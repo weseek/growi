@@ -1,15 +1,12 @@
 import React from 'react';
-import PropTypes from 'prop-types';
-import i18next from 'i18next';
 
+import i18next from 'i18next';
+import PropTypes from 'prop-types';
 import {
   Modal,
   ModalBody,
 } from 'reactstrap';
 
-import { withUnstatedContainers } from '../UnstatedUtils';
-import AppContainer from '~/client/services/AppContainer';
-import EditorContainer from '~/client/services/EditorContainer';
 import { getDiagramsNetLangCode } from '~/client/util/locale-utils';
 
 class DrawioModal extends React.PureComponent {
@@ -168,11 +165,8 @@ class DrawioModal extends React.PureComponent {
 }
 
 DrawioModal.propTypes = {
-  appContainer: PropTypes.instanceOf(AppContainer).isRequired,
-  editorContainer: PropTypes.instanceOf(EditorContainer).isRequired,
-
   onSave: PropTypes.func,
 };
 
 
-export default withUnstatedContainers(DrawioModal, [AppContainer, EditorContainer]);
+export default DrawioModal;
