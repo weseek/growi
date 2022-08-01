@@ -2,6 +2,10 @@
 @use '~/styles/bootstrap/init' as bs;
 @use '~/styles/mixins';
 
+%subnav-buttons-height {
+  height: 40px;
+}
+
 // https://github.com/css-modules/css-modules/issues/295#issuecomment-404873976
 // workaround to use '&' in global scope
 .grw-subnav {
@@ -36,15 +40,19 @@
       }
     }
 
+    .btn-skelton {
+      @extend %subnav-buttons-height;
+    }
+
     .btn-subscribe {
-      height: 40px;
+      @extend %subnav-buttons-height;
       font-size: 20px;
     }
 
     .btn-like,
     .btn-bookmark,
     .btn-seen-user {
-      height: 40px;
+      @extend %subnav-buttons-height;
       padding-right: 6px;
       padding-left: 8px;
       font-size: 20px;
