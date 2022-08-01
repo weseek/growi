@@ -25,7 +25,7 @@ import { GrowiSubNavigation } from '../Navbar/GrowiSubNavigation';
 import { SubNavButtons } from '../Navbar/SubNavButtons';
 import RevisionLoader from '../Page/RevisionLoader';
 import PageComment from '../PageComment';
-import PageContentFooter from '../PageContentFooter';
+import { PageContentFooter } from '../PageContentFooter';
 
 
 type AdditionalMenuItemsProps = AdditionalMenuItemsRendererProps & {

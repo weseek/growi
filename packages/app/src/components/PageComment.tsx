@@ -17,7 +17,7 @@ import { useSWRxPageComment } from '../stores/comment';
 import Comment from './PageComment/Comment';
 import CommentEditor from './PageComment/CommentEditor';
 import DeleteCommentModal from './PageComment/DeleteCommentModal';
-import ReplayComments from './PageComment/ReplayComments';
+import { ReplayComments } from './PageComment/ReplayComments';
 
 type Props = {
   appContainer: AppContainer,

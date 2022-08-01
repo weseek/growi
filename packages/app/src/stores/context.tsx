@@ -228,6 +228,10 @@ export const useRendererConfig = (initialData?: RendererConfig): SWRResponse<Ren
   return useStaticSWR('growiRendererConfig', initialData);
 };
 
+export const useIsAllReplyShown = (initialData?: boolean): SWRResponse<boolean, any> => {
+  return useStaticSWR('isAllReplyShown', initialData);
+};
+
 export const useCurrentPageTocNode = (): SWRResponse<HtmlElementNode, any> => {
   return useStaticSWR('currentPageTocNode');
 };

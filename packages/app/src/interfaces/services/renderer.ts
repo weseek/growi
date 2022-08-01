@@ -14,7 +14,6 @@ export type RendererConfig = {
   adminPreferredIndentSize: number,
   isIndentSizeForced: boolean,
   highlightJsStyleBorder: boolean,
-  isAllReplyShown: boolean,
 
   plantumlUri: string | null,
   blockdiagUri: string | null,
