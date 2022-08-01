@@ -18,7 +18,7 @@ import AdminTwitterSecurityContainer from '~/client/services/AdminTwitterSecurit
 import AdminUserGroupDetailContainer from '~/client/services/AdminUserGroupDetailContainer';
 import AdminUsersContainer from '~/client/services/AdminUsersContainer';
 
-export type AdminUnstatedContainers =
+type AdminUnstatedContainers =
   AdminAppContainer | AdminBasicSecurityContainer | AdminCustomizeContainer | AdminExternalAccountsContainer |
   AdminGeneralSecurityContainer | AdminGitHubSecurityContainer | AdminGoogleSecurityContainer | AdminHomeContainer |
   AdminImportContainer | AdminLdapSecurityContainer | AdminLocalSecurityContainer | AdminMarkDownContainer |
