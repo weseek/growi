@@ -10,12 +10,14 @@ import { Ref } from '~/interfaces/common';
 import { V5ConversionErrCode } from '~/interfaces/errors/v5-conversion-error';
 import { HasObjectId } from '~/interfaces/has-object-id';
 import {
-  IPage, IPageInfo, IPageInfoForEntity, IPageWithMeta,
+  IPage, IPageInfo, IPageInfoAll, IPageInfoForEntity, IPageWithMeta,
 } from '~/interfaces/page';
 import {
   PageDeleteConfigValue, IPageDeleteConfigValueToProcessValidation,
 } from '~/interfaces/page-delete-config';
-import { IPageOperationProcessInfo, IPageOperationProcessData } from '~/interfaces/page-operation';
+import {
+  IPageOperationProcessInfo, IPageOperationProcessData, PageActionStage, PageActionType,
+} from '~/interfaces/page-operation';
 import { IUserHasId } from '~/interfaces/user';
 import { PageMigrationErrorData, SocketEventName, UpdateDescCountRawData } from '~/interfaces/websocket';
 import {
@@ -27,7 +29,7 @@ import { prepareDeleteConfigValuesForCalc } from '~/utils/page-delete-config';
 
 import { ObjectIdLike } from '../interfaces/mongoose-utils';
 import { PathAlreadyExistsError } from '../models/errors';
-import PageOperation, { PageActionStage, PageActionType, PageOperationDocument } from '../models/page-operation';
+import PageOperation, { PageOperationDocument } from '../models/page-operation';
 import { PageRedirectModel } from '../models/page-redirect';
 import { serializePageSecurely } from '../models/serializers/page-serializer';
 import Subscription from '../models/subscription';
@@ -216,7 +218,9 @@ class PageService {
   }
 
   // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
-  async findPageAndMetaDataByViewer(pageId: string, path: string, user: IUserHasId, includeEmpty = false, isSharedPage = false): Promise<IPageWithMeta|null> {
+  async findPageAndMetaDataByViewer(
+      pageId: string, path: string, user: IUserHasId, includeEmpty = false, isSharedPage = false,
+  ): Promise<IPageWithMeta<IPageInfoAll>|null> {
 
     const Page = this.crowi.model('Page');
 
@@ -404,7 +408,19 @@ class PageService {
       logger.error('Failed to create PageOperation document.', err);
       throw err;
     }
-    const renamedPage = await this.renameMainOperation(page, newPagePath, user, options, pageOp._id);
+
+    let renamedPage: PageDocument | null = null;
+    try {
+      renamedPage = await this.renameMainOperation(page, newPagePath, user, options, pageOp._id);
+    }
+    catch (err) {
+      logger.error('Error occurred while running renameMainOperation', err);
+
+      // cleanup
+      await PageOperation.deleteOne({ _id: pageOp._id });
+
+      throw err;
+    }
 
     return renamedPage;
   }
@@ -999,7 +1015,20 @@ class PageService {
         logger.error('Failed to create PageOperation document.', err);
         throw err;
       }
-      this.duplicateRecursivelyMainOperation(page, newPagePath, user, pageOp._id);
+
+      (async() => {
+        try {
+          await this.duplicateRecursivelyMainOperation(page, newPagePath, user, pageOp._id);
+        }
+        catch (err) {
+          logger.error('Error occurred while running duplicateRecursivelyMainOperation.', err);
+
+          // cleanup
+          await PageOperation.deleteOne({ _id: pageOp._id });
+
+          throw err;
+        }
+      })();
     }
 
     const result = serializePageSecurely(duplicatedTarget);
@@ -1390,7 +1419,19 @@ class PageService {
       /*
        * Resumable Operation
        */
-      this.deleteRecursivelyMainOperation(page, user, pageOp._id);
+      (async() => {
+        try {
+          await this.deleteRecursivelyMainOperation(page, user, pageOp._id);
+        }
+        catch (err) {
+          logger.error('Error occurred while running deleteRecursivelyMainOperation.', err);
+
+          // cleanup
+          await PageOperation.deleteOne({ _id: pageOp._id });
+
+          throw err;
+        }
+      })();
     }
 
     return deletedPage;
@@ -1706,7 +1747,19 @@ class PageService {
       /*
        * Main Operation
        */
-      this.deleteCompletelyRecursivelyMainOperation(page, user, options, pageOp._id);
+      (async() => {
+        try {
+          await this.deleteCompletelyRecursivelyMainOperation(page, user, options, pageOp._id);
+        }
+        catch (err) {
+          logger.error('Error occurred while running deleteCompletelyRecursivelyMainOperation.', err);
+
+          // cleanup
+          await PageOperation.deleteOne({ _id: pageOp._id });
+
+          throw err;
+        }
+      })();
     }
 
     return;
@@ -1914,7 +1967,19 @@ class PageService {
       /*
        * Resumable Operation
        */
-      this.revertRecursivelyMainOperation(page, user, options, pageOp._id);
+      (async() => {
+        try {
+          await this.revertRecursivelyMainOperation(page, user, options, pageOp._id);
+        }
+        catch (err) {
+          logger.error('Error occurred while running revertRecursivelyMainOperation.', err);
+
+          // cleanup
+          await PageOperation.deleteOne({ _id: pageOp._id });
+
+          throw err;
+        }
+      })();
     }
 
     return updatedPage;
@@ -2300,7 +2365,19 @@ class PageService {
       throw err;
     }
 
-    this.normalizeParentRecursivelyMainOperation(page, user, pageOp._id);
+    (async() => {
+      try {
+        await this.normalizeParentRecursivelyMainOperation(page, user, pageOp._id);
+      }
+      catch (err) {
+        logger.error('Error occurred while running normalizeParentRecursivelyMainOperation.', err);
+
+        // cleanup
+        await PageOperation.deleteOne({ _id: pageOp._id });
+
+        throw err;
+      }
+    })();
   }
 
   async normalizeParentByPageIdsRecursively(pageIds: ObjectIdLike[], user): Promise<void> {
@@ -2485,7 +2562,11 @@ class PageService {
       }
       catch (err) {
         errorPagePaths.push(page.path);
-        logger.err('Failed to run normalizeParentRecursivelyMainOperation.', err);
+        logger.error('Failed to run normalizeParentRecursivelyMainOperation.', err);
+
+        // cleanup
+        await PageOperation.deleteOne({ _id: pageOp._id });
+
         throw err;
       }
     }

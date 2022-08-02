@@ -16,9 +16,9 @@ import urljoin from 'url-join';
 import { ISelectable } from '~/client/interfaces/selectable-all';
 import { bookmark, unbookmark, toggleContentWidth } from '~/client/services/page-operation';
 import {
-  IPageInfoAll, IPageInfoForEntity, IPageInfoForListing, IPageWithMeta, isIPageInfoForListing, isIPageInfoForEntity,
+  IPageInfoAll, isIPageInfoForListing, isIPageInfoForEntity, IPageWithMeta, IPageInfoForListing,
 } from '~/interfaces/page';
-import { IPageSearchMeta, isIPageSearchMeta } from '~/interfaces/search';
+import { IPageSearchMeta, IPageWithSearchMeta, isIPageSearchMeta } from '~/interfaces/search';
 import {
   OnDuplicatedFunction, OnRenamedFunction, OnDeletedFunction, OnPutBackedFunction,
 } from '~/interfaces/ui';
@@ -34,7 +34,7 @@ import PagePathHierarchicalLink from '../PagePathHierarchicalLink';
 import { toastError } from '~/client/util/apiNotification';
 
 type Props = {
-  page: IPageWithMeta<IPageInfoForEntity> | IPageWithMeta<IPageSearchMeta> | IPageWithMeta<IPageInfoForListing & IPageSearchMeta>,
+  page: IPageWithSearchMeta | IPageWithMeta<IPageInfoForListing & IPageSearchMeta>,
   isSelected?: boolean, // is item selected(focused)
   isEnableActions?: boolean,
   forceHideMenuItems?: ForceHideMenuItems,

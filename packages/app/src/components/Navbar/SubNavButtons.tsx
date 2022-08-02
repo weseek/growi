@@ -5,7 +5,7 @@ import {
 } from '~/client/services/page-operation';
 import { toastError } from '~/client/util/apiNotification';
 import {
-  IPageInfoAll, IPageToDeleteWithMeta, IPageToRenameWithMeta, isIPageInfoForEntity, isIPageInfoForOperation,
+  IPageInfoForOperation, IPageToDeleteWithMeta, IPageToRenameWithMeta, isIPageInfoForEntity, isIPageInfoForOperation,
 } from '~/interfaces/page';
 import { useIsGuestUser } from '~/stores/context';
 import { IPageForPageDuplicateModal } from '~/stores/modal';
@@ -38,7 +38,7 @@ type SubNavButtonsSubstanceProps = CommonProps & {
   shareLinkId?: string | null,
   revisionId: string | null,
   path?: string | null,
-  pageInfo: IPageInfoAll,
+  pageInfo: IPageInfoForOperation,
 }
 
 const SubNavButtonsSubstance = (props: SubNavButtonsSubstanceProps): JSX.Element => {

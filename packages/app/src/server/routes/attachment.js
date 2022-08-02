@@ -1,6 +1,7 @@
-import { SupportedAction } from '~/interfaces/activity';
-import loggerFactory from '~/utils/logger';
 
+import { SupportedAction } from '~/interfaces/activity';
+import { AttachmentType } from '~/server/interfaces/attachment';
+import loggerFactory from '~/utils/logger';
 
 /* eslint-disable no-use-before-define */
 
@@ -447,7 +448,7 @@ module.exports = function(crowi, app) {
     if (pageId == null && pagePath == null) {
       return res.json(ApiResponse.error('Either page_id or path is required.'));
     }
-    if (!req.file) {
+    if (req.file == null) {
       return res.json(ApiResponse.error('File error.'));
     }
 
@@ -473,7 +474,7 @@ module.exports = function(crowi, app) {
 
     let attachment;
     try {
-      attachment = await attachmentService.createAttachment(file, req.user, pageId);
+      attachment = await attachmentService.createAttachment(file, req.user, pageId, AttachmentType.WIKI_PAGE);
     }
     catch (err) {
       logger.error(err);
@@ -564,7 +565,7 @@ module.exports = function(crowi, app) {
    */
   api.uploadProfileImage = async function(req, res) {
     // check params
-    if (!req.file) {
+    if (req.file == null) {
       return res.json(ApiResponse.error('File error.'));
     }
     if (!req.user) {
@@ -582,7 +583,7 @@ module.exports = function(crowi, app) {
     let attachment;
     try {
       req.user.deleteImage();
-      attachment = await attachmentService.createAttachment(file, req.user);
+      attachment = await attachmentService.createAttachment(file, req.user, null, AttachmentType.PROFILE_IMAGE);
       await req.user.updateImage(attachment);
     }
     catch (err) {

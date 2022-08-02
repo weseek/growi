@@ -10,7 +10,7 @@ import { toastSuccess } from '~/client/util/apiNotification';
 import {
   IPageInfoForListing, IPageWithMeta, isIPageInfoForListing,
 } from '~/interfaces/page';
-import { IPageSearchMeta } from '~/interfaces/search';
+import { IPageSearchMeta, IPageWithSearchMeta } from '~/interfaces/search';
 import { OnDuplicatedFunction, OnRenamedFunction, OnDeletedFunction } from '~/interfaces/ui';
 import { useIsGuestUser } from '~/stores/context';
 import { useSWRxPageInfoForList } from '~/stores/page';
@@ -22,10 +22,10 @@ import { PageListItemL } from '../PageList/PageListItemL';
 
 
 type Props = {
-  pages: IPageWithMeta<IPageSearchMeta>[],
+  pages: IPageWithSearchMeta[],
   selectedPageId?: string,
   forceHideMenuItems?: ForceHideMenuItems,
-  onPageSelected?: (page?: IPageWithMeta<IPageSearchMeta>) => void,
+  onPageSelected?: (page?: IPageWithSearchMeta) => void,
   onCheckboxChanged?: (isChecked: boolean, pageId: string) => void,
 }
 
@@ -74,7 +74,7 @@ const SearchResultListSubstance: ForwardRefRenderFunction<ISelectableAll, Props>
     }
   }, [onPageSelected, pages]);
 
-  let injectedPages: (IPageWithMeta<IPageSearchMeta> | IPageWithMeta<IPageInfoForListing & IPageSearchMeta>)[] | undefined;
+  let injectedPages: (IPageWithSearchMeta | IPageWithMeta<IPageInfoForListing & IPageSearchMeta>)[] | undefined;
   // inject data to list
   if (idToPageInfo != null) {
     injectedPages = pages.map((page) => {
