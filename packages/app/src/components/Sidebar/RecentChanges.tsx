@@ -84,7 +84,7 @@ const LargePageItem = memo(({ page }: PageItemProps): JSX.Element => {
             <PagePathHierarchicalLink linkedPagePath={linkedPagePathLatter} basePath={dPagePath.isRoot ? undefined : dPagePath.former} />
             {locked}
           </h5>
-          <div className={`grw-tag-labels ${TagLabelsStyles['grw-tag-labels']} mt-1 mb-2`}>
+          <div className="grw-tag-labels mt-1 mb-2">
             { tagElements }
           </div>
           <PageItemLower page={page} />
