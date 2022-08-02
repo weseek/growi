@@ -10,7 +10,6 @@ import {
 } from '~/interfaces/page';
 import { IPageOperationProcessData } from '~/interfaces/page-operation';
 import { useSWRxPageInfo } from '~/stores/page';
-import { updateBodyClassByView } from '~/stores/ui';
 import loggerFactory from '~/utils/logger';
 import { shouldRecoverPagePaths } from '~/utils/page-operation';
 
@@ -57,6 +56,19 @@ type DropdownMenuProps = CommonProps & {
   isLoading?: boolean,
   operationProcessData?: IPageOperationProcessData,
 }
+
+// Utility to update body class
+const updateBodyClassByView = (isContainerFluid: boolean): void => {
+  const bodyClasses = document.body.classList;
+  const isLayoutFluid = bodyClasses.contains('growi-layout-fluid');
+
+  if (isContainerFluid && !isLayoutFluid) {
+    bodyClasses.add('growi-layout-fluid');
+  }
+  else if (isLayoutFluid) {
+    bodyClasses.remove('growi-layout-fluid');
+  }
+};
 
 const PageItemControlDropdownMenu = React.memo((props: DropdownMenuProps): JSX.Element => {
   const { t } = useTranslation('');
