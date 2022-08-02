@@ -246,7 +246,6 @@ class PageService {
           isDeletable: false,
           isAbleToDeleteCompletely: false,
           isRevertible: false,
-          isContainerFluid: page.isContainerFluid,
         },
       };
     }
@@ -273,9 +272,6 @@ class PageService {
     const isLiked: boolean = page.isLiked(user);
 
     const subscription = await Subscription.findByUserIdAndTargetId(user._id, pageId);
-    const isContainerFluid: boolean = page.isContainerFluid != null
-      ? page.isContainerFluid
-      : this.crowi.configManager.getConfig('crowi', 'customize:isContainerFluid');
 
     let creatorId = page.creator;
     if (page.isEmpty) {
@@ -296,7 +292,6 @@ class PageService {
         isBookmarked,
         isLiked,
         subscriptionStatus: subscription?.status,
-        isContainerFluid,
       },
     };
   }
@@ -2173,12 +2168,12 @@ class PageService {
         isDeletable: false,
         isAbleToDeleteCompletely: false,
         isRevertible: false,
-        isContainerFluid: false,
       };
     }
 
     const likers = page.liker.slice(0, 15) as Ref<IUserHasId>[];
     const seenUsers = page.seenUsers.slice(0, 15) as Ref<IUserHasId>[];
+    const expandContentWidth = page.expandContentWidth ?? this.crowi.configManager.getConfig('crowi', 'customize:isContainerFluid');
 
     return {
       isV5Compatible: isTopPage(page.path) || page.parent != null,
@@ -2191,7 +2186,7 @@ class PageService {
       isDeletable: isMovable,
       isAbleToDeleteCompletely: false,
       isRevertible: isTrashPage(page.path),
-      isContainerFluid: page.isContainerFluid,
+      expandContentWidth,
     };
 
   }
@@ -3361,7 +3356,7 @@ class PageService {
   async create(path: string, body: string, user, options: PageCreateOptions = {}): Promise<PageDocument> {
     const Page = mongoose.model('Page') as unknown as PageModel;
 
-    const isContainerFluid = this.crowi.configManager.getConfig('crowi', 'customize:isContainerFluid');
+    const expandContentWidth = this.crowi.configManager.getConfig('crowi', 'customize:isContainerFluid');
 
     // Switch method
     const isV5Compatible = this.crowi.configManager.getConfig('crowi', 'app:isV5Compatible');
@@ -3409,8 +3404,8 @@ class PageService {
       const parent = await this.getParentAndFillAncestorsByUser(user, path);
       page.parent = parent._id;
     }
-    if (isContainerFluid != null) {
-      page.isContainerFluid = isContainerFluid;
+    if (expandContentWidth != null) {
+      page.expandContentWidth = expandContentWidth;
     }
     // Save
     let savedPage = await page.save();

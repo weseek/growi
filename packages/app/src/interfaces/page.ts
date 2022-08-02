@@ -29,7 +29,7 @@ export interface IPage {
   pageIdOnHackmd: string,
   revisionHackmdSynced: Ref<IRevision>,
   hasDraftOnHackmd: boolean,
-  isContainerFluid: boolean,
+  expandContentWidth?: boolean,
   deleteUser: Ref<IUser>,
   deletedAt: Date,
 }
@@ -54,7 +54,6 @@ export type IPageInfo = {
   isDeletable: boolean,
   isAbleToDeleteCompletely: boolean,
   isRevertible: boolean,
-  isContainerFluid: boolean,
 }
 
 export type IPageInfoForEntity = IPageInfo & {
@@ -63,6 +62,7 @@ export type IPageInfoForEntity = IPageInfo & {
   likerIds: string[],
   sumOfSeenUsers: number,
   seenUserIds: string[],
+  expandContentWidth?: boolean,
 }
 
 export type IPageInfoForOperation = IPageInfoForEntity & {
@@ -84,7 +84,7 @@ export const isIPageInfoForEntity = (pageInfo: any | undefined): pageInfo is IPa
 export const isIPageInfoForOperation = (pageInfo: any | undefined): pageInfo is IPageInfoForOperation => {
   return pageInfo != null
     && isIPageInfoForEntity(pageInfo)
-    && ('isBookmarked' in pageInfo || 'isLiked' in pageInfo || 'subscriptionStatus' in pageInfo || 'isContainerFluid' in pageInfo);
+    && ('isBookmarked' in pageInfo || 'isLiked' in pageInfo || 'subscriptionStatus' in pageInfo);
 };
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any

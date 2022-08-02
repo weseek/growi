@@ -221,7 +221,7 @@ module.exports = (crowi) => {
       query('pageId').isString(),
     ],
     contentWidth: [
-      body('isContainerFluid').isBoolean(),
+      body('expandContentWidth').isBoolean(),
     ],
   };
 
@@ -824,14 +824,14 @@ module.exports = (crowi) => {
   router.put('/:pageId/content-width', accessTokenParser, loginRequiredStrictly, csrf,
     validator.contentWidth, apiV3FormValidator, async(req, res) => {
       const { pageId } = req.params;
-      const { isContainerFluid } = req.body;
+      const { expandContentWidth } = req.body;
 
       const isContainerFluidBySystem = configManager.getConfig('crowi', 'customize:isContainerFluid');
 
       try {
-        const updateQuery = isContainerFluid === isContainerFluidBySystem
-          ? { $unset: { isContainerFluid } } // remove if the specified value is the same to the system's one
-          : { $set: { isContainerFluid } };
+        const updateQuery = expandContentWidth === isContainerFluidBySystem
+          ? { $unset: { expandContentWidth } } // remove if the specified value is the same to the system's one
+          : { $set: { expandContentWidth } };
 
         const page = await Page.updateOne({ _id: pageId }, updateQuery);
         return res.apiv3({ page });
