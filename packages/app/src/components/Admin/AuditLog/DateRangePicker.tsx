@@ -1,32 +1,35 @@
-import React, {
-  FC, useRef, forwardRef, useCallback,
-} from 'react';
+import React, { FC, forwardRef, useCallback } from 'react';
 
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 
-import { useTranslation } from 'react-i18next';
-
 
 type CustomInputProps = {
-  buttonRef: React.Ref<HTMLButtonElement>
-  onClick?: () => void;
+  value?: string
+  onChange?: () => void
+  onFocus?: () => void
 }
 
-const CustomInput = forwardRef<HTMLButtonElement, CustomInputProps>((props: CustomInputProps) => {
-  const { t } = useTranslation();
+const CustomInput = forwardRef<HTMLInputElement, CustomInputProps>((props: CustomInputProps, ref) => {
   return (
-    <button
-      type="button"
-      className="btn btn-outline-secondary dropdown-toggle"
-      ref={props.buttonRef}
-      onClick={props.onClick}
-    >
-      <i className="fa fa-fw fa-calendar" /> {t('admin:audit_log_management.date')}
-    </button>
+    <div className="input-group admin-audit-log">
+      <div className="input-group-prepend">
+        <span className="input-group-text">
+          <i className="fa fa-fw fa-calendar" />
+        </span>
+      </div>
+      <input
+        ref={ref}
+        type="text"
+        value={props?.value}
+        onFocus={props?.onFocus}
+        onChange={props?.onChange}
+        className="form-control date-range-picker"
+        aria-describedby="basic-addon1"
+      />
+    </div>
   );
 });
-
 
 type DateRangePickerProps = {
   startDate: Date | null
@@ -36,8 +39,6 @@ type DateRangePickerProps = {
 
 export const DateRangePicker: FC<DateRangePickerProps> = (props: DateRangePickerProps) => {
   const { startDate, endDate, onChange } = props;
-
-  const buttonRef = useRef(null);
 
   const changeHandler = useCallback((dateList: Date[] | null[]) => {
     if (onChange != null) {
@@ -59,7 +60,7 @@ export const DateRangePicker: FC<DateRangePickerProps> = (props: DateRangePicker
         startDate={startDate}
         endDate={endDate}
         onChange={changeHandler}
-        customInput={<CustomInput buttonRef={buttonRef} />}
+        customInput={<CustomInput />}
       />
     </div>
   );
