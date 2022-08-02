@@ -418,7 +418,7 @@ async function injectRoutingInformation(context: GetServerSidePropsContext, prop
     props.isForbidden = count > 0;
   }
   else {
-    page.isNotFound = page.isEmpty;
+    props.isNotFound = page.isEmpty;
 
     // /62a88db47fed8b2d94f30000 ==> /path/to/page
     if (isPermalink && page.isEmpty) {
