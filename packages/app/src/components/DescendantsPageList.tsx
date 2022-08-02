@@ -130,11 +130,11 @@ export const DescendantsPageListSubstance = (props: SubstanceProps): JSX.Element
   );
 };
 
-type Props = {
+export type DescendantsPageListProps = {
   path: string,
 }
 
-export const DescendantsPageList = (props: Props): JSX.Element => {
+export const DescendantsPageList = (props: DescendantsPageListProps): JSX.Element => {
   const { path } = props;
 
   const [activePage, setActivePage] = useState(1);
