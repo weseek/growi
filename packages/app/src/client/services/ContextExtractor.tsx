@@ -9,7 +9,7 @@ import { IUserUISettings } from '~/interfaces/user-ui-settings';
 import {
   useIsDeviceSmallerThanMd, useIsDeviceSmallerThanLg,
   usePreferDrawerModeByUser, usePreferDrawerModeOnEditByUser, useSidebarCollapsed, useCurrentSidebarContents, useCurrentProductNavWidth,
-  useSelectedGrant, useSelectedGrantGroupId, useSelectedGrantGroupName,
+  useSelectedGrant,
 } from '~/stores/ui';
 import { useSetupGlobalSocket, useSetupGlobalAdminSocket } from '~/stores/websocket';
 
@@ -22,7 +22,7 @@ import {
   useIsSearchPage, useIsForbidden, useIsIdenticalPath, useHasParent,
   useIsAclEnabled, useIsSearchServiceConfigured, useIsSearchServiceReachable, useIsEnabledAttachTitleHeader,
   useDefaultIndentSize, useIsIndentSizeForced, useCsrfToken, useGrowiVersion, useAuditLogEnabled,
-  useActivityExpirationSeconds, useAuditLogAvailableActions, useRendererConfig, useNoCdn, useUploadableImage, useUploadableFile,
+  useActivityExpirationSeconds, useAuditLogAvailableActions, useRendererConfig,
 } from '../../stores/context';
 
 const { isTrashPage: _isTrashPage } = pagePathUtils;
@@ -133,9 +133,9 @@ const ContextExtractorOnce: FC = () => {
     plantumlUri: configByContextHydrate.env.PLANTUML_URI,
     blockdiagUri: configByContextHydrate.env.BLOCKDIAG_URI,
   });
-  useNoCdn(configByContextHydrate.env.NO_CDN);
-  useUploadableImage(configByContextHydrate.upload.image);
-  useUploadableFile(configByContextHydrate.upload.file);
+  // useNoCdn(configByContextHydrate.env.NO_CDN);
+  // useUploadableImage(configByContextHydrate.upload.image);
+  // useUploadableFile(configByContextHydrate.upload.file);
 
   // Page
   useDeleteUsername(deleteUsername);
@@ -173,9 +173,9 @@ const ContextExtractorOnce: FC = () => {
   useIsDeviceSmallerThanMd();
 
   // Editor
-  useSelectedGrant(grant);
-  useSelectedGrantGroupId(grantGroupId);
-  useSelectedGrantGroupName(grantGroupName);
+  // useSelectedGrant(grant);
+  // useSelectedGrantGroupId(grantGroupId);
+  // useSelectedGrantGroupName(grantGroupName);
 
   // SearchResult
   useIsDeviceSmallerThanLg();
