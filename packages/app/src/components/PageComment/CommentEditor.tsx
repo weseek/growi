@@ -216,7 +216,7 @@ export const CommentEditor = (props: PropsType): JSX.Element => {
         path={currentPagePath}
       />
     );
-  }, [currentPagePath, markdown]);
+  }, [currentPagePath, markdown, rendererOptions]);
 
   const renderBeforeReady = useCallback((): JSX.Element => {
     return (

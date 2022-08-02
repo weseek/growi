@@ -118,10 +118,9 @@ export const Comment = (props: CommentProps): JSX.Element => {
       {(isReEdit && !isReadOnly) ? (
         <CommentEditor
           rendererOptions={rendererOptions}
+          replyTo={undefined}
           currentCommentId={commentId}
           commentBody={comment.comment}
-          replyTo={undefined}
-          commentCreator={creator?.username}
           onCancelButtonClicked={() => setIsReEdit(false)}
           onCommentButtonClicked={() => {
             setIsReEdit(false);

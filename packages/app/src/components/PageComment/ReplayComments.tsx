@@ -11,7 +11,6 @@ import { useIsAllReplyShown } from '../../stores/context';
 import { Comment } from './Comment';
 
 type ReplaycommentsProps = {
-  comment: ICommentHasId,
   isReadOnly: boolean,
   replyList: ICommentHasIdList,
   deleteBtnClicked: (comment: ICommentHasId) => void,
@@ -24,7 +23,7 @@ type ReplaycommentsProps = {
 
 export const ReplayComments = (props: ReplaycommentsProps): JSX.Element => {
   const {
-    comment, isReadOnly, replyList, deleteBtnClicked, onComment, rendererOptions,
+    isReadOnly, replyList, deleteBtnClicked, onComment, rendererOptions,
     currentPagePath, currentRevisionId, currentRevisionCreatedAt,
   } = props;
   const { data: isAllReplyShown } = useIsAllReplyShown();
@@ -37,7 +36,7 @@ export const ReplayComments = (props: ReplaycommentsProps): JSX.Element => {
         <Comment
           rendererOptions={rendererOptions}
           deleteBtnClicked={deleteBtnClicked}
-          comment={comment}
+          comment={reply}
           onComment={onComment}
           isReadOnly={isReadOnly}
           currentPagePath={currentPagePath}

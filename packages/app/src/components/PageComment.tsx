@@ -129,22 +129,27 @@ export const PageComment:FC<Props> = memo((props:Props):JSX.Element => {
 
   const generateCommentInnerElement = (comment: ICommentHasId) => (
     <Comment
-      rendererOptions={rendererOptions}
-      deleteBtnClicked={onClickDeleteButton}
       comment={comment}
-      onComment={mutate}
       isReadOnly={isReadOnly}
+      deleteBtnClicked={onClickDeleteButton}
+      onComment={mutate}
+      rendererOptions={rendererOptions}
       currentPagePath={currentPagePath}
       currentRevisionId={currentPage.revision._id}
-      currentRevisionCreatedAt={currentPage.revision.createdAt} />
+      currentRevisionCreatedAt={currentPage.revision.createdAt}
+    />
   );
 
   const generateAllRepliesElement = (replyComments: ICommentHasIdList) => (
     <ReplayComments
-      deleteBtnClicked={onClickDeleteButton}
       isReadOnly={isReadOnly}
       replyList={replyComments}
+      deleteBtnClicked={onClickDeleteButton}
       onComment={mutate}
+      rendererOptions={rendererOptions}
+      currentPagePath={currentPagePath}
+      currentRevisionId={currentPage.revision._id}
+      currentRevisionCreatedAt={currentPage.revision.createdAt}
     />
   );
 
@@ -191,6 +196,7 @@ export const PageComment:FC<Props> = memo((props:Props):JSX.Element => {
                     {/* display reply editor */}
                     {(!isReadOnly && showEditorIds.has(comment._id)) && (
                       <CommentEditor
+                        rendererOptions={rendererOptions}
                         replyTo={comment._id}
                         onCancelButtonClicked={() => {
                           removeShowEditorId(comment._id);
