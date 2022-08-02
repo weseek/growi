@@ -1,3 +1,5 @@
+@use './bootstrap/variables' as var;
+
 body .page-list {
   .page-list-container {
     font-size: 15px;
@@ -98,8 +100,8 @@ body .page-list {
 }
 
 .card-timeline {
-  border: 1px solid $gray-300;
+  border: 1px solid var.$gray-300;
   > .card-header {
-    background-color: $gray-300;
+    background-color: var.$gray-300;
   }
 }
