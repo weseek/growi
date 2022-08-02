@@ -2,11 +2,12 @@ import React, {
   FC, useEffect, useState, useMemo, memo, useCallback,
 } from 'react';
 
+import { Nullable } from '@growi/core';
 import { Button } from 'reactstrap';
 
 import { toastError } from '~/client/util/apiNotification';
 import { apiPost } from '~/client/util/apiv1-client';
-import { useCurrentPageId, useCurrentPagePath } from '~/stores/context';
+import { useCurrentPagePath } from '~/stores/context';
 import { useSWRxCurrentPage } from '~/stores/page';
 import { useCommentPreviewOptions } from '~/stores/renderer';
 
@@ -22,6 +23,7 @@ import { ReplayComments } from './PageComment/ReplayComments';
 import styles from './PageComment.module.scss';
 
 type Props = {
+  pageId?: Nullable<string>
   isReadOnly: boolean,
   titleAlign?: 'center' | 'left' | 'right',
   highlightKeywords?: string[],
@@ -31,10 +33,9 @@ type Props = {
 export const PageComment: FC<Props> = memo((props:Props): JSX.Element => {
 
   const {
-    highlightKeywords, isReadOnly, titleAlign, hideIfEmpty,
+    pageId, highlightKeywords, isReadOnly, titleAlign, hideIfEmpty,
   } = props;
 
-  const { data: pageId } = useCurrentPageId();
   const { data: comments, mutate } = useSWRxPageComment(pageId);
   const { data: rendererOptions } = useCommentPreviewOptions();
   const { data: currentPage } = useSWRxCurrentPage();

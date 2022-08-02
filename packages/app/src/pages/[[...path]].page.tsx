@@ -326,7 +326,7 @@ const GrowiPage: NextPage<Props> = (props: Props) => {
         </div>
         <footer>
           {/* <PageComments /> */}
-          <PageComment isReadOnly={false} titleAlign="left" />
+          <PageComment pageId={useCurrentPageId().data} isReadOnly={false} titleAlign="left" />
           <PageContentFooter />
         </footer>
 
