@@ -1,0 +1,74 @@
+@use '~/styles/bootstrap/init' as bs;
+
+%comment-section {
+  position: relative;
+  padding: 1em;
+
+  // speech balloon
+  &:before {
+    position: absolute;
+    top: 1.5em;
+    left: -1em;
+    display: block;
+    width: 0;
+    content: '';
+    border: 1em solid transparent;
+    border-left-width: 0;
+
+    @include bs.media-breakpoint-down(xs) {
+      top: 1em;
+    }
+  }
+}
+
+%picture {
+  float: left;
+  width: 3em;
+  height: 3em;
+  margin-top: 0.8em;
+
+  @include bs.media-breakpoint-down(xs) {
+    width: 2em;
+    height: 2em;
+  }
+}
+
+// display cheatsheet for comment form only
+.comment-form :global {
+  .editor-cheatsheet {
+    display: none;
+  }
+
+  position: relative;
+  margin-top: 1em;
+
+  // user icon
+  .picture {
+    @extend %picture;
+  }
+
+  // seciton
+  .comment-form-main {
+    @extend %comment-section;
+    margin-left: 4.5em;
+    @include bs.media-breakpoint-down(xs) {
+      margin-left: 3.5em;
+    }
+  }
+
+  // textarea
+  .comment-write {
+    margin-bottom: 0.5em;
+  }
+  .comment-form-comment {
+    height: 80px;
+    &:focus,
+    &:not(:invalid) {
+      height: 180px;
+      transition: height 0.2s ease-out;
+    }
+  }
+  .comment-form-preview {
+    padding-top: 0.5em;
+  }
+}

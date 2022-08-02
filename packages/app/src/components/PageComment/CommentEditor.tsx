@@ -19,12 +19,14 @@ import {
 import { useSWRxSlackChannels, useIsSlackEnabled } from '~/stores/editor';
 import { useIsMobile } from '~/stores/ui';
 
-
 import { CustomNavTab } from '../CustomNavigation/CustomNav';
 import NotAvailableForGuest from '../NotAvailableForGuest';
 import { SlackNotification } from '../SlackNotification';
 
 import { CommentPreview } from './CommentPreview';
+
+import styles from './CommentEditor.module.scss';
+
 
 const navTabMapping = {
   comment_editor: {
@@ -332,7 +334,7 @@ export const CommentEditor = (props: PropsType): JSX.Element => {
 
   return (
     <div className="form page-comment-form">
-      <div className="comment-form">
+      <div className={`${styles['comment-form']}`}>
         <div className="comment-form-user">
           <UserPicture user={currentUser} noLink noTooltip />
         </div>

@@ -15,8 +15,11 @@ import { useSWRxPageComment } from '../stores/comment';
 
 import { Comment } from './PageComment/Comment';
 import { CommentEditor } from './PageComment/CommentEditor';
+import { CommentEditorLazyRenderer } from './PageComment/CommentEditorLazyRenderer';
 import DeleteCommentModal from './PageComment/DeleteCommentModal';
 import { ReplayComments } from './PageComment/ReplayComments';
+
+import styles from './PageComment.module.scss';
 
 type Props = {
   isReadOnly: boolean,
@@ -155,9 +158,9 @@ export const PageComment: FC<Props> = memo((props:Props): JSX.Element => {
 
   return (
     <>
-      <div className="page-comments-row comment-list">
+      <div className="page-comments-row comment-list mt-5 py-4 d-edit-none d-print-none">
         <div className="container-lg">
-          <div className="page-comments">
+          <div className={`${styles['page-comments']}`}>
             <h2 className={commentTitleClasses}><i className="icon-fw icon-bubbles"></i>Comments</h2>
             <div className="page-comments-list" id="page-comments-list">
               { commentsExceptReply.map((comment) => {
@@ -181,7 +184,7 @@ export const PageComment: FC<Props> = memo((props:Props): JSX.Element => {
                           outline
                           color="secondary"
                           size="sm"
-                          className="btn-comment-reply"
+                          className={`${styles['btn-comment-reply']}`}
                           onClick={() => {
                             setShowEditorIds(previousState => new Set(previousState.add(comment._id)));
                           }}
@@ -208,7 +211,10 @@ export const PageComment: FC<Props> = memo((props:Props): JSX.Element => {
                 );
 
               })}
+
             </div>
+            {/* TODO: Check if identical-page */}
+            <CommentEditorLazyRenderer />
           </div>
         </div>
       </div>

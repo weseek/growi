@@ -17,6 +17,8 @@ import Username from '../User/Username';
 import CommentControl from './CommentControl';
 import { CommentEditor } from './CommentEditor';
 
+import styles from './Comment.module.scss';
+
 type CommentProps = {
   comment: ICommentHasId,
   isReadOnly: boolean,
@@ -68,7 +70,7 @@ export const Comment = (props: CommentProps): JSX.Element => {
   };
 
   const getRootClassName = (comment) => {
-    let className = 'page-comment flex-column';
+    let className = ` ${styles['page-comment']} flex-column`;
 
     if (comment.revision === currentRevisionId) {
       className += ' page-comment-current';
