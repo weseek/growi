@@ -22,7 +22,6 @@ const IGNORED_COLLECTION_NAMES = [
 ];
 
 const ExportArchiveDataPage = (props) => {
-
   const [collections, setCollections] = useState([]);
   const [zipFileStats, setZipFileStats] = useState([]);
   const [progressList, setProgressList] = useState([]);
@@ -30,8 +29,6 @@ const ExportArchiveDataPage = (props) => {
   const [isExporting, setIsExporting] = useState(false);
   const [isZipping, setIsZipping] = useState(false);
   const [isExported, setIsExported] = useState(false);
-
-  const { t } = useTranslation();
 
   const fetchData = useCallback(async() => {
     const [{ collections }, { status }] = await Promise.all([
@@ -42,6 +39,7 @@ const ExportArchiveDataPage = (props) => {
       return !IGNORED_COLLECTION_NAMES.includes(collectionName);
     });
     const { zipFileStats, isExporting, progressList } = status;
+
     setCollections(filteredCollections);
     setZipFileStats(zipFileStats);
     setIsExporting(isExporting);
@@ -53,10 +51,9 @@ const ExportArchiveDataPage = (props) => {
     if (socket == null) {
       return;
     }
+
     socket.off('admin:onProgressForExport');
-
     socket.off('admin:onStartZippingForExport');
-
     socket.off('admin:onTerminateForExport');
   }, [props.adminSocketIoContainer]);
 
@@ -67,16 +64,14 @@ const ExportArchiveDataPage = (props) => {
       return;
     }
     // websocket event
-    socket.on('admin:onProgressForExport', ({ currentCount, totalCount, progressListOpt }) => {
+    socket.on('admin:onProgressForExport', ({ currentCount, totalCount, progressList }) => {
       setIsExporting(true);
-      setProgressList(progressListOpt);
+      setProgressList(progressList);
     });
-
     // websocket event
     socket.on('admin:onStartZippingForExport', () => {
       setIsZipping(true);
     });
-
     // websocket event
     socket.on('admin:onTerminateForExport', ({ addedZipFileStat }) => {
       setIsExporting(false);
@@ -161,7 +156,6 @@ const ExportArchiveDataPage = (props) => {
 
   const renderProgressBarForZipping = useCallback(() => {
     const showZippingBar = isZipping || isExported;
-
     if (!showZippingBar) {
       return <></>;
     }
@@ -192,15 +186,13 @@ const ExportArchiveDataPage = (props) => {
   }, [setupWebsocketEventHandler, cleanupWebsocketEventHandler]);
 
   const showExportingData = (isExported || isExporting) && (progressList != null);
-
+  const { t } = useTranslation();
   return (
     <div data-testid="admin-export-archive-data">
       <h2>{t('Export Archive Data')}</h2>
-
       <button type="button" className="btn btn-outline-secondary" disabled={isExporting} onClick={() => openExportModal()}>
         {t('admin:export_management.create_new_archive_data')}
       </button>
-
       { showExportingData && (
         <div className="mt-5">
           <h3>{t('admin:export_management.exporting_collection_list')}</h3>
@@ -208,7 +200,6 @@ const ExportArchiveDataPage = (props) => {
           {renderProgressBarForZipping() }
         </div>
       ) }
-
       <div className="mt-5">
         <h3>{t('admin:export_management.exported_data_list')}</h3>
         <ArchiveFilesTable
@@ -216,7 +207,6 @@ const ExportArchiveDataPage = (props) => {
           onZipFileStatRemove={(fileName => onZipFileStatRemove(fileName))}
         />
       </div>
-
       <SelectCollectionsModal
         isOpen={isExportModalOpen}
         onExportingRequested={() => exportingRequestedHandler()}
@@ -225,7 +215,6 @@ const ExportArchiveDataPage = (props) => {
       />
     </div>
   );
-
 };
 
 ExportArchiveDataPage.propTypes = {
