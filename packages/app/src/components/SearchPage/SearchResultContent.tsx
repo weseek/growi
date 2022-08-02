@@ -19,7 +19,6 @@ import { useSearchResultOptions } from '~/stores/renderer';
 import { useFullTextSearchTermManager } from '~/stores/search';
 
 
-import AppContainer from '../../client/services/AppContainer';
 import { AdditionalMenuItemsRendererProps, ForceHideMenuItems } from '../Common/Dropdown/PageItemControl';
 import { GrowiSubNavigation } from '../Navbar/GrowiSubNavigation';
 import { SubNavButtons } from '../Navbar/SubNavButtons';
@@ -54,7 +53,6 @@ const SCROLL_OFFSET_TOP = 175; // approximate height of (navigation + subnavigat
 const MUTATION_OBSERVER_CONFIG = { childList: true, subtree: true };
 
 type Props ={
-  appContainer: AppContainer,
   pageWithMeta : IPageWithSearchMeta,
   highlightKeywords?: string[],
   showPageControlDropdown?: boolean,
@@ -106,7 +104,6 @@ export const SearchResultContent: FC<Props> = (props: Props) => {
   // *******************************  end  *******************************
 
   const {
-    appContainer,
     pageWithMeta,
     highlightKeywords,
     showPageControlDropdown,

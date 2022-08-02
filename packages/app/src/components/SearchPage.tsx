@@ -8,7 +8,6 @@ import { useTranslation } from 'next-i18next';
 
 
 import { ISelectableAll, ISelectableAndIndeterminatable } from '~/client/interfaces/selectable-all';
-import AppContainer from '~/client/services/AppContainer';
 import { IFormattedSearchResult } from '~/interfaces/search';
 import { useIsSearchServiceReachable } from '~/stores/context';
 import { ISearchConditions, ISearchConfigurations, useSWRxSearch } from '~/stores/search';
@@ -97,16 +96,8 @@ const getParsedUrlQuery = () => {
   return parseQuerystring(search.slice(1)); // remove heading '?' and parse
 };
 
-type Props = {
-  appContainer: AppContainer,
-}
-
-export const SearchPage = (props: Props): JSX.Element => {
+export const SearchPage = (): JSX.Element => {
   const { t } = useTranslation();
-
-  const {
-    appContainer,
-  } = props;
 
   // parse URL Query
   const parsedQueries = getParsedUrlQuery().q;
@@ -272,7 +263,6 @@ export const SearchPage = (props: Props): JSX.Element => {
   return (
     <SearchPageBase
       ref={searchPageBaseRef}
-      appContainer={appContainer}
       pages={data?.data}
       searchingKeyword={keyword}
       onSelectedPagesByCheckboxesChanged={selectedPagesByCheckboxesChangedHandler}

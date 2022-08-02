@@ -23,6 +23,8 @@ import {
 } from '~/stores/ui';
 import { useXss } from '~/stores/xss';
 
+// import { SearchPage } from '../components/SearchPage';
+
 import {
   CommonProps, getNextI18NextConfig, getServerSideCommonProps, useCustomTitle,
 } from './utils/commons';
@@ -44,7 +46,7 @@ type Props = CommonProps & {
 
 };
 
-const SearchPage: NextPage<Props> = (props: Props) => {
+const SearchResultPage: NextPage<Props> = (props: Props) => {
   const { userUISettings } = props;
 
   // commons
@@ -74,6 +76,11 @@ const SearchPage: NextPage<Props> = (props: Props) => {
     return <PutbackPageModal />;
   };
 
+  const SearchPage = (): JSX.Element => {
+    const SearchPage = dynamic(() => import('../components/SearchPage').then(mod => mod.SearchPage), { ssr: false });
+    return <SearchPage />;
+  };
+
   const classNames: string[] = [];
   // if (props.isContainerFluid) {
   //   classNames.push('growi-layout-fluid');
@@ -93,8 +100,7 @@ const SearchPage: NextPage<Props> = (props: Props) => {
         <div id="main" className="main search-page mt-0">
 
           <div id="search-page">
-            Search Result Page
-            {/* render SearchPage component here */}
+            <SearchPage />
           </div>
 
         </div>
@@ -184,4 +190,4 @@ export const getServerSideProps: GetServerSideProps = async(context: GetServerSi
   };
 };
 
-export default SearchPage;
+export default SearchResultPage;
