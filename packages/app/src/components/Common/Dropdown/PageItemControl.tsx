@@ -23,6 +23,7 @@ export const MenuItemType = {
   DELETE: 'delete',
   REVERT: 'revert',
   PATH_RECOVERY: 'pathRecovery',
+  SWITCH_CONTENT_WIDTH: 'switch_content_width',
 } as const;
 export type MenuItemType = typeof MenuItemType[keyof typeof MenuItemType];
 
@@ -40,11 +41,13 @@ type CommonProps = {
   onClickDuplicateMenuItem?: (pageId: string) => Promise<void> | void,
   onClickDeleteMenuItem?: (pageId: string, pageInfo: IPageInfoAll | undefined) => Promise<void> | void,
   onClickRevertMenuItem?: (pageId: string) => Promise<void> | void,
+  onClickSwitchContentWidthMenuItem?: (pageId: string, isContainerFluid?: boolean) => Promise<void>,
   onClickPathRecoveryMenuItem?: (pageId: string) => Promise<void> | void,
 
   additionalMenuItemRenderer?: React.FunctionComponent<AdditionalMenuItemsRendererProps>,
   isInstantRename?: boolean,
   alignRight?: boolean,
+  isContainerFluid?: boolean
 }
 
 
@@ -54,16 +57,36 @@ type DropdownMenuProps = CommonProps & {
   operationProcessData?: IPageOperationProcessData,
 }
 
+// Utility to update body class
+const updateBodyClassByView = (isContainerFluid: boolean): void => {
+  const bodyClasses = document.body.classList;
+  const isLayoutFluid = bodyClasses.contains('growi-layout-fluid');
+
+  if (isContainerFluid && !isLayoutFluid) {
+    bodyClasses.add('growi-layout-fluid');
+  }
+  else if (isLayoutFluid) {
+    bodyClasses.remove('growi-layout-fluid');
+  }
+};
+
 const PageItemControlDropdownMenu = React.memo((props: DropdownMenuProps): JSX.Element => {
   const { t } = useTranslation('');
 
   const {
-    pageId, isLoading,
-    pageInfo, isEnableActions, forceHideMenuItems, operationProcessData,
-    onClickBookmarkMenuItem, onClickRenameMenuItem, onClickDuplicateMenuItem, onClickDeleteMenuItem, onClickRevertMenuItem, onClickPathRecoveryMenuItem,
+    pageId, isLoading, pageInfo, isEnableActions, forceHideMenuItems, operationProcessData,
+    onClickBookmarkMenuItem, onClickRenameMenuItem, onClickDuplicateMenuItem, onClickDeleteMenuItem,
+    onClickRevertMenuItem, onClickPathRecoveryMenuItem, onClickSwitchContentWidthMenuItem,
     additionalMenuItemRenderer: AdditionalMenuItems, isInstantRename, alignRight,
   } = props;
 
+  const switchContentWidthHandler = useCallback(async() => {
+    if (!isIPageInfoForOperation(pageInfo) || onClickSwitchContentWidthMenuItem == null) {
+      return;
+    }
+    await onClickSwitchContentWidthMenuItem(pageId, pageInfo.isContainerFluid);
+    updateBodyClassByView(!pageInfo.isContainerFluid);
+  }, [onClickSwitchContentWidthMenuItem, pageId, pageInfo]);
 
   // eslint-disable-next-line react-hooks/rules-of-hooks
   const bookmarkItemClickedHandler = useCallback(async() => {
@@ -148,6 +171,29 @@ const PageItemControlDropdownMenu = React.memo((props: DropdownMenuProps): JSX.E
             </p>
           </DropdownItem>
         ) }
+
+        {/* Content width switcher */}
+        { !forceHideMenuItems?.includes(MenuItemType.SWITCH_CONTENT_WIDTH) && isEnableActions && !pageInfo.isEmpty && isIPageInfoForOperation(pageInfo) && (
+          <DropdownItem
+            onClick={switchContentWidthHandler}
+            className="grw-page-control-dropdown-item"
+          >
+            <div className="custom-control custom-switch ml-1">
+              <input
+                id="switchContentWidth"
+                className="custom-control-input"
+                type="checkbox"
+                checked={pageInfo.isContainerFluid}
+                onChange={() => {}}
+              />
+              <label className="custom-control-label" htmlFor="switchContentWidth">
+                { t('wide_view') }
+              </label>
+            </div>
+          </DropdownItem>
+        ) }
+        { !forceHideMenuItems?.includes(MenuItemType.SWITCH_CONTENT_WIDTH) && !pageInfo.isEmpty && <DropdownItem divider /> }
+
 
         {/* Bookmark */}
         { !forceHideMenuItems?.includes(MenuItemType.BOOKMARK) && isEnableActions && !pageInfo.isEmpty && isIPageInfoForOperation(pageInfo) && (
@@ -252,9 +298,8 @@ type PageItemControlSubstanceProps = CommonProps & {
 export const PageItemControlSubstance = (props: PageItemControlSubstanceProps): JSX.Element => {
 
   const {
-    pageId, pageInfo: presetPageInfo, fetchOnInit,
-    children,
-    onClickBookmarkMenuItem, onClickRenameMenuItem, onClickDuplicateMenuItem, onClickDeleteMenuItem, onClickPathRecoveryMenuItem,
+    pageId, pageInfo: presetPageInfo, fetchOnInit, children, onClickBookmarkMenuItem, onClickRenameMenuItem,
+    onClickDuplicateMenuItem, onClickDeleteMenuItem, onClickPathRecoveryMenuItem, onClickSwitchContentWidthMenuItem,
   } = props;
 
   const [isOpen, setIsOpen] = useState(false);
@@ -271,6 +316,16 @@ export const PageItemControlSubstance = (props: PageItemControlSubstanceProps): 
       setShouldFetch(true);
     }
   }, [isOpen, presetPageInfo, shouldFetch]);
+
+  const switchContentWidthMenuItemHandler = useCallback(async(_pageId: string, _isContainerFluid: boolean) => {
+    if (onClickSwitchContentWidthMenuItem != null) {
+      await onClickSwitchContentWidthMenuItem(_pageId, _isContainerFluid);
+    }
+
+    if (shouldFetch) {
+      mutatePageInfo();
+    }
+  }, [mutatePageInfo, onClickSwitchContentWidthMenuItem, shouldFetch]);
 
   // mutate after handle event
   const bookmarkMenuItemClickHandler = useCallback(async(_pageId: string, _newValue: boolean) => {
@@ -329,6 +384,7 @@ export const PageItemControlSubstance = (props: PageItemControlSubstanceProps): 
         onClickRenameMenuItem={renameMenuItemClickHandler}
         onClickDuplicateMenuItem={duplicateMenuItemClickHandler}
         onClickDeleteMenuItem={deleteMenuItemClickHandler}
+        onClickSwitchContentWidthMenuItem={switchContentWidthMenuItemHandler}
         onClickPathRecoveryMenuItem={pathRecoveryMenuItemClickHandler}
       />
     </Dropdown>

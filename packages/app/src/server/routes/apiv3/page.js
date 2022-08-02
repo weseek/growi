@@ -18,7 +18,6 @@ const router = express.Router();
 const { convertToNewAffiliationPath, isTopPage } = pagePathUtils;
 const ErrorV3 = require('../../models/vo/error-apiv3');
 
-
 /**
  * @swagger
  *  tags:
@@ -219,6 +218,9 @@ module.exports = (crowi) => {
     ],
     subscribeStatus: [
       query('pageId').isString(),
+    ],
+    contentWidth: [
+      body('isContainerFluid').isBoolean(),
     ],
   };
 
@@ -816,6 +818,22 @@ module.exports = (crowi) => {
       return res.apiv3Err(err, 500);
     }
   });
+
+
+  router.put('/:pageId/content-width', accessTokenParser, loginRequiredStrictly, csrf,
+    validator.contentWidth, apiV3FormValidator, async(req, res) => {
+      const { pageId } = req.params;
+      const { isContainerFluid } = req.body;
+
+      try {
+        const page = await Page.updateOne({ _id: pageId }, { $set: { isContainerFluid } });
+        return res.apiv3({ page });
+      }
+      catch (err) {
+        logger.error('update-content-width-failed', err);
+        return res.apiv3Err(err, 500);
+      }
+    });
 
   return router;
 };

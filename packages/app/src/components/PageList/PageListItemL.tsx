@@ -14,7 +14,7 @@ import urljoin from 'url-join';
 
 
 import { ISelectable } from '~/client/interfaces/selectable-all';
-import { bookmark, unbookmark } from '~/client/services/page-operation';
+import { bookmark, unbookmark, toggleContentWidth } from '~/client/services/page-operation';
 import {
   IPageInfoAll, isIPageInfoForListing, isIPageInfoForEntity, IPageWithMeta, IPageInfoForListing,
 } from '~/interfaces/page';
@@ -31,6 +31,7 @@ import { useIsDeviceSmallerThanLg } from '~/stores/ui';
 import { useSWRxPageInfo } from '../../stores/page';
 import { ForceHideMenuItems, PageItemControl } from '../Common/Dropdown/PageItemControl';
 import PagePathHierarchicalLink from '../PagePathHierarchicalLink';
+import { toastError } from '~/client/util/apiNotification';
 
 type Props = {
   page: IPageWithSearchMeta | IPageWithMeta<IPageInfoForListing & IPageSearchMeta>,
@@ -122,6 +123,15 @@ const PageListItemLSubstance: ForwardRefRenderFunction<ISelectable, Props> = (pr
   const bookmarkMenuItemClickHandler = async(_pageId: string, _newValue: boolean): Promise<void> => {
     const bookmarkOperation = _newValue ? bookmark : unbookmark;
     await bookmarkOperation(_pageId);
+  };
+
+  const switchContentWidthMenuItemClickHandler = async(_pageId: string, _isContainerFluid: boolean): Promise<void> => {
+    try {
+      await toggleContentWidth(_pageId, _isContainerFluid);
+    }
+    catch (err) {
+      toastError(err);
+    }
   };
 
   const duplicateMenuItemClickHandler = useCallback(() => {
@@ -235,6 +245,7 @@ const PageListItemLSubstance: ForwardRefRenderFunction<ISelectable, Props> = (pr
                   onClickDuplicateMenuItem={duplicateMenuItemClickHandler}
                   onClickDeleteMenuItem={deleteMenuItemClickHandler}
                   onClickRevertMenuItem={revertMenuItemClickHandler}
+                  onClickSwitchContentWidthMenuItem={switchContentWidthMenuItemClickHandler}
                 />
               </div>
             </div>

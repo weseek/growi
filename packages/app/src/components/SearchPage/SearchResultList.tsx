@@ -17,7 +17,7 @@ import { useSWRxPageInfoForList } from '~/stores/page';
 import { usePageTreeTermManager } from '~/stores/page-listing';
 import { useFullTextSearchTermManager } from '~/stores/search';
 
-import { ForceHideMenuItems } from '../Common/Dropdown/PageItemControl';
+import { ForceHideMenuItems, MenuItemType } from '../Common/Dropdown/PageItemControl';
 import { PageListItemL } from '../PageList/PageListItemL';
 
 
@@ -126,7 +126,8 @@ const SearchResultListSubstance: ForwardRefRenderFunction<ISelectableAll, Props>
     advanceFts();
   };
 
-
+  const forceHideMenuItemsWithSwitchContent = forceHideMenuItems ?? [];
+  forceHideMenuItemsWithSwitchContent.push(MenuItemType.SWITCH_CONTENT_WIDTH);
   return (
     <ul data-testid="search-result-list" className="page-list-ul list-group list-group-flush">
       { (injectedPages ?? pages).map((page, i) => {
@@ -138,7 +139,7 @@ const SearchResultListSubstance: ForwardRefRenderFunction<ISelectableAll, Props>
             page={page}
             isEnableActions={!isGuestUser}
             isSelected={page.data._id === selectedPageId}
-            forceHideMenuItems={forceHideMenuItems}
+            forceHideMenuItems={forceHideMenuItemsWithSwitchContent}
             onClickItem={clickItemHandler}
             onCheckboxChanged={props.onCheckboxChanged}
             onPageDuplicated={duplicatedHandler}
