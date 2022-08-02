@@ -10,6 +10,7 @@ import {
 } from '~/interfaces/page';
 import { IPageOperationProcessData } from '~/interfaces/page-operation';
 import { useSWRxPageInfo } from '~/stores/page';
+import { updateBodyClassByView } from '~/stores/ui';
 import loggerFactory from '~/utils/logger';
 
 const logger = loggerFactory('growi:cli:PageItemControl');
@@ -66,26 +67,13 @@ const PageItemControlDropdownMenu = React.memo((props: DropdownMenuProps): JSX.E
     additionalMenuItemRenderer: AdditionalMenuItems, isInstantRename, alignRight,
   } = props;
 
-  // Change body class on change content width
-  const updateBodyClass = useCallback((isContainerFluid: boolean) => {
-    const bodyClasses = document.body.classList;
-    const isLayoutFluid = bodyClasses.contains('growi-layout-fluid');
-
-    if (isContainerFluid && !isLayoutFluid) {
-      bodyClasses.add('growi-layout-fluid');
-    }
-    else if (isLayoutFluid) {
-      bodyClasses.remove('growi-layout-fluid');
-    }
-  }, []);
-
   const switchContentWidthHandler = useCallback(async() => {
     if (!isIPageInfoForOperation(pageInfo) || onClickSwitchContentWidthMenuItem == null) {
       return;
     }
     await onClickSwitchContentWidthMenuItem(pageId, pageInfo.isContainerFluid);
-    updateBodyClass(!pageInfo.isContainerFluid);
-  }, [onClickSwitchContentWidthMenuItem, pageId, pageInfo, updateBodyClass]);
+    updateBodyClassByView(!pageInfo.isContainerFluid);
+  }, [onClickSwitchContentWidthMenuItem, pageId, pageInfo]);
 
   // eslint-disable-next-line react-hooks/rules-of-hooks
   const bookmarkItemClickedHandler = useCallback(async() => {

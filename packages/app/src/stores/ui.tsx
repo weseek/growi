@@ -467,3 +467,15 @@ export const useIsAbleToShowPageAuthors = (): SWRResponse<boolean, Error> => {
     () => isPageExist && !isUserPage,
   );
 };
+
+export const updateBodyClassByView = (isContainerFluid: boolean): void => {
+  const bodyClasses = document.body.classList;
+  const isLayoutFluid = bodyClasses.contains('growi-layout-fluid');
+
+  if (isContainerFluid && !isLayoutFluid) {
+    bodyClasses.add('growi-layout-fluid');
+  }
+  else if (isLayoutFluid) {
+    bodyClasses.remove('growi-layout-fluid');
+  }
+};
