@@ -102,7 +102,6 @@ class UserInviteModal extends React.Component {
   renderModalFooter() {
     const { t, isMailerSetup } = this.props;
     const { isCreateUserButtonPushed } = this.state;
-    // const { isMailerSetup } = appContainer.config;
 
     return (
       <>

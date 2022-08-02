@@ -144,7 +144,6 @@ const AdminMarkdownSettingsPage: NextPage<Props> = (props: Props) => {
   // useSearchServiceConfigured(props.isSearchServiceConfigured);
   useIsSearchServiceReachable(props.isSearchServiceReachable);
 
-  console.log('iii', props.isAclEnabled);
   useIsAclEnabled(props.isAclEnabled);
   useSiteUrl(props.siteUrl);
 
