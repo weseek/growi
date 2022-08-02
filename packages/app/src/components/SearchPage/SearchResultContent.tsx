@@ -176,8 +176,6 @@ export const SearchResultContent: FC<Props> = (props: Props) => {
       ? page.revision
       : page.revision._id;
 
-    const forceHideMenuItemsWithSwitchContentWidth = forceHideMenuItems ?? [];
-    forceHideMenuItemsWithSwitchContentWidth.push(MenuItemType.SWITCH_CONTENT_WIDTH);
 
     return (
       <div className="d-flex flex-column align-items-end justify-content-center py-md-2">
@@ -186,7 +184,7 @@ export const SearchResultContent: FC<Props> = (props: Props) => {
           revisionId={revisionId}
           path={page.path}
           showPageControlDropdown={showPageControlDropdown}
-          forceHideMenuItems={forceHideMenuItemsWithSwitchContentWidth}
+          forceHideMenuItems={forceHideMenuItems}
           additionalMenuItemRenderer={props => <AdditionalMenuItems {...props} pageId={page._id} revisionId={revisionId} />}
           isCompactMode
           onClickDuplicateMenuItem={duplicateItemClickedHandler}
