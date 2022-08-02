@@ -1,8 +1,8 @@
 import mongoose from 'mongoose';
 
-import { getModelSafely, getMongoUri, mongoOptions } from '@growi/core';
-import NamedQuery from '~/server/models/named-query';
 import { SearchDelegatorName } from '~/interfaces/named-query';
+import NamedQuery from '~/server/models/named-query';
+import { getMongoUri, mongoOptions } from '~/server/util/mongoose-utils';
 import loggerFactory from '~/utils/logger';
 
 
@@ -13,10 +13,11 @@ module.exports = {
     mongoose.connect(getMongoUri(), mongoOptions);
 
     try {
-      await NamedQuery.insertMany({
-        name: SearchDelegatorName.PRIVATE_LEGACY_PAGES,
-        delegatorName: SearchDelegatorName.PRIVATE_LEGACY_PAGES,
-      });
+      await NamedQuery.updateOne(
+        { name: SearchDelegatorName.PRIVATE_LEGACY_PAGES },
+        { delegatorName: SearchDelegatorName.PRIVATE_LEGACY_PAGES },
+        { upsert: true },
+      );
     }
     catch (err) {
       logger.error('Failed to migrate named query for private legacy pages search delagator.', err);

@@ -10,11 +10,12 @@ import { exportAsMarkdown } from '~/client/services/page-operation';
 import { toastSuccess, toastError } from '~/client/util/apiNotification';
 import { apiPost } from '~/client/util/apiv1-client';
 import {
-  IPageToRenameWithMeta, IPageWithMeta, IPageInfoForEntity,
+  IPageToRenameWithMeta, IPageWithMeta, IPageInfoForEntity, IPageHasId,
 } from '~/interfaces/page';
 import { OnDuplicatedFunction, OnRenamedFunction, OnDeletedFunction } from '~/interfaces/ui';
 import {
   useCurrentPageId,
+  useCurrentPathname,
   useCurrentUser, useIsGuestUser, useIsSharedUser, useShareLinkId, useTemplateTagData,
 } from '~/stores/context';
 import { usePageTagsForEditors } from '~/stores/editor';
@@ -36,7 +37,7 @@ import ShareLinkIcon from '../Icons/ShareLinkIcon';
 import { Skelton } from '../Skelton';
 
 import { GrowiSubNavigation } from './GrowiSubNavigation';
-import { SubNavButtons } from './SubNavButtons';
+import { SubNavButtonsProps } from './SubNavButtons';
 
 
 type AdditionalMenuItemsProps = {
@@ -121,6 +122,7 @@ const AdditionalMenuItems = (props: AdditionalMenuItemsProps): JSX.Element => {
       <DropdownItem
         onClick={() => openAccessoriesModal(PageAccessoriesModalContents.ShareLink)}
         disabled={isGuestUser || isSharedUser || isLinkSharingDisabled}
+        data-testid="open-page-accessories-modal-btn-with-share-link-management-data-tab"
         className="grw-page-control-dropdown-item"
       >
         <span className="grw-page-control-dropdown-icon">
@@ -151,7 +153,14 @@ type GrowiContextualSubNavigationProps = {
 
 const GrowiContextualSubNavigation = (props: GrowiContextualSubNavigationProps): JSX.Element => {
 
-  const PageEditorModeManager = dynamic(() => import('./PageEditorModeManager'), { ssr: false, loading: () => <Skelton width={208} height={32.49} /> });
+  const PageEditorModeManager = dynamic(
+    () => import('./PageEditorModeManager'),
+    { ssr: false, loading: () => <Skelton width={213} height={33.99} /> },
+  );
+  const SubNavButtons = dynamic<SubNavButtonsProps>(
+    () => import('./SubNavButtons').then(mod => mod.SubNavButtons),
+    { ssr: false, loading: () => <Skelton additionalClass='btn-skelton py-2' /> },
+  );
 
   const { data: currentPage, mutate: mutateCurrentPage } = useSWRxCurrentPage();
   const path = currentPage?.path;
@@ -162,6 +171,7 @@ const GrowiContextualSubNavigation = (props: GrowiContextualSubNavigationProps):
   const { data: isDrawerMode } = useDrawerMode();
   const { data: editorMode, mutate: mutateEditorMode } = useEditorMode();
   const { data: pageId } = useCurrentPageId();
+  const { data: currentPathname } = useCurrentPathname();
   const { data: currentUser } = useCurrentUser();
   const { data: isGuestUser } = useIsGuestUser();
   const { data: isSharedUser } = useIsSharedUser();
@@ -303,7 +313,7 @@ const GrowiContextualSubNavigation = (props: GrowiContextualSubNavigationProps):
         <div className="d-flex flex-column align-items-end justify-content-center py-md-2" style={{ gap: `${isCompactMode ? '5px' : '7px'}` }}>
 
           { isViewMode && (
-            <div className="h-50">
+            <div className="h-50 w-100">
               <SubNavButtons
                 isCompactMode={isCompactMode}
                 pageId={pageId}
@@ -344,13 +354,17 @@ const GrowiContextualSubNavigation = (props: GrowiContextualSubNavigationProps):
     templateMenuItemClickHandler, isPageTemplateModalShown,
   ]);
 
-  if (currentPage == null) {
+  if (currentPathname == null) {
     return <></>;
   }
 
+  const notFoundPage: Partial<IPageHasId> = {
+    path: currentPathname,
+  };
+
   return (
     <GrowiSubNavigation
-      page={currentPage}
+      page={currentPage ?? notFoundPage}
       showDrawerToggler={isDrawerMode}
       showTagLabel={isAbleToShowTagLabel}
       showPageAuthors={isAbleToShowPageAuthors}

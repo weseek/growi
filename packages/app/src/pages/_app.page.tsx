@@ -10,13 +10,15 @@ import '~/styles/style-next.scss';
 // import '~/styles/theme/default.scss';
 // import InterceptorManager from '~/service/interceptor-manager';
 
-import * as nextI18nConfig from '../next-i18next.config';
+import * as nextI18nConfig from '^/config/next-i18next.config';
+
 import { useI18nextHMR } from '../services/i18next-hmr';
 import {
   useAppTitle, useConfidential, useGrowiTheme, useGrowiVersion, useSiteUrl,
 } from '../stores/context';
 
 import { CommonProps } from './utils/commons';
+import { registerTransformerForObjectId } from './utils/objectid-transformer';
 // import { useInterceptorManager } from '~/stores/interceptor';
 
 const isDev = process.env.NODE_ENV === 'development';
@@ -24,6 +26,8 @@ const isDev = process.env.NODE_ENV === 'development';
 type GrowiAppProps = AppProps & {
   pageProps: CommonProps;
 };
+// register custom serializer
+registerTransformerForObjectId();
 
 function GrowiApp({ Component, pageProps }: GrowiAppProps): JSX.Element {
   useI18nextHMR(isDev);

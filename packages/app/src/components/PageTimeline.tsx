@@ -10,24 +10,23 @@ import { useTimelineOptions } from '~/stores/renderer';
 import RevisionLoader from './Page/RevisionLoader';
 import PaginationWrapper from './PaginationWrapper';
 
-
-const PageTimeline = (): JSX.Element => {
-  const { t } = useTranslation();
-
+export const PageTimeline = (): JSX.Element => {
   const [activePage, setActivePage] = useState(1);
   const [totalPageItems, setTotalPageItems] = useState(0);
-  const [limit, setLimit] = useState();
+  const [limit, setLimit] = useState(10);
   const [pages, setPages] = useState<IPageHasId[] | null>(null);
 
   const { data: currentPagePath } = useCurrentPagePath();
+  const { t } = useTranslation();
   const { data: rendererOptions } = useTimelineOptions();
 
-  const handlePage = useCallback(async(selectedPageNum: number) => {
-    const res = await apiv3Get('/pages/list', { path: currentPagePath, page: selectedPageNum });
+  const handlePage = useCallback(async(selectedPage: number) => {
+    if (currentPagePath == null) { return }
+    const res = await apiv3Get('/pages/list', { path: currentPagePath, selectedPage });
     setTotalPageItems(res.data.totalCount);
     setPages(res.data.pages);
     setLimit(res.data.limit);
-    setActivePage(selectedPageNum);
+    setActivePage(selectedPage);
   }, [currentPagePath]);
 
   useEffect(() => {
@@ -76,7 +75,4 @@ const PageTimeline = (): JSX.Element => {
       />
     </div>
   );
-
 };
-
-export default PageTimeline;

@@ -7,6 +7,7 @@ import {
   IDataWithMeta, IPageInfoForEntity, IPagePopulatedToShowRevision, isClient, isIPageInfoForEntity, isServer, IUser, IUserHasId, pagePathUtils, pathUtils,
 } from '@growi/core';
 import ExtensibleCustomError from 'extensible-custom-error';
+import mongoose from 'mongoose';
 import {
   NextPage, GetServerSideProps, GetServerSidePropsContext,
 } from 'next';
@@ -17,8 +18,9 @@ import { useRouter } from 'next/router';
 import superjson from 'superjson';
 
 import { PageAlerts } from '~/components/PageAlert/PageAlerts';
-// import { PageComments } from '~/components/PageComment/PageComments';
+import { PageComment } from '~/components/PageComment';
 // import { useTranslation } from '~/i18n';
+import CommentEditorLazyRenderer from '~/components/PageComment/CommentEditorLazyRenderer';
 import { CrowiRequest } from '~/interfaces/crowi-request';
 // import { renderScriptTagByName, renderHighlightJsStyleTag } from '~/service/cdn-resources-loader';
 // import { useIndentSize } from '~/stores/editor';
@@ -29,6 +31,7 @@ import { RendererConfig } from '~/interfaces/services/renderer';
 import { ISidebarConfig } from '~/interfaces/sidebar-config';
 import { IUserUISettings } from '~/interfaces/user-ui-settings';
 import { PageModel, PageDocument } from '~/server/models/page';
+import { PageRedirectModel } from '~/server/models/page-redirect';
 import UserUISettings from '~/server/models/user-ui-settings';
 import Xss from '~/services/xss';
 import { useSWRxCurrentPage, useSWRxPageInfo } from '~/stores/page';
@@ -41,8 +44,10 @@ import loggerFactory from '~/utils/logger';
 
 // import GrowiSubNavigation from '../client/js/components/Navbar/GrowiSubNavigation';
 // import GrowiSubNavigationSwitcher from '../client/js/components/Navbar/GrowiSubNavigationSwitcher';
+import ForbiddenPage from '../components/ForbiddenPage';
 import { BasicLayout } from '../components/Layout/BasicLayout';
 import GrowiContextualSubNavigation from '../components/Navbar/GrowiContextualSubNavigation';
+import { NotCreatablePage } from '../components/NotCreatablePage';
 import DisplaySwitcher from '../components/Page/DisplaySwitcher';
 
 // import { serializeUserSecurely } from '../server/models/serializers/user-serializer';
@@ -65,7 +70,6 @@ import { useXss } from '../stores/xss';
 import {
   CommonProps, getNextI18NextConfig, getServerSideCommonProps, useCustomTitle,
 } from './utils/commons';
-import { registerTransformerForObjectId } from './utils/objectid-transformer';
 // import { useCurrentPageSWR } from '../stores/page';
 
 
@@ -79,9 +83,6 @@ const { removeHeadingSlash } = pathUtils;
 
 type IPageToShowRevisionWithMeta = IDataWithMeta<IPagePopulatedToShowRevision & PageDocument, IPageInfoForEntity>;
 type IPageToShowRevisionWithMetaSerialized = IDataWithMeta<string, string>;
-
-// register custom serializer
-registerTransformerForObjectId();
 
 superjson.registerCustom<IPageToShowRevisionWithMeta, IPageToShowRevisionWithMetaSerialized>(
   {
@@ -128,8 +129,7 @@ type Props = CommonProps & {
 
   pageWithMeta: IPageToShowRevisionWithMeta,
   // pageUser?: any,
-  // redirectTo?: string;
-  // redirectFrom?: string;
+  redirectFrom?: string;
 
   // shareLinkId?: string;
   isLatestRevision?: boolean
@@ -232,7 +232,6 @@ const GrowiPage: NextPage<Props> = (props: Props) => {
   // useRendererSettings(props.rendererSettingsStr != null ? JSON.parse(props.rendererSettingsStr) : undefined);
   // useGrowiRendererConfig(props.growiRendererConfigStr != null ? JSON.parse(props.growiRendererConfigStr) : undefined);
 
-
   // const { data: editorMode } = useEditorMode();
 
   const { pageWithMeta, userUISettings } = props;
@@ -307,10 +306,10 @@ const GrowiPage: NextPage<Props> = (props: Props) => {
                 { !props.isIdenticalPathPage && (
                   <>
                     <PageAlerts />
-                    { props.isForbidden
-                      ? <>ForbiddenPage</>
-                      : <DisplaySwitcher />
-                    }
+                    { props.isForbidden && <ForbiddenPage /> }
+                    { props.IsNotCreatable && <NotCreatablePage />}
+                    { !props.isForbidden && !props.IsNotCreatable && <DisplaySwitcher />}
+                    {/* <DisplaySwitcher /> */}
                     <div id="page-editor-navbar-bottom-container" className="d-none d-edit-block"></div>
                     {/* <PageStatusAlert /> */}
                     PageStatusAlert
@@ -328,8 +327,8 @@ const GrowiPage: NextPage<Props> = (props: Props) => {
           </div>
         </div>
         <footer>
-          {/* <PageComments /> */}
-          PageComments
+          <PageComment pageId={useCurrentPageId().data} isReadOnly={false} titleAlign="left" />
+          {/* <CommentEditorLazyRenderer pageId={useCurrentPageId().data} /> */}
         </footer>
 
         <UnsavedAlertDialog />
@@ -363,17 +362,28 @@ async function injectPageData(context: GetServerSidePropsContext, props: Props):
   const { revisionId } = req.query;
 
   const Page = crowi.model('Page') as PageModel;
+  const PageRedirect = mongoose.model('PageRedirect') as PageRedirectModel;
   const { pageService } = crowi;
 
-  const { currentPathname } = props;
+  let currentPathname = props.currentPathname;
 
   const pageId = getPageIdFromPathname(currentPathname);
   const isPermalink = _isPermalink(currentPathname);
 
   const { user } = req;
 
-  // check whether the specified page path hits to multiple pages
   if (!isPermalink) {
+    // check redirects
+    const chains = await PageRedirect.retrievePageRedirectEndpoints(currentPathname);
+    if (chains != null) {
+      // overwrite currentPathname
+      currentPathname = chains.end.toPath;
+      props.currentPathname = currentPathname;
+      // set redirectFrom
+      props.redirectFrom = chains.start.fromPath;
+    }
+
+    // check whether the specified page path hits to multiple pages
     const count = await Page.countByPathAndViewer(currentPathname, user, null, true);
     if (count > 1) {
       throw new MultiplePagesHitsError(currentPathname);
@@ -419,9 +429,7 @@ async function injectRoutingInformation(context: GetServerSidePropsContext, prop
   }
   else if (page == null) {
     props.isNotFound = true;
-
     props.IsNotCreatable = !isCreatablePage(currentPathname);
-
     // check the page is forbidden or just does not exist.
     const count = isPermalink ? await Page.count({ _id: pageId }) : await Page.count({ path: currentPathname });
     props.isForbidden = count > 0;

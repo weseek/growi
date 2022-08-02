@@ -1,14 +1,21 @@
-import React, { useState } from 'react';
-
-import PropTypes from 'prop-types';
+import React, { ReactNode, useState } from 'react';
 
 import CustomNav, { CustomNavTab, CustomNavDropdown } from './CustomNav';
 import CustomTabContent from './CustomTabContent';
 
+type CustomNavAndContentsProps = {
+  navTabMapping: any,
+  defaultTabIndex?: number,
+  navigationMode?: 'both' | 'tab' | 'dropdown',
+  tabContentClasses?: string[],
+  breakpointToHideInactiveTabsDown?: 'xs' | 'sm' | 'md' | 'lg' | 'xl',
+  navRightElement?: ReactNode
+}
 
-const CustomNavAndContents = (props) => {
+
+const CustomNavAndContents = (props: CustomNavAndContentsProps): JSX.Element => {
   const {
-    navTabMapping, defaultTabIndex, navigationMode, tabContentClasses, breakpointToHideInactiveTabsDown, navRightElement,
+    navTabMapping, defaultTabIndex, navigationMode = 'tab', tabContentClasses = ['p-4'], breakpointToHideInactiveTabsDown, navRightElement,
   } = props;
   const [activeTab, setActiveTab] = useState(Object.keys(props.navTabMapping)[defaultTabIndex || 0]);
 
@@ -37,19 +44,6 @@ const CustomNavAndContents = (props) => {
       <CustomTabContent activeTab={activeTab} navTabMapping={navTabMapping} additionalClassNames={tabContentClasses} />
     </>
   );
-};
-
-CustomNavAndContents.propTypes = {
-  navTabMapping: PropTypes.object.isRequired,
-  defaultTabIndex: PropTypes.number,
-  navigationMode: PropTypes.oneOf(['both', 'tab', 'dropdown']),
-  tabContentClasses: PropTypes.arrayOf(PropTypes.string),
-  breakpointToHideInactiveTabsDown: PropTypes.oneOf(['xs', 'sm', 'md', 'lg', 'xl']),
-  navRightElement: PropTypes.node,
-};
-CustomNavAndContents.defaultProps = {
-  navigationMode: 'tab',
-  tabContentClasses: ['p-4'],
 };
 
 export default CustomNavAndContents;

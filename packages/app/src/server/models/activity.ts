@@ -1,4 +1,3 @@
-import { getOrCreateModel, getModelSafely } from '@growi/core';
 import {
   Types, Document, Model, Schema,
 } from 'mongoose';
@@ -11,6 +10,8 @@ import {
 } from '~/interfaces/activity';
 
 import loggerFactory from '../../utils/logger';
+import { getOrCreateModel, getModelSafely } from '../util/mongoose-utils';
+
 
 import Subscription from './subscription';
 
@@ -124,18 +125,6 @@ activitySchema.statics.updateByParameters = async function(activityId: string, p
   const activity = await this.findOneAndUpdate({ _id: activityId }, parameters, { new: true }) as unknown as IActivity;
 
   return activity;
-};
-
-activitySchema.statics.getPaginatedActivity = async function(limit: number, offset: number, query) {
-  const paginateResult = await this.paginate(
-    query,
-    {
-      limit,
-      offset,
-      sort: { createdAt: -1 },
-    },
-  );
-  return paginateResult;
 };
 
 activitySchema.statics.findSnapshotUsernamesByUsernameRegexWithTotalCount = async function(

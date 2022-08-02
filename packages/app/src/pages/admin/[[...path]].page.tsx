@@ -8,16 +8,19 @@ import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import dynamic from 'next/dynamic';
 import { useRouter } from 'next/router';
 
+import AdminCustomizeContainer from '~/client/services/AdminCustomizeContainer';
 import { CrowiRequest } from '~/interfaces/crowi-request';
 import PluginUtils from '~/server/plugins/plugin-utils';
 import ConfigLoader from '~/server/service/config-loader';
 import {
-  useCurrentUser, /* useSearchServiceConfigured, */ useIsSearchServiceReachable, useSiteUrl,
+  useCurrentUser, /* useSearchServiceConfigured, */ useIsMailerSetup, useIsSearchServiceReachable, useSiteUrl,
 } from '~/stores/context';
 
 import {
   CommonProps, getServerSideCommonProps, useCustomTitle, getNextI18NextConfig,
 } from '../utils/commons';
+
+
 // import { useEnvVars } from '~/stores/admin-context';
 
 const AdminHome = dynamic(() => import('../../components/Admin/AdminHome/AdminHome'), { ssr: false });
@@ -51,6 +54,7 @@ type Props = CommonProps & {
 
   isSearchServiceConfigured: boolean,
   isSearchServiceReachable: boolean,
+  isMailerSetup: boolean,
 
   siteUrl: string,
 };
@@ -135,6 +139,7 @@ const AdminMarkdownSettingsPage: NextPage<Props> = (props: Props) => {
   const title = content.title;
 
   useCurrentUser(props.currentUser != null ? JSON.parse(props.currentUser) : null);
+  useIsMailerSetup(props.isMailerSetup);
 
   // useSearchServiceConfigured(props.isSearchServiceConfigured);
   useIsSearchServiceReachable(props.isSearchServiceReachable);
@@ -143,12 +148,37 @@ const AdminMarkdownSettingsPage: NextPage<Props> = (props: Props) => {
 
   // useEnvVars(props.envVars);
 
+
+  const adminCustomizeContainer = new AdminCustomizeContainer();
+
+  const injectableContainers = [
+    // adminAppContainer,
+    // adminImportContainer,
+    // adminHomeContainer,
+    adminCustomizeContainer,
+    // adminUsersContainer,
+    // adminExternalAccountsContainer,
+    // adminNotificationContainer,
+    // adminSlackIntegrationLegacyContainer,
+    // adminMarkDownContainer,
+    // adminUserGroupDetailContainer,
+  ];
+
   return (
-    <AdminLayout title={title} selectedNavOpt={name}>
+    <AdminLayout title={title} selectedNavOpt={name} injectableContainers={injectableContainers}>
       {content.component}
     </AdminLayout>
   );
 };
+
+
+function injectServerConfigurations(context: GetServerSidePropsContext, props: Props): void {
+  const req: CrowiRequest = context.req as CrowiRequest;
+  const { crowi } = req;
+  const { mailService } = crowi;
+
+  props.isMailerSetup = mailService.isMailerSetup;
+}
 
 /**
  * for Server Side Translations
@@ -182,6 +212,7 @@ export const getServerSideProps: GetServerSideProps = async(context: GetServerSi
     props.currentUser = JSON.stringify(user);
   }
 
+  injectServerConfigurations(context, props);
   injectNextI18NextConfigurations(context, props, ['admin']);
 
   props.siteUrl = appService.getSiteUrl();
