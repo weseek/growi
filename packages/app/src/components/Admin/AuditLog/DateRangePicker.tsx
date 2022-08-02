@@ -1,5 +1,6 @@
 import React, { FC, forwardRef, useCallback } from 'react';
 
+import { addDays, format } from 'date-fns';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 
@@ -11,6 +12,10 @@ type CustomInputProps = {
 }
 
 const CustomInput = forwardRef<HTMLInputElement, CustomInputProps>((props: CustomInputProps, ref) => {
+  const dateFormat = 'MM/dd/yyyy';
+  const date = new Date();
+  const placeholder = `${format(date, dateFormat)} - ${format(addDays(date, 1), dateFormat)}`;
+
   return (
     <div className="input-group admin-audit-log">
       <div className="input-group-prepend">
@@ -24,6 +29,7 @@ const CustomInput = forwardRef<HTMLInputElement, CustomInputProps>((props: Custo
         value={props?.value}
         onFocus={props?.onFocus}
         onChange={props?.onChange}
+        placeholder={placeholder}
         className="form-control date-range-picker"
         aria-describedby="basic-addon1"
       />
