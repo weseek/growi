@@ -12,10 +12,14 @@ export const Skelton = (props: SkeltonProps): JSX.Element => {
     width, height, additionalClass, roundedPill,
   } = props;
 
-  const style = {
+  const skeltonStyle = {
     width,
     height,
   };
 
-  return <div style={style} className={`grw-skelton ${additionalClass} ${roundedPill ? 'rounded-pill' : ''}`}></div>;
+  return (
+    <div style={skeltonStyle} className={`${additionalClass}`}>
+      <div className={`grw-skelton h-100 w-100 ${roundedPill ? 'rounded-pill' : ''}`}></div>
+    </div>
+  );
 };

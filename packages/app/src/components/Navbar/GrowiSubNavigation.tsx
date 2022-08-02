@@ -11,7 +11,6 @@ import {
 import PagePathNav from '../PagePathNav';
 import { Skelton } from '../Skelton';
 
-import AuthorInfo from './AuthorInfo';
 import DrawerToggler from './DrawerToggler';
 
 
@@ -38,8 +37,8 @@ type Props = {
 
 export const GrowiSubNavigation = (props: Props): JSX.Element => {
 
-  const TagLabels = dynamic(() => import('../Page/TagLabels'), { ssr: false, loading: () => <Skelton width={124.5} height={21.99} /> });
-  const AuthorInfo = dynamic(() => import('./AuthorInfo'), { ssr: false, loading: () => <Skelton width={148.32} height={32.84} /> });
+  const TagLabels = dynamic(() => import('../Page/TagLabels'), { ssr: false, loading: () => <Skelton width={137} height={21.99} additionalClass='py-1' /> });
+  const AuthorInfo = dynamic(() => import('./AuthorInfo'), { ssr: false, loading: () => <Skelton width={139} height={32.84} additionalClass='py-1' /> });
 
   const { data: editorMode } = useEditorMode();
 
