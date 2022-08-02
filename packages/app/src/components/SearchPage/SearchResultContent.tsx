@@ -21,7 +21,7 @@ import { useFullTextSearchTermManager } from '~/stores/search';
 
 
 import AppContainer from '../../client/services/AppContainer';
-import { AdditionalMenuItemsRendererProps, ForceHideMenuItems } from '../Common/Dropdown/PageItemControl';
+import { AdditionalMenuItemsRendererProps, ForceHideMenuItems, MenuItemType } from '../Common/Dropdown/PageItemControl';
 import { GrowiSubNavigation } from '../Navbar/GrowiSubNavigation';
 import { SubNavButtons } from '../Navbar/SubNavButtons';
 import RevisionLoader from '../Page/RevisionLoader';
@@ -176,6 +176,9 @@ export const SearchResultContent: FC<Props> = (props: Props) => {
       ? page.revision
       : page.revision._id;
 
+    const forceHideMenuItemsWithSwitchContentWidth = forceHideMenuItems ?? [];
+    forceHideMenuItemsWithSwitchContentWidth.push(MenuItemType.SWITCH_CONTENT_WIDTH);
+
     return (
       <div className="d-flex flex-column align-items-end justify-content-center py-md-2">
         <SubNavButtons
@@ -183,7 +186,7 @@ export const SearchResultContent: FC<Props> = (props: Props) => {
           revisionId={revisionId}
           path={page.path}
           showPageControlDropdown={showPageControlDropdown}
-          forceHideMenuItems={forceHideMenuItems}
+          forceHideMenuItems={forceHideMenuItemsWithSwitchContentWidth}
           additionalMenuItemRenderer={props => <AdditionalMenuItems {...props} pageId={page._id} revisionId={revisionId} />}
           isCompactMode
           onClickDuplicateMenuItem={duplicateItemClickedHandler}

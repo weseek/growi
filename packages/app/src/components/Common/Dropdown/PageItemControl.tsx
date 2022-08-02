@@ -10,6 +10,7 @@ import {
 } from '~/interfaces/page';
 import { IPageOperationProcessData } from '~/interfaces/page-operation';
 import { useSWRxPageInfo } from '~/stores/page';
+import { updateBodyClassByView } from '~/stores/ui';
 import loggerFactory from '~/utils/logger';
 
 const logger = loggerFactory('growi:cli:PageItemControl');
@@ -71,6 +72,7 @@ const PageItemControlDropdownMenu = React.memo((props: DropdownMenuProps): JSX.E
       return;
     }
     await onClickSwitchContentWidthMenuItem(pageId, pageInfo.isContainerFluid);
+    updateBodyClassByView(!pageInfo.isContainerFluid);
   }, [onClickSwitchContentWidthMenuItem, pageId, pageInfo]);
 
   // eslint-disable-next-line react-hooks/rules-of-hooks
@@ -177,7 +179,7 @@ const PageItemControlDropdownMenu = React.memo((props: DropdownMenuProps): JSX.E
             </div>
           </DropdownItem>
         ) }
-        { !forceHideMenuItems?.includes(MenuItemType.SWITCH_CONTENT_WIDTH) && <DropdownItem divider /> }
+        { !forceHideMenuItems?.includes(MenuItemType.SWITCH_CONTENT_WIDTH) && !pageInfo.isEmpty && <DropdownItem divider /> }
 
 
         {/* Bookmark */}
@@ -299,14 +301,6 @@ export const PageItemControlSubstance = (props: PageItemControlSubstanceProps): 
     }
     if (!isIPageInfoForOperation(presetPageInfo) && isOpen) {
       setShouldFetch(true);
-    }
-    if (presetPageInfo?.isContainerFluid && !$('body').hasClass('on-search')) {
-      if (!$('body').hasClass('growi-layout-fluid')) {
-        $('body').addClass('growi-layout-fluid');
-      }
-    }
-    else if ($('body').hasClass('growi-layout-fluid')) {
-      $('body').removeClass('growi-layout-fluid');
     }
   }, [isOpen, presetPageInfo, shouldFetch]);
 
