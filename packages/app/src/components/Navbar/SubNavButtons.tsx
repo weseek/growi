@@ -2,7 +2,7 @@ import React, { useCallback } from 'react';
 
 import { toggleBookmark, toggleLike, toggleSubscribe } from '~/client/services/page-operation';
 import {
-  IPageInfoAll, IPageToDeleteWithMeta, IPageToRenameWithMeta, isIPageInfoForEntity, isIPageInfoForOperation,
+  IPageInfoForOperation, IPageToDeleteWithMeta, IPageToRenameWithMeta, isIPageInfoForEntity, isIPageInfoForOperation,
 } from '~/interfaces/page';
 import { useIsGuestUser } from '~/stores/context';
 import { IPageForPageDuplicateModal } from '~/stores/modal';
@@ -35,7 +35,7 @@ type SubNavButtonsSubstanceProps = CommonProps & {
   shareLinkId?: string | null,
   revisionId: string | null,
   path?: string | null,
-  pageInfo: IPageInfoAll,
+  pageInfo: IPageInfoForOperation,
 }
 
 const SubNavButtonsSubstance = (props: SubNavButtonsSubstanceProps): JSX.Element => {
@@ -139,10 +139,6 @@ const SubNavButtonsSubstance = (props: SubNavButtonsSubstanceProps): JSX.Element
 
     onClickDeleteMenuItem(pageToDelete);
   }, [onClickDeleteMenuItem, pageId, pageInfo, path, revisionId]);
-
-  if (!isIPageInfoForOperation(pageInfo)) {
-    return <></>;
-  }
 
 
   const {
