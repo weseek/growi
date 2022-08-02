@@ -72,7 +72,7 @@ const DisplaySwitcher = (): JSX.Element => {
               { isNotFound && <NotFoundPage /> }
             </div>
 
-            { !isNotFound && !currentPage?.isEmpty && (
+            { !isNotFound && (
               <div className="grw-side-contents-container">
                 <div className="grw-side-contents-sticky-container">
 
