@@ -2,9 +2,9 @@ import React, {
   useCallback, useEffect, useMemo, useRef, useState,
 } from 'react';
 
-import { parse as parseQuerystring } from 'querystring';
 
 import { useTranslation } from 'next-i18next';
+import { useRouter } from 'next/router';
 
 
 import { ISelectableAll, ISelectableAndIndeterminatable } from '~/client/interfaces/selectable-all';
@@ -87,21 +87,13 @@ const SearchResultListHead = React.memo((props: SearchResultListHeadProps): JSX.
 SearchResultListHead.displayName = 'SearchResultListHead';
 
 
-/**
- * SearchPage
- */
-
-const getParsedUrlQuery = () => {
-  const search = window.location.search || '?';
-  return parseQuerystring(search.slice(1)); // remove heading '?' and parse
-};
-
 export const SearchPage = (): JSX.Element => {
   const { t } = useTranslation();
+  const router = useRouter();
 
   // parse URL Query
-  const parsedQueries = getParsedUrlQuery().q;
-  const initQ = (Array.isArray(parsedQueries) ? parsedQueries.join(' ') : parsedQueries) ?? '';
+  const queries = router.query.q;
+  const initQ = (Array.isArray(queries) ? queries.join(' ') : queries) ?? '';
 
   const [keyword, setKeyword] = useState<string>(initQ);
   const [offset, setOffset] = useState<number>(0);

@@ -23,7 +23,7 @@ import {
 } from '~/stores/ui';
 import { useXss } from '~/stores/xss';
 
-// import { SearchPage } from '../components/SearchPage';
+import { SearchPage } from '../components/SearchPage';
 
 import {
   CommonProps, getNextI18NextConfig, getServerSideCommonProps, useCustomTitle,
@@ -74,11 +74,6 @@ const SearchResultPage: NextPage<Props> = (props: Props) => {
   const PutbackPageModal = (): JSX.Element => {
     const PutbackPageModal = dynamic(() => import('../components/PutbackPageModal'), { ssr: false });
     return <PutbackPageModal />;
-  };
-
-  const SearchPage = (): JSX.Element => {
-    const SearchPage = dynamic(() => import('../components/SearchPage').then(mod => mod.SearchPage), { ssr: false });
-    return <SearchPage />;
   };
 
   const classNames: string[] = [];
