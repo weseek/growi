@@ -1,9 +1,6 @@
 import React, { ReactNode } from 'react';
 
 import dynamic from 'next/dynamic';
-import { Provider } from 'unstated';
-
-import { AdminInjectableContainers } from '~/interfaces/unstated-container';
 
 import { GrowiNavbar } from '../Navbar/GrowiNavbar';
 
@@ -21,12 +18,11 @@ type Props = {
    */
   selectedNavOpt: string
   children?: ReactNode
-  injectableContainers: AdminInjectableContainers
 }
 
 
 const AdminLayout = ({
-  children, title, selectedNavOpt, injectableContainers,
+  children, title, selectedNavOpt,
 }: Props): JSX.Element => {
 
   const AdminNavigation = dynamic(() => import('~/components/Admin/Common/AdminNavigation'), { ssr: false });
@@ -46,9 +42,7 @@ const AdminLayout = ({
               <AdminNavigation selected={selectedNavOpt} />
             </div>
             <div className="col-lg-9">
-              <Provider inject={injectableContainers}>
-                {children}
-              </Provider>
+              {children}
             </div>
           </div>
         </div>
