@@ -112,7 +112,7 @@ class UserInviteModal extends React.Component {
             className="custom-control-input"
             name="sendEmail"
             defaultChecked={this.state.sendEmail}
-            disabled={isMailerSetup === true}
+            disabled={isMailerSetup === false}
           />
           <label className="custom-control-label" htmlFor="sendEmail">
             {t('admin:user_management.invite_modal.invite_thru_email')}
