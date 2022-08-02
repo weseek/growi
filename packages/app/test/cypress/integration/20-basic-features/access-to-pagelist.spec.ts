@@ -28,18 +28,14 @@ context('Access to pagelist', () => {
     });
     cy.getByTestid('page-duplicate-modal').should('be.visible').screenshot(`${ssPrefix}3-duplicate-page-modal-opened`);
     cy.getByTestid('page-duplicate-modal').should('be.visible').within(() => {
-      cy.get('.rbt-input-main').type('-duplicate', {force: true})
+      cy.get('.rbt-input-main').clear().type('-duplicate', {force: true});
     }).screenshot(`${ssPrefix}4-input-duplicated-page-name`);
     cy.getByTestid('page-duplicate-modal').should('be.visible').within(() => {
       cy.get('.modal-footer > button').click();
     });
     cy.get('body').type('{esc}');
     cy.getByTestid('pageListButton').click({force: true});
-    cy.getByTestid('page-accessories-modal').parent().should('have.class','show').within(() => {
-      cy.get('.list-group-item').eq(0).within(() => {
-        cy.screenshot(`${ssPrefix}5-duplicated-page`);
-      });
-    });
+    cy.getByTestid('page-accessories-modal').parent().should('have.class','show').screenshot(`${ssPrefix}5-page-list-with-duplicated-page`);
   });
 
   it('Successfully expand and close modal', () => {
