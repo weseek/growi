@@ -43,9 +43,9 @@ class InstallerForm extends React.Component {
       .then((res) => { return this.setState({ isValidUserName: res.data.valid }) });
   }
 
-  changeLanguage(lang) {
-    i18next.changeLanguage(lang);
-    this.setState({ selectedLang: lang });
+  changeLanguage(meta) {
+    i18next.changeLanguage(meta);
+    this.setState({ selectedLang: meta });
   }
 
   submitHandler() {
