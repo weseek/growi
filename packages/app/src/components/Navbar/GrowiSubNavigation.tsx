@@ -14,7 +14,8 @@ import { Skelton } from '../Skelton';
 import DrawerToggler from './DrawerToggler';
 
 
-import TagLabelsStyle from '../Page/TagLabels.module.scss';
+import TagLabelsStyles from '../Page/TagLabels.module.scss';
+import AuthorInfoStyles from './AuthorInfo.module.scss';
 import styles from './GrowiSubNavigation.module.scss';
 
 
@@ -40,9 +41,12 @@ export const GrowiSubNavigation = (props: Props): JSX.Element => {
 
   const TagLabels = dynamic(() => import('../Page/TagLabels'), {
     ssr: false,
-    loading: () => <Skelton additionalClass={`${TagLabelsStyle['grw-tag-labels-skelton']} py-1`} />,
+    loading: () => <Skelton additionalClass={`${TagLabelsStyles['grw-tag-labels-skelton']} py-1`} />,
   });
-  const AuthorInfo = dynamic(() => import('./AuthorInfo'), { ssr: false, loading: () => <Skelton width={139} height={32.84} additionalClass='py-1' /> });
+  const AuthorInfo = dynamic(() => import('./AuthorInfo'), {
+    ssr: false,
+    loading: () => <Skelton additionalClass={`${AuthorInfoStyles['grw-author-info-skelton']} py-1`} />,
+  });
 
   const { data: editorMode } = useEditorMode();
 
