@@ -35,7 +35,17 @@ $bgcolor-global: white;
   }
 }
 
+.page-comment-writer :global {
+  @include bs.media-breakpoint-down(xs) {
+    height: 3.5em;
+  }
+}
+
 .page-comment :global {
+  h4 {
+    margin-bottom: 1em;
+  }
+
   position: relative;
   padding-top: 70px;
   margin-top: -70px;
