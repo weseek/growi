@@ -44,16 +44,14 @@ import loggerFactory from '~/utils/logger';
 
 // import GrowiSubNavigation from '../client/js/components/Navbar/GrowiSubNavigation';
 // import GrowiSubNavigationSwitcher from '../client/js/components/Navbar/GrowiSubNavigationSwitcher';
+import { DescendantsPageListModal } from '../components/DescendantsPageListModal';
 import ForbiddenPage from '../components/ForbiddenPage';
 import { BasicLayout } from '../components/Layout/BasicLayout';
 import GrowiContextualSubNavigation from '../components/Navbar/GrowiContextualSubNavigation';
 import { NotCreatablePage } from '../components/NotCreatablePage';
 import DisplaySwitcher from '../components/Page/DisplaySwitcher';
-
 // import { serializeUserSecurely } from '../server/models/serializers/user-serializer';
 // import PageStatusAlert from '../client/js/components/PageStatusAlert';
-
-
 import {
   useCurrentUser, useCurrentPagePath,
   useIsLatestRevision,
@@ -117,11 +115,6 @@ const IdenticalPathPage = (): JSX.Element => {
 const PutbackPageModal = (): JSX.Element => {
   const PutbackPageModal = dynamic(() => import('../components/PutbackPageModal'), { ssr: false });
   return <PutbackPageModal />;
-};
-
-const DescendantsPageListModal = (): JSX.Element => {
-  const DescendantsPageListModal = dynamic(() => import('../components/DescendantsPageListModal').then(mod => mod.DescendantsPageListModal), { ssr: false });
-  return <DescendantsPageListModal />;
 };
 
 type Props = CommonProps & {

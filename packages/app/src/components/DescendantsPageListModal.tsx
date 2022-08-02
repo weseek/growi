@@ -2,6 +2,7 @@
 import React, { useState, useMemo } from 'react';
 
 import { useTranslation } from 'next-i18next';
+import dynamic from 'next/dynamic';
 import {
   Modal, ModalHeader, ModalBody,
 } from 'reactstrap';
@@ -11,12 +12,20 @@ import { useDescendantsPageListModal } from '~/stores/modal';
 
 import { CustomNavTab } from './CustomNavigation/CustomNav';
 import CustomTabContent from './CustomNavigation/CustomTabContent';
-import { DescendantsPageList } from './DescendantsPageList';
+import { DescendantsPageListProps } from './DescendantsPageList';
 import ExpandOrContractButton from './ExpandOrContractButton';
 import PageListIcon from './Icons/PageListIcon';
 import TimeLineIcon from './Icons/TimeLineIcon';
-import { PageTimeline } from './PageTimeline';
 
+const DescendantsPageList = (props: DescendantsPageListProps): JSX.Element => {
+  const DescendantsPageList = dynamic<DescendantsPageListProps>(() => import('./DescendantsPageList').then(mod => mod.DescendantsPageList), { ssr: false });
+  return <DescendantsPageList {...props}/>;
+};
+
+const PageTimeline = (): JSX.Element => {
+  const PageTimeline = dynamic(() => import('./PageTimeline').then(mod => mod.PageTimeline), { ssr: false });
+  return <PageTimeline />;
+};
 
 export const DescendantsPageListModal = (): JSX.Element => {
   const { t } = useTranslation();
