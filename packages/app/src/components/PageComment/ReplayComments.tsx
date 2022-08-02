@@ -22,10 +22,12 @@ type ReplaycommentsProps = {
 }
 
 export const ReplayComments = (props: ReplaycommentsProps): JSX.Element => {
+
   const {
     isReadOnly, replyList, deleteBtnClicked, onComment, rendererOptions,
     currentPagePath, currentRevisionId, currentRevisionCreatedAt,
   } = props;
+
   const { data: isAllReplyShown } = useIsAllReplyShown();
 
   const [isOlderRepliesShown, setIsOlderRepliesShown] = useState(false);
@@ -58,11 +60,9 @@ export const ReplayComments = (props: ReplaycommentsProps): JSX.Element => {
   }
 
   const areThereHiddenReplies = (replyList.length > 2);
-
   const toggleButtonIconName = isOlderRepliesShown ? 'icon-arrow-up' : 'icon-options-vertical';
   const toggleButtonIcon = <i className={`icon-fw ${toggleButtonIconName}`}></i>;
   const toggleButtonLabel = isOlderRepliesShown ? '' : 'more';
-
   const shownReplies = replyList.slice(replyList.length - 2, replyList.length);
   const hiddenReplies = replyList.slice(0, replyList.length - 2);
 

@@ -29,10 +29,12 @@ type CommentProps = {
 }
 
 export const Comment = (props: CommentProps): JSX.Element => {
+
   const {
     comment, isReadOnly, deleteBtnClicked, onComment, rendererOptions,
     currentPagePath, currentRevisionId, currentRevisionCreatedAt,
   } = props;
+
   const { t } = useTranslation();
   const { data: currentUser } = useCurrentUser();
 

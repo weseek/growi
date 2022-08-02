@@ -9,6 +9,7 @@ type CommentPreviewPorps = {
 }
 
 export const CommentPreview = (props: CommentPreviewPorps): JSX.Element => {
+
   const { markdown, path, rendererOptions } = props;
 
   return (

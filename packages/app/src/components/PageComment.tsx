@@ -25,7 +25,7 @@ type Props = {
   hideIfEmpty?: boolean,
 }
 
-export const PageComment:FC<Props> = memo((props:Props):JSX.Element => {
+export const PageComment: FC<Props> = memo((props:Props): JSX.Element => {
 
   const {
     highlightKeywords, isReadOnly, titleAlign, hideIfEmpty,

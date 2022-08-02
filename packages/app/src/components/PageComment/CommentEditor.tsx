@@ -61,6 +61,7 @@ export const CommentEditor = (props: PropsType): JSX.Element => {
     rendererOptions, isForNewComment, replyTo,
     currentCommentId, commentBody, onCancelButtonClicked, onCommentButtonClicked,
   } = props;
+
   const { data: currentUser } = useCurrentUser();
   const { data: currentPagePath } = useCurrentPagePath();
   const { data: currentPageId } = useCurrentPageId();
