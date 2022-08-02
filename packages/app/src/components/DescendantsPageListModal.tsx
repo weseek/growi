@@ -44,7 +44,12 @@ export const DescendantsPageListModal = (): JSX.Element => {
       },
       timeline: {
         Icon: TimeLineIcon,
-        Content: () => <PageTimeline />,
+        Content: () => {
+          if (status == null || !status.isOpened) {
+            return <></>;
+          }
+          return <PageTimeline />;
+        },
         i18n: t('Timeline View'),
         index: 1,
         isLinkEnabled: () => !isSharedUser,
