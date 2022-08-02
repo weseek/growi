@@ -37,7 +37,7 @@ import ShareLinkIcon from '../Icons/ShareLinkIcon';
 import { Skelton } from '../Skelton';
 
 import { GrowiSubNavigation } from './GrowiSubNavigation';
-import { SubNavButtons } from './SubNavButtons';
+import { SubNavButtonsProps } from './SubNavButtons';
 
 
 type AdditionalMenuItemsProps = {
@@ -153,7 +153,14 @@ type GrowiContextualSubNavigationProps = {
 
 const GrowiContextualSubNavigation = (props: GrowiContextualSubNavigationProps): JSX.Element => {
 
-  const PageEditorModeManager = dynamic(() => import('./PageEditorModeManager'), { ssr: false, loading: () => <Skelton width={208} height={32.49} /> });
+  const PageEditorModeManager = dynamic(
+    () => import('./PageEditorModeManager'),
+    { ssr: false, loading: () => <Skelton width={213} height={33.99} /> },
+  );
+  const SubNavButtons = dynamic<SubNavButtonsProps>(
+    () => import('./SubNavButtons').then(mod => mod.SubNavButtons),
+    { ssr: false, loading: () => <Skelton additionalClass='btn-skelton py-2' /> },
+  );
 
   const { data: currentPage, mutate: mutateCurrentPage } = useSWRxCurrentPage();
   const path = currentPage?.path;
@@ -306,7 +313,7 @@ const GrowiContextualSubNavigation = (props: GrowiContextualSubNavigationProps):
         <div className="d-flex flex-column align-items-end justify-content-center py-md-2" style={{ gap: `${isCompactMode ? '5px' : '7px'}` }}>
 
           { isViewMode && (
-            <div className="h-50">
+            <div className="h-50 w-100">
               <SubNavButtons
                 isCompactMode={isCompactMode}
                 pageId={pageId}
