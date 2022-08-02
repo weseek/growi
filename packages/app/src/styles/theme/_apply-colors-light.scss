@@ -410,5 +410,5 @@ $dropdown-link-active-bg: $bgcolor-dropdown-link-active;
  * skelton
  */
 .grw-skelton {
-  background-color: $gray-200;
+  background-color: darken($bgcolor-subnav, 10%);
 }
