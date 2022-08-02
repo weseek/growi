@@ -19,9 +19,9 @@ import DeleteCommentModal from './PageComment/DeleteCommentModal';
 import { ReplayComments } from './PageComment/ReplayComments';
 
 type Props = {
-  isReadOnly : boolean,
+  isReadOnly: boolean,
   titleAlign?: 'center' | 'left' | 'right',
-  highlightKeywords?:string[],
+  highlightKeywords?: string[],
   hideIfEmpty?: boolean,
 }
 
@@ -60,7 +60,6 @@ export const PageComment: FC<Props> = memo((props:Props): JSX.Element => {
   }, [highlightKeywords]);
 
   useEffect(() => {
-
     if (comments != null) {
       const preprocessedCommentList: string[] = comments.map((comment) => {
         const highlightedComment: string = highlightComment(comment.comment);
@@ -71,7 +70,6 @@ export const PageComment: FC<Props> = memo((props:Props): JSX.Element => {
       });
       setFormatedComments(preprocessedComments);
     }
-
   }, [comments, highlightComment]);
 
   if (commentsFromOldest != null) {
@@ -116,7 +114,6 @@ export const PageComment: FC<Props> = memo((props:Props): JSX.Element => {
       return previousShowEditorIds;
     });
   }, []);
-
 
   if (commentsFromOldest == null || commentsExceptReply == null) return <></>;
 
