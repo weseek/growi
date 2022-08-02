@@ -2,12 +2,15 @@ import React, {
   useCallback, useEffect, useMemo, useState,
 } from 'react';
 
+import AppContainer from '~/client/services/AppContainer';
 import { blinkElem } from '~/client/util/blink-section-header';
 import { addSmoothScrollEvent } from '~/client/util/smooth-scroll';
 import { CustomWindow } from '~/interfaces/global';
 import GrowiRenderer from '~/services/renderer/growi-renderer';
 import { useEditorSettings } from '~/stores/editor';
 import loggerFactory from '~/utils/logger';
+
+import { withUnstatedContainers } from '../UnstatedUtils';
 
 import RevisionBody from './RevisionBody';
 
@@ -84,6 +87,7 @@ function getHighlightedBody(body: string, _keywords: string | string[]): string 
 
 
 type Props = {
+  appContainer: AppContainer,
   growiRenderer: GrowiRenderer,
   markdown: string,
   pagePath: string,
@@ -154,9 +158,13 @@ const RevisionRenderer = (props: Props): JSX.Element => {
 
   }, [currentRenderingContext, interceptorManager, renderHtml]);
 
+  const config = props.appContainer.getConfig();
+  const isMathJaxEnabled = !!config.env.MATHJAX;
+
   return (
     <RevisionBody
       html={html}
+      isMathJaxEnabled={isMathJaxEnabled}
       additionalClassName={props.additionalClassName}
       renderMathJaxOnInit
     />
@@ -164,4 +172,9 @@ const RevisionRenderer = (props: Props): JSX.Element => {
 
 };
 
-export default RevisionRenderer;
+/**
+   * Wrapper component for using unstated
+   */
+const RevisionRendererWrapper = withUnstatedContainers(RevisionRenderer, [AppContainer]);
+
+export default RevisionRendererWrapper;

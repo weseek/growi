@@ -26,6 +26,9 @@ context('Access to page', () => {
 
   it('/Sandbox/Math is successfully loaded', () => {
     cy.visit('/Sandbox/Math');
+
+    cy.get('mjx-container').should('be.visible');
+
     cy.screenshot(`${ssPrefix}-sandbox-math`);
   });
 
