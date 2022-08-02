@@ -1,5 +1,7 @@
 @import './bootstrap/apply';
 
+@import 'mixins';
+
 // // override codemirror
 // @import 'override-codemirror';
 
@@ -49,7 +51,7 @@
 @import 'login';
 // @import 'me';
 // @import 'mirror_mode';
-// @import 'modal';
+@import 'modal';
 // @import 'navbar';
 // @import 'old-ios';
 // @import 'on-edit';
