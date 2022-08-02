@@ -1,0 +1,9 @@
+@use '~/styles/bootstrap/init' as bs;
+
+.grw-tag-labels :global {
+  .grw-tag-label {
+    font-size: 12px;
+    font-weight: normal;
+    border-radius: bs.$border-radius;
+  }
+}
