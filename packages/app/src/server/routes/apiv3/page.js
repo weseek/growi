@@ -165,8 +165,9 @@ module.exports = (crowi) => {
   const certifySharedPage = require('../../middlewares/certify-shared-page')(crowi);
   const addActivity = generateAddActivityMiddleware(crowi);
 
+  const configManager = crowi.configManager;
+
   const globalNotificationService = crowi.getGlobalNotificationService();
-  const socketIoService = crowi.socketIoService;
   const { Page, GlobalNotificationSetting, Bookmark } = crowi.models;
   const { pageService, exportService } = crowi;
 
@@ -825,8 +826,14 @@ module.exports = (crowi) => {
       const { pageId } = req.params;
       const { isContainerFluid } = req.body;
 
+      const isContainerFluidBySystem = configManager.getConfig('crowi', 'customize:isContainerFluid');
+
       try {
-        const page = await Page.updateOne({ _id: pageId }, { $set: { isContainerFluid } });
+        const updateQuery = isContainerFluid === isContainerFluidBySystem
+          ? { $unset: { isContainerFluid } } // remove if the specified value is the same to the system's one
+          : { $set: { isContainerFluid } };
+
+        const page = await Page.updateOne({ _id: pageId }, updateQuery);
         return res.apiv3({ page });
       }
       catch (err) {
