@@ -1715,12 +1715,26 @@
   dependencies:
     "@browser-bunyan/levels" "^1.6.0"
 
+"@browser-bunyan/console-formatted-stream@^1.8.0":
+  version "1.8.0"
+  resolved "https://registry.yarnpkg.com/@browser-bunyan/console-formatted-stream/-/console-formatted-stream-1.8.0.tgz#dda9dcab6ce445cbf2911045709930757e5d48c1"
+  integrity sha512-Lg5SC2uXrvZ6aLwLZT6SErfN1Is4NcrTOb5km4BW/BfL8Lv0CfpsYuhuD7ltdURL6awTYBUiT+BwhKw1Xd9glQ==
+  dependencies:
+    "@browser-bunyan/levels" "^1.8.0"
+
 "@browser-bunyan/console-plain-stream@^1.6.0":
   version "1.6.0"
   resolved "https://registry.yarnpkg.com/@browser-bunyan/console-plain-stream/-/console-plain-stream-1.6.0.tgz#295404482150e7693846ccb07045676218bcc911"
   integrity sha512-92j8/Lk7yD6F4JKygWd7g9++QoNiEIj1MAP5zMGVk0g1ssPs3vqK1F+HgWfzYaHccREJ6S553imX9Ll5OAn2nA==
   dependencies:
     "@browser-bunyan/levels" "^1.6.0"
+
+"@browser-bunyan/console-plain-stream@^1.8.0":
+  version "1.8.0"
+  resolved "https://registry.yarnpkg.com/@browser-bunyan/console-plain-stream/-/console-plain-stream-1.8.0.tgz#18cd8fe879a0f576cf84c4fa4647e86cd3feea3e"
+  integrity sha512-S0WNsH5zvMfkbayIx90wANGHQ8l3Bvd7mjgy95/bYmUzcI+Mwkv2eJcSufdTP/MbdHBhjv/lEdLDOXEPBi+w3A==
+  dependencies:
+    "@browser-bunyan/levels" "^1.8.0"
 
 "@browser-bunyan/console-raw-stream@^1.6.0":
   version "1.6.0"
@@ -1729,10 +1743,22 @@
   dependencies:
     "@browser-bunyan/levels" "^1.6.0"
 
+"@browser-bunyan/console-raw-stream@^1.8.0":
+  version "1.8.0"
+  resolved "https://registry.yarnpkg.com/@browser-bunyan/console-raw-stream/-/console-raw-stream-1.8.0.tgz#5d0438139bbffd9ed779241df6ae7e5f3a2a7b0c"
+  integrity sha512-6M/xEiNckbFslQMaS1BHAxvuvN1Wtbh/aq4UzQD3fjEPFCxtubvf4KyzwPxUXA5CXq7leVZ+cibEUCRBsm5bzg==
+  dependencies:
+    "@browser-bunyan/levels" "^1.8.0"
+
 "@browser-bunyan/levels@^1.6.0":
   version "1.6.0"
   resolved "https://registry.yarnpkg.com/@browser-bunyan/levels/-/levels-1.6.0.tgz#3a50b8118254aa2ac26caf9d2aafa72d157e374b"
   integrity sha512-wte6nXXZH62Y/RGysYRlOkKxuJn+4S8xEamMF0fDncxxy0SriCHYwGPyWGF0FWYWmRzbZuEkp7dNebBf9Xfeeg==
+
+"@browser-bunyan/levels@^1.8.0":
+  version "1.8.0"
+  resolved "https://registry.yarnpkg.com/@browser-bunyan/levels/-/levels-1.8.0.tgz#1c0a98d04284e0620e8ee414d7ce43385080a5cf"
+  integrity sha512-f9oSDik8kAl+4rhVyHqIr012P1boHFUKc7D9nzA5+lDsFoP90UQnDwpseqBdF2mTaWYju10E7h+GdH8u+7MHOQ==
 
 "@cspotcode/source-map-support@^0.8.0":
   version "0.8.1"
@@ -5791,6 +5817,16 @@ browser-bunyan@^1.6.3:
     "@browser-bunyan/console-plain-stream" "^1.6.0"
     "@browser-bunyan/console-raw-stream" "^1.6.0"
     "@browser-bunyan/levels" "^1.6.0"
+
+browser-bunyan@^1.8.0:
+  version "1.8.0"
+  resolved "https://registry.yarnpkg.com/browser-bunyan/-/browser-bunyan-1.8.0.tgz#6b9662fea571c642fce80ad002d62e3ea1453393"
+  integrity sha512-Et1TaRUm8m2oy4OTi69g0qAM8wqpofACUgkdBnj1Kq2aC8Wpl8w+lNevebPG6zKH2w0Aq+BHiAXWwjm0/QbkaQ==
+  dependencies:
+    "@browser-bunyan/console-formatted-stream" "^1.8.0"
+    "@browser-bunyan/console-plain-stream" "^1.8.0"
+    "@browser-bunyan/console-raw-stream" "^1.8.0"
+    "@browser-bunyan/levels" "^1.8.0"
 
 browser-or-node@>=1.2.1:
   version "1.2.1"
