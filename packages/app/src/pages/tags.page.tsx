@@ -41,24 +41,21 @@ const TagPage: NextPage<CommonProps> = (props: Props) => {
   const [offset, setOffset] = useState<number>(0);
 
   useCurrentUser(props.currentUser ?? null);
-
   const { data: tagDataList, error } = useSWRxTagsList(PAGING_LIMIT, offset);
-  const tagData: IDataTagCount[] = tagDataList?.data || [];
-  const totalCount: number = tagDataList?.totalCount || 0;
-  const isLoading = tagDataList === undefined && error == null;
-
   const { t } = useTranslation('');
-
-  useIsSearchServiceConfigured(props.isSearchServiceConfigured);
-  useIsSearchServiceReachable(props.isSearchServiceReachable);
-  useIsSearchScopeChildrenAsDefault(props.isSearchScopeChildrenAsDefault);
-
   const setOffsetByPageNumber = useCallback((selectedPageNumber: number) => {
     setActivePage(selectedPageNumber);
     setOffset((selectedPageNumber - 1) * PAGING_LIMIT);
   }, []);
 
+  const tagData: IDataTagCount[] = tagDataList?.data || [];
+  const totalCount: number = tagDataList?.totalCount || 0;
+  const isLoading = tagDataList === undefined && error == null;
   const classNames: string[] = [];
+
+  useIsSearchServiceConfigured(props.isSearchServiceConfigured);
+  useIsSearchServiceReachable(props.isSearchServiceReachable);
+  useIsSearchScopeChildrenAsDefault(props.isSearchScopeChildrenAsDefault);
 
   return (
     <>
