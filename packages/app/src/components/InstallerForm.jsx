@@ -44,7 +44,7 @@ class InstallerForm extends React.Component {
   }
 
   changeLanguage(meta) {
-    i18next.changeLanguage(meta);
+    i18next.changeLanguage(meta.id);
     this.setState({ selectedLang: meta });
   }
 
