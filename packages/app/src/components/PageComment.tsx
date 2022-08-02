@@ -141,9 +141,9 @@ export const PageComment:FC<Props> = memo((props:Props):JSX.Element => {
 
   const generateAllRepliesElement = (replyComments: ICommentHasIdList) => (
     <ReplayComments
-      replyList={replyComments}
       deleteBtnClicked={onClickDeleteButton}
       isReadOnly={isReadOnly}
+      replyList={replyComments}
       onComment={mutate}
     />
   );

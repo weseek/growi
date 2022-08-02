@@ -19,6 +19,7 @@ export const CommentEditorLazyRenderer = (): JSX.Element => {
 
   return (
     <CommentEditor
+      rendererOptions={rendererOptions}
       replyTo={undefined}
       onCommentButtonClicked={mutate}
       isForNewComment

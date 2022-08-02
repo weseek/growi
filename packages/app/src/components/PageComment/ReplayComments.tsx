@@ -3,23 +3,30 @@ import React, { useState } from 'react';
 
 import { Collapse } from 'reactstrap';
 
-import { ICommentHasId, ICommentHasIdList } from '../../interfaces/comment';
-import { useRendererConfig, useIsAllReplyShown } from '../../stores/context';
+import { RendererOptions } from '~/services/renderer/renderer';
 
-import Comment from './Comment';
+import { ICommentHasId, ICommentHasIdList } from '../../interfaces/comment';
+import { useIsAllReplyShown } from '../../stores/context';
+
+import { Comment } from './Comment';
 
 type ReplaycommentsProps = {
-  deleteBtnClicked: (comment: ICommentHasId) => void,
+  comment: ICommentHasId,
   isReadOnly: boolean,
   replyList: ICommentHasIdList,
+  deleteBtnClicked: (comment: ICommentHasId) => void,
   onComment: () => void,
+  rendererOptions: RendererOptions,
+  currentPagePath: string,
+  currentRevisionId: string,
+  currentRevisionCreatedAt: Date,
 }
 
 export const ReplayComments = (props: ReplaycommentsProps): JSX.Element => {
   const {
-    deleteBtnClicked, isReadOnly, replyList, onComment,
+    comment, isReadOnly, replyList, deleteBtnClicked, onComment, rendererOptions,
+    currentPagePath, currentRevisionId, currentRevisionCreatedAt,
   } = props;
-  const { data: rendererConfig } = useRendererConfig();
   const { data: isAllReplyShown } = useIsAllReplyShown();
 
   const [isOlderRepliesShown, setIsOlderRepliesShown] = useState(false);
@@ -27,12 +34,15 @@ export const ReplayComments = (props: ReplaycommentsProps): JSX.Element => {
   const renderReply = (reply: ICommentHasId) => {
     return (
       <div key={reply._id} className="page-comment-reply ml-4 ml-sm-5 mr-3">
-        {/* TODO: Update props */}
         <Comment
-          comment={reply}
+          rendererOptions={rendererOptions}
           deleteBtnClicked={deleteBtnClicked}
-          isReadOnly={isReadOnly}
+          comment={comment}
           onComment={onComment}
+          isReadOnly={isReadOnly}
+          currentPagePath={currentPagePath}
+          currentRevisionId={currentRevisionId}
+          currentRevisionCreatedAt={currentRevisionCreatedAt}
         />
       </div>
     );
