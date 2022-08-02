@@ -76,12 +76,11 @@ $bgcolor-global: white;
       visibility: visible;
     }
   }
-}
 
-
-// reply button
-.btn-comment-reply :global {
-  margin-top: 0.5em;
-  border: none;
+  // reply button
+  .btn-comment-reply {
+    margin-top: 0.5em;
+    border: none;
+  }
 }
 

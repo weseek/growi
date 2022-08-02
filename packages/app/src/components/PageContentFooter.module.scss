@@ -1,0 +1,17 @@
+@use '~/styles/bootstrap/init' as bs;
+
+$bgcolor-global: white;
+$border-color-theme: bs.$gray-400;
+
+.page-content-footer :global {
+  /*
+  * GROWI page content footer
+  */
+  background-color: darken($bgcolor-global, 2%);
+  border-top: solid 1px transparent;
+  border-top-color: $border-color-theme;
+
+  .page-meta {
+    font-size: 0.95em;
+  }
+}

@@ -49,6 +49,7 @@ $bgcolor-global: white;
   position: relative;
   padding-top: 70px;
   margin-top: -70px;
+  pointer-events: none;
 
   // ユーザー名
   .page-comment-creator {

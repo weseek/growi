@@ -6,6 +6,8 @@ import { useSWRxCurrentPage } from '~/stores/page';
 
 import { Skelton } from './Skelton';
 
+import styles from './PageContentFooter.module.scss';
+
 export const PageContentFooter = memo((): JSX.Element => {
 
   const AuthorInfo = dynamic(() => import('./Navbar/AuthorInfo'),
@@ -18,7 +20,7 @@ export const PageContentFooter = memo((): JSX.Element => {
   }
 
   return (
-    <div className="page-content-footer py-4 d-edit-none d-print-none">
+    <div className={`${styles['page-content-footer']} py-4 d-edit-none d-print-none}`}>
       <div className="grw-container-convertible">
         <div className="page-meta">
           <AuthorInfo user={page.creator} date={page.createdAt} mode="create" locate="footer" />
