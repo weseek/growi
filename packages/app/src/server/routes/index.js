@@ -204,7 +204,8 @@ module.exports = function(crowi, app) {
 
   app.use(unavailableWhenMaintenanceMode);
 
-  app.get('/tags'                     , loginRequired, tag.showPage);
+  // app.get('/tags'                     , loginRequired, tag.showPage);
+  app.get('/tags', loginRequired, next.delegateToNext);
 
   app.get('/me'                                 , loginRequiredStrictly, injectUserUISettings, me.index);
   // external-accounts
