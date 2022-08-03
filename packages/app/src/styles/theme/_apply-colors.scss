@@ -56,7 +56,7 @@ $color-modal-header: color-yiq($primary) !default;
   }
 }
 
-pre:not(.hljs):not(.CodeMirror-line) {
+pre:not([class*='language-']):not(.CodeMirror-line) {
   background-color: $bgcolor-inline-code;
   border-color: $bordercolor-inline-code;
 }
