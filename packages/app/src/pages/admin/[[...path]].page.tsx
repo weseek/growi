@@ -85,16 +85,14 @@ const AdminMarkdownSettingsPage: NextPage<Props> = (props: Props) => {
 
   const { t } = useTranslation('admin');
   const router = useRouter();
-  // const path = router.query.path || 'home';
-  const { path } = router.query;
-  console.log({ path });
+  const path = router.query.path || 'home';
 
-  let name;
-  if (path != null /* && Array.isArray(path) */) {
+  let name: string;
+  if (Array.isArray(path)) {
     name = path[1] != null ? path[1] : path[0];
   }
   else {
-    name = 'home';
+    name = path;
   }
 
   const adminPagesMap = {
