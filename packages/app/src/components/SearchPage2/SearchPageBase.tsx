@@ -3,6 +3,7 @@ import React, {
 } from 'react';
 
 import { useTranslation } from 'next-i18next';
+import dynamic from 'next/dynamic';
 
 import { ISelectableAll } from '~/client/interfaces/selectable-all';
 import { toastSuccess } from '~/client/util/apiNotification';
@@ -13,7 +14,6 @@ import { usePageDeleteModal } from '~/stores/modal';
 import { usePageTreeTermManager } from '~/stores/page-listing';
 
 import { ForceHideMenuItems } from '../Common/Dropdown/PageItemControl';
-import { SearchResultContent } from '../SearchPage/SearchResultContent';
 import { SearchResultList } from '../SearchPage/SearchResultList';
 
 
@@ -40,6 +40,7 @@ type Props = {
 }
 
 const SearchPageBaseSubstance: ForwardRefRenderFunction<ISelectableAll & IReturnSelectedPageIds, Props> = (props:Props, ref) => {
+  const SearchResultContent = dynamic(import('../SearchPage/SearchResultContent').then(mod => mod.SearchResultContent), { ssr: false });
   const {
     pages,
     searchingKeyword,
