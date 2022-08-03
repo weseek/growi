@@ -15,7 +15,6 @@ import { StickyStretchableScroller } from './StickyStretchableScroller';
 import styles from './TableOfContents.module.scss';
 
 
-
 // eslint-disable-next-line no-unused-vars
 const logger = loggerFactory('growi:TableOfContents');
 

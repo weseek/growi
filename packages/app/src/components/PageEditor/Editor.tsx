@@ -358,5 +358,6 @@ const Editor = React.forwardRef((props: EditorPropsType, ref): JSX.Element => {
   );
 });
 
+Editor.displayName = 'Editor';
 
 export default Editor;
