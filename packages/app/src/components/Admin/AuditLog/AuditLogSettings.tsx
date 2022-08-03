@@ -3,6 +3,7 @@ import React, { FC, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Collapse } from 'reactstrap';
 
+import { AllSupportedActions } from '~/interfaces/activity';
 import { useActivityExpirationSeconds, useAuditLogAvailableActions } from '~/stores/context';
 
 export const AuditLogSettings: FC = () => {
@@ -34,8 +35,23 @@ export const AuditLogSettings: FC = () => {
         />
       </p>
 
-      <h4 className="mt-4">{t('admin:audit_log_management.available_action_list')}</h4>
-      <p className="form-text text-muted">{t('admin:audit_log_management.available_action_list_explain')}</p>
+      <h4 className="mt-4">
+        {t('admin:audit_log_management.available_action_list')}
+        <span className="badge badge-pill badge-secondary ml-2">
+          {`${availableActions.length} / ${AllSupportedActions.length}`}
+        </span>
+        <a
+          className="ml-2"
+          href={t('admin:audit_log_management.docs_url.log_type')}
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          <i className="icon-fw icon-question" aria-hidden="true"></i>
+        </a>
+      </h4>
+      <p className="form-text text-muted">
+        {t('admin:audit_log_management.available_action_list_explain')}
+      </p>
       <p className="mt-1">
         <button type="button" className="btn btn-link p-0" aria-expanded="false" onClick={() => setIsExpandActionList(!isExpandActionList)}>
           <i className={`fa fa-fw fa-arrow-right ${isExpandActionList ? 'fa-rotate-90' : ''}`}></i>
