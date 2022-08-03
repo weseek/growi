@@ -1,5 +1,28 @@
+@use '~/styles/bootstrap/init' as bs;
 
-.grw-author-info-skelton {
+.grw-author-info :global {
+  li {
+    font-size: 12px;
+    list-style: none;
+  }
+
+  .text-date {
+    font-size: 11px;
+  }
+
+  .picture {
+    width: 22px;
+    height: 22px;
+    border: 1px solid bs.$gray-300;
+
+    &.picture-xs {
+      width: 14px;
+      height: 14px;
+    }
+  }
+}
+
+.grw-author-info-skelton :global {
   width: 139px;
   height: 32.84px;
 }

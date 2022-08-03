@@ -103,7 +103,7 @@ export const GrowiSubNavigation = (props: Props): JSX.Element => {
 
         {/* Page Authors */}
         { (showPageAuthors && !isCompactMode) && (
-          <ul className="authors text-nowrap border-left d-none d-lg-block d-edit-none py-2 pl-4 mb-0 ml-3">
+          <ul className={`${AuthorInfoStyles['grw-author-info']} text-nowrap border-left d-none d-lg-block d-edit-none py-2 pl-4 mb-0 ml-3`}>
             <li className="pb-1">
               <AuthorInfo user={creator as IUser} date={createdAt} locate="subnav" />
             </li>
