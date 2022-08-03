@@ -413,25 +413,25 @@ export const useIsAbleToShowTrashPageManagementButtons = (): SWRResponse<boolean
 };
 
 export const useIsAbleToShowPageManagement = (): SWRResponse<boolean, Error> => {
+  const key = 'isAbleToShowPageManagement';
   const { data: currentPageId } = useCurrentPageId();
   const { data: isTrashPage } = useIsTrashPage();
   const { data: isSharedUser } = useIsSharedUser();
   const { data: isNotFound } = useIsNotFound();
 
-  const key = `isAbleToShowPageManagement ${currentPageId}`;
-
   const pageId = currentPageId;
-  const includesUndefined = [pageId, isTrashPage, isSharedUser].some(v => v === undefined);
+  const includesUndefined = [pageId, isTrashPage, isSharedUser, isNotFound].some(v => v === undefined);
   const isPageExist = (pageId != null) && !isNotFound;
 
   return useSWRImmutable(
-    includesUndefined ? null : key,
+    includesUndefined ? null : [key, pageId],
     () => isPageExist && !isTrashPage && !isSharedUser,
   );
 };
 
 export const useIsAbleToShowTagLabel = (): SWRResponse<boolean, Error> => {
-  const { data: currentPageId } = useCurrentPageId();
+  const key = 'isAbleToShowTagLabel';
+  const { data: pageId } = useCurrentPageId();
   const { data: isUserPage } = useIsUserPage();
   const { data: currentPagePath } = useCurrentPagePath();
   const { data: isIdenticalPath } = useIsIdenticalPath();
@@ -439,14 +439,12 @@ export const useIsAbleToShowTagLabel = (): SWRResponse<boolean, Error> => {
   const { data: editorMode } = useEditorMode();
   const { data: shareLinkId } = useShareLinkId();
 
-  const key = `isAbleToShowTagLabel ${currentPageId}`;
-
   const includesUndefined = [isUserPage, currentPagePath, isIdenticalPath, isNotFound, editorMode].some(v => v === undefined);
 
   const isViewMode = editorMode === EditorMode.View;
 
   return useSWRImmutable(
-    includesUndefined ? null : [key, editorMode],
+    includesUndefined ? null : [key, editorMode, pageId],
     // "/trash" page does not exist on page collection and unable to add tags
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     () => !isUserPage && !isTrashTopPage(currentPagePath!) && shareLinkId == null && !isIdenticalPath && !(isViewMode && isNotFound),
@@ -469,17 +467,16 @@ export const useIsAbleToShowPageEditorModeManager = (): SWRResponse<boolean, Err
 };
 
 export const useIsAbleToShowPageAuthors = (): SWRResponse<boolean, Error> => {
-  const { data: currentPageId } = useCurrentPageId();
+  const key = 'isAbleToShowPageAuthors';
+  const { data: pageId } = useCurrentPageId();
   const { data: isUserPage } = useIsUserPage();
   const { data: isNotFound } = useIsNotFound();
 
-  const key = `isAbleToShowPageAuthors ${currentPageId}`;
-
-  const includesUndefined = [currentPageId, isUserPage].some(v => v === undefined);
-  const isPageExist = (currentPageId != null) && !isNotFound;
+  const includesUndefined = [pageId, isUserPage, isNotFound].some(v => v === undefined);
+  const isPageExist = (pageId != null) && !isNotFound;
 
   return useSWRImmutable(
-    includesUndefined ? null : key,
+    includesUndefined ? null : [key, pageId],
     () => isPageExist && !isUserPage,
   );
 };
