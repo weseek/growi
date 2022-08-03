@@ -20,24 +20,21 @@ type DeleteCommentModalProps = {
 
 export const DeleteCommentModal = (props: DeleteCommentModalProps): JSX.Element => {
 
-  /*
-   * the threshold for omitting body
-   */
-  const OMIT_BODY_THRES = () => {
-    return 400;
-  };
-  // static get OMIT_BODY_THRES() { return 400 }
-
   const {
     isShown, comment, errorMessage, cancel, confirmedToDelete,
   } = props;
+
+  /*
+   * the threshold for omitting body
+   */
+  const OMIT_BODY_THRES = 400;
 
   const commentDate = format(new Date(comment.createdAt), 'yyyy/MM/dd HH:mm');
 
   // generate body
   let commentBody = comment.comment;
-  if (commentBody.length > DeleteCommentModal.OMIT_BODY_THRES) { // omit
-    commentBody = `${commentBody.substr(0, DeleteCommentModal.OMIT_BODY_THRES)}...`;
+  if (commentBody.length > OMIT_BODY_THRES) { // omit
+    commentBody = `${commentBody.substr(0, OMIT_BODY_THRES)}...`;
   }
   const commentBodyElement = <span style={{ whiteSpace: 'pre-wrap' }}>{commentBody}</span>;
 
@@ -63,4 +60,5 @@ export const DeleteCommentModal = (props: DeleteCommentModalProps): JSX.Element 
       </ModalFooter>
     </Modal>
   );
+
 };
