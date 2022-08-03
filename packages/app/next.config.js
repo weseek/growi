@@ -33,7 +33,9 @@ const setupTranspileModules = () => {
     'unified',
     'comma-separated-tokens',
     'decode-named-character-reference',
+    'hastscript',
     'html-void-elements',
+    'longest-streak',
     'property-information',
     'space-separated-tokens',
     'trim-lines',
@@ -43,7 +45,7 @@ const setupTranspileModules = () => {
     'emoticon',
     'direction', // for hast-util-select
     'bcp-47-match', // for hast-util-select
-    ...listPrefixedPackages(['remark-', 'rehype-', 'hast-', 'mdast-', 'micromark-', 'micromark-', 'unist-']),
+    ...listPrefixedPackages(['remark-', 'rehype-', 'hast-', 'mdast-', 'micromark-', 'unist-']),
   ];
 
   logger.info('{bold:Listing scoped packages for transpiling:}');
