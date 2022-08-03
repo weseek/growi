@@ -65,7 +65,14 @@ const Bookmarks = () : JSX.Element => {
   const { data: isGuestUser } = useIsGuestUser();
   const { data: currentUserBookmarksData, mutate: mutateCurrentUserBookmarks } = useSWRxCurrentUserBookmarks();
 
-  const generateBookmarkList = () => {
+  const renderBookmarkList = () => {
+    if (currentUserBookmarksData?.length === 0) {
+      return (
+        <h4 className="pl-3">
+          { t('No bookmarks yet') }
+        </h4>
+      );
+    }
     return (
       <ul className="grw-bookmarks-list list-group p-3">
         <div className="grw-bookmarks-item-container">
@@ -79,17 +86,6 @@ const Bookmarks = () : JSX.Element => {
     );
   };
 
-  const renderBookmarksItem = () => {
-    if (currentUserBookmarksData?.length === 0) {
-      return (
-        <h4 className="pl-3">
-          { t('No bookmarks yet') }
-        </h4>
-      );
-    }
-    return generateBookmarkList();
-  };
-
   return (
     <>
       <div className="grw-sidebar-content-header p-3">
@@ -100,7 +96,7 @@ const Bookmarks = () : JSX.Element => {
           <h4 className="pl-3">
             { t('Not available for guest') }
           </h4>
-        ) : renderBookmarksItem()
+        ) : renderBookmarkList()
       }
     </>
   );
