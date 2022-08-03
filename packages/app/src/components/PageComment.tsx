@@ -19,7 +19,6 @@ import { CommentEditor } from './PageComment/CommentEditor';
 import { CommentEditorLazyRenderer } from './PageComment/CommentEditorLazyRenderer';
 import DeleteCommentModal from './PageComment/DeleteCommentModal';
 import { ReplayComments } from './PageComment/ReplayComments';
-import { Skelton } from './Skelton';
 
 import styles from './PageComment.module.scss';
 
@@ -225,7 +224,7 @@ export const PageComment: FC<Props> = memo((props:Props): JSX.Element => {
 
             </div>
             {/* TODO: Check if identical-page */}
-            <CommentEditorLazyRenderer />
+            <CommentEditorLazyRenderer pageId={pageId} rendererOptions={rendererOptions}/>
           </div>
         </div>
       </div>

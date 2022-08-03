@@ -1,21 +1,24 @@
 import React from 'react';
 
-import { useCurrentPageId } from '~/stores/context';
-import { useCommentPreviewOptions } from '~/stores/renderer';
+import { Nullable } from '@growi/core';
+
+import { RendererOptions } from '~/services/renderer/renderer';
 
 import { useSWRxPageComment } from '../../stores/comment';
 
 import { CommentEditor } from './CommentEditor';
 
-export const CommentEditorLazyRenderer = (): JSX.Element => {
 
-  const { data: pageId } = useCurrentPageId();
+type Props = {
+  pageId?: Nullable<string>,
+  rendererOptions: RendererOptions,
+}
+
+export const CommentEditorLazyRenderer = (props: Props): JSX.Element => {
+
+  const { pageId, rendererOptions } = props;
+
   const { mutate } = useSWRxPageComment(pageId);
-  const { data: rendererOptions } = useCommentPreviewOptions();
-
-  if (rendererOptions == null) {
-    return <></>;
-  }
 
   return (
     <CommentEditor
