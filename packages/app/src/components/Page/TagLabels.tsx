@@ -3,6 +3,8 @@ import React, { FC, useState } from 'react';
 import RenderTagLabels from './RenderTagLabels';
 import TagEditModal from './TagEditModal';
 
+import styles from './TagLabels.module.scss';
+
 type Props = {
   tags?: string[],
   isGuestUser: boolean,
@@ -25,7 +27,7 @@ const TagLabels:FC<Props> = (props: Props) => {
 
   return (
     <>
-      <form className="grw-tag-labels form-inline">
+      <form className={`${styles['grw-tag-labels']} grw-tag-labels form-inline`}>
         <i className="tag-icon icon-tag mr-2"></i>
         { tags == null
           ? (
