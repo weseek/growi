@@ -69,7 +69,7 @@ export const Comment = (props: CommentProps): JSX.Element => {
     return creator.username === currentUser.username;
   };
 
-  const getRootClassName = (comment) => {
+  const getRootClassName = (comment: ICommentHasId) => {
     let className = `${styles['page-comment']} page-comment flex-column`;
 
     if (comment.revision === currentRevisionId) {
