@@ -1,13 +1,16 @@
 @use '~/styles/bootstrap/init' as bs;
 
+$author-font-size: 12px;
+$date-font-size: 11px;
+
 .grw-author-info :global {
   li {
-    font-size: 12px;
+    font-size: $author-font-size;
     list-style: none;
   }
 
   .text-date {
-    font-size: 11px;
+    font-size: $date-font-size;
   }
 
   .picture {
@@ -24,5 +27,5 @@
 
 .grw-author-info-skelton :global {
   width: 139px;
-  height: 32.84px;
+  height: calc((#{$author-font-size} + #{$date-font-size}) * #{bs.$line-height-base});
 }
