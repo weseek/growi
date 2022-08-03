@@ -20,7 +20,6 @@ import superjson from 'superjson';
 import { PageAlerts } from '~/components/PageAlert/PageAlerts';
 import { PageComment } from '~/components/PageComment';
 // import { useTranslation } from '~/i18n';
-import { CommentEditorLazyRenderer } from '~/components/PageComment/CommentEditorLazyRenderer';
 import { PageContentFooter } from '~/components/PageContentFooter';
 import { CrowiRequest } from '~/interfaces/crowi-request';
 // import { renderScriptTagByName, renderHighlightJsStyleTag } from '~/service/cdn-resources-loader';
@@ -332,8 +331,7 @@ const GrowiPage: NextPage<Props> = (props: Props) => {
         </div>
         <footer>
           {/* <PageComments /> */}
-          <PageComment isReadOnly={false} titleAlign="left" />
-          <CommentEditorLazyRenderer />
+          <PageComment pageId={pageId} isReadOnly={false} titleAlign="left" />
           <PageContentFooter />
         </footer>
 
