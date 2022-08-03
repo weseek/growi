@@ -23,11 +23,12 @@ import { MenuItemType, PageItemControl } from '../Common/Dropdown/PageItemContro
 
 type Props = {
   bookmarkedPage: IPageHasId,
-  onPageOperationSuccess: () => void
+  onUnbookmarked: () => void,
+  onRenamed: () => void
 }
 
 const BookmarkItem = (props: Props) => {
-  const { bookmarkedPage, onPageOperationSuccess } = props;
+  const { bookmarkedPage, onUnbookmarked, onRenamed } = props;
   const { t } = useTranslation();
   const [isRenameInputShown, setRenameInputShown] = useState(false);
   const dPagePath = new DevidedPagePath(bookmarkedPage.path, false, true);
@@ -38,8 +39,8 @@ const BookmarkItem = (props: Props) => {
 
   const bookmarkMenuItemClickHandler = useCallback(async() => {
     await unbookmark(bookmarkedPage._id);
-    onPageOperationSuccess();
-  }, [onPageOperationSuccess, bookmarkedPage]);
+    onUnbookmarked();
+  }, [onUnbookmarked, bookmarkedPage]);
 
   const renameMenuItemClickHandler = useCallback(() => {
     setRenameInputShown(true);
@@ -71,14 +72,14 @@ const BookmarkItem = (props: Props) => {
         revisionId: bookmarkedPage.revision,
         newPagePath,
       });
-      onPageOperationSuccess();
+      onRenamed();
       toastSuccess(t('renamed_pages', { path: bookmarkedPage.path }));
     }
     catch (err) {
       setRenameInputShown(true);
       toastError(err);
     }
-  }, [bookmarkedPage, onPageOperationSuccess, t]);
+  }, [bookmarkedPage, onRenamed, t]);
 
   const deleteMenuItemClickHandler = useCallback(async(_pageId: string, pageInfo: IPageInfoAll | undefined): Promise<void> => {
     const onClickDeleteMenuItem = (pageToDelete: IPageToDeleteWithMeta) => {
@@ -175,7 +176,12 @@ const Bookmarks = () : JSX.Element => {
         <div className="grw-bookmarks-item-container">
           { currentUserBookmarksData?.map((currentUserBookmark) => {
             return (
-              <BookmarkItem key={currentUserBookmark._id} bookmarkedPage={currentUserBookmark} onPageOperationSuccess={mutateCurrentUserBookmarks} />
+              <BookmarkItem
+                key={currentUserBookmark._id}
+                bookmarkedPage={currentUserBookmark}
+                onUnbookmarked={mutateCurrentUserBookmarks}
+                onRenamed={mutateCurrentUserBookmarks}
+              />
             );
           })}
         </div>
