@@ -14,16 +14,19 @@ import { IPageTagsInfo } from '../interfaces/tag';
 
 import { useCurrentPageId } from './context';
 
-export const useSWRxPage = (pageId?: string|null, shareLinkId?: string): SWRResponse<IPagePopulatedToShowRevision, any> => {
-  return useSWR<IPagePopulatedToShowRevision, any>(
+export const useSWRxPage = (pageId?: string|null, shareLinkId?: string): SWRResponse<IPagePopulatedToShowRevision|null, Error> => {
+  return useSWR<IPagePopulatedToShowRevision|null, Error>(
     pageId != null ? ['/page', pageId, shareLinkId] : null,
-    (endpoint, pageId, shareLinkId) => apiv3Get<{ page: IPagePopulatedToShowRevision }>(endpoint, { pageId, shareLinkId }).then(result => result.data.page),
-    {
-      onErrorRetry: (error) => {
-        // for empty page
-        if (error[0].status === 404) return;
-      },
-    },
+    (endpoint, pageId, shareLinkId) => apiv3Get<{ page: IPagePopulatedToShowRevision }>(endpoint, { pageId, shareLinkId })
+      .then(result => result.data.page)
+      .catch((error) => {
+        const statusCode = error[0].status;
+        if (statusCode === 403 || statusCode === 404) {
+          // for NotFoundPage
+          return null;
+        }
+        throw Error('failed to get page');
+      }),
   );
 };
 
