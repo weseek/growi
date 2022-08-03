@@ -11,16 +11,23 @@ export const CodeBlock: CodeComponent = ({ inline, className, children }) => {
 
   // TODO: set border according to the value of 'customize:highlightJsStyleBorder'
 
-  const match = /language-(\w+)/.exec(className || '');
+  const match = /language-(\w+)(:?.+)?/.exec(className || '');
   const lang = match && match[1] ? match[1] : '';
+  const name = match && match[2] ? match[2].slice(1) : null;
+
   return (
-    <SyntaxHighlighter
-      className="code-highlighted"
-      PreTag="div"
-      style={oneLight}
-      language={lang}
-    >
-      {String(children).replace(/\n$/, '')}
-    </SyntaxHighlighter>
+    <>
+      {name != null && (
+        <cite className={`code-highlighted-title ${styles['code-highlighted-title']}`}>{name}</cite>
+      )}
+      <SyntaxHighlighter
+        className="code-highlighted"
+        PreTag="div"
+        style={oneLight}
+        language={lang}
+      >
+        {String(children).replace(/\n$/, '')}
+      </SyntaxHighlighter>
+    </>
   );
 };
