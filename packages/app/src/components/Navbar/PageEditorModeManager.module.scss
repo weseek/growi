@@ -2,6 +2,8 @@
 @use '~/styles/bootstrap/init' as bs;
 @use '~/styles/mixins';
 
+$btn-line-height: 1.2rem;
+
 .grw-page-editor-mode-manager :global {
   .btn {
     width: 70px;
@@ -11,7 +13,7 @@
 
     &.view-button,
     &.edit-button {
-      line-height: 1.2rem;
+      line-height: $btn-line-height;
       .grw-page-editor-mode-manager-icon {
         @include bs.media-breakpoint-down(sm) {
           font-size: 1.2rem;
@@ -19,7 +21,7 @@
       }
     }
     &.hackmd-button {
-      line-height: 1.2rem;
+      line-height: $btn-line-height;
       .grw-page-editor-mode-manager-icon {
         @include bs.media-breakpoint-down(sm) {
           font-size: 1.2rem;
@@ -35,5 +37,5 @@
 
 .grw-page-editor-mode-manager-skelton :global {
   width: 213px;
-  height: 33.99px;
+  height: calc($btn-line-height + bs.$btn-padding-y*2);
 }
