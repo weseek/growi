@@ -26,6 +26,7 @@ import { CrowiRequest } from '~/interfaces/crowi-request';
 // import { useIndentSize } from '~/stores/editor';
 // import { useRendererSettings } from '~/stores/renderer';
 // import { EditorMode, useEditorMode, useIsMobile } from '~/stores/ui';
+import { EditorConfig } from '~/interfaces/editor-settings';
 import { CustomWindow } from '~/interfaces/global';
 import { RendererConfig } from '~/interfaces/services/renderer';
 import { ISidebarConfig } from '~/interfaces/sidebar-config';
@@ -64,13 +65,14 @@ import {
   useIsAclEnabled, useIsUserPage, useIsNotCreatable,
   useCsrfToken, useIsSearchScopeChildrenAsDefault, useCurrentPageId, useCurrentPathname,
   useIsSlackConfigured, useIsBlinkedHeaderAtBoot, useRendererConfig, useEditingMarkdown,
-  useIsAllReplyShown,
+  useEditorConfig, useIsAllReplyShown, useIsUploadableFile, useIsUploadableImage,
 } from '../stores/context';
 import { useXss } from '../stores/xss';
 
 import {
   CommonProps, getNextI18NextConfig, getServerSideCommonProps, useCustomTitle,
 } from './utils/commons';
+import { EditorConfiguration } from 'codemirror';
 // import { useCurrentPageSWR } from '../stores/page';
 
 
@@ -151,6 +153,7 @@ type Props = CommonProps & {
   // highlightJsStyle: string,
   isAllReplyShown: boolean,
   // isContainerFluid: boolean,
+  editorConfig: EditorConfig,
   isEnabledStaleNotification: boolean,
   // isEnabledLinebreaks: boolean,
   // isEnabledLinebreaksInComments: boolean,
@@ -182,6 +185,7 @@ const GrowiPage: NextPage<Props> = (props: Props) => {
 
   // commons
   useXss(new Xss());
+  useEditorConfig(props.editorConfig);
   useCsrfToken(props.csrfToken);
 
   // UserUISettings
@@ -226,6 +230,9 @@ const GrowiPage: NextPage<Props> = (props: Props) => {
   // useRendererSettings(props.rendererSettingsStr != null ? JSON.parse(props.rendererSettingsStr) : undefined);
   // useGrowiRendererConfig(props.growiRendererConfigStr != null ? JSON.parse(props.growiRendererConfigStr) : undefined);
   useIsAllReplyShown(props.isAllReplyShown);
+
+  useIsUploadableFile(props.editorConfig.upload.isUploadableFile);
+  useIsUploadableImage(props.editorConfig.upload.isUploadableImage);
 
   // const { data: editorMode } = useEditorMode();
 
@@ -492,6 +499,12 @@ function injectServerConfigurations(context: GetServerSidePropsContext, props: P
   // props.isEnabledLinebreaks = configManager.getConfig('markdown', 'markdown:isEnabledLinebreaks');
   // props.isEnabledLinebreaksInComments = configManager.getConfig('markdown', 'markdown:isEnabledLinebreaksInComments');
   props.disableLinkSharing = configManager.getConfig('crowi', 'security:disableLinkSharing');
+  props.editorConfig = {
+    upload: {
+      image: crowi.fileUploadService.getIsUploadable(),
+      file: crowi.fileUploadService.getFileUploadEnabled(),
+    },
+  };
   // props.adminPreferredIndentSize = configManager.getConfig('markdown', 'markdown:adminPreferredIndentSize');
   // props.isIndentSizeForced = configManager.getConfig('markdown', 'markdown:isIndentSizeForced');
 
