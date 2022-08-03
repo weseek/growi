@@ -48,16 +48,13 @@ $nav-tabs-link-active-border-color: $bordercolor-nav-tabs-active;
 // determine variables with　bootstrap function (These variables can be used after importing bootstrap above)
 $color-modal-header: color-yiq($primary) !default;
 
-:not(pre) {
-  > code {
-    color: $color-inline-code;
-    background-color: $bgcolor-inline-code;
-    border-color: $bordercolor-inline-code;
-  }
+.code-inline {
+  color: $color-inline-code;
+  background-color: $bgcolor-inline-code;
+  border-color: $bordercolor-inline-code;
 }
 
-pre:not([class*='language-']):not(.CodeMirror-line) {
-  background-color: $bgcolor-inline-code;
+.code-highlighted {
   border-color: $bordercolor-inline-code;
 }
 

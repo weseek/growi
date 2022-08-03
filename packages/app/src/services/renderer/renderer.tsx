@@ -7,6 +7,7 @@ import breaks from 'remark-breaks';
 import emoji from 'remark-emoji';
 import gfm from 'remark-gfm';
 
+import { CodeBlock } from '~/components/ReactMarkdownComponents/CodeBlock';
 import { Header } from '~/components/ReactMarkdownComponents/Header';
 import { NextLink } from '~/components/ReactMarkdownComponents/NextLink';
 import { RendererConfig } from '~/interfaces/services/renderer';
@@ -228,6 +229,7 @@ const generateCommonOptions: ReactMarkdownOptionsGenerator = (config: RendererCo
     ],
     components: {
       a: NextLink,
+      code: CodeBlock,
     },
   };
 };
