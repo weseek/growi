@@ -1,24 +1,23 @@
-import React, { FC } from 'react';
+import React from 'react';
 
-import { useCommentPreviewOptions } from '~/stores/renderer';
+import { Nullable } from '@growi/core';
+
+import { RendererOptions } from '~/services/renderer/renderer';
 
 import { useSWRxPageComment } from '../../stores/comment';
 
 import { CommentEditor } from './CommentEditor';
 
 type Props = {
-  pageId: string,
+  pageId?: Nullable<string>,
+  rendererOptions: RendererOptions,
 }
 
-const CommentEditorLazyRenderer:FC<Props> = (props:Props):JSX.Element => {
+export const CommentEditorLazyRenderer = (props: Props): JSX.Element => {
 
-  const { pageId } = props;
+  const { pageId, rendererOptions } = props;
+
   const { mutate } = useSWRxPageComment(pageId);
-  const { data: rendererOptions } = useCommentPreviewOptions();
-
-  if (rendererOptions == null) {
-    return <></>;
-  }
 
   return (
     <CommentEditor
@@ -29,5 +28,3 @@ const CommentEditorLazyRenderer:FC<Props> = (props:Props):JSX.Element => {
     />
   );
 };
-
-export default CommentEditorLazyRenderer;

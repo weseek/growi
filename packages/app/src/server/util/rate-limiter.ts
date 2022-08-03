@@ -20,8 +20,10 @@ const generateApiRateLimitConfigFromEndpoint = (envVar: NodeJS.ProcessEnv, targe
     }
     const methodKey = `API_RATE_LIMIT_${target}_METHODS`;
     const maxRequestsKey = `API_RATE_LIMIT_${target}_MAX_REQUESTS`;
+    const usersPerIpProspectionKey = `API_RATE_LIMIT_${target}_USERS_PER_IP`;
     const method = envVar[methodKey] ?? 'ALL';
     const maxRequests = Number(envVar[maxRequestsKey]);
+    const usersPerIpProspection = Number(envVar[usersPerIpProspectionKey]);
 
     if (endpoint == null || maxRequests == null) {
       return;
@@ -30,6 +32,7 @@ const generateApiRateLimitConfigFromEndpoint = (envVar: NodeJS.ProcessEnv, targe
     const config = {
       method,
       maxRequests,
+      usersPerIpProspection,
     };
 
     apiRateLimitConfig[endpoint] = config;

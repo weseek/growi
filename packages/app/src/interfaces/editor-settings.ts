@@ -32,7 +32,7 @@ export interface IEditorSettings {
 
 export type EditorConfig = {
   upload: {
-    image: boolean,
-    file: boolean,
+    isUploadableFile: boolean,
+    isUploadableImage: boolean,
   }
 }
