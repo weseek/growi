@@ -69,8 +69,13 @@ export const Comment = (props: CommentProps): JSX.Element => {
     return creator.username === currentUser.username;
   };
 
+<<<<<<< HEAD
   const getRootClassName = (comment) => {
     let className = `${styles['page-comment']} page-comment flex-column`;
+=======
+  const getRootClassName = (comment: ICommentHasId) => {
+    let className = 'page-comment flex-column';
+>>>>>>> support/rendering-CommentEditorLazyRenderer
 
     if (comment.revision === currentRevisionId) {
       className += ' page-comment-current page-comment flex-column';
@@ -89,11 +94,11 @@ export const Comment = (props: CommentProps): JSX.Element => {
     return className;
   };
 
-  const deleteBtnClickedHandler = (comment) => {
+  const deleteBtnClickedHandler = () => {
     deleteBtnClicked(comment);
   };
 
-  const renderText = (comment) => {
+  const renderText = (comment: string) => {
     return <span style={{ whiteSpace: 'pre-wrap' }}>{comment}</span>;
   };
 

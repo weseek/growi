@@ -6,6 +6,7 @@ import EventEmitter from 'events';
 import {
   IDataWithMeta, IPageInfoForEntity, IPagePopulatedToShowRevision, isClient, isIPageInfoForEntity, isServer, IUser, IUserHasId, pagePathUtils, pathUtils,
 } from '@growi/core';
+import { EditorConfiguration } from 'codemirror';
 import ExtensibleCustomError from 'extensible-custom-error';
 import mongoose from 'mongoose';
 import {
@@ -72,7 +73,6 @@ import { useXss } from '../stores/xss';
 import {
   CommonProps, getNextI18NextConfig, getServerSideCommonProps, useCustomTitle,
 } from './utils/commons';
-import { EditorConfiguration } from 'codemirror';
 // import { useCurrentPageSWR } from '../stores/page';
 
 
@@ -501,8 +501,8 @@ function injectServerConfigurations(context: GetServerSidePropsContext, props: P
   props.disableLinkSharing = configManager.getConfig('crowi', 'security:disableLinkSharing');
   props.editorConfig = {
     upload: {
-      image: crowi.fileUploadService.getIsUploadable(),
-      file: crowi.fileUploadService.getFileUploadEnabled(),
+      isUploadableFile: crowi.fileUploadService.getFileUploadEnabled(),
+      isUploadableImage: crowi.fileUploadService.getIsUploadable(),
     },
   };
   // props.adminPreferredIndentSize = configManager.getConfig('markdown', 'markdown:adminPreferredIndentSize');
