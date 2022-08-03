@@ -240,6 +240,13 @@ export const useEditingMarkdown = (initialData?: string): SWRResponse<string, Er
   return useStaticSWR('currentMarkdown', initialData);
 };
 
+export const useIsUploadableImage = (initialData?: boolean): SWRResponse<boolean, Error> => {
+  return useStaticSWR('isUploadableImage', initialData);
+};
+
+export const useIsUploadableFile = (initialData?: boolean): SWRResponse<boolean, Error> => {
+  return useStaticSWR('isUploadableFile', initialData);
+};
 
 /** **********************************************************
  *                     Computed contexts

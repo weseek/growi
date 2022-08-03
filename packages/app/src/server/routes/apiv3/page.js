@@ -443,6 +443,7 @@ module.exports = (crowi) => {
     const page = await Page.findByIdAndViewer(pageId, req.user, null, false);
 
     if (page == null) {
+      // Empty page should not be related to grant API
       return res.apiv3Err(new ErrorV3('Page is unreachable or empty.', 'page_unreachable_or_empty'), 400);
     }
 
@@ -519,6 +520,7 @@ module.exports = (crowi) => {
     const page = await Page.findByIdAndViewer(pageId, req.user, null);
 
     if (page == null) {
+      // Empty page should not be related to grant API
       return res.apiv3Err(new ErrorV3('Page is unreachable or empty.', 'page_unreachable_or_empty'), 400);
     }
 
@@ -543,6 +545,7 @@ module.exports = (crowi) => {
     const page = await Page.findByIdAndViewer(pageId, req.user, null, false);
 
     if (page == null) {
+      // Empty page should not be related to grant API
       return res.apiv3Err(new ErrorV3('Page is unreachable or empty.', 'page_unreachable_or_empty'), 400);
     }
 
