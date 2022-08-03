@@ -19,8 +19,9 @@ export const useSWRxPage = (pageId?: string|null, shareLinkId?: string): SWRResp
     pageId != null ? ['/page', pageId, shareLinkId] : null,
     (endpoint, pageId, shareLinkId) => apiv3Get<{ page: IPagePopulatedToShowRevision }>(endpoint, { pageId, shareLinkId })
       .then(result => result.data.page)
-      .catch((error) => {
-        const statusCode = error[0].status;
+      .catch((errs) => {
+        if (!Array.isArray(errs)) { throw Error('error is not array') }
+        const statusCode = errs[0].status;
         if (statusCode === 403 || statusCode === 404) {
           // for NotFoundPage
           return null;
@@ -37,7 +38,7 @@ export const useSWRxPageByPath = (path?: string): SWRResponse<IPagePopulatedToSh
   );
 };
 
-export const useSWRxCurrentPage = (shareLinkId?: string, initialData?: IPagePopulatedToShowRevision): SWRResponse<IPagePopulatedToShowRevision, Error> => {
+export const useSWRxCurrentPage = (shareLinkId?: string, initialData?: IPagePopulatedToShowRevision): SWRResponse<IPagePopulatedToShowRevision|null, Error> => {
   const { data: currentPageId } = useCurrentPageId();
 
   const swrResult = useSWRxPage(currentPageId, shareLinkId);
