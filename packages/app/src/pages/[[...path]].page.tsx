@@ -245,7 +245,7 @@ const GrowiPage: NextPage<Props> = (props: Props) => {
   useIsNotCreatable(props.isForbidden || !isCreatablePage(pageWithMeta?.data.path ?? '')); // TODO: need to include props.isIdentical
   useCurrentPagePath(pageWithMeta?.data.path);
   useCurrentPathname(props.currentPathname);
-  useEditingMarkdown(pageWithMeta?.data.revision.body);
+  useEditingMarkdown(pageWithMeta?.data.revision?.body);
   const { data: grantData } = useSWRxIsGrantNormalized(pageId);
   const { mutate: mutateSelectedGrant } = useSelectedGrant();
 
