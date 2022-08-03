@@ -108,6 +108,7 @@
     "express-webpack-assets": "^0.1.0",
     "extensible-custom-error": "^0.0.7",
     "graceful-fs": "^4.1.11",
+    "hast-util-select": "^5.0.2",
     "helmet": "^4.6.0",
     "http-errors": "^2.0.0",
     "i18next-chained-backend": "^3.0.2",

@@ -10,6 +10,7 @@ import gfm from 'remark-gfm';
 import { Header } from '~/components/ReactMarkdownComponents/Header';
 import { NextLink } from '~/components/ReactMarkdownComponents/NextLink';
 import { RendererConfig } from '~/interfaces/services/renderer';
+import { addClass } from '~/services/renderer/rehype-plugins/add-class';
 import loggerFactory from '~/utils/logger';
 
 // import CsvToTable from './PreProcessor/CsvToTable';
@@ -224,6 +225,9 @@ const generateCommonOptions: ReactMarkdownOptionsGenerator = (config: RendererCo
           ...defaultSchema.attributes,
           '*': ['className', 'class'],
         },
+      }],
+      [addClass, {
+        table: 'table table-bordered',
       }],
     ],
     components: {
