@@ -12,10 +12,10 @@ import { toastError, toastSuccess } from '~/client/util/apiNotification';
 import { apiv3Put } from '~/client/util/apiv3-client';
 import { IPageHasId, IPageInfoAll, IPageToDeleteWithMeta } from '~/interfaces/page';
 import { OnDeletedFunction } from '~/interfaces/ui';
+import { useSWRxCurrentUserBookmarks } from '~/stores/bookmark';
 import { useIsGuestUser } from '~/stores/context';
 import { usePageDeleteModal } from '~/stores/modal';
 
-import { useSWRxCurrentUserBookmarks } from '~/stores/bookmark';
 
 import ClosableTextInput, { AlertInfo, AlertType } from '../Common/ClosableTextInput';
 import { MenuItemType, PageItemControl } from '../Common/Dropdown/PageItemControl';
