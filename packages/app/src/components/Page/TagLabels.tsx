@@ -27,7 +27,7 @@ const TagLabels:FC<Props> = (props: Props) => {
 
   return (
     <>
-      <form className={`${styles['grw-tag-labels']} grw-tag-labels form-inline`}>
+      <div className={`${styles['grw-tag-labels']} grw-tag-labels d-flex align-items-center`}>
         <i className="tag-icon icon-tag mr-2"></i>
         { tags == null
           ? (
@@ -41,7 +41,7 @@ const TagLabels:FC<Props> = (props: Props) => {
             />
           )
         }
-      </form>
+      </div>
 
       <TagEditModal
         tags={tags}
