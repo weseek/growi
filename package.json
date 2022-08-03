@@ -1,6 +1,6 @@
 {
   "name": "growi",
-  "version": "5.1.1",
+  "version": "5.1.2-RC.0",
   "description": "Team collaboration software using markdown",
   "tags": [
     "wiki",
@@ -75,7 +75,7 @@
     "reg-notify-github-plugin": "^0.11.1",
     "reg-notify-slack-plugin": "^0.11.0",
     "reg-publish-s3-plugin": "^0.11.0",
-    "reg-suit": "^0.11.1",
+    "reg-suit": "^0.12.1",
     "rewire": "^5.0.0",
     "shipjs": "^0.24.1",
     "stylelint": "^14.2.0",
