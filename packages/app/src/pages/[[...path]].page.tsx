@@ -20,7 +20,6 @@ import superjson from 'superjson';
 import { PageAlerts } from '~/components/PageAlert/PageAlerts';
 import { PageComment } from '~/components/PageComment';
 // import { useTranslation } from '~/i18n';
-import CommentEditorLazyRenderer from '~/components/PageComment/CommentEditorLazyRenderer';
 import { PageContentFooter } from '~/components/PageContentFooter';
 import { CrowiRequest } from '~/interfaces/crowi-request';
 // import { renderScriptTagByName, renderHighlightJsStyleTag } from '~/service/cdn-resources-loader';
@@ -56,7 +55,6 @@ import DisplaySwitcher from '../components/Page/DisplaySwitcher';
 // import { serializeUserSecurely } from '../server/models/serializers/user-serializer';
 // import PageStatusAlert from '../client/js/components/PageStatusAlert';
 
-
 import {
   useCurrentUser, useCurrentPagePath,
   useIsLatestRevision,
@@ -67,7 +65,7 @@ import {
   useIsAclEnabled, useIsUserPage, useIsNotCreatable,
   useCsrfToken, useIsSearchScopeChildrenAsDefault, useCurrentPageId, useCurrentPathname,
   useIsSlackConfigured, useIsBlinkedHeaderAtBoot, useRendererConfig, useEditingMarkdown,
-  useEditorConfig, useIsAllReplyShown,
+  useEditorConfig, useIsAllReplyShown, useIsUploadableFile, useIsUploadableImage,
 } from '../stores/context';
 import { useXss } from '../stores/xss';
 
@@ -232,6 +230,9 @@ const GrowiPage: NextPage<Props> = (props: Props) => {
   // useGrowiRendererConfig(props.growiRendererConfigStr != null ? JSON.parse(props.growiRendererConfigStr) : undefined);
   useIsAllReplyShown(props.isAllReplyShown);
 
+  useIsUploadableFile(props.editorConfig.upload.isUploadableFile);
+  useIsUploadableImage(props.editorConfig.upload.isUploadableImage);
+
   // const { data: editorMode } = useEditorMode();
 
   const { pageWithMeta, userUISettings } = props;
@@ -333,8 +334,7 @@ const GrowiPage: NextPage<Props> = (props: Props) => {
         </div>
         <footer>
           {/* <PageComments /> */}
-          <PageComment pageId={useCurrentPageId().data} isReadOnly={false} titleAlign="left" />
-          {/* <CommentEditorLazyRenderer pageId={useCurrentPageId().data} /> */}
+          <PageComment pageId={pageId} isReadOnly={false} titleAlign="left" />
           <PageContentFooter />
         </footer>
 
@@ -500,8 +500,8 @@ function injectServerConfigurations(context: GetServerSidePropsContext, props: P
   props.disableLinkSharing = configManager.getConfig('crowi', 'security:disableLinkSharing');
   props.editorConfig = {
     upload: {
-      image: crowi.fileUploadService.getIsUploadable(),
-      file: crowi.fileUploadService.getFileUploadEnabled(),
+      isUploadableFile: crowi.fileUploadService.getFileUploadEnabled(),
+      isUploadableImage: crowi.fileUploadService.getIsUploadable(),
     },
   };
   // props.adminPreferredIndentSize = configManager.getConfig('markdown', 'markdown:adminPreferredIndentSize');

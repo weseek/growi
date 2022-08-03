@@ -1,8 +1,6 @@
 import React, { useEffect, useState } from 'react';
 
-
 import { UserPicture } from '@growi/ui';
-import { ConsoleFormattedStream } from 'browser-bunyan';
 import { format } from 'date-fns';
 import { useTranslation } from 'next-i18next';
 import { UncontrolledTooltip } from 'reactstrap';
@@ -17,7 +15,7 @@ import RevisionRenderer from '../Page/RevisionRenderer';
 import Username from '../User/Username';
 
 import CommentControl from './CommentControl';
-import CommentEditor from './CommentEditor';
+import { CommentEditor } from './CommentEditor';
 
 type CommentProps = {
   comment: ICommentHasId,
@@ -31,9 +29,12 @@ type CommentProps = {
 }
 
 export const Comment = (props: CommentProps): JSX.Element => {
+
   const {
-    comment, isReadOnly, deleteBtnClicked, onComment, rendererOptions, currentPagePath, currentRevisionId, currentRevisionCreatedAt,
+    comment, isReadOnly, deleteBtnClicked, onComment, rendererOptions,
+    currentPagePath, currentRevisionId, currentRevisionCreatedAt,
   } = props;
+
   const { t } = useTranslation();
   const { data: currentUser } = useCurrentUser();
 
@@ -66,7 +67,7 @@ export const Comment = (props: CommentProps): JSX.Element => {
     return creator.username === currentUser.username;
   };
 
-  const getRootClassName = (comment) => {
+  const getRootClassName = (comment: ICommentHasId) => {
     let className = 'page-comment flex-column';
 
     if (comment.revision === currentRevisionId) {
@@ -86,18 +87,13 @@ export const Comment = (props: CommentProps): JSX.Element => {
     return className;
   };
 
-  const deleteBtnClickedHandler = (comment) => {
+  const deleteBtnClickedHandler = () => {
     deleteBtnClicked(comment);
   };
 
-  const renderText = (comment) => {
+  const renderText = (comment: string) => {
     return <span style={{ whiteSpace: 'pre-wrap' }}>{comment}</span>;
   };
-
-  // TODO: Remove when update ReplayComments.jsx
-  if (currentPagePath == null) {
-    return <></>;
-  }
 
   const renderRevisionBody = () => {
     return (
@@ -124,10 +120,9 @@ export const Comment = (props: CommentProps): JSX.Element => {
       {(isReEdit && !isReadOnly) ? (
         <CommentEditor
           rendererOptions={rendererOptions}
+          replyTo={undefined}
           currentCommentId={commentId}
           commentBody={comment.comment}
-          replyTo={undefined}
-          commentCreator={creator?.username}
           onCancelButtonClicked={() => setIsReEdit(false)}
           onCommentButtonClicked={() => {
             setIsReEdit(false);
