@@ -69,19 +69,14 @@ export const Comment = (props: CommentProps): JSX.Element => {
     return creator.username === currentUser.username;
   };
 
-<<<<<<< HEAD
   const getRootClassName = (comment) => {
     let className = `${styles['page-comment']} page-comment flex-column`;
-=======
-  const getRootClassName = (comment: ICommentHasId) => {
-    let className = 'page-comment flex-column';
->>>>>>> support/rendering-CommentEditorLazyRenderer
 
     if (comment.revision === currentRevisionId) {
-      className += ' page-comment-current page-comment flex-column';
+      className += ' page-comment-current';
     }
     else if (comment.createdAt.getTime() > currentRevisionCreatedAt.getTime()) {
-      className += ' page-comment-newer page-comment flex-column';
+      className += ' page-comment-newer';
     }
     else {
       className += ' page-comment-older';
