@@ -22,6 +22,9 @@ import TableOfContents from '../TableOfContents';
 import UserInfo from '../User/UserInfo';
 
 
+import styles from './DisplaySwitcher.module.scss';
+
+
 const WIKI_HEADER_LINK = 120;
 
 const { isTopPage } = pagePathUtils;
@@ -75,7 +78,7 @@ const DisplaySwitcher = (): JSX.Element => {
                 <div className="grw-side-contents-sticky-container">
 
                   {/* Page list */}
-                  <div className="grw-page-accessories-control">
+                  <div className={`grw-page-accessories-control ${styles['grw-page-accessories-control']}`}>
                     { currentPagePath != null && !isSharedUser && (
                       <button
                         type="button"
@@ -95,7 +98,7 @@ const DisplaySwitcher = (): JSX.Element => {
                   {/* Comments */}
                   {/* { getCommentListDom != null && !isTopPagePath && ( */}
                   { !isTopPagePath && (
-                    <div className="grw-page-accessories-control mt-2">
+                    <div className={`mt-2 grw-page-accessories-control ${styles['grw-page-accessories-control']}`}>
                       <button
                         type="button"
                         className="btn btn-block btn-outline-secondary grw-btn-page-accessories rounded-pill d-flex justify-content-between align-items-center"
