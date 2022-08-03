@@ -87,7 +87,7 @@ export const Comment = (props: CommentProps): JSX.Element => {
     return className;
   };
 
-  const deleteBtnClickedHandler = (comment: ICommentHasId) => {
+  const deleteBtnClickedHandler = () => {
     deleteBtnClicked(comment);
   };
 
