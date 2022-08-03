@@ -11,6 +11,11 @@ import loggerFactory from '~/utils/logger';
 
 import { StickyStretchableScroller } from './StickyStretchableScroller';
 
+
+import styles from './TableOfContents.module.scss';
+
+
+
 // eslint-disable-next-line no-unused-vars
 const logger = loggerFactory('growi:TableOfContents');
 
@@ -53,20 +58,22 @@ const TableOfContents = (): JSX.Element => {
   }, [tocHtml]);
 
   return (
-    <StickyStretchableScroller
-      stickyElemSelector=".grw-side-contents-sticky-container"
-      calcViewHeight={calcViewHeight}
-    >
-      <div
-        id="revision-toc-content"
-        className="revision-toc-content mb-3"
+    <div id="revision-toc" className={`revision-toc ${styles['revision-toc']}`}>
+      <StickyStretchableScroller
+        stickyElemSelector=".grw-side-contents-sticky-container"
+        calcViewHeight={calcViewHeight}
       >
-        {/* parse blank to show toc (https://github.com/weseek/growi/pull/6277) */}
-        <ReactMarkdown {...rendererOptions}>
-          {''}
-        </ReactMarkdown>
-      </div>
-    </StickyStretchableScroller>
+        <div
+          id="revision-toc-content"
+          className="revision-toc-content mb-3"
+        >
+          {/* parse blank to show toc (https://github.com/weseek/growi/pull/6277) */}
+          <ReactMarkdown {...rendererOptions}>
+            {''}
+          </ReactMarkdown>
+        </div>
+      </StickyStretchableScroller>
+    </div>
   );
 
 };
