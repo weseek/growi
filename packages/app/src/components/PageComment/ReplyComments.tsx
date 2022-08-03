@@ -3,23 +3,31 @@ import React, { useState } from 'react';
 
 import { Collapse } from 'reactstrap';
 
+import { RendererOptions } from '~/services/renderer/renderer';
+
 import { ICommentHasId, ICommentHasIdList } from '../../interfaces/comment';
-import { useRendererConfig, useIsAllReplyShown } from '../../stores/context';
+import { useIsAllReplyShown } from '../../stores/context';
 
-import Comment from './Comment';
+import { Comment } from './Comment';
 
-type ReplaycommentsProps = {
-  deleteBtnClicked: (comment: ICommentHasId) => void,
+type ReplycommentsProps = {
   isReadOnly: boolean,
   replyList: ICommentHasIdList,
+  deleteBtnClicked: (comment: ICommentHasId) => void,
   onComment: () => void,
+  rendererOptions: RendererOptions,
+  currentPagePath: string,
+  currentRevisionId: string,
+  currentRevisionCreatedAt: Date,
 }
 
-export const ReplayComments = (props: ReplaycommentsProps): JSX.Element => {
+export const ReplyComments = (props: ReplycommentsProps): JSX.Element => {
+
   const {
-    deleteBtnClicked, isReadOnly, replyList, onComment,
+    isReadOnly, replyList, deleteBtnClicked, onComment, rendererOptions,
+    currentPagePath, currentRevisionId, currentRevisionCreatedAt,
   } = props;
-  const { data: rendererConfig } = useRendererConfig();
+
   const { data: isAllReplyShown } = useIsAllReplyShown();
 
   const [isOlderRepliesShown, setIsOlderRepliesShown] = useState(false);
@@ -27,12 +35,15 @@ export const ReplayComments = (props: ReplaycommentsProps): JSX.Element => {
   const renderReply = (reply: ICommentHasId) => {
     return (
       <div key={reply._id} className="page-comment-reply ml-4 ml-sm-5 mr-3">
-        {/* TODO: Update props */}
         <Comment
-          comment={reply}
+          rendererOptions={rendererOptions}
           deleteBtnClicked={deleteBtnClicked}
-          isReadOnly={isReadOnly}
+          comment={reply}
           onComment={onComment}
+          isReadOnly={isReadOnly}
+          currentPagePath={currentPagePath}
+          currentRevisionId={currentRevisionId}
+          currentRevisionCreatedAt={currentRevisionCreatedAt}
         />
       </div>
     );
@@ -49,11 +60,9 @@ export const ReplayComments = (props: ReplaycommentsProps): JSX.Element => {
   }
 
   const areThereHiddenReplies = (replyList.length > 2);
-
   const toggleButtonIconName = isOlderRepliesShown ? 'icon-arrow-up' : 'icon-options-vertical';
   const toggleButtonIcon = <i className={`icon-fw ${toggleButtonIconName}`}></i>;
   const toggleButtonLabel = isOlderRepliesShown ? '' : 'more';
-
   const shownReplies = replyList.slice(replyList.length - 2, replyList.length);
   const hiddenReplies = replyList.slice(0, replyList.length - 2);
 

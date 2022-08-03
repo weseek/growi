@@ -16,18 +16,19 @@ import { useSWRxPageComment } from '../stores/comment';
 
 import { Comment } from './PageComment/Comment';
 import { CommentEditor } from './PageComment/CommentEditor';
+import { CommentEditorLazyRenderer } from './PageComment/CommentEditorLazyRenderer';
 import DeleteCommentModal from './PageComment/DeleteCommentModal';
-import { ReplayComments } from './PageComment/ReplayComments';
+import { ReplyComments } from './PageComment/ReplyComments';
 
 type Props = {
-  pageId?: Nullable<string>, // TODO: check pageId type
-  isReadOnly : boolean,
+  pageId?: Nullable<string>
+  isReadOnly: boolean,
   titleAlign?: 'center' | 'left' | 'right',
-  highlightKeywords?:string[],
+  highlightKeywords?: string[],
   hideIfEmpty?: boolean,
 }
 
-export const PageComment:FC<Props> = memo((props:Props):JSX.Element => {
+export const PageComment: FC<Props> = memo((props:Props): JSX.Element => {
 
   const {
     pageId, highlightKeywords, isReadOnly, titleAlign, hideIfEmpty,
@@ -61,7 +62,6 @@ export const PageComment:FC<Props> = memo((props:Props):JSX.Element => {
   }, [highlightKeywords]);
 
   useEffect(() => {
-
     if (comments != null) {
       const preprocessedCommentList: string[] = comments.map((comment) => {
         const highlightedComment: string = highlightComment(comment.comment);
@@ -72,7 +72,6 @@ export const PageComment:FC<Props> = memo((props:Props):JSX.Element => {
       });
       setFormatedComments(preprocessedComments);
     }
-
   }, [comments, highlightComment]);
 
   if (commentsFromOldest != null) {
@@ -110,16 +109,6 @@ export const PageComment:FC<Props> = memo((props:Props):JSX.Element => {
     }
   }, [commentToBeDeleted, onDeleteCommentAfterOperation]);
 
-  const generateAllRepliesElement = (replyComments: ICommentHasIdList) => (
-    // TODO: need page props path
-    <ReplayComments
-      replyList={replyComments}
-      deleteBtnClicked={onClickDeleteButton}
-      rendererOptions={rendererOptions}
-      isReadOnly={isReadOnly}
-    />
-  );
-
   const removeShowEditorId = useCallback((commentId: string) => {
     setShowEditorIds((previousState) => {
       const previousShowEditorIds = new Set(...previousState);
@@ -128,32 +117,38 @@ export const PageComment:FC<Props> = memo((props:Props):JSX.Element => {
     });
   }, []);
 
-
   if (commentsFromOldest == null || commentsExceptReply == null) return <></>;
 
   if (hideIfEmpty && comments?.length === 0) {
     return <></>;
   }
-  if (rendererOptions == null || currentPagePath == null) {
+  if (rendererOptions == null || currentPagePath == null || currentPage == null) {
     return <></>;
   }
 
   const generateCommentInnerElement = (comment: ICommentHasId) => (
     <Comment
-      rendererOptions={rendererOptions}
-      deleteBtnClicked={onClickDeleteButton}
       comment={comment}
-      onComment={mutate}
       isReadOnly={isReadOnly}
+      deleteBtnClicked={onClickDeleteButton}
+      onComment={mutate}
+      rendererOptions={rendererOptions}
+      currentPagePath={currentPagePath}
+      currentRevisionId={currentPage.revision._id}
+      currentRevisionCreatedAt={currentPage.revision.createdAt}
     />
   );
 
   const generateAllRepliesElement = (replyComments: ICommentHasIdList) => (
-    <ReplayComments
+    <ReplyComments
+      isReadOnly={isReadOnly}
       replyList={replyComments}
       deleteBtnClicked={onClickDeleteButton}
-      isReadOnly={isReadOnly}
       onComment={mutate}
+      rendererOptions={rendererOptions}
+      currentPagePath={currentPagePath}
+      currentRevisionId={currentPage.revision._id}
+      currentRevisionCreatedAt={currentPage.revision.createdAt}
     />
   );
 
@@ -200,6 +195,7 @@ export const PageComment:FC<Props> = memo((props:Props):JSX.Element => {
                     {/* display reply editor */}
                     {(!isReadOnly && showEditorIds.has(comment._id)) && (
                       <CommentEditor
+                        rendererOptions={rendererOptions}
                         replyTo={comment._id}
                         onCancelButtonClicked={() => {
                           removeShowEditorId(comment._id);
@@ -215,6 +211,8 @@ export const PageComment:FC<Props> = memo((props:Props):JSX.Element => {
 
               })}
             </div>
+            {/* TODO: Check if identical-page */}
+            <CommentEditorLazyRenderer pageId={pageId} rendererOptions={rendererOptions}/>
           </div>
         </div>
       </div>
