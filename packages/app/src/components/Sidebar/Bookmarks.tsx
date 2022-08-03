@@ -1,5 +1,5 @@
 
-import React, { useCallback } from 'react';
+import React, { useCallback, useState } from 'react';
 
 import nodePath from 'path';
 
@@ -52,7 +52,7 @@ const BookmarkItem = (props: Props) => {
     return null;
   };
 
-  const pressEnterForRenameHandler = (async(inputText: string) => {
+  const pressEnterForRenameHandler = useCallback(async(inputText: string) => {
     const parentPath = pathUtils.addTrailingSlash(nodePath.dirname(bookmarkedPage.path ?? ''));
     const newPagePath = nodePath.resolve(parentPath, inputText);
     if (newPagePath === bookmarkedPage.path) {
@@ -74,7 +74,7 @@ const BookmarkItem = (props: Props) => {
       setRenameInputShown(true);
       toastError(err);
     }
-  });
+  }, [bookmarkedPage, onPageOperationSuccess, t]);
 
   return (
     <div className="d-flex justify-content-between" key={bookmarkedPage._id}>
