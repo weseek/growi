@@ -14,7 +14,7 @@ import { RendererOptions } from '~/services/renderer/renderer';
 import { useSWRxPageComment } from '~/stores/comment';
 import {
   useCurrentPagePath, useCurrentPageId, useCurrentUser, useRevisionId, useIsSlackConfigured,
-  useEditorConfig,
+  useIsUploadableFile, useIsUploadableImage,
 } from '~/stores/context';
 import { useSWRxSlackChannels, useIsSlackEnabled } from '~/stores/editor';
 import { useIsMobile } from '~/stores/ui';
@@ -73,7 +73,8 @@ export const CommentEditor = (props: PropsType): JSX.Element => {
   const { data: isSlackEnabled, mutate: mutateIsSlackEnabled } = useIsSlackEnabled();
   const { data: slackChannelsData } = useSWRxSlackChannels(currentPagePath);
   const { data: isSlackConfigured } = useIsSlackConfigured();
-  const { data: editorConfig } = useEditorConfig();
+  const { data: isUploadableFile } = useIsUploadableFile();
+  const { data: isUploadableImage } = useIsUploadableImage();
 
   const [isReadyToUse, setIsReadyToUse] = useState(!isForNewComment);
   // TODO: Refactor comment and markdown variable names or logic after presentation
@@ -262,11 +263,7 @@ export const CommentEditor = (props: PropsType): JSX.Element => {
     // TODO: typescriptize Editor
     const AnyEditor = Editor as any;
 
-    if (editorConfig === undefined) {
-      return <></>;
-    }
-    const isUploadable = editorConfig.upload.isImageUploaded || editorConfig.upload.isFileUploaded;
-    const isUploadableFile = editorConfig.upload.isFileUploaded;
+    const isUploadable = isUploadableImage || isUploadableFile;
 
     return (
       <>

@@ -227,7 +227,7 @@ class PageService {
       page = await Page.findByIdAndViewer(pageId, user, null, includeEmpty);
     }
     else {
-      page = await Page.findByPathAndViewer(path, user, null, includeEmpty);
+      page = await Page.findByPathAndViewer(path, user, null, true, includeEmpty);
     }
 
     if (page == null) {

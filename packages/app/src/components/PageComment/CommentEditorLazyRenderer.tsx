@@ -8,7 +8,6 @@ import { useSWRxPageComment } from '../../stores/comment';
 
 import { CommentEditor } from './CommentEditor';
 
-
 type Props = {
   pageId?: Nullable<string>,
   rendererOptions: RendererOptions,

@@ -6,7 +6,6 @@ import useSWRImmutable from 'swr/immutable';
 
 
 import { SupportedActionType } from '~/interfaces/activity';
-import { EditorConfig } from '~/interfaces/editor-settings';
 // import { CustomWindow } from '~/interfaces/global';
 import { RendererConfig } from '~/interfaces/services/renderer';
 import { GrowiThemes } from '~/interfaces/theme';
@@ -225,10 +224,6 @@ export const useIsLatestRevision = (initialData?: boolean): SWRResponse<boolean,
   return useStaticSWR('isLatestRevision', initialData);
 };
 
-export const useEditorConfig = (initialData?: EditorConfig): SWRResponse<EditorConfig, Error> => {
-  return useStaticSWR<EditorConfig, Error>('editorConfig', initialData);
-};
-
 export const useRendererConfig = (initialData?: RendererConfig): SWRResponse<RendererConfig, any> => {
   return useStaticSWR('growiRendererConfig', initialData);
 };
@@ -249,6 +244,13 @@ export const useEditingMarkdown = (initialData?: string): SWRResponse<string, Er
   return useStaticSWR('currentMarkdown', initialData);
 };
 
+export const useIsUploadableImage = (initialData?: boolean): SWRResponse<boolean, Error> => {
+  return useStaticSWR('isUploadableImage', initialData);
+};
+
+export const useIsUploadableFile = (initialData?: boolean): SWRResponse<boolean, Error> => {
+  return useStaticSWR('isUploadableFile', initialData);
+};
 
 /** **********************************************************
  *                     Computed contexts
