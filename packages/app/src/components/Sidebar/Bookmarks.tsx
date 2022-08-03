@@ -24,11 +24,14 @@ import { MenuItemType, PageItemControl } from '../Common/Dropdown/PageItemContro
 type Props = {
   bookmarkedPage: IPageHasId,
   onUnbookmarked: () => void,
-  onRenamed: () => void
+  onRenamed: () => void,
+  onDeleted: () => void
 }
 
 const BookmarkItem = (props: Props) => {
-  const { bookmarkedPage, onUnbookmarked, onRenamed } = props;
+  const {
+    bookmarkedPage, onUnbookmarked, onRenamed, onDeleted,
+  } = props;
   const { t } = useTranslation();
   const [isRenameInputShown, setRenameInputShown] = useState(false);
   const dPagePath = new DevidedPagePath(bookmarkedPage.path, false, true);
@@ -95,7 +98,7 @@ const BookmarkItem = (props: Props) => {
         else {
           toastSuccess(t('deleted_pages', { path }));
         }
-        onPageOperationSuccess();
+        onDeleted();
       };
       openDeleteModal([pageToDelete], { onDeleted: onDeletedHandler });
     };
@@ -114,7 +117,7 @@ const BookmarkItem = (props: Props) => {
     };
 
     onClickDeleteMenuItem(pageToDelete);
-  }, [bookmarkedPage, openDeleteModal, onPageOperationSuccess, t]);
+  }, [bookmarkedPage, openDeleteModal, onDeleted, t]);
 
   return (
     <div className="d-flex justify-content-between" key={bookmarkedPage._id}>
@@ -181,6 +184,7 @@ const Bookmarks = () : JSX.Element => {
                 bookmarkedPage={currentUserBookmark}
                 onUnbookmarked={mutateCurrentUserBookmarks}
                 onRenamed={mutateCurrentUserBookmarks}
+                onDeleted={mutateCurrentUserBookmarks}
               />
             );
           })}
