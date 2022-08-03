@@ -1,19 +1,5 @@
 @use '~/styles/bootstrap/init' as bs;
 
-// .page-comments :global {
-//   // TODO: Never use this selector in PageComment.tsx
-//   .page-comments-list-toggle-older {
-//     display: inline-block;
-//     font-size: 0.9em;
-//   }
-//   // TODO: Never use this selector in PageComment.tsx
-//   .page-comment {
-//     padding-top: 50px;
-//     margin-top: -50px;
-//     pointer-events: none;
-//   }
-// }
-
 // TODO: _comment_growi.scss, need to find where using h4 class.
 .page-comment-module :global {
   .page-comments {

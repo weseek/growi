@@ -73,10 +73,10 @@ export const Comment = (props: CommentProps): JSX.Element => {
     let className = `${styles['page-comment']} page-comment flex-column`;
 
     if (comment.revision === currentRevisionId) {
-      className += ' page-comment-current';
+      className += ' page-comment-current page-comment flex-column';
     }
     else if (comment.createdAt.getTime() > currentRevisionCreatedAt.getTime()) {
-      className += ' page-comment-newer';
+      className += ' page-comment-newer page-comment flex-column';
     }
     else {
       className += ' page-comment-older';
@@ -136,7 +136,7 @@ export const Comment = (props: CommentProps): JSX.Element => {
           <div className={`${styles['page-comment-writer']} page-comment-writer`}>
             <UserPicture user={creator} noLink noTooltip />
           </div>
-          <div className={`${styles['page-comment-main']} page-comment-main`}>
+          <div className="page-comment-main">
             <div className="page-comment-creator">
               <Username user={creator} />
             </div>
