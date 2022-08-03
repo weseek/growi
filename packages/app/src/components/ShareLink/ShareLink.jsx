@@ -1,8 +1,8 @@
-import React, { useState, useCallback, useEffect } from 'react';
+import React, { useState, useCallback } from 'react';
 
 import { useTranslation } from 'next-i18next';
 import PropTypes from 'prop-types';
-
+import useSWR from 'swr';
 
 import PageContainer from '~/client/services/PageContainer';
 import { toastSuccess, toastError } from '~/client/util/apiNotification';
@@ -15,70 +15,57 @@ import ShareLinkList from './ShareLinkList';
 
 const ShareLink = (props) => {
   const { t } = useTranslation();
-  const { pageContainer } = props;
-  const { pageId } = pageContainer.state;
-  const [shareLinks, setShareLinks] = useState([]);
+  const { pageId } = props.pageContainer.state;
   const [isOpenShareLinkForm, setIsOpenShareLinkForm] = useState(false);
 
-  const retrieveShareLinks = useCallback(async() => {
-    try {
-      const res = await apiv3Get('/share-links/', { relatedPage: pageId });
-      const { shareLinksResult } = res.data;
-      setShareLinks(shareLinksResult);
-    }
-    catch (err) {
-      toastError(err);
-    }
+  const fetchShareLinks = useCallback(async(endpoint, pageId) => {
+    const res = await apiv3Get(endpoint, { relatedPage: pageId });
+    return {
+      shareLinkList: res.data.shareLinksResult,
+    };
+  }, []);
 
-  }, [pageId]);
+  const { data, isValidating, mutate } = useSWR('/share-links/', (endpoint => fetchShareLinks(endpoint, pageId)));
 
   const toggleShareLinkFormHandler = useCallback(() => {
     setIsOpenShareLinkForm(prev => !prev);
-    retrieveShareLinks();
-  }, [retrieveShareLinks]);
+    mutate();
+  }, [mutate]);
 
-  const deleteAllLinksButtonHandler = useCallback(async() => {
-
+  const deleteAllLinksButtonHandler = useCallback(async(pageId) => {
     try {
       const res = await apiv3Delete('/share-links/', { relatedPage: pageId });
       const count = res.data.n;
       toastSuccess(t('toaster.remove_share_link', { count }));
+      mutate();
     }
     catch (err) {
       toastError(err);
     }
-
-    retrieveShareLinks();
-  }, [retrieveShareLinks, pageId, t]);
+  }, [mutate, t]);
 
   const deleteLinkById = useCallback(async(shareLinkId) => {
-
     try {
       const res = await apiv3Delete(`/share-links/${shareLinkId}`);
       const { deletedShareLink } = res.data;
       toastSuccess(t('toaster.remove_share_link_success', { shareLinkId: deletedShareLink._id }));
+      mutate();
     }
     catch (err) {
       toastError(err);
     }
-
-    retrieveShareLinks();
-  }, [t, retrieveShareLinks]);
-
-  useEffect(() => {
-    retrieveShareLinks();
-  }, [retrieveShareLinks]);
+  }, [mutate, t]);
 
   return (
     <div className="container p-0" data-testid="share-link-management">
       <h3 className="grw-modal-head d-flex pb-2">
         { t('share_links.share_link_list') }
-        <button className="btn btn-danger ml-auto " type="button" onClick={deleteAllLinksButtonHandler}>{t('delete_all')}</button>
+        <button className="btn btn-danger ml-auto " type="button" onClick={() => deleteAllLinksButtonHandler(pageId)}>{t('delete_all')}</button>
       </h3>
 
       <div>
         <ShareLinkList
-          shareLinks={shareLinks}
+          shareLinks={!isValidating ? data.shareLinkList : []}
           onClickDeleteButton={deleteLinkById}
         />
         <button
