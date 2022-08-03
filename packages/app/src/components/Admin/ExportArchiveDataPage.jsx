@@ -3,7 +3,7 @@ import React, {
 } from 'react';
 
 import PropTypes from 'prop-types';
-import useSWR from 'swr';
+import { useTranslation } from 'react-i18next';
 import * as toastr from 'toastr';
 
 import AdminSocketIoContainer from '~/client/services/AdminSocketIoContainer';
