@@ -16,19 +16,10 @@ class InstallerForm extends React.Component {
     this.state = {
       isValidUserName: true,
       isSubmittingDisabled: false,
-      selectedLang: {},
     };
     this.checkUserName = this.checkUserName.bind(this);
 
     this.submitHandler = this.submitHandler.bind(this);
-  }
-
-  UNSAFE_componentWillMount() {
-    const meta = i18nConfig.locales.find(v => v.id === i18next.language);
-    if (meta == null) {
-      return this.setState({ selectedLang: i18nConfig.locales[0] });
-    }
-    this.setState({ selectedLang: meta });
   }
 
   checkUserName(event) {
@@ -45,7 +36,6 @@ class InstallerForm extends React.Component {
 
   changeLanguage(meta) {
     i18next.changeLanguage(meta.id);
-    this.setState({ selectedLang: meta });
   }
 
   submitHandler() {
@@ -60,6 +50,7 @@ class InstallerForm extends React.Component {
   }
 
   render() {
+    const { t } = this.props;
     const hasErrorClass = this.state.isValidUserName ? '' : ' has-error';
     const unavailableUserId = this.state.isValidUserName
       ? ''
@@ -79,7 +70,7 @@ class InstallerForm extends React.Component {
           <form role="form" action="/installer" method="post" id="register-form" className="col-md-12" onSubmit={this.submitHandler}>
             <div className="dropdown mb-3">
               <div className="d-flex dropdown-with-icon">
-                <i className="icon-bubbles border-0 rounded-0" />44
+                <i className="icon-bubbles border-0 rounded-0" />
                 <button
                   type="button"
                   className="btn btn-secondary dropdown-toggle text-right w-100 border-0 shadow-none"
@@ -90,12 +81,11 @@ class InstallerForm extends React.Component {
                   aria-expanded="true"
                 >
                   <span className="float-left">
-                    { i18n.getFixedT(this.state.selectedLang)('meta.display_name') }
+                    {t('meta.display_name')}
                   </span>
                 </button>
                 <input
                   type="hidden"
-                  value={this.state.selectedLang.id}
                   name="registerForm[app:globalLang]"
                 />
                 <div className="dropdown-menu" aria-labelledby="dropdownLanguage">
@@ -116,7 +106,7 @@ class InstallerForm extends React.Component {
                         </button>
                       );
                     })
-                  };
+                  }
                 </div>
               </div>
             </div>
