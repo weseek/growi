@@ -17,7 +17,7 @@ import { useSWRxPageComment } from '../stores/comment';
 import { Comment } from './PageComment/Comment';
 import { CommentEditor } from './PageComment/CommentEditor';
 import { CommentEditorLazyRenderer } from './PageComment/CommentEditorLazyRenderer';
-import DeleteCommentModal from './PageComment/DeleteCommentModal';
+import { DeleteCommentModal } from './PageComment/DeleteCommentModal';
 import { ReplyComments } from './PageComment/ReplyComments';
 
 type Props = {
