@@ -204,7 +204,9 @@ const SubNavButtonsSubstance = (props: SubNavButtonsSubstanceProps): JSX.Element
     if (!isIPageInfoForEntity(pageInfo)) {
       return undefined;
     }
-    return props => <WideViewMenuItem {...props} onClickMenuItem={switchContentWidthClickHandler} />;
+    return function WideViewMenuItem(props: WideViewMenuItemProps) {
+      return <WideViewMenuItem {...props} onClickMenuItem={switchContentWidthClickHandler} />;
+    };
   }, [pageInfo, switchContentWidthClickHandler]);
 
   if (!isIPageInfoForOperation(pageInfo)) {
