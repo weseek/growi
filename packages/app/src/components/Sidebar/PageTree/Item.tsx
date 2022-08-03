@@ -16,6 +16,7 @@ import TriangleIcon from '~/components/Icons/TriangleIcon';
 import {
   IPageHasId, IPageInfoAll, IPageToDeleteWithMeta,
 } from '~/interfaces/page';
+import { useSWRxCurrentUserBookmarks } from '~/stores/bookmark';
 import { IPageForPageDuplicateModal } from '~/stores/modal';
 import { useSWRxPageChildren } from '~/stores/page-listing';
 import { usePageTreeDescCountMap } from '~/stores/ui';
@@ -55,12 +56,6 @@ const markTarget = (children: ItemNode[], targetPathOrId?: string): void => {
     }
     return node;
   });
-};
-
-
-const bookmarkMenuItemClickHandler = async(_pageId: string, _newValue: boolean): Promise<void> => {
-  const bookmarkOperation = _newValue ? bookmark : unbookmark;
-  await bookmarkOperation(_pageId);
 };
 
 /**
@@ -111,6 +106,7 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
   const [isCreating, setCreating] = useState(false);
 
   const { data, mutate: mutateChildren } = useSWRxPageChildren(isOpen ? page._id : null);
+  const { mutate: mutateCurrentUserBookmarks } = useSWRxCurrentUserBookmarks();
 
   // descendantCount
   const { getDescCount } = usePageTreeDescCountMap();
@@ -237,6 +233,12 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
       setIsOpen(true);
     }
   }, [hasDescendants]);
+
+  const bookmarkMenuItemClickHandler = async(_pageId: string, _newValue: boolean): Promise<void> => {
+    const bookmarkOperation = _newValue ? bookmark : unbookmark;
+    await bookmarkOperation(_pageId);
+    mutateCurrentUserBookmarks();
+  };
 
   const duplicateMenuItemClickHandler = useCallback((): void => {
     if (onClickDuplicateMenuItem == null) {

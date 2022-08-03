@@ -1,116 +1,89 @@
 
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback } from 'react';
 
-import { DevidedPagePath } from '@growi/core';
+import { DevidedPagePath, pathUtils } from '@growi/core';
 import { useTranslation } from 'react-i18next';
 import { UncontrolledTooltip, DropdownToggle } from 'reactstrap';
 
-import { toastError } from '~/client/util/apiNotification';
-import { apiv3Get } from '~/client/util/apiv3-client';
+import { unbookmark } from '~/client/services/page-operation';
 import { IPageHasId } from '~/interfaces/page';
-import { useCurrentUser, useIsGuestUser } from '~/stores/context';
-import loggerFactory from '~/utils/logger';
-
+import { useSWRxCurrentUserBookmarks } from '~/stores/bookmark';
+import { useIsGuestUser } from '~/stores/context';
 
 import { MenuItemType, PageItemControl } from '../Common/Dropdown/PageItemControl';
 
-const logger = loggerFactory('growi:BookmarkList');
-
-// TODO: Remove pagination and apply  scrolling (not infinity)
-const ACTIVE_PAGE = 1;
 
 type Props = {
-  pages: IPageHasId[]
+  bookmarkedPage: IPageHasId,
+  onPageOperationSuccess: () => void
 }
 
-const BookmarksItem = (props: Props) => {
-  const { pages } = props;
+const BookmarkItem = (props: Props) => {
+  const { bookmarkedPage, onPageOperationSuccess } = props;
 
-  const generateBookmarkedPageList = pages.map((page) => {
-    const dPagePath = new DevidedPagePath(page.path, false, true);
-    const { latter: pageTitle, former: formerPagePath } = dPagePath;
-    const bookmarkItemId = `bookmark-item-${page._id}`;
+  const dPagePath = new DevidedPagePath(bookmarkedPage.path, false, true);
+  const { latter: pageTitle, former, isRoot } = dPagePath;
+  const formerPagePath = isRoot ? pageTitle : pathUtils.addTrailingSlash(former);
+  const bookmarkItemId = `bookmark-item-${bookmarkedPage._id}`;
 
-    return (
-      <div className="d-flex justify-content-between" key={page._id}>
-        <li className="list-group-item list-group-item-action border-0 py-0 pr-3 d-flex align-items-center" id={bookmarkItemId}>
-          <a href={`/${page._id}`} className="grw-bookmarks-title-anchor flex-grow-1">
-            <p className={`text-truncate m-auto ${page.isEmpty && 'grw-sidebar-text-muted'}`}>{pageTitle}</p>
-          </a>
-          <PageItemControl
-            pageId={page._id}
-            isEnableActions
-            forceHideMenuItems={[MenuItemType.DUPLICATE]}
-          >
-            <DropdownToggle color="transparent" className="border-0 rounded btn-page-item-control p-0 grw-visible-on-hover mr-1">
-              <i className="icon-options fa fa-rotate-90 p-1"></i>
-            </DropdownToggle>
-          </PageItemControl>
-          <UncontrolledTooltip
-            modifiers={{ preventOverflow: { boundariesElement: 'window' } }}
-            autohide={false}
-            placement="right"
-            target={bookmarkItemId}
-            fade={false}
-          >
-            { formerPagePath || '/' }
-          </UncontrolledTooltip>
-        </li>
-      </div>
-    );
-  });
-
+  const bookmarkMenuItemClickHandler = useCallback(async() => {
+    await unbookmark(bookmarkedPage._id);
+    onPageOperationSuccess();
+  }, [onPageOperationSuccess, bookmarkedPage]);
 
   return (
-    <>
-      <ul className="grw-bookmarks-list list-group p-3">
-        <div className="grw-bookmarks-item-container">
-          {generateBookmarkedPageList}
-        </div>
-      </ul>
-    </>
+    <div className="d-flex justify-content-between" key={bookmarkedPage._id}>
+      <li className="list-group-item list-group-item-action border-0 py-0 pr-3 d-flex align-items-center" id={bookmarkItemId}>
+        <a href={`/${bookmarkedPage._id}`} className="grw-bookmarks-title-anchor flex-grow-1">
+          <p className={`text-truncate m-auto ${bookmarkedPage.isEmpty && 'grw-sidebar-text-muted'}`}>{pageTitle}</p>
+        </a>
+        <PageItemControl
+          pageId={bookmarkedPage._id}
+          isEnableActions
+          forceHideMenuItems={[MenuItemType.DUPLICATE]}
+          onClickBookmarkMenuItem={bookmarkMenuItemClickHandler}
+        >
+          <DropdownToggle color="transparent" className="border-0 rounded btn-page-item-control p-0 grw-visible-on-hover mr-1">
+            <i className="icon-options fa fa-rotate-90 p-1"></i>
+          </DropdownToggle>
+        </PageItemControl>
+        <UncontrolledTooltip
+          modifiers={{ preventOverflow: { boundariesElement: 'window' } }}
+          autohide={false}
+          placement="right"
+          target={bookmarkItemId}
+        >
+          { formerPagePath }
+        </UncontrolledTooltip>
+      </li>
+    </div>
   );
 };
 
-
 const Bookmarks = () : JSX.Element => {
   const { t } = useTranslation();
-  const { data: currentUser } = useCurrentUser();
   const { data: isGuestUser } = useIsGuestUser();
-  const [pages, setPages] = useState<IPageHasId[]>([]);
+  const { data: currentUserBookmarksData, mutate: mutateCurrentUserBookmarks } = useSWRxCurrentUserBookmarks();
 
-  const getMyBookmarkList = useCallback(async() => {
-    // TODO: Remove pagination and apply  scrolling (not infinity)
-    const page = ACTIVE_PAGE;
-
-    try {
-      const res = await apiv3Get(`/bookmarks/${currentUser?._id}`, { page });
-      const { paginationResult } = res.data;
-      setPages(paginationResult.docs.map((page) => {
-        return {
-          ...page.page,
-        };
-      }));
-    }
-    catch (error) {
-      logger.error('failed to fetch data', error);
-      toastError(error, 'Error occurred in bookmark page list');
-    }
-  }, [currentUser]);
-
-  useEffect(() => {
-    getMyBookmarkList();
-  }, [getMyBookmarkList]);
-
-  const renderBookmarksItem = () => {
-    if (pages.length === 0) {
+  const renderBookmarkList = () => {
+    if (currentUserBookmarksData?.length === 0) {
       return (
-        <h3 className="pl-3">
+        <h4 className="pl-3">
           { t('No bookmarks yet') }
-        </h3>
+        </h4>
       );
     }
-    return <BookmarksItem pages={pages} />;
+    return (
+      <ul className="grw-bookmarks-list list-group p-3">
+        <div className="grw-bookmarks-item-container">
+          { currentUserBookmarksData?.map((currentUserBookmark) => {
+            return (
+              <BookmarkItem key={currentUserBookmark._id} bookmarkedPage={currentUserBookmark} onPageOperationSuccess={mutateCurrentUserBookmarks} />
+            );
+          })}
+        </div>
+      </ul>
+    );
   };
 
   return (
@@ -120,15 +93,13 @@ const Bookmarks = () : JSX.Element => {
       </div>
       { isGuestUser
         ? (
-          <h3 className="pl-3">
+          <h4 className="pl-3">
             { t('Not available for guest') }
-          </h3>
-        ) : renderBookmarksItem()
+          </h4>
+        ) : renderBookmarkList()
       }
-
     </>
   );
-
 };
 
 export default Bookmarks;
