@@ -7,6 +7,7 @@ import {
   IDataWithMeta, IPageInfoForEntity, IPagePopulatedToShowRevision, isClient, isIPageInfoForEntity, isServer, IUser, IUserHasId, pagePathUtils, pathUtils,
 } from '@growi/core';
 import ExtensibleCustomError from 'extensible-custom-error';
+import mongoose from 'mongoose';
 import {
   NextPage, GetServerSideProps, GetServerSidePropsContext,
 } from 'next';
@@ -17,8 +18,9 @@ import { useRouter } from 'next/router';
 import superjson from 'superjson';
 
 import { PageAlerts } from '~/components/PageAlert/PageAlerts';
-// import { PageComments } from '~/components/PageComment/PageComments';
+import { PageComment } from '~/components/PageComment';
 // import { useTranslation } from '~/i18n';
+import CommentEditorLazyRenderer from '~/components/PageComment/CommentEditorLazyRenderer';
 import { CrowiRequest } from '~/interfaces/crowi-request';
 // import { renderScriptTagByName, renderHighlightJsStyleTag } from '~/service/cdn-resources-loader';
 // import { useIndentSize } from '~/stores/editor';
@@ -29,11 +31,12 @@ import { RendererConfig } from '~/interfaces/services/renderer';
 import { ISidebarConfig } from '~/interfaces/sidebar-config';
 import { IUserUISettings } from '~/interfaces/user-ui-settings';
 import { PageModel, PageDocument } from '~/server/models/page';
+import { PageRedirectModel } from '~/server/models/page-redirect';
 import UserUISettings from '~/server/models/user-ui-settings';
 import Xss from '~/services/xss';
-import { useSWRxCurrentPage, useSWRxPageInfo } from '~/stores/page';
+import { useSWRxCurrentPage, useSWRxIsGrantNormalized, useSWRxPageInfo } from '~/stores/page';
 import {
-  usePreferDrawerModeByUser, usePreferDrawerModeOnEditByUser, useSidebarCollapsed, useCurrentSidebarContents, useCurrentProductNavWidth,
+  usePreferDrawerModeByUser, usePreferDrawerModeOnEditByUser, useSidebarCollapsed, useCurrentSidebarContents, useCurrentProductNavWidth, useSelectedGrant,
 } from '~/stores/ui';
 import loggerFactory from '~/utils/logger';
 
@@ -121,8 +124,7 @@ type Props = CommonProps & {
 
   pageWithMeta: IPageToShowRevisionWithMeta,
   // pageUser?: any,
-  // redirectTo?: string;
-  // redirectFrom?: string;
+  redirectFrom?: string;
 
   // shareLinkId?: string;
   isLatestRevision?: boolean
@@ -147,7 +149,6 @@ type Props = CommonProps & {
   // noCdn: string,
   // highlightJsStyle: string,
   // isAllReplyShown: boolean,
-  // isContainerFluid: boolean,
   // editorConfig: any,
   isEnabledStaleNotification: boolean,
   // isEnabledLinebreaks: boolean,
@@ -225,7 +226,6 @@ const GrowiPage: NextPage<Props> = (props: Props) => {
   // useRendererSettings(props.rendererSettingsStr != null ? JSON.parse(props.rendererSettingsStr) : undefined);
   // useGrowiRendererConfig(props.growiRendererConfigStr != null ? JSON.parse(props.growiRendererConfigStr) : undefined);
 
-
   // const { data: editorMode } = useEditorMode();
 
   const { pageWithMeta, userUISettings } = props;
@@ -235,16 +235,24 @@ const GrowiPage: NextPage<Props> = (props: Props) => {
     shouldRenderPutbackPageModal = _isTrashPage(pageWithMeta.data.path);
   }
 
-  useCurrentPageId(pageWithMeta?.data._id);
+  const pageId = pageWithMeta?.data._id;
+
+  useCurrentPageId(pageId);
   useSWRxCurrentPage(undefined, pageWithMeta?.data); // store initial data
-  // useSWRxPage(pageWithMeta?.data._id);
-  useSWRxPageInfo(pageWithMeta?.data._id, undefined, pageWithMeta?.meta); // store initial data
+  useSWRxPageInfo(pageId, undefined, pageWithMeta?.meta); // store initial data
   useIsTrashPage(_isTrashPage(pageWithMeta?.data.path ?? ''));
   useIsUserPage(isUserPage(pageWithMeta?.data.path ?? ''));
   useIsNotCreatable(props.isForbidden || !isCreatablePage(pageWithMeta?.data.path ?? '')); // TODO: need to include props.isIdentical
   useCurrentPagePath(pageWithMeta?.data.path);
   useCurrentPathname(props.currentPathname);
-  useEditingMarkdown(pageWithMeta?.data.revision?.body);
+  useEditingMarkdown(pageWithMeta?.data.revision.body);
+  const { data: grantData } = useSWRxIsGrantNormalized(pageId);
+  const { mutate: mutateSelectedGrant } = useSelectedGrant();
+
+  // sync grant data
+  useEffect(() => {
+    mutateSelectedGrant(grantData?.grantData.currentPageGrant);
+  }, [grantData?.grantData.currentPageGrant, mutateSelectedGrant]);
 
   // sync pathname by Shallow Routing https://nextjs.org/docs/routing/shallow-routing
   useEffect(() => {
@@ -263,9 +271,6 @@ const GrowiPage: NextPage<Props> = (props: Props) => {
   //     classNames.push('on-edit', 'hackmd');
   //     break;
   // }
-  // if (props.isContainerFluid) {
-  //   classNames.push('growi-layout-fluid');
-  // }
   // if (page == null) {
   //   classNames.push('not-found-page');
   // }
@@ -281,7 +286,7 @@ const GrowiPage: NextPage<Props> = (props: Props) => {
         */}
       </Head>
       {/* <BasicLayout title={useCustomTitle(props, t('GROWI'))} className={classNames.join(' ')}> */}
-      <BasicLayout title={useCustomTitle(props, 'GROWI')} className={classNames.join(' ')}>
+      <BasicLayout title={useCustomTitle(props, 'GROWI')} className={classNames.join(' ')} expandContainer={props.isContainerFluid}>
         <header className="py-0">
           <GrowiContextualSubNavigation isLinkSharingDisabled={props.disableLinkSharing} />
         </header>
@@ -307,7 +312,6 @@ const GrowiPage: NextPage<Props> = (props: Props) => {
                     {/* <DisplaySwitcher /> */}
                     <div id="page-editor-navbar-bottom-container" className="d-none d-edit-block"></div>
                     {/* <PageStatusAlert /> */}
-                    PageStatusAlert
                   </>
                 ) }
 
@@ -322,8 +326,8 @@ const GrowiPage: NextPage<Props> = (props: Props) => {
           </div>
         </div>
         <footer>
-          {/* <PageComments /> */}
-          PageComments
+          <PageComment pageId={useCurrentPageId().data} isReadOnly={false} titleAlign="left" />
+          {/* <CommentEditorLazyRenderer pageId={useCurrentPageId().data} /> */}
         </footer>
 
         <UnsavedAlertDialog />
@@ -356,17 +360,28 @@ async function injectPageData(context: GetServerSidePropsContext, props: Props):
   const { revisionId } = req.query;
 
   const Page = crowi.model('Page') as PageModel;
+  const PageRedirect = mongoose.model('PageRedirect') as PageRedirectModel;
   const { pageService } = crowi;
 
-  const { currentPathname } = props;
+  let currentPathname = props.currentPathname;
 
   const pageId = getPageIdFromPathname(currentPathname);
   const isPermalink = _isPermalink(currentPathname);
 
   const { user } = req;
 
-  // check whether the specified page path hits to multiple pages
   if (!isPermalink) {
+    // check redirects
+    const chains = await PageRedirect.retrievePageRedirectEndpoints(currentPathname);
+    if (chains != null) {
+      // overwrite currentPathname
+      currentPathname = chains.end.toPath;
+      props.currentPathname = currentPathname;
+      // set redirectFrom
+      props.redirectFrom = chains.start.fromPath;
+    }
+
+    // check whether the specified page path hits to multiple pages
     const count = await Page.countByPathAndViewer(currentPathname, user, null, true);
     if (count > 1) {
       throw new MultiplePagesHitsError(currentPathname);
@@ -470,7 +485,6 @@ function injectServerConfigurations(context: GetServerSidePropsContext, props: P
   // props.noCdn = configManager.getConfig('crowi', 'app:noCdn');
   // props.highlightJsStyle = configManager.getConfig('crowi', 'customize:highlightJsStyle');
   // props.isAllReplyShown = configManager.getConfig('crowi', 'customize:isAllReplyShown');
-  // props.isContainerFluid = configManager.getConfig('crowi', 'customize:isContainerFluid');
   props.isEnabledStaleNotification = configManager.getConfig('crowi', 'customize:isEnabledStaleNotification');
   // props.isEnabledLinebreaks = configManager.getConfig('markdown', 'markdown:isEnabledLinebreaks');
   // props.isEnabledLinebreaksInComments = configManager.getConfig('markdown', 'markdown:isEnabledLinebreaksInComments');

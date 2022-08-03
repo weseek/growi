@@ -1,3 +1,4 @@
+import { isServer } from '@growi/core';
 import { Container } from 'unstated';
 
 import { apiv3Get, apiv3Put } from '../util/apiv3-client';
@@ -10,6 +11,10 @@ export default class AdminSlackIntegrationLegacyContainer extends Container {
 
   constructor(appContainer) {
     super();
+
+    if (isServer()) {
+      return;
+    }
 
     this.appContainer = appContainer;
 

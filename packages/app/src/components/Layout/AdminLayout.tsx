@@ -1,7 +1,6 @@
 import React, { ReactNode } from 'react';
 
 import dynamic from 'next/dynamic';
-import { Provider } from 'unstated';
 
 import { GrowiNavbar } from '../Navbar/GrowiNavbar';
 
@@ -9,8 +8,6 @@ import { RawLayout } from './RawLayout';
 
 import styles from './Admin.module.scss';
 
-
-// import { injectableContainers } from '~/client/admin';
 
 type Props = {
   title: string
@@ -45,10 +42,7 @@ const AdminLayout = ({
               <AdminNavigation selected={selectedNavOpt} />
             </div>
             <div className="col-lg-9">
-              {/* TODO: inject Admincontainer (injectableContainers & adminSecurityContainers) by https://redmine.weseek.co.jp/issues/100072 */}
-              <Provider>
-                {children}
-              </Provider>
+              {children}
             </div>
           </div>
         </div>

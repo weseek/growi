@@ -1,3 +1,4 @@
+import { isServer } from '@growi/core';
 import { Container } from 'unstated';
 
 import loggerFactory from '~/utils/logger';
@@ -14,6 +15,10 @@ export default class AdminLocalSecurityContainer extends Container {
 
   constructor(appContainer) {
     super();
+
+    if (isServer()) {
+      return;
+    }
 
     this.appContainer = appContainer;
     this.dummyRegistrationMode = 0;

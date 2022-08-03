@@ -17,7 +17,6 @@ import CountBadge from '../Common/CountBadge';
 import PageListIcon from '../Icons/PageListIcon';
 import NotFoundPage from '../NotFoundPage';
 import { Page } from '../Page';
-// import PageEditor from '../PageEditor';
 // import PageEditorByHackmd from '../PageEditorByHackmd';
 import TableOfContents from '../TableOfContents';
 import UserInfo from '../User/UserInfo';
@@ -33,6 +32,7 @@ const { isTopPage } = pagePathUtils;
 const DisplaySwitcher = (): JSX.Element => {
   const { t } = useTranslation();
 
+  const PageEditor = dynamic(() => import('../PageEditor'), { ssr: false });
   const EditorNavbarBottom = dynamic(() => import('../PageEditor/EditorNavbarBottom'), { ssr: false });
   const HashChanged = dynamic(() => import('../EventListeneres/HashChanged'), { ssr: false });
   const ContentLinkButtons = dynamic(() => import('../ContentLinkButtons'), { ssr: false });
@@ -126,7 +126,7 @@ const DisplaySwitcher = (): JSX.Element => {
         { isEditable && (
           <TabPane tabId={EditorMode.Editor}>
             <div data-testid="page-editor" id="page-editor">
-              {/* <PageEditor /> */}
+              <PageEditor />
             </div>
           </TabPane>
         ) }

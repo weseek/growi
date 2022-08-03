@@ -1,4 +1,4 @@
-import { pathUtils } from '@growi/core';
+import { isServer, pathUtils } from '@growi/core';
 import { Container } from 'unstated';
 import urljoin from 'url-join';
 
@@ -17,6 +17,10 @@ export default class AdminGitHubSecurityContainer extends Container {
 
   constructor(appContainer) {
     super();
+
+    if (isServer()) {
+      return;
+    }
 
     this.dummyGithubClientId = 0;
     this.dummyGithubClientIdForError = 1;

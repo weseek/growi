@@ -14,6 +14,7 @@ import useSWRImmutable from 'swr/immutable';
 import { IFocusable } from '~/client/interfaces/focusable';
 import { useUserUISettings } from '~/client/services/user-ui-settings';
 import { apiv3Get, apiv3Put } from '~/client/util/apiv3-client';
+import { IPageGrantData } from '~/interfaces/page';
 import { ISidebarConfig } from '~/interfaces/sidebar-config';
 import { SidebarContentsType } from '~/interfaces/ui';
 import { UpdateDescCountData } from '~/interfaces/websocket';
@@ -365,17 +366,8 @@ export const useSidebarResizeDisabled = (isDisabled?: boolean): SWRResponse<bool
   return useStaticSWR('isSidebarResizeDisabled', isDisabled, { fallbackData: false });
 };
 
-
-export const useSelectedGrant = (initialData?: number): SWRResponse<number, Error> => {
-  return useStaticSWR<number, Error>('grant', initialData);
-};
-
-export const useSelectedGrantGroupId = (initialData?: Nullable<string>): SWRResponse<Nullable<string>, Error> => {
-  return useStaticSWR<Nullable<string>, Error>('grantGroupId', initialData);
-};
-
-export const useSelectedGrantGroupName = (initialData?: Nullable<string>): SWRResponse<Nullable<string>, Error> => {
-  return useStaticSWR<Nullable<string>, Error>('grantGroupName', initialData);
+export const useSelectedGrant = (initialData?: Nullable<IPageGrantData>): SWRResponse<Nullable<IPageGrantData>, Error> => {
+  return useStaticSWR<Nullable<IPageGrantData>, Error>('selectedGrant', initialData);
 };
 
 export const useGlobalSearchFormRef = (initialData?: RefObject<IFocusable>): SWRResponse<RefObject<IFocusable>, Error> => {
