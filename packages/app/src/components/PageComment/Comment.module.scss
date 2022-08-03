@@ -1,77 +1,94 @@
 @use '../../styles/bootstrap/init' as bs;
 
-%comment-section {
-  position: relative;
-  padding: 1em;
+// TODO: From _comment_growi.scss
+.growi {
+  %comment-section {
+    position: relative;
+    padding: 1em;
 
-  // speech balloon
-  &:before {
-    position: absolute;
-    top: 1.5em;
-    left: -1em;
-    display: block;
-    width: 0;
-    content: '';
-    border: 1em solid transparent;
-    border-left-width: 0;
+    // speech balloon
+    &:before {
+      position: absolute;
+      top: 1.5em;
+      left: -1em;
+      display: block;
+      width: 0;
+      content: '';
+      border: 1em solid transparent;
+      border-left-width: 0;
 
-    @include bs.media-breakpoint-down(xs) {
-      top: 1em;
-    }
-  }
-}
-
-%picture {
-  float: left;
-  width: 3em;
-  height: 3em;
-  margin-top: 0.8em;
-
-  @include bs.media-breakpoint-down(xs) {
-    width: 2em;
-    height: 2em;
-  }
-}
-
-.page-comment-writer :global {
-  @include bs.media-breakpoint-down(xs) {
-    height: 3.5em;
-  }
-}
-
-.page-comment :global {
-  h4 {
-    margin-bottom: 1em;
-  }
-
-  position: relative;
-  padding-top: 70px;
-  margin-top: -70px;
-  pointer-events: none;
-
-  // ユーザー名
-  .page-comment-creator {
-    margin-top: -0.5em;
-    margin-bottom: 0.5em;
-    font-weight: bold;
-  }
-
-  // ユーザーアイコン
-  .picture {
-    @extend %picture;
-  }
-
-  // コメントセクション
-  .page-comment-main {
-    @extend %comment-section;
-    @include bs.media-breakpoint-up(sm) {
-      margin-left: 4.5em;
-    }
-    @include bs.media-breakpoint-down(xs) {
-      &:before {
-        content: none;
+      @include bs.media-breakpoint-down(xs) {
+        top: 1em;
       }
     }
+  }
+
+  %picture {
+    float: left;
+    width: 3em;
+    height: 3em;
+    margin-top: 0.8em;
+
+    @include bs.media-breakpoint-down(xs) {
+      width: 2em;
+      height: 2em;
+    }
+  }
+
+  .page-comment-writer :global {
+    @include bs.media-breakpoint-down(xs) {
+      height: 3.5em;
+    }
+  }
+
+  .page-comment :global {
+    position: relative;
+    padding-top: 70px;
+    margin-top: -70px;
+
+    // ユーザー名
+    .page-comment-creator {
+      margin-top: -0.5em;
+      margin-bottom: 0.5em;
+      font-weight: bold;
+    }
+
+    // ユーザーアイコン
+    .picture {
+      @extend %picture;
+    }
+
+    // コメントセクション
+    .page-comment-main {
+      @extend %comment-section;
+      @include bs.media-breakpoint-up(sm) {
+        margin-left: 4.5em;
+      }
+      @include bs.media-breakpoint-down(xs) {
+        &:before {
+          content: none;
+        }
+      }
+    }
+
+    // コメント本文
+    .page-comment-body {
+      margin-bottom: 0.5em;
+      word-wrap: break-word;
+    }
+  }
+}
+
+.page-comments {
+  .page-comments-list-toggle-older :global {
+    display: inline-block;
+    font-size: 0.9em;
+  }
+
+  .page-comment {
+    padding-top: 50px;
+    margin-top: -50px;
+    pointer-events: none;
 
     // older comments
     &.page-comment-older {
@@ -99,9 +116,19 @@
     }
   }
 
-  // コメント本文
-  .page-comment-body {
-    margin-bottom: 0.5em;
-    word-wrap: break-word;
+  .page-comment-main {
+    pointer-events: auto;
+
+    // delete button
+    .page-comment-control {
+      position: absolute;
+      top: 0;
+      right: 0;
+      visibility: hidden;
+    }
+
+    &:hover > .page-comment-control {
+      visibility: visible;
+    }
   }
 }

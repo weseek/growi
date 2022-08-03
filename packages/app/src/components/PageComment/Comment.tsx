@@ -136,7 +136,7 @@ export const Comment = (props: CommentProps): JSX.Element => {
           <div className={`${styles['page-comment-writer']} page-comment-writer`}>
             <UserPicture user={creator} noLink noTooltip />
           </div>
-          <div className="page-comment-main">
+          <div className={`${styles['page-comment-main']} page-comment-main`}>
             <div className="page-comment-creator">
               <Username user={creator} />
             </div>
