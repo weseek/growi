@@ -87,9 +87,14 @@ const AdminMarkdownSettingsPage: NextPage<Props> = (props: Props) => {
   const router = useRouter();
   const path = router.query.path || 'home';
 
+  /*
+  *  `/admin/foo/bar` -> the name should be 'bar'
+  *  `/admin/foo`     -> the name should be 'foo'
+  *  `/admin/`        -> the name should be 'home'
+  */
   let name: string;
   if (Array.isArray(path)) {
-    name = path[1] != null ? path[1] : path[0];
+    name = path[1] || path[0];
   }
   else {
     name = path;
