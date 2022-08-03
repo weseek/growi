@@ -169,10 +169,10 @@ export const PageComment: FC<Props> = memo((props:Props): JSX.Element => {
 
   return (
     <>
-      <div className="page-comments-row comment-list mt-5 py-4 d-edit-none d-print-none">
+      <div className={`${styles['page-comment-module']} page-comments-row comment-list mt-5 py-4 d-edit-none d-print-none`}>
         {/* TODO: container-lg expected global import, _override.scss */}
         <div className="container-lg">
-          <div className={`${styles['page-comments']} page-comments`}>
+          <div className="page-comments">
             <h2 className={commentTitleClasses}><i className="icon-fw icon-bubbles"></i>Comments</h2>
             <div className="page-comments-list" id="page-comments-list">
               { commentsExceptReply.map((comment) => {
@@ -196,7 +196,7 @@ export const PageComment: FC<Props> = memo((props:Props): JSX.Element => {
                           outline
                           color="secondary"
                           size="sm"
-                          className={`${styles['btn-comment-reply']} btn-comment-reply`}
+                          className="btn-comment-reply"
                           onClick={() => {
                             setShowEditorIds(previousState => new Set(previousState.add(comment._id)));
                           }}
