@@ -41,6 +41,8 @@ const setupTranspileModules = () => {
     'vfile',
     'zwitch',
     'emoticon',
+    'direction', // for hast-util-select
+    'bcp-47-match', // for hast-util-select
     ...listPrefixedPackages(['remark-', 'rehype-', 'hast-', 'mdast-', 'micromark-', 'micromark-', 'unist-']),
   ];
 
