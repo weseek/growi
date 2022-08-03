@@ -7,12 +7,12 @@ import {
   DropdownToggle, DropdownMenu, DropdownItem,
 } from 'reactstrap';
 
-import PageContainer from '~/client/services/PageContainer';
+// import PageContainer from '~/client/services/PageContainer';
 import { getOptionsToSave } from '~/client/util/editor';
 import { useIsEditable, useCurrentPageId, useIsAclEnabled } from '~/stores/context';
 import { usePageTagsForEditors, useIsEnabledUnsavedWarning } from '~/stores/editor';
 import {
-  useEditorMode, useSelectedGrant, useSelectedGrantGroupId, useSelectedGrantGroupName,
+  useEditorMode, useSelectedGrant,
 } from '~/stores/ui';
 import loggerFactory from '~/utils/logger';
 
@@ -43,7 +43,7 @@ class SavePageControls extends React.Component {
 
   async save() {
     const {
-      isSlackEnabled, slackChannels, grant, grantGroupId, grantGroupName, pageContainer, pageTags, mutateIsEnabledUnsavedWarning,
+      isSlackEnabled, slackChannels, grant, grantGroupId, grantGroupName, /* pageContainer, */ pageTags, mutateIsEnabledUnsavedWarning,
     } = this.props;
     // disable unsaved warning
     mutateIsEnabledUnsavedWarning(false);
@@ -51,25 +51,25 @@ class SavePageControls extends React.Component {
     try {
       // save
       const optionsToSave = getOptionsToSave(isSlackEnabled, slackChannels, grant, grantGroupId, grantGroupName, pageTags);
-      await pageContainer.saveAndReload(optionsToSave, this.props.editorMode);
+      // await pageContainer.saveAndReload(optionsToSave, this.props.editorMode);
     }
     catch (error) {
       logger.error('failed to save', error);
-      pageContainer.showErrorToastr(error);
+      // pageContainer.showErrorToastr(error);
       if (error.code === 'conflict') {
-        pageContainer.setState({
-          remoteRevisionId: error.data.revisionId,
-          remoteRevisionBody: error.data.revisionBody,
-          remoteRevisionUpdateAt: error.data.createdAt,
-          lastUpdateUser: error.data.user,
-        });
+        // pageContainer.setState({
+        //   remoteRevisionId: error.data.revisionId,
+        //   remoteRevisionBody: error.data.revisionBody,
+        //   remoteRevisionUpdateAt: error.data.createdAt,
+        //   lastUpdateUser: error.data.user,
+        // });
       }
     }
   }
 
   saveAndOverwriteScopesOfDescendants() {
     const {
-      isSlackEnabled, slackChannels, grant, grantGroupId, grantGroupName, pageContainer, pageTags, mutateIsEnabledUnsavedWarning,
+      isSlackEnabled, slackChannels, grant, grantGroupId, grantGroupName, /* pageContainer, */ pageTags, mutateIsEnabledUnsavedWarning,
     } = this.props;
     // disable unsaved warning
     mutateIsEnabledUnsavedWarning(false);
@@ -78,18 +78,18 @@ class SavePageControls extends React.Component {
     const optionsToSave = Object.assign(currentOptionsToSave, {
       overwriteScopesOfDescendants: true,
     });
-    pageContainer.saveAndReload(optionsToSave, this.props.editorMode);
+    // pageContainer.saveAndReload(optionsToSave, this.props.editorMode);
   }
 
   render() {
 
     const {
-      t, pageContainer, isAclEnabled, grant, grantGroupId, grantGroupName,
+      t, /* pageContainer, */ isAclEnabled, grant, grantGroupId, grantGroupName,
     } = this.props;
 
-    const isRootPage = pageContainer.state.path === '/';
-    const labelSubmitButton = pageContainer.state.pageId == null ? t('Create') : t('Update');
-    const labelOverwriteScopes = t('page_edit.overwrite_scopes', { operation: labelSubmitButton });
+    // const isRootPage = pageContainer.state.path === '/';
+    // const labelSubmitButton = pageContainer.state.pageId == null ? t('Create') : t('Update');
+    // const labelOverwriteScopes = t('page_edit.overwrite_scopes', { operation: labelSubmitButton });
 
     return (
       <div className="d-flex align-items-center form-inline flex-nowrap">
@@ -98,7 +98,7 @@ class SavePageControls extends React.Component {
           && (
             <div className="mr-2">
               <GrantSelector
-                disabled={isRootPage}
+                // disabled={isRootPage}
                 grant={grant}
                 grantGroupId={grantGroupId}
                 grantGroupName={grantGroupName}
@@ -109,11 +109,15 @@ class SavePageControls extends React.Component {
         }
 
         <UncontrolledButtonDropdown direction="up">
-          <Button id="caret" color="primary" className="btn-submit" onClick={this.save}>{labelSubmitButton}</Button>
+          <Button id="caret" color="primary" className="btn-submit" onClick={this.save}>
+          labelSubmitButton
+            {/* {labelSubmitButton} */}
+          </Button>
           <DropdownToggle caret color="primary" />
           <DropdownMenu right>
             <DropdownItem onClick={this.saveAndOverwriteScopesOfDescendants}>
-              {labelOverwriteScopes}
+            labelOverwriteScopes
+              {/* {labelOverwriteScopes} */}
             </DropdownItem>
           </DropdownMenu>
         </UncontrolledButtonDropdown>
@@ -127,22 +131,20 @@ class SavePageControls extends React.Component {
 /**
  * Wrapper component for using unstated
  */
-const SavePageControlsHOCWrapper = withUnstatedContainers(SavePageControls, [PageContainer]);
+// const SavePageControlsHOCWrapper = withUnstatedContainers(SavePageControls, [PageContainer]);
 
 const SavePageControlsWrapper = (props) => {
   const { t } = useTranslation();
   const { data: isEditable } = useIsEditable();
   const { data: editorMode } = useEditorMode();
   const { data: isAclEnabled } = useIsAclEnabled();
-  const { data: grant, mutate: mutateGrant } = useSelectedGrant();
-  const { data: grantGroupId, mutate: mutateGrantGroupId } = useSelectedGrantGroupId();
-  const { data: grantGroupName, mutate: mutateGrantGroupName } = useSelectedGrantGroupName();
+  const { data: grantData, mutate: mutateGrant } = useSelectedGrant();
   const { data: pageId } = useCurrentPageId();
   const { data: pageTags } = usePageTagsForEditors(pageId);
   const { mutate: mutateIsEnabledUnsavedWarning } = useIsEnabledUnsavedWarning();
 
 
-  if (isEditable == null || editorMode == null || isAclEnabled == null) {
+  if (isEditable == null || editorMode == null || isAclEnabled == null || grantData == null) {
     return null;
   }
 
@@ -151,17 +153,18 @@ const SavePageControlsWrapper = (props) => {
   }
 
   return (
-    <SavePageControlsHOCWrapper
+    // <SavePageControlsHOCWrapper
+    <SavePageControls
       t={t}
       {...props}
       editorMode={editorMode}
       isAclEnabled={isAclEnabled}
-      grant={grant}
-      grantGroupId={grantGroupId}
-      grantGroupName={grantGroupName}
+      grant={grantData.grant}
+      grantGroupId={grantData.grantGroup?.id}
+      grantGroupName={grantData.grantedGroup?.name}
       mutateGrant={mutateGrant}
-      mutateGrantGroupId={mutateGrantGroupId}
-      mutateGrantGroupName={mutateGrantGroupName}
+      // mutateGrantGroupId={mutateGrantGroupId}
+      // mutateGrantGroupName={mutateGrantGroupName}
       mutateIsEnabledUnsavedWarning={mutateIsEnabledUnsavedWarning}
       pageTags={pageTags}
     />
@@ -171,7 +174,7 @@ const SavePageControlsWrapper = (props) => {
 SavePageControls.propTypes = {
   t: PropTypes.func.isRequired, // i18next
 
-  pageContainer: PropTypes.instanceOf(PageContainer).isRequired,
+  // pageContainer: PropTypes.instanceOf(PageContainer).isRequired,
 
   // TODO: remove this when omitting unstated is completed
   editorMode: PropTypes.string.isRequired,
