@@ -1,3 +1,4 @@
+import { isServer } from '@growi/core';
 import { Container } from 'unstated';
 
 import {
@@ -17,6 +18,10 @@ export default class AdminGeneralSecurityContainer extends Container {
 
   constructor(appContainer) {
     super();
+
+    if (isServer()) {
+      return;
+    }
 
     this.state = {
       retrieveError: null,

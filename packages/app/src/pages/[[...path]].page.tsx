@@ -36,9 +36,9 @@ import { PageModel, PageDocument } from '~/server/models/page';
 import { PageRedirectModel } from '~/server/models/page-redirect';
 import UserUISettings from '~/server/models/user-ui-settings';
 import Xss from '~/services/xss';
-import { useSWRxCurrentPage, useSWRxPageInfo } from '~/stores/page';
+import { useSWRxCurrentPage, useSWRxIsGrantNormalized, useSWRxPageInfo } from '~/stores/page';
 import {
-  usePreferDrawerModeByUser, usePreferDrawerModeOnEditByUser, useSidebarCollapsed, useCurrentSidebarContents, useCurrentProductNavWidth,
+  usePreferDrawerModeByUser, usePreferDrawerModeOnEditByUser, useSidebarCollapsed, useCurrentSidebarContents, useCurrentProductNavWidth, useSelectedGrant,
 } from '~/stores/ui';
 import loggerFactory from '~/utils/logger';
 
@@ -240,20 +240,29 @@ const GrowiPage: NextPage<Props> = (props: Props) => {
     shouldRenderPutbackPageModal = _isTrashPage(pageWithMeta.data.path);
   }
 
-  useCurrentPageId(pageWithMeta?.data._id);
+  const pageId = pageWithMeta?.data._id;
+
+  useCurrentPageId(pageId);
   useSWRxCurrentPage(undefined, pageWithMeta?.data); // store initial data
-  // useSWRxPage(pageWithMeta?.data._id);
-  useSWRxPageInfo(pageWithMeta?.data._id, undefined, pageWithMeta?.meta); // store initial data
+  useSWRxPageInfo(pageId, undefined, pageWithMeta?.meta); // store initial data
   useIsTrashPage(_isTrashPage(pageWithMeta?.data.path ?? ''));
   useIsUserPage(isUserPage(pageWithMeta?.data.path ?? ''));
   useIsNotCreatable(props.isForbidden || !isCreatablePage(pageWithMeta?.data.path ?? '')); // TODO: need to include props.isIdentical
   useCurrentPagePath(pageWithMeta?.data.path);
   useCurrentPathname(props.currentPathname);
-  useEditingMarkdown(pageWithMeta?.data.revision.body);
+  useEditingMarkdown(pageWithMeta?.data.revision?.body);
+  const { data: grantData } = useSWRxIsGrantNormalized(pageId);
+  const { mutate: mutateSelectedGrant } = useSelectedGrant();
+
+  // sync grant data
+  useEffect(() => {
+    mutateSelectedGrant(grantData?.grantData.currentPageGrant);
+  }, [grantData?.grantData.currentPageGrant, mutateSelectedGrant]);
 
   // sync pathname by Shallow Routing https://nextjs.org/docs/routing/shallow-routing
   useEffect(() => {
-    if (isClient() && window.location.pathname !== props.currentPathname) {
+    const decodedURI = decodeURI(window.location.pathname);
+    if (isClient() && decodedURI !== props.currentPathname) {
       router.replace(props.currentPathname, undefined, { shallow: true });
     }
   }, [props.currentPathname, router]);
@@ -266,9 +275,6 @@ const GrowiPage: NextPage<Props> = (props: Props) => {
   //   case EditorMode.HackMD:
   //     classNames.push('on-edit', 'hackmd');
   //     break;
-  // }
-  // if (props.isContainerFluid) {
-  //   classNames.push('growi-layout-fluid');
   // }
   // if (page == null) {
   //   classNames.push('not-found-page');
@@ -285,7 +291,7 @@ const GrowiPage: NextPage<Props> = (props: Props) => {
         */}
       </Head>
       {/* <BasicLayout title={useCustomTitle(props, t('GROWI'))} className={classNames.join(' ')}> */}
-      <BasicLayout title={useCustomTitle(props, 'GROWI')} className={classNames.join(' ')}>
+      <BasicLayout title={useCustomTitle(props, 'GROWI')} className={classNames.join(' ')} expandContainer={props.isContainerFluid}>
         <header className="py-0">
           <GrowiContextualSubNavigation isLinkSharingDisabled={props.disableLinkSharing} />
         </header>
@@ -311,7 +317,6 @@ const GrowiPage: NextPage<Props> = (props: Props) => {
                     {/* <DisplaySwitcher /> */}
                     <div id="page-editor-navbar-bottom-container" className="d-none d-edit-block"></div>
                     {/* <PageStatusAlert /> */}
-                    PageStatusAlert
                   </>
                 ) }
 
@@ -435,6 +440,8 @@ async function injectRoutingInformation(context: GetServerSidePropsContext, prop
     props.isForbidden = count > 0;
   }
   else {
+    props.isNotFound = page.isEmpty;
+
     // /62a88db47fed8b2d94f30000 ==> /path/to/page
     if (isPermalink && page.isEmpty) {
       props.currentPathname = page.path;
