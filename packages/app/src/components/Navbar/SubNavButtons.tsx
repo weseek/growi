@@ -200,13 +200,12 @@ const SubNavButtonsSubstance = (props: SubNavButtonsSubstanceProps): JSX.Element
     }
   }, [isGuestUser, mutatePageInfo, pageId, pageInfo]);
 
-  const wideviewMenuItemRenderer = useMemo(() => {
+  const additionalMenuItemOnTopRenderer = useMemo(() => {
     if (!isIPageInfoForEntity(pageInfo)) {
       return undefined;
     }
-    return function WideViewMenuItem(props: WideViewMenuItemProps) {
-      return <WideViewMenuItem {...props} onClickMenuItem={switchContentWidthClickHandler} />;
-    };
+    const wideviewMenuItemRenderer = (props: WideViewMenuItemProps) => <WideViewMenuItem {...props} onClickMenuItem={switchContentWidthClickHandler} />;
+    return wideviewMenuItemRenderer;
   }, [pageInfo, switchContentWidthClickHandler]);
 
   if (!isIPageInfoForOperation(pageInfo)) {
@@ -260,7 +259,7 @@ const SubNavButtonsSubstance = (props: SubNavButtonsSubstanceProps): JSX.Element
           pageInfo={pageInfo}
           isEnableActions={!isGuestUser}
           forceHideMenuItems={forceHideMenuItemsWithBookmark}
-          additionalMenuItemOnTopRenderer={wideviewMenuItemRenderer}
+          additionalMenuItemOnTopRenderer={additionalMenuItemOnTopRenderer}
           additionalMenuItemRenderer={additionalMenuItemRenderer}
           onClickRenameMenuItem={renameMenuItemClickHandler}
           onClickDuplicateMenuItem={duplicateMenuItemClickHandler}
