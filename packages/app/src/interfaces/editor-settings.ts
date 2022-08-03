@@ -29,10 +29,3 @@ export interface IEditorSettings {
   autoFormatMarkdownTable: boolean,
   textlintSettings: undefined | ITextlintSettings;
 }
-
-export type EditorConfig = {
-  upload: {
-    isImageUploaded: boolean,
-    isFileUploaded: boolean,
-  }
-}

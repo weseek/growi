@@ -6,7 +6,6 @@ import useSWRImmutable from 'swr/immutable';
 
 
 import { SupportedActionType } from '~/interfaces/activity';
-import { EditorConfig } from '~/interfaces/editor-settings';
 // import { CustomWindow } from '~/interfaces/global';
 import { RendererConfig } from '~/interfaces/services/renderer';
 import { GrowiThemes } from '~/interfaces/theme';
@@ -223,10 +222,6 @@ export const useIsEnabledStaleNotification = (initialData?: boolean): SWRRespons
 
 export const useIsLatestRevision = (initialData?: boolean): SWRResponse<boolean, any> => {
   return useStaticSWR('isLatestRevision', initialData);
-};
-
-export const useEditorConfig = (initialData?: EditorConfig): SWRResponse<EditorConfig, Error> => {
-  return useStaticSWR<EditorConfig, Error>('editorConfig', initialData);
 };
 
 export const useRendererConfig = (initialData?: RendererConfig): SWRResponse<RendererConfig, any> => {
