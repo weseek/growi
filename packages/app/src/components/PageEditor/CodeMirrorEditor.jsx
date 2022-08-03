@@ -16,14 +16,14 @@ import { UncontrolledCodeMirror } from '../UncontrolledCodeMirror';
 
 import AbstractEditor from './AbstractEditor';
 import CommentMentionHelper from './CommentMentionHelper';
-import DrawioModal from './DrawioModal';
+// import DrawioModal from './DrawioModal';
 import EditorIcon from './EditorIcon';
 import EmojiPicker from './EmojiPicker';
 import EmojiPickerHelper from './EmojiPickerHelper';
-import GridEditModal from './GridEditModal';
+// import GridEditModal from './GridEditModal';
 import geu from './GridEditorUtil';
-import HandsontableModal from './HandsontableModal';
-import LinkEditModal from './LinkEditModal';
+// import HandsontableModal from './HandsontableModal';
+// import LinkEditModal from './LinkEditModal';
 import mdu from './MarkdownDrawioUtil';
 import mlu from './MarkdownLinkUtil';
 import MarkdownTableInterceptor from './MarkdownTableInterceptor';
@@ -31,6 +31,8 @@ import mtu from './MarkdownTableUtil';
 import pasteHelper from './PasteHelper';
 import PreventMarkdownListInterceptor from './PreventMarkdownListInterceptor';
 import SimpleCheatsheet from './SimpleCheatsheet';
+
+import styles from './CodeMirrorEditor.module.scss';
 
 // Textlint
 window.JSHINT = JSHINT;
@@ -50,7 +52,6 @@ require('codemirror/addon/edit/matchtags');
 require('codemirror/addon/edit/closetag');
 require('codemirror/addon/edit/continuelist');
 require('codemirror/addon/hint/show-hint');
-require('codemirror/addon/hint/show-hint.css');
 require('codemirror/addon/search/searchcursor');
 require('codemirror/addon/search/match-highlighter');
 require('codemirror/addon/selection/active-line');
@@ -58,12 +59,10 @@ require('codemirror/addon/scroll/annotatescrollbar');
 require('codemirror/addon/scroll/scrollpastend');
 require('codemirror/addon/fold/foldcode');
 require('codemirror/addon/fold/foldgutter');
-require('codemirror/addon/fold/foldgutter.css');
 require('codemirror/addon/fold/markdown-fold');
 require('codemirror/addon/fold/brace-fold');
 require('codemirror/addon/display/placeholder');
 require('codemirror/addon/lint/lint');
-require('codemirror/addon/lint/lint.css');
 require('~/client/util/codemirror/autorefresh.ext');
 require('~/client/util/codemirror/drawio-fold.ext');
 require('~/client/util/codemirror/gfm-growi.mode');
@@ -790,19 +789,19 @@ class CodeMirrorEditor extends AbstractEditor {
   }
 
   showGridEditorHandler() {
-    this.gridEditModal.current.show(geu.getGridHtml(this.getCodeMirror()));
+    // this.gridEditModal.current.show(geu.getGridHtml(this.getCodeMirror()));
   }
 
   showLinkEditHandler() {
-    this.linkEditModal.current.show(mlu.getMarkdownLink(this.getCodeMirror()));
+    // this.linkEditModal.current.show(mlu.getMarkdownLink(this.getCodeMirror()));
   }
 
   showHandsonTableHandler() {
-    this.handsontableModal.current.show(mtu.getMarkdownTable(this.getCodeMirror()));
+    // this.handsontableModal.current.show(mtu.getMarkdownTable(this.getCodeMirror()));
   }
 
   showDrawioHandler() {
-    this.drawioModal.current.show(mdu.getMarkdownDrawioMxfile(this.getCodeMirror()));
+    // this.drawioModal.current.show(mdu.getMarkdownDrawioMxfile(this.getCodeMirror()));
   }
 
 
@@ -988,8 +987,11 @@ class CodeMirrorEditor extends AbstractEditor {
       gutters.push('CodeMirror-lint-markers');
     }
 
+    console.log(' this.state.value', this.state.value);
+    console.log(' this.props.value', this.props.value);
+
     return (
-      <React.Fragment>
+      <div className={`grw-codemirror-editor ${styles['grw-codemirror-editor']}`}>
 
         <UncontrolledCodeMirror
           ref={(c) => { this.cm = c }}
@@ -1000,7 +1002,9 @@ class CodeMirrorEditor extends AbstractEditor {
             editor.on('paste', this.pasteHandler);
             editor.on('scrollCursorIntoView', this.scrollCursorIntoViewHandler);
           }}
-          value={this.state.value}
+          // temporary set props.value
+          // value={this.state.value}
+          value={this.props.value}
           options={{
             indentUnit: this.props.indentSize,
             theme: this.props.editorSettings.theme ?? 'elegant',
@@ -1052,25 +1056,25 @@ class CodeMirrorEditor extends AbstractEditor {
         { this.renderCheatsheetOverlay() }
         { this.renderEmojiPicker() }
 
-        <GridEditModal
+        {/* <GridEditModal
           ref={this.gridEditModal}
           onSave={(grid) => { return geu.replaceGridWithHtmlWithEditor(this.getCodeMirror(), grid) }}
-        />
-        <LinkEditModal
+        /> */}
+        {/* <LinkEditModal
           ref={this.linkEditModal}
           onSave={(linkText) => { return mlu.replaceFocusedMarkdownLinkWithEditor(this.getCodeMirror(), linkText) }}
-        />
-        <HandsontableModal
+        /> */}
+        {/* <HandsontableModal
           ref={this.handsontableModal}
           onSave={(table) => { return mtu.replaceFocusedMarkdownTableWithEditor(this.getCodeMirror(), table) }}
           autoFormatMarkdownTable={this.props.editorSettings.autoFormatMarkdownTable}
-        />
-        <DrawioModal
+        /> */}
+        {/* <DrawioModal
           ref={this.drawioModal}
           onSave={this.onSaveForDrawio}
-        />
+        /> */}
 
-      </React.Fragment>
+      </div>
     );
   }
 

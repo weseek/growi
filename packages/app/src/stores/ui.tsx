@@ -14,6 +14,7 @@ import useSWRImmutable from 'swr/immutable';
 import { IFocusable } from '~/client/interfaces/focusable';
 import { useUserUISettings } from '~/client/services/user-ui-settings';
 import { apiv3Get, apiv3Put } from '~/client/util/apiv3-client';
+import { IPageGrantData } from '~/interfaces/page';
 import { ISidebarConfig } from '~/interfaces/sidebar-config';
 import { SidebarContentsType } from '~/interfaces/ui';
 import { UpdateDescCountData } from '~/interfaces/websocket';
@@ -365,17 +366,8 @@ export const useSidebarResizeDisabled = (isDisabled?: boolean): SWRResponse<bool
   return useStaticSWR('isSidebarResizeDisabled', isDisabled, { fallbackData: false });
 };
 
-
-export const useSelectedGrant = (initialData?: number): SWRResponse<number, Error> => {
-  return useStaticSWR<number, Error>('grant', initialData);
-};
-
-export const useSelectedGrantGroupId = (initialData?: Nullable<string>): SWRResponse<Nullable<string>, Error> => {
-  return useStaticSWR<Nullable<string>, Error>('grantGroupId', initialData);
-};
-
-export const useSelectedGrantGroupName = (initialData?: Nullable<string>): SWRResponse<Nullable<string>, Error> => {
-  return useStaticSWR<Nullable<string>, Error>('grantGroupName', initialData);
+export const useSelectedGrant = (initialData?: Nullable<IPageGrantData>): SWRResponse<Nullable<IPageGrantData>, Error> => {
+  return useStaticSWR<Nullable<IPageGrantData>, Error>('selectedGrant', initialData);
 };
 
 export const useGlobalSearchFormRef = (initialData?: RefObject<IFocusable>): SWRResponse<RefObject<IFocusable>, Error> => {
@@ -417,19 +409,21 @@ export const useIsAbleToShowPageManagement = (): SWRResponse<boolean, Error> => 
   const { data: currentPageId } = useCurrentPageId();
   const { data: isTrashPage } = useIsTrashPage();
   const { data: isSharedUser } = useIsSharedUser();
+  const { data: isNotFound } = useIsNotFound();
 
   const pageId = currentPageId;
-  const includesUndefined = [pageId, isTrashPage, isSharedUser].some(v => v === undefined);
-  const isPageExist = pageId != null;
+  const includesUndefined = [pageId, isTrashPage, isSharedUser, isNotFound].some(v => v === undefined);
+  const isPageExist = (pageId != null) && !isNotFound;
 
   return useSWRImmutable(
-    includesUndefined ? null : key,
+    includesUndefined ? null : [key, pageId],
     () => isPageExist && !isTrashPage && !isSharedUser,
   );
 };
 
 export const useIsAbleToShowTagLabel = (): SWRResponse<boolean, Error> => {
   const key = 'isAbleToShowTagLabel';
+  const { data: pageId } = useCurrentPageId();
   const { data: isUserPage } = useIsUserPage();
   const { data: currentPagePath } = useCurrentPagePath();
   const { data: isIdenticalPath } = useIsIdenticalPath();
@@ -442,7 +436,7 @@ export const useIsAbleToShowTagLabel = (): SWRResponse<boolean, Error> => {
   const isViewMode = editorMode === EditorMode.View;
 
   return useSWRImmutable(
-    includesUndefined ? null : [key, editorMode],
+    includesUndefined ? null : [key, editorMode, pageId],
     // "/trash" page does not exist on page collection and unable to add tags
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     () => !isUserPage && !isTrashTopPage(currentPagePath!) && shareLinkId == null && !isIdenticalPath && !(isViewMode && isNotFound),
@@ -466,14 +460,15 @@ export const useIsAbleToShowPageEditorModeManager = (): SWRResponse<boolean, Err
 
 export const useIsAbleToShowPageAuthors = (): SWRResponse<boolean, Error> => {
   const key = 'isAbleToShowPageAuthors';
-  const { data: currentPageId } = useCurrentPageId();
+  const { data: pageId } = useCurrentPageId();
   const { data: isUserPage } = useIsUserPage();
+  const { data: isNotFound } = useIsNotFound();
 
-  const includesUndefined = [currentPageId, isUserPage].some(v => v === undefined);
-  const isPageExist = currentPageId != null;
+  const includesUndefined = [pageId, isUserPage, isNotFound].some(v => v === undefined);
+  const isPageExist = (pageId != null) && !isNotFound;
 
   return useSWRImmutable(
-    includesUndefined ? null : key,
+    includesUndefined ? null : [key, pageId],
     () => isPageExist && !isUserPage,
   );
 };
