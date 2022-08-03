@@ -18,7 +18,7 @@ import { Comment } from './PageComment/Comment';
 import { CommentEditor } from './PageComment/CommentEditor';
 import { CommentEditorLazyRenderer } from './PageComment/CommentEditorLazyRenderer';
 import DeleteCommentModal from './PageComment/DeleteCommentModal';
-import { ReplayComments } from './PageComment/ReplayComments';
+import { ReplyComments } from './PageComment/ReplyComments';
 
 import styles from './PageComment.module.scss';
 
@@ -155,7 +155,7 @@ export const PageComment: FC<Props> = memo((props:Props): JSX.Element => {
   );
 
   const generateAllRepliesElement = (replyComments: ICommentHasIdList) => (
-    <ReplayComments
+    <ReplyComments
       isReadOnly={isReadOnly}
       replyList={replyComments}
       deleteBtnClicked={onClickDeleteButton}
