@@ -13,6 +13,8 @@ import loggerFactory from '~/utils/logger';
 
 // import RevisionBody from './RevisionBody';
 
+import katexStyles from '../CommonStyles/katex.module.scss';
+
 
 const logger = loggerFactory('components:Page:RevisionRenderer');
 
@@ -100,7 +102,10 @@ const RevisionRenderer = (props: Props): JSX.Element => {
   } = props;
 
   return (
-    <ReactMarkdown {...rendererOptions} className={`wiki ${additionalClassName ?? ''}`}>
+    <ReactMarkdown
+      {...rendererOptions}
+      className={`wiki katex-container ${katexStyles['katex-container']} ${additionalClassName ?? ''}`}
+    >
       {markdown}
     </ReactMarkdown>
   );
