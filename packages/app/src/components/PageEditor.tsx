@@ -108,9 +108,9 @@ const PageEditor = (props: Props): JSX.Element => {
 
   useEffect(() => {
     if (currentPage != null) {
-      setMarkdown(currentPage.revision.body);
+      setMarkdown(currentPage.revision?.body);
     }
-  }, [currentPage, currentPage?.revision.body]);
+  }, [currentPage, currentPage?.revision?.body]);
 
 
   const editorRef = useRef<EditorRef>(null);
