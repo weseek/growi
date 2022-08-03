@@ -18,7 +18,7 @@ import { Comment } from './PageComment/Comment';
 import { CommentEditor } from './PageComment/CommentEditor';
 import { CommentEditorLazyRenderer } from './PageComment/CommentEditorLazyRenderer';
 import DeleteCommentModal from './PageComment/DeleteCommentModal';
-import { ReplayComments } from './PageComment/ReplayComments';
+import { ReplyComments } from './PageComment/ReplyComments';
 
 type Props = {
   pageId?: Nullable<string>

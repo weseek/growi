@@ -10,7 +10,7 @@ import { useIsAllReplyShown } from '../../stores/context';
 
 import { Comment } from './Comment';
 
-type ReplaycommentsProps = {
+type ReplycommentsProps = {
   isReadOnly: boolean,
   replyList: ICommentHasIdList,
   deleteBtnClicked: (comment: ICommentHasId) => void,
@@ -21,7 +21,7 @@ type ReplaycommentsProps = {
   currentRevisionCreatedAt: Date,
 }
 
-export const ReplayComments = (props: ReplaycommentsProps): JSX.Element => {
+export const ReplyComments = (props: ReplycommentsProps): JSX.Element => {
 
   const {
     isReadOnly, replyList, deleteBtnClicked, onComment, rendererOptions,
