@@ -7,7 +7,7 @@ import { TabContent, TabPane } from 'reactstrap';
 
 import { smoothScrollIntoView } from '~/client/util/smooth-scroll';
 import {
-  useCurrentPagePath, useIsSharedUser, useIsEditable, useIsUserPage, usePageUser, useShareLinkId, useIsNotFound,
+  useCurrentPagePath, useIsSharedUser, useIsEditable, useIsUserPage, usePageUser, useShareLinkId, useIsNotFound, useIsNotCreatable,
 } from '~/stores/context';
 import { useDescendantsPageListModal } from '~/stores/modal';
 import { useSWRxCurrentPage } from '~/stores/page';
@@ -48,6 +48,7 @@ const DisplaySwitcher = (): JSX.Element => {
   const { data: isEditable } = useIsEditable();
   const { data: pageUser } = usePageUser();
   const { data: isNotFound } = useIsNotFound();
+  const { data: isNotCreatable } = useIsNotCreatable();
   const { data: currentPage } = useSWRxCurrentPage(shareLinkId ?? undefined);
 
   const { data: editorMode } = useEditorMode();
@@ -71,7 +72,7 @@ const DisplaySwitcher = (): JSX.Element => {
               { isNotFound && <NotFoundPage /> }
             </div>
 
-            { !isNotFound && !currentPage?.isEmpty && (
+            { !isNotFound && (
               <div className="grw-side-contents-container">
                 <div className="grw-side-contents-sticky-container">
 

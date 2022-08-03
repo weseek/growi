@@ -245,7 +245,7 @@ const GrowiPage: NextPage<Props> = (props: Props) => {
   useIsNotCreatable(props.isForbidden || !isCreatablePage(pageWithMeta?.data.path ?? '')); // TODO: need to include props.isIdentical
   useCurrentPagePath(pageWithMeta?.data.path);
   useCurrentPathname(props.currentPathname);
-  useEditingMarkdown(pageWithMeta?.data.revision.body);
+  useEditingMarkdown(pageWithMeta?.data.revision?.body);
   const { data: grantData } = useSWRxIsGrantNormalized(pageId);
   const { mutate: mutateSelectedGrant } = useSelectedGrant();
 
@@ -256,7 +256,8 @@ const GrowiPage: NextPage<Props> = (props: Props) => {
 
   // sync pathname by Shallow Routing https://nextjs.org/docs/routing/shallow-routing
   useEffect(() => {
-    if (isClient() && window.location.pathname !== props.currentPathname) {
+    const decodedURI = decodeURI(window.location.pathname);
+    if (isClient() && decodedURI !== props.currentPathname) {
       router.replace(props.currentPathname, undefined, { shallow: true });
     }
   }, [props.currentPathname, router]);
@@ -432,6 +433,8 @@ async function injectRoutingInformation(context: GetServerSidePropsContext, prop
     props.isForbidden = count > 0;
   }
   else {
+    props.isNotFound = page.isEmpty;
+
     // /62a88db47fed8b2d94f30000 ==> /path/to/page
     if (isPermalink && page.isEmpty) {
       props.currentPathname = page.path;

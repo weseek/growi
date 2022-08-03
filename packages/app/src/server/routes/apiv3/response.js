@@ -27,7 +27,7 @@ const addCustomFunctionToResponse = (express, crowi) => {
         return new ErrorV3(e.message, null, e.stack);
       }
       if (typeof e === 'string') {
-        return { message: e };
+        return { message: e, status };
       }
 
       throw new Error('invalid error supplied to res.apiv3Err');
