@@ -89,7 +89,8 @@ export const GrowiSubNavigation = (props: Props): JSX.Element => {
         <div className="grw-path-nav-container">
           { showTagLabel && !isCompactMode && (
             <div className="grw-taglabels-container">
-              <TagLabels tags={tags} isGuestUser={isGuestUser ?? false} tagsUpdateInvoked={tagsUpdatedHandler} />
+              {/* <TagLabels tags={tags} isGuestUser={isGuestUser ?? false} tagsUpdateInvoked={tagsUpdatedHandler} /> */}
+              <Skelton additionalClass={`${TagLabelsStyles['grw-tag-labels-skelton']} py-1`} />
             </div>
           ) }
           <PagePathNav pageId={pageId} pagePath={path} isSingleLineMode={isEditorMode} isCompactMode={isCompactMode} />
