@@ -36,7 +36,7 @@ export const ReplayComments = (props: ReplaycommentsProps): JSX.Element => {
 
   const renderReply = (reply: ICommentHasId) => {
     return (
-      <div key={reply._id} className={`${styles['page-comment-reply']} ml-4 ml-sm-5 mr-3`}>
+      <div key={reply._id} className={`${styles['page-comment-reply']} page-comment-reply ml-4 ml-sm-5 mr-3`}>
         <Comment
           rendererOptions={rendererOptions}
           deleteBtnClicked={deleteBtnClicked}
@@ -79,7 +79,7 @@ export const ReplayComments = (props: ReplaycommentsProps): JSX.Element => {
   return (
     <>
       {areThereHiddenReplies && (
-        <div className={`${styles['page-comments-hidden-replies']}`}>
+        <div className={`${styles['page-comments-hidden-replies']} page-comments-hidden-replies`}>
           <Collapse isOpen={isOlderRepliesShown}>
             <div>{hiddenElements}</div>
           </Collapse>

@@ -1,7 +1,5 @@
 @use '../../styles/bootstrap/init' as bs;
 
-$bgcolor-global: white;
-
 %comment-section {
   position: relative;
   padding: 1em;
@@ -98,23 +96,6 @@ $bgcolor-global: white;
     .page-comment-revision svg {
       width: 16px;
       height: 16px;
-    }
-
-    /*
-      * GROWI comment form
-    */
-    background-color: $bgcolor-global;
-
-    &:before {
-      border-right-color: $bgcolor-global;
-    }
-
-    .nav.nav-tabs {
-      > li > a.active {
-        background: transparent;
-        border-bottom: solid 1px darken($bgcolor-global, 4%);
-        border-bottom-color: darken($bgcolor-global, 4%);
-      }
     }
   }
 

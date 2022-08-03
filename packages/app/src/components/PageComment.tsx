@@ -128,7 +128,7 @@ export const PageComment: FC<Props> = memo((props:Props): JSX.Element => {
       <>
         <div className="page-comments-row comment-list mt-5 py-4 d-edit-none d-print-none">
           <div className="container-lg">
-            <div className={`${styles['page-comments']}`}>
+            <div className={`${styles['page-comments']} page-comments`}>
               <h2 className={commentTitleClasses}><i className="icon-fw icon-bubbles"></i>Comments</h2>
               <div className="text-muted text-center mt-3">
                 <i className="fa fa-lg fa-spinner fa-pulse mr-1"></i>
@@ -170,7 +170,7 @@ export const PageComment: FC<Props> = memo((props:Props): JSX.Element => {
     <>
       <div className="page-comments-row comment-list mt-5 py-4 d-edit-none d-print-none">
         <div className="container-lg">
-          <div className={`${styles['page-comments']}`}>
+          <div className={`${styles['page-comments']} page-comments`}>
             <h2 className={commentTitleClasses}><i className="icon-fw icon-bubbles"></i>Comments</h2>
             <div className="page-comments-list" id="page-comments-list">
               { commentsExceptReply.map((comment) => {

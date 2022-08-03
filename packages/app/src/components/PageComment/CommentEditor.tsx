@@ -334,7 +334,7 @@ export const CommentEditor = (props: PropsType): JSX.Element => {
 
   return (
     <div className="form page-comment-form">
-      <div className={`${styles['comment-form']}`}>
+      <div className={`${styles['comment-form']} comment-form`}>
         <div className="comment-form-user">
           <UserPicture user={currentUser} noLink noTooltip />
         </div>

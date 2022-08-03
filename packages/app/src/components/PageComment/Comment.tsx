@@ -70,7 +70,7 @@ export const Comment = (props: CommentProps): JSX.Element => {
   };
 
   const getRootClassName = (comment) => {
-    let className = `${styles['page-comment']} flex-column`;
+    let className = `${styles['page-comment']} page-comment flex-column`;
 
     if (comment.revision === currentRevisionId) {
       className += ' page-comment-current';
@@ -133,7 +133,7 @@ export const Comment = (props: CommentProps): JSX.Element => {
         />
       ) : (
         <div id={commentId} className={rootClassName}>
-          <div className={`${styles['page-comment-writer']}`}>
+          <div className={`${styles['page-comment-writer']} page-comment-writer`}>
             <UserPicture user={creator} noLink noTooltip />
           </div>
           <div className="page-comment-main">

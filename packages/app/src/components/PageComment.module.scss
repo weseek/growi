@@ -1,29 +1,6 @@
 @use '~/styles/bootstrap/init' as bs;
 
-$bgcolor-global: white;
-
 .page-comments :global {
-  /*
-  * GROWI comment form
-  */
-  .page-comment .page-comment-main,
-  .page-comment-form .comment-form-main {
-    background-color: $bgcolor-global;
-
-    &:before {
-      border-right-color: $bgcolor-global;
-    }
-
-    .nav.nav-tabs {
-      > li > a.active {
-        background: transparent;
-        border-bottom: solid 1px darken($bgcolor-global, 4%);
-        border-bottom-color: darken($bgcolor-global, 4%);
-      }
-    }
-  }
-
-
   .page-comments-list-toggle-older {
     display: inline-block;
     font-size: 0.9em;

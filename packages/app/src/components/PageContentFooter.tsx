@@ -10,17 +10,20 @@ import styles from './PageContentFooter.module.scss';
 
 export const PageContentFooter = memo((): JSX.Element => {
 
+  // TODO: update Skelton props
   const AuthorInfo = dynamic(() => import('./Navbar/AuthorInfo'),
     { ssr: false, loading: () => <Skelton width={300} height={20} additionalClass={'mb-3'} /> });
 
   const { data: page } = useSWRxCurrentPage();
 
+  // TODO: update Skelton props
   if (page == null) {
-    return <></>;
+    return <Skelton width={300} height={20} additionalClass={'mb-3'} />;
   }
 
   return (
-    <div className={`${styles['page-content-footer']} py-4 d-edit-none d-print-none}`}>
+    // TODO: page-content-footer, scss module import and global import.
+    <div className={`${styles['page-content-footer']} page-content-footer py-4 d-edit-none d-print-none}`}>
       <div className="grw-container-convertible">
         <div className="page-meta">
           <AuthorInfo user={page.creator} date={page.createdAt} mode="create" locate="footer" />
