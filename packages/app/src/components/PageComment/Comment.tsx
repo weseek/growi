@@ -67,7 +67,7 @@ export const Comment = (props: CommentProps): JSX.Element => {
     return creator.username === currentUser.username;
   };
 
-  const getRootClassName = (comment) => {
+  const getRootClassName = (comment: ICommentHasId) => {
     let className = 'page-comment flex-column';
 
     if (comment.revision === currentRevisionId) {
@@ -87,11 +87,11 @@ export const Comment = (props: CommentProps): JSX.Element => {
     return className;
   };
 
-  const deleteBtnClickedHandler = (comment) => {
+  const deleteBtnClickedHandler = (comment: ICommentHasId) => {
     deleteBtnClicked(comment);
   };
 
-  const renderText = (comment) => {
+  const renderText = (comment: string) => {
     return <span style={{ whiteSpace: 'pre-wrap' }}>{comment}</span>;
   };
 
