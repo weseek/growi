@@ -19,7 +19,7 @@ interface UncontrolledCodeMirrorCoreProps extends UncontrolledCodeMirrorProps {
   forwardedRef: Ref<UncontrolledCodeMirrorCore>;
 }
 
-class UncontrolledCodeMirrorCore extends AbstractEditor<UncontrolledCodeMirrorCoreProps> {
+export class UncontrolledCodeMirrorCore extends AbstractEditor<UncontrolledCodeMirrorCoreProps> {
 
   override render(): ReactNode {
 

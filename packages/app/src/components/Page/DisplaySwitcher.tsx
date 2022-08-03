@@ -7,7 +7,7 @@ import { TabContent, TabPane } from 'reactstrap';
 
 import { smoothScrollIntoView } from '~/client/util/smooth-scroll';
 import {
-  useCurrentPagePath, useIsSharedUser, useIsEditable, useIsUserPage, usePageUser, useShareLinkId, useIsNotFound,
+  useCurrentPagePath, useIsSharedUser, useIsEditable, useIsUserPage, usePageUser, useShareLinkId, useIsNotFound, useIsNotCreatable,
 } from '~/stores/context';
 import { useDescendantsPageListModal } from '~/stores/modal';
 import { useSWRxCurrentPage } from '~/stores/page';
@@ -17,7 +17,6 @@ import CountBadge from '../Common/CountBadge';
 import PageListIcon from '../Icons/PageListIcon';
 import NotFoundPage from '../NotFoundPage';
 import { Page } from '../Page';
-// import PageEditor from '../PageEditor';
 // import PageEditorByHackmd from '../PageEditorByHackmd';
 import TableOfContents from '../TableOfContents';
 import UserInfo from '../User/UserInfo';
@@ -33,6 +32,7 @@ const { isTopPage } = pagePathUtils;
 const DisplaySwitcher = (): JSX.Element => {
   const { t } = useTranslation();
 
+  const PageEditor = dynamic(() => import('../PageEditor'), { ssr: false });
   const EditorNavbarBottom = dynamic(() => import('../PageEditor/EditorNavbarBottom'), { ssr: false });
   const HashChanged = dynamic(() => import('../EventListeneres/HashChanged'), { ssr: false });
   const ContentLinkButtons = dynamic(() => import('../ContentLinkButtons'), { ssr: false });
@@ -48,6 +48,7 @@ const DisplaySwitcher = (): JSX.Element => {
   const { data: isEditable } = useIsEditable();
   const { data: pageUser } = usePageUser();
   const { data: isNotFound } = useIsNotFound();
+  const { data: isNotCreatable } = useIsNotCreatable();
   const { data: currentPage } = useSWRxCurrentPage(shareLinkId ?? undefined);
 
   const { data: editorMode } = useEditorMode();
@@ -71,7 +72,7 @@ const DisplaySwitcher = (): JSX.Element => {
               { isNotFound && <NotFoundPage /> }
             </div>
 
-            { !isNotFound && !currentPage?.isEmpty && (
+            { !isNotFound && (
               <div className="grw-side-contents-container">
                 <div className="grw-side-contents-sticky-container">
 
@@ -125,7 +126,7 @@ const DisplaySwitcher = (): JSX.Element => {
         { isEditable && (
           <TabPane tabId={EditorMode.Editor}>
             <div data-testid="page-editor" id="page-editor">
-              {/* <PageEditor /> */}
+              <PageEditor />
             </div>
           </TabPane>
         ) }
