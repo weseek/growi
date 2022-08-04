@@ -61,7 +61,7 @@ import {
   useHackmdUri,
   useIsAclEnabled, useIsUserPage, useIsNotCreatable,
   useCsrfToken, useIsSearchScopeChildrenAsDefault, useCurrentPageId, useCurrentPathname,
-  useIsSlackConfigured, useIsBlinkedHeaderAtBoot, useRendererConfig, useEditingMarkdown,
+  useIsSlackConfigured, useIsBlinkedHeaderAtBoot, useRendererConfig, useEditingMarkdown, useRedirectFrom,
 } from '../stores/context';
 import { useXss } from '../stores/xss';
 
@@ -196,6 +196,7 @@ const GrowiPage: NextPage<Props> = (props: Props) => {
   useIsForbidden(props.isForbidden);
   useIsNotFound(props.isNotFound);
   useIsNotCreatable(props.IsNotCreatable);
+  useRedirectFrom(props.redirectFrom);
   // useIsTrashPage(_isTrashPage(props.currentPagePath));
   // useShared();
   // useShareLinkId(props.shareLinkId);

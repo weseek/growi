@@ -248,6 +248,10 @@ export const useIsUploadableFile = (initialData?: boolean): SWRResponse<boolean,
   return useStaticSWR('isUploadableFile', initialData);
 };
 
+export const useRedirectFrom = (initialData?: string): SWRResponse<string, Error> => {
+  return useStaticSWR('redirectFrom', initialData);
+};
+
 /** **********************************************************
  *                     Computed contexts
  *********************************************************** */
