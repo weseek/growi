@@ -89,19 +89,20 @@ const SearchResultPage: NextPage<Props> = (props: Props) => {
         {renderScriptTagByName('highlight-addons')}
         */}
       </Head>
-      <BasicLayout title={useCustomTitle(props, 'GROWI')} className={classNames.join(' ')}>
+      <div className="on-search">
+        <BasicLayout title={useCustomTitle(props, 'GROWI')} className={classNames.join(' ')}>
 
-        <div id="grw-fav-sticky-trigger" className="sticky-top"></div>
-        <div id="main" className="main search-page mt-0">
+          <div id="grw-fav-sticky-trigger" className="sticky-top"></div>
+          <div id="main" className="main search-page mt-0">
 
-          <div id="search-page">
-            <SearchPage />
+            <div id="search-page">
+              <SearchPage />
+            </div>
+
           </div>
-
-        </div>
-        <PutbackPageModal />
-      </BasicLayout>
-
+          <PutbackPageModal />
+        </BasicLayout>
+      </div>
     </>
   );
 };
