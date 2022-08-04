@@ -2,12 +2,13 @@
 import React from 'react';
 
 import { useTranslation } from 'react-i18next';
+
 import { toastSuccess } from '~/client/util/apiNotification';
 import { IPageToDeleteWithMeta } from '~/interfaces/page';
+import { OnDeletedFunction } from '~/interfaces/ui';
+import { useSWRxCurrentUserBookmarks } from '~/stores/bookmark';
 import { useIsGuestUser } from '~/stores/context';
 import { usePageDeleteModal } from '~/stores/modal';
-import { useSWRxCurrentUserBookmarks } from '~/stores/bookmark';
-import { OnDeletedFunction } from '~/interfaces/ui';
 
 
 import BookmarkItem from './Bookmarks/BookmarkItem';
@@ -19,7 +20,7 @@ const Bookmarks = () : JSX.Element => {
   const { data: currentUserBookmarksData, mutate: mutateCurrentUserBookmarks } = useSWRxCurrentUserBookmarks();
   const { open: openDeleteModal } = usePageDeleteModal();
 
-  const onBookmarkItemDeleted = (pageToDelete: IPageToDeleteWithMeta):void => {
+  const onBookmarkItemDeleted = (pageToDelete: IPageToDeleteWithMeta): void => {
     const onDeletedHandler: OnDeletedFunction = (pathOrPathsToDelete, _isRecursively, isCompletely) => {
       if (typeof pathOrPathsToDelete !== 'string') {
         return;
