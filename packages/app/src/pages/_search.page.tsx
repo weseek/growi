@@ -21,7 +21,6 @@ import {
   usePreferDrawerModeByUser, usePreferDrawerModeOnEditByUser, useSidebarCollapsed,
   useCurrentSidebarContents, useCurrentProductNavWidth,
 } from '~/stores/ui';
-import { useXss } from '~/stores/xss';
 
 import { SearchPage } from '../components/SearchPage';
 
@@ -50,7 +49,6 @@ const SearchResultPage: NextPage<Props> = (props: Props) => {
   const { userUISettings } = props;
 
   // commons
-  useXss(new Xss());
   useCsrfToken(props.csrfToken);
 
   useCurrentUser(props.currentUser ?? null);
