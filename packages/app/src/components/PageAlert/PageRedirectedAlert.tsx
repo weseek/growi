@@ -1,20 +1,24 @@
-import React, { useState } from 'react';
+import React, { useState, useCallback } from 'react';
 
 import { useTranslation } from 'next-i18next';
 
-import { useRedirectFrom } from '~/stores/context';
+import { apiPost } from '~/client/util/apiv1-client';
+import { useCurrentPagePath, useRedirectFrom } from '~/stores/context';
 
 export const PageRedirectedAlert = React.memo((): JSX.Element => {
   const { t } = useTranslation();
+
   const { data: redirectFrom } = useRedirectFrom();
+  const { data: currentPagePath } = useCurrentPagePath();
+
   const [isUnlinked, setIsUnlinked] = useState(false);
 
-  const unlinkButtonClickHandler = (): void => {
-    // Todo: implement in https://redmine.weseek.co.jp/issues/101741
+  const unlinkButtonClickHandler = useCallback(() => {
+    apiPost('/pages.unlink', { path: currentPagePath });
     setIsUnlinked(true);
-  };
+  }, [currentPagePath]);
 
-  if (!redirectFrom) {
+  if (redirectFrom == null) {
     return <></>;
   }
 
