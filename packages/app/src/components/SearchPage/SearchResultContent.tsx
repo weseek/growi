@@ -3,6 +3,7 @@ import React, {
 } from 'react';
 
 import { useTranslation } from 'next-i18next';
+import dynamic from 'next/dynamic';
 import { DropdownItem } from 'reactstrap';
 
 import { exportAsMarkdown } from '~/client/services/page-operation';
@@ -20,11 +21,8 @@ import { useFullTextSearchTermManager } from '~/stores/search';
 
 
 import { AdditionalMenuItemsRendererProps, ForceHideMenuItems } from '../Common/Dropdown/PageItemControl';
-import { GrowiSubNavigation } from '../Navbar/GrowiSubNavigation';
-import { SubNavButtons } from '../Navbar/SubNavButtons';
-import RevisionLoader from '../Page/RevisionLoader';
-import { PageComment } from '../PageComment';
-import PageContentFooter from '../PageContentFooter';
+import { GrowiSubNavigationProps } from '../Navbar/GrowiSubNavigation';
+import { SubNavButtonsSubstanceProps } from '../Navbar/SubNavButtons';
 
 
 type AdditionalMenuItemsProps = AdditionalMenuItemsRendererProps & {
@@ -79,6 +77,12 @@ const generateObserverCallback = (doScroll: ()=>void) => {
 };
 
 export const SearchResultContent: FC<Props> = (props: Props) => {
+  const GrowiSubNavigation = dynamic<GrowiSubNavigationProps>(() => import('../Navbar/GrowiSubNavigation').then(mod => mod.GrowiSubNavigation), { ssr: false });
+  const SubNavButtons = dynamic<SubNavButtonsSubstanceProps>(() => import('../Navbar/SubNavButtons').then(mod => mod.SubNavButtons), { ssr: false });
+  const RevisionLoader = dynamic(() => import('../Page/RevisionLoader'), { ssr: false });
+  const PageComment = dynamic(() => import('../PageComment').then(mod => mod.PageComment), { ssr: false });
+  const PageContentFooter = dynamic(() => import('../PageContentFooter'), { ssr: false });
+
   const scrollElementRef = useRef(null);
 
   // for mutation

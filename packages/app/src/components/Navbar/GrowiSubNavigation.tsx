@@ -17,7 +17,7 @@ import DrawerToggler from './DrawerToggler';
 import styles from './GrowiSubNavigation.module.scss';
 
 
-type Props = {
+export type GrowiSubNavigationProps = {
   page: Partial<IPageHasId>,
 
   showDrawerToggler?: boolean,
@@ -35,7 +35,7 @@ type Props = {
   additionalClasses?: string[],
 }
 
-export const GrowiSubNavigation = (props: Props): JSX.Element => {
+export const GrowiSubNavigation = (props: GrowiSubNavigationProps): JSX.Element => {
 
   const TagLabels = dynamic(() => import('../Page/TagLabels'), { ssr: false, loading: () => <Skelton width={137} height={21.99} additionalClass='py-1' /> });
   const AuthorInfo = dynamic(() => import('./AuthorInfo'), { ssr: false, loading: () => <Skelton width={139} height={32.84} additionalClass='py-1' /> });
