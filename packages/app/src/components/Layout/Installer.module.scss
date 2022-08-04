@@ -154,51 +154,7 @@
       transition: color 0.8s;
     }
   }
-
-  // .link-switch {
-  //   color: $gray-200;
-
-  //   &:hover {
-  //     color: white;
-  //   }
-  // }
 }
-
-// .login-page {
-//   // layout
-//   .main .row .login-header,
-//   .login-dialog {
-//     width: 320px;
-//   }
-
-//   .link-growi-org {
-//     position: absolute;
-//     bottom: 9px;
-//     z-index: 3;
-//   }
-
-//   // To adjust the behavior, this problem is not solved.
-//   // See https://github.com/AaronCCWong/react-card-flip/issues/56
-//   .react-card-front,
-//   .react-card-back {
-//     height: 0% !important;
-//   }
-// }
-
-// .invited,
-// .nologin.error {
-//   .main .row {
-//     @media (min-width: 510px) {
-//       .offset-sm-4 {
-//         margin-left: calc(50% - 240px);
-//       }
-
-//       .col-sm-4 {
-//         width: 480px;
-//       }
-//     }
-//   }
-// }
 
 .login-header,
 .login-dialog {
