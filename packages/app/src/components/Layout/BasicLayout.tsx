@@ -11,10 +11,13 @@ import { RawLayout } from './RawLayout';
 type Props = {
   title: string
   className?: string,
+  expandContainer?: boolean,
   children?: ReactNode
 }
 
-export const BasicLayout = ({ children, title, className }: Props): JSX.Element => {
+export const BasicLayout = ({
+  children, title, className, expandContainer,
+}: Props): JSX.Element => {
 
   // const HotkeysManager = dynamic(() => import('../client/js/components/Hotkeys/HotkeysManager'), { ssr: false });
   // const PageCreateModal = dynamic(() => import('../client/js/components/PageCreateModal'), { ssr: false });
@@ -28,8 +31,10 @@ export const BasicLayout = ({ children, title, className }: Props): JSX.Element 
   const PageRenameModal = dynamic(() => import('../PageRenameModal'), { ssr: false });
   const PagePresentationModal = dynamic(() => import('../PagePresentationModal'), { ssr: false });
 
+  const myClassName = `${className ?? ''} ${expandContainer ? 'growi-layout-fluid' : ''}`;
+
   return (
-    <RawLayout title={title} className={className}>
+    <RawLayout title={title} className={myClassName}>
       <GrowiNavbar />
 
       <div className="page-wrapper d-flex d-print-block">

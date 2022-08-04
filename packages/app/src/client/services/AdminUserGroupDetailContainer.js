@@ -2,15 +2,16 @@
  * TODO 85062: AdminUserGroupDetailContainer is under transplantation to UserGroupDetailPage.tsx
  */
 
+import { isServer } from '@growi/core';
 import { Container } from 'unstated';
-
-import loggerFactory from '~/utils/logger';
-
-import { toastError } from '../util/apiNotification';
 
 import {
   apiv3Get, apiv3Delete, apiv3Put, apiv3Post,
 } from '~/client/util/apiv3-client';
+import loggerFactory from '~/utils/logger';
+
+import { toastError } from '../util/apiNotification';
+
 
 // eslint-disable-next-line no-unused-vars
 const logger = loggerFactory('growi:services:AdminUserGroupDetailContainer');
@@ -23,6 +24,10 @@ export default class AdminUserGroupDetailContainer extends Container {
 
   constructor(appContainer) {
     super();
+
+    if (isServer()) {
+      return;
+    }
 
     this.appContainer = appContainer;
 

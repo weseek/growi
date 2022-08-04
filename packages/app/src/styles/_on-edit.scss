@@ -1,12 +1,9 @@
+@import './bootstrap/init' ;
+@import './variables' ;
+@import './mixins' ;
+@import 'sidebar-wiki';
 @import 'editor-overlay';
 
-body:not(.on-edit) {
-  // hide .page-editor-footer
-  .page-editor-footer {
-    display: none !important;
-    border: none;
-  }
-}
 
 body.on-edit {
   overflow-y: hidden !important;
@@ -296,39 +293,15 @@ body.on-edit {
 }
 
 body.on-edit {
-  &:not(.growi-layout-fluid) .page-editor-preview-body {
+  .wrapper:not(.growi-layout-fluid) .page-editor-preview-body {
     .wiki {
       max-width: 980px;
       margin: 0 auto;
     }
   }
-  &.growi-layout-fluid .page-editor-preview-body {
+  .wrapper.growi-layout-fluid .page-editor-preview-body {
     .wiki {
       margin: 0 auto;
-    }
-  }
-}
-
-// overwrite .CodeMirror-hints
-.CodeMirror-hints {
-  max-height: 30em !important;
-
-  .CodeMirror-hint.crowi-emoji-autocomplete {
-    font-family: $font-family-monospace-not-strictly;
-    line-height: 1.6em;
-
-    .img-container {
-      display: inline-block;
-      width: 30px;
-    }
-  }
-
-  // active line
-  .CodeMirror-hint-active.crowi-emoji-autocomplete {
-    .img-container {
-      padding-top: 0.3em;
-      padding-bottom: 0.3em;
-      font-size: 15px; // adjust to .wiki
     }
   }
 }
