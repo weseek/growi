@@ -160,13 +160,13 @@ const AdminMarkdownSettingsPage: NextPage<Props> = (props: Props) => {
     },
   };
 
-  const searchTargetPageToRender = (pagesMap, keys) => {
+  const getTargetPageToRender = (pagesMap, keys) => {
     return keys.reduce((pagesMap, key) => {
       return pagesMap[key];
     }, pagesMap);
   };
 
-  const targetPage: {title: string, component: JSX.Element} = searchTargetPageToRender(adminPagesMap, pagePathKeys);
+  const targetPage: {title: string, component: JSX.Element} = getTargetPageToRender(adminPagesMap, pagePathKeys);
   const title = targetPage.title;
 
   useCurrentUser(props.currentUser != null ? JSON.parse(props.currentUser) : null);
