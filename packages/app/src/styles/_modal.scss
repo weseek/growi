@@ -30,7 +30,7 @@
   @include expand-modal-fullscreen(true, true);
 }
 
-// expanded window layout for grw-presentation-modal
-.modal-dialog.grw-presentation-modal-expanded {
+// expanded window layout without modal-header & modal-footer
+.modal-dialog.grw-body-only-modal-expanded {
   @include expand-modal-fullscreen(false, false);
 }
