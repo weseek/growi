@@ -33,89 +33,103 @@
   }
 }
 
-.page-comment-writer :global {
-  @include bs.media-breakpoint-down(xs) {
-    height: 3.5em;
-  }
+// TODO: Never use this class. From _comment.scss
+.page-comments {
+  // .page-comments-list-toggle-older {
+  //   display: inline-block;
+  //   font-size: 0.9em;
+  // }
+  // .page-comment {
+  //   padding-top: 50px;
+  //   margin-top: -50px;
+  //   pointer-events: none;
+  // }
 }
 
-.page-comment :global {
-  position: relative;
-  padding-top: 70px;
-  margin-top: -70px;
-  pointer-events: none;
-
-  // ユーザー名
-  .page-comment-creator {
-    margin-top: -0.5em;
-    margin-bottom: 0.5em;
-    font-weight: bold;
-  }
-
-  // ユーザーアイコン
-  .picture {
-    @extend %picture;
-  }
-
-
-  // コメントセクション
-  .page-comment-main {
-    @extend %comment-section;
-    @include bs.media-breakpoint-up(sm) {
-      margin-left: 4.5em;
-    }
+.comment-styles :global {
+  .page-comment-writer {
     @include bs.media-breakpoint-down(xs) {
-      &:before {
-        content: none;
+      height: 3.5em;
+    }
+  }
+
+  .page-comment {
+    position: relative;
+    padding-top: 70px;
+    margin-top: -70px;
+    pointer-events: none;
+
+    // ユーザー名
+    .page-comment-creator {
+      margin-top: -0.5em;
+      margin-bottom: 0.5em;
+      font-weight: bold;
+    }
+
+    // ユーザーアイコン
+    .picture {
+      @extend %picture;
+    }
+
+    // コメントセクション
+    .page-comment-main {
+      @extend %comment-section;
+      @include bs.media-breakpoint-up(sm) {
+        margin-left: 4.5em;
+      }
+      @include bs.media-breakpoint-down(xs) {
+        &:before {
+          content: none;
+        }
+      }
+      // TODO: from _comment.scss ###
+      pointer-events: auto;
+
+      // delete button
+      .page-comment-control {
+        position: absolute;
+        top: 0;
+        right: 0;
+        visibility: hidden;
+      }
+
+      &:hover > .page-comment-control {
+        visibility: visible;
+      }
+      // ###
+    }
+
+    // コメント本文
+    .page-comment-body {
+      margin-bottom: 0.5em;
+      word-wrap: break-word;
+    }
+
+    // TODO: from _comment.scss ###
+    // older comments
+    &.page-comment-older {
+    }
+    // newer comments
+    &.page-comment-newer {
+      opacity: 0.7;
+
+      &:hover {
+        opacity: 1;
       }
     }
-    // TODO: from _comment.scss ###
-    pointer-events: auto;
 
-    // delete button
-    .page-comment-control {
-      position: absolute;
-      top: 0;
-      right: 0;
-      visibility: hidden;
+    .page-comment-meta {
+      display: flex;
+      justify-content: flex-end;
+
+      font-size: 0.9em;
+      color: bs.$gray-400;
     }
 
-    &:hover > .page-comment-control {
-      visibility: visible;
+    .page-comment-revision svg {
+      width: 16px;
+      height: 16px;
     }
     // ###
   }
-
-  // コメント本文
-  .page-comment-body {
-    margin-bottom: 0.5em;
-    word-wrap: break-word;
-  }
-
-  // // TODO: from _comment.scss ###
-  // // older comments
-  // &.page-comment-older {
-  // }
-  // // newer comments
-  // &.page-comment-newer {
-  //   opacity: 0.7;
-
-  //   &:hover {
-  //     opacity: 1;
-  //   }
-  // }
-
-  .page-comment-meta {
-    display: flex;
-    justify-content: flex-end;
-
-    font-size: 0.9em;
-    color: bs.$gray-400;
-  }
-
-  .page-comment-revision svg {
-    width: 16px;
-    height: 16px;
-  }
-  // ###
 }

@@ -34,41 +34,43 @@
 }
 
 // display cheatsheet for comment form only
-.comment-form :global {
-  .editor-cheatsheet {
-    display: none;
-  }
+.comment-editor-styles :global {
+  .comment-form {
+    // .editor-cheatsheet {
+    //   display: none;
+    // }
 
-  position: relative;
-  margin-top: 1em;
+    position: relative;
+    margin-top: 1em;
 
-  // user icon
-  .picture {
-    @extend %picture;
-  }
-
-  // seciton
-  .comment-form-main {
-    @extend %comment-section;
-    margin-left: 4.5em;
-    @include bs.media-breakpoint-down(xs) {
-      margin-left: 3.5em;
+    // user icon
+    .picture {
+      @extend %picture;
     }
-  }
 
-  // textarea
-  .comment-write {
-    margin-bottom: 0.5em;
-  }
-  .comment-form-comment {
-    height: 80px;
-    &:focus,
-    &:not(:invalid) {
-      height: 180px;
-      transition: height 0.2s ease-out;
+    // seciton
+    .comment-form-main {
+      @extend %comment-section;
+      margin-left: 4.5em;
+      @include bs.media-breakpoint-down(xs) {
+        margin-left: 3.5em;
+      }
     }
-  }
-  .comment-form-preview {
-    padding-top: 0.5em;
+
+    // textarea
+    .comment-write {
+      margin-bottom: 0.5em;
+    }
+    // .comment-form-comment {
+    //   height: 80px;
+    //   &:focus,
+    //   &:not(:invalid) {
+    //     height: 180px;
+    //     transition: height 0.2s ease-out;
+    //   }
+    // }
+    .comment-form-preview {
+      padding-top: 0.5em;
+    }
   }
 }
