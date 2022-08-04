@@ -89,6 +89,16 @@ const AdminMarkdownSettingsPage: NextPage<Props> = (props: Props) => {
   const { path } = router.query;
   const pagePathKeys = Array.isArray(path) ? path : ['home'];
 
+  let userGroupId;
+
+  /*
+    * Set userGroupId as a adminPagesMap key
+    * eg) In case that url is `/user-group-detail/62e8388a9a649bea5e703ef7`, userGroupId is 62e8388a9a649bea5e703ef7
+    */
+  if (pagePathKeys[0] === 'user-group-detail') {
+    userGroupId = pagePathKeys[1];
+  }
+
   const adminPagesMap = {
     home: {
       title: useCustomTitle(props, t('Wiki Management Home Page')),
@@ -151,13 +161,13 @@ const AdminMarkdownSettingsPage: NextPage<Props> = (props: Props) => {
       title: useCustomTitle(props, t('UserGroup Management')),
       component: <UserGroupPage />,
     },
-    // 'user-group-detail': {
-    //   // {{ t('UserGroup Management') + '/' + userGroup.name
-    //   id: {
-    //     title: t('UserGroup Management'),
-    //     component: <UserGroupDetailPage />,
-    //   },
-    // },
+    'user-group-detail': {
+      // {{ t('UserGroup Management') + '/' + userGroup.name
+      [userGroupId]: {
+        title: t('UserGroup Management'),
+        component: <UserGroupDetailPage />,
+      },
+    },
     search: {
       title: useCustomTitle(props, t('Full Text Search Management')),
       component: <ElasticsearchManagement />,
