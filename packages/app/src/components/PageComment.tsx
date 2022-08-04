@@ -117,19 +117,28 @@ export const PageComment: FC<Props> = memo((props:Props): JSX.Element => {
     });
   }, []);
 
+  const test = false;
+  if (test && comments?.length === 0) {
+    return <></>;
+  }
+
   let commentTitleClasses = 'border-bottom py-3 mb-3';
   commentTitleClasses = titleAlign != null ? `${commentTitleClasses} text-${titleAlign}` : `${commentTitleClasses} text-center`;
 
-  if (commentsFromOldest == null || commentsExceptReply == null || rendererOptions == null || currentPagePath == null || currentPage == null
-    || (hideIfEmpty && comments?.length === 0)) {
+  if (commentsFromOldest == null || commentsExceptReply == null || rendererOptions == null || currentPagePath == null || currentPage == null) {
+    if (test) {
+      return <></>;
+    }
     return (
       <>
-        <div className="page-comments-row comment-list mt-5 py-4 d-edit-none d-print-none">
+        <div className="page-comments-row comment-list">
           <div className="container-lg">
             <div className="page-comments">
               <h2 className={commentTitleClasses}><i className="icon-fw icon-bubbles"></i>Comments</h2>
-              <div className="text-muted text-center mt-3">
-                <i className="fa fa-lg fa-spinner fa-pulse mr-1"></i>
+              <div className="page-comments-list" id="page-comments-list">
+                <div className="text-muted text-center mt-3">
+                  <i className="fa fa-lg fa-spinner fa-pulse mr-1"></i>
+                </div>
               </div>
             </div>
           </div>
