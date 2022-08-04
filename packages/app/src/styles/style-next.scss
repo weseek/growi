@@ -1,5 +1,7 @@
 @import './bootstrap/apply';
 
+@import 'mixins';
+
 // // override codemirror
 // @import 'override-codemirror';
 
@@ -38,7 +40,6 @@
 // @import 'attachments';
 // @import 'comment';
 // @import 'comment_growi';
-// @import 'drawio';
 // @import 'create-page';
 // @import 'draft';
 // @import 'editor-attachment';
@@ -49,14 +50,13 @@
 @import 'login';
 // @import 'me';
 // @import 'mirror_mode';
-// @import 'modal';
+@import 'modal';
 // @import 'navbar';
 // @import 'old-ios';
 @import 'on-edit';
 // @import 'page-duplicate-modal';
-// @import 'page_list';
-// @import 'page-accessories-control';
-// @import 'page-accessories-modal';
+@import 'page_list';
+
 // @import 'page-path';
 // @import 'page-tree';
 // @import 'page';

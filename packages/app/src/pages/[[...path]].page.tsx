@@ -46,15 +46,14 @@ import loggerFactory from '~/utils/logger';
 
 // import GrowiSubNavigation from '../client/js/components/Navbar/GrowiSubNavigation';
 // import GrowiSubNavigationSwitcher from '../client/js/components/Navbar/GrowiSubNavigationSwitcher';
+import { DescendantsPageListModal } from '../components/DescendantsPageListModal';
 import ForbiddenPage from '../components/ForbiddenPage';
 import { BasicLayout } from '../components/Layout/BasicLayout';
 import GrowiContextualSubNavigation from '../components/Navbar/GrowiContextualSubNavigation';
 import { NotCreatablePage } from '../components/NotCreatablePage';
 import DisplaySwitcher from '../components/Page/DisplaySwitcher';
-
 // import { serializeUserSecurely } from '../server/models/serializers/user-serializer';
 // import PageStatusAlert from '../client/js/components/PageStatusAlert';
-
 import {
   useCurrentUser, useCurrentPagePath,
   useIsLatestRevision,
@@ -339,6 +338,7 @@ const GrowiPage: NextPage<Props> = (props: Props) => {
         </footer>
 
         <UnsavedAlertDialog />
+        <DescendantsPageListModal />
         {shouldRenderPutbackPageModal && <PutbackPageModal />}
 
       </BasicLayout>
