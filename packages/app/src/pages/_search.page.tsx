@@ -23,6 +23,8 @@ import {
 } from '~/stores/ui';
 import { useXss } from '~/stores/xss';
 
+import { SearchPage } from '../components/SearchPage';
+
 import {
   CommonProps, getNextI18NextConfig, getServerSideCommonProps, useCustomTitle,
 } from './utils/commons';
@@ -44,7 +46,7 @@ type Props = CommonProps & {
 
 };
 
-const SearchPage: NextPage<Props> = (props: Props) => {
+const SearchResultPage: NextPage<Props> = (props: Props) => {
   const { userUISettings } = props;
 
   // commons
@@ -87,20 +89,20 @@ const SearchPage: NextPage<Props> = (props: Props) => {
         {renderScriptTagByName('highlight-addons')}
         */}
       </Head>
-      <BasicLayout title={useCustomTitle(props, 'GROWI')} className={classNames.join(' ')}>
+      <div className="on-search">
+        <BasicLayout title={useCustomTitle(props, 'GROWI')} className={classNames.join(' ')}>
 
-        <div id="grw-fav-sticky-trigger" className="sticky-top"></div>
-        <div id="main" className="main search-page mt-0">
+          <div id="grw-fav-sticky-trigger" className="sticky-top"></div>
+          <div id="main" className="main search-page mt-0">
 
-          <div id="search-page">
-            Search Result Page
-            {/* render SearchPage component here */}
+            <div id="search-page">
+              <SearchPage />
+            </div>
+
           </div>
-
-        </div>
-        <PutbackPageModal />
-      </BasicLayout>
-
+          <PutbackPageModal />
+        </BasicLayout>
+      </div>
     </>
   );
 };
@@ -184,4 +186,4 @@ export const getServerSideProps: GetServerSideProps = async(context: GetServerSi
   };
 };
 
-export default SearchPage;
+export default SearchResultPage;

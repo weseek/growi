@@ -3,6 +3,7 @@ import React, {
 } from 'react';
 
 import { useTranslation } from 'next-i18next';
+import dynamic from 'next/dynamic';
 import { DropdownItem } from 'reactstrap';
 
 import { exportAsMarkdown } from '~/client/services/page-operation';
@@ -19,13 +20,9 @@ import { useSearchResultOptions } from '~/stores/renderer';
 import { useFullTextSearchTermManager } from '~/stores/search';
 
 
-import AppContainer from '../../client/services/AppContainer';
-import { AdditionalMenuItemsRendererProps, ForceHideMenuItems, MenuItemType } from '../Common/Dropdown/PageItemControl';
-import { GrowiSubNavigation } from '../Navbar/GrowiSubNavigation';
-import { SubNavButtons } from '../Navbar/SubNavButtons';
-import RevisionLoader from '../Page/RevisionLoader';
-import { PageComment } from '../PageComment';
-import PageContentFooter from '../PageContentFooter';
+import { AdditionalMenuItemsRendererProps, ForceHideMenuItems } from '../Common/Dropdown/PageItemControl';
+import { GrowiSubNavigationProps } from '../Navbar/GrowiSubNavigation';
+import { SubNavButtonsProps } from '../Navbar/SubNavButtons';
 
 
 type AdditionalMenuItemsProps = AdditionalMenuItemsRendererProps & {
@@ -54,7 +51,6 @@ const SCROLL_OFFSET_TOP = 175; // approximate height of (navigation + subnavigat
 const MUTATION_OBSERVER_CONFIG = { childList: true, subtree: true };
 
 type Props ={
-  appContainer: AppContainer,
   pageWithMeta : IPageWithSearchMeta,
   highlightKeywords?: string[],
   showPageControlDropdown?: boolean,
@@ -81,6 +77,12 @@ const generateObserverCallback = (doScroll: ()=>void) => {
 };
 
 export const SearchResultContent: FC<Props> = (props: Props) => {
+  const GrowiSubNavigation = dynamic<GrowiSubNavigationProps>(() => import('../Navbar/GrowiSubNavigation').then(mod => mod.GrowiSubNavigation), { ssr: false });
+  const SubNavButtons = dynamic<SubNavButtonsProps>(() => import('../Navbar/SubNavButtons').then(mod => mod.SubNavButtons), { ssr: false });
+  const RevisionLoader = dynamic(() => import('../Page/RevisionLoader'), { ssr: false });
+  const PageComment = dynamic(() => import('../PageComment').then(mod => mod.PageComment), { ssr: false });
+  const PageContentFooter = dynamic(() => import('../PageContentFooter'), { ssr: false });
+
   const scrollElementRef = useRef(null);
 
   // for mutation
@@ -106,7 +108,6 @@ export const SearchResultContent: FC<Props> = (props: Props) => {
   // *******************************  end  *******************************
 
   const {
-    appContainer,
     pageWithMeta,
     highlightKeywords,
     showPageControlDropdown,
