@@ -125,7 +125,6 @@ export const PageComment: FC<Props> = memo((props:Props): JSX.Element => {
     return (
       <>
         <div className="page-comments-row comment-list mt-5 py-4 d-edit-none d-print-none">
-          {/* TODO: container-lg expected global import, _override.scss */}
           <div className="container-lg">
             <div className="page-comments">
               <h2 className={commentTitleClasses}><i className="icon-fw icon-bubbles"></i>Comments</h2>
