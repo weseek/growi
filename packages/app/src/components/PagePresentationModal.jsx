@@ -17,7 +17,7 @@ const PagePresentationModal = () => {
       isOpen={presentationData.isOpened}
       toggle={closePresentationModal}
       data-testid="page-presentation-modal"
-      className={`grw-presentation-modal ${styles['grw-presentation-modal']}`}
+      className={`grw-presentation-modal ${styles['grw-presentation-modal']} grw-presentation-modal-expanded`}
       unmountOnClose={false}
     >
       <ModalBody className="modal-body">

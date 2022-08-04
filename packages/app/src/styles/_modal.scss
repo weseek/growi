@@ -29,3 +29,8 @@
 .modal-dialog.grw-modal-expanded {
   @include expand-modal-fullscreen(true, true);
 }
+
+// expanded window layout for grw-presentation-modal
+.modal-dialog.grw-presentation-modal-expanded {
+  @include expand-modal-fullscreen(false, false);
+}
