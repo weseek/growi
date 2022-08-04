@@ -86,7 +86,7 @@ const AdminMarkdownSettingsPage: NextPage<Props> = (props: Props) => {
   const { t } = useTranslation('admin');
   const router = useRouter();
   const path = router.query.path;
-  const name = Array.isArray(path) ? path : ['home'];
+  const pagePathKeys = Array.isArray(path) ? path : ['home'];
 
   const adminPagesMap = {
     home: {
@@ -160,19 +160,14 @@ const AdminMarkdownSettingsPage: NextPage<Props> = (props: Props) => {
     },
   };
 
-  const renderPage = (pagesMap, keys) => {
+  const searchTargetPageToRender = (pagesMap, keys) => {
     return keys.reduce((pagesMap, key) => {
-      try {
-        return pagesMap[key];
-      }
-      catch (e) {
-        return undefined;
-      }
+      return pagesMap[key];
     }, pagesMap);
   };
 
-  const content = renderPage(adminPagesMap, name);
-  const title = content.title;
+  const targetPage: {title: string, component: JSX.Element} = searchTargetPageToRender(adminPagesMap, pagePathKeys);
+  const title = targetPage.title;
 
   useCurrentUser(props.currentUser != null ? JSON.parse(props.currentUser) : null);
   useIsMailerSetup(props.isMailerSetup);
@@ -250,8 +245,8 @@ const AdminMarkdownSettingsPage: NextPage<Props> = (props: Props) => {
 
   return (
     <Provider inject={[...injectableContainers, ...adminSecurityContainers]}>
-      <AdminLayout title={title} selectedNavOpt={name}>
-        {content.component}
+      <AdminLayout title={title} selectedNavOpt={pagePathKeys}>
+        {targetPage.component}
       </AdminLayout>
     </Provider>
   );
