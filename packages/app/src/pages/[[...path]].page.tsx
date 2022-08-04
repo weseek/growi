@@ -7,7 +7,7 @@ import {
   IDataWithMeta, IPageInfoForEntity, IPagePopulatedToShowRevision, isClient, isIPageInfoForEntity, isServer, IUser, IUserHasId, pagePathUtils, pathUtils,
 } from '@growi/core';
 import ExtensibleCustomError from 'extensible-custom-error';
-import mongoose from 'mongoose';
+import { model as mongooseModel } from 'mongoose';
 import {
   NextPage, GetServerSideProps, GetServerSidePropsContext,
 } from 'next';
@@ -33,8 +33,7 @@ import { ISidebarConfig } from '~/interfaces/sidebar-config';
 import { IUserUISettings } from '~/interfaces/user-ui-settings';
 import { PageModel, PageDocument } from '~/server/models/page';
 import { PageRedirectModel } from '~/server/models/page-redirect';
-import UserUISettings from '~/server/models/user-ui-settings';
-import Xss from '~/services/xss';
+import { UserUISettingsModel } from '~/server/models/user-ui-settings';
 import { useSWRxCurrentPage, useSWRxIsGrantNormalized, useSWRxPageInfo } from '~/stores/page';
 import {
   usePreferDrawerModeByUser, usePreferDrawerModeOnEditByUser, useSidebarCollapsed, useCurrentSidebarContents, useCurrentProductNavWidth, useSelectedGrant,
@@ -46,15 +45,12 @@ import loggerFactory from '~/utils/logger';
 
 // import GrowiSubNavigation from '../client/js/components/Navbar/GrowiSubNavigation';
 // import GrowiSubNavigationSwitcher from '../client/js/components/Navbar/GrowiSubNavigationSwitcher';
-import ForbiddenPage from '../components/ForbiddenPage';
+import { DescendantsPageListModal } from '../components/DescendantsPageListModal';
 import { BasicLayout } from '../components/Layout/BasicLayout';
 import GrowiContextualSubNavigation from '../components/Navbar/GrowiContextualSubNavigation';
-import { NotCreatablePage } from '../components/NotCreatablePage';
 import DisplaySwitcher from '../components/Page/DisplaySwitcher';
-
 // import { serializeUserSecurely } from '../server/models/serializers/user-serializer';
 // import PageStatusAlert from '../client/js/components/PageStatusAlert';
-
 import {
   useCurrentUser, useCurrentPagePath,
   useIsLatestRevision,
@@ -67,7 +63,6 @@ import {
   useIsSlackConfigured, useIsBlinkedHeaderAtBoot, useRendererConfig, useEditingMarkdown,
   useEditorConfig, useIsAllReplyShown, useIsUploadableFile, useIsUploadableImage,
 } from '../stores/context';
-import { useXss } from '../stores/xss';
 
 import {
   CommonProps, getNextI18NextConfig, getServerSideCommonProps, useCustomTitle,
@@ -172,6 +167,8 @@ const GrowiPage: NextPage<Props> = (props: Props) => {
   // const { t } = useTranslation();
   const router = useRouter();
 
+  const NotCreatablePage = dynamic(() => import('../components/NotCreatablePage').then(mod => mod.NotCreatablePage), { ssr: false });
+  const ForbiddenPage = dynamic(() => import('../components/ForbiddenPage'), { ssr: false });
   const UnsavedAlertDialog = dynamic(() => import('./UnsavedAlertDialog'), { ssr: false });
   const GrowiSubNavigationSwitcher = dynamic(() => import('../components/Navbar/GrowiSubNavigationSwitcher'), { ssr: false });
 
@@ -183,7 +180,6 @@ const GrowiPage: NextPage<Props> = (props: Props) => {
   }
 
   // commons
-  useXss(new Xss());
   useEditorConfig(props.editorConfig);
   useCsrfToken(props.csrfToken);
 
@@ -339,6 +335,7 @@ const GrowiPage: NextPage<Props> = (props: Props) => {
         </footer>
 
         <UnsavedAlertDialog />
+        <DescendantsPageListModal />
         {shouldRenderPutbackPageModal && <PutbackPageModal />}
 
       </BasicLayout>
@@ -368,7 +365,7 @@ async function injectPageData(context: GetServerSidePropsContext, props: Props):
   const { revisionId } = req.query;
 
   const Page = crowi.model('Page') as PageModel;
-  const PageRedirect = mongoose.model('PageRedirect') as PageRedirectModel;
+  const PageRedirect = mongooseModel('PageRedirect') as PageRedirectModel;
   const { pageService } = crowi;
 
   let currentPathname = props.currentPathname;
@@ -412,6 +409,7 @@ async function injectPageData(context: GetServerSidePropsContext, props: Props):
 async function injectUserUISettings(context: GetServerSidePropsContext, props: Props): Promise<void> {
   const req = context.req as CrowiRequest<IUserHasId & any>;
   const { user } = req;
+  const UserUISettings = mongooseModel('UserUISettings') as UserUISettingsModel;
 
   const userUISettings = user == null ? null : await UserUISettings.findOne({ user: user._id }).exec();
   if (userUISettings != null) {

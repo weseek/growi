@@ -14,7 +14,7 @@ import HistoryIcon from '../Icons/HistoryIcon';
 import RevisionRenderer from '../Page/RevisionRenderer';
 import Username from '../User/Username';
 
-import CommentControl from './CommentControl';
+import { CommentControl } from './CommentControl';
 import { CommentEditor } from './CommentEditor';
 
 import styles from './Comment.module.scss';
