@@ -3,15 +3,13 @@ import React from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { useSWRxCurrentPage } from '~/stores/page';
-import { useXss } from '~/stores/xss';
 
 
 export const PageGrantAlert = (): JSX.Element => {
   const { t } = useTranslation();
   const { data: pageData } = useSWRxCurrentPage();
-  const { data: xss } = useXss();
 
-  if (pageData == null || pageData.grant == null || pageData.grant === 1 || xss == null) {
+  if (pageData == null || pageData.grant == null || pageData.grant === 1) {
     return <></>;
   }
 
@@ -34,7 +32,7 @@ export const PageGrantAlert = (): JSX.Element => {
       if (pageData.grant === 5) {
         return (
           <>
-            <i className="icon-fw icon-organization"></i><strong>{xss.process(pageData.grantedGroup.name)} only</strong>
+            <i className="icon-fw icon-organization"></i><strong>{pageData.grantedGroup.name} only</strong>
           </>
         );
       }

@@ -5,7 +5,7 @@ import { useTranslation } from 'next-i18next';
 import dynamic from 'next/dynamic';
 import { TabContent, TabPane } from 'reactstrap';
 
-import { smoothScrollIntoView } from '~/client/util/smooth-scroll';
+// import { smoothScrollIntoView } from '~/client/util/smooth-scroll';
 import {
   useCurrentPagePath, useIsSharedUser, useIsEditable, useIsUserPage, usePageUser, useShareLinkId, useIsNotFound, useIsNotCreatable,
 } from '~/stores/context';
@@ -15,7 +15,6 @@ import { EditorMode, useEditorMode } from '~/stores/ui';
 
 import CountBadge from '../Common/CountBadge';
 import PageListIcon from '../Icons/PageListIcon';
-import NotFoundPage from '../NotFoundPage';
 import { Page } from '../Page';
 // import PageEditorByHackmd from '../PageEditorByHackmd';
 import TableOfContents from '../TableOfContents';
