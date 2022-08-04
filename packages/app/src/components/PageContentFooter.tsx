@@ -10,7 +10,6 @@ import styles from './PageContentFooter.module.scss';
 
 export const PageContentFooter = memo((): JSX.Element => {
 
-  // TODO: update Skelton props
   const AuthorInfo = dynamic(() => import('./Navbar/AuthorInfo'),
     { ssr: false, loading: () => <Skelton additionalClass={`${styles['page-content-footer-skelton']} mb-3`} /> });
 
