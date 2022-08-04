@@ -85,20 +85,8 @@ const AdminMarkdownSettingsPage: NextPage<Props> = (props: Props) => {
 
   const { t } = useTranslation('admin');
   const router = useRouter();
-  const path = router.query.path || 'home';
-
-  /*
-  *  `/admin/foo/bar` -> the name should be 'bar'
-  *  `/admin/foo`     -> the name should be 'foo'
-  *  `/admin/`        -> the name should be 'home'
-  */
-  let name: string;
-  if (Array.isArray(path)) {
-    name = path[1] || path[0];
-  }
-  else {
-    name = path;
-  }
+  const path = router.query.path;
+  const name = Array.isArray(path) ? path : ['home'];
 
   const adminPagesMap = {
     home: {
@@ -153,10 +141,10 @@ const AdminMarkdownSettingsPage: NextPage<Props> = (props: Props) => {
     users: {
       title: useCustomTitle(props, t('User_Management')),
       component: <UserManagement />,
-    },
-    'external-accounts': {
-      title: useCustomTitle(props, t('external_account_management')),
-      component: <ManageExternalAccount />,
+      'external-accounts': {
+        title: useCustomTitle(props, t('external_account_management')),
+        component: <ManageExternalAccount />,
+      },
     },
     'user-groups': {
       title: useCustomTitle(props, t('UserGroup Management')),
@@ -172,7 +160,18 @@ const AdminMarkdownSettingsPage: NextPage<Props> = (props: Props) => {
     },
   };
 
-  const content = adminPagesMap[name];
+  const renderPage = (pagesMap, keys) => {
+    return keys.reduce((pagesMap, key) => {
+      try {
+        return pagesMap[key];
+      }
+      catch (e) {
+        return undefined;
+      }
+    }, pagesMap);
+  };
+
+  const content = renderPage(adminPagesMap, name);
   const title = content.title;
 
   useCurrentUser(props.currentUser != null ? JSON.parse(props.currentUser) : null);
