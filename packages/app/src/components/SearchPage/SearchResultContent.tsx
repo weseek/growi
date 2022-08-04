@@ -22,7 +22,7 @@ import { useFullTextSearchTermManager } from '~/stores/search';
 
 import { AdditionalMenuItemsRendererProps, ForceHideMenuItems } from '../Common/Dropdown/PageItemControl';
 import { GrowiSubNavigationProps } from '../Navbar/GrowiSubNavigation';
-import { SubNavButtonsSubstanceProps } from '../Navbar/SubNavButtons';
+import { SubNavButtonsProps } from '../Navbar/SubNavButtons';
 
 
 type AdditionalMenuItemsProps = AdditionalMenuItemsRendererProps & {
@@ -78,7 +78,7 @@ const generateObserverCallback = (doScroll: ()=>void) => {
 
 export const SearchResultContent: FC<Props> = (props: Props) => {
   const GrowiSubNavigation = dynamic<GrowiSubNavigationProps>(() => import('../Navbar/GrowiSubNavigation').then(mod => mod.GrowiSubNavigation), { ssr: false });
-  const SubNavButtons = dynamic<SubNavButtonsSubstanceProps>(() => import('../Navbar/SubNavButtons').then(mod => mod.SubNavButtons), { ssr: false });
+  const SubNavButtons = dynamic<SubNavButtonsProps>(() => import('../Navbar/SubNavButtons').then(mod => mod.SubNavButtons), { ssr: false });
   const RevisionLoader = dynamic(() => import('../Page/RevisionLoader'), { ssr: false });
   const PageComment = dynamic(() => import('../PageComment').then(mod => mod.PageComment), { ssr: false });
   const PageContentFooter = dynamic(() => import('../PageContentFooter'), { ssr: false });
@@ -175,6 +175,7 @@ export const SearchResultContent: FC<Props> = (props: Props) => {
     const revisionId = typeof page.revision === 'string'
       ? page.revision
       : page.revision._id;
+
 
     return (
       <div className="d-flex flex-column align-items-end justify-content-center py-md-2">

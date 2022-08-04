@@ -1,4 +1,5 @@
 import { ReactMarkdownOptions } from 'react-markdown/lib/react-markdown';
+import katex from 'rehype-katex';
 import raw from 'rehype-raw';
 import sanitize, { defaultSchema } from 'rehype-sanitize';
 import slug from 'rehype-slug';
@@ -6,10 +7,12 @@ import toc, { HtmlElementNode } from 'rehype-toc';
 import breaks from 'remark-breaks';
 import emoji from 'remark-emoji';
 import gfm from 'remark-gfm';
+import math from 'remark-math';
 
 import { Header } from '~/components/ReactMarkdownComponents/Header';
 import { NextLink } from '~/components/ReactMarkdownComponents/NextLink';
 import { RendererConfig } from '~/interfaces/services/renderer';
+import { addClass } from '~/services/renderer/rehype-plugins/add-class';
 import loggerFactory from '~/utils/logger';
 
 // import CsvToTable from './PreProcessor/CsvToTable';
@@ -225,6 +228,9 @@ const generateCommonOptions: ReactMarkdownOptionsGenerator = (config: RendererCo
           '*': ['className', 'class'],
         },
       }],
+      [addClass, {
+        table: 'table table-bordered',
+      }],
     ],
     components: {
       a: NextLink,
@@ -244,6 +250,7 @@ export const generateViewOptions = (
   // add remark plugins
   if (remarkPlugins != null) {
     remarkPlugins.push(emoji);
+    remarkPlugins.push(math);
     if (config.isEnabledLinebreaks) {
       remarkPlugins.push(breaks);
     }
@@ -251,6 +258,7 @@ export const generateViewOptions = (
 
   // store toc node
   if (rehypePlugins != null) {
+    rehypePlugins.push(katex);
     rehypePlugins.push([toc, {
       nav: false,
       headings: ['h1', 'h2', 'h3'],

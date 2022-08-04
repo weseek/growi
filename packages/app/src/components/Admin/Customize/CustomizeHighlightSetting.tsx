@@ -1,6 +1,7 @@
 /* eslint-disable no-useless-escape */
 import React, { useCallback, useState } from 'react';
 
+
 import { useTranslation } from 'next-i18next';
 import {
   Dropdown, DropdownToggle, DropdownMenu, DropdownItem,
@@ -8,6 +9,7 @@ import {
 
 import AdminCustomizeContainer from '~/client/services/AdminCustomizeContainer';
 import { toastSuccess, toastError } from '~/client/util/apiNotification';
+import { IHighlightJsCssSelectorOptions } from '~/interfaces/customize';
 
 import { withUnstatedContainers } from '../../UnstatedUtils';
 import AdminUpdateButtonRow from '../Common/AdminUpdateButtonRow';
@@ -48,7 +50,7 @@ const CustomizeHighlightSetting = (props: Props): JSX.Element => {
   const { adminCustomizeContainer } = props;
   const { t } = useTranslation();
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-  const options = adminCustomizeContainer.state.highlightJsCssSelectorOptions;
+  const options: IHighlightJsCssSelectorOptions = adminCustomizeContainer.state.highlightJsCssSelectorOptions;
 
   const onToggleDropdown = useCallback(() => {
     setIsDropdownOpen(!isDropdownOpen);

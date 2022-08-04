@@ -1,3 +1,4 @@
+import { isServer } from '@growi/core';
 import { debounce } from 'throttle-debounce';
 import { Container } from 'unstated';
 
@@ -18,6 +19,10 @@ export default class AdminUsersContainer extends Container {
 
   constructor(appContainer) {
     super();
+
+    if (isServer()) {
+      return;
+    }
 
     this.appContainer = appContainer;
 

@@ -13,7 +13,7 @@ import {
   useSWRxSlackChannels, useIsSlackEnabled, usePageTagsForEditors, useIsEnabledUnsavedWarning,
 } from '~/stores/editor';
 import {
-  useEditorMode, useSelectedGrant, useSelectedGrantGroupId, useSelectedGrantGroupName,
+  useEditorMode, useSelectedGrant,
 } from '~/stores/ui';
 import loggerFactory from '~/utils/logger';
 
@@ -456,9 +456,7 @@ const PageEditorByHackmdWrapper = (props) => {
   const { data: isSlackEnabled } = useIsSlackEnabled();
   const { data: pageId } = useCurrentPageId();
   const { data: pageTags } = usePageTagsForEditors(pageId);
-  const { data: grant } = useSelectedGrant();
-  const { data: grantGroupId } = useSelectedGrantGroupId();
-  const { data: grantGroupName } = useSelectedGrantGroupName();
+  const { data: grantData } = useSelectedGrant();
   const { mutate: mutateIsEnabledUnsavedWarning } = useIsEnabledUnsavedWarning();
 
   if (editorMode == null) {
@@ -473,9 +471,9 @@ const PageEditorByHackmdWrapper = (props) => {
       isSlackEnabled={isSlackEnabled}
       slackChannels={slackChannelsData.toString()}
       pageTags={pageTags}
-      grant={grant}
-      grantGroupId={grantGroupId}
-      grantGroupName={grantGroupName}
+      grant={grantData.grant}
+      grantGroupId={grantData.grantGroup?.id}
+      grantGroupName={grantData.grantedGroup?.name}
       mutateIsEnabledUnsavedWarning={mutateIsEnabledUnsavedWarning}
     />
   );
