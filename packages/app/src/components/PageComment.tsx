@@ -117,8 +117,7 @@ export const PageComment: FC<Props> = memo((props:Props): JSX.Element => {
     });
   }, []);
 
-  const test = false;
-  if (test && comments?.length === 0) {
+  if (hideIfEmpty && comments?.length === 0) {
     return <></>;
   }
 
@@ -126,19 +125,18 @@ export const PageComment: FC<Props> = memo((props:Props): JSX.Element => {
   commentTitleClasses = titleAlign != null ? `${commentTitleClasses} text-${titleAlign}` : `${commentTitleClasses} text-center`;
 
   if (commentsFromOldest == null || commentsExceptReply == null || rendererOptions == null || currentPagePath == null || currentPage == null) {
-    if (test) {
+    if (hideIfEmpty) {
       return <></>;
     }
     return (
       <>
+        {/* TODO: Check the comment.html CSS */}
         <div className="page-comments-row comment-list">
           <div className="container-lg">
             <div className="page-comments">
               <h2 className={commentTitleClasses}><i className="icon-fw icon-bubbles"></i>Comments</h2>
-              <div className="page-comments-list" id="page-comments-list">
-                <div className="text-muted text-center mt-3">
-                  <i className="fa fa-lg fa-spinner fa-pulse mr-1"></i>
-                </div>
+              <div className="text-muted text-center mt-3">
+                <i className="fa fa-lg fa-spinner fa-pulse mr-1"></i>
               </div>
             </div>
           </div>
@@ -175,6 +173,7 @@ export const PageComment: FC<Props> = memo((props:Props): JSX.Element => {
 
   return (
     <>
+      {/* ToDO: Check the comment.html CSS */}
       <div className="page-comments-row comment-list">
         <div className="container-lg">
           <div className="page-comments">
