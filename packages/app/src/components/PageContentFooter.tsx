@@ -12,7 +12,7 @@ export const PageContentFooter = memo((): JSX.Element => {
 
   // TODO: update Skelton props
   const AuthorInfo = dynamic(() => import('./Navbar/AuthorInfo'),
-    { ssr: false, loading: () => <Skelton width={300} height={20} additionalClass={'mb-3'} /> });
+    { ssr: false, loading: () => <Skelton additionalClass={`${styles['page-content-footer-skelton']} mb-3`} /> });
 
   const { data: page } = useSWRxCurrentPage();
 

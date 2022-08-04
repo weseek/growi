@@ -11,6 +11,9 @@ import PageListIcon from './Icons/PageListIcon';
 import { PageListItemL } from './PageList/PageListItemL';
 
 
+import styles from './IdenticalPathPage.module.scss';
+
+
 type IdenticalPathAlertProps = {
   path? : string | null,
 }
@@ -67,7 +70,7 @@ export const IdenticalPathPage = (): JSX.Element => {
     <div className="d-flex flex-column flex-lg-row-reverse">
 
       <div className="grw-side-contents-container">
-        <div className="grw-page-accessories-control pb-1">
+        <div className={`pb-1 grw-page-accessories-control ${styles['grw-page-accessories-control']}`}>
           { currentPath != null && !isSharedUser && (
             <button
               type="button"

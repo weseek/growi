@@ -17,7 +17,9 @@ import FormattedDistanceDate from '../FormattedDistanceDate';
 
 import InfiniteScroll from './InfiniteScroll';
 
+import TagLabelsStyles from '../Page/TagLabels.module.scss';
 import styles from './RecentChanges.module.scss';
+
 
 const logger = loggerFactory('growi:History');
 
