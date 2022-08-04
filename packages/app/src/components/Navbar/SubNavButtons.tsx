@@ -74,7 +74,7 @@ type CommonProps = {
   onClickDeleteMenuItem?: (pageToDelete: IPageToDeleteWithMeta) => void,
 }
 
-export type SubNavButtonsSubstanceProps = CommonProps & {
+type SubNavButtonsSubstanceProps = CommonProps & {
   pageId: string,
   shareLinkId?: string | null,
   revisionId: string | null,
