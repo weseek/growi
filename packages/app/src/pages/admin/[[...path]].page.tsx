@@ -56,6 +56,7 @@ const LegacySlackIntegration = dynamic(() => import('../../components/Admin/Lega
 const UserManagement = dynamic(() => import('../../components/Admin/UserManagement'), { ssr: false });
 const ManageExternalAccount = dynamic(() => import('../../components/Admin/ManageExternalAccount'), { ssr: false });
 const UserGroupPage = dynamic(() => import('../../components/Admin/UserGroup/UserGroupPage'), { ssr: false });
+const UserGroupDetailPage = dynamic(() => import('../../components/Admin/UserGroupDetail/UserGroupDetailPage'), { ssr: false });
 const ElasticsearchManagement = dynamic(() => import('../../components/Admin/ElasticsearchManagement/ElasticsearchManagement'), { ssr: false });
 // named export
 const AuditLogManagement = dynamic(() => import('../../components/Admin/AuditLogManagement').then(module => module.AuditLogManagement));
@@ -150,6 +151,13 @@ const AdminMarkdownSettingsPage: NextPage<Props> = (props: Props) => {
       title: useCustomTitle(props, t('UserGroup Management')),
       component: <UserGroupPage />,
     },
+    // 'user-group-detail': {
+    //   // {{ t('UserGroup Management') + '/' + userGroup.name
+    //   id: {
+    //     title: t('UserGroup Management'),
+    //     component: <UserGroupDetailPage />,
+    //   },
+    // },
     search: {
       title: useCustomTitle(props, t('Full Text Search Management')),
       component: <ElasticsearchManagement />,

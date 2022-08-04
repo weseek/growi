@@ -1,10 +1,9 @@
 import React, { Fragment } from 'react';
 
-import PropTypes from 'prop-types';
 import { useTranslation } from 'next-i18next';
+import PropTypes from 'prop-types';
 
 import AdminUserGroupDetailContainer from '~/client/services/AdminUserGroupDetailContainer';
-import AppContainer from '~/client/services/AppContainer';
 import { toastError } from '~/client/util/apiNotification';
 import { apiv3Get } from '~/client/util/apiv3-client';
 
@@ -80,7 +79,6 @@ class UserGroupPageList extends React.Component {
 
 UserGroupPageList.propTypes = {
   t: PropTypes.func.isRequired, // i18next
-  appContainer: PropTypes.instanceOf(AppContainer).isRequired,
   adminUserGroupDetailContainer: PropTypes.instanceOf(AdminUserGroupDetailContainer).isRequired,
 };
 
@@ -92,6 +90,6 @@ const UserGroupPageListWrapperFC = (props) => {
 /**
  * Wrapper component for using unstated
  */
-const UserGroupPageListWrapper = withUnstatedContainers(UserGroupPageListWrapperFC, [AppContainer, AdminUserGroupDetailContainer]);
+const UserGroupPageListWrapper = withUnstatedContainers(UserGroupPageListWrapperFC, [AdminUserGroupDetailContainer]);
 
 export default UserGroupPageListWrapper;
