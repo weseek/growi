@@ -534,7 +534,7 @@
     "date": "Date",
     "action": "Action",
     "ip": "IP Address",
-    "url": "URL",
+    "url": "URL(Click to copy URL)",
     "settings": "Settings",
     "return": "Return",
     "clear": "Clear",

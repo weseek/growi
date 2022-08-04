@@ -543,7 +543,7 @@
     "date": "日期",
     "action": "行动",
     "ip": "IP地址",
-    "url": "URL",
+    "url": "URL（点击复制URL）",
     "settings": "设置",
     "return": "返回",
     "clear": "清除",
