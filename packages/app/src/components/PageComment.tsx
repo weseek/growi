@@ -138,7 +138,7 @@ export const PageComment: FC<Props> = memo((props:Props): JSX.Element => {
     );
   }
 
-  const generateCommentInnerElement = (comment: ICommentHasId) => (
+  const generateCommentElement = (comment: ICommentHasId) => (
     <Comment
       comment={comment}
       isReadOnly={isReadOnly}
@@ -151,7 +151,7 @@ export const PageComment: FC<Props> = memo((props:Props): JSX.Element => {
     />
   );
 
-  const generateAllRepliesElement = (replyComments: ICommentHasIdList) => (
+  const generateReplyCommentElements = (replyComments: ICommentHasIdList) => (
     <ReplyComments
       isReadOnly={isReadOnly}
       replyList={replyComments}
@@ -181,11 +181,8 @@ export const PageComment: FC<Props> = memo((props:Props): JSX.Element => {
 
                 return (
                   <div key={comment._id} className={commentThreadClasses}>
-                    {/* display comment */}
-                    {generateCommentInnerElement(comment)}
-                    {/* display reply comment */}
-                    {hasReply && generateAllRepliesElement(allReplies[comment._id])}
-                    {/* display reply button */}
+                    {generateCommentElement(comment)}
+                    {hasReply && generateReplyCommentElements(allReplies[comment._id])}
                     {(!isReadOnly && !showEditorIds.has(comment._id)) && (
                       <div className="text-right">
                         <Button
@@ -201,7 +198,6 @@ export const PageComment: FC<Props> = memo((props:Props): JSX.Element => {
                         </Button>
                       </div>
                     )}
-                    {/* display reply editor */}
                     {(!isReadOnly && showEditorIds.has(comment._id)) && (
                       <CommentEditor
                         rendererOptions={rendererOptions}
