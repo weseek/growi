@@ -10,6 +10,8 @@ import { useTimelineOptions } from '~/stores/renderer';
 import RevisionLoader from './Page/RevisionLoader';
 import PaginationWrapper from './PaginationWrapper';
 
+import styles from './PageTimeline.module.scss';
+
 export const PageTimeline = (): JSX.Element => {
   const [activePage, setActivePage] = useState(1);
   const [totalPageItems, setTotalPageItems] = useState(0);
@@ -51,7 +53,7 @@ export const PageTimeline = (): JSX.Element => {
       { pages.map((page) => {
         return (
           <div className="timeline-body" key={`key-${page._id}`}>
-            <div className="card card-timeline">
+            <div className={`card card-timeline ${styles['card-timeline']}`}>
               <div className="card-header"><a href={page.path}>{page.path}</a></div>
               <div className="card-body">
                 <RevisionLoader
