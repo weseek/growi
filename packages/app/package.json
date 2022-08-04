@@ -45,8 +45,9 @@
     "swagger-jsdoc": "swagger-jsdoc -o tmp/swagger.json -d config/swagger-definition.js",
     "openapi:v3": "yarn cross-env API_VERSION=3 yarn swagger-jsdoc -- \"src/server/routes/apiv3/**/*.js\" \"src/server/models/**/*.js\"",
     "openapi:v1": "yarn cross-env API_VERSION=1 yarn swagger-jsdoc -- \"src/server/*/*.js\" \"src/server/models/**/*.js\"",
-    "resources:plugin": "yarn ts-node bin/generate-plugin-definitions-source.ts",
-    "resources:dl-resources": "yarn ts-node bin/download-cdn-resources.ts",
+    "resources:dummy": "true",
+    "// resources:plugin": "yarn ts-node bin/generate-plugin-definitions-source.ts",
+    "// resources:dl-resources": "yarn ts-node bin/download-cdn-resources.ts",
     "ts-node": "ts-node -r tsconfig-paths/register -r dotenv-flow/config --transpile-only"
   },
   "// comments for dependencies": {
