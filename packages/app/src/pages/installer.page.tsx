@@ -6,6 +6,7 @@ import {
 } from 'next';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 
+import { NoLoginLayout } from '~/components/Layout/NoLoginLayout';
 import { RawLayout } from '~/components/Layout/RawLayout';
 
 import InstallerForm from '../components/InstallerForm';
@@ -46,36 +47,9 @@ const InstallerPage: NextPage<Props> = (props: Props) => {
   const classNames: string[] = [];
 
   return (
-    <>
-      <RawLayout title={useCustomTitle(props, 'GROWI')} className={classNames.join(' ')}>
-        <div className='nologin'>
-          <div id="wrapper">
-            <div id="page-wrapper">
-              <div className="main container-fluid">
-
-                <div className="row">
-
-                  <div className="col-md-12">
-                    <div className="login-header mx-auto">
-                      <div className="logo"></div>
-                      <h1 className="my-3">GROWI</h1>
-                      <div className="login-form-errors px-3"></div>
-                    </div>
-                  </div>
-
-                  <div className="col-md-12">
-                    <div id="installer-form-container">
-                      <InstallerForm />
-                    </div>
-                  </div>
-
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </RawLayout>
-    </>
+    <NoLoginLayout title={useCustomTitle(props, 'GROWI')} className={classNames.join(' ')}>
+      <InstallerForm />
+    </NoLoginLayout>
   );
 };
 
