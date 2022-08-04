@@ -16,9 +16,8 @@ export const PageContentFooter = memo((): JSX.Element => {
 
   const { data: page } = useSWRxCurrentPage();
 
-  // TODO: update Skelton props
   if (page == null) {
-    return <Skelton width={300} height={20} additionalClass={'mb-3'} />;
+    return <></>;
   }
 
   return (

@@ -6,7 +6,6 @@ import EventEmitter from 'events';
 import {
   IDataWithMeta, IPageInfoForEntity, IPagePopulatedToShowRevision, isClient, isIPageInfoForEntity, isServer, IUser, IUserHasId, pagePathUtils, pathUtils,
 } from '@growi/core';
-import { EditorConfiguration } from 'codemirror';
 import ExtensibleCustomError from 'extensible-custom-error';
 import mongoose from 'mongoose';
 import {
