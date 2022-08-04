@@ -404,22 +404,12 @@ const PageEditor = (props: Props): JSX.Element => {
   const isUploadable = isUploadableImage || isUploadableFile;
 
 
-  // TODO: omit no-explicit-any -- 2022.06.02 Yuki Takei
-  // It is impossible to avoid the error
-  //  "Property '...' does not exist on type 'IntrinsicAttributes & RefAttributes<any>'"
-  //  because Editor is a class component and must be wrapped with React.forwardRef
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const EditorAny = Editor as any;
-
-  // console.log('EditorAny', markdown);
-
   return (
     <div className="d-flex flex-wrap">
       <div className="page-editor-editor-container flex-grow-1 flex-basis-0 mw-0">
-        <EditorAny
+        <Editor
           ref={editorRef}
           value={markdown}
-          isMobile={isMobile}
           isUploadable={isUploadable}
           isUploadableFile={isUploadableFile}
           isTextlintEnabled={isTextlintEnabled}
