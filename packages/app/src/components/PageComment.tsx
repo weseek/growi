@@ -117,13 +117,26 @@ export const PageComment: FC<Props> = memo((props:Props): JSX.Element => {
     });
   }, []);
 
-  if (commentsFromOldest == null || commentsExceptReply == null) return <></>;
+  let commentTitleClasses = 'border-bottom py-3 mb-3';
+  commentTitleClasses = titleAlign != null ? `${commentTitleClasses} text-${titleAlign}` : `${commentTitleClasses} text-center`;
 
-  if (hideIfEmpty && comments?.length === 0) {
-    return <></>;
-  }
-  if (rendererOptions == null || currentPagePath == null || currentPage == null) {
-    return <></>;
+  if (commentsFromOldest == null || commentsExceptReply == null || rendererOptions == null || currentPagePath == null || currentPage == null
+    || (hideIfEmpty && comments?.length === 0)) {
+    return (
+      <>
+        <div className="page-comments-row comment-list mt-5 py-4 d-edit-none d-print-none">
+          {/* TODO: container-lg expected global import, _override.scss */}
+          <div className="container-lg">
+            <div className="page-comments">
+              <h2 className={commentTitleClasses}><i className="icon-fw icon-bubbles"></i>Comments</h2>
+              <div className="text-muted text-center mt-3">
+                <i className="fa fa-lg fa-spinner fa-pulse mr-1"></i>
+              </div>
+            </div>
+          </div>
+        </div>
+      </>
+    );
   }
 
   const generateCommentInnerElement = (comment: ICommentHasId) => (
@@ -151,9 +164,6 @@ export const PageComment: FC<Props> = memo((props:Props): JSX.Element => {
       currentRevisionCreatedAt={currentPage.revision.createdAt}
     />
   );
-
-  let commentTitleClasses = 'border-bottom py-3 mb-3';
-  commentTitleClasses = titleAlign != null ? `${commentTitleClasses} text-${titleAlign}` : `${commentTitleClasses} text-center`;
 
   return (
     <>
