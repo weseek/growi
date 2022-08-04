@@ -25,7 +25,7 @@ type Props = {
   bookmarkedPage: IPageHasId,
   onUnbookmarked: () => void,
   onRenamed: () => void,
-  onDeleted: () => void
+  onDeleted: (pageToDelete: IPageToDeleteWithMeta) => void
 }
 
 const BookmarkItem = (props: Props) => {
@@ -38,7 +38,6 @@ const BookmarkItem = (props: Props) => {
   const { latter: pageTitle, former, isRoot } = dPagePath;
   const formerPagePath = isRoot ? pageTitle : pathUtils.addTrailingSlash(former);
   const bookmarkItemId = `bookmark-item-${bookmarkedPage._id}`;
-  const { open: openDeleteModal } = usePageDeleteModal();
 
   const bookmarkMenuItemClickHandler = useCallback(async() => {
     await unbookmark(bookmarkedPage._id);
@@ -85,24 +84,6 @@ const BookmarkItem = (props: Props) => {
   }, [bookmarkedPage, onRenamed, t]);
 
   const deleteMenuItemClickHandler = useCallback(async(_pageId: string, pageInfo: IPageInfoAll | undefined): Promise<void> => {
-    const onClickDeleteMenuItem = (pageToDelete: IPageToDeleteWithMeta) => {
-      const onDeletedHandler: OnDeletedFunction = (pathOrPathsToDelete, _isRecursively, isCompletely) => {
-        if (typeof pathOrPathsToDelete !== 'string') {
-          return;
-        }
-        const path = pathOrPathsToDelete;
-
-        if (isCompletely) {
-          toastSuccess(t('deleted_pages_completely', { path }));
-        }
-        else {
-          toastSuccess(t('deleted_pages', { path }));
-        }
-        onDeleted();
-      };
-      openDeleteModal([pageToDelete], { onDeleted: onDeletedHandler });
-    };
-
     if (bookmarkedPage._id == null || bookmarkedPage.path == null) {
       throw Error('_id and path must not be null.');
     }
@@ -116,8 +97,8 @@ const BookmarkItem = (props: Props) => {
       meta: pageInfo,
     };
 
-    onClickDeleteMenuItem(pageToDelete);
-  }, [bookmarkedPage, openDeleteModal, onDeleted, t]);
+    onDeleted(pageToDelete);
+  }, [bookmarkedPage, onDeleted]);
 
   return (
     <div className="d-flex justify-content-between" key={bookmarkedPage._id}>
@@ -165,6 +146,25 @@ const Bookmarks = () : JSX.Element => {
   const { t } = useTranslation();
   const { data: isGuestUser } = useIsGuestUser();
   const { data: currentUserBookmarksData, mutate: mutateCurrentUserBookmarks } = useSWRxCurrentUserBookmarks();
+  const { open: openDeleteModal } = usePageDeleteModal();
+
+  const onBookmarkItemDeleted = (pageToDelete: IPageToDeleteWithMeta):void => {
+    const onDeletedHandler: OnDeletedFunction = (pathOrPathsToDelete, _isRecursively, isCompletely) => {
+      if (typeof pathOrPathsToDelete !== 'string') {
+        return;
+      }
+      const path = pathOrPathsToDelete;
+
+      if (isCompletely) {
+        toastSuccess(t('deleted_pages_completely', { path }));
+      }
+      else {
+        toastSuccess(t('deleted_pages', { path }));
+      }
+      mutateCurrentUserBookmarks();
+    };
+    openDeleteModal([pageToDelete], { onDeleted: onDeletedHandler });
+  };
 
   const renderBookmarkList = () => {
     if (currentUserBookmarksData?.length === 0) {
@@ -184,7 +184,7 @@ const Bookmarks = () : JSX.Element => {
                 bookmarkedPage={currentUserBookmark}
                 onUnbookmarked={mutateCurrentUserBookmarks}
                 onRenamed={mutateCurrentUserBookmarks}
-                onDeleted={mutateCurrentUserBookmarks}
+                onDeleted={onBookmarkItemDeleted}
               />
             );
           })}
