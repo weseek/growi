@@ -17,6 +17,7 @@ export type CommonProps = {
   theme: GrowiThemes,
   customTitleTemplate: string,
   csrfToken: string,
+  isContainerFluid: boolean,
   growiVersion: string,
 } & Partial<SSRConfig>;
 
@@ -41,6 +42,7 @@ export const getServerSideCommonProps: GetServerSideProps<CommonProps> = async(c
     theme: configManager.getConfig('crowi', 'customize:theme'),
     customTitleTemplate: customizeService.customTitleTemplate,
     csrfToken: req.csrfToken(),
+    isContainerFluid: configManager.getConfig('crowi', 'customize:isContainerFluid') ?? false,
     growiVersion: crowi.version,
   };
 

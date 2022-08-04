@@ -30,7 +30,7 @@ import { Page } from '../components/Page';
 import DisplaySwitcher from '../components/Page/DisplaySwitcher';
 import RedirectedAlert from '../components/Page/RedirectedAlert';
 import ShareLinkAlert from '../components/Page/ShareLinkAlert';
-import PageComment from '../components/PageComment';
+import { PageComment } from '../components/PageComment';
 import CommentEditorLazyRenderer from '../components/PageComment/CommentEditorLazyRenderer';
 import PageContentFooter from '../components/PageContentFooter';
 import BookmarkList from '../components/PageList/BookmarkList';
@@ -39,7 +39,6 @@ import { PageTimeline } from '../components/PageTimeline';
 import RecentCreated from '../components/RecentCreated/RecentCreated';
 import { SearchPage } from '../components/SearchPage';
 import Sidebar from '../components/Sidebar';
-import TagPage from '../components/TagPage';
 import TrashPageList from '../components/TrashPageList';
 
 import { appContainer, componentMappings } from './base';
@@ -75,7 +74,6 @@ Object.assign(componentMappings, {
   'identical-path-page': <IdenticalPathPage />,
 
   // 'revision-history': <PageHistory pageId={pageId} />,
-  'tags-page': <TagPage />,
 
   'grw-page-status-alert-container': <PageStatusAlert />,
 

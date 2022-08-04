@@ -82,12 +82,12 @@ const SecurityManagementContents = () => {
   return (
     <div data-testid="admin-security">
       <div className="mb-5">
-        {/* <SecuritySetting /> */}
+        <SecuritySetting />
       </div>
 
       {/* Shared Link List */}
       <div className="mb-5">
-        {/* <ShareLinkSetting /> */}
+        <ShareLinkSetting />
       </div>
 
 

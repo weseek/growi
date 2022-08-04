@@ -60,7 +60,7 @@ jobs:
     - name: Archive production files
       id: archive-prod-files
       run: |
-        tar -cf production.tar \
+        tar -zcf production.tar.gz \
           package.json \
           packages/app/.next \
           packages/app/config \
@@ -70,7 +70,7 @@ jobs:
           packages/app/.env.production* \
           packages/*/package.json \
           packages/*/dist
-        echo ::set-output name=file::production.tar
+        echo ::set-output name=file::production.tar.gz
 
     - name: Upload production files as artifact
       uses: actions/upload-artifact@v3
@@ -209,6 +209,9 @@ jobs:
 
     steps:
     - uses: actions/checkout@v3
+
+    - name: Install fonts
+      run: sudo apt install fonts-noto
 
     - uses: actions/setup-node@v3
       with:

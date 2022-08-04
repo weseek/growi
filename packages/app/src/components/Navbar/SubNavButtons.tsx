@@ -1,10 +1,14 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, useMemo } from 'react';
 
-import dynamic from 'next/dynamic';
+import { useTranslation } from 'next-i18next';
+import { DropdownItem } from 'reactstrap';
 
-import { toggleBookmark, toggleLike, toggleSubscribe } from '~/client/services/page-operation';
 import {
-  IPageInfoAll, IPageToDeleteWithMeta, IPageToRenameWithMeta, isIPageInfoForEntity, isIPageInfoForOperation,
+  toggleBookmark, toggleLike, toggleSubscribe, updateContentWidth,
+} from '~/client/services/page-operation';
+import { toastError } from '~/client/util/apiNotification';
+import {
+  IPageInfoForOperation, IPageToDeleteWithMeta, IPageToRenameWithMeta, isIPageInfoForEntity, isIPageInfoForOperation,
 } from '~/interfaces/page';
 import { useIsGuestUser } from '~/stores/context';
 import { IPageForPageDuplicateModal } from '~/stores/modal';
@@ -12,10 +16,51 @@ import { IPageForPageDuplicateModal } from '~/stores/modal';
 import { useSWRBookmarkInfo } from '../../stores/bookmark';
 import { useSWRxPageInfo } from '../../stores/page';
 import { useSWRxUsersList } from '../../stores/user';
+import BookmarkButtons from '../BookmarkButtons';
 import {
-  AdditionalMenuItemsRendererProps, ForceHideMenuItems, MenuItemType, PageItemControlProps,
+  AdditionalMenuItemsRendererProps, ForceHideMenuItems, MenuItemType,
+  PageItemControl,
 } from '../Common/Dropdown/PageItemControl';
-import { Skelton } from '../Skelton';
+import LikeButtons from '../LikeButtons';
+import SubscribeButton from '../SubscribeButton';
+import SeenUserInfo from '../User/SeenUserInfo';
+
+
+type WideViewMenuItemProps = AdditionalMenuItemsRendererProps & {
+  onClickMenuItem: (newValue: boolean) => void,
+}
+
+const WideViewMenuItem = (props: WideViewMenuItemProps): JSX.Element => {
+  const { t } = useTranslation();
+
+  const {
+    pageInfo, onClickMenuItem,
+  } = props;
+
+  if (!isIPageInfoForEntity(pageInfo)) {
+    return <></>;
+  }
+
+  return (
+    <DropdownItem
+      onClick={() => onClickMenuItem(!pageInfo.expandContentWidth)}
+      className="grw-page-control-dropdown-item"
+    >
+      <div className="custom-control custom-switch ml-1">
+        <input
+          id="switchContentWidth"
+          className="custom-control-input"
+          type="checkbox"
+          checked={pageInfo.expandContentWidth}
+          onChange={() => {}}
+        />
+        <label className="custom-control-label" htmlFor="switchContentWidth">
+          { t('wide_view') }
+        </label>
+      </div>
+    </DropdownItem>
+  );
+};
 
 
 type CommonProps = {
@@ -34,7 +79,7 @@ type SubNavButtonsSubstanceProps = CommonProps & {
   shareLinkId?: string | null,
   revisionId: string | null,
   path?: string | null,
-  pageInfo: IPageInfoAll,
+  pageInfo: IPageInfoForOperation,
 }
 
 const SubNavButtonsSubstance = (props: SubNavButtonsSubstanceProps): JSX.Element => {
@@ -50,20 +95,6 @@ const SubNavButtonsSubstance = (props: SubNavButtonsSubstanceProps): JSX.Element
   const { mutate: mutatePageInfo } = useSWRxPageInfo(pageId, shareLinkId);
 
   const { data: bookmarkInfo, mutate: mutateBookmarkInfo } = useSWRBookmarkInfo(pageId);
-
-  // dynamic import for show skelton
-  const SubscribeButton = dynamic(() => import('../SubscribeButton'), { ssr: false, loading: () => <Skelton width={37} additionalClass='btn-subscribe'/> });
-  const LikeButtons = dynamic(() => import('../LikeButtons'), { ssr: false, loading: () => <Skelton width={57.48} additionalClass='btn-like'/> });
-  const BookmarkButtons = dynamic(() => import('../BookmarkButtons'), {
-    ssr: false,
-    loading: () => <Skelton width={53.48} additionalClass='total-bookmarks'/>,
-  });
-  const SeenUserInfo = dynamic(() => import('../User/SeenUserInfo'), { ssr: false, loading: () => <Skelton width={58.98} additionalClass='btn-seen-user'/> });
-  const PageItemControl = dynamic<PageItemControlProps>(() => import('../Common/Dropdown/PageItemControl').then(mod => mod.PageItemControl), {
-    ssr: false,
-    loading: () => <Skelton width={37} additionalClass='btn-page-item-control'/>,
-  });
-
 
   const likerIds = isIPageInfoForEntity(pageInfo) ? (pageInfo.likerIds ?? []).slice(0, 15) : [];
   const seenUserIds = isIPageInfoForEntity(pageInfo) ? (pageInfo.seenUserIds ?? []).slice(0, 15) : [];
@@ -153,10 +184,33 @@ const SubNavButtonsSubstance = (props: SubNavButtonsSubstanceProps): JSX.Element
     onClickDeleteMenuItem(pageToDelete);
   }, [onClickDeleteMenuItem, pageId, pageInfo, path, revisionId]);
 
+  const switchContentWidthClickHandler = useCallback(async(newValue: boolean) => {
+    if (isGuestUser == null || isGuestUser) {
+      return;
+    }
+    if (!isIPageInfoForEntity(pageInfo)) {
+      return;
+    }
+    try {
+      await updateContentWidth(pageId, newValue);
+      mutatePageInfo();
+    }
+    catch (err) {
+      toastError(err);
+    }
+  }, [isGuestUser, mutatePageInfo, pageId, pageInfo]);
+
+  const additionalMenuItemOnTopRenderer = useMemo(() => {
+    if (!isIPageInfoForEntity(pageInfo)) {
+      return undefined;
+    }
+    const wideviewMenuItemRenderer = (props: WideViewMenuItemProps) => <WideViewMenuItem {...props} onClickMenuItem={switchContentWidthClickHandler} />;
+    return wideviewMenuItemRenderer;
+  }, [pageInfo, switchContentWidthClickHandler]);
+
   if (!isIPageInfoForOperation(pageInfo)) {
     return <></>;
   }
-
 
   const {
     sumOfLikers, sumOfSeenUsers, isLiked, bookmarkCount, isBookmarked,
@@ -205,6 +259,7 @@ const SubNavButtonsSubstance = (props: SubNavButtonsSubstanceProps): JSX.Element
           pageInfo={pageInfo}
           isEnableActions={!isGuestUser}
           forceHideMenuItems={forceHideMenuItemsWithBookmark}
+          additionalMenuItemOnTopRenderer={additionalMenuItemOnTopRenderer}
           additionalMenuItemRenderer={additionalMenuItemRenderer}
           onClickRenameMenuItem={renameMenuItemClickHandler}
           onClickDuplicateMenuItem={duplicateMenuItemClickHandler}
@@ -215,7 +270,7 @@ const SubNavButtonsSubstance = (props: SubNavButtonsSubstanceProps): JSX.Element
   );
 };
 
-type SubNavButtonsProps= CommonProps & {
+export type SubNavButtonsProps = CommonProps & {
   pageId: string,
   shareLinkId?: string | null,
   revisionId?: string | null,

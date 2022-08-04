@@ -20,11 +20,11 @@ import { useFullTextSearchTermManager } from '~/stores/search';
 
 
 import AppContainer from '../../client/services/AppContainer';
-import { AdditionalMenuItemsRendererProps, ForceHideMenuItems } from '../Common/Dropdown/PageItemControl';
+import { AdditionalMenuItemsRendererProps, ForceHideMenuItems, MenuItemType } from '../Common/Dropdown/PageItemControl';
 import { GrowiSubNavigation } from '../Navbar/GrowiSubNavigation';
 import { SubNavButtons } from '../Navbar/SubNavButtons';
 import RevisionLoader from '../Page/RevisionLoader';
-import PageComment from '../PageComment';
+import { PageComment } from '../PageComment';
 import PageContentFooter from '../PageContentFooter';
 
 
@@ -175,6 +175,7 @@ export const SearchResultContent: FC<Props> = (props: Props) => {
       ? page.revision
       : page.revision._id;
 
+
     return (
       <div className="d-flex flex-column align-items-end justify-content-center py-md-2">
         <SubNavButtons
@@ -214,7 +215,7 @@ export const SearchResultContent: FC<Props> = (props: Props) => {
           revisionId={page.revision}
           highlightKeywords={highlightKeywords}
         />
-        <PageComment appContainer={appContainer} pageId={page._id} highlightKeywords={highlightKeywords} isReadOnly hideIfEmpty />
+        <PageComment pageId={page._id} highlightKeywords={highlightKeywords} isReadOnly hideIfEmpty />
         <PageContentFooter
           createdAt={new Date(pageWithMeta.data.createdAt)}
           updatedAt={new Date(pageWithMeta.data.updatedAt)}

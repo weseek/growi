@@ -1,5 +1,6 @@
 import React from 'react';
 
+import { isClient } from '@growi/core';
 import {
   NextPage, GetServerSideProps, GetServerSidePropsContext,
 } from 'next';
@@ -7,17 +8,39 @@ import { useTranslation } from 'next-i18next';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import dynamic from 'next/dynamic';
 import { useRouter } from 'next/router';
+import { Container, Provider } from 'unstated';
 
+import AdminAppContainer from '~/client/services/AdminAppContainer';
+import AdminBasicSecurityContainer from '~/client/services/AdminBasicSecurityContainer';
+import AdminCustomizeContainer from '~/client/services/AdminCustomizeContainer';
+import AdminExternalAccountsContainer from '~/client/services/AdminExternalAccountsContainer';
+import AdminGeneralSecurityContainer from '~/client/services/AdminGeneralSecurityContainer';
+import AdminGitHubSecurityContainer from '~/client/services/AdminGitHubSecurityContainer';
+import AdminGoogleSecurityContainer from '~/client/services/AdminGoogleSecurityContainer';
+import AdminHomeContainer from '~/client/services/AdminHomeContainer';
+import AdminImportContainer from '~/client/services/AdminImportContainer';
+import AdminLdapSecurityContainer from '~/client/services/AdminLdapSecurityContainer';
+import AdminLocalSecurityContainer from '~/client/services/AdminLocalSecurityContainer';
+import AdminMarkDownContainer from '~/client/services/AdminMarkDownContainer';
+import AdminNotificationContainer from '~/client/services/AdminNotificationContainer';
+import AdminOidcSecurityContainer from '~/client/services/AdminOidcSecurityContainer';
+import AdminSamlSecurityContainer from '~/client/services/AdminSamlSecurityContainer';
+import AdminSlackIntegrationLegacyContainer from '~/client/services/AdminSlackIntegrationLegacyContainer';
+import AdminTwitterSecurityContainer from '~/client/services/AdminTwitterSecurityContainer';
+import AdminUserGroupDetailContainer from '~/client/services/AdminUserGroupDetailContainer';
+import AdminUsersContainer from '~/client/services/AdminUsersContainer';
 import { CrowiRequest } from '~/interfaces/crowi-request';
 import PluginUtils from '~/server/plugins/plugin-utils';
 import ConfigLoader from '~/server/service/config-loader';
 import {
-  useCurrentUser, /* useSearchServiceConfigured, */ /* useIsMailerSetup */ useIsSearchServiceReachable, useSiteUrl,
+  useCurrentUser, /* useSearchServiceConfigured, */ useIsAclEnabled, useIsMailerSetup, useIsSearchServiceReachable, useSiteUrl,
 } from '~/stores/context';
 
 import {
   CommonProps, getServerSideCommonProps, useCustomTitle, getNextI18NextConfig,
 } from '../utils/commons';
+
+
 // import { useEnvVars } from '~/stores/admin-context';
 
 const AdminHome = dynamic(() => import('../../components/Admin/AdminHome/AdminHome'), { ssr: false });
@@ -36,6 +59,7 @@ const ElasticsearchManagement = dynamic(() => import('../../components/Admin/Ela
 // named export
 const AuditLogManagement = dynamic(() => import('../../components/Admin/AuditLogManagement').then(module => module.AuditLogManagement));
 
+
 const AdminLayout = dynamic(() => import('../../components/Layout/AdminLayout'), { ssr: false });
 
 const pluginUtils = new PluginUtils();
@@ -48,7 +72,7 @@ type Props = CommonProps & {
   yarnVersion: string,
   installedPlugins: any,
   envVars: any,
-
+  isAclEnabled: boolean,
   isSearchServiceConfigured: boolean,
   isSearchServiceReachable: boolean,
   isMailerSetup: boolean,
@@ -141,14 +165,80 @@ const AdminMarkdownSettingsPage: NextPage<Props> = (props: Props) => {
   // useSearchServiceConfigured(props.isSearchServiceConfigured);
   useIsSearchServiceReachable(props.isSearchServiceReachable);
 
+  useIsAclEnabled(props.isAclEnabled);
   useSiteUrl(props.siteUrl);
 
   // useEnvVars(props.envVars);
 
+  const injectableContainers: Container<any>[] = [];
+
+  if (isClient()) {
+    // Create unstated container instances (except Security)
+    const adminAppContainer = new AdminAppContainer();
+    const adminImportContainer = new AdminImportContainer();
+    const adminHomeContainer = new AdminHomeContainer();
+    const adminCustomizeContainer = new AdminCustomizeContainer();
+    const adminUsersContainer = new AdminUsersContainer();
+    const adminExternalAccountsContainer = new AdminExternalAccountsContainer();
+    const adminNotificationContainer = new AdminNotificationContainer();
+    const adminSlackIntegrationLegacyContainer = new AdminSlackIntegrationLegacyContainer();
+    const adminMarkDownContainer = new AdminMarkDownContainer();
+    const adminUserGroupDetailContainer = new AdminUserGroupDetailContainer();
+
+    injectableContainers.push(
+      adminAppContainer,
+      adminImportContainer,
+      adminHomeContainer,
+      adminCustomizeContainer,
+      adminUsersContainer,
+      adminExternalAccountsContainer,
+      adminNotificationContainer,
+      adminSlackIntegrationLegacyContainer,
+      adminMarkDownContainer,
+      adminUserGroupDetailContainer,
+    );
+  }
+
+
+  const adminSecurityContainers: Container<any>[] = [];
+
+  if (isClient()) {
+    const adminSecuritySettingElem = document.getElementById('admin-security-setting');
+
+    if (adminSecuritySettingElem != null) {
+      // Create unstated container instances (Security)
+      const adminGeneralSecurityContainer = new AdminGeneralSecurityContainer();
+      const adminLocalSecurityContainer = new AdminLocalSecurityContainer();
+      const adminLdapSecurityContainer = new AdminLdapSecurityContainer();
+      const adminSamlSecurityContainer = new AdminSamlSecurityContainer();
+      const adminOidcSecurityContainer = new AdminOidcSecurityContainer();
+      const adminBasicSecurityContainer = new AdminBasicSecurityContainer();
+      const adminGoogleSecurityContainer = new AdminGoogleSecurityContainer();
+      const adminGitHubSecurityContainer = new AdminGitHubSecurityContainer();
+      const adminTwitterSecurityContainer = new AdminTwitterSecurityContainer();
+
+      adminSecurityContainers.push(
+        adminGeneralSecurityContainer,
+        adminLocalSecurityContainer,
+        adminLdapSecurityContainer,
+        adminSamlSecurityContainer,
+        adminOidcSecurityContainer,
+        adminBasicSecurityContainer,
+        adminGoogleSecurityContainer,
+        adminGitHubSecurityContainer,
+        adminTwitterSecurityContainer,
+      );
+    }
+
+  }
+
+
   return (
-    <AdminLayout title={title} selectedNavOpt={name}>
-      {content.component}
-    </AdminLayout>
+    <Provider inject={[...injectableContainers, ...adminSecurityContainers]}>
+      <AdminLayout title={title} selectedNavOpt={name}>
+        {content.component}
+      </AdminLayout>
+    </Provider>
   );
 };
 
@@ -176,7 +266,7 @@ export const getServerSideProps: GetServerSideProps = async(context: GetServerSi
   const req: CrowiRequest = context.req as CrowiRequest;
   const { crowi } = req;
   const {
-    appService, searchService,
+    appService, searchService, aclService,
   } = crowi;
 
   const { user } = req;
@@ -202,6 +292,7 @@ export const getServerSideProps: GetServerSideProps = async(context: GetServerSi
   props.yarnVersion = crowi.runtimeVersions.versions.yarn ? crowi.runtimeVersions.versions.yarn.version.version : null;
   props.installedPlugins = pluginUtils.listPlugins();
   props.envVars = await ConfigLoader.getEnvVarsForDisplay(true);
+  props.isAclEnabled = aclService.isAclEnabled();
 
   props.isSearchServiceConfigured = searchService.isConfigured;
   props.isSearchServiceReachable = searchService.isReachable;

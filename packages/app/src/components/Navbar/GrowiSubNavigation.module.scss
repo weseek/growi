@@ -2,6 +2,14 @@
 @use '~/styles/bootstrap/init' as bs;
 @use '~/styles/mixins';
 
+%subnav-buttons-height {
+  height: 40px;
+}
+
+%compact-subnav-buttons-height {
+  height: 32px;
+}
+
 // https://github.com/css-modules/css-modules/issues/295#issuecomment-404873976
 // workaround to use '&' in global scope
 .grw-subnav {
@@ -36,15 +44,20 @@
       }
     }
 
+    .btn-skelton {
+      @extend %subnav-buttons-height;
+      width: 100%;
+    }
+
     .btn-subscribe {
-      height: 40px;
+      @extend %subnav-buttons-height;
       font-size: 20px;
     }
 
     .btn-like,
     .btn-bookmark,
     .btn-seen-user {
-      height: 40px;
+      @extend %subnav-buttons-height;
       padding-right: 6px;
       padding-left: 8px;
       font-size: 20px;
@@ -75,42 +88,20 @@
       font-size: 16px;
     }
 
-    ul.authors {
-      li {
-        font-size: 12px;
-        list-style: none;
-      }
+    .user-list-popover {
+      max-width: 200px;
 
-      .text-date {
-        font-size: 11px;
-      }
+      .user-list-content {
+        direction: rtl;
 
-      .picture {
-        width: 22px;
-        height: 22px;
-        border: 1px solid bs.$gray-300;
-
-        &.picture-xs {
-          width: 14px;
-          height: 14px;
+        .liker-user-count,
+        .seen-user-count {
+          font-size: 12px;
+          font-weight: bolder;
         }
       }
-
-      .user-list-popover {
-        max-width: 200px;
-
-        .user-list-content {
-          direction: rtl;
-
-          .liker-user-count,
-          .seen-user-count {
-            font-size: 12px;
-            font-weight: bolder;
-          }
-        }
-        .cls-1 {
-          isolation: isolate;
-        }
+      .cls-1 {
+        isolation: isolate;
       }
     }
   }
@@ -135,17 +126,22 @@
         min-height: 90px;
       }
 
+      .btn-skelton {
+        @extend %compact-subnav-buttons-height;
+        width: 100%;
+      }
+
       .btn-like,
       .btn-bookmark,
       .btn-subscribe {
         width: 32px;
-        height: 32px;
+        @extend %compact-subnav-buttons-height;
         padding: 4px;
         font-size: 16px;
       }
       .btn-seen-user {
         width: 48px;
-        height: 32px;
+        @extend %compact-subnav-buttons-height;
         padding: 4px;
         font-size: 16px;
 
@@ -156,7 +152,7 @@
       }
       .btn-page-item-control {
         width: 32px;
-        height: 32px;
+        @extend %compact-subnav-buttons-height;
         font-size: 12px;
       }
     }

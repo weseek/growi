@@ -1,8 +1,28 @@
 # Changelog
 
-## [Unreleased](https://github.com/weseek/growi/compare/v5.1.0...HEAD)
+## [Unreleased](https://github.com/weseek/growi/compare/v5.1.1...HEAD)
 
 *Please do not manually update this file. We've automated the process.*
+
+## [v5.1.1](https://github.com/weseek/growi/compare/v5.1.0...v5.1.1) - 2022-08-01
+
+### 💎 Features
+
+- feat: Users can set users per ip from env var at API Rate Limit  (#6379) @yukendev
+- feat: Show user picture in Audit Log (#6342) @miya
+- feat: Reset search criteria button (#6327) @miya
+
+### 🚀 Improvement
+
+- imprv(auditlog): Display number of actions that can be saved (#6353) @miya
+- imprv(auditlog): Include delete-related actions in small group (#6351) @miya
+
+### 🐛 Bug Fixes
+
+- fix: Default markdown linker with relative path does not respect the current page path (v5.1.0) (#6378) @yuki-takei
+- fix: Recover page path operation (#6368) @hakumizuki
+- fix: Migration script for inserting NamedQuery (#6364) @yuki-takei
+- fix: "Error: cannnot get grant label" occured with lsx (#6348) @yukendev
 
 ## [v5.1.0](https://github.com/weseek/growi/compare/v5.0.11...v5.1.0) - 2022-07-21
 

@@ -1,10 +1,8 @@
 import React, { useCallback, useState, useEffect } from 'react';
 
-import PropTypes from 'prop-types';
 import { Collapse, Button } from 'reactstrap';
 
 
-import EditorContainer from '~/client/services/EditorContainer';
 import { useCurrentPagePath, useIsSlackConfigured } from '~/stores/context';
 import { useSWRxSlackChannels, useIsSlackEnabled } from '~/stores/editor';
 import {
@@ -14,7 +12,6 @@ import {
 import SavePageControls from '../SavePageControls';
 import SlackLogo from '../SlackLogo';
 import { SlackNotification } from '../SlackNotification';
-import { withUnstatedContainers } from '../UnstatedUtils';
 
 
 import OptionsSelector from './OptionsSelector';
@@ -152,8 +149,4 @@ const EditorNavbarBottom = (props) => {
   );
 };
 
-EditorNavbarBottom.propTypes = {
-  editorContainer: PropTypes.instanceOf(EditorContainer).isRequired,
-};
-
-export default withUnstatedContainers(EditorNavbarBottom, [EditorContainer]);
+export default EditorNavbarBottom;

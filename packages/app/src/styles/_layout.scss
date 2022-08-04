@@ -6,16 +6,16 @@ body {
   overscroll-behavior-y: none;
 }
 
-body:not(.growi-layout-fluid) .grw-container-convertible {
+.wrapper:not(.growi-layout-fluid) .grw-container-convertible {
   @extend .container-lg;
+}
+
+.wrapper.growi-layout-fluid .grw-container-convertible {
+  @extend .container-fluid;
 }
 
 body.not-found-page .grw-container-convertible {
   @extend .container-lg;
-}
-
-body.growi-layout-fluid .grw-container-convertible {
-  @extend .container-fluid;
 }
 
 .grw-modal-head {
@@ -114,14 +114,6 @@ body.growi-layout-fluid .grw-container-convertible {
 
     .row {
       display: block !important;
-    }
-
-    .revision-toc {
-      float: none;
-      max-width: 100%;
-      margin-bottom: 20px;
-      font-size: 0.9em;
-      border: solid 1px bs.$gray-400;
     }
 
     .meta {
