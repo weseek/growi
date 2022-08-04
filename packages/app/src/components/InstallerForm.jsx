@@ -1,7 +1,5 @@
 import React from 'react';
 
-import i18next from 'i18next';
-
 import { useTranslation, i18n } from 'next-i18next';
 import PropTypes from 'prop-types';
 
@@ -34,8 +32,8 @@ class InstallerForm extends React.Component {
       .then((res) => { return this.setState({ isValidUserName: res.data.valid }) });
   }
 
-  changeLanguage(meta) {
-    i18next.changeLanguage(meta.id);
+  changeLanguage(locale) {
+    i18n.changeLanguage(locale);
   }
 
   submitHandler() {
