@@ -1,9 +1,11 @@
-import React, { FC } from 'react';
+import React, { FC, useState, useCallback } from 'react';
 
 import { pagePathUtils } from '@growi/core';
 import { UserPicture } from '@growi/ui';
 import { format } from 'date-fns';
+import { CopyToClipboard } from 'react-copy-to-clipboard';
 import { useTranslation } from 'react-i18next';
+import { Tooltip } from 'reactstrap';
 
 import { IActivityHasId } from '~/interfaces/activity';
 
@@ -17,6 +19,14 @@ const formatDate = (date) => {
 
 export const ActivityTable : FC<Props> = (props: Props) => {
   const { t } = useTranslation();
+  const [tooltopOpen, setTooltipOpen] = useState(false);
+
+  const showToolTip = useCallback(() => {
+    setTooltipOpen(true);
+    setTimeout(() => {
+      setTooltipOpen(false);
+    }, 1000);
+  }, [setTooltipOpen]);
 
   return (
     <div className="table-responsive text-nowrap h-100">
@@ -27,7 +37,7 @@ export const ActivityTable : FC<Props> = (props: Props) => {
             <th scope="col">{t('admin:audit_log_management.date')}</th>
             <th scope="col">{t('admin:audit_log_management.action')}</th>
             <th scope="col">{t('admin:audit_log_management.ip')}</th>
-            <th scope="col">{t('admin:audit_log_management.url')}</th>
+            <th scope="col">{t('admin:audit_log_management.url')} </th>
           </tr>
         </thead>
         <tbody>
@@ -45,7 +55,16 @@ export const ActivityTable : FC<Props> = (props: Props) => {
                 <td>{formatDate(activity.createdAt)}</td>
                 <td>{t(`admin:audit_log_action.${activity.action}`)}</td>
                 <td>{activity.ip}</td>
-                <td>{activity.endpoint}</td>
+                <td>
+                  <CopyToClipboard text={activity.endpoint} onCopy={showToolTip}>
+                    <button id="urlButton" type="button" className="btn btn-link">
+                      {activity.endpoint}
+                    </button>
+                  </CopyToClipboard>
+                  <Tooltip placement="top" isOpen={tooltopOpen} fade={false} target="urlButton">
+                    copied!
+                  </Tooltip>
+                </td>
               </tr>
             );
           })}
