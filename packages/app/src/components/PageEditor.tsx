@@ -399,8 +399,6 @@ const PageEditor = (props: Props): JSX.Element => {
     return <></>;
   }
 
-  // const config = props.appContainer.getConfig();
-  // const isUploadable = config.upload.image || config.upload.file;
   const isUploadable = isUploadableImage || isUploadableFile;
 
 
