@@ -31,7 +31,6 @@ import AdminTwitterSecurityContainer from '~/client/services/AdminTwitterSecurit
 import AdminUserGroupDetailContainer from '~/client/services/AdminUserGroupDetailContainer';
 import AdminUsersContainer from '~/client/services/AdminUsersContainer';
 import { CrowiRequest } from '~/interfaces/crowi-request';
-import { IUserGroupHasId } from '~/interfaces/user';
 import PluginUtils from '~/server/plugins/plugin-utils';
 import ConfigLoader from '~/server/service/config-loader';
 import {
@@ -80,7 +79,6 @@ type Props = CommonProps & {
   isSearchServiceConfigured: boolean,
   isSearchServiceReachable: boolean,
   isMailerSetup: boolean,
-  // userGroup: IUserGroupHasId,
 
   siteUrl: string,
 };
@@ -169,7 +167,7 @@ const AdminMarkdownSettingsPage: NextPage<Props> = (props: Props) => {
       // {{ t('UserGroup Management') + '/' + userGroup.name
       [userGroupId]: {
         title: t('UserGroup Management'),
-        component: <UserGroupDetailPage /* userGroup={userGroup} */ />,
+        component: <UserGroupDetailPage userGroupId={userGroupId} />,
       },
     },
     search: {
@@ -299,19 +297,10 @@ async function injectNextI18NextConfigurations(context: GetServerSidePropsContex
 
 export const getServerSideProps: GetServerSideProps = async(context: GetServerSidePropsContext) => {
   const req: CrowiRequest = context.req as CrowiRequest;
-  const { crowi, path } = req;
-  console.log('crowi_getServer', req.path);
-  const lastItem = path.substring(path.lastIndexOf('/') + 1);
-  console.log({ lastItem });
+  const { crowi } = req;
   const {
-    appService, searchService, aclService, userGroupService,
+    appService, searchService, aclService,
   } = crowi;
-
-  // console.log('_iiiuu', crowi.aclService);
-  // console.log('getUserGroupDetailById', crowi.userGroupService.getUserGroupDetailById('62e8388a9a649bea5e703ef7'));
-  // console.log('mailService', crowi.mailService);
-
-  // console.log('hoge_req', req.path);
 
   const { user } = req;
   const result = await getServerSideCommonProps(context);
@@ -337,9 +326,6 @@ export const getServerSideProps: GetServerSideProps = async(context: GetServerSi
   props.installedPlugins = pluginUtils.listPlugins();
   props.envVars = await ConfigLoader.getEnvVarsForDisplay(true);
   props.isAclEnabled = aclService.isAclEnabled();
-  // props.userGroup = await userGroupService.getUserGroupDetailById('62e8388a9a649bea5e703ef7');
-  // props.userGroup = await userGroupService.getUserGroupDetailById(lastItem);
-  // console.log('aaaaaa', getUserGroupDetailById);
 
   props.isSearchServiceConfigured = searchService.isConfigured;
   props.isSearchServiceReachable = searchService.isReachable;
