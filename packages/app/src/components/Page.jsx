@@ -1,14 +1,13 @@
 import React, {
-  useCallback, useEffect, useMemo, useRef, useState,
+  useEffect, useRef, useState,
 } from 'react';
 
 import dynamic from 'next/dynamic';
 import PropTypes from 'prop-types';
-import { debounce } from 'throttle-debounce';
+// import { debounce } from 'throttle-debounce';
 
-import MarkdownTable from '~/client/models/MarkdownTable';
 import { blinkSectionHeaderAtBoot } from '~/client/util/blink-section-header';
-import { getOptionsToSave } from '~/client/util/editor';
+// import { getOptionsToSave } from '~/client/util/editor';
 import {
   useIsGuestUser, useIsBlinkedHeaderAtBoot,
 } from '~/stores/context';
@@ -23,8 +22,11 @@ import {
 import loggerFactory from '~/utils/logger';
 
 import RevisionRenderer from './Page/RevisionRenderer';
-import mdu from './PageEditor/MarkdownDrawioUtil';
-import mtu from './PageEditor/MarkdownTableUtil';
+
+// TODO: import dynamically
+// import MarkdownTable from '~/client/models/MarkdownTable';
+// import mdu from './PageEditor/MarkdownDrawioUtil';
+// import mtu from './PageEditor/MarkdownTableUtil';
 
 const logger = loggerFactory('growi:Page');
 

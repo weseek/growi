@@ -19,7 +19,7 @@ import AuthorInfoStyles from './AuthorInfo.module.scss';
 import styles from './GrowiSubNavigation.module.scss';
 
 
-type Props = {
+export type GrowiSubNavigationProps = {
   page: Partial<IPageHasId>,
 
   showDrawerToggler?: boolean,
@@ -37,7 +37,7 @@ type Props = {
   additionalClasses?: string[],
 }
 
-export const GrowiSubNavigation = (props: Props): JSX.Element => {
+export const GrowiSubNavigation = (props: GrowiSubNavigationProps): JSX.Element => {
 
   const TagLabels = dynamic(() => import('../Page/TagLabels'), {
     ssr: false,
