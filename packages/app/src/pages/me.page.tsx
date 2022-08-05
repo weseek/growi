@@ -1,7 +1,7 @@
 import React from 'react';
 
 import {
-  IDataWithMeta, IPageInfoForEntity, IPagePopulatedToShowRevision, isIPageInfoForEntity, IUser, IUserHasId,
+  IUser, IUserHasId,
 } from '@growi/core';
 import { model as mongooseModel } from 'mongoose';
 import {
@@ -10,12 +10,10 @@ import {
 import { useTranslation } from 'next-i18next';
 import dynamic from 'next/dynamic';
 import { useRouter } from 'next/router';
-import superjson from 'superjson';
 
 import { CrowiRequest } from '~/interfaces/crowi-request';
 import { ISidebarConfig } from '~/interfaces/sidebar-config';
 import { IUserUISettings } from '~/interfaces/user-ui-settings';
-import { PageDocument } from '~/server/models/page';
 import { UserUISettingsModel } from '~/server/models/user-ui-settings';
 import {
   usePreferDrawerModeByUser, usePreferDrawerModeOnEditByUser, useSidebarCollapsed, useCurrentSidebarContents, useCurrentProductNavWidth,
@@ -27,7 +25,7 @@ import { BasicLayout } from '../components/Layout/BasicLayout';
 import {
   useCurrentUser,
   useIsSearchServiceConfigured, useIsSearchServiceReachable,
-  useCsrfToken, useIsSearchScopeChildrenAsDefault, useCurrentPathname,
+  useCsrfToken, useIsSearchScopeChildrenAsDefault,
   useRegistrationWhiteList,
 } from '../stores/context';
 
@@ -37,35 +35,6 @@ import {
 
 
 const logger = loggerFactory('growi:pages:me');
-
-
-type IPageToShowRevisionWithMeta = IDataWithMeta<IPagePopulatedToShowRevision & PageDocument, IPageInfoForEntity>;
-type IPageToShowRevisionWithMetaSerialized = IDataWithMeta<string, string>;
-
-superjson.registerCustom<IPageToShowRevisionWithMeta, IPageToShowRevisionWithMetaSerialized>(
-  {
-    isApplicable: (v): v is IPageToShowRevisionWithMeta => {
-      return v?.data != null
-        && v?.data.toObject != null
-        && v?.meta != null
-        && isIPageInfoForEntity(v.meta);
-    },
-    serialize: (v) => {
-      return {
-        data: superjson.stringify(v.data.toObject()),
-        meta: superjson.stringify(v.meta),
-      };
-    },
-    deserialize: (v) => {
-      return {
-        data: superjson.parse(v.data),
-        meta: v.meta != null ? superjson.parse(v.meta) : undefined,
-      };
-    },
-  },
-  'IPageToShowRevisionWithMetaTransformer',
-);
-
 
 type Props = CommonProps & {
   currentUser: IUser,
@@ -99,16 +68,7 @@ const MePage: NextPage<Props> = (props: Props) => {
   useIsSearchServiceConfigured(props.isSearchServiceConfigured);
   useIsSearchServiceReachable(props.isSearchServiceReachable);
   useIsSearchScopeChildrenAsDefault(props.isSearchScopeChildrenAsDefault);
-  useCurrentPathname(props.currentPathname);
   const { t } = useTranslation();
-
-  // sync pathname by Shallow Routing https://nextjs.org/docs/routing/shallow-routing
-  // useEffect(() => {
-  //   const decodedURI = decodeURI(window.location.pathname);
-  //   if (isClient() && decodedURI !== props.currentPathname) {
-  //     router.replace(props.currentPathname, undefined, { shallow: true });
-  //   }
-  // }, [props.currentPathname, router]);
 
   const PersonalSettings = dynamic(() => import('~/components/Me/PersonalSettings'), { ssr: false });
 
