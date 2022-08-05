@@ -59,8 +59,6 @@ const UserGroupDetailPage = (props: Props) => {
    */
   const { data: userGroupPages } = useSWRxUserGroupPages(currentUserGroupId, 10, 0);
 
-  console.log();
-
 
   const { data: childUserGroupsList, mutate: mutateChildUserGroups } = useSWRxChildUserGroupList([currentUserGroupId], true);
   const childUserGroups = childUserGroupsList != null ? childUserGroupsList.childUserGroups : [];
