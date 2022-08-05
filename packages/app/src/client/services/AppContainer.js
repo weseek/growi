@@ -1,6 +1,6 @@
 import { Container } from 'unstated';
 
-import { i18nFactory } from '../util/i18n';
+// import { i18nFactory } from '../util/i18n';
 
 /**
  * Service container related to options for Application
@@ -20,7 +20,7 @@ export default class AppContainer extends Container {
       const currentUser = JSON.parse(currentUserElem.textContent);
       userLocaleId = currentUser?.lang;
     }
-    this.i18n = i18nFactory(userLocaleId);
+    // this.i18n = i18nFactory(userLocaleId);
 
     this.containerInstances = {};
     this.componentInstances = {};

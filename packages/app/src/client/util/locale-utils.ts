@@ -4,10 +4,6 @@ const DIAGRAMS_NET_LANG_MAP = {
   zh_CN: 'zh',
 };
 
-const getDiagramsNetLangCode = (lang) => {
+export const getDiagramsNetLangCode = (lang) => {
   return DIAGRAMS_NET_LANG_MAP[lang];
-};
-
-module.exports = {
-  getDiagramsNetLangCode,
 };
