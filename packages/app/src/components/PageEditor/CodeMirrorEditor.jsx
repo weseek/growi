@@ -987,9 +987,6 @@ class CodeMirrorEditor extends AbstractEditor {
       gutters.push('CodeMirror-lint-markers');
     }
 
-    console.log(' this.state.value', this.state.value);
-    console.log(' this.props.value', this.props.value);
-
     return (
       <div className={`grw-codemirror-editor ${styles['grw-codemirror-editor']}`}>
 
