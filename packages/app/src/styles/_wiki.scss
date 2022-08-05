@@ -113,6 +113,10 @@
     }
   }
 
+  pre {
+    position: relative; // for absolute positioned .code-highlighted-title
+  }
+
   .task-list {
     .task-list-item {
       margin: 0 0.2em 0.25em -1.6em;

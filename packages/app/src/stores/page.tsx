@@ -81,11 +81,18 @@ export const useSWRxPageInfo = (
   // assign null if shareLinkId is undefined in order to identify SWR key only by pageId
   const fixedShareLinkId = shareLinkId ?? null;
 
-  return useSWRImmutable<IPageInfo | IPageInfoForOperation, Error>(
+  const swrResult = useSWRImmutable<IPageInfo | IPageInfoForOperation, Error>(
     pageId != null ? ['/page/info', pageId, fixedShareLinkId] : null,
     (endpoint, pageId, shareLinkId) => apiv3Get(endpoint, { pageId, shareLinkId }).then(response => response.data),
     { fallbackData: initialData },
   );
+
+  // use mutate because fallbackData does not work
+  if (initialData != null) {
+    swrResult.mutate(initialData);
+  }
+
+  return swrResult;
 };
 
 export const useSWRxPageRevisions = (
