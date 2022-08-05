@@ -26,7 +26,7 @@ import UserGroupTable from '../UserGroup/UserGroupTable';
 import UpdateParentConfirmModal from './UpdateParentConfirmModal';
 // import UserGroupPageList from './UserGroupPageList';
 // import UserGroupUserModal from './UserGroupUserModal';
-import UserGroupUserTable from './UserGroupUserTable';
+// import UserGroupUserTable from './UserGroupUserTable';
 
 
 type Props = {
@@ -41,7 +41,6 @@ const UserGroupDetailPage = (props: Props) => {
   /*
    * State (from AdminUserGroupDetailContainer)
    */
-  // const [currentUserGroup, setUserGroup] = useState<IUserGroupHasId>(JSON.parse(adminUserGroupDetailElem?.getAttribute('data-user-group') || 'null'));
   const { data: userGroup } = useSWRxUserGroup(currentUserGroupId);
   const [currentUserGroup, setUserGroup] = useState<IUserGroupHasId>();
   const [relatedPages, setRelatedPages] = useState<IPageHasId[]>([]); // For page list
@@ -340,8 +339,8 @@ const UserGroupDetailPage = (props: Props) => {
         />
       </div>
       <h2 className="admin-setting-header mt-4">{t('admin:user_group_management.user_list')}</h2>
-      <UserGroupUserTable />
-      {/* This compoent will be successfully shown in https://redmine.weseek.co.jp/issues/102159 */}
+      {/* These compoents will be successfully shown in https://redmine.weseek.co.jp/issues/102159 */}
+      {/* <UserGroupUserTable /> */}
       {/* <UserGroupUserModal /> */}
 
       <h2 className="admin-setting-header mt-4">{t('admin:user_group_management.child_group_list')}</h2>

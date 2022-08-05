@@ -279,9 +279,6 @@ function injectServerConfigurations(context: GetServerSidePropsContext, props: P
   const { crowi } = req;
   const { mailService } = crowi;
 
-  // console.log('UserGroupService', crowi.UserGroupService);
-  // console.log('mailService', crowi.mailService);
-
   props.isMailerSetup = mailService.isMailerSetup;
 }
 

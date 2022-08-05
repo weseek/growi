@@ -50,7 +50,7 @@ class UserGroupUserTable extends React.Component {
           </tr>
         </thead>
         <tbody>
-          {/* {adminUserGroupDetailContainer.state.userGroupRelations.map((sRelation) => {
+          {adminUserGroupDetailContainer.state.userGroupRelations.map((sRelation) => {
             const { relatedUser } = sRelation;
 
             return (
@@ -89,7 +89,7 @@ class UserGroupUserTable extends React.Component {
                 </td>
               </tr>
             );
-          })} */}
+          })}
 
           <tr>
             <td></td>
