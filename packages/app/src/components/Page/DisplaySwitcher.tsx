@@ -5,7 +5,7 @@ import { useTranslation } from 'next-i18next';
 import dynamic from 'next/dynamic';
 import { TabContent, TabPane } from 'reactstrap';
 
-import { smoothScrollIntoView } from '~/client/util/smooth-scroll';
+// import { smoothScrollIntoView } from '~/client/util/smooth-scroll';
 import {
   useCurrentPagePath, useIsSharedUser, useIsEditable, useIsUserPage, usePageUser, useShareLinkId, useIsNotFound, useIsNotCreatable,
 } from '~/stores/context';
@@ -15,13 +15,13 @@ import { EditorMode, useEditorMode } from '~/stores/ui';
 
 import CountBadge from '../Common/CountBadge';
 import PageListIcon from '../Icons/PageListIcon';
-import NotFoundPage from '../NotFoundPage';
 import { Page } from '../Page';
 // import PageEditorByHackmd from '../PageEditorByHackmd';
 import TableOfContents from '../TableOfContents';
 import UserInfo from '../User/UserInfo';
 
-import styles from '../TableOfContents.module.scss';
+
+import styles from './DisplaySwitcher.module.scss';
 
 
 const WIKI_HEADER_LINK = 120;
@@ -77,7 +77,7 @@ const DisplaySwitcher = (): JSX.Element => {
                 <div className="grw-side-contents-sticky-container">
 
                   {/* Page list */}
-                  <div className="grw-page-accessories-control">
+                  <div className={`grw-page-accessories-control ${styles['grw-page-accessories-control']}`}>
                     { currentPagePath != null && !isSharedUser && (
                       <button
                         type="button"
@@ -97,7 +97,7 @@ const DisplaySwitcher = (): JSX.Element => {
                   {/* Comments */}
                   {/* { getCommentListDom != null && !isTopPagePath && ( */}
                   { !isTopPagePath && (
-                    <div className="grw-page-accessories-control mt-2">
+                    <div className={`mt-2 grw-page-accessories-control ${styles['grw-page-accessories-control']}`}>
                       <button
                         type="button"
                         className="btn btn-block btn-outline-secondary grw-btn-page-accessories rounded-pill d-flex justify-content-between align-items-center"
@@ -111,9 +111,7 @@ const DisplaySwitcher = (): JSX.Element => {
                   ) }
 
                   <div className="d-none d-lg-block">
-                    <div id="revision-toc" className={`revision-toc ${styles['revision-toc']}`}>
-                      <TableOfContents />
-                    </div>
+                    <TableOfContents />
                     <ContentLinkButtons />
                   </div>
 

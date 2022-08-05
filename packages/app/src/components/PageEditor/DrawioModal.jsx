@@ -136,7 +136,7 @@ class DrawioModal extends React.PureComponent {
         isOpen={this.state.show}
         toggle={this.cancel}
         backdrop="static"
-        className="drawio-modal"
+        className="drawio-modal grw-body-only-modal-expanded"
         size="xl"
         keyboard={false}
       >

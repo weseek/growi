@@ -135,6 +135,11 @@ export const AuditLogManagement: FC = () => {
         <span>
           {isSettingPage ? t('AuditLog Settings') : t('AuditLog')}
         </span>
+        { !isSettingPage && (
+          <button type="button" className="btn btn-sm ml-auto grw-btn-reload" onClick={reloadButtonPushedHandler}>
+            <i className="icon icon-reload"></i>
+          </button>
+        )}
       </h2>
 
       {isSettingPage ? (
@@ -160,17 +165,9 @@ export const AuditLogManagement: FC = () => {
               onChangeMultipleAction={multipleActionCheckboxChangedHandler}
             />
 
-            <div className="ml-auto">
-              <button type="button" className="btn btn-outline-secondary btn-sm mr-2" onClick={clearButtonPushedHandler}>
-                <span className="icon-refresh mr-1" />
-                {t('admin:audit_log_management.clear')}
-              </button>
-
-              <button type="button" className="btn btn-outline-secondary btn-sm" onClick={reloadButtonPushedHandler}>
-                <i className="icon icon-reload mr-1" />
-                {t('admin:audit_log_management.reload')}
-              </button>
-            </div>
+            <button type="button" className="btn btn-link" onClick={clearButtonPushedHandler}>
+              {t('admin:audit_log_management.clear')}
+            </button>
           </div>
 
           <p

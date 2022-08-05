@@ -6,14 +6,6 @@
   }
 }
 
-.grw-tag-labels {
-  .grw-tag-label {
-    font-size: 12px;
-    font-weight: normal;
-    border-radius: bs.$border-radius;
-  }
-}
-
 .grw-popular-tag-labels {
   text-align: left;
 
@@ -33,5 +25,7 @@
 .grw-recent-changes {
   .grw-tag-label {
     font-size: 10px;
+    font-weight: normal;
+    border-radius: bs.$border-radius;
   }
 }
