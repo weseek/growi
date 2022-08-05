@@ -20,7 +20,7 @@ const Bookmarks = () : JSX.Element => {
   const { data: currentUserBookmarksData, mutate: mutateCurrentUserBookmarks } = useSWRxCurrentUserBookmarks();
   const { open: openDeleteModal } = usePageDeleteModal();
 
-  const onBookmarkItemDeleted = (pageToDelete: IPageToDeleteWithMeta): void => {
+  const deleteBookmarkItem = (pageToDelete: IPageToDeleteWithMeta) => {
     const onDeletedHandler: OnDeletedFunction = (pathOrPathsToDelete, _isRecursively, isCompletely) => {
       if (typeof pathOrPathsToDelete !== 'string') {
         return;
@@ -56,7 +56,7 @@ const Bookmarks = () : JSX.Element => {
                 bookmarkedPage={currentUserBookmark}
                 onUnbookmarked={mutateCurrentUserBookmarks}
                 onRenamed={mutateCurrentUserBookmarks}
-                onDeleted={onBookmarkItemDeleted}
+                onDeleted={deleteBookmarkItem}
               />
             );
           })}
