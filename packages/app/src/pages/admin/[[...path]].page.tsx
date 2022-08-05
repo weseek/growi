@@ -87,7 +87,7 @@ const AdminMarkdownSettingsPage: NextPage<Props> = (props: Props) => {
   const { t } = useTranslation('admin');
   const router = useRouter();
   const { path } = router.query;
-  const pagePathKeys = Array.isArray(path) ? path : ['home'];
+  const pagePathKeys: string[] = Array.isArray(path) ? path : ['home'];
 
   let userGroupId;
 
@@ -263,7 +263,7 @@ const AdminMarkdownSettingsPage: NextPage<Props> = (props: Props) => {
 
   return (
     <Provider inject={[...injectableContainers, ...adminSecurityContainers]}>
-      <AdminLayout title={title} selectedNavOpt={pagePathKeys}>
+      <AdminLayout title={title} selectedNavOpt={pagePathKeys[0]}>
         {targetPage.component}
       </AdminLayout>
     </Provider>
