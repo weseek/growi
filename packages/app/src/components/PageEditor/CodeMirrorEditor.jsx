@@ -26,6 +26,7 @@ import HandsontableModal from './HandsontableModal';
 import LinkEditModal from './LinkEditModal';
 import mdu from './MarkdownDrawioUtil';
 import mlu from './MarkdownLinkUtil';
+import markdownListUtil from './MarkdownListUtil';
 import MarkdownTableInterceptor from './MarkdownTableInterceptor';
 import mtu from './MarkdownTableUtil';
 import pasteHelper from './PasteHelper';
@@ -521,7 +522,7 @@ class CodeMirrorEditor extends AbstractEditor {
     interceptorManager.process('preHandleEnter', context)
       .then(() => {
         if (context.handlers.length === 0) {
-          codemirror.commands.newlineAndIndentContinueMarkdownList(this.getCodeMirror());
+          markdownListUtil.newlineAndIndentContinueMarkdownList(this);
         }
       });
   }
