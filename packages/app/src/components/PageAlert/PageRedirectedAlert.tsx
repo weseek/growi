@@ -7,16 +7,16 @@ import { useCurrentPagePath, useRedirectFrom } from '~/stores/context';
 
 export const PageRedirectedAlert = React.memo((): JSX.Element => {
   const { t } = useTranslation();
-
-  const { data: redirectFrom } = useRedirectFrom();
   const { data: currentPagePath } = useCurrentPagePath();
+  const { data: redirectFrom, mutate: mutateRedirectFrom } = useRedirectFrom();
 
   const [isUnlinked, setIsUnlinked] = useState(false);
 
   const unlinkButtonClickHandler = useCallback(() => {
     apiPost('/pages.unlink', { path: currentPagePath });
     setIsUnlinked(true);
-  }, [currentPagePath]);
+    mutateRedirectFrom('');
+  }, [currentPagePath, mutateRedirectFrom]);
 
   if (redirectFrom == null) {
     return <></>;
