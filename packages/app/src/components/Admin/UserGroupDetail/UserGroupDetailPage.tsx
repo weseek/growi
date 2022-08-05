@@ -52,7 +52,7 @@ const UserGroupDetailPage = (props: Props) => {
   const [isUpdateModalShown, setUpdateModalShown] = useState<boolean>(false);
   const [isDeleteModalShown, setDeleteModalShown] = useState<boolean>(false);
 
-  const { data: userGroup } = useSWRxUserGroup('62e8388a9a649bea5e703ef7');
+  const { data: userGroup } = useSWRxUserGroup(currentUserGroupId);
 
   /*
    * Fetch
