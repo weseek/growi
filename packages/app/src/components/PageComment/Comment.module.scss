@@ -1,20 +1,6 @@
 @use '../../styles/bootstrap/init' as bs;
 @use './_comment-inheritance';
 
-// TODO: Never use this class. From "../../styles/_comment.scss"
-// pointer-events moved to .page-commnet
-.page-comments {
-  // .page-comments-list-toggle-older {
-  //   display: inline-block;
-  //   font-size: 0.9em;
-  // }
-  // .page-comment {
-  //   padding-top: 50px;
-  //   margin-top: -50px;
-  //   pointer-events: none;
-  // }
-}
-
 .comment-styles :global {
   .page-comment-writer {
     @include bs.media-breakpoint-down(xs) {

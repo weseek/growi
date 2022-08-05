@@ -8,3 +8,20 @@
     }
   }
 }
+
+
+.page-comments {
+  // TODO: Never use this class.
+  .page-comments-list-toggle-older {
+    display: inline-block;
+    font-size: 0.9em;
+  }
+  // TODO: "pointer-events: none;" moved to "Comment.module.scss" now.
+  // .page-comment was defined in _comment.scss and _comment_growi.scss
+  // Required if .page-comment is not under .growi but under .page-comments, or under .growi but not under .page-comments
+  .page-comment {
+    padding-top: 50px;
+    margin-top: -50px;
+    pointer-events: none;
+  }
+}

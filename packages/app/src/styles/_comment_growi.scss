@@ -1,0 +1,20 @@
+.growi {
+  // TODO: Never use these classes.
+
+  // display cheatsheet for comment form only
+  .comment-form {
+    .editor-cheatsheet {
+      display: none;
+    }
+
+    // textarea
+    .comment-form-comment {
+      height: 80px;
+      &:focus,
+      &:not(:invalid) {
+        height: 180px;
+        transition: height 0.2s ease-out;
+      }
+    }
+  }
+}
