@@ -148,17 +148,6 @@ class UserGroupService {
     return { user, deletedGroupsCount: deleteManyRes.deletedCount };
   }
 
-
-  async getUserGroupDetailById(userGroupId: ObjectIdLike): Promise<IUserGroupHasId> {
-    const userGroup = await UserGroup.findOne({ _id: userGroupId }).populate('parent');
-
-    if (userGroup == null) {
-      throw Error(`UserGroup does not exists. id: ${userGroupId}`);
-    }
-    return userGroup;
-  }
-
-
 }
 
 module.exports = UserGroupService;
