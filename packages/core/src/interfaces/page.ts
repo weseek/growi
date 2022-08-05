@@ -73,6 +73,7 @@ export type IPageInfoForEntity = IPageInfo & {
   sumOfSeenUsers: number,
   seenUserIds: string[],
   contentAge: number,
+  expandContentWidth?: boolean,
 }
 
 export type IPageInfoForOperation = IPageInfoForEntity & {

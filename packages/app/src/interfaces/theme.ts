@@ -16,3 +16,8 @@ export const GrowiThemes = {
   WOOD: 'wood',
 } as const;
 export type GrowiThemes = typeof GrowiThemes[keyof typeof GrowiThemes];
+
+export const PrismThemes = {
+  OneLight: 'one-light',
+} as const;
+export type PrismThemes = typeof PrismThemes[keyof typeof PrismThemes];

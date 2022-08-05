@@ -13,6 +13,7 @@
     "reg-notify-github-plugin": {
       "prCommentBehavior": "new",
       "setCommitStatus": false,
+      "shortDescription": true,
       "clientId": "$REG_NOTIFY_GITHUB_PLUGIN_CLIENTID"
     },
     "reg-notify-slack-plugin": {
