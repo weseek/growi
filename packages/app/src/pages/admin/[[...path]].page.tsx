@@ -164,7 +164,6 @@ const AdminMarkdownSettingsPage: NextPage<Props> = (props: Props) => {
       component: <UserGroupPage />,
     },
     'user-group-detail': {
-      // {{ t('UserGroup Management') + '/' + userGroup.name
       [userGroupId]: {
         title: t('UserGroup Management'),
         component: <UserGroupDetailPage userGroupId={userGroupId} />,
