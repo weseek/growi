@@ -9,7 +9,8 @@ import GrowiLogo from '../Icons/GrowiLogo';
 
 import { RawLayout } from './RawLayout';
 
-import styles from './Installer.module.scss';
+import loginStyles from './Login.module.scss';
+import commonStyles from './NoLoginLayout.module.scss';
 
 type Props = {
   title: string,
@@ -25,7 +26,7 @@ export const NoLoginLayout = ({
     classNames.push(className);
   }
   return (
-    <RawLayout title={title} className={`${styles.nologin}`}>
+    <RawLayout title={title} className={`${commonStyles.nologin}`}>
       <div className="nologin">
         <div id="wrapper">
           <div id="page-wrapper">
@@ -34,17 +35,15 @@ export const NoLoginLayout = ({
               <div className="row">
 
                 <div className="col-md-12">
-                  <div className="login-header mx-auto">
+                  <div className="noLogin-header mx-auto">
                     <GrowiLogo />
                     <h1 className="my-3">GROWI</h1>
-                    <div className="login-form-errors px-3"></div>
+                    <div className="noLogin-form-errors px-3"></div>
                   </div>
                 </div>
 
                 <div className="col-md-12">
-                  <div id="installer-form-container">
-                    {children}
-                  </div>
+                  {children}
                 </div>
 
               </div>

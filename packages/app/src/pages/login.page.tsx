@@ -7,6 +7,7 @@ import {
 } from 'next';
 import dynamic from 'next/dynamic';
 
+import { NoLoginLayout } from '~/components/Layout/NoLoginLayout';
 import { RawLayout } from '~/components/Layout/RawLayout';
 import { CrowiRequest } from '~/interfaces/crowi-request';
 
@@ -43,18 +44,12 @@ const LoginPage: NextPage<Props> = (props: Props) => {
   });
 
   return (
-    <>
-      <RawLayout title={useCustomTitle(props, 'GROWI')} className={classNames.join(' ')}>
-        <div className='nologin'>
-          <div id='wrapper'>
-            <div id="page-wrapper">
-              <LoginForm objOfIsExternalAuthEnableds={props.enabledStrategies} isLocalStrategySetup={true} isLdapStrategySetup={true}
-                isRegistrationEnabled={true} registrationWhiteList={props.registrationWhiteList} isPasswordResetEnabled={true} />
-            </div>
-          </div>
-        </div>
-      </RawLayout>
-    </>
+    <NoLoginLayout title={useCustomTitle(props, 'GROWI')} className={classNames.join(' ')}>
+      <div id="page-wrapper">
+        <LoginForm objOfIsExternalAuthEnableds={props.enabledStrategies} isLocalStrategySetup={true} isLdapStrategySetup={true}
+          isRegistrationEnabled={true} registrationWhiteList={props.registrationWhiteList} isPasswordResetEnabled={true} />
+      </div>
+    </NoLoginLayout>
   );
 };
 
