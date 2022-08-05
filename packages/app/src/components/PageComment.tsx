@@ -19,6 +19,9 @@ import { CommentEditor } from './PageComment/CommentEditor';
 import { CommentEditorLazyRenderer } from './PageComment/CommentEditorLazyRenderer';
 import { DeleteCommentModal } from './PageComment/DeleteCommentModal';
 import { ReplyComments } from './PageComment/ReplyComments';
+import { Skelton } from './Skelton';
+
+import styles from './PageComment.module.scss';
 
 type Props = {
   pageId?: Nullable<string>
@@ -135,9 +138,16 @@ export const PageComment: FC<Props> = memo((props:Props): JSX.Element => {
           <div className="container-lg">
             <div className="page-comments">
               <h2 className={commentTitleClasses}><i className="icon-fw icon-bubbles"></i>Comments</h2>
-              <div className="text-muted text-center mt-3">
-                <i className="fa fa-lg fa-spinner fa-pulse mr-1"></i>
+              <div className="page-comments-list" id="page-comments-list">
+                <div className='page-comment-thread pb-5  page-comment-thread-no-replies'>
+                  <Skelton additionalClass={`${styles['page-comment-comment-skelton']} mb-3`} roundedPill/>
+                  <Skelton additionalClass={`${styles['page-comment-replycomments-skelton']} mb-3`} />
+                  <div className="text-right">
+                    <Skelton additionalClass={`${styles['page-comment-button-skelton']}`} />
+                  </div>
+                </div>
               </div>
+              <Skelton additionalClass={`${styles['page-comment-commentlazyeditorrenderer-skelton']}`} />
             </div>
           </div>
         </div>
