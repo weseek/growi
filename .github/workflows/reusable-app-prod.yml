@@ -206,6 +206,9 @@ jobs:
     steps:
     - uses: actions/checkout@v3
 
+    - name: Install fonts
+      run: sudo apt install fonts-noto
+
     - uses: actions/setup-node@v3
       with:
         node-version: ${{ matrix.node-version }}
