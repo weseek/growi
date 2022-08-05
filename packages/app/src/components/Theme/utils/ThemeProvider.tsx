@@ -19,6 +19,7 @@ const ThemeWood = dynamic(() => import('../ThemeWood'));
 const ThemeMonoBlue = dynamic(() => import('../ThemeMonoBlue'));
 const ThemeKibela = dynamic(() => import('../ThemeKibela'));
 const ThemeHufflepuff = dynamic(() => import('../ThemeHufflepuff'));
+const ThemeHalloween = dynamic(() => import('../ThemeHalloween'));
 
 
 type Props = {
@@ -52,6 +53,8 @@ export const ThemeProvider = ({ theme, children }: Props): JSX.Element => {
       return <ThemeKibela>{children}</ThemeKibela>;
     case GrowiThemes.HUFFLEPUFF:
       return <ThemeHufflepuff>{children}</ThemeHufflepuff>;
+    case GrowiThemes.HALLOWEEN:
+      return <ThemeHalloween>{children}</ThemeHalloween>;
     default:
       return <ThemeDefault>{children}</ThemeDefault>;
   }
