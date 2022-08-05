@@ -1,5 +1,6 @@
-@import '../variables';
-@import '../override-bootstrap-variables';
+@use '../../styles/variables' as *;
+@use '../../styles/bootstrap/variables' as *;
+@use '../../styles/theme/mixins/page-editor-mode-manager';
 
 $themecolor: #aa4a04;
 $themelight: #f0f8ff;
@@ -33,8 +34,7 @@ $light: lighten($secondary, 10%);
 
 //== Light Mode
 //
-html[light],
-html[dark] {
+.theme :global {
   // Background colors
   $bgcolor-global: #050000;
   $bgcolor-inline-code: #1f1f22; //optional
@@ -105,13 +105,13 @@ html[dark] {
   // admin theme box
   $color-theme-color-box: lighten($primary, 20%);
 
-  @import 'apply-colors';
-  @import 'apply-colors-dark';
+  @import '../../styles/theme/apply-colors';
+  @import '../../styles/theme/apply-colors-dark';
 
   //Button
   .btn-group.grw-page-editor-mode-manager {
     .btn.btn-outline-primary {
-      @include btn-page-editor-mode-manager(lighten($primary, 35%), $primary, lighten($primary, 5%), darken($primary, 20%));
+      @include page-editor-mode-manager.btn-page-editor-mode-manager(lighten($primary, 35%), $primary, lighten($primary, 5%), darken($primary, 20%));
     }
   }
 
