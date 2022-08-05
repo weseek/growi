@@ -49,7 +49,6 @@ type Props = CommonProps & {
 };
 
 const MePage: NextPage<Props> = (props: Props) => {
-  const router = useRouter();
   useCurrentUser(props.currentUser ?? null);
 
   useRegistrationWhiteList(props.registrationWhiteList);
@@ -74,7 +73,6 @@ const MePage: NextPage<Props> = (props: Props) => {
 
   return (
     <>
-      {/* タブタイトルをカスタマイズする必要あり */}
       <BasicLayout title={useCustomTitle(props, 'GROWI')}>
 
         <header className="py-3">
