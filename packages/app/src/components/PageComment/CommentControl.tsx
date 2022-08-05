@@ -1,7 +1,5 @@
 import React from 'react';
 
-import styles from './CommentControl.module.scss';
-
 type CommentControlProps = {
   onClickEditBtn: () => void,
   onClickDeleteBtn: () => void,
