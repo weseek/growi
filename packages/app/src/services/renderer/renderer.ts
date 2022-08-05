@@ -226,7 +226,7 @@ const generateCommonOptions: ReactMarkdownOptionsGenerator = (config: RendererCo
         ...defaultSchema,
         attributes: {
           ...defaultSchema.attributes,
-          '*': ['className', 'class'],
+          '*': ['className', 'class', 'checked', 'disabled'],
         },
       }],
       [addClass, {
