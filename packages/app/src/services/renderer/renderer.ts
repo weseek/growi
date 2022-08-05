@@ -227,8 +227,8 @@ const generateCommonOptions: ReactMarkdownOptionsGenerator = (config: RendererCo
         attributes: {
           ...sanitizeDefaultSchema.attributes,
           '*': sanitizeDefaultSchema.attributes != null
-            ? sanitizeDefaultSchema.attributes['*'].concat('className')
-            : ['className'],
+            ? sanitizeDefaultSchema.attributes['*'].concat('class', 'className')
+            : ['class', 'className'],
         },
       }],
       [addClass, {
