@@ -1,7 +1,6 @@
 import mongoose from 'mongoose';
 
-
-import { IUser, IUserGroupHasId } from '~/interfaces/user';
+import { IUser } from '~/interfaces/user';
 import { ObjectIdLike } from '~/server/interfaces/mongoose-utils';
 import UserGroup from '~/server/models/user-group';
 import { excludeTestIdsFromTargetIds, isIncludesObjectId } from '~/server/util/compare-objectId';
