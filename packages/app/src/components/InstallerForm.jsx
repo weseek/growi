@@ -34,10 +34,6 @@ class InstallerForm extends React.Component {
       .then((res) => { return this.setState({ isValidUserName: res.data.valid }) });
   }
 
-  changeLanguage(meta) {
-    i18next.changeLanguage(meta.id);
-  }
-
   submitHandler() {
     if (this.state.isSubmittingDisabled) {
       return;
@@ -100,7 +96,7 @@ class InstallerForm extends React.Component {
                           data-testid={`dropdownLanguageMenu-${locale}`}
                           className="dropdown-item"
                           type="button"
-                          onClick={() => { this.changeLanguage(locale) }}
+                          onClick={() => { i18next.changeLanguage(meta.id) }}
                         >
                           {fixedT('meta.display_name')}
                         </button>
