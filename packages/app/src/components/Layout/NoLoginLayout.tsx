@@ -1,15 +1,9 @@
 import React, { ReactNode } from 'react';
 
-import Head from 'next/head';
-
-import { useGrowiTheme } from '~/stores/context';
-import { useNextThemes } from '~/stores/use-next-themes';
-
 import GrowiLogo from '../Icons/GrowiLogo';
 
 import { RawLayout } from './RawLayout';
 
-import loginStyles from './Login.module.scss';
 import commonStyles from './NoLoginLayout.module.scss';
 
 type Props = {

@@ -1,14 +1,12 @@
 import React from 'react';
 
 
-import { pagePathUtils } from '@growi/core';
 import {
   NextPage, GetServerSideProps, GetServerSidePropsContext,
 } from 'next';
 import dynamic from 'next/dynamic';
 
 import { NoLoginLayout } from '~/components/Layout/NoLoginLayout';
-import { RawLayout } from '~/components/Layout/RawLayout';
 import { CrowiRequest } from '~/interfaces/crowi-request';
 
 import {
