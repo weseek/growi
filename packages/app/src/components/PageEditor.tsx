@@ -411,8 +411,6 @@ const PageEditor = (props: Props): JSX.Element => {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const EditorAny = Editor as any;
 
-  // console.log('EditorAny', markdown);
-
   return (
     <div className="d-flex flex-wrap">
       <div className="page-editor-editor-container flex-grow-1 flex-basis-0 mw-0">
