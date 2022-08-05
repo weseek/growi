@@ -1,12 +1,9 @@
-@use '~/styles/bootstrap/init' as bs;
-
-// TODO: _comment_growi.scss, need to find where using h4 class.
 .page-comment-module :global {
-  // .page-comments {
-  //   h4 {
-  //     margin-bottom: 1em;
-  //   }
-  // }
+  .page-comments {
+    h4 {
+      margin-bottom: 1em;
+    }
+  }
 
   // reply button
   .btn-comment-reply {

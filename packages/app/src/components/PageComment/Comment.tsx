@@ -118,7 +118,7 @@ export const Comment = (props: CommentProps): JSX.Element => {
     : null;
 
   return (
-    <>
+    <div className={`${styles['comment-styles']}`}>
       {(isReEdit && !isReadOnly) ? (
         <CommentEditor
           rendererOptions={rendererOptions}
@@ -132,7 +132,7 @@ export const Comment = (props: CommentProps): JSX.Element => {
           }}
         />
       ) : (
-        <div id={commentId} className={`${styles['comment-styles']} ${rootClassName}`}>
+        <div id={commentId} className={rootClassName}>
           <div className="page-comment-writer">
             <UserPicture user={creator} noLink noTooltip />
           </div>
@@ -170,6 +170,6 @@ export const Comment = (props: CommentProps): JSX.Element => {
         </div>
       )
       }
-    </>
+    </div>
   );
 };

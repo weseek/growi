@@ -1,39 +1,8 @@
 @use '../../styles/bootstrap/init' as bs;
-
-%comment-section {
-  position: relative;
-  padding: 1em;
-
-  // speech balloon
-  &:before {
-    position: absolute;
-    top: 1.5em;
-    left: -1em;
-    display: block;
-    width: 0;
-    content: '';
-    border: 1em solid transparent;
-    border-left-width: 0;
-
-    @include bs.media-breakpoint-down(xs) {
-      top: 1em;
-    }
-  }
-}
-
-%picture {
-  float: left;
-  width: 3em;
-  height: 3em;
-  margin-top: 0.8em;
-
-  @include bs.media-breakpoint-down(xs) {
-    width: 2em;
-    height: 2em;
-  }
-}
+@use './_comment-inheritance';
 
 // TODO: Never use this class. From _comment.scss
+// pointer-events moved to .page-commnet
 .page-comments {
   // .page-comments-list-toggle-older {
   //   display: inline-block;
@@ -82,7 +51,7 @@
           content: none;
         }
       }
-      // TODO: from _comment.scss ###
+
       pointer-events: auto;
 
       // delete button
@@ -96,7 +65,6 @@
       &:hover > .page-comment-control {
         visibility: visible;
       }
-      // ###
     }
 
     // コメント本文
@@ -105,7 +73,6 @@
       word-wrap: break-word;
     }
 
-    // TODO: from _comment.scss ###
     // older comments
     &.page-comment-older {
     }
@@ -130,6 +97,5 @@
       width: 16px;
       height: 16px;
     }
-    // ###
   }
 }
