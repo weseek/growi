@@ -213,6 +213,7 @@ const AdminMarkdownSettingsPage: NextPage<Props> = (props: Props) => {
     const adminNotificationContainer = new AdminNotificationContainer();
     const adminSlackIntegrationLegacyContainer = new AdminSlackIntegrationLegacyContainer();
     const adminMarkDownContainer = new AdminMarkDownContainer();
+    // FIX: instance does not includ states and methods. (https://redmine.weseek.co.jp/issues/102159)
     const adminUserGroupDetailContainer = new AdminUserGroupDetailContainer();
 
     injectableContainers.push(

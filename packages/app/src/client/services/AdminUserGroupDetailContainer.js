@@ -31,6 +31,7 @@ export default class AdminUserGroupDetailContainer extends Container {
 
     this.appContainer = appContainer;
 
+    // FIX: instance does not includ states and methods. (https://redmine.weseek.co.jp/issues/102159)
     const rootElem = document.getElementById('admin-user-group-detail');
 
     if (rootElem == null) {

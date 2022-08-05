@@ -341,6 +341,7 @@ const UserGroupDetailPage = (props: Props) => {
       </div>
       <h2 className="admin-setting-header mt-4">{t('admin:user_group_management.user_list')}</h2>
       <UserGroupUserTable />
+      {/* This compoent will be successfully shown in https://redmine.weseek.co.jp/issues/102159 */}
       {/* <UserGroupUserModal /> */}
 
       <h2 className="admin-setting-header mt-4">{t('admin:user_group_management.child_group_list')}</h2>
@@ -387,6 +388,7 @@ const UserGroupDetailPage = (props: Props) => {
 
       <h2 className="admin-setting-header mt-4">{t('Page')}</h2>
       <div className="page-list">
+        {/* This compoent will be successfully shown in https://redmine.weseek.co.jp/issues/102159 */}
         {/* <UserGroupPageList /> */}
       </div>
     </div>

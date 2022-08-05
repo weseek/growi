@@ -20,8 +20,7 @@ class UserGroupUserModal extends React.Component {
     const { t, adminUserGroupDetailContainer } = this.props;
 
     return (
-      // <Modal isOpen={adminUserGroupDetailContainer.state.isUserGroupUserModalOpen} toggle={adminUserGroupDetailContainer.closeUserGroupUserModal}>
-      <Modal isOpen={false} toggle={adminUserGroupDetailContainer.closeUserGroupUserModal}>
+      <Modal isOpen={adminUserGroupDetailContainer.state.isUserGroupUserModalOpen} toggle={adminUserGroupDetailContainer.closeUserGroupUserModal}>
         <ModalHeader tag="h4" toggle={adminUserGroupDetailContainer.closeUserGroupUserModal} className="bg-info text-light">
           {t('admin:user_group_management.add_modal.add_user') }
         </ModalHeader>
