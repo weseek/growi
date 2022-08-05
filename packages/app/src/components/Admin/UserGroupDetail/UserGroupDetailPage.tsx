@@ -1,41 +1,47 @@
 import React, {
-  FC, useState, useCallback,
+  FC, useState, useCallback, useEffect,
 } from 'react';
+
 import { useTranslation } from 'next-i18next';
 
-import UserGroupForm from '../UserGroup/UserGroupForm';
-import UserGroupTable from '../UserGroup/UserGroupTable';
-import UserGroupModal from '../UserGroup/UserGroupModal';
-import UserGroupDeleteModal from '../UserGroup/UserGroupDeleteModal';
-import UpdateParentConfirmModal from './UpdateParentConfirmModal';
-import UserGroupDropdown from '../UserGroup/UserGroupDropdown';
-import UserGroupUserTable from './UserGroupUserTable';
-import UserGroupUserModal from './UserGroupUserModal';
-import UserGroupPageList from './UserGroupPageList';
-
+import { toastSuccess, toastError } from '~/client/util/apiNotification';
 import {
   apiv3Get, apiv3Put, apiv3Delete, apiv3Post,
 } from '~/client/util/apiv3-client';
-import { toastSuccess, toastError } from '~/client/util/apiNotification';
 import { IPageHasId } from '~/interfaces/page';
-import {
-  IUserGroup, IUserGroupHasId,
-} from '~/interfaces/user';
-import {
-  useSWRxUserGroupPages, useSWRxUserGroupRelationList, useSWRxChildUserGroupList,
-  useSWRxSelectableParentUserGroups, useSWRxSelectableChildUserGroups, useSWRxAncestorUserGroups,
-} from '~/stores/user-group';
+import { IUserGroup, IUserGroupHasId } from '~/interfaces/user';
 import { useIsAclEnabled } from '~/stores/context';
 import { useUpdateUserGroupConfirmModal } from '~/stores/modal';
+import {
+  useSWRxUserGroupPages, useSWRxUserGroupRelationList, useSWRxChildUserGroupList, useSWRxUserGroup,
+  useSWRxSelectableParentUserGroups, useSWRxSelectableChildUserGroups, useSWRxAncestorUserGroups,
+} from '~/stores/user-group';
 
-const UserGroupDetailPage: FC = () => {
+import UserGroupDeleteModal from '../UserGroup/UserGroupDeleteModal';
+import UserGroupDropdown from '../UserGroup/UserGroupDropdown';
+import UserGroupForm from '../UserGroup/UserGroupForm';
+import UserGroupModal from '../UserGroup/UserGroupModal';
+import UserGroupTable from '../UserGroup/UserGroupTable';
+
+import UpdateParentConfirmModal from './UpdateParentConfirmModal';
+// import UserGroupPageList from './UserGroupPageList';
+// import UserGroupUserModal from './UserGroupUserModal';
+import UserGroupUserTable from './UserGroupUserTable';
+
+
+type Props = {
+  // userGroup: IUserGroupHasId,
+}
+
+const UserGroupDetailPage = (props: Props) => {
   const { t } = useTranslation();
   const adminUserGroupDetailElem = document.getElementById('admin-user-group-detail');
 
   /*
    * State (from AdminUserGroupDetailContainer)
    */
-  const [currentUserGroup, setUserGroup] = useState<IUserGroupHasId>(JSON.parse(adminUserGroupDetailElem?.getAttribute('data-user-group') || 'null'));
+  // const [currentUserGroup, setUserGroup] = useState<IUserGroupHasId>(JSON.parse(adminUserGroupDetailElem?.getAttribute('data-user-group') || 'null'));
+  const [currentUserGroup, setUserGroup] = useState<IUserGroupHasId>();
   const [relatedPages, setRelatedPages] = useState<IPageHasId[]>([]); // For page list
   const [searchType, setSearchType] = useState<string>('partial');
   const [isAlsoMailSearched, setAlsoMailSearched] = useState<boolean>(false);
@@ -45,12 +51,17 @@ const UserGroupDetailPage: FC = () => {
   const [isUpdateModalShown, setUpdateModalShown] = useState<boolean>(false);
   const [isDeleteModalShown, setDeleteModalShown] = useState<boolean>(false);
 
+  const { data: userGroup } = useSWRxUserGroup('62e8388a9a649bea5e703ef7');
+
   /*
    * Fetch
    */
-  const { data: userGroupPages } = useSWRxUserGroupPages(currentUserGroup._id, 10, 0);
+  const { data: userGroupPages } = useSWRxUserGroupPages(currentUserGroup?._id, 10, 0);
 
-  const { data: childUserGroupsList, mutate: mutateChildUserGroups } = useSWRxChildUserGroupList([currentUserGroup._id], true);
+  console.log();
+
+
+  const { data: childUserGroupsList, mutate: mutateChildUserGroups } = useSWRxChildUserGroupList([currentUserGroup?._id], true);
   const childUserGroups = childUserGroupsList != null ? childUserGroupsList.childUserGroups : [];
   const grandChildUserGroups = childUserGroupsList != null ? childUserGroupsList.grandChildUserGroups : [];
   const childUserGroupIds = childUserGroups.map(group => group._id);
@@ -58,14 +69,19 @@ const UserGroupDetailPage: FC = () => {
   const { data: userGroupRelationList, mutate: mutateUserGroupRelations } = useSWRxUserGroupRelationList(childUserGroupIds);
   const childUserGroupRelations = userGroupRelationList != null ? userGroupRelationList : [];
 
-  const { data: selectableParentUserGroups, mutate: mutateSelectableParentUserGroups } = useSWRxSelectableParentUserGroups(currentUserGroup._id);
-  const { data: selectableChildUserGroups, mutate: mutateSelectableChildUserGroups } = useSWRxSelectableChildUserGroups(currentUserGroup._id);
+  const { data: selectableParentUserGroups, mutate: mutateSelectableParentUserGroups } = useSWRxSelectableParentUserGroups(currentUserGroup?._id);
+  const { data: selectableChildUserGroups, mutate: mutateSelectableChildUserGroups } = useSWRxSelectableChildUserGroups(currentUserGroup?._id);
 
-  const { data: ancestorUserGroups, mutate: mutateAncestorUserGroups } = useSWRxAncestorUserGroups(currentUserGroup._id);
+  const { data: ancestorUserGroups, mutate: mutateAncestorUserGroups } = useSWRxAncestorUserGroups(currentUserGroup?._id);
 
   const { data: isAclEnabled } = useIsAclEnabled();
 
   const { open: openUpdateParentConfirmModal } = useUpdateUserGroupConfirmModal();
+
+
+  useEffect(() => {
+    setUserGroup(userGroup);
+  }, [userGroup]);
 
   /*
    * Function
@@ -143,7 +159,7 @@ const UserGroupDetailPage: FC = () => {
   }, [t, openUpdateParentConfirmModal, onSubmitUpdateGroup]);
 
   const fetchApplicableUsers = useCallback(async(searchWord) => {
-    const res = await apiv3Get(`/user-groups/${currentUserGroup._id}/unrelated-users`, {
+    const res = await apiv3Get(`/user-groups/${currentUserGroup?._id}/unrelated-users`, {
       searchWord,
       searchType,
       isAlsoMailSearched,
@@ -157,12 +173,12 @@ const UserGroupDetailPage: FC = () => {
 
   // TODO 85062: will be used in UserGroupUserFormByInput
   const addUserByUsername = useCallback(async(username: string) => {
-    await apiv3Post(`/user-groups/${currentUserGroup._id}/users/${username}`);
+    await apiv3Post(`/user-groups/${currentUserGroup?._id}/users/${username}`);
     mutateUserGroupRelations();
   }, [currentUserGroup, mutateUserGroupRelations]);
 
   const removeUserByUsername = useCallback(async(username: string) => {
-    await apiv3Delete(`/user-groups/${currentUserGroup._id}/users/${username}`);
+    await apiv3Delete(`/user-groups/${currentUserGroup?._id}/users/${username}`);
     mutateUserGroupRelations();
   }, [currentUserGroup, mutateUserGroupRelations]);
 
@@ -201,7 +217,7 @@ const UserGroupDetailPage: FC = () => {
     await openUpdateParentConfirmModal(
       selectedChild,
       {
-        parent: currentUserGroup._id,
+        parent: currentUserGroup?._id,
       },
       onSubmitUpdateGroup,
     );
@@ -220,7 +236,7 @@ const UserGroupDetailPage: FC = () => {
       await apiv3Post('/user-groups', {
         name: userGroupData.name,
         description: userGroupData.description,
-        parentId: currentUserGroup._id,
+        parentId: currentUserGroup?._id,
       });
 
       toastSuccess(t('toaster.update_successed', { target: t('UserGroup') }));
@@ -326,7 +342,7 @@ const UserGroupDetailPage: FC = () => {
       </div>
       <h2 className="admin-setting-header mt-4">{t('admin:user_group_management.user_list')}</h2>
       <UserGroupUserTable />
-      <UserGroupUserModal />
+      {/* <UserGroupUserModal /> */}
 
       <h2 className="admin-setting-header mt-4">{t('admin:user_group_management.child_group_list')}</h2>
       <UserGroupDropdown
@@ -372,7 +388,7 @@ const UserGroupDetailPage: FC = () => {
 
       <h2 className="admin-setting-header mt-4">{t('Page')}</h2>
       <div className="page-list">
-        <UserGroupPageList />
+        {/* <UserGroupPageList /> */}
       </div>
     </div>
   );
