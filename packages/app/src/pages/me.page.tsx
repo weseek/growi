@@ -53,7 +53,7 @@ import {
   useHackmdUri,
   useIsAclEnabled, useIsUserPage, useIsNotCreatable,
   useCsrfToken, useIsSearchScopeChildrenAsDefault, useCurrentPageId, useCurrentPathname,
-  useIsSlackConfigured, useIsBlinkedHeaderAtBoot, useRendererConfig, useEditingMarkdown,
+  useIsSlackConfigured, useIsBlinkedHeaderAtBoot, useRendererConfig, useEditingMarkdown, useRegistrationWhiteList,
 } from '../stores/context';
 
 import {
@@ -100,60 +100,43 @@ superjson.registerCustom<IPageToShowRevisionWithMeta, IPageToShowRevisionWithMet
 
 type Props = CommonProps & {
   currentUser: IUser,
+  // pageWithMeta: IPageToShowRevisionWithMeta,
+  // redirectFrom?: string;
+  // isLatestRevision?: boolean
+  // isIdenticalPathPage?: boolean,
+  // isForbidden: boolean,
+  // isNotFound: boolean,
+  // IsNotCreatable: boolean,
+  // isSearchServiceConfigured: boolean,
+  // isSearchServiceReachable: boolean,
+  // isSearchScopeChildrenAsDefault: boolean,
+  // isSlackConfigured: boolean,
+  // isAclEnabled: boolean,
+  // hackmdUri: string,
+  // isEnabledStaleNotification: boolean,
+  // disableLinkSharing: boolean,
+  // rendererConfig: RendererConfig,
+  // userUISettings?: IUserUISettings
+  // sidebarConfig: ISidebarConfig,
 
-  pageWithMeta: IPageToShowRevisionWithMeta,
-  // pageUser?: any,
-  redirectFrom?: string;
-
-  // shareLinkId?: string;
-  isLatestRevision?: boolean
-
-  isIdenticalPathPage?: boolean,
-  isForbidden: boolean,
-  isNotFound: boolean,
-  IsNotCreatable: boolean,
-  // isAbleToDeleteCompletely: boolean,
-
-  isSearchServiceConfigured: boolean,
-  isSearchServiceReachable: boolean,
-  isSearchScopeChildrenAsDefault: boolean,
-
-  isSlackConfigured: boolean,
-  // isMailerSetup: boolean,
-  isAclEnabled: boolean,
-  // hasSlackConfig: boolean,
-  // drawioUri: string,
-  hackmdUri: string,
-  // mathJax: string,
-  // noCdn: string,
-  // highlightJsStyle: string,
-  // isAllReplyShown: boolean,
-  // editorConfig: any,
-  isEnabledStaleNotification: boolean,
-  // isEnabledLinebreaks: boolean,
-  // isEnabledLinebreaksInComments: boolean,
-  // adminPreferredIndentSize: number,
-  // isIndentSizeForced: boolean,
-  disableLinkSharing: boolean,
-
-  rendererConfig: RendererConfig,
-
-  // UI
-  userUISettings?: IUserUISettings
-  // Sidebar
-  sidebarConfig: ISidebarConfig,
+  // config
+  registrationWhiteList: string[],
 };
 
 const MePage: NextPage<Props> = (props: Props) => {
   // const { t } = useTranslation();
   const router = useRouter();
 
-  const { data: currentUser } = useCurrentUser(props.currentUser ?? null);
+  // const { data: currentUser } = useCurrentUser(props.currentUser ?? null);
 
   // register global EventEmitter
   if (isClient()) {
     (window as CustomWindow).globalEmitter = new EventEmitter();
   }
+
+  useCurrentUser(props.currentUser ?? null);
+
+  useRegistrationWhiteList(props.registrationWhiteList);
 
   // commons
   // useCsrfToken(props.csrfToken);
@@ -183,14 +166,14 @@ const MePage: NextPage<Props> = (props: Props) => {
   // useHackmdUri(props.hackmdUri);
   // useDisableLinkSharing(props.disableLinkSharing);
   // useRendererConfig(props.rendererConfig);
-  const { pageWithMeta, userUISettings } = props;
+  // const { pageWithMeta, userUISettings } = props;
 
-  let shouldRenderPutbackPageModal = false;
-  if (pageWithMeta != null) {
-    shouldRenderPutbackPageModal = _isTrashPage(pageWithMeta.data.path);
-  }
+  // let shouldRenderPutbackPageModal = false;
+  // if (pageWithMeta != null) {
+  //   shouldRenderPutbackPageModal = _isTrashPage(pageWithMeta.data.path);
+  // }
 
-  const pageId = pageWithMeta?.data._id;
+  // const pageId = pageWithMeta?.data._id;
 
   // useCurrentPageId(pageId);
   // useSWRxCurrentPage(undefined, pageWithMeta?.data); // store initial data
@@ -218,7 +201,7 @@ const MePage: NextPage<Props> = (props: Props) => {
   //   }
   // }, [props.currentPathname, router]);
 
-  // const PersonalSettings = dynamic(() => import('~/components/Me/PersonalSettings'), { ssr: false });
+  const PersonalSettings = dynamic(() => import('~/components/Me/PersonalSettings'), { ssr: false });
 
   return (
     <>
@@ -235,7 +218,7 @@ const MePage: NextPage<Props> = (props: Props) => {
 
         <div id="main" className='main'>
           <div id="content-main" className="content-main grw-container-convertible">
-            {/* <PersonalSettings /> */}
+            <PersonalSettings />
           </div>
         </div>
 
@@ -370,6 +353,17 @@ const MePage: NextPage<Props> = (props: Props) => {
 // //     }
 // //   }
 // // }
+
+async function injectServerConfigurations(context: GetServerSidePropsContext, props: Props): Promise<void> {
+  const req: CrowiRequest = context.req as CrowiRequest;
+  const { crowi } = req;
+  const {
+    mailService,
+    configManager,
+  } = crowi;
+
+  props.registrationWhiteList = configManager.getConfig('crowi', 'security:registrationWhiteList');
+}
 
 // function injectServerConfigurations(context: GetServerSidePropsContext, props: Props): void {
 //   const req: CrowiRequest = context.req as CrowiRequest;
