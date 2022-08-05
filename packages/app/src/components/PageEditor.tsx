@@ -399,8 +399,6 @@ const PageEditor = (props: Props): JSX.Element => {
     return <></>;
   }
 
-  // const config = props.appContainer.getConfig();
-  // const isUploadable = config.upload.image || config.upload.file;
   const isUploadable = isUploadableImage || isUploadableFile;
 
 
@@ -410,8 +408,6 @@ const PageEditor = (props: Props): JSX.Element => {
   //  because Editor is a class component and must be wrapped with React.forwardRef
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const EditorAny = Editor as any;
-
-  // console.log('EditorAny', markdown);
 
   return (
     <div className="d-flex flex-wrap">
