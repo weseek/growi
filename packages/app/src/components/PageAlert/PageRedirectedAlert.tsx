@@ -6,15 +6,16 @@ import { useRedirectFrom } from '~/stores/context';
 
 export const PageRedirectedAlert = React.memo((): JSX.Element => {
   const { t } = useTranslation();
-  const { data: redirectFrom } = useRedirectFrom();
+  const { data: redirectFrom, mutate: mutateRedirectFrom } = useRedirectFrom();
   const [isUnlinked, setIsUnlinked] = useState(false);
 
   const unlinkButtonClickHandler = (): void => {
     // Todo: implement in https://redmine.weseek.co.jp/issues/101741
     setIsUnlinked(true);
+    mutateRedirectFrom('');
   };
 
-  if (!redirectFrom) {
+  if (redirectFrom == null) {
     return <></>;
   }
 
