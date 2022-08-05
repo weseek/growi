@@ -42,6 +42,7 @@ const UserGroupDetailPage = (props: Props) => {
    * State (from AdminUserGroupDetailContainer)
    */
   // const [currentUserGroup, setUserGroup] = useState<IUserGroupHasId>(JSON.parse(adminUserGroupDetailElem?.getAttribute('data-user-group') || 'null'));
+  const { data: userGroup } = useSWRxUserGroup(currentUserGroupId);
   const [currentUserGroup, setUserGroup] = useState<IUserGroupHasId>();
   const [relatedPages, setRelatedPages] = useState<IPageHasId[]>([]); // For page list
   const [searchType, setSearchType] = useState<string>('partial');
@@ -52,7 +53,6 @@ const UserGroupDetailPage = (props: Props) => {
   const [isUpdateModalShown, setUpdateModalShown] = useState<boolean>(false);
   const [isDeleteModalShown, setDeleteModalShown] = useState<boolean>(false);
 
-  const { data: userGroup } = useSWRxUserGroup(currentUserGroupId);
 
   /*
    * Fetch
