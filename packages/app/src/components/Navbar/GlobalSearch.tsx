@@ -15,6 +15,7 @@ import SearchForm from '../SearchForm';
 
 import styles from './GlobalSearch.module.scss';
 
+
 export type GlobalSearchProps = {
   dropup?: boolean,
 }

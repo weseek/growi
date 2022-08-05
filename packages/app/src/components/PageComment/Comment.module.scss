@@ -1,7 +1,7 @@
 @use '../../styles/bootstrap/init' as bs;
 @use './_comment-inheritance';
 
-// TODO: Never use this class. From _comment.scss
+// TODO: Never use this class. From "../../styles/_comment.scss"
 // pointer-events moved to .page-commnet
 .page-comments {
   // .page-comments-list-toggle-older {

@@ -134,7 +134,7 @@ export const Comment = (props: CommentProps): JSX.Element => {
       ) : (
         <div id={commentId} className={rootClassName}>
           <div className="page-comment-writer">
-            <UserPicture user={creator} noLink noTooltip />
+            <UserPicture user={creator} />
           </div>
           <div className="page-comment-main">
             <div className="page-comment-creator">
