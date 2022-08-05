@@ -1,3 +1,4 @@
+@use '~/styles/bootstrap/init' as bs;
 
 .revision-toc :global {
   // to get on the Attachment row
@@ -24,5 +25,15 @@
       margin-right: 4px;
       margin-left: 17px;
     }
+  }
+}
+
+.revision-toc {
+  @media print {
+    float: none;
+    max-width: 100%;
+    margin-bottom: 20px;
+    font-size: 0.9em;
+    border: solid 1px bs.$gray-400;
   }
 }

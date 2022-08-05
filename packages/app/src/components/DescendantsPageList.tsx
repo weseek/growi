@@ -103,7 +103,7 @@ export const DescendantsPageListSubstance = (props: SubstanceProps): JSX.Element
     );
   }
 
-  const showPager = pagingResult.items.length > pagingResult.limit;
+  const showPager = pagingResult.totalCount > pagingResult.limit;
 
   return (
     <>
@@ -130,11 +130,11 @@ export const DescendantsPageListSubstance = (props: SubstanceProps): JSX.Element
   );
 };
 
-type Props = {
+export type DescendantsPageListProps = {
   path: string,
 }
 
-export const DescendantsPageList = (props: Props): JSX.Element => {
+export const DescendantsPageList = (props: DescendantsPageListProps): JSX.Element => {
   const { path } = props;
 
   const [activePage, setActivePage] = useState(1);

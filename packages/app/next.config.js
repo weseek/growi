@@ -9,12 +9,6 @@ const { withSuperjson } = require('next-superjson');
 const { PHASE_PRODUCTION_BUILD, PHASE_PRODUCTION_SERVER } = require('next/constants');
 
 
-// define additional entries
-const additionalWebpackEntries = {
-  boot: './src/client/boot',
-};
-
-
 const setupTranspileModules = () => {
   const eazyLogger = require('eazy-logger');
   const { listScopedPackages, listPrefixedPackages } = require('./src/utils/next.config.utils');
@@ -33,7 +27,9 @@ const setupTranspileModules = () => {
     'unified',
     'comma-separated-tokens',
     'decode-named-character-reference',
+    'hastscript',
     'html-void-elements',
+    'longest-streak',
     'property-information',
     'space-separated-tokens',
     'trim-lines',
@@ -41,7 +37,9 @@ const setupTranspileModules = () => {
     'vfile',
     'zwitch',
     'emoticon',
-    ...listPrefixedPackages(['remark-', 'rehype-', 'hast-', 'mdast-', 'micromark-', 'micromark-', 'unist-']),
+    'direction', // for hast-util-select
+    'bcp-47-match', // for hast-util-select
+    ...listPrefixedPackages(['remark-', 'rehype-', 'hast-', 'mdast-', 'micromark-', 'unist-']),
   ];
 
   logger.info('{bold:Listing scoped packages for transpiling:}');
@@ -82,21 +80,6 @@ module.exports = async(phase, { defaultConfig }) => {
       // This provides a way of excluding dependencies from the output bundles
       config.externals.push('dtrace-provider');
       config.externals.push('mongoose');
-
-      // configure additional entries
-      const orgEntry = config.entry;
-      config.entry = () => {
-        return orgEntry().then((entry) => {
-          return { ...entry, ...additionalWebpackEntries };
-        });
-      };
-
-      const { WebpackManifestPlugin } = require('webpack-manifest-plugin');
-      config.plugins.push(
-        new WebpackManifestPlugin({
-          fileName: 'custom-manifest.json',
-        }),
-      );
 
       // setup i18next-hmr
       if (!options.isServer && options.dev) {
