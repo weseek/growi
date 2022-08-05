@@ -9,18 +9,19 @@ import { exportAsMarkdown } from '~/client/services/page-operation';
 import { toastSuccess } from '~/client/util/apiNotification';
 import { smoothScrollIntoView } from '~/client/util/smooth-scroll';
 import { IPageToDeleteWithMeta, IPageToRenameWithMeta, IPageWithMeta } from '~/interfaces/page';
-import { IPageSearchMeta } from '~/interfaces/search';
+import { IPageWithSearchMeta } from '~/interfaces/search';
 import { OnDuplicatedFunction, OnRenamedFunction, OnDeletedFunction } from '~/interfaces/ui';
 import {
   usePageDuplicateModal, usePageRenameModal, usePageDeleteModal,
 } from '~/stores/modal';
 import { useDescendantsPageListForCurrentPathTermManager } from '~/stores/page';
 import { usePageTreeTermManager } from '~/stores/page-listing';
+import { useSearchResultRenderer } from '~/stores/renderer';
 import { useFullTextSearchTermManager } from '~/stores/search';
 
 
 import AppContainer from '../../client/services/AppContainer';
-import { AdditionalMenuItemsRendererProps, ForceHideMenuItems } from '../Common/Dropdown/PageItemControl';
+import { AdditionalMenuItemsRendererProps, ForceHideMenuItems, MenuItemType } from '../Common/Dropdown/PageItemControl';
 import { GrowiSubNavigation } from '../Navbar/GrowiSubNavigation';
 import { SubNavButtons } from '../Navbar/SubNavButtons';
 import RevisionLoader from '../Page/RevisionLoader';
@@ -55,7 +56,7 @@ const MUTATION_OBSERVER_CONFIG = { childList: true, subtree: true };
 
 type Props ={
   appContainer: AppContainer,
-  pageWithMeta : IPageWithMeta<IPageSearchMeta>,
+  pageWithMeta : IPageWithSearchMeta,
   highlightKeywords?: string[],
   showPageControlDropdown?: boolean,
   forceHideMenuItems?: ForceHideMenuItems,
@@ -120,8 +121,7 @@ export const SearchResultContent: FC<Props> = (props: Props) => {
   const { open: openRenameModal } = usePageRenameModal();
   const { open: openDeleteModal } = usePageDeleteModal();
 
-  const growiRenderer = appContainer.getRenderer('searchresult');
-
+  const { data: growiRenderer } = useSearchResultRenderer();
 
   const duplicateItemClickedHandler = useCallback(async(pageToDuplicate) => {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -176,6 +176,7 @@ export const SearchResultContent: FC<Props> = (props: Props) => {
       ? page.revision
       : page.revision._id;
 
+
     return (
       <div className="d-flex flex-column align-items-end justify-content-center py-md-2">
         <SubNavButtons
@@ -194,8 +195,8 @@ export const SearchResultContent: FC<Props> = (props: Props) => {
     );
   }, [page, showPageControlDropdown, forceHideMenuItems, duplicateItemClickedHandler, renameItemClickedHandler, deleteItemClickedHandler]);
 
-  // return if page is null
-  if (page == null) return <></>;
+  // return if page or growiRenderer is null
+  if (page == null || growiRenderer == null) return <></>;
 
   return (
     <div key={page._id} data-testid="search-result-content" className="search-result-content grw-page-path-text-muted-container d-flex flex-column">

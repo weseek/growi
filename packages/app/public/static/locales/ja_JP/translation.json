@@ -166,6 +166,7 @@
   "No bookmarks yet": "No bookmarks yet",
   "add_bookmark": "ブックマークに追加",
   "remove_bookmark": "ブックマークから削除",
+  "wide_view": "ワイドビュー",
   "Recent Created": "最新の作成",
   "Recent Changes": "最新の変更",
   "Page Tree": "ページツリー",
@@ -537,6 +538,7 @@
     "create_failed": "{{target}}の作成に失敗しました",
     "update_successed": "{{target}}を更新しました",
     "update_failed": "{{target}}の更新に失敗しました",
+    "file_upload_failed": "ファイルのアップロードに失敗しました",
     "initialize_successed": "{{target}}を初期化しました",
     "give_user_admin": "{{username}}を管理者に設定しました",
     "remove_user_admin": "{{username}}を管理者から外しました",
@@ -1075,11 +1077,18 @@
     "belonging_to_no_group": "所属しているグループが見つかりませんでした。",
     "manage_user_groups": "グループ管理"
   },
+  "crop_image_modal": {
+    "image_crop": "画像の切り抜き",
+    "crop": "トリミング",
+    "reset": "リセット",
+    "cancel": "キャンセル"
+  },
   "fix_page_grant": {
     "modal": {
       "no_grant_available": "選択可能な権限のリストが見つかりませんでした。まず親ページの権限を修正したのちに再試行してください。",
       "need_to_fix_grant": "正しく機能を使用するためにはこのページに紐づく権限を修正する必要があります。 <br> 下記の選択肢から選んで変更してください。",
       "grant_label": {
+        "public": "公開",
         "isForbidden": "権限の閲覧が許可されていません",
         "currentPageGrantLabel": "このページの権限: ",
         "parentPageGrantLabel": "親のページの権限: ",

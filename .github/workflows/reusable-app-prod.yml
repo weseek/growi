@@ -59,7 +59,16 @@ jobs:
     - name: Archive production files
       id: archive-prod-files
       run: |
-        tar -cf production.tar packages/**/dist packages/app/public
+        tar -cf production.tar \
+          package.json \
+          packages/app/config \
+          packages/app/public \
+          packages/app/resource \
+          packages/app/tmp \
+          packages/app/migrate-mongo-config.js \
+          packages/app/.env.production* \
+          packages/*/package.json \
+          packages/*/dist
         echo ::set-output name=file::production.tar
 
     - name: Upload production files as artifact
@@ -196,6 +205,9 @@ jobs:
 
     steps:
     - uses: actions/checkout@v3
+
+    - name: Install fonts
+      run: sudo apt install fonts-noto
 
     - uses: actions/setup-node@v3
       with:

@@ -5,17 +5,15 @@ const PATTERN_RELATIVE_PATH = new RegExp(/^(\.{1,2})(\/.*)?$/);
 
 export default class LinkerByRelativePathConfigurer {
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  appContainer: any;
+  pagePath: string;
 
-  // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
-  constructor(appContainer) {
-    this.appContainer = appContainer;
+  constructor(pagePath: string) {
+    this.pagePath = pagePath;
   }
 
   // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
   configure(md): void {
-    const pageContainer = this.appContainer.getContainer('PageContainer');
+    const pagePath = this.pagePath;
 
     // Remember old renderer, if overridden, or proxy to default renderer
     const defaultRender = md.renderer.rules.link_open || function(tokens, idx, options, env, self) {
@@ -32,7 +30,7 @@ export default class LinkerByRelativePathConfigurer {
 
       if (hrefIndex != null && hrefIndex >= 0) {
         const href: string = tokens[idx].attrs[hrefIndex][1];
-        const currentPath: string | null = pageContainer?.state.path;
+        const currentPath: string | null = pagePath;
 
         // resolve relative path and replace
         if (PATTERN_RELATIVE_PATH.test(href) && currentPath != null) {

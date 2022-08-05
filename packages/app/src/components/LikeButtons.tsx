@@ -85,14 +85,4 @@ const LikeButtons: FC<LikeButtonsProps> = (props: LikeButtonsProps) => {
 
 };
 
-/**
- * Wrapper component for using unstated
- */
-const LikeButtonsUnstatedWrapper = withUnstatedContainers(LikeButtons, [AppContainer]);
-
-// eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
-const LikeButtonsWrapper = (props) => {
-  return <LikeButtonsUnstatedWrapper {...props}></LikeButtonsUnstatedWrapper>;
-};
-
-export default LikeButtonsWrapper;
+export default LikeButtons;
