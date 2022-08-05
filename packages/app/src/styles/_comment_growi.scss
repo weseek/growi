@@ -1,13 +1,13 @@
 .growi {
-  // TODO: Never use these classes.
-
   // display cheatsheet for comment form only
   .comment-form {
+    // TODO: Never use .editor-cheatsheet class.
     .editor-cheatsheet {
       display: none;
     }
 
     // textarea
+    // TODO: Never use .comment-form-comment class.
     .comment-form-comment {
       height: 80px;
       &:focus,
