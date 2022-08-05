@@ -1,5 +1,5 @@
 import pathlib from 'path';
-import { Readable, Writable } from 'stream';
+import { Writable } from 'stream';
 
 import { pagePathUtils, pathUtils } from '@growi/core';
 import escapeStringRegexp from 'escape-string-regexp';
@@ -47,88 +47,6 @@ const { addTrailingSlash } = pathUtils;
 
 const BULK_REINDEX_SIZE = 100;
 const LIMIT_FOR_MULTIPLE_PAGE_OP = 20;
-
-// TODO: improve type
-class PageCursorsForDescendantsFactory {
-
-  private user: any; // TODO: Typescriptize model
-
-  private rootPage: any; // TODO: wait for mongoose update
-
-  private shouldIncludeEmpty: boolean;
-
-  private initialCursor: QueryCursor<any> | never[]; // TODO: wait for mongoose update
-
-  private Page: PageModel;
-
-  constructor(user: any, rootPage: any, shouldIncludeEmpty: boolean) {
-    this.user = user;
-    this.rootPage = rootPage;
-    this.shouldIncludeEmpty = shouldIncludeEmpty;
-
-    this.Page = mongoose.model('Page') as unknown as PageModel;
-  }
-
-  // prepare initial cursor
-  private async init() {
-    const initialCursor = await this.generateCursorToFindChildren(this.rootPage);
-    this.initialCursor = initialCursor;
-  }
-
-  /**
-   * Returns Iterable that yields only descendant pages unorderedly
-   * @returns Promise<AsyncGenerator>
-   */
-  async generateIterable(): Promise<AsyncGenerator | never[]> {
-    // initialize cursor
-    await this.init();
-
-    return this.isNeverArray(this.initialCursor) ? [] : this.generateOnlyDescendants(this.initialCursor);
-  }
-
-  /**
-   * Returns Readable that produces only descendant pages unorderedly
-   * @returns Promise<Readable>
-   */
-  async generateReadable(): Promise<Readable> {
-    return Readable.from(await this.generateIterable());
-  }
-
-  /**
-   * Generator that unorderedly yields descendant pages
-   */
-  private async* generateOnlyDescendants(cursor: QueryCursor<any>) {
-    for await (const page of cursor) {
-      const nextCursor = await this.generateCursorToFindChildren(page);
-      if (!this.isNeverArray(nextCursor)) {
-        yield* this.generateOnlyDescendants(nextCursor); // recursively yield
-      }
-
-      yield page;
-    }
-  }
-
-  private async generateCursorToFindChildren(page: any): Promise<QueryCursor<any> | never[]> {
-    if (page == null) {
-      return [];
-    }
-
-    const { PageQueryBuilder } = this.Page;
-
-    const builder = new PageQueryBuilder(this.Page.find(), this.shouldIncludeEmpty);
-    builder.addConditionToFilteringByParentId(page._id);
-
-    const cursor = builder.query.lean().cursor({ batchSize: BULK_REINDEX_SIZE }) as QueryCursor<any>;
-
-    return cursor;
-  }
-
-  private isNeverArray(val: QueryCursor<any> | never[]): val is never[] {
-    return 'length' in val && val.length === 0;
-  }
-
-}
-
 class PageService {
 
   crowi: any;
@@ -346,6 +264,49 @@ class PageService {
       .query
       .lean()
       .cursor({ batchSize: BULK_REINDEX_SIZE });
+  }
+
+  private async generateReadStreamToOperateOnlyDescendantsGraphLookup(targetId: ObjectIdLike) {
+    const Page = mongoose.model('Page') as unknown as PageModel;
+
+    const readStream = Page.aggregate([
+      {
+        $match: {
+          _id: targetId,
+        },
+      },
+      {
+        $graphLookup: {
+          from: 'pages',
+          startWith: '$_id',
+          connectFromField: '_id',
+          connectToField: 'parent',
+          as: 'descendants',
+        },
+      },
+      // Flatten by descendants.
+      {
+        $unwind: '$descendants',
+      },
+      {
+        $replaceRoot: {
+          newRoot: '$descendants',
+        },
+      },
+      {
+        $project: {
+          pathLength: { $strLenCP: '$path' },
+        },
+      },
+      {
+        $sort: {
+          pathLength: -1,
+          path: 1,
+        },
+      },
+    ]).cursor();
+
+    return readStream;
   }
 
   async renamePage(page, newPagePath, user, options) {
@@ -812,8 +773,7 @@ class PageService {
       return this.renameDescendantsWithStreamV4(targetPage, newPagePath, user, options);
     }
 
-    const factory = new PageCursorsForDescendantsFactory(user, targetPage, true);
-    const readStream = await factory.generateReadable();
+    const readStream = await this.generateReadStreamToOperateOnlyDescendantsGraphLookup(targetPage._id);
 
     const newPagePathPrefix = newPagePath;
     const pathRegExp = new RegExp(`^${escapeStringRegexp(targetPage.path)}`, 'i');
@@ -1248,8 +1208,7 @@ class PageService {
       return this.duplicateDescendantsWithStreamV4(page, newPagePath, user);
     }
 
-    const iterableFactory = new PageCursorsForDescendantsFactory(user, page, true);
-    const readStream = await iterableFactory.generateReadable();
+    const readStream = await this.generateReadStreamToOperateOnlyDescendantsGraphLookup(page._id);
 
     const newPagePathPrefix = newPagePath;
     const pathRegExp = new RegExp(`^${escapeStringRegexp(page.path)}`, 'i');
@@ -1588,8 +1547,7 @@ class PageService {
       readStream = await this.generateReadStreamToOperateOnlyDescendants(targetPage.path, user);
     }
     else {
-      const factory = new PageCursorsForDescendantsFactory(user, targetPage, true);
-      readStream = await factory.generateReadable();
+      readStream = await this.generateReadStreamToOperateOnlyDescendantsGraphLookup(targetPage._id);
     }
 
 
@@ -1801,8 +1759,7 @@ class PageService {
       readStream = await this.generateReadStreamToOperateOnlyDescendants(targetPage.path, user);
     }
     else {
-      const factory = new PageCursorsForDescendantsFactory(user, targetPage, true);
-      readStream = await factory.generateReadable();
+      readStream = await this.generateReadStreamToOperateOnlyDescendantsGraphLookup(targetPage._id);
     }
 
     let count = 0;
