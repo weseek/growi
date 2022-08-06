@@ -11,10 +11,10 @@ export const registerTransformerForObjectId = (): void => {
           return false;
         }
         // Only evaluate types for string and ObjectId
-        if (typeof v === 'string' || typeof v.toHexString === 'function') {
-          return objectIdUtils.isValidObjectId(v);
+        if (typeof v !== 'string' && typeof v.toHexString !== 'function') {
+          return false;
         }
-        return false;
+        return objectIdUtils.isValidObjectId(v);
       },
       serialize: v => (typeof v === 'string' ? v : v.toHexString()),
       deserialize: v => v,
