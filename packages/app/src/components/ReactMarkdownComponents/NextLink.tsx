@@ -40,7 +40,7 @@ export const NextLink = ({
 
   return (
     <Link {...props} href={href}>
-      <a className={className}>{children}</a>
+      <a href={href} className={className}>{children}</a>
     </Link>
   );
 };
