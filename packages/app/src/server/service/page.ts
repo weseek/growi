@@ -267,6 +267,8 @@ class PageService {
   }
 
   private async generateReadStreamToOperateOnlyDescendantsGraphLookup(targetId: ObjectIdLike) {
+    const BATCH_SIZE = 100;
+
     const Page = mongoose.model('Page') as unknown as PageModel;
 
     const readStream = Page.aggregate([
@@ -294,7 +296,7 @@ class PageService {
         },
       },
       {
-        $project: {
+        $addFields: {
           pathLength: { $strLenCP: '$path' },
         },
       },
@@ -304,7 +306,7 @@ class PageService {
           path: 1,
         },
       },
-    ]).cursor();
+    ]).cursor({ batchSize: BATCH_SIZE });
 
     return readStream;
   }
