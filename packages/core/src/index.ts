@@ -7,6 +7,7 @@ export const customTagUtils = _customTagUtils;
 
 // export utils with namespace
 export * as templateChecker from './utils/template-checker';
+export * as objectIdUtils from './utils/objectid-utils';
 export * as pagePathUtils from './utils/page-path-utils';
 export * as pathUtils from './utils/path-utils';
 export * as pageUtils from './utils/page-utils';
