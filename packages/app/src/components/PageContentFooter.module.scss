@@ -3,3 +3,33 @@
   width: 300px;
   height: 20px;
 }
+
+.page-comment-comment-writer-skelton :global {
+  height: 3.5em;
+}
+
+.page-comment-comment-body-skelton :global {
+  margin-bottom: 0.5em;
+  margin-left: 4.5em;
+  word-wrap: break-word;
+}
+
+.page-comment-replycomments-writer-skelton :global {
+  height: 3.5em;
+}
+
+.page-comment-replycomments-body-skelton :global{
+  margin-bottom: 0.5em;
+  margin-left: 4.5em;
+  word-wrap: break-word;
+}
+
+.page-comment-commentlazyeditorrenderer-writer-skelton :global {
+  height: 3.5em;
+}
+
+.page-comment-commentlazyeditorrenderer-body-skelton :global {
+  margin-bottom: 0.5em;
+  margin-left: 4.5em;
+  word-wrap: break-word;
+}

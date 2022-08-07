@@ -140,14 +140,25 @@ export const PageComment: FC<Props> = memo((props:Props): JSX.Element => {
               <h2 className={commentTitleClasses}><i className="icon-fw icon-bubbles"></i>Comments</h2>
               <div className="page-comments-list" id="page-comments-list">
                 <div className='page-comment-thread pb-5  page-comment-thread-no-replies'>
-                  <Skelton additionalClass={`${styles['page-comment-comment-skelton']} mb-3`} roundedPill/>
-                  <Skelton additionalClass={`${styles['page-comment-replycomments-skelton']} mb-3`} />
+                  <div className='page-comment flex-column'>
+                    <div className='page-commnet-writer'>
+                      <Skelton additionalClass='rounded-circle pictur mb-3' />
+                    </div>
+                    <Skelton additionalClass="page-comment-main mb-3" />
+                  </div>
+                  <div className='page-comment flex-column'>
+                    <div className='page-commnet-writer'>
+                      <Skelton additionalClass='rounded-circle pictur mb-3' />
+                    </div>
+                    <Skelton additionalClass="page-comment-main mb-3" />
+                  </div>
                   <div className="text-right">
                     <Skelton additionalClass={`${styles['page-comment-button-skelton']}`} />
                   </div>
                 </div>
               </div>
-              <Skelton additionalClass={`${styles['page-comment-commentlazyeditorrenderer-skelton']}`} />
+              <Skelton additionalClass={`${styles['page-comment-commentlazyeditorrenderer-writer-skelton']}`} />
+              <Skelton additionalClass={`${styles['page-comment-commentlazyeditorrenderer-body-skelton']}`} />
             </div>
           </div>
         </div>
