@@ -22,7 +22,6 @@ const IGNORED_COLLECTION_NAMES = [
 ];
 
 const ExportArchiveDataPage = (props) => {
-
   const [collections, setCollections] = useState([]);
   const [zipFileStats, setZipFileStats] = useState([]);
   const [progressList, setProgressList] = useState([]);
@@ -67,9 +66,9 @@ const ExportArchiveDataPage = (props) => {
       return;
     }
     // websocket event
-    socket.on('admin:onProgressForExport', ({ currentCount, totalCount, progressListOpt }) => {
+    socket.on('admin:onProgressForExport', ({ progressList }) => {
       setIsExporting(true);
-      setProgressList(progressListOpt);
+      setProgressList(progressList);
     });
 
     // websocket event
@@ -130,7 +129,6 @@ const ExportArchiveDataPage = (props) => {
   const openExportModal = useCallback(() => {
     setIsExportModalOpen(true);
   }, []);
-
 
   const closeExportModal = useCallback(() => {
     setIsExportModalOpen(false);
