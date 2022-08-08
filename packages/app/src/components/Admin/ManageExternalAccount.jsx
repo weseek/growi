@@ -19,7 +19,7 @@ class ManageExternalAccount extends React.Component {
     this.handleExternalAccountPage = this.handleExternalAccountPage.bind(this);
   }
 
-  UNSAFE_UNSAFE_componentWillMount() {
+  UNSAFE_componentWillMount() {
     this.handleExternalAccountPage(1);
   }
 
