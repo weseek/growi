@@ -1,8 +1,8 @@
-import React, { useState, useCallback, useEffect } from 'react';
+import React, {
+  FC, useState, useCallback, useEffect,
+} from 'react';
 
-import PropTypes from 'prop-types';
-import { useTranslation } from 'next-i18next';
-
+import { useTranslation } from 'react-i18next';
 
 import PageContainer from '~/client/services/PageContainer';
 import { toastSuccess, toastError } from '~/client/util/apiNotification';
@@ -13,12 +13,29 @@ import { withUnstatedContainers } from '../UnstatedUtils';
 import ShareLinkForm from './ShareLinkForm';
 import ShareLinkList from './ShareLinkList';
 
-const ShareLink = (props) => {
+type Props = {
+  pageContainer: PageContainer;
+}
+
+type ShareLinkItemType = {
+  _id: string;
+  createdAt: Date;
+  expiredAt: null | Date;
+  description: string;
+  relatedPage: {
+    _id: string;
+    path: string;
+    id: string;
+  };
+  __v: number;
+};
+
+const ShareLink: FC<Props> = (props: Props): JSX.Element => {
   const { t } = useTranslation();
   const { pageContainer } = props;
   const { pageId } = pageContainer.state;
-  const [shareLinks, setShareLinks] = useState([]);
-  const [isOpenShareLinkForm, setIsOpenShareLinkForm] = useState(false);
+  const [shareLinks, setShareLinks] = useState<ShareLinkItemType[]>([]);
+  const [isOpenShareLinkForm, setIsOpenShareLinkForm] = useState<boolean>(false);
 
   const retrieveShareLinks = useCallback(async() => {
     try {
@@ -29,7 +46,6 @@ const ShareLink = (props) => {
     catch (err) {
       toastError(err);
     }
-
   }, [pageId]);
 
   const toggleShareLinkFormHandler = useCallback(() => {
@@ -38,7 +54,6 @@ const ShareLink = (props) => {
   }, [retrieveShareLinks]);
 
   const deleteAllLinksButtonHandler = useCallback(async() => {
-
     try {
       const res = await apiv3Delete('/share-links/', { relatedPage: pageId });
       const count = res.data.n;
@@ -52,7 +67,6 @@ const ShareLink = (props) => {
   }, [retrieveShareLinks, pageId, t]);
 
   const deleteLinkById = useCallback(async(shareLinkId) => {
-
     try {
       const res = await apiv3Delete(`/share-links/${shareLinkId}`);
       const { deletedShareLink } = res.data;
@@ -75,7 +89,6 @@ const ShareLink = (props) => {
         { t('share_links.share_link_list') }
         <button className="btn btn-danger ml-auto " type="button" onClick={deleteAllLinksButtonHandler}>{t('delete_all')}</button>
       </h3>
-
       <div>
         <ShareLinkList
           shareLinks={shareLinks}
@@ -92,11 +105,6 @@ const ShareLink = (props) => {
       </div>
     </div>
   );
-
-};
-
-ShareLink.propTypes = {
-  pageContainer: PropTypes.instanceOf(PageContainer).isRequired,
 };
 
 const ShareLinkWrapper = withUnstatedContainers(ShareLink, [PageContainer]);
