@@ -1,6 +1,7 @@
 import React from 'react';
 
 import { isClient } from '@growi/core';
+import ObjectId from 'bson-objectid';
 import {
   NextPage, GetServerSideProps, GetServerSidePropsContext,
 } from 'next';
@@ -9,8 +10,6 @@ import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import dynamic from 'next/dynamic';
 import { useRouter } from 'next/router';
 import { Container, Provider } from 'unstated';
-
-import ObjectId from 'bson-objectid';
 
 
 import AdminAppContainer from '~/client/services/AdminAppContainer';
@@ -93,14 +92,14 @@ const AdminMarkdownSettingsPage: NextPage<Props> = (props: Props) => {
 
   let userGroupId;
 
-    /*
+  /*
     * Set userGroupId as a adminPagesMap key
     * eg) In case that url is `/user-group-detail/62e8388a9a649bea5e703ef7`, userGroupId will be 62e8388a9a649bea5e703ef7
     */
-    const [firstPath, secondPath] = pagePathKeys;
-   if (firstPath === "user-group-detail" && secondPath != null && ObjectId.isValid(secondPath)) {
-     userGroupId = secondPath;
-   }
+  const [firstPath, secondPath] = pagePathKeys;
+  if (firstPath === 'user-group-detail' && secondPath != null && ObjectId.isValid(secondPath)) {
+    userGroupId = secondPath;
+  }
   const adminPagesMap = {
     home: {
       title: useCustomTitle(props, t('Wiki Management Home Page')),

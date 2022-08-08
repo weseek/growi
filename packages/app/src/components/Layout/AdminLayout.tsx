@@ -8,7 +8,7 @@ import { RawLayout } from './RawLayout';
 
 import styles from './Admin.module.scss';
 
-const AdminNotFoundPage = dynamic(() => import('../../components/Admin/NotFoundPage').then(module => module.AdminNotFoundPage));
+const AdminNotFoundPage = dynamic(() => import('../Admin/NotFoundPage').then(module => module.AdminNotFoundPage));
 
 
 type Props = {
@@ -44,7 +44,7 @@ const AdminLayout = ({
               <AdminNavigation selected={selectedNavOpt} />
             </div>
             <div className="col-lg-9">
-            {title != null ? children : <AdminNotFoundPage />}
+              {title != null ? children : <AdminNotFoundPage />}
             </div>
           </div>
         </div>
