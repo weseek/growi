@@ -36,7 +36,7 @@ type Props = {
   userGroupId?: string,
 }
 
-export const UserGroupDetailPage = (props: Props) => {
+const UserGroupDetailPage = (props: Props) => {
   const { t } = useTranslation();
   const router = useRouter();
   const { userGroupId: currentUserGroupId } = props;
@@ -398,3 +398,5 @@ export const UserGroupDetailPage = (props: Props) => {
     </div>
   );
 };
+
+export default UserGroupDetailPage;
