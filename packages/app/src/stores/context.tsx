@@ -248,7 +248,6 @@ export const useIsUploadableFile = (initialData?: boolean): SWRResponse<boolean,
   return useStaticSWR('isUploadableFile', initialData);
 };
 
-
 /** **********************************************************
  *                     Computed contexts
  *********************************************************** */
