@@ -29,7 +29,7 @@ export const ActivityTable : FC<Props> = (props: Props) => {
   }, [setTooltipOpen]);
 
   return (
-    <div className="table-responsiv-sm text-nowrap h-100">
+    <div className="table-responsive text-nowrap h-100">
       <table className="table table-default table-bordered table-user-list">
         <thead>
           <tr>
