@@ -54,7 +54,7 @@ class ShareLinkSetting extends React.Component {
     this.switchDisableLinkSharing = this.switchDisableLinkSharing.bind(this);
   }
 
-  UNSAFE_UNSAFE_componentWillMount() {
+  UNSAFE_componentWillMount() {
     this.getShareLinkList(1);
   }
 
