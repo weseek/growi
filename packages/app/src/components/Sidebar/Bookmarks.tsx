@@ -25,12 +25,12 @@ type Props = {
   bookmarkedPage: IPageHasId,
   onUnbookmarked: () => void,
   onRenamed: () => void,
-  onDeleted: (pageToDelete: IPageToDeleteWithMeta) => void
+  onClickDeleteMenuItem: (pageToDelete: IPageToDeleteWithMeta) => void
 }
 
 const BookmarkItem = (props: Props) => {
   const {
-    bookmarkedPage, onUnbookmarked, onRenamed, onDeleted,
+    bookmarkedPage, onUnbookmarked, onRenamed, onClickDeleteMenuItem,
   } = props;
   const { t } = useTranslation();
   const [isRenameInputShown, setRenameInputShown] = useState(false);
@@ -97,8 +97,8 @@ const BookmarkItem = (props: Props) => {
       meta: pageInfo,
     };
 
-    onDeleted(pageToDelete);
-  }, [bookmarkedPage, onDeleted]);
+    onClickDeleteMenuItem(pageToDelete);
+  }, [bookmarkedPage, onClickDeleteMenuItem]);
 
   return (
     <div className="d-flex justify-content-between" key={bookmarkedPage._id}>
@@ -148,8 +148,8 @@ const Bookmarks = () : JSX.Element => {
   const { data: currentUserBookmarksData, mutate: mutateCurrentUserBookmarks } = useSWRxCurrentUserBookmarks();
   const { open: openDeleteModal } = usePageDeleteModal();
 
-  const deleteBookmarkItem = (pageToDelete: IPageToDeleteWithMeta) => {
-    const onDeletedHandler: OnDeletedFunction = (pathOrPathsToDelete, _isRecursively, isCompletely) => {
+  const deleteMenuItemClickHandler = (pageToDelete: IPageToDeleteWithMeta) => {
+    const pageDeletedHandler : OnDeletedFunction = (pathOrPathsToDelete, _isRecursively, isCompletely) => {
       if (typeof pathOrPathsToDelete !== 'string') {
         return;
       }
@@ -163,7 +163,7 @@ const Bookmarks = () : JSX.Element => {
       }
       mutateCurrentUserBookmarks();
     };
-    openDeleteModal([pageToDelete], { onDeleted: onDeletedHandler });
+    openDeleteModal([pageToDelete], { onDeleted: pageDeletedHandler });
   };
 
   const renderBookmarkList = () => {
@@ -184,7 +184,7 @@ const Bookmarks = () : JSX.Element => {
                 bookmarkedPage={currentUserBookmark}
                 onUnbookmarked={mutateCurrentUserBookmarks}
                 onRenamed={mutateCurrentUserBookmarks}
-                onDeleted={deleteBookmarkItem}
+                onClickDeleteMenuItem={deleteMenuItemClickHandler}
               />
             );
           })}
