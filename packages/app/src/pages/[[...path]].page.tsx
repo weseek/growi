@@ -18,6 +18,7 @@ import { useRouter } from 'next/router';
 import superjson from 'superjson';
 
 import { PageAlerts } from '~/components/PageAlert/PageAlerts';
+import { TrashPageList } from '~/components/_TrashPageList';
 import { PageComment } from '~/components/PageComment';
 // import { useTranslation } from '~/i18n';
 // import CommentEditorLazyRenderer from '~/components/PageComment/CommentEditorLazyRenderer';
@@ -314,6 +315,8 @@ const GrowiPage: NextPage<Props> = (props: Props) => {
 
               </div>
             </div>
+
+            {props.isTrashTopPage && <TrashPageList /> }
 
             {/* <div className="col-xl-2 col-lg-3 d-none d-lg-block revision-toc-container">
               <div id="revision-toc" className="revision-toc mt-3 sps sps--abv" data-sps-offset="123">
