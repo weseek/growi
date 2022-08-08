@@ -48,14 +48,10 @@ export const useViewOptions = (): SWRResponse<RendererOptions, Error> => {
     ? ['viewOptions', currentPagePath, rendererConfig]
     : null;
 
-  const swrResult = useSWRImmutable<RendererOptions, Error>(key);
-
-  if (isAllDataValid && swrResult.data == null) {
-    swrResult.mutate(generateViewOptions(currentPagePath, rendererConfig, storeTocNode));
-  }
-
-  // call useSWRImmutable again to foce to update cache
-  return useSWRImmutable<RendererOptions, Error>(key);
+  return useSWRImmutable<RendererOptions, Error>(
+    key,
+    (rendererId, currentPagePath, rendererConfig) => generateViewOptions(currentPagePath, rendererConfig, storeTocNode),
+  );
 };
 
 export const useTocOptions = (): SWRResponse<RendererOptions, Error> => {
