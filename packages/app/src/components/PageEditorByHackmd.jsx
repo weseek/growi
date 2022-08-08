@@ -6,7 +6,6 @@ import PropTypes from 'prop-types';
 import { useTranslation } from 'react-i18next';
 
 
-import { appContainer } from '~/client/base';
 import AppContainer from '~/client/services/AppContainer';
 import EditorContainer from '~/client/services/EditorContainer';
 import PageContainer from '~/client/services/PageContainer';
@@ -47,44 +46,40 @@ const PageEditorByHackmd = (props) => {
   const [errorMessage, setErrorMessage] = useState('');
   const [errorReason, setErrorReason] = useState('');
 
-  // componentWillMount() {
-  //   this.props.appContainer.registerComponentInstance('PageEditorByHackmd', this);
-  // }
+  const hackmdEditorRef = useRef(null);
 
-  // /**
-  //  * return markdown document of HackMD
-  //  * @return {Promise<string>}
-  //  */
-  // getMarkdown() {
-  //   const { t } = this.props;
-  //   if (!this.state.isInitialized) {
-  //     return Promise.reject(new Error(t('hackmd.not_initialized')));
-  //   }
+  useEffect(() => {
+    const pageEditorByHackmdInstance = {
+      getMarkdown: () => {
+        if (!isInitialized) {
+          return Promise.reject(new Error(t('hackmd.not_initialized')));
+        }
 
-  //   return this.hackmdEditor.getValue();
-  // }
+        return hackmdEditorRef.current.getValue();
+      },
+    };
+    appContainer.registerComponentInstance('PageEditorByHackmd', pageEditorByHackmdInstance);
+  }, [appContainer, isInitialized, t]);
 
-  // /**
-  //  * reset initialized status
-  //  */
-  // reset() {
-  //   this.setState({ isInitialized: false });
-  // }
-
-  const getHackmdUri = () => {
-    const envVars = appContainer.getConfig().env;
-    return envVars.HACKMD_URI;
+  /**
+   * reset initialized status
+   */
+  const reset = () => {
+    setIsInitialized(false);
   };
 
-  // get isResume() {
-  //   const { pageContainer } = this.props;
-  //   const {
-  //     pageIdOnHackmd, hasDraftOnHackmd, isHackmdDraftUpdatingInRealtime,
-  //   } = pageContainer.state;
+  const getHackmdUri = useCallback(() => {
+    const envVars = appContainer.getConfig().env;
+    return envVars.HACKMD_URI;
+  }, [appContainer]);
 
-  //   const isPageExistsOnHackmd = (pageIdOnHackmd != null);
-  //   return (isPageExistsOnHackmd && hasDraftOnHackmd) || isHackmdDraftUpdatingInRealtime;
-  // }
+  const isResume = () => {
+    const {
+      pageIdOnHackmd, hasDraftOnHackmd, isHackmdDraftUpdatingInRealtime,
+    } = pageContainer.state;
+    const isPageExistsOnHackmd = (pageIdOnHackmd != null);
+    return (isPageExistsOnHackmd && hasDraftOnHackmd) || isHackmdDraftUpdatingInRealtime;
+  };
 
   const startToEdit = useCallback(async() => {
     const hackmdUri = getHackmdUri();
@@ -108,7 +103,7 @@ const PageEditorByHackmd = (props) => {
         throw new Error(res.error);
       }
 
-      await pageContainer.setState({ // ???????????????????
+      await pageContainer.setState({
         pageIdOnHackmd: res.pageIdOnHackmd,
         revisionIdHackmdSynced: res.revisionIdHackmdSynced,
       });
@@ -125,12 +120,12 @@ const PageEditorByHackmd = (props) => {
     setIsInitializing(false);
   }, [getHackmdUri, pageContainer, pageId]);
 
-  // /**
-  //  * Start to edit w/o any api request
-  //  */
-  // resumeToEdit() {
-  //   this.setState({ isInitialized: true });
-  // }
+  /**
+   * Start to edit w/o any api request
+   */
+  const resumeToEdit = () => {
+    setIsInitialized(true);
+  };
 
   const discardChanges = useCallback(async() => {
     const { pageId } = pageContainer.state;
@@ -212,147 +207,142 @@ const PageEditorByHackmd = (props) => {
     }
   }, [editorContainer, getHackmdUri, pageContainer.state.markdown, pageContainer.state.pageId]);
 
-  // penpalErrorOccuredHandler(error) {
-  //   const { pageContainer, t } = this.props;
+  const penpalErrorOccuredHandler = (error) => {
+    pageContainer.showErrorToastr(error);
 
-  //   pageContainer.showErrorToastr(error);
+    setHasError(true);
+    setErrorMessage(t('hackmd.fail_to_connect'));
+    setErrorReason(error.toString());
+  };
 
-  //   this.setState({
-  //     hasError: true,
-  //     errorMessage: t('hackmd.fail_to_connect'),
-  //     errorReason: error.toString(),
-  //   });
-  // }
+  const renderPreInitContent = () => {
+    const hackmdUri = getHackmdUri();
+    const {
+      revisionId, revisionIdHackmdSynced, remoteRevisionId, pageId,
+    } = pageContainer.state;
+    const isPageNotFound = pageId == null;
 
-  // renderPreInitContent() {
-  //   const hackmdUri = this.getHackmdUri();
-  //   const { pageContainer, t } = this.props;
-  //   const {
-  //     revisionId, revisionIdHackmdSynced, remoteRevisionId, pageId,
-  //   } = pageContainer.state;
-  //   const isPageNotFound = pageId == null;
+    let content;
 
-  //   let content;
+    /*
+     * HackMD is not setup
+     */
+    if (hackmdUri == null) {
+      content = (
+        <div>
+          <p className="text-center hackmd-status-label"><i className="fa fa-file-text"></i> { t('hackmd.not_set_up')}</p>
+          {/* eslint-disable-next-line react/no-danger */}
+          <p dangerouslySetInnerHTML={{ __html: t('hackmd.need_to_associate_with_growi_to_use_hackmd_refer_to_this') }} />
+        </div>
+      );
+    }
 
-  //   /*
-  //    * HackMD is not setup
-  //    */
-  //   if (hackmdUri == null) {
-  //     content = (
-  //       <div>
-  //         <p className="text-center hackmd-status-label"><i className="fa fa-file-text"></i> { t('hackmd.not_set_up')}</p>
-  //         {/* eslint-disable-next-line react/no-danger */}
-  //         <p dangerouslySetInnerHTML={{ __html: t('hackmd.need_to_associate_with_growi_to_use_hackmd_refer_to_this') }} />
-  //       </div>
-  //     );
-  //   }
+    /*
+    * used HackMD from NotFound Page
+    */
+    else if (isPageNotFound) {
+      content = (
+        <div className="text-center">
+          <p className="hackmd-status-label">
+            <i className="fa fa-file-text mr-2" />
+            { t('hackmd.used_for_not_found') }
+          </p>
+          {/* eslint-disable-next-line react/no-danger */}
+          <p dangerouslySetInnerHTML={{ __html: t('hackmd.need_to_make_page') }} />
+        </div>
+      );
+    }
+    /*
+     * Resume to edit or discard changes
+     */
+    else if (isResume()) {
+      const isHackmdDocumentOutdated = revisionIdHackmdSynced !== remoteRevisionId;
 
-  //   /*
-  //   * used HackMD from NotFound Page
-  //   */
-  //   else if (isPageNotFound) {
-  //     content = (
-  //       <div className="text-center">
-  //         <p className="hackmd-status-label">
-  //           <i className="fa fa-file-text mr-2" />
-  //           { t('hackmd.used_for_not_found') }
-  //         </p>
-  //         {/* eslint-disable-next-line react/no-danger */}
-  //         <p dangerouslySetInnerHTML={{ __html: t('hackmd.need_to_make_page') }} />
-  //       </div>
-  //     );
-  //   }
-  //   /*
-  //    * Resume to edit or discard changes
-  //    */
-  //   else if (this.isResume) {
-  //     const isHackmdDocumentOutdated = revisionIdHackmdSynced !== remoteRevisionId;
+      content = (
+        <div>
+          <p className="text-center hackmd-status-label"><i className="fa fa-file-text"></i> HackMD is READY!</p>
+          <p className="text-center"><strong>{t('hackmd.unsaved_draft')}</strong></p>
 
-  //     content = (
-  //       <div>
-  //         <p className="text-center hackmd-status-label"><i className="fa fa-file-text"></i> HackMD is READY!</p>
-  //         <p className="text-center"><strong>{t('hackmd.unsaved_draft')}</strong></p>
+          { isHackmdDocumentOutdated && (
+            <div className="card border-warning">
+              <div className="card-header bg-warning"><i className="icon-fw icon-info"></i> {t('hackmd.draft_outdated')}</div>
+              <div className="card-body text-center">
+                {t('hackmd.based_on_revision')}&nbsp;
+                <a href={`?revision=${revisionIdHackmdSynced}`}><span className="badge badge-secondary">{revisionIdHackmdSynced.substr(-8)}</span></a>
 
-  //         { isHackmdDocumentOutdated && (
-  //           <div className="card border-warning">
-  //             <div className="card-header bg-warning"><i className="icon-fw icon-info"></i> {t('hackmd.draft_outdated')}</div>
-  //             <div className="card-body text-center">
-  //               {t('hackmd.based_on_revision')}&nbsp;
-  //               <a href={`?revision=${revisionIdHackmdSynced}`}><span className="badge badge-secondary">{revisionIdHackmdSynced.substr(-8)}</span></a>
+                <div className="text-center mt-3">
+                  <button
+                    className="btn btn-link btn-view-outdated-draft p-0"
+                    type="button"
+                    disabled={isInitializing}
+                    onClick={() => { return resumeToEdit() }}
+                  >
+                    {t('hackmd.view_outdated_draft')}
+                  </button>
+                </div>
+              </div>
+            </div>
+          ) }
 
-  //               <div className="text-center mt-3">
-  //                 <button
-  //                   className="btn btn-link btn-view-outdated-draft p-0"
-  //                   type="button"
-  //                   disabled={this.state.isInitializing}
-  //                   onClick={() => { return this.resumeToEdit() }}
-  //                 >
-  //                   {t('hackmd.view_outdated_draft')}
-  //                 </button>
-  //               </div>
-  //             </div>
-  //           </div>
-  //         ) }
+          { !isHackmdDocumentOutdated && (
+            <div className="text-center hackmd-resume-button-container mb-3">
+              <button
+                className="btn btn-success btn-lg waves-effect waves-light"
+                type="button"
+                disabled={isInitializing}
+                onClick={() => { return resumeToEdit() }}
+              >
+                <span className="btn-label"><i className="icon-fw icon-control-end"></i></span>
+                <span className="btn-text">{t('hackmd.resume_to_edit')}</span>
+              </button>
+            </div>
+          ) }
 
-  //         { !isHackmdDocumentOutdated && (
-  //           <div className="text-center hackmd-resume-button-container mb-3">
-  //             <button
-  //               className="btn btn-success btn-lg waves-effect waves-light"
-  //               type="button"
-  //               disabled={this.state.isInitializing}
-  //               onClick={() => { return this.resumeToEdit() }}
-  //             >
-  //               <span className="btn-label"><i className="icon-fw icon-control-end"></i></span>
-  //               <span className="btn-text">{t('hackmd.resume_to_edit')}</span>
-  //             </button>
-  //           </div>
-  //         ) }
+          <div className="text-center hackmd-discard-button-container mb-3">
+            <button
+              className="btn btn-outline-secondary btn-lg waves-effect waves-light"
+              type="button"
+              onClick={() => { return discardChanges() }}
+            >
+              <span className="btn-label"><i className="icon-fw icon-control-start"></i></span>
+              <span className="btn-text">{t('hackmd.discard_changes')}</span>
+            </button>
+          </div>
 
-  //         <div className="text-center hackmd-discard-button-container mb-3">
-  //           <button
-  //             className="btn btn-outline-secondary btn-lg waves-effect waves-light"
-  //             type="button"
-  //             onClick={() => { return this.discardChanges() }}
-  //           >
-  //             <span className="btn-label"><i className="icon-fw icon-control-start"></i></span>
-  //             <span className="btn-text">{t('hackmd.discard_changes')}</span>
-  //           </button>
-  //         </div>
+        </div>
+      );
+    }
+    /*
+     * Start to edit
+     */
+    else {
+      const isRevisionOutdated = revisionId !== remoteRevisionId;
 
-  //       </div>
-  //     );
-  //   }
-  //   /*
-  //    * Start to edit
-  //    */
-  //   else {
-  //     const isRevisionOutdated = revisionId !== remoteRevisionId;
+      content = (
+        <div>
+          <p className="text-muted text-center hackmd-status-label"><i className="fa fa-file-text"></i> HackMD is READY!</p>
+          <div className="text-center hackmd-start-button-container mb-3">
+            <button
+              className="btn btn-info btn-lg waves-effect waves-light"
+              type="button"
+              disabled={isRevisionOutdated || isInitializing}
+              onClick={() => { return startToEdit() }}
+            >
+              <span className="btn-label"><i className="icon-fw icon-paper-plane"></i></span>
+              {t('hackmd.start_to_edit')}
+            </button>
+          </div>
+          <p className="text-center">{t('hackmd.clone_page_content')}</p>
+        </div>
+      );
+    }
 
-  //     content = (
-  //       <div>
-  //         <p className="text-muted text-center hackmd-status-label"><i className="fa fa-file-text"></i> HackMD is READY!</p>
-  //         <div className="text-center hackmd-start-button-container mb-3">
-  //           <button
-  //             className="btn btn-info btn-lg waves-effect waves-light"
-  //             type="button"
-  //             disabled={isRevisionOutdated || this.state.isInitializing}
-  //             onClick={() => { return this.startToEdit() }}
-  //           >
-  //             <span className="btn-label"><i className="icon-fw icon-paper-plane"></i></span>
-  //             {t('hackmd.start_to_edit')}
-  //           </button>
-  //         </div>
-  //         <p className="text-center">{t('hackmd.clone_page_content')}</p>
-  //       </div>
-  //     );
-  //   }
-
-  //   return (
-  //     <div className="hackmd-preinit d-flex justify-content-center align-items-center">
-  //       {content}
-  //     </div>
-  //   );
-  // }
+    return (
+      <div className="hackmd-preinit d-flex justify-content-center align-items-center">
+        {content}
+      </div>
+    );
+  };
 
   if (editorMode == null) {
     return null;
@@ -363,27 +353,26 @@ const PageEditorByHackmd = (props) => {
     markdown, pageIdOnHackmd,
   } = pageContainer.state;
 
-
   let content;
 
   if (isInitialized) {
     content = (
       <HackmdEditor
-        // ref={(c) => { this.hackmdEditor = c }}
+        ref={hackmdEditorRef}
         hackmdUri={hackmdUri}
         pageIdOnHackmd={pageIdOnHackmd}
-        // initializationMarkdown={this.isResume ? null : markdown}
+        initializationMarkdown={isResume() ? null : markdown}
         onChange={hackmdEditorChangeHandler}
         onSaveWithShortcut={(document) => {
           onSaveWithShortcut(document);
         }}
-        // onPenpalErrorOccured={this.penpalErrorOccuredHandler}
+        onPenpalErrorOccured={penpalErrorOccuredHandler}
       >
       </HackmdEditor>
     );
   }
   else {
-    // content = this.renderPreInitContent();
+    content = renderPreInitContent();
   }
 
 
@@ -412,18 +401,12 @@ const PageEditorByHackmd = (props) => {
 };
 
 PageEditorByHackmd.propTypes = {
-  t: PropTypes.func.isRequired, // i18next
-
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
   pageContainer: PropTypes.instanceOf(PageContainer).isRequired,
   editorContainer: PropTypes.instanceOf(EditorContainer).isRequired,
 
   // TODO: remove this when omitting unstated is completed
-  editorMode: PropTypes.string.isRequired,
-  isSlackEnabled: PropTypes.bool.isRequired,
   pageTags: PropTypes.arrayOf(PropTypes.string),
-  slackChannels: PropTypes.string.isRequired,
-  grant: PropTypes.number.isRequired,
   grantGroupId: PropTypes.string,
   grantGroupName: PropTypes.string,
 };
