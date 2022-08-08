@@ -10,9 +10,12 @@ import { UncontrolledTooltip, DropdownToggle } from 'reactstrap';
 import { unbookmark } from '~/client/services/page-operation';
 import { toastError, toastSuccess } from '~/client/util/apiNotification';
 import { apiv3Put } from '~/client/util/apiv3-client';
-import { IPageHasId } from '~/interfaces/page';
+import { IPageHasId, IPageInfoAll, IPageToDeleteWithMeta } from '~/interfaces/page';
+import { OnDeletedFunction } from '~/interfaces/ui';
 import { useSWRxCurrentUserBookmarks } from '~/stores/bookmark';
 import { useIsGuestUser } from '~/stores/context';
+import { usePageDeleteModal } from '~/stores/modal';
+
 
 import ClosableTextInput, { AlertInfo, AlertType } from '../Common/ClosableTextInput';
 import { MenuItemType, PageItemControl } from '../Common/Dropdown/PageItemControl';
@@ -21,11 +24,14 @@ import { MenuItemType, PageItemControl } from '../Common/Dropdown/PageItemContro
 type Props = {
   bookmarkedPage: IPageHasId,
   onUnbookmarked: () => void,
-  onRenamed: () => void
+  onRenamed: () => void,
+  onClickDeleteMenuItem: (pageToDelete: IPageToDeleteWithMeta) => void
 }
 
 const BookmarkItem = (props: Props) => {
-  const { bookmarkedPage, onUnbookmarked, onRenamed } = props;
+  const {
+    bookmarkedPage, onUnbookmarked, onRenamed, onClickDeleteMenuItem,
+  } = props;
   const { t } = useTranslation();
   const [isRenameInputShown, setRenameInputShown] = useState(false);
   const dPagePath = new DevidedPagePath(bookmarkedPage.path, false, true);
@@ -77,6 +83,23 @@ const BookmarkItem = (props: Props) => {
     }
   }, [bookmarkedPage, onRenamed, t]);
 
+  const deleteMenuItemClickHandler = useCallback(async(_pageId: string, pageInfo: IPageInfoAll | undefined): Promise<void> => {
+    if (bookmarkedPage._id == null || bookmarkedPage.path == null) {
+      throw Error('_id and path must not be null.');
+    }
+
+    const pageToDelete: IPageToDeleteWithMeta = {
+      data: {
+        _id: bookmarkedPage._id,
+        revision: bookmarkedPage.revision as string,
+        path: bookmarkedPage.path,
+      },
+      meta: pageInfo,
+    };
+
+    onClickDeleteMenuItem(pageToDelete);
+  }, [bookmarkedPage, onClickDeleteMenuItem]);
+
   return (
     <div className="d-flex justify-content-between" key={bookmarkedPage._id}>
       <li className="list-group-item list-group-item-action border-0 py-0 pr-3 d-flex align-items-center" id={bookmarkItemId}>
@@ -99,6 +122,7 @@ const BookmarkItem = (props: Props) => {
           forceHideMenuItems={[MenuItemType.DUPLICATE]}
           onClickBookmarkMenuItem={bookmarkMenuItemClickHandler}
           onClickRenameMenuItem={renameMenuItemClickHandler}
+          onClickDeleteMenuItem={deleteMenuItemClickHandler}
         >
           <DropdownToggle color="transparent" className="border-0 rounded btn-page-item-control p-0 grw-visible-on-hover mr-1">
             <i className="icon-options fa fa-rotate-90 p-1"></i>
@@ -122,6 +146,25 @@ const Bookmarks = () : JSX.Element => {
   const { t } = useTranslation();
   const { data: isGuestUser } = useIsGuestUser();
   const { data: currentUserBookmarksData, mutate: mutateCurrentUserBookmarks } = useSWRxCurrentUserBookmarks();
+  const { open: openDeleteModal } = usePageDeleteModal();
+
+  const deleteMenuItemClickHandler = (pageToDelete: IPageToDeleteWithMeta) => {
+    const pageDeletedHandler : OnDeletedFunction = (pathOrPathsToDelete, _isRecursively, isCompletely) => {
+      if (typeof pathOrPathsToDelete !== 'string') {
+        return;
+      }
+      const path = pathOrPathsToDelete;
+
+      if (isCompletely) {
+        toastSuccess(t('deleted_pages_completely', { path }));
+      }
+      else {
+        toastSuccess(t('deleted_pages', { path }));
+      }
+      mutateCurrentUserBookmarks();
+    };
+    openDeleteModal([pageToDelete], { onDeleted: pageDeletedHandler });
+  };
 
   const renderBookmarkList = () => {
     if (currentUserBookmarksData?.length === 0) {
@@ -141,6 +184,7 @@ const Bookmarks = () : JSX.Element => {
                 bookmarkedPage={currentUserBookmark}
                 onUnbookmarked={mutateCurrentUserBookmarks}
                 onRenamed={mutateCurrentUserBookmarks}
+                onClickDeleteMenuItem={deleteMenuItemClickHandler}
               />
             );
           })}
