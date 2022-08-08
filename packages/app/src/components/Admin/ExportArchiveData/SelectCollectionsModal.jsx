@@ -1,27 +1,27 @@
 import React from 'react';
 
 import PropTypes from 'prop-types';
-import { withTranslation } from 'react-i18next';
+import { useTranslation } from 'react-i18next';
 import {
   Modal, ModalHeader, ModalBody, ModalFooter,
 } from 'reactstrap';
 import * as toastr from 'toastr';
 
-import AppContainer from '~/client/services/AppContainer';
 import { apiPost } from '~/client/util/apiv1-client';
 
-import { withUnstatedContainers } from '../../UnstatedUtils';
 // import { toastSuccess, toastError } from '~/client/util/apiNotification';
 
 
 const GROUPS_PAGE = [
-  'pages', 'revisions', 'tags', 'pagetagrelations',
+  'pages', 'revisions', 'tags', 'pagetagrelations', 'pageredirects', 'comments', 'sharelinks',
 ];
 const GROUPS_USER = [
   'users', 'externalaccounts', 'usergroups', 'usergrouprelations',
+  'useruisettings', 'editorsettings', 'bookmarks', 'subscriptions',
+  'inappnotificationsettings',
 ];
 const GROUPS_CONFIG = [
-  'configs', 'updateposts', 'globalnotificationsettings',
+  'configs', 'updateposts', 'globalnotificationsettings', 'slackappintegrations',
 ];
 const ALL_GROUPED_COLLECTIONS = GROUPS_PAGE.concat(GROUPS_USER).concat(GROUPS_CONFIG);
 
@@ -234,7 +234,6 @@ class SelectCollectionsModal extends React.Component {
 
 SelectCollectionsModal.propTypes = {
   t: PropTypes.func.isRequired, // i18next
-  appContainer: PropTypes.instanceOf(AppContainer).isRequired,
 
   isOpen: PropTypes.bool.isRequired,
   onExportingRequested: PropTypes.func.isRequired,
@@ -242,9 +241,10 @@ SelectCollectionsModal.propTypes = {
   collections: PropTypes.arrayOf(PropTypes.string).isRequired,
 };
 
-/**
- * Wrapper component for using unstated
- */
-const SelectCollectionsModalWrapper = withUnstatedContainers(SelectCollectionsModal, [AppContainer]);
+const SelectCollectionsModalWrapperFc = (props) => {
+  const { t } = useTranslation();
 
-export default withTranslation()(SelectCollectionsModalWrapper);
+  return <SelectCollectionsModal t={t} {...props} />;
+};
+
+export default SelectCollectionsModalWrapperFc;

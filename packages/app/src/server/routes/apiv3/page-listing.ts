@@ -2,7 +2,7 @@ import express, { Request, Router } from 'express';
 import { query, oneOf } from 'express-validator';
 import mongoose from 'mongoose';
 
-import { IPageInfoAll, isIPageInfoForEntity, IPageInfoForListing } from '~/interfaces/page';
+import { isIPageInfoForEntity, IPageInfoForListing, IPageInfo } from '~/interfaces/page';
 import { IUserHasId } from '~/interfaces/user';
 import loggerFactory from '~/utils/logger';
 
@@ -127,18 +127,19 @@ export default (crowi: Crowi): Router => {
         bookmarkCountMap = await Bookmark.getPageIdToCountMap(foundIds) as Record<string, number>;
       }
 
-      const idToPageInfoMap: Record<string, IPageInfoAll> = {};
+      const idToPageInfoMap: Record<string, IPageInfo | IPageInfoForListing> = {};
 
+      const isGuestUser = req.user == null;
       for (const page of pages) {
         // construct isIPageInfoForListing
-        const basicPageInfo = pageService.constructBasicPageInfo(page);
+        const basicPageInfo = pageService.constructBasicPageInfo(page, isGuestUser);
 
         const pageInfo = (!isIPageInfoForEntity(basicPageInfo))
           ? basicPageInfo
           // create IPageInfoForListing
           : {
             ...basicPageInfo,
-            isAbleToDeleteCompletely: pageService.canDeleteCompletely((page.creator as IUserHasId)?._id, req.user, false), // use normal delete config
+            isAbleToDeleteCompletely: pageService.canDeleteCompletely(page.path, (page.creator as IUserHasId)?._id, req.user, false), // use normal delete config
             bookmarkCount: bookmarkCountMap != null ? bookmarkCountMap[page._id] : undefined,
             revisionShortBody: shortBodiesMap != null ? shortBodiesMap[page._id] : undefined,
           } as IPageInfoForListing;

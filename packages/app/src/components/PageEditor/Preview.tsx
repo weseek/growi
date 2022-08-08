@@ -1,10 +1,11 @@
 import React, {
-  useCallback, useEffect, useMemo, useState, SyntheticEvent,
+  useCallback, useEffect, useMemo, useState, SyntheticEvent, RefObject,
 } from 'react';
 
 
 import AppContainer from '~/client/services/AppContainer';
 import InterceptorManager from '~/services/interceptor-manager';
+import GrowiRenderer from '~/services/renderer/growi-renderer';
 import { useEditorSettings } from '~/stores/editor';
 
 import RevisionBody from '../Page/RevisionBody';
@@ -15,30 +16,26 @@ declare const interceptorManager: InterceptorManager;
 
 
 type Props = {
-  appContainer: AppContainer,
-
+  growiRenderer: GrowiRenderer,
   markdown?: string,
   pagePath?: string,
-  inputRef?: React.RefObject<HTMLDivElement>,
   isMathJaxEnabled?: boolean,
   renderMathJaxOnInit?: boolean,
   onScroll?: (scrollTop: number) => void,
 }
 
+type UnstatedProps = Props & { appContainer: AppContainer };
 
-const Preview = (props: Props): JSX.Element => {
+const Preview = React.forwardRef((props: UnstatedProps, ref: RefObject<HTMLDivElement>): JSX.Element => {
 
   const {
-    appContainer,
+    growiRenderer,
     markdown, pagePath,
-    inputRef,
   } = props;
 
   const [html, setHtml] = useState('');
 
   const { data: editorSettings } = useEditorSettings();
-
-  const growiRenderer = appContainer.getRenderer('editor');
 
   const context = useMemo(() => {
     return {
@@ -64,7 +61,7 @@ const Preview = (props: Props): JSX.Element => {
     }
 
     setHtml(context.parsedHTML ?? '');
-  }, [interceptorManager, context, growiRenderer]);
+  }, [context, growiRenderer]);
 
   useEffect(() => {
     if (markdown == null) {
@@ -85,12 +82,12 @@ const Preview = (props: Props): JSX.Element => {
         parsedHTML: html,
       });
     }
-  }, [context, html, interceptorManager]);
+  }, [context, html]);
 
   return (
     <div
       className="page-editor-preview-body"
-      ref={inputRef}
+      ref={ref}
       onScroll={(event: SyntheticEvent<HTMLDivElement>) => {
         if (props.onScroll != null) {
           props.onScroll(event.currentTarget.scrollTop);
@@ -105,7 +102,7 @@ const Preview = (props: Props): JSX.Element => {
     </div>
   );
 
-};
+});
 
 /**
  * Wrapper component for using unstated
@@ -113,8 +110,8 @@ const Preview = (props: Props): JSX.Element => {
 const PreviewWrapper = withUnstatedContainers(Preview, [AppContainer]);
 
 // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
-const PreviewWrapper2 = (props): JSX.Element => {
-  return <PreviewWrapper {...props} />;
-};
+const PreviewWrapper2 = React.forwardRef((props: Props, ref: RefObject<HTMLDivElement>): JSX.Element => {
+  return <PreviewWrapper ref={ref} {...props} />;
+});
 
 export default PreviewWrapper2;

@@ -1,6 +1,9 @@
 import mongoose from 'mongoose';
 
-import { allLocales, localePath } from '~/next-i18next.config';
+import { i18n, localePath } from '~/next-i18next.config';
+import loggerFactory from '~/utils/logger';
+
+const logger = loggerFactory('growi:crowi:express-init');
 
 module.exports = function(crowi, app) {
   const debug = require('debug')('growi:crowi:express-init');
@@ -42,7 +45,7 @@ module.exports = function(crowi, app) {
     .init({
       // debug: true,
       fallbackLng: ['en_US'],
-      whitelist: allLocales,
+      whitelist: i18n.locales,
       backend: {
         loadPath: `${localePath}/{{lng}}/translation.json`,
       },
@@ -56,6 +59,30 @@ module.exports = function(crowi, app) {
     });
 
   app.use(compression());
+
+
+  const { configManager } = crowi;
+
+  const trustProxyBool = configManager.getConfig('crowi', 'security:trustProxyBool');
+  const trustProxyCsv = configManager.getConfig('crowi', 'security:trustProxyCsv');
+  const trustProxyHops = configManager.getConfig('crowi', 'security:trustProxyHops');
+
+  const trustProxy = trustProxyBool ?? trustProxyCsv ?? trustProxyHops;
+
+  try {
+    if (trustProxy != null) {
+      const isNotSpec = [trustProxyBool, trustProxyCsv, trustProxyHops].filter(trustProxy => trustProxy != null).length !== 1;
+      if (isNotSpec) {
+        // eslint-disable-next-line max-len
+        logger.warn(`If more than one TRUST_PROXY_ ~ environment variable is set, the values are set in the following order of inequality size (BOOL > CSV > HOPS) first. Set value: ${trustProxy}`);
+      }
+      app.set('trust proxy', trustProxy);
+    }
+  }
+  catch (err) {
+    logger.error(err);
+  }
+
 
   app.use(helmet({
     contentSecurityPolicy: false,
@@ -79,13 +106,6 @@ module.exports = function(crowi, app) {
     res.locals.baseUrl = crowi.appService.getSiteUrl();
     res.locals.env = env;
     res.locals.now = now;
-    res.locals.consts = {
-      pageGrants: Page.getGrantLabels(),
-      userStatus: User.getUserStatusLabels(),
-      language:   allLocales,
-      restrictGuestMode: crowi.aclService.getRestrictGuestModeLabels(),
-      registrationMode: crowi.aclService.getRegistrationModeLabels(),
-    };
     res.locals.local_config = Config.getLocalconfig(crowi); // config for browser context
 
     next();

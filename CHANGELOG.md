@@ -1,8 +1,127 @@
 # Changelog
 
-## [Unreleased](https://github.com/weseek/growi/compare/v5.0.9...HEAD)
+## [Unreleased](https://github.com/weseek/growi/compare/v5.1.2...HEAD)
 
 *Please do not manually update this file. We've automated the process.*
+
+## [v5.1.2](https://github.com/weseek/growi/compare/v5.1.1...v5.1.2) - 2022-08-03
+
+### 💎 Features
+
+- feat: Make content width of each page configurable (#6107) @mudana-grune
+
+### 🚀 Improvement
+
+- imprv(auditlog): Clear and reload button (#6398) @miya
+- imprv(auditlog): Date Range Picker  (#6395) @miya
+
+### 🐛 Bug Fixes
+
+- fix: MathJax rendering (#6396) @yuki-takei
+
+### 🧰 Maintenance
+
+- support: Make Editor component Functional Component and TypeScript (#6374) @yukendev
+
+## [v5.1.1](https://github.com/weseek/growi/compare/v5.1.0...v5.1.1) - 2022-08-01
+
+### 💎 Features
+
+- feat: Users can set users per ip from env var at API Rate Limit  (#6379) @yukendev
+- feat: Show user picture in Audit Log (#6342) @miya
+- feat: Reset search criteria button (#6327) @miya
+
+### 🚀 Improvement
+
+- imprv(auditlog): Display number of actions that can be saved (#6353) @miya
+- imprv(auditlog): Include delete-related actions in small group (#6351) @miya
+
+### 🐛 Bug Fixes
+
+- fix: Default markdown linker with relative path does not respect the current page path (v5.1.0) (#6378) @yuki-takei
+- fix: Recover page path operation (#6368) @hakumizuki
+- fix: Migration script for inserting NamedQuery (#6364) @yuki-takei
+- fix: "Error: cannnot get grant label" occured with lsx (#6348) @yukendev
+
+## [v5.1.0](https://github.com/weseek/growi/compare/v5.0.11...v5.1.0) - 2022-07-21
+
+### 💎 Features
+
+- feat: Custom brand logo image (#5709) @mudana-grune
+- feat: Rate Limit by rate-limit-flexible (#6053) @yukendev
+- feat: Audit Log (#5915) @miya
+
+### 🚀 Improvement
+
+- imprv: Prevent XSS with React (#6274) @yuki-takei
+- imprv: Reflect tmp tag data (#6124) @kaoritokashiki
+- imprv: Update subscribe button icon on Navbar (#6213) @jam411
+- imprv: Event emittion by socket.io is triggered only when ES reindexing (#6077) @hirokei-camel
+
+### 🐛 Bug Fixes
+
+- fix: Drawio rendering (#6275) @hakumizuki
+- fix: Blink section header on init (#6249) @yuki-takei
+- fix: Error when trying login with an email that contains plus sign (#6232) @miya
+- fix: Use APIv3 for api get check_username (#6226) @kaoritokashiki
+- fix: Slack integration connection test (#6201) @yukendev
+- fix: Not found page for `/${ObjectId like string}` path (#6208) @yuki-takei
+
+### 🧰 Maintenance
+
+- support: Refactor PageInfo types (#6283) @yuki-takei
+- support: Refactor growi renderer using hooks 2 (#6237) @yuki-takei
+- support: Refactor growi renderer using hooks (#6223) @hakumizuki
+- imprv: Omit Personal Container (#6182) @kaoritokashiki
+
+## [v5.0.11](https://github.com/weseek/growi/compare/v5.0.10...v5.0.11) - 2022-07-05
+
+### 💎 Features
+
+- feat: Integrate recount descendant count after paths fix (#6170) @Yohei-Shiina
+
+### 🚀 Improvement
+
+- imprv: Redirect when the anchor is #password (#6144) @Kami-jo
+
+### 🐛 Bug Fixes
+
+- fix: User registration page is not redirected after tmp login (#6197) @kaoritokashiki
+- fix: Empty trash doesn't work (#6168) @yukendev
+
+### 🧰 Maintenance
+
+- support: Ease rate limit temporary (#6191) @yuki-takei
+- support: Omit page history container and page revision comparer container (#6185) @yukendev
+
+## [v5.0.10](https://github.com/weseek/growi/compare/v5.0.9...v5.0.10) - 2022-06-27
+
+### 💎 Features
+
+- feat: Sidebar default mode settings (#6111) @yukendev
+- feat: Get GCS instance that uses Application Default Credentials for v5 (#6051) @Yohei-Shiina
+- feat: Resume rename on server boot (#5862)(#6014) @Yohei-Shiina
+- feat: Show page item control menu on empty page (#6070)(#6103) @Yohei-Shiina
+
+### 🚀 Improvement
+
+- imprv: Show page control on subnavigation at existing empty page  (#5638) @Yohei-Shiina
+- imprv: Remove toc and page authors in empty page (#5661) @Yohei-Shiina
+- imprv: SWRize apiGet /tag.search (#6062) @kaoritokashiki
+
+### 🐛 Bug Fixes
+
+- fix: Scrolling preview (#6148) @yuki-takei
+- fix: Show page history comparation modal on init (#6072) @hirokei-camel
+- fix: Ensure backword compatibility for ES6 when using max_analyzed_offset (#6121) @hakumizuki
+- fix: Set max_analyzed_offset to elasticsearch querying options (#6115) @hakumizuki
+- fix: Revision err when updating tags (#6073) @kaoritokashiki
+- fix: Support 3 types of syntax for OpenID Connect Issuer Host (#6061) @mudana-grune
+
+### 🧰 Maintenance
+
+- support: Omit comment container (#6147) @yuki-takei
+- support: Upgrade typescript to ^4.6.0 (#6082) @hakumizuki
 
 ## [v5.0.9](https://github.com/weseek/growi/compare/v5.0.8...v5.0.9) - 2022-06-13
 

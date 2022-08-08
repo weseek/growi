@@ -1,8 +1,14 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, useMemo } from 'react';
 
-import { toggleBookmark, toggleLike, toggleSubscribe } from '~/client/services/page-operation';
+import { useTranslation } from 'react-i18next';
+import { DropdownItem } from 'reactstrap';
+
 import {
-  IPageInfoAll, IPageToDeleteWithMeta, IPageToRenameWithMeta, isIPageInfoForEntity, isIPageInfoForOperation,
+  toggleBookmark, toggleLike, toggleSubscribe, updateContentWidth,
+} from '~/client/services/page-operation';
+import { toastError } from '~/client/util/apiNotification';
+import {
+  IPageInfoForOperation, IPageToDeleteWithMeta, IPageToRenameWithMeta, isIPageInfoForEntity, isIPageInfoForOperation,
 } from '~/interfaces/page';
 import { useIsGuestUser } from '~/stores/context';
 import { IPageForPageDuplicateModal } from '~/stores/modal';
@@ -19,6 +25,43 @@ import SubscribeButton from '../SubscribeButton';
 import SeenUserInfo from '../User/SeenUserInfo';
 
 
+type WideViewMenuItemProps = AdditionalMenuItemsRendererProps & {
+  onClickMenuItem: (newValue: boolean) => void,
+}
+
+const WideViewMenuItem = (props: WideViewMenuItemProps): JSX.Element => {
+  const { t } = useTranslation();
+
+  const {
+    pageInfo, onClickMenuItem,
+  } = props;
+
+  if (!isIPageInfoForEntity(pageInfo)) {
+    return <></>;
+  }
+
+  return (
+    <DropdownItem
+      onClick={() => onClickMenuItem(!pageInfo.expandContentWidth)}
+      className="grw-page-control-dropdown-item"
+    >
+      <div className="custom-control custom-switch ml-1">
+        <input
+          id="switchContentWidth"
+          className="custom-control-input"
+          type="checkbox"
+          checked={pageInfo.expandContentWidth}
+          onChange={() => {}}
+        />
+        <label className="custom-control-label" htmlFor="switchContentWidth">
+          { t('wide_view') }
+        </label>
+      </div>
+    </DropdownItem>
+  );
+};
+
+
 type CommonProps = {
   isCompactMode?: boolean,
   disableSeenUserInfoPopover?: boolean,
@@ -33,9 +76,9 @@ type CommonProps = {
 type SubNavButtonsSubstanceProps = CommonProps & {
   pageId: string,
   shareLinkId?: string | null,
-  revisionId: string,
+  revisionId: string | null,
   path?: string | null,
-  pageInfo: IPageInfoAll,
+  pageInfo: IPageInfoForOperation,
 }
 
 const SubNavButtonsSubstance = (props: SubNavButtonsSubstanceProps): JSX.Element => {
@@ -140,10 +183,32 @@ const SubNavButtonsSubstance = (props: SubNavButtonsSubstanceProps): JSX.Element
     onClickDeleteMenuItem(pageToDelete);
   }, [onClickDeleteMenuItem, pageId, pageInfo, path, revisionId]);
 
+  const switchContentWidthClickHandler = useCallback(async(newValue: boolean) => {
+    if (isGuestUser == null || isGuestUser) {
+      return;
+    }
+    if (!isIPageInfoForEntity(pageInfo)) {
+      return;
+    }
+    try {
+      await updateContentWidth(pageId, newValue);
+      mutatePageInfo();
+    }
+    catch (err) {
+      toastError(err);
+    }
+  }, [isGuestUser, mutatePageInfo, pageId, pageInfo]);
+
+  const wideviewMenuItemRenderer = useMemo(() => {
+    if (!isIPageInfoForEntity(pageInfo)) {
+      return undefined;
+    }
+    return props => <WideViewMenuItem {...props} onClickMenuItem={switchContentWidthClickHandler} />;
+  }, [pageInfo, switchContentWidthClickHandler]);
+
   if (!isIPageInfoForOperation(pageInfo)) {
     return <></>;
   }
-
 
   const {
     sumOfLikers, sumOfSeenUsers, isLiked, bookmarkCount, isBookmarked,
@@ -154,27 +219,31 @@ const SubNavButtonsSubstance = (props: SubNavButtonsSubstanceProps): JSX.Element
 
   return (
     <div className="d-flex" style={{ gap: '2px' }}>
-      <span>
+      {revisionId != null && (
         <SubscribeButton
           status={pageInfo.subscriptionStatus}
           onClick={subscribeClickhandler}
         />
-      </span>
-      <LikeButtons
-        hideTotalNumber={isCompactMode}
-        onLikeClicked={likeClickhandler}
-        sumOfLikers={sumOfLikers}
-        isLiked={isLiked}
-        likers={likers}
-      />
-      <BookmarkButtons
-        hideTotalNumber={isCompactMode}
-        bookmarkCount={bookmarkCount}
-        isBookmarked={isBookmarked}
-        bookmarkedUsers={bookmarkInfo?.bookmarkedUsers}
-        onBookMarkClicked={bookmarkClickHandler}
-      />
-      { !isCompactMode && (
+      )}
+      {revisionId != null && (
+        <LikeButtons
+          hideTotalNumber={isCompactMode}
+          onLikeClicked={likeClickhandler}
+          sumOfLikers={sumOfLikers}
+          isLiked={isLiked}
+          likers={likers}
+        />
+      )}
+      {revisionId != null && (
+        <BookmarkButtons
+          hideTotalNumber={isCompactMode}
+          bookmarkCount={bookmarkCount}
+          isBookmarked={isBookmarked}
+          bookmarkedUsers={bookmarkInfo?.bookmarkedUsers}
+          onBookMarkClicked={bookmarkClickHandler}
+        />
+      )}
+      {revisionId != null && !isCompactMode && (
         <SeenUserInfo
           seenUsers={seenUsers}
           sumOfSeenUsers={sumOfSeenUsers}
@@ -188,6 +257,7 @@ const SubNavButtonsSubstance = (props: SubNavButtonsSubstanceProps): JSX.Element
           pageInfo={pageInfo}
           isEnableActions={!isGuestUser}
           forceHideMenuItems={forceHideMenuItemsWithBookmark}
+          additionalMenuItemOnTopRenderer={wideviewMenuItemRenderer}
           additionalMenuItemRenderer={additionalMenuItemRenderer}
           onClickRenameMenuItem={renameMenuItemClickHandler}
           onClickDuplicateMenuItem={duplicateMenuItemClickHandler}
@@ -212,7 +282,7 @@ export const SubNavButtons = (props: SubNavButtonsProps): JSX.Element => {
 
   const { data: pageInfo, error } = useSWRxPageInfo(pageId ?? null, shareLinkId);
 
-  if (revisionId == null || error != null) {
+  if (error != null) {
     return <></>;
   }
 
@@ -220,13 +290,12 @@ export const SubNavButtons = (props: SubNavButtonsProps): JSX.Element => {
     return <></>;
   }
 
-
   return (
     <SubNavButtonsSubstance
       {...props}
       pageInfo={pageInfo}
       pageId={pageId}
-      revisionId={revisionId}
+      revisionId={revisionId ?? null}
       path={path}
       onClickDuplicateMenuItem={onClickDuplicateMenuItem}
       onClickRenameMenuItem={onClickRenameMenuItem}

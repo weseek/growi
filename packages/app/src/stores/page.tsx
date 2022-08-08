@@ -9,12 +9,15 @@ import {
 } from '~/interfaces/page';
 import { IRecordApplicableGrant, IResIsGrantNormalized } from '~/interfaces/page-grant';
 import { IPagingResult } from '~/interfaces/paging-result';
+import { IRevisionsForPagination } from '~/interfaces/revision';
 
 import { apiGet } from '../client/util/apiv1-client';
 import { Nullable } from '../interfaces/common';
 import { IPageTagsInfo } from '../interfaces/tag';
 
-import { useCurrentPageId, useCurrentPagePath } from './context';
+import {
+  useCurrentPageId, useCurrentPagePath,
+} from './context';
 import { ITermNumberManagerUtil, useTermNumberManager } from './use-static-swr';
 
 
@@ -92,14 +95,24 @@ export const useSWRxDescendantsPageListForCurrrentPath = (pageNumber?: number): 
   return useSWRxPageList(path, pageNumber, termNumber);
 };
 
-export const useSWRxTagsInfo = (pageId: Nullable<string>): SWRResponse<IPageTagsInfo, Error> => {
-  const key = pageId == null ? null : `/pages.getPageTag?pageId=${pageId}`;
 
-  return useSWRImmutable(key, endpoint => apiGet(endpoint).then((response: IPageTagsInfo) => {
-    return {
-      tags: response.tags,
-    };
-  }));
+export const useSWRxTagsInfo = (pageId: Nullable<string>): SWRResponse<IPageTagsInfo | undefined, Error> => {
+
+  const endpoint = `/pages.getPageTag?pageId=${pageId}`;
+  const key = [endpoint, pageId];
+
+  const fetcher = async(endpoint: string, pageId: Nullable<string>) => {
+    let tags: string[] = [];
+    // when the page exists
+    if (pageId != null) {
+      const res = await apiGet<IPageTagsInfo>(endpoint, { pageId });
+      tags = res?.tags;
+    }
+
+    return { tags };
+  };
+
+  return useSWRImmutable(key, fetcher);
 };
 
 export const useSWRxPageInfo = (
@@ -156,6 +169,26 @@ export const useSWRxPageInfoForList = (
       });
     },
   };
+};
+
+export const useSWRxPageRevisions = (
+    pageId: string,
+    page: number, // page number of pagination
+    limit: number, // max number of pages in one paginate
+): SWRResponse<IRevisionsForPagination, Error> => {
+
+  return useSWRImmutable<IRevisionsForPagination, Error>(
+    ['/revisions/list', pageId, page, limit],
+    (endpoint, pageId, page, limit) => {
+      return apiv3Get(endpoint, { pageId, page, limit }).then((response) => {
+        const revisions = {
+          revisions: response.data.docs,
+          totalCounts: response.data.totalDocs,
+        };
+        return revisions;
+      });
+    },
+  );
 };
 
 /*

@@ -5,16 +5,19 @@ import { useTranslation } from 'react-i18next';
 import { DropdownItem } from 'reactstrap';
 
 import EditorContainer from '~/client/services/EditorContainer';
+import PageContainer from '~/client/services/PageContainer';
 import { exportAsMarkdown } from '~/client/services/page-operation';
 import { toastSuccess, toastError } from '~/client/util/apiNotification';
 import { apiPost } from '~/client/util/apiv1-client';
+import { getIdForRef } from '~/interfaces/common';
 import {
-  IPageHasId, IPageToRenameWithMeta, IPageWithMeta,
+  IPageHasId, IPageToRenameWithMeta, IPageWithMeta, IPageInfoForEntity,
 } from '~/interfaces/page';
+import { IResTagsUpdateApiv1 } from '~/interfaces/tag';
 import { OnDuplicatedFunction, OnRenamedFunction, OnDeletedFunction } from '~/interfaces/ui';
 import {
   useCurrentCreatedAt, useCurrentUpdatedAt, useCurrentPageId, useRevisionId, useCurrentPagePath,
-  useCreator, useRevisionAuthor, useCurrentUser, useIsGuestUser, useIsSharedUser, useShareLinkId,
+  useCreator, useRevisionAuthor, useCurrentUser, useIsGuestUser, useIsSharedUser, useShareLinkId, useEmptyPageId, useTemplateTagData,
 } from '~/stores/context';
 import { usePageTagsForEditors } from '~/stores/editor';
 import {
@@ -123,6 +126,7 @@ const AdditionalMenuItems = (props: AdditionalMenuItemsProps): JSX.Element => {
       <DropdownItem
         onClick={() => openAccessoriesModal(PageAccessoriesModalContents.ShareLink)}
         disabled={isGuestUser || isSharedUser || isLinkSharingDisabled}
+        data-testid="open-page-accessories-modal-btn-with-share-link-management-data-tab"
         className="grw-page-control-dropdown-item"
       >
         <span className="grw-page-control-dropdown-icon">
@@ -154,6 +158,7 @@ const GrowiContextualSubNavigation = (props) => {
   const { data: createdAt } = useCurrentCreatedAt();
   const { data: updatedAt } = useCurrentUpdatedAt();
   const { data: pageId } = useCurrentPageId();
+  const { data: emptyPageId } = useEmptyPageId();
   const { data: revisionId } = useRevisionId();
   const { data: path } = useCurrentPagePath();
   const { data: creator } = useCreator();
@@ -174,24 +179,40 @@ const GrowiContextualSubNavigation = (props) => {
   const { open: openDuplicateModal } = usePageDuplicateModal();
   const { open: openRenameModal } = usePageRenameModal();
   const { open: openDeleteModal } = usePageDeleteModal();
+  const { data: templateTagData } = useTemplateTagData();
+
 
   useEffect(() => {
     // Run only when tagsInfoData has been updated
-    syncPageTagsForEditors();
+    if (templateTagData == null) {
+      syncPageTagsForEditors();
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [tagsInfoData?.tags]);
+
+  useEffect(() => {
+    if (pageId === null && templateTagData != null) {
+      const tags = templateTagData.split(',').filter((str: string) => {
+        return str !== ''; // filter empty values
+      });
+      mutatePageTagsForEditors(tags);
+    }
+  }, [pageId, mutatePageTagsForEditors, templateTagData, mutateSWRTagsInfo]);
 
   const [isPageTemplateModalShown, setIsPageTempleteModalShown] = useState(false);
 
   const {
-    isCompactMode, isLinkSharingDisabled,
+    isCompactMode, isLinkSharingDisabled, pageContainer,
   } = props;
 
   const isViewMode = editorMode === EditorMode.View;
 
+
   const tagsUpdatedHandlerForViewMode = useCallback(async(newTags: string[]) => {
     try {
-      await apiPost('/tags.update', { pageId, revisionId, tags: newTags }) as { tags };
+      const res: IResTagsUpdateApiv1 = await apiPost('/tags.update', { pageId, revisionId, tags: newTags });
+      const updatedRevisionId = getIdForRef(res.savedPage.revision);
+      await pageContainer.setState({ revisionId: updatedRevisionId });
 
       // revalidate SWRTagsInfo
       mutateSWRTagsInfo();
@@ -203,7 +224,7 @@ const GrowiContextualSubNavigation = (props) => {
       toastError(err, 'fail to update tags');
     }
 
-  }, [pageId, revisionId, mutateSWRTagsInfo, mutatePageTagsForEditors]);
+  }, [pageId, revisionId, mutateSWRTagsInfo, mutatePageTagsForEditors, pageContainer]);
 
   const tagsUpdatedHandlerForEditMode = useCallback((newTags: string[]): void => {
     // It will not be reflected in the DB until the page is refreshed
@@ -218,8 +239,12 @@ const GrowiContextualSubNavigation = (props) => {
     openDuplicateModal(page, { onDuplicated: duplicatedHandler });
   }, [openDuplicateModal]);
 
-  const renameItemClickedHandler = useCallback(async(page: IPageToRenameWithMeta) => {
+  const renameItemClickedHandler = useCallback(async(page: IPageToRenameWithMeta<IPageInfoForEntity>) => {
     const renamedHandler: OnRenamedFunction = () => {
+      if (page.data._id !== null) {
+        window.location.href = `/${page.data._id}`;
+        return;
+      }
       window.location.reload();
     };
     openRenameModal(page, { onRenamed: renamedHandler });
@@ -251,32 +276,38 @@ const GrowiContextualSubNavigation = (props) => {
 
 
   const ControlComponents = useCallback(() => {
+    const pageIdForSubNavButtons = pageId ?? emptyPageId; // for SubNavButtons
+
     function onPageEditorModeButtonClicked(viewType) {
       mutateEditorMode(viewType);
     }
 
+    let additionalMenuItemsRenderer;
+    if (revisionId != null) {
+      additionalMenuItemsRenderer = props => (
+        <AdditionalMenuItems
+          {...props}
+          pageId={pageId}
+          revisionId={revisionId}
+          isLinkSharingDisabled={isLinkSharingDisabled}
+          onClickTemplateMenuItem={templateMenuItemClickHandler}
+        />
+      );
+    }
     return (
       <>
         <div className="d-flex flex-column align-items-end justify-content-center py-md-2" style={{ gap: `${isCompactMode ? '5px' : '7px'}` }}>
-          { pageId != null && isViewMode && (
+          { pageIdForSubNavButtons != null && isViewMode && (
             <div className="h-50">
               <SubNavButtons
                 isCompactMode={isCompactMode}
-                pageId={pageId}
+                pageId={pageIdForSubNavButtons}
                 shareLinkId={shareLinkId}
                 revisionId={revisionId}
                 path={path}
                 disableSeenUserInfoPopover={isSharedUser}
                 showPageControlDropdown={isAbleToShowPageManagement}
-                additionalMenuItemRenderer={props => (
-                  <AdditionalMenuItems
-                    {...props}
-                    pageId={pageId}
-                    revisionId={revisionId}
-                    isLinkSharingDisabled={isLinkSharingDisabled}
-                    onClickTemplateMenuItem={templateMenuItemClickHandler}
-                  />
-                )}
+                additionalMenuItemRenderer={additionalMenuItemsRenderer}
                 onClickDuplicateMenuItem={duplicateItemClickedHandler}
                 onClickRenameMenuItem={renameItemClickedHandler}
                 onClickDeleteMenuItem={deleteItemClickedHandler}
@@ -302,7 +333,7 @@ const GrowiContextualSubNavigation = (props) => {
       </>
     );
   }, [
-    pageId, revisionId, shareLinkId, editorMode, mutateEditorMode, isCompactMode,
+    pageId, emptyPageId, revisionId, shareLinkId, editorMode, mutateEditorMode, isCompactMode,
     isLinkSharingDisabled, isDeviceSmallerThanMd, isGuestUser, isSharedUser, currentUser,
     isViewMode, isAbleToShowPageEditorModeManager, isAbleToShowPageManagement,
     duplicateItemClickedHandler, renameItemClickedHandler, deleteItemClickedHandler,
@@ -343,11 +374,12 @@ const GrowiContextualSubNavigation = (props) => {
 /**
  * Wrapper component for using unstated
  */
-const GrowiContextualSubNavigationWrapper = withUnstatedContainers(GrowiContextualSubNavigation, [EditorContainer]);
+const GrowiContextualSubNavigationWrapper = withUnstatedContainers(GrowiContextualSubNavigation, [EditorContainer, PageContainer]);
 
 
 GrowiContextualSubNavigation.propTypes = {
   editorContainer: PropTypes.instanceOf(EditorContainer).isRequired,
+  pageContainer: PropTypes.instanceOf(PageContainer).isRequired,
 
   isCompactMode: PropTypes.bool,
   isLinkSharingDisabled: PropTypes.bool,

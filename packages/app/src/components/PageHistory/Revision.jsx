@@ -1,7 +1,8 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 
 import { UserPicture } from '@growi/ui';
+import PropTypes from 'prop-types';
+
 import UserDate from '../User/UserDate';
 import Username from '../User/Username';
 
@@ -83,6 +84,5 @@ Revision.propTypes = {
   t: PropTypes.func.isRequired, // i18next
   revision: PropTypes.object,
   isLatestRevision: PropTypes.bool.isRequired,
-  revisionDiffOpened: PropTypes.bool.isRequired,
   hasDiff: PropTypes.bool.isRequired,
 };

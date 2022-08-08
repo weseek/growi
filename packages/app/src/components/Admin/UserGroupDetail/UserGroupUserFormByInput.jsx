@@ -3,12 +3,13 @@ import React from 'react';
 import { UserPicture } from '@growi/ui';
 import PropTypes from 'prop-types';
 import { AsyncTypeahead } from 'react-bootstrap-typeahead';
-import { withTranslation } from 'react-i18next';
+import { useTranslation } from 'react-i18next';
 import { debounce } from 'throttle-debounce';
 
 import AdminUserGroupDetailContainer from '~/client/services/AdminUserGroupDetailContainer';
 import AppContainer from '~/client/services/AppContainer';
 import { toastSuccess, toastError } from '~/client/util/apiNotification';
+import Xss from '~/services/xss';
 
 import { withUnstatedContainers } from '../../UnstatedUtils';
 
@@ -25,7 +26,7 @@ class UserGroupUserFormByInput extends React.Component {
       searchError: null,
     };
 
-    this.xss = window.xss;
+    this.xss = new Xss();
 
     this.addUserBySubmit = this.addUserBySubmit.bind(this);
     this.validateForm = this.validateForm.bind(this);
@@ -165,9 +166,14 @@ UserGroupUserFormByInput.propTypes = {
   adminUserGroupDetailContainer: PropTypes.instanceOf(AdminUserGroupDetailContainer).isRequired,
 };
 
+const UserGroupUserFormByInputWrapperFC = (props) => {
+  const { t } = useTranslation();
+  return <UserGroupUserFormByInput t={t} {...props} />;
+};
+
 /**
  * Wrapper component for using unstated
  */
-const UserGroupUserFormByInputWrapper = withUnstatedContainers(UserGroupUserFormByInput, [AppContainer, AdminUserGroupDetailContainer]);
+const UserGroupUserFormByInputWrapper = withUnstatedContainers(UserGroupUserFormByInputWrapperFC, [AppContainer, AdminUserGroupDetailContainer]);
 
-export default withTranslation()(UserGroupUserFormByInputWrapper);
+export default UserGroupUserFormByInputWrapper;

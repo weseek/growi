@@ -1,15 +1,13 @@
 import React from 'react';
 
 import PropTypes from 'prop-types';
-import { withTranslation } from 'react-i18next';
+import { useTranslation } from 'react-i18next';
 import { Waypoint } from 'react-waypoint';
 
-import AppContainer from '~/client/services/AppContainer';
-import GrowiRenderer from '~/client/util/GrowiRenderer';
 import { apiv3Get } from '~/client/util/apiv3-client';
+import GrowiRenderer from '~/services/renderer/growi-renderer';
+import { useViewRenderer } from '~/stores/renderer';
 import loggerFactory from '~/utils/logger';
-
-import { withUnstatedContainers } from '../UnstatedUtils';
 
 import RevisionRenderer from './RevisionRenderer';
 
@@ -17,7 +15,7 @@ import RevisionRenderer from './RevisionRenderer';
 /**
  * Load data from server and render RevisionBody component
  */
-class LegacyRevisionLoader extends React.Component {
+class RevisionLoader extends React.Component {
 
   constructor(props) {
     super(props);
@@ -122,13 +120,8 @@ class LegacyRevisionLoader extends React.Component {
 
 }
 
-/**
- * Wrapper component for using unstated
- */
-const LegacyRevisionLoaderWrapper = withTranslation()(withUnstatedContainers(LegacyRevisionLoader, [AppContainer]));
 
-LegacyRevisionLoader.propTypes = {
-  appContainer: PropTypes.instanceOf(AppContainer).isRequired,
+RevisionLoader.propTypes = {
   t: PropTypes.func.isRequired,
 
   growiRenderer: PropTypes.instanceOf(GrowiRenderer).isRequired,
@@ -140,7 +133,14 @@ LegacyRevisionLoader.propTypes = {
   highlightKeywords: PropTypes.arrayOf(PropTypes.string),
 };
 
-const RevisionLoader = (props) => {
-  return <LegacyRevisionLoaderWrapper {...props}></LegacyRevisionLoaderWrapper>;
+const RevisionLoaderWrapperFC = (props) => {
+  const { t } = useTranslation();
+  const { data: growiRenderer } = useViewRenderer();
+  if (growiRenderer == null) {
+    return <></>;
+  }
+
+  return <RevisionLoader t={t} growiRenderer={growiRenderer} {...props} />;
 };
-export default RevisionLoader;
+
+export default RevisionLoaderWrapperFC;

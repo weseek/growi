@@ -19,6 +19,7 @@ import {
 import {
   useCurrentIndentSize, useSWRxSlackChannels, useIsSlackEnabled, useIsTextlintEnabled, usePageTagsForEditors,
 } from '~/stores/editor';
+import { usePreviewRenderer } from '~/stores/renderer';
 import {
   EditorMode,
   useEditorMode, useIsMobile, useSelectedGrant, useSelectedGrantGroupId, useSelectedGrantGroupName,
@@ -96,6 +97,8 @@ const PageEditor = (props: Props): JSX.Element => {
   const { data: isTextlintEnabled } = useIsTextlintEnabled();
   const { data: isIndentSizeForced } = useIsIndentSizeForced();
   const { data: indentSize, mutate: mutateCurrentIndentSize } = useCurrentIndentSize();
+
+  const { data: growiRenderer } = usePreviewRenderer();
 
   // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
   const [markdown, setMarkdown] = useState<string>(pageContainer.state.markdown!);
@@ -375,6 +378,10 @@ const PageEditor = (props: Props): JSX.Element => {
     return <></>;
   }
 
+  if (growiRenderer == null) {
+    return <></>;
+  }
+
   const config = props.appContainer.getConfig();
   const isUploadable = config.upload.image || config.upload.file;
   const isUploadableFile = config.upload.file;
@@ -411,8 +418,8 @@ const PageEditor = (props: Props): JSX.Element => {
       <div className="d-none d-lg-block page-editor-preview-container flex-grow-1 flex-basis-0 mw-0">
         <Preview
           markdown={markdown}
-          // eslint-disable-next-line no-return-assign
-          inputRef={previewRef}
+          growiRenderer={growiRenderer}
+          ref={previewRef}
           isMathJaxEnabled={isMathJaxEnabled}
           renderMathJaxOnInit={false}
           onScroll={offset => scrollEditorByPreviewScrollWithThrottle(offset)}

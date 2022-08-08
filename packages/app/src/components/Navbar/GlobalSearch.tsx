@@ -1,19 +1,19 @@
 import React, {
   FC, useState, useCallback, useRef,
 } from 'react';
-import { useTranslation } from 'react-i18next';
+
 import assert from 'assert';
 
-import AppContainer from '~/client/services/AppContainer';
-import { IFocusable } from '~/client/interfaces/focusable';
-import { useGlobalSearchFormRef } from '~/stores/ui';
-import { IPageSearchMeta } from '~/interfaces/search';
-import { IPageWithMeta } from '~/interfaces/page';
+import { useTranslation } from 'react-i18next';
 
-import { withUnstatedContainers } from '../UnstatedUtils';
+import { IFocusable } from '~/client/interfaces/focusable';
+import AppContainer from '~/client/services/AppContainer';
+import { IPageWithSearchMeta } from '~/interfaces/search';
+import { useCurrentPagePath } from '~/stores/context';
+import { useGlobalSearchFormRef } from '~/stores/ui';
 
 import SearchForm from '../SearchForm';
-import { useCurrentPagePath } from '~/stores/context';
+import { withUnstatedContainers } from '../UnstatedUtils';
 
 
 type Props = {
@@ -36,7 +36,7 @@ const GlobalSearch: FC<Props> = (props: Props) => {
 
   const { data: currentPagePath } = useCurrentPagePath();
 
-  const gotoPage = useCallback((data: IPageWithMeta<IPageSearchMeta>[]) => {
+  const gotoPage = useCallback((data: IPageWithSearchMeta[]) => {
     assert(data.length > 0);
 
     const page = data[0].data; // should be single page selected
@@ -73,7 +73,13 @@ const GlobalSearch: FC<Props> = (props: Props) => {
     <div className={`form-group mb-0 d-print-none ${isSearchServiceReachable ? '' : 'has-error'}`}>
       <div className="input-group flex-nowrap">
         <div className={`input-group-prepend ${dropup ? 'dropup' : ''}`}>
-          <button className="btn btn-secondary dropdown-toggle py-0" type="button" data-toggle="dropdown" aria-haspopup="true">
+          <button
+            className="btn btn-secondary dropdown-toggle py-0"
+            type="button"
+            data-toggle="dropdown"
+            aria-haspopup="true"
+            data-testid="select-search-scope"
+          >
             {scopeLabel}
           </button>
           <div className="dropdown-menu">
@@ -88,6 +94,7 @@ const GlobalSearch: FC<Props> = (props: Props) => {
               { t('header_search_box.item_label.All pages') }
             </button>
             <button
+              data-tesid="search-current-tree"
               className="dropdown-item"
               type="button"
               onClick={() => {

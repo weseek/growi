@@ -106,12 +106,24 @@ const Confidential: FC<ConfidentialProps> = memo((props: ConfidentialProps) => {
   );
 });
 
+interface NavbarLogoProps {
+  logoSrc?: string,
+}
+const GrowiNavbarLogo: FC<NavbarLogoProps> = memo((props: NavbarLogoProps) => {
+
+  const { logoSrc } = props;
+  return logoSrc != null
+    ? (<img src={logoSrc} className="picture picture-lg p-2 mx-2" id="settingBrandLogo" width="32" />)
+    : <GrowiLogo />;
+
+});
 
 const GrowiNavbar = (props) => {
 
   const { appContainer } = props;
-  const { crowi, isSearchServiceConfigured } = appContainer.config;
-
+  const {
+    crowi, isSearchServiceConfigured, customizedLogoSrc,
+  } = appContainer.config;
   const { data: isDeviceSmallerThanMd } = useIsDeviceSmallerThanMd();
   const { data: isSearchPage } = useIsSearchPage();
 
@@ -120,7 +132,7 @@ const GrowiNavbar = (props) => {
       {/* Brand Logo  */}
       <div className="navbar-brand mr-0">
         <a className="grw-logo d-block" href="/">
-          <GrowiLogo />
+          <GrowiNavbarLogo logoSrc={customizedLogoSrc} />
         </a>
       </div>
 

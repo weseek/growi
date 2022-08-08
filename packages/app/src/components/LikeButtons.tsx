@@ -51,7 +51,7 @@ const LikeButtons: FC<LikeButtonsProps> = (props: LikeButtonsProps) => {
         type="button"
         id="like-button"
         onClick={onLikeClicked}
-        className={`btn btn-like border-0
+        className={`shadow-none btn btn-like border-0
             ${isLiked ? 'active' : ''} ${isGuestUser ? 'disabled' : ''}`}
       >
         <i className={`fa ${isLiked ? 'fa-heart' : 'fa-heart-o'}`}></i>
@@ -63,7 +63,12 @@ const LikeButtons: FC<LikeButtonsProps> = (props: LikeButtonsProps) => {
 
       { !hideTotalNumber && (
         <>
-          <button type="button" id="po-total-likes" className={`btn btn-like border-0 total-likes ${isLiked ? 'active' : ''}`}>
+          <button
+            type="button"
+            id="po-total-likes"
+            className={`shadow-none btn btn-like border-0
+              total-likes ${isLiked ? 'active' : ''}`}
+          >
             {sumOfLikers}
           </button>
           <Popover placement="bottom" isOpen={isPopoverOpen} target="po-total-likes" toggle={togglePopover} trigger="legacy">
@@ -80,14 +85,4 @@ const LikeButtons: FC<LikeButtonsProps> = (props: LikeButtonsProps) => {
 
 };
 
-/**
- * Wrapper component for using unstated
- */
-const LikeButtonsUnstatedWrapper = withUnstatedContainers(LikeButtons, [AppContainer]);
-
-// eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
-const LikeButtonsWrapper = (props) => {
-  return <LikeButtonsUnstatedWrapper {...props}></LikeButtonsUnstatedWrapper>;
-};
-
-export default LikeButtonsWrapper;
+export default LikeButtons;

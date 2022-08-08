@@ -2,7 +2,10 @@ import React, { FC, useEffect, useState } from 'react';
 
 import { pagePathUtils } from '@growi/core';
 
+import { CustomWindow } from '~/interfaces/global';
 import { IUserUISettings } from '~/interfaces/user-ui-settings';
+import { generatePreviewRenderer } from '~/services/renderer/growi-renderer';
+import { useRendererSettings } from '~/stores/renderer';
 import {
   useIsDeviceSmallerThanMd, useIsDeviceSmallerThanLg,
   usePreferDrawerModeByUser, usePreferDrawerModeOnEditByUser, useSidebarCollapsed, useCurrentSidebarContents, useCurrentProductNavWidth,
@@ -13,12 +16,13 @@ import { useSetupGlobalSocket, useSetupGlobalAdminSocket } from '~/stores/websoc
 import {
   useSiteUrl,
   useCurrentCreatedAt, useDeleteUsername, useDeletedAt, useHasChildren, useHasDraftOnHackmd,
-  useIsDeleted, useIsNotCreatable, useIsTrashPage, useIsUserPage, useLastUpdateUsername,
+  useIsNotCreatable, useIsTrashPage, useIsUserPage, useLastUpdateUsername,
   useCurrentPageId, usePageIdOnHackmd, usePageUser, useCurrentPagePath, useRevisionCreatedAt, useRevisionId, useRevisionIdHackmdSynced,
   useShareLinkId, useShareLinksNumber, useTemplateTagData, useCurrentUpdatedAt, useCreator, useRevisionAuthor, useCurrentUser, useTargetAndAncestors,
   useNotFoundTargetPathOrId, useIsSearchPage, useIsForbidden, useIsIdenticalPath, useHasParent,
-  useIsAclEnabled, useIsSearchServiceConfigured, useIsSearchServiceReachable, useIsEnabledAttachTitleHeader, useIsNotFoundPermalink,
-  useDefaultIndentSize, useIsIndentSizeForced, useCsrfToken,
+  useIsAclEnabled, useIsSearchServiceConfigured, useIsSearchServiceReachable, useIsEnabledAttachTitleHeader,
+  useDefaultIndentSize, useIsIndentSizeForced, useCsrfToken, useIsEmptyPage, useEmptyPageId, useGrowiVersion, useAuditLogEnabled,
+  useActivityExpirationSeconds, useAuditLogAvailableActions, useGrowiRendererConfig,
 } from '../../stores/context';
 
 const { isTrashPage: _isTrashPage } = pagePathUtils;
@@ -29,7 +33,7 @@ const ContextExtractorOnce: FC = () => {
 
   const mainContent = document.querySelector('#content-main');
   const notFoundContentForPt = document.getElementById('growi-pagetree-not-found-context');
-  const notFoundContent = document.getElementById('growi-not-found-context');
+  const notFoundContext = document.getElementById('growi-not-found-context');
   const forbiddenContent = document.getElementById('forbidden-page');
 
   // get csrf token from body element
@@ -57,7 +61,10 @@ const ContextExtractorOnce: FC = () => {
    */
   const revisionId = mainContent?.getAttribute('data-page-revision-id');
   const path = decodeURI(mainContent?.getAttribute('data-path') || '');
+  // assign `null` to avoid returning empty string
   const pageId = mainContent?.getAttribute('data-page-id') || null;
+  const emptyPageId = notFoundContext?.getAttribute('data-page-id') || null;
+
   const revisionCreatedAt = +(mainContent?.getAttribute('data-page-revision-created') || '');
 
   // createdAt
@@ -71,7 +78,6 @@ const ContextExtractorOnce: FC = () => {
   const isIdenticalPath = JSON.parse(mainContent?.getAttribute('data-identical-path') || jsonNull) ?? false;
   const isUserPage = JSON.parse(mainContent?.getAttribute('data-page-user') || jsonNull) != null;
   const isTrashPage = _isTrashPage(path);
-  const isDeleted = JSON.parse(mainContent?.getAttribute('data-page-is-deleted') || jsonNull) ?? false;
   const isNotCreatable = JSON.parse(mainContent?.getAttribute('data-page-is-not-creatable') || jsonNull) ?? false;
   const isForbidden = forbiddenContent != null;
   const pageUser = JSON.parse(mainContent?.getAttribute('data-page-user') || jsonNull);
@@ -89,8 +95,8 @@ const ContextExtractorOnce: FC = () => {
   const revisionAuthor = JSON.parse(mainContent?.getAttribute('data-page-revision-author') || jsonNull);
   const targetAndAncestors = JSON.parse(document.getElementById('growi-pagetree-target-and-ancestors')?.textContent || jsonNull);
   const notFoundTargetPathOrId = JSON.parse(notFoundContentForPt?.getAttribute('data-not-found-target-path-or-id') || jsonNull);
-  const isNotFoundPermalink = JSON.parse(notFoundContent?.getAttribute('data-is-not-found-permalink') || jsonNull);
   const isSearchPage = document.getElementById('search-page') != null;
+  const isEmptyPage = JSON.parse(mainContent?.getAttribute('data-page-is-empty') || jsonNull) ?? false;
 
   const grant = +(mainContent?.getAttribute('data-page-grant') || 1);
   const grantGroupId = mainContent?.getAttribute('data-page-grant-group') || null;
@@ -105,9 +111,9 @@ const ContextExtractorOnce: FC = () => {
   useCurrentUser(currentUser);
 
   // UserUISettings
-  usePreferDrawerModeByUser(userUISettings?.preferDrawerModeByUser);
+  usePreferDrawerModeByUser(userUISettings?.preferDrawerModeByUser ?? configByContextHydrate.isSidebarDrawerMode);
   usePreferDrawerModeOnEditByUser(userUISettings?.preferDrawerModeOnEditByUser);
-  useSidebarCollapsed(userUISettings?.isSidebarCollapsed);
+  useSidebarCollapsed(userUISettings?.isSidebarCollapsed ?? configByContextHydrate.isSidebarClosedAtDockMode);
   useCurrentSidebarContents(userUISettings?.currentSidebarContents);
   useCurrentProductNavWidth(userUISettings?.currentProductNavWidth);
 
@@ -119,7 +125,27 @@ const ContextExtractorOnce: FC = () => {
   useIsEnabledAttachTitleHeader(configByContextHydrate.isEnabledAttachTitleHeader);
   useIsIndentSizeForced(configByContextHydrate.isIndentSizeForced);
   useDefaultIndentSize(configByContextHydrate.adminPreferredIndentSize);
-
+  useAuditLogEnabled(configByContextHydrate.auditLogEnabled);
+  useActivityExpirationSeconds(configByContextHydrate.activityExpirationSeconds);
+  useAuditLogAvailableActions(configByContextHydrate.auditLogAvailableActions);
+  useGrowiVersion(configByContextHydrate.crowi.version);
+  useRendererSettings({
+    isEnabledLinebreaks: configByContextHydrate.isEnabledLinebreaks,
+    isEnabledLinebreaksInComments: configByContextHydrate.isEnabledLinebreaksInComments,
+    adminPreferredIndentSize: configByContextHydrate.adminPreferredIndentSize,
+    isIndentSizeForced: configByContextHydrate.isIndentSizeForced,
+  });
+  useGrowiRendererConfig({
+    isEnabledXssPrevention: configByContextHydrate.isEnabledXssPrevention,
+    attrWhiteList: configByContextHydrate.attrWhiteList,
+    tagWhiteList: configByContextHydrate.tagWhiteList,
+    highlightJsStyleBorder: configByContextHydrate.highlightJsStyleBorder,
+    env: {
+      MATHJAX: configByContextHydrate.env.MATHJAX,
+      PLANTUML_URI: configByContextHydrate.env.PLANTUML_URI,
+      BLOCKDIAG_URI: configByContextHydrate.env.BLOCKDIAG_URI,
+    },
+  });
 
   // Page
   useCurrentCreatedAt(createdAt);
@@ -128,13 +154,13 @@ const ContextExtractorOnce: FC = () => {
   useHasChildren(hasChildren);
   useHasDraftOnHackmd(hasDraftOnHackmd);
   useIsIdenticalPath(isIdenticalPath);
-  useIsDeleted(isDeleted);
   useIsNotCreatable(isNotCreatable);
   useIsForbidden(isForbidden);
   useIsTrashPage(isTrashPage);
   useIsUserPage(isUserPage);
   useLastUpdateUsername(lastUpdateUsername);
   useCurrentPageId(pageId);
+  useEmptyPageId(emptyPageId);
   usePageIdOnHackmd(pageIdOnHackmd);
   usePageUser(pageUser);
   useCurrentPagePath(path);
@@ -149,8 +175,8 @@ const ContextExtractorOnce: FC = () => {
   useRevisionAuthor(revisionAuthor);
   useTargetAndAncestors(targetAndAncestors);
   useNotFoundTargetPathOrId(notFoundTargetPathOrId);
-  useIsNotFoundPermalink(isNotFoundPermalink);
   useIsSearchPage(isSearchPage);
+  useIsEmptyPage(isEmptyPage);
   useHasParent(hasParent);
 
   // Navigation
@@ -175,6 +201,24 @@ const ContextExtractorOnce: FC = () => {
   useSetupGlobalSocket();
   const shouldInitAdminSock = !!currentUser?.isAdmin;
   useSetupGlobalAdminSocket(shouldInitAdminSock);
+
+  // TODO: Remove this code when reveal.js is omitted. see: https://github.com/weseek/growi/pull/6223
+  // Do not access this property from other than reveal.js plugins.
+  (window as CustomWindow).previewRenderer = generatePreviewRenderer(
+    {
+      isEnabledXssPrevention: configByContextHydrate.isEnabledXssPrevention,
+      attrWhiteList: configByContextHydrate.attrWhiteList,
+      tagWhiteList: configByContextHydrate.tagWhiteList,
+      highlightJsStyleBorder: configByContextHydrate.highlightJsStyleBorder,
+      env: {
+        MATHJAX: configByContextHydrate.env.MATHJAX,
+        PLANTUML_URI: configByContextHydrate.env.PLANTUML_URI,
+        BLOCKDIAG_URI: configByContextHydrate.env.BLOCKDIAG_URI,
+      },
+    },
+    null,
+    path,
+  );
 
   return null;
 };

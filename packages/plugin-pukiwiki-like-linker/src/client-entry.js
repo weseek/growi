@@ -1,6 +1,6 @@
 import PukiwikiLikeLinker from './resource/js/util/PreProcessor/PukiwikiLikeLinker';
 
-export default (appContainer) => {
+export default () => {
   // add preprocessor to head of array
-  appContainer.originRenderer.preProcessors.unshift(new PukiwikiLikeLinker());
+  window.growiRenderer.preProcessors.unshift(new PukiwikiLikeLinker());
 };

@@ -98,7 +98,7 @@ export const getPageSchema = (crowi) => {
   }
 
   pageSchema.methods.isDeleted = function() {
-    return (this.status === STATUS_DELETED) || isTrashPage(this.path);
+    return isTrashPage(this.path);
   };
 
   pageSchema.methods.isPublic = function() {
@@ -286,17 +286,6 @@ export const getPageSchema = (crowi) => {
       });
   };
 
-  pageSchema.statics.getGrantLabels = function() {
-    const grantLabels = {};
-    grantLabels[GRANT_PUBLIC] = 'Public'; // 公開
-    grantLabels[GRANT_RESTRICTED] = 'Anyone with the link'; // リンクを知っている人のみ
-    // grantLabels[GRANT_SPECIFIED]  = 'Specified users only'; // 特定ユーザーのみ
-    grantLabels[GRANT_USER_GROUP] = 'Only inside the group'; // 特定グループのみ
-    grantLabels[GRANT_OWNER] = 'Only me'; // 自分のみ
-
-    return grantLabels;
-  };
-
   pageSchema.statics.getUserPagePath = function(user) {
     return `/user/${user.username}`;
   };
@@ -421,7 +410,7 @@ export const getPageSchema = (crowi) => {
   };
 
   /**
-   * find pages that is match with `path` and its descendants whitch user is able to manage
+   * find pages that is match with `path` and its descendants which user is able to manage
    */
   pageSchema.statics.findManageableListWithDescendants = async function(page, user, option = {}, includeEmpty = false) {
     if (user == null) {
@@ -694,6 +683,7 @@ export const getPageSchema = (crowi) => {
     const Revision = crowi.model('Revision');
     const format = options.format || 'markdown';
     const grantUserGroupId = options.grantUserGroupId || null;
+    const expandContentWidth = crowi.configManager.getConfig('crowi', 'customize:isContainerFluid');
 
     // sanitize path
     path = crowi.xss.process(path); // eslint-disable-line no-param-reassign
@@ -715,7 +705,9 @@ export const getPageSchema = (crowi) => {
     page.creator = user;
     page.lastUpdateUser = user;
     page.status = STATUS_PUBLISHED;
-
+    if (expandContentWidth != null) {
+      page.expandContentWidth = expandContentWidth;
+    }
     await validateAppliedScope(user, grant, grantUserGroupId);
     page.applyScope(user, grant, grantUserGroupId);
 

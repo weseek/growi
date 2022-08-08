@@ -1,5 +1,5 @@
 import React, {
-  useCallback, useEffect, useMemo, useRef,
+  useCallback, useEffect, useMemo, useRef, useState,
 } from 'react';
 
 import EventEmitter from 'events';
@@ -7,23 +7,41 @@ import EventEmitter from 'events';
 import { useTranslation } from 'react-i18next';
 import { debounce } from 'throttle-debounce';
 
+import { CustomWindow } from '~/interfaces/global';
+import { IGraphViewer, isGraphViewer } from '~/interfaces/graph-viewer';
+
 import NotAvailableForGuest from './NotAvailableForGuest';
 
-
-declare const globalEmitter: EventEmitter;
-declare const GraphViewer: {
-  createViewerForElement: (Element) => void,
-};
-
 type Props = {
+  GraphViewer: IGraphViewer,
   drawioContent: string,
   rangeLineNumberOfMarkdown: { beginLineNumber: number, endLineNumber: number },
   isPreview?: boolean,
 }
 
+// It calls callback when GraphViewer is not null.
+// eslint-disable-next-line @typescript-eslint/ban-types
+const waitForGraphViewer = async(callback: Function) => {
+  const MAX_WAIT_COUNT = 10; // no reason for 10
+
+  for (let i = 0; i < MAX_WAIT_COUNT; i++) {
+    if (isGraphViewer((window as CustomWindow).GraphViewer)) {
+      callback((window as CustomWindow).GraphViewer);
+      break;
+    }
+    // Sleep 500 ms
+    // eslint-disable-next-line no-await-in-loop
+    await new Promise<void>(r => setTimeout(() => r(), 500));
+  }
+};
+
 const Drawio = (props: Props): JSX.Element => {
 
   const { t } = useTranslation();
+
+  // Wrap with a function since GraphViewer is a function.
+  // This applies when call setGraphViewer as well.
+  const [GraphViewer, setGraphViewer] = useState<IGraphViewer | undefined>(() => (window as CustomWindow).GraphViewer);
 
   const { drawioContent, rangeLineNumberOfMarkdown, isPreview } = props;
 
@@ -31,12 +49,14 @@ const Drawio = (props: Props): JSX.Element => {
 
   const drawioContainerRef = useRef<HTMLDivElement>(null);
 
+  const globalEmitter: EventEmitter = (window as CustomWindow).globalEmitter;
+
   const editButtonClickHandler = useCallback(() => {
     const { beginLineNumber, endLineNumber } = rangeLineNumberOfMarkdown;
     globalEmitter.emit('launchDrawioModal', beginLineNumber, endLineNumber);
-  }, [rangeLineNumberOfMarkdown]);
+  }, [rangeLineNumberOfMarkdown, globalEmitter]);
 
-  const renderDrawio = useCallback(() => {
+  const renderDrawio = useCallback((GraphViewer: IGraphViewer) => {
     if (drawioContainerRef.current == null) {
       return;
     }
@@ -51,17 +71,20 @@ const Drawio = (props: Props): JSX.Element => {
         GraphViewer.createViewerForElement(div);
       }
     }
-  }, []);
+  }, [drawioContainerRef]);
 
   const renderDrawioWithDebounce = useMemo(() => debounce(200, renderDrawio), [renderDrawio]);
 
   useEffect(() => {
     if (GraphViewer == null) {
+      waitForGraphViewer((gv: IGraphViewer) => {
+        setGraphViewer(() => gv);
+      });
       return;
     }
 
-    renderDrawioWithDebounce();
-  }, [renderDrawioWithDebounce]);
+    renderDrawioWithDebounce(GraphViewer);
+  }, [renderDrawioWithDebounce, GraphViewer]);
 
   return (
     <div className="editable-with-drawio position-relative">
