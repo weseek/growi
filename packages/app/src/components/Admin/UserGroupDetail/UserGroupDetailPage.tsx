@@ -2,6 +2,8 @@ import React, {
   FC, useState, useCallback, useEffect,
 } from 'react';
 
+import { useRouter } from 'next/router';
+
 import dynamic from 'next/dynamic';
 
 import { useTranslation } from 'next-i18next';
@@ -38,8 +40,8 @@ type Props = {
 
 const UserGroupDetailPage = (props: Props) => {
   const { t } = useTranslation();
+  const router = useRouter();
   const { userGroupId: currentUserGroupId } = props;
-  const adminUserGroupDetailElem = document.getElementById('admin-user-group-detail');
 
   /*
    * State (from AdminUserGroupDetailContainer)
@@ -54,6 +56,9 @@ const UserGroupDetailPage = (props: Props) => {
   const [isUpdateModalShown, setUpdateModalShown] = useState<boolean>(false);
   const [isDeleteModalShown, setDeleteModalShown] = useState<boolean>(false);
 
+  if (currentUserGroup === null) {
+    router.push('/admin/user-groups');
+  }
 
   /*
    * Fetch
