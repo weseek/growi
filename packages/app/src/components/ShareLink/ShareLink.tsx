@@ -7,6 +7,7 @@ import { useTranslation } from 'react-i18next';
 import PageContainer from '~/client/services/PageContainer';
 import { toastSuccess, toastError } from '~/client/util/apiNotification';
 import { apiv3Delete, apiv3Get } from '~/client/util/apiv3-client';
+import { useCurrentPageId } from '~/stores/context';
 
 import { withUnstatedContainers } from '../UnstatedUtils';
 
@@ -17,17 +18,9 @@ type Props = {
   pageContainer: PageContainer;
 }
 
+// TODO: specify more detailed type
 type ShareLinkItemType = {
-  _id: string;
-  createdAt: Date;
-  expiredAt: null | Date;
-  description: string;
-  relatedPage: {
-    _id: string;
-    path: string;
-    id: string;
-  };
-  __v: number;
+  any;
 };
 
 const ShareLink: FC<Props> = (props: Props): JSX.Element => {
