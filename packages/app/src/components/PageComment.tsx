@@ -142,7 +142,7 @@ export const PageComment: FC<Props> = memo((props:Props): JSX.Element => {
           <div className="container-lg">
             <div className="page-comments">
               <h2 className={commentTitleClasses}><i className="icon-fw icon-bubbles"></i>Comments</h2>
-              <div className="page-comments-list" id="page-comments-list">
+              {/* <div className="page-comments-list" id="page-comments-list">
                 <div className={`${CommentStyles['comment-styles']} page-comment-thread pb-5  page-comment-thread-no-replies`}>
                   <div className='page-comment flex-column'>
                     <div className='page-commnet-writer'>
@@ -160,13 +160,13 @@ export const PageComment: FC<Props> = memo((props:Props): JSX.Element => {
                     <Skelton additionalClass={`${styles['page-comment-button-skelton']} btn btn-outline-secondary btn-sm grw-skelton`} />
                   </div>
                 </div>
-              </div>
+              </div> */}
               <div className={`${CommentEditorStyles['comment-editor-styles']} form page-comment-form`}>
                 <div className='comment-form'>
                   <div className='comment-form-user'>
                     <Skelton additionalClass='rounded-circle picture' roundedPill />
                   </div>
-                  <Skelton additionalClass={`${styles['page-comment-comment-body-skelton']} grw-skelton`} />
+                  <Skelton additionalClass={`${styles['page-comment-commenteditorlazyrenderer-body-skelton']} grw-skelton`} />
                 </div>
               </div>
             </div>

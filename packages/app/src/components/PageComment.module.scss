@@ -1,3 +1,5 @@
+@use '~/styles/bootstrap/init' as bs;
+
 .page-comment-styles :global {
   .page-comments {
     h4 {
@@ -18,6 +20,9 @@
   height: 66px;
   padding: 1em;
   margin-left: 4.5em;
+  @include bs.media-breakpoint-down(xs) {
+    margin-left: 3.5em;
+  }
 }
 
 .page-comment-replycomments-body-skelton :global{
@@ -32,4 +37,14 @@
   height: 26.3833px;
   margin-top: 0.5em;
   border: none;
+}
+
+.page-comment-commenteditorlazyrenderer-body-skelton :global {
+  position: relative;
+  height: 72.25px;
+  padding: 1em;
+  margin-left: 4.5em;
+  @include bs.media-breakpoint-down(xs) {
+    margin-left: 3.5em;
+  }
 }
