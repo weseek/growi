@@ -1654,10 +1654,7 @@ class PageService {
       throw Error(`Cannot operate deleteCompletely from path "${page.path}" right now.`);
     }
 
-    const ids = [page._id];
-    const paths = [page.path];
-
-    logger.debug('Deleting completely', paths);
+    logger.debug('Deleting completely', page.path);
 
     // 1. update descendantCount
     if (isRecursively) {
@@ -1674,7 +1671,7 @@ class PageService {
       await this.updateDescendantCountOfAncestors(pageToUpdateDescendantCount.parent, -1, true);
     }
     // 2. then delete target completely
-    await this.deleteCompletelyOperation(ids, paths);
+    await this.deleteCompletelyOperation([page._id], [page.path]);
 
     // delete leaf empty pages
     await Page.removeLeafEmptyPagesRecursively(page.parent);
@@ -2086,7 +2083,7 @@ class PageService {
       .pipe(createBatchStream(BULK_REINDEX_SIZE))
       .pipe(writeStream);
 
-    await streamToPromise(readStream);
+    await streamToPromise(writeStream);
 
     return count;
   }
