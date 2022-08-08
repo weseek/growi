@@ -67,7 +67,7 @@ export const UserGroupDetailPage = (props: Props) => {
   const { data: userGroupPages } = useSWRxUserGroupPages(currentUserGroupId, 10, 0);
 
 
-  const { data: childUserGroupsList, mutate: mutateChildUserGroups } = useSWRxChildUserGroupList([currentUserGroupId], true);
+  const { data: childUserGroupsList, mutate: mutateChildUserGroups } = useSWRxChildUserGroupList(currentUserGroupId ? [currentUserGroupId] : [], true);
   const childUserGroups = childUserGroupsList != null ? childUserGroupsList.childUserGroups : [];
   const grandChildUserGroups = childUserGroupsList != null ? childUserGroupsList.grandChildUserGroups : [];
   const childUserGroupIds = childUserGroups.map(group => group._id);
