@@ -2,20 +2,14 @@ import React from 'react';
 
 import { useTranslation } from 'next-i18next';
 
-import AppContainer from '~/client/services/AppContainer';
 import { toastSuccess, toastError } from '~/client/util/apiNotification';
 // import { localeMetadatas } from '~/client/util/i18n';
+import { useRegistrationWhiteList } from '~/stores/context';
 import { usePersonalSettings } from '~/stores/personal-settings';
 
-import { withUnstatedContainers } from '../UnstatedUtils';
-
-type Props = {
-  appContainer: AppContainer,
-}
-
-const BasicInfoSettings = (props: Props) => {
+export const BasicInfoSettings = (): JSX.Element => {
   const { t } = useTranslation();
-  const { appContainer } = props;
+  const { data: registrationWhiteList } = useRegistrationWhiteList();
 
   const {
     data: personalSettingsInfo, mutate: mutatePersonalSettings, sync, updateBasicInfo, error,
@@ -33,9 +27,6 @@ const BasicInfoSettings = (props: Props) => {
       toastError(err);
     }
   };
-
-
-  const { registrationWhiteList } = appContainer.getConfig();
 
   const changePersonalSettingsHandler = (updateData) => {
     if (personalSettingsInfo == null) {
@@ -71,7 +62,7 @@ const BasicInfoSettings = (props: Props) => {
             defaultValue={personalSettingsInfo?.email || ''}
             onChange={e => changePersonalSettingsHandler({ email: e.target.value })}
           />
-          {registrationWhiteList.length !== 0 && (
+          {registrationWhiteList != null && registrationWhiteList.length !== 0 && (
             <div className="form-text text-muted">
               {t('page_register.form_help.email')}
               <ul>
@@ -163,11 +154,3 @@ const BasicInfoSettings = (props: Props) => {
     </>
   );
 };
-
-
-/**
- * Wrapper component for using unstated
- */
-const BasicInfoSettingsWrapper = withUnstatedContainers(BasicInfoSettings, [AppContainer]);
-
-export default BasicInfoSettingsWrapper;

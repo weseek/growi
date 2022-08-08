@@ -128,6 +128,10 @@ export const useDisableLinkSharing = (initialData?: Nullable<boolean>): SWRRespo
   return useStaticSWR<Nullable<boolean>, Error>('disableLinkSharing', initialData);
 };
 
+export const useRegistrationWhiteList = (initialData?: Nullable<string[]>): SWRResponse<Nullable<string[]>, Error> => {
+  return useStaticSWR<Nullable<string[]>, Error>('registrationWhiteList', initialData);
+};
+
 export const useRevisionIdHackmdSynced = (initialData?: Nullable<any>): SWRResponse<Nullable<any>, Error> => {
   return useStaticSWR<Nullable<any>, Error>('revisionIdHackmdSynced', initialData);
 };
