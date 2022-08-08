@@ -20,7 +20,8 @@ export const PageContentFooter = memo((): JSX.Element => {
   }
 
   return (
-    <div className="page-content-footer py-4 d-edit-none d-print-none">
+    // TODO: page-content-footer, scss module import and global import.
+    <div className={`${styles['page-content-footer']} page-content-footer py-4 d-edit-none d-print-none}`}>
       <div className="grw-container-convertible">
         <div className="page-meta">
           <AuthorInfo user={page.creator} date={page.createdAt} mode="create" locate="footer" />

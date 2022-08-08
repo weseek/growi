@@ -1,7 +1,8 @@
 /*
  * VSCode の Stylelint 設定チェック方法
  *
- * 1. .stylelintrc.json ファイル中の `src/linter-checker/test.scss` 行を削除
+ * 1. .stylelintrc.json ファイル中の `src/linter-checker/test.scss` 行を削除し、
+ *    このファイルを VSCode 上で開き直す
  *
  * 2. VSCode で以下のエラーが表示されていることを確認
  *   - color で stylelint(order/properties-order)

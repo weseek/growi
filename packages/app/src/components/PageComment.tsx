@@ -19,9 +19,6 @@ import { CommentEditor } from './PageComment/CommentEditor';
 import { CommentEditorLazyRenderer } from './PageComment/CommentEditorLazyRenderer';
 import { DeleteCommentModal } from './PageComment/DeleteCommentModal';
 import { ReplyComments } from './PageComment/ReplyComments';
-import { Skelton } from './Skelton';
-
-import styles from './PageComment.module.scss';
 
 type Props = {
   pageId?: Nullable<string>
@@ -195,7 +192,7 @@ export const PageComment: FC<Props> = memo((props:Props): JSX.Element => {
   return (
     <>
       {/* ToDO: Check the comment.html CSS */}
-      <div className="page-comments-row comment-list">
+      <div className={`${styles['page-comment-styles']} page-comments-row comment-list`}>
         <div className="container-lg">
           <div className="page-comments">
             <h2 className={commentTitleClasses}><i className="icon-fw icon-bubbles"></i>Comments</h2>

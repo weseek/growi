@@ -1,3 +1,17 @@
+.page-comment-styles :global {
+  .page-comments {
+    h4 {
+      margin-bottom: 1em;
+    }
+  }
+
+  // reply button
+  .btn-comment-reply {
+    margin-top: 0.5em;
+    border: none;
+  }
+}
+
 // TODO: Should Soft Coding see: https://github.com/weseek/growi/pull/6404
 .page-comment-comment-skelton :global {
   width: 300px;

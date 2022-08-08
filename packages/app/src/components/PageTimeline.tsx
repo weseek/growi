@@ -1,6 +1,7 @@
 import React, { useCallback, useEffect, useState } from 'react';
 
 import { useTranslation } from 'next-i18next';
+import Link from 'next/link';
 
 import { apiv3Get } from '~/client/util/apiv3-client';
 import { IPageHasId } from '~/interfaces/page';
@@ -54,7 +55,11 @@ export const PageTimeline = (): JSX.Element => {
         return (
           <div className="timeline-body" key={`key-${page._id}`}>
             <div className={`card card-timeline ${styles['card-timeline']}`}>
-              <div className="card-header"><a href={page.path}>{page.path}</a></div>
+              <div className="card-header">
+                <Link href={page.path} prefetch={false}>
+                  <a>{page.path}</a>
+                </Link>
+              </div>
               <div className="card-body">
                 <RevisionLoader
                   lazy

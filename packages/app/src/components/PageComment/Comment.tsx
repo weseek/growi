@@ -17,6 +17,8 @@ import Username from '../User/Username';
 import { CommentControl } from './CommentControl';
 import { CommentEditor } from './CommentEditor';
 
+import styles from './Comment.module.scss';
+
 type CommentProps = {
   comment: ICommentHasId,
   isReadOnly: boolean,
@@ -116,7 +118,7 @@ export const Comment = (props: CommentProps): JSX.Element => {
     : null;
 
   return (
-    <>
+    <div className={`${styles['comment-styles']}`}>
       {(isReEdit && !isReadOnly) ? (
         <CommentEditor
           rendererOptions={rendererOptions}
@@ -168,6 +170,6 @@ export const Comment = (props: CommentProps): JSX.Element => {
         </div>
       )
       }
-    </>
+    </div>
   );
 };
