@@ -1,8 +1,14 @@
 # Changelog
 
-## [Unreleased](https://github.com/weseek/growi/compare/v5.0.11...HEAD)
+## [Unreleased](https://github.com/weseek/growi/compare/v5.0.12...HEAD)
 
 *Please do not manually update this file. We've automated the process.*
+
+## [v5.0.12](https://github.com/weseek/growi/compare/v5.0.11...v5.0.12) - 2022-08-08
+
+### 🐛 Bug Fixes
+
+- fix: "Error: cannnot get grant label" occured with lsx (for v5.0.x) (#6352) @yukendev
 
 ## [v5.0.11](https://github.com/weseek/growi/compare/v5.0.10...v5.0.11) - 2022-07-05
 
