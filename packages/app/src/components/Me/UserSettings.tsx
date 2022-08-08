@@ -2,7 +2,7 @@ import React from 'react';
 
 import { useTranslation } from 'next-i18next';
 
-import BasicInfoSettings from './BasicInfoSettings';
+import { BasicInfoSettings } from './BasicInfoSettings';
 import ProfileImageSettings from './ProfileImageSettings';
 
 const UserSettings = React.memo((): JSX.Element => {
