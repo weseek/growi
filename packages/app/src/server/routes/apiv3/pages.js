@@ -544,7 +544,7 @@ module.exports = (crowi) => {
     try {
       // global notification
       await globalNotificationService.fire(GlobalNotificationSetting.EVENT.PAGE_MOVE, page, req.user, {
-        oldPath: req.body.path,
+        oldPath: page.path,
       });
     }
     catch (err) {
