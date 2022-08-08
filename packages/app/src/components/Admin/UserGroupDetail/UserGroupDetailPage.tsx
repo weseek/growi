@@ -5,6 +5,7 @@ import React, {
 import { useRouter } from 'next/router';
 
 import dynamic from 'next/dynamic';
+import ObjectId from 'bson-objectid';
 
 import { useTranslation } from 'next-i18next';
 
@@ -56,7 +57,7 @@ const UserGroupDetailPage = (props: Props) => {
   const [isUpdateModalShown, setUpdateModalShown] = useState<boolean>(false);
   const [isDeleteModalShown, setDeleteModalShown] = useState<boolean>(false);
 
-  if (currentUserGroup === null) {
+  if (!ObjectId.isValid(currentUserGroupId) || currentUserGroup === null) {
     router.push('/admin/user-groups');
   }
 
