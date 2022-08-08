@@ -9,7 +9,7 @@ type Props = {
   onClickCreateUserGroupButton?(): void
 };
 
-const UserGroupDropdown: FC<Props> = (props: Props) => {
+export const UserGroupDropdown: FC<Props> = (props: Props) => {
   const { t } = useTranslation();
 
   const { selectableUserGroups, onClickAddExistingUserGroupButton, onClickCreateUserGroupButton } = props;
@@ -66,5 +66,3 @@ const UserGroupDropdown: FC<Props> = (props: Props) => {
     </>
   );
 };
-
-export default UserGroupDropdown;

@@ -1,5 +1,6 @@
 import React, { FC, useState, useCallback } from 'react';
 
+import dynamic from 'next/dynamic';
 import { useTranslation } from 'react-i18next';
 
 
@@ -9,11 +10,12 @@ import { IUserGroup, IUserGroupHasId } from '~/interfaces/user';
 import { useIsAclEnabled } from '~/stores/context';
 import { useSWRxUserGroupList, useSWRxChildUserGroupList, useSWRxUserGroupRelationList } from '~/stores/user-group';
 
-import UserGroupDeleteModal from './UserGroupDeleteModal';
-import UserGroupModal from './UserGroupModal';
-import UserGroupTable from './UserGroupTable';
+const UserGroupDeleteModal = dynamic(() => import('./UserGroupDeleteModal').then(module => module.UserGroupDeleteModal));
+const UserGroupModal = dynamic(() => import('./UserGroupModal').then(module => module.UserGroupModal));
+const UserGroupTable = dynamic(() => import('./UserGroupTable').then(module => module.UserGroupTable));
 
-const UserGroupPage: FC = () => {
+
+export const UserGroupPage: FC = () => {
   const { t } = useTranslation();
 
   const { data: isAclEnabled } = useIsAclEnabled();
@@ -194,4 +196,4 @@ const UserGroupPage: FC = () => {
   );
 };
 
-export default UserGroupPage;
+// export default UserGroupPage;

@@ -7,7 +7,7 @@ import {
 import { useUpdateUserGroupConfirmModal } from '~/stores/modal';
 
 
-const UpdateParentConfirmModal: FC = () => {
+export const UpdateParentConfirmModal: FC = () => {
   const { t } = useTranslation();
 
   const [isForceUpdate, setForceUpdate] = useState(false);
@@ -88,5 +88,3 @@ const UpdateParentConfirmModal: FC = () => {
     </Modal>
   );
 };
-
-export default UpdateParentConfirmModal;

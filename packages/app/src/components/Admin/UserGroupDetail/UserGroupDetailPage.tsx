@@ -2,6 +2,8 @@ import React, {
   FC, useState, useCallback, useEffect,
 } from 'react';
 
+import dynamic from 'next/dynamic';
+
 import { useTranslation } from 'next-i18next';
 
 import { toastSuccess, toastError } from '~/client/util/apiNotification';
@@ -17,16 +19,17 @@ import {
   useSWRxSelectableParentUserGroups, useSWRxSelectableChildUserGroups, useSWRxAncestorUserGroups,
 } from '~/stores/user-group';
 
-import UserGroupDeleteModal from '../UserGroup/UserGroupDeleteModal';
-import UserGroupDropdown from '../UserGroup/UserGroupDropdown';
-import UserGroupForm from '../UserGroup/UserGroupForm';
-import UserGroupModal from '../UserGroup/UserGroupModal';
-import UserGroupTable from '../UserGroup/UserGroupTable';
-
-import UpdateParentConfirmModal from './UpdateParentConfirmModal';
+const UserGroupDeleteModal = dynamic(() => import('../UserGroup/UserGroupDeleteModal').then(module => module.UserGroupDeleteModal));
+const UserGroupDropdown = dynamic(() => import('../UserGroup/UserGroupDropdown').then(module => module.UserGroupDropdown));
+const UserGroupForm = dynamic(() => import('../UserGroup/UserGroupForm').then(module => module.UserGroupForm));
+const UserGroupModal = dynamic(() => import('../UserGroup/UserGroupModal').then(module => module.UserGroupModal));
+const UserGroupTable = dynamic(() => import('../UserGroup/UserGroupTable').then(module => module.UserGroupTable));
+const UpdateParentConfirmModal = dynamic(() => import('./UpdateParentConfirmModal').then(module => module.UpdateParentConfirmModal));
 // import UserGroupPageList from './UserGroupPageList';
 // import UserGroupUserModal from './UserGroupUserModal';
 // import UserGroupUserTable from './UserGroupUserTable';
+
+
 
 
 type Props = {

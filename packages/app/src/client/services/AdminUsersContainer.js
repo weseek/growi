@@ -17,14 +17,14 @@ const logger = loggerFactory('growi:services:AdminUserGroupDetailContainer');
  */
 export default class AdminUsersContainer extends Container {
 
-  constructor(appContainer) {
+  constructor(/* appContainer */) {
     super();
 
     if (isServer()) {
       return;
     }
 
-    this.appContainer = appContainer;
+    // this.appContainer = appContainer;
 
     this.state = {
       users: [],
