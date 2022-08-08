@@ -29,7 +29,7 @@ export const ActivityTable : FC<Props> = (props: Props) => {
   }, [setTooltipOpen]);
 
   return (
-    <div className="table-responsive text-nowrap h-100">
+    <div className="table-responsiv-sm text-nowrap h-100">
       <table className="table table-default table-bordered table-user-list">
         <thead>
           <tr>
@@ -56,12 +56,13 @@ export const ActivityTable : FC<Props> = (props: Props) => {
                 <td>{t(`admin:audit_log_action.${activity.action}`)}</td>
                 <td>{activity.ip}</td>
                 <td>
+                  {activity.endpoint}
                   <CopyToClipboard text={activity.endpoint} onCopy={showToolTip}>
-                    <button id="urlButton" type="button" className="btn btn-link">
-                      {activity.endpoint}
+                    <button type="button" className="btn btn-outline-secondary border-0 pull-right" id="tooltipTarget">
+                      <i className="fa fa-clipboard" aria-hidden="true"></i>
                     </button>
                   </CopyToClipboard>
-                  <Tooltip placement="top" isOpen={tooltopOpen} fade={false} target="urlButton">
+                  <Tooltip placement="top" isOpen={tooltopOpen} fade={false} target="tooltipTarget">
                     copied!
                   </Tooltip>
                 </td>
