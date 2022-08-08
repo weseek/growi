@@ -21,13 +21,13 @@ type Props = {
   bookmarkedPage: IPageHasId,
   onUnbookmarked: () => void,
   onRenamed: () => void,
-  onDeleted: (pageToDelete: IPageToDeleteWithMeta) => void
+  onClickDeleteMenuItem: (pageToDelete: IPageToDeleteWithMeta) => void
 }
 
 const BookmarkItem = (props: Props): JSX.Element => {
   const { t } = useTranslation();
   const {
-    bookmarkedPage, onUnbookmarked, onRenamed, onDeleted,
+    bookmarkedPage, onUnbookmarked, onRenamed, onClickDeleteMenuItem,
   } = props;
   const [isRenameInputShown, setRenameInputShown] = useState(false);
   const dPagePath = new DevidedPagePath(bookmarkedPage.path, false, true);
@@ -92,8 +92,8 @@ const BookmarkItem = (props: Props): JSX.Element => {
       meta: pageInfo,
     };
 
-    onDeleted(pageToDelete);
-  }, [bookmarkedPage, onDeleted]);
+    onClickDeleteMenuItem(pageToDelete);
+  }, [bookmarkedPage, onClickDeleteMenuItem]);
 
   return (
     <div className="d-flex justify-content-between" key={bookmarkedPage._id}>
