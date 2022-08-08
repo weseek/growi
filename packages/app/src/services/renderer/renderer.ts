@@ -13,8 +13,10 @@ import { CodeBlock } from '~/components/ReactMarkdownComponents/CodeBlock';
 import { Header } from '~/components/ReactMarkdownComponents/Header';
 import { NextLink } from '~/components/ReactMarkdownComponents/NextLink';
 import { RendererConfig } from '~/interfaces/services/renderer';
-import { addClass } from '~/services/renderer/rehype-plugins/add-class';
 import loggerFactory from '~/utils/logger';
+
+import { addClass } from './rehype-plugins/add-class';
+import { relativeLinks } from './rehype-plugins/relative-links';
 
 // import CsvToTable from './PreProcessor/CsvToTable';
 // import EasyGrid from './PreProcessor/EasyGrid';
@@ -218,6 +220,7 @@ const generateCommonOptions = (pagePath: string|undefined, config: RendererConfi
     remarkPlugins: [gfm],
     rehypePlugins: [
       slug,
+      [relativeLinks, { pagePath }],
       raw,
       [sanitize, {
         ...sanitizeDefaultSchema,

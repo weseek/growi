@@ -9,7 +9,7 @@ import {
 } from '~/services/renderer/renderer';
 
 
-import { useCurrentPageTocNode, useRendererConfig } from './context';
+import { useCurrentPagePath, useCurrentPageTocNode, useRendererConfig } from './context';
 
 interface ReactMarkdownOptionsGenerator {
   (config: RendererConfig): RendererOptions
@@ -38,11 +38,24 @@ const _useOptionsBase = (
 };
 
 export const useViewOptions = (): SWRResponse<RendererOptions, Error> => {
-  const key = 'viewOptions';
-
+  const { data: currentPagePath } = useCurrentPagePath();
+  const { data: rendererConfig } = useRendererConfig();
   const { mutate: storeTocNode } = useCurrentPageTocNode();
 
-  return _useOptionsBase(key, config => generateViewOptions(config, storeTocNode));
+  const isAllDataValid = currentPagePath != null && rendererConfig != null;
+
+  const key = isAllDataValid
+    ? ['viewOptions', currentPagePath, rendererConfig]
+    : null;
+
+  const swrResult = useSWRImmutable<RendererOptions, Error>(key);
+
+  if (isAllDataValid && swrResult.data == null) {
+    swrResult.mutate(generateViewOptions(currentPagePath, rendererConfig, storeTocNode));
+  }
+
+  // call useSWRImmutable again to foce to update cache
+  return useSWRImmutable<RendererOptions, Error>(key);
 };
 
 export const useTocOptions = (): SWRResponse<RendererOptions, Error> => {
