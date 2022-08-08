@@ -54,9 +54,12 @@ export const UserGroupDetailPage = (props: Props) => {
   const [isUpdateModalShown, setUpdateModalShown] = useState<boolean>(false);
   const [isDeleteModalShown, setDeleteModalShown] = useState<boolean>(false);
 
-  if (!ObjectId.isValid(currentUserGroupId) || currentUserGroup === null) {
-    router.push('/admin/user-groups');
-  }
+  useEffect(() => {
+    if (!ObjectId.isValid(currentUserGroupId) || currentUserGroup === null) {
+      router.push('/admin/user-groups');
+    }
+  }, [currentUserGroup, currentUserGroupId, router]);
+
 
   /*
    * Fetch
