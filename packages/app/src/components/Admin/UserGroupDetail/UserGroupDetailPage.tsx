@@ -33,7 +33,7 @@ const UpdateParentConfirmModal = dynamic(() => import('./UpdateParentConfirmModa
 
 
 type Props = {
-  userGroupId: string,
+  userGroupId?: string,
 }
 
 export const UserGroupDetailPage = (props: Props) => {
@@ -55,7 +55,7 @@ export const UserGroupDetailPage = (props: Props) => {
   const [isDeleteModalShown, setDeleteModalShown] = useState<boolean>(false);
 
   useEffect(() => {
-    if (!ObjectId.isValid(currentUserGroupId) || currentUserGroup === null) {
+    if ((currentUserGroupId != null && !ObjectId.isValid(currentUserGroupId)) || currentUserGroup === null) {
       router.push('/admin/user-groups');
     }
   }, [currentUserGroup, currentUserGroupId, router]);
