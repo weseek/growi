@@ -195,7 +195,7 @@ const ExportArchiveDataPage = (props) => {
     <div data-testid="admin-export-archive-data">
       <h2>{t('Export Archive Data')}</h2>
 
-      <button type="button" className="btn btn-outline-secondary" disabled={isExporting} onClick={() => openExportModal()}>
+      <button type="button" className="btn btn-outline-secondary" disabled={isExporting} onClick={openExportModal}>
         {t('admin:export_management.create_new_archive_data')}
       </button>
 
@@ -217,8 +217,8 @@ const ExportArchiveDataPage = (props) => {
 
       <SelectCollectionsModal
         isOpen={isExportModalOpen}
-        onExportingRequested={() => exportingRequestedHandler()}
-        onClose={() => closeExportModal()}
+        onExportingRequested={exportingRequestedHandler}
+        onClose={closeExportModal}
         collections={collections}
       />
     </div>
