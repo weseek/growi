@@ -40,7 +40,7 @@ class ExportArchiveDataPage extends React.Component {
     this.exportingRequestedHandler = this.exportingRequestedHandler.bind(this);
   }
 
-  async UNSAFE_UNSAFE_componentWillMount() {
+  async UNSAFE_componentWillMount() {
     // TODO:: use apiv3.get
     // eslint-disable-next-line no-unused-vars
     const [{ collections }, { status }] = await Promise.all([
