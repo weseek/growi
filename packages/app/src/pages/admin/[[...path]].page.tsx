@@ -10,6 +10,8 @@ import dynamic from 'next/dynamic';
 import { useRouter } from 'next/router';
 import { Container, Provider } from 'unstated';
 
+import ObjectId from 'bson-objectid';
+
 
 import AdminAppContainer from '~/client/services/AdminAppContainer';
 import AdminBasicSecurityContainer from '~/client/services/AdminBasicSecurityContainer';
@@ -62,7 +64,6 @@ const ElasticsearchManagement = dynamic(() => import('../../components/Admin/Ela
 const UserGroupPage = dynamic(() => import('../../components/Admin/UserGroup/UserGroupPage').then(module => module.UserGroupPage));
 const AuditLogManagement = dynamic(() => import('../../components/Admin/AuditLogManagement').then(module => module.AuditLogManagement));
 
-
 const AdminLayout = dynamic(() => import('../../components/Layout/AdminLayout'), { ssr: false });
 
 const pluginUtils = new PluginUtils();
@@ -92,15 +93,14 @@ const AdminMarkdownSettingsPage: NextPage<Props> = (props: Props) => {
 
   let userGroupId;
 
-  /*
+    /*
     * Set userGroupId as a adminPagesMap key
-    * eg) In case that url is `/user-group-detail/62e8388a9a649bea5e703ef7`, userGroupId is 62e8388a9a649bea5e703ef7
+    * eg) In case that url is `/user-group-detail/62e8388a9a649bea5e703ef7`, userGroupId will be 62e8388a9a649bea5e703ef7
     */
-  if (pagePathKeys[0] === 'user-group-detail') {
-    userGroupId = pagePathKeys[1];
-  }
-
-
+    const [firstPath, secondPath] = pagePathKeys;
+   if (firstPath === "user-group-detail" && secondPath != null && ObjectId.isValid(secondPath)) {
+     userGroupId = secondPath;
+   }
   const adminPagesMap = {
     home: {
       title: useCustomTitle(props, t('Wiki Management Home Page')),
