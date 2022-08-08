@@ -137,6 +137,7 @@ export const PageComment: FC<Props> = memo((props:Props): JSX.Element => {
     return (
       <>
         {/* TODO: Check the comment.html CSS */}
+        {/* TODO: Refactor CSS classes */}
         <div className={`${styles['page-comment-styles']} page-comments-row comment-list`}>
           <div className="container-lg">
             <div className="page-comments">
