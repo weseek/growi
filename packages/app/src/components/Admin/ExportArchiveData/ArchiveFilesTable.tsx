@@ -36,7 +36,7 @@ const ArchiveFilesTable = (props: ArchiveFilesTableProps): JSX.Element => {
                 <td>
                   <ArchiveFilesTableMenu
                     fileName={fileName}
-                    onZipFileStatRemove={() => props.onZipFileStatRemove(fileName)}
+                    onZipFileStatRemove={props.onZipFileStatRemove}
                   />
                 </td>
               </tr>

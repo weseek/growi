@@ -211,7 +211,7 @@ const ExportArchiveDataPage = (props) => {
         <h3>{t('admin:export_management.exported_data_list')}</h3>
         <ArchiveFilesTable
           zipFileStats={zipFileStats}
-          onZipFileStatRemove={(fileName => onZipFileStatRemove(fileName))}
+          onZipFileStatRemove={onZipFileStatRemove}
         />
       </div>
 
