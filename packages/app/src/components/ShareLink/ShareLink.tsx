@@ -7,7 +7,7 @@ import { useTranslation } from 'react-i18next';
 import PageContainer from '~/client/services/PageContainer';
 import { toastSuccess, toastError } from '~/client/util/apiNotification';
 import { apiv3Delete, apiv3Get } from '~/client/util/apiv3-client';
-import { useCurrentPageId } from '~/stores/context';
+import { IResShareLinkList } from '~/interfaces/share-link';
 
 import { withUnstatedContainers } from '../UnstatedUtils';
 
@@ -18,16 +18,11 @@ type Props = {
   pageContainer: PageContainer;
 }
 
-// TODO: specify more detailed type
-type ShareLinkItemType = {
-  any;
-};
-
 const ShareLink: FC<Props> = (props: Props): JSX.Element => {
   const { t } = useTranslation();
   const { pageContainer } = props;
   const { pageId } = pageContainer.state;
-  const [shareLinks, setShareLinks] = useState<ShareLinkItemType[]>([]);
+  const [shareLinks, setShareLinks] = useState<IResShareLinkList>([]);
   const [isOpenShareLinkForm, setIsOpenShareLinkForm] = useState<boolean>(false);
 
   const retrieveShareLinks = useCallback(async() => {
