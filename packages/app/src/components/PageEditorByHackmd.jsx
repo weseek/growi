@@ -73,13 +73,13 @@ const PageEditorByHackmd = (props) => {
     return envVars.HACKMD_URI;
   }, [appContainer]);
 
-  const isResume = () => {
+  const isResume = useCallback(() => {
     const {
       pageIdOnHackmd, hasDraftOnHackmd, isHackmdDraftUpdatingInRealtime,
     } = pageContainer.state;
     const isPageExistsOnHackmd = (pageIdOnHackmd != null);
     return (isPageExistsOnHackmd && hasDraftOnHackmd) || isHackmdDraftUpdatingInRealtime;
-  };
+  }, [pageContainer.state]);
 
   const startToEdit = useCallback(async() => {
     const hackmdUri = getHackmdUri();
@@ -123,9 +123,9 @@ const PageEditorByHackmd = (props) => {
   /**
    * Start to edit w/o any api request
    */
-  const resumeToEdit = () => {
+  const resumeToEdit = useCallback(() => {
     setIsInitialized(true);
-  };
+  }, []);
 
   const discardChanges = useCallback(async() => {
     const { pageId } = pageContainer.state;
@@ -207,15 +207,15 @@ const PageEditorByHackmd = (props) => {
     }
   }, [editorContainer, getHackmdUri, pageContainer.state.markdown, pageContainer.state.pageId]);
 
-  const penpalErrorOccuredHandler = (error) => {
+  const penpalErrorOccuredHandler = useCallback((error) => {
     pageContainer.showErrorToastr(error);
 
     setHasError(true);
     setErrorMessage(t('hackmd.fail_to_connect'));
     setErrorReason(error.toString());
-  };
+  }, [pageContainer, t]);
 
-  const renderPreInitContent = () => {
+  const renderPreInitContent = useCallback(() => {
     const hackmdUri = getHackmdUri();
     const {
       revisionId, revisionIdHackmdSynced, remoteRevisionId, pageId,
@@ -342,7 +342,7 @@ const PageEditorByHackmd = (props) => {
         {content}
       </div>
     );
-  };
+  }, [discardChanges, getHackmdUri, isInitializing, isResume, pageContainer.state, resumeToEdit, startToEdit, t]);
 
   if (editorMode == null) {
     return null;
