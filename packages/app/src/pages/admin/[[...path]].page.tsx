@@ -57,10 +57,10 @@ const UserManagement = dynamic(() => import('../../components/Admin/UserManageme
 const ManageExternalAccount = dynamic(() => import('../../components/Admin/ManageExternalAccount'), { ssr: false });
 const ElasticsearchManagement = dynamic(() => import('../../components/Admin/ElasticsearchManagement/ElasticsearchManagement'), { ssr: false });
 const UserGroupDetailPage = dynamic(() => import('../../components/Admin/UserGroupDetail/UserGroupDetailPage'), { ssr: false });
+const AdminLayout = dynamic(() => import('../../components/Layout/AdminLayout'), { ssr: false });
 // named export
 const UserGroupPage = dynamic(() => import('../../components/Admin/UserGroup/UserGroupPage').then(mod => mod.UserGroupPage), { ssr: false });
 const AuditLogManagement = dynamic(() => import('../../components/Admin/AuditLogManagement').then(mod => mod.AuditLogManagement), { ssr: false });
-const AdminLayout = dynamic(() => import('../../components/Layout/AdminLayout').then(mod => mod.AdminLayout), { ssr: false });
 
 const pluginUtils = new PluginUtils();
 

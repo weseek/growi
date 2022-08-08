@@ -23,7 +23,7 @@ type Props = {
 }
 
 
-export const AdminLayout = ({
+const AdminLayout = ({
   children, title, selectedNavOpt,
 }: Props): JSX.Element => {
 
@@ -54,3 +54,5 @@ export const AdminLayout = ({
     </RawLayout>
   );
 };
+
+export default AdminLayout;
