@@ -574,8 +574,14 @@ module.exports = (crowi) => {
       return res.apiv3Err(new ErrorV3(msg, code), 403);
     }
 
+    const pageOp = await crowi.pageOperationService.getRenameSubOperationByPageId(page._id);
+    if (pageOp == null) {
+      const msg = 'PageOperation document for Rename Sub operation not found.';
+      const code = 'document_not_found';
+      return res.apiv3Err(new ErrorV3(msg, code), 404);
+    }
+
     try {
-      const pageOp = await crowi.pageOperationService.getRenameSubOperationByPageId(page._id);
       await crowi.pageService.resumeRenameSubOperation(page, pageOp);
     }
     catch (err) {

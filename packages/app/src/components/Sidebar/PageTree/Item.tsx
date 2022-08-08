@@ -21,7 +21,7 @@ import { IPageForPageDuplicateModal } from '~/stores/modal';
 import { useSWRxPageChildren } from '~/stores/page-listing';
 import { usePageTreeDescCountMap } from '~/stores/ui';
 import loggerFactory from '~/utils/logger';
-
+import { shouldRecoverPagePaths } from '~/utils/page-operation';
 
 import ClosableTextInput, { AlertInfo, AlertType } from '../../Common/ClosableTextInput';
 import CountBadge from '../../Common/CountBadge';
@@ -411,7 +411,7 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
 
   // Rename process
   // Icon that draw attention from users for some actions
-  const shouldShowAttentionIcon = !!page.processData?.Rename?.isProcessable;
+  const shouldShowAttentionIcon = page.processData != null ? shouldRecoverPagePaths(page.processData) : false;
 
   return (
     <div
@@ -459,7 +459,7 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
                 </>
               )}
 
-              <Link href={`/${page._id}`}>
+              <Link href={`/${page._id}`} prefetch={false}>
                 <a className="grw-pagetree-title-anchor flex-grow-1">
                   <p className={`text-truncate m-auto ${page.isEmpty && 'grw-sidebar-text-muted'}`}>{nodePath.basename(page.path ?? '') || '/'}</p>
                 </a>

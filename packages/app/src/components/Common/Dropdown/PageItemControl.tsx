@@ -11,6 +11,7 @@ import {
 import { IPageOperationProcessData } from '~/interfaces/page-operation';
 import { useSWRxPageInfo } from '~/stores/page';
 import loggerFactory from '~/utils/logger';
+import { shouldRecoverPagePaths } from '~/utils/page-operation';
 
 const logger = loggerFactory('growi:cli:PageItemControl');
 
@@ -22,6 +23,7 @@ export const MenuItemType = {
   DELETE: 'delete',
   REVERT: 'revert',
   PATH_RECOVERY: 'pathRecovery',
+  SWITCH_CONTENT_WIDTH: 'switch_content_width',
 } as const;
 export type MenuItemType = typeof MenuItemType[keyof typeof MenuItemType];
 
@@ -41,6 +43,7 @@ type CommonProps = {
   onClickRevertMenuItem?: (pageId: string) => Promise<void> | void,
   onClickPathRecoveryMenuItem?: (pageId: string) => Promise<void> | void,
 
+  additionalMenuItemOnTopRenderer?: React.FunctionComponent<AdditionalMenuItemsRendererProps>,
   additionalMenuItemRenderer?: React.FunctionComponent<AdditionalMenuItemsRendererProps>,
   isInstantRename?: boolean,
   alignRight?: boolean,
@@ -57,12 +60,13 @@ const PageItemControlDropdownMenu = React.memo((props: DropdownMenuProps): JSX.E
   const { t } = useTranslation('');
 
   const {
-    pageId, isLoading,
-    pageInfo, isEnableActions, forceHideMenuItems, operationProcessData,
-    onClickBookmarkMenuItem, onClickRenameMenuItem, onClickDuplicateMenuItem, onClickDeleteMenuItem, onClickRevertMenuItem, onClickPathRecoveryMenuItem,
-    additionalMenuItemRenderer: AdditionalMenuItems, isInstantRename, alignRight,
+    pageId, isLoading, pageInfo, isEnableActions, forceHideMenuItems, operationProcessData,
+    onClickBookmarkMenuItem, onClickRenameMenuItem, onClickDuplicateMenuItem, onClickDeleteMenuItem,
+    onClickRevertMenuItem, onClickPathRecoveryMenuItem,
+    additionalMenuItemOnTopRenderer: AdditionalMenuItemsOnTop,
+    additionalMenuItemRenderer: AdditionalMenuItems,
+    isInstantRename, alignRight,
   } = props;
-
 
   // eslint-disable-next-line react-hooks/rules-of-hooks
   const bookmarkItemClickedHandler = useCallback(async() => {
@@ -136,7 +140,7 @@ const PageItemControlDropdownMenu = React.memo((props: DropdownMenuProps): JSX.E
 
     // PathRecovery
     // Todo: It is wanted to find a better way to pass operationProcessData to PageItemControl
-    const shouldShowPathRecoveryButton = operationProcessData?.Rename != null ? operationProcessData?.Rename.isProcessable : false;
+    const shouldShowPathRecoveryButton = operationProcessData != null ? shouldRecoverPagePaths(operationProcessData) : false;
 
     contents = (
       <>
@@ -148,8 +152,15 @@ const PageItemControlDropdownMenu = React.memo((props: DropdownMenuProps): JSX.E
           </DropdownItem>
         ) }
 
+        { AdditionalMenuItemsOnTop && (
+          <>
+            <AdditionalMenuItemsOnTop pageInfo={pageInfo} />
+            <DropdownItem divider />
+          </>
+        ) }
+
         {/* Bookmark */}
-        { !forceHideMenuItems?.includes(MenuItemType.BOOKMARK) && isEnableActions && !pageInfo.isEmpty && isIPageInfoForOperation(pageInfo) && (
+        { !forceHideMenuItems?.includes(MenuItemType.BOOKMARK) && isEnableActions && isIPageInfoForOperation(pageInfo) && (
           <DropdownItem
             onClick={bookmarkItemClickedHandler}
             className="grw-page-control-dropdown-item"
@@ -253,9 +264,8 @@ type PageItemControlSubstanceProps = CommonProps & {
 export const PageItemControlSubstance = (props: PageItemControlSubstanceProps): JSX.Element => {
 
   const {
-    pageId, pageInfo: presetPageInfo, fetchOnInit,
-    children,
-    onClickBookmarkMenuItem, onClickRenameMenuItem, onClickDuplicateMenuItem, onClickDeleteMenuItem, onClickPathRecoveryMenuItem,
+    pageId, pageInfo: presetPageInfo, fetchOnInit, children, onClickBookmarkMenuItem, onClickRenameMenuItem,
+    onClickDuplicateMenuItem, onClickDeleteMenuItem, onClickPathRecoveryMenuItem,
   } = props;
 
   const [isOpen, setIsOpen] = useState(false);

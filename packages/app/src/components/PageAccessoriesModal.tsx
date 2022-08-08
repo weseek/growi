@@ -21,6 +21,7 @@ import PageHistory from './PageHistory';
 import ShareLink from './ShareLink/ShareLink';
 import { withUnstatedContainers } from './UnstatedUtils';
 
+import styles from './PageAccessoriesModal.module.scss';
 
 type Props = {
   appContainer: AppContainer,
@@ -107,7 +108,7 @@ const PageAccessoriesModal = (props: Props): JSX.Element => {
       isOpen={isOpened}
       toggle={close}
       data-testid="page-accessories-modal"
-      className={`grw-page-accessories-modal ${isWindowExpanded ? 'grw-modal-expanded' : ''} `}
+      className={`grw-page-accessories-modal ${styles['grw-page-accessories-modal']} ${isWindowExpanded ? 'grw-modal-expanded' : ''} `}
     >
       <ModalHeader className="p-0" toggle={close} close={buttons}>
         <CustomNavTab

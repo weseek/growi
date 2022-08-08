@@ -4,7 +4,7 @@ import { useTranslation } from 'next-i18next';
 
 import AppContainer from '~/client/services/AppContainer';
 import { toastSuccess, toastError } from '~/client/util/apiNotification';
-import { localeMetadatas } from '~/client/util/i18n';
+// import { localeMetadatas } from '~/client/util/i18n';
 import { usePersonalSettings } from '~/stores/personal-settings';
 
 import { withUnstatedContainers } from '../UnstatedUtils';
@@ -113,6 +113,7 @@ const BasicInfoSettings = (props: Props) => {
       <div className="form-group row">
         <label className="text-left text-md-right col-md-3 col-form-label">{t('Language')}</label>
         <div className="col-md-6">
+          {/*
           {
             localeMetadatas.map(meta => (
               <div key={meta.id} className="custom-control custom-radio custom-control-inline">
@@ -128,6 +129,7 @@ const BasicInfoSettings = (props: Props) => {
               </div>
             ))
           }
+          */}
         </div>
       </div>
       <div className="form-group row">

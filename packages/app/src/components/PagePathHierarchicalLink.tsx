@@ -31,7 +31,7 @@ const PagePathHierarchicalLink = memo((props: PagePathHierarchicalLinkProps): JS
       ? (
         <>
           <span className="path-segment">
-            <Link href="/trash">
+            <Link href="/trash" prefetch={false}>
               <a ><i className="icon-trash"></i></a>
             </Link>
           </span>
@@ -41,7 +41,7 @@ const PagePathHierarchicalLink = memo((props: PagePathHierarchicalLinkProps): JS
       : (
         <>
           <span className="path-segment">
-            <Link href="/">
+            <Link href="/" prefetch={false}>
               <a >
                 <i className="icon-home"></i>
                 <span className="separator">/</span>
@@ -82,7 +82,7 @@ const PagePathHierarchicalLink = memo((props: PagePathHierarchicalLinkProps): JS
         <span className="separator">/</span>
       ) }
 
-      <Link href={href}>
+      <Link href={href} prefetch={false}>
         {
           shouldDangerouslySetInnerHTML
             // eslint-disable-next-line react/no-danger

@@ -1,4 +1,4 @@
-.grw-page-accessories-modal {
+.grw-page-accessories-modal :global {
   .modal-header {
     button.close {
       margin: auto 0rem auto auto;
@@ -15,10 +15,4 @@
   ul.pagination {
     margin-bottom: 0rem;
   }
-}
-
-// revision-history
-// to stay d2h-code-side-line-number in the revision history diff area
-.d2h-wrapper {
-  position: relative;
 }
