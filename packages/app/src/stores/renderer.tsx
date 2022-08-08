@@ -1,14 +1,19 @@
 import { Key, SWRResponse } from 'swr';
 import useSWRImmutable from 'swr/immutable';
 
+import { RendererConfig } from '~/interfaces/services/renderer';
 import {
-  ReactMarkdownOptionsGenerator, RendererOptions,
+  RendererOptions,
   generatePreviewOptions, generateCommentPreviewOptions, generateOthersOptions,
   generateViewOptions, generateTocOptions,
 } from '~/services/renderer/renderer';
 
 
 import { useCurrentPageTocNode, useRendererConfig } from './context';
+
+interface ReactMarkdownOptionsGenerator {
+  (config: RendererConfig): RendererOptions
+}
 
 // The base hook with common processes
 const _useOptionsBase = (

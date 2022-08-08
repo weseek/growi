@@ -212,11 +212,8 @@ const logger = loggerFactory('growi:util:GrowiRenderer');
 
 export type RendererOptions = Partial<ReactMarkdownOptions>;
 
-export interface ReactMarkdownOptionsGenerator {
-  (config: RendererConfig): RendererOptions
-}
 
-const generateCommonOptions: ReactMarkdownOptionsGenerator = (config: RendererConfig): RendererOptions => {
+const generateCommonOptions = (config: RendererConfig): RendererOptions => {
   return {
     remarkPlugins: [gfm],
     rehypePlugins: [
@@ -334,7 +331,7 @@ export const generateTocOptions = (config: RendererConfig, tocNode: HtmlElementN
   return options;
 };
 
-export const generatePreviewOptions: ReactMarkdownOptionsGenerator = (config: RendererConfig): RendererOptions => {
+export const generatePreviewOptions = (config: RendererConfig): RendererOptions => {
   const options = generateCommonOptions(config);
 
   // // Add configurers for preview
@@ -350,7 +347,7 @@ export const generatePreviewOptions: ReactMarkdownOptionsGenerator = (config: Re
   return options;
 };
 
-export const generateCommentPreviewOptions: ReactMarkdownOptionsGenerator = (config: RendererConfig): RendererOptions => {
+export const generateCommentPreviewOptions = (config: RendererConfig): RendererOptions => {
   const options = generateCommonOptions(config);
   const { remarkPlugins } = options;
 
@@ -372,7 +369,7 @@ export const generateCommentPreviewOptions: ReactMarkdownOptionsGenerator = (con
   return options;
 };
 
-export const generateOthersOptions: ReactMarkdownOptionsGenerator = (config: RendererConfig): RendererOptions => {
+export const generateOthersOptions = (config: RendererConfig): RendererOptions => {
   const options = generateCommonOptions(config);
 
   // renderer.addConfigurers([
