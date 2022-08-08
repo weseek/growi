@@ -54,6 +54,7 @@ const NotificationSetting = dynamic(() => import('../../components/Admin/Notific
 const SlackIntegration = dynamic(() => import('../../components/Admin/SlackIntegration/SlackIntegration'), { ssr: false });
 const LegacySlackIntegration = dynamic(() => import('../../components/Admin/LegacySlackIntegration/LegacySlackIntegration'), { ssr: false });
 const UserManagement = dynamic(() => import('../../components/Admin/UserManagement'), { ssr: false });
+const ManageExternalAccount = dynamic(() => import('../../components/Admin/ManageExternalAccount'), { ssr: false });
 const UserGroupPage = dynamic(() => import('../../components/Admin/UserGroup/UserGroupPage'), { ssr: false });
 const ElasticsearchManagement = dynamic(() => import('../../components/Admin/ElasticsearchManagement/ElasticsearchManagement'), { ssr: false });
 // named export
@@ -84,8 +85,8 @@ const AdminMarkdownSettingsPage: NextPage<Props> = (props: Props) => {
 
   const { t } = useTranslation('admin');
   const router = useRouter();
-  const path = router.query.path || 'home';
-  const name = Array.isArray(path) ? path[0] : path;
+  const { path } = router.query;
+  const pagePathKeys: string[] = Array.isArray(path) ? path : ['home'];
 
   const adminPagesMap = {
     home: {
@@ -116,7 +117,6 @@ const AdminMarkdownSettingsPage: NextPage<Props> = (props: Props) => {
     importer: {
       title: useCustomTitle(props, t('Import Data')),
       component: <DataImportPageContents />,
-
     },
     export: {
       title: useCustomTitle(props, t('Export Archive Data')),
@@ -141,6 +141,10 @@ const AdminMarkdownSettingsPage: NextPage<Props> = (props: Props) => {
     users: {
       title: useCustomTitle(props, t('User_Management')),
       component: <UserManagement />,
+      'external-accounts': {
+        title: useCustomTitle(props, t('external_account_management')),
+        component: <ManageExternalAccount />,
+      },
     },
     'user-groups': {
       title: useCustomTitle(props, t('UserGroup Management')),
@@ -156,8 +160,14 @@ const AdminMarkdownSettingsPage: NextPage<Props> = (props: Props) => {
     },
   };
 
-  const content = adminPagesMap[name];
-  const title = content.title;
+  const getTargetPageToRender = (pagesMap, keys) => {
+    return keys.reduce((pagesMap, key) => {
+      return pagesMap[key];
+    }, pagesMap);
+  };
+
+  const targetPage: {title: string, component: JSX.Element} = getTargetPageToRender(adminPagesMap, pagePathKeys);
+  const title = targetPage.title;
 
   useCurrentUser(props.currentUser != null ? JSON.parse(props.currentUser) : null);
   useIsMailerSetup(props.isMailerSetup);
@@ -235,8 +245,8 @@ const AdminMarkdownSettingsPage: NextPage<Props> = (props: Props) => {
 
   return (
     <Provider inject={[...injectableContainers, ...adminSecurityContainers]}>
-      <AdminLayout title={title} selectedNavOpt={name}>
-        {content.component}
+      <AdminLayout title={title} selectedNavOpt={pagePathKeys[0]}>
+        {targetPage.component}
       </AdminLayout>
     </Provider>
   );
