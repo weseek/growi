@@ -14,14 +14,11 @@
   }
 }
 
-// TODO: Refacotr to Soft-coding
 .page-comment-commenteditorlazyrenderer-body-skelton :global {
   position: relative;
-  padding: 1.5rem 2rem;
+  padding: 2.258rem 2rem;
   margin-left: 4.5em;
-  //font-size: 1.09375rem;
   line-height: 1.5;
-  //border-radius: 8px;
   @include bs.media-breakpoint-down(xs) {
     margin-left: 3.5em;
   }
