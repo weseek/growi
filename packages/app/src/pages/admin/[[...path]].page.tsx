@@ -87,11 +87,11 @@ const AdminMarkdownSettingsPage: NextPage<Props> = (props: Props) => {
   const { path } = router.query;
   const pagePathKeys: string[] = Array.isArray(path) ? path : ['home'];
 
-  let userGroupId;
   /*
-    * Set userGroupId as a adminPagesMap key
-    * eg) In case that url is `/user-group-detail/62e8388a9a649bea5e703ef7`, userGroupId will be 62e8388a9a649bea5e703ef7
-    */
+  * Set userGroupId as a adminPagesMap key
+  * eg) In case that url is `/user-group-detail/62e8388a9a649bea5e703ef7`, userGroupId will be 62e8388a9a649bea5e703ef7
+  */
+  let userGroupId;
   const [firstPath, secondPath] = pagePathKeys;
   if (firstPath === 'user-group-detail') {
     userGroupId = secondPath;
