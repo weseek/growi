@@ -14,31 +14,7 @@
   }
 }
 
-// TODO: Refacotr Soft-coding
-.page-comment-comment-body-skelton :global {
-  position: relative;
-  height: 66px;
-  padding: 1em;
-  margin-left: 4.5em;
-  @include bs.media-breakpoint-down(xs) {
-    margin-left: 3.5em;
-  }
-}
-
-.page-comment-replycomments-body-skelton :global{
-  position: relative;
-  height: 66px;
-  padding: 1em;
-  margin-left: 4.5em;
-}
-
-.page-comment-button-skelton :global {
-  width: 70.0167px;
-  height: 26.3833px;
-  margin-top: 0.5em;
-  border: none;
-}
-
+// TODO: Refacotr to Soft-coding
 .page-comment-commenteditorlazyrenderer-body-skelton :global {
   position: relative;
   height: 72.25px;
