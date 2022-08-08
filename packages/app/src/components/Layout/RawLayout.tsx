@@ -8,7 +8,7 @@ import { Themes, useNextThemes } from '~/stores/use-next-themes';
 import { ThemeProvider } from '../Theme/utils/ThemeProvider';
 
 type Props = {
-  title: string,
+  title?: string,
   className?: string,
   children?: ReactNode,
 }

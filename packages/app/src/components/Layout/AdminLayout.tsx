@@ -8,9 +8,11 @@ import { RawLayout } from './RawLayout';
 
 import styles from './Admin.module.scss';
 
+const AdminNotFoundPage = dynamic(() => import('../../components/Admin/NotFoundPage').then(module => module.AdminNotFoundPage));
+
 
 type Props = {
-  title: string
+  title?: string
   /**
    * Set the current option of AdminNavigation
    * Expected it is in ["home", "app", "security", "markdown", "customize", "importer", "export",
@@ -42,7 +44,7 @@ const AdminLayout = ({
               <AdminNavigation selected={selectedNavOpt} />
             </div>
             <div className="col-lg-9">
-              {children}
+            {title != null ? children : <AdminNotFoundPage />}
             </div>
           </div>
         </div>
