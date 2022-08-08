@@ -8,7 +8,7 @@ import { RawLayout } from './RawLayout';
 
 import styles from './Admin.module.scss';
 
-const AdminNotFoundPage = dynamic(() => import('../Admin/NotFoundPage').then(module => module.AdminNotFoundPage));
+const AdminNotFoundPage = dynamic(() => import('../Admin/NotFoundPage').then(mod => mod.AdminNotFoundPage), { ssr: false });
 
 
 type Props = {

@@ -9,9 +9,9 @@ import { IUserGroup, IUserGroupHasId } from '~/interfaces/user';
 import { useIsAclEnabled } from '~/stores/context';
 import { useSWRxUserGroupList, useSWRxChildUserGroupList, useSWRxUserGroupRelationList } from '~/stores/user-group';
 
-const UserGroupDeleteModal = dynamic(() => import('./UserGroupDeleteModal').then(module => module.UserGroupDeleteModal));
-const UserGroupModal = dynamic(() => import('./UserGroupModal').then(module => module.UserGroupModal));
-const UserGroupTable = dynamic(() => import('./UserGroupTable').then(module => module.UserGroupTable));
+const UserGroupDeleteModal = dynamic(() => import('./UserGroupDeleteModal').then(mod => mod.UserGroupDeleteModal), { ssr: false });
+const UserGroupModal = dynamic(() => import('./UserGroupModal').then(mod => mod.UserGroupModal), { ssr: false });
+const UserGroupTable = dynamic(() => import('./UserGroupTable').then(mod => mod.UserGroupTable), { ssr: false });
 
 export const UserGroupPage: FC = () => {
   const { t } = useTranslation();
