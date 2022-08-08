@@ -17,7 +17,7 @@ import loggerFactory from '~/utils/logger';
 
 import { addClass } from './rehype-plugins/add-class';
 import { relativeLinks } from './rehype-plugins/relative-links';
-import { pukiwikiLinkLinker } from './remark-plugins/pukiwiki-like-linker';
+import { pukiwikiLikeLinker } from './remark-plugins/pukiwiki-like-linker';
 
 // import CsvToTable from './PreProcessor/CsvToTable';
 // import EasyGrid from './PreProcessor/EasyGrid';
@@ -218,7 +218,7 @@ export type RendererOptions = Partial<ReactMarkdownOptions>;
 
 const generateCommonOptions = (pagePath: string|undefined, config: RendererConfig): RendererOptions => {
   return {
-    remarkPlugins: [gfm, pukiwikiLinkLinker],
+    remarkPlugins: [gfm, pukiwikiLikeLinker],
     rehypePlugins: [
       slug,
       [relativeLinks, { pagePath }],
