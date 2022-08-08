@@ -17,6 +17,8 @@ import ExpandOrContractButton from './ExpandOrContractButton';
 import PageListIcon from './Icons/PageListIcon';
 import TimeLineIcon from './Icons/TimeLineIcon';
 
+import styles from './DescendantsPageListModal.module.scss';
+
 const DescendantsPageList = (props: DescendantsPageListProps): JSX.Element => {
   const DescendantsPageList = dynamic<DescendantsPageListProps>(() => import('./DescendantsPageList').then(mod => mod.DescendantsPageList), { ssr: false });
   return <DescendantsPageList {...props}/>;
@@ -92,7 +94,7 @@ export const DescendantsPageListModal = (): JSX.Element => {
       isOpen={isOpened}
       toggle={close}
       data-testid="page-accessories-modal"
-      className={`grw-page-accessories-modal ${isWindowExpanded ? 'grw-modal-expanded' : ''} `}
+      className={`grw-page-accessories-modal ${styles['grw-page-accessories-modal']} ${isWindowExpanded ? 'grw-modal-expanded' : ''} `}
     >
       <ModalHeader className="p-0" toggle={close} close={buttons}>
         <CustomNavTab

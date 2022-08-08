@@ -1,12 +1,12 @@
-@import '../variables';
-@import '../override-bootstrap-variables';
+@use '../../styles/variables' as *;
+@use '../../styles/bootstrap/variables' as *;
+@use '../../styles/theme/mixins/page-editor-mode-manager';
 
 $primary: #00b5b7;
 $themecolor: #16282d;
 $accentcolor: #00fff5;
 
-html[light],
-html[dark] {
+.theme :global {
   // Background colors
   $bgcolor-global: $themecolor;
   $bgcolor-inline-code: #1f1f22; //optional
@@ -83,13 +83,13 @@ html[dark] {
   // admin theme box
   $color-theme-color-box: lighten($primary, 20%);
 
-  @import 'apply-colors';
-  @import 'apply-colors-dark';
+  @import '../../styles/theme/apply-colors';
+  @import '../../styles/theme/apply-colors-dark';
 
   //Button
   .btn-group.grw-page-editor-mode-manager {
     .btn.btn-outline-primary {
-      @include btn-page-editor-mode-manager(lighten($primary, 10%), $primary, darken($primary, 10%), darken($primary, 20%));
+      @include page-editor-mode-manager.btn-page-editor-mode-manager(lighten($primary, 10%), $primary, darken($primary, 10%), darken($primary, 20%));
     }
   }
 

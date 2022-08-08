@@ -39,8 +39,8 @@ export const NextLink = ({
   }
 
   return (
-    <Link {...props} href={href}>
-      <a className={className}>{children}</a>
+    <Link {...props} href={href} prefetch={false}>
+      <a href={href} className={className}>{children}</a>
     </Link>
   );
 };

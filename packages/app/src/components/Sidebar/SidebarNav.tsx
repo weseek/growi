@@ -62,7 +62,7 @@ const SecondaryItem: FC<SecondaryItemProps> = memo((props: SecondaryItemProps) =
   const { iconName, href, isBlank } = props;
 
   return (
-    <Link href={href}>
+    <Link href={href} prefetch={false}>
       <a className="d-block btn btn-primary" target={`${isBlank ? '_blank' : ''}`}>
         <i className="material-icons">{iconName}</i>
       </a>

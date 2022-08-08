@@ -1,12 +1,12 @@
 import React from 'react';
 
 import i18next from 'i18next';
-
 import { useTranslation, i18n } from 'next-i18next';
 import PropTypes from 'prop-types';
 
-import { useCsrfToken } from '~/stores/context';
 import { i18n as i18nConfig } from '^/config/next-i18next.config';
+
+import { useCsrfToken } from '~/stores/context';
 
 class InstallerForm extends React.Component {
 
@@ -32,10 +32,6 @@ class InstallerForm extends React.Component {
     });
     axios.get('/_api/v3/check-username', { params: { username: event.target.value } })
       .then((res) => { return this.setState({ isValidUserName: res.data.valid }) });
-  }
-
-  changeLanguage(meta) {
-    i18next.changeLanguage(meta.id);
   }
 
   submitHandler() {
@@ -100,7 +96,7 @@ class InstallerForm extends React.Component {
                           data-testid={`dropdownLanguageMenu-${locale}`}
                           className="dropdown-item"
                           type="button"
-                          onClick={() => { this.changeLanguage(locale) }}
+                          onClick={() => { i18next.changeLanguage(locale) }}
                         >
                           {fixedT('meta.display_name')}
                         </button>
