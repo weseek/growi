@@ -10,6 +10,8 @@ import { useIsAllReplyShown } from '../../stores/context';
 
 import { Comment } from './Comment';
 
+import styles from './ReplyComments.module.scss';
+
 type ReplycommentsProps = {
   isReadOnly: boolean,
   replyList: ICommentHasIdList,
@@ -34,7 +36,7 @@ export const ReplyComments = (props: ReplycommentsProps): JSX.Element => {
 
   const renderReply = (reply: ICommentHasId) => {
     return (
-      <div key={reply._id} className="page-comment-reply ml-4 ml-sm-5 mr-3">
+      <div key={reply._id} className={`${styles['page-comment-reply']} ml-4 ml-sm-5 mr-3`}>
         <Comment
           rendererOptions={rendererOptions}
           deleteBtnClicked={deleteBtnClicked}
@@ -77,7 +79,7 @@ export const ReplyComments = (props: ReplycommentsProps): JSX.Element => {
   return (
     <>
       {areThereHiddenReplies && (
-        <div className="page-comments-hidden-replies">
+        <div className={`${styles['page-comments-hidden-replies']}`}>
           <Collapse isOpen={isOlderRepliesShown}>
             <div>{hiddenElements}</div>
           </Collapse>

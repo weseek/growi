@@ -1,0 +1,13 @@
+.page-comment-styles :global {
+  .page-comments {
+    h4 {
+      margin-bottom: 1em;
+    }
+  }
+
+  // reply button
+  .btn-comment-reply {
+    margin-top: 0.5em;
+    border: none;
+  }
+}

@@ -9,6 +9,8 @@ import {
 import { ICommentHasId } from '../../interfaces/comment';
 import Username from '../User/Username';
 
+import styles from './DeleteCommentModal.module.scss';
+
 
 type DeleteCommentModalProps = {
   isShown: boolean,
@@ -39,7 +41,7 @@ export const DeleteCommentModal = (props: DeleteCommentModalProps): JSX.Element 
   const commentBodyElement = <span style={{ whiteSpace: 'pre-wrap' }}>{commentBody}</span>;
 
   return (
-    <Modal isOpen={isShown} toggle={cancel} className="page-comment-delete-modal">
+    <Modal isOpen={isShown} toggle={cancel} className={`${styles['page-comment-delete-modal']}`}>
       <ModalHeader tag="h4" toggle={cancel} className="bg-danger text-light">
         <span>
           <i className="icon-fw icon-fire"></i>

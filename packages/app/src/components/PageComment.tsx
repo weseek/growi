@@ -20,6 +20,8 @@ import { CommentEditorLazyRenderer } from './PageComment/CommentEditorLazyRender
 import { DeleteCommentModal } from './PageComment/DeleteCommentModal';
 import { ReplyComments } from './PageComment/ReplyComments';
 
+import styles from './PageComment.module.scss';
+
 type Props = {
   pageId?: Nullable<string>
   isReadOnly: boolean,
@@ -157,7 +159,7 @@ export const PageComment: FC<Props> = memo((props:Props): JSX.Element => {
 
   return (
     <>
-      <div className="page-comments-row comment-list">
+      <div className={`${styles['page-comment-styles']} page-comments-row comment-list`}>
         <div className="container-lg">
           <div className="page-comments">
             <h2 className={commentTitleClasses}><i className="icon-fw icon-bubbles"></i>Comments</h2>
