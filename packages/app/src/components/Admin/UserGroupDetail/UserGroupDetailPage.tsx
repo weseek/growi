@@ -41,8 +41,7 @@ const UserGroupDetailPage = (props: Props) => {
   /*
    * State (from AdminUserGroupDetailContainer)
    */
-  const { data: userGroup } = useSWRxUserGroup(currentUserGroupId);
-  const [currentUserGroup, setUserGroup] = useState<IUserGroupHasId>();
+  const { data: currentUserGroup } = useSWRxUserGroup(currentUserGroupId);
   const [relatedPages, setRelatedPages] = useState<IPageHasId[]>([]); // For page list
   const [searchType, setSearchType] = useState<string>('partial');
   const [isAlsoMailSearched, setAlsoMailSearched] = useState<boolean>(false);
@@ -77,10 +76,6 @@ const UserGroupDetailPage = (props: Props) => {
   const { open: openUpdateParentConfirmModal } = useUpdateUserGroupConfirmModal();
 
 
-  useEffect(() => {
-    setUserGroup(userGroup);
-  }, [userGroup]);
-
   /*
    * Function
    */
@@ -112,13 +107,11 @@ const UserGroupDetailPage = (props: Props) => {
     });
     const { userGroup: updatedUserGroup } = res.data;
 
-    setUserGroup(updatedUserGroup);
-
     // mutate
     mutateAncestorUserGroups();
     mutateSelectableChildUserGroups();
     mutateSelectableParentUserGroups();
-  }, [setUserGroup, mutateAncestorUserGroups, mutateSelectableChildUserGroups, mutateSelectableParentUserGroups]);
+  }, [mutateAncestorUserGroups, mutateSelectableChildUserGroups, mutateSelectableParentUserGroups]);
 
   const onSubmitUpdateGroup = useCallback(
     async(targetGroup: IUserGroupHasId, userGroupData: Partial<IUserGroupHasId>, forceUpdateParents: boolean): Promise<void> => {
