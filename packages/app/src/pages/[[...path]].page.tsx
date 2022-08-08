@@ -34,6 +34,7 @@ import { PageModel, PageDocument } from '~/server/models/page';
 import { PageRedirectModel } from '~/server/models/page-redirect';
 import { UserUISettingsModel } from '~/server/models/user-ui-settings';
 import { useSWRxCurrentPage, useSWRxIsGrantNormalized, useSWRxPageInfo } from '~/stores/page';
+import { useRedirectFrom } from '~/stores/page-redirect';
 import {
   usePreferDrawerModeByUser, usePreferDrawerModeOnEditByUser, useSidebarCollapsed, useCurrentSidebarContents, useCurrentProductNavWidth, useSelectedGrant,
 } from '~/stores/ui';
@@ -187,12 +188,12 @@ const GrowiPage: NextPage<Props> = (props: Props) => {
   useCurrentProductNavWidth(props.userUISettings?.currentProductNavWidth);
 
   // page
-  useCurrentPagePath(props.currentPathname);
   useIsLatestRevision(props.isLatestRevision);
   // useOwnerOfCurrentPage(props.pageUser != null ? JSON.parse(props.pageUser) : null);
   useIsForbidden(props.isForbidden);
   useIsNotFound(props.isNotFound);
   useIsNotCreatable(props.IsNotCreatable);
+  useRedirectFrom(props.redirectFrom);
   // useIsTrashPage(_isTrashPage(props.currentPagePath));
   // useShared();
   // useShareLinkId(props.shareLinkId);

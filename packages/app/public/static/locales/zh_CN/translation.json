@@ -20,6 +20,7 @@
 	"Move/Rename": "移动/重命名",
 	"Redirected": "重定向",
 	"Unlinked": "Unlinked",
+  "unlink_redirection": "取消链接重定向",
   "Done": "Done",
   "Cancel": "取消",
 	"Create": "创建",
