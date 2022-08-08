@@ -37,7 +37,7 @@ export const ActivityTable : FC<Props> = (props: Props) => {
             <th scope="col">{t('admin:audit_log_management.date')}</th>
             <th scope="col">{t('admin:audit_log_management.action')}</th>
             <th scope="col">{t('admin:audit_log_management.ip')}</th>
-            <th scope="col">{t('admin:audit_log_management.url')} </th>
+            <th scope="col">{t('admin:audit_log_management.url')}</th>
           </tr>
         </thead>
         <tbody>
