@@ -1078,6 +1078,7 @@
       "no_grant_available": "選択可能な権限のリストが見つかりませんでした。まず親ページの権限を修正したのちに再試行してください。",
       "need_to_fix_grant": "正しく機能を使用するためにはこのページに紐づく権限を修正する必要があります。 <br> 下記の選択肢から選んで変更してください。",
       "grant_label": {
+        "public": "公開",
         "isForbidden": "権限の閲覧が許可されていません",
         "currentPageGrantLabel": "このページの権限: ",
         "parentPageGrantLabel": "親のページの権限: ",
