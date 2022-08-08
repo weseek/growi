@@ -14,19 +14,19 @@
     margin-top: -70px;
     pointer-events: none;
 
-    // ユーザー名
+    // user name
     .page-comment-creator {
       margin-top: -0.5em;
       margin-bottom: 0.5em;
       font-weight: bold;
     }
 
-    // ユーザーアイコン
+    // user icon
     .picture {
       @extend %picture;
     }
 
-    // コメントセクション
+    // comment section
     .page-comment-main {
       @extend %comment-section;
       @include bs.media-breakpoint-up(sm) {
@@ -53,7 +53,7 @@
       }
     }
 
-    // コメント本文
+    // comment body
     .page-comment-body {
       margin-bottom: 0.5em;
       word-wrap: break-word;
