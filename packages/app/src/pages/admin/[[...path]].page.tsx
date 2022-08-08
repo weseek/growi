@@ -55,13 +55,12 @@ const SlackIntegration = dynamic(() => import('../../components/Admin/SlackInteg
 const LegacySlackIntegration = dynamic(() => import('../../components/Admin/LegacySlackIntegration/LegacySlackIntegration'), { ssr: false });
 const UserManagement = dynamic(() => import('../../components/Admin/UserManagement'), { ssr: false });
 const ManageExternalAccount = dynamic(() => import('../../components/Admin/ManageExternalAccount'), { ssr: false });
-const UserGroupPage = dynamic(() => import('../../components/Admin/UserGroup/UserGroupPage'), { ssr: false });
 const ElasticsearchManagement = dynamic(() => import('../../components/Admin/ElasticsearchManagement/ElasticsearchManagement'), { ssr: false });
 // named export
+const UserGroupPage = dynamic(() => import('../../components/Admin/UserGroup/UserGroupPage').then(module => module.UserGroupPage));
+const UserGroupDetailPage = dynamic(() => import('../../components/Admin/UserGroupDetail/UserGroupDetailPage').then(module => module.UserGroupDetailPage));
 const AuditLogManagement = dynamic(() => import('../../components/Admin/AuditLogManagement').then(module => module.AuditLogManagement));
-
-
-const AdminLayout = dynamic(() => import('../../components/Layout/AdminLayout'), { ssr: false });
+const AdminLayout = dynamic(() => import('../../components/Layout/AdminLayout').then(module => module.AdminLayout));
 
 const pluginUtils = new PluginUtils();
 
@@ -87,6 +86,16 @@ const AdminMarkdownSettingsPage: NextPage<Props> = (props: Props) => {
   const router = useRouter();
   const { path } = router.query;
   const pagePathKeys: string[] = Array.isArray(path) ? path : ['home'];
+
+  let userGroupId;
+  /*
+    * Set userGroupId as a adminPagesMap key
+    * eg) In case that url is `/user-group-detail/62e8388a9a649bea5e703ef7`, userGroupId will be 62e8388a9a649bea5e703ef7
+    */
+  const [firstPath, secondPath] = pagePathKeys;
+  if (firstPath === 'user-group-detail') {
+    userGroupId = secondPath;
+  }
 
   const adminPagesMap = {
     home: {
@@ -149,6 +158,12 @@ const AdminMarkdownSettingsPage: NextPage<Props> = (props: Props) => {
     'user-groups': {
       title: useCustomTitle(props, t('UserGroup Management')),
       component: <UserGroupPage />,
+    },
+    'user-group-detail': {
+      [userGroupId]: {
+        title: t('UserGroup Management'),
+        component: <UserGroupDetailPage userGroupId={userGroupId} />,
+      },
     },
     search: {
       title: useCustomTitle(props, t('Full Text Search Management')),

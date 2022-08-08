@@ -6,7 +6,6 @@ import { useTranslation } from 'next-i18next';
 import PropTypes from 'prop-types';
 
 import AdminUserGroupDetailContainer from '~/client/services/AdminUserGroupDetailContainer';
-import AppContainer from '~/client/services/AppContainer';
 import { toastSuccess, toastError } from '~/client/util/apiNotification';
 import Xss from '~/services/xss';
 
@@ -114,7 +113,6 @@ class UserGroupUserTable extends React.Component {
 
 UserGroupUserTable.propTypes = {
   t: PropTypes.func.isRequired, // i18next
-  appContainer: PropTypes.instanceOf(AppContainer).isRequired,
   adminUserGroupDetailContainer: PropTypes.instanceOf(AdminUserGroupDetailContainer).isRequired,
 };
 
@@ -126,6 +124,6 @@ const UserGroupUserTableWrapperFC = (props) => {
 /**
  * Wrapper component for using unstated
  */
-const UserGroupUserTableWrapper = withUnstatedContainers(UserGroupUserTableWrapperFC, [AppContainer, AdminUserGroupDetailContainer]);
+const UserGroupUserTableWrapper = withUnstatedContainers(UserGroupUserTableWrapperFC, [AdminUserGroupDetailContainer]);
 
 export default UserGroupUserTableWrapper;

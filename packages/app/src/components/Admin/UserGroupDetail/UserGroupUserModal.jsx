@@ -1,13 +1,12 @@
 import React from 'react';
 
-import PropTypes from 'prop-types';
 import { useTranslation } from 'next-i18next';
+import PropTypes from 'prop-types';
 import {
   Modal, ModalHeader, ModalBody,
 } from 'reactstrap';
 
 import AdminUserGroupDetailContainer from '~/client/services/AdminUserGroupDetailContainer';
-import AppContainer from '~/client/services/AppContainer';
 
 import { withUnstatedContainers } from '../../UnstatedUtils';
 
@@ -81,7 +80,6 @@ class UserGroupUserModal extends React.Component {
 
 UserGroupUserModal.propTypes = {
   t: PropTypes.func.isRequired, // i18next
-  appContainer: PropTypes.instanceOf(AppContainer).isRequired,
   adminUserGroupDetailContainer: PropTypes.instanceOf(AdminUserGroupDetailContainer).isRequired,
 };
 
@@ -92,6 +90,6 @@ const UserGroupUserModalWrapperFC = (props) => {
 /**
  * Wrapper component for using unstated
  */
-const UserGroupUserModalWrapper = withUnstatedContainers(UserGroupUserModalWrapperFC, [AppContainer, AdminUserGroupDetailContainer]);
+const UserGroupUserModalWrapper = withUnstatedContainers(UserGroupUserModalWrapperFC, [AdminUserGroupDetailContainer]);
 
 export default UserGroupUserModalWrapper;
