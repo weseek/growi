@@ -310,8 +310,8 @@ const UserGroupDetailPage = (props: Props) => {
             ancestorUserGroups != null && ancestorUserGroups.length > 0 && (
               ancestorUserGroups.map((ancestorUserGroup: IUserGroupHasId) => (
                 // eslint-disable-next-line max-len
-                <li key={ancestorUserGroup._id} className={`breadcrumb-item ${ancestorUserGroup._id === currentUserGroup._id ? 'active' : ''}`} aria-current="page">
-                  { ancestorUserGroup._id === currentUserGroup._id ? (
+                <li key={ancestorUserGroup._id} className={`breadcrumb-item ${ancestorUserGroup._id === currentUserGroupId ? 'active' : ''}`} aria-current="page">
+                  { ancestorUserGroup._id === currentUserGroupId ? (
                     <>{ancestorUserGroup.name}</>
                   ) : (
                     <a href={`/admin/user-group-detail/${ancestorUserGroup._id}`}>{ancestorUserGroup.name}</a>
