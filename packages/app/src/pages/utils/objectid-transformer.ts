@@ -1,4 +1,5 @@
 // !!! Do NOT import 'mongoose' to reduce bundle size !!!
+import { objectIdUtils } from '@growi/core';
 import ObjectId from 'bson-objectid';
 import superjson from 'superjson';
 
@@ -9,13 +10,11 @@ export const registerTransformerForObjectId = (): void => {
         if (v == null) {
           return false;
         }
-        if (typeof v === 'string') {
-          return ObjectId.isValid(v);
+        // Only evaluate types for string and ObjectId
+        if (typeof v !== 'string' && typeof v.toHexString !== 'function') {
+          return false;
         }
-        if (typeof v.toHexString === 'function') {
-          return ObjectId.isValid(v.toHexString());
-        }
-        return false;
+        return objectIdUtils.isValidObjectId(v);
       },
       serialize: v => (typeof v === 'string' ? v : v.toHexString()),
       deserialize: v => v,

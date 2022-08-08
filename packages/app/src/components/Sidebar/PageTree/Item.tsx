@@ -459,7 +459,7 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
                 </>
               )}
 
-              <Link href={`/${page._id}`}>
+              <Link href={`/${page._id}`} prefetch={false}>
                 <a className="grw-pagetree-title-anchor flex-grow-1">
                   <p className={`text-truncate m-auto ${page.isEmpty && 'grw-sidebar-text-muted'}`}>{nodePath.basename(page.path ?? '') || '/'}</p>
                 </a>

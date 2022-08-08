@@ -1,7 +1,7 @@
 import { ReactMarkdownOptions } from 'react-markdown/lib/react-markdown';
 import katex from 'rehype-katex';
 import raw from 'rehype-raw';
-import sanitize, { defaultSchema } from 'rehype-sanitize';
+import sanitize, { defaultSchema as sanitizeDefaultSchema } from 'rehype-sanitize';
 import slug from 'rehype-slug';
 import toc, { HtmlElementNode } from 'rehype-toc';
 import breaks from 'remark-breaks';
@@ -223,10 +223,12 @@ const generateCommonOptions: ReactMarkdownOptionsGenerator = (config: RendererCo
       slug,
       raw,
       [sanitize, {
-        ...defaultSchema,
+        ...sanitizeDefaultSchema,
         attributes: {
-          ...defaultSchema.attributes,
-          '*': ['className', 'class'],
+          ...sanitizeDefaultSchema.attributes,
+          '*': sanitizeDefaultSchema.attributes != null
+            ? sanitizeDefaultSchema.attributes['*'].concat('class', 'className')
+            : ['class', 'className'],
         },
       }],
       [addClass, {
