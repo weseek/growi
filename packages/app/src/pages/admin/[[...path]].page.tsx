@@ -260,7 +260,7 @@ const AdminMarkdownSettingsPage: NextPage<Props> = (props: Props) => {
 
   return (
     <Provider inject={[...injectableContainers, ...adminSecurityContainers]}>
-      <AdminLayout title={title} selectedNavOpt={pagePathKeys[0]}>
+      <AdminLayout title={title} selectedNavOpt={firstPath}>
         {targetPage.component}
       </AdminLayout>
     </Provider>
