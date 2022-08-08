@@ -204,7 +204,7 @@ export const Page = (props) => {
 
     blinkSectionHeaderAtBoot();
     mutateBlinkedAtBoot(true);
-  }, [mutateBlinkedAtBoot]);
+  }, [isBlinkedAtBoot, mutateBlinkedAtBoot]);
 
   // // set handler to open DrawioModal
   // useEffect(() => {

@@ -29,6 +29,7 @@ const setupTranspileModules = () => {
     'decode-named-character-reference',
     'hastscript',
     'html-void-elements',
+    'is-absolute-url',
     'longest-streak',
     'property-information',
     'space-separated-tokens',
