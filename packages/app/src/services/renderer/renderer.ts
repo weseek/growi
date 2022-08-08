@@ -213,7 +213,7 @@ const logger = loggerFactory('growi:util:GrowiRenderer');
 export type RendererOptions = Partial<ReactMarkdownOptions>;
 
 
-const generateCommonOptions = (config: RendererConfig): RendererOptions => {
+const generateCommonOptions = (pagePath: string|undefined, config: RendererConfig): RendererOptions => {
   return {
     remarkPlugins: [gfm],
     rehypePlugins: [
@@ -240,11 +240,12 @@ const generateCommonOptions = (config: RendererConfig): RendererOptions => {
 };
 
 export const generateViewOptions = (
+    pagePath: string,
     config: RendererConfig,
     storeTocNode: (node: HtmlElementNode) => void,
 ): RendererOptions => {
 
-  const options = generateCommonOptions(config);
+  const options = generateCommonOptions(pagePath, config);
 
   const { remarkPlugins, rehypePlugins, components } = options;
 
@@ -309,7 +310,7 @@ export const generateViewOptions = (
 
 export const generateTocOptions = (config: RendererConfig, tocNode: HtmlElementNode | undefined): RendererOptions => {
 
-  const options = generateCommonOptions(config);
+  const options = generateCommonOptions(undefined, config);
 
   const { remarkPlugins, rehypePlugins } = options;
 
@@ -332,7 +333,7 @@ export const generateTocOptions = (config: RendererConfig, tocNode: HtmlElementN
 };
 
 export const generatePreviewOptions = (config: RendererConfig): RendererOptions => {
-  const options = generateCommonOptions(config);
+  const options = generateCommonOptions(undefined, config);
 
   // // Add configurers for preview
   // renderer.addConfigurers([
@@ -348,7 +349,7 @@ export const generatePreviewOptions = (config: RendererConfig): RendererOptions 
 };
 
 export const generateCommentPreviewOptions = (config: RendererConfig): RendererOptions => {
-  const options = generateCommonOptions(config);
+  const options = generateCommonOptions(undefined, config);
   const { remarkPlugins } = options;
 
   // add remark plugins
@@ -370,7 +371,7 @@ export const generateCommentPreviewOptions = (config: RendererConfig): RendererO
 };
 
 export const generateOthersOptions = (config: RendererConfig): RendererOptions => {
-  const options = generateCommonOptions(config);
+  const options = generateCommonOptions(undefined, config);
 
   // renderer.addConfigurers([
   //   new TableConfigurer(),
