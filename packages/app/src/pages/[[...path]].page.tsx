@@ -18,7 +18,7 @@ import { useRouter } from 'next/router';
 import superjson from 'superjson';
 
 import { PageAlerts } from '~/components/PageAlert/PageAlerts';
-import { TrashPageList } from '~/components/_TrashPageList';
+import { TrashPageList } from '~/components/TrashPageList';
 import { PageComment } from '~/components/PageComment';
 // import { useTranslation } from '~/i18n';
 // import CommentEditorLazyRenderer from '~/components/PageComment/CommentEditorLazyRenderer';
