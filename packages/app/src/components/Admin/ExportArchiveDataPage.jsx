@@ -32,6 +32,8 @@ const ExportArchiveDataPage = (props) => {
 
   const { t } = useTranslation();
 
+  const socket = props.adminSocketIoContainer.getSocket();
+
   const fetchData = useCallback(async() => {
     const [{ collections }, { status }] = await Promise.all([
       apiGet('/v3/mongo/collections', {}),
@@ -47,25 +49,15 @@ const ExportArchiveDataPage = (props) => {
     setProgressList(progressList);
   }, []);
 
-  const cleanupWebsocketEventHandler = useCallback(() => {
-    const socket = props.adminSocketIoContainer.getSocket();
-    if (socket == null) {
-      return;
-    }
+  const cleanupWebsocketEventHandler = useCallback((socket) => {
     socket.off('admin:onProgressForExport');
 
     socket.off('admin:onStartZippingForExport');
 
     socket.off('admin:onTerminateForExport');
-  }, [props.adminSocketIoContainer]);
+  }, []);
 
-  const setupWebsocketEventHandler = useCallback(() => {
-
-    const socket = props.adminSocketIoContainer.getSocket();
-    if (socket == null) {
-      return;
-    }
-    // websocket event
+  const setupWebsocketEventHandler = useCallback((socket) => {
     socket.on('admin:onProgressForExport', ({ progressList }) => {
       setIsExporting(true);
       setProgressList(progressList);
@@ -94,7 +86,7 @@ const ExportArchiveDataPage = (props) => {
         extendedTimeOut: '150',
       });
     });
-  }, [props.adminSocketIoContainer]);
+  }, []);
 
   const onZipFileStatRemove = useCallback(async(fileName) => {
     try {
@@ -183,11 +175,14 @@ const ExportArchiveDataPage = (props) => {
   }, [fetchData]);
 
   useEffect(() => {
-    setupWebsocketEventHandler();
+    if (socket === null) {
+      return;
+    }
+    setupWebsocketEventHandler(socket);
     return () => {
-      cleanupWebsocketEventHandler();
+      cleanupWebsocketEventHandler(socket);
     };
-  }, [setupWebsocketEventHandler, cleanupWebsocketEventHandler]);
+  }, [setupWebsocketEventHandler, cleanupWebsocketEventHandler, socket]);
 
   const showExportingData = (isExported || isExporting) && (progressList != null);
 
