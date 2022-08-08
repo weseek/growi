@@ -1,9 +1,7 @@
 // See: https://github.com/martypdx/rehype-add-classes for the original implementation.
 // Re-implemeted in TypeScript.
-
 import { selectAll, HastNode, Element } from 'hast-util-select';
-
-import { RehypePlugin } from '~/interfaces/services/renderer';
+import { Plugin } from 'unified';
 
 export type SelectorName = string; // e.g. 'h1'
 export type ClassName = string; // e.g. 'header'
@@ -32,8 +30,8 @@ const adder = (entry: AdditionsEntry) => {
   return (node: HastNode) => selectAll(selectorName, node).forEach(writer);
 };
 
-export const addClass: RehypePlugin = (additions) => {
+export const addClass: Plugin<[Additions]> = (additions) => {
   const adders = Object.entries(additions).map(adder);
 
-  return node => adders.forEach(a => a(node));
+  return node => adders.forEach(a => a(node as HastNode));
 };
