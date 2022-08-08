@@ -52,7 +52,7 @@ import DisplaySwitcher from '../components/Page/DisplaySwitcher';
 import {
   useCurrentUser, useCurrentPagePath,
   useIsLatestRevision,
-  useIsForbidden, useIsNotFound, useIsTrashPage, useIsSharedUser,
+  useIsForbidden, useIsNotFound, useIsTrashTopPage, useIsTrashPage, useIsSharedUser,
   useIsEnabledStaleNotification, useIsIdenticalPath,
   useIsSearchServiceConfigured, useIsSearchServiceReachable, useDisableLinkSharing,
   useHackmdUri,
@@ -70,7 +70,7 @@ import {
 const logger = loggerFactory('growi:pages:all');
 
 const {
-  isPermalink: _isPermalink, isUsersHomePage, isTrashPage: _isTrashPage, isUserPage, isCreatablePage,
+  isPermalink: _isPermalink, isUsersHomePage, isTrashTopPage: _isTrashTopPage, isTrashPage: _isTrashPage, isUserPage, isCreatablePage,
 } = pagePathUtils;
 const { removeHeadingSlash } = pathUtils;
 
@@ -127,6 +127,7 @@ type Props = CommonProps & {
   isForbidden: boolean,
   isNotFound: boolean,
   IsNotCreatable: boolean,
+  isTrashTopPage: boolean,
   // isAbleToDeleteCompletely: boolean,
 
   isSearchServiceConfigured: boolean,
@@ -235,6 +236,7 @@ const GrowiPage: NextPage<Props> = (props: Props) => {
   useCurrentPageId(pageId);
   useSWRxCurrentPage(undefined, pageWithMeta?.data); // store initial data
   useSWRxPageInfo(pageId, undefined, pageWithMeta?.meta); // store initial data
+  useIsTrashTopPage(props.isTrashTopPage)
   useIsTrashPage(_isTrashPage(pageWithMeta?.data.path ?? ''));
   useIsUserPage(isUserPage(pageWithMeta?.data.path ?? ''));
   useIsNotCreatable(props.isForbidden || !isCreatablePage(pageWithMeta?.data.path ?? '')); // TODO: need to include props.isIdentical
@@ -360,6 +362,8 @@ async function injectPageData(context: GetServerSidePropsContext, props: Props):
   const { pageService } = crowi;
 
   let currentPathname = props.currentPathname;
+
+  props.isTrashTopPage = _isTrashTopPage(props.currentPathname);
 
   const pageId = getPageIdFromPathname(currentPathname);
   const isPermalink = _isPermalink(currentPathname);

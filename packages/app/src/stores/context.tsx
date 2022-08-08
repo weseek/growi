@@ -84,6 +84,10 @@ export const useIsUserPage = (initialData?: boolean): SWRResponse<boolean, Error
   return useStaticSWR<boolean, Error>('isUserPage', initialData, { fallbackData: false });
 };
 
+export const useIsTrashTopPage = (initialData?: boolean): SWRResponse<boolean, Error> => {
+  return useStaticSWR<boolean, Error>('isTrashTopPage', initialData, { fallbackData: false });
+};
+
 export const useIsTrashPage = (initialData?: boolean): SWRResponse<boolean, Error> => {
   return useStaticSWR<boolean, Error>('isTrashPage', initialData, { fallbackData: false });
 };
