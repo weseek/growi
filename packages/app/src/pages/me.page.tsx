@@ -8,6 +8,7 @@ import {
   NextPage, GetServerSideProps, GetServerSidePropsContext,
 } from 'next';
 import { useTranslation } from 'next-i18next';
+import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import dynamic from 'next/dynamic';
 import { useRouter } from 'next/router';
 
@@ -131,10 +132,10 @@ async function injectServerConfigurations(context: GetServerSidePropsContext, pr
 //  * @param props
 //  * @param namespacesRequired
 //  */
-// async function injectNextI18NextConfigurations(context: GetServerSidePropsContext, props: Props, namespacesRequired?: string[] | undefined): Promise<void> {
-//   const nextI18NextConfig = await getNextI18NextConfig(serverSideTranslations, context, namespacesRequired);
-//   props._nextI18Next = nextI18NextConfig._nextI18Next;
-// }
+async function injectNextI18NextConfigurations(context: GetServerSidePropsContext, props: Props, namespacesRequired?: string[] | undefined): Promise<void> {
+  const nextI18NextConfig = await getNextI18NextConfig(serverSideTranslations, context, namespacesRequired);
+  props._nextI18Next = nextI18NextConfig._nextI18Next;
+}
 
 export const getServerSideProps: GetServerSideProps = async(context: GetServerSidePropsContext) => {
   const req = context.req as CrowiRequest<IUserHasId & any>;
@@ -157,6 +158,7 @@ export const getServerSideProps: GetServerSideProps = async(context: GetServerSi
 
   await injectUserUISettings(context, props);
   await injectServerConfigurations(context, props);
+  await injectNextI18NextConfigurations(context, props, ['translation']);
 
   return {
     props,
