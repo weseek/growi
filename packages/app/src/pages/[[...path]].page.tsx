@@ -191,7 +191,6 @@ const GrowiPage: NextPage<Props> = (props: Props) => {
   useCurrentProductNavWidth(props.userUISettings?.currentProductNavWidth);
 
   // page
-  useCurrentPagePath(props.currentPathname);
   useIsLatestRevision(props.isLatestRevision);
   // useOwnerOfCurrentPage(props.pageUser != null ? JSON.parse(props.pageUser) : null);
   useIsForbidden(props.isForbidden);
