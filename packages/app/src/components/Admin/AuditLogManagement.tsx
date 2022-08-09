@@ -215,11 +215,11 @@ export const AuditLogManagement: FC = () => {
             size="sm"
           />
 
-          <div className="text-center">
+          <div className="text-center admin-audit-log">
             <span>Go to: </span>
             <input
               type="text"
-              className="grw-jump-page-input"
+              className="jump-page-input"
               onChange={jumpPageInputChangeHandler}
             />
           </div>
