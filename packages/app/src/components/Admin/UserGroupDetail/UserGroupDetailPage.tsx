@@ -21,15 +21,16 @@ import {
   useSWRxSelectableParentUserGroups, useSWRxSelectableChildUserGroups, useSWRxAncestorUserGroups,
 } from '~/stores/user-group';
 
+// import UserGroupPageList from './UserGroupPageList';
+// import UserGroupUserModal from './UserGroupUserModal';
+const UserGroupUserTable = dynamic(() => import('./UserGroupUserTable'), { ssr: false });
+
 const UserGroupDeleteModal = dynamic(() => import('../UserGroup/UserGroupDeleteModal').then(mod => mod.UserGroupDeleteModal), { ssr: false });
 const UserGroupDropdown = dynamic(() => import('../UserGroup/UserGroupDropdown').then(mod => mod.UserGroupDropdown), { ssr: false });
 const UserGroupForm = dynamic(() => import('../UserGroup/UserGroupForm').then(mod => mod.UserGroupForm), { ssr: false });
 const UserGroupModal = dynamic(() => import('../UserGroup/UserGroupModal').then(mod => mod.UserGroupModal), { ssr: false });
 const UserGroupTable = dynamic(() => import('../UserGroup/UserGroupTable').then(mod => mod.UserGroupTable), { ssr: false });
 const UpdateParentConfirmModal = dynamic(() => import('./UpdateParentConfirmModal').then(mod => mod.UpdateParentConfirmModal), { ssr: false });
-// import UserGroupPageList from './UserGroupPageList';
-// import UserGroupUserModal from './UserGroupUserModal';
-// import UserGroupUserTable from './UserGroupUserTable';
 
 
 type Props = {
@@ -341,9 +342,7 @@ const UserGroupDetailPage = (props: Props) => {
         />
       </div>
       <h2 className="admin-setting-header mt-4">{t('admin:user_group_management.user_list')}</h2>
-      {/* These compoents will be successfully shown in https://redmine.weseek.co.jp/issues/102159 */}
-      {/* <UserGroupUserTable /> */}
-      UserGroupUserTable
+      <UserGroupUserTable />
       {/* <UserGroupUserModal /> */}
       UserGroupUserModal
 

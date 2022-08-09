@@ -8,6 +8,7 @@ import PropTypes from 'prop-types';
 import AdminUserGroupDetailContainer from '~/client/services/AdminUserGroupDetailContainer';
 import { toastSuccess, toastError } from '~/client/util/apiNotification';
 import Xss from '~/services/xss';
+import { useSWRxMyUserGroupRelations } from '~/stores/user-group';
 
 import { withUnstatedContainers } from '../../UnstatedUtils';
 
@@ -33,7 +34,7 @@ class UserGroupUserTable extends React.Component {
   }
 
   render() {
-    const { t, adminUserGroupDetailContainer } = this.props;
+    const { t, adminUserGroupDetailContainer, userGroupRelations } = this.props;
 
     return (
       <table className="table table-bordered table-user-list">
@@ -50,7 +51,7 @@ class UserGroupUserTable extends React.Component {
           </tr>
         </thead>
         <tbody>
-          {adminUserGroupDetailContainer.state.userGroupRelations.map((relation) => {
+          {userGroupRelations != null && userGroupRelations.map((relation) => {
             const { relatedUser } = relation;
 
             return (
@@ -114,11 +115,14 @@ class UserGroupUserTable extends React.Component {
 UserGroupUserTable.propTypes = {
   t: PropTypes.func.isRequired, // i18next
   adminUserGroupDetailContainer: PropTypes.instanceOf(AdminUserGroupDetailContainer).isRequired,
+  userGroupRelations: PropTypes.object,
 };
 
 const UserGroupUserTableWrapperFC = (props) => {
   const { t } = useTranslation();
-  return <UserGroupUserTable t={t} {...props} />;
+  const { data: myUserGroupRelations } = useSWRxMyUserGroupRelations();
+
+  return <UserGroupUserTable t={t} userGroupRelations={myUserGroupRelations} {...props} />;
 };
 
 /**
