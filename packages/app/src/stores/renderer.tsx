@@ -9,7 +9,9 @@ import {
 } from '~/services/renderer/renderer';
 
 
-import { useCurrentPagePath, useCurrentPageTocNode, useRendererConfig } from './context';
+import {
+  useCurrentPageId, useCurrentPagePath, useCurrentPageTocNode, useRendererConfig,
+} from './context';
 
 interface ReactMarkdownOptionsGenerator {
   (config: RendererConfig): RendererOptions
@@ -55,11 +57,20 @@ export const useViewOptions = (): SWRResponse<RendererOptions, Error> => {
 };
 
 export const useTocOptions = (): SWRResponse<RendererOptions, Error> => {
-  const key = 'tocOptions';
-
+  const { data: pageId } = useCurrentPageId();
+  const { data: rendererConfig } = useRendererConfig();
   const { data: tocNode } = useCurrentPageTocNode();
 
-  return _useOptionsBase(key, config => generateTocOptions(config, tocNode));
+  const isAllDataValid = rendererConfig != null;
+
+  const key = isAllDataValid
+    ? ['tocOptions', pageId, rendererConfig]
+    : null;
+
+  return useSWRImmutable<RendererOptions, Error>(
+    key,
+    (rendererId, pageId, rendererConfig) => generateTocOptions(rendererConfig, tocNode),
+  );
 };
 
 export const usePreviewOptions = (): SWRResponse<RendererOptions, Error> => {
