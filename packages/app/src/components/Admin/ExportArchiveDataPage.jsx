@@ -7,8 +7,8 @@ import { useTranslation } from 'react-i18next';
 import * as toastr from 'toastr';
 
 import AdminSocketIoContainer from '~/client/services/AdminSocketIoContainer';
-import AppContainer from '~/client/services/AppContainer';
 import { apiDelete, apiGet } from '~/client/util/apiv1-client';
+// import { useGlobalAdminSocket } from '~/stores/websocket';
 
 import { withUnstatedContainers } from '../UnstatedUtils';
 
@@ -31,6 +31,8 @@ const ExportArchiveDataPage = (props) => {
   const [isExported, setIsExported] = useState(false);
 
   const { t } = useTranslation();
+
+  // const socket = useGlobalAdminSocket();
 
   const socket = props.adminSocketIoContainer.getSocket();
 
@@ -222,9 +224,8 @@ const ExportArchiveDataPage = (props) => {
 };
 
 ExportArchiveDataPage.propTypes = {
-  appContainer: PropTypes.instanceOf(AppContainer).isRequired,
   adminSocketIoContainer: PropTypes.instanceOf(AdminSocketIoContainer).isRequired,
 };
 
-const ExportArchiveDataPageWrapper = withUnstatedContainers(ExportArchiveDataPage, [AppContainer, AdminSocketIoContainer]);
+const ExportArchiveDataPageWrapper = withUnstatedContainers(ExportArchiveDataPage, [AdminSocketIoContainer]);
 export default ExportArchiveDataPageWrapper;
