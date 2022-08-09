@@ -53,8 +53,8 @@ export const RawLayout = ({ children, title, className }: Props): JSX.Element =>
       </Head>
       <ThemeProvider theme={growiTheme}>
         <div className={classNames.join(' ')} data-color-scheme={colorScheme}>
-          {backgroundImageSrc != null && <div className="bg-image-wrapper">
-            <Image className='bg-image' alt='background-image' src={backgroundImageSrc} layout='fill' quality="100" />
+          {backgroundImageSrc != null && <div className="grw-bg-image-wrapper">
+            <Image className='grw-bg-image' alt='background-image' src={backgroundImageSrc} layout='fill' quality="100" />
           </div>}
           {children}
         </div>
