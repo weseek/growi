@@ -20,6 +20,11 @@ module.exports = {
 
       preset: 'ts-jest/presets/js-with-ts',
 
+      // transform ESM to CJS
+      transformIgnorePatterns: [
+        '/node_modules/(?!remark-gfm)/',
+      ],
+
       rootDir: '.',
       roots: ['<rootDir>'],
       testMatch: ['<rootDir>/test/unit/**/*.test.ts', '<rootDir>/test/unit/**/*.test.js'],
@@ -29,6 +34,7 @@ module.exports = {
       // Automatically clear mock calls and instances between every test
       clearMocks: true,
       moduleNameMapper: MODULE_NAME_MAPPING,
+
     },
     {
       displayName: 'server',
