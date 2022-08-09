@@ -31,15 +31,15 @@ export default class AdminUserGroupDetailContainer extends Container {
 
     this.appContainer = appContainer;
 
-    const rootElem = document.getElementById('admin-user-group-detail');
+    // const rootElem = document.getElementById('admin-user-group-detail');
 
-    if (rootElem == null) {
-      return;
-    }
+    // if (rootElem == null) {
+    //   return;
+    // }
 
     this.state = {
       // TODO: [SPA] get userGroup from props
-      userGroup: JSON.parse(rootElem.getAttribute('data-user-group')),
+      // userGroup: JSON.parse(rootElem.getAttribute('data-user-group')),
       userGroupRelations: [], // For user list
 
       // TODO 85062: /_api/v3/user-groups/children?include_grand_child=boolean

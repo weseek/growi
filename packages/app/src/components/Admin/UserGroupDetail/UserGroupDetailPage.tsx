@@ -22,7 +22,7 @@ import {
 } from '~/stores/user-group';
 
 // import UserGroupPageList from './UserGroupPageList';
-// import UserGroupUserModal from './UserGroupUserModal';
+const UserGroupUserModal = dynamic(() => import('./UserGroupUserModal'), { ssr: false });
 const UserGroupUserTable = dynamic(() => import('./UserGroupUserTable'), { ssr: false });
 
 const UserGroupDeleteModal = dynamic(() => import('../UserGroup/UserGroupDeleteModal').then(mod => mod.UserGroupDeleteModal), { ssr: false });
@@ -343,8 +343,7 @@ const UserGroupDetailPage = (props: Props) => {
       </div>
       <h2 className="admin-setting-header mt-4">{t('admin:user_group_management.user_list')}</h2>
       <UserGroupUserTable />
-      {/* <UserGroupUserModal /> */}
-      UserGroupUserModal
+      <UserGroupUserModal isOpen={true}/>
 
       <h2 className="admin-setting-header mt-4">{t('admin:user_group_management.child_group_list')}</h2>
       <UserGroupDropdown
