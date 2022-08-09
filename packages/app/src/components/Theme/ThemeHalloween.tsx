@@ -7,7 +7,7 @@ import styles from './ThemeHalloween.module.scss';
 export const getBackgroundImageSrc = (colorScheme: Themes): string => {
   switch (colorScheme) {
     default:
-      return '/images/themes/halloween/halloween-navbar.jpg';
+      return '/images/themes/halloween/halloween.jpg';
   }
 };
 
