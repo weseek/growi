@@ -5,40 +5,32 @@ import useSWR from 'swr';
 
 import { useTranslation } from 'react-i18next';
 
-import PageContainer from '~/client/services/PageContainer';
 import { toastSuccess, toastError } from '~/client/util/apiNotification';
 import { apiv3Delete, apiv3Get } from '~/client/util/apiv3-client';
 import { IResShareLinkList } from '~/interfaces/share-link';
-
-import { withUnstatedContainers } from '../UnstatedUtils';
+import { useCurrentPageId } from '~/stores/context';
 
 import ShareLinkForm from './ShareLinkForm';
 import ShareLinkList from './ShareLinkList';
 
-type Props = {
-  pageContainer: PageContainer;
-}
+const fetchShareLinks = async(endpoint, pageId): Promise<IResShareLinkList['shareLinksResult']> => {
+  const res = await apiv3Get(endpoint, { relatedPage: pageId });
+  return res.data.shareLinksResult;
+};
 
-const ShareLink = (props: Props): JSX.Element => {
+const ShareLink = (): JSX.Element => {
   const { t } = useTranslation();
-  // TODO: ureplace useCurrentPageId and remove pageContainer https://redmine.weseek.co.jp/issues/101565
-  const { pageContainer } = props;
-  const { pageId } = pageContainer.state;
+  const { data: currentPageId } = useCurrentPageId();
   const [isOpenShareLinkForm, setIsOpenShareLinkForm] = useState<boolean>(false);
 
-  const fetchShareLinks = useCallback(async(endpoint, pageId): Promise<IResShareLinkList['shareLinksResult']> => {
-    const res = await apiv3Get(endpoint, { relatedPage: pageId });
-    return res.data.shareLinksResult;
-  }, []);
-
-  const { data, isValidating, mutate } = useSWR('/share-links/', (endpoint => fetchShareLinks(endpoint, pageId)));
+  const { data, isValidating, mutate } = useSWR('/share-links/', (endpoint => fetchShareLinks(endpoint, currentPageId)));
 
   const toggleShareLinkFormHandler = useCallback(() => {
     setIsOpenShareLinkForm(prev => !prev);
     mutate();
   }, [mutate]);
 
-  const deleteAllLinksButtonHandler = useCallback(async() => {
+  const deleteAllLinksButtonHandler = useCallback(async(pageId) => {
     try {
       const res = await apiv3Delete('/share-links/', { relatedPage: pageId });
       const count = res.data.n;
@@ -48,7 +40,7 @@ const ShareLink = (props: Props): JSX.Element => {
     catch (err) {
       toastError(err);
     }
-  }, [mutate, pageId, t]);
+  }, [mutate, t]);
 
   const deleteLinkById = useCallback(async(shareLinkId) => {
     try {
@@ -66,7 +58,7 @@ const ShareLink = (props: Props): JSX.Element => {
     <div className="container p-0" data-testid="share-link-management">
       <h3 className="grw-modal-head d-flex pb-2">
         { t('share_links.share_link_list') }
-        <button className="btn btn-danger ml-auto " type="button" onClick={deleteAllLinksButtonHandler}>{t('delete_all')}</button>
+        <button className="btn btn-danger ml-auto " type="button" onClick={() => deleteAllLinksButtonHandler(currentPageId)}>{t('delete_all')}</button>
       </h3>
       <div>
         <ShareLinkList
@@ -86,6 +78,4 @@ const ShareLink = (props: Props): JSX.Element => {
   );
 };
 
-const ShareLinkWrapper = withUnstatedContainers(ShareLink, [PageContainer]);
-
-export default ShareLinkWrapper;
+export default ShareLink;
