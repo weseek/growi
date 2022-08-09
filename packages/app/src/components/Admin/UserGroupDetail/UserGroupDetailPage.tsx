@@ -343,7 +343,7 @@ const UserGroupDetailPage = (props: Props) => {
       </div>
       <h2 className="admin-setting-header mt-4">{t('admin:user_group_management.user_list')}</h2>
       <UserGroupUserTable />
-      <UserGroupUserModal isOpen={true}/>
+      <UserGroupUserModal />
 
       <h2 className="admin-setting-header mt-4">{t('admin:user_group_management.child_group_list')}</h2>
       <UserGroupDropdown
