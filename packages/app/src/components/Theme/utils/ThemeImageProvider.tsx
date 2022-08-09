@@ -9,7 +9,10 @@ import { getBackgroundImageSrc as getIslandBackgroundImageSrc } from '../ThemeIs
 import { getBackgroundImageSrc as getSpringBackgroundImageSrc } from '../ThemeSpring';
 import { getBackgroundImageSrc as getWoodBackgroundImageSrc } from '../ThemeWood';
 
-export const getBackgroundImageSrc = (theme: GrowiThemes, colorScheme: Themes): string | undefined => {
+export const getBackgroundImageSrc = (theme: GrowiThemes | undefined, colorScheme: Themes | undefined): string | undefined => {
+  if (theme == null || colorScheme == null) {
+    return undefined;
+  }
   switch (theme) {
     case GrowiThemes.ANTARCTIC:
       return getAntarcticBackgroundImageSrc(colorScheme);

@@ -30,16 +30,14 @@ export const RawLayout = ({ children, title, className }: Props): JSX.Element =>
 
   const [colorScheme, setColorScheme] = useState<Themes|undefined>(undefined);
   const [backgroundImageSrc, setBackgroundImageSrc] = useState<string | undefined>(undefined);
+
   // set colorScheme in CSR
   useEffect(() => {
     setColorScheme(resolvedTheme as Themes);
   }, [resolvedTheme]);
 
+  // set background image
   useEffect(() => {
-    if (growiTheme == null || colorScheme == null) {
-      setBackgroundImageSrc(undefined);
-      return;
-    }
     const imgSrc = getBackgroundImageSrc(growiTheme, colorScheme);
     setBackgroundImageSrc(imgSrc);
   }, [growiTheme, colorScheme]);
