@@ -1,10 +1,14 @@
-import React, { ReactNode, useEffect, useState } from 'react';
+import React, {
+  ReactNode, useCallback, useEffect, useState,
+} from 'react';
 
 import Head from 'next/head';
+import Image from 'next/image';
 
 import { useGrowiTheme } from '~/stores/context';
 import { Themes, useNextThemes } from '~/stores/use-next-themes';
 
+import { getBackgroundImageSrc } from '../Theme/utils/ThemeImageProvider';
 import { ThemeProvider } from '../Theme/utils/ThemeProvider';
 
 type Props = {
@@ -25,11 +29,20 @@ export const RawLayout = ({ children, title, className }: Props): JSX.Element =>
   const { resolvedTheme } = useNextThemes();
 
   const [colorScheme, setColorScheme] = useState<Themes|undefined>(undefined);
-
+  const [backgroundImageSrc, setBackgroundImageSrc] = useState<string | undefined>(undefined);
   // set colorScheme in CSR
   useEffect(() => {
     setColorScheme(resolvedTheme as Themes);
   }, [resolvedTheme]);
+
+  useEffect(() => {
+    if (growiTheme == null || colorScheme == null) {
+      setBackgroundImageSrc(undefined);
+      return;
+    }
+    const imgSrc = getBackgroundImageSrc(growiTheme, colorScheme);
+    setBackgroundImageSrc(imgSrc);
+  }, [growiTheme, colorScheme]);
 
   return (
     <>
@@ -40,6 +53,9 @@ export const RawLayout = ({ children, title, className }: Props): JSX.Element =>
       </Head>
       <ThemeProvider theme={growiTheme}>
         <div className={classNames.join(' ')} data-color-scheme={colorScheme}>
+          {backgroundImageSrc != null && <div className="bg-image-wrapper">
+            <Image className='bg-image' alt='background-image' src={backgroundImageSrc} layout='fill' />
+          </div>}
           {children}
         </div>
       </ThemeProvider>
