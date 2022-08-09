@@ -1,8 +1,27 @@
 # Changelog
 
-## [Unreleased](https://github.com/weseek/growi/compare/v5.1.1...HEAD)
+## [Unreleased](https://github.com/weseek/growi/compare/v5.1.2...HEAD)
 
 *Please do not manually update this file. We've automated the process.*
+
+## [v5.1.2](https://github.com/weseek/growi/compare/v5.1.1...v5.1.2) - 2022-08-03
+
+### 💎 Features
+
+- feat: Make content width of each page configurable (#6107) @mudana-grune
+
+### 🚀 Improvement
+
+- imprv(auditlog): Clear and reload button (#6398) @miya
+- imprv(auditlog): Date Range Picker  (#6395) @miya
+
+### 🐛 Bug Fixes
+
+- fix: MathJax rendering (#6396) @yuki-takei
+
+### 🧰 Maintenance
+
+- support: Make Editor component Functional Component and TypeScript (#6374) @yukendev
 
 ## [v5.1.1](https://github.com/weseek/growi/compare/v5.1.0...v5.1.1) - 2022-08-01
 

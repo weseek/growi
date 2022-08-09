@@ -96,7 +96,7 @@ class InstallerForm extends React.Component {
                           data-testid={`dropdownLanguageMenu-${locale}`}
                           className="dropdown-item"
                           type="button"
-                          onClick={() => { i18next.changeLanguage(meta.id) }}
+                          onClick={() => { i18next.changeLanguage(locale) }}
                         >
                           {fixedT('meta.display_name')}
                         </button>

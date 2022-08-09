@@ -45,6 +45,7 @@
     // style
     border-bottom: solid 1px transparent;
   }
+
   h2 {
     padding-bottom: 0.3em;
     font-size: 1.6em;
@@ -53,22 +54,26 @@
     // style
     border-bottom: solid 1px transparent;
   }
+
   h3 {
     font-size: 1.4em;
     font-weight: bold;
   }
+
   h4 {
     font-size: 1.35em;
     font-weight: normal;
     // style
     @include add-left-border(6px);
   }
+
   h5 {
     font-size: 1.25em;
     font-weight: normal;
     // style
     @include add-left-border(4px);
   }
+
   h6 {
     font-size: 1.2em;
     font-weight: normal;
@@ -80,6 +85,7 @@
     margin: 15px 0;
     font-weight: normal;
   }
+
   blockquote {
     padding: 0 20px;
     margin: 0 0 30px 0;
@@ -117,28 +123,35 @@
     position: relative; // for absolute positioned .code-highlighted-title
   }
 
-  .task-list {
+  .contains-task-list {
     .task-list-item {
       margin: 0 0.2em 0.25em -1.6em;
       list-style-type: none;
     }
-    .task-list-item > .task-list {
+
+    .task-list-item > .contains-task-list {
       margin-left: 30px;
     }
+
     // use awesome-bootstrap-checkbox
     .task-list-item .checkbox input[type='checkbox'] {
+
       // layout
-      + label {
+      +label {
         padding-left: 0.3em;
+
         &:before {
           margin-top: 0.4em;
         }
       }
+
       // styles
       cursor: default;
-      + label {
+
+      +label {
         cursor: default;
         opacity: 1;
+
         &:before,
         &:after {
           cursor: default;
@@ -148,6 +161,7 @@
   }
 
   $ratio: 0.95;
+
   &.comment {
     font-size: 14px;
     line-height: 1.5em;
@@ -172,11 +186,13 @@
       font-size: 1.8em * $ratio;
       line-height: 1.1em * $ratio;
     }
+
     h2 {
       padding-bottom: 0.5em * $ratio;
       font-size: 1.4em * $ratio;
       line-height: 1.225 * $ratio;
     }
+
     h3 {
       font-size: 1.2em * $ratio;
     }
@@ -192,6 +208,7 @@
 
       li {
         line-height: bs.$line-height-base;
+
         pre {
           line-height: bs.$line-height-base;
         }
@@ -199,6 +216,7 @@
     }
 
     .revision-head {
+
       .revision-head-link,
       .revision-head-edit-button {
         margin-left: 0.5em * $ratio;
@@ -224,6 +242,7 @@
 
 // mobile
 .page-mobile .wiki .revision-head {
+
   .revision-head-link,
   .revision-head-edit-button {
     opacity: 0.3;

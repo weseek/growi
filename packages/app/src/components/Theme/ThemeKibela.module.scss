@@ -1,5 +1,6 @@
-@import '../variables';
-@import '../override-bootstrap-variables';
+@use '../../styles/variables' as *;
+@use '../../styles/bootstrap/variables' as *;
+@use '../../styles/theme/mixins/page-editor-mode-manager';
 
 $bgcolor-theme: rgb(18, 86, 163);
 $themelight: #f4f5f6;
@@ -27,8 +28,7 @@ $lightthemecolor: rgba(181, 203, 247, 0.61);
 }
 
 // Light Mode
-html[light],
-html[dark] {
+.theme :global {
   // Background colors
   $bgcolor-navbar: white;
   $bgcolor-navbar-active: $bgcolor-theme;
@@ -98,13 +98,13 @@ html[dark] {
   // Sidebar list group
   $bgcolor-sidebar-list-group: #fafbff; // optional
 
-  @import 'apply-colors';
-  @import 'apply-colors-light';
+  @import '../../styles/theme/apply-colors';
+  @import '../../styles/theme/apply-colors-light';
 
   //Button
   .grw-page-editor-mode-manager {
     .btn.btn-outline-primary {
-      @include btn-page-editor-mode-manager(darken($primary, 15%), lighten($primary, 45%), lighten($primary, 50%));
+      @include page-editor-mode-manager.btn-page-editor-mode-manager(darken($primary, 15%), lighten($primary, 45%), lighten($primary, 50%));
     }
   }
 }

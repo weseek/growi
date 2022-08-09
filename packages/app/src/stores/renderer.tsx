@@ -1,14 +1,19 @@
 import { Key, SWRResponse } from 'swr';
 import useSWRImmutable from 'swr/immutable';
 
+import { RendererConfig } from '~/interfaces/services/renderer';
 import {
-  ReactMarkdownOptionsGenerator, RendererOptions,
+  RendererOptions,
   generatePreviewOptions, generateCommentPreviewOptions, generateOthersOptions,
   generateViewOptions, generateTocOptions,
 } from '~/services/renderer/renderer';
 
 
-import { useCurrentPageTocNode, useRendererConfig } from './context';
+import { useCurrentPagePath, useCurrentPageTocNode, useRendererConfig } from './context';
+
+interface ReactMarkdownOptionsGenerator {
+  (config: RendererConfig): RendererOptions
+}
 
 // The base hook with common processes
 const _useOptionsBase = (
@@ -33,11 +38,20 @@ const _useOptionsBase = (
 };
 
 export const useViewOptions = (): SWRResponse<RendererOptions, Error> => {
-  const key = 'viewOptions';
-
+  const { data: currentPagePath } = useCurrentPagePath();
+  const { data: rendererConfig } = useRendererConfig();
   const { mutate: storeTocNode } = useCurrentPageTocNode();
 
-  return _useOptionsBase(key, config => generateViewOptions(config, storeTocNode));
+  const isAllDataValid = currentPagePath != null && rendererConfig != null;
+
+  const key = isAllDataValid
+    ? ['viewOptions', currentPagePath, rendererConfig]
+    : null;
+
+  return useSWRImmutable<RendererOptions, Error>(
+    key,
+    (rendererId, currentPagePath, rendererConfig) => generateViewOptions(currentPagePath, rendererConfig, storeTocNode),
+  );
 };
 
 export const useTocOptions = (): SWRResponse<RendererOptions, Error> => {
