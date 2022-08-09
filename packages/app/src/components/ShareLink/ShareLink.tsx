@@ -1,7 +1,7 @@
 import React, {
-  useState, useCallback, useEffect,
+  useState, useCallback,
 } from 'react';
-// import useSWR from 'swr';
+import useSWR from 'swr';
 
 import { useTranslation } from 'react-i18next';
 
@@ -22,65 +22,60 @@ type Props = {
 const ShareLink = (props: Props): JSX.Element => {
   const { t } = useTranslation();
 
-  // const fetchShareLinks = useCallback(async(endpoint, pageId) => {
-  //   const res = await apiv3Get(endpoint, { relatedPage: pageId });
-  //   return {
-  //     shareLinkList: res.data.shareLinksResult,
-  //   };
-  // }, []);
+  const fetchShareLinks = useCallback(async(endpoint, pageId): Promise<IResShareLinkList> => {
+    const res = await apiv3Get(endpoint, { relatedPage: pageId });
+    return res.data.shareLinksResult;
+  }, []);
 
-  // const { data, isValidating, mutate } = useSWR('/share-links/', (endpoint => fetchShareLinks(endpoint, pageId)));
-
-  // const toggleShareLinkFormHandler = useCallback(() => {
-  //   setIsOpenShareLinkForm(prev => !prev);
-  //   mutate();
-  // }, [mutate]);
+  const { data, isValidating, mutate } = useSWR('/share-links/', (endpoint => fetchShareLinks(endpoint, pageId)));
 
   // TODO: ureplace useCurrentPageId and remove pageContainer https://redmine.weseek.co.jp/issues/101565
   const { pageContainer } = props;
   const { pageId } = pageContainer.state;
-  const [shareLinks, setShareLinks] = useState<IResShareLinkList['shareLinksResult']>([]);
+  // const [shareLinks, setShareLinks] = useState<IResShareLinkList['shareLinksResult']>([]);
   const [isOpenShareLinkForm, setIsOpenShareLinkForm] = useState<boolean>(false);
 
-  const retrieveShareLinks = useCallback(async() => {
-    try {
-      const res = await apiv3Get<IResShareLinkList>('/share-links/', { relatedPage: pageId });
-      const { shareLinksResult } = res.data;
-      setShareLinks(shareLinksResult);
-    }
-    catch (err) {
-      toastError(err);
-    }
-  }, [pageId]);
+  // const retrieveShareLinks = useCallback(async() => {
+  //   try {
+  //     const res = await apiv3Get<IResShareLinkList>('/share-links/', { relatedPage: pageId });
+  //     const { shareLinksResult } = res.data;
+  //     setShareLinks(shareLinksResult);
+  //   }
+  //   catch (err) {
+  //     toastError(err);
+  //   }
+  // }, [pageId]);
 
   const toggleShareLinkFormHandler = useCallback(() => {
     setIsOpenShareLinkForm(prev => !prev);
-    retrieveShareLinks();
-  }, [retrieveShareLinks]);
+    mutate();
+  }, [mutate]);
 
   const deleteAllLinksButtonHandler = useCallback(async() => {
     try {
       const res = await apiv3Delete('/share-links/', { relatedPage: pageId });
       const count = res.data.n;
       toastSuccess(t('toaster.remove_share_link', { count }));
-      // mutate();
+      mutate();
     }
     catch (err) {
       toastError(err);
     }
-  }, [t]);
+  }, [mutate, t]);
 
   const deleteLinkById = useCallback(async(shareLinkId) => {
     try {
       const res = await apiv3Delete(`/share-links/${shareLinkId}`);
       const { deletedShareLink } = res.data;
       toastSuccess(t('toaster.remove_share_link_success', { shareLinkId: deletedShareLink._id }));
-      // mutate();
+      mutate();
     }
     catch (err) {
       toastError(err);
     }
-  }, [t]);
+  }, [mutate, t]);
+
+
 
   return (
     <div className="container p-0" data-testid="share-link-management">
@@ -90,8 +85,7 @@ const ShareLink = (props: Props): JSX.Element => {
       </h3>
       <div>
         <ShareLinkList
-        // !isValidating ? data.shareLinkList :
-          shareLinks={[]}
+          shareLinks={!isValidating && data ? data.shareLinksResult : []}
           onClickDeleteButton={deleteLinkById}
         />
         <button
