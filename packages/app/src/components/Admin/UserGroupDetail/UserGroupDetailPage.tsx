@@ -21,7 +21,7 @@ import {
   useSWRxSelectableParentUserGroups, useSWRxSelectableChildUserGroups, useSWRxAncestorUserGroups,
 } from '~/stores/user-group';
 
-// import UserGroupPageList from './UserGroupPageList';
+const UserGroupPageList = dynamic(() => import('./UserGroupPageList'), { ssr: false });
 const UserGroupUserModal = dynamic(() => import('./UserGroupUserModal'), { ssr: false });
 const UserGroupUserTable = dynamic(() => import('./UserGroupUserTable'), { ssr: false });
 
@@ -389,9 +389,7 @@ const UserGroupDetailPage = (props: Props) => {
 
       <h2 className="admin-setting-header mt-4">{t('Page')}</h2>
       <div className="page-list">
-        {/* This compoent will be successfully shown in https://redmine.weseek.co.jp/issues/102159 */}
-        {/* <UserGroupPageList /> */}
-        UserGroupPageList
+        <UserGroupPageList />
       </div>
     </div>
   );
