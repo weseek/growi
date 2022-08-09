@@ -122,6 +122,16 @@
     }
   }
 
+  .growi:not(.login-page) {
+    // add background-image
+    .page-editor-preview-container {
+      background-image: url('/images/themes/hufflepuff/badger-light3.png');
+      background-attachment: fixed;
+      background-position: bottom;
+      background-size: cover;
+    }
+  }
+
   // login and register
   .nologin {
     #page-wrapper {
@@ -277,6 +287,16 @@
 
   .card-timeline > .card-header {
     background-color: $accentcolor;
+  }
+
+  .growi:not(.login-page) {
+    // add background-image
+    .page-editor-preview-container {
+      background-image: url('/images/themes/hufflepuff/badger-dark.jpg');
+      background-attachment: fixed;
+      background-position: bottom;
+      background-size: cover;
+    }
   }
 
   // login and register
