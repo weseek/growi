@@ -633,7 +633,8 @@ mark.rbt-highlight-text {
 /*
  * GROWI admin page #layoutOptions #themeOptions
  */
-.admin-page {
+
+// .admin-page {
   #layoutOptions {
     .customize-layout-card {
       &.border-active {
@@ -653,7 +654,7 @@ mark.rbt-highlight-text {
       }
     }
   }
-}
+// }
 
 /*
  * HackMd
