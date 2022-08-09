@@ -21,30 +21,17 @@ type Props = {
 
 const ShareLink = (props: Props): JSX.Element => {
   const { t } = useTranslation();
+  // TODO: ureplace useCurrentPageId and remove pageContainer https://redmine.weseek.co.jp/issues/101565
+  const { pageContainer } = props;
+  const { pageId } = pageContainer.state;
+  const [isOpenShareLinkForm, setIsOpenShareLinkForm] = useState<boolean>(false);
 
-  const fetchShareLinks = useCallback(async(endpoint, pageId): Promise<IResShareLinkList> => {
+  const fetchShareLinks = useCallback(async(endpoint, pageId): Promise<IResShareLinkList['shareLinksResult']> => {
     const res = await apiv3Get(endpoint, { relatedPage: pageId });
     return res.data.shareLinksResult;
   }, []);
 
   const { data, isValidating, mutate } = useSWR('/share-links/', (endpoint => fetchShareLinks(endpoint, pageId)));
-
-  // TODO: ureplace useCurrentPageId and remove pageContainer https://redmine.weseek.co.jp/issues/101565
-  const { pageContainer } = props;
-  const { pageId } = pageContainer.state;
-  // const [shareLinks, setShareLinks] = useState<IResShareLinkList['shareLinksResult']>([]);
-  const [isOpenShareLinkForm, setIsOpenShareLinkForm] = useState<boolean>(false);
-
-  // const retrieveShareLinks = useCallback(async() => {
-  //   try {
-  //     const res = await apiv3Get<IResShareLinkList>('/share-links/', { relatedPage: pageId });
-  //     const { shareLinksResult } = res.data;
-  //     setShareLinks(shareLinksResult);
-  //   }
-  //   catch (err) {
-  //     toastError(err);
-  //   }
-  // }, [pageId]);
 
   const toggleShareLinkFormHandler = useCallback(() => {
     setIsOpenShareLinkForm(prev => !prev);
@@ -61,7 +48,7 @@ const ShareLink = (props: Props): JSX.Element => {
     catch (err) {
       toastError(err);
     }
-  }, [mutate, t]);
+  }, [mutate, pageId, t]);
 
   const deleteLinkById = useCallback(async(shareLinkId) => {
     try {
@@ -75,8 +62,6 @@ const ShareLink = (props: Props): JSX.Element => {
     }
   }, [mutate, t]);
 
-
-
   return (
     <div className="container p-0" data-testid="share-link-management">
       <h3 className="grw-modal-head d-flex pb-2">
@@ -85,7 +70,7 @@ const ShareLink = (props: Props): JSX.Element => {
       </h3>
       <div>
         <ShareLinkList
-          shareLinks={!isValidating && data ? data.shareLinksResult : []}
+          shareLinks={!isValidating && data ? data : []}
           onClickDeleteButton={deleteLinkById}
         />
         <button
