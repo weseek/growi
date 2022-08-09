@@ -1,2 +1,4 @@
 // Todo: specify more detailed Type
-export type IResShareLinkList = any[];
+export type IResShareLinkList = {
+  shareLinksResult: any[],
+};

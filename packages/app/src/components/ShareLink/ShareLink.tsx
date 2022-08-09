@@ -1,5 +1,5 @@
 import React, {
-  FC, useState, useCallback, useEffect,
+  useState, useCallback, useEffect,
 } from 'react';
 
 import { useTranslation } from 'react-i18next';
@@ -18,16 +18,17 @@ type Props = {
   pageContainer: PageContainer;
 }
 
-const ShareLink: FC<Props> = (props: Props): JSX.Element => {
+const ShareLink = (props: Props): JSX.Element => {
   const { t } = useTranslation();
+  // TODO: ureplace useCurrentPageId and remove pageContainer https://redmine.weseek.co.jp/issues/101565
   const { pageContainer } = props;
   const { pageId } = pageContainer.state;
-  const [shareLinks, setShareLinks] = useState<IResShareLinkList>([]);
+  const [shareLinks, setShareLinks] = useState<IResShareLinkList[]>([]);
   const [isOpenShareLinkForm, setIsOpenShareLinkForm] = useState<boolean>(false);
 
   const retrieveShareLinks = useCallback(async() => {
     try {
-      const res = await apiv3Get('/share-links/', { relatedPage: pageId });
+      const res = await apiv3Get<IResShareLinkList>('/share-links/', { relatedPage: pageId });
       const { shareLinksResult } = res.data;
       setShareLinks(shareLinksResult);
     }
