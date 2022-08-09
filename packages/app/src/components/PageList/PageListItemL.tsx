@@ -8,6 +8,7 @@ import { DevidedPagePath } from '@growi/core';
 import { UserPicture, PageListMeta } from '@growi/ui';
 import { format } from 'date-fns';
 import { useTranslation } from 'next-i18next';
+import Link from 'next/link';
 import Clamp from 'react-multiline-clamp';
 import { CustomInput } from 'reactstrap';
 import urljoin from 'url-join';
@@ -99,7 +100,7 @@ const PageListItemLSubstance: ForwardRefRenderFunction<ISelectable, Props> = (pr
   const lastUpdateDate = format(new Date(pageData.updatedAt), 'yyyy/MM/dd HH:mm:ss');
 
   useEffect(() => {
-    if (isIPageInfoForEntity(pageInfo) && pageInfo != null) {
+    if (isIPageInfoForEntity(pageInfo)) {
       // likerCount
       setLikerCount(pageInfo.likerIds?.length ?? 0);
       // bookmarkCount
@@ -201,18 +202,19 @@ const PageListItemLSubstance: ForwardRefRenderFunction<ISelectable, Props> = (pr
                 <span className="h5 mb-0">
                   {/* Use permanent links to care for pages with the same name (Cannot use page path url) */}
                   <span className="grw-page-path-hierarchical-link text-break">
-                    {shouldDangerouslySetInnerHTMLForPaths
-                      ? (
-                        <a
-                          className="page-segment"
-                          href={encodeURI(urljoin('/', pageData._id))}
-                          // eslint-disable-next-line react/no-danger
-                          dangerouslySetInnerHTML={{ __html: linkedPagePathHighlightedLatter.pathName }}
-                        >
-                        </a>
-                      )
-                      : <a className="page-segment" href={encodeURI(urljoin('/', pageData._id))}>{linkedPagePathHighlightedLatter.pathName}</a>
-                    }
+                    <Link href={encodeURI(urljoin('/', pageData._id))} prefetch={false}>
+                      {shouldDangerouslySetInnerHTMLForPaths
+                        ? (
+                          <a
+                            className="page-segment"
+                            // eslint-disable-next-line react/no-danger
+                            dangerouslySetInnerHTML={{ __html: linkedPagePathHighlightedLatter.pathName }}
+                          >
+                          </a>
+                        )
+                        : <a className="page-segment">{linkedPagePathHighlightedLatter.pathName}</a>
+                      }
+                    </Link>
                   </span>
                 </span>
               </Clamp>

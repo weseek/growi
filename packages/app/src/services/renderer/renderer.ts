@@ -1,15 +1,19 @@
 import { ReactMarkdownOptions } from 'react-markdown/lib/react-markdown';
+import katex from 'rehype-katex';
 import raw from 'rehype-raw';
-import sanitize, { defaultSchema } from 'rehype-sanitize';
+import sanitize, { defaultSchema as sanitizeDefaultSchema } from 'rehype-sanitize';
 import slug from 'rehype-slug';
 import toc, { HtmlElementNode } from 'rehype-toc';
 import breaks from 'remark-breaks';
 import emoji from 'remark-emoji';
 import gfm from 'remark-gfm';
+import math from 'remark-math';
 
+import { CodeBlock } from '~/components/ReactMarkdownComponents/CodeBlock';
 import { Header } from '~/components/ReactMarkdownComponents/Header';
 import { NextLink } from '~/components/ReactMarkdownComponents/NextLink';
 import { RendererConfig } from '~/interfaces/services/renderer';
+import { addClass } from '~/services/renderer/rehype-plugins/add-class';
 import loggerFactory from '~/utils/logger';
 
 // import CsvToTable from './PreProcessor/CsvToTable';
@@ -219,15 +223,21 @@ const generateCommonOptions: ReactMarkdownOptionsGenerator = (config: RendererCo
       slug,
       raw,
       [sanitize, {
-        ...defaultSchema,
+        ...sanitizeDefaultSchema,
         attributes: {
-          ...defaultSchema.attributes,
-          '*': ['className', 'class'],
+          ...sanitizeDefaultSchema.attributes,
+          '*': sanitizeDefaultSchema.attributes != null
+            ? sanitizeDefaultSchema.attributes['*'].concat('class', 'className')
+            : ['class', 'className'],
         },
+      }],
+      [addClass, {
+        table: 'table table-bordered',
       }],
     ],
     components: {
       a: NextLink,
+      code: CodeBlock,
     },
   };
 };
@@ -244,6 +254,7 @@ export const generateViewOptions = (
   // add remark plugins
   if (remarkPlugins != null) {
     remarkPlugins.push(emoji);
+    remarkPlugins.push(math);
     if (config.isEnabledLinebreaks) {
       remarkPlugins.push(breaks);
     }
@@ -251,6 +262,7 @@ export const generateViewOptions = (
 
   // store toc node
   if (rehypePlugins != null) {
+    rehypePlugins.push(katex);
     rehypePlugins.push([toc, {
       nav: false,
       headings: ['h1', 'h2', 'h3'],

@@ -17,7 +17,9 @@ import FormattedDistanceDate from '../FormattedDistanceDate';
 
 import InfiniteScroll from './InfiniteScroll';
 
+import TagLabelsStyles from '../Page/TagLabels.module.scss';
 import styles from './RecentChanges.module.scss';
+
 
 const logger = loggerFactory('growi:History');
 
@@ -64,7 +66,7 @@ const LargePageItem = memo(({ page }: PageItemProps): JSX.Element => {
       return <></>;
     }
     return (
-      <Link key={tag.name} href={`/_search?q=tag:${tag.name}`}>
+      <Link key={tag.name} href={`/_search?q=tag:${tag.name}`} prefetch={false}>
         <a className="grw-tag-label badge badge-secondary mr-2 small">
           {tag.name}
         </a>

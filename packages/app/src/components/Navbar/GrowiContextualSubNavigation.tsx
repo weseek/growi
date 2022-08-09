@@ -39,6 +39,8 @@ import { Skelton } from '../Skelton';
 import { GrowiSubNavigation } from './GrowiSubNavigation';
 import { SubNavButtonsProps } from './SubNavButtons';
 
+import PageEditorModeManagerStyles from './PageEditorModeManager.module.scss';
+
 
 type AdditionalMenuItemsProps = {
   pageId: string,
@@ -155,7 +157,7 @@ const GrowiContextualSubNavigation = (props: GrowiContextualSubNavigationProps):
 
   const PageEditorModeManager = dynamic(
     () => import('./PageEditorModeManager'),
-    { ssr: false, loading: () => <Skelton width={213} height={33.99} /> },
+    { ssr: false, loading: () => <Skelton additionalClass={`${PageEditorModeManagerStyles['grw-page-editor-mode-manager-skelton']}`} /> },
   );
   const SubNavButtons = dynamic<SubNavButtonsProps>(
     () => import('./SubNavButtons').then(mod => mod.SubNavButtons),
