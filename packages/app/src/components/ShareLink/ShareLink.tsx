@@ -23,7 +23,7 @@ const ShareLink = (props: Props): JSX.Element => {
   // TODO: ureplace useCurrentPageId and remove pageContainer https://redmine.weseek.co.jp/issues/101565
   const { pageContainer } = props;
   const { pageId } = pageContainer.state;
-  const [shareLinks, setShareLinks] = useState<IResShareLinkList[]>([]);
+  const [shareLinks, setShareLinks] = useState<IResShareLinkList['shareLinksResult']>([]);
   const [isOpenShareLinkForm, setIsOpenShareLinkForm] = useState<boolean>(false);
 
   const retrieveShareLinks = useCallback(async() => {
