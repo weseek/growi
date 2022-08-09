@@ -18,6 +18,23 @@
 //   border-bottom: $accentcolor 4px solid;
 // }
 
+.theme :global {
+  .wrapper {
+    position: relative;
+  }
+
+  .bg-image-wrapper {
+    position: fixed;
+    width: 100%;
+    height: 100%;
+  }
+
+  .bg-image {
+    object-fit: cover;
+    object-position: bottom;
+  }
+}
+
 //== Light Mode
 //
 .theme[data-color-scheme='light'] :global {
@@ -102,17 +119,6 @@
   .btn-group.grw-page-editor-mode-manager {
     .btn.btn-outline-primary {
       @include page-editor-mode-manager.btn-page-editor-mode-manager(darken($primary, 70%), lighten($primary, 5%), lighten($primary, 20%));
-    }
-  }
-
-  .growi:not(.login-page) {
-    // add background-image
-    #page-wrapper,
-    .page-editor-preview-container {
-      background-image: url('/images/themes/hufflepuff/badger-light3.png');
-      background-attachment: fixed;
-      background-position: bottom;
-      background-size: cover;
     }
   }
 
@@ -271,17 +277,6 @@
 
   .card-timeline > .card-header {
     background-color: $accentcolor;
-  }
-
-  .growi:not(.login-page) {
-    // add background-image
-    #page-wrapper,
-    .page-editor-preview-container {
-      background-image: url('/images/themes/hufflepuff/badger-dark.jpg');
-      background-attachment: fixed;
-      background-position: bottom;
-      background-size: cover;
-    }
   }
 
   // login and register
