@@ -18,7 +18,6 @@ const router = express.Router();
 const { convertToNewAffiliationPath, isTopPage } = pagePathUtils;
 const ErrorV3 = require('../../models/vo/error-apiv3');
 
-
 /**
  * @swagger
  *  tags:
@@ -166,8 +165,9 @@ module.exports = (crowi) => {
   const certifySharedPage = require('../../middlewares/certify-shared-page')(crowi);
   const addActivity = generateAddActivityMiddleware(crowi);
 
+  const configManager = crowi.configManager;
+
   const globalNotificationService = crowi.getGlobalNotificationService();
-  const socketIoService = crowi.socketIoService;
   const { Page, GlobalNotificationSetting, Bookmark } = crowi.models;
   const { pageService, exportService } = crowi;
 
@@ -219,6 +219,9 @@ module.exports = (crowi) => {
     ],
     subscribeStatus: [
       query('pageId').isString(),
+    ],
+    contentWidth: [
+      body('expandContentWidth').isBoolean(),
     ],
   };
 
@@ -816,6 +819,28 @@ module.exports = (crowi) => {
       return res.apiv3Err(err, 500);
     }
   });
+
+
+  router.put('/:pageId/content-width', accessTokenParser, loginRequiredStrictly, csrf,
+    validator.contentWidth, apiV3FormValidator, async(req, res) => {
+      const { pageId } = req.params;
+      const { expandContentWidth } = req.body;
+
+      const isContainerFluidBySystem = configManager.getConfig('crowi', 'customize:isContainerFluid');
+
+      try {
+        const updateQuery = expandContentWidth === isContainerFluidBySystem
+          ? { $unset: { expandContentWidth } } // remove if the specified value is the same to the system's one
+          : { $set: { expandContentWidth } };
+
+        const page = await Page.updateOne({ _id: pageId }, updateQuery);
+        return res.apiv3({ page });
+      }
+      catch (err) {
+        logger.error('update-content-width-failed', err);
+        return res.apiv3Err(err, 500);
+      }
+    });
 
   return router;
 };

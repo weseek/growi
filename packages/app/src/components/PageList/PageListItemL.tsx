@@ -99,7 +99,7 @@ const PageListItemLSubstance: ForwardRefRenderFunction<ISelectable, Props> = (pr
   const lastUpdateDate = format(new Date(pageData.updatedAt), 'yyyy/MM/dd HH:mm:ss');
 
   useEffect(() => {
-    if (isIPageInfoForEntity(pageInfo) && pageInfo != null) {
+    if (isIPageInfoForEntity(pageInfo)) {
       // likerCount
       setLikerCount(pageInfo.likerIds?.length ?? 0);
       // bookmarkCount

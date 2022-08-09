@@ -126,7 +126,6 @@ const SearchResultListSubstance: ForwardRefRenderFunction<ISelectableAll, Props>
     advanceFts();
   };
 
-
   return (
     <ul data-testid="search-result-list" className="page-list-ul list-group list-group-flush">
       { (injectedPages ?? pages).map((page, i) => {

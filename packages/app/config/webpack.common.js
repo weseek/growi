@@ -76,6 +76,7 @@ module.exports = (options) => {
     },
     node: {
       fs: 'empty',
+      module: 'empty',
     },
     module: {
       rules: options.module.rules.concat([
