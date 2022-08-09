@@ -12,6 +12,7 @@ import { Comment } from './Comment';
 
 import styles from './ReplyComments.module.scss';
 
+
 type ReplycommentsProps = {
   isReadOnly: boolean,
   replyList: ICommentHasIdList,
@@ -38,11 +39,11 @@ export const ReplyComments = (props: ReplycommentsProps): JSX.Element => {
     return (
       <div key={reply._id} className={`${styles['page-comment-reply']} ml-4 ml-sm-5 mr-3`}>
         <Comment
-          rendererOptions={rendererOptions}
-          deleteBtnClicked={deleteBtnClicked}
           comment={reply}
-          onComment={onComment}
           isReadOnly={isReadOnly}
+          deleteBtnClicked={deleteBtnClicked}
+          onComment={onComment}
+          rendererOptions={rendererOptions}
           currentPagePath={currentPagePath}
           currentRevisionId={currentRevisionId}
           currentRevisionCreatedAt={currentRevisionCreatedAt}

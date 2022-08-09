@@ -3,7 +3,6 @@ import React, {
 } from 'react';
 
 import { UserPicture } from '@growi/ui';
-// import dynamic from 'next/dynamic';
 import {
   Button, TabContent, TabPane,
 } from 'reactstrap';
@@ -17,7 +16,6 @@ import {
   useIsUploadableFile, useIsUploadableImage,
 } from '~/stores/context';
 import { useSWRxSlackChannels, useIsSlackEnabled } from '~/stores/editor';
-// import { useIsMobile } from '~/stores/ui';
 
 import { CustomNavTab } from '../CustomNavigation/CustomNav';
 import NotAvailableForGuest from '../NotAvailableForGuest';
@@ -42,7 +40,7 @@ const navTabMapping = {
   },
 };
 
-type PropsType = {
+export type CommentEditorProps = {
   rendererOptions: RendererOptions,
   isForNewComment?: boolean,
   replyTo?: string,
@@ -58,7 +56,7 @@ type EditorRef = {
   terminateUploadingState: () => void,
 }
 
-export const CommentEditor = (props: PropsType): JSX.Element => {
+export const CommentEditor = (props: CommentEditorProps): JSX.Element => {
 
   const {
     rendererOptions, isForNewComment, replyTo,
@@ -70,7 +68,6 @@ export const CommentEditor = (props: PropsType): JSX.Element => {
   const { data: currentPageId } = useCurrentPageId();
   const { update: updateComment, post: postComment } = useSWRxPageComment(currentPageId);
   const { data: revisionId } = useRevisionId();
-  // const { data: isMobile } = useIsMobile();
   const { data: isSlackEnabled, mutate: mutateIsSlackEnabled } = useIsSlackEnabled();
   const { data: slackChannelsData } = useSWRxSlackChannels(currentPagePath);
   const { data: isSlackConfigured } = useIsSlackConfigured();
@@ -78,9 +75,7 @@ export const CommentEditor = (props: PropsType): JSX.Element => {
   const { data: isUploadableImage } = useIsUploadableImage();
 
   const [isReadyToUse, setIsReadyToUse] = useState(!isForNewComment);
-  // TODO: Refactor comment and markdown variable names or logic after presentation
   const [comment, setComment] = useState(commentBody ?? '');
-  const [markdown, setMarkdown] = useState('');
   const [activeTab, setActiveTab] = useState('comment_editor');
   const [error, setError] = useState();
   const [slackChannels, setSlackChannels] = useState(slackChannelsData?.toString());
@@ -89,8 +84,7 @@ export const CommentEditor = (props: PropsType): JSX.Element => {
 
   const handleSelect = useCallback((activeTab: string) => {
     setActiveTab(activeTab);
-    setMarkdown(comment);
-  }, [comment, setMarkdown]);
+  }, []);
 
   useEffect(() => {
     if (slackChannels === undefined) { return }
@@ -99,7 +93,6 @@ export const CommentEditor = (props: PropsType): JSX.Element => {
 
   const initializeEditor = useCallback(() => {
     setComment('');
-    setMarkdown('');
     setActiveTab('comment_editor');
     setError(undefined);
     // reset value
@@ -177,7 +170,6 @@ export const CommentEditor = (props: PropsType): JSX.Element => {
   }, []);
 
   const uploadHandler = useCallback(async(file) => {
-
     if (editorRef.current == null) { return }
 
     const pagePath = currentPagePath;
@@ -187,6 +179,7 @@ export const CommentEditor = (props: PropsType): JSX.Element => {
     formData.append('file', file);
     formData.append('path', pagePath ?? '');
     formData.append('page_id', pageId ?? '');
+
     try {
       // TODO: typescriptize res
       const res = await apiPostForm(endpoint, formData) as any;
@@ -208,7 +201,6 @@ export const CommentEditor = (props: PropsType): JSX.Element => {
     }
   }, [apiErrorHandler, currentPageId, currentPagePath]);
 
-
   const getCommentHtml = useCallback(() => {
     if (currentPagePath == null) {
       return <></>;
@@ -217,11 +209,11 @@ export const CommentEditor = (props: PropsType): JSX.Element => {
     return (
       <CommentPreview
         rendererOptions={rendererOptions}
-        markdown={markdown}
+        markdown={comment}
         path={currentPagePath}
       />
     );
-  }, [currentPagePath, markdown, rendererOptions]);
+  }, [currentPagePath, comment, rendererOptions]);
 
   const renderBeforeReady = useCallback((): JSX.Element => {
     return (
@@ -240,7 +232,6 @@ export const CommentEditor = (props: PropsType): JSX.Element => {
   }, []);
 
   const renderReady = () => {
-
     const commentPreview = getCommentHtml();
 
     const errorMessage = <span className="text-danger text-right mr-2">{error}</span>;
@@ -260,10 +251,6 @@ export const CommentEditor = (props: PropsType): JSX.Element => {
       </Button>
     );
 
-    // const Editor = dynamic(() => import('../PageEditor/Editor'), { ssr: false });
-    // TODO: typescriptize Editor
-    // const AnyEditor = Editor as any;
-
     const isUploadable = isUploadableImage || isUploadableFile;
 
     return (
@@ -275,8 +262,6 @@ export const CommentEditor = (props: PropsType): JSX.Element => {
               <Editor
                 ref={editorRef}
                 value={comment}
-                // lineNumbers={false}
-                // isMobile={isMobile}
                 isUploadable={isUploadable}
                 isUploadableFile={isUploadableFile}
                 onChange={setComment}

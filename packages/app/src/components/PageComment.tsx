@@ -2,7 +2,7 @@ import React, {
   FC, useEffect, useState, useMemo, memo, useCallback,
 } from 'react';
 
-import { Nullable } from '@growi/core';
+import dynamic from 'next/dynamic';
 import { Button } from 'reactstrap';
 
 import { toastError } from '~/client/util/apiNotification';
@@ -15,22 +15,26 @@ import { ICommentHasId, ICommentHasIdList } from '../interfaces/comment';
 import { useSWRxPageComment } from '../stores/comment';
 
 import { Comment } from './PageComment/Comment';
-import { CommentEditor } from './PageComment/CommentEditor';
+import { CommentEditorProps } from './PageComment/CommentEditor';
 import { CommentEditorLazyRenderer } from './PageComment/CommentEditorLazyRenderer';
 import { DeleteCommentModal } from './PageComment/DeleteCommentModal';
 import { ReplyComments } from './PageComment/ReplyComments';
 
 import styles from './PageComment.module.scss';
 
-type Props = {
-  pageId?: Nullable<string>
+// TODO: Update Skelton
+const CommentEditor = dynamic<CommentEditorProps>(() => import('./PageComment/CommentEditor').then(mod => mod.CommentEditor), { ssr: false });
+
+
+type PageCommentProps = {
+  pageId?: string,
   isReadOnly: boolean,
   titleAlign?: 'center' | 'left' | 'right',
   highlightKeywords?: string[],
   hideIfEmpty?: boolean,
 }
 
-export const PageComment: FC<Props> = memo((props:Props): JSX.Element => {
+export const PageComment: FC<PageCommentProps> = memo((props:PageCommentProps): JSX.Element => {
 
   const {
     pageId, highlightKeywords, isReadOnly, titleAlign, hideIfEmpty,
@@ -214,7 +218,10 @@ export const PageComment: FC<Props> = memo((props:Props): JSX.Element => {
               })}
             </div>
             {/* TODO: Check if identical-page */}
-            <CommentEditorLazyRenderer pageId={pageId} rendererOptions={rendererOptions}/>
+            <CommentEditorLazyRenderer
+              pageId={pageId}
+              rendererOptions={rendererOptions}
+            />
           </div>
         </div>
       </div>
