@@ -283,7 +283,7 @@ const GrowiPage: NextPage<Props> = (props: Props) => {
       </Head>
       {/* <BasicLayout title={useCustomTitle(props, t('GROWI'))} className={classNames.join(' ')}> */}
       <BasicLayout title={useCustomTitle(props, 'GROWI')} className={classNames.join(' ')} expandContainer={props.isContainerFluid}>
-        <header className="py-0">
+        <header className="py-0 position-relative">
           <GrowiContextualSubNavigation isLinkSharingDisabled={props.disableLinkSharing} />
         </header>
         <div className="d-edit-none">
