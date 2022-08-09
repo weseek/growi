@@ -34,6 +34,18 @@
   }
 }
 
+.theme :global {
+  .bg-image-wrapper {
+    position: fixed;
+    width: 100%;
+    height: 100%;
+  }
+
+  .bg-image {
+    object-fit: cover;
+  }
+}
+
 $themecolor: #000080;
 $themelight: #f0f8ff;
 $accentcolor: #ffd700;
