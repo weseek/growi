@@ -101,7 +101,6 @@ COPY packages/core packages/core
 COPY packages/codemirror-textlint packages/codemirror-textlint
 COPY packages/plugin-attachment-refs packages/plugin-attachment-refs
 COPY packages/plugin-lsx packages/plugin-lsx
-COPY packages/plugin-pukiwiki-like-linker packages/plugin-pukiwiki-like-linker
 COPY packages/slack packages/slack
 COPY packages/ui packages/ui
 
