@@ -1,10 +1,12 @@
 import { SWRResponse } from 'swr';
 
+import { ICommentHasId } from '~/interfaces/comment';
 import { IPageToDeleteWithMeta, IPageToRenameWithMeta } from '~/interfaces/page';
 import {
   OnDuplicatedFunction, OnRenamedFunction, OnDeletedFunction, OnPutBackedFunction,
 } from '~/interfaces/ui';
 import { IUserGroupHasId } from '~/interfaces/user';
+
 
 import { useStaticSWR } from './use-static-swr';
 
@@ -436,5 +438,51 @@ export const useShortcutsModal = (): SWRResponse<ShortcutsModalStatus, Error> & 
     close() {
       swrResponse.mutate({ isOpened: false });
     },
+  };
+};
+
+/*
+  * DeleteCommentModal
+  */
+export type IDeleteCommentModal = {
+  comment: string,
+  errorMessage: string,
+}
+
+export type IDeleteCommentModalOption = {
+  onDeleteComment?: () => void,
+}
+
+type DeleteCommentModalStatus = {
+  isOpened: boolean,
+  comment?: ICommentHasId,
+  errorMessage?: IDeleteCommentModal,
+  opts?: IDeleteCommentModalOption,
+}
+
+type DeleteCommentModalUtils = {
+  open(
+    comment?: ICommentHasId,
+    errorMessage?: IDeleteCommentModal,
+    opts?: IDeleteCommentModalOption,
+  ): Promise<DeleteCommentModalStatus | undefined>,
+  close(): Promise<DeleteCommentModalStatus | undefined>,
+}
+
+export const useDeleteCommentModal = (status?: DeleteCommentModalStatus): SWRResponse<DeleteCommentModalStatus, Error> & DeleteCommentModalUtils => {
+  const initialStatus: DeleteCommentModalStatus = {
+    isOpened: false,
+  };
+  const swrResponse = useStaticSWR<DeleteCommentModalStatus, Error>('deleteCommentModal', status, { fallbackData: initialStatus });
+  return {
+    ...swrResponse,
+    open: (
+        comment?: ICommentHasId,
+        errorMessage?: IDeleteCommentModal,
+        opts?: IDeleteCommentModalOption,
+    ) => swrResponse.mutate({
+      isOpened: true, comment, errorMessage, opts,
+    }),
+    close: () => swrResponse.mutate({ isOpened: false }),
   };
 };

@@ -8,6 +8,7 @@ import { Button } from 'reactstrap';
 import { toastError } from '~/client/util/apiNotification';
 import { apiPost } from '~/client/util/apiv1-client';
 import { useCurrentPagePath } from '~/stores/context';
+import { useDeleteCommentModal } from '~/stores/modal';
 import { useSWRxCurrentPage } from '~/stores/page';
 import { useCommentPreviewOptions } from '~/stores/renderer';
 
@@ -17,14 +18,11 @@ import { useSWRxPageComment } from '../stores/comment';
 import { Comment } from './PageComment/Comment';
 import { CommentEditorProps } from './PageComment/CommentEditor';
 import { CommentEditorLazyRenderer } from './PageComment/CommentEditorLazyRenderer';
-import { DeleteCommentModalProps } from './PageComment/DeleteCommentModal';
+import { DeleteCommentModal } from './PageComment/DeleteCommentModal';
 import { ReplyComments } from './PageComment/ReplyComments';
 
 import styles from './PageComment.module.scss';
 
-const DeleteCommentModal = dynamic<DeleteCommentModalProps>(
-  () => import('./PageComment/DeleteCommentModal').then(mod => mod.DeleteCommentModal), { ssr: false },
-);
 // TODO: Update Skelton
 const CommentEditor = dynamic<CommentEditorProps>(() => import('./PageComment/CommentEditor').then(mod => mod.CommentEditor), { ssr: false });
 
@@ -43,6 +41,7 @@ export const PageComment: FC<PageCommentProps> = memo((props:PageCommentProps): 
     pageId, highlightKeywords, isReadOnly, titleAlign, hideIfEmpty,
   } = props;
 
+  const { open: openDeleteCommentModal, close: closeDeleteCommentModal } = useDeleteCommentModal();
   const { data: comments, mutate } = useSWRxPageComment(pageId);
   const { data: rendererOptions } = useCommentPreviewOptions();
   const { data: currentPage } = useSWRxCurrentPage();
@@ -93,13 +92,13 @@ export const PageComment: FC<PageCommentProps> = memo((props:PageCommentProps): 
 
   const onClickDeleteButton = useCallback((comment: ICommentHasId) => {
     setCommentToBeDeleted(comment);
-    setIsDeleteConfirmModalShown(true);
-  }, []);
+    openDeleteCommentModal();
+  }, [openDeleteCommentModal]);
 
   const onCancelDeleteComment = useCallback(() => {
     setCommentToBeDeleted(null);
-    setIsDeleteConfirmModalShown(false);
-  }, []);
+    closeDeleteCommentModal();
+  }, [closeDeleteCommentModal]);
 
   const onDeleteCommentAfterOperation = useCallback(() => {
     onCancelDeleteComment();
@@ -230,10 +229,8 @@ export const PageComment: FC<PageCommentProps> = memo((props:PageCommentProps): 
       </div>
       {(!isReadOnly && commentToBeDeleted != null) && (
         <DeleteCommentModal
-          isShown={isDeleteConfirmModalShown}
           comment={commentToBeDeleted}
           errorMessage={errorMessageOnDelete}
-          cancel={onCancelDeleteComment}
           confirmedToDelete={onDeleteComment}
         />
       )}
