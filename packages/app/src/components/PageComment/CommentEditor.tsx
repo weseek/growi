@@ -3,7 +3,7 @@ import React, {
 } from 'react';
 
 import { UserPicture } from '@growi/ui';
-import dynamic from 'next/dynamic';
+// import dynamic from 'next/dynamic';
 import {
   Button, TabContent, TabPane,
 } from 'reactstrap';
@@ -17,10 +17,11 @@ import {
   useIsUploadableFile, useIsUploadableImage,
 } from '~/stores/context';
 import { useSWRxSlackChannels, useIsSlackEnabled } from '~/stores/editor';
-import { useIsMobile } from '~/stores/ui';
+// import { useIsMobile } from '~/stores/ui';
 
 import { CustomNavTab } from '../CustomNavigation/CustomNav';
 import NotAvailableForGuest from '../NotAvailableForGuest';
+import Editor from '../PageEditor/Editor';
 import { SlackNotification } from '../SlackNotification';
 
 import { CommentPreview } from './CommentPreview';
@@ -69,7 +70,7 @@ export const CommentEditor = (props: PropsType): JSX.Element => {
   const { data: currentPageId } = useCurrentPageId();
   const { update: updateComment, post: postComment } = useSWRxPageComment(currentPageId);
   const { data: revisionId } = useRevisionId();
-  const { data: isMobile } = useIsMobile();
+  // const { data: isMobile } = useIsMobile();
   const { data: isSlackEnabled, mutate: mutateIsSlackEnabled } = useIsSlackEnabled();
   const { data: slackChannelsData } = useSWRxSlackChannels(currentPagePath);
   const { data: isSlackConfigured } = useIsSlackConfigured();
@@ -259,9 +260,9 @@ export const CommentEditor = (props: PropsType): JSX.Element => {
       </Button>
     );
 
-    const Editor = dynamic(() => import('../PageEditor/Editor'), { ssr: false });
+    // const Editor = dynamic(() => import('../PageEditor/Editor'), { ssr: false });
     // TODO: typescriptize Editor
-    const AnyEditor = Editor as any;
+    // const AnyEditor = Editor as any;
 
     const isUploadable = isUploadableImage || isUploadableFile;
 
@@ -271,18 +272,18 @@ export const CommentEditor = (props: PropsType): JSX.Element => {
           <CustomNavTab activeTab={activeTab} navTabMapping={navTabMapping} onNavSelected={handleSelect} hideBorderBottom />
           <TabContent activeTab={activeTab}>
             <TabPane tabId="comment_editor">
-              {/* <AnyEditor
+              <Editor
                 ref={editorRef}
                 value={comment}
-                lineNumbers={false}
-                isMobile={isMobile}
-                // isUploadable={isUploadable}
-                // isUploadableFile={isUploadableFile}
+                // lineNumbers={false}
+                // isMobile={isMobile}
+                isUploadable={isUploadable}
+                isUploadableFile={isUploadableFile}
                 onChange={setComment}
                 onUpload={uploadHandler}
                 onCtrlEnter={ctrlEnterHandler}
                 isComment
-              /> */}
+              />
               {/*
                 Note: <OptionsSelector /> is not optimized for ComentEditor in terms of responsive design.
                 See a review comment in https://github.com/weseek/growi/pull/3473
