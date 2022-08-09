@@ -12,7 +12,7 @@ import Username from '../User/Username';
 import styles from './DeleteCommentModal.module.scss';
 
 
-type DeleteCommentModalProps = {
+export type DeleteCommentModalProps = {
   isShown: boolean,
   comment: ICommentHasId,
   errorMessage: string,
