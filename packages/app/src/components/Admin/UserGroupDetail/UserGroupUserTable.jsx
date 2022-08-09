@@ -50,11 +50,11 @@ class UserGroupUserTable extends React.Component {
           </tr>
         </thead>
         <tbody>
-          {adminUserGroupDetailContainer.state.userGroupRelations.map((sRelation) => {
-            const { relatedUser } = sRelation;
+          {adminUserGroupDetailContainer.state.userGroupRelations.map((relation) => {
+            const { relatedUser } = relation;
 
             return (
-              <tr key={sRelation._id}>
+              <tr key={relation._id}>
                 <td>
                   <UserPicture user={relatedUser} className="picture rounded-circle" />
                 </td>
