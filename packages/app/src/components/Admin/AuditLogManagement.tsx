@@ -59,6 +59,7 @@ export const AuditLogManagement: FC = () => {
   const { data: activityData, mutate: mutateActivity, error } = useSWRxActivity(PAGING_LIMIT, offset, searchFilter);
   const activityList = activityData?.docs != null ? activityData.docs : [];
   const totalActivityNum = activityData?.totalDocs != null ? activityData.totalDocs : 0;
+  const totalPagingPages = activityData?.totalPages != null ? activityData.totalPages : 0;
   const isLoading = activityData === undefined && error == null;
 
   if (error != null) {
@@ -113,6 +114,24 @@ export const AuditLogManagement: FC = () => {
     setActivePage(1);
     mutateActivity();
   }, [mutateActivity]);
+
+  const jumpPageInputChangeHandler = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+    const inputNumber = Number(e.target.value);
+    const isNan = Number.isNaN(inputNumber);
+
+    if (!isNan) {
+      if (inputNumber > totalPagingPages) {
+        setActivePage(totalPagingPages);
+        return;
+      }
+
+      if (inputNumber <= 0) {
+        setActivePage(1);
+        return;
+      }
+      setActivePage(inputNumber);
+    }
+  }, [totalPagingPages]);
 
   // eslint-disable-next-line max-len
   const activityCounter = `<b>${activityList.length === 0 ? 0 : offset + 1}</b> - <b>${(PAGING_LIMIT * activePage) - (PAGING_LIMIT - activityList.length)}</b> of <b>${totalActivityNum}<b/>`;
@@ -195,6 +214,15 @@ export const AuditLogManagement: FC = () => {
             align="center"
             size="sm"
           />
+
+          <div className="text-center">
+            <span>Go to: </span>
+            <input
+              type="text"
+              className="grw-jump-page-input"
+              onChange={jumpPageInputChangeHandler}
+            />
+          </div>
         </>
       )}
     </div>
