@@ -27,12 +27,23 @@ $color-link-wiki-hover: lighten($color-link-wiki, 15%);
 
 .growi:not(.login-page) {
   // add background-image
-  #page-wrapper,
   .page-editor-preview-container {
     background-image: url('/images/themes/christmas/christmas.jpg');
     background-attachment: fixed;
     background-position: center center;
     background-size: cover;
+  }
+}
+
+.theme :global {
+  .bg-image-wrapper {
+    position: fixed;
+    width: 100%;
+    height: 100%;
+  }
+
+  .bg-image {
+    object-fit: cover;
   }
 }
 
