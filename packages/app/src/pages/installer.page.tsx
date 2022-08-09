@@ -7,7 +7,6 @@ import {
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 
 import { NoLoginLayout } from '~/components/Layout/NoLoginLayout';
-import { RawLayout } from '~/components/Layout/RawLayout';
 
 import InstallerForm from '../components/InstallerForm';
 import {
