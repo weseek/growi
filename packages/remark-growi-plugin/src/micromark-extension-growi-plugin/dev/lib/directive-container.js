@@ -28,6 +28,7 @@ const nonLazyLine = { tokenize: tokenizeNonLazyLine, partial: true };
 
 /** @type {Tokenizer} */
 function tokenizeDirectiveContainer(effects, ok, nok) {
+  // eslint-disable-next-line @typescript-eslint/no-this-alias
   const self = this;
   const tail = self.events[self.events.length - 1];
   const initialSize = tail && tail[1].type === types.linePrefix
@@ -274,6 +275,7 @@ function tokenizeAttributes(effects, ok, nok) {
 
 /** @type {Tokenizer} */
 function tokenizeNonLazyLine(effects, ok, nok) {
+  // eslint-disable-next-line @typescript-eslint/no-this-alias
   const self = this;
 
   return start;
