@@ -1,9 +1,12 @@
+import { MutableRefObject } from 'react';
+
+import { HastNode } from 'hast-util-select';
 import { ReactMarkdownOptions } from 'react-markdown/lib/react-markdown';
 import katex from 'rehype-katex';
 import raw from 'rehype-raw';
 import sanitize, { defaultSchema as sanitizeDefaultSchema } from 'rehype-sanitize';
 import slug from 'rehype-slug';
-import toc, { HtmlElementNode } from 'rehype-toc';
+import toc from 'rehype-toc';
 import breaks from 'remark-breaks';
 import emoji from 'remark-emoji';
 import gfm from 'remark-gfm';
@@ -245,7 +248,7 @@ const generateCommonOptions = (pagePath: string|undefined, config: RendererConfi
 export const generateViewOptions = (
     pagePath: string,
     config: RendererConfig,
-    storeTocNode: (node: HtmlElementNode) => void,
+    tocRef: MutableRefObject<HastNode | undefined>,
 ): RendererOptions => {
 
   const options = generateCommonOptions(pagePath, config);
@@ -267,7 +270,7 @@ export const generateViewOptions = (
     rehypePlugins.push([toc, {
       nav: false,
       headings: ['h1', 'h2', 'h3'],
-      customizeTOC: (toc: HtmlElementNode) => {
+      customizeTOC: (toc: HastNode) => {
         // method for replace <ol> to <ul>
         const replacer = (children) => {
           children.forEach((child) => {
@@ -280,7 +283,10 @@ export const generateViewOptions = (
           });
         };
         replacer([toc]); // replace <ol> to <ul>
-        storeTocNode(toc); // store tocNode to global state with swr
+
+        // For storing tocNode to global state with swr
+        tocRef.current = toc;
+
         return false; // not show toc in body
       },
     }]);
@@ -311,7 +317,7 @@ export const generateViewOptions = (
   return options;
 };
 
-export const generateTocOptions = (config: RendererConfig, tocNode: HtmlElementNode | undefined): RendererOptions => {
+export const generateTocOptions = (config: RendererConfig, tocNode: HastNode | undefined): RendererOptions => {
 
   const options = generateCommonOptions(undefined, config);
 

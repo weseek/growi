@@ -1,3 +1,6 @@
+import { useEffect, useRef } from 'react';
+
+import { HastNode } from 'hast-util-select';
 import { Key, SWRResponse } from 'swr';
 import useSWRImmutable from 'swr/immutable';
 
@@ -10,7 +13,7 @@ import {
 
 
 import {
-  useCurrentPageId, useCurrentPagePath, useCurrentPageTocNode, useRendererConfig,
+  useCurrentPagePath, useCurrentPageTocNode, useRendererConfig,
 } from './context';
 
 interface ReactMarkdownOptionsGenerator {
@@ -42,7 +45,11 @@ const _useOptionsBase = (
 export const useViewOptions = (): SWRResponse<RendererOptions, Error> => {
   const { data: currentPagePath } = useCurrentPagePath();
   const { data: rendererConfig } = useRendererConfig();
-  const { mutate: storeTocNode } = useCurrentPageTocNode();
+  const { mutate: mutateCurrentPageTocNode } = useCurrentPageTocNode();
+
+  // Pass tocRef to generateViewOptions (=> rehypePlugin => customizeTOC) to call mutateCurrentPageTocNode when tocRef.current changes.
+  // The toc node passed by customizeTOC is assigned to tocRef.current.
+  const tocRef = useRef<HastNode>();
 
   const isAllDataValid = currentPagePath != null && rendererConfig != null;
 
@@ -50,26 +57,31 @@ export const useViewOptions = (): SWRResponse<RendererOptions, Error> => {
     ? ['viewOptions', currentPagePath, rendererConfig]
     : null;
 
+  useEffect(() => {
+    mutateCurrentPageTocNode(tocRef.current);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [mutateCurrentPageTocNode, tocRef.current]); // include tocRef.current to call mutateCurrentPageTocNode when tocRef.current changes
+
   return useSWRImmutable<RendererOptions, Error>(
     key,
-    (rendererId, currentPagePath, rendererConfig) => generateViewOptions(currentPagePath, rendererConfig, storeTocNode),
+    (rendererId, currentPagePath, rendererConfig) => generateViewOptions(currentPagePath, rendererConfig, tocRef),
   );
 };
 
 export const useTocOptions = (): SWRResponse<RendererOptions, Error> => {
-  const { data: pageId } = useCurrentPageId();
+  const { data: currentPagePath } = useCurrentPagePath();
   const { data: rendererConfig } = useRendererConfig();
   const { data: tocNode } = useCurrentPageTocNode();
 
   const isAllDataValid = rendererConfig != null;
 
   const key = isAllDataValid
-    ? ['tocOptions', pageId, rendererConfig]
+    ? ['tocOptions', currentPagePath, tocNode, rendererConfig]
     : null;
 
   return useSWRImmutable<RendererOptions, Error>(
     key,
-    (rendererId, pageId, rendererConfig) => generateTocOptions(rendererConfig, tocNode),
+    (rendererId, path, tocNode, rendererConfig) => generateTocOptions(rendererConfig, tocNode),
   );
 };
 

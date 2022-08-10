@@ -3,7 +3,6 @@ import React, {
 } from 'react';
 
 import dynamic from 'next/dynamic';
-import PropTypes from 'prop-types';
 // import { debounce } from 'throttle-debounce';
 
 import { blinkSectionHeaderAtBoot } from '~/client/util/blink-section-header';
@@ -30,9 +29,28 @@ import RevisionRenderer from './Page/RevisionRenderer';
 
 const logger = loggerFactory('growi:Page');
 
-class PageSubstance extends React.Component {
+type PageSubstanceProps = {
+  rendererOptions: any,
+  page: any,
+  pageTags?: string[],
+  editorMode: string,
+  isGuestUser: boolean,
+  isMobile?: boolean,
+  isSlackEnabled: boolean,
+  slackChannels: string,
+};
 
-  constructor(props) {
+class PageSubstance extends React.Component<PageSubstanceProps> {
+
+  gridEditModal: any;
+
+  linkEditModal: any;
+
+  handsontableModal: any;
+
+  drawioModal: any;
+
+  constructor(props: PageSubstanceProps) {
     super(props);
 
     this.state = {
@@ -138,7 +156,7 @@ class PageSubstance extends React.Component {
     // }
   }
 
-  render() {
+  override render() {
     const {
       rendererOptions, page, isMobile, isGuestUser,
     } = this.props;
@@ -171,31 +189,19 @@ class PageSubstance extends React.Component {
 
 }
 
-PageSubstance.propTypes = {
-  rendererOptions: PropTypes.object.isRequired,
-
-  page: PropTypes.any.isRequired,
-  pageTags:  PropTypes.arrayOf(PropTypes.string),
-  editorMode: PropTypes.string.isRequired,
-  isGuestUser: PropTypes.bool.isRequired,
-  isMobile: PropTypes.bool,
-  isSlackEnabled: PropTypes.bool.isRequired,
-  slackChannels: PropTypes.string.isRequired,
-};
-
 export const Page = (props) => {
+  const pageRef = useRef(null);
+
   const { data: currentPage } = useSWRxCurrentPage();
   const { data: editorMode } = useEditorMode();
   const { data: isGuestUser } = useIsGuestUser();
   const { data: isMobile } = useIsMobile();
   const { data: slackChannelsData } = useSWRxSlackChannels(currentPage?.path);
   const { data: isSlackEnabled } = useIsSlackEnabled();
-  const { data: pageTags } = usePageTagsForEditors();
+  const { data: pageTags } = usePageTagsForEditors(null); // TODO: pass pageId
   const { data: rendererOptions } = useViewOptions();
   const { mutate: mutateIsEnabledUnsavedWarning } = useIsEnabledUnsavedWarning();
   const { data: isBlinkedAtBoot, mutate: mutateBlinkedAtBoot } = useIsBlinkedHeaderAtBoot();
-
-  const pageRef = useRef(null);
 
   useEffect(() => {
     if (isBlinkedAtBoot) {
@@ -253,7 +259,7 @@ export const Page = (props) => {
       isMobile={isMobile}
       isSlackEnabled={isSlackEnabled}
       pageTags={pageTags}
-      slackChannels={slackChannelsData.toString()}
+      slackChannels={slackChannelsData?.toString()}
       mutateIsEnabledUnsavedWarning={mutateIsEnabledUnsavedWarning}
     />
   );
