@@ -5,6 +5,7 @@ import { useTranslation } from 'next-i18next';
 import { toastSuccess, toastError } from '~/client/util/apiNotification';
 import { apiPost } from '~/client/util/apiv1-client';
 import loggerFactory from '~/utils/logger';
+import { IResTestLdap } from '~/interfaces/ldap';
 
 const logger = loggerFactory('growi:security:AdminLdapSecurityContainer');
 
@@ -37,7 +38,7 @@ export const LdapAuthTest = (props: LdapAuthTestProps): JSX.Element => {
    */
   const testLdapCredentials = async() => {
     try {
-      const response = await apiPost('/login/testLdap', {
+      const response = await apiPost<IResTestLdap>('/login/testLdap', {
         loginForm: {
           username,
           password,
@@ -46,7 +47,7 @@ export const LdapAuthTest = (props: LdapAuthTestProps): JSX.Element => {
 
       const {
         err, message, status, ldapConfiguration, ldapAccountInfo,
-      } = response as any;
+      } = response;
 
       // add logs
       if (err) {
