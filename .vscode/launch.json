@@ -77,10 +77,6 @@
             "path": "${workspaceFolder}/packages/plugin-attachment-refs"
           },
           {
-            "url": "webpack://_n_e/plugin-pukiwiki-like-linker",
-            "path": "${workspaceFolder}/packages/plugin-pukiwiki-like-linker"
-          },
-          {
             "url": "webpack://_n_e/plugin-lsx",
             "path": "${workspaceFolder}/packages/plugin-lsx"
           },
