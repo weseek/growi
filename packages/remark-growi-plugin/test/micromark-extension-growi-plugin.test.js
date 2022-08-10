@@ -7,7 +7,7 @@ import { htmlVoidElements } from 'html-void-elements';
 import { micromark } from 'micromark';
 import test from 'tape';
 
-import { directive as syntax } from '../src/micromark-extension-growi-plugin/index.js';
+import { directive as syntax, directiveHtml as html } from '../src/micromark-extension-growi-plugin/index.js';
 
 const own = {}.hasOwnProperty;
 
@@ -1546,5 +1546,6 @@ function options(options) {
   return {
     allowDangerousHtml: true,
     extensions: [syntax()],
+    htmlExtensions: [html(options)],
   };
 }
