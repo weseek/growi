@@ -6,6 +6,7 @@ import {
 } from '~/interfaces/activity';
 import { Ref } from '~/interfaces/common';
 import { IPage } from '~/interfaces/page';
+import { IUser } from '~/interfaces/user';
 import Activity from '~/server/models/activity';
 
 import loggerFactory from '../../utils/logger';
@@ -41,7 +42,7 @@ class ActivityService {
   }
 
   initActivityEventListeners(): void {
-    this.activityEvent.on('update', async(activityId: string, parameters, target?: IPage, descendantPages?: Ref<IPage>[]) => {
+    this.activityEvent.on('update', async(activityId: string, parameters, target?: IPage, descendantsSubscribedUsers?: Ref<IUser>[]) => {
       let activity: IActivity;
       const shoudUpdate = this.shoudUpdateActivity(parameters.action);
 
@@ -54,7 +55,7 @@ class ActivityService {
           return;
         }
 
-        this.activityEvent.emit('updated', activity, target, descendantPages);
+        this.activityEvent.emit('updated', activity, target, descendantsSubscribedUsers);
       }
     });
   }

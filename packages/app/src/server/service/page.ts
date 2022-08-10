@@ -19,7 +19,7 @@ import {
 import {
   IPageOperationProcessInfo, IPageOperationProcessData, PageActionStage, PageActionType,
 } from '~/interfaces/page-operation';
-import { IUserHasId } from '~/interfaces/user';
+import { IUser, IUserHasId } from '~/interfaces/user';
 import { PageMigrationErrorData, SocketEventName, UpdateDescCountRawData } from '~/interfaces/websocket';
 import {
   CreateMethod, PageCreateOptions, PageModel, PageDocument, pushRevision, PageQueryBuilder,
@@ -369,7 +369,6 @@ class PageService {
     };
 
     const activity = await this.crowi.activityService.createActivity(parameters);
-    console.log('What is the activity\n', activity);
 
     const isExist = await Page.exists({ path: newPagePath });
     if (isExist) {
@@ -536,8 +535,10 @@ class PageService {
     const timerObj = this.crowi.pageOperationService.autoUpdateExpiryDate(pageOpId);
     try {
     // update descendants first
-      const descendantPages = await this.renameDescendantsWithStream(page, newPagePath, user, options, false);
-      this.activityEvent.emit('updated', activity, page, descendantPages);
+      const descendantsSubscribedSets = new Set();
+      await this.renameDescendantsWithStream(page, newPagePath, user, options, false, descendantsSubscribedSets);
+      const descendantsSubscribedUsers = Array.from(descendantsSubscribedSets);
+      this.activityEvent.emit('updated', activity, page, descendantsSubscribedUsers);
     }
     catch (err) {
       logger.warn(err);
@@ -825,7 +826,7 @@ class PageService {
     this.pageEvent.emit('updateMany', pages, user);
   }
 
-  private async renameDescendantsWithStream(targetPage, newPagePath, user, options = {}, shouldUseV4Process = true) {
+  private async renameDescendantsWithStream(targetPage, newPagePath, user, options = {}, shouldUseV4Process = true, descendantsSubscribedSets?) {
     // v4 compatible process
     if (shouldUseV4Process) {
       return this.renameDescendantsWithStreamV4(targetPage, newPagePath, user, options);
@@ -840,7 +841,6 @@ class PageService {
     const renameDescendants = this.renameDescendants.bind(this);
     const pageEvent = this.pageEvent;
     let count = 0;
-    let descendantPages = [];
     const writeStream = new Writable({
       objectMode: true,
       async write(batch, encoding, callback) {
@@ -849,7 +849,10 @@ class PageService {
           await renameDescendants(
             batch, user, options, pathRegExp, newPagePathPrefix, shouldUseV4Process,
           );
-          descendantPages = descendantPages.concat(batch);
+          const subscribedUsers = await Subscription.getSubscriptions(batch);
+          subscribedUsers.forEach((eachUser) => {
+            descendantsSubscribedSets.add(eachUser);
+          });
           logger.debug(`Renaming pages progressing: (count=${count})`);
         }
         catch (err) {
@@ -874,7 +877,6 @@ class PageService {
       .pipe(writeStream);
 
     await streamToPromise(writeStream);
-    return descendantPages;
   }
 
   private async renameDescendantsWithStreamV4(targetPage, newPagePath, user, options = {}) {
