@@ -878,7 +878,6 @@ class PageService {
       .pipe(writeStream);
 
     await streamToPromise(writeStream);
-    console.log('Who are the subscribed users\n', descendantsSubscribedUsers);
     return descendantsSubscribedUsers;
   }
 
