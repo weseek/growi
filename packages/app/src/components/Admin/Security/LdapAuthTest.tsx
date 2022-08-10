@@ -21,8 +21,8 @@ export const LdapAuthTest = (props: LdapAuthTestProps): JSX.Element => {
   } = props;
   const { t } = useTranslation();
   const [logs, setLogs] = useState('');
-  const [errorMessage, setErrorMessage] = useState();
-  const [successMessage, setSuccessMessage] = useState();
+  const [errorMessage, setErrorMessage] = useState('');
+  const [successMessage, setSuccessMessage] = useState('');
 
   /**
    * add logs
@@ -30,9 +30,6 @@ export const LdapAuthTest = (props: LdapAuthTestProps): JSX.Element => {
   const addLogs = (log) => {
     const newLog = `${new Date()} - ${log}\n\n`;
     setLogs(`${newLog}${logs}`);
-    // this.setState({
-    //   logs: `${newLog}${this.state.logs}`,
-    // });
   };
 
   /**
@@ -47,30 +44,34 @@ export const LdapAuthTest = (props: LdapAuthTestProps): JSX.Element => {
         },
       });
 
+      const {
+        err, message, status, ldapConfiguration, ldapAccountInfo,
+      } = response as any;
+
       // add logs
-      if (response.err) {
-        toastError(response.err);
-        addLogs(response.err);
+      if (err) {
+        toastError(err);
+        addLogs(err);
       }
 
-      if (response.status === 'warning') {
-        addLogs(response.message);
-        setErrorMessage(response.message);
-        setSuccessMessage(null);
+      if (status === 'warning') {
+        addLogs(message);
+        setErrorMessage(message);
+        setSuccessMessage('');
       }
 
-      if (response.status === 'success') {
-        toastSuccess(response.message);
-        setSuccessMessage(response.message);
-        setErrorMessage(null);
+      if (status === 'success') {
+        toastSuccess(message);
+        setSuccessMessage(message);
+        setErrorMessage('');
       }
 
-      if (response.ldapConfiguration) {
-        const prettified = JSON.stringify(response.ldapConfiguration.server, undefined, 4);
+      if (ldapConfiguration) {
+        const prettified = JSON.stringify(ldapConfiguration.server, undefined, 4);
         addLogs(`LDAP Configuration : ${prettified}`);
       }
-      if (response.ldapAccountInfo) {
-        const prettified = JSON.stringify(response.ldapAccountInfo, undefined, 4);
+      if (ldapAccountInfo) {
+        const prettified = JSON.stringify(ldapAccountInfo, undefined, 4);
         addLogs(`Retrieved LDAP Account : ${prettified}`);
       }
 
@@ -85,8 +86,8 @@ export const LdapAuthTest = (props: LdapAuthTestProps): JSX.Element => {
 
   return (
     <React.Fragment>
-      {successMessage != null && <div className="alert alert-success">{successMessage}</div>}
-      {errorMessage != null && <div className="alert alert-warning">{errorMessage}</div>}
+      {successMessage !== '' && <div className="alert alert-success">{successMessage}</div>}
+      {errorMessage !== '' && <div className="alert alert-warning">{errorMessage}</div>}
       <div className="form-group row">
         <label htmlFor="username" className="col-3 col-form-label">{t('username')}</label>
         <div className="col-6">
