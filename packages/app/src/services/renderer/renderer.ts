@@ -1,3 +1,4 @@
+import growiPlugin from '@growi/remark-growi-plugin';
 import { ReactMarkdownOptions } from 'react-markdown/lib/react-markdown';
 import katex from 'rehype-katex';
 import raw from 'rehype-raw';
@@ -8,6 +9,7 @@ import breaks from 'remark-breaks';
 import emoji from 'remark-emoji';
 import gfm from 'remark-gfm';
 import math from 'remark-math';
+
 
 import { CodeBlock } from '~/components/ReactMarkdownComponents/CodeBlock';
 import { Header } from '~/components/ReactMarkdownComponents/Header';
@@ -222,6 +224,7 @@ const generateCommonOptions = (pagePath: string|undefined, config: RendererConfi
     remarkPlugins: [
       gfm,
       pukiwikiLikeLinker,
+      growiPlugin,
     ],
     rehypePlugins: [
       slug,
