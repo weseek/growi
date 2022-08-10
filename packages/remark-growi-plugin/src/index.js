@@ -4,21 +4,16 @@
  * @typedef {import('mdast-util-directive')} DoNotTouchAsThisImportIncludesDirectivesInTree
  */
 
-import { directiveFromMarkdown, directiveToMarkdown } from 'mdast-util-directive';
-import { directive } from 'micromark-extension-directive';
+import { directiveFromMarkdown, directiveToMarkdown } from './mdast-util-growi-plugin';
+import { directive } from './micromark-extension-growi-plugin/dev';
 
 /**
- * Plugin to support the generic directives proposal (`:cite[smith04]`,
- * `::youtube[Video of a cat in a box]{v=01ab2cd3efg}`, and such).
+ * Plugin to support GROWI plugin (`$lsx(/path, depth=2)`).
  *
  * @type {import('unified').Plugin<void[], Root>}
  */
-export default function remarkDirective() {
+export default function remarkGrowiPlugin() {
   const data = this.data();
-
-  add('micromarkExtensions', directive());
-  add('fromMarkdownExtensions', directiveFromMarkdown);
-  add('toMarkdownExtensions', directiveToMarkdown);
 
   /**
    * @param {string} field
@@ -33,4 +28,8 @@ export default function remarkDirective() {
 
     list.push(value);
   }
+
+  add('micromarkExtensions', directive());
+  add('fromMarkdownExtensions', directiveFromMarkdown);
+  add('toMarkdownExtensions', directiveToMarkdown);
 }
