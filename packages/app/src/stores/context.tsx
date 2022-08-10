@@ -1,4 +1,4 @@
-import { HastNode } from 'hast-util-select';
+import { HtmlElementNode } from 'rehype-toc';
 import { Key, SWRResponse } from 'swr';
 import useSWRImmutable from 'swr/immutable';
 
@@ -273,7 +273,7 @@ export const useIsEditable = (): SWRResponse<boolean, Error> => {
   );
 };
 
-export const useCurrentPageTocNode = (): SWRResponse<HastNode, any> => {
+export const useCurrentPageTocNode = (): SWRResponse<HtmlElementNode, any> => {
   const { data: currentPagePath } = useCurrentPagePath();
 
   return useStaticSWR(['currentPageTocNode', currentPagePath]);

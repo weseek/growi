@@ -1,6 +1,6 @@
 import { useEffect, useRef } from 'react';
 
-import { HastNode } from 'hast-util-select';
+import { HtmlElementNode } from 'rehype-toc';
 import { Key, SWRResponse } from 'swr';
 import useSWRImmutable from 'swr/immutable';
 
@@ -49,7 +49,7 @@ export const useViewOptions = (): SWRResponse<RendererOptions, Error> => {
 
   // Pass tocRef to generateViewOptions (=> rehypePlugin => customizeTOC) to call mutateCurrentPageTocNode when tocRef.current changes.
   // The toc node passed by customizeTOC is assigned to tocRef.current.
-  const tocRef = useRef<HastNode>();
+  const tocRef = useRef<HtmlElementNode>();
 
   const isAllDataValid = currentPagePath != null && rendererConfig != null;
 
