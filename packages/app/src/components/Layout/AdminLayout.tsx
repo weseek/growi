@@ -33,7 +33,7 @@ const AdminLayout = ({
       <div className={`admin-page ${styles['admin-page']}`}>
         <GrowiNavbar />
 
-        <header className="py-0">
+        <header className="py-0 position-relative">
           <h1 className="title">{title}</h1>
         </header>
         <div id="main" className="main">
