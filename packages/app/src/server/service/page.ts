@@ -535,7 +535,9 @@ class PageService {
     const timerObj = this.crowi.pageOperationService.autoUpdateExpiryDate(pageOpId);
     try {
     // update descendants first
-      const descendantsSubscribedUsers = await this.renameDescendantsWithStream(page, newPagePath, user, options, false);
+      const descendantsSubscribedSets = new Set();
+      await this.renameDescendantsWithStream(page, newPagePath, user, options, false, descendantsSubscribedSets);
+      const descendantsSubscribedUsers = Array.from(descendantsSubscribedSets);
       this.activityEvent.emit('updated', activity, page, descendantsSubscribedUsers);
     }
     catch (err) {
@@ -824,7 +826,7 @@ class PageService {
     this.pageEvent.emit('updateMany', pages, user);
   }
 
-  private async renameDescendantsWithStream(targetPage, newPagePath, user, options = {}, shouldUseV4Process = true) {
+  private async renameDescendantsWithStream(targetPage, newPagePath, user, options = {}, shouldUseV4Process = true, descendantsSubscribedSets?) {
     // v4 compatible process
     if (shouldUseV4Process) {
       return this.renameDescendantsWithStreamV4(targetPage, newPagePath, user, options);
@@ -839,7 +841,6 @@ class PageService {
     const renameDescendants = this.renameDescendants.bind(this);
     const pageEvent = this.pageEvent;
     let count = 0;
-    const descendantsSubscribedUsers = [];
     const writeStream = new Writable({
       objectMode: true,
       async write(batch, encoding, callback) {
@@ -850,9 +851,7 @@ class PageService {
           );
           const subscribedUsers = await Subscription.getSubscriptions(batch);
           subscribedUsers.forEach((eachUser) => {
-            if (!descendantsSubscribedUsers.includes(eachUser as never)) {
-              descendantsSubscribedUsers.push(eachUser as never);
-            }
+            descendantsSubscribedSets.add(eachUser);
           });
           logger.debug(`Renaming pages progressing: (count=${count})`);
         }
@@ -878,7 +877,6 @@ class PageService {
       .pipe(writeStream);
 
     await streamToPromise(writeStream);
-    return descendantsSubscribedUsers;
   }
 
   private async renameDescendantsWithStreamV4(targetPage, newPagePath, user, options = {}) {
