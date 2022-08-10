@@ -285,6 +285,7 @@ export const generateViewOptions = (
         replacer([toc]); // replace <ol> to <ul>
 
         // For storing tocNode to global state with swr
+        // search: tocRef.current
         tocRef.current = toc;
 
         return false; // not show toc in body

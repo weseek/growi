@@ -190,8 +190,6 @@ class PageSubstance extends React.Component<PageSubstanceProps> {
 }
 
 export const Page = (props) => {
-  const pageRef = useRef(null);
-
   const { data: currentPage } = useSWRxCurrentPage();
   const { data: editorMode } = useEditorMode();
   const { data: isGuestUser } = useIsGuestUser();
@@ -202,6 +200,8 @@ export const Page = (props) => {
   const { data: rendererOptions } = useViewOptions();
   const { mutate: mutateIsEnabledUnsavedWarning } = useIsEnabledUnsavedWarning();
   const { data: isBlinkedAtBoot, mutate: mutateBlinkedAtBoot } = useIsBlinkedHeaderAtBoot();
+
+  const pageRef = useRef(null);
 
   useEffect(() => {
     if (isBlinkedAtBoot) {
