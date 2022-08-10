@@ -11,7 +11,7 @@ import {
 import { toastSuccess, toastError } from '~/client/util/apiNotification';
 import { usePersonalSettings, useSWRxPersonalExternalAccounts } from '~/stores/personal-settings';
 
-import LdapAuthTest from '../Admin/Security/LdapAuthTest';
+import { LdapAuthTest } from '../Admin/Security/LdapAuthTest';
 
 type Props = {
   isOpen: boolean,
