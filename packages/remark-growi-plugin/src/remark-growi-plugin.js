@@ -5,7 +5,7 @@
  */
 
 import { directiveFromMarkdown, directiveToMarkdown } from './mdast-util-growi-plugin/index.js';
-import { directive } from './micromark-extension-growi-plugin/dev/index.js';
+import { directive } from './micromark-extension-growi-plugin/index.js';
 
 /**
     * Plugin to support GROWI plugin (`$lsx(/path, depth=2)`).

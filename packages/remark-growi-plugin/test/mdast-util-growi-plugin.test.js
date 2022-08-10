@@ -1,10 +1,10 @@
 import { fromMarkdown } from 'mdast-util-from-markdown';
 import { toMarkdown } from 'mdast-util-to-markdown';
-import { directive } from 'micromark-extension-directive';
 import test from 'tape';
 import { removePosition } from 'unist-util-remove-position';
 
-import { directiveFromMarkdown, directiveToMarkdown } from './index.js';
+import { directiveFromMarkdown, directiveToMarkdown } from '../src/mdast-util-growi-plugin/index.js';
+import { directive } from '../src/micromark-extension-growi-plugin/index.js';
 
 test('markdown -> mdast', (t) => {
   t.deepEqual(

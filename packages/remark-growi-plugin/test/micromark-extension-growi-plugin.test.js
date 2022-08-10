@@ -1,13 +1,13 @@
 /**
- * @typedef {import('../dev/index.js').HtmlOptions} HtmlOptions
- * @typedef {import('../dev/index.js').Handle} Handle
+ * @typedef {import('../src/micromark-extension-growi-plugin/index.js').HtmlOptions} HtmlOptions
+ * @typedef {import('../src/micromark-extension-growi-plugin/index.js').Handle} Handle
  */
 
 import { htmlVoidElements } from 'html-void-elements';
 import { micromark } from 'micromark';
 import test from 'tape';
 
-import { directive as syntax, directiveHtml as html } from '../dev/index.js';
+import { directive as syntax } from '../src/micromark-extension-growi-plugin/index.js';
 
 const own = {}.hasOwnProperty;
 
@@ -1492,6 +1492,7 @@ function youtube(d) {
     list.push(`title="${this.encode(d.label)}"`);
   }
 
+  // eslint-disable-next-line no-restricted-syntax
   for (prop in attrs) {
     if (prop !== 'v') {
       list.push(`${this.encode(prop)}="${this.encode(attrs[prop])}"`);
@@ -1518,6 +1519,7 @@ function h(d) {
   /** @type {string} */
   let prop;
 
+  // eslint-disable-next-line no-restricted-syntax
   for (prop in attrs) {
     if (own.call(attrs, prop)) {
       list.push(`${this.encode(prop)}="${this.encode(attrs[prop])}"`);
@@ -1544,6 +1546,5 @@ function options(options) {
   return {
     allowDangerousHtml: true,
     extensions: [syntax()],
-    htmlExtensions: [html(options)],
   };
 }
