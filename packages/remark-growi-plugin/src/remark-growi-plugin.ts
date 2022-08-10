@@ -8,17 +8,17 @@ import { directiveFromMarkdown, directiveToMarkdown } from './mdast-util-growi-p
 import { directive } from './micromark-extension-growi-plugin/dev';
 
 /**
- * Plugin to support GROWI plugin (`$lsx(/path, depth=2)`).
- *
- * @type {import('unified').Plugin<void[], Root>}
- */
+  * Plugin to support GROWI plugin (`$lsx(/path, depth=2)`).
+  *
+  * @type {import('unified').Plugin<void[], Root>}
+  */
 export default function remarkGrowiPlugin() {
   const data = this.data();
 
   /**
-   * @param {string} field
-   * @param {unknown} value
-   */
+    * @param {string} field
+    * @param {unknown} value
+    */
   function add(field, value) {
     const list = /** @type {unknown[]} */ (
       // Other extensions
