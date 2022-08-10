@@ -385,7 +385,7 @@ function fence(node) {
     size += 3;
   }
   else if (node.type === 'leafGrowiPluginDirective') {
-    size = 2;
+    size = 1;
   }
   else {
     size = 1;

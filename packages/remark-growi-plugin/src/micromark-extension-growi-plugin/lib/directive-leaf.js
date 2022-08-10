@@ -27,37 +27,55 @@ function tokenizeDirectiveLeaf(effects, ok, nok) {
 
   return start;
 
+  // /** @type {State} */
+  // function start(code) {
+  //   assert(code === codes.dollarSign, 'expected `$`');
+  //   effects.enter('directiveLeaf');
+  //   effects.enter('directiveLeafSequence');
+  //   effects.consume(code);
+  //   return inStart;
+  // }
+
+  // /** @type {State} */
+  // function inStart(code) {
+  //   if (code === codes.dollarSign) {
+  //     effects.consume(code);
+  //     effects.exit('directiveLeafSequence');
+  //     return factoryName.call(
+  //       self,
+  //       effects,
+  //       afterName,
+  //       nok,
+  //       'directiveLeafName',
+  //     );
+  //   }
+
+  //   return nok(code);
+  // }
+
+  // /** @type {State} */
+  // function afterName(code) {
+  //   return code === codes.leftSquareBracket
+  //     ? effects.attempt(label, afterLabel, afterLabel)(code)
+  //     : afterLabel(code);
+  // }
+
   /** @type {State} */
   function start(code) {
     assert(code === codes.dollarSign, 'expected `$`');
     effects.enter('directiveLeaf');
-    effects.enter('directiveLeafSequence');
     effects.consume(code);
-    return inStart;
-  }
-
-  /** @type {State} */
-  function inStart(code) {
-    if (code === codes.dollarSign) {
-      effects.consume(code);
-      effects.exit('directiveLeafSequence');
-      return factoryName.call(
-        self,
-        effects,
-        afterName,
-        nok,
-        'directiveLeafName',
-      );
-    }
-
-    return nok(code);
+    return factoryName.call(self, effects, afterName, nok, 'directiveLeafName');
   }
 
   /** @type {State} */
   function afterName(code) {
-    return code === codes.leftSquareBracket
-      ? effects.attempt(label, afterLabel, afterLabel)(code)
-      : afterLabel(code);
+    // eslint-disable-next-line no-nested-ternary
+    return code === codes.dollarSign
+      ? nok(code)
+      : code === codes.leftSquareBracket
+        ? effects.attempt(label, afterLabel, afterLabel)(code)
+        : afterLabel(code);
   }
 
   /** @type {State} */
