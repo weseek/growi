@@ -25,6 +25,7 @@ const setupTranspileModules = () => {
     // listing ESM packages until experimental.esmExternals works correctly to avoid ERR_REQUIRE_ESM
     'react-markdown',
     'unified',
+    'character-entities-html4',
     'comma-separated-tokens',
     'decode-named-character-reference',
     'hastscript',
@@ -33,7 +34,9 @@ const setupTranspileModules = () => {
     'longest-streak',
     'property-information',
     'space-separated-tokens',
+    'stringify-entities',
     'trim-lines',
+    'trough',
     'web-namespaces',
     'vfile',
     'zwitch',
