@@ -4,80 +4,82 @@
  * @typedef {import('micromark-util-types').State} State
  */
 
-import {ok as assert} from 'uvu/assert'
-import {factorySpace} from 'micromark-factory-space'
-import {markdownLineEnding} from 'micromark-util-character'
-import {codes} from 'micromark-util-symbol/codes.js'
-import {types} from 'micromark-util-symbol/types.js'
-import {factoryAttributes} from './factory-attributes.js'
-import {factoryLabel} from './factory-label.js'
-import {factoryName} from './factory-name.js'
+import { factorySpace } from 'micromark-factory-space';
+import { markdownLineEnding } from 'micromark-util-character';
+import { codes } from 'micromark-util-symbol/codes.js';
+import { types } from 'micromark-util-symbol/types.js';
+import { ok as assert } from 'uvu/assert';
+
+import { factoryAttributes } from './factory-attributes.js';
+import { factoryLabel } from './factory-label.js';
+import { factoryName } from './factory-name.js';
 
 /** @type {Construct} */
-export const directiveLeaf = {tokenize: tokenizeDirectiveLeaf}
+export const directiveLeaf = { tokenize: tokenizeDirectiveLeaf };
 
-const label = {tokenize: tokenizeLabel, partial: true}
-const attributes = {tokenize: tokenizeAttributes, partial: true}
+const label = { tokenize: tokenizeLabel, partial: true };
+const attributes = { tokenize: tokenizeAttributes, partial: true };
 
 /** @type {Tokenizer} */
 function tokenizeDirectiveLeaf(effects, ok, nok) {
-  const self = this
+  // eslint-disable-next-line @typescript-eslint/no-this-alias
+  const self = this;
 
-  return start
+  return start;
 
   /** @type {State} */
   function start(code) {
-    assert(code === codes.colon, 'expected `:`')
-    effects.enter('directiveLeaf')
-    effects.enter('directiveLeafSequence')
-    effects.consume(code)
-    return inStart
+    assert(code === codes.colon, 'expected `:`');
+    effects.enter('directiveLeaf');
+    effects.enter('directiveLeafSequence');
+    effects.consume(code);
+    return inStart;
   }
 
   /** @type {State} */
   function inStart(code) {
     if (code === codes.colon) {
-      effects.consume(code)
-      effects.exit('directiveLeafSequence')
+      effects.consume(code);
+      effects.exit('directiveLeafSequence');
       return factoryName.call(
         self,
         effects,
         afterName,
         nok,
-        'directiveLeafName'
-      )
+        'directiveLeafName',
+      );
     }
 
-    return nok(code)
+    return nok(code);
   }
 
   /** @type {State} */
   function afterName(code) {
     return code === codes.leftSquareBracket
       ? effects.attempt(label, afterLabel, afterLabel)(code)
-      : afterLabel(code)
+      : afterLabel(code);
   }
 
   /** @type {State} */
   function afterLabel(code) {
     return code === codes.leftCurlyBrace
       ? effects.attempt(attributes, afterAttributes, afterAttributes)(code)
-      : afterAttributes(code)
+      : afterAttributes(code);
   }
 
   /** @type {State} */
   function afterAttributes(code) {
-    return factorySpace(effects, end, types.whitespace)(code)
+    return factorySpace(effects, end, types.whitespace)(code);
   }
 
   /** @type {State} */
   function end(code) {
     if (code === codes.eof || markdownLineEnding(code)) {
-      effects.exit('directiveLeaf')
-      return ok(code)
+      effects.exit('directiveLeaf');
+      return ok(code);
     }
 
-    return nok(code)
+    return nok(code);
   }
 }
 
@@ -91,8 +93,8 @@ function tokenizeLabel(effects, ok, nok) {
     'directiveLeafLabel',
     'directiveLeafLabelMarker',
     'directiveLeafLabelString',
-    true
-  )
+    true,
+  );
 }
 
 /** @type {Tokenizer} */
@@ -113,6 +115,6 @@ function tokenizeAttributes(effects, ok, nok) {
     'directiveLeafAttributeValue',
     'directiveLeafAttributeValueMarker',
     'directiveLeafAttributeValueData',
-    true
-  )
+    true,
+  );
 }

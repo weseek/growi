@@ -4,8 +4,8 @@
  * @typedef {import('micromark-util-types').State} State
  */
 
-import {asciiAlpha, asciiAlphanumeric} from 'micromark-util-character'
-import {codes} from 'micromark-util-symbol/codes.js'
+import { asciiAlpha, asciiAlphanumeric } from 'micromark-util-character';
+import { codes } from 'micromark-util-symbol/codes.js';
 
 /**
  * @this {TokenizeContext}
@@ -15,35 +15,36 @@ import {codes} from 'micromark-util-symbol/codes.js'
  * @param {string} type
  */
 export function factoryName(effects, ok, nok, type) {
-  const self = this
+  // eslint-disable-next-line @typescript-eslint/no-this-alias
+  const self = this;
 
-  return start
+  return start;
 
   /** @type {State} */
   function start(code) {
     if (asciiAlpha(code)) {
-      effects.enter(type)
-      effects.consume(code)
-      return name
+      effects.enter(type);
+      effects.consume(code);
+      return name;
     }
 
-    return nok(code)
+    return nok(code);
   }
 
   /** @type {State} */
   function name(code) {
     if (
-      code === codes.dash ||
-      code === codes.underscore ||
-      asciiAlphanumeric(code)
+      code === codes.dash
+      || code === codes.underscore
+      || asciiAlphanumeric(code)
     ) {
-      effects.consume(code)
-      return name
+      effects.consume(code);
+      return name;
     }
 
-    effects.exit(type)
+    effects.exit(type);
     return self.previous === codes.dash || self.previous === codes.underscore
       ? nok(code)
-      : ok(code)
+      : ok(code);
   }
 }

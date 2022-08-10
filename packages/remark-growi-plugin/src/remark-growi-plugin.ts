@@ -1,7 +1,7 @@
 import { Plugin } from 'unified';
 
-import { directiveFromMarkdown, directiveToMarkdown } from './mdast-util-growi-plugin';
-import { directive } from './micromark-extension-growi-plugin/dev';
+import { directiveFromMarkdown, directiveToMarkdown } from './mdast-util-growi-plugin/index.js';
+import { directive } from './micromark-extension-growi-plugin/dev/index.js';
 
 export const remarkGrowiPlugin: Plugin = function() {
   const data = this.data();
