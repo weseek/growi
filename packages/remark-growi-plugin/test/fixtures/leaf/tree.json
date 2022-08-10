@@ -2,7 +2,7 @@
   "type": "root",
   "children": [
     {
-      "type": "leafDirective",
+      "type": "leafGrowiPluginDirective",
       "name": "a",
       "attributes": {},
       "children": [],
@@ -20,7 +20,7 @@
       }
     },
     {
-      "type": "leafDirective",
+      "type": "leafGrowiPluginDirective",
       "name": "a",
       "attributes": {},
       "children": [
@@ -55,7 +55,7 @@
       }
     },
     {
-      "type": "leafDirective",
+      "type": "leafGrowiPluginDirective",
       "name": "a",
       "attributes": {
         "b": ""
@@ -75,7 +75,7 @@
       }
     },
     {
-      "type": "leafDirective",
+      "type": "leafGrowiPluginDirective",
       "name": "a",
       "attributes": {
         "c": ""
@@ -112,7 +112,7 @@
       }
     },
     {
-      "type": "leafDirective",
+      "type": "leafGrowiPluginDirective",
       "name": "a",
       "attributes": {},
       "children": [
@@ -229,7 +229,7 @@
       }
     },
     {
-      "type": "leafDirective",
+      "type": "leafGrowiPluginDirective",
       "name": "a",
       "attributes": {
         "id": "e",

@@ -31,7 +31,7 @@ handleDirective.peek = peekDirective;
 
 /** @type {FromMarkdownExtension} */
 export const directiveFromMarkdown = {
-  canContainEols: ['textDirective'],
+  canContainEols: ['textGrowiPluginDirective'],
   enter: {
     directiveContainer: enterContainer,
     directiveContainerAttributes: enterAttributes,
@@ -76,11 +76,11 @@ export const directiveToMarkdown = {
   unsafe: [
     {
       character: '\r',
-      inConstruct: ['leafDirectiveLabel', 'containerDirectiveLabel'],
+      inConstruct: ['leafGrowiPluginDirectiveLabel', 'containerGrowiPluginDirectiveLabel'],
     },
     {
       character: '\n',
-      inConstruct: ['leafDirectiveLabel', 'containerDirectiveLabel'],
+      inConstruct: ['leafGrowiPluginDirectiveLabel', 'containerGrowiPluginDirectiveLabel'],
     },
     {
       before: '[^:]',
@@ -91,25 +91,25 @@ export const directiveToMarkdown = {
     { atBreak: true, character: ':', after: ':' },
   ],
   handlers: {
-    containerDirective: handleDirective,
-    leafDirective: handleDirective,
-    textDirective: handleDirective,
+    containerGrowiPluginDirective: handleDirective,
+    leafGrowiPluginDirective: handleDirective,
+    textGrowiPluginDirective: handleDirective,
   },
 };
 
 /** @type {FromMarkdownHandle} */
 function enterContainer(token) {
-  enter.call(this, 'containerDirective', token);
+  enter.call(this, 'containerGrowiPluginDirective', token);
 }
 
 /** @type {FromMarkdownHandle} */
 function enterLeaf(token) {
-  enter.call(this, 'leafDirective', token);
+  enter.call(this, 'leafGrowiPluginDirective', token);
 }
 
 /** @type {FromMarkdownHandle} */
 function enterText(token) {
-  enter.call(this, 'textDirective', token);
+  enter.call(this, 'textGrowiPluginDirective', token);
 }
 
 /**
@@ -229,7 +229,7 @@ function handleDirective(node, _, context, safeOptions) {
   /** @type {Directive|Paragraph|undefined} */
   let label = node;
 
-  if (node.type === 'containerDirective') {
+  if (node.type === 'containerGrowiPluginDirective') {
     const head = (node.children || [])[0];
     label = inlineDirectiveLabel(head) ? head : undefined;
   }
@@ -252,7 +252,7 @@ function handleDirective(node, _, context, safeOptions) {
 
   value += tracker.move(attributes(node, context));
 
-  if (node.type === 'containerDirective') {
+  if (node.type === 'containerGrowiPluginDirective') {
     const head = (node.children || [])[0];
     let shallow = node;
 
@@ -284,7 +284,7 @@ function peekDirective() {
  */
 function attributes(node, context) {
   const quote = checkQuote(context);
-  const subset = node.type === 'textDirective' ? [quote] : [quote, '\n', '\r'];
+  const subset = node.type === 'textGrowiPluginDirective' ? [quote] : [quote, '\n', '\r'];
   const attrs = node.attributes || {};
   /** @type {Array.<string>} */
   const values = [];
@@ -380,11 +380,11 @@ function inlineDirectiveLabel(node) {
 function fence(node) {
   let size = 0;
 
-  if (node.type === 'containerDirective') {
-    visitParents(node, 'containerDirective', onvisit);
+  if (node.type === 'containerGrowiPluginDirective') {
+    visitParents(node, 'containerGrowiPluginDirective', onvisit);
     size += 3;
   }
-  else if (node.type === 'leafDirective') {
+  else if (node.type === 'leafGrowiPluginDirective') {
     size = 2;
   }
   else {
@@ -399,7 +399,7 @@ function fence(node) {
     let nesting = 0;
 
     while (index--) {
-      if (parents[index].type === 'containerDirective') {
+      if (parents[index].type === 'containerGrowiPluginDirective') {
         nesting++;
       }
     }

@@ -2,7 +2,7 @@
   "type": "root",
   "children": [
     {
-      "type": "containerDirective",
+      "type": "containerGrowiPluginDirective",
       "name": "a",
       "attributes": {},
       "children": [],
@@ -20,7 +20,7 @@
       }
     },
     {
-      "type": "containerDirective",
+      "type": "containerGrowiPluginDirective",
       "name": "a",
       "attributes": {},
       "children": [
@@ -75,7 +75,7 @@
       }
     },
     {
-      "type": "containerDirective",
+      "type": "containerGrowiPluginDirective",
       "name": "a",
       "attributes": {
         "b": ""
@@ -95,7 +95,7 @@
       }
     },
     {
-      "type": "containerDirective",
+      "type": "containerGrowiPluginDirective",
       "name": "a",
       "attributes": {
         "c": ""
@@ -152,7 +152,7 @@
       }
     },
     {
-      "type": "containerDirective",
+      "type": "containerGrowiPluginDirective",
       "name": "a",
       "attributes": {},
       "children": [
@@ -289,7 +289,7 @@
       }
     },
     {
-      "type": "containerDirective",
+      "type": "containerGrowiPluginDirective",
       "name": "a",
       "attributes": {
         "id": "e",
@@ -311,17 +311,17 @@
       }
     },
     {
-      "type": "containerDirective",
+      "type": "containerGrowiPluginDirective",
       "name": "a",
       "attributes": {},
       "children": [
         {
-          "type": "containerDirective",
+          "type": "containerGrowiPluginDirective",
           "name": "b",
           "attributes": {},
           "children": [
             {
-              "type": "containerDirective",
+              "type": "containerGrowiPluginDirective",
               "name": "c",
               "attributes": {},
               "children": [],
@@ -367,7 +367,7 @@
       }
     },
     {
-      "type": "containerDirective",
+      "type": "containerGrowiPluginDirective",
       "name": "a",
       "attributes": {},
       "children": [
@@ -405,7 +405,7 @@
           }
         },
         {
-          "type": "containerDirective",
+          "type": "containerGrowiPluginDirective",
           "name": "c",
           "attributes": {},
           "children": [
@@ -443,7 +443,7 @@
               }
             },
             {
-              "type": "containerDirective",
+              "type": "containerGrowiPluginDirective",
               "name": "e",
               "attributes": {},
               "children": [

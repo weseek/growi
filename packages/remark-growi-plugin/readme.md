@@ -137,9 +137,9 @@ function myRemarkPlugin() {
   return (tree) => {
     visit(tree, (node) => {
       if (
-        node.type === 'textDirective' ||
-        node.type === 'leafDirective' ||
-        node.type === 'containerDirective'
+        node.type === 'textGrowiPluginDirective' ||
+        node.type === 'leafGrowiPluginDirective' ||
+        node.type === 'containerGrowiPluginDirective'
       ) {
         const data = node.data || (node.data = {})
         const hast = h(node.name, node.attributes)
@@ -188,9 +188,9 @@ function myRemarkPlugin() {
   return (tree, file) => {
     visit(tree, (node) => {
       if (
-        node.type === 'textDirective' ||
-        node.type === 'leafDirective' ||
-        node.type === 'containerDirective'
+        node.type === 'textGrowiPluginDirective' ||
+        node.type === 'leafGrowiPluginDirective' ||
+        node.type === 'containerGrowiPluginDirective'
       ) {
         if (node.name !== 'youtube') return
 
@@ -198,7 +198,7 @@ function myRemarkPlugin() {
         const attributes = node.attributes || {}
         const id = attributes.id
 
-        if (node.type === 'textDirective') file.fail('Text directives for `youtube` not supported', node)
+        if (node.type === 'textGrowiPluginDirective') file.fail('Text directives for `youtube` not supported', node)
         if (!id) file.fail('Missing video id', node)
 
         data.hName = 'iframe'
@@ -247,14 +247,14 @@ function myRemarkPlugin() {
   return (tree) => {
     visit(tree, (node) => {
       if (
-        node.type === 'textDirective' ||
-        node.type === 'leafDirective' ||
-        node.type === 'containerDirective'
+        node.type === 'textGrowiPluginDirective' ||
+        node.type === 'leafGrowiPluginDirective' ||
+        node.type === 'containerGrowiPluginDirective'
       ) {
         if (node.name !== 'note') return
 
         const data = node.data || (node.data = {})
-        const tagName = node.type === 'textDirective' ? 'span' : 'div'
+        const tagName = node.type === 'textGrowiPluginDirective' ? 'span' : 'div'
 
         data.hName = tagName
         data.hProperties = h(tagName, node.attributes).properties

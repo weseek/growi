@@ -9,27 +9,27 @@ interface DirectiveFields {
 }
 
 export interface TextDirective extends Parent, DirectiveFields {
-  type: 'textDirective'
+  type: 'textGrowiPluginDirective'
   children: PhrasingContent[]
 }
 
 export interface LeafDirective extends Parent, DirectiveFields {
-  type: 'leafDirective'
+  type: 'leafGrowiPluginDirective'
   children: PhrasingContent[]
 }
 
 export interface ContainerDirective extends Parent, DirectiveFields {
-  type: 'containerDirective'
+  type: 'containerGrowiPluginDirective'
   children: BlockContent[]
 }
 
 declare module 'mdast' {
   interface StaticPhrasingContentMap {
-    textDirective: TextDirective
+    textGrowiPluginDirective: TextDirective
   }
 
   interface BlockContentMap {
-    containerDirective: ContainerDirective
-    leafDirective: LeafDirective
+    containerGrowiPluginDirective: ContainerDirective
+    leafGrowiPluginDirective: LeafDirective
   }
 }
