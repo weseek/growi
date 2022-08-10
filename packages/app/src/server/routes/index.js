@@ -144,7 +144,7 @@ module.exports = function(crowi, app) {
   // app.get('/admin/user-group-detail/:id'                , loginRequiredStrictly, adminRequired, admin.userGroup.detail);
 
   // auditLog admin
-  app.get('/admin/audit-log'                            , loginRequiredStrictly, adminRequired, admin.auditLog.index);
+  // app.get('/admin/audit-log'                            , loginRequiredStrictly, adminRequired, admin.auditLog.index);
 
   // importer management for admin
   // app.get('/admin/importer'                     , loginRequiredStrictly , adminRequired , admin.importer.index);
