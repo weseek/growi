@@ -26,7 +26,7 @@ const attributes = { tokenize: tokenizeAttributes, partial: true };
 function previous(code) {
   // If there is a previous code, there will always be a tail.
   return (
-    code !== codes.colon
+    code !== codes.dollarSign
     || this.events[this.events.length - 1][1].type === types.characterEscape
   );
 }
@@ -40,7 +40,7 @@ function tokenizeDirectiveText(effects, ok, nok) {
 
   /** @type {State} */
   function start(code) {
-    assert(code === codes.colon, 'expected `:`');
+    assert(code === codes.dollarSign, 'expected `$`');
     assert(previous.call(self, self.previous), 'expected correct previous');
     effects.enter('directiveText');
     effects.enter('directiveTextMarker');
@@ -52,7 +52,7 @@ function tokenizeDirectiveText(effects, ok, nok) {
   /** @type {State} */
   function afterName(code) {
     // eslint-disable-next-line no-nested-ternary
-    return code === codes.colon
+    return code === codes.dollarSign
       ? nok(code)
       : code === codes.leftSquareBracket
         ? effects.attempt(label, afterLabel, afterLabel)(code)

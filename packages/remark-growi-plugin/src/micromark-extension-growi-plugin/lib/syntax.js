@@ -13,7 +13,7 @@ import { directiveText } from './directive-text.js';
  */
 export function directive() {
   return {
-    text: { [codes.colon]: directiveText },
-    flow: { [codes.colon]: [directiveContainer, directiveLeaf] },
+    text: { [codes.dollarSign]: directiveText },
+    flow: { [codes.dollarSign]: [directiveContainer, directiveLeaf] },
   };
 }

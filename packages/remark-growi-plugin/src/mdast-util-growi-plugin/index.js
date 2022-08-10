@@ -83,12 +83,12 @@ export const directiveToMarkdown = {
       inConstruct: ['leafGrowiPluginDirectiveLabel', 'containerGrowiPluginDirectiveLabel'],
     },
     {
-      before: '[^:]',
-      character: ':',
+      before: '[^$]',
+      character: '$',
       after: '[A-Za-z]',
       inConstruct: ['phrasing'],
     },
-    { atBreak: true, character: ':', after: ':' },
+    { atBreak: true, character: '$', after: '$' },
   ],
   handlers: {
     containerGrowiPluginDirective: handleDirective,
@@ -274,7 +274,7 @@ function handleDirective(node, _, context, safeOptions) {
 
 /** @type {ToMarkdownHandle} */
 function peekDirective() {
-  return ':';
+  return '$';
 }
 
 /**
@@ -391,7 +391,7 @@ function fence(node) {
     size = 1;
   }
 
-  return ':'.repeat(size);
+  return '$'.repeat(size);
 
   /** @type {import('unist-util-visit-parents/complex-types').BuildVisitor<Root, Directive>} */
   function onvisit(_, parents) {
