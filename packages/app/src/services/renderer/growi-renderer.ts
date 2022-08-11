@@ -17,7 +17,6 @@ import HeaderConfigurer from './markdown-it/header';
 import HeaderLineNumberConfigurer from './markdown-it/header-line-number';
 import HeaderWithEditLinkConfigurer from './markdown-it/header-with-edit-link';
 import LinkerByRelativePathConfigurer from './markdown-it/link-by-relative-path';
-import ListConfigurer from './markdown-it/list';
 import MathJaxConfigurer from './markdown-it/mathjax';
 import PlantUMLConfigurer from './markdown-it/plantuml';
 import TableConfigurer from './markdown-it/table';
@@ -103,7 +102,6 @@ export default class GrowiRenderer {
       new DrawioViewerConfigurer(),
       new PlantUMLConfigurer(this.growiRendererConfig),
       new BlockdiagConfigurer(this.growiRendererConfig),
-      new ListConfigurer(),
     ];
 
     if (this.pagePath != null) {
