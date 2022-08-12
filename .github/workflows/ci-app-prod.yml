@@ -13,7 +13,9 @@ on:
       - yarn.lock
       - packages/app/**
       - '!packages/app/docker/**'
+      - packages/codemirror-textlint/**
       - packages/core/**
+      - packages/remark-growi-plugin/**
       - packages/slack/**
       - packages/ui/**
       - packages/plugin-**
@@ -30,7 +32,9 @@ on:
       - yarn.lock
       - packages/app/**
       - '!packages/app/docker/**'
+      - packages/codemirror-textlint/**
       - packages/core/**
+      - packages/remark-growi-plugin/**
       - packages/slack/**
       - packages/ui/**
       - packages/plugin-**
