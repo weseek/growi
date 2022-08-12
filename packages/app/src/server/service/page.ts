@@ -1359,7 +1359,7 @@ class PageService {
   /*
    * Delete
    */
-  async deletePage(page, user, options = {}, isRecursively = false) {
+  async deletePage(page, user, options = {}, isRecursively = false, activityParameters?) {
     /*
      * Common Operation
      */
@@ -1396,6 +1396,18 @@ class PageService {
     if (shouldReplace) {
       await Page.replaceTargetWithPage(page, null, true);
     }
+
+    const parameters = {
+      ip: activityParameters.ip,
+      endpoint: activityParameters.endpoint,
+      action: page.descendantCount > 0 ? SupportedAction.ACTION_PAGE_RECURSIVELY_DELETE : SupportedAction.ACTION_PAGE_DELETE,
+      user,
+      snapshot: {
+        username: user.username,
+      },
+    };
+
+    const activity = await this.crowi.activityService.createActivity(parameters);
 
     // Delete target (only updating an existing document's properties )
     let deletedPage;
@@ -1440,7 +1452,7 @@ class PageService {
        */
       (async() => {
         try {
-          await this.deleteRecursivelyMainOperation(page, user, pageOp._id);
+          await this.deleteRecursivelyMainOperation(page, user, pageOp._id, activity);
         }
         catch (err) {
           logger.error('Error occurred while running deleteRecursivelyMainOperation.', err);
@@ -1451,6 +1463,9 @@ class PageService {
           throw err;
         }
       })();
+    }
+    else {
+      this.activityEvent.emit('updated', activity, page);
     }
 
     return deletedPage;
@@ -1483,8 +1498,12 @@ class PageService {
     return deletedPage;
   }
 
-  async deleteRecursivelyMainOperation(page, user, pageOpId: ObjectIdLike): Promise<void> {
-    await this.deleteDescendantsWithStream(page, user, false);
+  async deleteRecursivelyMainOperation(page, user, pageOpId: ObjectIdLike, activity?): Promise<void> {
+    const descendantsSubscribedSets = new Set();
+    await this.deleteDescendantsWithStream(page, user, false, descendantsSubscribedSets);
+
+    const descendantsSubscribedUsers = Array.from(descendantsSubscribedSets);
+    this.activityEvent.emit('updated', activity, page, descendantsSubscribedUsers);
 
     await PageOperation.findByIdAndDelete(pageOpId);
 
@@ -1606,7 +1625,7 @@ class PageService {
   /**
    * Create delete stream and return deleted document count
    */
-  private async deleteDescendantsWithStream(targetPage, user, shouldUseV4Process = true): Promise<number> {
+  private async deleteDescendantsWithStream(targetPage, user, shouldUseV4Process = true, descendantsSubscribedSets?): Promise<number> {
     let readStream;
     if (shouldUseV4Process) {
       readStream = await this.generateReadStreamToOperateOnlyDescendants(targetPage.path, user);
@@ -1629,6 +1648,10 @@ class PageService {
         try {
           count += batch.length;
           await deleteDescendants(batch, user);
+          const subscribedUsers = await Subscription.getSubscriptions(batch);
+          subscribedUsers.forEach((eachUser) => {
+            descendantsSubscribedSets.add(eachUser);
+          });
           logger.debug(`Deleting pages progressing: (count=${count})`);
         }
         catch (err) {
@@ -1693,7 +1716,7 @@ class PageService {
     return;
   }
 
-  async deleteCompletely(page, user, options = {}, isRecursively = false, preventEmitting = false) {
+  async deleteCompletely(page, user, options = {}, isRecursively = false, preventEmitting = false, activityParameters?) {
     /*
      * Common Operation
      */
@@ -1722,6 +1745,18 @@ class PageService {
     const paths = [page.path];
 
     logger.debug('Deleting completely', paths);
+
+    const parameters = {
+      ip: activityParameters.ip,
+      endpoint: activityParameters.endpoint,
+      action: page.descendantCount > 0 ? SupportedAction.ACTION_PAGE_RECURSIVELY_DELETE_COMPLETELY : SupportedAction.ACTION_PAGE_DELETE_COMPLETELY,
+      user,
+      snapshot: {
+        username: user.username,
+      },
+    };
+
+    const activity = await this.crowi.activityService.createActivity(parameters);
 
     // 1. update descendantCount
     if (isRecursively) {
@@ -1768,7 +1803,7 @@ class PageService {
        */
       (async() => {
         try {
-          await this.deleteCompletelyRecursivelyMainOperation(page, user, options, pageOp._id);
+          await this.deleteCompletelyRecursivelyMainOperation(page, user, options, pageOp._id, activity);
         }
         catch (err) {
           logger.error('Error occurred while running deleteCompletelyRecursivelyMainOperation.', err);
@@ -1780,12 +1815,18 @@ class PageService {
         }
       })();
     }
+    else {
+      this.activityEvent.emit('updated', activity, page);
+    }
 
     return;
   }
 
-  async deleteCompletelyRecursivelyMainOperation(page, user, options, pageOpId: ObjectIdLike): Promise<void> {
-    await this.deleteCompletelyDescendantsWithStream(page, user, options, false);
+  async deleteCompletelyRecursivelyMainOperation(page, user, options, pageOpId: ObjectIdLike, activity?): Promise<void> {
+    const descendantsSubscribedSets = new Set();
+    await this.deleteCompletelyDescendantsWithStream(page, user, options, false, descendantsSubscribedSets);
+    const descendantsSubscribedUsers = Array.from(descendantsSubscribedSets);
+    this.activityEvent.emit('updated', activity, page, descendantsSubscribedUsers);
 
     await PageOperation.findByIdAndDelete(pageOpId);
 
@@ -1818,7 +1859,7 @@ class PageService {
   /**
    * Create delete completely stream
    */
-  private async deleteCompletelyDescendantsWithStream(targetPage, user, options = {}, shouldUseV4Process = true): Promise<number> {
+  private async deleteCompletelyDescendantsWithStream(targetPage, user, options = {}, shouldUseV4Process = true, descendantsSubscribedSets?): Promise<number> {
     let readStream;
 
     if (shouldUseV4Process) { // pages don't have parents
@@ -1841,6 +1882,10 @@ class PageService {
         try {
           count += batch.length;
           await deleteMultipleCompletely(batch, user, options);
+          const subscribedUsers = await Subscription.getSubscriptions(batch);
+          subscribedUsers.forEach((eachUser) => {
+            descendantsSubscribedSets.add(eachUser);
+          });
           logger.debug(`Adding pages progressing: (count=${count})`);
         }
         catch (err) {
