@@ -8,7 +8,6 @@ import { CustomWindow } from '~/interfaces/global';
 import { RendererOptions } from '~/services/renderer/renderer';
 import { useCurrentPathname, useInterceptorManager } from '~/stores/context';
 import { useEditorSettings } from '~/stores/editor';
-import { useViewOptions } from '~/stores/renderer';
 import loggerFactory from '~/utils/logger';
 
 // import RevisionBody from './RevisionBody';

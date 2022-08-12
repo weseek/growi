@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react';
+import { useCallback, useEffect, useRef } from 'react';
 
 import { HtmlElementNode } from 'rehype-toc';
 import { Key, SWRResponse } from 'swr';
@@ -42,14 +42,9 @@ const _useOptionsBase = (
   return useSWRImmutable<RendererOptions, Error>(key);
 };
 
-export const useViewOptions = (): SWRResponse<RendererOptions, Error> => {
+export const useViewOptions = (storeTocNodeHandler: (toc: HtmlElementNode) => void): SWRResponse<RendererOptions, Error> => {
   const { data: currentPagePath } = useCurrentPagePath();
   const { data: rendererConfig } = useRendererConfig();
-  const { mutate: mutateCurrentPageTocNode } = useCurrentPageTocNode();
-
-  // Pass tocRef to generateViewOptions (=> rehypePlugin => customizeTOC) to call mutateCurrentPageTocNode when tocRef.current changes.
-  // The toc node passed by customizeTOC is assigned to tocRef.current.
-  const tocRef = useRef<HtmlElementNode>();
 
   const isAllDataValid = currentPagePath != null && rendererConfig != null;
 
@@ -57,14 +52,9 @@ export const useViewOptions = (): SWRResponse<RendererOptions, Error> => {
     ? ['viewOptions', currentPagePath, rendererConfig]
     : null;
 
-  useEffect(() => {
-    mutateCurrentPageTocNode(tocRef.current);
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [mutateCurrentPageTocNode, tocRef.current]); // include tocRef.current to call mutateCurrentPageTocNode when tocRef.current changes
-
   return useSWRImmutable<RendererOptions, Error>(
     key,
-    (rendererId, currentPagePath, rendererConfig) => generateViewOptions(currentPagePath, rendererConfig, tocRef),
+    (rendererId, currentPagePath, rendererConfig) => generateViewOptions(currentPagePath, rendererConfig, storeTocNodeHandler),
   );
 };
 

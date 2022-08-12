@@ -1,4 +1,5 @@
 import React, {
+  useCallback,
   useEffect, useRef, useState,
 } from 'react';
 
@@ -8,7 +9,7 @@ import dynamic from 'next/dynamic';
 import { blinkSectionHeaderAtBoot } from '~/client/util/blink-section-header';
 // import { getOptionsToSave } from '~/client/util/editor';
 import {
-  useIsGuestUser, useIsBlinkedHeaderAtBoot,
+  useIsGuestUser, useIsBlinkedHeaderAtBoot, useCurrentPageTocNode,
 } from '~/stores/context';
 import {
   useSWRxSlackChannels, useIsSlackEnabled, usePageTagsForEditors, useIsEnabledUnsavedWarning,
@@ -21,6 +22,7 @@ import {
 import loggerFactory from '~/utils/logger';
 
 import RevisionRenderer from './Page/RevisionRenderer';
+import { HtmlElementNode } from 'rehype-toc';
 
 // TODO: import dynamically
 // import MarkdownTable from '~/client/models/MarkdownTable';
@@ -190,6 +192,14 @@ class PageSubstance extends React.Component<PageSubstanceProps> {
 }
 
 export const Page = (props) => {
+  // Pass tocRef to generateViewOptions (=> rehypePlugin => customizeTOC) to call mutateCurrentPageTocNode when tocRef.current changes.
+  // The toc node passed by customizeTOC is assigned to tocRef.current.
+  const tocRef = useRef<HtmlElementNode>();
+
+  const storeTocNodeHandler = useCallback((toc: HtmlElementNode) => {
+    tocRef.current = toc;
+  }, []);
+
   const { data: currentPage } = useSWRxCurrentPage();
   const { data: editorMode } = useEditorMode();
   const { data: isGuestUser } = useIsGuestUser();
@@ -197,9 +207,10 @@ export const Page = (props) => {
   const { data: slackChannelsData } = useSWRxSlackChannels(currentPage?.path);
   const { data: isSlackEnabled } = useIsSlackEnabled();
   const { data: pageTags } = usePageTagsForEditors(null); // TODO: pass pageId
-  const { data: rendererOptions } = useViewOptions();
+  const { data: rendererOptions } = useViewOptions(storeTocNodeHandler);
   const { mutate: mutateIsEnabledUnsavedWarning } = useIsEnabledUnsavedWarning();
   const { data: isBlinkedAtBoot, mutate: mutateBlinkedAtBoot } = useIsBlinkedHeaderAtBoot();
+  const { mutate: mutateCurrentPageTocNode } = useCurrentPageTocNode();
 
   const pageRef = useRef(null);
 
@@ -211,6 +222,11 @@ export const Page = (props) => {
     blinkSectionHeaderAtBoot();
     mutateBlinkedAtBoot(true);
   }, [isBlinkedAtBoot, mutateBlinkedAtBoot]);
+
+  useEffect(() => {
+    mutateCurrentPageTocNode(tocRef.current);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [mutateCurrentPageTocNode, tocRef.current]); // include tocRef.current to call mutateCurrentPageTocNode when tocRef.current changes
 
   // // set handler to open DrawioModal
   // useEffect(() => {

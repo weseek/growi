@@ -1,5 +1,3 @@
-import { MutableRefObject } from 'react';
-
 import { ReactMarkdownOptions } from 'react-markdown/lib/react-markdown';
 import katex from 'rehype-katex';
 import raw from 'rehype-raw';
@@ -247,7 +245,7 @@ const generateCommonOptions = (pagePath: string|undefined, config: RendererConfi
 export const generateViewOptions = (
     pagePath: string,
     config: RendererConfig,
-    tocRef: MutableRefObject<HtmlElementNode | undefined>,
+    storeTocNode: (toc: HtmlElementNode) => void,
 ): RendererOptions => {
 
   const options = generateCommonOptions(pagePath, config);
@@ -285,7 +283,7 @@ export const generateViewOptions = (
 
         // For storing tocNode to global state with swr
         // search: tocRef.current
-        tocRef.current = toc;
+        storeTocNode(toc);
 
         return false; // not show toc in body
       },
