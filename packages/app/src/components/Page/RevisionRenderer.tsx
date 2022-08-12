@@ -95,7 +95,7 @@ type Props = {
   additionalClassName?: string,
 }
 
-const RevisionRenderer = (props: Props): JSX.Element => {
+const RevisionRenderer = React.memo((props: Props): JSX.Element => {
 
   const {
     rendererOptions, markdown, pagePath, highlightKeywords, additionalClassName,
@@ -246,6 +246,7 @@ const RevisionRenderer = (props: Props): JSX.Element => {
   //   />
   // );
 
-};
+});
+RevisionRenderer.displayName = 'RevisionRenderer';
 
 export default RevisionRenderer;

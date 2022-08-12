@@ -31,7 +31,7 @@ class GrowiArchiveSection extends React.Component {
     this.renderDefferentVersionAlert = this.renderDefferentVersionAlert.bind(this);
   }
 
-  async UNSAFE_UNSAFE_componentWillMount() {
+  async UNSAFE_componentWillMount() {
     // get uploaded file status
     const res = await apiv3Get('/import/status');
 
