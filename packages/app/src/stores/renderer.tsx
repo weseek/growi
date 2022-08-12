@@ -1,5 +1,3 @@
-import { useCallback, useEffect, useRef } from 'react';
-
 import { HtmlElementNode } from 'rehype-toc';
 import { Key, SWRResponse } from 'swr';
 import useSWRImmutable from 'swr/immutable';
