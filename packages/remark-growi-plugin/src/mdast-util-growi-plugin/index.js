@@ -291,7 +291,7 @@ function attributes(node, context) {
     values.unshift(id);
   }
 
-  return values.length > 0 ? `{${values.join(' ')}}` : '';
+  return values.length > 0 ? `(${values.join(' ')})` : '';
 
   /**
    * @param {string} key

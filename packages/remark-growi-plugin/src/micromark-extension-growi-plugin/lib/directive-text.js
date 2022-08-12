@@ -61,7 +61,7 @@ function tokenizeDirectiveText(effects, ok, nok) {
 
   /** @type {State} */
   function afterLabel(code) {
-    return code === codes.leftCurlyBrace
+    return code === codes.leftParenthesis
       ? effects.attempt(attributes, afterAttributes, afterAttributes)(code)
       : afterAttributes(code);
   }

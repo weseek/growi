@@ -98,26 +98,8 @@ test('micromark-extension-directive (syntax)', (t) => {
     );
 
     t.equal(
-      micromark(':+1:', options()),
-      '<p>:+1:</p>',
-      'should not interfere w/ gemoji (1)',
-    );
-
-    t.equal(
-      micromark(':heart:', options()),
-      '<p>:heart:</p>',
-      'should not interfere w/ gemoji (2)',
-    );
-
-    t.equal(
-      micromark(':call_me_hand:', options()),
-      '<p>:call_me_hand:</p>',
-      'should not interfere w/ gemoji (3)',
-    );
-
-    t.equal(
-      micromark('_:directive_', options()),
-      '<p><em>:directive</em></p>',
+      micromark('_$directive_', options()),
+      '<p><em>$directive</em></p>',
       'should not interfere w/ emphasis (`_`)',
     );
 
@@ -128,8 +110,8 @@ test('micromark-extension-directive (syntax)', (t) => {
     );
 
     t.equal(
-      micromark('$a{', options()),
-      '<p>{</p>',
+      micromark('$a(', options()),
+      '<p>(</p>',
       'should support a name followed by an unclosed `{`',
     );
 
@@ -140,8 +122,8 @@ test('micromark-extension-directive (syntax)', (t) => {
     );
 
     t.equal(
-      micromark('$a{b', options()),
-      '<p>{b</p>',
+      micromark('$a(b', options()),
+      '<p>(b</p>',
       'should support a name followed by an unclosed `{` w/ content',
     );
 
@@ -188,188 +170,188 @@ test('micromark-extension-directive (syntax)', (t) => {
     );
 
     t.equal(
-      micromark('a $a{}', options()),
+      micromark('a $a()', options()),
       '<p>a </p>',
       'should support empty attributes',
     );
 
     t.equal(
-      micromark('a $a{ \t}', options()),
+      micromark('a $a( \t)', options()),
       '<p>a </p>',
       'should support whitespace only attributes',
     );
 
     t.equal(
-      micromark('$a{\n}', options()),
+      micromark('$a(\n)', options()),
       '<p></p>',
       'should support an eol in attributes',
     );
 
     t.equal(
-      micromark('a $a{a b c}', options()),
+      micromark('a $a(a b c)', options()),
       '<p>a </p>',
       'should support attributes w/o values',
     );
 
     t.equal(
-      micromark('a $a{a=b c=d}', options()),
+      micromark('a $a(a=b c=d)', options()),
       '<p>a </p>',
       'should support attributes w/ unquoted values',
     );
 
     t.equal(
-      micromark('a $a{.a .b}', options()),
+      micromark('a $a(.a .b)', options()),
       '<p>a </p>',
       'should support attributes w/ class shortcut',
     );
 
     t.equal(
-      micromark('a $a{.a.b}', options()),
+      micromark('a $a(.a.b)', options()),
       '<p>a </p>',
       'should support attributes w/ class shortcut w/o whitespace between',
     );
 
     t.equal(
-      micromark('a $a{#a #b}', options()),
+      micromark('a $a(#a #b)', options()),
       '<p>a </p>',
       'should support attributes w/ id shortcut',
     );
 
     t.equal(
-      micromark('a $a{#a#b}', options()),
+      micromark('a $a(#a#b)', options()),
       '<p>a </p>',
       'should support attributes w/ id shortcut w/o whitespace between',
     );
 
     t.equal(
-      micromark('a $a{#a.b.c#d e f=g #h.i.j}', options()),
+      micromark('a $a(#a.b.c#d e f=g #h.i.j)', options()),
       '<p>a </p>',
       'should support attributes w/ shortcuts combined w/ other attributes',
     );
 
     t.equal(
-      micromark('$a{..b}', options()),
-      '<p>{..b}</p>',
+      micromark('$a(..b)', options()),
+      '<p>(..b)</p>',
       'should not support an empty shortcut (`.`)',
     );
 
     t.equal(
-      micromark('$a{.#b}', options()),
-      '<p>{.#b}</p>',
+      micromark('$a(.#b)', options()),
+      '<p>(.#b)</p>',
       'should not support an empty shortcut (`#`)',
     );
 
     t.equal(
-      micromark('$a{.}', options()),
-      '<p>{.}</p>',
+      micromark('$a(.)', options()),
+      '<p>(.)</p>',
       'should not support an empty shortcut (`}`)',
     );
 
     t.equal(
-      micromark('$a{.a=b}', options()),
-      '<p>{.a=b}</p>',
+      micromark('$a(.a=b)', options()),
+      '<p>(.a=b)</p>',
       'should not support certain characters in shortcuts (`=`)',
     );
 
     t.equal(
-      micromark('$a{.a"b}', options()),
-      '<p>{.a&quot;b}</p>',
+      micromark('$a(.a"b)', options()),
+      '<p>(.a&quot;b)</p>',
       'should not support certain characters in shortcuts (`"`)',
     );
 
     t.equal(
-      micromark('$a{.a<b}', options()),
-      '<p>{.a&lt;b}</p>',
+      micromark('$a(.a<b)', options()),
+      '<p>(.a&lt;b)</p>',
       'should not support certain characters in shortcuts (`<`)',
     );
 
     t.equal(
-      micromark('a $a{.a💚b}', options()),
+      micromark('a $a(.a💚b)', options()),
       '<p>a </p>',
       'should support most characters in shortcuts',
     );
 
     t.equal(
-      micromark('a $a{_}', options()),
+      micromark('a $a(_)', options()),
       '<p>a </p>',
       'should support an underscore in attribute names',
     );
 
     t.equal(
-      micromark('a $a{xml:lang}', options()),
+      micromark('a $a(xml:lang)', options()),
       '<p>a </p>',
       'should support a colon in attribute names',
     );
 
     t.equal(
-      micromark('a $a{a="b" c="d e f"}', options()),
+      micromark('a $a(a="b" c="d e f")', options()),
       '<p>a </p>',
       'should support double quoted attributes',
     );
 
     t.equal(
-      micromark("a $a{a='b' c='d e f'}", options()),
+      micromark("a $a(a='b' c='d e f')", options()),
       '<p>a </p>',
       'should support single quoted attributes',
     );
 
     t.equal(
-      micromark('a $a{a = b c\t=\t\'d\' f  =\r"g"}', options()),
+      micromark('a $a(a = b c\t=\t\'d\' f  =\r"g")', options()),
       '<p>a </p>',
       'should support whitespace around initializers',
     );
 
     t.equal(
-      micromark('$a{b==}', options()),
-      '<p>{b==}</p>',
+      micromark('$a(b==)', options()),
+      '<p>(b==)</p>',
       'should not support `=` to start an unquoted attribute value',
     );
 
     t.equal(
-      micromark('$a{b=}', options()),
-      '<p>{b=}</p>',
+      micromark('$a(b=)', options()),
+      '<p>(b=)</p>',
       'should not support a missing attribute value after `=`',
     );
 
     t.equal(
-      micromark("$a{b=c'}", options()),
-      "<p>{b=c'}</p>",
+      micromark("$a(b=c')", options()),
+      "<p>(b=c')</p>",
       'should not support an apostrophe in an unquoted attribute value',
     );
 
     t.equal(
-      micromark('$a{b=c`}', options()),
-      '<p>{b=c`}</p>',
+      micromark('$a(b=c`)', options()),
+      '<p>(b=c`)</p>',
       'should not support a grave accent in an unquoted attribute value',
     );
 
     t.equal(
-      micromark('a $a{b=a💚b}', options()),
+      micromark('a $a(b=a💚b)', options()),
       '<p>a </p>',
       'should support most other characters in unquoted attribute values',
     );
 
     t.equal(
-      micromark('$a{b="c', options()),
-      '<p>{b=&quot;c</p>',
+      micromark('$a(b="c', options()),
+      '<p>(b=&quot;c</p>',
       'should not support an EOF in a quoted attribute value',
     );
 
     t.equal(
-      micromark('a $a{b="a💚b"}', options()),
+      micromark('a $a(b="a💚b")', options()),
       '<p>a </p>',
       'should support most other characters in quoted attribute values',
     );
 
     t.equal(
-      micromark('$a{b="\nc\r  d"}', options()),
+      micromark('$a(b="\nc\r  d")', options()),
       '<p></p>',
       'should support EOLs in quoted attribute values',
     );
 
     t.equal(
-      micromark('$a{b="c"', options()),
-      '<p>{b=&quot;c&quot;</p>',
+      micromark('$a(b="c"', options()),
+      '<p>(b=&quot;c&quot;</p>',
       'should not support an EOF after a quoted attribute value',
     );
 
@@ -484,240 +466,240 @@ test('micromark-extension-directive (syntax)', (t) => {
     // );
 
     t.equal(
-      micromark('$a{}', options()),
+      micromark('$a()', options()),
       '',
       'should support empty attributes',
     );
 
     t.equal(
-      micromark('$a{ \t}', options()),
+      micromark('$a( \t)', options()),
       '',
       'should support whitespace only attributes',
     );
 
     // == Resolved as text directive
     // t.equal(
-    //   micromark('$a{\n}', options()),
-    //   '<p>$a{\n}</p>',
+    //   micromark('$a(\n)', options()),
+    //   '<p>$a(\n)</p>',
     //   'should not support an eol in attributes',
     // );
 
     t.equal(
-      micromark('$a{a b c}', options()),
+      micromark('$a(a b c)', options()),
       '',
       'should support attributes w/o values',
     );
 
     t.equal(
-      micromark('$a{a=b c=d}', options()),
+      micromark('$a(a=b c=d)', options()),
       '',
       'should support attributes w/ unquoted values',
     );
 
     t.equal(
-      micromark('$a{.a .b}', options()),
+      micromark('$a(.a .b)', options()),
       '',
       'should support attributes w/ class shortcut',
     );
 
     t.equal(
-      micromark('$a{#a #b}', options()),
+      micromark('$a(#a #b)', options()),
       '',
       'should support attributes w/ id shortcut',
     );
 
     t.equal(
-      micromark('$a{.a💚b}', options()),
+      micromark('$a(.a💚b)', options()),
       '',
       'should support most characters in shortcuts',
     );
 
     t.equal(
-      micromark('$a{a="b" c="d e f"}', options()),
+      micromark('$a(a="b" c="d e f")', options()),
       '',
       'should support double quoted attributes',
     );
 
     t.equal(
-      micromark("$a{a='b' c='d e f'}", options()),
+      micromark("$a(a='b' c='d e f')", options()),
       '',
       'should support single quoted attributes',
     );
 
     t.equal(
-      micromark("$a{a = b c\t=\t'd'}", options()),
+      micromark("$a(a = b c\t=\t'd')", options()),
       '',
       'should support whitespace around initializers',
     );
 
     // == Resolved as text directive
     // t.equal(
-    //   micromark('$a{f  =\rg}', options()),
-    //   '<p>$a{f  =\rg}</p>',
+    //   micromark('$a(f  =\rg)', options()),
+    //   '<p>$a(f  =\rg)</p>',
     //   'should not support EOLs around initializers',
     // );
 
     // == Resolved as text directive
     // t.equal(
-    //   micromark('$a{b==}', options()),
-    //   '<p>$a{b==}</p>',
+    //   micromark('$a(b==)', options()),
+    //   '<p>$a(b==)</p>',
     //   'should not support `=` to start an unquoted attribute value',
     // );
 
     t.equal(
-      micromark('$a{b=a💚b}', options()),
+      micromark('$a(b=a💚b)', options()),
       '',
       'should support most other characters in unquoted attribute values',
     );
 
     // == Resolved as text directive
     // t.equal(
-    //   micromark('$a{b="c', options()),
-    //   '<p>$a{b=&quot;c</p>',
+    //   micromark('$a(b="c', options()),
+    //   '<p>$a(b=&quot;c</p>',
     //   'should not support an EOF in a quoted attribute value',
     // );
 
     t.equal(
-      micromark('$a{b="a💚b"}', options()),
+      micromark('$a(b="a💚b")', options()),
       '',
       'should support most other characters in quoted attribute values',
     );
 
     // == Resolved as text directive
     // t.equal(
-    //   micromark('$a{b="\nc\r  d"}', options()),
-    //   '<p>$a{b=&quot;\nc\rd&quot;}</p>',
+    //   micromark('$a(b="\nc\r  d")', options()),
+    //   '<p>$a(b=&quot;\nc\rd&quot;)</p>',
     //   'should not support EOLs in quoted attribute values',
     // );
 
     // t.equal(
-    //   micromark('$a{b="c"', options()),
-    //   '<p>$a{b=&quot;c&quot;</p>',
+    //   micromark('$a(b="c"', options()),
+    //   '<p>$a(b=&quot;c&quot;</p>',
     //   'should not support an EOF after a quoted attribute value',
     // );
 
     t.equal(
-      micromark('$a{b=c} \t ', options()),
+      micromark('$a(b=c) \t ', options()),
       '',
       'should support whitespace after directives',
     );
 
     t.equal(
-      micromark('$a{b=c}\n>a', options()),
+      micromark('$a(b=c)\n>a', options()),
       '<blockquote>\n<p>a</p>\n</blockquote>',
       'should support a block quote after a leaf',
     );
 
     t.equal(
-      micromark('$a{b=c}\n```js\na', options()),
+      micromark('$a(b=c)\n```js\na', options()),
       '<pre><code class="language-js">a\n</code></pre>\n',
       'should support code (fenced) after a leaf',
     );
 
     t.equal(
-      micromark('$a{b=c}\n    a', options()),
+      micromark('$a(b=c)\n    a', options()),
       '<pre><code>a\n</code></pre>',
       'should support code (indented) after a leaf',
     );
 
     t.equal(
-      micromark('$a{b=c}\n[a]: b', options()),
+      micromark('$a(b=c)\n[a]: b', options()),
       '',
       'should support a definition after a leaf',
     );
 
     t.equal(
-      micromark('$a{b=c}\n# a', options()),
+      micromark('$a(b=c)\n# a', options()),
       '<h1>a</h1>',
       'should support a heading (atx) after a leaf',
     );
 
     t.equal(
-      micromark('$a{b=c}\na\n=', options()),
+      micromark('$a(b=c)\na\n=', options()),
       '<h1>a</h1>',
       'should support a heading (setext) after a leaf',
     );
 
     t.equal(
-      micromark('$a{b=c}\n<!-->', options()),
+      micromark('$a(b=c)\n<!-->', options()),
       '<!-->',
       'should support html after a leaf',
     );
 
     t.equal(
-      micromark('$a{b=c}\n* a', options()),
+      micromark('$a(b=c)\n* a', options()),
       '<ul>\n<li>a</li>\n</ul>',
       'should support a list after a leaf',
     );
 
     t.equal(
-      micromark('$a{b=c}\na', options()),
+      micromark('$a(b=c)\na', options()),
       '<p>a</p>',
       'should support a paragraph after a leaf',
     );
 
     t.equal(
-      micromark('$a{b=c}\n***', options()),
+      micromark('$a(b=c)\n***', options()),
       '<hr />',
       'should support a thematic break after a leaf',
     );
 
     t.equal(
-      micromark('>a\n$a{b=c}', options()),
+      micromark('>a\n$a(b=c)', options()),
       '<blockquote>\n<p>a</p>\n</blockquote>\n',
       'should support a block quote before a leaf',
     );
 
     t.equal(
-      micromark('```js\na\n```\n$a{b=c}', options()),
+      micromark('```js\na\n```\n$a(b=c)', options()),
       '<pre><code class="language-js">a\n</code></pre>\n',
       'should support code (fenced) before a leaf',
     );
 
     t.equal(
-      micromark('    a\n$a{b=c}', options()),
+      micromark('    a\n$a(b=c)', options()),
       '<pre><code>a\n</code></pre>\n',
       'should support code (indented) before a leaf',
     );
 
     t.equal(
-      micromark('[a]: b\n$a{b=c}', options()),
+      micromark('[a]: b\n$a(b=c)', options()),
       '',
       'should support a definition before a leaf',
     );
 
     t.equal(
-      micromark('# a\n$a{b=c}', options()),
+      micromark('# a\n$a(b=c)', options()),
       '<h1>a</h1>\n',
       'should support a heading (atx) before a leaf',
     );
 
     t.equal(
-      micromark('a\n=\n$a{b=c}', options()),
+      micromark('a\n=\n$a(b=c)', options()),
       '<h1>a</h1>\n',
       'should support a heading (setext) before a leaf',
     );
 
     t.equal(
-      micromark('<!-->\n$a{b=c}', options()),
+      micromark('<!-->\n$a(b=c)', options()),
       '<!-->\n',
       'should support html before a leaf',
     );
 
     t.equal(
-      micromark('* a\n$a{b=c}', options()),
+      micromark('* a\n$a(b=c)', options()),
       '<ul>\n<li>a</li>\n</ul>\n',
       'should support a list before a leaf',
     );
 
     t.equal(
-      micromark('a\n$a{b=c}', options()),
+      micromark('a\n$a(b=c)', options()),
       '<p>a</p>\n',
       'should support a paragraph before a leaf',
     );
 
     t.equal(
-      micromark('***\n$a{b=c}', options()),
+      micromark('***\n$a(b=c)', options()),
       '<hr />\n',
       'should support a thematic break before a leaf',
     );
@@ -746,8 +728,8 @@ test('micromark-extension-directive (compile)', (t) => {
       [
         'a $abbr',
         'a $abbr[HTML]',
-        'a $abbr{title="HyperText Markup Language"}',
-        'a $abbr[HTML]{title="HyperText Markup Language"}',
+        'a $abbr(title="HyperText Markup Language")',
+        'a $abbr[HTML](title="HyperText Markup Language")',
       ].join('\n\n'),
       options({ abbr }),
     ),
@@ -766,13 +748,13 @@ test('micromark-extension-directive (compile)', (t) => {
         'Text:',
         'a $youtube',
         'a $youtube[Cat in a box a]',
-        'a $youtube{v=1}',
-        'a $youtube[Cat in a box b]{v=2}',
+        'a $youtube(v=1)',
+        'a $youtube[Cat in a box b](v=2)',
         'Leaf:',
         '$youtube',
         '$youtube[Cat in a box c]',
-        '$youtube{v=3}',
-        '$youtube[Cat in a box d]{v=4}',
+        '$youtube(v=3)',
+        '$youtube[Cat in a box d](v=4)',
       ].join('\n\n'),
       options({ youtube }),
     ),
@@ -796,7 +778,7 @@ test('micromark-extension-directive (compile)', (t) => {
   );
 
   t.equal(
-    micromark('a $a[$img{src="x" alt=y}]{href="z"}', options({ '*': h })),
+    micromark('a $a[$img(src="x" alt=y)](href="z")', options({ '*': h })),
     '<p>a <a href="z"><img src="x" alt="y"></a></p>',
     'should support fall through directives (`*`)',
   );
@@ -897,91 +879,91 @@ test('content', (t) => {
   );
 
   t.equal(
-    micromark('a $abbr{title=a&apos;b}', options({ abbr })),
+    micromark('a $abbr(title=a&apos;b)', options({ abbr })),
     '<p>a <abbr title="a\'b"></abbr></p>',
     'should support character references in unquoted attribute values',
   );
 
   t.equal(
-    micromark('a $abbr{title="a&apos;b"}', options({ abbr })),
+    micromark('a $abbr(title="a&apos;b")', options({ abbr })),
     '<p>a <abbr title="a\'b"></abbr></p>',
     'should support character references in double attribute values',
   );
 
   t.equal(
-    micromark("a $abbr{title='a&apos;b'}", options({ abbr })),
+    micromark("a $abbr(title='a&apos;b')", options({ abbr })),
     '<p>a <abbr title="a\'b"></abbr></p>',
     'should support character references in single attribute values',
   );
 
   t.equal(
-    micromark('a $abbr{title="a&somethingelse;b"}', options({ abbr })),
+    micromark('a $abbr(title="a&somethingelse;b")', options({ abbr })),
     '<p>a <abbr title="a&amp;somethingelse;b"></abbr></p>',
     'should support unknown character references in attribute values',
   );
 
   t.equal(
-    micromark('$span{a\nb}', options({ '*': h })),
+    micromark('$span(a\nb)', options({ '*': h })),
     '<p><span a="" b=""></span></p>',
     'should support EOLs between attributes',
   );
 
   t.equal(
-    micromark('$span{\na\n}', options({ '*': h })),
+    micromark('$span(\na\n)', options({ '*': h })),
     '<p><span a=""></span></p>',
     'should support EOLs at the edges of attributes',
   );
 
   t.equal(
-    micromark('$span{a\r= b}', options({ '*': h })),
+    micromark('$span(a\r= b)', options({ '*': h })),
     '<p><span a="b"></span></p>',
     'should support EOLs before initializer',
   );
 
   t.equal(
-    micromark('$span{a=\r\nb}', options({ '*': h })),
+    micromark('$span(a=\r\nb)', options({ '*': h })),
     '<p><span a="b"></span></p>',
     'should support EOLs after initializer',
   );
 
   t.equal(
-    micromark('$span{a=b\nc}', options({ '*': h })),
+    micromark('$span(a=b\nc)', options({ '*': h })),
     '<p><span a="b" c=""></span></p>',
     'should support EOLs between an unquoted attribute value and a next attribute name',
   );
 
   t.equal(
-    micromark('$span{a="b\nc"}', options({ '*': h })),
+    micromark('$span(a="b\nc")', options({ '*': h })),
     '<p><span a="b\nc"></span></p>',
     'should support EOLs in a double quoted attribute value',
   );
 
   t.equal(
-    micromark("$span{a='b\nc'}", options({ '*': h })),
+    micromark("$span(a='b\nc')", options({ '*': h })),
     '<p><span a="b\nc"></span></p>',
     'should support EOLs in a single quoted attribute value',
   );
 
   t.equal(
-    micromark('a $span{#a#b}', options({ '*': h })),
+    micromark('a $span(#a#b)', options({ '*': h })),
     '<p>a <span id="b"></span></p>',
     'should support `id` shortcuts',
   );
 
   t.equal(
-    micromark('a $span{id=a id="b" #c#d}', options({ '*': h })),
+    micromark('a $span(id=a id="b" #c#d)', options({ '*': h })),
     '<p>a <span id="d"></span></p>',
     'should support `id` shortcuts after `id` attributes',
   );
 
   t.equal(
-    micromark('a $span{.a.b}', options({ '*': h })),
+    micromark('a $span(.a.b)', options({ '*': h })),
     '<p>a <span class="a b"></span></p>',
     'should support `class` shortcuts',
   );
 
   t.equal(
-    micromark('a $span{class=a class="b c" .d.e}', options({ '*': h })),
+    micromark('a $span(class=a class="b c" .d.e)', options({ '*': h })),
     '<p>a <span class="a b c d e"></span></p>',
     'should support `class` shortcuts after `class` attributes',
   );

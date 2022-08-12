@@ -8,7 +8,7 @@ import { directive } from '../src/micromark-extension-growi-plugin/index.js';
 
 test('markdown -> mdast', (t) => {
   t.deepEqual(
-    fromMarkdown('a $b[c]{d} e.', {
+    fromMarkdown('a $b[c](d) e.', {
       extensions: [directive()],
       mdastExtensions: [directiveFromMarkdown],
     }).children[0],
@@ -60,7 +60,7 @@ test('markdown -> mdast', (t) => {
   );
 
   t.deepEqual(
-    fromMarkdown('$a[b]{c}', {
+    fromMarkdown('$a[b](c)', {
       extensions: [directive()],
       mdastExtensions: [directiveFromMarkdown],
     }).children[0],
@@ -120,7 +120,7 @@ test('markdown -> mdast', (t) => {
 
   t.deepEqual(
     removePosition(
-      fromMarkdown('x $a{#b.c.d e=f g="h&amp;i&unknown;j"}', {
+      fromMarkdown('x $a(#b.c.d e=f g="h&amp;i&unknown;j")', {
         extensions: [directive()],
         mdastExtensions: [directiveFromMarkdown],
       }),
@@ -150,7 +150,7 @@ test('markdown -> mdast', (t) => {
 
   t.deepEqual(
     removePosition(
-      fromMarkdown('$a{b\nc="d\ne"}', {
+      fromMarkdown('$a(b\nc="d\ne")', {
         extensions: [directive()],
         mdastExtensions: [directiveFromMarkdown],
       }),
@@ -293,7 +293,7 @@ test('mdast -> markdown', (t) => {
       },
       { extensions: [directiveToMarkdown] },
     ),
-    'a $b{c="d" e="f" g j="2"} k.\n',
+    'a $b(c="d" e="f" g j="2") k.\n',
     'should serialize a directive (text) w/ `attributes`',
   );
 
@@ -314,7 +314,7 @@ test('mdast -> markdown', (t) => {
       },
       { extensions: [directiveToMarkdown] },
     ),
-    'a $b{#d .a.b.c key="value"} k.\n',
+    'a $b(#d .a.b.c key="value") k.\n',
     'should serialize a directive (text) w/ `id`, `class` attributes',
   );
 
@@ -335,7 +335,7 @@ test('mdast -> markdown', (t) => {
       },
       { extensions: [directiveToMarkdown] },
     ),
-    'a $b{x="y&#x22;\'\r\nz"} k.\n',
+    'a $b(x="y&#x22;\'\r\nz") k.\n',
     'should encode the quote in an attribute value (text)',
   );
 
@@ -356,7 +356,7 @@ test('mdast -> markdown', (t) => {
       },
       { extensions: [directiveToMarkdown] },
     ),
-    'a $b{x="y&#x22;\'\r\nz"} k.\n',
+    'a $b(x="y&#x22;\'\r\nz") k.\n',
     'should encode the quote in an attribute value (text)',
   );
 
@@ -377,7 +377,7 @@ test('mdast -> markdown', (t) => {
       },
       { extensions: [directiveToMarkdown] },
     ),
-    'a $b{id="c#d"} e.\n',
+    'a $b(id="c#d") e.\n',
     'should not use the `id` shortcut if impossible characters exist',
   );
 
@@ -398,7 +398,7 @@ test('mdast -> markdown', (t) => {
       },
       { extensions: [directiveToMarkdown] },
     ),
-    'a $b{class="c.d e<f"} g.\n',
+    'a $b(class="c.d e<f") g.\n',
     'should not use the `class` shortcut if impossible characters exist',
   );
 
@@ -419,7 +419,7 @@ test('mdast -> markdown', (t) => {
       },
       { extensions: [directiveToMarkdown] },
     ),
-    'a $b{.e.hij class="c.d f<g"} k.\n',
+    'a $b(.e.hij class="c.d f<g") k.\n',
     'should not use the `class` shortcut if impossible characters exist (but should use it for classes that don’t)',
   );
 
@@ -489,7 +489,7 @@ test('mdast -> markdown', (t) => {
       },
       { extensions: [directiveToMarkdown] },
     ),
-    '$a{#b .c.d key="e&#xA;f"}\n',
+    '$a(#b .c.d key="e&#xA;f")\n',
     'should serialize a directive (leaf) w/ EOLs in `attributes`',
   );
 

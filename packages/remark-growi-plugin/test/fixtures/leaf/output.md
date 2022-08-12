@@ -2,10 +2,10 @@ $a
 
 $a[b]
 
-$a{b}
+$a(b)
 
-$a[b]{c}
+$a[b](c)
 
 $a[b *c* d **e**]
 
-$a{#e .c.d.f.g h="i & j k"}
+$a(#e .c.d.f.g h="i & j k")

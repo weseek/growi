@@ -61,7 +61,7 @@ export function factoryAttributes(
 
   /** @type {State} */
   function start(code) {
-    assert(code === codes.leftCurlyBrace, 'expected `{`');
+    assert(code === codes.leftParenthesis, 'expected `(`');
     effects.enter(attributesType);
     effects.enter(attributesMarkerType);
     effects.consume(code);
@@ -121,7 +121,7 @@ export function factoryAttributes(
       || code === codes.equalsTo
       || code === codes.greaterThan
       || code === codes.graveAccent
-      || code === codes.rightCurlyBrace
+      || code === codes.rightParenthesis
       || markdownLineEndingOrSpace(code)
     ) {
       return nok(code);
@@ -149,7 +149,7 @@ export function factoryAttributes(
     if (
       code === codes.numberSign
       || code === codes.dot
-      || code === codes.rightCurlyBrace
+      || code === codes.rightParenthesis
       || markdownLineEndingOrSpace(code)
     ) {
       effects.exit(`${type}Value`);
@@ -210,7 +210,7 @@ export function factoryAttributes(
       || code === codes.equalsTo
       || code === codes.greaterThan
       || code === codes.graveAccent
-      || code === codes.rightCurlyBrace
+      || code === codes.rightParenthesis
       || (disallowEol && markdownLineEnding(code))
     ) {
       return nok(code);
@@ -254,7 +254,7 @@ export function factoryAttributes(
       return nok(code);
     }
 
-    if (code === codes.rightCurlyBrace || markdownLineEndingOrSpace(code)) {
+    if (code === codes.rightParenthesis || markdownLineEndingOrSpace(code)) {
       effects.exit(attributeValueData);
       effects.exit(attributeValueType);
       effects.exit(attributeType);
@@ -316,14 +316,14 @@ export function factoryAttributes(
 
   /** @type {State} */
   function valueQuotedAfter(code) {
-    return code === codes.rightCurlyBrace || markdownLineEndingOrSpace(code)
+    return code === codes.rightParenthesis || markdownLineEndingOrSpace(code)
       ? between(code)
       : end(code);
   }
 
   /** @type {State} */
   function end(code) {
-    if (code === codes.rightCurlyBrace) {
+    if (code === codes.rightParenthesis) {
       effects.enter(attributesMarkerType);
       effects.consume(code);
       effects.exit(attributesMarkerType);
