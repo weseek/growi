@@ -58,12 +58,7 @@ jobs:
           yarn lerna run lint --scope @growi/remark-growi-plugin --scope @growi/plugin-*
       - name: lerna run lint for app
         run: |
-          yarn lerna run lint \
-            --scope @growi/app \
-            --scope @growi/codemirror-textlint \
-            --scope @growi/core \
-            --scope @growi/slack
-            --scope @growi/ui
+          yarn lerna run lint --scope @growi/app --scope @growi/codemirror-textlint --scope @growi/core --scope @growi/slack --scope @growi/ui
 
       - name: Slack Notification
         uses: weseek/ghaction-slack-notification@master
