@@ -251,7 +251,7 @@ const generateCommonOptions = (pagePath: string|undefined, config: RendererConfi
 export const generateViewOptions = (
     pagePath: string,
     config: RendererConfig,
-    storeTocNode: (node: HtmlElementNode) => void,
+    storeTocNode: (toc: HtmlElementNode) => void,
 ): RendererOptions => {
 
   const options = generateCommonOptions(pagePath, config);
@@ -286,7 +286,11 @@ export const generateViewOptions = (
           });
         };
         replacer([toc]); // replace <ol> to <ul>
-        storeTocNode(toc); // store tocNode to global state with swr
+
+        // For storing tocNode to global state with swr
+        // search: tocRef.current
+        storeTocNode(toc);
+
         return false; // not show toc in body
       },
     }]);
