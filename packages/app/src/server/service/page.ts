@@ -1969,12 +1969,24 @@ class PageService {
     }
   }
 
-  async revertDeletedPage(page, user, options = {}, isRecursively = false) {
+  async revertDeletedPage(page, user, options = {}, isRecursively = false, activityParameters?) {
     /*
      * Common Operation
      */
     const Page = this.crowi.model('Page');
     const PageTagRelation = this.crowi.model('PageTagRelation');
+
+    const parameters = {
+      ip: activityParameters.ip,
+      endpoint: activityParameters.endpoint,
+      action: page.descendantCount > 0 ? SupportedAction.ACTION_PAGE_RECURSIVELY_REVERT : SupportedAction.ACTION_PAGE_REVERT,
+      user,
+      snapshot: {
+        username: user.username,
+      },
+    };
+
+    const activity = await this.crowi.activityService.createActivity(parameters);
 
     // 1. Separate v4 & v5 process
     const shouldUseV4Process = this.shouldUseV4ProcessForRevert(page);
@@ -2010,6 +2022,7 @@ class PageService {
 
     if (!isRecursively) {
       await this.updateDescendantCountOfAncestors(parent._id, 1, true);
+      this.activityEvent.emit('updated', activity, page);
     }
     else {
       let pageOp;
@@ -2033,7 +2046,7 @@ class PageService {
        */
       (async() => {
         try {
-          await this.revertRecursivelyMainOperation(page, user, options, pageOp._id);
+          await this.revertRecursivelyMainOperation(page, user, options, pageOp._id, activity);
         }
         catch (err) {
           logger.error('Error occurred while running revertRecursivelyMainOperation.', err);
@@ -2049,10 +2062,13 @@ class PageService {
     return updatedPage;
   }
 
-  async revertRecursivelyMainOperation(page, user, options, pageOpId: ObjectIdLike): Promise<void> {
+  async revertRecursivelyMainOperation(page, user, options, pageOpId: ObjectIdLike, activity?): Promise<void> {
     const Page = mongoose.model('Page') as unknown as PageModel;
 
-    await this.revertDeletedDescendantsWithStream(page, user, options, false);
+    const descendantsSubscribedSets = new Set();
+    await this.revertDeletedDescendantsWithStream(page, user, options, false, descendantsSubscribedSets);
+    const descendantsSubscribedUsers = Array.from(descendantsSubscribedSets);
+    this.activityEvent.emit('updated', activity, page, descendantsSubscribedUsers);
 
     const newPath = Page.getRevertDeletedPageName(page.path);
     // normalize parent of descendant pages
@@ -2127,7 +2143,7 @@ class PageService {
   /**
    * Create revert stream
    */
-  private async revertDeletedDescendantsWithStream(targetPage, user, options = {}, shouldUseV4Process = true): Promise<number> {
+  private async revertDeletedDescendantsWithStream(targetPage, user, options = {}, shouldUseV4Process = true, descendantsSubscribedSets?): Promise<number> {
     if (shouldUseV4Process) {
       return this.revertDeletedDescendantsWithStreamV4(targetPage, user, options);
     }
@@ -2142,6 +2158,10 @@ class PageService {
         try {
           count += batch.length;
           await revertDeletedDescendants(batch, user);
+          const subscribedUsers = await Subscription.getSubscriptions(batch);
+          subscribedUsers.forEach((eachUser) => {
+            descendantsSubscribedSets.add(eachUser);
+          });
           logger.debug(`Reverting pages progressing: (count=${count})`);
         }
         catch (err) {

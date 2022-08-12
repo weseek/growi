@@ -1360,6 +1360,11 @@ module.exports = function(crowi, app) {
     // get recursively flag
     const isRecursively = req.body.recursively;
 
+    const activityParameters = {
+      ip: req.ip,
+      endpoint: req.originalUrl,
+    };
+
     let page;
     let descendantPages;
     try {
@@ -1367,10 +1372,7 @@ module.exports = function(crowi, app) {
       if (page == null) {
         throw new Error(`Page '${pageId}' is not found or forbidden`, 'notfound_or_forbidden');
       }
-      page = await crowi.pageService.revertDeletedPage(page, req.user, {}, isRecursively);
-      const pages = await Page.findListWithDescendants(page.path, req.user);
-      descendantPages = pages.pages;
-      descendantPages.pop();
+      page = await crowi.pageService.revertDeletedPage(page, req.user, {}, isRecursively, activityParameters);
     }
     catch (err) {
       if (err instanceof PathAlreadyExistsError) {
@@ -1383,13 +1385,6 @@ module.exports = function(crowi, app) {
 
     const result = {};
     result.page = page; // TODO consider to use serializePageSecurely method -- 2018.08.06 Yuki Takei
-
-    const parameters = {
-      targetModel: SupportedTargetModel.MODEL_PAGE,
-      target: page,
-      action: isRecursively ? SupportedAction.ACTION_PAGE_RECURSIVELY_REVERT : SupportedAction.ACTION_PAGE_REVERT,
-    };
-    activityEvent.emit('update', res.locals.activity._id, parameters, page, descendantPages);
 
     return res.json(ApiResponse.success(result));
   };

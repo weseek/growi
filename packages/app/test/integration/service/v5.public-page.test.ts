@@ -1834,7 +1834,7 @@ describe('PageService page operations with only public pages', () => {
       try {
         await deletePage(rootPage, dummyUser1, {}, false, {
           ip: '::ffff:127.0.0.1',
-          endpoint: '/_api/v3/pages/rename',
+          endpoint: '/_api/v3/pages/delete',
         });
       }
       catch (err) { isThrown = true }
@@ -1853,7 +1853,7 @@ describe('PageService page operations with only public pages', () => {
       try {
         await deletePage(trashedPage, dummyUser1, {}, false, {
           ip: '::ffff:127.0.0.1',
-          endpoint: '/_api/v3/pages/rename',
+          endpoint: '/_api/v3/pages/delete',
         });
       }
       catch (err) { isThrown = true }
@@ -1871,7 +1871,7 @@ describe('PageService page operations with only public pages', () => {
       try {
         await deletePage(dummyUser1Page, dummyUser1, {}, false, {
           ip: '::ffff:127.0.0.1',
-          endpoint: '/_api/v3/pages/rename',
+          endpoint: '/_api/v3/pages/delete',
         });
       }
       catch (err) { isThrown = true }
@@ -1887,7 +1887,7 @@ describe('PageService page operations with only public pages', () => {
       expect(pageToDelete).toBeTruthy();
       const deletedPage = await deletePage(pageToDelete, dummyUser1, {}, false, {
         ip: '::ffff:127.0.0.1',
-        endpoint: '/_api/v3/pages/rename',
+        endpoint: '/_api/v3/pages/delete',
       });
       const page = await Page.findOne({ path: '/v5_PageForDelete2' });
 
@@ -1906,7 +1906,7 @@ describe('PageService page operations with only public pages', () => {
       expect(grandchildPage).toBeTruthy();
       const deletedParentPage = await deletePage(parentPage, dummyUser1, {}, true, {
         ip: '::ffff:127.0.0.1',
-        endpoint: '/_api/v3/pages/rename',
+        endpoint: '/_api/v3/pages/delete',
       });
       const deletedChildPage = await Page.findOne({ path: '/trash/v5_PageForDelete3/v5_PageForDelete4' });
       const deletedGrandchildPage = await Page.findOne({ path: '/trash/v5_PageForDelete3/v5_PageForDelete4/v5_PageForDelete5' });
@@ -1936,7 +1936,7 @@ describe('PageService page operations with only public pages', () => {
       expect(pageRelation2).toBeTruthy();
       const deletedPage = await deletePage(pageToDelete, dummyUser1, {}, false, {
         ip: '::ffff:127.0.0.1',
-        endpoint: '/_api/v3/pages/rename',
+        endpoint: '/_api/v3/pages/delete',
       });
       const page = await Page.findOne({ path: '/v5_PageForDelete6' });
       const deletedTagRelation1 = await PageTagRelation.findOne({ _id: pageRelation1._id });
@@ -1971,7 +1971,7 @@ describe('PageService page operations with only public pages', () => {
       try {
         await deleteCompletely(rootPage, dummyUser1, {}, false, false, {
           ip: '::ffff:127.0.0.1',
-          endpoint: '/_api/v3/pages/rename',
+          endpoint: '/_api/v3/pages/deletecompletely',
         });
       }
       catch (err) { isThrown = true }
@@ -1985,7 +1985,7 @@ describe('PageService page operations with only public pages', () => {
 
       await deleteCompletely(page, dummyUser1, {}, false, false, {
         ip: '::ffff:127.0.0.1',
-        endpoint: '/_api/v3/pages/rename',
+        endpoint: '/_api/v3/pages/deletecompletely',
       });
       const deletedPage = await Page.findOne({ _id: page._id, path: '/v5_PageForDeleteCompletely1' });
 
@@ -2021,7 +2021,7 @@ describe('PageService page operations with only public pages', () => {
 
       await deleteCompletely(parentPage, dummyUser1, {}, true, false, {
         ip: '::ffff:127.0.0.1',
-        endpoint: '/_api/v3/pages/rename',
+        endpoint: '/_api/v3/pages/deletecompletely',
       });
       const deletedPages = await Page.find({ _id: { $in: [parentPage._id, childPage._id, grandchildPage._id] } });
       const deletedRevisions = await Revision.find({ pageId: { $in: [parentPage._id, grandchildPage._id] } });
@@ -2056,7 +2056,7 @@ describe('PageService page operations with only public pages', () => {
       expect(revision).toBeTruthy();
       await deleteCompletely(page, dummyUser1, {}, false, false, {
         ip: '::ffff:127.0.0.1',
-        endpoint: '/_api/v3/pages/rename',
+        endpoint: '/_api/v3/pages/deletecompletely',
       });
       const deltedPage = await Page.findOne({ _id: page._id });
       const deltedRevision = await Revision.findOne({ _id: revision._id });
@@ -2074,7 +2074,7 @@ describe('PageService page operations with only public pages', () => {
 
       await deleteCompletely(childPage, dummyUser1, {}, false, false, {
         ip: '::ffff:127.0.0.1',
-        endpoint: '/_api/v3/pages/rename',
+        endpoint: '/_api/v3/pages/deletecompletely',
       });
       const parentPageAfterDelete = await Page.findOne({ path: '/v5_PageForDeleteCompletely6' });
       const childPageAfterDelete = await Page.findOne({ path: '/v5_PageForDeleteCompletely6/v5_PageForDeleteCompletely7' });
@@ -2093,10 +2093,10 @@ describe('PageService page operations with only public pages', () => {
     });
   });
   describe('revert', () => {
-    const revertDeletedPage = async(page, user, options = {}, isRecursively = false) => {
+    const revertDeletedPage = async(page, user, options = {}, isRecursively = false, activityParameters?) => {
       // mock return value
       const mockedRevertRecursivelyMainOperation = jest.spyOn(crowi.pageService, 'revertRecursivelyMainOperation').mockReturnValue(null);
-      const revertedPage = await crowi.pageService.revertDeletedPage(page, user, options, isRecursively);
+      const revertedPage = await crowi.pageService.revertDeletedPage(page, user, options, isRecursively, activityParameters);
 
       const argsForRecursivelyMainOperation = mockedRevertRecursivelyMainOperation.mock.calls[0];
 
@@ -2120,7 +2120,10 @@ describe('PageService page operations with only public pages', () => {
       expect(tag).toBeTruthy();
       expect(deletedPageTagRelation).toBeTruthy();
 
-      const revertedPage = await revertDeletedPage(deletedPage, dummyUser1, {}, false);
+      const revertedPage = await revertDeletedPage(deletedPage, dummyUser1, {}, false, {
+        ip: '::ffff:127.0.0.1',
+        endpoint: '/_api/v3/pages/revert',
+      });
       const pageTagRelation = await PageTagRelation.findOne({ relatedPage: deletedPage._id, relatedTag: tag?._id });
 
       expect(revertedPage.parent).toStrictEqual(rootPage._id);
@@ -2140,7 +2143,10 @@ describe('PageService page operations with only public pages', () => {
       expect(revision1).toBeTruthy();
       expect(revision2).toBeTruthy();
 
-      const revertedPage1 = await revertDeletedPage(deletedPage1, dummyUser1, {}, true);
+      const revertedPage1 = await revertDeletedPage(deletedPage1, dummyUser1, {}, true, {
+        ip: '::ffff:127.0.0.1',
+        endpoint: '/_api/v3/pages/revert',
+      });
       const revertedPage2 = await Page.findOne({ _id: deletedPage2._id });
       const newlyCreatedPage = await Page.findOne({ path: '/v5_revert2/v5_revert3' });
 

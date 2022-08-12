@@ -1286,10 +1286,10 @@ describe('PageService page operations with non-public pages', () => {
     });
   });
   describe('revert', () => {
-    const revertDeletedPage = async(page, user, options = {}, isRecursively = false) => {
+    const revertDeletedPage = async(page, user, options = {}, isRecursively = false, activityParameters?) => {
       // mock return value
       const mockedRevertRecursivelyMainOperation = jest.spyOn(crowi.pageService, 'revertRecursivelyMainOperation').mockReturnValue(null);
-      const revertedPage = await crowi.pageService.revertDeletedPage(page, user, options, isRecursively);
+      const revertedPage = await crowi.pageService.revertDeletedPage(page, user, options, isRecursively, activityParameters);
 
       const argsForRecursivelyMainOperation = mockedRevertRecursivelyMainOperation.mock.calls[0];
 
@@ -1312,7 +1312,10 @@ describe('PageService page operations with non-public pages', () => {
       expect(tag).toBeTruthy();
       expect(deletedPageTagRelation).toBeTruthy();
 
-      await revertDeletedPage(trashedPage, dummyUser1, {}, false);
+      await revertDeletedPage(trashedPage, dummyUser1, {}, false, {
+        ip: '::ffff:127.0.0.1',
+        endpoint: '/_api/v3/pages/rename',
+      });
 
       const revertedPage = await Page.findOne({ path: '/np_revert1' });
       const deltedPageBeforeRevert = await Page.findOne({ path: '/trash/np_revert1' });
@@ -1339,7 +1342,10 @@ describe('PageService page operations with non-public pages', () => {
       expect(tag).toBeTruthy();
       expect(deletedPageTagRelation).toBeTruthy();
 
-      await revertDeletedPage(trashedPage, user1, {}, false);
+      await revertDeletedPage(trashedPage, user1, {}, false, {
+        ip: '::ffff:127.0.0.1',
+        endpoint: '/_api/v3/pages/revert',
+      });
 
       const revertedPage = await Page.findOne({ path: '/np_revert2' });
       const trashedPageBR = await Page.findOne({ path: beforeRevertPath });
@@ -1367,7 +1373,10 @@ describe('PageService page operations with non-public pages', () => {
       expect(revision1).toBeTruthy();
       expect(revision2).toBeTruthy();
 
-      await revertDeletedPage(trashedPage1, npDummyUser2, {}, true);
+      await revertDeletedPage(trashedPage1, npDummyUser2, {}, true, {
+        ip: '::ffff:127.0.0.1',
+        endpoint: '/_api/v3/pages/revert',
+      });
 
       const revertedPage = await Page.findOne({ path: '/np_revert3' });
       const middlePage = await Page.findOne({ path: '/np_revert3/middle' });
@@ -1406,7 +1415,10 @@ describe('PageService page operations with non-public pages', () => {
       expect(user).toBeTruthy();
       expect(nonExistantPage3).toBeNull();
 
-      await revertDeletedPage(trashedPage1, user, {}, true);
+      await revertDeletedPage(trashedPage1, user, {}, true, {
+        ip: '::ffff:127.0.0.1',
+        endpoint: '/_api/v3/pages/revert',
+      });
       const revertedPage1 = await Page.findOne({ path: '/np_revert5' });
       const newlyCreatedPage = await Page.findOne({ path: '/np_revert5/middle' });
       const revertedPage2 = await Page.findOne({ path: '/np_revert5/middle/np_revert6' });
