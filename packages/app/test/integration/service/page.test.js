@@ -387,7 +387,7 @@ describe('PageService', () => {
   describe('rename page without using renameDescendantsWithStreamSpy', () => {
     test('rename page with different tree with isRecursively [deeper]', async() => {
       const resultPage = await crowi.pageService.renamePage(parentForRename6, '/parentForRename6/renamedChild', testUser1, { isRecursively: true },
-        { ip: '::ffff:127.0.0.1', endpoint: '/_api/v3/pages/rename', activityId: '62e291bc10e0ab61bd691794' });
+        { ip: '::ffff:127.0.0.1', endpoint: '/_api/v3/pages/rename' });
       const wrongPage = await Page.findOne({ path: '/parentForRename6/renamedChild/renamedChild' });
       const expectPage1 = await Page.findOne({ path: '/parentForRename6/renamedChild' });
       const expectPage2 = await Page.findOne({ path: '/parentForRename6-2021H1' });
@@ -410,7 +410,7 @@ describe('PageService', () => {
       // when
       //   rename /level1/level2 --> /level1
       await crowi.pageService.renamePage(parentForRename7, '/level1', testUser1, { isRecursively: true },
-        { ip: '::ffff:127.0.0.1', endpoint: '/_api/v3/pages/rename', activityId: '62e291bc10e0ab61bd691794' });
+        { ip: '::ffff:127.0.0.1', endpoint: '/_api/v3/pages/rename' });
 
       // then
       expect(await Page.findOne({ path: '/level1' })).not.toBeNull();
@@ -441,7 +441,7 @@ describe('PageService', () => {
       test('rename page without options', async() => {
 
         const resultPage = await crowi.pageService.renamePage(parentForRename1,
-          '/renamed1', testUser2, {}, { ip: '::ffff:127.0.0.1', endpoint: '/_api/v3/pages/rename', activityId: '62e291bc10e0ab61bd691794' });
+          '/renamed1', testUser2, {}, { ip: '::ffff:127.0.0.1', endpoint: '/_api/v3/pages/rename' });
 
         expect(xssSpy).toHaveBeenCalled();
 
@@ -455,7 +455,7 @@ describe('PageService', () => {
       test('rename page with updateMetadata option', async() => {
 
         const resultPage = await crowi.pageService.renamePage(parentForRename2, '/renamed2', testUser2, { updateMetadata: true },
-          { ip: '::ffff:127.0.0.1', endpoint: '/_api/v3/pages/rename', activityId: '62e291bc10e0ab61bd691794' });
+          { ip: '::ffff:127.0.0.1', endpoint: '/_api/v3/pages/rename' });
 
         expect(xssSpy).toHaveBeenCalled();
 
@@ -469,7 +469,7 @@ describe('PageService', () => {
       test('rename page with createRedirectPage option', async() => {
 
         const resultPage = await crowi.pageService.renamePage(parentForRename3, '/renamed3', testUser2, { createRedirectPage: true },
-          { ip: '::ffff:127.0.0.1', endpoint: '/_api/v3/pages/rename', activityId: '62e291bc10e0ab61bd691794' });
+          { ip: '::ffff:127.0.0.1', endpoint: '/_api/v3/pages/rename' });
 
         expect(xssSpy).toHaveBeenCalled();
         expect(pageEventSpy).toHaveBeenCalledWith('rename');
@@ -482,7 +482,7 @@ describe('PageService', () => {
       test('rename page with isRecursively', async() => {
 
         const resultPage = await crowi.pageService.renamePage(parentForRename4, '/renamed4', testUser2, { isRecursively: true },
-          { ip: '::ffff:127.0.0.1', endpoint: '/_api/v3/pages/rename', activityId: '62e291bc10e0ab61bd691794' });
+          { ip: '::ffff:127.0.0.1', endpoint: '/_api/v3/pages/rename' });
 
         expect(xssSpy).toHaveBeenCalled();
         expect(renameDescendantsWithStreamSpy).toHaveBeenCalled();
@@ -496,7 +496,7 @@ describe('PageService', () => {
       test('rename page with different tree with isRecursively', async() => {
 
         const resultPage = await crowi.pageService.renamePage(parentForRename5, '/parentForRename5/renamedChild', testUser1, { isRecursively: true },
-          { ip: '::ffff:127.0.0.1', endpoint: '/_api/v3/pages/rename', activityId: '62e291bc10e0ab61bd691794' });
+          { ip: '::ffff:127.0.0.1', endpoint: '/_api/v3/pages/rename' });
         const wrongPage = await Page.findOne({ path: '/parentForRename5/renamedChild/renamedChild' });
         const expectPage = await Page.findOne({ path: '/parentForRename5/renamedChild' });
 
@@ -651,7 +651,10 @@ describe('PageService', () => {
     });
 
     test('delete page without options', async() => {
-      const resultPage = await crowi.pageService.deletePage(parentForDelete1, testUser2, { });
+      const resultPage = await crowi.pageService.deletePage(parentForDelete1, testUser2, { }, false, {
+        ip: '::ffff:127.0.0.1',
+        endpoint: '/_api/v3/pages/delete',
+      });
 
       expect(getDeletedPageNameSpy).toHaveBeenCalled();
       expect(deleteDescendantsWithStreamSpy).not.toHaveBeenCalled();
@@ -668,7 +671,10 @@ describe('PageService', () => {
     });
 
     test('delete page with isRecursively', async() => {
-      const resultPage = await crowi.pageService.deletePage(parentForDelete2, testUser2, { }, true);
+      const resultPage = await crowi.pageService.deletePage(parentForDelete2, testUser2, { }, true, {
+        ip: '::ffff:127.0.0.1',
+        endpoint: '/_api/v3/pages/delete',
+      });
 
       expect(getDeletedPageNameSpy).toHaveBeenCalled();
       expect(deleteDescendantsWithStreamSpy).toHaveBeenCalled();
@@ -738,7 +744,10 @@ describe('PageService', () => {
     });
 
     test('delete completely without options', async() => {
-      await crowi.pageService.deleteCompletely(parentForDeleteCompletely, testUser2, { });
+      await crowi.pageService.deleteCompletely(parentForDeleteCompletely, testUser2, { }, false, false, {
+        ip: '::ffff:127.0.0.1',
+        endpoint: '/_api/v3/pages/deletecompletely',
+      });
 
       expect(deleteCompletelyOperationSpy).toHaveBeenCalled();
       expect(deleteCompletelyDescendantsWithStreamSpy).not.toHaveBeenCalled();
@@ -748,7 +757,10 @@ describe('PageService', () => {
 
 
     test('delete completely with isRecursively', async() => {
-      await crowi.pageService.deleteCompletely(parentForDeleteCompletely, testUser2, { }, true);
+      await crowi.pageService.deleteCompletely(parentForDeleteCompletely, testUser2, { }, true, false, {
+        ip: '::ffff:127.0.0.1',
+        endpoint: '/_api/v3/pages/deletecompletely',
+      });
 
       expect(deleteCompletelyOperationSpy).toHaveBeenCalled();
       expect(deleteCompletelyDescendantsWithStreamSpy).toHaveBeenCalled();
@@ -771,7 +783,10 @@ describe('PageService', () => {
     });
 
     test('revert deleted page when the redirect from page exists', async() => {
-      const resultPage = await crowi.pageService.revertDeletedPage(parentForRevert1, testUser2);
+      const resultPage = await crowi.pageService.revertDeletedPage(parentForRevert1, testUser2, {}, false, {
+        ip: '::ffff:127.0.0.1',
+        endpoint: '/_api/v3/pages/revert',
+      });
 
       expect(getRevertDeletedPageNameSpy).toHaveBeenCalledWith(parentForRevert1.path);
       expect(revertDeletedDescendantsWithStreamSpy).not.toHaveBeenCalled();
@@ -789,7 +804,10 @@ describe('PageService', () => {
         return null;
       });
 
-      const resultPage = await crowi.pageService.revertDeletedPage(parentForRevert2, testUser2, {}, true);
+      const resultPage = await crowi.pageService.revertDeletedPage(parentForRevert2, testUser2, {}, true, {
+        ip: '::ffff:127.0.0.1',
+        endpoint: '/_api/v3/pages/revert',
+      });
 
       expect(getRevertDeletedPageNameSpy).toHaveBeenCalledWith(parentForRevert2.path);
       expect(findByPathSpy).toHaveBeenCalledWith('/parentForRevert2');
