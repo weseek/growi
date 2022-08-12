@@ -41,6 +41,7 @@ export const AuditLogManagement: FC = () => {
    */
   const [isSettingPage, setIsSettingPage] = useState<boolean>(false);
   const [activePage, setActivePage] = useState<number>(1);
+  const [jumpPageNum, setJumpPageNum] = useState<number>(1);
   const offset = (activePage - 1) * PAGING_LIMIT;
   const [startDate, setStartDate] = useState<Date | null>(null);
   const [endDate, setEndDate] = useState<Date | null>(null);
@@ -121,17 +122,21 @@ export const AuditLogManagement: FC = () => {
 
     if (!isNan) {
       if (inputNumber > totalPagingPages) {
-        setActivePage(totalPagingPages);
+        setJumpPageNum(totalPagingPages);
         return;
       }
 
       if (inputNumber <= 0) {
-        setActivePage(1);
+        setJumpPageNum(1);
         return;
       }
-      setActivePage(inputNumber);
+      setJumpPageNum(inputNumber);
     }
   }, [totalPagingPages]);
+
+  const jumpPageButtonPushedHandler = useCallback(() => {
+    setActivePage(jumpPageNum);
+  }, [jumpPageNum]);
 
   // eslint-disable-next-line max-len
   const activityCounter = `<b>${activityList.length === 0 ? 0 : offset + 1}</b> - <b>${(PAGING_LIMIT * activePage) - (PAGING_LIMIT - activityList.length)}</b> of <b>${totalActivityNum}<b/>`;
@@ -206,22 +211,28 @@ export const AuditLogManagement: FC = () => {
             )
           }
 
-          <PaginationWrapper
-            activePage={activePage}
-            changePage={setActivePageHandler}
-            totalItemsCount={totalActivityNum}
-            pagingLimit={PAGING_LIMIT}
-            align="center"
-            size="sm"
-          />
-
-          <div className="text-center admin-audit-log">
-            <span>Go to: </span>
-            <input
-              type="text"
-              className="jump-page-input"
-              onChange={jumpPageInputChangeHandler}
+          <div className="d-flex flex-row justify-content-center">
+            <PaginationWrapper
+              activePage={activePage}
+              changePage={setActivePageHandler}
+              totalItemsCount={totalActivityNum}
+              pagingLimit={PAGING_LIMIT}
+              align="center"
+              size="sm"
             />
+
+            <div className="admin-audit-log ml-3">
+              <label htmlFor="jumpPageInput" className="mr-1 text-secondary">Jump To Page</label>
+              <input
+                id="jumpPageInput"
+                type="text"
+                className="jump-page-input"
+                onChange={jumpPageInputChangeHandler}
+              />
+              <button className="btn btn-sm" type="button" onClick={jumpPageButtonPushedHandler}>
+                <b>Go</b>
+              </button>
+            </div>
           </div>
         </>
       )}
