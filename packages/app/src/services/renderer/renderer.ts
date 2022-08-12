@@ -264,7 +264,7 @@ export const generateViewOptions = (
   // add remark plugins
   if (remarkPlugins != null) {
     remarkPlugins.push(emoji);
-    // remarkPlugins.push(math);
+    remarkPlugins.push(math);
     if (config.isEnabledLinebreaks) {
       remarkPlugins.push(breaks);
     }
@@ -272,7 +272,7 @@ export const generateViewOptions = (
 
   // store toc node
   if (rehypePlugins != null) {
-    // rehypePlugins.push(katex);
+    rehypePlugins.push(katex);
     rehypePlugins.push([toc, {
       nav: false,
       headings: ['h1', 'h2', 'h3'],
