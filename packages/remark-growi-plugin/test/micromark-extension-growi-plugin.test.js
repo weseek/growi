@@ -20,8 +20,8 @@ test('micromark-extension-directive (syntax)', (t) => {
     );
 
     t.equal(
-      micromark('\\$a', options()),
-      '<p>$a</p>',
+      micromark('\\$$a', options()),
+      '<p>$</p>',
       'should support a directive after an escaped colon',
     );
 
