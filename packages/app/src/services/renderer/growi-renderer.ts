@@ -5,6 +5,7 @@ import { CustomWindow } from '~/interfaces/global';
 import { GrowiRendererConfig, RendererSettings } from '~/interfaces/services/renderer';
 import loggerFactory from '~/utils/logger';
 
+import OrderedList from './PostProcessor/OrderedList';
 import CsvToTable from './PreProcessor/CsvToTable';
 import EasyGrid from './PreProcessor/EasyGrid';
 import Linker from './PreProcessor/Linker';
@@ -73,6 +74,7 @@ export default class GrowiRenderer {
         }),
       ];
       this.postProcessors = [
+        new OrderedList(),
       ];
     }
 
