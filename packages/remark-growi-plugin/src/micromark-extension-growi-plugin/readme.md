@@ -57,7 +57,7 @@ const output = micromark(fs.readFileSync('example.md'), {
 console.log(output)
 
 function abbr(d) {
-  if (d.type !== 'textGrowiPluginDirective') return false
+  if (d.type !== DirectiveType.Text) return false
 
   this.tag('<abbr')
 
@@ -120,7 +120,7 @@ An object representing a directive.
 
 ###### Fields
 
-*   `type` (`'textGrowiPluginDirective'|'leafGrowiPluginDirective'`)
+*   `type` (`DirectiveType.Text|DirectiveType.Leaf`)
 *   `name` (`string`) — name of directive
 *   `label` (`string?`) — compiled HTML content that was in `[brackets]`
 *   `attributes` (`Record<string, string>?`) — object w/ HTML attributes

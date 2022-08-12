@@ -3,6 +3,7 @@ import { toMarkdown } from 'mdast-util-to-markdown';
 import test from 'tape';
 import { removePosition } from 'unist-util-remove-position';
 
+import { DirectiveType } from '../src/mdast-util-growi-plugin/consts.js';
 import { directiveFromMarkdown, directiveToMarkdown } from '../src/mdast-util-growi-plugin/index.js';
 import { directive } from '../src/micromark-extension-growi-plugin/index.js';
 
@@ -24,7 +25,7 @@ test('markdown -> mdast', (t) => {
           },
         },
         {
-          type: 'textGrowiPluginDirective',
+          type: DirectiveType.Text,
           name: 'b',
           attributes: { d: '' },
           children: [
@@ -65,7 +66,7 @@ test('markdown -> mdast', (t) => {
       mdastExtensions: [directiveFromMarkdown],
     }).children[0],
     {
-      type: 'leafGrowiPluginDirective',
+      type: DirectiveType.Leaf,
       name: 'a',
       attributes: { c: '' },
       children: [
@@ -102,7 +103,7 @@ test('markdown -> mdast', (t) => {
           children: [
             { type: 'text', value: 'x ' },
             {
-              type: 'textGrowiPluginDirective',
+              type: DirectiveType.Text,
               name: 'a',
               attributes: {},
               children: [
@@ -134,7 +135,7 @@ test('markdown -> mdast', (t) => {
           children: [
             { type: 'text', value: 'x ' },
             {
-              type: 'textGrowiPluginDirective',
+              type: DirectiveType.Text,
               name: 'a',
               attributes: {
                 id: 'b', class: 'c d', e: 'f', g: 'h&i&unknown;j',
@@ -163,7 +164,7 @@ test('markdown -> mdast', (t) => {
           type: 'paragraph',
           children: [
             {
-              type: 'textGrowiPluginDirective',
+              type: DirectiveType.Text,
               name: 'a',
               attributes: { b: '', c: 'd\ne' },
               children: [],
@@ -186,7 +187,7 @@ test('mdast -> markdown', (t) => {
         children: [
           { type: 'text', value: 'a ' },
           // @ts-expect-error: `children`, `name` missing.
-          { type: 'textGrowiPluginDirective' },
+          { type: DirectiveType.Text },
           { type: 'text', value: ' b.' },
         ],
       },
@@ -203,7 +204,7 @@ test('mdast -> markdown', (t) => {
         children: [
           { type: 'text', value: 'a ' },
           // @ts-expect-error: `children` missing.
-          { type: 'textGrowiPluginDirective', name: 'b' },
+          { type: DirectiveType.Text, name: 'b' },
           { type: 'text', value: ' c.' },
         ],
       },
@@ -220,7 +221,7 @@ test('mdast -> markdown', (t) => {
         children: [
           { type: 'text', value: 'a ' },
           {
-            type: 'textGrowiPluginDirective',
+            type: DirectiveType.Text,
             name: 'b',
             children: [{ type: 'text', value: 'c' }],
           },
@@ -240,7 +241,7 @@ test('mdast -> markdown', (t) => {
         children: [
           { type: 'text', value: 'a ' },
           {
-            type: 'textGrowiPluginDirective',
+            type: DirectiveType.Text,
             name: 'b',
             children: [{ type: 'text', value: 'c[d]e' }],
           },
@@ -260,7 +261,7 @@ test('mdast -> markdown', (t) => {
         children: [
           { type: 'text', value: 'a ' },
           {
-            type: 'textGrowiPluginDirective',
+            type: DirectiveType.Text,
             name: 'b',
             children: [{ type: 'text', value: 'c\nd' }],
           },
@@ -280,7 +281,7 @@ test('mdast -> markdown', (t) => {
         children: [
           { type: 'text', value: 'a ' },
           {
-            type: 'textGrowiPluginDirective',
+            type: DirectiveType.Text,
             name: 'b',
             // @ts-expect-error: should contain only `string`s
             attributes: {
@@ -304,7 +305,7 @@ test('mdast -> markdown', (t) => {
         children: [
           { type: 'text', value: 'a ' },
           {
-            type: 'textGrowiPluginDirective',
+            type: DirectiveType.Text,
             name: 'b',
             attributes: { class: 'a b\nc', id: 'd', key: 'value' },
             children: [],
@@ -325,7 +326,7 @@ test('mdast -> markdown', (t) => {
         children: [
           { type: 'text', value: 'a ' },
           {
-            type: 'textGrowiPluginDirective',
+            type: DirectiveType.Text,
             name: 'b',
             attributes: { x: 'y"\'\r\nz' },
             children: [],
@@ -346,7 +347,7 @@ test('mdast -> markdown', (t) => {
         children: [
           { type: 'text', value: 'a ' },
           {
-            type: 'textGrowiPluginDirective',
+            type: DirectiveType.Text,
             name: 'b',
             attributes: { x: 'y"\'\r\nz' },
             children: [],
@@ -367,7 +368,7 @@ test('mdast -> markdown', (t) => {
         children: [
           { type: 'text', value: 'a ' },
           {
-            type: 'textGrowiPluginDirective',
+            type: DirectiveType.Text,
             name: 'b',
             attributes: { id: 'c#d' },
             children: [],
@@ -388,7 +389,7 @@ test('mdast -> markdown', (t) => {
         children: [
           { type: 'text', value: 'a ' },
           {
-            type: 'textGrowiPluginDirective',
+            type: DirectiveType.Text,
             name: 'b',
             attributes: { class: 'c.d e<f' },
             children: [],
@@ -409,7 +410,7 @@ test('mdast -> markdown', (t) => {
         children: [
           { type: 'text', value: 'a ' },
           {
-            type: 'textGrowiPluginDirective',
+            type: DirectiveType.Text,
             name: 'b',
             attributes: { class: 'c.d e f<g hij' },
             children: [],
@@ -425,7 +426,7 @@ test('mdast -> markdown', (t) => {
 
   t.deepEqual(
     // @ts-expect-error: `children`, `name` missing.
-    toMarkdown({ type: 'leafGrowiPluginDirective' }, { extensions: [directiveToMarkdown] }),
+    toMarkdown({ type: DirectiveType.Leaf }, { extensions: [directiveToMarkdown] }),
     '$\n',
     'should try to serialize a directive (leaf) w/o `name`',
   );
@@ -433,7 +434,7 @@ test('mdast -> markdown', (t) => {
   t.deepEqual(
     toMarkdown(
       // @ts-expect-error: `children` missing.
-      { type: 'leafGrowiPluginDirective', name: 'a' },
+      { type: DirectiveType.Leaf, name: 'a' },
       { extensions: [directiveToMarkdown] },
     ),
     '$a\n',
@@ -443,7 +444,7 @@ test('mdast -> markdown', (t) => {
   t.deepEqual(
     toMarkdown(
       {
-        type: 'leafGrowiPluginDirective',
+        type: DirectiveType.Leaf,
         name: 'a',
         children: [{ type: 'text', value: 'b' }],
       },
@@ -456,7 +457,7 @@ test('mdast -> markdown', (t) => {
   t.deepEqual(
     toMarkdown(
       {
-        type: 'leafGrowiPluginDirective',
+        type: DirectiveType.Leaf,
         name: 'a',
         children: [{ type: 'text', value: 'b' }],
       },
@@ -469,7 +470,7 @@ test('mdast -> markdown', (t) => {
   t.deepEqual(
     toMarkdown(
       {
-        type: 'leafGrowiPluginDirective',
+        type: DirectiveType.Leaf,
         name: 'a',
         children: [{ type: 'text', value: 'b\nc' }],
       },
@@ -482,7 +483,7 @@ test('mdast -> markdown', (t) => {
   t.deepEqual(
     toMarkdown(
       {
-        type: 'leafGrowiPluginDirective',
+        type: DirectiveType.Leaf,
         name: 'a',
         attributes: { id: 'b', class: 'c d', key: 'e\nf' },
         children: [],
@@ -570,7 +571,7 @@ test('mdast -> markdown', (t) => {
       {
         type: 'paragraph',
         children: [
-          { type: 'textGrowiPluginDirective', name: 'red', children: [] },
+          { type: DirectiveType.Text, name: 'red', children: [] },
           { type: 'text', value: '$' },
         ],
       },

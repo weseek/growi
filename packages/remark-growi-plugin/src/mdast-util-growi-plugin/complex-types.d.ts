@@ -1,6 +1,9 @@
 import type { PhrasingContent } from 'mdast';
 import type { Parent } from 'unist';
 
+import { DirectiveType } from './consts.js';
+
+
 type DirectiveAttributes = Record<string, string>
 
 interface DirectiveFields {
@@ -9,21 +12,21 @@ interface DirectiveFields {
 }
 
 export interface TextDirective extends Parent, DirectiveFields {
-  type: 'textGrowiPluginDirective'
+  type: DirectiveType.Text
   children: PhrasingContent[]
 }
 
 export interface LeafDirective extends Parent, DirectiveFields {
-  type: 'leafGrowiPluginDirective'
+  type: DirectiveType.Leaf
   children: PhrasingContent[]
 }
 
 declare module 'mdast' {
   interface StaticPhrasingContentMap {
-    textGrowiPluginDirective: TextDirective
+    [DirectiveType.Text]: TextDirective
   }
 
   interface BlockContentMap {
-    leafGrowiPluginDirective: LeafDirective
+    [DirectiveType.Leaf]: LeafDirective
   }
 }

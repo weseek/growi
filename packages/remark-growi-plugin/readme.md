@@ -137,8 +137,8 @@ function myRemarkPlugin() {
   return (tree) => {
     visit(tree, (node) => {
       if (
-        node.type === 'textGrowiPluginDirective' ||
-        node.type === 'leafGrowiPluginDirective'
+        node.type === DirectiveType.Text ||
+        node.type === DirectiveType.Leaf
       ) {
         const data = node.data || (node.data = {})
         const hast = h(node.name, node.attributes)
@@ -187,8 +187,8 @@ function myRemarkPlugin() {
   return (tree, file) => {
     visit(tree, (node) => {
       if (
-        node.type === 'textGrowiPluginDirective' ||
-        node.type === 'leafGrowiPluginDirective'
+        node.type === DirectiveType.Text ||
+        node.type === DirectiveType.Leaf
       ) {
         if (node.name !== 'youtube') return
 
@@ -196,7 +196,7 @@ function myRemarkPlugin() {
         const attributes = node.attributes || {}
         const id = attributes.id
 
-        if (node.type === 'textGrowiPluginDirective') file.fail('Text directives for `youtube` not supported', node)
+        if (node.type === DirectiveType.Text) file.fail('Text directives for `youtube` not supported', node)
         if (!id) file.fail('Missing video id', node)
 
         data.hName = 'iframe'
@@ -245,13 +245,13 @@ function myRemarkPlugin() {
   return (tree) => {
     visit(tree, (node) => {
       if (
-        node.type === 'textGrowiPluginDirective' ||
-        node.type === 'leafGrowiPluginDirective'
+        node.type === DirectiveType.Text ||
+        node.type === DirectiveType.Leaf
       ) {
         if (node.name !== 'note') return
 
         const data = node.data || (node.data = {})
-        const tagName = node.type === 'textGrowiPluginDirective' ? 'span' : 'div'
+        const tagName = node.type === DirectiveType.Text ? 'span' : 'div'
 
         data.hName = tagName
         data.hProperties = h(tagName, node.attributes).properties

@@ -20,6 +20,8 @@ import { track } from 'mdast-util-to-markdown/lib/util/track.js';
 import { parseEntities } from 'parse-entities';
 import { stringifyEntitiesLight } from 'stringify-entities';
 
+import { DirectiveType } from './consts.js';
+
 const own = {}.hasOwnProperty;
 
 const shortcut = /^[^\t\n\r "#'.<=>`}]+$/;
@@ -28,7 +30,7 @@ handleDirective.peek = peekDirective;
 
 /** @type {FromMarkdownExtension} */
 export const directiveFromMarkdown = {
-  canContainEols: ['textGrowiPluginDirective'],
+  canContainEols: [DirectiveType.Text],
   enter: {
     directiveLeaf: enterLeaf,
     directiveLeafAttributes: enterAttributes,
@@ -60,11 +62,11 @@ export const directiveToMarkdown = {
   unsafe: [
     {
       character: '\r',
-      inConstruct: ['leafGrowiPluginDirectiveLabel'],
+      inConstruct: [DirectiveType.Leaf],
     },
     {
       character: '\n',
-      inConstruct: ['leafGrowiPluginDirectiveLabel'],
+      inConstruct: [DirectiveType.Leaf],
     },
     {
       before: '[^$]',
@@ -75,19 +77,19 @@ export const directiveToMarkdown = {
     { atBreak: true, character: '$', after: '$' },
   ],
   handlers: {
-    leafGrowiPluginDirective: handleDirective,
-    textGrowiPluginDirective: handleDirective,
+    [DirectiveType.Leaf]: handleDirective,
+    [DirectiveType.Text]: handleDirective,
   },
 };
 
 /** @type {FromMarkdownHandle} */
 function enterLeaf(token) {
-  enter.call(this, 'leafGrowiPluginDirective', token);
+  enter.call(this, DirectiveType.Leaf, token);
 }
 
 /** @type {FromMarkdownHandle} */
 function enterText(token) {
-  enter.call(this, 'textGrowiPluginDirective', token);
+  enter.call(this, DirectiveType.Text, token);
 }
 
 /**
@@ -228,7 +230,7 @@ function peekDirective() {
  */
 function attributes(node, context) {
   const quote = checkQuote(context);
-  const subset = node.type === 'textGrowiPluginDirective' ? [quote] : [quote, '\n', '\r'];
+  const subset = node.type === DirectiveType.Text ? [quote] : [quote, '\n', '\r'];
   const attrs = node.attributes || {};
   /** @type {Array.<string>} */
   const values = [];
@@ -314,7 +316,7 @@ function attributes(node, context) {
 function fence(node) {
   let size = 0;
 
-  if (node.type === 'leafGrowiPluginDirective') {
+  if (node.type === DirectiveType.Leaf) {
     size = 1;
   }
   else {

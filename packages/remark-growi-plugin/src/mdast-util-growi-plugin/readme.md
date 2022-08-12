@@ -132,7 +132,7 @@ console.log(out)
       children: [
         {type: 'text', value: 'A lovely language know as '},
         {
-          type: 'textGrowiPluginDirective',
+          type: DirectiveType.Text,
           name: 'abbr',
           attributes: {title: 'HyperText Markup Language'},
           children: [{type: 'text', value: 'HTML'}]
@@ -175,7 +175,7 @@ The following interfaces are added to **[mdast][]** by this utility.
 
 ```idl
 interface TextDirective <: Parent {
-  type: 'textGrowiPluginDirective'
+  type: DirectiveType.Text
   children: [PhrasingContent]
 }
 
@@ -197,7 +197,7 @@ Yields:
 
 ```js
 {
-  type: 'textGrowiPluginDirective',
+  type: DirectiveType.Text,
   name: 'name',
   attributes: {id: 'x', class: 'y z', key: 'value'},
   children: [{type: 'text', value: 'Label'}]
@@ -208,7 +208,7 @@ Yields:
 
 ```idl
 interface LeafDirective <: Parent {
-  type: 'leafGrowiPluginDirective'
+  type: DirectiveType.Leaf
   children: [PhrasingContent]
 }
 
@@ -230,7 +230,7 @@ Yields:
 
 ```js
 {
-  type: 'leafGrowiPluginDirective',
+  type: DirectiveType.Leaf,
   name: 'youtube',
   attributes: {v: '123'},
   children: [{type: 'text', value: 'Label'}]

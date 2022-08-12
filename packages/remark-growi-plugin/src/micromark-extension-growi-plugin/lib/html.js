@@ -6,7 +6,6 @@
 
 /**
  * @typedef {[string, string]} Attribute
- * @typedef {'leafGrowiPluginDirective'|'textGrowiPluginDirective'} DirectiveType
  *
  * @typedef Directive
  * @property {DirectiveType} type
@@ -24,6 +23,8 @@
 import { parseEntities } from 'parse-entities';
 import { ok as assert } from 'uvu/assert';
 
+import { DirectiveType } from '../../mdast-util-growi-plugin/consts.js';
+
 const own = {}.hasOwnProperty;
 
 /**
@@ -35,13 +36,13 @@ export function directiveHtml(options = {}) {
     enter: {
 
       directiveLeaf() {
-        return enter.call(this, 'leafGrowiPluginDirective');
+        return enter.call(this, DirectiveType.Leaf);
       },
       directiveLeafAttributes: enterAttributes,
       directiveLeafLabel: enterLabel,
 
       directiveText() {
-        return enter.call(this, 'textGrowiPluginDirective');
+        return enter.call(this, DirectiveType.Text);
       },
       directiveTextAttributes: enterAttributes,
       directiveTextLabel: enterLabel,
@@ -187,7 +188,7 @@ export function directiveHtml(options = {}) {
       found = result !== false;
     }
 
-    if (!found && directive.type !== 'textGrowiPluginDirective') {
+    if (!found && directive.type !== DirectiveType.Text) {
       this.setData('slurpOneLineEnding', true);
     }
   }

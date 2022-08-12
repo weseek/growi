@@ -7,6 +7,7 @@ import { htmlVoidElements } from 'html-void-elements';
 import { micromark } from 'micromark';
 import test from 'tape';
 
+import { DirectiveType } from '../src/mdast-util-growi-plugin/consts.js';
 import { directive as syntax, directiveHtml as html } from '../src/micromark-extension-growi-plugin/index.js';
 
 const own = {}.hasOwnProperty;
@@ -973,7 +974,7 @@ test('content', (t) => {
 
 /** @type {Handle} */
 function abbr(d) {
-  if (d.type !== 'textGrowiPluginDirective') return false;
+  if (d.type !== DirectiveType.Text) return false;
 
   this.tag('<abbr');
 
