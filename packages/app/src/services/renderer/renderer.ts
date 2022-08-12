@@ -17,6 +17,7 @@ import { NextLink } from '~/components/ReactMarkdownComponents/NextLink';
 import { RendererConfig } from '~/interfaces/services/renderer';
 import loggerFactory from '~/utils/logger';
 
+import * as lsxGrowiPlugin from './growi-plugins/lsx';
 import { addClass } from './rehype-plugins/add-class';
 import { relativeLinks } from './rehype-plugins/relative-links';
 import { relativeLinksByPukiwikiLikeLinker } from './rehype-plugins/relative-links-by-pukiwiki-like-linker';
@@ -233,6 +234,11 @@ const generateCommonOptions = (pagePath: string|undefined, config: RendererConfi
       raw,
       [sanitize, {
         ...sanitizeDefaultSchema,
+        tagNames: [
+          ...(sanitizeDefaultSchema.tagNames ?? []),
+          'ls',
+          'lsx',
+        ],
         attributes: {
           ...sanitizeDefaultSchema.attributes,
           '*': sanitizeDefaultSchema.attributes != null
@@ -268,6 +274,7 @@ export const generateViewOptions = (
     if (config.isEnabledLinebreaks) {
       remarkPlugins.push(breaks);
     }
+    remarkPlugins.push(lsxGrowiPlugin.remarkPlugin);
   }
 
   // store toc node
