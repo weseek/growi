@@ -9,14 +9,12 @@
  * @typedef {import('mdast-util-to-markdown/lib/types.js').Handle} ToMarkdownHandle
  * @typedef {import('mdast-util-to-markdown/lib/types.js').Context} Context
  * @typedef {import('mdast-util-to-markdown/lib/types.js').Options} ToMarkdownExtension
- * @typedef {import('./complex-types').ContainerDirective} ContainerDirective
  * @typedef {import('./complex-types').LeafDirective} LeafDirective
  * @typedef {import('./complex-types').TextDirective} TextDirective
- * @typedef {ContainerDirective|LeafDirective|TextDirective} Directive
+ * @typedef {LeafDirective|TextDirective} Directive
  */
 
 import { checkQuote } from 'mdast-util-to-markdown/lib/util/check-quote.js';
-import { containerFlow } from 'mdast-util-to-markdown/lib/util/container-flow.js';
 import { containerPhrasing } from 'mdast-util-to-markdown/lib/util/container-phrasing.js';
 import { track } from 'mdast-util-to-markdown/lib/util/track.js';
 import { parseEntities } from 'parse-entities';
@@ -33,10 +31,6 @@ handleDirective.peek = peekDirective;
 export const directiveFromMarkdown = {
   canContainEols: ['textGrowiPluginDirective'],
   enter: {
-    directiveContainer: enterContainer,
-    directiveContainerAttributes: enterAttributes,
-    directiveContainerLabel: enterContainerLabel,
-
     directiveLeaf: enterLeaf,
     directiveLeafAttributes: enterAttributes,
 
@@ -44,15 +38,6 @@ export const directiveFromMarkdown = {
     directiveTextAttributes: enterAttributes,
   },
   exit: {
-    directiveContainer: exit,
-    directiveContainerAttributeClassValue: exitAttributeClassValue,
-    directiveContainerAttributeIdValue: exitAttributeIdValue,
-    directiveContainerAttributeName: exitAttributeName,
-    directiveContainerAttributeValue: exitAttributeValue,
-    directiveContainerAttributes: exitAttributes,
-    directiveContainerLabel: exitContainerLabel,
-    directiveContainerName: exitName,
-
     directiveLeaf: exit,
     directiveLeafAttributeClassValue: exitAttributeClassValue,
     directiveLeafAttributeIdValue: exitAttributeIdValue,
@@ -76,11 +61,11 @@ export const directiveToMarkdown = {
   unsafe: [
     {
       character: '\r',
-      inConstruct: ['leafGrowiPluginDirectiveLabel', 'containerGrowiPluginDirectiveLabel'],
+      inConstruct: ['leafGrowiPluginDirectiveLabel'],
     },
     {
       character: '\n',
-      inConstruct: ['leafGrowiPluginDirectiveLabel', 'containerGrowiPluginDirectiveLabel'],
+      inConstruct: ['leafGrowiPluginDirectiveLabel'],
     },
     {
       before: '[^$]',
@@ -91,16 +76,10 @@ export const directiveToMarkdown = {
     { atBreak: true, character: '$', after: '$' },
   ],
   handlers: {
-    containerGrowiPluginDirective: handleDirective,
     leafGrowiPluginDirective: handleDirective,
     textGrowiPluginDirective: handleDirective,
   },
 };
-
-/** @type {FromMarkdownHandle} */
-function enterContainer(token) {
-  enter.call(this, 'containerGrowiPluginDirective', token);
-}
 
 /** @type {FromMarkdownHandle} */
 function enterLeaf(token) {
@@ -130,19 +109,6 @@ function enter(type, token) {
 function exitName(token) {
   const node = /** @type {Directive} */ (this.stack[this.stack.length - 1]);
   node.name = this.sliceSerialize(token);
-}
-
-/** @type {FromMarkdownHandle} */
-function enterContainerLabel(token) {
-  this.enter(
-    { type: 'paragraph', data: { directiveLabel: true }, children: [] },
-    token,
-  );
-}
-
-/** @type {FromMarkdownHandle} */
-function exitContainerLabel(token) {
-  this.exit(token);
 }
 
 /** @type {FromMarkdownHandle} */
@@ -227,12 +193,7 @@ function handleDirective(node, _, context, safeOptions) {
   const exit = context.enter(node.type);
   let value = tracker.move(sequence + (node.name || ''));
   /** @type {Directive|Paragraph|undefined} */
-  let label = node;
-
-  if (node.type === 'containerGrowiPluginDirective') {
-    const head = (node.children || [])[0];
-    label = inlineDirectiveLabel(head) ? head : undefined;
-  }
+  const label = node;
 
   if (label && label.children && label.children.length > 0) {
     const exit = context.enter('label');
@@ -251,22 +212,6 @@ function handleDirective(node, _, context, safeOptions) {
   }
 
   value += tracker.move(attributes(node, context));
-
-  if (node.type === 'containerGrowiPluginDirective') {
-    const head = (node.children || [])[0];
-    let shallow = node;
-
-    if (inlineDirectiveLabel(head)) {
-      shallow = Object.assign({}, node, { children: node.children.slice(1) });
-    }
-
-    if (shallow && shallow.children && shallow.children.length > 0) {
-      value += tracker.move('\n');
-      value += tracker.move(containerFlow(shallow, context, tracker.current()));
-    }
-
-    value += tracker.move(`\n${sequence}`);
-  }
 
   exit();
   return value;
@@ -364,27 +309,13 @@ function attributes(node, context) {
 }
 
 /**
- * @param {BlockContent} node
- * @returns {node is Paragraph & {data: {directiveLabel: boolean}}}
- */
-function inlineDirectiveLabel(node) {
-  return Boolean(
-    node && node.type === 'paragraph' && node.data && node.data.directiveLabel,
-  );
-}
-
-/**
  * @param {Directive} node
  * @returns {string}
  */
 function fence(node) {
   let size = 0;
 
-  if (node.type === 'containerGrowiPluginDirective') {
-    visitParents(node, 'containerGrowiPluginDirective', onvisit);
-    size += 3;
-  }
-  else if (node.type === 'leafGrowiPluginDirective') {
+  if (node.type === 'leafGrowiPluginDirective') {
     size = 1;
   }
   else {
@@ -393,17 +324,4 @@ function fence(node) {
 
   return '$'.repeat(size);
 
-  /** @type {import('unist-util-visit-parents/complex-types').BuildVisitor<Root, Directive>} */
-  function onvisit(_, parents) {
-    let index = parents.length;
-    let nesting = 0;
-
-    while (index--) {
-      if (parents[index].type === 'containerGrowiPluginDirective') {
-        nesting++;
-      }
-    }
-
-    if (nesting > size) size = nesting;
-  }
 }

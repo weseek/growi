@@ -4,7 +4,6 @@
 
 import { codes } from 'micromark-util-symbol/codes.js';
 
-import { directiveContainer } from './directive-container.js';
 import { directiveLeaf } from './directive-leaf.js';
 import { directiveText } from './directive-text.js';
 
@@ -14,6 +13,6 @@ import { directiveText } from './directive-text.js';
 export function directive() {
   return {
     text: { [codes.dollarSign]: directiveText },
-    flow: { [codes.dollarSign]: [directiveContainer, directiveLeaf] },
+    flow: { [codes.dollarSign]: [directiveLeaf] },
   };
 }

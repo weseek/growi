@@ -120,7 +120,7 @@ An object representing a directive.
 
 ###### Fields
 
-*   `type` (`'textGrowiPluginDirective'|'leafGrowiPluginDirective'|'containerGrowiPluginDirective'`)
+*   `type` (`'textGrowiPluginDirective'|'leafGrowiPluginDirective'`)
 *   `name` (`string`) — name of directive
 *   `label` (`string?`) — compiled HTML content that was in `[brackets]`
 *   `attributes` (`Record<string, string>?`) — object w/ HTML attributes

@@ -18,18 +18,12 @@ export interface LeafDirective extends Parent, DirectiveFields {
   children: PhrasingContent[]
 }
 
-export interface ContainerDirective extends Parent, DirectiveFields {
-  type: 'containerGrowiPluginDirective'
-  children: BlockContent[]
-}
-
 declare module 'mdast' {
   interface StaticPhrasingContentMap {
     textGrowiPluginDirective: TextDirective
   }
 
   interface BlockContentMap {
-    containerGrowiPluginDirective: ContainerDirective
     leafGrowiPluginDirective: LeafDirective
   }
 }

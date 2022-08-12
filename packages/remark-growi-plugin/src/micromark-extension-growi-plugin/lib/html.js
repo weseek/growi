@@ -6,7 +6,7 @@
 
 /**
  * @typedef {[string, string]} Attribute
- * @typedef {'containerGrowiPluginDirective'|'leafGrowiPluginDirective'|'textGrowiPluginDirective'} DirectiveType
+ * @typedef {'leafGrowiPluginDirective'|'textGrowiPluginDirective'} DirectiveType
  *
  * @typedef Directive
  * @property {DirectiveType} type
@@ -33,14 +33,6 @@ const own = {}.hasOwnProperty;
 export function directiveHtml(options = {}) {
   return {
     enter: {
-      directiveContainer() {
-        return enter.call(this, 'containerGrowiPluginDirective');
-      },
-      directiveContainerAttributes: enterAttributes,
-      directiveContainerLabel: enterLabel,
-      directiveContainerContent() {
-        this.buffer();
-      },
 
       directiveLeaf() {
         return enter.call(this, 'leafGrowiPluginDirective');
@@ -55,17 +47,6 @@ export function directiveHtml(options = {}) {
       directiveTextLabel: enterLabel,
     },
     exit: {
-      directiveContainer: exit,
-      directiveContainerAttributeClassValue: exitAttributeClassValue,
-      directiveContainerAttributeIdValue: exitAttributeIdValue,
-      directiveContainerAttributeName: exitAttributeName,
-      directiveContainerAttributeValue: exitAttributeValue,
-      directiveContainerAttributes: exitAttributes,
-      directiveContainerContent: exitContainerContent,
-      directiveContainerFence: exitContainerFence,
-      directiveContainerLabel: exitLabel,
-      directiveContainerName: exitName,
-
       directiveLeaf: exit,
       directiveLeafAttributeClassValue: exitAttributeClassValue,
       directiveLeafAttributeIdValue: exitAttributeIdValue,
@@ -183,24 +164,6 @@ export function directiveHtml(options = {}) {
     this.resume();
     this.setData('directiveAttributes');
     stack[stack.length - 1].attributes = cleaned;
-  }
-
-  /** @type {_Handle} */
-  function exitContainerContent() {
-    const data = this.resume();
-    /** @type {Directive[]} */
-    const stack = this.getData('directiveStack');
-    stack[stack.length - 1].content = data;
-  }
-
-  /** @type {_Handle} */
-  function exitContainerFence() {
-    /** @type {Directive[]} */
-    const stack = this.getData('directiveStack');
-    const directive = stack[stack.length - 1];
-    if (!directive._fenceCount) directive._fenceCount = 0;
-    directive._fenceCount++;
-    if (directive._fenceCount === 1) this.setData('slurpOneLineEnding', true);
   }
 
   /** @type {_Handle} */

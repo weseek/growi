@@ -239,51 +239,7 @@ Yields:
 
 #### `ContainerDirective`
 
-```idl
-interface ContainerDirective <: Parent {
-  type: 'containerGrowiPluginDirective'
-  children: [FlowContent]
-}
-
-ContainerDirective includes Directive
-```
-
-**ContainerDirective** (**[Parent][dfn-parent]**) is a directive.
-It can be used where **[flow][dfn-flow-content]** content is expected.
-Its content model is also **[flow][dfn-flow-content]** content.
-It includes the mixin **[Directive][dfn-mxn-directive]**.
-
-The phrasing in the label is, when available, added as a paragraph with a
-`directiveLabel: true` field, as the head of its content.
-
-For example, the following Markdown:
-
-```markdown
-:::spoiler[Open at your own peril]
-He dies.
-:::
-```
-
-Yields:
-
-```js
-{
-  type: 'containerGrowiPluginDirective',
-  name: 'spoiler',
-  attributes: {},
-  children: [
-    {
-      type: 'paragraph',
-      data: {directiveLabel: true},
-      children: [{type: 'text', value: 'Open at your own peril'}]
-    },
-    {
-      type: 'paragraph',
-      children: [{type: 'text', value: 'He dies.'}]
-    }
-  ]
-}
-```
+ContainerDirective is not supported.
 
 ### Mixin
 

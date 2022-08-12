@@ -138,8 +138,7 @@ function myRemarkPlugin() {
     visit(tree, (node) => {
       if (
         node.type === 'textGrowiPluginDirective' ||
-        node.type === 'leafGrowiPluginDirective' ||
-        node.type === 'containerGrowiPluginDirective'
+        node.type === 'leafGrowiPluginDirective'
       ) {
         const data = node.data || (node.data = {})
         const hast = h(node.name, node.attributes)
@@ -189,8 +188,7 @@ function myRemarkPlugin() {
     visit(tree, (node) => {
       if (
         node.type === 'textGrowiPluginDirective' ||
-        node.type === 'leafGrowiPluginDirective' ||
-        node.type === 'containerGrowiPluginDirective'
+        node.type === 'leafGrowiPluginDirective'
       ) {
         if (node.name !== 'youtube') return
 
@@ -248,8 +246,7 @@ function myRemarkPlugin() {
     visit(tree, (node) => {
       if (
         node.type === 'textGrowiPluginDirective' ||
-        node.type === 'leafGrowiPluginDirective' ||
-        node.type === 'containerGrowiPluginDirective'
+        node.type === 'leafGrowiPluginDirective'
       ) {
         if (node.name !== 'note') return
 
