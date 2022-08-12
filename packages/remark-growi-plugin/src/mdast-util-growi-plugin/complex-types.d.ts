@@ -1,4 +1,4 @@
-import type { PhrasingContent, BlockContent } from 'mdast';
+import type { PhrasingContent } from 'mdast';
 import type { Parent } from 'unist';
 
 type DirectiveAttributes = Record<string, string>

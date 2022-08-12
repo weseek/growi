@@ -19,7 +19,6 @@ import { containerPhrasing } from 'mdast-util-to-markdown/lib/util/container-phr
 import { track } from 'mdast-util-to-markdown/lib/util/track.js';
 import { parseEntities } from 'parse-entities';
 import { stringifyEntitiesLight } from 'stringify-entities';
-import { visitParents } from 'unist-util-visit-parents';
 
 const own = {}.hasOwnProperty;
 
