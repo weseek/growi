@@ -9,6 +9,7 @@ import breaks from 'remark-breaks';
 import emoji from 'remark-emoji';
 import gfm from 'remark-gfm';
 import math from 'remark-math';
+import deepmerge from 'ts-deepmerge';
 
 
 import { CodeBlock } from '~/components/ReactMarkdownComponents/CodeBlock';
@@ -221,6 +222,19 @@ export type RendererOptions = Partial<ReactMarkdownOptions>;
 
 
 const generateCommonOptions = (pagePath: string|undefined, config: RendererConfig): RendererOptions => {
+  const sanitizeOption = deepmerge(
+    sanitizeDefaultSchema,
+    {
+      tagNames: [
+        'ls',
+        'lsx',
+      ],
+      attributes: {
+        '*': ['class', 'className'],
+      },
+    },
+  );
+
   return {
     remarkPlugins: [
       gfm,
@@ -232,20 +246,7 @@ const generateCommonOptions = (pagePath: string|undefined, config: RendererConfi
       [relativeLinksByPukiwikiLikeLinker, { pagePath }],
       [relativeLinks, { pagePath }],
       raw,
-      [sanitize, {
-        ...sanitizeDefaultSchema,
-        tagNames: [
-          ...(sanitizeDefaultSchema.tagNames ?? []),
-          'ls',
-          'lsx',
-        ],
-        attributes: {
-          ...sanitizeDefaultSchema.attributes,
-          '*': sanitizeDefaultSchema.attributes != null
-            ? sanitizeDefaultSchema.attributes['*'].concat('class', 'className')
-            : ['class', 'className'],
-        },
-      }],
+      [sanitize, sanitizeOption],
       [addClass, {
         table: 'table table-bordered',
       }],
