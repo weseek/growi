@@ -1,5 +1,10 @@
+// allow only types to import from react
+import { ComponentType } from 'react';
+
 import growiPlugin from '@growi/remark-growi-plugin';
 import { Schema as SanitizeOption } from 'hast-util-sanitize';
+import { SpecialComponents } from 'react-markdown/lib/ast-to-react';
+import { NormalComponents } from 'react-markdown/lib/complex-types';
 import { ReactMarkdownOptions } from 'react-markdown/lib/react-markdown';
 import katex from 'rehype-katex';
 import raw from 'rehype-raw';
@@ -222,9 +227,18 @@ const logger = loggerFactory('growi:util:GrowiRenderer');
 // }
 
 type SanitizePlugin = PluginTuple<[SanitizeOption]>;
-export type RendererOptions = Omit<ReactMarkdownOptions, 'remarkPlugins' | 'rehypePlugins' | 'children'> & {
+export type RendererOptions = Omit<ReactMarkdownOptions, 'remarkPlugins' | 'rehypePlugins' | 'components' | 'children'> & {
   remarkPlugins: PluggableList,
   rehypePlugins: PluggableList,
+  components?:
+    | Partial<
+        Omit<NormalComponents, keyof SpecialComponents>
+        & SpecialComponents
+        & {
+          [elem: string]: ComponentType<any>,
+        }
+      >
+    | undefined
 };
 
 const commonSanitizeOption: SanitizeOption = deepmerge(
