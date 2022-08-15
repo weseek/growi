@@ -17,6 +17,7 @@ import RadioButtonForSerchUserOption from './RadioButtonForSerchUserOption';
 import UserGroupUserFormByInput from './UserGroupUserFormByInput';
 
 type Props = {
+  isOpen: boolean,
   adminUserGroupDetailContainer: AdminUserGroupDetailContainer,
   userGroup: IUserGroupHasId,
   searchType: SearchType,
@@ -28,11 +29,11 @@ type Props = {
 const UserGroupUserModal = (props: Props) => {
   const { t } = useTranslation();
   const {
-    adminUserGroupDetailContainer, userGroup, searchType, onClickAddUserBtn, onSearchApplicableUsers, onChangeSearchType,
+    isOpen, adminUserGroupDetailContainer, userGroup, searchType, onClickAddUserBtn, onSearchApplicableUsers, onChangeSearchType,
   } = props;
 
   return (
-    <Modal isOpen={adminUserGroupDetailContainer.state.isUserGroupUserModalOpen} toggle={adminUserGroupDetailContainer.closeUserGroupUserModal}>
+    <Modal isOpen={isOpen} toggle={adminUserGroupDetailContainer.closeUserGroupUserModal}>
       <ModalHeader tag="h4" toggle={adminUserGroupDetailContainer.closeUserGroupUserModal} className="bg-info text-light">
         {t('admin:user_group_management.add_modal.add_user') }
       </ModalHeader>

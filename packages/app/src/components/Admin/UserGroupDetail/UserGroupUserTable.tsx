@@ -4,24 +4,22 @@ import { UserPicture } from '@growi/ui';
 import dateFnsFormat from 'date-fns/format';
 import { useTranslation } from 'next-i18next';
 
-
-import AdminUserGroupDetailContainer from '~/client/services/AdminUserGroupDetailContainer';
 import { IUserGroupHasId, IUserGroupRelation } from '~/interfaces/user';
 import { useSWRxUserGroupRelations } from '~/stores/user-group';
 
-import { withUnstatedContainers } from '../../UnstatedUtils';
-
 type Props = {
-  adminUserGroupDetailContainer: AdminUserGroupDetailContainer
   userGroupRelations: IUserGroupRelation[],
   userGroup: IUserGroupHasId,
   onClickRemoveUserBtn: (username: string) => Promise<void>,
+  onClickPlusBtn: () => void,
 }
 
-const UserGroupUserTable = (props: Props) => {
+export const UserGroupUserTable = (props: Props): JSX.Element => {
   const { t } = useTranslation();
 
-  const { adminUserGroupDetailContainer, userGroup, onClickRemoveUserBtn } = props;
+  const {
+    userGroup, onClickRemoveUserBtn, onClickPlusBtn,
+  } = props;
   const { data: userGroupRelations } = useSWRxUserGroupRelations(userGroup._id);
 
 
@@ -82,7 +80,7 @@ const UserGroupUserTable = (props: Props) => {
         <tr>
           <td></td>
           <td className="text-center">
-            <button className="btn btn-outline-secondary" type="button" onClick={adminUserGroupDetailContainer.openUserGroupUserModal}>
+            <button className="btn btn-outline-secondary" type="button" onClick={onClickPlusBtn}>
               <i className="ti ti-plus"></i>
             </button>
           </td>
@@ -97,9 +95,4 @@ const UserGroupUserTable = (props: Props) => {
   );
 };
 
-/**
- * Wrapper component for using unstated
- */
-const UserGroupUserTableWrapper = withUnstatedContainers(UserGroupUserTable, [AdminUserGroupDetailContainer]);
-
-export default UserGroupUserTableWrapper;
+export default UserGroupUserTable;

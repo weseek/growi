@@ -57,6 +57,7 @@ const UserGroupDetailPage = (props: Props): JSX.Element => {
   const [isCreateModalShown, setCreateModalShown] = useState<boolean>(false);
   const [isUpdateModalShown, setUpdateModalShown] = useState<boolean>(false);
   const [isDeleteModalShown, setDeleteModalShown] = useState<boolean>(false);
+  const [isUserGroupUserModalShown, setIsUserGroupUserModalShown] = useState<boolean>(false);
 
   useEffect(() => {
     if ((currentUserGroupId != null && !ObjectId.isValid(currentUserGroupId)) || currentUserGroup === null) {
@@ -191,6 +192,14 @@ const UserGroupDetailPage = (props: Props): JSX.Element => {
       toastError(new Error(`Unable to remove "${xss.process(username)}" from "${xss.process(currentUserGroup?.name)}"`));
     }
   }, [currentUserGroup?.name, currentUserGroupId, mutateUserGroupRelations, xss]);
+
+  const openUserGroupUserModal = useCallback(() => {
+    setIsUserGroupUserModalShown(true);
+  }, []);
+
+  const closeUserGroupUserModal = useCallback(() => {
+    setIsUserGroupUserModalShown(false);
+  }, []);
 
   const showUpdateModal = useCallback((group: IUserGroupHasId) => {
     setUpdateModalShown(true);
@@ -351,8 +360,9 @@ const UserGroupDetailPage = (props: Props): JSX.Element => {
         />
       </div>
       <h2 className="admin-setting-header mt-4">{t('admin:user_group_management.user_list')}</h2>
-      <UserGroupUserTable userGroup={currentUserGroup} userGroupRelations={childUserGroupRelations} onClickRemoveUserBtn={removeUserByUsername} />
+      <UserGroupUserTable userGroup={currentUserGroup} userGroupRelati onClickPlusBtn={openUserGroupUserModal} />
       <UserGroupUserModal
+        isOpen={isUserGroupUserModalShown}
         userGroup={currentUserGroup}
         searchType={searchType}
         onClickAddUserBtn={addUserByUsername}
