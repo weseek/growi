@@ -339,7 +339,7 @@ const UserGroupDetailPage = (props: Props) => {
         />
       </div>
       <h2 className="admin-setting-header mt-4">{t('admin:user_group_management.user_list')}</h2>
-      <UserGroupUserTable userGroup={currentUserGroup} userGroupRelations={childUserGroupRelations} />
+      <UserGroupUserTable userGroup={currentUserGroup} userGroupRelations={childUserGroupRelations} onClickRemoveUserBtn={removeUserByUsername} />
       <UserGroupUserModal userGroup={currentUserGroup} onClickAddUserBtn={addUserByUsername} onSearchApplicableUsers={fetchApplicableUsers} />
 
       <h2 className="admin-setting-header mt-4">{t('admin:user_group_management.child_group_list')}</h2>

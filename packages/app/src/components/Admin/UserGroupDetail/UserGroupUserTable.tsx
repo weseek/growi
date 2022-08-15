@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useCallback, useMemo } from 'react';
 
 import { UserPicture } from '@growi/ui';
 import dateFnsFormat from 'date-fns/format';
@@ -17,31 +17,29 @@ type Props = {
   adminUserGroupDetailContainer: AdminUserGroupDetailContainer
   userGroupRelations: IUserGroupRelation[],
   userGroup: IUserGroupHasId,
+  onClickRemoveUserBtn: (username: string) => void,
 }
 
 const UserGroupUserTable = (props: Props) => {
   const { t } = useTranslation();
 
-  const { adminUserGroupDetailContainer, userGroup } = props;
+  const { adminUserGroupDetailContainer, userGroup, onClickRemoveUserBtn } = props;
   const { data: userGroupRelations } = useSWRxUserGroupRelations(userGroup._id);
+  const xss = useMemo(() => new Xss(), []);
 
-  let xss;
-
-  useEffect(() => {
-    xss = new Xss();
-  }, []);
-
-
-  const removeUser = async(username: string) => {
+  const removeUser = useCallback(async(username: string) => {
     try {
-      await props.adminUserGroupDetailContainer.removeUserByUsername(username);
-      toastSuccess(`Removed "${xss.process(username)}" from "${xss.process(props.adminUserGroupDetailContainer.state.userGroup.name)}"`);
+      // await props.adminUserGroupDetailContainer.removeUserByUsername(username);
+      await onClickRemoveUserBtn(username);
+      // toastSuccess(`Removed "${xss.process(username)}" from "${xss.process(props.adminUserGroupDetailContainer.state.userGroup.name)}"`);
+      toastSuccess(`Removed "${xss.process(username)}" from "${xss.process(userGroup.name)}"`);
     }
     catch (err) {
       // eslint-disable-next-line max-len
-      toastError(new Error(`Unable to remove "${xss.process(username)}" from "${xss.process(props.adminUserGroupDetailContainer.state.userGroup.name)}"`));
+      // toastError(new Error(`Unable to remove "${xss.process(username)}" from "${xss.process(props.adminUserGroupDetailContainer.state.userGroup.name)}"`));
+      toastError(new Error(`Unable to remove "${xss.process(username)}" from "${xss.process(userGroup.name)}"`));
     }
-  };
+  }, [onClickRemoveUserBtn, userGroup.name, xss]);
 
 
   return (

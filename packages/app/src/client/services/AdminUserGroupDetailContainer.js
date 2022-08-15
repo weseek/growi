@@ -59,9 +59,9 @@ export default class AdminUserGroupDetailContainer extends Container {
     this.switchIsAlsoNameSearched = this.switchIsAlsoNameSearched.bind(this);
     this.openUserGroupUserModal = this.openUserGroupUserModal.bind(this);
     this.closeUserGroupUserModal = this.closeUserGroupUserModal.bind(this);
-    this.addUserByUsername = this.addUserByUsername.bind(this);
-    this.removeUserByUsername = this.removeUserByUsername.bind(this);
-    this.fetchApplicableUsers = this.fetchApplicableUsers.bind(this);
+    // this.addUserByUsername = this.addUserByUsername.bind(this);
+    // this.removeUserByUsername = this.removeUserByUsername.bind(this);
+    // this.fetchApplicableUsers = this.fetchApplicableUsers.bind(this);
   }
 
   /**
@@ -150,14 +150,14 @@ export default class AdminUserGroupDetailContainer extends Container {
    * @memberOf AdminUserGroupDetailContainer
    * @param {string} username username of the user to be removed from the group
    */
-  async removeUserByUsername(username) {
-    const res = await apiv3Delete(`/user-groups/${this.state.userGroup._id}/users/${username}`);
+  // async removeUserByUsername(username) {
+  //   const res = await apiv3Delete(`/user-groups/${this.state.userGroup._id}/users/${username}`);
 
-    this.setState((prevState) => {
-      return {
-        userGroupRelations: prevState.userGroupRelations.filter((u) => { return u._id !== res.data.userGroupRelation._id }),
-      };
-    });
-  }
+  //   this.setState((prevState) => {
+  //     return {
+  //       userGroupRelations: prevState.userGroupRelations.filter((u) => { return u._id !== res.data.userGroupRelation._id }),
+  //     };
+  //   });
+  // }
 
 }
