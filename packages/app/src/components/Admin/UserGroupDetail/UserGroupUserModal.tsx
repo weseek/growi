@@ -24,17 +24,18 @@ type Props = {
   onClickAddUserBtn: () => void,
   onSearchApplicableUsers: () => void,
   onChangeSearchType: (searchType: SearchType) => void
+  onClose: () => void,
 }
 
 const UserGroupUserModal = (props: Props) => {
   const { t } = useTranslation();
   const {
-    isOpen, adminUserGroupDetailContainer, userGroup, searchType, onClickAddUserBtn, onSearchApplicableUsers, onChangeSearchType,
+    isOpen, adminUserGroupDetailContainer, userGroup, searchType, onClickAddUserBtn, onSearchApplicableUsers, onChangeSearchType, onClose,
   } = props;
 
   return (
-    <Modal isOpen={isOpen} toggle={adminUserGroupDetailContainer.closeUserGroupUserModal}>
-      <ModalHeader tag="h4" toggle={adminUserGroupDetailContainer.closeUserGroupUserModal} className="bg-info text-light">
+    <Modal isOpen={isOpen} toggle={onClose}>
+      <ModalHeader tag="h4" toggle={onClose} className="bg-info text-light">
         {t('admin:user_group_management.add_modal.add_user') }
       </ModalHeader>
       <ModalBody>

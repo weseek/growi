@@ -193,14 +193,6 @@ const UserGroupDetailPage = (props: Props): JSX.Element => {
     }
   }, [currentUserGroup?.name, currentUserGroupId, mutateUserGroupRelations, xss]);
 
-  const openUserGroupUserModal = useCallback(() => {
-    setIsUserGroupUserModalShown(true);
-  }, []);
-
-  const closeUserGroupUserModal = useCallback(() => {
-    setIsUserGroupUserModalShown(false);
-  }, []);
-
   const showUpdateModal = useCallback((group: IUserGroupHasId) => {
     setUpdateModalShown(true);
     setSelectedUserGroup(group);
@@ -360,7 +352,7 @@ const UserGroupDetailPage = (props: Props): JSX.Element => {
         />
       </div>
       <h2 className="admin-setting-header mt-4">{t('admin:user_group_management.user_list')}</h2>
-      <UserGroupUserTable userGroup={currentUserGroup} userGroupRelati onClickPlusBtn={openUserGroupUserModal} />
+      <UserGroupUserTable userGroup={currentUserGroup} userGroupRelati onClickPlusBtn={() => setIsUserGroupUserModalShown(true)} />
       <UserGroupUserModal
         isOpen={isUserGroupUserModalShown}
         userGroup={currentUserGroup}
@@ -368,6 +360,7 @@ const UserGroupDetailPage = (props: Props): JSX.Element => {
         onClickAddUserBtn={addUserByUsername}
         onSearchApplicableUsers={fetchApplicableUsers}
         onChangeSearchType={switchSearchType}
+        onClose={() => setIsUserGroupUserModalShown(false)}
       />
 
       <h2 className="admin-setting-header mt-4">{t('admin:user_group_management.child_group_list')}</h2>
