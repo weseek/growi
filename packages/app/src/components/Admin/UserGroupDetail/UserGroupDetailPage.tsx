@@ -1,5 +1,5 @@
 import React, {
-  FC, useState, useCallback, useEffect, useMemo,
+  useState, useCallback, useEffect, useMemo,
 } from 'react';
 
 
@@ -13,6 +13,7 @@ import {
   apiv3Get, apiv3Put, apiv3Delete, apiv3Post,
 } from '~/client/util/apiv3-client';
 import { IUserGroup, IUserGroupHasId } from '~/interfaces/user';
+import { SearchTypes, SearchType } from '~/interfaces/user-group';
 import Xss from '~/services/xss';
 import { useIsAclEnabled } from '~/stores/context';
 import { useUpdateUserGroupConfirmModal } from '~/stores/modal';
@@ -39,7 +40,7 @@ type Props = {
   userGroupId?: string,
 }
 
-const UserGroupDetailPage = (props: Props) => {
+const UserGroupDetailPage = (props: Props): JSX.Element => {
   const { t } = useTranslation();
   const router = useRouter();
   const xss = useMemo(() => new Xss(), []);
@@ -49,7 +50,7 @@ const UserGroupDetailPage = (props: Props) => {
    * State (from AdminUserGroupDetailContainer)
    */
   const { data: currentUserGroup } = useSWRxUserGroup(currentUserGroupId);
-  const [searchType, setSearchType] = useState<string>('partial');
+  const [searchType, setSearchType] = useState<SearchType>(SearchTypes.PARTIAL);
   const [isAlsoMailSearched, setAlsoMailSearched] = useState<boolean>(false);
   const [isAlsoNameSearched, setAlsoNameSearched] = useState<boolean>(false);
   const [selectedUserGroup, setSelectedUserGroup] = useState<IUserGroupHasId | undefined>(undefined); // not null but undefined (to use defaultProps in UserGroupDeleteModal)
@@ -351,7 +352,13 @@ const UserGroupDetailPage = (props: Props) => {
       </div>
       <h2 className="admin-setting-header mt-4">{t('admin:user_group_management.user_list')}</h2>
       <UserGroupUserTable userGroup={currentUserGroup} userGroupRelations={childUserGroupRelations} onClickRemoveUserBtn={removeUserByUsername} />
-      <UserGroupUserModal userGroup={currentUserGroup} onClickAddUserBtn={addUserByUsername} onSearchApplicableUsers={fetchApplicableUsers} />
+      <UserGroupUserModal
+        userGroup={currentUserGroup}
+        searchType={searchType}
+        onClickAddUserBtn={addUserByUsername}
+        onSearchApplicableUsers={fetchApplicableUsers}
+        onSwitchSearchType={switchSearchType}
+      />
 
       <h2 className="admin-setting-header mt-4">{t('admin:user_group_management.child_group_list')}</h2>
       <UserGroupDropdown
