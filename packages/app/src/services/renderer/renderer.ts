@@ -340,12 +340,7 @@ export const generateViewOptions = (
 
   const sanitizeOption = deepmerge(
     commonSanitizeOption,
-    {
-      tagNames: [
-        'ls',
-        'lsx',
-      ],
-    },
+    lsxGrowiPlugin.sanitizeOption,
   );
   rehypePlugins.push([sanitize, sanitizeOption]);
 
@@ -399,6 +394,7 @@ export const generateTocOptions = (config: RendererConfig, tocNode: HtmlElementN
 
 export const generatePreviewOptions = (config: RendererConfig): RendererOptions => {
   const options = generateCommonOptions(undefined, config);
+  const { rehypePlugins } = options;
 
   // // Add configurers for preview
   // renderer.addConfigurers([
@@ -409,6 +405,11 @@ export const generatePreviewOptions = (config: RendererConfig): RendererOptions 
 
   // renderer.setMarkdownSettings({ breaks: rendererSettings?.isEnabledLinebreaks });
   // renderer.configure();
+
+  // add rehype plugins
+  rehypePlugins.push(
+    [sanitize, commonSanitizeOption],
+  );
 
   verifySanitizePlugin(options);
   return options;

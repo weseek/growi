@@ -1,4 +1,5 @@
 import { RemarkGrowiPluginType } from '@growi/remark-growi-plugin';
+import { Schema as SanitizeOption } from 'hast-util-sanitize';
 import { Plugin } from 'unified';
 import { visit } from 'unist-util-visit';
 
@@ -27,4 +28,11 @@ export const remarkPlugin: Plugin = function() {
       }
     });
   };
+};
+
+export const sanitizeOption: SanitizeOption = {
+  tagNames: ['lsx'],
+  attributes: {
+    lsx: ['prefix', 'num', 'depth', 'sort', 'reverse', 'filter'],
+  },
 };
