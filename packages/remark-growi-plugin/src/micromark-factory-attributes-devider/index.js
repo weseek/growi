@@ -6,6 +6,10 @@ import { factorySpace } from 'micromark-factory-space';
 import { markdownLineEnding, markdownSpace } from 'micromark-util-character';
 import { codes } from 'micromark-util-symbol/codes.js';
 
+export function markdownLineEndingOrSpaceOrComma(code) {
+  return code !== null && (code < codes.nul || code === codes.space || code === codes.comma);
+}
+
 /**
  * @param {Effects} effects
  * @param {State} ok
@@ -25,10 +29,12 @@ export function factoryAttributesDevider(effects, ok) {
       return start;
     }
 
+    // consume comma
     if (code === codes.comma) {
       effects.enter('attributeDevider');
       effects.consume(code);
       effects.exit('attributeDevider');
+      seen = true;
       return start;
     }
 
