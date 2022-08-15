@@ -4,6 +4,7 @@ import { Plugin } from 'unified';
 import { visit } from 'unist-util-visit';
 
 const NODE_NAME_PATTERN = new RegExp(/ls|lsx/);
+const SUPPORTED_ATTRIBUTES = ['prefix', 'num', 'depth', 'sort', 'reverse', 'filter'];
 
 
 type DirectiveAttributes = Record<string, string>
@@ -23,6 +24,23 @@ export const remarkPlugin: Plugin = function() {
         const data = node.data ?? (node.data = {});
         const attributes = node.attributes as DirectiveAttributes || {};
 
+        // set 'prefix' attribute if the first attribute is only value
+        // e.g.
+        //   case 1: lsx(prefix=/path..., ...)    => prefix="/path"
+        //   case 2: lsx(/path, ...)              => prefix="/path"
+        //   case 3: lsx(/foo, prefix=/bar ...)   => prefix="/bar"
+        if (attributes.prefix == null) {
+          const attrEntries = Object.entries(attributes);
+
+          if (attrEntries.length > 0) {
+            const [firstAttrKey, firstAttrValue] = attrEntries[0];
+
+            if (firstAttrValue === '' && !SUPPORTED_ATTRIBUTES.includes(firstAttrValue)) {
+              attributes.prefix = firstAttrKey;
+            }
+          }
+        }
+
         data.hName = 'lsx';
         data.hProperties = attributes;
       }
@@ -33,6 +51,6 @@ export const remarkPlugin: Plugin = function() {
 export const sanitizeOption: SanitizeOption = {
   tagNames: ['lsx'],
   attributes: {
-    lsx: ['prefix', 'num', 'depth', 'sort', 'reverse', 'filter'],
+    lsx: SUPPORTED_ATTRIBUTES,
   },
 };
