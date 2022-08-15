@@ -1,9 +1,10 @@
-import React from 'react';
+import React, {
+  useCallback, useEffect, useMemo, useState,
+} from 'react';
 
 import * as url from 'url';
 
 import { pathUtils } from '@growi/core';
-import PropTypes from 'prop-types';
 
 import axios from '~/utils/axios';
 
@@ -16,50 +17,163 @@ import { getInstance as getTagCacheManager } from './tag-cache-manager';
 
 import styles from './Lsx.module.scss';
 
-export class Lsx extends React.Component {
 
-  constructor(props) {
-    super(props);
+const tagCacheManager = getTagCacheManager();
 
-    this.state = {
-      isLoading: false,
-      isError: false,
-      isCacheExists: false,
-      nodeTree: undefined,
-      basisViewersCount: undefined,
-      errorMessage: '',
-    };
 
-    this.tagCacheManager = getTagCacheManager();
+/**
+ * compare whether path1 and path2 is the same
+ *
+ * @param {string} path1
+ * @param {string} path2
+ * @returns
+ *
+ * @memberOf Lsx
+ */
+function isEquals(path1: string, path2: string) {
+  return pathUtils.removeTrailingSlash(path1) === pathUtils.removeTrailingSlash(path2);
+}
+
+function getParentPath(path: string) {
+  return pathUtils.addTrailingSlash(decodeURIComponent(url.resolve(path, '../')));
+}
+
+/**
+ * generate PageNode instances for target page and the ancestors
+ *
+ * @param {any} pathToNodeMap
+ * @param {any} rootPagePath
+ * @param {any} pagePath
+ * @returns
+ * @memberof Lsx
+ */
+function generatePageNode(pathToNodeMap: Record<string, PageNode>, rootPagePath: string, pagePath: string): PageNode | null {
+  // exclude rootPagePath itself
+  if (isEquals(pagePath, rootPagePath)) {
+    return null;
   }
 
-  async componentDidMount() {
-    const { lsxContext, forceToFetchData } = this.props;
+  // return when already registered
+  if (pathToNodeMap[pagePath] != null) {
+    return pathToNodeMap[pagePath];
+  }
 
+  // generate node
+  const node = new PageNode(pagePath);
+  pathToNodeMap[pagePath] = node;
+
+  /*
+    * process recursively for ancestors
+    */
+  // get or create parent node
+  const parentPath = this.getParentPath(pagePath);
+  const parentNode = this.generatePageNode(pathToNodeMap, rootPagePath, parentPath);
+  // associate to patent
+  if (parentNode != null) {
+    parentNode.children.push(node);
+  }
+
+  return node;
+}
+
+
+type Props = {
+  // lsxContext: PropTypes.instanceOf(LsxContext).isRequired,
+
+  children: React.ReactNode,
+  className?: string,
+
+  prefix: string,
+  num?: string,
+  depth?: string,
+  sort?: string,
+  reverse?: string,
+  filter?: string,
+
+  forceToFetchData?: boolean,
+};
+
+export const Lsx = ({
+  prefix,
+  num, depth, sort, reverse, filter,
+  ...props
+}: Props): JSX.Element => {
+
+  const [isLoading, setLoading] = useState(false);
+  const [isError, setError] = useState(false);
+  const [isCacheExists, setCacheExists] = useState(false);
+  const [nodeTree, setNodeTree] = useState<PageNode[]|undefined>();
+  const [basisViewersCount, setBasisViewersCount] = useState<number|undefined>();
+  const [errorMessage, setErrorMessage] = useState('');
+
+  const { forceToFetchData } = props;
+
+  const lsxContext = useMemo(() => {
+    const options = {
+      num, depth, sort, reverse, filter,
+    };
+    return new LsxContext(prefix, options);
+  }, [depth, filter, num, prefix, reverse, sort]);
+
+  const retrieveDataFromCache = useCallback(() => {
     // get state object cache
-    const stateCache = this.retrieveDataFromCache();
+    const stateCache = tagCacheManager.getStateCache(lsxContext);
 
-    if (stateCache != null) {
-      this.setState({
-        isCacheExists: true,
-        nodeTree: stateCache.nodeTree,
-        isError: stateCache.isError,
-        errorMessage: stateCache.errorMessage,
+    // instanciate PageNode
+    if (stateCache != null && stateCache.nodeTree != null) {
+      stateCache.nodeTree = stateCache.nodeTree.map((obj) => {
+        return PageNode.instanciateFrom(obj);
       });
-
-      // switch behavior by forceToFetchData
-      if (!forceToFetchData) {
-        return; // go to render()
-      }
     }
 
-    lsxContext.parse();
-    this.setState({ isLoading: true });
+    return stateCache;
+  }, []);
+
+  const generatePageNodeTree = useCallback((rootPagePath, pages) => {
+    const pathToNodeMap: Record<string, PageNode> = {};
+
+    pages.forEach((page) => {
+      // add slash ensure not to forward match to another page
+      // e.g. '/Java/' not to match to '/JavaScript'
+      const pagePath = pathUtils.addTrailingSlash(page.path);
+
+      const node = generatePageNode(pathToNodeMap, rootPagePath, pagePath); // this will not be null
+
+      // exclude rootPagePath itself
+      if (node == null) {
+        return;
+      }
+
+      // set the Page substance
+      node.page = page;
+    });
+
+    // return root objects
+    const rootNodes: PageNode[] = [];
+    Object.keys(pathToNodeMap).forEach((pagePath) => {
+      // exclude '/'
+      if (pagePath === '/') {
+        return;
+      }
+
+      const parentPath = getParentPath(pagePath);
+
+      // pick up what parent doesn't exist
+      if ((parentPath === '/') || !(parentPath in pathToNodeMap)) {
+        rootNodes.push(pathToNodeMap[pagePath]);
+      }
+    });
+    return rootNodes;
+  }, []);
+
+  const loadData = useCallback(async() => {
+    setLoading(true);
 
     // add slash ensure not to forward match to another page
     // ex: '/Java/' not to match to '/JavaScript'
     const pagePath = pathUtils.addTrailingSlash(lsxContext.pagePath);
 
+    let newNodeTree: PageNode[] = [];
     try {
       const res = await axios.get('/_api/plugins/lsx', {
         params: {
@@ -70,147 +184,54 @@ export class Lsx extends React.Component {
 
       if (res.data.ok) {
         const basisViewersCount = res.data.toppageViewersCount;
-        const nodeTree = this.generatePageNodeTree(pagePath, res.data.pages);
-        this.setState({ nodeTree, basisViewersCount });
+        newNodeTree = generatePageNodeTree(pagePath, res.data.pages);
+        setNodeTree(newNodeTree);
+        setBasisViewersCount(basisViewersCount);
       }
     }
     catch (error) {
-      this.setState({ isError: true, errorMessage: error.message });
+      setError(true);
+      setErrorMessage(error.message);
     }
     finally {
-      this.setState({ isLoading: false });
+      setLoading(false);
 
       // store to sessionStorage
-      this.tagCacheManager.cacheState(lsxContext, this.state);
-    }
-  }
-
-  retrieveDataFromCache() {
-    const { lsxContext } = this.props;
-
-    // get state object cache
-    const stateCache = this.tagCacheManager.getStateCache(lsxContext);
-
-    // instanciate PageNode
-    if (stateCache != null && stateCache.nodeTree != null) {
-      stateCache.nodeTree = stateCache.nodeTree.map((obj) => {
-        return PageNode.instanciateFrom(obj);
+      tagCacheManager.cacheState(lsxContext, {
+        isError,
+        isCacheExists,
+        basisViewersCount,
+        errorMessage,
+        nodeTree: newNodeTree,
       });
     }
+  }, [basisViewersCount, errorMessage, generatePageNodeTree, isCacheExists, isError, lsxContext]);
 
-    return stateCache;
-  }
+  useEffect(() => {
+    // get state object cache
+    const stateCache = retrieveDataFromCache();
 
-  /**
-   * generate tree structure
-   *
-   * @param {string} rootPagePath
-   * @param {Page[]} pages Array of Page model
-   *
-   * @memberOf Lsx
-   */
-  generatePageNodeTree(rootPagePath, pages) {
-    const pathToNodeMap = {};
+    if (stateCache != null) {
+      setCacheExists(true);
+      setNodeTree(stateCache.nodeTree);
+      setError(stateCache.isError);
+      setErrorMessage(stateCache.errorMessage);
 
-    pages.forEach((page) => {
-      // add slash ensure not to forward match to another page
-      // e.g. '/Java/' not to match to '/JavaScript'
-      const pagePath = pathUtils.addTrailingSlash(page.path);
-
-      // exclude rootPagePath itself
-      if (this.isEquals(pagePath, rootPagePath)) {
-        return;
+      // switch behavior by forceToFetchData
+      if (!forceToFetchData) {
+        return; // go to render()
       }
-
-      const node = this.generatePageNode(pathToNodeMap, rootPagePath, pagePath); // this will not be null
-      // set the Page substance
-      node.page = page;
-    });
-
-    // return root objects
-    const rootNodes = [];
-    Object.keys(pathToNodeMap).forEach((pagePath) => {
-      // exclude '/'
-      if (pagePath === '/') {
-        return;
-      }
-
-      const parentPath = this.getParentPath(pagePath);
-
-      // pick up what parent doesn't exist
-      if ((parentPath === '/') || !(parentPath in pathToNodeMap)) {
-        rootNodes.push(pathToNodeMap[pagePath]);
-      }
-    });
-    return rootNodes;
-  }
-
-  /**
-   * generate PageNode instances for target page and the ancestors
-   *
-   * @param {any} pathToNodeMap
-   * @param {any} rootPagePath
-   * @param {any} pagePath
-   * @returns
-   * @memberof Lsx
-   */
-  generatePageNode(pathToNodeMap, rootPagePath, pagePath) {
-    // exclude rootPagePath itself
-    if (this.isEquals(pagePath, rootPagePath)) {
-      return null;
     }
 
-    // return when already registered
-    if (pathToNodeMap[pagePath] != null) {
-      return pathToNodeMap[pagePath];
-    }
+    loadData();
+  }, [forceToFetchData, loadData, retrieveDataFromCache]);
 
-    // generate node
-    const node = new PageNode(pagePath);
-    pathToNodeMap[pagePath] = node;
-
-    /*
-     * process recursively for ancestors
-     */
-    // get or create parent node
-    const parentPath = this.getParentPath(pagePath);
-    const parentNode = this.generatePageNode(pathToNodeMap, rootPagePath, parentPath);
-    // associate to patent
-    if (parentNode != null) {
-      parentNode.children.push(node);
-    }
-
-    return node;
-  }
-
-  /**
-   * compare whether path1 and path2 is the same
-   *
-   * @param {string} path1
-   * @param {string} path2
-   * @returns
-   *
-   * @memberOf Lsx
-   */
-  isEquals(path1, path2) {
-    return pathUtils.removeTrailingSlash(path1) === pathUtils.removeTrailingSlash(path2);
-  }
-
-  getParentPath(path) {
-    return pathUtils.addTrailingSlash(decodeURIComponent(url.resolve(path, '../')));
-  }
-
-  renderContents() {
-    const lsxContext = this.props.lsxContext;
-    const {
-      isLoading, isError, isCacheExists, nodeTree,
-    } = this.state;
-
+  const renderContents = () => {
     if (isError) {
       return (
         <div className="text-warning">
           <i className="fa fa-exclamation-triangle fa-fw"></i>
-          {lsxContext.tagExpression} (-&gt; <small>{this.state.errorMessage}</small>)
+          {/* {lsxContext.tagExpression} (-&gt; <small>{this.state.errorMessage}</small>) */}
         </div>
       );
     }
@@ -221,26 +242,16 @@ export class Lsx extends React.Component {
         { isLoading && (
           <div className="text-muted">
             <i className="fa fa-spinner fa-pulse mr-1"></i>
-            {lsxContext.tagExpression}
+            {/* {lsxContext.tagExpression} */}
             { isCacheExists && <small>&nbsp;(Showing cache..)</small> }
           </div>
         ) }
         { nodeTree && (
-          <LsxListView nodeTree={this.state.nodeTree} lsxContext={this.props.lsxContext} basisViewersCount={this.state.basisViewersCount} />
+          <LsxListView nodeTree={nodeTree} lsxContext={lsxContext} basisViewersCount={basisViewersCount} />
         ) }
       </div>
     );
+  };
 
-  }
-
-  render() {
-    return <div className={`lsx ${styles.lsx}`}>{this.renderContents()}</div>;
-  }
-
-}
-
-Lsx.propTypes = {
-  lsxContext: PropTypes.instanceOf(LsxContext).isRequired,
-
-  forceToFetchData: PropTypes.bool,
+  return <div className={`lsx ${styles.lsx}`}>{renderContents()}</div>;
 };
