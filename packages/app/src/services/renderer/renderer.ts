@@ -1,3 +1,4 @@
+import growiPlugin from '@growi/remark-growi-plugin';
 import { ReactMarkdownOptions } from 'react-markdown/lib/react-markdown';
 import katex from 'rehype-katex';
 import raw from 'rehype-raw';
@@ -9,6 +10,7 @@ import emoji from 'remark-emoji';
 import gfm from 'remark-gfm';
 import math from 'remark-math';
 
+
 import { CodeBlock } from '~/components/ReactMarkdownComponents/CodeBlock';
 import { Header } from '~/components/ReactMarkdownComponents/Header';
 import { NextLink } from '~/components/ReactMarkdownComponents/NextLink';
@@ -17,6 +19,8 @@ import loggerFactory from '~/utils/logger';
 
 import { addClass } from './rehype-plugins/add-class';
 import { relativeLinks } from './rehype-plugins/relative-links';
+import { relativeLinksByPukiwikiLikeLinker } from './rehype-plugins/relative-links-by-pukiwiki-like-linker';
+import { pukiwikiLikeLinker } from './remark-plugins/pukiwiki-like-linker';
 
 // import CsvToTable from './PreProcessor/CsvToTable';
 // import EasyGrid from './PreProcessor/EasyGrid';
@@ -217,9 +221,14 @@ export type RendererOptions = Partial<ReactMarkdownOptions>;
 
 const generateCommonOptions = (pagePath: string|undefined, config: RendererConfig): RendererOptions => {
   return {
-    remarkPlugins: [gfm],
+    remarkPlugins: [
+      gfm,
+      pukiwikiLikeLinker,
+      growiPlugin,
+    ],
     rehypePlugins: [
       slug,
+      [relativeLinksByPukiwikiLikeLinker, { pagePath }],
       [relativeLinks, { pagePath }],
       raw,
       [sanitize, {
@@ -245,7 +254,7 @@ const generateCommonOptions = (pagePath: string|undefined, config: RendererConfi
 export const generateViewOptions = (
     pagePath: string,
     config: RendererConfig,
-    storeTocNode: (node: HtmlElementNode) => void,
+    storeTocNode: (toc: HtmlElementNode) => void,
 ): RendererOptions => {
 
   const options = generateCommonOptions(pagePath, config);
@@ -280,7 +289,11 @@ export const generateViewOptions = (
           });
         };
         replacer([toc]); // replace <ol> to <ul>
-        storeTocNode(toc); // store tocNode to global state with swr
+
+        // For storing tocNode to global state with swr
+        // search: tocRef.current
+        storeTocNode(toc);
+
         return false; // not show toc in body
       },
     }]);

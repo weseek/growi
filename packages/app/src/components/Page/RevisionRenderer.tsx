@@ -8,7 +8,6 @@ import { CustomWindow } from '~/interfaces/global';
 import { RendererOptions } from '~/services/renderer/renderer';
 import { useCurrentPathname, useInterceptorManager } from '~/stores/context';
 import { useEditorSettings } from '~/stores/editor';
-import { useViewOptions } from '~/stores/renderer';
 import loggerFactory from '~/utils/logger';
 
 // import RevisionBody from './RevisionBody';
@@ -95,7 +94,7 @@ type Props = {
   additionalClassName?: string,
 }
 
-const RevisionRenderer = (props: Props): JSX.Element => {
+const RevisionRenderer = React.memo((props: Props): JSX.Element => {
 
   const {
     rendererOptions, markdown, pagePath, highlightKeywords, additionalClassName,
@@ -246,6 +245,7 @@ const RevisionRenderer = (props: Props): JSX.Element => {
   //   />
   // );
 
-};
+});
+RevisionRenderer.displayName = 'RevisionRenderer';
 
 export default RevisionRenderer;
