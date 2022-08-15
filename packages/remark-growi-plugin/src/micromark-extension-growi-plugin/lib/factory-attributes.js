@@ -17,6 +17,8 @@ import { codes } from 'micromark-util-symbol/codes.js';
 import { types } from 'micromark-util-symbol/types.js';
 import { ok as assert } from 'uvu/assert';
 
+import { factoryAttributesDevider } from '../../micromark-factory-attributes-devider/index.js';
+
 /**
  * @param {Effects} effects
  * @param {State} ok
@@ -81,7 +83,7 @@ export function factoryAttributes(
       return shortcutStart(code);
     }
 
-    if (code === codes.colon || code === codes.underscore || asciiAlpha(code)) {
+    if (code === codes.colon || code === codes.underscore || code === codes.slash || asciiAlpha(code)) {
       effects.enter(attributeType);
       effects.enter(attributeNameType);
       effects.consume(code);
@@ -92,8 +94,8 @@ export function factoryAttributes(
       return factorySpace(effects, between, types.whitespace)(code);
     }
 
-    if (!disallowEol && markdownLineEndingOrSpace(code)) {
-      return factoryWhitespace(effects, between)(code);
+    if (!disallowEol && (code === codes.comma || markdownLineEndingOrSpace(code))) {
+      return factoryAttributesDevider(effects, between)(code);
     }
 
     return end(code);
