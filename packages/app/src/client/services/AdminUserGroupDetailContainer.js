@@ -39,7 +39,6 @@ export default class AdminUserGroupDetailContainer extends Container {
 
     this.state = {
       // TODO: [SPA] get userGroup from props
-      // userGroup: JSON.parse(rootElem.getAttribute('data-user-group')),
       userGroupRelations: [], // For user list
 
       // TODO 85062: /_api/v3/user-groups/children?include_grand_child=boolean
@@ -62,6 +61,7 @@ export default class AdminUserGroupDetailContainer extends Container {
     this.closeUserGroupUserModal = this.closeUserGroupUserModal.bind(this);
     this.addUserByUsername = this.addUserByUsername.bind(this);
     this.removeUserByUsername = this.removeUserByUsername.bind(this);
+    this.fetchApplicableUsers = this.fetchApplicableUsers.bind(this);
   }
 
   /**
@@ -71,29 +71,6 @@ export default class AdminUserGroupDetailContainer extends Container {
     return 'AdminUserGroupDetailContainer';
   }
 
-  /**
-   * retrieve user group data
-   */
-  // async init() {
-  //   try {
-  //     const [
-  //       userGroupRelations,
-  //       relatedPages,
-  //     ] = await Promise.all([
-  //       apiv3Get(`/user-groups/${this.state.userGroup._id}/user-group-relations`).then((res) => { return res.data.userGroupRelations }),
-  //       apiv3Get(`/user-groups/${this.state.userGroup._id}/pages`).then((res) => { return res.data.pages }),
-  //     ]);
-
-  //     await this.setState({
-  //       userGroupRelations,
-  //       relatedPages,
-  //     });
-  //   }
-  //   catch (err) {
-  //     logger.error(err);
-  //     toastError(new Error('Failed to fetch data'));
-  //   }
-  // }
 
   /**
    * switch isAlsoMailSearched
@@ -117,22 +94,6 @@ export default class AdminUserGroupDetailContainer extends Container {
   }
 
   /**
-   * update user group
-   *
-   * @memberOf AdminUserGroupDetailContainer
-   * @param {object} param update param for user group
-   * @return {object} response object
-   */
-  async updateUserGroup(param) {
-    const res = await apiv3Put(`/user-groups/${this.state.userGroup._id}`, param);
-    const { userGroup } = res.data;
-
-    await this.setState({ userGroup });
-
-    return res;
-  }
-
-  /**
    * open a modal
    *
    * @memberOf AdminUserGroupDetailContainer
@@ -150,38 +111,38 @@ export default class AdminUserGroupDetailContainer extends Container {
     await this.setState({ isUserGroupUserModalOpen: false });
   }
 
-  /**
-   * search user for invitation
-   * @param {string} username username of the user to be searched
-   */
-  async fetchApplicableUsers(searchWord) {
-    const res = await apiv3Get(`/user-groups/${this.state.userGroup._id}/unrelated-users`, {
-      searchWord,
-      searchType: this.state.searchType,
-      isAlsoMailSearched: this.state.isAlsoMailSearched,
-      isAlsoNameSearched: this.state.isAlsoNameSearched,
-    });
+  // /**
+  //  * search user for invitation
+  //  * @param {string} username username of the user to be searched
+  //  */
+  // async fetchApplicableUsers(searchWord) {
+  //   const res = await apiv3Get(`/user-groups/${this.state.userGroup._id}/unrelated-users`, {
+  //     searchWord,
+  //     searchType: this.state.searchType,
+  //     isAlsoMailSearched: this.state.isAlsoMailSearched,
+  //     isAlsoNameSearched: this.state.isAlsoNameSearched,
+  //   });
 
-    const { users } = res.data;
+  //   const { users } = res.data;
 
-    return users;
-  }
+  //   return users;
+  // }
 
 
-  /**
-   * update user group
-   *
-   * @memberOf AdminUserGroupDetailContainer
-   * @param {string} username username of the user to be added to the group
-   */
-  async addUserByUsername(username) {
-    const res = await apiv3Post(`/user-groups/${this.state.userGroup._id}/users/${username}`);
+  // /**
+  //  * update user group
+  //  *
+  //  * @memberOf AdminUserGroupDetailContainer
+  //  * @param {string} username username of the user to be added to the group
+  //  */
+  // async addUserByUsername(username) {
+  //   const res = await apiv3Post(`/user-groups/${this.state.userGroup._id}/users/${username}`);
 
-    // do not add users for ducaplicate
-    if (res.data.userGroupRelation == null) { return }
+  //   // do not add users for ducaplicate
+  //   if (res.data.userGroupRelation == null) { return }
 
-    this.init();
-  }
+  //   this.init();
+  // }
 
   /**
    * update user group

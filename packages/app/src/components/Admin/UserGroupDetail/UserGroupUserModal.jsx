@@ -17,7 +17,9 @@ import UserGroupUserFormByInput from './UserGroupUserFormByInput';
 class UserGroupUserModal extends React.Component {
 
   render() {
-    const { t, adminUserGroupDetailContainer } = this.props;
+    const {
+      t, userGroup, adminUserGroupDetailContainer, onClickAddUserBtn, onSearchApplicableUsers,
+    } = this.props;
 
     return (
       <Modal isOpen={adminUserGroupDetailContainer.state.isUserGroupUserModalOpen} toggle={adminUserGroupDetailContainer.closeUserGroupUserModal}>
@@ -27,7 +29,7 @@ class UserGroupUserModal extends React.Component {
         <ModalBody>
           <p className="card well">{t('admin:user_group_management.add_modal.description')}</p>
           <div className="p-3">
-            <UserGroupUserFormByInput />
+            <UserGroupUserFormByInput userGroup={userGroup} onClickAddUserBtn={onClickAddUserBtn} onSearchApplicableUsers={onSearchApplicableUsers} />
           </div>
           <h2 className="border-bottom">{t('admin:user_group_management.add_modal.search_option')}</h2>
           <div className="row mt-4">
@@ -81,11 +83,20 @@ class UserGroupUserModal extends React.Component {
 UserGroupUserModal.propTypes = {
   t: PropTypes.func.isRequired, // i18next
   adminUserGroupDetailContainer: PropTypes.instanceOf(AdminUserGroupDetailContainer).isRequired,
+  onClickAddUserBtn: PropTypes.func,
+  onSearchApplicableUsers: PropTypes.func,
+  userGroup: PropTypes.object.isRequired,
 };
 
 const UserGroupUserModalWrapperFC = (props) => {
   const { t } = useTranslation();
-  return <UserGroupUserModal t={t} {...props} />;
+  return <UserGroupUserModal
+    t={t}
+    userGroup={props.userGroup}
+    onClickAddUserBtn={props.onClickAddUserBtn}
+    onSearchApplicableUsers={props.onSearchApplicableUsers}
+    {...props}
+  />;
 };
 /**
  * Wrapper component for using unstated

@@ -170,7 +170,6 @@ const UserGroupDetailPage = (props: Props) => {
     return users;
   }, [currentUserGroupId, searchType, isAlsoMailSearched, isAlsoNameSearched]);
 
-  // TODO 85062: will be used in UserGroupUserFormByInput
   const addUserByUsername = useCallback(async(username: string) => {
     await apiv3Post(`/user-groups/${currentUserGroupId}/users/${username}`);
     mutateUserGroupRelations();
@@ -341,7 +340,7 @@ const UserGroupDetailPage = (props: Props) => {
       </div>
       <h2 className="admin-setting-header mt-4">{t('admin:user_group_management.user_list')}</h2>
       <UserGroupUserTable userGroup={currentUserGroup} userGroupRelations={childUserGroupRelations} />
-      <UserGroupUserModal />
+      <UserGroupUserModal userGroup={currentUserGroup} onClickAddUserBtn={addUserByUsername} onSearchApplicableUsers={fetchApplicableUsers} />
 
       <h2 className="admin-setting-header mt-4">{t('admin:user_group_management.child_group_list')}</h2>
       <UserGroupDropdown

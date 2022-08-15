@@ -38,15 +38,14 @@ class UserGroupUserFormByInput extends React.Component {
   }
 
   async addUserBySubmit() {
-    const { adminUserGroupDetailContainer } = this.props;
-    const { userGroup } = adminUserGroupDetailContainer.state;
+    const { userGroup, adminUserGroupDetailContainer, onClickAddUserBtn } = this.props;
 
     if (this.state.inputUser.length === 0) { return }
     const userName = this.state.inputUser[0].username;
 
     try {
-      await adminUserGroupDetailContainer.addUserByUsername(userName);
-      await adminUserGroupDetailContainer.init();
+      await onClickAddUserBtn(userName);
+      // await adminUserGroupDetailContainer.init();
       await adminUserGroupDetailContainer.closeUserGroupUserModal();
       toastSuccess(`Added "${this.xss.process(userName)}" to "${this.xss.process(userGroup.name)}"`);
       this.setState({ inputUser: '' });
@@ -63,13 +62,14 @@ class UserGroupUserFormByInput extends React.Component {
   }
 
   async searhApplicableUsers() {
-    const { adminUserGroupDetailContainer } = this.props;
+    const { onSearchApplicableUsers } = this.props;
 
     try {
-      const users = await adminUserGroupDetailContainer.fetchApplicableUsers(this.state.keyword);
+      const users = await onSearchApplicableUsers(this.state.keyword);
       this.setState({ applicableUsers: users, isLoading: false });
     }
     catch (err) {
+      console.log('searhApplicableUsers_err', err);
       toastError(err);
     }
   }
@@ -83,7 +83,6 @@ class UserGroupUserFormByInput extends React.Component {
   }
 
   handleSearch(keyword) {
-
     if (keyword === '') {
       return;
     }
@@ -103,12 +102,12 @@ class UserGroupUserFormByInput extends React.Component {
     const { adminUserGroupDetailContainer } = this.props;
     const user = option;
     return (
-      <React.Fragment>
+      <>
         <UserPicture user={user} size="sm" noLink noTooltip />
         <strong className="ml-2">{user.username}</strong>
         {adminUserGroupDetailContainer.state.isAlsoNameSearched && <span className="ml-2">{user.name}</span>}
         {adminUserGroupDetailContainer.state.isAlsoMailSearched && <span className="ml-2">{user.email}</span>}
-      </React.Fragment>
+      </>
     );
   }
 
@@ -162,6 +161,9 @@ class UserGroupUserFormByInput extends React.Component {
 UserGroupUserFormByInput.propTypes = {
   t: PropTypes.func.isRequired, // i18next
   adminUserGroupDetailContainer: PropTypes.instanceOf(AdminUserGroupDetailContainer).isRequired,
+  onClickAddUserBtn: PropTypes.func,
+  onSearchApplicableUsers: PropTypes.func,
+  userGroup: PropTypes.object,
 };
 
 const UserGroupUserFormByInputWrapperFC = (props) => {
