@@ -1,5 +1,5 @@
 import React, {
-  FC, useState, useCallback, useEffect,
+  FC, useState, useCallback, useEffect, useMemo,
 } from 'react';
 
 
@@ -13,12 +13,14 @@ import {
   apiv3Get, apiv3Put, apiv3Delete, apiv3Post,
 } from '~/client/util/apiv3-client';
 import { IUserGroup, IUserGroupHasId } from '~/interfaces/user';
+import Xss from '~/services/xss';
 import { useIsAclEnabled } from '~/stores/context';
 import { useUpdateUserGroupConfirmModal } from '~/stores/modal';
 import {
   useSWRxUserGroupPages, useSWRxUserGroupRelationList, useSWRxChildUserGroupList, useSWRxUserGroup,
   useSWRxSelectableParentUserGroups, useSWRxSelectableChildUserGroups, useSWRxAncestorUserGroups,
 } from '~/stores/user-group';
+
 
 const UserGroupPageList = dynamic(() => import('./UserGroupPageList'), { ssr: false });
 const UserGroupUserModal = dynamic(() => import('./UserGroupUserModal'), { ssr: false });
@@ -33,12 +35,14 @@ const UpdateParentConfirmModal = dynamic(() => import('./UpdateParentConfirmModa
 
 
 type Props = {
+  adminUserGroupDetailContainer: any;
   userGroupId?: string,
 }
 
 const UserGroupDetailPage = (props: Props) => {
   const { t } = useTranslation();
   const router = useRouter();
+  const xss = useMemo(() => new Xss(), []);
   const { userGroupId: currentUserGroupId } = props;
 
   /*
@@ -176,9 +180,16 @@ const UserGroupDetailPage = (props: Props) => {
   }, [currentUserGroupId, mutateUserGroupRelations]);
 
   const removeUserByUsername = useCallback(async(username: string) => {
-    await apiv3Delete(`/user-groups/${currentUserGroupId}/users/${username}`);
-    mutateUserGroupRelations();
-  }, [currentUserGroupId, mutateUserGroupRelations]);
+    try {
+      await apiv3Delete(`/user-groups/${currentUserGroupId}/users/${username}`);
+      toastSuccess(`Removed "${xss.process(username)}" from "${xss.process(currentUserGroup?.name)}"`);
+      mutateUserGroupRelations();
+    }
+    catch (err) {
+      // eslint-disable-next-line max-len
+      toastError(new Error(`Unable to remove "${xss.process(username)}" from "${xss.process(currentUserGroup?.name)}"`));
+    }
+  }, [currentUserGroup?.name, currentUserGroupId, mutateUserGroupRelations, xss]);
 
   const showUpdateModal = useCallback((group: IUserGroupHasId) => {
     setUpdateModalShown(true);

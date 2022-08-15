@@ -1,4 +1,4 @@
-import React, { useEffect, useCallback, useMemo } from 'react';
+import React from 'react';
 
 import { UserPicture } from '@growi/ui';
 import dateFnsFormat from 'date-fns/format';
@@ -6,9 +6,7 @@ import { useTranslation } from 'next-i18next';
 
 
 import AdminUserGroupDetailContainer from '~/client/services/AdminUserGroupDetailContainer';
-import { toastSuccess, toastError } from '~/client/util/apiNotification';
 import { IUserGroupHasId, IUserGroupRelation } from '~/interfaces/user';
-import Xss from '~/services/xss';
 import { useSWRxUserGroupRelations } from '~/stores/user-group';
 
 import { withUnstatedContainers } from '../../UnstatedUtils';
@@ -17,7 +15,7 @@ type Props = {
   adminUserGroupDetailContainer: AdminUserGroupDetailContainer
   userGroupRelations: IUserGroupRelation[],
   userGroup: IUserGroupHasId,
-  onClickRemoveUserBtn: (username: string) => void,
+  onClickRemoveUserBtn: (username: string) => Promise<void>,
 }
 
 const UserGroupUserTable = (props: Props) => {
@@ -25,21 +23,6 @@ const UserGroupUserTable = (props: Props) => {
 
   const { adminUserGroupDetailContainer, userGroup, onClickRemoveUserBtn } = props;
   const { data: userGroupRelations } = useSWRxUserGroupRelations(userGroup._id);
-  const xss = useMemo(() => new Xss(), []);
-
-  const removeUser = useCallback(async(username: string) => {
-    try {
-      // await props.adminUserGroupDetailContainer.removeUserByUsername(username);
-      await onClickRemoveUserBtn(username);
-      // toastSuccess(`Removed "${xss.process(username)}" from "${xss.process(props.adminUserGroupDetailContainer.state.userGroup.name)}"`);
-      toastSuccess(`Removed "${xss.process(username)}" from "${xss.process(userGroup.name)}"`);
-    }
-    catch (err) {
-      // eslint-disable-next-line max-len
-      // toastError(new Error(`Unable to remove "${xss.process(username)}" from "${xss.process(props.adminUserGroupDetailContainer.state.userGroup.name)}"`));
-      toastError(new Error(`Unable to remove "${xss.process(username)}" from "${xss.process(userGroup.name)}"`));
-    }
-  }, [onClickRemoveUserBtn, userGroup.name, xss]);
 
 
   return (
@@ -85,9 +68,7 @@ const UserGroupUserTable = (props: Props) => {
                     <button
                       className="dropdown-item"
                       type="button"
-                      onClick={() => {
-                        return removeUser(relatedUser.username);
-                      }}
+                      onClick={() => onClickRemoveUserBtn(relatedUser.username)}
                     >
                       <i className="icon-fw icon-user-unfollow"></i> {t('admin:user_group_management.remove_from_group')}
                     </button>
