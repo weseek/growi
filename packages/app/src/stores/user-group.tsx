@@ -4,9 +4,9 @@ import useSWRImmutable from 'swr/immutable';
 import { apiGet } from '~/client/util/apiv1-client';
 import { apiv3Get } from '~/client/util/apiv3-client';
 import { IPageHasId } from '~/interfaces/page';
-import { IUserGroupHasId, IUserGroupRelationHasId } from '~/interfaces/user';
+import { IUserGroupHasId, IUserGroupRelationHasId, IUserGroupRelationHasIdPopulatedUser } from '~/interfaces/user';
 import {
-  UserGroupResult, UserGroupListResult, ChildUserGroupListResult, UserGroupRelationListResult,
+  UserGroupResult, UserGroupListResult, ChildUserGroupListResult, UserGroupRelationListResult, UserGroupRelationsResult,
   UserGroupPagesResult, SelectableParentUserGroupsResult, SelectableUserChildGroupsResult, AncestorUserGroupsResult,
 } from '~/interfaces/user-group-response';
 
@@ -51,10 +51,10 @@ export const useSWRxChildUserGroupList = (
   );
 };
 
-export const useSWRxUserGroupRelations = (groupId: string): SWRResponse<IUserGroupRelationHasId[], Error> => {
+export const useSWRxUserGroupRelations = (groupId: string): SWRResponse<IUserGroupRelationHasIdPopulatedUser[], Error> => {
   return useSWRImmutable(
     groupId != null ? [`/user-groups/${groupId}/user-group-relations`] : null,
-    endpoint => apiv3Get<UserGroupRelationListResult>(endpoint).then(result => result.data.userGroupRelations),
+    endpoint => apiv3Get<UserGroupRelationsResult>(endpoint).then(result => result.data.userGroupRelations),
   );
 };
 

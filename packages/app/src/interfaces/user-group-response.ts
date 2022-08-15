@@ -1,5 +1,5 @@
-import { IUserGroupHasId, IUserGroupRelationHasId } from './user';
 import { IPageHasId } from './page';
+import { IUserGroupHasId, IUserGroupRelationHasId, IUserGroupRelationHasIdPopulatedUser } from './user';
 
 export type UserGroupResult = {
   userGroup: IUserGroupHasId,
@@ -16,6 +16,10 @@ export type ChildUserGroupListResult = {
 
 export type UserGroupRelationListResult = {
   userGroupRelations: IUserGroupRelationHasId[],
+};
+
+export type UserGroupRelationsResult = {
+  userGroupRelations: IUserGroupRelationHasIdPopulatedUser[],
 };
 
 export type UserGroupPagesResult = {

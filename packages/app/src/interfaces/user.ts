@@ -1,3 +1,3 @@
 export type {
-  IUser, IUserGroupRelation, IUserGroup, IUserHasId, IUserGroupHasId, IUserGroupRelationHasId,
+  IUser, IUserGroupRelation, IUserGroup, IUserHasId, IUserGroupHasId, IUserGroupRelationHasId, IUserGroupRelationHasIdPopulatedUser,
 } from '@growi/core';
