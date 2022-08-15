@@ -357,7 +357,7 @@ const UserGroupDetailPage = (props: Props): JSX.Element => {
         searchType={searchType}
         onClickAddUserBtn={addUserByUsername}
         onSearchApplicableUsers={fetchApplicableUsers}
-        onSwitchSearchType={switchSearchType}
+        onChangeSearchType={switchSearchType}
       />
 
       <h2 className="admin-setting-header mt-4">{t('admin:user_group_management.child_group_list')}</h2>

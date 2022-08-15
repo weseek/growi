@@ -22,13 +22,13 @@ type Props = {
   searchType: SearchType,
   onClickAddUserBtn: () => void,
   onSearchApplicableUsers: () => void,
-  onSwitchSearchType: (searchType: SearchType) => void
+  onChangeSearchType: (searchType: SearchType) => void
 }
 
 const UserGroupUserModal = (props: Props) => {
   const { t } = useTranslation();
   const {
-    adminUserGroupDetailContainer, userGroup, searchType, onClickAddUserBtn, onSearchApplicableUsers, onSwitchSearchType,
+    adminUserGroupDetailContainer, userGroup, searchType, onClickAddUserBtn, onSearchApplicableUsers, onChangeSearchType,
   } = props;
 
   return (
@@ -64,21 +64,21 @@ const UserGroupUserModal = (props: Props) => {
               <RadioButtonForSerchUserOption
                 searchType="forward"
                 checked={searchType === SearchTypes.FORWARD}
-                onChange={() => onSwitchSearchType(SearchTypes.FORWARD)}
+                onChange={() => onChangeSearchType(SearchTypes.FORWARD)}
               />
             </div>
             <div className="mb-5">
               <RadioButtonForSerchUserOption
                 searchType="partial"
                 checked={searchType === SearchTypes.PARTIAL}
-                onChange={() => onSwitchSearchType(SearchTypes.PARTIAL)}
+                onChange={() => onChangeSearchType(SearchTypes.PARTIAL)}
               />
             </div>
             <div className="mb-5">
               <RadioButtonForSerchUserOption
                 searchType="backward"
                 checked={searchType === SearchTypes.BACKWORD}
-                onChange={() => onSwitchSearchType(SearchTypes.BACKWORD)}
+                onChange={() => onChangeSearchType(SearchTypes.BACKWORD)}
               />
             </div>
           </div>
