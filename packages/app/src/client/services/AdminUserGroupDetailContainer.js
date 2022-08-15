@@ -36,7 +36,6 @@ export default class AdminUserGroupDetailContainer extends Container {
 
       childUserGroupRelations: [], // TODO 85062: fetch data on init (findRelationsByGroupIds) For child group list users
       // relatedPages: [], // For page list
-      // isUserGroupUserModalOpen: false,
       isAlsoMailSearched: false,
       isAlsoNameSearched: false,
     };
@@ -45,8 +44,6 @@ export default class AdminUserGroupDetailContainer extends Container {
 
     this.switchIsAlsoMailSearched = this.switchIsAlsoMailSearched.bind(this);
     this.switchIsAlsoNameSearched = this.switchIsAlsoNameSearched.bind(this);
-    // this.openUserGroupUserModal = this.openUserGroupUserModal.bind(this);
-    // this.closeUserGroupUserModal = this.closeUserGroupUserModal.bind(this);
   }
 
   /**
@@ -70,23 +67,5 @@ export default class AdminUserGroupDetailContainer extends Container {
   switchIsAlsoNameSearched() {
     this.setState({ isAlsoNameSearched: !this.state.isAlsoNameSearched });
   }
-
-  // /**
-  //  * open a modal
-  //  *
-  //  * @memberOf AdminUserGroupDetailContainer
-  //  */
-  // async openUserGroupUserModal() {
-  //   await this.setState({ isUserGroupUserModalOpen: true });
-  // }
-
-  // /**
-  //  * close a modal
-  //  *
-  //  * @memberOf AdminUserGroupDetailContainer
-  //  */
-  // async closeUserGroupUserModal() {
-  //   await this.setState({ isUserGroupUserModalOpen: false });
-  // }
 
 }
