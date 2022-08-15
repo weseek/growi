@@ -6,7 +6,7 @@ import * as url from 'url';
 
 import { pathUtils } from '@growi/core';
 
-import axios from '~/utils/axios';
+import { apiGet } from '~/client/util/apiv1-client';
 
 // eslint-disable-next-line no-unused-vars
 
@@ -66,8 +66,8 @@ function generatePageNode(pathToNodeMap: Record<string, PageNode>, rootPagePath:
     * process recursively for ancestors
     */
   // get or create parent node
-  const parentPath = this.getParentPath(pagePath);
-  const parentNode = this.generatePageNode(pathToNodeMap, rootPagePath, parentPath);
+  const parentPath = getParentPath(pagePath);
+  const parentNode = generatePageNode(pathToNodeMap, rootPagePath, parentPath);
   // associate to patent
   if (parentNode != null) {
     parentNode.children.push(node);
@@ -127,7 +127,7 @@ export const Lsx = ({
     }
 
     return stateCache;
-  }, []);
+  }, [lsxContext]);
 
   const generatePageNodeTree = useCallback((rootPagePath, pages) => {
     const pathToNodeMap: Record<string, PageNode> = {};
@@ -175,19 +175,15 @@ export const Lsx = ({
 
     let newNodeTree: PageNode[] = [];
     try {
-      const res = await axios.get('/_api/plugins/lsx', {
-        params: {
-          pagePath,
-          options: lsxContext.options,
-        },
+      const result: any = await apiGet('/plugins/lsx', {
+        pagePath,
+        options: lsxContext.options,
       });
 
-      if (res.data.ok) {
-        const basisViewersCount = res.data.toppageViewersCount;
-        newNodeTree = generatePageNodeTree(pagePath, res.data.pages);
-        setNodeTree(newNodeTree);
-        setBasisViewersCount(basisViewersCount);
-      }
+      const basisViewersCount = result.toppageViewersCount;
+      newNodeTree = generatePageNodeTree(pagePath, result.pages);
+      setNodeTree(newNodeTree);
+      setBasisViewersCount(basisViewersCount);
     }
     catch (error) {
       setError(true);
@@ -197,15 +193,15 @@ export const Lsx = ({
       setLoading(false);
 
       // store to sessionStorage
-      tagCacheManager.cacheState(lsxContext, {
-        isError,
-        isCacheExists,
-        basisViewersCount,
-        errorMessage,
-        nodeTree: newNodeTree,
-      });
+      // tagCacheManager.cacheState(lsxContext, {
+      //   isError,
+      //   isCacheExists,
+      //   basisViewersCount,
+      //   errorMessage,
+      //   nodeTree: newNodeTree,
+      // });
     }
-  }, [basisViewersCount, errorMessage, generatePageNodeTree, isCacheExists, isError, lsxContext]);
+  }, [generatePageNodeTree, lsxContext]);
 
   useEffect(() => {
     // get state object cache
@@ -231,7 +227,7 @@ export const Lsx = ({
       return (
         <div className="text-warning">
           <i className="fa fa-exclamation-triangle fa-fw"></i>
-          {/* {lsxContext.tagExpression} (-&gt; <small>{this.state.errorMessage}</small>) */}
+          {lsxContext.toString()} (-&gt; <small>{errorMessage}</small>)
         </div>
       );
     }
@@ -242,7 +238,7 @@ export const Lsx = ({
         { isLoading && (
           <div className="text-muted">
             <i className="fa fa-spinner fa-pulse mr-1"></i>
-            {/* {lsxContext.tagExpression} */}
+            {lsxContext.toString()}
             { isCacheExists && <small>&nbsp;(Showing cache..)</small> }
           </div>
         ) }

@@ -135,22 +135,13 @@ class Lsx {
    */
   static addSortCondition(query, pagePath, optionsSortArg, optionsReverse) {
     // init sort key
-    const optionsSort = optionsSortArg || 'path';
+    const optionsSort = optionsSortArg ?? 'path';
 
     // the default sort order
-    let isReversed = false;
+    const isReversed = optionsReverse === 'true';
 
-    if (optionsSort != null) {
-      if (optionsSort !== 'path' && optionsSort !== 'createdAt' && optionsSort !== 'updatedAt') {
-        throw new Error(`The specified value '${optionsSort}' for the sort option is invalid. It must be 'path', 'createdAt' or 'updatedAt'.`);
-      }
-    }
-
-    if (optionsReverse != null) {
-      if (optionsReverse !== 'true' && optionsReverse !== 'false') {
-        throw new Error(`The specified value '${optionsReverse}' for the reverse option is invalid. It must be 'true' or 'false'.`);
-      }
-      isReversed = (optionsReverse === 'true');
+    if (optionsSort !== 'path' && optionsSort !== 'createdAt' && optionsSort !== 'updatedAt') {
+      throw new Error(`The specified value '${optionsSort}' for the sort option is invalid. It must be 'path', 'createdAt' or 'updatedAt'.`);
     }
 
     const sortOption = {};
@@ -162,7 +153,6 @@ class Lsx {
 
 module.exports = (crowi, app) => {
   const Page = crowi.model('Page');
-  const User = crowi.model('User');
   const ApiResponse = crowi.require('../util/apiResponse');
   const actions = {};
 
@@ -203,8 +193,17 @@ module.exports = (crowi, app) => {
 
   actions.listPages = async(req, res) => {
     const user = req.user;
-    const pagePath = req.query.pagePath;
-    const options = JSON.parse(req.query.options);
+
+    let pagePath;
+    let options;
+
+    try {
+      pagePath = req.query.pagePath;
+      options = JSON.parse(req.query.options);
+    }
+    catch (error) {
+      return res.json(ApiResponse.error(error));
+    }
 
     const builder = await generateBaseQueryBuilder(pagePath, user);
 
