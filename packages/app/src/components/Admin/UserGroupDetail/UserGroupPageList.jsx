@@ -6,6 +6,7 @@ import PropTypes from 'prop-types';
 import AdminUserGroupDetailContainer from '~/client/services/AdminUserGroupDetailContainer';
 import { toastError } from '~/client/util/apiNotification';
 import { apiv3Get } from '~/client/util/apiv3-client';
+import { IPageHasId } from '~/interfaces/page';
 
 import PageListItemS from '../../PageList/PageListItemS';
 import PaginationWrapper from '../../PaginationWrapper';
@@ -35,7 +36,7 @@ class UserGroupPageList extends React.Component {
     const offset = (pageNum - 1) * limit;
 
     try {
-      const res = await apiv3Get(`/user-groups/${this.props.adminUserGroupDetailContainer.state.userGroup._id}/pages`, {
+      const res = await apiv3Get(`/user-groups/${this.props.userGroupId}/pages`, {
         limit,
         offset,
       });
@@ -54,7 +55,7 @@ class UserGroupPageList extends React.Component {
 
   render() {
     const { t, adminUserGroupDetailContainer } = this.props;
-    const { relatedPages } = adminUserGroupDetailContainer.state;
+    const { relatedPages } = this.props;
 
     return (
       <Fragment>
@@ -80,11 +81,20 @@ class UserGroupPageList extends React.Component {
 UserGroupPageList.propTypes = {
   t: PropTypes.func.isRequired, // i18next
   adminUserGroupDetailContainer: PropTypes.instanceOf(AdminUserGroupDetailContainer).isRequired,
+  userGroupId: PropTypes.string.isRequired,
+  relatedPages: PropTypes.arrayOf(IPageHasId),
 };
 
 const UserGroupPageListWrapperFC = (props) => {
   const { t } = useTranslation();
-  return <UserGroupPageList t={t} {...props} />;
+  const { userGroupId, relatedPages } = props;
+
+
+  if (userGroupId == null || relatedPages == null) {
+    return <></>;
+  }
+
+  return <UserGroupPageList t={t} userGroupId={userGroupId} relatedPages={relatedPages} {...props} />;
 };
 
 /**

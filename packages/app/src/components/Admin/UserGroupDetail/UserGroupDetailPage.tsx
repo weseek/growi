@@ -12,7 +12,6 @@ import { toastSuccess, toastError } from '~/client/util/apiNotification';
 import {
   apiv3Get, apiv3Put, apiv3Delete, apiv3Post,
 } from '~/client/util/apiv3-client';
-import { IPageHasId } from '~/interfaces/page';
 import { IUserGroup, IUserGroupHasId } from '~/interfaces/user';
 import { useIsAclEnabled } from '~/stores/context';
 import { useUpdateUserGroupConfirmModal } from '~/stores/modal';
@@ -46,7 +45,6 @@ const UserGroupDetailPage = (props: Props) => {
    * State (from AdminUserGroupDetailContainer)
    */
   const { data: currentUserGroup } = useSWRxUserGroup(currentUserGroupId);
-  const [relatedPages, setRelatedPages] = useState<IPageHasId[]>([]); // For page list
   const [searchType, setSearchType] = useState<string>('partial');
   const [isAlsoMailSearched, setAlsoMailSearched] = useState<boolean>(false);
   const [isAlsoNameSearched, setAlsoNameSearched] = useState<boolean>(false);
@@ -389,7 +387,7 @@ const UserGroupDetailPage = (props: Props) => {
 
       <h2 className="admin-setting-header mt-4">{t('Page')}</h2>
       <div className="page-list">
-        <UserGroupPageList />
+        <UserGroupPageList userGroupId={currentUserGroupId} relatedPages={userGroupPages} />
       </div>
     </div>
   );

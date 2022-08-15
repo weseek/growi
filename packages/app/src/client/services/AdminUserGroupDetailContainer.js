@@ -47,14 +47,14 @@ export default class AdminUserGroupDetailContainer extends Container {
       grandChildUserGroups: [], // TODO 85062: fetch data on init (findChildGroupsByParentIds) For child group list
 
       childUserGroupRelations: [], // TODO 85062: fetch data on init (findRelationsByGroupIds) For child group list users
-      relatedPages: [], // For page list
+      // relatedPages: [], // For page list
       isUserGroupUserModalOpen: false,
       searchType: 'partial',
       isAlsoMailSearched: false,
       isAlsoNameSearched: false,
     };
 
-    this.init();
+    // this.init();
 
     this.switchIsAlsoMailSearched = this.switchIsAlsoMailSearched.bind(this);
     this.switchIsAlsoNameSearched = this.switchIsAlsoNameSearched.bind(this);
@@ -74,26 +74,26 @@ export default class AdminUserGroupDetailContainer extends Container {
   /**
    * retrieve user group data
    */
-  async init() {
-    try {
-      const [
-        userGroupRelations,
-        relatedPages,
-      ] = await Promise.all([
-        apiv3Get(`/user-groups/${this.state.userGroup._id}/user-group-relations`).then((res) => { return res.data.userGroupRelations }),
-        apiv3Get(`/user-groups/${this.state.userGroup._id}/pages`).then((res) => { return res.data.pages }),
-      ]);
+  // async init() {
+  //   try {
+  //     const [
+  //       userGroupRelations,
+  //       relatedPages,
+  //     ] = await Promise.all([
+  //       apiv3Get(`/user-groups/${this.state.userGroup._id}/user-group-relations`).then((res) => { return res.data.userGroupRelations }),
+  //       apiv3Get(`/user-groups/${this.state.userGroup._id}/pages`).then((res) => { return res.data.pages }),
+  //     ]);
 
-      await this.setState({
-        userGroupRelations,
-        relatedPages,
-      });
-    }
-    catch (err) {
-      logger.error(err);
-      toastError(new Error('Failed to fetch data'));
-    }
-  }
+  //     await this.setState({
+  //       userGroupRelations,
+  //       relatedPages,
+  //     });
+  //   }
+  //   catch (err) {
+  //     logger.error(err);
+  //     toastError(new Error('Failed to fetch data'));
+  //   }
+  // }
 
   /**
    * switch isAlsoMailSearched
