@@ -335,6 +335,7 @@ export const generateViewOptions = (
         return false; // not show toc in body
       },
     }],
+    [lsxGrowiPlugin.rehypePlugin, { pagePath }],
     // [autoLinkHeadings, {
     //   behavior: 'append',
     // }]

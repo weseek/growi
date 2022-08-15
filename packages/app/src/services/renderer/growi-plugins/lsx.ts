@@ -1,11 +1,18 @@
+import assert from 'assert';
+
+import { pathUtils } from '@growi/core';
 import { RemarkGrowiPluginType } from '@growi/remark-growi-plugin';
 import { Schema as SanitizeOption } from 'hast-util-sanitize';
+import { selectAll, HastNode } from 'hast-util-select';
 import { Plugin } from 'unified';
 import { visit } from 'unist-util-visit';
+
+import { IHrefResolver } from '../rehype-plugins/relative-links';
 
 const NODE_NAME_PATTERN = new RegExp(/ls|lsx/);
 const SUPPORTED_ATTRIBUTES = ['prefix', 'num', 'depth', 'sort', 'reverse', 'filter'];
 
+const { hasHeadingSlash } = pathUtils;
 
 type DirectiveAttributes = Record<string, string>
 
@@ -44,6 +51,53 @@ export const remarkPlugin: Plugin = function() {
         data.hName = 'lsx';
         data.hProperties = attributes;
       }
+    });
+  };
+};
+
+export type LsxRehypePluginParams = {
+  pagePath?: string,
+}
+
+const pathResolver: IHrefResolver = (relativeHref, basePath) => {
+  // generate relative pathname
+  const baseUrl = new URL(pathUtils.addTrailingSlash(basePath), 'https://example.com');
+  const relativeUrl = new URL(relativeHref, baseUrl);
+
+  return relativeUrl.pathname;
+};
+
+export const rehypePlugin: Plugin<[LsxRehypePluginParams]> = (options = {}) => {
+  assert.notStrictEqual(options.pagePath, null, 'lsx rehype plugin requires \'pagePath\' option');
+
+  return (tree) => {
+    if (options.pagePath == null) {
+      return;
+    }
+
+    const basePagePath = options.pagePath;
+    const elements = selectAll('lsx', tree as HastNode);
+
+    elements.forEach((lsxElem) => {
+      if (lsxElem.properties == null) {
+        return;
+      }
+
+      const prefix = lsxElem.properties.prefix;
+
+      // set basePagePath when prefix is undefined or invalid
+      if (prefix == null || typeof prefix !== 'string') {
+        lsxElem.properties.prefix = basePagePath;
+        return;
+      }
+
+      // return when prefix is already determined and aboslute path
+      if (hasHeadingSlash(prefix)) {
+        return;
+      }
+
+      // resolve relative path
+      lsxElem.properties.prefix = pathResolver(prefix, basePagePath);
     });
   };
 };
