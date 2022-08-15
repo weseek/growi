@@ -16,6 +16,7 @@ import { PluggableList, Pluggable, PluginTuple } from 'unified';
 
 import { CodeBlock } from '~/components/ReactMarkdownComponents/CodeBlock';
 import { Header } from '~/components/ReactMarkdownComponents/Header';
+import { Lsx } from '~/components/ReactMarkdownComponents/Lsx/Lsx';
 import { NextLink } from '~/components/ReactMarkdownComponents/NextLink';
 import { RendererConfig } from '~/interfaces/services/renderer';
 import loggerFactory from '~/utils/logger';
@@ -282,6 +283,7 @@ const generateCommonOptions = (pagePath: string|undefined, config: RendererConfi
     components: {
       a: NextLink,
       code: CodeBlock,
+      lsx: Lsx,
     },
   };
 };

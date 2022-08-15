@@ -1,20 +1,20 @@
-
 import React from 'react';
 
 import * as url from 'url';
 
 import { pathUtils } from '@growi/core';
-import axios from 'axios';
 import PropTypes from 'prop-types';
 
+import axios from '~/utils/axios';
+
 // eslint-disable-next-line no-unused-vars
-import { LsxContext } from '../util/LsxContext';
-import { TagCacheManagerFactory } from '../util/TagCacheManagerFactory';
 
 import { LsxListView } from './LsxPageList/LsxListView';
 import { PageNode } from './PageNode';
+import { LsxContext } from './lsx-context';
+import { getInstance as getTagCacheManager } from './tag-cache-manager';
 
-import styles from '../../css/index.css';
+import styles from './Lsx.module.scss';
 
 export class Lsx extends React.Component {
 
@@ -30,7 +30,7 @@ export class Lsx extends React.Component {
       errorMessage: '',
     };
 
-    this.tagCacheManager = TagCacheManagerFactory.getInstance();
+    this.tagCacheManager = getTagCacheManager();
   }
 
   async componentDidMount() {
@@ -234,7 +234,7 @@ export class Lsx extends React.Component {
   }
 
   render() {
-    return <div className="lsx">{this.renderContents()}</div>;
+    return <div className={`lsx ${styles.lsx}`}>{this.renderContents()}</div>;
   }
 
 }

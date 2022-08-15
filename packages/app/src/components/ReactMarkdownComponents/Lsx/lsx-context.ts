@@ -6,19 +6,14 @@ const { TagContext, ArgsParser, OptionParser } = customTagUtils;
 
 export class LsxContext extends TagContext {
 
-  /**
-   * @param {object|TagContext|LsxContext} initArgs
-   */
-  constructor(initArgs) {
-    super(initArgs);
+  fromPagePath: string;
 
-    this.fromPagePath = null;
+  isParsed?: boolean;
 
-    // initialized after parse()
-    this.isParsed = null;
-    this.pagePath = null;
-    this.options = {};
-  }
+  pagePath?: string;
+
+  options?: any;
+
 
   parse() {
     if (this.isParsed) {
@@ -34,8 +29,8 @@ export class LsxContext extends TagContext {
     //   2: lsx(firstArgs, ...)
     //   3: fromPagePath
     const specifiedPath = this.options.prefix
-        || ((parsedResult.firstArgsValue === true) ? parsedResult.firstArgsKey : undefined)
-        || this.fromPagePath;
+        ?? ((parsedResult.firstArgsValue === true) ? parsedResult.firstArgsKey : undefined)
+        ?? this.fromPagePath;
 
     // resolve pagePath
     //   when `fromPagePath`=/hoge and `specifiedPath`=./fuga,
