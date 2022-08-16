@@ -1,7 +1,6 @@
 export default class OrderedList {
 
-  process(markdown, context) {
-
+  process(markdown) {
     const orderedListRE = /^(\s*)(\d+\.)(\s)(.*)+?/gm;
 
     const itemList = markdown.match(orderedListRE);
@@ -9,50 +8,49 @@ export default class OrderedList {
       const indent = item.split(/[\d]/)[0].length;
       const itemNumber = item.trim().split('.')[0];
       const content = item.split(/\d.\s/)[1];
+      const level = Math.round(indent / 4) + 1;
       return {
-        indent,
         number: itemNumber,
         content,
+        level,
       };
     });
 
-    const getChild = (listObject, indent) => {
-      let child = null;
-      listObject.every((list) => {
-        child = list;
-        return !(list.indent > indent);
-      });
-      return child;
-    };
-    const contentListWIthChild = itemListData.map((list, index) => {
-      const isLastElementOfSameIndent = () => {
-        if (index === itemListData.length - 1) {
-          return true;
-        }
-        return itemListData[index].indent === itemListData[index + 1].indent;
-      };
-      return {
-        ...list,
-        child: isLastElementOfSameIndent() ? null : getChild(itemListData, list.indent),
-      };
-    });
-    const createList = (node) => {
-      let element = '<ol>';
-      if (node.child == null) {
-        element += `<li>${node.content}</li></ol>`;
-      }
-      else {
-        element += node.child.map((childItem) => {
-          return createList(childItem);
+    const getNestedOrderedListData = (itemListData) => {
+      const result:any[] = [];
+      const levels:any[] = [result];
+      if (itemListData.length > 0) {
+        itemListData.forEach((item) => {
+          console.log(item);
+          levels[item.level - 1].push({ ...item, children: levels[item.level] = [] });
         });
+        return result;
       }
-      return element;
+      return result;
     };
-    // TODO: - Create nested data list from matched markdown
-    //       - Create HTML verison of ordered list
-    //       - Replace Markdown with HTML ordered list
 
-    return markdown;
+    const buildList = (itemListData) => {
+      if (itemListData == null || itemListData.length === 0) {
+        return '';
+      }
+      let element = `<ol start=${itemListData[0].number}>`;
+      element += itemListData.map((item) => {
+        return `<li class="code-line"> ${item.content}</li> ${buildList(item.children)}`;
+      }).join('');
+      element += '</ol>';
+      return element;
+
+    };
+    const nestedItemListData = getNestedOrderedListData(itemListData);
+    const getMarkdownRepacement = () => {
+      let occurrence = 0;
+      return markdown.replace(orderedListRE, () => {
+        occurrence++;
+        if (occurrence === 1) return buildList(nestedItemListData);
+        return '';
+      });
+    };
+    return getMarkdownRepacement();
 
   }
 
