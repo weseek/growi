@@ -24,9 +24,9 @@ import {
 
 
 const UserGroupPageList = dynamic(() => import('./UserGroupPageList'), { ssr: false });
-const UserGroupUserModal = dynamic(() => import('./UserGroupUserModal'), { ssr: false });
 const UserGroupUserTable = dynamic(() => import('./UserGroupUserTable'), { ssr: false });
 
+const UserGroupUserModal = dynamic(() => import('./UserGroupUserModal').then(mod => mod.UserGroupUserModal), { ssr: false });
 const UserGroupDeleteModal = dynamic(() => import('../UserGroup/UserGroupDeleteModal').then(mod => mod.UserGroupDeleteModal), { ssr: false });
 const UserGroupDropdown = dynamic(() => import('../UserGroup/UserGroupDropdown').then(mod => mod.UserGroupDropdown), { ssr: false });
 const UserGroupForm = dynamic(() => import('../UserGroup/UserGroupForm').then(mod => mod.UserGroupForm), { ssr: false });
@@ -89,16 +89,13 @@ const UserGroupDetailPage = (props: Props): JSX.Element => {
 
   const { open: openUpdateParentConfirmModal } = useUpdateUserGroupConfirmModal();
 
-
   /*
    * Function
    */
-  // TODO 85062: old name: switchIsAlsoMailSearched
   const toggleIsAlsoMailSearched = useCallback(() => {
     setAlsoMailSearched(prev => !prev);
   }, []);
 
-  // TODO 85062: old name: switchIsAlsoNameSearched
   const toggleAlsoNameSearched = useCallback(() => {
     setAlsoNameSearched(prev => !prev);
   }, []);
@@ -357,10 +354,14 @@ const UserGroupDetailPage = (props: Props): JSX.Element => {
         isOpen={isUserGroupUserModalShown}
         userGroup={currentUserGroup}
         searchType={searchType}
+        isAlsoMailSearched={isAlsoMailSearched}
+        isAlsoNameSearched={isAlsoNameSearched}
         onClickAddUserBtn={addUserByUsername}
         onSearchApplicableUsers={fetchApplicableUsers}
-        onChangeSearchType={switchSearchType}
+        onSwitchSearchType={switchSearchType}
         onClose={() => setIsUserGroupUserModalShown(false)}
+        onToggleIsAlsoMailSearched={toggleIsAlsoMailSearched}
+        onToggleIsAlsoNameSearched={toggleAlsoNameSearched}
       />
 
       <h2 className="admin-setting-header mt-4">{t('admin:user_group_management.child_group_list')}</h2>

@@ -9,9 +9,6 @@ import AdminUserGroupDetailContainer from '~/client/services/AdminUserGroupDetai
 import { IUserGroupHasId } from '~/interfaces/user';
 import { SearchTypes, SearchType } from '~/interfaces/user-group';
 
-
-import { withUnstatedContainers } from '../../UnstatedUtils';
-
 import CheckBoxForSerchUserOption from './CheckBoxForSerchUserOption';
 import RadioButtonForSerchUserOption from './RadioButtonForSerchUserOption';
 import UserGroupUserFormByInput from './UserGroupUserFormByInput';
@@ -21,16 +18,30 @@ type Props = {
   adminUserGroupDetailContainer: AdminUserGroupDetailContainer,
   userGroup: IUserGroupHasId,
   searchType: SearchType,
+  isAlsoMailSearched: boolean,
+  isAlsoNameSearched: boolean,
   onClickAddUserBtn: () => void,
   onSearchApplicableUsers: () => void,
-  onChangeSearchType: (searchType: SearchType) => void
+  onSwitchSearchType: (searchType: SearchType) => void
   onClose: () => void,
+  onToggleIsAlsoMailSearched: () => void,
+  onToggleIsAlsoNameSearched: () => void,
 }
 
-const UserGroupUserModal = (props: Props) => {
+export const UserGroupUserModal = (props: Props): JSX.Element => {
   const { t } = useTranslation();
   const {
-    isOpen, adminUserGroupDetailContainer, userGroup, searchType, onClickAddUserBtn, onSearchApplicableUsers, onChangeSearchType, onClose,
+    isOpen,
+    userGroup,
+    searchType,
+    onClickAddUserBtn,
+    onSearchApplicableUsers,
+    onSwitchSearchType,
+    onClose,
+    isAlsoMailSearched,
+    isAlsoNameSearched,
+    onToggleIsAlsoMailSearched,
+    onToggleIsAlsoNameSearched,
   } = props;
 
   return (
@@ -49,15 +60,15 @@ const UserGroupUserModal = (props: Props) => {
             <div className="mb-5">
               <CheckBoxForSerchUserOption
                 option="mail"
-                checked={adminUserGroupDetailContainer.state.isAlsoMailSearched}
-                onChange={adminUserGroupDetailContainer.switchIsAlsoMailSearched}
+                checked={isAlsoMailSearched}
+                onChange={onToggleIsAlsoMailSearched}
               />
             </div>
             <div className="mb-5">
               <CheckBoxForSerchUserOption
                 option="name"
-                checked={adminUserGroupDetailContainer.state.isAlsoNameSearched}
-                onChange={adminUserGroupDetailContainer.switchIsAlsoNameSearched}
+                checked={isAlsoNameSearched}
+                onChange={onToggleIsAlsoNameSearched}
               />
             </div>
           </div>
@@ -66,21 +77,21 @@ const UserGroupUserModal = (props: Props) => {
               <RadioButtonForSerchUserOption
                 searchType="forward"
                 checked={searchType === SearchTypes.FORWARD}
-                onChange={() => onChangeSearchType(SearchTypes.FORWARD)}
+                onChange={() => onSwitchSearchType(SearchTypes.FORWARD)}
               />
             </div>
             <div className="mb-5">
               <RadioButtonForSerchUserOption
                 searchType="partial"
                 checked={searchType === SearchTypes.PARTIAL}
-                onChange={() => onChangeSearchType(SearchTypes.PARTIAL)}
+                onChange={() => onSwitchSearchType(SearchTypes.PARTIAL)}
               />
             </div>
             <div className="mb-5">
               <RadioButtonForSerchUserOption
                 searchType="backward"
                 checked={searchType === SearchTypes.BACKWORD}
-                onChange={() => onChangeSearchType(SearchTypes.BACKWORD)}
+                onChange={() => onSwitchSearchType(SearchTypes.BACKWORD)}
               />
             </div>
           </div>
@@ -89,10 +100,3 @@ const UserGroupUserModal = (props: Props) => {
     </Modal>
   );
 };
-
-/**
- * Wrapper component for using unstated
- */
-const UserGroupUserModalWrapper = withUnstatedContainers(UserGroupUserModal, [AdminUserGroupDetailContainer]);
-
-export default UserGroupUserModalWrapper;

@@ -42,8 +42,6 @@ export default class AdminUserGroupDetailContainer extends Container {
 
     // this.init();
 
-    this.switchIsAlsoMailSearched = this.switchIsAlsoMailSearched.bind(this);
-    this.switchIsAlsoNameSearched = this.switchIsAlsoNameSearched.bind(this);
   }
 
   /**
@@ -51,21 +49,6 @@ export default class AdminUserGroupDetailContainer extends Container {
    */
   static getClassName() {
     return 'AdminUserGroupDetailContainer';
-  }
-
-
-  /**
-   * switch isAlsoMailSearched
-   */
-  switchIsAlsoMailSearched() {
-    this.setState({ isAlsoMailSearched: !this.state.isAlsoMailSearched });
-  }
-
-  /**
-   * switch isAlsoNameSearched
-   */
-  switchIsAlsoNameSearched() {
-    this.setState({ isAlsoNameSearched: !this.state.isAlsoNameSearched });
   }
 
 }
