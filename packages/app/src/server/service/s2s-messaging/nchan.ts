@@ -1,9 +1,10 @@
 import path from 'path';
 
+// eslint-disable-next-line no-restricted-imports
+import axios from 'axios';
 import ReconnectingWebSocket from 'reconnecting-websocket';
 import WebSocket from 'ws';
 
-import axios from '~/utils/axios';
 import loggerFactory from '~/utils/logger';
 
 import S2sMessage from '../../models/vo/s2s-message';
