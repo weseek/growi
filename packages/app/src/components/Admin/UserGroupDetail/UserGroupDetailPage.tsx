@@ -36,7 +36,6 @@ const UpdateParentConfirmModal = dynamic(() => import('./UpdateParentConfirmModa
 
 
 type Props = {
-  adminUserGroupDetailContainer: any;
   userGroupId?: string,
 }
 
@@ -177,6 +176,7 @@ const UserGroupDetailPage = (props: Props): JSX.Element => {
   }, [currentUserGroupId, mutateUserGroupRelations]);
 
   const removeUserByUsername = useCallback(async(username: string) => {
+    console.log({ username });
     try {
       await apiv3Delete(`/user-groups/${currentUserGroupId}/users/${username}`);
       toastSuccess(`Removed "${xss.process(username)}" from "${xss.process(currentUserGroup?.name)}"`);
@@ -347,7 +347,12 @@ const UserGroupDetailPage = (props: Props): JSX.Element => {
         />
       </div>
       <h2 className="admin-setting-header mt-4">{t('admin:user_group_management.user_list')}</h2>
-      <UserGroupUserTable userGroup={currentUserGroup} userGroupRelati onClickPlusBtn={() => setIsUserGroupUserModalShown(true)} />
+      <UserGroupUserTable
+        userGroup={currentUserGroup}
+        userGroupRelati
+        onClickPlusBtn={() => setIsUserGroupUserModalShown(true)}
+        onClickRemoveUserBtn={removeUserByUsername}
+      />
       <UserGroupUserModal
         isOpen={isUserGroupUserModalShown}
         userGroup={currentUserGroup}
