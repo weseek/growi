@@ -6,6 +6,6 @@
     "src"
   ],
   "exclude": [
-    "src/test"
+    "test"
   ]
 }

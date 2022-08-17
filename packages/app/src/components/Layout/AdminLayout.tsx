@@ -31,26 +31,28 @@ const AdminLayout = ({
   const SystemVersion = dynamic(() => import('../SystemVersion'), { ssr: false });
 
   return (
-    <RawLayout title={title} className={`admin-page ${styles['admin-page']}`}>
-      <GrowiNavbar />
+    <RawLayout title={title}>
+      <div className={`admin-page ${styles['admin-page']}`}>
+        <GrowiNavbar />
 
-      <header className="py-0">
-        <h1 className="title">{title}</h1>
-      </header>
-      <div id="main" className="main">
-        <div className="container-fluid">
-          <div className="row">
-            <div className="col-lg-3">
-              <AdminNavigation selected={selectedNavOpt} />
-            </div>
-            <div className="col-lg-9">
-              {title != null ? children : <AdminNotFoundPage />}
+        <header className="py-0 position-relative">
+          <h1 className="title">{title}</h1>
+        </header>
+        <div id="main" className="main">
+          <div className="container-fluid">
+            <div className="row">
+              <div className="col-lg-3">
+                <AdminNavigation selected={selectedNavOpt} />
+              </div>
+              <div className="col-lg-9">
+                {children}
+              </div>
             </div>
           </div>
         </div>
-      </div>
 
-      <SystemVersion />
+        <SystemVersion />
+      </div>
     </RawLayout>
   );
 };
