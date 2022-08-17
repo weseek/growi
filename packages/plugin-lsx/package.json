@@ -8,6 +8,10 @@
     "growi-plugin"
   ],
   "main": "dist/cjs/index.js",
+  "exports": {
+    "./components": "./dist/cjs/components/index.js",
+    "./server/routes": "./dist/cjs/server/routes/index.js"
+  },
   "module": "dist/esm/index.js",
   "files": [
     "dist"
