@@ -75,8 +75,6 @@ function generatePageNode(pathToNodeMap: Record<string, PageNode>, rootPagePath:
 
 
 type Props = {
-  // lsxContext: PropTypes.instanceOf(LsxContext).isRequired,
-
   children: React.ReactNode,
   className?: string,
 
@@ -179,7 +177,7 @@ export const Lsx = ({
 
     let newNodeTree: PageNode[] = [];
     try {
-      const result: any = await axios.get('/_api/plugins/lsx', {
+      const result = await axios.get('/_api/plugins/lsx', {
         params: {
           pagePath,
           options: lsxContext.options,
@@ -212,7 +210,7 @@ export const Lsx = ({
     finally {
       setLoading(false);
     }
-  }, [basisViewersCount, generatePageNodeTree, isCacheExists, lsxContext]);
+  }, [basisViewersCount, generatePageNodeTree, lsxContext]);
 
   useEffect(() => {
     // get state object cache
