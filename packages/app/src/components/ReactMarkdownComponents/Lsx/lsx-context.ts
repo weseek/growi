@@ -2,6 +2,7 @@ import { customTagUtils } from '@growi/core';
 
 const { OptionParser } = customTagUtils;
 
+
 export class LsxContext {
 
   pagePath: string;
@@ -24,19 +25,24 @@ export class LsxContext {
     return OptionParser.parseRange(this.options.depth);
   }
 
+  getStringifiedAttributes(separator = ', '): string {
+    const attributeStrs = [`prefix=${this.pagePath}`];
+    if (this.options != null) {
+      const optionEntries = Object.entries(this.options).sort();
+      attributeStrs.push(
+        ...optionEntries.map(([key, val]) => `${key}=${val || 'true'}`),
+      );
+    }
+
+    return attributeStrs.join(separator);
+  }
+
   /**
    * for printing errors
    * @returns
    */
   toString(): string {
-    const attributeStrs = [`prefix=${this.pagePath}`];
-    if (this.options != null) {
-      attributeStrs.push(
-        ...Object.entries(this.options).map(([key, val]) => `${key}=${val || 'true'}`),
-      );
-    }
-
-    return `$lsx(${attributeStrs.join(', ')})`;
+    return `$lsx(${this.getStringifiedAttributes()})`;
   }
 
 }

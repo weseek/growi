@@ -180,28 +180,35 @@ export const Lsx = ({
         options: lsxContext.options,
       });
 
-      const basisViewersCount = result.toppageViewersCount;
       newNodeTree = generatePageNodeTree(pagePath, result.pages);
       setNodeTree(newNodeTree);
-      setBasisViewersCount(basisViewersCount);
+      setBasisViewersCount(result.toppageViewersCount);
+      setError(false);
+
+      // store to sessionStorage
+      tagCacheManager.cacheState(lsxContext, {
+        isError: false,
+        errorMessage: '',
+        isCacheExists,
+        basisViewersCount,
+        nodeTree: newNodeTree,
+      });
     }
     catch (error) {
       setError(true);
       setErrorMessage(error.message);
+
+      // store to sessionStorage
+      tagCacheManager.cacheState(lsxContext, {
+        isError: true,
+        errorMessage: error.message,
+        isCacheExists,
+      });
     }
     finally {
       setLoading(false);
-
-      // store to sessionStorage
-      // tagCacheManager.cacheState(lsxContext, {
-      //   isError,
-      //   isCacheExists,
-      //   basisViewersCount,
-      //   errorMessage,
-      //   nodeTree: newNodeTree,
-      // });
     }
-  }, [generatePageNodeTree, lsxContext]);
+  }, [basisViewersCount, generatePageNodeTree, isCacheExists, lsxContext]);
 
   useEffect(() => {
     // get state object cache
@@ -232,17 +239,20 @@ export const Lsx = ({
       );
     }
 
+    const showListView = nodeTree != null && (!isLoading || nodeTree.length > 0);
 
     return (
       <div className={isLoading ? 'lsx-blink' : ''}>
         { isLoading && (
           <div className="text-muted">
-            <i className="fa fa-spinner fa-pulse mr-1"></i>
-            {lsxContext.toString()}
-            { isCacheExists && <small>&nbsp;(Showing cache..)</small> }
+            <small>
+              <i className="fa fa-spinner fa-pulse mr-1"></i>
+              {lsxContext.toString()}
+              { isCacheExists && <>&nbsp;(Showing cache..)</> }
+            </small>
           </div>
         ) }
-        { nodeTree && (
+        { showListView && (
           <LsxListView nodeTree={nodeTree} lsxContext={lsxContext} basisViewersCount={basisViewersCount} />
         ) }
       </div>

@@ -365,7 +365,7 @@ export const generateViewOptions = (
     components.h1 = Header;
     components.h2 = Header;
     components.h3 = Header;
-    components.lsx = Lsx;
+    components.lsx = props => <Lsx {...props} forceToFetchData />;
   }
 
   // // Add configurers for viewer
