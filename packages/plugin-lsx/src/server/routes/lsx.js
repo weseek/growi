@@ -153,7 +153,6 @@ class Lsx {
 
 module.exports = (crowi, app) => {
   const Page = crowi.model('Page');
-  const ApiResponse = crowi.require('../util/apiResponse');
   const actions = {};
 
   /**
@@ -202,7 +201,7 @@ module.exports = (crowi, app) => {
       options = JSON.parse(req.query.options);
     }
     catch (error) {
-      return res.json(ApiResponse.error(error));
+      return res.status(400).send(error);
     }
 
     const builder = await generateBaseQueryBuilder(pagePath, user);
@@ -220,7 +219,7 @@ module.exports = (crowi, app) => {
         : 1;
     }
     catch (error) {
-      return res.json(ApiResponse.error(error));
+      return res.status(500).send(error);
     }
 
     let query = builder.query;
@@ -243,10 +242,10 @@ module.exports = (crowi, app) => {
       query = Lsx.addSortCondition(query, pagePath, options.sort, options.reverse);
 
       const pages = await query.exec();
-      res.json(ApiResponse.success({ pages, toppageViewersCount }));
+      res.status(200).send({ pages, toppageViewersCount });
     }
     catch (error) {
-      return res.json(ApiResponse.error(error));
+      return res.status(500).send(error);
     }
   };
 
