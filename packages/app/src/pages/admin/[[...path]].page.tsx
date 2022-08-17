@@ -27,7 +27,6 @@ import AdminOidcSecurityContainer from '~/client/services/AdminOidcSecurityConta
 import AdminSamlSecurityContainer from '~/client/services/AdminSamlSecurityContainer';
 import AdminSlackIntegrationLegacyContainer from '~/client/services/AdminSlackIntegrationLegacyContainer';
 import AdminTwitterSecurityContainer from '~/client/services/AdminTwitterSecurityContainer';
-import AdminUserGroupDetailContainer from '~/client/services/AdminUserGroupDetailContainer';
 import AdminUsersContainer from '~/client/services/AdminUsersContainer';
 import { CrowiRequest } from '~/interfaces/crowi-request';
 import PluginUtils from '~/server/plugins/plugin-utils';
@@ -208,7 +207,6 @@ const AdminMarkdownSettingsPage: NextPage<Props> = (props: Props) => {
     const adminNotificationContainer = new AdminNotificationContainer();
     const adminSlackIntegrationLegacyContainer = new AdminSlackIntegrationLegacyContainer();
     const adminMarkDownContainer = new AdminMarkDownContainer();
-    const adminUserGroupDetailContainer = new AdminUserGroupDetailContainer();
 
     injectableContainers.push(
       adminAppContainer,
@@ -220,7 +218,6 @@ const AdminMarkdownSettingsPage: NextPage<Props> = (props: Props) => {
       adminNotificationContainer,
       adminSlackIntegrationLegacyContainer,
       adminMarkDownContainer,
-      adminUserGroupDetailContainer,
     );
   }
 

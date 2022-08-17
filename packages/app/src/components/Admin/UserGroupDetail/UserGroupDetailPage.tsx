@@ -46,9 +46,6 @@ const UserGroupDetailPage = (props: Props): JSX.Element => {
   const xss = useMemo(() => new Xss(), []);
   const { userGroupId: currentUserGroupId } = props;
 
-  /*
-   * State (from AdminUserGroupDetailContainer)
-   */
   const { data: currentUserGroup } = useSWRxUserGroup(currentUserGroupId);
   const [searchType, setSearchType] = useState<SearchType>(SearchTypes.PARTIAL);
   const [isAlsoMailSearched, setAlsoMailSearched] = useState<boolean>(false);
