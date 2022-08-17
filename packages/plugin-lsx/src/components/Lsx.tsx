@@ -4,7 +4,7 @@ import React, {
 
 import * as url from 'url';
 
-import { pathUtils } from '@growi/core';
+import { IPage, pathUtils } from '@growi/core';
 import axios from 'axios';
 
 import { LsxListView } from './LsxPageList/LsxListView';
@@ -73,6 +73,43 @@ function generatePageNode(pathToNodeMap: Record<string, PageNode>, rootPagePath:
   return node;
 }
 
+function generatePageNodeTree(rootPagePath: string, pages: IPage[]) {
+  const pathToNodeMap: Record<string, PageNode> = {};
+
+  pages.forEach((page) => {
+    // add slash ensure not to forward match to another page
+    // e.g. '/Java/' not to match to '/JavaScript'
+    const pagePath = pathUtils.addTrailingSlash(page.path);
+
+    const node = generatePageNode(pathToNodeMap, rootPagePath, pagePath); // this will not be null
+
+    // exclude rootPagePath itself
+    if (node == null) {
+      return;
+    }
+
+    // set the Page substance
+    node.page = page;
+  });
+
+  // return root objects
+  const rootNodes: PageNode[] = [];
+  Object.keys(pathToNodeMap).forEach((pagePath) => {
+    // exclude '/'
+    if (pagePath === '/') {
+      return;
+    }
+
+    const parentPath = getParentPath(pagePath);
+
+    // pick up what parent doesn't exist
+    if ((parentPath === '/') || !(parentPath in pathToNodeMap)) {
+      rootNodes.push(pathToNodeMap[pagePath]);
+    }
+  });
+  return rootNodes;
+}
+
 
 type Props = {
   children: React.ReactNode,
@@ -131,43 +168,6 @@ export const Lsx = ({
     return stateCache;
   }, [lsxContext]);
 
-  const generatePageNodeTree = useCallback((rootPagePath, pages) => {
-    const pathToNodeMap: Record<string, PageNode> = {};
-
-    pages.forEach((page) => {
-      // add slash ensure not to forward match to another page
-      // e.g. '/Java/' not to match to '/JavaScript'
-      const pagePath = pathUtils.addTrailingSlash(page.path);
-
-      const node = generatePageNode(pathToNodeMap, rootPagePath, pagePath); // this will not be null
-
-      // exclude rootPagePath itself
-      if (node == null) {
-        return;
-      }
-
-      // set the Page substance
-      node.page = page;
-    });
-
-    // return root objects
-    const rootNodes: PageNode[] = [];
-    Object.keys(pathToNodeMap).forEach((pagePath) => {
-      // exclude '/'
-      if (pagePath === '/') {
-        return;
-      }
-
-      const parentPath = getParentPath(pagePath);
-
-      // pick up what parent doesn't exist
-      if ((parentPath === '/') || !(parentPath in pathToNodeMap)) {
-        rootNodes.push(pathToNodeMap[pagePath]);
-      }
-    });
-    return rootNodes;
-  }, []);
-
   const loadData = useCallback(async() => {
     setLoading(true);
 
@@ -210,7 +210,7 @@ export const Lsx = ({
     finally {
       setLoading(false);
     }
-  }, [basisViewersCount, generatePageNodeTree, lsxContext]);
+  }, [basisViewersCount, lsxContext]);
 
   useEffect(() => {
     // get state object cache
