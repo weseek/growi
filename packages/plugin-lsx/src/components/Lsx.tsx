@@ -172,16 +172,16 @@ export const Lsx = ({
 
     let newNodeTree: PageNode[] = [];
     try {
-      const result: any = await axios.get('/plugins/lsx', {
+      const result: any = await axios.get('/_api/plugins/lsx', {
         params: {
           pagePath,
           options: lsxContext.options,
         },
       });
 
-      newNodeTree = generatePageNodeTree(pagePath, result.pages);
+      newNodeTree = generatePageNodeTree(pagePath, result.data.pages);
       setNodeTree(newNodeTree);
-      setBasisViewersCount(result.toppageViewersCount);
+      setBasisViewersCount(result.data.toppageViewersCount);
       setError(false);
 
       // store to sessionStorage
