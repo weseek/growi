@@ -153,7 +153,6 @@ class Lsx {
 
 module.exports = (crowi, app) => {
   const Page = crowi.model('Page');
-  const ApiResponse = crowi.require('../util/apiResponse');
   const actions = {};
 
   /**
