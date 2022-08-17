@@ -7,8 +7,6 @@ import { selectAll, HastNode } from 'hast-util-select';
 import { Plugin } from 'unified';
 import { visit } from 'unist-util-visit';
 
-import { IHrefResolver } from '../rehype-plugins/relative-links';
-
 const NODE_NAME_PATTERN = new RegExp(/ls|lsx/);
 const SUPPORTED_ATTRIBUTES = ['prefix', 'num', 'depth', 'sort', 'reverse', 'filter'];
 
@@ -59,7 +57,7 @@ export type LsxRehypePluginParams = {
   pagePath?: string,
 }
 
-const pathResolver: IHrefResolver = (relativeHref, basePath) => {
+const pathResolver = (relativeHref: string, basePath: string): string => {
   // generate relative pathname
   const baseUrl = new URL(pathUtils.addTrailingSlash(basePath), 'https://example.com');
   const relativeUrl = new URL(relativeHref, baseUrl);

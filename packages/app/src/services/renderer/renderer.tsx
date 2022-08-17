@@ -2,6 +2,7 @@
 import { ComponentType } from 'react';
 
 import { Lsx } from '@growi/plugin-lsx/components';
+import * as lsxGrowiPlugin from '@growi/plugin-lsx/services/renderer';
 import growiPlugin from '@growi/remark-growi-plugin';
 import { Schema as SanitizeOption } from 'hast-util-sanitize';
 import { SpecialComponents } from 'react-markdown/lib/ast-to-react';
@@ -26,7 +27,6 @@ import { NextLink } from '~/components/ReactMarkdownComponents/NextLink';
 import { RendererConfig } from '~/interfaces/services/renderer';
 import loggerFactory from '~/utils/logger';
 
-import * as lsxGrowiPlugin from './growi-plugins/lsx';
 import { addClass } from './rehype-plugins/add-class';
 import { relativeLinks } from './rehype-plugins/relative-links';
 import { relativeLinksByPukiwikiLikeLinker } from './rehype-plugins/relative-links-by-pukiwiki-like-linker';
