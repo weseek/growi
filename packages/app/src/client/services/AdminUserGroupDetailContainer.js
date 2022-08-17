@@ -36,8 +36,6 @@ export default class AdminUserGroupDetailContainer extends Container {
 
       childUserGroupRelations: [], // TODO 85062: fetch data on init (findRelationsByGroupIds) For child group list users
       // relatedPages: [], // For page list
-      isAlsoMailSearched: false,
-      isAlsoNameSearched: false,
     };
 
     // this.init();
