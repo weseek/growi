@@ -6,11 +6,8 @@ import PropTypes from 'prop-types';
 import { AsyncTypeahead } from 'react-bootstrap-typeahead';
 import { debounce } from 'throttle-debounce';
 
-import AdminUserGroupDetailContainer from '~/client/services/AdminUserGroupDetailContainer';
 import { toastSuccess, toastError } from '~/client/util/apiNotification';
 import Xss from '~/services/xss';
-
-import { withUnstatedContainers } from '../../UnstatedUtils';
 
 class UserGroupUserFormByInput extends React.Component {
 
@@ -96,14 +93,14 @@ class UserGroupUserFormByInput extends React.Component {
   }
 
   renderMenuItemChildren(option) {
-    const { adminUserGroupDetailContainer } = this.props;
+    const { isAlsoNameSearched, isAlsoMailSearched } = this.props;
     const user = option;
     return (
       <>
         <UserPicture user={user} size="sm" noLink noTooltip />
         <strong className="ml-2">{user.username}</strong>
-        {adminUserGroupDetailContainer.state.isAlsoNameSearched && <span className="ml-2">{user.name}</span>}
-        {adminUserGroupDetailContainer.state.isAlsoMailSearched && <span className="ml-2">{user.email}</span>}
+        {isAlsoNameSearched && <span className="ml-2">{user.name}</span>}
+        {isAlsoMailSearched && <span className="ml-2">{user.email}</span>}
       </>
     );
   }
@@ -157,7 +154,8 @@ class UserGroupUserFormByInput extends React.Component {
 
 UserGroupUserFormByInput.propTypes = {
   t: PropTypes.func.isRequired, // i18next
-  adminUserGroupDetailContainer: PropTypes.instanceOf(AdminUserGroupDetailContainer).isRequired,
+  isAlsoMailSearched: PropTypes.bool.isRequired,
+  isAlsoNameSearched: PropTypes.bool.isRequired,
   onClickAddUserBtn: PropTypes.func,
   onSearchApplicableUsers: PropTypes.func,
   userGroup: PropTypes.object,
@@ -168,9 +166,4 @@ const UserGroupUserFormByInputWrapperFC = (props) => {
   return <UserGroupUserFormByInput t={t} {...props} />;
 };
 
-/**
- * Wrapper component for using unstated
- */
-const UserGroupUserFormByInputWrapper = withUnstatedContainers(UserGroupUserFormByInputWrapperFC, [AdminUserGroupDetailContainer]);
-
-export default UserGroupUserFormByInputWrapper;
+export default UserGroupUserFormByInputWrapperFC;

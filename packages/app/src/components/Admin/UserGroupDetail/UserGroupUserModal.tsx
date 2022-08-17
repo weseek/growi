@@ -55,6 +55,8 @@ export const UserGroupUserModal = (props: Props): JSX.Element => {
             onClickAddUserBtn={onClickAddUserBtn}
             onSearchApplicableUsers={onSearchApplicableUsers}
             onClose={onClose}
+            isAlsoNameSearched={isAlsoNameSearched}
+            isAlsoMailSearched={isAlsoMailSearched}
           />
         </div>
         <h2 className="border-bottom">{t('admin:user_group_management.add_modal.search_option')}</h2>
