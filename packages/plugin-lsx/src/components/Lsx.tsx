@@ -5,10 +5,7 @@ import React, {
 import * as url from 'url';
 
 import { pathUtils } from '@growi/core';
-
-import { apiGet } from '~/client/util/apiv1-client';
-
-// eslint-disable-next-line no-unused-vars
+import axios from 'axios';
 
 import { LsxListView } from './LsxPageList/LsxListView';
 import { PageNode } from './PageNode';
@@ -175,9 +172,11 @@ export const Lsx = ({
 
     let newNodeTree: PageNode[] = [];
     try {
-      const result: any = await apiGet('/plugins/lsx', {
-        pagePath,
-        options: lsxContext.options,
+      const result: any = await axios.get('/plugins/lsx', {
+        params: {
+          pagePath,
+          options: lsxContext.options,
+        },
       });
 
       newNodeTree = generatePageNodeTree(pagePath, result.pages);
