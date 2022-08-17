@@ -242,9 +242,9 @@ export const Lsx = ({
     const showListView = nodeTree != null && (!isLoading || nodeTree.length > 0);
 
     return (
-      <div className={isLoading ? 'lsx-blink' : ''}>
+      <>
         { isLoading && (
-          <div className="text-muted">
+          <div className={`text-muted ${isLoading ? 'lsx-blink' : ''}`}>
             <small>
               <i className="fa fa-spinner fa-pulse mr-1"></i>
               {lsxContext.toString()}
@@ -255,7 +255,7 @@ export const Lsx = ({
         { showListView && (
           <LsxListView nodeTree={nodeTree} lsxContext={lsxContext} basisViewersCount={basisViewersCount} />
         ) }
-      </div>
+      </>
     );
   };
 
