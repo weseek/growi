@@ -90,6 +90,13 @@ type Props = {
   forceToFetchData?: boolean,
 };
 
+type StateCache = {
+  isError: boolean,
+  errorMessage: string,
+  basisViewersCount?: number,
+  nodeTree?: PageNode[],
+}
+
 export const Lsx = ({
   prefix,
   num, depth, sort, reverse, filter,
@@ -114,7 +121,7 @@ export const Lsx = ({
 
   const retrieveDataFromCache = useCallback(() => {
     // get state object cache
-    const stateCache = tagCacheManager.getStateCache(lsxContext);
+    const stateCache = tagCacheManager.getStateCache(lsxContext) as StateCache | null;
 
     // instanciate PageNode
     if (stateCache != null && stateCache.nodeTree != null) {
@@ -188,7 +195,6 @@ export const Lsx = ({
       tagCacheManager.cacheState(lsxContext, {
         isError: false,
         errorMessage: '',
-        isCacheExists,
         basisViewersCount,
         nodeTree: newNodeTree,
       });
@@ -201,7 +207,6 @@ export const Lsx = ({
       tagCacheManager.cacheState(lsxContext, {
         isError: true,
         errorMessage: error.message,
-        isCacheExists,
       });
     }
     finally {
