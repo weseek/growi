@@ -1,4 +1,4 @@
-import { customTagUtils } from '@growi/core';
+import { customTagUtils, ParseRangeResult } from '@growi/core';
 
 const { OptionParser } = customTagUtils;
 
@@ -18,9 +18,9 @@ export class LsxContext {
     this.options = options;
   }
 
-  getOptDepth() {
+  getOptDepth(): ParseRangeResult | null {
     if (this.options?.depth == null) {
-      return undefined;
+      return null;
     }
     return OptionParser.parseRange(this.options.depth);
   }

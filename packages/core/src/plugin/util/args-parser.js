@@ -1,7 +1,7 @@
 /**
  * Arguments parser for custom tag
  */
-class ArgsParser {
+export class ArgsParser {
 
   /**
    * @typedef ParseArgsResult
@@ -55,5 +55,3 @@ class ArgsParser {
   }
 
 }
-
-module.exports = ArgsParser;

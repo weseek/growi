@@ -1,13 +1,9 @@
+import { ParseRangeResult } from '../interfaces/option-parser';
+
 /**
  * Options parser for custom tag
  */
-class OptionParser {
-
-  /**
-   * @typedef ParseRangeResult
-   * @property {number} start - start index
-   * @property {number} end - end index
-   */
+export class OptionParser {
 
   /**
    * Parse range expression
@@ -27,7 +23,7 @@ class OptionParser {
    * @param {string} str
    * @returns {ParseRangeResult}
    */
-  static parseRange(str) {
+  static parseRange(str: string): ParseRangeResult | null {
     if (str == null) {
       return null;
     }
@@ -66,5 +62,3 @@ class OptionParser {
   }
 
 }
-
-module.exports = OptionParser;
