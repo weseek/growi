@@ -5,7 +5,6 @@ import {
   Modal, ModalHeader, ModalBody,
 } from 'reactstrap';
 
-import AdminUserGroupDetailContainer from '~/client/services/AdminUserGroupDetailContainer';
 import { IUserGroupHasId } from '~/interfaces/user';
 import { SearchTypes, SearchType } from '~/interfaces/user-group';
 
@@ -15,7 +14,6 @@ import UserGroupUserFormByInput from './UserGroupUserFormByInput';
 
 type Props = {
   isOpen: boolean,
-  adminUserGroupDetailContainer: AdminUserGroupDetailContainer,
   userGroup: IUserGroupHasId,
   searchType: SearchType,
   isAlsoMailSearched: boolean,
@@ -52,7 +50,12 @@ export const UserGroupUserModal = (props: Props): JSX.Element => {
       <ModalBody>
         <p className="card well">{t('admin:user_group_management.add_modal.description')}</p>
         <div className="p-3">
-          <UserGroupUserFormByInput userGroup={userGroup} onClickAddUserBtn={onClickAddUserBtn} onSearchApplicableUsers={onSearchApplicableUsers} />
+          <UserGroupUserFormByInput
+            userGroup={userGroup}
+            onClickAddUserBtn={onClickAddUserBtn}
+            onSearchApplicableUsers={onSearchApplicableUsers}
+            onClose={onClose}
+          />
         </div>
         <h2 className="border-bottom">{t('admin:user_group_management.add_modal.search_option')}</h2>
         <div className="row mt-4">

@@ -175,6 +175,7 @@ const UserGroupDetailPage = (props: Props): JSX.Element => {
 
   const addUserByUsername = useCallback(async(username: string) => {
     await apiv3Post(`/user-groups/${currentUserGroupId}/users/${username}`);
+    setIsUserGroupUserModalShown(false);
     mutateUserGroupRelations();
   }, [currentUserGroupId, mutateUserGroupRelations]);
 

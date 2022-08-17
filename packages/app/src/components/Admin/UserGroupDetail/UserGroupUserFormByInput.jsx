@@ -38,15 +38,13 @@ class UserGroupUserFormByInput extends React.Component {
   }
 
   async addUserBySubmit() {
-    const { userGroup, adminUserGroupDetailContainer, onClickAddUserBtn } = this.props;
+    const { userGroup, onClickAddUserBtn } = this.props;
 
     if (this.state.inputUser.length === 0) { return }
     const userName = this.state.inputUser[0].username;
 
     try {
       await onClickAddUserBtn(userName);
-      // await adminUserGroupDetailContainer.init();
-      await adminUserGroupDetailContainer.closeUserGroupUserModal();
       toastSuccess(`Added "${this.xss.process(userName)}" to "${this.xss.process(userGroup.name)}"`);
       this.setState({ inputUser: '' });
     }
@@ -69,7 +67,6 @@ class UserGroupUserFormByInput extends React.Component {
       this.setState({ applicableUsers: users, isLoading: false });
     }
     catch (err) {
-      console.log('searhApplicableUsers_err', err);
       toastError(err);
     }
   }
