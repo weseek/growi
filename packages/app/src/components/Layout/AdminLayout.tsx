@@ -45,7 +45,7 @@ const AdminLayout = ({
                 <AdminNavigation selected={selectedNavOpt} />
               </div>
               <div className="col-lg-9">
-                {children}
+                {title != null ? children : <AdminNotFoundPage />}
               </div>
             </div>
           </div>

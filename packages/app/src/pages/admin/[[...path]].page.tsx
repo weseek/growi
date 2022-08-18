@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useCallback } from 'react';
 
 import { isClient } from '@growi/core';
 import {
@@ -36,6 +36,7 @@ import {
   useCurrentUser, /* useSearchServiceConfigured, */ useIsAclEnabled, useIsMailerSetup, useIsSearchServiceReachable, useSiteUrl,
 } from '~/stores/context';
 
+import { isValidObjectId } from '../../../../core/src/utils/objectid-utils';
 import {
   CommonProps, getServerSideCommonProps, useCustomTitle, getNextI18NextConfig,
 } from '../utils/commons';
@@ -94,7 +95,7 @@ const AdminMarkdownSettingsPage: NextPage<Props> = (props: Props) => {
   let userGroupId;
   const [firstPath, secondPath] = pagePathKeys;
   if (firstPath === 'user-group-detail') {
-    userGroupId = secondPath;
+    userGroupId = isValidObjectId(secondPath) ? secondPath : undefined;
   }
 
   const adminPagesMap = {
@@ -254,7 +255,6 @@ const AdminMarkdownSettingsPage: NextPage<Props> = (props: Props) => {
         adminTwitterSecurityContainer,
       );
     }
-
   }
 
 

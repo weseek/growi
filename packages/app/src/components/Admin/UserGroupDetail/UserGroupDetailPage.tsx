@@ -2,8 +2,6 @@ import React, {
   FC, useState, useCallback, useEffect,
 } from 'react';
 
-
-import ObjectId from 'bson-objectid';
 import { useTranslation } from 'next-i18next';
 import dynamic from 'next/dynamic';
 import { useRouter } from 'next/router';
@@ -20,6 +18,8 @@ import {
   useSWRxUserGroupPages, useSWRxUserGroupRelationList, useSWRxChildUserGroupList, useSWRxUserGroup,
   useSWRxSelectableParentUserGroups, useSWRxSelectableChildUserGroups, useSWRxAncestorUserGroups,
 } from '~/stores/user-group';
+
+import { isValidObjectId } from '../../../../../core/src/utils/objectid-utils';
 
 const UserGroupDeleteModal = dynamic(() => import('../UserGroup/UserGroupDeleteModal').then(mod => mod.UserGroupDeleteModal), { ssr: false });
 const UserGroupDropdown = dynamic(() => import('../UserGroup/UserGroupDropdown').then(mod => mod.UserGroupDropdown), { ssr: false });
@@ -54,11 +54,14 @@ const UserGroupDetailPage = (props: Props) => {
   const [isUpdateModalShown, setUpdateModalShown] = useState<boolean>(false);
   const [isDeleteModalShown, setDeleteModalShown] = useState<boolean>(false);
 
+  const isLoading = currentUserGroup === undefined;
+  const notExistsUerGroup = !isLoading && currentUserGroup == null;
+
   useEffect(() => {
-    if ((currentUserGroupId != null && !ObjectId.isValid(currentUserGroupId)) || currentUserGroup === null) {
+    if (!isValidObjectId(currentUserGroupId) || notExistsUerGroup) {
       router.push('/admin/user-groups');
     }
-  }, [currentUserGroup, currentUserGroupId, router]);
+  }, [currentUserGroup, currentUserGroupId, notExistsUerGroup, router]);
 
 
   /*
