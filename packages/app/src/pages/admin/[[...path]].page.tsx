@@ -1,6 +1,6 @@
 import React, { useCallback } from 'react';
 
-import { isClient } from '@growi/core';
+import { isClient, objectIdUtils } from '@growi/core';
 import {
   NextPage, GetServerSideProps, GetServerSidePropsContext,
 } from 'next';
@@ -36,7 +36,6 @@ import {
   useCurrentUser, /* useSearchServiceConfigured, */ useIsAclEnabled, useIsMailerSetup, useIsSearchServiceReachable, useSiteUrl,
 } from '~/stores/context';
 
-import { isValidObjectId } from '../../../../core/src/utils/objectid-utils';
 import {
   CommonProps, getServerSideCommonProps, useCustomTitle, getNextI18NextConfig,
 } from '../utils/commons';
@@ -95,7 +94,7 @@ const AdminMarkdownSettingsPage: NextPage<Props> = (props: Props) => {
   let userGroupId;
   const [firstPath, secondPath] = pagePathKeys;
   if (firstPath === 'user-group-detail') {
-    userGroupId = isValidObjectId(secondPath) ? secondPath : undefined;
+    userGroupId = objectIdUtils.isValidObjectId(secondPath) ? secondPath : undefined;
   }
 
   // TODO: refactoring adminPagesMap => https://redmine.weseek.co.jp/issues/102694
