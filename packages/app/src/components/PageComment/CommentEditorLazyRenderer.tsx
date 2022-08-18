@@ -5,12 +5,25 @@ import dynamic from 'next/dynamic';
 import { RendererOptions } from '~/services/renderer/renderer';
 
 import { useSWRxPageComment } from '../../stores/comment';
+import { Skelton } from '../Skelton';
 
 import { CommentEditorProps } from './CommentEditor';
 
-// TODO: Update Skelton
-const CommentEditor = dynamic<CommentEditorProps>(() => import('./CommentEditor').then(mod => mod.CommentEditor), { ssr: false });
+import styles from '../PageComment.module.scss';
+import CommentEditorStyles from './CommentEditor.module.scss';
 
+const CommentEditor = dynamic<CommentEditorProps>(() => import('./CommentEditor').then(mod => mod.CommentEditor),
+  {
+    ssr: false,
+    loading: () => <div className={`${CommentEditorStyles['comment-editor-styles']} form page-comment-form`}>
+      <div className='comment-form'>
+        <div className='comment-form-user'>
+          <Skelton additionalClass='rounded-circle picture' roundedPill />
+        </div>
+        <Skelton additionalClass={`${styles['page-comment-commenteditorlazyrenderer-body-skelton']} grw-skelton`} />
+      </div>
+    </div>,
+  });
 
 type Props = {
   pageId?: string,
