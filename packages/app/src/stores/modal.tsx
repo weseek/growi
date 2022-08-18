@@ -255,7 +255,7 @@ export const usePagePresentationModal = (
     status?: PresentationModalStatus,
 ): SWRResponse<PresentationModalStatus, Error> & PresentationModalStatusUtils => {
   const initialData: PresentationModalStatus = {
-    isOpened: false, href: '?presentation=1',
+    isOpened: false, href: '',
   };
   const swrResponse = useStaticSWR<PresentationModalStatus, Error>('presentationModalStatus', status, { fallbackData: initialData });
 

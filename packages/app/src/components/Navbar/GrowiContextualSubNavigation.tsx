@@ -67,7 +67,7 @@ const AdditionalMenuItems = (props: AdditionalMenuItemsProps): JSX.Element => {
   const { open: openPresentationModal } = usePagePresentationModal();
   const { open: openAccessoriesModal } = usePageAccessoriesModal();
 
-  const hrefForPresentationModal = `${pageId}/?presentation=1`;
+  const hrefForPresentationModal = `/_presentation/${pageId}`;
 
   return (
     <>
