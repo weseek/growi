@@ -156,6 +156,14 @@
   }
 }
 
+.link-switch {
+  color: $gray-200;
+
+  &:hover {
+    color: white;
+  }
+}
+
 .nologin.error {
   .alert h2 {
     line-height: 1em;

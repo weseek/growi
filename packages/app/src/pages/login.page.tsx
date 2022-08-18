@@ -35,7 +35,7 @@ const LoginPage: NextPage<Props> = (props: Props) => {
   // page
   useCurrentPathname(props.currentPathname);
 
-  const classNames: string[] = [];
+  const classNames: string[] = ['login-page'];
 
   const LoginForm = dynamic(() => import('~/components/LoginForm'), {
     ssr: false,
@@ -43,7 +43,7 @@ const LoginPage: NextPage<Props> = (props: Props) => {
 
   return (
     <NoLoginLayout title={useCustomTitle(props, 'GROWI')} className={classNames.join(' ')}>
-      <div id="login-page">
+      <div className="col-md-12">
         <LoginForm objOfIsExternalAuthEnableds={props.enabledStrategies} isLocalStrategySetup={true} isLdapStrategySetup={true}
           isRegistrationEnabled={true} registrationWhiteList={props.registrationWhiteList} isPasswordResetEnabled={true} />
       </div>

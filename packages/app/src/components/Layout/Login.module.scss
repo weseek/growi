@@ -1,17 +1,6 @@
 @use '~/styles/bootstrap/init' as bs;
 
 
-.nologin {
-  .link-switch {
-    color: bs.$gray-200;
-
-    &:hover {
-      color: white;
-    }
-  }
-}
-
-
 .login-page {
   // layout
   .main .row .login-header,
