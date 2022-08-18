@@ -37,10 +37,3 @@ export type IUserGroup = {
 export type IUserHasId = IUser & HasObjectId;
 export type IUserGroupHasId = IUserGroup & HasObjectId;
 export type IUserGroupRelationHasId = IUserGroupRelation & HasObjectId;
-
-
-export type IUserGroupRelationHasIdPopulatedUser = {
-  relatedGroup: Ref<IUserGroup>,
-  relatedUser: IUser & HasObjectId,
-  createdAt: Date,
-} & HasObjectId;

@@ -4,8 +4,9 @@ import useSWRImmutable from 'swr/immutable';
 import { apiGet } from '~/client/util/apiv1-client';
 import { apiv3Get } from '~/client/util/apiv3-client';
 import { IPageHasId } from '~/interfaces/page';
-import { IUserGroupHasId, IUserGroupRelationHasId, IUserGroupRelationHasIdPopulatedUser } from '~/interfaces/user';
+import { IUserGroupHasId, IUserGroupRelationHasId } from '~/interfaces/user';
 import {
+  IUserGroupRelationHasIdPopulatedUser,
   UserGroupResult, UserGroupListResult, ChildUserGroupListResult, UserGroupRelationListResult, UserGroupRelationsResult,
   UserGroupPagesResult, SelectableParentUserGroupsResult, SelectableUserChildGroupsResult, AncestorUserGroupsResult,
 } from '~/interfaces/user-group-response';

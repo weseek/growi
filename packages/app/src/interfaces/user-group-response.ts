@@ -22,6 +22,12 @@ export type UserGroupRelationListResult = {
   userGroupRelations: IUserGroupRelationHasId[],
 };
 
+export type IUserGroupRelationHasIdPopulatedUser = {
+  relatedGroup: Ref<IUserGroup>,
+  relatedUser: IUser & HasObjectId,
+  createdAt: Date,
+} & HasObjectId;
+
 export type UserGroupRelationsResult = {
   userGroupRelations: IUserGroupRelationHasIdPopulatedUser[],
 };
@@ -41,9 +47,3 @@ export type SelectableUserChildGroupsResult = {
 export type AncestorUserGroupsResult = {
   ancestorUserGroups: IUserGroupHasId[],
 }
-
-export type IUserGroupRelationHasIdPopulatedUser = {
-  relatedGroup: Ref<IUserGroup>,
-  relatedUser: IUser & HasObjectId,
-  createdAt: Date,
-} & HasObjectId;
