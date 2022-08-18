@@ -18,7 +18,7 @@ export type IUser = {
   lang: Lang,
   slackMemberId?: string,
   createdAt: Date,
-  lastLoginAt: Date,
+  lastLoginAt?: Date,
 }
 
 export type IUserGroupRelation = {
