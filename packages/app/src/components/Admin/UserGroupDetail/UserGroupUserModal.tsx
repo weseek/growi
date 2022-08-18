@@ -18,15 +18,15 @@ type Props = {
   searchType: SearchType,
   isAlsoMailSearched: boolean,
   isAlsoNameSearched: boolean,
-  onClickAddUserBtn: () => void,
-  onSearchApplicableUsers: () => void,
+  onClickAddUserBtn: (username: string) => Promise<void>,
+  onSearchApplicableUsers: (searchWord: string) => Promise<void>,
   onSwitchSearchType: (searchType: SearchType) => void
   onClose: () => void,
   onToggleIsAlsoMailSearched: () => void,
   onToggleIsAlsoNameSearched: () => void,
 }
 
-export const UserGroupUserModal = (props: Props): JSX.Element => {
+const UserGroupUserModal = (props: Props): JSX.Element => {
   const { t } = useTranslation();
   const {
     isOpen,
@@ -105,3 +105,5 @@ export const UserGroupUserModal = (props: Props): JSX.Element => {
     </Modal>
   );
 };
+
+export default UserGroupUserModal;

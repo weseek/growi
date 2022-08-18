@@ -25,7 +25,7 @@ import {
 const UserGroupPageList = dynamic(() => import('./UserGroupPageList'), { ssr: false });
 const UserGroupUserTable = dynamic(() => import('./UserGroupUserTable'), { ssr: false });
 
-const UserGroupUserModal = dynamic(() => import('./UserGroupUserModal').then(mod => mod.UserGroupUserModal), { ssr: false });
+const UserGroupUserModal = dynamic(() => import('./UserGroupUserModal'), { ssr: false });
 
 const UserGroupDeleteModal = dynamic(() => import('../UserGroup/UserGroupDeleteModal').then(mod => mod.UserGroupDeleteModal), { ssr: false });
 const UserGroupDropdown = dynamic(() => import('../UserGroup/UserGroupDropdown').then(mod => mod.UserGroupDropdown), { ssr: false });
@@ -99,7 +99,7 @@ const UserGroupDetailPage = (props: Props): JSX.Element => {
     setAlsoNameSearched(prev => !prev);
   }, []);
 
-  const switchSearchType = useCallback((searchType) => {
+  const switchSearchType = useCallback((searchType: SearchType) => {
     setSearchType(searchType);
   }, []);
 
@@ -159,7 +159,7 @@ const UserGroupDetailPage = (props: Props): JSX.Element => {
     }
   }, [t, openUpdateParentConfirmModal, onSubmitUpdateGroup]);
 
-  const fetchApplicableUsers = useCallback(async(searchWord) => {
+  const fetchApplicableUsers = useCallback(async(searchWord: string) => {
     const res = await apiv3Get(`/user-groups/${currentUserGroupId}/unrelated-users`, {
       searchWord,
       searchType,
@@ -314,7 +314,7 @@ const UserGroupDetailPage = (props: Props): JSX.Element => {
   /*
    * Dependencies
    */
-  if (currentUserGroup == null) {
+  if (currentUserGroup == null || currentUserGroupId == null) {
     return <></>;
   }
 
@@ -351,7 +351,7 @@ const UserGroupDetailPage = (props: Props): JSX.Element => {
       <h2 className="admin-setting-header mt-4">{t('admin:user_group_management.user_list')}</h2>
       <UserGroupUserTable
         userGroup={currentUserGroup}
-        userGroupRelati
+        userGroupRelations={childUserGroupRelations}
         onClickPlusBtn={() => setIsUserGroupUserModalShown(true)}
         onClickRemoveUserBtn={removeUserByUsername}
       />
