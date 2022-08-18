@@ -291,7 +291,7 @@ class LoginForm extends React.Component {
     const isSomeExternalAuthEnabled = true;
 
     return (
-      <div className="login-dialog mx-auto" id="login-dialog">
+      <div className="noLogin-dialog mx-auto" id="noLogin-dialog">
         <div className="row mx-0">
           <div className="col-12">
             <ReactCardFlip isFlipped={this.state.isRegistering} flipDirection="horizontal" cardZIndex="3">
