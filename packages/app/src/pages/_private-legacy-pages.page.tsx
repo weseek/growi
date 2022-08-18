@@ -68,11 +68,6 @@ const PrivateLegacyPage: NextPage<Props> = (props: Props) => {
   // render config
   useRendererConfig(props.rendererConfig);
 
-  const PutbackPageModal = (): JSX.Element => {
-    const PutbackPageModal = dynamic(() => import('../components/PutbackPageModal'), { ssr: false });
-    return <PutbackPageModal />;
-  };
-
   const classNames: string[] = [];
   // if (props.isContainerFluid) {
   //   classNames.push('growi-layout-fluid');
@@ -97,7 +92,6 @@ const PrivateLegacyPage: NextPage<Props> = (props: Props) => {
             </div>
 
           </div>
-          <PutbackPageModal />
         </BasicLayout>
       </div>
     </>
