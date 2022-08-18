@@ -2,10 +2,10 @@ import {
   NextPage, GetServerSideProps, GetServerSidePropsContext,
 } from 'next';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
+import dynamic from 'next/dynamic';
 import Head from 'next/head';
 
 import { BasicLayout } from '~/components/Layout/BasicLayout';
-import PrivateLegacyPages from '~/components/PrivateLegacyPages';
 import { CrowiRequest } from '~/interfaces/crowi-request';
 import { RendererConfig } from '~/interfaces/services/renderer';
 import { ISidebarConfig } from '~/interfaces/sidebar-config';
@@ -45,6 +45,8 @@ type Props = CommonProps & {
 
 const PrivateLegacyPage: NextPage<Props> = (props: Props) => {
   const { userUISettings } = props;
+
+  const PrivateLegacyPages = dynamic(() => import('~/components/PrivateLegacyPages'), { ssr: false });
 
   // commons
   useCsrfToken(props.csrfToken);
