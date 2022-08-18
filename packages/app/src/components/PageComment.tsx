@@ -8,7 +8,6 @@ import { Button } from 'reactstrap';
 import { toastError } from '~/client/util/apiNotification';
 import { apiPost } from '~/client/util/apiv1-client';
 import { useCurrentPagePath } from '~/stores/context';
-import { useDeleteCommentModal } from '~/stores/modal';
 import { useSWRxCurrentPage } from '~/stores/page';
 import { useCommentPreviewOptions } from '~/stores/renderer';
 
@@ -41,7 +40,6 @@ export const PageComment: FC<PageCommentProps> = memo((props:PageCommentProps): 
     pageId, highlightKeywords, isReadOnly, titleAlign, hideIfEmpty,
   } = props;
 
-  const { open: openDeleteCommentModal, close: closeDeleteCommentModal } = useDeleteCommentModal();
   const { data: comments, mutate } = useSWRxPageComment(pageId);
   const { data: rendererOptions } = useCommentPreviewOptions();
   const { data: currentPage } = useSWRxCurrentPage();
@@ -92,13 +90,13 @@ export const PageComment: FC<PageCommentProps> = memo((props:PageCommentProps): 
 
   const onClickDeleteButton = useCallback((comment: ICommentHasId) => {
     setCommentToBeDeleted(comment);
-    openDeleteCommentModal();
-  }, [openDeleteCommentModal]);
+    setIsDeleteConfirmModalShown(true);
+  }, []);
 
   const onCancelDeleteComment = useCallback(() => {
     setCommentToBeDeleted(null);
-    closeDeleteCommentModal();
-  }, [closeDeleteCommentModal]);
+    setIsDeleteConfirmModalShown(false);
+  }, []);
 
   const onDeleteCommentAfterOperation = useCallback(() => {
     onCancelDeleteComment();
@@ -229,8 +227,10 @@ export const PageComment: FC<PageCommentProps> = memo((props:PageCommentProps): 
       </div>
       {(!isReadOnly && commentToBeDeleted != null) && (
         <DeleteCommentModal
+          isShown={isDeleteConfirmModalShown}
           comment={commentToBeDeleted}
           errorMessage={errorMessageOnDelete}
+          cancel={onCancelDeleteComment}
           confirmedToDelete={onDeleteComment}
         />
       )}
