@@ -49,5 +49,8 @@
     "node_modules",
     "dist",
     "**/*.test.ts"
-  ]
+  ],
+  "ts-node": {
+    "transpileOnly": true
+  }
 }
