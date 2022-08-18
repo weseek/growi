@@ -21,6 +21,6 @@
     "src/linter-checker",
     "src/stores",
     "src/styles",
-    "src/styles-hackmd",
+    "src/styles-hackmd"
   ]
 }
