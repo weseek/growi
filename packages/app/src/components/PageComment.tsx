@@ -17,13 +17,16 @@ import { useSWRxPageComment } from '../stores/comment';
 import { Comment } from './PageComment/Comment';
 import { CommentEditorProps } from './PageComment/CommentEditor';
 import { CommentEditorLazyRenderer } from './PageComment/CommentEditorLazyRenderer';
-import { DeleteCommentModal } from './PageComment/DeleteCommentModal';
+import { DeleteCommentModalProps } from './PageComment/DeleteCommentModal';
 import { ReplyComments } from './PageComment/ReplyComments';
 
 import styles from './PageComment.module.scss';
 
 // TODO: Update Skelton
 const CommentEditor = dynamic<CommentEditorProps>(() => import('./PageComment/CommentEditor').then(mod => mod.CommentEditor), { ssr: false });
+const DeleteCommentModal = dynamic<DeleteCommentModalProps>(
+  () => import('./PageComment/DeleteCommentModal').then(mod => mod.DeleteCommentModal), { ssr: false },
+);
 
 
 type PageCommentProps = {
