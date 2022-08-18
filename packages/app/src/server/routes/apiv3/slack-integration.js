@@ -1,18 +1,21 @@
+import createError from 'http-errors';
+
+import { SlackCommandHandlerError } from '~/server/models/vo/slack-command-handler-error';
+import loggerFactory from '~/utils/logger';
+
+import ErrorV3 from '../../models/vo/error-apiv3';
+
 import {
   markdownSectionBlock, InvalidGrowiCommandError, generateRespondUtil, supportedGrowiCommands,
 } from '@growi/slack';
-import createError from 'http-errors';
-import loggerFactory from '~/utils/logger';
-import { SlackCommandHandlerError } from '~/server/models/vo/slack-command-handler-error';
-import ErrorV3 from '../../models/vo/error-apiv3';
 
-const express = require('express');
-const mongoose = require('mongoose');
-const { body } = require('express-validator');
 
 const {
   verifySlackRequest, parseSlashCommand, InteractionPayloadAccessor, respond,
 } = require('@growi/slack');
+const express = require('express');
+const { body } = require('express-validator');
+const mongoose = require('mongoose');
 
 
 const logger = loggerFactory('growi:routes:apiv3:slack-integration');
@@ -22,7 +25,6 @@ const { handleError } = require('../../service/slack-command-handler/error-handl
 const { checkPermission } = require('../../util/slack-integration');
 
 module.exports = (crowi) => {
-  this.app = crowi.express;
 
   const { configManager, slackIntegrationService } = crowi;
 

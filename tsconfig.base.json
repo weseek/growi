@@ -51,6 +51,7 @@
     "**/*.test.ts"
   ],
   "ts-node": {
-    "transpileOnly": true
+    "transpileOnly": true,
+    "swc": true
   }
 }
