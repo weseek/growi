@@ -1,13 +1,12 @@
 import React from 'react';
 
 import { UserPicture } from '@growi/ui';
+import { useTranslation } from 'next-i18next';
 import PropTypes from 'prop-types';
 import { AsyncTypeahead } from 'react-bootstrap-typeahead';
-import { useTranslation } from 'next-i18next';
 import { debounce } from 'throttle-debounce';
 
 import AdminUserGroupDetailContainer from '~/client/services/AdminUserGroupDetailContainer';
-import AppContainer from '~/client/services/AppContainer';
 import { toastSuccess, toastError } from '~/client/util/apiNotification';
 import Xss from '~/services/xss';
 
@@ -162,7 +161,6 @@ class UserGroupUserFormByInput extends React.Component {
 
 UserGroupUserFormByInput.propTypes = {
   t: PropTypes.func.isRequired, // i18next
-  appContainer: PropTypes.instanceOf(AppContainer).isRequired,
   adminUserGroupDetailContainer: PropTypes.instanceOf(AdminUserGroupDetailContainer).isRequired,
 };
 
@@ -174,6 +172,6 @@ const UserGroupUserFormByInputWrapperFC = (props) => {
 /**
  * Wrapper component for using unstated
  */
-const UserGroupUserFormByInputWrapper = withUnstatedContainers(UserGroupUserFormByInputWrapperFC, [AppContainer, AdminUserGroupDetailContainer]);
+const UserGroupUserFormByInputWrapper = withUnstatedContainers(UserGroupUserFormByInputWrapperFC, [AdminUserGroupDetailContainer]);
 
 export default UserGroupUserFormByInputWrapper;
