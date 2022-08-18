@@ -67,11 +67,6 @@ const PrivateLegacyPage: NextPage<Props> = (props: Props) => {
   // render config
   useRendererConfig(props.rendererConfig);
 
-  const classNames: string[] = [];
-  // if (props.isContainerFluid) {
-  //   classNames.push('growi-layout-fluid');
-  // }
-
   return (
     <>
       <Head>
@@ -81,12 +76,12 @@ const PrivateLegacyPage: NextPage<Props> = (props: Props) => {
         */}
       </Head>
       <div className="on-search">
-        <BasicLayout title={useCustomTitle(props, 'GROWI')} className={classNames.join(' ')}>
+        <BasicLayout title={useCustomTitle(props, 'GROWI')}>
 
           <div id="grw-fav-sticky-trigger" className="sticky-top"></div>
           <div id="main" className="main search-page mt-0">
 
-            <div id="search-page">
+            <div id="private-regacy-pages">
               <PrivateLegacyPages />
             </div>
 
