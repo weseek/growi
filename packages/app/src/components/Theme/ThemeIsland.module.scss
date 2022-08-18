@@ -7,6 +7,14 @@ $color-primary: #97cbc3;
 $color-themelight: rgba(183, 226, 219, 1);
 
 .theme :global {
+  .grw-bg-image-wrapper {
+    position: fixed;
+    width: 100%;
+    height: 100%;
+  }
+}
+
+.theme :global {
   $primary: $color-primary;
   // Background colors
   $bgcolor-card: $gray-50;
@@ -89,7 +97,6 @@ $color-themelight: rgba(183, 226, 219, 1);
     background: lighten($color-themelight, 5%);
   }
 
-  #wrapper > #page-wrapper,
   .page-editor-preview-container {
     background-image: url('/images/themes/island/island.png');
     background-attachment: fixed;
