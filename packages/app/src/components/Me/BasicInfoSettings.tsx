@@ -1,9 +1,9 @@
 import React from 'react';
 
+import { LangWithMeta } from '@growi/core';
 import { useTranslation } from 'next-i18next';
 
 import { toastSuccess, toastError } from '~/client/util/apiNotification';
-// import { localeMetadatas } from '~/client/util/i18n';
 import { useRegistrationWhiteList } from '~/stores/context';
 import { usePersonalSettings } from '~/stores/personal-settings';
 
@@ -104,9 +104,8 @@ export const BasicInfoSettings = (): JSX.Element => {
       <div className="form-group row">
         <label className="text-left text-md-right col-md-3 col-form-label">{t('Language')}</label>
         <div className="col-md-6">
-          {/*
           {
-            localeMetadatas.map(meta => (
+            Object.values(LangWithMeta).map(meta => (
               <div key={meta.id} className="custom-control custom-radio custom-control-inline">
                 <input
                   type="radio"
@@ -120,7 +119,6 @@ export const BasicInfoSettings = (): JSX.Element => {
               </div>
             ))
           }
-          */}
         </div>
       </div>
       <div className="form-group row">
