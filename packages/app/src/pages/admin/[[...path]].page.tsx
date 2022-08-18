@@ -176,14 +176,13 @@ const AdminMarkdownSettingsPage: NextPage<Props> = (props: Props) => {
     },
   };
 
-  const getTargetPageToRender = (pagesMap, keys) => {
+  const getTargetPageToRender = (pagesMap, keys): {title: string, component: JSX.Element} => {
     return keys.reduce((pagesMap, key) => {
       return pagesMap[key];
     }, pagesMap);
   };
 
-  const targetPage: {title: string, component: JSX.Element} = getTargetPageToRender(adminPagesMap, pagePathKeys);
-  const title = targetPage.title;
+  const targetPage = getTargetPageToRender(adminPagesMap, pagePathKeys);
 
   useCurrentUser(props.currentUser != null ? JSON.parse(props.currentUser) : null);
   useIsMailerSetup(props.isMailerSetup);
@@ -260,7 +259,7 @@ const AdminMarkdownSettingsPage: NextPage<Props> = (props: Props) => {
 
   return (
     <Provider inject={[...injectableContainers, ...adminSecurityContainers]}>
-      <AdminLayout title={title} selectedNavOpt={firstPath}>
+      <AdminLayout title={targetPage.title} selectedNavOpt={firstPath}>
         {targetPage.component}
       </AdminLayout>
     </Provider>
