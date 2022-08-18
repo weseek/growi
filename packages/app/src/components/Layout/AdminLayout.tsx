@@ -12,7 +12,7 @@ const AdminNotFoundPage = dynamic(() => import('../Admin/NotFoundPage').then(mod
 
 
 type Props = {
-  title?: string
+  title: string
   /**
    * Set the current option of AdminNavigation
    * Expected it is in ["home", "app", "security", "markdown", "customize", "importer", "export",
@@ -45,7 +45,7 @@ const AdminLayout = ({
                 <AdminNavigation selected={selectedNavOpt} />
               </div>
               <div className="col-lg-9">
-                {children}
+                {children || <AdminNotFoundPage />}
               </div>
             </div>
           </div>

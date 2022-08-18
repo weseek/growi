@@ -1,6 +1,6 @@
-import React from 'react';
+import React, { useCallback } from 'react';
 
-import { isClient } from '@growi/core';
+import { isClient, objectIdUtils } from '@growi/core';
 import {
   NextPage, GetServerSideProps, GetServerSidePropsContext,
 } from 'next';
@@ -93,9 +93,10 @@ const AdminMarkdownSettingsPage: NextPage<Props> = (props: Props) => {
   let userGroupId;
   const [firstPath, secondPath] = pagePathKeys;
   if (firstPath === 'user-group-detail') {
-    userGroupId = secondPath;
+    userGroupId = objectIdUtils.isValidObjectId(secondPath) ? secondPath : undefined;
   }
 
+  // TODO: refactoring adminPagesMap => https://redmine.weseek.co.jp/issues/102694
   const adminPagesMap = {
     home: {
       title: useCustomTitle(props, t('Wiki Management Home Page')),
@@ -174,17 +175,16 @@ const AdminMarkdownSettingsPage: NextPage<Props> = (props: Props) => {
     },
   };
 
-  const getTargetPageToRender = (pagesMap, keys) => {
+  const getTargetPageToRender = (pagesMap, keys): {title: string, component: JSX.Element} => {
     return keys.reduce((pagesMap, key) => {
       return pagesMap[key];
     }, pagesMap);
   };
 
-  const targetPage: {title: string, component: JSX.Element} = getTargetPageToRender(adminPagesMap, pagePathKeys);
-  const title = targetPage.title;
+  const targetPage = getTargetPageToRender(adminPagesMap, pagePathKeys);
 
   useCurrentUser(props.currentUser != null ? JSON.parse(props.currentUser) : null);
-  useIsMailerSetup(props.isMailerSetup);
+  // useIsMailerSetup(props.isMailerSetup);
 
   // useSearchServiceConfigured(props.isSearchServiceConfigured);
   useIsSearchServiceReachable(props.isSearchServiceReachable);
@@ -251,13 +251,12 @@ const AdminMarkdownSettingsPage: NextPage<Props> = (props: Props) => {
         adminTwitterSecurityContainer,
       );
     }
-
   }
 
 
   return (
     <Provider inject={[...injectableContainers, ...adminSecurityContainers]}>
-      <AdminLayout title={title} selectedNavOpt={firstPath}>
+      <AdminLayout title={targetPage.title} selectedNavOpt={firstPath}>
         {targetPage.component}
       </AdminLayout>
     </Provider>

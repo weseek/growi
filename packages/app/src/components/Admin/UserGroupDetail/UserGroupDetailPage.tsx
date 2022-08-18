@@ -2,8 +2,7 @@ import React, {
   useState, useCallback, useEffect, useMemo,
 } from 'react';
 
-
-import ObjectId from 'bson-objectid';
+import { objectIdUtils } from '@growi/core';
 import { useTranslation } from 'next-i18next';
 import dynamic from 'next/dynamic';
 import { useRouter } from 'next/router';
@@ -27,6 +26,7 @@ const UserGroupPageList = dynamic(() => import('./UserGroupPageList'), { ssr: fa
 const UserGroupUserTable = dynamic(() => import('./UserGroupUserTable'), { ssr: false });
 
 const UserGroupUserModal = dynamic(() => import('./UserGroupUserModal').then(mod => mod.UserGroupUserModal), { ssr: false });
+
 const UserGroupDeleteModal = dynamic(() => import('../UserGroup/UserGroupDeleteModal').then(mod => mod.UserGroupDeleteModal), { ssr: false });
 const UserGroupDropdown = dynamic(() => import('../UserGroup/UserGroupDropdown').then(mod => mod.UserGroupDropdown), { ssr: false });
 const UserGroupForm = dynamic(() => import('../UserGroup/UserGroupForm').then(mod => mod.UserGroupForm), { ssr: false });
@@ -55,11 +55,14 @@ const UserGroupDetailPage = (props: Props): JSX.Element => {
   const [isDeleteModalShown, setDeleteModalShown] = useState<boolean>(false);
   const [isUserGroupUserModalShown, setIsUserGroupUserModalShown] = useState<boolean>(false);
 
+  const isLoading = currentUserGroup === undefined;
+  const notExistsUerGroup = !isLoading && currentUserGroup == null;
+
   useEffect(() => {
-    if ((currentUserGroupId != null && !ObjectId.isValid(currentUserGroupId)) || currentUserGroup === null) {
+    if (!objectIdUtils.isValidObjectId(currentUserGroupId) || notExistsUerGroup) {
       router.push('/admin/user-groups');
     }
-  }, [currentUserGroup, currentUserGroupId, router]);
+  }, [currentUserGroup, currentUserGroupId, notExistsUerGroup, router]);
 
 
   /*
