@@ -159,3 +159,9 @@
     max-width: 480px;
   }
 }
+
+.nologin.error {
+  .alert h2 {
+    line-height: 1em;
+  }
+}

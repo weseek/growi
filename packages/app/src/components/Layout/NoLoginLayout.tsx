@@ -36,9 +36,7 @@ export const NoLoginLayout = ({
                   </div>
                 </div>
 
-                <div className="col-md-12">
-                  {children}
-                </div>
+                {children}
 
               </div>
             </div>

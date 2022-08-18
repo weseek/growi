@@ -43,7 +43,7 @@ const LoginPage: NextPage<Props> = (props: Props) => {
 
   return (
     <NoLoginLayout title={useCustomTitle(props, 'GROWI')} className={classNames.join(' ')}>
-      <div id="page-wrapper">
+      <div id="login-page">
         <LoginForm objOfIsExternalAuthEnableds={props.enabledStrategies} isLocalStrategySetup={true} isLdapStrategySetup={true}
           isRegistrationEnabled={true} registrationWhiteList={props.registrationWhiteList} isPasswordResetEnabled={true} />
       </div>
