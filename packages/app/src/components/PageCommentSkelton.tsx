@@ -29,16 +29,16 @@ export const PageCommentSkelton = (props: PageCommentSkeltonProps): JSX.Element 
                   <div className='page-commnet-writer'>
                     <Skelton additionalClass='rounded-circle picture' roundedPill />
                   </div>
-                  <Skelton additionalClass={`${styles['page-comment-comment-body-skelton']} grw-skelton`} />
+                  <Skelton additionalClass="page-comment-comment-body-skelton grw-skelton" />
                 </div>
                 <div className='page-comment flex-column ml-4 ml-sm-5 mr-3'>
                   <div className='page-commnet-writer mt-3'>
                     <Skelton additionalClass='rounded-circle picture' roundedPill />
                   </div>
-                  <Skelton additionalClass={`${styles['page-comment-comment-body-skelton']} grw-skelton mt-3`} />
+                  <Skelton additionalClass="page-comment-comment-body-skelton grw-skelton mt-3" />
                 </div>
                 <div className="text-right">
-                  <Skelton additionalClass={`${styles['page-comment-button-skelton']} btn btn-outline-secondary btn-sm grw-skelton`} />
+                  <Skelton additionalClass="page-comment-button-skelton btn btn-outline-secondary btn-sm grw-skelton" />
                 </div>
               </div>
             </div>
@@ -47,7 +47,7 @@ export const PageCommentSkelton = (props: PageCommentSkeltonProps): JSX.Element 
                 <div className='comment-form-user'>
                   <Skelton additionalClass='rounded-circle picture' roundedPill />
                 </div>
-                <Skelton additionalClass={`${styles['page-comment-commenteditorlazyrenderer-body-skelton']} grw-skelton`} />
+                <Skelton additionalClass="page-comment-commenteditorlazyrenderer-body-skelton grw-skelton" />
               </div>
             </div>
           </div>

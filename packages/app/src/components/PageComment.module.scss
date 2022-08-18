@@ -12,39 +12,12 @@
     margin-top: 0.5em;
     border: none;
   }
-}
 
-// TODO: Refacotr Soft-coding
-.page-comment-comment-body-skelton :global {
-  position: relative;
-  height: 66px;
-  padding: 1em;
-  margin-left: 4.5em;
-  @include bs.media-breakpoint-down(xs) {
-    margin-left: 3.5em;
-  }
-}
-
-.page-comment-replycomments-body-skelton :global{
-  position: relative;
-  height: 66px;
-  padding: 1em;
-  margin-left: 4.5em;
-}
-
-.page-comment-button-skelton :global {
-  width: 70.0167px;
-  height: 26.3833px;
-  margin-top: 0.5em;
-  border: none;
-}
-
-.page-comment-commenteditorlazyrenderer-body-skelton :global {
-  position: relative;
-  padding: 2.258rem 2rem;
-  margin-left: 4.5em;
-  line-height: 1.5;
-  @include bs.media-breakpoint-down(xs) {
-    margin-left: 3.5em;
+  // TODO: Refacotr Soft-coding
+  .page-comment-button-skelton {
+    width: 70.0167px;
+    height: 26.3833px;
+    margin-top: 0.5em;
+    border: none;
   }
 }

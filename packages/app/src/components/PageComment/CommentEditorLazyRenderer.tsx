@@ -20,7 +20,7 @@ const CommentEditor = dynamic<CommentEditorProps>(() => import('./CommentEditor'
         <div className='comment-form-user'>
           <Skelton additionalClass='rounded-circle picture' roundedPill />
         </div>
-        <Skelton additionalClass={`${styles['page-comment-commenteditorlazyrenderer-body-skelton']} grw-skelton`} />
+        <Skelton additionalClass="page-comment-commenteditorlazyrenderer-body-skelton grw-skelton" />
       </div>
     </div>,
   });
