@@ -1,12 +1,10 @@
 import { SWRResponse } from 'swr';
 
-import { ICommentHasId } from '~/interfaces/comment';
 import { IPageToDeleteWithMeta, IPageToRenameWithMeta } from '~/interfaces/page';
 import {
   OnDuplicatedFunction, OnRenamedFunction, OnDeletedFunction, OnPutBackedFunction,
 } from '~/interfaces/ui';
 import { IUserGroupHasId } from '~/interfaces/user';
-
 
 import { useStaticSWR } from './use-static-swr';
 
