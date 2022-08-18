@@ -175,8 +175,8 @@ const UserGroupDetailPage = (props: Props): JSX.Element => {
     mutateUserGroupRelations();
   }, [currentUserGroupId, mutateUserGroupRelations]);
 
+  // Fix: invalid csrf token https://redmine.weseek.co.jp/issues/102704
   const removeUserByUsername = useCallback(async(username: string) => {
-    console.log({ username });
     try {
       await apiv3Delete(`/user-groups/${currentUserGroupId}/users/${username}`);
       toastSuccess(`Removed "${xss.process(username)}" from "${xss.process(currentUserGroup?.name)}"`);
