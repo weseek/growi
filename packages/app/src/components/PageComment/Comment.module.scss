@@ -84,4 +84,15 @@
       height: 16px;
     }
   }
+
+  // TODO: Refacotr Soft-coding
+  .page-comment-comment-body-skelton {
+    position: relative;
+    height: 66px;
+    padding: 1em;
+    margin-left: 4.5em;
+    @include bs.media-breakpoint-down(xs) {
+      margin-left: 3.5em;
+    }
+  }
 }

@@ -19,10 +19,10 @@ import { CommentEditorProps } from './PageComment/CommentEditor';
 import { CommentEditorLazyRenderer } from './PageComment/CommentEditorLazyRenderer';
 import { DeleteCommentModal } from './PageComment/DeleteCommentModal';
 import { ReplyComments } from './PageComment/ReplyComments';
+import { PageCommentSkelton } from './PageCommentSkelton';
 
 import styles from './PageComment.module.scss';
 
-// TODO: Update Skelton
 const CommentEditor = dynamic<CommentEditorProps>(() => import('./PageComment/CommentEditor').then(mod => mod.CommentEditor), { ssr: false });
 
 
@@ -123,16 +123,23 @@ export const PageComment: FC<PageCommentProps> = memo((props:PageCommentProps): 
     });
   }, []);
 
-  if (commentsFromOldest == null || commentsExceptReply == null) return <></>;
-
   if (hideIfEmpty && comments?.length === 0) {
     return <></>;
   }
-  if (rendererOptions == null || currentPagePath == null || currentPage == null) {
-    return <></>;
+
+  let commentTitleClasses = 'border-bottom py-3 mb-3';
+  commentTitleClasses = titleAlign != null ? `${commentTitleClasses} text-${titleAlign}` : `${commentTitleClasses} text-center`;
+
+  if (commentsFromOldest == null || commentsExceptReply == null || rendererOptions == null || currentPagePath == null || currentPage == null) {
+    if (hideIfEmpty) {
+      return <></>;
+    }
+    return (
+      <PageCommentSkelton commentTitleClasses={commentTitleClasses}/>
+    );
   }
 
-  const generateCommentInnerElement = (comment: ICommentHasId) => (
+  const generateCommentElement = (comment: ICommentHasId) => (
     <Comment
       comment={comment}
       isReadOnly={isReadOnly}
@@ -145,7 +152,7 @@ export const PageComment: FC<PageCommentProps> = memo((props:PageCommentProps): 
     />
   );
 
-  const generateAllRepliesElement = (replyComments: ICommentHasIdList) => (
+  const generateReplyCommentElements = (replyComments: ICommentHasIdList) => (
     <ReplyComments
       isReadOnly={isReadOnly}
       replyList={replyComments}
@@ -158,11 +165,9 @@ export const PageComment: FC<PageCommentProps> = memo((props:PageCommentProps): 
     />
   );
 
-  let commentTitleClasses = 'border-bottom py-3 mb-3';
-  commentTitleClasses = titleAlign != null ? `${commentTitleClasses} text-${titleAlign}` : `${commentTitleClasses} text-center`;
-
   return (
     <>
+      {/* TODO: Check the comment.html CSS */}
       <div className={`${styles['page-comment-styles']} page-comments-row comment-list`}>
         <div className="container-lg">
           <div className="page-comments">
@@ -178,11 +183,8 @@ export const PageComment: FC<PageCommentProps> = memo((props:PageCommentProps): 
 
                 return (
                   <div key={comment._id} className={commentThreadClasses}>
-                    {/* display comment */}
-                    {generateCommentInnerElement(comment)}
-                    {/* display reply comment */}
-                    {hasReply && generateAllRepliesElement(allReplies[comment._id])}
-                    {/* display reply button */}
+                    {generateCommentElement(comment)}
+                    {hasReply && generateReplyCommentElements(allReplies[comment._id])}
                     {(!isReadOnly && !showEditorIds.has(comment._id)) && (
                       <div className="text-right">
                         <Button
@@ -198,7 +200,6 @@ export const PageComment: FC<PageCommentProps> = memo((props:PageCommentProps): 
                         </Button>
                       </div>
                     )}
-                    {/* display reply editor */}
                     {(!isReadOnly && showEditorIds.has(comment._id)) && (
                       <CommentEditor
                         rendererOptions={rendererOptions}
