@@ -19,15 +19,10 @@ import { CommentEditorProps } from './PageComment/CommentEditor';
 import { CommentEditorLazyRenderer } from './PageComment/CommentEditorLazyRenderer';
 import { DeleteCommentModal } from './PageComment/DeleteCommentModal';
 import { ReplyComments } from './PageComment/ReplyComments';
-// import { Skelton } from './Skelton';
 import { PageCommentSkelton } from './PageCommentSkelton';
 
 import styles from './PageComment.module.scss';
-// import CommentStyles from './PageComment/Comment.module.scss';
-// import CommentEditorStyles from './PageComment/CommentEditor.module.scss';
 
-
-// TODO: Update Skelton
 const CommentEditor = dynamic<CommentEditorProps>(() => import('./PageComment/CommentEditor').then(mod => mod.CommentEditor), { ssr: false });
 
 

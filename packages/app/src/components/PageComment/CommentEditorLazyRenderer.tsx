@@ -9,7 +9,6 @@ import { Skelton } from '../Skelton';
 
 import { CommentEditorProps } from './CommentEditor';
 
-import styles from '../PageComment.module.scss';
 import CommentEditorStyles from './CommentEditor.module.scss';
 
 const CommentEditor = dynamic<CommentEditorProps>(() => import('./CommentEditor').then(mod => mod.CommentEditor),
