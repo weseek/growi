@@ -6,7 +6,7 @@ import {
 } from 'reactstrap';
 
 import { IUserGroupHasId } from '~/interfaces/user';
-import { SearchTypes, SearchType } from '~/interfaces/user-group-response';
+import { SearchTypes, SearchType } from '~/interfaces/user-group';
 
 import CheckBoxForSerchUserOption from './CheckBoxForSerchUserOption';
 import RadioButtonForSerchUserOption from './RadioButtonForSerchUserOption';

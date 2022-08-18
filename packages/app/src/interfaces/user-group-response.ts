@@ -1,5 +1,9 @@
+import { HasObjectId, Ref } from '@growi/core';
+
 import { IPageHasId } from './page';
-import { IUserGroupHasId, IUserGroupRelationHasId, IUserGroupRelationHasIdPopulatedUser } from './user';
+import {
+  IUser, IUserGroup, IUserGroupHasId, IUserGroupRelationHasId,
+} from './user';
 
 export type UserGroupResult = {
   userGroup: IUserGroupHasId,
@@ -38,10 +42,8 @@ export type AncestorUserGroupsResult = {
   ancestorUserGroups: IUserGroupHasId[],
 }
 
-export const SearchTypes = {
-  FORWARD: 'forward',
-  PARTIAL: 'partial',
-  BACKWORD: 'backword',
-} as const;
-
-export type SearchType = typeof SearchTypes[keyof typeof SearchTypes];
+export type IUserGroupRelationHasIdPopulatedUser = {
+  relatedGroup: Ref<IUserGroup>,
+  relatedUser: IUser & HasObjectId,
+  createdAt: Date,
+} & HasObjectId;

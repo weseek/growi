@@ -12,7 +12,7 @@ import {
   apiv3Get, apiv3Put, apiv3Delete, apiv3Post,
 } from '~/client/util/apiv3-client';
 import { IUserGroup, IUserGroupHasId } from '~/interfaces/user';
-import { SearchTypes, SearchType } from '~/interfaces/user-group-response';
+import { SearchTypes, SearchType } from '~/interfaces/user-group';
 import Xss from '~/services/xss';
 import { useIsAclEnabled } from '~/stores/context';
 import { useUpdateUserGroupConfirmModal } from '~/stores/modal';
