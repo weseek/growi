@@ -1,5 +1,3 @@
-import EventEmitter from 'events';
-
 import { HtmlElementNode } from 'rehype-toc';
 import { Key, SWRResponse } from 'swr';
 import useSWRImmutable from 'swr/immutable';
@@ -241,10 +239,6 @@ export const useIsAllReplyShown = (initialData?: boolean): SWRResponse<boolean, 
   return useStaticSWR('isAllReplyShown', initialData);
 };
 
-export const useCurrentPageTocNode = (): SWRResponse<HtmlElementNode, any> => {
-  return useStaticSWR('currentPageTocNode');
-};
-
 export const useIsBlinkedHeaderAtBoot = (initialData?: boolean): SWRResponse<boolean, Error> => {
   return useStaticSWR('isBlinkedAtBoot', initialData);
 };
@@ -286,4 +280,10 @@ export const useIsEditable = (): SWRResponse<boolean, Error> => {
       return (!isNotCreatable && !isTrashPage && !isGuestUser);
     },
   );
+};
+
+export const useCurrentPageTocNode = (): SWRResponse<HtmlElementNode, any> => {
+  const { data: currentPagePath } = useCurrentPagePath();
+
+  return useStaticSWR(['currentPageTocNode', currentPagePath]);
 };

@@ -21,14 +21,21 @@ $light: lighten($secondary, 10%);
 // $dark: #;
 
 .growi:not(.login-page) {
-  #wrapper > .navbar {
-    background-image: url(/images/themes/halloween/halloween-navbar.jpg);
-  }
-
   // add background-image
-  #page-wrapper,
   .page-editor-preview-container {
     background-image: url('/images/themes/halloween/halloween.jpg');
+  }
+}
+
+.theme :global {
+  .grw-bg-image-wrapper {
+    position: fixed;
+    width: 100%;
+    height: 100%;
+  }
+
+  .grw-navbar {
+    background-image: url('/images/themes/halloween/halloween-navbar.jpg') !important;
   }
 }
 

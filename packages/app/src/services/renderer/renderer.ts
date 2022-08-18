@@ -1,3 +1,4 @@
+import growiPlugin from '@growi/remark-growi-plugin';
 import { ReactMarkdownOptions } from 'react-markdown/lib/react-markdown';
 import katex from 'rehype-katex';
 import raw from 'rehype-raw';
@@ -9,12 +10,17 @@ import emoji from 'remark-emoji';
 import gfm from 'remark-gfm';
 import math from 'remark-math';
 
+
 import { CodeBlock } from '~/components/ReactMarkdownComponents/CodeBlock';
 import { Header } from '~/components/ReactMarkdownComponents/Header';
 import { NextLink } from '~/components/ReactMarkdownComponents/NextLink';
 import { RendererConfig } from '~/interfaces/services/renderer';
-import { addClass } from '~/services/renderer/rehype-plugins/add-class';
 import loggerFactory from '~/utils/logger';
+
+import { addClass } from './rehype-plugins/add-class';
+import { relativeLinks } from './rehype-plugins/relative-links';
+import { relativeLinksByPukiwikiLikeLinker } from './rehype-plugins/relative-links-by-pukiwiki-like-linker';
+import { pukiwikiLikeLinker } from './remark-plugins/pukiwiki-like-linker';
 
 // import CsvToTable from './PreProcessor/CsvToTable';
 // import EasyGrid from './PreProcessor/EasyGrid';
@@ -212,15 +218,18 @@ const logger = loggerFactory('growi:util:GrowiRenderer');
 
 export type RendererOptions = Partial<ReactMarkdownOptions>;
 
-export interface ReactMarkdownOptionsGenerator {
-  (config: RendererConfig): RendererOptions
-}
 
-const generateCommonOptions: ReactMarkdownOptionsGenerator = (config: RendererConfig): RendererOptions => {
+const generateCommonOptions = (pagePath: string|undefined, config: RendererConfig): RendererOptions => {
   return {
-    remarkPlugins: [gfm],
+    remarkPlugins: [
+      gfm,
+      pukiwikiLikeLinker,
+      growiPlugin,
+    ],
     rehypePlugins: [
       slug,
+      [relativeLinksByPukiwikiLikeLinker, { pagePath }],
+      [relativeLinks, { pagePath }],
       raw,
       [sanitize, {
         ...sanitizeDefaultSchema,
@@ -243,11 +252,12 @@ const generateCommonOptions: ReactMarkdownOptionsGenerator = (config: RendererCo
 };
 
 export const generateViewOptions = (
+    pagePath: string,
     config: RendererConfig,
-    storeTocNode: (node: HtmlElementNode) => void,
+    storeTocNode: (toc: HtmlElementNode) => void,
 ): RendererOptions => {
 
-  const options = generateCommonOptions(config);
+  const options = generateCommonOptions(pagePath, config);
 
   const { remarkPlugins, rehypePlugins, components } = options;
 
@@ -279,7 +289,11 @@ export const generateViewOptions = (
           });
         };
         replacer([toc]); // replace <ol> to <ul>
-        storeTocNode(toc); // store tocNode to global state with swr
+
+        // For storing tocNode to global state with swr
+        // search: tocRef.current
+        storeTocNode(toc);
+
         return false; // not show toc in body
       },
     }]);
@@ -312,7 +326,7 @@ export const generateViewOptions = (
 
 export const generateTocOptions = (config: RendererConfig, tocNode: HtmlElementNode | undefined): RendererOptions => {
 
-  const options = generateCommonOptions(config);
+  const options = generateCommonOptions(undefined, config);
 
   const { remarkPlugins, rehypePlugins } = options;
 
@@ -334,8 +348,8 @@ export const generateTocOptions = (config: RendererConfig, tocNode: HtmlElementN
   return options;
 };
 
-export const generatePreviewOptions: ReactMarkdownOptionsGenerator = (config: RendererConfig): RendererOptions => {
-  const options = generateCommonOptions(config);
+export const generatePreviewOptions = (config: RendererConfig): RendererOptions => {
+  const options = generateCommonOptions(undefined, config);
 
   // // Add configurers for preview
   // renderer.addConfigurers([
@@ -350,8 +364,8 @@ export const generatePreviewOptions: ReactMarkdownOptionsGenerator = (config: Re
   return options;
 };
 
-export const generateCommentPreviewOptions: ReactMarkdownOptionsGenerator = (config: RendererConfig): RendererOptions => {
-  const options = generateCommonOptions(config);
+export const generateCommentPreviewOptions = (config: RendererConfig): RendererOptions => {
+  const options = generateCommonOptions(undefined, config);
   const { remarkPlugins } = options;
 
   // add remark plugins
@@ -372,8 +386,8 @@ export const generateCommentPreviewOptions: ReactMarkdownOptionsGenerator = (con
   return options;
 };
 
-export const generateOthersOptions: ReactMarkdownOptionsGenerator = (config: RendererConfig): RendererOptions => {
-  const options = generateCommonOptions(config);
+export const generateOthersOptions = (config: RendererConfig): RendererOptions => {
+  const options = generateCommonOptions(undefined, config);
 
   // renderer.addConfigurers([
   //   new TableConfigurer(),

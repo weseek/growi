@@ -35,6 +35,7 @@ import { PageModel, PageDocument } from '~/server/models/page';
 import { PageRedirectModel } from '~/server/models/page-redirect';
 import { UserUISettingsModel } from '~/server/models/user-ui-settings';
 import { useSWRxCurrentPage, useSWRxIsGrantNormalized, useSWRxPageInfo } from '~/stores/page';
+import { useRedirectFrom } from '~/stores/page-redirect';
 import {
   usePreferDrawerModeByUser, usePreferDrawerModeOnEditByUser, useSidebarCollapsed, useCurrentSidebarContents, useCurrentProductNavWidth, useSelectedGrant,
 } from '~/stores/ui';
@@ -191,12 +192,12 @@ const GrowiPage: NextPage<Props> = (props: Props) => {
   useCurrentProductNavWidth(props.userUISettings?.currentProductNavWidth);
 
   // page
-  useCurrentPagePath(props.currentPathname);
   useIsLatestRevision(props.isLatestRevision);
   // useOwnerOfCurrentPage(props.pageUser != null ? JSON.parse(props.pageUser) : null);
   useIsForbidden(props.isForbidden);
   useIsNotFound(props.isNotFound);
   useIsNotCreatable(props.IsNotCreatable);
+  useRedirectFrom(props.redirectFrom);
   // useIsTrashPage(_isTrashPage(props.currentPagePath));
   // useShared();
   // useShareLinkId(props.shareLinkId);
@@ -290,7 +291,7 @@ const GrowiPage: NextPage<Props> = (props: Props) => {
       </Head>
       {/* <BasicLayout title={useCustomTitle(props, t('GROWI'))} className={classNames.join(' ')}> */}
       <BasicLayout title={useCustomTitle(props, 'GROWI')} className={classNames.join(' ')} expandContainer={props.isContainerFluid}>
-        <header className="py-0">
+        <header className="py-0 position-relative">
           <GrowiContextualSubNavigation isLinkSharingDisabled={props.disableLinkSharing} />
         </header>
         <div className="d-edit-none">
