@@ -1,3 +1,5 @@
+import React from 'react';
+
 import { UserPicture } from '@growi/ui';
 import { format } from 'date-fns';
 import {
