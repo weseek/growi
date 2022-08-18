@@ -98,6 +98,7 @@ const AdminMarkdownSettingsPage: NextPage<Props> = (props: Props) => {
     userGroupId = isValidObjectId(secondPath) ? secondPath : undefined;
   }
 
+  // TODO: refactoring adminPagesMap => https://redmine.weseek.co.jp/issues/102694
   const adminPagesMap = {
     home: {
       title: useCustomTitle(props, t('Wiki Management Home Page')),
