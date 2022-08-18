@@ -170,7 +170,7 @@ const AdminMarkdownSettingsPage: NextPage<Props> = (props: Props) => {
   const title = targetPage.title;
 
   useCurrentUser(props.currentUser != null ? JSON.parse(props.currentUser) : null);
-  useIsMailerSetup(props.isMailerSetup);
+  // useIsMailerSetup(props.isMailerSetup);
 
   // useSearchServiceConfigured(props.isSearchServiceConfigured);
   useIsSearchServiceReachable(props.isSearchServiceReachable);

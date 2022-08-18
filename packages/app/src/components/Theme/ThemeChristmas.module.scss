@@ -146,8 +146,8 @@ $color-link-wiki-hover: lighten($color-link-wiki, 15%);
       }
     }
 
-    .login-header,
-    .login-dialog {
+    .noLogin-header,
+    .noLogin-dialog {
       background-color: rgba(#ccc, 0.5);
     }
     .link-switch {
