@@ -12,7 +12,7 @@ import {
   apiv3Get, apiv3Put, apiv3Delete, apiv3Post,
 } from '~/client/util/apiv3-client';
 import { IUserGroup, IUserGroupHasId } from '~/interfaces/user';
-import { SearchTypes, SearchType } from '~/interfaces/user-group';
+import { SearchTypes, SearchType } from '~/interfaces/user-group-response';
 import Xss from '~/services/xss';
 import { useIsAclEnabled } from '~/stores/context';
 import { useUpdateUserGroupConfirmModal } from '~/stores/modal';
@@ -178,7 +178,7 @@ const UserGroupDetailPage = (props: Props): JSX.Element => {
     mutateUserGroupRelations();
   }, [currentUserGroupId, mutateUserGroupRelations]);
 
-  // Fix: invalid csrf token https://redmine.weseek.co.jp/issues/102704
+  // Fix: invalid csrf token => https://redmine.weseek.co.jp/issues/102704
   const removeUserByUsername = useCallback(async(username: string) => {
     try {
       await apiv3Delete(`/user-groups/${currentUserGroupId}/users/${username}`);
@@ -186,7 +186,6 @@ const UserGroupDetailPage = (props: Props): JSX.Element => {
       mutateUserGroupRelations();
     }
     catch (err) {
-      // eslint-disable-next-line max-len
       toastError(new Error(`Unable to remove "${xss.process(username)}" from "${xss.process(currentUserGroup?.name)}"`));
     }
   }, [currentUserGroup?.name, currentUserGroupId, mutateUserGroupRelations, xss]);
