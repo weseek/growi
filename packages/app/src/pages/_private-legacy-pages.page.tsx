@@ -6,6 +6,7 @@ import dynamic from 'next/dynamic';
 import Head from 'next/head';
 
 import { BasicLayout } from '~/components/Layout/BasicLayout';
+import PrivateLegacyPages from '~/components/PrivateLegacyPages';
 import { CrowiRequest } from '~/interfaces/crowi-request';
 import { RendererConfig } from '~/interfaces/services/renderer';
 import { ISidebarConfig } from '~/interfaces/sidebar-config';
@@ -21,7 +22,6 @@ import {
   useCurrentSidebarContents, useCurrentProductNavWidth,
 } from '~/stores/ui';
 
-import PrivateLegacyPages from '~/components/PrivateLegacyPages';
 
 import {
   CommonProps, getNextI18NextConfig, getServerSideCommonProps, useCustomTitle,
@@ -114,7 +114,7 @@ async function injectUserUISettings(context: GetServerSidePropsContext, props: P
   }
 }
 
-async function injectServerConfigurations(context: GetServerSidePropsContext, props: Props): void {
+async function injectServerConfigurations(context: GetServerSidePropsContext, props: Props): Promise<void> {
   const req: CrowiRequest = context.req as CrowiRequest;
   const { crowi } = req;
   const { configManager, searchService } = crowi;
