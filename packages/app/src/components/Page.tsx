@@ -1,15 +1,15 @@
 import React, {
+  useCallback,
   useEffect, useRef, useState,
 } from 'react';
 
 import dynamic from 'next/dynamic';
-import PropTypes from 'prop-types';
 // import { debounce } from 'throttle-debounce';
 
 import { blinkSectionHeaderAtBoot } from '~/client/util/blink-section-header';
 // import { getOptionsToSave } from '~/client/util/editor';
 import {
-  useIsGuestUser, useIsBlinkedHeaderAtBoot,
+  useIsGuestUser, useIsBlinkedHeaderAtBoot, useCurrentPageTocNode,
 } from '~/stores/context';
 import {
   useSWRxSlackChannels, useIsSlackEnabled, usePageTagsForEditors, useIsEnabledUnsavedWarning,
@@ -22,6 +22,7 @@ import {
 import loggerFactory from '~/utils/logger';
 
 import RevisionRenderer from './Page/RevisionRenderer';
+import { HtmlElementNode } from 'rehype-toc';
 
 // TODO: import dynamically
 // import MarkdownTable from '~/client/models/MarkdownTable';
@@ -30,9 +31,28 @@ import RevisionRenderer from './Page/RevisionRenderer';
 
 const logger = loggerFactory('growi:Page');
 
-class PageSubstance extends React.Component {
+type PageSubstanceProps = {
+  rendererOptions: any,
+  page: any,
+  pageTags?: string[],
+  editorMode: string,
+  isGuestUser: boolean,
+  isMobile?: boolean,
+  isSlackEnabled: boolean,
+  slackChannels: string,
+};
 
-  constructor(props) {
+class PageSubstance extends React.Component<PageSubstanceProps> {
+
+  gridEditModal: any;
+
+  linkEditModal: any;
+
+  handsontableModal: any;
+
+  drawioModal: any;
+
+  constructor(props: PageSubstanceProps) {
     super(props);
 
     this.state = {
@@ -138,7 +158,7 @@ class PageSubstance extends React.Component {
     // }
   }
 
-  render() {
+  override render() {
     const {
       rendererOptions, page, isMobile, isGuestUser,
     } = this.props;
@@ -171,29 +191,26 @@ class PageSubstance extends React.Component {
 
 }
 
-PageSubstance.propTypes = {
-  rendererOptions: PropTypes.object.isRequired,
-
-  page: PropTypes.any.isRequired,
-  pageTags:  PropTypes.arrayOf(PropTypes.string),
-  editorMode: PropTypes.string.isRequired,
-  isGuestUser: PropTypes.bool.isRequired,
-  isMobile: PropTypes.bool,
-  isSlackEnabled: PropTypes.bool.isRequired,
-  slackChannels: PropTypes.string.isRequired,
-};
-
 export const Page = (props) => {
+  // Pass tocRef to generateViewOptions (=> rehypePlugin => customizeTOC) to call mutateCurrentPageTocNode when tocRef.current changes.
+  // The toc node passed by customizeTOC is assigned to tocRef.current.
+  const tocRef = useRef<HtmlElementNode>();
+
+  const storeTocNodeHandler = useCallback((toc: HtmlElementNode) => {
+    tocRef.current = toc;
+  }, []);
+
   const { data: currentPage } = useSWRxCurrentPage();
   const { data: editorMode } = useEditorMode();
   const { data: isGuestUser } = useIsGuestUser();
   const { data: isMobile } = useIsMobile();
   const { data: slackChannelsData } = useSWRxSlackChannels(currentPage?.path);
   const { data: isSlackEnabled } = useIsSlackEnabled();
-  const { data: pageTags } = usePageTagsForEditors();
-  const { data: rendererOptions } = useViewOptions();
+  const { data: pageTags } = usePageTagsForEditors(null); // TODO: pass pageId
+  const { data: rendererOptions } = useViewOptions(storeTocNodeHandler);
   const { mutate: mutateIsEnabledUnsavedWarning } = useIsEnabledUnsavedWarning();
   const { data: isBlinkedAtBoot, mutate: mutateBlinkedAtBoot } = useIsBlinkedHeaderAtBoot();
+  const { mutate: mutateCurrentPageTocNode } = useCurrentPageTocNode();
 
   const pageRef = useRef(null);
 
@@ -205,6 +222,11 @@ export const Page = (props) => {
     blinkSectionHeaderAtBoot();
     mutateBlinkedAtBoot(true);
   }, [isBlinkedAtBoot, mutateBlinkedAtBoot]);
+
+  useEffect(() => {
+    mutateCurrentPageTocNode(tocRef.current);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [mutateCurrentPageTocNode, tocRef.current]); // include tocRef.current to call mutateCurrentPageTocNode when tocRef.current changes
 
   // // set handler to open DrawioModal
   // useEffect(() => {
@@ -253,7 +275,7 @@ export const Page = (props) => {
       isMobile={isMobile}
       isSlackEnabled={isSlackEnabled}
       pageTags={pageTags}
-      slackChannels={slackChannelsData.toString()}
+      slackChannels={slackChannelsData?.toString()}
       mutateIsEnabledUnsavedWarning={mutateIsEnabledUnsavedWarning}
     />
   );
