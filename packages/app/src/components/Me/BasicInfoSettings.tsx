@@ -1,9 +1,10 @@
 import React from 'react';
 
-import { useTranslation } from 'next-i18next';
+import { useTranslation, i18n } from 'next-i18next';
+
+import { i18n as i18nConfig } from '^/config/next-i18next.config';
 
 import { toastSuccess, toastError } from '~/client/util/apiNotification';
-// import { localeMetadatas } from '~/client/util/i18n';
 import { useRegistrationWhiteList } from '~/stores/context';
 import { usePersonalSettings } from '~/stores/personal-settings';
 
@@ -104,23 +105,27 @@ export const BasicInfoSettings = (): JSX.Element => {
       <div className="form-group row">
         <label className="text-left text-md-right col-md-3 col-form-label">{t('Language')}</label>
         <div className="col-md-6">
-          {/*
           {
-            localeMetadatas.map(meta => (
-              <div key={meta.id} className="custom-control custom-radio custom-control-inline">
-                <input
-                  type="radio"
-                  id={`radioLang${meta.id}`}
-                  className="custom-control-input"
-                  name="userForm[lang]"
-                  checked={personalSettingsInfo?.lang === meta.id}
-                  onChange={() => changePersonalSettingsHandler({ lang: meta.id })}
-                />
-                <label className="custom-control-label" htmlFor={`radioLang${meta.id}`}>{meta.displayName}</label>
-              </div>
-            ))
+            i18nConfig.locales.map((locale) => {
+              if (i18n == null) { return }
+              const fixedT = i18n.getFixedT(locale);
+              i18n.loadLanguages(i18nConfig.locales);
+
+              return (
+                <div key={locale} className="custom-control custom-radio custom-control-inline">
+                  <input
+                    type="radio"
+                    id={`radioLang${locale}`}
+                    className="custom-control-input"
+                    name="userForm[lang]"
+                    checked={personalSettingsInfo?.lang === locale}
+                    onChange={() => changePersonalSettingsHandler({ lang: locale })}
+                  />
+                  <label className="custom-control-label" htmlFor={`radioLang${locale}`}>{fixedT('meta.display_name')}</label>
+                </div>
+              );
+            })
           }
-          */}
         </div>
       </div>
       <div className="form-group row">

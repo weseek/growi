@@ -19,7 +19,7 @@ type Props = {
   onHide?: () => Promise<void> | void
 };
 
-const UserGroupModal: FC<Props> = (props: Props) => {
+export const UserGroupModal: FC<Props> = (props: Props) => {
 
   const { t } = useTranslation();
 
@@ -116,5 +116,3 @@ const UserGroupModal: FC<Props> = (props: Props) => {
     </Modal>
   );
 };
-
-export default UserGroupModal;
