@@ -1,5 +1,3 @@
-import { HastNode } from 'hast-util-select';
-
 import { XssOptionConfig } from '~/services/xss/xssOption';
 
 // export type GrowiHydratedEnv = {
@@ -20,5 +18,3 @@ export type RendererConfig = {
   plantumlUri: string | null,
   blockdiagUri: string | null,
 } & XssOptionConfig;
-
-export type RehypePlugin = (option: any) => (node: HastNode) => void

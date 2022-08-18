@@ -1,14 +1,22 @@
+import { HtmlElementNode } from 'rehype-toc';
 import { Key, SWRResponse } from 'swr';
 import useSWRImmutable from 'swr/immutable';
 
+import { RendererConfig } from '~/interfaces/services/renderer';
 import {
-  ReactMarkdownOptionsGenerator, RendererOptions,
+  RendererOptions,
   generatePreviewOptions, generateCommentPreviewOptions, generateOthersOptions,
   generateViewOptions, generateTocOptions,
 } from '~/services/renderer/renderer';
 
 
-import { useCurrentPageTocNode, useRendererConfig } from './context';
+import {
+  useCurrentPagePath, useCurrentPageTocNode, useRendererConfig,
+} from './context';
+
+interface ReactMarkdownOptionsGenerator {
+  (config: RendererConfig): RendererOptions
+}
 
 // The base hook with common processes
 const _useOptionsBase = (
@@ -32,20 +40,37 @@ const _useOptionsBase = (
   return useSWRImmutable<RendererOptions, Error>(key);
 };
 
-export const useViewOptions = (): SWRResponse<RendererOptions, Error> => {
-  const key = 'viewOptions';
+export const useViewOptions = (storeTocNodeHandler: (toc: HtmlElementNode) => void): SWRResponse<RendererOptions, Error> => {
+  const { data: currentPagePath } = useCurrentPagePath();
+  const { data: rendererConfig } = useRendererConfig();
 
-  const { mutate: storeTocNode } = useCurrentPageTocNode();
+  const isAllDataValid = currentPagePath != null && rendererConfig != null;
 
-  return _useOptionsBase(key, config => generateViewOptions(config, storeTocNode));
+  const key = isAllDataValid
+    ? ['viewOptions', currentPagePath, rendererConfig]
+    : null;
+
+  return useSWRImmutable<RendererOptions, Error>(
+    key,
+    (rendererId, currentPagePath, rendererConfig) => generateViewOptions(currentPagePath, rendererConfig, storeTocNodeHandler),
+  );
 };
 
 export const useTocOptions = (): SWRResponse<RendererOptions, Error> => {
-  const key = 'tocOptions';
-
+  const { data: currentPagePath } = useCurrentPagePath();
+  const { data: rendererConfig } = useRendererConfig();
   const { data: tocNode } = useCurrentPageTocNode();
 
-  return _useOptionsBase(key, config => generateTocOptions(config, tocNode));
+  const isAllDataValid = rendererConfig != null;
+
+  const key = isAllDataValid
+    ? ['tocOptions', currentPagePath, tocNode, rendererConfig]
+    : null;
+
+  return useSWRImmutable<RendererOptions, Error>(
+    key,
+    (rendererId, path, tocNode, rendererConfig) => generateTocOptions(rendererConfig, tocNode),
+  );
 };
 
 export const usePreviewOptions = (): SWRResponse<RendererOptions, Error> => {

@@ -8,10 +8,10 @@ import { Skelton } from './Skelton';
 
 import styles from './PageContentFooter.module.scss';
 
-export const PageContentFooter = memo((): JSX.Element => {
+const AuthorInfo = dynamic(() => import('./Navbar/AuthorInfo'),
+  { ssr: false, loading: () => <Skelton additionalClass={`${styles['page-content-footer-skelton']} mb-3`} /> });
 
-  const AuthorInfo = dynamic(() => import('./Navbar/AuthorInfo'),
-    { ssr: false, loading: () => <Skelton additionalClass={`${styles['page-content-footer-skelton']} mb-3`} /> });
+export const PageContentFooter = memo((): JSX.Element => {
 
   const { data: page } = useSWRxCurrentPage();
 
@@ -20,7 +20,6 @@ export const PageContentFooter = memo((): JSX.Element => {
   }
 
   return (
-    // TODO: page-content-footer, scss module import and global import.
     <div className={`${styles['page-content-footer']} page-content-footer py-4 d-edit-none d-print-none}`}>
       <div className="grw-container-convertible">
         <div className="page-meta">

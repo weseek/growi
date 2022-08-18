@@ -3,6 +3,7 @@ import React, { useEffect, useState } from 'react';
 import { UserPicture } from '@growi/ui';
 import { format } from 'date-fns';
 import { useTranslation } from 'next-i18next';
+import dynamic from 'next/dynamic';
 import { UncontrolledTooltip } from 'reactstrap';
 
 import { RendererOptions } from '~/services/renderer/renderer';
@@ -15,9 +16,13 @@ import RevisionRenderer from '../Page/RevisionRenderer';
 import Username from '../User/Username';
 
 import { CommentControl } from './CommentControl';
-import { CommentEditor } from './CommentEditor';
+import { CommentEditorProps } from './CommentEditor';
 
 import styles from './Comment.module.scss';
+
+// TODO: Update Skelton
+const CommentEditor = dynamic<CommentEditorProps>(() => import('./CommentEditor').then(mod => mod.CommentEditor), { ssr: false });
+
 
 type CommentProps = {
   comment: ICommentHasId,

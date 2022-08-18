@@ -1,11 +1,13 @@
 import React from 'react';
 
+
 type CommentControlProps = {
   onClickEditBtn: () => void,
   onClickDeleteBtn: () => void,
 }
 
 export const CommentControl = (props: CommentControlProps): JSX.Element => {
+
   const { onClickEditBtn, onClickDeleteBtn } = props;
 
   return (
@@ -19,4 +21,5 @@ export const CommentControl = (props: CommentControlProps): JSX.Element => {
       </button>
     </div>
   );
+
 };
