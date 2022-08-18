@@ -53,7 +53,7 @@ class InstallerForm extends React.Component {
       : <span><i className="icon-fw icon-ban" />{ this.props.t('installer.unavaliable_user_id') }</span>;
 
     return (
-      <div data-testid="installerForm" className={`login-dialog p-3 mx-auto${hasErrorClass}`}>
+      <div data-testid="installerForm" className={`noLogin-dialog p-3 mx-auto${hasErrorClass}`}>
         <div className="row">
           <div className="col-md-12">
             <p className="alert alert-success">
