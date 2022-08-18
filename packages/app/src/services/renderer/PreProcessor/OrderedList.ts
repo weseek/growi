@@ -2,27 +2,34 @@ export default class OrderedList {
 
   process(markdown) {
     const orderedListRE = /^(\s*)(\d+\.)(\s)(.*)+?/gm;
+    const markdownTextGroupRE = /((?:[^\n][\n]?)+)/gm;
 
-    const itemList = markdown.match(orderedListRE);
-    const itemListData = itemList?.map((item) => {
-      const indent = item.split(/[\d]/)[0].length;
-      const itemNumber = item.trim().split('.')[0];
-      const content = item.split(/\d.\s/)[1];
-      const level = Math.round(indent / 4) + 1;
-      return {
-        number: itemNumber,
-        content,
-        level,
-      };
-    });
+    const getItemListData = (itemList) => {
+      const isValidList = itemList[0].split(/[\d]/)[0].length === 0;
+      if (!isValidList) {
+        return;
+      }
+      return itemList.map((item) => {
+        const indent = item.split(/[\d]/)[0].length;
+        const itemNumber = item.trim().split('.')[0];
+        const content = item.split(/\d.\s/)[1];
+        const level = Math.round(indent / 4) + 1;
+        return {
+          number: itemNumber,
+          content,
+          level,
+        };
+      });
+    };
 
     const getNestedOrderedListData = (itemListData) => {
       const result:any[] = [];
-      const levels:any[] = [result];
-      if (itemListData.length > 0) {
+      const listItemNode:any[] = [result];
+      if (itemListData?.length > 0) {
         itemListData.forEach((item) => {
-          console.log(item);
-          levels[item.level - 1].push({ ...item, children: levels[item.level] = [] });
+          if (listItemNode[item.level - 1] != null) {
+            listItemNode[item.level - 1].push({ ...item, children: listItemNode[item.level] = [] });
+          }
         });
         return result;
       }
@@ -41,16 +48,27 @@ export default class OrderedList {
       return element;
 
     };
-    const nestedItemListData = getNestedOrderedListData(itemListData);
-    const getMarkdownRepacement = () => {
+
+    const replaceMarkdownWithHtml = (nestedItemListData) => {
       let occurrence = 0;
-      return markdown.replace(orderedListRE, () => {
-        occurrence++;
-        if (occurrence === 1) return buildList(nestedItemListData);
-        return '';
-      });
+      occurrence++;
+      if (occurrence === 1) {
+        return buildList(nestedItemListData);
+      }
+      return '';
+
     };
-    return getMarkdownRepacement();
+
+
+    return markdown.replace(markdownTextGroupRE, (group) => {
+      const itemList = group.match(orderedListRE);
+      if (itemList != null) {
+        const itemListData = getItemListData(itemList);
+        const nestedItemListData = getNestedOrderedListData(itemListData);
+        return nestedItemListData.length > 0 ? replaceMarkdownWithHtml(nestedItemListData) : group;
+      }
+      return group;
+    });
 
   }
 
