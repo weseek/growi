@@ -2,14 +2,10 @@ import { isServer } from '@growi/core';
 import { debounce } from 'throttle-debounce';
 import { Container } from 'unstated';
 
-import loggerFactory from '~/utils/logger';
-
 import {
   apiv3Delete, apiv3Get, apiv3Post, apiv3Put,
 } from '../util/apiv3-client';
 
-// eslint-disable-next-line no-unused-vars
-const logger = loggerFactory('growi:services:AdminUserGroupDetailContainer');
 
 /**
  * Service container for admin users page (Users.jsx)
