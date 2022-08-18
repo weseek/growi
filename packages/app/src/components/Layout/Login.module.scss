@@ -2,17 +2,6 @@
 
 
 .nologin {
-  .link-growi-org {
-    font-size: smaller;
-    font-weight: bold;
-
-    &,
-    .growi,
-    .org {
-      transition: color 0.8s;
-    }
-  }
-
   .link-switch {
     color: bs.$gray-200;
 
@@ -21,6 +10,7 @@
     }
   }
 }
+
 
 .login-page {
   // layout
