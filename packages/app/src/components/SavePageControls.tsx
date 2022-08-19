@@ -51,7 +51,7 @@ export const SavePageControls = (props: Props): JSX.Element | null => {
   const { mutate: mutateIsEnabledUnsavedWarning } = useIsEnabledUnsavedWarning();
 
 
-  if (isEditable == null || editorMode == null || isAclEnabled == null || grantData == null) {
+  if (isEditable == null || editorMode == null || isAclEnabled == null) {
     return null;
   }
 
@@ -59,7 +59,8 @@ export const SavePageControls = (props: Props): JSX.Element | null => {
     return null;
   }
 
-  const { grant, grantedGroup } = grantData;
+  const grant = grantData?.grant || 1;
+  const grantedGroup = grantData?.grantedGroup;
 
   const {
     isSlackEnabled, slackChannels,
