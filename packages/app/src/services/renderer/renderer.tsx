@@ -1,4 +1,12 @@
+// allow only types to import from react
+import { ComponentType } from 'react';
+
+import { Lsx } from '@growi/plugin-lsx/components';
+import * as lsxGrowiPlugin from '@growi/plugin-lsx/services/renderer';
 import growiPlugin from '@growi/remark-growi-plugin';
+import { Schema as SanitizeOption } from 'hast-util-sanitize';
+import { SpecialComponents } from 'react-markdown/lib/ast-to-react';
+import { NormalComponents } from 'react-markdown/lib/complex-types';
 import { ReactMarkdownOptions } from 'react-markdown/lib/react-markdown';
 import katex from 'rehype-katex';
 import raw from 'rehype-raw';
@@ -9,6 +17,8 @@ import breaks from 'remark-breaks';
 import emoji from 'remark-emoji';
 import gfm from 'remark-gfm';
 import math from 'remark-math';
+import deepmerge from 'ts-deepmerge';
+import { PluggableList, Pluggable, PluginTuple } from 'unified';
 
 
 import { CodeBlock } from '~/components/ReactMarkdownComponents/CodeBlock';
@@ -216,8 +226,57 @@ const logger = loggerFactory('growi:util:GrowiRenderer');
 
 // }
 
-export type RendererOptions = Partial<ReactMarkdownOptions>;
+type SanitizePlugin = PluginTuple<[SanitizeOption]>;
+export type RendererOptions = Omit<ReactMarkdownOptions, 'remarkPlugins' | 'rehypePlugins' | 'components' | 'children'> & {
+  remarkPlugins: PluggableList,
+  rehypePlugins: PluggableList,
+  components?:
+    | Partial<
+        Omit<NormalComponents, keyof SpecialComponents>
+        & SpecialComponents
+        & {
+          [elem: string]: ComponentType<any>,
+        }
+      >
+    | undefined
+};
 
+const commonSanitizeOption: SanitizeOption = deepmerge(
+  sanitizeDefaultSchema,
+  {
+    attributes: {
+      '*': ['class', 'className'],
+    },
+  },
+);
+
+const isSanitizePlugin = (pluggable: Pluggable): pluggable is SanitizePlugin => {
+  if (!Array.isArray(pluggable) || pluggable.length < 2) {
+    return false;
+  }
+  const sanitizeOption = pluggable[1];
+  return 'tagNames' in sanitizeOption && 'attributes' in sanitizeOption;
+};
+
+const hasSanitizePluginAtTheLast = (options: RendererOptions): boolean => {
+  const { rehypePlugins } = options;
+  if (rehypePlugins == null || rehypePlugins.length === 0) {
+    return false;
+  }
+
+  // get the last element
+  const lastPluggableElem = rehypePlugins.slice(-1)[0];
+
+  return isSanitizePlugin(lastPluggableElem);
+};
+
+const verifySanitizePlugin = (options: RendererOptions): void => {
+  if (hasSanitizePluginAtTheLast(options)) {
+    return;
+  }
+
+  throw new Error('The specified options does not have sanitize plugin in \'rehypePlugins\'');
+};
 
 const generateCommonOptions = (pagePath: string|undefined, config: RendererConfig): RendererOptions => {
   return {
@@ -231,15 +290,6 @@ const generateCommonOptions = (pagePath: string|undefined, config: RendererConfi
       [relativeLinksByPukiwikiLikeLinker, { pagePath }],
       [relativeLinks, { pagePath }],
       raw,
-      [sanitize, {
-        ...sanitizeDefaultSchema,
-        attributes: {
-          ...sanitizeDefaultSchema.attributes,
-          '*': sanitizeDefaultSchema.attributes != null
-            ? sanitizeDefaultSchema.attributes['*'].concat('class', 'className')
-            : ['class', 'className'],
-        },
-      }],
       [addClass, {
         table: 'table table-bordered',
       }],
@@ -262,18 +312,19 @@ export const generateViewOptions = (
   const { remarkPlugins, rehypePlugins, components } = options;
 
   // add remark plugins
-  if (remarkPlugins != null) {
-    remarkPlugins.push(emoji);
-    remarkPlugins.push(math);
-    if (config.isEnabledLinebreaks) {
-      remarkPlugins.push(breaks);
-    }
+  remarkPlugins.push(
+    emoji,
+    math,
+    lsxGrowiPlugin.remarkPlugin,
+  );
+  if (config.isEnabledLinebreaks) {
+    remarkPlugins.push(breaks);
   }
 
-  // store toc node
-  if (rehypePlugins != null) {
-    rehypePlugins.push(katex);
-    rehypePlugins.push([toc, {
+  // add rehype plugins
+  rehypePlugins.push(
+    katex,
+    [toc, {
       nav: false,
       headings: ['h1', 'h2', 'h3'],
       customizeTOC: (toc: HtmlElementNode) => {
@@ -296,17 +347,25 @@ export const generateViewOptions = (
 
         return false; // not show toc in body
       },
-    }]);
-  }
-  // renderer.rehypePlugins.push([autoLinkHeadings, {
-  //   behavior: 'append',
-  // }]);
+    }],
+    [lsxGrowiPlugin.rehypePlugin, { pagePath }],
+    // [autoLinkHeadings, {
+    //   behavior: 'append',
+    // }]
+  );
+
+  const sanitizeOption = deepmerge(
+    commonSanitizeOption,
+    lsxGrowiPlugin.sanitizeOption,
+  );
+  rehypePlugins.push([sanitize, sanitizeOption]);
 
   // add components
   if (components != null) {
     components.h1 = Header;
     components.h2 = Header;
     components.h3 = Header;
+    components.lsx = props => <Lsx {...props} forceToFetchData />;
   }
 
   // // Add configurers for viewer
@@ -321,6 +380,7 @@ export const generateViewOptions = (
   // renderer.setMarkdownSettings({ breaks: rendererSettings.isEnabledLinebreaks });
   // renderer.configure();
 
+  verifySanitizePlugin(options);
   return options;
 };
 
@@ -331,25 +391,27 @@ export const generateTocOptions = (config: RendererConfig, tocNode: HtmlElementN
   const { remarkPlugins, rehypePlugins } = options;
 
   // add remark plugins
-  if (remarkPlugins != null) {
-    remarkPlugins.push(emoji);
-  }
-  // set toc node
-  if (rehypePlugins != null) {
-    rehypePlugins.push([toc, {
+  remarkPlugins.push(emoji);
+
+  // add rehype plugins
+  rehypePlugins.push(
+    [toc, {
       headings: ['h1', 'h2', 'h3'],
       customizeTOC: () => tocNode,
-    }]);
-  }
+    }],
+    [sanitize, commonSanitizeOption],
+  );
   // renderer.rehypePlugins.push([autoLinkHeadings, {
   //   behavior: 'append',
   // }]);
 
+  verifySanitizePlugin(options);
   return options;
 };
 
 export const generatePreviewOptions = (config: RendererConfig): RendererOptions => {
   const options = generateCommonOptions(undefined, config);
+  const { rehypePlugins } = options;
 
   // // Add configurers for preview
   // renderer.addConfigurers([
@@ -361,19 +423,23 @@ export const generatePreviewOptions = (config: RendererConfig): RendererOptions 
   // renderer.setMarkdownSettings({ breaks: rendererSettings?.isEnabledLinebreaks });
   // renderer.configure();
 
+  // add rehype plugins
+  rehypePlugins.push(
+    [sanitize, commonSanitizeOption],
+  );
+
+  verifySanitizePlugin(options);
   return options;
 };
 
 export const generateCommentPreviewOptions = (config: RendererConfig): RendererOptions => {
   const options = generateCommonOptions(undefined, config);
-  const { remarkPlugins } = options;
+  const { remarkPlugins, rehypePlugins } = options;
 
   // add remark plugins
-  if (remarkPlugins != null) {
-    remarkPlugins.push(emoji);
-    if (config.isEnabledLinebreaksInComments) {
-      remarkPlugins.push(breaks);
-    }
+  remarkPlugins.push(emoji);
+  if (config.isEnabledLinebreaksInComments) {
+    remarkPlugins.push(breaks);
   }
 
   // renderer.addConfigurers([
@@ -383,11 +449,18 @@ export const generateCommentPreviewOptions = (config: RendererConfig): RendererO
   // renderer.setMarkdownSettings({ breaks: rendererSettings.isEnabledLinebreaksInComments });
   // renderer.configure();
 
+  // add rehype plugins
+  rehypePlugins.push(
+    [sanitize, commonSanitizeOption],
+  );
+
+  verifySanitizePlugin(options);
   return options;
 };
 
 export const generateOthersOptions = (config: RendererConfig): RendererOptions => {
   const options = generateCommonOptions(undefined, config);
+  const { rehypePlugins } = options;
 
   // renderer.addConfigurers([
   //   new TableConfigurer(),
@@ -396,5 +469,11 @@ export const generateOthersOptions = (config: RendererConfig): RendererOptions =
   // renderer.setMarkdownSettings({ breaks: rendererSettings.isEnabledLinebreaks });
   // renderer.configure();
 
+  // add rehype plugins
+  rehypePlugins.push(
+    [sanitize, commonSanitizeOption],
+  );
+
+  verifySanitizePlugin(options);
   return options;
 };

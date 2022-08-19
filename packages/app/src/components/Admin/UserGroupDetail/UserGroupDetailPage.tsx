@@ -1,7 +1,8 @@
 import React, {
-  FC, useState, useCallback, useEffect,
+  useState, useCallback, useEffect, useMemo,
 } from 'react';
 
+import { objectIdUtils } from '@growi/core';
 import { useTranslation } from 'next-i18next';
 import dynamic from 'next/dynamic';
 import { useRouter } from 'next/router';
@@ -10,8 +11,9 @@ import { toastSuccess, toastError } from '~/client/util/apiNotification';
 import {
   apiv3Get, apiv3Put, apiv3Delete, apiv3Post,
 } from '~/client/util/apiv3-client';
-import { IPageHasId } from '~/interfaces/page';
 import { IUserGroup, IUserGroupHasId } from '~/interfaces/user';
+import { SearchTypes, SearchType } from '~/interfaces/user-group';
+import Xss from '~/services/xss';
 import { useIsAclEnabled } from '~/stores/context';
 import { useUpdateUserGroupConfirmModal } from '~/stores/modal';
 import {
@@ -19,7 +21,11 @@ import {
   useSWRxSelectableParentUserGroups, useSWRxSelectableChildUserGroups, useSWRxAncestorUserGroups,
 } from '~/stores/user-group';
 
-import { isValidObjectId } from '../../../../../core/src/utils/objectid-utils';
+
+const UserGroupPageList = dynamic(() => import('./UserGroupPageList'), { ssr: false });
+const UserGroupUserTable = dynamic(() => import('./UserGroupUserTable'), { ssr: false });
+
+const UserGroupUserModal = dynamic(() => import('./UserGroupUserModal'), { ssr: false });
 
 const UserGroupDeleteModal = dynamic(() => import('../UserGroup/UserGroupDeleteModal').then(mod => mod.UserGroupDeleteModal), { ssr: false });
 const UserGroupDropdown = dynamic(() => import('../UserGroup/UserGroupDropdown').then(mod => mod.UserGroupDropdown), { ssr: false });
@@ -27,38 +33,33 @@ const UserGroupForm = dynamic(() => import('../UserGroup/UserGroupForm').then(mo
 const UserGroupModal = dynamic(() => import('../UserGroup/UserGroupModal').then(mod => mod.UserGroupModal), { ssr: false });
 const UserGroupTable = dynamic(() => import('../UserGroup/UserGroupTable').then(mod => mod.UserGroupTable), { ssr: false });
 const UpdateParentConfirmModal = dynamic(() => import('./UpdateParentConfirmModal').then(mod => mod.UpdateParentConfirmModal), { ssr: false });
-// import UserGroupPageList from './UserGroupPageList';
-// import UserGroupUserModal from './UserGroupUserModal';
-// import UserGroupUserTable from './UserGroupUserTable';
 
 
 type Props = {
   userGroupId?: string,
 }
 
-const UserGroupDetailPage = (props: Props) => {
+const UserGroupDetailPage = (props: Props): JSX.Element => {
   const { t } = useTranslation();
   const router = useRouter();
+  const xss = useMemo(() => new Xss(), []);
   const { userGroupId: currentUserGroupId } = props;
 
-  /*
-   * State (from AdminUserGroupDetailContainer)
-   */
   const { data: currentUserGroup } = useSWRxUserGroup(currentUserGroupId);
-  const [relatedPages, setRelatedPages] = useState<IPageHasId[]>([]); // For page list
-  const [searchType, setSearchType] = useState<string>('partial');
+  const [searchType, setSearchType] = useState<SearchType>(SearchTypes.PARTIAL);
   const [isAlsoMailSearched, setAlsoMailSearched] = useState<boolean>(false);
   const [isAlsoNameSearched, setAlsoNameSearched] = useState<boolean>(false);
   const [selectedUserGroup, setSelectedUserGroup] = useState<IUserGroupHasId | undefined>(undefined); // not null but undefined (to use defaultProps in UserGroupDeleteModal)
   const [isCreateModalShown, setCreateModalShown] = useState<boolean>(false);
   const [isUpdateModalShown, setUpdateModalShown] = useState<boolean>(false);
   const [isDeleteModalShown, setDeleteModalShown] = useState<boolean>(false);
+  const [isUserGroupUserModalShown, setIsUserGroupUserModalShown] = useState<boolean>(false);
 
   const isLoading = currentUserGroup === undefined;
   const notExistsUerGroup = !isLoading && currentUserGroup == null;
 
   useEffect(() => {
-    if (!isValidObjectId(currentUserGroupId) || notExistsUerGroup) {
+    if (!objectIdUtils.isValidObjectId(currentUserGroupId) || notExistsUerGroup) {
       router.push('/admin/user-groups');
     }
   }, [currentUserGroup, currentUserGroupId, notExistsUerGroup, router]);
@@ -87,21 +88,18 @@ const UserGroupDetailPage = (props: Props) => {
 
   const { open: openUpdateParentConfirmModal } = useUpdateUserGroupConfirmModal();
 
-
   /*
    * Function
    */
-  // TODO 85062: old name: switchIsAlsoMailSearched
   const toggleIsAlsoMailSearched = useCallback(() => {
     setAlsoMailSearched(prev => !prev);
   }, []);
 
-  // TODO 85062: old name: switchIsAlsoNameSearched
   const toggleAlsoNameSearched = useCallback(() => {
     setAlsoNameSearched(prev => !prev);
   }, []);
 
-  const switchSearchType = useCallback((searchType) => {
+  const switchSearchType = useCallback((searchType: SearchType) => {
     setSearchType(searchType);
   }, []);
 
@@ -161,7 +159,7 @@ const UserGroupDetailPage = (props: Props) => {
     }
   }, [t, openUpdateParentConfirmModal, onSubmitUpdateGroup]);
 
-  const fetchApplicableUsers = useCallback(async(searchWord) => {
+  const fetchApplicableUsers = useCallback(async(searchWord: string) => {
     const res = await apiv3Get(`/user-groups/${currentUserGroupId}/unrelated-users`, {
       searchWord,
       searchType,
@@ -174,16 +172,23 @@ const UserGroupDetailPage = (props: Props) => {
     return users;
   }, [currentUserGroupId, searchType, isAlsoMailSearched, isAlsoNameSearched]);
 
-  // TODO 85062: will be used in UserGroupUserFormByInput
   const addUserByUsername = useCallback(async(username: string) => {
     await apiv3Post(`/user-groups/${currentUserGroupId}/users/${username}`);
+    setIsUserGroupUserModalShown(false);
     mutateUserGroupRelations();
   }, [currentUserGroupId, mutateUserGroupRelations]);
 
+  // Fix: invalid csrf token => https://redmine.weseek.co.jp/issues/102704
   const removeUserByUsername = useCallback(async(username: string) => {
-    await apiv3Delete(`/user-groups/${currentUserGroupId}/users/${username}`);
-    mutateUserGroupRelations();
-  }, [currentUserGroupId, mutateUserGroupRelations]);
+    try {
+      await apiv3Delete(`/user-groups/${currentUserGroupId}/users/${username}`);
+      toastSuccess(`Removed "${xss.process(username)}" from "${xss.process(currentUserGroup?.name)}"`);
+      mutateUserGroupRelations();
+    }
+    catch (err) {
+      toastError(new Error(`Unable to remove "${xss.process(username)}" from "${xss.process(currentUserGroup?.name)}"`));
+    }
+  }, [currentUserGroup?.name, currentUserGroupId, mutateUserGroupRelations, xss]);
 
   const showUpdateModal = useCallback((group: IUserGroupHasId) => {
     setUpdateModalShown(true);
@@ -309,7 +314,7 @@ const UserGroupDetailPage = (props: Props) => {
   /*
    * Dependencies
    */
-  if (currentUserGroup == null) {
+  if (currentUserGroup == null || currentUserGroupId == null) {
     return <></>;
   }
 
@@ -344,11 +349,25 @@ const UserGroupDetailPage = (props: Props) => {
         />
       </div>
       <h2 className="admin-setting-header mt-4">{t('admin:user_group_management.user_list')}</h2>
-      {/* These compoents will be successfully shown in https://redmine.weseek.co.jp/issues/102159 */}
-      {/* <UserGroupUserTable /> */}
-      UserGroupUserTable
-      {/* <UserGroupUserModal /> */}
-      UserGroupUserModal
+      <UserGroupUserTable
+        userGroup={currentUserGroup}
+        userGroupRelations={childUserGroupRelations}
+        onClickPlusBtn={() => setIsUserGroupUserModalShown(true)}
+        onClickRemoveUserBtn={removeUserByUsername}
+      />
+      <UserGroupUserModal
+        isOpen={isUserGroupUserModalShown}
+        userGroup={currentUserGroup}
+        searchType={searchType}
+        isAlsoMailSearched={isAlsoMailSearched}
+        isAlsoNameSearched={isAlsoNameSearched}
+        onClickAddUserBtn={addUserByUsername}
+        onSearchApplicableUsers={fetchApplicableUsers}
+        onSwitchSearchType={switchSearchType}
+        onClose={() => setIsUserGroupUserModalShown(false)}
+        onToggleIsAlsoMailSearched={toggleIsAlsoMailSearched}
+        onToggleIsAlsoNameSearched={toggleAlsoNameSearched}
+      />
 
       <h2 className="admin-setting-header mt-4">{t('admin:user_group_management.child_group_list')}</h2>
       <UserGroupDropdown
@@ -394,9 +413,7 @@ const UserGroupDetailPage = (props: Props) => {
 
       <h2 className="admin-setting-header mt-4">{t('Page')}</h2>
       <div className="page-list">
-        {/* This compoent will be successfully shown in https://redmine.weseek.co.jp/issues/102159 */}
-        {/* <UserGroupPageList /> */}
-        UserGroupPageList
+        <UserGroupPageList userGroupId={currentUserGroupId} relatedPages={userGroupPages} />
       </div>
     </div>
   );

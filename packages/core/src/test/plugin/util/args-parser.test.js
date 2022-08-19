@@ -1,4 +1,4 @@
-import ArgsParser from '~/plugin/util/args-parser';
+import { ArgsParser } from '~/plugin/util/args-parser';
 
 describe('args-parser', () => {
 

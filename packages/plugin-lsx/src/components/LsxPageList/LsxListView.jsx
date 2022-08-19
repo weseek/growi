@@ -2,8 +2,8 @@ import React from 'react';
 
 import PropTypes from 'prop-types';
 
-import { LsxContext } from '../../util/LsxContext';
 import { PageNode } from '../PageNode';
+import { LsxContext } from '../lsx-context';
 
 import { LsxPage } from './LsxPage';
 

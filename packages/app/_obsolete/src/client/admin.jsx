@@ -23,7 +23,7 @@ import AdminSamlSecurityContainer from '~/client/services/AdminSamlSecurityConta
 import AdminSlackIntegrationLegacyContainer from '~/client/services/AdminSlackIntegrationLegacyContainer';
 import AdminSocketIoContainer from '~/client/services/AdminSocketIoContainer';
 import AdminTwitterSecurityContainer from '~/client/services/AdminTwitterSecurityContainer';
-import AdminUserGroupDetailContainer from '~/client/services/AdminUserGroupDetailContainer';
+// import AdminUserGroupDetailContainer from '~/client/services/AdminUserGroupDetailContainer';
 import AdminUsersContainer from '~/client/services/AdminUsersContainer';
 import ContextExtractor from '~/client/services/ContextExtractor';
 import loggerFactory from '~/utils/logger';
@@ -67,7 +67,7 @@ const adminExternalAccountsContainer = new AdminExternalAccountsContainer(appCon
 const adminNotificationContainer = new AdminNotificationContainer(appContainer);
 const adminSlackIntegrationLegacyContainer = new AdminSlackIntegrationLegacyContainer(appContainer);
 const adminMarkDownContainer = new AdminMarkDownContainer(appContainer);
-const adminUserGroupDetailContainer = new AdminUserGroupDetailContainer(appContainer);
+// const adminUserGroupDetailContainer = new AdminUserGroupDetailContainer(appContainer);
 const socketIoContainer = appContainer.getContainer('SocketIoContainer');
 const injectableContainers = [
   appContainer,
@@ -81,7 +81,7 @@ const injectableContainers = [
   adminNotificationContainer,
   adminSlackIntegrationLegacyContainer,
   adminMarkDownContainer,
-  adminUserGroupDetailContainer,
+  // adminUserGroupDetailContainer,
   socketIoContainer,
 ];
 
