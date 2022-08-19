@@ -17,7 +17,7 @@ type Props = Omit<LinkProps, 'href'> & {
   children: React.ReactNode,
   href?: string,
   className?: string,
-} ;
+};
 
 export const NextLink = ({
   href, children, className, ...props

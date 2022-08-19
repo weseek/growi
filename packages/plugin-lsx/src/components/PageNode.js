@@ -3,6 +3,8 @@ export class PageNode {
   constructor(pagePath) {
     this.pagePath = pagePath;
     this.children = [];
+
+    this.page = undefined;
   }
 
   /**

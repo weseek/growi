@@ -4,8 +4,8 @@ import { pathUtils } from '@growi/core';
 import { PageListMeta } from '@growi/ui';
 import PropTypes from 'prop-types';
 
-import { LsxContext } from '../../util/LsxContext';
 import { PageNode } from '../PageNode';
+import { LsxContext } from '../lsx-context';
 
 import { PagePathWrapper } from './PagePathWrapper';
 
@@ -33,7 +33,7 @@ export class LsxPage extends React.Component {
 
     // process depth option
     const optDepth = this.props.lsxContext.getOptDepth();
-    if (optDepth === undefined) {
+    if (optDepth == null) {
       this.setState({ isLinkable: true });
     }
     else {
