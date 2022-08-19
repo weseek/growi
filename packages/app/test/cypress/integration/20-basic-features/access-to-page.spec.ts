@@ -39,7 +39,7 @@ context('Access to page', () => {
 
   it('/user/admin is successfully loaded', () => {
     cy.visit('/user/admin', {  });
-    cy.screenshot(`${ssPrefix}-user-admin`);
+    cy.screenshot(`${ssPrefix}-user-admin`, {capture:'viewport', blackout: ['.grw-subnav > .d-flex:eq(1)','.grw-count-badge','#user-created-list']});
   });
 
 });
