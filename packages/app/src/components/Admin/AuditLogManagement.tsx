@@ -127,6 +127,12 @@ export const AuditLogManagement: FC = () => {
     }
   }, [totalPagingPages]);
 
+  const jumpPageInputKeyDownHandler = useCallback((e) => {
+    if (e.key === 'Enter') {
+      setActivePage(jumpPageNumber);
+    }
+  }, [setActivePage, jumpPageNumber]);
+
   const jumpPageButtonPushedHandler = useCallback(() => {
     setActivePage(jumpPageNumber);
   }, [jumpPageNumber]);
@@ -221,6 +227,7 @@ export const AuditLogManagement: FC = () => {
                 type="text"
                 className="jump-page-input"
                 onChange={jumpPageInputChangeHandler}
+                onKeyDown={jumpPageInputKeyDownHandler}
               />
               <button className="btn btn-sm" type="button" onClick={jumpPageButtonPushedHandler}>
                 <b>Go</b>
