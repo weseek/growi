@@ -165,7 +165,6 @@ context('Access to /me/all-in-app-notifications', () => {
     cy.visit('/');
     cy.get('.notification-wrapper > a').click();
     cy.get('.notification-wrapper > .dropdown-menu > a').click();
-    cy.getByTestid("grw-navigation-resize-button").click({force: true});
     cy.screenshot(`${ssPrefix}-see-all`, { capture: 'viewport' });
 
     cy.get('.grw-custom-nav-tab > div > ul > li:nth-child(2) > a').click();
