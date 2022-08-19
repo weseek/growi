@@ -40,9 +40,9 @@ export const AuditLogManagement: FC = () => {
    * State
    */
   const [isSettingPage, setIsSettingPage] = useState<boolean>(false);
-  const [activePage, setActivePage] = useState<number>(1);
+  const [activePageNumber, setActivePageNumber] = useState<number>(1);
   const [jumpPageNumber, setJumpPageNumber] = useState<number>(1);
-  const offset = (activePage - 1) * PAGING_LIMIT;
+  const offset = (activePageNumber - 1) * PAGING_LIMIT;
   const [startDate, setStartDate] = useState<Date | null>(null);
   const [endDate, setEndDate] = useState<Date | null>(null);
   const [selectedUsernames, setSelectedUsernames] = useState<string[]>([]);
@@ -73,34 +73,34 @@ export const AuditLogManagement: FC = () => {
    * Functions
    */
   const setActivePageHandler = useCallback((selectedPageNum: number) => {
-    setActivePage(selectedPageNum);
+    setActivePageNumber(selectedPageNum);
   }, []);
 
   const datePickerChangedHandler = useCallback((dateList: Date[] | null[]) => {
-    setActivePage(1);
+    setActivePageNumber(1);
     setStartDate(dateList[0]);
     setEndDate(dateList[1]);
   }, []);
 
   const actionCheckboxChangedHandler = useCallback((action: SupportedActionType) => {
-    setActivePage(1);
+    setActivePageNumber(1);
     actionMap.set(action, !actionMap.get(action));
     setActionMap(new Map(actionMap.entries()));
   }, [actionMap, setActionMap]);
 
   const multipleActionCheckboxChangedHandler = useCallback((actions: SupportedActionType[], isChecked) => {
-    setActivePage(1);
+    setActivePageNumber(1);
     actions.forEach(action => actionMap.set(action, isChecked));
     setActionMap(new Map(actionMap.entries()));
   }, [actionMap, setActionMap]);
 
   const setUsernamesHandler = useCallback((usernames: string[]) => {
-    setActivePage(1);
+    setActivePageNumber(1);
     setSelectedUsernames(usernames);
   }, []);
 
   const clearButtonPushedHandler = useCallback(() => {
-    setActivePage(1);
+    setActivePageNumber(1);
     setStartDate(null);
     setEndDate(null);
     setSelectedUsernames([]);
@@ -109,10 +109,10 @@ export const AuditLogManagement: FC = () => {
     if (auditLogAvailableActionsData != null) {
       setActionMap(new Map<SupportedActionType, boolean>(auditLogAvailableActionsData.map(action => [action, true])));
     }
-  }, [setActivePage, setStartDate, setEndDate, setSelectedUsernames, setActionMap, auditLogAvailableActionsData]);
+  }, [setActivePageNumber, setStartDate, setEndDate, setSelectedUsernames, setActionMap, auditLogAvailableActionsData]);
 
   const reloadButtonPushedHandler = useCallback(() => {
-    setActivePage(1);
+    setActivePageNumber(1);
     mutateActivity();
   }, [mutateActivity]);
 
@@ -129,16 +129,16 @@ export const AuditLogManagement: FC = () => {
 
   const jumpPageInputKeyDownHandler = useCallback((e) => {
     if (e.key === 'Enter') {
-      setActivePage(jumpPageNumber);
+      setActivePageNumber(jumpPageNumber);
     }
-  }, [setActivePage, jumpPageNumber]);
+  }, [setActivePageNumber, jumpPageNumber]);
 
   const jumpPageButtonPushedHandler = useCallback(() => {
-    setActivePage(jumpPageNumber);
+    setActivePageNumber(jumpPageNumber);
   }, [jumpPageNumber]);
 
   // eslint-disable-next-line max-len
-  const activityCounter = `<b>${activityList.length === 0 ? 0 : offset + 1}</b> - <b>${(PAGING_LIMIT * activePage) - (PAGING_LIMIT - activityList.length)}</b> of <b>${totalActivityNum}<b/>`;
+  const activityCounter = `<b>${activityList.length === 0 ? 0 : offset + 1}</b> - <b>${(PAGING_LIMIT * activePageNumber) - (PAGING_LIMIT - activityList.length)}</b> of <b>${totalActivityNum}<b/>`;
 
   if (!auditLogEnabled) {
     return <AuditLogDisableMode />;
@@ -212,7 +212,7 @@ export const AuditLogManagement: FC = () => {
 
           <div className="d-flex flex-row justify-content-center">
             <PaginationWrapper
-              activePage={activePage}
+              activePage={activePageNumber}
               changePage={setActivePageHandler}
               totalItemsCount={totalActivityNum}
               pagingLimit={PAGING_LIMIT}
