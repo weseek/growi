@@ -39,7 +39,7 @@ context('Access to page', () => {
 
   it('/user/admin is successfully loaded', () => {
     cy.visit('/user/admin', {  });
-    cy.screenshot(`${ssPrefix}-user-admin`, {capture:'viewport', blackout: ['.grw-subnav > .d-flex:eq(1)','.grw-count-badge','#user-created-list']});
+    cy.screenshot(`${ssPrefix}-user-admin`, {capture:'viewport', blackout: ['.grw-count-badge']});
   });
 
 });
@@ -165,7 +165,7 @@ context('Access to /me/all-in-app-notifications', () => {
     cy.visit('/');
     cy.get('.notification-wrapper > a').click();
     cy.get('.notification-wrapper > .dropdown-menu > a').click();
-
+    cy.getByTestid("grw-navigation-resize-button").click({force: true});
     cy.screenshot(`${ssPrefix}-see-all`, { capture: 'viewport' });
 
     cy.get('.grw-custom-nav-tab > div > ul > li:nth-child(2) > a').click();
