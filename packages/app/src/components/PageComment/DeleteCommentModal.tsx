@@ -16,14 +16,14 @@ export type DeleteCommentModalProps = {
   isShown: boolean,
   comment: ICommentHasId,
   errorMessage: string,
-  cancel: () => void, // for cancel evnet handling
-  confirmedToDelete: () => void, // for confirmed event handling
+  cancelToDelete: () => void,
+  confirmeToDelete: () => void,
 }
 
 export const DeleteCommentModal = (props: DeleteCommentModalProps): JSX.Element => {
 
   const {
-    isShown, comment, errorMessage, cancel, confirmedToDelete,
+    isShown, comment, errorMessage, cancelToDelete, confirmeToDelete,
   } = props;
 
   // the threshold for omitting body
@@ -39,8 +39,8 @@ export const DeleteCommentModal = (props: DeleteCommentModalProps): JSX.Element 
   const commentBodyElement = <span style={{ whiteSpace: 'pre-wrap' }}>{commentBody}</span>;
 
   return (
-    <Modal isOpen={isShown} toggle={cancel} className={`${styles['page-comment-delete-modal']}`}>
-      <ModalHeader tag="h4" toggle={cancel} className="bg-danger text-light">
+    <Modal isOpen={isShown} toggle={cancelToDelete} className={`${styles['page-comment-delete-modal']}`}>
+      <ModalHeader tag="h4" toggle={cancelToDelete} className="bg-danger text-light">
         <span>
           <i className="icon-fw icon-fire"></i>
           Delete comment?
@@ -56,8 +56,8 @@ export const DeleteCommentModal = (props: DeleteCommentModalProps): JSX.Element 
       )}
       <ModalFooter>
         <span className="text-danger">{errorMessage}</span>&nbsp;
-        <Button onClick={cancel}>Cancel</Button>
-        <Button color="danger" onClick={confirmedToDelete}>
+        <Button onClick={cancelToDelete}>Cancel</Button>
+        <Button color="danger" onClick={confirmeToDelete}>
           <i className="icon icon-fire"></i>
           Delete
         </Button>
