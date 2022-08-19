@@ -21,7 +21,7 @@ context('Access to page', () => {
     // hide fab
     cy.getByTestid('grw-fab-container').invoke('attr', 'style', 'display: none');
 
-    cy.screenshot(`${ssPrefix}-sandbox-headers`);
+    cy.screenshot(`${ssPrefix}-sandbox-headers`, {blackout: ['#Headers']});
   });
 
   it('/Sandbox/Math is successfully loaded', () => {
