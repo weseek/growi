@@ -121,16 +121,9 @@ export const AuditLogManagement: FC = () => {
     const isNan = Number.isNaN(inputNumber);
 
     if (!isNan) {
-      if (inputNumber > totalPagingPages) {
-        setJumpPageNum(totalPagingPages);
-        return;
-      }
-
-      if (inputNumber <= 0) {
-        setJumpPageNum(1);
-        return;
-      }
-      setJumpPageNum(inputNumber);
+      // eslint-disable-next-line no-nested-ternary
+      const jumpPageNumber = inputNumber > totalPagingPages ? totalPagingPages : inputNumber <= 0 ? 1 : inputNumber;
+      setJumpPageNum(jumpPageNumber);
     }
   }, [totalPagingPages]);
 
