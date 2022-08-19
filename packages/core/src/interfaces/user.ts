@@ -17,6 +17,8 @@ export type IUser = {
   isEmailPublished: boolean,
   lang: Lang,
   slackMemberId?: string,
+  createdAt: Date,
+  lastLoginAt?: Date,
 }
 
 export type IUserGroupRelation = {

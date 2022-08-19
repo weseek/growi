@@ -3,6 +3,7 @@ import http from 'http';
 import path from 'path';
 
 import { createTerminus } from '@godaddy/terminus';
+import lsxRoutes from '@growi/plugin-lsx/server/routes';
 import mongoose from 'mongoose';
 import next from 'next';
 
@@ -33,7 +34,6 @@ import { initMongooseGlobalSettings, getMongoUri, mongoOptions } from '../util/m
 const logger = loggerFactory('growi:crowi');
 const httpErrorHandler = require('../middlewares/http-error-handler');
 const models = require('../models');
-const PluginService = require('../plugins/plugin.service');
 
 const sep = path.sep;
 
@@ -434,10 +434,6 @@ Crowi.prototype.start = async function() {
 
   const { express, configManager } = this;
 
-  // setup plugins
-  this.pluginService = new PluginService(this, express);
-  await this.pluginService.autoDetectAndLoadPlugins();
-
   const app = (this.node_env === 'development') ? this.crowiDev.setupServer(express) : express;
 
   const httpServer = http.createServer(app);
@@ -465,6 +461,7 @@ Crowi.prototype.start = async function() {
   }
 
   // setup Express Routes
+  this.setupRoutesForPlugins();
   this.setupRoutesAtLast();
 
   // setup Global Error Handlers
@@ -513,6 +510,10 @@ Crowi.prototype.setupTerminus = function(server) {
       logger.info('Cleanup finished, server is shutting down');
     },
   });
+};
+
+Crowi.prototype.setupRoutesForPlugins = function() {
+  lsxRoutes(this, this.express);
 };
 
 /**

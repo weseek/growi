@@ -8,6 +8,8 @@ import { RawLayout } from './RawLayout';
 
 import styles from './Admin.module.scss';
 
+const AdminNotFoundPage = dynamic(() => import('../Admin/NotFoundPage').then(mod => mod.AdminNotFoundPage), { ssr: false });
+
 
 type Props = {
   title: string
@@ -33,7 +35,7 @@ const AdminLayout = ({
       <div className={`admin-page ${styles['admin-page']}`}>
         <GrowiNavbar />
 
-        <header className="py-0">
+        <header className="py-0 position-relative">
           <h1 className="title">{title}</h1>
         </header>
         <div id="main" className="main">
@@ -43,7 +45,7 @@ const AdminLayout = ({
                 <AdminNavigation selected={selectedNavOpt} />
               </div>
               <div className="col-lg-9">
-                {children}
+                {children || <AdminNotFoundPage />}
               </div>
             </div>
           </div>

@@ -244,9 +244,6 @@ ___
 
 ## Pukiwiki like linker
 
-(available by [weseek/growi-plugin-pukiwiki-like-linker
-](https://github.com/weseek/growi-plugin-pukiwiki-like-linker) )
-
 最も柔軟な Linker です。
 記述中のページを基点とした相対リンクと、表示テキストに対するリンクを同時に実現できます。
 

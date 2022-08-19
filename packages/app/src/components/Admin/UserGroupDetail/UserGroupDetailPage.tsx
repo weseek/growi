@@ -1,56 +1,77 @@
 import React, {
-  FC, useState, useCallback,
+  useState, useCallback, useEffect, useMemo,
 } from 'react';
+
+import { objectIdUtils } from '@growi/core';
 import { useTranslation } from 'next-i18next';
+import dynamic from 'next/dynamic';
+import { useRouter } from 'next/router';
 
-import UserGroupForm from '../UserGroup/UserGroupForm';
-import UserGroupTable from '../UserGroup/UserGroupTable';
-import UserGroupModal from '../UserGroup/UserGroupModal';
-import UserGroupDeleteModal from '../UserGroup/UserGroupDeleteModal';
-import UpdateParentConfirmModal from './UpdateParentConfirmModal';
-import UserGroupDropdown from '../UserGroup/UserGroupDropdown';
-import UserGroupUserTable from './UserGroupUserTable';
-import UserGroupUserModal from './UserGroupUserModal';
-import UserGroupPageList from './UserGroupPageList';
-
+import { toastSuccess, toastError } from '~/client/util/apiNotification';
 import {
   apiv3Get, apiv3Put, apiv3Delete, apiv3Post,
 } from '~/client/util/apiv3-client';
-import { toastSuccess, toastError } from '~/client/util/apiNotification';
-import { IPageHasId } from '~/interfaces/page';
-import {
-  IUserGroup, IUserGroupHasId,
-} from '~/interfaces/user';
-import {
-  useSWRxUserGroupPages, useSWRxUserGroupRelationList, useSWRxChildUserGroupList,
-  useSWRxSelectableParentUserGroups, useSWRxSelectableChildUserGroups, useSWRxAncestorUserGroups,
-} from '~/stores/user-group';
+import { IUserGroup, IUserGroupHasId } from '~/interfaces/user';
+import { SearchTypes, SearchType } from '~/interfaces/user-group';
+import Xss from '~/services/xss';
 import { useIsAclEnabled } from '~/stores/context';
 import { useUpdateUserGroupConfirmModal } from '~/stores/modal';
+import {
+  useSWRxUserGroupPages, useSWRxUserGroupRelationList, useSWRxChildUserGroupList, useSWRxUserGroup,
+  useSWRxSelectableParentUserGroups, useSWRxSelectableChildUserGroups, useSWRxAncestorUserGroups,
+} from '~/stores/user-group';
 
-const UserGroupDetailPage: FC = () => {
+
+const UserGroupPageList = dynamic(() => import('./UserGroupPageList'), { ssr: false });
+const UserGroupUserTable = dynamic(() => import('./UserGroupUserTable'), { ssr: false });
+
+const UserGroupUserModal = dynamic(() => import('./UserGroupUserModal'), { ssr: false });
+
+const UserGroupDeleteModal = dynamic(() => import('../UserGroup/UserGroupDeleteModal').then(mod => mod.UserGroupDeleteModal), { ssr: false });
+const UserGroupDropdown = dynamic(() => import('../UserGroup/UserGroupDropdown').then(mod => mod.UserGroupDropdown), { ssr: false });
+const UserGroupForm = dynamic(() => import('../UserGroup/UserGroupForm').then(mod => mod.UserGroupForm), { ssr: false });
+const UserGroupModal = dynamic(() => import('../UserGroup/UserGroupModal').then(mod => mod.UserGroupModal), { ssr: false });
+const UserGroupTable = dynamic(() => import('../UserGroup/UserGroupTable').then(mod => mod.UserGroupTable), { ssr: false });
+const UpdateParentConfirmModal = dynamic(() => import('./UpdateParentConfirmModal').then(mod => mod.UpdateParentConfirmModal), { ssr: false });
+
+
+type Props = {
+  userGroupId?: string,
+}
+
+const UserGroupDetailPage = (props: Props): JSX.Element => {
   const { t } = useTranslation();
-  const adminUserGroupDetailElem = document.getElementById('admin-user-group-detail');
+  const router = useRouter();
+  const xss = useMemo(() => new Xss(), []);
+  const { userGroupId: currentUserGroupId } = props;
 
-  /*
-   * State (from AdminUserGroupDetailContainer)
-   */
-  const [currentUserGroup, setUserGroup] = useState<IUserGroupHasId>(JSON.parse(adminUserGroupDetailElem?.getAttribute('data-user-group') || 'null'));
-  const [relatedPages, setRelatedPages] = useState<IPageHasId[]>([]); // For page list
-  const [searchType, setSearchType] = useState<string>('partial');
+  const { data: currentUserGroup } = useSWRxUserGroup(currentUserGroupId);
+  const [searchType, setSearchType] = useState<SearchType>(SearchTypes.PARTIAL);
   const [isAlsoMailSearched, setAlsoMailSearched] = useState<boolean>(false);
   const [isAlsoNameSearched, setAlsoNameSearched] = useState<boolean>(false);
   const [selectedUserGroup, setSelectedUserGroup] = useState<IUserGroupHasId | undefined>(undefined); // not null but undefined (to use defaultProps in UserGroupDeleteModal)
   const [isCreateModalShown, setCreateModalShown] = useState<boolean>(false);
   const [isUpdateModalShown, setUpdateModalShown] = useState<boolean>(false);
   const [isDeleteModalShown, setDeleteModalShown] = useState<boolean>(false);
+  const [isUserGroupUserModalShown, setIsUserGroupUserModalShown] = useState<boolean>(false);
+
+  const isLoading = currentUserGroup === undefined;
+  const notExistsUerGroup = !isLoading && currentUserGroup == null;
+
+  useEffect(() => {
+    if (!objectIdUtils.isValidObjectId(currentUserGroupId) || notExistsUerGroup) {
+      router.push('/admin/user-groups');
+    }
+  }, [currentUserGroup, currentUserGroupId, notExistsUerGroup, router]);
+
 
   /*
    * Fetch
    */
-  const { data: userGroupPages } = useSWRxUserGroupPages(currentUserGroup._id, 10, 0);
+  const { data: userGroupPages } = useSWRxUserGroupPages(currentUserGroupId, 10, 0);
 
-  const { data: childUserGroupsList, mutate: mutateChildUserGroups } = useSWRxChildUserGroupList([currentUserGroup._id], true);
+
+  const { data: childUserGroupsList, mutate: mutateChildUserGroups } = useSWRxChildUserGroupList(currentUserGroupId ? [currentUserGroupId] : [], true);
   const childUserGroups = childUserGroupsList != null ? childUserGroupsList.childUserGroups : [];
   const grandChildUserGroups = childUserGroupsList != null ? childUserGroupsList.grandChildUserGroups : [];
   const childUserGroupIds = childUserGroups.map(group => group._id);
@@ -58,10 +79,10 @@ const UserGroupDetailPage: FC = () => {
   const { data: userGroupRelationList, mutate: mutateUserGroupRelations } = useSWRxUserGroupRelationList(childUserGroupIds);
   const childUserGroupRelations = userGroupRelationList != null ? userGroupRelationList : [];
 
-  const { data: selectableParentUserGroups, mutate: mutateSelectableParentUserGroups } = useSWRxSelectableParentUserGroups(currentUserGroup._id);
-  const { data: selectableChildUserGroups, mutate: mutateSelectableChildUserGroups } = useSWRxSelectableChildUserGroups(currentUserGroup._id);
+  const { data: selectableParentUserGroups, mutate: mutateSelectableParentUserGroups } = useSWRxSelectableParentUserGroups(currentUserGroupId);
+  const { data: selectableChildUserGroups, mutate: mutateSelectableChildUserGroups } = useSWRxSelectableChildUserGroups(currentUserGroupId);
 
-  const { data: ancestorUserGroups, mutate: mutateAncestorUserGroups } = useSWRxAncestorUserGroups(currentUserGroup._id);
+  const { data: ancestorUserGroups, mutate: mutateAncestorUserGroups } = useSWRxAncestorUserGroups(currentUserGroupId);
 
   const { data: isAclEnabled } = useIsAclEnabled();
 
@@ -70,17 +91,15 @@ const UserGroupDetailPage: FC = () => {
   /*
    * Function
    */
-  // TODO 85062: old name: switchIsAlsoMailSearched
   const toggleIsAlsoMailSearched = useCallback(() => {
     setAlsoMailSearched(prev => !prev);
   }, []);
 
-  // TODO 85062: old name: switchIsAlsoNameSearched
   const toggleAlsoNameSearched = useCallback(() => {
     setAlsoNameSearched(prev => !prev);
   }, []);
 
-  const switchSearchType = useCallback((searchType) => {
+  const switchSearchType = useCallback((searchType: SearchType) => {
     setSearchType(searchType);
   }, []);
 
@@ -98,13 +117,11 @@ const UserGroupDetailPage: FC = () => {
     });
     const { userGroup: updatedUserGroup } = res.data;
 
-    setUserGroup(updatedUserGroup);
-
     // mutate
     mutateAncestorUserGroups();
     mutateSelectableChildUserGroups();
     mutateSelectableParentUserGroups();
-  }, [setUserGroup, mutateAncestorUserGroups, mutateSelectableChildUserGroups, mutateSelectableParentUserGroups]);
+  }, [mutateAncestorUserGroups, mutateSelectableChildUserGroups, mutateSelectableParentUserGroups]);
 
   const onSubmitUpdateGroup = useCallback(
     async(targetGroup: IUserGroupHasId, userGroupData: Partial<IUserGroupHasId>, forceUpdateParents: boolean): Promise<void> => {
@@ -142,8 +159,8 @@ const UserGroupDetailPage: FC = () => {
     }
   }, [t, openUpdateParentConfirmModal, onSubmitUpdateGroup]);
 
-  const fetchApplicableUsers = useCallback(async(searchWord) => {
-    const res = await apiv3Get(`/user-groups/${currentUserGroup._id}/unrelated-users`, {
+  const fetchApplicableUsers = useCallback(async(searchWord: string) => {
+    const res = await apiv3Get(`/user-groups/${currentUserGroupId}/unrelated-users`, {
       searchWord,
       searchType,
       isAlsoMailSearched,
@@ -153,18 +170,25 @@ const UserGroupDetailPage: FC = () => {
     const { users } = res.data;
 
     return users;
-  }, [searchType, isAlsoMailSearched, isAlsoNameSearched]);
+  }, [currentUserGroupId, searchType, isAlsoMailSearched, isAlsoNameSearched]);
 
-  // TODO 85062: will be used in UserGroupUserFormByInput
   const addUserByUsername = useCallback(async(username: string) => {
-    await apiv3Post(`/user-groups/${currentUserGroup._id}/users/${username}`);
+    await apiv3Post(`/user-groups/${currentUserGroupId}/users/${username}`);
+    setIsUserGroupUserModalShown(false);
     mutateUserGroupRelations();
-  }, [currentUserGroup, mutateUserGroupRelations]);
+  }, [currentUserGroupId, mutateUserGroupRelations]);
 
+  // Fix: invalid csrf token => https://redmine.weseek.co.jp/issues/102704
   const removeUserByUsername = useCallback(async(username: string) => {
-    await apiv3Delete(`/user-groups/${currentUserGroup._id}/users/${username}`);
-    mutateUserGroupRelations();
-  }, [currentUserGroup, mutateUserGroupRelations]);
+    try {
+      await apiv3Delete(`/user-groups/${currentUserGroupId}/users/${username}`);
+      toastSuccess(`Removed "${xss.process(username)}" from "${xss.process(currentUserGroup?.name)}"`);
+      mutateUserGroupRelations();
+    }
+    catch (err) {
+      toastError(new Error(`Unable to remove "${xss.process(username)}" from "${xss.process(currentUserGroup?.name)}"`));
+    }
+  }, [currentUserGroup?.name, currentUserGroupId, mutateUserGroupRelations, xss]);
 
   const showUpdateModal = useCallback((group: IUserGroupHasId) => {
     setUpdateModalShown(true);
@@ -201,11 +225,11 @@ const UserGroupDetailPage: FC = () => {
     await openUpdateParentConfirmModal(
       selectedChild,
       {
-        parent: currentUserGroup._id,
+        parent: currentUserGroupId,
       },
       onSubmitUpdateGroup,
     );
-  }, [openUpdateParentConfirmModal, onSubmitUpdateGroup, currentUserGroup]);
+  }, [openUpdateParentConfirmModal, currentUserGroupId, onSubmitUpdateGroup]);
 
   const showCreateModal = useCallback(() => {
     setCreateModalShown(true);
@@ -220,7 +244,7 @@ const UserGroupDetailPage: FC = () => {
       await apiv3Post('/user-groups', {
         name: userGroupData.name,
         description: userGroupData.description,
-        parentId: currentUserGroup._id,
+        parentId: currentUserGroupId,
       });
 
       toastSuccess(t('toaster.update_successed', { target: t('UserGroup') }));
@@ -235,7 +259,7 @@ const UserGroupDetailPage: FC = () => {
     catch (err) {
       toastError(err);
     }
-  }, [t, currentUserGroup, mutateChildUserGroups, mutateSelectableChildUserGroups, mutateSelectableParentUserGroups, hideCreateModal]);
+  }, [currentUserGroupId, t, mutateChildUserGroups, mutateSelectableChildUserGroups, mutateSelectableParentUserGroups, hideCreateModal]);
 
   const showDeleteModal = useCallback(async(group: IUserGroupHasId) => {
     setSelectedUserGroup(group);
@@ -290,7 +314,7 @@ const UserGroupDetailPage: FC = () => {
   /*
    * Dependencies
    */
-  if (currentUserGroup == null) {
+  if (currentUserGroup == null || currentUserGroupId == null) {
     return <></>;
   }
 
@@ -303,8 +327,8 @@ const UserGroupDetailPage: FC = () => {
             ancestorUserGroups != null && ancestorUserGroups.length > 0 && (
               ancestorUserGroups.map((ancestorUserGroup: IUserGroupHasId) => (
                 // eslint-disable-next-line max-len
-                <li key={ancestorUserGroup._id} className={`breadcrumb-item ${ancestorUserGroup._id === currentUserGroup._id ? 'active' : ''}`} aria-current="page">
-                  { ancestorUserGroup._id === currentUserGroup._id ? (
+                <li key={ancestorUserGroup._id} className={`breadcrumb-item ${ancestorUserGroup._id === currentUserGroupId ? 'active' : ''}`} aria-current="page">
+                  { ancestorUserGroup._id === currentUserGroupId ? (
                     <>{ancestorUserGroup.name}</>
                   ) : (
                     <a href={`/admin/user-group-detail/${ancestorUserGroup._id}`}>{ancestorUserGroup.name}</a>
@@ -325,8 +349,25 @@ const UserGroupDetailPage: FC = () => {
         />
       </div>
       <h2 className="admin-setting-header mt-4">{t('admin:user_group_management.user_list')}</h2>
-      <UserGroupUserTable />
-      <UserGroupUserModal />
+      <UserGroupUserTable
+        userGroup={currentUserGroup}
+        userGroupRelations={childUserGroupRelations}
+        onClickPlusBtn={() => setIsUserGroupUserModalShown(true)}
+        onClickRemoveUserBtn={removeUserByUsername}
+      />
+      <UserGroupUserModal
+        isOpen={isUserGroupUserModalShown}
+        userGroup={currentUserGroup}
+        searchType={searchType}
+        isAlsoMailSearched={isAlsoMailSearched}
+        isAlsoNameSearched={isAlsoNameSearched}
+        onClickAddUserBtn={addUserByUsername}
+        onSearchApplicableUsers={fetchApplicableUsers}
+        onSwitchSearchType={switchSearchType}
+        onClose={() => setIsUserGroupUserModalShown(false)}
+        onToggleIsAlsoMailSearched={toggleIsAlsoMailSearched}
+        onToggleIsAlsoNameSearched={toggleAlsoNameSearched}
+      />
 
       <h2 className="admin-setting-header mt-4">{t('admin:user_group_management.child_group_list')}</h2>
       <UserGroupDropdown
@@ -372,7 +413,7 @@ const UserGroupDetailPage: FC = () => {
 
       <h2 className="admin-setting-header mt-4">{t('Page')}</h2>
       <div className="page-list">
-        <UserGroupPageList />
+        <UserGroupPageList userGroupId={currentUserGroupId} relatedPages={userGroupPages} />
       </div>
     </div>
   );

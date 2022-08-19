@@ -14,7 +14,6 @@
 
 .growi:not(.login-page) {
   // add background-image
-  #page-wrapper,
   .page-editor-preview-container {
     background-image: url('/images/themes/wood/wood.jpg');
     background-attachment: fixed;
@@ -34,6 +33,19 @@
 
 $themecolor: #b9b177;
 $themelight: #f5f3ee;
+
+.theme :global {
+  .grw-bg-image-wrapper {
+    position: fixed;
+    width: 100%;
+    height: 100%;
+  }
+
+  .grw-bg-image {
+    object-fit: cover;
+    object-position: center center;
+  }
+}
 
 //== Light Mode
 //
@@ -147,8 +159,8 @@ $themelight: #f5f3ee;
   .nologin {
     background: white;
 
-    .login-header,
-    .login-dialog {
+    .noLogin-header,
+    .noLogin-dialog {
       background-color: rgba(black, 0.1);
     }
 
