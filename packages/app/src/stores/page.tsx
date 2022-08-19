@@ -193,9 +193,6 @@ export const useSWRxPageOperation = (pageId: string, path: string, revisionId: s
       return;
     }
 
-    // const { pageId, path } = this.state;
-    // const { revisionId } = this.state;
-
     const options = Object.assign({}, optionsToSave);
 
     let markdown;
