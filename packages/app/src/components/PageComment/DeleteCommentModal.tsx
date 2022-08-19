@@ -16,7 +16,7 @@ export type DeleteCommentModalProps = {
   isShown: boolean,
   comment: ICommentHasId,
   errorMessage: string,
-  cancel: () => void, // for cancel evnet handling
+  cancel: (value: any) => void, // for cancel evnet handling
   confirmedToDelete: () => void, // for confirmed event handling
 }
 

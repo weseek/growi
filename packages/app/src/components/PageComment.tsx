@@ -97,7 +97,6 @@ export const PageComment: FC<PageCommentProps> = memo((props:PageCommentProps): 
   }, []);
 
   const onCancelDeleteComment = useCallback(() => {
-    setCommentToBeDeleted(null);
     setIsDeleteConfirmModalShown(false);
   }, []);
 
