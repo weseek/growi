@@ -41,7 +41,7 @@ export const AuditLogManagement: FC = () => {
    */
   const [isSettingPage, setIsSettingPage] = useState<boolean>(false);
   const [activePage, setActivePage] = useState<number>(1);
-  const [jumpPageNum, setJumpPageNum] = useState<number>(1);
+  const [jumpPageNumber, setJumpPageNumber] = useState<number>(1);
   const offset = (activePage - 1) * PAGING_LIMIT;
   const [startDate, setStartDate] = useState<Date | null>(null);
   const [endDate, setEndDate] = useState<Date | null>(null);
@@ -123,13 +123,13 @@ export const AuditLogManagement: FC = () => {
     if (!isNan) {
       // eslint-disable-next-line no-nested-ternary
       const jumpPageNumber = inputNumber > totalPagingPages ? totalPagingPages : inputNumber <= 0 ? 1 : inputNumber;
-      setJumpPageNum(jumpPageNumber);
+      setJumpPageNumber(jumpPageNumber);
     }
   }, [totalPagingPages]);
 
   const jumpPageButtonPushedHandler = useCallback(() => {
-    setActivePage(jumpPageNum);
-  }, [jumpPageNum]);
+    setActivePage(jumpPageNumber);
+  }, [jumpPageNumber]);
 
   // eslint-disable-next-line max-len
   const activityCounter = `<b>${activityList.length === 0 ? 0 : offset + 1}</b> - <b>${(PAGING_LIMIT * activePage) - (PAGING_LIMIT - activityList.length)}</b> of <b>${totalActivityNum}<b/>`;
