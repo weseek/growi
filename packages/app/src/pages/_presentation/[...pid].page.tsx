@@ -81,7 +81,6 @@ export const getServerSideProps: GetServerSideProps = async(context: GetServerSi
   await injectRevisionData(context, props);
 
   if (props.shouldRedirectTo != null) {
-    console.log('props.shouldRedirectTo', props.shouldRedirectTo);
     return {
       redirect: {
         destination: props.shouldRedirectTo,
