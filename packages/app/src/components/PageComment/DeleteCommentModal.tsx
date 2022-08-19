@@ -38,10 +38,6 @@ export const DeleteCommentModal = (props: DeleteCommentModalProps): JSX.Element 
   }
   const commentBodyElement = <span style={{ whiteSpace: 'pre-wrap' }}>{commentBody}</span>;
 
-  if (isShown == null) {
-    return <></>;
-  }
-
   return (
     <Modal isOpen={isShown} toggle={cancel} className={`${styles['page-comment-delete-modal']}`}>
       <ModalHeader tag="h4" toggle={cancel} className="bg-danger text-light">
@@ -50,10 +46,14 @@ export const DeleteCommentModal = (props: DeleteCommentModalProps): JSX.Element 
           Delete comment?
         </span>
       </ModalHeader>
-      <ModalBody>
-        <UserPicture user={comment.creator} size="xs" /> <strong><Username user={comment.creator}></Username></strong> wrote on {commentDate}:
-        <p className="card well comment-body mt-2 p-2">{commentBodyElement}</p>
-      </ModalBody>
+      {(isShown == null) ? (
+        <></>
+      ) : (
+        <ModalBody>
+          <UserPicture user={comment.creator} size="xs" /> <strong><Username user={comment.creator}></Username></strong> wrote on {commentDate}:
+          <p className="card well comment-body mt-2 p-2">{commentBodyElement}</p>
+        </ModalBody>
+      )}
       <ModalFooter>
         <span className="text-danger">{errorMessage}</span>&nbsp;
         <Button onClick={cancel}>Cancel</Button>
