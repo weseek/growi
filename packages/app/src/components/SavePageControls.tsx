@@ -1,6 +1,7 @@
 import React from 'react';
 
 import { pagePathUtils } from '@growi/core';
+import { NullableBoolean } from 'aws-sdk/clients/synthetics';
 import { useTranslation } from 'next-i18next';
 import {
   UncontrolledButtonDropdown, Button,
@@ -38,7 +39,7 @@ type Props = {
 
 const { isTopPage } = pagePathUtils;
 
-export const SavePageControls = (props: Props) => {
+export const SavePageControls = (props: Props): JSX.Element | null => {
   const { t } = useTranslation();
   const { data: currentPagePath } = useCurrentPagePath();
   const { data: isEditable } = useIsEditable();
