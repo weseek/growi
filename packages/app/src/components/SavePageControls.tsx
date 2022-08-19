@@ -101,8 +101,8 @@ export const SavePageControls = (props: Props) => {
   };
 
   // const isRootPage = pageContainer.state.path === '/';
-  // const labelSubmitButton = pageContainer.state.pageId == null ? t('Create') : t('Update');
-  // const labelOverwriteScopes = t('page_edit.overwrite_scopes', { operation: labelSubmitButton });
+  const labelSubmitButton = pageId == null ? t('Create') : t('Update');
+  const labelOverwriteScopes = t('page_edit.overwrite_scopes', { operation: labelSubmitButton });
 
   return (
     <div className="d-flex align-items-center form-inline flex-nowrap">
@@ -123,14 +123,12 @@ export const SavePageControls = (props: Props) => {
 
       <UncontrolledButtonDropdown direction="up">
         <Button id="caret" color="primary" className="btn-submit" onClick={save}>
-          labelSubmitButton
-          {/* {labelSubmitButton} */}
+          {labelSubmitButton}
         </Button>
         <DropdownToggle caret color="primary" />
         <DropdownMenu right>
           <DropdownItem onClick={saveAndOverwriteScopesOfDescendants}>
-            labelOverwriteScopes
-            {/* {labelOverwriteScopes} */}
+            {labelOverwriteScopes}
           </DropdownItem>
         </DropdownMenu>
       </UncontrolledButtonDropdown>
