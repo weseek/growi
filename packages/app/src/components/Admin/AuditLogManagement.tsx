@@ -122,10 +122,13 @@ export const AuditLogManagement: FC = () => {
 
     if (!isNan) {
       // eslint-disable-next-line no-nested-ternary
-      const jumpPageNumber = inputNumber > totalPagingPages ? totalPagingPages : inputNumber <= 0 ? 1 : inputNumber;
+      const jumpPageNumber = inputNumber > totalPagingPages ? totalPagingPages : inputNumber <= 0 ? activePageNumber : inputNumber;
       setJumpPageNumber(jumpPageNumber);
     }
-  }, [totalPagingPages]);
+    else {
+      setJumpPageNumber(activePageNumber);
+    }
+  }, [totalPagingPages, activePageNumber, setJumpPageNumber]);
 
   const jumpPageInputKeyDownHandler = useCallback((e) => {
     if (e.key === 'Enter') {
