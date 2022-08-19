@@ -1,5 +1,6 @@
 import React from 'react';
 
+import { pagePathUtils } from '@growi/core';
 import { useTranslation } from 'next-i18next';
 import {
   UncontrolledButtonDropdown, Button,
@@ -8,7 +9,9 @@ import {
 
 // import PageContainer from '~/client/services/PageContainer';
 import { getOptionsToSave } from '~/client/util/editor';
-import { useIsEditable, useCurrentPageId, useIsAclEnabled } from '~/stores/context';
+import {
+  useCurrentPagePath, useIsEditable, useCurrentPageId, useIsAclEnabled,
+} from '~/stores/context';
 import { usePageTagsForEditors, useIsEnabledUnsavedWarning } from '~/stores/editor';
 import {
   useEditorMode, useSelectedGrant,
@@ -31,11 +34,13 @@ type Props = {
   // mutateGrantGroupId?: () => void,
   // mutateGrantGroupName:() => void,
   // mutateIsEnabledUnsavedWarning?: () => void,
-
 }
+
+const { isTopPage } = pagePathUtils;
 
 export const SavePageControls = (props: Props) => {
   const { t } = useTranslation();
+  const { data: currentPagePath } = useCurrentPagePath();
   const { data: isEditable } = useIsEditable();
   const { data: editorMode } = useEditorMode();
   const { data: isAclEnabled } = useIsAclEnabled();
@@ -100,7 +105,7 @@ export const SavePageControls = (props: Props) => {
     // pageContainer.saveAndReload(optionsToSave, this.props.editorMode);
   };
 
-  // const isRootPage = pageContainer.state.path === '/';
+  const isRootPage = isTopPage(currentPagePath ?? '');
   const labelSubmitButton = pageId == null ? t('Create') : t('Update');
   const labelOverwriteScopes = t('page_edit.overwrite_scopes', { operation: labelSubmitButton });
 
@@ -111,8 +116,8 @@ export const SavePageControls = (props: Props) => {
           && (
             <div className="mr-2">
               <GrantSelector
-                // disabled={isRootPage}
                 grant={grant}
+                disabled={isRootPage}
                 grantGroupId={grantedGroup?.id}
                 grantGroupName={grantedGroup?.name}
                 onUpdateGrant={updateGrantHandler}
