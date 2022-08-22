@@ -271,7 +271,7 @@ const PageEditorByHackmd = (props) => {
                     className="btn btn-link btn-view-outdated-draft p-0"
                     type="button"
                     disabled={isInitializing}
-                    onClick={() => { resumeToEdit() }}
+                    onClick={resumeToEdit}
                   >
                     {t('hackmd.view_outdated_draft')}
                   </button>
@@ -286,7 +286,7 @@ const PageEditorByHackmd = (props) => {
                 className="btn btn-success btn-lg waves-effect waves-light"
                 type="button"
                 disabled={isInitializing}
-                onClick={() => { resumeToEdit() }}
+                onClick={resumeToEdit}
               >
                 <span className="btn-label"><i className="icon-fw icon-control-end"></i></span>
                 <span className="btn-text">{t('hackmd.resume_to_edit')}</span>
@@ -298,7 +298,7 @@ const PageEditorByHackmd = (props) => {
             <button
               className="btn btn-outline-secondary btn-lg waves-effect waves-light"
               type="button"
-              onClick={() => { discardChanges() }}
+              onClick={discardChanges}
             >
               <span className="btn-label"><i className="icon-fw icon-control-start"></i></span>
               <span className="btn-text">{t('hackmd.discard_changes')}</span>
@@ -322,7 +322,7 @@ const PageEditorByHackmd = (props) => {
               className="btn btn-info btn-lg waves-effect waves-light"
               type="button"
               disabled={isRevisionOutdated || isInitializing}
-              onClick={() => { startToEdit() }}
+              onClick={startToEdit}
             >
               <span className="btn-label"><i className="icon-fw icon-paper-plane"></i></span>
               {t('hackmd.start_to_edit')}
