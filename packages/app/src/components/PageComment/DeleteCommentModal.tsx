@@ -15,7 +15,7 @@ import styles from './DeleteCommentModal.module.scss';
 
 export type DeleteCommentModalProps = {
   isShown: boolean,
-  comment?: Nullable<ICommentHasId>,
+  comment: Nullable<ICommentHasId>,
   errorMessage: string,
   cancelToDelete: () => void,
   confirmeToDelete: () => void,
