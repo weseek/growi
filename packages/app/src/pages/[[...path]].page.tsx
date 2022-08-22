@@ -18,7 +18,6 @@ import { useRouter } from 'next/router';
 import superjson from 'superjson';
 
 import { PageAlerts } from '~/components/PageAlert/PageAlerts';
-import { TrashPageList } from '~/components/TrashPageList';
 import { PageComment } from '~/components/PageComment';
 // import { useTranslation } from '~/i18n';
 // import CommentEditorLazyRenderer from '~/components/PageComment/CommentEditorLazyRenderer';
@@ -54,7 +53,7 @@ import DisplaySwitcher from '../components/Page/DisplaySwitcher';
 import {
   useCurrentUser, useCurrentPagePath,
   useIsLatestRevision,
-  useIsForbidden, useIsNotFound, useIsTrashTopPage, useIsTrashPage, useIsSharedUser,
+  useIsForbidden, useIsNotFound, useIsTrashPage, useIsSharedUser,
   useIsEnabledStaleNotification, useIsIdenticalPath,
   useIsSearchServiceConfigured, useIsSearchServiceReachable, useDisableLinkSharing,
   useHackmdUri,
@@ -72,7 +71,7 @@ import {
 const logger = loggerFactory('growi:pages:all');
 
 const {
-  isPermalink: _isPermalink, isUsersHomePage, isTrashTopPage: _isTrashTopPage, isTrashPage: _isTrashPage, isUserPage, isCreatablePage,
+  isPermalink: _isPermalink, isUsersHomePage, isTrashPage: _isTrashPage, isUserPage, isCreatablePage,
 } = pagePathUtils;
 const { removeHeadingSlash } = pathUtils;
 
@@ -129,7 +128,6 @@ type Props = CommonProps & {
   isForbidden: boolean,
   isNotFound: boolean,
   IsNotCreatable: boolean,
-  isTrashTopPage: boolean,
   // isAbleToDeleteCompletely: boolean,
 
   isSearchServiceConfigured: boolean,
@@ -238,7 +236,6 @@ const GrowiPage: NextPage<Props> = (props: Props) => {
   useCurrentPageId(pageId);
   useSWRxCurrentPage(undefined, pageWithMeta?.data); // store initial data
   useSWRxPageInfo(pageId, undefined, pageWithMeta?.meta); // store initial data
-  useIsTrashTopPage(props.isTrashTopPage);
   useIsTrashPage(_isTrashPage(pageWithMeta?.data.path ?? ''));
   useIsUserPage(isUserPage(pageWithMeta?.data.path ?? ''));
   useIsNotCreatable(props.isForbidden || !isCreatablePage(pageWithMeta?.data.path ?? '')); // TODO: need to include props.isIdentical
@@ -317,8 +314,6 @@ const GrowiPage: NextPage<Props> = (props: Props) => {
               </div>
             </div>
 
-            {props.isTrashTopPage && <TrashPageList /> }
-
             {/* <div className="col-xl-2 col-lg-3 d-none d-lg-block revision-toc-container">
               <div id="revision-toc" className="revision-toc mt-3 sps sps--abv" data-sps-offset="123">
                 <div id="revision-toc-content" className="revision-toc-content"></div>
@@ -366,8 +361,6 @@ async function injectPageData(context: GetServerSidePropsContext, props: Props):
   const { pageService } = crowi;
 
   let currentPathname = props.currentPathname;
-
-  props.isTrashTopPage = _isTrashTopPage(props.currentPathname);
 
   const pageId = getPageIdFromPathname(currentPathname);
   const isPermalink = _isPermalink(currentPathname);
