@@ -21,7 +21,6 @@ export type DeleteCommentModalProps = {
 }
 
 export const DeleteCommentModal = (props: DeleteCommentModalProps): JSX.Element => {
-
   const {
     isShown, comment, errorMessage, cancelToDelete, confirmeToDelete,
   } = props;
@@ -30,7 +29,6 @@ export const DeleteCommentModal = (props: DeleteCommentModalProps): JSX.Element 
     if (comment == null || isShown === false) {
       return <></>;
     }
-
     return (
       <span>
         <i className="icon-fw icon-fire"></i>
@@ -44,8 +42,11 @@ export const DeleteCommentModal = (props: DeleteCommentModalProps): JSX.Element 
       return <></>;
     }
 
+    // the threshold for omitting body
     const OMIT_BODY_THRES = 400;
+
     const commentDate = format(new Date(comment.createdAt), 'yyyy/MM/dd HH:mm');
+
     let commentBody = comment.comment;
     if (commentBody.length > OMIT_BODY_THRES) { // omit
       commentBody = `${commentBody.substr(0, OMIT_BODY_THRES)}...`;
@@ -64,7 +65,6 @@ export const DeleteCommentModal = (props: DeleteCommentModalProps): JSX.Element 
     if (comment == null || isShown === false) {
       return <></>;
     }
-
     return (
       <>
         <span className="text-danger">{errorMessage}</span>&nbsp;
@@ -90,5 +90,4 @@ export const DeleteCommentModal = (props: DeleteCommentModalProps): JSX.Element 
       </ModalFooter>
     </Modal>
   );
-
 };
