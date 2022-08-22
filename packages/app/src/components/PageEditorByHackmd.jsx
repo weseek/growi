@@ -57,16 +57,12 @@ const PageEditorByHackmd = (props) => {
 
         return hackmdEditorRef.current.getValue();
       },
+      reset: () => {
+        setIsInitialized(false);
+      },
     };
     appContainer.registerComponentInstance('PageEditorByHackmd', pageEditorByHackmdInstance);
   }, [appContainer, isInitialized, t]);
-
-  /**
-   * reset initialized status
-   */
-  const reset = () => {
-    setIsInitialized(false);
-  };
 
   const getHackmdUri = useCallback(() => {
     const envVars = appContainer.getConfig().env;
