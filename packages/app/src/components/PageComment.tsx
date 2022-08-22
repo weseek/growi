@@ -229,7 +229,7 @@ export const PageComment: FC<PageCommentProps> = memo((props:PageCommentProps): 
           </div>
         </div>
       </div>
-      {(!isReadOnly) && (
+      {!isReadOnly && (
         <DeleteCommentModal
           isShown={isDeleteConfirmModalShown}
           comment={commentToBeDeleted}
