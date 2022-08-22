@@ -1,5 +1,6 @@
 import React from 'react';
 
+import { Nullable } from '@growi/core';
 import { UserPicture } from '@growi/ui';
 import { format } from 'date-fns';
 import {
@@ -14,7 +15,7 @@ import styles from './DeleteCommentModal.module.scss';
 
 export type DeleteCommentModalProps = {
   isShown: boolean,
-  comment?: ICommentHasId,
+  comment?: Nullable<ICommentHasId>,
   errorMessage: string,
   cancelToDelete: () => void,
   confirmeToDelete: () => void,
