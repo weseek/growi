@@ -52,16 +52,16 @@ module.exports = (crowi) => {
   const { exportService, socketIoService } = crowi;
 
   const activityEvent = crowi.event('activity');
-  this.adminEvent = crowi.event('admin');
+  const adminEvent = crowi.event('admin');
 
   // setup event
-  this.adminEvent.on('onProgressForExport', (data) => {
+  adminEvent.on('onProgressForExport', (data) => {
     socketIoService.getAdminSocket().emit('admin:onProgressForExport', data);
   });
-  this.adminEvent.on('onStartZippingForExport', (data) => {
+  adminEvent.on('onStartZippingForExport', (data) => {
     socketIoService.getAdminSocket().emit('admin:onStartZippingForExport', data);
   });
-  this.adminEvent.on('onTerminateForExport', (data) => {
+  adminEvent.on('onTerminateForExport', (data) => {
     socketIoService.getAdminSocket().emit('admin:onTerminateForExport', data);
   });
 

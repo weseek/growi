@@ -12,7 +12,7 @@ import { getBackgroundImageSrc } from '../Theme/utils/ThemeImageProvider';
 import { ThemeProvider } from '../Theme/utils/ThemeProvider';
 
 type Props = {
-  title: string,
+  title?: string,
   className?: string,
   children?: ReactNode,
 }

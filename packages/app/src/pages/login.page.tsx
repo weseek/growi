@@ -1,13 +1,12 @@
 import React from 'react';
 
 
-import { pagePathUtils } from '@growi/core';
 import {
   NextPage, GetServerSideProps, GetServerSidePropsContext,
 } from 'next';
 import dynamic from 'next/dynamic';
 
-import { RawLayout } from '~/components/Layout/RawLayout';
+import { NoLoginLayout } from '~/components/Layout/NoLoginLayout';
 import { CrowiRequest } from '~/interfaces/crowi-request';
 
 import {
@@ -36,25 +35,19 @@ const LoginPage: NextPage<Props> = (props: Props) => {
   // page
   useCurrentPathname(props.currentPathname);
 
-  const classNames: string[] = [];
+  const classNames: string[] = ['login-page'];
 
   const LoginForm = dynamic(() => import('~/components/LoginForm'), {
     ssr: false,
   });
 
   return (
-    <>
-      <RawLayout title={useCustomTitle(props, 'GROWI')} className={classNames.join(' ')}>
-        <div className='nologin'>
-          <div id='wrapper'>
-            <div id="page-wrapper">
-              <LoginForm objOfIsExternalAuthEnableds={props.enabledStrategies} isLocalStrategySetup={true} isLdapStrategySetup={true}
-                isRegistrationEnabled={true} registrationWhiteList={props.registrationWhiteList} isPasswordResetEnabled={true} />
-            </div>
-          </div>
-        </div>
-      </RawLayout>
-    </>
+    <NoLoginLayout title={useCustomTitle(props, 'GROWI')} className={classNames.join(' ')}>
+      <div className="col-md-12">
+        <LoginForm objOfIsExternalAuthEnableds={props.enabledStrategies} isLocalStrategySetup={true} isLdapStrategySetup={true}
+          isRegistrationEnabled={true} registrationWhiteList={props.registrationWhiteList} isPasswordResetEnabled={true} />
+      </div>
+    </NoLoginLayout>
   );
 };
 

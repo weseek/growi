@@ -40,7 +40,7 @@ const actionForPages = {
   transfer: 'transfer',
 };
 
-const UserGroupDeleteModal: FC<Props> = (props: Props) => {
+export const UserGroupDeleteModal: FC<Props> = (props: Props) => {
 
   const { t } = useTranslation();
 
@@ -209,5 +209,3 @@ const UserGroupDeleteModal: FC<Props> = (props: Props) => {
     </Modal>
   );
 };
-
-export default UserGroupDeleteModal;

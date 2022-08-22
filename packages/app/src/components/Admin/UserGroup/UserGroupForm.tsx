@@ -13,7 +13,7 @@ type Props = {
   onSubmit?: (targetGroup: IUserGroupHasId, userGroupData: Partial<IUserGroupHasId>) => Promise<void> | void
 };
 
-const UserGroupForm: FC<Props> = (props: Props) => {
+export const UserGroupForm: FC<Props> = (props: Props) => {
 
   const { t } = useTranslation();
 
@@ -152,5 +152,3 @@ const UserGroupForm: FC<Props> = (props: Props) => {
     </form>
   );
 };
-
-export default UserGroupForm;

@@ -53,7 +53,7 @@ const generateGroupIdToChildGroupsMap = (childUserGroups: IUserGroupHasId[]): Re
 };
 
 
-const UserGroupTable: FC<Props> = (props: Props) => {
+export const UserGroupTable: FC<Props> = (props: Props) => {
   const { t } = useTranslation();
 
   /*
@@ -219,5 +219,3 @@ const UserGroupTable: FC<Props> = (props: Props) => {
     </>
   );
 };
-
-export default UserGroupTable;
