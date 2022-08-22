@@ -19,7 +19,7 @@ import SelectCollectionsModal from './ExportArchiveData/SelectCollectionsModal';
 
 
 const IGNORED_COLLECTION_NAMES = [
-  'sessions',
+  'sessions', 'rlflx', 'activities',
 ];
 
 class ExportArchiveDataPage extends React.Component {

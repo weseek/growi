@@ -37,6 +37,29 @@ export const toggleBookmark = async(pageId: string, currentValue?: boolean): Pro
   }
 };
 
+// Utility to update body class
+const updateBodyClassByView = (expandContentWidth: boolean): void => {
+  const bodyClasses = document.body.classList;
+  const isLayoutFluid = bodyClasses.contains('growi-layout-fluid');
+
+  if (expandContentWidth && !isLayoutFluid) {
+    bodyClasses.add('growi-layout-fluid');
+  }
+  else if (isLayoutFluid) {
+    bodyClasses.remove('growi-layout-fluid');
+  }
+};
+
+export const updateContentWidth = async(pageId: string, newValue: boolean): Promise<void> => {
+  try {
+    await apiv3Put(`/page/${pageId}/content-width`, { expandContentWidth: newValue });
+    updateBodyClassByView(newValue);
+  }
+  catch (err) {
+    toastError(err);
+  }
+};
+
 export const bookmark = async(pageId: string): Promise<void> => {
   try {
     await apiv3Put('/bookmarks', { pageId, bool: true });

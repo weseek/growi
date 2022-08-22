@@ -9,7 +9,7 @@ import { exportAsMarkdown } from '~/client/services/page-operation';
 import { toastSuccess } from '~/client/util/apiNotification';
 import { smoothScrollIntoView } from '~/client/util/smooth-scroll';
 import { IPageToDeleteWithMeta, IPageToRenameWithMeta, IPageWithMeta } from '~/interfaces/page';
-import { IPageSearchMeta } from '~/interfaces/search';
+import { IPageWithSearchMeta } from '~/interfaces/search';
 import { OnDuplicatedFunction, OnRenamedFunction, OnDeletedFunction } from '~/interfaces/ui';
 import {
   usePageDuplicateModal, usePageRenameModal, usePageDeleteModal,
@@ -21,7 +21,7 @@ import { useFullTextSearchTermManager } from '~/stores/search';
 
 
 import AppContainer from '../../client/services/AppContainer';
-import { AdditionalMenuItemsRendererProps, ForceHideMenuItems } from '../Common/Dropdown/PageItemControl';
+import { AdditionalMenuItemsRendererProps, ForceHideMenuItems, MenuItemType } from '../Common/Dropdown/PageItemControl';
 import { GrowiSubNavigation } from '../Navbar/GrowiSubNavigation';
 import { SubNavButtons } from '../Navbar/SubNavButtons';
 import RevisionLoader from '../Page/RevisionLoader';
@@ -56,7 +56,7 @@ const MUTATION_OBSERVER_CONFIG = { childList: true, subtree: true };
 
 type Props ={
   appContainer: AppContainer,
-  pageWithMeta : IPageWithMeta<IPageSearchMeta>,
+  pageWithMeta : IPageWithSearchMeta,
   highlightKeywords?: string[],
   showPageControlDropdown?: boolean,
   forceHideMenuItems?: ForceHideMenuItems,
@@ -175,6 +175,7 @@ export const SearchResultContent: FC<Props> = (props: Props) => {
     const revisionId = typeof page.revision === 'string'
       ? page.revision
       : page.revision._id;
+
 
     return (
       <div className="d-flex flex-column align-items-end justify-content-center py-md-2">

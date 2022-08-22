@@ -1,7 +1,9 @@
 import { pagePathUtils } from '@growi/core';
 
-import { IPageOperationProcessInfo, IPageOperationProcessData } from '~/interfaces/page-operation';
-import PageOperation, { PageActionType, PageActionStage, PageOperationDocument } from '~/server/models/page-operation';
+import {
+  IPageOperationProcessInfo, IPageOperationProcessData, PageActionType, PageActionStage,
+} from '~/interfaces/page-operation';
+import PageOperation, { PageOperationDocument } from '~/server/models/page-operation';
 import loggerFactory from '~/utils/logger';
 
 import { ObjectIdLike } from '../interfaces/mongoose-utils';
@@ -26,9 +28,10 @@ class PageOperationService {
   }
 
   async init(): Promise<void> {
-    // cleanup PageOperation documents except ones with actionType: Rename
+    // cleanup PageOperation documents except ones with { actionType: Rename, actionStage: Sub }
     const types = [Duplicate, Delete, DeleteCompletely, Revert, NormalizeParent];
     await PageOperation.deleteByActionTypes(types);
+    await PageOperation.deleteMany({ actionType: PageActionType.Rename, actionStage: PageActionStage.Main });
   }
 
   /**
@@ -137,12 +140,19 @@ class PageOperationService {
       const isProcessable = pageOp.isProcessable();
 
       // processData for processInfo
-      const processData: IPageOperationProcessData = { [actionType]: { isProcessable } };
+      const mainProcessableInfo = pageOp.actionStage === PageActionStage.Main ? { isProcessable } : undefined;
+      const subProcessableInfo = pageOp.actionStage === PageActionStage.Sub ? { isProcessable } : undefined;
+      const processData: IPageOperationProcessData = {
+        [actionType]: {
+          [PageActionStage.Main]: mainProcessableInfo,
+          [PageActionStage.Sub]: subProcessableInfo,
+        },
+      };
 
       // Merge processData if other processData exist
       if (processInfo[pageId] != null) {
         const otherProcessData = processInfo[pageId];
-        processInfo[pageId] = { ...otherProcessData, ...processData };
+        processInfo[pageId] = Object.assign(otherProcessData, processData);
         return;
       }
       // add new process data to processInfo

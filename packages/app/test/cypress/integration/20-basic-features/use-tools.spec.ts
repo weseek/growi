@@ -139,6 +139,17 @@ context('Page Accessories Modal', () => {
      cy.getByTestid('page-attachment').should('be.visible')
      cy.screenshot(`${ssPrefix}-open-page-attachment-data-bootstrap4`);
   });
+  it('Share Link Management is shown successfully', () => {
+    cy.visit('/Sandbox/Bootstrap4', { });
+    cy.get('#grw-subnav-container').within(() => {
+      cy.getByTestid('open-page-item-control-btn').click();
+      cy.getByTestid('open-page-accessories-modal-btn-with-share-link-management-data-tab').click();
+   });
+
+   cy.getByTestid('page-accessories-modal').should('be.visible');
+   cy.getByTestid('share-link-management').should('be.visible');
+   cy.screenshot(`${ssPrefix}-open-share-link-management-bootstrap4`);
+  });
 
 });
 
