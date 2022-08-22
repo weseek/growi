@@ -14,7 +14,7 @@ import { getOptionsToSave } from '~/client/util/editor';
 import { useCurrentPagePath, useCurrentPageId } from '~/stores/context';
 import { useSWRxSlackChannels, useIsSlackEnabled, usePageTagsForEditors } from '~/stores/editor';
 import {
-  useEditorMode, useSelectedGrant, useSelectedGrantGroupId, useSelectedGrantGroupName,
+  useEditorMode, useSelectedGrant,
 } from '~/stores/ui';
 import loggerFactory from '~/utils/logger';
 
@@ -34,8 +34,6 @@ const PageEditorByHackmd = (props) => {
   const { data: pageId } = useCurrentPageId();
   const { data: pageTags } = usePageTagsForEditors(pageId);
   const { data: grant } = useSelectedGrant();
-  const { data: grantGroupId } = useSelectedGrantGroupId();
-  const { data: grantGroupName } = useSelectedGrantGroupName();
 
   const slackChannels = slackChannelsData.toString();
 
@@ -152,7 +150,7 @@ const PageEditorByHackmd = (props) => {
    * @param {string} markdown
    */
   const onSaveWithShortcut = useCallback(async(markdown) => {
-    const optionsToSave = getOptionsToSave(isSlackEnabled, slackChannels, grant, grantGroupId, grantGroupName, pageTags);
+    const optionsToSave = getOptionsToSave(isSlackEnabled, slackChannels, grant, grant.grantedGroup.id, grant.grantedGroup.name, pageTags);
 
     try {
       // disable unsaved warning
@@ -171,7 +169,7 @@ const PageEditorByHackmd = (props) => {
       logger.error('failed to save', error);
       pageContainer.showErrorToastr(error);
     }
-  }, [editorContainer, editorMode, grant, grantGroupId, grantGroupName, isSlackEnabled, pageContainer, pageTags, slackChannels]);
+  }, [editorContainer, editorMode, grant, isSlackEnabled, pageContainer, pageTags, slackChannels]);
 
   /**
    * onChange event of HackmdEditor handler
