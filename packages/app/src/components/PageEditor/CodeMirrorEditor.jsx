@@ -116,6 +116,7 @@ class CodeMirrorEditor extends AbstractEditor {
       emojiSearchText: null,
     };
 
+    this.cm = React.createRef();
     this.gridEditModal = React.createRef();
     this.linkEditModal = React.createRef();
     this.handsontableModal = React.createRef();
@@ -227,7 +228,7 @@ class CodeMirrorEditor extends AbstractEditor {
   }
 
   getCodeMirror() {
-    return this.cm.editor;
+    return this.cm.current?.editor;
   }
 
   /**
@@ -991,7 +992,7 @@ class CodeMirrorEditor extends AbstractEditor {
       <div className={`grw-codemirror-editor ${styles['grw-codemirror-editor']}`}>
 
         <UncontrolledCodeMirror
-          ref={(c) => { this.cm = c }}
+          ref={this.cm}
           className={additionalClasses}
           placeholder="search"
           editorDidMount={(editor) => {
