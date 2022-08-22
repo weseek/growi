@@ -14,7 +14,7 @@ import styles from './DeleteCommentModal.module.scss';
 
 export type DeleteCommentModalProps = {
   isShown: boolean,
-  comment: ICommentHasId,
+  comment?: ICommentHasId,
   errorMessage: string,
   cancelToDelete: () => void,
   confirmeToDelete: () => void,
@@ -25,6 +25,19 @@ export const DeleteCommentModal = (props: DeleteCommentModalProps): JSX.Element 
   const {
     isShown, comment, errorMessage, cancelToDelete, confirmeToDelete,
   } = props;
+
+  if (comment == null || isShown === false) {
+    return (
+      <Modal isOpen={isShown} toggle={cancelToDelete} className={`${styles['page-comment-delete-modal']}`}>
+        <ModalHeader tag="h4" toggle={cancelToDelete} className="bg-danger text-light">
+        </ModalHeader>
+        <ModalBody>
+        </ModalBody>
+        <ModalFooter>
+        </ModalFooter>
+      </Modal>
+    );
+  }
 
   // the threshold for omitting body
   const OMIT_BODY_THRES = 400;
@@ -46,14 +59,10 @@ export const DeleteCommentModal = (props: DeleteCommentModalProps): JSX.Element 
           Delete comment?
         </span>
       </ModalHeader>
-      {(isShown === false) ? (
-        <></>
-      ) : (
-        <ModalBody>
-          <UserPicture user={comment.creator} size="xs" /> <strong><Username user={comment.creator}></Username></strong> wrote on {commentDate}:
-          <p className="card well comment-body mt-2 p-2">{commentBodyElement}</p>
-        </ModalBody>
-      )}
+      <ModalBody>
+        <UserPicture user={comment.creator} size="xs" /> <strong><Username user={comment.creator}></Username></strong> wrote on {commentDate}:
+        <p className="card well comment-body mt-2 p-2">{commentBodyElement}</p>
+      </ModalBody>
       <ModalFooter>
         <span className="text-danger">{errorMessage}</span>&nbsp;
         <Button onClick={cancelToDelete}>Cancel</Button>
