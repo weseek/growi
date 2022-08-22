@@ -46,7 +46,7 @@ export const DeleteCommentModal = (props: DeleteCommentModalProps): JSX.Element 
           Delete comment?
         </span>
       </ModalHeader>
-      {(isShown == null) ? (
+      {(isShown === false) ? (
         <></>
       ) : (
         <ModalBody>
