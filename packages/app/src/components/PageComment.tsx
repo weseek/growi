@@ -131,7 +131,7 @@ export const PageComment: FC<PageCommentProps> = memo((props:PageCommentProps): 
   commentTitleClasses = titleAlign != null ? `${commentTitleClasses} text-${titleAlign}` : `${commentTitleClasses} text-center`;
 
   if (commentsFromOldest == null || commentsExceptReply == null || rendererOptions == null || currentPagePath == null || currentPage == null) {
-    if (hideIfEmpty) {
+    if (hideIfEmpty && comments?.length === 0) {
       return <></>;
     }
     return (
@@ -219,10 +219,12 @@ export const PageComment: FC<PageCommentProps> = memo((props:PageCommentProps): 
               })}
             </div>
             {/* TODO: Check if identical-page */}
-            <CommentEditorLazyRenderer
-              pageId={pageId}
-              rendererOptions={rendererOptions}
-            />
+            {(!isReadOnly) && (
+              <CommentEditorLazyRenderer
+                pageId={pageId}
+                rendererOptions={rendererOptions}
+              />
+            )}
           </div>
         </div>
       </div>
