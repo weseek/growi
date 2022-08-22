@@ -1,7 +1,7 @@
 import React, { useCallback, useState } from 'react';
 
 
-import { useTranslation } from 'react-i18next';
+import { useTranslation } from 'next-i18next';
 
 import { toastSuccess, toastError } from '~/client/util/apiNotification';
 import { apiPost, apiPostForm } from '~/client/util/apiv1-client';

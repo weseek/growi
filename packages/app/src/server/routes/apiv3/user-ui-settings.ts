@@ -15,7 +15,6 @@ const router = express.Router();
 
 module.exports = (crowi) => {
   const loginRequiredStrictly = require('../../middlewares/login-required')(crowi);
-  const csrf = require('../../middlewares/csrf')(crowi);
 
   const validatorForPut = [
     body('settings').exists().withMessage('The body param \'settings\' is required'),
@@ -27,7 +26,7 @@ module.exports = (crowi) => {
   ];
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  router.put('/', loginRequiredStrictly, csrf, validatorForPut, apiV3FormValidator, async(req: any, res: any) => {
+  router.put('/', loginRequiredStrictly, validatorForPut, apiV3FormValidator, async(req: any, res: any) => {
     const { user } = req;
     const { settings } = req.body;
 

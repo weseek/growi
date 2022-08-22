@@ -2,10 +2,10 @@ import React, {
   forwardRef, ForwardRefRenderFunction, useEffect, useImperativeHandle, useRef, useState,
 } from 'react';
 
-import { useTranslation } from 'react-i18next';
+import { useTranslation } from 'next-i18next';
+import dynamic from 'next/dynamic';
 
 import { ISelectableAll } from '~/client/interfaces/selectable-all';
-import AppContainer from '~/client/services/AppContainer';
 import { toastSuccess } from '~/client/util/apiNotification';
 import { IFormattedSearchResult, IPageWithSearchMeta } from '~/interfaces/search';
 import { OnDeletedFunction } from '~/interfaces/ui';
@@ -14,7 +14,6 @@ import { usePageDeleteModal } from '~/stores/modal';
 import { usePageTreeTermManager } from '~/stores/page-listing';
 
 import { ForceHideMenuItems } from '../Common/Dropdown/PageItemControl';
-import { SearchResultContent } from '../SearchPage/SearchResultContent';
 import { SearchResultList } from '../SearchPage/SearchResultList';
 
 
@@ -28,8 +27,6 @@ export interface IReturnSelectedPageIds {
 
 
 type Props = {
-  appContainer: AppContainer,
-
   pages?: IPageWithSearchMeta[],
   searchingKeyword?: string,
 
@@ -43,8 +40,8 @@ type Props = {
 }
 
 const SearchPageBaseSubstance: ForwardRefRenderFunction<ISelectableAll & IReturnSelectedPageIds, Props> = (props:Props, ref) => {
+  const SearchResultContent = dynamic(import('../SearchPage/SearchResultContent').then(mod => mod.SearchResultContent), { ssr: false });
   const {
-    appContainer,
     pages,
     searchingKeyword,
     forceHideMenuItems,
@@ -203,7 +200,6 @@ const SearchPageBaseSubstance: ForwardRefRenderFunction<ISelectableAll & IReturn
         <div className="mw-0 flex-grow-1 flex-basis-0 d-none d-lg-block search-result-content">
           { selectedPageWithMeta != null && (
             <SearchResultContent
-              appContainer={appContainer}
               pageWithMeta={selectedPageWithMeta}
               highlightKeywords={highlightKeywords}
               showPageControlDropdown={!isGuestUser}

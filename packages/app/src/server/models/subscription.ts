@@ -1,10 +1,11 @@
-import { getOrCreateModel } from '@growi/core';
+import { SubscriptionStatusType, AllSubscriptionStatusType } from '@growi/core';
 import {
   Types, Document, Model, Schema,
 } from 'mongoose';
 
 import { AllSupportedTargetModels } from '~/interfaces/activity';
-import { SubscriptionStatusType, AllSubscriptionStatusType } from '~/interfaces/subscription';
+
+import { getOrCreateModel } from '../util/mongoose-utils';
 
 
 export interface ISubscription {

@@ -245,9 +245,6 @@ You can create links using `[Display text](URL)`.
 
 ## Pukiwiki like linker
 
-(available by [weseek/growi-plugin-pukiwiki-like-linker
-](https://github.com/weseek/growi-plugin-pukiwiki-like-linker) )
-
 This is the most flexible linker.
 Both the page description and link address can be displayed on the page.
 

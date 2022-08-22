@@ -14,7 +14,9 @@ on:
       - yarn.lock
       - packages/app/**
       - '!packages/app/docker/**'
+      - packages/codemirror-textlint/**
       - packages/core/**
+      - packages/remark-growi-plugin/**
       - packages/slack/**
       - packages/ui/**
       - packages/plugin-*/**
@@ -53,10 +55,10 @@ jobs:
 
       - name: lerna run lint for plugins
         run: |
-          yarn lerna run lint --scope @growi/plugin-*
+          yarn lerna run lint --scope @growi/remark-growi-plugin --scope @growi/plugin-*
       - name: lerna run lint for app
         run: |
-          yarn lerna run lint --scope @growi/app --scope @growi/codemirror-textlint --scope @growi/core --scope @growi/ui
+          yarn lerna run lint --scope @growi/app --scope @growi/codemirror-textlint --scope @growi/core --scope @growi/slack --scope @growi/ui
 
       - name: Slack Notification
         uses: weseek/ghaction-slack-notification@master
@@ -105,7 +107,11 @@ jobs:
         run: |
           npx lerna bootstrap -- --frozen-lockfile
 
-      - name: yarn test
+      - name: lerna run test for plugins
+        run: |
+          yarn lerna run test --scope @growi/remark-growi-plugin --scope @growi/plugin-*
+
+      - name: Test app
         working-directory: ./packages/app
         run: |
           yarn test:ci --selectProjects unit server ; yarn test:ci --selectProjects server-v5
@@ -116,7 +122,9 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: Coverage Report
-          path: packages/app/coverage
+          path: |
+            packages/app/coverage
+            packages/remark-growi-plugin/coverage
 
       - name: Slack Notification
         uses: weseek/ghaction-slack-notification@master
@@ -150,16 +158,17 @@ jobs:
           cache: 'yarn'
           cache-dependency-path: '**/yarn.lock'
 
-      - name: Cache/Restore node_modules
+      - name: Cache/Restore node_modules and next cache files
         id: cache-dependencies
         uses: actions/cache@v3
         with:
           path: |
             **/node_modules
-          key: node_modules-${{ runner.OS }}-node${{ matrix.node-version }}-${{ hashFiles('**/yarn.lock') }}-${{ hashFiles('packages/app/package.json') }}
+            ${{ github.workspace }}/packages/app/.next/cache
+          key: dev-${{ runner.OS }}-node${{ matrix.node-version }}-${{ hashFiles('**/yarn.lock') }}-${{ hashFiles('packages/app/package.json') }}
           restore-keys: |
-            node_modules-${{ runner.OS }}-node${{ matrix.node-version }}-${{ hashFiles('**/yarn.lock') }}-
-            node_modules-${{ runner.OS }}-node${{ matrix.node-version }}-
+            dev-${{ runner.OS }}-node${{ matrix.node-version }}-${{ hashFiles('**/yarn.lock') }}-
+            dev-${{ runner.OS }}-node${{ matrix.node-version }}-
 
       - name: lerna bootstrap
         run: |

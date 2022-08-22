@@ -25,7 +25,7 @@ module.exports = (crowi) => {
   const { appService, mailService, configManager } = crowi;
   const User = crowi.model('User');
   const path = require('path');
-  const csrf = require('../../middlewares/csrf')(crowi);
+
   const addActivity = generateAddActivityMiddleware(crowi);
 
   const activityEvent = crowi.event('activity');
@@ -95,7 +95,7 @@ module.exports = (crowi) => {
   });
 
   // eslint-disable-next-line max-len
-  router.put('/', checkPassportStrategyMiddleware, injectResetOrderByTokenMiddleware, csrf, validator.password, apiV3FormValidator, addActivity, async(req, res) => {
+  router.put('/', checkPassportStrategyMiddleware, injectResetOrderByTokenMiddleware, validator.password, apiV3FormValidator, addActivity, async(req, res) => {
     const { passwordResetOrder } = req;
     const { email } = passwordResetOrder;
     const grobalLang = configManager.getConfig('crowi', 'app:globalLang');

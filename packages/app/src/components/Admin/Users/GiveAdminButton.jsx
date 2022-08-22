@@ -1,10 +1,9 @@
 import React from 'react';
 
+import { useTranslation } from 'next-i18next';
 import PropTypes from 'prop-types';
-import { useTranslation } from 'react-i18next';
 
 import AdminUsersContainer from '~/client/services/AdminUsersContainer';
-import AppContainer from '~/client/services/AppContainer';
 import { toastSuccess, toastError } from '~/client/util/apiNotification';
 
 import { withUnstatedContainers } from '../../UnstatedUtils';
@@ -49,11 +48,10 @@ const GiveAdminButtonWrapperFC = (props) => {
 /**
  * Wrapper component for using unstated
  */
-const GiveAdminButtonWrapper = withUnstatedContainers(GiveAdminButtonWrapperFC, [AppContainer, AdminUsersContainer]);
+const GiveAdminButtonWrapper = withUnstatedContainers(GiveAdminButtonWrapperFC, [AdminUsersContainer]);
 
 GiveAdminButton.propTypes = {
   t: PropTypes.func.isRequired, // i18next
-  appContainer: PropTypes.instanceOf(AppContainer).isRequired,
   adminUsersContainer: PropTypes.instanceOf(AdminUsersContainer).isRequired,
 
   user: PropTypes.object.isRequired,

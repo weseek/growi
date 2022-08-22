@@ -101,7 +101,6 @@ COPY packages/core packages/core
 COPY packages/codemirror-textlint packages/codemirror-textlint
 COPY packages/plugin-attachment-refs packages/plugin-attachment-refs
 COPY packages/plugin-lsx packages/plugin-lsx
-COPY packages/plugin-pukiwiki-like-linker packages/plugin-pukiwiki-like-linker
 COPY packages/slack packages/slack
 COPY packages/ui packages/ui
 
@@ -111,11 +110,11 @@ RUN yarn lerna run build
 # make artifacts
 RUN tar -cf packages.tar \
   package.json \
+  packages/app/.next \
   packages/app/config \
   packages/app/public \
   packages/app/resource \
   packages/app/tmp \
-  packages/app/migrate-mongo-config.js \
   packages/app/.env.production* \
   packages/*/package.json \
   packages/*/dist

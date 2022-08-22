@@ -99,7 +99,6 @@ const ErrorV3 = require('../../models/vo/error-apiv3');
 module.exports = (crowi) => {
   const loginRequiredStrictly = require('../../middlewares/login-required')(crowi);
   const adminRequired = require('../../middlewares/admin-required')(crowi);
-  const csrf = require('../../middlewares/csrf')(crowi);
   const addActivity = generateAddActivityMiddleware(crowi);
 
   const activityEvent = crowi.event('activity');
@@ -254,7 +253,7 @@ module.exports = (crowi) => {
    *                schema:
    *                  $ref: '#/components/schemas/CustomizeLayout'
    */
-  router.put('/layout', loginRequiredStrictly, adminRequired, csrf, addActivity, validator.layout, apiV3FormValidator, async(req, res) => {
+  router.put('/layout', loginRequiredStrictly, adminRequired, addActivity, validator.layout, apiV3FormValidator, async(req, res) => {
     const requestParams = {
       'customize:isContainerFluid': req.body.isContainerFluid,
     };
@@ -337,7 +336,7 @@ module.exports = (crowi) => {
    *                schema:
    *                  $ref: '#/components/schemas/CustomizeTheme'
    */
-  router.put('/theme', loginRequiredStrictly, adminRequired, csrf, addActivity, validator.theme, apiV3FormValidator, async(req, res) => {
+  router.put('/theme', loginRequiredStrictly, adminRequired, addActivity, validator.theme, apiV3FormValidator, async(req, res) => {
     const requestParams = {
       'customize:theme': req.body.themeType,
     };
@@ -373,7 +372,7 @@ module.exports = (crowi) => {
     }
   });
 
-  router.put('/sidebar', loginRequiredStrictly, adminRequired, csrf, validator.sidebar, apiV3FormValidator, addActivity, async(req, res) => {
+  router.put('/sidebar', loginRequiredStrictly, adminRequired, validator.sidebar, apiV3FormValidator, addActivity, async(req, res) => {
     const requestParams = {
       'customize:isSidebarDrawerMode': req.body.isSidebarDrawerMode,
       'customize:isSidebarClosedAtDockMode': req.body.isSidebarClosedAtDockMode,
@@ -420,7 +419,7 @@ module.exports = (crowi) => {
    *                schema:
    *                  $ref: '#/components/schemas/CustomizeFunction'
    */
-  router.put('/function', loginRequiredStrictly, adminRequired, csrf, addActivity, validator.function, apiV3FormValidator, async(req, res) => {
+  router.put('/function', loginRequiredStrictly, adminRequired, addActivity, validator.function, apiV3FormValidator, async(req, res) => {
     const requestParams = {
       'customize:isEnabledTimeline': req.body.isEnabledTimeline,
       'customize:isSavedStatesOfTabChanges': req.body.isSavedStatesOfTabChanges,
@@ -482,7 +481,7 @@ module.exports = (crowi) => {
    *                schema:
    *                  $ref: '#/components/schemas/CustomizeHighlight'
    */
-  router.put('/highlight', loginRequiredStrictly, adminRequired, csrf, addActivity, validator.highlight, apiV3FormValidator, async(req, res) => {
+  router.put('/highlight', loginRequiredStrictly, adminRequired, addActivity, validator.highlight, apiV3FormValidator, async(req, res) => {
     const requestParams = {
       'customize:highlightJsStyle': req.body.highlightJsStyle,
       'customize:highlightJsStyleBorder': req.body.highlightJsStyleBorder,
@@ -528,7 +527,7 @@ module.exports = (crowi) => {
    *                schema:
    *                  $ref: '#/components/schemas/CustomizeTitle'
    */
-  router.put('/customize-title', loginRequiredStrictly, adminRequired, csrf, addActivity, validator.customizeTitle, apiV3FormValidator, async(req, res) => {
+  router.put('/customize-title', loginRequiredStrictly, adminRequired, addActivity, validator.customizeTitle, apiV3FormValidator, async(req, res) => {
     const requestParams = {
       'customize:title': req.body.customizeTitle,
     };
@@ -575,7 +574,7 @@ module.exports = (crowi) => {
    *                schema:
    *                  $ref: '#/components/schemas/CustomizeHeader'
    */
-  router.put('/customize-header', loginRequiredStrictly, adminRequired, csrf, addActivity, validator.customizeHeader, apiV3FormValidator, async(req, res) => {
+  router.put('/customize-header', loginRequiredStrictly, adminRequired, addActivity, validator.customizeHeader, apiV3FormValidator, async(req, res) => {
     const requestParams = {
       'customize:header': req.body.customizeHeader,
     };
@@ -618,7 +617,7 @@ module.exports = (crowi) => {
    *                schema:
    *                  $ref: '#/components/schemas/CustomizeCss'
    */
-  router.put('/customize-css', loginRequiredStrictly, adminRequired, csrf, addActivity, validator.customizeCss, apiV3FormValidator, async(req, res) => {
+  router.put('/customize-css', loginRequiredStrictly, adminRequired, addActivity, validator.customizeCss, apiV3FormValidator, async(req, res) => {
     const requestParams = {
       'customize:css': req.body.customizeCss,
     };
@@ -664,7 +663,7 @@ module.exports = (crowi) => {
    *                schema:
    *                  $ref: '#/components/schemas/CustomizeScript'
    */
-  router.put('/customize-script', loginRequiredStrictly, adminRequired, csrf, addActivity, validator.customizeScript, apiV3FormValidator, async(req, res) => {
+  router.put('/customize-script', loginRequiredStrictly, adminRequired, addActivity, validator.customizeScript, apiV3FormValidator, async(req, res) => {
     const requestParams = {
       'customize:script': req.body.customizeScript,
     };
@@ -690,7 +689,7 @@ module.exports = (crowi) => {
     return res.apiv3({ isDefaultLogo, customizedLogoSrc });
   });
 
-  router.put('/customize-logo', csrf, loginRequiredStrictly, adminRequired, validator.logo, apiV3FormValidator, async(req, res) => {
+  router.put('/customize-logo', loginRequiredStrictly, adminRequired, validator.logo, apiV3FormValidator, async(req, res) => {
 
     const {
       isDefaultLogo, customizedLogoSrc,
@@ -716,7 +715,7 @@ module.exports = (crowi) => {
   });
 
   router.post('/upload-brand-logo', uploads.single('file'), loginRequiredStrictly,
-    adminRequired, csrf, validator.logo, apiV3FormValidator, async(req, res) => {
+    adminRequired, validator.logo, apiV3FormValidator, async(req, res) => {
 
       if (req.file == null) {
         return res.apiv3Err(new ErrorV3('File error.', 'upload-brand-logo-failed'));
@@ -757,7 +756,7 @@ module.exports = (crowi) => {
       return res.apiv3({ attachment });
     });
 
-  router.delete('/delete-brand-logo', csrf, loginRequiredStrictly, adminRequired, async(req, res) => {
+  router.delete('/delete-brand-logo', loginRequiredStrictly, adminRequired, async(req, res) => {
 
     const attachments = await Attachment.find({ attachmentType: AttachmentType.BRAND_LOGO });
 

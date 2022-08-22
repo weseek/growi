@@ -4,7 +4,7 @@ import React, {
 
 import dateFnsFormat from 'date-fns/format';
 import { TFunctionResult } from 'i18next';
-import { useTranslation } from 'react-i18next';
+import { useTranslation } from 'next-i18next';
 
 import { IUserGroupHasId, IUserGroupRelation, IUserHasId } from '~/interfaces/user';
 
@@ -53,7 +53,7 @@ const generateGroupIdToChildGroupsMap = (childUserGroups: IUserGroupHasId[]): Re
 };
 
 
-const UserGroupTable: FC<Props> = (props: Props) => {
+export const UserGroupTable: FC<Props> = (props: Props) => {
   const { t } = useTranslation();
 
   /*
@@ -219,5 +219,3 @@ const UserGroupTable: FC<Props> = (props: Props) => {
     </>
   );
 };
-
-export default UserGroupTable;

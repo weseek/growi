@@ -28,7 +28,7 @@ module.exports = (crowi) => {
   const validator = {
     retrieveAttachments: [
       query('pageId').isMongoId().withMessage('pageId is required'),
-      query('page').optional().isInt().withMessage('page must be a number'),
+      query('pageNumber').optional().isInt().withMessage('pageNumber must be a number'),
       query('limit').optional().isInt({ max: 100 }).withMessage('You should set less than 100 or not to set limit.'),
     ],
   };
@@ -53,8 +53,8 @@ module.exports = (crowi) => {
   router.get('/list', accessTokenParser, loginRequired, validator.retrieveAttachments, apiV3FormValidator, async(req, res) => {
 
     const limit = req.query.limit || await crowi.configManager.getConfig('crowi', 'customize:showPageLimitationS') || 10;
-    const page = req.query.page || 1;
-    const offset = (page - 1) * limit;
+    const pageNumber = req.query.pageNumber || 1;
+    const offset = (pageNumber - 1) * limit;
 
     try {
       const pageId = req.query.pageId;

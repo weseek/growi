@@ -1,13 +1,16 @@
 /* eslint-disable react/no-danger */
 import React from 'react';
 
+import { pathUtils } from '@growi/core';
+import { useTranslation } from 'next-i18next';
 import PropTypes from 'prop-types';
-import { useTranslation } from 'react-i18next';
+import urljoin from 'url-join';
 
 
 import AdminGeneralSecurityContainer from '~/client/services/AdminGeneralSecurityContainer';
 import AdminGitHubSecurityContainer from '~/client/services/AdminGitHubSecurityContainer';
 import { toastSuccess, toastError } from '~/client/util/apiNotification';
+import { useSiteUrl } from '~/stores/context';
 
 import { withUnstatedContainers } from '../../UnstatedUtils';
 
@@ -33,8 +36,11 @@ class GitHubSecurityManagementContents extends React.Component {
   }
 
   render() {
-    const { t, adminGeneralSecurityContainer, adminGitHubSecurityContainer } = this.props;
+    const {
+      t, adminGeneralSecurityContainer, adminGitHubSecurityContainer, siteUrl,
+    } = this.props;
     const { isGitHubEnabled } = adminGeneralSecurityContainer.state;
+    const gitHubCallbackUrl = urljoin(pathUtils.removeTrailingSlash(siteUrl), '/passport/github/callback');
 
     return (
 
@@ -75,11 +81,11 @@ class GitHubSecurityManagementContents extends React.Component {
             <input
               className="form-control"
               type="text"
-              value={adminGitHubSecurityContainer.state.appSiteUrl}
+              value={gitHubCallbackUrl}
               readOnly
             />
             <p className="form-text text-muted small">{t('security_setting.desc_of_callback_URL', { AuthName: 'OAuth' })}</p>
-            {!adminGeneralSecurityContainer.state.appSiteUrl && (
+            {(siteUrl == null || siteUrl === '') && (
               <div className="alert alert-danger">
                 <i
                   className="icon-exclamation"
@@ -172,7 +178,7 @@ class GitHubSecurityManagementContents extends React.Component {
           <ol id="collapseHelpForGitHubOauth" className="collapse">
             {/* eslint-disable-next-line max-len */}
             <li dangerouslySetInnerHTML={{ __html: t('security_setting.OAuth.GitHub.register_1', { link: '<a href="https://github.com/settings/developers" target=_blank>GitHub Developer Settings</a>' }) }} />
-            <li dangerouslySetInnerHTML={{ __html: t('security_setting.OAuth.GitHub.register_2', { url: adminGitHubSecurityContainer.state.callbackUrl }) }} />
+            <li dangerouslySetInnerHTML={{ __html: t('security_setting.OAuth.GitHub.register_2', { url: gitHubCallbackUrl }) }} />
             <li dangerouslySetInnerHTML={{ __html: t('security_setting.OAuth.GitHub.register_3') }} />
           </ol>
         </div>
@@ -187,7 +193,8 @@ class GitHubSecurityManagementContents extends React.Component {
 
 const GitHubSecurityManagementContentsFC = (props) => {
   const { t } = useTranslation();
-  return <GitHubSecurityManagementContents t={t} {...props} />;
+  const { data: siteUrl } = useSiteUrl();
+  return <GitHubSecurityManagementContents t={t} siteUrl={siteUrl} {...props} />;
 };
 
 /**

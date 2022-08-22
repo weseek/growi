@@ -1,7 +1,9 @@
-import React, { useState, useCallback, useEffect } from 'react';
+import React, {
+  useState, useCallback, useEffect, useRef,
+} from 'react';
 
+import { useRipple } from 'react-use-ripple';
 import StickyEvents from 'sticky-events';
-
 
 import { smoothScrollIntoView } from '~/client/util/smooth-scroll';
 import { useCurrentPagePath, useCurrentUser } from '~/stores/context';
@@ -22,6 +24,9 @@ const Fab = () => {
   const [animateClasses, setAnimateClasses] = useState('invisible');
   const [buttonClasses, setButtonClasses] = useState('');
 
+  // ripple
+  const createBtnRef = useRef(null);
+  useRipple(createBtnRef, { rippleColor: 'rgba(255, 255, 255, 0.3)' });
 
   const stickyChangeHandler = useCallback((event) => {
     logger.debug('StickyEvents.CHANGE detected');
@@ -54,7 +59,8 @@ const Fab = () => {
         <div className={`rounded-circle position-absolute ${animateClasses}`} style={{ bottom: '2.3rem', right: '4rem' }}>
           <button
             type="button"
-            className={`btn btn-lg btn-create-page btn-primary rounded-circle p-0 waves-effect waves-light ${buttonClasses}`}
+            className={`btn btn-lg btn-create-page btn-primary rounded-circle p-0 ${buttonClasses}`}
+            ref={createBtnRef}
             onClick={() => openCreateModal(currentPath)}
           >
             <CreatePageIcon />

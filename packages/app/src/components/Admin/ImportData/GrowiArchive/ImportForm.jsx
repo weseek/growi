@@ -1,7 +1,7 @@
 import React from 'react';
 
 import PropTypes from 'prop-types';
-import { useTranslation } from 'react-i18next';
+import { useTranslation } from 'next-i18next';
 
 import AdminSocketIoContainer from '~/client/services/AdminSocketIoContainer';
 import { toastSuccess, toastError } from '~/client/util/apiNotification';
@@ -94,7 +94,7 @@ class ImportForm extends React.Component {
     return Object.keys(this.state.collectionNameToFileNameMap);
   }
 
-  componentWillMount() {
+  UNSAFE_componentWillMount() {
     this.setupWebsocketEventHandler();
   }
 

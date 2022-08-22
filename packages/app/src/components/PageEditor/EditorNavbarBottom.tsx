@@ -1,12 +1,9 @@
 import React, { useCallback, useState, useEffect } from 'react';
 
-import PropTypes from 'prop-types';
 import { Collapse, Button } from 'reactstrap';
 
 
-import AppContainer from '~/client/services/AppContainer';
-import EditorContainer from '~/client/services/EditorContainer';
-import { useCurrentPagePath } from '~/stores/context';
+import { useCurrentPagePath, useIsSlackConfigured } from '~/stores/context';
 import { useSWRxSlackChannels, useIsSlackEnabled } from '~/stores/editor';
 import {
   EditorMode, useDrawerOpened, useEditorMode, useIsDeviceSmallerThanMd,
@@ -15,7 +12,6 @@ import {
 import SavePageControls from '../SavePageControls';
 import SlackLogo from '../SlackLogo';
 import { SlackNotification } from '../SlackNotification';
-import { withUnstatedContainers } from '../UnstatedUtils';
 
 
 import OptionsSelector from './OptionsSelector';
@@ -27,13 +23,14 @@ const EditorNavbarBottom = (props) => {
   const [isExpanded, setExpanded] = useState(false);
 
   const [isSlackExpanded, setSlackExpanded] = useState(false);
-  const isSlackConfigured = props.appContainer.getConfig().isSlackConfigured;
 
+  const { data: isSlackConfigured } = useIsSlackConfigured();
   const { mutate: mutateDrawerOpened } = useDrawerOpened();
   const { data: isDeviceSmallerThanMd } = useIsDeviceSmallerThanMd();
   const additionalClasses = ['grw-editor-navbar-bottom'];
   const { data: currentPagePath } = useCurrentPagePath();
   const { data: slackChannelsData } = useSWRxSlackChannels(currentPagePath);
+
   const { data: isSlackEnabled, mutate: mutateIsSlackEnabled } = useIsSlackEnabled();
 
   const [slackChannelsStr, setSlackChannelsStr] = useState<string>('');
@@ -152,9 +149,4 @@ const EditorNavbarBottom = (props) => {
   );
 };
 
-EditorNavbarBottom.propTypes = {
-  appContainer: PropTypes.instanceOf(AppContainer).isRequired,
-  editorContainer: PropTypes.instanceOf(EditorContainer).isRequired,
-};
-
-export default withUnstatedContainers(EditorNavbarBottom, [EditorContainer, AppContainer]);
+export default EditorNavbarBottom;

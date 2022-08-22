@@ -2,13 +2,13 @@ import React, {
   FC, useState, useEffect, useCallback,
 } from 'react';
 
+import { Ref } from '@growi/core';
 import { TFunctionResult } from 'i18next';
-import { useTranslation } from 'react-i18next';
+import { useTranslation } from 'next-i18next';
 import {
   Modal, ModalHeader, ModalBody, ModalFooter,
 } from 'reactstrap';
 
-import { Ref } from '~/interfaces/common';
 import { IUserGroup, IUserGroupHasId } from '~/interfaces/user';
 
 type Props = {
@@ -19,7 +19,7 @@ type Props = {
   onHide?: () => Promise<void> | void
 };
 
-const UserGroupModal: FC<Props> = (props: Props) => {
+export const UserGroupModal: FC<Props> = (props: Props) => {
 
   const { t } = useTranslation();
 
@@ -116,5 +116,3 @@ const UserGroupModal: FC<Props> = (props: Props) => {
     </Modal>
   );
 };
-
-export default UserGroupModal;

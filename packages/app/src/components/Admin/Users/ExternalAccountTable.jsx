@@ -1,11 +1,10 @@
 import React, { Fragment } from 'react';
 
 import dateFnsFormat from 'date-fns/format';
+import { useTranslation } from 'next-i18next';
 import PropTypes from 'prop-types';
-import { useTranslation } from 'react-i18next';
 
 import AdminExternalAccountsContainer from '~/client/services/AdminExternalAccountsContainer';
-import AppContainer from '~/client/services/AppContainer';
 import { toastSuccess, toastError } from '~/client/util/apiNotification';
 
 import { withUnstatedContainers } from '../../UnstatedUtils';
@@ -119,7 +118,6 @@ class ExternalAccountTable extends React.Component {
 
 ExternalAccountTable.propTypes = {
   t: PropTypes.func.isRequired, // i18next
-  appContainer: PropTypes.instanceOf(AppContainer).isRequired,
   adminExternalAccountsContainer: PropTypes.instanceOf(AdminExternalAccountsContainer).isRequired,
 };
 
@@ -128,7 +126,7 @@ const ExternalAccountTableWrapperFC = (props) => {
   return <ExternalAccountTable t={t} {...props} />;
 };
 
-const ExternalAccountTableWrapper = withUnstatedContainers(ExternalAccountTableWrapperFC, [AppContainer, AdminExternalAccountsContainer]);
+const ExternalAccountTableWrapper = withUnstatedContainers(ExternalAccountTableWrapperFC, [AdminExternalAccountsContainer]);
 
 
 export default ExternalAccountTableWrapper;

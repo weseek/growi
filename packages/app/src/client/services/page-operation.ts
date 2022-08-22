@@ -1,6 +1,5 @@
+import { SubscriptionStatusType } from '@growi/core';
 import urljoin from 'url-join';
-
-import { SubscriptionStatusType } from '~/interfaces/subscription';
 
 import { toastError } from '../util/apiNotification';
 import { apiv3Post, apiv3Put } from '../util/apiv3-client';

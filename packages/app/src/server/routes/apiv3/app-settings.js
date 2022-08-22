@@ -1,7 +1,8 @@
 import { body } from 'express-validator';
 
+import { i18n } from '^/config/next-i18next.config';
+
 import { SupportedAction } from '~/interfaces/activity';
-import { i18n } from '~/next-i18next.config';
 import loggerFactory from '~/utils/logger';
 
 import { generateAddActivityMiddleware } from '../../middlewares/add-activity';
@@ -153,7 +154,6 @@ module.exports = (crowi) => {
   const accessTokenParser = require('../../middlewares/access-token-parser')(crowi);
   const loginRequiredStrictly = require('../../middlewares/login-required')(crowi);
   const adminRequired = require('../../middlewares/admin-required')(crowi);
-  const csrf = require('../../middlewares/csrf')(crowi);
   const addActivity = generateAddActivityMiddleware(crowi);
 
   const activityEvent = crowi.event('activity');
@@ -300,7 +300,7 @@ module.exports = (crowi) => {
    *                schema:
    *                  $ref: '#/components/schemas/AppSettingParams'
    */
-  router.put('/app-setting', loginRequiredStrictly, adminRequired, csrf, addActivity, validator.appSetting, apiV3FormValidator, async(req, res) => {
+  router.put('/app-setting', loginRequiredStrictly, adminRequired, addActivity, validator.appSetting, apiV3FormValidator, async(req, res) => {
     const requestAppSettingParams = {
       'app:title': req.body.title,
       'app:confidential': req.body.confidential,
@@ -355,7 +355,7 @@ module.exports = (crowi) => {
    *                schema:
    *                  $ref: '#/components/schemas/SiteUrlSettingParams'
    */
-  router.put('/site-url-setting', loginRequiredStrictly, adminRequired, csrf, addActivity, validator.siteUrlSetting, apiV3FormValidator, async(req, res) => {
+  router.put('/site-url-setting', loginRequiredStrictly, adminRequired, addActivity, validator.siteUrlSetting, apiV3FormValidator, async(req, res) => {
 
     const requestSiteUrlSettingParams = {
       'app:siteUrl': pathUtils.removeTrailingSlash(req.body.siteUrl),
@@ -490,7 +490,7 @@ module.exports = (crowi) => {
    *                schema:
    *                  $ref: '#/components/schemas/SmtpSettingParams'
    */
-  router.put('/smtp-setting', loginRequiredStrictly, adminRequired, csrf, addActivity, validator.smtpSetting, apiV3FormValidator, async(req, res) => {
+  router.put('/smtp-setting', loginRequiredStrictly, adminRequired, addActivity, validator.smtpSetting, apiV3FormValidator, async(req, res) => {
     const requestMailSettingParams = {
       'mail:from': req.body.fromAddress,
       'mail:transmissionMethod': req.body.transmissionMethod,
@@ -564,7 +564,7 @@ module.exports = (crowi) => {
    *                schema:
    *                  $ref: '#/components/schemas/SesSettingParams'
    */
-  router.put('/ses-setting', loginRequiredStrictly, adminRequired, csrf, addActivity, validator.sesSetting, apiV3FormValidator, async(req, res) => {
+  router.put('/ses-setting', loginRequiredStrictly, adminRequired, addActivity, validator.sesSetting, apiV3FormValidator, async(req, res) => {
     const { mailService } = crowi;
 
     const requestSesSettingParams = {
@@ -615,7 +615,7 @@ module.exports = (crowi) => {
    *                  $ref: '#/components/schemas/FileUploadSettingParams'
    */
   //  eslint-disable-next-line max-len
-  router.put('/file-upload-setting', loginRequiredStrictly, adminRequired, csrf, addActivity, validator.fileUploadSetting, apiV3FormValidator, async(req, res) => {
+  router.put('/file-upload-setting', loginRequiredStrictly, adminRequired, addActivity, validator.fileUploadSetting, apiV3FormValidator, async(req, res) => {
     const { fileUploadType } = req.body;
 
     const requestParams = {
@@ -697,7 +697,7 @@ module.exports = (crowi) => {
    *                schema:
    *                  $ref: '#/components/schemas/PluginSettingParams'
    */
-  router.put('/plugin-setting', loginRequiredStrictly, adminRequired, csrf, addActivity, validator.pluginSetting, apiV3FormValidator, async(req, res) => {
+  router.put('/plugin-setting', loginRequiredStrictly, adminRequired, addActivity, validator.pluginSetting, apiV3FormValidator, async(req, res) => {
     const requestPluginSettingParams = {
       'plugin:isEnabledPlugins': req.body.isEnabledPlugins,
     };
@@ -719,7 +719,7 @@ module.exports = (crowi) => {
 
   });
 
-  router.post('/v5-schema-migration', accessTokenParser, loginRequiredStrictly, adminRequired, csrf, async(req, res) => {
+  router.post('/v5-schema-migration', accessTokenParser, loginRequiredStrictly, adminRequired, async(req, res) => {
     const isMaintenanceMode = crowi.appService.isMaintenanceMode();
     if (!isMaintenanceMode) {
       return res.apiv3Err(new ErrorV3('GROWI is not maintenance mode. To import data, please activate the maintenance mode first.', 'not_maintenance_mode'));
@@ -741,7 +741,7 @@ module.exports = (crowi) => {
   });
 
   // eslint-disable-next-line max-len
-  router.post('/maintenance-mode', accessTokenParser, loginRequiredStrictly, adminRequired, csrf, addActivity, validator.maintenanceMode, apiV3FormValidator, async(req, res) => {
+  router.post('/maintenance-mode', accessTokenParser, loginRequiredStrictly, adminRequired, addActivity, validator.maintenanceMode, apiV3FormValidator, async(req, res) => {
     const { flag } = req.body;
     const parameters = {};
     try {

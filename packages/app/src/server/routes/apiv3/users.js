@@ -79,7 +79,6 @@ module.exports = (crowi) => {
   const loginRequired = require('../../middlewares/login-required')(crowi, true);
   const loginRequiredStrictly = require('../../middlewares/login-required')(crowi);
   const adminRequired = require('../../middlewares/admin-required')(crowi);
-  const csrf = require('../../middlewares/csrf')(crowi);
   const addActivity = generateAddActivityMiddleware(crowi);
 
   const activityEvent = crowi.event('activity');
@@ -406,7 +405,7 @@ module.exports = (crowi) => {
    *                      type: object
    *                      description: Users email that failed to create or send email
    */
-  router.post('/invite', loginRequiredStrictly, adminRequired, csrf, addActivity, validator.inviteEmail, apiV3FormValidator, async(req, res) => {
+  router.post('/invite', loginRequiredStrictly, adminRequired, addActivity, validator.inviteEmail, apiV3FormValidator, async(req, res) => {
 
     // Delete duplicate email addresses
     const emailList = Array.from(new Set(req.body.shapedEmailList));
@@ -464,7 +463,7 @@ module.exports = (crowi) => {
    *                      type: object
    *                      description: data of admin user
    */
-  router.put('/:id/giveAdmin', loginRequiredStrictly, adminRequired, csrf, addActivity, async(req, res) => {
+  router.put('/:id/giveAdmin', loginRequiredStrictly, adminRequired, addActivity, async(req, res) => {
     const { id } = req.params;
 
     try {
@@ -509,7 +508,7 @@ module.exports = (crowi) => {
    *                      type: object
    *                      description: data of removed admin user
    */
-  router.put('/:id/removeAdmin', loginRequiredStrictly, adminRequired, csrf, addActivity, async(req, res) => {
+  router.put('/:id/removeAdmin', loginRequiredStrictly, adminRequired, addActivity, async(req, res) => {
     const { id } = req.params;
 
     try {
@@ -553,7 +552,7 @@ module.exports = (crowi) => {
    *                      type: object
    *                      description: data of activate user
    */
-  router.put('/:id/activate', loginRequiredStrictly, adminRequired, csrf, addActivity, async(req, res) => {
+  router.put('/:id/activate', loginRequiredStrictly, adminRequired, addActivity, async(req, res) => {
     // check user upper limit
     const isUserCountExceedsUpperLimit = await User.isUserCountExceedsUpperLimit();
     if (isUserCountExceedsUpperLimit) {
@@ -605,7 +604,7 @@ module.exports = (crowi) => {
    *                      type: object
    *                      description: data of deactivate user
    */
-  router.put('/:id/deactivate', loginRequiredStrictly, adminRequired, csrf, addActivity, async(req, res) => {
+  router.put('/:id/deactivate', loginRequiredStrictly, adminRequired, addActivity, async(req, res) => {
     const { id } = req.params;
 
     try {
@@ -649,7 +648,7 @@ module.exports = (crowi) => {
    *                      type: object
    *                      description: data of delete user
    */
-  router.delete('/:id/remove', loginRequiredStrictly, adminRequired, csrf, addActivity, async(req, res) => {
+  router.delete('/:id/remove', loginRequiredStrictly, adminRequired, addActivity, async(req, res) => {
     const { id } = req.params;
 
     try {
@@ -772,7 +771,7 @@ module.exports = (crowi) => {
    *                      type: object
    *                      description: users updated with imageUrlCached
    */
-  router.put('/update.imageUrlCache', loginRequiredStrictly, adminRequired, csrf, async(req, res) => {
+  router.put('/update.imageUrlCache', loginRequiredStrictly, adminRequired, async(req, res) => {
     try {
       const userIds = req.body.userIds;
       const users = await User.find({ _id: { $in: userIds }, imageUrlCached: null });
@@ -828,7 +827,7 @@ module.exports = (crowi) => {
    *                      type: object
    *                      description: Target user
    */
-  router.put('/reset-password', loginRequiredStrictly, adminRequired, csrf, addActivity, async(req, res) => {
+  router.put('/reset-password', loginRequiredStrictly, adminRequired, async(req, res) => {
     const { id } = req.body;
 
     try {
@@ -875,7 +874,7 @@ module.exports = (crowi) => {
    *                      type: object
    *                      description: email and reasons for email sending failure
    */
-  router.put('/send-invitation-email', loginRequiredStrictly, adminRequired, csrf, addActivity, async(req, res) => {
+  router.put('/send-invitation-email', loginRequiredStrictly, adminRequired, addActivity, async(req, res) => {
     const { id } = req.body;
 
     try {

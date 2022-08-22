@@ -1,4 +1,4 @@
-describe('config/migrate.js', () => {
+describe('config/migrate-mongo-config.js', () => {
 
   beforeEach(async() => {
     jest.resetModules();
@@ -9,19 +9,19 @@ describe('config/migrate.js', () => {
     const initMongooseGlobalSettingsMock = jest.fn();
 
     // mock for mongoose-utils
-    jest.doMock('@growi/core', () => {
+    jest.doMock('../../src/server/util/mongoose-utils', () => {
       return {
         initMongooseGlobalSettings: initMongooseGlobalSettingsMock,
       };
     });
 
     const requireConfig = () => {
-      require('^/migrate-mongo-config');
+      require('../../config/migrate-mongo-config');
     };
 
     expect(requireConfig).toThrow('An env var MIGRATIONS_DIR must be set.');
 
-    jest.dontMock('@growi/core');
+    jest.dontMock('../../src/server/util/mongoose-utils');
 
     expect(initMongooseGlobalSettingsMock).not.toHaveBeenCalled();
   });
@@ -44,7 +44,7 @@ describe('config/migrate.js', () => {
       const mongoOptionsMock = jest.fn();
 
       // mock for mongoose-utils
-      jest.doMock('@growi/core', () => {
+      jest.doMock('../../src/server/util/mongoose-utils', () => {
         return {
           initMongooseGlobalSettings: initMongooseGlobalSettingsMock,
           getMongoUri: () => {
@@ -54,9 +54,9 @@ describe('config/migrate.js', () => {
         };
       });
 
-      const { mongodb, migrationsDir, changelogCollectionName } = require('^/migrate-mongo-config');
+      const { mongodb, migrationsDir, changelogCollectionName } = require('../../config/migrate-mongo-config');
 
-      jest.dontMock('@growi/core');
+      jest.dontMock('../../src/server/util/mongoose-utils');
 
       expect(initMongooseGlobalSettingsMock).toHaveBeenCalledTimes(1);
       expect(mongodb.url).toBe(MONGO_URI);

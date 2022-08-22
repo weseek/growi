@@ -2,17 +2,15 @@ import React, {
   memo, useCallback, useMemo, useState,
 } from 'react';
 
-import { useTranslation } from 'react-i18next';
+import { useTranslation } from 'next-i18next';
 import {
   Dropdown, DropdownToggle, DropdownMenu, DropdownItem,
 } from 'reactstrap';
 
-import AppContainer from '~/client/services/AppContainer';
 import { useIsIndentSizeForced } from '~/stores/context';
 import { useEditorSettings, useIsTextlintEnabled, useCurrentIndentSize } from '~/stores/editor';
 
 import { DEFAULT_THEME, KeyMapMode } from '../../interfaces/editor-settings';
-import { withUnstatedContainers } from '../UnstatedUtils';
 
 import { DownloadDictModal } from './DownloadDictModal';
 
@@ -118,6 +116,7 @@ const KeymapSelector = memo((): JSX.Element => {
 
 });
 
+KeymapSelector.displayName = 'KeymapSelector';
 
 type IndentSizeSelectorProps = {
   isIndentSizeForced: boolean,
@@ -160,13 +159,14 @@ const IndentSizeSelector = memo(({ isIndentSizeForced, selectedIndentSize, onCha
 
 });
 
+IndentSizeSelector.displayName = 'IndentSizeSelector';
+
 
 type ConfigurationDropdownProps = {
-  isMathJaxEnabled: boolean,
   onConfirmEnableTextlint?: () => void,
 }
 
-const ConfigurationDropdown = memo(({ isMathJaxEnabled, onConfirmEnableTextlint }: ConfigurationDropdownProps): JSX.Element => {
+const ConfigurationDropdown = memo(({ onConfirmEnableTextlint }: ConfigurationDropdownProps): JSX.Element => {
   const { t } = useTranslation();
 
   const [isCddMenuOpened, setCddMenuOpened] = useState(false);
@@ -204,10 +204,6 @@ const ConfigurationDropdown = memo(({ isMathJaxEnabled, onConfirmEnableTextlint 
       return <></>;
     }
 
-    if (!isMathJaxEnabled) {
-      return <></>;
-    }
-
     const isActive = editorSettings.renderMathJaxInRealtime;
 
     const iconClasses = ['text-info'];
@@ -225,7 +221,7 @@ const ConfigurationDropdown = memo(({ isMathJaxEnabled, onConfirmEnableTextlint 
         </div>
       </DropdownItem>
     );
-  }, [editorSettings, isMathJaxEnabled, update]);
+  }, [editorSettings, update]);
 
   const renderRealtimeDrawioMenuItem = useCallback(() => {
     if (editorSettings == null) {
@@ -341,15 +337,10 @@ const ConfigurationDropdown = memo(({ isMathJaxEnabled, onConfirmEnableTextlint 
 
 });
 
+ConfigurationDropdown.displayName = 'ConfigurationDropdown';
 
-type Props = {
-  appContainer: AppContainer
-};
 
-const OptionsSelector = (props: Props): JSX.Element => {
-  const { appContainer } = props;
-  const config = appContainer.config;
-
+const OptionsSelector = (): JSX.Element => {
   const [isDownloadDictModalShown, setDownloadDictModalShown] = useState(false);
 
   const { data: editorSettings, turnOffAskingBeforeDownloadLargeFiles } = useEditorSettings();
@@ -379,7 +370,6 @@ const OptionsSelector = (props: Props): JSX.Element => {
         </span>
         <span className="ml-2 ml-sm-4">
           <ConfigurationDropdown
-            isMathJaxEnabled={!!config.env.MATHJAX}
             onConfirmEnableTextlint={() => setDownloadDictModalShown(true)}
           />
         </span>
@@ -406,5 +396,4 @@ const OptionsSelector = (props: Props): JSX.Element => {
 };
 
 
-const OptionsSelectorWrapper = withUnstatedContainers(OptionsSelector, [AppContainer]);
-export default OptionsSelectorWrapper;
+export default OptionsSelector;

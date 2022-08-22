@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { useTranslation } from 'react-i18next';
+import { useTranslation } from 'next-i18next';
 
 import { IPageInfoForEntity, IPageWithMeta } from '~/interfaces/page';
 import { OnDeletedFunction, OnPutBackedFunction } from '~/interfaces/ui';

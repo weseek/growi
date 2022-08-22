@@ -4,7 +4,7 @@ import React, {
 
 import EventEmitter from 'events';
 
-import { useTranslation } from 'react-i18next';
+import { useTranslation } from 'next-i18next';
 import { debounce } from 'throttle-debounce';
 
 import { CustomWindow } from '~/interfaces/global';

@@ -1,28 +1,28 @@
+/* eslint-disable */
 import React, { FC, useEffect, useState } from 'react';
 
 import { pagePathUtils } from '@growi/core';
 
 import { CustomWindow } from '~/interfaces/global';
 import { IUserUISettings } from '~/interfaces/user-ui-settings';
-import { generatePreviewRenderer } from '~/services/renderer/growi-renderer';
-import { useRendererSettings } from '~/stores/renderer';
+// import { generatePreviewRenderer } from '~/services/renderer/growi-renderer';
 import {
   useIsDeviceSmallerThanMd, useIsDeviceSmallerThanLg,
   usePreferDrawerModeByUser, usePreferDrawerModeOnEditByUser, useSidebarCollapsed, useCurrentSidebarContents, useCurrentProductNavWidth,
-  useSelectedGrant, useSelectedGrantGroupId, useSelectedGrantGroupName,
+  useSelectedGrant,
 } from '~/stores/ui';
 import { useSetupGlobalSocket, useSetupGlobalAdminSocket } from '~/stores/websocket';
 
 import {
   useSiteUrl,
-  useCurrentCreatedAt, useDeleteUsername, useDeletedAt, useHasChildren, useHasDraftOnHackmd,
+  useDeleteUsername, useDeletedAt, useHasChildren, useHasDraftOnHackmd,
   useIsNotCreatable, useIsTrashPage, useIsUserPage, useLastUpdateUsername,
   useCurrentPageId, usePageIdOnHackmd, usePageUser, useCurrentPagePath, useRevisionCreatedAt, useRevisionId, useRevisionIdHackmdSynced,
-  useShareLinkId, useShareLinksNumber, useTemplateTagData, useCurrentUpdatedAt, useCreator, useRevisionAuthor, useCurrentUser, useTargetAndAncestors,
-  useNotFoundTargetPathOrId, useIsSearchPage, useIsForbidden, useIsIdenticalPath, useHasParent,
+  useShareLinkId, useShareLinksNumber, useTemplateTagData, useCurrentUser, useTargetAndAncestors,
+  useIsSearchPage, useIsForbidden, useIsIdenticalPath, useHasParent,
   useIsAclEnabled, useIsSearchServiceConfigured, useIsSearchServiceReachable, useIsEnabledAttachTitleHeader,
-  useDefaultIndentSize, useIsIndentSizeForced, useCsrfToken, useIsEmptyPage, useEmptyPageId, useGrowiVersion, useAuditLogEnabled,
-  useActivityExpirationSeconds, useAuditLogAvailableActions, useGrowiRendererConfig,
+  useDefaultIndentSize, useIsIndentSizeForced, useCsrfToken, useGrowiVersion, useAuditLogEnabled,
+  useActivityExpirationSeconds, useAuditLogAvailableActions, useRendererConfig,
 } from '../../stores/context';
 
 const { isTrashPage: _isTrashPage } = pagePathUtils;
@@ -63,16 +63,8 @@ const ContextExtractorOnce: FC = () => {
   const path = decodeURI(mainContent?.getAttribute('data-path') || '');
   // assign `null` to avoid returning empty string
   const pageId = mainContent?.getAttribute('data-page-id') || null;
-  const emptyPageId = notFoundContext?.getAttribute('data-page-id') || null;
 
   const revisionCreatedAt = +(mainContent?.getAttribute('data-page-revision-created') || '');
-
-  // createdAt
-  const createdAtAttribute = mainContent?.getAttribute('data-page-created-at');
-  const createdAt: Date | null = (createdAtAttribute != null) ? new Date(createdAtAttribute) : null;
-  // updatedAt
-  const updatedAtAttribute = mainContent?.getAttribute('data-page-updated-at');
-  const updatedAt: Date | null = (updatedAtAttribute != null) ? new Date(updatedAtAttribute) : null;
 
   const deletedAt = mainContent?.getAttribute('data-page-deleted-at') || null;
   const isIdenticalPath = JSON.parse(mainContent?.getAttribute('data-identical-path') || jsonNull) ?? false;
@@ -91,8 +83,6 @@ const ContextExtractorOnce: FC = () => {
   const deleteUsername = mainContent?.getAttribute('data-page-delete-username') || null;
   const pageIdOnHackmd = mainContent?.getAttribute('data-page-id-on-hackmd') || null;
   const hasDraftOnHackmd = !!mainContent?.getAttribute('data-page-has-draft-on-hackmd');
-  const creator = JSON.parse(mainContent?.getAttribute('data-page-creator') || jsonNull);
-  const revisionAuthor = JSON.parse(mainContent?.getAttribute('data-page-revision-author') || jsonNull);
   const targetAndAncestors = JSON.parse(document.getElementById('growi-pagetree-target-and-ancestors')?.textContent || jsonNull);
   const notFoundTargetPathOrId = JSON.parse(notFoundContentForPt?.getAttribute('data-not-found-target-path-or-id') || jsonNull);
   const isSearchPage = document.getElementById('search-page') != null;
@@ -129,26 +119,25 @@ const ContextExtractorOnce: FC = () => {
   useActivityExpirationSeconds(configByContextHydrate.activityExpirationSeconds);
   useAuditLogAvailableActions(configByContextHydrate.auditLogAvailableActions);
   useGrowiVersion(configByContextHydrate.crowi.version);
-  useRendererSettings({
+  useRendererConfig({
     isEnabledLinebreaks: configByContextHydrate.isEnabledLinebreaks,
     isEnabledLinebreaksInComments: configByContextHydrate.isEnabledLinebreaksInComments,
     adminPreferredIndentSize: configByContextHydrate.adminPreferredIndentSize,
     isIndentSizeForced: configByContextHydrate.isIndentSizeForced,
-  });
-  useGrowiRendererConfig({
+
     isEnabledXssPrevention: configByContextHydrate.isEnabledXssPrevention,
     attrWhiteList: configByContextHydrate.attrWhiteList,
     tagWhiteList: configByContextHydrate.tagWhiteList,
     highlightJsStyleBorder: configByContextHydrate.highlightJsStyleBorder,
-    env: {
-      MATHJAX: configByContextHydrate.env.MATHJAX,
-      PLANTUML_URI: configByContextHydrate.env.PLANTUML_URI,
-      BLOCKDIAG_URI: configByContextHydrate.env.BLOCKDIAG_URI,
-    },
+
+    plantumlUri: configByContextHydrate.env.PLANTUML_URI,
+    blockdiagUri: configByContextHydrate.env.BLOCKDIAG_URI,
   });
+  // useNoCdn(configByContextHydrate.env.NO_CDN);
+  // useUploadableImage(configByContextHydrate.upload.image);
+  // useUploadableFile(configByContextHydrate.upload.file);
 
   // Page
-  useCurrentCreatedAt(createdAt);
   useDeleteUsername(deleteUsername);
   useDeletedAt(deletedAt);
   useHasChildren(hasChildren);
@@ -160,7 +149,6 @@ const ContextExtractorOnce: FC = () => {
   useIsUserPage(isUserPage);
   useLastUpdateUsername(lastUpdateUsername);
   useCurrentPageId(pageId);
-  useEmptyPageId(emptyPageId);
   usePageIdOnHackmd(pageIdOnHackmd);
   usePageUser(pageUser);
   useCurrentPagePath(path);
@@ -170,13 +158,8 @@ const ContextExtractorOnce: FC = () => {
   useShareLinkId(shareLinkId);
   useShareLinksNumber(shareLinksNumber);
   useTemplateTagData(templateTagData);
-  useCurrentUpdatedAt(updatedAt);
-  useCreator(creator);
-  useRevisionAuthor(revisionAuthor);
   useTargetAndAncestors(targetAndAncestors);
-  useNotFoundTargetPathOrId(notFoundTargetPathOrId);
   useIsSearchPage(isSearchPage);
-  useIsEmptyPage(isEmptyPage);
   useHasParent(hasParent);
 
   // Navigation
@@ -190,9 +173,9 @@ const ContextExtractorOnce: FC = () => {
   useIsDeviceSmallerThanMd();
 
   // Editor
-  useSelectedGrant(grant);
-  useSelectedGrantGroupId(grantGroupId);
-  useSelectedGrantGroupName(grantGroupName);
+  // useSelectedGrant(grant);
+  // useSelectedGrantGroupId(grantGroupId);
+  // useSelectedGrantGroupName(grantGroupName);
 
   // SearchResult
   useIsDeviceSmallerThanLg();
@@ -204,21 +187,21 @@ const ContextExtractorOnce: FC = () => {
 
   // TODO: Remove this code when reveal.js is omitted. see: https://github.com/weseek/growi/pull/6223
   // Do not access this property from other than reveal.js plugins.
-  (window as CustomWindow).previewRenderer = generatePreviewRenderer(
-    {
-      isEnabledXssPrevention: configByContextHydrate.isEnabledXssPrevention,
-      attrWhiteList: configByContextHydrate.attrWhiteList,
-      tagWhiteList: configByContextHydrate.tagWhiteList,
-      highlightJsStyleBorder: configByContextHydrate.highlightJsStyleBorder,
-      env: {
-        MATHJAX: configByContextHydrate.env.MATHJAX,
-        PLANTUML_URI: configByContextHydrate.env.PLANTUML_URI,
-        BLOCKDIAG_URI: configByContextHydrate.env.BLOCKDIAG_URI,
-      },
-    },
-    null,
-    path,
-  );
+  // (window as CustomWindow).previewRenderer = generatePreviewRenderer(
+  //   {
+  //     isEnabledXssPrevention: configByContextHydrate.isEnabledXssPrevention,
+  //     attrWhiteList: configByContextHydrate.attrWhiteList,
+  //     tagWhiteList: configByContextHydrate.tagWhiteList,
+  //     highlightJsStyleBorder: configByContextHydrate.highlightJsStyleBorder,
+  //     env: {
+  //       MATHJAX: configByContextHydrate.env.MATHJAX,
+  //       PLANTUML_URI: configByContextHydrate.env.PLANTUML_URI,
+  //       BLOCKDIAG_URI: configByContextHydrate.env.BLOCKDIAG_URI,
+  //     },
+  //   },
+  //   null,
+  //   path,
+  // );
 
   return null;
 };

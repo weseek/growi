@@ -51,7 +51,6 @@ const validator = {
 module.exports = (crowi) => {
   const loginRequiredStrictly = require('../../middlewares/login-required')(crowi);
   const adminRequired = require('../../middlewares/admin-required')(crowi);
-  const csrf = require('../../middlewares/csrf')(crowi);
   const addActivity = generateAddActivityMiddleware(crowi);
 
   const activityEvent = crowi.event('activity');
@@ -106,7 +105,7 @@ module.exports = (crowi) => {
    *                schema:
    *                  $ref: '#/components/schemas/SlackConfigurationParams'
    */
-  router.put('/', loginRequiredStrictly, adminRequired, csrf, addActivity, validator.slackConfiguration, apiV3FormValidator, async(req, res) => {
+  router.put('/', loginRequiredStrictly, adminRequired, addActivity, validator.slackConfiguration, apiV3FormValidator, async(req, res) => {
 
     const requestParams = {
       'slack:incomingWebhookUrl': req.body.webhookUrl,

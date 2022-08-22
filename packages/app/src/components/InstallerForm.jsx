@@ -1,10 +1,11 @@
 import React from 'react';
 
 import i18next from 'i18next';
+import { useTranslation, i18n } from 'next-i18next';
 import PropTypes from 'prop-types';
-import { useTranslation } from 'react-i18next';
 
-import { localeMetadatas } from '~/client/util/i18n';
+import { i18n as i18nConfig } from '^/config/next-i18next.config';
+
 import { useCsrfToken } from '~/stores/context';
 
 class InstallerForm extends React.Component {
@@ -15,36 +16,22 @@ class InstallerForm extends React.Component {
     this.state = {
       isValidUserName: true,
       isSubmittingDisabled: false,
-      selectedLang: {},
     };
-    // this.checkUserName = this.checkUserName.bind(this);
+    this.checkUserName = this.checkUserName.bind(this);
 
     this.submitHandler = this.submitHandler.bind(this);
   }
 
-  componentWillMount() {
-    const meta = localeMetadatas.find(v => v.id === i18next.language);
-    if (meta == null) {
-      return this.setState({ selectedLang: localeMetadatas[0] });
-    }
-    this.setState({ selectedLang: meta });
-  }
-
-  // checkUserName(event) {
-  //   const axios = require('axios').create({
-  //     headers: {
-  //       'Content-Type': 'application/json',
-  //       'X-Requested-With': 'XMLHttpRequest',
-  //     },
-  //     responseType: 'json',
-  //   });
-  //   axios.get('/_api/v3/check-username', { params: { username: event.target.value } })
-  //     .then((res) => { return this.setState({ isValidUserName: res.data.valid }) });
-  // }
-
-  changeLanguage(meta) {
-    i18next.changeLanguage(meta.id);
-    this.setState({ selectedLang: meta });
+  checkUserName(event) {
+    const axios = require('axios').create({
+      headers: {
+        'Content-Type': 'application/json',
+        'X-Requested-With': 'XMLHttpRequest',
+      },
+      responseType: 'json',
+    });
+    axios.get('/_api/v3/check-username', { params: { username: event.target.value } })
+      .then((res) => { return this.setState({ isValidUserName: res.data.valid }) });
   }
 
   submitHandler() {
@@ -59,13 +46,14 @@ class InstallerForm extends React.Component {
   }
 
   render() {
+    const { t } = this.props;
     const hasErrorClass = this.state.isValidUserName ? '' : ' has-error';
     const unavailableUserId = this.state.isValidUserName
       ? ''
       : <span><i className="icon-fw icon-ban" />{ this.props.t('installer.unavaliable_user_id') }</span>;
 
     return (
-      <div data-testid="installerForm" className={`login-dialog p-3 mx-auto${hasErrorClass}`}>
+      <div data-testid="installerForm" className={`noLogin-dialog p-3 mx-auto${hasErrorClass}`}>
         <div className="row">
           <div className="col-md-12">
             <p className="alert alert-success">
@@ -89,27 +77,31 @@ class InstallerForm extends React.Component {
                   aria-expanded="true"
                 >
                   <span className="float-left">
-                    {this.state.selectedLang.displayName}
+                    {t('meta.display_name')}
                   </span>
                 </button>
                 <input
                   type="hidden"
-                  value={this.state.selectedLang.id}
                   name="registerForm[app:globalLang]"
                 />
                 <div className="dropdown-menu" aria-labelledby="dropdownLanguage">
                   {
-                    localeMetadatas.map(meta => (
-                      <button
-                        key={meta.id}
-                        data-testid={`dropdownLanguageMenu-${meta.id}`}
-                        className="dropdown-item"
-                        type="button"
-                        onClick={() => { this.changeLanguage(meta) }}
-                      >
-                        {meta.displayName}
-                      </button>
-                    ))
+                    i18nConfig.locales.map((locale) => {
+                      const fixedT = i18n.getFixedT(locale);
+                      i18n.loadLanguages(i18nConfig.locales);
+
+                      return (
+                        <button
+                          key={locale}
+                          data-testid={`dropdownLanguageMenu-${locale}`}
+                          className="dropdown-item"
+                          type="button"
+                          onClick={() => { i18next.changeLanguage(locale) }}
+                        >
+                          {fixedT('meta.display_name')}
+                        </button>
+                      );
+                    })
                   }
                 </div>
               </div>

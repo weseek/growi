@@ -1,4 +1,3 @@
-import { getOrCreateModel, getModelSafely } from '@growi/core';
 import {
   Types, Document, Model, Schema,
 } from 'mongoose';
@@ -11,6 +10,8 @@ import {
 } from '~/interfaces/activity';
 
 import loggerFactory from '../../utils/logger';
+import { getOrCreateModel, getModelSafely } from '../util/mongoose-utils';
+
 
 import Subscription from './subscription';
 

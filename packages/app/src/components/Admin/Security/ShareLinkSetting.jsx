@@ -1,10 +1,9 @@
 import React, { Fragment } from 'react';
 
+import { useTranslation } from 'next-i18next';
 import PropTypes from 'prop-types';
-import { useTranslation } from 'react-i18next';
 
 import AdminGeneralSecurityContainer from '~/client/services/AdminGeneralSecurityContainer';
-import AppContainer from '~/client/services/AppContainer';
 import { toastSuccess, toastError } from '~/client/util/apiNotification';
 import { apiv3Delete } from '~/client/util/apiv3-client';
 
@@ -55,7 +54,7 @@ class ShareLinkSetting extends React.Component {
     this.switchDisableLinkSharing = this.switchDisableLinkSharing.bind(this);
   }
 
-  componentWillMount() {
+  UNSAFE_componentWillMount() {
     this.getShareLinkList(1);
   }
 
@@ -78,7 +77,7 @@ class ShareLinkSetting extends React.Component {
   }
 
   async deleteAllLinksButtonHandler() {
-    const { t, appContainer } = this.props;
+    const { t } = this.props;
 
     try {
       const res = await apiv3Delete('/share-links/all');
@@ -92,7 +91,7 @@ class ShareLinkSetting extends React.Component {
   }
 
   async deleteLinkById(shareLinkId) {
-    const { t, appContainer, adminGeneralSecurityContainer } = this.props;
+    const { t, adminGeneralSecurityContainer } = this.props;
     const { shareLinksActivePage } = adminGeneralSecurityContainer.state;
 
     try {
@@ -193,7 +192,6 @@ class ShareLinkSetting extends React.Component {
 
 ShareLinkSetting.propTypes = {
   t: PropTypes.func.isRequired, //  i18next
-  appContainer: PropTypes.instanceOf(AppContainer).isRequired,
   adminGeneralSecurityContainer: PropTypes.instanceOf(AdminGeneralSecurityContainer).isRequired,
 };
 
@@ -205,6 +203,6 @@ const ShareLinkSettingWrapperFC = (props) => {
 /**
  * Wrapper component for using unstated
  */
-const ShareLinkSettingWrapper = withUnstatedContainers(ShareLinkSettingWrapperFC, [AppContainer, AdminGeneralSecurityContainer]);
+const ShareLinkSettingWrapper = withUnstatedContainers(ShareLinkSettingWrapperFC, [AdminGeneralSecurityContainer]);
 
 export default ShareLinkSettingWrapper;

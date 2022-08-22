@@ -1,7 +1,7 @@
 import React, { FC, useState, useCallback } from 'react';
 
+import dynamic from 'next/dynamic';
 import { useTranslation } from 'react-i18next';
-
 
 import { toastSuccess, toastError } from '~/client/util/apiNotification';
 import { apiv3Delete, apiv3Post, apiv3Put } from '~/client/util/apiv3-client';
@@ -9,11 +9,11 @@ import { IUserGroup, IUserGroupHasId } from '~/interfaces/user';
 import { useIsAclEnabled } from '~/stores/context';
 import { useSWRxUserGroupList, useSWRxChildUserGroupList, useSWRxUserGroupRelationList } from '~/stores/user-group';
 
-import UserGroupDeleteModal from './UserGroupDeleteModal';
-import UserGroupModal from './UserGroupModal';
-import UserGroupTable from './UserGroupTable';
+const UserGroupDeleteModal = dynamic(() => import('./UserGroupDeleteModal').then(mod => mod.UserGroupDeleteModal), { ssr: false });
+const UserGroupModal = dynamic(() => import('./UserGroupModal').then(mod => mod.UserGroupModal), { ssr: false });
+const UserGroupTable = dynamic(() => import('./UserGroupTable').then(mod => mod.UserGroupTable), { ssr: false });
 
-const UserGroupPage: FC = () => {
+export const UserGroupPage: FC = () => {
   const { t } = useTranslation();
 
   const { data: isAclEnabled } = useIsAclEnabled();
@@ -193,5 +193,3 @@ const UserGroupPage: FC = () => {
     </div>
   );
 };
-
-export default UserGroupPage;

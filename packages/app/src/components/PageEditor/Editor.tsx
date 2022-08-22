@@ -26,9 +26,11 @@ type EditorPropsType = {
   noCdn?: boolean,
   isUploadable?: boolean,
   isUploadableFile?: boolean,
-  onChange?: () => void,
+  isTextlintEnabled?: boolean,
+  onChange?: (newValue: string) => void,
   onUpload?: (file) => void,
   indentSize?: number,
+  onScroll?: ({ line: number }) => void,
   onScrollCursorIntoView?: (line: number) => void,
   onSave?: () => Promise<void>,
   onPasteFiles?: (event: Event) => void,
@@ -357,5 +359,6 @@ const Editor = React.forwardRef((props: EditorPropsType, ref): JSX.Element => {
   );
 });
 
+Editor.displayName = 'Editor';
 
 export default Editor;

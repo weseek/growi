@@ -1,19 +1,25 @@
 import React from 'react';
 
+import dynamic from 'next/dynamic';
+
 import { IPageHasId } from '~/interfaces/page';
 import { IUser } from '~/interfaces/user';
 import {
   EditorMode, useEditorMode,
 } from '~/stores/ui';
 
-import TagLabels from '../Page/TagLabels';
 import PagePathNav from '../PagePathNav';
+import { Skelton } from '../Skelton';
 
-import AuthorInfo from './AuthorInfo';
 import DrawerToggler from './DrawerToggler';
 
 
-type Props = {
+import TagLabelsStyles from '../Page/TagLabels.module.scss';
+import AuthorInfoStyles from './AuthorInfo.module.scss';
+import styles from './GrowiSubNavigation.module.scss';
+
+
+export type GrowiSubNavigationProps = {
   page: Partial<IPageHasId>,
 
   showDrawerToggler?: boolean,
@@ -31,7 +37,17 @@ type Props = {
   additionalClasses?: string[],
 }
 
-export const GrowiSubNavigation = (props: Props): JSX.Element => {
+export const GrowiSubNavigation = (props: GrowiSubNavigationProps): JSX.Element => {
+
+  const TagLabels = dynamic(() => import('../Page/TagLabels'), {
+    ssr: false,
+    loading: () => <Skelton additionalClass={`${TagLabelsStyles['grw-tag-labels-skelton']} py-1`} />,
+  });
+  const AuthorInfo = dynamic(() => import('./AuthorInfo'), {
+    ssr: false,
+    loading: () => <Skelton additionalClass={`${AuthorInfoStyles['grw-author-info-skelton']} py-1`} />,
+  });
+
   const { data: editorMode } = useEditorMode();
 
   const {
@@ -57,7 +73,7 @@ export const GrowiSubNavigation = (props: Props): JSX.Element => {
 
   return (
     <div className={
-      'grw-subnav d-flex align-items-center justify-content-between'
+      `grw-subnav ${styles['grw-subnav']} d-flex align-items-center justify-content-between`
       + ` ${additionalClasses.join(' ')}`
       + ` ${isCompactMode ? 'grw-subnav-compact d-print-none' : ''}`}
     >
@@ -87,7 +103,7 @@ export const GrowiSubNavigation = (props: Props): JSX.Element => {
 
         {/* Page Authors */}
         { (showPageAuthors && !isCompactMode) && (
-          <ul className="authors text-nowrap border-left d-none d-lg-block d-edit-none py-2 pl-4 mb-0 ml-3">
+          <ul className={`${AuthorInfoStyles['grw-author-info']} text-nowrap border-left d-none d-lg-block d-edit-none py-2 pl-4 mb-0 ml-3`}>
             <li className="pb-1">
               <AuthorInfo user={creator as IUser} date={createdAt} locate="subnav" />
             </li>

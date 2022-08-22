@@ -73,20 +73,19 @@ module.exports = (crowi) => {
   const accessTokenParser = require('../../middlewares/access-token-parser')(crowi);
   const loginRequired = require('../../middlewares/login-required')(crowi);
   const adminRequired = require('../../middlewares/admin-required')(crowi);
-  const csrf = require('../../middlewares/csrf')(crowi);
   const addActivity = generateAddActivityMiddleware(crowi);
 
-  this.adminEvent = crowi.event('admin');
+  const adminEvent = crowi.event('admin');
   const activityEvent = crowi.event('activity');
 
   // setup event
-  this.adminEvent.on('onProgressForImport', (data) => {
+  adminEvent.on('onProgressForImport', (data) => {
     socketIoService.getAdminSocket().emit('admin:onProgressForImport', data);
   });
-  this.adminEvent.on('onTerminateForImport', (data) => {
+  adminEvent.on('onTerminateForImport', (data) => {
     socketIoService.getAdminSocket().emit('admin:onTerminateForImport', data);
   });
-  this.adminEvent.on('onErrorForImport', (data) => {
+  adminEvent.on('onErrorForImport', (data) => {
     socketIoService.getAdminSocket().emit('admin:onErrorForImport', data);
   });
 
@@ -212,7 +211,7 @@ module.exports = (crowi) => {
    *        200:
    *          description: Import process has requested
    */
-  router.post('/', accessTokenParser, loginRequired, adminRequired, csrf, addActivity, async(req, res) => {
+  router.post('/', accessTokenParser, loginRequired, adminRequired, addActivity, async(req, res) => {
     // TODO: add express validator
     const { fileName, collections, optionsMap } = req.body;
 
@@ -257,7 +256,7 @@ module.exports = (crowi) => {
     }
     catch (err) {
       logger.error(err);
-      this.adminEvent.emit('onErrorForImport', { message: err.message });
+      adminEvent.emit('onErrorForImport', { message: err.message });
       return;
     }
 
@@ -269,7 +268,7 @@ module.exports = (crowi) => {
     }
     catch (err) {
       logger.error(err);
-      this.adminEvent.emit('onErrorForImport', { message: err.message });
+      adminEvent.emit('onErrorForImport', { message: err.message });
       return;
     }
 
@@ -299,7 +298,7 @@ module.exports = (crowi) => {
     }
     catch (err) {
       logger.error(err);
-      this.adminEvent.emit('onErrorForImport', { message: err.message });
+      adminEvent.emit('onErrorForImport', { message: err.message });
     }
   });
 
@@ -331,7 +330,7 @@ module.exports = (crowi) => {
    *                      type: object
    *                      description: the property of each extracted file
    */
-  router.post('/upload', uploads.single('file'), accessTokenParser, loginRequired, adminRequired, csrf, addActivity, async(req, res) => {
+  router.post('/upload', uploads.single('file'), accessTokenParser, loginRequired, adminRequired, addActivity, async(req, res) => {
     const { file } = req;
     const zipFile = importService.getFile(file.filename);
     let data = null;
@@ -373,7 +372,7 @@ module.exports = (crowi) => {
    *        200:
    *          description: all files are deleted
    */
-  router.delete('/all', accessTokenParser, loginRequired, adminRequired, csrf, async(req, res) => {
+  router.delete('/all', accessTokenParser, loginRequired, adminRequired, async(req, res) => {
     try {
       importService.deleteAllZipFiles();
 

@@ -2,7 +2,7 @@ import React, { FC, useCallback, useState } from 'react';
 
 import dateFnsFormat from 'date-fns/format';
 import { TFunctionResult } from 'i18next';
-import { useTranslation } from 'react-i18next';
+import { useTranslation } from 'next-i18next';
 
 import { IUserGroupHasId } from '~/interfaces/user';
 
@@ -13,7 +13,7 @@ type Props = {
   onSubmit?: (targetGroup: IUserGroupHasId, userGroupData: Partial<IUserGroupHasId>) => Promise<void> | void
 };
 
-const UserGroupForm: FC<Props> = (props: Props) => {
+export const UserGroupForm: FC<Props> = (props: Props) => {
 
   const { t } = useTranslation();
 
@@ -152,5 +152,3 @@ const UserGroupForm: FC<Props> = (props: Props) => {
     </form>
   );
 };
-
-export default UserGroupForm;

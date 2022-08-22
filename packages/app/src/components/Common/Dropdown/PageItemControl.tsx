@@ -1,6 +1,6 @@
 import React, { useState, useCallback, useEffect } from 'react';
 
-import { useTranslation } from 'react-i18next';
+import { useTranslation } from 'next-i18next';
 import {
   Dropdown, DropdownMenu, DropdownToggle, DropdownItem,
 } from 'reactstrap';
@@ -251,6 +251,8 @@ const PageItemControlDropdownMenu = React.memo((props: DropdownMenuProps): JSX.E
   );
 });
 
+PageItemControlDropdownMenu.displayName = 'PageItemControl';
+
 
 type PageItemControlSubstanceProps = CommonProps & {
   pageId: string,
@@ -346,7 +348,7 @@ export const PageItemControlSubstance = (props: PageItemControlSubstanceProps): 
 };
 
 
-type PageItemControlProps = CommonProps & {
+export type PageItemControlProps = CommonProps & {
   pageId?: string,
   children?: React.ReactNode,
   operationProcessData?: IPageOperationProcessData,

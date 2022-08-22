@@ -1,7 +1,6 @@
-import { pagePathUtils } from '@growi/core';
+import { pagePathUtils, AllSubscriptionStatusType, SubscriptionStatusType } from '@growi/core';
 
 import { SupportedAction, SupportedTargetModel } from '~/interfaces/activity';
-import { AllSubscriptionStatusType, SubscriptionStatusType } from '~/interfaces/subscription';
 import { generateAddActivityMiddleware } from '~/server/middlewares/add-activity';
 import Subscription from '~/server/models/subscription';
 import UserGroup from '~/server/models/user-group';
@@ -161,7 +160,6 @@ module.exports = (crowi) => {
   const accessTokenParser = require('../../middlewares/access-token-parser')(crowi);
   const loginRequired = require('../../middlewares/login-required')(crowi, true);
   const loginRequiredStrictly = require('../../middlewares/login-required')(crowi);
-  const csrf = require('../../middlewares/csrf')(crowi);
   const certifySharedPage = require('../../middlewares/certify-shared-page')(crowi);
   const addActivity = generateAddActivityMiddleware(crowi);
 
@@ -175,8 +173,9 @@ module.exports = (crowi) => {
 
   const validator = {
     getPage: [
-      query('id').if(value => value != null).isMongoId(),
-      query('path').if(value => value != null).isString(),
+      query('pageId').optional().isString(),
+      query('path').optional().isString(),
+      query('findAll').optional().isBoolean(),
     ],
     likes: [
       body('pageId').isString(),
@@ -255,19 +254,23 @@ module.exports = (crowi) => {
    */
   router.get('/', certifySharedPage, accessTokenParser, loginRequired, validator.getPage, apiV3FormValidator, async(req, res) => {
     const { user } = req;
-    const { pageId, path } = req.query;
+    const { pageId, path, findAll } = req.query;
 
     if (pageId == null && path == null) {
-      return res.apiv3Err(new ErrorV3('Parameter path or pageId is required.', 'invalid-request'));
+      return res.apiv3Err(new ErrorV3('Either parameter of path or pageId is required.', 'invalid-request'));
     }
 
     let page;
+    let pages;
     try {
       if (pageId != null) { // prioritized
         page = await Page.findByIdAndViewer(pageId, user);
       }
+      else if (!findAll) {
+        page = await Page.findByPathAndViewer(path, user, null, true);
+      }
       else {
-        page = await Page.findByPathAndViewer(path, user);
+        pages = await Page.findByPathAndViewer(path, user, null, false);
       }
     }
     catch (err) {
@@ -275,22 +278,24 @@ module.exports = (crowi) => {
       return res.apiv3Err(err, 500);
     }
 
-    if (page == null) {
+    if (page == null && (pages == null || pages.length === 0)) {
       return res.apiv3Err('Page is not found', 404);
     }
 
-    try {
-      page.initLatestRevisionField();
+    if (page != null) {
+      try {
+        page.initLatestRevisionField();
 
-      // populate
-      page = await page.populateDataToShowRevision();
-    }
-    catch (err) {
-      logger.error('populate-page-failed', err);
-      return res.apiv3Err(err, 500);
+        // populate
+        page = await page.populateDataToShowRevision();
+      }
+      catch (err) {
+        logger.error('populate-page-failed', err);
+        return res.apiv3Err(err, 500);
+      }
     }
 
-    return res.apiv3({ page });
+    return res.apiv3({ page, pages });
   });
 
   /**
@@ -315,7 +320,7 @@ module.exports = (crowi) => {
    *                schema:
    *                  $ref: '#/components/schemas/Page'
    */
-  router.put('/likes', accessTokenParser, loginRequiredStrictly, csrf, addActivity, validator.likes, apiV3FormValidator, async(req, res) => {
+  router.put('/likes', accessTokenParser, loginRequiredStrictly, addActivity, validator.likes, apiV3FormValidator, async(req, res) => {
     const { pageId, bool: isLiked } = req.body;
 
     let page;
@@ -441,6 +446,7 @@ module.exports = (crowi) => {
     const page = await Page.findByIdAndViewer(pageId, req.user, null, false);
 
     if (page == null) {
+      // Empty page should not be related to grant API
       return res.apiv3Err(new ErrorV3('Page is unreachable or empty.', 'page_unreachable_or_empty'), 400);
     }
 
@@ -517,6 +523,7 @@ module.exports = (crowi) => {
     const page = await Page.findByIdAndViewer(pageId, req.user, null);
 
     if (page == null) {
+      // Empty page should not be related to grant API
       return res.apiv3Err(new ErrorV3('Page is unreachable or empty.', 'page_unreachable_or_empty'), 400);
     }
 
@@ -541,6 +548,7 @@ module.exports = (crowi) => {
     const page = await Page.findByIdAndViewer(pageId, req.user, null, false);
 
     if (page == null) {
+      // Empty page should not be related to grant API
       return res.apiv3Err(new ErrorV3('Page is unreachable or empty.', 'page_unreachable_or_empty'), 400);
     }
 
@@ -730,7 +738,7 @@ module.exports = (crowi) => {
   //  *                schema:
   //  *                  $ref: '#/components/schemas/Page'
   //  */
-  // router.post('/archive', accessTokenParser, loginRequired, csrf, validator.archive, apiV3FormValidator, async(req, res) => {
+  // router.post('/archive', accessTokenParser, loginRequired, validator.archive, apiV3FormValidator, async(req, res) => {
   //   const PageArchive = crowi.model('PageArchive');
 
   //   const {
@@ -794,7 +802,7 @@ module.exports = (crowi) => {
    *          500:
    *            description: Internal server error.
    */
-  router.put('/subscribe', accessTokenParser, loginRequiredStrictly, csrf, addActivity, validator.subscribe, apiV3FormValidator, async(req, res) => {
+  router.put('/subscribe', accessTokenParser, loginRequiredStrictly, addActivity, validator.subscribe, apiV3FormValidator, async(req, res) => {
     const { pageId, status } = req.body;
     const userId = req.user._id;
 
@@ -821,7 +829,7 @@ module.exports = (crowi) => {
   });
 
 
-  router.put('/:pageId/content-width', accessTokenParser, loginRequiredStrictly, csrf,
+  router.put('/:pageId/content-width', accessTokenParser, loginRequiredStrictly,
     validator.contentWidth, apiV3FormValidator, async(req, res) => {
       const { pageId } = req.params;
       const { expandContentWidth } = req.body;
