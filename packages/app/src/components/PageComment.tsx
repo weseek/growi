@@ -152,7 +152,7 @@ export const PageComment: FC<PageCommentProps> = memo((props:PageCommentProps): 
     />
   );
 
-  const generateReplyCommentElements = (replyComments: ICommentHasIdList) => (
+  const generateReplyCommentsElement = (replyComments: ICommentHasIdList) => (
     <ReplyComments
       isReadOnly={isReadOnly}
       replyList={replyComments}
@@ -184,7 +184,7 @@ export const PageComment: FC<PageCommentProps> = memo((props:PageCommentProps): 
                 return (
                   <div key={comment._id} className={commentThreadClasses}>
                     {generateCommentElement(comment)}
-                    {hasReply && generateReplyCommentElements(allReplies[comment._id])}
+                    {hasReply && generateReplyCommentsElement(allReplies[comment._id])}
                     {(!isReadOnly && !showEditorIds.has(comment._id)) && (
                       <div className="text-right">
                         <Button
