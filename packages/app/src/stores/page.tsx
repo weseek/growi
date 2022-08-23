@@ -2,20 +2,18 @@ import { IPageInfoForEntity, IPagePopulatedToShowRevision, Nullable } from '@gro
 import useSWR, { SWRResponse } from 'swr';
 import useSWRImmutable from 'swr/immutable';
 
-import { apiPost, apiGet } from '~/client/util/apiv1-client';
-import { apiv3Get, apiv3Post } from '~/client/util/apiv3-client';
+import { apiGet } from '~/client/util/apiv1-client';
+import { apiv3Get } from '~/client/util/apiv3-client';
 import {
-  IPageInfo, IPageInfoForOperation, IPageInfoAll,
+  IPageInfo, IPageInfoForOperation,
 } from '~/interfaces/page';
 import { IRecordApplicableGrant, IResIsGrantNormalized } from '~/interfaces/page-grant';
 import { IRevisionsForPagination } from '~/interfaces/revision';
-import loggerFactory from '~/utils/logger';
 
 import { IPageTagsInfo } from '../interfaces/tag';
 
 import { useCurrentPageId } from './context';
 
-const logger = loggerFactory('growi:stores:page');
 
 export const useSWRxPage = (pageId?: string|null, shareLinkId?: string): SWRResponse<IPagePopulatedToShowRevision|null, Error> => {
   return useSWR<IPagePopulatedToShowRevision|null, Error>(
