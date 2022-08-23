@@ -81,7 +81,7 @@ export const SearchResultContent: FC<Props> = (props: Props) => {
   const SubNavButtons = dynamic<SubNavButtonsProps>(() => import('../Navbar/SubNavButtons').then(mod => mod.SubNavButtons), { ssr: false });
   const RevisionLoader = dynamic(() => import('../Page/RevisionLoader'), { ssr: false });
   const PageComment = dynamic(() => import('../PageComment').then(mod => mod.PageComment), { ssr: false });
-  const PageContentFooter = dynamic(() => import('../PageContentFooter'), { ssr: false });
+  const PageContentFooter = dynamic(() => import('../PageContentFooter').then(mod => mod.PageContentFooter), { ssr: false });
 
   const scrollElementRef = useRef(null);
 
@@ -217,12 +217,7 @@ export const SearchResultContent: FC<Props> = (props: Props) => {
           highlightKeywords={highlightKeywords}
         />
         <PageComment pageId={page._id} highlightKeywords={highlightKeywords} isReadOnly hideIfEmpty />
-        <PageContentFooter
-          createdAt={new Date(pageWithMeta.data.createdAt)}
-          updatedAt={new Date(pageWithMeta.data.updatedAt)}
-          creator={pageWithMeta.data.creator}
-          revisionAuthor={pageWithMeta.data.lastUpdateUser}
-        />
+        <PageContentFooter />
       </div>
     </div>
   );

@@ -150,7 +150,7 @@ module.exports = function(crowi, app) {
 
   // csurf should be initialized after express-session
   // default methods + PUT. See: https://expressjs.com/en/resources/middleware/csurf.html#ignoremethods
-  app.use(csrf({ ignoreMethods: ['GET', 'HEAD', 'OPTIONS', 'PUT', 'POST'], cookie: false }));
+  app.use(csrf({ ignoreMethods: ['GET', 'HEAD', 'OPTIONS', 'PUT', 'POST', 'DELETE'], cookie: false }));
 
   // passport
   debug('initialize Passport');

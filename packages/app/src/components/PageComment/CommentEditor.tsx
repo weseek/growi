@@ -4,29 +4,27 @@ import React, {
 
 import { UserPicture } from '@growi/ui';
 import {
-  Button,
-  TabContent, TabPane,
+  Button, TabContent, TabPane,
 } from 'reactstrap';
 import * as toastr from 'toastr';
 
 import { apiPostForm } from '~/client/util/apiv1-client';
-import { CustomWindow } from '~/interfaces/global';
-import { IInterceptorManager } from '~/interfaces/interceptor-manager';
 import { RendererOptions } from '~/services/renderer/renderer';
 import { useSWRxPageComment } from '~/stores/comment';
 import {
-  useCurrentPagePath, useCurrentPageId, useCurrentUser, useRevisionId, useRendererConfig,
+  useCurrentPagePath, useCurrentPageId, useCurrentUser, useRevisionId, useIsSlackConfigured,
+  useIsUploadableFile, useIsUploadableImage,
 } from '~/stores/context';
 import { useSWRxSlackChannels, useIsSlackEnabled } from '~/stores/editor';
-import { useIsMobile } from '~/stores/ui';
-
 
 import { CustomNavTab } from '../CustomNavigation/CustomNav';
 import NotAvailableForGuest from '../NotAvailableForGuest';
-// import Editor from '../PageEditor/Editor';
+import Editor from '../PageEditor/Editor';
 import { SlackNotification } from '../SlackNotification';
 
-import CommentPreview from './CommentPreview';
+import { CommentPreview } from './CommentPreview';
+
+import styles from './CommentEditor.module.scss';
 
 
 const navTabMapping = {
@@ -42,13 +40,12 @@ const navTabMapping = {
   },
 };
 
-type PropsType = {
+export type CommentEditorProps = {
   rendererOptions: RendererOptions,
   isForNewComment?: boolean,
   replyTo?: string,
   currentCommentId?: string,
   commentBody?: string,
-  commentCreator?: string,
   onCancelButtonClicked?: () => void,
   onCommentButtonClicked?: () => void,
 }
@@ -59,71 +56,35 @@ type EditorRef = {
   terminateUploadingState: () => void,
 }
 
-const CommentEditor = (props: PropsType): JSX.Element => {
+export const CommentEditor = (props: CommentEditorProps): JSX.Element => {
 
   const {
     rendererOptions, isForNewComment, replyTo,
-    currentCommentId, commentBody, commentCreator, onCancelButtonClicked, onCommentButtonClicked,
+    currentCommentId, commentBody, onCancelButtonClicked, onCommentButtonClicked,
   } = props;
+
   const { data: currentUser } = useCurrentUser();
   const { data: currentPagePath } = useCurrentPagePath();
   const { data: currentPageId } = useCurrentPageId();
   const { update: updateComment, post: postComment } = useSWRxPageComment(currentPageId);
   const { data: revisionId } = useRevisionId();
-  const { data: isMobile } = useIsMobile();
   const { data: isSlackEnabled, mutate: mutateIsSlackEnabled } = useIsSlackEnabled();
   const { data: slackChannelsData } = useSWRxSlackChannels(currentPagePath);
-  const { data: config } = useRendererConfig();
-
-  // const isUploadable = config.upload.image || config.upload.file;
-  // const isUploadableFile = config.upload.file;
-  // const isSlackConfigured = config.isSlackConfigured;
+  const { data: isSlackConfigured } = useIsSlackConfigured();
+  const { data: isUploadableFile } = useIsUploadableFile();
+  const { data: isUploadableImage } = useIsUploadableImage();
 
   const [isReadyToUse, setIsReadyToUse] = useState(!isForNewComment);
   const [comment, setComment] = useState(commentBody ?? '');
-  const [html, setHtml] = useState('');
   const [activeTab, setActiveTab] = useState('comment_editor');
   const [error, setError] = useState();
   const [slackChannels, setSlackChannels] = useState(slackChannelsData?.toString());
 
   const editorRef = useRef<EditorRef>(null);
 
-  const renderHtml = useCallback((markdown: string) => {
-    const context = {
-      markdown,
-      parsedHTML: '',
-    };
-
-    // TODO: use ReactMarkdown
-
-    // const interceptorManager: IInterceptorManager = (window as CustomWindow).interceptorManager;
-    // interceptorManager.process('preRenderCommnetPreview', context)
-    //   .then(() => { return interceptorManager.process('prePreProcess', context) })
-    //   .then(() => {
-    //     context.markdown = rendererOptions.preProcess(context.markdown, context);
-    //   })
-    //   .then(() => { return interceptorManager.process('postPreProcess', context) })
-    //   .then(() => {
-    //     const parsedHTML = rendererOptions.process(context.markdown, context);
-    //     context.parsedHTML = parsedHTML;
-    //   })
-    //   .then(() => { return interceptorManager.process('prePostProcess', context) })
-    //   .then(() => {
-    //     context.parsedHTML = rendererOptions.postProcess(context.parsedHTML, context);
-    //   })
-    //   .then(() => { return interceptorManager.process('postPostProcess', context) })
-    //   .then(() => { return interceptorManager.process('preRenderCommentPreviewHtml', context) })
-    //   .then(() => {
-    //     setHtml(context.parsedHTML);
-    //   })
-    //   // process interceptors for post rendering
-    //   .then(() => { return interceptorManager.process('postRenderCommentPreviewHtml', context) });
-  }, [rendererOptions]);
-
   const handleSelect = useCallback((activeTab: string) => {
     setActiveTab(activeTab);
-    renderHtml(comment);
-  }, [comment, renderHtml]);
+  }, []);
 
   useEffect(() => {
     if (slackChannels === undefined) { return }
@@ -132,7 +93,6 @@ const CommentEditor = (props: PropsType): JSX.Element => {
 
   const initializeEditor = useCallback(() => {
     setComment('');
-    setHtml('');
     setActiveTab('comment_editor');
     setError(undefined);
     // reset value
@@ -210,7 +170,6 @@ const CommentEditor = (props: PropsType): JSX.Element => {
   }, []);
 
   const uploadHandler = useCallback(async(file) => {
-
     if (editorRef.current == null) { return }
 
     const pagePath = currentPagePath;
@@ -220,6 +179,7 @@ const CommentEditor = (props: PropsType): JSX.Element => {
     formData.append('file', file);
     formData.append('path', pagePath ?? '');
     formData.append('page_id', pageId ?? '');
+
     try {
       // TODO: typescriptize res
       const res = await apiPostForm(endpoint, formData) as any;
@@ -242,12 +202,18 @@ const CommentEditor = (props: PropsType): JSX.Element => {
   }, [apiErrorHandler, currentPageId, currentPagePath]);
 
   const getCommentHtml = useCallback(() => {
+    if (currentPagePath == null) {
+      return <></>;
+    }
+
     return (
       <CommentPreview
-        html={html}
+        rendererOptions={rendererOptions}
+        markdown={comment}
+        path={currentPagePath}
       />
     );
-  }, [html]);
+  }, [currentPagePath, comment, rendererOptions]);
 
   const renderBeforeReady = useCallback((): JSX.Element => {
     return (
@@ -266,7 +232,6 @@ const CommentEditor = (props: PropsType): JSX.Element => {
   }, []);
 
   const renderReady = () => {
-
     const commentPreview = getCommentHtml();
 
     const errorMessage = <span className="text-danger text-right mr-2">{error}</span>;
@@ -286,8 +251,7 @@ const CommentEditor = (props: PropsType): JSX.Element => {
       </Button>
     );
 
-    // // TODO: typescriptize Editor
-    // const AnyEditor = Editor as any;
+    const isUploadable = isUploadableImage || isUploadableFile;
 
     return (
       <>
@@ -295,18 +259,16 @@ const CommentEditor = (props: PropsType): JSX.Element => {
           <CustomNavTab activeTab={activeTab} navTabMapping={navTabMapping} onNavSelected={handleSelect} hideBorderBottom />
           <TabContent activeTab={activeTab}>
             <TabPane tabId="comment_editor">
-              {/* <AnyEditor
+              <Editor
                 ref={editorRef}
                 value={comment}
-                lineNumbers={false}
-                isMobile={isMobile}
-                // isUploadable={isUploadable}
-                // isUploadableFile={isUploadableFile}
+                isUploadable={isUploadable}
+                isUploadableFile={isUploadableFile}
                 onChange={setComment}
                 onUpload={uploadHandler}
                 onCtrlEnter={ctrlEnterHandler}
                 isComment
-              /> */}
+              />
               {/*
                 Note: <OptionsSelector /> is not optimized for ComentEditor in terms of responsive design.
                 See a review comment in https://github.com/weseek/growi/pull/3473
@@ -325,7 +287,7 @@ const CommentEditor = (props: PropsType): JSX.Element => {
             <span className="flex-grow-1" />
             <span className="d-none d-sm-inline">{ errorMessage && errorMessage }</span>
 
-            {/* { isSlackConfigured
+            { isSlackConfigured
               && (
                 <div className="form-inline align-self-center mr-md-2">
                   <SlackNotification
@@ -337,7 +299,7 @@ const CommentEditor = (props: PropsType): JSX.Element => {
                   />
                 </div>
               )
-            } */}
+            }
             <div className="d-none d-sm-block">
               <span className="mr-2">{cancelButton}</span><span>{submitButton}</span>
             </div>
@@ -354,7 +316,7 @@ const CommentEditor = (props: PropsType): JSX.Element => {
   };
 
   return (
-    <div className="form page-comment-form">
+    <div className={`${styles['comment-editor-styles']} form page-comment-form`}>
       <div className="comment-form">
         <div className="comment-form-user">
           <UserPicture user={currentUser} noLink noTooltip />
@@ -370,5 +332,3 @@ const CommentEditor = (props: PropsType): JSX.Element => {
   );
 
 };
-
-export default CommentEditor;
