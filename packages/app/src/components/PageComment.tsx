@@ -170,7 +170,6 @@ export const PageComment: FC<PageCommentProps> = memo((props:PageCommentProps): 
 
   return (
     <>
-      {/* TODO: Check the comment.html CSS */}
       <div className={`${styles['page-comment-styles']} page-comments-row comment-list`}>
         <div className="container-lg">
           <div className="page-comments">
@@ -221,13 +220,6 @@ export const PageComment: FC<PageCommentProps> = memo((props:PageCommentProps): 
 
               })}
             </div>
-            {/* TODO: Check if identical-page */}
-            {(!isReadOnly) && (
-              <CommentEditorLazyRenderer
-                pageId={pageId}
-                rendererOptions={rendererOptions}
-              />
-            )}
           </div>
         </div>
       </div>
