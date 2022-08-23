@@ -16,6 +16,7 @@ export const Comments = (props: CommentsProps): JSX.Element => {
 
   const { data: rendererOptions } = useCommentPreviewOptions();
 
+  // TODO: Implement Skelton
   if (rendererOptions == null) {
     return <></>;
   }
