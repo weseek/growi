@@ -8,6 +8,8 @@ import { envUtils } from '@growi/core';
 import detectIndent from 'detect-indent';
 import { throttle, debounce } from 'throttle-debounce';
 
+import { saveAndReload } from '~/client/services/page-operation';
+
 // import AppContainer from '~/client/services/AppContainer';
 // import EditorContainer from '~/client/services/EditorContainer';
 // import PageContainer from '~/client/services/PageContainer';
@@ -101,16 +103,21 @@ const PageEditor = (props: Props): JSX.Element => {
   const { data: isUploadableFile } = useIsUploadableFile();
   const { data: isUploadableImage } = useIsUploadableImage();
   const { data: currentPage } = useSWRxCurrentPage();
+  // const { registerComponentInstance } = useComponentInstances();
 
   const { data: rendererOptions } = usePreviewOptions();
 
   const [markdown, setMarkdown] = useState<string>('');
+
+  console.log('mark', markdown);
 
   useEffect(() => {
     if (currentPage != null) {
       setMarkdown(currentPage.revision?.body);
     }
   }, [currentPage, currentPage?.revision?.body]);
+
+  const slackChannels = useMemo(() => (slackChannelsData ? slackChannelsData.toString() : ''), []);
 
 
   const editorRef = useRef<EditorRef>(null);
@@ -135,8 +142,6 @@ const PageEditor = (props: Props): JSX.Element => {
     if (grantData == null) {
       return;
     }
-
-    const slackChannels = slackChannelsData ? slackChannelsData.toString() : '';
 
     const optionsToSave = getOptionsToSave(
       isSlackEnabled ?? false, slackChannels,
@@ -316,16 +321,6 @@ const PageEditor = (props: Props): JSX.Element => {
   const scrollEditorByPreviewScrollWithThrottle = useMemo(() => throttle(20, scrollEditorByPreviewScroll), [scrollEditorByPreviewScroll]);
 
 
-  // register dummy instance to get markdown
-  useEffect(() => {
-    const pageEditorInstance = {
-      getMarkdown: () => {
-        return markdown;
-      },
-    };
-    // appContainer.registerComponentInstance('PageEditor', pageEditorInstance);
-  }, [markdown]);
-
   // initial caret line
   useEffect(() => {
     if (editorRef.current != null) {
@@ -349,6 +344,29 @@ const PageEditor = (props: Props): JSX.Element => {
       globalEmitter.removeListener('setCaretLine', handler);
     };
   }, []);
+
+
+  const saveAndReloadHandler = useCallback(async() => {
+    const grant = grantData?.grant;
+    const grantedGroup = grantData?.grantedGroup;
+
+    if (isSlackEnabled == null || grantedGroup == null) {
+      return;
+    }
+
+    console.log('markdown_saveAndReloadHandler', markdown);
+    const optionsToSave = getOptionsToSave(isSlackEnabled, slackChannels, grant || 1, grantedGroup.id, grantedGroup.name, pageTags || []);
+    await saveAndReload(optionsToSave, { pageId, path: currentPagePath, revisionId: currentPage?.revision._id }, markdown);
+  }, [currentPage?.revision._id, currentPagePath, grantData?.grant, grantData?.grantedGroup, isSlackEnabled, markdown, pageId, pageTags, slackChannels]);
+
+  // set handler to save and reload Page
+  useEffect(() => {
+    globalEmitter.on('saveAndReload', saveAndReloadHandler);
+
+    return function cleanup() {
+      globalEmitter.removeListener('saveAndReload', saveAndReloadHandler);
+    };
+  }, [saveAndReloadHandler]);
 
   // set handler to focus
   useEffect(() => {

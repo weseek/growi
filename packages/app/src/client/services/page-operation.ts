@@ -1,12 +1,13 @@
 import { SubscriptionStatusType } from '@growi/core';
 import urljoin from 'url-join';
 
+import { OptionsToSave } from '~/interfaces/editor-settings';
+import loggerFactory from '~/utils/logger';
+
 import { toastError } from '../util/apiNotification';
 import { apiPost } from '../util/apiv1-client';
 import { apiv3Post, apiv3Put } from '../util/apiv3-client';
-import { EditorMode } from '~/stores/ui';
 
-import loggerFactory from '~/utils/logger';
 const logger = loggerFactory('growi:services:page-operation');
 
 export const toggleSubscribe = async(pageId: string, currentStatus: SubscriptionStatusType | undefined): Promise<void> => {
@@ -96,8 +97,7 @@ export const resumeRenameOperation = async(pageId: string): Promise<void> => {
 };
 
 
-
-export const createPage = async(pagePath, markdown, tmpParams) => {
+export const createPage = async(pagePath, markdown, tmpParams): Promise<any> => {
   // clone
   const params = Object.assign(tmpParams, {
     path: pagePath,
@@ -108,9 +108,9 @@ export const createPage = async(pagePath, markdown, tmpParams) => {
   const { page, tags, revision } = res.data;
 
   return { page, tags, revision };
-}
+};
 
-export const updatePage = async(pageId, revisionId, markdown, tmpParams) => {
+export const updatePage = async(pageId: string, revisionId: string, markdown: string, tmpParams): Promise<any> => {
   // clone
   const params = Object.assign(tmpParams, {
     page_id: pageId,
@@ -123,38 +123,52 @@ export const updatePage = async(pageId, revisionId, markdown, tmpParams) => {
     throw new Error(res.error);
   }
   return res;
+};
+
+type PageInfo= {
+  pageId: string | null | undefined,
+  path: string | null | undefined,
+  revisionId: string | null | undefined,
 }
 
 
-export const saveAndReload = async(optionsToSave, editorMode, pageInfo) => {
+export const saveAndReload = async(optionsToSave: OptionsToSave, pageInfo: PageInfo, markdown: string) => {
+  console.log({ optionsToSave, pageInfo, markdown });
+  // const { getComponentInstance } = useComponentInstances();
+
   if (optionsToSave == null) {
     const msg = '\'saveAndReload\' requires the \'optionsToSave\' param';
     throw new Error(msg);
   }
 
-  if (editorMode == null) {
-    logger.warn('\'saveAndReload\' requires the \'editorMode\' param');
-    return;
-  }
+  // if (editorMode == null) {
+  //   logger.warn('\'saveAndReload\' requires the \'editorMode\' param');
+  //   return;
+  // }
 
   const { pageId, path, revisionId } = pageInfo;
   // const { pageId, path } = this.state;
   // let { revisionId } = this.state;
 
+  if (path == null) {
+    return;
+  }
+
   const options = Object.assign({}, optionsToSave);
 
-  let markdown;
-  if (editorMode === EditorMode.HackMD) {
-    // const pageEditorByHackmd = this.appContainer.getComponentInstance('PageEditorByHackmd');
-    // markdown = await pageEditorByHackmd.getMarkdown();
-    // // set option to sync
-    // options.isSyncRevisionToHackmd = true;
-    // revisionId = this.state.revisionIdHackmdSynced;
-  }
-  else {
-    // const pageEditor = this.appContainer.getComponentInstance('PageEditor');
-    // markdown = pageEditor.getMarkdown();
-  }
+  // let markdown;
+  // if (editorMode === EditorMode.HackMD) {
+  // const pageEditorByHackmd = this.appContainer.getComponentInstance('PageEditorByHackmd');
+  // markdown = await pageEditorByHackmd.getMarkdown();
+  // // set option to sync
+  // options.isSyncRevisionToHackmd = true;
+  // revisionId = this.state.revisionIdHackmdSynced;
+  // }
+  // else {
+  // const pageEditor = this.appContainer.getComponentInstance('PageEditor');
+  // const pageEditor = getComponentInstance('PageEditor');
+  // markdown = pageEditor.getMarkdown();
+  // }
 
   let res;
   if (pageId == null) {
@@ -166,9 +180,7 @@ export const saveAndReload = async(optionsToSave, editorMode, pageInfo) => {
 
   // const editorContainer = this.appContainer.getContainer('EditorContainer');
   // editorContainer.clearDraft(path);
-  window.location.href = path;
+  // window.location.href = path;
 
   return res;
-}
-
-
+};

@@ -29,3 +29,12 @@ export interface IEditorSettings {
   autoFormatMarkdownTable: boolean,
   textlintSettings: undefined | ITextlintSettings;
 }
+
+export type OptionsToSave = {
+  isSlackEnabled: boolean;
+  slackChannels: string;
+  grant: number;
+  pageTags: string[] | null;
+  grantUserGroupId?: string | null;
+  grantUserGroupName?: string | null;
+};

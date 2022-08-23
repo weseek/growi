@@ -1,5 +1,7 @@
 import React from 'react';
 
+import EventEmitter from 'events';
+
 import { pagePathUtils } from '@growi/core';
 import { NullableBoolean } from 'aws-sdk/clients/synthetics';
 import { useTranslation } from 'next-i18next';
@@ -10,16 +12,19 @@ import {
 
 // import PageContainer from '~/client/services/PageContainer';
 import { getOptionsToSave } from '~/client/util/editor';
+import { CustomWindow } from '~/interfaces/global';
 import {
   useCurrentPagePath, useIsEditable, useCurrentPageId, useIsAclEnabled,
 } from '~/stores/context';
 import { usePageTagsForEditors, useIsEnabledUnsavedWarning } from '~/stores/editor';
+import { useSWRxCurrentPage } from '~/stores/page';
 import {
   useEditorMode, useSelectedGrant,
 } from '~/stores/ui';
 import loggerFactory from '~/utils/logger';
 
 import GrantSelector from './SavePageControls/GrantSelector';
+
 // import { withUnstatedContainers } from './UnstatedUtils';
 
 const logger = loggerFactory('growi:SavePageControls');
@@ -28,7 +33,7 @@ type Props = {
   // pageContainer: PropTypes.instanceOf(PageContainer).isRequired,
 
   // TODO: remove this when omitting unstated is completed
-  // editorMode: string,
+  // editorMode?: string,
   isSlackEnabled: boolean,
   slackChannels: string,
   // mutateGrant?: () => void,
@@ -43,7 +48,6 @@ export const SavePageControls = (props: Props): JSX.Element | null => {
   const { t } = useTranslation();
   const { data: currentPagePath } = useCurrentPagePath();
   const { data: isEditable } = useIsEditable();
-  const { data: editorMode } = useEditorMode();
   const { data: isAclEnabled } = useIsAclEnabled();
   const { data: grantData, mutate: mutateGrant } = useSelectedGrant();
   const { data: pageId } = useCurrentPageId();
@@ -51,7 +55,7 @@ export const SavePageControls = (props: Props): JSX.Element | null => {
   const { mutate: mutateIsEnabledUnsavedWarning } = useIsEnabledUnsavedWarning();
 
 
-  if (isEditable == null || editorMode == null || isAclEnabled == null) {
+  if (isEditable == null || isAclEnabled == null) {
     return null;
   }
 
@@ -79,8 +83,7 @@ export const SavePageControls = (props: Props): JSX.Element | null => {
 
     try {
       // save
-      const optionsToSave = getOptionsToSave(isSlackEnabled, slackChannels, grant, grantedGroup?.id, grantedGroup?.name, pageTags || []);
-      // await pageContainer.saveAndReload(optionsToSave, this.props.editorMode);
+      (window as CustomWindow).globalEmitter.emit('saveAndReload');
     }
     catch (error) {
       logger.error('failed to save', error);

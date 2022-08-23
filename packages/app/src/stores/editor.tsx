@@ -112,32 +112,3 @@ export const usePageTagsForEditors = (pageId: Nullable<string>): SWRResponse<str
 export const useIsEnabledUnsavedWarning = (): SWRResponse<boolean, Error> => {
   return useStaticSWR<boolean, Error>('isEnabledUnsavedWarning', undefined, { fallbackData: false });
 };
-
-
-const useComponentInstances = (): SWRResponse<{}, Error> => {
-  return useStaticSWR(
-    'componentInstances',
-    undefined,
-    { fallbackData: {} },
-  );
-};
-
-export const registerComponentInstance = (id: string, instance) => {
-  const { data: componentInstancesData, mutate: mutateComponentInstances } = useComponentInstances();
-
-  if (instance == null) {
-    throw new Error('The specified instance must not be null');
-  }
-
-  mutateComponentInstances({...componentInstancesData, [id]: instance});
-}
-
-// Get registered React component instance
-export const getComponentInstance = (id: string) => {
-  const { data: componentInstancesData } = useComponentInstances();
-
-  if(componentInstancesData == null){
-    return {}
-  }
-  return componentInstancesData[id];
-}
