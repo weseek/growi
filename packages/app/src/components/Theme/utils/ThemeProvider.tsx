@@ -4,6 +4,7 @@ import React from 'react';
 import dynamic from 'next/dynamic';
 
 import { GrowiThemes } from '~/interfaces/theme';
+import { Themes } from '~/stores/use-next-themes';
 
 
 const ThemeAntarctic = dynamic(() => import('../ThemeAntarctic'));
@@ -26,12 +27,13 @@ const ThemeWood = dynamic(() => import('../ThemeWood'));
 type Props = {
   children: JSX.Element,
   theme?: GrowiThemes,
+  colorScheme?: Themes,
 }
 
-export const ThemeProvider = ({ theme, children }: Props): JSX.Element => {
+export const ThemeProvider = ({ theme, children, colorScheme }: Props): JSX.Element => {
   switch (theme) {
     case GrowiThemes.ANTARCTIC:
-      return <ThemeAntarctic>{children}</ThemeAntarctic>;
+      return <ThemeAntarctic colorScheme={colorScheme}>{children}</ThemeAntarctic>;
     case GrowiThemes.BLACKBOARD:
       return <ThemeBlackboard>{children}</ThemeBlackboard>;
     case GrowiThemes.CHRISTMAS:
