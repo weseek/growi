@@ -3,7 +3,6 @@ import { NextPage, GetServerSideProps, GetServerSidePropsContext } from 'next';
 
 import { CrowiRequest } from '~/interfaces/crowi-request';
 import { IRevision } from '~/interfaces/revision';
-import { IUser, IUserHasId } from '~/interfaces/user';
 
 import { CommonProps, getServerSideCommonProps } from '../utils/commons';
 
@@ -12,7 +11,6 @@ const { isPermalink: _isPermalink } = pagePathUtils;
 type Props = CommonProps & {
   shouldRedirectTo: string | undefined;
 
-  currentUser: IUser;
   revision: IRevision;
 };
 
