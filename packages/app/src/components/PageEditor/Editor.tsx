@@ -8,7 +8,7 @@ import {
   Modal, ModalHeader, ModalBody,
 } from 'reactstrap';
 
-import { toastError, toastSuccess } from '~/client/util/apiNotification';
+import { toastError } from '~/client/util/apiNotification';
 import { useDefaultIndentSize } from '~/stores/context';
 import { useEditorSettings } from '~/stores/editor';
 import { useIsMobile } from '~/stores/ui';
@@ -141,7 +141,7 @@ const Editor = React.forwardRef((props: EditorPropsType, ref): JSX.Element => {
   const pasteFilesHandler = useCallback((event) => {
     const items = event.clipboardData.items || event.clipboardData.files || [];
 
-    toastSuccess(t('toaster.file_upload_succeeded'));
+    toastError(t('toaster.file_upload_failed'));
 
     // abort if length is not 1
     if (items.length < 1) {
