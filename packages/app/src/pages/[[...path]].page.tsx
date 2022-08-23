@@ -329,8 +329,7 @@ const GrowiPage: NextPage<Props> = (props: Props) => {
             </div> */}
           </div>
         </div>
-        <footer>
-          {/* <PageComments /> */}
+        <footer className="footer d-edit-none">
           <PageComment pageId={pageId} isReadOnly={false} titleAlign="left" />
           <PageContentFooter />
         </footer>
