@@ -97,7 +97,7 @@ export const resumeRenameOperation = async(pageId: string): Promise<void> => {
 
 
 
-const createPage = async(pagePath, markdown, tmpParams) => {
+export const createPage = async(pagePath, markdown, tmpParams) => {
   // clone
   const params = Object.assign(tmpParams, {
     path: pagePath,
@@ -110,7 +110,7 @@ const createPage = async(pagePath, markdown, tmpParams) => {
   return { page, tags, revision };
 }
 
-const updatePage = async(pageId, revisionId, markdown, tmpParams) => {
+export const updatePage = async(pageId, revisionId, markdown, tmpParams) => {
   // clone
   const params = Object.assign(tmpParams, {
     page_id: pageId,
@@ -124,8 +124,6 @@ const updatePage = async(pageId, revisionId, markdown, tmpParams) => {
   }
   return res;
 }
-
-
 
 
 export const saveAndReload = async(optionsToSave, editorMode, pageInfo) => {
