@@ -1,33 +1,47 @@
-import React, { FC } from 'react';
+import React from 'react';
 
-import { useCommentPreviewOptions } from '~/stores/renderer';
+import dynamic from 'next/dynamic';
+
+import { RendererOptions } from '~/services/renderer/renderer';
 
 import { useSWRxPageComment } from '../../stores/comment';
+import { Skelton } from '../Skelton';
 
-import CommentEditor from './CommentEditor';
+import { CommentEditorProps } from './CommentEditor';
+
+import CommentEditorStyles from './CommentEditor.module.scss';
+
+const CommentEditor = dynamic<CommentEditorProps>(() => import('./CommentEditor').then(mod => mod.CommentEditor),
+  {
+    ssr: false,
+    loading: () => <div className={`${CommentEditorStyles['comment-editor-styles']} form page-comment-form`}>
+      <div className='comment-form'>
+        <div className='comment-form-user'>
+          <Skelton additionalClass='rounded-circle picture' roundedPill />
+        </div>
+        <Skelton additionalClass="page-comment-commenteditorlazyrenderer-body-skelton grw-skelton" />
+      </div>
+    </div>,
+  });
 
 type Props = {
-  pageId: string,
+  pageId?: string,
+  rendererOptions: RendererOptions,
 }
 
-const CommentEditorLazyRenderer:FC<Props> = (props:Props):JSX.Element => {
+export const CommentEditorLazyRenderer = (props: Props): JSX.Element => {
 
-  const { pageId } = props;
+  const { pageId, rendererOptions } = props;
+
   const { mutate } = useSWRxPageComment(pageId);
-  const { data: rendererOptions } = useCommentPreviewOptions();
-
-  if (rendererOptions == null) {
-    return <></>;
-  }
 
   return (
     <CommentEditor
       rendererOptions={rendererOptions}
+      isForNewComment
       replyTo={undefined}
       onCommentButtonClicked={mutate}
-      isForNewComment
     />
   );
-};
 
-export default CommentEditorLazyRenderer;
+};

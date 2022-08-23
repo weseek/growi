@@ -20,12 +20,13 @@ import superjson from 'superjson';
 import { PageAlerts } from '~/components/PageAlert/PageAlerts';
 import { PageComment } from '~/components/PageComment';
 // import { useTranslation } from '~/i18n';
-// import CommentEditorLazyRenderer from '~/components/PageComment/CommentEditorLazyRenderer';
+import { PageContentFooter } from '~/components/PageContentFooter';
 import { CrowiRequest } from '~/interfaces/crowi-request';
 // import { renderScriptTagByName, renderHighlightJsStyleTag } from '~/service/cdn-resources-loader';
 // import { useIndentSize } from '~/stores/editor';
 // import { useRendererSettings } from '~/stores/renderer';
 // import { EditorMode, useEditorMode, useIsMobile } from '~/stores/ui';
+import { EditorConfig } from '~/interfaces/editor-settings';
 import { CustomWindow } from '~/interfaces/global';
 import { RendererConfig } from '~/interfaces/services/renderer';
 import { ISidebarConfig } from '~/interfaces/sidebar-config';
@@ -39,6 +40,7 @@ import {
   usePreferDrawerModeByUser, usePreferDrawerModeOnEditByUser, useSidebarCollapsed, useCurrentSidebarContents, useCurrentProductNavWidth, useSelectedGrant,
 } from '~/stores/ui';
 import loggerFactory from '~/utils/logger';
+
 
 // import { isUserPage, isTrashPage, isSharedPage } from '~/utils/path-utils';
 
@@ -60,6 +62,7 @@ import {
   useIsAclEnabled, useIsUserPage, useIsNotCreatable,
   useCsrfToken, useIsSearchScopeChildrenAsDefault, useCurrentPageId, useCurrentPathname,
   useIsSlackConfigured, useIsBlinkedHeaderAtBoot, useRendererConfig, useEditingMarkdown,
+  useEditorConfig, useIsAllReplyShown, useIsUploadableFile, useIsUploadableImage,
 } from '../stores/context';
 
 import {
@@ -143,8 +146,9 @@ type Props = CommonProps & {
   // mathJax: string,
   // noCdn: string,
   // highlightJsStyle: string,
-  // isAllReplyShown: boolean,
-  // editorConfig: any,
+  isAllReplyShown: boolean,
+  // isContainerFluid: boolean,
+  editorConfig: EditorConfig,
   isEnabledStaleNotification: boolean,
   // isEnabledLinebreaks: boolean,
   // isEnabledLinebreaksInComments: boolean,
@@ -177,7 +181,7 @@ const GrowiPage: NextPage<Props> = (props: Props) => {
   }
 
   // commons
-  // useEditorConfig(props.editorConfig);
+  useEditorConfig(props.editorConfig);
   useCsrfToken(props.csrfToken);
 
   // UserUISettings
@@ -221,6 +225,10 @@ const GrowiPage: NextPage<Props> = (props: Props) => {
   useRendererConfig(props.rendererConfig);
   // useRendererSettings(props.rendererSettingsStr != null ? JSON.parse(props.rendererSettingsStr) : undefined);
   // useGrowiRendererConfig(props.growiRendererConfigStr != null ? JSON.parse(props.growiRendererConfigStr) : undefined);
+  useIsAllReplyShown(props.isAllReplyShown);
+
+  useIsUploadableFile(props.editorConfig.upload.isUploadableFile);
+  useIsUploadableImage(props.editorConfig.upload.isUploadableImage);
 
   // const { data: editorMode } = useEditorMode();
 
@@ -322,8 +330,9 @@ const GrowiPage: NextPage<Props> = (props: Props) => {
           </div>
         </div>
         <footer>
-          <PageComment pageId={useCurrentPageId().data} isReadOnly={false} titleAlign="left" />
-          {/* <CommentEditorLazyRenderer pageId={useCurrentPageId().data} /> */}
+          {/* <PageComments /> */}
+          <PageComment pageId={pageId} isReadOnly={false} titleAlign="left" />
+          <PageContentFooter />
         </footer>
 
         <UnsavedAlertDialog />
@@ -482,17 +491,18 @@ function injectServerConfigurations(context: GetServerSidePropsContext, props: P
   // props.mathJax = configManager.getConfig('crowi', 'app:mathJax');
   // props.noCdn = configManager.getConfig('crowi', 'app:noCdn');
   // props.highlightJsStyle = configManager.getConfig('crowi', 'customize:highlightJsStyle');
-  // props.isAllReplyShown = configManager.getConfig('crowi', 'customize:isAllReplyShown');
+  props.isAllReplyShown = configManager.getConfig('crowi', 'customize:isAllReplyShown');
+  // props.isContainerFluid = configManager.getConfig('crowi', 'customize:isContainerFluid');
   props.isEnabledStaleNotification = configManager.getConfig('crowi', 'customize:isEnabledStaleNotification');
   // props.isEnabledLinebreaks = configManager.getConfig('markdown', 'markdown:isEnabledLinebreaks');
   // props.isEnabledLinebreaksInComments = configManager.getConfig('markdown', 'markdown:isEnabledLinebreaksInComments');
   props.disableLinkSharing = configManager.getConfig('crowi', 'security:disableLinkSharing');
-  // props.editorConfig = {
-  //   upload: {
-  //     image: crowi.fileUploadService.getIsUploadable(),
-  //     file: crowi.fileUploadService.getFileUploadEnabled(),
-  //   },
-  // };
+  props.editorConfig = {
+    upload: {
+      isUploadableFile: crowi.fileUploadService.getFileUploadEnabled(),
+      isUploadableImage: crowi.fileUploadService.getIsUploadable(),
+    },
+  };
   // props.adminPreferredIndentSize = configManager.getConfig('markdown', 'markdown:adminPreferredIndentSize');
   // props.isIndentSizeForced = configManager.getConfig('markdown', 'markdown:isIndentSizeForced');
 

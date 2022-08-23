@@ -35,6 +35,7 @@ type EditorPropsType = {
   onSave?: () => Promise<void>,
   onPasteFiles?: (event: Event) => void,
   onCtrlEnter?: (event: Event) => void,
+  isComment?: boolean,
 }
 
 type DropzoneRef = {
