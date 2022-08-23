@@ -317,14 +317,14 @@ const PageEditor = (props: Props): JSX.Element => {
 
 
   // register dummy instance to get markdown
-  // useEffect(() => {
-  //   const pageEditorInstance = {
-  //     getMarkdown: () => {
-  //       return markdown;
-  //     },
-  //   };
-  //   appContainer.registerComponentInstance('PageEditor', pageEditorInstance);
-  // }, [appContainer, markdown]);
+  useEffect(() => {
+    const pageEditorInstance = {
+      getMarkdown: () => {
+        return markdown;
+      },
+    };
+    // appContainer.registerComponentInstance('PageEditor', pageEditorInstance);
+  }, [markdown]);
 
   // initial caret line
   useEffect(() => {

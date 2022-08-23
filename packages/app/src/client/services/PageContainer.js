@@ -7,9 +7,6 @@ import { Container } from 'unstated';
 import { EditorMode } from '~/stores/ui';
 import loggerFactory from '~/utils/logger';
 
-import { toastError } from '../util/apiNotification';
-import { apiPost } from '../util/apiv1-client';
-import { apiv3Post } from '../util/apiv3-client';
 import {
   DetachCodeBlockInterceptor,
   RestoreCodeBlockInterceptor,
@@ -17,6 +14,9 @@ import {
 import {
   DrawioInterceptor,
 } from '../../services/renderer/interceptor/drawio-interceptor';
+import { toastError } from '../util/apiNotification';
+import { apiPost } from '../util/apiv1-client';
+import { apiv3Post } from '../util/apiv3-client';
 
 const { isTrashPage } = pagePathUtils;
 

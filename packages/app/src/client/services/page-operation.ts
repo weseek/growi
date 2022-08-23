@@ -2,8 +2,12 @@ import { SubscriptionStatusType } from '@growi/core';
 import urljoin from 'url-join';
 
 import { toastError } from '../util/apiNotification';
+import { apiPost } from '../util/apiv1-client';
 import { apiv3Post, apiv3Put } from '../util/apiv3-client';
+import { EditorMode } from '~/stores/ui';
 
+import loggerFactory from '~/utils/logger';
+const logger = loggerFactory('growi:services:page-operation');
 
 export const toggleSubscribe = async(pageId: string, currentStatus: SubscriptionStatusType | undefined): Promise<void> => {
   try {
@@ -90,3 +94,83 @@ export const exportAsMarkdown = (pageId: string, revisionId: string, format: str
 export const resumeRenameOperation = async(pageId: string): Promise<void> => {
   await apiv3Post('/pages/resume-rename', { pageId });
 };
+
+
+
+const createPage = async(pagePath, markdown, tmpParams) => {
+  // clone
+  const params = Object.assign(tmpParams, {
+    path: pagePath,
+    body: markdown,
+  });
+
+  const res = await apiv3Post('/pages/', params);
+  const { page, tags, revision } = res.data;
+
+  return { page, tags, revision };
+}
+
+const updatePage = async(pageId, revisionId, markdown, tmpParams) => {
+  // clone
+  const params = Object.assign(tmpParams, {
+    page_id: pageId,
+    revision_id: revisionId,
+    body: markdown,
+  });
+
+  const res: any = await apiPost('/pages.update', params);
+  if (!res.ok) {
+    throw new Error(res.error);
+  }
+  return res;
+}
+
+
+
+
+export const saveAndReload = async(optionsToSave, editorMode, pageInfo) => {
+  if (optionsToSave == null) {
+    const msg = '\'saveAndReload\' requires the \'optionsToSave\' param';
+    throw new Error(msg);
+  }
+
+  if (editorMode == null) {
+    logger.warn('\'saveAndReload\' requires the \'editorMode\' param');
+    return;
+  }
+
+  const { pageId, path, revisionId } = pageInfo;
+  // const { pageId, path } = this.state;
+  // let { revisionId } = this.state;
+
+  const options = Object.assign({}, optionsToSave);
+
+  let markdown;
+  if (editorMode === EditorMode.HackMD) {
+    // const pageEditorByHackmd = this.appContainer.getComponentInstance('PageEditorByHackmd');
+    // markdown = await pageEditorByHackmd.getMarkdown();
+    // // set option to sync
+    // options.isSyncRevisionToHackmd = true;
+    // revisionId = this.state.revisionIdHackmdSynced;
+  }
+  else {
+    // const pageEditor = this.appContainer.getComponentInstance('PageEditor');
+    // markdown = pageEditor.getMarkdown();
+  }
+
+  let res;
+  if (pageId == null) {
+    res = await createPage(path, markdown, options);
+  }
+  else {
+    res = await updatePage(pageId, revisionId, markdown, options);
+  }
+
+  // const editorContainer = this.appContainer.getContainer('EditorContainer');
+  // editorContainer.clearDraft(path);
+  window.location.href = path;
+
+  return res;
+}
+
+
