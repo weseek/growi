@@ -28,11 +28,13 @@ import AdminSamlSecurityContainer from '~/client/services/AdminSamlSecurityConta
 import AdminSlackIntegrationLegacyContainer from '~/client/services/AdminSlackIntegrationLegacyContainer';
 import AdminTwitterSecurityContainer from '~/client/services/AdminTwitterSecurityContainer';
 import AdminUsersContainer from '~/client/services/AdminUsersContainer';
+import { SupportedActionType } from '~/interfaces/activity';
 import { CrowiRequest } from '~/interfaces/crowi-request';
 import PluginUtils from '~/server/plugins/plugin-utils';
 import ConfigLoader from '~/server/service/config-loader';
 import {
   useCurrentUser, /* useSearchServiceConfigured, */ useIsAclEnabled, useIsMailerSetup, useIsSearchServiceReachable, useSiteUrl,
+  useAuditLogEnabled, useAuditLogAvailableActions,
 } from '~/stores/context';
 
 import {
@@ -75,6 +77,8 @@ type Props = CommonProps & {
   isSearchServiceConfigured: boolean,
   isSearchServiceReachable: boolean,
   isMailerSetup: boolean,
+  auditLogEnabled: boolean,
+  auditLogAvailableActions: SupportedActionType[],
 
   siteUrl: string,
 };
@@ -193,6 +197,9 @@ const AdminMarkdownSettingsPage: NextPage<Props> = (props: Props) => {
   useSiteUrl(props.siteUrl);
 
   // useEnvVars(props.envVars);
+
+  useAuditLogEnabled(props.auditLogEnabled);
+  useAuditLogAvailableActions(props.auditLogAvailableActions);
 
   const injectableContainers: Container<any>[] = [];
 
@@ -317,6 +324,9 @@ export const getServerSideProps: GetServerSideProps = async(context: GetServerSi
 
   props.isSearchServiceConfigured = searchService.isConfigured;
   props.isSearchServiceReachable = searchService.isReachable;
+
+  props.auditLogEnabled = crowi.configManager.getConfig('crowi', 'app:auditLogEnabled');
+  props.auditLogAvailableActions = crowi.activityService.getAvailableActions(false);
 
   return {
     props,
