@@ -20,7 +20,6 @@ import CodeMirrorEditor from './CodeMirrorEditor';
 import pasteHelper from './PasteHelper';
 import TextAreaEditor from './TextAreaEditor';
 
-
 type EditorPropsType = {
   value?: string,
   isGfmMode?: boolean,

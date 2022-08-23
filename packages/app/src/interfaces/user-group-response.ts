@@ -1,5 +1,9 @@
-import { IUserGroupHasId, IUserGroupRelationHasId } from './user';
+import { HasObjectId, Ref } from '@growi/core';
+
 import { IPageHasId } from './page';
+import {
+  IUser, IUserGroup, IUserGroupHasId, IUserGroupRelationHasId,
+} from './user';
 
 export type UserGroupResult = {
   userGroup: IUserGroupHasId,
@@ -16,6 +20,16 @@ export type ChildUserGroupListResult = {
 
 export type UserGroupRelationListResult = {
   userGroupRelations: IUserGroupRelationHasId[],
+};
+
+export type IUserGroupRelationHasIdPopulatedUser = {
+  relatedGroup: Ref<IUserGroup>,
+  relatedUser: IUser & HasObjectId,
+  createdAt: Date,
+} & HasObjectId;
+
+export type UserGroupRelationsResult = {
+  userGroupRelations: IUserGroupRelationHasIdPopulatedUser[],
 };
 
 export type UserGroupPagesResult = {

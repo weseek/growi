@@ -765,7 +765,6 @@ module.exports = (crowi) => {
     try {
       const userGroup = await UserGroup.findById(id);
       const userGroupRelations = await UserGroupRelation.findAllRelationForUserGroup(userGroup);
-
       return res.apiv3({ userGroupRelations });
     }
     catch (err) {

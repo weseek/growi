@@ -969,6 +969,34 @@ test('content', (t) => {
     'should support `class` shortcuts after `class` attributes',
   );
 
+  t.test('spec for growi plugin', (t) => {
+    t.equal(
+      micromark('a $lsx(/Sandbox)', options()),
+      '<p>a </p>',
+      'should support name with slash',
+    );
+
+    t.equal(
+      micromark('a $lsx(key=value, reverse)', options()),
+      '<p>a </p>',
+      'should support name=value and an attribute w/o value',
+    );
+
+    t.equal(
+      micromark('a $lsx(key=value, reverse, reverse2)', options()),
+      '<p>a </p>',
+      'should support consecutive attributes w/o value',
+    );
+
+    t.equal(
+      micromark('a $lsx(/Sandbox, key=value, reverse)', options()),
+      '<p>a </p>',
+      'should support name=value after an empty value attribute',
+    );
+
+    t.end();
+  });
+
   t.end();
 });
 

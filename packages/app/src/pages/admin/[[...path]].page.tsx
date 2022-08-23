@@ -1,6 +1,6 @@
-import React from 'react';
+import React, { useCallback } from 'react';
 
-import { isClient } from '@growi/core';
+import { isClient, objectIdUtils } from '@growi/core';
 import {
   NextPage, GetServerSideProps, GetServerSidePropsContext,
 } from 'next';
@@ -27,13 +27,14 @@ import AdminOidcSecurityContainer from '~/client/services/AdminOidcSecurityConta
 import AdminSamlSecurityContainer from '~/client/services/AdminSamlSecurityContainer';
 import AdminSlackIntegrationLegacyContainer from '~/client/services/AdminSlackIntegrationLegacyContainer';
 import AdminTwitterSecurityContainer from '~/client/services/AdminTwitterSecurityContainer';
-import AdminUserGroupDetailContainer from '~/client/services/AdminUserGroupDetailContainer';
 import AdminUsersContainer from '~/client/services/AdminUsersContainer';
+import { SupportedActionType } from '~/interfaces/activity';
 import { CrowiRequest } from '~/interfaces/crowi-request';
 import PluginUtils from '~/server/plugins/plugin-utils';
 import ConfigLoader from '~/server/service/config-loader';
 import {
   useCurrentUser, /* useSearchServiceConfigured, */ useIsAclEnabled, useIsMailerSetup, useIsSearchServiceReachable, useSiteUrl,
+  useAuditLogEnabled, useAuditLogAvailableActions,
 } from '~/stores/context';
 
 import {
@@ -55,13 +56,12 @@ const SlackIntegration = dynamic(() => import('../../components/Admin/SlackInteg
 const LegacySlackIntegration = dynamic(() => import('../../components/Admin/LegacySlackIntegration/LegacySlackIntegration'), { ssr: false });
 const UserManagement = dynamic(() => import('../../components/Admin/UserManagement'), { ssr: false });
 const ManageExternalAccount = dynamic(() => import('../../components/Admin/ManageExternalAccount'), { ssr: false });
-const UserGroupPage = dynamic(() => import('../../components/Admin/UserGroup/UserGroupPage'), { ssr: false });
 const ElasticsearchManagement = dynamic(() => import('../../components/Admin/ElasticsearchManagement/ElasticsearchManagement'), { ssr: false });
-// named export
-const AuditLogManagement = dynamic(() => import('../../components/Admin/AuditLogManagement').then(module => module.AuditLogManagement));
-
-
+const UserGroupDetailPage = dynamic(() => import('../../components/Admin/UserGroupDetail/UserGroupDetailPage'), { ssr: false });
 const AdminLayout = dynamic(() => import('../../components/Layout/AdminLayout'), { ssr: false });
+// named export
+const UserGroupPage = dynamic(() => import('../../components/Admin/UserGroup/UserGroupPage').then(mod => mod.UserGroupPage), { ssr: false });
+const AuditLogManagement = dynamic(() => import('../../components/Admin/AuditLogManagement').then(mod => mod.AuditLogManagement), { ssr: false });
 
 const pluginUtils = new PluginUtils();
 
@@ -77,6 +77,8 @@ type Props = CommonProps & {
   isSearchServiceConfigured: boolean,
   isSearchServiceReachable: boolean,
   isMailerSetup: boolean,
+  auditLogEnabled: boolean,
+  auditLogAvailableActions: SupportedActionType[],
 
   siteUrl: string,
 };
@@ -88,6 +90,17 @@ const AdminMarkdownSettingsPage: NextPage<Props> = (props: Props) => {
   const { path } = router.query;
   const pagePathKeys: string[] = Array.isArray(path) ? path : ['home'];
 
+  /*
+  * Set userGroupId as a adminPagesMap key
+  * eg) In case that url is `/user-group-detail/62e8388a9a649bea5e703ef7`, userGroupId will be 62e8388a9a649bea5e703ef7
+  */
+  let userGroupId;
+  const [firstPath, secondPath] = pagePathKeys;
+  if (firstPath === 'user-group-detail') {
+    userGroupId = objectIdUtils.isValidObjectId(secondPath) ? secondPath : undefined;
+  }
+
+  // TODO: refactoring adminPagesMap => https://redmine.weseek.co.jp/issues/102694
   const adminPagesMap = {
     home: {
       title: useCustomTitle(props, t('Wiki Management Home Page')),
@@ -150,6 +163,12 @@ const AdminMarkdownSettingsPage: NextPage<Props> = (props: Props) => {
       title: useCustomTitle(props, t('UserGroup Management')),
       component: <UserGroupPage />,
     },
+    'user-group-detail': {
+      [userGroupId]: {
+        title: t('UserGroup Management'),
+        component: <UserGroupDetailPage userGroupId={userGroupId} />,
+      },
+    },
     search: {
       title: useCustomTitle(props, t('Full Text Search Management')),
       component: <ElasticsearchManagement />,
@@ -160,17 +179,16 @@ const AdminMarkdownSettingsPage: NextPage<Props> = (props: Props) => {
     },
   };
 
-  const getTargetPageToRender = (pagesMap, keys) => {
+  const getTargetPageToRender = (pagesMap, keys): {title: string, component: JSX.Element} => {
     return keys.reduce((pagesMap, key) => {
       return pagesMap[key];
     }, pagesMap);
   };
 
-  const targetPage: {title: string, component: JSX.Element} = getTargetPageToRender(adminPagesMap, pagePathKeys);
-  const title = targetPage.title;
+  const targetPage = getTargetPageToRender(adminPagesMap, pagePathKeys);
 
   useCurrentUser(props.currentUser != null ? JSON.parse(props.currentUser) : null);
-  useIsMailerSetup(props.isMailerSetup);
+  // useIsMailerSetup(props.isMailerSetup);
 
   // useSearchServiceConfigured(props.isSearchServiceConfigured);
   useIsSearchServiceReachable(props.isSearchServiceReachable);
@@ -179,6 +197,9 @@ const AdminMarkdownSettingsPage: NextPage<Props> = (props: Props) => {
   useSiteUrl(props.siteUrl);
 
   // useEnvVars(props.envVars);
+
+  useAuditLogEnabled(props.auditLogEnabled);
+  useAuditLogAvailableActions(props.auditLogAvailableActions);
 
   const injectableContainers: Container<any>[] = [];
 
@@ -193,7 +214,6 @@ const AdminMarkdownSettingsPage: NextPage<Props> = (props: Props) => {
     const adminNotificationContainer = new AdminNotificationContainer();
     const adminSlackIntegrationLegacyContainer = new AdminSlackIntegrationLegacyContainer();
     const adminMarkDownContainer = new AdminMarkDownContainer();
-    const adminUserGroupDetailContainer = new AdminUserGroupDetailContainer();
 
     injectableContainers.push(
       adminAppContainer,
@@ -205,7 +225,6 @@ const AdminMarkdownSettingsPage: NextPage<Props> = (props: Props) => {
       adminNotificationContainer,
       adminSlackIntegrationLegacyContainer,
       adminMarkDownContainer,
-      adminUserGroupDetailContainer,
     );
   }
 
@@ -239,13 +258,12 @@ const AdminMarkdownSettingsPage: NextPage<Props> = (props: Props) => {
         adminTwitterSecurityContainer,
       );
     }
-
   }
 
 
   return (
     <Provider inject={[...injectableContainers, ...adminSecurityContainers]}>
-      <AdminLayout title={title} selectedNavOpt={pagePathKeys[0]}>
+      <AdminLayout title={targetPage.title} selectedNavOpt={firstPath}>
         {targetPage.component}
       </AdminLayout>
     </Provider>
@@ -306,6 +324,9 @@ export const getServerSideProps: GetServerSideProps = async(context: GetServerSi
 
   props.isSearchServiceConfigured = searchService.isConfigured;
   props.isSearchServiceReachable = searchService.isReachable;
+
+  props.auditLogEnabled = crowi.configManager.getConfig('crowi', 'app:auditLogEnabled');
+  props.auditLogAvailableActions = crowi.activityService.getAvailableActions(false);
 
   return {
     props,
