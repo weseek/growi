@@ -6,7 +6,6 @@ import { useTranslation } from 'react-i18next';
 
 
 import AppContainer from '~/client/services/AppContainer';
-import EditorContainer from '~/client/services/EditorContainer';
 import PageContainer from '~/client/services/PageContainer';
 import { apiPost } from '~/client/util/apiv1-client';
 import { getOptionsToSave } from '~/client/util/editor';
@@ -26,7 +25,6 @@ const logger = loggerFactory('growi:PageEditorByHackmd');
 type PageEditorByHackmdProps = {
   appContainer: AppContainer,
   pageContainer: PageContainer,
-  editorContainer: EditorContainer,
 };
 
 type HackEditorRef = {
@@ -34,7 +32,7 @@ type HackEditorRef = {
 };
 
 const PageEditorByHackmd = (props: PageEditorByHackmdProps) => {
-  const { appContainer, pageContainer, editorContainer } = props; // wip
+  const { appContainer, pageContainer } = props; // wip
 
   const { t } = useTranslation();
   const { data: editorMode } = useEditorMode();
@@ -42,7 +40,7 @@ const PageEditorByHackmd = (props: PageEditorByHackmdProps) => {
   const { data: slackChannelsData } = useSWRxSlackChannels(currentPagePath);
   const { data: isSlackEnabled } = useIsSlackEnabled();
   const { data: pageId } = useCurrentPageId();
-  const { data: pageTags } = usePageTagsForEditors(pageId);
+  const { data: pageTags, mutate: updatePageTagsForEditors } = usePageTagsForEditors(pageId);
   const { data: grant } = useSelectedGrant();
 
   const slackChannels = slackChannelsData?.toString();
@@ -171,14 +169,13 @@ const PageEditorByHackmd = (props: PageEditorByHackmdProps) => {
 
       pageContainer.showSuccessToastr();
 
-      // update state of EditorContainer
-      editorContainer.setState({ tags });
+      updatePageTagsForEditors(tags);
     }
     catch (error) {
       logger.error('failed to save', error);
       pageContainer.showErrorToastr(error);
     }
-  }, [editorContainer, editorMode, grant, isSlackEnabled, pageContainer, pageTags, slackChannels]);
+  }, [editorMode, grant, isSlackEnabled, pageContainer, pageTags, slackChannels, updatePageTagsForEditors]);
 
   /**
    * onChange event of HackmdEditor handler
@@ -208,7 +205,7 @@ const PageEditorByHackmd = (props: PageEditorByHackmdProps) => {
     catch (err) {
       logger.error(err);
     }
-  }, [editorContainer, getHackmdUri, pageContainer.state.markdown, pageContainer.state.pageId]);
+  }, [getHackmdUri, pageContainer.state.markdown, pageContainer.state.pageId]);
 
   const penpalErrorOccuredHandler = useCallback((error) => {
     pageContainer.showErrorToastr(error);
@@ -407,6 +404,6 @@ const PageEditorByHackmd = (props: PageEditorByHackmdProps) => {
 
 };
 
-const PageEditorByHackmdWrapper = withUnstatedContainers(PageEditorByHackmd, [AppContainer, PageContainer, EditorContainer]);
+const PageEditorByHackmdWrapper = withUnstatedContainers(PageEditorByHackmd, [AppContainer, PageContainer]);
 
 export default PageEditorByHackmdWrapper;
