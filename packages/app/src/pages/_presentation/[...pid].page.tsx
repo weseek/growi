@@ -60,9 +60,6 @@ async function injectRevisionData(context: GetServerSidePropsContext, props: Pro
 }
 
 export const getServerSideProps: GetServerSideProps = async(context: GetServerSidePropsContext) => {
-  const req = context.req as CrowiRequest<IUserHasId & any>;
-  const { user } = req;
-
   const result = await getServerSideCommonProps(context);
 
 
@@ -73,10 +70,6 @@ export const getServerSideProps: GetServerSideProps = async(context: GetServerSi
   }
 
   const props: Props = result.props as Props;
-
-  if (user != null) {
-    props.currentUser = user.toObject();
-  }
 
   await injectRevisionData(context, props);
 
