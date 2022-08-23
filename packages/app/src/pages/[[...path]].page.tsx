@@ -330,7 +330,9 @@ const GrowiPage: NextPage<Props> = (props: Props) => {
           </div>
         </div>
         <footer className="footer d-edit-none">
-          <PageComment pageId={pageId} isReadOnly={false} titleAlign="left" />
+          { !props.isIdenticalPathPage && (
+            <PageComment pageId={pageId} isReadOnly={false} titleAlign="left" />
+          )}
           <PageContentFooter />
         </footer>
 
