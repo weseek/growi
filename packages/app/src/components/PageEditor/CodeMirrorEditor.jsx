@@ -280,7 +280,7 @@ class CodeMirrorEditor extends AbstractEditor {
     }
 
     const editor = this.getCodeMirror();
-    const linePosition = Math.max(0, line);
+    const linePosition = Math.max(0, line - 1);
 
     editor.setCursor({ line: linePosition }); // leave 'ch' field as null/undefined to indicate the end of line
 
