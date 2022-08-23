@@ -2,15 +2,14 @@ import React, {
   useCallback, useEffect, useRef, useState,
 } from 'react';
 
-import PropTypes from 'prop-types';
 import { useTranslation } from 'react-i18next';
 
 
 import AppContainer from '~/client/services/AppContainer';
-import EditorContainer from '~/client/services/EditorContainer';
 import PageContainer from '~/client/services/PageContainer';
 import { apiPost } from '~/client/util/apiv1-client';
 import { getOptionsToSave } from '~/client/util/editor';
+import { IResHackmdIntegrated, IResHackmdDiscard } from '~/interfaces/hackmd';
 import { useCurrentPagePath, useCurrentPageId } from '~/stores/context';
 import { useSWRxSlackChannels, useIsSlackEnabled, usePageTagsForEditors } from '~/stores/editor';
 import {
@@ -23,8 +22,17 @@ import { withUnstatedContainers } from './UnstatedUtils';
 
 const logger = loggerFactory('growi:PageEditorByHackmd');
 
-const PageEditorByHackmd = (props) => {
-  const { appContainer, pageContainer, editorContainer } = props; // wip
+type PageEditorByHackmdProps = {
+  appContainer: AppContainer,
+  pageContainer: PageContainer,
+};
+
+type HackEditorRef = {
+  getValue: () => string
+};
+
+const PageEditorByHackmd = (props: PageEditorByHackmdProps) => {
+  const { appContainer, pageContainer } = props; // wip
 
   const { t } = useTranslation();
   const { data: editorMode } = useEditorMode();
@@ -32,10 +40,10 @@ const PageEditorByHackmd = (props) => {
   const { data: slackChannelsData } = useSWRxSlackChannels(currentPagePath);
   const { data: isSlackEnabled } = useIsSlackEnabled();
   const { data: pageId } = useCurrentPageId();
-  const { data: pageTags } = usePageTagsForEditors(pageId);
+  const { data: pageTags, mutate: updatePageTagsForEditors } = usePageTagsForEditors(pageId);
   const { data: grant } = useSelectedGrant();
 
-  const slackChannels = slackChannelsData.toString();
+  const slackChannels = slackChannelsData?.toString();
 
   const [isInitialized, setIsInitialized] = useState(false);
   const [isInitializing, setIsInitializing] = useState(false);
@@ -44,7 +52,7 @@ const PageEditorByHackmd = (props) => {
   const [errorMessage, setErrorMessage] = useState('');
   const [errorReason, setErrorReason] = useState('');
 
-  const hackmdEditorRef = useRef(null);
+  const hackmdEditorRef = useRef<HackEditorRef>(null);
 
   useEffect(() => {
     const pageEditorByHackmdInstance = {
@@ -52,6 +60,8 @@ const PageEditorByHackmd = (props) => {
         if (!isInitialized) {
           return Promise.reject(new Error(t('hackmd.not_initialized')));
         }
+
+        if (hackmdEditorRef.current == null) { return }
 
         return hackmdEditorRef.current.getValue();
       },
@@ -86,12 +96,8 @@ const PageEditorByHackmd = (props) => {
     setIsInitialized(false);
     setIsInitializing(true);
 
-    const params = {
-      pageId,
-    };
-
     try {
-      const res = await apiPost('/hackmd.integrate', params);
+      const res = await apiPost<IResHackmdIntegrated>('/hackmd.integrate', { pageId });
 
       if (!res.ok) {
         throw new Error(res.error);
@@ -125,7 +131,7 @@ const PageEditorByHackmd = (props) => {
     const { pageId } = pageContainer.state;
 
     try {
-      const res = await apiPost('/hackmd.discard', { pageId });
+      const res = await apiPost<IResHackmdDiscard>('/hackmd.discard', { pageId });
 
       if (!res.ok) {
         throw new Error(res.error);
@@ -150,11 +156,12 @@ const PageEditorByHackmd = (props) => {
    * @param {string} markdown
    */
   const onSaveWithShortcut = useCallback(async(markdown) => {
-    const optionsToSave = getOptionsToSave(isSlackEnabled, slackChannels, grant, grant.grantedGroup.id, grant.grantedGroup.name, pageTags);
+    if (isSlackEnabled == null || grant == null || slackChannels == null) { return }
+    const optionsToSave = getOptionsToSave(isSlackEnabled, slackChannels, grant.grant, grant.grantedGroup?.id, grant.grantedGroup?.name, pageTags ?? []);
 
     try {
       // disable unsaved warning
-      editorContainer.disableUnsavedWarning();
+      // editorContainer.disableUnsavedWarning(); commentout because disableUnsavedWarning doesn't exitst
 
       // eslint-disable-next-line no-unused-vars
       const { page, tags } = await pageContainer.save(markdown, editorMode, optionsToSave);
@@ -162,14 +169,13 @@ const PageEditorByHackmd = (props) => {
 
       pageContainer.showSuccessToastr();
 
-      // update state of EditorContainer
-      editorContainer.setState({ tags });
+      updatePageTagsForEditors(tags);
     }
     catch (error) {
       logger.error('failed to save', error);
       pageContainer.showErrorToastr(error);
     }
-  }, [editorContainer, editorMode, grant, isSlackEnabled, pageContainer, pageTags, slackChannels]);
+  }, [editorMode, grant, isSlackEnabled, pageContainer, pageTags, slackChannels, updatePageTagsForEditors]);
 
   /**
    * onChange event of HackmdEditor handler
@@ -188,7 +194,7 @@ const PageEditorByHackmd = (props) => {
     }
 
     // enable unsaved warning
-    editorContainer.enableUnsavedWarning();
+    // editorContainer.enableUnsavedWarning(); commentout because enableUnsavedWarning doesn't exitst
 
     const params = {
       pageId: pageContainer.state.pageId,
@@ -199,7 +205,7 @@ const PageEditorByHackmd = (props) => {
     catch (err) {
       logger.error(err);
     }
-  }, [editorContainer, getHackmdUri, pageContainer.state.markdown, pageContainer.state.pageId]);
+  }, [getHackmdUri, pageContainer.state.markdown, pageContainer.state.pageId]);
 
   const penpalErrorOccuredHandler = useCallback((error) => {
     pageContainer.showErrorToastr(error);
@@ -262,7 +268,7 @@ const PageEditorByHackmd = (props) => {
               <div className="card-header bg-warning"><i className="icon-fw icon-info"></i> {t('hackmd.draft_outdated')}</div>
               <div className="card-body text-center">
                 {t('hackmd.based_on_revision')}&nbsp;
-                <a href={`?revision=${revisionIdHackmdSynced}`}><span className="badge badge-secondary">{revisionIdHackmdSynced.substr(-8)}</span></a>
+                <a href={`?revision=${revisionIdHackmdSynced}`}><span className="badge badge-secondary">{revisionIdHackmdSynced?.substr(-8)}</span></a>
 
                 <div className="text-center mt-3">
                   <button
@@ -349,9 +355,13 @@ const PageEditorByHackmd = (props) => {
 
   let content;
 
+  // TODO: typescriptize
+  // using any because ref cann't used between FC and class conponent with type safe
+  const AnyEditor = HackmdEditor as any;
+
   if (isInitialized) {
     content = (
-      <HackmdEditor
+      <AnyEditor
         ref={hackmdEditorRef}
         hackmdUri={hackmdUri}
         pageIdOnHackmd={pageIdOnHackmd}
@@ -362,7 +372,7 @@ const PageEditorByHackmd = (props) => {
         }}
         onPenpalErrorOccured={penpalErrorOccuredHandler}
       >
-      </HackmdEditor>
+      </AnyEditor>
     );
   }
   else {
@@ -394,17 +404,6 @@ const PageEditorByHackmd = (props) => {
 
 };
 
-PageEditorByHackmd.propTypes = {
-  appContainer: PropTypes.instanceOf(AppContainer).isRequired,
-  pageContainer: PropTypes.instanceOf(PageContainer).isRequired,
-  editorContainer: PropTypes.instanceOf(EditorContainer).isRequired,
-
-  // TODO: remove this when omitting unstated is completed
-  pageTags: PropTypes.arrayOf(PropTypes.string),
-  grantGroupId: PropTypes.string,
-  grantGroupName: PropTypes.string,
-};
-
-const PageEditorByHackmdWrapper = withUnstatedContainers(PageEditorByHackmd, [AppContainer, PageContainer, EditorContainer]);
+const PageEditorByHackmdWrapper = withUnstatedContainers(PageEditorByHackmd, [AppContainer, PageContainer]);
 
 export default PageEditorByHackmdWrapper;
