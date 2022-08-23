@@ -350,14 +350,14 @@ const PageEditor = (props: Props): JSX.Element => {
     const grant = grantData?.grant;
     const grantedGroup = grantData?.grantedGroup;
 
-    if (isSlackEnabled == null || grantedGroup == null) {
+    if (isSlackEnabled == null) {
       return;
     }
 
     console.log('markdown_saveAndReloadHandler', markdown);
-    const optionsToSave = getOptionsToSave(isSlackEnabled, slackChannels, grant || 1, grantedGroup.id, grantedGroup.name, pageTags || []);
+    const optionsToSave = getOptionsToSave(isSlackEnabled, slackChannels, grant || 1, grantedGroup?.id, grantedGroup?.name, pageTags || []);
     await saveAndReload(optionsToSave, { pageId, path: currentPagePath, revisionId: currentPage?.revision._id }, markdown);
-  }, [currentPage?.revision._id, currentPagePath, grantData?.grant, grantData?.grantedGroup, isSlackEnabled, markdown, pageId, pageTags, slackChannels]);
+  }, [currentPage?.revision._id, currentPagePath, grantData, isSlackEnabled, markdown, pageId, pageTags, slackChannels]);
 
   // set handler to save and reload Page
   useEffect(() => {

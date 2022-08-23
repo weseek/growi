@@ -150,9 +150,9 @@ export const saveAndReload = async(optionsToSave: OptionsToSave, pageInfo: PageI
   // const { pageId, path } = this.state;
   // let { revisionId } = this.state;
 
-  if (path == null) {
-    return;
-  }
+  // if (path == null) {
+  //   return;
+  // }
 
   const options = Object.assign({}, optionsToSave);
 
@@ -180,7 +180,7 @@ export const saveAndReload = async(optionsToSave: OptionsToSave, pageInfo: PageI
 
   // const editorContainer = this.appContainer.getContainer('EditorContainer');
   // editorContainer.clearDraft(path);
-  // window.location.href = path;
+  window.location.href = path;
 
   return res;
 };
