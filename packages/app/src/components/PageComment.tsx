@@ -17,13 +17,16 @@ import { useSWRxPageComment } from '../stores/comment';
 import { Comment } from './PageComment/Comment';
 import { CommentEditorProps } from './PageComment/CommentEditor';
 import { CommentEditorLazyRenderer } from './PageComment/CommentEditorLazyRenderer';
-import { DeleteCommentModal } from './PageComment/DeleteCommentModal';
+import { DeleteCommentModalProps } from './PageComment/DeleteCommentModal';
 import { ReplyComments } from './PageComment/ReplyComments';
 import { PageCommentSkelton } from './PageCommentSkelton';
 
 import styles from './PageComment.module.scss';
 
 const CommentEditor = dynamic<CommentEditorProps>(() => import('./PageComment/CommentEditor').then(mod => mod.CommentEditor), { ssr: false });
+const DeleteCommentModal = dynamic<DeleteCommentModalProps>(
+  () => import('./PageComment/DeleteCommentModal').then(mod => mod.DeleteCommentModal), { ssr: false },
+);
 
 
 type PageCommentProps = {
@@ -228,13 +231,13 @@ export const PageComment: FC<PageCommentProps> = memo((props:PageCommentProps): 
           </div>
         </div>
       </div>
-      {(!isReadOnly && commentToBeDeleted != null) && (
+      {!isReadOnly && (
         <DeleteCommentModal
           isShown={isDeleteConfirmModalShown}
           comment={commentToBeDeleted}
           errorMessage={errorMessageOnDelete}
-          cancel={onCancelDeleteComment}
-          confirmedToDelete={onDeleteComment}
+          cancelToDelete={onCancelDeleteComment}
+          confirmToDelete={onDeleteComment}
         />
       )}
     </>
