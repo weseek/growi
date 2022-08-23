@@ -20,7 +20,6 @@ import { CommentEditorProps } from './CommentEditor';
 
 import styles from './Comment.module.scss';
 
-// TODO: Update Skelton
 const CommentEditor = dynamic<CommentEditorProps>(() => import('./CommentEditor').then(mod => mod.CommentEditor), { ssr: false });
 
 

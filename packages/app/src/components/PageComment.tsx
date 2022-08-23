@@ -134,7 +134,7 @@ export const PageComment: FC<PageCommentProps> = memo((props:PageCommentProps): 
   commentTitleClasses = titleAlign != null ? `${commentTitleClasses} text-${titleAlign}` : `${commentTitleClasses} text-center`;
 
   if (commentsFromOldest == null || commentsExceptReply == null || rendererOptions == null || currentPagePath == null || currentPage == null) {
-    if (hideIfEmpty) {
+    if (hideIfEmpty && comments?.length === 0) {
       return <></>;
     }
     return (
@@ -155,7 +155,7 @@ export const PageComment: FC<PageCommentProps> = memo((props:PageCommentProps): 
     />
   );
 
-  const generateReplyCommentElements = (replyComments: ICommentHasIdList) => (
+  const generateReplyCommentsElement = (replyComments: ICommentHasIdList) => (
     <ReplyComments
       isReadOnly={isReadOnly}
       replyList={replyComments}
@@ -187,7 +187,7 @@ export const PageComment: FC<PageCommentProps> = memo((props:PageCommentProps): 
                 return (
                   <div key={comment._id} className={commentThreadClasses}>
                     {generateCommentElement(comment)}
-                    {hasReply && generateReplyCommentElements(allReplies[comment._id])}
+                    {hasReply && generateReplyCommentsElement(allReplies[comment._id])}
                     {(!isReadOnly && !showEditorIds.has(comment._id)) && (
                       <div className="text-right">
                         <Button
@@ -222,10 +222,12 @@ export const PageComment: FC<PageCommentProps> = memo((props:PageCommentProps): 
               })}
             </div>
             {/* TODO: Check if identical-page */}
-            <CommentEditorLazyRenderer
-              pageId={pageId}
-              rendererOptions={rendererOptions}
-            />
+            {(!isReadOnly) && (
+              <CommentEditorLazyRenderer
+                pageId={pageId}
+                rendererOptions={rendererOptions}
+              />
+            )}
           </div>
         </div>
       </div>
