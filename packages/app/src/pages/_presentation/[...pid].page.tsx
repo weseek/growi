@@ -10,7 +10,6 @@ const { isPermalink: _isPermalink } = pagePathUtils;
 
 type Props = CommonProps & {
   shouldRedirectTo: string | undefined;
-
   revision: IRevision;
 };
 
