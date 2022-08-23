@@ -363,6 +363,8 @@ class PageService {
       endpoint: activityParameters.endpoint,
       action: page.descendantCount > 0 ? SupportedAction.ACTION_PAGE_RECURSIVELY_RENAME : SupportedAction.ACTION_PAGE_RENAME,
       user,
+      targetModel: 'Page',
+      target: page,
       snapshot: {
         username: user.username,
       },
@@ -431,7 +433,7 @@ class PageService {
 
       throw err;
     }
-    if (!options.isRecursively) {
+    if (page.descendantCount < 1) {
       this.activityEvent.emit('updated', activity, page);
     }
     return renamedPage;
