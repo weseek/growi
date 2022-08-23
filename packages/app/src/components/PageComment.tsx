@@ -235,7 +235,7 @@ export const PageComment: FC<PageCommentProps> = memo((props:PageCommentProps): 
           comment={commentToBeDeleted}
           errorMessage={errorMessageOnDelete}
           cancelToDelete={onCancelDeleteComment}
-          confirmeToDelete={onDeleteComment}
+          confirmToDelete={onDeleteComment}
         />
       )}
     </>

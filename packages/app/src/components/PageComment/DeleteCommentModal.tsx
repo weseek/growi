@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 
 import { UserPicture } from '@growi/ui';
 import { format } from 'date-fns';
@@ -17,15 +17,15 @@ export type DeleteCommentModalProps = {
   comment: ICommentHasId | null,
   errorMessage: string,
   cancelToDelete: () => void,
-  confirmeToDelete: () => void,
+  confirmToDelete: () => void,
 }
 
 export const DeleteCommentModal = (props: DeleteCommentModalProps): JSX.Element => {
   const {
-    isShown, comment, errorMessage, cancelToDelete, confirmeToDelete,
+    isShown, comment, errorMessage, cancelToDelete, confirmToDelete,
   } = props;
 
-  const HeaderContent = () => {
+  const HeaderContent = useMemo(() => {
     if (comment == null || isShown === false) {
       return <></>;
     }
@@ -35,9 +35,9 @@ export const DeleteCommentModal = (props: DeleteCommentModalProps): JSX.Element 
         Delete comment?
       </span>
     );
-  };
+  }, [comment, isShown]);
 
-  const BodyContent = () => {
+  const BodyContent = useMemo(() => {
     if (comment == null || isShown === false) {
       return <></>;
     }
@@ -59,9 +59,9 @@ export const DeleteCommentModal = (props: DeleteCommentModalProps): JSX.Element 
         <p className="card well comment-body mt-2 p-2">{commentBodyElement}</p>
       </>
     );
-  };
+  }, [comment, isShown]);
 
-  const FooterContent = () => {
+  const FooterContent = useMemo(() => {
     if (comment == null || isShown === false) {
       return <></>;
     }
@@ -69,24 +69,24 @@ export const DeleteCommentModal = (props: DeleteCommentModalProps): JSX.Element 
       <>
         <span className="text-danger">{errorMessage}</span>&nbsp;
         <Button onClick={cancelToDelete}>Cancel</Button>
-        <Button color="danger" onClick={confirmeToDelete}>
+        <Button color="danger" onClick={confirmToDelete}>
           <i className="icon icon-fire"></i>
           Delete
         </Button>
       </>
     );
-  };
+  }, [cancelToDelete, comment, confirmToDelete, errorMessage, isShown]);
 
   return (
     <Modal isOpen={isShown} toggle={cancelToDelete} className={`${styles['page-comment-delete-modal']}`}>
       <ModalHeader tag="h4" toggle={cancelToDelete} className="bg-danger text-light">
-        <HeaderContent/>
+        {HeaderContent}
       </ModalHeader>
       <ModalBody>
-        <BodyContent />
+        {BodyContent}
       </ModalBody>
       <ModalFooter>
-        <FooterContent />
+        {FooterContent}
       </ModalFooter>
     </Modal>
   );
