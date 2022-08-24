@@ -51,7 +51,7 @@ const GrantSelector = (props: Props): JSX.Element => {
     grantGroupName,
     onUpdateGrant,
     grant: currentGrant,
-    grantGroupId
+    grantGroupId,
   } = props;
 
 
