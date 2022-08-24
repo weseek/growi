@@ -135,21 +135,8 @@ type PageInfo= {
 
 export const saveAndReload = async(optionsToSave: OptionsToSave, pageInfo: PageInfo, markdown: string) => {
   console.log({ optionsToSave, pageInfo, markdown });
-  // const { getComponentInstance } = useComponentInstances();
-
-  if (optionsToSave == null) {
-    const msg = '\'saveAndReload\' requires the \'optionsToSave\' param';
-    throw new Error(msg);
-  }
-
 
   const { pageId, path, revisionId } = pageInfo;
-  // const { pageId, path } = this.state;
-  // let { revisionId } = this.state;
-
-  // if (path == null) {
-  //   return;
-  // }
 
   const options = Object.assign({}, optionsToSave);
 
