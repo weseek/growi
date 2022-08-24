@@ -98,8 +98,7 @@ export const resumeRenameOperation = async(pageId: string): Promise<void> => {
 };
 
 
-export const createPage = async(pagePath: string, markdown: string, tmpParams): Promise<any> => {
-  console.log('createPage', { pagePath, markdown, tmpParams });
+export const createPage = async(pagePath: string, markdown: string, tmpParams: OptionsToSave) => {
   // clone
   const params = Object.assign(tmpParams, {
     path: pagePath,
@@ -112,7 +111,7 @@ export const createPage = async(pagePath: string, markdown: string, tmpParams): 
   return { page, tags, revision };
 };
 
-export const updatePage = async(pageId: string, revisionId: string, markdown: string, tmpParams): Promise<any> => {
+export const updatePage = async(pageId: string, revisionId: string, markdown: string, tmpParams: OptionsToSave) => {
   // clone
   const params = Object.assign(tmpParams, {
     page_id: pageId,
@@ -135,8 +134,6 @@ type PageInfo= {
 
 
 export const saveAndReload = async(optionsToSave: OptionsToSave, pageInfo: PageInfo, markdown: string) => {
-  console.log({ optionsToSave, pageInfo, markdown });
-
   const { path, pageId, revisionId } = pageInfo;
 
   const options = Object.assign({}, optionsToSave);
