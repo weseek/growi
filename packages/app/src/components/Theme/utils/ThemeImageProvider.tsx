@@ -1,7 +1,6 @@
 import { GrowiThemes } from '~/interfaces/theme';
 import { Themes } from '~/stores/use-next-themes';
 
-import { getBackgroundImageSrc as getChristmasBackgroundImageSrc } from '../ThemeChristmas';
 import { getBackgroundImageSrc as getHalloweenBackgroundImageSrc } from '../ThemeHalloween';
 import { getBackgroundImageSrc as getHuffulePuffBackgroundImageSrc } from '../ThemeHufflepuff';
 import { getBackgroundImageSrc as getIslandBackgroundImageSrc } from '../ThemeIsland';
@@ -13,8 +12,6 @@ export const getBackgroundImageSrc = (theme: GrowiThemes | undefined, colorSchem
     return undefined;
   }
   switch (theme) {
-    case GrowiThemes.CHRISTMAS:
-      return getChristmasBackgroundImageSrc(colorScheme);
     case GrowiThemes.HALLOWEEN:
       return getHalloweenBackgroundImageSrc(colorScheme);
     case GrowiThemes.ISLAND:
