@@ -1,9 +1,6 @@
 import React from 'react';
 
-import EventEmitter from 'events';
-
 import { pagePathUtils } from '@growi/core';
-import { NullableBoolean } from 'aws-sdk/clients/synthetics';
 import { useTranslation } from 'next-i18next';
 import {
   UncontrolledButtonDropdown, Button,
@@ -20,6 +17,7 @@ import { usePageTagsForEditors, useIsEnabledUnsavedWarning } from '~/stores/edit
 import { useSWRxCurrentPage } from '~/stores/page';
 import { useSelectedGrant } from '~/stores/ui';
 import loggerFactory from '~/utils/logger';
+import { IPageGrantData } from '~/interfaces/page';
 
 import GrantSelector from './SavePageControls/GrantSelector';
 
@@ -31,13 +29,8 @@ type Props = {
   // pageContainer: PropTypes.instanceOf(PageContainer).isRequired,
 
   // TODO: remove this when omitting unstated is completed
-  // editorMode?: string,
   isSlackEnabled: boolean,
   slackChannels: string,
-  // mutateGrant?: () => void,
-  // mutateGrantGroupId?: () => void,
-  // mutateGrantGroupName:() => void,
-  // mutateIsEnabledUnsavedWarning?: () => void,
 }
 
 const { isTopPage } = pagePathUtils;
@@ -66,14 +59,11 @@ export const SavePageControls = (props: Props): JSX.Element | null => {
 
   const {
     isSlackEnabled, slackChannels,
-    // pageContainer, mutateGrantGroupId, mutateGrantGroupName,
+    // pageContainer,
   } = props;
 
-  const updateGrantHandler = (data): void => {
-    console.log({ data });
-    mutateGrant(data.grant);
-    // mutateGrantGroupId(data.grantGroupId);
-    // mutateGrantGroupName(data.grantGroupName);
+  const updateGrantHandler = (grantData: IPageGrantData): void => {
+    mutateGrant(grantData);
   };
 
   const save = async(): Promise<void> => {

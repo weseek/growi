@@ -50,6 +50,8 @@ const GrantSelector = (props: Props): JSX.Element => {
     disabled,
     grantGroupName,
     onUpdateGrant,
+    grant: currentGrant,
+    grantGroupId
   } = props;
 
 
@@ -93,7 +95,8 @@ const GrantSelector = (props: Props): JSX.Element => {
    * Render grant selector DOM.
    */
   const renderGrantSelector = useCallback(() => {
-    const { grant: currentGrant, grantGroupId } = props;
+    // const { grant: currentGrant, grantGroupId } = props;
+    console.log({currentGrant});
 
     let dropdownToggleBtnColor;
     let dropdownToggleLabelElm;
