@@ -8,13 +8,11 @@ import {
 } from 'reactstrap';
 
 // import PageContainer from '~/client/services/PageContainer';
-import { getOptionsToSave } from '~/client/util/editor';
 import { CustomWindow } from '~/interfaces/global';
 import {
   useCurrentPagePath, useIsEditable, useCurrentPageId, useIsAclEnabled,
 } from '~/stores/context';
-import { usePageTagsForEditors, useIsEnabledUnsavedWarning } from '~/stores/editor';
-import { useSWRxCurrentPage } from '~/stores/page';
+import { useIsEnabledUnsavedWarning } from '~/stores/editor';
 import { useSelectedGrant } from '~/stores/ui';
 import loggerFactory from '~/utils/logger';
 import { IPageGrantData } from '~/interfaces/page';
@@ -27,10 +25,6 @@ const logger = loggerFactory('growi:SavePageControls');
 
 type Props = {
   // pageContainer: PropTypes.instanceOf(PageContainer).isRequired,
-
-  // TODO: remove this when omitting unstated is completed
-  isSlackEnabled: boolean,
-  slackChannels: string,
 }
 
 const { isTopPage } = pagePathUtils;
@@ -42,7 +36,6 @@ export const SavePageControls = (props: Props): JSX.Element | null => {
   const { data: isAclEnabled } = useIsAclEnabled();
   const { data: grantData, mutate: mutateGrant } = useSelectedGrant();
   const { data: pageId } = useCurrentPageId();
-  const { data: pageTags } = usePageTagsForEditors(pageId);
   const { mutate: mutateIsEnabledUnsavedWarning } = useIsEnabledUnsavedWarning();
 
 
@@ -58,7 +51,6 @@ export const SavePageControls = (props: Props): JSX.Element | null => {
   const grantedGroup = grantData?.grantedGroup;
 
   const {
-    isSlackEnabled, slackChannels,
     // pageContainer,
   } = props;
 

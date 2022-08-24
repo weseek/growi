@@ -129,7 +129,7 @@ const EditorNavbarBottom = (props) => {
               )}
             </div>
           ))}
-          <SavePageControls slackChannels={slackChannelsStr} isSlackEnabled={isSlackEnabled || false} />
+          <SavePageControls />
           { isCollapsedOptionsSelectorEnabled && renderExpandButton() }
         </form>
       </div>
