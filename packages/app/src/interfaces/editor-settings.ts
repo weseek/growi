@@ -30,6 +30,13 @@ export interface IEditorSettings {
   textlintSettings: undefined | ITextlintSettings;
 }
 
+export type EditorConfig = {
+  upload: {
+    isUploadableFile: boolean,
+    isUploadableImage: boolean,
+  }
+}
+
 export type OptionsToSave = {
   isSlackEnabled: boolean;
   slackChannels: string;

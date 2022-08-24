@@ -10,12 +10,13 @@ import {
   asciiAlpha,
   asciiAlphanumeric,
   markdownLineEnding,
-  markdownLineEndingOrSpace,
   markdownSpace,
 } from 'micromark-util-character';
 import { codes } from 'micromark-util-symbol/codes.js';
 import { types } from 'micromark-util-symbol/types.js';
 import { ok as assert } from 'uvu/assert';
+
+import { markdownLineEndingOrSpaceOrComma, factoryAttributesDevider } from '../../micromark-factory-attributes-devider/index.js';
 
 /**
  * @param {Effects} effects
@@ -81,7 +82,7 @@ export function factoryAttributes(
       return shortcutStart(code);
     }
 
-    if (code === codes.colon || code === codes.underscore || asciiAlpha(code)) {
+    if (code === codes.colon || code === codes.underscore || code === codes.slash || asciiAlpha(code)) {
       effects.enter(attributeType);
       effects.enter(attributeNameType);
       effects.consume(code);
@@ -92,8 +93,8 @@ export function factoryAttributes(
       return factorySpace(effects, between, types.whitespace)(code);
     }
 
-    if (!disallowEol && markdownLineEndingOrSpace(code)) {
-      return factoryWhitespace(effects, between)(code);
+    if (!disallowEol && (markdownLineEndingOrSpaceOrComma(code))) {
+      return factoryAttributesDevider(effects, between)(code);
     }
 
     return end(code);
@@ -122,7 +123,7 @@ export function factoryAttributes(
       || code === codes.greaterThan
       || code === codes.graveAccent
       || code === codes.rightParenthesis
-      || markdownLineEndingOrSpace(code)
+      || markdownLineEndingOrSpaceOrComma(code)
     ) {
       return nok(code);
     }
@@ -150,7 +151,7 @@ export function factoryAttributes(
       code === codes.numberSign
       || code === codes.dot
       || code === codes.rightParenthesis
-      || markdownLineEndingOrSpace(code)
+      || markdownLineEndingOrSpaceOrComma(code)
     ) {
       effects.exit(`${type}Value`);
       effects.exit(type);
@@ -181,8 +182,8 @@ export function factoryAttributes(
       return factorySpace(effects, nameAfter, types.whitespace)(code);
     }
 
-    if (!disallowEol && markdownLineEndingOrSpace(code)) {
-      return factoryWhitespace(effects, nameAfter)(code);
+    if (!disallowEol && markdownLineEndingOrSpaceOrComma(code)) {
+      return factoryAttributesDevider(effects, nameAfter)(code);
     }
 
     return nameAfter(code);
@@ -229,8 +230,8 @@ export function factoryAttributes(
       return factorySpace(effects, valueBefore, types.whitespace)(code);
     }
 
-    if (!disallowEol && markdownLineEndingOrSpace(code)) {
-      return factoryWhitespace(effects, valueBefore)(code);
+    if (!disallowEol && markdownLineEndingOrSpaceOrComma(code)) {
+      return factoryAttributesDevider(effects, valueBefore)(code);
     }
 
     effects.enter(attributeValueType);
@@ -254,7 +255,7 @@ export function factoryAttributes(
       return nok(code);
     }
 
-    if (code === codes.rightParenthesis || markdownLineEndingOrSpace(code)) {
+    if (code === codes.rightParenthesis || markdownLineEndingOrSpaceOrComma(code)) {
       effects.exit(attributeValueData);
       effects.exit(attributeValueType);
       effects.exit(attributeType);
@@ -316,7 +317,7 @@ export function factoryAttributes(
 
   /** @type {State} */
   function valueQuotedAfter(code) {
-    return code === codes.rightParenthesis || markdownLineEndingOrSpace(code)
+    return code === codes.rightParenthesis || markdownLineEndingOrSpaceOrComma(code)
       ? between(code)
       : end(code);
   }

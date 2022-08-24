@@ -2,7 +2,7 @@ import React, {
   FC, useEffect, useState, useMemo, memo, useCallback,
 } from 'react';
 
-import { Nullable } from '@growi/core';
+import dynamic from 'next/dynamic';
 import { Button } from 'reactstrap';
 
 import { toastError } from '~/client/util/apiNotification';
@@ -15,19 +15,29 @@ import { ICommentHasId, ICommentHasIdList } from '../interfaces/comment';
 import { useSWRxPageComment } from '../stores/comment';
 
 import { Comment } from './PageComment/Comment';
-import CommentEditor from './PageComment/CommentEditor';
-import DeleteCommentModal from './PageComment/DeleteCommentModal';
-import ReplayComments from './PageComment/ReplayComments';
+import { CommentEditorProps } from './PageComment/CommentEditor';
+import { CommentEditorLazyRenderer } from './PageComment/CommentEditorLazyRenderer';
+import { DeleteCommentModalProps } from './PageComment/DeleteCommentModal';
+import { ReplyComments } from './PageComment/ReplyComments';
+import { PageCommentSkelton } from './PageCommentSkelton';
 
-type Props = {
-  pageId?: Nullable<string>, // TODO: check pageId type
-  isReadOnly : boolean,
+import styles from './PageComment.module.scss';
+
+const CommentEditor = dynamic<CommentEditorProps>(() => import('./PageComment/CommentEditor').then(mod => mod.CommentEditor), { ssr: false });
+const DeleteCommentModal = dynamic<DeleteCommentModalProps>(
+  () => import('./PageComment/DeleteCommentModal').then(mod => mod.DeleteCommentModal), { ssr: false },
+);
+
+
+type PageCommentProps = {
+  pageId?: string,
+  isReadOnly: boolean,
   titleAlign?: 'center' | 'left' | 'right',
-  highlightKeywords?:string[],
+  highlightKeywords?: string[],
   hideIfEmpty?: boolean,
 }
 
-export const PageComment:FC<Props> = memo((props:Props):JSX.Element => {
+export const PageComment: FC<PageCommentProps> = memo((props:PageCommentProps): JSX.Element => {
 
   const {
     pageId, highlightKeywords, isReadOnly, titleAlign, hideIfEmpty,
@@ -61,7 +71,6 @@ export const PageComment:FC<Props> = memo((props:Props):JSX.Element => {
   }, [highlightKeywords]);
 
   useEffect(() => {
-
     if (comments != null) {
       const preprocessedCommentList: string[] = comments.map((comment) => {
         const highlightedComment: string = highlightComment(comment.comment);
@@ -72,7 +81,6 @@ export const PageComment:FC<Props> = memo((props:Props):JSX.Element => {
       });
       setFormatedComments(preprocessedComments);
     }
-
   }, [comments, highlightComment]);
 
   if (commentsFromOldest != null) {
@@ -110,16 +118,6 @@ export const PageComment:FC<Props> = memo((props:Props):JSX.Element => {
     }
   }, [commentToBeDeleted, onDeleteCommentAfterOperation]);
 
-  const generateAllRepliesElement = (replyComments: ICommentHasIdList) => (
-    // TODO: need page props path
-    <ReplayComments
-      replyList={replyComments}
-      deleteBtnClicked={onClickDeleteButton}
-      rendererOptions={rendererOptions}
-      isReadOnly={isReadOnly}
-    />
-  );
-
   const removeShowEditorId = useCallback((commentId: string) => {
     setShowEditorIds((previousState) => {
       const previousShowEditorIds = new Set(...previousState);
@@ -128,37 +126,52 @@ export const PageComment:FC<Props> = memo((props:Props):JSX.Element => {
     });
   }, []);
 
-
-  if (commentsFromOldest == null || commentsExceptReply == null) return <></>;
-
   if (hideIfEmpty && comments?.length === 0) {
     return <></>;
   }
-  if (rendererOptions == null || currentPagePath == null) {
-    return <></>;
-  }
-
-  const generateCommentInnerElement = (comment: ICommentHasId) => (
-    currentPage != null && (
-      <Comment
-        rendererOptions={rendererOptions}
-        deleteBtnClicked={onClickDeleteButton}
-        comment={comment}
-        onComment={mutate}
-        isReadOnly={isReadOnly}
-        currentPagePath={currentPagePath}
-        currentRevisionId={currentPage.revision._id}
-        currentRevisionCreatedAt={currentPage.revision.createdAt}
-      />
-    )
-  );
 
   let commentTitleClasses = 'border-bottom py-3 mb-3';
   commentTitleClasses = titleAlign != null ? `${commentTitleClasses} text-${titleAlign}` : `${commentTitleClasses} text-center`;
 
+  if (commentsFromOldest == null || commentsExceptReply == null || rendererOptions == null || currentPagePath == null || currentPage == null) {
+    if (hideIfEmpty && comments?.length === 0) {
+      return <></>;
+    }
+    return (
+      <PageCommentSkelton commentTitleClasses={commentTitleClasses}/>
+    );
+  }
+
+  const generateCommentElement = (comment: ICommentHasId) => (
+    <Comment
+      comment={comment}
+      isReadOnly={isReadOnly}
+      deleteBtnClicked={onClickDeleteButton}
+      onComment={mutate}
+      rendererOptions={rendererOptions}
+      currentPagePath={currentPagePath}
+      currentRevisionId={currentPage.revision._id}
+      currentRevisionCreatedAt={currentPage.revision.createdAt}
+    />
+  );
+
+  const generateReplyCommentsElement = (replyComments: ICommentHasIdList) => (
+    <ReplyComments
+      isReadOnly={isReadOnly}
+      replyList={replyComments}
+      deleteBtnClicked={onClickDeleteButton}
+      onComment={mutate}
+      rendererOptions={rendererOptions}
+      currentPagePath={currentPagePath}
+      currentRevisionId={currentPage.revision._id}
+      currentRevisionCreatedAt={currentPage.revision.createdAt}
+    />
+  );
+
   return (
     <>
-      <div className="page-comments-row comment-list">
+      {/* TODO: Check the comment.html CSS */}
+      <div className={`${styles['page-comment-styles']} page-comments-row comment-list`}>
         <div className="container-lg">
           <div className="page-comments">
             <h2 className={commentTitleClasses}><i className="icon-fw icon-bubbles"></i>Comments</h2>
@@ -173,11 +186,8 @@ export const PageComment:FC<Props> = memo((props:Props):JSX.Element => {
 
                 return (
                   <div key={comment._id} className={commentThreadClasses}>
-                    {/* display comment */}
-                    {generateCommentInnerElement(comment)}
-                    {/* display reply comment */}
-                    {hasReply && generateAllRepliesElement(allReplies[comment._id])}
-                    {/* display reply button */}
+                    {generateCommentElement(comment)}
+                    {hasReply && generateReplyCommentsElement(allReplies[comment._id])}
                     {(!isReadOnly && !showEditorIds.has(comment._id)) && (
                       <div className="text-right">
                         <Button
@@ -193,7 +203,6 @@ export const PageComment:FC<Props> = memo((props:Props):JSX.Element => {
                         </Button>
                       </div>
                     )}
-                    {/* display reply editor */}
                     {(!isReadOnly && showEditorIds.has(comment._id)) && (
                       <CommentEditor
                         rendererOptions={rendererOptions}
@@ -212,16 +221,23 @@ export const PageComment:FC<Props> = memo((props:Props):JSX.Element => {
 
               })}
             </div>
+            {/* TODO: Check if identical-page */}
+            {(!isReadOnly) && (
+              <CommentEditorLazyRenderer
+                pageId={pageId}
+                rendererOptions={rendererOptions}
+              />
+            )}
           </div>
         </div>
       </div>
-      {(!isReadOnly && commentToBeDeleted != null) && (
+      {!isReadOnly && (
         <DeleteCommentModal
           isShown={isDeleteConfirmModalShown}
           comment={commentToBeDeleted}
           errorMessage={errorMessageOnDelete}
-          cancel={onCancelDeleteComment}
-          confirmedToDelete={onDeleteComment}
+          cancelToDelete={onCancelDeleteComment}
+          confirmToDelete={onDeleteComment}
         />
       )}
     </>

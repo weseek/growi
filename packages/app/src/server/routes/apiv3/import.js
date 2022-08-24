@@ -75,17 +75,17 @@ module.exports = (crowi) => {
   const adminRequired = require('../../middlewares/admin-required')(crowi);
   const addActivity = generateAddActivityMiddleware(crowi);
 
-  this.adminEvent = crowi.event('admin');
+  const adminEvent = crowi.event('admin');
   const activityEvent = crowi.event('activity');
 
   // setup event
-  this.adminEvent.on('onProgressForImport', (data) => {
+  adminEvent.on('onProgressForImport', (data) => {
     socketIoService.getAdminSocket().emit('admin:onProgressForImport', data);
   });
-  this.adminEvent.on('onTerminateForImport', (data) => {
+  adminEvent.on('onTerminateForImport', (data) => {
     socketIoService.getAdminSocket().emit('admin:onTerminateForImport', data);
   });
-  this.adminEvent.on('onErrorForImport', (data) => {
+  adminEvent.on('onErrorForImport', (data) => {
     socketIoService.getAdminSocket().emit('admin:onErrorForImport', data);
   });
 
@@ -256,7 +256,7 @@ module.exports = (crowi) => {
     }
     catch (err) {
       logger.error(err);
-      this.adminEvent.emit('onErrorForImport', { message: err.message });
+      adminEvent.emit('onErrorForImport', { message: err.message });
       return;
     }
 
@@ -268,7 +268,7 @@ module.exports = (crowi) => {
     }
     catch (err) {
       logger.error(err);
-      this.adminEvent.emit('onErrorForImport', { message: err.message });
+      adminEvent.emit('onErrorForImport', { message: err.message });
       return;
     }
 
@@ -298,7 +298,7 @@ module.exports = (crowi) => {
     }
     catch (err) {
       logger.error(err);
-      this.adminEvent.emit('onErrorForImport', { message: err.message });
+      adminEvent.emit('onErrorForImport', { message: err.message });
     }
   });
 

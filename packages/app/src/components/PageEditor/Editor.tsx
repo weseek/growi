@@ -20,7 +20,6 @@ import CodeMirrorEditor from './CodeMirrorEditor';
 import pasteHelper from './PasteHelper';
 import TextAreaEditor from './TextAreaEditor';
 
-
 type EditorPropsType = {
   value?: string,
   isGfmMode?: boolean,
@@ -36,6 +35,7 @@ type EditorPropsType = {
   onSave?: () => Promise<void>,
   onPasteFiles?: (event: Event) => void,
   onCtrlEnter?: (event: Event) => void,
+  isComment?: boolean,
 }
 
 type DropzoneRef = {

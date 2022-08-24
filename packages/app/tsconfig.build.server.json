@@ -11,6 +11,7 @@
     "paths": {
       "~/*": ["./src/*"],
       "^/*": ["./*"],
+      "@growi/plugin-lsx/*": ["../plugin-lsx/dist/cjs/*"],
       "debug": ["./src/utils/logger/alias-for-debug"]
     }
   },
@@ -21,6 +22,6 @@
     "src/linter-checker",
     "src/stores",
     "src/styles",
-    "src/styles-hackmd",
+    "src/styles-hackmd"
   ]
 }
