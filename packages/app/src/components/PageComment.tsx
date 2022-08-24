@@ -16,7 +16,6 @@ import { useSWRxPageComment } from '../stores/comment';
 
 import { Comment } from './PageComment/Comment';
 import { CommentEditorProps } from './PageComment/CommentEditor';
-import { CommentEditorLazyRenderer } from './PageComment/CommentEditorLazyRenderer';
 import { DeleteCommentModalProps } from './PageComment/DeleteCommentModal';
 import { ReplyComments } from './PageComment/ReplyComments';
 import { PageCommentSkelton } from './PageCommentSkelton';
@@ -140,6 +139,10 @@ export const PageComment: FC<PageCommentProps> = memo((props:PageCommentProps): 
     return (
       <PageCommentSkelton commentTitleClasses={commentTitleClasses}/>
     );
+  }
+
+  if (currentPage.revision == null) {
+    return <></>;
   }
 
   const generateCommentElement = (comment: ICommentHasId) => (

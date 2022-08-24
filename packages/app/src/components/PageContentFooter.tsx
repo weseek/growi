@@ -15,7 +15,7 @@ export const PageContentFooter = memo((): JSX.Element => {
 
   const { data: page } = useSWRxCurrentPage();
 
-  if (page == null || page.revision === undefined) {
+  if (page == null || page.revision == null) {
     return <></>;
   }
 
