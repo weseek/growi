@@ -271,7 +271,7 @@ const AdminMarkdownSettingsPage: NextPage<Props> = (props: Props) => {
 };
 
 
-async function injectServerConfigurations(context: GetServerSidePropsContext, props: Props): void {
+async function injectServerConfigurations(context: GetServerSidePropsContext, props: Props): Promise<void> {
   const req: CrowiRequest = context.req as CrowiRequest;
   const { crowi } = req;
   const {
