@@ -1404,6 +1404,8 @@ class PageService {
       endpoint: activityParameters.endpoint,
       action: page.descendantCount > 0 ? SupportedAction.ACTION_PAGE_RECURSIVELY_DELETE : SupportedAction.ACTION_PAGE_DELETE,
       user,
+      target: page,
+      targetModel: 'Page',
       snapshot: {
         username: user.username,
       },
@@ -1753,6 +1755,8 @@ class PageService {
       endpoint: activityParameters.endpoint,
       action: page.descendantCount > 0 ? SupportedAction.ACTION_PAGE_RECURSIVELY_DELETE_COMPLETELY : SupportedAction.ACTION_PAGE_DELETE_COMPLETELY,
       user,
+      target: page,
+      targetModel: 'Page',
       snapshot: {
         username: user.username,
       },
@@ -1983,6 +1987,8 @@ class PageService {
       endpoint: activityParameters.endpoint,
       action: page.descendantCount > 0 ? SupportedAction.ACTION_PAGE_RECURSIVELY_REVERT : SupportedAction.ACTION_PAGE_REVERT,
       user,
+      target: page,
+      targetModel: 'Page',
       snapshot: {
         username: user.username,
       },
