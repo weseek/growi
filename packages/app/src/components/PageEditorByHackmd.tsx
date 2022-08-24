@@ -10,7 +10,7 @@ import PageContainer from '~/client/services/PageContainer';
 import { apiPost } from '~/client/util/apiv1-client';
 import { getOptionsToSave } from '~/client/util/editor';
 import { IResHackmdIntegrated, IResHackmdDiscard } from '~/interfaces/hackmd';
-import { useCurrentPagePath, useCurrentPageId } from '~/stores/context';
+import { useCurrentPagePath, useCurrentPageId, useHackmdUri } from '~/stores/context';
 import { useSWRxSlackChannels, useIsSlackEnabled, usePageTagsForEditors } from '~/stores/editor';
 import {
   useEditorMode, useSelectedGrant,
@@ -42,6 +42,7 @@ const PageEditorByHackmd = (props: PageEditorByHackmdProps) => {
   const { data: pageId } = useCurrentPageId();
   const { data: pageTags, mutate: updatePageTagsForEditors } = usePageTagsForEditors(pageId);
   const { data: grant } = useSelectedGrant();
+  const { data: hackmdUri } = useHackmdUri();
 
   const slackChannels = slackChannelsData?.toString();
 
@@ -72,11 +73,6 @@ const PageEditorByHackmd = (props: PageEditorByHackmdProps) => {
     appContainer.registerComponentInstance('PageEditorByHackmd', pageEditorByHackmdInstance);
   }, [appContainer, isInitialized, t]);
 
-  const getHackmdUri = useCallback(() => {
-    const envVars = appContainer.getConfig().env;
-    return envVars.HACKMD_URI;
-  }, [appContainer]);
-
   const isResume = useCallback(() => {
     const {
       pageIdOnHackmd, hasDraftOnHackmd, isHackmdDraftUpdatingInRealtime,
@@ -86,7 +82,6 @@ const PageEditorByHackmd = (props: PageEditorByHackmdProps) => {
   }, [pageContainer.state]);
 
   const startToEdit = useCallback(async() => {
-    const hackmdUri = getHackmdUri();
 
     if (hackmdUri == null) {
       // do nothing
@@ -118,7 +113,7 @@ const PageEditorByHackmd = (props: PageEditorByHackmdProps) => {
 
     setIsInitialized(true);
     setIsInitializing(false);
-  }, [getHackmdUri, pageContainer, pageId]);
+  }, [pageContainer, pageId, hackmdUri]);
 
   /**
    * Start to edit w/o any api request
@@ -181,7 +176,6 @@ const PageEditorByHackmd = (props: PageEditorByHackmdProps) => {
    * onChange event of HackmdEditor handler
    */
   const hackmdEditorChangeHandler = useCallback(async(body) => {
-    const hackmdUri = getHackmdUri();
 
     if (hackmdUri == null) {
       // do nothing
@@ -205,7 +199,7 @@ const PageEditorByHackmd = (props: PageEditorByHackmdProps) => {
     catch (err) {
       logger.error(err);
     }
-  }, [getHackmdUri, pageContainer.state.markdown, pageContainer.state.pageId]);
+  }, [pageContainer.state.markdown, pageContainer.state.pageId, hackmdUri]);
 
   const penpalErrorOccuredHandler = useCallback((error) => {
     pageContainer.showErrorToastr(error);
@@ -216,7 +210,6 @@ const PageEditorByHackmd = (props: PageEditorByHackmdProps) => {
   }, [pageContainer, t]);
 
   const renderPreInitContent = useCallback(() => {
-    const hackmdUri = getHackmdUri();
     const {
       revisionId, revisionIdHackmdSynced, remoteRevisionId, pageId,
     } = pageContainer.state;
@@ -342,13 +335,12 @@ const PageEditorByHackmd = (props: PageEditorByHackmdProps) => {
         {content}
       </div>
     );
-  }, [discardChanges, getHackmdUri, isInitializing, isResume, pageContainer.state, resumeToEdit, startToEdit, t]);
+  }, [discardChanges, isInitializing, isResume, pageContainer.state, resumeToEdit, startToEdit, t, hackmdUri]);
 
   if (editorMode == null) {
     return null;
   }
 
-  const hackmdUri = getHackmdUri();
   const {
     markdown, pageIdOnHackmd,
   } = pageContainer.state;
@@ -359,7 +351,7 @@ const PageEditorByHackmd = (props: PageEditorByHackmdProps) => {
   // using any because ref cann't used between FC and class conponent with type safe
   const AnyEditor = HackmdEditor as any;
 
-  if (isInitialized) {
+  if (isInitialized && hackmdUri != null) {
     content = (
       <AnyEditor
         ref={hackmdEditorRef}
