@@ -15,7 +15,7 @@ import { saveAndReload } from '~/client/services/page-operation';
 import { apiGet, apiPostForm } from '~/client/util/apiv1-client';
 import { getOptionsToSave } from '~/client/util/editor';
 import {
-  useIsEditable, useIsIndentSizeForced, useCurrentPagePath, useCurrentPageId, useIsUploadableFile, useIsUploadableImage,
+  useIsEditable, useIsIndentSizeForced, useCurrentPagePath, useCurrentPathname, useCurrentPageId, useIsUploadableFile, useIsUploadableImage,
 } from '~/stores/context';
 import {
   useCurrentIndentSize, useSWRxSlackChannels, useIsSlackEnabled, useIsTextlintEnabled, usePageTagsForEditors,
@@ -92,6 +92,7 @@ const PageEditor = (props: Props): JSX.Element => {
   const { data: pageId } = useCurrentPageId();
   const { data: pageTags } = usePageTagsForEditors(pageId);
   const { data: currentPagePath } = useCurrentPagePath();
+  const { data: currentPathname } = useCurrentPathname();
   const { data: slackChannelsData } = useSWRxSlackChannels(currentPagePath);
   const { data: grantData, mutate: mutateGrant } = useSelectedGrant();
   const { data: isTextlintEnabled } = useIsTextlintEnabled();
@@ -316,6 +317,8 @@ const PageEditor = (props: Props): JSX.Element => {
   }, []);
   const scrollEditorByPreviewScrollWithThrottle = useMemo(() => throttle(20, scrollEditorByPreviewScroll), [scrollEditorByPreviewScroll]);
 
+  console.log({ currentPagePath });
+
 
   // initial caret line
   useEffect(() => {
@@ -351,7 +354,7 @@ const PageEditor = (props: Props): JSX.Element => {
     const grant = grantData?.grant;
     const grantedGroup = grantData?.grantedGroup;
 
-    if (isSlackEnabled == null) {
+    if (isSlackEnabled == null || currentPathname == null) {
       return;
     }
 
@@ -368,9 +371,10 @@ const PageEditor = (props: Props): JSX.Element => {
       optionsToSave = currentOptionsToSave;
     }
 
-    await saveAndReload(optionsToSave, { pageId, path: currentPagePath, revisionId: currentPage?.revision._id }, markdown);
+    await saveAndReload(optionsToSave, { pageId, path: currentPagePath || currentPathname, revisionId: currentPage?.revision._id }, markdown);
   }, [currentPage?.revision._id,
       currentPagePath,
+      currentPathname,
       editorMode,
       grantData?.grant,
       grantData?.grantedGroup,

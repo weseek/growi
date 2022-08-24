@@ -97,7 +97,8 @@ export const resumeRenameOperation = async(pageId: string): Promise<void> => {
 };
 
 
-export const createPage = async(pagePath, markdown, tmpParams): Promise<any> => {
+export const createPage = async(pagePath: string, markdown: string, tmpParams): Promise<any> => {
+  console.log('createPage', { pagePath, markdown, tmpParams });
   // clone
   const params = Object.assign(tmpParams, {
     path: pagePath,
@@ -127,7 +128,7 @@ export const updatePage = async(pageId: string, revisionId: string, markdown: st
 
 type PageInfo= {
   pageId: string | null | undefined,
-  path: string | null | undefined,
+  path: string,
   revisionId: string | null | undefined,
 }
 
