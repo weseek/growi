@@ -9,13 +9,13 @@ import {
 
 // import PageContainer from '~/client/services/PageContainer';
 import { CustomWindow } from '~/interfaces/global';
+import { IPageGrantData } from '~/interfaces/page';
 import {
   useCurrentPagePath, useIsEditable, useCurrentPageId, useIsAclEnabled,
 } from '~/stores/context';
 import { useIsEnabledUnsavedWarning } from '~/stores/editor';
 import { useSelectedGrant } from '~/stores/ui';
 import loggerFactory from '~/utils/logger';
-import { IPageGrantData } from '~/interfaces/page';
 
 import GrantSelector from './SavePageControls/GrantSelector';
 
@@ -50,9 +50,7 @@ export const SavePageControls = (props: Props): JSX.Element | null => {
   const grant = grantData?.grant || 1;
   const grantedGroup = grantData?.grantedGroup;
 
-  const {
-    // pageContainer,
-  } = props;
+  // const {  pageContainer } = props;
 
   const updateGrantHandler = (grantData: IPageGrantData): void => {
     mutateGrant(grantData);
@@ -123,5 +121,3 @@ export const SavePageControls = (props: Props): JSX.Element | null => {
     </div>
   );
 };
-
-export default SavePageControls;

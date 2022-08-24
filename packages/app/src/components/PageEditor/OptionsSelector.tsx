@@ -340,7 +340,7 @@ const ConfigurationDropdown = memo(({ onConfirmEnableTextlint }: ConfigurationDr
 ConfigurationDropdown.displayName = 'ConfigurationDropdown';
 
 
-const OptionsSelector = (): JSX.Element => {
+export const OptionsSelector = (): JSX.Element => {
   const [isDownloadDictModalShown, setDownloadDictModalShown] = useState(false);
 
   const { data: editorSettings, turnOffAskingBeforeDownloadLargeFiles } = useEditorSettings();
@@ -394,6 +394,3 @@ const OptionsSelector = (): JSX.Element => {
   );
 
 };
-
-
-export default OptionsSelector;

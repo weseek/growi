@@ -1,10 +1,9 @@
-import { SubscriptionStatusType } from '@growi/core';
+import { SubscriptionStatusType, Nullable } from '@growi/core';
 import urljoin from 'url-join';
 
 import { OptionsToSave } from '~/interfaces/editor-settings';
 import loggerFactory from '~/utils/logger';
 
-import { Nullable } from '@growi/core';
 
 import { toastError } from '../util/apiNotification';
 import { apiPost } from '../util/apiv1-client';
@@ -165,8 +164,8 @@ export const saveAndReload = async(optionsToSave: OptionsToSave, pageInfo: PageI
     res = await createPage(path, markdown, options);
   }
   else {
-    if(revisionId == null){
-      const msg = '\'revisionId\' requires to update page';
+    if (revisionId == null) {
+      const msg = '\'revisionId\' is required to update page';
       throw new Error(msg);
     }
     res = await updatePage(pageId, revisionId, markdown, options);
