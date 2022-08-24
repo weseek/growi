@@ -12,8 +12,6 @@ export const getBackgroundImageSrc = (theme: GrowiThemes | undefined, colorSchem
     return undefined;
   }
   switch (theme) {
-    case GrowiThemes.HALLOWEEN:
-      return getHalloweenBackgroundImageSrc(colorScheme);
     case GrowiThemes.ISLAND:
       return getIslandBackgroundImageSrc(colorScheme);
     case GrowiThemes.HUFFLEPUFF:
