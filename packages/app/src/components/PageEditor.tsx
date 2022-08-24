@@ -317,8 +317,6 @@ const PageEditor = (props: Props): JSX.Element => {
   }, []);
   const scrollEditorByPreviewScrollWithThrottle = useMemo(() => throttle(20, scrollEditorByPreviewScroll), [scrollEditorByPreviewScroll]);
 
-  console.log({ currentPagePath });
-
 
   // initial caret line
   useEffect(() => {

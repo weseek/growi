@@ -4,6 +4,8 @@ import urljoin from 'url-join';
 import { OptionsToSave } from '~/interfaces/editor-settings';
 import loggerFactory from '~/utils/logger';
 
+import { Nullable } from '@growi/core';
+
 import { toastError } from '../util/apiNotification';
 import { apiPost } from '../util/apiv1-client';
 import { apiv3Post, apiv3Put } from '../util/apiv3-client';
@@ -127,9 +129,9 @@ export const updatePage = async(pageId: string, revisionId: string, markdown: st
 };
 
 type PageInfo= {
-  pageId: string | null | undefined,
   path: string,
-  revisionId: string | null | undefined,
+  pageId: Nullable<string>,
+  revisionId: Nullable<string>,
 }
 
 
@@ -159,6 +161,10 @@ export const saveAndReload = async(optionsToSave: OptionsToSave, pageInfo: PageI
     res = await createPage(path, markdown, options);
   }
   else {
+    if(revisionId == null){
+      const msg = '\'revisionId\' requires to update page';
+      throw new Error(msg);
+    }
     res = await updatePage(pageId, revisionId, markdown, options);
   }
 
