@@ -18,9 +18,7 @@ import {
 } from '~/stores/context';
 import { usePageTagsForEditors, useIsEnabledUnsavedWarning } from '~/stores/editor';
 import { useSWRxCurrentPage } from '~/stores/page';
-import {
-  useEditorMode, useSelectedGrant,
-} from '~/stores/ui';
+import { useSelectedGrant } from '~/stores/ui';
 import loggerFactory from '~/utils/logger';
 
 import GrantSelector from './SavePageControls/GrantSelector';
@@ -72,6 +70,7 @@ export const SavePageControls = (props: Props): JSX.Element | null => {
   } = props;
 
   const updateGrantHandler = (data): void => {
+    console.log({ data });
     mutateGrant(data.grant);
     // mutateGrantGroupId(data.grantGroupId);
     // mutateGrantGroupName(data.grantGroupName);
