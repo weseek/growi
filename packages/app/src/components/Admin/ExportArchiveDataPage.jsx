@@ -8,7 +8,7 @@ import * as toastr from 'toastr';
 
 import AdminSocketIoContainer from '~/client/services/AdminSocketIoContainer';
 import { apiDelete, apiGet } from '~/client/util/apiv1-client';
-// import { useGlobalAdminSocket } from '~/stores/websocket';
+import { useGlobalAdminSocket } from '~/stores/websocket';
 
 import { withUnstatedContainers } from '../UnstatedUtils';
 
@@ -32,9 +32,9 @@ const ExportArchiveDataPage = (props) => {
 
   const { t } = useTranslation();
 
-  // const socket = useGlobalAdminSocket();
+  const { data: socket } = useGlobalAdminSocket();
 
-  const socket = props.adminSocketIoContainer.getSocket();
+  // const socket = props.adminSocketIoContainer.getSocket();
 
   const fetchData = useCallback(async() => {
     const [{ collections }, { status }] = await Promise.all([
@@ -52,26 +52,26 @@ const ExportArchiveDataPage = (props) => {
   }, []);
 
   const cleanupWebsocketEventHandler = useCallback((socket) => {
-    socket.off('admin:onProgressForExport');
+    socket?.off('admin:onProgressForExport');
 
-    socket.off('admin:onStartZippingForExport');
+    socket?.off('admin:onStartZippingForExport');
 
-    socket.off('admin:onTerminateForExport');
+    socket?.off('admin:onTerminateForExport');
   }, []);
 
   const setupWebsocketEventHandler = useCallback((socket) => {
-    socket.on('admin:onProgressForExport', ({ progressList }) => {
+    socket?.on('admin:onProgressForExport', ({ progressList }) => {
       setIsExporting(true);
       setProgressList(progressList);
     });
 
     // websocket event
-    socket.on('admin:onStartZippingForExport', () => {
+    socket?.on('admin:onStartZippingForExport', () => {
       setIsZipping(true);
     });
 
     // websocket event
-    socket.on('admin:onTerminateForExport', ({ addedZipFileStat }) => {
+    socket?.on('admin:onTerminateForExport', ({ addedZipFileStat }) => {
       setIsExporting(false);
       setIsZipping(false);
       setIsExported(true);
