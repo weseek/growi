@@ -10,7 +10,6 @@ import { throttle, debounce } from 'throttle-debounce';
 
 import { saveAndReload } from '~/client/services/page-operation';
 
-// import AppContainer from '~/client/services/AppContainer';
 // import EditorContainer from '~/client/services/EditorContainer';
 // import PageContainer from '~/client/services/PageContainer';
 import { apiGet, apiPostForm } from '~/client/util/apiv1-client';
@@ -55,7 +54,6 @@ type EditorRef = {
 }
 
 type Props = {
-  // appContainer: AppContainer,
   // pageContainer: PageContainer,
   // editorContainer: EditorContainer,
 
@@ -84,7 +82,7 @@ let isOriginOfScrollSyncPreview = false;
 
 const PageEditor = (props: Props): JSX.Element => {
   // const {
-  //   appContainer, pageContainer, editorContainer,
+  //   pageContainer, editorContainer,
   // } = props;
 
   const { data: isEditable } = useIsEditable();
@@ -103,13 +101,11 @@ const PageEditor = (props: Props): JSX.Element => {
   const { data: isUploadableFile } = useIsUploadableFile();
   const { data: isUploadableImage } = useIsUploadableImage();
   const { data: currentPage } = useSWRxCurrentPage();
-  // const { registerComponentInstance } = useComponentInstances();
 
   const { data: rendererOptions } = usePreviewOptions();
 
   const [markdown, setMarkdown] = useState<string>('');
 
-  console.log('mark', markdown);
 
   useEffect(() => {
     if (currentPage != null) {
@@ -354,7 +350,6 @@ const PageEditor = (props: Props): JSX.Element => {
       return;
     }
 
-    console.log('markdown_saveAndReloadHandler', markdown);
     const optionsToSave = getOptionsToSave(isSlackEnabled, slackChannels, grant || 1, grantedGroup?.id, grantedGroup?.name, pageTags || []);
     await saveAndReload(optionsToSave, { pageId, path: currentPagePath, revisionId: currentPage?.revision._id }, markdown);
   }, [currentPage?.revision._id, currentPagePath, grantData, isSlackEnabled, markdown, pageId, pageTags, slackChannels]);
@@ -459,7 +454,7 @@ const PageEditor = (props: Props): JSX.Element => {
 /**
    * Wrapper component for using unstated
    */
-// const PageEditorWrapper = withUnstatedContainers(PageEditor, [AppContainer, PageContainer, EditorContainer]);
+// const PageEditorWrapper = withUnstatedContainers(PageEditor, [PageContainer, EditorContainer]);
 
 // export default PageEditorWrapper;
 export default PageEditor;
