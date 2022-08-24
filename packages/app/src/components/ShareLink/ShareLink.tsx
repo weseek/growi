@@ -6,31 +6,27 @@ import useSWR from 'swr';
 import { useTranslation } from 'react-i18next';
 
 import { toastSuccess, toastError } from '~/client/util/apiNotification';
-import { apiv3Delete, apiv3Get } from '~/client/util/apiv3-client';
-import { IResShareLinkList } from '~/interfaces/share-link';
+import { apiv3Delete } from '~/client/util/apiv3-client';
 import { useCurrentPageId } from '~/stores/context';
+import { useSWRxSharelink } from '~/stores/sharelink';
 
 import ShareLinkForm from './ShareLinkForm';
 import ShareLinkList from './ShareLinkList';
 
-const fetchShareLinks = async(endpoint, pageId): Promise<IResShareLinkList['shareLinksResult']> => {
-  const res = await apiv3Get(endpoint, { relatedPage: pageId });
-  return res.data.shareLinksResult;
-};
-
 const ShareLink = (): JSX.Element => {
   const { t } = useTranslation();
-  const { data: currentPageId } = useCurrentPageId();
   const [isOpenShareLinkForm, setIsOpenShareLinkForm] = useState<boolean>(false);
 
-  const { data, isValidating, mutate } = useSWR('/share-links/', (endpoint => fetchShareLinks(endpoint, currentPageId)));
+  const { data: pageId } = useCurrentPageId();
+
+  const { data, mutate } = useSWRxSharelink();
 
   const toggleShareLinkFormHandler = useCallback(() => {
     setIsOpenShareLinkForm(prev => !prev);
     mutate();
   }, [mutate]);
 
-  const deleteAllLinksButtonHandler = useCallback(async(pageId) => {
+  const deleteAllLinksButtonHandler = useCallback(async() => {
     try {
       const res = await apiv3Delete('/share-links/', { relatedPage: pageId });
       const count = res.data.n;
@@ -40,7 +36,7 @@ const ShareLink = (): JSX.Element => {
     catch (err) {
       toastError(err);
     }
-  }, [mutate, t]);
+  }, [mutate, pageId, t]);
 
   const deleteLinkById = useCallback(async(shareLinkId) => {
     try {
@@ -58,11 +54,11 @@ const ShareLink = (): JSX.Element => {
     <div className="container p-0" data-testid="share-link-management">
       <h3 className="grw-modal-head d-flex pb-2">
         { t('share_links.share_link_list') }
-        <button className="btn btn-danger ml-auto " type="button" onClick={() => deleteAllLinksButtonHandler(currentPageId)}>{t('delete_all')}</button>
+        <button className="btn btn-danger ml-auto " type="button" onClick={deleteAllLinksButtonHandler}>{t('delete_all')}</button>
       </h3>
       <div>
         <ShareLinkList
-          shareLinks={!isValidating && data ? data : []}
+          shareLinks={!data ? [] : data}
           onClickDeleteButton={deleteLinkById}
         />
         <button
