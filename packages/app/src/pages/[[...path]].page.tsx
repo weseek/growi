@@ -74,7 +74,7 @@ import {
 const logger = loggerFactory('growi:pages:all');
 
 const {
-  isPermalink: _isPermalink, isUsersHomePage, isTrashPage: _isTrashPage, isUserPage, isCreatablePage, isTrashPage,
+  isPermalink: _isPermalink, isUsersHomePage, isTrashPage: _isTrashPage, isUserPage, isCreatablePage,
 } = pagePathUtils;
 const { removeHeadingSlash } = pathUtils;
 
@@ -333,9 +333,9 @@ const GrowiPage: NextPage<Props> = (props: Props) => {
         <footer className="footer d-edit-none">
           {/* TODO: Enable page_list.html */}
           {/* TODO: Enable isIdenticalPathPage or useIdenticalPath */}
-          { !props.isIdenticalPathPage && (
-            <Comments pageId={pageId} isDeleted={isTrashPage(pageWithMeta?.data.path)}/>
-          )}
+          {/* { !props.isIdenticalPathPage && ( */}
+          <Comments pageId={pageId} />
+          {/* )} */}
           {/* TODO: Create UsersHomePageFooter conponent */}
           { isUsersHomePage(pageWithMeta?.data.path) && (
             <div className="container-lg user-page-footer py-5">
