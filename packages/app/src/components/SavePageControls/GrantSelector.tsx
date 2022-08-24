@@ -95,8 +95,6 @@ const GrantSelector = (props: Props): JSX.Element => {
    * Render grant selector DOM.
    */
   const renderGrantSelector = useCallback(() => {
-    // const { grant: currentGrant, grantGroupId } = props;
-    console.log({currentGrant});
 
     let dropdownToggleBtnColor;
     let dropdownToggleLabelElm;
