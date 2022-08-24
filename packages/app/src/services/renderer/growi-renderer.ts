@@ -8,7 +8,6 @@ import loggerFactory from '~/utils/logger';
 import CsvToTable from './PreProcessor/CsvToTable';
 import EasyGrid from './PreProcessor/EasyGrid';
 import Linker from './PreProcessor/Linker';
-import OrderedList from './PreProcessor/OrderedList';
 import XssFilter from './PreProcessor/XssFilter';
 import BlockdiagConfigurer from './markdown-it/blockdiag';
 import DrawioViewerConfigurer from './markdown-it/drawio-viewer';
@@ -72,7 +71,6 @@ export default class GrowiRenderer {
           tagWhiteList: this.growiRendererConfig.tagWhiteList,
           attrWhiteList: this.growiRendererConfig.attrWhiteList,
         }),
-        new OrderedList(),
       ];
       this.postProcessors = [
 
