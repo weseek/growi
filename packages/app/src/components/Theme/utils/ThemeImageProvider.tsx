@@ -1,7 +1,6 @@
 import { GrowiThemes } from '~/interfaces/theme';
 import { Themes } from '~/stores/use-next-themes';
 
-import { getBackgroundImageSrc as getHalloweenBackgroundImageSrc } from '../ThemeHalloween';
 import { getBackgroundImageSrc as getHuffulePuffBackgroundImageSrc } from '../ThemeHufflepuff';
 import { getBackgroundImageSrc as getIslandBackgroundImageSrc } from '../ThemeIsland';
 import { getBackgroundImageSrc as getSpringBackgroundImageSrc } from '../ThemeSpring';
