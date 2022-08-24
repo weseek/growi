@@ -19,17 +19,16 @@ type Props = {
 }
 
 const ThemeAntarctic = ({ children, colorScheme }: Props): JSX.Element => {
-  const element = colorScheme == null
-    ? children
-    : (
-      <>
-        <div className={`grw-bg-image-wrapper ${styles['grw-bg-image-wrapper']}`}>
-          <Image className='grw-bg-image' alt='background-image' src={getBackgroundImageSrc(colorScheme)} layout='fill' quality="100" />
+  const newChildren = (
+    <>
+      {colorScheme != null && (
+        <div className={'grw-bg-image-wrapper'}>
+          <Image className='grw-bg-image' alt='background image' src={getBackgroundImageSrc(colorScheme)} layout='fill' quality="100" />
         </div>
-        {children}
-      </>
-    );
-
-  return <ThemeInjector className={`hoge ${styles.theme}`}>{element}</ThemeInjector>;
+      )}
+      {children}
+    </>
+  );
+  return <ThemeInjector className={`${styles.theme}`}>{newChildren}</ThemeInjector>;
 };
 export default ThemeAntarctic;
