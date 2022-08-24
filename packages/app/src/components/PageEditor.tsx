@@ -343,13 +343,12 @@ const PageEditor = (props: Props): JSX.Element => {
   }, []);
 
 
-  const saveAndReloadHandler = useCallback(async(opts?) => {
+  const saveAndReloadHandler = useCallback(async(opts?: {overwriteScopesOfDescendants: boolean}) => {
     if (editorMode !== EditorMode.Editor) {
       return;
     }
 
-    console.log({ opts });
-    const grant = grantData?.grant;
+    const grant = grantData?.grant || 1;
     const grantedGroup = grantData?.grantedGroup;
 
     if (isSlackEnabled == null || currentPathname == null) {
