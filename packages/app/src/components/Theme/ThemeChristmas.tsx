@@ -29,6 +29,6 @@ const ThemeChristmas = ({ children, colorScheme }: Props): JSX.Element => {
       {children}
     </>
   );
-  return <ThemeInjector className={`hoge ${styles.theme}`}>{element}</ThemeInjector>;
+  return <ThemeInjector className={`${styles.theme}`}>{element}</ThemeInjector>;
 };
 export default ThemeChristmas;
