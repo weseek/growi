@@ -369,8 +369,8 @@ const PageEditor = (props: Props): JSX.Element => {
       optionsToSave = currentOptionsToSave;
     }
 
-    await saveAndReload(optionsToSave, { pageId, path: currentPagePath || currentPathname, revisionId: currentPage?.revision._id }, markdown);
-  }, [currentPage?.revision._id,
+    await saveAndReload(optionsToSave, { pageId, path: currentPagePath || currentPathname, revisionId: currentPage?.revision?._id }, markdown);
+  }, [currentPage?.revision?._id,
       currentPagePath,
       currentPathname,
       editorMode,
