@@ -1,4 +1,5 @@
 @use './bootstrap/init' as bs;
+@use './bootstrap/variables' as var;
 
 @mixin variable-font-size($basesize) {
   font-size: $basesize * 0.6;
@@ -196,5 +197,25 @@
     svg {
       fill: $color-hover;
     }
+  }
+}
+
+@mixin overlay-processing-style($additionalSelector, $contentFontSize: inherit, $contentPadding: inherit) {
+  .overlay.#{$additionalSelector} {
+    background: rgba(255, 255, 255, 0.5);
+    .overlay-content {
+      padding: $contentPadding;
+      font-size: $contentFontSize;
+      color: var.$gray-700;
+      background: rgba(200, 200, 200, 0.5);
+    }
+  }
+}
+
+@mixin insertSimpleLineIcons($code) {
+  &:before {
+    margin-right: 0.2em;
+    font-family: 'simple-line-icons';
+    content: $code;
   }
 }

@@ -11,7 +11,7 @@
 }
 
 // overlay in .editor-container
-.editor-container {
+.editor-container :global {
   .overlay {
     position: absolute;
     top: 0;

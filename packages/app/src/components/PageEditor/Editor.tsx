@@ -20,6 +20,8 @@ import CodeMirrorEditor from './CodeMirrorEditor';
 import pasteHelper from './PasteHelper';
 import TextAreaEditor from './TextAreaEditor';
 
+import styles from './Editor.module.scss';
+
 type EditorPropsType = {
   value?: string,
   isGfmMode?: boolean,
@@ -257,7 +259,7 @@ const Editor = React.forwardRef((props: EditorPropsType, ref): JSX.Element => {
     };
 
     return (
-      <Modal isOpen={isCheatsheetModalShown} toggle={hideCheatsheetModal} className="modal-gfm-cheatsheet">
+      <Modal isOpen={isCheatsheetModalShown} toggle={hideCheatsheetModal} className={`modal-gfm-cheatsheet ${styles['modal-gfm-cheatsheet']}`} >
         <ModalHeader tag="h4" toggle={hideCheatsheetModal} className="bg-primary text-light">
           <i className="icon-fw icon-question" />Markdown help
         </ModalHeader>
@@ -280,7 +282,7 @@ const Editor = React.forwardRef((props: EditorPropsType, ref): JSX.Element => {
 
   return (
     <>
-      <div style={flexContainer} className="editor-container">
+      <div style={flexContainer} className={`editor-container ${styles['editor-container']}`} >
         <Dropzone
           ref={dropzoneRef}
           accept={getAcceptableType()}
