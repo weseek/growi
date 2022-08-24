@@ -210,9 +210,7 @@ const GrowiContextualSubNavigation = (props) => {
 
   const tagsUpdatedHandlerForViewMode = useCallback(async(newTags: string[]) => {
     try {
-      const res: IResTagsUpdateApiv1 = await apiPost('/tags.update', { pageId, revisionId, tags: newTags });
-      const updatedRevisionId = getIdForRef(res.savedPage.revision);
-      await pageContainer.setState({ revisionId: updatedRevisionId });
+      await apiPost('/tags.update', { pageId, revisionId, tags: newTags });
 
       // revalidate SWRTagsInfo
       mutateSWRTagsInfo();
@@ -224,7 +222,7 @@ const GrowiContextualSubNavigation = (props) => {
       toastError(err, 'fail to update tags');
     }
 
-  }, [pageId, revisionId, mutateSWRTagsInfo, mutatePageTagsForEditors, pageContainer]);
+  }, [pageId, revisionId, mutateSWRTagsInfo, mutatePageTagsForEditors]);
 
   const tagsUpdatedHandlerForEditMode = useCallback((newTags: string[]): void => {
     // It will not be reflected in the DB until the page is refreshed

@@ -158,8 +158,6 @@ module.exports = function(crowi, app) {
         return res.json(ApiResponse.error("You don't have permission to update this page."));
       }
 
-      const previousRevision = await Revision.findById(revisionId);
-      result.savedPage = await Page.updatePage(page, previousRevision.body, previousRevision.body, req.user);
       await PageTagRelation.updatePageTags(pageId, tags);
       result.tags = await PageTagRelation.listTagNamesByPage(pageId);
 
