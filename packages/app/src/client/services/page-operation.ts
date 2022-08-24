@@ -138,10 +138,14 @@ type PageInfo= {
 export const saveAndReload = async(optionsToSave: OptionsToSave, pageInfo: PageInfo, markdown: string) => {
   console.log({ optionsToSave, pageInfo, markdown });
 
-  const { pageId, path, revisionId } = pageInfo;
+  const { path, pageId, revisionId } = pageInfo;
 
   const options = Object.assign({}, optionsToSave);
 
+  /*
+  * Note: variable "markdown" will be received from params
+  * please delete the following code after implemating HackMD editor function
+  */
   // let markdown;
   // if (editorMode === EditorMode.HackMD) {
   // const pageEditorByHackmd = this.appContainer.getComponentInstance('PageEditorByHackmd');
@@ -168,6 +172,9 @@ export const saveAndReload = async(optionsToSave: OptionsToSave, pageInfo: PageI
     res = await updatePage(pageId, revisionId, markdown, options);
   }
 
+  /*
+  * TODO: implement Draft function => https://redmine.weseek.co.jp/issues/103246
+  */
   // const editorContainer = this.appContainer.getContainer('EditorContainer');
   // editorContainer.clearDraft(path);
   window.location.href = path;
