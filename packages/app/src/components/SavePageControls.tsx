@@ -103,10 +103,11 @@ export const SavePageControls = (props: Props): JSX.Element | null => {
     // disable unsaved warning
     mutateIsEnabledUnsavedWarning(false);
     // save
-    const currentOptionsToSave = getOptionsToSave(isSlackEnabled, slackChannels, grant, grantedGroup?.id, grantedGroup?.name, pageTags || []);
-    const optionsToSave = Object.assign(currentOptionsToSave, {
-      overwriteScopesOfDescendants: true,
-    });
+    // const currentOptionsToSave = getOptionsToSave(isSlackEnabled, slackChannels, grant, grantedGroup?.id, grantedGroup?.name, pageTags || []);
+    // const optionsToSave = Object.assign(currentOptionsToSave, {
+    //   overwriteScopesOfDescendants: true,
+    // });
+    (window as CustomWindow).globalEmitter.emit('saveAndReload', { overwriteScopesOfDescendants: true });
     // pageContainer.saveAndReload(optionsToSave, this.props.editorMode);
   };
 

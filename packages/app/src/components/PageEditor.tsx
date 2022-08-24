@@ -342,7 +342,12 @@ const PageEditor = (props: Props): JSX.Element => {
   }, []);
 
 
-  const saveAndReloadHandler = useCallback(async() => {
+  const saveAndReloadHandler = useCallback(async(opts?) => {
+    if (editorMode !== EditorMode.Editor) {
+      return;
+    }
+
+    console.log({ opts });
     const grant = grantData?.grant;
     const grantedGroup = grantData?.grantedGroup;
 
@@ -350,9 +355,31 @@ const PageEditor = (props: Props): JSX.Element => {
       return;
     }
 
-    const optionsToSave = getOptionsToSave(isSlackEnabled, slackChannels, grant || 1, grantedGroup?.id, grantedGroup?.name, pageTags || []);
+    let optionsToSave;
+
+    const currentOptionsToSave = getOptionsToSave(isSlackEnabled, slackChannels, grant || 1, grantedGroup?.id, grantedGroup?.name, pageTags || []);
+
+    if (opts != null) {
+      optionsToSave = Object.assign(currentOptionsToSave, {
+        ...opts,
+      });
+    }
+    else {
+      optionsToSave = currentOptionsToSave;
+    }
+
     await saveAndReload(optionsToSave, { pageId, path: currentPagePath, revisionId: currentPage?.revision._id }, markdown);
-  }, [currentPage?.revision._id, currentPagePath, grantData, isSlackEnabled, markdown, pageId, pageTags, slackChannels]);
+  }, [currentPage?.revision._id,
+      currentPagePath,
+      editorMode,
+      grantData?.grant,
+      grantData?.grantedGroup,
+      isSlackEnabled,
+      markdown,
+      pageId,
+      pageTags,
+      slackChannels,
+  ]);
 
   // set handler to save and reload Page
   useEffect(() => {

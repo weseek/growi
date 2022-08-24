@@ -141,10 +141,6 @@ export const saveAndReload = async(optionsToSave: OptionsToSave, pageInfo: PageI
     throw new Error(msg);
   }
 
-  // if (editorMode == null) {
-  //   logger.warn('\'saveAndReload\' requires the \'editorMode\' param');
-  //   return;
-  // }
 
   const { pageId, path, revisionId } = pageInfo;
   // const { pageId, path } = this.state;
