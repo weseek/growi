@@ -16,7 +16,6 @@ import {
 } from '../../services/renderer/interceptor/drawio-interceptor';
 import { toastError } from '../util/apiNotification';
 import { apiPost } from '../util/apiv1-client';
-import { apiv3Post } from '../util/apiv3-client';
 
 const { isTrashPage } = pagePathUtils;
 
@@ -263,81 +262,6 @@ export default class PageContainer extends Container {
     return res;
   }
 
-  async saveAndReload(optionsToSave, editorMode) {
-    if (optionsToSave == null) {
-      const msg = '\'saveAndReload\' requires the \'optionsToSave\' param';
-      throw new Error(msg);
-    }
-
-    if (editorMode == null) {
-      logger.warn('\'saveAndReload\' requires the \'editorMode\' param');
-      return;
-    }
-
-    const { pageId, path } = this.state;
-    let { revisionId } = this.state;
-
-    const options = Object.assign({}, optionsToSave);
-
-    let markdown;
-    if (editorMode === EditorMode.HackMD) {
-      const pageEditorByHackmd = this.appContainer.getComponentInstance('PageEditorByHackmd');
-      markdown = await pageEditorByHackmd.getMarkdown();
-      // set option to sync
-      options.isSyncRevisionToHackmd = true;
-      revisionId = this.state.revisionIdHackmdSynced;
-    }
-    else {
-      const pageEditor = this.appContainer.getComponentInstance('PageEditor');
-      markdown = pageEditor.getMarkdown();
-    }
-
-    let res;
-    if (pageId == null) {
-      res = await this.createPage(path, markdown, options);
-    }
-    else {
-      res = await this.updatePage(pageId, revisionId, markdown, options);
-    }
-
-    const editorContainer = this.appContainer.getContainer('EditorContainer');
-    editorContainer.clearDraft(path);
-    window.location.href = path;
-
-    return res;
-  }
-
-  async createPage(pagePath, markdown, tmpParams) {
-    const socketIoContainer = this.appContainer.getContainer('SocketIoContainer');
-
-    // clone
-    const params = Object.assign(tmpParams, {
-      path: pagePath,
-      body: markdown,
-    });
-
-    const res = await apiv3Post('/pages/', params);
-    const { page, tags, revision } = res.data;
-
-    return { page, tags, revision };
-  }
-
-  async updatePage(pageId, revisionId, markdown, tmpParams) {
-    const socketIoContainer = this.appContainer.getContainer('SocketIoContainer');
-
-    // clone
-    const params = Object.assign(tmpParams, {
-      page_id: pageId,
-      revision_id: revisionId,
-      body: markdown,
-    });
-
-    const res = await apiPost('/pages.update', params);
-    if (!res.ok) {
-      throw new Error(res.error);
-    }
-    return res;
-  }
 
   showSuccessToastr() {
     toastr.success(undefined, 'Saved successfully', {
