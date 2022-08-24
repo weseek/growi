@@ -271,12 +271,28 @@ const AdminMarkdownSettingsPage: NextPage<Props> = (props: Props) => {
 };
 
 
-function injectServerConfigurations(context: GetServerSidePropsContext, props: Props): void {
+async function injectServerConfigurations(context: GetServerSidePropsContext, props: Props): void {
   const req: CrowiRequest = context.req as CrowiRequest;
   const { crowi } = req;
-  const { mailService } = crowi;
+  const {
+    appService, mailService, aclService, searchService, activityService,
+  } = crowi;
+
+  props.siteUrl = appService.getSiteUrl();
+  props.nodeVersion = crowi.runtimeVersions.versions.node ? crowi.runtimeVersions.versions.node.version.version : null;
+  props.npmVersion = crowi.runtimeVersions.versions.npm ? crowi.runtimeVersions.versions.npm.version.version : null;
+  props.yarnVersion = crowi.runtimeVersions.versions.yarn ? crowi.runtimeVersions.versions.yarn.version.version : null;
+  props.installedPlugins = pluginUtils.listPlugins();
+  props.envVars = await ConfigLoader.getEnvVarsForDisplay(true);
+  props.isAclEnabled = aclService.isAclEnabled();
+
+  props.isSearchServiceConfigured = searchService.isConfigured;
+  props.isSearchServiceReachable = searchService.isReachable;
 
   props.isMailerSetup = mailService.isMailerSetup;
+
+  props.auditLogEnabled = crowi.configManager.getConfig('crowi', 'app:auditLogEnabled');
+  props.auditLogAvailableActions = activityService.getAvailableActions(false);
 }
 
 /**
@@ -292,10 +308,6 @@ async function injectNextI18NextConfigurations(context: GetServerSidePropsContex
 
 export const getServerSideProps: GetServerSideProps = async(context: GetServerSidePropsContext) => {
   const req: CrowiRequest = context.req as CrowiRequest;
-  const { crowi } = req;
-  const {
-    appService, searchService, aclService,
-  } = crowi;
 
   const { user } = req;
   const result = await getServerSideCommonProps(context);
@@ -313,20 +325,6 @@ export const getServerSideProps: GetServerSideProps = async(context: GetServerSi
 
   injectServerConfigurations(context, props);
   injectNextI18NextConfigurations(context, props, ['admin']);
-
-  props.siteUrl = appService.getSiteUrl();
-  props.nodeVersion = crowi.runtimeVersions.versions.node ? crowi.runtimeVersions.versions.node.version.version : null;
-  props.npmVersion = crowi.runtimeVersions.versions.npm ? crowi.runtimeVersions.versions.npm.version.version : null;
-  props.yarnVersion = crowi.runtimeVersions.versions.yarn ? crowi.runtimeVersions.versions.yarn.version.version : null;
-  props.installedPlugins = pluginUtils.listPlugins();
-  props.envVars = await ConfigLoader.getEnvVarsForDisplay(true);
-  props.isAclEnabled = aclService.isAclEnabled();
-
-  props.isSearchServiceConfigured = searchService.isConfigured;
-  props.isSearchServiceReachable = searchService.isReachable;
-
-  props.auditLogEnabled = crowi.configManager.getConfig('crowi', 'app:auditLogEnabled');
-  props.auditLogAvailableActions = crowi.activityService.getAvailableActions(false);
 
   return {
     props,
