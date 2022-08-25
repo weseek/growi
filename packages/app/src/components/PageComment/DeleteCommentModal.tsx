@@ -25,7 +25,7 @@ export const DeleteCommentModal = (props: DeleteCommentModalProps): JSX.Element 
     isShown, comment, errorMessage, cancelToDelete, confirmToDelete,
   } = props;
 
-  const HeaderContent = React.memo(() => {
+  const HeaderContent = useMemo(() => {
     if (comment == null || isShown === false) {
       return <></>;
     }
@@ -35,10 +35,9 @@ export const DeleteCommentModal = (props: DeleteCommentModalProps): JSX.Element 
         Delete comment?
       </span>
     );
-  });
-  HeaderContent.displayName = 'HeaderContent';
+  }, [comment, isShown]);
 
-  const BodyContent = React.memo(() => {
+  const BodyContent = useMemo(() => {
     if (comment == null || isShown === false) {
       return <></>;
     }
@@ -60,10 +59,9 @@ export const DeleteCommentModal = (props: DeleteCommentModalProps): JSX.Element 
         <p className="card well comment-body mt-2 p-2">{commentBodyElement}</p>
       </>
     );
-  });
-  BodyContent.displayName = 'BodyContent';
+  }, [comment, isShown]);
 
-  const FooterContent = React.memo(() => {
+  const FooterContent = useMemo(() => {
     if (comment == null || isShown === false) {
       return <></>;
     }
@@ -77,19 +75,18 @@ export const DeleteCommentModal = (props: DeleteCommentModalProps): JSX.Element 
         </Button>
       </>
     );
-  });
-  FooterContent.displayName = 'FooterContent';
+  }, [cancelToDelete, comment, confirmToDelete, errorMessage, isShown]);
 
   return (
     <Modal isOpen={isShown} toggle={cancelToDelete} className={`${styles['page-comment-delete-modal']}`}>
       <ModalHeader tag="h4" toggle={cancelToDelete} className="bg-danger text-light">
-        <HeaderContent/>
+        {HeaderContent}
       </ModalHeader>
       <ModalBody>
-        <BodyContent/>
+        {BodyContent}
       </ModalBody>
       <ModalFooter>
-        <FooterContent/>
+        {FooterContent}
       </ModalFooter>
     </Modal>
   );
