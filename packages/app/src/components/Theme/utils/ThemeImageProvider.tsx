@@ -8,8 +8,6 @@ export const getBackgroundImageSrc = (theme: GrowiThemes | undefined, colorSchem
     return undefined;
   }
   switch (theme) {
-    case GrowiThemes.WOOD:
-      return getWoodBackgroundImageSrc(colorScheme);
     default:
       return undefined;
   }
