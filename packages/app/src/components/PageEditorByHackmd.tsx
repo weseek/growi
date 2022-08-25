@@ -78,11 +78,6 @@ export const PageEditorByHackmd = (): JSX.Element => {
   //   appContainer.registerComponentInstance('PageEditorByHackmd', pageEditorByHackmdInstance);
   // }, [appContainer, isInitialized, t]);
 
-  // const getHackmdUri = useCallback(() => {
-  //   const envVars = appContainer.getConfig().env;
-  //   return envVars.HACKMD_URI;
-  // }, [appContainer]);
-
   const isResume = useCallback(() => {
     const isPageExistsOnHackmd = (pageIdOnHackmd != null);
     return (isPageExistsOnHackmd && hasDraftOnHackmd) || isHackmdDraftUpdatingInRealtime;
