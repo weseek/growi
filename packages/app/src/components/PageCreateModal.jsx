@@ -19,7 +19,7 @@ const {
   userPageRoot, isCreatablePage, generateEditorPath, isUsersHomePage,
 } = pagePathUtils;
 
-const PageCreateModal = (props) => {
+const PageCreateModal = () => {
   const { t } = useTranslation();
 
   const { data: currentUser } = useCurrentUser();
@@ -132,6 +132,9 @@ const PageCreateModal = (props) => {
   }
 
   function renderCreateTodayForm() {
+    if (!isOpened) {
+      return <></>;
+    }
     return (
       <div className="row">
         <fieldset className="col-12 mb-4">
@@ -183,6 +186,9 @@ const PageCreateModal = (props) => {
   }
 
   function renderInputPageForm() {
+    if (!isOpened) {
+      return <></>;
+    }
     return (
       <div className="row" data-testid="row-create-page-under-below">
         <fieldset className="col-12 mb-4">
@@ -237,6 +243,9 @@ const PageCreateModal = (props) => {
   }
 
   function renderTemplatePageForm() {
+    if (!isOpened) {
+      return <></>;
+    }
     return (
       <div className="row">
         <fieldset className="col-12">
