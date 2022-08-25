@@ -47,7 +47,7 @@ export const ThemeProvider = ({ theme, children, colorScheme }: Props): JSX.Elem
     case GrowiThemes.HUFFLEPUFF:
       return <ThemeHufflepuff colorScheme={colorScheme}>{children}</ThemeHufflepuff>;
     case GrowiThemes.ISLAND:
-      return <ThemeIsland>{children}</ThemeIsland>;
+      return <ThemeIsland colorScheme={colorScheme}>{children}</ThemeIsland>;
     case GrowiThemes.JADE_GREEN:
       return <ThemeJadeGreen>{children}</ThemeJadeGreen>;
     case GrowiThemes.KIBELA:
