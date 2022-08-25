@@ -42,8 +42,10 @@ const PageCreateModal = () => {
 
   // ensure pageNameInput is synced with selectedPagePath || currentPagePath
   useEffect(() => {
-    setPageNameInput(isCreatable ? pathUtils.addTrailingSlash(pathname) : '/');
-  }, [pathname, isCreatable]);
+    if (isOpened) {
+      setPageNameInput(isCreatable ? pathUtils.addTrailingSlash(pathname) : '/');
+    }
+  }, [isOpened, pathname, isCreatable]);
 
   const checkIsUsersHomePageDebounce = useMemo(() => {
     const checkIsUsersHomePage = () => {
@@ -54,8 +56,10 @@ const PageCreateModal = () => {
   }, [pageNameInput]);
 
   useEffect(() => {
-    checkIsUsersHomePageDebounce(pageNameInput);
-  }, [checkIsUsersHomePageDebounce, pageNameInput]);
+    if (isOpened) {
+      checkIsUsersHomePageDebounce(pageNameInput);
+    }
+  }, [isOpened, checkIsUsersHomePageDebounce, pageNameInput]);
 
   function transitBySubmitEvent(e, transitHandler) {
     // prevent page transition by submit
