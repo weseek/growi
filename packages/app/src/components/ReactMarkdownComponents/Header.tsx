@@ -51,7 +51,7 @@ export const Header = (props: HeaderProps): JSX.Element => {
   const CustomTag = `h${level}` as keyof JSX.IntrinsicElements;
 
   return (
-    <CustomTag id={id} className={`revision-head ${styles['revision-head']} ${styles.hoge}`}>
+    <CustomTag id={id} className={`revision-head ${styles['revision-head']}`}>
       {children}
       <NextLink href={`#${id}`} className="revision-head-link">
         <span className="icon-link"></span>
