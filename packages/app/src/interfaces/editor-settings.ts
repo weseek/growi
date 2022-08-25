@@ -44,4 +44,5 @@ export type OptionsToSave = {
   pageTags: string[] | null;
   grantUserGroupId?: string | null;
   grantUserGroupName?: string | null;
+  isSyncRevisionToHackmd?: boolean;
 };
