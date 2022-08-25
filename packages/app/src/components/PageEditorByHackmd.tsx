@@ -1,10 +1,12 @@
 import React, {
-  useCallback, useRef, useState, useEffect,
+  useCallback, useRef, useState, useEffect, useMemo,
 } from 'react';
 
 import EventEmitter from 'events';
 
 import { useTranslation } from 'react-i18next';
+import { throttle, debounce } from 'throttle-debounce';
+
 
 import { updatePage, saveAndReload } from '~/client/services/page-operation';
 import { toastError, toastSuccess } from '~/client/util/apiNotification';
@@ -65,6 +67,14 @@ export const PageEditorByHackmd = (): JSX.Element => {
   const [isHackmdDraftUpdatingInRealtime, setIsHackmdDraftUpdatingInRealtime] = useState(false);
   const [remoteRevisionId, setRemoteRevisionId] = useState(revision?._id); // initialize
 
+  const [markdown, setMarkdown] = useState<string>(revision?.body ?? '');
+
+  const setMarkdownWithDebounce = useMemo(() => debounce(50, throttle(100, value => setMarkdown(value))), []);
+
+  const markdownChangedHandler = useCallback((value: string): void => {
+    setMarkdownWithDebounce(value);
+  }, [setMarkdownWithDebounce]);
+
   const hackmdEditorRef = useRef<HackEditorRef>(null);
 
   const saveAndReloadHandler = useCallback(async(opts?: {overwriteScopesOfDescendants: boolean}) => {
@@ -91,8 +101,8 @@ export const PageEditorByHackmd = (): JSX.Element => {
       optionsToSave = currentOptionsToSave;
     }
 
-    await saveAndReload(optionsToSave, { pageId, path: currentPagePath || currentPathname, revisionId: revision?._id }, revision?.body);
-  }, [currentPagePath, currentPathname, editorMode, grant, isSlackEnabled, pageId, pageTags, revision, slackChannels]);
+    await saveAndReload(optionsToSave, { pageId, path: currentPagePath || currentPathname, revisionId: revision?._id }, markdown);
+  }, [currentPagePath, currentPathname, editorMode, grant, isSlackEnabled, pageId, pageTags, revision, slackChannels, markdown]);
 
   // set handler to save and reload Page
   useEffect(() => {
@@ -226,6 +236,7 @@ export const PageEditorByHackmd = (): JSX.Element => {
 
     try {
       await apiPost('/hackmd.saveOnHackmd', { pageId });
+      markdownChangedHandler(body);
     }
     catch (err) {
       logger.error(err);
