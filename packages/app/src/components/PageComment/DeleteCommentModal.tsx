@@ -25,7 +25,7 @@ export const DeleteCommentModal = (props: DeleteCommentModalProps): JSX.Element 
     isShown, comment, errorMessage, cancelToDelete, confirmToDelete,
   } = props;
 
-  const HeaderContent = useMemo(() => {
+  const headerContent = useMemo(() => {
     if (comment == null || isShown === false) {
       return <></>;
     }
@@ -37,7 +37,7 @@ export const DeleteCommentModal = (props: DeleteCommentModalProps): JSX.Element 
     );
   }, [comment, isShown]);
 
-  const BodyContent = useMemo(() => {
+  const bodyContent = useMemo(() => {
     if (comment == null || isShown === false) {
       return <></>;
     }
@@ -61,7 +61,7 @@ export const DeleteCommentModal = (props: DeleteCommentModalProps): JSX.Element 
     );
   }, [comment, isShown]);
 
-  const FooterContent = useMemo(() => {
+  const footerContent = useMemo(() => {
     if (comment == null || isShown === false) {
       return <></>;
     }
@@ -80,13 +80,13 @@ export const DeleteCommentModal = (props: DeleteCommentModalProps): JSX.Element 
   return (
     <Modal isOpen={isShown} toggle={cancelToDelete} className={`${styles['page-comment-delete-modal']}`}>
       <ModalHeader tag="h4" toggle={cancelToDelete} className="bg-danger text-light">
-        {HeaderContent}
+        {headerContent}
       </ModalHeader>
       <ModalBody>
-        {BodyContent}
+        {bodyContent}
       </ModalBody>
       <ModalFooter>
-        {FooterContent}
+        {footerContent}
       </ModalFooter>
     </Modal>
   );
