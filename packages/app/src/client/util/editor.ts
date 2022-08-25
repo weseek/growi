@@ -1,12 +1,4 @@
-type OptionsToSave = {
-  isSlackEnabled: boolean;
-  slackChannels: string;
-  grant: number;
-  pageTags: string[] | null;
-  grantUserGroupId?: string | null;
-  grantUserGroupName?: string | null;
-  isSyncRevisionToHackmd?: boolean;
-};
+import { OptionsToSave } from '~/interfaces/editor-settings';
 
 export const getOptionsToSave = (
     isSlackEnabled: boolean,
