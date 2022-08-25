@@ -1,24 +1,9 @@
 @use '~/styles/mixins' as ms;
 @use '~/styles/bootstrap/init' as bs;
-@use '~/styles/bootstrap/variables' as var;
 
-// TODO: Refactor Scss improt bellow. This classes from _editor-overlay.scss
 
-// TODO: Move to ~/styles/mixins.
-// @mixin overlay-processing-style($additionalSelector, $contentFontSize: inherit, $contentPadding: inherit) {
-//   .overlay.#{$additionalSelector} {
-//     background: rgba(255, 255, 255, 0.5);
-//     .overlay-content {
-//       padding: $contentPadding;
-//       font-size: $contentFontSize;
-//       color: $gray-700;
-//       background: rgba(200, 200, 200, 0.5);
-//     }
-//   }
-// }
-
-// overlay in .editor-container
 .editor-container :global {
+  // overlay in .editor-container
   .overlay {
     position: absolute;
     top: 0;
@@ -33,43 +18,6 @@
 
   // loading keymap
   @include ms.overlay-processing-style(overlay-loading-keymap, 2.5em, 0.3em);
-
-  // cheat sheat
-  .overlay.overlay-gfm-cheatsheet {
-    align-items: flex-end;
-    justify-content: flex-end;
-
-    pointer-events: none;
-
-    .card.gfm-cheatsheet {
-      box-shadow: unset;
-      opacity: 0.6;
-      .card-body {
-        min-width: 30em;
-        padding-bottom: 0;
-        font-family: monospace;
-        color: bs.$text-muted;
-      }
-      ul > li {
-        list-style: none;
-      }
-    }
-
-    .gfm-cheatsheet-modal-link {
-      color: bs.$text-muted;
-      pointer-events: all;
-      cursor: pointer;
-      background-color: transparent;
-      border: none;
-
-      opacity: 0.6;
-
-      &:hover,
-      &:focus {
-        opacity: 1;
-      }
-    }
-  }
 
 
   // TODO: Refactor Scss improt bellow. This classes from _editor-attachment.scss
@@ -95,7 +43,7 @@
         background: rgba(200, 200, 200, 0.8);
 
         .overlay-content {
-          color: var.$gray-300;
+          color: bs.$gray-300;
         }
       }
     }
@@ -124,7 +72,7 @@
       // accepted
       &.dropzone-accepted:not(.dropzone-rejected) {
         .overlay.overlay-dropzone-active {
-          border: 4px dashed var.$gray-300;
+          border: 4px dashed bs.$gray-300;
 
           .overlay-content {
             // insert content
@@ -179,7 +127,7 @@
     padding-bottom: 3px;
     font-size: small;
     border: none;
-    border-top: 1px dotted var.$gray-300;
+    border-top: 1px dotted bs.$gray-300;
     border-bottom: none;
 
     &:hover,

@@ -1,5 +1,4 @@
 @use './bootstrap/init' as bs;
-@use './bootstrap/variables' as var;
 
 @mixin variable-font-size($basesize) {
   font-size: $basesize * 0.6;
@@ -206,7 +205,7 @@
     .overlay-content {
       padding: $contentPadding;
       font-size: $contentFontSize;
-      color: var.$gray-700;
+      color: bs.$gray-700;
       background: rgba(200, 200, 200, 0.5);
     }
   }
