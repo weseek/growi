@@ -1,7 +1,6 @@
 import { GrowiThemes } from '~/interfaces/theme';
 import { Themes } from '~/stores/use-next-themes';
 
-import { getBackgroundImageSrc as getSpringBackgroundImageSrc } from '../ThemeSpring';
 import { getBackgroundImageSrc as getWoodBackgroundImageSrc } from '../ThemeWood';
 
 export const getBackgroundImageSrc = (theme: GrowiThemes | undefined, colorScheme: Themes | undefined): string | undefined => {
@@ -9,8 +8,6 @@ export const getBackgroundImageSrc = (theme: GrowiThemes | undefined, colorSchem
     return undefined;
   }
   switch (theme) {
-    case GrowiThemes.SPRING:
-      return getSpringBackgroundImageSrc(colorScheme);
     case GrowiThemes.WOOD:
       return getWoodBackgroundImageSrc(colorScheme);
     default:
