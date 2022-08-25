@@ -1,9 +1,12 @@
 import React, {
-  useCallback, useRef, useState,
+  useCallback, useRef, useState, useEffect,
 } from 'react';
+
+import EventEmitter from 'events';
 
 import { useTranslation } from 'react-i18next';
 
+import { updatePage, saveAndReload } from '~/client/services/page-operation';
 import { toastError, toastSuccess } from '~/client/util/apiNotification';
 import { apiPost } from '~/client/util/apiv1-client';
 import { getOptionsToSave } from '~/client/util/editor';
@@ -14,6 +17,7 @@ import {
 import { useSWRxSlackChannels, useIsSlackEnabled, usePageTagsForEditors } from '~/stores/editor';
 import { useSWRxCurrentPage } from '~/stores/page';
 import {
+  EditorMode,
   useEditorMode, useSelectedGrant,
 } from '~/stores/ui';
 import loggerFactory from '~/utils/logger';
@@ -21,6 +25,8 @@ import loggerFactory from '~/utils/logger';
 import HackmdEditor from './PageEditorByHackmd/HackmdEditor';
 
 const logger = loggerFactory('growi:PageEditorByHackmd');
+
+declare const globalEmitter: EventEmitter;
 
 type HackEditorRef = {
   getValue: () => string
@@ -31,6 +37,7 @@ export const PageEditorByHackmd = (): JSX.Element => {
   const { t } = useTranslation();
   const { data: editorMode } = useEditorMode();
   const { data: currentPagePath } = useCurrentPagePath();
+  const { data: currentPathname } = useCurrentPagePath();
   const { data: slackChannelsData } = useSWRxSlackChannels(currentPagePath);
   const { data: isSlackEnabled } = useIsSlackEnabled();
   const { data: pageId } = useCurrentPageId();
@@ -60,23 +67,46 @@ export const PageEditorByHackmd = (): JSX.Element => {
 
   const hackmdEditorRef = useRef<HackEditorRef>(null);
 
-  // useEffect(() => {
-  //   const pageEditorByHackmdInstance = {
-  //     getMarkdown: () => {
-  //       if (!isInitialized) {
-  //         return Promise.reject(new Error(t('hackmd.not_initialized')));
-  //       }
+  const saveAndReloadHandler = useCallback(async(opts?: {overwriteScopesOfDescendants: boolean}) => {
+    console.log('処理がきた');
+    if (editorMode !== EditorMode.HackMD) {
+      return;
+    }
+    console.log('処理がきた2');
 
-  //       if (hackmdEditorRef.current == null) { return }
+    // const grant = grant?.grant || 1;
+    // const grantedGroup = grantData?.grantedGroup;
 
-  //       return hackmdEditorRef.current.getValue();
-  //     },
-  //     reset: () => {
-  //       setIsInitialized(false);
-  //     },
-  //   };
-  //   appContainer.registerComponentInstance('PageEditorByHackmd', pageEditorByHackmdInstance);
-  // }, [appContainer, isInitialized, t]);
+    if (isSlackEnabled == null || currentPathname == null || slackChannels == null || grant == null || revision == null) {
+      return;
+    }
+
+    let optionsToSave;
+
+    const currentOptionsToSave = getOptionsToSave(
+      isSlackEnabled, slackChannels, grant.grant, grant.grantedGroup?.id, grant.grantedGroup?.name, pageTags ?? [], true,
+    );
+
+    if (opts != null) {
+      optionsToSave = Object.assign(currentOptionsToSave, {
+        ...opts,
+      });
+    }
+    else {
+      optionsToSave = currentOptionsToSave;
+    }
+
+    await saveAndReload(optionsToSave, { pageId, path: currentPagePath || currentPathname, revisionId: revision?._id }, revision?.body);
+  }, []);
+
+  // set handler to save and reload Page
+  useEffect(() => {
+    globalEmitter.on('saveAndReload', saveAndReloadHandler);
+
+    return function cleanup() {
+      globalEmitter.removeListener('saveAndReload', saveAndReloadHandler);
+    };
+  }, [saveAndReloadHandler]);
 
   const isResume = useCallback(() => {
     const isPageExistsOnHackmd = (pageIdOnHackmd != null);
@@ -158,14 +188,7 @@ export const PageEditorByHackmd = (): JSX.Element => {
     );
 
     try {
-
-      const params = Object.assign(optionsToSave, {
-        page_id: pageId,
-        revision_id: revisionIdHackmdSynced,
-        body: markdown,
-      });
-
-      const res = await apiPost<any>('/pages.update', params);
+      const res = await updatePage(pageId, revisionIdHackmdSynced, markdown, optionsToSave);
 
       // update pageData
       updatePageData();
