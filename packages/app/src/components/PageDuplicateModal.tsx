@@ -75,10 +75,10 @@ const PageDuplicateModal = (): JSX.Element => {
   }, [checkExistPaths]);
 
   useEffect(() => {
-    if (page != null && pageNameInput !== page.path) {
+    if (isOpened && page != null && pageNameInput !== page.path) {
       checkExistPathsDebounce(page.path, pageNameInput);
     }
-  }, [pageNameInput, subordinatedPages, checkExistPathsDebounce, page]);
+  }, [isOpened, pageNameInput, subordinatedPages, checkExistPathsDebounce, page]);
 
   /**
    * change pageNameInput for PagePathAutoComplete
@@ -150,21 +150,14 @@ const PageDuplicateModal = (): JSX.Element => {
 
   }, [isOpened]);
 
-  if (page == null) {
-    return <></>;
-  }
-
-
-  const { path } = page;
-  const isTargetPageDuplicate = existingPaths.includes(pageNameInput);
-
-  const submitButtonEnabled = existingPaths.length === 0
-  || (isDuplicateRecursively && isDuplicateRecursivelyWithoutExistPath);
 
   const bodyContent = () => {
-    if (!isOpened) {
+    if (!isOpened || page == null) {
       return <></>;
     }
+
+    const { path } = page;
+    const isTargetPageDuplicate = existingPaths.includes(pageNameInput);
 
     return (
       <>
@@ -246,9 +239,12 @@ const PageDuplicateModal = (): JSX.Element => {
   };
 
   const footerContent = () => {
-    if (!isOpened) {
+    if (!isOpened || page == null) {
       return <></>;
     }
+
+    const submitButtonEnabled = existingPaths.length === 0
+    || (isDuplicateRecursively && isDuplicateRecursivelyWithoutExistPath);
 
     return (
       <>
