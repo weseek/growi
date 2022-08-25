@@ -33,7 +33,8 @@
 
 //== Light Mode
 //
-.theme {[data-color-scheme='light'] :global {
+.theme {
+  [data-color-scheme='light'] :global {
     // Theme colors
     $themecolor: #eaab20;
     $themelight: #efe2cf;
@@ -170,7 +171,8 @@
   }
 }
 
-.theme {[data-color-scheme='dark'] :global {
+.theme {
+  [data-color-scheme='dark'] :global {
     // Theme colors
     $themecolor: #eaab20;
     $themedark: #3d3f38;
