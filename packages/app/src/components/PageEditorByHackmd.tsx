@@ -69,7 +69,7 @@ const PageEditorByHackmd = (props: PageEditorByHackmdProps) => {
         setIsInitialized(false);
       },
     };
-    appContainer.registerComponentInstance('PageEditorByHackmd', pageEditorByHackmdInstance);
+    // appContainer.registerComponentInstance('PageEditorByHackmd', pageEditorByHackmdInstance);
   }, [appContainer, isInitialized, t]);
 
   const getHackmdUri = useCallback(() => {

@@ -1,9 +1,15 @@
-import { SubscriptionStatusType } from '@growi/core';
+import { SubscriptionStatusType, Nullable } from '@growi/core';
 import urljoin from 'url-join';
 
+import { OptionsToSave } from '~/interfaces/editor-settings';
+import loggerFactory from '~/utils/logger';
+
+
 import { toastError } from '../util/apiNotification';
+import { apiPost } from '../util/apiv1-client';
 import { apiv3Post, apiv3Put } from '../util/apiv3-client';
 
+const logger = loggerFactory('growi:services:page-operation');
 
 export const toggleSubscribe = async(pageId: string, currentStatus: SubscriptionStatusType | undefined): Promise<void> => {
   try {
@@ -89,4 +95,85 @@ export const exportAsMarkdown = (pageId: string, revisionId: string, format: str
  */
 export const resumeRenameOperation = async(pageId: string): Promise<void> => {
   await apiv3Post('/pages/resume-rename', { pageId });
+};
+
+
+export const createPage = async(pagePath: string, markdown: string, tmpParams: OptionsToSave) => {
+  // clone
+  const params = Object.assign(tmpParams, {
+    path: pagePath,
+    body: markdown,
+  });
+
+  const res = await apiv3Post('/pages/', params);
+  const { page, tags, revision } = res.data;
+
+  return { page, tags, revision };
+};
+
+export const updatePage = async(pageId: string, revisionId: string, markdown: string, tmpParams: OptionsToSave) => {
+  // clone
+  const params = Object.assign(tmpParams, {
+    page_id: pageId,
+    revision_id: revisionId,
+    body: markdown,
+  });
+
+  const res: any = await apiPost('/pages.update', params);
+  if (!res.ok) {
+    throw new Error(res.error);
+  }
+  return res;
+};
+
+type PageInfo= {
+  path: string,
+  pageId: Nullable<string>,
+  revisionId: Nullable<string>,
+}
+
+
+export const saveAndReload = async(optionsToSave: OptionsToSave, pageInfo: PageInfo, markdown: string) => {
+  const { path, pageId, revisionId } = pageInfo;
+
+  const options = Object.assign({}, optionsToSave);
+
+  /*
+  * Note: variable "markdown" will be received from params
+  * please delete the following code after implemating HackMD editor function
+  */
+  // let markdown;
+  // if (editorMode === EditorMode.HackMD) {
+  // const pageEditorByHackmd = this.appContainer.getComponentInstance('PageEditorByHackmd');
+  // markdown = await pageEditorByHackmd.getMarkdown();
+  // // set option to sync
+  // options.isSyncRevisionToHackmd = true;
+  // revisionId = this.state.revisionIdHackmdSynced;
+  // }
+  // else {
+  // const pageEditor = this.appContainer.getComponentInstance('PageEditor');
+  // const pageEditor = getComponentInstance('PageEditor');
+  // markdown = pageEditor.getMarkdown();
+  // }
+
+  let res;
+  if (pageId == null) {
+    res = await createPage(path, markdown, options);
+  }
+  else {
+    if (revisionId == null) {
+      const msg = '\'revisionId\' is required to update page';
+      throw new Error(msg);
+    }
+    res = await updatePage(pageId, revisionId, markdown, options);
+  }
+
+  /*
+  * TODO: implement Draft function => https://redmine.weseek.co.jp/issues/103246
+  */
+  // const editorContainer = this.appContainer.getContainer('EditorContainer');
+  // editorContainer.clearDraft(path);
+  window.location.href = path;
+
+  return res;
 };
