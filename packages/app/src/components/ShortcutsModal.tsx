@@ -14,7 +14,7 @@ const ShortcutsModal = (): JSX.Element => {
 
   const { data: status, close } = useShortcutsModal();
 
-  const bodyContent = useMemo(() => {
+  const bodyContent = () => {
     if (status == null || !status.isOpened) {
       return <></>;
     }
@@ -158,7 +158,7 @@ const ShortcutsModal = (): JSX.Element => {
         </div>
       </div>
     );
-  }, [status, t]);
+  };
 
   return (
     <>
@@ -168,7 +168,7 @@ const ShortcutsModal = (): JSX.Element => {
             {t('Shortcuts')}
           </ModalHeader>
           <ModalBody>
-            {bodyContent}
+            {bodyContent()}
           </ModalBody>
         </Modal>
       ) }
