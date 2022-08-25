@@ -337,7 +337,7 @@ const GrowiPage: NextPage<Props> = (props: Props) => {
           <Comments pageId={pageId} />
           {/* )} */}
           {/* TODO: Create UsersHomePageFooter conponent */}
-          { isUsersHomePage(pageWithMeta?.data.path) && (
+          { isUsersHomePage(props.currentPathname) && (
             <div className="container-lg user-page-footer py-5">
               <div className="grw-user-page-list-m d-edit-none">
                 <h2 id="bookmarks-list" className="grw-user-page-header border-bottom pb-2 mb-3">

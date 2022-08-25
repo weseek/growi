@@ -1,6 +1,6 @@
 import React, { useCallback } from 'react';
 
-import { pagePathUtils } from '@growi/core';
+import { pagePathUtils, PageGrant } from '@growi/core';
 import { useTranslation } from 'next-i18next';
 import {
   UncontrolledButtonDropdown, Button,
@@ -81,7 +81,7 @@ export const SavePageControls = (props: Props): JSX.Element | null => {
     return null;
   }
 
-  const grant = grantData?.grant || 1;
+  const grant = grantData?.grant || PageGrant.GRANT_PUBLIC;
   const grantedGroup = grantData?.grantedGroup;
 
   // const {  pageContainer } = props;

@@ -4,7 +4,7 @@ import React, {
 
 import EventEmitter from 'events';
 
-import { envUtils } from '@growi/core';
+import { envUtils, PageGrant } from '@growi/core';
 import detectIndent from 'detect-indent';
 import { throttle, debounce } from 'throttle-debounce';
 
@@ -348,7 +348,7 @@ const PageEditor = (props: Props): JSX.Element => {
       return;
     }
 
-    const grant = grantData?.grant || 1;
+    const grant = grantData?.grant || PageGrant.GRANT_PUBLIC;
     const grantedGroup = grantData?.grantedGroup;
 
     if (isSlackEnabled == null || currentPathname == null) {
