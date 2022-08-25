@@ -154,18 +154,20 @@ const PageDuplicateModal = (): JSX.Element => {
     return <></>;
   }
 
+
   const { path } = page;
   const isTargetPageDuplicate = existingPaths.includes(pageNameInput);
 
   const submitButtonEnabled = existingPaths.length === 0
-    || (isDuplicateRecursively && isDuplicateRecursivelyWithoutExistPath);
+  || (isDuplicateRecursively && isDuplicateRecursivelyWithoutExistPath);
 
-  return (
-    <Modal size="lg" isOpen={isOpened} toggle={closeDuplicateModal} data-testid="page-duplicate-modal" className="grw-duplicate-page" autoFocus={false}>
-      <ModalHeader tag="h4" toggle={closeDuplicateModal} className="bg-primary text-light">
-        { t('modal_duplicate.label.Duplicate page') }
-      </ModalHeader>
-      <ModalBody>
+  const bodyContent = () => {
+    if (!isOpened) {
+      return <></>;
+    }
+
+    return (
+      <>
         <div className="form-group"><label>{t('modal_duplicate.label.Current page name')}</label><br />
           <code>{path}</code>
         </div>
@@ -239,9 +241,17 @@ const PageDuplicateModal = (): JSX.Element => {
             ) }
           </div>
         </div>
+      </>
+    );
+  };
 
-      </ModalBody>
-      <ModalFooter>
+  const footerContent = () => {
+    if (!isOpened) {
+      return <></>;
+    }
+
+    return (
+      <>
         <ApiErrorMessageList errs={errs} targetPath={pageNameInput} />
         <button
           type="button"
@@ -251,6 +261,22 @@ const PageDuplicateModal = (): JSX.Element => {
         >
           { t('modal_duplicate.label.Duplicate page') }
         </button>
+      </>
+    );
+  };
+
+
+  return (
+    <Modal size="lg" isOpen={isOpened} toggle={closeDuplicateModal} data-testid="page-duplicate-modal" className="grw-duplicate-page" autoFocus={false}>
+      <ModalHeader tag="h4" toggle={closeDuplicateModal} className="bg-primary text-light">
+        { t('modal_duplicate.label.Duplicate page') }
+      </ModalHeader>
+      <ModalBody>
+        {bodyContent()}
+      </ModalBody>
+      <ModalFooter>
+        <ApiErrorMessageList errs={errs} targetPath={pageNameInput} />
+        {footerContent()}
       </ModalFooter>
     </Modal>
   );
