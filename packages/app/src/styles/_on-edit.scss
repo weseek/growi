@@ -291,8 +291,6 @@ body.on-edit {
   }
 }
 
-// TODO: Check no generated .wiki under .page-editor-preview-body.
-// see: https://github.com/weseek/growi/commit/a981c4659525adfa800235601e44302a270370ee#
 body.on-edit {
   .wrapper:not(.growi-layout-fluid) .page-editor-preview-body {
     .wiki {
