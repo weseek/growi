@@ -209,7 +209,7 @@ export const PageEditorByHackmd = (): JSX.Element => {
 
       logger.debug('success to save');
 
-      toastSuccess('Saved successfully');
+      toastSuccess(t('successfully_saved_the_page'));
     }
     catch (error) {
       logger.error('failed to save', error);
