@@ -147,7 +147,7 @@ const GrantSelector = (props: Props): JSX.Element => {
         </UncontrolledDropdown>
       </div>
     );
-  }, [changeGrantHandler, disabled, grantGroupName, props, t]);
+  }, [changeGrantHandler, currentGrant, disabled, grantGroupId, grantGroupName, t]);
 
   /**
    * Render select grantgroup modal.

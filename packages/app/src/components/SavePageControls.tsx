@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useCallback } from 'react';
 
 import { pagePathUtils } from '@growi/core';
 import { useTranslation } from 'next-i18next';
@@ -39,24 +39,11 @@ export const SavePageControls = (props: Props): JSX.Element | null => {
   const { mutate: mutateIsEnabledUnsavedWarning } = useIsEnabledUnsavedWarning();
 
 
-  if (isEditable == null || isAclEnabled == null) {
-    return null;
-  }
-
-  if (!isEditable) {
-    return null;
-  }
-
-  const grant = grantData?.grant || 1;
-  const grantedGroup = grantData?.grantedGroup;
-
-  // const {  pageContainer } = props;
-
-  const updateGrantHandler = (grantData: IPageGrantData): void => {
+  const updateGrantHandler = useCallback((grantData: IPageGrantData): void => {
     mutateGrant(grantData);
-  };
+  }, [mutateGrant]);
 
-  const save = async(): Promise<void> => {
+  const save = useCallback(async(): Promise<void> => {
     // disable unsaved warning
     mutateIsEnabledUnsavedWarning(false);
 
@@ -76,14 +63,28 @@ export const SavePageControls = (props: Props): JSX.Element | null => {
         // });
       }
     }
-  };
+  }, [mutateIsEnabledUnsavedWarning]);
 
-  const saveAndOverwriteScopesOfDescendants = () => {
+  const saveAndOverwriteScopesOfDescendants = useCallback(() => {
     // disable unsaved warning
     mutateIsEnabledUnsavedWarning(false);
     // save
     (window as CustomWindow).globalEmitter.emit('saveAndReload', { overwriteScopesOfDescendants: true });
-  };
+  }, [mutateIsEnabledUnsavedWarning]);
+
+
+  if (isEditable == null || isAclEnabled == null) {
+    return null;
+  }
+
+  if (!isEditable) {
+    return null;
+  }
+
+  const grant = grantData?.grant || 1;
+  const grantedGroup = grantData?.grantedGroup;
+
+  // const {  pageContainer } = props;
 
   const isRootPage = isTopPage(currentPagePath ?? '');
   const labelSubmitButton = pageId == null ? t('Create') : t('Update');
