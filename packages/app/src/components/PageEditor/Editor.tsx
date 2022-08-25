@@ -259,7 +259,7 @@ const Editor = React.forwardRef((props: EditorPropsType, ref): JSX.Element => {
     };
 
     return (
-      <Modal isOpen={isCheatsheetModalShown} toggle={hideCheatsheetModal} className={`modal-gfm-cheatsheet ${styles['modal-gfm-cheatsheet']}`} >
+      <Modal isOpen={isCheatsheetModalShown} toggle={hideCheatsheetModal} className={`${styles['modal-gfm-cheatsheet']}`} >
         <ModalHeader tag="h4" toggle={hideCheatsheetModal} className="bg-primary text-light">
           <i className="icon-fw icon-question" />Markdown help
         </ModalHeader>
