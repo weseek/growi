@@ -19,16 +19,17 @@ type Props = {
 }
 
 const ThemeHalloween = ({ children, colorScheme }: Props): JSX.Element => {
-  const element = (
+  const newChildren = (
     <>
-      {colorScheme && (
-        <div className={'grw-bg-image-wrapper'}>
+      {colorScheme != null && (
+        <div className='grw-bg-image-wrapper'>
           <Image className='grw-bg-image' alt='background image' src={getBackgroundImageSrc(colorScheme)} layout='fill' quality="100" />
         </div>
       )}
       {children}
     </>
   );
-  return <ThemeInjector className={`${styles.theme}`}>{element}</ThemeInjector>;
+  return <ThemeInjector className={styles.theme}>{newChildren}</ThemeInjector>;
 };
+
 export default ThemeHalloween;
