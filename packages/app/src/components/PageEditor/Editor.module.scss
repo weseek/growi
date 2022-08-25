@@ -19,19 +19,8 @@
   // loading keymap
   @include ms.overlay-processing-style(overlay-loading-keymap, 2.5em, 0.3em);
 
-
-  // TODO: Refactor Scss improt bellow. This classes from _editor-attachment.scss
   // for Dropzone
   .dropzone {
-    // TODO: Move to ~/styles/mixins.
-    // @mixin insertSimpleLineIcons($code) {
-    //   &:before {
-    //     margin-right: 0.2em;
-    //     font-family: 'simple-line-icons';
-    //     content: $code;
-    //   }
-    // }
-
     position: relative; // against .overlay position: absolute
 
     @include ms.overlay-processing-style(overlay-dropzone-active, 2.5em, 0.5em);
@@ -136,8 +125,7 @@
     }
   }
 
-
-  // TODO: Refactor Scss improt bellow. This classes from _editor-navbar.scss
+  // for Navbar editor
   .navbar-editor {
     height: 30px;
     padding: 0;
@@ -166,7 +154,6 @@
   }
 }
 
-// TODO: Refactor Scss improt bellow. This classes from _editor-overlay.scss
 .modal-gfm-cheatsheet :global {
   .modal-body {
     .hljs {
