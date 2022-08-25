@@ -30,6 +30,6 @@ const ThemeAntarctic = ({ children, colorScheme }: Props): JSX.Element => {
     </>
   );
   return <ThemeInjector className={styles.theme}>{newChildren}</ThemeInjector>;
-
 };
+
 export default ThemeAntarctic;
