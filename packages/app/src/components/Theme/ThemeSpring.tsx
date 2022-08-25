@@ -23,7 +23,7 @@ const ThemeSpring = ({ children, colorScheme }: Props): JSX.Element => {
     <>
       {colorScheme != null && (
         <div className='grw-bg-image-wrapper'>
-          <Image className='grw-bg-image' alt='background-image' src={getBackgroundImageSrc(colorScheme)} layout='fill' quality="100" />
+          <Image className='grw-bg-image' alt='background image' src={getBackgroundImageSrc(colorScheme)} layout='fill' quality="100" />
         </div>
       )}
       {children}
