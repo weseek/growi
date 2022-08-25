@@ -25,9 +25,11 @@ type Props = {
 const ThemeHufflepuff = ({ children, colorScheme }: Props): JSX.Element => {
   const newChildren = (
     <>
-      {colorScheme != null && <div className='grw-bg-image-wrapper'>
-        <Image className='grw-bg-image' alt='background-image' src={getBackgroundImageSrc(colorScheme)} layout='fill' quality="100" />
-      </div>}
+      {colorScheme != null && (
+        <div className='grw-bg-image-wrapper'>
+          <Image className='grw-bg-image' alt='background-image' src={getBackgroundImageSrc(colorScheme)} layout='fill' quality="100" />
+        </div>
+      )}
       {children}
     </>
   );
