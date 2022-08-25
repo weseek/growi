@@ -68,14 +68,9 @@ export const PageEditorByHackmd = (): JSX.Element => {
   const hackmdEditorRef = useRef<HackEditorRef>(null);
 
   const saveAndReloadHandler = useCallback(async(opts?: {overwriteScopesOfDescendants: boolean}) => {
-    console.log('処理がきた');
     if (editorMode !== EditorMode.HackMD) {
       return;
     }
-    console.log('処理がきた2');
-
-    // const grant = grant?.grant || 1;
-    // const grantedGroup = grantData?.grantedGroup;
 
     if (isSlackEnabled == null || currentPathname == null || slackChannels == null || grant == null || revision == null) {
       return;
@@ -97,7 +92,7 @@ export const PageEditorByHackmd = (): JSX.Element => {
     }
 
     await saveAndReload(optionsToSave, { pageId, path: currentPagePath || currentPathname, revisionId: revision?._id }, revision?.body);
-  }, []);
+  }, [currentPagePath, currentPathname, editorMode, grant, isSlackEnabled, pageId, pageTags, revision, slackChannels]);
 
   // set handler to save and reload Page
   useEffect(() => {
