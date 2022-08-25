@@ -49,7 +49,7 @@ module.exports = function(crowi, app) {
   const tag = require('./tag')(crowi, app);
   const search = require('./search')(crowi, app);
   // == TODO: Replace the code in hackmd.js getting the script path from manifest.json
-  // const hackmd = require('./hackmd')(crowi, app);
+  const hackmd = require('./hackmd')(crowi, app);
   const ogp = require('./ogp')(crowi);
 
   const next = nextFactory(crowi);
@@ -227,11 +227,11 @@ module.exports = function(crowi, app) {
   app.get('/trash/*/$'                , loginRequired, injectUserUISettings, page.deletedPageListShowWrapper);
 
   // == TODO: Replace the code in hackmd.js getting the script path from manifest.json
-  // app.get('/_hackmd/load-agent'          , hackmd.loadAgent);
-  // app.get('/_hackmd/load-styles'         , hackmd.loadStyles);
-  // app.post('/_api/hackmd.integrate'      , accessTokenParser , loginRequiredStrictly , hackmd.validateForApi, hackmd.integrate);
-  // app.post('/_api/hackmd.discard'        , accessTokenParser , loginRequiredStrictly , hackmd.validateForApi, hackmd.discard);
-  // app.post('/_api/hackmd.saveOnHackmd'   , accessTokenParser , loginRequiredStrictly , hackmd.validateForApi, hackmd.saveOnHackmd);
+  app.get('/_hackmd/load-agent'          , hackmd.loadAgent);
+  app.get('/_hackmd/load-styles'         , hackmd.loadStyles);
+  app.post('/_api/hackmd.integrate'      , accessTokenParser , loginRequiredStrictly , hackmd.validateForApi, hackmd.integrate);
+  app.post('/_api/hackmd.discard'        , accessTokenParser , loginRequiredStrictly , hackmd.validateForApi, hackmd.discard);
+  app.post('/_api/hackmd.saveOnHackmd'   , accessTokenParser , loginRequiredStrictly , hackmd.validateForApi, hackmd.saveOnHackmd);
 
   app.use('/forgot-password', express.Router()
     .use(forgotPassword.checkForgotPasswordEnabledMiddlewareFactory(crowi))

@@ -16,7 +16,7 @@ import { EditorMode, useEditorMode } from '~/stores/ui';
 import CountBadge from '../Common/CountBadge';
 import PageListIcon from '../Icons/PageListIcon';
 import { Page } from '../Page';
-// import PageEditorByHackmd from '../PageEditorByHackmd';
+import { PageEditorByHackmd } from '../PageEditorByHackmd';
 import TableOfContents from '../TableOfContents';
 import UserInfo from '../User/UserInfo';
 
@@ -131,7 +131,7 @@ const DisplaySwitcher = (): JSX.Element => {
         { isEditable && (
           <TabPane tabId={EditorMode.HackMD}>
             <div id="page-editor-with-hackmd">
-              {/* <PageEditorByHackmd /> */}
+              <PageEditorByHackmd />
             </div>
           </TabPane>
         ) }
