@@ -62,38 +62,33 @@ const Editor = React.forwardRef((props: EditorPropsType, ref): JSX.Element => {
   const cmEditorRef = useRef<CodeMirrorEditor>(null);
   const taEditorRef = useRef<TextAreaEditor>(null);
 
-  const editorSubstance = isMobile ? taEditorRef.current : cmEditorRef.current;
+  const editorSubstance = useCallback(() => {
+    return isMobile ? taEditorRef.current : cmEditorRef.current;
+  }, [isMobile]);
 
   const methods: Partial<IEditorMethods> = useMemo(() => {
     return {
       forceToFocus: () => {
-        if (editorSubstance == null) { return }
-        editorSubstance.forceToFocus();
+        editorSubstance()?.forceToFocus();
       },
       setValue: (newValue: string) => {
-        if (editorSubstance == null) { return }
-        editorSubstance.setValue(newValue);
+        editorSubstance()?.setValue(newValue);
       },
       setGfmMode: (bool: boolean) => {
-        if (editorSubstance == null) { return }
-        editorSubstance.setGfmMode(bool);
+        editorSubstance()?.setGfmMode(bool);
       },
       setCaretLine: (line: number) => {
-        if (editorSubstance == null) { return }
-        editorSubstance.setCaretLine(line);
+        editorSubstance()?.setCaretLine(line);
       },
       setScrollTopByLine: (line: number) => {
-        if (editorSubstance == null) { return }
-        editorSubstance.setScrollTopByLine(line);
+        editorSubstance()?.setScrollTopByLine(line);
       },
       insertText: (text: string) => {
-        if (editorSubstance == null) { return }
-        editorSubstance.insertText(text);
+        editorSubstance()?.insertText(text);
       },
       getNavbarItems: (): JSX.Element[] => {
-        if (editorSubstance == null) { return [] }
         // concat common items and items specific to CodeMirrorEditor or TextAreaEditor
-        const navbarItems = editorSubstance.getNavbarItems() ?? [];
+        const navbarItems = editorSubstance()?.getNavbarItems() ?? [];
         return navbarItems;
       },
     };
