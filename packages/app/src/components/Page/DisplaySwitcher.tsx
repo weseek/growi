@@ -141,7 +141,8 @@ const DisplaySwitcher = (): JSX.Element => {
       { isEditable && <HashChanged></HashChanged> }
     </>
   );
-});
+};
+
 DisplaySwitcher.displayName = 'DisplaySwitcher';
 
 export default DisplaySwitcher;
