@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react';
+import React from 'react';
 
 import { isClient, objectIdUtils } from '@growi/core';
 import {
@@ -28,6 +28,7 @@ import AdminSamlSecurityContainer from '~/client/services/AdminSamlSecurityConta
 import AdminSlackIntegrationLegacyContainer from '~/client/services/AdminSlackIntegrationLegacyContainer';
 import AdminTwitterSecurityContainer from '~/client/services/AdminTwitterSecurityContainer';
 import AdminUsersContainer from '~/client/services/AdminUsersContainer';
+import ManageGlobalNotification from '~/components/Admin/Notification/ManageGlobalNotification';
 import { SupportedActionType } from '~/interfaces/activity';
 import { CrowiRequest } from '~/interfaces/crowi-request';
 import PluginUtils from '~/server/plugins/plugin-utils';
@@ -140,8 +141,14 @@ const AdminMarkdownSettingsPage: NextPage<Props> = (props: Props) => {
       component: <NotificationSetting />,
     },
     'global-notification': {
-      title: '',
-      component: <>global-notification</>,
+      new: {
+        title: useCustomTitle(props, t('Add_new')),
+        component: <ManageGlobalNotification />,
+      },
+      setting: {
+        title: useCustomTitle(props, t('settings')),
+        component: <ManageGlobalNotification />,
+      },
     },
     'slack-integration': {
       title: useCustomTitle(props, t('slack_integration')),

@@ -4,8 +4,8 @@ import { useTranslation } from 'next-i18next';
 import PropTypes from 'prop-types';
 import urljoin from 'url-join';
 
-import AppContainer from '~/client/services/AppContainer';
-import { toastError } from '~/client/util/apiNotification';
+// import AppContainer from '~/client/services/AppContainer';
+// import { toastError } from '~/client/util/apiNotification';
 import { apiv3Post, apiv3Put } from '~/client/util/apiv3-client';
 import loggerFactory from '~/utils/logger';
 
@@ -18,7 +18,7 @@ import TriggerEventCheckBox from './TriggerEventCheckBox';
 
 const logger = loggerFactory('growi:manageGlobalNotification');
 
-class ManageGlobalNotification extends React.Component {
+export default class ManageGlobalNotification extends React.Component {
 
   constructor() {
     super();
@@ -26,9 +26,11 @@ class ManageGlobalNotification extends React.Component {
     let globalNotification;
     try {
       globalNotification = JSON.parse(document.getElementById('admin-global-notification-setting').getAttribute('data-global-notification'));
+      console.log('Did it work?\n');
     }
     catch (err) {
-      toastError(err);
+      // toastError(err);
+      console.log('It did not work\n');
       logger.error(err);
     }
 
@@ -93,15 +95,15 @@ class ManageGlobalNotification extends React.Component {
       window.location.href = urljoin(window.location.origin, '/admin/notification#global-notification');
     }
     catch (err) {
-      toastError(err);
+      // toastError(err);
       logger.error(err);
     }
   }
 
 
   render() {
-    const { t, appContainer } = this.props;
-    const { isMailerSetup } = appContainer.config;
+    const { t } = this.props;
+    // const { isMailerSetup } = appContainer.config;
 
     return (
       <React.Fragment>
@@ -188,7 +190,7 @@ class ManageGlobalNotification extends React.Component {
 
                   <p className="p-2">
                     {/* eslint-disable-next-line react/no-danger */}
-                    {!isMailerSetup && <span className="form-text text-muted" dangerouslySetInnerHTML={{ __html: t('admin:mailer_setup_required') }} />}
+                    {/* {!isMailerSetup && <span className="form-text text-muted" dangerouslySetInnerHTML={{ __html: t('admin:mailer_setup_required') }} />} */}
                     <b>Hint: </b>
                     <a href="https://ifttt.com/create" target="blank">{t('notification_setting.email.ifttt_link')}
                       <i className="icon-share-alt" />
@@ -314,7 +316,7 @@ class ManageGlobalNotification extends React.Component {
 
 ManageGlobalNotification.propTypes = {
   t: PropTypes.func.isRequired, // i18next
-  appContainer: PropTypes.instanceOf(AppContainer).isRequired,
+  // appContainer: PropTypes.instanceOf(AppContainer).isRequired,
 
 };
 
@@ -324,7 +326,7 @@ const ManageGlobalNotificationWrapperFC = (props) => {
   return <ManageGlobalNotification t={t} {...props} />;
 };
 
-const ManageGlobalNotificationWrapper = withUnstatedContainers(ManageGlobalNotificationWrapperFC, [AppContainer]);
+// const ManageGlobalNotificationWrapper = withUnstatedContainers(ManageGlobalNotificationWrapperFC, [AppContainer]);
 
 
-export default ManageGlobalNotificationWrapper;
+// export default ManageGlobalNotificationWrapper;
