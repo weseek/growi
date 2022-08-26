@@ -24011,6 +24011,11 @@ use@^3.1.0:
   dependencies:
     kind-of "^6.0.2"
 
+usehooks-ts@^2.6.0:
+  version "2.6.0"
+  resolved "https://registry.yarnpkg.com/usehooks-ts/-/usehooks-ts-2.6.0.tgz#aebab367da2350a0bee1c3749bc6dd4bcce3eaae"
+  integrity sha512-Kj/4oc2nOxRDGTDb2v1ZulF7+tpeXFuqI6cUesM0Vic7TPPDlFORxKh4ivsYg+NTvX/YbM+lhqqkfFTiIt23eg==
+
 useragent@^2.2.1:
   version "2.3.0"
   resolved "https://registry.yarnpkg.com/useragent/-/useragent-2.3.0.tgz#217f943ad540cb2128658ab23fc960f6a88c9972"
