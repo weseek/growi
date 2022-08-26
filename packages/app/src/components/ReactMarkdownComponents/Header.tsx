@@ -1,3 +1,5 @@
+import EventEmitter from 'events';
+
 import { Element } from 'react-markdown/lib/rehype-filter';
 
 import { NextLink } from './NextLink';
@@ -5,6 +7,14 @@ import { NextLink } from './NextLink';
 
 import styles from './Header.module.scss';
 
+
+declare const globalEmitter: EventEmitter;
+
+function setCaretLine(line?: number): void {
+  if (line != null) {
+    globalEmitter.emit('setCaretLine', line);
+  }
+}
 
 type EditLinkProps = {
   line?: number,
@@ -18,7 +28,7 @@ const EditLink = (props: EditLinkProps): JSX.Element => {
 
   return (
     <span className="revision-head-edit-button">
-      <a href="#edit" aria-disabled={isDisabled} onClick={() => console.log(`TODO: Jump to the line '${props.line}'`)}>
+      <a href="#edit" aria-disabled={isDisabled} onClick={() => setCaretLine(props.line)}>
         <i className="icon-note"></i>
       </a>
     </span>
@@ -41,7 +51,7 @@ export const Header = (props: HeaderProps): JSX.Element => {
   const CustomTag = `h${level}` as keyof JSX.IntrinsicElements;
 
   return (
-    <CustomTag id={id} className={`revision-head ${styles['revision-head']} ${styles.hoge}`}>
+    <CustomTag id={id} className={`revision-head ${styles['revision-head']}`}>
       {children}
       <NextLink href={`#${id}`} className="revision-head-link">
         <span className="icon-link"></span>

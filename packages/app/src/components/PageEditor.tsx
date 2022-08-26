@@ -4,7 +4,7 @@ import React, {
 
 import EventEmitter from 'events';
 
-import { envUtils } from '@growi/core';
+import { envUtils, PageGrant } from '@growi/core';
 import detectIndent from 'detect-indent';
 import { throttle, debounce } from 'throttle-debounce';
 
@@ -80,7 +80,7 @@ let lastScrolledDateWithCursor: Date | null = null;
 let isOriginOfScrollSyncEditor = false;
 let isOriginOfScrollSyncPreview = false;
 
-const PageEditor = (props: Props): JSX.Element => {
+const PageEditor = React.memo((props: Props): JSX.Element => {
   // const {
   //   pageContainer, editorContainer,
   // } = props;
@@ -222,7 +222,7 @@ const PageEditor = (props: Props): JSX.Element => {
       editorRef.current.terminateUploadingState();
     }
   // }, [editorMode, mutateGrant, pageContainer]);
-  }, [editorMode, mutateGrant]);
+  }, [currentPagePath, mutateGrant, pageId]);
 
 
   const scrollPreviewByEditorLine = useCallback((line: number) => {
@@ -348,7 +348,7 @@ const PageEditor = (props: Props): JSX.Element => {
       return;
     }
 
-    const grant = grantData?.grant || 1;
+    const grant = grantData?.grant || PageGrant.GRANT_PUBLIC;
     const grantedGroup = grantData?.grantedGroup;
 
     if (isSlackEnabled == null || currentPathname == null) {
@@ -477,7 +477,8 @@ const PageEditor = (props: Props): JSX.Element => {
       /> */}
     </div>
   );
-};
+});
+PageEditor.displayName = 'PageEditor';
 
 /**
    * Wrapper component for using unstated

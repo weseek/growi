@@ -240,7 +240,7 @@ export const useIsAllReplyShown = (initialData?: boolean): SWRResponse<boolean, 
 };
 
 export const useIsBlinkedHeaderAtBoot = (initialData?: boolean): SWRResponse<boolean, Error> => {
-  return useStaticSWR('isBlinkedAtBoot', initialData);
+  return useStaticSWR('isBlinkedAtBoot', initialData, { fallbackData: false });
 };
 
 export const useEditingMarkdown = (initialData?: string): SWRResponse<string, Error> => {

@@ -4,7 +4,7 @@ import React, { useEffect } from 'react';
 import EventEmitter from 'events';
 
 import {
-  IDataWithMeta, IPageInfoForEntity, IPagePopulatedToShowRevision, isClient, isIPageInfoForEntity, isServer, IUser, IUserHasId, pagePathUtils, pathUtils,
+  IDataWithMeta, IPageInfoForEntity, IPagePopulatedToShowRevision, isClient, isIPageInfoForEntity, IUser, IUserHasId, pagePathUtils, pathUtils,
 } from '@growi/core';
 import ExtensibleCustomError from 'extensible-custom-error';
 import { model as mongooseModel } from 'mongoose';
@@ -61,7 +61,7 @@ import {
   useHackmdUri,
   useIsAclEnabled, useIsUserPage, useIsNotCreatable,
   useCsrfToken, useIsSearchScopeChildrenAsDefault, useCurrentPageId, useCurrentPathname,
-  useIsSlackConfigured, useIsBlinkedHeaderAtBoot, useRendererConfig, useEditingMarkdown,
+  useIsSlackConfigured, useRendererConfig, useEditingMarkdown,
   useEditorConfig, useIsAllReplyShown, useIsUploadableFile, useIsUploadableImage,
 } from '../stores/context';
 
@@ -205,7 +205,6 @@ const GrowiPage: NextPage<Props> = (props: Props) => {
   useIsIdenticalPath(false); // TODO: need to initialize from props
   // useIsAbleToDeleteCompletely(props.isAbleToDeleteCompletely);
   useIsEnabledStaleNotification(props.isEnabledStaleNotification);
-  useIsBlinkedHeaderAtBoot(false);
 
   useIsSearchServiceConfigured(props.isSearchServiceConfigured);
   useIsSearchServiceReachable(props.isSearchServiceReachable);
@@ -337,7 +336,7 @@ const GrowiPage: NextPage<Props> = (props: Props) => {
           <Comments pageId={pageId} />
           {/* )} */}
           {/* TODO: Create UsersHomePageFooter conponent */}
-          { isUsersHomePage(pageWithMeta?.data.path) && (
+          { isUsersHomePage(props.currentPathname) && (
             <div className="container-lg user-page-footer py-5">
               <div className="grw-user-page-list-m d-edit-none">
                 <h2 id="bookmarks-list" className="grw-user-page-header border-bottom pb-2 mb-3">
