@@ -5,7 +5,7 @@ import { UserPicture, PageListMeta, PagePathLabel } from '@growi/ui';
 
 type PageListItemSProps = {
   page: any, // TODO: update page type
-  noLink: boolean,
+  noLink?: boolean,
 }
 
 export const PageListItemS = (props: PageListItemSProps): JSX.Element => {
