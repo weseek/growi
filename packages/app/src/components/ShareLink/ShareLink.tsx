@@ -17,9 +17,9 @@ const ShareLink = (): JSX.Element => {
   const { t } = useTranslation();
   const [isOpenShareLinkForm, setIsOpenShareLinkForm] = useState<boolean>(false);
 
-  const { data: pageId } = useCurrentPageId();
+  const { data: currentPageId } = useCurrentPageId();
 
-  const { data, mutate } = useSWRxSharelink();
+  const { data, mutate } = useSWRxSharelink(currentPageId);
 
   const toggleShareLinkFormHandler = useCallback(() => {
     setIsOpenShareLinkForm(prev => !prev);
@@ -28,7 +28,7 @@ const ShareLink = (): JSX.Element => {
 
   const deleteAllLinksButtonHandler = useCallback(async() => {
     try {
-      const res = await apiv3Delete('/share-links/', { relatedPage: pageId });
+      const res = await apiv3Delete('/share-links/', { relatedPage: currentPageId });
       const count = res.data.n;
       toastSuccess(t('toaster.remove_share_link', { count }));
       mutate();
@@ -36,7 +36,7 @@ const ShareLink = (): JSX.Element => {
     catch (err) {
       toastError(err);
     }
-  }, [mutate, pageId, t]);
+  }, [mutate, currentPageId, t]);
 
   const deleteLinkById = useCallback(async(shareLinkId) => {
     try {
