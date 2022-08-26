@@ -212,7 +212,9 @@ const GrowiContextualSubNavigation = (props) => {
     try {
       const res: IResTagsUpdateApiv1 = await apiPost('/tags.update', { pageId, revisionId, tags: newTags });
       const updatedRevisionId = getIdForRef(res.savedPage.revision);
+      const lastUpdateUsername = res.savedPage?.lastUpdateUser?.username;
       await pageContainer.setState({ revisionId: updatedRevisionId });
+      await pageContainer.setState({ lastUpdateUsername });
 
       // revalidate SWRTagsInfo
       mutateSWRTagsInfo();
