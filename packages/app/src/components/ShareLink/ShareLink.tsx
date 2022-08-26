@@ -58,7 +58,7 @@ const ShareLink = (): JSX.Element => {
       </h3>
       <div>
         <ShareLinkList
-          shareLinks={!data ? [] : data}
+          shareLinks={data == null ? [] : data}
           onClickDeleteButton={deleteLinkById}
         />
         <button
