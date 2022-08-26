@@ -4,7 +4,7 @@ import { UserPicture, PageListMeta, PagePathLabel } from '@growi/ui';
 
 
 type PageListItemSProps = {
-  page: any, // TODO: update page type
+  page: any,
   noLink?: boolean,
 }
 
