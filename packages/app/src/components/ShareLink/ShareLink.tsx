@@ -1,7 +1,6 @@
 import React, {
   useState, useCallback,
 } from 'react';
-import useSWR from 'swr';
 
 import { useTranslation } from 'react-i18next';
 
