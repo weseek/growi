@@ -13950,10 +13950,10 @@ markdown-it-blockdiag@^1.1.1:
     url-join "^4.0.0"
     utf8-bytes "0.0.1"
 
-markdown-it-drawio-viewer@^1.3.1:
-  version "1.3.1"
-  resolved "https://registry.yarnpkg.com/markdown-it-drawio-viewer/-/markdown-it-drawio-viewer-1.3.1.tgz#96ec4d02c159cb1ccb07760ea3ce7bfb07ac8730"
-  integrity sha512-jNjKM6ULboy1VCYePZkNzqRUZDGrhlvo7giIGSnSX2X4DAWSTZ4bGtH0gBUGsRVRjj2BjsRm0mah8RMi8I1qGQ==
+markdown-it-drawio-viewer@^1.4.0:
+  version "1.4.0"
+  resolved "https://registry.yarnpkg.com/markdown-it-drawio-viewer/-/markdown-it-drawio-viewer-1.4.0.tgz#4a4b590775a75f85e8c83b9042018b57657a172f"
+  integrity sha512-2xorLkpvwl+ncqlvF2CWEFRqfmYjq/SNy2Avc0tW8am+1BpoaIHfyM+sHH6XoLEJ3ZgkAsNnkIjmxssqNsbWBg==
   dependencies:
     "@kaishuu0123/markdown-it-fence" "^1.0.1"
     xmldoc "^1.1.2"
