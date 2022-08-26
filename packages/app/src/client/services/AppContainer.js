@@ -104,25 +104,30 @@ export default class AppContainer extends Container {
     return this.containerInstances[className];
   }
 
+
+  /*
+  * Note: Use globalEmitter instaead of registerComponentInstance and getComponentInstance
+  */
+
   /**
    * Register React component instance
    * @param {string} id
    * @param {object} instance React component instance
    */
-  registerComponentInstance(id, instance) {
-    if (instance == null) {
-      throw new Error('The specified instance must not be null');
-    }
+  // registerComponentInstance(id, instance) {
+  //   if (instance == null) {
+  //     throw new Error('The specified instance must not be null');
+  //   }
 
-    this.componentInstances[id] = instance;
-  }
+  //   this.componentInstances[id] = instance;
+  // }
 
   /**
    * Get registered React component instance
    * @param {string} id
    */
-  getComponentInstance(id) {
-    return this.componentInstances[id];
-  }
+  // getComponentInstance(id) {
+  //   return this.componentInstances[id];
+  // }
 
 }
