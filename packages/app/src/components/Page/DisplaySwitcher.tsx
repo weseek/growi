@@ -29,14 +29,14 @@ const WIKI_HEADER_LINK = 120;
 const { isTopPage } = pagePathUtils;
 
 
-const DisplaySwitcher = (): JSX.Element => {
-  const { t } = useTranslation();
+const PageEditor = dynamic(() => import('../PageEditor'), { ssr: false });
+const EditorNavbarBottom = dynamic(() => import('../PageEditor/EditorNavbarBottom'), { ssr: false });
+const HashChanged = dynamic(() => import('../EventListeneres/HashChanged'), { ssr: false });
+const ContentLinkButtons = dynamic(() => import('../ContentLinkButtons'), { ssr: false });
+const NotFoundPage = dynamic(() => import('../NotFoundPage'), { ssr: false });
 
-  const PageEditor = dynamic(() => import('../PageEditor'), { ssr: false });
-  const EditorNavbarBottom = dynamic(() => import('../PageEditor/EditorNavbarBottom'), { ssr: false });
-  const HashChanged = dynamic(() => import('../EventListeneres/HashChanged'), { ssr: false });
-  const ContentLinkButtons = dynamic(() => import('../ContentLinkButtons'), { ssr: false });
-  const NotFoundPage = dynamic(() => import('../NotFoundPage'), { ssr: false });
+const DisplaySwitcher = React.memo((): JSX.Element => {
+  const { t } = useTranslation();
 
   // get element for smoothScroll
   // const getCommentListDom = useMemo(() => { return document.getElementById('page-comments-list') }, []);
@@ -141,6 +141,7 @@ const DisplaySwitcher = (): JSX.Element => {
       { isEditable && <HashChanged></HashChanged> }
     </>
   );
-};
+});
+DisplaySwitcher.displayName = 'DisplaySwitcher';
 
 export default DisplaySwitcher;

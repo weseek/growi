@@ -5,6 +5,12 @@ import loggerFactory from '~/utils/logger';
 const logger = loggerFactory('growi:services:EditorContainer');
 
 
+/*
+* TODO: Omit Unstated: EditorContainer
+* => https://redmine.weseek.co.jp/issues/103246
+*/
+
+
 /**
  * Service container related to options for Editor/Preview
  * @extends {Container} unstated Container
