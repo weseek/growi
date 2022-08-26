@@ -10,10 +10,5 @@ const fetchShareLinks = async(endpoint, pageId) => {
 };
 
 export const useSWRxSharelink = (currentPageId: Nullable<string>): SWRResponse<IResShareLinkList['shareLinksResult'], Error> => {
-  return useSWR(['/share-links/', currentPageId], ((endpoint) => {
-    if (currentPageId == null) {
-      return [];
-    }
-    return fetchShareLinks(endpoint, currentPageId);
-  }));
+  return useSWR(currentPageId == null ? null : ['/share-links/', currentPageId], (endpoint => fetchShareLinks(endpoint, currentPageId)));
 };

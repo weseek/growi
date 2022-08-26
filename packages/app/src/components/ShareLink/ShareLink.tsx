@@ -18,7 +18,7 @@ const ShareLink = (): JSX.Element => {
 
   const { data: currentPageId } = useCurrentPageId();
 
-  const { data, mutate } = useSWRxSharelink(currentPageId);
+  const { data: currentShareLinks, mutate } = useSWRxSharelink(currentPageId);
 
   const toggleShareLinkFormHandler = useCallback(() => {
     setIsOpenShareLinkForm(prev => !prev);
@@ -57,7 +57,7 @@ const ShareLink = (): JSX.Element => {
       </h3>
       <div>
         <ShareLinkList
-          shareLinks={data == null ? [] : data}
+          shareLinks={currentShareLinks == null ? [] : currentShareLinks}
           onClickDeleteButton={deleteLinkById}
         />
         <button
