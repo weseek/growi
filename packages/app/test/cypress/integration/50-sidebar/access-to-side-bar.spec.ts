@@ -38,6 +38,9 @@ context('Access to sidebar', () => {
     cy.get('#edit-tag-modal').should('be.visible');
 
     cy.get('#edit-tag-modal').within(() => {
+      cy.get('button.rbt-token-remove-button').each(($btn) => {
+        cy.wrap($btn).click({force: true})
+      });
       cy.get('.rbt-input-main').type('test');
       cy.get('#tag-typeahead-asynctypeahead').should('be.visible');
       cy.get('#tag-typeahead-asynctypeahead-item-0').should('be.visible');
@@ -59,13 +62,20 @@ context('Access to sidebar', () => {
       }
     });
     cy.getByTestid('grw-contextual-navigation-sub').screenshot(`${ssPrefix}custom-sidebar-1-click-on-custom-sidebar`);
-    cy.get('.grw-sidebar-content-header.h5').should('be.visible').find('a').click();
-
-    cy.get('.CodeMirror textarea').type(content, {force: true});
-    cy.screenshot(`${ssPrefix}custom-sidebar-2-custom-sidebar-editor`);
-    cy.get('.dropup > .btn-submit').click();
-    cy.get('body').should('not.have.class', 'on-edit');
-    cy.screenshot(`${ssPrefix}custom-sidebar-3-custom-sidebar-created`);
+    // Check if custom sidebar exists or not
+    cy.get('body').then($body => {
+      if($body.find('.grw-sidebar-content-header.h5').length){
+        cy.get('.grw-sidebar-content-header.h5').find('a').click();
+        cy.get('.CodeMirror textarea').type(content, {force: true});
+        cy.screenshot(`${ssPrefix}custom-sidebar-2-custom-sidebar-editor`);
+        cy.get('.dropup > .btn-submit').click();
+        cy.get('body').should('not.have.class', 'on-edit');
+        cy.screenshot(`${ssPrefix}custom-sidebar-3-custom-sidebar-created`);
+      }else{
+        cy.visit('/Sidebar');
+        cy.screenshot(`${ssPrefix}custom-sidebar-3-custom-sidebar-created`);
+      }
+    });
   });
 
   it('Successfully performed page operation from "page tree"', () => {
