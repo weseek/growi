@@ -47,12 +47,19 @@ export const RawLayout = ({ children, title, className }: Props): JSX.Element =>
     setBackgroundImageSrc(imgSrc);
   }, [growiTheme, colorScheme]);
 
+  const scriptToRewriteDataColorScheme = isClient() ? `
+    wrapper = document.getElementById('wrapper');
+    wrapper.setAttribute('data-color-scheme', '${resolvedThemeByAttributes}');
+  ` : '';
+
   return (
     <>
       <Head>
         <title>{title}</title>
         <meta charSet="utf-8" />
         <meta name="viewport" content="initial-scale=1.0, width=device-width" />
+        {/* set data-color-scheme immediately after load */}
+        <script>{scriptToRewriteDataColorScheme}</script>
       </Head>
       <ThemeProvider theme={growiTheme}>
         <div id="wrapper" className={classNames.join(' ')} data-color-scheme={colorScheme}>
