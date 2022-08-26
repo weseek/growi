@@ -20,9 +20,9 @@ export type ColorScheme = ResolvedThemes;
 
 const ATTRIBUTE = 'data-theme';
 
-// export const NextThemesProvider: React.FC<ThemeProviderProps> = (props) => {
-//   return <ThemeProvider {...props} attribute={ATTRIBUTE} />;
-// };
+export const NextThemesProvider: React.FC<ThemeProviderProps> = (props) => {
+  return <ThemeProvider {...props} attribute={ATTRIBUTE} />;
+};
 
 type UseThemeExtendedProps = Omit<UseThemeProps, 'theme'|'resolvedTheme'> & {
   theme: Themes,
