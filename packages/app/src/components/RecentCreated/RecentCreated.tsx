@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useCallback } from 'react';
 
 import { toastError } from '~/client/util/apiNotification';
 import { apiv3Get } from '~/client/util/apiv3-client';
@@ -15,20 +15,21 @@ type RecentCreatedProps = {
 
 export const RecentCreated = (props: RecentCreatedProps): JSX.Element => {
   const { userId } = props;
-
   const [pages, setPages] = useState<any>([]);
   const [activePage, setActivePage] = useState(1);
   const [totalPages, setTotalPages] = useState(0);
   const [pagingLimit, setPagingLimit] = useState(10);
 
-  const getMyRecentCreatedList = useCallback(async() => {
-    const page = activePage;
+
+  const getMyRecentCreatedList = useCallback(async(selectedPage) => {
+    const page = selectedPage;
 
     try {
       const res = await apiv3Get(`/users/${userId}/recent`, { page });
       const { totalCount, pages, limit } = res.data;
 
       setPages(pages);
+      setActivePage(selectedPage);
       setTotalPages(totalCount);
       setPagingLimit(limit);
     }
@@ -36,10 +37,10 @@ export const RecentCreated = (props: RecentCreatedProps): JSX.Element => {
       logger.error('failed to fetch data', error);
       toastError(error, 'Error occurred in bookmark page list');
     }
-  }, [activePage, userId]);
+  }, [userId]);
 
-  useEffect(() => {
-    getMyRecentCreatedList();
+  const handlePage = useCallback(async(selectedPage) => {
+    await getMyRecentCreatedList(selectedPage);
   }, [getMyRecentCreatedList]);
 
   return (
@@ -48,14 +49,14 @@ export const RecentCreated = (props: RecentCreatedProps): JSX.Element => {
 
         {pages.map(page => (
           <li key={`recent-created:list-view:${page._id}`} className="mt-4">
-            <PageListItemS page={page.page} />
+            <PageListItemS page={page} />
           </li>
         ))}
 
       </ul>
       <PaginationWrapper
         activePage={activePage}
-        changePage={setActivePage}
+        changePage={handlePage}
         totalItemsCount={totalPages}
         pagingLimit={pagingLimit}
         align="center"
