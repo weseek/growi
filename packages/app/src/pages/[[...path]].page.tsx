@@ -21,6 +21,7 @@ import { Comments } from '~/components/Comments';
 import { PageAlerts } from '~/components/PageAlert/PageAlerts';
 // import { useTranslation } from '~/i18n';
 import { PageContentFooter } from '~/components/PageContentFooter';
+import { BookmarkList } from '~/components/PageList/BookmarkList';
 import { CrowiRequest } from '~/interfaces/crowi-request';
 // import { renderScriptTagByName, renderHighlightJsStyleTag } from '~/service/cdn-resources-loader';
 // import { useIndentSize } from '~/stores/editor';
@@ -40,7 +41,6 @@ import {
   usePreferDrawerModeByUser, usePreferDrawerModeOnEditByUser, useSidebarCollapsed, useCurrentSidebarContents, useCurrentProductNavWidth, useSelectedGrant,
 } from '~/stores/ui';
 import loggerFactory from '~/utils/logger';
-
 
 // import { isUserPage, isTrashPage, isSharedPage } from '~/utils/path-utils';
 
@@ -337,7 +337,7 @@ const GrowiPage: NextPage<Props> = (props: Props) => {
           <Comments pageId={pageId} />
           {/* )} */}
           {/* TODO: Create UsersHomePageFooter conponent */}
-          { isUsersHomePage(props.currentPathname) && (
+          { !isUsersHomePage(props.currentPathname) && (
             <div className="container-lg user-page-footer py-5">
               <div className="grw-user-page-list-m d-edit-none">
                 <h2 id="bookmarks-list" className="grw-user-page-header border-bottom pb-2 mb-3">
@@ -347,7 +347,8 @@ const GrowiPage: NextPage<Props> = (props: Props) => {
                 <div id="user-bookmark-list" className="page-list">
                   {/* TODO: No need page-list-container class ? */}
                   <div className="page-list-container">
-                    {/* <BookmarkList userId={pageContainer.state.creator._id} /> */}
+                    {/* TODO: <BookmarkList userId={pageContainer.state.creator._id} /> */}
+                    <BookmarkList userId={pageWithMeta?.data.creator._id} />
                   </div>
                 </div>
               </div>

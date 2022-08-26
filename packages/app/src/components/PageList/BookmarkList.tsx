@@ -8,7 +8,7 @@ import loggerFactory from '~/utils/logger';
 
 import PaginationWrapper from '../PaginationWrapper';
 
-import PageListItemS from './PageListItemS';
+import { PageListItemS } from './PageListItemS';
 
 
 const logger = loggerFactory('growi:BookmarkList');

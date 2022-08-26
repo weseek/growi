@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 
 import { apiv3Get } from '~/client/util/apiv3-client';
 
-import PageListItemS from '../PageList/PageListItemS';
+import { PageListItemS } from '../PageList/PageListItemS';
 import PaginationWrapper from '../PaginationWrapper';
 
 class RecentCreated extends React.Component {
