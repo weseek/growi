@@ -25,35 +25,18 @@ context('Access to sidebar', () => {
         cy.getByTestid('grw-navigation-resize-button').click({force: true});
       }
     });
+
+    cy.getByTestid('grw-recent-changes').should('be.visible');
+
     cy.getByTestid('grw-contextual-navigation-sub').screenshot(`${ssPrefix}recent-changes-1-page-list`);
 
     cy.get('#grw-sidebar-contents-wrapper').within(() => {
       cy.get('#recentChangesResize').click({force: true});
       cy.screenshot(`${ssPrefix}recent-changes-2-switch-sidebar-size`);
     });
-
-    cy.visit('/Sandbox');
-    // Add tag
-    cy.get('#edit-tags-btn-wrapper-for-tooltip > a').click({force: true});
-    cy.get('#edit-tag-modal').should('be.visible');
-
-    cy.get('#edit-tag-modal').within(() => {
-      cy.get('button.rbt-token-remove-button').each(($btn) => {
-        cy.wrap($btn).click({force: true})
-      });
-      cy.get('.rbt-input-main').type('test');
-      cy.get('#tag-typeahead-asynctypeahead').should('be.visible');
-      cy.get('#tag-typeahead-asynctypeahead-item-0').should('be.visible');
-      cy.get('a#tag-typeahead-asynctypeahead-item-0').click({force: true})
-    });
-
-    cy.get('#edit-tag-modal').within(() => {
-      cy.get('div.modal-footer > button').click();
-    });
   });
 
   it('Successfully create a custom sidebar page', () => {
-    const content = '# HELLO \n ## Hello\n ### Hello';
     cy.visit('/');
     cy.getByTestid('grw-sidebar-nav-primary-custom-sidebar').click();
     cy.getByTestid('grw-contextual-navigation-sub').then(($el) => {
@@ -61,21 +44,17 @@ context('Access to sidebar', () => {
         cy.getByTestid('grw-navigation-resize-button').click({force: true});
       }
     });
+
     cy.getByTestid('grw-contextual-navigation-sub').screenshot(`${ssPrefix}custom-sidebar-1-click-on-custom-sidebar`);
-    // Check if custom sidebar exists or not
-    cy.get('body').then($body => {
-      if($body.find('.grw-sidebar-content-header.h5').length){
-        cy.get('.grw-sidebar-content-header.h5').find('a').click();
-        cy.get('.CodeMirror textarea').type(content, {force: true});
-        cy.screenshot(`${ssPrefix}custom-sidebar-2-custom-sidebar-editor`);
-        cy.get('.dropup > .btn-submit').click();
-        cy.get('body').should('not.have.class', 'on-edit');
-        cy.screenshot(`${ssPrefix}custom-sidebar-3-custom-sidebar-created`);
-      }else{
-        cy.visit('/Sidebar');
-        cy.screenshot(`${ssPrefix}custom-sidebar-3-custom-sidebar-created`);
-      }
-    });
+
+    // create /Sidebar contents
+    const content = '# HELLO \n ## Hello\n ### Hello';
+    cy.get('.grw-sidebar-content-header.h5').find('a').click();
+    cy.get('.CodeMirror textarea').type(content, {force: true});
+    cy.screenshot(`${ssPrefix}custom-sidebar-2-custom-sidebar-editor`);
+    cy.get('.dropup > .btn-submit').click();
+    cy.get('body').should('not.have.class', 'on-edit');
+    cy.getByTestid('grw-contextual-navigation-sub').screenshot(`${ssPrefix}custom-sidebar-3-custom-sidebar-created`);
   });
 
   it('Successfully performed page operation from "page tree"', () => {
@@ -155,12 +134,10 @@ context('Access to sidebar', () => {
 
     cy.get('.grw-container-convertible > div > .btn-primary').click({force: true});
 
-    cy.screenshot(`${ssPrefix}tags-2-check-all-tags`);
-    cy.getByTestid('grw-tags-list').within(() => {
-      cy.get('ul').find('a').contains('test').click();
-    });
+    // collapse sidebar
+    cy.collapseSidebar(true);
 
-    cy.screenshot(`${ssPrefix}tags-3-page-list-with-tag`);
+    cy.screenshot(`${ssPrefix}tags-2-check-all-tags`);
   });
 
   it('Successfully access to My Drafts page', () => {
