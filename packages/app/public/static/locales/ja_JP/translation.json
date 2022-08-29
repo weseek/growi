@@ -538,6 +538,7 @@
     "create_failed": "{{target}}の作成に失敗しました",
     "update_successed": "{{target}}を更新しました",
     "update_failed": "{{target}}の更新に失敗しました",
+    "file_upload_succeeded": "ファイルをアップロードしました",
     "file_upload_failed": "ファイルのアップロードに失敗しました",
     "initialize_successed": "{{target}}を初期化しました",
     "give_user_admin": "{{username}}を管理者に設定しました",
