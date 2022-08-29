@@ -14,6 +14,7 @@ import {
 } from '~/interfaces/page';
 import { OnDuplicatedFunction, OnRenamedFunction, OnDeletedFunction } from '~/interfaces/ui';
 import { IUser } from '~/interfaces/user';
+import { IResTagsUpdateApiv1 } from '~/interfaces/tag';
 import {
   useCurrentPageId,
   useCurrentPathname,
