@@ -8,7 +8,7 @@ $subthemecolor: rgb(88, 130, 250);
 $lightthemecolor: rgba(181, 203, 247, 0.61);
 
 // Light Mode
-.theme :global {
+:root .theme-kibela {
   // Background colors
   $bgcolor-navbar: white;
   $bgcolor-navbar-active: $bgcolor-theme;

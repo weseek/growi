@@ -180,6 +180,7 @@
     "universal-bunyan": "^0.9.2",
     "unzipper": "^0.10.5",
     "url-join": "^4.0.0",
+    "usehooks-ts": "^2.6.0",
     "validator": "^13.7.0",
     "ws": "^8.3.0",
     "xss": "^1.0.6"

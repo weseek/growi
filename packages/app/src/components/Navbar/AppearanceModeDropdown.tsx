@@ -55,7 +55,7 @@ export const AppearanceModeDropdown:FC<AppearanceModeDropdownProps> = (props: Ap
   }, [resolvedTheme, setTheme]);
 
   const userPreferenceSwitchModifiedHandler = useCallback((isDarkMode: boolean) => {
-    setTheme(isDarkMode ? 'dark' : 'light');
+    setTheme(isDarkMode ? Themes.dark : Themes.light);
   }, [setTheme]);
 
   /* eslint-disable react/prop-types */
