@@ -25,7 +25,7 @@ import geu from './GridEditorUtil';
 import HandsontableModal from './HandsontableModal';
 import LinkEditModal from './LinkEditModal';
 import mdu from './MarkdownDrawioUtil';
-import mlu from './MarkdownLinkUtil';
+import markdownLinkUtil from './MarkdownLinkUtil';
 import markdownListUtil from './MarkdownListUtil';
 import MarkdownTableInterceptor from './MarkdownTableInterceptor';
 import mtu from './MarkdownTableUtil';
@@ -549,7 +549,7 @@ class CodeMirrorEditor extends AbstractEditor {
     const hasLinkClass = additionalClassSet.has(MARKDOWN_LINK_ACTIVATED_CLASS);
 
     const isInTable = mtu.isInTable(editor);
-    const isInLink = mlu.isInLink(editor);
+    const isInLink = markdownLinkUtil.isInLink(editor);
 
     if (!hasCustomClass && isInTable) {
       additionalClassSet.add(MARKDOWN_TABLE_ACTIVATED_CLASS);
@@ -795,7 +795,7 @@ class CodeMirrorEditor extends AbstractEditor {
   }
 
   showLinkEditHandler() {
-    this.linkEditModal.current.show(mlu.getMarkdownLink(this.getCodeMirror()));
+    this.linkEditModal.current.show(markdownLinkUtil.getMarkdownLink(this.getCodeMirror()));
   }
 
   showHandsonTableHandler() {
@@ -1059,7 +1059,7 @@ class CodeMirrorEditor extends AbstractEditor {
         />
         <LinkEditModal
           ref={this.linkEditModal}
-          onSave={(linkText) => { return mlu.replaceFocusedMarkdownLinkWithEditor(this.getCodeMirror(), linkText) }}
+          onSave={(linkText) => { return markdownLinkUtil.replaceFocusedMarkdownLinkWithEditor(this.getCodeMirror(), linkText) }}
         />
         <HandsontableModal
           ref={this.handsontableModal}
