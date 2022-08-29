@@ -4,7 +4,7 @@ import { Themes } from '~/stores/use-next-themes';
 
 import { ThemeInjector } from './utils/ThemeInjector';
 
-import styles from './ThemeHufflepuff.module.scss';
+// import styles from './ThemeHufflepuff.module.scss';
 
 export const getBackgroundImageSrc = (colorScheme: Themes): string => {
   switch (colorScheme) {
@@ -30,7 +30,7 @@ const ThemeHufflepuff = ({ children, colorScheme }: Props): JSX.Element => {
       )}
     </>
   );
-  return <ThemeInjector className={styles.theme} bgImageNode={bgImageNode}>{children}</ThemeInjector>;
+  return <ThemeInjector className="theme-hufflepuff" bgImageNode={bgImageNode}>{children}</ThemeInjector>;
 };
 
 export default ThemeHufflepuff;

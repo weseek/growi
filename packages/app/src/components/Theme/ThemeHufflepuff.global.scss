@@ -1,5 +1,5 @@
-@use '../../styles/variables' as *;
-@use '../../styles/bootstrap/variables' as *;
+// @use '../../styles/variables' as *;
+// @use '../../styles/bootstrap/variables' as *;
 @use '../../styles/theme/mixins/page-editor-mode-manager';
 
 // == Define Bootstrap theme colors
@@ -20,7 +20,7 @@
 
 //== Light Mode
 //
-.theme[data-color-scheme='light'] :global {
+:root[data-theme='light'] .theme-hufflepuff {
   // Theme colors
   $themecolor: #eaab20;
   $themelight: #efe2cf;
@@ -156,7 +156,7 @@
   }
 }
 
-.theme[data-color-scheme='dark'] :global {
+:root[data-theme='dark'] .theme-hufflepuff {
   // Theme colors
   $themecolor: #eaab20;
   $themedark: #3d3f38;

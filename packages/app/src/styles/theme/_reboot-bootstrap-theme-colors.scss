@@ -1,4 +1,4 @@
-@use '../bootstrap/init' as *;
+// @use '../bootstrap/init' as *;
 @use '../mixins';
 
 @each $color, $value in $theme-colors {
