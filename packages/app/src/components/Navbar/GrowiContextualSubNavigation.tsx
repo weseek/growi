@@ -2,6 +2,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 
 
 import { isPopulated } from '@growi/core';
+import { IResTagsUpdateApiv1 } from '~/interfaces/tag';
 import { useTranslation } from 'next-i18next';
 import dynamic from 'next/dynamic';
 import { DropdownItem } from 'reactstrap';
@@ -14,6 +15,7 @@ import {
 } from '~/interfaces/page';
 import { OnDuplicatedFunction, OnRenamedFunction, OnDeletedFunction } from '~/interfaces/ui';
 import { IUser } from '~/interfaces/user';
+import { IResTagsUpdateApiv1 } from '~/interfaces/tag';
 import {
   useCurrentPageId,
   useCurrentPathname,

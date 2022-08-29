@@ -36,7 +36,7 @@ const AdminLayout = ({
         <GrowiNavbar />
 
         <header className="py-0 position-relative">
-          <h1 className="title">{title}</h1>
+          <h1 className="title px-3">{title}</h1>
         </header>
         <div id="main" className="main">
           <div className="container-fluid">

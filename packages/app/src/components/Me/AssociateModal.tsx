@@ -45,7 +45,7 @@ const AssociateModal = (props: Props): JSX.Element => {
       mutatePersonalExternalAccounts();
 
       closeModalHandler();
-      toastSuccess(t('security_setting.updated_general_security_setting'));
+      toastSuccess(t('security_settings.updated_general_security_setting'));
     }
     catch (err) {
       toastError(err);

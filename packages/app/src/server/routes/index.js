@@ -220,7 +220,7 @@ module.exports = function(crowi, app) {
 
   app.get('/_search'                            , loginRequired, next.delegateToNext);
 
-  app.get('/trash$'                   , loginRequired, injectUserUISettings, page.trashPageShowWrapper);
+  app.get('/trash$'                   , loginRequired, injectUserUISettings, next.delegateToNext);
   app.get('/trash/$'                  , loginRequired, (req, res) => res.redirect('/trash'));
   app.get('/trash/*/$'                , loginRequired, injectUserUISettings, page.deletedPageListShowWrapper);
 

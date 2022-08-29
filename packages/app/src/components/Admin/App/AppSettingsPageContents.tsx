@@ -25,7 +25,7 @@ type Props = {
 }
 
 const AppSettingsPageContents = (props: Props) => {
-  const { t } = useTranslation();
+  const { t } = useTranslation('admin');
   const { adminAppContainer } = props;
   const { isV5Compatible } = adminAppContainer.state;
 
@@ -78,7 +78,7 @@ const AppSettingsPageContents = (props: Props) => {
 
       <div className="row">
         <div className="col-lg-12">
-          <h2 className="admin-setting-header">{t('App Settings')}</h2>
+          <h2 className="admin-setting-header">{t('app_settings')}</h2>
           <AppSetting />
         </div>
       </div>
@@ -92,7 +92,7 @@ const AppSettingsPageContents = (props: Props) => {
 
       <div className="row mt-5">
         <div className="col-lg-12">
-          <h2 className="admin-setting-header" id="mail-settings">{t('admin:app_setting.mail_settings')}</h2>
+          <h2 className="admin-setting-header" id="mail-settings">{t('app_setting.mail_settings')}</h2>
           <MailSetting />
         </div>
       </div>

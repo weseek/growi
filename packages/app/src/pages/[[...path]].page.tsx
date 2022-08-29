@@ -72,6 +72,11 @@ import {
 // import { useCurrentPageSWR } from '../stores/page';
 
 
+const NotCreatablePage = dynamic(() => import('../components/NotCreatablePage').then(mod => mod.NotCreatablePage), { ssr: false });
+const ForbiddenPage = dynamic(() => import('../components/ForbiddenPage'), { ssr: false });
+const UnsavedAlertDialog = dynamic(() => import('./UnsavedAlertDialog'), { ssr: false });
+const GrowiSubNavigationSwitcher = dynamic(() => import('../components/Navbar/GrowiSubNavigationSwitcher'), { ssr: false });
+
 const logger = loggerFactory('growi:pages:all');
 
 const {
@@ -170,11 +175,6 @@ type Props = CommonProps & {
 const GrowiPage: NextPage<Props> = (props: Props) => {
   // const { t } = useTranslation();
   const router = useRouter();
-
-  const NotCreatablePage = dynamic(() => import('../components/NotCreatablePage').then(mod => mod.NotCreatablePage), { ssr: false });
-  const ForbiddenPage = dynamic(() => import('../components/ForbiddenPage'), { ssr: false });
-  const UnsavedAlertDialog = dynamic(() => import('./UnsavedAlertDialog'), { ssr: false });
-  const GrowiSubNavigationSwitcher = dynamic(() => import('../components/Navbar/GrowiSubNavigationSwitcher'), { ssr: false });
 
   const { data: currentUser } = useCurrentUser(props.currentUser ?? null);
 
