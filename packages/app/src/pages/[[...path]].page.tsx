@@ -1,6 +1,5 @@
 import React, { useEffect } from 'react';
 
-
 import EventEmitter from 'events';
 
 import {
@@ -18,6 +17,7 @@ import { useRouter } from 'next/router';
 import superjson from 'superjson';
 
 import { Comments } from '~/components/Comments';
+import { RecentlyCreatedIcon } from '~/components/Icons/RecentlyCreatedIcon';
 import { PageAlerts } from '~/components/PageAlert/PageAlerts';
 // import { useTranslation } from '~/i18n';
 import { PageContentFooter } from '~/components/PageContentFooter';
@@ -353,7 +353,7 @@ const GrowiPage: NextPage<Props> = (props: Props) => {
               <div className="grw-user-page-list-m mt-5 d-edit-none">
                 <h2 id="recently-created-list" className="grw-user-page-header border-bottom pb-2 mb-3">
                   <i id="recent-created-icon" className="mr-1">
-                    {/* <RecentlyCreatedIcon /> */}
+                    <RecentlyCreatedIcon />
                   </i>
                   Recently Created
                 </h2>

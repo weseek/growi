@@ -2,6 +2,7 @@ import React, { useState, useCallback } from 'react';
 
 import { toastError } from '~/client/util/apiNotification';
 import { apiv3Get } from '~/client/util/apiv3-client';
+import { IPageHasId } from '~/interfaces/page';
 import loggerFactory from '~/utils/logger';
 
 import PageListItemS from '../PageList/PageListItemS';
@@ -14,12 +15,13 @@ type RecentCreatedProps = {
 }
 
 export const RecentCreated = (props: RecentCreatedProps): JSX.Element => {
+
   const { userId } = props;
-  const [pages, setPages] = useState<any>([]);
+
+  const [pages, setPages] = useState<IPageHasId[]>([]);
   const [activePage, setActivePage] = useState(1);
   const [totalPages, setTotalPages] = useState(0);
   const [pagingLimit, setPagingLimit] = useState(10);
-
 
   const getMyRecentCreatedList = useCallback(async(selectedPage) => {
     const page = selectedPage;
@@ -35,7 +37,7 @@ export const RecentCreated = (props: RecentCreatedProps): JSX.Element => {
     }
     catch (error) {
       logger.error('failed to fetch data', error);
-      toastError(error, 'Error occurred in bookmark page list');
+      toastError(error, 'Error occurred in recent created page list');
     }
   }, [userId]);
 
