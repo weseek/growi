@@ -38,7 +38,7 @@ import {
 } from '~/stores/context';
 
 import {
-  CommonProps, getServerSideCommonProps, useCustomTitle, getNextI18NextConfig,
+  CommonProps, getServerSideCommonProps, getNextI18NextConfig,
 } from '../utils/commons';
 
 
@@ -302,8 +302,10 @@ async function injectServerConfigurations(context: GetServerSidePropsContext, pr
  * @param namespacesRequired
  */
 async function injectNextI18NextConfigurations(context: GetServerSidePropsContext, props: Props, namespacesRequired?: string[] | undefined): Promise<void> {
+  console.log('eee', context)
   const nextI18NextConfig = await getNextI18NextConfig(serverSideTranslations, context, namespacesRequired);
   props._nextI18Next = nextI18NextConfig._nextI18Next;
+  console.log('props._nextI18Next', props._nextI18Next)
 }
 
 export const getServerSideProps: GetServerSideProps = async(context: GetServerSidePropsContext) => {
@@ -324,7 +326,7 @@ export const getServerSideProps: GetServerSideProps = async(context: GetServerSi
   }
 
   injectServerConfigurations(context, props);
-  injectNextI18NextConfigurations(context, props, ['admin']);
+  await injectNextI18NextConfigurations(context, props, ['admin']);
 
   return {
     props,
