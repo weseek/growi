@@ -1,5 +1,5 @@
-@use '../../styles/variables' as *;
-@use '../../styles/bootstrap/variables' as *;
+// @use '../../styles/variables' as *;
+// @use '../../styles/bootstrap/variables' as *;
 @use '../../styles/theme/mixins/page-editor-mode-manager';
 
 // == Define Bootstrap theme colors
@@ -33,18 +33,6 @@
   }
 }
 
-.theme :global {
-  .grw-bg-image-wrapper {
-    position: fixed;
-    width: 100%;
-    height: 100%;
-  }
-
-  .grw-bg-image {
-    object-fit: cover;
-  }
-}
-
 $themecolor: #000080;
 $themelight: #f0f8ff;
 $accentcolor: #ffd700;
@@ -55,7 +43,7 @@ $accentcolor: #ffd700;
 
 //== Light Mode
 //
-.theme :global {
+:root .theme-antarctic {
   $primary: $themecolor;
 
   // Background colors

@@ -1,12 +1,12 @@
-@use '../../styles/variables' as *;
-@use '../../styles/bootstrap/variables' as *;
+// @use '../../styles/variables' as *;
+// @use '../../styles/bootstrap/variables' as *;
 @use '../../styles/theme/mixins/page-editor-mode-manager';
 
 $primary: #00b5b7;
 $themecolor: #16282d;
 $accentcolor: #00fff5;
 
-.theme :global {
+:root .theme-future {
   // Background colors
   $bgcolor-global: $themecolor;
   $bgcolor-inline-code: #1f1f22; //optional

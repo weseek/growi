@@ -26,7 +26,7 @@ const ThemeHufflepuff = ({ children, colorScheme }: Props): JSX.Element => {
   const bgImageNode = (
     <>
       {colorScheme != null && (
-        <Image className='grw-bg-image' alt='background image' src={getBackgroundImageSrc(colorScheme)} layout='fill' quality="100" />
+        <Image alt='background image' src={getBackgroundImageSrc(colorScheme)} layout='fill' quality="100" />
       )}
     </>
   );

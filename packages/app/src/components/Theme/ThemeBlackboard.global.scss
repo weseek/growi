@@ -1,8 +1,8 @@
-@use '../../styles/variables' as *;
-@use '../../styles/bootstrap/variables' as *;
+// @use '../../styles/variables' as *;
+// @use '../../styles/bootstrap/variables' as *;
 @use '../../styles/theme/mixins/page-editor-mode-manager';
 
-.theme :global {
+:root .theme-blackboard {
   // Theme colors
   $themecolor: #da8506;
   $themelight: #223729;

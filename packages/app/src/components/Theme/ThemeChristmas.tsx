@@ -4,7 +4,7 @@ import { Themes } from '~/stores/use-next-themes';
 
 import { ThemeInjector } from './utils/ThemeInjector';
 
-import styles from './ThemeChristmas.module.scss';
+// import styles from './ThemeChristmas.module.scss';
 
 export const getBackgroundImageSrc = (colorScheme: Themes): string => {
   switch (colorScheme) {
@@ -19,17 +19,14 @@ type Props = {
 }
 
 const ThemeChristmas = ({ children, colorScheme }: Props): JSX.Element => {
-  const newChildren = (
+  const bgImageNode = (
     <>
       {colorScheme != null && (
-        <div className='grw-bg-image-wrapper'>
-          <Image className='grw-bg-image' alt='background image' src={getBackgroundImageSrc(colorScheme)} layout='fill' quality="100" />
-        </div>
+        <Image alt='background image' src={getBackgroundImageSrc(colorScheme)} layout='fill' quality="100" />
       )}
-      {children}
     </>
   );
-  return <ThemeInjector className={styles.theme}>{newChildren}</ThemeInjector>;
+  return <ThemeInjector className="theme-christmas" bgImageNode={bgImageNode}>{children}</ThemeInjector>;
 };
 
 export default ThemeChristmas;

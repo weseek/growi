@@ -4,7 +4,7 @@ import { Themes } from '~/stores/use-next-themes';
 
 import { ThemeInjector } from './utils/ThemeInjector';
 
-import styles from './ThemeWood.module.scss';
+// import styles from './ThemeWood.module.scss';
 
 export const getBackgroundImageSrc = (colorScheme: Themes): string => {
   switch (colorScheme) {
@@ -19,17 +19,14 @@ type Props = {
 }
 
 const ThemeWood = ({ children, colorScheme }: Props): JSX.Element => {
-  const newChildren = (
+  const bgImageNode = (
     <>
       {colorScheme != null && (
-        <div className='grw-bg-image-wrapper'>
-          <Image className='grw-bg-image' alt='background image' src={getBackgroundImageSrc(colorScheme)} layout='fill' quality="100" />
-        </div>
+        <Image alt='background image' src={getBackgroundImageSrc(colorScheme)} layout='fill' quality="100" />
       )}
-      {children}
     </>
   );
-  return <ThemeInjector className={styles.theme}>{newChildren}</ThemeInjector>;
+  return <ThemeInjector className="theme-wood" bgImageNode={bgImageNode}>{children}</ThemeInjector>;
 };
 
 export default ThemeWood;
