@@ -1,4 +1,11 @@
 {
+  "wiki_management_home_page": "Wiki Management Home Page",
+  "app_settings": "App Settings",
+  "security_settings": "Security Settings",
+  "markdown_settings": "Markdown Settings",
+  "notification_settings": "Notification Settings",
+  "Customize": "Customize",
+  "full_text_search_management": "Full Text Search Management",
   "mailer_setup_required":"<a href='/admin/app'>Email settings</a> are required to send.",
   "admin_top": {
     "management_wiki": "Management Wiki",
@@ -305,12 +312,14 @@
     "delete": "Delete"
   },
   "external_notification": {
+    "external_notification": "External Notification",
     "enabled": "Enabled",
     "disabled": "Disabled",
     "header_status": "Slack Integration Status",
     "caution_enabled": "CAUTION: Currently, notifications that are configured in this page will send only to the Slack Workspace set as primary."
   },
   "slack_integration": {
+    "slack_integration": "Slack Integration",
     "selecting_bot_types": {
       "slack_bot": "Slack bot",
       "detailed_explanation": "Detailed explanation",
@@ -422,10 +431,12 @@
     }
   },
   "slack_integration_legacy": {
+    "slack_integration_legacy": "Legacy Slack Integration",
     "alert_Pd": "This 'Legacy Slack Integration' is currently disabled because <a href='/admin/slack-integration'>the new settings</a> is enabled.",
     "alert_deplicated": "This 'Legacy Slack Integration' is outdated and will be discontinued in the future. Use <a href='/admin/slack-integration'>the new settings</a> instead. "
   },
   "user_management": {
+    "user_management": "User Management",
     "invite_users": "Temporarily issue a new user",
     "click_twice_same_checkbox": "You should check at least one checkbox.",
     "invite_modal": {
@@ -483,6 +494,7 @@
     "current_users": "Current users:"
   },
   "user_group_management": {
+    "user_group_management": "User Group Management",
     "create_group": "Create new group",
     "add_child_group": "Add child group",
     "remove_child_group": "Remove",
@@ -529,6 +541,8 @@
     }
   },
   "audit_log_management": {
+    "audit_log": "Audit Log",
+    "audit_log_settings": "Audit Log Settings",
     "user": "User",
     "username": "Username",
     "date": "Date",

@@ -54,7 +54,7 @@ const SlackIntegrationListItem = ({ isEnabled, currentBotType }) => {
     <li data-testid="slack-integration-list-item" className="list-group-item">
       <h4>
         <Badge isEnabled={isEnabled} />
-        <a href="/admin/slack-integration" className="ml-2">{t('slack_integration')}</a>
+        <a href="/admin/slack-integration" className="ml-2">{t('slack_integration.slack_integration')}</a>
       </h4>
       { isCautionVisible && (
         <ul className="mt-2 pl-4">
@@ -155,7 +155,7 @@ function NotificationSetting(props) {
       </ul>
 
 
-      <h2 className="admin-setting-header mt-5">{t('Notification Settings')}</h2>
+      <h2 className="admin-setting-header mt-5">{t('notification_settings')}</h2>
 
       <CustomNavTab activeTab={activeTab} navTabMapping={navTabMapping} onNavSelected={switchActiveTab} hideBorderBottom />
 

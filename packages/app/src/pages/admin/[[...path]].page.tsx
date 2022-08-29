@@ -103,7 +103,7 @@ const AdminMarkdownSettingsPage: NextPage<Props> = (props: Props) => {
   // TODO: refactoring adminPagesMap => https://redmine.weseek.co.jp/issues/102694
   const adminPagesMap = {
     home: {
-      title:  t('Wiki Management Home Page'),
+      title:  t('wiki_management_home_page'),
       component: <AdminHome
         nodeVersion={props.nodeVersion}
         npmVersion={props.npmVersion}
@@ -112,7 +112,7 @@ const AdminMarkdownSettingsPage: NextPage<Props> = (props: Props) => {
       />,
     },
     app: {
-      title: t('App Settings'),
+      title: t('app_settings'),
       component: <AppSettingsPageContents />,
     },
     security: {
@@ -120,7 +120,7 @@ const AdminMarkdownSettingsPage: NextPage<Props> = (props: Props) => {
       component: <SecurityManagementContents />,
     },
     markdown: {
-      title: t('Markdown Settings'),
+      title: t('markdown_settings'),
       component: <MarkDownSettingContents />,
     },
     customize: {
@@ -136,7 +136,7 @@ const AdminMarkdownSettingsPage: NextPage<Props> = (props: Props) => {
       component: <ExportArchiveDataPage />,
     },
     notification: {
-      title: t('Notification Settings'),
+      title: t('external_notification.external_notification'),
       component: <NotificationSetting />,
     },
     'global-notification': {
@@ -144,15 +144,15 @@ const AdminMarkdownSettingsPage: NextPage<Props> = (props: Props) => {
       component: <>global-notification</>,
     },
     'slack-integration': {
-      title: t('slack_integration'),
+      title: t('slack_integration.slack_integration'),
       component: <SlackIntegration />,
     },
     'slack-integration-legacy': {
-      title: t('Legacy_Slack_Integration'),
+      title: t('slack_integration_legacy.slack_integration_legacy'),
       component: <LegacySlackIntegration />,
     },
     users: {
-      title: t('User_Management'),
+      title: t('user_management.user_management'),
       component: <UserManagement />,
       'external-accounts': {
         title: t('external_account_management'),
@@ -160,21 +160,21 @@ const AdminMarkdownSettingsPage: NextPage<Props> = (props: Props) => {
       },
     },
     'user-groups': {
-      title:  t('UserGroup Management'),
+      title:  t('user_group_management.user_group_management'),
       component: <UserGroupPage />,
     },
     'user-group-detail': {
       [userGroupId]: {
-        title: t('UserGroup Management'),
+        title: t('user_group_management.user_group_management'),
         component: <UserGroupDetailPage userGroupId={userGroupId} />,
       },
     },
     search: {
-      title: t('Full Text Search Management'),
+      title: t('full_text_search_management'),
       component: <ElasticsearchManagement />,
     },
     'audit-log': {
-      title: t('AuditLog'),
+      title: t('audit_log_management.audit_log'),
       component: <AuditLogManagement />,
     },
   };

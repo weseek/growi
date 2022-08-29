@@ -26,7 +26,7 @@ class GlobalNotification extends React.Component {
 
     try {
       await adminNotificationContainer.updateGlobalNotificationForPages();
-      toastSuccess(t('toaster.update_successed', { target: t('External_Notification') }));
+      toastSuccess(t('toaster.update_successed', { target: t('external_notification.external_notification') }));
     }
     catch (err) {
       toastError(err);
