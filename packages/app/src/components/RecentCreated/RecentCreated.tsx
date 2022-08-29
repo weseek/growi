@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useEffect } from 'react';
 
 import { toastError } from '~/client/util/apiNotification';
 import { apiv3Get } from '~/client/util/apiv3-client';
@@ -40,6 +40,10 @@ export const RecentCreated = (props: RecentCreatedProps): JSX.Element => {
       toastError(error, 'Error occurred in recent created page list');
     }
   }, [userId]);
+
+  useEffect(() => {
+    getMyRecentCreatedList(1);
+  }, [getMyRecentCreatedList]);
 
   const handlePage = useCallback(async(selectedPage) => {
     await getMyRecentCreatedList(selectedPage);
