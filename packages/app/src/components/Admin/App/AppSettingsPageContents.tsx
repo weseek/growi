@@ -92,7 +92,7 @@ const AppSettingsPageContents = (props: Props) => {
 
       <div className="row mt-5">
         <div className="col-lg-12">
-          <h2 className="admin-setting-header" id="mail-settings">{t('admin:app_setting.mail_settings')}</h2>
+          <h2 className="admin-setting-header" id="mail-settings">{t('app_setting.mail_settings')}</h2>
           <MailSetting />
         </div>
       </div>

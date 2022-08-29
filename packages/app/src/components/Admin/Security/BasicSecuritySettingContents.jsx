@@ -24,7 +24,7 @@ class BasicSecurityManagementContents extends React.Component {
     try {
       await adminBasicSecurityContainer.updateBasicSetting();
       await adminGeneralSecurityContainer.retrieveSetupStratedies();
-      toastSuccess(t('admin:security_settings.Basic.updated_basic'));
+      toastSuccess(t('security_settings.Basic.updated_basic'));
     }
     catch (err) {
       toastError(err);
@@ -39,7 +39,7 @@ class BasicSecurityManagementContents extends React.Component {
       <React.Fragment>
 
         <h2 className="alert-anchor border-bottom">
-          { t('admin:security_settings.Basic.name') }
+          { t('security_settings.Basic.name') }
         </h2>
 
         {adminBasicSecurityContainer.state.retrieveError != null && (
@@ -59,17 +59,17 @@ class BasicSecurityManagementContents extends React.Component {
                 onChange={() => { adminGeneralSecurityContainer.switchIsBasicEnabled() }}
               />
               <label className="custom-control-label" htmlFor="isBasicEnabled">
-                { t('admin:security_settings.Basic.enable_basic') }
+                { t('security_settings.Basic.enable_basic') }
               </label>
             </div>
             <p className="form-text text-muted">
               <small>
                 <span dangerouslySetInnerHTML={{ __html: t('security_settings.Basic.desc_1') }} /><br />
-                { t('admin:security_settings.Basic.desc_2')}
+                { t('security_settings.Basic.desc_2')}
               </small>
             </p>
             {(!adminGeneralSecurityContainer.state.setupStrategies.includes('basic') && isBasicEnabled)
-            && <div className="badge badge-warning">{t('admin:security_settings.setup_is_not_yet_complete')}</div>}
+            && <div className="badge badge-warning">{t('security_settings.setup_is_not_yet_complete')}</div>}
           </div>
         </div>
 
@@ -126,7 +126,7 @@ BasicSecurityManagementContents.propTypes = {
 };
 
 const BasicSecurityManagementContentsWrapperFC = (props) => {
-  const { t } = useTranslation();
+  const { t } = useTranslation('admin');
 
   return <BasicSecurityManagementContents t={t} {...props} />;
 };

@@ -28,11 +28,11 @@ let retrieveErrors = null;
 
 // eslint-disable-next-line react/prop-types
 const Badge = ({ isEnabled }) => {
-  const { t } = useTranslation();
+  const { t } = useTranslation('admin');
 
   return isEnabled
-    ? <span className="badge badge-success">{t('admin:external_notification.enabled')}</span>
-    : <span className="badge badge-secondary">{t('admin:external_notification.disabled')}</span>;
+    ? <span className="badge badge-success">{t('external_notification.enabled')}</span>
+    : <span className="badge badge-secondary">{t('external_notification.disabled')}</span>;
 };
 
 const SkeltonListItem = () => (
@@ -54,12 +54,12 @@ const SlackIntegrationListItem = ({ isEnabled, currentBotType }) => {
     <li data-testid="slack-integration-list-item" className="list-group-item">
       <h4>
         <Badge isEnabled={isEnabled} />
-        <a href="/admin/slack-integration" className="ml-2">{t('admin:slack_integration.slack_integration')}</a>
+        <a href="/admin/slack-integration" className="ml-2">{t('slack_integration.slack_integration')}</a>
       </h4>
       { isCautionVisible && (
         <ul className="mt-2 pl-4">
           {/* eslint-disable-next-line react/no-danger */}
-          <li dangerouslySetInnerHTML={{ __html: t('admin:external_notification.caution_enabled') }} />
+          <li dangerouslySetInnerHTML={{ __html: t('external_notification.caution_enabled') }} />
         </ul>
       ) }
     </li>
@@ -80,7 +80,7 @@ const LegacySlackIntegrationListItem = ({ isEnabled }) => {
         <ul className="mt-2 pl-4">
           <li>
             {/* eslint-disable-next-line react/no-danger */}
-            <span className="text-danger" dangerouslySetInnerHTML={{ __html: t('admin:slack_integration_legacy.alert_deplicated') }}></span>
+            <span className="text-danger" dangerouslySetInnerHTML={{ __html: t('slack_integration_legacy.alert_deplicated') }}></span>
           </li>
         </ul>
       ) }
@@ -142,7 +142,7 @@ function NotificationSetting(props) {
 
   return (
     <div data-testid="admin-notification">
-      <h2 className="admin-setting-header">{t('admin:external_notification.header_status')}</h2>
+      <h2 className="admin-setting-header">{t('external_notification.header_status')}</h2>
       <ul className="list-group">
         { !isMounted && <SkeltonListItem />}
         { isMounted && (
@@ -155,7 +155,7 @@ function NotificationSetting(props) {
       </ul>
 
 
-      <h2 className="admin-setting-header mt-5">{t('admin:notification_settings.notification_settings')}</h2>
+      <h2 className="admin-setting-header mt-5">{t('notification_settings.notification_settings')}</h2>
 
       <CustomNavTab activeTab={activeTab} navTabMapping={navTabMapping} onNavSelected={switchActiveTab} hideBorderBottom />
 

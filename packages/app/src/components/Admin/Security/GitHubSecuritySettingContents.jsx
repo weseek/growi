@@ -28,7 +28,7 @@ class GitHubSecurityManagementContents extends React.Component {
     try {
       await adminGitHubSecurityContainer.updateGitHubSetting();
       await adminGeneralSecurityContainer.retrieveSetupStratedies();
-      toastSuccess(t('admin:security_settings.OAuth.GitHub.updated_github'));
+      toastSuccess(t('security_settings.OAuth.GitHub.updated_github'));
     }
     catch (err) {
       toastError(err);
