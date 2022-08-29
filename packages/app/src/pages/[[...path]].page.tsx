@@ -336,7 +336,7 @@ const GrowiPage: NextPage<Props> = (props: Props) => {
           {/* { !props.isIdenticalPathPage && ( */}
           <Comments pageId={pageId} />
           {/* )} */}
-          { isUsersHomePage(props.currentPathname) && (<UsersHomePageFooter creatorId={}/>) }
+          { isUsersHomePage(props.currentPathname) && (<UsersHomePageFooter creatorId={pageWithMeta?.data.creator._id}/>) }
           <PageContentFooter />
         </footer>
 

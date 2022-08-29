@@ -1,8 +1,8 @@
 import React from 'react';
 
 import { RecentlyCreatedIcon } from '~/components/Icons/RecentlyCreatedIcon';
-import { BookmarkList } from '~/components/PageList/BookmarkList';
-import { RecentCreated } from '~/components/RecentCreated/RecentCreated';
+// import { BookmarkList } from '~/components/PageList/BookmarkList';
+// import { RecentCreated } from '~/components/RecentCreated/RecentCreated';
 import styles from '~/components/UsersHomePageFooter.module.scss';
 
 type UsersHomePageFooterProps = {
@@ -11,7 +11,7 @@ type UsersHomePageFooterProps = {
 
 export const UsersHomePageFooter = (props: UsersHomePageFooterProps) => {
 
-  const { creatorId } = props;
+  // const { creatorId } = props;
 
   // TODO: Check CSS module
   return (
