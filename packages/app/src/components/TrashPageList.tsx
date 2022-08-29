@@ -32,3 +32,5 @@ export const TrashPageList: FC = () => {
     </div>
   );
 };
+
+TrashPageList.displayName = 'TrashPageList';
