@@ -6,7 +6,7 @@ import { DndProvider } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
 
 import '~/styles/style-next.scss';
-// import '~/styles/theme/default.scss';
+import '~/styles/style-themes.scss';
 // import InterceptorManager from '~/service/interceptor-manager';
 
 import * as nextI18nConfig from '^/config/next-i18next.config';
