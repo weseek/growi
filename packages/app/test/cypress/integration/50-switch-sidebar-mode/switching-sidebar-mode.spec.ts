@@ -23,12 +23,11 @@ context('Switch sidebar mode', () => {
     cy.visit('/');
     cy.get('.grw-apperance-mode-dropdown').click();
 
-    cy.get('[for="swSidebarMode"]').click({force: true});
+    cy.get('[for="swSidebarModeOnEditor"]').click();
     cy.screenshot(`${ssPrefix}-switch-sidebar-mode`, { capture: 'viewport' });
 
-    cy.get('[for="swSidebarMode"]').click({force: true});
+    cy.get('[for="swSidebarModeOnEditor"]').click();
     cy.screenshot(`${ssPrefix}-switch-sidebar-mode-back`, { capture: 'viewport' });
   });
 
 });
-
