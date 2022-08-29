@@ -19,6 +19,7 @@ import superjson from 'superjson';
 
 import { Comments } from '~/components/Comments';
 import { PageAlerts } from '~/components/PageAlert/PageAlerts';
+import { MaintenanceMode } from '~/components/MaintenanceMode';
 // import { useTranslation } from '~/i18n';
 import { PageContentFooter } from '~/components/PageContentFooter';
 import { CrowiRequest } from '~/interfaces/crowi-request';
@@ -283,7 +284,7 @@ const GrowiPage: NextPage<Props> = (props: Props) => {
   // }
 
   if (props.isMaintenanceMode) {
-    return <>メンテナンスモード</>
+    return <MaintenanceMode />
   }
 
   return (
