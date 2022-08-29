@@ -4,16 +4,16 @@ import loggerFactory from '~/utils/logger';
 
 const logger = loggerFactory('growi:middlewares:unavailable-when-maintenance-mode');
 
-export const generateUnavailableWhenMaintenanceModeMiddleware = crowi => async(req: Request, res: Response, next: NextFunction): Promise<void> => {
-  const isMaintenanceMode = crowi.appService.isMaintenanceMode();
+// export const generateUnavailableWhenMaintenanceModeMiddleware = crowi => async(req: Request, res: Response, next: NextFunction): Promise<void> => {
+//   const isMaintenanceMode = crowi.appService.isMaintenanceMode();
 
-  if (!isMaintenanceMode) {
-    next();
-    return;
-  }
+//   if (!isMaintenanceMode) {
+//     next();
+//     return;
+//   }
 
-  res.render('maintenance-mode');
-};
+//   res.render('maintenance-mode');
+// };
 
 export const generateUnavailableWhenMaintenanceModeMiddlewareForApi = crowi => async(req: Request, res: Response, next: NextFunction): Promise<void> => {
   const isMaintenanceMode = crowi.appService.isMaintenanceMode();
