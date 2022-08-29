@@ -4,6 +4,7 @@ import { useTranslation } from 'next-i18next';
 
 import { toastError } from '~/client/util/apiNotification';
 import { apiv3Get } from '~/client/util/apiv3-client';
+import { IPageHasId } from '~/interfaces/page';
 import loggerFactory from '~/utils/logger';
 
 import PaginationWrapper from '../PaginationWrapper';
@@ -17,11 +18,18 @@ type BookmarkListProps = {
   userId: string
 }
 
+type BookmarkListPages = {
+  _id: string,
+  page: IPageHasId,
+  user: string,
+  createdAt: Date,
+}
+
 export const BookmarkList = (props: BookmarkListProps): JSX.Element => {
   const { userId } = props;
 
   const { t } = useTranslation();
-  const [pages, setPages] = useState<any>([]);
+  const [pages, setPages] = useState<BookmarkListPages[]>([]);
 
   const [activePage, setActivePage] = useState(1);
   const [totalItemsCount, setTotalItemsCount] = useState(0);

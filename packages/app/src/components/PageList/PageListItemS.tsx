@@ -2,9 +2,11 @@ import React from 'react';
 
 import { UserPicture, PageListMeta, PagePathLabel } from '@growi/ui';
 
+import { IPageHasId } from '~/interfaces/page';
+
 
 type PageListItemSProps = {
-  page: any,
+  page: IPageHasId,
   noLink?: boolean,
 }
 
