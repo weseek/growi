@@ -166,11 +166,17 @@ context('Access to /me/all-in-app-notifications', () => {
     cy.get('.notification-wrapper > a').click();
     cy.get('.notification-wrapper > .dropdown-menu > a').click();
 
-    cy.screenshot(`${ssPrefix}-see-all`, { capture: 'viewport' });
+    cy.screenshot(`${ssPrefix}-see-all`, {
+      capture: 'viewport' ,
+      blackout: ['#grw-sidebar-contents-wrapper']
+    });
 
     cy.get('.grw-custom-nav-tab > div > ul > li:nth-child(2) > a').click();
 
-    cy.screenshot(`${ssPrefix}-see-unread`, { capture: 'viewport' });
+    cy.screenshot(`${ssPrefix}-see-unread`, {
+      capture: 'viewport',
+      blackout: ['#grw-sidebar-contents-wrapper']
+    });
    });
 
 })
