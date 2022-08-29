@@ -156,6 +156,8 @@ type Props = CommonProps & {
   // isIndentSizeForced: boolean,
   disableLinkSharing: boolean,
 
+  isMaintenanceMode: boolean,
+
   rendererConfig: RendererConfig,
 
   // UI
@@ -174,6 +176,8 @@ const GrowiPage: NextPage<Props> = (props: Props) => {
   const GrowiSubNavigationSwitcher = dynamic(() => import('../components/Navbar/GrowiSubNavigationSwitcher'), { ssr: false });
 
   const { data: currentUser } = useCurrentUser(props.currentUser ?? null);
+
+  console.log('メンテ？', props.isMaintenanceMode)
 
   // register global EventEmitter
   if (isClient()) {
@@ -277,6 +281,10 @@ const GrowiPage: NextPage<Props> = (props: Props) => {
   // if (page == null) {
   //   classNames.push('not-found-page');
   // }
+
+  if (props.isMaintenanceMode) {
+    return <>メンテナンスモード</>
+  }
 
   return (
     <>
@@ -539,6 +547,8 @@ function injectServerConfigurations(context: GetServerSidePropsContext, props: P
   };
   // props.adminPreferredIndentSize = configManager.getConfig('markdown', 'markdown:adminPreferredIndentSize');
   // props.isIndentSizeForced = configManager.getConfig('markdown', 'markdown:isIndentSizeForced');
+
+  props.isMaintenanceMode = crowi.appService.isMaintenanceMode();
 
   props.rendererConfig = {
     isEnabledLinebreaks: configManager.getConfig('markdown', 'markdown:isEnabledLinebreaks'),
