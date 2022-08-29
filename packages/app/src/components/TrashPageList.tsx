@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React, { FC, useMemo } from 'react';
 
 import { useTranslation } from 'next-i18next';
 
@@ -8,7 +8,7 @@ import EmptyTrashButton from './EmptyTrashButton';
 import PageListIcon from './Icons/PageListIcon';
 
 
-const TrashPageList = () => {
+export const TrashPageList: FC = () => {
   const { t } = useTranslation();
 
   const navTabMapping = useMemo(() => {
@@ -33,4 +33,4 @@ const TrashPageList = () => {
   );
 };
 
-export default TrashPageList;
+TrashPageList.displayName = 'TrashPageList';

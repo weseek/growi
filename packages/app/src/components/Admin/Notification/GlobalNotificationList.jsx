@@ -39,7 +39,7 @@ class GlobalNotificationList extends React.Component {
       await apiv3Put(`/notification-setting/global-notification/${notification._id}/enabled`, {
         isEnabled,
       });
-      toastSuccess(t('notification_setting.toggle_notification', { path: notification.triggerPath }));
+      toastSuccess(t('notification_settings.toggle_notification', { path: notification.triggerPath }));
       await this.props.adminNotificationContainer.retrieveNotificationData();
     }
     catch (err) {
@@ -61,7 +61,7 @@ class GlobalNotificationList extends React.Component {
 
     try {
       const deletedNotificaton = await adminNotificationContainer.deleteGlobalNotificationPattern(this.state.notificationForConfiguration._id);
-      toastSuccess(t('notification_setting.delete_notification_pattern', { path: deletedNotificaton.triggerPath }));
+      toastSuccess(t('notification_settings.delete_notification_pattern', { path: deletedNotificaton.triggerPath }));
     }
     catch (err) {
       toastError(err);

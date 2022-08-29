@@ -19,7 +19,7 @@ const {
   userPageRoot, isCreatablePage, generateEditorPath, isUsersHomePage,
 } = pagePathUtils;
 
-const PageCreateModal = (props) => {
+const PageCreateModal = () => {
   const { t } = useTranslation();
 
   const { data: currentUser } = useCurrentUser();
@@ -42,8 +42,10 @@ const PageCreateModal = (props) => {
 
   // ensure pageNameInput is synced with selectedPagePath || currentPagePath
   useEffect(() => {
-    setPageNameInput(isCreatable ? pathUtils.addTrailingSlash(pathname) : '/');
-  }, [pathname, isCreatable]);
+    if (isOpened) {
+      setPageNameInput(isCreatable ? pathUtils.addTrailingSlash(pathname) : '/');
+    }
+  }, [isOpened, pathname, isCreatable]);
 
   const checkIsUsersHomePageDebounce = useMemo(() => {
     const checkIsUsersHomePage = () => {
@@ -54,8 +56,10 @@ const PageCreateModal = (props) => {
   }, [pageNameInput]);
 
   useEffect(() => {
-    checkIsUsersHomePageDebounce(pageNameInput);
-  }, [checkIsUsersHomePageDebounce, pageNameInput]);
+    if (isOpened) {
+      checkIsUsersHomePageDebounce(pageNameInput);
+    }
+  }, [isOpened, checkIsUsersHomePageDebounce, pageNameInput]);
 
   function transitBySubmitEvent(e, transitHandler) {
     // prevent page transition by submit
@@ -132,6 +136,9 @@ const PageCreateModal = (props) => {
   }
 
   function renderCreateTodayForm() {
+    if (!isOpened) {
+      return <></>;
+    }
     return (
       <div className="row">
         <fieldset className="col-12 mb-4">
@@ -183,6 +190,9 @@ const PageCreateModal = (props) => {
   }
 
   function renderInputPageForm() {
+    if (!isOpened) {
+      return <></>;
+    }
     return (
       <div className="row" data-testid="row-create-page-under-below">
         <fieldset className="col-12 mb-4">
@@ -237,6 +247,9 @@ const PageCreateModal = (props) => {
   }
 
   function renderTemplatePageForm() {
+    if (!isOpened) {
+      return <></>;
+    }
     return (
       <div className="row">
         <fieldset className="col-12">

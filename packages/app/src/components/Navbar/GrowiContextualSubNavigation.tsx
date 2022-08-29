@@ -2,6 +2,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 
 
 import { isPopulated } from '@growi/core';
+import { IResTagsUpdateApiv1 } from '~/interfaces/tag';
 import { useTranslation } from 'next-i18next';
 import dynamic from 'next/dynamic';
 import { DropdownItem } from 'reactstrap';
@@ -13,6 +14,8 @@ import {
   IPageToRenameWithMeta, IPageWithMeta, IPageInfoForEntity, IPageHasId,
 } from '~/interfaces/page';
 import { OnDuplicatedFunction, OnRenamedFunction, OnDeletedFunction } from '~/interfaces/ui';
+import { IUser } from '~/interfaces/user';
+import { IResTagsUpdateApiv1 } from '~/interfaces/tag';
 import {
   useCurrentPageId,
   useCurrentPathname,
@@ -224,8 +227,12 @@ const GrowiContextualSubNavigation = (props: GrowiContextualSubNavigationProps):
 
     const { _id: pageId, revision: revisionId } = currentPage;
     try {
-      await apiPost('/tags.update', { pageId, revisionId, tags: newTags });
+      const res: IResTagsUpdateApiv1 = await apiPost('/tags.update', { pageId, revisionId, tags: newTags });
       mutateCurrentPage();
+
+      // TODO: fix https://github.com/weseek/growi/pull/6478 without pageContainer
+      // const lastUpdateUser = res.savedPage?.lastUpdateUser as IUser;
+      // await pageContainer.setState({ lastUpdateUsername: lastUpdateUser.username });
 
       // revalidate SWRTagsInfo
       mutateSWRTagsInfo();

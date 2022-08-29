@@ -1,16 +1,14 @@
 import React, { ReactNode, useState } from 'react';
 
+import { isClient } from '@growi/core';
 import Head from 'next/head';
-import Image from 'next/image';
 import { useIsomorphicLayoutEffect } from 'usehooks-ts';
 
 import { useGrowiTheme } from '~/stores/context';
-import { ColorScheme, ResolvedThemes, useNextThemes } from '~/stores/use-next-themes';
+import { ColorScheme, useNextThemes } from '~/stores/use-next-themes';
 import loggerFactory from '~/utils/logger';
 
-import { getBackgroundImageSrc } from '../Theme/utils/ThemeImageProvider';
 import { ThemeProvider } from '../Theme/utils/ThemeProvider';
-import { isClient } from '@growi/core';
 
 
 const logger = loggerFactory('growi:cli:RawLayout');
@@ -23,7 +21,6 @@ type Props = {
 }
 
 export const RawLayout = ({ children, title, className }: Props): JSX.Element => {
-
   const classNames: string[] = ['wrapper'];
   if (className != null) {
     classNames.push(className);
@@ -34,18 +31,11 @@ export const RawLayout = ({ children, title, className }: Props): JSX.Element =>
   const { resolvedTheme, resolvedThemeByAttributes } = useNextThemes();
 
   const [colorScheme, setColorScheme] = useState<ColorScheme|undefined>(undefined);
-  const [backgroundImageSrc, setBackgroundImageSrc] = useState<string | undefined>(undefined);
 
   // set colorScheme in CSR
   useIsomorphicLayoutEffect(() => {
     setColorScheme(resolvedTheme ?? resolvedThemeByAttributes);
   }, [resolvedTheme]);
-
-  // set background image
-  useIsomorphicLayoutEffect(() => {
-    const imgSrc = getBackgroundImageSrc(growiTheme, colorScheme);
-    setBackgroundImageSrc(imgSrc);
-  }, [growiTheme, colorScheme]);
 
   const scriptToRewriteDataColorScheme = isClient() ? `
     wrapper = document.getElementById('wrapper');
@@ -61,11 +51,8 @@ export const RawLayout = ({ children, title, className }: Props): JSX.Element =>
         {/* set data-color-scheme immediately after load */}
         <script>{scriptToRewriteDataColorScheme}</script>
       </Head>
-      <ThemeProvider theme={growiTheme}>
+      <ThemeProvider theme={growiTheme} colorScheme={colorScheme}>
         <div id="wrapper" className={classNames.join(' ')} data-color-scheme={colorScheme}>
-          {backgroundImageSrc != null && <div className="grw-bg-image-wrapper">
-            <Image className='grw-bg-image' alt='background-image' src={backgroundImageSrc} layout='fill' quality="100" />
-          </div>}
           {children}
         </div>
       </ThemeProvider>

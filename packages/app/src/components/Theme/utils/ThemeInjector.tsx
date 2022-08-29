@@ -8,5 +8,5 @@ type Props = {
 
 export const ThemeInjector = ({ children, className: themeClassName }: Props): JSX.Element => {
   const className = `${children.props.className ?? ''} ${themeClassName}`;
-  return React.cloneElement(children, { className });
+  return React.cloneElement(<div>{children}</div>, { className });
 };
