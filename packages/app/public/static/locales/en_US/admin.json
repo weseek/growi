@@ -4,6 +4,9 @@
   "security_settings": {
     "security_settings": "Security Settings",
     "Guest Users Access": "Guest users access",
+    "always_hidden": "Always hidden",
+    "always_displayed": "Always displayed",
+    "displayed_or_hidden": "Displayed / Hidden",
     "Fixed by env var": "This is fixed by the env var <code>{{key}}={{value}}</code>.",
     "Register limitation": "Register limitation",
     "Register limitation desc": "Restriction of new users' registration",
