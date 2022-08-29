@@ -23,6 +23,7 @@ type BookmarkListPages = {
   page: IPageHasId,
   user: string,
   createdAt: Date,
+  __v: number,
 }
 
 export const BookmarkList = (props: BookmarkListProps): JSX.Element => {
@@ -30,7 +31,6 @@ export const BookmarkList = (props: BookmarkListProps): JSX.Element => {
 
   const { t } = useTranslation();
   const [pages, setPages] = useState<BookmarkListPages[]>([]);
-
   const [activePage, setActivePage] = useState(1);
   const [totalItemsCount, setTotalItemsCount] = useState(0);
   const [pagingLimit, setPagingLimit] = useState(10);
