@@ -11,6 +11,7 @@ import { apiPost } from '~/client/util/apiv1-client';
 import {
   IPageToRenameWithMeta, IPageWithMeta, IPageInfoForEntity, IPageHasId,
 } from '~/interfaces/page';
+import { IResTagsUpdateApiv1 } from '~/interfaces/tag';
 import { OnDuplicatedFunction, OnRenamedFunction, OnDeletedFunction } from '~/interfaces/ui';
 import { IUser } from '~/interfaces/user';
 import {
@@ -39,7 +40,6 @@ import { Skelton } from '../Skelton';
 import { GrowiSubNavigation } from './GrowiSubNavigation';
 import { SubNavButtonsProps } from './SubNavButtons';
 
-import { IResTagsUpdateApiv1 } from '~interfaces/tag';
 
 import PageEditorModeManagerStyles from './PageEditorModeManager.module.scss';
 
