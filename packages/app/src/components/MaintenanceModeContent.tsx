@@ -7,7 +7,7 @@ import { apiv3Post } from '~/client/util/apiv3-client';
 import { useCurrentUser } from '~/stores/context';
 
 
-const MaintenanceModeContent = () => {
+export const MaintenanceModeContent = () => {
   const { t } = useTranslation();
 
   const { data: currentUser } = useCurrentUser();
@@ -51,5 +51,3 @@ const MaintenanceModeContent = () => {
 
 };
 
-
-export default MaintenanceModeContent;
