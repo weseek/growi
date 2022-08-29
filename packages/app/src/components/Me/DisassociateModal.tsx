@@ -32,7 +32,7 @@ const DisassociateModal = (props: Props): JSX.Element => {
     try {
       await disassociateLdapAccount({ providerType, accountId });
       props.onClose();
-      toastSuccess(t('security_setting.updated_general_security_setting'));
+      toastSuccess(t('security_settings.updated_general_security_setting'));
     }
     catch (err) {
       toastError(err);

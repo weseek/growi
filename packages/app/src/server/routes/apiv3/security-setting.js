@@ -977,7 +977,7 @@ module.exports = (crowi) => {
         crowi.passportService.parseABLCRule(rule);
       }
       catch (err) {
-        return res.apiv3Err(req.t('form_validation.invalid_syntax', req.t('security_setting.form_item_name.ABLCRule')), 400);
+        return res.apiv3Err(req.t('form_validation.invalid_syntax', req.t('security_settings.form_item_name.ABLCRule')), 400);
       }
     }
 

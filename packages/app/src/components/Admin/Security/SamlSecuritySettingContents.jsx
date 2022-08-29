@@ -34,7 +34,7 @@ class SamlSecurityManagementContents extends React.Component {
     try {
       await adminSamlSecurityContainer.updateSamlSetting();
       await adminGeneralSecurityContainer.retrieveSetupStratedies();
-      toastSuccess(t('security_setting.SAML.updated_saml'));
+      toastSuccess(t('security_settings.SAML.updated_saml'));
     }
     catch (err) {
       toastError(err);
@@ -54,13 +54,13 @@ class SamlSecurityManagementContents extends React.Component {
       <React.Fragment>
 
         <h2 className="alert-anchor border-bottom">
-          {t('security_setting.SAML.name')}
+          {t('security_settings.SAML.name')}
         </h2>
 
         {useOnlyEnvVars && (
           <p
             className="alert alert-info"
-            dangerouslySetInnerHTML={{ __html: t('security_setting.SAML.note for the only env option', { env: 'SAML_USES_ONLY_ENV_VARS_FOR_SOME_OPTIONS' }) }}
+            dangerouslySetInnerHTML={{ __html: t('security_settings.SAML.note for the only env option', { env: 'SAML_USES_ONLY_ENV_VARS_FOR_SOME_OPTIONS' }) }}
           />
         )}
 
@@ -76,16 +76,16 @@ class SamlSecurityManagementContents extends React.Component {
                 disabled={adminSamlSecurityContainer.state.useOnlyEnvVars}
               />
               <label className="custom-control-label" htmlFor="isSamlEnabled">
-                {t('security_setting.SAML.enable_saml')}
+                {t('security_settings.SAML.enable_saml')}
               </label>
             </div>
             {(!adminGeneralSecurityContainer.state.setupStrategies.includes('saml') && isSamlEnabled)
-              && <div className="badge badge-warning">{t('security_setting.setup_is_not_yet_complete')}</div>}
+              && <div className="badge badge-warning">{t('security_settings.setup_is_not_yet_complete')}</div>}
           </div>
         </div>
 
         <div className="row form-group mb-5">
-          <label className="text-left text-md-right col-md-3 col-form-label">{t('security_setting.callback_URL')}</label>
+          <label className="text-left text-md-right col-md-3 col-form-label">{t('security_settings.callback_URL')}</label>
           <div className="col-md-6">
             <input
               className="form-control"
@@ -93,13 +93,13 @@ class SamlSecurityManagementContents extends React.Component {
               defaultValue={samlCallbackUrl}
               readOnly
             />
-            <p className="form-text text-muted small">{t('security_setting.desc_of_callback_URL', { AuthName: 'SAML Identity' })}</p>
+            <p className="form-text text-muted small">{t('security_settings.desc_of_callback_URL', { AuthName: 'SAML Identity' })}</p>
             {(siteUrl == null || siteUrl === '') && (
               <div className="alert alert-danger">
                 <i
                   className="icon-exclamation"
                   // eslint-disable-next-line max-len
-                  dangerouslySetInnerHTML={{ __html: t('security_setting.alert_siteUrl_is_not_set', { link: `<a href="/admin/app">${t('app_settings')}<i class="icon-login"></i></a>` }) }}
+                  dangerouslySetInnerHTML={{ __html: t('security_settings.alert_siteUrl_is_not_set', { link: `<a href="/admin/app">${t('app_settings')}<i class="icon-login"></i></a>` }) }}
                 />
               </div>
             )}
@@ -111,7 +111,7 @@ class SamlSecurityManagementContents extends React.Component {
 
             {(adminSamlSecurityContainer.state.missingMandatoryConfigKeys.length !== 0) && (
               <div className="alert alert-danger">
-                {t('security_setting.missing mandatory configs')}
+                {t('security_settings.missing mandatory configs')}
                 <ul>
                   {adminSamlSecurityContainer.state.missingMandatoryConfigKeys.map((configKey) => {
                     const key = configKey.replace('security:passport-saml:', '');
@@ -137,7 +137,7 @@ class SamlSecurityManagementContents extends React.Component {
               </thead>
               <tbody>
                 <tr>
-                  <th>{t('security_setting.form_item_name.entryPoint')}</th>
+                  <th>{t('security_settings.form_item_name.entryPoint')}</th>
                   <td>
                     <input
                       className="form-control"
@@ -156,12 +156,12 @@ class SamlSecurityManagementContents extends React.Component {
                       readOnly
                     />
                     <p className="form-text text-muted">
-                      <small dangerouslySetInnerHTML={{ __html: t('security_setting.SAML.Use env var if empty', { env: 'SAML_ENTRY_POINT' }) }} />
+                      <small dangerouslySetInnerHTML={{ __html: t('security_settings.SAML.Use env var if empty', { env: 'SAML_ENTRY_POINT' }) }} />
                     </p>
                   </td>
                 </tr>
                 <tr>
-                  <th>{t('security_setting.form_item_name.issuer')}</th>
+                  <th>{t('security_settings.form_item_name.issuer')}</th>
                   <td>
                     <input
                       className="form-control"
@@ -180,12 +180,12 @@ class SamlSecurityManagementContents extends React.Component {
                       readOnly
                     />
                     <p className="form-text text-muted">
-                      <small dangerouslySetInnerHTML={{ __html: t('security_setting.SAML.Use env var if empty', { env: 'SAML_ISSUER' }) }} />
+                      <small dangerouslySetInnerHTML={{ __html: t('security_settings.SAML.Use env var if empty', { env: 'SAML_ISSUER' }) }} />
                     </p>
                   </td>
                 </tr>
                 <tr>
-                  <th>{t('security_setting.form_item_name.cert')}</th>
+                  <th>{t('security_settings.form_item_name.cert')}</th>
                   <td>
                     <textarea
                       className="form-control form-control-sm"
@@ -198,7 +198,7 @@ class SamlSecurityManagementContents extends React.Component {
                     />
                     <p>
                       <small>
-                        {t('security_setting.SAML.cert_detail')}
+                        {t('security_settings.SAML.cert_detail')}
                       </small>
                     </p>
                     <div>
@@ -225,7 +225,7 @@ pWVdnzS1VCO8fKsJ7YYIr+JmHvseph3kFUOI5RqkCcMZlKUv83aUThsTHw==
                       value={adminSamlSecurityContainer.state.envCert || ''}
                     />
                     <p className="form-text text-muted">
-                      <small dangerouslySetInnerHTML={{ __html: t('security_setting.SAML.Use env var if empty', { env: 'SAML_CERT' }) }} />
+                      <small dangerouslySetInnerHTML={{ __html: t('security_settings.SAML.Use env var if empty', { env: 'SAML_CERT' }) }} />
                     </p>
                   </td>
                 </tr>
@@ -247,7 +247,7 @@ pWVdnzS1VCO8fKsJ7YYIr+JmHvseph3kFUOI5RqkCcMZlKUv83aUThsTHw==
               </thead>
               <tbody>
                 <tr>
-                  <th>{t('security_setting.form_item_name.attrMapId')}</th>
+                  <th>{t('security_settings.form_item_name.attrMapId')}</th>
                   <td>
                     <input
                       className="form-control"
@@ -257,7 +257,7 @@ pWVdnzS1VCO8fKsJ7YYIr+JmHvseph3kFUOI5RqkCcMZlKUv83aUThsTHw==
                     />
                     <p className="form-text text-muted">
                       <small>
-                        {t('security_setting.SAML.id_detail')}
+                        {t('security_settings.SAML.id_detail')}
                       </small>
                     </p>
                   </td>
@@ -269,12 +269,12 @@ pWVdnzS1VCO8fKsJ7YYIr+JmHvseph3kFUOI5RqkCcMZlKUv83aUThsTHw==
                       readOnly
                     />
                     <p className="form-text text-muted">
-                      <small dangerouslySetInnerHTML={{ __html: t('security_setting.SAML.Use env var if empty', { env: 'SAML_ATTR_MAPPING_ID' }) }} />
+                      <small dangerouslySetInnerHTML={{ __html: t('security_settings.SAML.Use env var if empty', { env: 'SAML_ATTR_MAPPING_ID' }) }} />
                     </p>
                   </td>
                 </tr>
                 <tr>
-                  <th>{t('security_setting.form_item_name.attrMapUsername')}</th>
+                  <th>{t('security_settings.form_item_name.attrMapUsername')}</th>
                   <td>
                     <input
                       className="form-control"
@@ -283,7 +283,7 @@ pWVdnzS1VCO8fKsJ7YYIr+JmHvseph3kFUOI5RqkCcMZlKUv83aUThsTHw==
                       onChange={e => adminSamlSecurityContainer.changeSamlAttrMapUserName(e.target.value)}
                     />
                     <p className="form-text text-muted">
-                      <small dangerouslySetInnerHTML={{ __html: t('security_setting.SAML.username_detail') }} />
+                      <small dangerouslySetInnerHTML={{ __html: t('security_settings.SAML.username_detail') }} />
                     </p>
                   </td>
                   <td>
@@ -294,12 +294,12 @@ pWVdnzS1VCO8fKsJ7YYIr+JmHvseph3kFUOI5RqkCcMZlKUv83aUThsTHw==
                       readOnly
                     />
                     <p className="form-text text-muted">
-                      <small dangerouslySetInnerHTML={{ __html: t('security_setting.SAML.Use env var if empty', { env: 'SAML_ATTR_MAPPING_USERNAME' }) }} />
+                      <small dangerouslySetInnerHTML={{ __html: t('security_settings.SAML.Use env var if empty', { env: 'SAML_ATTR_MAPPING_USERNAME' }) }} />
                     </p>
                   </td>
                 </tr>
                 <tr>
-                  <th>{t('security_setting.form_item_name.attrMapMail')}</th>
+                  <th>{t('security_settings.form_item_name.attrMapMail')}</th>
                   <td>
                     <input
                       className="form-control"
@@ -308,7 +308,7 @@ pWVdnzS1VCO8fKsJ7YYIr+JmHvseph3kFUOI5RqkCcMZlKUv83aUThsTHw==
                       onChange={e => adminSamlSecurityContainer.changeSamlAttrMapMail(e.target.value)}
                     />
                     <p className="form-text text-muted">
-                      <small dangerouslySetInnerHTML={{ __html: t('security_setting.SAML.mapping_detail', { target: 'Email' }) }} />
+                      <small dangerouslySetInnerHTML={{ __html: t('security_settings.SAML.mapping_detail', { target: 'Email' }) }} />
                     </p>
                   </td>
                   <td>
@@ -319,12 +319,12 @@ pWVdnzS1VCO8fKsJ7YYIr+JmHvseph3kFUOI5RqkCcMZlKUv83aUThsTHw==
                       readOnly
                     />
                     <p className="form-text text-muted">
-                      <small dangerouslySetInnerHTML={{ __html: t('security_setting.SAML.Use env var if empty', { env: 'SAML_ATTR_MAPPING_MAIL' }) }} />
+                      <small dangerouslySetInnerHTML={{ __html: t('security_settings.SAML.Use env var if empty', { env: 'SAML_ATTR_MAPPING_MAIL' }) }} />
                     </p>
                   </td>
                 </tr>
                 <tr>
-                  <th>{t('security_setting.form_item_name.attrMapFirstName')}</th>
+                  <th>{t('security_settings.form_item_name.attrMapFirstName')}</th>
                   <td>
                     <input
                       className="form-control"
@@ -334,7 +334,7 @@ pWVdnzS1VCO8fKsJ7YYIr+JmHvseph3kFUOI5RqkCcMZlKUv83aUThsTHw==
                     />
                     <p className="form-text text-muted">
                       {/* eslint-disable-next-line max-len */}
-                      <small dangerouslySetInnerHTML={{ __html: t('security_setting.SAML.mapping_detail', { target: t('security_setting.form_item_name.attrMapFirstName') }) }} />
+                      <small dangerouslySetInnerHTML={{ __html: t('security_settings.SAML.mapping_detail', { target: t('security_settings.form_item_name.attrMapFirstName') }) }} />
                     </p>
                   </td>
                   <td>
@@ -346,15 +346,15 @@ pWVdnzS1VCO8fKsJ7YYIr+JmHvseph3kFUOI5RqkCcMZlKUv83aUThsTHw==
                     />
                     <p className="form-text text-muted">
                       <small>
-                        <span dangerouslySetInnerHTML={{ __html: t('security_setting.SAML.Use env var if empty', { env: 'SAML_ATTR_MAPPING_FIRST_NAME' }) }} />
+                        <span dangerouslySetInnerHTML={{ __html: t('security_settings.SAML.Use env var if empty', { env: 'SAML_ATTR_MAPPING_FIRST_NAME' }) }} />
                         <br />
-                        <span dangerouslySetInnerHTML={{ __html: t('security_setting.Use default if both are empty', { target: 'firstName' }) }} />
+                        <span dangerouslySetInnerHTML={{ __html: t('security_settings.Use default if both are empty', { target: 'firstName' }) }} />
                       </small>
                     </p>
                   </td>
                 </tr>
                 <tr>
-                  <th>{t('security_setting.form_item_name.attrMapLastName')}</th>
+                  <th>{t('security_settings.form_item_name.attrMapLastName')}</th>
                   <td>
                     <input
                       className="form-control"
@@ -364,7 +364,7 @@ pWVdnzS1VCO8fKsJ7YYIr+JmHvseph3kFUOI5RqkCcMZlKUv83aUThsTHw==
                     />
                     <p className="form-text text-muted">
                       {/* eslint-disable-next-line max-len */}
-                      <small dangerouslySetInnerHTML={{ __html: t('security_setting.SAML.mapping_detail', { target: t('security_setting.form_item_name.attrMapLastName') }) }} />
+                      <small dangerouslySetInnerHTML={{ __html: t('security_settings.SAML.mapping_detail', { target: t('security_settings.form_item_name.attrMapLastName') }) }} />
                     </p>
                   </td>
                   <td>
@@ -376,9 +376,9 @@ pWVdnzS1VCO8fKsJ7YYIr+JmHvseph3kFUOI5RqkCcMZlKUv83aUThsTHw==
                     />
                     <p className="form-text text-muted">
                       <small>
-                        <span dangerouslySetInnerHTML={{ __html: t('security_setting.SAML.Use env var if empty', { env: 'SAML_ATTR_MAPPING_LAST_NAME' }) }} />
+                        <span dangerouslySetInnerHTML={{ __html: t('security_settings.SAML.Use env var if empty', { env: 'SAML_ATTR_MAPPING_LAST_NAME' }) }} />
                         <br />
-                        <span dangerouslySetInnerHTML={{ __html: t('security_setting.Use default if both are empty', { target: 'lastName' }) }} />
+                        <span dangerouslySetInnerHTML={{ __html: t('security_settings.Use default if both are empty', { target: 'lastName' }) }} />
                       </small>
                     </p>
                   </td>
@@ -403,11 +403,11 @@ pWVdnzS1VCO8fKsJ7YYIr+JmHvseph3kFUOI5RqkCcMZlKUv83aUThsTHw==
                   <label
                     className="custom-control-label"
                     htmlFor="bindByUserName-SAML"
-                    dangerouslySetInnerHTML={{ __html: t('security_setting.Treat username matching as identical') }}
+                    dangerouslySetInnerHTML={{ __html: t('security_settings.Treat username matching as identical') }}
                   />
                 </div>
                 <p className="form-text text-muted">
-                  <small dangerouslySetInnerHTML={{ __html: t('security_setting.Treat username matching as identical_warn') }} />
+                  <small dangerouslySetInnerHTML={{ __html: t('security_settings.Treat username matching as identical_warn') }} />
                 </p>
               </div>
             </div>
@@ -425,11 +425,11 @@ pWVdnzS1VCO8fKsJ7YYIr+JmHvseph3kFUOI5RqkCcMZlKUv83aUThsTHw==
                   <label
                     className="custom-control-label"
                     htmlFor="bindByEmail-SAML"
-                    dangerouslySetInnerHTML={{ __html: t('security_setting.Treat email matching as identical') }}
+                    dangerouslySetInnerHTML={{ __html: t('security_settings.Treat email matching as identical') }}
                   />
                 </div>
                 <p className="form-text text-muted">
-                  <small dangerouslySetInnerHTML={{ __html: t('security_setting.Treat email matching as identical_warn') }} />
+                  <small dangerouslySetInnerHTML={{ __html: t('security_settings.Treat email matching as identical_warn') }} />
                 </p>
               </div>
             </div>
@@ -439,7 +439,7 @@ pWVdnzS1VCO8fKsJ7YYIr+JmHvseph3kFUOI5RqkCcMZlKUv83aUThsTHw==
             </h3>
 
             <p className="form-text text-muted">
-              <small dangerouslySetInnerHTML={{ __html: t('security_setting.SAML.attr_based_login_control_detail') }} />
+              <small dangerouslySetInnerHTML={{ __html: t('security_settings.SAML.attr_based_login_control_detail') }} />
             </p>
 
             <table className="table settings-table">
@@ -454,7 +454,7 @@ pWVdnzS1VCO8fKsJ7YYIr+JmHvseph3kFUOI5RqkCcMZlKUv83aUThsTHw==
               <tbody>
                 <tr>
                   <th>
-                    { t('security_setting.form_item_name.ABLCRule') }
+                    { t('security_settings.form_item_name.ABLCRule') }
                   </th>
                   <td>
                     <textarea
@@ -491,9 +491,9 @@ pWVdnzS1VCO8fKsJ7YYIr+JmHvseph3kFUOI5RqkCcMZlKUv83aUThsTHw==
                           </div>
                           <Collapse isOpen={this.state.isHelpOpened}>
                             <div className="card-body">
-                              <p dangerouslySetInnerHTML={{ __html: t('security_setting.SAML.attr_based_login_control_rule_help') }} />
-                              <p dangerouslySetInnerHTML={{ __html: t('security_setting.SAML.attr_based_login_control_rule_example1') }} />
-                              <p dangerouslySetInnerHTML={{ __html: t('security_setting.SAML.attr_based_login_control_rule_example2') }} />
+                              <p dangerouslySetInnerHTML={{ __html: t('security_settings.SAML.attr_based_login_control_rule_help') }} />
+                              <p dangerouslySetInnerHTML={{ __html: t('security_settings.SAML.attr_based_login_control_rule_example1') }} />
+                              <p dangerouslySetInnerHTML={{ __html: t('security_settings.SAML.attr_based_login_control_rule_example2') }} />
                             </div>
                           </Collapse>
                         </div>
@@ -508,7 +508,7 @@ pWVdnzS1VCO8fKsJ7YYIr+JmHvseph3kFUOI5RqkCcMZlKUv83aUThsTHw==
                       readOnly
                     />
                     <p className="form-text text-muted">
-                      <small dangerouslySetInnerHTML={{ __html: t('security_setting.SAML.Use env var if empty', { env: 'SAML_ABLC_RULE' }) }} />
+                      <small dangerouslySetInnerHTML={{ __html: t('security_settings.SAML.Use env var if empty', { env: 'SAML_ABLC_RULE' }) }} />
                     </p>
                   </td>
                 </tr>
@@ -546,7 +546,7 @@ SamlSecurityManagementContents.propTypes = {
 };
 
 const SamlSecurityManagementContentsWrapperFC = (props) => {
-  const { t } = useTranslation();
+  const { t } = useTranslation('admin');
   const { data: siteUrl } = useSiteUrl();
   return <SamlSecurityManagementContents t={t} siteUrl={siteUrl} {...props} />;
 };

@@ -175,7 +175,7 @@ class LoginForm extends React.Component {
         )}
         { (!isMailerSetup && isEmailAuthenticationEnabled) && (
           <p className="alert alert-danger">
-            <span>{t('security_setting.Local.please_enable_mailer')}</span>
+            <span>{t('security_settings.Local.please_enable_mailer')}</span>
           </p>
         )}
 

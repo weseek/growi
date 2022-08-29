@@ -116,7 +116,7 @@ const AdminMarkdownSettingsPage: NextPage<Props> = (props: Props) => {
       component: <AppSettingsPageContents />,
     },
     security: {
-      title: t('security_settings'),
+      title: t('security_settings.security_settings'),
       component: <SecurityManagementContents />,
     },
     markdown: {

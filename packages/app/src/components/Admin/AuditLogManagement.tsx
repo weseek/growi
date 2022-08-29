@@ -30,7 +30,7 @@ const formatDate = (date: Date | null) => {
 const PAGING_LIMIT = 10;
 
 export const AuditLogManagement: FC = () => {
-  const { t } = useTranslation();
+  const { t } = useTranslation('admin');
 
   const typeaheadRef = useRef<IClearable>(null);
 
