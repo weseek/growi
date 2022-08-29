@@ -13,6 +13,7 @@ import {
   IPageToRenameWithMeta, IPageWithMeta, IPageInfoForEntity, IPageHasId,
 } from '~/interfaces/page';
 import { OnDuplicatedFunction, OnRenamedFunction, OnDeletedFunction } from '~/interfaces/ui';
+import { IUser } from '~/interfaces/user';
 import {
   useCurrentPageId,
   useCurrentPathname,

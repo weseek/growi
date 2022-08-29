@@ -14454,10 +14454,17 @@ markdown-table@^1.1.1:
   version "1.1.1"
   resolved "https://registry.yarnpkg.com/markdown-table/-/markdown-table-1.1.1.tgz#4b3dd3a133d1518b8ef0dbc709bf2a1b4824bc8c"
 
+<<<<<<< HEAD
 markdown-table@^2.0.0:
   version "2.0.0"
   resolved "https://registry.yarnpkg.com/markdown-table/-/markdown-table-2.0.0.tgz#194a90ced26d31fe753d8b9434430214c011865b"
   integrity sha512-Ezda85ToJUBhM6WGaG6veasyym+Tbs3cMAw/ZhOPqXiYsr0jgocBV3j3nx+4lk47plLlIqjwuTm/ywVI+zjJ/A==
+=======
+markdown-it-drawio-viewer@^1.4.0:
+  version "1.4.0"
+  resolved "https://registry.yarnpkg.com/markdown-it-drawio-viewer/-/markdown-it-drawio-viewer-1.4.0.tgz#4a4b590775a75f85e8c83b9042018b57657a172f"
+  integrity sha512-2xorLkpvwl+ncqlvF2CWEFRqfmYjq/SNy2Avc0tW8am+1BpoaIHfyM+sHH6XoLEJ3ZgkAsNnkIjmxssqNsbWBg==
+>>>>>>> 855d38de6614d7d1ec7f2830909da0c8de68ca46
   dependencies:
     repeat-string "^1.0.0"
 

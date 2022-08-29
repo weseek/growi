@@ -1,10 +1,11 @@
 {
-  "name": "@growi/ui",
+  "name": "@growi/plugin-pukiwiki-like-linker",
   "version": "5.1.4-RC.0",
-  "description": "GROWI UI Libraries",
+  "description": "GROWI plugin to add PukiwikiLikeLinker",
   "license": "MIT",
   "keywords": [
-    "growi"
+    "growi",
+    "growi-plugin"
   ],
   "main": "dist/cjs/index.js",
   "module": "dist/esm/index.js",
@@ -15,16 +16,13 @@
     "build": "run-p build:*",
     "build:cjs": "tsc -p tsconfig.build.cjs.json && tsc-alias -p tsconfig.build.cjs.json",
     "build:esm": "tsc -p tsconfig.build.esm.json && tsc-alias -p tsconfig.build.esm.json",
-    "clean": "npx -y shx rm -rf dist",
-    "lint:js": "eslint **/*.{js,jsx,ts,tsx}",
-    "lint": "npm-run-all -p lint:*",
-    "test": "jest --verbose"
-  },
-  "dependencies": {
-    "@growi/core": "^5.1.3-RC.0"
+    "lint:js": "eslint **/*.{js,ts}",
+    "lint": "run-p lint:*",
+    "test": ""
   },
   "devDependencies": {
+    "browser-bunyan": "^1.6.3",
     "eslint-plugin-regex": "^1.8.0",
-    "react": "^18.2.0"
+    "tsc-alias": "^1.2.9"
   }
 }
