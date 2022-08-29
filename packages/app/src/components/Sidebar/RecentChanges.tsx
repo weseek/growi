@@ -2,21 +2,22 @@ import React, {
   FC,
   useCallback, useEffect, useState,
 } from 'react';
-import PropTypes from 'prop-types';
 
+import { DevidedPagePath } from '@growi/core';
+import { UserPicture, FootstampIcon } from '@growi/ui';
+import PropTypes from 'prop-types';
 import { useTranslation } from 'react-i18next';
 
-import { UserPicture, FootstampIcon } from '@growi/ui';
-import { DevidedPagePath } from '@growi/core';
 
 import PagePathHierarchicalLink from '~/components/PagePathHierarchicalLink';
+import LinkedPagePath from '~/models/linked-page-path';
 import { useSWRInifinitexRecentlyUpdated } from '~/stores/page';
 import loggerFactory from '~/utils/logger';
 
-import LinkedPagePath from '~/models/linked-page-path';
+import FormattedDistanceDate from '../FormattedDistanceDate';
+
 import InfiniteScroll from './InfiniteScroll';
 
-import FormattedDistanceDate from '../FormattedDistanceDate';
 
 const logger = loggerFactory('growi:History');
 
@@ -144,7 +145,7 @@ const RecentChanges = (): JSX.Element => {
   }, [retrieveSizePreferenceFromLocalStorage]);
 
   return (
-    <>
+    <div data-testid="grw-recent-changes">
       <div className="grw-sidebar-content-header p-3 d-flex">
         <h3 className="mb-0  text-nowrap">{t('Recent Changes')}</h3>
         <button type="button" className="btn btn-sm ml-auto grw-btn-reload" onClick={() => swr.mutate()}>
@@ -179,7 +180,7 @@ const RecentChanges = (): JSX.Element => {
           </InfiniteScroll>
         </ul>
       </div>
-    </>
+    </div>
   );
 
 };
