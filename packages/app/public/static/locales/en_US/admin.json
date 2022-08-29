@@ -269,7 +269,7 @@
     "delete_notification_pattern_desc2": "Once deleted, it cannot be recovered",
     "toggle_notification": "Updated setting of {{path}}"
   },
-  "Customize": "Customize",
+  "customize": "Customize",
   "full_text_search_management": "Full Text Search Management",
   "mailer_setup_required":"<a href='/admin/app'>Email settings</a> are required to send.",
   "admin_top": {
