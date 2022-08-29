@@ -13,6 +13,7 @@ import {
   IPageToRenameWithMeta, IPageWithMeta, IPageInfoForEntity, IPageHasId,
 } from '~/interfaces/page';
 import { OnDuplicatedFunction, OnRenamedFunction, OnDeletedFunction } from '~/interfaces/ui';
+import { IUser } from '~/interfaces/user';
 import {
   useCurrentPageId,
   useCurrentPathname,
@@ -224,8 +225,12 @@ const GrowiContextualSubNavigation = (props: GrowiContextualSubNavigationProps):
 
     const { _id: pageId, revision: revisionId } = currentPage;
     try {
-      await apiPost('/tags.update', { pageId, revisionId, tags: newTags });
+      const res: IResTagsUpdateApiv1 = await apiPost('/tags.update', { pageId, revisionId, tags: newTags });
       mutateCurrentPage();
+
+      // TODO: fix https://github.com/weseek/growi/pull/6478 without pageContainer
+      // const lastUpdateUser = res.savedPage?.lastUpdateUser as IUser;
+      // await pageContainer.setState({ lastUpdateUsername: lastUpdateUser.username });
 
       // revalidate SWRTagsInfo
       mutateSWRTagsInfo();

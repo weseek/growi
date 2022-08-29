@@ -53,6 +53,9 @@ export const useViewOptions = (storeTocNodeHandler: (toc: HtmlElementNode) => vo
   return useSWRImmutable<RendererOptions, Error>(
     key,
     (rendererId, currentPagePath, rendererConfig) => generateViewOptions(currentPagePath, rendererConfig, storeTocNodeHandler),
+    {
+      fallbackData: isAllDataValid ? generateViewOptions(currentPagePath, rendererConfig, storeTocNodeHandler) : undefined,
+    },
   );
 };
 
