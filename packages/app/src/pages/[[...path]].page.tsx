@@ -329,14 +329,12 @@ const GrowiPage: NextPage<Props> = (props: Props) => {
             </div> */}
           </div>
         </div>
-        {/* TODO: Check CSS import */}
         <footer className="footer d-edit-none">
           {/* TODO: Enable page_list.html */}
-          {/* TODO: Enable isIdenticalPathPage or useIdenticalPath */}
-          {/* { !props.isIdenticalPathPage && ( */}
-          <Comments pageId={pageId} />
-          {/* )} */}
-          { isUsersHomePage(props.currentPathname) && (<UsersHomePageFooter creatorId={pageWithMeta?.data.creator._id}/>) }
+          { !props.isIdenticalPathPage && (<Comments pageId={pageId} />) }
+          { (pageWithMeta != null && isUsersHomePage(pageWithMeta.data.path)) && (
+            <UsersHomePageFooter creatorId={pageWithMeta.data.creator._id}/>
+          )}
           <PageContentFooter />
         </footer>
 

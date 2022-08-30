@@ -1,17 +1,17 @@
 import React from 'react';
 
 import { RecentlyCreatedIcon } from '~/components/Icons/RecentlyCreatedIcon';
-// import { BookmarkList } from '~/components/PageList/BookmarkList';
-// import { RecentCreated } from '~/components/RecentCreated/RecentCreated';
+import BookmarkList from '~/components/PageList/BookmarkList';
+import RecentCreated from '~/components/RecentCreated/RecentCreated';
 import styles from '~/components/UsersHomePageFooter.module.scss';
 
 type UsersHomePageFooterProps = {
   creatorId: string,
 }
 
-export const UsersHomePageFooter = (props: UsersHomePageFooterProps) => {
+export const UsersHomePageFooter = (props: UsersHomePageFooterProps): JSX.Element => {
 
-  // const { creatorId } = props;
+  const { creatorId } = props;
 
   // TODO: Check CSS module
   return (
@@ -23,7 +23,7 @@ export const UsersHomePageFooter = (props: UsersHomePageFooterProps) => {
         </h2>
         <div id="user-bookmark-list" className="page-list">
           <div className="page-list-container">
-            {/* <BookmarkList userId={creatorId} /> */}
+            <BookmarkList userId={creatorId} />
           </div>
         </div>
       </div>
@@ -34,7 +34,7 @@ export const UsersHomePageFooter = (props: UsersHomePageFooterProps) => {
         </h2>
         <div id="user-created-list" className="page-list">
           <div className="page-list-container">
-            {/* <RecentCreated userId={creatorId} /> */}
+            <RecentCreated userId={creatorId} />
           </div>
         </div>
       </div>
