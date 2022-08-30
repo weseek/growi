@@ -56,8 +56,6 @@ export const usePersonalSettings = (): SWRResponse<IUser, Error> & IPersonalSett
       slackMemberId: data.slackMemberId,
     };
 
-    console.log({ updateData });
-
     // invoke API
     try {
       await apiv3Put('/personal-setting/', updateData);
