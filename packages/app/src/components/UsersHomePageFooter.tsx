@@ -13,7 +13,6 @@ export const UsersHomePageFooter = (props: UsersHomePageFooterProps): JSX.Elemen
 
   const { creatorId } = props;
 
-  // TODO: Check CSS module
   return (
     <div className={`container-lg user-page-footer py-5 ${styles['user-page-footer']}`}>
       <div className="grw-user-page-list-m d-edit-none">
