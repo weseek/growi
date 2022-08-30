@@ -16,6 +16,7 @@ import { usePageTreeTermManager } from '~/stores/page-listing';
 import { ForceHideMenuItems } from '../Common/Dropdown/PageItemControl';
 import { SearchResultList } from '../SearchPage/SearchResultList';
 
+import styles from './SearchPageBase.module.scss';
 
 // https://regex101.com/r/brrkBu/1
 const highlightKeywordsSplitter = new RegExp('"[^"]+"|[^\u{20}\u{3000}]+', 'ug');
@@ -176,7 +177,7 @@ const SearchPageBaseSubstance: ForwardRefRenderFunction<ISelectableAll & IReturn
                 </div>
 
                 { pages.length > 0 && (
-                  <div className="page-list px-md-4">
+                  <div className={`page-list ${styles['page-list']} px-md-4`}>
                     <SearchResultList
                       ref={searchResultListRef}
                       pages={pages}

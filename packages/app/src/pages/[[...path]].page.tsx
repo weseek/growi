@@ -70,6 +70,7 @@ import {
 } from './utils/commons';
 // import { useCurrentPageSWR } from '../stores/page';
 
+import styles from './[[...path]].page.module.scss';
 
 const NotCreatablePage = dynamic(() => import('../components/NotCreatablePage').then(mod => mod.NotCreatablePage), { ssr: false });
 const ForbiddenPage = dynamic(() => import('../components/ForbiddenPage'), { ssr: false });
@@ -346,7 +347,7 @@ const GrowiPage: NextPage<Props> = (props: Props) => {
                     <i style={{ fontSize: '1.3em' }} className="fa fa-fw fa-bookmark-o"></i>
                     Bookmarks
                   </h2>
-                  <div id="user-bookmark-list" className="page-list">
+                  <div id="user-bookmark-list" className={`page-list ${styles['page-list']}`}>
                     {/* TODO: No need page-list-container class ? */}
                     <div className="page-list-container">
                       {/* <BookmarkList userId={pageContainer.state.creator._id} /> */}
@@ -360,7 +361,7 @@ const GrowiPage: NextPage<Props> = (props: Props) => {
                     </i>
                     Recently Created
                   </h2>
-                  <div id="user-created-list" className="page-list">
+                  <div id="user-created-list" className={`page-list ${styles['page-list']}`}>
                     {/* TODO: No need page-list-container class ? */}
                     <div className="page-list-container">
                       {/* <RecentCreated userId={pageContainer.state.creator._id} /> */}
