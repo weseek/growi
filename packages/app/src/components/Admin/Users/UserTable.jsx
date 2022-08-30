@@ -2,8 +2,8 @@ import React, { Fragment } from 'react';
 
 import { UserPicture } from '@growi/ui';
 import dateFnsFormat from 'date-fns/format';
-import PropTypes from 'prop-types';
 import { useTranslation } from 'next-i18next';
+import PropTypes from 'prop-types';
 
 import AdminUsersContainer from '~/client/services/AdminUsersContainer';
 
@@ -99,7 +99,7 @@ class UserTable extends React.Component {
                 <th>
                   <div className="d-flex align-items-center">
                     <div className="mr-3">
-                      {t('status')}
+                      {t('user_management.status')}
                     </div>
                     <SortIcons
                       isSelected={adminUsersContainer.state.sort === 'status'}
@@ -222,7 +222,7 @@ UserTable.propTypes = {
 };
 
 const UserTableWrapperFC = (props) => {
-  const { t } = useTranslation();
+  const { t } = useTranslation('admin');
   return <UserTable t={t} {...props} />;
 };
 

@@ -62,7 +62,7 @@ class UserMenu extends React.Component {
     return (
       <Fragment>
         <li className="dropdown-divider"></li>
-        <li className="dropdown-header">{t('status')}</li>
+        <li className="dropdown-header">{t('user_management.status')}</li>
         <li>
           {(user.status === 1 || user.status === 3) && <StatusActivateButton user={user} />}
           {user.status === 2 && <StatusSuspendedMenuItem user={user} />}
@@ -116,7 +116,7 @@ class UserMenu extends React.Component {
 }
 
 const UserMenuWrapperFC = (props) => {
-  const { t } = useTranslation();
+  const { t } = useTranslation('admin');
   return <UserMenu t={t} {...props} />;
 };
 
