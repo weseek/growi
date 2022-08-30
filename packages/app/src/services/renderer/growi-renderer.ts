@@ -73,6 +73,7 @@ export default class GrowiRenderer {
         }),
       ];
       this.postProcessors = [
+
       ];
     }
 
