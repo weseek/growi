@@ -37,9 +37,9 @@ class WhiteListInput extends React.Component {
       <>
         <div className="mt-4">
           <div className="d-flex justify-content-between">
-            {t('admin:markdown_setting.xss_options.tag_names')}
+            {t('markdown_settings.xss_options.tag_names')}
             <p id="btn-import-tags" className="btn btn-sm btn-primary mb-0" onClick={this.onClickRecommendTagButton}>
-              {t('admin:markdown_setting.xss_options.import_recommended', { target: 'Tags' })}
+              {t('markdown_settings.xss_options.import_recommended', { target: 'Tags' })}
             </p>
           </div>
           <textarea
@@ -54,9 +54,9 @@ class WhiteListInput extends React.Component {
         </div>
         <div className="mt-4">
           <div className="d-flex justify-content-between">
-            {t('admin:markdown_setting.xss_options.tag_attributes')}
+            {t('markdown_settings.xss_options.tag_attributes')}
             <p id="btn-import-tags" className="btn btn-sm btn-primary mb-0" onClick={this.onClickRecommendAttrButton}>
-              {t('admin:markdown_setting.xss_options.import_recommended', { target: 'Attrs' })}
+              {t('markdown_settings.xss_options.import_recommended', { target: 'Attrs' })}
             </p>
           </div>
           <textarea
@@ -83,7 +83,7 @@ WhiteListInput.propTypes = {
 };
 
 const PresentationFormWrapperFC = (props) => {
-  const { t } = useTranslation();
+  const { t } = useTranslation('admin');
 
   return <WhiteListInput t={t} {...props} />;
 };

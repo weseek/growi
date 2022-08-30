@@ -28,7 +28,7 @@ class XssForm extends React.Component {
 
     try {
       await this.props.adminMarkDownContainer.updateXssSetting();
-      toastSuccess(t('toaster.update_successed', { target: t('admin:markdown_setting.xss_header') }));
+      toastSuccess(t('toaster.update_successed', { target: t('markdown_settings.xss_header') }));
     }
     catch (err) {
       toastError(err);
@@ -54,9 +54,9 @@ class XssForm extends React.Component {
                 onChange={() => { adminMarkDownContainer.setState({ xssOption: 1 }) }}
               />
               <label className="custom-control-label w-100" htmlFor="xssOption1">
-                <p className="font-weight-bold">{t('admin:markdown_setting.xss_options.remove_all_tags')}</p>
+                <p className="font-weight-bold">{t('markdown_settings.xss_options.remove_all_tags')}</p>
                 <div className="mt-4">
-                  {t('admin:markdown_setting.xss_options.remove_all_tags_desc')}
+                  {t('markdown_settings.xss_options.remove_all_tags_desc')}
                 </div>
               </label>
             </div>
@@ -73,10 +73,10 @@ class XssForm extends React.Component {
                 onChange={() => { adminMarkDownContainer.setState({ xssOption: 2 }) }}
               />
               <label className="custom-control-label w-100" htmlFor="xssOption2">
-                <p className="font-weight-bold">{t('admin:markdown_setting.xss_options.recommended_setting')}</p>
+                <p className="font-weight-bold">{t('markdown_settings.xss_options.recommended_setting')}</p>
                 <div className="mt-4">
                   <div className="d-flex justify-content-between">
-                    {t('admin:markdown_setting.xss_options.tag_names')}
+                    {t('markdown_settings.xss_options.tag_names')}
                   </div>
                   <textarea
                     className="form-control xss-list"
@@ -89,7 +89,7 @@ class XssForm extends React.Component {
                 </div>
                 <div className="mt-4">
                   <div className="d-flex justify-content-between">
-                    {t('admin:markdown_setting.xss_options.tag_attributes')}
+                    {t('markdown_settings.xss_options.tag_attributes')}
                   </div>
                   <textarea
                     className="form-control xss-list"
@@ -115,7 +115,7 @@ class XssForm extends React.Component {
                 onChange={() => { adminMarkDownContainer.setState({ xssOption: 3 }) }}
               />
               <label className="custom-control-label w-100" htmlFor="xssOption3">
-                <p className="font-weight-bold">{t('admin:markdown_setting.xss_options.custom_whitelist')}</p>
+                <p className="font-weight-bold">{t('markdown_settings.xss_options.custom_whitelist')}</p>
                 <WhiteListInput customizable />
               </label>
             </div>
@@ -144,7 +144,7 @@ class XssForm extends React.Component {
                   onChange={adminMarkDownContainer.switchEnableXss}
                 />
                 <label className="custom-control-label w-100" htmlFor="XssEnable">
-                  {t('admin:markdown_setting.xss_options.enable_xss_prevention')}
+                  {t('markdown_settings.xss_options.enable_xss_prevention')}
                 </label>
               </div>
             </div>
@@ -168,7 +168,7 @@ XssForm.propTypes = {
 };
 
 const XssFormWrapperFC = (props) => {
-  const { t } = useTranslation();
+  const { t } = useTranslation('admin');
 
   return <XssForm t={t} {...props} />;
 };

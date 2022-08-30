@@ -120,15 +120,15 @@ const AdminMarkdownSettingsPage: NextPage<Props> = (props: Props) => {
       component: <SecurityManagementContents />,
     },
     markdown: {
-      title: t('markdown_settings'),
+      title: t('markdown_settings.markdown_settings'),
       component: <MarkDownSettingContents />,
     },
     customize: {
-      title: t('Customize Settings'),
+      title: t('customize_setting.customize_setting'),
       component: <CustomizeSettingContents />,
     },
     importer: {
-      title: t('Import Data'),
+      title: t('importer_management.import_data'),
       component: <DataImportPageContents />,
     },
     export: {

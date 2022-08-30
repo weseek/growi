@@ -1,7 +1,7 @@
 import React from 'react';
 
-import PropTypes from 'prop-types';
 import { useTranslation } from 'next-i18next';
+import PropTypes from 'prop-types';
 
 import AdminSocketIoContainer from '~/client/services/AdminSocketIoContainer';
 import { toastSuccess, toastError } from '~/client/util/apiNotification';
@@ -505,7 +505,7 @@ ImportForm.propTypes = {
 };
 
 const ImportFormWrapperFc = (props) => {
-  const { t } = useTranslation();
+  const { t } = useTranslation('admin');
 
   return <ImportForm t={t} {...props} />;
 };
