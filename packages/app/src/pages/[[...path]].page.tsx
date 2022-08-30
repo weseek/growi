@@ -178,8 +178,6 @@ const GrowiPage: NextPage<Props> = (props: Props) => {
 
   const { data: currentUser } = useCurrentUser(props.currentUser ?? null);
 
-  console.log('メンテ？', props.isMaintenanceMode)
-
   // register global EventEmitter
   if (isClient()) {
     (window as CustomWindow).globalEmitter = new EventEmitter();
