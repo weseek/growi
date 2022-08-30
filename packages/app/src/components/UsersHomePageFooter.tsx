@@ -22,9 +22,7 @@ export const UsersHomePageFooter = (props: UsersHomePageFooterProps): JSX.Elemen
           Bookmarks
         </h2>
         <div id="user-bookmark-list" className="page-list">
-          <div className="page-list-container">
-            <BookmarkList userId={creatorId} />
-          </div>
+          <BookmarkList userId={creatorId} />
         </div>
       </div>
       <div className="grw-user-page-list-m mt-5 d-edit-none">
@@ -33,9 +31,7 @@ export const UsersHomePageFooter = (props: UsersHomePageFooterProps): JSX.Elemen
           Recently Created
         </h2>
         <div id="user-created-list" className="page-list">
-          <div className="page-list-container">
-            <RecentCreated userId={creatorId} />
-          </div>
+          <RecentCreated userId={creatorId} />
         </div>
       </div>
     </div>
