@@ -37,7 +37,7 @@ export class LsxListView extends React.Component {
     }
 
     return (
-      <div className={`page-list lsx${styles['page-list']}`}>
+      <div className={`page-list ${styles['page-list']} lsx`}>
         <ul className="page-list-ul">
           {listView}
         </ul>
