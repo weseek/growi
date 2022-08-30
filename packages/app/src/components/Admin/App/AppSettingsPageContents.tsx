@@ -29,7 +29,7 @@ const AppSettingsPageContents = (props: Props) => {
   const { t } = useTranslation('admin');
   const { adminAppContainer } = props;
 
-  const { data: isMaintenanceModeData } = useIsMaintenanceMode();
+  const { data: isMaintenanceMode } = useIsMaintenanceMode();
 
   const { isV5Compatible } = adminAppContainer.state;
 
@@ -52,7 +52,7 @@ const AppSettingsPageContents = (props: Props) => {
     <div data-testid="admin-app-settings">
       {
         // Alert message will be displayed in case that the GROWI is under maintenance
-        isMaintenanceModeData && (
+        isMaintenanceMode && (
           <div className="alert alert-danger alert-link" role="alert">
             <h3 className="alert-heading">
               {t('admin:maintenance_mode.maintenance_mode')}
