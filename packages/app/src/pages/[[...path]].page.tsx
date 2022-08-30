@@ -177,6 +177,7 @@ const GrowiPage: NextPage<Props> = (props: Props) => {
   const router = useRouter();
 
   const { data: currentUser } = useCurrentUser(props.currentUser ?? null);
+  const title = useCustomTitle(props, 'GROWI');
 
   // register global EventEmitter
   if (isClient()) {
@@ -296,7 +297,7 @@ const GrowiPage: NextPage<Props> = (props: Props) => {
         */}
       </Head>
       {/* <BasicLayout title={useCustomTitle(props, t('GROWI'))} className={classNames.join(' ')}> */}
-      <BasicLayout title={useCustomTitle(props, 'GROWI')} className={classNames.join(' ')} expandContainer={props.isContainerFluid}>
+      <BasicLayout title={title} className={classNames.join(' ')} expandContainer={props.isContainerFluid}>
         <header className="py-0 position-relative">
           <GrowiContextualSubNavigation isLinkSharingDisabled={props.disableLinkSharing} />
         </header>
