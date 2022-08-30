@@ -282,7 +282,7 @@ const GrowiPage: NextPage<Props> = (props: Props) => {
   // }
 
   if (props.isMaintenanceMode) {
-    return <MaintenanceMode />
+    return <MaintenanceMode />;
   }
 
   return (

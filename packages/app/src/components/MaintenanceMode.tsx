@@ -58,5 +58,5 @@ export const MaintenanceMode: FC = () => {
         </div>
       </div>
     </div>
-  )
+  );
 };
