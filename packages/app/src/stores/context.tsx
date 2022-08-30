@@ -35,6 +35,10 @@ export const useSiteUrl = (initialData?: string): SWRResponse<string, Error> => 
   return useStaticSWR<string, Error>('siteUrl', initialData);
 };
 
+export const useIsMaintenanceMode = (initialData?: boolean): SWRResponse<boolean, Error> => {
+  return useStaticSWR<boolean, Error>('isMaintenanceMode', initialData, { fallbackData: false });
+};
+
 export const useConfidential = (initialData?: string): SWRResponse<string, Error> => {
   return useStaticSWR('confidential', initialData);
 };
