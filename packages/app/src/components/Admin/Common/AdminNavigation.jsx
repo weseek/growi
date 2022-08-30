@@ -36,7 +36,8 @@ const AdminNavigation = (props) => {
       case 'slack-integration-legacy': return <><i className="icon-fw icon-shuffle"></i>         { t('slack_integration_legacy.slack_integration_legacy')}</>;
       case 'users':                    return <><i className="icon-fw icon-user"></i>            { t('user_management.user_management') }</>;
       case 'user-groups':              return <><i className="icon-fw icon-people"></i>          { t('user_group_management.user_group_management') }</>;
-      case 'search':                   return <><i className="icon-fw icon-magnifier"></i>       { t('full_text_search_management.full_text_search_management') }</>;
+      case 'search':                   return <><i className="icon-fw icon-magnifier"></i>
+        { t('full_text_search_management.full_text_search_management') }</>;
       // TODO: Consider where to place the "AuditLog"
       case 'audit-log':                return <><i className="icon-fw icon-feed"></i>            { t('audit_log_management.audit_log')}</>;
       case 'cloud':                    return <><i className="icon-fw icon-share-alt"></i>       { t('to_cloud_settings')} </>;
