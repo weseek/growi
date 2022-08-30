@@ -28,7 +28,8 @@ context('Access to page', () => {
     cy.visit('/Sandbox/Math');
 
     cy.get('mjx-container').should('be.visible');
-
+    cy.get('p[data-line]:gt(0)').invoke('attr','style','display:none');
+    cy.get('h2[data-line]:gt(0)').invoke('attr','style','display:none');
     cy.screenshot(`${ssPrefix}-sandbox-math`);
   });
 
