@@ -20,19 +20,19 @@ export const MaintenanceMode: FC = () => {
 
   const [isModalOpen, setModalOpen] = useState<boolean>(false);
 
-  const startMaintenanceMode = async() => {
+  const startMaintenanceMode = useCallback(async() => {
     await apiv3Post('/app-settings/maintenance-mode', { flag: true });
     return;
-  }
+  }, []);
 
-  const endMaintenanceMode = async() => {
+  const endMaintenanceMode = useCallback(async() => {
     await apiv3Post('/app-settings/maintenance-mode', { flag: false });
     return;
-  }
+  }, []);
 
-  const openModal = () => { setModalOpen(true) };
+  const openModal = useCallback(() => { setModalOpen(true) }, []);
 
-  const closeModal = () => { setModalOpen(false) };
+  const closeModal = useCallback(() => { setModalOpen(false) }, []);
 
   const onConfirmHandler = useCallback(async() => {
     closeModal();

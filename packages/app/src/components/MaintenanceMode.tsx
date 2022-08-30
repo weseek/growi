@@ -1,4 +1,4 @@
-import React, { FC } from 'react';
+import React, { FC, useCallback } from 'react';
 import { useTranslation } from 'next-i18next';
 
 import { toastError } from '~/client/util/apiNotification';
@@ -10,7 +10,7 @@ export const MaintenanceMode: FC = () => {
 
   const { data: currentUser } = useCurrentUser();
 
-  const logoutHandler = async() => {
+  const logoutHandler = useCallback(async() => {
     try {
       await apiv3Post('/logout');
       window.location.reload();
@@ -18,7 +18,7 @@ export const MaintenanceMode: FC = () => {
     catch (err) {
       toastError(err);
     }
-  };
+  }, []);
 
   return (
     <div id="content-main" className="content-main container-lg">
