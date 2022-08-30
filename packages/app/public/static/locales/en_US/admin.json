@@ -270,6 +270,8 @@
     "toggle_notification": "Updated setting of {{path}}"
   },
   "customize": "Customize",
+  "ipmport_data": "Import Data",
+  "export_archive_data": "Export Archive Data",
   "full_text_search_management": "Full Text Search Management",
   "mailer_setup_required":"<a href='/admin/app'>Email settings</a> are required to send.",
   "admin_top": {

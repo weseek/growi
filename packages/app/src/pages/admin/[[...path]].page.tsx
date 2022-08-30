@@ -132,7 +132,7 @@ const AdminMarkdownSettingsPage: NextPage<Props> = (props: Props) => {
       component: <DataImportPageContents />,
     },
     export: {
-      title: t('Export Archive Data'),
+      title: t('export_archive_data'),
       component: <ExportArchiveDataPage />,
     },
     notification: {
@@ -170,7 +170,7 @@ const AdminMarkdownSettingsPage: NextPage<Props> = (props: Props) => {
       },
     },
     search: {
-      title: t('full_text_search_management'),
+      title: t('full_text_search_management.full_text_search_management'),
       component: <ElasticsearchManagement />,
     },
     'audit-log': {

@@ -29,14 +29,14 @@ const AdminNavigation = (props) => {
       case 'security':                 return <><i className="icon-fw icon-shield"></i>          { t('security_settings.security_settings') }</>;
       case 'markdown':                 return <><i className="icon-fw icon-note"></i>            { t('markdown_settings') }</>;
       case 'customize':                return <><i className="icon-fw icon-wrench"></i>          { t('customize') }</>;
-      case 'importer':                 return <><i className="icon-fw icon-cloud-upload"></i>    { t('Import Data') }</>;
-      case 'export':                   return <><i className="icon-fw icon-cloud-download"></i>  { t('Export Archive Data') }</>;
+      case 'importer':                 return <><i className="icon-fw icon-cloud-upload"></i>    { t('ipmport_data') }</>;
+      case 'export':                   return <><i className="icon-fw icon-cloud-download"></i>  { t('export_archive_data') }</>;
       case 'notification':             return <><i className="icon-fw icon-bell"></i>            { t('external_notification.external_notification')}</>;
       case 'slack-integration':        return <><i className="icon-fw icon-shuffle"></i>         { t('slack_integration.slack_integration') }</>;
       case 'slack-integration-legacy': return <><i className="icon-fw icon-shuffle"></i>         { t('slack_integration_legacy.slack_integration_legacy')}</>;
       case 'users':                    return <><i className="icon-fw icon-user"></i>            { t('user_management.user_management') }</>;
       case 'user-groups':              return <><i className="icon-fw icon-people"></i>          { t('user_group_management.user_group_management') }</>;
-      case 'search':                   return <><i className="icon-fw icon-magnifier"></i>       { t('full_text_search_management') }</>;
+      case 'search':                   return <><i className="icon-fw icon-magnifier"></i>       { t('full_text_search_management.full_text_search_management') }</>;
       // TODO: Consider where to place the "AuditLog"
       case 'audit-log':                return <><i className="icon-fw icon-feed"></i>            { t('audit_log_management.audit_log')}</>;
       case 'cloud':                    return <><i className="icon-fw icon-share-alt"></i>       { t('to_cloud_settings')} </>;
