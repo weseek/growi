@@ -218,7 +218,6 @@
       "ABLCRule": "Rule"
     }
   },
-  "markdown_settings": "Markdown Settings",
   "notification_settings": {
     "notification_settings": "Notification Settings",
     "slack_incoming_configuration": "Slack Incoming Webhooks configuration",
@@ -379,7 +378,8 @@
     "use_env_var_if_empty": "If the value in the database is empty, the value of the environment variable <code>{{variable}}</code> is used.",
     "note_for_the_only_env_option": "The GCS Settings is limited by the value of environment variable.<br>To change this setting, please change to false or delete the value of the environment variable <code>{{env}}</code> ."
   },
-  "markdown_setting": {
+  "markdown_settings": {
+    "markdown_settings": "Markdown Settings",
     "lineBreak_header": "Line break setting",
     "lineBreak_desc": "You can change line break settings.",
     "lineBreak_options": {

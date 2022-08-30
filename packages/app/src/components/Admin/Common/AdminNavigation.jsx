@@ -27,7 +27,7 @@ const AdminNavigation = (props) => {
     switch (menu) {
       case 'app':                      return <><i className="icon-fw icon-settings"></i>        { t('app_settings') }</>;
       case 'security':                 return <><i className="icon-fw icon-shield"></i>          { t('security_settings.security_settings') }</>;
-      case 'markdown':                 return <><i className="icon-fw icon-note"></i>            { t('markdown_settings') }</>;
+      case 'markdown':                 return <><i className="icon-fw icon-note"></i>            { t('markdown_settings.markdown_settings') }</>;
       case 'customize':                return <><i className="icon-fw icon-wrench"></i>          { t('customize') }</>;
       case 'importer':                 return <><i className="icon-fw icon-cloud-upload"></i>    { t('ipmport_data') }</>;
       case 'export':                   return <><i className="icon-fw icon-cloud-download"></i>  { t('export_archive_data') }</>;

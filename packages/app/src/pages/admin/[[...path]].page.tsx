@@ -120,7 +120,7 @@ const AdminMarkdownSettingsPage: NextPage<Props> = (props: Props) => {
       component: <SecurityManagementContents />,
     },
     markdown: {
-      title: t('markdown_settings'),
+      title: t('markdown_settings.markdown_settings'),
       component: <MarkDownSettingContents />,
     },
     customize: {

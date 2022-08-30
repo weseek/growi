@@ -218,7 +218,6 @@
       "ABLCRule": "ルール"
     }
   },
-  "markdown_settings": "マークダウン設定",
   "notification_settings": {
     "notification_settings": "通知設定",
     "slack_incoming_configuration": "Slack Incoming Webhooks 設定",
@@ -402,6 +401,7 @@
     "note_for_the_only_env_option": "現在GCS設定は環境変数の値によって制限されています<br>この設定を変更する場合は環境変数 <code>{{env}}</code> の値をfalseに変更もしくは削除してください"
   },
   "markdown_setting": {
+    "markdown_settings": "マークダウン設定",
     "lineBreak_header": "Line Break設定",
     "lineBreak_desc": "Line Breakの設定を変更できます。",
     "lineBreak_options": {
