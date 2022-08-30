@@ -34,7 +34,7 @@ import PluginUtils from '~/server/plugins/plugin-utils';
 import ConfigLoader from '~/server/service/config-loader';
 import {
   useCurrentUser, /* useSearchServiceConfigured, */ useIsAclEnabled, useIsMailerSetup, useIsSearchServiceReachable, useSiteUrl,
-  useAuditLogEnabled, useAuditLogAvailableActions,
+  useAuditLogEnabled, useAuditLogAvailableActions, useIsMaintenanceMode
 } from '~/stores/context';
 
 import {
@@ -68,6 +68,7 @@ const pluginUtils = new PluginUtils();
 type Props = CommonProps & {
   currentUser: any,
 
+  isMaintenanceMode: boolean,
   nodeVersion: string,
   npmVersion: string,
   yarnVersion: string,
@@ -189,6 +190,7 @@ const AdminMarkdownSettingsPage: NextPage<Props> = (props: Props) => {
 
   useCurrentUser(props.currentUser != null ? JSON.parse(props.currentUser) : null);
   useIsMailerSetup(props.isMailerSetup);
+  useIsMaintenanceMode(props.isMaintenanceMode);
 
   // useSearchServiceConfigured(props.isSearchServiceConfigured);
   useIsSearchServiceReachable(props.isSearchServiceReachable);
@@ -279,6 +281,7 @@ async function injectServerConfigurations(context: GetServerSidePropsContext, pr
   } = crowi;
 
   props.siteUrl = appService.getSiteUrl();
+  props.isMaintenanceMode = crowi.appService.isMaintenanceMode();
   props.nodeVersion = crowi.runtimeVersions.versions.node ? crowi.runtimeVersions.versions.node.version.version : null;
   props.npmVersion = crowi.runtimeVersions.versions.npm ? crowi.runtimeVersions.versions.npm.version.version : null;
   props.yarnVersion = crowi.runtimeVersions.versions.yarn ? crowi.runtimeVersions.versions.yarn.version.version : null;

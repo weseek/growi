@@ -9,6 +9,10 @@ import { toastSuccess, toastError } from '~/client/util/apiNotification';
 
 import AdminAppContainer from '~/client/services/AdminAppContainer';
 
+import { apiv3Post } from '~/client/util/apiv3-client';
+
+import { useIsMaintenanceMode } from '~/stores/context';
+
 const logger = loggerFactory('growi:maintenanceMode');
 
 type Props = {
@@ -19,10 +23,22 @@ const MaintenanceMode: FC<Props> = (props: Props) => {
   const { t } = useTranslation();
   const { adminAppContainer } = props;
 
+  const { data: isMaintenanceMode, mutate: mutateIsMaintenanceMode } = useIsMaintenanceMode();
+
   const [isModalOpen, setModalOpen] = useState<boolean>(false);
-  const [isMaintenanceMode, setMaintenanceMode] = useState<boolean | undefined>(adminAppContainer.state.isMaintenanceMode);
+
+  const startMaintenanceMode = async() => {
+    await apiv3Post('/app-settings/maintenance-mode', { flag: true });
+    return;
+  }
+
+  const endMaintenanceMode = async() => {
+    await apiv3Post('/app-settings/maintenance-mode', { flag: false });
+    return;
+  }
 
   const openModal = () => { setModalOpen(true) };
+
   const closeModal = () => { setModalOpen(false) };
 
   const onConfirmHandler = useCallback(async() => {
@@ -30,12 +46,12 @@ const MaintenanceMode: FC<Props> = (props: Props) => {
 
     try {
       if (isMaintenanceMode) {
-        await adminAppContainer.endMaintenanceMode();
-        setMaintenanceMode(false);
+        await endMaintenanceMode();
+        mutateIsMaintenanceMode(false);
       }
       else {
-        await adminAppContainer.startMaintenanceMode();
-        setMaintenanceMode(true);
+        await startMaintenanceMode();
+        mutateIsMaintenanceMode(true);
       }
     }
     catch (err) {

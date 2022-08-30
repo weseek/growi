@@ -7,7 +7,6 @@ import { toastError } from '~/client/util/apiNotification';
 import { toArrayIfNot } from '~/utils/array-utils';
 import loggerFactory from '~/utils/logger';
 
-
 import { withUnstatedContainers } from '../../UnstatedUtils';
 
 import AppSetting from './AppSetting';
@@ -18,6 +17,8 @@ import PluginSetting from './PluginSetting';
 import SiteUrlSetting from './SiteUrlSetting';
 import V5PageMigration from './V5PageMigration';
 
+import { useIsMaintenanceMode } from '~/stores/context';
+
 const logger = loggerFactory('growi:appSettings');
 
 type Props = {
@@ -27,6 +28,9 @@ type Props = {
 const AppSettingsPageContents = (props: Props) => {
   const { t } = useTranslation('admin');
   const { adminAppContainer } = props;
+
+  const { data: isMaintenanceModeData } = useIsMaintenanceMode();
+
   const { isV5Compatible } = adminAppContainer.state;
 
   useEffect(() => {
@@ -48,7 +52,7 @@ const AppSettingsPageContents = (props: Props) => {
     <div data-testid="admin-app-settings">
       {
         // Alert message will be displayed in case that the GROWI is under maintenance
-        adminAppContainer.state.isMaintenanceMode && (
+        isMaintenanceModeData && (
           <div className="alert alert-danger alert-link" role="alert">
             <h3 className="alert-heading">
               {t('admin:maintenance_mode.maintenance_mode')}
