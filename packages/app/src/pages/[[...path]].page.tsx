@@ -1,6 +1,5 @@
 import React, { useEffect } from 'react';
 
-
 import EventEmitter from 'events';
 
 import {
@@ -18,10 +17,12 @@ import { useRouter } from 'next/router';
 import superjson from 'superjson';
 
 import { Comments } from '~/components/Comments';
+import { RecentlyCreatedIcon } from '~/components/Icons/RecentlyCreatedIcon';
 import { PageAlerts } from '~/components/PageAlert/PageAlerts';
 // import { useTranslation } from '~/i18n';
 import { PageContentFooter } from '~/components/PageContentFooter';
 import { BookmarkList } from '~/components/PageList/BookmarkList';
+import { RecentCreated } from '~/components/RecentCreated/RecentCreated';
 import { CrowiRequest } from '~/interfaces/crowi-request';
 // import { renderScriptTagByName, renderHighlightJsStyleTag } from '~/service/cdn-resources-loader';
 // import { useIndentSize } from '~/stores/editor';
@@ -352,13 +353,13 @@ const GrowiPage: NextPage<Props> = (props: Props) => {
               <div className="grw-user-page-list-m mt-5 d-edit-none">
                 <h2 id="recently-created-list" className="grw-user-page-header border-bottom pb-2 mb-3">
                   <i id="recent-created-icon" className="mr-1">
-                    {/* <RecentlyCreatedIcon /> */}
+                    <RecentlyCreatedIcon />
                   </i>
                   Recently Created
                 </h2>
                 <div id="user-created-list" className="page-list">
                   <div className="page-list-container">
-                    {/* <RecentCreated userId={pageContainer.state.creator._id} /> */}
+                    <RecentCreated userId={pageWithMeta.data.creator._id} />
                   </div>
                 </div>
               </div>
