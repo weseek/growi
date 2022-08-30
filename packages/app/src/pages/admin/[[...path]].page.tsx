@@ -38,7 +38,7 @@ import {
 } from '~/stores/context';
 
 import {
-  CommonProps, getServerSideCommonProps, useCustomTitle, getNextI18NextConfig,
+  CommonProps, getServerSideCommonProps, getNextI18NextConfig,
 } from '../utils/commons';
 
 
@@ -132,7 +132,7 @@ const AdminMarkdownSettingsPage: NextPage<Props> = (props: Props) => {
       component: <DataImportPageContents />,
     },
     export: {
-      title: t('Export Archive Data'),
+      title: t('export_archive_data'),
       component: <ExportArchiveDataPage />,
     },
     notification: {
@@ -170,7 +170,7 @@ const AdminMarkdownSettingsPage: NextPage<Props> = (props: Props) => {
       },
     },
     search: {
-      title: t('full_text_search_management'),
+      title: t('full_text_search_management.full_text_search_management'),
       component: <ElasticsearchManagement />,
     },
     'audit-log': {
@@ -324,7 +324,7 @@ export const getServerSideProps: GetServerSideProps = async(context: GetServerSi
   }
 
   injectServerConfigurations(context, props);
-  injectNextI18NextConfigurations(context, props, ['admin']);
+  await injectNextI18NextConfigurations(context, props, ['admin']);
 
   return {
     props,
