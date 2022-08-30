@@ -1,8 +1,10 @@
+import Image from 'next/image';
+
 import { Themes } from '~/stores/use-next-themes';
 
 import { ThemeInjector } from './utils/ThemeInjector';
 
-import styles from './ThemeIsland.module.scss';
+// import styles from './ThemeIsland.module.scss';
 
 export const getBackgroundImageSrc = (colorScheme: Themes): string => {
   switch (colorScheme) {
@@ -11,7 +13,20 @@ export const getBackgroundImageSrc = (colorScheme: Themes): string => {
   }
 };
 
-const ThemeIsland = ({ children }: { children: JSX.Element }): JSX.Element => {
-  return <ThemeInjector className={styles.theme}>{children}</ThemeInjector>;
+type Props = {
+  children: JSX.Element,
+  colorScheme?: Themes,
+}
+
+const ThemeIsland = ({ children, colorScheme }: Props): JSX.Element => {
+  const bgImageNode = (
+    <>
+      {colorScheme != null && (
+        <Image alt='background image' src={getBackgroundImageSrc(colorScheme)} layout='fill' quality="100" />
+      )}
+    </>
+  );
+  return <ThemeInjector className="theme-island" bgImageNode={bgImageNode}>{children}</ThemeInjector>;
 };
+
 export default ThemeIsland;

@@ -15,7 +15,7 @@ class FacebookSecurityManagement extends React.Component {
     return (
       <>
         <h2 className="alert-anchor border-bottom">
-          Facebook OAuth { t('security_setting.configuration') }
+          Facebook OAuth { t('admin:security_settings.configuration') }
         </h2>
 
         <p className="well">(TBD)</p>

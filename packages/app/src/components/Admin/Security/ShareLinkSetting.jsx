@@ -137,7 +137,7 @@ class ShareLinkSetting extends React.Component {
           </button>
           <h2 className="alert-anchor border-bottom">{t('share_links.share_link_management')}</h2>
         </div>
-        <h4>{t('security_setting.share_link_rights')}</h4>
+        <h4>{t('security_settings.share_link_rights')}</h4>
         <div className="row mb-5">
           <div className="col-6 offset-3">
             <div className="custom-control custom-switch custom-checkbox-success">
@@ -149,15 +149,15 @@ class ShareLinkSetting extends React.Component {
                 onChange={() => this.switchDisableLinkSharing()}
               />
               <label className="custom-control-label" htmlFor="disableLinkSharing">
-                {t('security_setting.enable_link_sharing')}
+                {t('security_settings.enable_link_sharing')}
               </label>
             </div>
             {!adminGeneralSecurityContainer.state.setupStrategies.includes('local') && disableLinkSharing && (
-              <div className="badge badge-warning">{t('security_setting.setup_is_not_yet_complete')}</div>
+              <div className="badge badge-warning">{t('security_settings.setup_is_not_yet_complete')}</div>
             )}
           </div>
         </div>
-        <h4>{t('security_setting.all_share_links')}</h4>
+        <h4>{t('security_settings.all_share_links')}</h4>
         <Pager
           links={shareLinks}
           activePage={shareLinksActivePage}
@@ -196,7 +196,7 @@ ShareLinkSetting.propTypes = {
 };
 
 const ShareLinkSettingWrapperFC = (props) => {
-  const { t } = useTranslation();
+  const { t } = useTranslation('admin');
   return <ShareLinkSetting t={t} {...props} />;
 };
 

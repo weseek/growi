@@ -26,7 +26,7 @@ class GlobalNotification extends React.Component {
 
     try {
       await adminNotificationContainer.updateGlobalNotificationForPages();
-      toastSuccess(t('toaster.update_successed', { target: t('External_Notification') }));
+      toastSuccess(t('toaster.update_successed', { target: t('external_notification.external_notification') }));
     }
     catch (err) {
       toastError(err);
@@ -40,11 +40,11 @@ class GlobalNotification extends React.Component {
     return (
       <React.Fragment>
 
-        <h2 className="border-bottom my-4">{t('notification_setting.valid_page')}</h2>
+        <h2 className="border-bottom my-4">{t('notification_settings.valid_page')}</h2>
 
         <p className="card well">
           {/* eslint-disable-next-line react/no-danger */}
-          <span dangerouslySetInnerHTML={{ __html: t('notification_setting.link_notification_help') }} />
+          <span dangerouslySetInnerHTML={{ __html: t('notification_settings.link_notification_help') }} />
         </p>
 
 
@@ -60,7 +60,7 @@ class GlobalNotification extends React.Component {
               />
               <label className="custom-control-label" htmlFor="isNotificationForOwnerPageEnabled">
                 {/* eslint-disable-next-line react/no-danger */}
-                <span dangerouslySetInnerHTML={{ __html: t('notification_setting.just_me_notification_help') }} />
+                <span dangerouslySetInnerHTML={{ __html: t('notification_settings.just_me_notification_help') }} />
               </label>
             </div>
           </div>
@@ -79,7 +79,7 @@ class GlobalNotification extends React.Component {
               />
               <label className="custom-control-label" htmlFor="isNotificationForGroupPageEnabled">
                 {/* eslint-disable-next-line react/no-danger */}
-                <span dangerouslySetInnerHTML={{ __html: t('notification_setting.group_notification_help') }} />
+                <span dangerouslySetInnerHTML={{ __html: t('notification_settings.group_notification_help') }} />
               </label>
             </div>
           </div>
@@ -97,9 +97,9 @@ class GlobalNotification extends React.Component {
           </div>
         </div>
 
-        <h2 className="border-bottom mb-5">{t('notification_setting.notification_list')}
+        <h2 className="border-bottom mb-5">{t('notification_settings.notification_list')}
           <a href="/admin/global-notification/new">
-            <p className="btn btn-outline-secondary pull-right">{t('notification_setting.add_notification')}</p>
+            <p className="btn btn-outline-secondary pull-right">{t('notification_settings.add_notification')}</p>
           </a>
         </h2>
 
@@ -108,9 +108,9 @@ class GlobalNotification extends React.Component {
             <tr>
               <th>ON/OFF</th>
               {/* eslint-disable-next-line react/no-danger */}
-              <th>{t('notification_setting.trigger_path')} <span dangerouslySetInnerHTML={{ __html: t('notification_setting.trigger_path_help') }} /></th>
-              <th>{t('notification_setting.trigger_events')}</th>
-              <th>{t('notification_setting.notify_to')}</th>
+              <th>{t('notification_settings.trigger_path')} <span dangerouslySetInnerHTML={{ __html: t('notification_settings.trigger_path_help') }} /></th>
+              <th>{t('notification_settings.trigger_events')}</th>
+              <th>{t('notification_settings.notify_to')}</th>
               <th></th>
             </tr>
           </thead>
@@ -134,7 +134,7 @@ GlobalNotification.propTypes = {
 };
 
 const GlobalNotificationWrapperFC = (props) => {
-  const { t } = useTranslation();
+  const { t } = useTranslation('admin');
 
   return <GlobalNotification t={t} {...props} />;
 };
