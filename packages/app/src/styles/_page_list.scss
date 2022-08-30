@@ -1,11 +1,6 @@
 @use './bootstrap/variables' as var;
 
 .page-list :global {
-  .page-list-container {
-    font-size: 15px;
-    line-height: 1.6em;
-  }
-
   .btn-page-item-control {
     width: 20px;
     height: 20px;
