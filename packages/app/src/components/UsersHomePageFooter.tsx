@@ -2,7 +2,7 @@ import React from 'react';
 
 import { RecentlyCreatedIcon } from '~/components/Icons/RecentlyCreatedIcon';
 import BookmarkList from '~/components/PageList/BookmarkList';
-import RecentCreated from '~/components/RecentCreated/RecentCreated';
+import { RecentCreated } from '~/components/RecentCreated/RecentCreated';
 import styles from '~/components/UsersHomePageFooter.module.scss';
 
 type UsersHomePageFooterProps = {
