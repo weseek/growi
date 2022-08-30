@@ -26,11 +26,15 @@ ENV optDir /opt
 
 WORKDIR ${optDir}
 
+RUN set -eux; \
+	apt-get update; \
+	apt-get install -y python3 build-essential;
+
 # copy files
 COPY --from=packages-json-picker ${optDir} .
 
-# setup
-RUN yarn config set network-timeout 300000
+# setup (with network-timeout = 1 hour)
+RUN yarn config set network-timeout 3600000
 RUN npx -y lerna bootstrap -- --frozen-lockfile
 
 # make artifacts
