@@ -11,7 +11,6 @@ import PaginationWrapper from '../PaginationWrapper';
 
 import { PageListItemS } from './PageListItemS';
 
-
 const logger = loggerFactory('growi:BookmarkList');
 
 type BookmarkListProps = {
@@ -23,8 +22,8 @@ type BookmarkListPages = {
   page: IPageHasId,
   user: string,
   createdAt: Date,
-  __v: number,
 }
+
 
 export const BookmarkList = (props: BookmarkListProps): JSX.Element => {
   const { userId } = props;

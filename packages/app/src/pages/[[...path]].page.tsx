@@ -336,7 +336,7 @@ const GrowiPage: NextPage<Props> = (props: Props) => {
           <Comments pageId={pageId} />
           {/* )} */}
           {/* TODO: Create UsersHomePageFooter conponent */}
-          { !isUsersHomePage(props.currentPathname) && (
+          { (pageWithMeta != null && isUsersHomePage(pageWithMeta.data.path)) && (
             <div className="container-lg user-page-footer py-5">
               <div className="grw-user-page-list-m d-edit-none">
                 <h2 id="bookmarks-list" className="grw-user-page-header border-bottom pb-2 mb-3">
@@ -344,10 +344,8 @@ const GrowiPage: NextPage<Props> = (props: Props) => {
                   Bookmarks
                 </h2>
                 <div id="user-bookmark-list" className="page-list">
-                  {/* TODO: No need page-list-container class ? */}
                   <div className="page-list-container">
-                    {/* TODO: <BookmarkList userId={pageContainer.state.creator._id} /> */}
-                    <BookmarkList userId={pageWithMeta?.data.creator._id} />
+                    <BookmarkList userId={pageWithMeta.data.creator._id} />
                   </div>
                 </div>
               </div>
@@ -359,7 +357,6 @@ const GrowiPage: NextPage<Props> = (props: Props) => {
                   Recently Created
                 </h2>
                 <div id="user-created-list" className="page-list">
-                  {/* TODO: No need page-list-container class ? */}
                   <div className="page-list-container">
                     {/* <RecentCreated userId={pageContainer.state.creator._id} /> */}
                   </div>
