@@ -344,7 +344,6 @@ const GrowiPage: NextPage<Props> = (props: Props) => {
                   Bookmarks
                 </h2>
                 <div id="user-bookmark-list" className="page-list">
-                  {/* TODO: No need page-list-container class ? */}
                   <div className="page-list-container">
                     {/* <BookmarkList userId={pageContainer.state.creator._id} /> */}
                   </div>
@@ -358,10 +357,8 @@ const GrowiPage: NextPage<Props> = (props: Props) => {
                   Recently Created
                 </h2>
                 <div id="user-created-list" className="page-list">
-                  {/* TODO: No need page-list-container class ? */}
                   <div className="page-list-container">
-                    {/* TODO: <RecentCreated userId={pageContainer.state.creator._id} /> */}
-                    <RecentCreated userId={pageWithMeta?.data.creator._id} />
+                    <RecentCreated userId={pageWithMeta.data.creator._id} />
                   </div>
                 </div>
               </div>
