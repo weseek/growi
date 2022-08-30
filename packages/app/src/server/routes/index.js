@@ -181,8 +181,8 @@ module.exports = function(crowi, app) {
   apiV1Router.get('/pages.updatePost'    , accessTokenParser, loginRequired, page.api.getUpdatePost);
   apiV1Router.get('/pages.getPageTag'    , accessTokenParser , loginRequired , page.api.getPageTag);
   // allow posting to guests because the client doesn't know whether the user logged in
-  apiV1Router.post('/pages.remove'       , loginRequiredStrictly , addActivity, page.validator.remove, apiV1FormValidator, page.api.remove); // (Avoid from API Token)
-  apiV1Router.post('/pages.revertRemove' , loginRequiredStrictly , addActivity, page.validator.revertRemove, apiV1FormValidator, page.api.revertRemove); // (Avoid from API Token)
+  apiV1Router.post('/pages.remove'       , loginRequiredStrictly , page.validator.remove, apiV1FormValidator, page.api.remove); // (Avoid from API Token)
+  apiV1Router.post('/pages.revertRemove' , loginRequiredStrictly , page.validator.revertRemove, apiV1FormValidator, page.api.revertRemove); // (Avoid from API Token)
   apiV1Router.post('/pages.unlink'       , loginRequiredStrictly , page.api.unlink); // (Avoid from API Token)
   apiV1Router.post('/pages.duplicate'    , accessTokenParser, loginRequiredStrictly, page.api.duplicate);
   apiV1Router.get('/tags.list'           , accessTokenParser, loginRequired, tag.api.list);

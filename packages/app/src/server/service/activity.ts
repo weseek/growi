@@ -1,10 +1,10 @@
+import { Ref, IPage, IUser } from '@growi/core';
 import mongoose from 'mongoose';
 
 import {
   IActivity, SupportedActionType, AllSupportedActions, ActionGroupSize,
   AllEssentialActions, AllSmallGroupActions, AllMediumGroupActions, AllLargeGroupActions,
 } from '~/interfaces/activity';
-import { IPage } from '~/interfaces/page';
 import Activity from '~/server/models/activity';
 
 import loggerFactory from '../../utils/logger';
@@ -39,7 +39,7 @@ class ActivityService {
   }
 
   initActivityEventListeners(): void {
-    this.activityEvent.on('update', async(activityId: string, parameters, target?: IPage) => {
+    this.activityEvent.on('update', async(activityId: string, parameters, target?: IPage, descendantsSubscribedUsers?: Ref<IUser>[]) => {
       let activity: IActivity;
       const shoudUpdate = this.shoudUpdateActivity(parameters.action);
 
@@ -52,7 +52,7 @@ class ActivityService {
           return;
         }
 
-        this.activityEvent.emit('updated', activity, target);
+        this.activityEvent.emit('updated', activity, target, descendantsSubscribedUsers);
       }
     });
   }
@@ -103,16 +103,19 @@ class ActivityService {
   };
 
   // for GET request
-  createActivity = async function(parameters): Promise<void> {
+  createActivity = async function(parameters): Promise<IActivity | null> {
     const shoudCreateActivity = this.crowi.activityService.shoudUpdateActivity(parameters.action);
     if (shoudCreateActivity) {
+      let activity: IActivity;
       try {
-        await Activity.createByParameters(parameters);
+        activity = await Activity.createByParameters(parameters);
+        return activity;
       }
       catch (err) {
         logger.error('Create activity failed', err);
       }
     }
+    return null;
   };
 
   createTtlIndex = async function() {

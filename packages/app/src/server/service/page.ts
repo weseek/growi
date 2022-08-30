@@ -3,22 +3,21 @@ import { Readable, Writable } from 'stream';
 
 import {
   pagePathUtils, pathUtils, Ref, HasObjectId,
+  IUserHasId,
+  IPage, IPageInfo, IPageInfoAll, IPageInfoForEntity, IPageWithMeta,
 } from '@growi/core';
 import escapeStringRegexp from 'escape-string-regexp';
 import mongoose, { ObjectId, QueryCursor } from 'mongoose';
 import streamToPromise from 'stream-to-promise';
 
+import { SupportedAction } from '~/interfaces/activity';
 import { V5ConversionErrCode } from '~/interfaces/errors/v5-conversion-error';
-import {
-  IPage, IPageInfo, IPageInfoAll, IPageInfoForEntity, IPageWithMeta,
-} from '~/interfaces/page';
 import {
   PageDeleteConfigValue, IPageDeleteConfigValueToProcessValidation,
 } from '~/interfaces/page-delete-config';
 import {
   IPageOperationProcessInfo, IPageOperationProcessData, PageActionStage, PageActionType,
 } from '~/interfaces/page-operation';
-import { IUserHasId } from '~/interfaces/user';
 import { PageMigrationErrorData, SocketEventName, UpdateDescCountRawData } from '~/interfaces/websocket';
 import {
   CreateMethod, PageCreateOptions, PageModel, PageDocument, pushRevision, PageQueryBuilder,
@@ -137,10 +136,13 @@ class PageService {
 
   tagEvent: any;
 
+  activityEvent: any;
+
   constructor(crowi) {
     this.crowi = crowi;
     this.pageEvent = crowi.event('page');
     this.tagEvent = crowi.event('tag');
+    this.activityEvent = crowi.event('activity');
 
     // init
     this.initPageEvent();
@@ -348,11 +350,25 @@ class PageService {
       .cursor({ batchSize: BULK_REINDEX_SIZE });
   }
 
-  async renamePage(page, newPagePath, user, options) {
+  async renamePage(page: IPage, newPagePath, user, options, activityParameters): Promise<PageDocument | null> {
     /*
      * Common Operation
      */
     const Page = mongoose.model('Page') as unknown as PageModel;
+
+    const parameters = {
+      ip: activityParameters.ip,
+      endpoint: activityParameters.endpoint,
+      action: page.descendantCount > 0 ? SupportedAction.ACTION_PAGE_RECURSIVELY_RENAME : SupportedAction.ACTION_PAGE_RENAME,
+      user,
+      targetModel: 'Page',
+      target: page,
+      snapshot: {
+        username: user.username,
+      },
+    };
+
+    const activity = await this.crowi.activityService.createActivity(parameters);
 
     const isExist = await Page.exists({ path: newPagePath });
     if (isExist) {
@@ -403,10 +419,9 @@ class PageService {
       logger.error('Failed to create PageOperation document.', err);
       throw err;
     }
-
     let renamedPage: PageDocument | null = null;
     try {
-      renamedPage = await this.renameMainOperation(page, newPagePath, user, options, pageOp._id);
+      renamedPage = await this.renameMainOperation(page, newPagePath, user, options, pageOp._id, activity);
     }
     catch (err) {
       logger.error('Error occurred while running renameMainOperation', err);
@@ -416,11 +431,13 @@ class PageService {
 
       throw err;
     }
-
+    if (page.descendantCount < 1) {
+      this.activityEvent.emit('updated', activity, page);
+    }
     return renamedPage;
   }
 
-  async renameMainOperation(page, newPagePath: string, user, options, pageOpId: ObjectIdLike) {
+  async renameMainOperation(page, newPagePath: string, user, options, pageOpId: ObjectIdLike, activity?): Promise<PageDocument | null> {
     const Page = mongoose.model('Page') as unknown as PageModel;
 
     const updateMetadata = options.updateMetadata || false;
@@ -505,12 +522,12 @@ class PageService {
     /*
      * Sub Operation
      */
-    this.renameSubOperation(page, newPagePath, user, options, renamedPage, pageOp._id);
+    this.renameSubOperation(page, newPagePath, user, options, renamedPage, pageOp._id, activity);
 
     return renamedPage;
   }
 
-  async renameSubOperation(page, newPagePath: string, user, options, renamedPage, pageOpId: ObjectIdLike): Promise<void> {
+  async renameSubOperation(page, newPagePath: string, user, options, renamedPage, pageOpId: ObjectIdLike, activity?): Promise<void> {
     const Page = mongoose.model('Page') as unknown as PageModel;
 
     const exParentId = page.parent;
@@ -518,7 +535,10 @@ class PageService {
     const timerObj = this.crowi.pageOperationService.autoUpdateExpiryDate(pageOpId);
     try {
     // update descendants first
-      await this.renameDescendantsWithStream(page, newPagePath, user, options, false);
+      const descendantsSubscribedSets = new Set();
+      await this.renameDescendantsWithStream(page, newPagePath, user, options, false, descendantsSubscribedSets);
+      const descendantsSubscribedUsers = Array.from(descendantsSubscribedSets);
+      this.activityEvent.emit('updated', activity, page, descendantsSubscribedUsers);
     }
     catch (err) {
       logger.warn(err);
@@ -549,7 +569,7 @@ class PageService {
     await PageOperation.findByIdAndDelete(pageOpId);
   }
 
-  async resumeRenameSubOperation(renamedPage: PageDocument, pageOp: PageOperationDocument): Promise<void> {
+  async resumeRenameSubOperation(renamedPage: PageDocument, pageOp: PageOperationDocument, activity?): Promise<void> {
     const isProcessable = pageOp.isProcessable();
     if (!isProcessable) {
       throw Error('This page operation is currently being processed');
@@ -562,7 +582,7 @@ class PageService {
       page, fromPath, toPath, options, user,
     } = pageOp;
 
-    this.fixPathsAndDescendantCountOfAncestors(page, user, options, renamedPage, pageOp._id, fromPath, toPath);
+    this.fixPathsAndDescendantCountOfAncestors(page, user, options, renamedPage, pageOp._id, fromPath, toPath, activity);
   }
 
   /**
@@ -570,8 +590,8 @@ class PageService {
    * `renameSubOperation` to restart rename operation
    * `updateDescendantCountOfPagesWithPaths` to fix descendantCount of ancestors
    */
-  private async fixPathsAndDescendantCountOfAncestors(page, user, options, renamedPage, pageOpId, fromPath, toPath): Promise<void> {
-    await this.renameSubOperation(page, toPath, user, options, renamedPage, pageOpId);
+  private async fixPathsAndDescendantCountOfAncestors(page, user, options, renamedPage, pageOpId, fromPath, toPath, activity?): Promise<void> {
+    await this.renameSubOperation(page, toPath, user, options, renamedPage, pageOpId, activity);
     const ancestorsPaths = this.crowi.pageOperationService.getAncestorsPathsByFromAndToPath(fromPath, toPath);
     await this.updateDescendantCountOfPagesWithPaths(ancestorsPaths);
   }
@@ -806,7 +826,7 @@ class PageService {
     this.pageEvent.emit('updateMany', pages, user);
   }
 
-  private async renameDescendantsWithStream(targetPage, newPagePath, user, options = {}, shouldUseV4Process = true) {
+  private async renameDescendantsWithStream(targetPage, newPagePath, user, options = {}, shouldUseV4Process = true, descendantsSubscribedSets?) {
     // v4 compatible process
     if (shouldUseV4Process) {
       return this.renameDescendantsWithStreamV4(targetPage, newPagePath, user, options);
@@ -829,6 +849,10 @@ class PageService {
           await renameDescendants(
             batch, user, options, pathRegExp, newPagePathPrefix, shouldUseV4Process,
           );
+          const subscribedUsers = await Subscription.getSubscriptions(batch);
+          subscribedUsers.forEach((eachUser) => {
+            descendantsSubscribedSets.add(eachUser);
+          });
           logger.debug(`Renaming pages progressing: (count=${count})`);
         }
         catch (err) {
@@ -1335,7 +1359,7 @@ class PageService {
   /*
    * Delete
    */
-  async deletePage(page, user, options = {}, isRecursively = false) {
+  async deletePage(page, user, options = {}, isRecursively = false, activityParameters?) {
     /*
      * Common Operation
      */
@@ -1372,6 +1396,20 @@ class PageService {
     if (shouldReplace) {
       await Page.replaceTargetWithPage(page, null, true);
     }
+
+    const parameters = {
+      ip: activityParameters.ip,
+      endpoint: activityParameters.endpoint,
+      action: page.descendantCount > 0 ? SupportedAction.ACTION_PAGE_RECURSIVELY_DELETE : SupportedAction.ACTION_PAGE_DELETE,
+      user,
+      target: page,
+      targetModel: 'Page',
+      snapshot: {
+        username: user.username,
+      },
+    };
+
+    const activity = await this.crowi.activityService.createActivity(parameters);
 
     // Delete target (only updating an existing document's properties )
     let deletedPage;
@@ -1416,7 +1454,7 @@ class PageService {
        */
       (async() => {
         try {
-          await this.deleteRecursivelyMainOperation(page, user, pageOp._id);
+          await this.deleteRecursivelyMainOperation(page, user, pageOp._id, activity);
         }
         catch (err) {
           logger.error('Error occurred while running deleteRecursivelyMainOperation.', err);
@@ -1427,6 +1465,9 @@ class PageService {
           throw err;
         }
       })();
+    }
+    else {
+      this.activityEvent.emit('updated', activity, page);
     }
 
     return deletedPage;
@@ -1459,8 +1500,12 @@ class PageService {
     return deletedPage;
   }
 
-  async deleteRecursivelyMainOperation(page, user, pageOpId: ObjectIdLike): Promise<void> {
-    await this.deleteDescendantsWithStream(page, user, false);
+  async deleteRecursivelyMainOperation(page, user, pageOpId: ObjectIdLike, activity?): Promise<void> {
+    const descendantsSubscribedSets = new Set();
+    await this.deleteDescendantsWithStream(page, user, false, descendantsSubscribedSets);
+
+    const descendantsSubscribedUsers = Array.from(descendantsSubscribedSets);
+    this.activityEvent.emit('updated', activity, page, descendantsSubscribedUsers);
 
     await PageOperation.findByIdAndDelete(pageOpId);
 
@@ -1582,7 +1627,7 @@ class PageService {
   /**
    * Create delete stream and return deleted document count
    */
-  private async deleteDescendantsWithStream(targetPage, user, shouldUseV4Process = true): Promise<number> {
+  private async deleteDescendantsWithStream(targetPage, user, shouldUseV4Process = true, descendantsSubscribedSets?): Promise<number> {
     let readStream;
     if (shouldUseV4Process) {
       readStream = await this.generateReadStreamToOperateOnlyDescendants(targetPage.path, user);
@@ -1605,6 +1650,10 @@ class PageService {
         try {
           count += batch.length;
           await deleteDescendants(batch, user);
+          const subscribedUsers = await Subscription.getSubscriptions(batch);
+          subscribedUsers.forEach((eachUser) => {
+            descendantsSubscribedSets.add(eachUser);
+          });
           logger.debug(`Deleting pages progressing: (count=${count})`);
         }
         catch (err) {
@@ -1669,7 +1718,7 @@ class PageService {
     return;
   }
 
-  async deleteCompletely(page, user, options = {}, isRecursively = false, preventEmitting = false) {
+  async deleteCompletely(page, user, options = {}, isRecursively = false, preventEmitting = false, activityParameters?) {
     /*
      * Common Operation
      */
@@ -1698,6 +1747,20 @@ class PageService {
     const paths = [page.path];
 
     logger.debug('Deleting completely', paths);
+
+    const parameters = {
+      ip: activityParameters.ip,
+      endpoint: activityParameters.endpoint,
+      action: page.descendantCount > 0 ? SupportedAction.ACTION_PAGE_RECURSIVELY_DELETE_COMPLETELY : SupportedAction.ACTION_PAGE_DELETE_COMPLETELY,
+      user,
+      target: page,
+      targetModel: 'Page',
+      snapshot: {
+        username: user.username,
+      },
+    };
+
+    const activity = await this.crowi.activityService.createActivity(parameters);
 
     // 1. update descendantCount
     if (isRecursively) {
@@ -1744,7 +1807,7 @@ class PageService {
        */
       (async() => {
         try {
-          await this.deleteCompletelyRecursivelyMainOperation(page, user, options, pageOp._id);
+          await this.deleteCompletelyRecursivelyMainOperation(page, user, options, pageOp._id, activity);
         }
         catch (err) {
           logger.error('Error occurred while running deleteCompletelyRecursivelyMainOperation.', err);
@@ -1756,12 +1819,18 @@ class PageService {
         }
       })();
     }
+    else {
+      this.activityEvent.emit('updated', activity, page);
+    }
 
     return;
   }
 
-  async deleteCompletelyRecursivelyMainOperation(page, user, options, pageOpId: ObjectIdLike): Promise<void> {
-    await this.deleteCompletelyDescendantsWithStream(page, user, options, false);
+  async deleteCompletelyRecursivelyMainOperation(page, user, options, pageOpId: ObjectIdLike, activity?): Promise<void> {
+    const descendantsSubscribedSets = new Set();
+    await this.deleteCompletelyDescendantsWithStream(page, user, options, false, descendantsSubscribedSets);
+    const descendantsSubscribedUsers = Array.from(descendantsSubscribedSets);
+    this.activityEvent.emit('updated', activity, page, descendantsSubscribedUsers);
 
     await PageOperation.findByIdAndDelete(pageOpId);
 
@@ -1794,7 +1863,7 @@ class PageService {
   /**
    * Create delete completely stream
    */
-  private async deleteCompletelyDescendantsWithStream(targetPage, user, options = {}, shouldUseV4Process = true): Promise<number> {
+  private async deleteCompletelyDescendantsWithStream(targetPage, user, options = {}, shouldUseV4Process = true, descendantsSubscribedSets?): Promise<number> {
     let readStream;
 
     if (shouldUseV4Process) { // pages don't have parents
@@ -1817,6 +1886,10 @@ class PageService {
         try {
           count += batch.length;
           await deleteMultipleCompletely(batch, user, options);
+          const subscribedUsers = await Subscription.getSubscriptions(batch);
+          subscribedUsers.forEach((eachUser) => {
+            descendantsSubscribedSets.add(eachUser);
+          });
           logger.debug(`Adding pages progressing: (count=${count})`);
         }
         catch (err) {
@@ -1900,12 +1973,26 @@ class PageService {
     }
   }
 
-  async revertDeletedPage(page, user, options = {}, isRecursively = false) {
+  async revertDeletedPage(page, user, options = {}, isRecursively = false, activityParameters?) {
     /*
      * Common Operation
      */
     const Page = this.crowi.model('Page');
     const PageTagRelation = this.crowi.model('PageTagRelation');
+
+    const parameters = {
+      ip: activityParameters.ip,
+      endpoint: activityParameters.endpoint,
+      action: page.descendantCount > 0 ? SupportedAction.ACTION_PAGE_RECURSIVELY_REVERT : SupportedAction.ACTION_PAGE_REVERT,
+      user,
+      target: page,
+      targetModel: 'Page',
+      snapshot: {
+        username: user.username,
+      },
+    };
+
+    const activity = await this.crowi.activityService.createActivity(parameters);
 
     // 1. Separate v4 & v5 process
     const shouldUseV4Process = this.shouldUseV4ProcessForRevert(page);
@@ -1941,6 +2028,7 @@ class PageService {
 
     if (!isRecursively) {
       await this.updateDescendantCountOfAncestors(parent._id, 1, true);
+      this.activityEvent.emit('updated', activity, page);
     }
     else {
       let pageOp;
@@ -1964,7 +2052,7 @@ class PageService {
        */
       (async() => {
         try {
-          await this.revertRecursivelyMainOperation(page, user, options, pageOp._id);
+          await this.revertRecursivelyMainOperation(page, user, options, pageOp._id, activity);
         }
         catch (err) {
           logger.error('Error occurred while running revertRecursivelyMainOperation.', err);
@@ -1980,10 +2068,13 @@ class PageService {
     return updatedPage;
   }
 
-  async revertRecursivelyMainOperation(page, user, options, pageOpId: ObjectIdLike): Promise<void> {
+  async revertRecursivelyMainOperation(page, user, options, pageOpId: ObjectIdLike, activity?): Promise<void> {
     const Page = mongoose.model('Page') as unknown as PageModel;
 
-    await this.revertDeletedDescendantsWithStream(page, user, options, false);
+    const descendantsSubscribedSets = new Set();
+    await this.revertDeletedDescendantsWithStream(page, user, options, false, descendantsSubscribedSets);
+    const descendantsSubscribedUsers = Array.from(descendantsSubscribedSets);
+    this.activityEvent.emit('updated', activity, page, descendantsSubscribedUsers);
 
     const newPath = Page.getRevertDeletedPageName(page.path);
     // normalize parent of descendant pages
@@ -2058,7 +2149,7 @@ class PageService {
   /**
    * Create revert stream
    */
-  private async revertDeletedDescendantsWithStream(targetPage, user, options = {}, shouldUseV4Process = true): Promise<number> {
+  private async revertDeletedDescendantsWithStream(targetPage, user, options = {}, shouldUseV4Process = true, descendantsSubscribedSets?): Promise<number> {
     if (shouldUseV4Process) {
       return this.revertDeletedDescendantsWithStreamV4(targetPage, user, options);
     }
@@ -2073,6 +2164,10 @@ class PageService {
         try {
           count += batch.length;
           await revertDeletedDescendants(batch, user);
+          const subscribedUsers = await Subscription.getSubscriptions(batch);
+          subscribedUsers.forEach((eachUser) => {
+            descendantsSubscribedSets.add(eachUser);
+          });
           logger.debug(`Reverting pages progressing: (count=${count})`);
         }
         catch (err) {
