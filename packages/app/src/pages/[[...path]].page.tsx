@@ -290,89 +290,90 @@ const GrowiPage: NextPage<Props> = (props: Props) => {
       </Head>
       {/* <BasicLayout title={useCustomTitle(props, t('GROWI'))} className={classNames.join(' ')}> */}
       <BasicLayout title={useCustomTitle(props, 'GROWI')} className={classNames.join(' ')} expandContainer={props.isContainerFluid}>
-        <header className="py-0 position-relative">
-          <GrowiContextualSubNavigation isLinkSharingDisabled={props.disableLinkSharing} />
-        </header>
-        <div className="d-edit-none">
-          <GrowiSubNavigationSwitcher />
-        </div>
-
-        <div id="grw-subnav-sticky-trigger" className="sticky-top"></div>
-        <div id="grw-fav-sticky-trigger" className="sticky-top"></div>
-
-        <div id="main" className={`main ${isUsersHomePage(props.currentPathname) && 'user-page'}`}>
-          <div id="content-main" className="content-main grw-container-convertible">
-            <div className="row">
-              <div className="col">
-                { props.isIdenticalPathPage && <IdenticalPathPage /> }
-
-                { !props.isIdenticalPathPage && (
-                  <>
-                    <PageAlerts />
-                    { props.isForbidden && <ForbiddenPage /> }
-                    { props.IsNotCreatable && <NotCreatablePage />}
-                    { !props.isForbidden && !props.IsNotCreatable && <DisplaySwitcher />}
-                    {/* <DisplaySwitcher /> */}
-                    <div id="page-editor-navbar-bottom-container" className="d-none d-edit-block"></div>
-                    {/* <PageStatusAlert /> */}
-                  </>
-                ) }
-
-              </div>
-            </div>
-
-            {/* <div className="col-xl-2 col-lg-3 d-none d-lg-block revision-toc-container">
-              <div id="revision-toc" className="revision-toc mt-3 sps sps--abv" data-sps-offset="123">
-                <div id="revision-toc-content" className="revision-toc-content"></div>
-              </div>
-            </div> */}
+        <div className="h-100 d-flex flex-column justify-content-between">
+          <header className="py-0 position-relative">
+            <GrowiContextualSubNavigation isLinkSharingDisabled={props.disableLinkSharing} />
+          </header>
+          <div className="d-edit-none">
+            <GrowiSubNavigationSwitcher />
           </div>
-        </div>
-        {/* TODO: Check CSS import */}
-        <footer className="footer d-edit-none">
-          {/* TODO: Enable page_list.html */}
-          {/* TODO: Enable isIdenticalPathPage or useIdenticalPath */}
-          {/* { !props.isIdenticalPathPage && ( */}
-          <Comments pageId={pageId} />
-          {/* )} */}
-          {/* TODO: Create UsersHomePageFooter conponent */}
-          { isUsersHomePage(props.currentPathname) && (
-            <div className="container-lg user-page-footer py-5">
-              <div className="grw-user-page-list-m d-edit-none">
-                <h2 id="bookmarks-list" className="grw-user-page-header border-bottom pb-2 mb-3">
-                  <i style={{ fontSize: '1.3em' }} className="fa fa-fw fa-bookmark-o"></i>
-                  Bookmarks
-                </h2>
-                <div id="user-bookmark-list" className="page-list">
-                  {/* TODO: No need page-list-container class ? */}
-                  <div className="page-list-container">
-                    {/* <BookmarkList userId={pageContainer.state.creator._id} /> */}
-                  </div>
+
+          <div id="grw-subnav-sticky-trigger" className="sticky-top"></div>
+          <div id="grw-fav-sticky-trigger" className="sticky-top"></div>
+
+          <div id="main" className={`main ${isUsersHomePage(props.currentPathname) && 'user-page'}`}>
+            <div id="content-main" className="content-main grw-container-convertible">
+              <div className="row">
+                <div className="col">
+                  { props.isIdenticalPathPage && <IdenticalPathPage /> }
+
+                  { !props.isIdenticalPathPage && (
+                    <>
+                      <PageAlerts />
+                      { props.isForbidden && <ForbiddenPage /> }
+                      { props.IsNotCreatable && <NotCreatablePage />}
+                      { !props.isForbidden && !props.IsNotCreatable && <DisplaySwitcher />}
+                      {/* <DisplaySwitcher /> */}
+                      <div id="page-editor-navbar-bottom-container" className="d-none d-edit-block"></div>
+                      {/* <PageStatusAlert /> */}
+                    </>
+                  ) }
+
                 </div>
               </div>
-              <div className="grw-user-page-list-m mt-5 d-edit-none">
-                <h2 id="recently-created-list" className="grw-user-page-header border-bottom pb-2 mb-3">
-                  <i id="recent-created-icon" className="mr-1">
-                    {/* <RecentlyCreatedIcon /> */}
-                  </i>
-                  Recently Created
-                </h2>
-                <div id="user-created-list" className="page-list">
-                  {/* TODO: No need page-list-container class ? */}
-                  <div className="page-list-container">
-                    {/* <RecentCreated userId={pageContainer.state.creator._id} /> */}
-                  </div>
+
+              {/* <div className="col-xl-2 col-lg-3 d-none d-lg-block revision-toc-container">
+                <div id="revision-toc" className="revision-toc mt-3 sps sps--abv" data-sps-offset="123">
+                  <div id="revision-toc-content" className="revision-toc-content"></div>
                 </div>
-              </div>
+              </div> */}
             </div>
-          )}
-          <PageContentFooter />
-        </footer>
+          </div>
+          {/* TODO: Check CSS import */}
+          <footer className="footer d-edit-none">
+            {/* TODO: Enable page_list.html */}
+            {/* TODO: Enable isIdenticalPathPage or useIdenticalPath */}
+            {/* { !props.isIdenticalPathPage && ( */}
+            <Comments pageId={pageId} />
+            {/* )} */}
+            {/* TODO: Create UsersHomePageFooter conponent */}
+            { isUsersHomePage(props.currentPathname) && (
+              <div className="container-lg user-page-footer py-5">
+                <div className="grw-user-page-list-m d-edit-none">
+                  <h2 id="bookmarks-list" className="grw-user-page-header border-bottom pb-2 mb-3">
+                    <i style={{ fontSize: '1.3em' }} className="fa fa-fw fa-bookmark-o"></i>
+                    Bookmarks
+                  </h2>
+                  <div id="user-bookmark-list" className="page-list">
+                    {/* TODO: No need page-list-container class ? */}
+                    <div className="page-list-container">
+                      {/* <BookmarkList userId={pageContainer.state.creator._id} /> */}
+                    </div>
+                  </div>
+                </div>
+                <div className="grw-user-page-list-m mt-5 d-edit-none">
+                  <h2 id="recently-created-list" className="grw-user-page-header border-bottom pb-2 mb-3">
+                    <i id="recent-created-icon" className="mr-1">
+                      {/* <RecentlyCreatedIcon /> */}
+                    </i>
+                    Recently Created
+                  </h2>
+                  <div id="user-created-list" className="page-list">
+                    {/* TODO: No need page-list-container class ? */}
+                    <div className="page-list-container">
+                      {/* <RecentCreated userId={pageContainer.state.creator._id} /> */}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
+            <PageContentFooter />
+          </footer>
 
-        <UnsavedAlertDialog />
-        <DescendantsPageListModal />
-        {shouldRenderPutbackPageModal && <PutbackPageModal />}
-
+          <UnsavedAlertDialog />
+          <DescendantsPageListModal />
+          {shouldRenderPutbackPageModal && <PutbackPageModal />}
+        </div>
       </BasicLayout>
     </>
   );
