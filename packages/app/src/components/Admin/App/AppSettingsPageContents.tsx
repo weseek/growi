@@ -12,7 +12,7 @@ import { withUnstatedContainers } from '../../UnstatedUtils';
 import AppSetting from './AppSetting';
 import FileUploadSetting from './FileUploadSetting';
 import MailSetting from './MailSetting';
-import MaintenanceMode from './MaintenanceMode';
+import { MaintenanceMode } from './MaintenanceMode';
 import PluginSetting from './PluginSetting';
 import SiteUrlSetting from './SiteUrlSetting';
 import V5PageMigration from './V5PageMigration';

@@ -3,11 +3,8 @@ import { useTranslation } from 'next-i18next';
 
 import loggerFactory from '~/utils/logger';
 
-import { withUnstatedContainers } from '../../UnstatedUtils';
 import { ConfirmModal } from './ConfirmModal';
 import { toastSuccess, toastError } from '~/client/util/apiNotification';
-
-import AdminAppContainer from '~/client/services/AdminAppContainer';
 
 import { apiv3Post } from '~/client/util/apiv3-client';
 
@@ -15,13 +12,9 @@ import { useIsMaintenanceMode } from '~/stores/context';
 
 const logger = loggerFactory('growi:maintenanceMode');
 
-type Props = {
-  adminAppContainer: AdminAppContainer,
-};
 
-const MaintenanceMode: FC<Props> = (props: Props) => {
+export const MaintenanceMode: FC = () => {
   const { t } = useTranslation();
-  const { adminAppContainer } = props;
 
   const { data: isMaintenanceMode, mutate: mutateIsMaintenanceMode } = useIsMaintenanceMode();
 
@@ -60,7 +53,7 @@ const MaintenanceMode: FC<Props> = (props: Props) => {
 
     // eslint-disable-next-line max-len
     toastSuccess(isMaintenanceMode ? t('admin:maintenance_mode.successfully_ended_maintenance_mode') : t('admin:maintenance_mode.successfully_started_maintenance_mode'));
-  }, [isMaintenanceMode, adminAppContainer, closeModal]);
+  }, [isMaintenanceMode, closeModal]);
 
   return (
     <div className="mb-5">
@@ -92,5 +85,3 @@ const MaintenanceMode: FC<Props> = (props: Props) => {
     </div>
   );
 };
-
-export default withUnstatedContainers(MaintenanceMode, [AdminAppContainer]);
