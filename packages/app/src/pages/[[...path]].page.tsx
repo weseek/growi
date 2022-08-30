@@ -301,7 +301,6 @@ const GrowiPage: NextPage<Props> = (props: Props) => {
           <div id="grw-subnav-sticky-trigger" className="sticky-top"></div>
           <div id="grw-fav-sticky-trigger" className="sticky-top"></div>
 
-          {/* TODO: check grep=flex-grow-1, identical-path-page.html, layout.html, page_content.html */}
           <div className="flex-grow-1">
             <div id="main" className={`main ${isUsersHomePage(props.currentPathname) && 'user-page'}`}>
               <div id="content-main" className="content-main grw-container-convertible">
