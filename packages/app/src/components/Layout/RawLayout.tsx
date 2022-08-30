@@ -1,13 +1,17 @@
-import React, {
-  ReactNode, useEffect, useState,
-} from 'react';
+import React, { ReactNode, useState } from 'react';
 
 import Head from 'next/head';
+import { useIsomorphicLayoutEffect } from 'usehooks-ts';
 
 import { useGrowiTheme } from '~/stores/context';
-import { Themes, useNextThemes } from '~/stores/use-next-themes';
+import { ColorScheme, useNextThemes } from '~/stores/use-next-themes';
+import loggerFactory from '~/utils/logger';
 
 import { ThemeProvider } from '../Theme/utils/ThemeProvider';
+
+
+const logger = loggerFactory('growi:cli:RawLayout');
+
 
 type Props = {
   title?: string,
@@ -23,13 +27,13 @@ export const RawLayout = ({ children, title, className }: Props): JSX.Element =>
   const { data: growiTheme } = useGrowiTheme();
 
   // get color scheme from next-themes
-  const { resolvedTheme } = useNextThemes();
+  const { resolvedTheme, resolvedThemeByAttributes } = useNextThemes();
 
-  const [colorScheme, setColorScheme] = useState<Themes|undefined>(undefined);
+  const [colorScheme, setColorScheme] = useState<ColorScheme|undefined>(undefined);
 
   // set colorScheme in CSR
-  useEffect(() => {
-    setColorScheme(resolvedTheme as Themes);
+  useIsomorphicLayoutEffect(() => {
+    setColorScheme(resolvedTheme ?? resolvedThemeByAttributes);
   }, [resolvedTheme]);
 
   return (
