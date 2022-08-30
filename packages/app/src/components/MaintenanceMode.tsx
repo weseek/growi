@@ -1,4 +1,5 @@
 import React, { FC, useCallback } from 'react';
+
 import { useTranslation } from 'next-i18next';
 
 import { toastError } from '~/client/util/apiNotification';
@@ -35,7 +36,7 @@ export const MaintenanceMode: FC = () => {
                 && (
                   <p>
                     <i className="icon-arrow-right"></i>
-                    <a className="btn btn-link" href="/admin">{ t('maintenance_mode.admin_page') }</a>
+                    <a className="btn btn-link" href="/admin/home">{ t('maintenance_mode.admin_page') }</a>
                   </p>
                 )}
                 {currentUser != null
@@ -60,3 +61,5 @@ export const MaintenanceMode: FC = () => {
     </div>
   );
 };
+
+MaintenanceMode.displayName = 'MaintenanceMode';
