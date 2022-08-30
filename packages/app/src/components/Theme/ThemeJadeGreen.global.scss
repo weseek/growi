@@ -2,9 +2,9 @@
 @use '../../styles/bootstrap/variables' as *;
 @use '../../styles/theme/mixins/page-editor-mode-manager';
 
-.theme[data-color-scheme='light'] :global {
+:root[data-theme='light'] .theme-jade-green {
   // Theme colors
-  $themecolor: #ea5532;
+  $themecolor: #38b48b;
   $themelight: #ffffff;
   $accentcolor: #bfbfbf;
   $subthemecolor: #e6e6e6;
@@ -57,7 +57,7 @@
   $bgcolor-resize-button-hover: lighten($bgcolor-resize-button, 5%);
   // Sidebar contents
   $color-sidebar-context: $color-global;
-  $bgcolor-sidebar-context: #ececec;
+  $bgcolor-sidebar-context: #ebebeb;
   // Sidebar list group
   // $bgcolor-sidebar-list-group: #; // optional
 
@@ -95,14 +95,14 @@
   }
 }
 
-.theme[data-color-scheme='dark'] :global {
+:root[data-theme='dark'] .theme-jade-green {
   // Theme colors
-  $themecolor: #ea5532;
+  $themecolor: #38b48b;
   $themedark: #333333;
   $accentcolor: #212121;
   $subthemecolor: #2e2e2e;
 
-  $primary: #ea5532;
+  $primary: #38b48b;
   $dark: #a7a7a7;
 
   // Background colors
@@ -136,7 +136,7 @@
   // Navbar
   $bgcolor-navbar: #2c2c2c;
   $bgcolor-search-top-dropdown: $themecolor;
-  $border-image-navbar: linear-gradient(to right, #ea5532 0%, #c9171e 100%);
+  $border-image-navbar: linear-gradient(to right, $primary 0%, darken($primary, 5%) 100%);
 
   // Logo colors
   $bgcolor-logo: #ffffff;
@@ -153,7 +153,7 @@
   $color-resize-button-hover: $color-global;
   $bgcolor-resize-button-hover: darken($bgcolor-resize-button, 5%);
   // Sidebar contents
-  $bgcolor-sidebar-context: #413f3f;
+  $bgcolor-sidebar-context: #3c403c;
   $color-sidebar-context: $color-global;
   // Sidebar list group
   // $bgcolor-sidebar-list-group: #; // optional

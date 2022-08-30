@@ -117,12 +117,13 @@
   }
 }
 
-@mixin blink-bgcolor($bgcolor) {
-  @keyframes fadeout {
-    100% {
-      opacity: 0;
-    }
+@keyframes fadeout {
+  100% {
+    opacity: 0;
   }
+}
+
+@mixin blink-bgcolor($bgcolor) {
   position: relative;
   z-index: 1;
 
