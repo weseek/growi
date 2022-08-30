@@ -14,6 +14,17 @@ body {
   @extend .container-fluid;
 }
 
+.grw-bg-image-wrapper {
+  position: fixed;
+  width: 100%;
+  height: 100%;
+
+  img {
+    object-fit: cover;
+    object-position: bottom;
+  }
+}
+
 body.not-found-page .grw-container-convertible {
   @extend .container-lg;
 }

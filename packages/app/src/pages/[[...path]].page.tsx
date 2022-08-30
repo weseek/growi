@@ -1,6 +1,5 @@
 import React, { useEffect } from 'react';
 
-
 import EventEmitter from 'events';
 
 import {
@@ -42,7 +41,6 @@ import {
 } from '~/stores/ui';
 import loggerFactory from '~/utils/logger';
 
-
 // import { isUserPage, isTrashPage, isSharedPage } from '~/utils/path-utils';
 
 // import GrowiSubNavigation from '../client/js/components/Navbar/GrowiSubNavigation';
@@ -71,6 +69,11 @@ import {
 } from './utils/commons';
 // import { useCurrentPageSWR } from '../stores/page';
 
+
+const NotCreatablePage = dynamic(() => import('../components/NotCreatablePage').then(mod => mod.NotCreatablePage), { ssr: false });
+const ForbiddenPage = dynamic(() => import('../components/ForbiddenPage'), { ssr: false });
+const UnsavedAlertDialog = dynamic(() => import('./UnsavedAlertDialog'), { ssr: false });
+const GrowiSubNavigationSwitcher = dynamic(() => import('../components/Navbar/GrowiSubNavigationSwitcher'), { ssr: false });
 
 const logger = loggerFactory('growi:pages:all');
 
@@ -168,11 +171,6 @@ type Props = CommonProps & {
 const GrowiPage: NextPage<Props> = (props: Props) => {
   // const { t } = useTranslation();
   const router = useRouter();
-
-  const NotCreatablePage = dynamic(() => import('../components/NotCreatablePage').then(mod => mod.NotCreatablePage), { ssr: false });
-  const ForbiddenPage = dynamic(() => import('../components/ForbiddenPage'), { ssr: false });
-  const UnsavedAlertDialog = dynamic(() => import('./UnsavedAlertDialog'), { ssr: false });
-  const GrowiSubNavigationSwitcher = dynamic(() => import('../components/Navbar/GrowiSubNavigationSwitcher'), { ssr: false });
 
   const { data: currentUser } = useCurrentUser(props.currentUser ?? null);
 

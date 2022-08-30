@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
 
-
 import { isPopulated } from '@growi/core';
 import { useTranslation } from 'next-i18next';
 import dynamic from 'next/dynamic';
@@ -14,7 +13,6 @@ import {
 } from '~/interfaces/page';
 import { IResTagsUpdateApiv1 } from '~/interfaces/tag';
 import { OnDuplicatedFunction, OnRenamedFunction, OnDeletedFunction } from '~/interfaces/ui';
-import { IUser } from '~/interfaces/user';
 import {
   useCurrentPageId,
   useCurrentPathname,
@@ -40,6 +38,7 @@ import { Skelton } from '../Skelton';
 
 import { GrowiSubNavigation } from './GrowiSubNavigation';
 import { SubNavButtonsProps } from './SubNavButtons';
+
 
 import PageEditorModeManagerStyles from './PageEditorModeManager.module.scss';
 
@@ -243,7 +242,7 @@ const GrowiContextualSubNavigation = (props: GrowiContextualSubNavigationProps):
       toastError(err, 'fail to update tags');
     }
 
-  }, [mutateSWRTagsInfo, mutatePageTagsForEditors, mutateCurrentPage, pageId, revisionId]);
+  }, [currentPage, mutateCurrentPage, mutateSWRTagsInfo, mutatePageTagsForEditors]);
 
   const tagsUpdatedHandlerForEditMode = useCallback((newTags: string[]): void => {
     // It will not be reflected in the DB until the page is refreshed
@@ -355,11 +354,13 @@ const GrowiContextualSubNavigation = (props: GrowiContextualSubNavigationProps):
       </>
     );
   }, [
-    pageId, revisionId, editorMode, mutateEditorMode, isCompactMode,
-    isLinkSharingDisabled, isGuestUser, isSharedUser, currentUser,
-    isViewMode, isAbleToShowPageEditorModeManager, isAbleToShowPageManagement,
+    currentPage, currentUser, pageId, revisionId, shareLinkId, path, editorMode,
+    isCompactMode, isViewMode, isSharedUser, isAbleToShowPageManagement, isAbleToShowPageEditorModeManager,
+    isLinkSharingDisabled, isGuestUser, isPageTemplateModalShown,
     duplicateItemClickedHandler, renameItemClickedHandler, deleteItemClickedHandler,
-    templateMenuItemClickHandler, isPageTemplateModalShown,
+    PageEditorModeManager, SubNavButtons,
+    mutateEditorMode,
+    templateMenuItemClickHandler,
   ]);
 
   if (currentPathname == null) {

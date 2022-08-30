@@ -11,7 +11,7 @@ import {
 } from '~/stores/ui';
 
 
-const SavePageControls = dynamic(() => import('~/components/SavePageControls').then(mod => mod.SavePageControls), { ssr: false });
+const SavePageControls = dynamic(() => import('../SavePageControls').then(mod => mod.SavePageControls), { ssr: false });
 const SlackLogo = dynamic(() => import('~/components/SlackLogo').then(mod => mod.SlackLogo), { ssr: false });
 const SlackNotification = dynamic(() => import('~/components/SlackNotification').then(mod => mod.SlackNotification), { ssr: false });
 const OptionsSelector = dynamic(() => import('~/components/PageEditor/OptionsSelector').then(mod => mod.OptionsSelector), { ssr: false });
