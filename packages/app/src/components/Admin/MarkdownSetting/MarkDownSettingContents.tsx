@@ -22,7 +22,7 @@ type Props ={
 }
 
 const MarkDownSettingContents = React.memo((props: Props): JSX.Element => {
-  const { t } = useTranslation();
+  const { t } = useTranslation('admin');
   const { adminMarkDownContainer } = props;
 
   useEffect(() => {
@@ -43,30 +43,30 @@ const MarkDownSettingContents = React.memo((props: Props): JSX.Element => {
   return (
     <div data-testid="admin-markdown">
       {/* Line Break Setting */}
-      <h2 className="admin-setting-header">{t('admin:markdown_setting.lineBreak_header')}</h2>
+      <h2 className="admin-setting-header">{t('markdown_settings.lineBreak_header')}</h2>
       <Card className="card well my-3">
-        <CardBody className="px-0 py-2">{ t('admin:markdown_setting.lineBreak_desc') }</CardBody>
+        <CardBody className="px-0 py-2">{ t('markdown_settings.lineBreak_desc') }</CardBody>
       </Card>
       <LineBreakForm />
 
       {/* Indent Setting */}
-      <h2 className="admin-setting-header">{t('admin:markdown_setting.indent_header')}</h2>
+      <h2 className="admin-setting-header">{t('markdown_settings.indent_header')}</h2>
       <Card className="card well my-3">
-        <CardBody className="px-0 py-2">{t('admin:markdown_setting.indent_desc') }</CardBody>
+        <CardBody className="px-0 py-2">{t('markdown_settings.indent_desc') }</CardBody>
       </Card>
       <IndentForm />
 
       {/* Presentation Setting */}
-      <h2 className="admin-setting-header">{ t('admin:markdown_setting.presentation_header') }</h2>
+      <h2 className="admin-setting-header">{ t('markdown_settings.presentation_header') }</h2>
       <Card className="card well my-3">
-        <CardBody className="px-0 py-2">{ t('admin:markdown_setting.presentation_desc') }</CardBody>
+        <CardBody className="px-0 py-2">{ t('markdown_settings.presentation_desc') }</CardBody>
       </Card>
       <PresentationForm />
 
       {/* XSS Setting */}
-      <h2 className="admin-setting-header">{ t('admin:markdown_setting.xss_header') }</h2>
+      <h2 className="admin-setting-header">{ t('markdown_settings.xss_header') }</h2>
       <Card className="card well my-3">
-        <CardBody className="px-0 py-2">{ t('admin:markdown_setting.xss_desc') }</CardBody>
+        <CardBody className="px-0 py-2">{ t('markdown_settings.xss_desc') }</CardBody>
       </Card>
       <XssForm />
     </div>

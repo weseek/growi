@@ -1,4 +1,7 @@
 {
+  "Update": "更新",
+  "Delete": "删除",
+  "User": "用户",
   "wiki_management_home_page": "Wiki管理首页",
   "app_settings": "系统设置",
   "public": "公共",
@@ -397,10 +400,9 @@
       "import_recommended": "导入建议 {{target}}"
     }
   },
-  "customize": "页面定制",
-  "import_data": "导入数据",
   "export_archive_data": "导出主题数据",
   "customize_setting": {
+    "customize_setting": "页面定制",
     "default_sidebar_mode": {
       "title": "默认的侧边栏模式",
       "desc": "你可以为新用户和访问该网页的客人设置侧边栏模式。",
@@ -479,6 +481,12 @@
     "delete_logo": "删除徽标"
   },
   "importer_management": {
+    "import_data": "导入数据",
+    "article": "主题",
+    "category": "分类",
+    "tag": "标签",
+    "page": "页面",
+    "page_path": "相对路径",
     "beta_warning": "这个函数是Beta。",
     "import_from": "Import from {{from}}",
     "import_growi_archive": "Import GROWI archive",
@@ -568,7 +576,7 @@
     "delete": "删除"
   },
   "external_notification": {
-    "external_notificatio"n: "外部通知",
+    "external_notification": "外部通知",
     "enabled": "Enabled",
     "disabled": "Disabled",
     "header_status": "Slack整合状态",

@@ -269,7 +269,7 @@
     "toggle_notification": "{{path}}の通知設定を変更しました"
   },
   "customize": "カスタマイズ",
-  "ipmport_data": "データインポート",
+  "import_data": "データインポート",
   "export_archive_data": "データアーカイブ",
   "full_text_search_management": {
     "full_text_search_management": "全文検索管理",

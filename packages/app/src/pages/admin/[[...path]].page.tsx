@@ -124,11 +124,11 @@ const AdminMarkdownSettingsPage: NextPage<Props> = (props: Props) => {
       component: <MarkDownSettingContents />,
     },
     customize: {
-      title: t('Customize Settings'),
+      title: t('customize_setting.customize_setting'),
       component: <CustomizeSettingContents />,
     },
     importer: {
-      title: t('Import Data'),
+      title: t('importer_management.import_data'),
       component: <DataImportPageContents />,
     },
     export: {
