@@ -7,6 +7,8 @@ import { LsxContext } from '../lsx-context';
 
 import { LsxPage } from './LsxPage';
 
+import styles from './LsxListView.module.scss';
+
 export class LsxListView extends React.Component {
 
   render() {
@@ -35,7 +37,7 @@ export class LsxListView extends React.Component {
     }
 
     return (
-      <div className="page-list lsx">
+      <div className={`page-list lsx${styles['page-list']}`}>
         <ul className="page-list-ul">
           {listView}
         </ul>
