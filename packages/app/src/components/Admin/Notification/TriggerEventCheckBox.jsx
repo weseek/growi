@@ -17,7 +17,7 @@ const TriggerEventCheckBox = (props) => {
       />
       <label className="custom-control-label" htmlFor={`trigger-event-${props.event}`}>
         {props.children}{' '}
-        {t(`notification_setting.event_${props.event}`)}
+        {t(`notification_settings.event_${props.event}`)}
       </label>
     </div>
   );

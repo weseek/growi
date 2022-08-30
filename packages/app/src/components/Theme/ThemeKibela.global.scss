@@ -7,28 +7,8 @@ $themelight: #f4f5f6;
 $subthemecolor: rgb(88, 130, 250);
 $lightthemecolor: rgba(181, 203, 247, 0.61);
 
-.main {
-  .container,
-  .container-sm,
-  .container-md,
-  .container-lg,
-  .container-fluid {
-    padding-top: 30px;
-    padding-bottom: 30px;
-    background-color: white;
-    border-radius: 0.35em;
-  }
-}
-
-.user-page-footer {
-  margin-top: 3rem;
-  margin-bottom: 3rem;
-  background-color: white;
-  border-radius: 0.35em;
-}
-
 // Light Mode
-.theme :global {
+:root .theme-kibela {
   // Background colors
   $bgcolor-navbar: white;
   $bgcolor-navbar-active: $bgcolor-theme;
@@ -100,6 +80,26 @@ $lightthemecolor: rgba(181, 203, 247, 0.61);
 
   @import '../../styles/theme/apply-colors';
   @import '../../styles/theme/apply-colors-light';
+
+  .main {
+    .container,
+    .container-sm,
+    .container-md,
+    .container-lg,
+    .container-fluid {
+      padding-top: 30px;
+      padding-bottom: 30px;
+      background-color: white;
+      border-radius: 0.35em;
+    }
+  }
+
+  .user-page-footer {
+    margin-top: 3rem;
+    margin-bottom: 3rem;
+    background-color: white;
+    border-radius: 0.35em;
+  }
 
   //Button
   .grw-page-editor-mode-manager {

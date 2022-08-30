@@ -103,7 +103,7 @@ const AdminMarkdownSettingsPage: NextPage<Props> = (props: Props) => {
   // TODO: refactoring adminPagesMap => https://redmine.weseek.co.jp/issues/102694
   const adminPagesMap = {
     home: {
-      title: useCustomTitle(props, t('Wiki Management Home Page')),
+      title:  t('wiki_management_home_page'),
       component: <AdminHome
         nodeVersion={props.nodeVersion}
         npmVersion={props.npmVersion}
@@ -112,31 +112,31 @@ const AdminMarkdownSettingsPage: NextPage<Props> = (props: Props) => {
       />,
     },
     app: {
-      title: useCustomTitle(props, t('App Settings')),
+      title: t('app_settings'),
       component: <AppSettingsPageContents />,
     },
     security: {
-      title: useCustomTitle(props, t('security_settings')),
+      title: t('security_settings.security_settings'),
       component: <SecurityManagementContents />,
     },
     markdown: {
-      title: useCustomTitle(props, t('Markdown Settings')),
+      title: t('markdown_settings'),
       component: <MarkDownSettingContents />,
     },
     customize: {
-      title: useCustomTitle(props, t('Customize Settings')),
+      title: t('Customize Settings'),
       component: <CustomizeSettingContents />,
     },
     importer: {
-      title: useCustomTitle(props, t('Import Data')),
+      title: t('Import Data'),
       component: <DataImportPageContents />,
     },
     export: {
-      title: useCustomTitle(props, t('Export Archive Data')),
+      title: t('Export Archive Data'),
       component: <ExportArchiveDataPage />,
     },
     notification: {
-      title: useCustomTitle(props, t('Notification Settings')),
+      title: t('external_notification.external_notification'),
       component: <NotificationSetting />,
     },
     'global-notification': {
@@ -144,37 +144,37 @@ const AdminMarkdownSettingsPage: NextPage<Props> = (props: Props) => {
       component: <>global-notification</>,
     },
     'slack-integration': {
-      title: useCustomTitle(props, t('slack_integration')),
+      title: t('slack_integration.slack_integration'),
       component: <SlackIntegration />,
     },
     'slack-integration-legacy': {
-      title: useCustomTitle(props, t('Legacy_Slack_Integration')),
+      title: t('slack_integration_legacy.slack_integration_legacy'),
       component: <LegacySlackIntegration />,
     },
     users: {
-      title: useCustomTitle(props, t('User_Management')),
+      title: t('user_management.user_management'),
       component: <UserManagement />,
       'external-accounts': {
-        title: useCustomTitle(props, t('external_account_management')),
+        title: t('external_account_management'),
         component: <ManageExternalAccount />,
       },
     },
     'user-groups': {
-      title: useCustomTitle(props, t('UserGroup Management')),
+      title:  t('user_group_management.user_group_management'),
       component: <UserGroupPage />,
     },
     'user-group-detail': {
       [userGroupId]: {
-        title: t('UserGroup Management'),
+        title: t('user_group_management.user_group_management'),
         component: <UserGroupDetailPage userGroupId={userGroupId} />,
       },
     },
     search: {
-      title: useCustomTitle(props, t('Full Text Search Management')),
+      title: t('full_text_search_management'),
       component: <ElasticsearchManagement />,
     },
     'audit-log': {
-      title: useCustomTitle(props, t('AuditLog')),
+      title: t('audit_log_management.audit_log'),
       component: <AuditLogManagement />,
     },
   };
