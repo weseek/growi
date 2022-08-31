@@ -345,9 +345,7 @@ const GrowiPage: NextPage<Props> = (props: Props) => {
                   Bookmarks
                 </h2>
                 <div id="user-bookmark-list" className="page-list">
-                  <div className="page-list-container">
-                    <BookmarkList userId={pageWithMeta?.data.creator._id} />
-                  </div>
+                  { (pageWithMeta != null) && (<BookmarkList userId={pageWithMeta?.data.creator._id} />) }
                 </div>
               </div>
               <div className="grw-user-page-list-m mt-5 d-edit-none">
@@ -358,9 +356,7 @@ const GrowiPage: NextPage<Props> = (props: Props) => {
                   Recently Created
                 </h2>
                 <div id="user-created-list" className="page-list">
-                  <div className="page-list-container">
-                    <RecentCreated userId={pageWithMeta?.data.creator._id} />
-                  </div>
+                  { (pageWithMeta != null) && (<RecentCreated userId={pageWithMeta?.data.creator._id} />) }
                 </div>
               </div>
             </div>

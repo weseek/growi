@@ -1,8 +1,7 @@
 import { Ref } from '@growi/core';
 
+import { IPageHasId } from '~/interfaces/page';
 import { IUser } from '~/interfaces/user';
-
-import { IPage } from './page';
 
 export type IBookmarkInfo = {
   sumOfBookmarks: number;
@@ -12,7 +11,7 @@ export type IBookmarkInfo = {
 
 export type BookmarkListPage = {
   _id: string,
-  page: Populated<IPage>,
+  page: IPageHasId,
   user: Ref<IUser>,
   createdAt: Date,
 }
