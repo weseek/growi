@@ -581,6 +581,17 @@ export const getServerSideProps: GetServerSideProps = async(context: GetServerSi
   const req = context.req as CrowiRequest<IUserHasId & any>;
   const { user } = req;
 
+  const { crowi } = req;
+  const isMaintenanceMode = crowi.appService.isMaintenanceMode();
+  if (isMaintenanceMode) {
+    return {
+      redirect: {
+        destination: '/maintenance',
+        permanent: false,
+      },
+    };
+  }
+
   const result = await getServerSideCommonProps(context);
 
 

@@ -12,7 +12,6 @@ import { UncontrolledTooltip } from 'reactstrap';
 import {
   useIsSearchPage, useCurrentPagePath, useIsGuestUser, useIsSearchServiceConfigured, useAppTitle, useConfidential,
 } from '~/stores/context';
-import { useIsMaintenanceMode } from '~/stores/maintenanceMode';
 import { usePageCreateModal } from '~/stores/modal';
 import { useIsDeviceSmallerThanMd } from '~/stores/ui';
 
@@ -131,30 +130,16 @@ export const GrowiNavbar = (): JSX.Element => {
   const { data: isSearchServiceConfigured } = useIsSearchServiceConfigured();
   const { data: isDeviceSmallerThanMd } = useIsDeviceSmallerThanMd();
   const { data: isSearchPage } = useIsSearchPage();
-  const { data: isMaintenanceMode } = useIsMaintenanceMode();
 
   return (
     <nav id="grw-navbar" className={`navbar grw-navbar ${styles['grw-navbar']} navbar-expand navbar-dark sticky-top mb-0 px-0`}>
       {/* Brand Logo  */}
       <div className="navbar-brand mr-0">
-        {
-          // If it was in maintenance mode, refresh it
-          isMaintenanceMode
-            ? (
-              <div className="navbar-brand mr-0">
-                <a className="grw-logo d-block" href="/">
-                  <GrowiLogo />
-                </a>
-              </div>
-            )
-            : (
-              <Link href="/" prefetch={false}>
-                <a className="grw-logo d-block">
-                  <GrowiLogo />
-                </a>
-              </Link>
-            )
-        }
+        <Link href="/" prefetch={false}>
+          <a className="grw-logo d-block">
+            <GrowiLogo />
+          </a>
+        </Link>
       </div>
 
       <div className="grw-app-title d-none d-md-block">
