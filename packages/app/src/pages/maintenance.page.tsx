@@ -20,8 +20,8 @@ type Props = CommonProps & {
 };
 
 const MaintenancePage: NextPage<CommonProps> = (props: Props) => {
-
   const { t } = useTranslation();
+
   useCurrentUser(props.currentUser ?? null);
 
   const logoutHandler = async() => {
@@ -83,14 +83,25 @@ async function injectNextI18NextConfigurations(context: GetServerSidePropsContex
 export const getServerSideProps: GetServerSideProps = async(context: GetServerSidePropsContext) => {
   const req = context.req as CrowiRequest<IUserHasId & any>;
 
-  const { user } = req;
-  const result = await getServerSideCommonProps(context);
+  const { crowi } = req;
+  const isMaintenanceMode = crowi.appService.isMaintenanceMode();
+  if (!isMaintenanceMode) {
+    return {
+      redirect: {
+        destination: '/',
+        permanent: false,
+      },
+    };
+  }
 
+  const result = await getServerSideCommonProps(context);
   if (!('props' in result)) {
     throw new Error('invalid getSSP result');
   }
+
   const props: Props = result.props as Props;
 
+  const { user } = req;
   if (user != null) {
     props.currentUser = user.toObject();
   }
