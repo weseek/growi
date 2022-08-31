@@ -9,7 +9,7 @@ type Props = {
 }
 
 const ReconnectControls = (props: Props): JSX.Element => {
-  const { t } = useTranslation();
+  const { t } = useTranslation('admin');
 
   const { isEnabled, isProcessing } = props;
 

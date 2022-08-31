@@ -39,7 +39,7 @@ const Preview = React.forwardRef((props: Props, ref: RefObject<HTMLDivElement>):
         }
       }}
     >
-      <ReactMarkdown {...rendererOptions} >{markdown || ''}</ReactMarkdown>
+      <ReactMarkdown {...rendererOptions} className='wiki'>{markdown || ''}</ReactMarkdown>
     </div>
   );
 

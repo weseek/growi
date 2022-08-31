@@ -2,9 +2,8 @@
 @import './variables' ;
 @import './mixins' ;
 @import 'sidebar-wiki';
-@import 'editor-overlay';
 
-
+// global imported
 body.on-edit {
   overflow-y: hidden !important;
 
@@ -306,6 +305,7 @@ body.on-edit {
   }
 }
 
+// TODO: Never used this id class
 #tag-edit-button-tooltip {
   .tooltip-inner {
     color: black;
@@ -315,51 +315,5 @@ body.on-edit {
 
   .tooltip-arrow {
     border-bottom: 5px solid $gray-300;
-  }
-}
-
-/*
- Grid Edit Modal
-*/
-
-.grw-grid-edit-modal {
-  .desktop-preview,
-  .tablet-preview,
-  .mobile-preview {
-    .row {
-      height: 140px;
-      margin: 0px;
-    }
-  }
-  .desktop-preview {
-    .row {
-      div {
-        padding: 0px;
-      }
-    }
-  }
-
-  .tablet-preview {
-    .row {
-      div {
-        padding: 0px;
-      }
-    }
-  }
-
-  .mobile-preview {
-    width: 75%;
-    .row {
-      div {
-        padding: 0px;
-      }
-    }
-  }
-
-  .grid-division-menu {
-    width: 60vw;
-    @include media-breakpoint-down(lg) {
-      width: 80vw;
-    }
   }
 }

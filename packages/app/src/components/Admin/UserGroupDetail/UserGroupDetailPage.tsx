@@ -21,6 +21,7 @@ import {
   useSWRxSelectableParentUserGroups, useSWRxSelectableChildUserGroups, useSWRxAncestorUserGroups,
 } from '~/stores/user-group';
 
+import styles from './UserGroupDetailPage.module.scss';
 
 const UserGroupPageList = dynamic(() => import('./UserGroupPageList'), { ssr: false });
 const UserGroupUserTable = dynamic(() => import('./UserGroupUserTable'), { ssr: false });
@@ -412,7 +413,7 @@ const UserGroupDetailPage = (props: Props): JSX.Element => {
       />
 
       <h2 className="admin-setting-header mt-4">{t('Page')}</h2>
-      <div className="page-list">
+      <div className={`page-list ${styles['page-list']}`}>
         <UserGroupPageList userGroupId={currentUserGroupId} relatedPages={userGroupPages} />
       </div>
     </div>

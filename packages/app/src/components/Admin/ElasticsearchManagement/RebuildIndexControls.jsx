@@ -108,7 +108,7 @@ class RebuildIndexControls extends React.Component {
 }
 
 const RebuildIndexControlsFC = (props) => {
-  const { t } = useTranslation();
+  const { t } = useTranslation('admin');
   const { data: socket } = useAdminSocket();
   return <RebuildIndexControls t={t} socket={socket} {...props} />;
 };

@@ -242,7 +242,6 @@ module.exports = (crowi) => {
       user.slackMemberId = req.body.slackMemberId;
 
       const updatedUser = await user.save();
-      req.i18n.changeLanguage(req.body.lang);
 
       const parameters = { action: SupportedAction.ACTION_USER_PERSONAL_SETTINGS_UPDATE };
       activityEvent.emit('update', res.locals.activity._id, parameters);
