@@ -488,7 +488,7 @@ module.exports = (crowi) => {
    *          409:
    *            description: page path is already existed
    */
-  router.put('/rename', accessTokenParser, loginRequiredStrictly, addActivity, validator.renamePage, apiV3FormValidator, async(req, res) => {
+  router.put('/rename', accessTokenParser, loginRequiredStrictly, validator.renamePage, apiV3FormValidator, async(req, res) => {
     const { pageId, revisionId } = req.body;
 
     let newPagePath = pathUtils.normalizePath(req.body.newPagePath);
@@ -498,6 +498,11 @@ module.exports = (crowi) => {
       createRedirectPage: req.body.isRenameRedirect,
       updateMetadata: req.body.updateMetadata,
       isMoveMode: req.body.isMoveMode,
+    };
+
+    const activityParameters = {
+      ip: req.ip,
+      endpoint: req.originalUrl,
     };
 
     if (!isCreatablePage(newPagePath)) {
@@ -518,6 +523,7 @@ module.exports = (crowi) => {
 
     try {
       page = await Page.findByIdAndViewer(pageId, req.user, null, true);
+      options.isRecursively = page.descendantCount > 0;
 
       if (page == null) {
         return res.apiv3Err(new ErrorV3(`Page '${pageId}' is not found or forbidden`, 'notfound_or_forbidden'), 401);
@@ -531,15 +537,13 @@ module.exports = (crowi) => {
       if (!page.isEmpty && !page.isUpdatable(revisionId)) {
         return res.apiv3Err(new ErrorV3('Someone could update this page, so couldn\'t delete.', 'notfound_or_forbidden'), 409);
       }
-      renamedPage = await crowi.pageService.renamePage(page, newPagePath, req.user, options);
+      renamedPage = await crowi.pageService.renamePage(page, newPagePath, req.user, options, activityParameters);
     }
     catch (err) {
       logger.error(err);
       return res.apiv3Err(new ErrorV3('Failed to update page.', 'unknown'), 500);
     }
-
     const result = { page: serializePageSecurely(renamedPage ?? page) };
-
     try {
       // global notification
       await globalNotificationService.fire(GlobalNotificationSetting.EVENT.PAGE_MOVE, page, req.user, {
@@ -549,14 +553,6 @@ module.exports = (crowi) => {
     catch (err) {
       logger.error('Move notification failed', err);
     }
-
-    const activityId = res.locals.activity._id;
-    const parameters = {
-      targetModel: SupportedTargetModel.MODEL_PAGE,
-      target: page,
-      action: SupportedAction.ACTION_PAGE_RENAME,
-    };
-    activityEvent.emit('update', activityId, parameters, page);
 
     return res.apiv3(result);
   });

@@ -89,7 +89,7 @@ export const IdenticalPathPage = (): JSX.Element => {
 
         <IdenticalPathAlert path={currentPath} />
 
-        <div className="page-list">
+        <div className={`page-list ${styles['page-list']}`}>
           <ul className="page-list-ul list-group list-group-flush">
             {injectedPages.map((pageWithMeta) => {
               const pageId = pageWithMeta.data._id;

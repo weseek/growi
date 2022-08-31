@@ -1,5 +1,6 @@
 import React, { useEffect } from 'react';
 
+
 import EventEmitter from 'events';
 
 import {
@@ -17,11 +18,9 @@ import { useRouter } from 'next/router';
 import superjson from 'superjson';
 
 import { Comments } from '~/components/Comments';
-import { RecentlyCreatedIcon } from '~/components/Icons/RecentlyCreatedIcon';
 import { PageAlerts } from '~/components/PageAlert/PageAlerts';
 // import { useTranslation } from '~/i18n';
 import { PageContentFooter } from '~/components/PageContentFooter';
-import { RecentCreated } from '~/components/RecentCreated/RecentCreated';
 import { CrowiRequest } from '~/interfaces/crowi-request';
 // import { renderScriptTagByName, renderHighlightJsStyleTag } from '~/service/cdn-resources-loader';
 // import { useIndentSize } from '~/stores/editor';
@@ -41,6 +40,7 @@ import {
   usePreferDrawerModeByUser, usePreferDrawerModeOnEditByUser, useSidebarCollapsed, useCurrentSidebarContents, useCurrentProductNavWidth, useSelectedGrant,
 } from '~/stores/ui';
 import loggerFactory from '~/utils/logger';
+
 
 // import { isUserPage, isTrashPage, isSharedPage } from '~/utils/path-utils';
 
@@ -70,6 +70,7 @@ import {
 } from './utils/commons';
 // import { useCurrentPageSWR } from '../stores/page';
 
+import styles from './[[...path]].page.module.scss';
 
 const NotCreatablePage = dynamic(() => import('../components/NotCreatablePage').then(mod => mod.NotCreatablePage), { ssr: false });
 const ForbiddenPage = dynamic(() => import('../components/ForbiddenPage'), { ssr: false });
@@ -290,87 +291,92 @@ const GrowiPage: NextPage<Props> = (props: Props) => {
       </Head>
       {/* <BasicLayout title={useCustomTitle(props, t('GROWI'))} className={classNames.join(' ')}> */}
       <BasicLayout title={useCustomTitle(props, 'GROWI')} className={classNames.join(' ')} expandContainer={props.isContainerFluid}>
-        <header className="py-0 position-relative">
-          <GrowiContextualSubNavigation isLinkSharingDisabled={props.disableLinkSharing} />
-        </header>
-        <div className="d-edit-none">
-          <GrowiSubNavigationSwitcher />
-        </div>
-
-        <div id="grw-subnav-sticky-trigger" className="sticky-top"></div>
-        <div id="grw-fav-sticky-trigger" className="sticky-top"></div>
-
-        <div id="main" className={`main ${isUsersHomePage(props.currentPathname) && 'user-page'}`}>
-          <div id="content-main" className="content-main grw-container-convertible">
-            <div className="row">
-              <div className="col">
-                { props.isIdenticalPathPage && <IdenticalPathPage /> }
-
-                { !props.isIdenticalPathPage && (
-                  <>
-                    <PageAlerts />
-                    { props.isForbidden && <ForbiddenPage /> }
-                    { props.IsNotCreatable && <NotCreatablePage />}
-                    { !props.isForbidden && !props.IsNotCreatable && <DisplaySwitcher />}
-                    {/* <DisplaySwitcher /> */}
-                    <div id="page-editor-navbar-bottom-container" className="d-none d-edit-block"></div>
-                    {/* <PageStatusAlert /> */}
-                  </>
-                ) }
-
-              </div>
-            </div>
-
-            {/* <div className="col-xl-2 col-lg-3 d-none d-lg-block revision-toc-container">
-              <div id="revision-toc" className="revision-toc mt-3 sps sps--abv" data-sps-offset="123">
-                <div id="revision-toc-content" className="revision-toc-content"></div>
-              </div>
-            </div> */}
+        <div className="h-100 d-flex flex-column justify-content-between">
+          <header className="py-0 position-relative">
+            <GrowiContextualSubNavigation isLinkSharingDisabled={props.disableLinkSharing} />
+          </header>
+          <div className="d-edit-none">
+            <GrowiSubNavigationSwitcher />
           </div>
-        </div>
-        {/* TODO: Check CSS import */}
-        <footer className="footer d-edit-none">
-          {/* TODO: Enable page_list.html */}
-          {/* TODO: Enable isIdenticalPathPage or useIdenticalPath */}
-          {/* { !props.isIdenticalPathPage && ( */}
-          <Comments pageId={pageId} />
-          {/* )} */}
-          {/* TODO: Create UsersHomePageFooter conponent */}
-          { !isUsersHomePage(props.currentPathname) && (
-            <div className="container-lg user-page-footer py-5">
-              <div className="grw-user-page-list-m d-edit-none">
-                <h2 id="bookmarks-list" className="grw-user-page-header border-bottom pb-2 mb-3">
-                  <i style={{ fontSize: '1.3em' }} className="fa fa-fw fa-bookmark-o"></i>
-                  Bookmarks
-                </h2>
-                <div id="user-bookmark-list" className="page-list">
-                  <div className="page-list-container">
-                    {/* <BookmarkList userId={pageContainer.state.creator._id} /> */}
+
+          <div id="grw-subnav-sticky-trigger" className="sticky-top"></div>
+          <div id="grw-fav-sticky-trigger" className="sticky-top"></div>
+
+          <div className="flex-grow-1">
+            <div id="main" className={`main ${isUsersHomePage(props.currentPathname) && 'user-page'}`}>
+              <div id="content-main" className="content-main grw-container-convertible">
+                <div className="row">
+                  <div className="col">
+                    { props.isIdenticalPathPage && <IdenticalPathPage /> }
+
+                    { !props.isIdenticalPathPage && (
+                      <>
+                        <PageAlerts />
+                        { props.isForbidden && <ForbiddenPage /> }
+                        { props.IsNotCreatable && <NotCreatablePage />}
+                        { !props.isForbidden && !props.IsNotCreatable && <DisplaySwitcher />}
+                        {/* <DisplaySwitcher /> */}
+                        <div id="page-editor-navbar-bottom-container" className="d-none d-edit-block"></div>
+                        {/* <PageStatusAlert /> */}
+                      </>
+                    ) }
+
                   </div>
                 </div>
-              </div>
-              <div className="grw-user-page-list-m mt-5 d-edit-none">
-                <h2 id="recently-created-list" className="grw-user-page-header border-bottom pb-2 mb-3">
-                  <i id="recent-created-icon" className="mr-1">
-                    <RecentlyCreatedIcon />
-                  </i>
-                  Recently Created
-                </h2>
-                <div id="user-created-list" className="page-list">
-                  <div className="page-list-container">
-                    <RecentCreated userId={pageWithMeta.data.creator._id} />
+
+                {/* <div className="col-xl-2 col-lg-3 d-none d-lg-block revision-toc-container">
+                  <div id="revision-toc" className="revision-toc mt-3 sps sps--abv" data-sps-offset="123">
+                    <div id="revision-toc-content" className="revision-toc-content"></div>
                   </div>
-                </div>
+                </div> */}
               </div>
             </div>
-          )}
-          <PageContentFooter />
-        </footer>
+          </div>
+          {/* TODO: Check CSS import */}
+          <footer className="footer d-edit-none">
+            {/* TODO: Enable page_list.html */}
+            {/* TODO: Enable isIdenticalPathPage or useIdenticalPath */}
+            {/* { !props.isIdenticalPathPage && ( */}
+            <Comments pageId={pageId} />
+            {/* )} */}
+            {/* TODO: Create UsersHomePageFooter conponent */}
+            { isUsersHomePage(props.currentPathname) && (
+              <div className="container-lg user-page-footer py-5">
+                <div className="grw-user-page-list-m d-edit-none">
+                  <h2 id="bookmarks-list" className="grw-user-page-header border-bottom pb-2 mb-3">
+                    <i style={{ fontSize: '1.3em' }} className="fa fa-fw fa-bookmark-o"></i>
+                    Bookmarks
+                  </h2>
+                  <div id="user-bookmark-list" className={`page-list ${styles['page-list']}`}>
+                    {/* TODO: No need page-list-container class ? */}
+                    <div className="page-list-container">
+                      {/* <BookmarkList userId={pageContainer.state.creator._id} /> */}
+                    </div>
+                  </div>
+                </div>
+                <div className="grw-user-page-list-m mt-5 d-edit-none">
+                  <h2 id="recently-created-list" className="grw-user-page-header border-bottom pb-2 mb-3">
+                    <i id="recent-created-icon" className="mr-1">
+                      {/* <RecentlyCreatedIcon /> */}
+                    </i>
+                    Recently Created
+                  </h2>
+                  <div id="user-created-list" className={`page-list ${styles['page-list']}`}>
+                    {/* TODO: No need page-list-container class ? */}
+                    <div className="page-list-container">
+                      {/* <RecentCreated userId={pageContainer.state.creator._id} /> */}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
+            <PageContentFooter />
+          </footer>
 
-        <UnsavedAlertDialog />
-        <DescendantsPageListModal />
-        {shouldRenderPutbackPageModal && <PutbackPageModal />}
-
+          <UnsavedAlertDialog />
+          <DescendantsPageListModal />
+          {shouldRenderPutbackPageModal && <PutbackPageModal />}
+        </div>
       </BasicLayout>
     </>
   );

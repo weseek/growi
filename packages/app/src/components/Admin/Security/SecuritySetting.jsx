@@ -1,8 +1,8 @@
 /* eslint-disable react/no-danger */
 import React from 'react';
 
-import PropTypes from 'prop-types';
 import { useTranslation } from 'next-i18next';
+import PropTypes from 'prop-types';
 import { Collapse } from 'reactstrap';
 
 import AdminGeneralSecurityContainer from '~/client/services/AdminGeneralSecurityContainer';
@@ -340,21 +340,21 @@ class SecuritySetting extends React.Component {
           <table className="table table-bordered col-lg-9 mb-5">
             <thead>
               <tr>
-                <th scope="col">{ t('scope_of_page_disclosure') }</th>
-                <th scope="col">{ t('set_point') }</th>
+                <th scope="col">{ t('security_settings.scope_of_page_disclosure') }</th>
+                <th scope="col">{ t('security_settings.set_point') }</th>
               </tr>
             </thead>
             <tbody>
               <tr>
-                <th scope="row">{ t('Public') }</th>
+                <th scope="row">{ t('public') }</th>
                 <td>{ t('security_settings.always_displayed') }</td>
               </tr>
               <tr>
-                <th scope="row">{ t('Anyone with the link') }</th>
+                <th scope="row">{ t('anyone_with_the_link') }</th>
                 <td>{ t('security_settings.always_hidden') }</td>
               </tr>
               <tr>
-                <th scope="row">{ t('Only me') }</th>
+                <th scope="row">{ t('only_me') }</th>
                 <td>
                   <div className="custom-control custom-switch custom-checkbox-success">
                     <input
@@ -371,7 +371,7 @@ class SecuritySetting extends React.Component {
                 </td>
               </tr>
               <tr>
-                <th scope="row">{ t('Only inside the group') }</th>
+                <th scope="row">{ t('only_inside_the_group') }</th>
                 <td>
                   <div className="custom-control custom-switch custom-checkbox-success">
                     <input
