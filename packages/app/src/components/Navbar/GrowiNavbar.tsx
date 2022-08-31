@@ -133,20 +133,28 @@ export const GrowiNavbar = (): JSX.Element => {
   const { data: isSearchPage } = useIsSearchPage();
   const { data: isMaintenanceMode } = useIsMaintenanceMode();
 
-  const brandLogo = () => {
-
-
-  };
-
   return (
     <nav id="grw-navbar" className={`navbar grw-navbar ${styles['grw-navbar']} navbar-expand navbar-dark sticky-top mb-0 px-0`}>
       {/* Brand Logo  */}
       <div className="navbar-brand mr-0">
-        <Link href="/" prefetch={false}>
-          <a className="grw-logo d-block">
-            <GrowiLogo />
-          </a>
-        </Link>
+        {
+          // If it was in maintenance mode, refresh it
+          isMaintenanceMode
+            ? (
+              <div className="navbar-brand mr-0">
+                <a className="grw-logo d-block" href="/">
+                  <GrowiLogo />
+                </a>
+              </div>
+            )
+            : (
+              <Link href="/" prefetch={false}>
+                <a className="grw-logo d-block">
+                  <GrowiLogo />
+                </a>
+              </Link>
+            )
+        }
       </div>
 
       <div className="grw-app-title d-none d-md-block">
