@@ -142,11 +142,11 @@ const AdminMarkdownSettingsPage: NextPage<Props> = (props: Props) => {
     },
     'global-notification': {
       new: {
-        title: useCustomTitle(props, t('Add_new')),
+        title: t('Add_new'),
         component: <ManageGlobalNotification />,
       },
       setting: {
-        title: useCustomTitle(props, t('settings')),
+        title: t('settings'),
         component: <ManageGlobalNotification />,
       },
     },
