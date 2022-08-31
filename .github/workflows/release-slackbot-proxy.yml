@@ -42,12 +42,13 @@ jobs:
         username: wsmoogle
         password: ${{ secrets.DOCKER_REGISTRY_ON_GITHUB_PASSWORD }}
 
-    - name: Setup gcloud
-      uses: google-github-actions/setup-gcloud@master
+    - name: Authenticate to Google Cloud for GROWI.cloud
+      uses: google-github-actions/auth@v0
       with:
-        project_id: ${{ secrets.GCP_PRJ_ID_SLACKBOT_PROXY }}
-        service_account_key: ${{ secrets.GCP_SA_KEY_SLACKBOT_PROXY }}
-        export_default_credentials: true
+        credentials_json: '${{ secrets.GCP_SA_KEY_SLACKBOT_PROXY }}'
+
+    - name: Setup gcloud
+      uses: google-github-actions/setup-gcloud@v0
 
     - name: Configure docker for gcloud
       run: |
