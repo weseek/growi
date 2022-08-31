@@ -7,7 +7,9 @@ import injectResetOrderByTokenMiddleware from '../middlewares/inject-reset-order
 import injectUserRegistrationOrderByTokenMiddleware from '../middlewares/inject-user-registration-order-by-token-middleware';
 import * as loginFormValidator from '../middlewares/login-form-validator';
 import * as registerFormValidator from '../middlewares/register-form-validator';
-import { generateUnavailableWhenMaintenanceModeMiddlewareForApi } from '../middlewares/unavailable-when-maintenance-mode';
+import {
+  generateUnavailableWhenMaintenanceModeMiddleware, generateUnavailableWhenMaintenanceModeMiddlewareForApi,
+} from '../middlewares/unavailable-when-maintenance-mode';
 
 import * as allInAppNotifications from './all-in-app-notifications';
 import * as forgotPassword from './forgot-password';
@@ -52,7 +54,7 @@ module.exports = function(crowi, app) {
 
   const next = nextFactory(crowi);
 
-  // const unavailableWhenMaintenanceMode = generateUnavailableWhenMaintenanceModeMiddleware(crowi);
+  const unavailableWhenMaintenanceMode = generateUnavailableWhenMaintenanceModeMiddleware(crowi);
   const unavailableWhenMaintenanceModeForApi = generateUnavailableWhenMaintenanceModeMiddlewareForApi(crowi);
 
   const isInstalled = crowi.configManager.getConfig('crowi', 'app:installed');
@@ -74,7 +76,7 @@ module.exports = function(crowi, app) {
 
   app.get('/_next/*'                  , next.delegateToNext);
 
-  app.get('/'                         , applicationInstalled, loginRequired, autoReconnectToSearch, next.delegateToNext);
+  app.get('/'                         , applicationInstalled, unavailableWhenMaintenanceMode, loginRequired, autoReconnectToSearch, next.delegateToNext);
 
   app.get('/login/error/:reason'      , applicationInstalled, login.error);
   app.get('/login'                    , applicationInstalled, login.preLogin, next.delegateToNext);
@@ -179,8 +181,8 @@ module.exports = function(crowi, app) {
   apiV1Router.get('/pages.updatePost'    , accessTokenParser, loginRequired, page.api.getUpdatePost);
   apiV1Router.get('/pages.getPageTag'    , accessTokenParser , loginRequired , page.api.getPageTag);
   // allow posting to guests because the client doesn't know whether the user logged in
-  apiV1Router.post('/pages.remove'       , loginRequiredStrictly , addActivity, page.validator.remove, apiV1FormValidator, page.api.remove); // (Avoid from API Token)
-  apiV1Router.post('/pages.revertRemove' , loginRequiredStrictly , addActivity, page.validator.revertRemove, apiV1FormValidator, page.api.revertRemove); // (Avoid from API Token)
+  apiV1Router.post('/pages.remove'       , loginRequiredStrictly , page.validator.remove, apiV1FormValidator, page.api.remove); // (Avoid from API Token)
+  apiV1Router.post('/pages.revertRemove' , loginRequiredStrictly , page.validator.revertRemove, apiV1FormValidator, page.api.revertRemove); // (Avoid from API Token)
   apiV1Router.post('/pages.unlink'       , loginRequiredStrictly , page.api.unlink); // (Avoid from API Token)
   apiV1Router.post('/pages.duplicate'    , accessTokenParser, loginRequiredStrictly, page.api.duplicate);
   apiV1Router.get('/tags.list'           , accessTokenParser, loginRequired, tag.api.list);
@@ -200,7 +202,7 @@ module.exports = function(crowi, app) {
   // API v1
   app.use('/_api', unavailableWhenMaintenanceModeForApi, apiV1Router);
 
-  // app.use(unavailableWhenMaintenanceMode);
+  app.use(unavailableWhenMaintenanceMode);
 
   // app.get('/tags'                     , loginRequired, tag.showPage);
   app.get('/tags', loginRequired, next.delegateToNext);

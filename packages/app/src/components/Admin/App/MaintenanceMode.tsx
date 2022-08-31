@@ -1,14 +1,13 @@
 import React, { FC, useState, useCallback } from 'react';
+
 import { useTranslation } from 'next-i18next';
 
+import { toastSuccess, toastError } from '~/client/util/apiNotification';
+import { apiv3Post } from '~/client/util/apiv3-client';
+import { useIsMaintenanceMode } from '~/stores/context';
 import loggerFactory from '~/utils/logger';
 
 import { ConfirmModal } from './ConfirmModal';
-import { toastSuccess, toastError } from '~/client/util/apiNotification';
-
-import { apiv3Post } from '~/client/util/apiv3-client';
-
-import { useIsMaintenanceMode } from '~/stores/context';
 
 const logger = loggerFactory('growi:maintenanceMode');
 
@@ -53,7 +52,7 @@ export const MaintenanceMode: FC = () => {
 
     // eslint-disable-next-line max-len
     toastSuccess(isMaintenanceMode ? t('admin:maintenance_mode.successfully_ended_maintenance_mode') : t('admin:maintenance_mode.successfully_started_maintenance_mode'));
-  }, [isMaintenanceMode, closeModal]);
+  }, [isMaintenanceMode, closeModal, startMaintenanceMode, endMaintenanceMode, mutateIsMaintenanceMode, t]);
 
   return (
     <div className="mb-5">
