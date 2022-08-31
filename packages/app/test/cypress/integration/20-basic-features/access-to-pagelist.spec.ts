@@ -48,14 +48,14 @@ context('Access to pagelist', () => {
     cy.getByTestid('page-accessories-modal').parent().should('have.class','show');
     cy.screenshot(`${ssPrefix}6-page-list-modal-size-normal`, {
       capture: 'viewport',
-      blackout:['.page-list-ul.list-group > li:eq(2)', '.page-list-ul.list-group > li:eq(3)','.page-list-ul.list-group > li:eq(4)']
+      blackout:['.page-list-ul.list-group > li:eq(2)', '.page-list-ul.list-group > li:eq(3)','.page-list-ul.list-group > li:eq(4)', '[data-hide-in-vrt=true]']
     });
     cy.getByTestid('page-accessories-modal').parent().should('have.class','show').within(() => {
       cy.get('button.close').eq(0).click();
     });
     cy.screenshot(`${ssPrefix}7-page-list-modal-size-fullscreen`, {
       capture: 'viewport',
-      blackout:['.page-list-ul.list-group > li:eq(2)', '.page-list-ul.list-group > li:eq(3)','.page-list-ul.list-group > li:eq(4)']
+      blackout:['.page-list-ul.list-group > li:eq(2)', '.page-list-ul.list-group > li:eq(3)','.page-list-ul.list-group > li:eq(4)', '[data-hide-in-vrt=true]']
     });
 
     cy.getByTestid('page-accessories-modal').parent().should('have.class','show').within(() => {
