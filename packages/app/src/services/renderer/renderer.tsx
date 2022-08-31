@@ -286,7 +286,6 @@ const generateCommonOptions = (pagePath: string|undefined, config: RendererConfi
       growiPlugin,
     ],
     rehypePlugins: [
-      slug,
       [relativeLinksByPukiwikiLikeLinker, { pagePath }],
       [relativeLinks, { pagePath }],
       raw,
@@ -323,6 +322,7 @@ export const generateViewOptions = (
 
   // add rehype plugins
   rehypePlugins.push(
+    slug,
     katex,
     [toc, {
       nav: false,
