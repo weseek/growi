@@ -90,4 +90,41 @@
       }
     }
   }
+
+  // cheat sheat
+  .overlay.overlay-gfm-cheatsheet {
+    align-items: flex-end;
+    justify-content: flex-end;
+
+    pointer-events: none;
+
+    .card.gfm-cheatsheet {
+      box-shadow: unset;
+      opacity: 0.6;
+      .card-body {
+        min-width: 30em;
+        padding-bottom: 0;
+        font-family: monospace;
+        color: bs.$text-muted;
+      }
+      ul > li {
+        list-style: none;
+      }
+    }
+
+    .gfm-cheatsheet-modal-link {
+      color: bs.$text-muted;
+      pointer-events: all;
+      cursor: pointer;
+      background-color: transparent;
+      border: none;
+
+      opacity: 0.6;
+
+      &:hover,
+      &:focus {
+        opacity: 1;
+      }
+    }
+  }
 }

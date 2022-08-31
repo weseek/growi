@@ -111,20 +111,20 @@ export default class ManageGlobalNotification extends React.Component {
         <div className="my-3">
           <a href="/admin/notification#global-notification" className="btn btn-outline-secondary">
             <i className="icon-fw ti-arrow-left" aria-hidden="true"></i>
-            {t('notification_setting.back_to_list')}
+            {t('notification_settings.back_to_list')}
           </a>
         </div>
 
 
         <div className="row">
           <div className="form-box col-md-12">
-            <h2 className="border-bottom mb-5">{t('notification_setting.notification_detail')}</h2>
+            <h2 className="border-bottom mb-5">{t('notification_settings.notification_detail')}</h2>
           </div>
 
           <div className="col-sm-4">
-            <h3 htmlFor="triggerPath">{t('notification_setting.trigger_path')}
+            <h3 htmlFor="triggerPath">{t('notification_settings.trigger_path')}
               {/* eslint-disable-next-line react/no-danger */}
-              <small dangerouslySetInnerHTML={{ __html: t('notification_setting.trigger_path_help', '<code>*</code>') }} />
+              <small dangerouslySetInnerHTML={{ __html: t('notification_settings.trigger_path_help', '<code>*</code>') }} />
             </h3>
             <div className="form-group">
               <input
@@ -137,7 +137,7 @@ export default class ManageGlobalNotification extends React.Component {
               />
             </div>
 
-            <h3>{t('notification_setting.notify_to')}</h3>
+            <h3>{t('notification_settings.notify_to')}</h3>
             <div className="form-group form-inline">
               <div className="custom-control custom-radio">
                 <input
@@ -192,7 +192,7 @@ export default class ManageGlobalNotification extends React.Component {
                     {/* eslint-disable-next-line react/no-danger */}
                     {/* {!isMailerSetup && <span className="form-text text-muted" dangerouslySetInnerHTML={{ __html: t('admin:mailer_setup_required') }} />} */}
                     <b>Hint: </b>
-                    <a href="https://ifttt.com/create" target="blank">{t('notification_setting.email.ifttt_link')}
+                    <a href="https://ifttt.com/create" target="blank">{t('notification_settings.email.ifttt_link')}
                       <i className="icon-share-alt" />
                     </a>
                   </p>
@@ -216,7 +216,7 @@ export default class ManageGlobalNotification extends React.Component {
                   </div>
                   <p className="p-2">
                     {/* eslint-disable-next-line react/no-danger */}
-                    <span dangerouslySetInnerHTML={{ __html: t('notification_setting.channel_desc') }} />
+                    <span dangerouslySetInnerHTML={{ __html: t('notification_settings.channel_desc') }} />
                   </p>
                 </>
               )}
@@ -224,7 +224,7 @@ export default class ManageGlobalNotification extends React.Component {
 
           <div className="offset-1 col-sm-5">
             <div className="form-group">
-              <h3>{t('notification_setting.trigger_events')}</h3>
+              <h3>{t('notification_settings.trigger_events')}</h3>
               <div className="my-1">
                 <TriggerEventCheckBox
                   checkbox="success"

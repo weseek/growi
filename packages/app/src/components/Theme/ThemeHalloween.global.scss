@@ -27,21 +27,10 @@ $light: lighten($secondary, 10%);
   }
 }
 
-.theme :global {
-  .grw-bg-image-wrapper {
-    position: fixed;
-    width: 100%;
-    height: 100%;
-  }
-
-  .grw-navbar {
-    background-image: url('/images/themes/halloween/halloween-navbar.jpg') !important;
-  }
-}
 
 //== Light Mode
 //
-.theme :global {
+:root .theme-halloween {
   // Background colors
   $bgcolor-global: #050000;
   $bgcolor-inline-code: #1f1f22; //optional
@@ -115,7 +104,11 @@ $light: lighten($secondary, 10%);
   @import '../../styles/theme/apply-colors';
   @import '../../styles/theme/apply-colors-dark';
 
-  //Button
+  .grw-navbar {
+    background-image: url('/images/themes/halloween/halloween-navbar.jpg') !important;
+  }
+
+  // Button
   .btn-group.grw-page-editor-mode-manager {
     .btn.btn-outline-primary {
       @include page-editor-mode-manager.btn-page-editor-mode-manager(lighten($primary, 35%), $primary, lighten($primary, 5%), darken($primary, 20%));

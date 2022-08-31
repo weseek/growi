@@ -1,11 +1,11 @@
-import { HasObjectId, SubscriptionStatusType } from '@growi/core';
+import {
+  HasObjectId, SubscriptionStatusType, Ref, IPage, IUser,
+} from '@growi/core';
 import { subDays } from 'date-fns';
 import { Types } from 'mongoose';
 
 import { AllEssentialActions, SupportedAction } from '~/interfaces/activity';
 import { InAppNotificationStatuses, PaginateResult } from '~/interfaces/in-app-notification';
-import { IPage } from '~/interfaces/page';
-import { IUser } from '~/interfaces/user';
 import { stringifySnapshot } from '~/models/serializers/in-app-notification-snapshot/page';
 import { ActivityDocument } from '~/server/models/activity';
 import {
@@ -17,6 +17,7 @@ import Subscription from '~/server/models/subscription';
 import loggerFactory from '~/utils/logger';
 
 import Crowi from '../crowi';
+import { PageDocument } from '../models/page';
 import { RoomPrefix, getRoomNameWithId } from '../util/socket-io-helpers';
 
 
@@ -50,11 +51,11 @@ export default class InAppNotificationService {
   }
 
   initActivityEventListeners(): void {
-    this.activityEvent.on('updated', async(activity: ActivityDocument, target: IPage) => {
+    this.activityEvent.on('updated', async(activity: ActivityDocument, target: IPage, descendantsSubscribedUsers?: Ref<IUser>[]) => {
       try {
         const shouldNotification = activity != null && target != null && (AllEssentialActions as ReadonlyArray<string>).includes(activity.action);
         if (shouldNotification) {
-          await this.createInAppNotification(activity, target);
+          await this.createInAppNotification(activity, target, descendantsSubscribedUsers);
         }
       }
       catch (err) {
@@ -198,17 +199,26 @@ export default class InAppNotificationService {
     return;
   };
 
-  createInAppNotification = async function(activity: ActivityDocument, target: IPage): Promise<void> {
+  createInAppNotification = async function(activity: ActivityDocument, target: IPage, descendantsSubscribedUsers?: Ref<IUser>[]): Promise<void> {
     const shouldNotification = activity != null && target != null && (AllEssentialActions as ReadonlyArray<string>).includes(activity.action);
+    const snapshot = stringifySnapshot(target);
     if (shouldNotification) {
       let mentionedUsers: IUser[] = [];
       if (activity.action === SupportedAction.ACTION_COMMENT_CREATE) {
         mentionedUsers = await this.crowi.commentService.getMentionedUsers(activity.event);
       }
       const notificationTargetUsers = await activity?.getNotificationTargetUsers();
-      const snapshot = stringifySnapshot(target as IPage);
-      await this.upsertByActivity([...notificationTargetUsers, ...mentionedUsers], activity, snapshot);
-      await this.emitSocketIo(notificationTargetUsers);
+      let notificationDescendantsUsers = [];
+      if (descendantsSubscribedUsers != null) {
+        const User = this.crowi.model('User');
+        const descendantsUsers = descendantsSubscribedUsers.filter(item => (item.toString() !== activity.user._id.toString()));
+        notificationDescendantsUsers = await User.find({
+          _id: { $in: descendantsUsers },
+          status: User.STATUS_ACTIVE,
+        }).distinct('_id');
+      }
+      await this.upsertByActivity([...notificationTargetUsers, ...mentionedUsers, ...notificationDescendantsUsers], activity, snapshot);
+      await this.emitSocketIo([...notificationTargetUsers, notificationDescendantsUsers]);
     }
     else {
       throw Error('No activity to notify');

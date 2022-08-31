@@ -8,7 +8,7 @@ import {
   Modal, ModalHeader, ModalBody,
 } from 'reactstrap';
 
-import { toastError } from '~/client/util/apiNotification';
+import { toastError, toastSuccess } from '~/client/util/apiNotification';
 import { useDefaultIndentSize } from '~/stores/context';
 import { useEditorSettings } from '~/stores/editor';
 import { useIsMobile } from '~/stores/ui';
@@ -19,6 +19,8 @@ import Cheatsheet from './Cheatsheet';
 import CodeMirrorEditor from './CodeMirrorEditor';
 import pasteHelper from './PasteHelper';
 import TextAreaEditor from './TextAreaEditor';
+
+import styles from './Editor.module.scss';
 
 type EditorPropsType = {
   value?: string,
@@ -138,7 +140,7 @@ const Editor = React.forwardRef((props: EditorPropsType, ref): JSX.Element => {
   const pasteFilesHandler = useCallback((event) => {
     const items = event.clipboardData.items || event.clipboardData.files || [];
 
-    toastError(t('toaster.file_upload_failed'));
+    toastSuccess(t('toaster.file_upload_succeeded'));
 
     // abort if length is not 1
     if (items.length < 1) {
@@ -252,7 +254,7 @@ const Editor = React.forwardRef((props: EditorPropsType, ref): JSX.Element => {
     };
 
     return (
-      <Modal isOpen={isCheatsheetModalShown} toggle={hideCheatsheetModal} className="modal-gfm-cheatsheet">
+      <Modal isOpen={isCheatsheetModalShown} toggle={hideCheatsheetModal} className={`${styles['modal-gfm-cheatsheet']}`} >
         <ModalHeader tag="h4" toggle={hideCheatsheetModal} className="bg-primary text-light">
           <i className="icon-fw icon-question" />Markdown help
         </ModalHeader>
@@ -275,7 +277,7 @@ const Editor = React.forwardRef((props: EditorPropsType, ref): JSX.Element => {
 
   return (
     <>
-      <div style={flexContainer} className="editor-container">
+      <div style={flexContainer} className={`editor-container ${styles['editor-container']}`} >
         <Dropzone
           ref={dropzoneRef}
           accept={getAcceptableType()}

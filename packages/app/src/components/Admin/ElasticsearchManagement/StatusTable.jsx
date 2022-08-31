@@ -161,7 +161,7 @@ class StatusTable extends React.PureComponent {
 }
 
 const StatusTableWrapperFC = (props) => {
-  const { t } = useTranslation();
+  const { t } = useTranslation('admin');
 
   return <StatusTable t={t} {...props} />;
 };

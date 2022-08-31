@@ -54,7 +54,7 @@ class UserTriggerNotification extends React.Component {
 
     try {
       await adminNotificationContainer.addNotificationPattern(this.state.pathPattern, this.state.channel);
-      toastSuccess(t('notification_setting.add_notification_pattern'));
+      toastSuccess(t('notification_settings.add_notification_pattern'));
       this.setState({ pathPattern: '', channel: '' });
     }
     catch (err) {
@@ -68,7 +68,7 @@ class UserTriggerNotification extends React.Component {
 
     try {
       const deletedNotificaton = await adminNotificationContainer.deleteUserTriggerNotificationPattern(notificationIdForDelete);
-      toastSuccess(t('notification_setting.delete_notification_pattern', { path: deletedNotificaton.pathPattern }));
+      toastSuccess(t('notification_settings.delete_notification_pattern', { path: deletedNotificaton.pathPattern }));
     }
     catch (err) {
       toastError(err);
@@ -82,13 +82,13 @@ class UserTriggerNotification extends React.Component {
 
     return (
       <React.Fragment>
-        <h2 className="border-bottom my-4">{t('notification_setting.user_trigger_notification_header')}</h2>
+        <h2 className="border-bottom my-4">{t('notification_settings.user_trigger_notification_header')}</h2>
 
         <table className="table table-bordered">
           <thead>
             <tr>
-              <th>{t('notification_setting.pattern')}</th>
-              <th>{t('notification_setting.channel')}</th>
+              <th>{t('notification_settings.pattern')}</th>
+              <th>{t('notification_settings.channel')}</th>
               <th />
             </tr>
           </thead>
@@ -105,7 +105,7 @@ class UserTriggerNotification extends React.Component {
                 />
                 <p className="p-2 mb-0">
                   {/* eslint-disable-next-line react/no-danger */}
-                  <span dangerouslySetInnerHTML={{ __html: t('notification_setting.pattern_desc') }} />
+                  <span dangerouslySetInnerHTML={{ __html: t('notification_settings.pattern_desc') }} />
                 </p>
               </td>
 
@@ -125,7 +125,7 @@ class UserTriggerNotification extends React.Component {
                 </div>
                 <p className="p-2 mb-0">
                   {/* eslint-disable-next-line react/no-danger */}
-                  <span dangerouslySetInnerHTML={{ __html: t('notification_setting.channel_desc') }} />
+                  <span dangerouslySetInnerHTML={{ __html: t('notification_settings.channel_desc') }} />
                 </p>
               </td>
               <td>
@@ -152,7 +152,7 @@ UserTriggerNotification.propTypes = {
 };
 
 const UserTriggerNotificationWrapperFC = (props) => {
-  const { t } = useTranslation();
+  const { t } = useTranslation('admin');
 
   return <UserTriggerNotification t={t} {...props} />;
 };

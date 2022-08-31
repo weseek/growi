@@ -157,7 +157,7 @@ class UserManagement extends React.Component {
           </a>
         </p>
 
-        <h2>{t('User_Management')}</h2>
+        <h2>{t('user_management.user_management')}</h2>
         <div className="border-top border-bottom">
 
           <div className="row d-flex justify-content-start align-items-center my-2">
@@ -224,7 +224,7 @@ UserManagement.propTypes = {
 };
 
 const UserManagementFc = (props) => {
-  const { t } = useTranslation();
+  const { t } = useTranslation('admin');
   return <UserManagement t={t} {...props} />;
 };
 

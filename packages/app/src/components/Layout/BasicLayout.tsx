@@ -7,6 +7,19 @@ import Sidebar from '../Sidebar';
 
 import { RawLayout } from './RawLayout';
 
+// const HotkeysManager = dynamic(() => import('../client/js/components/Hotkeys/HotkeysManager'), { ssr: false });
+// const PageCreateModal = dynamic(() => import('../client/js/components/PageCreateModal'), { ssr: false });
+const GrowiNavbarBottom = dynamic(() => import('../Navbar/GrowiNavbarBottom').then(mod => mod.GrowiNavbarBottom), { ssr: false });
+const ShortcutsModal = dynamic(() => import('../ShortcutsModal'), { ssr: false });
+const SystemVersion = dynamic(() => import('../SystemVersion'), { ssr: false });
+// Page modals
+const PageCreateModal = dynamic(() => import('../PageCreateModal'), { ssr: false });
+const PageDuplicateModal = dynamic(() => import('../PageDuplicateModal'), { ssr: false });
+const PageDeleteModal = dynamic(() => import('../PageDeleteModal'), { ssr: false });
+const PageRenameModal = dynamic(() => import('../PageRenameModal'), { ssr: false });
+const PagePresentationModal = dynamic(() => import('../PagePresentationModal'), { ssr: false });
+const PageAccessoriesModal = dynamic(() => import('../PageAccessoriesModal'), { ssr: false });
+
 
 type Props = {
   title: string
@@ -18,18 +31,6 @@ type Props = {
 export const BasicLayout = ({
   children, title, className, expandContainer,
 }: Props): JSX.Element => {
-
-  // const HotkeysManager = dynamic(() => import('../client/js/components/Hotkeys/HotkeysManager'), { ssr: false });
-  // const PageCreateModal = dynamic(() => import('../client/js/components/PageCreateModal'), { ssr: false });
-  const GrowiNavbarBottom = dynamic(() => import('../Navbar/GrowiNavbarBottom').then(mod => mod.GrowiNavbarBottom), { ssr: false });
-  const ShortcutsModal = dynamic(() => import('../ShortcutsModal'), { ssr: false });
-  const SystemVersion = dynamic(() => import('../SystemVersion'), { ssr: false });
-  // Page modals
-  const PageCreateModal = dynamic(() => import('../PageCreateModal'), { ssr: false });
-  const PageDuplicateModal = dynamic(() => import('../PageDuplicateModal'), { ssr: false });
-  const PageDeleteModal = dynamic(() => import('../PageDeleteModal'), { ssr: false });
-  const PageRenameModal = dynamic(() => import('../PageRenameModal'), { ssr: false });
-  const PagePresentationModal = dynamic(() => import('../PagePresentationModal'), { ssr: false });
 
   const myClassName = `${className ?? ''} ${expandContainer ? 'growi-layout-fluid' : ''}`;
 
@@ -54,6 +55,7 @@ export const BasicLayout = ({
       <PageDeleteModal />
       <PageRenameModal />
       <PagePresentationModal />
+      <PageAccessoriesModal />
       {/* <HotkeysManager /> */}
 
       <ShortcutsModal />
