@@ -3,8 +3,7 @@ import React, { FC, useState, useCallback } from 'react';
 import { useTranslation } from 'next-i18next';
 
 import { toastSuccess, toastError } from '~/client/util/apiNotification';
-import { apiv3Post } from '~/client/util/apiv3-client';
-import { useIsMaintenanceMode } from '~/stores/context';
+import { useIsMaintenanceMode } from '~/stores/maintenanceMode';
 import loggerFactory from '~/utils/logger';
 
 import { ConfirmModal } from './ConfirmModal';
@@ -15,19 +14,11 @@ const logger = loggerFactory('growi:maintenanceMode');
 export const MaintenanceMode: FC = () => {
   const { t } = useTranslation();
 
-  const { data: isMaintenanceMode, mutate: mutateIsMaintenanceMode } = useIsMaintenanceMode();
+  const {
+    data: isMaintenanceMode, start: startMaintenanceMode, end: endMaintenanceMode,
+  } = useIsMaintenanceMode();
 
   const [isModalOpen, setModalOpen] = useState<boolean>(false);
-
-  const startMaintenanceMode = useCallback(async() => {
-    await apiv3Post('/app-settings/maintenance-mode', { flag: true });
-    return;
-  }, []);
-
-  const endMaintenanceMode = useCallback(async() => {
-    await apiv3Post('/app-settings/maintenance-mode', { flag: false });
-    return;
-  }, []);
 
   const openModal = useCallback(() => { setModalOpen(true) }, []);
 
@@ -38,12 +29,10 @@ export const MaintenanceMode: FC = () => {
 
     try {
       if (isMaintenanceMode) {
-        await endMaintenanceMode();
-        mutateIsMaintenanceMode(false);
+        endMaintenanceMode();
       }
       else {
-        await startMaintenanceMode();
-        mutateIsMaintenanceMode(true);
+        startMaintenanceMode();
       }
     }
     catch (err) {
@@ -52,7 +41,7 @@ export const MaintenanceMode: FC = () => {
 
     // eslint-disable-next-line max-len
     toastSuccess(isMaintenanceMode ? t('admin:maintenance_mode.successfully_ended_maintenance_mode') : t('admin:maintenance_mode.successfully_started_maintenance_mode'));
-  }, [isMaintenanceMode, closeModal, startMaintenanceMode, endMaintenanceMode, mutateIsMaintenanceMode, t]);
+  }, [isMaintenanceMode, closeModal, startMaintenanceMode, endMaintenanceMode, t]);
 
   return (
     <div className="mb-5">

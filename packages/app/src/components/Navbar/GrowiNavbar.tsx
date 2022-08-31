@@ -12,6 +12,7 @@ import { UncontrolledTooltip } from 'reactstrap';
 import {
   useIsSearchPage, useCurrentPagePath, useIsGuestUser, useIsSearchServiceConfigured, useAppTitle, useConfidential,
 } from '~/stores/context';
+import { useIsMaintenanceMode } from '~/stores/maintenanceMode';
 import { usePageCreateModal } from '~/stores/modal';
 import { useIsDeviceSmallerThanMd } from '~/stores/ui';
 
@@ -130,6 +131,12 @@ export const GrowiNavbar = (): JSX.Element => {
   const { data: isSearchServiceConfigured } = useIsSearchServiceConfigured();
   const { data: isDeviceSmallerThanMd } = useIsDeviceSmallerThanMd();
   const { data: isSearchPage } = useIsSearchPage();
+  const { data: isMaintenanceMode } = useIsMaintenanceMode();
+
+  const brandLogo = () => {
+
+
+  };
 
   return (
     <nav id="grw-navbar" className={`navbar grw-navbar ${styles['grw-navbar']} navbar-expand navbar-dark sticky-top mb-0 px-0`}>

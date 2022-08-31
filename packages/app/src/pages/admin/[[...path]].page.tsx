@@ -34,8 +34,9 @@ import PluginUtils from '~/server/plugins/plugin-utils';
 import ConfigLoader from '~/server/service/config-loader';
 import {
   useCurrentUser, /* useSearchServiceConfigured, */ useIsAclEnabled, useIsMailerSetup, useIsSearchServiceReachable, useSiteUrl,
-  useAuditLogEnabled, useAuditLogAvailableActions, useIsMaintenanceMode,
+  useAuditLogEnabled, useAuditLogAvailableActions,
 } from '~/stores/context';
+import { useIsMaintenanceMode } from '~/stores/maintenanceMode';
 
 import {
   CommonProps, getServerSideCommonProps, getNextI18NextConfig,
