@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react';
+import React from 'react';
 
 import { isClient, objectIdUtils } from '@growi/core';
 import {
@@ -52,6 +52,7 @@ const CustomizeSettingContents = dynamic(() => import('../../components/Admin/Cu
 const DataImportPageContents = dynamic(() => import('../../components/Admin/ImportData/ImportDataPageContents'), { ssr: false });
 const ExportArchiveDataPage = dynamic(() => import('../../components/Admin/ExportArchiveDataPage'), { ssr: false });
 const NotificationSetting = dynamic(() => import('../../components/Admin/Notification/NotificationSetting'), { ssr: false });
+const ManageGlobalNotification = dynamic(() => import('../../components/Admin/Notification/ManageGlobalNotification'), { ssr: false });
 const SlackIntegration = dynamic(() => import('../../components/Admin/SlackIntegration/SlackIntegration'), { ssr: false });
 const LegacySlackIntegration = dynamic(() => import('../../components/Admin/LegacySlackIntegration/LegacySlackIntegration'), { ssr: false });
 const UserManagement = dynamic(() => import('../../components/Admin/UserManagement'), { ssr: false });
@@ -140,8 +141,10 @@ const AdminMarkdownSettingsPage: NextPage<Props> = (props: Props) => {
       component: <NotificationSetting />,
     },
     'global-notification': {
-      title: '',
-      component: <>global-notification</>,
+      new: {
+        title: t('external_notification.external_notification'),
+        component: <ManageGlobalNotification />,
+      },
     },
     'slack-integration': {
       title: t('slack_integration.slack_integration'),
