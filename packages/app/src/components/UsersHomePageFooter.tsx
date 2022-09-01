@@ -22,7 +22,7 @@ export const UsersHomePageFooter = (props: UsersHomePageFooterProps): JSX.Elemen
           <i style={{ fontSize: '1.3em' }} className="fa fa-fw fa-bookmark-o"></i>
           {t('footer.bookmarks')}
         </h2>
-        <div id="user-bookmark-list" className="page-list">
+        <div id="user-bookmark-list" className={`page-list ${styles['page-list']}`}>
           <BookmarkList userId={creatorId} />
         </div>
       </div>
@@ -31,7 +31,7 @@ export const UsersHomePageFooter = (props: UsersHomePageFooterProps): JSX.Elemen
           <i id="recent-created-icon" className="mr-1"><RecentlyCreatedIcon /></i>
           {t('footer.recently_created')}
         </h2>
-        <div id="user-created-list" className="page-list">
+        <div id="user-created-list" className={`page-list ${styles['page-list']}`}>
           <RecentCreated userId={creatorId} />
         </div>
       </div>
