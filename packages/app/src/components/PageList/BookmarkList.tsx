@@ -76,5 +76,4 @@ export const BookmarkList = (props: BookmarkListProps): JSX.Element => {
       )}
     </div>
   );
-
 };
