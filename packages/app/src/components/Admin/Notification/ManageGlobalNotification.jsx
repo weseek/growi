@@ -23,41 +23,11 @@ const logger = loggerFactory('growi:manageGlobalNotification');
 
 const ManageGlobalNotification = (props) => {
 
-  // constructor() {
-  //   super();
-
-  //   const globalNotification = null;
-  //   // try {
-  //   //   globalNotification = JSON.parse(document.getElementById('admin-global-notification-setting').getAttribute('data-global-notification'));
-  //   // }
-  //   // catch (err) {
-  //   //   // toastError(err);
-  //   //   logger.error(err);
-  //   // }
-
-  //   this.state = {
-  //     // globalNotificationId: globalNotification._id || null,
-  //     globalNotificationId: null,
-  //     // triggerPath: globalNotification.triggerPath || '',
-  //     triggerPath: '',
-  //     // notifyToType: globalNotification.__t || 'mail',
-  //     notifyToType: 'mail',
-  //     // emailToSend: globalNotification.toEmail || '',
-  //     emailToSend: '',
-  //     // slackChannelToSend: globalNotification.slackChannels || '',
-  //     slackChannelToSend: '',
-  //     // triggerEvents: new Set(globalNotification.triggerEvents),
-  //     triggerEvents: new Set(),
-  //   };
-
-  //   this.submitHandler = this.submitHandler.bind(this);
-  // }
-
   const [globalNotificationId, setGlobalNotificationId] = useState(null);
   const [triggerPath, setTriggerPath] = useState('');
   const [notifyToType, setNotifyToType] = useState('mail');
   const [emailToSend, setEmailToSend] = useState('');
-  const [slacChannelToSend, setSlackChannelToSend] = useState('');
+  const [slackChannelToSend, setSlackChannelToSend] = useState('');
   const [triggerEvents, setTriggerEvents] = useState(new Set());
 
 
@@ -81,11 +51,11 @@ const ManageGlobalNotification = (props) => {
 
     if (triggerEvents.has(triggerEvent)) {
       triggerEvents.delete(triggerEvent);
-      setTriggerEvents({ triggerEvents });
+      setTriggerEvents(triggerEvents);
     }
     else {
       triggerEvents.add(triggerEvent);
-      setTriggerEvents({ triggerEvents });
+      setTriggerEvents(triggerEvents);
     }
   };
 
@@ -95,7 +65,7 @@ const ManageGlobalNotification = (props) => {
       triggerPath,
       notifyToType,
       emailToSend,
-      slacChannelToSend,
+      slackChannelToSend,
       triggerEvents,
     };
 
@@ -222,7 +192,7 @@ const ManageGlobalNotification = (props) => {
                     aria-describedby="slack-channel-addon"
                     name="notificationGlobal[slackChannels]"
                     placeholder="Slack Channel"
-                    value={slacChannelToSend}
+                    value={slackChannelToSend}
                     onChange={(e) => { setSlackChannelToSend(e.target.value) }}
                   />
                 </div>
