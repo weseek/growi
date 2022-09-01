@@ -20,7 +20,7 @@ import { Comments } from '~/components/Comments';
 import { PageAlerts } from '~/components/PageAlert/PageAlerts';
 // import { useTranslation } from '~/i18n';
 import { PageContentFooter } from '~/components/PageContentFooter';
-import { UsersHomePageFooter } from '~/components/UsersHomePageFooter';
+import { UsersHomePageFooterProps } from '~/components/UsersHomePageFooter';
 import { CrowiRequest } from '~/interfaces/crowi-request';
 // import { renderScriptTagByName, renderHighlightJsStyleTag } from '~/service/cdn-resources-loader';
 // import { useIndentSize } from '~/stores/editor';
@@ -74,6 +74,8 @@ const NotCreatablePage = dynamic(() => import('../components/NotCreatablePage').
 const ForbiddenPage = dynamic(() => import('../components/ForbiddenPage'), { ssr: false });
 const UnsavedAlertDialog = dynamic(() => import('./UnsavedAlertDialog'), { ssr: false });
 const GrowiSubNavigationSwitcher = dynamic(() => import('../components/Navbar/GrowiSubNavigationSwitcher'), { ssr: false });
+const UsersHomePageFooter = dynamic<UsersHomePageFooterProps>(() => import('../components/UsersHomePageFooter')
+  .then(mod => mod.UsersHomePageFooter), { ssr: false });
 
 const logger = loggerFactory('growi:pages:all');
 

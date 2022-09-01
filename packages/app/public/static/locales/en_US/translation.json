@@ -864,5 +864,9 @@
   "page_operation":{
     "paths_recovered": "Paths recovered successfully",
     "path_recovery_failed":"Path recovery failed"
+  },
+  "footer": {
+    "bookmarks": "Bookmarks",
+    "recently_created": "Recently Created"
   }
 }

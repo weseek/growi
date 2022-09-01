@@ -1146,5 +1146,9 @@
   "page_operation":{
     "paths_recovered": "成功恢复了页面路径",
     "path_recovery_failed":"路径恢复失败"
+  },
+  "footer": {
+    "bookmarks": "书签",
+    "recently_created": "最近创建页面"
   }
 }
