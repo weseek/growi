@@ -10,7 +10,11 @@ import { withUnstatedContainers } from '../../UnstatedUtils';
 
 import SecurityManagementContents from './SecurityManagementContents';
 
-function SecurityManagement(props) {
+type Props = {
+  adminGeneralSecurityContainer: AdminGeneralSecurityContainer
+}
+
+const SecurityManagement = (props: Props) => {
   const { adminGeneralSecurityContainer } = props;
 
   const fetchGeneralSecuritySettingsData = useCallback(async() => {
@@ -28,10 +32,6 @@ function SecurityManagement(props) {
   }, [adminGeneralSecurityContainer, fetchGeneralSecuritySettingsData]);
 
   return <SecurityManagementContents />;
-}
-
-SecurityManagement.propTypes = {
-  adminGeneralSecurityContainer: PropTypes.instanceOf(AdminGeneralSecurityContainer).isRequired,
 };
 
 const SecurityManagementWithUnstatedContainer = withUnstatedContainers(SecurityManagement, [AdminGeneralSecurityContainer]);

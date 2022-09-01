@@ -46,7 +46,7 @@ import {
 
 const AdminHome = dynamic(() => import('../../components/Admin/AdminHome/AdminHome'), { ssr: false });
 const AppSettingsPageContents = dynamic(() => import('../../components/Admin/App/AppSettingsPageContents'), { ssr: false });
-const SecurityManagementContents = dynamic(() => import('../../components/Admin/Security/SecurityManagementContents'), { ssr: false });
+const SecurityManagement = dynamic(() => import('../../components/Admin/Security/SecurityManagement'), { ssr: false });
 const MarkDownSettingContents = dynamic(() => import('../../components/Admin/MarkdownSetting/MarkDownSettingContents'), { ssr: false });
 const CustomizeSettingContents = dynamic(() => import('../../components/Admin/Customize/Customize'), { ssr: false });
 const DataImportPageContents = dynamic(() => import('../../components/Admin/ImportData/ImportDataPageContents'), { ssr: false });
@@ -117,7 +117,7 @@ const AdminMarkdownSettingsPage: NextPage<Props> = (props: Props) => {
     },
     security: {
       title: t('security_settings.security_settings'),
-      component: <SecurityManagementContents />,
+      component: <SecurityManagement />,
     },
     markdown: {
       title: t('markdown_settings.markdown_settings'),
