@@ -144,7 +144,7 @@ class ImportDataPageContents extends React.Component {
                 <tr>
                   <th>{t('importer_management.article')}</th>
                   <th><i className="icon-arrow-right-circle text-success"></i></th>
-                  <th>{t('page')}</th>
+                  <th>{t('importer_management.page')}</th>
                 </tr>
                 <tr>
                   <th>{t('importer_management.tag')}</th>

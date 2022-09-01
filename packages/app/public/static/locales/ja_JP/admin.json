@@ -1,4 +1,13 @@
 {
+  "Update": "更新",
+  "Delete": "削除",
+  "User": "ユーザー",
+  "Name": "名前",
+  "Page": "ページ",
+  "Created": "作成日",
+  "Edit": "編集",
+  "Description": "説明",
+  "last_login": "最終ログイン",
   "wiki_management_home_page": "Wiki管理トップ",
   "app_settings": "アプリ設定",
   "public": "公開",
@@ -269,7 +278,6 @@
     "toggle_notification": "{{path}}の通知設定を変更しました"
   },
   "customize": "カスタマイズ",
-  "import_data": "データインポート",
   "export_archive_data": "データアーカイブ",
   "full_text_search_management": {
     "full_text_search_management": "全文検索管理",
@@ -400,7 +408,7 @@
     "use_env_var_if_empty": "データベース側の値が空の場合、環境変数 <code>{{variable}}</code> の値を利用します",
     "note_for_the_only_env_option": "現在GCS設定は環境変数の値によって制限されています<br>この設定を変更する場合は環境変数 <code>{{env}}</code> の値をfalseに変更もしくは削除してください"
   },
-  "markdown_setting": {
+  "markdown_settings": {
     "markdown_settings": "マークダウン設定",
     "lineBreak_header": "Line Break設定",
     "lineBreak_desc": "Line Breakの設定を変更できます。",
@@ -530,6 +538,12 @@
     "delete": "削除"
   },
   "importer_management": {
+    "import_data": "データインポート",
+    "article": "記事",
+    "category": "カテゴリー",
+    "tag": "タグ",
+    "page": "ページ",
+    "page_path": "ページパス",
     "beta_warning": "この機能はベータ版です",
     "import_from": "{{from}} からインポート",
     "import_growi_archive": "GROWI アーカイブをインポート",
@@ -727,6 +741,7 @@
     "user_management": "ユーザー管理",
     "invite_users": "新規ユーザーの仮発行",
     "click_twice_same_checkbox": "少なくとも一つはチェックしてください。",
+    "status": "ステータス",
     "invite_modal": {
       "emails": "メールアドレス (複数行入力で複数人発行可能)",
       "description1": "メールアドレスを使用して新規ユーザーを仮発行します。",
@@ -789,6 +804,7 @@
     "deny_create_group": "新規グループの作成はできません。",
     "group_name": "グループ名",
     "group_example": "例: Group1",
+    "child_user_group": "子グループ",
     "parent_group": "親グループ",
     "select_parent_group": "親グループを選択",
     "release_parent_group": "親グループの解除",

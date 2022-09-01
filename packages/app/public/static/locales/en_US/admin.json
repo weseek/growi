@@ -706,6 +706,7 @@
     "user_management": "User Management",
     "invite_users": "Temporarily issue a new user",
     "click_twice_same_checkbox": "You should check at least one checkbox.",
+    "status": "Status",
     "invite_modal": {
       "emails": "Emails (Possible to issue multiple people with new lines)",
       "description1":"Temporarily issue new users by email addresses.",
@@ -768,6 +769,7 @@
     "deny_create_group": "You can't create a new group with the current settings.",
     "group_name": "Group name",
     "group_example": "e.g. : Group1",
+    "child_user_group": "Child User Group",
     "parent_group": "Parent Group",
     "select_parent_group": "Select Parent Group",
     "release_parent_group": "Release parent group",
