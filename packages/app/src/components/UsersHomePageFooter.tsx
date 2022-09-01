@@ -12,6 +12,7 @@ export type UsersHomePageFooterProps = {
 }
 
 export const UsersHomePageFooter = (props: UsersHomePageFooterProps): JSX.Element => {
+
   const { t } = useTranslation();
   const { creatorId } = props;
 
