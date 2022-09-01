@@ -30,7 +30,7 @@ const ManageGlobalNotification = (props) => {
   const [notifyToType, setNotifyToType] = useState('mail');
   const [emailToSend, setEmailToSend] = useState('');
   const [slackChannelToSend, setSlackChannelToSend] = useState('');
-  const [triggerEvents, setTriggerEvents] = useState(new Set(globalNotification.triggerEvents));
+  const [triggerEvents, setTriggerEvents] = useState(new Set(globalNotification?.triggerEvents));
 
   const onChangeTriggerEvents = (triggerEvent) => {
 
