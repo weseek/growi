@@ -581,19 +581,11 @@ export const getServerSideProps: GetServerSideProps = async(context: GetServerSi
   const req = context.req as CrowiRequest<IUserHasId & any>;
   const { user } = req;
 
-  const { crowi } = req;
-  const isMaintenanceMode = crowi.appService.isMaintenanceMode();
-  if (isMaintenanceMode) {
-    return {
-      redirect: {
-        destination: '/maintenance',
-        permanent: false,
-      },
-    };
-  }
-
   const result = await getServerSideCommonProps(context);
 
+  if ('redirect' in result) {
+    return { redirect: result.redirect };
+  }
 
   // check for presence
   // see: https://github.com/vercel/next.js/issues/19271#issuecomment-730006862

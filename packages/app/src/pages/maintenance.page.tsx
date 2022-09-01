@@ -83,18 +83,12 @@ async function injectNextI18NextConfigurations(context: GetServerSidePropsContex
 export const getServerSideProps: GetServerSideProps = async(context: GetServerSidePropsContext) => {
   const req = context.req as CrowiRequest<IUserHasId & any>;
 
-  const { crowi } = req;
-  const isMaintenanceMode = crowi.appService.isMaintenanceMode();
-  if (!isMaintenanceMode) {
-    return {
-      redirect: {
-        destination: '/',
-        permanent: false,
-      },
-    };
+  const result = await getServerSideCommonProps(context);
+
+  if ('redirect' in result) {
+    return { redirect: result.redirect };
   }
 
-  const result = await getServerSideCommonProps(context);
   if (!('props' in result)) {
     throw new Error('invalid getSSP result');
   }

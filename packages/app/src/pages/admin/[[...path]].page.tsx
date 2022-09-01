@@ -69,7 +69,6 @@ const pluginUtils = new PluginUtils();
 type Props = CommonProps & {
   currentUser: any,
 
-  isMaintenanceMode: boolean,
   nodeVersion: string,
   npmVersion: string,
   yarnVersion: string,
@@ -282,7 +281,6 @@ async function injectServerConfigurations(context: GetServerSidePropsContext, pr
   } = crowi;
 
   props.siteUrl = appService.getSiteUrl();
-  props.isMaintenanceMode = crowi.appService.isMaintenanceMode();
   props.nodeVersion = crowi.runtimeVersions.versions.node ? crowi.runtimeVersions.versions.node.version.version : null;
   props.npmVersion = crowi.runtimeVersions.versions.npm ? crowi.runtimeVersions.versions.npm.version.version : null;
   props.yarnVersion = crowi.runtimeVersions.versions.yarn ? crowi.runtimeVersions.versions.yarn.version.version : null;

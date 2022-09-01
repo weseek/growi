@@ -19,6 +19,7 @@ export type CommonProps = {
   csrfToken: string,
   isContainerFluid: boolean,
   growiVersion: string,
+  isMaintenanceMode: boolean,
 } & Partial<SSRConfig>;
 
 // eslint-disable-next-line max-len
@@ -44,7 +45,28 @@ export const getServerSideCommonProps: GetServerSideProps<CommonProps> = async(c
     csrfToken: req.csrfToken(),
     isContainerFluid: configManager.getConfig('crowi', 'customize:isContainerFluid') ?? false,
     growiVersion: crowi.version,
+    isMaintenanceMode: appService.isMaintenanceMode(),
   };
+
+  if (!props.isMaintenanceMode && currentPathname === '/maintenance') {
+    return {
+      props,
+      redirect: {
+        destination: '/',
+        permanent: false,
+      },
+    };
+  }
+
+  if (props.isMaintenanceMode && !currentPathname.match('/admin/*') && !(currentPathname === '/maintenance')) {
+    return {
+      props,
+      redirect: {
+        destination: '/maintenance',
+        permanent: false,
+      },
+    };
+  }
 
   return { props };
 };
