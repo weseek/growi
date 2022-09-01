@@ -1,5 +1,5 @@
-import loggerFactory from '~/utils/logger';
 import { toArrayIfNot } from '~/utils/array-utils';
+import loggerFactory from '~/utils/logger';
 
 import ConfigLoader from './config-loader';
 
@@ -7,10 +7,11 @@ const logger = loggerFactory('growi:services:ExportService'); // eslint-disable-
 
 const fs = require('fs');
 const path = require('path');
-const mongoose = require('mongoose');
 const { Transform } = require('stream');
-const streamToPromise = require('stream-to-promise');
+
 const archiver = require('archiver');
+const mongoose = require('mongoose');
+const streamToPromise = require('stream-to-promise');
 
 const CollectionProgressingStatus = require('../models/vo/collection-progressing-status');
 

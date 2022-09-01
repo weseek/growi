@@ -125,7 +125,7 @@ const AdminMarkdownSettingsPage: NextPage<Props> = (props: Props) => {
       component: <MarkDownSettingContents />,
     },
     customize: {
-      title: t('customize_setting.customize_setting'),
+      title: t('customize_settings.customize_settings'),
       component: <CustomizeSettingContents />,
     },
     importer: {
@@ -158,7 +158,7 @@ const AdminMarkdownSettingsPage: NextPage<Props> = (props: Props) => {
       title: t('user_management.user_management'),
       component: <UserManagement />,
       'external-accounts': {
-        title: t('external_account_management'),
+        title: t('user_management.external_account'),
         component: <ManageExternalAccount />,
       },
     },
