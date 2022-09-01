@@ -29,7 +29,6 @@ import {
   useIsAbleToShowPageEditorModeManager, useIsAbleToShowPageAuthors,
 } from '~/stores/ui';
 
-
 import CreateTemplateModal from '../CreateTemplateModal';
 import AttachmentIcon from '../Icons/AttachmentIcon';
 import HistoryIcon from '../Icons/HistoryIcon';
