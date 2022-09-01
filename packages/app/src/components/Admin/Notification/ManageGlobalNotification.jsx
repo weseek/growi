@@ -10,7 +10,7 @@ import { apiv3Post, apiv3Put } from '~/client/util/apiv3-client';
 import loggerFactory from '~/utils/logger';
 
 
-import { withUnstatedContainers } from '../../UnstatedUtils';
+// import { withUnstatedContainers } from '../../UnstatedUtils';
 import AdminUpdateButtonRow from '../Common/AdminUpdateButtonRow';
 
 import TriggerEventCheckBox from './TriggerEventCheckBox';
@@ -26,11 +26,9 @@ export default class ManageGlobalNotification extends React.Component {
     let globalNotification;
     try {
       globalNotification = JSON.parse(document.getElementById('admin-global-notification-setting').getAttribute('data-global-notification'));
-      console.log('Did it work?\n');
     }
     catch (err) {
       // toastError(err);
-      console.log('It did not work\n');
       logger.error(err);
     }
 
@@ -102,8 +100,7 @@ export default class ManageGlobalNotification extends React.Component {
 
 
   render() {
-    const { t } = this.props;
-    // const { isMailerSetup } = appContainer.config;
+    const { t, isMailerSetup } = this.props;
 
     return (
       <React.Fragment>
@@ -190,7 +187,7 @@ export default class ManageGlobalNotification extends React.Component {
 
                   <p className="p-2">
                     {/* eslint-disable-next-line react/no-danger */}
-                    {/* {!isMailerSetup && <span className="form-text text-muted" dangerouslySetInnerHTML={{ __html: t('admin:mailer_setup_required') }} />} */}
+                    {!isMailerSetup && <span className="form-text text-muted" dangerouslySetInnerHTML={{ __html: t('admin:mailer_setup_required') }} />}
                     <b>Hint: </b>
                     <a href="https://ifttt.com/create" target="blank">{t('notification_settings.email.ifttt_link')}
                       <i className="icon-share-alt" />
@@ -316,8 +313,7 @@ export default class ManageGlobalNotification extends React.Component {
 
 ManageGlobalNotification.propTypes = {
   t: PropTypes.func.isRequired, // i18next
-  // appContainer: PropTypes.instanceOf(AppContainer).isRequired,
-
+  isMailerSetup: PropTypes.bool,
 };
 
 const ManageGlobalNotificationWrapperFC = (props) => {
