@@ -154,7 +154,6 @@
   "add_bookmark": "Add to Bookmarks",
   "remove_bookmark": "Remove from Bookmarks",
   "wide_view": "Wide View",
-  "Recent Created": "Recent Created",
   "Recent Changes": "Recent Changes",
   "Page Tree": "Page Tree",
   "original_path":"Original path",
@@ -864,5 +863,9 @@
   "page_operation":{
     "paths_recovered": "Paths recovered successfully",
     "path_recovery_failed":"Path recovery failed"
+  },
+  "footer": {
+    "bookmarks": "Bookmarks",
+    "recently_created": "Recently Created"
   }
 }

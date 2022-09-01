@@ -17,11 +17,10 @@ import { useRouter } from 'next/router';
 import superjson from 'superjson';
 
 import { Comments } from '~/components/Comments';
-import { RecentlyCreatedIcon } from '~/components/Icons/RecentlyCreatedIcon';
 import { PageAlerts } from '~/components/PageAlert/PageAlerts';
 // import { useTranslation } from '~/i18n';
 import { PageContentFooter } from '~/components/PageContentFooter';
-import { RecentCreated } from '~/components/RecentCreated/RecentCreated';
+import { UsersHomePageFooterProps } from '~/components/UsersHomePageFooter';
 import { CrowiRequest } from '~/interfaces/crowi-request';
 // import { renderScriptTagByName, renderHighlightJsStyleTag } from '~/service/cdn-resources-loader';
 // import { useIndentSize } from '~/stores/editor';
@@ -75,6 +74,8 @@ const NotCreatablePage = dynamic(() => import('../components/NotCreatablePage').
 const ForbiddenPage = dynamic(() => import('../components/ForbiddenPage'), { ssr: false });
 const UnsavedAlertDialog = dynamic(() => import('./UnsavedAlertDialog'), { ssr: false });
 const GrowiSubNavigationSwitcher = dynamic(() => import('../components/Navbar/GrowiSubNavigationSwitcher'), { ssr: false });
+const UsersHomePageFooter = dynamic<UsersHomePageFooterProps>(() => import('../components/UsersHomePageFooter')
+  .then(mod => mod.UsersHomePageFooter), { ssr: false });
 
 const logger = loggerFactory('growi:pages:all');
 
@@ -328,41 +329,11 @@ const GrowiPage: NextPage<Props> = (props: Props) => {
             </div> */}
           </div>
         </div>
-        {/* TODO: Check CSS import */}
         <footer className="footer d-edit-none">
           {/* TODO: Enable page_list.html */}
-          {/* TODO: Enable isIdenticalPathPage or useIdenticalPath */}
-          {/* { !props.isIdenticalPathPage && ( */}
-          <Comments pageId={pageId} />
-          {/* )} */}
-          {/* TODO: Create UsersHomePageFooter conponent */}
-          { !isUsersHomePage(props.currentPathname) && (
-            <div className="container-lg user-page-footer py-5">
-              <div className="grw-user-page-list-m d-edit-none">
-                <h2 id="bookmarks-list" className="grw-user-page-header border-bottom pb-2 mb-3">
-                  <i style={{ fontSize: '1.3em' }} className="fa fa-fw fa-bookmark-o"></i>
-                  Bookmarks
-                </h2>
-                <div id="user-bookmark-list" className="page-list">
-                  <div className="page-list-container">
-                    {/* <BookmarkList userId={pageContainer.state.creator._id} /> */}
-                  </div>
-                </div>
-              </div>
-              <div className="grw-user-page-list-m mt-5 d-edit-none">
-                <h2 id="recently-created-list" className="grw-user-page-header border-bottom pb-2 mb-3">
-                  <i id="recent-created-icon" className="mr-1">
-                    <RecentlyCreatedIcon />
-                  </i>
-                  Recently Created
-                </h2>
-                <div id="user-created-list" className="page-list">
-                  <div className="page-list-container">
-                    <RecentCreated userId={pageWithMeta.data.creator._id} />
-                  </div>
-                </div>
-              </div>
-            </div>
+          { !props.isIdenticalPathPage && (<Comments pageId={pageId} />) }
+          { (pageWithMeta != null && isUsersHomePage(pageWithMeta.data.path)) && (
+            <UsersHomePageFooter creatorId={pageWithMeta.data.creator._id}/>
           )}
           <PageContentFooter />
         </footer>
