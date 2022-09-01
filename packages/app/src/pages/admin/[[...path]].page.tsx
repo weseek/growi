@@ -143,7 +143,7 @@ const AdminMarkdownSettingsPage: NextPage<Props> = (props: Props) => {
     'global-notification': {
       new: {
         title: t('external_notification.external_notification'),
-        component: <ManageGlobalNotification isMailerSetup={props.isMailerSetup} />,
+        component: <ManageGlobalNotification />,
       },
     },
     'slack-integration': {
