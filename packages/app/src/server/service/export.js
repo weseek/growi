@@ -1,5 +1,5 @@
-import loggerFactory from '~/utils/logger';
 import { toArrayIfNot } from '~/utils/array-utils';
+import loggerFactory from '~/utils/logger';
 
 import ConfigLoader from './config-loader';
 
@@ -7,10 +7,11 @@ const logger = loggerFactory('growi:services:ExportService'); // eslint-disable-
 
 const fs = require('fs');
 const path = require('path');
-const mongoose = require('mongoose');
 const { Transform } = require('stream');
-const streamToPromise = require('stream-to-promise');
+
 const archiver = require('archiver');
+const mongoose = require('mongoose');
+const streamToPromise = require('stream-to-promise');
 
 const CollectionProgressingStatus = require('../models/vo/collection-progressing-status');
 
@@ -288,14 +289,14 @@ class ExportService {
     };
 
     // send event (in progress in global)
-    this.adminEvent.emit('admin:onProgressForExport', data);
+    this.adminEvent.emit('onProgressForExport', data);
   }
 
   /**
    * emit start zipping event
    */
   emitStartZippingEvent() {
-    this.adminEvent.emit('admin:onStartZippingForExport', {});
+    this.adminEvent.emit('onStartZippingForExport', {});
   }
 
   /**
@@ -303,7 +304,7 @@ class ExportService {
    * @param {object} zipFileStat added zip file status data
    */
   emitTerminateEvent(zipFileStat) {
-    this.adminEvent.emit('admin:onTerminateForExport', { addedZipFileStat: zipFileStat });
+    this.adminEvent.emit('onTerminateForExport', { addedZipFileStat: zipFileStat });
   }
 
   /**
