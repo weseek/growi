@@ -170,7 +170,7 @@ const ManageGlobalNotification = (props) => {
                 name="notifyToType"
                 value="slack"
                 checked={notifyToType === 'slack'}
-                onChange={() => { this.onChangeNotifyToType('slack') }}
+                onChange={() => { setNotifyToType('slack') }}
               />
               <label className="custom-control-label" htmlFor="slack">
                 <p className="font-weight-bold">Slack</p>
@@ -251,7 +251,7 @@ const ManageGlobalNotification = (props) => {
                 checkbox="warning"
                 event="pageEdit"
                 checked={triggerEvents.has('pageEdit')}
-                onChange={() => this.onChangeTriggerEvents('pageEdit')}
+                onChange={() => onChangeTriggerEvents('pageEdit')}
               >
                 <span className="badge badge-pill badge-warning">
                   <i className="icon-pencil mr-1" />EDIT
@@ -263,7 +263,7 @@ const ManageGlobalNotification = (props) => {
                 checkbox="pink"
                 event="pageMove"
                 checked={triggerEvents.has('pageMove')}
-                onChange={() => this.onChangeTriggerEvents('pageMove')}
+                onChange={() => onChangeTriggerEvents('pageMove')}
               >
                 <span className="badge badge-pill badge-pink">
                   <i className="icon-action-redo mr-1" />MOVE
@@ -275,7 +275,7 @@ const ManageGlobalNotification = (props) => {
                 checkbox="danger"
                 event="pageDelete"
                 checked={triggerEvents.has('pageDelete')}
-                onChange={() => this.onChangeTriggerEvents('pageDelete')}
+                onChange={() => onChangeTriggerEvents('pageDelete')}
               >
                 <span className="badge badge-pill badge-danger">
                   <i className="icon-fire mr-1" />DELETE
@@ -287,7 +287,7 @@ const ManageGlobalNotification = (props) => {
                 checkbox="info"
                 event="pageLike"
                 checked={triggerEvents.has('pageLike')}
-                onChange={() => this.onChangeTriggerEvents('pageLike')}
+                onChange={() => onChangeTriggerEvents('pageLike')}
               >
                 <span className="badge badge-pill badge-info">
                   <i className="fa fa-heart-o mr-1" />LIKE
@@ -299,7 +299,7 @@ const ManageGlobalNotification = (props) => {
                 checkbox="secondary"
                 event="comment"
                 checked={triggerEvents.has('comment')}
-                onChange={() => this.onChangeTriggerEvents('comment')}
+                onChange={() => onChangeTriggerEvents('comment')}
               >
                 <span className="badge badge-pill badge-secondary">
                   <i className="icon-bubble mr-1" />POST
