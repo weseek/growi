@@ -143,10 +143,3 @@ export const InAppNotificationPage: FC = () => {
 };
 
 InAppNotificationPage.displayName = 'InAppNotificationPage';
-
-// const InAppNotificationPage = withUnstatedContainers(InAppNotificationPageBody, [AppContainer]);
-// export default InAppNotificationPage;
-
-// InAppNotificationPageBody.propTypes = {
-//   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
-// };
