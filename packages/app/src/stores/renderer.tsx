@@ -77,9 +77,22 @@ export const useTocOptions = (): SWRResponse<RendererOptions, Error> => {
 };
 
 export const usePreviewOptions = (): SWRResponse<RendererOptions, Error> => {
-  const key = 'previewOptions';
+  const { data: currentPagePath } = useCurrentPagePath();
+  const { data: rendererConfig } = useRendererConfig();
 
-  return _useOptionsBase(key, generatePreviewOptions);
+  const isAllDataValid = currentPagePath != null && rendererConfig != null;
+
+  const key = isAllDataValid
+    ? ['previewOptions', currentPagePath, rendererConfig]
+    : null;
+
+  return useSWRImmutable<RendererOptions, Error>(
+    key,
+    (rendererId, currentPagePath, rendererConfig) => generatePreviewOptions(currentPagePath, rendererConfig),
+    {
+      fallbackData: isAllDataValid ? generatePreviewOptions(currentPagePath, rendererConfig) : undefined,
+    },
+  );
 };
 
 export const useCommentPreviewOptions = (): SWRResponse<RendererOptions, Error> => {
