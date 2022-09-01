@@ -79,11 +79,11 @@ const ManageGlobalNotification = (props) => {
 
     if (triggerEvents.has(triggerEvent)) {
       triggerEvents.delete(triggerEvent);
-      this.setState({ triggerEvents });
+      setTriggerEvents({ triggerEvents });
     }
     else {
       triggerEvents.add(triggerEvent);
-      this.setState({ triggerEvents });
+      setTriggerEvents({ triggerEvents });
     }
   };
 
