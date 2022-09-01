@@ -22,7 +22,7 @@ const logger = loggerFactory('growi:manageGlobalNotification');
 const ManageGlobalNotification = (props) => {
 
   let globalNotification;
-  // TODO: globalNotificationを取得する タスクURL https://redmine.weseek.co.jp/issues/103901
+  // TODO: securely fetch the data of globalNotification variable without using swig. URL https://redmine.weseek.co.jp/issues/103901
   // globalNotification = JSON.parse(document.getElementById('admin-global-notification-setting').getAttribute('data-global-notification'));
 
   const [globalNotificationId, setGlobalNotificationId] = useState(null);
