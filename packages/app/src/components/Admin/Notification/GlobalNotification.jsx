@@ -8,6 +8,8 @@ import AdminNotificationContainer from '~/client/services/AdminNotificationConta
 import { toastSuccess, toastError } from '~/client/util/apiNotification';
 import loggerFactory from '~/utils/logger';
 
+import { withUnstatedContainers } from '../../UnstatedUtils';
+
 import GlobalNotificationList from './GlobalNotificationList';
 
 const logger = loggerFactory('growi:GlobalNotification');
@@ -114,14 +116,12 @@ GlobalNotification.propTypes = {
   adminNotificationContainer: PropTypes.instanceOf(AdminNotificationContainer).isRequired,
 };
 
-export default GlobalNotification;
-
 // const GlobalNotificationWrapperFC = (props) => {
 //   const { t } = useTranslation('admin');
 
 //   return <GlobalNotification t={t} {...props} />;
 // };
 
-// const GlobalNotificationWrapper = withUnstatedContainers(GlobalNotificationWrapperFC, [AdminNotificationContainer]);
+const GlobalNotificationWrapper = withUnstatedContainers(GlobalNotification, [AdminNotificationContainer]);
 
-// export default GlobalNotificationWrapper;
+export default GlobalNotificationWrapper;

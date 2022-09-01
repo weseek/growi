@@ -164,7 +164,7 @@ function NotificationSetting(props) {
           {activeComponents.has('user_trigger_notification') && <UserTriggerNotification />}
         </TabPane>
         <TabPane tabId="global_notification">
-          {activeComponents.has('global_notification') && <GlobalNotification adminNotificationContainer={props.adminNotificationContainer} />}
+          {activeComponents.has('global_notification') && <GlobalNotification />}
         </TabPane>
       </TabContent>
     </div>

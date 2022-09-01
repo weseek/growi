@@ -7,6 +7,7 @@ import urljoin from 'url-join';
 // import AppContainer from '~/client/services/AppContainer';
 // import { toastError } from '~/client/util/apiNotification';
 import { apiv3Post, apiv3Put } from '~/client/util/apiv3-client';
+import { useIsMailerSetup } from '~/stores/context';
 import loggerFactory from '~/utils/logger';
 
 
@@ -112,7 +113,7 @@ const ManageGlobalNotification = (props) => {
     }
   }, []);
 
-  const { isMailerSetup } = props;
+  const { data: isMailerSetup } = useIsMailerSetup();
   const { t } = useTranslation('admin');
 
   return (
