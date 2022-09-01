@@ -21,7 +21,7 @@ const logger = loggerFactory('growi:manageGlobalNotification');
 
 const ManageGlobalNotification = (props) => {
 
-  const globalNotification = null;
+  let globalNotification;
   // TODO: globalNotificationを取得する タスクURL https://redmine.weseek.co.jp/issues/103901
   // globalNotification = JSON.parse(document.getElementById('admin-global-notification-setting').getAttribute('data-global-notification'));
 
