@@ -8,15 +8,14 @@ import AdminNotificationContainer from '~/client/services/AdminNotificationConta
 import { toastSuccess, toastError } from '~/client/util/apiNotification';
 import loggerFactory from '~/utils/logger';
 
-import { withUnstatedContainers } from '../../UnstatedUtils';
-
 import GlobalNotificationList from './GlobalNotificationList';
 
 const logger = loggerFactory('growi:GlobalNotification');
 
 const GlobalNotification = (props) => {
 
-  const { t, adminNotificationContainer } = props;
+  const { adminNotificationContainer } = props;
+  const { t } = useTranslation('admin');
 
   // constructor() {
   //   super();
@@ -27,7 +26,7 @@ const GlobalNotification = (props) => {
   const onClickSubmit = useCallback(async() => {
     try {
       await adminNotificationContainer.updateGlobalNotificationForPages();
-      toastSuccess(t('toaster.update_successed', { target: t('External_Notification') }));
+      toastSuccess(t('toaster.update_successed', { target: t('external_notification.external_notification') }));
     }
     catch (err) {
       toastError(err);
@@ -73,7 +72,8 @@ const GlobalNotification = (props) => {
             </label>
           </div>
         </div>
-      </div><div className="row my-3">
+      </div>
+      <div className="row my-3">
         <div className="col-sm-5 offset-sm-4">
           <button
             type="button"
@@ -95,7 +95,7 @@ const GlobalNotification = (props) => {
           <tr>
             <th>ON/OFF</th>
             {/* eslint-disable-next-line react/no-danger */}
-            <th>{t('notification_settings.trigger_path')} <span dangerouslySetInnerHTML={{ __html: t('notification_setting.trigger_path_help') }} /></th>
+            <th>{t('notification_settings.trigger_path')} <span dangerouslySetInnerHTML={{ __html: t('notification_settings.trigger_path_help') }} /></th>
             <th>{t('notification_settings.trigger_events')}</th>
             <th>{t('notification_settings.notify_to')}</th>
             <th></th>
@@ -111,17 +111,17 @@ const GlobalNotification = (props) => {
 };
 
 GlobalNotification.propTypes = {
-  t: PropTypes.func.isRequired, // i18next
   adminNotificationContainer: PropTypes.instanceOf(AdminNotificationContainer).isRequired,
-
 };
 
-const GlobalNotificationWrapperFC = (props) => {
-  const { t } = useTranslation();
+export default GlobalNotification;
 
-  return <GlobalNotification t={t} {...props} />;
-};
+// const GlobalNotificationWrapperFC = (props) => {
+//   const { t } = useTranslation('admin');
 
-const GlobalNotificationWrapper = withUnstatedContainers(GlobalNotificationWrapperFC, [AdminNotificationContainer]);
+//   return <GlobalNotification t={t} {...props} />;
+// };
 
-export default GlobalNotificationWrapper;
+// const GlobalNotificationWrapper = withUnstatedContainers(GlobalNotificationWrapperFC, [AdminNotificationContainer]);
+
+// export default GlobalNotificationWrapper;

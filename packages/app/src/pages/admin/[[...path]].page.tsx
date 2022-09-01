@@ -28,7 +28,6 @@ import AdminSamlSecurityContainer from '~/client/services/AdminSamlSecurityConta
 import AdminSlackIntegrationLegacyContainer from '~/client/services/AdminSlackIntegrationLegacyContainer';
 import AdminTwitterSecurityContainer from '~/client/services/AdminTwitterSecurityContainer';
 import AdminUsersContainer from '~/client/services/AdminUsersContainer';
-import ManageGlobalNotification from '~/components/Admin/Notification/ManageGlobalNotification';
 import { SupportedActionType } from '~/interfaces/activity';
 import { CrowiRequest } from '~/interfaces/crowi-request';
 import PluginUtils from '~/server/plugins/plugin-utils';
@@ -53,6 +52,7 @@ const CustomizeSettingContents = dynamic(() => import('../../components/Admin/Cu
 const DataImportPageContents = dynamic(() => import('../../components/Admin/ImportData/ImportDataPageContents'), { ssr: false });
 const ExportArchiveDataPage = dynamic(() => import('../../components/Admin/ExportArchiveDataPage'), { ssr: false });
 const NotificationSetting = dynamic(() => import('../../components/Admin/Notification/NotificationSetting'), { ssr: false });
+const ManageGlobalNotification = dynamic(() => import('../../components/Admin/Notification/ManageGlobalNotification'), { ssr: false });
 const SlackIntegration = dynamic(() => import('../../components/Admin/SlackIntegration/SlackIntegration'), { ssr: false });
 const LegacySlackIntegration = dynamic(() => import('../../components/Admin/LegacySlackIntegration/LegacySlackIntegration'), { ssr: false });
 const UserManagement = dynamic(() => import('../../components/Admin/UserManagement'), { ssr: false });
@@ -142,8 +142,8 @@ const AdminMarkdownSettingsPage: NextPage<Props> = (props: Props) => {
     },
     'global-notification': {
       new: {
-        title: t('external_notification'),
-        component: <ManageGlobalNotification isMailerSetup={props.isMailerSetup} />,
+        title: t('external_notification.external_notification'),
+        component: <ManageGlobalNotification isMailerSetup={props.isMailerSetup} t={t} />,
       },
     },
     'slack-integration': {

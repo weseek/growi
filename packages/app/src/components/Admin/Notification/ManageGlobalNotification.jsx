@@ -23,22 +23,28 @@ export default class ManageGlobalNotification extends React.Component {
   constructor() {
     super();
 
-    let globalNotification;
-    try {
-      globalNotification = JSON.parse(document.getElementById('admin-global-notification-setting').getAttribute('data-global-notification'));
-    }
-    catch (err) {
-      // toastError(err);
-      logger.error(err);
-    }
+    const globalNotification = null;
+    // try {
+    //   globalNotification = JSON.parse(document.getElementById('admin-global-notification-setting').getAttribute('data-global-notification'));
+    // }
+    // catch (err) {
+    //   // toastError(err);
+    //   logger.error(err);
+    // }
 
     this.state = {
-      globalNotificationId: globalNotification._id || null,
-      triggerPath: globalNotification.triggerPath || '',
-      notifyToType: globalNotification.__t || 'mail',
-      emailToSend: globalNotification.toEmail || '',
-      slackChannelToSend: globalNotification.slackChannels || '',
-      triggerEvents: new Set(globalNotification.triggerEvents),
+      // globalNotificationId: globalNotification._id || null,
+      globalNotificationId: null,
+      // triggerPath: globalNotification.triggerPath || '',
+      triggerPath: '',
+      // notifyToType: globalNotification.__t || 'mail',
+      notifyToType: 'mail',
+      // emailToSend: globalNotification.toEmail || '',
+      emailToSend: '',
+      // slackChannelToSend: globalNotification.slackChannels || '',
+      slackChannelToSend: '',
+      // triggerEvents: new Set(globalNotification.triggerEvents),
+      triggerEvents: new Set(),
     };
 
     this.submitHandler = this.submitHandler.bind(this);
@@ -316,11 +322,11 @@ ManageGlobalNotification.propTypes = {
   isMailerSetup: PropTypes.bool,
 };
 
-const ManageGlobalNotificationWrapperFC = (props) => {
-  const { t } = useTranslation();
+// const ManageGlobalNotificationWrapperFC = (props) => {
+//   const { t } = useTranslation();
 
-  return <ManageGlobalNotification t={t} {...props} />;
-};
+//   return <ManageGlobalNotification t={t} {...props} />;
+// };
 
 // const ManageGlobalNotificationWrapper = withUnstatedContainers(ManageGlobalNotificationWrapperFC, [AppContainer]);
 
