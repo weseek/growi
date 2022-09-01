@@ -55,14 +55,14 @@ module.exports = (crowi) => {
   const adminEvent = crowi.event('admin');
 
   // setup event
-  adminEvent.on('onProgressForExport', (data) => {
-    socketIoService.getAdminSocket().emit('admin:onProgressForExport', data);
+  adminEvent.on('admin:onProgressForExport', (data) => {
+    socketIoService.getAdminSocket().emit('admin:admin:onProgressForExport', data);
   });
-  adminEvent.on('onStartZippingForExport', (data) => {
-    socketIoService.getAdminSocket().emit('admin:onStartZippingForExport', data);
+  adminEvent.on('admin:onStartZippingForExport', (data) => {
+    socketIoService.getAdminSocket().emit('admin:admin:onStartZippingForExport', data);
   });
-  adminEvent.on('onTerminateForExport', (data) => {
-    socketIoService.getAdminSocket().emit('admin:onTerminateForExport', data);
+  adminEvent.on('admin:onTerminateForExport', (data) => {
+    socketIoService.getAdminSocket().emit('admin:admin:onTerminateForExport', data);
   });
 
   const validator = {

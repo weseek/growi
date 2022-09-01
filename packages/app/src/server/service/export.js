@@ -288,14 +288,14 @@ class ExportService {
     };
 
     // send event (in progress in global)
-    this.adminEvent.emit('onProgressForExport', data);
+    this.adminEvent.emit('admin:onProgressForExport', data);
   }
 
   /**
    * emit start zipping event
    */
   emitStartZippingEvent() {
-    this.adminEvent.emit('onStartZippingForExport', {});
+    this.adminEvent.emit('admin:onStartZippingForExport', {});
   }
 
   /**
@@ -303,7 +303,7 @@ class ExportService {
    * @param {object} zipFileStat added zip file status data
    */
   emitTerminateEvent(zipFileStat) {
-    this.adminEvent.emit('onTerminateForExport', { addedZipFileStat: zipFileStat });
+    this.adminEvent.emit('admin:onTerminateForExport', { addedZipFileStat: zipFileStat });
   }
 
   /**

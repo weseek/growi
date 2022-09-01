@@ -70,7 +70,7 @@ class ExportArchiveDataPage extends React.Component {
 
     if (socket != null) {
       // websocket event
-      socket.on('onProgressForExport', ({ currentCount, totalCount, progressList }) => {
+      socket.on('admin:onProgressForExport', ({ currentCount, totalCount, progressList }) => {
         this.setState({
           isExporting: true,
           progressList,
@@ -78,14 +78,14 @@ class ExportArchiveDataPage extends React.Component {
       });
 
       // websocket event
-      socket.on('onStartZippingForExport', () => {
+      socket.on('admin:onStartZippingForExport', () => {
         this.setState({
           isZipping: true,
         });
       });
 
       // websocket event
-      socket.on('onTerminateForExport', ({ addedZipFileStat }) => {
+      socket.on('admin:onTerminateForExport', ({ addedZipFileStat }) => {
         const zipFileStats = this.state.zipFileStats.concat([addedZipFileStat]);
 
         this.setState({
