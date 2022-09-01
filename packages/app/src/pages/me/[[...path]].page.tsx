@@ -23,7 +23,7 @@ import {
   useCurrentUser,
   useIsSearchServiceConfigured, useIsSearchServiceReachable,
   useCsrfToken, useIsSearchScopeChildrenAsDefault,
-  useRegistrationWhiteList,
+  useRegistrationWhiteList, useShowPageLimitationXL,
 } from '~/stores/context';
 import {
   usePreferDrawerModeByUser, usePreferDrawerModeOnEditByUser, useSidebarCollapsed, useCurrentSidebarContents, useCurrentProductNavWidth,
@@ -45,6 +45,7 @@ type Props = CommonProps & {
   isSearchScopeChildrenAsDefault: boolean,
   userUISettings?: IUserUISettings
   sidebarConfig: ISidebarConfig,
+  showPageLimitationXL: number,
 
   // config
   registrationWhiteList: string[],
@@ -61,8 +62,6 @@ const MePage: NextPage<Props> = (props: Props) => {
   const { t } = useTranslation();
   const { path } = router.query;
   const pagePathKeys: string[] = Array.isArray(path) ? path : ['personal-settings'];
-
-  console.log(pagePathKeys, 'pagePathKeys');
 
   const mePagesMap = {
     'personal-settings': {
@@ -90,6 +89,8 @@ const MePage: NextPage<Props> = (props: Props) => {
   useCurrentUser(props.currentUser ?? null);
 
   useRegistrationWhiteList(props.registrationWhiteList);
+
+  useShowPageLimitationXL(props.showPageLimitationXL);
 
   // commons
   useCsrfToken(props.csrfToken);
@@ -153,6 +154,8 @@ async function injectServerConfigurations(context: GetServerSidePropsContext, pr
   props.isSearchScopeChildrenAsDefault = configManager.getConfig('crowi', 'customize:isSearchScopeChildrenAsDefault');
 
   props.registrationWhiteList = configManager.getConfig('crowi', 'security:registrationWhiteList');
+
+  props.showPageLimitationXL = crowi.configManager.getConfig('crowi', 'customize:showPageLimitationXL');
 
   props.sidebarConfig = {
     isSidebarDrawerMode: configManager.getConfig('crowi', 'customize:isSidebarDrawerMode'),
