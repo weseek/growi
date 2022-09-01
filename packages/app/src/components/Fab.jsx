@@ -33,7 +33,7 @@ const Fab = () => {
   const stickyChangeHandler = useCallback((event) => {
     logger.debug('StickyEvents.CHANGE detected');
 
-    const newAnimateClasses = event.detail.isSticky ? 'animated fadeinup faster' : 'animated fadeout faster';
+    const newAnimateClasses = event.detail.isSticky ? 'animated fadeInUp faster' : 'animated fadeOut faster';
     const newButtonClasses = event.detail.isSticky ? '' : 'disabled grw-pointer-events-none';
 
     setAnimateClasses(newAnimateClasses);
