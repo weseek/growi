@@ -3,7 +3,7 @@ import React from 'react';
 import { useTranslation } from 'next-i18next';
 
 import { RecentlyCreatedIcon } from '~/components/Icons/RecentlyCreatedIcon';
-import BookmarkList from '~/components/PageList/BookmarkList';
+import { BookmarkList } from '~/components/PageList/BookmarkList';
 import { RecentCreated } from '~/components/RecentCreated/RecentCreated';
 import styles from '~/components/UsersHomePageFooter.module.scss';
 
