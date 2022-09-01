@@ -30,23 +30,6 @@ const ManageGlobalNotification = (props) => {
   const [slackChannelToSend, setSlackChannelToSend] = useState('');
   const [triggerEvents, setTriggerEvents] = useState(new Set());
 
-
-  // onChangeTriggerPath(inputValue) {
-  //   this.setState({ triggerPath: inputValue });
-  // }
-
-  // onChangeNotifyToType(notifyToType) {
-  //   this.setState({ notifyToType });
-  // }
-
-  // onChangeEmailToSend(inputValue) {
-  //   this.setState({ emailToSend: inputValue });
-  // }
-
-  // onChangeSlackChannelToSend(inputValue) {
-  //   this.setState({ slackChannelToSend: inputValue });
-  // }
-
   const onChangeTriggerEvents = (triggerEvent) => {
 
     if (triggerEvents.has(triggerEvent)) {
@@ -295,12 +278,6 @@ const ManageGlobalNotification = (props) => {
 ManageGlobalNotification.propTypes = {
   adminNotificationContainer: PropTypes.instanceOf(AdminNotificationContainer).isRequired,
 };
-
-// const ManageGlobalNotificationWrapperFC = (props) => {
-//   const { t } = useTranslation();
-
-//   return <ManageGlobalNotification t={t} {...props} />;
-// };
 
 const ManageGlobalNotificationWrapper = withUnstatedContainers(ManageGlobalNotification, [AdminNotificationContainer]);
 

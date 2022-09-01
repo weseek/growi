@@ -19,12 +19,6 @@ const GlobalNotification = (props) => {
   const { adminNotificationContainer } = props;
   const { t } = useTranslation('admin');
 
-  // constructor() {
-  //   super();
-
-  //   this.onClickSubmit = this.onClickSubmit.bind(this);
-  // }
-
   const onClickSubmit = useCallback(async() => {
     try {
       await adminNotificationContainer.updateGlobalNotificationForPages();
@@ -115,12 +109,6 @@ const GlobalNotification = (props) => {
 GlobalNotification.propTypes = {
   adminNotificationContainer: PropTypes.instanceOf(AdminNotificationContainer).isRequired,
 };
-
-// const GlobalNotificationWrapperFC = (props) => {
-//   const { t } = useTranslation('admin');
-
-//   return <GlobalNotification t={t} {...props} />;
-// };
 
 const GlobalNotificationWrapper = withUnstatedContainers(GlobalNotification, [AdminNotificationContainer]);
 
