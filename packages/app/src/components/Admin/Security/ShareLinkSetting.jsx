@@ -135,9 +135,9 @@ class ShareLinkSetting extends React.Component {
           >
             {t('share_links.delete_all_share_links')}
           </button>
-          <h2 className="alert-anchor border-bottom">{t('share_links.share_link_management')}</h2>
+          <h2 className="alert-anchor border-bottom">{t('security_settings.share_links.share_link_management')}</h2>
         </div>
-        <h4>{t('security_settings.share_link_rights')}</h4>
+        <h4>{t('security_settings.share_links.share_link_rights')}</h4>
         <div className="row mb-5">
           <div className="col-6 offset-3">
             <div className="custom-control custom-switch custom-checkbox-success">
@@ -149,15 +149,15 @@ class ShareLinkSetting extends React.Component {
                 onChange={() => this.switchDisableLinkSharing()}
               />
               <label className="custom-control-label" htmlFor="disableLinkSharing">
-                {t('security_settings.enable_link_sharing')}
+                {t('security_settings.share_links.enable_link_sharing')}
               </label>
             </div>
             {!adminGeneralSecurityContainer.state.setupStrategies.includes('local') && disableLinkSharing && (
-              <div className="badge badge-warning">{t('security_settings.setup_is_not_yet_complete')}</div>
+              <div className="badge badge-warning">{t('security_settings.share_links.setup_is_not_yet_complete')}</div>
             )}
           </div>
         </div>
-        <h4>{t('security_settings.all_share_links')}</h4>
+        <h4>{t('security_settings.share_links.all_share_links')}</h4>
         <Pager
           links={shareLinks}
           activePage={shareLinksActivePage}

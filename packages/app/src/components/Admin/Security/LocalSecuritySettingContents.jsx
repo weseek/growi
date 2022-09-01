@@ -152,7 +152,7 @@ class LocalSecuritySettingContents extends React.Component {
             </div>
             <div className="row">
               <div className="col-12 col-md-3 text-left text-md-right">
-                <strong dangerouslySetInnerHTML={{ __html: t('The whitelist of registration permission E-mail address') }} />
+                <strong dangerouslySetInnerHTML={{ __html: t('security_settings.The whitelist of registration permission E-mail address') }} />
               </div>
               <div className="col-12 col-md-6">
                 <textarea

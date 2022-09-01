@@ -115,7 +115,7 @@ class SamlSecurityManagementContents extends React.Component {
                 <ul>
                   {adminSamlSecurityContainer.state.missingMandatoryConfigKeys.map((configKey) => {
                     const key = configKey.replace('security:passport-saml:', '');
-                    return <li key={configKey}>{t(`security_setting.form_item_name.${key}`)}</li>;
+                    return <li key={configKey}>{t(`security_settings.form_item_name.${key}`)}</li>;
                   })}
                 </ul>
               </div>
