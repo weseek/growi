@@ -79,10 +79,10 @@ const GlobalNotification = (props) => {
           >{t('Update')}
           </button>
         </div>
-      </div><h2 className="border-bottom mb-5">{t('notification_settings.notification_list')}
-        <div className="btn btn-outline-secondary pull-right">
-          <button type="button" onClick={() => router.push('/admin/global-notification/new')}>{t('notification_settings.add_notification')}</button>
-        </div>
+      </div>
+      <h2 className="border-bottom mb-5">{t('notification_settings.notification_list')}
+        <button className="btn btn-outline-secondary pull-right"
+          type="button" onClick={() => router.push('/admin/global-notification/new')}>{t('notification_settings.add_notification')}</button>
         {/* <a href="/admin/global-notification/new">
       <p className="btn btn-outline-secondary pull-right">{t('notification_setting.add_notification')}</p>
     </a> */}
