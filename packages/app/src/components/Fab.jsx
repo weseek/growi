@@ -13,6 +13,8 @@ import loggerFactory from '~/utils/logger';
 import CreatePageIcon from './Icons/CreatePageIcon';
 import ReturnTopIcon from './Icons/ReturnTopIcon';
 
+import styles from './Fab.module.scss';
+
 const logger = loggerFactory('growi:cli:Fab');
 
 const Fab = () => {
@@ -71,9 +73,9 @@ const Fab = () => {
   }
 
   return (
-    <div className="grw-fab d-none d-md-block d-edit-none" data-testid="grw-fab">
+    <div className={`${styles['grw-fab']} grw-fab d-none d-md-block d-edit-none`} data-testid="grw-fab">
       {currentUser != null && renderPageCreateButton()}
-      <div data-testid="grw-fab-return-to-top" className={`rounded-circle position-absolute ${animateClasses}`} style={{ bottom: 0, right: 0 }}>
+      <div className={`rounded-circle position-absolute ${animateClasses}`} style={{ bottom: 0, right: 0 }} data-testid="grw-fab-return-to-top">
         <button
           type="button"
           className={`btn btn-light btn-scroll-to-top rounded-circle p-0 ${buttonClasses}`}
