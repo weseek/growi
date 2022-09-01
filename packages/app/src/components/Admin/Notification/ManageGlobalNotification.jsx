@@ -6,12 +6,14 @@ import urljoin from 'url-join';
 
 // import AppContainer from '~/client/services/AppContainer';
 // import { toastError } from '~/client/util/apiNotification';
+import AdminNotificationContainer from '~/client/services/AdminNotificationContainer';
 import { apiv3Post, apiv3Put } from '~/client/util/apiv3-client';
 import { useIsMailerSetup } from '~/stores/context';
 import loggerFactory from '~/utils/logger';
 
 
 // import { withUnstatedContainers } from '../../UnstatedUtils';
+import { withUnstatedContainers } from '../../UnstatedUtils';
 import AdminUpdateButtonRow from '../Common/AdminUpdateButtonRow';
 
 import TriggerEventCheckBox from './TriggerEventCheckBox';
@@ -57,7 +59,6 @@ const ManageGlobalNotification = (props) => {
   const [emailToSend, setEmailToSend] = useState('');
   const [slacChannelToSend, setSlackChannelToSend] = useState('');
   const [triggerEvents, setTriggerEvents] = useState(new Set());
-  const [retrieveError] = useState(null);
 
 
   // onChangeTriggerPath(inputValue) {
@@ -114,6 +115,7 @@ const ManageGlobalNotification = (props) => {
   }, []);
 
   const { data: isMailerSetup } = useIsMailerSetup();
+  const { adminNotificationContainer } = props;
   const { t } = useTranslation('admin');
 
   return (
@@ -314,14 +316,14 @@ const ManageGlobalNotification = (props) => {
 
       <AdminUpdateButtonRow
         onClick={submitHandler}
-        disabled={retrieveError != null}
+        disabled={adminNotificationContainer.state.retrieveError != null}
       />
     </>
   );
 };
 
 ManageGlobalNotification.propTypes = {
-  isMailerSetup: PropTypes.bool,
+  adminNotificationContainer: PropTypes.instanceOf(AdminNotificationContainer).isRequired,
 };
 
 // const ManageGlobalNotificationWrapperFC = (props) => {
@@ -330,7 +332,7 @@ ManageGlobalNotification.propTypes = {
 //   return <ManageGlobalNotification t={t} {...props} />;
 // };
 
-// const ManageGlobalNotificationWrapper = withUnstatedContainers(ManageGlobalNotificationWrapperFC, [AppContainer]);
+const ManageGlobalNotificationWrapper = withUnstatedContainers(ManageGlobalNotification, [AdminNotificationContainer]);
 
 
-export default ManageGlobalNotification;
+export default ManageGlobalNotificationWrapper;
