@@ -33,7 +33,8 @@ const GlobalNotification = (props) => {
   const router = useRouter();
   const { globalNotifications } = adminNotificationContainer.state;
   return (
-    <><h2 className="border-bottom my-4">{t('notification_settings.valid_page')}</h2>
+    <>
+      <h2 className="border-bottom my-4">{t('notification_settings.valid_page')}</h2>
 
       <p className="card well">
         {/* eslint-disable-next-line react/no-danger */}
@@ -102,7 +103,8 @@ const GlobalNotification = (props) => {
             <GlobalNotificationList />
           </tbody>
         )}
-      </table></>
+      </table>
+    </>
   );
 };
 

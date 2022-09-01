@@ -4,15 +4,13 @@ import { useTranslation } from 'next-i18next';
 import PropTypes from 'prop-types';
 import urljoin from 'url-join';
 
-// import AppContainer from '~/client/services/AppContainer';
-// import { toastError } from '~/client/util/apiNotification';
 import AdminNotificationContainer from '~/client/services/AdminNotificationContainer';
+import { toastError } from '~/client/util/apiNotification';
 import { apiv3Post, apiv3Put } from '~/client/util/apiv3-client';
 import { useIsMailerSetup } from '~/stores/context';
 import loggerFactory from '~/utils/logger';
 
 
-// import { withUnstatedContainers } from '../../UnstatedUtils';
 import { withUnstatedContainers } from '../../UnstatedUtils';
 import AdminUpdateButtonRow from '../Common/AdminUpdateButtonRow';
 
@@ -23,12 +21,16 @@ const logger = loggerFactory('growi:manageGlobalNotification');
 
 const ManageGlobalNotification = (props) => {
 
+  const globalNotification = null;
+  // TODO: globalNotificationを取得する タスクURL https://redmine.weseek.co.jp/issues/103901
+  // globalNotification = JSON.parse(document.getElementById('admin-global-notification-setting').getAttribute('data-global-notification'));
+
   const [globalNotificationId, setGlobalNotificationId] = useState(null);
   const [triggerPath, setTriggerPath] = useState('');
   const [notifyToType, setNotifyToType] = useState('mail');
   const [emailToSend, setEmailToSend] = useState('');
   const [slackChannelToSend, setSlackChannelToSend] = useState('');
-  const [triggerEvents, setTriggerEvents] = useState(new Set());
+  const [triggerEvents, setTriggerEvents] = useState(new Set(globalNotification.triggerEvents));
 
   const onChangeTriggerEvents = (triggerEvent) => {
 
@@ -62,10 +64,10 @@ const ManageGlobalNotification = (props) => {
       window.location.href = urljoin(window.location.origin, '/admin/notification#global-notification');
     }
     catch (err) {
-      // toastError(err);
+      toastError(err);
       logger.error(err);
     }
-  }, []);
+  }, [emailToSend, globalNotificationId, notifyToType, slackChannelToSend, triggerEvents, triggerPath]);
 
   const { data: isMailerSetup } = useIsMailerSetup();
   const { adminNotificationContainer } = props;
