@@ -125,7 +125,7 @@ const AdminMarkdownSettingsPage: NextPage<Props> = (props: Props) => {
       component: <MarkDownSettingContents />,
     },
     customize: {
-      title: t('customize_settings.customize_setting'),
+      title: t('customize_settings.customize_settings'),
       component: <CustomizeSettingContents />,
     },
     importer: {
