@@ -59,7 +59,7 @@ const CustomizeThemeOptions = (props) => {
     <div id="themeOptions" className={`${currentLayout === 'kibela' && 'disabled'}`}>
       {/* Light and Dark Themes */}
       <div>
-        <h3>{t('customize_setting.theme_desc.light_and_dark')}</h3>
+        <h3>{t('customize_settings.theme_desc.light_and_dark')}</h3>
         <div className="d-flex flex-wrap">
           {lightNDarkTheme.map((theme) => {
             return (
@@ -75,7 +75,7 @@ const CustomizeThemeOptions = (props) => {
       </div>
       {/* Unique Theme */}
       <div className="mt-3">
-        <h3>{t('customize_setting.theme_desc.unique')}</h3>
+        <h3>{t('customize_settings.theme_desc.unique')}</h3>
         <div className="d-flex flex-wrap">
           {uniqueTheme.map((theme) => {
             return (

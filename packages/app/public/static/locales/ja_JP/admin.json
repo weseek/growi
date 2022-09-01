@@ -297,8 +297,6 @@
     "delete_notification_pattern_desc2": "Once deleted, it cannot be recovered",
     "toggle_notification": "{{path}}の通知設定を変更しました"
   },
-  "customize": "カスタマイズ",
-  "export_archive_data": "データアーカイブ",
   "full_text_search_management": {
     "full_text_search_management": "全文検索管理",
     "elasticsearch_management": "Elasticsearch 管理",
@@ -472,7 +470,8 @@
       "import_recommended": "{{target}} のおすすめをインポート"
     }
   },
-  "customize_setting": {
+  "customize_settings": {
+    "customize_settings": "カスタマイズ",
     "default_sidebar_mode": {
       "title": "デフォルトのサイドバーモード",
       "desc": "新規ユーザー、ページを訪れたゲストのサイドバーモードを設定できます。",
@@ -540,6 +539,7 @@
     "delete_logo": "ロゴを削除"
   },
   "export_management": {
+    "export_archive_data": "データアーカイブ",
     "exporting_collection_list": "エクスポート中のコレクション",
     "exported_data_list": "エクスポートされたアーカイブリスト",
     "export_collections": "コレクションのエクスポート",

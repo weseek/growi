@@ -70,7 +70,7 @@ class ExportArchiveDataPage extends React.Component {
 
     if (socket != null) {
       // websocket event
-      socket.on('admin:onProgressForExport', ({ currentCount, totalCount, progressList }) => {
+      socket.on('onProgressForExport', ({ currentCount, totalCount, progressList }) => {
         this.setState({
           isExporting: true,
           progressList,
@@ -78,14 +78,14 @@ class ExportArchiveDataPage extends React.Component {
       });
 
       // websocket event
-      socket.on('admin:onStartZippingForExport', () => {
+      socket.on('onStartZippingForExport', () => {
         this.setState({
           isZipping: true,
         });
       });
 
       // websocket event
-      socket.on('admin:onTerminateForExport', ({ addedZipFileStat }) => {
+      socket.on('onTerminateForExport', ({ addedZipFileStat }) => {
         const zipFileStats = this.state.zipFileStats.concat([addedZipFileStat]);
 
         this.setState({
@@ -212,22 +212,22 @@ class ExportArchiveDataPage extends React.Component {
 
     return (
       <div data-testid="admin-export-archive-data">
-        <h2>{t('export_archive_data')}</h2>
+        <h2>{t('export_management.export_archive_data')}</h2>
 
         <button type="button" className="btn btn-outline-secondary" disabled={isExporting} onClick={this.openExportModal}>
-          {t('admin:export_management.create_new_archive_data')}
+          {t('export_management.create_new_archive_data')}
         </button>
 
         { showExportingData && (
           <div className="mt-5">
-            <h3>{t('admin:export_management.exporting_collection_list')}</h3>
+            <h3>{t('export_management.exporting_collection_list')}</h3>
             { this.renderProgressBarsForCollections() }
             { this.renderProgressBarForZipping() }
           </div>
         ) }
 
         <div className="mt-5">
-          <h3>{t('admin:export_management.exported_data_list')}</h3>
+          <h3>{t('export_management.exported_data_list')}</h3>
           <ArchiveFilesTable
             zipFileStats={this.state.zipFileStats}
             onZipFileStatRemove={this.onZipFileStatRemove}
@@ -252,7 +252,7 @@ ExportArchiveDataPage.propTypes = {
 };
 
 const ExportArchiveDataPageWrapperFC = (props) => {
-  const { t } = useTranslation();
+  const { t } = useTranslation('admin');
   const { data: socket } = useAdminSocket();
 
   return <ExportArchiveDataPage t={t} socket={socket} {...props} />;
