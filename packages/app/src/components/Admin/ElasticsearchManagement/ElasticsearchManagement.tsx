@@ -15,7 +15,7 @@ import ReconnectControls from './ReconnectControls';
 import StatusTable from './StatusTable';
 
 const ElasticsearchManagement = () => {
-  const { t } = useTranslation();
+  const { t } = useTranslation('admin');
   const { data: isSearchServiceReachable } = useIsSearchServiceReachable();
   const { data: socket } = useAdminSocket();
 

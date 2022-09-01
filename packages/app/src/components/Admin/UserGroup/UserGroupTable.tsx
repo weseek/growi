@@ -54,7 +54,7 @@ const generateGroupIdToChildGroupsMap = (childUserGroups: IUserGroupHasId[]): Re
 
 
 export const UserGroupTable: FC<Props> = (props: Props) => {
-  const { t } = useTranslation();
+  const { t } = useTranslation('admin');
 
   /*
    * State
@@ -135,7 +135,7 @@ export const UserGroupTable: FC<Props> = (props: Props) => {
             <th>{t('Name')}</th>
             <th>{t('Description')}</th>
             <th>{t('User')}</th>
-            <th>{t('ChildUserGroup')}</th>
+            <th>{t('user_group_management.child_user_group')}</th>
             <th style={{ width: 100 }}>{t('Created')}</th>
             <th style={{ width: 70 }}></th>
           </tr>

@@ -218,7 +218,6 @@
       "ABLCRule": "Rule"
     }
   },
-  "markdown_settings": "Markdown Settings",
   "notification_settings": {
     "notification_settings": "Notification Settings",
     "slack_incoming_configuration": "Slack Incoming Webhooks configuration",
@@ -269,8 +268,9 @@
     "delete_notification_pattern_desc2": "Once deleted, it cannot be recovered",
     "toggle_notification": "Updated setting of {{path}}"
   },
-  "Customize": "Customize",
-  "full_text_search_management": "Full Text Search Management",
+  "customize": "Customize",
+  "import_data": "Import Data",
+  "export_archive_data": "Export Archive Data",
   "mailer_setup_required":"<a href='/admin/app'>Email settings</a> are required to send.",
   "admin_top": {
     "management_wiki": "Management Wiki",
@@ -377,7 +377,8 @@
     "use_env_var_if_empty": "If the value in the database is empty, the value of the environment variable <code>{{variable}}</code> is used.",
     "note_for_the_only_env_option": "The GCS Settings is limited by the value of environment variable.<br>To change this setting, please change to false or delete the value of the environment variable <code>{{env}}</code> ."
   },
-  "markdown_setting": {
+  "markdown_settings": {
+    "markdown_settings": "Markdown Settings",
     "lineBreak_header": "Line break setting",
     "lineBreak_desc": "You can change line break settings.",
     "lineBreak_options": {
@@ -805,6 +806,29 @@
       "force_update_parents_label": "Forcibly add missing users",
       "force_update_parents_description": "Enable this option to force the addition of missing users to the ancestor groups if they exist after changing a parent group."
     }
+  },
+  "full_text_search_management": {
+    "full_text_search_management": "Full Text Search Management",
+    "elasticsearch_management": "Elasticsearch management",
+    "connection_status": "Connection status",
+    "connection_status_label_unconfigured": "UNCONFIGURED",
+    "connection_status_label_connected": "CONNECTED",
+    "connection_status_label_disconnected": "DISCONNECTED",
+    "connection_status_label_erroroccured": "ERROR OCCURED ON SEARCH SERVICE",
+    "indices_status": "Indices Status",
+    "indices_status_label_normalized": "NORMALIZED",
+    "indices_status_label_unnormalized": "REBUILDING or BROKEN",
+    "indices_summary": "Indices summary",
+    "reconnect": "Reconnect",
+    "reconnect_button": "Try to reconnect",
+    "reconnect_description": "Click the button to try to reconnect to Elasticsearch.",
+    "normalize": "Normalize",
+    "normalize_button": "Normalize indices",
+    "normalize_description": "Click the button to repair broken indices.",
+    "rebuild": "Rebuild",
+    "rebuild_button": "Rebuild index",
+    "rebuild_description_1": "Click the button to rebuild index and add all page datas.",
+    "rebuild_description_2": "This may take a while."
   },
   "audit_log_management": {
     "audit_log": "Audit Log",

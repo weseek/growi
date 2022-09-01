@@ -224,7 +224,7 @@ UserManagement.propTypes = {
 };
 
 const UserManagementFc = (props) => {
-  const { t } = useTranslation();
+  const { t } = useTranslation('admin');
   return <UserManagement t={t} {...props} />;
 };
 

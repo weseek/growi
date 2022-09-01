@@ -121,8 +121,6 @@
   "external_account_management": "External Account Management",
   "UserGroup": "UserGroup",
   "ChildUserGroup": "ChildUserGroup",
-  "Import Data": "Import Data",
-  "Export Archive Data": "Export Archive Data",
   "Basic Settings": "Basic Settings",
   "Basic authentication": "Basic authentication",
   "Register limitation": "Register limitation",
@@ -154,7 +152,6 @@
   "add_bookmark": "Add to Bookmarks",
   "remove_bookmark": "Remove from Bookmarks",
   "wide_view": "Wide View",
-  "Recent Created": "Recent Created",
   "Recent Changes": "Recent Changes",
   "Page Tree": "Page Tree",
   "original_path":"Original path",
@@ -673,28 +670,6 @@
       "error_duplicate_pages_found": "Multiple pages with the same path name were found. Please rename or delete and try again."
     }
   },
-  "full_text_search_management": {
-    "elasticsearch_management": "Elasticsearch management",
-    "connection_status": "Connection status",
-    "connection_status_label_unconfigured": "UNCONFIGURED",
-    "connection_status_label_connected": "CONNECTED",
-    "connection_status_label_disconnected": "DISCONNECTED",
-    "connection_status_label_erroroccured": "ERROR OCCURED ON SEARCH SERVICE",
-    "indices_status": "Indices Status",
-    "indices_status_label_normalized": "NORMALIZED",
-    "indices_status_label_unnormalized": "REBUILDING or BROKEN",
-    "indices_summary": "Indices summary",
-    "reconnect": "Reconnect",
-    "reconnect_button": "Try to reconnect",
-    "reconnect_description": "Click the button to try to reconnect to Elasticsearch.",
-    "normalize": "Normalize",
-    "normalize_button": "Normalize indices",
-    "normalize_description": "Click the button to repair broken indices.",
-    "rebuild": "Rebuild",
-    "rebuild_button": "Rebuild index",
-    "rebuild_description_1": "Click the button to rebuild index and add all page datas.",
-    "rebuild_description_2": "This may take a while."
-  },
   "to_cloud_settings": "Open GROWI.cloud Settings",
   "login": {
     "Sign in error": "Login error",
@@ -864,5 +839,9 @@
   "page_operation":{
     "paths_recovered": "Paths recovered successfully",
     "path_recovery_failed":"Path recovery failed"
+  },
+  "footer": {
+    "bookmarks": "Bookmarks",
+    "recently_created": "Recently Created"
   }
 }
