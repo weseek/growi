@@ -163,7 +163,7 @@ const PageEditor = React.memo((props: Props): JSX.Element => {
       logger.error('failed to save', error);
       // pageContainer.showErrorToastr(error);
     }
-  }, [grantData, isSlackEnabled, slackChannelsData, pageTags, mutateIsEnabledUnsavedWarning]);
+  }, [grantData, isSlackEnabled, slackChannels, pageTags, mutateIsEnabledUnsavedWarning]);
 
 
   /**
@@ -368,7 +368,21 @@ const PageEditor = React.memo((props: Props): JSX.Element => {
       optionsToSave = currentOptionsToSave;
     }
 
-    await saveAndReload(optionsToSave, { pageId, path: currentPagePath || currentPathname, revisionId: currentPage?.revision?._id }, markdown);
+    try {
+      await saveAndReload(optionsToSave, { pageId, path: currentPagePath || currentPathname, revisionId: currentPage?.revision?._id }, markdown);
+    }
+    catch (error) {
+      logger.error('failed to save', error);
+      // pageContainer.showErrorToastr(error);
+      if (error.code === 'conflict') {
+        // pageContainer.setState({
+        //   remoteRevisionId: error.data.revisionId,
+        //   remoteRevisionBody: error.data.revisionBody,
+        //   remoteRevisionUpdateAt: error.data.createdAt,
+        //   lastUpdateUser: error.data.user,
+        // });
+      }
+    }
   }, [currentPage?.revision?._id,
       currentPagePath,
       currentPathname,
