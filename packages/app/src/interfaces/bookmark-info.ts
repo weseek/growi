@@ -9,9 +9,11 @@ export type IBookmarkInfo = {
   bookmarkedUsers: IUser[]
 };
 
-export type BookmarkListPage = {
+type BookmarkedPage = {
   _id: string,
   page: IPageHasId,
   user: Ref<IUser>,
   createdAt: Date,
 }
+
+export type MyBookmarkList = BookmarkedPage[]

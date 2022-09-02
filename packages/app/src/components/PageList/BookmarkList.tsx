@@ -4,7 +4,7 @@ import { useTranslation } from 'next-i18next';
 
 import { toastError } from '~/client/util/apiNotification';
 import { apiv3Get } from '~/client/util/apiv3-client';
-import { BookmarkListPage } from '~/interfaces/bookmark-info';
+import { MyBookmarkList } from '~/interfaces/bookmark-info';
 import loggerFactory from '~/utils/logger';
 
 import PaginationWrapper from '../PaginationWrapper';
@@ -21,7 +21,7 @@ export const BookmarkList = (props: BookmarkListProps): JSX.Element => {
   const { userId } = props;
 
   const { t } = useTranslation();
-  const [pages, setPages] = useState<BookmarkListPage[]>([]);
+  const [pages, setPages] = useState<MyBookmarkList>([]);
   const [activePage, setActivePage] = useState(1);
   const [totalItemsCount, setTotalItemsCount] = useState(0);
   const [pagingLimit, setPagingLimit] = useState(10);
