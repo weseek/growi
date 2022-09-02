@@ -7,11 +7,6 @@
 body.on-edit {
   overflow-y: hidden !important;
 
-  .container-fluid {
-    padding-right: 15px;
-    padding-left: 15px;
-  }
-
   .grw-navbar {
     position: fixed !important;
     width: 100vw;
@@ -22,6 +17,8 @@ body.on-edit {
     height: $grw-subnav-height-on-edit;
     min-height: unset;
     padding-top: 0;
+    padding-right: 15px;
+    padding-left: 15px;
 
     @include media-breakpoint-up(lg) {
       height: $grw-subnav-height-lg-on-edit;

@@ -307,24 +307,18 @@ const GrowiPage: NextPage<Props> = (props: Props) => {
           <div className="flex-grow-1">
             <div id="main" className={`main ${isUsersHomePage(props.currentPathname) && 'user-page'}`}>
               <div id="content-main" className="content-main grw-container-convertible">
-                <div className="row">
-                  <div className="col">
-                    { props.isIdenticalPathPage && <IdenticalPathPage /> }
+                { props.isIdenticalPathPage && <IdenticalPathPage /> }
 
-                    { !props.isIdenticalPathPage && (
-                      <>
-                        <PageAlerts />
-                        { props.isForbidden && <ForbiddenPage /> }
-                        { props.IsNotCreatable && <NotCreatablePage />}
-                        { !props.isForbidden && !props.IsNotCreatable && <DisplaySwitcher />}
-                        {/* <DisplaySwitcher /> */}
-                        <div id="page-editor-navbar-bottom-container" className="d-none d-edit-block"></div>
-                        {/* <PageStatusAlert /> */}
-                      </>
-                    ) }
-
-                  </div>
-                </div>
+                { !props.isIdenticalPathPage && (
+                  <>
+                    <PageAlerts />
+                    { props.isForbidden && <ForbiddenPage /> }
+                    { props.IsNotCreatable && <NotCreatablePage />}
+                    { !props.isForbidden && !props.IsNotCreatable && <DisplaySwitcher />}
+                    {/* <DisplaySwitcher /> */}
+                    {/* <PageStatusAlert /> */}
+                  </>
+                ) }
 
                 {/* <div className="col-xl-2 col-lg-3 d-none d-lg-block revision-toc-container">
                   <div id="revision-toc" className="revision-toc mt-3 sps sps--abv" data-sps-offset="123">

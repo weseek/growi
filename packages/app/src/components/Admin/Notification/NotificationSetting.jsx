@@ -46,7 +46,7 @@ const SkeltonListItem = () => (
 
 // eslint-disable-next-line react/prop-types
 const SlackIntegrationListItem = ({ isEnabled, currentBotType }) => {
-  const { t } = useTranslation();
+  const { t } = useTranslation('admin');
 
   const isCautionVisible = currentBotType === SlackbotType.OFFICIAL || currentBotType === SlackbotType.CUSTOM_WITH_PROXY;
 
@@ -68,7 +68,7 @@ const SlackIntegrationListItem = ({ isEnabled, currentBotType }) => {
 
 // eslint-disable-next-line react/prop-types
 const LegacySlackIntegrationListItem = ({ isEnabled }) => {
-  const { t } = useTranslation();
+  const { t } = useTranslation('admin');
 
   return (
     <li className="list-group-item">
@@ -91,7 +91,7 @@ const LegacySlackIntegrationListItem = ({ isEnabled }) => {
 function NotificationSetting(props) {
   const { adminNotificationContainer } = props;
 
-  const { t } = useTranslation();
+  const { t } = useTranslation('admin');
 
   const [isMounted, setMounted] = useState(false);
   const [activeTab, setActiveTab] = useState('user_trigger_notification');

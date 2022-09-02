@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react';
+import React from 'react';
 
 import { isClient, objectIdUtils } from '@growi/core';
 import {
@@ -46,12 +46,13 @@ import {
 
 const AdminHome = dynamic(() => import('../../components/Admin/AdminHome/AdminHome'), { ssr: false });
 const AppSettingsPageContents = dynamic(() => import('../../components/Admin/App/AppSettingsPageContents'), { ssr: false });
-const SecurityManagementContents = dynamic(() => import('../../components/Admin/Security/SecurityManagementContents'), { ssr: false });
+const SecurityManagement = dynamic(() => import('../../components/Admin/Security/SecurityManagement'), { ssr: false });
 const MarkDownSettingContents = dynamic(() => import('../../components/Admin/MarkdownSetting/MarkDownSettingContents'), { ssr: false });
 const CustomizeSettingContents = dynamic(() => import('../../components/Admin/Customize/Customize'), { ssr: false });
 const DataImportPageContents = dynamic(() => import('../../components/Admin/ImportData/ImportDataPageContents'), { ssr: false });
 const ExportArchiveDataPage = dynamic(() => import('../../components/Admin/ExportArchiveDataPage'), { ssr: false });
 const NotificationSetting = dynamic(() => import('../../components/Admin/Notification/NotificationSetting'), { ssr: false });
+const ManageGlobalNotification = dynamic(() => import('../../components/Admin/Notification/ManageGlobalNotification'), { ssr: false });
 const SlackIntegration = dynamic(() => import('../../components/Admin/SlackIntegration/SlackIntegration'), { ssr: false });
 const LegacySlackIntegration = dynamic(() => import('../../components/Admin/LegacySlackIntegration/LegacySlackIntegration'), { ssr: false });
 const UserManagement = dynamic(() => import('../../components/Admin/UserManagement'), { ssr: false });
@@ -117,14 +118,14 @@ const AdminMarkdownSettingsPage: NextPage<Props> = (props: Props) => {
     },
     security: {
       title: t('security_settings.security_settings'),
-      component: <SecurityManagementContents />,
+      component: <SecurityManagement />,
     },
     markdown: {
       title: t('markdown_settings.markdown_settings'),
       component: <MarkDownSettingContents />,
     },
     customize: {
-      title: t('customize_setting.customize_setting'),
+      title: t('customize_settings.customize_settings'),
       component: <CustomizeSettingContents />,
     },
     importer: {
@@ -140,8 +141,10 @@ const AdminMarkdownSettingsPage: NextPage<Props> = (props: Props) => {
       component: <NotificationSetting />,
     },
     'global-notification': {
-      title: '',
-      component: <>global-notification</>,
+      new: {
+        title: t('external_notification.external_notification'),
+        component: <ManageGlobalNotification />,
+      },
     },
     'slack-integration': {
       title: t('slack_integration.slack_integration'),
@@ -155,7 +158,7 @@ const AdminMarkdownSettingsPage: NextPage<Props> = (props: Props) => {
       title: t('user_management.user_management'),
       component: <UserManagement />,
       'external-accounts': {
-        title: t('external_account_management'),
+        title: t('user_management.external_account'),
         component: <ManageExternalAccount />,
       },
     },

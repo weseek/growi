@@ -33,7 +33,7 @@ export const UserGroupUserTable = (props: Props): JSX.Element => {
           </th>
           <th>{t('Name')}</th>
           <th style={{ width: '100px' }}>{t('Created')}</th>
-          <th style={{ width: '160px' }}>{t('Last_Login')}</th>
+          <th style={{ width: '160px' }}>{t('last_login')}</th>
           <th style={{ width: '70px' }}></th>
         </tr>
       </thead>

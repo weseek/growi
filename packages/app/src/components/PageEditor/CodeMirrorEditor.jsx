@@ -996,11 +996,12 @@ class CodeMirrorEditor extends AbstractEditor {
           ref={this.cm}
           className={additionalClasses}
           placeholder="search"
-          editorDidMount={(editor) => {
-          // add event handlers
-            editor.on('paste', this.pasteHandler);
-            editor.on('scrollCursorIntoView', this.scrollCursorIntoViewHandler);
-          }}
+          // == temporary deactivate editorDidMount to use https://github.com/scniro/react-codemirror2/issues/284#issuecomment-1155928554
+          // editorDidMount={(editor) => {
+          // // add event handlers
+          //   editor.on('paste', this.pasteHandler);
+          //   editor.on('scrollCursorIntoView', this.scrollCursorIntoViewHandler);
+          // }}
           // temporary set props.value
           // value={this.state.value}
           value={this.props.value}

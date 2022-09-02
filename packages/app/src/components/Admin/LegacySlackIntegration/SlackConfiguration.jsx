@@ -62,7 +62,7 @@ class SlackConfiguration extends React.Component {
         </div>
         {adminSlackIntegrationLegacyContainer.state.selectSlackOption === 'Incoming Webhooks' ? (
           <React.Fragment>
-            <h2 className="border-bottom mb-5">{t('admin:notification_settings.slack_incoming_configuration')}</h2>
+            <h2 className="border-bottom mb-5">{t('notification_settings.slack_incoming_configuration')}</h2>
 
             <div className="row mb-3">
               <label className="col-md-3 text-left text-md-right">Webhook URL</label>
@@ -87,11 +87,11 @@ class SlackConfiguration extends React.Component {
                     onChange={() => { adminSlackIntegrationLegacyContainer.switchIsIncomingWebhookPrioritized() }}
                   />
                   <label className="custom-control-label" htmlFor="cbPrioritizeIWH">
-                    {t('admin:notification_settings.prioritize_webhook')}
+                    {t('notification_settings.prioritize_webhook')}
                   </label>
                 </div>
                 <p className="form-text text-muted">
-                  {t('admin:notification_settings.prioritize_webhook_desc')}
+                  {t('notification_settings.prioritize_webhook_desc')}
                 </p>
               </div>
             </div>
@@ -112,7 +112,7 @@ class SlackConfiguration extends React.Component {
                   data-toggle="tab"
                   onClick={() => adminSlackIntegrationLegacyContainer.switchSlackOption('Incoming Webhooks')}
                 >
-                  {t('admin:notification_settings.use_instead')}
+                  {t('notification_settings.use_instead')}
                 </a>
               </div>
 
@@ -141,7 +141,7 @@ class SlackConfiguration extends React.Component {
 
         <h3>
           <i className="icon-question" aria-hidden="true"></i>{' '}
-          <a href="#collapseHelpForIwh" data-toggle="collapse">{t('admin:notification_settings.how_to.header')}</a>
+          <a href="#collapseHelpForIwh" data-toggle="collapse">{t('notification_settings.how_to.header')}</a>
         </h3>
 
         <ol id="collapseHelpForIwh" className="collapse">
@@ -177,7 +177,7 @@ SlackConfiguration.propTypes = {
 };
 
 const SlackConfigurationWrapperFc = (props) => {
-  const { t } = useTranslation();
+  const { t } = useTranslation('admin');
 
   return <SlackConfiguration t={t} {...props} />;
 };
