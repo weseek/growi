@@ -577,7 +577,6 @@ export const getServerSideProps: GetServerSideProps = async(context: GetServerSi
 
   const result = await getServerSideCommonProps(context);
 
-
   // check for presence
   // see: https://github.com/vercel/next.js/issues/19271#issuecomment-730006862
   if (!('props' in result)) {
@@ -585,6 +584,15 @@ export const getServerSideProps: GetServerSideProps = async(context: GetServerSi
   }
 
   const props: Props = result.props as Props;
+
+  if (props.redirectDestination != null) {
+    return {
+      redirect: {
+        permanent: false,
+        destination: props.redirectDestination,
+      },
+    };
+  }
 
   if (user != null) {
     props.currentUser = user.toObject();
