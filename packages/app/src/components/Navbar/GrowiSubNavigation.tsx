@@ -74,8 +74,6 @@ export const GrowiSubNavigation = (props: GrowiSubNavigationProps): JSX.Element 
     return <></>;
   }
 
-  console.log(isCompactMode);
-
   return (
     <div className={`grw-subnav ${styles['grw-subnav']} d-flex align-items-center justify-content-between ${additionalClasses.join(' ')}
     ${compactModeClasses}`} >
