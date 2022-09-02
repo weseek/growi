@@ -1,7 +1,7 @@
 import React from 'react';
 
 import {
-  IUser, IUserHasId, isClient,
+  IUser, IUserHasId,
 } from '@growi/core';
 import { model as mongooseModel } from 'mongoose';
 import {
@@ -11,9 +11,7 @@ import { useTranslation } from 'next-i18next';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import dynamic from 'next/dynamic';
 import { useRouter } from 'next/router';
-import { Container, Provider } from 'unstated';
 
-import AppContainer from '~/client/services/AppContainer';
 import { BasicLayout } from '~/components/Layout/BasicLayout';
 import { CrowiRequest } from '~/interfaces/crowi-request';
 import { ISidebarConfig } from '~/interfaces/sidebar-config';
@@ -29,7 +27,6 @@ import {
   usePreferDrawerModeByUser, usePreferDrawerModeOnEditByUser, useSidebarCollapsed, useCurrentSidebarContents, useCurrentProductNavWidth,
 } from '~/stores/ui';
 import loggerFactory from '~/utils/logger';
-
 
 import {
   CommonProps, getNextI18NextConfig, getServerSideCommonProps, useCustomTitle,
