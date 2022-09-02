@@ -20,7 +20,6 @@ import Fab from '../components/Fab';
 import ForbiddenPage from '../components/ForbiddenPage';
 import RecentlyCreatedIcon from '../components/Icons/RecentlyCreatedIcon';
 import InAppNotificationPage from '../components/InAppNotification/InAppNotificationPage';
-import MaintenanceModeContent from '../components/MaintenanceModeContent';
 import PersonalSettings from '../components/Me/PersonalSettings';
 import MyDraftList from '../components/MyDraftList/MyDraftList';
 import GrowiContextualSubNavigation from '../components/Navbar/GrowiContextualSubNavigation';

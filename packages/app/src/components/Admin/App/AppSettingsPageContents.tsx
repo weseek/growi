@@ -4,19 +4,20 @@ import { useTranslation } from 'next-i18next';
 
 import AdminAppContainer from '~/client/services/AdminAppContainer';
 import { toastError } from '~/client/util/apiNotification';
+import { useIsMaintenanceMode } from '~/stores/maintenanceMode';
 import { toArrayIfNot } from '~/utils/array-utils';
 import loggerFactory from '~/utils/logger';
-
 
 import { withUnstatedContainers } from '../../UnstatedUtils';
 
 import AppSetting from './AppSetting';
 import FileUploadSetting from './FileUploadSetting';
 import MailSetting from './MailSetting';
-import MaintenanceMode from './MaintenanceMode';
+import { MaintenanceMode } from './MaintenanceMode';
 import PluginSetting from './PluginSetting';
 import SiteUrlSetting from './SiteUrlSetting';
 import V5PageMigration from './V5PageMigration';
+
 
 const logger = loggerFactory('growi:appSettings');
 
@@ -27,6 +28,9 @@ type Props = {
 const AppSettingsPageContents = (props: Props) => {
   const { t } = useTranslation('admin');
   const { adminAppContainer } = props;
+
+  const { data: isMaintenanceMode } = useIsMaintenanceMode();
+
   const { isV5Compatible } = adminAppContainer.state;
 
   useEffect(() => {
@@ -48,7 +52,7 @@ const AppSettingsPageContents = (props: Props) => {
     <div data-testid="admin-app-settings">
       {
         // Alert message will be displayed in case that the GROWI is under maintenance
-        adminAppContainer.state.isMaintenanceMode && (
+        isMaintenanceMode && (
           <div className="alert alert-danger alert-link" role="alert">
             <h3 className="alert-heading">
               {t('admin:maintenance_mode.maintenance_mode')}
