@@ -1,7 +1,7 @@
 import React from 'react';
 
-import PropTypes from 'prop-types';
 import { useTranslation } from 'next-i18next';
+import PropTypes from 'prop-types';
 
 const TriggerEventCheckBox = (props) => {
   const { t } = props;
@@ -36,7 +36,7 @@ TriggerEventCheckBox.propTypes = {
 
 // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
 const TriggerEventCheckBoxWrapperFC = (props) => {
-  const { t } = useTranslation();
+  const { t } = useTranslation('admin');
 
   return <TriggerEventCheckBox t={t} {...props} />;
 };

@@ -404,9 +404,8 @@
       "import_recommended": "导入建议 {{target}}"
     }
   },
-  "export_archive_data": "导出主题数据",
-  "customize_setting": {
-    "customize_setting": "页面定制",
+  "customize_settings": {
+    "customize_settings": "页面定制",
     "default_sidebar_mode": {
       "title": "默认的侧边栏模式",
       "desc": "你可以为新用户和访问该网页的客人设置侧边栏模式。",
@@ -562,6 +561,7 @@
     "Directory_hierarchy_tag": "Directory hierarchy tag"
   },
   "export_management": {
+    "export_archive_data": "导出主题数据",
     "exporting_collection_list": "正在导出集合列表",
     "exported_data_list": "导出的存档数据列表",
     "export_collections": "导出集合",

@@ -169,7 +169,7 @@ class UserTable extends React.Component {
                 <th width="150px">
                   <div className="d-flex align-items-center">
                     <div className="mr-3">
-                      {t('Last_Login')}
+                      {t('last_login')}
                     </div>
                     <SortIcons
                       isSelected={adminUsersContainer.state.sort === 'lastLoginAt'}

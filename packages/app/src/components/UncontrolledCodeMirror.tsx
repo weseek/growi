@@ -1,5 +1,8 @@
-import React, { forwardRef, ReactNode, Ref } from 'react';
+import React, {
+  forwardRef, ReactNode, Ref,
+} from 'react';
 
+import { Editor } from 'codemirror';
 import { ICodeMirror, UnControlled as CodeMirror } from 'react-codemirror2';
 
 import AbstractEditor, { AbstractEditorProps } from '~/components/PageEditor/AbstractEditor';
@@ -21,6 +24,25 @@ interface UncontrolledCodeMirrorCoreProps extends UncontrolledCodeMirrorProps {
 
 export class UncontrolledCodeMirrorCore extends AbstractEditor<UncontrolledCodeMirrorCoreProps> {
 
+  editor: Editor;
+
+  // wrapperRef: RefObject<any>;
+
+  constructor(props: UncontrolledCodeMirrorCoreProps) {
+    super(props);
+    this.editorDidMount = this.editorDidMount.bind(this);
+    this.editorWillUnmount = this.editorWillUnmount.bind(this);
+  }
+
+  editorDidMount(e: Editor): void {
+    this.editor = e;
+  }
+
+  editorWillUnmount(): void {
+    // workaround to fix editor duplicating by https://github.com/scniro/react-codemirror2/issues/284#issuecomment-1155928554
+    (this.editor as any).display.wrapper.remove();
+  }
+
   override render(): ReactNode {
 
     const {
@@ -38,6 +60,8 @@ export class UncontrolledCodeMirrorCore extends AbstractEditor<UncontrolledCodeM
           tabSize: 4,
           ...options,
         }}
+        editorDidMount={this.editorDidMount}
+        editorWillUnmount={this.editorWillUnmount}
         {...rest}
       />
     );

@@ -37,6 +37,7 @@ $nav-tabs-link-hover-border-color: $bordercolor-nav-tabs-hover;
 $nav-tabs-link-active-color: $color-nav-tabs-link-active;
 $nav-tabs-link-active-bg: $bgcolor-global;
 $nav-tabs-link-active-border-color: $bordercolor-nav-tabs-active;
+$theme-colors: map-merge($theme-colors, ( primary: $primary ));
 
 @import 'reboot-bootstrap-buttons';
 @import 'reboot-bootstrap-colors';
