@@ -36,6 +36,7 @@ import {
   useCurrentUser, /* useSearchServiceConfigured, */ useIsAclEnabled, useIsMailerSetup, useIsSearchServiceReachable, useSiteUrl,
   useAuditLogEnabled, useAuditLogAvailableActions,
 } from '~/stores/context';
+import { useIsMaintenanceMode } from '~/stores/maintenanceMode';
 
 import {
   CommonProps, getServerSideCommonProps, getNextI18NextConfig,
@@ -192,6 +193,7 @@ const AdminMarkdownSettingsPage: NextPage<Props> = (props: Props) => {
 
   useCurrentUser(props.currentUser != null ? JSON.parse(props.currentUser) : null);
   useIsMailerSetup(props.isMailerSetup);
+  useIsMaintenanceMode(props.isMaintenanceMode);
 
   // useSearchServiceConfigured(props.isSearchServiceConfigured);
   useIsSearchServiceReachable(props.isSearchServiceReachable);
