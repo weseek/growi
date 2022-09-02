@@ -95,6 +95,15 @@ export const getServerSideProps: GetServerSideProps = async(context: GetServerSi
 
   const props: Props = result.props as Props;
 
+  if (props.redirectDestination != null) {
+    return {
+      redirect: {
+        permanent: false,
+        destination: props.redirectDestination,
+      },
+    };
+  }
+
   const { user } = req;
   if (user != null) {
     props.currentUser = user.toObject();
