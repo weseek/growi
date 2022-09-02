@@ -30,33 +30,24 @@ context('Access to pagelist', () => {
     cy.getByTestid('page-duplicate-modal').should('be.visible').within(() => {
       cy.get('.rbt-input-main').type('-duplicate', {force: true})
     }).screenshot(`${ssPrefix}4-input-duplicated-page-name`);
-    cy.getByTestid('page-duplicate-modal').should('be.visible').within(() => {
-      cy.get('.modal-footer > button').click();
-    });
     cy.get('body').type('{esc}');
-    cy.getByTestid('pageListButton').click({force: true});
-    cy.getByTestid('page-accessories-modal').parent().should('have.class','show').within(() => {
-      cy.get('.list-group-item').eq(0).within(() => {
-        cy.screenshot(`${ssPrefix}5-duplicated-page`);
-      });
-    });
   });
 
   it('Successfully expand and close modal', () => {
     cy.visit('/');
     cy.getByTestid('pageListButton').click({force: true});
     cy.getByTestid('page-accessories-modal').parent().should('have.class','show');
-    cy.screenshot(`${ssPrefix}6-page-list-modal-size-normal`, {capture: 'viewport'});
+    cy.screenshot(`${ssPrefix}5-page-list-modal-size-normal`, {capture: 'viewport'});
     cy.getByTestid('page-accessories-modal').parent().should('have.class','show').within(() => {
       cy.get('button.close').eq(0).click();
     });
-    cy.screenshot(`${ssPrefix}7-page-list-modal-size-fullscreen`, {capture: 'viewport'});
+    cy.screenshot(`${ssPrefix}6-page-list-modal-size-fullscreen`, {capture: 'viewport'});
 
     cy.getByTestid('page-accessories-modal').parent().should('have.class','show').within(() => {
       cy.get('button.close').eq(1).click();
     });
 
-    cy.screenshot(`${ssPrefix}8-close-page-list-modal`, {capture: 'viewport'});
+    cy.screenshot(`${ssPrefix}7-close-page-list-modal`, {capture: 'viewport'});
   });
 });
 
@@ -75,7 +66,6 @@ context('Access to timeline', () => {
     cy.getByTestid('pageListButton').click({force: true});
     cy.getByTestid('page-accessories-modal').parent().should('have.class','show').within(() => {
       cy.get('.nav-title > li').eq(1).find('a').click();
-      cy.get('.timeline-body').invoke('attr','style', 'display:none');
     });
     cy.screenshot(`${ssPrefix}1-timeline-list`, {capture: 'viewport'});
   });
@@ -86,7 +76,6 @@ context('Access to timeline', () => {
     cy.getByTestid('page-accessories-modal').parent().should('have.class','show').within(() => {
       cy.get('.nav-title > li').eq(1).find('a').click();
       cy.get('button.close').eq(0).click();
-      cy.get('.timeline-body').invoke('attr','style', 'display:none');
     });
     cy.screenshot(`${ssPrefix}2-timeline-list-fullscreen`, {capture: 'viewport'});
     cy.getByTestid('page-accessories-modal').parent().should('have.class','show').within(() => {
