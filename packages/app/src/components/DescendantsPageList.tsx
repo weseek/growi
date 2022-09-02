@@ -114,6 +114,7 @@ export const DescendantsPageListSubstance = (props: SubstanceProps): JSX.Element
         onPagesDeleted={pageDeletedHandler}
         onPagePutBacked={pagePutBackedHandler}
       />
+
       { showPager && (
         <div className="my-4">
           <PaginationWrapper
