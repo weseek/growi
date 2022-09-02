@@ -18,7 +18,6 @@ import { useRouter } from 'next/router';
 import superjson from 'superjson';
 
 import { Comments } from '~/components/Comments';
-import { RecentlyCreatedIcon } from '~/components/Icons/RecentlyCreatedIcon';
 import { PageAlerts } from '~/components/PageAlert/PageAlerts';
 // import { useTranslation } from '~/i18n';
 import { PageContentFooter } from '~/components/PageContentFooter';
@@ -82,10 +81,9 @@ const UsersHomePageFooter = dynamic<UsersHomePageFooterProps>(() => import('../c
 const logger = loggerFactory('growi:pages:all');
 
 const {
-  isPermalink: _isPermalink, isUsersHomePage, isTrashPage: _isTrashPage, isUserPage, isCreatablePage,
+  isPermalink: _isPermalink, isUsersHomePage, isTrashPage: _isTrashPage, isUserPage, isCreatablePage, isTopPage,
 } = pagePathUtils;
 const { removeHeadingSlash } = pathUtils;
-
 
 type IPageToShowRevisionWithMeta = IDataWithMeta<IPagePopulatedToShowRevision & PageDocument, IPageInfoForEntity>;
 type IPageToShowRevisionWithMetaSerialized = IDataWithMeta<string, string>;
@@ -281,6 +279,8 @@ const GrowiPage: NextPage<Props> = (props: Props) => {
   //   classNames.push('not-found-page');
   // }
 
+  const isTopPagePath = isTopPage(pageWithMeta?.data.path ?? '');
+
   return (
     <>
       <Head>
@@ -329,8 +329,7 @@ const GrowiPage: NextPage<Props> = (props: Props) => {
             </div>
           </div>
           <footer className="footer d-edit-none">
-            {/* TODO: Enable page_list.html */}
-            { !props.isIdenticalPathPage && (<Comments pageId={pageId} />) }
+            { !isTopPagePath && (<Comments pageId={pageId} />) }
             { (pageWithMeta != null && isUsersHomePage(pageWithMeta.data.path)) && (
               <UsersHomePageFooter creatorId={pageWithMeta.data.creator._id}/>
             )}
