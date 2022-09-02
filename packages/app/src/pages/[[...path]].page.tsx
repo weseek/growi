@@ -328,13 +328,15 @@ const GrowiPage: NextPage<Props> = (props: Props) => {
               </div>
             </div>
           </div>
-          <footer className="footer d-edit-none">
-            { !isTopPagePath && (<Comments pageId={pageId} />) }
-            { (pageWithMeta != null && isUsersHomePage(pageWithMeta.data.path)) && (
-              <UsersHomePageFooter creatorId={pageWithMeta.data.creator._id}/>
-            )}
-            <PageContentFooter />
-          </footer>
+          { !props.isNotFound && (
+            <footer className="footer d-edit-none">
+              { !isTopPagePath && (<Comments pageId={pageId} />) }
+              { (pageWithMeta != null && isUsersHomePage(pageWithMeta.data.path)) && (
+                <UsersHomePageFooter creatorId={pageWithMeta.data.creator._id}/>
+              )}
+              <PageContentFooter />
+            </footer>
+          )}
 
           <UnsavedAlertDialog />
           <DescendantsPageListModal />
