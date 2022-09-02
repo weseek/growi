@@ -81,6 +81,9 @@ context('Access to timeline', () => {
     cy.getByTestid('page-accessories-modal').parent().should('have.class','show').within(() => {
       cy.get('button.close').eq(1).click();
     });
-    cy.screenshot(`${ssPrefix}3-close-modal`, {capture: 'viewport'});
+    cy.screenshot(`${ssPrefix}3-close-modal`, {
+      capture: 'viewport',
+      blackout: ['[data-line="2"]:eq(0) > a > img', '[data-hide-in-vrt="true"]']
+    });
   });
 });
