@@ -7,7 +7,8 @@ import { useIsNotFound } from '~/stores/context';
 
 import LinkedPagePath from '../models/linked-page-path';
 
-import PagePathHierarchicalLink from './PagePathHierarchicalLink';
+const PagePathHierarchicalLink = dynamic(() => import('./PagePathHierarchicalLink'), { ssr: false });
+const CopyDropdown = dynamic(() => import('./Page/CopyDropdown'), { ssr: false });
 
 
 type Props = {
@@ -21,15 +22,13 @@ const PagePathNav: FC<Props> = (props: Props) => {
   const {
     pageId, pagePath, isSingleLineMode, isCompactMode,
   } = props;
-  const dPagePath = new DevidedPagePath(pagePath, false, true);
 
   const { data: isNotFound } = useIsNotFound();
 
-  const CopyDropdown = dynamic(() => import('./Page/CopyDropdown'), { ssr: false });
+  const dPagePath = new DevidedPagePath(pagePath, false, true);
 
   let formerLink;
   let latterLink;
-
   // one line
   if (dPagePath.isRoot || dPagePath.isFormerRoot || isSingleLineMode) {
     const linkedPagePath = new LinkedPagePath(pagePath);
@@ -48,7 +47,7 @@ const PagePathNav: FC<Props> = (props: Props) => {
 
   return (
     <div className="grw-page-path-nav">
-      {formerLink}
+      { formerLink }
       <span className="d-flex align-items-center">
         <h1 className="m-0">{latterLink}</h1>
         { pageId != null && !isNotFound && (

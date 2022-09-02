@@ -83,7 +83,6 @@ const AdditionalMenuItems = (props: AdditionalMenuItemsProps): JSX.Element => {
         </i>
         { t('Presentation Mode') }
       </DropdownItem>
-
       {/* Export markdown */}
       <DropdownItem
         onClick={() => exportAsMarkdown(pageId, revisionId, 'md')}
@@ -92,9 +91,7 @@ const AdditionalMenuItems = (props: AdditionalMenuItemsProps): JSX.Element => {
         <i className="icon-fw icon-cloud-download grw-page-control-dropdown-icon"></i>
         {t('export_bulk.export_page_markdown')}
       </DropdownItem>
-
       <DropdownItem divider />
-
       {/*
         TODO: show Tooltip when menu is disabled
         refs: PageAccessoriesModalControl
@@ -110,7 +107,6 @@ const AdditionalMenuItems = (props: AdditionalMenuItemsProps): JSX.Element => {
         </span>
         {t('History')}
       </DropdownItem>
-
       <DropdownItem
         onClick={() => openAccessoriesModal(PageAccessoriesModalContents.Attachment)}
         data-testid="open-page-accessories-modal-btn-with-attachment-data-tab"
@@ -121,7 +117,6 @@ const AdditionalMenuItems = (props: AdditionalMenuItemsProps): JSX.Element => {
         </span>
         {t('attachment_data')}
       </DropdownItem>
-
       <DropdownItem
         onClick={() => openAccessoriesModal(PageAccessoriesModalContents.ShareLink)}
         disabled={isGuestUser || isSharedUser || isLinkSharingDisabled}
@@ -133,7 +128,6 @@ const AdditionalMenuItems = (props: AdditionalMenuItemsProps): JSX.Element => {
         </span>
         {t('share_links.share_link_management')}
       </DropdownItem>
-
       <DropdownItem divider />
 
       {/* Create template */}
@@ -318,7 +312,6 @@ const GrowiContextualSubNavigation = (props: GrowiContextualSubNavigationProps):
     return (
       <>
         <div className="d-flex flex-column align-items-end justify-content-center py-md-2" style={{ gap: `${isCompactMode ? '5px' : '7px'}` }}>
-
           { isViewMode && (
             <div className="h-50 w-100">
               <SubNavButtons
