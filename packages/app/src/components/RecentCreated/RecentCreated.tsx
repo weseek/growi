@@ -5,7 +5,7 @@ import { apiv3Get } from '~/client/util/apiv3-client';
 import { IPageHasId } from '~/interfaces/page';
 import loggerFactory from '~/utils/logger';
 
-import PageListItemS from '../PageList/PageListItemS';
+import { PageListItemS } from '../PageList/PageListItemS';
 import PaginationWrapper from '../PaginationWrapper';
 
 const logger = loggerFactory('growi:RecentCreated');

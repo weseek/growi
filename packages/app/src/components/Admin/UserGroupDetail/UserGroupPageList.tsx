@@ -6,7 +6,7 @@ import { toastError } from '~/client/util/apiNotification';
 import { apiv3Get } from '~/client/util/apiv3-client';
 import { IPageHasId } from '~/interfaces/page';
 
-import PageListItemS from '../../PageList/PageListItemS';
+import { PageListItemS } from '../../PageList/PageListItemS';
 import PaginationWrapper from '../../PaginationWrapper';
 
 const pagingLimit = 10;
