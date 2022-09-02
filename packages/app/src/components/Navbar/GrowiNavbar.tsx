@@ -23,7 +23,6 @@ import PersonalDropdown from './PersonalDropdown';
 
 import styles from './GrowiNavbar.module.scss';
 
-
 const InAppNotificationDropdown = dynamic(() => import('../InAppNotification/InAppNotificationDropdown')
   .then(mod => mod.InAppNotificationDropdown), { ssr: false });
 const AppearanceModeDropdown = dynamic(() => import('./AppearanceModeDropdown').then(mod => mod.AppearanceModeDropdown), { ssr: false });
@@ -73,7 +72,7 @@ const NavbarRight = memo((): JSX.Element => {
         </li>
       </>
     );
-  }, [t, isAuthenticated, openCreateModal, currentPagePath]);
+  }, [isAuthenticated, openCreateModal, currentPagePath]);
 
   const notAuthenticatedNavItem = useMemo(() => {
     return (
@@ -140,14 +139,17 @@ export const GrowiNavbar = (): JSX.Element => {
           </a>
         </Link>
       </div>
+
       <div className="grw-app-title d-none d-md-block">
         {appTitle}
       </div>
+
       {/* Navbar Right  */}
       <ul className="navbar-nav ml-auto">
         <NavbarRight />
         <Confidential confidential={confidential} />
       </ul>
+
       { isSearchServiceConfigured && !isDeviceSmallerThanMd && !isSearchPage && (
         <div className="grw-global-search-container position-absolute">
           <GlobalSearch />
