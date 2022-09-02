@@ -101,6 +101,7 @@ context('Open presentation modal', () => {
 
     // eslint-disable-next-line cypress/no-unnecessary-waiting
     cy.wait(1500);
+    cy.get('.present > [data-line=2] > a > img').invoke('attr','style','display:none');
     cy.screenshot(`${ssPrefix}-open-top`);
   });
 
