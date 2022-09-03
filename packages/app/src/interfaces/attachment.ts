@@ -9,3 +9,8 @@ export type IAttachment = {
   // virtual property
   filePathProxied: string,
 };
+
+export type IAttachmentsForPagination = {
+  attachments: IAttachment[], // attachments in one pagination
+  totalCounts: number // total counts
+}

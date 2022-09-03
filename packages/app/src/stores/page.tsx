@@ -3,6 +3,7 @@ import useSWRImmutable from 'swr/immutable';
 import useSWRInfinite, { SWRInfiniteResponse } from 'swr/infinite';
 
 import { apiv3Get } from '~/client/util/apiv3-client';
+import { IAttachmentsForPagination } from '~/interfaces/attachment';
 import { HasObjectId } from '~/interfaces/has-object-id';
 import {
   IPageInfo, IPageHasId, IPageInfoForOperation, IPageInfoForListing, IDataWithMeta,
@@ -10,6 +11,7 @@ import {
 import { IRecordApplicableGrant, IResIsGrantNormalized } from '~/interfaces/page-grant';
 import { IPagingResult } from '~/interfaces/paging-result';
 import { IRevisionsForPagination } from '~/interfaces/revision';
+import { IShareLink } from '~/interfaces/share-links';
 
 import { apiGet } from '../client/util/apiv1-client';
 import { Nullable } from '../interfaces/common';
@@ -211,5 +213,39 @@ export const useSWRxApplicableGrant = (
   return useSWRImmutable(
     pageId != null ? ['/page/applicable-grant', pageId] : null,
     (endpoint, pageId) => apiv3Get(endpoint, { pageId }).then(response => response.data),
+  );
+};
+
+export const useSWRxAttachments = (
+    pageId: string,
+    page: number, // page number of pagination
+    limit: number, // max number of pages in one paginate
+): SWRResponse<IAttachmentsForPagination, Error> => {
+
+  return useSWRImmutable<IAttachmentsForPagination, Error>(
+    ['/attachment/list', pageId, page, limit],
+    (endpoint, pageId, page, limit) => {
+      return apiv3Get(endpoint, { pageId, page, limit }).then((response) => {
+        const attachments = {
+          attachments: response.data.docs,
+          totalCounts: response.data.totalDocs,
+        };
+        return attachments;
+      });
+    },
+  );
+};
+
+export const useSWRxShareLinks = (
+    relatedPage: string,
+): SWRResponse<IShareLink[], Error> => {
+
+  return useSWRImmutable<IShareLink[], Error>(
+    ['/share-links', relatedPage],
+    (endpoint, relatedPage) => {
+      return apiv3Get(endpoint, { relatedPage }).then((response) => {
+        return response.data.shareLinkResult;
+      });
+    },
   );
 };

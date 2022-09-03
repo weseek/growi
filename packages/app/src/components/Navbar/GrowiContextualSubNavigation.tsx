@@ -25,12 +25,15 @@ import {
   usePageAccessoriesModal, PageAccessoriesModalContents, IPageForPageDuplicateModal,
   usePageDuplicateModal, usePageRenameModal, usePageDeleteModal, usePagePresentationModal,
 } from '~/stores/modal';
-import { useSWRxTagsInfo } from '~/stores/page';
+import {
+  useSWRxAttachments, useSWRxPageRevisions, useSWRxShareLinks, useSWRxTagsInfo,
+} from '~/stores/page';
 import {
   EditorMode, useDrawerMode, useEditorMode, useIsDeviceSmallerThanMd, useIsAbleToShowPageManagement, useIsAbleToShowTagLabel,
   useIsAbleToShowPageEditorModeManager, useIsAbleToShowPageAuthors,
 } from '~/stores/ui';
 
+import CountBadge from '../Common/CountBadge';
 import { AdditionalMenuItemsRendererProps } from '../Common/Dropdown/PageItemControl';
 import CreateTemplateModal from '../CreateTemplateModal';
 import AttachmentIcon from '../Icons/AttachmentIcon';
@@ -71,6 +74,9 @@ const AdditionalMenuItems = (props: AdditionalMenuItemsProps): JSX.Element => {
   const { open: openAccessoriesModal } = usePageAccessoriesModal();
 
   const hrefForPresentationModal = `${pageId}/?presentation=1`;
+  const { data: revisionsData } = useSWRxPageRevisions(pageId, 1, 1);
+  const { data: attachmentsData } = useSWRxAttachments(pageId, 1, 1);
+  const { data: shareLinkData } = useSWRxShareLinks(pageId);
 
   return (
     <>
@@ -111,6 +117,9 @@ const AdditionalMenuItems = (props: AdditionalMenuItemsProps): JSX.Element => {
           <HistoryIcon />
         </span>
         {t('History')}
+        <CountBadge
+          count={revisionsData?.totalCounts}
+        />
       </DropdownItem>
 
       <DropdownItem
@@ -122,6 +131,10 @@ const AdditionalMenuItems = (props: AdditionalMenuItemsProps): JSX.Element => {
           <AttachmentIcon />
         </span>
         {t('attachment_data')}
+        <CountBadge
+          // [TODO] 読み込みが終わったらコンポーネントを更新する
+          count={attachmentsData?.totalCounts}
+        />
       </DropdownItem>
 
       <DropdownItem
@@ -134,6 +147,10 @@ const AdditionalMenuItems = (props: AdditionalMenuItemsProps): JSX.Element => {
           <ShareLinkIcon />
         </span>
         {t('share_links.share_link_management')}
+        <CountBadge
+          // [TODO] 読み込みが終わったらコンポーネントを更新する
+          count={shareLinkData?.length}
+        />
       </DropdownItem>
 
       <DropdownItem divider />
