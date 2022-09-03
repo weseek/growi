@@ -132,7 +132,6 @@ const AdditionalMenuItems = (props: AdditionalMenuItemsProps): JSX.Element => {
         </span>
         {t('attachment_data')}
         <CountBadge
-          // [TODO] 読み込みが終わったらコンポーネントを更新する
           count={attachmentsData?.totalCounts}
         />
       </DropdownItem>
@@ -148,7 +147,6 @@ const AdditionalMenuItems = (props: AdditionalMenuItemsProps): JSX.Element => {
         </span>
         {t('share_links.share_link_management')}
         <CountBadge
-          // [TODO] 読み込みが終わったらコンポーネントを更新する
           count={shareLinkData?.length}
         />
       </DropdownItem>

@@ -227,8 +227,8 @@ export const useSWRxAttachments = (
     (endpoint, pageId, page, limit) => {
       return apiv3Get(endpoint, { pageId, page, limit }).then((response) => {
         const attachments = {
-          attachments: response.data.docs,
-          totalCounts: response.data.totalDocs,
+          attachments: response.data.paginateResult.docs,
+          totalCounts: response.data.paginateResult.totalDocs,
         };
         return attachments;
       });
@@ -244,7 +244,7 @@ export const useSWRxShareLinks = (
     ['/share-links', relatedPage],
     (endpoint, relatedPage) => {
       return apiv3Get(endpoint, { relatedPage }).then((response) => {
-        return response.data.shareLinkResult;
+        return response.data.shareLinksResult;
       });
     },
   );
