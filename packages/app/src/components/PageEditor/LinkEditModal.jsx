@@ -2,7 +2,6 @@ import React from 'react';
 
 import path from 'path';
 
-
 import { useTranslation } from 'next-i18next';
 import PropTypes from 'prop-types';
 import {
