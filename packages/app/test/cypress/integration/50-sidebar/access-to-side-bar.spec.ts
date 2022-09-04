@@ -102,7 +102,7 @@ context('Access to sidebar', () => {
     });
 
     cy.get('.grw-pagetree-item-children').eq(0).within(() => {
-      cy.getByTestid('closable-text-input').type('_newname');
+      cy.get('.flex-fill > input').type('_newname');
     });
 
     cy.getByTestid('grw-contextual-navigation-sub').screenshot(`${ssPrefix}page-tree-6-rename-page`);
