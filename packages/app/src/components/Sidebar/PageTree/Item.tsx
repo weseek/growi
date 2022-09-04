@@ -1,5 +1,5 @@
 import React, {
-  useCallback, useState, FC, useEffect,
+  useCallback, useState, FC, useEffect, ReactNode,
 } from 'react';
 
 import nodePath from 'path';
@@ -91,6 +91,15 @@ const isDroppable = (fromPage?: Partial<IPageHasId>, newParentPage?: Partial<IPa
 
   const newPathAfterMoved = getNewPathAfterMoved(fromPage.path, newParentPage.path);
   return pagePathUtils.canMoveByPath(fromPage.path, newPathAfterMoved) && !pagePathUtils.isUsersTopPage(newParentPage.path);
+};
+
+// Component wrapper to make a child element not draggable
+// https://github.com/react-dnd/react-dnd/issues/335
+type NotDraggableProps = {
+  children: ReactNode,
+};
+const NotDraggable = (props: NotDraggableProps): JSX.Element => {
+  return <div draggable onDragStart={e => e.preventDefault()}>{props.children}</div>;
 };
 
 
@@ -439,13 +448,15 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
         </div>
         { isRenameInputShown
           ? (
-            <ClosableTextInput
-              value={nodePath.basename(page.path ?? '')}
-              placeholder={t('Input page name')}
-              onClickOutside={() => { setRenameInputShown(false) }}
-              onPressEnter={onPressEnterForRenameHandler}
-              inputValidator={inputValidator}
-            />
+            <NotDraggable>
+              <ClosableTextInput
+                value={nodePath.basename(page.path ?? '')}
+                placeholder={t('Input page name')}
+                onClickOutside={() => { setRenameInputShown(false) }}
+                onPressEnter={onPressEnterForRenameHandler}
+                inputValidator={inputValidator}
+              />
+            </NotDraggable>
           )
           : (
             <>
@@ -499,12 +510,14 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
       </li>
 
       {isEnableActions && isNewPageInputShown && (
-        <ClosableTextInput
-          placeholder={t('Input page name')}
-          onClickOutside={() => { setNewPageInputShown(false) }}
-          onPressEnter={onPressEnterForCreateHandler}
-          inputValidator={inputValidator}
-        />
+        <NotDraggable>
+          <ClosableTextInput
+            placeholder={t('Input page name')}
+            onClickOutside={() => { setNewPageInputShown(false) }}
+            onPressEnter={onPressEnterForCreateHandler}
+            inputValidator={inputValidator}
+          />
+        </NotDraggable>
       )}
       {
         isOpen && hasChildren() && currentChildren.map((node, index) => (
