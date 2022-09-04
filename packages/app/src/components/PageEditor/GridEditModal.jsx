@@ -152,9 +152,7 @@ class GridEditModal extends React.Component {
         <div className="col-lg-2">
           <h4 className="d-block mt-2">{t('phone')}</h4>
           <div className="mobile-preview d-block px-3 py-2">
-            iiii
             {this.renderGridPreview(!isXsSelected)}
-            uuu
           </div>
         </div>
         <div className="col-lg-3">
@@ -184,8 +182,6 @@ class GridEditModal extends React.Component {
         <div key={key} className={`${key} ${className}`}></div>
       );
     });
-
-    console.log({ convertedHTML });
     return (
       <div className="row">{convertedHTML}</div>
     );
