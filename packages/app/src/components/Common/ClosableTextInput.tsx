@@ -112,7 +112,7 @@ const ClosableTextInput: FC<ClosableTextInputProps> = memo((props: ClosableTextI
 
 
   return (
-    <div className="d-block flex-fill">
+    <div>
       <input
         value={inputText || ''}
         ref={inputRef}
