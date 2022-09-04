@@ -30,7 +30,8 @@ const ClosableTextInput: FC<ClosableTextInputProps> = memo((props: ClosableTextI
 
   const [inputText, setInputText] = useState(props.value);
   const [currentAlertInfo, setAlertInfo] = useState<AlertInfo | null>(null);
-  const [isAbleToShowAlert, setIsAbleToShowAlert] = useState<boolean>(false);
+  const [isAbleToShowAlert, setIsAbleToShowAlert] = useState(false);
+  const [isComposing, setComposing] = useState(false);
 
   const createValidation = async(inputText: string) => {
     if (props.inputValidator != null) {
@@ -63,6 +64,10 @@ const ClosableTextInput: FC<ClosableTextInputProps> = memo((props: ClosableTextI
   const onKeyDownHandler = (e) => {
     switch (e.key) {
       case 'Enter':
+        // Do nothing when composing
+        if (isComposing) {
+          return;
+        }
         onPressEnter();
         break;
       default:
@@ -118,6 +123,8 @@ const ClosableTextInput: FC<ClosableTextInputProps> = memo((props: ClosableTextI
         onFocus={onFocusHandler}
         onChange={onChangeHandler}
         onKeyDown={onKeyDownHandler}
+        onCompositionStart={() => setComposing(true)}
+        onCompositionEnd={() => setComposing(false)}
         onBlur={onBlurHandler}
         autoFocus={false}
       />
