@@ -152,7 +152,9 @@ class GridEditModal extends React.Component {
         <div className="col-lg-2">
           <h4 className="d-block mt-2">{t('phone')}</h4>
           <div className="mobile-preview d-block px-3 py-2">
+            iiii
             {this.renderGridPreview(!isXsSelected)}
+            uuu
           </div>
         </div>
         <div className="col-lg-3">
@@ -182,6 +184,8 @@ class GridEditModal extends React.Component {
         <div key={key} className={`${key} ${className}`}></div>
       );
     });
+
+    console.log({ convertedHTML });
     return (
       <div className="row">{convertedHTML}</div>
     );
@@ -190,7 +194,7 @@ class GridEditModal extends React.Component {
   render() {
     const { t } = this.props;
     return (
-      <Modal isOpen={this.state.show} toggle={this.cancel} size="xl" className={`${styles['grw-grid-edit-modal']}`}>
+      <Modal isOpen={this.state.show} toggle={this.cancel} size="xl" className={`grw-grid-edit-modal ${styles['grw-grid-edit-modal']}`}>
         <ModalHeader tag="h4" toggle={this.cancel} className="bg-primary text-light">
           {t('grid_edit.create_bootstrap_4_grid')}
         </ModalHeader>
