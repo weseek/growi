@@ -448,7 +448,7 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
         </div>
         { isRenameInputShown
           ? (
-            <div className="flex-fill">
+            <div className="d-block flex-fill">
               <NotDraggableForClosableTextInput>
                 <ClosableTextInput
                   value={nodePath.basename(page.path ?? '')}
@@ -512,7 +512,7 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
       </li>
 
       {isEnableActions && isNewPageInputShown && (
-        <div className="flex-fill">
+        <div className="d-block flex-fill">
           <NotDraggableForClosableTextInput>
             <ClosableTextInput
               placeholder={t('Input page name')}
