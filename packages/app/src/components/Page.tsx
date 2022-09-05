@@ -167,7 +167,7 @@ class PageSubstance extends React.Component<PageSubstanceProps> {
     const { _id: revisionId, body: markdown } = page.revision;
 
     // const DrawioModal = dynamic(() => import('./PageEditor/DrawioModal'), { ssr: false });
-    // const GridEditModal = dynamic(() => import('./PageEditor/GridEditModal'), { ssr: false });
+    const GridEditModal = dynamic(() => import('./PageEditor/GridEditModal'), { ssr: false });
     // const HandsontableModal = dynamic(() => import('./PageEditor/HandsontableModal'), { ssr: false });
     const LinkEditModal = dynamic(() => import('./PageEditor/LinkEditModal'), { ssr: false });
 
@@ -180,7 +180,7 @@ class PageSubstance extends React.Component<PageSubstanceProps> {
 
         { !isGuestUser && (
           <>
-            {/* <GridEditModal ref={this.gridEditModal} /> */}
+            <GridEditModal ref={this.gridEditModal} />
             <LinkEditModal ref={this.linkEditModal} />
             {/* <HandsontableModal ref={this.handsontableModal} onSave={this.saveHandlerForHandsontableModal} /> */}
             {/* <DrawioModal ref={this.drawioModal} onSave={this.saveHandlerForDrawioModal} /> */}
