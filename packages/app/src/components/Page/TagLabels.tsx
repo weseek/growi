@@ -17,7 +17,7 @@ export const TagLabelsSkelton = (): JSX.Element => {
   return <Skelton additionalClass={`${styles['grw-tag-labels-skelton']} py-1`} />;
 };
 
-const TagLabels:FC<Props> = (props: Props) => {
+export const TagLabels:FC<Props> = (props: Props) => {
   const { tags, isGuestUser, tagsUpdateInvoked } = props;
 
   const [isTagEditModalShown, setIsTagEditModalShown] = useState(false);
@@ -30,24 +30,20 @@ const TagLabels:FC<Props> = (props: Props) => {
     setIsTagEditModalShown(false);
   };
 
+  if (tags == null) {
+    return <TagLabelsSkelton />;
+  }
+
   return (
     <>
       <div className={`${styles['grw-tag-labels']} grw-tag-labels d-flex align-items-center`}>
         <i className="tag-icon icon-tag mr-2"></i>
-        { tags == null
-          ? (
-            <span className="grw-tag-label badge badge-secondary">―</span>
-          )
-          : (
-            <RenderTagLabels
-              tags={tags}
-              openEditorModal={openEditorModal}
-              isGuestUser={isGuestUser}
-            />
-          )
-        }
+        <RenderTagLabels
+          tags={tags}
+          openEditorModal={openEditorModal}
+          isGuestUser={isGuestUser}
+        />
       </div>
-
       <TagEditModal
         tags={tags}
         isOpen={isTagEditModalShown}
@@ -57,5 +53,3 @@ const TagLabels:FC<Props> = (props: Props) => {
     </>
   );
 };
-
-export default TagLabels;

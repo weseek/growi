@@ -17,7 +17,7 @@ import DrawerToggler from './DrawerToggler';
 import AuthorInfoStyles from './AuthorInfo.module.scss';
 import styles from './GrowiSubNavigation.module.scss';
 
-const TagLabels = dynamic(() => import('../Page/TagLabels'), {
+const TagLabels = dynamic(() => import('../Page/TagLabels').then(mod => mod.TagLabels), {
   ssr: false,
   loading: () => <TagLabelsSkelton />,
 });
