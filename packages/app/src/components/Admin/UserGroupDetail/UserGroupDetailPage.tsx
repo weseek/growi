@@ -1,32 +1,35 @@
 import React, {
   FC, useState, useCallback,
 } from 'react';
+
 import { useTranslation } from 'react-i18next';
 
-import UserGroupForm from '../UserGroup/UserGroupForm';
-import UserGroupTable from '../UserGroup/UserGroupTable';
-import UserGroupModal from '../UserGroup/UserGroupModal';
-import UserGroupDeleteModal from '../UserGroup/UserGroupDeleteModal';
-import UpdateParentConfirmModal from './UpdateParentConfirmModal';
-import UserGroupDropdown from '../UserGroup/UserGroupDropdown';
-import UserGroupUserTable from './UserGroupUserTable';
-import UserGroupUserModal from './UserGroupUserModal';
-import UserGroupPageList from './UserGroupPageList';
 
+import { toastSuccess, toastError } from '~/client/util/apiNotification';
 import {
   apiv3Get, apiv3Put, apiv3Delete, apiv3Post,
 } from '~/client/util/apiv3-client';
-import { toastSuccess, toastError } from '~/client/util/apiNotification';
 import { IPageHasId } from '~/interfaces/page';
 import {
   IUserGroup, IUserGroupHasId,
 } from '~/interfaces/user';
+import { useIsAclEnabled } from '~/stores/context';
+import { useUpdateUserGroupConfirmModal } from '~/stores/modal';
 import {
   useSWRxUserGroupPages, useSWRxUserGroupRelationList, useSWRxChildUserGroupList,
   useSWRxSelectableParentUserGroups, useSWRxSelectableChildUserGroups, useSWRxAncestorUserGroups,
 } from '~/stores/user-group';
-import { useIsAclEnabled } from '~/stores/context';
-import { useUpdateUserGroupConfirmModal } from '~/stores/modal';
+
+import UserGroupDeleteModal from '../UserGroup/UserGroupDeleteModal';
+import UserGroupDropdown from '../UserGroup/UserGroupDropdown';
+import UserGroupForm from '../UserGroup/UserGroupForm';
+import UserGroupModal from '../UserGroup/UserGroupModal';
+import UserGroupTable from '../UserGroup/UserGroupTable';
+
+import UpdateParentConfirmModal from './UpdateParentConfirmModal';
+import UserGroupPageList from './UserGroupPageList';
+import UserGroupUserModal from './UserGroupUserModal';
+import UserGroupUserTable from './UserGroupUserTable';
 
 const UserGroupDetailPage: FC = () => {
   const { t } = useTranslation();
@@ -85,10 +88,6 @@ const UserGroupDetailPage: FC = () => {
   }, []);
 
   const updateUserGroup = useCallback(async(userGroup: IUserGroupHasId, update: Partial<IUserGroupHasId>, forceUpdateParents: boolean) => {
-    if (update.parent == null) {
-      throw Error('"parent" attr must not be null');
-    }
-
     const parentId = typeof update.parent === 'string' ? update.parent : update.parent?._id;
     const res = await apiv3Put<{ userGroup: IUserGroupHasId }>(`/user-groups/${userGroup._id}`, {
       name: update.name,
@@ -120,7 +119,7 @@ const UserGroupDetailPage: FC = () => {
   );
 
   const onClickSubmitForm = useCallback(async(targetGroup: IUserGroupHasId, userGroupData: Partial<IUserGroupHasId>): Promise<void> => {
-    if (userGroupData?.parent === undefined || typeof userGroupData?.parent === 'string') {
+    if (typeof userGroupData?.parent === 'string') {
       toastError(t('Something went wrong. Please try again.'));
       return;
     }
