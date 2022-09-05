@@ -1062,7 +1062,7 @@ class CodeMirrorEditor extends AbstractEditor {
         />
         <LinkEditModal
           ref={this.linkEditModal}
-          onSave={(linkTexts) => { return markdownLinkUtil.replaceFocusedMarkdownLinkWithEditor(this.getCodeMirror(), linkText) }}
+          onSave={(linkText) => { return markdownLinkUtil.replaceFocusedMarkdownLinkWithEditor(this.getCodeMirror(), linkText) }}
         />
         {/*
         <HandsontableModal
