@@ -101,8 +101,12 @@ context('Open presentation modal', () => {
 
     // eslint-disable-next-line cypress/no-unnecessary-waiting
     cy.wait(1500);
-    cy.get('.present > [data-line=2] > a > img').invoke('attr','style','display:none');
+    cy.get('iframe').then(($iframe) => {
+      const $body = $iframe.contents().find('body')
+      cy.wrap($body).find('section.present > p[data-line=2] > a > img').invoke('attr','style','display:none');
+    });
     cy.screenshot(`${ssPrefix}-open-top`);
+
   });
 
 });
@@ -161,6 +165,7 @@ context('Tag Oprations', () =>{
     cy.fixture("user-admin.json").then(user => {
       cy.login(user.username, user.password);
     });
+    cy.collapseSidebar(true)
   });
 
   it('Successfully add new tag', () => {
@@ -189,9 +194,10 @@ context('Tag Oprations', () =>{
       cy.get('div.modal-footer > button').click();
     });
 
+    cy.get('#toast-container').invoke('attr','style','display:none');
     cy.get('.grw-taglabels-container > form > a').contains(tag).should('exist');
 
-    cy.screenshot(`${ssPrefix}4-click-done`, {capture: 'viewport'});
+    cy.screenshot(`${ssPrefix}4-click-done`, {capture: 'viewport', blackout: ['[data-line="2"]:eq(0) > a > img', '[data-hide-in-vrt="true"]']});
 
   });
 
@@ -204,10 +210,13 @@ context('Tag Oprations', () =>{
     cy.getByTestid('search-result-base').should('be.visible');
     cy.getByTestid('search-result-list').should('be.visible');
     cy.getByTestid('search-result-content').should('be.visible');
+    cy.get('#wiki').should('be.visible');
     cy.screenshot(`${ssPrefix}1-click-tag-name`, {capture: 'viewport'});
+    cy.getByTestid('search-result-list').within(() => {
+      cy.getByTestid('open-page-item-control-btn').first().click({force: true});
+    })
 
-    cy.getByTestid('open-page-item-control-btn').first().click({force: true});
-    cy.screenshot(`${ssPrefix}2-click-three-dots-menu`, {capture: 'viewport'});
+    cy.screenshot(`${ssPrefix}2-click-three-dots-menu`, {capture: 'viewport', blackout:['#wiki > p:eq(0) > a > img']});
 
     cy.getByTestid('open-page-duplicate-modal-btn').first().click({force: true});
     cy.getByTestid('page-duplicate-modal').should('be.visible');
@@ -220,7 +229,7 @@ context('Tag Oprations', () =>{
     });
     cy.visit(`/${newPageName}`);
     cy.get('#wiki').should('not.be.empty');
-    cy.screenshot(`${ssPrefix}4-duplicated-page`, {capture: 'viewport'});
+    cy.screenshot(`${ssPrefix}4-duplicated-page`, {capture: 'viewport', blackout: ['[data-line="2"]:eq(0) > a > img', '[data-hide-in-vrt="true"]']});
   });
 
   it('Successfully rename page from generated tag', () => {
