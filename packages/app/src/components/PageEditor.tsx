@@ -85,34 +85,28 @@ const PageEditor = React.memo((props: Props): JSX.Element => {
   //   pageContainer, editorContainer,
   // } = props;
 
+  const { data: pageId } = useCurrentPageId();
+  const { data: currentPagePath } = useCurrentPagePath();
+  const { data: currentPathname } = useCurrentPathname();
+  const { data: currentPage } = useSWRxCurrentPage();
+  const { data: grantData, mutate: mutateGrant } = useSelectedGrant();
+  const { data: pageTags } = usePageTagsForEditors(pageId);
+
   const { data: isEditable } = useIsEditable();
   const { data: editorMode } = useEditorMode();
   const { data: isMobile } = useIsMobile();
   const { data: isSlackEnabled } = useIsSlackEnabled();
-  const { data: pageId } = useCurrentPageId();
-  const { data: pageTags } = usePageTagsForEditors(pageId);
-  const { data: currentPagePath } = useCurrentPagePath();
-  const { data: currentPathname } = useCurrentPathname();
   const { data: slackChannelsData } = useSWRxSlackChannels(currentPagePath);
-  const { data: grantData, mutate: mutateGrant } = useSelectedGrant();
   const { data: isTextlintEnabled } = useIsTextlintEnabled();
   const { data: isIndentSizeForced } = useIsIndentSizeForced();
   const { data: indentSize, mutate: mutateCurrentIndentSize } = useCurrentIndentSize();
   const { mutate: mutateIsEnabledUnsavedWarning } = useIsEnabledUnsavedWarning();
   const { data: isUploadableFile } = useIsUploadableFile();
   const { data: isUploadableImage } = useIsUploadableImage();
-  const { data: currentPage } = useSWRxCurrentPage();
 
   const { data: rendererOptions } = usePreviewOptions();
 
   const [markdown, setMarkdown] = useState<string>('');
-
-
-  useEffect(() => {
-    if (currentPage != null) {
-      setMarkdown(currentPage.revision?.body);
-    }
-  }, [currentPage, currentPage?.revision?.body]);
 
   const slackChannels = useMemo(() => (slackChannelsData ? slackChannelsData.toString() : ''), []);
 
@@ -456,13 +450,14 @@ const PageEditor = React.memo((props: Props): JSX.Element => {
 
   const isUploadable = isUploadableImage || isUploadableFile;
 
+  const initialValue = currentPage?.revision?.body;
 
   return (
     <div className="d-flex flex-wrap">
       <div className="page-editor-editor-container flex-grow-1 flex-basis-0 mw-0">
         <Editor
           ref={editorRef}
-          value={markdown}
+          value={initialValue}
           isUploadable={isUploadable}
           isUploadableFile={isUploadableFile}
           isTextlintEnabled={isTextlintEnabled}
