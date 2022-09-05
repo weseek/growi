@@ -22,7 +22,7 @@ import EmojiPicker from './EmojiPicker';
 import EmojiPickerHelper from './EmojiPickerHelper';
 import GridEditModal from './GridEditModal';
 import geu from './GridEditorUtil';
-// import HandsontableModal from './HandsontableModal';
+import HandsontableModal from './HandsontableModal';
 import LinkEditModal from './LinkEditModal';
 import mdu from './MarkdownDrawioUtil';
 import markdownLinkUtil from './MarkdownLinkUtil';
@@ -799,7 +799,7 @@ class CodeMirrorEditor extends AbstractEditor {
   }
 
   showHandsonTableHandler() {
-    // this.handsontableModal.current.show(mtu.getMarkdownTable(this.getCodeMirror()));
+    this.handsontableModal.current.show(mtu.getMarkdownTable(this.getCodeMirror()));
   }
 
   showDrawioHandler() {
@@ -1064,12 +1064,11 @@ class CodeMirrorEditor extends AbstractEditor {
           ref={this.linkEditModal}
           onSave={(linkText) => { return markdownLinkUtil.replaceFocusedMarkdownLinkWithEditor(this.getCodeMirror(), linkText) }}
         />
-        {/*
         <HandsontableModal
           ref={this.handsontableModal}
           onSave={(table) => { return mtu.replaceFocusedMarkdownTableWithEditor(this.getCodeMirror(), table) }}
           autoFormatMarkdownTable={this.props.editorSettings.autoFormatMarkdownTable}
-        /> */}
+        />
         {/* <DrawioModal
           ref={this.drawioModal}
           onSave={this.onSaveForDrawio}
