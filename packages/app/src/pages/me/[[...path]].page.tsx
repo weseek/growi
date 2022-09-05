@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 
 import {
   IUser, IUserHasId,
@@ -60,20 +60,22 @@ const MePage: NextPage<Props> = (props: Props) => {
   const { path } = router.query;
   const pagePathKeys: string[] = Array.isArray(path) ? path : ['personal-settings'];
 
-  const mePagesMap = {
-    'personal-settings': {
-      title: t('User Settings'),
-      component: <PersonalSettings />,
-    },
-    drafts: {
-      title: t('My Drafts'),
-      component: <MyDraftList />,
-    },
-    'all-in-app-notifications': {
-      title: t('in_app_notification.notification_list'),
-      component: <InAppNotificationPage />,
-    },
-  };
+  const mePagesMap = useMemo(() => {
+    return {
+      'personal-settings': {
+        title: t('User Settings'),
+        component: <PersonalSettings />,
+      },
+      drafts: {
+        title: t('My Drafts'),
+        component: <MyDraftList />,
+      },
+      'all-in-app-notifications': {
+        title: t('in_app_notification.notification_list'),
+        component: <InAppNotificationPage />,
+      },
+    };
+  }, [t]);
 
   const getTargetPageToRender = (pagesMap, keys): {title: string, component: JSX.Element} => {
     return keys.reduce((pagesMap, key) => {
