@@ -722,6 +722,10 @@
 		"Registration successful": "注册成功",
 		"Setup": "安装程序"
 	},
+  "invited": {
+    "invited_discription_heading": "创建账户",
+    "invited_discription": "用被邀请的电子邮件地址创建一个你的账户"
+  },
   "export_bulk": {
     "failed_to_export": "导出失败",
     "failed_to_count_pages": "页面计数失败",
