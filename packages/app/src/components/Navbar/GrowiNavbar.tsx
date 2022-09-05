@@ -23,13 +23,14 @@ import PersonalDropdown from './PersonalDropdown';
 
 import styles from './GrowiNavbar.module.scss';
 
+const InAppNotificationDropdown = dynamic(() => import('../InAppNotification/InAppNotificationDropdown')
+  .then(mod => mod.InAppNotificationDropdown), { ssr: false });
+const AppearanceModeDropdown = dynamic(() => import('./AppearanceModeDropdown').then(mod => mod.AppearanceModeDropdown), { ssr: false });
+const GlobalSearch = dynamic<GlobalSearchProps>(() => import('./GlobalSearch').then(mod => mod.GlobalSearch), { ssr: false });
+
 
 const NavbarRight = memo((): JSX.Element => {
   const { t } = useTranslation();
-
-  const InAppNotificationDropdown = dynamic(() => import('../InAppNotification/InAppNotificationDropdown')
-    .then(mod => mod.InAppNotificationDropdown), { ssr: false });
-  const AppearanceModeDropdown = dynamic(() => import('./AppearanceModeDropdown').then(mod => mod.AppearanceModeDropdown), { ssr: false });
 
   const { data: currentPagePath } = useCurrentPagePath();
   const { data: isGuestUser } = useIsGuestUser();
@@ -71,7 +72,7 @@ const NavbarRight = memo((): JSX.Element => {
         </li>
       </>
     );
-  }, [InAppNotificationDropdown, t, AppearanceModeDropdown, isAuthenticated, openCreateModal, currentPagePath]);
+  }, [isAuthenticated, openCreateModal, currentPagePath]);
 
   const notAuthenticatedNavItem = useMemo(() => {
     return (
@@ -79,11 +80,10 @@ const NavbarRight = memo((): JSX.Element => {
         <li className="grw-apperance-mode-dropdown nav-item dropdown">
           <AppearanceModeDropdown isAuthenticated={isAuthenticated} />
         </li>
-
         <li id="login-user" className="nav-item"><a className="nav-link" href="/login">Login</a></li>;
       </>
     );
-  }, [AppearanceModeDropdown, isAuthenticated]);
+  }, [isAuthenticated]);
 
   return (
     <>
@@ -123,8 +123,6 @@ Confidential.displayName = 'Confidential';
 
 export const GrowiNavbar = (): JSX.Element => {
 
-  const GlobalSearch = dynamic<GlobalSearchProps>(() => import('./GlobalSearch').then(mod => mod.GlobalSearch), { ssr: false });
-
   const { data: appTitle } = useAppTitle();
   const { data: confidential } = useConfidential();
   const { data: isSearchServiceConfigured } = useIsSearchServiceConfigured();
@@ -146,18 +144,14 @@ export const GrowiNavbar = (): JSX.Element => {
         {appTitle}
       </div>
 
-
       {/* Navbar Right  */}
       <ul className="navbar-nav ml-auto">
         <NavbarRight />
         <Confidential confidential={confidential} />
       </ul>
-
-      { isSearchServiceConfigured && !isDeviceSmallerThanMd && !isSearchPage && (
-        <div className="grw-global-search-container position-absolute">
-          <GlobalSearch />
-        </div>
-      ) }
+      <div className="grw-global-search-container position-absolute">
+        { isSearchServiceConfigured && !isDeviceSmallerThanMd && !isSearchPage && (<GlobalSearch />) }
+      </div>
     </nav>
   );
 
