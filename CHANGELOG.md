@@ -1,8 +1,68 @@
 # Changelog
 
-## [Unreleased](https://github.com/weseek/growi/compare/v5.1.0...HEAD)
+## [Unreleased](https://github.com/weseek/growi/compare/v5.1.3...HEAD)
 
 *Please do not manually update this file. We've automated the process.*
+
+## [v5.1.3](https://github.com/weseek/growi/compare/v5.1.2...v5.1.3) - 2022-08-28
+
+### 💎 Features
+
+- feat(auditlog): Copy URL of the table (#6421) @miya
+
+### 🚀 Improvement
+
+- imprv(auditlog): Activity paging UI (#6444) @miya
+- imprv: Improvement behavior when click on drawio diagram. (#6486) @kaishuu0123
+
+### 🐛 Bug Fixes
+
+- fix: Label of alert when updating tags (#6478) @miya
+- fix: Uploading image using shortcut key(ctrl+v) shows toastError (#6474) @Yohei-Shiina
+- fix: Pager is not displayed (#6468) @miya
+
+### 🧰 Maintenance
+
+- support: Use vscode-stylelint (#6430) @yuki-takei
+
+## [v5.1.2](https://github.com/weseek/growi/compare/v5.1.1...v5.1.2) - 2022-08-03
+
+### 💎 Features
+
+- feat: Make content width of each page configurable (#6107) @mudana-grune
+
+### 🚀 Improvement
+
+- imprv(auditlog): Clear and reload button (#6398) @miya
+- imprv(auditlog): Date Range Picker  (#6395) @miya
+
+### 🐛 Bug Fixes
+
+- fix: MathJax rendering (#6396) @yuki-takei
+
+### 🧰 Maintenance
+
+- support: Make Editor component Functional Component and TypeScript (#6374) @yukendev
+
+## [v5.1.1](https://github.com/weseek/growi/compare/v5.1.0...v5.1.1) - 2022-08-01
+
+### 💎 Features
+
+- feat: Users can set users per ip from env var at API Rate Limit  (#6379) @yukendev
+- feat: Show user picture in Audit Log (#6342) @miya
+- feat: Reset search criteria button (#6327) @miya
+
+### 🚀 Improvement
+
+- imprv(auditlog): Display number of actions that can be saved (#6353) @miya
+- imprv(auditlog): Include delete-related actions in small group (#6351) @miya
+
+### 🐛 Bug Fixes
+
+- fix: Default markdown linker with relative path does not respect the current page path (v5.1.0) (#6378) @yuki-takei
+- fix: Recover page path operation (#6368) @hakumizuki
+- fix: Migration script for inserting NamedQuery (#6364) @yuki-takei
+- fix: "Error: cannnot get grant label" occured with lsx (#6348) @yukendev
 
 ## [v5.1.0](https://github.com/weseek/growi/compare/v5.0.11...v5.1.0) - 2022-07-21
 

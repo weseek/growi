@@ -15,6 +15,7 @@ import {
 } from '~/interfaces/page';
 import { IResTagsUpdateApiv1 } from '~/interfaces/tag';
 import { OnDuplicatedFunction, OnRenamedFunction, OnDeletedFunction } from '~/interfaces/ui';
+import { IUser } from '~/interfaces/user';
 import {
   useCurrentCreatedAt, useCurrentUpdatedAt, useCurrentPageId, useRevisionId, useCurrentPagePath,
   useCreator, useRevisionAuthor, useCurrentUser, useIsGuestUser, useIsSharedUser, useShareLinkId, useEmptyPageId, useTemplateTagData,
@@ -211,8 +212,12 @@ const GrowiContextualSubNavigation = (props) => {
   const tagsUpdatedHandlerForViewMode = useCallback(async(newTags: string[]) => {
     try {
       const res: IResTagsUpdateApiv1 = await apiPost('/tags.update', { pageId, revisionId, tags: newTags });
+
       const updatedRevisionId = getIdForRef(res.savedPage.revision);
       await pageContainer.setState({ revisionId: updatedRevisionId });
+
+      const lastUpdateUser = res.savedPage?.lastUpdateUser as IUser;
+      await pageContainer.setState({ lastUpdateUser });
 
       // revalidate SWRTagsInfo
       mutateSWRTagsInfo();

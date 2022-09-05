@@ -29,6 +29,7 @@ export interface IPage {
   pageIdOnHackmd: string,
   revisionHackmdSynced: Ref<IRevision>,
   hasDraftOnHackmd: boolean,
+  expandContentWidth?: boolean,
   deleteUser: Ref<IUser>,
   deletedAt: Date,
 }
@@ -61,6 +62,7 @@ export type IPageInfoForEntity = IPageInfo & {
   likerIds: string[],
   sumOfSeenUsers: number,
   seenUserIds: string[],
+  expandContentWidth?: boolean,
 }
 
 export type IPageInfoForOperation = IPageInfoForEntity & {

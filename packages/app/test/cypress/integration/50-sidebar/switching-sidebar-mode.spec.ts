@@ -21,12 +21,12 @@ context('Switch sidebar mode', () => {
 
   it('Switching sidebar mode', () => {
     cy.visit('/');
-    cy.get('.grw-personal-dropdown').click();
+    cy.get('.grw-personal-dropdown').first().click();
 
-    cy.get('[for="swSidebarModeOnEditor"]').click();
+    cy.get('[for="swSidebarMode"]').click({force: true});
     cy.screenshot(`${ssPrefix}-switch-sidebar-mode`, { capture: 'viewport' });
 
-    cy.get('[for="swSidebarModeOnEditor"]').click();
+    cy.get('[for="swSidebarMode"]').click({force: true});
     cy.screenshot(`${ssPrefix}-switch-sidebar-mode-back`, { capture: 'viewport' });
   });
 

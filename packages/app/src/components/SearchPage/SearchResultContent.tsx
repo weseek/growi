@@ -21,7 +21,7 @@ import { useFullTextSearchTermManager } from '~/stores/search';
 
 
 import AppContainer from '../../client/services/AppContainer';
-import { AdditionalMenuItemsRendererProps, ForceHideMenuItems } from '../Common/Dropdown/PageItemControl';
+import { AdditionalMenuItemsRendererProps, ForceHideMenuItems, MenuItemType } from '../Common/Dropdown/PageItemControl';
 import { GrowiSubNavigation } from '../Navbar/GrowiSubNavigation';
 import { SubNavButtons } from '../Navbar/SubNavButtons';
 import RevisionLoader from '../Page/RevisionLoader';
@@ -175,6 +175,7 @@ export const SearchResultContent: FC<Props> = (props: Props) => {
     const revisionId = typeof page.revision === 'string'
       ? page.revision
       : page.revision._id;
+
 
     return (
       <div className="d-flex flex-column align-items-end justify-content-center py-md-2">

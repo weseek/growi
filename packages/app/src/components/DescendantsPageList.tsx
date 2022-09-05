@@ -103,7 +103,7 @@ export const DescendantsPageListSubstance = (props: SubstanceProps): JSX.Element
     );
   }
 
-  const showPager = pagingResult.items.length > pagingResult.limit;
+  const showPager = pagingResult.totalCount > pagingResult.limit;
 
   return (
     <>

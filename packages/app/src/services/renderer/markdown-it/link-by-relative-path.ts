@@ -5,14 +5,16 @@ const PATTERN_RELATIVE_PATH = new RegExp(/^(\.{1,2})(\/.*)?$/);
 
 export default class LinkerByRelativePathConfigurer {
 
-  pagePath: string
+  pagePath: string;
 
   constructor(pagePath: string) {
     this.pagePath = pagePath;
   }
 
   // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
-  configure(md, pagePath: string): void {
+  configure(md): void {
+    const pagePath = this.pagePath;
+
     // Remember old renderer, if overridden, or proxy to default renderer
     const defaultRender = md.renderer.rules.link_open || function(tokens, idx, options, env, self) {
       return self.renderToken(tokens, idx, options);

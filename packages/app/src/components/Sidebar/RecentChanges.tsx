@@ -145,7 +145,7 @@ const RecentChanges = (): JSX.Element => {
   }, [retrieveSizePreferenceFromLocalStorage]);
 
   return (
-    <>
+    <div data-testid="grw-recent-changes">
       <div className="grw-sidebar-content-header p-3 d-flex">
         <h3 className="mb-0  text-nowrap">{t('Recent Changes')}</h3>
         <button type="button" className="btn btn-sm ml-auto grw-btn-reload" onClick={() => swr.mutate()}>
@@ -180,7 +180,7 @@ const RecentChanges = (): JSX.Element => {
           </InfiniteScroll>
         </ul>
       </div>
-    </>
+    </div>
   );
 
 };

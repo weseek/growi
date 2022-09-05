@@ -1,13 +1,12 @@
 import React, { FC } from 'react';
 
 import AppContainer from '~/client/services/AppContainer';
-import loggerFactory from '~/utils/logger';
-import { useSWRxPageByPath } from '~/stores/page';
-
-import { withUnstatedContainers } from '../UnstatedUtils';
-import RevisionRenderer from '../Page/RevisionRenderer';
 import { IRevision } from '~/interfaces/revision';
+import { useSWRxPageByPath } from '~/stores/page';
 import { useCustomSidebarRenderer } from '~/stores/renderer';
+import loggerFactory from '~/utils/logger';
+
+import RevisionRenderer from '../Page/RevisionRenderer';
 
 const logger = loggerFactory('growi:cli:CustomSidebar');
 
@@ -26,9 +25,7 @@ type Props = {
   appContainer: AppContainer,
 };
 
-const CustomSidebar: FC<Props> = (props: Props) => {
-
-  const { appContainer } = props;
+const CustomSidebar: FC<Props> = () => {
 
   const { data: renderer } = useCustomSidebarRenderer();
 
@@ -40,6 +37,9 @@ const CustomSidebar: FC<Props> = (props: Props) => {
 
   const isLoading = page === undefined && error == null;
   const markdown = (page?.revision as IRevision | undefined)?.body;
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const RevisionRendererAny: any = RevisionRenderer;
 
   return (
     <>
@@ -64,7 +64,7 @@ const CustomSidebar: FC<Props> = (props: Props) => {
       {
         (!isLoading && markdown != null) && (
           <div className="p-3">
-            <RevisionRenderer
+            <RevisionRendererAny
               growiRenderer={renderer}
               markdown={markdown}
               pagePath="/Sidebar"
@@ -83,9 +83,4 @@ const CustomSidebar: FC<Props> = (props: Props) => {
   );
 };
 
-/**
- * Wrapper component for using unstated
- */
-const CustomSidebarWrapper = withUnstatedContainers(CustomSidebar, [AppContainer]);
-
-export default CustomSidebarWrapper;
+export default CustomSidebar;
