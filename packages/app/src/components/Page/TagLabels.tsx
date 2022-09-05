@@ -1,5 +1,7 @@
 import React, { FC, useState } from 'react';
 
+import { Skelton } from '../Skelton';
+
 import RenderTagLabels from './RenderTagLabels';
 import TagEditModal from './TagEditModal';
 
@@ -11,6 +13,9 @@ type Props = {
   tagsUpdateInvoked?: (tags: string[]) => Promise<void> | void,
 }
 
+export const TagLabelsSkelton = (): JSX.Element => {
+  return <Skelton additionalClass={`${styles['grw-tag-labels-skelton']} py-1`} />;
+};
 
 const TagLabels:FC<Props> = (props: Props) => {
   const { tags, isGuestUser, tagsUpdateInvoked } = props;

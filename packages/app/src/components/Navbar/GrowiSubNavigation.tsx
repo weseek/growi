@@ -8,18 +8,18 @@ import {
   EditorMode, useEditorMode,
 } from '~/stores/ui';
 
+import { TagLabelsSkelton } from '../Page/TagLabels';
 import PagePathNav from '../PagePathNav';
 import { Skelton } from '../Skelton';
 
 import DrawerToggler from './DrawerToggler';
 
-import TagLabelsStyles from '../Page/TagLabels.module.scss';
 import AuthorInfoStyles from './AuthorInfo.module.scss';
 import styles from './GrowiSubNavigation.module.scss';
 
 const TagLabels = dynamic(() => import('../Page/TagLabels'), {
   ssr: false,
-  loading: () => <Skelton additionalClass={`${TagLabelsStyles['grw-tag-labels-skelton']} py-1`} />,
+  loading: () => <TagLabelsSkelton />,
 });
 const AuthorInfo = dynamic(() => import('./AuthorInfo'), {
   ssr: false,
