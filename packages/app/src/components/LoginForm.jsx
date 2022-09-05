@@ -291,37 +291,39 @@ class LoginForm extends React.Component {
     const isSomeExternalAuthEnabled = true;
 
     return (
-      <div className="noLogin-dialog mx-auto" id="noLogin-dialog">
-        <div className="row mx-0">
-          <div className="col-12">
-            <ReactCardFlip isFlipped={this.state.isRegistering} flipDirection="horizontal" cardZIndex="3">
-              <div className="front">
-                {isLocalOrLdapStrategiesEnabled && this.renderLocalOrLdapLoginForm()}
-                {isSomeExternalAuthEnabled && this.renderExternalAuthLoginForm()}
-                {isLocalOrLdapStrategiesEnabled && isPasswordResetEnabled && (
-                  <div className="text-right mb-2">
-                    <a href="/forgot-password" className="d-block link-switch">
-                      <i className="icon-key"></i> {t('forgot_password.forgot_password')}
-                    </a>
-                  </div>
-                )}
-                {isRegistrationEnabled && (
-                  <div className="text-right mb-2">
-                    <a href="#register" id="register" className="link-switch" onClick={this.switchForm}>
-                      <i className="ti ti-check-box"></i> {t('Sign up is here')}
-                    </a>
-                  </div>
-                )}
-              </div>
-              <div className="back">
-                {isRegistrationEnabled && this.renderRegisterForm()}
-              </div>
-            </ReactCardFlip>
+      <div className="col-md-12">
+        <div className="noLogin-dialog mx-auto" id="noLogin-dialog">
+          <div className="row mx-0">
+            <div className="col-12">
+              <ReactCardFlip isFlipped={this.state.isRegistering} flipDirection="horizontal" cardZIndex="3">
+                <div className="front">
+                  {isLocalOrLdapStrategiesEnabled && this.renderLocalOrLdapLoginForm()}
+                  {isSomeExternalAuthEnabled && this.renderExternalAuthLoginForm()}
+                  {isLocalOrLdapStrategiesEnabled && isPasswordResetEnabled && (
+                    <div className="text-right mb-2">
+                      <a href="/forgot-password" className="d-block link-switch">
+                        <i className="icon-key"></i> {t('forgot_password.forgot_password')}
+                      </a>
+                    </div>
+                  )}
+                  {isRegistrationEnabled && (
+                    <div className="text-right mb-2">
+                      <a href="#register" id="register" className="link-switch" onClick={this.switchForm}>
+                        <i className="ti ti-check-box"></i> {t('Sign up is here')}
+                      </a>
+                    </div>
+                  )}
+                </div>
+                <div className="back">
+                  {isRegistrationEnabled && this.renderRegisterForm()}
+                </div>
+              </ReactCardFlip>
+            </div>
           </div>
+          <a href="https://growi.org" className="link-growi-org pl-3">
+            <span className="growi">GROWI</span>.<span className="org">ORG</span>
+          </a>
         </div>
-        <a href="https://growi.org" className="link-growi-org pl-3">
-          <span className="growi">GROWI</span>.<span className="org">ORG</span>
-        </a>
       </div>
     );
   }

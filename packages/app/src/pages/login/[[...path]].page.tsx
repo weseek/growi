@@ -1,8 +1,6 @@
 import React from 'react';
 
-import { isClient } from '^/../core/src';
 import { NextPage, GetServerSideProps, GetServerSidePropsContext } from 'next';
-import { useTranslation } from 'next-i18next';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import dynamic from 'next/dynamic';
 import { useRouter } from 'next/router';
@@ -27,10 +25,9 @@ type Props = CommonProps & {
 
 const LoginPage: NextPage<Props> = (props: Props) => {
 
-  // const { t } = useTranslation('login');
   const router = useRouter();
   const { path } = router.query;
-  const pagePathKeys: string[] = Array.isArray(path) ? path : ['home'];
+  const pagePathKeys: string[] = Array.isArray(path) ? path : ['login'];
 
   useCsrfToken(props.csrfToken);
   useCurrentPathname(props.currentPathname);
@@ -38,12 +35,12 @@ const LoginPage: NextPage<Props> = (props: Props) => {
   const loginPagesMap = {
     login: {
       component: <LoginForm
-        objOfIsExternalAuthEnableds={props.enabledStrategies}
         isLocalStrategySetup={true}
         isLdapStrategySetup={true}
+        objOfIsExternalAuthEnableds={props.enabledStrategies}
         isRegistrationEnabled={true}
-        registrationWhiteList={props.registrationWhiteList}
         isPasswordResetEnabled={true}
+        registrationWhiteList={props.registrationWhiteList}
       />,
       classNames: ['login-page'],
     },
