@@ -21,10 +21,11 @@ import {
   useCurrentSidebarContents, useCurrentProductNavWidth,
 } from '~/stores/ui';
 
-
 import {
   CommonProps, getNextI18NextConfig, getServerSideCommonProps, useCustomTitle,
 } from './utils/commons';
+
+import styles from './_private-legacy-pages.page.module.scss';
 
 type Props = CommonProps & {
   currentUser: IUser,
@@ -77,7 +78,7 @@ const PrivateLegacyPage: NextPage<Props> = (props: Props) => {
         {renderScriptTagByName('highlight-addons')}
         */}
       </Head>
-      <div className="on-search">
+      <div className={`${styles['on-search']}`}>
         <BasicLayout title={useCustomTitle(props, 'GROWI')}>
 
           <div id="grw-fav-sticky-trigger" className="sticky-top"></div>

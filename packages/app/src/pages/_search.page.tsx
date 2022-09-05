@@ -28,6 +28,8 @@ import {
   CommonProps, getNextI18NextConfig, getServerSideCommonProps, useCustomTitle,
 } from './utils/commons';
 
+import styles from './_search.page.module.scss';
+
 type Props = CommonProps & {
   currentUser: IUser,
 
@@ -87,7 +89,7 @@ const SearchResultPage: NextPage<Props> = (props: Props) => {
         {renderScriptTagByName('highlight-addons')}
         */}
       </Head>
-      <div className="on-search">
+      <div className={`${styles['on-search']}`}>
         <BasicLayout title={useCustomTitle(props, 'GROWI')} className={classNames.join(' ')}>
 
           <div id="grw-fav-sticky-trigger" className="sticky-top"></div>
