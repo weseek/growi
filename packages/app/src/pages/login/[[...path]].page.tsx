@@ -37,7 +37,14 @@ const LoginPage: NextPage<Props> = (props: Props) => {
 
   const loginPagesMap = {
     login: {
-      component: <LoginForm />,
+      component: <LoginForm
+        objOfIsExternalAuthEnableds={props.enabledStrategies}
+        isLocalStrategySetup={true}
+        isLdapStrategySetup={true}
+        isRegistrationEnabled={true}
+        registrationWhiteList={props.registrationWhiteList}
+        isPasswordResetEnabled={true}
+      />,
       classNames: ['login-page'],
     },
     invited: {
