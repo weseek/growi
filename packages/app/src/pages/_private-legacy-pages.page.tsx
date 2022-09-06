@@ -25,7 +25,7 @@ import {
   CommonProps, getNextI18NextConfig, getServerSideCommonProps, useCustomTitle,
 } from './utils/commons';
 
-import styles from './_private-legacy-pages.page.module.scss';
+import styles from './SearchResultLayout.module.scss';
 
 type Props = CommonProps & {
   currentUser: IUser,
