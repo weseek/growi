@@ -100,13 +100,15 @@ const PageEditor = React.memo((props: Props): JSX.Element => {
   const { data: isTextlintEnabled } = useIsTextlintEnabled();
   const { data: isIndentSizeForced } = useIsIndentSizeForced();
   const { data: indentSize, mutate: mutateCurrentIndentSize } = useCurrentIndentSize();
-  const { mutate: mutateIsEnabledUnsavedWarning } = useIsEnabledUnsavedWarning();
+  const { data: isEnabledUnsavedWarning, mutate: mutateIsEnabledUnsavedWarning } = useIsEnabledUnsavedWarning();
   const { data: isUploadableFile } = useIsUploadableFile();
   const { data: isUploadableImage } = useIsUploadableImage();
 
   const { data: rendererOptions } = usePreviewOptions();
 
-  const [markdown, setMarkdown] = useState<string>('');
+  const initialValue = currentPage?.revision?.body;
+
+  const [markdown, setMarkdown] = useState<string>(initialValue ?? '');
 
   const slackChannels = useMemo(() => (slackChannelsData ? slackChannelsData.toString() : ''), []);
 
@@ -420,13 +422,15 @@ const PageEditor = React.memo((props: Props): JSX.Element => {
     };
   }, []);
 
-  // Displays an alert if there is a difference with pageContainer's markdown
-  // useEffect(() => {
-  //   // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-  //   if (pageContainer.state.markdown! !== markdown) {
-  //     mutateIsEnabledUnsavedWarning(true);
-  //   }
-  // }, [editorContainer, markdown, mutateIsEnabledUnsavedWarning, pageContainer.state.markdown]);
+  // Displays an alert if there is a difference with original markdown body
+  useEffect(() => {
+    if (initialValue == null || isEnabledUnsavedWarning) {
+      return;
+    }
+    if (initialValue !== markdown) {
+      mutateIsEnabledUnsavedWarning(true);
+    }
+  }, [initialValue, isEnabledUnsavedWarning, markdown, mutateIsEnabledUnsavedWarning]);
 
   // Detect indent size from contents (only when users are allowed to change it)
   // useEffect(() => {
@@ -449,8 +453,6 @@ const PageEditor = React.memo((props: Props): JSX.Element => {
   }
 
   const isUploadable = isUploadableImage || isUploadableFile;
-
-  const initialValue = currentPage?.revision?.body;
 
   return (
     <div className="d-flex flex-wrap">
