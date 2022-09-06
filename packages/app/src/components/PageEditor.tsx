@@ -146,7 +146,8 @@ const PageEditor = React.memo((props: Props): JSX.Element => {
       }
     }
 
-  }, [currentPage?.revision?._id, currentPagePath, currentPathname, grantData, isSlackEnabled, markdown, pageId, pageTags, slackChannels]);
+  // eslint-disable-next-line max-len
+  }, [currentRevisionId, currentPagePath, currentPathname, grantData, isSlackEnabled, markdown, mutateIsEnabledUnsavedWarning, pageId, pageTags, slackChannels]);
 
   const saveAndReturnToViewHandler = useCallback(async(opts?: {overwriteScopesOfDescendants: boolean}) => {
     if (editorMode !== EditorMode.Editor) {
@@ -225,7 +226,6 @@ const PageEditor = React.memo((props: Props): JSX.Element => {
     finally {
       editorRef.current.terminateUploadingState();
     }
-  // }, [editorMode, mutateGrant, pageContainer]);
   }, [currentPagePath, mutateGrant, pageId]);
 
 
