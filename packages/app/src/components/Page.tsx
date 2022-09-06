@@ -258,9 +258,13 @@ export const Page = (props) => {
   // }, []);
 
   if (currentPage == null || editorMode == null || isGuestUser == null || rendererOptions == null) {
-    logger.warn('Some of materials are missing.', {
-      currentPage: currentPage?._id, editorMode, isGuestUser, rendererOptions,
-    });
+    const entries = Object.entries({
+      currentPage, editorMode, isGuestUser, rendererOptions,
+    })
+      .map(([key, value]) => [key, value == null ? 'null' : undefined])
+      .filter(([, value]) => value != null);
+
+    logger.warn('Some of materials are missing.', Object.fromEntries(entries));
     return null;
   }
 
