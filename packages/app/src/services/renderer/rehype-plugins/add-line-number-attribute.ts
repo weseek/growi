@@ -8,9 +8,14 @@ export const addLineNumberAttribute: Plugin = () => {
   return (tree) => {
     visit(tree, 'element', (node: Element) => {
       if (REGEXP_TARGET_TAGNAMES.test(node.tagName as string)) {
-        if (node.properties != null) {
-          node.properties['data-line'] = node.position?.start.line;
-        }
+        const properties = node.properties ?? {};
+
+        // add class
+        properties.className = [properties.className as string ?? '', 'has-data-line'];
+        // add attribute
+        properties['data-line'] = node.position?.start.line;
+
+        node.properties = properties;
       }
     });
   };
