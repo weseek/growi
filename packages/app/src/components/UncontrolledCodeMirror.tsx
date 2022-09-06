@@ -2,8 +2,17 @@ import React, {
   useCallback, useRef, MutableRefObject,
 } from 'react';
 
-import { Editor } from 'codemirror';
+import { commands, Editor } from 'codemirror';
 import { ICodeMirror, UnControlled as CodeMirror } from 'react-codemirror2';
+
+// set save handler
+// CommandActions in @types/codemirror does not include 'save' but actualy exists
+// https://codemirror.net/5/doc/manual.html#commands
+(commands as any).save = (instance) => {
+  if (instance.codeMirrorEditor != null) {
+    instance.codeMirrorEditor.dispatchSave();
+  }
+};
 
 window.CodeMirror = require('codemirror');
 require('codemirror/addon/display/placeholder');

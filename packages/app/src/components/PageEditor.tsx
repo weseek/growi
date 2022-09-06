@@ -31,10 +31,7 @@ import loggerFactory from '~/utils/logger';
 import Editor from './PageEditor/Editor';
 import Preview from './PageEditor/Preview';
 import scrollSyncHelper from './PageEditor/ScrollSyncHelper';
-// import { withUnstatedContainers } from './UnstatedUtils';
 
-
-// TODO: remove this when omitting unstated is completed
 
 const logger = loggerFactory('growi:PageEditor');
 
@@ -394,19 +391,21 @@ const PageEditor = React.memo((props: Props): JSX.Element => {
     }
   }, [editorMode]);
 
+  // Unnecessary code. Delete after PageEditor and PageEditorByHackmd implementation has completed. -- 2022.09.06 Yuki Takei
+  //
   // set handler to update editor value
-  useEffect(() => {
-    const handler = (markdown) => {
-      if (editorRef.current != null) {
-        editorRef.current.setValue(markdown);
-      }
-    };
-    globalEmitter.on('updateEditorValue', handler);
+  // useEffect(() => {
+  //   const handler = (markdown) => {
+  //     if (editorRef.current != null) {
+  //       editorRef.current.setValue(markdown);
+  //     }
+  //   };
+  //   globalEmitter.on('updateEditorValue', handler);
 
-    return function cleanup() {
-      globalEmitter.removeListener('updateEditorValue', handler);
-    };
-  }, []);
+  //   return function cleanup() {
+  //     globalEmitter.removeListener('updateEditorValue', handler);
+  //   };
+  // }, []);
 
   // Displays an alert if there is a difference with original markdown body
   useEffect(() => {
