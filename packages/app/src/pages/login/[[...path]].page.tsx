@@ -1,5 +1,6 @@
 import React from 'react';
 
+import { IUserHasId } from '@growi/core';
 import { NextPage, GetServerSideProps, GetServerSidePropsContext } from 'next';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import dynamic from 'next/dynamic';
@@ -8,10 +9,11 @@ import { useRouter } from 'next/router';
 import { NoLoginLayout } from '~/components/Layout/NoLoginLayout';
 import { CrowiRequest } from '~/interfaces/crowi-request';
 
-import { useCsrfToken, useCurrentPathname } from '../../stores/context';
+import { useCsrfToken, useCurrentPathname, useCurrentUser } from '../../stores/context';
 import {
   CommonProps, getServerSideCommonProps, useCustomTitle, getNextI18NextConfig,
 } from '../utils/commons';
+
 
 const LoginForm = dynamic(() => import('~/components/LoginForm'), { ssr: false });
 const InvitedForm = dynamic(() => import('~/components/Login/InvitedForm').then(mod => mod.InvitedForm), { ssr: false });
@@ -31,6 +33,7 @@ const LoginPage: NextPage<Props> = (props: Props) => {
 
   useCsrfToken(props.csrfToken);
   useCurrentPathname(props.currentPathname);
+  useCurrentUser(props.currentUser);
 
   const loginPagesMap = {
     login: {
@@ -105,6 +108,8 @@ async function injectNextI18NextConfigurations(context: GetServerSidePropsContex
 }
 
 export const getServerSideProps: GetServerSideProps = async(context: GetServerSidePropsContext) => {
+  const req = context.req as CrowiRequest<IUserHasId & any>;
+  const { user } = req;
   const result = await getServerSideCommonProps(context);
 
   // check for presence
@@ -112,8 +117,11 @@ export const getServerSideProps: GetServerSideProps = async(context: GetServerSi
   if (!('props' in result)) {
     throw new Error('invalid getSSP result');
   }
-
   const props: Props = result.props as Props;
+
+  if (user != null) {
+    props.currentUser = user.toObject();
+  }
 
   injectServerConfigurations(context, props);
   injectEnabledStrategies(context, props);
