@@ -11,7 +11,7 @@ export const addLineNumberAttribute: Plugin = () => {
         const properties = node.properties ?? {};
 
         // add class
-        properties.className = [properties.className as string ?? '', 'has-data-line'];
+        properties.className = [properties.className?.toString() ?? '', 'has-data-line'];
         // add attribute
         properties['data-line'] = node.position?.start.line;
 
