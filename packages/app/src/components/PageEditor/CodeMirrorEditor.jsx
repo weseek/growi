@@ -20,10 +20,10 @@ import CommentMentionHelper from './CommentMentionHelper';
 import EditorIcon from './EditorIcon';
 import EmojiPicker from './EmojiPicker';
 import EmojiPickerHelper from './EmojiPickerHelper';
-// import GridEditModal from './GridEditModal';
+import GridEditModal from './GridEditModal';
 import geu from './GridEditorUtil';
 // import HandsontableModal from './HandsontableModal';
-// import LinkEditModal from './LinkEditModal';
+import LinkEditModal from './LinkEditModal';
 import mdu from './MarkdownDrawioUtil';
 import markdownLinkUtil from './MarkdownLinkUtil';
 import markdownListUtil from './MarkdownListUtil';
@@ -791,11 +791,11 @@ class CodeMirrorEditor extends AbstractEditor {
   }
 
   showGridEditorHandler() {
-    // this.gridEditModal.current.show(geu.getGridHtml(this.getCodeMirror()));
+    this.gridEditModal.current.show(geu.getGridHtml(this.getCodeMirror()));
   }
 
   showLinkEditHandler() {
-    // this.linkEditModal.current.show(markdownLinkUtil.getMarkdownLink(this.getCodeMirror()));
+    this.linkEditModal.current.show(markdownLinkUtil.getMarkdownLink(this.getCodeMirror()));
   }
 
   showHandsonTableHandler() {
@@ -1056,14 +1056,15 @@ class CodeMirrorEditor extends AbstractEditor {
         { this.renderCheatsheetOverlay() }
         { this.renderEmojiPicker() }
 
-        {/* <GridEditModal
+        <GridEditModal
           ref={this.gridEditModal}
           onSave={(grid) => { return geu.replaceGridWithHtmlWithEditor(this.getCodeMirror(), grid) }}
-        /> */}
-        {/* <LinkEditModal
+        />
+        <LinkEditModal
           ref={this.linkEditModal}
           onSave={(linkText) => { return markdownLinkUtil.replaceFocusedMarkdownLinkWithEditor(this.getCodeMirror(), linkText) }}
         />
+        {/*
         <HandsontableModal
           ref={this.handsontableModal}
           onSave={(table) => { return mtu.replaceFocusedMarkdownTableWithEditor(this.getCodeMirror(), table) }}

@@ -24,6 +24,8 @@ import SearchTypeahead from '../SearchTypeahead';
 
 import Preview from './Preview';
 
+import styles from './LinkEditPreview.module.scss';
+
 
 class LinkEditModal extends React.PureComponent {
 
@@ -302,13 +304,13 @@ class LinkEditModal extends React.PureComponent {
                 autoFocus
               />
               <div className="d-none d-sm-block input-group-append">
-                <button type="button" id="preview-btn" className="btn btn-info btn-page-preview">
+                <button type="button" id="preview-btn" className={`btn btn-info btn-page-preview ${styles['btn-page-preview']}`}>
                   <PagePreviewIcon />
                 </button>
                 <Popover trigger="focus" placement="right" isOpen={this.state.isPreviewOpen} target="preview-btn" toggle={this.toggleIsPreviewOpen}>
                   <PopoverBody>
                     {this.state.markdown != null && pagePath != null
-                    && <div className="linkedit-preview">
+                    && <div className={`linkedit-preview ${styles['linkedit-preview']}`}>
                       <Preview markdown={this.state.markdown} pagePath={pagePath} />
                     </div>
                     }
