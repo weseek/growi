@@ -79,7 +79,7 @@
 }
 
 // style to apply when displaying search page
-.on-search {
+.on-search :global {
   // set sidebar height shown in search page
   $search-page-sidebar-height: calc(100vh - (var.$grw-navbar-height + var.$grw-navbar-border-width));
 
