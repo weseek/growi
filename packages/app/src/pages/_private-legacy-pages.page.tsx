@@ -21,10 +21,11 @@ import {
   useCurrentSidebarContents, useCurrentProductNavWidth,
 } from '~/stores/ui';
 
-
 import {
   CommonProps, getNextI18NextConfig, getServerSideCommonProps, useCustomTitle,
 } from './utils/commons';
+
+const SearchResultLayout = dynamic(() => import('~/components/Layout/SearchResultLayout'), { ssr: false });
 
 type Props = CommonProps & {
   currentUser: IUser,
@@ -77,19 +78,12 @@ const PrivateLegacyPage: NextPage<Props> = (props: Props) => {
         {renderScriptTagByName('highlight-addons')}
         */}
       </Head>
-      <div className="on-search">
-        <BasicLayout title={useCustomTitle(props, 'GROWI')}>
 
-          <div id="grw-fav-sticky-trigger" className="sticky-top"></div>
-          <div id="main" className="main search-page mt-0">
-
-            <div id="private-regacy-pages">
-              <PrivateLegacyPages />
-            </div>
-
-          </div>
-        </BasicLayout>
-      </div>
+      <SearchResultLayout title={useCustomTitle(props, 'GROWI')}>
+        <div id="private-regacy-pages">
+          <PrivateLegacyPages />
+        </div>
+      </SearchResultLayout>
     </>
   );
 };
