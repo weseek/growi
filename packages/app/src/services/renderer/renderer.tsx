@@ -245,7 +245,9 @@ export type RendererOptions = Omit<ReactMarkdownOptions, 'remarkPlugins' | 'rehy
 const commonSanitizeOption: SanitizeOption = deepmerge(
   sanitizeDefaultSchema,
   {
+    tagNames: ['svg', 'path'],
     attributes: {
+      path: ['d'],
       '*': ['class', 'className', 'style'],
     },
   },
@@ -450,14 +452,14 @@ export const generatePreviewOptions = (pagePath: string, config: RendererConfig)
     lsxGrowiPlugin.sanitizeOption,
     addLineNumberAttribute.sanitizeOption,
   );
-  rehypePlugins.push([sanitize, sanitizeOption]);
+  // rehypePlugins.push([sanitize, sanitizeOption]);
 
   // add components
   if (components != null) {
     components.lsx = props => <Lsx {...props} />;
   }
 
-  verifySanitizePlugin(options);
+  // verifySanitizePlugin(options);
   return options;
 };
 
