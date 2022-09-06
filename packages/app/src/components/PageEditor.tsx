@@ -324,6 +324,14 @@ const PageEditor = React.memo((props: Props): JSX.Element => {
   const scrollEditorByPreviewScrollWithThrottle = useMemo(() => throttle(20, scrollEditorByPreviewScroll), [scrollEditorByPreviewScroll]);
 
 
+  // initialize
+  useEffect(() => {
+    if (initialValue != null) {
+      setMarkdown(initialValue);
+      mutateIsEnabledUnsavedWarning(false);
+    }
+  }, [initialValue, mutateIsEnabledUnsavedWarning]);
+
   // initial caret line
   useEffect(() => {
     if (editorRef.current != null) {
