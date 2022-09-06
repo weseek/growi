@@ -211,7 +211,7 @@ context('Tag Oprations', () =>{
     cy.getByTestid('search-result-list').should('be.visible');
     cy.getByTestid('search-result-content').should('be.visible');
     cy.get('#wiki').should('be.visible');
-    cy.screenshot(`${ssPrefix}1-click-tag-name`, {capture: 'viewport'});
+    cy.screenshot(`${ssPrefix}1-click-tag-name`, {capture: 'viewport', blackout:['#wiki > p:eq(0) > a > img']});
     cy.getByTestid('search-result-list').within(() => {
       cy.getByTestid('open-page-item-control-btn').first().click({force: true});
     })
@@ -243,7 +243,8 @@ context('Tag Oprations', () =>{
     cy.getByTestid('search-result-base').should('be.visible');
     cy.getByTestid('search-result-list').should('be.visible');
     cy.getByTestid('search-result-content').should('be.visible');
-    cy.screenshot(`${ssPrefix}1-click-tag-name`, {capture: 'viewport'});
+    cy.get('#wiki').should('be.visible');
+    cy.screenshot(`${ssPrefix}1-click-tag-name`, {capture: 'viewport', blackout: ['#wiki > p:eq(0) > a > img']});
 
     cy.getByTestid('search-result-list').within(() => {
       cy.get('.list-group-item').each(($row) => {
@@ -254,7 +255,8 @@ context('Tag Oprations', () =>{
         }
       });
     });
-    cy.screenshot(`${ssPrefix}2-click-three-dots-menu`, {capture: 'viewport'});
+    cy.get('#wiki').should('be.visible');
+    cy.screenshot(`${ssPrefix}2-click-three-dots-menu`, {capture: 'viewport', blackout:['#wiki > p:eq(0) > a > img']});
 
     cy.getByTestid('search-result-list').within(() => {
       cy.get('.list-group-item').each(($row) => {
@@ -275,7 +277,7 @@ context('Tag Oprations', () =>{
     });
 
     cy.visit(`/${newPageName}`);
-    cy.screenshot(`${ssPrefix}4-new-page-name-applied`, {capture: 'viewport'});
+    cy.screenshot(`${ssPrefix}4-new-page-name-applied`, {capture: 'viewport', blackout: ['#wiki > p:eq(0) > a > img']});
   });
 
 });
