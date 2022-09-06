@@ -117,7 +117,7 @@ export const getServerSideProps: GetServerSideProps = async(context: GetServerSi
 
   injectServerConfigurations(context, props);
   injectEnabledStrategies(context, props);
-  await injectNextI18NextConfigurations(context, props, ['login']);
+  await injectNextI18NextConfigurations(context, props, ['translation']);
 
   return { props };
 };

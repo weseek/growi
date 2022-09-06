@@ -186,7 +186,7 @@ class LoginForm extends React.Component {
               <div className="input-group" id="input-group-username">
                 <div className="input-group-prepend">
                   <span className="input-group-text">
-                    <i className="icon-user">aaa</i>
+                    <i className="icon-user"></i>
                   </span>
                 </div>
                 <input

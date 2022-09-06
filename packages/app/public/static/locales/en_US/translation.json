@@ -676,8 +676,8 @@
     "Setup": "Setup"
   },
   "invited": {
-    "invited_discription_heading": "Create Account",
-    "invited_discription": "Create an your account with the invited email address"
+    "discription_heading": "Create Account",
+    "discription": "Create an your account with the invited email address"
   },
   "export_bulk": {
     "failed_to_export": "Failed to export",

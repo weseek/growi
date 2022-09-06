@@ -667,8 +667,8 @@
     "Setup": "セットアップ"
   },
   "invited": {
-    "invited_discription_heading": "アカウント作成",
-    "invited_discription": "招待を受け取ったメールアドレスでアカウントを作成します"
+    "discription_heading": "アカウント作成",
+    "discription": "招待を受け取ったメールアドレスでアカウントを作成します"
   },
   "export_bulk": {
     "failed_to_export": "ページのエクスポートに失敗しました",
