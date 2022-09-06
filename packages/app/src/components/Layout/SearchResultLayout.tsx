@@ -13,10 +13,12 @@ type Props = {
 const SearchResultLayout = ({
   children, title, className,
 }: Props): JSX.Element => {
-  const classNames: string[] = ['wrapper'];
+
+  const classNames: string[] = [];
   if (className != null) {
     classNames.push(className);
   }
+
   return (
     <div className={`${commonStyles['on-search']}`}>
       <BasicLayout title={title} className={classNames.join(' ')}>
