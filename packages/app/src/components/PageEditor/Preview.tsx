@@ -12,7 +12,6 @@ type Props = {
   rendererOptions: RendererOptions,
   markdown?: string,
   pagePath?: string | null,
-  renderMathJaxOnInit?: boolean,
   onScroll?: (scrollTop: number) => void,
 }
 

@@ -199,30 +199,6 @@ const ConfigurationDropdown = memo(({ onConfirmEnableTextlint }: ConfigurationDr
     );
   }, [editorSettings, update, t]);
 
-  const renderRealtimeMathJaxMenuItem = useCallback(() => {
-    if (editorSettings == null) {
-      return <></>;
-    }
-
-    const isActive = editorSettings.renderMathJaxInRealtime;
-
-    const iconClasses = ['text-info'];
-    if (isActive) {
-      iconClasses.push('ti-check');
-    }
-    const iconClassName = iconClasses.join(' ');
-
-    return (
-      <DropdownItem toggle={false} onClick={() => update({ renderMathJaxInRealtime: !isActive })}>
-        <div className="d-flex justify-content-between">
-          <span className="icon-container"><img src="/images/icons/fx.svg" width="14px" alt="fx"></img></span>
-          <span className="menuitem-label">MathJax Rendering</span>
-          <span className="icon-container"><i className={iconClassName}></i></span>
-        </div>
-      </DropdownItem>
-    );
-  }, [editorSettings, update]);
-
   const renderRealtimeDrawioMenuItem = useCallback(() => {
     if (editorSettings == null) {
       return <></>;
@@ -324,7 +300,6 @@ const ConfigurationDropdown = memo(({ onConfirmEnableTextlint }: ConfigurationDr
 
         <DropdownMenu>
           {renderActiveLineMenuItem()}
-          {renderRealtimeMathJaxMenuItem()}
           {renderRealtimeDrawioMenuItem()}
           {renderMarkdownTableAutoFormattingMenuItem()}
           {renderIsTextlintEnabledMenuItem()}

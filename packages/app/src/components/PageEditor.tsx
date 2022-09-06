@@ -419,7 +419,6 @@ const PageEditor = React.memo((): JSX.Element => {
           rendererOptions={rendererOptions}
           markdown={markdownToPreview}
           pagePath={currentPagePath}
-          renderMathJaxOnInit={false}
           onScroll={offset => scrollEditorByPreviewScrollWithThrottle(offset)}
         />
       </div>
