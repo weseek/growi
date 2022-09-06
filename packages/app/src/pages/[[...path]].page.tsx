@@ -129,6 +129,7 @@ type Props = CommonProps & {
   pageWithMeta: IPageToShowRevisionWithMeta,
   // pageUser?: any,
   redirectFrom?: string;
+  identicalPagePathname?: string;
 
   // shareLinkId?: string;
   isLatestRevision?: boolean
@@ -247,7 +248,7 @@ const GrowiPage: NextPage<Props> = (props: Props) => {
   useIsTrashPage(_isTrashPage(pageWithMeta?.data.path ?? ''));
   useIsUserPage(isUserPage(pageWithMeta?.data.path ?? ''));
   useIsNotCreatable(props.isForbidden || !isCreatablePage(pageWithMeta?.data.path ?? '')); // TODO: need to include props.isIdentical
-  useCurrentPagePath(pageWithMeta?.data.path);
+  useCurrentPagePath(props.isIdenticalPathPage ? props.identicalPagePathname : pageWithMeta?.data.path);
   useCurrentPathname(props.currentPathname);
   useEditingMarkdown(pageWithMeta?.data.revision?.body);
   const { data: grantData } = useSWRxIsGrantNormalized(pageId);
@@ -462,7 +463,7 @@ async function injectRoutingInformation(context: GetServerSidePropsContext, prop
   const page = props.pageWithMeta?.data;
 
   if (props.isIdenticalPathPage) {
-    // TBD
+    props.identicalPagePathname = currentPathname;
   }
   else if (page == null) {
     props.isNotFound = true;
