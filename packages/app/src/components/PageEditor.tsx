@@ -116,33 +116,58 @@ const PageEditor = React.memo((props: Props): JSX.Element => {
     setMarkdownWithDebounce(value);
   }, [setMarkdownWithDebounce]);
 
-
-  const saveWithShortcut = useCallback(async() => {
-    if (grantData == null) {
-      return;
+  const save = useCallback(async(opts?: {overwriteScopesOfDescendants: boolean}) => {
+    if (grantData == null || isSlackEnabled == null || currentPathname == null) {
+      logger.error('Some materials to save are invalid', { grantData, isSlackEnabled, currentPathname });
+      throw new Error('Some materials to save are invalid');
     }
 
-    const optionsToSave = getOptionsToSave(
-      isSlackEnabled ?? false, slackChannels,
-      grantData.grant, grantData.grantedGroup?.id, grantData.grantedGroup?.name,
-      pageTags || [],
+    const grant = grantData.grant || PageGrant.GRANT_PUBLIC;
+    const grantedGroup = grantData?.grantedGroup;
+
+    const optionsToSave = Object.assign(
+      getOptionsToSave(isSlackEnabled, slackChannels, grant || 1, grantedGroup?.id, grantedGroup?.name, pageTags || []),
+      { ...opts },
     );
 
     try {
-      // disable unsaved warning
-      mutateIsEnabledUnsavedWarning(false);
-
-      // eslint-disable-next-line no-unused-vars
-      // const { tags } = await pageContainer.save(markdown, editorMode, optionsToSave);
-      logger.debug('success to save');
-
-      // pageContainer.showSuccessToastr();
+      await saveOrUpdate(optionsToSave, { pageId, path: currentPagePath || currentPathname, revisionId: currentPage?.revision?._id }, markdown);
     }
     catch (error) {
       logger.error('failed to save', error);
       // pageContainer.showErrorToastr(error);
+      if (error.code === 'conflict') {
+        // pageContainer.setState({
+        //   remoteRevisionId: error.data.revisionId,
+        //   remoteRevisionBody: error.data.revisionBody,
+        //   remoteRevisionUpdateAt: error.data.createdAt,
+        //   lastUpdateUser: error.data.user,
+        // });
+      }
     }
-  }, [grantData, isSlackEnabled, slackChannels, pageTags, mutateIsEnabledUnsavedWarning]);
+
+  }, [currentPage?.revision?._id, currentPagePath, currentPathname, grantData, isSlackEnabled, markdown, pageId, pageTags, slackChannels]);
+
+  const saveAndReturnToViewHandler = useCallback(async(opts?: {overwriteScopesOfDescendants: boolean}) => {
+    if (editorMode !== EditorMode.Editor) {
+      return;
+    }
+
+    await save(opts);
+    await mutateCurrentPage();
+    mutateEditorMode(EditorMode.View);
+  }, [editorMode, save, mutateCurrentPage, mutateEditorMode]);
+
+  const saveWithShortcut = useCallback(async() => {
+    if (editorMode !== EditorMode.Editor) {
+      return;
+    }
+
+    await save();
+
+    // TODO: show toastr
+    // pageContainer.showErrorToastr(error);
+  }, [editorMode, save]);
 
 
   /**
@@ -320,63 +345,6 @@ const PageEditor = React.memo((props: Props): JSX.Element => {
       globalEmitter.removeListener('setCaretLine', handler);
     };
   }, []);
-
-
-  const saveAndReturnToViewHandler = useCallback(async(opts?: {overwriteScopesOfDescendants: boolean}) => {
-    if (editorMode !== EditorMode.Editor) {
-      return;
-    }
-
-    const grant = grantData?.grant || PageGrant.GRANT_PUBLIC;
-    const grantedGroup = grantData?.grantedGroup;
-
-    if (isSlackEnabled == null || currentPathname == null) {
-      return;
-    }
-
-    let optionsToSave;
-
-    const currentOptionsToSave = getOptionsToSave(isSlackEnabled, slackChannels, grant || 1, grantedGroup?.id, grantedGroup?.name, pageTags || []);
-
-    if (opts != null) {
-      optionsToSave = Object.assign(currentOptionsToSave, {
-        ...opts,
-      });
-    }
-    else {
-      optionsToSave = currentOptionsToSave;
-    }
-
-    try {
-      await saveOrUpdate(optionsToSave, { pageId, path: currentPagePath || currentPathname, revisionId: currentPage?.revision?._id }, markdown);
-      await mutateCurrentPage();
-      mutateEditorMode(EditorMode.View);
-    }
-    catch (error) {
-      logger.error('failed to save', error);
-      // pageContainer.showErrorToastr(error);
-      if (error.code === 'conflict') {
-        // pageContainer.setState({
-        //   remoteRevisionId: error.data.revisionId,
-        //   remoteRevisionBody: error.data.revisionBody,
-        //   remoteRevisionUpdateAt: error.data.createdAt,
-        //   lastUpdateUser: error.data.user,
-        // });
-      }
-    }
-  }, [currentPage?.revision?._id,
-      currentPagePath,
-      currentPathname,
-      grantData?.grant,
-      grantData?.grantedGroup,
-      isSlackEnabled,
-      markdown,
-      pageId,
-      pageTags,
-      slackChannels,
-      mutateCurrentPage,
-      editorMode, mutateEditorMode,
-  ]);
 
   // set handler to save and return to View
   useEffect(() => {
