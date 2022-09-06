@@ -27,7 +27,7 @@ import { NextLink } from '~/components/ReactMarkdownComponents/NextLink';
 import { RendererConfig } from '~/interfaces/services/renderer';
 import loggerFactory from '~/utils/logger';
 
-import { addClass } from './rehype-plugins/add-class';
+import * as addClass from './rehype-plugins/add-class';
 import * as addLineNumberAttribute from './rehype-plugins/add-line-number-attribute';
 import { relativeLinks } from './rehype-plugins/relative-links';
 import { relativeLinksByPukiwikiLikeLinker } from './rehype-plugins/relative-links-by-pukiwiki-like-linker';
@@ -290,7 +290,7 @@ const generateCommonOptions = (pagePath: string|undefined, config: RendererConfi
       [relativeLinksByPukiwikiLikeLinker, { pagePath }],
       [relativeLinks, { pagePath }],
       raw,
-      [addClass, {
+      [addClass.rehypePlugin, {
         table: 'table table-bordered',
       }],
     ],
