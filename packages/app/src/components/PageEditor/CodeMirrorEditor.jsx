@@ -1,7 +1,7 @@
 import React from 'react';
 
 import { createValidator } from '@growi/codemirror-textlint';
-import * as codemirror from 'codemirror';
+import { commands } from 'codemirror';
 import { JSHINT } from 'jshint';
 import * as loadCssSync from 'load-css-file';
 import PropTypes from 'prop-types';
@@ -39,14 +39,6 @@ import styles from './CodeMirrorEditor.module.scss';
 window.JSHINT = JSHINT;
 window.kuromojin = { dicPath: '/static/dict' };
 
-// set save handler
-codemirror.commands.save = (instance) => {
-  if (instance.codeMirrorEditor != null) {
-    instance.codeMirrorEditor.dispatchSave();
-  }
-};
-// set CodeMirror instance as 'CodeMirror' so that CDN addons can reference
-window.CodeMirror = require('codemirror');
 require('codemirror/addon/display/placeholder');
 require('codemirror/addon/edit/matchbrackets');
 require('codemirror/addon/edit/matchtags');
@@ -107,7 +99,6 @@ class CodeMirrorEditor extends AbstractEditor {
     this.logger = loggerFactory('growi:PageEditor:CodeMirrorEditor');
 
     this.state = {
-      value: this.props.value,
       isGfmMode: this.props.isGfmMode,
       isLoadingKeymap: false,
       isSimpleCheatsheetShown: this.props.isGfmMode && this.props.value.length === 0,
@@ -252,7 +243,6 @@ class CodeMirrorEditor extends AbstractEditor {
    * @inheritDoc
    */
   setValue(newValue) {
-    this.setState({ value: newValue });
     this.getCodeMirror().getDoc().setValue(newValue);
   }
 
@@ -508,7 +498,7 @@ class CodeMirrorEditor extends AbstractEditor {
    */
   handleEnterKey() {
     if (!this.state.isGfmMode) {
-      codemirror.commands.newlineAndIndent(this.getCodeMirror());
+      commands.newlineAndIndent(this.getCodeMirror());
       return;
     }
 
@@ -1002,8 +992,6 @@ class CodeMirrorEditor extends AbstractEditor {
           //   editor.on('paste', this.pasteHandler);
           //   editor.on('scrollCursorIntoView', this.scrollCursorIntoViewHandler);
           // }}
-          // temporary set props.value
-          // value={this.state.value}
           value={this.props.value}
           options={{
             indentUnit: this.props.indentSize,

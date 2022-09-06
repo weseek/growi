@@ -99,7 +99,7 @@ export const SidebarNav: FC<Props> = (props: Props) => {
       </div>
       <div className="grw-sidebar-nav-secondary-container">
         {isAdmin && <SecondaryItem label="Admin" iconName="settings" href="/admin" />}
-        <SecondaryItem label="Draft" iconName="file_copy" href="/me/drafts" />
+        {/* <SecondaryItem label="Draft" iconName="file_copy" href="/me/drafts" /> */}
         <SecondaryItem label="Help" iconName="help" href="https://docs.growi.org" isBlank />
         <SecondaryItem label="Trash" iconName="delete" href="/trash" />
       </div>

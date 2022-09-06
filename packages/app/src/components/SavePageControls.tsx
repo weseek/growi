@@ -48,14 +48,14 @@ export const SavePageControls = (props: Props): JSX.Element | null => {
     mutateIsEnabledUnsavedWarning(false);
 
     // save
-    (window as CustomWindow).globalEmitter.emit('saveAndReload');
+    (window as CustomWindow).globalEmitter.emit('saveAndReturnToView');
   }, [mutateIsEnabledUnsavedWarning]);
 
   const saveAndOverwriteScopesOfDescendants = useCallback(() => {
     // disable unsaved warning
     mutateIsEnabledUnsavedWarning(false);
     // save
-    (window as CustomWindow).globalEmitter.emit('saveAndReload', { overwriteScopesOfDescendants: true });
+    (window as CustomWindow).globalEmitter.emit('saveAndReturnToView', { overwriteScopesOfDescendants: true });
   }, [mutateIsEnabledUnsavedWarning]);
 
 
