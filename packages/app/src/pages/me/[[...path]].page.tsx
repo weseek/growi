@@ -49,7 +49,7 @@ type Props = CommonProps & {
 };
 
 const PersonalSettings = dynamic(() => import('~/components/Me/PersonalSettings'), { ssr: false });
-const MyDraftList = dynamic(() => import('~/components/MyDraftList/MyDraftList'), { ssr: false });
+// const MyDraftList = dynamic(() => import('~/components/MyDraftList/MyDraftList'), { ssr: false });
 const InAppNotificationPage = dynamic(
   () => import('~/components/InAppNotification/InAppNotificationPage').then(mod => mod.InAppNotificationPage), { ssr: false },
 );
@@ -66,10 +66,10 @@ const MePage: NextPage<Props> = (props: Props) => {
         title: t('User Settings'),
         component: <PersonalSettings />,
       },
-      drafts: {
-        title: t('My Drafts'),
-        component: <MyDraftList />,
-      },
+      // drafts: {
+      //   title: t('My Drafts'),
+      //   component: <MyDraftList />,
+      // },
       'all-in-app-notifications': {
         title: t('in_app_notification.notification_list'),
         component: <InAppNotificationPage />,

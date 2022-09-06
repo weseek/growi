@@ -9,9 +9,6 @@ import detectIndent from 'detect-indent';
 import { throttle, debounce } from 'throttle-debounce';
 
 import { saveAndReload } from '~/client/services/page-operation';
-
-// import EditorContainer from '~/client/services/EditorContainer';
-// import PageContainer from '~/client/services/PageContainer';
 import { apiGet, apiPostForm } from '~/client/util/apiv1-client';
 import { getOptionsToSave } from '~/client/util/editor';
 import {
@@ -55,7 +52,6 @@ type EditorRef = {
 
 type Props = {
   // pageContainer: PageContainer,
-  // editorContainer: EditorContainer,
 
   // isEditable: boolean,
 
@@ -82,7 +78,7 @@ let isOriginOfScrollSyncPreview = false;
 
 const PageEditor = React.memo((props: Props): JSX.Element => {
   // const {
-  //   pageContainer, editorContainer,
+  //   pageContainer,
   // } = props;
 
   const { data: pageId } = useCurrentPageId();
@@ -117,17 +113,10 @@ const PageEditor = React.memo((props: Props): JSX.Element => {
   const previewRef = useRef<HTMLDivElement>(null);
 
   const setMarkdownWithDebounce = useMemo(() => debounce(50, throttle(100, value => setMarkdown(value))), []);
-  // const saveDraftWithDebounce = useMemo(() => debounce(800, () => {
-  //   editorContainer.saveDraft(pageContainer.state.path, markdown);
-  // }), [editorContainer, markdown, pageContainer.state.path]);
+
 
   const markdownChangedHandler = useCallback((value: string): void => {
     setMarkdownWithDebounce(value);
-    // only when the first time to edit
-    // if (!pageContainer.state.revisionId) {
-    //   saveDraftWithDebounce();
-    // }
-  // }, [pageContainer.state.revisionId, saveDraftWithDebounce, setMarkdownWithDebounce]);
   }, [setMarkdownWithDebounce]);
 
 
@@ -151,9 +140,6 @@ const PageEditor = React.memo((props: Props): JSX.Element => {
       logger.debug('success to save');
 
       // pageContainer.showSuccessToastr();
-
-      // update state of EditorContainer
-      // editorContainer.setState({ tags });
     }
     catch (error) {
       logger.error('failed to save', error);
@@ -492,10 +478,4 @@ const PageEditor = React.memo((props: Props): JSX.Element => {
 });
 PageEditor.displayName = 'PageEditor';
 
-/**
-   * Wrapper component for using unstated
-   */
-// const PageEditorWrapper = withUnstatedContainers(PageEditor, [PageContainer, EditorContainer]);
-
-// export default PageEditorWrapper;
 export default PageEditor;

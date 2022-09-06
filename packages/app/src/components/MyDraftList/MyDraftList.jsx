@@ -105,7 +105,7 @@ class MyDraftList extends React.Component {
   }
 
   clearDraft(path) {
-    this.props.editorContainer.clearDraft(path);
+    // this.props.editorContainer.clearDraft(path);
 
     this.setState((prevState) => {
       return {
@@ -116,7 +116,7 @@ class MyDraftList extends React.Component {
   }
 
   clearAllDrafts() {
-    this.props.editorContainer.clearAllDrafts();
+    // this.props.editorContainer.clearAllDrafts();
 
     this.setState({
       drafts: [],
@@ -175,7 +175,7 @@ MyDraftList.propTypes = {
   t: PropTypes.func.isRequired, // i18next
 
   pageContainer: PropTypes.instanceOf(PageContainer).isRequired,
-  editorContainer: PropTypes.instanceOf(EditorContainer).isRequired,
+  // editorContainer: PropTypes.instanceOf(EditorContainer).isRequired,
 };
 
 const MyDraftListWrapperFC = (props) => {
@@ -183,9 +183,11 @@ const MyDraftListWrapperFC = (props) => {
   return <MyDraftList t={t} {...props} />;
 };
 
+export default MyDraftListWrapperFC;
+
 /**
  * Wrapper component for using unstated
  */
-const MyDraftListWrapper = withUnstatedContainers(MyDraftListWrapperFC, [PageContainer, EditorContainer]);
+// const MyDraftListWrapper = withUnstatedContainers(MyDraftListWrapperFC, [PageContainer, EditorContainer]);
 
-export default MyDraftListWrapper;
+// export default MyDraftListWrapper;

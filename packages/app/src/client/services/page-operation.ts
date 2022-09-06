@@ -168,11 +168,6 @@ export const saveAndReload = async(optionsToSave: OptionsToSave, pageInfo: PageI
     res = await updatePage(pageId, revisionId, markdown, options);
   }
 
-  /*
-  * TODO: implement Draft function => https://redmine.weseek.co.jp/issues/103246
-  */
-  // const editorContainer = this.appContainer.getContainer('EditorContainer');
-  // editorContainer.clearDraft(path);
   window.location.href = path;
 
   return res;
