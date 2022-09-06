@@ -28,7 +28,7 @@ import {
   CommonProps, getNextI18NextConfig, getServerSideCommonProps, useCustomTitle,
 } from './utils/commons';
 
-import styles from './SearchResultLayout.module.scss';
+const SearchResultLayout = dynamic(() => import('~/components/Layout/SearchResultLayout'), { ssr: false });
 
 type Props = CommonProps & {
   currentUser: IUser,
@@ -89,20 +89,14 @@ const SearchResultPage: NextPage<Props> = (props: Props) => {
         {renderScriptTagByName('highlight-addons')}
         */}
       </Head>
-      <div className={`${styles['on-search']}`}>
-        <BasicLayout title={useCustomTitle(props, 'GROWI')} className={classNames.join(' ')}>
 
-          <div id="grw-fav-sticky-trigger" className="sticky-top"></div>
-          <div id="main" className="main search-page mt-0">
+      <SearchResultLayout title={useCustomTitle(props, 'GROWI')} className={classNames.join(' ')}>
+        <div id="search-page">
+          <SearchPage />
+        </div>
+      </SearchResultLayout>
 
-            <div id="search-page">
-              <SearchPage />
-            </div>
-
-          </div>
-          <PutbackPageModal />
-        </BasicLayout>
-      </div>
+      <PutbackPageModal />
     </>
   );
 };
