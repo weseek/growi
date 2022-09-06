@@ -246,7 +246,7 @@ const commonSanitizeOption: SanitizeOption = deepmerge(
   sanitizeDefaultSchema,
   {
     attributes: {
-      '*': ['class', 'className'],
+      '*': ['class', 'className', 'style'],
     },
   },
 );
