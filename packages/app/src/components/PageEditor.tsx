@@ -8,7 +8,7 @@ import { envUtils, PageGrant } from '@growi/core';
 import detectIndent from 'detect-indent';
 import { throttle, debounce } from 'throttle-debounce';
 
-import { saveAndReload } from '~/client/services/page-operation';
+import { saveOrUpdate } from '~/client/services/page-operation';
 import { apiGet, apiPostForm } from '~/client/util/apiv1-client';
 import { getOptionsToSave } from '~/client/util/editor';
 import {
@@ -81,12 +81,12 @@ const PageEditor = React.memo((props: Props): JSX.Element => {
   const { data: pageId } = useCurrentPageId();
   const { data: currentPagePath } = useCurrentPagePath();
   const { data: currentPathname } = useCurrentPathname();
-  const { data: currentPage } = useSWRxCurrentPage();
+  const { data: currentPage, mutate: mutateCurrentPage } = useSWRxCurrentPage();
   const { data: grantData, mutate: mutateGrant } = useSelectedGrant();
   const { data: pageTags } = usePageTagsForEditors(pageId);
 
   const { data: isEditable } = useIsEditable();
-  const { data: editorMode } = useEditorMode();
+  const { data: editorMode, mutate: mutateEditorMode } = useEditorMode();
   const { data: isMobile } = useIsMobile();
   const { data: isSlackEnabled } = useIsSlackEnabled();
   const { data: slackChannelsData } = useSWRxSlackChannels(currentPagePath);
@@ -322,7 +322,7 @@ const PageEditor = React.memo((props: Props): JSX.Element => {
   }, []);
 
 
-  const saveAndReloadHandler = useCallback(async(opts?: {overwriteScopesOfDescendants: boolean}) => {
+  const saveAndReturnToViewHandler = useCallback(async(opts?: {overwriteScopesOfDescendants: boolean}) => {
     if (editorMode !== EditorMode.Editor) {
       return;
     }
@@ -348,7 +348,9 @@ const PageEditor = React.memo((props: Props): JSX.Element => {
     }
 
     try {
-      await saveAndReload(optionsToSave, { pageId, path: currentPagePath || currentPathname, revisionId: currentPage?.revision?._id }, markdown);
+      await saveOrUpdate(optionsToSave, { pageId, path: currentPagePath || currentPathname, revisionId: currentPage?.revision?._id }, markdown);
+      await mutateCurrentPage();
+      mutateEditorMode(EditorMode.View);
     }
     catch (error) {
       logger.error('failed to save', error);
@@ -365,7 +367,6 @@ const PageEditor = React.memo((props: Props): JSX.Element => {
   }, [currentPage?.revision?._id,
       currentPagePath,
       currentPathname,
-      editorMode,
       grantData?.grant,
       grantData?.grantedGroup,
       isSlackEnabled,
@@ -373,16 +374,18 @@ const PageEditor = React.memo((props: Props): JSX.Element => {
       pageId,
       pageTags,
       slackChannels,
+      mutateCurrentPage,
+      editorMode, mutateEditorMode,
   ]);
 
-  // set handler to save and reload Page
+  // set handler to save and return to View
   useEffect(() => {
-    globalEmitter.on('saveAndReload', saveAndReloadHandler);
+    globalEmitter.on('saveAndReturnToView', saveAndReturnToViewHandler);
 
     return function cleanup() {
-      globalEmitter.removeListener('saveAndReload', saveAndReloadHandler);
+      globalEmitter.removeListener('saveAndReturnToView', saveAndReturnToViewHandler);
     };
-  }, [saveAndReloadHandler]);
+  }, [saveAndReturnToViewHandler]);
 
   // set handler to focus
   useEffect(() => {

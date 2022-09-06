@@ -97,8 +97,8 @@ export const resumeRenameOperation = async(pageId: string): Promise<void> => {
   await apiv3Post('/pages/resume-rename', { pageId });
 };
 
-
-export const createPage = async(pagePath: string, markdown: string, tmpParams: OptionsToSave) => {
+// TODO: define return type
+const createPage = async(pagePath: string, markdown: string, tmpParams: OptionsToSave) => {
   // clone
   const params = Object.assign(tmpParams, {
     path: pagePath,
@@ -111,7 +111,8 @@ export const createPage = async(pagePath: string, markdown: string, tmpParams: O
   return { page, tags, revision };
 };
 
-export const updatePage = async(pageId: string, revisionId: string, markdown: string, tmpParams: OptionsToSave) => {
+// TODO: define return type
+const updatePage = async(pageId: string, revisionId: string, markdown: string, tmpParams: OptionsToSave) => {
   // clone
   const params = Object.assign(tmpParams, {
     page_id: pageId,
@@ -132,8 +133,8 @@ type PageInfo= {
   revisionId: Nullable<string>,
 }
 
-
-export const saveAndReload = async(optionsToSave: OptionsToSave, pageInfo: PageInfo, markdown: string) => {
+// TODO: define return type
+export const saveOrUpdate = async(optionsToSave: OptionsToSave, pageInfo: PageInfo, markdown: string) => {
   const { path, pageId, revisionId } = pageInfo;
 
   const options = Object.assign({}, optionsToSave);
@@ -167,8 +168,6 @@ export const saveAndReload = async(optionsToSave: OptionsToSave, pageInfo: PageI
     }
     res = await updatePage(pageId, revisionId, markdown, options);
   }
-
-  window.location.href = path;
 
   return res;
 };
