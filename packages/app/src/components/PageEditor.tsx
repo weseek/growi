@@ -133,6 +133,7 @@ const PageEditor = React.memo((props: Props): JSX.Element => {
 
     try {
       await saveOrUpdate(optionsToSave, { pageId, path: currentPagePath || currentPathname, revisionId: currentRevisionId }, markdown);
+      await mutateCurrentPage();
       mutateIsEnabledUnsavedWarning(false);
     }
     catch (error) {
@@ -149,7 +150,7 @@ const PageEditor = React.memo((props: Props): JSX.Element => {
     }
 
   // eslint-disable-next-line max-len
-  }, [currentRevisionId, currentPagePath, currentPathname, grantData, isSlackEnabled, markdown, mutateIsEnabledUnsavedWarning, pageId, pageTags, slackChannels]);
+  }, [grantData, isSlackEnabled, currentPathname, slackChannels, pageTags, pageId, currentPagePath, currentRevisionId, markdown, mutateCurrentPage, mutateIsEnabledUnsavedWarning]);
 
   const saveAndReturnToViewHandler = useCallback(async(opts?: {overwriteScopesOfDescendants: boolean}) => {
     if (editorMode !== EditorMode.Editor) {
@@ -157,9 +158,8 @@ const PageEditor = React.memo((props: Props): JSX.Element => {
     }
 
     await save(opts);
-    await mutateCurrentPage();
     mutateEditorMode(EditorMode.View);
-  }, [editorMode, save, mutateCurrentPage, mutateEditorMode]);
+  }, [editorMode, save, mutateEditorMode]);
 
   const saveWithShortcut = useCallback(async() => {
     if (editorMode !== EditorMode.Editor) {
