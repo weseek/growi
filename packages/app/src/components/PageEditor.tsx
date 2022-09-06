@@ -99,6 +99,7 @@ const PageEditor = React.memo((props: Props): JSX.Element => {
 
   const { data: rendererOptions } = usePreviewOptions();
 
+  const currentRevisionId = currentPage?.revision?._id;
   const initialValue = currentPage?.revision?.body;
 
   const [markdown, setMarkdown] = useState<string>(initialValue ?? '');
@@ -131,7 +132,8 @@ const PageEditor = React.memo((props: Props): JSX.Element => {
     );
 
     try {
-      await saveOrUpdate(optionsToSave, { pageId, path: currentPagePath || currentPathname, revisionId: currentPage?.revision?._id }, markdown);
+      await saveOrUpdate(optionsToSave, { pageId, path: currentPagePath || currentPathname, revisionId: currentRevisionId }, markdown);
+      mutateIsEnabledUnsavedWarning(false);
     }
     catch (error) {
       logger.error('failed to save', error);
