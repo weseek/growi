@@ -265,5 +265,3 @@ export const SearchPage = (): JSX.Element => {
     />
   );
 };
-
-SearchPage.displayName = 'SearchPage';
