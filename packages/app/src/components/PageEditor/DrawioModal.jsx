@@ -171,12 +171,11 @@ DrawioModal.propTypes = {
   drawioUri:  PropTypes.string,
 };
 
-const DrawioModalFc = (props) => {
+const DrawioModalFc = React.forwardRef((props, ref) => {
   const { growiHydratedEnv } = useGrowiHydratedEnv();
 
-
-  return <DrawioModal onSave={props.onSave} drawioUri={growiHydratedEnv?.DRAWIO_URI} />;
-};
+  return <DrawioModal onSave={props.onSave} drawioUri={growiHydratedEnv?.DRAWIO_URI} ref={ref} />;
+});
 
 
 export default DrawioModalFc;
