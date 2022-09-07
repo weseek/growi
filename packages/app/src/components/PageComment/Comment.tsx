@@ -8,6 +8,7 @@ import { UncontrolledTooltip } from 'reactstrap';
 
 import { RendererOptions } from '~/services/renderer/renderer';
 import { useCurrentUser } from '~/stores/context';
+import { useSWRxCurrentPage } from '~/stores/page';
 
 import { ICommentHasId } from '../../interfaces/comment';
 import FormattedDistanceDate from '../FormattedDistanceDate';
@@ -29,20 +30,19 @@ type CommentProps = {
   deleteBtnClicked: (comment: ICommentHasId) => void,
   onComment: () => void,
   rendererOptions: RendererOptions,
-  currentPagePath: string,
-  currentRevisionId: string,
-  currentRevisionCreatedAt: Date,
+  currentRevisionId?: string,
+  currentRevisionCreatedAt?: Date,
 }
 
 export const Comment = (props: CommentProps): JSX.Element => {
 
   const {
     comment, isReadOnly, deleteBtnClicked, onComment, rendererOptions,
-    currentPagePath, currentRevisionId, currentRevisionCreatedAt,
   } = props;
 
   const { t } = useTranslation();
   const { data: currentUser } = useCurrentUser();
+  const { data: currentPage } = useSWRxCurrentPage();
 
   const [markdown, setMarkdown] = useState('');
   const [isReEdit, setIsReEdit] = useState(false);
@@ -53,6 +53,8 @@ export const Comment = (props: CommentProps): JSX.Element => {
   const createdAt = new Date(comment.createdAt);
   const updatedAt = new Date(comment.updatedAt);
   const isEdited = createdAt < updatedAt;
+  const currentRevisionId = currentPage?.revision._id;
+  const currentRevisionCreatedAt = currentPage?.revision.createdAt;
 
   useEffect(() => {
     setMarkdown(comment.comment);
@@ -76,14 +78,17 @@ export const Comment = (props: CommentProps): JSX.Element => {
   const getRootClassName = (comment: ICommentHasId) => {
     let className = 'page-comment flex-column';
 
-    if (comment.revision === currentRevisionId) {
-      className += ' page-comment-current';
-    }
-    else if (comment.createdAt.getTime() > currentRevisionCreatedAt.getTime()) {
-      className += ' page-comment-newer';
-    }
-    else {
-      className += ' page-comment-older';
+    // Conditional branch when called from SearchResultContext
+    if (currentRevisionId != null && currentRevisionCreatedAt != null) {
+      if (comment.revision === currentRevisionId) {
+        className += ' page-comment-current';
+      }
+      else if (comment.createdAt.getTime() > currentRevisionCreatedAt.getTime()) {
+        className += ' page-comment-newer';
+      }
+      else {
+        className += ' page-comment-older';
+      }
     }
 
     if (isCurrentUserEqualsToAuthor()) {
@@ -107,7 +112,6 @@ export const Comment = (props: CommentProps): JSX.Element => {
         rendererOptions={rendererOptions}
         markdown={markdown}
         additionalClassName="comment"
-        pagePath={currentPagePath}
       />
     );
   };

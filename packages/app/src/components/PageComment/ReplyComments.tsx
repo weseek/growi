@@ -19,16 +19,12 @@ type ReplycommentsProps = {
   deleteBtnClicked: (comment: ICommentHasId) => void,
   onComment: () => void,
   rendererOptions: RendererOptions,
-  currentPagePath: string,
-  currentRevisionId: string,
-  currentRevisionCreatedAt: Date,
 }
 
 export const ReplyComments = (props: ReplycommentsProps): JSX.Element => {
 
   const {
     isReadOnly, replyList, deleteBtnClicked, onComment, rendererOptions,
-    currentPagePath, currentRevisionId, currentRevisionCreatedAt,
   } = props;
 
   const { data: isAllReplyShown } = useIsAllReplyShown();
@@ -44,9 +40,6 @@ export const ReplyComments = (props: ReplycommentsProps): JSX.Element => {
           deleteBtnClicked={deleteBtnClicked}
           onComment={onComment}
           rendererOptions={rendererOptions}
-          currentPagePath={currentPagePath}
-          currentRevisionId={currentRevisionId}
-          currentRevisionCreatedAt={currentRevisionCreatedAt}
         />
       </div>
     );

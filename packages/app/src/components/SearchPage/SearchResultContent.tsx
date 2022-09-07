@@ -19,7 +19,6 @@ import { useDescendantsPageListForCurrentPathTermManager, usePageTreeTermManager
 import { useSearchResultOptions } from '~/stores/renderer';
 import { useFullTextSearchTermManager } from '~/stores/search';
 
-
 import { AdditionalMenuItemsRendererProps, ForceHideMenuItems } from '../Common/Dropdown/PageItemControl';
 import { GrowiSubNavigationProps } from '../Navbar/GrowiSubNavigation';
 import { SubNavButtonsProps } from '../Navbar/SubNavButtons';
@@ -223,10 +222,10 @@ export const SearchResultContent: FC<Props> = (props: Props) => {
           hideIfEmpty
         />
         <PageContentFooter
-          createdAt={new Date(pageWithMeta.data.createdAt)}
-          updatedAt={new Date(pageWithMeta.data.updatedAt)}
-          creator={pageWithMeta.data.creator}
-          revisionAuthor={pageWithMeta.data.lastUpdateUser}
+          createdAt={new Date(page.createdAt)}
+          updatedAt={new Date(page.updatedAt)}
+          creator={page.creator}
+          revisionAuthor={page.lastUpdateUser}
         />
       </div>
     </div>

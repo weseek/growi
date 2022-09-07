@@ -7,7 +7,6 @@ import { Button } from 'reactstrap';
 
 import { toastError } from '~/client/util/apiNotification';
 import { apiPost } from '~/client/util/apiv1-client';
-import { useCurrentPagePath } from '~/stores/context';
 import { useSWRxCurrentPage } from '~/stores/page';
 import { useCommentPreviewOptions } from '~/stores/renderer';
 
@@ -44,8 +43,6 @@ export const PageComment: FC<PageCommentProps> = memo((props:PageCommentProps): 
 
   const { data: comments, mutate } = useSWRxPageComment(pageId);
   const { data: rendererOptions } = useCommentPreviewOptions();
-  const { data: currentPage } = useSWRxCurrentPage();
-  const { data: currentPagePath } = useCurrentPagePath();
 
   const [commentToBeDeleted, setCommentToBeDeleted] = useState<ICommentHasId | null>(null);
   const [isDeleteConfirmModalShown, setIsDeleteConfirmModalShown] = useState<boolean>(false);
@@ -132,17 +129,13 @@ export const PageComment: FC<PageCommentProps> = memo((props:PageCommentProps): 
   let commentTitleClasses = 'border-bottom py-3 mb-3';
   commentTitleClasses = titleAlign != null ? `${commentTitleClasses} text-${titleAlign}` : `${commentTitleClasses} text-center`;
 
-  if (commentsFromOldest == null || commentsExceptReply == null || rendererOptions == null || currentPagePath == null || currentPage == null) {
-    if (hideIfEmpty && comments?.length === 0) {
+  if (commentsFromOldest == null || commentsExceptReply == null || rendererOptions == null) {
+    if (hideIfEmpty) {
       return <></>;
     }
     return (
       <PageCommentSkelton commentTitleClasses={commentTitleClasses}/>
     );
-  }
-
-  if (currentPage.revision == null) {
-    return <></>;
   }
 
   const generateCommentElement = (comment: ICommentHasId) => (
@@ -152,9 +145,6 @@ export const PageComment: FC<PageCommentProps> = memo((props:PageCommentProps): 
       deleteBtnClicked={onClickDeleteButton}
       onComment={mutate}
       rendererOptions={rendererOptions}
-      currentPagePath={currentPagePath}
-      currentRevisionId={currentPage.revision._id}
-      currentRevisionCreatedAt={currentPage.revision.createdAt}
     />
   );
 
@@ -165,9 +155,6 @@ export const PageComment: FC<PageCommentProps> = memo((props:PageCommentProps): 
       deleteBtnClicked={onClickDeleteButton}
       onComment={mutate}
       rendererOptions={rendererOptions}
-      currentPagePath={currentPagePath}
-      currentRevisionId={currentPage.revision._id}
-      currentRevisionCreatedAt={currentPage.revision.createdAt}
     />
   );
 
