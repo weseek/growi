@@ -9,7 +9,7 @@ import { useRouter } from 'next/router';
 import { NoLoginLayout } from '~/components/Layout/NoLoginLayout';
 import { CrowiRequest } from '~/interfaces/crowi-request';
 
-import { useCsrfToken, useCurrentPathname, useCurrentUser } from '../../stores/context';
+import { useCsrfToken, useCurrentPathname } from '../../stores/context';
 import {
   CommonProps, getServerSideCommonProps, useCustomTitle, getNextI18NextConfig,
 } from '../utils/commons';
@@ -34,7 +34,6 @@ const LoginPage: NextPage<Props> = (props: Props) => {
 
   useCsrfToken(props.csrfToken);
   useCurrentPathname(props.currentPathname);
-  useCurrentUser(props.currentUser);
 
   const loginPagesMap = {
     login: {
@@ -50,8 +49,9 @@ const LoginPage: NextPage<Props> = (props: Props) => {
     },
     invited: {
       component: <InvitedForm
-        username={props.invitedFormUsername}
-        name={props.invitedFormName}
+        currentUser={props.currentUser}
+        invitedFormUsername={props.invitedFormUsername}
+        invitedFormName={props.invitedFormName}
       />,
       classNames: ['invited-page'],
     },
