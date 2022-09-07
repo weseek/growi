@@ -331,7 +331,12 @@ const GrowiPage: NextPage<Props> = (props: Props) => {
               { (pageWithMeta != null && isUsersHomePage(pageWithMeta.data.path)) && (
                 <UsersHomePageFooter creatorId={pageWithMeta.data.creator._id}/>
               ) }
-              <PageContentFooter />
+              <PageContentFooter
+                createdAt={new Date(pageWithMeta.data.createdAt)}
+                updatedAt={new Date(pageWithMeta.data.updatedAt)}
+                creator={pageWithMeta.data.creator}
+                revisionAuthor={pageWithMeta.data.lastUpdateUser}
+              />
             </footer>
           )}
 

@@ -24,6 +24,12 @@ import { AdditionalMenuItemsRendererProps, ForceHideMenuItems } from '../Common/
 import { GrowiSubNavigationProps } from '../Navbar/GrowiSubNavigation';
 import { SubNavButtonsProps } from '../Navbar/SubNavButtons';
 
+const GrowiSubNavigation = dynamic<GrowiSubNavigationProps>(() => import('../Navbar/GrowiSubNavigation').then(mod => mod.GrowiSubNavigation), { ssr: false });
+const SubNavButtons = dynamic<SubNavButtonsProps>(() => import('../Navbar/SubNavButtons').then(mod => mod.SubNavButtons), { ssr: false });
+const RevisionLoader = dynamic(() => import('../Page/RevisionLoader'), { ssr: false });
+const PageComment = dynamic(() => import('../PageComment').then(mod => mod.PageComment), { ssr: false });
+const PageContentFooter = dynamic(() => import('../PageContentFooter').then(mod => mod.PageContentFooter), { ssr: false });
+
 
 type AdditionalMenuItemsProps = AdditionalMenuItemsRendererProps & {
   pageId: string,
@@ -77,11 +83,6 @@ const generateObserverCallback = (doScroll: ()=>void) => {
 };
 
 export const SearchResultContent: FC<Props> = (props: Props) => {
-  const GrowiSubNavigation = dynamic<GrowiSubNavigationProps>(() => import('../Navbar/GrowiSubNavigation').then(mod => mod.GrowiSubNavigation), { ssr: false });
-  const SubNavButtons = dynamic<SubNavButtonsProps>(() => import('../Navbar/SubNavButtons').then(mod => mod.SubNavButtons), { ssr: false });
-  const RevisionLoader = dynamic(() => import('../Page/RevisionLoader'), { ssr: false });
-  const PageComment = dynamic(() => import('../PageComment').then(mod => mod.PageComment), { ssr: false });
-  const PageContentFooter = dynamic(() => import('../PageContentFooter').then(mod => mod.PageContentFooter), { ssr: false });
 
   const scrollElementRef = useRef(null);
 
@@ -215,8 +216,18 @@ export const SearchResultContent: FC<Props> = (props: Props) => {
           revisionId={page.revision}
           highlightKeywords={highlightKeywords}
         />
-        <PageComment pageId={page._id} highlightKeywords={highlightKeywords} isReadOnly hideIfEmpty />
-        <PageContentFooter />
+        <PageComment
+          pageId={page._id}
+          highlightKeywords={highlightKeywords}
+          isReadOnly
+          hideIfEmpty
+        />
+        <PageContentFooter
+          createdAt={new Date(pageWithMeta.data.createdAt)}
+          updatedAt={new Date(pageWithMeta.data.updatedAt)}
+          creator={pageWithMeta.data.creator}
+          revisionAuthor={pageWithMeta.data.lastUpdateUser}
+        />
       </div>
     </div>
   );

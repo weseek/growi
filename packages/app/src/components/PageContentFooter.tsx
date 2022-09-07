@@ -1,8 +1,9 @@
 import React, { memo } from 'react';
 
+import { IUser, Ref } from '@growi/core';
 import dynamic from 'next/dynamic';
 
-import { useSWRxCurrentPage } from '~/stores/page';
+import { IUserHasId } from '~/interfaces/user';
 
 import { Skelton } from './Skelton';
 
@@ -11,20 +12,24 @@ import styles from './PageContentFooter.module.scss';
 const AuthorInfo = dynamic(() => import('./Navbar/AuthorInfo'),
   { ssr: false, loading: () => <Skelton additionalClass={`${styles['page-content-footer-skelton']} mb-3`} /> });
 
-export const PageContentFooter = memo((): JSX.Element => {
+type PageContentFooterProps = {
+  createdAt: Date,
+  updatedAt: Date,
+  creator: IUserHasId,
+  revisionAuthor: Ref<IUser>,
+}
 
-  const { data: page } = useSWRxCurrentPage();
-
-  if (page == null || page.revision == null) {
-    return <></>;
-  }
+export const PageContentFooter = memo((props: PageContentFooterProps): JSX.Element => {
+  const {
+    createdAt, updatedAt, creator, revisionAuthor,
+  } = props;
 
   return (
     <div className={`${styles['page-content-footer']} page-content-footer py-4 d-edit-none d-print-none}`}>
       <div className="grw-container-convertible">
         <div className="page-meta">
-          <AuthorInfo user={page.creator} date={page.createdAt} mode="create" locate="footer" />
-          <AuthorInfo user={page.revision.author} date={page.updatedAt} mode="update" locate="footer" />
+          <AuthorInfo user={creator} date={createdAt} mode="create" locate="footer" />
+          <AuthorInfo user={revisionAuthor} date={updatedAt} mode="update" locate="footer" />
         </div>
       </div>
     </div>
