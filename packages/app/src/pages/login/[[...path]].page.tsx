@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { IUserHasId } from '@growi/core';
+import { IUserHasId, IUser } from '@growi/core';
 import { NextPage, GetServerSideProps, GetServerSidePropsContext } from 'next';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import dynamic from 'next/dynamic';
@@ -14,15 +14,16 @@ import {
   CommonProps, getServerSideCommonProps, useCustomTitle, getNextI18NextConfig,
 } from '../utils/commons';
 
-
 const LoginForm = dynamic(() => import('~/components/LoginForm'), { ssr: false });
 const InvitedForm = dynamic(() => import('~/components/Login/InvitedForm').then(mod => mod.InvitedForm), { ssr: false });
 
 type Props = CommonProps & {
-  pageWithMetaStr: string,
   isMailerSetup: boolean,
   enabledStrategies: unknown,
   registrationWhiteList: string[],
+  currentUser: IUser,
+  invitedFormUsername?: string,
+  invitedFormName?: string,
 }
 
 const LoginPage: NextPage<Props> = (props: Props) => {
@@ -48,7 +49,10 @@ const LoginPage: NextPage<Props> = (props: Props) => {
       classNames: ['login-page'],
     },
     invited: {
-      component: <InvitedForm />,
+      component: <InvitedForm
+        username={props.invitedFormUsername}
+        name={props.invitedFormName}
+      />,
       classNames: ['invited-page'],
     },
   };
@@ -109,7 +113,7 @@ async function injectNextI18NextConfigurations(context: GetServerSidePropsContex
 
 export const getServerSideProps: GetServerSideProps = async(context: GetServerSidePropsContext) => {
   const req = context.req as CrowiRequest<IUserHasId & any>;
-  const { user } = req;
+  const { user, body: invitedForm } = req;
   const result = await getServerSideCommonProps(context);
 
   // check for presence
@@ -121,6 +125,12 @@ export const getServerSideProps: GetServerSideProps = async(context: GetServerSi
 
   if (user != null) {
     props.currentUser = user.toObject();
+  }
+  if (invitedForm.username != null) {
+    props.invitedFormUsername = req.body.invitedForm.username.toObject();
+  }
+  if (invitedForm.name != null) {
+    props.invitedFormName = req.body.invitedForm.name.toObject();
   }
 
   injectServerConfigurations(context, props);

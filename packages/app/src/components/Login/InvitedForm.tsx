@@ -1,69 +1,27 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 
 import { useTranslation, i18n } from 'next-i18next';
 
 import { i18n as i18nConfig } from '^/config/next-i18next.config';
 
-import { apiv3Get } from '~/client/util/apiv3-client';
-import { usePersonalSettings } from '~/stores/personal-settings';
-
 import { useCsrfToken, useCurrentUser } from '../../stores/context';
-// import { toastError, toastSuccess } from '../client/util/apiNotification';
-
 
 type InvitedFormProps = {
-  // csrfToken: string,
-  // isEmailAuthenticationEnabled: boolean,
-  username: string,
-  // isRegistering: boolean,
-  name: string,
-  // email: string,
-  // user: any,
-  // isMailerSetup: boolean,
-
-  // isLocalOrLdapStrategiesEnabled: boolean,
-  // isSomeExternalAuthEnabled: boolean,
-  // isPasswordResetEnabled: boolean,
-  // isRegistrationEnabled: boolean,
+  username?: string,
+  name?: string,
 }
 
 export const InvitedForm = (props: InvitedFormProps): JSX.Element => {
   const { t } = useTranslation();
   const { data: csrfToken } = useCsrfToken();
   const { data: user } = useCurrentUser();
-  const {
-    data: personalSettingsInfo, mutate: mutatePersonalSettings, sync, updateBasicInfo, error,
-  } = usePersonalSettings();
 
-  const {
-    username, name,
-  } = props;
+  const { username, name } = props;
 
   if (user == null) {
     return <></>;
   }
 
-  const submitHandler = async() => {
-    try {
-      await updateBasicInfo();
-      sync();
-      // toastSuccess(t('toaster.update_successed', { target: t('Basic Info') }));
-    }
-    catch (err) {
-      // toastError(err);
-    }
-  };
-
-  const changePersonalSettingsHandler = (updateData) => {
-    if (personalSettingsInfo == null) {
-      return;
-    }
-    mutatePersonalSettings({ ...personalSettingsInfo, ...updateData });
-  };
-
-  // TODO: check flow
-  // TODO: check noLoing-dialog
-  // TODO: Check loginForm[app:globalLang]
   return (
     <div className="noLogin-dialog p-3 mx-auto" id="noLogin-dialog">
       <p className="alert alert-success">
@@ -89,7 +47,9 @@ export const InvitedForm = (props: InvitedFormProps): JSX.Element => {
             <input type="hidden" name="loginForm[app:globalLang]" />
             <div className="dropdown-menu" aria-labelledby="dropdownLanguage">
               { i18nConfig.locales.map((locale) => {
+                if (i18n == null) { return }
                 const fixedT = i18n.getFixedT(locale);
+                i18n.loadLanguages(i18nConfig.locales);
 
                 return (
                   <button
@@ -97,26 +57,13 @@ export const InvitedForm = (props: InvitedFormProps): JSX.Element => {
                     data-testid={`dropdownLanguageMenu-${locale}`}
                     className="dropdown-item"
                     type="button"
-                    onClick={() => changePersonalSettingsHandler({ lang: locale })}
+                    onClick={() => { i18n?.changeLanguage(locale) }}
                   >
                     {fixedT('meta.display_name')}
                   </button>
                 );
               }) }
             </div>
-          </div>
-        </div>
-        <div className="row my-3">
-          <div className="offset-4 col-5">
-            <button
-              data-testid="grw-besic-info-settings-update-button"
-              type="button"
-              className="btn btn-primary"
-              onClick={submitHandler}
-              disabled={error != null}
-            >
-              {t('Update')}
-            </button>
           </div>
         </div>
         {/* Email Form */}
@@ -131,8 +78,8 @@ export const InvitedForm = (props: InvitedFormProps): JSX.Element => {
             className="form-control"
             disabled
             placeholder={t('Email')}
-            name="invitedForm[email]" // ?
-            defaultValue={user.email} // value = user.email
+            name="invitedForm[email]"
+            defaultValue={user.email}
             required
           />
         </div>
@@ -148,7 +95,7 @@ export const InvitedForm = (props: InvitedFormProps): JSX.Element => {
             className="form-control"
             placeholder={t('User ID')}
             name="invitedForm[username]"
-            defaultValue={username} // value =req.body.invitedForm.username
+            defaultValue={username}
             required
           />
         </div>
@@ -164,7 +111,7 @@ export const InvitedForm = (props: InvitedFormProps): JSX.Element => {
             className="form-control"
             placeholder={t('Name')}
             name="invitedForm[name]"
-            defaultValue={name} // value = req.body.invitedForm.name
+            defaultValue={name}
             required
           />
         </div>
