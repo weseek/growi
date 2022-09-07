@@ -29,7 +29,12 @@ export const Comments = (props: CommentsProps): JSX.Element => {
       <div className="container-lg">
         <div className="page-comments">
           <div id="page-comments-list" className="page-comments-list">
-            <PageComment pageId={pageId} isReadOnly={false} titleAlign="left" />
+            <PageComment
+              pageId={pageId}
+              isReadOnly={false}
+              titleAlign="left"
+              hideIfEmpty={false}
+            />
           </div>
           { !isDeleted && (
             <div id="page-comment-write">
