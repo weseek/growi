@@ -117,7 +117,6 @@ class DrawioModal extends React.PureComponent {
   }
 
   get drawioURL() {
-    // const { config } = this.props.appContainer;
     const { drawioUriEnv } = this.props;
 
     const drawioUri = drawioUriEnv || 'https://embed.diagrams.net/';
