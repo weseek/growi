@@ -127,10 +127,10 @@ export const getServerSideProps: GetServerSideProps = async(context: GetServerSi
     props.currentUser = user.toObject();
   }
   if (invitedForm.username != null) {
-    props.invitedFormUsername = req.body.invitedForm.username.toObject();
+    props.invitedFormUsername = req.body.invitedForm.username;
   }
   if (invitedForm.name != null) {
-    props.invitedFormName = req.body.invitedForm.name.toObject();
+    props.invitedFormName = req.body.invitedForm.name;
   }
 
   injectServerConfigurations(context, props);
