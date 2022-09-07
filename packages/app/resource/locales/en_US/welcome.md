@@ -1,6 +1,6 @@
 # :tada: Welcome to GROWI
 
-[![GitHub Releases](https://img.shields.io/github/release/weseek/growi.svg)](https://github.com/weseek/growi/releases/latest)
+[![GitHub Releases](https://img.shields.io/github/release/weseek/growi.svg)](https://github.com/weseek/growi/releases/tag/v5.1.2)
 [![MIT License](https://img.shields.io/badge/license-MIT-blue.svg?style=flat)](LICENSE)
 
 GROWI is a Wiki for Individuals and Corporations | A knowledge base tool.
