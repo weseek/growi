@@ -22,8 +22,8 @@ type Props = CommonProps & {
   enabledStrategies: unknown,
   registrationWhiteList: string[],
   currentUser: IUser,
-  invitedFormUsername?: string,
-  invitedFormName?: string,
+  invitedFormUsername: string,
+  invitedFormName: string,
 }
 
 const LoginPage: NextPage<Props> = (props: Props) => {
@@ -81,8 +81,12 @@ async function injectServerConfigurations(context: GetServerSidePropsContext, pr
   props.isMailerSetup = mailService.isMailerSetup;
   props.registrationWhiteList = configManager.getConfig('crowi', 'security:registrationWhiteList');
 
-  props.invitedFormUsername = invitedForm.username;
-  props.invitedFormName = invitedForm.name;
+  if (props.invitedFormUsername != null) {
+    props.invitedFormUsername = invitedForm.username;
+  }
+  if (props.invitedFormName != null) {
+    props.invitedFormName = invitedForm.name;
+  }
 }
 
 function injectEnabledStrategies(context: GetServerSidePropsContext, props: Props): void {

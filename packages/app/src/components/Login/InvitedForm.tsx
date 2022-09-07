@@ -5,8 +5,8 @@ import { useTranslation } from 'next-i18next';
 import { useCsrfToken, useCurrentUser } from '../../stores/context';
 
 type InvitedFormProps = {
-  invitedFormUsername?: string,
-  invitedFormName?: string,
+  invitedFormUsername: string,
+  invitedFormName: string,
 }
 
 export const InvitedForm = (props: InvitedFormProps): JSX.Element => {
