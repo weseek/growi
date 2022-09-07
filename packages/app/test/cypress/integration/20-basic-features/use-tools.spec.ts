@@ -165,7 +165,6 @@ context('Tag Oprations', () =>{
     cy.fixture("user-admin.json").then(user => {
       cy.login(user.username, user.password);
     });
-    cy.collapseSidebar(true)
   });
 
   it('Successfully add new tag', () => {
@@ -196,7 +195,7 @@ context('Tag Oprations', () =>{
 
     cy.get('#toast-container').invoke('attr','style','display:none');
     cy.get('.grw-taglabels-container > form > a').contains(tag).should('exist');
-
+    cy.collapseSidebar(true);
     cy.screenshot(`${ssPrefix}4-click-done`, {capture: 'viewport', blackout: ['[data-line="2"]:eq(0) > a > img', '[data-hide-in-vrt="true"]']});
 
   });
