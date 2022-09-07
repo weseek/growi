@@ -176,7 +176,7 @@ const DrawioModalFc = (props) => {
   const { growiHydratedEnv } = useGrowiHydratedEnv();
 
 
-  return <DrawioModal onSave={props.onSave} drawioUri={growiHydratedEnv?.drawioUri} />;
+  return <DrawioModal onSave={props.onSave} drawioUri={growiHydratedEnv?.DRAWIO_URI} />;
 };
 
 
