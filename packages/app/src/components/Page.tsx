@@ -26,13 +26,16 @@ import {
 import loggerFactory from '~/utils/logger';
 
 import RevisionRenderer from './Page/RevisionRenderer';
-import DrawioModal from './PageEditor/DrawioModal';
-
-
-// TODO: import dynamically
+import { DrawioModal } from './PageEditor/DrawioModal';
 // import MarkdownTable from '~/client/models/MarkdownTable';
 import mdu from './PageEditor/MarkdownDrawioUtil';
 import mtu from './PageEditor/MarkdownTableUtil';
+
+
+// TODO: import dynamically
+const GridEditModal = dynamic(() => import('./PageEditor/GridEditModal'), { ssr: false });
+// const HandsontableModal = dynamic(() => import('./PageEditor/HandsontableModal'), { ssr: false });
+const LinkEditModal = dynamic(() => import('./PageEditor/LinkEditModal'), { ssr: false });
 
 declare const globalEmitter: EventEmitter;
 
@@ -172,11 +175,6 @@ class PageSubstance extends React.Component<PageSubstanceProps> {
     const { path } = page;
     const { _id: revisionId, body: markdown } = page.revision;
 
-    // const DrawioModal = dynamic(() => import('./PageEditor/DrawioModal'), { ssr: false });
-    const GridEditModal = dynamic(() => import('./PageEditor/GridEditModal'), { ssr: false });
-    // const HandsontableModal = dynamic(() => import('./PageEditor/HandsontableModal'), { ssr: false });
-    const LinkEditModal = dynamic(() => import('./PageEditor/LinkEditModal'), { ssr: false });
-
     return (
       <div className={`mb-5 ${isMobile ? 'page-mobile' : ''}`}>
 
@@ -189,7 +187,10 @@ class PageSubstance extends React.Component<PageSubstanceProps> {
             <GridEditModal ref={this.gridEditModal} />
             <LinkEditModal ref={this.linkEditModal} />
             {/* <HandsontableModal ref={this.handsontableModal} onSave={this.saveHandlerForHandsontableModal} /> */}
-            <DrawioModal ref={this.drawioModal} onSave={this.saveHandlerForDrawioModal} />
+            <DrawioModal
+              ref={this.drawioModal}
+              onSave={this.saveHandlerForDrawioModal}
+            />
           </>
         )}
       </div>
