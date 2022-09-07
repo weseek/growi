@@ -1,8 +1,6 @@
 import React from 'react';
 
-import { useTranslation, i18n } from 'next-i18next';
-
-import { i18n as i18nConfig } from '^/config/next-i18next.config';
+import { useTranslation } from 'next-i18next';
 
 import { useCsrfToken, useCurrentUser } from '../../stores/context';
 
@@ -29,43 +27,6 @@ export const InvitedForm = (props: InvitedFormProps): JSX.Element => {
         <small>{ t('invited.discription') }</small>
       </p>
       <form role="form" action="/login/activateInvited" method="post" id="invited-form">
-        {/* Language Menu */}
-        <div className="dropdown mb-3">
-          <div className="d-flex dropdown-with-icon">
-            <i className="icon-bubbles border-0 rounded-0"></i>
-            <button
-              type="button"
-              className="btn btn-secondary dropdown-toggle text-right w-100 border-0 shadow-none"
-              id="dropdownLanguage"
-              data-testid="dropdownLanguage"
-              data-toggle="dropdown"
-              aria-haspopup="true"
-              aria-expanded="true"
-            >
-              <span className="float-left">{t('meta.display_name')}</span>
-            </button>
-            <input type="hidden" name="loginForm[app:globalLang]" />
-            <div className="dropdown-menu" aria-labelledby="dropdownLanguage">
-              { i18nConfig.locales.map((locale) => {
-                if (i18n == null) { return }
-                const fixedT = i18n.getFixedT(locale);
-                i18n.loadLanguages(i18nConfig.locales);
-
-                return (
-                  <button
-                    key={locale}
-                    data-testid={`dropdownLanguageMenu-${locale}`}
-                    className="dropdown-item"
-                    type="button"
-                    onClick={() => { i18n?.changeLanguage(locale) }}
-                  >
-                    {fixedT('meta.display_name')}
-                  </button>
-                );
-              }) }
-            </div>
-          </div>
-        </div>
         {/* Email Form */}
         <div className="input-group">
           <div className="input-group-prepend">
