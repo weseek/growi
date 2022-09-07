@@ -16,7 +16,7 @@ import { UncontrolledCodeMirror } from '../UncontrolledCodeMirror';
 
 import AbstractEditor from './AbstractEditor';
 import CommentMentionHelper from './CommentMentionHelper';
-// import DrawioModal from './DrawioModal';
+import DrawioModal from './DrawioModal';
 import EditorIcon from './EditorIcon';
 import EmojiPicker from './EmojiPicker';
 import EmojiPickerHelper from './EmojiPickerHelper';
@@ -229,14 +229,14 @@ class CodeMirrorEditor extends AbstractEditor {
   forceToFocus() {
     const editor = this.getCodeMirror();
     // use setInterval with reluctance -- 2018.01.11 Yuki Takei
-    const intervalId = setInterval(() => {
-      this.getCodeMirror().focus();
-      if (editor.hasFocus()) {
-        clearInterval(intervalId);
-        // refresh
-        editor.refresh();
-      }
-    }, 100);
+    // const intervalId = setInterval(() => {
+    //   this.getCodeMirror().focus();
+    //   if (editor.hasFocus()) {
+    //     clearInterval(intervalId);
+    //     // refresh
+    //     editor.refresh();
+    //   }
+    // }, 100);
   }
 
   /**
@@ -793,7 +793,7 @@ class CodeMirrorEditor extends AbstractEditor {
   }
 
   showDrawioHandler() {
-    // this.drawioModal.current.show(mdu.getMarkdownDrawioMxfile(this.getCodeMirror()));
+    this.drawioModal.current.show(mdu.getMarkdownDrawioMxfile(this.getCodeMirror()));
   }
 
 
@@ -1052,17 +1052,15 @@ class CodeMirrorEditor extends AbstractEditor {
           ref={this.linkEditModal}
           onSave={(linkText) => { return markdownLinkUtil.replaceFocusedMarkdownLinkWithEditor(this.getCodeMirror(), linkText) }}
         />
-        {/*
-        <HandsontableModal
+        {/* <HandsontableModal
           ref={this.handsontableModal}
           onSave={(table) => { return mtu.replaceFocusedMarkdownTableWithEditor(this.getCodeMirror(), table) }}
           autoFormatMarkdownTable={this.props.editorSettings.autoFormatMarkdownTable}
         /> */}
-        {/* <DrawioModal
+        <DrawioModal
           ref={this.drawioModal}
           onSave={this.onSaveForDrawio}
-        /> */}
-
+        />
       </div>
     );
   }

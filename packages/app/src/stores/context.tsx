@@ -6,7 +6,7 @@ import useSWRImmutable from 'swr/immutable';
 import { SupportedActionType } from '~/interfaces/activity';
 import { EditorConfig } from '~/interfaces/editor-settings';
 // import { CustomWindow } from '~/interfaces/global';
-import { RendererConfig } from '~/interfaces/services/renderer';
+import { GrowiHydratedEnv, RendererConfig } from '~/interfaces/services/renderer';
 import { GrowiThemes } from '~/interfaces/theme';
 import InterceptorManager from '~/services/interceptor-manager';
 
@@ -229,6 +229,10 @@ export const useIsLatestRevision = (initialData?: boolean): SWRResponse<boolean,
 
 export const useEditorConfig = (initialData?: EditorConfig): SWRResponse<EditorConfig, Error> => {
   return useStaticSWR<EditorConfig, Error>('editorConfig', initialData);
+};
+
+export const useGrowiHydratedEnv = (initialData?: GrowiHydratedEnv): SWRResponse<GrowiHydratedEnv, Error> => {
+  return useStaticSWR('growiHydratedEnv', initialData);
 };
 
 export const useRendererConfig = (initialData?: RendererConfig): SWRResponse<RendererConfig, any> => {

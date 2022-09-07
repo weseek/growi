@@ -8,6 +8,8 @@ import {
 } from 'reactstrap';
 
 import { getDiagramsNetLangCode } from '~/client/util/locale-utils';
+import { useGrowiHydratedEnv } from '~/stores/context';
+
 
 class DrawioModal extends React.PureComponent {
 
@@ -115,9 +117,10 @@ class DrawioModal extends React.PureComponent {
   }
 
   get drawioURL() {
-    const { config } = this.props.appContainer;
+    // const { config } = this.props.appContainer;
+    const { drawioUriEnv } = this.props;
 
-    const drawioUri = config.env.DRAWIO_URI || 'https://embed.diagrams.net/';
+    const drawioUri = drawioUriEnv || 'https://embed.diagrams.net/';
     const url = new URL(drawioUri);
 
     // refs: https://desk.draw.io/support/solutions/articles/16000042546-what-url-parameters-are-supported-
@@ -166,7 +169,15 @@ class DrawioModal extends React.PureComponent {
 
 DrawioModal.propTypes = {
   onSave: PropTypes.func,
+  drawioUri:  PropTypes.string,
+};
+
+const DrawioModalFc = (props) => {
+  const { growiHydratedEnv } = useGrowiHydratedEnv();
+
+
+  return <DrawioModal onSave={props.onSave} drawioUri={growiHydratedEnv?.drawioUri} />;
 };
 
 
-export default DrawioModal;
+export default DrawioModalFc;

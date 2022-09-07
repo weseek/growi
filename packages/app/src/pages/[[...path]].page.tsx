@@ -28,7 +28,7 @@ import { CrowiRequest } from '~/interfaces/crowi-request';
 // import { EditorMode, useEditorMode, useIsMobile } from '~/stores/ui';
 import { EditorConfig } from '~/interfaces/editor-settings';
 import { CustomWindow } from '~/interfaces/global';
-import { RendererConfig } from '~/interfaces/services/renderer';
+import { GrowiHydratedEnv, RendererConfig } from '~/interfaces/services/renderer';
 import { ISidebarConfig } from '~/interfaces/sidebar-config';
 import { IUserUISettings } from '~/interfaces/user-ui-settings';
 import { PageModel, PageDocument } from '~/server/models/page';
@@ -61,7 +61,7 @@ import {
   useHackmdUri,
   useIsAclEnabled, useIsUserPage, useIsNotCreatable,
   useCsrfToken, useIsSearchScopeChildrenAsDefault, useCurrentPageId, useCurrentPathname,
-  useIsSlackConfigured, useRendererConfig, useEditingMarkdown,
+  useIsSlackConfigured, useGrowiHydratedEnv, useRendererConfig, useEditingMarkdown,
   useEditorConfig, useIsAllReplyShown, useIsUploadableFile, useIsUploadableImage,
 } from '../stores/context';
 
@@ -147,9 +147,7 @@ type Props = CommonProps & {
   // isMailerSetup: boolean,
   isAclEnabled: boolean,
   // hasSlackConfig: boolean,
-  // drawioUri: string,
   hackmdUri: string,
-  // noCdn: string,
   // highlightJsStyle: string,
   isAllReplyShown: boolean,
   // isContainerFluid: boolean,
@@ -161,6 +159,7 @@ type Props = CommonProps & {
   // isIndentSizeForced: boolean,
   disableLinkSharing: boolean,
 
+  growiHydratedEnv : GrowiHydratedEnv,
   rendererConfig: RendererConfig,
 
   // UI
@@ -220,6 +219,7 @@ const GrowiPage: NextPage<Props> = (props: Props) => {
   // useIndentSize(props.adminPreferredIndentSize);
   useDisableLinkSharing(props.disableLinkSharing);
 
+  useGrowiHydratedEnv(props.growiHydratedEnv);
   useRendererConfig(props.rendererConfig);
   // useRendererSettings(props.rendererSettingsStr != null ? JSON.parse(props.rendererSettingsStr) : undefined);
   // useGrowiRendererConfig(props.growiRendererConfigStr != null ? JSON.parse(props.growiRendererConfigStr) : undefined);
@@ -515,9 +515,6 @@ function injectServerConfigurations(context: GetServerSidePropsContext, props: P
   // props.isMailerSetup = mailService.isMailerSetup;
   props.isAclEnabled = aclService.isAclEnabled();
   // props.hasSlackConfig = slackNotificationService.hasSlackConfig();
-  // props.drawioUri = configManager.getConfig('crowi', 'app:drawioUri');
-  props.hackmdUri = configManager.getConfig('crowi', 'app:hackmdUri');
-  // props.noCdn = configManager.getConfig('crowi', 'app:noCdn');
   // props.highlightJsStyle = configManager.getConfig('crowi', 'customize:highlightJsStyle');
   props.isAllReplyShown = configManager.getConfig('crowi', 'customize:isAllReplyShown');
   // props.isContainerFluid = configManager.getConfig('crowi', 'customize:isContainerFluid');
@@ -533,6 +530,14 @@ function injectServerConfigurations(context: GetServerSidePropsContext, props: P
   };
   // props.adminPreferredIndentSize = configManager.getConfig('markdown', 'markdown:adminPreferredIndentSize');
   // props.isIndentSizeForced = configManager.getConfig('markdown', 'markdown:isIndentSizeForced');
+
+  props.growiHydratedEnv = {
+    DRAWIO_URI: configManager.getConfig('crowi', 'app:drawioUri'),
+    HACKMD_URI: configManager.getConfig('crowi', 'app:hackmdUri'),
+    NO_CDN: configManager.getConfig('crowi', 'app:noCdn'),
+    GROWI_CLOUD_URI: configManager.getConfig('crowi', 'app:growiCloudUri'),
+    GROWI_APP_ID_FOR_GROWI_CLOUD: configManager.getConfig('crowi', 'app:growiAppIdForCloud'),
+  };
 
   props.rendererConfig = {
     isEnabledLinebreaks: configManager.getConfig('markdown', 'markdown:isEnabledLinebreaks'),

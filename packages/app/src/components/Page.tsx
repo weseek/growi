@@ -3,13 +3,15 @@ import React, {
   useEffect, useRef, useState,
 } from 'react';
 
+import EventEmitter from 'events';
+
 import dynamic from 'next/dynamic';
 // import { debounce } from 'throttle-debounce';
 
 import { HtmlElementNode } from 'rehype-toc';
 
 import { blinkSectionHeaderAtBoot } from '~/client/util/blink-section-header';
-// import { getOptionsToSave } from '~/client/util/editor';
+import { getOptionsToSave } from '~/client/util/editor';
 import {
   useIsGuestUser, useIsBlinkedHeaderAtBoot, useCurrentPageTocNode,
 } from '~/stores/context';
@@ -24,11 +26,15 @@ import {
 import loggerFactory from '~/utils/logger';
 
 import RevisionRenderer from './Page/RevisionRenderer';
+import DrawioModal from './PageEditor/DrawioModal';
+
 
 // TODO: import dynamically
 // import MarkdownTable from '~/client/models/MarkdownTable';
-// import mdu from './PageEditor/MarkdownDrawioUtil';
-// import mtu from './PageEditor/MarkdownTableUtil';
+import mdu from './PageEditor/MarkdownDrawioUtil';
+import mtu from './PageEditor/MarkdownTableUtil';
+
+declare const globalEmitter: EventEmitter;
 
 const logger = loggerFactory('growi:Page');
 
@@ -76,10 +82,10 @@ class PageSubstance extends React.Component<PageSubstanceProps> {
    * @param endLineNumber
    */
   launchHandsontableModal(beginLineNumber, endLineNumber) {
-    // const markdown = this.props.pageContainer.state.markdown;
-    // const tableLines = markdown.split(/\r\n|\r|\n/).slice(beginLineNumber - 1, endLineNumber).join('\n');
-    // this.setState({ currentTargetTableArea: { beginLineNumber, endLineNumber } });
-    // this.handsontableModal.current.show(MarkdownTable.fromMarkdownString(tableLines));
+    const markdown = this.props.pageContainer.state.markdown;
+    const tableLines = markdown.split(/\r\n|\r|\n/).slice(beginLineNumber - 1, endLineNumber).join('\n');
+    this.setState({ currentTargetTableArea: { beginLineNumber, endLineNumber } });
+    this.handsontableModal.current.show(MarkdownTable.fromMarkdownString(tableLines));
   }
 
   /**
@@ -88,75 +94,75 @@ class PageSubstance extends React.Component<PageSubstanceProps> {
    * @param endLineNumber
    */
   launchDrawioModal(beginLineNumber, endLineNumber) {
-    // const markdown = this.props.pageContainer.state.markdown;
-    // const drawioMarkdownArray = markdown.split(/\r\n|\r|\n/).slice(beginLineNumber - 1, endLineNumber);
-    // const drawioData = drawioMarkdownArray.slice(1, drawioMarkdownArray.length - 1).join('\n').trim();
-    // this.setState({ currentTargetDrawioArea: { beginLineNumber, endLineNumber } });
-    // this.drawioModal.current.show(drawioData);
+    const markdown = this.props.pageContainer.state.markdown;
+    const drawioMarkdownArray = markdown.split(/\r\n|\r|\n/).slice(beginLineNumber - 1, endLineNumber);
+    const drawioData = drawioMarkdownArray.slice(1, drawioMarkdownArray.length - 1).join('\n').trim();
+    this.setState({ currentTargetDrawioArea: { beginLineNumber, endLineNumber } });
+    this.drawioModal.current.show(drawioData);
   }
 
   async saveHandlerForHandsontableModal(markdownTable) {
-    // const {
-    //   isSlackEnabled, slackChannels, pageContainer, mutateIsEnabledUnsavedWarning, grant, grantGroupId, grantGroupName, pageTags,
-    // } = this.props;
-    // const optionsToSave = getOptionsToSave(isSlackEnabled, slackChannels, grant, grantGroupId, grantGroupName, pageTags);
+    const {
+      isSlackEnabled, slackChannels, pageContainer, mutateIsEnabledUnsavedWarning, grant, grantGroupId, grantGroupName, pageTags,
+    } = this.props;
+    const optionsToSave = getOptionsToSave(isSlackEnabled, slackChannels, grant, grantGroupId, grantGroupName, pageTags);
 
-    // const newMarkdown = mtu.replaceMarkdownTableInMarkdown(
-    //   markdownTable,
-    //   this.props.pageContainer.state.markdown,
-    //   this.state.currentTargetTableArea.beginLineNumber,
-    //   this.state.currentTargetTableArea.endLineNumber,
-    // );
+    const newMarkdown = mtu.replaceMarkdownTableInMarkdown(
+      markdownTable,
+      this.props.pageContainer.state.markdown,
+      this.state.currentTargetTableArea.beginLineNumber,
+      this.state.currentTargetTableArea.endLineNumber,
+    );
 
-    // try {
-    //   // disable unsaved warning
-    //   mutateIsEnabledUnsavedWarning(false);
+    try {
+      // disable unsaved warning
+      mutateIsEnabledUnsavedWarning(false);
 
-    //   // eslint-disable-next-line no-unused-vars
-    //   const { page, tags } = await pageContainer.save(newMarkdown, this.props.editorMode, optionsToSave);
-    //   logger.debug('success to save');
+      // eslint-disable-next-line no-unused-vars
+      const { page, tags } = await pageContainer.save(newMarkdown, this.props.editorMode, optionsToSave);
+      logger.debug('success to save');
 
-    //   pageContainer.showSuccessToastr();
-    // }
-    // catch (error) {
-    //   logger.error('failed to save', error);
-    //   pageContainer.showErrorToastr(error);
-    // }
-    // finally {
-    //   this.setState({ currentTargetTableArea: null });
-    // }
+      pageContainer.showSuccessToastr();
+    }
+    catch (error) {
+      logger.error('failed to save', error);
+      pageContainer.showErrorToastr(error);
+    }
+    finally {
+      this.setState({ currentTargetTableArea: null });
+    }
   }
 
   async saveHandlerForDrawioModal(drawioData) {
-    // const {
-    //   isSlackEnabled, slackChannels, pageContainer, pageTags, grant, grantGroupId, grantGroupName, mutateIsEnabledUnsavedWarning,
-    // } = this.props;
-    // const optionsToSave = getOptionsToSave(isSlackEnabled, slackChannels, grant, grantGroupId, grantGroupName, pageTags);
+    const {
+      isSlackEnabled, slackChannels, pageContainer, pageTags, grant, grantGroupId, grantGroupName, mutateIsEnabledUnsavedWarning,
+    } = this.props;
+    const optionsToSave = getOptionsToSave(isSlackEnabled, slackChannels, grant, grantGroupId, grantGroupName, pageTags);
 
-    // const newMarkdown = mdu.replaceDrawioInMarkdown(
-    //   drawioData,
-    //   this.props.pageContainer.state.markdown,
-    //   this.state.currentTargetDrawioArea.beginLineNumber,
-    //   this.state.currentTargetDrawioArea.endLineNumber,
-    // );
+    const newMarkdown = mdu.replaceDrawioInMarkdown(
+      drawioData,
+      this.props.pageContainer.state.markdown,
+      this.state.currentTargetDrawioArea.beginLineNumber,
+      this.state.currentTargetDrawioArea.endLineNumber,
+    );
 
-    // try {
-    //   // disable unsaved warning
-    //   mutateIsEnabledUnsavedWarning(false);
+    try {
+      // disable unsaved warning
+      mutateIsEnabledUnsavedWarning(false);
 
-    //   // eslint-disable-next-line no-unused-vars
-    //   const { page, tags } = await pageContainer.save(newMarkdown, this.props.editorMode, optionsToSave);
-    //   logger.debug('success to save');
+      // eslint-disable-next-line no-unused-vars
+      const { page, tags } = await pageContainer.save(newMarkdown, this.props.editorMode, optionsToSave);
+      logger.debug('success to save');
 
-    //   pageContainer.showSuccessToastr();
-    // }
-    // catch (error) {
-    //   logger.error('failed to save', error);
-    //   pageContainer.showErrorToastr(error);
-    // }
-    // finally {
-    //   this.setState({ currentTargetDrawioArea: null });
-    // }
+      pageContainer.showSuccessToastr();
+    }
+    catch (error) {
+      logger.error('failed to save', error);
+      pageContainer.showErrorToastr(error);
+    }
+    finally {
+      this.setState({ currentTargetDrawioArea: null });
+    }
   }
 
   override render() {
@@ -183,7 +189,7 @@ class PageSubstance extends React.Component<PageSubstanceProps> {
             <GridEditModal ref={this.gridEditModal} />
             <LinkEditModal ref={this.linkEditModal} />
             {/* <HandsontableModal ref={this.handsontableModal} onSave={this.saveHandlerForHandsontableModal} /> */}
-            {/* <DrawioModal ref={this.drawioModal} onSave={this.saveHandlerForDrawioModal} /> */}
+            <DrawioModal ref={this.drawioModal} onSave={this.saveHandlerForDrawioModal} />
           </>
         )}
       </div>
@@ -230,18 +236,18 @@ export const Page = (props) => {
   }, [mutateCurrentPageTocNode, tocRef.current]); // include tocRef.current to call mutateCurrentPageTocNode when tocRef.current changes
 
   // // set handler to open DrawioModal
-  // useEffect(() => {
-  //   const handler = (beginLineNumber, endLineNumber) => {
-  //     if (pageRef?.current != null) {
-  //       pageRef.current.launchDrawioModal(beginLineNumber, endLineNumber);
-  //     }
-  //   };
-  //   window.globalEmitter.on('launchDrawioModal', handler);
+  useEffect(() => {
+    const handler = (beginLineNumber, endLineNumber) => {
+      if (pageRef?.current != null) {
+        pageRef.current.launchDrawioModal(beginLineNumber, endLineNumber);
+      }
+    };
+    globalEmitter.on('launchDrawioModal', handler);
 
-  //   return function cleanup() {
-  //     window.globalEmitter.removeListener('launchDrawioModal', handler);
-  //   };
-  // }, []);
+    return function cleanup() {
+      globalEmitter.removeListener('launchDrawioModal', handler);
+    };
+  }, []);
 
   // // set handler to open HandsontableModal
   // useEffect(() => {
@@ -250,10 +256,10 @@ export const Page = (props) => {
   //       pageRef.current.launchHandsontableModal(beginLineNumber, endLineNumber);
   //     }
   //   };
-  //   window.globalEmitter.on('launchHandsontableModal', handler);
+  //   globalEmitter.on('launchHandsontableModal', handler);
 
   //   return function cleanup() {
-  //     window.globalEmitter.removeListener('launchHandsontableModal', handler);
+  //     globalEmitter.removeListener('launchHandsontableModal', handler);
   //   };
   // }, []);
 
