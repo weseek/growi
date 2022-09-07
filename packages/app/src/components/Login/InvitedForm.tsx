@@ -3,10 +3,10 @@ import React from 'react';
 import { IUser } from '@growi/core';
 import { useTranslation } from 'next-i18next';
 
-import { useCsrfToken } from '../../stores/context';
+import { useCsrfToken, useCurrentUser } from '../../stores/context';
 
 type InvitedFormProps = {
-  currentUser: IUser,
+  user: IUser,
   invitedFormUsername?: string,
   invitedFormName?: string,
 }
@@ -14,8 +14,13 @@ type InvitedFormProps = {
 export const InvitedForm = (props: InvitedFormProps): JSX.Element => {
   const { t } = useTranslation();
   const { data: csrfToken } = useCsrfToken();
+  const { data: user } = useCurrentUser();
 
-  const { currentUser, invitedFormUsername, invitedFormName } = props;
+  const { invitedFormUsername, invitedFormName } = props;
+
+  if (user == null) {
+    return <></>;
+  }
 
   return (
     <div className="noLogin-dialog p-3 mx-auto" id="noLogin-dialog">
@@ -37,7 +42,7 @@ export const InvitedForm = (props: InvitedFormProps): JSX.Element => {
             disabled
             placeholder={t('Email')}
             name="invitedForm[email]"
-            defaultValue={currentUser.email}
+            defaultValue={user.email}
             required
           />
         </div>

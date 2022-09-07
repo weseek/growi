@@ -9,7 +9,7 @@ import { useRouter } from 'next/router';
 import { NoLoginLayout } from '~/components/Layout/NoLoginLayout';
 import { CrowiRequest } from '~/interfaces/crowi-request';
 
-import { useCsrfToken, useCurrentPathname } from '../../stores/context';
+import { useCsrfToken, useCurrentPathname, useCurrentUser } from '../../stores/context';
 import {
   CommonProps, getServerSideCommonProps, useCustomTitle, getNextI18NextConfig,
 } from '../utils/commons';
@@ -34,6 +34,7 @@ const LoginPage: NextPage<Props> = (props: Props) => {
 
   useCsrfToken(props.csrfToken);
   useCurrentPathname(props.currentPathname);
+  useCurrentUser(props.currentUser);
 
   const loginPagesMap = {
     login: {
@@ -49,7 +50,6 @@ const LoginPage: NextPage<Props> = (props: Props) => {
     },
     invited: {
       component: <InvitedForm
-        currentUser={props.currentUser}
         invitedFormUsername={props.invitedFormUsername}
         invitedFormName={props.invitedFormName}
       />,
@@ -75,11 +75,14 @@ const LoginPage: NextPage<Props> = (props: Props) => {
 
 async function injectServerConfigurations(context: GetServerSidePropsContext, props: Props): Promise<void> {
   const req: CrowiRequest = context.req as CrowiRequest;
-  const { crowi } = req;
+  const { crowi, body: invitedForm } = req;
   const { mailService, configManager } = crowi;
 
   props.isMailerSetup = mailService.isMailerSetup;
   props.registrationWhiteList = configManager.getConfig('crowi', 'security:registrationWhiteList');
+
+  props.invitedFormUsername = invitedForm.username;
+  props.invitedFormName = invitedForm.name;
 }
 
 function injectEnabledStrategies(context: GetServerSidePropsContext, props: Props): void {
@@ -113,7 +116,7 @@ async function injectNextI18NextConfigurations(context: GetServerSidePropsContex
 
 export const getServerSideProps: GetServerSideProps = async(context: GetServerSidePropsContext) => {
   const req = context.req as CrowiRequest<IUserHasId & any>;
-  const { user, body: invitedForm } = req;
+  const { user } = req;
   const result = await getServerSideCommonProps(context);
 
   // check for presence
@@ -125,12 +128,6 @@ export const getServerSideProps: GetServerSideProps = async(context: GetServerSi
 
   if (user != null) {
     props.currentUser = user.toObject();
-  }
-  if (invitedForm.username != null) {
-    props.invitedFormUsername = req.body.invitedForm.username;
-  }
-  if (invitedForm.name != null) {
-    props.invitedFormName = req.body.invitedForm.name;
   }
 
   injectServerConfigurations(context, props);
