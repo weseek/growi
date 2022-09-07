@@ -5,8 +5,8 @@ import { useTranslation } from 'next-i18next';
 import { useCsrfToken, useCurrentUser } from '../../stores/context';
 
 type InvitedFormProps = {
-  username?: string,
-  name?: string,
+  invitedFormUsername?: string,
+  invitedFormName?: string,
 }
 
 export const InvitedForm = (props: InvitedFormProps): JSX.Element => {
@@ -14,7 +14,7 @@ export const InvitedForm = (props: InvitedFormProps): JSX.Element => {
   const { data: csrfToken } = useCsrfToken();
   const { data: user } = useCurrentUser();
 
-  const { username, name } = props;
+  const { invitedFormUsername, invitedFormName } = props;
 
   if (user == null) {
     return <></>;
@@ -56,7 +56,7 @@ export const InvitedForm = (props: InvitedFormProps): JSX.Element => {
             className="form-control"
             placeholder={t('User ID')}
             name="invitedForm[username]"
-            value={username}
+            value={invitedFormUsername}
             required
           />
         </div>
@@ -72,7 +72,7 @@ export const InvitedForm = (props: InvitedFormProps): JSX.Element => {
             className="form-control"
             placeholder={t('Name')}
             name="invitedForm[name]"
-            value={name}
+            value={invitedFormName}
             required
           />
         </div>
