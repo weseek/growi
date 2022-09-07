@@ -56,7 +56,7 @@ export const InvitedForm = (props: InvitedFormProps): JSX.Element => {
             className="form-control"
             placeholder={t('User ID')}
             name="invitedForm[username]"
-            defaultValue={username}
+            value={username}
             required
           />
         </div>
@@ -72,7 +72,7 @@ export const InvitedForm = (props: InvitedFormProps): JSX.Element => {
             className="form-control"
             placeholder={t('Name')}
             name="invitedForm[name]"
-            defaultValue={name}
+            value={name}
             required
           />
         </div>
