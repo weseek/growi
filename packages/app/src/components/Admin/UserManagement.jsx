@@ -14,6 +14,8 @@ import InviteUserControl from './Users/InviteUserControl';
 import PasswordResetModal from './Users/PasswordResetModal';
 import UserTable from './Users/UserTable';
 
+import styles from './UserManagement.module.scss';
+
 class UserManagement extends React.Component {
 
   constructor(props) {
@@ -129,7 +131,7 @@ class UserManagement extends React.Component {
       adminUsersContainer.state.searchText.length > 0
         ? (
           <i
-            className="icon-close search-clear"
+            className={`icon-close ${styles['search-clear']}`}
             onClick={() => {
               adminUsersContainer.clearSearchText();
               this.searchUserElement.value = '';

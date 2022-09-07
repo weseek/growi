@@ -117,7 +117,6 @@ module.exports = (crowi) => {
       body('theme').optional().isString(),
       body('keymapMode').optional().isString(),
       body('styleActiveLine').optional().isBoolean(),
-      body('renderMathJaxInRealtime').optional().isBoolean(),
       body('renderDrawioInRealtime').optional().isBoolean(),
       body('autoFormatMarkdownTable').optional().isBoolean(),
       body('textlintSettings.neverAskBeforeDownloadLargeFiles').optional().isBoolean(),
@@ -540,12 +539,12 @@ module.exports = (crowi) => {
     const { body } = req;
 
     const {
-      theme, keymapMode, styleActiveLine, renderMathJaxInRealtime, renderDrawioInRealtime, autoFormatMarkdownTable,
+      theme, keymapMode, styleActiveLine, renderDrawioInRealtime, autoFormatMarkdownTable,
       textlintSettings,
     } = body;
 
     const document = {
-      theme, keymapMode, styleActiveLine, renderMathJaxInRealtime, renderDrawioInRealtime, autoFormatMarkdownTable,
+      theme, keymapMode, styleActiveLine, renderDrawioInRealtime, autoFormatMarkdownTable,
     };
 
     if (textlintSettings != null) {

@@ -149,7 +149,6 @@ type Props = CommonProps & {
   // hasSlackConfig: boolean,
   // drawioUri: string,
   hackmdUri: string,
-  // mathJax: string,
   // noCdn: string,
   // highlightJsStyle: string,
   isAllReplyShown: boolean,
@@ -217,7 +216,6 @@ const GrowiPage: NextPage<Props> = (props: Props) => {
   // useHasSlackConfig(props.hasSlackConfig);
   // useDrawioUri(props.drawioUri);
   useHackmdUri(props.hackmdUri);
-  // useMathJax(props.mathJax);
   // useNoCdn(props.noCdn);
   // useIndentSize(props.adminPreferredIndentSize);
   useDisableLinkSharing(props.disableLinkSharing);
@@ -286,7 +284,6 @@ const GrowiPage: NextPage<Props> = (props: Props) => {
       <Head>
         {/*
         {renderScriptTagByName('drawio-viewer')}
-        {renderScriptTagByName('mathjax')}
         {renderScriptTagByName('highlight-addons')}
         {renderHighlightJsStyleTag(props.highlightJsStyle)}
         */}
@@ -491,7 +488,6 @@ function injectServerConfigurations(context: GetServerSidePropsContext, props: P
   // props.hasSlackConfig = slackNotificationService.hasSlackConfig();
   // props.drawioUri = configManager.getConfig('crowi', 'app:drawioUri');
   props.hackmdUri = configManager.getConfig('crowi', 'app:hackmdUri');
-  // props.mathJax = configManager.getConfig('crowi', 'app:mathJax');
   // props.noCdn = configManager.getConfig('crowi', 'app:noCdn');
   // props.highlightJsStyle = configManager.getConfig('crowi', 'customize:highlightJsStyle');
   props.isAllReplyShown = configManager.getConfig('crowi', 'customize:isAllReplyShown');
