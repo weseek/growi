@@ -1,12 +1,10 @@
 import React from 'react';
 
-import { IUser } from '@growi/core';
 import { useTranslation } from 'next-i18next';
 
 import { useCsrfToken, useCurrentUser } from '../../stores/context';
 
 type InvitedFormProps = {
-  user: IUser,
   invitedFormUsername?: string,
   invitedFormName?: string,
 }

@@ -130,7 +130,7 @@ export const getServerSideProps: GetServerSideProps = async(context: GetServerSi
     props.currentUser = user.toObject();
   }
 
-  injectServerConfigurations(context, props);
+  await injectServerConfigurations(context, props);
   injectEnabledStrategies(context, props);
   await injectNextI18NextConfigurations(context, props, ['translation']);
 
