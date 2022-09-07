@@ -6,6 +6,8 @@ import React, {
 import dynamic from 'next/dynamic';
 // import { debounce } from 'throttle-debounce';
 
+import { HtmlElementNode } from 'rehype-toc';
+
 import { blinkSectionHeaderAtBoot } from '~/client/util/blink-section-header';
 // import { getOptionsToSave } from '~/client/util/editor';
 import {
@@ -22,7 +24,6 @@ import {
 import loggerFactory from '~/utils/logger';
 
 import RevisionRenderer from './Page/RevisionRenderer';
-import { HtmlElementNode } from 'rehype-toc';
 
 // TODO: import dynamically
 // import MarkdownTable from '~/client/models/MarkdownTable';
@@ -166,9 +167,9 @@ class PageSubstance extends React.Component<PageSubstanceProps> {
     const { _id: revisionId, body: markdown } = page.revision;
 
     // const DrawioModal = dynamic(() => import('./PageEditor/DrawioModal'), { ssr: false });
-    // const GridEditModal = dynamic(() => import('./PageEditor/GridEditModal'), { ssr: false });
+    const GridEditModal = dynamic(() => import('./PageEditor/GridEditModal'), { ssr: false });
     // const HandsontableModal = dynamic(() => import('./PageEditor/HandsontableModal'), { ssr: false });
-    // const LinkEditModal = dynamic(() => import('./PageEditor/LinkEditModal'), { ssr: false });
+    const LinkEditModal = dynamic(() => import('./PageEditor/LinkEditModal'), { ssr: false });
 
     return (
       <div className={`mb-5 ${isMobile ? 'page-mobile' : ''}`}>
@@ -179,8 +180,8 @@ class PageSubstance extends React.Component<PageSubstanceProps> {
 
         { !isGuestUser && (
           <>
-            {/* <GridEditModal ref={this.gridEditModal} /> */}
-            {/* <LinkEditModal ref={this.LinkEditModal} /> */}
+            <GridEditModal ref={this.gridEditModal} />
+            <LinkEditModal ref={this.linkEditModal} />
             {/* <HandsontableModal ref={this.handsontableModal} onSave={this.saveHandlerForHandsontableModal} /> */}
             {/* <DrawioModal ref={this.drawioModal} onSave={this.saveHandlerForDrawioModal} /> */}
           </>
@@ -257,9 +258,13 @@ export const Page = (props) => {
   // }, []);
 
   if (currentPage == null || editorMode == null || isGuestUser == null || rendererOptions == null) {
-    logger.warn('Some of materials are missing.', {
-      currentPage: currentPage?._id, editorMode, isGuestUser, rendererOptions,
-    });
+    const entries = Object.entries({
+      currentPage, editorMode, isGuestUser, rendererOptions,
+    })
+      .map(([key, value]) => [key, value == null ? 'null' : undefined])
+      .filter(([, value]) => value != null);
+
+    logger.warn('Some of materials are missing.', Object.fromEntries(entries));
     return null;
   }
 

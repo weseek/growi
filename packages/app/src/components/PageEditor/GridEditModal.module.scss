@@ -1,6 +1,6 @@
 @use '~/styles/bootstrap/init' as bs;
 
-.grw-grid-edit-modal {
+.grw-grid-edit-modal :global {
   .desktop-preview,
   .tablet-preview,
   .mobile-preview {

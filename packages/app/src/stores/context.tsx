@@ -255,6 +255,10 @@ export const useIsUploadableFile = (initialData?: boolean): SWRResponse<boolean,
   return useStaticSWR('isUploadableFile', initialData);
 };
 
+export const useShowPageLimitationXL = (initialData?: number): SWRResponse<number, Error> => {
+  return useStaticSWR('showPageLimitationXL', initialData);
+};
+
 /** **********************************************************
  *                     Computed contexts
  *********************************************************** */

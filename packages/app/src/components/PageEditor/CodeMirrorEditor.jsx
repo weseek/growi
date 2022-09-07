@@ -1,7 +1,7 @@
 import React from 'react';
 
 import { createValidator } from '@growi/codemirror-textlint';
-import * as codemirror from 'codemirror';
+import { commands } from 'codemirror';
 import { JSHINT } from 'jshint';
 import * as loadCssSync from 'load-css-file';
 import PropTypes from 'prop-types';
@@ -20,10 +20,10 @@ import CommentMentionHelper from './CommentMentionHelper';
 import EditorIcon from './EditorIcon';
 import EmojiPicker from './EmojiPicker';
 import EmojiPickerHelper from './EmojiPickerHelper';
-// import GridEditModal from './GridEditModal';
+import GridEditModal from './GridEditModal';
 import geu from './GridEditorUtil';
 // import HandsontableModal from './HandsontableModal';
-// import LinkEditModal from './LinkEditModal';
+import LinkEditModal from './LinkEditModal';
 import mdu from './MarkdownDrawioUtil';
 import markdownLinkUtil from './MarkdownLinkUtil';
 import markdownListUtil from './MarkdownListUtil';
@@ -39,14 +39,6 @@ import styles from './CodeMirrorEditor.module.scss';
 window.JSHINT = JSHINT;
 window.kuromojin = { dicPath: '/static/dict' };
 
-// set save handler
-codemirror.commands.save = (instance) => {
-  if (instance.codeMirrorEditor != null) {
-    instance.codeMirrorEditor.dispatchSave();
-  }
-};
-// set CodeMirror instance as 'CodeMirror' so that CDN addons can reference
-window.CodeMirror = require('codemirror');
 require('codemirror/addon/display/placeholder');
 require('codemirror/addon/edit/matchbrackets');
 require('codemirror/addon/edit/matchtags');
@@ -107,7 +99,6 @@ class CodeMirrorEditor extends AbstractEditor {
     this.logger = loggerFactory('growi:PageEditor:CodeMirrorEditor');
 
     this.state = {
-      value: this.props.value,
       isGfmMode: this.props.isGfmMode,
       isLoadingKeymap: false,
       isSimpleCheatsheetShown: this.props.isGfmMode && this.props.value.length === 0,
@@ -252,7 +243,6 @@ class CodeMirrorEditor extends AbstractEditor {
    * @inheritDoc
    */
   setValue(newValue) {
-    this.setState({ value: newValue });
     this.getCodeMirror().getDoc().setValue(newValue);
   }
 
@@ -508,7 +498,7 @@ class CodeMirrorEditor extends AbstractEditor {
    */
   handleEnterKey() {
     if (!this.state.isGfmMode) {
-      codemirror.commands.newlineAndIndent(this.getCodeMirror());
+      commands.newlineAndIndent(this.getCodeMirror());
       return;
     }
 
@@ -791,11 +781,11 @@ class CodeMirrorEditor extends AbstractEditor {
   }
 
   showGridEditorHandler() {
-    // this.gridEditModal.current.show(geu.getGridHtml(this.getCodeMirror()));
+    this.gridEditModal.current.show(geu.getGridHtml(this.getCodeMirror()));
   }
 
   showLinkEditHandler() {
-    // this.linkEditModal.current.show(markdownLinkUtil.getMarkdownLink(this.getCodeMirror()));
+    this.linkEditModal.current.show(markdownLinkUtil.getMarkdownLink(this.getCodeMirror()));
   }
 
   showHandsonTableHandler() {
@@ -1002,8 +992,6 @@ class CodeMirrorEditor extends AbstractEditor {
           //   editor.on('paste', this.pasteHandler);
           //   editor.on('scrollCursorIntoView', this.scrollCursorIntoViewHandler);
           // }}
-          // temporary set props.value
-          // value={this.state.value}
           value={this.props.value}
           options={{
             indentUnit: this.props.indentSize,
@@ -1056,14 +1044,15 @@ class CodeMirrorEditor extends AbstractEditor {
         { this.renderCheatsheetOverlay() }
         { this.renderEmojiPicker() }
 
-        {/* <GridEditModal
+        <GridEditModal
           ref={this.gridEditModal}
           onSave={(grid) => { return geu.replaceGridWithHtmlWithEditor(this.getCodeMirror(), grid) }}
-        /> */}
-        {/* <LinkEditModal
+        />
+        <LinkEditModal
           ref={this.linkEditModal}
           onSave={(linkText) => { return markdownLinkUtil.replaceFocusedMarkdownLinkWithEditor(this.getCodeMirror(), linkText) }}
         />
+        {/*
         <HandsontableModal
           ref={this.handsontableModal}
           onSave={(table) => { return mtu.replaceFocusedMarkdownTableWithEditor(this.getCodeMirror(), table) }}
