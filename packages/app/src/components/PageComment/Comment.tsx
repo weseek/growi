@@ -78,7 +78,7 @@ export const Comment = (props: CommentProps): JSX.Element => {
   const getRootClassName = (comment: ICommentHasId) => {
     let className = 'page-comment flex-column';
 
-    // Conditional branch when called from SearchResultContext
+    // Conditional for called from SearchResultContext
     if (currentRevisionId != null && currentRevisionCreatedAt != null) {
       if (comment.revision === currentRevisionId) {
         className += ' page-comment-current';
