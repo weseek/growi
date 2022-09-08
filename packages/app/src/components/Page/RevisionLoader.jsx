@@ -111,7 +111,6 @@ class RevisionLoader extends React.Component {
       <RevisionRenderer
         rendererOptions={this.props.rendererOptions}
         markdown={markdown}
-        pagePath={this.props.pagePath}
         highlightKeywords={this.props.highlightKeywords}
       />
     );
