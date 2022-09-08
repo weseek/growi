@@ -238,14 +238,15 @@ const GrowiPage: NextPage<Props> = (props: Props) => {
   }
 
   const pageId = pageWithMeta?.data._id;
+  const pagePath = pageWithMeta?.data.path ?? props.currentPathname;
 
   useCurrentPageId(pageId);
   useSWRxCurrentPage(undefined, pageWithMeta?.data); // store initial data
   useSWRxPageInfo(pageId, undefined, pageWithMeta?.meta); // store initial data
-  useIsTrashPage(_isTrashPage(pageWithMeta?.data.path ?? ''));
-  useIsUserPage(isUserPage(pageWithMeta?.data.path ?? ''));
-  useIsNotCreatable(props.isForbidden || !isCreatablePage(pageWithMeta?.data.path ?? '')); // TODO: need to include props.isIdentical
-  useCurrentPagePath(pageWithMeta?.data.path);
+  useIsTrashPage(_isTrashPage(pagePath));
+  useIsUserPage(isUserPage(pagePath));
+  useIsNotCreatable(props.isForbidden || !isCreatablePage(pagePath)); // TODO: need to include props.isIdentical
+  useCurrentPagePath(pagePath);
   useCurrentPathname(props.currentPathname);
   useEditingMarkdown(pageWithMeta?.data.revision?.body);
   const { data: grantData } = useSWRxIsGrantNormalized(pageId);
