@@ -101,7 +101,7 @@ class CodeMirrorEditor extends AbstractEditor {
     this.state = {
       isGfmMode: this.props.isGfmMode,
       isLoadingKeymap: false,
-      isSimpleCheatsheetShown: this.props.isGfmMode && this.props.value.length === 0,
+      isSimpleCheatsheetShown: this.props.isGfmMode && this.props.value?.length === 0,
       isCheatsheetModalShown: false,
       additionalClassSet: new Set(),
       isEmojiPickerShown: false,
