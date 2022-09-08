@@ -10,7 +10,7 @@ import AppContainer from '~/client/services/AppContainer';
 import CompleteUserRegistrationForm from '~/components/CompleteUserRegistrationForm';
 import { swrGlobalConfiguration } from '~/utils/swr-utils';
 
-import LoginForm from '../components/LoginForm';
+import LoginForm from '../components/Login/LoginForm';
 import PasswordResetExecutionForm from '../components/PasswordResetExecutionForm';
 import PasswordResetRequestForm from '../components/PasswordResetRequestForm';
 

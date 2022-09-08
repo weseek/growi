@@ -15,7 +15,7 @@ import {
   CommonProps, getServerSideCommonProps, useCustomTitle, getNextI18NextConfig,
 } from '../utils/commons';
 
-const LoginForm = dynamic(() => import('~/components/LoginForm'), { ssr: false });
+const LoginForm = dynamic(() => import('~/components/Login/LoginForm'), { ssr: false });
 const InvitedForm = dynamic<InvitedFormProps>(() => import('~/components/Login/InvitedForm').then(mod => mod.InvitedForm), { ssr: false });
 
 type Props = CommonProps & {
