@@ -192,6 +192,9 @@ context('Tag Oprations', () =>{
     // Hide toast
     cy.get('#toast-container').invoke('attr','style','display:none');
     cy.get('.grw-taglabels-container > form > a').contains(tag).should('exist');
+
+    // Hide sidebar by collapse instead of blackout options
+    // Placed on this line to minimize changes to previous screenshots
     cy.collapseSidebar(true);
 
     //Hide release and license
@@ -276,7 +279,10 @@ context('Tag Oprations', () =>{
     });
 
     cy.visit(`/${newPageName}`);
-    cy.screenshot(`${ssPrefix}4-new-page-name-applied`, {capture: 'viewport', blackout: ['#wiki > p:eq(0) > a > img']});
+    cy.screenshot(`${ssPrefix}4-new-page-name-applied`, {
+      capture: 'viewport',
+      blackout: ['#wiki > p:eq(0) > a > img', '[data-hide-in-vrt="true"]']
+    });
   });
 
 });
