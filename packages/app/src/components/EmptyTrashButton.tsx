@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react';
+import React, { FC, useCallback } from 'react';
 
 import { useTranslation } from 'next-i18next';
 
@@ -12,7 +12,7 @@ import { useEmptyTrashModal } from '~/stores/modal';
 import { useSWRxDescendantsPageListForCurrrentPath, useSWRxPageInfoForList } from '~/stores/page-listing';
 
 
-const EmptyTrashButton = () => {
+const EmptyTrashButton: FC = () => {
   const { t } = useTranslation();
   const { open: openEmptyTrashModal } = useEmptyTrashModal();
   const { data: pagingResult, mutate } = useSWRxDescendantsPageListForCurrrentPath();
