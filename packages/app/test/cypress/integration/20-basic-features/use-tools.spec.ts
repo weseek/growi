@@ -193,10 +193,6 @@ context('Tag Oprations', () =>{
     cy.get('#toast-container').invoke('attr','style','display:none');
     cy.get('.grw-taglabels-container > form > a').contains(tag).should('exist');
 
-    // Hide sidebar by collapse instead of blackout options
-    // Placed on this line to minimize changes to previous screenshots
-    cy.collapseSidebar(true);
-
     //Hide release and license
     cy.screenshot(`${ssPrefix}4-click-done`, {
       capture: 'viewport',
