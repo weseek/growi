@@ -30,24 +30,37 @@ context('Access to pagelist', () => {
     cy.getByTestid('page-duplicate-modal').should('be.visible').within(() => {
       cy.get('.rbt-input-main').type('-duplicate', {force: true})
     }).screenshot(`${ssPrefix}4-input-duplicated-page-name`);
+    cy.getByTestid('page-duplicate-modal').should('be.visible').within(() => {
+      cy.get('.modal-footer > button').click();
+    });
     cy.get('body').type('{esc}');
+    cy.getByTestid('pageListButton').click({force: true});
+    cy.getByTestid('page-accessories-modal').parent().should('have.class','show').within(() => {
+      cy.get('.list-group-item').eq(0).within(() => {
+        cy.screenshot(`${ssPrefix}5-duplicated-page`);
+      });
+    });
   });
 
   it('Successfully expand and close modal', () => {
     cy.visit('/');
     cy.getByTestid('pageListButton').click({force: true});
     cy.getByTestid('page-accessories-modal').parent().should('have.class','show');
-    cy.screenshot(`${ssPrefix}5-page-list-modal-size-normal`, {capture: 'viewport'});
+    cy.screenshot(`${ssPrefix}6-page-list-modal-size-normal`, {capture: 'viewport'});
     cy.getByTestid('page-accessories-modal').parent().should('have.class','show').within(() => {
       cy.get('button.close').eq(0).click();
     });
-    cy.screenshot(`${ssPrefix}6-page-list-modal-size-fullscreen`, {capture: 'viewport'});
+    cy.screenshot(`${ssPrefix}7-page-list-modal-size-fullscreen`, {capture: 'viewport'});
 
     cy.getByTestid('page-accessories-modal').parent().should('have.class','show').within(() => {
       cy.get('button.close').eq(1).click();
     });
 
-    cy.screenshot(`${ssPrefix}7-close-page-list-modal`, {capture: 'viewport'});
+    // Hide release & license on home page , page-list count and page creation & date
+    cy.screenshot(`${ssPrefix}8-close-page-list-modal`, {
+      capture: 'viewport',
+      blackout: ['[data-line="2"]:eq(0) > a > img', '[data-hide-in-vrt=true]', '[data-testid="pageListButton"] > span']
+    });
   });
 });
 
@@ -77,13 +90,18 @@ context('Access to timeline', () => {
       cy.get('.nav-title > li').eq(1).find('a').click();
       cy.get('button.close').eq(0).click();
     });
-    cy.screenshot(`${ssPrefix}2-timeline-list-fullscreen`, {capture: 'viewport'});
+
+    // Hide release & license on home page , page-list count and page creation & date
+    cy.screenshot(`${ssPrefix}2-timeline-list-fullscreen`, {
+      capture: 'viewport',
+      blackout: ['.card-timeline:eq(0) > .card-body > #wiki > p > a > img']
+    });
     cy.getByTestid('page-accessories-modal').parent().should('have.class','show').within(() => {
       cy.get('button.close').eq(1).click();
     });
     cy.screenshot(`${ssPrefix}3-close-modal`, {
       capture: 'viewport',
-      blackout: ['[data-line="2"]:eq(0) > a > img', '[data-hide-in-vrt="true"]']
+      blackout: ['[data-line="2"]:eq(0) > a > img', '[data-hide-in-vrt="true"]','[data-testid="pageListButton"] > span']
     });
   });
 });
