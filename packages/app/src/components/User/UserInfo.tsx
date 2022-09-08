@@ -4,6 +4,8 @@ import { UserPicture } from '@growi/ui';
 
 import { IUserHasId } from '~/interfaces/user';
 
+import styles from './UserInfo.module.scss';
+
 type UserInfoProps = {
   pageUser: IUserHasId,
 }
@@ -11,13 +13,8 @@ type UserInfoProps = {
 export const UserInfo = (props: UserInfoProps): JSX.Element => {
   const { pageUser } = props;
 
-  // // do not display when the user does not exist
-  // if (pageUser == null) {
-  //   return <></>;
-  // }
-
   return (
-    <div className="grw-users-info d-flex align-items-center d-edit-none mb-5 pb-3 border-bottom">
+    <div className={`${styles['grw-users-info']} d-flex align-items-center d-edit-none mb-5 pb-3 border-bottom`}>
       <UserPicture user={pageUser} />
       <div className="users-meta">
         <h1 className="user-page-name">
