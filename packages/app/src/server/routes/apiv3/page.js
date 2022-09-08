@@ -591,6 +591,11 @@ module.exports = (crowi) => {
 
       const Revision = crowi.model('Revision');
       revision = await Revision.findById(revisionIdForFind);
+
+      // Error if pageId and revison's pageIds do not match
+      if (page._id.toString() !== revision.pageId.toString()) {
+        return res.apiv3Err(new ErrorV3("Haven't the right to see the page."), 403);
+      }
     }
     catch (err) {
       logger.error('Failed to get page data', err);
