@@ -168,6 +168,9 @@ class CodeMirrorEditor extends AbstractEditor {
     // ensure to be able to resolve 'this' to use 'codemirror.commands.save'
     this.getCodeMirror().codeMirrorEditor = this;
 
+    // mark clean
+    this.getCodeMirror().getDoc().markClean();
+
     // fold drawio section
     this.foldDrawioSection();
 
@@ -244,6 +247,9 @@ class CodeMirrorEditor extends AbstractEditor {
    */
   setValue(newValue) {
     this.getCodeMirror().getDoc().setValue(newValue);
+
+    // mark clean
+    this.getCodeMirror().getDoc().markClean();
   }
 
   /**
@@ -564,7 +570,8 @@ class CodeMirrorEditor extends AbstractEditor {
 
   changeHandler(editor, data, value) {
     if (this.props.onChange != null) {
-      this.props.onChange(value);
+      const isClean = data.origin == null || editor.isClean();
+      this.props.onChange(value, isClean);
     }
 
     this.updateCheatsheetStates(null, value);

@@ -69,7 +69,7 @@ const PageEditor = React.memo((): JSX.Element => {
   const { data: isTextlintEnabled } = useIsTextlintEnabled();
   const { data: isIndentSizeForced } = useIsIndentSizeForced();
   const { data: indentSize, mutate: mutateCurrentIndentSize } = useCurrentIndentSize();
-  const { data: isEnabledUnsavedWarning, mutate: mutateIsEnabledUnsavedWarning } = useIsEnabledUnsavedWarning();
+  const { mutate: mutateIsEnabledUnsavedWarning } = useIsEnabledUnsavedWarning();
   const { data: isUploadableFile } = useIsUploadableFile();
   const { data: isUploadableImage } = useIsUploadableImage();
 
@@ -87,18 +87,17 @@ const PageEditor = React.memo((): JSX.Element => {
   const editorRef = useRef<EditorRef>(null);
   const previewRef = useRef<HTMLDivElement>(null);
 
-  const setMarkdownWithDebounce = useMemo(() => debounce(50, throttle(100, (value) => {
+  const setMarkdownWithDebounce = useMemo(() => debounce(100, throttle(150, (value: string, isClean: boolean) => {
     markdownToSave.current = value;
     setMarkdownToPreview(value);
+
     // Displays an unsaved warning alert
-    if (!isEnabledUnsavedWarning) {
-      mutateIsEnabledUnsavedWarning(true);
-    }
-  })), [isEnabledUnsavedWarning, mutateIsEnabledUnsavedWarning]);
+    mutateIsEnabledUnsavedWarning(!isClean);
+  })), [mutateIsEnabledUnsavedWarning]);
 
 
-  const markdownChangedHandler = useCallback((value: string): void => {
-    setMarkdownWithDebounce(value);
+  const markdownChangedHandler = useCallback((value: string, isClean: boolean): void => {
+    setMarkdownWithDebounce(value, isClean);
   }, [setMarkdownWithDebounce]);
 
   const save = useCallback(async(opts?: {overwriteScopesOfDescendants: boolean}) => {
