@@ -17,9 +17,7 @@ context('Access to page by guest', () => {
     // hide fab
     cy.getByTestid('grw-fab-container').invoke('attr', 'style', 'display: none');
 
-    cy.screenshot(`${ssPrefix}-sandbox-headers`, {
-      blackout: ['#grw-sidebar-contents-wrapper', '#grw-subnav-fixed-container']
-    });
+    cy.screenshot(`${ssPrefix}-sandbox-headers`);
   });
 
   it('/Sandbox/Math is successfully loaded', () => {
