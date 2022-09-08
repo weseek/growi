@@ -7,6 +7,7 @@ import dynamic from 'next/dynamic';
 import { useRouter } from 'next/router';
 
 import { NoLoginLayout } from '~/components/Layout/NoLoginLayout';
+import { InvitedFormProps } from '~/components/Login/InvitedForm';
 import { CrowiRequest } from '~/interfaces/crowi-request';
 
 import { useCsrfToken, useCurrentPathname, useCurrentUser } from '../../stores/context';
@@ -15,7 +16,7 @@ import {
 } from '../utils/commons';
 
 const LoginForm = dynamic(() => import('~/components/LoginForm'), { ssr: false });
-const InvitedForm = dynamic(() => import('~/components/Login/InvitedForm').then(mod => mod.InvitedForm), { ssr: false });
+const InvitedForm = dynamic<InvitedFormProps>(() => import('~/components/Login/InvitedForm').then(mod => mod.InvitedForm), { ssr: false });
 
 type Props = CommonProps & {
   isMailerSetup: boolean,

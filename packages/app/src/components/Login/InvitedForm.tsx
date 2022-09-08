@@ -4,7 +4,7 @@ import { useTranslation } from 'next-i18next';
 
 import { useCsrfToken, useCurrentUser } from '../../stores/context';
 
-type InvitedFormProps = {
+export type InvitedFormProps = {
   invitedFormUsername: string,
   invitedFormName: string,
 }
