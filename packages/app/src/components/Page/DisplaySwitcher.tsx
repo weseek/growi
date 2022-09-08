@@ -18,6 +18,7 @@ import PageListIcon from '../Icons/PageListIcon';
 import { Page } from '../Page';
 // import PageEditorByHackmd from '../PageEditorByHackmd';
 import TableOfContents from '../TableOfContents';
+import { UserInfoProps } from '../User/UserInfo';
 
 
 import styles from './DisplaySwitcher.module.scss';
@@ -33,7 +34,7 @@ const EditorNavbarBottom = dynamic(() => import('../PageEditor/EditorNavbarBotto
 const HashChanged = dynamic(() => import('../EventListeneres/HashChanged'), { ssr: false });
 const ContentLinkButtons = dynamic(() => import('../ContentLinkButtons'), { ssr: false });
 const NotFoundPage = dynamic(() => import('../NotFoundPage'), { ssr: false });
-const UserInfo = dynamic(() => import('../User/UserInfo').then(mod => mod.UserInfo), { ssr: false });
+const UserInfo = dynamic<UserInfoProps>(() => import('../User/UserInfo').then(mod => mod.UserInfo), { ssr: false });
 
 const DisplaySwitcher = React.memo((): JSX.Element => {
   const { t } = useTranslation();

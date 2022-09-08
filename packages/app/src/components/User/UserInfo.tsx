@@ -6,7 +6,7 @@ import { IUserHasId } from '~/interfaces/user';
 
 import styles from './UserInfo.module.scss';
 
-type UserInfoProps = {
+export type UserInfoProps = {
   pageUser: IUserHasId,
 }
 
