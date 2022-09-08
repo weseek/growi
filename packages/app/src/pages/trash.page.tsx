@@ -22,6 +22,8 @@ import {
 const TrashPageList = dynamic(() => import('~/components/TrashPageList').then(mod => mod.TrashPageList), { ssr: false });
 const GrowiContextualSubNavigation = dynamic(() => import('~/components/Navbar/GrowiContextualSubNavigation'), { ssr: true });
 
+const EmptyTrashModal = dynamic(() => import('~/components/EmptyTrashModal'), { ssr: false });
+
 type Props = CommonProps & {
   currentUser: IUser,
   isSearchServiceConfigured: boolean,
@@ -54,6 +56,8 @@ const TrashPage: NextPage<CommonProps> = (props: Props) => {
           <TrashPageList />
         </div>
       </BasicLayout>
+
+      <EmptyTrashModal />
     </>
   );
 };
