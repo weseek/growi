@@ -1,11 +1,9 @@
 import {
   IUser, IUserHasId,
 } from '@growi/core';
-
-import dynamic from 'next/dynamic';
 import { NextPage, GetServerSideProps, GetServerSidePropsContext } from 'next';
+import dynamic from 'next/dynamic';
 
-import GrowiContextualSubNavigation from '~/components/Navbar/GrowiContextualSubNavigation';
 import { CrowiRequest } from '~/interfaces/crowi-request';
 import { IUserUISettings } from '~/interfaces/user-ui-settings';
 import UserUISettings from '~/server/models/user-ui-settings';
@@ -21,6 +19,9 @@ import {
   CommonProps, getServerSideCommonProps, useCustomTitle,
 } from './utils/commons';
 
+const TrashPageList = dynamic(() => import('~/components/TrashPageList').then(mod => mod.TrashPageList), { ssr: false });
+const GrowiContextualSubNavigation = dynamic(() => import('~/components/Navbar/GrowiContextualSubNavigation'), { ssr: true });
+
 type Props = CommonProps & {
   currentUser: IUser,
   isSearchServiceConfigured: boolean,
@@ -30,8 +31,6 @@ type Props = CommonProps & {
 };
 
 const TrashPage: NextPage<CommonProps> = (props: Props) => {
-  const TrashPageList = dynamic(() => import('~/components/TrashPageList').then(mod => mod.TrashPageList), { ssr: false });
-
   useCurrentUser(props.currentUser ?? null);
 
   useIsSearchServiceConfigured(props.isSearchServiceConfigured);
@@ -48,6 +47,9 @@ const TrashPage: NextPage<CommonProps> = (props: Props) => {
         <header className="py-0 position-relative">
           <GrowiContextualSubNavigation isLinkSharingDisabled={false} />
         </header>
+
+        <div id="grw-fav-sticky-trigger" className="sticky-top"></div>
+
         <div className="grw-container-convertible mb-5 pb-5">
           <TrashPageList />
         </div>
