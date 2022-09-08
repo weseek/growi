@@ -12,7 +12,7 @@ import styles from './PageContentFooter.module.scss';
 const AuthorInfo = dynamic(() => import('./Navbar/AuthorInfo'),
   { ssr: false, loading: () => <Skelton additionalClass={`${styles['page-content-footer-skelton']} mb-3`} /> });
 
-type PageContentFooterProps = {
+export type PageContentFooterProps = {
   createdAt: Date,
   updatedAt: Date,
   creator: IUserHasId,

@@ -7,7 +7,6 @@ import { Button } from 'reactstrap';
 
 import { toastError } from '~/client/util/apiNotification';
 import { apiPost } from '~/client/util/apiv1-client';
-import { useSWRxCurrentPage } from '~/stores/page';
 import { useCommentPreviewOptions } from '~/stores/renderer';
 
 import { ICommentHasId, ICommentHasIdList } from '../interfaces/comment';
@@ -27,7 +26,7 @@ const DeleteCommentModal = dynamic<DeleteCommentModalProps>(
 );
 
 
-type PageCommentProps = {
+export type PageCommentProps = {
   pageId?: string,
   isReadOnly: boolean,
   titleAlign?: 'center' | 'left' | 'right',
