@@ -438,3 +438,50 @@ export const useShortcutsModal = (): SWRResponse<ShortcutsModalStatus, Error> & 
     },
   };
 };
+
+
+/*
+* DrawioModal
+*/
+
+type DrawioModalStatus = {
+  isOpened: boolean,
+  drawioMxFile: string,
+}
+
+type DrawioModalStatusUtils = {
+  open(drawioMxFile: string): void,
+  close(): void,
+}
+
+export const useDrawioModal = (status?: DrawioModalStatus): SWRResponse<DrawioModalStatus, Error> & DrawioModalStatusUtils => {
+  const initialData: DrawioModalStatus = {
+    isOpened: false,
+    drawioMxFile: '',
+  };
+  const swrResponse = useStaticSWR<DrawioModalStatus, Error>('drawioModalStatus', status, { fallbackData: initialData });
+
+
+  // const init = (drawioMxFile) => {
+  //   const initDrawioMxFile = drawioMxFile;
+  //   // setDrawioMxFile(initDrawioMxFile);
+  //   swrResponse.mutate({ isOpened: false, drawioMxFile: initDrawioMxFile });
+  // };
+
+  const open = (drawioMxFile: string): void => {
+    // init(drawioMxFile);
+    // window.addEventListener('message', receiveFromDrawio);
+    // setIsShown(true);
+    swrResponse.mutate({ isOpened: true, drawioMxFile });
+  };
+
+  const close = (): void => {
+    swrResponse.mutate({ isOpened: false, drawioMxFile: '' });
+  };
+
+  return {
+    ...swrResponse,
+    open,
+    close,
+  };
+};

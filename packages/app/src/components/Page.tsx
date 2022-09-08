@@ -187,10 +187,10 @@ class PageSubstance extends React.Component<PageSubstanceProps> {
             <GridEditModal ref={this.gridEditModal} />
             <LinkEditModal ref={this.linkEditModal} />
             {/* <HandsontableModal ref={this.handsontableModal} onSave={this.saveHandlerForHandsontableModal} /> */}
-            <DrawioModal
+            {/* <DrawioModal
               ref={this.drawioModal}
               onSave={this.saveHandlerForDrawioModal}
-            />
+            /> */}
           </>
         )}
       </div>

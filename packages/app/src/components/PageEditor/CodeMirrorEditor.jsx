@@ -1057,10 +1057,10 @@ class CodeMirrorEditor extends AbstractEditor {
           onSave={(table) => { return mtu.replaceFocusedMarkdownTableWithEditor(this.getCodeMirror(), table) }}
           autoFormatMarkdownTable={this.props.editorSettings.autoFormatMarkdownTable}
         /> */}
-        <DrawioModal
+        {/* <DrawioModal
           ref={this.drawioModal}
           onSave={this.onSaveForDrawio}
-        />
+        /> */}
       </div>
     );
   }

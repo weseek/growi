@@ -8,37 +8,44 @@ import {
   ModalBody,
 } from 'reactstrap';
 
+
 import { getDiagramsNetLangCode } from '~/client/util/locale-utils';
 import { useGrowiHydratedEnv } from '~/stores/context';
+import { useDrawioModal } from '~/stores/modal';
 
 const headerColor = '#334455';
 const fontFamily = "Lato, -apple-system, BlinkMacSystemFont, 'Hiragino Kaku Gothic ProN', Meiryo, sans-serif";
 
 
 type Props = {
-  onSave: (drawioData) => void,
-  drawioUri?: string,
+  // onSave: (drawioData) => void,
 };
 
 export const DrawioModal = React.forwardRef((props: Props, ref: React.LegacyRef<Modal>): JSX.Element => {
   const { data: growiHydratedEnv } = useGrowiHydratedEnv();
-  const [isShown, setIsShown] = useState(false);
-  const [drawioMxFile, setDrawioMxFile] = useState('');
+  // const [isShown, setIsShown] = useState(false);
 
-  const init = (drawioMxFile) => {
-    const initDrawioMxFile = drawioMxFile;
-    setDrawioMxFile(initDrawioMxFile);
-  };
+  const { data: drawioModalData, close: closeDrawioModal } = useDrawioModal();
+  const isOpened = drawioModalData?.isOpened ?? false;
+  const drawioMxFile = drawioModalData?.drawioMxFile ?? '';
+  // const { isOpened, drawioMxFile } = drawioModalData;
+  // const [drawioMxFile, setDrawioMxFile] = useState('');
 
-  const show = (drawioMxFile) => {
-    init(drawioMxFile);
+  // const init = (drawioMxFile) => {
+  //   const initDrawioMxFile = drawioMxFile;
+  //   setDrawioMxFile(initDrawioMxFile);
+  // };
 
-    window.addEventListener('message', receiveFromDrawio);
-    setIsShown(true);
-  };
+  // const show = (drawioMxFile) => {
+  //   init(drawioMxFile);
+
+  //   window.addEventListener('message', receiveFromDrawio);
+  //   setIsShown(true);
+  // };
 
   const hide = () => {
-    setIsShown(false);
+    // setIsShown(false);
+    closeDrawioModal();
   };
 
   const cancel = () => {
@@ -85,9 +92,9 @@ export const DrawioModal = React.forwardRef((props: Props, ref: React.LegacyRef<
         const dom = parser.parseFromString(event.data, 'text/xml');
         const drawioData = dom.getElementsByTagName('diagram')[0].innerHTML;
 
-        if (props.onSave != null) {
-          props.onSave(drawioData);
-        }
+        // if (props.onSave != null) {
+        //   props.onSave(drawioData);
+        // }
       }
 
       window.removeEventListener('message', receiveFromDrawio);
@@ -123,7 +130,7 @@ export const DrawioModal = React.forwardRef((props: Props, ref: React.LegacyRef<
   return (
     <Modal
       ref={ref}
-      isOpen={isShown}
+      isOpen={isOpened}
       toggle={cancel}
       backdrop="static"
       className="drawio-modal grw-body-only-modal-expanded"
@@ -139,7 +146,7 @@ export const DrawioModal = React.forwardRef((props: Props, ref: React.LegacyRef<
         </div>
         {/* iframe */}
         <div className="w-100 h-100 position-absolute d-flex">
-          { isShown && (
+          { isOpened && (
             <iframe
               src={drawioUrl}
               className="border-0 flex-grow-1"
