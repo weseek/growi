@@ -101,10 +101,6 @@ context('Open presentation modal', () => {
 
     // eslint-disable-next-line cypress/no-unnecessary-waiting
     cy.wait(1500);
-    cy.get('iframe').then(($iframe) => {
-      const $body = $iframe.contents().find('body')
-      cy.wrap($body).find('section.present > p[data-line=2] > a > img').invoke('attr','style','display:none');
-    });
     cy.screenshot(`${ssPrefix}-open-top`);
 
   });
@@ -193,11 +189,15 @@ context('Tag Oprations', () =>{
       cy.get('div.modal-footer > button').click();
     });
 
+    // Hide toast
     cy.get('#toast-container').invoke('attr','style','display:none');
     cy.get('.grw-taglabels-container > form > a').contains(tag).should('exist');
     cy.collapseSidebar(true);
-    cy.screenshot(`${ssPrefix}4-click-done`, {capture: 'viewport', blackout: ['[data-line="2"]:eq(0) > a > img', '[data-hide-in-vrt="true"]']});
 
+    //Hide release and license
+    cy.screenshot(`${ssPrefix}4-click-done`, {
+      capture: 'viewport',
+      blackout: ['[data-line="2"]:eq(0) > a > img', '[data-hide-in-vrt="true"]']});
   });
 
   it('Successfully duplicate page by generated tag', () => {
