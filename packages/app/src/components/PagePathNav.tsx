@@ -3,7 +3,7 @@ import React, { FC } from 'react';
 import { DevidedPagePath } from '@growi/core';
 import dynamic from 'next/dynamic';
 
-import { useIsNotFound } from '~/stores/context';
+import { useIsNotFound, useIsTrashPage } from '~/stores/context';
 
 import LinkedPagePath from '../models/linked-page-path';
 
@@ -24,6 +24,7 @@ const PagePathNav: FC<Props> = (props: Props) => {
   const dPagePath = new DevidedPagePath(pagePath, false, true);
 
   const { data: isNotFound } = useIsNotFound();
+  const { data: isTrashPage } = useIsTrashPage();
 
   const CopyDropdown = dynamic(() => import('./Page/CopyDropdown'), { ssr: false });
 
@@ -33,14 +34,14 @@ const PagePathNav: FC<Props> = (props: Props) => {
   // one line
   if (dPagePath.isRoot || dPagePath.isFormerRoot || isSingleLineMode) {
     const linkedPagePath = new LinkedPagePath(pagePath);
-    latterLink = <PagePathHierarchicalLink linkedPagePath={linkedPagePath} />;
+    latterLink = <PagePathHierarchicalLink linkedPagePath={linkedPagePath} isInTrash={isTrashPage} />;
   }
   // two line
   else {
     const linkedPagePathFormer = new LinkedPagePath(dPagePath.former);
     const linkedPagePathLatter = new LinkedPagePath(dPagePath.latter);
     formerLink = <PagePathHierarchicalLink linkedPagePath={linkedPagePathFormer} />;
-    latterLink = <PagePathHierarchicalLink linkedPagePath={linkedPagePathLatter} basePath={dPagePath.former} />;
+    latterLink = <PagePathHierarchicalLink linkedPagePath={linkedPagePathLatter} basePath={dPagePath.former} isInTrash={isTrashPage} />;
   }
 
   const copyDropdownId = `copydropdown${isCompactMode ? '-subnav-compact' : ''}-${pageId}`;
