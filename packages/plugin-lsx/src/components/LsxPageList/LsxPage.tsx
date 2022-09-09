@@ -1,12 +1,10 @@
 import React, { useMemo } from 'react';
 
 import { pathUtils } from '@growi/core';
-import { PageListMeta } from '@growi/ui';
+import { PagePathLabel, PageListMeta } from '@growi/ui';
 
 import { PageNode } from '../PageNode';
 import { LsxContext } from '../lsx-context';
-
-import { PagePathWrapper } from './PagePathWrapper';
 
 
 type Props = {
@@ -66,8 +64,13 @@ export const LsxPage = React.memo((props: Props): JSX.Element => {
   }, [isExists]);
 
   const pagePathElement: JSX.Element = useMemo(() => {
+    const classNames: string[] = [];
+    if (!isExists) {
+      classNames.push('lsx-page-not-exist');
+    }
+
     // create PagePath element
-    let pagePathNode = <PagePathWrapper pagePath={pageNode.pagePath} isExists={isExists} />;
+    let pagePathNode = <PagePathLabel path={pageNode.pagePath} isLatterOnly additionalClassNames={classNames} />;
     if (isLinkable) {
       pagePathNode = <a className="page-list-link" href={encodeURI(pathUtils.removeTrailingSlash(pageNode.pagePath))}>{pagePathNode}</a>;
     }
