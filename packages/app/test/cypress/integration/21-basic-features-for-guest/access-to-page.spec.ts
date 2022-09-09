@@ -16,9 +16,6 @@ context('Access to page by guest', () => {
 
     // hide fab
     cy.getByTestid('grw-fab-container').invoke('attr', 'style', 'display: none');
-
-    // Collapse sidebar
-    cy.collapseSidebar(true);
     cy.screenshot(`${ssPrefix}-sandbox-headers`);
   });
 
