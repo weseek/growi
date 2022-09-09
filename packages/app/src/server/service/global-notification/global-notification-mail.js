@@ -57,24 +57,30 @@ class GlobalNotificationMailService {
     }
 
     const template = nodePath.join(this.crowi.localeDir, `${defaultLang}/notifications/${event}.txt`);
+
+    const appTitle = this.crowi.appService.getAppTitle();
+    const siteUrl = this.crowi.appService.getSiteUrl();
+    const pageUrl = new URL(path, siteUrl);
+
     let subject;
     let vars = {
-      appTitle: this.crowi.appService.getAppTitle(),
+      appTitle,
+      siteUrl,
       path,
       username: triggeredBy.username,
     };
 
     switch (event) {
       case this.event.PAGE_CREATE:
-        subject = `#${event} - ${triggeredBy.username} created ${path}`;
+        subject = `#${event} - ${triggeredBy.username} created ${path} at URL: ${pageUrl}`;
         break;
 
       case this.event.PAGE_EDIT:
-        subject = `#${event} - ${triggeredBy.username} edited ${path}`;
+        subject = `#${event} - ${triggeredBy.username} edited ${path} at URL: ${pageUrl}`;
         break;
 
       case this.event.PAGE_DELETE:
-        subject = `#${event} - ${triggeredBy.username} deleted ${path}`;
+        subject = `#${event} - ${triggeredBy.username} deleted ${path} at URL: ${pageUrl}`;
         break;
 
       case this.event.PAGE_MOVE:
@@ -83,7 +89,7 @@ class GlobalNotificationMailService {
           throw new Error(`invalid vars supplied to GlobalNotificationMailService.generateOption for event ${event}`);
         }
 
-        subject = `#${event} - ${triggeredBy.username} moved ${oldPath} to ${path}`;
+        subject = `#${event} - ${triggeredBy.username} moved ${oldPath} to ${path} at URL: ${pageUrl}`;
         vars = {
           ...vars,
           oldPath,
@@ -92,7 +98,7 @@ class GlobalNotificationMailService {
         break;
 
       case this.event.PAGE_LIKE:
-        subject = `#${event} - ${triggeredBy.username} liked ${path}`;
+        subject = `#${event} - ${triggeredBy.username} liked ${path} at URL: ${pageUrl}`;
         break;
 
       case this.event.COMMENT:
@@ -101,7 +107,7 @@ class GlobalNotificationMailService {
           throw new Error(`invalid vars supplied to GlobalNotificationMailService.generateOption for event ${event}`);
         }
 
-        subject = `#${event} - ${triggeredBy.username} commented on ${path}`;
+        subject = `#${event} - ${triggeredBy.username} commented on ${path} at URL: ${pageUrl}`;
         vars = {
           ...vars,
           comment: comment.comment,
