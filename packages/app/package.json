@@ -180,7 +180,7 @@
     "@types/multer": "^1.4.5",
     "@types/react-dom": "^17.0.9",
     "autoprefixer": "^9.0.0",
-    "bootstrap": "^4.5.0",
+    "bootstrap": "^5.2.1",
     "browser-sync": "^2.27.7",
     "bunyan-debug": "^2.0.0",
     "cli": "~1.0.1",
