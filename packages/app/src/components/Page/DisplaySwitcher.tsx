@@ -68,7 +68,7 @@ const DisplaySwitcher = React.memo((): JSX.Element => {
           <div className="d-flex flex-column flex-lg-row">
 
             <div className="flex-grow-1 flex-basis-0 mw-0">
-              { isUserPage && <UserInfo pageUser={pageUser} />}
+              { isUserPage && pageUser != null && <UserInfo pageUser={pageUser} />}
               { !isNotFound && <Page /> }
               { isNotFound && <NotFoundPage /> }
             </div>
