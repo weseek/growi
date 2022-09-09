@@ -584,7 +584,7 @@ class CodeMirrorEditor extends AbstractEditor {
   }
 
   keyUpHandler(editor, event) {
-    if (event.key !== 'Backspace') {
+    if (event.key === ':') {
       this.checkWhetherEmojiPickerShouldBeShown();
     }
   }

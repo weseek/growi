@@ -32,7 +32,7 @@ type EditorPropsType = {
   onChange?: (newValue: string, isClean?: boolean) => void,
   onUpload?: (file) => void,
   indentSize?: number,
-  onScroll?: ({ line: number }) => void,
+  onScroll?: (line: { line: number }) => void,
   onScrollCursorIntoView?: (line: number) => void,
   onSave?: () => Promise<void>,
   onPasteFiles?: (event: Event) => void,
