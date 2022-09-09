@@ -17,6 +17,8 @@ type Props = {
   isCompactMode?:boolean,
 }
 
+const CopyDropdown = dynamic(() => import('./Page/CopyDropdown'), { ssr: false });
+
 const PagePathNav: FC<Props> = (props: Props) => {
   const {
     pageId, pagePath, isSingleLineMode, isCompactMode,
@@ -25,8 +27,6 @@ const PagePathNav: FC<Props> = (props: Props) => {
 
   const { data: isNotFound } = useIsNotFound();
   const { data: isTrashPage } = useIsTrashPage();
-
-  const CopyDropdown = dynamic(() => import('./Page/CopyDropdown'), { ssr: false });
 
   let formerLink;
   let latterLink;
