@@ -55,12 +55,6 @@ context('Access to pagelist', () => {
     cy.getByTestid('page-accessories-modal').parent().should('have.class','show').within(() => {
       cy.get('button.close').eq(1).click();
     });
-
-    // Hide release & license on home page , page-list count and page creation & date
-    cy.screenshot(`${ssPrefix}8-close-page-list-modal`, {
-      capture: 'viewport',
-      blackout: ['[data-line="2"]:eq(0) > a > img', '[data-hide-in-vrt=true]', '[data-testid="pageListButton"] > span']
-    });
   });
 });
 
@@ -90,18 +84,6 @@ context('Access to timeline', () => {
       cy.get('.nav-title > li').eq(1).find('a').click();
       cy.get('button.close').eq(0).click();
     });
-
-    // Hide release & license on home page , page-list count and page creation & date
-    cy.screenshot(`${ssPrefix}2-timeline-list-fullscreen`, {
-      capture: 'viewport',
-      blackout: ['.card-timeline:eq(0) > .card-body > #wiki > p > a > img']
-    });
-    cy.getByTestid('page-accessories-modal').parent().should('have.class','show').within(() => {
-      cy.get('button.close').eq(1).click();
-    });
-    cy.screenshot(`${ssPrefix}3-close-modal`, {
-      capture: 'viewport',
-      blackout: ['[data-line="2"]:eq(0) > a > img', '[data-hide-in-vrt="true"]','[data-testid="pageListButton"] > span']
-    });
+    cy.screenshot(`${ssPrefix}2-timeline-list-fullscreen`, {capture: 'viewport'});
   });
 });
