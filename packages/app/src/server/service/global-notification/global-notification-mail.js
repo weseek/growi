@@ -20,17 +20,17 @@ class GlobalNotificationMailService {
    * @memberof GlobalNotificationMailService
    *
    * @param {string} event event name triggered
-   * @param {string} path path triggered the event
+   * @param {import('~/server/models/page').PageDocument} page page triggered the event
    * @param {User} triggeredBy user who triggered the event
    * @param {{ comment: Comment, oldPath: string }} _ event specific vars
    */
-  async fire(event, path, triggeredBy, vars) {
+  async fire(event, page, triggeredBy, vars) {
     const { mailService } = this.crowi;
 
     const GlobalNotification = this.crowi.model('GlobalNotificationSetting');
-    const notifications = await GlobalNotification.findSettingByPathAndEvent(event, path, this.type);
+    const notifications = await GlobalNotification.findSettingByPathAndEvent(event, page.path, this.type);
 
-    const option = this.generateOption(event, path, triggeredBy, vars);
+    const option = this.generateOption(event, page, triggeredBy, vars);
 
     await Promise.all(notifications.map((notification) => {
       return mailService.send({ ...option, to: notification.toEmail });
@@ -43,24 +43,25 @@ class GlobalNotificationMailService {
    * @memberof GlobalNotificationMailService
    *
    * @param {string} event event name triggered
-   * @param {string} path path triggered the event
+   * @param {import('~/server/models/page').PageDocument} page path triggered the event
    * @param {User} triggeredBy user triggered the event
    * @param {{ comment: Comment, oldPath: string }} _ event specific vars
    *
    * @return  {{ subject: string, template: string, vars: object }}
    */
-  generateOption(event, path, triggeredBy, { comment, oldPath }) {
+  generateOption(event, page, triggeredBy, { comment, oldPath }) {
     const defaultLang = this.crowi.configManager.getConfig('crowi', 'app:globalLang');
     // validate for all events
-    if (event == null || path == null || triggeredBy == null) {
+    if (event == null || page == null || triggeredBy == null) {
       throw new Error(`invalid vars supplied to GlobalNotificationMailService.generateOption for event ${event}`);
     }
 
     const template = nodePath.join(this.crowi.localeDir, `${defaultLang}/notifications/${event}.txt`);
 
+    const path = page.path;
     const appTitle = this.crowi.appService.getAppTitle();
     const siteUrl = this.crowi.appService.getSiteUrl();
-    const pageUrl = new URL(path, siteUrl);
+    const pageUrl = new URL(page._id, siteUrl);
 
     let subject;
     let vars = {
