@@ -137,35 +137,35 @@ class PageSubstance extends React.Component<PageSubstanceProps> {
   }
 
   async saveHandlerForDrawioModal(drawioData) {
-    // const {
-    //   isSlackEnabled, slackChannels, pageContainer, pageTags, grant, grantGroupId, grantGroupName, mutateIsEnabledUnsavedWarning,
-    // } = this.props;
-    // const optionsToSave = getOptionsToSave(isSlackEnabled, slackChannels, grant, grantGroupId, grantGroupName, pageTags);
+  //   const {
+  //     isSlackEnabled, slackChannels, pageContainer, pageTags, grant, grantGroupId, grantGroupName, mutateIsEnabledUnsavedWarning,
+  //   } = this.props;
+  //   const optionsToSave = getOptionsToSave(isSlackEnabled, slackChannels, grant, grantGroupId, grantGroupName, pageTags);
 
-    // const newMarkdown = mdu.replaceDrawioInMarkdown(
-    //   drawioData,
-    //   this.props.pageContainer.state.markdown,
-    //   this.state.currentTargetDrawioArea.beginLineNumber,
-    //   this.state.currentTargetDrawioArea.endLineNumber,
-    // );
+  //   const newMarkdown = mdu.replaceDrawioInMarkdown(
+  //     drawioData,
+  //     this.props.pageContainer.state.markdown,
+  //     this.state.currentTargetDrawioArea.beginLineNumber,
+  //     this.state.currentTargetDrawioArea.endLineNumber,
+  //   );
 
-    // try {
-    //   // disable unsaved warning
-    //   mutateIsEnabledUnsavedWarning(false);
+  //   try {
+  //     // disable unsaved warning
+  //     mutateIsEnabledUnsavedWarning(false);
 
-    //   // eslint-disable-next-line no-unused-vars
-    //   const { page, tags } = await pageContainer.save(newMarkdown, this.props.editorMode, optionsToSave);
-    //   logger.debug('success to save');
+  //     // eslint-disable-next-line no-unused-vars
+  //     const { page, tags } = await pageContainer.save(newMarkdown, this.props.editorMode, optionsToSave);
+  //     logger.debug('success to save');
 
-    //   pageContainer.showSuccessToastr();
-    // }
-    // catch (error) {
-    //   logger.error('failed to save', error);
-    //   pageContainer.showErrorToastr(error);
-    // }
-    // finally {
-    //   this.setState({ currentTargetDrawioArea: null });
-    // }
+  //     pageContainer.showSuccessToastr();
+  //   }
+  //   catch (error) {
+  //     logger.error('failed to save', error);
+  //     pageContainer.showErrorToastr(error);
+  //   }
+  //   finally {
+  //     this.setState({ currentTargetDrawioArea: null });
+  //   }
   }
 
   override render() {

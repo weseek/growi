@@ -17,6 +17,7 @@ import { UncontrolledCodeMirror } from '../UncontrolledCodeMirror';
 import AbstractEditor from './AbstractEditor';
 import CommentMentionHelper from './CommentMentionHelper';
 import { DrawioModal } from './DrawioModal';
+import { useDrawioModal } from '~/stores/modal';
 import EditorIcon from './EditorIcon';
 import EmojiPicker from './EmojiPicker';
 import EmojiPickerHelper from './EmojiPickerHelper';
@@ -229,14 +230,14 @@ class CodeMirrorEditor extends AbstractEditor {
   forceToFocus() {
     const editor = this.getCodeMirror();
     // use setInterval with reluctance -- 2018.01.11 Yuki Takei
-    const intervalId = setInterval(() => {
-      this.getCodeMirror().focus();
-      if (editor.hasFocus()) {
-        clearInterval(intervalId);
-        // refresh
-        editor.refresh();
-      }
-    }, 100);
+    // const intervalId = setInterval(() => {
+    //   this.getCodeMirror().focus();
+    //   if (editor.hasFocus()) {
+    //     clearInterval(intervalId);
+    //     // refresh
+    //     editor.refresh();
+    //   }
+    // }, 100);
   }
 
   /**
@@ -793,7 +794,8 @@ class CodeMirrorEditor extends AbstractEditor {
   }
 
   showDrawioHandler() {
-    this.drawioModal.current.show(mdu.getMarkdownDrawioMxfile(this.getCodeMirror()));
+    this.props.onClickDrawioBtn(mdu.getMarkdownDrawioMxfile(this.getCodeMirror()))
+    // this.drawioModal.current.show(mdu.getMarkdownDrawioMxfile(this.getCodeMirror()));
   }
 
 
@@ -1079,4 +1081,14 @@ CodeMirrorEditor.defaultProps = {
   lineNumbers: true,
 };
 
-export default CodeMirrorEditor;
+const CodeMirrorEditorFc = React.forwardRef((props, ref) => {
+  const {open: openDrawioModal } = useDrawioModal();
+
+  const openDrawioModalHandler = (drawioMxFile) => {
+    openDrawioModal(drawioMxFile);
+  };
+
+  return <CodeMirrorEditor ref={ref} {...props} onClickDrawioBtn={(drawioMxFile) => openDrawioModalHandler(drawioMxFile) } />
+});
+
+export default CodeMirrorEditorFc;
