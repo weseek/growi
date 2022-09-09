@@ -9,8 +9,9 @@ import { IUserUISettings } from '~/interfaces/user-ui-settings';
 import UserUISettings from '~/server/models/user-ui-settings';
 
 import { BasicLayout } from '../components/Layout/BasicLayout';
+import GrowiContextualSubNavigation from '../components/Navbar/GrowiContextualSubNavigation';
 import {
-  useCurrentUser, useCurrentPagePath, useCurrentPathname,
+  useCurrentUser, useCurrentPageId, useCurrentPagePath, useCurrentPathname,
   useIsSearchServiceConfigured, useIsSearchServiceReachable,
   useIsSearchScopeChildrenAsDefault,
 } from '../stores/context';
@@ -20,8 +21,6 @@ import {
 } from './utils/commons';
 
 const TrashPageList = dynamic(() => import('~/components/TrashPageList').then(mod => mod.TrashPageList), { ssr: false });
-const GrowiContextualSubNavigation = dynamic(() => import('~/components/Navbar/GrowiContextualSubNavigation'), { ssr: true });
-
 const EmptyTrashModal = dynamic(() => import('~/components/EmptyTrashModal'), { ssr: false });
 
 type Props = CommonProps & {
@@ -39,6 +38,7 @@ const TrashPage: NextPage<CommonProps> = (props: Props) => {
   useIsSearchServiceReachable(props.isSearchServiceReachable);
   useIsSearchScopeChildrenAsDefault(props.isSearchScopeChildrenAsDefault);
 
+  useCurrentPageId(null);
   useCurrentPathname('/trash');
   useCurrentPagePath('/trash');
 
