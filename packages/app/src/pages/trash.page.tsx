@@ -10,7 +10,7 @@ import UserUISettings from '~/server/models/user-ui-settings';
 
 import { BasicLayout } from '../components/Layout/BasicLayout';
 import {
-  useCurrentUser, useIsTrashPage, useCurrentPagePath, useCurrentPathname,
+  useCurrentUser, useCurrentPagePath, useCurrentPathname,
   useIsSearchServiceConfigured, useIsSearchServiceReachable,
   useIsSearchScopeChildrenAsDefault,
 } from '../stores/context';
@@ -39,7 +39,6 @@ const TrashPage: NextPage<CommonProps> = (props: Props) => {
   useIsSearchServiceReachable(props.isSearchServiceReachable);
   useIsSearchScopeChildrenAsDefault(props.isSearchScopeChildrenAsDefault);
 
-  useIsTrashPage(true);
   useCurrentPathname('/trash');
   useCurrentPagePath('/trash');
 

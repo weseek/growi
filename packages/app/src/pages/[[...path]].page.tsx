@@ -243,7 +243,6 @@ const GrowiPage: NextPage<Props> = (props: Props) => {
   useCurrentPageId(pageId);
   useSWRxCurrentPage(undefined, pageWithMeta?.data); // store initial data
   useSWRxPageInfo(pageId, undefined, pageWithMeta?.meta); // store initial data
-  useIsTrashPage(_isTrashPage(pagePath));
   useIsUserPage(isUserPage(pagePath));
   useIsNotCreatable(props.isForbidden || !isCreatablePage(pagePath)); // TODO: need to include props.isIdentical
   useCurrentPagePath(pagePath);

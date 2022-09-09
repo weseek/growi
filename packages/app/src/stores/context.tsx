@@ -1,7 +1,7 @@
+import { pagePathUtils } from '@growi/core';
 import { HtmlElementNode } from 'rehype-toc';
 import { Key, SWRResponse } from 'swr';
 import useSWRImmutable from 'swr/immutable';
-
 
 import { SupportedActionType } from '~/interfaces/activity';
 import { EditorConfig } from '~/interfaces/editor-settings';
@@ -17,6 +17,8 @@ import { useStaticSWR } from './use-static-swr';
 
 
 type Nullable<T> = T | null;
+
+const { isTrashPage } = pagePathUtils;
 
 
 export const useInterceptorManager = (): SWRResponse<InterceptorManager, Error> => {
@@ -83,9 +85,9 @@ export const useIsUserPage = (initialData?: boolean): SWRResponse<boolean, Error
   return useStaticSWR<boolean, Error>('isUserPage', initialData, { fallbackData: false });
 };
 
-export const useIsTrashPage = (initialData?: boolean): SWRResponse<boolean, Error> => {
-  return useStaticSWR<boolean, Error>('isTrashPage', initialData, { fallbackData: false });
-};
+// export const useIsTrashPage = (initialData?: boolean): SWRResponse<boolean, Error> => {
+//   return useStaticSWR<boolean, Error>('isTrashPage', initialData, { fallbackData: false });
+// };
 
 export const useIsNotCreatable = (initialData?: boolean): SWRResponse<boolean, Error> => {
   return useStaticSWR<boolean, Error>('isNotCreatable', initialData, { fallbackData: false });
@@ -270,6 +272,17 @@ export const useIsGuestUser = (): SWRResponse<boolean, Error> => {
     ['isGuestUser', currentUser],
     (key: Key, currentUser: IUser) => currentUser == null,
     { fallbackData: currentUser == null },
+  );
+};
+
+export const useIsTrashPage = (): SWRResponse<boolean, Error> => {
+  const { data: currentPagePath } = useCurrentPagePath();
+
+  const result = isTrashPage(currentPagePath || '');
+
+  return useSWRImmutable(
+    ['isTrashPage', result],
+    (key: Key, isTrashPage: boolean) => isTrashPage,
   );
 };
 
