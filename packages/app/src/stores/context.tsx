@@ -277,7 +277,7 @@ export const useIsTrashPage = (): SWRResponse<boolean, Error> => {
   const result = isTrashPage(currentPagePath || '');
 
   return useSWRImmutable(
-    ['isTrashPage', result],
+    currentPagePath != null ? ['isTrashPage', result] : null,
     (key: Key, isTrashPage: boolean) => isTrashPage,
   );
 };

@@ -3,6 +3,8 @@ import React, { memo } from 'react';
 import Link from 'next/link';
 import urljoin from 'url-join';
 
+import { useIsTrashPage } from '~/stores/context';
+
 import LinkedPagePath from '../models/linked-page-path';
 
 
@@ -21,13 +23,16 @@ const PagePathHierarchicalLink = memo((props: PagePathHierarchicalLinkProps): JS
   const {
     linkedPagePath, linkedPagePathByHtml, basePath, isInTrash,
   } = props;
+
+  const { data: isTrashPage } = useIsTrashPage();
+
   // render root element
   if (linkedPagePath.isRoot) {
     if (basePath != null) {
       return <></>;
     }
 
-    return isInTrash
+    return isTrashPage || isInTrash
       ? (
         <>
           <span className="path-segment">
