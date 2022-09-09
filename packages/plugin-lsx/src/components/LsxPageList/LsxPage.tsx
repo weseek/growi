@@ -1,67 +1,54 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 
 import { pathUtils } from '@growi/core';
 import { PageListMeta } from '@growi/ui';
-import PropTypes from 'prop-types';
 
 import { PageNode } from '../PageNode';
 import { LsxContext } from '../lsx-context';
 
 import { PagePathWrapper } from './PagePathWrapper';
 
-export class LsxPage extends React.Component {
 
-  constructor(props) {
-    super(props);
+type Props = {
+  pageNode: PageNode,
+  lsxContext: LsxContext,
+  depth: number,
+  basisViewersCount?: number,
+};
 
-    this.state = {
-      isExists: false,
-      isLinkable: false,
-      hasChildren: false,
-    };
-  }
+export const LsxPage = React.memo((props: Props): JSX.Element => {
+  const {
+    pageNode, lsxContext, depth, basisViewersCount,
+  } = props;
 
-  UNSAFE_componentWillMount() {
-    const pageNode = this.props.pageNode;
-
-    if (pageNode.page !== undefined) {
-      this.setState({ isExists: true });
-    }
-    if (pageNode.children.length > 0) {
-      this.setState({ hasChildren: true });
-    }
-
+  const isExists = pageNode.page !== undefined;
+  const isLinkable = (() => {
     // process depth option
-    const optDepth = this.props.lsxContext.getOptDepth();
+    const optDepth = lsxContext.getOptDepth();
     if (optDepth == null) {
-      this.setState({ isLinkable: true });
+      return true;
     }
-    else {
-      const depth = this.props.depth;
 
-      // debug
-      // console.log(pageNode.pagePath, {depth, decGens, 'optDepth.start': optDepth.start, 'optDepth.end': optDepth.end});
+    // debug
+    // console.log(pageNode.pagePath, {depth, decGens, 'optDepth.start': optDepth.start, 'optDepth.end': optDepth.end});
 
-      const isLinkable = optDepth.start <= depth;
-      this.setState({ isLinkable });
-    }
-  }
+    return optDepth.start <= depth;
+  })();
+  const hasChildren = pageNode.children.length > 0;
 
-  getChildPageElement() {
-    const pageNode = this.props.pageNode;
-
-    let element = '';
+  const childrenElements: JSX.Element = useMemo(() => {
+    let element = <></>;
 
     // create child pages elements
-    if (this.state.hasChildren) {
+    if (hasChildren) {
       const pages = pageNode.children.map((pageNode) => {
         return (
           <LsxPage
             key={pageNode.pagePath}
-            depth={this.props.depth + 1}
+            depth={depth + 1}
             pageNode={pageNode}
-            lsxContext={this.props.lsxContext}
-            basisViewersCount={this.props.basisViewersCount}
+            lsxContext={lsxContext}
+            basisViewersCount={basisViewersCount}
           />
         );
       });
@@ -70,40 +57,36 @@ export class LsxPage extends React.Component {
     }
 
     return element;
-  }
+  }, [basisViewersCount, depth, hasChildren, lsxContext, pageNode.children]);
 
-  getIconElement() {
-    return (this.state.isExists)
+  const iconElement: JSX.Element = useMemo(() => {
+    return (isExists)
       ? <i className="ti ti-agenda" aria-hidden="true"></i>
       : <i className="ti ti-file lsx-page-not-exist" aria-hidden="true"></i>;
-  }
+  }, [isExists]);
 
-  render() {
-    const { pageNode, basisViewersCount } = this.props;
-
+  const pagePathElement: JSX.Element = useMemo(() => {
     // create PagePath element
-    let pagePathNode = <PagePathWrapper pagePath={pageNode.pagePath} isExists={this.state.isExists} />;
-    if (this.state.isLinkable) {
+    let pagePathNode = <PagePathWrapper pagePath={pageNode.pagePath} isExists={isExists} />;
+    if (isLinkable) {
       pagePathNode = <a className="page-list-link" href={encodeURI(pathUtils.removeTrailingSlash(pageNode.pagePath))}>{pagePathNode}</a>;
     }
+    return pagePathNode;
+  }, [isExists, isLinkable, pageNode.pagePath]);
 
-    // create PageListMeta element
-    const pageListMeta = (this.state.isExists) ? <PageListMeta page={pageNode.page} basisViewersCount={basisViewersCount} /> : '';
+  const pageListMetaElement: JSX.Element = useMemo(() => {
+    if (!isExists) {
+      return <></>;
+    }
+    return <PageListMeta page={pageNode.page} basisViewersCount={basisViewersCount} />;
+  }, [basisViewersCount, isExists, pageNode.page]);
 
-    return (
-      <li className="page-list-li">
-        <small>{this.getIconElement()}</small> {pagePathNode}
-        <span className="ml-2">{pageListMeta}</span>
-        {this.getChildPageElement()}
-      </li>
-    );
-  }
+  return (
+    <li className="page-list-li">
+      <small>{iconElement}</small> {pagePathElement}
+      <span className="ml-2">{pageListMetaElement}</span>
+      {childrenElements}
+    </li>
+  );
 
-}
-
-LsxPage.propTypes = {
-  pageNode: PropTypes.instanceOf(PageNode).isRequired,
-  lsxContext: PropTypes.instanceOf(LsxContext).isRequired,
-  depth: PropTypes.number,
-  basisViewersCount: PropTypes.number,
-};
+});
