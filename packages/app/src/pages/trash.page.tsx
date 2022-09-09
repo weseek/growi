@@ -50,11 +50,11 @@ const TrashPage: NextPage<CommonProps> = (props: Props) => {
           <GrowiContextualSubNavigation isLinkSharingDisabled={false} />
         </header>
 
-        <div id="grw-fav-sticky-trigger" className="sticky-top"></div>
-
         <div className="grw-container-convertible mb-5 pb-5">
           <TrashPageList />
         </div>
+
+        <div id="grw-fav-sticky-trigger" className="sticky-top"></div>
       </BasicLayout>
 
       <EmptyTrashModal />
