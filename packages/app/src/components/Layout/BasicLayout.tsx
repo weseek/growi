@@ -3,7 +3,6 @@ import React, { ReactNode } from 'react';
 import dynamic from 'next/dynamic';
 
 import { GrowiNavbar } from '../Navbar/GrowiNavbar';
-import { DrawioModal } from '../PageEditor/DrawioModal';
 import Sidebar from '../Sidebar';
 
 import { RawLayout } from './RawLayout';
@@ -22,6 +21,7 @@ const PageDeleteModal = dynamic(() => import('../PageDeleteModal'), { ssr: false
 const PageRenameModal = dynamic(() => import('../PageRenameModal'), { ssr: false });
 const PagePresentationModal = dynamic(() => import('../PagePresentationModal'), { ssr: false });
 const PageAccessoriesModal = dynamic(() => import('../PageAccessoriesModal'), { ssr: false });
+const DrawioModal = dynamic(() => import('../PageEditor/DrawioModal').then(mod => mod.DrawioModal), { ssr: false });
 // Fab
 const Fab = dynamic(() => import('../Fab'), { ssr: false });
 

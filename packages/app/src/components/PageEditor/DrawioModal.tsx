@@ -23,11 +23,15 @@ type Props = {
 
 export const DrawioModal = React.forwardRef((props: Props, ref: React.LegacyRef<Modal>): JSX.Element => {
   const { data: growiHydratedEnv } = useGrowiHydratedEnv();
+
+  console.log({ growiHydratedEnv });
   // const [isShown, setIsShown] = useState(false);
 
   const { data: drawioModalData, close: closeDrawioModal } = useDrawioModal();
+  console.log({ drawioModalData });
   const isOpened = drawioModalData?.isOpened ?? false;
   const drawioMxFile = drawioModalData?.drawioMxFile ?? '';
+  console.log({ drawioMxFile });
   // const { isOpened, drawioMxFile } = drawioModalData;
   // const [drawioMxFile, setDrawioMxFile] = useState('');
 
@@ -118,14 +122,17 @@ export const DrawioModal = React.forwardRef((props: Props, ref: React.LegacyRef<
     const url = new URL(drawioUri);
 
     // refs: https://desk.draw.io/support/solutions/articles/16000042546-what-url-parameters-are-supported-
-    url.searchParams.append('spin', '1');
-    url.searchParams.append('embed', '1');
+    url.searchParams.append('spin', 1);
+    url.searchParams.append('embed', 1);
     url.searchParams.append('lang', getDiagramsNetLangCode(i18next.language));
     url.searchParams.append('ui', 'atlas');
-    url.searchParams.append('configure', '1');
+    url.searchParams.append('configure', 1);
 
     return url.toString();
   }, [growiHydratedEnv?.DRAWIO_URI]);
+
+
+  console.log({ drawioUrl });
 
   return (
     <Modal
@@ -139,11 +146,11 @@ export const DrawioModal = React.forwardRef((props: Props, ref: React.LegacyRef<
     >
       <ModalBody className="p-0">
         {/* Loading spinner */}
-        <div className="w-100 h-100 position-absolute d-flex">
+        {/* <div className="w-100 h-100 position-absolute d-flex">
           <div className="mx-auto my-auto">
             <i className="fa fa-3x fa-spinner fa-pulse mx-auto text-muted"></i>
           </div>
-        </div>
+        </div> */}
         {/* iframe */}
         <div className="w-100 h-100 position-absolute d-flex">
           { isOpened && (
@@ -152,6 +159,7 @@ export const DrawioModal = React.forwardRef((props: Props, ref: React.LegacyRef<
               className="border-0 flex-grow-1"
             >
             </iframe>
+            // <>hoge</>
           ) }
         </div>
       </ModalBody>
