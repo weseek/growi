@@ -63,7 +63,7 @@ export const isMovablePage = (path: string): boolean => {
  * @param path
  */
 export const isUserPage = (path: string): boolean => {
-  // https://regex101.com/r/BSDdRr/1
+  // https://regex101.com/r/MwifLR/1
   if (path.match(/^\/user\/.*?$/)) {
     return true;
   }
