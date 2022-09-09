@@ -3,11 +3,7 @@ context('Access to page by guest', () => {
 
   beforeEach(() => {
     // collapse sidebar
-    cy.getByTestid('grw-contextual-navigation-sub').then(($el) => {
-      if(!$el.hasClass('d-none')){
-        cy.getByTestid('grw-navigation-resize-button').click({force: true});
-      }
-    });
+    cy.collapseSidebar(true);
   });
 
   it('/Sandbox is successfully loaded', () => {
@@ -20,6 +16,13 @@ context('Access to page by guest', () => {
 
     // hide fab
     cy.getByTestid('grw-fab-container').invoke('attr', 'style', 'display: none');
+
+    // Collapse sidebar
+    cy.getByTestid('grw-contextual-navigation-sub').then(($el) => {
+      if(!$el.hasClass('d-none')){
+        cy.getByTestid('grw-navigation-resize-button').click({force: true});
+      }
+    });
     cy.screenshot(`${ssPrefix}-sandbox-headers`);
   });
 
@@ -28,11 +31,23 @@ context('Access to page by guest', () => {
 
     cy.get('mjx-container').should('be.visible');
 
+     // Collapse sidebar
+     cy.getByTestid('grw-contextual-navigation-sub').then(($el) => {
+      if(!$el.hasClass('d-none')){
+        cy.getByTestid('grw-navigation-resize-button').click({force: true});
+      }
+    });
     cy.screenshot(`${ssPrefix}-sandbox-math`);
   });
 
   it('/Sandbox with edit is successfully loaded', () => {
     cy.visit('/Sandbox#edit');
+     // Collapse sidebar
+     cy.getByTestid('grw-contextual-navigation-sub').then(($el) => {
+      if(!$el.hasClass('d-none')){
+        cy.getByTestid('grw-navigation-resize-button').click({force: true});
+      }
+    });
     cy.screenshot(`${ssPrefix}-sandbox-edit-page`);
   })
 
@@ -66,14 +81,18 @@ context('Access to special pages by guest', () => {
   it('/trash is successfully loaded', () => {
     cy.visit('/trash', {  });
     cy.getByTestid('trash-page-list').should('be.visible');
+     // Collapse sidebar
+     cy.getByTestid('grw-contextual-navigation-sub').then(($el) => {
+      if(!$el.hasClass('d-none')){
+        cy.getByTestid('grw-navigation-resize-button').click({force: true});
+      }
+    });
     cy.screenshot(`${ssPrefix}-trash`);
   });
 
   it('/tags is successfully loaded', () => {
     cy.visit('/tags');
 
-    // open sidebar
-    cy.collapseSidebar(false);
     // select tags
     cy.getByTestid('grw-sidebar-nav-primary-tags').click();
     cy.getByTestid('grw-sidebar-content-tags').should('be.visible');
@@ -81,6 +100,12 @@ context('Access to special pages by guest', () => {
     cy.getByTestid('grw-tags-list').contains('You have no tag, You can set tags on pages');
 
     cy.getByTestid('tags-page').should('be.visible');
+     // Open sidebar
+     cy.getByTestid('grw-contextual-navigation-sub').then(($el) => {
+      if($el.hasClass('d-none')){
+        cy.getByTestid('grw-navigation-resize-button').click({force: true});
+      }
+    });
     cy.screenshot(`${ssPrefix}-tags`);
   });
 
