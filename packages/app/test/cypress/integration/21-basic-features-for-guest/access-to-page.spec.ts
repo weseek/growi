@@ -3,7 +3,11 @@ context('Access to page by guest', () => {
 
   beforeEach(() => {
     // collapse sidebar
-    cy.collapseSidebar(true);
+    cy.getByTestid('grw-contextual-navigation-sub').then(($el) => {
+      if(!$el.hasClass('d-none')){
+        cy.getByTestid('grw-navigation-resize-button').click({force: true});
+      }
+    });
   });
 
   it('/Sandbox is successfully loaded', () => {
