@@ -43,15 +43,12 @@ const EmptyTrashButton: FC = () => {
     openEmptyTrashModal(deletablePages, { onEmptiedTrash: onEmptiedTrashHandler, canDelepeAllPages: pagingResult?.totalCount === deletablePages.length });
   };
 
-  if (deletablePages.length === 0) {
-    return <></>;
-  }
-
   return (
     <div className="d-flex align-items-center">
       <button
         type="button"
         className="btn btn-outline-secondary rounded-pill text-danger d-flex align-items-center"
+        disabled={deletablePages.length === 0}
         onClick={() => emptyTrashClickHandler()}
       >
         <i className="icon-fw icon-trash"></i>
