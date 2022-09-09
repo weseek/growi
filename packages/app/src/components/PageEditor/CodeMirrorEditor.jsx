@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useCallback } from 'react';
 
 import { createValidator } from '@growi/codemirror-textlint';
 import { commands } from 'codemirror';
@@ -10,6 +10,7 @@ import * as loadScript from 'simple-load-script';
 import urljoin from 'url-join';
 
 import InterceptorManager from '~/services/interceptor-manager';
+import { useDrawioModal } from '~/stores/modal';
 import loggerFactory from '~/utils/logger';
 
 import { UncontrolledCodeMirror } from '../UncontrolledCodeMirror';
@@ -17,7 +18,6 @@ import { UncontrolledCodeMirror } from '../UncontrolledCodeMirror';
 import AbstractEditor from './AbstractEditor';
 import CommentMentionHelper from './CommentMentionHelper';
 import { DrawioModal } from './DrawioModal';
-import { useDrawioModal } from '~/stores/modal';
 import EditorIcon from './EditorIcon';
 import EmojiPicker from './EmojiPicker';
 import EmojiPickerHelper from './EmojiPickerHelper';
@@ -143,7 +143,7 @@ class CodeMirrorEditor extends AbstractEditor {
     this.showGridEditorHandler = this.showGridEditorHandler.bind(this);
     this.showLinkEditHandler = this.showLinkEditHandler.bind(this);
     this.showHandsonTableHandler = this.showHandsonTableHandler.bind(this);
-    this.showDrawioHandler = this.showDrawioHandler.bind(this);
+    this.clickDrawioHandler = this.clickDrawioHandler.bind(this);
 
     this.foldDrawioSection = this.foldDrawioSection.bind(this);
     this.onSaveForDrawio = this.onSaveForDrawio.bind(this);
@@ -793,8 +793,8 @@ class CodeMirrorEditor extends AbstractEditor {
     // this.handsontableModal.current.show(mtu.getMarkdownTable(this.getCodeMirror()));
   }
 
-  showDrawioHandler() {
-    this.props.onClickDrawioBtn(mdu.getMarkdownDrawioMxfile(this.getCodeMirror()))
+  clickDrawioHandler() {
+    this.props.onClickDrawioBtn(mdu.getMarkdownDrawioMxfile(this.getCodeMirror()));
     // this.drawioModal.current.show(mdu.getMarkdownDrawioMxfile(this.getCodeMirror()));
   }
 
@@ -949,7 +949,7 @@ class CodeMirrorEditor extends AbstractEditor {
         color={null}
         bssize="small"
         title="draw.io"
-        onClick={this.showDrawioHandler}
+        onClick={this.clickDrawioHandler}
       >
         <EditorIcon icon="Drawio" />
       </Button>,
@@ -1075,6 +1075,7 @@ CodeMirrorEditor.propTypes = Object.assign({
   editorSettings: PropTypes.object.isRequired,
   onMarkdownHelpButtonClicked: PropTypes.func,
   onAddAttachmentButtonClicked: PropTypes.func,
+  onClickDrawioBtn: PropTypes.func,
 }, AbstractEditor.propTypes);
 
 CodeMirrorEditor.defaultProps = {
@@ -1082,13 +1083,15 @@ CodeMirrorEditor.defaultProps = {
 };
 
 const CodeMirrorEditorFc = React.forwardRef((props, ref) => {
-  const {open: openDrawioModal } = useDrawioModal();
+  const { open: openDrawioModal } = useDrawioModal();
 
-  const openDrawioModalHandler = (drawioMxFile) => {
+  const openDrawioModalHandler = useCallback((drawioMxFile) => {
     openDrawioModal(drawioMxFile);
-  };
+  }, [openDrawioModal]);
 
-  return <CodeMirrorEditor ref={ref} {...props} onClickDrawioBtn={(drawioMxFile) => openDrawioModalHandler(drawioMxFile) } />
+  return <CodeMirrorEditor ref={ref} {...props} onClickDrawioBtn={openDrawioModalHandler} />;
 });
+
+CodeMirrorEditorFc.displayName = 'CodeMirrorEditorFc';
 
 export default CodeMirrorEditorFc;
