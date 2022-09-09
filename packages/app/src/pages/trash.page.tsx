@@ -1,3 +1,5 @@
+import React from 'react';
+
 import {
   IUser, IUserHasId,
 } from '@growi/core';
