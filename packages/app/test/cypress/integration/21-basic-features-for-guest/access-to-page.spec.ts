@@ -22,6 +22,13 @@ context('Access to page by guest', () => {
 
     // hide fab
     cy.getByTestid('grw-fab-container').invoke('attr', 'style', 'display: none');
+
+    // Collapse sidebar
+    cy.getByTestid('grw-contextual-navigation-sub').then(($el) => {
+      if(!$el.hasClass('d-none')){
+        cy.getByTestid('grw-navigation-resize-button').click({force: true});
+      }
+    });
     cy.screenshot(`${ssPrefix}-sandbox-headers`);
   });
 
