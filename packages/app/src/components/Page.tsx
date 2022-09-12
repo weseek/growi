@@ -30,6 +30,11 @@ import RevisionRenderer from './Page/RevisionRenderer';
 // import mdu from './PageEditor/MarkdownDrawioUtil';
 // import mtu from './PageEditor/MarkdownTableUtil';
 
+// const DrawioModal = dynamic(() => import('./PageEditor/DrawioModal'), { ssr: false });
+const GridEditModal = dynamic(() => import('./PageEditor/GridEditModal'), { ssr: false });
+// const HandsontableModal = dynamic(() => import('./PageEditor/HandsontableModal'), { ssr: false });
+const LinkEditModal = dynamic(() => import('./PageEditor/LinkEditModal'), { ssr: false });
+
 const logger = loggerFactory('growi:Page');
 
 type PageSubstanceProps = {
@@ -166,16 +171,11 @@ class PageSubstance extends React.Component<PageSubstanceProps> {
     const { path } = page;
     const { _id: revisionId, body: markdown } = page.revision;
 
-    // const DrawioModal = dynamic(() => import('./PageEditor/DrawioModal'), { ssr: false });
-    const GridEditModal = dynamic(() => import('./PageEditor/GridEditModal'), { ssr: false });
-    // const HandsontableModal = dynamic(() => import('./PageEditor/HandsontableModal'), { ssr: false });
-    const LinkEditModal = dynamic(() => import('./PageEditor/LinkEditModal'), { ssr: false });
-
     return (
       <div className={`mb-5 ${isMobile ? 'page-mobile' : ''}`}>
 
         { revisionId != null && (
-          <RevisionRenderer rendererOptions={rendererOptions} markdown={markdown} pagePath={path} />
+          <RevisionRenderer rendererOptions={rendererOptions} markdown={markdown} />
         )}
 
         { !isGuestUser && (

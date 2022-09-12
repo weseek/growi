@@ -19,7 +19,6 @@ export const CommentPreview = (props: CommentPreviewPorps): JSX.Element => {
         rendererOptions={rendererOptions}
         markdown={markdown}
         additionalClassName="comment"
-        pagePath={path}
       />
     </div>
   );
