@@ -224,10 +224,7 @@ export const SearchResultContent: FC<Props> = (props: Props) => {
           hideIfEmpty
         />
         <PageContentFooter
-          createdAt={new Date(page.createdAt)}
-          updatedAt={new Date(page.updatedAt)}
-          creator={page.creator}
-          revisionAuthor={page.lastUpdateUser}
+          page={page}
         />
       </div>
     </div>
