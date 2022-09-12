@@ -19,6 +19,8 @@ import {
   CommonProps, getServerSideCommonProps, useCustomTitle,
 } from './utils/commons';
 
+const LoginForm = dynamic(() => import('~/components/LoginForm'), { ssr: false });
+
 type Props = CommonProps & {
 
   pageWithMetaStr: string,
@@ -37,16 +39,10 @@ const LoginPage: NextPage<Props> = (props: Props) => {
 
   const classNames: string[] = ['login-page'];
 
-  const LoginForm = dynamic(() => import('~/components/LoginForm'), {
-    ssr: false,
-  });
-
   return (
     <NoLoginLayout title={useCustomTitle(props, 'GROWI')} className={classNames.join(' ')}>
-      <div className="col-md-12">
-        <LoginForm objOfIsExternalAuthEnableds={props.enabledStrategies} isLocalStrategySetup={true} isLdapStrategySetup={true}
-          isRegistrationEnabled={true} registrationWhiteList={props.registrationWhiteList} isPasswordResetEnabled={true} />
-      </div>
+      <LoginForm objOfIsExternalAuthEnableds={props.enabledStrategies} isLocalStrategySetup={true} isLdapStrategySetup={true}
+        isRegistrationEnabled={true} registrationWhiteList={props.registrationWhiteList} isPasswordResetEnabled={true} />
     </NoLoginLayout>
   );
 };
