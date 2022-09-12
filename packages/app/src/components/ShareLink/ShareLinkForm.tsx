@@ -33,14 +33,6 @@ export const ShareLinkForm: FC<Props> = (props: Props) => {
 
   const { data: currentPageId } = useCurrentPageId();
 
-  const formatDate = useCallback((date) => {
-    return format(date, 'yyyy-MM-dd');
-  }, []);
-
-  const formatTime = useCallback((date) => {
-    return format(date, 'HH:mm');
-  }, []);
-
   const handleChangeExpirationType = useCallback((expirationType: ExpirationType) => {
     setExpirationType(expirationType);
   }, []);
@@ -180,7 +172,7 @@ export const ShareLinkForm: FC<Props> = (props: Props) => {
                   type="date"
                   className="ml-3 mb-2"
                   name="customExpirationDate"
-                  value={formatDate(customExpirationDate)}
+                  value={format(customExpirationDate, 'yyyy-MM-dd')}
                   onFocus={() => { handleChangeExpirationType(ExpirationType.CUSTOM) }}
                   onChange={e => handleChangeCustomExpirationDate(e.target.value)}
                 />
@@ -188,7 +180,7 @@ export const ShareLinkForm: FC<Props> = (props: Props) => {
                   type="time"
                   className="ml-3 mb-2"
                   name="customExpiration"
-                  value={formatTime(customExpirationTime)}
+                  value={format(customExpirationTime, 'HH:mm')}
                   onFocus={() => { handleChangeExpirationType(ExpirationType.CUSTOM) }}
                   onChange={e => handleChangeCustomExpirationTime(e.target.value)}
                 />
