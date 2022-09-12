@@ -80,8 +80,8 @@ module.exports = function(crowi, app) {
 
   app.get('/login/error/:reason'      , applicationInstalled, login.error);
   app.get('/login'                    , applicationInstalled, login.preLogin, next.delegateToNext);
-  app.get('/invited'            , applicationInstalled, next.delegateToNext);
-  app.post('/invited/activateInvited'   , applicationInstalled, loginFormValidator.inviteRules(), loginFormValidator.inviteValidation, csrfProtection, login.invited);
+  app.get('/invited'                  , applicationInstalled, next.delegateToNext);
+  app.post('/invited/activateInvited' , applicationInstalled, loginFormValidator.inviteRules(), loginFormValidator.inviteValidation, csrfProtection, login.invited);
   app.post('/login'                   , applicationInstalled, loginFormValidator.loginRules(), loginFormValidator.loginValidation, csrfProtection,  addActivity, loginPassport.loginWithLocal, loginPassport.loginWithLdap, loginPassport.loginFailure);
 
   app.post('/register'                , applicationInstalled, registerFormValidator.registerRules(), registerFormValidator.registerValidation, csrfProtection, addActivity, login.register);
