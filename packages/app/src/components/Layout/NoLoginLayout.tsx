@@ -27,12 +27,6 @@ export const NoLoginLayout = ({ children, title, className }: Props): JSX.Elemen
     classNames.push(className);
   }
 
-  // errors?='aaa,bbb' => ['aaa', 'bbb']
-  const { search } = window.location;
-  const params = new URLSearchParams(search);
-  const errorString = params.get('errors');
-  const errors = errorString?.split(',');
-
   return (
     <RawLayout title={title} className={`${commonStyles.nologin}`}>
       <div className="nologin">
@@ -47,18 +41,6 @@ export const NoLoginLayout = ({ children, title, className }: Props): JSX.Elemen
                     <GrowiLogo />
                     <h1 className="my-3">GROWI</h1>
                     <div className="noLogin-form-errors px-3"></div>
-                    { errors != null && errors.length > 0 && (
-                      <div className="register-form-errors px-3">
-                        <div className="alert alert-danger">
-                          {errors.map((err, index) => {
-                            const i18nKey = `message.${err}`;
-                            return (<>
-                              <span key={index}>{t(i18nKey)}</span><br/>
-                            </>);
-                          })}
-                        </div>
-                      </div>
-                    )}
                   </div>
                 </div>
 
