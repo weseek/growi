@@ -16,31 +16,31 @@ export const ShareLinkForm: FC<Props> = (props: Props) => {
   const { t } = useTranslation();
   const { onCloseForm } = props;
 
-  const [expirationType, setExpirationType] = useState('unlimited');
-  const [numberOfDays, setNumberOfDays] = useState(7);
-  const [description, setDescription] = useState('');
-  const [customExpirationDate, setCustomExpirationDate] = useState(format(new Date(), 'yyyy-MM-dd'));
-  const [customExpirationTime, setCustomExpirationTime] = useState(format(new Date(), 'HH:mm'));
+  const [expirationType, setExpirationType] = useState<string>('unlimited');
+  const [numberOfDays, setNumberOfDays] = useState<number>(7);
+  const [description, setDescription] = useState<string>('');
+  const [customExpirationDate, setCustomExpirationDate] = useState<string>(format(new Date(), 'yyyy-MM-dd'));
+  const [customExpirationTime, setCustomExpirationTime] = useState<string>(format(new Date(), 'HH:mm'));
 
   const { data: currentPageId } = useCurrentPageId();
 
-  const handleChangeExpirationType = useCallback((expirationType) => {
+  const handleChangeExpirationType = useCallback((expirationType: string) => {
     setExpirationType(expirationType);
   }, []);
 
-  const handleChangeNumberOfDays = useCallback((numberOfDays) => {
+  const handleChangeNumberOfDays = useCallback((numberOfDays: number) => {
     setNumberOfDays(numberOfDays);
   }, []);
 
-  const handleChangeDescription = useCallback((description) => {
+  const handleChangeDescription = useCallback((description: string) => {
     setDescription(description);
   }, []);
 
-  const handleChangeCustomExpirationDate = useCallback((customExpirationDate) => {
+  const handleChangeCustomExpirationDate = useCallback((customExpirationDate: string) => {
     setCustomExpirationDate(customExpirationDate);
   }, []);
 
-  const handleChangeCustomExpirationTime = useCallback((customExpirationTime) => {
+  const handleChangeCustomExpirationTime = useCallback((customExpirationTime: string) => {
     setCustomExpirationTime(customExpirationTime);
   }, []);
 
