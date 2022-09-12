@@ -92,7 +92,7 @@ const UserGroupDetailPage: FC = () => {
     const res = await apiv3Put<{ userGroup: IUserGroupHasId }>(`/user-groups/${userGroup._id}`, {
       name: update.name,
       description: update.description,
-      parentId,
+      parentId: parentId ?? null,
       forceUpdateParents,
     });
     const { userGroup: updatedUserGroup } = res.data;
