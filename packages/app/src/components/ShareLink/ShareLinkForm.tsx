@@ -1,4 +1,4 @@
-import React, { FC, useState } from 'react';
+import React, { FC, useState, useCallback } from 'react';
 
 import { isInteger } from 'core-js/fn/number';
 import { format, parse } from 'date-fns';
@@ -24,27 +24,27 @@ export const ShareLinkForm: FC<Props> = (props: Props) => {
 
   const { data: currentPageId } = useCurrentPageId();
 
-  const handleChangeExpirationType = (expirationType) => {
+  const handleChangeExpirationType = useCallback((expirationType) => {
     setExpirationType(expirationType);
-  };
+  }, []);
 
-  const handleChangeNumberOfDays = (numberOfDays) => {
+  const handleChangeNumberOfDays = useCallback((numberOfDays) => {
     setNumberOfDays(numberOfDays);
-  };
+  }, []);
 
-  const handleChangeDescription = (description) => {
+  const handleChangeDescription = useCallback((description) => {
     setDescription(description);
-  };
+  }, []);
 
-  const handleChangeCustomExpirationDate = (customExpirationDate) => {
+  const handleChangeCustomExpirationDate = useCallback((customExpirationDate) => {
     setCustomExpirationDate(customExpirationDate);
-  };
+  }, []);
 
-  const handleChangeCustomExpirationTime = (customExpirationTime) => {
+  const handleChangeCustomExpirationTime = useCallback((customExpirationTime) => {
     setCustomExpirationTime(customExpirationTime);
-  };
+  }, []);
 
-  const generateExpired = () => {
+  const generateExpired = useCallback(() => {
     let expiredAt;
 
     if (expirationType === 'unlimited') {
@@ -65,17 +65,16 @@ export const ShareLinkForm: FC<Props> = (props: Props) => {
     }
 
     return expiredAt;
-  };
+  }, [t, customExpirationTime, customExpirationDate, expirationType, numberOfDays]);
 
-  const closeForm = () => {
+  const closeForm = useCallback(() => {
     if (onCloseForm == null) {
       return;
     }
     onCloseForm();
-  };
+  }, [onCloseForm]);
 
-
-  const handleIssueShareLink = async() => {
+  const handleIssueShareLink = useCallback(async() => {
     let expiredAt;
 
     try {
@@ -93,7 +92,7 @@ export const ShareLinkForm: FC<Props> = (props: Props) => {
     catch (err) {
       toastError(err);
     }
-  };
+  }, [t, currentPageId, description, closeForm, generateExpired]);
 
   return (
     <div className="share-link-form p-3">
