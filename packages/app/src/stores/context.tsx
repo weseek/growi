@@ -18,7 +18,7 @@ import { useStaticSWR } from './use-static-swr';
 
 type Nullable<T> = T | null;
 
-const { isTrashPage } = pagePathUtils;
+const { isTrashPage, isTrashTopPage } = pagePathUtils;
 
 
 export const useInterceptorManager = (): SWRResponse<InterceptorManager, Error> => {
@@ -278,6 +278,17 @@ export const useIsTrashPage = (): SWRResponse<boolean, Error> => {
 
   return useSWRImmutable(
     currentPagePath != null ? ['isTrashPage', result] : null,
+    (key: Key, isTrashPage: boolean) => isTrashPage,
+  );
+};
+
+export const useIsTrashTopPage = (): SWRResponse<boolean, Error> => {
+  const { data: currentPagePath } = useCurrentPagePath();
+
+  const result = isTrashTopPage(currentPagePath || '');
+
+  return useSWRImmutable(
+    currentPagePath != null ? ['isTrashTopPage', result] : null,
     (key: Key, isTrashPage: boolean) => isTrashPage,
   );
 };
