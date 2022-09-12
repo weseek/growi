@@ -217,7 +217,7 @@ const GrowiContextualSubNavigation = (props) => {
       await pageContainer.setState({ revisionId: updatedRevisionId });
 
       const lastUpdateUser = res.savedPage?.lastUpdateUser as IUser;
-      await pageContainer.setState({ lastUpdateUsername: lastUpdateUser.username });
+      await pageContainer.setState({ lastUpdateUser });
 
       // revalidate SWRTagsInfo
       mutateSWRTagsInfo();
