@@ -187,14 +187,10 @@ jobs:
         push: true
         build-args: |
           flavor=${{ matrix.flavor }}
-        cache-from: type=local,src=/tmp/.buildx-cache
-        cache-to: type=local,mode=max,dest=/tmp/.buildx-cache-new
+        builder: ${{ steps.buildx.outputs.name }}
+        cache-from: type=gha
+        cache-to: type=gha,mode=max
         tags: ${{ steps.meta.outputs.tags }}
-
-    - name: Move cache
-      run: |
-        rm -rf /tmp/.buildx-cache
-        mv /tmp/.buildx-cache-new /tmp/.buildx-cache
 
     - name: Update Docker Hub Description
       uses: peter-evans/dockerhub-description@v2
