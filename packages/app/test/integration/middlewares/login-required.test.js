@@ -47,7 +47,7 @@ describe('loginRequired', () => {
         userStatus  | expectedPath
         ${1}        | ${'/login/error/registered'}
         ${3}        | ${'/login/error/suspended'}
-        ${5}        | ${'/login/invited'}
+        ${5}        | ${'/invited'}
       `('redirect to \'$expectedPath\' when user.status is \'$userStatus\'', ({ userStatus, expectedPath }) => {
 
         req.user = {
@@ -122,7 +122,7 @@ describe('loginRequired', () => {
         userStatus  | expectedPath
         ${1}        | ${'/login/error/registered'}
         ${3}        | ${'/login/error/suspended'}
-        ${5}        | ${'/login/invited'}
+        ${5}        | ${'/invited'}
       `('redirect to \'$expectedPath\' when user.status is \'$userStatus\'', ({ userStatus, expectedPath }) => {
 
         req.user = {
@@ -248,7 +248,7 @@ describe('loginRequired', () => {
       userStatus  | expectedPath
       ${1}        | ${'/login/error/registered'}
       ${3}        | ${'/login/error/suspended'}
-      ${5}        | ${'/login/invited'}
+      ${5}        | ${'/invited'}
     `('redirect to \'$expectedPath\' when user.status is \'$userStatus\'', ({ userStatus, expectedPath }) => {
       req.user = {
         _id: 'user id',

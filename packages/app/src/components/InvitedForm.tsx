@@ -2,7 +2,7 @@ import React from 'react';
 
 import { useTranslation } from 'next-i18next';
 
-import { useCsrfToken, useCurrentUser } from '../../stores/context';
+import { useCsrfToken, useCurrentUser } from '../stores/context';
 
 export type InvitedFormProps = {
   invitedFormUsername: string,
@@ -26,7 +26,7 @@ export const InvitedForm = (props: InvitedFormProps): JSX.Element => {
         <strong>{ t('invited.discription_heading') }</strong><br></br>
         <small>{ t('invited.discription') }</small>
       </p>
-      <form role="form" action="/login/activateInvited" method="post" id="invited-form">
+      <form role="form" action="/invited/activateInvited" method="post" id="invited-form">
         {/* Email Form */}
         <div className="input-group">
           <div className="input-group-prepend">

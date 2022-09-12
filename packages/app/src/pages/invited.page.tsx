@@ -4,19 +4,18 @@ import { IUserHasId, IUser } from '@growi/core';
 import { NextPage, GetServerSideProps, GetServerSidePropsContext } from 'next';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import dynamic from 'next/dynamic';
-import { useRouter } from 'next/router';
 
+import { InvitedFormProps } from '~/components/InvitedForm';
 import { NoLoginLayout } from '~/components/Layout/NoLoginLayout';
-import { InvitedFormProps } from '~/components/Login/InvitedForm';
 import { CrowiRequest } from '~/interfaces/crowi-request';
 
-import { useCsrfToken, useCurrentPathname, useCurrentUser } from '../../stores/context';
+import { useCsrfToken, useCurrentPathname, useCurrentUser } from '../stores/context';
+
 import {
   CommonProps, getServerSideCommonProps, useCustomTitle, getNextI18NextConfig,
-} from '../utils/commons';
+} from './utils/commons';
 
-const LoginForm = dynamic(() => import('~/components/Login/LoginForm'), { ssr: false });
-const InvitedForm = dynamic<InvitedFormProps>(() => import('~/components/Login/InvitedForm').then(mod => mod.InvitedForm), { ssr: false });
+const InvitedForm = dynamic<InvitedFormProps>(() => import('~/components/InvitedForm').then(mod => mod.InvitedForm), { ssr: false });
 
 type Props = CommonProps & {
   isMailerSetup: boolean,
@@ -27,48 +26,17 @@ type Props = CommonProps & {
   invitedFormName: string,
 }
 
-const LoginPage: NextPage<Props> = (props: Props) => {
-
-  const router = useRouter();
-  const { path } = router.query;
-  const pagePathKeys: string[] = Array.isArray(path) ? path : ['login'];
+const InvitedPage: NextPage<Props> = (props: Props) => {
 
   useCsrfToken(props.csrfToken);
   useCurrentPathname(props.currentPathname);
   useCurrentUser(props.currentUser);
 
-  const loginPagesMap = {
-    login: {
-      component: <LoginForm
-        isLocalStrategySetup={true}
-        isLdapStrategySetup={true}
-        objOfIsExternalAuthEnableds={props.enabledStrategies}
-        isRegistrationEnabled={true}
-        isPasswordResetEnabled={true}
-        registrationWhiteList={props.registrationWhiteList}
-      />,
-      classNames: ['login-page'],
-    },
-    invited: {
-      component: <InvitedForm
-        invitedFormUsername={props.invitedFormUsername}
-        invitedFormName={props.invitedFormName}
-      />,
-      classNames: ['invited-page'],
-    },
-  };
-
-  const getTargetPageToRender = (pagesMap, keys): {component: JSX.Element, classNames: string[]} => {
-    return keys.reduce((pagesMap, key) => {
-      return pagesMap[key];
-    }, pagesMap);
-  };
-
-  const targetPage = getTargetPageToRender(loginPagesMap, pagePathKeys);
+  const classNames: string[] = ['invited-page'];
 
   return (
-    <NoLoginLayout title={useCustomTitle(props, 'GROWI')} className={targetPage.classNames.join(' ')}>
-      { targetPage.component }
+    <NoLoginLayout title={useCustomTitle(props, 'GROWI')} className={classNames.join(' ')}>
+      <InvitedForm invitedFormUsername={props.invitedFormUsername} invitedFormName={props.invitedFormName} />
     </NoLoginLayout>
   );
 
@@ -142,4 +110,4 @@ export const getServerSideProps: GetServerSideProps = async(context: GetServerSi
   return { props };
 };
 
-export default LoginPage;
+export default InvitedPage;
