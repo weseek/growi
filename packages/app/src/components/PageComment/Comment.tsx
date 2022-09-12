@@ -7,10 +7,9 @@ import dynamic from 'next/dynamic';
 import { UncontrolledTooltip } from 'reactstrap';
 
 import { RendererOptions } from '~/services/renderer/renderer';
-import { useCurrentUser } from '~/stores/context';
-import { useSWRxCurrentPage } from '~/stores/page';
 
 import { ICommentHasId } from '../../interfaces/comment';
+import { IUser } from '../../interfaces/user';
 import FormattedDistanceDate from '../FormattedDistanceDate';
 import HistoryIcon from '../Icons/HistoryIcon';
 import RevisionRenderer from '../Page/RevisionRenderer';
@@ -23,26 +22,24 @@ import styles from './Comment.module.scss';
 
 const CommentEditor = dynamic<CommentEditorProps>(() => import('./CommentEditor').then(mod => mod.CommentEditor), { ssr: false });
 
-
 type CommentProps = {
   comment: ICommentHasId,
+  revisionId: string,
+  revisionCreatedAt: Date,
+  currentUser: IUser,
   isReadOnly: boolean,
   deleteBtnClicked: (comment: ICommentHasId) => void,
   onComment: () => void,
   rendererOptions: RendererOptions,
-  currentRevisionId?: string,
-  currentRevisionCreatedAt?: Date,
 }
 
 export const Comment = (props: CommentProps): JSX.Element => {
 
   const {
-    comment, isReadOnly, deleteBtnClicked, onComment, rendererOptions,
+    comment, revisionId, revisionCreatedAt, currentUser, isReadOnly, deleteBtnClicked, onComment, rendererOptions,
   } = props;
 
   const { t } = useTranslation();
-  const { data: currentUser } = useCurrentUser();
-  const { data: currentPage } = useSWRxCurrentPage();
 
   const [markdown, setMarkdown] = useState('');
   const [isReEdit, setIsReEdit] = useState(false);
@@ -53,22 +50,17 @@ export const Comment = (props: CommentProps): JSX.Element => {
   const createdAt = new Date(comment.createdAt);
   const updatedAt = new Date(comment.updatedAt);
   const isEdited = createdAt < updatedAt;
-  const currentRevisionId = currentPage?.revision._id;
-  const currentRevisionCreatedAt = currentPage?.revision.createdAt;
 
   useEffect(() => {
     setMarkdown(comment.comment);
-
     const isCurrentRevision = () => {
-      return comment.revision === currentRevisionId;
+      return comment.revision === revisionId;
     };
     isCurrentRevision();
-
-  }, [comment, currentRevisionId]);
+  }, [comment, revisionId]);
 
   const isCurrentUserEqualsToAuthor = () => {
     const { creator }: any = comment;
-
     if (creator == null || currentUser == null) {
       return false;
     }
@@ -79,11 +71,11 @@ export const Comment = (props: CommentProps): JSX.Element => {
     let className = 'page-comment flex-column';
 
     // Conditional for called from SearchResultContext
-    if (currentRevisionId != null && currentRevisionCreatedAt != null) {
-      if (comment.revision === currentRevisionId) {
+    if (revisionCreatedAt != null) {
+      if (comment.revision === revisionId) {
         className += ' page-comment-current';
       }
-      else if (comment.createdAt.getTime() > currentRevisionCreatedAt.getTime()) {
+      else if (comment.createdAt.getTime() > revisionCreatedAt.getTime()) {
         className += ' page-comment-newer';
       }
       else {
@@ -119,15 +111,12 @@ export const Comment = (props: CommentProps): JSX.Element => {
   const rootClassName = getRootClassName(comment);
   const commentBody = isMarkdown ? renderRevisionBody() : renderText(comment.comment);
   const revHref = `?revision=${comment.revision}`;
-
   const editedDateId = `editedDate-${comment._id}`;
-  const editedDateFormatted = isEdited
-    ? format(updatedAt, 'yyyy/MM/dd HH:mm')
-    : null;
+  const editedDateFormatted = isEdited ? format(updatedAt, 'yyyy/MM/dd HH:mm') : null;
 
   return (
     <div className={`${styles['comment-styles']}`}>
-      {(isReEdit && !isReadOnly) ? (
+      { (isReEdit && !isReadOnly) ? (
         <CommentEditor
           rendererOptions={rendererOptions}
           replyTo={undefined}
@@ -158,7 +147,7 @@ export const Comment = (props: CommentProps): JSX.Element => {
                   <span id={editedDateId}>&nbsp;(edited)</span>
                   <UncontrolledTooltip placement="bottom" fade={false} target={editedDateId}>{editedDateFormatted}</UncontrolledTooltip>
                 </>
-              )}
+              ) }
               <span className="ml-2">
                 <a id={`page-comment-revision-${commentId}`} className="page-comment-revision" href={revHref}>
                   <HistoryIcon />
@@ -168,7 +157,7 @@ export const Comment = (props: CommentProps): JSX.Element => {
                 </UncontrolledTooltip>
               </span>
             </div>
-            {(isCurrentUserEqualsToAuthor() && !isReadOnly) && (
+            { (isCurrentUserEqualsToAuthor() && !isReadOnly) && (
               <CommentControl
                 onClickDeleteBtn={deleteBtnClickedHandler}
                 onClickEditBtn={() => setIsReEdit(true)}
@@ -176,8 +165,7 @@ export const Comment = (props: CommentProps): JSX.Element => {
             ) }
           </div>
         </div>
-      )
-      }
+      ) }
     </div>
   );
 };

@@ -12,6 +12,7 @@ import { smoothScrollIntoView } from '~/client/util/smooth-scroll';
 import { IPageToDeleteWithMeta, IPageToRenameWithMeta } from '~/interfaces/page';
 import { IPageWithSearchMeta } from '~/interfaces/search';
 import { OnDuplicatedFunction, OnRenamedFunction, OnDeletedFunction } from '~/interfaces/ui';
+import { useCurrentUser } from '~/stores/context';
 import {
   usePageDuplicateModal, usePageRenameModal, usePageDeleteModal,
 } from '~/stores/modal';
@@ -30,7 +31,6 @@ const SubNavButtons = dynamic<SubNavButtonsProps>(() => import('../Navbar/SubNav
 const RevisionLoader = dynamic(() => import('../Page/RevisionLoader'), { ssr: false });
 const PageComment = dynamic<PageCommentProps>(() => import('../PageComment').then(mod => mod.PageComment), { ssr: false });
 const PageContentFooter = dynamic<PageContentFooterProps>(() => import('../PageContentFooter').then(mod => mod.PageContentFooter), { ssr: false });
-
 
 type AdditionalMenuItemsProps = AdditionalMenuItemsRendererProps & {
   pageId: string,
@@ -122,8 +122,8 @@ export const SearchResultContent: FC<Props> = (props: Props) => {
   const { open: openDuplicateModal } = usePageDuplicateModal();
   const { open: openRenameModal } = usePageRenameModal();
   const { open: openDeleteModal } = usePageDeleteModal();
-
   const { data: rendererOptions } = useSearchResultOptions();
+  const { data: currentUser } = useCurrentUser();
 
   const duplicateItemClickedHandler = useCallback(async(pageToDuplicate) => {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -194,7 +194,7 @@ export const SearchResultContent: FC<Props> = (props: Props) => {
         />
       </div>
     );
-  }, [page, SubNavButtons, showPageControlDropdown, forceHideMenuItems, duplicateItemClickedHandler, renameItemClickedHandler, deleteItemClickedHandler]);
+  }, [page, showPageControlDropdown, forceHideMenuItems, duplicateItemClickedHandler, renameItemClickedHandler, deleteItemClickedHandler]);
 
   // return if page or growiRenderer is null
   if (page == null || rendererOptions == null) return <></>;
@@ -219,6 +219,8 @@ export const SearchResultContent: FC<Props> = (props: Props) => {
         />
         <PageComment
           pageId={page._id}
+          revision={page.revision}
+          currentUser={currentUser}
           highlightKeywords={highlightKeywords}
           isReadOnly
           hideIfEmpty
