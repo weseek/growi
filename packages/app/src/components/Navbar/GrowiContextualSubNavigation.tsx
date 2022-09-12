@@ -16,7 +16,7 @@ import { IResTagsUpdateApiv1 } from '~/interfaces/tag';
 import { OnDuplicatedFunction, OnRenamedFunction, OnDeletedFunction } from '~/interfaces/ui';
 import {
   useCurrentPageId,
-  useCurrentPathname, useIsTrashTopPage,
+  useCurrentPathname,
   useCurrentUser, useIsGuestUser, useIsSharedUser, useShareLinkId, useTemplateTagData,
 } from '~/stores/context';
 import { usePageTagsForEditors } from '~/stores/editor';
@@ -180,7 +180,6 @@ const GrowiContextualSubNavigation = (props: GrowiContextualSubNavigationProps):
   const { data: isGuestUser } = useIsGuestUser();
   const { data: isSharedUser } = useIsSharedUser();
   const { data: shareLinkId } = useShareLinkId();
-  const { data: isTrashTopPage } = useIsTrashTopPage();
 
   const { data: isAbleToShowPageManagement } = useIsAbleToShowPageManagement();
   const { data: isAbleToShowTagLabel } = useIsAbleToShowTagLabel();
@@ -366,13 +365,9 @@ const GrowiContextualSubNavigation = (props: GrowiContextualSubNavigationProps):
     path: currentPathname,
   };
 
-  const trashTopPage: Partial<IPageHasId> = {
-    path: '/trash',
-  };
-
   return (
     <GrowiSubNavigation
-      page={isTrashTopPage ? trashTopPage : currentPage ?? notFoundPage}
+      page={currentPage ?? notFoundPage}
       showDrawerToggler={isDrawerMode}
       showTagLabel={isAbleToShowTagLabel}
       showPageAuthors={isAbleToShowPageAuthors}
