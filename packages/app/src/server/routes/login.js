@@ -47,6 +47,33 @@ module.exports = function(crowi, app) {
     });
   };
 
+  async function sendEmailToAllAdmins(userData) {
+    // send mails to all admin users (derived from crowi) -- 2020.06.18 Yuki Takei
+    const admins = await User.findAdmins();
+
+    const appTitle = appService.getAppTitle();
+
+    const promises = admins.map((admin) => {
+      return mailService.send({
+        to: admin.email,
+        subject: `[${appTitle}:admin] A New User Created and Waiting for Activation`,
+        template: path.join(crowi.localeDir, 'en_US/admin/userWaitingActivation.txt'),
+        vars: {
+          createdUser: userData,
+          admin,
+          url: appService.getSiteUrl(),
+          appTitle,
+        },
+      });
+    });
+
+    const results = await Promise.allSettled(promises);
+    results
+      .filter(result => result.status === 'rejected')
+      .forEach(result => logger.error(result.reason));
+  }
+
+
   actions.error = function(req, res) {
     const reason = req.params.reason;
 
@@ -111,33 +138,32 @@ module.exports = function(crowi, app) {
 
       // email と username の unique チェックする
       User.isRegisterable(email, username, (isRegisterable, errOn) => {
-        let isError = false;
+        const errors = [];
         if (!User.isEmailValid(email)) {
-          isError = true;
-          req.flash('registerWarningMessage', req.t('message.email_address_could_not_be_used'));
+          errors.push('email_address_could_not_be_used');
         }
         if (!isRegisterable) {
           if (!errOn.username) {
-            isError = true;
-            req.flash('registerWarningMessage', req.t('message.user_id_is_not_available'));
+            errors.push('user_id_is_not_available');
           }
           if (!errOn.email) {
-            isError = true;
-            req.flash('registerWarningMessage', req.t('message.email_address_is_already_registered'));
+            errors.push('email_address_is_already_registered');
           }
         }
-        if (isError) {
+        if (errors.length > 0) {
           debug('isError user register error', errOn);
-          return res.redirect('/register');
+          return res.redirect(`/register?errors=${errors}`);
         }
 
         User.createUserByEmailAndPassword(name, username, email, password, undefined, async(err, userData) => {
           if (err) {
+            const errors = [];
             if (err.name === 'UserUpperLimitException') {
-              req.flash('registerWarningMessage', req.t('message.can_not_register_maximum_number_of_users'));
+              errors.push('can_not_register_maximum_number_of_users');
             }
             else {
               req.flash('registerWarningMessage', req.t('message.failed_to_register'));
+              errors.push('failed_to_register');
             }
             return res.redirect('/register');
           }
@@ -158,32 +184,6 @@ module.exports = function(crowi, app) {
       return res.render('login', { isRegistering });
     }
   };
-
-  async function sendEmailToAllAdmins(userData) {
-    // send mails to all admin users (derived from crowi) -- 2020.06.18 Yuki Takei
-    const admins = await User.findAdmins();
-
-    const appTitle = appService.getAppTitle();
-
-    const promises = admins.map((admin) => {
-      return mailService.send({
-        to: admin.email,
-        subject: `[${appTitle}:admin] A New User Created and Waiting for Activation`,
-        template: path.join(crowi.localeDir, 'en_US/admin/userWaitingActivation.txt'),
-        vars: {
-          createdUser: userData,
-          admin,
-          url: appService.getSiteUrl(),
-          appTitle,
-        },
-      });
-    });
-
-    const results = await Promise.allSettled(promises);
-    results
-      .filter(result => result.status === 'rejected')
-      .forEach(result => logger.error(result.reason));
-  }
 
   actions.invited = async function(req, res) {
     if (!req.user) {
