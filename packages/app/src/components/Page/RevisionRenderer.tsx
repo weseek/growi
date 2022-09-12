@@ -98,6 +98,7 @@ const RevisionRenderer = React.memo((props: Props): JSX.Element => {
 
   return (
     <ReactMarkdown
+      data-testid="wiki"
       {...rendererOptions}
       className={`wiki ${additionalClassName ?? ''}`}
     >
