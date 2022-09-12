@@ -22,7 +22,7 @@ import TextAreaEditor from './TextAreaEditor';
 
 import styles from './Editor.module.scss';
 
-type EditorPropsType = {
+export type EditorPropsType = {
   value?: string,
   isGfmMode?: boolean,
   noCdn?: boolean,

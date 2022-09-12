@@ -6,11 +6,13 @@ import EventEmitter from 'events';
 
 import { envUtils, PageGrant } from '@growi/core';
 import detectIndent from 'detect-indent';
+import dynamic from 'next/dynamic';
 import { throttle, debounce } from 'throttle-debounce';
 
 import { saveOrUpdate } from '~/client/services/page-operation';
 import { apiGet, apiPostForm } from '~/client/util/apiv1-client';
 import { getOptionsToSave } from '~/client/util/editor';
+import { IEditorMethods } from '~/interfaces/editor-methods';
 import {
   useIsEditable, useIsIndentSizeForced, useCurrentPagePath, useCurrentPathname, useCurrentPageId, useIsUploadableFile, useIsUploadableImage,
 } from '~/stores/context';
@@ -28,9 +30,11 @@ import loggerFactory from '~/utils/logger';
 
 
 // import { ConflictDiffModal } from './PageEditor/ConflictDiffModal';
-import Editor from './PageEditor/Editor';
 import Preview from './PageEditor/Preview';
 import scrollSyncHelper from './PageEditor/ScrollSyncHelper';
+// import Editor from './PageEditor/WrappedEditor';
+
+const Editor = dynamic(() => import('./PageEditor/WrappedEditor'), { ssr: false });
 
 
 const logger = loggerFactory('growi:PageEditor');
@@ -38,14 +42,6 @@ const logger = loggerFactory('growi:PageEditor');
 
 declare const globalEmitter: EventEmitter;
 
-
-type EditorRef = {
-  setValue: (markdown: string) => void,
-  setCaretLine: (line: number) => void,
-  insertText: (text: string) => void,
-  forceToFocus: () => void,
-  terminateUploadingState: () => void,
-}
 
 // for scrolling
 let lastScrolledDateWithCursor: Date | null = null;
@@ -84,7 +80,7 @@ const PageEditor = React.memo((): JSX.Element => {
   const slackChannels = useMemo(() => (slackChannelsData ? slackChannelsData.toString() : ''), [slackChannelsData]);
 
 
-  const editorRef = useRef<EditorRef>(null);
+  const editorRef = useRef<IEditorMethods>(null);
   const previewRef = useRef<HTMLDivElement>(null);
 
   const setMarkdownWithDebounce = useMemo(() => debounce(100, throttle(150, (value: string, isClean: boolean) => {
@@ -399,7 +395,7 @@ const PageEditor = React.memo((): JSX.Element => {
     <div className="d-flex flex-wrap">
       <div className="page-editor-editor-container flex-grow-1 flex-basis-0 mw-0">
         <Editor
-          ref={editorRef}
+          editorRef={editorRef}
           value={initialValue}
           isUploadable={isUploadable}
           isUploadableFile={isUploadableFile}

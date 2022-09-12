@@ -3,12 +3,14 @@ import React, {
 } from 'react';
 
 import { UserPicture } from '@growi/ui';
+import dynamic from 'next/dynamic';
 import {
   Button, TabContent, TabPane,
 } from 'reactstrap';
 import * as toastr from 'toastr';
 
 import { apiPostForm } from '~/client/util/apiv1-client';
+import { IEditorMethods } from '~/interfaces/editor-methods';
 import { RendererOptions } from '~/services/renderer/renderer';
 import { useSWRxPageComment } from '~/stores/comment';
 import {
@@ -19,12 +21,14 @@ import { useSWRxSlackChannels, useIsSlackEnabled } from '~/stores/editor';
 
 import { CustomNavTab } from '../CustomNavigation/CustomNav';
 import NotAvailableForGuest from '../NotAvailableForGuest';
-import Editor from '../PageEditor/Editor';
 import { SlackNotification } from '../SlackNotification';
 
 import { CommentPreview } from './CommentPreview';
 
 import styles from './CommentEditor.module.scss';
+
+
+const Editor = dynamic(() => import('../PageEditor/WrappedEditor'), { ssr: false });
 
 
 const navTabMapping = {
@@ -50,11 +54,6 @@ export type CommentEditorProps = {
   onCommentButtonClicked?: () => void,
 }
 
-type EditorRef = {
-  setValue: (value: string) => void,
-  insertText: (text: string) => void,
-  terminateUploadingState: () => void,
-}
 
 export const CommentEditor = (props: CommentEditorProps): JSX.Element => {
 
@@ -80,7 +79,7 @@ export const CommentEditor = (props: CommentEditorProps): JSX.Element => {
   const [error, setError] = useState();
   const [slackChannels, setSlackChannels] = useState(slackChannelsData?.toString());
 
-  const editorRef = useRef<EditorRef>(null);
+  const editorRef = useRef<IEditorMethods>(null);
 
   const handleSelect = useCallback((activeTab: string) => {
     setActiveTab(activeTab);
@@ -260,7 +259,7 @@ export const CommentEditor = (props: CommentEditorProps): JSX.Element => {
           <TabContent activeTab={activeTab}>
             <TabPane tabId="comment_editor">
               <Editor
-                ref={editorRef}
+                editorRef={editorRef}
                 value={comment}
                 isUploadable={isUploadable}
                 isUploadableFile={isUploadableFile}
