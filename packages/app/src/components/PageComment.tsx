@@ -2,7 +2,7 @@ import React, {
   FC, useEffect, useState, useMemo, memo, useCallback,
 } from 'react';
 
-import { IRevisionHasId } from '@growi/core';
+import { IRevisionHasId, isPopulated, getIdForRef } from '@growi/core';
 import dynamic from 'next/dynamic';
 import { Button } from 'reactstrap';
 
@@ -139,19 +139,14 @@ export const PageComment: FC<PageCommentProps> = memo((props:PageCommentProps): 
     );
   }
 
-  // Conditional for called PageComment from SearchResultContext
-  let revisionId = revision;
-  let revisionCreatedAt: Date;
-  if (typeof (revision) !== 'string') {
-    revisionId = revision._id;
-    revisionCreatedAt = revision.createdAt;
-  }
+  const revisionId = getIdForRef(revision);
+  const revisionCreatedAt = (isPopulated(revision)) ? revision.createdAt : undefined;
 
   const generateCommentElement = (comment: ICommentHasId) => (
     <Comment
       comment={comment}
-      revisionId={revisionId as string}
-      revisionCreatedAt={revisionCreatedAt}
+      revisionId={revisionId}
+      revisionCreatedAt={revisionCreatedAt as Date}
       currentUser={currentUser}
       isReadOnly={isReadOnly}
       deleteBtnClicked={onClickDeleteButton}
@@ -163,8 +158,8 @@ export const PageComment: FC<PageCommentProps> = memo((props:PageCommentProps): 
   const generateReplyCommentsElement = (replyComments: ICommentHasIdList) => (
     <ReplyComments
       isReadOnly={isReadOnly}
-      revisionId={revisionId as string}
-      revisionCreatedAt={revisionCreatedAt}
+      revisionId={revisionId}
+      revisionCreatedAt={revisionCreatedAt as Date}
       currentUser={currentUser}
       replyList={replyComments}
       deleteBtnClicked={onClickDeleteButton}

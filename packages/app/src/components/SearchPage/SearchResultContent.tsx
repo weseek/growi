@@ -2,6 +2,7 @@ import React, {
   FC, useCallback, useEffect, useRef,
 } from 'react';
 
+import { getIdForRef } from '@growi/core';
 import { useTranslation } from 'next-i18next';
 import dynamic from 'next/dynamic';
 import { DropdownItem } from 'reactstrap';
@@ -174,9 +175,7 @@ export const SearchResultContent: FC<Props> = (props: Props) => {
       return <></>;
     }
 
-    const revisionId = typeof page.revision === 'string'
-      ? page.revision
-      : page.revision._id;
+    const revisionId = getIdForRef(page.revision);
 
     return (
       <div className="d-flex flex-column align-items-end justify-content-center py-md-2">
