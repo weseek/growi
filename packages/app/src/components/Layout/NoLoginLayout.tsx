@@ -50,9 +50,11 @@ export const NoLoginLayout = ({ children, title, className }: Props): JSX.Elemen
                     { errors != null && errors.length > 0 && (
                       <div className="register-form-errors px-3">
                         <div className="alert alert-danger">
-                          {errors.map((err) => {
+                          {errors.map((err, index) => {
                             const i18nKey = `message.${err}`;
-                            return <>{t(i18nKey)}<br/></>;
+                            return (<>
+                              <span key={index}>{t(i18nKey)}</span><br/>
+                            </>);
                           })}
                         </div>
                       </div>
