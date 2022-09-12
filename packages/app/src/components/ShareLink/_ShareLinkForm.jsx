@@ -2,8 +2,8 @@ import React from 'react';
 
 import { isInteger } from 'core-js/fn/number';
 import { format, parse } from 'date-fns';
-import PropTypes from 'prop-types';
 import { useTranslation } from 'next-i18next';
+import PropTypes from 'prop-types';
 
 import PageContainer from '~/client/services/PageContainer';
 import { toastSuccess, toastError } from '~/client/util/apiNotification';
