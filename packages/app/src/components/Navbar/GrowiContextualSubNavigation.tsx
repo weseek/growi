@@ -43,6 +43,16 @@ import { SubNavButtonsProps } from './SubNavButtons';
 import PageEditorModeManagerStyles from './PageEditorModeManager.module.scss';
 
 
+const PageEditorModeManager = dynamic(
+  () => import('./PageEditorModeManager'),
+  { ssr: false, loading: () => <Skelton additionalClass={`${PageEditorModeManagerStyles['grw-page-editor-mode-manager-skelton']}`} /> },
+);
+const SubNavButtons = dynamic<SubNavButtonsProps>(
+  () => import('./SubNavButtons').then(mod => mod.SubNavButtons),
+  { ssr: false, loading: () => <Skelton additionalClass='btn-skelton py-2' /> },
+);
+
+
 type AdditionalMenuItemsProps = {
   pageId: string,
   revisionId: string,
@@ -155,15 +165,6 @@ type GrowiContextualSubNavigationProps = {
 };
 
 const GrowiContextualSubNavigation = (props: GrowiContextualSubNavigationProps): JSX.Element => {
-
-  const PageEditorModeManager = dynamic(
-    () => import('./PageEditorModeManager'),
-    { ssr: false, loading: () => <Skelton additionalClass={`${PageEditorModeManagerStyles['grw-page-editor-mode-manager-skelton']}`} /> },
-  );
-  const SubNavButtons = dynamic<SubNavButtonsProps>(
-    () => import('./SubNavButtons').then(mod => mod.SubNavButtons),
-    { ssr: false, loading: () => <Skelton additionalClass='btn-skelton py-2' /> },
-  );
 
   const { data: currentPage, mutate: mutateCurrentPage } = useSWRxCurrentPage();
   const path = currentPage?.path;
@@ -353,15 +354,8 @@ const GrowiContextualSubNavigation = (props: GrowiContextualSubNavigationProps):
         )}
       </>
     );
-  }, [
-    currentPage, currentUser, pageId, revisionId, shareLinkId, path, editorMode,
-    isCompactMode, isViewMode, isSharedUser, isAbleToShowPageManagement, isAbleToShowPageEditorModeManager,
-    isLinkSharingDisabled, isGuestUser, isPageTemplateModalShown,
-    duplicateItemClickedHandler, renameItemClickedHandler, deleteItemClickedHandler,
-    PageEditorModeManager, SubNavButtons,
-    mutateEditorMode,
-    templateMenuItemClickHandler,
-  ]);
+  // eslint-disable-next-line max-len
+  }, [currentPage, currentUser, pageId, revisionId, shareLinkId, path, editorMode, isCompactMode, isViewMode, isSharedUser, isAbleToShowPageManagement, isAbleToShowPageEditorModeManager, isLinkSharingDisabled, isGuestUser, isPageTemplateModalShown, duplicateItemClickedHandler, renameItemClickedHandler, deleteItemClickedHandler, mutateEditorMode, templateMenuItemClickHandler]);
 
   if (currentPathname == null) {
     return <></>;

@@ -29,7 +29,7 @@ type EditorPropsType = {
   isUploadable?: boolean,
   isUploadableFile?: boolean,
   isTextlintEnabled?: boolean,
-  onChange?: (newValue: string) => void,
+  onChange?: (newValue: string, isClean?: boolean) => void,
   onUpload?: (file) => void,
   indentSize?: number,
   onScroll?: ({ line: number }) => void,
