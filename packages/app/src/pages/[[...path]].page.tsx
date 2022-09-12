@@ -331,7 +331,7 @@ const GrowiPage: NextPage<Props> = (props: Props) => {
               { (pageWithMeta != null && isUsersHomePage(pageWithMeta.data.path)) && (
                 <UsersHomePageFooter creatorId={pageWithMeta.data.creator._id}/>
               ) }
-              <PageContentFooter page={pageWithMeta?.data} />
+              <PageContentFooter />
             </footer>
           )}
 

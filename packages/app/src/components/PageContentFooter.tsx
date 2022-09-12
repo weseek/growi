@@ -1,27 +1,30 @@
-import React, { memo } from 'react';
+import React from 'react';
 
-import { IPage } from '@growi/core';
 import dynamic from 'next/dynamic';
 
 import { IUser } from '~/interfaces/user';
+import { useSWRxCurrentPage } from '~/stores/page';
 
 import { Skelton } from './Skelton';
 
 import styles from './PageContentFooter.module.scss';
 
-const AuthorInfo = dynamic(() => import('./Navbar/AuthorInfo'),
-  { ssr: false, loading: () => <Skelton additionalClass={`${styles['page-content-footer-skelton']} mb-3`} /> });
+const AuthorInfo = dynamic(() => import('./Navbar/AuthorInfo'), {
+  ssr: false,
+  loading: () => <Skelton additionalClass={`${styles['page-content-footer-skelton']} mb-3`} />,
+});
 
-export type PageContentFooterProps = {
-  page: IPage,
-}
+export const PageContentFooter = (): JSX.Element => {
 
-export const PageContentFooter = memo((props: PageContentFooterProps): JSX.Element => {
-  const { page } = props;
+  const { data: currentPage } = useSWRxCurrentPage();
+
+  if (currentPage == null) {
+    return <></>;
+  }
 
   const {
     creator, lastUpdateUser, createdAt, updatedAt,
-  } = page;
+  } = currentPage;
 
   return (
     <div className={`${styles['page-content-footer']} page-content-footer py-4 d-edit-none d-print-none}`}>
@@ -33,6 +36,6 @@ export const PageContentFooter = memo((props: PageContentFooterProps): JSX.Eleme
       </div>
     </div>
   );
-});
+};
 
 PageContentFooter.displayName = 'PageContentFooter';
