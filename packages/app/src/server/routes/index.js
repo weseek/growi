@@ -88,7 +88,7 @@ module.exports = function(crowi, app) {
   app.get('/register'                 , applicationInstalled, login.preLogin, login.register);
 
   app.get('/admin/*'                    , applicationInstalled, loginRequiredStrictly , adminRequired , next.delegateToNext);
-  // app.get('/admin'                    , applicationInstalled, loginRequiredStrictly , adminRequired , admin.index);
+  app.get('/admin'                    , applicationInstalled, loginRequiredStrictly , adminRequired , next.delegateToNext);
   // app.get('/admin/app'                , applicationInstalled, loginRequiredStrictly , adminRequired , admin.app.index);
 
   // installer
