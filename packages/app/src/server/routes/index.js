@@ -85,7 +85,7 @@ module.exports = function(crowi, app) {
   app.post('/login'                   , applicationInstalled, loginFormValidator.loginRules(), loginFormValidator.loginValidation, csrfProtection,  addActivity, loginPassport.loginWithLocal, loginPassport.loginWithLdap, loginPassport.loginFailure);
 
   app.post('/register'                , applicationInstalled, registerFormValidator.registerRules(), registerFormValidator.registerValidation, csrfProtection, addActivity, login.register);
-  app.get('/register'                 , applicationInstalled, login.preLogin, login.register);
+  app.get('/register'                 , applicationInstalled, login.preLogin, next.delegateToNext);
 
   app.get('/admin/*'                    , applicationInstalled, loginRequiredStrictly , adminRequired , next.delegateToNext);
   // app.get('/admin'                    , applicationInstalled, loginRequiredStrictly , adminRequired , admin.index);
