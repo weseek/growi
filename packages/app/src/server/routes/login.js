@@ -162,10 +162,9 @@ module.exports = function(crowi, app) {
               errors.push('can_not_register_maximum_number_of_users');
             }
             else {
-              req.flash('registerWarningMessage', req.t('message.failed_to_register'));
               errors.push('failed_to_register');
             }
-            return res.redirect('/register');
+            return res.redirect(`/register?errors=${errors}`);
           }
 
           if (configManager.getConfig('crowi', 'security:registrationMode') !== aclService.labels.SECURITY_REGISTRATION_MODE_RESTRICTED) {
