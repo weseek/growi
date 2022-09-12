@@ -18,9 +18,6 @@ import {
 const InvitedForm = dynamic<InvitedFormProps>(() => import('~/components/InvitedForm').then(mod => mod.InvitedForm), { ssr: false });
 
 type Props = CommonProps & {
-  isMailerSetup: boolean,
-  enabledStrategies: unknown,
-  registrationWhiteList: string[],
   currentUser: IUser,
   invitedFormUsername: string,
   invitedFormName: string,
@@ -44,11 +41,7 @@ const InvitedPage: NextPage<Props> = (props: Props) => {
 
 async function injectServerConfigurations(context: GetServerSidePropsContext, props: Props): Promise<void> {
   const req: CrowiRequest = context.req as CrowiRequest;
-  const { crowi, body: invitedForm } = req;
-  const { mailService, configManager } = crowi;
-
-  props.isMailerSetup = mailService.isMailerSetup;
-  props.registrationWhiteList = configManager.getConfig('crowi', 'security:registrationWhiteList');
+  const { body: invitedForm } = req;
 
   if (props.invitedFormUsername != null) {
     props.invitedFormUsername = invitedForm.username;
@@ -56,24 +49,6 @@ async function injectServerConfigurations(context: GetServerSidePropsContext, pr
   if (props.invitedFormName != null) {
     props.invitedFormName = invitedForm.name;
   }
-}
-
-function injectEnabledStrategies(context: GetServerSidePropsContext, props: Props): void {
-  const req: CrowiRequest = context.req as CrowiRequest;
-  const { crowi } = req;
-  const { configManager } = crowi;
-
-  const enabledStrategies = {
-    google: configManager.getConfig('crowi', 'security:passport-google:isEnabled'),
-    github: configManager.getConfig('crowi', 'security:passport-github:isEnabled'),
-    facebook: false,
-    twitter: configManager.getConfig('crowi', 'security:passport-twitter:isEnabled'),
-    smal: configManager.getConfig('crowi', 'security:passport-saml:isEnabled'),
-    oidc: configManager.getConfig('crowi', 'security:passport-oidc:isEnabled'),
-    basic: configManager.getConfig('crowi', 'security:passport-basic:isEnabled'),
-  };
-
-  props.enabledStrategies = enabledStrategies;
 }
 
 /**
@@ -104,7 +79,6 @@ export const getServerSideProps: GetServerSideProps = async(context: GetServerSi
   }
 
   await injectServerConfigurations(context, props);
-  injectEnabledStrategies(context, props);
   await injectNextI18NextConfigurations(context, props, ['translation']);
 
   return { props };
