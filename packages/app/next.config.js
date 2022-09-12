@@ -64,7 +64,6 @@ module.exports = async(phase, { defaultConfig }) => {
     // experimental: { esmExternals: true }, // Prefer loading of ES Modules over CommonJS
 
     async rewrites() {
-      console.log('rewrites is called');
       return [
         {
           source: '/register',
