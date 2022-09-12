@@ -63,14 +63,6 @@ module.exports = async(phase, { defaultConfig }) => {
     // see: https://github.com/vercel/next.js/discussions/27876
     // experimental: { esmExternals: true }, // Prefer loading of ES Modules over CommonJS
 
-    async rewrites() {
-      return [
-        {
-          source: '/register',
-          destination: '/login',
-        },
-      ];
-    },
     reactStrictMode: true,
     swcMinify: true,
     typescript: {
