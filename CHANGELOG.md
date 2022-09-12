@@ -1,8 +1,14 @@
 # Changelog
 
-## [Unreleased](https://github.com/weseek/growi/compare/v4.5.24...HEAD)
+## [Unreleased](https://github.com/weseek/growi/compare/v4.5.25...HEAD)
 
 *Please do not manually update this file. We've automated the process.*
+
+## [v4.5.25](https://github.com/weseek/growi/compare/v4.5.24...v4.5.25) - 2022-09-12
+
+### 🐛 Bug Fixes
+
+- fix: Disallow retrieval of revision data that does not match the page for v4 (#6538) @miya
 
 ## [v4.5.24](https://github.com/weseek/growi/compare/v4.5.23...v4.5.24) - 2022-07-12
 
