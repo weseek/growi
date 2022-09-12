@@ -35,15 +35,17 @@ type Props = {
   onModalClose: () => void,
   onCropCompleted: (res: any) => void,
   isCircular: boolean,
+  isShouldCrop: boolean
 }
 const ImageCropModal: FC<Props> = (props: Props) => {
 
   const {
-    isShow, src, onModalClose, onCropCompleted, isCircular,
+    isShow, src, onModalClose, onCropCompleted, isCircular, isShouldCrop,
   } = props;
 
   const [imageRef, setImageRef] = useState<HTMLImageElement>();
   const [cropOptions, setCropOtions] = useState<CropOptions>(null);
+  const [isCropImage, setIsCropImage] = useState<boolean>(true);
   const { t } = useTranslation();
   const reset = useCallback(() => {
     if (imageRef) {
@@ -93,10 +95,22 @@ const ImageCropModal: FC<Props> = (props: Props) => {
     }
   };
 
+  // Convert base64 Image to blob
+  const convertBase64ToBlob = async(base64Image: string) => {
+    const parts = base64Image.split(';base64,');
+    const imageType = parts[0].split(':')[1];
+    const decodedData = window.atob(parts[1]);
+    const uInt8Array = new Uint8Array(decodedData.length);
+    for (let i = 0; i < decodedData.length; ++i) {
+      uInt8Array[i] = decodedData.charCodeAt(i);
+    }
+    return new Blob([uInt8Array], { type: imageType });
+  };
+
   const crop = async() => {
     // crop immages
     if (imageRef && cropOptions?.width && cropOptions.height) {
-      const result = await getCroppedImg(imageRef, cropOptions);
+      const result = isCropImage ? await getCroppedImg(imageRef, cropOptions) : await convertBase64ToBlob(imageRef.src);
       onCropCompleted(result);
     }
   };
@@ -107,17 +121,38 @@ const ImageCropModal: FC<Props> = (props: Props) => {
         {t('crop_image_modal.image_crop')}
       </ModalHeader>
       <ModalBody className="my-4">
-        <ReactCrop src={src} crop={cropOptions} onImageLoaded={onImageLoaded} onChange={onCropChange} circularCrop={isCircular} />
+        {
+          isCropImage
+            ? (<ReactCrop src={src} crop={cropOptions} onImageLoaded={onImageLoaded} onChange={onCropChange} circularCrop={isCircular} />)
+            : (<img style={{ maxWidth: imageRef?.width }} src={imageRef?.src} />)
+        }
       </ModalBody>
       <ModalFooter>
         <button type="button" className="btn btn-outline-danger rounded-pill mr-auto" onClick={reset}>
           {t('crop_image_modal.reset')}
         </button>
+        { !isShouldCrop && (
+          <div className="mr-auto">
+            <div className="custom-control custom-switch ">
+              <input
+                id="cropImageOption"
+                className="custom-control-input mr-auto"
+                type="checkbox"
+                checked={isCropImage}
+                onChange={() => { setIsCropImage(!isCropImage) }}
+              />
+              <label className="custom-control-label" htmlFor="cropImageOption">
+                { t('crop_image_modal.image_crop') }
+              </label>
+            </div>
+          </div>
+        )
+        }
         <button type="button" className="btn btn-outline-secondary rounded-pill mr-2" onClick={onModalClose}>
           {t('crop_image_modal.cancel')}
         </button>
         <button type="button" className="btn btn-outline-primary rounded-pill" onClick={crop}>
-          {t('crop_image_modal.crop')}
+          { isCropImage ? t('crop_image_modal.crop') : t('crop_image_modal.save') }
         </button>
       </ModalFooter>
     </Modal>

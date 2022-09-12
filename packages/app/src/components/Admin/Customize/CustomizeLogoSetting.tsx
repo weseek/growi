@@ -80,6 +80,12 @@ const CustomizeLogoSetting = (): JSX.Element => {
     }
   }, [t]);
 
+  // Clear uploadedLogoSrc and close modal
+  const onModalCloseHandler = useCallback(() => {
+    setIsImageCropModalShow(false);
+    setUploadLogoSrc(null);
+  }, []);
+
   const onCropCompleted = useCallback(async(croppedImage) => {
     try {
       const formData = new FormData();
@@ -93,9 +99,8 @@ const CustomizeLogoSetting = (): JSX.Element => {
       setRetrieveError(err);
       throw new Error('Failed to upload brand logo');
     }
-    setIsImageCropModalShow(false);
-  }, [t]);
-
+    onModalCloseHandler();
+  }, [t, onModalCloseHandler]);
 
   return (
     <React.Fragment>
@@ -171,9 +176,10 @@ const CustomizeLogoSetting = (): JSX.Element => {
       <ImageCropModal
         isShow={isImageCropModalShow}
         src={uploadLogoSrc}
-        onModalClose={() => setIsImageCropModalShow(false)}
+        onModalClose={onModalCloseHandler}
         onCropCompleted={onCropCompleted}
         isCircular={false}
+        isShouldCrop={false}
       />
     </React.Fragment>
   );

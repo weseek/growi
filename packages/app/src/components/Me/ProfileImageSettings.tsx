@@ -160,6 +160,7 @@ const ProfileImageSettings = (): JSX.Element => {
         onModalClose={() => setShowImageCropModal(false)}
         onCropCompleted={cropCompletedHandler}
         isCircular
+        isShouldCrop
       />
 
       <div className="row my-3">
