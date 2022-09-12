@@ -8,9 +8,6 @@ import { toastSuccess, toastError } from '~/client/util/apiNotification';
 import { apiv3Post } from '~/client/util/apiv3-client';
 import { useCurrentPageId } from '~/stores/context';
 
-type Props = {
-  onCloseForm: () => void,
-}
 
 const ExpirationType = {
   UNLIMITED: 'unlimited',
@@ -20,6 +17,10 @@ const ExpirationType = {
 
 type ExpirationType = typeof ExpirationType[keyof typeof ExpirationType];
 
+type Props = {
+  onCloseForm: () => void,
+}
+
 export const ShareLinkForm: FC<Props> = (props: Props) => {
   const { t } = useTranslation();
   const { onCloseForm } = props;
@@ -27,10 +28,18 @@ export const ShareLinkForm: FC<Props> = (props: Props) => {
   const [expirationType, setExpirationType] = useState<ExpirationType>(ExpirationType.UNLIMITED);
   const [numberOfDays, setNumberOfDays] = useState<number>(7);
   const [description, setDescription] = useState<string>('');
-  const [customExpirationDate, setCustomExpirationDate] = useState<string>(format(new Date(), 'yyyy-MM-dd'));
-  const [customExpirationTime, setCustomExpirationTime] = useState<string>(format(new Date(), 'HH:mm'));
+  const [customExpirationDate, setCustomExpirationDate] = useState<Date>(new Date());
+  const [customExpirationTime, setCustomExpirationTime] = useState<Date>(new Date());
 
   const { data: currentPageId } = useCurrentPageId();
+
+  const formatDate = useCallback((date) => {
+    return format(date, 'yyyy-MM-dd');
+  }, []);
+
+  const formatTime = useCallback((date) => {
+    return format(date, 'HH:mm');
+  }, []);
 
   const handleChangeExpirationType = useCallback((expirationType: ExpirationType) => {
     setExpirationType(expirationType);
@@ -45,11 +54,13 @@ export const ShareLinkForm: FC<Props> = (props: Props) => {
   }, []);
 
   const handleChangeCustomExpirationDate = useCallback((customExpirationDate: string) => {
-    setCustomExpirationDate(customExpirationDate);
+    const parsedDate = parse(customExpirationDate, 'yyyy-MM-dd', new Date());
+    setCustomExpirationDate(parsedDate);
   }, []);
 
   const handleChangeCustomExpirationTime = useCallback((customExpirationTime: string) => {
-    setCustomExpirationTime(customExpirationTime);
+    const parsedTime = parse(customExpirationTime, 'HH:mm', new Date());
+    setCustomExpirationTime(parsedTime);
   }, []);
 
   const generateExpired = useCallback(() => {
@@ -169,7 +180,7 @@ export const ShareLinkForm: FC<Props> = (props: Props) => {
                   type="date"
                   className="ml-3 mb-2"
                   name="customExpirationDate"
-                  value={customExpirationDate}
+                  value={formatDate(customExpirationDate)}
                   onFocus={() => { handleChangeExpirationType(ExpirationType.CUSTOM) }}
                   onChange={e => handleChangeCustomExpirationDate(e.target.value)}
                 />
@@ -177,7 +188,7 @@ export const ShareLinkForm: FC<Props> = (props: Props) => {
                   type="time"
                   className="ml-3 mb-2"
                   name="customExpiration"
-                  value={customExpirationTime}
+                  value={formatTime(customExpirationTime)}
                   onFocus={() => { handleChangeExpirationType(ExpirationType.CUSTOM) }}
                   onChange={e => handleChangeCustomExpirationTime(e.target.value)}
                 />
