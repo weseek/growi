@@ -122,11 +122,11 @@ export const DrawioModal = React.forwardRef((props: Props, ref: React.LegacyRef<
     const url = new URL(drawioUri);
 
     // refs: https://desk.draw.io/support/solutions/articles/16000042546-what-url-parameters-are-supported-
-    url.searchParams.append('spin', 1);
-    url.searchParams.append('embed', 1);
+    url.searchParams.append('spin', '1');
+    url.searchParams.append('embed', '1');
     url.searchParams.append('lang', getDiagramsNetLangCode(i18next.language));
     url.searchParams.append('ui', 'atlas');
-    url.searchParams.append('configure', 1);
+    url.searchParams.append('configure', '1');
 
     return url.toString();
   }, [growiHydratedEnv?.DRAWIO_URI]);
