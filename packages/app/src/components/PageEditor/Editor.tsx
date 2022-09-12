@@ -1,5 +1,5 @@
 import React, {
-  useState, useRef, useImperativeHandle, useCallback, useMemo,
+  useState, useRef, useImperativeHandle, useCallback, ForwardRefRenderFunction, forwardRef,
 } from 'react';
 
 import Dropzone from 'react-dropzone';
@@ -44,7 +44,7 @@ type DropzoneRef = {
   open: () => void
 }
 
-const Editor = React.forwardRef((props: EditorPropsType, ref): JSX.Element => {
+const Editor: ForwardRefRenderFunction<IEditorMethods, EditorPropsType> = (props, ref): JSX.Element => {
   const {
     onUpload, isUploadable, isUploadableFile, indentSize, isGfmMode = true,
   } = props;
@@ -66,45 +66,29 @@ const Editor = React.forwardRef((props: EditorPropsType, ref): JSX.Element => {
     return isMobile ? taEditorRef.current : cmEditorRef.current;
   }, [isMobile]);
 
-  const methods: Partial<IEditorMethods> = useMemo(() => {
-    return {
-      forceToFocus: () => {
-        editorSubstance()?.forceToFocus();
-      },
-      setValue: (newValue: string) => {
-        editorSubstance()?.setValue(newValue);
-      },
-      setGfmMode: (bool: boolean) => {
-        editorSubstance()?.setGfmMode(bool);
-      },
-      setCaretLine: (line: number) => {
-        editorSubstance()?.setCaretLine(line);
-      },
-      setScrollTopByLine: (line: number) => {
-        editorSubstance()?.setScrollTopByLine(line);
-      },
-      insertText: (text: string) => {
-        editorSubstance()?.insertText(text);
-      },
-      getNavbarItems: (): JSX.Element[] => {
-        // concat common items and items specific to CodeMirrorEditor or TextAreaEditor
-        const navbarItems = editorSubstance()?.getNavbarItems() ?? [];
-        return navbarItems;
-      },
-    };
-  }, [editorSubstance]);
-
   // methods for ref
   useImperativeHandle(ref, () => ({
-    forceToFocus: methods.forceToFocus,
-    setValue: methods.setValue,
-    setGfmMode: methods.setGfmMode,
-    setCaretLine: methods.setCaretLine,
-    setScrollTopByLine: methods.setScrollTopByLine,
-    insertText: methods.insertText,
+    forceToFocus: () => {
+      editorSubstance()?.forceToFocus();
+    },
+    setValue: (newValue: string) => {
+      editorSubstance()?.setValue(newValue);
+    },
+    setGfmMode: (bool: boolean) => {
+      editorSubstance()?.setGfmMode(bool);
+    },
+    setCaretLine: (line: number) => {
+      editorSubstance()?.setCaretLine(line);
+    },
+    setScrollTopByLine: (line: number) => {
+      editorSubstance()?.setScrollTopByLine(line);
+    },
+    insertText: (text: string) => {
+      editorSubstance()?.insertText(text);
+    },
     /**
-   * remove overlay and set isUploading to false
-   */
+     * remove overlay and set isUploading to false
+     */
     terminateUploadingState: () => {
       setDropzoneActive(false);
       setIsUploading(false);
@@ -239,14 +223,14 @@ const Editor = React.forwardRef((props: EditorPropsType, ref): JSX.Element => {
     return (
       <div className="m-0 navbar navbar-default navbar-editor" style={{ minHeight: 'unset' }}>
         <ul className="pl-2 nav nav-navbar">
-          { methods.getNavbarItems?.().map((item, idx) => {
+          { (editorSubstance()?.getNavbarItems() ?? []).map((item, idx) => {
             // eslint-disable-next-line react/no-array-index-key
             return <li key={`navbarItem-${idx}`}>{item}</li>;
           }) }
         </ul>
       </div>
     );
-  }, [methods]);
+  }, [editorSubstance]);
 
   const renderCheatsheetModal = useCallback(() => {
     const hideCheatsheetModal = () => {
@@ -355,8 +339,6 @@ const Editor = React.forwardRef((props: EditorPropsType, ref): JSX.Element => {
       </div>
     </>
   );
-});
+};
 
-Editor.displayName = 'Editor';
-
-export default Editor;
+export default forwardRef(Editor);
