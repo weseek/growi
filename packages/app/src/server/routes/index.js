@@ -61,7 +61,9 @@ module.exports = function(crowi, app) {
 
   /* eslint-disable max-len, comma-spacing, no-multi-spaces */
 
-  const [apiV3Router, apiV3AdminRouter, apiV3AuthRouter] = require('./apiv3')(crowi);
+  const [apiV3Router, apiV3AdminRouter, apiV3AuthRouter] = require('./apiv3')(
+    crowi, applicationInstalled, registerFormValidator, addActivity, // arguments for require('./apiv3')
+  );
 
   app.use('/api-docs', require('./apiv3/docs')(crowi));
 
