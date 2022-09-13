@@ -60,6 +60,10 @@ export const BasicLayout = ({
       <PageAccessoriesModal />
       {/* <HotkeysManager /> */}
 
+      {/*
+      * Comment out to prevent err >>> TypeError: Cannot read properties of null (reading 'bottom')
+      * This err occurs when moving to "grw-fav-sticky-trigger" pages.
+      */ }
       {/* <Fab /> */}
 
       <ShortcutsModal />
