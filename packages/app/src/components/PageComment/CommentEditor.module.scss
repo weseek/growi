@@ -1,5 +1,6 @@
 @use '~/styles/bootstrap/init' as bs;
-@use './_comment-inheritance';
+@use './comment-inheritance';
+@use '../PageEditor/page-editor-inheritance';
 
 // display cheatsheet for comment form only
 .comment-editor-styles :global {
@@ -31,8 +32,8 @@
   }
 
   .page-comment-editor-skelton {
-    height: 300px;
-    margin-top: 30px;
-    margin-bottom: 20px;
+    height: comment-inheritance.$codemirror-default-height;
+    margin-top: page-editor-inheritance.$navbar-editor-height;
+    margin-bottom: bs.$line-height-base + bs.$btn-padding-y;
   }
 }
