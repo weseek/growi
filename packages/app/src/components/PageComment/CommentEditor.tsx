@@ -23,11 +23,12 @@ import NotAvailableForGuest from '../NotAvailableForGuest';
 import { Skelton } from '../Skelton';
 
 
+import { CommentPreview } from './CommentPreview';
+
 import styles from './CommentEditor.module.scss';
 
 
 const SlackNotification = dynamic(() => import('../SlackNotification').then(mod => mod.SlackNotification), { ssr: false });
-const CommentPreview = dynamic(() => import('./CommentPreview').then(mod => mod.CommentPreview), { ssr: false });
 const Editor = dynamic(() => import('../PageEditor/Editor'),
   {
     ssr: false,
