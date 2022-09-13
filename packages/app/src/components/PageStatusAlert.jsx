@@ -1,7 +1,7 @@
 import React from 'react';
 
-import PropTypes from 'prop-types';
 import { useTranslation } from 'next-i18next';
+import PropTypes from 'prop-types';
 
 import AppContainer from '~/client/services/AppContainer';
 import PageContainer from '~/client/services/PageContainer';
@@ -83,12 +83,14 @@ class PageStatusAlert extends React.Component {
       isConflictOnEdit = markdownOnEdit !== pageContainer.state.markdown;
     }
 
-    const usernameComponentToString = ReactDOMServer.renderToString(<Username user={pageContainer.state.lastUpdateUser} />);
+    // TODO: re-impl with Next.js way
+    // const usernameComponentToString = ReactDOMServer.renderToString(<Username user={pageContainer.state.lastUpdateUser} />);
 
-    const label1 = isConflictOnEdit
-      ? t('modal_resolve_conflict.file_conflicting_with_newer_remote')
-      // eslint-disable-next-line react/no-danger
-      : <span dangerouslySetInnerHTML={{ __html: `${usernameComponentToString} ${t('edited this page')}` }} />;
+    // const label1 = isConflictOnEdit
+    //   ? t('modal_resolve_conflict.file_conflicting_with_newer_remote')
+    //   // eslint-disable-next-line react/no-danger
+    //   : <span dangerouslySetInnerHTML={{ __html: `${usernameComponentToString} ${t('edited this page')}` }} />;
+    const label1 = '(TBD -- 2022.09.13)';
 
     return [
       ['bg-warning'],
