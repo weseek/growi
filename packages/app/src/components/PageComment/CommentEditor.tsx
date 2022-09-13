@@ -9,6 +9,7 @@ import {
 import * as toastr from 'toastr';
 
 import { apiPostForm } from '~/client/util/apiv1-client';
+import { IEditorMethods } from '~/interfaces/editor-methods';
 import { RendererOptions } from '~/services/renderer/renderer';
 import { useSWRxPageComment } from '~/stores/comment';
 import {
@@ -50,11 +51,6 @@ export type CommentEditorProps = {
   onCommentButtonClicked?: () => void,
 }
 
-type EditorRef = {
-  setValue: (value: string) => void,
-  insertText: (text: string) => void,
-  terminateUploadingState: () => void,
-}
 
 export const CommentEditor = (props: CommentEditorProps): JSX.Element => {
 
@@ -80,7 +76,7 @@ export const CommentEditor = (props: CommentEditorProps): JSX.Element => {
   const [error, setError] = useState();
   const [slackChannels, setSlackChannels] = useState(slackChannelsData?.toString());
 
-  const editorRef = useRef<EditorRef>(null);
+  const editorRef = useRef<IEditorMethods>(null);
 
   const handleSelect = useCallback((activeTab: string) => {
     setActiveTab(activeTab);
