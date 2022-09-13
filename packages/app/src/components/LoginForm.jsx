@@ -25,6 +25,8 @@ class LoginForm extends React.Component {
     this.renderExternalAuthLoginForm = this.renderExternalAuthLoginForm.bind(this);
     this.renderExternalAuthInput = this.renderExternalAuthInput.bind(this);
     this.renderRegisterForm = this.renderRegisterForm.bind(this);
+    this.handleChange = this.handleChange.bind(this);
+    this.handleRegisterFormSubmit = this.handleRegisterFormSubmit.bind(this);
 
     const { hash } = window.location;
     if (hash === '#register') {
@@ -144,6 +146,31 @@ class LoginForm extends React.Component {
         </div>
       </>
     );
+  }
+
+  handleChange(e) {
+    const inputName = e.target.name;
+    const inputValue = e.target.value;
+    this.setState({ [inputName]: inputValue });
+  }
+
+  async handleRegisterFormSubmit(e) {
+    e.preventDefault();
+
+    const { csrfToken } = this.props;
+    const {
+      username, name, email, password,
+    } = this.state;
+
+    const registerForm = {
+      username,
+      name,
+      email,
+      password,
+      token: csrfToken,
+    };
+    const res = await apiv3Post('/register', { registerForm });
+    return;
   }
 
   renderRegisterForm() {
