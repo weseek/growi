@@ -223,7 +223,9 @@ export const SearchResultContent: FC<Props> = (props: Props) => {
           isReadOnly
           hideIfEmpty
         />
-        <PageContentFooter />
+        <PageContentFooter
+          page={page}
+        />
       </div>
     </div>
   );

@@ -1,8 +1,8 @@
 import React from 'react';
 
+import { IPage, IUser } from '@growi/core';
 import dynamic from 'next/dynamic';
 
-import { IUser } from '~/interfaces/user';
 import { useSWRxCurrentPage } from '~/stores/page';
 
 import { Skelton } from './Skelton';
@@ -14,17 +14,17 @@ const AuthorInfo = dynamic(() => import('./Navbar/AuthorInfo'), {
   loading: () => <Skelton additionalClass={`${styles['page-content-footer-skelton']} mb-3`} />,
 });
 
-export const PageContentFooter = (): JSX.Element => {
+type PageContentFooterProps = {
+  page: IPage,
+}
 
-  const { data: currentPage } = useSWRxCurrentPage();
+export const PageContentFooter = (props: PageContentFooterProps): JSX.Element => {
 
-  if (currentPage == null) {
-    return <></>;
-  }
+  const { page } = props;
 
   const {
     creator, lastUpdateUser, createdAt, updatedAt,
-  } = currentPage;
+  } = page;
 
   return (
     <div className={`${styles['page-content-footer']} page-content-footer py-4 d-edit-none d-print-none}`}>
@@ -38,4 +38,12 @@ export const PageContentFooter = (): JSX.Element => {
   );
 };
 
-PageContentFooter.displayName = 'PageContentFooter';
+export const PageContentFooterWrapper = (): JSX.Element => {
+  const { data: currentPage } = useSWRxCurrentPage();
+
+  if (currentPage == null) {
+    return <></>;
+  }
+
+  return <PageContentFooter page={currentPage} />;
+};
