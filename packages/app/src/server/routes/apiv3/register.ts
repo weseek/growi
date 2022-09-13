@@ -82,7 +82,7 @@ module.exports = (crowi) => {
       return res.redirect('/');
     }
 
-    if (req.method === 'POST' && req.form.isValid) {
+    if (req.form.isValid) {
       const registerForm = req.form.registerForm || {};
 
       const name = registerForm.name;
@@ -126,15 +126,9 @@ module.exports = (crowi) => {
             sendEmailToAllAdmins(userData);
           }
 
-
           return registerSuccessHandler(req, res, userData);
         });
       });
-    }
-    else { // method GET of form is not valid
-      debug('session is', req.session);
-      const isRegistering = true;
-      return res.render('login', { isRegistering });
     }
   });
 
