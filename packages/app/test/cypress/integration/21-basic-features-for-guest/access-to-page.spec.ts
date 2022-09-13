@@ -9,11 +9,7 @@ context('Access to page by guest', () => {
   it('/Sandbox is successfully loaded', () => {
     cy.visit('/Sandbox', {  });
     // Collapse sidebar
-    cy.getByTestid('grw-contextual-navigation-sub').then(($el) => {
-      if(!$el.hasClass('d-none')){
-        cy.getByTestid('grw-navigation-resize-button').click({force: true});
-      }
-    });
+    cy.collapseSidebar(true);
     cy.screenshot(`${ssPrefix}-sandbox`);
   });
 
