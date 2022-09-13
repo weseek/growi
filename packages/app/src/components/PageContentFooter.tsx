@@ -14,7 +14,7 @@ const AuthorInfo = dynamic(() => import('./Navbar/AuthorInfo'), {
   loading: () => <Skelton additionalClass={`${styles['page-content-footer-skelton']} mb-3`} />,
 });
 
-type PageContentFooterProps = {
+export type PageContentFooterProps = {
   page: IPage,
 }
 
