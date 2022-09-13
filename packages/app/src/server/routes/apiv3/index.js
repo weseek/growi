@@ -17,6 +17,13 @@ const routerForAuth = express.Router();
 
 const csrfProtection = csrf({ ignoreMethods: ['POST'], cookie: false });
 
+module.exports = (
+    crowi,
+    applicationInstalled,
+    registerFormValidator,
+    addActivity,
+) => {
+
   // add custom functions to express response
   require('./response')(express, crowi);
 
@@ -42,6 +49,13 @@ const csrfProtection = csrf({ ignoreMethods: ['POST'], cookie: false });
   // auth
   routerForAuth.use('/logout', require('./logout')(crowi));
 
+  router.use('/register',
+    applicationInstalled,
+    registerFormValidator.registerRules(),
+    registerFormValidator.registerValidation,
+    csrfProtection,
+    addActivity,
+    require('./register')(crowi));
 
   router.use('/in-app-notification', require('./in-app-notification')(crowi));
 
