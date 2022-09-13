@@ -29,6 +29,7 @@ class LoginForm extends React.Component {
     this.renderRegisterForm = this.renderRegisterForm.bind(this);
     this.handleChange = this.handleChange.bind(this);
     this.handleRegisterFormSubmit = this.handleRegisterFormSubmit.bind(this);
+    this.resetRegisterErrors = this.resetRegisterErrors.bind(this);
 
     const { hash } = window.location;
     if (hash === '#register') {
@@ -36,8 +37,19 @@ class LoginForm extends React.Component {
     }
   }
 
+  resetRegisterErrors() {
+    if (this.state.registerErrors.length === 0) {
+      return;
+    }
+    this.setState({ registerErrors: [] });
+  }
+
   switchForm() {
-    this.setState({ isRegistering: !this.state.isRegistering });
+    this.setState({
+      isRegistering: !this.state.isRegistering,
+    });
+    // reset errors
+    this.resetRegisterErrors();
   }
 
   handleLoginWithExternalAuth(e) {
