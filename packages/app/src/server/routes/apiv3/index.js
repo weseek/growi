@@ -1,3 +1,5 @@
+import csrf from 'csurf';
+
 import loggerFactory from '~/utils/logger';
 
 import injectUserRegistrationOrderByTokenMiddleware from '../../middlewares/inject-user-registration-order-by-token-middleware';
@@ -13,7 +15,7 @@ const router = express.Router();
 const routerForAdmin = express.Router();
 const routerForAuth = express.Router();
 
-module.exports = (crowi) => {
+const csrfProtection = csrf({ ignoreMethods: ['POST'], cookie: false });
 
   // add custom functions to express response
   require('./response')(express, crowi);
