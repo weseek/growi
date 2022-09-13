@@ -6,7 +6,6 @@ import EventEmitter from 'events';
 
 import { envUtils, PageGrant } from '@growi/core';
 import detectIndent from 'detect-indent';
-import dynamic from 'next/dynamic';
 import { throttle, debounce } from 'throttle-debounce';
 
 import { saveOrUpdate } from '~/client/services/page-operation';
@@ -30,11 +29,9 @@ import loggerFactory from '~/utils/logger';
 
 
 // import { ConflictDiffModal } from './PageEditor/ConflictDiffModal';
+import Editor from './PageEditor/Editor';
 import Preview from './PageEditor/Preview';
 import scrollSyncHelper from './PageEditor/ScrollSyncHelper';
-// import Editor from './PageEditor/WrappedEditor';
-
-const Editor = dynamic(() => import('./PageEditor/WrappedEditor'), { ssr: false });
 
 
 const logger = loggerFactory('growi:PageEditor');
@@ -395,7 +392,7 @@ const PageEditor = React.memo((): JSX.Element => {
     <div className="d-flex flex-wrap">
       <div className="page-editor-editor-container flex-grow-1 flex-basis-0 mw-0">
         <Editor
-          editorRef={editorRef}
+          ref={editorRef}
           value={initialValue}
           isUploadable={isUploadable}
           isUploadableFile={isUploadableFile}

@@ -3,7 +3,6 @@ import React, {
 } from 'react';
 
 import { UserPicture } from '@growi/ui';
-import dynamic from 'next/dynamic';
 import {
   Button, TabContent, TabPane,
 } from 'reactstrap';
@@ -21,14 +20,12 @@ import { useSWRxSlackChannels, useIsSlackEnabled } from '~/stores/editor';
 
 import { CustomNavTab } from '../CustomNavigation/CustomNav';
 import NotAvailableForGuest from '../NotAvailableForGuest';
+import Editor from '../PageEditor/Editor';
 import { SlackNotification } from '../SlackNotification';
 
 import { CommentPreview } from './CommentPreview';
 
 import styles from './CommentEditor.module.scss';
-
-
-const Editor = dynamic(() => import('../PageEditor/WrappedEditor'), { ssr: false });
 
 
 const navTabMapping = {
@@ -259,7 +256,7 @@ export const CommentEditor = (props: CommentEditorProps): JSX.Element => {
           <TabContent activeTab={activeTab}>
             <TabPane tabId="comment_editor">
               <Editor
-                editorRef={editorRef}
+                ref={editorRef}
                 value={comment}
                 isUploadable={isUploadable}
                 isUploadableFile={isUploadableFile}
