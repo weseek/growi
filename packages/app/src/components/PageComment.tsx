@@ -29,7 +29,7 @@ const DeleteCommentModal = dynamic<DeleteCommentModalProps>(
 
 
 type PageCommentProps = {
-  pageId?: string,
+  pageId: string,
   isReadOnly: boolean,
   titleAlign?: 'center' | 'left' | 'right',
   highlightKeywords?: string[],
@@ -207,7 +207,7 @@ export const PageComment: FC<PageCommentProps> = memo((props:PageCommentProps): 
                     )}
                     {(!isReadOnly && showEditorIds.has(comment._id)) && (
                       <CommentEditor
-                        rendererOptions={rendererOptions}
+                        pageId={pageId}
                         replyTo={comment._id}
                         onCancelButtonClicked={() => {
                           removeShowEditorId(comment._id);

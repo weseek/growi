@@ -3,6 +3,7 @@ import React, {
 } from 'react';
 
 import { UserPicture } from '@growi/ui';
+import dynamic from 'next/dynamic';
 import {
   Button, TabContent, TabPane,
 } from 'reactstrap';
@@ -10,22 +11,28 @@ import * as toastr from 'toastr';
 
 import { apiPostForm } from '~/client/util/apiv1-client';
 import { IEditorMethods } from '~/interfaces/editor-methods';
-import { RendererOptions } from '~/services/renderer/renderer';
 import { useSWRxPageComment } from '~/stores/comment';
 import {
-  useCurrentPagePath, useCurrentPageId, useCurrentUser, useRevisionId, useIsSlackConfigured,
+  useCurrentPagePath, useCurrentUser, useRevisionId, useIsSlackConfigured,
   useIsUploadableFile, useIsUploadableImage,
 } from '~/stores/context';
 import { useSWRxSlackChannels, useIsSlackEnabled } from '~/stores/editor';
 
 import { CustomNavTab } from '../CustomNavigation/CustomNav';
 import NotAvailableForGuest from '../NotAvailableForGuest';
-import Editor from '../PageEditor/Editor';
-import { SlackNotification } from '../SlackNotification';
+import { Skelton } from '../Skelton';
 
-import { CommentPreview } from './CommentPreview';
 
 import styles from './CommentEditor.module.scss';
+
+
+const SlackNotification = dynamic(() => import('../SlackNotification').then(mod => mod.SlackNotification), { ssr: false });
+const CommentPreview = dynamic(() => import('./CommentPreview').then(mod => mod.CommentPreview), { ssr: false });
+const Editor = dynamic(() => import('../PageEditor/Editor'),
+  {
+    ssr: false,
+    loading: () => <Skelton additionalClass="grw-skelton page-comment-editor-skelton" />,
+  });
 
 
 const navTabMapping = {
@@ -42,7 +49,7 @@ const navTabMapping = {
 };
 
 export type CommentEditorProps = {
-  rendererOptions: RendererOptions,
+  pageId: string,
   isForNewComment?: boolean,
   replyTo?: string,
   currentCommentId?: string,
@@ -55,14 +62,13 @@ export type CommentEditorProps = {
 export const CommentEditor = (props: CommentEditorProps): JSX.Element => {
 
   const {
-    rendererOptions, isForNewComment, replyTo,
+    pageId, isForNewComment, replyTo,
     currentCommentId, commentBody, onCancelButtonClicked, onCommentButtonClicked,
   } = props;
 
   const { data: currentUser } = useCurrentUser();
   const { data: currentPagePath } = useCurrentPagePath();
-  const { data: currentPageId } = useCurrentPageId();
-  const { update: updateComment, post: postComment } = useSWRxPageComment(currentPageId);
+  const { update: updateComment, post: postComment } = useSWRxPageComment(pageId);
   const { data: revisionId } = useRevisionId();
   const { data: isSlackEnabled, mutate: mutateIsSlackEnabled } = useIsSlackEnabled();
   const { data: slackChannelsData } = useSWRxSlackChannels(currentPagePath);
@@ -169,7 +175,6 @@ export const CommentEditor = (props: CommentEditorProps): JSX.Element => {
     if (editorRef.current == null) { return }
 
     const pagePath = currentPagePath;
-    const pageId = currentPageId;
     const endpoint = '/attachments.add';
     const formData = new FormData();
     formData.append('file', file);
@@ -195,7 +200,7 @@ export const CommentEditor = (props: CommentEditorProps): JSX.Element => {
     finally {
       editorRef.current.terminateUploadingState();
     }
-  }, [apiErrorHandler, currentPageId, currentPagePath]);
+  }, [apiErrorHandler, currentPagePath, pageId]);
 
   const getCommentHtml = useCallback(() => {
     if (currentPagePath == null) {
@@ -204,12 +209,11 @@ export const CommentEditor = (props: CommentEditorProps): JSX.Element => {
 
     return (
       <CommentPreview
-        rendererOptions={rendererOptions}
         markdown={comment}
         path={currentPagePath}
       />
     );
-  }, [currentPagePath, comment, rendererOptions]);
+  }, [currentPagePath, comment]);
 
   const renderBeforeReady = useCallback((): JSX.Element => {
     return (
