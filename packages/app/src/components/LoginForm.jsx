@@ -13,6 +13,10 @@ class LoginForm extends React.Component {
 
     this.state = {
       isRegistering: false,
+      username: '',
+      name: '',
+      email: '',
+      password: '',
     };
 
     this.switchForm = this.switchForm.bind(this);
