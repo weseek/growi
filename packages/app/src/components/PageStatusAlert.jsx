@@ -5,6 +5,7 @@ import { useTranslation } from 'next-i18next';
 
 import AppContainer from '~/client/services/AppContainer';
 import PageContainer from '~/client/services/PageContainer';
+import Username from '~/components/User/Username';
 
 import { withUnstatedContainers } from './UnstatedUtils';
 
@@ -82,9 +83,12 @@ class PageStatusAlert extends React.Component {
       isConflictOnEdit = markdownOnEdit !== pageContainer.state.markdown;
     }
 
+    const usernameComponentToString = ReactDOMServer.renderToString(<Username user={pageContainer.state.lastUpdateUser} />);
+
     const label1 = isConflictOnEdit
       ? t('modal_resolve_conflict.file_conflicting_with_newer_remote')
-      : `${pageContainer.state.lastUpdateUsername} ${t('edited this page')}`;
+      // eslint-disable-next-line react/no-danger
+      : <span dangerouslySetInnerHTML={{ __html: `${usernameComponentToString} ${t('edited this page')}` }} />;
 
     return [
       ['bg-warning'],
