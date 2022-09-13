@@ -19,8 +19,8 @@ const PageDeleteModal = dynamic(() => import('../PageDeleteModal'), { ssr: false
 const PageRenameModal = dynamic(() => import('../PageRenameModal'), { ssr: false });
 const PagePresentationModal = dynamic(() => import('../PagePresentationModal'), { ssr: false });
 const PageAccessoriesModal = dynamic(() => import('../PageAccessoriesModal'), { ssr: false });
-// Fab
-const Fab = dynamic(() => import('../Fab'), { ssr: false });
+// // Fab
+// const Fab = dynamic(() => import('../Fab'), { ssr: false });
 
 
 type Props = {
@@ -60,7 +60,7 @@ export const BasicLayout = ({
       <PageAccessoriesModal />
       {/* <HotkeysManager /> */}
 
-      <Fab />
+      {/* <Fab /> */}
 
       <ShortcutsModal />
       <SystemVersion showShortcutsButton />
