@@ -4,6 +4,7 @@ import { useTranslation } from 'next-i18next';
 import PropTypes from 'prop-types';
 import ReactCardFlip from 'react-card-flip';
 
+import { apiv3Post } from '~/client/util/apiv3-client';
 import { useCsrfToken } from '~/stores/context';
 
 class LoginForm extends React.Component {
@@ -210,7 +211,7 @@ class LoginForm extends React.Component {
           </p>
         )}
 
-        <form role="form" action={registerAction} method="post" id="register-form">
+        <form role="form" onSubmit={this.handleRegisterFormSubmit } id="register-form">
 
           {!isEmailAuthenticationEnabled && (
             <div>
@@ -220,11 +221,12 @@ class LoginForm extends React.Component {
                     <i className="icon-user"></i>
                   </span>
                 </div>
+                {/* username */}
                 <input
                   type="text"
                   className="form-control rounded-0"
-                  placeholder={t('User ID')}
-                  name="registerForm[username]"
+                  onChange={this.handleChange}placeholder={t('User ID')}
+                  name="username"
                   defaultValue={username}
                   required
                 />
@@ -238,7 +240,13 @@ class LoginForm extends React.Component {
                     <i className="icon-tag"></i>
                   </span>
                 </div>
-                <input type="text" className="form-control rounded-0" placeholder={t('Name')} name="registerForm[name]" defaultValue={name} required />
+                {/* name */}
+                <input type="text"
+                  className="form-control rounded-0"
+                  onChange={this.handleChange}placeholder={t('Name')}
+                  name="name"
+                  defaultValue={name}
+                  required />
               </div>
             </div>
           )}
@@ -249,7 +257,15 @@ class LoginForm extends React.Component {
                 <i className="icon-envelope"></i>
               </span>
             </div>
-            <input type="email" className="form-control rounded-0" placeholder={t('Email')} name="registerForm[email]" defaultValue={email} required />
+            {/* email */}
+            <input type="email"
+              className="form-control rounded-0"
+              onChange={this.handleChange}
+              placeholder={t('Email')}
+              name="email"
+              defaultValue={email}
+              required
+            />
           </div>
 
           {registrationWhiteList.length > 0 && (
@@ -275,14 +291,25 @@ class LoginForm extends React.Component {
                     <i className="icon-lock"></i>
                   </span>
                 </div>
-                <input type="password" className="form-control rounded-0" placeholder={t('Password')} name="registerForm[password]" required />
+                {/* Password */}
+                <input type="password"
+                  className="form-control rounded-0"
+                  onChange={this.handleChange}
+                  placeholder={t('Password')}
+                  name="password"
+                  required />
               </div>
             </div>
           )}
 
+          {/* Sign up button (submit) */}
           <div className="input-group justify-content-center my-4">
             <input type="hidden" name="_csrf" value={csrfToken} />
-            <button type="submit" className="btn btn-fill rounded-0" id="register" disabled={(!isMailerSetup && isEmailAuthenticationEnabled)}>
+            <button
+              className="btn btn-fill rounded-0"
+              id="register"
+              disabled={(!isMailerSetup && isEmailAuthenticationEnabled)}
+            >
               <div className="eff"></div>
               <span className="btn-label">
                 <i className="icon-user-follow"></i>
@@ -336,6 +363,7 @@ class LoginForm extends React.Component {
                     </a>
                   </div>
                 )}
+                {/* Sign up link */}
                 {isRegistrationEnabled && (
                   <div className="text-right mb-2">
                     <a href="#register" id="register" className="link-switch" onClick={this.switchForm}>
@@ -345,6 +373,7 @@ class LoginForm extends React.Component {
                 )}
               </div>
               <div className="back">
+                {/* Register form for /login#register */}
                 {isRegistrationEnabled && this.renderRegisterForm()}
               </div>
             </ReactCardFlip>
