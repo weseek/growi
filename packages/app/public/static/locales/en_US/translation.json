@@ -674,6 +674,10 @@
     "Registration successful": "Registration successful",
     "Setup": "Setup"
   },
+  "invited": {
+    "discription_heading": "Create Account",
+    "discription": "Create an your account with the invited email address"
+  },
   "export_bulk": {
     "failed_to_export": "Failed to export",
     "failed_to_count_pages": "Failed to count pages",

@@ -665,6 +665,10 @@
     "Registration successful": "登録完了",
     "Setup": "セットアップ"
   },
+  "invited": {
+    "discription_heading": "アカウント作成",
+    "discription": "招待を受け取ったメールアドレスでアカウントを作成します"
+  },
   "export_bulk": {
     "failed_to_export": "ページのエクスポートに失敗しました",
     "failed_to_count_pages": "ページ数の取得に失敗しました",

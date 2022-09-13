@@ -19,15 +19,13 @@ import { HasChildren } from '../../interfaces/common';
 import GrowiLogo from '../Icons/GrowiLogo';
 
 import { GlobalSearchProps } from './GlobalSearch';
-import PersonalDropdown from './PersonalDropdown';
 
 import styles from './GrowiNavbar.module.scss';
 
+const PersonalDropdown = dynamic(() => import('./PersonalDropdown'), { ssr: false });
 const InAppNotificationDropdown = dynamic(() => import('../InAppNotification/InAppNotificationDropdown')
   .then(mod => mod.InAppNotificationDropdown), { ssr: false });
 const AppearanceModeDropdown = dynamic(() => import('./AppearanceModeDropdown').then(mod => mod.AppearanceModeDropdown), { ssr: false });
-const GlobalSearch = dynamic<GlobalSearchProps>(() => import('./GlobalSearch').then(mod => mod.GlobalSearch), { ssr: false });
-
 
 const NavbarRight = memo((): JSX.Element => {
   const { t } = useTranslation();
@@ -72,7 +70,7 @@ const NavbarRight = memo((): JSX.Element => {
         </li>
       </>
     );
-  }, [isAuthenticated, openCreateModal, currentPagePath]);
+  }, [t, isAuthenticated, openCreateModal, currentPagePath]);
 
   const notAuthenticatedNavItem = useMemo(() => {
     return (
@@ -123,6 +121,8 @@ Confidential.displayName = 'Confidential';
 
 export const GrowiNavbar = (): JSX.Element => {
 
+  const GlobalSearch = dynamic<GlobalSearchProps>(() => import('./GlobalSearch').then(mod => mod.GlobalSearch), { ssr: false });
+
   const { data: appTitle } = useAppTitle();
   const { data: confidential } = useConfidential();
   const { data: isSearchServiceConfigured } = useIsSearchServiceConfigured();
@@ -144,14 +144,18 @@ export const GrowiNavbar = (): JSX.Element => {
         {appTitle}
       </div>
 
+
       {/* Navbar Right  */}
       <ul className="navbar-nav ml-auto">
         <NavbarRight />
         <Confidential confidential={confidential} />
       </ul>
-      <div className="grw-global-search-container position-absolute">
-        { isSearchServiceConfigured && !isDeviceSmallerThanMd && !isSearchPage && (<GlobalSearch />) }
-      </div>
+
+      { isSearchServiceConfigured && !isDeviceSmallerThanMd && !isSearchPage && (
+        <div className="grw-global-search-container position-absolute">
+          <GlobalSearch />
+        </div>
+      ) }
     </nav>
   );
 
