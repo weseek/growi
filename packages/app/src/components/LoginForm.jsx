@@ -190,12 +190,12 @@ class LoginForm extends React.Component {
       return;
     }
     catch (err) {
-    // Execute if error exists
+      // Execute if error exists
       if (err != null || err.length > 0) {
-      this.setState({
+        this.setState({
           registerErrors: err,
-      });
-    }
+        });
+      }
     }
   }
 
