@@ -18,8 +18,6 @@ module.exports = (crowi) => {
     req.login(userData, (err) => {
       if (err) {
         logger.debug(err);
-        // I created a flash message in case the user information that processing was successful is not stored in the session.
-        req.flash('successMessage', req.t('message.successfully_created', { username: userData.username }));
       }
       else {
         // update lastLoginAt
