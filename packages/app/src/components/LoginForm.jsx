@@ -4,7 +4,7 @@ import { useTranslation } from 'next-i18next';
 import PropTypes from 'prop-types';
 import ReactCardFlip from 'react-card-flip';
 
-import { apiv3Post } from '~/client/util/apiv3-client';
+import { apiv3PostForm } from '~/client/util/apiv3-client';
 import { useCsrfToken } from '~/stores/context';
 
 class LoginForm extends React.Component {
