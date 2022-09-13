@@ -18,6 +18,7 @@ class LoginForm extends React.Component {
       name: '',
       email: '',
       password: '',
+      registerErrors: [], // array of string
     };
 
     this.switchForm = this.switchForm.bind(this);
@@ -171,7 +172,18 @@ class LoginForm extends React.Component {
       token: csrfToken,
     };
     const res = await apiv3Post('/register', { registerForm });
+    const { errors } = res.data;
+
+    // Execute if error exists
+    if (errors != null || errors.length > 0) {
+      this.setState({
+        registerErrors: errors,
+      });
+    }
+
+    // Todo: redirect to /login
     return;
+
   }
 
   renderRegisterForm() {
@@ -196,6 +208,9 @@ class LoginForm extends React.Component {
       submitText = t('page_register.send_email');
     }
 
+    // register errors set after
+    const { registerErrors } = this.state;
+
     return (
       <React.Fragment>
         {registrationMode === 'Restricted' && (
@@ -210,6 +225,20 @@ class LoginForm extends React.Component {
             <span>{t('security_settings.Local.please_enable_mailer')}</span>
           </p>
         )}
+
+        {
+          registerErrors != null && registerErrors.length > 0 && (
+            <p className="alert alert-danger">
+              {registerErrors.map((err, index) => {
+                return (
+                  <span key={index}>
+                    {t(`message.${err}`)}<br/>
+                  </span>
+                );
+              })}
+            </p>
+          )
+        }
 
         <form role="form" onSubmit={this.handleRegisterFormSubmit } id="register-form">
 
