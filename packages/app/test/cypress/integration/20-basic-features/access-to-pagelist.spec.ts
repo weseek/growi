@@ -55,6 +55,10 @@ context('Access to pagelist', () => {
     cy.getByTestid('page-accessories-modal').parent().should('have.class','show').within(() => {
       cy.get('button.close').eq(1).click();
     });
+    cy.screenshot(`${ssPrefix}8-close-page-list-modal`, {
+      capture: 'viewport',
+      blackout: ['[data-line="2"]:eq(0) > a > img', '[data-hide-in-vrt=true]']
+    });
   });
 });
 
@@ -85,5 +89,12 @@ context('Access to timeline', () => {
       cy.get('button.close').eq(0).click();
     });
     cy.screenshot(`${ssPrefix}2-timeline-list-fullscreen`, {capture: 'viewport'});
+    cy.getByTestid('page-accessories-modal').parent().should('have.class','show').within(() => {
+      cy.get('button.close').eq(1).click();
+    });
+    cy.screenshot(`${ssPrefix}3-close-modal`, {
+      capture: 'viewport',
+      blackout: ['[data-line="2"]:eq(0) > a > img', '[data-hide-in-vrt=true]']
+    });
   });
 });
