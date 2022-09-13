@@ -183,19 +183,20 @@ class LoginForm extends React.Component {
       password,
       token: csrfToken,
     };
-    const res = await apiv3Post('/register', { registerForm });
-    const { errors } = res.data;
-
+    try {
+      const res = await apiv3PostForm('/register', { registerForm });
+      const { redirectTo } = res.data;
+      // Todo: redirect
+      return;
+    }
+    catch (err) {
     // Execute if error exists
-    if (errors != null || errors.length > 0) {
+      if (err != null || err.length > 0) {
       this.setState({
-        registerErrors: errors,
+          registerErrors: err,
       });
     }
-
-    // Todo: redirect to /login
-    return;
-
+    }
   }
 
   renderRegisterForm() {
@@ -244,7 +245,7 @@ class LoginForm extends React.Component {
               {registerErrors.map((err, index) => {
                 return (
                   <span key={index}>
-                    {t(`message.${err}`)}<br/>
+                    {t(`message.${err.message}`)}<br/>
                   </span>
                 );
               })}
@@ -456,11 +457,6 @@ const LoginFormWrapperFC = (props) => {
 
   return <LoginForm t={t} csrfToken={csrfToken} {...props} />;
 };
-
-/**
- * Wrapper component for using unstated
- */
-// const LoginFormWrapper = withUnstatedContainers(LoginFormWrapperFC, [AppContainer]);
 
 // export default LoginForm;
 export default LoginFormWrapperFC;
