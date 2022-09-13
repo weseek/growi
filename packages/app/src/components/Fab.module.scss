@@ -3,7 +3,7 @@
   // https://stackoverflow.com/a/57667536
   .fadeInUp {
     & :local {
-      animation: fab-fadeinup 1s ease 0s;
+      animation: fab-fadeinup 0.5s ease 0s;
     }
   }
   .fadeOut {
