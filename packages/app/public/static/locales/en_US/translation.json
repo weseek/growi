@@ -706,7 +706,9 @@
     "complete_to_install2":"Complete to Install GROWI ! Please check each settings on this page first.",
     "failed_to_create_admin_user":"Failed to create admin user. {{errMessage}}",
     "successfully_send_email_auth":"We sent an email to {{email}}. Please click the URL in the email and complete the registration.",
-    "incorrect_token_or_expired_url": "The token is incorrect or the URL has expired."
+    "incorrect_token_or_expired_url": "The token is incorrect or the URL has expired.",
+    "user_already_loggedin": "You cannot create a new account when you are logged in.",
+    "registration_closed": "You are not authorized to create a new account."
   },
   "grid_edit":{
     "create_bootstrap_4_grid":"Create Bootstrap 4 Grid",

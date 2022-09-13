@@ -697,7 +697,9 @@
     "complete_to_install2":"GROWI のインストールが完了しました！はじめに、このページで各種設定を確認してください。",
     "failed_to_create_admin_user":"管理ユーザーの作成に失敗しました。{{errMessage}}",
     "successfully_send_email_auth":"{{email}} にメールを送信しました。添付されたURLをクリックし、本登録を完了させてください",
-    "incorrect_token_or_expired_url":"トークンが正しくないか、URLの有効期限が切れています。"
+    "incorrect_token_or_expired_url":"トークンが正しくないか、URLの有効期限が切れています。",
+    "user_already_loggedin": "ログイン中のため、新規アカウントを作成できませんでした。",
+    "registration_closed": "新しいアカウントを作成する権限がありません。"
   },
   "grid_edit":{
     "create_bootstrap_4_grid":"Bootstrap 4 グリッドを作成",
