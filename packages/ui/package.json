@@ -21,7 +21,7 @@
     "test": "jest --verbose"
   },
   "dependencies": {
-    "@growi/core": "^5.1.4-RC.0"
+    "@growi/core": "^5.1.5-RC.0"
   },
   "devDependencies": {
     "eslint-plugin-regex": "^1.8.0",
