@@ -25,7 +25,7 @@ type ReplycommentsProps = {
 export const ReplyComments = (props: ReplycommentsProps): JSX.Element => {
 
   const {
-    isReadOnly, revisionId, revisionCreatedAt, currentUser, replyList, deleteBtnClicked, onComment, rendererOptions,
+    isReadOnly, revisionId, revisionCreatedAt, currentUser, replyList, deleteBtnClicked, onComment,
   } = props;
 
   const { data: isAllReplyShown } = useIsAllReplyShown();

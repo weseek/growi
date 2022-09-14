@@ -35,7 +35,7 @@ type CommentProps = {
 export const Comment = (props: CommentProps): JSX.Element => {
 
   const {
-    comment, revisionId, revisionCreatedAt, currentUser, isReadOnly, deleteBtnClicked, onComment, rendererOptions,
+    comment, revisionId, revisionCreatedAt, currentUser, isReadOnly, deleteBtnClicked, onComment,
   } = props;
 
   const { t } = useTranslation();
@@ -110,7 +110,6 @@ export const Comment = (props: CommentProps): JSX.Element => {
           rendererOptions={rendererOptions}
           markdown={markdown}
           additionalClassName="comment"
-          pagePath={currentPagePath}
         />
       )
       : renderText(comment.comment);

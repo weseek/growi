@@ -208,12 +208,7 @@ export const CommentEditor = (props: CommentEditorProps): JSX.Element => {
       return <></>;
     }
 
-    return (
-      <CommentPreview
-        markdown={comment}
-        path={currentPagePath}
-      />
-    );
+    return <CommentPreview markdown={comment} />;
   }, [currentPagePath, comment]);
 
   const renderBeforeReady = useCallback((): JSX.Element => {

@@ -8,12 +8,11 @@ import styles from './CommentPreview.module.scss';
 
 type CommentPreviewPorps = {
   markdown: string,
-  path: string,
 }
 
 export const CommentPreview = (props: CommentPreviewPorps): JSX.Element => {
 
-  const { markdown, path } = props;
+  const { markdown } = props;
 
   const { data: rendererOptions } = useCommentPreviewOptions();
 

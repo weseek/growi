@@ -3,7 +3,6 @@ import React from 'react';
 import { IRevisionHasId } from '@growi/core';
 import dynamic from 'next/dynamic';
 
-
 import { PageComment } from '~/components/PageComment';
 import { useSWRxPageComment } from '~/stores/comment';
 
