@@ -38,7 +38,7 @@ export const PageContentFooter = (props: PageContentFooterProps): JSX.Element =>
   );
 };
 
-export const PageContentFooterWrapper = (): JSX.Element => {
+export const CurrentPageContentFooter = (): JSX.Element => {
   const { data: currentPage } = useSWRxCurrentPage();
 
   if (currentPage == null) {
