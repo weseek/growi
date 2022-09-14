@@ -198,7 +198,6 @@ const GrowiPage: NextPage<Props> = (props: Props) => {
   useIsNotFound(props.isNotFound);
   // useIsNotCreatable(props.IsNotCreatable);
   useRedirectFrom(props.redirectFrom);
-  // useIsTrashPage(_isTrashPage(props.currentPagePath));
   // useShared();
   // useShareLinkId(props.shareLinkId);
   useIsSharedUser(false); // this page cann't be routed for '/share'
@@ -247,6 +246,8 @@ const GrowiPage: NextPage<Props> = (props: Props) => {
   useCurrentPagePath(pagePath);
   useCurrentPathname(props.currentPathname);
   useEditingMarkdown(pageWithMeta?.data.revision?.body);
+  useIsTrashPage(_isTrashPage(pagePath));
+
   const { data: grantData } = useSWRxIsGrantNormalized(pageId);
   const { mutate: mutateSelectedGrant } = useSelectedGrant();
 
