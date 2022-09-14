@@ -8,7 +8,7 @@ import { useTranslation } from 'react-i18next';
 import { throttle, debounce } from 'throttle-debounce';
 
 
-import { updatePage, saveAndReload } from '~/client/services/page-operation';
+import { saveOrUpdate } from '~/client/services/page-operation';
 import { toastError, toastSuccess } from '~/client/util/apiNotification';
 import { apiPost } from '~/client/util/apiv1-client';
 import { getOptionsToSave } from '~/client/util/editor';
@@ -37,7 +37,7 @@ type HackEditorRef = {
 export const PageEditorByHackmd = (): JSX.Element => {
 
   const { t } = useTranslation();
-  const { data: editorMode } = useEditorMode();
+  const { data: editorMode, mutate: mutateEditorMode } = useEditorMode();
   const { data: currentPagePath } = useCurrentPagePath();
   const { data: currentPathname } = useCurrentPagePath();
   const { data: slackChannelsData } = useSWRxSlackChannels(currentPagePath);
@@ -77,7 +77,7 @@ export const PageEditorByHackmd = (): JSX.Element => {
 
   const hackmdEditorRef = useRef<HackEditorRef>(null);
 
-  const saveAndReloadHandler = useCallback(async(opts?: {overwriteScopesOfDescendants: boolean}) => {
+  const saveAndReturnToViewHandler = useCallback(async(opts?: {overwriteScopesOfDescendants: boolean}) => {
     if (editorMode !== EditorMode.HackMD) {
       return;
     }
@@ -101,17 +101,18 @@ export const PageEditorByHackmd = (): JSX.Element => {
       optionsToSave = currentOptionsToSave;
     }
 
-    await saveAndReload(optionsToSave, { pageId, path: currentPagePath || currentPathname, revisionId: revision?._id }, markdown);
-  }, [currentPagePath, currentPathname, editorMode, grant, isSlackEnabled, pageId, pageTags, revision, slackChannels, markdown]);
+    await saveOrUpdate(optionsToSave, { pageId, path: currentPagePath || currentPathname, revisionId: revision?._id }, markdown);
+    mutateEditorMode(EditorMode.View);
+  }, [currentPagePath, currentPathname, editorMode, grant, isSlackEnabled, pageId, pageTags, revision, slackChannels, markdown, mutateEditorMode]);
 
   // set handler to save and reload Page
   useEffect(() => {
-    globalEmitter.on('saveAndReload', saveAndReloadHandler);
+    globalEmitter.on('saveAndReturnToView', saveAndReturnToViewHandler);
 
     return function cleanup() {
-      globalEmitter.removeListener('saveAndReload', saveAndReloadHandler);
+      globalEmitter.removeListener('saveAndReturnToView', saveAndReturnToViewHandler);
     };
-  }, [saveAndReloadHandler]);
+  }, [saveAndReturnToViewHandler]);
 
   const isResume = useCallback(() => {
     const isPageExistsOnHackmd = (pageIdOnHackmd != null);
@@ -187,13 +188,15 @@ export const PageEditorByHackmd = (): JSX.Element => {
    * @param {string} markdown
    */
   const onSaveWithShortcut = useCallback(async(markdown) => {
-    if (isSlackEnabled == null || grant == null || slackChannels == null || pageId == null || revisionIdHackmdSynced == null) { return }
+    if (
+      isSlackEnabled == null || grant == null || slackChannels == null || pageId == null || revisionIdHackmdSynced == null || currentPathname == null
+    ) { return }
     const optionsToSave = getOptionsToSave(
       isSlackEnabled, slackChannels, grant.grant, grant.grantedGroup?.id, grant.grantedGroup?.name, pageTags ?? [], true,
     );
 
     try {
-      const res = await updatePage(pageId, revisionIdHackmdSynced, markdown, optionsToSave);
+      const res = await saveOrUpdate(optionsToSave, { pageId, path: currentPagePath || currentPathname, revisionId: revisionIdHackmdSynced }, markdown);
 
       // update pageData
       updatePageData();
@@ -216,8 +219,8 @@ export const PageEditorByHackmd = (): JSX.Element => {
       toastError(error);
     }
   }, [
-    grant, isSlackEnabled, pageTags, slackChannels, updatePageTagsForEditors, pageId,
-    revisionIdHackmdSynced, updatePageData, updateHasDraftOnHackmd, updateRevisionIdHackmdSynced,
+    grant, isSlackEnabled, pageTags, slackChannels, updatePageTagsForEditors, pageId, currentPagePath, currentPathname,
+    revisionIdHackmdSynced, updatePageData, updateHasDraftOnHackmd, updateRevisionIdHackmdSynced, t,
   ]);
 
   /**
@@ -241,7 +244,7 @@ export const PageEditorByHackmd = (): JSX.Element => {
     catch (err) {
       logger.error(err);
     }
-  }, [pageId, revision?.body, hackmdUri]);
+  }, [pageId, revision?.body, hackmdUri, markdownChangedHandler]);
 
   const penpalErrorOccuredHandler = useCallback((error) => {
     toastError(error);
