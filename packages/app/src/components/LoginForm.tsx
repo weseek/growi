@@ -179,6 +179,7 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
         setRegisterErrors(err);
       }
     }
+    return;
   };
 
   const resetRegisterErrors = () => {
