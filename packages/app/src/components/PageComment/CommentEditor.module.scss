@@ -1,5 +1,6 @@
 @use '~/styles/bootstrap/init' as bs;
-@use './_comment-inheritance';
+@use './comment-inheritance';
+@use '../PageEditor/page-editor-inheritance';
 
 // display cheatsheet for comment form only
 .comment-editor-styles :global {
@@ -30,14 +31,9 @@
     }
   }
 
-  // TODO: Refacotr Soft-coding
-  .page-comment-commenteditorlazyrenderer-body-skelton {
-    position: relative;
-    padding: 2.258rem 2rem;
-    margin-left: 4.5em;
-    line-height: 1.5;
-    @include bs.media-breakpoint-down(xs) {
-      margin-left: 3.5em;
-    }
+  .page-comment-editor-skelton {
+    height: comment-inheritance.$codemirror-default-height;
+    margin-top: page-editor-inheritance.$navbar-editor-height;
+    margin-bottom: bs.$line-height-base + bs.$btn-padding-y;
   }
 }
