@@ -1,64 +1,63 @@
-import React from 'react';
+import React, {
+  useState, useEffect,
+} from 'react';
 
 import { useTranslation } from 'next-i18next';
-import PropTypes from 'prop-types';
+import { useRouter } from 'next/router';
 import ReactCardFlip from 'react-card-flip';
 
-import { apiv3PostForm } from '~/client/util/apiv3-client';
+import { apiv3Post } from '~/client/util/apiv3-client';
 import { useCsrfToken } from '~/stores/context';
 
-class LoginForm extends React.Component {
+export type LoginFormProps = {
+  username?: string,
+  name?: string,
+  email?: string,
+  isRegistrationEnabled: boolean,
+  isEmailAuthenticationEnabled: boolean,
+  registrationMode?: string,
+  registrationWhiteList: string[],
+  isPasswordResetEnabled: boolean,
+  isLocalStrategySetup: boolean,
+  isLdapStrategySetup: boolean,
+  objOfIsExternalAuthEnableds?: any,
+  isMailerSetup?: boolean
+}
+export const LoginForm = (props: LoginFormProps): JSX.Element => {
+  const { t } = useTranslation();
+  const router = useRouter();
+  const { data: csrfToken } = useCsrfToken();
 
-  constructor(props) {
-    super(props);
+  const {
+    isLocalStrategySetup, isLdapStrategySetup, isPasswordResetEnabled, isRegistrationEnabled,
+  } = props;
+  const isLocalOrLdapStrategiesEnabled = isLocalStrategySetup || isLdapStrategySetup;
+  // const isSomeExternalAuthEnabled = Object.values(objOfIsExternalAuthEnableds).some(elem => elem);
+  const isSomeExternalAuthEnabled = true;
 
-    this.state = {
-      isRegistering: false,
-      username: '',
-      name: '',
-      email: '',
-      password: '',
-      registerErrors: [], // array of string
-    };
+  // states
+  const [isRegistering, setIsRegistering] = useState(false);
+  const [username, setUsername] = useState('');
+  const [name, setName] = useState('');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [registerErrors, setRegisterErrors] = useState<Error[]>([]);
 
-    this.switchForm = this.switchForm.bind(this);
-    this.handleLoginWithExternalAuth = this.handleLoginWithExternalAuth.bind(this);
-    this.renderLocalOrLdapLoginForm = this.renderLocalOrLdapLoginForm.bind(this);
-    this.renderExternalAuthLoginForm = this.renderExternalAuthLoginForm.bind(this);
-    this.renderExternalAuthInput = this.renderExternalAuthInput.bind(this);
-    this.renderRegisterForm = this.renderRegisterForm.bind(this);
-    this.handleChange = this.handleChange.bind(this);
-    this.handleRegisterFormSubmit = this.handleRegisterFormSubmit.bind(this);
-    this.resetRegisterErrors = this.resetRegisterErrors.bind(this);
-
+  useEffect(() => {
     const { hash } = window.location;
     if (hash === '#register') {
-      this.state.isRegistering = true;
+      setIsRegistering(true);
     }
-  }
+  }, []);
 
-  resetRegisterErrors() {
-    if (this.state.registerErrors.length === 0) {
-      return;
-    }
-    this.setState({ registerErrors: [] });
-  }
-
-  switchForm() {
-    this.setState({
-      isRegistering: !this.state.isRegistering,
-    });
-    // reset errors
-    this.resetRegisterErrors();
-  }
-
-  handleLoginWithExternalAuth(e) {
+  // functions
+  const handleLoginWithExternalAuth = (e) => {
     const auth = e.currentTarget.id;
-    window.location.href = `/passport/${auth}`;
-  }
 
-  renderLocalOrLdapLoginForm() {
-    const { t, csrfToken, isLdapStrategySetup } = this.props;
+    window.location.href = `/passport/${auth}`;
+  };
+  const renderLocalOrLdapLoginForm = () => {
+    const { isLdapStrategySetup } = props;
 
     return (
       <form role="form" action="/login" method="post">
@@ -99,10 +98,8 @@ class LoginForm extends React.Component {
         </div>
       </form>
     );
-  }
-
-  renderExternalAuthInput(auth) {
-    const { t } = this.props;
+  };
+  const renderExternalAuthInput = (auth) => {
     const authIconNames = {
       google: 'google',
       github: 'github',
@@ -115,7 +112,7 @@ class LoginForm extends React.Component {
 
     return (
       <div key={auth} className="col-6 my-2">
-        <button type="button" className="btn btn-fill rounded-0" id={auth} onClick={this.handleLoginWithExternalAuth}>
+        <button type="button" className="btn btn-fill rounded-0" id={auth} onClick={handleLoginWithExternalAuth}>
           <div className="eff"></div>
           <span className="btn-label">
             <i className={`fa fa-${authIconNames[auth]}`}></i>
@@ -125,10 +122,9 @@ class LoginForm extends React.Component {
         <div className="small text-right">by {auth} Account</div>
       </div>
     );
-  }
-
-  renderExternalAuthLoginForm() {
-    const { isLocalStrategySetup, isLdapStrategySetup, objOfIsExternalAuthEnableds } = this.props;
+  };
+  const renderExternalAuthLoginForm = () => {
+    const { isLocalStrategySetup, isLdapStrategySetup, objOfIsExternalAuthEnableds } = props;
     const isExternalAuthCollapsible = isLocalStrategySetup || isLdapStrategySetup;
     const collapsibleClass = isExternalAuthCollapsible ? 'collapse collapse-external-auth' : '';
 
@@ -141,7 +137,7 @@ class LoginForm extends React.Component {
                 if (!objOfIsExternalAuthEnableds[auth]) {
                   return;
                 }
-                return this.renderExternalAuthInput(auth);
+                return renderExternalAuthInput(auth);
               })}
             </div>
           </div>
@@ -160,21 +156,10 @@ class LoginForm extends React.Component {
         </div>
       </>
     );
-  }
+  };
 
-  handleChange(e) {
-    const inputName = e.target.name;
-    const inputValue = e.target.value;
-    this.setState({ [inputName]: inputValue });
-  }
-
-  async handleRegisterFormSubmit(e) {
+  const handleRegisterFormSubmit = async(e, requestPath) => {
     e.preventDefault();
-
-    const { csrfToken } = this.props;
-    const {
-      username, name, email, password,
-    } = this.state;
 
     const registerForm = {
       username,
@@ -184,26 +169,30 @@ class LoginForm extends React.Component {
       token: csrfToken,
     };
     try {
-      const res = await apiv3PostForm('/register', { registerForm });
+      const res = await apiv3Post(requestPath, { registerForm });
       const { redirectTo } = res.data;
-      // Todo: redirect
-      return;
+      router.push(redirectTo);
     }
     catch (err) {
       // Execute if error exists
       if (err != null || err.length > 0) {
-        this.setState({
-          registerErrors: err,
-        });
+        setRegisterErrors(err);
       }
     }
-  }
+  };
 
-  renderRegisterForm() {
+  const resetRegisterErrors = () => {
+    if (registerErrors.length === 0) return;
+    setRegisterErrors([]);
+  };
+
+  const switchForm = () => {
+    setIsRegistering(!isRegistering);
+    resetRegisterErrors();
+  };
+
+  const renderRegisterForm = () => {
     const {
-      t,
-      // appContainer,
-      csrfToken,
       isEmailAuthenticationEnabled,
       username,
       name,
@@ -211,7 +200,7 @@ class LoginForm extends React.Component {
       registrationMode,
       registrationWhiteList,
       isMailerSetup,
-    } = this.props;
+    } = props;
 
     let registerAction = '/register';
 
@@ -220,9 +209,6 @@ class LoginForm extends React.Component {
       registerAction = '/user-activation/register';
       submitText = t('page_register.send_email');
     }
-
-    // register errors set after
-    const { registerErrors } = this.state;
 
     return (
       <React.Fragment>
@@ -253,7 +239,7 @@ class LoginForm extends React.Component {
           )
         }
 
-        <form role="form" onSubmit={this.handleRegisterFormSubmit } id="register-form">
+        <form role="form" onSubmit={e => handleRegisterFormSubmit(e, registerAction) } id="register-form">
 
           {!isEmailAuthenticationEnabled && (
             <div>
@@ -267,7 +253,7 @@ class LoginForm extends React.Component {
                 <input
                   type="text"
                   className="form-control rounded-0"
-                  onChange={this.handleChange}placeholder={t('User ID')}
+                  onChange={(e) => { setUsername(e.target.value) }}placeholder={t('User ID')}
                   name="username"
                   defaultValue={username}
                   required
@@ -285,7 +271,7 @@ class LoginForm extends React.Component {
                 {/* name */}
                 <input type="text"
                   className="form-control rounded-0"
-                  onChange={this.handleChange}placeholder={t('Name')}
+                  onChange={(e) => { setName(e.target.value) }}placeholder={t('Name')}
                   name="name"
                   defaultValue={name}
                   required />
@@ -302,7 +288,7 @@ class LoginForm extends React.Component {
             {/* email */}
             <input type="email"
               className="form-control rounded-0"
-              onChange={this.handleChange}
+              onChange={(e) => { setEmail(e.target.value) }}
               placeholder={t('Email')}
               name="email"
               defaultValue={email}
@@ -336,7 +322,7 @@ class LoginForm extends React.Component {
                 {/* Password */}
                 <input type="password"
                   className="form-control rounded-0"
-                  onChange={this.handleChange}
+                  onChange={(e) => { setPassword(e.target.value) }}
                   placeholder={t('Password')}
                   name="password"
                   required />
@@ -365,7 +351,7 @@ class LoginForm extends React.Component {
 
         <div className="row">
           <div className="text-right col-12 mt-2 py-2">
-            <a href="#login" id="login" className="link-switch" onClick={this.switchForm}>
+            <a href="#login" id="login" className="link-switch" onClick={switchForm}>
               <i className="icon-fw icon-login"></i>
               {t('Sign in is here')}
             </a>
@@ -373,90 +359,43 @@ class LoginForm extends React.Component {
         </div>
       </React.Fragment>
     );
-  }
+  };
 
-  render() {
-    const {
-      t,
-      isLocalStrategySetup,
-      isLdapStrategySetup,
-      isRegistrationEnabled,
-      isPasswordResetEnabled,
-      objOfIsExternalAuthEnableds,
-    } = this.props;
-
-
-    const isLocalOrLdapStrategiesEnabled = isLocalStrategySetup || isLdapStrategySetup;
-    // const isSomeExternalAuthEnabled = Object.values(objOfIsExternalAuthEnableds).some(elem => elem);
-    const isSomeExternalAuthEnabled = true;
-
-    return (
-      <div className="noLogin-dialog mx-auto" id="noLogin-dialog">
-        <div className="row mx-0">
-          <div className="col-12">
-            <ReactCardFlip isFlipped={this.state.isRegistering} flipDirection="horizontal" cardZIndex="3">
-              <div className="front">
-                {isLocalOrLdapStrategiesEnabled && this.renderLocalOrLdapLoginForm()}
-                {isSomeExternalAuthEnabled && this.renderExternalAuthLoginForm()}
-                {isLocalOrLdapStrategiesEnabled && isPasswordResetEnabled && (
-                  <div className="text-right mb-2">
-                    <a href="/forgot-password" className="d-block link-switch">
-                      <i className="icon-key"></i> {t('forgot_password.forgot_password')}
-                    </a>
-                  </div>
-                )}
-                {/* Sign up link */}
-                {isRegistrationEnabled && (
-                  <div className="text-right mb-2">
-                    <a href="#register" id="register" className="link-switch" onClick={this.switchForm}>
-                      <i className="ti ti-check-box"></i> {t('Sign up is here')}
-                    </a>
-                  </div>
-                )}
-              </div>
-              <div className="back">
-                {/* Register form for /login#register */}
-                {isRegistrationEnabled && this.renderRegisterForm()}
-              </div>
-            </ReactCardFlip>
-          </div>
+  return (
+    <div className="noLogin-dialog mx-auto" id="noLogin-dialog">
+      <div className="row mx-0">
+        <div className="col-12">
+          <ReactCardFlip isFlipped={isRegistering} flipDirection="horizontal" cardZIndex="3">
+            <div className="front">
+              {isLocalOrLdapStrategiesEnabled && renderLocalOrLdapLoginForm()}
+              {isSomeExternalAuthEnabled && renderExternalAuthLoginForm()}
+              {isLocalOrLdapStrategiesEnabled && isPasswordResetEnabled && (
+                <div className="text-right mb-2">
+                  <a href="/forgot-password" className="d-block link-switch">
+                    <i className="icon-key"></i> {t('forgot_password.forgot_password')}
+                  </a>
+                </div>
+              )}
+              {/* Sign up link */}
+              {isRegistrationEnabled && (
+                <div className="text-right mb-2">
+                  <a href="#register" id="register" className="link-switch" onClick={switchForm}>
+                    <i className="ti ti-check-box"></i> {t('Sign up is here')}
+                  </a>
+                </div>
+              )}
+            </div>
+            <div className="back">
+              {/* Register form for /login#register */}
+              {isRegistrationEnabled && renderRegisterForm()}
+            </div>
+          </ReactCardFlip>
         </div>
-        <a href="https://growi.org" className="link-growi-org pl-3">
-          <span className="growi">GROWI</span>.<span className="org">ORG</span>
-        </a>
       </div>
-    );
-  }
+      <a href="https://growi.org" className="link-growi-org pl-3">
+        <span className="growi">GROWI</span>.<span className="org">ORG</span>
+      </a>
+    </div>
+  );
 
-}
-
-LoginForm.propTypes = {
-  // i18next
-  t: PropTypes.func.isRequired,
-  // appContainer: PropTypes.instanceOf(AppContainer).isRequired,
-
-  csrfToken: PropTypes.string,
-  isRegistering: PropTypes.bool,
-  username: PropTypes.string,
-  name: PropTypes.string,
-  email: PropTypes.string,
-  isRegistrationEnabled: PropTypes.bool,
-  registrationMode: PropTypes.string,
-  registrationWhiteList: PropTypes.array,
-  isPasswordResetEnabled: PropTypes.bool,
-  isEmailAuthenticationEnabled: PropTypes.bool,
-  isLocalStrategySetup: PropTypes.bool,
-  isLdapStrategySetup: PropTypes.bool,
-  objOfIsExternalAuthEnableds: PropTypes.object,
-  isMailerSetup: PropTypes.bool,
 };
-
-const LoginFormWrapperFC = (props) => {
-  const { t } = useTranslation();
-  const { data: csrfToken } = useCsrfToken();
-
-  return <LoginForm t={t} csrfToken={csrfToken} {...props} />;
-};
-
-// export default LoginForm;
-export default LoginFormWrapperFC;
