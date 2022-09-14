@@ -19,17 +19,16 @@ import { HasChildren } from '../../interfaces/common';
 import GrowiLogo from '../Icons/GrowiLogo';
 
 import { GlobalSearchProps } from './GlobalSearch';
-import PersonalDropdown from './PersonalDropdown';
 
 import styles from './GrowiNavbar.module.scss';
 
+const PersonalDropdown = dynamic(() => import('./PersonalDropdown'), { ssr: false });
+const InAppNotificationDropdown = dynamic(() => import('../InAppNotification/InAppNotificationDropdown')
+  .then(mod => mod.InAppNotificationDropdown), { ssr: false });
+const AppearanceModeDropdown = dynamic(() => import('./AppearanceModeDropdown').then(mod => mod.AppearanceModeDropdown), { ssr: false });
 
 const NavbarRight = memo((): JSX.Element => {
   const { t } = useTranslation();
-
-  const InAppNotificationDropdown = dynamic(() => import('../InAppNotification/InAppNotificationDropdown')
-    .then(mod => mod.InAppNotificationDropdown), { ssr: false });
-  const AppearanceModeDropdown = dynamic(() => import('./AppearanceModeDropdown').then(mod => mod.AppearanceModeDropdown), { ssr: false });
 
   const { data: currentPagePath } = useCurrentPagePath();
   const { data: isGuestUser } = useIsGuestUser();
@@ -71,7 +70,7 @@ const NavbarRight = memo((): JSX.Element => {
         </li>
       </>
     );
-  }, [InAppNotificationDropdown, t, AppearanceModeDropdown, isAuthenticated, openCreateModal, currentPagePath]);
+  }, [t, isAuthenticated, openCreateModal, currentPagePath]);
 
   const notAuthenticatedNavItem = useMemo(() => {
     return (

@@ -10,10 +10,6 @@ import { useCurrentPathname, useInterceptorManager } from '~/stores/context';
 import { useEditorSettings } from '~/stores/editor';
 import loggerFactory from '~/utils/logger';
 
-// import RevisionBody from './RevisionBody';
-
-import katexStyles from '../CommonStyles/katex.module.scss';
-
 
 const logger = loggerFactory('components:Page:RevisionRenderer');
 
@@ -102,8 +98,9 @@ const RevisionRenderer = React.memo((props: Props): JSX.Element => {
 
   return (
     <ReactMarkdown
+      data-testid="wiki"
       {...rendererOptions}
-      className={`wiki katex-container ${katexStyles['katex-container']} ${additionalClassName ?? ''}`}
+      className={`wiki ${additionalClassName ?? ''}`}
     >
       {markdown}
     </ReactMarkdown>

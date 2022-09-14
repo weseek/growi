@@ -1,8 +1,48 @@
 # Changelog
 
-## [Unreleased](https://github.com/weseek/growi/compare/v5.1.2...HEAD)
+## [Unreleased](https://github.com/weseek/growi/compare/v5.1.4...HEAD)
 
 *Please do not manually update this file. We've automated the process.*
+
+## [v5.1.4](https://github.com/weseek/growi/compare/v5.1.3...v5.1.4) - 2022-09-12
+
+### 💎 Features
+
+- feat:  Truncate long path when recent changes is in S size (#6263) @mudana-grune
+- feat: In-app notifications when removing descendants of subscribed pages (#6192) @Shunm634-source
+- feat: Not increment ordered list number in CodeMirror (#6462) @mudana-grune
+
+### 🚀 Improvement
+
+- imprv: Added page URL to mail subject (#6554) @hakumizuki
+
+### 🐛 Bug Fixes
+
+- fix: Cannot update user group without parent (#6530) @kaoritokashiki
+- fix: Make PageTree input not draggable when editting (#6525) @hakumizuki
+- fix: Pagetree input hit enter (#6526) @hakumizuki
+- fix: Disallow retrieval of revision data that does not match the page (#6537) @miya
+
+## [v5.1.3](https://github.com/weseek/growi/compare/v5.1.2...v5.1.3) - 2022-08-28
+
+### 💎 Features
+
+- feat(auditlog): Copy URL of the table (#6421) @miya
+
+### 🚀 Improvement
+
+- imprv(auditlog): Activity paging UI (#6444) @miya
+- imprv: Improvement behavior when click on drawio diagram. (#6486) @kaishuu0123
+
+### 🐛 Bug Fixes
+
+- fix: Label of alert when updating tags (#6478) @miya
+- fix: Uploading image using shortcut key(ctrl+v) shows toastError (#6474) @Yohei-Shiina
+- fix: Pager is not displayed (#6468) @miya
+
+### 🧰 Maintenance
+
+- support: Use vscode-stylelint (#6430) @yuki-takei
 
 ## [v5.1.2](https://github.com/weseek/growi/compare/v5.1.1...v5.1.2) - 2022-08-03
 

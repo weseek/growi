@@ -12,9 +12,6 @@ body {
 .container-lg,
 .container-xl,
 .container-fluid {
-  // default: 15px
-  // padding-right: 15px;
-  // padding-left: 15px;
   @include media-breakpoint-down(xs) {
     padding-right: 10px;
     padding-left: 10px;

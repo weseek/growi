@@ -80,15 +80,15 @@ module.exports = function(crowi, app) {
 
   app.get('/login/error/:reason'      , applicationInstalled, login.error);
   app.get('/login'                    , applicationInstalled, login.preLogin, next.delegateToNext);
-  app.get('/login/invited'            , applicationInstalled, login.invited);
-  app.post('/login/activateInvited'   , applicationInstalled, loginFormValidator.inviteRules(), loginFormValidator.inviteValidation, csrfProtection, login.invited);
+  app.get('/invited'                  , applicationInstalled, next.delegateToNext);
+  app.post('/invited/activateInvited' , applicationInstalled, loginFormValidator.inviteRules(), loginFormValidator.inviteValidation, csrfProtection, login.invited);
   app.post('/login'                   , applicationInstalled, loginFormValidator.loginRules(), loginFormValidator.loginValidation, csrfProtection,  addActivity, loginPassport.loginWithLocal, loginPassport.loginWithLdap, loginPassport.loginFailure);
 
   app.post('/register'                , applicationInstalled, registerFormValidator.registerRules(), registerFormValidator.registerValidation, csrfProtection, addActivity, login.register);
   app.get('/register'                 , applicationInstalled, login.preLogin, login.register);
 
   app.get('/admin/*'                    , applicationInstalled, loginRequiredStrictly , adminRequired , next.delegateToNext);
-  // app.get('/admin'                    , applicationInstalled, loginRequiredStrictly , adminRequired , admin.index);
+  app.get('/admin'                    , applicationInstalled, loginRequiredStrictly , adminRequired , next.delegateToNext);
   // app.get('/admin/app'                , applicationInstalled, loginRequiredStrictly , adminRequired , admin.app.index);
 
   // installer
@@ -181,8 +181,8 @@ module.exports = function(crowi, app) {
   apiV1Router.get('/pages.updatePost'    , accessTokenParser, loginRequired, page.api.getUpdatePost);
   apiV1Router.get('/pages.getPageTag'    , accessTokenParser , loginRequired , page.api.getPageTag);
   // allow posting to guests because the client doesn't know whether the user logged in
-  apiV1Router.post('/pages.remove'       , loginRequiredStrictly , addActivity, page.validator.remove, apiV1FormValidator, page.api.remove); // (Avoid from API Token)
-  apiV1Router.post('/pages.revertRemove' , loginRequiredStrictly , addActivity, page.validator.revertRemove, apiV1FormValidator, page.api.revertRemove); // (Avoid from API Token)
+  apiV1Router.post('/pages.remove'       , loginRequiredStrictly , page.validator.remove, apiV1FormValidator, page.api.remove); // (Avoid from API Token)
+  apiV1Router.post('/pages.revertRemove' , loginRequiredStrictly , page.validator.revertRemove, apiV1FormValidator, page.api.revertRemove); // (Avoid from API Token)
   apiV1Router.post('/pages.unlink'       , loginRequiredStrictly , page.api.unlink); // (Avoid from API Token)
   apiV1Router.post('/pages.duplicate'    , accessTokenParser, loginRequiredStrictly, page.api.duplicate);
   apiV1Router.get('/tags.list'           , accessTokenParser, loginRequired, tag.api.list);
@@ -207,13 +207,13 @@ module.exports = function(crowi, app) {
   // app.get('/tags'                     , loginRequired, tag.showPage);
   app.get('/tags', loginRequired, next.delegateToNext);
 
-  app.get('/me'                                 , loginRequiredStrictly, injectUserUISettings, next.delegateToNext);
+  app.get('/me/*'                                 , loginRequiredStrictly, injectUserUISettings, next.delegateToNext);
   // external-accounts
   // my in-app-notifications
-  app.get('/me/all-in-app-notifications'   , loginRequiredStrictly, allInAppNotifications.list);
-  app.get('/me/external-accounts'               , loginRequiredStrictly, injectUserUISettings, me.externalAccounts.list);
-  // my drafts
-  app.get('/me/drafts'                          , loginRequiredStrictly, injectUserUISettings, me.drafts.list);
+  // app.get('/me/all-in-app-notifications'   , loginRequiredStrictly, allInAppNotifications.list);
+  // app.get('/me/external-accounts'               , loginRequiredStrictly, injectUserUISettings, me.externalAccounts.list);
+  // // my drafts
+  // app.get('/me/drafts'                          , loginRequiredStrictly, injectUserUISettings, me.drafts.list);
 
   app.get('/attachment/:id([0-9a-z]{24})' , certifySharedFile , loginRequired, attachment.api.get);
   app.get('/attachment/profile/:id([0-9a-z]{24})' , loginRequired, attachment.api.get);
@@ -222,7 +222,7 @@ module.exports = function(crowi, app) {
 
   app.get('/_search'                            , loginRequired, next.delegateToNext);
 
-  app.get('/trash$'                   , loginRequired, injectUserUISettings, page.trashPageShowWrapper);
+  app.get('/trash$'                   , loginRequired, injectUserUISettings, next.delegateToNext);
   app.get('/trash/$'                  , loginRequired, (req, res) => res.redirect('/trash'));
   app.get('/trash/*/$'                , loginRequired, injectUserUISettings, page.deletedPageListShowWrapper);
 

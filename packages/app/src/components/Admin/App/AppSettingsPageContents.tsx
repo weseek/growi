@@ -4,19 +4,20 @@ import { useTranslation } from 'next-i18next';
 
 import AdminAppContainer from '~/client/services/AdminAppContainer';
 import { toastError } from '~/client/util/apiNotification';
+import { useIsMaintenanceMode } from '~/stores/maintenanceMode';
 import { toArrayIfNot } from '~/utils/array-utils';
 import loggerFactory from '~/utils/logger';
-
 
 import { withUnstatedContainers } from '../../UnstatedUtils';
 
 import AppSetting from './AppSetting';
 import FileUploadSetting from './FileUploadSetting';
 import MailSetting from './MailSetting';
-import MaintenanceMode from './MaintenanceMode';
+import { MaintenanceMode } from './MaintenanceMode';
 import PluginSetting from './PluginSetting';
 import SiteUrlSetting from './SiteUrlSetting';
 import V5PageMigration from './V5PageMigration';
+
 
 const logger = loggerFactory('growi:appSettings');
 
@@ -25,8 +26,11 @@ type Props = {
 }
 
 const AppSettingsPageContents = (props: Props) => {
-  const { t } = useTranslation();
+  const { t } = useTranslation('admin');
   const { adminAppContainer } = props;
+
+  const { data: isMaintenanceMode } = useIsMaintenanceMode();
+
   const { isV5Compatible } = adminAppContainer.state;
 
   useEffect(() => {
@@ -48,7 +52,7 @@ const AppSettingsPageContents = (props: Props) => {
     <div data-testid="admin-app-settings">
       {
         // Alert message will be displayed in case that the GROWI is under maintenance
-        adminAppContainer.state.isMaintenanceMode && (
+        isMaintenanceMode && (
           <div className="alert alert-danger alert-link" role="alert">
             <h3 className="alert-heading">
               {t('admin:maintenance_mode.maintenance_mode')}
@@ -78,7 +82,7 @@ const AppSettingsPageContents = (props: Props) => {
 
       <div className="row">
         <div className="col-lg-12">
-          <h2 className="admin-setting-header">{t('App Settings')}</h2>
+          <h2 className="admin-setting-header">{t('app_settings')}</h2>
           <AppSetting />
         </div>
       </div>
@@ -92,7 +96,7 @@ const AppSettingsPageContents = (props: Props) => {
 
       <div className="row mt-5">
         <div className="col-lg-12">
-          <h2 className="admin-setting-header" id="mail-settings">{t('admin:app_setting.mail_settings')}</h2>
+          <h2 className="admin-setting-header" id="mail-settings">{t('app_setting.mail_settings')}</h2>
           <MailSetting />
         </div>
       </div>

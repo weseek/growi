@@ -5,23 +5,27 @@
 // // override codemirror
 // @import 'override-codemirror';
 
+// react-bootstrap-typeahead
 @import '~react-bootstrap-typeahead/css/Typeahead';
 @import 'override-rbt';
 
-// import SimpleBar styles
+// SimpleBar
 @import '~simplebar/dist/simplebar.min.css';
-
-// override simplebar-react styles
 @import 'override-simplebar';
 
+// KaTeX
+@import '~katex/dist/katex.min';
+
 // icons
+
+// DO NOT CHANGE THER OERDER OF font-awesome AND simple-line-icons.
+// font-familiy used in simple-line-icons has to be prioritized than the one used in font-awesome.
+@import '~font-awesome';
 @import '~simple-line-icons';
 @import '~material-icons/iconfont/filled';
-@import '~font-awesome';
 @import '~@icon/themify-icons/themify-icons';
 
-
-// // atoms
+// atoms
 @import 'atoms/buttons';
 // @import 'atoms/code';
 // @import 'atoms/nav';
@@ -55,7 +59,6 @@
 // @import 'old-ios';
 @import 'on-edit';
 // @import 'page-duplicate-modal';
-@import 'page_list';
 
 // @import 'page-path';
 // @import 'page-tree';
@@ -76,6 +79,7 @@
 @import 'wiki';
 // @import 'sharelink';
 // @import 'linkedit-preview';
+
 
 /*
  * for Guest User Mode

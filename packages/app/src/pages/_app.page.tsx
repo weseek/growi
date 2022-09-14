@@ -1,16 +1,17 @@
 import React, { useEffect } from 'react';
 
 import { appWithTranslation } from 'next-i18next';
-import { ThemeProvider } from 'next-themes';
 import { AppProps } from 'next/app';
 import { DndProvider } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
 
 import '~/styles/style-next.scss';
-// import '~/styles/theme/default.scss';
+import '~/styles/style-themes.scss';
 // import InterceptorManager from '~/service/interceptor-manager';
 
 import * as nextI18nConfig from '^/config/next-i18next.config';
+
+import { NextThemesProvider } from '~/stores/use-next-themes';
 
 import { useI18nextHMR } from '../services/i18next-hmr';
 import {
@@ -45,11 +46,11 @@ function GrowiApp({ Component, pageProps }: GrowiAppProps): JSX.Element {
   useGrowiVersion(commonPageProps.growiVersion);
 
   return (
-    <ThemeProvider>
+    <NextThemesProvider>
       <DndProvider backend={HTML5Backend}>
         <Component {...pageProps} />
       </DndProvider>
-    </ThemeProvider>
+    </NextThemesProvider>
   );
 }
 

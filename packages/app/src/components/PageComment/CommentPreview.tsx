@@ -1,20 +1,28 @@
-import { RendererOptions } from '~/services/renderer/renderer';
+import { useCommentPreviewOptions } from '~/stores/renderer';
 
 import RevisionRenderer from '../Page/RevisionRenderer';
 
 
+import styles from './CommentPreview.module.scss';
+
+
 type CommentPreviewPorps = {
-  rendererOptions: RendererOptions,
   markdown: string,
   path: string,
 }
 
 export const CommentPreview = (props: CommentPreviewPorps): JSX.Element => {
 
-  const { rendererOptions, markdown, path } = props;
+  const { markdown, path } = props;
+
+  const { data: rendererOptions } = useCommentPreviewOptions();
+
+  if (rendererOptions == null) {
+    return <></>;
+  }
 
   return (
-    <div className="page-comment-preview-body">
+    <div className={`grw-comment-preview ${styles['grw-comment-preview']}`}>
       <RevisionRenderer
         rendererOptions={rendererOptions}
         markdown={markdown}

@@ -21,6 +21,7 @@ import {
   useSWRxSelectableParentUserGroups, useSWRxSelectableChildUserGroups, useSWRxAncestorUserGroups,
 } from '~/stores/user-group';
 
+import styles from './UserGroupDetailPage.module.scss';
 
 const UserGroupPageList = dynamic(() => import('./UserGroupPageList'), { ssr: false });
 const UserGroupUserTable = dynamic(() => import('./UserGroupUserTable'), { ssr: false });
@@ -40,7 +41,7 @@ type Props = {
 }
 
 const UserGroupDetailPage = (props: Props): JSX.Element => {
-  const { t } = useTranslation();
+  const { t } = useTranslation('admin');
   const router = useRouter();
   const xss = useMemo(() => new Xss(), []);
   const { userGroupId: currentUserGroupId } = props;
@@ -104,15 +105,11 @@ const UserGroupDetailPage = (props: Props): JSX.Element => {
   }, []);
 
   const updateUserGroup = useCallback(async(userGroup: IUserGroupHasId, update: Partial<IUserGroupHasId>, forceUpdateParents: boolean) => {
-    if (update.parent == null) {
-      throw Error('"parent" attr must not be null');
-    }
-
     const parentId = typeof update.parent === 'string' ? update.parent : update.parent?._id;
     const res = await apiv3Put<{ userGroup: IUserGroupHasId }>(`/user-groups/${userGroup._id}`, {
       name: update.name,
       description: update.description,
-      parentId,
+      parentId: parentId ?? null,
       forceUpdateParents,
     });
     const { userGroup: updatedUserGroup } = res.data;
@@ -137,7 +134,7 @@ const UserGroupDetailPage = (props: Props): JSX.Element => {
   );
 
   const onClickSubmitForm = useCallback(async(targetGroup: IUserGroupHasId, userGroupData: Partial<IUserGroupHasId>): Promise<void> => {
-    if (userGroupData?.parent === undefined || typeof userGroupData?.parent === 'string') {
+    if (typeof userGroupData?.parent === 'string') {
       toastError(t('Something went wrong. Please try again.'));
       return;
     }
@@ -322,7 +319,7 @@ const UserGroupDetailPage = (props: Props): JSX.Element => {
     <div>
       <nav aria-label="breadcrumb">
         <ol className="breadcrumb">
-          <li className="breadcrumb-item"><a href="/admin/user-groups">{t('admin:user_group_management.group_list')}</a></li>
+          <li className="breadcrumb-item"><a href="/admin/user-groups">{t('user_group_management.group_list')}</a></li>
           {
             ancestorUserGroups != null && ancestorUserGroups.length > 0 && (
               ancestorUserGroups.map((ancestorUserGroup: IUserGroupHasId) => (
@@ -348,7 +345,7 @@ const UserGroupDetailPage = (props: Props): JSX.Element => {
           onSubmit={onClickSubmitForm}
         />
       </div>
-      <h2 className="admin-setting-header mt-4">{t('admin:user_group_management.user_list')}</h2>
+      <h2 className="admin-setting-header mt-4">{t('user_group_management.user_list')}</h2>
       <UserGroupUserTable
         userGroup={currentUserGroup}
         userGroupRelations={childUserGroupRelations}
@@ -369,7 +366,7 @@ const UserGroupDetailPage = (props: Props): JSX.Element => {
         onToggleIsAlsoNameSearched={toggleAlsoNameSearched}
       />
 
-      <h2 className="admin-setting-header mt-4">{t('admin:user_group_management.child_group_list')}</h2>
+      <h2 className="admin-setting-header mt-4">{t('user_group_management.child_group_list')}</h2>
       <UserGroupDropdown
         selectableUserGroups={selectableChildUserGroups}
         onClickAddExistingUserGroupButton={onClickAddExistingUserGroupButtonHandler}
@@ -412,7 +409,7 @@ const UserGroupDetailPage = (props: Props): JSX.Element => {
       />
 
       <h2 className="admin-setting-header mt-4">{t('Page')}</h2>
-      <div className="page-list">
+      <div className={`page-list ${styles['page-list']}`}>
         <UserGroupPageList userGroupId={currentUserGroupId} relatedPages={userGroupPages} />
       </div>
     </div>

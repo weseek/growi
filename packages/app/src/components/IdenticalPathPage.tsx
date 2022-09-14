@@ -3,7 +3,7 @@ import React, { FC } from 'react';
 import { DevidedPagePath } from '@growi/core';
 import { useTranslation } from 'next-i18next';
 
-import { useCurrentPagePath, useIsSharedUser } from '~/stores/context';
+import { useCurrentPathname, useIsSharedUser } from '~/stores/context';
 import { useDescendantsPageListModal } from '~/stores/modal';
 import { useSWRxPageInfoForList, useSWRxPagesByPath } from '~/stores/page-listing';
 
@@ -52,7 +52,7 @@ const IdenticalPathAlert : FC<IdenticalPathAlertProps> = (props: IdenticalPathAl
 export const IdenticalPathPage = (): JSX.Element => {
   const { t } = useTranslation();
 
-  const { data: currentPath } = useCurrentPagePath();
+  const { data: currentPath } = useCurrentPathname();
   const { data: isSharedUser } = useIsSharedUser();
 
   const { data: pages } = useSWRxPagesByPath(currentPath);
@@ -89,7 +89,7 @@ export const IdenticalPathPage = (): JSX.Element => {
 
         <IdenticalPathAlert path={currentPath} />
 
-        <div className="page-list">
+        <div className={`page-list ${styles['page-list']}`}>
           <ul className="page-list-ul list-group list-group-flush">
             {injectedPages.map((pageWithMeta) => {
               const pageId = pageWithMeta.data._id;

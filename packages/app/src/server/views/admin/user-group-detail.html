@@ -1,9 +1,9 @@
 {% extends '../layout/admin.html' %}
 
-{% block html_title %}{{ customizeService.generateCustomTitleForFixedPageName(t('UserGroup Management') + '/' + userGroup.name) | preventXss }}{% endblock %}
+{% block html_title %}{{ customizeService.generateCustomTitleForFixedPageName(t('user_group_management.user_group_management') + '/' + userGroup.name) | preventXss }}{% endblock %}
 
 {% block content_header %}
-<h1 class="title">{{ t('UserGroup Management') + '/' + userGroup.name | preventXss }}</h1>
+<h1 class="title">{{ t('user_group_management.user_group_management') + '/' + userGroup.name | preventXss }}</h1>
 {% endblock %}
 
 {% block content_main %}

@@ -2,20 +2,16 @@ import React, {
   SyntheticEvent, RefObject,
 } from 'react';
 
-import ReactMarkdown from 'react-markdown';
-
-
 import { RendererOptions } from '~/services/renderer/renderer';
 import { useEditorSettings } from '~/stores/editor';
 
-import RevisionBody from '../Page/RevisionBody';
+import RevisionRenderer from '../Page/RevisionRenderer';
 
 
 type Props = {
   rendererOptions: RendererOptions,
   markdown?: string,
-  pagePath?: string,
-  renderMathJaxOnInit?: boolean,
+  pagePath?: string | null,
   onScroll?: (scrollTop: number) => void,
 }
 
@@ -39,7 +35,9 @@ const Preview = React.forwardRef((props: Props, ref: RefObject<HTMLDivElement>):
         }
       }}
     >
-      <ReactMarkdown {...rendererOptions} >{markdown || ''}</ReactMarkdown>
+      { markdown != null && pagePath != null && (
+        <RevisionRenderer rendererOptions={rendererOptions} markdown={markdown} pagePath={pagePath}></RevisionRenderer>
+      ) }
     </div>
   );
 

@@ -9,7 +9,7 @@ type Props = {
 }
 
 const AdminUpdateButtonRow = (props: Props): JSX.Element => {
-  const { t } = useTranslation();
+  const { t } = useTranslation('admin');
 
   return (
     <div className="row my-3">

@@ -34,7 +34,7 @@ import { IUserUISettings } from '~/interfaces/user-ui-settings';
 import { PageModel, PageDocument } from '~/server/models/page';
 import { PageRedirectModel } from '~/server/models/page-redirect';
 import { UserUISettingsModel } from '~/server/models/user-ui-settings';
-import { useSWRxCurrentPage, useSWRxIsGrantNormalized, useSWRxPageInfo } from '~/stores/page';
+import { useSWRxCurrentPage, useSWRxIsGrantNormalized } from '~/stores/page';
 import { useRedirectFrom } from '~/stores/page-redirect';
 import {
   usePreferDrawerModeByUser, usePreferDrawerModeOnEditByUser, useSidebarCollapsed, useCurrentSidebarContents, useCurrentProductNavWidth, useSelectedGrant,
@@ -70,6 +70,12 @@ import {
 } from './utils/commons';
 // import { useCurrentPageSWR } from '../stores/page';
 
+import styles from './[[...path]].page.module.scss';
+
+const NotCreatablePage = dynamic(() => import('../components/NotCreatablePage').then(mod => mod.NotCreatablePage), { ssr: false });
+const ForbiddenPage = dynamic(() => import('../components/ForbiddenPage'), { ssr: false });
+const UnsavedAlertDialog = dynamic(() => import('./UnsavedAlertDialog'), { ssr: false });
+const GrowiSubNavigationSwitcher = dynamic(() => import('../components/Navbar/GrowiSubNavigationSwitcher'), { ssr: false });
 
 const logger = loggerFactory('growi:pages:all');
 
@@ -143,7 +149,6 @@ type Props = CommonProps & {
   // hasSlackConfig: boolean,
   // drawioUri: string,
   hackmdUri: string,
-  // mathJax: string,
   // noCdn: string,
   // highlightJsStyle: string,
   isAllReplyShown: boolean,
@@ -167,11 +172,6 @@ type Props = CommonProps & {
 const GrowiPage: NextPage<Props> = (props: Props) => {
   // const { t } = useTranslation();
   const router = useRouter();
-
-  const NotCreatablePage = dynamic(() => import('../components/NotCreatablePage').then(mod => mod.NotCreatablePage), { ssr: false });
-  const ForbiddenPage = dynamic(() => import('../components/ForbiddenPage'), { ssr: false });
-  const UnsavedAlertDialog = dynamic(() => import('./UnsavedAlertDialog'), { ssr: false });
-  const GrowiSubNavigationSwitcher = dynamic(() => import('../components/Navbar/GrowiSubNavigationSwitcher'), { ssr: false });
 
   const { data: currentUser } = useCurrentUser(props.currentUser ?? null);
 
@@ -216,7 +216,6 @@ const GrowiPage: NextPage<Props> = (props: Props) => {
   // useHasSlackConfig(props.hasSlackConfig);
   // useDrawioUri(props.drawioUri);
   useHackmdUri(props.hackmdUri);
-  // useMathJax(props.mathJax);
   // useNoCdn(props.noCdn);
   // useIndentSize(props.adminPreferredIndentSize);
   useDisableLinkSharing(props.disableLinkSharing);
@@ -239,14 +238,13 @@ const GrowiPage: NextPage<Props> = (props: Props) => {
   }
 
   const pageId = pageWithMeta?.data._id;
+  const pagePath = pageWithMeta?.data.path ?? props.currentPathname;
 
   useCurrentPageId(pageId);
   useSWRxCurrentPage(undefined, pageWithMeta?.data); // store initial data
-  useSWRxPageInfo(pageId, undefined, pageWithMeta?.meta); // store initial data
-  useIsTrashPage(_isTrashPage(pageWithMeta?.data.path ?? ''));
-  useIsUserPage(isUserPage(pageWithMeta?.data.path ?? ''));
-  useIsNotCreatable(props.isForbidden || !isCreatablePage(pageWithMeta?.data.path ?? '')); // TODO: need to include props.isIdentical
-  useCurrentPagePath(pageWithMeta?.data.path);
+  useIsUserPage(isUserPage(pagePath));
+  useIsNotCreatable(props.isForbidden || !isCreatablePage(pagePath)); // TODO: need to include props.isIdentical
+  useCurrentPagePath(pagePath);
   useCurrentPathname(props.currentPathname);
   useEditingMarkdown(pageWithMeta?.data.revision?.body);
   const { data: grantData } = useSWRxIsGrantNormalized(pageId);
@@ -283,27 +281,26 @@ const GrowiPage: NextPage<Props> = (props: Props) => {
       <Head>
         {/*
         {renderScriptTagByName('drawio-viewer')}
-        {renderScriptTagByName('mathjax')}
         {renderScriptTagByName('highlight-addons')}
         {renderHighlightJsStyleTag(props.highlightJsStyle)}
         */}
       </Head>
       {/* <BasicLayout title={useCustomTitle(props, t('GROWI'))} className={classNames.join(' ')}> */}
       <BasicLayout title={useCustomTitle(props, 'GROWI')} className={classNames.join(' ')} expandContainer={props.isContainerFluid}>
-        <header className="py-0 position-relative">
-          <GrowiContextualSubNavigation isLinkSharingDisabled={props.disableLinkSharing} />
-        </header>
-        <div className="d-edit-none">
-          <GrowiSubNavigationSwitcher />
-        </div>
+        <div className="h-100 d-flex flex-column justify-content-between">
+          <header className="py-0 position-relative">
+            <GrowiContextualSubNavigation isLinkSharingDisabled={props.disableLinkSharing} />
+          </header>
+          <div className="d-edit-none">
+            <GrowiSubNavigationSwitcher />
+          </div>
 
-        <div id="grw-subnav-sticky-trigger" className="sticky-top"></div>
-        <div id="grw-fav-sticky-trigger" className="sticky-top"></div>
+          <div id="grw-subnav-sticky-trigger" className="sticky-top"></div>
+          <div id="grw-fav-sticky-trigger" className="sticky-top"></div>
 
-        <div id="main" className={`main ${isUsersHomePage(props.currentPathname) && 'user-page'}`}>
-          <div id="content-main" className="content-main grw-container-convertible">
-            <div className="row">
-              <div className="col">
+          <div className="flex-grow-1">
+            <div id="main" className={`main ${isUsersHomePage(props.currentPathname) && 'user-page'}`}>
+              <div id="content-main" className="content-main grw-container-convertible">
                 { props.isIdenticalPathPage && <IdenticalPathPage /> }
 
                 { !props.isIdenticalPathPage && (
@@ -313,66 +310,63 @@ const GrowiPage: NextPage<Props> = (props: Props) => {
                     { props.IsNotCreatable && <NotCreatablePage />}
                     { !props.isForbidden && !props.IsNotCreatable && <DisplaySwitcher />}
                     {/* <DisplaySwitcher /> */}
-                    <div id="page-editor-navbar-bottom-container" className="d-none d-edit-block"></div>
                     {/* <PageStatusAlert /> */}
                   </>
                 ) }
 
+                {/* <div className="col-xl-2 col-lg-3 d-none d-lg-block revision-toc-container">
+                  <div id="revision-toc" className="revision-toc mt-3 sps sps--abv" data-sps-offset="123">
+                    <div id="revision-toc-content" className="revision-toc-content"></div>
+                  </div>
+                </div> */}
               </div>
             </div>
-
-            {/* <div className="col-xl-2 col-lg-3 d-none d-lg-block revision-toc-container">
-              <div id="revision-toc" className="revision-toc mt-3 sps sps--abv" data-sps-offset="123">
-                <div id="revision-toc-content" className="revision-toc-content"></div>
-              </div>
-            </div> */}
           </div>
+          {/* TODO: Check CSS import */}
+          <footer className="footer d-edit-none">
+            {/* TODO: Enable page_list.html */}
+            {/* TODO: Enable isIdenticalPathPage or useIdenticalPath */}
+            {/* { !props.isIdenticalPathPage && ( */}
+            <Comments pageId={pageId} />
+            {/* )} */}
+            {/* TODO: Create UsersHomePageFooter conponent */}
+            { isUsersHomePage(props.currentPathname) && (
+              <div className="container-lg user-page-footer py-5">
+                <div className="grw-user-page-list-m d-edit-none">
+                  <h2 id="bookmarks-list" className="grw-user-page-header border-bottom pb-2 mb-3">
+                    <i style={{ fontSize: '1.3em' }} className="fa fa-fw fa-bookmark-o"></i>
+                    Bookmarks
+                  </h2>
+                  <div id="user-bookmark-list" className={`page-list ${styles['page-list']}`}>
+                    {/* TODO: No need page-list-container class ? */}
+                    <div className="page-list-container">
+                      {/* <BookmarkList userId={pageContainer.state.creator._id} /> */}
+                    </div>
+                  </div>
+                </div>
+                <div className="grw-user-page-list-m mt-5 d-edit-none">
+                  <h2 id="recently-created-list" className="grw-user-page-header border-bottom pb-2 mb-3">
+                    <i id="recent-created-icon" className="mr-1">
+                      {/* <RecentlyCreatedIcon /> */}
+                    </i>
+                    Recently Created
+                  </h2>
+                  <div id="user-created-list" className={`page-list ${styles['page-list']}`}>
+                    {/* TODO: No need page-list-container class ? */}
+                    <div className="page-list-container">
+                      {/* <RecentCreated userId={pageContainer.state.creator._id} /> */}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
+            <PageContentFooter />
+          </footer>
+
+          <UnsavedAlertDialog />
+          <DescendantsPageListModal />
+          {shouldRenderPutbackPageModal && <PutbackPageModal />}
         </div>
-        {/* TODO: Check CSS import */}
-        <footer className="footer d-edit-none">
-          {/* TODO: Enable page_list.html */}
-          {/* TODO: Enable isIdenticalPathPage or useIdenticalPath */}
-          {/* { !props.isIdenticalPathPage && ( */}
-          <Comments pageId={pageId} />
-          {/* )} */}
-          {/* TODO: Create UsersHomePageFooter conponent */}
-          { isUsersHomePage(props.currentPathname) && (
-            <div className="container-lg user-page-footer py-5">
-              <div className="grw-user-page-list-m d-edit-none">
-                <h2 id="bookmarks-list" className="grw-user-page-header border-bottom pb-2 mb-3">
-                  <i style={{ fontSize: '1.3em' }} className="fa fa-fw fa-bookmark-o"></i>
-                  Bookmarks
-                </h2>
-                <div id="user-bookmark-list" className="page-list">
-                  {/* TODO: No need page-list-container class ? */}
-                  <div className="page-list-container">
-                    {/* <BookmarkList userId={pageContainer.state.creator._id} /> */}
-                  </div>
-                </div>
-              </div>
-              <div className="grw-user-page-list-m mt-5 d-edit-none">
-                <h2 id="recently-created-list" className="grw-user-page-header border-bottom pb-2 mb-3">
-                  <i id="recent-created-icon" className="mr-1">
-                    {/* <RecentlyCreatedIcon /> */}
-                  </i>
-                  Recently Created
-                </h2>
-                <div id="user-created-list" className="page-list">
-                  {/* TODO: No need page-list-container class ? */}
-                  <div className="page-list-container">
-                    {/* <RecentCreated userId={pageContainer.state.creator._id} /> */}
-                  </div>
-                </div>
-              </div>
-            </div>
-          )}
-          <PageContentFooter />
-        </footer>
-
-        <UnsavedAlertDialog />
-        <DescendantsPageListModal />
-        {shouldRenderPutbackPageModal && <PutbackPageModal />}
-
       </BasicLayout>
     </>
   );
@@ -522,7 +516,6 @@ function injectServerConfigurations(context: GetServerSidePropsContext, props: P
   // props.hasSlackConfig = slackNotificationService.hasSlackConfig();
   // props.drawioUri = configManager.getConfig('crowi', 'app:drawioUri');
   props.hackmdUri = configManager.getConfig('crowi', 'app:hackmdUri');
-  // props.mathJax = configManager.getConfig('crowi', 'app:mathJax');
   // props.noCdn = configManager.getConfig('crowi', 'app:noCdn');
   // props.highlightJsStyle = configManager.getConfig('crowi', 'customize:highlightJsStyle');
   props.isAllReplyShown = configManager.getConfig('crowi', 'customize:isAllReplyShown');
@@ -579,7 +572,6 @@ export const getServerSideProps: GetServerSideProps = async(context: GetServerSi
 
   const result = await getServerSideCommonProps(context);
 
-
   // check for presence
   // see: https://github.com/vercel/next.js/issues/19271#issuecomment-730006862
   if (!('props' in result)) {
@@ -587,6 +579,15 @@ export const getServerSideProps: GetServerSideProps = async(context: GetServerSi
   }
 
   const props: Props = result.props as Props;
+
+  if (props.redirectDestination != null) {
+    return {
+      redirect: {
+        permanent: false,
+        destination: props.redirectDestination,
+      },
+    };
+  }
 
   if (user != null) {
     props.currentUser = user.toObject();

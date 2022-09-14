@@ -228,13 +228,26 @@ const PageDeleteModal: FC = () => {
     return <></>;
   };
 
-  return (
-    <Modal size="lg" isOpen={isOpened} toggle={closeDeleteModal} data-testid="page-delete-modal" className="grw-create-page">
-      <ModalHeader tag="h4" toggle={closeDeleteModal} className={`bg-${deleteIconAndKey[deleteMode].color} text-light`}>
+  const headerContent = () => {
+    if (!isOpened) {
+      return <></>;
+    }
+
+    return (
+      <>
         <i className={`icon-fw icon-${deleteIconAndKey[deleteMode].icon}`}></i>
         { t(`modal_delete.delete_${deleteIconAndKey[deleteMode].translationKey}`) }
-      </ModalHeader>
-      <ModalBody>
+      </>
+    );
+  };
+
+  const bodyContent = () => {
+    if (!isOpened) {
+      return <></>;
+    }
+
+    return (
+      <>
         <div className="form-group grw-scrollable-modal-body pb-1">
           <label>{ t('modal_delete.deleting_page') }:</label><br />
           {/* Todo: change the way to show path on modal when too many pages are selected */}
@@ -242,8 +255,17 @@ const PageDeleteModal: FC = () => {
         </div>
         { isDeletable && renderDeleteRecursivelyForm()}
         { isDeletable && !forceDeleteCompletelyMode && renderDeleteCompletelyForm() }
-      </ModalBody>
-      <ModalFooter>
+      </>
+    );
+  };
+
+  const footerContent = () => {
+    if (!isOpened) {
+      return <></>;
+    }
+
+    return (
+      <>
         <ApiErrorMessageList errs={errs} />
         <button
           type="button"
@@ -254,6 +276,20 @@ const PageDeleteModal: FC = () => {
           <i className={`mr-1 icon-${deleteIconAndKey[deleteMode].icon}`} aria-hidden="true"></i>
           { t(`modal_delete.delete_${deleteIconAndKey[deleteMode].translationKey}`) }
         </button>
+      </>
+    );
+  };
+
+  return (
+    <Modal size="lg" isOpen={isOpened} toggle={closeDeleteModal} data-testid="page-delete-modal" className="grw-create-page">
+      <ModalHeader tag="h4" toggle={closeDeleteModal} className={`bg-${deleteIconAndKey[deleteMode].color} text-light`}>
+        {headerContent()}
+      </ModalHeader>
+      <ModalBody>
+        {bodyContent()}
+      </ModalBody>
+      <ModalFooter>
+        {footerContent()}
       </ModalFooter>
     </Modal>
 

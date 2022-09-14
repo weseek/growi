@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react';
+import React from 'react';
 
 import { isClient, objectIdUtils } from '@growi/core';
 import {
@@ -36,9 +36,10 @@ import {
   useCurrentUser, /* useSearchServiceConfigured, */ useIsAclEnabled, useIsMailerSetup, useIsSearchServiceReachable, useSiteUrl,
   useAuditLogEnabled, useAuditLogAvailableActions,
 } from '~/stores/context';
+import { useIsMaintenanceMode } from '~/stores/maintenanceMode';
 
 import {
-  CommonProps, getServerSideCommonProps, useCustomTitle, getNextI18NextConfig,
+  CommonProps, getServerSideCommonProps, getNextI18NextConfig,
 } from '../utils/commons';
 
 
@@ -46,12 +47,13 @@ import {
 
 const AdminHome = dynamic(() => import('../../components/Admin/AdminHome/AdminHome'), { ssr: false });
 const AppSettingsPageContents = dynamic(() => import('../../components/Admin/App/AppSettingsPageContents'), { ssr: false });
-const SecurityManagementContents = dynamic(() => import('../../components/Admin/Security/SecurityManagementContents'), { ssr: false });
+const SecurityManagement = dynamic(() => import('../../components/Admin/Security/SecurityManagement'), { ssr: false });
 const MarkDownSettingContents = dynamic(() => import('../../components/Admin/MarkdownSetting/MarkDownSettingContents'), { ssr: false });
 const CustomizeSettingContents = dynamic(() => import('../../components/Admin/Customize/Customize'), { ssr: false });
 const DataImportPageContents = dynamic(() => import('../../components/Admin/ImportData/ImportDataPageContents'), { ssr: false });
 const ExportArchiveDataPage = dynamic(() => import('../../components/Admin/ExportArchiveDataPage'), { ssr: false });
 const NotificationSetting = dynamic(() => import('../../components/Admin/Notification/NotificationSetting'), { ssr: false });
+const ManageGlobalNotification = dynamic(() => import('../../components/Admin/Notification/ManageGlobalNotification'), { ssr: false });
 const SlackIntegration = dynamic(() => import('../../components/Admin/SlackIntegration/SlackIntegration'), { ssr: false });
 const LegacySlackIntegration = dynamic(() => import('../../components/Admin/LegacySlackIntegration/LegacySlackIntegration'), { ssr: false });
 const UserManagement = dynamic(() => import('../../components/Admin/UserManagement'), { ssr: false });
@@ -103,7 +105,7 @@ const AdminMarkdownSettingsPage: NextPage<Props> = (props: Props) => {
   // TODO: refactoring adminPagesMap => https://redmine.weseek.co.jp/issues/102694
   const adminPagesMap = {
     home: {
-      title: useCustomTitle(props, t('Wiki Management Home Page')),
+      title:  t('wiki_management_home_page'),
       component: <AdminHome
         nodeVersion={props.nodeVersion}
         npmVersion={props.npmVersion}
@@ -112,69 +114,71 @@ const AdminMarkdownSettingsPage: NextPage<Props> = (props: Props) => {
       />,
     },
     app: {
-      title: useCustomTitle(props, t('App Settings')),
+      title: t('app_settings'),
       component: <AppSettingsPageContents />,
     },
     security: {
-      title: useCustomTitle(props, t('security_settings')),
-      component: <SecurityManagementContents />,
+      title: t('security_settings.security_settings'),
+      component: <SecurityManagement />,
     },
     markdown: {
-      title: useCustomTitle(props, t('Markdown Settings')),
+      title: t('markdown_settings.markdown_settings'),
       component: <MarkDownSettingContents />,
     },
     customize: {
-      title: useCustomTitle(props, t('Customize Settings')),
+      title: t('customize_settings.customize_settings'),
       component: <CustomizeSettingContents />,
     },
     importer: {
-      title: useCustomTitle(props, t('Import Data')),
+      title: t('importer_management.import_data'),
       component: <DataImportPageContents />,
     },
     export: {
-      title: useCustomTitle(props, t('Export Archive Data')),
+      title: t('export_archive_data'),
       component: <ExportArchiveDataPage />,
     },
     notification: {
-      title: useCustomTitle(props, t('Notification Settings')),
+      title: t('external_notification.external_notification'),
       component: <NotificationSetting />,
     },
     'global-notification': {
-      title: '',
-      component: <>global-notification</>,
+      new: {
+        title: t('external_notification.external_notification'),
+        component: <ManageGlobalNotification />,
+      },
     },
     'slack-integration': {
-      title: useCustomTitle(props, t('slack_integration')),
+      title: t('slack_integration.slack_integration'),
       component: <SlackIntegration />,
     },
     'slack-integration-legacy': {
-      title: useCustomTitle(props, t('Legacy_Slack_Integration')),
+      title: t('slack_integration_legacy.slack_integration_legacy'),
       component: <LegacySlackIntegration />,
     },
     users: {
-      title: useCustomTitle(props, t('User_Management')),
+      title: t('user_management.user_management'),
       component: <UserManagement />,
       'external-accounts': {
-        title: useCustomTitle(props, t('external_account_management')),
+        title: t('user_management.external_account'),
         component: <ManageExternalAccount />,
       },
     },
     'user-groups': {
-      title: useCustomTitle(props, t('UserGroup Management')),
+      title:  t('user_group_management.user_group_management'),
       component: <UserGroupPage />,
     },
     'user-group-detail': {
       [userGroupId]: {
-        title: t('UserGroup Management'),
+        title: t('user_group_management.user_group_management'),
         component: <UserGroupDetailPage userGroupId={userGroupId} />,
       },
     },
     search: {
-      title: useCustomTitle(props, t('Full Text Search Management')),
+      title: t('full_text_search_management.full_text_search_management'),
       component: <ElasticsearchManagement />,
     },
     'audit-log': {
-      title: useCustomTitle(props, t('AuditLog')),
+      title: t('audit_log_management.audit_log'),
       component: <AuditLogManagement />,
     },
   };
@@ -189,6 +193,7 @@ const AdminMarkdownSettingsPage: NextPage<Props> = (props: Props) => {
 
   useCurrentUser(props.currentUser != null ? JSON.parse(props.currentUser) : null);
   useIsMailerSetup(props.isMailerSetup);
+  useIsMaintenanceMode(props.isMaintenanceMode);
 
   // useSearchServiceConfigured(props.isSearchServiceConfigured);
   useIsSearchServiceReachable(props.isSearchServiceReachable);
@@ -324,7 +329,7 @@ export const getServerSideProps: GetServerSideProps = async(context: GetServerSi
   }
 
   injectServerConfigurations(context, props);
-  injectNextI18NextConfigurations(context, props, ['admin']);
+  await injectNextI18NextConfigurations(context, props, ['admin']);
 
   return {
     props,

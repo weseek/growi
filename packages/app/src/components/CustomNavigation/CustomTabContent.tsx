@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+
 import PropTypes from 'prop-types';
 import {
   TabContent, TabPane,
@@ -18,7 +19,7 @@ const CustomTabContent = (props: Props): JSX.Element => {
 
   const { activeTab, navTabMapping, additionalClassNames } = props;
 
-  const [activatedContent, setActivatedContent] = useState<Set<string>>(new Set<string>());
+  const [activatedContent, setActivatedContent] = useState(new Set([activeTab]));
 
   // add activated content to Set
   useEffect(() => {

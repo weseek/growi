@@ -117,7 +117,7 @@ const SmallPageItem = memo(({ page }: PageItemProps): JSX.Element => {
         <UserPicture user={page.lastUpdateUser} size="md" noTooltip />
         <div className="flex-grow-1 ml-2">
           { !dPagePath.isRoot && <FormerLink /> }
-          <h5 className="my-0">
+          <h5 className="my-0 text-truncate">
             <PagePathHierarchicalLink linkedPagePath={linkedPagePathLatter} basePath={dPagePath.isRoot ? undefined : dPagePath.former} />
             {locked}
           </h5>
@@ -153,7 +153,7 @@ const RecentChanges = (): JSX.Element => {
   }, [retrieveSizePreferenceFromLocalStorage]);
 
   return (
-    <>
+    <div data-testid="grw-recent-changes">
       <div className="grw-sidebar-content-header p-3 d-flex">
         <h3 className="mb-0  text-nowrap">{t('Recent Changes')}</h3>
         <button type="button" className="btn btn-sm ml-auto grw-btn-reload" onClick={() => swr.mutate()}>
@@ -188,7 +188,7 @@ const RecentChanges = (): JSX.Element => {
           </InfiniteScroll>
         </ul>
       </div>
-    </>
+    </div>
   );
 
 };

@@ -12,6 +12,7 @@ import { apiPost } from '~/client/util/apiv1-client';
 import {
   IPageToRenameWithMeta, IPageWithMeta, IPageInfoForEntity, IPageHasId,
 } from '~/interfaces/page';
+import { IResTagsUpdateApiv1 } from '~/interfaces/tag';
 import { OnDuplicatedFunction, OnRenamedFunction, OnDeletedFunction } from '~/interfaces/ui';
 import {
   useCurrentPageId,
@@ -40,6 +41,16 @@ import { GrowiSubNavigation } from './GrowiSubNavigation';
 import { SubNavButtonsProps } from './SubNavButtons';
 
 import PageEditorModeManagerStyles from './PageEditorModeManager.module.scss';
+
+
+const PageEditorModeManager = dynamic(
+  () => import('./PageEditorModeManager'),
+  { ssr: false, loading: () => <Skelton additionalClass={`${PageEditorModeManagerStyles['grw-page-editor-mode-manager-skelton']}`} /> },
+);
+const SubNavButtons = dynamic<SubNavButtonsProps>(
+  () => import('./SubNavButtons').then(mod => mod.SubNavButtons),
+  { ssr: false, loading: () => <Skelton additionalClass='btn-skelton py-2' /> },
+);
 
 
 type AdditionalMenuItemsProps = {
@@ -155,15 +166,6 @@ type GrowiContextualSubNavigationProps = {
 
 const GrowiContextualSubNavigation = (props: GrowiContextualSubNavigationProps): JSX.Element => {
 
-  const PageEditorModeManager = dynamic(
-    () => import('./PageEditorModeManager'),
-    { ssr: false, loading: () => <Skelton additionalClass={`${PageEditorModeManagerStyles['grw-page-editor-mode-manager-skelton']}`} /> },
-  );
-  const SubNavButtons = dynamic<SubNavButtonsProps>(
-    () => import('./SubNavButtons').then(mod => mod.SubNavButtons),
-    { ssr: false, loading: () => <Skelton additionalClass='btn-skelton py-2' /> },
-  );
-
   const { data: currentPage, mutate: mutateCurrentPage } = useSWRxCurrentPage();
   const path = currentPage?.path;
 
@@ -224,8 +226,12 @@ const GrowiContextualSubNavigation = (props: GrowiContextualSubNavigationProps):
 
     const { _id: pageId, revision: revisionId } = currentPage;
     try {
-      await apiPost('/tags.update', { pageId, revisionId, tags: newTags });
+      const res: IResTagsUpdateApiv1 = await apiPost('/tags.update', { pageId, revisionId, tags: newTags });
       mutateCurrentPage();
+
+      // TODO: fix https://github.com/weseek/growi/pull/6478 without pageContainer
+      // const lastUpdateUser = res.savedPage?.lastUpdateUser as IUser;
+      // await pageContainer.setState({ lastUpdateUsername: lastUpdateUser.username });
 
       // revalidate SWRTagsInfo
       mutateSWRTagsInfo();
@@ -237,7 +243,7 @@ const GrowiContextualSubNavigation = (props: GrowiContextualSubNavigationProps):
       toastError(err, 'fail to update tags');
     }
 
-  }, [mutateSWRTagsInfo, mutatePageTagsForEditors, mutateCurrentPage, pageId, revisionId]);
+  }, [currentPage, mutateCurrentPage, mutateSWRTagsInfo, mutatePageTagsForEditors]);
 
   const tagsUpdatedHandlerForEditMode = useCallback((newTags: string[]): void => {
     // It will not be reflected in the DB until the page is refreshed
@@ -348,13 +354,8 @@ const GrowiContextualSubNavigation = (props: GrowiContextualSubNavigationProps):
         )}
       </>
     );
-  }, [
-    pageId, revisionId, editorMode, mutateEditorMode, isCompactMode,
-    isLinkSharingDisabled, isGuestUser, isSharedUser, currentUser,
-    isViewMode, isAbleToShowPageEditorModeManager, isAbleToShowPageManagement,
-    duplicateItemClickedHandler, renameItemClickedHandler, deleteItemClickedHandler,
-    templateMenuItemClickHandler, isPageTemplateModalShown,
-  ]);
+  // eslint-disable-next-line max-len
+  }, [currentPage, currentUser, pageId, revisionId, shareLinkId, path, editorMode, isCompactMode, isViewMode, isSharedUser, isAbleToShowPageManagement, isAbleToShowPageEditorModeManager, isLinkSharingDisabled, isGuestUser, isPageTemplateModalShown, duplicateItemClickedHandler, renameItemClickedHandler, deleteItemClickedHandler, mutateEditorMode, templateMenuItemClickHandler]);
 
   if (currentPathname == null) {
     return <></>;

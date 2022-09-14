@@ -17,7 +17,7 @@ type Props = {
 }
 
 const UserGroupPageList = (props: Props): JSX.Element => {
-  const { t } = useTranslation();
+  const { t } = useTranslation('admin');
   const { userGroupId, relatedPages } = props;
 
   const [currentPages, setCurrentPages] = useState<IPageHasId[]>([]);
@@ -52,7 +52,7 @@ const UserGroupPageList = (props: Props): JSX.Element => {
       <ul className="page-list-ul page-list-ul-flat mb-3">
         {currentPages.map(page => <li key={page._id}><PageListItemS page={page} /></li>)}
       </ul>
-      {relatedPages != null && relatedPages.length === 0 ? <p>{t('admin:user_group_management.no_pages')}</p> : (
+      {relatedPages != null && relatedPages.length === 0 ? <p>{t('user_group_management.no_pages')}</p> : (
         <PaginationWrapper
           activePage={activePage}
           changePage={handlePageChange}

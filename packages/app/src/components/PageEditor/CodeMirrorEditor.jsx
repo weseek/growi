@@ -1,7 +1,7 @@
 import React from 'react';
 
 import { createValidator } from '@growi/codemirror-textlint';
-import * as codemirror from 'codemirror';
+import { commands } from 'codemirror';
 import { JSHINT } from 'jshint';
 import * as loadCssSync from 'load-css-file';
 import PropTypes from 'prop-types';
@@ -20,12 +20,13 @@ import CommentMentionHelper from './CommentMentionHelper';
 import EditorIcon from './EditorIcon';
 import EmojiPicker from './EmojiPicker';
 import EmojiPickerHelper from './EmojiPickerHelper';
-// import GridEditModal from './GridEditModal';
+import GridEditModal from './GridEditModal';
 import geu from './GridEditorUtil';
 // import HandsontableModal from './HandsontableModal';
-// import LinkEditModal from './LinkEditModal';
+import LinkEditModal from './LinkEditModal';
 import mdu from './MarkdownDrawioUtil';
-import mlu from './MarkdownLinkUtil';
+import markdownLinkUtil from './MarkdownLinkUtil';
+import markdownListUtil from './MarkdownListUtil';
 import MarkdownTableInterceptor from './MarkdownTableInterceptor';
 import mtu from './MarkdownTableUtil';
 import pasteHelper from './PasteHelper';
@@ -38,14 +39,6 @@ import styles from './CodeMirrorEditor.module.scss';
 window.JSHINT = JSHINT;
 window.kuromojin = { dicPath: '/static/dict' };
 
-// set save handler
-codemirror.commands.save = (instance) => {
-  if (instance.codeMirrorEditor != null) {
-    instance.codeMirrorEditor.dispatchSave();
-  }
-};
-// set CodeMirror instance as 'CodeMirror' so that CDN addons can reference
-window.CodeMirror = require('codemirror');
 require('codemirror/addon/display/placeholder');
 require('codemirror/addon/edit/matchbrackets');
 require('codemirror/addon/edit/matchtags');
@@ -106,10 +99,9 @@ class CodeMirrorEditor extends AbstractEditor {
     this.logger = loggerFactory('growi:PageEditor:CodeMirrorEditor');
 
     this.state = {
-      value: this.props.value,
       isGfmMode: this.props.isGfmMode,
       isLoadingKeymap: false,
-      isSimpleCheatsheetShown: this.props.isGfmMode && this.props.value.length === 0,
+      isSimpleCheatsheetShown: this.props.isGfmMode && this.props.value?.length === 0,
       isCheatsheetModalShown: false,
       additionalClassSet: new Set(),
       isEmojiPickerShown: false,
@@ -175,6 +167,9 @@ class CodeMirrorEditor extends AbstractEditor {
   componentDidMount() {
     // ensure to be able to resolve 'this' to use 'codemirror.commands.save'
     this.getCodeMirror().codeMirrorEditor = this;
+
+    // mark clean
+    this.getCodeMirror().getDoc().markClean();
 
     // fold drawio section
     this.foldDrawioSection();
@@ -251,8 +246,10 @@ class CodeMirrorEditor extends AbstractEditor {
    * @inheritDoc
    */
   setValue(newValue) {
-    this.setState({ value: newValue });
     this.getCodeMirror().getDoc().setValue(newValue);
+
+    // mark clean
+    this.getCodeMirror().getDoc().markClean();
   }
 
   /**
@@ -507,7 +504,7 @@ class CodeMirrorEditor extends AbstractEditor {
    */
   handleEnterKey() {
     if (!this.state.isGfmMode) {
-      codemirror.commands.newlineAndIndent(this.getCodeMirror());
+      commands.newlineAndIndent(this.getCodeMirror());
       return;
     }
 
@@ -521,7 +518,7 @@ class CodeMirrorEditor extends AbstractEditor {
     interceptorManager.process('preHandleEnter', context)
       .then(() => {
         if (context.handlers.length === 0) {
-          codemirror.commands.newlineAndIndentContinueMarkdownList(this.getCodeMirror());
+          markdownListUtil.newlineAndIndentContinueMarkdownList(this);
         }
       });
   }
@@ -548,7 +545,7 @@ class CodeMirrorEditor extends AbstractEditor {
     const hasLinkClass = additionalClassSet.has(MARKDOWN_LINK_ACTIVATED_CLASS);
 
     const isInTable = mtu.isInTable(editor);
-    const isInLink = mlu.isInLink(editor);
+    const isInLink = markdownLinkUtil.isInLink(editor);
 
     if (!hasCustomClass && isInTable) {
       additionalClassSet.add(MARKDOWN_TABLE_ACTIVATED_CLASS);
@@ -573,7 +570,8 @@ class CodeMirrorEditor extends AbstractEditor {
 
   changeHandler(editor, data, value) {
     if (this.props.onChange != null) {
-      this.props.onChange(value);
+      const isClean = data.origin == null || editor.isClean();
+      this.props.onChange(value, isClean);
     }
 
     this.updateCheatsheetStates(null, value);
@@ -790,11 +788,11 @@ class CodeMirrorEditor extends AbstractEditor {
   }
 
   showGridEditorHandler() {
-    // this.gridEditModal.current.show(geu.getGridHtml(this.getCodeMirror()));
+    this.gridEditModal.current.show(geu.getGridHtml(this.getCodeMirror()));
   }
 
   showLinkEditHandler() {
-    // this.linkEditModal.current.show(mlu.getMarkdownLink(this.getCodeMirror()));
+    this.linkEditModal.current.show(markdownLinkUtil.getMarkdownLink(this.getCodeMirror()));
   }
 
   showHandsonTableHandler() {
@@ -995,13 +993,12 @@ class CodeMirrorEditor extends AbstractEditor {
           ref={this.cm}
           className={additionalClasses}
           placeholder="search"
-          editorDidMount={(editor) => {
-          // add event handlers
-            editor.on('paste', this.pasteHandler);
-            editor.on('scrollCursorIntoView', this.scrollCursorIntoViewHandler);
-          }}
-          // temporary set props.value
-          // value={this.state.value}
+          // == temporary deactivate editorDidMount to use https://github.com/scniro/react-codemirror2/issues/284#issuecomment-1155928554
+          // editorDidMount={(editor) => {
+          // // add event handlers
+          //   editor.on('paste', this.pasteHandler);
+          //   editor.on('scrollCursorIntoView', this.scrollCursorIntoViewHandler);
+          // }}
           value={this.props.value}
           options={{
             indentUnit: this.props.indentSize,
@@ -1054,15 +1051,16 @@ class CodeMirrorEditor extends AbstractEditor {
         { this.renderCheatsheetOverlay() }
         { this.renderEmojiPicker() }
 
-        {/* <GridEditModal
+        <GridEditModal
           ref={this.gridEditModal}
           onSave={(grid) => { return geu.replaceGridWithHtmlWithEditor(this.getCodeMirror(), grid) }}
-        /> */}
-        {/* <LinkEditModal
+        />
+        <LinkEditModal
           ref={this.linkEditModal}
-          onSave={(linkText) => { return mlu.replaceFocusedMarkdownLinkWithEditor(this.getCodeMirror(), linkText) }}
-        /> */}
-        {/* <HandsontableModal
+          onSave={(linkText) => { return markdownLinkUtil.replaceFocusedMarkdownLinkWithEditor(this.getCodeMirror(), linkText) }}
+        />
+        {/*
+        <HandsontableModal
           ref={this.handsontableModal}
           onSave={(table) => { return mtu.replaceFocusedMarkdownTableWithEditor(this.getCodeMirror(), table) }}
           autoFormatMarkdownTable={this.props.editorSettings.autoFormatMarkdownTable}

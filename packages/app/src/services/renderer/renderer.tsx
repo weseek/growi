@@ -27,7 +27,8 @@ import { NextLink } from '~/components/ReactMarkdownComponents/NextLink';
 import { RendererConfig } from '~/interfaces/services/renderer';
 import loggerFactory from '~/utils/logger';
 
-import { addClass } from './rehype-plugins/add-class';
+import * as addClass from './rehype-plugins/add-class';
+import * as addLineNumberAttribute from './rehype-plugins/add-line-number-attribute';
 import { relativeLinks } from './rehype-plugins/relative-links';
 import { relativeLinksByPukiwikiLikeLinker } from './rehype-plugins/relative-links-by-pukiwiki-like-linker';
 import { pukiwikiLikeLinker } from './remark-plugins/pukiwiki-like-linker';
@@ -244,8 +245,10 @@ export type RendererOptions = Omit<ReactMarkdownOptions, 'remarkPlugins' | 'rehy
 const commonSanitizeOption: SanitizeOption = deepmerge(
   sanitizeDefaultSchema,
   {
+    tagNames: ['svg', 'path'],
     attributes: {
-      '*': ['class', 'className'],
+      path: ['d'],
+      '*': ['class', 'className', 'style'],
     },
   },
 );
@@ -286,11 +289,10 @@ const generateCommonOptions = (pagePath: string|undefined, config: RendererConfi
       growiPlugin,
     ],
     rehypePlugins: [
-      slug,
       [relativeLinksByPukiwikiLikeLinker, { pagePath }],
       [relativeLinks, { pagePath }],
       raw,
-      [addClass, {
+      [addClass.rehypePlugin, {
         table: 'table table-bordered',
       }],
     ],
@@ -323,6 +325,7 @@ export const generateViewOptions = (
 
   // add rehype plugins
   rehypePlugins.push(
+    slug,
     katex,
     [toc, {
       nav: false,
@@ -409,10 +412,7 @@ export const generateTocOptions = (config: RendererConfig, tocNode: HtmlElementN
   return options;
 };
 
-export const generatePreviewOptions = (config: RendererConfig): RendererOptions => {
-  const options = generateCommonOptions(undefined, config);
-  const { rehypePlugins } = options;
-
+export const generatePreviewOptions = (pagePath: string, config: RendererConfig): RendererOptions => {
   // // Add configurers for preview
   // renderer.addConfigurers([
   //   new FooternoteConfigurer(),
@@ -423,12 +423,43 @@ export const generatePreviewOptions = (config: RendererConfig): RendererOptions 
   // renderer.setMarkdownSettings({ breaks: rendererSettings?.isEnabledLinebreaks });
   // renderer.configure();
 
+  const options = generateCommonOptions(pagePath, config);
+
+  const { remarkPlugins, rehypePlugins, components } = options;
+
+  // add remark plugins
+  remarkPlugins.push(
+    emoji,
+    math,
+    lsxGrowiPlugin.remarkPlugin,
+  );
+  if (config.isEnabledLinebreaks) {
+    remarkPlugins.push(breaks);
+  }
+
   // add rehype plugins
   rehypePlugins.push(
-    [sanitize, commonSanitizeOption],
+    katex,
+    [lsxGrowiPlugin.rehypePlugin, { pagePath }],
+    addLineNumberAttribute.rehypePlugin,
+    // [autoLinkHeadings, {
+    //   behavior: 'append',
+    // }]
   );
 
-  verifySanitizePlugin(options);
+  const sanitizeOption = deepmerge(
+    commonSanitizeOption,
+    lsxGrowiPlugin.sanitizeOption,
+    addLineNumberAttribute.sanitizeOption,
+  );
+  // rehypePlugins.push([sanitize, sanitizeOption]);
+
+  // add components
+  if (components != null) {
+    components.lsx = props => <Lsx {...props} />;
+  }
+
+  // verifySanitizePlugin(options);
   return options;
 };
 

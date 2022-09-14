@@ -30,7 +30,7 @@ export const UpdateParentConfirmModal: FC = () => {
         <i className="icon icon-warning"></i> {t('admin:user_group_management.update_parent_confirm_modal.header')}
       </ModalHeader>
       {
-        targetGroup != null && updateData != null && updateData?.parent !== undefined ? (
+        targetGroup != null && updateData != null ? (
           <>
             <ModalBody>
               <div className="mb-2">

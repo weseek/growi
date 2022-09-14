@@ -21,7 +21,7 @@ type Props = {
 
 export const UserGroupModal: FC<Props> = (props: Props) => {
 
-  const { t } = useTranslation();
+  const { t } = useTranslation('admin');
 
   const {
     userGroup, buttonLabel, onClickSubmit, isShow, onHide,
@@ -73,19 +73,19 @@ export const UserGroupModal: FC<Props> = (props: Props) => {
     <Modal className="modal-md" isOpen={isShow} toggle={onHide}>
       <form onSubmit={onSubmitHandler}>
         <ModalHeader tag="h4" toggle={onHide} className="bg-primary text-light">
-          {t('admin:user_group_management.basic_info')}
+          {t('user_group_management.basic_info')}
         </ModalHeader>
 
         <ModalBody>
           <div className="form-group">
             <label htmlFor="name">
-              {t('admin:user_group_management.group_name')}
+              {t('user_group_management.group_name')}
             </label>
             <input
               className="form-control"
               type="text"
               name="name"
-              placeholder={t('admin:user_group_management.group_example')}
+              placeholder={t('user_group_management.group_example')}
               value={currentName}
               onChange={onChangeNameHandler}
               required
