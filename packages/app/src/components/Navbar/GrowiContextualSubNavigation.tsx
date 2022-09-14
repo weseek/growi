@@ -15,7 +15,7 @@ import { IResTagsUpdateApiv1 } from '~/interfaces/tag';
 import { OnDuplicatedFunction, OnRenamedFunction, OnDeletedFunction } from '~/interfaces/ui';
 import {
   useCurrentPageId,
-  useCurrentPathname,
+  useCurrentPathname, useIsNotFound,
   useCurrentUser, useIsGuestUser, useIsSharedUser, useShareLinkId, useTemplateTagData,
 } from '~/stores/context';
 import { usePageTagsForEditors } from '~/stores/editor';
@@ -180,6 +180,7 @@ const GrowiContextualSubNavigation = (props: GrowiContextualSubNavigationProps):
   const { data: isGuestUser } = useIsGuestUser();
   const { data: isSharedUser } = useIsSharedUser();
   const { data: shareLinkId } = useShareLinkId();
+  const { data: isNotFound } = useIsNotFound();
 
   const { data: isAbleToShowPageManagement } = useIsAbleToShowPageManagement();
   const { data: isAbleToShowTagLabel } = useIsAbleToShowTagLabel();
@@ -374,6 +375,7 @@ const GrowiContextualSubNavigation = (props: GrowiContextualSubNavigationProps):
       isGuestUser={isGuestUser}
       isDrawerMode={isDrawerMode}
       isCompactMode={isCompactMode}
+      isNotFound={isNotFound}
       tags={isViewMode ? tagsInfoData?.tags : tagsForEditors}
       tagsUpdatedHandler={isViewMode ? tagsUpdatedHandlerForViewMode : tagsUpdatedHandlerForEditMode}
       controls={ControlComponents}

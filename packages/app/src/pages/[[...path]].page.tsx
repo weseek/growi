@@ -59,7 +59,7 @@ import {
   useIsEnabledStaleNotification, useIsIdenticalPath,
   useIsSearchServiceConfigured, useIsSearchServiceReachable, useDisableLinkSharing,
   useHackmdUri,
-  useIsAclEnabled, useIsUserPage, useIsNotCreatable,
+  useIsAclEnabled, useIsUserPage,
   useCsrfToken, useIsSearchScopeChildrenAsDefault, useCurrentPageId, useCurrentPathname,
   useIsSlackConfigured, useRendererConfig, useEditingMarkdown,
   useEditorConfig, useIsAllReplyShown, useIsUploadableFile, useIsUploadableImage,
@@ -136,7 +136,7 @@ type Props = CommonProps & {
   isIdenticalPathPage?: boolean,
   isForbidden: boolean,
   isNotFound: boolean,
-  IsNotCreatable: boolean,
+  IsNotCreatablePage: boolean,
   // isAbleToDeleteCompletely: boolean,
 
   isSearchServiceConfigured: boolean,
@@ -196,7 +196,7 @@ const GrowiPage: NextPage<Props> = (props: Props) => {
   // useOwnerOfCurrentPage(props.pageUser != null ? JSON.parse(props.pageUser) : null);
   useIsForbidden(props.isForbidden);
   useIsNotFound(props.isNotFound);
-  useIsNotCreatable(props.IsNotCreatable);
+  // useIsNotCreatable(props.IsNotCreatable);
   useRedirectFrom(props.redirectFrom);
   // useShared();
   // useShareLinkId(props.shareLinkId);
@@ -242,7 +242,7 @@ const GrowiPage: NextPage<Props> = (props: Props) => {
   useCurrentPageId(pageId);
   useSWRxCurrentPage(undefined, pageWithMeta?.data); // store initial data
   useIsUserPage(isUserPage(pagePath));
-  useIsNotCreatable(props.isForbidden || !isCreatablePage(pagePath)); // TODO: need to include props.isIdentical
+  // useIsNotCreatable(props.isForbidden || !isCreatablePage(pagePath)); // TODO: need to include props.isIdentical
   useCurrentPagePath(pagePath);
   useCurrentPathname(props.currentPathname);
   useEditingMarkdown(pageWithMeta?.data.revision?.body);
@@ -310,8 +310,8 @@ const GrowiPage: NextPage<Props> = (props: Props) => {
                   <>
                     <PageAlerts />
                     { props.isForbidden && <ForbiddenPage /> }
-                    { props.IsNotCreatable && <NotCreatablePage />}
-                    { !props.isForbidden && !props.IsNotCreatable && <DisplaySwitcher />}
+                    { props.IsNotCreatablePage && <NotCreatablePage />}
+                    { !props.isForbidden && !props.IsNotCreatablePage && <DisplaySwitcher />}
                     {/* <DisplaySwitcher /> */}
                     {/* <PageStatusAlert /> */}
                   </>
@@ -434,7 +434,7 @@ async function injectRoutingInformation(context: GetServerSidePropsContext, prop
   }
   else if (page == null) {
     props.isNotFound = true;
-    props.IsNotCreatable = !isCreatablePage(currentPathname);
+    props.IsNotCreatablePage = !isCreatablePage(currentPathname);
     // check the page is forbidden or just does not exist.
     const count = isPermalink ? await Page.count({ _id: pageId }) : await Page.count({ path: currentPathname });
     props.isForbidden = count > 0;
