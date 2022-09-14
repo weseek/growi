@@ -1,8 +1,5 @@
 import React, { ReactNode } from 'react';
 
-import { isServer } from '@growi/core';
-import { useTranslation } from 'next-i18next';
-
 import GrowiLogo from '../Icons/GrowiLogo';
 
 import { RawLayout } from './RawLayout';
@@ -15,13 +12,9 @@ type Props = {
   children?: ReactNode,
 }
 
-export const NoLoginLayout = ({ children, title, className }: Props): JSX.Element => {
-
-  const { t } = useTranslation();
-
-  if (isServer()) {
-    return <></>;
-  }
+export const NoLoginLayout = ({
+  children, title, className,
+}: Props): JSX.Element => {
   const classNames: string[] = ['wrapper'];
   if (className != null) {
     classNames.push(className);
