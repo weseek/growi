@@ -20,7 +20,7 @@ import superjson from 'superjson';
 import { Comments } from '~/components/Comments';
 import { PageAlerts } from '~/components/PageAlert/PageAlerts';
 // import { useTranslation } from '~/i18n';
-import { PageContentFooter } from '~/components/PageContentFooter';
+import { CurrentPageContentFooter } from '~/components/PageContentFooter';
 import { UsersHomePageFooterProps } from '~/components/UsersHomePageFooter';
 import { CrowiRequest } from '~/interfaces/crowi-request';
 // import { renderScriptTagByName, renderHighlightJsStyleTag } from '~/service/cdn-resources-loader';
@@ -331,7 +331,7 @@ const GrowiPage: NextPage<Props> = (props: Props) => {
               { (pageWithMeta != null && isUsersHomePage(pageWithMeta.data.path)) && (
                 <UsersHomePageFooter creatorId={pageWithMeta.data.creator._id}/>
               ) }
-              <PageContentFooter page={pageWithMeta?.data} />
+              <CurrentPageContentFooter />
             </footer>
           )}
 

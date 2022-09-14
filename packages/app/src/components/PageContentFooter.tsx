@@ -1,22 +1,25 @@
-import React, { memo } from 'react';
+import React from 'react';
 
-import { IPage } from '@growi/core';
+import { IPage, IUser } from '@growi/core';
 import dynamic from 'next/dynamic';
 
-import { IUser } from '~/interfaces/user';
+import { useSWRxCurrentPage } from '~/stores/page';
 
 import { Skelton } from './Skelton';
 
 import styles from './PageContentFooter.module.scss';
 
-const AuthorInfo = dynamic(() => import('./Navbar/AuthorInfo'),
-  { ssr: false, loading: () => <Skelton additionalClass={`${styles['page-content-footer-skelton']} mb-3`} /> });
+const AuthorInfo = dynamic(() => import('./Navbar/AuthorInfo'), {
+  ssr: false,
+  loading: () => <Skelton additionalClass={`${styles['page-content-footer-skelton']} mb-3`} />,
+});
 
 export type PageContentFooterProps = {
   page: IPage,
 }
 
-export const PageContentFooter = memo((props: PageContentFooterProps): JSX.Element => {
+export const PageContentFooter = (props: PageContentFooterProps): JSX.Element => {
+
   const { page } = props;
 
   const {
@@ -33,6 +36,14 @@ export const PageContentFooter = memo((props: PageContentFooterProps): JSX.Eleme
       </div>
     </div>
   );
-});
+};
 
-PageContentFooter.displayName = 'PageContentFooter';
+export const CurrentPageContentFooter = (): JSX.Element => {
+  const { data: currentPage } = useSWRxCurrentPage();
+
+  if (currentPage == null) {
+    return <></>;
+  }
+
+  return <PageContentFooter page={currentPage} />;
+};
