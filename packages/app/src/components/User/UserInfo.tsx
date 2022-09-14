@@ -11,6 +11,7 @@ export type UserInfoProps = {
 }
 
 export const UserInfo = (props: UserInfoProps): JSX.Element => {
+
   const { pageUser } = props;
 
   // Do not display when the user does not exist
