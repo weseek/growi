@@ -706,11 +706,11 @@
     "registration_closed": "新しいアカウントを作成する権限がありません。",
     "Username has invalid characters": "ユーザー名に不正な文字が含まれています.",
     "Username field is required": "User ID は必須項目です",
-    "Name field is required": "Name は必須項目です。",
-    "Email format is invalid": "メールアドレスのフォーマットが無効です。",
-    "Email field is required": "メールアドレスは必須項目です。",
+    "Name field is required": "ユーザーID は必須項目です",
+    "Email format is invalid": "メールアドレスのフォーマットが無効です",
+    "Email field is required": "メールアドレスは必須項目です",
     "Password has invalid character": "パスワードに無効な文字があります",
-    "Password minimum character should be more than 8 characters": "パスワードの最小文字数は8文字以上です。",
+    "Password minimum character should be more than 8 characters": "パスワードの最小文字数は8文字以上です",
     "Password field is required": "パスワードの欄は必ず入力してください"
   },
   "grid_edit":{
