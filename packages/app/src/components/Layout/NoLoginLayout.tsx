@@ -42,9 +42,8 @@ export const NoLoginLayout = ({ children, title, className }: Props): JSX.Elemen
                     <h1 className="my-3">GROWI</h1>
                     <div className="noLogin-form-errors px-3"></div>
                   </div>
+                  {children}
                 </div>
-
-                {children}
 
               </div>
             </div>

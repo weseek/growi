@@ -145,7 +145,7 @@ const ContextExtractorOnce: FC = () => {
   useIsIdenticalPath(isIdenticalPath);
   useIsNotCreatable(isNotCreatable);
   useIsForbidden(isForbidden);
-  useIsTrashPage(isTrashPage);
+  // useIsTrashPage(isTrashPage);
   useIsUserPage(isUserPage);
   useLastUpdateUsername(lastUpdateUsername);
   useCurrentPageId(pageId);
