@@ -19,7 +19,6 @@ export const NoLoginLayout = ({
   if (className != null) {
     classNames.push(className);
   }
-
   return (
     <RawLayout title={title} className={`${commonStyles.nologin}`}>
       <div className="nologin">
