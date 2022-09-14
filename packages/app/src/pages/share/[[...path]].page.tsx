@@ -5,6 +5,7 @@ import {
   NextPage, GetServerSideProps, GetServerSidePropsContext,
 } from 'next';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
+import dynamic from 'next/dynamic';
 
 import { BasicLayout } from '~/components/Layout/BasicLayout';
 import GrowiContextualSubNavigation from '~/components/Navbar/GrowiContextualSubNavigation';
@@ -19,6 +20,8 @@ import {
 import {
   CommonProps, getServerSideCommonProps, useCustomTitle, getNextI18NextConfig,
 } from '../utils/commons';
+
+const ShareLinkAlert = dynamic(() => import('~/components/Page/ShareLinkAlert'), { ssr: false });
 
 
 type Props = CommonProps & {
@@ -51,7 +54,12 @@ const SharedPage: NextPage<Props> = (props: Props) => {
         <header className="py-0 position-relative">
           <GrowiContextualSubNavigation isLinkSharingDisabled={props.disableLinkSharing} />
         </header>
+
         <div id="grw-fav-sticky-trigger" className="sticky-top"></div>
+
+        <div id="content-main" className="content-main grw-container-convertible my-5">
+          <ShareLinkAlert expiredAt={expiredAt} createdAt={createdAt} />
+        </div>
       </div>
     </BasicLayout>
   );
@@ -105,7 +113,7 @@ async function injectRoutingInformation(context: GetServerSidePropsContext, prop
     // exipred
   }
 
-  props.shareLink = shareLink.toObject;
+  props.shareLink = shareLink.toObject();
 }
 
 export const getServerSideProps: GetServerSideProps = async(context: GetServerSidePropsContext) => {
