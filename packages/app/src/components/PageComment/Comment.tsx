@@ -1,5 +1,6 @@
 import React, { useEffect, useMemo, useState } from 'react';
 
+import { IUser } from '@growi/core';
 import { UserPicture } from '@growi/ui';
 import { format } from 'date-fns';
 import { useTranslation } from 'next-i18next';
@@ -9,7 +10,6 @@ import { UncontrolledTooltip } from 'reactstrap';
 import { useCommentPreviewOptions } from '~/stores/renderer';
 
 import { ICommentHasId } from '../../interfaces/comment';
-import { IUser } from '../../interfaces/user';
 import FormattedDistanceDate from '../FormattedDistanceDate';
 import HistoryIcon from '../Icons/HistoryIcon';
 import RevisionRenderer from '../Page/RevisionRenderer';
@@ -52,6 +52,10 @@ export const Comment = (props: CommentProps): JSX.Element => {
   const isEdited = createdAt < updatedAt;
 
   useEffect(() => {
+    if (revisionId == null) {
+      return;
+    }
+
     setMarkdown(comment.comment);
 
     const isCurrentRevision = () => {
@@ -72,7 +76,7 @@ export const Comment = (props: CommentProps): JSX.Element => {
     let className = 'page-comment flex-column';
 
     // Conditional for called from SearchResultContext
-    if (revisionCreatedAt != null) {
+    if (revisionId != null && revisionCreatedAt != null) {
       if (comment.revision === revisionId) {
         className += ' page-comment-current';
       }
