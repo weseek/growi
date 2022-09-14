@@ -1,6 +1,9 @@
 import React, { ReactNode } from 'react';
 
+import { pagePathUtils } from '@growi/core';
 import dynamic from 'next/dynamic';
+
+import { useCurrentPathname } from '~/stores/context';
 
 import { GrowiNavbar } from '../Navbar/GrowiNavbar';
 import Sidebar from '../Sidebar';
@@ -34,21 +37,32 @@ export const BasicLayout = ({
   children, title, className, expandContainer,
 }: Props): JSX.Element => {
 
+  const { data: currentPathname } = useCurrentPathname();
+
+  const isSharedPage = pagePathUtils.isSharedPage(currentPathname ?? '');
+
   const myClassName = `${className ?? ''} ${expandContainer ? 'growi-layout-fluid' : ''}`;
 
   return (
     <RawLayout title={title} className={myClassName}>
       <GrowiNavbar />
 
-      <div className="page-wrapper d-flex d-print-block">
-        <div className="grw-sidebar-wrapper">
-          <Sidebar />
-        </div>
+      {isSharedPage
+        ? (
+          <>{children}</>
+        )
+        : (
+          <div className="page-wrapper d-flex d-print-block">
+            <div className="grw-sidebar-wrapper">
+              <Sidebar />
+            </div>
 
-        <div className="flex-fill mw-0">
-          {children}
-        </div>
-      </div>
+            <div className="flex-fill mw-0">
+              {children}
+            </div>
+          </div>
+        )
+      }
 
       <GrowiNavbarBottom />
 
