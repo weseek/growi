@@ -193,7 +193,7 @@ export const SearchResultContent: FC<Props> = (props: Props) => {
         />
       </div>
     );
-  }, [page, SubNavButtons, showPageControlDropdown, forceHideMenuItems, duplicateItemClickedHandler, renameItemClickedHandler, deleteItemClickedHandler]);
+  }, [page, showPageControlDropdown, forceHideMenuItems, duplicateItemClickedHandler, renameItemClickedHandler, deleteItemClickedHandler]);
 
   // return if page or growiRenderer is null
   if (page == null || rendererOptions == null) return <></>;
