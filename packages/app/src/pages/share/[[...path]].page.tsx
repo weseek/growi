@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { IPageHasId, IUser, IUserHasId } from '@growi/core';
+import { IUser, IUserHasId } from '@growi/core';
 import {
   NextPage, GetServerSideProps, GetServerSidePropsContext,
 } from 'next';
@@ -12,7 +12,7 @@ import { CrowiRequest } from '~/interfaces/crowi-request';
 import { IUserUISettings } from '~/interfaces/user-ui-settings';
 import UserUISettings from '~/server/models/user-ui-settings';
 import {
-  useIsSharedUser, useCurrentUser, useCurrentPagePath, useCurrentPathname, useCurrentPageId,
+  useCurrentUser, useCurrentPagePath, useCurrentPathname, useCurrentPageId,
   useShareLinkId, useIsSearchServiceConfigured, useIsSearchServiceReachable, useIsSearchScopeChildrenAsDefault,
 } from '~/stores/context';
 
@@ -22,10 +22,8 @@ import {
 
 
 type Props = CommonProps & {
+  shareLink: any, // TODO: Type 作る
   currentUser: IUser,
-  pageId: string,
-  pagePath: string,
-  sharelinkId: string,
   userUISettings?: IUserUISettings,
   disableLinkSharing: boolean,
   isSearchServiceConfigured: boolean,
@@ -34,12 +32,15 @@ type Props = CommonProps & {
 };
 
 const SharedPage: NextPage<Props> = (props: Props) => {
-  useIsSharedUser(true);
+  const {
+    _id: shareLinkId, expiredAt, createdAt, relatedPage,
+  } = props.shareLink;
+
+  useShareLinkId(shareLinkId);
+  useCurrentPageId(relatedPage._id);
+  useCurrentPagePath(relatedPage.pagePath);
   useCurrentUser(props.currentUser);
-  useCurrentPageId(props.pageId);
-  useCurrentPagePath(props.pagePath);
   useCurrentPathname(props.currentPathname);
-  useShareLinkId(props.sharelinkId);
   useIsSearchServiceConfigured(props.isSearchServiceConfigured);
   useIsSearchServiceReachable(props.isSearchServiceReachable);
   useIsSearchScopeChildrenAsDefault(props.isSearchScopeChildrenAsDefault);
@@ -82,6 +83,7 @@ async function injectNextI18NextConfigurations(context: GetServerSidePropsContex
   props._nextI18Next = nextI18NextConfig._nextI18Next;
 }
 
+// MEMO: getServerSideProps でやっちゃっていいかも
 async function injectRoutingInformation(context: GetServerSidePropsContext, props: Props): Promise<void> {
   const req: CrowiRequest = context.req as CrowiRequest;
   const { crowi } = req;
@@ -103,11 +105,7 @@ async function injectRoutingInformation(context: GetServerSidePropsContext, prop
     // exipred
   }
 
-  const relatedPage = shareLink.relatedPage as IPageHasId;
-
-  props.pageId = relatedPage._id;
-  props.pagePath = relatedPage.path;
-  props.sharelinkId = shareLink._id;
+  props.shareLink = shareLink.toObject;
 }
 
 export const getServerSideProps: GetServerSideProps = async(context: GetServerSidePropsContext) => {
