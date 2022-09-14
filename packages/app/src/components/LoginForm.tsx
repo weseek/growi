@@ -254,7 +254,7 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
                 <input
                   type="text"
                   className="form-control rounded-0"
-                  onChange={(e) => { setUsername(e.target.value) }}placeholder={t('User ID')}
+                  onChange={(e) => { setUsername(e.target.value) }} placeholder={t('User ID')}
                   name="username"
                   defaultValue={username}
                   required
@@ -272,7 +272,7 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
                 {/* name */}
                 <input type="text"
                   className="form-control rounded-0"
-                  onChange={(e) => { setName(e.target.value) }}placeholder={t('Name')}
+                  onChange={(e) => { setName(e.target.value) }} placeholder={t('Name')}
                   name="name"
                   defaultValue={name}
                   required />
