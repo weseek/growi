@@ -143,7 +143,6 @@
   "add_bookmark": "ブックマークに追加",
   "remove_bookmark": "ブックマークから削除",
   "wide_view": "ワイドビュー",
-  "Recent Created": "最新の作成",
   "Recent Changes": "最新の変更",
   "Page Tree": "ページツリー",
   "original_path":"元のパス",
@@ -833,5 +832,9 @@
   "page_operation":{
     "paths_recovered": "パスを修復しました",
     "path_recovery_failed":"パスを修復できませんでした"
+  },
+  "footer": {
+    "bookmarks": "ブックマーク",
+    "recently_created": "最近作成したページ"
   }
 }

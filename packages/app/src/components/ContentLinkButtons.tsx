@@ -1,9 +1,9 @@
 import React, { useCallback, useMemo } from 'react';
 
 import { smoothScrollIntoView } from '~/client/util/smooth-scroll';
+import { RecentlyCreatedIcon } from '~/components/Icons/RecentlyCreatedIcon';
 import { usePageUser } from '~/stores/context';
 
-import RecentlyCreatedIcon from './Icons/RecentlyCreatedIcon';
 
 const WIKI_HEADER_LINK = 120;
 
