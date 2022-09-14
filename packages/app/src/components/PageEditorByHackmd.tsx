@@ -102,6 +102,7 @@ export const PageEditorByHackmd = (): JSX.Element => {
     }
 
     await saveOrUpdate(optionsToSave, { pageId, path: currentPagePath || currentPathname, revisionId: revision?._id }, markdown);
+    await updatePageData();
     mutateEditorMode(EditorMode.View);
   }, [currentPagePath, currentPathname, editorMode, grant, isSlackEnabled, pageId, pageTags, revision, slackChannels, markdown, mutateEditorMode]);
 
