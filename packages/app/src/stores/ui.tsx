@@ -22,7 +22,7 @@ import loggerFactory from '~/utils/logger';
 
 import {
   useCurrentPageId, useCurrentPagePath, useIsEditable, useIsTrashPage, useIsUserPage, useIsGuestUser,
-  useIsNotCreatable, useIsSharedUser, useIsForbidden, useIsIdenticalPath, useCurrentUser, useIsNotFound, useShareLinkId,
+  useIsSharedUser, useIsIdenticalPath, useCurrentUser, useIsNotFound, useShareLinkId,
 } from './context';
 import { localStorageMiddleware } from './middlewares/sync-to-storage';
 import { useStaticSWR } from './use-static-swr';
@@ -445,16 +445,14 @@ export const useIsAbleToShowTagLabel = (): SWRResponse<boolean, Error> => {
 
 export const useIsAbleToShowPageEditorModeManager = (): SWRResponse<boolean, Error> => {
   const key = 'isAbleToShowPageEditorModeManager';
-  const { data: isNotCreatable } = useIsNotCreatable();
-  const { data: isForbidden } = useIsForbidden();
-  const { data: isTrashPage } = useIsTrashPage();
+  const { data: isEditable } = useIsEditable();
   const { data: isSharedUser } = useIsSharedUser();
 
-  const includesUndefined = [isNotCreatable, isForbidden, isTrashPage, isSharedUser].some(v => v === undefined);
+  const includesUndefined = [isEditable, isSharedUser].some(v => v === undefined);
 
   return useSWRImmutable(
     includesUndefined ? null : key,
-    () => !isNotCreatable && !isForbidden && !isTrashPage && !isSharedUser,
+    () => !!isEditable && !isSharedUser,
   );
 };
 

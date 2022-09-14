@@ -245,9 +245,7 @@ export type RendererOptions = Omit<ReactMarkdownOptions, 'remarkPlugins' | 'rehy
 const commonSanitizeOption: SanitizeOption = deepmerge(
   sanitizeDefaultSchema,
   {
-    tagNames: ['svg', 'path'],
     attributes: {
-      path: ['d'],
       '*': ['class', 'className', 'style'],
     },
   },
@@ -261,20 +259,19 @@ const isSanitizePlugin = (pluggable: Pluggable): pluggable is SanitizePlugin => 
   return 'tagNames' in sanitizeOption && 'attributes' in sanitizeOption;
 };
 
-const hasSanitizePluginAtTheLast = (options: RendererOptions): boolean => {
+const hasSanitizePlugin = (options: RendererOptions, shouldBeTheLastItem: boolean): boolean => {
   const { rehypePlugins } = options;
   if (rehypePlugins == null || rehypePlugins.length === 0) {
     return false;
   }
 
-  // get the last element
-  const lastPluggableElem = rehypePlugins.slice(-1)[0];
-
-  return isSanitizePlugin(lastPluggableElem);
+  return shouldBeTheLastItem
+    ? isSanitizePlugin(rehypePlugins.slice(-1)[0]) // evaluate the last one
+    : rehypePlugins.some(rehypePlugin => isSanitizePlugin(rehypePlugin));
 };
 
-const verifySanitizePlugin = (options: RendererOptions): void => {
-  if (hasSanitizePluginAtTheLast(options)) {
+const verifySanitizePlugin = (options: RendererOptions, shouldBeTheLastItem = true): void => {
+  if (hasSanitizePlugin(options, shouldBeTheLastItem)) {
     return;
   }
 
@@ -326,7 +323,6 @@ export const generateViewOptions = (
   // add rehype plugins
   rehypePlugins.push(
     slug,
-    katex,
     [toc, {
       nav: false,
       headings: ['h1', 'h2', 'h3'],
@@ -352,16 +348,15 @@ export const generateViewOptions = (
       },
     }],
     [lsxGrowiPlugin.rehypePlugin, { pagePath }],
+    [sanitize, deepmerge(
+      commonSanitizeOption,
+      lsxGrowiPlugin.sanitizeOption,
+    )],
+    katex,
     // [autoLinkHeadings, {
     //   behavior: 'append',
     // }]
   );
-
-  const sanitizeOption = deepmerge(
-    commonSanitizeOption,
-    lsxGrowiPlugin.sanitizeOption,
-  );
-  rehypePlugins.push([sanitize, sanitizeOption]);
 
   // add components
   if (components != null) {
@@ -383,7 +378,7 @@ export const generateViewOptions = (
   // renderer.setMarkdownSettings({ breaks: rendererSettings.isEnabledLinebreaks });
   // renderer.configure();
 
-  verifySanitizePlugin(options);
+  verifySanitizePlugin(options, false);
   return options;
 };
 
@@ -439,27 +434,25 @@ export const generatePreviewOptions = (pagePath: string, config: RendererConfig)
 
   // add rehype plugins
   rehypePlugins.push(
-    katex,
     [lsxGrowiPlugin.rehypePlugin, { pagePath }],
     addLineNumberAttribute.rehypePlugin,
+    [sanitize, deepmerge(
+      commonSanitizeOption,
+      lsxGrowiPlugin.sanitizeOption,
+      addLineNumberAttribute.sanitizeOption,
+    )],
+    katex,
     // [autoLinkHeadings, {
     //   behavior: 'append',
     // }]
   );
-
-  const sanitizeOption = deepmerge(
-    commonSanitizeOption,
-    lsxGrowiPlugin.sanitizeOption,
-    addLineNumberAttribute.sanitizeOption,
-  );
-  // rehypePlugins.push([sanitize, sanitizeOption]);
 
   // add components
   if (components != null) {
     components.lsx = props => <Lsx {...props} />;
   }
 
-  // verifySanitizePlugin(options);
+  verifySanitizePlugin(options, false);
   return options;
 };
 
