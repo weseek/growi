@@ -3,8 +3,6 @@ import React, { useState } from 'react';
 
 import { Collapse } from 'reactstrap';
 
-import { RendererOptions } from '~/services/renderer/renderer';
-
 import { ICommentHasId, ICommentHasIdList } from '../../interfaces/comment';
 import { IUser } from '../../interfaces/user';
 import { useIsAllReplyShown } from '../../stores/context';
@@ -22,7 +20,6 @@ type ReplycommentsProps = {
   replyList: ICommentHasIdList,
   deleteBtnClicked: (comment: ICommentHasId) => void,
   onComment: () => void,
-  rendererOptions: RendererOptions,
 }
 
 export const ReplyComments = (props: ReplycommentsProps): JSX.Element => {
@@ -46,7 +43,6 @@ export const ReplyComments = (props: ReplycommentsProps): JSX.Element => {
           isReadOnly={isReadOnly}
           deleteBtnClicked={deleteBtnClicked}
           onComment={onComment}
-          rendererOptions={rendererOptions}
         />
       </div>
     );

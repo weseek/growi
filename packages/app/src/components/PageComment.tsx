@@ -8,7 +8,6 @@ import { Button } from 'reactstrap';
 
 import { toastError } from '~/client/util/apiNotification';
 import { apiPost } from '~/client/util/apiv1-client';
-import { useCommentPreviewOptions } from '~/stores/renderer';
 
 import { ICommentHasId, ICommentHasIdList } from '../interfaces/comment';
 import { useSWRxPageComment } from '../stores/comment';
@@ -27,7 +26,7 @@ const DeleteCommentModal = dynamic<DeleteCommentModalProps>(
 );
 
 export type PageCommentProps = {
-  pageId?: string,
+  pageId: string,
   revision: string | IRevisionHasId,
   currentUser: any,
   isReadOnly: boolean,
@@ -43,7 +42,6 @@ export const PageComment: FC<PageCommentProps> = memo((props:PageCommentProps): 
   } = props;
 
   const { data: comments, mutate } = useSWRxPageComment(pageId);
-  const { data: rendererOptions } = useCommentPreviewOptions();
 
   const [commentToBeDeleted, setCommentToBeDeleted] = useState<ICommentHasId | null>(null);
   const [isDeleteConfirmModalShown, setIsDeleteConfirmModalShown] = useState<boolean>(false);
@@ -130,7 +128,7 @@ export const PageComment: FC<PageCommentProps> = memo((props:PageCommentProps): 
   let commentTitleClasses = 'border-bottom py-3 mb-3';
   commentTitleClasses = titleAlign != null ? `${commentTitleClasses} text-${titleAlign}` : `${commentTitleClasses} text-center`;
 
-  if (commentsFromOldest == null || commentsExceptReply == null || rendererOptions == null) {
+  if (commentsFromOldest == null || commentsExceptReply == null) {
     if (hideIfEmpty) {
       return <></>;
     }
@@ -151,7 +149,6 @@ export const PageComment: FC<PageCommentProps> = memo((props:PageCommentProps): 
       isReadOnly={isReadOnly}
       deleteBtnClicked={onClickDeleteButton}
       onComment={mutate}
-      rendererOptions={rendererOptions}
     />
   );
 
@@ -164,7 +161,6 @@ export const PageComment: FC<PageCommentProps> = memo((props:PageCommentProps): 
       replyList={replyComments}
       deleteBtnClicked={onClickDeleteButton}
       onComment={mutate}
-      rendererOptions={rendererOptions}
     />
   );
 
@@ -204,7 +200,7 @@ export const PageComment: FC<PageCommentProps> = memo((props:PageCommentProps): 
                     )}
                     {(!isReadOnly && showEditorIds.has(comment._id)) && (
                       <CommentEditor
-                        rendererOptions={rendererOptions}
+                        pageId={pageId}
                         replyTo={comment._id}
                         onCancelButtonClicked={() => {
                           removeShowEditorId(comment._id);

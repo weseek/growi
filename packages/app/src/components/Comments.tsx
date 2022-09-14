@@ -1,13 +1,19 @@
 import React from 'react';
 
 import { IRevisionHasId } from '@growi/core';
+import dynamic from 'next/dynamic';
+
 
 import { PageComment } from '~/components/PageComment';
-import { useCommentPreviewOptions } from '~/stores/renderer';
+import { useSWRxPageComment } from '~/stores/comment';
 
 import { useIsTrashPage, useCurrentUser } from '../stores/context';
 
-import { CommentEditorLazyRenderer } from './PageComment/CommentEditorLazyRenderer';
+import { CommentEditorProps } from './PageComment/CommentEditor';
+
+
+const CommentEditor = dynamic<CommentEditorProps>(() => import('./PageComment/CommentEditor').then(mod => mod.CommentEditor), { ssr: false });
+
 
 type CommentsProps = {
   pageId: string,
@@ -18,12 +24,11 @@ export const Comments = (props: CommentsProps): JSX.Element => {
 
   const { pageId, revision } = props;
 
-  const { data: rendererOptions } = useCommentPreviewOptions();
+  const { mutate } = useSWRxPageComment(pageId);
   const { data: isDeleted } = useIsTrashPage();
   const { data: currentUser } = useCurrentUser();
 
-  // TODO: Implement or refactor Skelton if server-side rendering
-  if (rendererOptions == null || isDeleted == null) {
+  if (pageId == null) {
     return <></>;
   }
 
@@ -44,9 +49,10 @@ export const Comments = (props: CommentsProps): JSX.Element => {
           </div>
           { !isDeleted && (
             <div id="page-comment-write">
-              <CommentEditorLazyRenderer
+              <CommentEditor
                 pageId={pageId}
-                rendererOptions={rendererOptions}
+                isForNewComment
+                onCommentButtonClicked={mutate}
               />
             </div>
           )}

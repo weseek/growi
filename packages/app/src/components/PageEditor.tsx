@@ -11,6 +11,7 @@ import { throttle, debounce } from 'throttle-debounce';
 import { saveOrUpdate } from '~/client/services/page-operation';
 import { apiGet, apiPostForm } from '~/client/util/apiv1-client';
 import { getOptionsToSave } from '~/client/util/editor';
+import { IEditorMethods } from '~/interfaces/editor-methods';
 import {
   useIsEditable, useIsIndentSizeForced, useCurrentPagePath, useCurrentPathname, useCurrentPageId, useIsUploadableFile, useIsUploadableImage,
 } from '~/stores/context';
@@ -38,14 +39,6 @@ const logger = loggerFactory('growi:PageEditor');
 
 declare const globalEmitter: EventEmitter;
 
-
-type EditorRef = {
-  setValue: (markdown: string) => void,
-  setCaretLine: (line: number) => void,
-  insertText: (text: string) => void,
-  forceToFocus: () => void,
-  terminateUploadingState: () => void,
-}
 
 // for scrolling
 let lastScrolledDateWithCursor: Date | null = null;
@@ -84,7 +77,7 @@ const PageEditor = React.memo((): JSX.Element => {
   const slackChannels = useMemo(() => (slackChannelsData ? slackChannelsData.toString() : ''), [slackChannelsData]);
 
 
-  const editorRef = useRef<EditorRef>(null);
+  const editorRef = useRef<IEditorMethods>(null);
   const previewRef = useRef<HTMLDivElement>(null);
 
   const setMarkdownWithDebounce = useMemo(() => debounce(100, throttle(150, (value: string, isClean: boolean) => {

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 
 import { UserPicture } from '@growi/ui';
 import { format } from 'date-fns';
@@ -6,7 +6,7 @@ import { useTranslation } from 'next-i18next';
 import dynamic from 'next/dynamic';
 import { UncontrolledTooltip } from 'reactstrap';
 
-import { RendererOptions } from '~/services/renderer/renderer';
+import { useCommentPreviewOptions } from '~/stores/renderer';
 
 import { ICommentHasId } from '../../interfaces/comment';
 import { IUser } from '../../interfaces/user';
@@ -30,7 +30,6 @@ type CommentProps = {
   isReadOnly: boolean,
   deleteBtnClicked: (comment: ICommentHasId) => void,
   onComment: () => void,
-  rendererOptions: RendererOptions,
 }
 
 export const Comment = (props: CommentProps): JSX.Element => {
@@ -40,6 +39,7 @@ export const Comment = (props: CommentProps): JSX.Element => {
   } = props;
 
   const { t } = useTranslation();
+  const { data: rendererOptions } = useCommentPreviewOptions();
 
   const [markdown, setMarkdown] = useState('');
   const [isReEdit, setIsReEdit] = useState(false);
@@ -53,6 +53,7 @@ export const Comment = (props: CommentProps): JSX.Element => {
 
   useEffect(() => {
     setMarkdown(comment.comment);
+
     const isCurrentRevision = () => {
       return comment.revision === revisionId;
     };
@@ -98,18 +99,24 @@ export const Comment = (props: CommentProps): JSX.Element => {
     return <span style={{ whiteSpace: 'pre-wrap' }}>{comment}</span>;
   };
 
-  const renderRevisionBody = () => {
-    return (
-      <RevisionRenderer
-        rendererOptions={rendererOptions}
-        markdown={markdown}
-        additionalClassName="comment"
-      />
-    );
-  };
+  const commentBody = useMemo(() => {
+    if (rendererOptions == null) {
+      return <></>;
+    }
+
+    return isMarkdown
+      ? (
+        <RevisionRenderer
+          rendererOptions={rendererOptions}
+          markdown={markdown}
+          additionalClassName="comment"
+          pagePath={currentPagePath}
+        />
+      )
+      : renderText(comment.comment);
+  }, [comment, isMarkdown, markdown, rendererOptions]);
 
   const rootClassName = getRootClassName(comment);
-  const commentBody = isMarkdown ? renderRevisionBody() : renderText(comment.comment);
   const revHref = `?revision=${comment.revision}`;
   const editedDateId = `editedDate-${comment._id}`;
   const editedDateFormatted = isEdited ? format(updatedAt, 'yyyy/MM/dd HH:mm') : null;
@@ -118,7 +125,7 @@ export const Comment = (props: CommentProps): JSX.Element => {
     <div className={`${styles['comment-styles']}`}>
       { (isReEdit && !isReadOnly) ? (
         <CommentEditor
-          rendererOptions={rendererOptions}
+          pageId={comment._id}
           replyTo={undefined}
           currentCommentId={commentId}
           commentBody={comment.comment}
