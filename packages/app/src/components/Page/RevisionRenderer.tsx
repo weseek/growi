@@ -85,14 +85,13 @@ const logger = loggerFactory('components:Page:RevisionRenderer');
 type Props = {
   rendererOptions: RendererOptions,
   markdown: string,
-  highlightKeywords?: string | string[],
   additionalClassName?: string,
 }
 
 const RevisionRenderer = React.memo((props: Props): JSX.Element => {
 
   const {
-    rendererOptions, markdown, highlightKeywords, additionalClassName,
+    rendererOptions, markdown, additionalClassName,
   } = props;
 
   return (

@@ -29,6 +29,7 @@ import loggerFactory from '~/utils/logger';
 
 import * as addClass from './rehype-plugins/add-class';
 import * as addLineNumberAttribute from './rehype-plugins/add-line-number-attribute';
+import * as keywordHighlighter from './rehype-plugins/keyword-highlighter';
 import { relativeLinks } from './rehype-plugins/relative-links';
 import { relativeLinksByPukiwikiLikeLinker } from './rehype-plugins/relative-links-by-pukiwiki-like-linker';
 import { pukiwikiLikeLinker } from './remark-plugins/pukiwiki-like-linker';
@@ -407,17 +408,41 @@ export const generateTocOptions = (config: RendererConfig, tocNode: HtmlElementN
   return options;
 };
 
-export const generatePreviewOptions = (pagePath: string, config: RendererConfig): RendererOptions => {
-  // // Add configurers for preview
-  // renderer.addConfigurers([
-  //   new FooternoteConfigurer(),
-  //   new HeaderLineNumberConfigurer(),
-  //   new TableConfigurer(),
-  // ]);
+export const generateSimpleViewOptions = (config: RendererConfig, pagePath: string, highlightKeywords?: string | string[]): RendererOptions => {
+  const options = generateCommonOptions(pagePath, config);
 
-  // renderer.setMarkdownSettings({ breaks: rendererSettings?.isEnabledLinebreaks });
-  // renderer.configure();
+  const { remarkPlugins, rehypePlugins, components } = options;
 
+  // add remark plugins
+  remarkPlugins.push(
+    math,
+    lsxGrowiPlugin.remarkPlugin,
+  );
+  if (config.isEnabledLinebreaks) {
+    remarkPlugins.push(breaks);
+  }
+
+  // add rehype plugins
+  rehypePlugins.push(
+    [lsxGrowiPlugin.rehypePlugin, { pagePath }],
+    [keywordHighlighter.rehypePlugin, { keywords: highlightKeywords }],
+    [sanitize, deepmerge(
+      commonSanitizeOption,
+      lsxGrowiPlugin.sanitizeOption,
+    )],
+    katex,
+  );
+
+  // add components
+  if (components != null) {
+    components.lsx = props => <Lsx {...props} />;
+  }
+
+  verifySanitizePlugin(options, false);
+  return options;
+};
+
+export const generatePreviewOptions = (config: RendererConfig, pagePath: string): RendererOptions => {
   const options = generateCommonOptions(pagePath, config);
 
   const { remarkPlugins, rehypePlugins, components } = options;
@@ -441,9 +466,6 @@ export const generatePreviewOptions = (pagePath: string, config: RendererConfig)
       addLineNumberAttribute.sanitizeOption,
     )],
     katex,
-    // [autoLinkHeadings, {
-    //   behavior: 'append',
-    // }]
   );
 
   // add components
@@ -452,31 +474,6 @@ export const generatePreviewOptions = (pagePath: string, config: RendererConfig)
   }
 
   verifySanitizePlugin(options, false);
-  return options;
-};
-
-export const generateCommentPreviewOptions = (config: RendererConfig): RendererOptions => {
-  const options = generateCommonOptions(undefined, config);
-  const { remarkPlugins, rehypePlugins } = options;
-
-  // add remark plugins
-  if (config.isEnabledLinebreaksInComments) {
-    remarkPlugins.push(breaks);
-  }
-
-  // renderer.addConfigurers([
-  //   new TableConfigurer(),
-  // ]);
-
-  // renderer.setMarkdownSettings({ breaks: rendererSettings.isEnabledLinebreaksInComments });
-  // renderer.configure();
-
-  // add rehype plugins
-  rehypePlugins.push(
-    [sanitize, commonSanitizeOption],
-  );
-
-  verifySanitizePlugin(options);
   return options;
 };
 
