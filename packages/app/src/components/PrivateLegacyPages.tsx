@@ -452,6 +452,7 @@ const PrivateLegacyPages = (): JSX.Element => {
             });
             toastSuccess(t('private_legacy_pages.by_path_modal.success'));
             setOpenConvertModal(false);
+            mutate();
           }
           catch (errs) {
             if (errs.length === 1) {
