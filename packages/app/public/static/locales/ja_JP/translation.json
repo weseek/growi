@@ -703,7 +703,15 @@
     "successfully_send_email_auth":"{{email}} にメールを送信しました。添付されたURLをクリックし、本登録を完了させてください",
     "incorrect_token_or_expired_url":"トークンが正しくないか、URLの有効期限が切れています。",
     "user_already_loggedin": "ログイン中のため、新規アカウントを作成できませんでした。",
-    "registration_closed": "新しいアカウントを作成する権限がありません。"
+    "registration_closed": "新しいアカウントを作成する権限がありません。",
+    "Username has invalid characters": "ユーザー名に不正な文字が含まれています.",
+    "Username field is required": "User ID は必須項目です",
+    "Name field is required": "Name は必須項目です。",
+    "Email format is invalid": "メールアドレスのフォーマットが無効です。",
+    "Email field is required": "メールアドレスは必須項目です。",
+    "Password has invalid character": "パスワードに無効な文字があります",
+    "Password minimum character should be more than 8 characters": "パスワードの最小文字数は8文字以上です。",
+    "Password field is required": "パスワードの欄は必ず入力してください"
   },
   "grid_edit":{
     "create_bootstrap_4_grid":"Bootstrap 4 グリッドを作成",

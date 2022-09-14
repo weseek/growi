@@ -759,7 +759,15 @@
     "successfully_send_email_auth":"我们向 {{email}} 发送了一封电子邮件。 请点击邮件中的网址并完成注册。",
     "incorrect_token_or_expired_url":"令牌不正确或 URL 已过期。",
     "user_already_loggedin": "当你登录的时候，你不能创建一个新的账户。",
-    "registration_closed": "你无权创建一个新的账户。"
+    "registration_closed": "你无权创建一个新的账户。",
+    "Username has invalid characters": "用户名有无效字符",
+    "Username field is required": "用户ID字段是必需的",
+    "Name field is required": "姓名字段为必填项",
+    "Email format is invalid": "电子邮件的格式是无效的",
+    "Email field is required": "电子邮件字段是必需的",
+    "Password has invalid character": "密码有无效字符",
+    "Password minimum character should be more than 8 characters": "密码最小字符应超过8个字符",
+    "Password field is required": "密码字段是必需的"
 	},
   "grid_edit":{
     "create_bootstrap_4_grid":"创建Bootstrap 4网格",
