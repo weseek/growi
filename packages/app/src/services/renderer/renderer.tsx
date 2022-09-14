@@ -282,6 +282,7 @@ const generateCommonOptions = (pagePath: string|undefined, config: RendererConfi
   return {
     remarkPlugins: [
       gfm,
+      emoji,
       pukiwikiLikeLinker,
       growiPlugin,
     ],
@@ -312,7 +313,6 @@ export const generateViewOptions = (
 
   // add remark plugins
   remarkPlugins.push(
-    emoji,
     math,
     lsxGrowiPlugin.remarkPlugin,
   );
@@ -386,10 +386,10 @@ export const generateTocOptions = (config: RendererConfig, tocNode: HtmlElementN
 
   const options = generateCommonOptions(undefined, config);
 
-  const { remarkPlugins, rehypePlugins } = options;
+  const { rehypePlugins } = options;
 
   // add remark plugins
-  remarkPlugins.push(emoji);
+  // remarkPlugins.push();
 
   // add rehype plugins
   rehypePlugins.push(
@@ -424,7 +424,6 @@ export const generatePreviewOptions = (pagePath: string, config: RendererConfig)
 
   // add remark plugins
   remarkPlugins.push(
-    emoji,
     math,
     lsxGrowiPlugin.remarkPlugin,
   );
@@ -461,7 +460,6 @@ export const generateCommentPreviewOptions = (config: RendererConfig): RendererO
   const { remarkPlugins, rehypePlugins } = options;
 
   // add remark plugins
-  remarkPlugins.push(emoji);
   if (config.isEnabledLinebreaksInComments) {
     remarkPlugins.push(breaks);
   }
