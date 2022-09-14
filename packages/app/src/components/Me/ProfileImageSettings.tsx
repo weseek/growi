@@ -53,8 +53,6 @@ const ProfileImageSettings = (): JSX.Element => {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       setUploadedPictureSrc((response as any).attachment.filePathProxied);
 
-      // close modal
-      setShowImageCropModal(false);
     }
     catch (err) {
       toastError(err);
@@ -160,7 +158,7 @@ const ProfileImageSettings = (): JSX.Element => {
         onModalClose={() => setShowImageCropModal(false)}
         onCropCompleted={cropCompletedHandler}
         isCircular
-        isShouldCrop
+        showCropOption
       />
 
       <div className="row my-3">

@@ -35,15 +35,15 @@ type Props = {
   onModalClose: () => void,
   onCropCompleted: (res: any) => void,
   isCircular: boolean,
-  isShouldCrop: boolean
+  showCropOption: boolean
 }
 const ImageCropModal: FC<Props> = (props: Props) => {
 
   const {
-    isShow, src, onModalClose, onCropCompleted, isCircular, isShouldCrop,
+    isShow, src, onModalClose, onCropCompleted, isCircular, showCropOption,
   } = props;
 
-  const [imageRef, setImageRef] = useState<HTMLImageElement>();
+  const [imageRef, setImageRef] = useState<HTMLImageElement | null>(null);
   const [cropOptions, setCropOtions] = useState<CropOptions>(null);
   const [isCropImage, setIsCropImage] = useState<boolean>(true);
   const { t } = useTranslation();
@@ -97,27 +97,31 @@ const ImageCropModal: FC<Props> = (props: Props) => {
 
   // Convert base64 Image to blob
   const convertBase64ToBlob = async(base64Image: string) => {
-    const parts = base64Image.split(';base64,');
-    const imageType = parts[0].split(':')[1];
-    const decodedData = window.atob(parts[1]);
-    const uInt8Array = new Uint8Array(decodedData.length);
-    for (let i = 0; i < decodedData.length; ++i) {
-      uInt8Array[i] = decodedData.charCodeAt(i);
-    }
-    return new Blob([uInt8Array], { type: imageType });
+    const base64Response = await fetch(base64Image);
+    const blob = await base64Response.blob();
+    return blob;
   };
 
-  const crop = async() => {
-    // crop immages
+
+  // Clear image and set isImageCrop true on modal close
+  const onModalCloseHandler = async() => {
+    setImageRef(null);
+    setIsCropImage(true);
+    onModalClose();
+  };
+
+  // Crop and save image
+  const save = async() => {
     if (imageRef && cropOptions?.width && cropOptions.height) {
       const result = isCropImage ? await getCroppedImg(imageRef, cropOptions) : await convertBase64ToBlob(imageRef.src);
       onCropCompleted(result);
     }
+    onModalCloseHandler();
   };
 
   return (
-    <Modal isOpen={isShow} toggle={onModalClose}>
-      <ModalHeader tag="h4" toggle={onModalClose} className="bg-info text-light">
+    <Modal isOpen={isShow} toggle={onModalCloseHandler}>
+      <ModalHeader tag="h4" toggle={onModalCloseHandler} className="bg-info text-light">
         {t('crop_image_modal.image_crop')}
       </ModalHeader>
       <ModalBody className="my-4">
@@ -131,7 +135,7 @@ const ImageCropModal: FC<Props> = (props: Props) => {
         <button type="button" className="btn btn-outline-danger rounded-pill mr-auto" onClick={reset}>
           {t('crop_image_modal.reset')}
         </button>
-        { !isShouldCrop && (
+        { !showCropOption && (
           <div className="mr-auto">
             <div className="custom-control custom-switch ">
               <input
@@ -148,10 +152,10 @@ const ImageCropModal: FC<Props> = (props: Props) => {
           </div>
         )
         }
-        <button type="button" className="btn btn-outline-secondary rounded-pill mr-2" onClick={onModalClose}>
+        <button type="button" className="btn btn-outline-secondary rounded-pill mr-2" onClick={onModalCloseHandler}>
           {t('crop_image_modal.cancel')}
         </button>
-        <button type="button" className="btn btn-outline-primary rounded-pill" onClick={crop}>
+        <button type="button" className="btn btn-outline-primary rounded-pill" onClick={save}>
           { isCropImage ? t('crop_image_modal.crop') : t('crop_image_modal.save') }
         </button>
       </ModalFooter>
