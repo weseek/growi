@@ -16,7 +16,7 @@ export const UserInfo = (props: UserInfoProps): JSX.Element => {
   return (
     <>
       { (pageUser.name === '') ? (
-        <i>This User ID was deleted.</i>
+        <i>This User ID has been deleted.</i>
       ) : (
         <div className={`${styles['grw-users-info']} d-flex align-items-center d-edit-none mb-5 pb-3 border-bottom`}>
           <UserPicture user={pageUser} />
