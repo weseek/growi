@@ -1,11 +1,12 @@
 import React from 'react';
 
+import { IRevisionHasId } from '@growi/core';
 import dynamic from 'next/dynamic';
 
 import { PageComment } from '~/components/PageComment';
 import { useSWRxPageComment } from '~/stores/comment';
 
-import { useIsTrashPage } from '../stores/context';
+import { useIsTrashPage, useCurrentUser } from '../stores/context';
 
 import { CommentEditorProps } from './PageComment/CommentEditor';
 
@@ -14,15 +15,17 @@ const CommentEditor = dynamic<CommentEditorProps>(() => import('./PageComment/Co
 
 
 type CommentsProps = {
-  pageId?: string,
+  pageId: string,
+  revision: IRevisionHasId,
 }
 
 export const Comments = (props: CommentsProps): JSX.Element => {
 
-  const { pageId } = props;
+  const { pageId, revision } = props;
 
   const { mutate } = useSWRxPageComment(pageId);
   const { data: isDeleted } = useIsTrashPage();
+  const { data: currentUser } = useCurrentUser();
 
   if (pageId == null) {
     return <></>;
@@ -34,7 +37,14 @@ export const Comments = (props: CommentsProps): JSX.Element => {
       <div className="container-lg">
         <div className="page-comments">
           <div id="page-comments-list" className="page-comments-list">
-            <PageComment pageId={pageId} isReadOnly={false} titleAlign="left" />
+            <PageComment
+              pageId={pageId}
+              revision={revision}
+              currentUser={currentUser}
+              isReadOnly={false}
+              titleAlign="left"
+              hideIfEmpty={false}
+            />
           </div>
           { !isDeleted && (
             <div id="page-comment-write">
