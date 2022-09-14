@@ -9,7 +9,6 @@ import { toastError } from '~/client/util/apiNotification';
 import { apiPost } from '~/client/util/apiv1-client';
 import { useCurrentPagePath } from '~/stores/context';
 import { useSWRxCurrentPage } from '~/stores/page';
-import { useCommentPreviewOptions } from '~/stores/renderer';
 
 import { ICommentHasId, ICommentHasIdList } from '../interfaces/comment';
 import { useSWRxPageComment } from '../stores/comment';
@@ -29,7 +28,7 @@ const DeleteCommentModal = dynamic<DeleteCommentModalProps>(
 
 
 type PageCommentProps = {
-  pageId?: string,
+  pageId: string,
   isReadOnly: boolean,
   titleAlign?: 'center' | 'left' | 'right',
   highlightKeywords?: string[],
@@ -43,7 +42,6 @@ export const PageComment: FC<PageCommentProps> = memo((props:PageCommentProps): 
   } = props;
 
   const { data: comments, mutate } = useSWRxPageComment(pageId);
-  const { data: rendererOptions } = useCommentPreviewOptions();
   const { data: currentPage } = useSWRxCurrentPage();
   const { data: currentPagePath } = useCurrentPagePath();
 
@@ -132,7 +130,7 @@ export const PageComment: FC<PageCommentProps> = memo((props:PageCommentProps): 
   let commentTitleClasses = 'border-bottom py-3 mb-3';
   commentTitleClasses = titleAlign != null ? `${commentTitleClasses} text-${titleAlign}` : `${commentTitleClasses} text-center`;
 
-  if (commentsFromOldest == null || commentsExceptReply == null || rendererOptions == null || currentPagePath == null || currentPage == null) {
+  if (commentsFromOldest == null || commentsExceptReply == null || currentPagePath == null || currentPage == null) {
     if (hideIfEmpty && comments?.length === 0) {
       return <></>;
     }
@@ -151,7 +149,6 @@ export const PageComment: FC<PageCommentProps> = memo((props:PageCommentProps): 
       isReadOnly={isReadOnly}
       deleteBtnClicked={onClickDeleteButton}
       onComment={mutate}
-      rendererOptions={rendererOptions}
       currentPagePath={currentPagePath}
       currentRevisionId={currentPage.revision._id}
       currentRevisionCreatedAt={currentPage.revision.createdAt}
@@ -164,7 +161,6 @@ export const PageComment: FC<PageCommentProps> = memo((props:PageCommentProps): 
       replyList={replyComments}
       deleteBtnClicked={onClickDeleteButton}
       onComment={mutate}
-      rendererOptions={rendererOptions}
       currentPagePath={currentPagePath}
       currentRevisionId={currentPage.revision._id}
       currentRevisionCreatedAt={currentPage.revision.createdAt}
@@ -207,7 +203,7 @@ export const PageComment: FC<PageCommentProps> = memo((props:PageCommentProps): 
                     )}
                     {(!isReadOnly && showEditorIds.has(comment._id)) && (
                       <CommentEditor
-                        rendererOptions={rendererOptions}
+                        pageId={pageId}
                         replyTo={comment._id}
                         onCancelButtonClicked={() => {
                           removeShowEditorId(comment._id);

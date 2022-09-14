@@ -11,6 +11,7 @@ import { throttle, debounce } from 'throttle-debounce';
 import { saveOrUpdate } from '~/client/services/page-operation';
 import { apiGet, apiPostForm } from '~/client/util/apiv1-client';
 import { getOptionsToSave } from '~/client/util/editor';
+import { IEditorMethods } from '~/interfaces/editor-methods';
 import {
   useIsEditable, useIsIndentSizeForced, useCurrentPagePath, useCurrentPathname, useCurrentPageId, useIsUploadableFile, useIsUploadableImage,
 } from '~/stores/context';
@@ -39,14 +40,6 @@ const logger = loggerFactory('growi:PageEditor');
 declare const globalEmitter: EventEmitter;
 
 
-type EditorRef = {
-  setValue: (markdown: string) => void,
-  setCaretLine: (line: number) => void,
-  insertText: (text: string) => void,
-  forceToFocus: () => void,
-  terminateUploadingState: () => void,
-}
-
 // for scrolling
 let lastScrolledDateWithCursor: Date | null = null;
 let isOriginOfScrollSyncEditor = false;
@@ -69,7 +62,7 @@ const PageEditor = React.memo((): JSX.Element => {
   const { data: isTextlintEnabled } = useIsTextlintEnabled();
   const { data: isIndentSizeForced } = useIsIndentSizeForced();
   const { data: indentSize, mutate: mutateCurrentIndentSize } = useCurrentIndentSize();
-  const { data: isEnabledUnsavedWarning, mutate: mutateIsEnabledUnsavedWarning } = useIsEnabledUnsavedWarning();
+  const { mutate: mutateIsEnabledUnsavedWarning } = useIsEnabledUnsavedWarning();
   const { data: isUploadableFile } = useIsUploadableFile();
   const { data: isUploadableImage } = useIsUploadableImage();
 
@@ -84,21 +77,20 @@ const PageEditor = React.memo((): JSX.Element => {
   const slackChannels = useMemo(() => (slackChannelsData ? slackChannelsData.toString() : ''), [slackChannelsData]);
 
 
-  const editorRef = useRef<EditorRef>(null);
+  const editorRef = useRef<IEditorMethods>(null);
   const previewRef = useRef<HTMLDivElement>(null);
 
-  const setMarkdownWithDebounce = useMemo(() => debounce(50, throttle(100, (value) => {
+  const setMarkdownWithDebounce = useMemo(() => debounce(100, throttle(150, (value: string, isClean: boolean) => {
     markdownToSave.current = value;
     setMarkdownToPreview(value);
+
     // Displays an unsaved warning alert
-    if (!isEnabledUnsavedWarning) {
-      mutateIsEnabledUnsavedWarning(true);
-    }
-  })), [isEnabledUnsavedWarning, mutateIsEnabledUnsavedWarning]);
+    mutateIsEnabledUnsavedWarning(!isClean);
+  })), [mutateIsEnabledUnsavedWarning]);
 
 
-  const markdownChangedHandler = useCallback((value: string): void => {
-    setMarkdownWithDebounce(value);
+  const markdownChangedHandler = useCallback((value: string, isClean: boolean): void => {
+    setMarkdownWithDebounce(value, isClean);
   }, [setMarkdownWithDebounce]);
 
   const save = useCallback(async(opts?: {overwriteScopesOfDescendants: boolean}) => {

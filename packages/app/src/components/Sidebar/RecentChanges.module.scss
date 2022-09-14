@@ -38,4 +38,13 @@
   .icon-lock {
     font-size: 14px;
   }
+
+  // For truncate-text
+  .flex-grow-1 {
+    min-width: 0;
+  }
+
+  .truncate-text {
+    max-width: fit-content;
+  }
 }

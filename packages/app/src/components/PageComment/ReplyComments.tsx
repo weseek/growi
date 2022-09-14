@@ -3,8 +3,6 @@ import React, { useState } from 'react';
 
 import { Collapse } from 'reactstrap';
 
-import { RendererOptions } from '~/services/renderer/renderer';
-
 import { ICommentHasId, ICommentHasIdList } from '../../interfaces/comment';
 import { useIsAllReplyShown } from '../../stores/context';
 
@@ -18,7 +16,6 @@ type ReplycommentsProps = {
   replyList: ICommentHasIdList,
   deleteBtnClicked: (comment: ICommentHasId) => void,
   onComment: () => void,
-  rendererOptions: RendererOptions,
   currentPagePath: string,
   currentRevisionId: string,
   currentRevisionCreatedAt: Date,
@@ -27,7 +24,7 @@ type ReplycommentsProps = {
 export const ReplyComments = (props: ReplycommentsProps): JSX.Element => {
 
   const {
-    isReadOnly, replyList, deleteBtnClicked, onComment, rendererOptions,
+    isReadOnly, replyList, deleteBtnClicked, onComment,
     currentPagePath, currentRevisionId, currentRevisionCreatedAt,
   } = props;
 
@@ -43,7 +40,6 @@ export const ReplyComments = (props: ReplycommentsProps): JSX.Element => {
           isReadOnly={isReadOnly}
           deleteBtnClicked={deleteBtnClicked}
           onComment={onComment}
-          rendererOptions={rendererOptions}
           currentPagePath={currentPagePath}
           currentRevisionId={currentRevisionId}
           currentRevisionCreatedAt={currentRevisionCreatedAt}
