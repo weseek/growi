@@ -62,7 +62,7 @@ module.exports = function(crowi, app) {
   /* eslint-disable max-len, comma-spacing, no-multi-spaces */
 
   const middlewaresForAuth = {
-    applicationInstalled, registerFormValidator, csrfProtection, addActivity, login,
+    applicationInstalled, loginFormValidator, loginPassport, registerFormValidator, csrfProtection, addActivity, login,
   };
   const [apiV3Router, apiV3AdminRouter, apiV3AuthRouter] = require('./apiv3')(crowi, middlewaresForAuth);
 
