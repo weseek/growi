@@ -77,8 +77,7 @@ export const loginValidation = (req, res, next) => {
   const extractedErrors: string[] = [];
   errors.array().map(err => extractedErrors.push(err.msg));
 
-  req.flash('errorMessages', extractedErrors);
-  Object.assign(form, { isValid: false });
+  Object.assign(form, { errors, isValid: false });
   req.form = form;
 
   return next();
