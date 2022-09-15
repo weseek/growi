@@ -17,6 +17,33 @@ module.exports = function(crowi, app) {
 
   const ApiResponse = require('../util/apiResponse');
 
+  const promisifiedPassportAuthentication = (strategyName, req, res) => {
+    return new Promise((resolve, reject) => {
+      passport.authenticate(strategyName, (err, response, info) => {
+        if (res.headersSent) { // dirty hack -- 2017.09.25
+          return; //              cz: somehow passport.authenticate called twice when ECONNREFUSED error occurred
+        }
+
+        logger.debug(`--- authenticate with ${strategyName} strategy ---`);
+
+        if (err) {
+          logger.error(`'${strategyName}' passport authentication error: `, err);
+          reject(err);
+        }
+
+        logger.debug('response', response);
+        logger.debug('info', info);
+
+        // authentication failure
+        if (!response) {
+          reject(response);
+        }
+
+        resolve(response);
+      })(req, res);
+    });
+  };
+
   /**
    * success handler
    * @param {*} req
@@ -559,33 +586,6 @@ module.exports = function(crowi, app) {
       if (err) { debug(err.message); return next() }
 
       return loginSuccessHandler(req, res, user, SupportedAction.ACTION_USER_LOGIN_WITH_BASIC);
-    });
-  };
-
-  const promisifiedPassportAuthentication = (strategyName, req, res) => {
-    return new Promise((resolve, reject) => {
-      passport.authenticate(strategyName, (err, response, info) => {
-        if (res.headersSent) { // dirty hack -- 2017.09.25
-          return; //              cz: somehow passport.authenticate called twice when ECONNREFUSED error occurred
-        }
-
-        logger.debug(`--- authenticate with ${strategyName} strategy ---`);
-
-        if (err) {
-          logger.error(`'${strategyName}' passport authentication error: `, err);
-          reject(err);
-        }
-
-        logger.debug('response', response);
-        logger.debug('info', info);
-
-        // authentication failure
-        if (!response) {
-          reject(response);
-        }
-
-        resolve(response);
-      })(req, res);
     });
   };
 
