@@ -39,8 +39,11 @@ module.exports = (crowi, middlewaresForAuth) => {
 
   // auth
   const {
-    applicationInstalled, registerFormValidator, csrfProtection, addActivity, login,
+    applicationInstalled, loginFormValidator, loginPassport, registerFormValidator, csrfProtection, addActivity, login,
   } = middlewaresForAuth;
+
+  routerForAuth.post('/login', applicationInstalled, loginFormValidator.loginRules(), loginFormValidator.loginValidation,
+    csrfProtection, addActivity, loginPassport.loginWithLocal, loginPassport.loginWithLdap, loginPassport.loginFailure);
 
   routerForAuth.use('/logout', require('./logout')(crowi));
   routerForAuth.post('/register', applicationInstalled, registerFormValidator.registerRules(), registerFormValidator.registerValidation,
