@@ -2,6 +2,8 @@ import { SupportedAction } from '~/interfaces/activity';
 import { NullUsernameToBeRegisteredError } from '~/server/models/errors';
 import loggerFactory from '~/utils/logger';
 
+import ErrorV3 from '../models/vo/error-apiv3';
+
 /* eslint-disable no-use-before-define */
 
 module.exports = function(crowi, app) {
@@ -53,7 +55,6 @@ module.exports = function(crowi, app) {
    * @param {*} res
    */
   const loginFailureHandler = async(req, res, message) => {
-    req.flash('errorMessage', message || req.t('message.sign_in_failure'));
 
     const parameters = { action: SupportedAction.ACTION_USER_LOGIN_FAILURE };
     activityEvent.emit('update', res.locals.activity._id, parameters);
@@ -67,6 +68,7 @@ module.exports = function(crowi, app) {
    * @param {*} res
    */
   const loginFailure = (req, res) => {
+    req.errors = ErrorV3('sign_in_failure');
     return loginFailureHandler(req, res, req.t('message.sign_in_failure'));
   };
 
