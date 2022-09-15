@@ -235,7 +235,7 @@ module.exports = function(crowi, app) {
 
   app.use('/forgot-password', express.Router()
     .use(forgotPassword.checkForgotPasswordEnabledMiddlewareFactory(crowi))
-    .get('/', forgotPassword.forgotPassword)
+    .get('/', forgotPassword.forgotPassword(crowi))
     .get('/:token', injectResetOrderByTokenMiddleware, forgotPassword.resetPassword)
     .use(forgotPassword.handleErrosMiddleware));
 

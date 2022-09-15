@@ -1,7 +1,6 @@
 import {
   NextFunction, Request, RequestHandler, Response,
 } from 'express';
-
 import createError from 'http-errors';
 
 import loggerFactory from '~/utils/logger';
@@ -10,6 +9,15 @@ import { ReqWithPasswordResetOrder } from '../middlewares/inject-reset-order-by-
 
 const logger = loggerFactory('growi:routes:forgot-password');
 
+
+type Crowi = {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  nextApp: any,
+}
+
+type CrowiReq = Request & {
+  crowi: Crowi,
+}
 
 // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types, @typescript-eslint/no-explicit-any
 export const checkForgotPasswordEnabledMiddlewareFactory = (crowi: any, forApi = false) => {
@@ -33,8 +41,12 @@ export const checkForgotPasswordEnabledMiddlewareFactory = (crowi: any, forApi =
 
 };
 
-export const forgotPassword = (req: Request, res: Response): void => {
-  return res.render('forgot-password');
+export const forgotPassword = (crowi: any) => {
+  return (req: CrowiReq, res: Response): void => {
+    const { nextApp } = crowi;
+    req.crowi = crowi;
+    nextApp.render(req, res, '/forgot-password');
+  };
 };
 
 export const resetPassword = (req: ReqWithPasswordResetOrder, res: Response): void => {
