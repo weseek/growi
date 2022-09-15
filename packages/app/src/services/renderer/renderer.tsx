@@ -246,6 +246,7 @@ export type RendererOptions = Omit<ReactMarkdownOptions, 'remarkPlugins' | 'rehy
 const commonSanitizeOption: SanitizeOption = deepmerge(
   sanitizeDefaultSchema,
   {
+    clobberPrefix: 'mdcont-',
     attributes: {
       '*': ['class', 'className', 'style'],
     },
@@ -324,6 +325,12 @@ export const generateViewOptions = (
   // add rehype plugins
   rehypePlugins.push(
     slug,
+    [lsxGrowiPlugin.rehypePlugin, { pagePath }],
+    [sanitize, deepmerge(
+      commonSanitizeOption,
+      lsxGrowiPlugin.sanitizeOption,
+    )],
+    katex,
     [toc, {
       nav: false,
       headings: ['h1', 'h2', 'h3'],
@@ -348,12 +355,6 @@ export const generateViewOptions = (
         return false; // not show toc in body
       },
     }],
-    [lsxGrowiPlugin.rehypePlugin, { pagePath }],
-    [sanitize, deepmerge(
-      commonSanitizeOption,
-      lsxGrowiPlugin.sanitizeOption,
-    )],
-    katex,
     // [autoLinkHeadings, {
     //   behavior: 'append',
     // }]
