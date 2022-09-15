@@ -157,7 +157,6 @@ export const getServerSideProps: GetServerSideProps = async(context: GetServerSi
   }
 
   const { linkId } = req.params;
-
   try {
     const ShareLinkModel = crowi.model('ShareLink');
     const shareLink = await ShareLinkModel.findOne({ _id: linkId }).populate('relatedPage');
