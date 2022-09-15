@@ -58,7 +58,7 @@ module.exports = function(crowi, app) {
     const parameters = { action: SupportedAction.ACTION_USER_LOGIN_FAILURE };
     activityEvent.emit('update', res.locals.activity._id, parameters);
 
-    return res.redirect('/login');
+    return res.apiv3Err({ errors: req.errors }, 400);
   };
 
   /**
