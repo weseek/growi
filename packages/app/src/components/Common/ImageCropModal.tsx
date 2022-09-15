@@ -33,14 +33,14 @@ type Props = {
   isShow: boolean,
   src: string | ArrayBuffer | null,
   onModalClose: () => void,
-  onCropCompleted: (res: any) => void,
+  onImageProcessCompleted: (res: any) => void,
   isCircular: boolean,
   showCropOption: boolean
 }
 const ImageCropModal: FC<Props> = (props: Props) => {
 
   const {
-    isShow, src, onModalClose, onCropCompleted, isCircular, showCropOption,
+    isShow, src, onModalClose, onImageProcessCompleted, isCircular, showCropOption,
   } = props;
 
   const [imageRef, setImageRef] = useState<HTMLImageElement | null>(null);
@@ -98,8 +98,7 @@ const ImageCropModal: FC<Props> = (props: Props) => {
   // Convert base64 Image to blob
   const convertBase64ToBlob = async(base64Image: string) => {
     const base64Response = await fetch(base64Image);
-    const blob = await base64Response.blob();
-    return blob;
+    return base64Response.blob();
   };
 
 
@@ -110,11 +109,14 @@ const ImageCropModal: FC<Props> = (props: Props) => {
     onModalClose();
   };
 
-  // Crop and save image
-  const save = async() => {
+  // Process and save image
+  // Cropping image is optional
+  // If crop is active , the saved image is cropped image (png). Otherwise, the original image will be saved (Original size and file type)
+  const processAndSaveImage = async() => {
     if (imageRef && cropOptions?.width && cropOptions.height) {
-      const result = isCropImage ? await getCroppedImg(imageRef, cropOptions) : await convertBase64ToBlob(imageRef.src);
-      onCropCompleted(result);
+      const processedImage = isCropImage ? await getCroppedImg(imageRef, cropOptions) : await convertBase64ToBlob(imageRef.src);
+      // Save image to database
+      onImageProcessCompleted(processedImage);
     }
     onModalCloseHandler();
   };
@@ -155,7 +157,7 @@ const ImageCropModal: FC<Props> = (props: Props) => {
         <button type="button" className="btn btn-outline-secondary rounded-pill mr-2" onClick={onModalCloseHandler}>
           {t('crop_image_modal.cancel')}
         </button>
-        <button type="button" className="btn btn-outline-primary rounded-pill" onClick={save}>
+        <button type="button" className="btn btn-outline-primary rounded-pill" onClick={processAndSaveImage}>
           { isCropImage ? t('crop_image_modal.crop') : t('crop_image_modal.save') }
         </button>
       </ModalFooter>

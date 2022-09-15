@@ -42,7 +42,7 @@ const ProfileImageSettings = (): JSX.Element => {
     setShowImageCropModal(true);
   }, []);
 
-  const cropCompletedHandler = useCallback(async(croppedImage) => {
+  const processImageCompletedHandler = useCallback(async(croppedImage) => {
     try {
       const formData = new FormData();
       formData.append('file', croppedImage);
@@ -156,7 +156,7 @@ const ProfileImageSettings = (): JSX.Element => {
         isShow={showImageCropModal}
         src={imageCropSrc}
         onModalClose={() => setShowImageCropModal(false)}
-        onCropCompleted={cropCompletedHandler}
+        onImageProcessCompleted={processImageCompletedHandler}
         isCircular
         showCropOption
       />

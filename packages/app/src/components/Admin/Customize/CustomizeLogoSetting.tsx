@@ -66,7 +66,6 @@ const CustomizeLogoSetting = (): JSX.Element => {
     }
   }, [t, isDefaultLogo, customizedLogoSrc]);
 
-
   const onClickDeleteBtn = useCallback(async() => {
     try {
       await apiv3Delete('/customize-setting/delete-brand-logo');
@@ -81,7 +80,7 @@ const CustomizeLogoSetting = (): JSX.Element => {
   }, [t]);
 
 
-  const onCropCompleted = useCallback(async(croppedImage) => {
+  const processImageCompletedHandler = useCallback(async(croppedImage) => {
     try {
       const formData = new FormData();
       formData.append('file', croppedImage);
@@ -171,7 +170,7 @@ const CustomizeLogoSetting = (): JSX.Element => {
         isShow={isImageCropModalShow}
         src={uploadLogoSrc}
         onModalClose={() => setIsImageCropModalShow(false)}
-        onCropCompleted={onCropCompleted}
+        onImageProcessCompleted={processImageCompletedHandler}
         isCircular={false}
         showCropOption={false}
       />
