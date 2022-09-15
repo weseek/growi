@@ -33,6 +33,7 @@ import * as keywordHighlighter from './rehype-plugins/keyword-highlighter';
 import { relativeLinks } from './rehype-plugins/relative-links';
 import { relativeLinksByPukiwikiLikeLinker } from './rehype-plugins/relative-links-by-pukiwiki-like-linker';
 import { pukiwikiLikeLinker } from './remark-plugins/pukiwiki-like-linker';
+import * as xsvToTable from './remark-plugins/xsv-to-table';
 
 // import CsvToTable from './PreProcessor/CsvToTable';
 // import EasyGrid from './PreProcessor/EasyGrid';
@@ -315,6 +316,7 @@ export const generateViewOptions = (
   // add remark plugins
   remarkPlugins.push(
     math,
+    xsvToTable.remarkPlugin,
     lsxGrowiPlugin.remarkPlugin,
   );
   if (config.isEnabledLinebreaks) {
@@ -416,6 +418,7 @@ export const generateSimpleViewOptions = (config: RendererConfig, pagePath: stri
   // add remark plugins
   remarkPlugins.push(
     math,
+    xsvToTable.remarkPlugin,
     lsxGrowiPlugin.remarkPlugin,
   );
   if (config.isEnabledLinebreaks) {
@@ -450,6 +453,7 @@ export const generatePreviewOptions = (config: RendererConfig, pagePath: string)
   // add remark plugins
   remarkPlugins.push(
     math,
+    xsvToTable.remarkPlugin,
     lsxGrowiPlugin.remarkPlugin,
   );
   if (config.isEnabledLinebreaks) {
