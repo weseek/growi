@@ -95,7 +95,7 @@ module.exports = function(crowi, app) {
    * @param {*} res
    */
   const loginFailure = (req, res) => {
-    req.errors = ErrorV3('sign_in_failure');
+    req.form.errors.push(ErrorV3('sign_in_failure', 'signin-failure'));
     return loginFailureHandler(req, res, req.t('message.sign_in_failure'));
   };
 
@@ -122,15 +122,17 @@ module.exports = function(crowi, app) {
    * @param {*} next
    */
   const loginWithLdap = async(req, res, next) => {
+    const { errors } = req.form;
     if (!passportService.isLdapStrategySetup) {
       debug('LdapStrategy has not been set up');
+      errors.push(ErrorV3('message.strategy_has_not_been_set_up.LdapStrategy', 'ldap-strategy-has-not-been-set-up'));
       return next();
     }
 
     if (!req.form.isValid) {
       debug('invalid form');
-      return res.render('login', {
-      });
+      // no need to push error to req.form because loginValidation middleware already took care of it.
+      return next();
     }
 
     const providerId = 'ldap';
@@ -142,11 +144,13 @@ module.exports = function(crowi, app) {
     }
     catch (err) {
       debug(err.message);
+      errors.push(err);
       return next();
     }
 
     // check groups for LDAP
     if (!isValidLdapUserByGroupFilter(ldapAccountInfo)) {
+      errors.push(ErrorV3('message.ldap_user_not_valid'));
       return next();
     }
 
@@ -172,6 +176,7 @@ module.exports = function(crowi, app) {
 
     const externalAccount = await getOrCreateUser(req, res, userInfo, providerId);
     if (!externalAccount) {
+      errors.push(ErrorV3('message.external_account_not_exist'));
       return next();
     }
 
@@ -248,15 +253,16 @@ module.exports = function(crowi, app) {
    * @param {*} next
    */
   const loginWithLocal = (req, res, next) => {
+    const { errors } = req.form;
     if (!passportService.isLocalStrategySetup) {
       debug('LocalStrategy has not been set up');
-      req.errors.push(ErrorV3('message.strategy_has_not_been_set_up.LocalStrategy', 'local-strategy-has-not-been-set-up'));
+      errors.push(ErrorV3('message.strategy_has_not_been_set_up.LocalStrategy', 'local-strategy-has-not-been-set-up'));
       return next();
     }
 
     if (!req.form.isValid) {
-      return res.render('login', {
-      });
+      // no need to push error to req.form because loginValidation middleware already took care of it.
+      return next();
     }
 
     passport.authenticate('local', (err, user, info) => {
@@ -266,8 +272,8 @@ module.exports = function(crowi, app) {
 
       if (err) { // DB Error
         logger.error('Database Server Error: ', err);
-        req.errors.push(ErrorV3('message.database_error', 'database-error'));
-        return next(); // pass and the flash message is displayed when all of authentications are failed.
+        errors.push(ErrorV3('message.database_error', 'database-error'));
+        return next();
       }
       if (!user) { return next() }
       req.logIn(user, (err) => {
