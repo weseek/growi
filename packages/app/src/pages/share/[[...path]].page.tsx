@@ -9,11 +9,13 @@ import dynamic from 'next/dynamic';
 
 import { BasicLayout } from '~/components/Layout/BasicLayout';
 import GrowiContextualSubNavigation from '~/components/Navbar/GrowiContextualSubNavigation';
+import DisplaySwitcher from '~/components/Page/DisplaySwitcher';
 import { CrowiRequest } from '~/interfaces/crowi-request';
+import { RendererConfig } from '~/interfaces/services/renderer';
 import { IUserUISettings } from '~/interfaces/user-ui-settings';
 import UserUISettings from '~/server/models/user-ui-settings';
 import {
-  useCurrentUser, useCurrentPagePath, useCurrentPathname, useCurrentPageId,
+  useCurrentUser, useCurrentPagePath, useCurrentPathname, useCurrentPageId, useRendererConfig,
   useShareLinkId, useIsSearchServiceConfigured, useIsSearchServiceReachable, useIsSearchScopeChildrenAsDefault,
 } from '~/stores/context';
 
@@ -32,6 +34,7 @@ type Props = CommonProps & {
   isSearchServiceConfigured: boolean,
   isSearchServiceReachable: boolean,
   isSearchScopeChildrenAsDefault: boolean,
+  rendererConfig: RendererConfig,
 };
 
 const SharedPage: NextPage<Props> = (props: Props) => {
@@ -41,9 +44,10 @@ const SharedPage: NextPage<Props> = (props: Props) => {
 
   useShareLinkId(shareLinkId);
   useCurrentPageId(relatedPage._id);
-  useCurrentPagePath(relatedPage.pagePath);
+  useCurrentPagePath(relatedPage.path);
   useCurrentUser(props.currentUser);
   useCurrentPathname(props.currentPathname);
+  useRendererConfig(props.rendererConfig);
   useIsSearchServiceConfigured(props.isSearchServiceConfigured);
   useIsSearchServiceReachable(props.isSearchServiceReachable);
   useIsSearchScopeChildrenAsDefault(props.isSearchScopeChildrenAsDefault);
@@ -59,6 +63,8 @@ const SharedPage: NextPage<Props> = (props: Props) => {
 
         <div id="content-main" className="content-main grw-container-convertible my-5">
           <ShareLinkAlert expiredAt={expiredAt} createdAt={createdAt} />
+
+          <DisplaySwitcher />
         </div>
       </div>
     </BasicLayout>
@@ -74,6 +80,22 @@ function injectServerConfigurations(context: GetServerSidePropsContext, props: P
   props.isSearchServiceConfigured = crowi.searchService.isConfigured;
   props.isSearchServiceReachable = crowi.searchService.isReachable;
   props.isSearchScopeChildrenAsDefault = crowi.configManager.getConfig('crowi', 'customize:isSearchScopeChildrenAsDefault');
+
+  props.rendererConfig = {
+    isEnabledLinebreaks: crowi.configManager.getConfig('markdown', 'markdown:isEnabledLinebreaks'),
+    isEnabledLinebreaksInComments: crowi.configManager.getConfig('markdown', 'markdown:isEnabledLinebreaksInComments'),
+    adminPreferredIndentSize: crowi.configManager.getConfig('markdown', 'markdown:adminPreferredIndentSize'),
+    isIndentSizeForced: crowi.configManager.getConfig('markdown', 'markdown:isIndentSizeForced'),
+
+    plantumlUri: process.env.PLANTUML_URI ?? null,
+    blockdiagUri: process.env.BLOCKDIAG_URI ?? null,
+
+    // XSS Options
+    isEnabledXssPrevention: crowi.configManager.getConfig('markdown', 'markdown:xss:isEnabledPrevention'),
+    attrWhiteList: crowi.xssService.getAttrWhiteList(),
+    tagWhiteList: crowi.xssService.getTagWhiteList(),
+    highlightJsStyleBorder: crowi.configManager.getConfig('crowi', 'customize:highlightJsStyleBorder'),
+  };
 }
 
 async function injectUserUISettings(context: GetServerSidePropsContext, props: Props): Promise<void> {

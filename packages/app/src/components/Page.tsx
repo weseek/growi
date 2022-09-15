@@ -11,7 +11,7 @@ import { HtmlElementNode } from 'rehype-toc';
 import { blinkSectionHeaderAtBoot } from '~/client/util/blink-section-header';
 // import { getOptionsToSave } from '~/client/util/editor';
 import {
-  useIsGuestUser, useIsBlinkedHeaderAtBoot, useCurrentPageTocNode,
+  useIsGuestUser, useIsBlinkedHeaderAtBoot, useCurrentPageTocNode, useShareLinkId,
 } from '~/stores/context';
 import {
   useSWRxSlackChannels, useIsSlackEnabled, usePageTagsForEditors, useIsEnabledUnsavedWarning,
@@ -201,7 +201,8 @@ export const Page = (props) => {
     tocRef.current = toc;
   }, []);
 
-  const { data: currentPage } = useSWRxCurrentPage();
+  const { data: shareLinkId } = useShareLinkId();
+  const { data: currentPage } = useSWRxCurrentPage(shareLinkId ?? '');
   const { data: editorMode } = useEditorMode();
   const { data: isGuestUser } = useIsGuestUser();
   const { data: isMobile } = useIsMobile();
