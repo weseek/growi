@@ -12,6 +12,7 @@ import GrowiContextualSubNavigation from '~/components/Navbar/GrowiContextualSub
 import DisplaySwitcher from '~/components/Page/DisplaySwitcher';
 import { CrowiRequest } from '~/interfaces/crowi-request';
 import { RendererConfig } from '~/interfaces/services/renderer';
+import { IShareLinkHasId } from '~/interfaces/share-link';
 import { IUserUISettings } from '~/interfaces/user-ui-settings';
 import UserUISettings from '~/server/models/user-ui-settings';
 import {
@@ -27,7 +28,7 @@ const ShareLinkAlert = dynamic(() => import('~/components/Page/ShareLinkAlert'),
 
 
 type Props = CommonProps & {
-  shareLink: any, // TODO: Type 作る
+  shareLink: IShareLinkHasId
   currentUser: IUser,
   userUISettings?: IUserUISettings,
   disableLinkSharing: boolean,
@@ -114,33 +115,33 @@ async function injectNextI18NextConfigurations(context: GetServerSidePropsContex
 }
 
 // MEMO: getServerSideProps でやっちゃっていいかも
-async function injectRoutingInformation(context: GetServerSidePropsContext, props: Props): Promise<void> {
-  const req: CrowiRequest = context.req as CrowiRequest;
-  const { crowi } = req;
+// async function injectRoutingInformation(context: GetServerSidePropsContext, props: Props): Promise<void> {
+//   const req: CrowiRequest = context.req as CrowiRequest;
+//   const { crowi } = req;
 
-  const { linkId } = req.params;
+//   const { linkId } = req.params;
 
-  const ShareLinkModel = crowi.model('ShareLink');
-  const shareLink = await ShareLinkModel.findOne({ _id: linkId }).populate('relatedPage');
+//   const ShareLinkModel = crowi.model('ShareLink');
+//   const shareLink = await ShareLinkModel.findOne({ _id: linkId }).populate('relatedPage');
 
-  if (props.disableLinkSharing) {
-    // forbidden
-  }
+//   if (props.disableLinkSharing) {
+//     // forbidden
+//   }
 
-  if (shareLink == null || shareLink.relatedPage == null || shareLink.relatedPage.isEmpty) {
-    // not found
-  }
+//   if (shareLink == null || shareLink.relatedPage == null || shareLink.relatedPage.isEmpty) {
+//     // not found
+//   }
 
-  if (shareLink.isExpired()) {
-    // exipred
-  }
+//   if (shareLink.isExpired()) {
+//     // exipred
+//   }
 
-  props.shareLink = shareLink.toObject();
-}
+//   props.shareLink = shareLink.toObject();
+// }
 
 export const getServerSideProps: GetServerSideProps = async(context: GetServerSidePropsContext) => {
   const req = context.req as CrowiRequest<IUserHasId & any>;
-  const { user } = req;
+  const { user, crowi } = req;
   const result = await getServerSideCommonProps(context);
 
   if (!('props' in result)) {
@@ -152,10 +153,18 @@ export const getServerSideProps: GetServerSideProps = async(context: GetServerSi
     props.currentUser = user.toObject();
   }
 
+  const { linkId } = req.params;
+
+  const ShareLinkModel = crowi.model('ShareLink');
+  const shareLink = await ShareLinkModel.findOne({ _id: linkId }).populate('relatedPage');
+
+  if (shareLink != null) {
+    props.shareLink = shareLink.toObject();
+  }
+
   injectServerConfigurations(context, props);
   await injectUserUISettings(context, props);
   await injectNextI18NextConfigurations(context, props);
-  await injectRoutingInformation(context, props);
 
   return {
     props,

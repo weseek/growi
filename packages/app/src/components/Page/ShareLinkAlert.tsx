@@ -27,8 +27,8 @@ const getAlertColor = (ratio: number): string => {
 };
 
 type Props = {
-  expiredAt: Date,
   createdAt: Date,
+  expiredAt?: Date,
 }
 
 const ShareLinkAlert: FC<Props> = (props: Props) => {
