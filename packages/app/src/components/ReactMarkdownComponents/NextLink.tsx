@@ -34,8 +34,8 @@ export const NextLink = ({
   if (isAnchorLink(href)) {
     const to = href.slice(1);
     return (
-      <ScrollLink to={to} spy smooth="easeOutQuart" offset={-100} duration={800}>
-        <a href={href} className={className}>{children}</a>
+      <ScrollLink href={href} to={to} className={className} spy smooth="easeOutQuart" offset={-100} duration={800}>
+        {children}
       </ScrollLink>
     );
   }
