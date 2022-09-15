@@ -25,10 +25,11 @@ import {
 } from '../utils/commons';
 
 const ShareLinkAlert = dynamic(() => import('~/components/Page/ShareLinkAlert'), { ssr: false });
-
+const ForbiddenPage = dynamic(() => import('~/components/ForbiddenPage'), { ssr: false });
 
 type Props = CommonProps & {
-  shareLink: IShareLinkHasId
+  shareLink?: IShareLinkHasId,
+  isExpired: boolean,
   currentUser: IUser,
   userUISettings?: IUserUISettings,
   disableLinkSharing: boolean,
@@ -39,13 +40,9 @@ type Props = CommonProps & {
 };
 
 const SharedPage: NextPage<Props> = (props: Props) => {
-  const {
-    _id: shareLinkId, expiredAt, createdAt, relatedPage,
-  } = props.shareLink;
-
-  useShareLinkId(shareLinkId);
-  useCurrentPageId(relatedPage._id);
-  useCurrentPagePath(relatedPage.path);
+  useShareLinkId(props.shareLink?._id);
+  useCurrentPageId(props.shareLink?.relatedPage._id);
+  useCurrentPagePath(props.shareLink?.relatedPage.path);
   useCurrentUser(props.currentUser);
   useCurrentPathname(props.currentPathname);
   useRendererConfig(props.rendererConfig);
@@ -53,19 +50,50 @@ const SharedPage: NextPage<Props> = (props: Props) => {
   useIsSearchServiceReachable(props.isSearchServiceReachable);
   useIsSearchScopeChildrenAsDefault(props.isSearchScopeChildrenAsDefault);
 
+  const isNotFound = props.shareLink == null || props.shareLink.relatedPage == null || props.shareLink.relatedPage.isEmpty;
+  const isShowSharedPage = !props.disableLinkSharing && !isNotFound && !props.isExpired;
+
   return (
     <BasicLayout title={useCustomTitle(props, 'GROWI')} expandContainer={props.isContainerFluid}>
       <div className="h-100 d-flex flex-column justify-content-between">
         <header className="py-0 position-relative">
-          <GrowiContextualSubNavigation isLinkSharingDisabled={props.disableLinkSharing} />
+          {isShowSharedPage && <GrowiContextualSubNavigation isLinkSharingDisabled={props.disableLinkSharing} />}
         </header>
 
         <div id="grw-fav-sticky-trigger" className="sticky-top"></div>
 
-        <div id="content-main" className="content-main grw-container-convertible my-5">
-          <ShareLinkAlert expiredAt={expiredAt} createdAt={createdAt} />
+        <div id="content-main" className="content-main grw-container-convertible">
 
-          <DisplaySwitcher />
+          { props.disableLinkSharing && (
+            <div className="mt-4">
+              <ForbiddenPage isLinkSharingDisabled={props.disableLinkSharing} />
+            </div>
+          )}
+
+          { isNotFound && (
+            <div className="container-lg">
+              <h2 className="text-muted mt-4">
+                <i className="icon-ban" aria-hidden="true"></i>
+                  Page is not found
+              </h2>
+            </div>
+          )}
+
+          { props.isExpired && (
+            <div className="container-lg">
+              <h2 className="text-muted mt-4">
+                <i className="icon-ban" aria-hidden="true"></i>
+                  Page is expired
+              </h2>
+            </div>
+          )}
+
+          {(isShowSharedPage && props.shareLink != null) && (
+            <>
+              <ShareLinkAlert expiredAt={props.shareLink.expiredAt} createdAt={props.shareLink.createdAt} />
+              <DisplaySwitcher />
+            </>
+          )}
         </div>
       </div>
     </BasicLayout>
@@ -114,31 +142,6 @@ async function injectNextI18NextConfigurations(context: GetServerSidePropsContex
   props._nextI18Next = nextI18NextConfig._nextI18Next;
 }
 
-// MEMO: getServerSideProps でやっちゃっていいかも
-// async function injectRoutingInformation(context: GetServerSidePropsContext, props: Props): Promise<void> {
-//   const req: CrowiRequest = context.req as CrowiRequest;
-//   const { crowi } = req;
-
-//   const { linkId } = req.params;
-
-//   const ShareLinkModel = crowi.model('ShareLink');
-//   const shareLink = await ShareLinkModel.findOne({ _id: linkId }).populate('relatedPage');
-
-//   if (props.disableLinkSharing) {
-//     // forbidden
-//   }
-
-//   if (shareLink == null || shareLink.relatedPage == null || shareLink.relatedPage.isEmpty) {
-//     // not found
-//   }
-
-//   if (shareLink.isExpired()) {
-//     // exipred
-//   }
-
-//   props.shareLink = shareLink.toObject();
-// }
-
 export const getServerSideProps: GetServerSideProps = async(context: GetServerSidePropsContext) => {
   const req = context.req as CrowiRequest<IUserHasId & any>;
   const { user, crowi } = req;
@@ -155,11 +158,16 @@ export const getServerSideProps: GetServerSideProps = async(context: GetServerSi
 
   const { linkId } = req.params;
 
-  const ShareLinkModel = crowi.model('ShareLink');
-  const shareLink = await ShareLinkModel.findOne({ _id: linkId }).populate('relatedPage');
-
-  if (shareLink != null) {
-    props.shareLink = shareLink.toObject();
+  try {
+    const ShareLinkModel = crowi.model('ShareLink');
+    const shareLink = await ShareLinkModel.findOne({ _id: linkId }).populate('relatedPage');
+    if (shareLink != null) {
+      props.isExpired = shareLink.isExpired();
+      props.shareLink = shareLink.toObject();
+    }
+  }
+  catch (err) {
+    //
   }
 
   injectServerConfigurations(context, props);
