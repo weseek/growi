@@ -689,7 +689,16 @@
     "fail_to_save_access_token": "Failed to save access_token. Please try again.",
     "fail_to_fetch_access_token": "Failed to fetch access_token. Please do connect again.",
     "successfully_disconnected": "Successfully Disconnected!",
-    "strategy_has_not_been_set_up": "{{strategy}} has not been set up",
+    "strategy_has_not_been_set_up": {
+      "LocalStrategy"  : "LocalStrategy has not been set up",
+      "LdapStrategy"   : "LdapStrategy has not been set up",
+      "GoogleStrategy" : "GoogleStrategy has not been set up",
+      "GitHubStrategy" : "GitHubStrategy has not been set up",
+      "TwitterStrategy": "TwitterStrategy has not been set up",
+      "OidcStrategy"   : "OidcStrategy has not been set up",
+      "SamlStrategy"   : "SamlStrategy has not been set up",
+      "Basic"          : "Basic has not been set up"
+     },
     "maximum_number_of_users": "Can not register more than the maximum number of users.",
     "database_error": "Database Server Error occured",
     "sign_in_failure": "Sign in failure.",
