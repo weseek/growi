@@ -59,6 +59,11 @@
     pre.CodeMirror-line-like.CodeMirror-placeholder {
       color: bs.$text-muted;
     }
+
+    // overwrite .CodeMirror-scroll
+    .CodeMirror-scroll {
+      box-sizing: border-box;
+    }
   }
 
   // patch to fix https://github.com/codemirror/CodeMirror/issues/4089
