@@ -7,6 +7,7 @@ import {
 import dynamic from 'next/dynamic';
 
 import { NoLoginLayout } from '~/components/Layout/NoLoginLayout';
+import { LoginFormProps } from '~/components/LoginForm';
 import { CrowiRequest } from '~/interfaces/crowi-request';
 
 import {
@@ -19,7 +20,7 @@ import {
   CommonProps, getServerSideCommonProps, useCustomTitle,
 } from './utils/commons';
 
-const LoginForm = dynamic(() => import('~/components/LoginForm'), { ssr: false });
+const LoginForm = dynamic<LoginFormProps>(() => import('~/components/LoginForm').then(mod => mod.LoginForm), { ssr: false });
 
 type Props = CommonProps & {
 
@@ -41,8 +42,17 @@ const LoginPage: NextPage<Props> = (props: Props) => {
 
   return (
     <NoLoginLayout title={useCustomTitle(props, 'GROWI')} className={classNames.join(' ')}>
-      <LoginForm objOfIsExternalAuthEnableds={props.enabledStrategies} isLocalStrategySetup={true} isLdapStrategySetup={true}
-        isRegistrationEnabled={true} registrationWhiteList={props.registrationWhiteList} isPasswordResetEnabled={true} />
+      <LoginForm
+        // Todo: These props should be set properly. https://redmine.weseek.co.jp/issues/104847
+        objOfIsExternalAuthEnableds={props.enabledStrategies}
+        isLocalStrategySetup={true}
+        isLdapStrategySetup={true}
+        isEmailAuthenticationEnabled={false}
+        isRegistrationEnabled={true}
+        registrationWhiteList={props.registrationWhiteList}
+        isPasswordResetEnabled={true}
+        isMailerSetup={false}
+      />
     </NoLoginLayout>
   );
 };
