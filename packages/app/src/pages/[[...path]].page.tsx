@@ -62,7 +62,7 @@ import {
   useIsAclEnabled, useIsUserPage,
   useCsrfToken, useIsSearchScopeChildrenAsDefault, useCurrentPageId, useCurrentPathname,
   useIsSlackConfigured, useRendererConfig, useEditingMarkdown,
-  useEditorConfig, useIsAllReplyShown, useIsUploadableFile, useIsUploadableImage,
+  useEditorConfig, useIsAllReplyShown, useIsUploadableFile, useIsUploadableImage, usePageUser,
 } from '../stores/context';
 
 import {
@@ -136,7 +136,7 @@ type Props = CommonProps & {
   isIdenticalPathPage?: boolean,
   isForbidden: boolean,
   isNotFound: boolean,
-  IsNotCreatablePage: boolean,
+  isNotCreatablePage: boolean,
   // isAbleToDeleteCompletely: boolean,
 
   isSearchServiceConfigured: boolean,
@@ -251,6 +251,8 @@ const GrowiPage: NextPage<Props> = (props: Props) => {
   const { data: grantData } = useSWRxIsGrantNormalized(pageId);
   const { mutate: mutateSelectedGrant } = useSelectedGrant();
 
+  usePageUser(pageWithMeta?.data.creator);
+
   // sync grant data
   useEffect(() => {
     mutateSelectedGrant(grantData?.grantData.currentPageGrant);
@@ -310,8 +312,8 @@ const GrowiPage: NextPage<Props> = (props: Props) => {
                   <>
                     <PageAlerts />
                     { props.isForbidden && <ForbiddenPage /> }
-                    { props.IsNotCreatablePage && <NotCreatablePage />}
-                    { !props.isForbidden && !props.IsNotCreatablePage && <DisplaySwitcher />}
+                    { props.isNotCreatablePage && <NotCreatablePage />}
+                    { !props.isForbidden && !props.isNotCreatablePage && <DisplaySwitcher />}
                     {/* <DisplaySwitcher /> */}
                     {/* <PageStatusAlert /> */}
                   </>
@@ -434,7 +436,7 @@ async function injectRoutingInformation(context: GetServerSidePropsContext, prop
   }
   else if (page == null) {
     props.isNotFound = true;
-    props.IsNotCreatablePage = !isCreatablePage(currentPathname);
+    props.isNotCreatablePage = !isCreatablePage(currentPathname);
     // check the page is forbidden or just does not exist.
     const count = isPermalink ? await Page.count({ _id: pageId }) : await Page.count({ path: currentPathname });
     props.isForbidden = count > 0;

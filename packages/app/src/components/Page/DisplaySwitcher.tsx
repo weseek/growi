@@ -18,7 +18,7 @@ import PageListIcon from '../Icons/PageListIcon';
 import { Page } from '../Page';
 // import PageEditorByHackmd from '../PageEditorByHackmd';
 import TableOfContents from '../TableOfContents';
-import UserInfo from '../User/UserInfo';
+import { UserInfoProps } from '../User/UserInfo';
 
 
 import styles from './DisplaySwitcher.module.scss';
@@ -32,6 +32,7 @@ const EditorNavbarBottom = dynamic(() => import('../PageEditor/EditorNavbarBotto
 const HashChanged = dynamic(() => import('../EventListeneres/HashChanged'), { ssr: false });
 const ContentLinkButtons = dynamic(() => import('../ContentLinkButtons'), { ssr: false });
 const NotFoundPage = dynamic(() => import('../NotFoundPage'), { ssr: false });
+const UserInfo = dynamic<UserInfoProps>(() => import('../User/UserInfo').then(mod => mod.UserInfo), { ssr: false });
 
 
 const PageView = React.memo((): JSX.Element => {
@@ -52,7 +53,7 @@ const PageView = React.memo((): JSX.Element => {
     <div className="d-flex flex-column flex-lg-row">
 
       <div className="flex-grow-1 flex-basis-0 mw-0">
-        { isUserPage && <UserInfo pageUser={pageUser} />}
+        { isUserPage && pageUser != null && <UserInfo pageUser={pageUser} />}
         { !isNotFound && <Page /> }
         { isNotFound && <NotFoundPage /> }
       </div>

@@ -11,7 +11,7 @@ import { GrowiThemes } from '~/interfaces/theme';
 import InterceptorManager from '~/services/interceptor-manager';
 
 import { TargetAndAncestors } from '../interfaces/page-listing-results';
-import { IUser } from '../interfaces/user';
+import { IUser, IUserHasId } from '../interfaces/user';
 
 import { useStaticSWR } from './use-static-swr';
 
@@ -98,8 +98,8 @@ export const useIsNotFound = (initialData?: boolean): SWRResponse<boolean, Error
   return useStaticSWR<boolean, Error>('isNotFound', initialData, { fallbackData: false });
 };
 
-export const usePageUser = (initialData?: Nullable<any>): SWRResponse<Nullable<any>, Error> => {
-  return useStaticSWR<Nullable<any>, Error>('pageUser', initialData);
+export const usePageUser = (initialData?: IUserHasId): SWRResponse<IUserHasId, Error> => {
+  return useStaticSWR<IUserHasId, Error>('pageUser', initialData);
 };
 
 export const useHasChildren = (initialData?: Nullable<any>): SWRResponse<Nullable<any>, Error> => {
