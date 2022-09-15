@@ -1,11 +1,10 @@
 import React, {
-  useCallback, useRef, useState, useEffect, useMemo,
+  useCallback, useRef, useState, useEffect,
 } from 'react';
 
 import EventEmitter from 'events';
 
 import { useTranslation } from 'react-i18next';
-import { throttle, debounce } from 'throttle-debounce';
 
 
 import { saveOrUpdate } from '~/client/services/page-operation';
@@ -31,7 +30,7 @@ const logger = loggerFactory('growi:PageEditorByHackmd');
 declare const globalEmitter: EventEmitter;
 
 type HackEditorRef = {
-  getValue: () => string
+  getValue: () => Promise<string>
 };
 
 export const PageEditorByHackmd = (): JSX.Element => {
@@ -67,14 +66,6 @@ export const PageEditorByHackmd = (): JSX.Element => {
   const [isHackmdDraftUpdatingInRealtime, setIsHackmdDraftUpdatingInRealtime] = useState(false);
   const [remoteRevisionId, setRemoteRevisionId] = useState(revision?._id); // initialize
 
-  const [markdown, setMarkdown] = useState<string>(revision?.body ?? '');
-
-  const setMarkdownWithDebounce = useMemo(() => debounce(50, throttle(100, value => setMarkdown(value))), []);
-
-  const markdownChangedHandler = useCallback((value: string): void => {
-    setMarkdownWithDebounce(value);
-  }, [setMarkdownWithDebounce]);
-
   const hackmdEditorRef = useRef<HackEditorRef>(null);
 
   const saveAndReturnToViewHandler = useCallback(async(opts?: {overwriteScopesOfDescendants: boolean}) => {
@@ -82,7 +73,7 @@ export const PageEditorByHackmd = (): JSX.Element => {
       return;
     }
 
-    if (isSlackEnabled == null || currentPathname == null || slackChannels == null || grant == null || revision == null) {
+    if (isSlackEnabled == null || currentPathname == null || slackChannels == null || grant == null || revision == null || hackmdEditorRef.current == null) {
       return;
     }
 
@@ -101,10 +92,12 @@ export const PageEditorByHackmd = (): JSX.Element => {
       optionsToSave = currentOptionsToSave;
     }
 
+    const markdown = await hackmdEditorRef.current.getValue();
+
     await saveOrUpdate(optionsToSave, { pageId, path: currentPagePath || currentPathname, revisionId: revision?._id }, markdown);
     await updatePageData();
     mutateEditorMode(EditorMode.View);
-  }, [currentPagePath, currentPathname, editorMode, grant, isSlackEnabled, pageId, pageTags, revision, slackChannels, markdown, mutateEditorMode]);
+  }, [currentPagePath, currentPathname, editorMode, grant, isSlackEnabled, pageId, pageTags, revision, slackChannels, mutateEditorMode, updatePageData]);
 
   // set handler to save and reload Page
   useEffect(() => {
@@ -240,12 +233,11 @@ export const PageEditorByHackmd = (): JSX.Element => {
 
     try {
       await apiPost('/hackmd.saveOnHackmd', { pageId });
-      markdownChangedHandler(body);
     }
     catch (err) {
       logger.error(err);
     }
-  }, [pageId, revision?.body, hackmdUri, markdownChangedHandler]);
+  }, [pageId, revision?.body, hackmdUri]);
 
   const penpalErrorOccuredHandler = useCallback((error) => {
     toastError(error);
