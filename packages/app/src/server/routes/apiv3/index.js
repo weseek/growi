@@ -13,7 +13,7 @@ const router = express.Router();
 const routerForAdmin = express.Router();
 const routerForAuth = express.Router();
 
-module.exports = (crowi) => {
+module.exports = (crowi, middlewaresForAuth) => {
 
   // add custom functions to express response
   require('./response')(express, crowi);
@@ -38,8 +38,13 @@ module.exports = (crowi) => {
   routerForAdmin.use('/activity', require('./activity')(crowi));
 
   // auth
-  routerForAuth.use('/logout', require('./logout')(crowi));
+  const {
+    applicationInstalled, registerFormValidator, csrfProtection, addActivity, login,
+  } = middlewaresForAuth;
 
+  routerForAuth.use('/logout', require('./logout')(crowi));
+  routerForAuth.post('/register', applicationInstalled, registerFormValidator.registerRules(), registerFormValidator.registerValidation,
+    csrfProtection, addActivity, login.register);
 
   router.use('/in-app-notification', require('./in-app-notification')(crowi));
 
