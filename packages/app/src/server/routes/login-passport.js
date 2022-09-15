@@ -44,7 +44,7 @@ module.exports = function(crowi, app) {
     };
     await crowi.activityService.createActivity(parameters);
 
-    return res.safeRedirect(redirectTo);
+    return res.apiv3({ redirectTo });
   };
 
   /**
