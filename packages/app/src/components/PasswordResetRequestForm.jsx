@@ -6,7 +6,7 @@ import { toastSuccess, toastError } from '~/client/util/apiNotification';
 import { apiv3Post } from '~/client/util/apiv3-client';
 
 
-const PasswordResetRequestForm = (props) => {
+const PasswordResetRequestForm = () => {
   const { t } = useTranslation();
   const [email, setEmail] = useState('');
 
@@ -50,9 +50,6 @@ const PasswordResetRequestForm = (props) => {
       </a>
     </form>
   );
-};
-
-PasswordResetRequestForm.propTypes = {
 };
 
 export default PasswordResetRequestForm;
