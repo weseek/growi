@@ -62,6 +62,9 @@ RUN tar -cf node_modules.tar \
 FROM node:16-slim AS prebuilder-default
 
 ENV optDir /opt
+ENV nodeModulesGrowiPackagesDir ${optDir}/node_modules/@growi
+# expect a string seperated by commas (e.g. "A,B")
+ENV removeNodeModulesSymlinkPaths ${nodeModulesGrowiPackagesDir}/slackbot-proxy
 
 WORKDIR ${optDir}
 
@@ -73,6 +76,8 @@ COPY --from=deps-resolver \
 RUN tar -xf node_modules.tar
 RUN rm node_modules.tar
 
+# remove symlinks
+RUN rm -f $(echo ${removeNodeModulesSymlinkPaths} | sed -e "s/,/ /g")
 
 
 ##
@@ -103,6 +108,7 @@ COPY packages/plugin-attachment-refs packages/plugin-attachment-refs
 COPY packages/plugin-lsx packages/plugin-lsx
 COPY packages/slack packages/slack
 COPY packages/ui packages/ui
+COPY packages/remark-growi-plugin packages/remark-growi-plugin
 
 # build
 RUN yarn lerna run build
