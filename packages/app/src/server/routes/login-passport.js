@@ -223,7 +223,7 @@ module.exports = function(crowi, app) {
   const loginWithLocal = (req, res, next) => {
     if (!passportService.isLocalStrategySetup) {
       debug('LocalStrategy has not been set up');
-      req.flash('warningMessage', req.t('message.strategy_has_not_been_set_up', { strategy: 'LocalStrategy' }));
+      req.errors.push(ErrorV3('message.strategy_has_not_been_set_up.LocalStrategy', 'local-strategy-has-not-been-set-up'));
       return next();
     }
 
@@ -239,7 +239,7 @@ module.exports = function(crowi, app) {
 
       if (err) { // DB Error
         logger.error('Database Server Error: ', err);
-        req.flash('warningMessage', req.t('message.database_error'));
+        req.errors.push(ErrorV3('message.database_error', 'database-error'));
         return next(); // pass and the flash message is displayed when all of authentications are failed.
       }
       if (!user) { return next() }
