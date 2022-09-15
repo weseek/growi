@@ -28,9 +28,9 @@
     "test": ""
   },
   "dependencies": {
-    "@growi/ui": "^5.1.5-RC.0",
     "@growi/core": "^5.1.5-RC.0",
-    "@growi/remark-growi-plugin": "^5.1.5-RC.0"
+    "@growi/remark-growi-plugin": "^5.1.5-RC.0",
+    "@growi/ui": "^5.1.5-RC.0"
   },
   "devDependencies": {
     "eslint-plugin-regex": "^1.8.0",
