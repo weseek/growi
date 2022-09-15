@@ -16,7 +16,7 @@ import { useSetupGlobalSocket, useSetupGlobalAdminSocket } from '~/stores/websoc
 import {
   useSiteUrl,
   useDeleteUsername, useDeletedAt, useHasChildren, useHasDraftOnHackmd,
-  useIsNotCreatable, useIsTrashPage, useIsUserPage, useLastUpdateUsername,
+  useIsTrashPage, useIsUserPage, useLastUpdateUsername,
   useCurrentPageId, usePageIdOnHackmd, usePageUser, useCurrentPagePath, useRevisionCreatedAt, useRevisionId, useRevisionIdHackmdSynced,
   useShareLinkId, useShareLinksNumber, useTemplateTagData, useCurrentUser, useTargetAndAncestors,
   useIsSearchPage, useIsForbidden, useIsIdenticalPath, useHasParent,
@@ -143,7 +143,7 @@ const ContextExtractorOnce: FC = () => {
   useHasChildren(hasChildren);
   useHasDraftOnHackmd(hasDraftOnHackmd);
   useIsIdenticalPath(isIdenticalPath);
-  useIsNotCreatable(isNotCreatable);
+  // useIsNotCreatable(isNotCreatable);
   useIsForbidden(isForbidden);
   // useIsTrashPage(isTrashPage);
   useIsUserPage(isUserPage);

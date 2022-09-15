@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 
 import dynamic from 'next/dynamic';
 
@@ -35,6 +35,7 @@ export type GrowiSubNavigationProps = {
   isGuestUser?: boolean,
   isDrawerMode?: boolean,
   isCompactMode?: boolean,
+  isNotFound?: boolean,
   tags?: string[],
   tagsUpdatedHandler?: (newTags: string[]) => Promise<void> | void,
   controls: React.FunctionComponent,
@@ -44,12 +45,11 @@ export type GrowiSubNavigationProps = {
 export const GrowiSubNavigation = (props: GrowiSubNavigationProps): JSX.Element => {
 
   const { data: editorMode } = useEditorMode();
-  const [isControls, setControls] = useState(false);
 
   const {
     page,
     showDrawerToggler, showTagLabel, showPageAuthors,
-    isGuestUser, isDrawerMode, isCompactMode,
+    isGuestUser, isDrawerMode, isCompactMode, isNotFound,
     tags, tagsUpdatedHandler,
     controls: Controls,
     additionalClasses = [],
@@ -63,12 +63,6 @@ export const GrowiSubNavigation = (props: GrowiSubNavigationProps): JSX.Element 
     _id: pageId, path, creator, lastUpdateUser,
     createdAt, updatedAt,
   } = page;
-
-  useEffect(() => {
-    if (Controls != null) {
-      setControls(true);
-    }
-  }, [Controls]);
 
   if (path == null) {
     return <></>;
@@ -93,21 +87,23 @@ export const GrowiSubNavigation = (props: GrowiSubNavigationProps): JSX.Element 
           <PagePathNav pageId={pageId} pagePath={path} isSingleLineMode={isEditorMode} isCompactMode={isCompactMode} />
         </div>
       </div>
-      {/* Right side */}
-      <div className="d-flex">
-        { isControls && <Controls /> }
-        {/* Page Authors */}
-        { (showPageAuthors && !isCompactMode) && (
-          <ul className={`${AuthorInfoStyles['grw-author-info']} text-nowrap border-left d-none d-lg-block d-edit-none py-2 pl-4 mb-0 ml-3`}>
-            <li className="pb-1">
-              <AuthorInfo user={creator as IUser} date={createdAt} locate="subnav" />
-            </li>
-            <li className="mt-1 pt-1 border-top">
-              <AuthorInfo user={lastUpdateUser as IUser} date={updatedAt} mode="update" locate="subnav" />
-            </li>
-          </ul>
-        ) }
-      </div>
+      {/* Right side. isNotFound for avoid flicker when called ForbiddenPage.tsx */}
+      { !isNotFound && (
+        <div className="d-flex">
+          <Controls />
+          {/* Page Authors */}
+          { (showPageAuthors && !isCompactMode) && (
+            <ul className={`${AuthorInfoStyles['grw-author-info']} text-nowrap border-left d-none d-lg-block d-edit-none py-2 pl-4 mb-0 ml-3`}>
+              <li className="pb-1">
+                <AuthorInfo user={creator as IUser} date={createdAt} locate="subnav" />
+              </li>
+              <li className="mt-1 pt-1 border-top">
+                <AuthorInfo user={lastUpdateUser as IUser} date={updatedAt} mode="update" locate="subnav" />
+              </li>
+            </ul>
+          ) }
+        </div>
+      ) }
     </div>
   );
 };

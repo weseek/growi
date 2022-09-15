@@ -87,10 +87,9 @@ export const useIsTrashPage = (initialData?: boolean): SWRResponse<boolean, Erro
   return useStaticSWR<boolean, Error>('isTrashPage', initialData, { fallbackData: false });
 };
 
-export const useIsNotCreatable = (initialData?: boolean): SWRResponse<boolean, Error> => {
-  return useStaticSWR<boolean, Error>('isNotCreatable', initialData, { fallbackData: false });
-};
-
+// export const useIsNotCreatable = (initialData?: boolean): SWRResponse<boolean, Error> => {
+//   return useStaticSWR<boolean, Error>('isNotCreatable', initialData, { fallbackData: false });
+// };
 export const useIsForbidden = (initialData?: boolean): SWRResponse<boolean, Error> => {
   return useStaticSWR<boolean, Error>('isForbidden', initialData, { fallbackData: false });
 };
@@ -275,13 +274,14 @@ export const useIsGuestUser = (): SWRResponse<boolean, Error> => {
 
 export const useIsEditable = (): SWRResponse<boolean, Error> => {
   const { data: isGuestUser } = useIsGuestUser();
-  const { data: isNotCreatable } = useIsNotCreatable();
+  const { data: isForbidden } = useIsForbidden();
+  const { data: isIdenticalPath } = useIsIdenticalPath();
   const { data: isTrashPage } = useIsTrashPage();
 
   return useSWRImmutable(
-    ['isEditable', isGuestUser, isTrashPage, isNotCreatable],
-    (key: Key, isGuestUser: boolean, isTrashPage: boolean, isNotCreatable: boolean) => {
-      return (!isNotCreatable && !isTrashPage && !isGuestUser);
+    ['isEditable', isGuestUser, isForbidden, isIdenticalPath, isTrashPage],
+    (key: Key, isGuestUser: boolean, isForbidden: boolean, isIdenticalPath: boolean, isTrashPage: boolean) => {
+      return (!isTrashPage && !isForbidden && !isIdenticalPath && !isGuestUser);
     },
   );
 };
