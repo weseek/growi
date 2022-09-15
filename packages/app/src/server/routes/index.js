@@ -20,7 +20,7 @@ import * as userActivation from './user-activation';
 const multer = require('multer');
 const autoReap = require('multer-autoreap');
 
-const csrfProtection = csrf({ cookie: false });
+const csrfProtection = csrf({ ignoreMethods: ['GET', 'HEAD', 'OPTIONS', 'POST'], cookie: false });
 
 autoReap.options.reapOnError = true; // continue reaping the file even if an error occurs
 
@@ -61,7 +61,10 @@ module.exports = function(crowi, app) {
 
   /* eslint-disable max-len, comma-spacing, no-multi-spaces */
 
-  const [apiV3Router, apiV3AdminRouter, apiV3AuthRouter] = require('./apiv3')(crowi);
+  const middlewaresForAuth = {
+    applicationInstalled, registerFormValidator, csrfProtection, addActivity, login,
+  };
+  const [apiV3Router, apiV3AdminRouter, apiV3AuthRouter] = require('./apiv3')(crowi, middlewaresForAuth);
 
   app.use('/api-docs', require('./apiv3/docs')(crowi));
 
