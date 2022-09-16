@@ -1,4 +1,6 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, {
+  useCallback, useEffect, useMemo, useState,
+} from 'react';
 
 import { useTranslation } from 'next-i18next';
 
@@ -10,31 +12,8 @@ import PageAttachmentList from './PageAttachment/PageAttachmentList';
 import PaginationWrapper from './PaginationWrapper';
 
 // Utility
-const checkIfFileInUse = (markdown: string, attachment) => {
-  return markdown.match(attachment._id);
-};
-
-// Custom hook that handles processes related to inUseAttachments
-const useInUseAttachments = (attachments) => {
-  const { data: markdown } = useEditingMarkdown();
-  const [inUse, setInUse] = useState<any>({});
-
-  // Update inUse when either of attachments or markdown is updated
-  useEffect(() => {
-    if (markdown == null) {
-      return;
-    }
-
-    const newInUse = {};
-
-    for (const attachment of attachments) {
-      newInUse[attachment._id] = checkIfFileInUse(markdown, attachment);
-    }
-
-    setInUse(newInUse);
-  }, [attachments, markdown]);
-
-  return inUse;
+const checkIfFileInUse = (markdown: string, attachment): boolean => {
+  return markdown.indexOf(attachment._id) >= 0;
 };
 
 const PageAttachment = (): JSX.Element => {
@@ -43,6 +22,7 @@ const PageAttachment = (): JSX.Element => {
   // Static SWRs
   const { data: pageId } = useCurrentPageId();
   const { data: isGuestUser } = useIsGuestUser();
+  const { data: markdown } = useEditingMarkdown();
 
   // States
   const [pageNumber, setPageNumber] = useState(1);
@@ -59,7 +39,18 @@ const PageAttachment = (): JSX.Element => {
   } = dataAttachments ?? {};
 
   // Custom hooks
-  const inUseAttachments = useInUseAttachments(attachments);
+  const inUseAttachmentsMap: { [id: string]: boolean } = useMemo(() => {
+    if (markdown == null) {
+      return {};
+    }
+
+    const attachmentEntries = attachments
+      .map((attachment) => {
+        return [attachment._id, checkIfFileInUse(markdown, attachment)];
+      });
+
+    return Object.fromEntries(attachmentEntries);
+  }, [attachments, markdown]);
 
   // Methods
   const onChangePageHandler = useCallback((newPageNumber: number) => {
@@ -104,9 +95,9 @@ const PageAttachment = (): JSX.Element => {
       );
     }
 
-    let deleteInUse = null;
+    let deleteInUse: boolean | null = null;
     if (attachmentToDelete != null) {
-      deleteInUse = inUseAttachments[attachmentToDelete._id] || false;
+      deleteInUse = inUseAttachmentsMap[attachmentToDelete._id] || false;
     }
 
     const isOpen = attachmentToDelete != null;
@@ -124,13 +115,13 @@ const PageAttachment = (): JSX.Element => {
       />
     );
   // eslint-disable-next-line max-len
-  }, [attachmentToDelete, attachments.length, deleteError, deleting, inUseAttachments, isGuestUser, onAttachmentDeleteClickedConfirmHandler, onToggleHandler, t]);
+  }, [attachmentToDelete, attachments.length, deleteError, deleting, inUseAttachmentsMap, isGuestUser, onAttachmentDeleteClickedConfirmHandler, onToggleHandler, t]);
 
   return (
     <div data-testid="page-attachment">
       <PageAttachmentList
         attachments={attachments}
-        inUse={inUseAttachments}
+        inUse={inUseAttachmentsMap}
         onAttachmentDeleteClicked={onAttachmentDeleteClicked}
         isUserLoggedIn={!isGuestUser}
       />
