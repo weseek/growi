@@ -2,6 +2,14 @@
 # yarn lockfile v1
 
 
+"@akebifiky/remark-simple-plantuml@^1.0.2":
+  version "1.0.2"
+  resolved "https://registry.yarnpkg.com/@akebifiky/remark-simple-plantuml/-/remark-simple-plantuml-1.0.2.tgz#c353e4be4e5338b0165f1d6060da4960c325bad5"
+  integrity sha512-y5rWgQvU+DMpLKx1KlXCsgUeqVooqQm1S3hePLF9iecZy6YhKRybznFdvAvoAoiV2GoGhObQDHnneAl93llIcg==
+  dependencies:
+    plantuml-encoder "^1.4.0"
+    unist-util-visit "^2.0.2"
+
 "@alienfast/i18next-loader@^1.1.4":
   version "1.1.4"
   resolved "https://registry.yarnpkg.com/@alienfast/i18next-loader/-/i18next-loader-1.1.4.tgz#213a6cd77222900a61b1635a212051193bcd5d1f"
@@ -17726,7 +17734,7 @@ pkg-dir@^5.0.0:
   dependencies:
     find-up "^5.0.0"
 
-plantuml-encoder@^1.2.5:
+plantuml-encoder@^1.2.5, plantuml-encoder@^1.4.0:
   version "1.4.0"
   resolved "https://registry.yarnpkg.com/plantuml-encoder/-/plantuml-encoder-1.4.0.tgz#7899302cf785de956bf1a167e15420feee5975f7"
   integrity sha512-sxMwpDw/ySY1WB2CE3+IdMuEcWibJ72DDOsXLkSmEaSzwEUaYBT6DWgOfBiHGCux4q433X6+OEFWjlVqp7gL6g==
@@ -23867,6 +23875,15 @@ unist-util-visit@^1.1.0:
   integrity sha512-AvGNk7Bb//EmJZyhtRUnNMEpId/AZ5Ph/KUpTI09WHQuDZHKovQ1oEv3mfmKpWKtoMzyMC4GLBm1Zy5k12fjIw==
   dependencies:
     unist-util-visit-parents "^2.0.0"
+
+unist-util-visit@^2.0.2:
+  version "2.0.3"
+  resolved "https://registry.yarnpkg.com/unist-util-visit/-/unist-util-visit-2.0.3.tgz#c3703893146df47203bb8a9795af47d7b971208c"
+  integrity sha512-iJ4/RczbJMkD0712mGktuGpm/U4By4FfDonL7N/9tATGIF4imikjOuagyMY53tnZq3NP6BcmlrHhEKAfGWjh7Q==
+  dependencies:
+    "@types/unist" "^2.0.0"
+    unist-util-is "^4.0.0"
+    unist-util-visit-parents "^3.0.0"
 
 unist-util-visit@^3.0.0:
   version "3.1.0"

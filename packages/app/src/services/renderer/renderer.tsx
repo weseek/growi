@@ -1,6 +1,7 @@
 // allow only types to import from react
 import { ComponentType } from 'react';
 
+import plantuml from '@akebifiky/remark-simple-plantuml';
 import { Lsx } from '@growi/plugin-lsx/components';
 import * as lsxGrowiPlugin from '@growi/plugin-lsx/services/renderer';
 import growiPlugin from '@growi/remark-growi-plugin';
@@ -318,6 +319,7 @@ export const generateViewOptions = (
   // add remark plugins
   remarkPlugins.push(
     math,
+    [plantuml, { baseUrl: 'https://www.plantuml.com/plantuml/svg' }],
     xsvToTable.remarkPlugin,
     lsxGrowiPlugin.remarkPlugin,
   );
