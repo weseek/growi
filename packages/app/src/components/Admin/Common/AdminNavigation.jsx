@@ -1,7 +1,3 @@
-/* eslint-disable no-multi-spaces */
-/* eslint-disable react/jsx-props-no-multi-spaces */
-
-
 import React from 'react';
 
 import { pathUtils } from '@growi/core';
@@ -25,6 +21,7 @@ const AdminNavigation = (props) => {
   // eslint-disable-next-line react/prop-types
   const MenuLabel = ({ menu }) => {
     switch (menu) {
+      /* eslint-disable no-multi-spaces */
       case 'app':                      return <><i className="icon-fw icon-settings"></i>        { t('app_settings') }</>;
       case 'security':                 return <><i className="icon-fw icon-shield"></i>          { t('security_settings.security_settings') }</>;
       case 'markdown':                 return <><i className="icon-fw icon-note"></i>            { t('markdown_settings.markdown_settings') }</>;
@@ -42,6 +39,7 @@ const AdminNavigation = (props) => {
       case 'audit-log':                return <><i className="icon-fw icon-feed"></i>            { t('audit_log_management.audit_log')}</>;
       case 'cloud':                    return <><i className="icon-fw icon-share-alt"></i>       { t('to_cloud_settings')} </>;
       default:                         return <><i className="icon-fw icon-home"></i>            { t('wiki_management_home_page') }</>;
+      /* eslint-enable no-multi-spaces */
     }
   };
 
@@ -76,6 +74,7 @@ const AdminNavigation = (props) => {
   const getListGroupItemOrDropdownItemList = (isListGroupItems) => {
     return (
       <>
+        {/* eslint-disable no-multi-spaces */}
         <MenuLink menu="home"         isListGroupItems isActive={pathname === '/admin'} isRoot />
         <MenuLink menu="app"          isListGroupItems isActive={isActiveMenu('/app')} />
         <MenuLink menu="security"     isListGroupItems isActive={isActiveMenu('/security')} />
@@ -100,6 +99,7 @@ const AdminNavigation = (props) => {
             </a>
           )
         } */}
+        {/* eslint-enable no-multi-spaces */}
       </>
     );
   };
@@ -123,6 +123,7 @@ const AdminNavigation = (props) => {
           aria-expanded="false"
         >
           <span className="float-left">
+            {/* eslint-disable no-multi-spaces */}
             {pathname === '/admin' &&              <MenuLabel menu="home" />}
             {isActiveMenu('/app') &&               <MenuLabel menu="app" />}
             {isActiveMenu('/security') &&          <MenuLabel menu="security" />}
@@ -136,6 +137,7 @@ const AdminNavigation = (props) => {
             {isActiveMenu('/user-groups') &&       <MenuLabel menu="user-groups" />}
             {isActiveMenu('/search') &&            <MenuLabel menu="search" />}
             {isActiveMenu('/audit-log') &&         <MenuLabel menu="audit-log" />}
+            {/* eslint-enable no-multi-spaces */}
           </span>
         </button>
         <div className="dropdown-menu" aria-labelledby="dropdown-admin-navigation">
