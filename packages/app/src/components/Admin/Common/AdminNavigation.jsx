@@ -2,6 +2,7 @@ import React from 'react';
 
 import { pathUtils } from '@growi/core';
 import { useTranslation } from 'next-i18next';
+import Link from 'next/link';
 import PropTypes from 'prop-types';
 import urljoin from 'url-join';
 
@@ -51,13 +52,17 @@ const AdminNavigation = (props) => {
       ? 'list-group-item list-group-item-action border-0 round-corner'
       : 'dropdown-item px-3 py-2';
 
+    const href = isRoot ? '/admin' : urljoin('/admin', menu);
+
     return (
-      <a
-        href={isRoot ? '/admin' : urljoin('/admin', menu)}
-        className={`${pageTransitionClassName} ${isActive ? 'active' : ''}`}
-      >
-        <MenuLabel menu={menu} />
-      </a>
+      <Link href={href}>
+        <a
+          href={href}
+          className={`${pageTransitionClassName} ${isActive ? 'active' : ''}`}
+        >
+          <MenuLabel menu={menu} />
+        </a>
+      </Link>
     );
   };
 
