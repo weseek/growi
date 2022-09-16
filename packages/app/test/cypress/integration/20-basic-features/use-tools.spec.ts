@@ -208,7 +208,7 @@ context('Tag Oprations', () =>{
     cy.get('.grw-taglabels-container > form > a').contains(tag).click();
     cy.getByTestid('search-result-base').should('be.visible');
     cy.getByTestid('search-result-list').should('be.visible');
-    cy.getByTestid('search-result-content').should('be.visible');
+    cy.get('#wiki').should('be.visible');
     cy.screenshot(`${ssPrefix}1-click-tag-name`, {capture: 'viewport'});
 
     cy.getByTestid('open-page-item-control-btn').first().click({force: true});
