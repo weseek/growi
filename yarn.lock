@@ -7773,10 +7773,10 @@ csurf@^1.11.0:
     csrf "3.1.0"
     http-errors "~1.7.3"
 
-csv-to-markdown-table@^1.0.1:
-  version "1.0.1"
-  resolved "https://registry.yarnpkg.com/csv-to-markdown-table/-/csv-to-markdown-table-1.0.1.tgz#43da1b0c0c483faa10a23921abc5e47a48e0daba"
-  integrity sha512-sw7oHNTBvmvztdDp5ZdIA3FPOy7fVol08hPgdSfVky4D1bcIoKwSiUeB/3G99mSaHnZh7wgCHcT7wAmyiyiaQA==
+csv-to-markdown-table@^1.1.0:
+  version "1.1.0"
+  resolved "https://registry.yarnpkg.com/csv-to-markdown-table/-/csv-to-markdown-table-1.1.0.tgz#1c4546b4a6d7265d7715df51825c1852a7286247"
+  integrity sha512-gsnCustJ+9ckvdsivA8pRkBSUbr7vaMK5uuXU+gn5df93hUe2EqGPTazAJFGjc3vy0R9hjKHoLRjphTFy04bPg==
 
 currently-unhandled@^0.4.1:
   version "0.4.1"

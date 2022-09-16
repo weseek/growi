@@ -350,65 +350,65 @@ aligned    | aligned     | aligned
 | left       | right       | center       |
 | aligned    | aligned     | aligned      |
 
-## TSV (crowi-plus 独自記法)
+## TSV
 
+~~~
+``` tsv
+Content Cell	Content Cell
+Content Cell	Content Cell
 ```
-::: tsv
-Content Cell  Content Cell
-Content Cell  Content Cell
-:::
-```
+~~~
 
-::: tsv
-Content Cell Content Cell
-Content Cell Content Cell
-:::
-
-## TSV ヘッダ付き (crowi-plus 独自記法)
-
-```
-::: tsv-h
-First Header Second Header
-Content Cell Content Cell
-Content Cell Content Cell
-:::
+``` tsv
+Content Cell	Content Cell
+Content Cell	Content Cell
 ```
 
-::: tsv-h
-First Header Second Header
-Content Cell Content Cell
-Content Cell Content Cell
-:::
+## TSV (ヘッダー付き)
 
-## CSV (crowi-plus 独自記法)
-
+~~~
+``` tsv-h
+First Header	Second Header
+Content Cell	Content Cell
+Content Cell	Content Cell
 ```
-::: csv
+~~~
+
+``` tsv-h
+First Header	Second Header
+Content Cell	Content Cell
+Content Cell	Content Cell
+```
+
+## CSV
+
+~~~
+``` csv
 Content Cell,Content Cell
 Content Cell,Content Cell
-:::
 ```
+~~~
 
-::: csv
+``` csv
 Content Cell,Content Cell
 Content Cell,Content Cell
-:::
-
-## CSV ヘッダ付き (crowi-plus 独自記法)
-
 ```
-::: csv-h
+
+## CSV (ヘッダー付き)
+
+~~~
+``` csv-h
 First Header,Second Header
 Content Cell,Content Cell
 Content Cell,Content Cell
-:::
 ```
+~~~
 
-::: csv-h
+``` csv-h
 First Header,Second Header
 Content Cell,Content Cell
 Content Cell,Content Cell
-:::
+```
 
 
 # :memo: Footnote
