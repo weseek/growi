@@ -62,6 +62,7 @@ export default class RevisionBody extends React.PureComponent {
           this.element = elem;
         }}
         id="wiki"
+        data-testid="wiki"
         className={`wiki ${additionalClassName}`}
         // eslint-disable-next-line react/no-danger
         dangerouslySetInnerHTML={this.generateInnerHtml(this.props.html)}
