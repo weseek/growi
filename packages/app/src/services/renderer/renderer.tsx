@@ -33,6 +33,7 @@ import * as keywordHighlighter from './rehype-plugins/keyword-highlighter';
 import { relativeLinks } from './rehype-plugins/relative-links';
 import { relativeLinksByPukiwikiLikeLinker } from './rehype-plugins/relative-links-by-pukiwiki-like-linker';
 import * as toc from './rehype-plugins/relocate-toc';
+import * as plantuml from './remark-plugins/plantuml';
 import { pukiwikiLikeLinker } from './remark-plugins/pukiwiki-like-linker';
 import * as xsvToTable from './remark-plugins/xsv-to-table';
 
@@ -318,6 +319,7 @@ export const generateViewOptions = (
   // add remark plugins
   remarkPlugins.push(
     math,
+    [plantuml.remarkPlugin, { baseUrl: config.plantumlUri }],
     xsvToTable.remarkPlugin,
     lsxGrowiPlugin.remarkPlugin,
   );
@@ -394,6 +396,7 @@ export const generateSimpleViewOptions = (config: RendererConfig, pagePath: stri
   // add remark plugins
   remarkPlugins.push(
     math,
+    [plantuml.remarkPlugin, { baseUrl: config.plantumlUri }],
     xsvToTable.remarkPlugin,
     lsxGrowiPlugin.remarkPlugin,
   );
@@ -429,6 +432,7 @@ export const generatePreviewOptions = (config: RendererConfig, pagePath: string)
   // add remark plugins
   remarkPlugins.push(
     math,
+    [plantuml.remarkPlugin, { baseUrl: config.plantumlUri }],
     xsvToTable.remarkPlugin,
     lsxGrowiPlugin.remarkPlugin,
   );
