@@ -9,6 +9,7 @@ context('Switch Sidebar content', () => {
   });
 
   it('PageTree is successfully shown', () => {
+    cy.collapseSidebar(false);
     cy.visit('/page');
     cy.getByTestid('grw-sidebar-nav-primary-page-tree').click();
     // eslint-disable-next-line cypress/no-unnecessary-waiting
@@ -28,6 +29,7 @@ context('Modal for page operation', () => {
     cy.fixture("user-admin.json").then(user => {
       cy.login(user.username, user.password);
     });
+    cy.collapseSidebar(true);
   });
 
   it("PageCreateModal is shown successfully", () => {
@@ -89,6 +91,7 @@ context('Open presentation modal', () => {
     cy.fixture("user-admin.json").then(user => {
       cy.login(user.username, user.password);
     });
+    cy.collapseSidebar(true);
   });
 
   it('PresentationModal for "/" is shown successfully', () => {
@@ -115,6 +118,7 @@ context('Page Accessories Modal', () => {
     cy.fixture("user-admin.json").then(user => {
       cy.login(user.username, user.password);
     });
+    cy.collapseSidebar(true);
   });
 
   it('Page History is shown successfully', () => {
@@ -160,6 +164,7 @@ context('Tag Oprations', () =>{
     cy.fixture("user-admin.json").then(user => {
       cy.login(user.username, user.password);
     });
+    cy.collapseSidebar(true);
   });
 
   it('Successfully add new tag', () => {
