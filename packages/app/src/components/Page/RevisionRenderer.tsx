@@ -2,12 +2,7 @@ import React from 'react';
 
 import ReactMarkdown from 'react-markdown';
 
-import { blinkElem } from '~/client/util/blink-section-header';
-import { addSmoothScrollEvent } from '~/client/util/smooth-scroll';
-import { CustomWindow } from '~/interfaces/global';
 import { RendererOptions } from '~/services/renderer/renderer';
-import { useCurrentPathname, useInterceptorManager } from '~/stores/context';
-import { useEditorSettings } from '~/stores/editor';
 import loggerFactory from '~/utils/logger';
 
 
