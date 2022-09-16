@@ -1,5 +1,6 @@
 import path from 'path';
 
+import { addSeconds } from 'date-fns';
 import ExtensibleCustomError from 'extensible-custom-error';
 import fs from 'graceful-fs';
 import mongoose from 'mongoose';
@@ -79,7 +80,20 @@ export class InstallerService {
         // TODO typescriptize models/user.js and remove eslint-disable-next-line
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const Page = mongoose.model('Page') as any;
-        await Page.updateMany({}, { createdAt: initialPagesCreatedAt, updatedAt: initialPagesCreatedAt });
+
+        // Increment timestamp to avoid difference for order in VRT
+        const pagePaths = ['/Sandbox', '/Sandbox/Bootstrap4', '/Sandbox/Diagrams', '/Sandbox/Math'];
+        const promises = pagePaths.map(async(path: string, idx: number) => {
+          const date = addSeconds(initialPagesCreatedAt, idx);
+          return Page.update(
+            { path },
+            {
+              createdAt: date,
+              updatedAt: date,
+            },
+          );
+        });
+        await Promise.all(promises);
       }
       catch (err) {
         logger.error('Failed to update createdAt', err);
