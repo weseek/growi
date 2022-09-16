@@ -109,12 +109,14 @@ class RevisionLoader extends React.Component {
     }
 
     return (
-      <RevisionRenderer
-        growiRenderer={this.props.growiRenderer}
-        markdown={markdown}
-        pagePath={this.props.pagePath}
-        highlightKeywords={this.props.highlightKeywords}
-      />
+      <div data-testid="search-result-revision-renderer">
+        <RevisionRenderer
+          growiRenderer={this.props.growiRenderer}
+          markdown={markdown}
+          pagePath={this.props.pagePath}
+          highlightKeywords={this.props.highlightKeywords}
+        />
+      </div>
     );
   }
 
