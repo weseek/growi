@@ -193,6 +193,7 @@ context('Tag Oprations', () =>{
       cy.get('div.modal-footer > button').click();
     });
 
+    cy.get('.toast').should('be.visible').invoke('attr', 'style', 'opacity: 1');
     cy.get('.grw-taglabels-container > form > a').contains(tag).should('exist');
 
     cy.screenshot(`${ssPrefix}4-click-done`, {capture: 'viewport'});
