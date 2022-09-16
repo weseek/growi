@@ -24,6 +24,8 @@ context('Access to page by guest', () => {
     cy.visit('/Sandbox/Math');
 
     cy.get('mjx-container').should('be.visible');
+    // eslint-disable-next-line cypress/no-unnecessary-waiting
+    cy.wait(2000); // wait for 2 seconds for MathJax.typesetPromise();
 
     cy.screenshot(`${ssPrefix}-sandbox-math`);
   });
