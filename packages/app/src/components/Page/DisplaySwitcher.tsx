@@ -16,7 +16,6 @@ import CountBadge from '../Common/CountBadge';
 import CustomTabContent from '../CustomNavigation/CustomTabContent';
 import PageListIcon from '../Icons/PageListIcon';
 import { Page } from '../Page';
-// import PageEditorByHackmd from '../PageEditorByHackmd';
 import TableOfContents from '../TableOfContents';
 import { UserInfoProps } from '../User/UserInfo';
 
@@ -28,6 +27,7 @@ const { isTopPage } = pagePathUtils;
 
 
 const PageEditor = dynamic(() => import('../PageEditor'), { ssr: false });
+const PageEditorByHackmd = dynamic(() => import('../PageEditorByHackmd').then(mod => mod.PageEditorByHackmd), { ssr: false });
 const EditorNavbarBottom = dynamic(() => import('../PageEditor/EditorNavbarBottom'), { ssr: false });
 const HashChanged = dynamic(() => import('../EventListeneres/HashChanged'), { ssr: false });
 const ContentLinkButtons = dynamic(() => import('../ContentLinkButtons'), { ssr: false });
@@ -145,7 +145,7 @@ const DisplaySwitcher = React.memo((): JSX.Element => {
           isEditable
             ? (
               <div id="page-editor-with-hackmd">
-                {/* <PageEditorByHackmd /> */}
+                <PageEditorByHackmd />
               </div>
             )
             : <></>
