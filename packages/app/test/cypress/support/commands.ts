@@ -40,9 +40,9 @@ Cypress.Commands.add('login', (username, password) => {
 
 let isSidebarCollapsed: boolean | undefined;
 
-Cypress.Commands.add('collapseSidebar', (isCollapsed) => {
+Cypress.Commands.add('collapseSidebar', (isCollapsed, force=false) => {
 
-  if (isSidebarCollapsed === isCollapsed) {
+  if (!force && isSidebarCollapsed === isCollapsed) {
     return;
   }
 
