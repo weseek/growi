@@ -60,9 +60,9 @@ export const PageEditorByHackmd = (): JSX.Element => {
   const [errorReason, setErrorReason] = useState('');
 
   // state from pageContainer
-  const { data: pageIdOnHackmd, mutate: updatePageIdOnHackmd } = usePageIdOnHackmd();
-  const { data: hasDraftOnHackmd, mutate: updateHasDraftOnHackmd } = useHasDraftOnHackmd();
-  const { data: revisionIdHackmdSynced, mutate: updateRevisionIdHackmdSynced } = useRevisionIdHackmdSynced();
+  const { data: pageIdOnHackmd, mutate: mutatePageIdOnHackmd } = usePageIdOnHackmd();
+  const { data: hasDraftOnHackmd, mutate: mutateHasDraftOnHackmd } = useHasDraftOnHackmd();
+  const { data: revisionIdHackmdSynced, mutate: mutateRevisionIdHackmdSynced } = useRevisionIdHackmdSynced();
   const [isHackmdDraftUpdatingInRealtime, setIsHackmdDraftUpdatingInRealtime] = useState(false);
   const [remoteRevisionId, setRemoteRevisionId] = useState(revision?._id); // initialize
 
@@ -130,8 +130,8 @@ export const PageEditorByHackmd = (): JSX.Element => {
         throw new Error(res.error);
       }
 
-      updatePageIdOnHackmd(res.pageIdOnHackmd);
-      updateRevisionIdHackmdSynced(res.revisionIdHackmdSynced);
+      mutatePageIdOnHackmd(res.pageIdOnHackmd);
+      mutateRevisionIdHackmdSynced(res.revisionIdHackmdSynced);
     }
     catch (err) {
       toastError(err);
@@ -143,7 +143,7 @@ export const PageEditorByHackmd = (): JSX.Element => {
 
     setIsInitialized(true);
     setIsInitializing(false);
-  }, [pageId, hackmdUri, updatePageIdOnHackmd, updateRevisionIdHackmdSynced]);
+  }, [pageId, hackmdUri, mutatePageIdOnHackmd, mutateRevisionIdHackmdSynced]);
 
   /**
    * Start to edit w/o any api request
@@ -164,10 +164,10 @@ export const PageEditorByHackmd = (): JSX.Element => {
       }
 
       setIsHackmdDraftUpdatingInRealtime(false);
-      updateHasDraftOnHackmd(false);
-      updatePageIdOnHackmd(res.pageIdOnHackmd);
+      mutateHasDraftOnHackmd(false);
+      mutatePageIdOnHackmd(res.pageIdOnHackmd);
       setRemoteRevisionId(res.revisionIdHackmdSynced);
-      updateRevisionIdHackmdSynced(res.revisionIdHackmdSynced);
+      mutateRevisionIdHackmdSynced(res.revisionIdHackmdSynced);
 
 
     }
@@ -175,7 +175,7 @@ export const PageEditorByHackmd = (): JSX.Element => {
       logger.error(err);
       toastError(err);
     }
-  }, [setIsHackmdDraftUpdatingInRealtime, updateHasDraftOnHackmd, updatePageIdOnHackmd, updateRevisionIdHackmdSynced, pageId]);
+  }, [setIsHackmdDraftUpdatingInRealtime, mutateHasDraftOnHackmd, mutatePageIdOnHackmd, mutateRevisionIdHackmdSynced, pageId]);
 
   /**
    * save and update state of containers
@@ -197,8 +197,8 @@ export const PageEditorByHackmd = (): JSX.Element => {
 
       // set updated data
       setRemoteRevisionId(res.revision._id);
-      updateRevisionIdHackmdSynced(res.page.revisionHackmdSynced);
-      updateHasDraftOnHackmd(res.page.hasDraftOnHackmd);
+      mutateRevisionIdHackmdSynced(res.page.revisionHackmdSynced);
+      mutateHasDraftOnHackmd(res.page.hasDraftOnHackmd);
       updatePageTagsForEditors(res.tags);
 
       // call reset
@@ -214,7 +214,7 @@ export const PageEditorByHackmd = (): JSX.Element => {
     }
   }, [
     grant, isSlackEnabled, pageTags, slackChannels, updatePageTagsForEditors, pageId, currentPagePath, currentPathname,
-    revisionIdHackmdSynced, updatePageData, updateHasDraftOnHackmd, updateRevisionIdHackmdSynced, t,
+    revisionIdHackmdSynced, updatePageData, mutateHasDraftOnHackmd, mutateRevisionIdHackmdSynced, t,
   ]);
 
   /**
