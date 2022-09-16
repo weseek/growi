@@ -161,8 +161,6 @@ context('Search all pages', () => {
     cy.getByTestid('search-result-list').should('be.visible');
     cy.getByTestid('search-result-content').should('be.visible');
 
-    // force to click element to pass VRT: https://github.com/weseek/growi/pull/6603
-    cy.getByTestid('page-list-item-L').first().click();
     cy.screenshot(`${ssPrefix}2-search-with-tag-result`, {capture: 'viewport'});
     cy.getByTestid('open-page-item-control-btn').first().click();
     cy.screenshot(`${ssPrefix}3-click-three-dots-menu-search-with-tag`, {capture: 'viewport'});
