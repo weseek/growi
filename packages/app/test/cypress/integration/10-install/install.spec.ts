@@ -1,5 +1,6 @@
 context('Installer', () => {
 
+
   const ssPrefix = 'installer-';
 
   beforeEach(() => {
