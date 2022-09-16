@@ -57,6 +57,7 @@ export const Header = (props: HeaderProps): JSX.Element => {
 
   const CustomTag = `h${level}` as keyof JSX.IntrinsicElements;
 
+  // update isActive when hash is changed
   useEffect(() => {
     const handler = (url: string) => {
       const hash = (new URL(url, 'https://example.com')).hash.slice(1);
