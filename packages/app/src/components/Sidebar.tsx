@@ -13,10 +13,9 @@ import {
 } from '~/stores/ui';
 
 import DrawerToggler from './Navbar/DrawerToggler';
-
-import SidebarNav from './Sidebar/SidebarNav';
-import SidebarContents from './Sidebar/SidebarContents';
 import { NavigationResizeHexagon } from './Sidebar/NavigationResizeHexagon';
+import SidebarContents from './Sidebar/SidebarContents';
+import SidebarNav from './Sidebar/SidebarNav';
 import { StickyStretchableScroller } from './StickyStretchableScroller';
 
 const sidebarMinWidth = 240;
@@ -292,7 +291,7 @@ const Sidebar: FC<Props> = (props: Props) => {
 
   return (
     <>
-      <div className={`grw-sidebar d-print-none ${isDrawerMode ? 'grw-sidebar-drawer' : ''} ${isDrawerOpened ? 'open' : ''}`}>
+      <div className={`deleteme grw-sidebar d-print-none ${isDrawerMode ? 'grw-sidebar-drawer' : ''} ${isDrawerOpened ? 'open' : ''}`}>
         <div className="data-layout-container">
           <div
             className={`navigation ${isTransitionEnabled ? 'transition-enabled' : ''}`}
