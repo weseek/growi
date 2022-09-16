@@ -1,4 +1,5 @@
 import Link, { LinkProps } from 'next/link';
+import { Link as ScrollLink } from 'react-scroll';
 
 import { useSiteUrl } from '~/stores/context';
 
@@ -25,9 +26,20 @@ export const NextLink = ({
 
   const { data: siteUrl } = useSiteUrl();
 
+  if (href == null) {
+    return <a className={className}>{children}</a>;
+  }
+
   // when href is an anchor link
-  if (href == null || isAnchorLink(href)) {
-    return <a href={href} className={className}>{children}</a>;
+  if (isAnchorLink(href)) {
+    const to = href.slice(1);
+    return (
+      <Link href={href} scroll={false}>
+        <ScrollLink href={href} to={to} className={className} smooth="easeOutQuart" offset={-100} duration={800}>
+          {children}
+        </ScrollLink>
+      </Link>
+    );
   }
 
   if (isExternalLink(href, siteUrl)) {

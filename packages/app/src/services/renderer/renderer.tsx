@@ -12,7 +12,7 @@ import katex from 'rehype-katex';
 import raw from 'rehype-raw';
 import sanitize, { defaultSchema as sanitizeDefaultSchema } from 'rehype-sanitize';
 import slug from 'rehype-slug';
-import toc, { HtmlElementNode } from 'rehype-toc';
+import { HtmlElementNode } from 'rehype-toc';
 import breaks from 'remark-breaks';
 import emoji from 'remark-emoji';
 import gfm from 'remark-gfm';
@@ -32,6 +32,7 @@ import * as addLineNumberAttribute from './rehype-plugins/add-line-number-attrib
 import * as keywordHighlighter from './rehype-plugins/keyword-highlighter';
 import { relativeLinks } from './rehype-plugins/relative-links';
 import { relativeLinksByPukiwikiLikeLinker } from './rehype-plugins/relative-links-by-pukiwiki-like-linker';
+import * as toc from './rehype-plugins/relocate-toc';
 import { pukiwikiLikeLinker } from './remark-plugins/pukiwiki-like-linker';
 import * as xsvToTable from './remark-plugins/xsv-to-table';
 
@@ -247,6 +248,7 @@ export type RendererOptions = Omit<ReactMarkdownOptions, 'remarkPlugins' | 'rehy
 const commonSanitizeOption: SanitizeOption = deepmerge(
   sanitizeDefaultSchema,
   {
+    clobberPrefix: 'mdcont-',
     attributes: {
       '*': ['class', 'className', 'style'],
     },
@@ -326,36 +328,13 @@ export const generateViewOptions = (
   // add rehype plugins
   rehypePlugins.push(
     slug,
-    [toc, {
-      nav: false,
-      headings: ['h1', 'h2', 'h3'],
-      customizeTOC: (toc: HtmlElementNode) => {
-        // method for replace <ol> to <ul>
-        const replacer = (children) => {
-          children.forEach((child) => {
-            if (child.type === 'element' && child.tagName === 'ol') {
-              child.tagName = 'ul';
-            }
-            if (child.children) {
-              replacer(child.children);
-            }
-          });
-        };
-        replacer([toc]); // replace <ol> to <ul>
-
-        // For storing tocNode to global state with swr
-        // search: tocRef.current
-        storeTocNode(toc);
-
-        return false; // not show toc in body
-      },
-    }],
     [lsxGrowiPlugin.rehypePlugin, { pagePath }],
     [sanitize, deepmerge(
       commonSanitizeOption,
       lsxGrowiPlugin.sanitizeOption,
     )],
     katex,
+    [toc.rehypePluginStore, { storeTocNode }],
     // [autoLinkHeadings, {
     //   behavior: 'append',
     // }]
@@ -396,10 +375,7 @@ export const generateTocOptions = (config: RendererConfig, tocNode: HtmlElementN
 
   // add rehype plugins
   rehypePlugins.push(
-    [toc, {
-      headings: ['h1', 'h2', 'h3'],
-      customizeTOC: () => tocNode,
-    }],
+    [toc.rehypePluginRestore, { tocNode }],
     [sanitize, commonSanitizeOption],
   );
   // renderer.rehypePlugins.push([autoLinkHeadings, {

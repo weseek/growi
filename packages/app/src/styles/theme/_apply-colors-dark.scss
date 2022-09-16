@@ -246,6 +246,15 @@ ul.pagination {
 }
 
 /*
+ * GROWI ToC
+ */
+.revision-toc-content {
+  ::marker {
+    color: lighten($bgcolor-global, 30%);
+  }
+}
+
+/*
  * GROWI subnavigation
  */
 .grw-subnav {

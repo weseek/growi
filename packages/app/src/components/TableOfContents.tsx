@@ -1,9 +1,7 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback } from 'react';
 
 import ReactMarkdown from 'react-markdown';
 
-import { blinkElem } from '~/client/util/blink-section-header';
-import { addSmoothScrollEvent } from '~/client/util/smooth-scroll';
 import { useIsUserPage } from '~/stores/context';
 import { useTocOptions } from '~/stores/renderer';
 import loggerFactory from '~/utils/logger';
@@ -22,7 +20,7 @@ const TableOfContents = (): JSX.Element => {
 
   const { data: isUserPage } = useIsUserPage();
 
-  const [tocHtml, setTocHtml] = useState('');
+  // const [tocHtml, setTocHtml] = useState('');
 
   const { data: rendererOptions } = useTocOptions();
 
@@ -48,13 +46,6 @@ const TableOfContents = (): JSX.Element => {
     // bottom - revisionToc top
     return bottom - (containerTop + containerPaddingTop);
   }, [isUserPage]);
-
-  useEffect(() => {
-    const tocDom = document.getElementById('revision-toc-content');
-    if (tocDom == null) { return }
-    const anchorsInToc = Array.from(tocDom.getElementsByTagName('a'));
-    addSmoothScrollEvent(anchorsInToc, blinkElem);
-  }, [tocHtml]);
 
   return (
     <div id="revision-toc" className={`revision-toc ${styles['revision-toc']}`}>
