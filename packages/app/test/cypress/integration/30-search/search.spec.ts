@@ -16,9 +16,8 @@ context('Access to search result page', () => {
     cy.getByTestid('search-result-base').should('be.visible');
     cy.getByTestid('search-result-list').should('be.visible');
     cy.getByTestid('search-result-content').should('be.visible');
-    cy.get('#wiki').should('be.visible');
-    // eslint-disable-next-line cypress/no-unnecessary-waiting
-    cy.wait(500); // wait for 500 ms for Scroll
+    cy.get('#wiki').should('be.visible')
+    cy.get('.search-result-content-body-container').scrollTo('top'); // for avoid mismatch by auto auto scrolling
     cy.screenshot(`${ssPrefix}with-q`);
   });
 
@@ -100,16 +99,14 @@ context('Search all pages', () => {
     cy.getByTestid('search-result-base').should('be.visible');
     cy.getByTestid('search-result-list').should('be.visible');
     cy.getByTestid('search-result-content').should('be.visible');
-    cy.get('#wiki').should('be.visible');
-    // eslint-disable-next-line cypress/no-unnecessary-waiting
-    cy.wait(500); // wait for 500 ms for Scroll
+    cy.get('#wiki').should('be.visible')
+    cy.get('.search-result-content-body-container').scrollTo('top'); // for avoid mismatch by auto auto scrolling
     cy.screenshot(`${ssPrefix}3-search-page-results`, { capture: 'viewport'});
 
     cy.getByTestid('open-page-item-control-btn').eq(1).click();
     cy.getByTestid('search-result-content').should('be.visible');
-    cy.get('#wiki').should('be.visible');
-    // eslint-disable-next-line cypress/no-unnecessary-waiting
-    cy.wait(500); // wait for 500 ms for Scroll
+    cy.get('#wiki').should('be.visible')
+    cy.get('.search-result-content-body-container').scrollTo('top'); // for avoid mismatch by auto auto scrolling
     cy.screenshot(`${ssPrefix}4-click-three-dots-menu`, {capture: 'viewport'});
 
     //Add bookmark
@@ -252,16 +249,14 @@ context('Search current tree with "prefix":', () => {
     cy.getByTestid('search-result-base').should('be.visible');
     cy.getByTestid('search-result-list').should('be.visible');
     cy.getByTestid('search-result-content').should('be.visible');
-    cy.get('#wiki').should('be.visible');
-    // eslint-disable-next-line cypress/no-unnecessary-waiting
-    cy.wait(500); // wait for 500 ms for Scroll
+    cy.get('#wiki').should('be.visible')
+    cy.get('.search-result-content-body-container').scrollTo('top'); // for avoid mismatch by auto auto scrolling
     cy.screenshot(`${ssPrefix}3-search-page-results`, { capture: 'viewport'});
 
     cy.getByTestid('open-page-item-control-btn').first().click();
     cy.getByTestid('search-result-content').should('be.visible');
-    cy.get('#wiki').should('be.visible');
-    // eslint-disable-next-line cypress/no-unnecessary-waiting
-    cy.wait(500); // wait for 500 ms for Scroll
+    cy.get('#wiki').should('be.visible')
+    cy.get('.search-result-content-body-container').scrollTo('top'); // for avoid mismatch by auto auto scrolling
     cy.screenshot(`${ssPrefix}4-click-three-dots-menu`, {capture: 'viewport'});
   });
 
