@@ -1,4 +1,4 @@
-context.only('Access to page by guest', () => {
+context('Access to page by guest', () => {
   const ssPrefix = 'access-to-page-by-guest-';
 
   it('/Sandbox is successfully loaded', () => {
@@ -7,7 +7,7 @@ context.only('Access to page by guest', () => {
     cy.screenshot(`${ssPrefix}-sandbox`);
   });
 
-  it.only('/Sandbox with anchor hash is successfully loaded', () => {
+  it('/Sandbox with anchor hash is successfully loaded', () => {
     cy.visit('/Sandbox#Headers');
     cy.collapseSidebar(true, true);
 
