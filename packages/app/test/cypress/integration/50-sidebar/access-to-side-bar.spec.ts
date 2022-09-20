@@ -61,7 +61,7 @@ context('Access to sidebar', () => {
       }
     });
 
-    cy.get('grw-custom-sidebar-content').should('be.visible');
+    cy.get('.grw-custom-sidebar-content').should('be.visible');
     cy.getByTestid('grw-contextual-navigation-sub').screenshot(`${ssPrefix}custom-sidebar-3-custom-sidebar-created`);
   });
 
