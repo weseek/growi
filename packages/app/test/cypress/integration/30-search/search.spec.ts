@@ -186,7 +186,6 @@ context('Search all pages', () => {
     cy.getByTestid('search-result-list').should('be.visible');
     cy.getByTestid('search-result-content').should('be.visible');
     cy.get('#wiki').should('be.visible');
-
     cy.screenshot(`${ssPrefix}1-tag-order-click-tag-name`, {capture: 'viewport'});
 
     cy.get('.grw-search-page-nav').within(() => {
@@ -198,7 +197,6 @@ context('Search all pages', () => {
     cy.getByTestid('search-result-list').should('be.visible');
     cy.getByTestid('search-result-content').should('be.visible');
     cy.get('#wiki').should('be.visible');
-
     cy.screenshot(`${ssPrefix}2-tag-order-by-relevance`);
 
     cy.get('.grw-search-page-nav').within(() => {
@@ -210,7 +208,6 @@ context('Search all pages', () => {
     cy.getByTestid('search-result-list').should('be.visible');
     cy.getByTestid('search-result-content').should('be.visible');
     cy.get('#wiki').should('be.visible');
-
     cy.screenshot(`${ssPrefix}3-tag-order-by-creation-date`);
 
     cy.get('.grw-search-page-nav').within(() => {
@@ -222,7 +219,6 @@ context('Search all pages', () => {
     cy.getByTestid('search-result-list').should('be.visible');
     cy.getByTestid('search-result-content').should('be.visible');
     cy.get('#wiki').should('be.visible');
-
     cy.screenshot(`${ssPrefix}4-tag-order-by-last-update-date`);
   });
 
@@ -257,11 +253,15 @@ context('Search current tree with "prefix":', () => {
     cy.getByTestid('search-result-list').should('be.visible');
     cy.getByTestid('search-result-content').should('be.visible');
     cy.get('#wiki').should('be.visible');
+    // eslint-disable-next-line cypress/no-unnecessary-waiting
+    cy.wait(500); // wait for 500 ms for Scroll
     cy.screenshot(`${ssPrefix}3-search-page-results`, { capture: 'viewport'});
 
     cy.getByTestid('open-page-item-control-btn').first().click();
     cy.getByTestid('search-result-content').should('be.visible');
     cy.get('#wiki').should('be.visible');
+    // eslint-disable-next-line cypress/no-unnecessary-waiting
+    cy.wait(500); // wait for 500 ms for Scroll
     cy.screenshot(`${ssPrefix}4-click-three-dots-menu`, {capture: 'viewport'});
   });
 
