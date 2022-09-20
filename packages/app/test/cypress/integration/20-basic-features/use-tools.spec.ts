@@ -52,7 +52,12 @@ context('Modal for page operation', () => {
       cy.screenshot(`${ssPrefix}today-add-page-name`);
       cy.getByTestid('btn-create-memo').click();
     });
-    cy.getByTestid('page-editor').should('be.visible').screenshot(`${ssPrefix}create-today-page`);
+    cy.getByTestid('page-editor').should('be.visible');
+    cy.get('.dropup > .btn-submit').click();
+    cy.get('body').should('not.have.class', 'on-edit');
+
+    cy.get('.grw-subnav').should('be.visible');
+    cy.screenshot(`${ssPrefix}create-today-page`);
   });
   it('Successfully create page under specific path', () => {
     const pageName = 'testtest';
@@ -64,7 +69,12 @@ context('Modal for page operation', () => {
       cy.screenshot(`${ssPrefix}under-path-add-page-name`);
       cy.getByTestid('btn-create-page-under-below').click();
     });
-    cy.getByTestid('page-editor').should('be.visible').screenshot(`${ssPrefix}create-page-under-path`);
+    cy.getByTestid('page-editor').should('be.visible');
+    cy.get('.dropup > .btn-submit').click();
+    cy.get('body').should('not.have.class', 'on-edit');
+
+    cy.get('.grw-subnav').should('be.visible');
+    cy.screenshot(`${ssPrefix}create-page-under-path`);
   });
 
   it('Successfully create a template page under the path', () => {
