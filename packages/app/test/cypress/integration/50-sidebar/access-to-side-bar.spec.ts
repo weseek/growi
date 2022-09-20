@@ -55,6 +55,7 @@ context('Access to sidebar', () => {
     cy.get('.dropup > .btn-submit').click();
     cy.get('body').should('not.have.class', 'on-edit');
 
+    // What to do when UserUISettings is not saved in time
     cy.getByTestid('grw-sidebar-nav-primary-custom-sidebar').then(($el) => {
       if (!$el.hasClass('active')) {
         cy.wrap($el).click();
