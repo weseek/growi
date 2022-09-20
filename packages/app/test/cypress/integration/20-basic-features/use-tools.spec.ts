@@ -193,9 +193,10 @@ context('Tag Oprations', () =>{
       cy.get('div.modal-footer > button').click();
     });
 
-    cy.get('.toast').should('be.visible').invoke('attr', 'style', 'opacity: 1');
+    cy.get('.toast').should('be.visible').trigger('mouseover');
     cy.get('.grw-taglabels-container > form > a').contains(tag).should('exist');
-
+    /* eslint-disable cypress/no-unnecessary-waiting */
+    cy.wait(150); // wait for toastr to change its color occured by mouseover
     cy.screenshot(`${ssPrefix}4-click-done`, {capture: 'viewport'});
 
   });
