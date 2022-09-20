@@ -66,7 +66,7 @@ context('Access to legacy private pages', () => {
     cy.visit('/_private-legacy-pages');
 
     cy.getByTestid('search-result-base').should('be.visible');
-    cy.getByTestid('search-result-list').should('be.visible');
+    cy.getByTestid('search-result-private-legacy-pages').should('be.visible');
 
     cy.screenshot(`${ssPrefix}shown`);
   });
