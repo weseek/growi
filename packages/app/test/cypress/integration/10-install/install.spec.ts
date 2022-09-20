@@ -51,9 +51,9 @@ context('Installing', () => {
     cy.screenshot(`${ssPrefix}-before-submit`);
 
     cy.getByTestid('btnSubmit').click();
-
+    cy.collapseSidebar(true)
     cy.screenshot(`${ssPrefix}-installed`, {
-      blackout: ['#grw-sidebar-contents-wrapper','[data-line="2"]:eq(0) > a > img', '[data-hide-in-vrt=true]'],
+      blackout: ['[data-line="2"]:eq(0) > a > img', '[data-hide-in-vrt=true]'],
     });
   });
 
