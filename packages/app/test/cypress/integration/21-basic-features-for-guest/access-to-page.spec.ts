@@ -56,13 +56,9 @@ context('Access to /me page', () => {
 context('Access to special pages by guest', () => {
   const ssPrefix = 'access-to-special-pages-by-guest-';
 
-  beforeEach(() => {
-    // collapse sidebar
-    cy.collapseSidebar(true);
-  });
-
   it('/trash is successfully loaded', () => {
     cy.visit('/trash', {  });
+    cy.collapseSidebar(true, true);
     cy.getByTestid('trash-page-list').should('be.visible');
     cy.screenshot(`${ssPrefix}-trash`);
   });
