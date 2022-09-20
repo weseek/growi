@@ -159,14 +159,14 @@ context('Access to /me/all-in-app-notifications', () => {
     cy.fixture("user-admin.json").then(user => {
       cy.login(user.username, user.password);
     });
+    // collapse sidebar
+    cy.collapseSidebar(true);
   });
 
   it('All In-App Notification list is successfully loaded', () => {
     cy.visit('/');
     cy.get('.notification-wrapper > a').click();
     cy.get('.notification-wrapper > .dropdown-menu > a').click();
-
-    cy.collapseSidebar(true, true); // The in-app notification page appears with the sidebar open so close it forcefully here
 
     cy.screenshot(`${ssPrefix}-see-all`, { capture: 'viewport' });
 
