@@ -54,6 +54,14 @@ context('Access to sidebar', () => {
     cy.screenshot(`${ssPrefix}custom-sidebar-2-custom-sidebar-editor`);
     cy.get('.dropup > .btn-submit').click();
     cy.get('body').should('not.have.class', 'on-edit');
+
+    cy.getByTestid('grw-sidebar-nav-primary-custom-sidebar').then(($el) => {
+      if (!$el.hasClass('active')) {
+        cy.wrap($el).click().should('be.visible');
+        cy.getByTestid('grw-contextual-navigation-sub').should('be.visible');
+      }
+    });
+
     cy.getByTestid('grw-contextual-navigation-sub').screenshot(`${ssPrefix}custom-sidebar-3-custom-sidebar-created`);
   });
 
