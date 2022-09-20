@@ -58,10 +58,10 @@ context('Access to sidebar', () => {
     cy.getByTestid('grw-sidebar-nav-primary-custom-sidebar').then(($el) => {
       if (!$el.hasClass('active')) {
         cy.wrap($el).click();
-        cy.getByTestid('grw-contextual-navigation-sub').should('be.visible');
       }
     });
 
+    cy.get('grw-custom-sidebar-content').should('be.visible');
     cy.getByTestid('grw-contextual-navigation-sub').screenshot(`${ssPrefix}custom-sidebar-3-custom-sidebar-created`);
   });
 
