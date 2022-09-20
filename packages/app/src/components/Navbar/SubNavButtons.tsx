@@ -1,8 +1,14 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, useMemo } from 'react';
 
-import { toggleBookmark, toggleLike, toggleSubscribe } from '~/client/services/page-operation';
+import { useTranslation } from 'react-i18next';
+import { DropdownItem } from 'reactstrap';
+
 import {
-  IPageInfoAll, IPageToDeleteWithMeta, IPageToRenameWithMeta, isIPageInfoForEntity, isIPageInfoForOperation,
+  toggleBookmark, toggleLike, toggleSubscribe, updateContentWidth,
+} from '~/client/services/page-operation';
+import { toastError } from '~/client/util/apiNotification';
+import {
+  IPageInfoForOperation, IPageToDeleteWithMeta, IPageToRenameWithMeta, isIPageInfoForEntity, isIPageInfoForOperation,
 } from '~/interfaces/page';
 import { useIsGuestUser } from '~/stores/context';
 import { IPageForPageDuplicateModal } from '~/stores/modal';
@@ -17,6 +23,43 @@ import {
 import LikeButtons from '../LikeButtons';
 import SubscribeButton from '../SubscribeButton';
 import SeenUserInfo from '../User/SeenUserInfo';
+
+
+type WideViewMenuItemProps = AdditionalMenuItemsRendererProps & {
+  onClickMenuItem: (newValue: boolean) => void,
+}
+
+const WideViewMenuItem = (props: WideViewMenuItemProps): JSX.Element => {
+  const { t } = useTranslation();
+
+  const {
+    pageInfo, onClickMenuItem,
+  } = props;
+
+  if (!isIPageInfoForEntity(pageInfo)) {
+    return <></>;
+  }
+
+  return (
+    <DropdownItem
+      onClick={() => onClickMenuItem(!pageInfo.expandContentWidth)}
+      className="grw-page-control-dropdown-item"
+    >
+      <div className="custom-control custom-switch ml-1">
+        <input
+          id="switchContentWidth"
+          className="custom-control-input"
+          type="checkbox"
+          checked={pageInfo.expandContentWidth}
+          onChange={() => {}}
+        />
+        <label className="custom-control-label" htmlFor="switchContentWidth">
+          { t('wide_view') }
+        </label>
+      </div>
+    </DropdownItem>
+  );
+};
 
 
 type CommonProps = {
@@ -35,7 +78,7 @@ type SubNavButtonsSubstanceProps = CommonProps & {
   shareLinkId?: string | null,
   revisionId: string | null,
   path?: string | null,
-  pageInfo: IPageInfoAll,
+  pageInfo: IPageInfoForOperation,
 }
 
 const SubNavButtonsSubstance = (props: SubNavButtonsSubstanceProps): JSX.Element => {
@@ -140,10 +183,32 @@ const SubNavButtonsSubstance = (props: SubNavButtonsSubstanceProps): JSX.Element
     onClickDeleteMenuItem(pageToDelete);
   }, [onClickDeleteMenuItem, pageId, pageInfo, path, revisionId]);
 
+  const switchContentWidthClickHandler = useCallback(async(newValue: boolean) => {
+    if (isGuestUser == null || isGuestUser) {
+      return;
+    }
+    if (!isIPageInfoForEntity(pageInfo)) {
+      return;
+    }
+    try {
+      await updateContentWidth(pageId, newValue);
+      mutatePageInfo();
+    }
+    catch (err) {
+      toastError(err);
+    }
+  }, [isGuestUser, mutatePageInfo, pageId, pageInfo]);
+
+  const wideviewMenuItemRenderer = useMemo(() => {
+    if (!isIPageInfoForEntity(pageInfo)) {
+      return undefined;
+    }
+    return props => <WideViewMenuItem {...props} onClickMenuItem={switchContentWidthClickHandler} />;
+  }, [pageInfo, switchContentWidthClickHandler]);
+
   if (!isIPageInfoForOperation(pageInfo)) {
     return <></>;
   }
-
 
   const {
     sumOfLikers, sumOfSeenUsers, isLiked, bookmarkCount, isBookmarked,
@@ -155,12 +220,10 @@ const SubNavButtonsSubstance = (props: SubNavButtonsSubstanceProps): JSX.Element
   return (
     <div className="d-flex" style={{ gap: '2px' }}>
       {revisionId != null && (
-        <span>
-          <SubscribeButton
-            status={pageInfo.subscriptionStatus}
-            onClick={subscribeClickhandler}
-          />
-        </span>
+        <SubscribeButton
+          status={pageInfo.subscriptionStatus}
+          onClick={subscribeClickhandler}
+        />
       )}
       {revisionId != null && (
         <LikeButtons
@@ -194,6 +257,7 @@ const SubNavButtonsSubstance = (props: SubNavButtonsSubstanceProps): JSX.Element
           pageInfo={pageInfo}
           isEnableActions={!isGuestUser}
           forceHideMenuItems={forceHideMenuItemsWithBookmark}
+          additionalMenuItemOnTopRenderer={wideviewMenuItemRenderer}
           additionalMenuItemRenderer={additionalMenuItemRenderer}
           onClickRenameMenuItem={renameMenuItemClickHandler}
           onClickDuplicateMenuItem={duplicateMenuItemClickHandler}

@@ -17,6 +17,7 @@ import CustomizeFunctionSetting from './CustomizeFunctionSetting';
 import CustomizeHeaderSetting from './CustomizeHeaderSetting';
 import CustomizeHighlightSetting from './CustomizeHighlightSetting';
 import CustomizeLayoutSetting from './CustomizeLayoutSetting';
+import CustomizeLogoSetting from './CustomizeLogoSetting';
 import CustomizeScriptSetting from './CustomizeScriptSetting';
 import CustomizeSidebarSetting from './CustomizeSidebarSetting';
 import CustomizeThemeSetting from './CustomizeThemeSetting';
@@ -75,6 +76,9 @@ function Customize(props) {
       </div>
       <div className="mb-5">
         <CustomizeScriptSetting />
+      </div>
+      <div className="mb-5">
+        <CustomizeLogoSetting />
       </div>
     </div>
   );

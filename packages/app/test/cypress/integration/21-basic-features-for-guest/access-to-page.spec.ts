@@ -1,18 +1,15 @@
 context('Access to page by guest', () => {
   const ssPrefix = 'access-to-page-by-guest-';
 
-  beforeEach(() => {
-    // collapse sidebar
-    cy.collapseSidebar(true);
-  });
-
   it('/Sandbox is successfully loaded', () => {
     cy.visit('/Sandbox', {  });
+    cy.collapseSidebar(true, true);
     cy.screenshot(`${ssPrefix}-sandbox`);
   });
 
   it('/Sandbox with anchor hash is successfully loaded', () => {
     cy.visit('/Sandbox#Headers');
+    cy.collapseSidebar(true, true);
 
     // hide fab
     cy.getByTestid('grw-fab-container').invoke('attr', 'style', 'display: none');
@@ -22,11 +19,18 @@ context('Access to page by guest', () => {
 
   it('/Sandbox/Math is successfully loaded', () => {
     cy.visit('/Sandbox/Math');
+    cy.collapseSidebar(true, true);
+
+    cy.get('mjx-container').should('be.visible');
+    // eslint-disable-next-line cypress/no-unnecessary-waiting
+    cy.wait(2000); // wait for 2 seconds for MathJax.typesetPromise();
+
     cy.screenshot(`${ssPrefix}-sandbox-math`);
   });
 
   it('/Sandbox with edit is successfully loaded', () => {
     cy.visit('/Sandbox#edit');
+    cy.collapseSidebar(true, true);
     cy.screenshot(`${ssPrefix}-sandbox-edit-page`);
   })
 
@@ -52,13 +56,9 @@ context('Access to /me page', () => {
 context('Access to special pages by guest', () => {
   const ssPrefix = 'access-to-special-pages-by-guest-';
 
-  beforeEach(() => {
-    // collapse sidebar
-    cy.collapseSidebar(true);
-  });
-
   it('/trash is successfully loaded', () => {
     cy.visit('/trash', {  });
+    cy.collapseSidebar(true, true);
     cy.getByTestid('trash-page-list').should('be.visible');
     cy.screenshot(`${ssPrefix}-trash`);
   });

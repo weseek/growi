@@ -61,9 +61,17 @@
 {% block html_body %}
 {% set additionalBodyClasses = []; %}
 {% block html_additional_body_classes %}{% endblock %}
-{% if getConfig('crowi', 'customize:isContainerFluid') %}
+
+{% if page.expandContentWidth !== undefined %}
+  {% set isContainerFluid = page.expandContentWidth; %}
+{% else %}
+  {% set isContainerFluid = getConfig('crowi', 'customize:isContainerFluid'); %}
+{% endif %}
+
+{% if isContainerFluid  %}
   {% set additionalBodyClasses = additionalBodyClasses|push('growi-layout-fluid') %}
 {% endif %}
+
 <body
   class="{% block html_base_css %}{% endblock %} growi {{ additionalBodyClasses|join(' ') }}"
   data-plugin-enabled="{{ getConfig('crowi', 'plugin:isEnabledPlugins') }}"

@@ -26,6 +26,11 @@ context('Access to page', () => {
 
   it('/Sandbox/Math is successfully loaded', () => {
     cy.visit('/Sandbox/Math');
+
+    cy.get('mjx-container').should('be.visible');
+    // eslint-disable-next-line cypress/no-unnecessary-waiting
+    cy.wait(2000); // wait for 2 seconds for MathJax.typesetPromise();
+
     cy.screenshot(`${ssPrefix}-sandbox-math`);
   });
 
@@ -162,8 +167,6 @@ context('Access to /me/all-in-app-notifications', () => {
     cy.visit('/');
     cy.get('.notification-wrapper > a').click();
     cy.get('.notification-wrapper > .dropdown-menu > a').click();
-
-    cy.get('#all-in-app-notifications').should('be.visible');
 
     cy.screenshot(`${ssPrefix}-see-all`, { capture: 'viewport' });
 

@@ -1,8 +1,138 @@
 # Changelog
 
-## [Unreleased](https://github.com/weseek/growi/compare/v5.0.10...HEAD)
+## [Unreleased](https://github.com/weseek/growi/compare/v5.1.4...HEAD)
 
 *Please do not manually update this file. We've automated the process.*
+
+## [v5.1.4](https://github.com/weseek/growi/compare/v5.1.3...v5.1.4) - 2022-09-12
+
+### 💎 Features
+
+- feat:  Truncate long path when recent changes is in S size (#6263) @mudana-grune
+- feat: In-app notifications when removing descendants of subscribed pages (#6192) @Shunm634-source
+- feat: Not increment ordered list number in CodeMirror (#6462) @mudana-grune
+
+### 🚀 Improvement
+
+- imprv: Added page URL to mail subject (#6554) @hakumizuki
+
+### 🐛 Bug Fixes
+
+- fix: Cannot update user group without parent (#6530) @kaoritokashiki
+- fix: Make PageTree input not draggable when editting (#6525) @hakumizuki
+- fix: Pagetree input hit enter (#6526) @hakumizuki
+- fix: Disallow retrieval of revision data that does not match the page (#6537) @miya
+
+## [v5.1.3](https://github.com/weseek/growi/compare/v5.1.2...v5.1.3) - 2022-08-28
+
+### 💎 Features
+
+- feat(auditlog): Copy URL of the table (#6421) @miya
+
+### 🚀 Improvement
+
+- imprv(auditlog): Activity paging UI (#6444) @miya
+- imprv: Improvement behavior when click on drawio diagram. (#6486) @kaishuu0123
+
+### 🐛 Bug Fixes
+
+- fix: Label of alert when updating tags (#6478) @miya
+- fix: Uploading image using shortcut key(ctrl+v) shows toastError (#6474) @Yohei-Shiina
+- fix: Pager is not displayed (#6468) @miya
+
+### 🧰 Maintenance
+
+- support: Use vscode-stylelint (#6430) @yuki-takei
+
+## [v5.1.2](https://github.com/weseek/growi/compare/v5.1.1...v5.1.2) - 2022-08-03
+
+### 💎 Features
+
+- feat: Make content width of each page configurable (#6107) @mudana-grune
+
+### 🚀 Improvement
+
+- imprv(auditlog): Clear and reload button (#6398) @miya
+- imprv(auditlog): Date Range Picker  (#6395) @miya
+
+### 🐛 Bug Fixes
+
+- fix: MathJax rendering (#6396) @yuki-takei
+
+### 🧰 Maintenance
+
+- support: Make Editor component Functional Component and TypeScript (#6374) @yukendev
+
+## [v5.1.1](https://github.com/weseek/growi/compare/v5.1.0...v5.1.1) - 2022-08-01
+
+### 💎 Features
+
+- feat: Users can set users per ip from env var at API Rate Limit  (#6379) @yukendev
+- feat: Show user picture in Audit Log (#6342) @miya
+- feat: Reset search criteria button (#6327) @miya
+
+### 🚀 Improvement
+
+- imprv(auditlog): Display number of actions that can be saved (#6353) @miya
+- imprv(auditlog): Include delete-related actions in small group (#6351) @miya
+
+### 🐛 Bug Fixes
+
+- fix: Default markdown linker with relative path does not respect the current page path (v5.1.0) (#6378) @yuki-takei
+- fix: Recover page path operation (#6368) @hakumizuki
+- fix: Migration script for inserting NamedQuery (#6364) @yuki-takei
+- fix: "Error: cannnot get grant label" occured with lsx (#6348) @yukendev
+
+## [v5.1.0](https://github.com/weseek/growi/compare/v5.0.11...v5.1.0) - 2022-07-21
+
+### 💎 Features
+
+- feat: Custom brand logo image (#5709) @mudana-grune
+- feat: Rate Limit by rate-limit-flexible (#6053) @yukendev
+- feat: Audit Log (#5915) @miya
+
+### 🚀 Improvement
+
+- imprv: Prevent XSS with React (#6274) @yuki-takei
+- imprv: Reflect tmp tag data (#6124) @kaoritokashiki
+- imprv: Update subscribe button icon on Navbar (#6213) @jam411
+- imprv: Event emittion by socket.io is triggered only when ES reindexing (#6077) @hirokei-camel
+
+### 🐛 Bug Fixes
+
+- fix: Drawio rendering (#6275) @hakumizuki
+- fix: Blink section header on init (#6249) @yuki-takei
+- fix: Error when trying login with an email that contains plus sign (#6232) @miya
+- fix: Use APIv3 for api get check_username (#6226) @kaoritokashiki
+- fix: Slack integration connection test (#6201) @yukendev
+- fix: Not found page for `/${ObjectId like string}` path (#6208) @yuki-takei
+
+### 🧰 Maintenance
+
+- support: Refactor PageInfo types (#6283) @yuki-takei
+- support: Refactor growi renderer using hooks 2 (#6237) @yuki-takei
+- support: Refactor growi renderer using hooks (#6223) @hakumizuki
+- imprv: Omit Personal Container (#6182) @kaoritokashiki
+
+## [v5.0.11](https://github.com/weseek/growi/compare/v5.0.10...v5.0.11) - 2022-07-05
+
+### 💎 Features
+
+- feat: Integrate recount descendant count after paths fix (#6170) @Yohei-Shiina
+
+### 🚀 Improvement
+
+- imprv: Redirect when the anchor is #password (#6144) @Kami-jo
+
+### 🐛 Bug Fixes
+
+- fix: User registration page is not redirected after tmp login (#6197) @kaoritokashiki
+- fix: Empty trash doesn't work (#6168) @yukendev
+
+### 🧰 Maintenance
+
+- support: Ease rate limit temporary (#6191) @yuki-takei
+- support: Omit page history container and page revision comparer container (#6185) @yukendev
 
 ## [v5.0.10](https://github.com/weseek/growi/compare/v5.0.9...v5.0.10) - 2022-06-27
 

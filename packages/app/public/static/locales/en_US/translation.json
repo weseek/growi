@@ -126,6 +126,8 @@
   "UserGroup": "UserGroup",
   "ChildUserGroup": "ChildUserGroup",
   "UserGroup Management": "UserGroup Management",
+  "AuditLog": "Audit Log",
+  "AuditLog Settings": "Audit Log Settings",
   "Full Text Search Management": "Full Text Search Management",
   "Import Data": "Import Data",
   "Export Archive Data": "Export Archive Data",
@@ -162,6 +164,7 @@
   "No bookmarks yet": "No bookmarks yet",
   "add_bookmark": "Add to Bookmarks",
   "remove_bookmark": "Remove from Bookmarks",
+  "wide_view": "Wide View",
   "Recent Created": "Recent Created",
   "Recent Changes": "Recent Changes",
   "Page Tree": "Page Tree",
@@ -535,6 +538,8 @@
     "create_failed": "Failed to create {{target}}",
     "update_successed": "Succeeded to update {{target}}",
     "update_failed": "Failed to update {{target}}",
+    "file_upload_succeeded": "File upload succeeded.",
+    "file_upload_failed": "File upload failed.",
     "initialize_successed": "Succeeded to initialize {{target}}",
     "give_user_admin": "Succeeded to give {{username}} admin",
     "remove_user_admin": "Succeeded to remove {{username}} admin",
@@ -1080,11 +1085,18 @@
     "belonging_to_no_group": "Could not find the groups you belong to.",
     "manage_user_groups": "Manage user groups"
   },
+  "crop_image_modal": {
+    "image_crop": "Image Crop",
+    "crop": "Crop",
+    "reset": "Reset",
+    "cancel": "Cancel"
+  },
   "fix_page_grant": {
     "modal": {
       "no_grant_available": "The list of selectable permissions could not be found. Please modify the permissions on the parent page first and try again.",
       "need_to_fix_grant": "The permissions associated with this page must be modified in order to use the functionality correctly. <br> Please select from the options below to make the change.",
       "grant_label": {
+        "public": "Public",
         "isForbidden": "Authority not allowed to view",
         "currentPageGrantLabel": "Authorization for this page: ",
         "parentPageGrantLabel": "Authority of parent page: ",

@@ -1,3 +1,5 @@
+
+import { SupportedAction, SupportedTargetModel, SupportedEventModel } from '~/interfaces/activity';
 import loggerFactory from '~/utils/logger';
 
 /**
@@ -52,6 +54,8 @@ module.exports = function(crowi, app) {
   const Page = crowi.model('Page');
   const GlobalNotificationSetting = crowi.model('GlobalNotificationSetting');
   const ApiResponse = require('../util/apiResponse');
+
+  const activityEvent = crowi.event('activity');
 
   const globalNotificationService = crowi.getGlobalNotificationService();
   const userNotificationService = crowi.getUserNotificationService();
@@ -248,7 +252,6 @@ module.exports = function(crowi, app) {
       logger.error(err);
       return res.json(ApiResponse.error(err));
     }
-
     // update page
     const page = await Page.findOneAndUpdate(
       { _id: pageId },
@@ -257,6 +260,15 @@ module.exports = function(crowi, app) {
         updatedAt: new Date(),
       },
     );
+
+    const parameters = {
+      targetModel: SupportedTargetModel.MODEL_PAGE,
+      target: page,
+      eventModel: SupportedEventModel.MODEL_COMMENT,
+      event: createdComment,
+      action: SupportedAction.ACTION_COMMENT_CREATE,
+    };
+    activityEvent.emit('update', res.locals.activity._id, parameters, page);
 
     res.json(ApiResponse.success({ comment: createdComment }));
 
@@ -386,6 +398,9 @@ module.exports = function(crowi, app) {
       return res.json(ApiResponse.error(err));
     }
 
+    const parameters = { action: SupportedAction.ACTION_COMMENT_UPDATE };
+    activityEvent.emit('update', res.locals.activity._id, parameters);
+
     res.json(ApiResponse.success({ comment: updatedComment }));
 
     // process notification if needed
@@ -464,6 +479,9 @@ module.exports = function(crowi, app) {
     catch (err) {
       return res.json(ApiResponse.error(err));
     }
+
+    const parameters = { action: SupportedAction.ACTION_COMMENT_REMOVE };
+    activityEvent.emit('update', res.locals.activity._id, parameters);
 
     return res.json(ApiResponse.success({}));
   };

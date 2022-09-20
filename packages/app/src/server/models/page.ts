@@ -102,6 +102,7 @@ const schema = new Schema<PageDocument, PageModel>({
   pageIdOnHackmd: { type: String },
   revisionHackmdSynced: { type: ObjectId, ref: 'Revision' }, // the revision that is synced to HackMD
   hasDraftOnHackmd: { type: Boolean }, // set true if revision and revisionHackmdSynced are same but HackMD document has modified
+  expandContentWidth: { type: Boolean },
   updatedAt: { type: Date, default: Date.now }, // Do not use timetamps for updatedAt because it breaks 'updateMetadata: false' option
   deleteUser: { type: ObjectId, ref: 'User' },
   deletedAt: { type: Date },
