@@ -57,7 +57,7 @@ context('Access to sidebar', () => {
 
     cy.getByTestid('grw-sidebar-nav-primary-custom-sidebar').then(($el) => {
       if (!$el.hasClass('active')) {
-        cy.wrap($el).click().should('be.visible');
+        cy.wrap($el).click();
         cy.getByTestid('grw-contextual-navigation-sub').should('be.visible');
       }
     });
