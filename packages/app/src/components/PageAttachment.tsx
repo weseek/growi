@@ -1,14 +1,14 @@
 import React, {
-  useCallback, useEffect, useMemo, useState,
+  useCallback, useMemo, useState,
 } from 'react';
 
-import { useTranslation } from 'next-i18next';
+import { HasObjectId, IAttachment } from '@growi/core';
 
 import { useSWRxAttachments } from '~/stores/attachment';
 import { useEditingMarkdown, useCurrentPageId, useIsGuestUser } from '~/stores/context';
 
-import DeleteAttachmentModal from './PageAttachment/DeleteAttachmentModal';
-import PageAttachmentList from './PageAttachment/PageAttachmentList';
+import { DeleteAttachmentModal } from './PageAttachment/DeleteAttachmentModal';
+import { PageAttachmentList } from './PageAttachment/PageAttachmentList';
 import PaginationWrapper from './PaginationWrapper';
 
 // Utility
@@ -17,8 +17,6 @@ const checkIfFileInUse = (markdown: string, attachment): boolean => {
 };
 
 const PageAttachment = (): JSX.Element => {
-  const { t } = useTranslation();
-
   // Static SWRs
   const { data: pageId } = useCurrentPageId();
   const { data: isGuestUser } = useIsGuestUser();
@@ -26,31 +24,26 @@ const PageAttachment = (): JSX.Element => {
 
   // States
   const [pageNumber, setPageNumber] = useState(1);
-  const [attachmentToDelete, setAttachmentToDelete] = useState<any>(undefined);
+  const [attachmentToDelete, setAttachmentToDelete] = useState<(IAttachment & HasObjectId) | null>(null);
   const [deleting, setDeleting] = useState(false);
   const [deleteError, setDeleteError] = useState('');
 
   // SWRs
   const { data: dataAttachments, remove } = useSWRxAttachments(pageId, pageNumber);
-  const {
-    attachments = [],
-    totalAttachments = 0,
-    limit,
-  } = dataAttachments ?? {};
 
   // Custom hooks
-  const inUseAttachmentsMap: { [id: string]: boolean } = useMemo(() => {
-    if (markdown == null) {
-      return {};
+  const inUseAttachmentsMap: { [id: string]: boolean } | undefined = useMemo(() => {
+    if (markdown == null || dataAttachments == null) {
+      return undefined;
     }
 
-    const attachmentEntries = attachments
+    const attachmentEntries = dataAttachments.attachments
       .map((attachment) => {
         return [attachment._id, checkIfFileInUse(markdown, attachment)];
       });
 
     return Object.fromEntries(attachmentEntries);
-  }, [attachments, markdown]);
+  }, [dataAttachments, markdown]);
 
   // Methods
   const onChangePageHandler = useCallback((newPageNumber: number) => {
@@ -61,7 +54,7 @@ const PageAttachment = (): JSX.Element => {
     setAttachmentToDelete(attachment);
   }, []);
 
-  const onAttachmentDeleteClickedConfirmHandler = useCallback(async(attachment) => {
+  const onAttachmentDeleteClickedConfirmHandler = useCallback(async(attachment: IAttachment & HasObjectId) => {
     setDeleting(true);
 
     try {
@@ -82,22 +75,32 @@ const PageAttachment = (): JSX.Element => {
   }, []);
 
   // Renderers
+  const renderPageAttachmentList = useCallback(() => {
+    if (dataAttachments == null || inUseAttachmentsMap == null) {
+      return (
+        <div className="text-muted text-center">
+          <i className="fa fa-2x fa-spinner fa-pulse mr-1"></i>
+        </div>
+      );
+    }
+
+    return (
+      <PageAttachmentList
+        attachments={dataAttachments.attachments}
+        inUse={inUseAttachmentsMap}
+        onAttachmentDeleteClicked={onAttachmentDeleteClicked}
+        isUserLoggedIn={!isGuestUser}
+      />
+    );
+  }, [dataAttachments, inUseAttachmentsMap, isGuestUser, onAttachmentDeleteClicked]);
+
   const renderDeleteAttachmentModal = useCallback(() => {
     if (isGuestUser) {
       return <></>;
     }
 
-    if (attachments.length === 0) {
-      return (
-        <div data-testid="page-attachment">
-          {t('No_attachments_yet')}
-        </div>
-      );
-    }
-
-    let deleteInUse: boolean | null = null;
-    if (attachmentToDelete != null) {
-      deleteInUse = inUseAttachmentsMap[attachmentToDelete._id] || false;
+    if (dataAttachments == null || dataAttachments.attachments.length === 0 || attachmentToDelete == null) {
+      return <></>;
     }
 
     const isOpen = attachmentToDelete != null;
@@ -105,36 +108,39 @@ const PageAttachment = (): JSX.Element => {
     return (
       <DeleteAttachmentModal
         isOpen={isOpen}
-        animation="false"
         toggle={onToggleHandler}
         attachmentToDelete={attachmentToDelete}
-        inUse={deleteInUse}
         deleting={deleting}
         deleteError={deleteError}
         onAttachmentDeleteClickedConfirm={onAttachmentDeleteClickedConfirmHandler}
       />
     );
   // eslint-disable-next-line max-len
-  }, [attachmentToDelete, attachments.length, deleteError, deleting, inUseAttachmentsMap, isGuestUser, onAttachmentDeleteClickedConfirmHandler, onToggleHandler, t]);
+  }, [attachmentToDelete, dataAttachments, deleteError, deleting, isGuestUser, onAttachmentDeleteClickedConfirmHandler, onToggleHandler]);
 
-  return (
-    <div data-testid="page-attachment">
-      <PageAttachmentList
-        attachments={attachments}
-        inUse={inUseAttachmentsMap}
-        onAttachmentDeleteClicked={onAttachmentDeleteClicked}
-        isUserLoggedIn={!isGuestUser}
-      />
+  const renderPaginationWrapper = useCallback(() => {
+    if (dataAttachments == null || dataAttachments.attachments.length === 0) {
+      return <></>;
+    }
 
-      {renderDeleteAttachmentModal()}
-
+    return (
       <PaginationWrapper
         activePage={pageNumber}
         changePage={onChangePageHandler}
-        totalItemsCount={totalAttachments}
-        pagingLimit={limit}
+        totalItemsCount={dataAttachments.totalAttachments}
+        pagingLimit={dataAttachments.limit}
         align="center"
       />
+    );
+  }, [dataAttachments, onChangePageHandler, pageNumber]);
+
+  return (
+    <div data-testid="page-attachment">
+      {renderPageAttachmentList()}
+
+      {renderDeleteAttachmentModal()}
+
+      {renderPaginationWrapper()}
     </div>
   );
 };
