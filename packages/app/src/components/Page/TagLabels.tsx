@@ -25,7 +25,7 @@ const TagLabels:FC<Props> = (props: Props) => {
 
   return (
     <>
-      <form className="grw-tag-labels form-inline">
+      <form className="grw-tag-labels form-inline" data-testid="grw-tag-labels">
         <i className="tag-icon icon-tag mr-2"></i>
         { tags == null
           ? (
