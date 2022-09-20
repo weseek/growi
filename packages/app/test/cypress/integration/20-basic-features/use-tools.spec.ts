@@ -210,8 +210,6 @@ context('Tag Oprations', () =>{
     cy.getByTestid('search-result-list').should('be.visible');
     cy.getByTestid('search-result-content').should('be.visible');
     cy.get('#wiki').should('be.visible');
-    // eslint-disable-next-line cypress/no-unnecessary-waiting
-    cy.wait(500); // wait for 500 ms for Scroll
     cy.screenshot(`${ssPrefix}1-click-tag-name`, {capture: 'viewport'});
 
     cy.getByTestid('open-page-item-control-btn').first().click({force: true});
@@ -243,8 +241,6 @@ context('Tag Oprations', () =>{
     cy.getByTestid('search-result-list').should('be.visible');
     cy.getByTestid('search-result-content').should('be.visible');
     cy.get('#wiki').should('be.visible');
-    // eslint-disable-next-line cypress/no-unnecessary-waiting
-    cy.wait(500); // wait for 500 ms for Scroll
     cy.screenshot(`${ssPrefix}1-click-tag-name`, {capture: 'viewport'});
 
     cy.getByTestid('search-result-list').within(() => {
