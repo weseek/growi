@@ -4,7 +4,5 @@ import type { PaginateResult } from './mongoose-utils';
 
 
 export type IResAttachmentList = {
-  data: {
-    paginateResult: PaginateResult<IAttachment & HasObjectId>
-  }
+  paginateResult: PaginateResult<IAttachment & HasObjectId>
 };

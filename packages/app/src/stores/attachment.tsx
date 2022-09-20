@@ -6,7 +6,8 @@ import {
 } from '@growi/core';
 import useSWR from 'swr';
 
-import { apiGet, apiPost } from '~/client/util/apiv1-client';
+import { apiPost } from '~/client/util/apiv1-client';
+import { apiv3Get } from '~/client/util/apiv3-client';
 import { IResAttachmentList } from '~/interfaces/attachment';
 
 type Util = {
@@ -22,17 +23,19 @@ type IDataAttachmentList = {
 export const useSWRxAttachments = (pageId?: Nullable<string>, pageNumber?: number): SWRResponseWithUtils<Util, IDataAttachmentList, Error> => {
   const shouldFetch = pageId != null && pageNumber != null;
 
-  const fetcher = useCallback(async(endpoint) => {
-    const res = await apiGet<IResAttachmentList>(endpoint, { pageId, pageNumber });
+  const fetcher = useCallback(async(endpoint, pageId, pageNumber) => {
+    const res = await apiv3Get<IResAttachmentList>(endpoint, { pageId, pageNumber });
+    const resAttachmentList = res.data;
+    const { paginateResult } = resAttachmentList;
     return {
-      attachments: res.data.paginateResult.docs,
-      totalAttachments: res.data.paginateResult.totalDocs,
-      limit: res.data.paginateResult.limit,
+      attachments: paginateResult.docs,
+      totalAttachments: paginateResult.totalDocs,
+      limit: paginateResult.limit,
     };
-  }, [pageId, pageNumber]);
+  }, []);
 
   const swrResponse = useSWR(
-    shouldFetch ? ['/attachments/list', pageId, pageNumber] : null,
+    shouldFetch ? ['/attachment/list', pageId, pageNumber] : null,
     fetcher,
   );
 
