@@ -5,6 +5,7 @@ import { useSWRxPageComment } from '../../stores/comment';
 import AppContainer from '~/client/services/AppContainer';
 
 import CommentEditor from './CommentEditor';
+import { useCommentPreviewRenderer } from '~/stores/renderer';
 
 type Props = {
   appContainer: AppContainer,
@@ -15,9 +16,13 @@ const CommentEditorLazyRenderer:FC<Props> = (props:Props):JSX.Element => {
 
   const { pageId } = props;
   const { mutate } = useSWRxPageComment(pageId);
+  const { data: growiRenderer } = useCommentPreviewRenderer();
+
+  if (growiRenderer == null) {
+    return <></>;
+  }
 
   const { appContainer } = props;
-  const growiRenderer = appContainer.getRenderer('comment');
 
   return (
     <CommentEditor

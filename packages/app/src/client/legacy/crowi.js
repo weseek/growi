@@ -1,5 +1,3 @@
-const { blinkElem, blinkSectionHeaderAtBoot } = require('../util/blink-section-header');
-
 /* eslint-disable react/jsx-filename-extension */
 require('jquery.cookie');
 

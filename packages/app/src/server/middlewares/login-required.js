@@ -12,18 +12,6 @@ module.exports = (crowi, isGuestAllowed = false, fallback = null) => {
 
   return function(req, res, next) {
 
-    // check the route config and ACL
-    if (isGuestAllowed && crowi.aclService.isGuestAllowedToRead()) {
-      logger.debug('Allowed to read: ', req.path);
-      return next();
-    }
-
-    // check the page is shared
-    if (isGuestAllowed && req.isSharedPage) {
-      logger.debug('Target page is shared page');
-      return next();
-    }
-
     const User = crowi.model('User');
 
     // check the user logged in
@@ -41,6 +29,18 @@ module.exports = (crowi, isGuestAllowed = false, fallback = null) => {
       if (req.user.status === User.STATUS_INVITED) {
         return res.redirect('/login/invited');
       }
+    }
+
+    // check the route config and ACL
+    if (isGuestAllowed && crowi.aclService.isGuestAllowedToRead()) {
+      logger.debug('Allowed to read: ', req.path);
+      return next();
+    }
+
+    // check the page is shared
+    if (isGuestAllowed && req.isSharedPage) {
+      logger.debug('Target page is shared page');
+      return next();
     }
 
     // is api path

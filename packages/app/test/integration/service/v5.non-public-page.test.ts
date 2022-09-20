@@ -859,18 +859,16 @@ describe('PageService page operations with non-public pages', () => {
   });
 
   describe('Rename', () => {
-    const renamePage = async(page, newPagePath, user, options) => {
+    const renamePage = async(page, newPagePath, user, options, activityParameters?) => {
       // mock return value
       const mockedRenameSubOperation = jest.spyOn(crowi.pageService, 'renameSubOperation').mockReturnValue(null);
-      const mockedCreateAndSendNotifications = jest.spyOn(crowi.pageService, 'createAndSendNotifications').mockReturnValue(null);
-      const renamedPage = await crowi.pageService.renamePage(page, newPagePath, user, options);
+      const renamedPage = await crowi.pageService.renamePage(page, newPagePath, user, options, activityParameters);
 
       // retrieve the arguments passed when calling method renameSubOperation inside renamePage method
       const argsForRenameSubOperation = mockedRenameSubOperation.mock.calls[0];
 
       // restores the original implementation
       mockedRenameSubOperation.mockRestore();
-      mockedCreateAndSendNotifications.mockRestore();
 
       // rename descendants
       if (page.grant !== Page.GRANT_RESTRICTED) {
@@ -896,7 +894,11 @@ describe('PageService page operations with non-public pages', () => {
 
       const newPathForPage2 = '/np_rename1_destination/np_rename2';
       const newPathForPage3 = '/np_rename1_destination/np_rename2/np_rename3';
-      await renamePage(_page2, newPathForPage2, npDummyUser2, {});
+      await renamePage(_page2, newPathForPage2, npDummyUser2, {}, {
+        ip: '::ffff:127.0.0.1',
+        endpoint: '/_api/v3/pages/rename',
+        activityId: '62e291bc10e0ab61bd691794',
+      });
 
       const pageD = await Page.findOne({ path: _pathD, ..._propertiesD });
       const page2 = await Page.findOne({ path: _path2, ..._properties2 }); // not exist
@@ -932,7 +934,11 @@ describe('PageService page operations with non-public pages', () => {
       const newPathForPage3 = '/np_rename4_destination/np_rename5/np_rename6';
       let isThrown = false;
       try {
-        await renamePage(_page2, newPathForPage2, dummyUser1, {});
+        await renamePage(_page2, newPathForPage2, dummyUser1, {}, {
+          ip: '::ffff:127.0.0.1',
+          endpoint: '/_api/v3/pages/rename',
+          activityId: '62e291bc10e0ab61bd691794',
+        });
       }
       catch (err) {
         isThrown = true;
@@ -960,7 +966,11 @@ describe('PageService page operations with non-public pages', () => {
 
       const newPathForPage2 = '/np_rename7_destination/np_rename8';
       const newpathForPage3 = '/np_rename7_destination/np_rename8/np_rename9';
-      await renamePage(_page2, newPathForPage2, npDummyUser1, { isRecursively: true });
+      await renamePage(_page2, newPathForPage2, npDummyUser1, { isRecursively: true }, {
+        ip: '::ffff:127.0.0.1',
+        endpoint: '/_api/v3/pages/rename',
+        activityId: '62e291bc10e0ab61bd691794',
+      });
 
       const page2 = await Page.findOne({ path: _path2 }); // not exist
       const page3 = await Page.findOne({ path: _path3 }); // not renamed thus exist
@@ -979,7 +989,6 @@ describe('PageService page operations with non-public pages', () => {
     const duplicate = async(page, newPagePath, user, isRecursively) => {
       // mock return value
       const mockedDuplicateRecursivelyMainOperation = jest.spyOn(crowi.pageService, 'duplicateRecursivelyMainOperation').mockReturnValue(null);
-      const mockedCreateAndSendNotifications = jest.spyOn(crowi.pageService, 'createAndSendNotifications').mockReturnValue(null);
       const duplicatedPage = await crowi.pageService.duplicate(page, newPagePath, user, isRecursively);
 
       // retrieve the arguments passed when calling method duplicateRecursivelyMainOperation inside duplicate method
@@ -987,7 +996,6 @@ describe('PageService page operations with non-public pages', () => {
 
       // restores the original implementation
       mockedDuplicateRecursivelyMainOperation.mockRestore();
-      mockedCreateAndSendNotifications.mockRestore();
 
       // duplicate descendants
       if (page.grant !== Page.GRANT_RESTRICTED && isRecursively) {
@@ -1096,16 +1104,14 @@ describe('PageService page operations with non-public pages', () => {
   });
   describe('Delete', () => {
 
-    const deletePage = async(page, user, options, isRecursively) => {
+    const deletePage = async(page, user, options, isRecursively, activityParameters?) => {
       const mockedDeleteRecursivelyMainOperation = jest.spyOn(crowi.pageService, 'deleteRecursivelyMainOperation').mockReturnValue(null);
-      const mockedCreateAndSendNotifications = jest.spyOn(crowi.pageService, 'createAndSendNotifications').mockReturnValue(null);
 
-      const deletedPage = await crowi.pageService.deletePage(page, user, options, isRecursively);
+      const deletedPage = await crowi.pageService.deletePage(page, user, options, isRecursively, activityParameters);
 
       const argsForDeleteRecursivelyMainOperation = mockedDeleteRecursivelyMainOperation.mock.calls[0];
 
       mockedDeleteRecursivelyMainOperation.mockRestore();
-      mockedCreateAndSendNotifications.mockRestore();
 
       if (isRecursively) {
         await crowi.pageService.deleteRecursivelyMainOperation(...argsForDeleteRecursivelyMainOperation);
@@ -1120,7 +1126,10 @@ describe('PageService page operations with non-public pages', () => {
         expect(_pageT).toBeTruthy();
 
         const isRecursively = false;
-        await deletePage(_pageT, dummyUser1, {}, isRecursively);
+        await deletePage(_pageT, dummyUser1, {}, isRecursively, {
+          ip: '::ffff:127.0.0.1',
+          endpoint: '/_api/v3/pages/rename',
+        });
 
         const pageT = await Page.findOne({ path: `/trash${_pathT}` });
         const pageN = await Page.findOne({ path: _pathT }); // should not exist
@@ -1137,7 +1146,10 @@ describe('PageService page operations with non-public pages', () => {
         expect(_page1).toBeTruthy();
 
         const isRecursively = false;
-        await deletePage(_page1, npDummyUser1, {}, isRecursively);
+        await deletePage(_page1, npDummyUser1, {}, isRecursively, {
+          ip: '::ffff:127.0.0.1',
+          endpoint: '/_api/v3/pages/rename',
+        });
 
         const pageN = await Page.findOne({ path: _path, grantedGroup: groupIdA });
         const page1 = await Page.findOne({ path: `/trash${_path}`, grantedGroup: groupIdA });
@@ -1163,7 +1175,10 @@ describe('PageService page operations with non-public pages', () => {
         expect(_pageR).toBeTruthy();
 
         const isRecursively = true;
-        await deletePage(_pageT, npDummyUser1, {}, isRecursively);
+        await deletePage(_pageT, npDummyUser1, {}, isRecursively, {
+          ip: '::ffff:127.0.0.1',
+          endpoint: '/_api/v3/pages/rename',
+        });
 
         const pageTNotExist = await Page.findOne({ path: _pathT, grant: Page.GRANT_USER_GROUP, grantedGroup: groupIdA }); // A should not exist
         const page1NotExist = await Page.findOne({ path: _path1, grant: Page.GRANT_USER_GROUP, grantedGroup: groupIdB }); // B should not exist
@@ -1193,16 +1208,14 @@ describe('PageService page operations with non-public pages', () => {
 
   });
   describe('Delete completely', () => {
-    const deleteCompletely = async(page, user, options = {}, isRecursively = false, preventEmitting = false) => {
+    const deleteCompletely = async(page, user, options = {}, isRecursively = false, preventEmitting = false, activityParameters?) => {
       const mockedDeleteCompletelyRecursivelyMainOperation = jest.spyOn(crowi.pageService, 'deleteCompletelyRecursivelyMainOperation').mockReturnValue(null);
-      const mockedCreateAndSendNotifications = jest.spyOn(crowi.pageService, 'createAndSendNotifications').mockReturnValue(null);
 
-      await crowi.pageService.deleteCompletely(page, user, options, isRecursively, preventEmitting);
+      await crowi.pageService.deleteCompletely(page, user, options, isRecursively, preventEmitting, activityParameters);
 
       const argsForDeleteCompletelyRecursivelyMainOperation = mockedDeleteCompletelyRecursivelyMainOperation.mock.calls[0];
 
       mockedDeleteCompletelyRecursivelyMainOperation.mockRestore();
-      mockedCreateAndSendNotifications.mockRestore();
 
       if (isRecursively) {
         await crowi.pageService.deleteCompletelyRecursivelyMainOperation(...argsForDeleteCompletelyRecursivelyMainOperation);
@@ -1217,7 +1230,10 @@ describe('PageService page operations with non-public pages', () => {
         const _page = await Page.findOne({ path: _path, grant: Page.GRANT_RESTRICTED });
         expect(_page).toBeTruthy();
 
-        await deleteCompletely(_page, dummyUser1, {}, false);
+        await deleteCompletely(_page, dummyUser1, {}, false, false, {
+          ip: '::ffff:127.0.0.1',
+          endpoint: '/_api/v3/pages/rename',
+        });
 
         const page = await Page.findOne({ path: _path, grant: Page.GRANT_RESTRICTED });
         expect(page).toBeNull();
@@ -1229,7 +1245,10 @@ describe('PageService page operations with non-public pages', () => {
         const _page = await Page.findOne({ path: _path, grant: Page.GRANT_USER_GROUP, grantedGroup: groupIdA });
         expect(_page).toBeTruthy();
 
-        await deleteCompletely(_page, npDummyUser1, {}, false);
+        await deleteCompletely(_page, npDummyUser1, {}, false, false, {
+          ip: '::ffff:127.0.0.1',
+          endpoint: '/_api/v3/pages/rename',
+        });
 
         const page = await Page.findOne({ path: _path, grant: Page.GRANT_USER_GROUP, grantedGroup: groupIdA });
         expect(page).toBeNull();
@@ -1249,7 +1268,10 @@ describe('PageService page operations with non-public pages', () => {
         expect(_page3).toBeTruthy();
         expect(_page4).toBeTruthy();
 
-        await deleteCompletely(_page1, npDummyUser1, {}, true);
+        await deleteCompletely(_page1, npDummyUser1, {}, true, false, {
+          ip: '::ffff:127.0.0.1',
+          endpoint: '/_api/v3/pages/rename',
+        });
 
         const page1 = await Page.findOne({ path: _path1, grant: Page.GRANT_USER_GROUP, grantedGroup: groupIdA });
         const page2 = await Page.findOne({ path: _path2, grant: Page.GRANT_USER_GROUP, grantedGroup: groupIdB });
@@ -1264,10 +1286,10 @@ describe('PageService page operations with non-public pages', () => {
     });
   });
   describe('revert', () => {
-    const revertDeletedPage = async(page, user, options = {}, isRecursively = false) => {
+    const revertDeletedPage = async(page, user, options = {}, isRecursively = false, activityParameters?) => {
       // mock return value
       const mockedRevertRecursivelyMainOperation = jest.spyOn(crowi.pageService, 'revertRecursivelyMainOperation').mockReturnValue(null);
-      const revertedPage = await crowi.pageService.revertDeletedPage(page, user, options, isRecursively);
+      const revertedPage = await crowi.pageService.revertDeletedPage(page, user, options, isRecursively, activityParameters);
 
       const argsForRecursivelyMainOperation = mockedRevertRecursivelyMainOperation.mock.calls[0];
 
@@ -1290,7 +1312,10 @@ describe('PageService page operations with non-public pages', () => {
       expect(tag).toBeTruthy();
       expect(deletedPageTagRelation).toBeTruthy();
 
-      await revertDeletedPage(trashedPage, dummyUser1, {}, false);
+      await revertDeletedPage(trashedPage, dummyUser1, {}, false, {
+        ip: '::ffff:127.0.0.1',
+        endpoint: '/_api/v3/pages/rename',
+      });
 
       const revertedPage = await Page.findOne({ path: '/np_revert1' });
       const deltedPageBeforeRevert = await Page.findOne({ path: '/trash/np_revert1' });
@@ -1317,7 +1342,10 @@ describe('PageService page operations with non-public pages', () => {
       expect(tag).toBeTruthy();
       expect(deletedPageTagRelation).toBeTruthy();
 
-      await revertDeletedPage(trashedPage, user1, {}, false);
+      await revertDeletedPage(trashedPage, user1, {}, false, {
+        ip: '::ffff:127.0.0.1',
+        endpoint: '/_api/v3/pages/revert',
+      });
 
       const revertedPage = await Page.findOne({ path: '/np_revert2' });
       const trashedPageBR = await Page.findOne({ path: beforeRevertPath });
@@ -1345,7 +1373,10 @@ describe('PageService page operations with non-public pages', () => {
       expect(revision1).toBeTruthy();
       expect(revision2).toBeTruthy();
 
-      await revertDeletedPage(trashedPage1, npDummyUser2, {}, true);
+      await revertDeletedPage(trashedPage1, npDummyUser2, {}, true, {
+        ip: '::ffff:127.0.0.1',
+        endpoint: '/_api/v3/pages/revert',
+      });
 
       const revertedPage = await Page.findOne({ path: '/np_revert3' });
       const middlePage = await Page.findOne({ path: '/np_revert3/middle' });
@@ -1384,7 +1415,10 @@ describe('PageService page operations with non-public pages', () => {
       expect(user).toBeTruthy();
       expect(nonExistantPage3).toBeNull();
 
-      await revertDeletedPage(trashedPage1, user, {}, true);
+      await revertDeletedPage(trashedPage1, user, {}, true, {
+        ip: '::ffff:127.0.0.1',
+        endpoint: '/_api/v3/pages/revert',
+      });
       const revertedPage1 = await Page.findOne({ path: '/np_revert5' });
       const newlyCreatedPage = await Page.findOne({ path: '/np_revert5/middle' });
       const revertedPage2 = await Page.findOne({ path: '/np_revert5/middle/np_revert6' });

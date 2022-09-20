@@ -1,7 +1,7 @@
 import { addSeconds } from 'date-fns';
 import mongoose from 'mongoose';
 
-import { PageActionStage, PageActionType } from '../../../src/server/models/page-operation';
+import { PageActionStage, PageActionType } from '../../../src/interfaces/page-operation';
 import { getInstance } from '../setup-crowi';
 
 
@@ -489,9 +489,9 @@ describe('Test page service methods', () => {
   });
 
   describe('restart renameOperation', () => {
-    const resumeRenameSubOperation = async(renamePage, pageOp) => {
+    const resumeRenameSubOperation = async(renamePage, pageOp, activity?) => {
       const mockedPathsAndDescendantCountOfAncestors = jest.spyOn(crowi.pageService, 'fixPathsAndDescendantCountOfAncestors').mockReturnValue(null);
-      await crowi.pageService.resumeRenameSubOperation(renamePage, pageOp);
+      await crowi.pageService.resumeRenameSubOperation(renamePage, pageOp, activity);
 
       const argsForRenameSubOperation = mockedPathsAndDescendantCountOfAncestors.mock.calls[0];
 
@@ -511,6 +511,9 @@ describe('Test page service methods', () => {
       const path1 = '/resume_rename_0/resume_rename_1';
       const path2 = '/resume_rename_0/resume_rename_1/resume_rename_2';
       const path3 = '/resume_rename_0/resume_rename_1/resume_rename_2/resume_rename_3';
+
+      // activity options
+      const activity = 'randomActivityId';
 
       // page
       const _page0 = await Page.findOne({ path: _path0 });
@@ -536,7 +539,7 @@ describe('Test page service methods', () => {
       expect(_pageOperation).toBeTruthy();
 
       // rename
-      await resumeRenameSubOperation(_page1, _pageOperation);
+      await resumeRenameSubOperation(_page1, _pageOperation, activity);
 
       // page
       const page0 = await Page.findById(_page0._id);
@@ -573,6 +576,13 @@ describe('Test page service methods', () => {
       const path1 = '/resume_rename_8/resume_rename_9';
       const path2 = '/resume_rename_8/resume_rename_9/resume_rename_10';
 
+      // activity options
+      const activityParameters = {
+        ip: '::ffff:127.0.0.1',
+        endpoint: '/_api/v3/pages/rename',
+        activityId: '62e291bc10e0ab61bd691794',
+      };
+
       // page
       const _page0 = await Page.findOne({ path: _path0 });
       const _page1 = await Page.findOne({ path: _path1 });
@@ -594,7 +604,7 @@ describe('Test page service methods', () => {
       expect(_pageOperation).toBeTruthy();
 
       // rename
-      await resumeRenameSubOperation(_page1, _pageOperation);
+      await resumeRenameSubOperation(_page1, _pageOperation, activityParameters);
 
       // page
       const page0 = await Page.findById(_page0._id);

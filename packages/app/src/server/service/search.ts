@@ -1,23 +1,23 @@
-import xss from 'xss';
 import mongoose from 'mongoose';
+import xss from 'xss';
 
 import { SearchDelegatorName } from '~/interfaces/named-query';
-import { IPageWithMeta } from '~/interfaces/page';
-import { IFormattedSearchResult, IPageSearchMeta, ISearchResult } from '~/interfaces/search';
+import { IPageHasId } from '~/interfaces/page';
+import { IFormattedSearchResult, IPageWithSearchMeta, ISearchResult } from '~/interfaces/search';
 import loggerFactory from '~/utils/logger';
 
-import NamedQuery from '../models/named-query';
+import { ObjectIdLike } from '../interfaces/mongoose-utils';
 import {
   SearchDelegator, SearchQueryParser, SearchResolver, ParsedQuery, SearchableData, QueryTerms,
 } from '../interfaces/search';
+import NamedQuery from '../models/named-query';
+import { PageModel } from '../models/page';
+import { serializeUserSecurely } from '../models/serializers/user-serializer';
+import { SearchError } from '../models/vo/search-error';
+
 import ElasticsearchDelegator from './search-delegator/elasticsearch';
 import PrivateLegacyPagesDelegator from './search-delegator/private-legacy-pages';
 
-import { PageModel } from '../models/page';
-import { serializeUserSecurely } from '../models/serializers/user-serializer';
-
-import { ObjectIdLike } from '../interfaces/mongoose-utils';
-import { SearchError } from '../models/vo/search-error';
 
 // eslint-disable-next-line no-unused-vars
 const logger = loggerFactory('growi:service:search');
@@ -71,17 +71,17 @@ const findPageListByIds = async(pageIds: ObjectIdLike[], crowi: any) => {
 
 class SearchService implements SearchQueryParser, SearchResolver {
 
-  crowi!: any
+  crowi!: any;
 
-  configManager!: any
+  configManager!: any;
 
-  isErrorOccuredOnHealthcheck: boolean | null
+  isErrorOccuredOnHealthcheck: boolean | null;
 
-  isErrorOccuredOnSearching: boolean | null
+  isErrorOccuredOnSearching: boolean | null;
 
-  fullTextSearchDelegator: any & ElasticsearchDelegator
+  fullTextSearchDelegator: any & ElasticsearchDelegator;
 
-  nqDelegators: {[key in SearchDelegatorName]: SearchDelegator}
+  nqDelegators: {[key in SearchDelegatorName]: SearchDelegator};
 
   constructor(crowi) {
     this.crowi = crowi;
@@ -400,9 +400,9 @@ class SearchService implements SearchQueryParser, SearchResolver {
    */
   async formatSearchResult(searchResult: ISearchResult<any>, delegatorName: SearchDelegatorName, user, userGroups): Promise<IFormattedSearchResult> {
     if (!this.checkIsFormattable(searchResult, delegatorName)) {
-      const data: IPageWithMeta<IPageSearchMeta>[] = searchResult.data.map((page) => {
+      const data: IPageWithSearchMeta[] = searchResult.data.map((page) => {
         return {
-          data: page,
+          data: page as IPageHasId,
         };
       });
 
@@ -419,7 +419,7 @@ class SearchService implements SearchQueryParser, SearchResolver {
     const result = {} as IFormattedSearchResult;
 
     // get page data
-    const pageIds = searchResult.data.map((page) => { return page._id });
+    const pageIds: string[] = searchResult.data.map((page) => { return page._id });
 
     const findPageResult = await findPageListByIds(pageIds, this.crowi);
 
@@ -427,7 +427,7 @@ class SearchService implements SearchQueryParser, SearchResolver {
     result.meta = searchResult.meta;
 
     // set search result page data
-    const pages: (IPageWithMeta<IPageSearchMeta> | null)[] = searchResult.data.map((data) => {
+    const pages: (IPageWithSearchMeta | null)[] = searchResult.data.map((data) => {
       const pageData = findPageResult.pages.find((pageData) => {
         return pageData.id === data._id;
       });

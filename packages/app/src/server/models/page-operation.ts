@@ -4,9 +4,10 @@ import mongoose, {
   Schema, Model, Document, QueryOptions, FilterQuery,
 } from 'mongoose';
 
+import { PageActionType, PageActionStage } from '~/interfaces/page-operation';
 import {
   IPageForResuming, IUserForResuming, IOptionsForResuming,
-} from '~/server/interfaces/page-operation';
+} from '~/server/models/interfaces/page-operation';
 
 import loggerFactory from '../../utils/logger';
 import { ObjectIdLike } from '../interfaces/mongoose-utils';
@@ -17,22 +18,6 @@ const logger = loggerFactory('growi:models:page-operation');
 
 type IObjectId = mongoose.Types.ObjectId;
 const ObjectId = mongoose.Schema.Types.ObjectId;
-
-export const PageActionType = {
-  Rename: 'Rename',
-  Duplicate: 'Duplicate',
-  Delete: 'Delete',
-  DeleteCompletely: 'DeleteCompletely',
-  Revert: 'Revert',
-  NormalizeParent: 'NormalizeParent',
-} as const;
-export type PageActionType = typeof PageActionType[keyof typeof PageActionType];
-
-export const PageActionStage = {
-  Main: 'Main',
-  Sub: 'Sub',
-} as const;
-export type PageActionStage = typeof PageActionStage[keyof typeof PageActionStage];
 
 /*
  * Main Schema

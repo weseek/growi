@@ -29,6 +29,7 @@ export interface IPage {
   pageIdOnHackmd: string,
   revisionHackmdSynced: Ref<IRevision>,
   hasDraftOnHackmd: boolean,
+  expandContentWidth?: boolean,
   deleteUser: Ref<IUser>,
   deletedAt: Date,
 }
@@ -56,11 +57,12 @@ export type IPageInfo = {
 }
 
 export type IPageInfoForEntity = IPageInfo & {
-  bookmarkCount?: number,
-  sumOfLikers?: number,
-  likerIds?: string[],
-  sumOfSeenUsers?: number,
-  seenUserIds?: string[],
+  bookmarkCount: number,
+  sumOfLikers: number,
+  likerIds: string[],
+  sumOfSeenUsers: number,
+  seenUserIds: string[],
+  expandContentWidth?: boolean,
 }
 
 export type IPageInfoForOperation = IPageInfoForEntity & {
@@ -113,7 +115,7 @@ export type IDataWithMeta<D = unknown, M = unknown> = {
   meta?: M,
 }
 
-export type IPageWithMeta<M = IPageInfoAll> = IDataWithMeta<IPageHasId, M>;
+export type IPageWithMeta<M extends IPageInfo = IPageInfo> = IDataWithMeta<IPageHasId, M>;
 
 export type IPageToDeleteWithMeta<T = IPageInfoForEntity | unknown> = IDataWithMeta<HasObjectId & (IPage | { path: string, revision: string | null}), T>;
 export type IPageToRenameWithMeta<T = IPageInfoForEntity | unknown> = IPageToDeleteWithMeta<T>;

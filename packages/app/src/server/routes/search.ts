@@ -1,5 +1,8 @@
+import { SupportedAction } from '~/interfaces/activity';
 import loggerFactory from '~/utils/logger';
+
 import { isSearchError } from '../models/vo/search-error';
+
 
 const logger = loggerFactory('growi:routes:search');
 
@@ -37,8 +40,19 @@ module.exports = function(crowi, app) {
   const actions: any = {};
   const api: any = {};
 
-  actions.searchPage = function(req, res) {
+  actions.searchPage = async function(req, res) {
     const keyword = req.query.q || null;
+
+    const parameters = {
+      ip:  req.ip,
+      endpoint: req.originalUrl,
+      action: SupportedAction.ACTION_SEARCH_PAGE_VIEW,
+      user: req.user?._id,
+      snapshot: {
+        username: req.user?.username,
+      },
+    };
+    await crowi.activityService.createActivity(parameters);
 
     return res.render('search', {
       q: keyword,
@@ -168,6 +182,18 @@ module.exports = function(crowi, app) {
       logger.error(err);
       return res.json(ApiResponse.error(err));
     }
+
+    const parameters = {
+      ip:  req.ip,
+      endpoint: req.originalUrl,
+      action: SupportedAction.ACTION_SEARCH_PAGE,
+      user: req.user?._id,
+      snapshot: {
+        username: req.user?.username,
+      },
+    };
+    await crowi.activityService.createActivity(parameters);
+
     return res.json(ApiResponse.success(result));
   };
 

@@ -8,6 +8,7 @@ import { useTranslation } from 'react-i18next';
 import AdminUserGroupDetailContainer from '~/client/services/AdminUserGroupDetailContainer';
 import AppContainer from '~/client/services/AppContainer';
 import { toastSuccess, toastError } from '~/client/util/apiNotification';
+import Xss from '~/services/xss';
 
 import { withUnstatedContainers } from '../../UnstatedUtils';
 
@@ -16,7 +17,7 @@ class UserGroupUserTable extends React.Component {
   constructor(props) {
     super(props);
 
-    this.xss = window.xss;
+    this.xss = new Xss();
 
     this.removeUser = this.removeUser.bind(this);
   }

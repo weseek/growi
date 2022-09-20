@@ -1,3 +1,4 @@
+import { SupportedAction } from '~/interfaces/activity';
 import { NullUsernameToBeRegisteredError } from '~/server/models/errors';
 import loggerFactory from '~/utils/logger';
 
@@ -9,6 +10,9 @@ module.exports = function(crowi, app) {
   const passport = require('passport');
   const ExternalAccount = crowi.model('ExternalAccount');
   const passportService = crowi.passportService;
+
+  const activityEvent = crowi.event('activity');
+
   const ApiResponse = require('../util/apiResponse');
 
   /**
@@ -16,7 +20,7 @@ module.exports = function(crowi, app) {
    * @param {*} req
    * @param {*} res
    */
-  const loginSuccessHandler = (req, res, user) => {
+  const loginSuccessHandler = async(req, res, user, action) => {
     // update lastLoginAt
     user.updateLastLoginAt(new Date(), (err, userData) => {
       if (err) {
@@ -28,6 +32,18 @@ module.exports = function(crowi, app) {
     const { redirectTo } = req.session;
     // remove session.redirectTo
     delete req.session.redirectTo;
+
+    const parameters = {
+      ip:  req.ip,
+      endpoint: req.originalUrl,
+      action,
+      user: req.user?._id,
+      snapshot: {
+        username: req.user.username,
+      },
+    };
+    await crowi.activityService.createActivity(parameters);
+
     return res.safeRedirect(redirectTo);
   };
 
@@ -36,8 +52,12 @@ module.exports = function(crowi, app) {
    * @param {*} req
    * @param {*} res
    */
-  const loginFailureHandler = (req, res, message) => {
+  const loginFailureHandler = async(req, res, message) => {
     req.flash('errorMessage', message || req.t('message.sign_in_failure'));
+
+    const parameters = { action: SupportedAction.ACTION_USER_LOGIN_FAILURE };
+    activityEvent.emit('update', res.locals.activity._id, parameters);
+
     return res.redirect('/login');
   };
 
@@ -131,7 +151,8 @@ module.exports = function(crowi, app) {
     // login
     await req.logIn(user, (err) => {
       if (err) { debug(err.message); return next() }
-      return loginSuccessHandler(req, res, user);
+
+      return loginSuccessHandler(req, res, user, SupportedAction.ACTION_USER_LOGIN_WITH_LDAP);
     });
   };
 
@@ -223,7 +244,7 @@ module.exports = function(crowi, app) {
       req.logIn(user, (err) => {
         if (err) { debug(err.message); return next() }
 
-        return loginSuccessHandler(req, res, user);
+        return loginSuccessHandler(req, res, user, SupportedAction.ACTION_USER_LOGIN_WITH_LOCAL);
       });
     })(req, res, next);
   };
@@ -291,9 +312,10 @@ module.exports = function(crowi, app) {
     const user = await externalAccount.getPopulatedUser();
 
     // login
-    req.logIn(user, (err) => {
+    req.logIn(user, async(err) => {
       if (err) { debug(err.message); return next() }
-      return loginSuccessHandler(req, res, user);
+
+      return loginSuccessHandler(req, res, user, SupportedAction.ACTION_USER_LOGIN_WITH_GOOGLE);
     });
   };
 
@@ -333,9 +355,10 @@ module.exports = function(crowi, app) {
     const user = await externalAccount.getPopulatedUser();
 
     // login
-    req.logIn(user, (err) => {
+    req.logIn(user, async(err) => {
       if (err) { debug(err.message); return next() }
-      return loginSuccessHandler(req, res, user);
+
+      return loginSuccessHandler(req, res, user, SupportedAction.ACTION_USER_LOGIN_WITH_GITHUB);
     });
   };
 
@@ -375,9 +398,10 @@ module.exports = function(crowi, app) {
     const user = await externalAccount.getPopulatedUser();
 
     // login
-    req.logIn(user, (err) => {
+    req.logIn(user, async(err) => {
       if (err) { debug(err.message); return next() }
-      return loginSuccessHandler(req, res, user);
+
+      return loginSuccessHandler(req, res, user, SupportedAction.ACTION_USER_LOGIN_WITH_TWITTER);
     });
   };
 
@@ -423,9 +447,10 @@ module.exports = function(crowi, app) {
 
     // login
     const user = await externalAccount.getPopulatedUser();
-    req.logIn(user, (err) => {
+    req.logIn(user, async(err) => {
       if (err) { debug(err.message); return next() }
-      return loginSuccessHandler(req, res, user);
+
+      return loginSuccessHandler(req, res, user, SupportedAction.ACTION_USER_LOGIN_WITH_OIDC);
     });
   };
 
@@ -487,7 +512,8 @@ module.exports = function(crowi, app) {
         logger.error(err);
         return loginFailureHandler(req, res);
       }
-      return loginSuccessHandler(req, res, user);
+
+      return loginSuccessHandler(req, res, user, SupportedAction.ACTION_USER_LOGIN_WITH_SAML);
     });
   };
 
@@ -529,7 +555,8 @@ module.exports = function(crowi, app) {
     const user = await externalAccount.getPopulatedUser();
     await req.logIn(user, (err) => {
       if (err) { debug(err.message); return next() }
-      return loginSuccessHandler(req, res, user);
+
+      return loginSuccessHandler(req, res, user, SupportedAction.ACTION_USER_LOGIN_WITH_BASIC);
     });
   };
 

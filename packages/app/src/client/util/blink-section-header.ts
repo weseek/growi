@@ -23,5 +23,6 @@ export const blinkSectionHeaderAtBoot = (): HTMLElement | undefined => {
   const elem = document.getElementById(id);
   if (elem != null && elem.tagName.match(/h\d+/i)) { // match h1, h2, h3...
     blinkElem(elem);
+    return elem;
   }
 };
