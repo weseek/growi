@@ -1,45 +1,47 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 
+
+import { HasObjectId, IAttachment } from '@growi/core';
 import { Attachment } from '@growi/ui';
+import { useTranslation } from 'next-i18next';
 
-export default class PageAttachmentList extends React.Component {
 
-  render() {
-    if (this.props.attachments <= 0) {
-      return null;
-    }
-
-    const attachmentList = this.props.attachments.map((attachment, idx) => {
-      return (
-        <Attachment
-          key={`page:attachment:${attachment._id}`}
-          attachment={attachment}
-          inUse={this.props.inUse[attachment._id] || false}
-          onAttachmentDeleteClicked={this.props.onAttachmentDeleteClicked}
-          isUserLoggedIn={this.props.isUserLoggedIn}
-        />
-      );
-    });
-
-    return (
-      <div>
-        <ul className="pl-2">
-          {attachmentList}
-        </ul>
-      </div>
-    );
-  }
-
+type Props = {
+  attachments: (IAttachment & HasObjectId)[],
+  inUse: { [id: string]: boolean },
+  onAttachmentDeleteClicked?: (attachment: IAttachment & HasObjectId) => void,
+  isUserLoggedIn?: boolean,
 }
 
-PageAttachmentList.propTypes = {
-  attachments: PropTypes.arrayOf(PropTypes.object),
-  inUse: PropTypes.objectOf(PropTypes.bool),
-  onAttachmentDeleteClicked: PropTypes.func,
-  isUserLoggedIn: PropTypes.bool,
-};
-PageAttachmentList.defaultProps = {
-  attachments: [],
-  inUse: {},
+export const PageAttachmentList = (props: Props): JSX.Element => {
+  const { t } = useTranslation();
+
+  const {
+    attachments, inUse, onAttachmentDeleteClicked, isUserLoggedIn,
+  } = props;
+
+  if (attachments.length === 0) {
+    return <>{t('No_attachments_yet')}</>;
+  }
+
+  const attachmentList = attachments.map((attachment) => {
+    return (
+      <Attachment
+        key={`page:attachment:${attachment._id}`}
+        attachment={attachment}
+        inUse={inUse[attachment._id] || false}
+        onAttachmentDeleteClicked={onAttachmentDeleteClicked}
+        isUserLoggedIn={isUserLoggedIn}
+      />
+    );
+  });
+
+  return (
+    <div>
+      <ul className="pl-2">
+        {attachmentList}
+      </ul>
+    </div>
+  );
+
 };

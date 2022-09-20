@@ -1,36 +1,52 @@
 /* eslint-disable react/prop-types */
-import React from 'react';
+import React, { useCallback } from 'react';
 
+import { HasObjectId, IAttachment } from '@growi/core';
+import { UserPicture } from '@growi/ui';
 import {
   Button,
   Modal, ModalHeader, ModalBody, ModalFooter,
 } from 'reactstrap';
 
-import { UserPicture } from '@growi/ui';
 import Username from '../User/Username';
 
-export default class DeleteAttachmentModal extends React.Component {
 
-  constructor(props) {
-    super(props);
-
-    this._onDeleteConfirm = this._onDeleteConfirm.bind(this);
+function iconNameByFormat(format: string): string {
+  if (format.match(/image\/.+/i)) {
+    return 'icon-picture';
   }
 
-  _onDeleteConfirm() {
-    this.props.onAttachmentDeleteClickedConfirm(this.props.attachmentToDelete);
-  }
+  return 'icon-doc';
+}
 
-  iconNameByFormat(format) {
-    if (format.match(/image\/.+/i)) {
-      return 'icon-picture';
+
+type Props = {
+  isOpen: boolean,
+  toggle: () => void,
+  attachmentToDelete: IAttachment & HasObjectId | null,
+  deleting: boolean,
+  deleteError: string,
+  onAttachmentDeleteClickedConfirm?: (attachment: IAttachment & HasObjectId) => Promise<void>,
+}
+
+export const DeleteAttachmentModal = (props: Props): JSX.Element => {
+
+  const {
+    isOpen, toggle,
+    attachmentToDelete, deleting, deleteError,
+    onAttachmentDeleteClickedConfirm,
+  } = props;
+
+  const onDeleteConfirm = useCallback(() => {
+    if (attachmentToDelete == null || onAttachmentDeleteClickedConfirm == null) {
+      return;
     }
+    onAttachmentDeleteClickedConfirm(attachmentToDelete);
+  }, [attachmentToDelete, onAttachmentDeleteClickedConfirm]);
 
-    return 'icon-doc';
-  }
-
-  renderByFileFormat(attachment) {
+  const renderByFileFormat = useCallback((attachment) => {
     const content = (attachment.fileFormat.match(/image\/.+/i))
+      // eslint-disable-next-line @next/next/no-img-element
       ? <img src={attachment.filePathProxied} alt="deleting image" />
       : '';
 
@@ -38,7 +54,7 @@ export default class DeleteAttachmentModal extends React.Component {
     return (
       <div className="attachment-delete-image">
         <p>
-          <i className={this.iconNameByFormat(attachment.fileFormat)}></i> {attachment.originalName}
+          <i className={iconNameByFormat(attachment.fileFormat)}></i> {attachment.originalName}
         </p>
         <p>
           uploaded by <UserPicture user={attachment.creator} size="sm"></UserPicture> <Username user={attachment.creator}></Username>
@@ -46,52 +62,37 @@ export default class DeleteAttachmentModal extends React.Component {
         {content}
       </div>
     );
+  }, []);
+
+  let deletingIndicator = <></>;
+  if (deleting) {
+    deletingIndicator = <div className="speeding-wheel-sm"></div>;
+  }
+  if (deleteError) {
+    deletingIndicator = <span>{deleteError}</span>;
   }
 
-  render() {
-    const attachment = this.props.attachmentToDelete;
-    if (attachment === null) {
-      return null;
-    }
 
-    const props = Object.assign({}, this.props);
-    delete props.onAttachmentDeleteClickedConfirm;
-    delete props.attachmentToDelete;
-    delete props.inUse;
-    delete props.deleting;
-    delete props.deleteError;
+  return (
+    <Modal isOpen={isOpen} className="attachment-delete-modal" size="lg" aria-labelledby="contained-modal-title-lg" fade={false}>
+      <ModalHeader tag="h4" toggle={toggle} className="bg-danger text-light">
+        <span id="contained-modal-title-lg">Delete attachment?</span>
+      </ModalHeader>
+      <ModalBody>
+        {renderByFileFormat(attachmentToDelete)}
+      </ModalBody>
+      <ModalFooter>
+        <div className="mr-3 d-inline-block">
+          {deletingIndicator}
+        </div>
+        <Button
+          color="danger"
+          onClick={onDeleteConfirm}
+          disabled={deleting}
+        >Delete!
+        </Button>
+      </ModalFooter>
+    </Modal>
+  );
 
-    let deletingIndicator = '';
-    if (this.props.deleting) {
-      deletingIndicator = <div className="speeding-wheel-sm"></div>;
-    }
-    if (this.props.deleteError) {
-      deletingIndicator = <span>{this.props.deleteError}</span>;
-    }
-
-    const renderAttachment = this.renderByFileFormat(attachment);
-
-    return (
-      <Modal {...props} className="attachment-delete-modal" bssize="large" aria-labelledby="contained-modal-title-lg">
-        <ModalHeader tag="h4" toggle={this.props.toggle} className="bg-danger text-light">
-          <span id="contained-modal-title-lg">Delete attachment?</span>
-        </ModalHeader>
-        <ModalBody>
-          {renderAttachment}
-        </ModalBody>
-        <ModalFooter>
-          <div className="mr-3 d-inline-block">
-            {deletingIndicator}
-          </div>
-          <Button
-            color="danger"
-            onClick={this._onDeleteConfirm}
-            disabled={this.props.deleting}
-          >Delete!
-          </Button>
-        </ModalFooter>
-      </Modal>
-    );
-  }
-
-}
+};
