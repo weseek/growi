@@ -272,6 +272,7 @@ context('Tag Oprations', () =>{
     });
 
     cy.visit(`/${newPageName}`);
+    cy.getByTestid('grw-tag-labels').should('be.visible');
     cy.screenshot(`${ssPrefix}4-new-page-name-applied`, {capture: 'viewport'});
   });
 
