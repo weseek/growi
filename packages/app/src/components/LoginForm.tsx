@@ -170,7 +170,7 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
     try {
       const res = await apiv3Post(requestPath, { registerForm, _csrf: csrfToken });
       const { redirectTo } = res.data;
-      router.push(redirectTo);
+      window.location.href = redirectTo;
     }
     catch (err) {
       // Execute if error exists
