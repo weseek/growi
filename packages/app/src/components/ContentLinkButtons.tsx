@@ -12,11 +12,11 @@ type Props = {
   isUserPage: boolean
 }
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 export const ContentLinkButtons = (props: Props): JSX.Element => {
 
   const { data: pageUser } = usePageUser();
 
-  // get element for smoothScroll
   const getBookMarkListHeaderDom = document.getElementById('bookmarks-list');
   const getRecentlyCreatedListHeaderDom = document.getElementById('recently-created-list');
 
