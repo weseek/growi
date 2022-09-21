@@ -43,7 +43,7 @@ context('Modal for page operation', () => {
     cy.screenshot(`${ssPrefix}page-create-modal-closed`, {capture: 'viewport'});
   });
   it("Successfully Create Today's page", () => {
-    const pageName = 'abcdefg';
+    const pageName = "Today's page";
     cy.visit('/');
     cy.getByTestid('newPageBtn').click();
 
@@ -60,7 +60,7 @@ context('Modal for page operation', () => {
     cy.screenshot(`${ssPrefix}create-today-page`);
   });
   it('Successfully create page under specific path', () => {
-    const pageName = 'testtest';
+    const pageName = 'Pages created under a specific path';
     cy.visit('/');
     cy.getByTestid('newPageBtn').click();
 
@@ -78,12 +78,12 @@ context('Modal for page operation', () => {
   });
 
   it('Successfully create a template page under the path', () => {
-    const templatePath = 'testttttt';
+    const pageName = 'Template page created under a specific path';
     cy.visit('/');
     cy.getByTestid('newPageBtn').click();
 
     cy.getByTestid('page-create-modal').should('be.visible').within(() => {
-      cy.get('.rbt-input-main').type(templatePath);
+      cy.get('.rbt-input-main').type(pageName);
 
       cy.screenshot(`${ssPrefix}create-template-for-children-add-path`);
       cy.get('#template-type').click();
