@@ -193,9 +193,10 @@ context('Tag Oprations', () =>{
       cy.get('div.modal-footer > button').click();
     });
 
-    cy.get('.toast').should('be.visible').invoke('attr', 'style', 'opacity: 1');
+    cy.get('.toast').should('be.visible').trigger('mouseover');
     cy.get('.grw-taglabels-container > form > a').contains(tag).should('exist');
-
+    /* eslint-disable cypress/no-unnecessary-waiting */
+    cy.wait(150); // wait for toastr to change its color occured by mouseover
     cy.screenshot(`${ssPrefix}4-click-done`, {capture: 'viewport'});
 
   });
@@ -208,6 +209,7 @@ context('Tag Oprations', () =>{
     cy.get('.grw-taglabels-container > form > a').contains(tag).click();
     cy.getByTestid('search-result-base').should('be.visible');
     cy.getByTestid('search-result-list').should('be.visible');
+    cy.getByTestid('search-result-content').should('be.visible');
     cy.get('#wiki').should('be.visible');
     // force to click element to pass VRT: https://github.com/weseek/growi/pull/6603
     cy.getByTestid('page-list-item-L').first().click();
@@ -241,6 +243,7 @@ context('Tag Oprations', () =>{
     cy.getByTestid('search-result-base').should('be.visible');
     cy.getByTestid('search-result-list').should('be.visible');
     cy.getByTestid('search-result-content').should('be.visible');
+    cy.get('#wiki').should('be.visible');
     cy.screenshot(`${ssPrefix}1-click-tag-name`, {capture: 'viewport'});
 
     cy.getByTestid('search-result-list').within(() => {
@@ -273,6 +276,7 @@ context('Tag Oprations', () =>{
     });
 
     cy.visit(`/${newPageName}`);
+    cy.getByTestid('grw-tag-labels').should('be.visible');
     cy.screenshot(`${ssPrefix}4-new-page-name-applied`, {capture: 'viewport'});
   });
 

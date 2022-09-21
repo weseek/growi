@@ -16,8 +16,10 @@ context('Access to search result page', () => {
     cy.getByTestid('search-result-base').should('be.visible');
     cy.getByTestid('search-result-list').should('be.visible');
     cy.getByTestid('search-result-content').should('be.visible');
-
-    cy.screenshot(`${ssPrefix}-with-q`);
+    cy.get('#wiki').should('be.visible');
+    // eslint-disable-next-line cypress/no-unnecessary-waiting
+    cy.wait(500); // wait for 500 ms for Scroll
+    cy.screenshot(`${ssPrefix}with-q`);
   });
 
   it('checkboxes behaviors', () => {
@@ -26,26 +28,25 @@ context('Access to search result page', () => {
     cy.getByTestid('search-result-base').should('be.visible');
     cy.getByTestid('search-result-list').should('be.visible');
     cy.getByTestid('search-result-content').should('be.visible');
+    cy.get('#wiki').should('be.visible');
 
     cy.getByTestid('cb-select').first().click({force: true});
-    cy.screenshot(`${ssPrefix}-the-first-checkbox-on`);
+    cy.screenshot(`${ssPrefix}the-first-checkbox-on`);
     cy.getByTestid('cb-select').first().click({force: true});
-    cy.screenshot(`${ssPrefix}-the-first-checkbox-off`);
+    cy.screenshot(`${ssPrefix}the-first-checkbox-off`);
 
     // click select all checkbox
     cy.getByTestid('cb-select-all').click({force: true});
-    cy.screenshot(`${ssPrefix}-the-select-all-checkbox-1`);
+    cy.screenshot(`${ssPrefix}the-select-all-checkbox-1`);
     cy.getByTestid('cb-select').first().click({force: true});
-    cy.screenshot(`${ssPrefix}-the-select-all-checkbox-2`);
+    cy.screenshot(`${ssPrefix}the-select-all-checkbox-2`);
     cy.getByTestid('cb-select').first().click({force: true});
-    cy.screenshot(`${ssPrefix}-the-select-all-checkbox-3`);
+    cy.screenshot(`${ssPrefix}the-select-all-checkbox-3`);
     cy.getByTestid('cb-select-all').click({force: true});
-    cy.screenshot(`${ssPrefix}-the-select-all-checkbox-4`);
+    cy.screenshot(`${ssPrefix}the-select-all-checkbox-4`);
   });
 
 });
-
-
 
 context('Access to legacy private pages', () => {
   const ssPrefix = 'access-to-legacy-private-pages-directly-';
@@ -63,8 +64,9 @@ context('Access to legacy private pages', () => {
     cy.visit('/_private-legacy-pages');
 
     cy.getByTestid('search-result-base').should('be.visible');
+    cy.getByTestid('search-result-private-legacy-pages').should('be.visible');
 
-    cy.screenshot(`${ssPrefix}-shown`);
+    cy.screenshot(`${ssPrefix}shown`);
   });
 
 });
@@ -98,11 +100,18 @@ context('Search all pages', () => {
     cy.getByTestid('search-result-base').should('be.visible');
     cy.getByTestid('search-result-list').should('be.visible');
     cy.getByTestid('search-result-content').should('be.visible');
+    cy.get('#wiki').should('be.visible');
+    // eslint-disable-next-line cypress/no-unnecessary-waiting
+    cy.wait(500); // wait for 500 ms for Scroll
     // force to click element to pass VRT: https://github.com/weseek/growi/pull/6603
     cy.getByTestid('page-list-item-L').first().click();
     cy.screenshot(`${ssPrefix}3-search-page-results`, { capture: 'viewport'});
 
     cy.getByTestid('open-page-item-control-btn').eq(1).click();
+    cy.getByTestid('search-result-content').should('be.visible');
+    cy.get('#wiki').should('be.visible');
+    // eslint-disable-next-line cypress/no-unnecessary-waiting
+    cy.wait(500); // wait for 500 ms for Scroll
     cy.screenshot(`${ssPrefix}4-click-three-dots-menu`, {capture: 'viewport'});
 
     //Add bookmark
@@ -160,12 +169,16 @@ context('Search all pages', () => {
     cy.getByTestid('search-result-base').should('be.visible');
     cy.getByTestid('search-result-list').should('be.visible');
     cy.getByTestid('search-result-content').should('be.visible');
-
+    cy.get('#wiki').should('be.visible');
     cy.screenshot(`${ssPrefix}2-search-with-tag-result`, {capture: 'viewport'});
+
     cy.getByTestid('open-page-item-control-btn').first().click();
+    cy.getByTestid('search-result-content').should('be.visible');
+    cy.get('#wiki').should('be.visible');
     cy.screenshot(`${ssPrefix}3-click-three-dots-menu-search-with-tag`, {capture: 'viewport'});
 
   });
+
   it('Successfully order page search results by tag', () => {
     const tag = 'help';
 
@@ -174,6 +187,7 @@ context('Search all pages', () => {
     cy.getByTestid('search-result-base').should('be.visible');
     cy.getByTestid('search-result-list').should('be.visible');
     cy.getByTestid('search-result-content').should('be.visible');
+    cy.get('#wiki').should('be.visible');
     // force to click element to pass VRT: https://github.com/weseek/growi/pull/6603
     cy.getByTestid('page-list-item-L').first().click();
     cy.screenshot(`${ssPrefix}1-tag-order-click-tag-name`, {capture: 'viewport'});
@@ -186,6 +200,7 @@ context('Search all pages', () => {
     cy.getByTestid('search-result-base').should('be.visible');
     cy.getByTestid('search-result-list').should('be.visible');
     cy.getByTestid('search-result-content').should('be.visible');
+    cy.get('#wiki').should('be.visible');
     cy.screenshot(`${ssPrefix}2-tag-order-by-relevance`);
 
     cy.get('.grw-search-page-nav').within(() => {
@@ -196,6 +211,7 @@ context('Search all pages', () => {
     cy.getByTestid('search-result-base').should('be.visible');
     cy.getByTestid('search-result-list').should('be.visible');
     cy.getByTestid('search-result-content').should('be.visible');
+    cy.get('#wiki').should('be.visible');
     cy.screenshot(`${ssPrefix}3-tag-order-by-creation-date`);
 
     cy.get('.grw-search-page-nav').within(() => {
@@ -206,6 +222,7 @@ context('Search all pages', () => {
     cy.getByTestid('search-result-base').should('be.visible');
     cy.getByTestid('search-result-list').should('be.visible');
     cy.getByTestid('search-result-content').should('be.visible');
+    cy.get('#wiki').should('be.visible');
     cy.screenshot(`${ssPrefix}4-tag-order-by-last-update-date`);
   });
 
@@ -239,9 +256,16 @@ context('Search current tree with "prefix":', () => {
     cy.getByTestid('search-result-base').should('be.visible');
     cy.getByTestid('search-result-list').should('be.visible');
     cy.getByTestid('search-result-content').should('be.visible');
+    cy.get('#wiki').should('be.visible');
+    // eslint-disable-next-line cypress/no-unnecessary-waiting
+    cy.wait(500); // wait for 500 ms for Scroll
     cy.screenshot(`${ssPrefix}3-search-page-results`, { capture: 'viewport'});
 
     cy.getByTestid('open-page-item-control-btn').first().click();
+    cy.getByTestid('search-result-content').should('be.visible');
+    cy.get('#wiki').should('be.visible');
+    // eslint-disable-next-line cypress/no-unnecessary-waiting
+    cy.wait(500); // wait for 500 ms for Scroll
     cy.screenshot(`${ssPrefix}4-click-three-dots-menu`, {capture: 'viewport'});
   });
 
