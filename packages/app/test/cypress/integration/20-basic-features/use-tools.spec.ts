@@ -211,8 +211,8 @@ context('Tag Oprations', () =>{
     cy.getByTestid('search-result-list').should('be.visible');
     cy.getByTestid('search-result-content').should('be.visible');
     cy.get('#wiki').should('be.visible');
-    // force to click element to pass VRT: https://github.com/weseek/growi/pull/6603
-    cy.getByTestid('page-list-item-L').first().click();
+    // force to add 'active' to pass VRT: https://github.com/weseek/growi/pull/6603
+    cy.getByTestid('page-list-item-L').first().invoke('addClass', 'active');
     cy.screenshot(`${ssPrefix}1-click-tag-name`, {capture: 'viewport'});
 
     cy.getByTestid('open-page-item-control-btn').first().click({force: true});
