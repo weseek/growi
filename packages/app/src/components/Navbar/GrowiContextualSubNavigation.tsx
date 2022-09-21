@@ -180,7 +180,6 @@ const GrowiContextualSubNavigation = (props: GrowiContextualSubNavigationProps):
   const { data: isGuestUser } = useIsGuestUser();
   const { data: isSharedUser } = useIsSharedUser();
   const { data: shareLinkId } = useShareLinkId();
-  const { data: isNotFound } = useIsNotFound();
 
   const { data: isAbleToShowPageManagement } = useIsAbleToShowPageManagement();
   const { data: isAbleToShowTagLabel } = useIsAbleToShowTagLabel();
@@ -296,14 +295,6 @@ const GrowiContextualSubNavigation = (props: GrowiContextualSubNavigationProps):
 
 
   const ControlComponents = useCallback(() => {
-    if (currentPage == null || pageId == null) {
-      return <></>;
-    }
-
-    function onPageEditorModeButtonClicked(viewType) {
-      mutateEditorMode(viewType);
-    }
-
     const additionalMenuItemsRenderer = () => {
       if (revisionId == null || pageId == null) {
         return <></>;
@@ -323,24 +314,26 @@ const GrowiContextualSubNavigation = (props: GrowiContextualSubNavigationProps):
 
           { isViewMode && (
             <div className="h-50 w-100">
-              <SubNavButtons
-                isCompactMode={isCompactMode}
-                pageId={pageId}
-                revisionId={revisionId}
-                shareLinkId={shareLinkId}
-                path={path}
-                disableSeenUserInfoPopover={isSharedUser}
-                showPageControlDropdown={isAbleToShowPageManagement}
-                additionalMenuItemRenderer={additionalMenuItemsRenderer}
-                onClickDuplicateMenuItem={duplicateItemClickedHandler}
-                onClickRenameMenuItem={renameItemClickedHandler}
-                onClickDeleteMenuItem={deleteItemClickedHandler}
-              />
+              { pageId != null && (
+                <SubNavButtons
+                  isCompactMode={isCompactMode}
+                  pageId={pageId}
+                  revisionId={revisionId}
+                  shareLinkId={shareLinkId}
+                  path={path}
+                  disableSeenUserInfoPopover={isSharedUser}
+                  showPageControlDropdown={isAbleToShowPageManagement}
+                  additionalMenuItemRenderer={additionalMenuItemsRenderer}
+                  onClickDuplicateMenuItem={duplicateItemClickedHandler}
+                  onClickRenameMenuItem={renameItemClickedHandler}
+                  onClickDeleteMenuItem={deleteItemClickedHandler}
+                />
+              ) }
             </div>
           ) }
           {isAbleToShowPageEditorModeManager && (
             <PageEditorModeManager
-              onPageEditorModeButtonClicked={onPageEditorModeButtonClicked}
+              onPageEditorModeButtonClicked={viewType => mutateEditorMode(viewType)}
               isBtnDisabled={isGuestUser}
               editorMode={editorMode}
             />
@@ -356,7 +349,7 @@ const GrowiContextualSubNavigation = (props: GrowiContextualSubNavigationProps):
       </>
     );
   // eslint-disable-next-line max-len
-  }, [currentPage, currentUser, pageId, revisionId, shareLinkId, path, editorMode, isCompactMode, isViewMode, isSharedUser, isAbleToShowPageManagement, isAbleToShowPageEditorModeManager, isLinkSharingDisabled, isGuestUser, isPageTemplateModalShown, duplicateItemClickedHandler, renameItemClickedHandler, deleteItemClickedHandler, mutateEditorMode, templateMenuItemClickHandler]);
+  }, [currentUser, pageId, revisionId, shareLinkId, path, editorMode, isCompactMode, isViewMode, isSharedUser, isAbleToShowPageManagement, isAbleToShowPageEditorModeManager, isLinkSharingDisabled, isGuestUser, isPageTemplateModalShown, duplicateItemClickedHandler, renameItemClickedHandler, deleteItemClickedHandler, mutateEditorMode, templateMenuItemClickHandler]);
 
   if (currentPathname == null) {
     return <></>;
@@ -375,7 +368,6 @@ const GrowiContextualSubNavigation = (props: GrowiContextualSubNavigationProps):
       isGuestUser={isGuestUser}
       isDrawerMode={isDrawerMode}
       isCompactMode={isCompactMode}
-      isNotFound={isNotFound}
       tags={isViewMode ? tagsInfoData?.tags : tagsForEditors}
       tagsUpdatedHandler={isViewMode ? tagsUpdatedHandlerForViewMode : tagsUpdatedHandlerForEditMode}
       controls={ControlComponents}
