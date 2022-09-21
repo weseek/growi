@@ -275,6 +275,8 @@ context('Tag Oprations', () =>{
     cy.screenshot(`${ssPrefix}1-click-tag-name`, {capture: 'viewport'});
 
     cy.getByTestid('open-page-item-control-btn').first().click({force: true});
+    // eslint-disable-next-line cypress/no-unnecessary-waiting
+    cy.wait(1500); // for wait rendering pagelist info
     cy.screenshot(`${ssPrefix}2-click-three-dots-menu`, {capture: 'viewport'});
 
     cy.getByTestid('open-page-duplicate-modal-btn').first().click({force: true});
