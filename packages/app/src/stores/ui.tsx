@@ -1,7 +1,7 @@
 import { RefObject } from 'react';
 
 import {
-  isClient, isServer, pagePathUtils, Nullable,
+  isClient, isServer, pagePathUtils, Nullable, PageGrant,
 } from '@growi/core';
 import { withUtils, SWRResponseWithUtils } from '@growi/core/src/utils/with-utils';
 import { Breakpoint, addBreakpointListener } from '@growi/ui';
@@ -367,7 +367,7 @@ export const useSidebarResizeDisabled = (isDisabled?: boolean): SWRResponse<bool
 };
 
 export const useSelectedGrant = (initialData?: Nullable<IPageGrantData>): SWRResponse<Nullable<IPageGrantData>, Error> => {
-  return useStaticSWR<Nullable<IPageGrantData>, Error>('selectedGrant', initialData);
+  return useStaticSWR<Nullable<IPageGrantData>, Error>('selectedGrant', initialData, { fallbackData: { grant: PageGrant.GRANT_PUBLIC } });
 };
 
 export const useGlobalSearchFormRef = (initialData?: RefObject<IFocusable>): SWRResponse<RefObject<IFocusable>, Error> => {
