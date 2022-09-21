@@ -1,14 +1,14 @@
 import React, { useCallback, useMemo } from 'react';
 
 import { smoothScrollIntoView } from '~/client/util/smooth-scroll';
+import styles from '~/components/ContentLinkButtons.module.scss';
 import { RecentlyCreatedIcon } from '~/components/Icons/RecentlyCreatedIcon';
 import { usePageUser } from '~/stores/context';
 
 
 const WIKI_HEADER_LINK = 120;
 
-
-const ContentLinkButtons = (): JSX.Element => {
+export const ContentLinkButtons = (): JSX.Element => {
 
   const { data: pageUser } = usePageUser();
 
@@ -45,13 +45,13 @@ const ContentLinkButtons = (): JSX.Element => {
         className="btn btn-outline-secondary btn-sm px-3"
         onClick={() => smoothScrollIntoView(getRecentlyCreatedListHeaderDom, WIKI_HEADER_LINK)}
       >
-        <i className="grw-icon-container-recently-created mr-2"><RecentlyCreatedIcon /></i>
+        <i className={`${styles['grw-icon-container-recently-created']} grw-icon-container-recently-created mr-2`}><RecentlyCreatedIcon /></i>
         <span>Recently Created</span>
       </button>
     );
   }, [getRecentlyCreatedListHeaderDom]);
 
-  if (pageUser == null) {
+  if (pageUser == null || pageUser.name === '') {
     return <></>;
   }
 
@@ -61,7 +61,4 @@ const ContentLinkButtons = (): JSX.Element => {
       <RecentlyCreatedLinkButton />
     </div>
   );
-
 };
-
-export default ContentLinkButtons;

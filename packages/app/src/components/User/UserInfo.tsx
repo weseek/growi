@@ -2,20 +2,16 @@ import React from 'react';
 
 import { UserPicture } from '@growi/ui';
 
-import { IUserHasId } from '~/interfaces/user';
+import { usePageUser } from '~/stores/context';
 
 import styles from './UserInfo.module.scss';
 
-export type UserInfoProps = {
-  pageUser: IUserHasId,
-}
+export const UserInfo = (): JSX.Element => {
 
-export const UserInfo = (props: UserInfoProps): JSX.Element => {
-
-  const { pageUser } = props;
+  const { data: pageUser } = usePageUser();
 
   // Do not display when the user does not exist
-  if (pageUser == null) {
+  if (pageUser == null || pageUser.name === '') {
     return <></>;
   }
 
