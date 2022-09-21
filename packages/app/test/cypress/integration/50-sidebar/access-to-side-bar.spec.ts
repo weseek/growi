@@ -52,7 +52,7 @@ context('Access to sidebar', () => {
     cy.get('.grw-sidebar-content-header.h5').find('a').click();
     cy.get('.CodeMirror textarea').type(content, {force: true});
     cy.screenshot(`${ssPrefix}custom-sidebar-2-custom-sidebar-editor`);
-    cy.get('.dropup > .btn-submit').click();
+    cy.getByTestid('btn-submit').click();
     cy.get('body').should('not.have.class', 'on-edit');
 
     // What to do when UserUISettings is not saved in time

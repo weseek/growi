@@ -53,7 +53,7 @@ context('Modal for page operation', () => {
       cy.getByTestid('btn-create-memo').click();
     });
     cy.getByTestid('page-editor').should('be.visible');
-    cy.get('.dropup > .btn-submit').click();
+    cy.getByTestid('save-page-btn').click();
     cy.get('body').should('not.have.class', 'on-edit');
 
     cy.get('.grw-subnav').should('be.visible');
@@ -70,7 +70,7 @@ context('Modal for page operation', () => {
       cy.getByTestid('btn-create-page-under-below').click();
     });
     cy.getByTestid('page-editor').should('be.visible');
-    cy.get('.dropup > .btn-submit').click();
+    cy.getByTestid('btn-submit').click();
     cy.get('body').should('not.have.class', 'on-edit');
 
     cy.get('.grw-subnav').should('be.visible');
