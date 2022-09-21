@@ -103,6 +103,8 @@ context('Search all pages', () => {
     cy.get('#wiki').should('be.visible');
     // eslint-disable-next-line cypress/no-unnecessary-waiting
     cy.wait(500); // wait for 500 ms for Scroll
+    // force to add 'active' to pass VRT: https://github.com/weseek/growi/pull/6603
+    cy.getByTestid('page-list-item-L').first().invoke('addClass', 'active');
     cy.screenshot(`${ssPrefix}3-search-page-results`, { capture: 'viewport'});
 
     cy.getByTestid('open-page-item-control-btn').eq(1).click();
@@ -168,6 +170,8 @@ context('Search all pages', () => {
     cy.getByTestid('search-result-list').should('be.visible');
     cy.getByTestid('search-result-content').should('be.visible');
     cy.get('#wiki').should('be.visible');
+    // force to add 'active' to pass VRT: https://github.com/weseek/growi/pull/6603
+    cy.getByTestid('page-list-item-L').first().invoke('addClass', 'active');
     cy.screenshot(`${ssPrefix}2-search-with-tag-result`, {capture: 'viewport'});
 
     cy.getByTestid('open-page-item-control-btn').first().click();
@@ -186,6 +190,8 @@ context('Search all pages', () => {
     cy.getByTestid('search-result-list').should('be.visible');
     cy.getByTestid('search-result-content').should('be.visible');
     cy.get('#wiki').should('be.visible');
+    // force to add 'active' to pass VRT: https://github.com/weseek/growi/pull/6603
+    cy.getByTestid('page-list-item-L').first().invoke('addClass', 'active');
     cy.screenshot(`${ssPrefix}1-tag-order-click-tag-name`, {capture: 'viewport'});
 
     cy.get('.grw-search-page-nav').within(() => {
