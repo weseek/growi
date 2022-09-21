@@ -3,7 +3,6 @@ import React, {
 } from 'react';
 
 import { useTranslation } from 'next-i18next';
-import { useRouter } from 'next/router';
 import ReactCardFlip from 'react-card-flip';
 
 import { apiv3Post } from '~/client/util/apiv3-client';
@@ -25,7 +24,6 @@ export type LoginFormProps = {
 }
 export const LoginForm = (props: LoginFormProps): JSX.Element => {
   const { t } = useTranslation();
-  const router = useRouter();
   const { data: csrfToken } = useCsrfToken();
 
   const {
