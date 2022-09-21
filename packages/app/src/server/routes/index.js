@@ -20,7 +20,7 @@ import * as userActivation from './user-activation';
 const multer = require('multer');
 const autoReap = require('multer-autoreap');
 
-const csrfProtection = csrf({ ignoreMethods: ['GET', 'HEAD', 'OPTIONS', 'POST'], cookie: false });
+const csrfProtection = csrf({ cookie: false });
 
 autoReap.options.reapOnError = true; // continue reaping the file even if an error occurs
 
