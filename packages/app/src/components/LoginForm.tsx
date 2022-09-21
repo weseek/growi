@@ -3,7 +3,6 @@ import React, {
 } from 'react';
 
 import { useTranslation } from 'next-i18next';
-import { useRouter } from 'next/router';
 import ReactCardFlip from 'react-card-flip';
 
 import { apiv3Post } from '~/client/util/apiv3-client';
@@ -25,7 +24,6 @@ export type LoginFormProps = {
 }
 export const LoginForm = (props: LoginFormProps): JSX.Element => {
   const { t } = useTranslation();
-  const router = useRouter();
   const { data: csrfToken } = useCsrfToken();
 
   const {
@@ -172,12 +170,11 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
       name,
       email,
       password,
-      token: csrfToken,
     };
     try {
-      const res = await apiv3Post(requestPath, { registerForm });
+      const res = await apiv3Post(requestPath, { registerForm, _csrf: csrfToken });
       const { redirectTo } = res.data;
-      router.push(redirectTo);
+      window.location.href = redirectTo;
     }
     catch (err) {
       // Execute if error exists
@@ -341,7 +338,6 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
 
           {/* Sign up button (submit) */}
           <div className="input-group justify-content-center my-4">
-            <input type="hidden" name="_csrf" value={csrfToken} />
             <button
               className="btn btn-fill rounded-0"
               id="register"
