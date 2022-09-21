@@ -60,12 +60,14 @@ context('Modal for page operation', () => {
     cy.screenshot(`${ssPrefix}create-today-page`);
   });
   it('Successfully create page under specific path', () => {
-    const pageName = 'Pages created under a specific path';
-    cy.visit('/');
+    const parentPageName = '/SandBox';
+    const childPageName = `${parentPageName}/child`;
+
+    cy.visit(parentPageName);
     cy.getByTestid('newPageBtn').click();
 
     cy.getByTestid('page-create-modal').should('be.visible').within(() => {
-      cy.get('.rbt-input-main').type(pageName);
+      cy.get('.rbt-input-main').type(childPageName);
       cy.screenshot(`${ssPrefix}under-path-add-page-name`);
       cy.getByTestid('btn-create-page-under-below').click();
     });
@@ -77,15 +79,11 @@ context('Modal for page operation', () => {
     cy.screenshot(`${ssPrefix}create-page-under-path`);
   });
 
-  it('Successfully create a template page under the path', () => {
-    const pageName = 'Template page created under a specific path';
+  it('Trying to create template page under the root page fail', () => {
     cy.visit('/');
     cy.getByTestid('newPageBtn').click();
 
     cy.getByTestid('page-create-modal').should('be.visible').within(() => {
-      cy.get('.rbt-input-main').type(pageName);
-
-      cy.screenshot(`${ssPrefix}create-template-for-children-add-path`);
       cy.get('#template-type').click();
       cy.get('#template-type').next().find('button:eq(0)').click({force: true});
       cy.get('#dd-template-type').next().find('button').click({force: true});
@@ -95,9 +93,6 @@ context('Modal for page operation', () => {
     cy.get('.toast-error').should('be.visible').click();
 
     cy.getByTestid('page-create-modal').should('be.visible').within(() => {
-      cy.get('.rbt-input-main').clear().type('/');
-
-      cy.screenshot(`${ssPrefix}create-template-for-descendants-add-path`);
       cy.get('#template-type').click();
       cy.get('#template-type').next().find('button:eq(1)').click({force: true});
       cy.get('#dd-template-type').next().find('button').click({force: true});
@@ -109,7 +104,6 @@ context('Modal for page operation', () => {
       cy.get('button.close').click();
     });
     cy.screenshot(`${ssPrefix}create-template-close-modal`, {capture: 'viewport'});
-
   });
 
   it('PageDeleteModal is shown successfully', () => {
