@@ -166,10 +166,9 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
       name,
       email,
       password,
-      token: csrfToken,
     };
     try {
-      const res = await apiv3Post(requestPath, { registerForm });
+      const res = await apiv3Post(requestPath, { registerForm, _csrf: csrfToken });
       const { redirectTo } = res.data;
       router.push(redirectTo);
     }
@@ -335,7 +334,6 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
 
           {/* Sign up button (submit) */}
           <div className="input-group justify-content-center my-4">
-            <input type="hidden" name="_csrf" value={csrfToken} />
             <button
               className="btn btn-fill rounded-0"
               id="register"
