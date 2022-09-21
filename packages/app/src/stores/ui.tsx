@@ -27,7 +27,7 @@ import {
 import { localStorageMiddleware } from './middlewares/sync-to-storage';
 import { useStaticSWR } from './use-static-swr';
 
-const { isTrashTopPage } = pagePathUtils;
+const { isTrashTopPage, isUsersTopPage } = pagePathUtils;
 
 const logger = loggerFactory('growi:stores:ui');
 
@@ -424,22 +424,21 @@ export const useIsAbleToShowPageManagement = (): SWRResponse<boolean, Error> => 
 export const useIsAbleToShowTagLabel = (): SWRResponse<boolean, Error> => {
   const key = 'isAbleToShowTagLabel';
   const { data: pageId } = useCurrentPageId();
-  const { data: isUserPage } = useIsUserPage();
   const { data: currentPagePath } = useCurrentPagePath();
   const { data: isIdenticalPath } = useIsIdenticalPath();
   const { data: isNotFound } = useIsNotFound();
   const { data: editorMode } = useEditorMode();
   const { data: shareLinkId } = useShareLinkId();
 
-  const includesUndefined = [isUserPage, currentPagePath, isIdenticalPath, isNotFound, editorMode].some(v => v === undefined);
+  const includesUndefined = [currentPagePath, isIdenticalPath, isNotFound, editorMode].some(v => v === undefined);
 
   const isViewMode = editorMode === EditorMode.View;
 
   return useSWRImmutable(
-    includesUndefined ? null : [key, editorMode, pageId],
+    includesUndefined ? null : [key, pageId, currentPagePath, isIdenticalPath, isNotFound, editorMode, shareLinkId],
     // "/trash" page does not exist on page collection and unable to add tags
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    () => !isUserPage && !isTrashTopPage(currentPagePath!) && shareLinkId == null && !isIdenticalPath && !(isViewMode && isNotFound),
+    () => !isUsersTopPage(currentPagePath!) && !isTrashTopPage(currentPagePath!) && shareLinkId == null && !isIdenticalPath && !(isViewMode && isNotFound),
   );
 };
 
