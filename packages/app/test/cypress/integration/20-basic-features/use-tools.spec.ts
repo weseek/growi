@@ -70,7 +70,7 @@ context('Modal for page operation', () => {
       cy.getByTestid('btn-create-page-under-below').click();
     });
     cy.getByTestid('page-editor').should('be.visible');
-    cy.getByTestid('btn-submit').click();
+    cy.getByTestid('save-page-btn').click();
     cy.get('body').should('not.have.class', 'on-edit');
 
     cy.getByTestid('grw-contextual-sub-nav').should('be.visible');
