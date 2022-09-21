@@ -56,7 +56,7 @@ context('Modal for page operation', () => {
     cy.getByTestid('save-page-btn').click();
     cy.get('body').should('not.have.class', 'on-edit');
 
-    cy.get('.grw-subnav').should('be.visible');
+    cy.getByTestid('grw-contextual-sub-nav').should('be.visible');
     cy.screenshot(`${ssPrefix}create-today-page`);
   });
   it('Successfully create page under specific path', () => {
@@ -73,7 +73,7 @@ context('Modal for page operation', () => {
     cy.getByTestid('btn-submit').click();
     cy.get('body').should('not.have.class', 'on-edit');
 
-    cy.get('.grw-subnav').should('be.visible');
+    cy.getByTestid('grw-contextual-sub-nav').should('be.visible');
     cy.screenshot(`${ssPrefix}create-page-under-path`);
   });
 
