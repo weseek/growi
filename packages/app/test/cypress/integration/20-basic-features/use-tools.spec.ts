@@ -75,7 +75,7 @@ context('Modal for page operation', () => {
     cy.get('body').should('not.have.class', 'on-edit');
 
     cy.getByTestid('grw-contextual-sub-nav').should('be.visible');
-    cy.screenshot(`${ssPrefix}create-page-under-path`);
+    cy.screenshot(`${ssPrefix}create-page-under-specific-page`);
   });
 
   it('Trying to create template page under the root page fail', () => {
