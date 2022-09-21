@@ -60,14 +60,13 @@ context('Modal for page operation', () => {
     cy.screenshot(`${ssPrefix}create-today-page`);
   });
   it('Successfully create page under specific path', () => {
-    const parentPageName = '/SandBox';
-    const childPageName = `${parentPageName}/child`;
+    const pageName = 'child';
 
-    cy.visit(parentPageName);
+    cy.visit('/SandBox');
     cy.getByTestid('newPageBtn').click();
 
     cy.getByTestid('page-create-modal').should('be.visible').within(() => {
-      cy.get('.rbt-input-main').type(childPageName);
+      cy.get('.rbt-input-main').type(pageName);
       cy.screenshot(`${ssPrefix}under-path-add-page-name`);
       cy.getByTestid('btn-create-page-under-below').click();
     });
