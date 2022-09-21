@@ -95,7 +95,7 @@ const PageView = React.memo((): JSX.Element => {
 
             <div className="d-none d-lg-block">
               <TableOfContents />
-              { isUserPage && <ContentLinkButtons /> }
+              { isUserPage && <ContentLinkButtons isUserPage={isUserPage}/> }
             </div>
 
           </div>

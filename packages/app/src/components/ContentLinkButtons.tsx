@@ -1,21 +1,24 @@
-import React, { useCallback, useMemo } from 'react';
+import React, { useCallback } from 'react';
 
 import { smoothScrollIntoView } from '~/client/util/smooth-scroll';
 import styles from '~/components/ContentLinkButtons.module.scss';
 import { RecentlyCreatedIcon } from '~/components/Icons/RecentlyCreatedIcon';
 import { usePageUser } from '~/stores/context';
 
-
 const WIKI_HEADER_LINK = 120;
 
-export const ContentLinkButtons = (): JSX.Element => {
+// props for re-rendering
+type Props = {
+  isUserPage: boolean
+}
+
+export const ContentLinkButtons = (props: Props): JSX.Element => {
 
   const { data: pageUser } = usePageUser();
 
   // get element for smoothScroll
-  const getBookMarkListHeaderDom = useMemo(() => { return document.getElementById('bookmarks-list') }, []);
-  const getRecentlyCreatedListHeaderDom = useMemo(() => { return document.getElementById('recently-created-list') }, []);
-
+  const getBookMarkListHeaderDom = document.getElementById('bookmarks-list');
+  const getRecentlyCreatedListHeaderDom = document.getElementById('recently-created-list');
 
   const BookMarkLinkButton = useCallback((): JSX.Element => {
     if (getBookMarkListHeaderDom == null) {
