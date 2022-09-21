@@ -170,6 +170,8 @@ context('Search all pages', () => {
     cy.getByTestid('search-result-list').should('be.visible');
     cy.getByTestid('search-result-content').should('be.visible');
     cy.get('#wiki').should('be.visible');
+    // force to add 'active' to pass VRT: https://github.com/weseek/growi/pull/6603
+    cy.getByTestid('page-list-item-L').first().invoke('addClass', 'active');
     cy.screenshot(`${ssPrefix}2-search-with-tag-result`, {capture: 'viewport'});
 
     cy.getByTestid('open-page-item-control-btn').first().click();
