@@ -124,14 +124,12 @@ module.exports = function(crowi, app) {
     const { errors } = req.form;
     if (!passportService.isLdapStrategySetup) {
       debug('LdapStrategy has not been set up');
-      errors.push(ErrorV3('message.strategy_has_not_been_set_up.LdapStrategy', 'ldap-strategy-has-not-been-set-up'));
-      return next();
+      return res.apiv3Err('message.strategy_has_not_been_set_up.LdapStrategy', 405);
     }
 
     if (!req.form.isValid) {
-      debug('invalid form');
-      // no need to push error to req.form because loginValidation middleware already took care of it.
-      return next();
+      const errors = req.form.errors;
+      return res.apiv3Err(errors, 400);
     }
 
     const providerId = 'ldap';
@@ -143,14 +141,12 @@ module.exports = function(crowi, app) {
     }
     catch (err) {
       debug(err.message);
-      errors.push(err);
-      return next();
+      return res.apiv3Err(err);
     }
 
     // check groups for LDAP
     if (!isValidLdapUserByGroupFilter(ldapAccountInfo)) {
-      errors.push(ErrorV3('message.ldap_user_not_valid'));
-      return next();
+      return res.apiv3Err('message.ldap_user_not_valid', 400);
     }
 
     /*
@@ -175,15 +171,14 @@ module.exports = function(crowi, app) {
 
     const externalAccount = await getOrCreateUser(req, res, userInfo, providerId);
     if (!externalAccount) {
-      errors.push(ErrorV3('message.external_account_not_exist'));
-      return next();
+      return res.apiv3Err('message.external_account_not_exist', 404);
     }
 
     const user = await externalAccount.getPopulatedUser();
 
     // login
     await req.logIn(user, (err) => {
-      if (err) { debug(err.message); return next() }
+      if (err) { debug(err.message); return res.apiv3Err(err) }
 
       return loginSuccessHandler(req, res, user, SupportedAction.ACTION_USER_LOGIN_WITH_LDAP);
     });
