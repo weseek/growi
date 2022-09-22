@@ -60,7 +60,7 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
     window.location.href = `/passport/${auth}`;
   }, []);
 
-  const handleLoginWithLocal = useCallback(async(e) => {
+  const handleLoginWithLocalSubmit = useCallback(async(e) => {
     e.preventDefault();
 
     const loginForm = {
@@ -97,7 +97,7 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
             </p>
           )
         }
-        <form role="form" onSubmit={handleLoginWithLocal} id="login-form">
+        <form role="form" onSubmit={handleLoginWithLocalSubmit} id="login-form">
           <div className="input-group">
             <div className="input-group-prepend">
               <span className="input-group-text">
@@ -137,7 +137,7 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
         </form>
       </>
     );
-  }, [handleLoginWithLocal, loginErrors, props, t]);
+  }, [handleLoginWithLocalSubmit, loginErrors, props, t]);
 
   const renderExternalAuthInput = useCallback((auth) => {
     const authIconNames = {
