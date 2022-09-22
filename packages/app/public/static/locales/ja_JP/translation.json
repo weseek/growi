@@ -722,6 +722,8 @@
     "Password has invalid character": "パスワードに無効な文字があります",
     "Password minimum character should be more than 8 characters": "パスワードの最小文字数は8文字以上です",
     "Password field is required": "パスワードの欄は必ず入力してください",
+    "Username or E-mail has invalid characters": "ユーザー名または、メールアドレスに無効な文字があります",
+    "Password minimum character should be more than 6 characters": "パスワードの最小文字数は6文字以上です",
     "user_not_found": "ユーザーが見つかりません"
   },
   "grid_edit":{

@@ -731,6 +731,8 @@
     "Password has invalid character": "Password has invalid character",
     "Password minimum character should be more than 8 characters": "Password minimum character should be more than 8 characters",
     "Password field is required": "Password field is required",
+    "Username or E-mail has invalid characters": "Username or E-mail has invalid characters",
+    "Password minimum character should be more than 6 characters": "Password minimum character should be more than 6 characters",
     "user_not_found": "User not found"
   },
   "grid_edit":{
