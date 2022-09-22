@@ -44,6 +44,48 @@ module.exports = function(crowi, app) {
     });
   };
 
+  const getOrCreateUser = async(req, res, userInfo, providerId) => {
+    // get option
+    const isSameUsernameTreatedAsIdenticalUser = crowi.passportService.isSameUsernameTreatedAsIdenticalUser(providerId);
+    const isSameEmailTreatedAsIdenticalUser = crowi.passportService.isSameEmailTreatedAsIdenticalUser(providerId);
+
+    try {
+      // find or register(create) user
+      const externalAccount = await ExternalAccount.findOrRegister(
+        providerId,
+        userInfo.id,
+        userInfo.username,
+        userInfo.name,
+        userInfo.email,
+        isSameUsernameTreatedAsIdenticalUser,
+        isSameEmailTreatedAsIdenticalUser,
+      );
+      return externalAccount;
+    }
+    catch (err) {
+      /* eslint-disable no-else-return */
+      if (err instanceof NullUsernameToBeRegisteredError) {
+        req.flash('warningMessage', req.t(`message.${err.message}`));
+        return;
+      }
+      else if (err.name === 'DuplicatedUsernameException') {
+        if (isSameEmailTreatedAsIdenticalUser || isSameUsernameTreatedAsIdenticalUser) {
+          // associate to existing user
+          debug(`ExternalAccount '${userInfo.username}' will be created and bound to the exisiting User account`);
+          return ExternalAccount.associate(providerId, userInfo.id, err.user);
+        }
+
+        req.flash('provider-DuplicatedUsernameException', providerId);
+        return;
+      }
+      else if (err.name === 'UserUpperLimitException') {
+        req.flash('warningMessage', req.t('message.maximum_number_of_users'));
+        return;
+      }
+      /* eslint-enable no-else-return */
+    }
+  };
+
   /**
    * success handler
    * @param {*} req
@@ -587,48 +629,6 @@ module.exports = function(crowi, app) {
 
       return loginSuccessHandler(req, res, user, SupportedAction.ACTION_USER_LOGIN_WITH_BASIC);
     });
-  };
-
-  const getOrCreateUser = async(req, res, userInfo, providerId) => {
-    // get option
-    const isSameUsernameTreatedAsIdenticalUser = crowi.passportService.isSameUsernameTreatedAsIdenticalUser(providerId);
-    const isSameEmailTreatedAsIdenticalUser = crowi.passportService.isSameEmailTreatedAsIdenticalUser(providerId);
-
-    try {
-      // find or register(create) user
-      const externalAccount = await ExternalAccount.findOrRegister(
-        providerId,
-        userInfo.id,
-        userInfo.username,
-        userInfo.name,
-        userInfo.email,
-        isSameUsernameTreatedAsIdenticalUser,
-        isSameEmailTreatedAsIdenticalUser,
-      );
-      return externalAccount;
-    }
-    catch (err) {
-      /* eslint-disable no-else-return */
-      if (err instanceof NullUsernameToBeRegisteredError) {
-        req.flash('warningMessage', req.t(`message.${err.message}`));
-        return;
-      }
-      else if (err.name === 'DuplicatedUsernameException') {
-        if (isSameEmailTreatedAsIdenticalUser || isSameUsernameTreatedAsIdenticalUser) {
-          // associate to existing user
-          debug(`ExternalAccount '${userInfo.username}' will be created and bound to the exisiting User account`);
-          return ExternalAccount.associate(providerId, userInfo.id, err.user);
-        }
-
-        req.flash('provider-DuplicatedUsernameException', providerId);
-        return;
-      }
-      else if (err.name === 'UserUpperLimitException') {
-        req.flash('warningMessage', req.t('message.maximum_number_of_users'));
-        return;
-      }
-      /* eslint-enable no-else-return */
-    }
   };
 
   return {
