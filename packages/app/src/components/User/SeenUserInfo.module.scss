@@ -2,7 +2,7 @@
 @use '~/styles/mixins';
 
 .grw-seen-user-info :global {
-  .btn-seen-user {
+  .btn.btn-seen-user {
     $color-seen-user: #549c79;
 
     @include bs.button-outline-variant($color-seen-user, $color-seen-user, rgba(lighten($color-seen-user, 10%), 0.15), rgba(lighten($color-seen-user, 10%), 0.5));
