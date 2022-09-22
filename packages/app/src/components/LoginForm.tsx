@@ -71,7 +71,6 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
     try {
       const res = await apiv3Post('/login', { loginForm });
       const { redirectTo } = res.data;
-      console.log(redirectTo);
       router.push(redirectTo);
     }
     catch (err) {
