@@ -1,5 +1,5 @@
 import React, {
-  useState, useEffect,
+  useState, useEffect, useCallback,
 } from 'react';
 
 import { useTranslation } from 'next-i18next';
@@ -51,12 +51,12 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
   }, []);
 
   // functions
-  const handleLoginWithExternalAuth = (e) => {
+  const handleLoginWithExternalAuth = useCallback((e) => {
     const auth = e.currentTarget.id;
 
     window.location.href = `/passport/${auth}`;
-  };
-  const renderLocalOrLdapLoginForm = () => {
+  }, []);
+  const renderLocalOrLdapLoginForm = useCallback(() => {
     const { isLdapStrategySetup } = props;
 
     return (
@@ -98,8 +98,8 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
         </div>
       </form>
     );
-  };
-  const renderExternalAuthInput = (auth) => {
+  }, [csrfToken, props, t]);
+  const renderExternalAuthInput = useCallback((auth) => {
     const authIconNames = {
       google: 'google',
       github: 'github',
@@ -122,8 +122,8 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
         <div className="small text-right">by {auth} Account</div>
       </div>
     );
-  };
-  const renderExternalAuthLoginForm = () => {
+  }, [handleLoginWithExternalAuth, t]);
+  const renderExternalAuthLoginForm = useCallback(() => {
     const { isLocalStrategySetup, isLdapStrategySetup, objOfIsExternalAuthEnableds } = props;
     const isExternalAuthCollapsible = isLocalStrategySetup || isLdapStrategySetup;
     const collapsibleClass = isExternalAuthCollapsible ? 'collapse collapse-external-auth' : '';
@@ -156,9 +156,9 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
         </div>
       </>
     );
-  };
+  }, [props, renderExternalAuthInput]);
 
-  const handleRegisterFormSubmit = async(e, requestPath) => {
+  const handleRegisterFormSubmit = useCallback(async(e, requestPath) => {
     e.preventDefault();
 
     const registerForm = {
@@ -179,19 +179,19 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
       }
     }
     return;
-  };
+  }, [email, name, password, router, username]);
 
-  const resetRegisterErrors = () => {
+  const resetRegisterErrors = useCallback(() => {
     if (registerErrors.length === 0) return;
     setRegisterErrors([]);
-  };
+  }, [registerErrors.length]);
 
-  const switchForm = () => {
+  const switchForm = useCallback(() => {
     setIsRegistering(!isRegistering);
     resetRegisterErrors();
-  };
+  }, [isRegistering, resetRegisterErrors]);
 
-  const renderRegisterForm = () => {
+  const renderRegisterForm = useCallback(() => {
     const {
       isEmailAuthenticationEnabled,
       username,
@@ -360,7 +360,7 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
         </div>
       </React.Fragment>
     );
-  };
+  }, [handleRegisterFormSubmit, props, registerErrors, switchForm, t]);
 
   return (
     <div className="noLogin-dialog mx-auto" id="noLogin-dialog">
