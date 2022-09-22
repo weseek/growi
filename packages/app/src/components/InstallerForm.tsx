@@ -24,7 +24,9 @@ const InstallerForm = memo((): JSX.Element => {
   }, []);
 
   // TODO: XHRize https://redmine.weseek.co.jp/issues/105252
-  const submitHandler = useCallback(() => {
+  const submitHandler = useCallback((e) => {
+    e.preventDefault();
+
     if (isSubmittingDisabled) {
       return;
     }
@@ -51,7 +53,7 @@ const InstallerForm = memo((): JSX.Element => {
         </div>
       </div>
       <div className="row">
-        <form role="form" action="/installer" method="post" id="register-form" className="col-md-12" onSubmit={submitHandler}>
+        <form role="form" action="/_api/v3/installer" method="post" id="register-form" className="col-md-12" onSubmit={submitHandler}>
           <div className="dropdown mb-3">
             <div className="d-flex dropdown-with-icon">
               <i className="icon-bubbles border-0 rounded-0" />

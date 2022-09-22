@@ -40,6 +40,12 @@ module.exports = (crowi) => {
   // auth
   routerForAuth.use('/logout', require('./logout')(crowi));
 
+  // installer
+  const isInstalled = crowi.configManager.getConfig('crowi', 'app:installed');
+  if (!isInstalled) {
+    router.use('/installer', require('./installer')(crowi));
+  }
+
 
   router.use('/in-app-notification', require('./in-app-notification')(crowi));
 
