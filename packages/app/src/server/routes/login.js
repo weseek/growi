@@ -102,14 +102,6 @@ module.exports = function(crowi, app) {
     next();
   };
 
-  actions.login = function(req, res) {
-    if (req.form) {
-      debug(req.form.errors);
-    }
-
-    return res.render('login', {});
-  };
-
   actions.register = function(req, res) {
     if (req.user != null) {
       return res.apiv3Err('user_already_logged_in', 403);
