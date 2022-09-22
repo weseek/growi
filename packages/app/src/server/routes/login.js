@@ -160,7 +160,7 @@ module.exports = function(crowi, app) {
           else {
             errors.push('failed_to_register');
           }
-          return res.apiv3Err(errors, 400);
+          return res.apiv3Err(errors, 405);
         }
 
         if (configManager.getConfig('crowi', 'security:registrationMode') !== aclService.labels.SECURITY_REGISTRATION_MODE_RESTRICTED) {
