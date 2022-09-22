@@ -232,11 +232,13 @@ module.exports = function(crowi, app) {
   // app.post('/_api/hackmd.discard'        , accessTokenParser , loginRequiredStrictly , hackmd.validateForApi, hackmd.discard);
   // app.post('/_api/hackmd.saveOnHackmd'   , accessTokenParser , loginRequiredStrictly , hackmd.validateForApi, hackmd.saveOnHackmd);
 
-  app.use('/forgot-password', express.Router()
-    .use(forgotPassword.checkForgotPasswordEnabledMiddlewareFactory(crowi))
-    .get('/', forgotPassword.forgotPassword(crowi))
-    .get('/:token', injectResetOrderByTokenMiddleware, forgotPassword.resetPassword)
-    .use(forgotPassword.handleErrosMiddleware));
+  // app.use('/forgot-password', express.Router()
+  //   .use(forgotPassword.checkForgotPasswordEnabledMiddlewareFactory(crowi))
+  //   .get('/', forgotPassword.forgotPassword(crowi))
+  //   .get('/:token', injectResetOrderByTokenMiddleware, forgotPassword.resetPassword)
+  //   .use(forgotPassword.handleErrosMiddleware));
+
+  app.get('/forgot-password', next.delegateToNext);
 
   app.get('/_private-legacy-pages', next.delegateToNext);
   app.use('/user-activation', express.Router()

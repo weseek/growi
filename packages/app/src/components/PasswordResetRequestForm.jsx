@@ -32,6 +32,7 @@ const PasswordResetRequestForm = () => {
 
   return (
     <form onSubmit={sendPasswordResetRequestMail}>
+      <h3>{ t('forgot_password.password_reset_request_desc') }</h3>
       <div className="form-group">
         <div className="input-group">
           <input name="email" placeholder="E-mail Address" className="form-control" type="email" onChange={e => changeEmail(e.target.value)} />
