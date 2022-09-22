@@ -71,7 +71,7 @@ const SharedPage: NextPage<Props> = (props: Props) => {
               <div className="container-lg">
                 <h2 className="text-muted mt-4">
                   <i className="icon-ban" aria-hidden="true"></i>
-                  Page is not found
+                    <span> Page is not found</span>
                 </h2>
               </div>
             )}
@@ -80,7 +80,7 @@ const SharedPage: NextPage<Props> = (props: Props) => {
               <div className="container-lg">
                 <h2 className="text-muted mt-4">
                   <i className="icon-ban" aria-hidden="true"></i>
-                  Page is expired
+                    <span> Page is expired</span>
                 </h2>
               </div>
             )}
