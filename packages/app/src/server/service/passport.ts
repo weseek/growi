@@ -94,6 +94,7 @@ class PassportService implements S2sMessageHandlable {
     'security:passport-saml:issuer',
     'security:passport-saml:cert',
     'security:passport-saml:attrMapId',
+    'security:passport-saml:attrMapUsername',
     'security:passport-saml:attrMapMail',
   ];
 
