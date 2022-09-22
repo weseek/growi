@@ -38,10 +38,10 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
 
   // states
   const [isRegistering, setIsRegistering] = useState(false);
-  const [usernameForRegister, setUsernameForRegister] = useState('');
-  const [nameForRegister, setNameForRegister] = useState('');
-  const [emailForRegister, setEmailForRegister] = useState('');
-  const [passwordForRegister, setPasswordForRegister] = useState('');
+  const [username, setUsername] = useState('');
+  const [name, setName] = useState('');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
   const [registerErrors, setRegisterErrors] = useState<Error[]>([]);
 
   useEffect(() => {
@@ -169,10 +169,10 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
     e.preventDefault();
 
     const registerForm = {
-      usernameForRegister,
-      nameForRegister,
-      emailForRegister,
-      passwordForRegister,
+      username,
+      name,
+      email,
+      password,
     };
     try {
       const res = await apiv3Post(requestPath, { registerForm });
@@ -186,7 +186,7 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
       }
     }
     return;
-  }, [emailForRegister, nameForRegister, passwordForRegister, router, usernameForRegister]);
+  }, [email, name, password, router, username]);
 
   const resetRegisterErrors = useCallback(() => {
     if (registerErrors.length === 0) return;
@@ -250,7 +250,7 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
                 <input
                   type="text"
                   className="form-control rounded-0"
-                  onChange={(e) => { setUsernameForRegister(e.target.value) }}
+                  onChange={(e) => { setUsername(e.target.value) }}
                   placeholder={t('User ID')}
                   name="username"
                   defaultValue={props.username}
@@ -269,7 +269,7 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
                 {/* name */}
                 <input type="text"
                   className="form-control rounded-0"
-                  onChange={(e) => { setNameForRegister(e.target.value) }}
+                  onChange={(e) => { setName(e.target.value) }}
                   placeholder={t('Name')}
                   name="name"
                   defaultValue={props.name}
@@ -287,7 +287,7 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
             {/* email */}
             <input type="email"
               className="form-control rounded-0"
-              onChange={(e) => { setEmailForRegister(e.target.value) }}
+              onChange={(e) => { setEmail(e.target.value) }}
               placeholder={t('Email')}
               name="email"
               defaultValue={props.email}
@@ -321,7 +321,7 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
                 {/* Password */}
                 <input type="password"
                   className="form-control rounded-0"
-                  onChange={(e) => { setPasswordForRegister(e.target.value) }}
+                  onChange={(e) => { setPassword(e.target.value) }}
                   placeholder={t('Password')}
                   name="password"
                   required />
