@@ -255,13 +255,12 @@ module.exports = function(crowi, app) {
     const { errors } = req.form;
     if (!passportService.isLocalStrategySetup) {
       debug('LocalStrategy has not been set up');
-      errors.push(ErrorV3('message.strategy_has_not_been_set_up.LocalStrategy', 'local-strategy-has-not-been-set-up'));
-      return next();
+      return res.apiv3Err('strategy_has_not_been_set_up.LocalStrategy', 405);
     }
 
     if (!req.form.isValid) {
-      // no need to push error to req.form because loginValidation middleware already took care of it.
-      return next();
+      const errors = req.form.errors;
+      return res.apiv3Err(errors, 400);
     }
 
     passport.authenticate('local', (err, user, info) => {
@@ -271,12 +270,13 @@ module.exports = function(crowi, app) {
 
       if (err) { // DB Error
         logger.error('Database Server Error: ', err);
-        errors.push(ErrorV3('message.database_error', 'database-error'));
-        return next();
+        return res.apiv3Err('database_error', 500);
       }
-      if (!user) { return next() }
+      if (!user) {
+        return res.apiv3Err('user_not_found', 401);
+      }
       req.logIn(user, (err) => {
-        if (err) { debug(err.message); return next() }
+        if (err) { debug(err.message); return res.apiv3Err(err) }
 
         return loginSuccessHandler(req, res, user, SupportedAction.ACTION_USER_LOGIN_WITH_LOCAL);
       });

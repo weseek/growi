@@ -122,7 +122,7 @@ module.exports = function(crowi, app) {
 
     if (!req.form.isValid) {
       const errors = req.form.errors;
-      return res.apiv3Err(errors, 401);
+      return res.apiv3Err(errors, 400);
     }
 
     const registerForm = req.form.registerForm || {};
