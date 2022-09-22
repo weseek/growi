@@ -70,8 +70,8 @@ const SharedPage: NextPage<Props> = (props: Props) => {
             { (isNotFound && !props.disableLinkSharing) && (
               <div className="container-lg">
                 <h2 className="text-muted mt-4">
-                  <i className="icon-ban" aria-hidden="true"></i>
-                    <span> Page is not found</span>
+                  <i className="icon-ban" aria-hidden="true" />
+                  <span> Page is not found</span>
                 </h2>
               </div>
             )}
@@ -79,8 +79,8 @@ const SharedPage: NextPage<Props> = (props: Props) => {
             { (props.isExpired && !props.disableLinkSharing) && (
               <div className="container-lg">
                 <h2 className="text-muted mt-4">
-                  <i className="icon-ban" aria-hidden="true"></i>
-                    <span> Page is expired</span>
+                  <i className="icon-ban" aria-hidden="true" />
+                  <span> Page is expired</span>
                 </h2>
               </div>
             )}
