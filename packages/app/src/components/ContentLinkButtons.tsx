@@ -5,11 +5,9 @@ import styles from '~/components/ContentLinkButtons.module.scss';
 import { RecentlyCreatedIcon } from '~/components/Icons/RecentlyCreatedIcon';
 import { usePageUser } from '~/stores/context';
 
-export const ContentLinkButtons = (): JSX.Element => {
+const WIKI_HEADER_LINK = 120;
 
-  const WIKI_HEADER_LINK = 120;
-
-  const { data: pageUser } = usePageUser();
+const BookMarkLinkButton = React.memo(() => {
 
   const BookMarkLinkButtonClickHandler = useCallback(() => {
     const getBookMarkListHeaderDom = document.getElementById('bookmarks-list');
@@ -17,37 +15,45 @@ export const ContentLinkButtons = (): JSX.Element => {
     smoothScrollIntoView(getBookMarkListHeaderDom, WIKI_HEADER_LINK);
   }, []);
 
+  return (
+    <button
+      type="button"
+      className="btn btn-outline-secondary btn-sm px-2"
+      onClick={BookMarkLinkButtonClickHandler}
+    >
+      <i className="fa fa-fw fa-bookmark-o"></i>
+      <span>Bookmarks</span>
+    </button>
+  );
+});
+
+BookMarkLinkButton.displayName = 'BookMarkLinkButton';
+
+const RecentlyCreatedLinkButton = React.memo(() => {
+
   const RecentlyCreatedListButtonClickHandler = useCallback(() => {
     const getRecentlyCreatedListHeaderDom = document.getElementById('recently-created-list');
     if (getRecentlyCreatedListHeaderDom == null) { return }
     smoothScrollIntoView(getRecentlyCreatedListHeaderDom, WIKI_HEADER_LINK);
   }, []);
 
-  const BookMarkLinkButton = () => {
-    return (
-      <button
-        type="button"
-        className="btn btn-outline-secondary btn-sm px-2"
-        onClick={BookMarkLinkButtonClickHandler}
-      >
-        <i className="fa fa-fw fa-bookmark-o"></i>
-        <span>Bookmarks</span>
-      </button>
-    );
-  };
+  return (
+    <button
+      type="button"
+      className="btn btn-outline-secondary btn-sm px-3"
+      onClick={RecentlyCreatedListButtonClickHandler}
+    >
+      <i className={`${styles['grw-icon-container-recently-created']} grw-icon-container-recently-created mr-2`}><RecentlyCreatedIcon /></i>
+      <span>Recently Created</span>
+    </button>
+  );
+});
 
-  const RecentlyCreatedLinkButton = () => {
-    return (
-      <button
-        type="button"
-        className="btn btn-outline-secondary btn-sm px-3"
-        onClick={RecentlyCreatedListButtonClickHandler}
-      >
-        <i className={`${styles['grw-icon-container-recently-created']} grw-icon-container-recently-created mr-2`}><RecentlyCreatedIcon /></i>
-        <span>Recently Created</span>
-      </button>
-    );
-  };
+RecentlyCreatedLinkButton.displayName = 'RecentlyCreatedLinkButton';
+
+export const ContentLinkButtons = (): JSX.Element => {
+
+  const { data: pageUser } = usePageUser();
 
   if (pageUser == null || pageUser.name === '') {
     return <></>;
