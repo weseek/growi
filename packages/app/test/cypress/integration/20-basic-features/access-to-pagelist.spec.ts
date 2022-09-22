@@ -76,6 +76,7 @@ context('Access to timeline', () => {
     cy.getByTestid('page-accessories-modal').parent().should('have.class','show').within(() => {
       cy.get('.nav-title > li').eq(1).find('a').click();
     });
+    cy.get('#wiki').should('be.visible'); // wait for rendering
     cy.screenshot(`${ssPrefix}1-timeline-list`, {capture: 'viewport'});
   });
 
