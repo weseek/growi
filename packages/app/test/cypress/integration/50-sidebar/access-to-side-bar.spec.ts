@@ -52,8 +52,17 @@ context('Access to sidebar', () => {
     cy.get('.grw-sidebar-content-header.h5').find('a').click();
     cy.get('.CodeMirror textarea').type(content, {force: true});
     cy.screenshot(`${ssPrefix}custom-sidebar-2-custom-sidebar-editor`);
-    cy.get('.dropup > .btn-submit').click();
+    cy.getByTestid('save-page-btn').click();
     cy.get('body').should('not.have.class', 'on-edit');
+
+    // What to do when UserUISettings is not saved in time
+    cy.getByTestid('grw-sidebar-nav-primary-custom-sidebar').then(($el) => {
+      if (!$el.hasClass('active')) {
+        cy.wrap($el).click();
+      }
+    });
+
+    cy.get('.grw-custom-sidebar-content').should('be.visible');
     cy.getByTestid('grw-contextual-navigation-sub').screenshot(`${ssPrefix}custom-sidebar-3-custom-sidebar-created`);
   });
 
@@ -102,7 +111,7 @@ context('Access to sidebar', () => {
     });
 
     cy.get('.grw-pagetree-item-children').eq(0).within(() => {
-      cy.get('.flex-fill > input').type('_newname');
+      cy.getByTestid('closable-text-input').type('_newname');
     });
 
     cy.getByTestid('grw-contextual-navigation-sub').screenshot(`${ssPrefix}page-tree-6-rename-page`);
@@ -142,6 +151,7 @@ context('Access to sidebar', () => {
 
   it('Successfully access to My Drafts page', () => {
     cy.visit('/');
+    cy.collapseSidebar(true);
     cy.get('.grw-sidebar-nav-secondary-container').within(() => {
       cy.get('a[href*="/me/drafts"]').click();
     });
