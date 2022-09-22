@@ -250,7 +250,7 @@ module.exports = function(crowi, app) {
     const { errors } = req.form;
     if (!passportService.isLocalStrategySetup) {
       debug('LocalStrategy has not been set up');
-      return res.apiv3Err('strategy_has_not_been_set_up.LocalStrategy', 405);
+      return res.apiv3Err('message.strategy_has_not_been_set_up.LocalStrategy', 405);
     }
 
     if (!req.form.isValid) {
@@ -265,10 +265,10 @@ module.exports = function(crowi, app) {
 
       if (err) { // DB Error
         logger.error('Database Server Error: ', err);
-        return res.apiv3Err('database_error', 500);
+        return res.apiv3Err('message.database_error', 500);
       }
       if (!user) {
-        return res.apiv3Err('user_not_found', 401);
+        return res.apiv3Err('message.user_not_found', 401);
       }
       req.logIn(user, (err) => {
         if (err) { debug(err.message); return res.apiv3Err(err) }
