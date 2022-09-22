@@ -170,8 +170,7 @@ module.exports = function(crowi, app) {
     }
 
     if (!req.form.isValid) {
-      const errors = req.form.errors;
-      return res.apiv3Err(errors, 400);
+      return res.apiv3Err(req.form.errors, 400);
     }
 
     const providerId = 'ldap';
@@ -296,8 +295,7 @@ module.exports = function(crowi, app) {
     }
 
     if (!req.form.isValid) {
-      const errors = req.form.errors;
-      return res.apiv3Err(errors, 400);
+      return res.apiv3Err(req.form.errors, 400);
     }
 
     passport.authenticate('local', (err, user, info) => {
