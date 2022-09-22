@@ -30,6 +30,7 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
 
   const {
     isLocalStrategySetup, isLdapStrategySetup, isPasswordResetEnabled, isRegistrationEnabled,
+    isEmailAuthenticationEnabled, registrationMode, registrationWhiteList, isMailerSetup,
   } = props;
   const isLocalOrLdapStrategiesEnabled = isLocalStrategySetup || isLdapStrategySetup;
   // const isSomeExternalAuthEnabled = Object.values(objOfIsExternalAuthEnableds).some(elem => elem);
@@ -192,16 +193,6 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
   }, [isRegistering, resetRegisterErrors]);
 
   const renderRegisterForm = useCallback(() => {
-    const {
-      isEmailAuthenticationEnabled,
-      username,
-      name,
-      email,
-      registrationMode,
-      registrationWhiteList,
-      isMailerSetup,
-    } = props;
-
     let registerAction = '/register';
 
     let submitText = t('Sign up');
@@ -256,7 +247,7 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
                   onChange={(e) => { setUsername(e.target.value) }}
                   placeholder={t('User ID')}
                   name="username"
-                  defaultValue={username}
+                  defaultValue={props.username}
                   required
                 />
               </div>
@@ -275,7 +266,7 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
                   onChange={(e) => { setName(e.target.value) }}
                   placeholder={t('Name')}
                   name="name"
-                  defaultValue={name}
+                  defaultValue={props.name}
                   required />
               </div>
             </div>
@@ -293,7 +284,7 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
               onChange={(e) => { setEmail(e.target.value) }}
               placeholder={t('Email')}
               name="email"
-              defaultValue={email}
+              defaultValue={props.email}
               required
             />
           </div>
@@ -360,7 +351,9 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
         </div>
       </React.Fragment>
     );
-  }, [handleRegisterFormSubmit, props, registerErrors, switchForm, t]);
+  }, [handleRegisterFormSubmit, isEmailAuthenticationEnabled, isMailerSetup,
+      props.email, props.name, props.username,
+      registerErrors, registrationMode, registrationWhiteList, switchForm, t]);
 
   return (
     <div className="noLogin-dialog mx-auto" id="noLogin-dialog">
