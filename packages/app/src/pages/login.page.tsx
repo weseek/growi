@@ -4,10 +4,9 @@ import React from 'react';
 import {
   NextPage, GetServerSideProps, GetServerSidePropsContext,
 } from 'next';
-import dynamic from 'next/dynamic';
 
 import { NoLoginLayout } from '~/components/Layout/NoLoginLayout';
-import { LoginFormProps } from '~/components/LoginForm';
+import { LoginForm } from '~/components/LoginForm';
 import { CrowiRequest } from '~/interfaces/crowi-request';
 
 import {
@@ -19,8 +18,6 @@ import {
 import {
   CommonProps, getServerSideCommonProps, useCustomTitle,
 } from './utils/commons';
-
-const LoginForm = dynamic<LoginFormProps>(() => import('~/components/LoginForm').then(mod => mod.LoginForm), { ssr: false });
 
 type Props = CommonProps & {
 

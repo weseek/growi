@@ -9,7 +9,7 @@ import ReactCardFlip from 'react-card-flip';
 import { apiv3Post } from '~/client/util/apiv3-client';
 import { useCsrfToken } from '~/stores/context';
 
-export type LoginFormProps = {
+type LoginFormProps = {
   username?: string,
   name?: string,
   email?: string,
