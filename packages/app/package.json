@@ -250,7 +250,7 @@
     "sticky-events": "^3.4.11",
     "style-loader": "^1.0.0",
     "styled-components": "^5.0.1",
-    "swagger2openapi": "^5.3.1",
+    "swagger2openapi": "^7.0.0",
     "swr": "^1.1.2",
     "terser-webpack-plugin": "^4.1.0",
     "throttle-debounce": "^3.0.1",
