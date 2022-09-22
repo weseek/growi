@@ -351,65 +351,65 @@ aligned    | aligned     | aligned
 | left       | right       | center       |
 | aligned    | aligned     | aligned      |
 
-## TSV (crowi-plus notation)
+## TSV
 
+~~~
+``` tsv
+Content Cell	Content Cell
+Content Cell	Content Cell
 ```
-::: tsv
-Content Cell  Content Cell
-Content Cell  Content Cell
-:::
-```
+~~~
 
-::: tsv
-Content Cell Content Cell
-Content Cell Content Cell
-:::
-
-## TSV with header (crowi-plus notation)
-
-```
-::: tsv-h
-First Header Second Header
-Content Cell Content Cell
-Content Cell Content Cell
-:::
+``` tsv
+Content Cell	Content Cell
+Content Cell	Content Cell
 ```
 
-::: tsv-h
-First Header Second Header
-Content Cell Content Cell
-Content Cell Content Cell
-:::
+## TSV with header
 
-## CSV (crowi-plus original notation)
-
+~~~
+``` tsv-h
+First Header	Second Header
+Content Cell	Content Cell
+Content Cell	Content Cell
 ```
-::: csv
+~~~
+
+``` tsv-h
+First Header	Second Header
+Content Cell	Content Cell
+Content Cell	Content Cell
+```
+
+## CSV
+
+~~~
+``` csv
 Content Cell,Content Cell
 Content Cell,Content Cell
-:::
 ```
+~~~
 
-::: csv
+``` csv
 Content Cell,Content Cell
 Content Cell,Content Cell
-:::
-
-## CSV with header (crowi-plus original notation)
-
 ```
-::: csv-h
+
+## CSV with header
+
+~~~
+``` csv-h
 First Header,Second Header
 Content Cell,Content Cell
 Content Cell,Content Cell
-:::
 ```
+~~~
 
-::: csv-h
+``` csv-h
 First Header,Second Header
 Content Cell,Content Cell
 Content Cell,Content Cell
-:::
+```
 
 
 # :memo: Footnote

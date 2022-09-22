@@ -8,10 +8,9 @@ import dynamic from 'next/dynamic';
 
 import { HtmlElementNode } from 'rehype-toc';
 
-import { blinkSectionHeaderAtBoot } from '~/client/util/blink-section-header';
 // import { getOptionsToSave } from '~/client/util/editor';
 import {
-  useIsGuestUser, useIsBlinkedHeaderAtBoot, useCurrentPageTocNode, useShareLinkId,
+  useIsGuestUser, useCurrentPageTocNode, useShareLinkId,
 } from '~/stores/context';
 import {
   useSWRxSlackChannels, useIsSlackEnabled, usePageTagsForEditors, useIsEnabledUnsavedWarning,
@@ -211,19 +210,9 @@ export const Page = (props) => {
   const { data: pageTags } = usePageTagsForEditors(null); // TODO: pass pageId
   const { data: rendererOptions } = useViewOptions(storeTocNodeHandler);
   const { mutate: mutateIsEnabledUnsavedWarning } = useIsEnabledUnsavedWarning();
-  const { data: isBlinkedAtBoot, mutate: mutateBlinkedAtBoot } = useIsBlinkedHeaderAtBoot();
   const { mutate: mutateCurrentPageTocNode } = useCurrentPageTocNode();
 
   const pageRef = useRef(null);
-
-  useEffect(() => {
-    if (isBlinkedAtBoot) {
-      return;
-    }
-
-    blinkSectionHeaderAtBoot();
-    mutateBlinkedAtBoot(true);
-  }, [isBlinkedAtBoot, mutateBlinkedAtBoot]);
 
   useEffect(() => {
     mutateCurrentPageTocNode(tocRef.current);

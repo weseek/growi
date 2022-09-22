@@ -28,7 +28,7 @@ See [diagrams.net](https://diagrams.net)
 See [PlantUML](http://plantuml.com/).
 
 ## シーケンス図
-
+``` plantuml
 @startuml
 skinparam sequenceArrowThickness 2
 skinparam roundcorner 20
@@ -58,13 +58,11 @@ A --> User: Done
 deactivate A
 
 @enduml
-
-<!-- Reset PlantUML -->
-<div class="clearfix"></div>
+```
 
 
 ## クラス図
-
+``` plantuml
 @startuml
 
 class BaseClass
@@ -86,13 +84,11 @@ namespace net.foo {
 BaseClass <|-- net.unused.Person
 
 @enduml
-
-<!-- Reset PlantUML -->
-<div class="clearfix"></div>
+```
 
 
 ## コンポーネント図
-
+``` plantuml
 @startuml
 
 package "Some Group" {
@@ -125,14 +121,12 @@ database "MySql" {
 [Folder 3] --> [Frame 4]
 
 @enduml
-
-<!-- Reset PlantUML -->
-<div class="clearfix"></div>
+```
 
 
 ## ステート図
 
-
+``` plantuml
 @startuml
 scale 600 width
 
@@ -153,9 +147,8 @@ State3 --> [*] : Succeeded / Save Result
 State3 --> [*] : Aborted
 
 @enduml
+```
 
-<!-- Reset PlantUML -->
-<div class="clearfix"></div>
 
 # :pencil: blockdiag
 

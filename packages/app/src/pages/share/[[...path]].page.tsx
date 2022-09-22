@@ -170,7 +170,7 @@ export const getServerSideProps: GetServerSideProps = async(context: GetServerSi
   }
 
   injectServerConfigurations(context, props);
-  await injectUserUISettings(context, props);
+  // await injectUserUISettings(context, props);
   await injectNextI18NextConfigurations(context, props);
 
   return {
