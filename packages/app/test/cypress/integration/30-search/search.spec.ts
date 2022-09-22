@@ -105,10 +105,10 @@ context('Search all pages', () => {
     cy.get('#wiki').should('be.visible');
     // force to add 'active' to pass VRT: https://github.com/weseek/growi/pull/6603
     cy.getByTestid('page-list-item-L').first().invoke('addClass', 'active');
-    // eslint-disable-next-line cypress/no-unnecessary-waiting
-    cy.wait(1500);
     // for avoid mismatch by auto scrolling
     cy.get('.search-result-content-body-container').scrollTo('top');
+    // eslint-disable-next-line cypress/no-unnecessary-waiting
+    cy.wait(1500);
     cy.screenshot(`${ssPrefix}3-search-page-results`, { capture: 'viewport'});
 
     cy.getByTestid('open-page-item-control-btn').eq(1).click();
