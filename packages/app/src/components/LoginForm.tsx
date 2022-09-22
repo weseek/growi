@@ -7,7 +7,6 @@ import { useRouter } from 'next/router';
 import ReactCardFlip from 'react-card-flip';
 
 import { apiv3Post } from '~/client/util/apiv3-client';
-import { useCsrfToken } from '~/stores/context';
 
 type LoginFormProps = {
   username?: string,
@@ -26,7 +25,6 @@ type LoginFormProps = {
 export const LoginForm = (props: LoginFormProps): JSX.Element => {
   const { t } = useTranslation();
   const router = useRouter();
-  const { data: csrfToken } = useCsrfToken();
 
   const {
     isLocalStrategySetup, isLdapStrategySetup, isPasswordResetEnabled, isRegistrationEnabled,
@@ -73,6 +71,7 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
     try {
       const res = await apiv3Post('/login', { loginForm });
       const { redirectTo } = res.data;
+      console.log(redirectTo);
       router.push(redirectTo);
     }
     catch (err) {
@@ -128,7 +127,6 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
           </div>
 
           <div className="input-group my-4">
-            <input type="hidden" name="_csrf" value={csrfToken} />
             <button type="submit" id="login" className="btn btn-fill rounded-0 login mx-auto" data-testid="btnSubmitForLogin">
               <div className="eff"></div>
               <span className="btn-label">
@@ -140,7 +138,7 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
         </form>
       </>
     );
-  }, [csrfToken, handleLoginWithLocal, loginErrors, props, t]);
+  }, [handleLoginWithLocal, loginErrors, props, t]);
 
   const renderExternalAuthInput = useCallback((auth) => {
     const authIconNames = {
