@@ -36,7 +36,7 @@ declare global {
     interface Chainable {
        getByTestid(selector: string, options?: Partial<Loggable & Timeoutable & Withinable & Shadow>): Chainable<JQuery<Element>>,
        login(username: string, password: string): Chainable<void>,
-       collapseSidebar(isCollapsed: boolean): Chainable<void>,
+       collapseSidebar(isCollapsed: boolean, force?: boolean): Chainable<void>,
     }
   }
 }

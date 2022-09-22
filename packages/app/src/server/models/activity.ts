@@ -9,6 +9,8 @@ import {
   AllSupportedTargetModels, SupportedTargetModelType,
   AllSupportedEventModels, SupportedEventModelType,
 } from '~/interfaces/activity';
+import { Ref } from '~/interfaces/common';
+import { IPage } from '~/interfaces/page';
 
 import loggerFactory from '../../utils/logger';
 
@@ -94,18 +96,8 @@ activitySchema.post('save', function() {
 activitySchema.methods.getNotificationTargetUsers = async function() {
   const User = getModelSafely('User') || require('~/server/models/user')();
   const { user: actionUser, target } = this;
-
-  const [subscribeUsers, unsubscribeUsers] = await Promise.all([
-    Subscription.getSubscription((target as any) as Types.ObjectId),
-    Subscription.getUnsubscription((target as any) as Types.ObjectId),
-  ]);
-
-  const unique = array => Object.values(array.reduce((objects, object) => ({ ...objects, [object.toString()]: object }), {}));
-  const filter = (array, pull) => {
-    const ids = pull.map(object => object.toString());
-    return array.filter(object => !ids.includes(object.toString()));
-  };
-  const notificationUsers = filter(unique([...subscribeUsers]), [...unsubscribeUsers, actionUser]);
+  const subscribedUsers = await Subscription.getSubscription(target as unknown as Ref<IPage>);
+  const notificationUsers = subscribedUsers.filter(item => (item.toString() !== actionUser._id.toString()));
   const activeNotificationUsers = await User.find({
     _id: { $in: notificationUsers },
     status: User.STATUS_ACTIVE,

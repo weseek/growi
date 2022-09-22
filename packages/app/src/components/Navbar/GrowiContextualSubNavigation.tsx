@@ -217,7 +217,7 @@ const GrowiContextualSubNavigation = (props) => {
       await pageContainer.setState({ revisionId: updatedRevisionId });
 
       const lastUpdateUser = res.savedPage?.lastUpdateUser as IUser;
-      await pageContainer.setState({ lastUpdateUsername: lastUpdateUser.username });
+      await pageContainer.setState({ lastUpdateUser });
 
       // revalidate SWRTagsInfo
       mutateSWRTagsInfo();
@@ -360,19 +360,21 @@ const GrowiContextualSubNavigation = (props) => {
   };
 
   return (
-    <GrowiSubNavigation
-      page={currentPage}
-      showDrawerToggler={isDrawerMode}
-      showTagLabel={isAbleToShowTagLabel}
-      showPageAuthors={isAbleToShowPageAuthors}
-      isGuestUser={isGuestUser}
-      isDrawerMode={isDrawerMode}
-      isCompactMode={isCompactMode}
-      tags={isViewMode ? tagsInfoData?.tags : tagsForEditors}
-      tagsUpdatedHandler={isViewMode ? tagsUpdatedHandlerForViewMode : tagsUpdatedHandlerForEditMode}
-      controls={ControlComponents}
-      additionalClasses={['container-fluid']}
-    />
+    <div data-testid="grw-contextual-sub-nav">
+      <GrowiSubNavigation
+        page={currentPage}
+        showDrawerToggler={isDrawerMode}
+        showTagLabel={isAbleToShowTagLabel}
+        showPageAuthors={isAbleToShowPageAuthors}
+        isGuestUser={isGuestUser}
+        isDrawerMode={isDrawerMode}
+        isCompactMode={isCompactMode}
+        tags={isViewMode ? tagsInfoData?.tags : tagsForEditors}
+        tagsUpdatedHandler={isViewMode ? tagsUpdatedHandlerForViewMode : tagsUpdatedHandlerForEditMode}
+        controls={ControlComponents}
+        additionalClasses={['container-fluid']}
+      />
+    </div>
   );
 };
 
