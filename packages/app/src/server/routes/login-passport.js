@@ -95,8 +95,7 @@ module.exports = function(crowi, app) {
    * @param {*} res
    */
   const loginFailure = (req, res) => {
-    req.form.errors.push(ErrorV3('sign_in_failure', 'signin-failure'));
-    return loginFailureHandler(req, res, req.t('message.sign_in_failure'));
+    return res.redirect('/login');
   };
 
   /**
