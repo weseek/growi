@@ -3,6 +3,7 @@ import React, {
 } from 'react';
 
 import { useTranslation } from 'next-i18next';
+import { useRouter } from 'next/router';
 import ReactCardFlip from 'react-card-flip';
 
 import { apiv3Post } from '~/client/util/apiv3-client';
@@ -24,6 +25,7 @@ export type LoginFormProps = {
 }
 export const LoginForm = (props: LoginFormProps): JSX.Element => {
   const { t } = useTranslation();
+  const router = useRouter();
   const { data: csrfToken } = useCsrfToken();
 
   const {
@@ -166,9 +168,9 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
       password,
     };
     try {
-      const res = await apiv3Post(requestPath, { registerForm, _csrf: csrfToken });
+      const res = await apiv3Post(requestPath, { registerForm });
       const { redirectTo } = res.data;
-      window.location.href = redirectTo;
+      router.push(redirectTo);
     }
     catch (err) {
       // Execute if error exists

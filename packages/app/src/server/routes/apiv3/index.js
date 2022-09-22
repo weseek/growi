@@ -45,8 +45,9 @@ module.exports = (crowi, app) => {
   const login = require('../login')(crowi, app);
 
   routerForAuth.use('/logout', require('./logout')(crowi));
-  routerForAuth.post('/register', applicationInstalled, registerFormValidator.registerRules(), registerFormValidator.registerValidation,
-    addActivity, login.register);
+
+  routerForAuth.post('/register',
+    applicationInstalled, registerFormValidator.registerRules(), registerFormValidator.registerValidation, addActivity, login.register);
 
   router.use('/in-app-notification', require('./in-app-notification')(crowi));
 
