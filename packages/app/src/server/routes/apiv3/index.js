@@ -1,6 +1,8 @@
 import loggerFactory from '~/utils/logger';
 
+import { generateAddActivityMiddleware } from '../../middlewares/add-activity';
 import injectUserRegistrationOrderByTokenMiddleware from '../../middlewares/inject-user-registration-order-by-token-middleware';
+import * as registerFormValidator from '../../middlewares/register-form-validator';
 
 import pageListing from './page-listing';
 import * as userActivation from './user-activation';
@@ -13,7 +15,7 @@ const router = express.Router();
 const routerForAdmin = express.Router();
 const routerForAuth = express.Router();
 
-module.exports = (crowi, middlewaresForAuth) => {
+module.exports = (crowi, app) => {
 
   // add custom functions to express response
   require('./response')(express, crowi);
@@ -38,13 +40,13 @@ module.exports = (crowi, middlewaresForAuth) => {
   routerForAdmin.use('/activity', require('./activity')(crowi));
 
   // auth
-  const {
-    applicationInstalled, registerFormValidator, csrfProtection, addActivity, login,
-  } = middlewaresForAuth;
+  const applicationInstalled = require('../../middlewares/application-installed')(crowi);
+  const addActivity = generateAddActivityMiddleware(crowi);
+  const login = require('../login')(crowi, app);
 
   routerForAuth.use('/logout', require('./logout')(crowi));
   routerForAuth.post('/register', applicationInstalled, registerFormValidator.registerRules(), registerFormValidator.registerValidation,
-    csrfProtection, addActivity, login.register);
+    addActivity, login.register);
 
   router.use('/in-app-notification', require('./in-app-notification')(crowi));
 
