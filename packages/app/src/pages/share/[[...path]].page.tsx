@@ -7,7 +7,7 @@ import {
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import dynamic from 'next/dynamic';
 
-import { BasicLayout } from '~/components/Layout/BasicLayout';
+import { ShareLinkLayout } from '~/components/Layout/ShareLinkLayout';
 import GrowiContextualSubNavigation from '~/components/Navbar/GrowiContextualSubNavigation';
 import DisplaySwitcher from '~/components/Page/DisplaySwitcher';
 import { CrowiRequest } from '~/interfaces/crowi-request';
@@ -54,7 +54,7 @@ const SharedPage: NextPage<Props> = (props: Props) => {
   const isShowSharedPage = !props.disableLinkSharing && !isNotFound && !props.isExpired;
 
   return (
-    <BasicLayout title={useCustomTitle(props, 'GROWI')} expandContainer={props.isContainerFluid}>
+    <ShareLinkLayout title={useCustomTitle(props, 'GROWI')} expandContainer={props.isContainerFluid}>
       <div className="h-100 d-flex flex-column justify-content-between">
         <header className="py-0 position-relative">
           {isShowSharedPage && <GrowiContextualSubNavigation isLinkSharingDisabled={props.disableLinkSharing} />}
@@ -62,41 +62,42 @@ const SharedPage: NextPage<Props> = (props: Props) => {
 
         <div id="grw-fav-sticky-trigger" className="sticky-top"></div>
 
-        <div id="content-main" className="content-main grw-container-convertible">
+        <div className="flex-grow-1">
+          <div id="content-main" className="content-main grw-container-convertible">
+            { props.disableLinkSharing && (
+              <div className="mt-4">
+                <ForbiddenPage isLinkSharingDisabled={props.disableLinkSharing} />
+              </div>
+            )}
 
-          { props.disableLinkSharing && (
-            <div className="mt-4">
-              <ForbiddenPage isLinkSharingDisabled={props.disableLinkSharing} />
-            </div>
-          )}
-
-          { (isNotFound && !props.disableLinkSharing) && (
-            <div className="container-lg">
-              <h2 className="text-muted mt-4">
-                <i className="icon-ban" aria-hidden="true"></i>
+            { (isNotFound && !props.disableLinkSharing) && (
+              <div className="container-lg">
+                <h2 className="text-muted mt-4">
+                  <i className="icon-ban" aria-hidden="true"></i>
                   Page is not found
-              </h2>
-            </div>
-          )}
+                </h2>
+              </div>
+            )}
 
-          { (props.isExpired && !props.disableLinkSharing) && (
-            <div className="container-lg">
-              <h2 className="text-muted mt-4">
-                <i className="icon-ban" aria-hidden="true"></i>
+            { (props.isExpired && !props.disableLinkSharing) && (
+              <div className="container-lg">
+                <h2 className="text-muted mt-4">
+                  <i className="icon-ban" aria-hidden="true"></i>
                   Page is expired
-              </h2>
-            </div>
-          )}
+                </h2>
+              </div>
+            )}
 
-          {(isShowSharedPage && props.shareLink != null) && (
-            <>
-              <ShareLinkAlert expiredAt={props.shareLink.expiredAt} createdAt={props.shareLink.createdAt} />
-              <DisplaySwitcher />
-            </>
-          )}
+            {(isShowSharedPage && props.shareLink != null) && (
+              <>
+                <ShareLinkAlert expiredAt={props.shareLink.expiredAt} createdAt={props.shareLink.createdAt} />
+                <DisplaySwitcher />
+              </>
+            )}
+          </div>
         </div>
       </div>
-    </BasicLayout>
+    </ShareLinkLayout>
   );
 };
 
@@ -170,7 +171,7 @@ export const getServerSideProps: GetServerSideProps = async(context: GetServerSi
   }
 
   injectServerConfigurations(context, props);
-  // await injectUserUISettings(context, props);
+  await injectUserUISettings(context, props);
   await injectNextI18NextConfigurations(context, props);
 
   return {
