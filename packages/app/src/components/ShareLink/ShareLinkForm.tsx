@@ -1,7 +1,7 @@
 import React, { FC, useState, useCallback } from 'react';
 
 import { isInteger } from 'core-js/fn/number';
-import { format, parse } from 'date-fns';
+import { format, parse, addDays } from 'date-fns';
 import { useTranslation } from 'next-i18next';
 
 import { toastSuccess, toastError } from '~/client/util/apiNotification';
@@ -56,8 +56,6 @@ export const ShareLinkForm: FC<Props> = (props: Props) => {
   }, []);
 
   const generateExpired = useCallback(() => {
-    let expiredAt;
-
     if (expirationType === ExpirationType.UNLIMITED) {
       return null;
     }
@@ -66,16 +64,14 @@ export const ShareLinkForm: FC<Props> = (props: Props) => {
       if (!isInteger(Number(numberOfDays))) {
         throw new Error(t('share_links.Invalid_Number_of_Date'));
       }
-      const date = new Date();
-      date.setDate(date.getDate() + Number(numberOfDays));
-      expiredAt = date;
+      return addDays(new Date(), numberOfDays);
     }
 
     if (expirationType === ExpirationType.CUSTOM) {
-      expiredAt = parse(`${customExpirationDate}T${customExpirationTime}`, "yyyy-MM-dd'T'HH:mm", new Date());
+      const formattedDate = format(customExpirationDate, 'yyyy-MM-dd');
+      const formattedTime = format(customExpirationTime, 'HH:mm');
+      return parse(`${formattedDate}T${formattedTime}`, "yyyy-MM-dd'T'HH:mm", new Date());
     }
-
-    return expiredAt;
   }, [t, customExpirationTime, customExpirationDate, expirationType, numberOfDays]);
 
   const closeForm = useCallback(() => {
