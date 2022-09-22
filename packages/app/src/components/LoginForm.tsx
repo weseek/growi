@@ -38,6 +38,11 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
 
   // states
   const [isRegistering, setIsRegistering] = useState(false);
+  // For Login
+  const [usernameForLogin, setUsernameForLogin] = useState('');
+  const [passwordForLogin, setPasswordForLogin] = useState('');
+  const [loginErrors, setLoginErrors] = useState<Error[]>([]);
+  // For Register
   const [usernameForRegister, setUsernameForRegister] = useState('');
   const [nameForRegister, setNameForRegister] = useState('');
   const [emailForRegister, setEmailForRegister] = useState('');
@@ -57,49 +62,87 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
 
     window.location.href = `/passport/${auth}`;
   }, []);
+
+  const handleLoginWithLocal = useCallback(async(e) => {
+    e.preventDefault();
+
+    const loginForm = {
+      username: usernameForLogin,
+      password: passwordForLogin,
+    };
+
+    try {
+      const res = await apiv3Post('/login', { loginForm });
+      const { redirectTo } = res.data;
+      router.push(redirectTo);
+    }
+    catch (err) {
+      setLoginErrors(err);
+    }
+    return;
+
+  }, [passwordForLogin, router, usernameForLogin]);
+
   const renderLocalOrLdapLoginForm = useCallback(() => {
     const { isLdapStrategySetup } = props;
-
     return (
-      <form role="form" action="/login" method="post">
-        <div className="input-group">
-          <div className="input-group-prepend">
-            <span className="input-group-text">
-              <i className="icon-user"></i>
-            </span>
-          </div>
-          <input type="text" className="form-control rounded-0" data-testid="tiUsernameForLogin" placeholder="Username or E-mail" name="loginForm[username]" />
-          {isLdapStrategySetup && (
-            <div className="input-group-append">
-              <small className="input-group-text text-success">
-                <i className="icon-fw icon-check"></i> LDAP
-              </small>
+      <>
+        {
+          loginErrors != null && loginErrors.length > 0 && (
+            <p className="alert alert-danger">
+              {loginErrors.map((err, index) => {
+                return (
+                  <span key={index}>
+                    {t(`message.${err.message}`)}<br/>
+                  </span>
+                );
+              })}
+            </p>
+          )
+        }
+        <form role="form" onSubmit={handleLoginWithLocal} id="login-form">
+          <div className="input-group">
+            <div className="input-group-prepend">
+              <span className="input-group-text">
+                <i className="icon-user"></i>
+              </span>
             </div>
-          )}
-        </div>
-
-        <div className="input-group">
-          <div className="input-group-prepend">
-            <span className="input-group-text">
-              <i className="icon-lock"></i>
-            </span>
+            <input type="text" className="form-control rounded-0" data-testid="tiUsernameForLogin" placeholder="Username or E-mail"
+              onChange={(e) => { setUsernameForLogin(e.target.value) }} name="usernameForLogin" />
+            {isLdapStrategySetup && (
+              <div className="input-group-append">
+                <small className="input-group-text text-success">
+                  <i className="icon-fw icon-check"></i> LDAP
+                </small>
+              </div>
+            )}
           </div>
-          <input type="password" className="form-control rounded-0" data-testid="tiPasswordForLogin" placeholder="Password" name="loginForm[password]" />
-        </div>
 
-        <div className="input-group my-4">
-          <input type="hidden" name="_csrf" value={csrfToken} />
-          <button type="submit" id="login" className="btn btn-fill rounded-0 login mx-auto" data-testid="btnSubmitForLogin">
-            <div className="eff"></div>
-            <span className="btn-label">
-              <i className="icon-login"></i>
-            </span>
-            <span className="btn-label-text">{t('Sign in')}</span>
-          </button>
-        </div>
-      </form>
+          <div className="input-group">
+            <div className="input-group-prepend">
+              <span className="input-group-text">
+                <i className="icon-lock"></i>
+              </span>
+            </div>
+            <input type="password" className="form-control rounded-0" data-testid="tiPasswordForLogin" placeholder="Password"
+              onChange={(e) => { setPasswordForLogin(e.target.value) }} name="passwordForLogin" />
+          </div>
+
+          <div className="input-group my-4">
+            <input type="hidden" name="_csrf" value={csrfToken} />
+            <button type="submit" id="login" className="btn btn-fill rounded-0 login mx-auto" data-testid="btnSubmitForLogin">
+              <div className="eff"></div>
+              <span className="btn-label">
+                <i className="icon-login"></i>
+              </span>
+              <span className="btn-label-text">{t('Sign in')}</span>
+            </button>
+          </div>
+        </form>
+      </>
     );
-  }, [csrfToken, props, t]);
+  }, [csrfToken, handleLoginWithLocal, loginErrors, props, t]);
+
   const renderExternalAuthInput = useCallback((auth) => {
     const authIconNames = {
       google: 'google',
@@ -124,6 +167,7 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
       </div>
     );
   }, [handleLoginWithExternalAuth, t]);
+
   const renderExternalAuthLoginForm = useCallback(() => {
     const { isLocalStrategySetup, isLdapStrategySetup, objOfIsExternalAuthEnableds } = props;
     const isExternalAuthCollapsible = isLocalStrategySetup || isLdapStrategySetup;
@@ -182,6 +226,11 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
     return;
   }, [emailForRegister, nameForRegister, passwordForRegister, router, usernameForRegister]);
 
+  const resetLoginErrors = useCallback(() => {
+    if (loginErrors.length === 0) return;
+    setLoginErrors([]);
+  }, [loginErrors.length]);
+
   const resetRegisterErrors = useCallback(() => {
     if (registerErrors.length === 0) return;
     setRegisterErrors([]);
@@ -189,8 +238,9 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
 
   const switchForm = useCallback(() => {
     setIsRegistering(!isRegistering);
+    resetLoginErrors();
     resetRegisterErrors();
-  }, [isRegistering, resetRegisterErrors]);
+  }, [isRegistering, resetLoginErrors, resetRegisterErrors]);
 
   const renderRegisterForm = useCallback(() => {
     let registerAction = '/register';
