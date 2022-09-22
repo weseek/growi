@@ -163,10 +163,10 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
     e.preventDefault();
 
     const registerForm = {
-      usernameForRegister,
-      nameForRegister,
-      emailForRegister,
-      passwordForRegister,
+      username: usernameForRegister,
+      name: nameForRegister,
+      email: emailForRegister,
+      password: passwordForRegister,
     };
     try {
       const res = await apiv3Post(requestPath, { registerForm });
