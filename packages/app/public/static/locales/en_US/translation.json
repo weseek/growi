@@ -730,7 +730,8 @@
     "Email field is required": "Email field is required",
     "Password has invalid character": "Password has invalid character",
     "Password minimum character should be more than 8 characters": "Password minimum character should be more than 8 characters",
-    "Password field is required": "Password field is required"
+    "Password field is required": "Password field is required",
+    "user_not_found": "User not found"
   },
   "grid_edit":{
     "create_bootstrap_4_grid":"Create Bootstrap 4 Grid",

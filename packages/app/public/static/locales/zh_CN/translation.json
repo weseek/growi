@@ -777,7 +777,8 @@
     "Email field is required": "电子邮件字段是必需的",
     "Password has invalid character": "密码有无效字符",
     "Password minimum character should be more than 8 characters": "密码最小字符应超过8个字符",
-    "Password field is required": "密码字段是必需的"
+    "Password field is required": "密码字段是必需的",
+    "user_not_found": "未找到用户"
 	},
   "grid_edit":{
     "create_bootstrap_4_grid":"创建Bootstrap 4网格",
