@@ -15,7 +15,7 @@ import { ReturnTopIcon } from './Icons/ReturnTopIcon';
 
 import styles from './Fab.module.scss';
 
-const logger = loggerFactory('growi:cli:Fab');
+// const logger = loggerFactory('growi:cli:Fab');
 
 export const Fab = (): JSX.Element => {
 
@@ -30,30 +30,33 @@ export const Fab = (): JSX.Element => {
   const createBtnRef = useRef(null);
   useRipple(createBtnRef, { rippleColor: 'rgba(255, 255, 255, 0.3)' });
 
-  const stickyChangeHandler = useCallback((event) => {
-    logger.debug('StickyEvents.CHANGE detected');
+  /*
+  * Comment out to prevent err >>> TypeError: Cannot read properties of null (reading 'bottom')
+  */
+  // const stickyChangeHandler = useCallback((event) => {
+  //   logger.debug('StickyEvents.CHANGE detected');
 
-    const newAnimateClasses = event.detail.isSticky ? 'animated fadeInUp faster' : 'animated fadeOut faster';
-    const newButtonClasses = event.detail.isSticky ? '' : 'disabled grw-pointer-events-none';
+  //   const newAnimateClasses = event.detail.isSticky ? 'animated fadeInUp faster' : 'animated fadeOut faster';
+  //   const newButtonClasses = event.detail.isSticky ? '' : 'disabled grw-pointer-events-none';
 
-    setAnimateClasses(newAnimateClasses);
-    setButtonClasses(newButtonClasses);
-  }, []);
+  //   setAnimateClasses(newAnimateClasses);
+  //   setButtonClasses(newButtonClasses);
+  // }, []);
 
-  // setup effect by sticky event
-  useEffect(() => {
-    // sticky
-    // See: https://github.com/ryanwalters/sticky-events
-    const stickyEvents = new StickyEvents({ stickySelector: '#grw-fav-sticky-trigger' });
-    const { stickySelector } = stickyEvents;
-    const elem = document.querySelector(stickySelector);
-    elem.addEventListener(StickyEvents.CHANGE, stickyChangeHandler);
+  // // setup effect by sticky event
+  // useEffect(() => {
+  //   // sticky
+  //   // See: https://github.com/ryanwalters/sticky-events
+  //   const stickyEvents = new StickyEvents({ stickySelector: '#grw-fav-sticky-trigger' });
+  //   const { stickySelector } = stickyEvents;
+  //   const elem = document.querySelector(stickySelector);
+  //   elem.addEventListener(StickyEvents.CHANGE, stickyChangeHandler);
 
-    // return clean up handler
-    return () => {
-      elem.removeEventListener(StickyEvents.CHANGE, stickyChangeHandler);
-    };
-  }, [stickyChangeHandler]);
+  //   // return clean up handler
+  //   return () => {
+  //     elem.removeEventListener(StickyEvents.CHANGE, stickyChangeHandler);
+  //   };
+  // }, [stickyChangeHandler]);
 
   if (currentPath == null) {
     return <></>;
