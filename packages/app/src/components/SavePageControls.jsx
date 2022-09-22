@@ -117,7 +117,7 @@ class SavePageControls extends React.Component {
         }
 
         <UncontrolledButtonDropdown direction="up">
-          <Button id="caret" color="primary" className="btn-submit" onClick={this.save}>{labelSubmitButton}</Button>
+          <Button data-testid="save-page-btn" id="caret" color="primary" className="btn-submit" onClick={this.save}>{labelSubmitButton}</Button>
           <DropdownToggle caret color="primary" />
           <DropdownMenu right>
             <DropdownItem onClick={this.saveAndOverwriteScopesOfDescendants}>
