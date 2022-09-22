@@ -1,30 +1,18 @@
+import { getOrCreateModel } from '@growi/core';
 import {
   Schema, Model, Document,
 } from 'mongoose';
-import { getOrCreateModel } from '@growi/core';
+
+import { IEditorSettings, ITextlintSettings } from '~/interfaces/editor-settings';
 
 
-export interface ILintRule {
-  name: string;
-  options?: unknown;
-  isEnabled?: boolean;
+export interface EditorSettingsDocument extends IEditorSettings, Document {
+  userId: Schema.Types.ObjectId,
 }
-
-export interface ITextlintSettings {
-  isTextlintEnabled: boolean;
-  textlintRules: ILintRule[];
-}
-
-export interface IEditorSettings {
-  userId: Schema.Types.ObjectId;
-  textlintSettings: ITextlintSettings;
-}
-
-export interface EditorSettingsDocument extends IEditorSettings, Document {}
 export type EditorSettingsModel = Model<EditorSettingsDocument>
 
 const textlintSettingsSchema = new Schema<ITextlintSettings>({
-  isTextlintEnabled: { type: Boolean, default: false },
+  neverAskBeforeDownloadLargeFiles: { type: Boolean, default: false },
   textlintRules: {
     type: [
       { name: { type: String }, options: { type: Object }, isEnabled: { type: Boolean } },
@@ -34,6 +22,12 @@ const textlintSettingsSchema = new Schema<ITextlintSettings>({
 
 const editorSettingsSchema = new Schema<EditorSettingsDocument, EditorSettingsModel>({
   userId: { type: Schema.Types.ObjectId },
+  theme: { type: String },
+  keymapMode: { type: String },
+  styleActiveLine: { type: Boolean, default: false },
+  renderMathJaxInRealtime: { type: Boolean, default: true },
+  renderDrawioInRealtime: { type: Boolean, default: true },
+  autoFormatMarkdownTable: { type: Boolean, default: true },
   textlintSettings: textlintSettingsSchema,
 });
 

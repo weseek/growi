@@ -1,22 +1,24 @@
 import React from 'react';
+
 import { useTranslation } from 'react-i18next';
 
-import { IPageWithMeta } from '~/interfaces/page';
+import { IPageInfoForEntity, IPageWithMeta } from '~/interfaces/page';
 import { OnDeletedFunction, OnPutBackedFunction } from '~/interfaces/ui';
+
 import { ForceHideMenuItems } from '../Common/Dropdown/PageItemControl';
 
 import { PageListItemL } from './PageListItemL';
 
 
-type Props = {
-  pages: IPageWithMeta[],
+type Props<M extends IPageInfoForEntity> = {
+  pages: IPageWithMeta<M>[],
   isEnableActions?: boolean,
   forceHideMenuItems?: ForceHideMenuItems,
   onPagesDeleted?: OnDeletedFunction,
   onPagePutBacked?: OnPutBackedFunction,
 }
 
-const PageList = (props: Props): JSX.Element => {
+const PageList = (props: Props<IPageInfoForEntity>): JSX.Element => {
   const { t } = useTranslation();
   const {
     pages, isEnableActions, forceHideMenuItems, onPagesDeleted, onPagePutBacked,
@@ -53,7 +55,7 @@ const PageList = (props: Props): JSX.Element => {
 
   return (
     <div className="page-list">
-      <ul className="page-list-ul list-group-flush">
+      <ul className="page-list-ul list-group list-group-flush">
         {pageList}
       </ul>
     </div>

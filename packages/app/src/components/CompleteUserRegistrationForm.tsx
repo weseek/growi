@@ -1,6 +1,9 @@
 import React, { useState, useEffect } from 'react';
+
 import { useTranslation } from 'react-i18next';
+
 import { apiv3Get, apiv3Post } from '~/client/util/apiv3-client';
+
 import { toastSuccess, toastError } from '../client/util/apiNotification';
 
 interface Props {
@@ -28,7 +31,7 @@ const CompleteUserRegistrationForm: React.FC<Props> = (props: Props) => {
   useEffect(() => {
     const delayDebounceFn = setTimeout(async() => {
       try {
-        const { data } = await apiv3Get('/check_username', { username });
+        const { data } = await apiv3Get('/check-username', { username });
         if (data.ok) {
           setUsernameAvailable(data.valid);
         }

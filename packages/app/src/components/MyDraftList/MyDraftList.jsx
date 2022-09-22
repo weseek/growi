@@ -1,14 +1,14 @@
 import React from 'react';
+
 import PropTypes from 'prop-types';
+import { useTranslation } from 'react-i18next';
 
-import { withTranslation } from 'react-i18next';
-
-import { withUnstatedContainers } from '../UnstatedUtils';
-import AppContainer from '~/client/services/AppContainer';
-import PageContainer from '~/client/services/PageContainer';
 import EditorContainer from '~/client/services/EditorContainer';
+import PageContainer from '~/client/services/PageContainer';
+import { apiGet } from '~/client/util/apiv1-client';
 
 import PaginationWrapper from '../PaginationWrapper';
+import { withUnstatedContainers } from '../UnstatedUtils';
 
 import Draft from './Draft';
 
@@ -49,7 +49,7 @@ class MyDraftList extends React.Component {
       return;
     }
 
-    const res = await this.props.appContainer.apiGet('/pages.exist', {
+    const res = await apiGet('/pages.exist', {
       pagePaths: JSON.stringify(Object.keys(draftsAsObj)),
     });
 
@@ -171,18 +171,21 @@ class MyDraftList extends React.Component {
 
 }
 
-/**
- * Wrapper component for using unstated
- */
-const MyDraftListWrapper = withUnstatedContainers(MyDraftList, [AppContainer, PageContainer, EditorContainer]);
-
-
 MyDraftList.propTypes = {
   t: PropTypes.func.isRequired, // react-i18next
 
-  appContainer: PropTypes.instanceOf(AppContainer).isRequired,
   pageContainer: PropTypes.instanceOf(PageContainer).isRequired,
   editorContainer: PropTypes.instanceOf(EditorContainer).isRequired,
 };
 
-export default withTranslation()(MyDraftListWrapper);
+const MyDraftListWrapperFC = (props) => {
+  const { t } = useTranslation();
+  return <MyDraftList t={t} {...props} />;
+};
+
+/**
+ * Wrapper component for using unstated
+ */
+const MyDraftListWrapper = withUnstatedContainers(MyDraftListWrapperFC, [PageContainer, EditorContainer]);
+
+export default MyDraftListWrapper;

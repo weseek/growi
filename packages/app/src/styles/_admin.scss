@@ -59,6 +59,13 @@ $slack-work-space-name-card-border: #efc1f6;
     }
   }
 
+  .admin-customize-sidebar-icon {
+    svg {
+      width: 20px;
+      height: 20px;
+    }
+  }
+
   .admin-notification {
     table .admin-notif-list {
       td {
@@ -220,6 +227,19 @@ $slack-work-space-name-card-border: #efc1f6;
   //     }
   //   }
   // }
+
+  .admin-audit-log {
+    .select-action-dropdown {
+      max-height: 500px;
+      overflow-y: auto;
+    }
+    .date-range-picker {
+      width: 188px;
+    }
+    .jump-page-input {
+      width: 50px;
+    }
+  }
 
   #layoutOptions {
     .customize-layout-card {

@@ -85,7 +85,7 @@ html[dark] {
   $color-resize-button-hover: $color-reversal;
   $bgcolor-resize-button-hover: lighten($bgcolor-resize-button, 5%);
   $color-sidebar-context: $linktext;
-  $bgcolor-sidebar-context: #f4f6fc;
+  $bgcolor-sidebar-context: #f4fcf6;
   // Sidebar list group
   $bgcolor-sidebar-list-group: #fafbff; // optional
 
@@ -177,23 +177,6 @@ html[dark] {
   .grw-page-editor-mode-manager {
     .btn.btn-outline-primary {
       @include btn-page-editor-mode-manager(darken($subthemecolor, 15%), lighten($subthemecolor, 35%), lighten($subthemecolor, 45%));
-    }
-  }
-
-  /*
- * GROWI Sidebar
- */
-  .grw-sidebar {
-    // Pagetree
-    .grw-pagetree {
-      @include override-list-group-item-for-pagetree(
-        $color-list,
-        $bgcolor-sidebar-list-group,
-        $color-list-hover,
-        $bgcolor-list-hover,
-        $color-list-active,
-        $bgcolor-list-hover
-      );
     }
   }
 }

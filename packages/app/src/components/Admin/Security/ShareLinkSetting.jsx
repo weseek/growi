@@ -1,18 +1,19 @@
 import React, { Fragment } from 'react';
-import PropTypes from 'prop-types';
-import { withTranslation } from 'react-i18next';
 
-import { withUnstatedContainers } from '../../UnstatedUtils';
+import PropTypes from 'prop-types';
+import { useTranslation } from 'react-i18next';
+
+import AdminGeneralSecurityContainer from '~/client/services/AdminGeneralSecurityContainer';
+import AppContainer from '~/client/services/AppContainer';
 import { toastSuccess, toastError } from '~/client/util/apiNotification';
+import { apiv3Delete } from '~/client/util/apiv3-client';
 
 import PaginationWrapper from '../../PaginationWrapper';
+import ShareLinkList from '../../ShareLink/ShareLinkList';
+import { withUnstatedContainers } from '../../UnstatedUtils';
 
-import AppContainer from '~/client/services/AppContainer';
-import AdminGeneralSecurityContainer from '~/client/services/AdminGeneralSecurityContainer';
 
 import DeleteAllShareLinksModal from './DeleteAllShareLinksModal';
-import ShareLinkList from '../../ShareLink/ShareLinkList';
-
 
 const Pager = (props) => {
   if (props.links.length === 0) {
@@ -80,7 +81,7 @@ class ShareLinkSetting extends React.Component {
     const { t, appContainer } = this.props;
 
     try {
-      const res = await appContainer.apiv3Delete('/share-links/all');
+      const res = await apiv3Delete('/share-links/all');
       const { deletedCount } = res.data;
       toastSuccess(t('toaster.remove_share_link', { count: deletedCount }));
     }
@@ -95,7 +96,7 @@ class ShareLinkSetting extends React.Component {
     const { shareLinksActivePage } = adminGeneralSecurityContainer.state;
 
     try {
-      const res = await appContainer.apiv3Delete(`/share-links/${shareLinkId}`);
+      const res = await apiv3Delete(`/share-links/${shareLinkId}`);
       const { deletedShareLink } = res.data;
       toastSuccess(t('toaster.remove_share_link_success', { shareLinkId: deletedShareLink._id }));
     }
@@ -190,12 +191,20 @@ class ShareLinkSetting extends React.Component {
 
 }
 
-const ShareLinkSettingWrapper = withUnstatedContainers(ShareLinkSetting, [AppContainer, AdminGeneralSecurityContainer]);
-
 ShareLinkSetting.propTypes = {
   t: PropTypes.func.isRequired, //  i18next
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
   adminGeneralSecurityContainer: PropTypes.instanceOf(AdminGeneralSecurityContainer).isRequired,
 };
 
-export default withTranslation()(ShareLinkSettingWrapper);
+const ShareLinkSettingWrapperFC = (props) => {
+  const { t } = useTranslation();
+  return <ShareLinkSetting t={t} {...props} />;
+};
+
+/**
+ * Wrapper component for using unstated
+ */
+const ShareLinkSettingWrapper = withUnstatedContainers(ShareLinkSettingWrapperFC, [AppContainer, AdminGeneralSecurityContainer]);
+
+export default ShareLinkSettingWrapper;

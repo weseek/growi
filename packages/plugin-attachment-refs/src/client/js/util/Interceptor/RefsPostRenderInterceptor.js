@@ -1,12 +1,12 @@
+import { BasicInterceptor } from '@growi/core';
 import React from 'react';
 import ReactDOM from 'react-dom';
 
-import { BasicInterceptor } from '@growi/core';
-
-import RefsContext from '../RefsContext';
-import GalleryContext from '../GalleryContext';
 
 import AttachmentList from '../../components/AttachmentList';
+import GalleryContext from '../GalleryContext';
+import RefsContext from '../RefsContext';
+
 
 /**
  * The interceptor for refs

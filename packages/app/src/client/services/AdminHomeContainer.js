@@ -3,6 +3,7 @@ import { Container } from 'unstated';
 import loggerFactory from '~/utils/logger';
 
 import { toastError } from '../util/apiNotification';
+import { apiv3Get } from '../util/apiv3-client';
 
 // eslint-disable-next-line no-unused-vars
 const logger = loggerFactory('growi:services:AdminHomeContainer');
@@ -13,10 +14,8 @@ const logger = loggerFactory('growi:services:AdminHomeContainer');
  */
 export default class AdminHomeContainer extends Container {
 
-  constructor(appContainer) {
+  constructor() {
     super();
-
-    this.appContainer = appContainer;
 
     this.copyStateValues = {
       DEFAULT: 'default',
@@ -53,7 +52,7 @@ export default class AdminHomeContainer extends Container {
    */
   async retrieveAdminHomeData() {
     try {
-      const response = await this.appContainer.apiv3.get('/admin-home/');
+      const response = await apiv3Get('/admin-home/');
       const { adminHomeParams } = response.data;
 
       this.setState(prevState => ({

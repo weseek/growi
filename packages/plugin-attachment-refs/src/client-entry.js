@@ -1,9 +1,9 @@
-import RefsPreRenderInterceptor from './client/js/util/Interceptor/RefsPreRenderInterceptor';
 import RefsPostRenderInterceptor from './client/js/util/Interceptor/RefsPostRenderInterceptor';
+import RefsPreRenderInterceptor from './client/js/util/Interceptor/RefsPreRenderInterceptor';
 
-export default (appContainer) => {
+export default () => {
   // add interceptors
-  appContainer.interceptorManager.addInterceptors([
+  global.interceptorManager.addInterceptors([
     new RefsPreRenderInterceptor(),
     new RefsPostRenderInterceptor(),
   ]);

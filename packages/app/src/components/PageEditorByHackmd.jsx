@@ -1,24 +1,23 @@
 import React from 'react';
+
 import PropTypes from 'prop-types';
-import { withTranslation } from 'react-i18next';
-import loggerFactory from '~/utils/logger';
+import { useTranslation } from 'react-i18next';
 
 
 import AppContainer from '~/client/services/AppContainer';
-import PageContainer from '~/client/services/PageContainer';
 import EditorContainer from '~/client/services/EditorContainer';
-
-import { withUnstatedContainers } from './UnstatedUtils';
-import HackmdEditor from './PageEditorByHackmd/HackmdEditor';
-
+import PageContainer from '~/client/services/PageContainer';
+import { apiPost } from '~/client/util/apiv1-client';
 import { getOptionsToSave } from '~/client/util/editor';
-
-// TODO: remove this when omitting unstated is completed
+import { useCurrentPagePath, useCurrentPageId } from '~/stores/context';
+import { useSWRxSlackChannels, useIsSlackEnabled, usePageTagsForEditors } from '~/stores/editor';
 import {
   useEditorMode, useSelectedGrant, useSelectedGrantGroupId, useSelectedGrantGroupName,
 } from '~/stores/ui';
-import { useSlackChannels } from '~/stores/context';
-import { useIsSlackEnabled } from '~/stores/editor';
+import loggerFactory from '~/utils/logger';
+
+import HackmdEditor from './PageEditorByHackmd/HackmdEditor';
+import { withUnstatedContainers } from './UnstatedUtils';
 
 const logger = loggerFactory('growi:PageEditorByHackmd');
 
@@ -105,7 +104,7 @@ class PageEditorByHackmd extends React.Component {
     };
 
     try {
-      const res = await this.props.appContainer.apiPost('/hackmd.integrate', params);
+      const res = await apiPost('/hackmd.integrate', params);
 
       if (!res.ok) {
         throw new Error(res.error);
@@ -147,7 +146,7 @@ class PageEditorByHackmd extends React.Component {
     const { pageId } = pageContainer.state;
 
     try {
-      const res = await this.props.appContainer.apiPost('/hackmd.discard', { pageId });
+      const res = await apiPost('/hackmd.discard', { pageId });
 
       if (!res.ok) {
         throw new Error(res.error);
@@ -173,9 +172,9 @@ class PageEditorByHackmd extends React.Component {
    */
   async onSaveWithShortcut(markdown) {
     const {
-      isSlackEnabled, slackChannels, pageContainer, editorContainer, grant, grantGroupId, grantGroupName,
+      isSlackEnabled, slackChannels, pageContainer, editorContainer, grant, grantGroupId, grantGroupName, pageTags,
     } = this.props;
-    const optionsToSave = getOptionsToSave(isSlackEnabled, slackChannels, grant, grantGroupId, grantGroupName, editorContainer);
+    const optionsToSave = getOptionsToSave(isSlackEnabled, slackChannels, grant, grantGroupId, grantGroupName, pageTags);
 
     try {
       // disable unsaved warning
@@ -220,7 +219,7 @@ class PageEditorByHackmd extends React.Component {
       pageId: pageContainer.state.pageId,
     };
     try {
-      await this.props.appContainer.apiPost('/hackmd.saveOnHackmd', params);
+      await apiPost('/hackmd.saveOnHackmd', params);
     }
     catch (err) {
       logger.error(err);
@@ -425,15 +424,36 @@ class PageEditorByHackmd extends React.Component {
 
 }
 
+PageEditorByHackmd.propTypes = {
+  t: PropTypes.func.isRequired, // i18next
+
+  appContainer: PropTypes.instanceOf(AppContainer).isRequired,
+  pageContainer: PropTypes.instanceOf(PageContainer).isRequired,
+  editorContainer: PropTypes.instanceOf(EditorContainer).isRequired,
+
+  // TODO: remove this when omitting unstated is completed
+  editorMode: PropTypes.string.isRequired,
+  isSlackEnabled: PropTypes.bool.isRequired,
+  pageTags: PropTypes.arrayOf(PropTypes.string),
+  slackChannels: PropTypes.string.isRequired,
+  grant: PropTypes.number.isRequired,
+  grantGroupId: PropTypes.string,
+  grantGroupName: PropTypes.string,
+};
+
 /**
  * Wrapper component for using unstated
  */
 const PageEditorByHackmdHOCWrapper = withUnstatedContainers(PageEditorByHackmd, [AppContainer, PageContainer, EditorContainer]);
 
 const PageEditorByHackmdWrapper = (props) => {
+  const { t } = useTranslation();
   const { data: editorMode } = useEditorMode();
+  const { data: currentPagePath } = useCurrentPagePath();
+  const { data: slackChannelsData } = useSWRxSlackChannels(currentPagePath);
   const { data: isSlackEnabled } = useIsSlackEnabled();
-  const { data: slackChannels } = useSlackChannels();
+  const { data: pageId } = useCurrentPageId();
+  const { data: pageTags } = usePageTagsForEditors(pageId);
   const { data: grant } = useSelectedGrant();
   const { data: grantGroupId } = useSelectedGrantGroupId();
   const { data: grantGroupName } = useSelectedGrantGroupName();
@@ -445,9 +465,11 @@ const PageEditorByHackmdWrapper = (props) => {
   return (
     <PageEditorByHackmdHOCWrapper
       {...props}
+      t={t}
       editorMode={editorMode}
       isSlackEnabled={isSlackEnabled}
-      slackChannels={slackChannels}
+      slackChannels={slackChannelsData.toString()}
+      pageTags={pageTags}
       grant={grant}
       grantGroupId={grantGroupId}
       grantGroupName={grantGroupName}
@@ -455,20 +477,4 @@ const PageEditorByHackmdWrapper = (props) => {
   );
 };
 
-PageEditorByHackmd.propTypes = {
-  t: PropTypes.func.isRequired, // i18next
-
-  appContainer: PropTypes.instanceOf(AppContainer).isRequired,
-  pageContainer: PropTypes.instanceOf(PageContainer).isRequired,
-  editorContainer: PropTypes.instanceOf(EditorContainer).isRequired,
-
-  // TODO: remove this when omitting unstated is completed
-  editorMode: PropTypes.string.isRequired,
-  isSlackEnabled: PropTypes.bool.isRequired,
-  slackChannels: PropTypes.string.isRequired,
-  grant: PropTypes.number.isRequired,
-  grantGroupId: PropTypes.string,
-  grantGroupName: PropTypes.string,
-};
-
-export default withTranslation()(PageEditorByHackmdWrapper);
+export default PageEditorByHackmdWrapper;

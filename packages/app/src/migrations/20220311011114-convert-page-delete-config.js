@@ -16,6 +16,17 @@ module.exports = {
     mongoose.connect(getMongoUri(), mongoOptions);
     const Config = getModelSafely('Config') || ConfigModel;
 
+    const isNewConfigExists = await Config.count({
+      ns: 'crowi',
+      key: 'security:pageDeletionAuthority',
+    }) > 0;
+
+    if (isNewConfigExists) {
+      logger.info('This migration is skipped because new configs are existed.');
+      logger.info('Migration has successfully applied');
+      return;
+    }
+
     const oldConfig = await Config.findOne({
       ns: 'crowi',
       key: 'security:pageCompleteDeletionAuthority',

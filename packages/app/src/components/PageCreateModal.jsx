@@ -1,32 +1,33 @@
-
 import React, {
   useEffect, useState, useMemo, useCallback,
 } from 'react';
-import PropTypes from 'prop-types';
 
+import { pagePathUtils, pathUtils } from '@growi/core';
+import { format } from 'date-fns';
+import PropTypes from 'prop-types';
+import { useTranslation } from 'react-i18next';
 import { Modal, ModalHeader, ModalBody } from 'reactstrap';
 import { debounce } from 'throttle-debounce';
 
-import { withTranslation } from 'react-i18next';
-import { format } from 'date-fns';
-
-import { pagePathUtils, pathUtils } from '@growi/core';
-
 
 import AppContainer from '~/client/services/AppContainer';
-import { withUnstatedContainers } from './UnstatedUtils';
 import { toastError } from '~/client/util/apiNotification';
-
+import { useCurrentUser } from '~/stores/context';
 import { usePageCreateModal } from '~/stores/modal';
 
 import PagePathAutoComplete from './PagePathAutoComplete';
+import { withUnstatedContainers } from './UnstatedUtils';
+
 
 const {
   userPageRoot, isCreatablePage, generateEditorPath, isUsersHomePage,
 } = pagePathUtils;
 
 const PageCreateModal = (props) => {
-  const { t, appContainer } = props;
+  const { t } = useTranslation();
+  const { appContainer } = props;
+
+  const { data: currentUser } = useCurrentUser();
 
   const { data: pageCreateModalData, close: closeCreateModal } = usePageCreateModal();
   const { isOpened, path } = pageCreateModalData;
@@ -34,8 +35,9 @@ const PageCreateModal = (props) => {
   const config = appContainer.getConfig();
   const isReachable = config.isSearchServiceReachable;
   const pathname = path || '';
-  const userPageRootPath = userPageRoot(appContainer.currentUser);
-  const pageNameInputInitialValue = isCreatablePage(pathname) ? pathUtils.addTrailingSlash(pathname) : '/';
+  const userPageRootPath = userPageRoot(currentUser);
+  const isCreatable = isCreatablePage(pathname) || isUsersHomePage(pathname);
+  const pageNameInputInitialValue = isCreatable ? pathUtils.addTrailingSlash(pathname) : '/';
   const now = format(new Date(), 'yyyy/MM/dd');
 
   const [todayInput1, setTodayInput1] = useState(t('Memo'));
@@ -46,8 +48,8 @@ const PageCreateModal = (props) => {
 
   // ensure pageNameInput is synced with selectedPagePath || currentPagePath
   useEffect(() => {
-    setPageNameInput(isCreatablePage(pathname) ? pathUtils.addTrailingSlash(pathname) : '/');
-  }, [pathname]);
+    setPageNameInput(isCreatable ? pathUtils.addTrailingSlash(pathname) : '/');
+  }, [pathname, isCreatable]);
 
   const checkIsUsersHomePageDebounce = useMemo(() => {
     const checkIsUsersHomePage = () => {
@@ -81,14 +83,6 @@ const PageCreateModal = (props) => {
    */
   function onChangeTodayInput2Handler(value) {
     setTodayInput2(value);
-  }
-
-  /**
-   * change pageNameInput
-   * @param {string} value
-   */
-  function onChangePageNameInputHandler(value) {
-    setPageNameInput(value);
   }
 
   /**
@@ -129,10 +123,6 @@ const PageCreateModal = (props) => {
    */
   function createInputPage() {
     redirectToEditor(pageNameInput);
-  }
-
-  function ppacInputChangeHandler(value) {
-    setPageNameInput(value);
   }
 
   function ppacSubmitHandler(input) {
@@ -212,7 +202,7 @@ const PageCreateModal = (props) => {
                     initializedPath={pageNameInput}
                     addTrailingSlash
                     onSubmit={ppacSubmitHandler}
-                    onInputChange={ppacInputChangeHandler}
+                    onInputChange={value => setPageNameInput(value)}
                     autoFocus
                   />
                 )
@@ -223,7 +213,7 @@ const PageCreateModal = (props) => {
                       value={pageNameInput}
                       className="form-control flex-fill"
                       placeholder={t('Input page name')}
-                      onChange={e => onChangePageNameInputHandler(e.target.value)}
+                      onChange={e => setPageNameInput(e.target.value)}
                       required
                     />
                   </form>
@@ -321,16 +311,13 @@ const PageCreateModal = (props) => {
   );
 };
 
+PageCreateModal.propTypes = {
+  appContainer: PropTypes.instanceOf(AppContainer).isRequired,
+};
 
 /**
  * Wrapper component for using unstated
  */
-const ModalControlWrapper = withUnstatedContainers(PageCreateModal, [AppContainer]);
+const PageCreateModalWrapper = withUnstatedContainers(PageCreateModal, [AppContainer]);
 
-
-PageCreateModal.propTypes = {
-  t: PropTypes.func.isRequired, //  i18next
-  appContainer: PropTypes.instanceOf(AppContainer).isRequired,
-};
-
-export default withTranslation()(ModalControlWrapper);
+export default PageCreateModalWrapper;

@@ -1,3 +1,6 @@
+
+import { SupportedAction } from '~/interfaces/activity';
+import { AttachmentType } from '~/server/interfaces/attachment';
 import loggerFactory from '~/utils/logger';
 
 /* eslint-disable no-use-before-define */
@@ -7,7 +10,6 @@ const logger = loggerFactory('growi:routes:attachment');
 
 const { serializePageSecurely } = require('../models/serializers/page-serializer');
 const { serializeRevisionSecurely } = require('../models/serializers/revision-serializer');
-
 const ApiResponse = require('../util/apiResponse');
 
 /**
@@ -136,6 +138,8 @@ module.exports = function(crowi, app) {
   const GlobalNotificationSetting = crowi.model('GlobalNotificationSetting');
   const { attachmentService, globalNotificationService } = crowi;
 
+  const activityEvent = crowi.event('activity');
+
   /**
    * Check the user is accessible to the related page
    *
@@ -215,6 +219,17 @@ module.exports = function(crowi, app) {
       return res.json(ApiResponse.error(e.message));
     }
 
+    const parameters = {
+      ip:  req.ip,
+      endpoint: req.originalUrl,
+      action: SupportedAction.ACTION_ATTACHMENT_DOWNLOAD,
+      user: req.user?._id,
+      snapshot: {
+        username: req.user?.username,
+      },
+    };
+    await crowi.activityService.createActivity(parameters);
+
     return fileStream.pipe(res);
   }
 
@@ -230,6 +245,12 @@ module.exports = function(crowi, app) {
       ETag: `Attachment-${attachment._id}`,
       'Last-Modified': attachment.createdAt.toUTCString(),
     });
+
+    if (!attachment.fileSize) {
+      res.set({
+        'Content-Length': attachment.fileSize,
+      });
+    }
 
     // download
     if (forceDownload) {
@@ -427,7 +448,7 @@ module.exports = function(crowi, app) {
     if (pageId == null && pagePath == null) {
       return res.json(ApiResponse.error('Either page_id or path is required.'));
     }
-    if (!req.file) {
+    if (req.file == null) {
       return res.json(ApiResponse.error('File error.'));
     }
 
@@ -437,7 +458,7 @@ module.exports = function(crowi, app) {
     if (pageId == null) {
       logger.debug('Create page before file upload');
 
-      page = await Page.create(pagePath, `# ${pagePath}`, req.user, { grant: Page.GRANT_OWNER });
+      page = await crowi.pageService.create(pagePath, `# ${pagePath}`, req.user, { grant: Page.GRANT_OWNER });
       pageCreated = true;
       pageId = page._id;
     }
@@ -453,7 +474,7 @@ module.exports = function(crowi, app) {
 
     let attachment;
     try {
-      attachment = await attachmentService.createAttachment(file, req.user, pageId);
+      attachment = await attachmentService.createAttachment(file, req.user, pageId, AttachmentType.WIKI_PAGE);
     }
     catch (err) {
       logger.error(err);
@@ -466,6 +487,8 @@ module.exports = function(crowi, app) {
       attachment: attachment.toObject({ virtuals: true }),
       pageCreated,
     };
+
+    activityEvent.emit('update', res.locals.activity._id, { action: SupportedAction.ACTION_ATTACHMENT_ADD });
 
     res.json(ApiResponse.success(result));
 
@@ -542,7 +565,7 @@ module.exports = function(crowi, app) {
    */
   api.uploadProfileImage = async function(req, res) {
     // check params
-    if (!req.file) {
+    if (req.file == null) {
       return res.json(ApiResponse.error('File error.'));
     }
     if (!req.user) {
@@ -560,7 +583,7 @@ module.exports = function(crowi, app) {
     let attachment;
     try {
       req.user.deleteImage();
-      attachment = await attachmentService.createAttachment(file, req.user);
+      attachment = await attachmentService.createAttachment(file, req.user, null, AttachmentType.PROFILE_IMAGE);
       await req.user.updateImage(attachment);
     }
     catch (err) {
@@ -635,6 +658,8 @@ module.exports = function(crowi, app) {
       logger.error(err);
       return res.status(500).json(ApiResponse.error('Error while deleting file'));
     }
+
+    activityEvent.emit('update', res.locals.activity._id, { action: SupportedAction.ACTION_ATTACHMENT_REMOVE });
 
     return res.json(ApiResponse.success({}));
   };

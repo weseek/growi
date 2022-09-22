@@ -1,17 +1,20 @@
 import React from 'react';
+
 import PropTypes from 'prop-types';
-import { withTranslation } from 'react-i18next';
+import { useTranslation } from 'react-i18next';
 import urljoin from 'url-join';
+
+import AdminNotificationContainer from '~/client/services/AdminNotificationContainer';
+import AppContainer from '~/client/services/AppContainer';
+import { toastSuccess, toastError } from '~/client/util/apiNotification';
+import { apiv3Put } from '~/client/util/apiv3-client';
 import loggerFactory from '~/utils/logger';
 
 import { withUnstatedContainers } from '../../UnstatedUtils';
-import { toastSuccess, toastError } from '~/client/util/apiNotification';
-
-import AppContainer from '~/client/services/AppContainer';
-import AdminNotificationContainer from '~/client/services/AdminNotificationContainer';
 
 import NotificationDeleteModal from './NotificationDeleteModal';
 import NotificationTypeIcon from './NotificationTypeIcon';
+
 
 const logger = loggerFactory('growi:GolobalNotificationList');
 
@@ -34,7 +37,7 @@ class GlobalNotificationList extends React.Component {
     const { t } = this.props;
     const isEnabled = !notification.isEnabled;
     try {
-      await this.props.appContainer.apiv3.put(`/notification-setting/global-notification/${notification._id}/enabled`, {
+      await apiv3Put(`/notification-setting/global-notification/${notification._id}/enabled`, {
         isEnabled,
       });
       toastSuccess(t('notification_setting.toggle_notification', { path: notification.triggerPath }));
@@ -171,8 +174,6 @@ class GlobalNotificationList extends React.Component {
 
 }
 
-const GlobalNotificationListWrapper = withUnstatedContainers(GlobalNotificationList, [AppContainer, AdminNotificationContainer]);
-
 GlobalNotificationList.propTypes = {
   t: PropTypes.func.isRequired, // i18next
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
@@ -180,4 +181,12 @@ GlobalNotificationList.propTypes = {
 
 };
 
-export default withTranslation()(GlobalNotificationListWrapper);
+const GlobalNotificationListWrapperFC = (props) => {
+  const { t } = useTranslation();
+
+  return <GlobalNotificationList t={t} {...props} />;
+};
+
+const GlobalNotificationListWrapper = withUnstatedContainers(GlobalNotificationListWrapperFC, [AppContainer, AdminNotificationContainer]);
+
+export default GlobalNotificationListWrapper;

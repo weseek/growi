@@ -2,21 +2,22 @@ import React, {
   FC,
   useCallback, useEffect, useState,
 } from 'react';
-import PropTypes from 'prop-types';
 
+import { DevidedPagePath } from '@growi/core';
+import { UserPicture, FootstampIcon } from '@growi/ui';
+import PropTypes from 'prop-types';
 import { useTranslation } from 'react-i18next';
 
-import { UserPicture, FootstampIcon } from '@growi/ui';
-import { DevidedPagePath } from '@growi/core';
 
 import PagePathHierarchicalLink from '~/components/PagePathHierarchicalLink';
-import { useSWRxRecentlyUpdated } from '~/stores/page';
+import LinkedPagePath from '~/models/linked-page-path';
+import { useSWRInifinitexRecentlyUpdated } from '~/stores/page';
 import loggerFactory from '~/utils/logger';
 
-import LinkedPagePath from '~/models/linked-page-path';
-
-
 import FormattedDistanceDate from '../FormattedDistanceDate';
+
+import InfiniteScroll from './InfiniteScroll';
+
 
 const logger = loggerFactory('growi:History');
 
@@ -106,7 +107,7 @@ function SmallPageItem({ page }) {
         <UserPicture user={page.lastUpdateUser} size="md" noTooltip />
         <div className="flex-grow-1 ml-2">
           { !dPagePath.isRoot && <FormerLink /> }
-          <h5 className="my-0">
+          <h5 className="my-0 text-truncate">
             <PagePathHierarchicalLink linkedPagePath={linkedPagePathLatter} basePath={dPagePath.isRoot ? undefined : dPagePath.former} />
             {locked}
           </h5>
@@ -120,14 +121,13 @@ SmallPageItem.propTypes = {
   page: PropTypes.any,
 };
 
-
 const RecentChanges = (): JSX.Element => {
-
+  const PER_PAGE = 20;
   const { t } = useTranslation();
-  const { data: pages, mutate } = useSWRxRecentlyUpdated();
-
+  const swr = useSWRInifinitexRecentlyUpdated();
   const [isRecentChangesSidebarSmall, setIsRecentChangesSidebarSmall] = useState(false);
-
+  const isEmpty = swr.data?.[0].length === 0;
+  const isReachingEnd = isEmpty || (swr.data && swr.data[swr.data.length - 1]?.length < PER_PAGE);
   const retrieveSizePreferenceFromLocalStorage = useCallback(() => {
     if (window.localStorage.isRecentChangesSidebarSmall === 'true') {
       setIsRecentChangesSidebarSmall(true);
@@ -145,10 +145,10 @@ const RecentChanges = (): JSX.Element => {
   }, [retrieveSizePreferenceFromLocalStorage]);
 
   return (
-    <>
+    <div data-testid="grw-recent-changes">
       <div className="grw-sidebar-content-header p-3 d-flex">
         <h3 className="mb-0  text-nowrap">{t('Recent Changes')}</h3>
-        <button type="button" className="btn btn-sm ml-auto grw-btn-reload" onClick={() => mutate()}>
+        <button type="button" className="btn btn-sm ml-auto grw-btn-reload" onClick={() => swr.mutate()}>
           <i className="icon icon-reload"></i>
         </button>
         <div className="d-flex align-items-center">
@@ -167,14 +167,21 @@ const RecentChanges = (): JSX.Element => {
       </div>
       <div className="grw-recent-changes p-3">
         <ul className="list-group list-group-flush">
-          {(pages || []).map(page => (isRecentChangesSidebarSmall
-            ? <SmallPageItem key={page._id} page={page} />
-            : <LargePageItem key={page._id} page={page} />))}
+          <InfiniteScroll
+            swrInifiniteResponse={swr}
+            isReachingEnd={isReachingEnd}
+          >
+            {pages => pages.map(page => (
+              isRecentChangesSidebarSmall
+                ? <SmallPageItem key={page._id} page={page} />
+                : <LargePageItem key={page._id} page={page} />
+            ))
+            }
+          </InfiniteScroll>
         </ul>
       </div>
-    </>
+    </div>
   );
 
 };
-
 export default RecentChanges;

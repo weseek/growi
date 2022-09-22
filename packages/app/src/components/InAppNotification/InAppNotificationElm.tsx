@@ -1,16 +1,18 @@
 import React, {
   FC, useRef,
 } from 'react';
-import { DropdownItem } from 'reactstrap';
 
 import { UserPicture } from '@growi/ui';
-import { IInAppNotification, InAppNotificationStatuses } from '~/interfaces/in-app-notification';
+import { DropdownItem } from 'reactstrap';
+
+import { IInAppNotificationOpenable } from '~/client/interfaces/in-app-notification-openable';
+import { apiv3Post } from '~/client/util/apiv3-client';
 import { HasObjectId } from '~/interfaces/has-object-id';
+import { IInAppNotification, InAppNotificationStatuses } from '~/interfaces/in-app-notification';
 
 // Change the display for each targetmodel
 import PageModelNotification from './PageNotification/PageModelNotification';
-import { IInAppNotificationOpenable } from '~/client/interfaces/in-app-notification-openable';
-import { apiv3Post } from '~/client/util/apiv3-client';
+
 
 interface Props {
   notification: IInAppNotification & HasObjectId
@@ -101,6 +103,10 @@ const InAppNotificationElm: FC<Props> = (props: Props) => {
       actionMsg = 'renamed';
       actionIcon = 'icon-action-redo';
       break;
+    case 'PAGE_DUPLICATE':
+      actionMsg = 'duplicated';
+      actionIcon = 'icon-docs';
+      break;
     case 'PAGE_DELETE':
       actionMsg = 'deleted';
       actionIcon = 'icon-trash';
@@ -108,6 +114,26 @@ const InAppNotificationElm: FC<Props> = (props: Props) => {
     case 'PAGE_DELETE_COMPLETELY':
       actionMsg = 'completely deleted';
       actionIcon = 'icon-fire';
+      break;
+    case 'PAGE_REVERT':
+      actionMsg = 'reverted';
+      actionIcon = 'icon-action-undo';
+      break;
+    case 'PAGE_RECURSIVELY_RENAME':
+      actionMsg = 'renamed under';
+      actionIcon = 'icon-action-redo';
+      break;
+    case 'PAGE_RECURSIVELY_DELETE':
+      actionMsg = 'deleted under';
+      actionIcon = 'icon-trash';
+      break;
+    case 'PAGE_RECURSIVELY_DELETE_COMPLETELY':
+      actionMsg = 'deleted completely under';
+      actionIcon = 'icon-fire';
+      break;
+    case 'PAGE_RECURSIVELY_REVERT':
+      actionMsg = 'reverted under';
+      actionIcon = 'icon-action-undo';
       break;
     case 'COMMENT_CREATE':
       actionMsg = 'commented on';

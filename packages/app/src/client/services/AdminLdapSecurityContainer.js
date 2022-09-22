@@ -1,7 +1,9 @@
 import { Container } from 'unstated';
-import loggerFactory from '~/utils/logger';
 
+import loggerFactory from '~/utils/logger';
 import { removeNullPropertyFromObject } from '~/utils/object-utils';
+
+import { apiv3Get, apiv3Put } from '../util/apiv3-client';
 
 const logger = loggerFactory('growi:services:AdminLdapSecurityContainer');
 
@@ -42,7 +44,7 @@ export default class AdminLdapSecurityContainer extends Container {
    */
   async retrieveSecurityData() {
     try {
-      const response = await this.appContainer.apiv3.get('/security-setting/');
+      const response = await apiv3Get('/security-setting/');
       const { ldapAuth } = response.data.securityParams;
       this.setState({
         serverUrl: ldapAuth.serverUrl,
@@ -183,7 +185,7 @@ export default class AdminLdapSecurityContainer extends Container {
     };
 
     requestParams = await removeNullPropertyFromObject(requestParams);
-    const response = await this.appContainer.apiv3.put('/security-setting/ldap', requestParams);
+    const response = await apiv3Put('/security-setting/ldap', requestParams);
     const { securitySettingParams } = response.data;
 
     this.setState({

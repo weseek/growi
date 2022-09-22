@@ -1,10 +1,12 @@
-import mongoose, {
+import crypto from 'crypto';
+
+import { getOrCreateModel } from '@growi/core';
+import { addHours } from 'date-fns';
+import {
   Schema, Model, Document,
 } from 'mongoose';
-
 import uniqueValidator from 'mongoose-unique-validator';
-import crypto from 'crypto';
-import { getOrCreateModel } from '@growi/core';
+
 
 export interface IUserRegistrationOrder {
   token: string,
@@ -15,7 +17,7 @@ export interface IUserRegistrationOrder {
 }
 
 export interface UserRegistrationOrderDocument extends IUserRegistrationOrder, Document {
-  isExpired(): Promise<boolean>
+  isExpired(): boolean
   revokeOneTimeToken(): Promise<void>
 }
 
@@ -24,12 +26,17 @@ export interface UserRegistrationOrderModel extends Model<UserRegistrationOrderD
   createUserRegistrationOrder(email: string): UserRegistrationOrderDocument
 }
 
+const expiredAt = (): Date => {
+  return addHours(new Date(), 1);
+};
+
 const schema = new Schema<UserRegistrationOrderDocument, UserRegistrationOrderModel>({
   token: { type: String, required: true, unique: true },
   email: { type: String, required: true },
   isRevoked: { type: Boolean, default: false, required: true },
-  createdAt: { type: Date, default: new Date(Date.now()), required: true },
-  expiredAt: { type: Date, default: new Date(Date.now() + 600000), required: true },
+  expiredAt: { type: Date, default: expiredAt, required: true },
+}, {
+  timestamps: true,
 });
 schema.plugin(uniqueValidator);
 

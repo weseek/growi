@@ -1,30 +1,32 @@
 import React, {
   FC, useCallback, useEffect, useRef,
 } from 'react';
+
 import { useTranslation } from 'react-i18next';
-
 import { DropdownItem } from 'reactstrap';
-
-import { IPageToDeleteWithMeta, IPageToRenameWithMeta, IPageWithMeta } from '~/interfaces/page';
-import { IPageSearchMeta } from '~/interfaces/search';
-import { OnDuplicatedFunction, OnRenamedFunction, OnDeletedFunction } from '~/interfaces/ui';
-import { usePageTreeTermManager } from '~/stores/page-listing';
-import { useFullTextSearchTermManager } from '~/stores/search';
-import { useDescendantsPageListForCurrentPathTermManager } from '~/stores/page';
 
 import { exportAsMarkdown } from '~/client/services/page-operation';
 import { toastSuccess } from '~/client/util/apiNotification';
-
-import RevisionLoader from '../Page/RevisionLoader';
-import AppContainer from '../../client/services/AppContainer';
 import { smoothScrollIntoView } from '~/client/util/smooth-scroll';
-import { GrowiSubNavigation } from '../Navbar/GrowiSubNavigation';
-import { SubNavButtons } from '../Navbar/SubNavButtons';
-import { AdditionalMenuItemsRendererProps, ForceHideMenuItems } from '../Common/Dropdown/PageItemControl';
-
+import { IPageToDeleteWithMeta, IPageToRenameWithMeta, IPageWithMeta } from '~/interfaces/page';
+import { IPageWithSearchMeta } from '~/interfaces/search';
+import { OnDuplicatedFunction, OnRenamedFunction, OnDeletedFunction } from '~/interfaces/ui';
 import {
   usePageDuplicateModal, usePageRenameModal, usePageDeleteModal,
 } from '~/stores/modal';
+import { useDescendantsPageListForCurrentPathTermManager } from '~/stores/page';
+import { usePageTreeTermManager } from '~/stores/page-listing';
+import { useSearchResultRenderer } from '~/stores/renderer';
+import { useFullTextSearchTermManager } from '~/stores/search';
+
+
+import AppContainer from '../../client/services/AppContainer';
+import { AdditionalMenuItemsRendererProps, ForceHideMenuItems, MenuItemType } from '../Common/Dropdown/PageItemControl';
+import { GrowiSubNavigation } from '../Navbar/GrowiSubNavigation';
+import { SubNavButtons } from '../Navbar/SubNavButtons';
+import RevisionLoader from '../Page/RevisionLoader';
+import PageComment from '../PageComment';
+import PageContentFooter from '../PageContentFooter';
 
 
 type AdditionalMenuItemsProps = AdditionalMenuItemsRendererProps & {
@@ -39,8 +41,11 @@ const AdditionalMenuItems = (props: AdditionalMenuItemsProps): JSX.Element => {
 
   return (
     // Export markdown
-    <DropdownItem onClick={() => exportAsMarkdown(pageId, revisionId, 'md')}>
-      <i className="icon-fw icon-cloud-download"></i>
+    <DropdownItem
+      onClick={() => exportAsMarkdown(pageId, revisionId, 'md')}
+      className="grw-page-control-dropdown-item"
+    >
+      <i className="icon-fw icon-cloud-download grw-page-control-dropdown-icon"></i>
       {t('export_bulk.export_page_markdown')}
     </DropdownItem>
   );
@@ -51,7 +56,7 @@ const MUTATION_OBSERVER_CONFIG = { childList: true, subtree: true };
 
 type Props ={
   appContainer: AppContainer,
-  pageWithMeta : IPageWithMeta<IPageSearchMeta>,
+  pageWithMeta : IPageWithSearchMeta,
   highlightKeywords?: string[],
   showPageControlDropdown?: boolean,
   forceHideMenuItems?: ForceHideMenuItems,
@@ -116,8 +121,7 @@ export const SearchResultContent: FC<Props> = (props: Props) => {
   const { open: openRenameModal } = usePageRenameModal();
   const { open: openDeleteModal } = usePageDeleteModal();
 
-  const growiRenderer = appContainer.getRenderer('searchresult');
-
+  const { data: growiRenderer } = useSearchResultRenderer();
 
   const duplicateItemClickedHandler = useCallback(async(pageToDuplicate) => {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -172,30 +176,27 @@ export const SearchResultContent: FC<Props> = (props: Props) => {
       ? page.revision
       : page.revision._id;
 
+
     return (
-      <>
-        <div className="h-50 d-flex flex-column align-items-end justify-content-center">
-          <SubNavButtons
-            pageId={page._id}
-            revisionId={revisionId}
-            path={page.path}
-            showPageControlDropdown={showPageControlDropdown}
-            forceHideMenuItems={forceHideMenuItems}
-            additionalMenuItemRenderer={props => <AdditionalMenuItems {...props} pageId={page._id} revisionId={revisionId} />}
-            isCompactMode
-            onClickDuplicateMenuItem={duplicateItemClickedHandler}
-            onClickRenameMenuItem={renameItemClickedHandler}
-            onClickDeleteMenuItem={deleteItemClickedHandler}
-          />
-        </div>
-        <div className="h-50 d-flex flex-column align-items-end justify-content-center">
-        </div>
-      </>
+      <div className="d-flex flex-column align-items-end justify-content-center py-md-2">
+        <SubNavButtons
+          pageId={page._id}
+          revisionId={revisionId}
+          path={page.path}
+          showPageControlDropdown={showPageControlDropdown}
+          forceHideMenuItems={forceHideMenuItems}
+          additionalMenuItemRenderer={props => <AdditionalMenuItems {...props} pageId={page._id} revisionId={revisionId} />}
+          isCompactMode
+          onClickDuplicateMenuItem={duplicateItemClickedHandler}
+          onClickRenameMenuItem={renameItemClickedHandler}
+          onClickDeleteMenuItem={deleteItemClickedHandler}
+        />
+      </div>
     );
   }, [page, showPageControlDropdown, forceHideMenuItems, duplicateItemClickedHandler, renameItemClickedHandler, deleteItemClickedHandler]);
 
-  // return if page is null
-  if (page == null) return <></>;
+  // return if page or growiRenderer is null
+  if (page == null || growiRenderer == null) return <></>;
 
   return (
     <div key={page._id} data-testid="search-result-content" className="search-result-content grw-page-path-text-muted-container d-flex flex-column">
@@ -214,6 +215,13 @@ export const SearchResultContent: FC<Props> = (props: Props) => {
           pagePath={page.path}
           revisionId={page.revision}
           highlightKeywords={highlightKeywords}
+        />
+        <PageComment appContainer={appContainer} pageId={page._id} highlightKeywords={highlightKeywords} isReadOnly hideIfEmpty />
+        <PageContentFooter
+          createdAt={new Date(pageWithMeta.data.createdAt)}
+          updatedAt={new Date(pageWithMeta.data.updatedAt)}
+          creator={pageWithMeta.data.creator}
+          revisionAuthor={pageWithMeta.data.lastUpdateUser}
         />
       </div>
     </div>

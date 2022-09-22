@@ -7,6 +7,14 @@ on:
       - rc/**
       - chore/**
       - support/prepare-v**
+    paths:
+      - .github/workflows/ci-slackbot-proxy.yml
+      - .eslint*
+      - tsconfig.base.json
+      - yarn.lock
+      - packages/slackbot-proxy/**
+      - '!packages/slackbot-proxy/docker/**'
+      - packages/slack/**
 
 jobs:
 

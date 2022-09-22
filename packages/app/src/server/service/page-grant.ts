@@ -1,9 +1,10 @@
-import mongoose from 'mongoose';
 import { pagePathUtils, pathUtils, pageUtils } from '@growi/core';
 import escapeStringRegexp from 'escape-string-regexp';
+import mongoose from 'mongoose';
 
-import UserGroup from '~/server/models/user-group';
+import { IRecordApplicableGrant } from '~/interfaces/page-grant';
 import { PageDocument, PageModel } from '~/server/models/page';
+import UserGroup from '~/server/models/user-group';
 import { isIncludesObjectId, excludeTestIdsFromTargetIds } from '~/server/util/compare-objectId';
 
 const { addTrailingSlash } = pathUtils;
@@ -74,7 +75,7 @@ class PageGrantService {
     // GRANT_OWNER
     else if (ancestor.grant === Page.GRANT_OWNER) {
       if (target.grantedUserIds?.length !== 1) {
-        throw Error('grantedUserIds must have one user');
+        return false;
       }
 
       if (target.grant !== Page.GRANT_OWNER) { // only GRANT_OWNER page can exist under GRANT_OWNER page
@@ -226,7 +227,7 @@ class PageGrantService {
      */
     const builderForAncestors = new PageQueryBuilder(Page.find(), false);
     if (!includeNotMigratedPages) {
-      builderForAncestors.addConditionAsMigrated();
+      builderForAncestors.addConditionAsOnTree();
     }
     const ancestors = await builderForAncestors
       .addConditionToListOnlyAncestors(targetPath)
@@ -401,6 +402,75 @@ class PageGrantService {
     }
 
     return [normalizable, nonNormalizable];
+  }
+
+  async calcApplicableGrantData(page, user): Promise<IRecordApplicableGrant> {
+    const Page = mongoose.model('Page') as unknown as PageModel;
+    const UserGroupRelation = mongoose.model('UserGroupRelation') as any; // TODO: Typescriptize model
+
+    // -- Public only if top page
+    const isOnlyPublicApplicable = isTopPage(page.path);
+    if (isOnlyPublicApplicable) {
+      return {
+        [Page.GRANT_PUBLIC]: null,
+      };
+    }
+
+    // Increment an object (type IRecordApplicableGrant)
+    // grant is never public, anyone with the link, nor specified
+    const data: IRecordApplicableGrant = {
+      [Page.GRANT_RESTRICTED]: null, // any page can be restricted
+    };
+
+    // -- Any grant is allowed if parent is null
+    const isAnyGrantApplicable = page.parent == null;
+    if (isAnyGrantApplicable) {
+      data[Page.GRANT_PUBLIC] = null;
+      data[Page.GRANT_OWNER] = null;
+      data[Page.GRANT_USER_GROUP] = await UserGroupRelation.findAllUserGroupIdsRelatedToUser(user);
+      return data;
+    }
+
+    const parent = await Page.findById(page.parent);
+    if (parent == null) {
+      throw Error('The page\'s parent does not exist.');
+    }
+
+    const {
+      grant, grantedUsers, grantedGroup,
+    } = parent;
+
+    if (grant === Page.GRANT_PUBLIC) {
+      data[Page.GRANT_PUBLIC] = null;
+      data[Page.GRANT_OWNER] = null;
+      data[Page.GRANT_USER_GROUP] = await UserGroupRelation.findAllUserGroupIdsRelatedToUser(user);
+    }
+    else if (grant === Page.GRANT_OWNER) {
+      const grantedUser = grantedUsers[0];
+
+      const isUserApplicable = grantedUser.toString() === user._id.toString();
+
+      if (isUserApplicable) {
+        data[Page.GRANT_OWNER] = null;
+      }
+    }
+    else if (grant === Page.GRANT_USER_GROUP) {
+      const group = await UserGroup.findById(grantedGroup);
+      if (group == null) {
+        throw Error('Group not found to calculate grant data.');
+      }
+
+      const applicableGroups = await UserGroupRelation.findGroupsWithDescendantsByGroupAndUser(group, user);
+
+      const isUserExistInGroup = await UserGroupRelation.countByGroupIdAndUser(group, user) > 0;
+
+      if (isUserExistInGroup) {
+        data[Page.GRANT_OWNER] = null;
+      }
+      data[Page.GRANT_USER_GROUP] = { applicableGroups };
+    }
+
+    return data;
   }
 
 }

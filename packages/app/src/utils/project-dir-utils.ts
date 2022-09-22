@@ -4,8 +4,9 @@ import fs from 'fs';
 import path from 'path';
 import process from 'process';
 
-const isServer = typeof window === 'undefined';
-const isCurrentDirRoot = isServer && fs.existsSync('./next.config.js');
+import { isServer } from '@growi/core';
+
+const isCurrentDirRoot = isServer() && fs.existsSync('./next.config.js');
 
 export const projectRoot = isCurrentDirRoot
   ? process.cwd()

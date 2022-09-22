@@ -1,10 +1,15 @@
 /* eslint-disable no-unused-vars */
 import { advanceTo } from 'jest-date-mock';
 
+import Tag from '~/server/models/tag';
+
 const mongoose = require('mongoose');
+
 
 const { getInstance } = require('../setup-crowi');
 
+let rootPage;
+let dummyUser1;
 let testUser1;
 let testUser2;
 let parentTag;
@@ -50,7 +55,6 @@ describe('PageService', () => {
   let Page;
   let Revision;
   let User;
-  let Tag;
   let PageTagRelation;
   let Bookmark;
   let Comment;
@@ -64,7 +68,6 @@ describe('PageService', () => {
     User = mongoose.model('User');
     Page = mongoose.model('Page');
     Revision = mongoose.model('Revision');
-    Tag = mongoose.model('Tag');
     PageTagRelation = mongoose.model('PageTagRelation');
     Bookmark = mongoose.model('Bookmark');
     Comment = mongoose.model('Comment');
@@ -77,6 +80,10 @@ describe('PageService', () => {
 
     testUser1 = await User.findOne({ username: 'someone1' });
     testUser2 = await User.findOne({ username: 'someone2' });
+
+    dummyUser1 = await User.findOne({ username: 'v5DummyUser1' });
+
+    rootPage = await Page.findOne({ path: '/' });
 
     await Page.insertMany([
       {
@@ -289,11 +296,98 @@ describe('PageService', () => {
     ]);
 
     xssSpy = jest.spyOn(crowi.xss, 'process').mockImplementation(path => path);
+
+    /**
+     * getParentAndFillAncestors
+     */
+    const pageIdPAF1 = new mongoose.Types.ObjectId();
+    const pageIdPAF2 = new mongoose.Types.ObjectId();
+    const pageIdPAF3 = new mongoose.Types.ObjectId();
+
+    await Page.insertMany([
+      {
+        _id: pageIdPAF1,
+        path: '/PAF1',
+        grant: Page.GRANT_PUBLIC,
+        creator: dummyUser1,
+        lastUpdateUser: dummyUser1._id,
+        isEmpty: false,
+        parent: rootPage._id,
+        descendantCount: 0,
+      },
+      {
+        _id: pageIdPAF2,
+        path: '/emp_anc3',
+        grant: Page.GRANT_PUBLIC,
+        isEmpty: true,
+        descendantCount: 1,
+        parent: rootPage._id,
+      },
+      {
+        path: '/emp_anc3/PAF3',
+        grant: Page.GRANT_PUBLIC,
+        creator: dummyUser1,
+        lastUpdateUser: dummyUser1._id,
+        isEmpty: false,
+        descendantCount: 0,
+        parent: pageIdPAF2,
+      },
+      {
+        _id: pageIdPAF3,
+        path: '/emp_anc4',
+        grant: Page.GRANT_PUBLIC,
+        isEmpty: true,
+        descendantCount: 1,
+        parent: rootPage._id,
+      },
+      {
+        path: '/emp_anc4/PAF4',
+        grant: Page.GRANT_PUBLIC,
+        creator: dummyUser1,
+        lastUpdateUser: dummyUser1._id,
+        isEmpty: false,
+        descendantCount: 0,
+        parent: pageIdPAF3,
+      },
+      {
+        path: '/emp_anc4',
+        grant: Page.GRANT_OWNER,
+        grantedUsers: [dummyUser1._id],
+        creator: dummyUser1,
+        lastUpdateUser: dummyUser1._id,
+        isEmpty: false,
+      },
+      {
+        path: '/get_parent_A',
+        creator: dummyUser1,
+        lastUpdateUser: dummyUser1,
+        parent: null,
+      },
+      {
+        path: '/get_parent_A/get_parent_B',
+        creator: dummyUser1,
+        lastUpdateUser: dummyUser1,
+        parent: null,
+      },
+      {
+        path: '/get_parent_C',
+        creator: dummyUser1,
+        lastUpdateUser: dummyUser1,
+        parent: rootPage._id,
+      },
+      {
+        path: '/get_parent_C/get_parent_D',
+        creator: dummyUser1,
+        lastUpdateUser: dummyUser1,
+        parent: null,
+      },
+    ]);
   });
 
   describe('rename page without using renameDescendantsWithStreamSpy', () => {
     test('rename page with different tree with isRecursively [deeper]', async() => {
-      const resultPage = await crowi.pageService.renamePage(parentForRename6, '/parentForRename6/renamedChild', testUser1, { isRecursively: true });
+      const resultPage = await crowi.pageService.renamePage(parentForRename6, '/parentForRename6/renamedChild', testUser1, { isRecursively: true },
+        { ip: '::ffff:127.0.0.1', endpoint: '/_api/v3/pages/rename' });
       const wrongPage = await Page.findOne({ path: '/parentForRename6/renamedChild/renamedChild' });
       const expectPage1 = await Page.findOne({ path: '/parentForRename6/renamedChild' });
       const expectPage2 = await Page.findOne({ path: '/parentForRename6-2021H1' });
@@ -315,7 +409,8 @@ describe('PageService', () => {
 
       // when
       //   rename /level1/level2 --> /level1
-      await crowi.pageService.renamePage(parentForRename7, '/level1', testUser1, { isRecursively: true });
+      await crowi.pageService.renamePage(parentForRename7, '/level1', testUser1, { isRecursively: true },
+        { ip: '::ffff:127.0.0.1', endpoint: '/_api/v3/pages/rename' });
 
       // then
       expect(await Page.findOne({ path: '/level1' })).not.toBeNull();
@@ -345,11 +440,12 @@ describe('PageService', () => {
 
       test('rename page without options', async() => {
 
-        const resultPage = await crowi.pageService.renamePage(parentForRename1, '/renamed1', testUser2, {});
+        const resultPage = await crowi.pageService.renamePage(parentForRename1,
+          '/renamed1', testUser2, {}, { ip: '::ffff:127.0.0.1', endpoint: '/_api/v3/pages/rename' });
 
         expect(xssSpy).toHaveBeenCalled();
 
-        expect(pageEventSpy).toHaveBeenCalledWith('rename', parentForRename1, testUser2);
+        expect(pageEventSpy).toHaveBeenCalledWith('rename');
 
         expect(resultPage.path).toBe('/renamed1');
         expect(resultPage.updatedAt).toEqual(parentForRename1.updatedAt);
@@ -358,11 +454,12 @@ describe('PageService', () => {
 
       test('rename page with updateMetadata option', async() => {
 
-        const resultPage = await crowi.pageService.renamePage(parentForRename2, '/renamed2', testUser2, { updateMetadata: true });
+        const resultPage = await crowi.pageService.renamePage(parentForRename2, '/renamed2', testUser2, { updateMetadata: true },
+          { ip: '::ffff:127.0.0.1', endpoint: '/_api/v3/pages/rename' });
 
         expect(xssSpy).toHaveBeenCalled();
 
-        expect(pageEventSpy).toHaveBeenCalledWith('rename', parentForRename2, testUser2);
+        expect(pageEventSpy).toHaveBeenCalledWith('rename');
 
         expect(resultPage.path).toBe('/renamed2');
         expect(resultPage.updatedAt).toEqual(dateToUse);
@@ -371,10 +468,11 @@ describe('PageService', () => {
 
       test('rename page with createRedirectPage option', async() => {
 
-        const resultPage = await crowi.pageService.renamePage(parentForRename3, '/renamed3', testUser2, { createRedirectPage: true });
+        const resultPage = await crowi.pageService.renamePage(parentForRename3, '/renamed3', testUser2, { createRedirectPage: true },
+          { ip: '::ffff:127.0.0.1', endpoint: '/_api/v3/pages/rename' });
 
         expect(xssSpy).toHaveBeenCalled();
-        expect(pageEventSpy).toHaveBeenCalledWith('rename', parentForRename3, testUser2);
+        expect(pageEventSpy).toHaveBeenCalledWith('rename');
 
         expect(resultPage.path).toBe('/renamed3');
         expect(resultPage.updatedAt).toEqual(parentForRename3.updatedAt);
@@ -383,11 +481,12 @@ describe('PageService', () => {
 
       test('rename page with isRecursively', async() => {
 
-        const resultPage = await crowi.pageService.renamePage(parentForRename4, '/renamed4', testUser2, { isRecursively: true });
+        const resultPage = await crowi.pageService.renamePage(parentForRename4, '/renamed4', testUser2, { isRecursively: true },
+          { ip: '::ffff:127.0.0.1', endpoint: '/_api/v3/pages/rename' });
 
         expect(xssSpy).toHaveBeenCalled();
         expect(renameDescendantsWithStreamSpy).toHaveBeenCalled();
-        expect(pageEventSpy).toHaveBeenCalledWith('rename', parentForRename4, testUser2);
+        expect(pageEventSpy).toHaveBeenCalledWith('rename');
 
         expect(resultPage.path).toBe('/renamed4');
         expect(resultPage.updatedAt).toEqual(parentForRename4.updatedAt);
@@ -396,7 +495,8 @@ describe('PageService', () => {
 
       test('rename page with different tree with isRecursively', async() => {
 
-        const resultPage = await crowi.pageService.renamePage(parentForRename5, '/parentForRename5/renamedChild', testUser1, { isRecursively: true });
+        const resultPage = await crowi.pageService.renamePage(parentForRename5, '/parentForRename5/renamedChild', testUser1, { isRecursively: true },
+          { ip: '::ffff:127.0.0.1', endpoint: '/_api/v3/pages/rename' });
         const wrongPage = await Page.findOne({ path: '/parentForRename5/renamedChild/renamedChild' });
         const expectPage = await Page.findOne({ path: '/parentForRename5/renamedChild' });
 
@@ -551,7 +651,10 @@ describe('PageService', () => {
     });
 
     test('delete page without options', async() => {
-      const resultPage = await crowi.pageService.deletePage(parentForDelete1, testUser2, { });
+      const resultPage = await crowi.pageService.deletePage(parentForDelete1, testUser2, { }, false, {
+        ip: '::ffff:127.0.0.1',
+        endpoint: '/_api/v3/pages/delete',
+      });
 
       expect(getDeletedPageNameSpy).toHaveBeenCalled();
       expect(deleteDescendantsWithStreamSpy).not.toHaveBeenCalled();
@@ -568,7 +671,10 @@ describe('PageService', () => {
     });
 
     test('delete page with isRecursively', async() => {
-      const resultPage = await crowi.pageService.deletePage(parentForDelete2, testUser2, { }, true);
+      const resultPage = await crowi.pageService.deletePage(parentForDelete2, testUser2, { }, true, {
+        ip: '::ffff:127.0.0.1',
+        endpoint: '/_api/v3/pages/delete',
+      });
 
       expect(getDeletedPageNameSpy).toHaveBeenCalled();
       expect(deleteDescendantsWithStreamSpy).toHaveBeenCalled();
@@ -638,7 +744,10 @@ describe('PageService', () => {
     });
 
     test('delete completely without options', async() => {
-      await crowi.pageService.deleteCompletely(parentForDeleteCompletely, testUser2, { });
+      await crowi.pageService.deleteCompletely(parentForDeleteCompletely, testUser2, { }, false, false, {
+        ip: '::ffff:127.0.0.1',
+        endpoint: '/_api/v3/pages/deletecompletely',
+      });
 
       expect(deleteCompletelyOperationSpy).toHaveBeenCalled();
       expect(deleteCompletelyDescendantsWithStreamSpy).not.toHaveBeenCalled();
@@ -648,7 +757,10 @@ describe('PageService', () => {
 
 
     test('delete completely with isRecursively', async() => {
-      await crowi.pageService.deleteCompletely(parentForDeleteCompletely, testUser2, { }, true);
+      await crowi.pageService.deleteCompletely(parentForDeleteCompletely, testUser2, { }, true, false, {
+        ip: '::ffff:127.0.0.1',
+        endpoint: '/_api/v3/pages/deletecompletely',
+      });
 
       expect(deleteCompletelyOperationSpy).toHaveBeenCalled();
       expect(deleteCompletelyDescendantsWithStreamSpy).toHaveBeenCalled();
@@ -671,7 +783,10 @@ describe('PageService', () => {
     });
 
     test('revert deleted page when the redirect from page exists', async() => {
-      const resultPage = await crowi.pageService.revertDeletedPage(parentForRevert1, testUser2);
+      const resultPage = await crowi.pageService.revertDeletedPage(parentForRevert1, testUser2, {}, false, {
+        ip: '::ffff:127.0.0.1',
+        endpoint: '/_api/v3/pages/revert',
+      });
 
       expect(getRevertDeletedPageNameSpy).toHaveBeenCalledWith(parentForRevert1.path);
       expect(revertDeletedDescendantsWithStreamSpy).not.toHaveBeenCalled();
@@ -689,7 +804,10 @@ describe('PageService', () => {
         return null;
       });
 
-      const resultPage = await crowi.pageService.revertDeletedPage(parentForRevert2, testUser2, {}, true);
+      const resultPage = await crowi.pageService.revertDeletedPage(parentForRevert2, testUser2, {}, true, {
+        ip: '::ffff:127.0.0.1',
+        endpoint: '/_api/v3/pages/revert',
+      });
 
       expect(getRevertDeletedPageNameSpy).toHaveBeenCalledWith(parentForRevert2.path);
       expect(findByPathSpy).toHaveBeenCalledWith('/parentForRevert2');
@@ -719,6 +837,184 @@ describe('PageService', () => {
 
       expect(revrtedFromPage).toBeNull();
       expect(revrtedFromPageRevision).toBeNull();
+    });
+  });
+
+  describe('getParentAndFillAncestors', () => {
+    test('return parent if exist', async() => {
+      const page1 = await Page.findOne({ path: '/PAF1' });
+      const parent = await crowi.pageService.getParentAndFillAncestorsByUser(dummyUser1, page1.path);
+      expect(parent).toBeTruthy();
+      expect(page1.parent).toStrictEqual(parent._id);
+    });
+    test('create parent and ancestors when they do not exist, and return the new parent', async() => {
+      const path1 = '/emp_anc1';
+      const path2 = '/emp_anc1/emp_anc2';
+      const path3 = '/emp_anc1/emp_anc2/PAF2';
+      const _page1 = await Page.findOne({ path: path1 }); // not exist
+      const _page2 = await Page.findOne({ path: path2 }); // not exist
+      const _page3 = await Page.findOne({ path: path3 }); // not exist
+      expect(_page1).toBeNull();
+      expect(_page2).toBeNull();
+      expect(_page3).toBeNull();
+
+      const parent = await crowi.pageService.getParentAndFillAncestorsByUser(dummyUser1, path3);
+      const page1 = await Page.findOne({ path: path1 });
+      const page2 = await Page.findOne({ path: path2 });
+      const page3 = await Page.findOne({ path: path3 });
+
+      expect(parent._id).toStrictEqual(page2._id);
+      expect(parent.path).toStrictEqual(page2.path);
+      expect(parent.parent).toStrictEqual(page2.parent);
+
+      expect(parent).toBeTruthy();
+      expect(page1).toBeTruthy();
+      expect(page2).toBeTruthy();
+      expect(page3).toBeNull();
+
+      expect(page1.parent).toStrictEqual(rootPage._id);
+      expect(page2.parent).toStrictEqual(page1._id);
+    });
+    test('return parent even if the parent page is empty', async() => {
+      const path1 = '/emp_anc3';
+      const path2 = '/emp_anc3/PAF3';
+      const _page1 = await Page.findOne({ path: path1, isEmpty: true });
+      const _page2 = await Page.findOne({ path: path2, isEmpty: false });
+      expect(_page1).toBeTruthy();
+      expect(_page2).toBeTruthy();
+
+      const parent = await crowi.pageService.getParentAndFillAncestorsByUser(dummyUser1, _page2.path);
+      const page1 = await Page.findOne({ path: path1, isEmpty: true }); // parent
+      const page2 = await Page.findOne({ path: path2, isEmpty: false });
+
+      // check for the parent (should be the same as page1)
+      expect(parent._id).toStrictEqual(page1._id);
+      expect(parent.path).toStrictEqual(page1.path);
+      expect(parent.parent).toStrictEqual(page1.parent);
+
+      expect(page1.parent).toStrictEqual(rootPage._id);
+      expect(page2.parent).toStrictEqual(page1._id);
+    });
+    test('should find parent while NOT updating private legacy page\'s parent', async() => {
+      const path1 = '/emp_anc4';
+      const path2 = '/emp_anc4/PAF4';
+      const _page1 = await Page.findOne({ path: path1, isEmpty: true, grant: Page.GRANT_PUBLIC });
+      const _page2 = await Page.findOne({ path: path2, isEmpty: false, grant: Page.GRANT_PUBLIC });
+      const _page3 = await Page.findOne({ path: path1, isEmpty: false, grant: Page.GRANT_OWNER });
+      expect(_page1).toBeTruthy();
+      expect(_page2).toBeTruthy();
+      expect(_page3).toBeTruthy();
+      expect(_page3.parent).toBeNull();
+
+      const parent = await crowi.pageService.getParentAndFillAncestorsByUser(dummyUser1, _page2.path);
+      const page1 = await Page.findOne({ path: path1, isEmpty: true, grant: Page.GRANT_PUBLIC });
+      const page2 = await Page.findOne({ path: path2, isEmpty: false, grant: Page.GRANT_PUBLIC });
+      const page3 = await Page.findOne({ path: path1, isEmpty: false, grant: Page.GRANT_OWNER });
+      expect(page1).toBeTruthy();
+      expect(page2).toBeTruthy();
+      expect(page3).toBeTruthy();
+      expect(page3.parent).toBeNull(); // parent property of page in private legacy pages should be null
+
+      expect(page1._id).toStrictEqual(parent._id);
+      expect(page2.parent).toStrictEqual(parent._id);
+
+    });
+    test('should find parent while NOT creating unnecessary empty pages with all v4 public pages', async() => {
+      // All pages does not have parent (v4 schema)
+      const _pageA = await Page.findOne({
+        path: '/get_parent_A',
+        grant: Page.GRANT_PUBLIC,
+        isEmpty: false,
+        parent: null,
+      });
+      const _pageAB = await Page.findOne({
+        path: '/get_parent_A/get_parent_B',
+        grant: Page.GRANT_PUBLIC,
+        isEmpty: false,
+        parent: null,
+      });
+      const _emptyA = await Page.findOne({
+        path: '/get_parent_A',
+        grant: Page.GRANT_PUBLIC,
+        isEmpty: true,
+      });
+      const _emptyAB = await Page.findOne({
+        path: '/get_parent_A/get_parent_B',
+        grant: Page.GRANT_PUBLIC,
+        isEmpty: true,
+      });
+
+      expect(_pageA).not.toBeNull();
+      expect(_pageAB).not.toBeNull();
+      expect(_emptyA).toBeNull();
+      expect(_emptyAB).toBeNull();
+
+      const parent = await crowi.pageService.getParentAndFillAncestorsByUser(dummyUser1, '/get_parent_A/get_parent_B/get_parent_C');
+
+      const pageA = await Page.findOne({ path: '/get_parent_A', grant: Page.GRANT_PUBLIC, isEmpty: false });
+      const pageAB = await Page.findOne({ path: '/get_parent_A/get_parent_B', grant: Page.GRANT_PUBLIC, isEmpty: false });
+      const emptyA = await Page.findOne({ path: '/get_parent_A', grant: Page.GRANT_PUBLIC, isEmpty: true });
+      const emptyAB = await Page.findOne({ path: '/get_parent_A/get_parent_B', grant: Page.GRANT_PUBLIC, isEmpty: true });
+
+      // -- Check existance
+      expect(parent).not.toBeNull();
+      expect(pageA).not.toBeNull();
+      expect(pageAB).not.toBeNull();
+      expect(emptyA).toBeNull();
+      expect(emptyAB).toBeNull();
+
+      // -- Check parent
+      expect(pageA.parent).not.toBeNull();
+      expect(pageAB.parent).not.toBeNull();
+    });
+    test('should find parent while NOT creating unnecessary empty pages with some v5 public pages', async() => {
+      const _pageC = await Page.findOne({
+        path: '/get_parent_C',
+        grant: Page.GRANT_PUBLIC,
+        isEmpty: false,
+        parent: { $ne: null },
+      });
+      const _pageCD = await Page.findOne({
+        path: '/get_parent_C/get_parent_D',
+        grant: Page.GRANT_PUBLIC,
+        isEmpty: false,
+      });
+      const _emptyC = await Page.findOne({
+        path: '/get_parent_C',
+        grant: Page.GRANT_PUBLIC,
+        isEmpty: true,
+      });
+      const _emptyCD = await Page.findOne({
+        path: '/get_parent_C/get_parent_D',
+        grant: Page.GRANT_PUBLIC,
+        isEmpty: true,
+      });
+
+      expect(_pageC).not.toBeNull();
+      expect(_pageCD).not.toBeNull();
+      expect(_emptyC).toBeNull();
+      expect(_emptyCD).toBeNull();
+
+      const parent = await crowi.pageService.getParentAndFillAncestorsByUser(dummyUser1, '/get_parent_C/get_parent_D/get_parent_E');
+
+      const pageC = await Page.findOne({ path: '/get_parent_C', grant: Page.GRANT_PUBLIC, isEmpty: false });
+      const pageCD = await Page.findOne({ path: '/get_parent_C/get_parent_D', grant: Page.GRANT_PUBLIC, isEmpty: false });
+      const emptyC = await Page.findOne({ path: '/get_parent_C', grant: Page.GRANT_PUBLIC, isEmpty: true });
+      const emptyCD = await Page.findOne({ path: '/get_parent_C/get_parent_D', grant: Page.GRANT_PUBLIC, isEmpty: true });
+
+      // -- Check existance
+      expect(parent).not.toBeNull();
+      expect(pageC).not.toBeNull();
+      expect(pageCD).not.toBeNull();
+      expect(emptyC).toBeNull();
+      expect(emptyCD).toBeNull();
+
+      // -- Check parent attribute
+      expect(pageC.parent).toStrictEqual(rootPage._id);
+      expect(pageCD.parent).toStrictEqual(pageC._id);
+
+      // -- Check the found parent
+      expect(parent.toObject()).toStrictEqual(pageCD.toObject());
     });
   });
 

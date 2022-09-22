@@ -1,32 +1,32 @@
 import React, {
-  useCallback, useState, FC, useEffect,
+  useCallback, useState, FC, useEffect, ReactNode,
 } from 'react';
-import { DropdownToggle } from 'reactstrap';
-import { useTranslation } from 'react-i18next';
-
-import { useDrag, useDrop } from 'react-dnd';
 
 import nodePath from 'path';
 
 import { pathUtils, pagePathUtils } from '@growi/core';
+import { useDrag, useDrop } from 'react-dnd';
+import { useTranslation } from 'react-i18next';
+import { UncontrolledTooltip, DropdownToggle } from 'reactstrap';
 
-import loggerFactory from '~/utils/logger';
-
+import { bookmark, unbookmark, resumeRenameOperation } from '~/client/services/page-operation';
 import { toastWarning, toastError, toastSuccess } from '~/client/util/apiNotification';
-
-import { useSWRxPageChildren } from '~/stores/page-listing';
 import { apiv3Put, apiv3Post } from '~/client/util/apiv3-client';
-import { IPageForPageDuplicateModal } from '~/stores/modal';
-
 import TriangleIcon from '~/components/Icons/TriangleIcon';
-import { bookmark, unbookmark } from '~/client/services/page-operation';
-import ClosableTextInput, { AlertInfo, AlertType } from '../../Common/ClosableTextInput';
-import { PageItemControl } from '../../Common/Dropdown/PageItemControl';
-import { ItemNode } from './ItemNode';
-import { usePageTreeDescCountMap } from '~/stores/ui';
 import {
   IPageHasId, IPageInfoAll, IPageToDeleteWithMeta,
 } from '~/interfaces/page';
+import { IPageForPageDuplicateModal } from '~/stores/modal';
+import { useSWRxPageChildren } from '~/stores/page-listing';
+import { usePageTreeDescCountMap } from '~/stores/ui';
+import loggerFactory from '~/utils/logger';
+import { shouldRecoverPagePaths } from '~/utils/page-operation';
+
+import ClosableTextInput, { AlertInfo, AlertType } from '../../Common/ClosableTextInput';
+import CountBadge from '../../Common/CountBadge';
+import { PageItemControl } from '../../Common/Dropdown/PageItemControl';
+
+import { ItemNode } from './ItemNode';
 
 
 const logger = loggerFactory('growi:cli:Item');
@@ -93,20 +93,15 @@ const isDroppable = (fromPage?: Partial<IPageHasId>, newParentPage?: Partial<IPa
   return pagePathUtils.canMoveByPath(fromPage.path, newPathAfterMoved) && !pagePathUtils.isUsersTopPage(newParentPage.path);
 };
 
-
-type ItemCountProps = {
-  descendantCount: number
-}
-
-const ItemCount: FC<ItemCountProps> = (props:ItemCountProps) => {
-  return (
-    <>
-      <span className="grw-pagetree-count px-2 badge badge-pill badge-light">
-        {props.descendantCount}
-      </span>
-    </>
-  );
+// Component wrapper to make a child element not draggable
+// https://github.com/react-dnd/react-dnd/issues/335
+type NotDraggableProps = {
+  children: ReactNode,
 };
+const NotDraggableForClosableTextInput = (props: NotDraggableProps): JSX.Element => {
+  return <div draggable onDragStart={e => e.preventDefault()}>{props.children}</div>;
+};
+
 
 const Item: FC<ItemProps> = (props: ItemProps) => {
   const { t } = useTranslation();
@@ -122,7 +117,6 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
   const [isNewPageInputShown, setNewPageInputShown] = useState(false);
   const [shouldHide, setShouldHide] = useState(false);
   const [isRenameInputShown, setRenameInputShown] = useState(false);
-  const [isRenaming, setRenaming] = useState(false);
   const [isCreating, setCreating] = useState(false);
 
   const { data, mutate: mutateChildren } = useSWRxPageChildren(isOpen ? page._id : null);
@@ -194,6 +188,10 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
       });
 
       await mutateChildren();
+
+      if (onRenamed != null) {
+        onRenamed();
+      }
 
       // force open
       setIsOpen(true);
@@ -280,7 +278,6 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
 
     try {
       setRenameInputShown(false);
-      setRenaming(true);
       await apiv3Put('/pages/rename', {
         pageId: page._id,
         revisionId: page.revision,
@@ -297,11 +294,6 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
       setRenameInputShown(true);
       toastError(err);
     }
-    finally {
-      setTimeout(() => {
-        setRenaming(false);
-      }, 1000);
-    }
   };
 
   const deleteMenuItemClickHandler = useCallback(async(_pageId: string, pageInfo: IPageInfoAll | undefined): Promise<void> => {
@@ -309,8 +301,8 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
       return;
     }
 
-    if (page._id == null || page.revision == null || page.path == null) {
-      throw Error('Any of _id, revision, and path must not be null.');
+    if (page._id == null || page.path == null) {
+      throw Error('_id and path must not be null.');
     }
 
     const pageToDelete: IPageToDeleteWithMeta = {
@@ -377,16 +369,27 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
       };
     }
 
-    if (title.includes('/')) {
-      return {
-        type: AlertType.WARNING,
-        message: t('form_validation.slashed_are_not_yet_supported'),
-      };
-    }
-
     return null;
   };
 
+  /**
+   * Users do not need to know if all pages have been renamed.
+   * Make resuming rename operation appears to be working fine to allow users for a seamless operation.
+   */
+  const pathRecoveryMenuItemClickHandler = async(pageId: string): Promise<void> => {
+    try {
+      await resumeRenameOperation(pageId);
+
+      if (onRenamed != null) {
+        onRenamed();
+      }
+
+      toastSuccess(t('page_operation.paths_recovered'));
+    }
+    catch {
+      toastError(t('page_operation.path_recovery_failed'));
+    }
+  };
 
   // didMount
   useEffect(() => {
@@ -413,6 +416,10 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
       setCurrentChildren(newChildren);
     }
   }, [data, isOpen, targetPathOrId]);
+
+  // Rename process
+  // Icon that draw attention from users for some actions
+  const shouldShowAttentionIcon = page.processData != null ? shouldRecoverPagePaths(page.processData) : false;
 
   return (
     <div
@@ -441,27 +448,37 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
         </div>
         { isRenameInputShown
           ? (
-            <ClosableTextInput
-              value={nodePath.basename(page.path ?? '')}
-              placeholder={t('Input page name')}
-              onClickOutside={() => { setRenameInputShown(false) }}
-              onPressEnter={onPressEnterForRenameHandler}
-              inputValidator={inputValidator}
-            />
+            <div className="flex-fill">
+              <NotDraggableForClosableTextInput>
+                <ClosableTextInput
+                  value={nodePath.basename(page.path ?? '')}
+                  placeholder={t('Input page name')}
+                  onClickOutside={() => { setRenameInputShown(false) }}
+                  onPressEnter={onPressEnterForRenameHandler}
+                  inputValidator={inputValidator}
+                />
+              </NotDraggableForClosableTextInput>
+            </div>
           )
           : (
             <>
-              { isRenaming && (
-                <i className="fa fa-spinner fa-pulse mr-2 text-muted"></i>
+              { shouldShowAttentionIcon && (
+                <>
+                  <i id="path-recovery" className="fa fa-warning mr-2 text-warning"></i>
+                  <UncontrolledTooltip placement="top" target="path-recovery" fade={false}>
+                    {t('tooltip.operation.attention.rename')}
+                  </UncontrolledTooltip>
+                </>
               )}
+
               <a href={`/${page._id}`} className="grw-pagetree-title-anchor flex-grow-1">
-                <p className={`text-truncate m-auto ${page.isEmpty && 'text-muted'}`}>{nodePath.basename(page.path ?? '') || '/'}</p>
+                <p className={`text-truncate m-auto ${page.isEmpty && 'grw-sidebar-text-muted'}`}>{nodePath.basename(page.path ?? '') || '/'}</p>
               </a>
             </>
           )}
         {descendantCount > 0 && !isRenameInputShown && (
           <div className="grw-pagetree-count-wrapper">
-            <ItemCount descendantCount={descendantCount} />
+            <CountBadge count={descendantCount} />
           </div>
         )}
         <div className="grw-pagetree-control d-flex">
@@ -472,7 +489,10 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
             onClickDuplicateMenuItem={duplicateMenuItemClickHandler}
             onClickRenameMenuItem={renameMenuItemClickHandler}
             onClickDeleteMenuItem={deleteMenuItemClickHandler}
+            onClickPathRecoveryMenuItem={pathRecoveryMenuItemClickHandler}
             isInstantRename
+            // Todo: It is wanted to find a better way to pass operationProcessData to PageItemControl
+            operationProcessData={page.processData}
           >
             {/* pass the color property to reactstrap dropdownToggle props. https://6-4-0--reactstrap.netlify.app/components/dropdowns/  */}
             <DropdownToggle color="transparent" className="border-0 rounded btn-page-item-control p-0 grw-visible-on-hover mr-1">
@@ -492,12 +512,16 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
       </li>
 
       {isEnableActions && isNewPageInputShown && (
-        <ClosableTextInput
-          placeholder={t('Input page name')}
-          onClickOutside={() => { setNewPageInputShown(false) }}
-          onPressEnter={onPressEnterForCreateHandler}
-          inputValidator={inputValidator}
-        />
+        <div className="flex-fill">
+          <NotDraggableForClosableTextInput>
+            <ClosableTextInput
+              placeholder={t('Input page name')}
+              onClickOutside={() => { setNewPageInputShown(false) }}
+              onPressEnter={onPressEnterForCreateHandler}
+              inputValidator={inputValidator}
+            />
+          </NotDraggableForClosableTextInput>
+        </div>
       )}
       {
         isOpen && hasChildren() && currentChildren.map((node, index) => (

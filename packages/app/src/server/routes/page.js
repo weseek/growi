@@ -1,9 +1,14 @@
 import { pagePathUtils } from '@growi/core';
-import urljoin from 'url-join';
 import { body } from 'express-validator';
 import mongoose from 'mongoose';
+import urljoin from 'url-join';
 
+import { SupportedTargetModel, SupportedAction } from '~/interfaces/activity';
+import Activity from '~/server/models/activity';
+import XssOption from '~/services/xss/xssOption';
 import loggerFactory from '~/utils/logger';
+
+import { PathAlreadyExistsError } from '../models/errors';
 import UpdatePost from '../models/update-post';
 
 const { isCreatablePage, isTopPage, isUsersHomePage } = pagePathUtils;
@@ -151,11 +156,11 @@ module.exports = function(crowi, app) {
   const getToday = require('../util/getToday');
 
   const { configManager, xssService } = crowi;
-  const interceptorManager = crowi.getInterceptorManager();
   const globalNotificationService = crowi.getGlobalNotificationService();
   const userNotificationService = crowi.getUserNotificationService();
 
-  const XssOption = require('~/services/xss/xssOption');
+  const activityEvent = crowi.event('activity');
+
   const Xss = require('~/services/xss/index');
   const initializedConfig = {
     isEnabledXssPrevention: configManager.getConfig('markdown', 'markdown:xss:isEnabledPrevention'),
@@ -169,7 +174,7 @@ module.exports = function(crowi, app) {
   const actions = {};
 
   function getPathFromRequest(req) {
-    return pathUtils.normalizePath(req.pagePath || req.params[0] || '');
+    return pathUtils.normalizePath(req.pagePath || req.params[0] || req.params.id || '');
   }
 
   function generatePager(offset, limit, totalCount) {
@@ -273,9 +278,12 @@ module.exports = function(crowi, app) {
     }
 
     renderVars.notFoundTargetPathOrId = pathOrId;
+  }
 
-    const isPath = pathOrId.includes('/');
-    renderVars.isNotFoundPermalink = !isPath && !await Page.exists({ _id: pathOrId });
+  async function addRenderVarsWhenEmptyPage(renderVars, isEmpty, pageId) {
+    if (!isEmpty) return;
+    renderVars.pageId = pageId;
+    renderVars.isEmpty = isEmpty;
   }
 
   function replacePlaceholdersOfTemplate(template, req) {
@@ -298,20 +306,25 @@ module.exports = function(crowi, app) {
     const pathOrId = req.params.id || path;
 
     let view;
+    let action;
     const renderVars = { path };
 
     if (!isCreatablePage(path)) {
       view = 'layout-growi/not_creatable';
+      action = SupportedAction.ACTION_PAGE_NOT_CREATABLE;
     }
     else if (req.isForbidden) {
       view = 'layout-growi/forbidden';
+      action = SupportedAction.ACTION_PAGE_FORBIDDEN;
     }
     else {
       view = 'layout-growi/not_found';
+      action = SupportedAction.ACTION_PAGE_NOT_FOUND;
 
       // retrieve templates
       if (req.user != null) {
         const template = await Page.findTemplate(path);
+
         if (template.templateBody) {
           const body = replacePlaceholdersOfTemplate(template.templateBody, req);
           const tags = template.templateTags;
@@ -332,8 +345,19 @@ module.exports = function(crowi, app) {
     const offset = parseInt(req.query.offset) || 0;
     await addRenderVarsForDescendants(renderVars, path, req.user, offset, limit, true);
     await addRenderVarsForPageTree(renderVars, pathOrId, req.user);
-
     await addRenderVarsWhenNotFound(renderVars, pathOrId);
+    await addRenderVarsWhenEmptyPage(renderVars, req.isEmpty, req.pageId);
+
+    const parameters = {
+      ip:  req.ip,
+      endpoint: req.originalUrl,
+      action,
+      user: req.user?._id,
+      snapshot: {
+        username: req.user?.username,
+      },
+    };
+    crowi.activityService.createActivity(parameters);
 
     return res.render(view, renderVars);
   }
@@ -402,7 +426,17 @@ module.exports = function(crowi, app) {
 
     await addRenderVarsForPageTree(renderVars, portalPath, req.user);
 
-    await interceptorManager.process('beforeRenderPage', req, res, renderVars);
+    const parameters = {
+      ip:  req.ip,
+      endpoint: req.originalUrl,
+      action: SupportedAction.ACTION_PAGE_VIEW,
+      user: req.user?._id,
+      snapshot: {
+        username: req.user?.username,
+      },
+    };
+    crowi.activityService.createActivity(parameters);
+
     return res.render(view, renderVars);
   }
 
@@ -420,13 +454,10 @@ module.exports = function(crowi, app) {
 
     // empty page
     if (page.isEmpty) {
-      // redirect to page (path) url
-      const url = new URL('https://dummy.origin');
-      url.pathname = page.path;
-      Object.entries(req.query).forEach(([key, value], i) => {
-        url.searchParams.append(key, value);
-      });
-      return res.safeRedirect(urljoin(url.pathname, url.search));
+      req.pageId = page._id;
+      req.pagePath = page.path;
+      req.isEmpty = page.isEmpty;
+      return _notFound(req, res);
     }
 
     const { path } = page; // this must exist
@@ -464,7 +495,17 @@ module.exports = function(crowi, app) {
 
     await addRenderVarsForPageTree(renderVars, path, req.user);
 
-    await interceptorManager.process('beforeRenderPage', req, res, renderVars);
+    const parameters = {
+      ip:  req.ip,
+      endpoint: req.originalUrl,
+      action: isUsersHomePage(path) ? SupportedAction.ACTION_PAGE_USER_HOME_VIEW : SupportedAction.ACTION_PAGE_VIEW,
+      user: req.user?._id,
+      snapshot: {
+        username: req.user?.username,
+      },
+    };
+    crowi.activityService.createActivity(parameters);
+
     return res.render(view, renderVars);
   }
 
@@ -498,13 +539,30 @@ module.exports = function(crowi, app) {
     const revisionId = req.query.revision;
     const renderVars = {};
 
+    const parameters = {
+      ip:  req.ip,
+      endpoint: req.originalUrl,
+      user: req.user?._id,
+      snapshot: {
+        username: req.user?.username,
+      },
+    };
+
     const shareLink = await ShareLink.findOne({ _id: linkId }).populate('relatedPage');
 
     if (shareLink == null || shareLink.relatedPage == null || shareLink.relatedPage.isEmpty) {
+
+      Object.assign(parameters, { action: SupportedAction.ACTION_SHARE_LINK_NOT_FOUND });
+      crowi.activityService.createActivity(parameters);
+
       // page or sharelink are not found (or page is empty: abnormaly)
       return res.render('layout-growi/not_found_shared_page');
     }
     if (crowi.configManager.getConfig('crowi', 'security:disableLinkSharing')) {
+
+      Object.assign(parameters, { action: SupportedAction.ACTION_SHARE_LINK_NOT_FOUND });
+      crowi.activityService.createActivity(parameters);
+
       return res.render('layout-growi/forbidden');
     }
 
@@ -512,6 +570,9 @@ module.exports = function(crowi, app) {
 
     // check if share link is expired
     if (shareLink.isExpired()) {
+      Object.assign(parameters, { action: SupportedAction.ACTION_SHARE_LINK_EXPIRED_PAGE_VIEW });
+      crowi.activityService.createActivity(parameters);
+
       // page is not found
       return res.render('layout-growi/expired_shared_page', renderVars);
     }
@@ -534,7 +595,9 @@ module.exports = function(crowi, app) {
     addRenderVarsForPage(renderVars, page);
     addRenderVarsForScope(renderVars, page);
 
-    await interceptorManager.process('beforeRenderPage', req, res, renderVars);
+    Object.assign(parameters, { action: SupportedAction.ACTION_SHARE_LINK_PAGE_VIEW });
+    crowi.activityService.createActivity(parameters);
+
     return res.render('layout-growi/shared_page', renderVars);
   };
 
@@ -598,40 +661,42 @@ module.exports = function(crowi, app) {
   async function redirector(req, res, next, path) {
     const { redirectFrom } = req.query;
 
-    const builder = new PageQueryBuilder(Page.find({ path }));
+    const includeEmpty = true;
+    const builder = new PageQueryBuilder(Page.find({ path }), includeEmpty);
+
+    builder.populateDataToList(User.USER_FIELDS_EXCEPT_CONFIDENTIAL);
+
     await Page.addConditionToFilteringByViewerForList(builder, req.user, true);
-
     const pages = await builder.query.lean().clone().exec('find');
+    const nonEmptyPages = pages.filter(p => !p.isEmpty);
 
-    if (pages.length >= 2) {
-
-      // populate to list
-      builder.populateDataToList(User.USER_FIELDS_EXCEPT_CONFIDENTIAL);
-      const identicalPathPages = await builder.query.lean().exec('find');
-
+    if (nonEmptyPages.length >= 2) {
       return res.render('layout-growi/identical-path-page', {
-        identicalPathPages,
+        identicalPathPages: nonEmptyPages,
         redirectFrom,
         path,
       });
     }
 
-    if (pages.length === 1) {
+    if (nonEmptyPages.length === 1) {
+      const nonEmptyPage = nonEmptyPages[0];
       const url = new URL('https://dummy.origin');
-      url.pathname = `/${pages[0]._id}`;
+
+      url.pathname = `/${nonEmptyPage._id}`;
       Object.entries(req.query).forEach(([key, value], i) => {
         url.searchParams.append(key, value);
       });
       return res.safeRedirect(urljoin(url.pathname, url.search));
     }
 
-    // Exclude isEmpty page to handle _notFound or forbidden
-    const isForbidden = await Page.exists({ path, isEmpty: false });
-    if (isForbidden) {
-      req.isForbidden = true;
+    // Processing of nonEmptyPage is finished by the time this code is read
+    // If any pages exist then they should be empty
+    const emptyPage = pages[0];
+    if (emptyPage != null) {
+      req.pageId = emptyPage._id;
+      req.isEmpty = emptyPage.isEmpty;
       return _notFound(req, res);
     }
-
     // redirect by PageRedirect
     const pageRedirect = await PageRedirect.findOne({ fromPath: path });
     if (pageRedirect != null) {
@@ -644,12 +709,33 @@ module.exports = function(crowi, app) {
   actions.redirector = async function(req, res, next) {
     const path = getPathFromRequest(req);
 
+    const parameters = {
+      ip:  req.ip,
+      endpoint: req.originalUrl,
+      action: SupportedAction.ACTION_PAGE_VIEW,
+      user: req.user?._id,
+      snapshot: {
+        username: req.user?.username,
+      },
+    };
+    crowi.activityService.createActivity(parameters);
     return redirector(req, res, next, path);
   };
 
   actions.redirectorWithEndOfSlash = async function(req, res, next) {
     const _path = getPathFromRequest(req);
     const path = pathUtils.removeTrailingSlash(_path);
+
+    const parameters = {
+      ip:  req.ip,
+      endpoint: req.originalUrl,
+      action: SupportedAction.ACTION_PAGE_VIEW,
+      user: req.user?._id,
+      snapshot: {
+        username: req.user?.username,
+      },
+    };
+    crowi.activityService.createActivity(parameters);
 
     return redirector(req, res, next, path);
   };
@@ -790,7 +876,7 @@ module.exports = function(crowi, app) {
       options.grantUserGroupId = grantUserGroupId;
     }
 
-    const createdPage = await Page.create(pagePath, body, req.user, options);
+    const createdPage = await crowi.pageService.create(pagePath, body, req.user, options);
 
     let savedTags;
     if (pageTags != null) {
@@ -985,6 +1071,13 @@ module.exports = function(crowi, app) {
         logger.error('Create user notification failed', err);
       }
     }
+
+    const parameters = {
+      targetModel: SupportedTargetModel.MODEL_PAGE,
+      target: page,
+      action: SupportedAction.ACTION_PAGE_UPDATE,
+    };
+    activityEvent.emit('update', res.locals.activity._id, parameters, page);
   };
 
   /**
@@ -1177,20 +1270,35 @@ module.exports = function(crowi, app) {
 
     const options = {};
 
+    const activityParameters = {
+      ip: req.ip,
+      endpoint: req.originalUrl,
+    };
+
     const page = await Page.findByIdAndViewer(pageId, req.user, null, true);
 
     if (page == null) {
       return res.json(ApiResponse.error(`Page '${pageId}' is not found or forbidden`, 'notfound_or_forbidden'));
     }
 
+    let creator;
+    if (page.isEmpty) {
+      // If empty, the creator is inherited from the closest non-empty ancestor page.
+      const notEmptyClosestAncestor = await Page.findNonEmptyClosestAncestor(page.path);
+      creator = notEmptyClosestAncestor.creator;
+    }
+    else {
+      creator = page.creator;
+    }
+
     debug('Delete page', page._id, page.path);
 
     try {
       if (isCompletely) {
-        if (!crowi.pageService.canDeleteCompletely(page.creator, req.user, isRecursively)) {
+        if (!crowi.pageService.canDeleteCompletely(page.path, creator, req.user, isRecursively)) {
           return res.json(ApiResponse.error('You can not delete this page completely', 'user_not_admin'));
         }
-        await crowi.pageService.deleteCompletely(page, req.user, options, isRecursively);
+        await crowi.pageService.deleteCompletely(page, req.user, options, isRecursively, false, activityParameters);
       }
       else {
         // behave like not found
@@ -1203,11 +1311,11 @@ module.exports = function(crowi, app) {
           return res.json(ApiResponse.error('Someone could update this page, so couldn\'t delete.', 'outdated'));
         }
 
-        if (!crowi.pageService.canDelete(page.creator, req.user, isRecursively)) {
+        if (!crowi.pageService.canDelete(page.path, creator, req.user, isRecursively)) {
           return res.json(ApiResponse.error('You can not delete this page', 'user_not_admin'));
         }
 
-        await crowi.pageService.deletePage(page, req.user, options, isRecursively);
+        await crowi.pageService.deletePage(page, req.user, options, isRecursively, activityParameters);
       }
     }
     catch (err) {
@@ -1252,15 +1360,25 @@ module.exports = function(crowi, app) {
     // get recursively flag
     const isRecursively = req.body.recursively;
 
+    const activityParameters = {
+      ip: req.ip,
+      endpoint: req.originalUrl,
+    };
+
     let page;
+    let descendantPages;
     try {
       page = await Page.findByIdAndViewer(pageId, req.user);
       if (page == null) {
         throw new Error(`Page '${pageId}' is not found or forbidden`, 'notfound_or_forbidden');
       }
-      page = await crowi.pageService.revertDeletedPage(page, req.user, {}, isRecursively);
+      page = await crowi.pageService.revertDeletedPage(page, req.user, {}, isRecursively, activityParameters);
     }
     catch (err) {
+      if (err instanceof PathAlreadyExistsError) {
+        logger.error('Path already exists', err);
+        return res.json(ApiResponse.error(err, 'already_exists', err.targetPath));
+      }
       logger.error('Error occured while get setting', err);
       return res.json(ApiResponse.error(err));
     }

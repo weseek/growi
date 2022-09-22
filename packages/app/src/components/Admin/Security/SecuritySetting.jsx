@@ -1,15 +1,16 @@
 /* eslint-disable react/no-danger */
 import React from 'react';
-import PropTypes from 'prop-types';
-import { Collapse } from 'reactstrap';
-import { withTranslation } from 'react-i18next';
 
-import { validateDeleteConfigs } from '~/utils/page-delete-config';
-import { withUnstatedContainers } from '../../UnstatedUtils';
+import PropTypes from 'prop-types';
+import { useTranslation } from 'react-i18next';
+import { Collapse } from 'reactstrap';
+
+import AdminGeneralSecurityContainer from '~/client/services/AdminGeneralSecurityContainer';
 import { toastSuccess, toastError } from '~/client/util/apiNotification';
 import { PageDeleteConfigValue } from '~/interfaces/page-delete-config';
-import AppContainer from '~/client/services/AppContainer';
-import AdminGeneralSecurityContainer from '~/client/services/AdminGeneralSecurityContainer';
+import { validateDeleteConfigs, prepareDeleteConfigValuesForCalc } from '~/utils/page-delete-config';
+
+import { withUnstatedContainers } from '../../UnstatedUtils';
 
 // used as the prefix of translation
 const DeletionTypeForT = Object.freeze({
@@ -39,6 +40,20 @@ const getDeletionTypeForT = (deletionType) => {
   }
 };
 
+const getDeleteConfigValueForT = (DeleteConfigValue) => {
+  switch (DeleteConfigValue) {
+    case PageDeleteConfigValue.Anyone:
+    case null:
+      return 'security_setting.anyone';
+    case PageDeleteConfigValue.Inherit:
+      return 'security_setting.inherit';
+    case PageDeleteConfigValue.AdminOnly:
+      return 'security_setting.admin_only';
+    case PageDeleteConfigValue.AdminAndAuthor:
+      return 'security_setting.admin_and_author';
+  }
+};
+
 /**
  * Return true if "deletionType" is DeletionType.RecursiveDeletion or DeletionType.RecursiveCompleteDeletion.
  * @param deletionType Deletion type
@@ -62,9 +77,16 @@ class SecuritySetting extends React.Component {
   constructor(props) {
     super(props);
 
+    // functions
     this.putSecuritySetting = this.putSecuritySetting.bind(this);
     this.getRecursiveDeletionConfigState = this.getRecursiveDeletionConfigState.bind(this);
+    this.previousPageRecursiveAuthorityState = this.previousPageRecursiveAuthorityState.bind(this);
+    this.setPagePreviousRecursiveAuthorityState = this.setPagePreviousRecursiveAuthorityState.bind(this);
+    this.expantDeleteOptionsState = this.expantDeleteOptionsState.bind(this);
+    this.setExpantOtherDeleteOptionsState = this.setExpantOtherDeleteOptionsState.bind(this);
     this.setDeletionConfigState = this.setDeletionConfigState.bind(this);
+
+    // render
     this.renderPageDeletePermission = this.renderPageDeletePermission.bind(this);
     this.renderPageDeletePermissionDropdown = this.renderPageDeletePermissionDropdown.bind(this);
   }
@@ -96,25 +118,67 @@ class SecuritySetting extends React.Component {
     ];
   }
 
+  previousPageRecursiveAuthorityState(deletionType) {
+    const { adminGeneralSecurityContainer } = this.props;
+
+    return isTypeDeletion(deletionType)
+      ? adminGeneralSecurityContainer.state.previousPageRecursiveDeletionAuthority
+      : adminGeneralSecurityContainer.state.previousPageRecursiveCompleteDeletionAuthority;
+  }
+
+  setPagePreviousRecursiveAuthorityState(deletionType, previousState) {
+    const { adminGeneralSecurityContainer } = this.props;
+
+    if (isTypeDeletion(deletionType)) {
+      adminGeneralSecurityContainer.changePreviousPageRecursiveDeletionAuthority(previousState);
+      return;
+    }
+
+    adminGeneralSecurityContainer.changePreviousPageRecursiveCompleteDeletionAuthority(previousState);
+  }
+
+  expantDeleteOptionsState(deletionType) {
+    const { adminGeneralSecurityContainer } = this.props;
+
+    return isTypeDeletion(deletionType)
+      ? adminGeneralSecurityContainer.state.expandOtherOptionsForDeletion
+      : adminGeneralSecurityContainer.state.expandOtherOptionsForCompleteDeletion;
+  }
+
+  setExpantOtherDeleteOptionsState(deletionType, bool) {
+    const { adminGeneralSecurityContainer } = this.props;
+
+    if (isTypeDeletion(deletionType)) {
+      adminGeneralSecurityContainer.switchExpandOtherOptionsForDeletion(bool);
+      return;
+    }
+    adminGeneralSecurityContainer.switchExpandOtherOptionsForCompleteDeletion(bool);
+    return;
+  }
+
   /**
    * Force update deletion config for recursive operation when the deletion config for general operation is updated.
    * @param deletionType Deletion type
    */
   setDeletionConfigState(newState, setState, deletionType) {
-    if (isRecursiveDeletion(deletionType)) {
-      setState(newState);
+    setState(newState);
 
+    if (this.previousPageRecursiveAuthorityState(deletionType) !== null) {
+      this.setPagePreviousRecursiveAuthorityState(deletionType, null);
+    }
+
+    if (isRecursiveDeletion(deletionType)) {
       return;
     }
 
     const [recursiveState, setRecursiveState] = this.getRecursiveDeletionConfigState(deletionType);
-    const shouldForceUpdate = !validateDeleteConfigs(newState, recursiveState);
+
+    const calculableValue = prepareDeleteConfigValuesForCalc(newState, recursiveState);
+    const shouldForceUpdate = !validateDeleteConfigs(calculableValue[0], calculableValue[1]);
     if (shouldForceUpdate) {
-      setState(newState);
       setRecursiveState(newState);
-    }
-    else {
-      setState(newState);
+      this.setPagePreviousRecursiveAuthorityState(deletionType, recursiveState);
+      this.setExpantOtherDeleteOptionsState(deletionType, true);
     }
 
     return;
@@ -133,10 +197,7 @@ class SecuritySetting extends React.Component {
           aria-expanded="true"
         >
           <span className="float-left">
-            {currentState === PageDeleteConfigValue.Inherit && t('security_setting.inherit')}
-            {(currentState === PageDeleteConfigValue.Anyone || currentState == null) && t('security_setting.anyone')}
-            {currentState === PageDeleteConfigValue.AdminOnly && t('security_setting.admin_only')}
-            {currentState === PageDeleteConfigValue.AdminAndAuthor && t('security_setting.admin_and_author')}
+            {t(getDeleteConfigValueForT(currentState))}
           </span>
         </button>
         <div className="dropdown-menu" aria-labelledby="dropdownMenuButton">
@@ -184,20 +245,9 @@ class SecuritySetting extends React.Component {
   }
 
   renderPageDeletePermission(currentState, setState, deletionType, isButtonDisabled) {
-    const { t, adminGeneralSecurityContainer } = this.props;
+    const { t } = this.props;
 
-    const expandOtherOptions = isTypeDeletion(deletionType)
-      ? adminGeneralSecurityContainer.state.expandOtherOptionsForDeletion
-      : adminGeneralSecurityContainer.state.expandOtherOptionsForCompleteDeletion;
-
-    const setExpantOtherOptions = () => {
-      if (isTypeDeletion(deletionType)) {
-        adminGeneralSecurityContainer.switchExpandOtherOptionsForDeletion();
-        return;
-      }
-      adminGeneralSecurityContainer.switchExpandOtherOptionsForCompleteDeletion();
-      return;
-    };
+    const expantDeleteOptionsState = this.expantDeleteOptionsState(deletionType);
 
     return (
       <div key={`page-delete-permission-dropdown-${deletionType}`} className="row">
@@ -223,13 +273,30 @@ class SecuritySetting extends React.Component {
                     type="button"
                     className="btn btn-link p-0 mb-4"
                     aria-expanded="false"
-                    onClick={() => setExpantOtherOptions()}
+                    onClick={() => this.setExpantOtherDeleteOptionsState(deletionType, !expantDeleteOptionsState)}
                   >
-                    <i className={`fa fa-fw fa-arrow-right ${expandOtherOptions ? 'fa-rotate-90' : ''}`}></i>
+                    <i className={`fa fa-fw fa-arrow-right ${expantDeleteOptionsState ? 'fa-rotate-90' : ''}`}></i>
                     { t('security_setting.other_options') }
                   </button>
-                  <Collapse isOpen={expandOtherOptions}>
+                  <Collapse isOpen={expantDeleteOptionsState}>
                     <div className="pb-4">
+                      <p className="card well">
+                        <span className="text-warning">
+                          <i className="icon-info"></i>
+                          {/* eslint-disable-next-line react/no-danger */}
+                          <span dangerouslySetInnerHTML={{ __html: t('security_setting.page_delete_rights_caution') }} />
+                        </span>
+                      </p>
+                      { this.previousPageRecursiveAuthorityState(deletionType) !== null && (
+                        <div className="mb-3">
+                          <strong>
+                            {t('security_setting.forced_update_desc')}
+                          </strong>
+                          <code>
+                            {t(getDeleteConfigValueForT(this.previousPageRecursiveAuthorityState(deletionType)))}
+                          </code>
+                        </div>
+                      )}
                       {this.renderPageDeletePermissionDropdown(currentState, setState, deletionType, isButtonDisabled)}
                     </div>
                   </Collapse>
@@ -269,58 +336,60 @@ class SecuritySetting extends React.Component {
         )}
 
         <h4 className="mt-4">{ t('security_setting.page_list_and_search_results') }</h4>
-        <table className="table table-bordered col-lg-9 mb-5">
-          <thead>
-            <tr>
-              <th scope="col">{ t('scope_of_page_disclosure') }</th>
-              <th scope="col">{ t('set_point') }</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <th scope="row">{ t('Public') }</th>
-              <td>{ t('always_displayed') }</td>
-            </tr>
-            <tr>
-              <th scope="row">{ t('Anyone with the link') }</th>
-              <td>{ t('always_hidden') }</td>
-            </tr>
-            <tr>
-              <th scope="row">{ t('Only me') }</th>
-              <td>
-                <div className="custom-control custom-switch custom-checkbox-success">
-                  <input
-                    type="checkbox"
-                    className="custom-control-input"
-                    id="isShowRestrictedByOwner"
-                    checked={adminGeneralSecurityContainer.state.isShowRestrictedByOwner}
-                    onChange={() => { adminGeneralSecurityContainer.switchIsShowRestrictedByOwner() }}
-                  />
-                  <label className="custom-control-label" htmlFor="isShowRestrictedByOwner">
-                    {t('displayed_or_hidden')}
-                  </label>
-                </div>
-              </td>
-            </tr>
-            <tr>
-              <th scope="row">{ t('Only inside the group') }</th>
-              <td>
-                <div className="custom-control custom-switch custom-checkbox-success">
-                  <input
-                    type="checkbox"
-                    className="custom-control-input"
-                    id="isShowRestrictedByGroup"
-                    checked={adminGeneralSecurityContainer.state.isShowRestrictedByGroup}
-                    onChange={() => { adminGeneralSecurityContainer.switchIsShowRestrictedByGroup() }}
-                  />
-                  <label className="custom-control-label" htmlFor="isShowRestrictedByGroup">
-                    {t('displayed_or_hidden')}
-                  </label>
-                </div>
-              </td>
-            </tr>
-          </tbody>
-        </table>
+        <div className="row justify-content-md-center">
+          <table className="table table-bordered col-lg-9 mb-5">
+            <thead>
+              <tr>
+                <th scope="col">{ t('scope_of_page_disclosure') }</th>
+                <th scope="col">{ t('set_point') }</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <th scope="row">{ t('Public') }</th>
+                <td>{ t('always_displayed') }</td>
+              </tr>
+              <tr>
+                <th scope="row">{ t('Anyone with the link') }</th>
+                <td>{ t('always_hidden') }</td>
+              </tr>
+              <tr>
+                <th scope="row">{ t('Only me') }</th>
+                <td>
+                  <div className="custom-control custom-switch custom-checkbox-success">
+                    <input
+                      type="checkbox"
+                      className="custom-control-input"
+                      id="isShowRestrictedByOwner"
+                      checked={adminGeneralSecurityContainer.state.isShowRestrictedByOwner}
+                      onChange={() => { adminGeneralSecurityContainer.switchIsShowRestrictedByOwner() }}
+                    />
+                    <label className="custom-control-label" htmlFor="isShowRestrictedByOwner">
+                      {t('displayed_or_hidden')}
+                    </label>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <th scope="row">{ t('Only inside the group') }</th>
+                <td>
+                  <div className="custom-control custom-switch custom-checkbox-success">
+                    <input
+                      type="checkbox"
+                      className="custom-control-input"
+                      id="isShowRestrictedByGroup"
+                      checked={adminGeneralSecurityContainer.state.isShowRestrictedByGroup}
+                      onChange={() => { adminGeneralSecurityContainer.switchIsShowRestrictedByGroup() }}
+                    />
+                    <label className="custom-control-label" htmlFor="isShowRestrictedByGroup">
+                      {t('displayed_or_hidden')}
+                    </label>
+                  </div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
 
         <h4>{t('security_setting.page_access_rights')}</h4>
         <div className="row mb-4">
@@ -353,13 +422,13 @@ class SecuritySetting extends React.Component {
               </div>
             </div>
             {adminGeneralSecurityContainer.isWikiModeForced && (
-              <p className="alert alert-warning mt-2 text-left offset-3 col-6">
+              <p className="alert alert-warning mt-2 col-6">
                 <i className="icon-exclamation icon-fw">
                 </i><b>FIXED</b><br />
                 <b
                   dangerouslySetInnerHTML={{
                     __html: t('security_setting.Fixed by env var',
-                      { forcewikimode: 'FORCE_WIKI_MODE', wikimode: adminGeneralSecurityContainer.state.wikiMode }),
+                      { key: 'FORCE_WIKI_MODE', value: adminGeneralSecurityContainer.state.wikiMode }),
                   }}
                 />
               </p>
@@ -368,8 +437,7 @@ class SecuritySetting extends React.Component {
         </div>
 
         <h4>{t('security_setting.page_delete_rights')}</h4>
-        <div className="row mb-4"></div>
-        {/* Render PageDeletePermissionDropdown */}
+        {/* Render PageDeletePermission */}
         {
           [
             [currentPageDeletionAuthority, adminGeneralSecurityContainer.changePageDeletionAuthority, DeletionType.Deletion, false],
@@ -423,11 +491,14 @@ class SecuritySetting extends React.Component {
 
 SecuritySetting.propTypes = {
   t: PropTypes.func.isRequired, // i18next
-  appContainer: PropTypes.instanceOf(AppContainer).isRequired,
-  csrf: PropTypes.string,
   adminGeneralSecurityContainer: PropTypes.instanceOf(AdminGeneralSecurityContainer).isRequired,
 };
 
-const SecuritySettingWrapper = withUnstatedContainers(SecuritySetting, [AppContainer, AdminGeneralSecurityContainer]);
+const SecuritySettingWrapperFC = (props) => {
+  const { t } = useTranslation();
+  return <SecuritySetting t={t} {...props} />;
+};
 
-export default withTranslation()(SecuritySettingWrapper);
+const SecuritySettingWrapper = withUnstatedContainers(SecuritySettingWrapperFC, [AdminGeneralSecurityContainer]);
+
+export default SecuritySettingWrapper;

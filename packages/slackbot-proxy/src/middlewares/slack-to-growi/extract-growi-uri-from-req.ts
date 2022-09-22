@@ -3,8 +3,8 @@ import {
 } from '@tsed/common';
 
 import { SlackOauthReq } from '~/interfaces/slack-to-growi/slack-oauth-req';
-import { ViewInteractionPayloadDelegator } from '~/services/growi-uri-injector/ViewInteractionPayloadDelegator';
 import { ActionsBlockPayloadDelegator } from '~/services/growi-uri-injector/ActionsBlockPayloadDelegator';
+import { ViewInteractionPayloadDelegator } from '~/services/growi-uri-injector/ViewInteractionPayloadDelegator';
 
 
 @Middleware()

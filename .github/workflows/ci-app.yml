@@ -7,6 +7,17 @@ on:
       - rc/**
       - chore/**
       - support/prepare-v**
+    paths:
+      - .github/workflows/ci-app.yml
+      - .eslint*
+      - tsconfig.base.json
+      - yarn.lock
+      - packages/app/**
+      - '!packages/app/docker/**'
+      - packages/core/**
+      - packages/slack/**
+      - packages/ui/**
+      - packages/plugin-*/**
 
 jobs:
   lint:
@@ -45,7 +56,7 @@ jobs:
           yarn lerna run lint --scope @growi/plugin-*
       - name: lerna run lint for app
         run: |
-          yarn lerna run lint --scope @growi/app --scope @growi/core --scope @growi/ui
+          yarn lerna run lint --scope @growi/app --scope @growi/codemirror-textlint --scope @growi/core --scope @growi/ui
 
       - name: Slack Notification
         uses: weseek/ghaction-slack-notification@master
@@ -102,7 +113,7 @@ jobs:
           MONGO_URI: mongodb://localhost:${{ job.services.mongodb.ports['27017'] }}/growi_test
 
       - name: Upload coverage report as artifact
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: Coverage Report
           path: packages/app/coverage

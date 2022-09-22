@@ -1,11 +1,3 @@
-import {
-  Controller, Get, Inject, PlatformResponse, Post, Req, Res, UseBefore,
-} from '@tsed/common';
-
-import axios from 'axios';
-
-import { WebAPICallResult } from '@slack/web-api';
-import { Installation } from '@slack/oauth';
 
 
 import {
@@ -14,23 +6,29 @@ import {
   parseSlackInteractionRequest, verifySlackRequest,
   respond, supportedGrowiCommands, IChannelOptionalId,
 } from '@growi/slack';
+import { Installation } from '@slack/oauth';
+import { WebAPICallResult } from '@slack/web-api';
+import {
+  Controller, Get, Inject, PlatformResponse, Post, Req, Res, UseBefore,
+} from '@tsed/common';
+import axios from 'axios';
 
 import { Relation } from '~/entities/relation';
 import { SlackOauthReq } from '~/interfaces/slack-to-growi/slack-oauth-req';
-import { InstallationRepository } from '~/repositories/installation';
-import { RelationRepository } from '~/repositories/relation';
-import { OrderRepository } from '~/repositories/order';
 import { AddSigningSecretToReq } from '~/middlewares/slack-to-growi/add-signing-secret-to-req';
 import {
   AuthorizeCommandMiddleware, AuthorizeInteractionMiddleware, AuthorizeEventsMiddleware,
 } from '~/middlewares/slack-to-growi/authorizer';
-import { UrlVerificationMiddleware } from '~/middlewares/slack-to-growi/url-verification';
 import { ExtractGrowiUriFromReq } from '~/middlewares/slack-to-growi/extract-growi-uri-from-req';
+import { UrlVerificationMiddleware } from '~/middlewares/slack-to-growi/url-verification';
+import { InstallationRepository } from '~/repositories/installation';
+import { OrderRepository } from '~/repositories/order';
+import { RelationRepository } from '~/repositories/relation';
 import { InstallerService } from '~/services/InstallerService';
-import { SelectGrowiService } from '~/services/SelectGrowiService';
 import { LinkSharedService } from '~/services/LinkSharedService';
 import { RegisterService } from '~/services/RegisterService';
 import { RelationsService } from '~/services/RelationsService';
+import { SelectGrowiService } from '~/services/SelectGrowiService';
 import { UnregisterService } from '~/services/UnregisterService';
 import loggerFactory from '~/utils/logger';
 import { postInstallSuccessMessage, postWelcomeMessageOnce } from '~/utils/welcome-message';

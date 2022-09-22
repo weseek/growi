@@ -1,14 +1,12 @@
-import { Inject, Service } from '@tsed/di';
-
-import axios from 'axios';
-import { addHours } from 'date-fns';
-
 import {
   REQUEST_TIMEOUT_FOR_PTOG, getSupportedGrowiActionsRegExp, IChannelOptionalId, permissionParser,
 } from '@growi/slack';
+import { Inject, Service } from '@tsed/di';
+import axios from 'axios';
+import { addHours } from 'date-fns';
+
 import { Relation, PermissionSettingsInterface } from '~/entities/relation';
 import { RelationRepository } from '~/repositories/relation';
-
 import loggerFactory from '~/utils/logger';
 
 const logger = loggerFactory('slackbot-proxy:services:RelationsService');

@@ -1,8 +1,11 @@
-import loggerFactory from '~/utils/logger';
-import { excludeTestIdsFromTargetIds } from '~/server/util/compare-objectId';
+import { SupportedAction } from '~/interfaces/activity';
 import UserGroup from '~/server/models/user-group';
+import { excludeTestIdsFromTargetIds } from '~/server/util/compare-objectId';
+import loggerFactory from '~/utils/logger';
 
+import { generateAddActivityMiddleware } from '../../middlewares/add-activity';
 import { apiV3FormValidator } from '../../middlewares/apiv3-form-validator';
+
 
 const logger = loggerFactory('growi:routes:apiv3:user-group'); // eslint-disable-line no-unused-vars
 
@@ -12,12 +15,10 @@ const router = express.Router();
 
 const { body, param, query } = require('express-validator');
 const { sanitizeQuery } = require('express-validator');
-
 const mongoose = require('mongoose');
 
-const ErrorV3 = require('../../models/vo/error-apiv3');
-
 const { serializeUserSecurely } = require('../../models/serializers/user-serializer');
+const ErrorV3 = require('../../models/vo/error-apiv3');
 const { toPagingLimit, toPagingOffset } = require('../../util/express-validator/sanitizer');
 
 const { ObjectId } = mongoose.Types;
@@ -33,6 +34,9 @@ module.exports = (crowi) => {
   const loginRequiredStrictly = require('../../middlewares/login-required')(crowi);
   const adminRequired = require('../../middlewares/admin-required')(crowi);
   const csrf = require('../../middlewares/csrf')(crowi);
+  const addActivity = generateAddActivityMiddleware(crowi);
+
+  const activityEvent = crowi.event('activity');
 
   const {
     UserGroupRelation,
@@ -49,7 +53,7 @@ module.exports = (crowi) => {
     update: [
       body('name', 'Group name must be a string').optional().trim().isString(),
       body('description', 'Group description must be a string').optional().isString(),
-      body('parentId', 'parentId must be a string').optional().isString(),
+      body('parentId', 'ParentId must be a string or null').optional({ nullable: true }).isString(),
       body('forceUpdateParents', 'forceUpdateParents must be a boolean').optional().isBoolean(),
     ],
     delete: [
@@ -224,13 +228,16 @@ module.exports = (crowi) => {
    *                      type: object
    *                      description: A result of `UserGroup.createGroupByName`
    */
-  router.post('/', loginRequiredStrictly, adminRequired, csrf, validator.create, apiV3FormValidator, async(req, res) => {
+  router.post('/', loginRequiredStrictly, adminRequired, csrf, addActivity, validator.create, apiV3FormValidator, async(req, res) => {
     const { name, description = '', parentId } = req.body;
 
     try {
       const userGroupName = crowi.xss.process(name);
       const userGroupDescription = crowi.xss.process(description);
       const userGroup = await UserGroup.createGroup(userGroupName, userGroupDescription, parentId);
+
+      const parameters = { action: SupportedAction.ACTION_ADMIN_USER_GROUP_CREATE };
+      activityEvent.emit('update', res.locals.activity._id, parameters);
 
       return res.apiv3({ userGroup }, 201);
     }
@@ -422,12 +429,15 @@ module.exports = (crowi) => {
    *                      type: object
    *                      description: A result of `UserGroup.removeCompletelyById`
    */
-  router.delete('/:id', loginRequiredStrictly, adminRequired, csrf, validator.delete, apiV3FormValidator, async(req, res) => {
+  router.delete('/:id', loginRequiredStrictly, adminRequired, csrf, validator.delete, apiV3FormValidator, addActivity, async(req, res) => {
     const { id: deleteGroupId } = req.params;
     const { actionName, transferToUserGroupId } = req.query;
 
     try {
       const userGroups = await crowi.userGroupService.removeCompletelyByRootGroupId(deleteGroupId, actionName, transferToUserGroupId, req.user);
+
+      const parameters = { action: SupportedAction.ACTION_ADMIN_USER_GROUP_DELETE };
+      activityEvent.emit('update', res.locals.activity._id, parameters);
 
       return res.apiv3({ userGroups });
     }
@@ -466,7 +476,7 @@ module.exports = (crowi) => {
    *                      type: object
    *                      description: A result of `UserGroup.updateName`
    */
-  router.put('/:id', loginRequiredStrictly, adminRequired, csrf, validator.update, apiV3FormValidator, async(req, res) => {
+  router.put('/:id', loginRequiredStrictly, adminRequired, csrf, validator.update, apiV3FormValidator, addActivity, async(req, res) => {
     const { id } = req.params;
     const {
       name, description, parentId, forceUpdateParents = false,
@@ -474,6 +484,9 @@ module.exports = (crowi) => {
 
     try {
       const userGroup = await crowi.userGroupService.updateGroup(id, name, description, parentId, forceUpdateParents);
+
+      const parameters = { action: SupportedAction.ACTION_ADMIN_USER_GROUP_UPDATE };
+      activityEvent.emit('update', res.locals.activity._id, parameters);
 
       return res.apiv3({ userGroup });
     }
@@ -632,7 +645,7 @@ module.exports = (crowi) => {
    *                      type: object
    *                      description: the associative entity between user and userGroup
    */
-  router.post('/:id/users/:username', loginRequiredStrictly, adminRequired, validator.users.post, apiV3FormValidator, async(req, res) => {
+  router.post('/:id/users/:username', loginRequiredStrictly, adminRequired, validator.users.post, apiV3FormValidator, addActivity, async(req, res) => {
     const { id, username } = req.params;
 
     try {
@@ -653,6 +666,8 @@ module.exports = (crowi) => {
       const insertedRelations = await UserGroupRelation.createRelations(groupIdsOfRelationToCreate, user);
       const serializedUser = serializeUserSecurely(user);
 
+      const parameters = { action: SupportedAction.ACTION_ADMIN_USER_GROUP_ADD_USER };
+      activityEvent.emit('update', res.locals.activity._id, parameters);
       return res.apiv3({ user: serializedUser, createdRelationCount: insertedRelations.length });
     }
     catch (err) {
@@ -699,21 +714,13 @@ module.exports = (crowi) => {
    *                      description: the associative entity between user and userGroup
    */
   router.delete('/:id/users/:username', loginRequiredStrictly, adminRequired, validator.users.delete, apiV3FormValidator, async(req, res) => {
-    const { id, username } = req.params;
+    const { id: userGroupId, username } = req.params;
 
     try {
-      const [userGroup, user] = await Promise.all([
-        UserGroup.findById(id),
-        User.findUserByUsername(username),
-      ]);
+      const removedUserRes = await crowi.userGroupService.removeUserByUsername(userGroupId, username);
+      const serializedUser = serializeUserSecurely(removedUserRes.user);
 
-      const groupsOfRelationsToDelete = await UserGroup.findGroupsWithDescendantsRecursively([userGroup]);
-      const relatedGroupIdsToDelete = groupsOfRelationsToDelete.map(g => g._id);
-
-      const deleteManyRes = await UserGroupRelation.deleteMany({ relatedUser: user._id, relatedGroup: { $in: relatedGroupIdsToDelete } });
-      const serializedUser = serializeUserSecurely(user);
-
-      return res.apiv3({ user: serializedUser, deletedGroupsCount: deleteManyRes.deletedCount });
+      return res.apiv3({ user: serializedUser, deletedGroupsCount: removedUserRes.deletedGroupsCount });
     }
     catch (err) {
       const msg = 'Error occurred while removing the user from groups.';

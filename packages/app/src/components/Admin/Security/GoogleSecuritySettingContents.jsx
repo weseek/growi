@@ -1,14 +1,15 @@
 /* eslint-disable react/no-danger */
 import React from 'react';
+
 import PropTypes from 'prop-types';
-import { withTranslation } from 'react-i18next';
+import { useTranslation } from 'react-i18next';
 
-import { withUnstatedContainers } from '../../UnstatedUtils';
-import { toastSuccess, toastError } from '~/client/util/apiNotification';
 
-import AppContainer from '~/client/services/AppContainer';
 import AdminGeneralSecurityContainer from '~/client/services/AdminGeneralSecurityContainer';
 import AdminGoogleSecurityContainer from '~/client/services/AdminGoogleSecurityContainer';
+import { toastSuccess, toastError } from '~/client/util/apiNotification';
+
+import { withUnstatedContainers } from '../../UnstatedUtils';
 
 class GoogleSecurityManagementContents extends React.Component {
 
@@ -135,8 +136,8 @@ class GoogleSecurityManagementContents extends React.Component {
                     id="bindByUserNameGoogle"
                     className="custom-control-input"
                     type="checkbox"
-                    checked={adminGoogleSecurityContainer.state.isSameUsernameTreatedAsIdenticalUser || false}
-                    onChange={() => { adminGoogleSecurityContainer.switchIsSameUsernameTreatedAsIdenticalUser() }}
+                    checked={adminGoogleSecurityContainer.state.isSameEmailTreatedAsIdenticalUser || false}
+                    onChange={() => { adminGoogleSecurityContainer.switchIsSameEmailTreatedAsIdenticalUser() }}
                   />
                   <label
                     className="custom-control-label"
@@ -191,18 +192,21 @@ class GoogleSecurityManagementContents extends React.Component {
 
 }
 
+const GoogleSecurityManagementContentsFc = (props) => {
+  const { t } = useTranslation();
+  return <GoogleSecurityManagementContents t={t} {...props} />;
+};
+
 
 GoogleSecurityManagementContents.propTypes = {
   t: PropTypes.func.isRequired, // i18next
-  appContainer: PropTypes.instanceOf(AppContainer).isRequired,
   adminGeneralSecurityContainer: PropTypes.instanceOf(AdminGeneralSecurityContainer).isRequired,
   adminGoogleSecurityContainer: PropTypes.instanceOf(AdminGoogleSecurityContainer).isRequired,
 };
 
-const GoogleSecurityManagementContentsWrapper = withUnstatedContainers(GoogleSecurityManagementContents, [
-  AppContainer,
+const GoogleSecurityManagementContentsWrapper = withUnstatedContainers(GoogleSecurityManagementContentsFc, [
   AdminGeneralSecurityContainer,
   AdminGoogleSecurityContainer,
 ]);
 
-export default withTranslation()(GoogleSecurityManagementContentsWrapper);
+export default GoogleSecurityManagementContentsWrapper;

@@ -47,8 +47,8 @@ export const inviteValidation = (req, res, next) => {
 export const loginRules = () => {
   return [
     body('loginForm.username')
-      .matches(/^[\da-zA-Z\-_.@]+$/)
-      .withMessage('Username has invalid characters')
+      .matches(/^[\da-zA-Z\-_.+@]+$/)
+      .withMessage('Username or E-mail has invalid characters')
       .not()
       .isEmpty()
       .withMessage('Username field is required'),

@@ -1,3 +1,4 @@
+import { SupportedAction } from '~/interfaces/activity';
 import loggerFactory from '~/utils/logger';
 
 import { InstallerService, FailedToCreateAdminUserError } from '../service/installer';
@@ -7,6 +8,8 @@ const logger = loggerFactory('growi:routes:installer');
 module.exports = function(crowi) {
 
   const actions = {};
+
+  const activityEvent = crowi.event('activity');
 
   actions.index = function(req, res) {
     return res.render('installer');
@@ -55,6 +58,10 @@ module.exports = function(crowi) {
       }
 
       req.flash('successMessage', req.t('message.complete_to_install2'));
+
+      const parameters = { action: SupportedAction.ACTION_USER_REGISTRATION_SUCCESS };
+      activityEvent.emit('update', res.locals.activity._id, parameters);
+
       return res.redirect('/');
     });
   };

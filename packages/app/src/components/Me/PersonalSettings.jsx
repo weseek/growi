@@ -1,19 +1,21 @@
 
 import React, { useMemo } from 'react';
+
 import PropTypes from 'prop-types';
-import { withTranslation } from 'react-i18next';
+import { useTranslation } from 'react-i18next';
 
 import CustomNavAndContents from '../CustomNavigation/CustomNavAndContents';
-import UserSettings from './UserSettings';
-import PasswordSettings from './PasswordSettings';
-import ExternalAccountLinkedMe from './ExternalAccountLinkedMe';
+
 import ApiSettings from './ApiSettings';
 import { EditorSettings } from './EditorSettings';
+import ExternalAccountLinkedMe from './ExternalAccountLinkedMe';
 import InAppNotificationSettings from './InAppNotificationSettings';
+import PasswordSettings from './PasswordSettings';
+import UserSettings from './UserSettings';
 
-const PersonalSettings = (props) => {
+const PersonalSettings = () => {
 
-  const { t } = props;
+  const { t } = useTranslation();
 
   const navTabMapping = useMemo(() => {
     return {
@@ -56,15 +58,14 @@ const PersonalSettings = (props) => {
     };
   }, [t]);
 
+  const onPasswordSettings = window.location.hash === '#password';
 
   return (
-    <CustomNavAndContents navTabMapping={navTabMapping} navigationMode="both" tabContentClasses={['px-0']} />
+    <div data-testid="grw-personal-settings">
+      <CustomNavAndContents defaultTabIndex={onPasswordSettings && 2} navTabMapping={navTabMapping} navigationMode="both" tabContentClasses={['px-0']} />
+    </div>
   );
 
 };
 
-PersonalSettings.propTypes = {
-  t: PropTypes.func.isRequired, // i18next
-};
-
-export default withTranslation()(PersonalSettings);
+export default PersonalSettings;

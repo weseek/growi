@@ -10,8 +10,8 @@
   "pluginsFile": "test/cypress/plugins/index.ts",
   "testFiles": "**/*.spec.ts",
 
-  "viewportWidth": 1440,
-  "viewportHeight": 1200,
+  "viewportWidth": 1400,
+  "viewportHeight": 1024,
 
   "experimentalSessionSupport": true
 }

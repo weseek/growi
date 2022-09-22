@@ -1,20 +1,21 @@
 import React from 'react';
-import PropTypes from 'prop-types';
-import { withTranslation } from 'react-i18next';
 
+import PropTypes from 'prop-types';
+import { useTranslation } from 'react-i18next';
+
+import AdminSocketIoContainer from '~/client/services/AdminSocketIoContainer';
+import { toastSuccess, toastError } from '~/client/util/apiNotification';
+import { apiv3Post } from '~/client/util/apiv3-client';
 import GrowiArchiveImportOption from '~/models/admin/growi-archive-import-option';
 import ImportOptionForPages from '~/models/admin/import-option-for-pages';
 import ImportOptionForRevisions from '~/models/admin/import-option-for-revisions';
 
 import { withUnstatedContainers } from '../../../UnstatedUtils';
-import AppContainer from '~/client/services/AppContainer';
-import AdminSocketIoContainer from '~/client/services/AdminSocketIoContainer';
-import { toastSuccess, toastError } from '~/client/util/apiNotification';
 
 
-import ImportCollectionItem, { DEFAULT_MODE, MODE_RESTRICTED_COLLECTION } from './ImportCollectionItem';
-import ImportCollectionConfigurationModal from './ImportCollectionConfigurationModal';
 import ErrorViewer from './ErrorViewer';
+import ImportCollectionConfigurationModal from './ImportCollectionConfigurationModal';
+import ImportCollectionItem, { DEFAULT_MODE, MODE_RESTRICTED_COLLECTION } from './ImportCollectionItem';
 
 
 const GROUPS_PAGE = [
@@ -288,7 +289,7 @@ class ImportForm extends React.Component {
 
   async import() {
     const {
-      appContainer, fileName, onPostImport, t,
+      fileName, onPostImport, t,
     } = this.props;
     const { selectedCollections, optionsMap } = this.state;
 
@@ -300,8 +301,8 @@ class ImportForm extends React.Component {
     });
 
     try {
-      // TODO: use appContainer.apiv3.post
-      await appContainer.apiv3Post('/import', {
+      // TODO: use apiv3Post
+      await apiv3Post('/import', {
         fileName,
         collections: Array.from(selectedCollections),
         optionsMap,
@@ -495,7 +496,6 @@ class ImportForm extends React.Component {
 
 ImportForm.propTypes = {
   t: PropTypes.func.isRequired, // i18next
-  appContainer: PropTypes.instanceOf(AppContainer).isRequired,
   adminSocketIoContainer: PropTypes.instanceOf(AdminSocketIoContainer).isRequired,
 
   fileName: PropTypes.string,
@@ -504,9 +504,15 @@ ImportForm.propTypes = {
   onPostImport: PropTypes.func,
 };
 
+const ImportFormWrapperFc = (props) => {
+  const { t } = useTranslation();
+
+  return <ImportForm t={t} {...props} />;
+};
+
 /**
  * Wrapper component for using unstated
  */
-const ImportFormWrapper = withUnstatedContainers(ImportForm, [AppContainer, AdminSocketIoContainer]);
+const ImportFormWrapper = withUnstatedContainers(ImportFormWrapperFc, [AdminSocketIoContainer]);
 
-export default withTranslation()(ImportFormWrapper);
+export default ImportFormWrapper;

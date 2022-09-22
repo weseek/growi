@@ -1,5 +1,5 @@
-import { ChatPostMessageResponse, WebClient } from '@slack/web-api';
 import { markdownSectionBlock } from '@growi/slack';
+import { ChatPostMessageResponse, WebClient } from '@slack/web-api';
 
 export const postWelcomeMessageOnce = async(client: WebClient, channel: string): Promise<void|ChatPostMessageResponse> => {
   const history = await client.conversations.history({

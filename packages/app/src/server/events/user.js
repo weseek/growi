@@ -21,7 +21,7 @@ UserEvent.prototype.onActivated = async function(user) {
 
     // create user page
     try {
-      await Page.create(userPagePath, body, user, {});
+      await this.crowi.pageService.create(userPagePath, body, user, {});
 
       // page created
       debug('User page created', page);

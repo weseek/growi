@@ -1,17 +1,20 @@
-import { Inject, Service } from '@tsed/di';
-import {
-  WebClient, LogLevel, Block, ConversationsSelect,
-} from '@slack/web-api';
 import {
   markdownSectionBlock, markdownHeaderBlock, inputSectionBlock, GrowiCommand, inputBlock,
   respond, GrowiCommandProcessor, GrowiInteractionProcessor,
   getInteractionIdRegexpFromCommandName, InteractionHandledResult, InteractionPayloadAccessor,
 } from '@growi/slack';
 import { AuthorizeResult } from '@slack/oauth';
-import { OrderRepository } from '~/repositories/order';
-import { InvalidUrlError } from '../models/errors';
+import {
+  WebClient, LogLevel, Block, ConversationsSelect,
+} from '@slack/web-api';
+import { Inject, Service } from '@tsed/di';
+
+
 import { InstallationRepository } from '~/repositories/installation';
+import { OrderRepository } from '~/repositories/order';
 import loggerFactory from '~/utils/logger';
+
+import { InvalidUrlError } from '../models/errors';
 
 const logger = loggerFactory('slackbot-proxy:services:RegisterService');
 

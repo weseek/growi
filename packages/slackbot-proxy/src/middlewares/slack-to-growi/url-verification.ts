@@ -1,6 +1,7 @@
 import {
   IMiddleware, Middleware, Req, Res, Next,
 } from '@tsed/common';
+
 import { SlackOauthReq } from '~/interfaces/slack-to-growi/slack-oauth-req';
 
 

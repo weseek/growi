@@ -1,10 +1,12 @@
 import React from 'react';
+
 import PropTypes from 'prop-types';
 import ReactCardFlip from 'react-card-flip';
-
-import { withTranslation } from 'react-i18next';
+import { useTranslation } from 'react-i18next';
 
 import AppContainer from '~/client/services/AppContainer';
+import { useCsrfToken } from '~/stores/context';
+
 import { withUnstatedContainers } from './UnstatedUtils';
 
 class LoginForm extends React.Component {
@@ -35,12 +37,12 @@ class LoginForm extends React.Component {
 
   handleLoginWithExternalAuth(e) {
     const auth = e.currentTarget.id;
-    const { csrf } = this.props.appContainer;
-    window.location.href = `/passport/${auth}?_csrf=${csrf}`;
+    const { csrfToken } = this.props;
+    window.location.href = `/passport/${auth}?_csrf=${csrfToken}`;
   }
 
   renderLocalOrLdapLoginForm() {
-    const { t, appContainer, isLdapStrategySetup } = this.props;
+    const { t, csrfToken, isLdapStrategySetup } = this.props;
 
     return (
       <form role="form" action="/login" method="post">
@@ -70,7 +72,7 @@ class LoginForm extends React.Component {
         </div>
 
         <div className="input-group my-4">
-          <input type="hidden" name="_csrf" value={appContainer.csrfToken} />
+          <input type="hidden" name="_csrf" value={csrfToken} />
           <button type="submit" id="login" className="btn btn-fill rounded-0 login mx-auto" data-testid="btnSubmitForLogin">
             <div className="eff"></div>
             <span className="btn-label">
@@ -148,6 +150,7 @@ class LoginForm extends React.Component {
     const {
       t,
       appContainer,
+      csrfToken,
       isEmailAuthenticationEnabled,
       username,
       name,
@@ -251,7 +254,7 @@ class LoginForm extends React.Component {
           )}
 
           <div className="input-group justify-content-center my-4">
-            <input type="hidden" name="_csrf" value={appContainer.csrfToken} />
+            <input type="hidden" name="_csrf" value={csrfToken} />
             <button type="submit" className="btn btn-fill rounded-0" id="register" disabled={(!isMailerSetup && isEmailAuthenticationEnabled)}>
               <div className="eff"></div>
               <span className="btn-label">
@@ -327,16 +330,12 @@ class LoginForm extends React.Component {
 
 }
 
-/**
- * Wrapper component for using unstated
- */
-const LoginFormWrapper = withUnstatedContainers(LoginForm, [AppContainer]);
-
 LoginForm.propTypes = {
   // i18next
   t: PropTypes.func.isRequired,
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
 
+  csrfToken: PropTypes.string,
   isRegistering: PropTypes.bool,
   username: PropTypes.string,
   name: PropTypes.string,
@@ -351,4 +350,16 @@ LoginForm.propTypes = {
   objOfIsExternalAuthEnableds: PropTypes.object,
 };
 
-export default withTranslation()(LoginFormWrapper);
+const LoginFormWrapperFC = (props) => {
+  const { t } = useTranslation();
+  const { data: csrfToken } = useCsrfToken();
+
+  return <LoginForm t={t} csrfToken={csrfToken} {...props} />;
+};
+
+/**
+ * Wrapper component for using unstated
+ */
+const LoginFormWrapper = withUnstatedContainers(LoginFormWrapperFC, [AppContainer]);
+
+export default LoginFormWrapper;

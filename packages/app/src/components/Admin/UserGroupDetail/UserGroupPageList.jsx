@@ -1,13 +1,16 @@
 import React, { Fragment } from 'react';
+
 import PropTypes from 'prop-types';
-import { withTranslation } from 'react-i18next';
+import { useTranslation } from 'react-i18next';
+
+import AdminUserGroupDetailContainer from '~/client/services/AdminUserGroupDetailContainer';
+import AppContainer from '~/client/services/AppContainer';
+import { toastError } from '~/client/util/apiNotification';
+import { apiv3Get } from '~/client/util/apiv3-client';
 
 import PageListItemS from '../../PageList/PageListItemS';
 import PaginationWrapper from '../../PaginationWrapper';
 import { withUnstatedContainers } from '../../UnstatedUtils';
-import AppContainer from '~/client/services/AppContainer';
-import AdminUserGroupDetailContainer from '~/client/services/AdminUserGroupDetailContainer';
-import { toastError } from '~/client/util/apiNotification';
 
 class UserGroupPageList extends React.Component {
 
@@ -33,7 +36,7 @@ class UserGroupPageList extends React.Component {
     const offset = (pageNum - 1) * limit;
 
     try {
-      const res = await this.props.appContainer.apiv3.get(`/user-groups/${this.props.adminUserGroupDetailContainer.state.userGroup._id}/pages`, {
+      const res = await apiv3Get(`/user-groups/${this.props.adminUserGroupDetailContainer.state.userGroup._id}/pages`, {
         limit,
         offset,
       });
@@ -81,9 +84,14 @@ UserGroupPageList.propTypes = {
   adminUserGroupDetailContainer: PropTypes.instanceOf(AdminUserGroupDetailContainer).isRequired,
 };
 
+const UserGroupPageListWrapperFC = (props) => {
+  const { t } = useTranslation();
+  return <UserGroupPageList t={t} {...props} />;
+};
+
 /**
  * Wrapper component for using unstated
  */
-const UserGroupPageListWrapper = withUnstatedContainers(UserGroupPageList, [AppContainer, AdminUserGroupDetailContainer]);
+const UserGroupPageListWrapper = withUnstatedContainers(UserGroupPageListWrapperFC, [AppContainer, AdminUserGroupDetailContainer]);
 
-export default withTranslation()(UserGroupPageListWrapper);
+export default UserGroupPageListWrapper;

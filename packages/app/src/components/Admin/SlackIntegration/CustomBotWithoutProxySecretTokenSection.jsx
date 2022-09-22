@@ -1,10 +1,14 @@
 import React, { useState, useEffect } from 'react';
-import { useTranslation } from 'react-i18next';
+
 import PropTypes from 'prop-types';
-import AdminUpdateButtonRow from '../Common/AdminUpdateButtonRow';
+import { useTranslation } from 'react-i18next';
+
 import AppContainer from '~/client/services/AppContainer';
-import { withUnstatedContainers } from '../../UnstatedUtils';
 import { toastSuccess, toastError } from '~/client/util/apiNotification';
+import { apiv3Put } from '~/client/util/apiv3-client';
+
+import { withUnstatedContainers } from '../../UnstatedUtils';
+import AdminUpdateButtonRow from '../Common/AdminUpdateButtonRow';
 
 
 const CustomBotWithoutProxySecretTokenSection = (props) => {
@@ -26,7 +30,7 @@ const CustomBotWithoutProxySecretTokenSection = (props) => {
 
   const updatedSecretToken = async() => {
     try {
-      await appContainer.apiv3.put('/slack-integration-settings/without-proxy/update-settings', {
+      await apiv3Put('/slack-integration-settings/without-proxy/update-settings', {
         slackSigningSecret: inputSigningSecret,
         slackBotToken: inputBotToken,
       });

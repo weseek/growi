@@ -2,6 +2,7 @@ import { differenceInMilliseconds } from 'date-fns';
 import {
   Column, CreateDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateColumn, ManyToOne, Index,
 } from 'typeorm';
+
 import { Installation } from './installation';
 
 export interface PermissionSettingsInterface {

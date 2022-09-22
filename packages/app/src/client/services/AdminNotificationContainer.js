@@ -1,5 +1,9 @@
 import { Container } from 'unstated';
 
+import {
+  apiv3Delete, apiv3Get, apiv3Post, apiv3Put,
+} from '../util/apiv3-client';
+
 /**
  * Service container for admin Notification setting page (NotificationSetting.jsx)
  * @extends {Container} unstated Container
@@ -37,7 +41,7 @@ export default class AdminNotificationContainer extends Container {
    * Retrieve notificationData
    */
   async retrieveNotificationData() {
-    const response = await this.appContainer.apiv3.get('/notification-setting/');
+    const response = await apiv3Get('/notification-setting/');
     const { notificationParams } = response.data;
 
     this.setState({
@@ -57,7 +61,7 @@ export default class AdminNotificationContainer extends Container {
    * @memberOf SlackAppConfiguration
    */
   async updateSlackAppConfiguration() {
-    const response = await this.appContainer.apiv3.put('/notification-setting/slack-configuration', {
+    const response = await apiv3Put('/notification-setting/slack-configuration', {
       webhookUrl: this.state.webhookUrl,
       isIncomingWebhookPrioritized: this.state.isIncomingWebhookPrioritized,
       slackToken: this.state.slackToken,
@@ -71,7 +75,7 @@ export default class AdminNotificationContainer extends Container {
    * @memberOf SlackAppConfiguration
    */
   async addNotificationPattern(pathPattern, channel) {
-    const response = await this.appContainer.apiv3.post('/notification-setting/user-notification', {
+    const response = await apiv3Post('/notification-setting/user-notification', {
       pathPattern,
       channel,
     });
@@ -83,7 +87,7 @@ export default class AdminNotificationContainer extends Container {
    * Delete user trigger notification pattern
    */
   async deleteUserTriggerNotificationPattern(notificatiionId) {
-    const response = await this.appContainer.apiv3.delete(`/notification-setting/user-notification/${notificatiionId}`);
+    const response = await apiv3Delete(`/notification-setting/user-notification/${notificatiionId}`);
     const deletedNotificaton = response.data;
     await this.retrieveNotificationData();
     return deletedNotificaton;
@@ -108,7 +112,7 @@ export default class AdminNotificationContainer extends Container {
    * @memberOf SlackAppConfiguration
    */
   async updateGlobalNotificationForPages() {
-    const response = await this.appContainer.apiv3.put('/notification-setting/notify-for-page-grant/', {
+    const response = await apiv3Put('/notification-setting/notify-for-page-grant/', {
       isNotificationForOwnerPageEnabled: this.state.isNotificationForOwnerPageEnabled,
       isNotificationForGroupPageEnabled: this.state.isNotificationForGroupPageEnabled,
     });
@@ -120,7 +124,7 @@ export default class AdminNotificationContainer extends Container {
    * Delete global notification pattern
    */
   async deleteGlobalNotificationPattern(notificatiionId) {
-    const response = await this.appContainer.apiv3.delete(`/notification-setting/global-notification/${notificatiionId}`);
+    const response = await apiv3Delete(`/notification-setting/global-notification/${notificatiionId}`);
     const deletedNotificaton = response.data;
     await this.retrieveNotificationData();
     return deletedNotificaton;

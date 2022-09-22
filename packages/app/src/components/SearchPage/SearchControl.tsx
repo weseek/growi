@@ -12,20 +12,24 @@ import SearchForm from '../SearchForm';
 
 type Props = {
   isSearchServiceReachable: boolean,
+  isEnableSort: boolean,
+  isEnableFilter: boolean,
   initialSearchConditions: Partial<ISearchConditions>,
 
   onSearchInvoked: (keyword: string, configurations: Partial<ISearchConfigurations>) => void,
 
-  deleteAllControl: React.ReactNode,
+  allControl: React.ReactNode,
 }
 
 const SearchControl: FC <Props> = React.memo((props: Props) => {
 
   const {
     isSearchServiceReachable,
+    isEnableSort,
+    isEnableFilter,
     initialSearchConditions,
     onSearchInvoked,
-    deleteAllControl,
+    allControl,
   } = props;
 
   const [keyword, setKeyword] = useState(initialSearchConditions.keyword ?? '');
@@ -73,71 +77,79 @@ const SearchControl: FC <Props> = React.memo((props: Props) => {
         </div>
 
         {/* sort option: show when screen is larger than lg */}
-        <div className="mr-4 d-lg-flex d-none">
-          <SortControl
-            sort={sort}
-            order={order}
-            onChange={changeSortHandler}
-          />
-        </div>
+        {isEnableSort && (
+          <div className="mr-4 d-lg-flex d-none">
+            <SortControl
+              sort={sort}
+              order={order}
+              onChange={changeSortHandler}
+            />
+          </div>
+        )}
       </div>
       {/* TODO: replace the following elements deleteAll button , relevance button and include specificPath button component */}
       <div className="search-control d-flex align-items-center py-md-2 py-3 px-md-4 px-3 border-bottom border-gray">
         <div className="d-flex">
-          {deleteAllControl}
+          {allControl}
         </div>
         {/* sort option: show when screen is smaller than lg */}
-        <div className="mr-md-4 mr-2 d-flex d-lg-none ml-auto">
-          <SortControl
-            sort={sort}
-            order={order}
-            onChange={changeSortHandler}
-          />
-        </div>
+        {isEnableSort && (
+          <div className="mr-md-4 mr-2 d-flex d-lg-none ml-auto">
+            <SortControl
+              sort={sort}
+              order={order}
+              onChange={changeSortHandler}
+            />
+          </div>
+        )}
         {/* filter option */}
-        <div className="d-lg-none">
-          <button
-            type="button"
-            className="btn"
-            onClick={() => setIsFileterOptionModalShown(true)}
-          >
-            <i className="icon-equalizer"></i>
-          </button>
-        </div>
-        <div className="d-none d-lg-flex align-items-center ml-auto search-control-include-options">
-          <div className="border rounded px-2 py-1 mr-3">
-            <div className="custom-control custom-checkbox custom-checkbox-primary">
-              <input
-                className="custom-control-input mr-2"
-                type="checkbox"
-                id="flexCheckDefault"
-                defaultChecked={includeUserPages}
-                onChange={e => setIncludeUserPages(e.target.checked)}
-              />
-              <label className="custom-control-label mb-0 d-flex align-items-center text-secondary with-no-font-weight" htmlFor="flexCheckDefault">
-                {t('Include Subordinated Target Page', { target: '/user' })}
-              </label>
-            </div>
-          </div>
-          <div className="border rounded px-2 py-1">
-            <div className="custom-control custom-checkbox custom-checkbox-primary">
-              <input
-                className="custom-control-input mr-2"
-                type="checkbox"
-                id="flexCheckChecked"
-                checked={includeTrashPages}
-                onChange={e => setIncludeTrashPages(e.target.checked)}
-              />
-              <label
-                className="custom-control-label
-              d-flex align-items-center text-secondary with-no-font-weight"
-                htmlFor="flexCheckChecked"
+        {isEnableFilter && (
+          <>
+            <div className="d-lg-none">
+              <button
+                type="button"
+                className="btn"
+                onClick={() => setIsFileterOptionModalShown(true)}
               >
-                {t('Include Subordinated Target Page', { target: '/trash' })}
-              </label>
+                <i className="icon-equalizer"></i>
+              </button>
             </div>
-          </div>
-        </div>
+            <div className="d-none d-lg-flex align-items-center ml-auto search-control-include-options">
+              <div className="border rounded px-2 py-1 mr-3">
+                <div className="custom-control custom-checkbox custom-checkbox-primary">
+                  <input
+                    className="custom-control-input mr-2"
+                    type="checkbox"
+                    id="flexCheckDefault"
+                    defaultChecked={includeUserPages}
+                    onChange={e => setIncludeUserPages(e.target.checked)}
+                  />
+                  <label className="custom-control-label mb-0 d-flex align-items-center text-secondary with-no-font-weight" htmlFor="flexCheckDefault">
+                    {t('Include Subordinated Target Page', { target: '/user' })}
+                  </label>
+                </div>
+              </div>
+              <div className="border rounded px-2 py-1">
+                <div className="custom-control custom-checkbox custom-checkbox-primary">
+                  <input
+                    className="custom-control-input mr-2"
+                    type="checkbox"
+                    id="flexCheckChecked"
+                    checked={includeTrashPages}
+                    onChange={e => setIncludeTrashPages(e.target.checked)}
+                  />
+                  <label
+                    className="custom-control-label
+                  d-flex align-items-center text-secondary with-no-font-weight"
+                    htmlFor="flexCheckChecked"
+                  >
+                    {t('Include Subordinated Target Page', { target: '/trash' })}
+                  </label>
+                </div>
+              </div>
+            </div>
+          </>
+        )}
       </div>
 
       <SearchOptionModal

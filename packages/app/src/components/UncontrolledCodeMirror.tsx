@@ -1,7 +1,7 @@
 import React, { forwardRef, ReactNode, Ref } from 'react';
+
 import { ICodeMirror, UnControlled as CodeMirror } from 'react-codemirror2';
-import { Container, Subscribe } from 'unstated';
-import EditorContainer from '~/client/services/EditorContainer';
+
 import AbstractEditor, { AbstractEditorProps } from '~/components/PageEditor/AbstractEditor';
 
 window.CodeMirror = require('codemirror');
@@ -16,19 +16,17 @@ export interface UncontrolledCodeMirrorProps extends AbstractEditorProps {
 }
 
 interface UncontrolledCodeMirrorCoreProps extends UncontrolledCodeMirrorProps {
-  editorContainer: Container<EditorContainer>;
   forwardedRef: Ref<UncontrolledCodeMirrorCore>;
 }
 
 class UncontrolledCodeMirrorCore extends AbstractEditor<UncontrolledCodeMirrorCoreProps> {
 
-  render(): ReactNode {
+  override render(): ReactNode {
 
     const {
-      value, isGfmMode, lineNumbers, editorContainer, options, forwardedRef, ...rest
+      value, isGfmMode, lineNumbers, options, forwardedRef,
+      ...rest
     } = this.props;
-
-    const { editorOptions } = editorContainer.state;
 
     return (
       <CodeMirror
@@ -37,8 +35,6 @@ class UncontrolledCodeMirrorCore extends AbstractEditor<UncontrolledCodeMirrorCo
         options={{
           lineNumbers: lineNumbers ?? true,
           mode: isGfmMode ? 'gfm-growi' : undefined,
-          theme: editorOptions.theme,
-          styleActiveLine: editorOptions.styleActiveLine,
           tabSize: 4,
           ...options,
         }}
@@ -49,8 +45,11 @@ class UncontrolledCodeMirrorCore extends AbstractEditor<UncontrolledCodeMirrorCo
 
 }
 
-export const UncontrolledCodeMirror = forwardRef<UncontrolledCodeMirrorCore, UncontrolledCodeMirrorProps>((props, ref) => (
-  <Subscribe to={[EditorContainer]}>
-    {(EditorContainer: Container<EditorContainer>) => <UncontrolledCodeMirrorCore {...props} forwardedRef={ref} editorContainer={EditorContainer} />}
-  </Subscribe>
-));
+export const UncontrolledCodeMirror = forwardRef<UncontrolledCodeMirrorCore, UncontrolledCodeMirrorProps>((props, ref) => {
+  return (
+    <UncontrolledCodeMirrorCore
+      {...props}
+      forwardedRef={ref}
+    />
+  );
+});

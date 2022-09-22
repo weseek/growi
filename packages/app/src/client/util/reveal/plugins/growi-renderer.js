@@ -2,19 +2,16 @@
  * reveal.js growi-renderer plugin.
  */
 (function(root, factory) {
-  // get AppContainer instance from parent window
-  const appContainer = window.parent.appContainer;
-
-  const growiRendererPlugin = factory(appContainer);
+  const growiRendererPlugin = factory();
   growiRendererPlugin.initialize();
-}(this, (appContainer) => {
+}(this, () => {
   /* eslint-disable no-useless-escape */
   const DEFAULT_SLIDE_SEPARATOR = '^\r?\n---\r?\n$';
   const DEFAULT_ELEMENT_ATTRIBUTES_SEPARATOR = '\\\.element\\\s*?(.+?)$';
   const DEFAULT_SLIDE_ATTRIBUTES_SEPARATOR = '\\\.slide:\\\s*?(\\\S.+?)$';
   /* eslint-enable no-useless-escape */
 
-  const growiRenderer = appContainer.getRenderer('editor');
+  const growiRenderer = window.parent.previewRenderer;
 
   let marked;
 
@@ -28,7 +25,7 @@
       const section = sections[i];
       const markdown = marked.getMarkdownFromSlide(section);
       const context = { markdown };
-      const interceptorManager = appContainer.interceptorManager;
+      const { interceptorManager } = window.parent;
       let dataSeparator = section.getAttribute('data-separator') || DEFAULT_SLIDE_SEPARATOR;
       // replace string '\n' to LF code.
       dataSeparator = dataSeparator.replace(/\\n/g, '\n');
@@ -51,7 +48,7 @@
   function convertSlides() {
     const sections = document.querySelectorAll('[data-markdown]');
     let markdown;
-    const interceptorManager = appContainer.interceptorManager;
+    const { interceptorManager } = window.parent;
 
     for (let i = 0, len = sections.length; i < len; i++) {
       const section = sections[i];
@@ -61,7 +58,7 @@
         section.setAttribute('data-markdown-parsed', 'true');
         const notes = section.querySelector('aside.notes');
         markdown = marked.getMarkdownFromSlide(section);
-        const context = { markdown };
+        const context = { markdown, currentPathname: decodeURIComponent(window.parent.location.pathname) };
 
         interceptorManager.process('preRender', context)
           .then(() => { return interceptorManager.process('prePreProcess', context) })

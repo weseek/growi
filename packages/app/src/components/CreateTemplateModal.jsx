@@ -1,15 +1,14 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 
-import { Modal, ModalHeader, ModalBody } from 'reactstrap';
-
-import { withTranslation } from 'react-i18next';
 import { pathUtils } from '@growi/core';
+import PropTypes from 'prop-types';
+import { useTranslation } from 'react-i18next';
+import { Modal, ModalHeader, ModalBody } from 'reactstrap';
 import urljoin from 'url-join';
 
-
 const CreateTemplateModal = (props) => {
-  const { t, path } = props;
+  const { t } = useTranslation();
+  const { path } = props;
 
   const parentPath = pathUtils.addTrailingSlash(path);
 
@@ -30,6 +29,7 @@ const CreateTemplateModal = (props) => {
         </div>
         <div className="card-footer text-center">
           <a
+            data-testid={`template-button-${target}`}
             href={generateUrl(label)}
             className="btn btn-sm btn-primary"
             id={`template-button-${target}`}
@@ -42,7 +42,7 @@ const CreateTemplateModal = (props) => {
   }
 
   return (
-    <Modal isOpen={props.isOpen} toggle={props.onClose} className="grw-create-page">
+    <Modal isOpen={props.isOpen} toggle={props.onClose} data-testid="page-template-modal" className="grw-create-page">
       <ModalHeader tag="h4" toggle={props.onClose} className="bg-primary text-light">
         {t('template.modal_label.Create/Edit Template Page')}
       </ModalHeader>
@@ -63,12 +63,10 @@ const CreateTemplateModal = (props) => {
   );
 };
 
-
 CreateTemplateModal.propTypes = {
-  t: PropTypes.func.isRequired, //  i18next
   path: PropTypes.string.isRequired,
   isOpen: PropTypes.bool.isRequired,
   onClose: PropTypes.func.isRequired,
 };
 
-export default withTranslation()(CreateTemplateModal);
+export default CreateTemplateModal;

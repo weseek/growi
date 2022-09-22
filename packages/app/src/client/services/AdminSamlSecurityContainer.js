@@ -1,10 +1,11 @@
-import { Container } from 'unstated';
-
-
 import { pathUtils } from '@growi/core';
+import { Container } from 'unstated';
 import urljoin from 'url-join';
+
 import loggerFactory from '~/utils/logger';
 import { removeNullPropertyFromObject } from '~/utils/object-utils';
+
+import { apiv3Get, apiv3Put } from '../util/apiv3-client';
 
 const logger = loggerFactory('growi:security:AdminSamlSecurityContainer');
 
@@ -57,7 +58,7 @@ export default class AdminSamlSecurityContainer extends Container {
    */
   async retrieveSecurityData() {
     try {
-      const response = await this.appContainer.apiv3.get('/security-setting/');
+      const response = await apiv3Get('/security-setting/');
       const { samlAuth } = response.data.securityParams;
       this.setState({
         missingMandatoryConfigKeys: samlAuth.missingMandatoryConfigKeys,
@@ -195,7 +196,7 @@ export default class AdminSamlSecurityContainer extends Container {
     };
 
     requestParams = await removeNullPropertyFromObject(requestParams);
-    const response = await this.appContainer.apiv3.put('/security-setting/saml', requestParams);
+    const response = await apiv3Put('/security-setting/saml', requestParams);
     const { securitySettingParams } = response.data;
 
     this.setState({

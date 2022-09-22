@@ -30,8 +30,15 @@ RUN chown -R $USER_UID:$USER_GID /home/$USERNAME /workspace;
 # * See https://docs.docker.com/engine/reference/builder/#run *
 # *************************************************************
 ENV DEBIAN_FRONTEND=noninteractive
+
+# Prepare to install Chrome for VRT
+RUN sh -c 'echo "deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main" >> /etc/apt/sources.list.d/google.list'
+RUN wget -q -O - https://dl.google.com/linux/linux_signing_key.pub | sudo apt-key add -
+
 RUN apt-get update \
    && apt-get -y install --no-install-recommends git-lfs \
+      # Chrome
+      google-chrome-stable \
       # for Cypress
       libgtk2.0-0 libgtk-3-0 libgbm-dev libnotify-dev libgconf-2-4 libnss3 libxss1 libasound2 libxtst6 xauth xvfb fonts-noto-cjk \
 

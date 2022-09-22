@@ -2,8 +2,8 @@
 /* eslint-disable no-return-await */
 
 const mongoose = require('mongoose');
-const uniqueValidator = require('mongoose-unique-validator');
 const mongoosePaginate = require('mongoose-paginate-v2');
+const uniqueValidator = require('mongoose-unique-validator');
 
 const ObjectId = mongoose.Schema.Types.ObjectId;
 
@@ -19,7 +19,8 @@ const schema = new mongoose.Schema({
   },
   expiredAt: { type: Date },
   description: { type: String },
-  createdAt: { type: Date, default: Date.now, required: true },
+}, {
+  timestamps: { createdAt: true, updatedAt: false },
 });
 schema.plugin(mongoosePaginate);
 schema.plugin(uniqueValidator);

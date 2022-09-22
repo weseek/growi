@@ -1,9 +1,8 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 
 import { pathUtils } from '@growi/core';
-
 import { PageListMeta } from '@growi/ui';
+import PropTypes from 'prop-types';
 
 import { LsxContext } from '../../util/LsxContext';
 import { PageNode } from '../PageNode';
@@ -62,6 +61,7 @@ export class LsxPage extends React.Component {
             depth={this.props.depth + 1}
             pageNode={pageNode}
             lsxContext={this.props.lsxContext}
+            basisViewersCount={this.props.basisViewersCount}
           />
         );
       });
@@ -79,7 +79,7 @@ export class LsxPage extends React.Component {
   }
 
   render() {
-    const pageNode = this.props.pageNode;
+    const { pageNode, basisViewersCount } = this.props;
 
     // create PagePath element
     let pagePathNode = <PagePathWrapper pagePath={pageNode.pagePath} isExists={this.state.isExists} />;
@@ -88,7 +88,7 @@ export class LsxPage extends React.Component {
     }
 
     // create PageListMeta element
-    const pageListMeta = (this.state.isExists) ? <PageListMeta page={pageNode.page} /> : '';
+    const pageListMeta = (this.state.isExists) ? <PageListMeta page={pageNode.page} basisViewersCount={basisViewersCount} /> : '';
 
     return (
       <li className="page-list-li">
@@ -105,4 +105,5 @@ LsxPage.propTypes = {
   pageNode: PropTypes.instanceOf(PageNode).isRequired,
   lsxContext: PropTypes.instanceOf(LsxContext).isRequired,
   depth: PropTypes.number,
+  basisViewersCount: PropTypes.number,
 };

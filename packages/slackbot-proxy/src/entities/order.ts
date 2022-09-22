@@ -1,6 +1,7 @@
 import {
   Column, CreateDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateColumn, ManyToOne,
 } from 'typeorm';
+
 import { Installation } from './installation';
 
 @Entity()

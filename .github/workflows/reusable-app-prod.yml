@@ -59,17 +59,26 @@ jobs:
     - name: Archive production files
       id: archive-prod-files
       run: |
-        tar -cf production.tar packages/**/dist packages/app/public
+        tar -cf production.tar \
+          package.json \
+          packages/app/config \
+          packages/app/public \
+          packages/app/resource \
+          packages/app/tmp \
+          packages/app/migrate-mongo-config.js \
+          packages/app/.env.production* \
+          packages/*/package.json \
+          packages/*/dist
         echo ::set-output name=file::production.tar
 
     - name: Upload production files as artifact
-      uses: actions/upload-artifact@v2
+      uses: actions/upload-artifact@v3
       with:
         name: Production Files
         path: ${{ steps.archive-prod-files.outputs.file }}
 
     - name: Upload report as artifact
-      uses: actions/upload-artifact@v2
+      uses: actions/upload-artifact@v3
       with:
         name: Bundle Analyzing Report
         path: packages/app/report/bundle-analyzer.html
@@ -140,7 +149,7 @@ jobs:
         npx lerna bootstrap -- --production
 
     - name: Download production files artifact
-      uses: actions/download-artifact@v2
+      uses: actions/download-artifact@v3
       with:
         name: Production Files
 
@@ -175,17 +184,12 @@ jobs:
     if: ${{ !inputs.skip-cypress }}
 
     runs-on: ubuntu-latest
-    container:
-      image: cypress/base:16.13.0
-      # solve permissions issue
-      # see: https://github.com/cypress-io/github-action/issues/446#issuecomment-987015822
-      options: --user 1001
 
     strategy:
       fail-fast: false
       matrix:
         # List string expressions that is comma separated ids of tests in "test/cypress/integration"
-        spec-group: ['1', '2', '3']
+        spec-group: ['10', '20', '21', '30', '40', '50', '60']
 
     services:
       mongodb:
@@ -202,10 +206,14 @@ jobs:
     steps:
     - uses: actions/checkout@v3
 
-    - name: Get yarn cache dir
-      id: yarn-cache-dir
-      run: |
-        echo "::set-output name=value::`yarn cache dir --silent`"
+    - name: Install fonts
+      run: sudo apt install fonts-noto
+
+    - uses: actions/setup-node@v3
+      with:
+        node-version: ${{ matrix.node-version }}
+        cache: 'yarn'
+        cache-dependency-path: '**/yarn.lock'
 
     - name: Cache/Restore dependencies
       uses: actions/cache@v3
@@ -213,7 +221,6 @@ jobs:
         path: |
           **/node_modules
           ~/.cache/Cypress
-          ${{ steps.yarn-cache-dir.outputs.value }}
         key: deps-for-cypress-${{ runner.OS }}-node${{ inputs.node-version }}-${{ hashFiles('**/yarn.lock') }}-${{ hashFiles('packages/app/package.json') }}
         restore-keys: |
           deps-for-cypress-${{ runner.OS }}-node${{ inputs.node-version }}-${{ hashFiles('**/yarn.lock') }}-
@@ -224,7 +231,7 @@ jobs:
         npx lerna bootstrap -- --frozen-lockfile
 
     - name: Download production files artifact
-      uses: actions/download-artifact@v2
+      uses: actions/download-artifact@v3
       with:
         name: Production Files
 
@@ -244,26 +251,32 @@ jobs:
         cat config/ci/.env.local.for-ci >> .env.production.local
 
     - name: Copy dotenv file for automatic installation
-      if: ${{ matrix.spec-group != '1' }}
+      if: ${{ matrix.spec-group != '10' }}
       working-directory: ./packages/app
       run: |
         cat config/ci/.env.local.for-auto-install >> .env.production.local
 
+    - name: Copy dotenv file for automatic installation with allowing guest mode
+      if: ${{ matrix.spec-group == '21' }}
+      working-directory: ./packages/app
+      run: |
+        cat config/ci/.env.local.for-auto-install-with-allowing-guest >> .env.production.local
+
     - name: Cypress Run
-      uses: cypress-io/github-action@v2
+      uses: cypress-io/github-action@v3
       with:
+        browser: chrome
         working-directory: ./packages/app
-        install: false
         spec: '${{ steps.determine-spec-exp.outputs.value }}'
         start: yarn server
         wait-on: 'http://localhost:3000'
       env:
-        MONGO_URI: mongodb://mongodb:27017/growi-vrt
-        ELASTICSEARCH_URI: http://elasticsearch:9200/growi
+        MONGO_URI: mongodb://localhost:${{ job.services.mongodb.ports['27017'] }}/growi-vrt
+        ELASTICSEARCH_URI: http://localhost:${{ job.services.elasticsearch.ports['9200'] }}/growi
 
     - name: Upload results
       if: always()
-      uses: actions/upload-artifact@v2
+      uses: actions/upload-artifact@v3
       with:
         name: ${{ inputs.cypress-report-artifact-name }}
         path: |

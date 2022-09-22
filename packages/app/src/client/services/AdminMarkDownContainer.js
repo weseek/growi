@@ -1,5 +1,7 @@
 import { Container } from 'unstated';
 
+import { apiv3Get, apiv3Put } from '../util/apiv3-client';
+
 /**
  * Service container for admin markdown setting page (MarkDownSetting.jsx)
  * @extends {Container} unstated Container
@@ -43,7 +45,7 @@ export default class AdminMarkDownContainer extends Container {
    * retrieve markdown data
    */
   async retrieveMarkdownData() {
-    const response = await this.appContainer.apiv3.get('/markdown-setting/');
+    const response = await apiv3Get('/markdown-setting/');
     const { markdownParams } = response.data;
 
     this.setState({
@@ -93,7 +95,7 @@ export default class AdminMarkDownContainer extends Container {
    */
   async updateLineBreakSetting() {
 
-    const response = await this.appContainer.apiv3.put('/markdown-setting/lineBreak', {
+    const response = await apiv3Put('/markdown-setting/lineBreak', {
       isEnabledLinebreaks: this.state.isEnabledLinebreaks,
       isEnabledLinebreaksInComments: this.state.isEnabledLinebreaksInComments,
     });
@@ -106,7 +108,7 @@ export default class AdminMarkDownContainer extends Container {
    */
   async updateIndentSetting() {
 
-    const response = await this.appContainer.apiv3.put('/markdown-setting/indent', {
+    const response = await apiv3Put('/markdown-setting/indent', {
       adminPreferredIndentSize: this.state.adminPreferredIndentSize,
       isIndentSizeForced: this.state.isIndentSizeForced,
     });
@@ -123,7 +125,7 @@ export default class AdminMarkDownContainer extends Container {
     tagWhiteList = Array.isArray(tagWhiteList) ? tagWhiteList : tagWhiteList.split(',');
     attrWhiteList = Array.isArray(attrWhiteList) ? attrWhiteList : attrWhiteList.split(',');
 
-    const response = await this.appContainer.apiv3.put('/markdown-setting/xss', {
+    const response = await apiv3Put('/markdown-setting/xss', {
       isEnabledXss: this.state.isEnabledXss,
       xssOption: this.state.xssOption,
       tagWhiteList,
@@ -138,7 +140,7 @@ export default class AdminMarkDownContainer extends Container {
    */
   async updatePresentationSetting() {
 
-    const response = await this.appContainer.apiv3.put('/markdown-setting/presentation', {
+    const response = await apiv3Put('/markdown-setting/presentation', {
       pageBreakSeparator: this.state.pageBreakSeparator,
       pageBreakCustomSeparator: this.state.pageBreakCustomSeparator,
     });

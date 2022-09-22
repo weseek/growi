@@ -1,10 +1,11 @@
 import React from 'react';
-import ReactDOM from 'react-dom';
 
 import { BasicInterceptor } from '@growi/core';
+import ReactDOM from 'react-dom';
 
-import { LsxContext } from '../LsxContext';
+
 import { Lsx } from '../../components/Lsx';
+import { LsxContext } from '../LsxContext';
 
 /**
  * The interceptor for lsx
@@ -12,11 +13,6 @@ import { Lsx } from '../../components/Lsx';
  *  render React DOM
  */
 export class LsxPostRenderInterceptor extends BasicInterceptor {
-
-  constructor(appContainer) {
-    super();
-    this.appContainer = appContainer;
-  }
 
   /**
    * @inheritdoc
@@ -54,7 +50,7 @@ export class LsxPostRenderInterceptor extends BasicInterceptor {
 
   renderReactDOM(lsxContext, elem, isPreview) {
     ReactDOM.render(
-      <Lsx appContainer={this.appContainer} lsxContext={lsxContext} forceToFetchData={!isPreview} />,
+      <Lsx lsxContext={lsxContext} forceToFetchData={!isPreview} />,
       elem,
     );
   }

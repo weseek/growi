@@ -1,4 +1,4 @@
-# syntax = docker/dockerfile:1
+# syntax = docker/dockerfile:1.4
 
 ARG flavor=default
 
@@ -111,15 +111,12 @@ RUN yarn lerna run build
 # make artifacts
 RUN tar -cf packages.tar \
   package.json \
-  tsconfig.base.json \
   packages/app/config \
   packages/app/public \
   packages/app/resource \
   packages/app/tmp \
   packages/app/migrate-mongo-config.js \
   packages/app/.env.production* \
-  packages/app/tsconfig.base.json \
-  packages/app/tsconfig.json \
   packages/*/package.json \
   packages/*/dist
 
@@ -157,12 +154,9 @@ RUN tar -xf node_modules.tar
 RUN tar -xf packages.tar
 RUN rm node_modules.tar packages.tar
 
+COPY --chown=node:node --chmod=700 packages/app/docker/docker-entrypoint.sh /
+
 USER root
-
-COPY packages/app/docker/docker-entrypoint.sh /
-RUN chmod 700 /docker-entrypoint.sh
-RUN chown node:node ${appDir}
-
 WORKDIR ${appDir}/packages/app
 
 VOLUME /data

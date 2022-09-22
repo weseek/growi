@@ -1,12 +1,12 @@
 import React, { FC } from 'react';
 
 import AppContainer from '~/client/services/AppContainer';
-import loggerFactory from '~/utils/logger';
-import { useSWRxPageByPath } from '~/stores/page';
-
-import { withUnstatedContainers } from '../UnstatedUtils';
-import RevisionRenderer from '../Page/RevisionRenderer';
 import { IRevision } from '~/interfaces/revision';
+import { useSWRxPageByPath } from '~/stores/page';
+import { useCustomSidebarRenderer } from '~/stores/renderer';
+import loggerFactory from '~/utils/logger';
+
+import RevisionRenderer from '../Page/RevisionRenderer';
 
 const logger = loggerFactory('growi:cli:CustomSidebar');
 
@@ -25,16 +25,21 @@ type Props = {
   appContainer: AppContainer,
 };
 
-const CustomSidebar: FC<Props> = (props: Props) => {
+const CustomSidebar: FC<Props> = () => {
 
-  const { appContainer } = props;
-
-  const renderer = appContainer.getRenderer('sidebar');
+  const { data: renderer } = useCustomSidebarRenderer();
 
   const { data: page, error, mutate } = useSWRxPageByPath('/Sidebar');
 
+  if (renderer == null) {
+    return <></>;
+  }
+
   const isLoading = page === undefined && error == null;
   const markdown = (page?.revision as IRevision | undefined)?.body;
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const RevisionRendererAny: any = RevisionRenderer;
 
   return (
     <>
@@ -43,7 +48,7 @@ const CustomSidebar: FC<Props> = (props: Props) => {
           Custom Sidebar
           <a className="h6 ml-2" href="/Sidebar"><i className="icon-pencil"></i></a>
         </h3>
-        <button type="button" className="btn btn-sm btn-outline-secondary ml-auto" onClick={() => mutate()}>
+        <button type="button" className="btn btn-sm ml-auto grw-btn-reload" onClick={() => mutate()}>
           <i className="icon icon-reload"></i>
         </button>
       </div>
@@ -57,16 +62,20 @@ const CustomSidebar: FC<Props> = (props: Props) => {
       }
 
       {
-        !isLoading && markdown != null ? (
+        (!isLoading && markdown != null) && (
           <div className="p-3">
-            <RevisionRenderer
+            <RevisionRendererAny
               growiRenderer={renderer}
               markdown={markdown}
               pagePath="/Sidebar"
               additionalClassName="grw-custom-sidebar-content"
             />
           </div>
-        ) : (
+        )
+      }
+
+      {
+        (!isLoading && markdown === undefined) && (
           <SidebarNotFound />
         )
       }
@@ -74,9 +83,4 @@ const CustomSidebar: FC<Props> = (props: Props) => {
   );
 };
 
-/**
- * Wrapper component for using unstated
- */
-const CustomSidebarWrapper = withUnstatedContainers(CustomSidebar, [AppContainer]);
-
-export default CustomSidebarWrapper;
+export default CustomSidebar;

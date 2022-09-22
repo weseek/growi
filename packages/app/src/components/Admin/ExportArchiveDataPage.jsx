@@ -1,22 +1,25 @@
 import React, { Fragment } from 'react';
+
 import PropTypes from 'prop-types';
-import { withTranslation } from 'react-i18next';
+import { useTranslation } from 'react-i18next';
 import * as toastr from 'toastr';
 
+
+import AdminSocketIoContainer from '~/client/services/AdminSocketIoContainer';
+import AppContainer from '~/client/services/AppContainer';
+import { apiDelete, apiGet } from '~/client/util/apiv1-client';
 
 import { withUnstatedContainers } from '../UnstatedUtils';
 // import { toastSuccess, toastError } from '~/client/util/apiNotification';
 
-import AppContainer from '~/client/services/AppContainer';
-import AdminSocketIoContainer from '~/client/services/AdminSocketIoContainer';
 
 import LabeledProgressBar from './Common/LabeledProgressBar';
-
-import SelectCollectionsModal from './ExportArchiveData/SelectCollectionsModal';
 import ArchiveFilesTable from './ExportArchiveData/ArchiveFilesTable';
+import SelectCollectionsModal from './ExportArchiveData/SelectCollectionsModal';
+
 
 const IGNORED_COLLECTION_NAMES = [
-  'sessions',
+  'sessions', 'rlflx', 'activities',
 ];
 
 class ExportArchiveDataPage extends React.Component {
@@ -45,8 +48,8 @@ class ExportArchiveDataPage extends React.Component {
     // TODO:: use apiv3.get
     // eslint-disable-next-line no-unused-vars
     const [{ collections }, { status }] = await Promise.all([
-      this.props.appContainer.apiGet('/v3/mongo/collections', {}),
-      this.props.appContainer.apiGet('/v3/export/status', {}),
+      apiGet('/v3/mongo/collections', {}),
+      apiGet('/v3/export/status', {}),
     ]);
     // TODO: toastSuccess, toastError
 
@@ -118,7 +121,7 @@ class ExportArchiveDataPage extends React.Component {
 
   async onZipFileStatRemove(fileName) {
     try {
-      await this.props.appContainer.apiDelete(`/v3/export/${fileName}`, {});
+      await apiDelete(`/v3/export/${fileName}`, {});
 
       this.setState((prevState) => {
         return {
@@ -251,9 +254,14 @@ ExportArchiveDataPage.propTypes = {
   adminSocketIoContainer: PropTypes.instanceOf(AdminSocketIoContainer).isRequired,
 };
 
+const ExportArchiveDataPageWrapperFC = (props) => {
+  const { t } = useTranslation();
+  return <ExportArchiveDataPage t={t} {...props} />;
+};
+
 /**
  * Wrapper component for using unstated
  */
-const ExportArchiveDataPageWrapper = withUnstatedContainers(ExportArchiveDataPage, [AppContainer, AdminSocketIoContainer]);
+const ExportArchiveDataPageWrapper = withUnstatedContainers(ExportArchiveDataPageWrapperFC, [AppContainer, AdminSocketIoContainer]);
 
-export default withTranslation()(ExportArchiveDataPageWrapper);
+export default ExportArchiveDataPageWrapper;

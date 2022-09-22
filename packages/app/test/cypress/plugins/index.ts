@@ -19,4 +19,15 @@
 module.exports = (on, config) => {
   // `on` is used to hook into various events Cypress emits
   // `config` is the resolved Cypress config
+
+  // change screen size
+  // see: https://docs.cypress.io/api/plugins/browser-launch-api#Set-screen-size-when-running-headless
+  on('before:browser:launch', (browser, launchOptions) => {
+    if (browser.name === 'chrome' && browser.isHeadless) {
+      launchOptions.args.push('--window-size=1400,1024')
+      launchOptions.args.push('--force-device-scale-factor=1')
+    }
+
+    return launchOptions
+  })
 }

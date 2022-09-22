@@ -1,18 +1,19 @@
 import React, {
   forwardRef, ForwardRefRenderFunction, useEffect, useImperativeHandle, useRef, useState,
 } from 'react';
+
 import { useTranslation } from 'react-i18next';
+
 import { ISelectableAll } from '~/client/interfaces/selectable-all';
 import AppContainer from '~/client/services/AppContainer';
 import { toastSuccess } from '~/client/util/apiNotification';
-import { IPageWithMeta } from '~/interfaces/page';
-import { IFormattedSearchResult, IPageSearchMeta } from '~/interfaces/search';
+import { IFormattedSearchResult, IPageWithSearchMeta } from '~/interfaces/search';
 import { OnDeletedFunction } from '~/interfaces/ui';
 import { useIsGuestUser, useIsSearchServiceConfigured, useIsSearchServiceReachable } from '~/stores/context';
 import { usePageDeleteModal } from '~/stores/modal';
 import { usePageTreeTermManager } from '~/stores/page-listing';
-import { ForceHideMenuItems } from '../Common/Dropdown/PageItemControl';
 
+import { ForceHideMenuItems } from '../Common/Dropdown/PageItemControl';
 import { SearchResultContent } from '../SearchPage/SearchResultContent';
 import { SearchResultList } from '../SearchPage/SearchResultList';
 
@@ -29,7 +30,7 @@ export interface IReturnSelectedPageIds {
 type Props = {
   appContainer: AppContainer,
 
-  pages?: IPageWithMeta<IPageSearchMeta>[],
+  pages?: IPageWithSearchMeta[],
   searchingKeyword?: string,
 
   forceHideMenuItems?: ForceHideMenuItems,
@@ -59,7 +60,7 @@ const SearchPageBaseSubstance: ForwardRefRenderFunction<ISelectableAll & IReturn
 
   const [selectedPageIdsByCheckboxes] = useState<Set<string>>(new Set());
   // const [allPageIds] = useState<Set<string>>(new Set());
-  const [selectedPageWithMeta, setSelectedPageWithMeta] = useState<IPageWithMeta<IPageSearchMeta> | undefined>();
+  const [selectedPageWithMeta, setSelectedPageWithMeta] = useState<IPageWithSearchMeta | undefined>();
 
   // publish selectAll()
   useImperativeHandle(ref, () => ({
@@ -253,7 +254,14 @@ export const usePageDeleteModalForBulkDeletion = (
 
     openDeleteModal(selectedPages, {
       onDeleted: (...args) => {
-        toastSuccess(args[2] ? t('deleted_pages_completely') : t('deleted_pages'));
+        const path = args[0];
+        const isCompletely = args[2];
+        if (path == null || isCompletely == null) {
+          toastSuccess(t('deleted_page'));
+        }
+        else {
+          toastSuccess(t('deleted_pages_completely', { path }));
+        }
         advancePt();
 
         if (onDeleted != null) {

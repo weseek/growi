@@ -1,22 +1,27 @@
-import React, { useState, FC, useMemo } from 'react';
+import React, {
+  useState, FC, useMemo, useEffect,
+} from 'react';
+
+import { pagePathUtils } from '@growi/core';
+import { useTranslation } from 'react-i18next';
 import {
   Modal, ModalHeader, ModalBody, ModalFooter,
 } from 'reactstrap';
-import { useTranslation } from 'react-i18next';
 
 import { apiPost } from '~/client/util/apiv1-client';
 import { apiv3Post } from '~/client/util/apiv3-client';
-import { usePageDeleteModal } from '~/stores/modal';
-import loggerFactory from '~/utils/logger';
-
+import { HasObjectId } from '~/interfaces/has-object-id';
 import {
   IDeleteSinglePageApiv1Result, IDeleteManyPageApiv3Result, IPageToDeleteWithMeta, IDataWithMeta, isIPageInfoForEntity, IPageInfoForEntity,
 } from '~/interfaces/page';
-import { HasObjectId } from '~/interfaces/has-object-id';
+import { usePageDeleteModal } from '~/stores/modal';
+import { useSWRxPageInfoForList } from '~/stores/page';
+import loggerFactory from '~/utils/logger';
+
 
 import ApiErrorMessageList from './PageManagement/ApiErrorMessageList';
-import { isTrashPage } from '^/../core/src/utils/page-path-utils';
-import { useSWRxPageInfoForList } from '~/stores/page';
+
+const { isTrashPage } = pagePathUtils;
 
 
 const logger = loggerFactory('growi:cli:PageDeleteModal');
@@ -79,6 +84,10 @@ const PageDeleteModal: FC = () => {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [errs, setErrs] = useState<Error[] | null>(null);
 
+  useEffect(() => {
+    setIsDeleteCompletely(forceDeleteCompletelyMode);
+  }, [forceDeleteCompletelyMode]);
+
   function changeIsDeleteRecursivelyHandler() {
     setIsDeleteRecursively(!isDeleteRecursively);
   }
@@ -121,7 +130,6 @@ const PageDeleteModal: FC = () => {
         if (onDeleted != null) {
           onDeleted(data.paths, data.isRecursively, data.isCompletely);
         }
-
         closeDeleteModal();
       }
       catch (err) {
@@ -231,7 +239,6 @@ const PageDeleteModal: FC = () => {
         <div className="form-group grw-scrollable-modal-body pb-1">
           <label>{ t('modal_delete.deleting_page') }:</label><br />
           {/* Todo: change the way to show path on modal when too many pages are selected */}
-          {/* https://redmine.weseek.co.jp/issues/82787 */}
           {renderPagePathsToDelete()}
         </div>
         { isDeletable && renderDeleteRecursivelyForm()}
@@ -245,7 +252,7 @@ const PageDeleteModal: FC = () => {
           disabled={!isDeletable}
           onClick={deleteButtonHandler}
         >
-          <i className={`icon-${deleteIconAndKey[deleteMode].icon}`} aria-hidden="true"></i>
+          <i className={`mr-1 icon-${deleteIconAndKey[deleteMode].icon}`} aria-hidden="true"></i>
           { t(`modal_delete.delete_${deleteIconAndKey[deleteMode].translationKey}`) }
         </button>
       </ModalFooter>

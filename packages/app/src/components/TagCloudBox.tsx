@@ -1,38 +1,42 @@
-import React, { FC } from 'react';
+import React, { FC, memo } from 'react';
 
-import { TagCloud } from 'react-tagcloud';
-
-type Tag = {
-  _id: string,
-  name: string,
-  count: number,
-}
+import { IDataTagCount } from '~/interfaces/tag';
 
 type Props = {
-  tags:Tag[],
+  tags:IDataTagCount[],
   minSize?: number,
   maxSize?: number,
-}
+  maxTagTextLength?: number,
+  isDisableRandomColor?: boolean,
+};
 
-const MIN_FONT_SIZE = 12;
-const MAX_FONT_SIZE = 36;
+const defaultProps = {
+  isDisableRandomColor: true,
+};
 
-const TagCloudBox: FC<Props> = (props:Props) => {
+const MAX_TAG_TEXT_LENGTH = 8;
+
+const TagCloudBox: FC<Props> = memo((props:(Props & typeof defaultProps)) => {
+  const { tags } = props;
+  const maxTagTextLength: number = props.maxTagTextLength ?? MAX_TAG_TEXT_LENGTH;
+
+  const tagElements = tags.map((tag:IDataTagCount) => {
+    const tagNameFormat = (tag.name).length > maxTagTextLength ? `${(tag.name).slice(0, maxTagTextLength)}...` : tag.name;
+    return (
+      <a key={tag.name} href={`/_search?q=tag:${tag.name}`} className="grw-tag-label badge badge-secondary mr-2">
+        {tagNameFormat}
+      </a>
+    );
+  });
+
   return (
-    <>
-      <TagCloud
-        minSize={props.minSize || MIN_FONT_SIZE}
-        maxSize={props.maxSize || MAX_FONT_SIZE}
-        tags={props.tags.map((tag) => {
-          return { value: tag.name, count: tag.count };
-        })}
-        style={{ cursor: 'pointer' }}
-        className="simple-cloud"
-        onClick={(target) => { window.location.href = `/_search?q=tag:${encodeURIComponent(target.value)}` }}
-      />
-    </>
+    <div className="grw-popular-tag-labels">
+      {tagElements}
+    </div>
   );
 
-};
+});
+
+TagCloudBox.defaultProps = defaultProps;
 
 export default TagCloudBox;

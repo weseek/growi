@@ -2,24 +2,23 @@ import React, {
   useState, useEffect, useCallback, useMemo,
 } from 'react';
 
+import { pagePathUtils } from '@growi/core';
+import { useTranslation } from 'react-i18next';
 import {
   Collapse, Modal, ModalHeader, ModalBody, ModalFooter,
 } from 'reactstrap';
-
-import { useTranslation } from 'react-i18next';
-
 import { debounce } from 'throttle-debounce';
-import { pagePathUtils } from '@growi/core';
-import { usePageRenameModal } from '~/stores/modal';
+
 import { toastError } from '~/client/util/apiNotification';
-
 import { apiv3Get, apiv3Put } from '~/client/util/apiv3-client';
-
-import ApiErrorMessageList from './PageManagement/ApiErrorMessageList';
-import DuplicatedPathsTable from './DuplicatedPathsTable';
-import { useSiteUrl } from '~/stores/context';
 import { isIPageInfoForEntity } from '~/interfaces/page';
+import { useSiteUrl, useIsSearchServiceReachable } from '~/stores/context';
+import { usePageRenameModal } from '~/stores/modal';
 import { useSWRxPageInfo } from '~/stores/page';
+
+import DuplicatedPathsTable from './DuplicatedPathsTable';
+import ApiErrorMessageList from './PageManagement/ApiErrorMessageList';
+import PagePathAutoComplete from './PagePathAutoComplete';
 
 
 const isV5Compatible = (meta: unknown): boolean => {
@@ -33,6 +32,7 @@ const PageRenameModal = (): JSX.Element => {
   const { isUsersHomePage } = pagePathUtils;
   const { data: siteUrl } = useSiteUrl();
   const { data: renameModalData, close: closeRenameModal } = usePageRenameModal();
+  const { data: isReachable } = useIsSearchServiceReachable();
 
   const isOpened = renameModalData?.isOpened ?? false;
   const page = renameModalData?.page;
@@ -50,6 +50,7 @@ const PageRenameModal = (): JSX.Element => {
 
   const [subordinatedPages, setSubordinatedPages] = useState([]);
   const [existingPaths, setExistingPaths] = useState<string[]>([]);
+  const [canRename, setCanRename] = useState(false);
   const [isRenameRecursively, setIsRenameRecursively] = useState(true);
   const [isRenameRedirect, setIsRenameRedirect] = useState(false);
   const [isRemainMetadata, setIsRemainMetadata] = useState(false);
@@ -81,7 +82,7 @@ const PageRenameModal = (): JSX.Element => {
   }, [isOpened, page, updateSubordinatedList]);
 
   const rename = useCallback(async() => {
-    if (page == null) {
+    if (page == null || !canRename) {
       return;
     }
 
@@ -93,7 +94,7 @@ const PageRenameModal = (): JSX.Element => {
     try {
       const response = await apiv3Put('/pages/rename', {
         pageId: _id,
-        revisionId: revision,
+        revisionId: revision ?? null,
         isRecursively: !_isV5Compatible ? isRenameRecursively : undefined,
         isRenameRedirect,
         updateMetadata: !isRemainMetadata,
@@ -116,7 +117,7 @@ const PageRenameModal = (): JSX.Element => {
     catch (err) {
       setErrs(err);
     }
-  }, [closeRenameModal, isRemainMetadata, isRenameRecursively, isRenameRedirect, page, pageNameInput, renameModalData?.opts?.onRenamed]);
+  }, [closeRenameModal, canRename, isRemainMetadata, isRenameRecursively, isRenameRedirect, page, pageNameInput, renameModalData?.opts?.onRenamed]);
 
   const checkExistPaths = useCallback(async(fromPath, toPath) => {
     if (page == null) {
@@ -124,8 +125,11 @@ const PageRenameModal = (): JSX.Element => {
     }
 
     try {
-      const res = await apiv3Get<{ existPaths: string[] }>('/page/exist-paths', { fromPath, toPath });
+      const res = await apiv3Get<{ existPaths: string[]}>('/page/exist-paths', { fromPath, toPath });
       const { existPaths } = res.data;
+      if (existPaths.length === 0) {
+        setCanRename(true);
+      }
       setExistingPaths(existPaths);
     }
     catch (err) {
@@ -153,6 +157,15 @@ const PageRenameModal = (): JSX.Element => {
     }
   }, [pageNameInput, subordinatedPages, checkExistPathsDebounce, page, checkIsUsersHomePageDebounce]);
 
+  useEffect(() => {
+    setCanRename(false);
+  }, [pageNameInput]);
+
+
+  function ppacInputChangeHandler(value) {
+    setErrs(null);
+    setPageNameInput(value);
+  }
 
   /**
    * change pageNameInput
@@ -194,6 +207,9 @@ const PageRenameModal = (): JSX.Element => {
   if (isMatchedWithUserHomePagePath) {
     submitButtonDisabled = true;
   }
+  else if (!canRename) {
+    submitButtonDisabled = true;
+  }
   else if (isV5Compatible(page.meta)) {
     submitButtonDisabled = existingPaths.length !== 0; // v5 data
   }
@@ -219,14 +235,25 @@ const PageRenameModal = (): JSX.Element => {
               <span className="input-group-text">{siteUrl}</span>
             </div>
             <form className="flex-fill" onSubmit={(e) => { e.preventDefault(); rename() }}>
-              <input
-                type="text"
-                value={pageNameInput}
-                className="form-control"
-                onChange={e => inputChangeHandler(e.target.value)}
-                required
-                autoFocus
-              />
+              {isReachable
+                ? (
+                  <PagePathAutoComplete
+                    initializedPath={path}
+                    onSubmit={rename}
+                    onInputChange={ppacInputChangeHandler}
+                    autoFocus
+                  />
+                )
+                : (
+                  <input
+                    type="text"
+                    value={pageNameInput}
+                    className="form-control"
+                    onChange={e => inputChangeHandler(e.target.value)}
+                    required
+                    autoFocus
+                  />
+                )}
             </form>
           </div>
         </div>

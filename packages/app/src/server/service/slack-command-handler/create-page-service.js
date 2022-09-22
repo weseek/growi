@@ -11,7 +11,7 @@ class CreatePageService {
     this.crowi = crowi;
   }
 
-  async createPageInGrowi(interactionPayloadAccessor, path, contentsBody, respondUtil) {
+  async createPageInGrowi(interactionPayloadAccessor, path, contentsBody, respondUtil, userId) {
     const Page = this.crowi.model('Page');
     const reshapedContentsBody = reshapeContentsBody(contentsBody);
 
@@ -20,8 +20,8 @@ class CreatePageService {
     const normalizedPath = pathUtils.normalizePath(sanitizedPath);
 
     // generate a dummy id because Operation to create a page needs ObjectId
-    const dummyObjectIdOfUser = new mongoose.Types.ObjectId();
-    const page = await Page.create(normalizedPath, reshapedContentsBody, dummyObjectIdOfUser, {});
+    const dummyObjectIdOfUser = userId != null ? userId : new mongoose.Types.ObjectId();
+    const page = await this.crowi.pageService.create(normalizedPath, reshapedContentsBody, dummyObjectIdOfUser, {});
 
     // Send a message when page creation is complete
     const growiUri = this.crowi.appService.getSiteUrl();

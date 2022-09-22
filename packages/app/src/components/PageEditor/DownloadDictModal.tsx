@@ -1,19 +1,19 @@
-import React, { useState, FC } from 'react';
-import PropTypes from 'prop-types';
+import React, { useState } from 'react';
+
+import { useTranslation } from 'react-i18next';
 import {
   Modal, ModalHeader, ModalBody, ModalFooter,
 } from 'reactstrap';
-import { useTranslation } from 'react-i18next';
 
 type DownloadDictModalProps = {
   isModalOpen: boolean
-  onConfirmEnableTextlint?: (isSkipAskingAgainChecked: boolean) => void;
+  onEnableTextlint?: (isSkipAskingAgainChecked: boolean) => void;
   onCancel?: () => void;
 };
 
-export const DownloadDictModal: FC<DownloadDictModalProps> = (props) => {
+export const DownloadDictModal = (props: DownloadDictModalProps): JSX.Element => {
   const { t } = useTranslation('');
-  const [isSkipAskingAgainChecked, setIsSkipAskingAgainChecked] = useState(true);
+  const [isSkipAskingAgainChecked, setIsSkipAskingAgainChecked] = useState(false);
 
   const onCancel = () => {
     if (props.onCancel != null) {
@@ -22,8 +22,8 @@ export const DownloadDictModal: FC<DownloadDictModalProps> = (props) => {
   };
 
   const onConfirmEnableTextlint = () => {
-    if (props.onConfirmEnableTextlint != null) {
-      props.onConfirmEnableTextlint(isSkipAskingAgainChecked);
+    if (props.onEnableTextlint != null) {
+      props.onEnableTextlint(isSkipAskingAgainChecked);
     }
   };
 
@@ -66,10 +66,4 @@ export const DownloadDictModal: FC<DownloadDictModalProps> = (props) => {
       </ModalFooter>
     </Modal>
   );
-};
-
-DownloadDictModal.propTypes = {
-  isModalOpen: PropTypes.bool.isRequired,
-  onConfirmEnableTextlint: PropTypes.func,
-  onCancel: PropTypes.func,
 };

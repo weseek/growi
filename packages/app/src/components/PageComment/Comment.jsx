@@ -1,23 +1,24 @@
 import React from 'react';
-import PropTypes from 'prop-types';
-
-import { withTranslation } from 'react-i18next';
-import { format } from 'date-fns';
-
-import { UncontrolledTooltip } from 'reactstrap';
 
 import { UserPicture } from '@growi/ui';
+import { format } from 'date-fns';
+import PropTypes from 'prop-types';
+import { useTranslation } from 'react-i18next';
+import { UncontrolledTooltip } from 'reactstrap';
+
 import AppContainer from '~/client/services/AppContainer';
 import PageContainer from '~/client/services/PageContainer';
-
-import { withUnstatedContainers } from '../UnstatedUtils';
+import { useCurrentUser } from '~/stores/context';
 
 import FormattedDistanceDate from '../FormattedDistanceDate';
-import RevisionBody from '../Page/RevisionBody';
-import Username from '../User/Username';
-import CommentEditor from './CommentEditor';
-import CommentControl from './CommentControl';
 import HistoryIcon from '../Icons/HistoryIcon';
+import RevisionBody from '../Page/RevisionBody';
+import { withUnstatedContainers } from '../UnstatedUtils';
+import Username from '../User/Username';
+
+import CommentControl from './CommentControl';
+import CommentEditor from './CommentEditor';
+
 
 /**
  *
@@ -68,17 +69,19 @@ class Comment extends React.PureComponent {
       return;
     }
 
-    const { interceptorManager } = this.props.appContainer;
+    const { interceptorManager } = window;
 
     interceptorManager.process('postRenderCommentHtml', this.currentRenderingContext);
   }
 
   isCurrentUserEqualsToAuthor() {
-    const { creator } = this.props.comment;
-    if (creator == null) {
+    const { comment, currentUser } = this.props;
+    const { creator } = comment;
+
+    if (creator == null || currentUser == null) {
       return false;
     }
-    return creator.username === this.props.appContainer.currentUsername;
+    return creator.username === currentUser.username;
   }
 
   isCurrentRevision() {
@@ -130,7 +133,7 @@ class Comment extends React.PureComponent {
   async renderHtml() {
 
     const { growiRenderer, appContainer } = this.props;
-    const { interceptorManager } = appContainer;
+    const { interceptorManager } = window;
     const context = this.currentRenderingContext;
 
     await interceptorManager.process('preRenderComment', context);
@@ -147,8 +150,9 @@ class Comment extends React.PureComponent {
   }
 
   render() {
-    const { t } = this.props;
-    const comment = this.props.comment;
+    const {
+      t, comment, isReadOnly, onComment,
+    } = this.props;
     const commentId = comment._id;
     const creator = comment.creator;
     const isMarkdown = comment.isMarkdown;
@@ -167,7 +171,7 @@ class Comment extends React.PureComponent {
 
     return (
       <React.Fragment>
-        {this.state.isReEdit ? (
+        {(this.state.isReEdit && !isReadOnly) ? (
           <CommentEditor
             growiRenderer={this.props.growiRenderer}
             currentCommentId={commentId}
@@ -175,7 +179,10 @@ class Comment extends React.PureComponent {
             replyTo={undefined}
             commentCreator={creator?.username}
             onCancelButtonClicked={() => this.setState({ isReEdit: false })}
-            onCommentButtonClicked={() => this.setState({ isReEdit: false })}
+            onCommentButtonClicked={() => {
+              this.setState({ isReEdit: false });
+              if (onComment != null) onComment();
+            }}
           />
         ) : (
           <div id={commentId} className={rootClassName}>
@@ -206,7 +213,7 @@ class Comment extends React.PureComponent {
                   </UncontrolledTooltip>
                 </span>
               </div>
-              {this.isCurrentUserEqualsToAuthor() && (
+              {(this.isCurrentUserEqualsToAuthor() && !isReadOnly) && (
                 <CommentControl
                   onClickDeleteBtn={this.deleteBtnClickedHandler}
                   onClickEditBtn={() => this.setState({ isReEdit: true })}
@@ -222,19 +229,30 @@ class Comment extends React.PureComponent {
 
 }
 
-/**
- * Wrapper component for using unstated
- */
-const CommentWrapper = withUnstatedContainers(Comment, [AppContainer, PageContainer]);
-
 Comment.propTypes = {
   t: PropTypes.func.isRequired, // i18next
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
   pageContainer: PropTypes.instanceOf(PageContainer).isRequired,
 
   comment: PropTypes.object.isRequired,
+  isReadOnly: PropTypes.bool.isRequired,
   growiRenderer: PropTypes.object.isRequired,
   deleteBtnClicked: PropTypes.func.isRequired,
+  currentUser: PropTypes.object,
+  onComment: PropTypes.func,
 };
 
-export default withTranslation()(CommentWrapper);
+const CommentWrapperFC = (props) => {
+  const { t } = useTranslation();
+
+  const { data: currentUser } = useCurrentUser();
+
+  return <Comment t={t} currentUser={currentUser} {...props} />;
+};
+
+/**
+ * Wrapper component for using unstated
+ */
+const CommentWrapper = withUnstatedContainers(CommentWrapperFC, [AppContainer, PageContainer]);
+
+export default CommentWrapper;

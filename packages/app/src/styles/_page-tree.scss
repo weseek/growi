@@ -21,7 +21,7 @@ $grw-pagetree-item-padding-left: 10px;
         display: block;
       }
 
-      .grw-pagetree-count {
+      .grw-count-badge {
         display: none;
       }
     }
@@ -47,12 +47,6 @@ $grw-pagetree-item-padding-left: 10px;
 
       &:hover {
         display: none;
-      }
-
-      .grw-pagetree-count {
-        width: auto;
-        padding: 0.1rem 0;
-        font-size: 12px;
       }
     }
   }

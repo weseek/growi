@@ -1,23 +1,26 @@
 
 import React, { Fragment } from 'react';
+
 import PropTypes from 'prop-types';
 
-import loggerFactory from '~/utils/logger';
 import AdminCustomizeContainer from '~/client/services/AdminCustomizeContainer';
 import AppContainer from '~/client/services/AppContainer';
-
-import { withUnstatedContainers } from '../../UnstatedUtils';
 import { toastError } from '~/client/util/apiNotification';
 import { toArrayIfNot } from '~/utils/array-utils';
-import { withLoadingSppiner } from '../../SuspenseUtils';
+import loggerFactory from '~/utils/logger';
 
-import CustomizeLayoutSetting from './CustomizeLayoutSetting';
-import CustomizeThemeSetting from './CustomizeThemeSetting';
-import CustomizeFunctionSetting from './CustomizeFunctionSetting';
-import CustomizeHighlightSetting from './CustomizeHighlightSetting';
+import { withLoadingSppiner } from '../../SuspenseUtils';
+import { withUnstatedContainers } from '../../UnstatedUtils';
+
 import CustomizeCssSetting from './CustomizeCssSetting';
-import CustomizeScriptSetting from './CustomizeScriptSetting';
+import CustomizeFunctionSetting from './CustomizeFunctionSetting';
 import CustomizeHeaderSetting from './CustomizeHeaderSetting';
+import CustomizeHighlightSetting from './CustomizeHighlightSetting';
+import CustomizeLayoutSetting from './CustomizeLayoutSetting';
+import CustomizeLogoSetting from './CustomizeLogoSetting';
+import CustomizeScriptSetting from './CustomizeScriptSetting';
+import CustomizeSidebarSetting from './CustomizeSidebarSetting';
+import CustomizeThemeSetting from './CustomizeThemeSetting';
 import CustomizeTitle from './CustomizeTitle';
 
 const logger = loggerFactory('growi:services:AdminCustomizePage');
@@ -54,6 +57,9 @@ function Customize(props) {
         <CustomizeThemeSetting />
       </div>
       <div className="mb-5">
+        <CustomizeSidebarSetting />
+      </div>
+      <div className="mb-5">
         <CustomizeFunctionSetting />
       </div>
       <div className="mb-5">
@@ -70,6 +76,9 @@ function Customize(props) {
       </div>
       <div className="mb-5">
         <CustomizeScriptSetting />
+      </div>
+      <div className="mb-5">
+        <CustomizeLogoSetting />
       </div>
     </div>
   );

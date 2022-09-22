@@ -1,3 +1,7 @@
+/*
+ * !! TODO: https://redmine.weseek.co.jp/issues/92050 Fix & adjust test !!
+ */
+
 import mongoose from 'mongoose';
 
 import SearchService from '~/server/service/search';
@@ -68,20 +72,32 @@ describe('SearchService test', () => {
   describe('parseSearchQuery()', () => {
 
     test('should return result with delegatorName', async() => {
-      const queryString = '[nq:named_query1]';
-      const parsedQuery = await searchService.parseSearchQuery(queryString);
+      const queryString = '/';
+      const nqName = 'named_query1';
+      const parsedQuery = await searchService.parseSearchQuery(queryString, nqName);
 
       const expected = {
         queryString,
         delegatorName: PRIVATE_LEGACY_PAGES,
+        terms: {
+          match: ['/'],
+          not_match: [],
+          phrase: [],
+          not_phrase: [],
+          prefix: [],
+          not_prefix: [],
+          tag: [],
+          not_tag: [],
+        },
       };
 
       expect(parsedQuery).toStrictEqual(expected);
     });
 
     test('should return result with expanded aliasOf value', async() => {
-      const queryString = '[nq:named_query2]';
-      const parsedQuery = await searchService.parseSearchQuery(queryString);
+      const queryString = '/';
+      const nqName = 'named_query2';
+      const parsedQuery = await searchService.parseSearchQuery(queryString, nqName);
       const expected = {
         queryString: dummyAliasOf,
         terms: {
@@ -125,17 +141,30 @@ describe('SearchService test', () => {
     });
 
     test('should resolve as custom search delegator', async() => {
-      const queryString = '[nq:named_query1]';
+      const queryString = '/';
       const parsedQuery = {
         queryString,
         delegatorName: PRIVATE_LEGACY_PAGES,
+        terms: {
+          match: ['/'],
+          not_match: [],
+          phrase: [],
+          not_phrase: [],
+          prefix: [],
+          not_prefix: [],
+          tag: [],
+          not_tag: [],
+        },
       };
 
       const [delegator, data] = await searchService.resolve(parsedQuery);
 
-      const expectedData = null;
+      const expectedData = {
+        queryString: '/',
+        terms: parsedQuery.terms,
+      };
 
-      expect(data).toBe(expectedData);
+      expect(data).toStrictEqual(expectedData);
       expect(typeof delegator.search).toBe('function');
     });
   });
@@ -186,9 +215,10 @@ describe('SearchService test', () => {
         },
       ]);
 
-      const queryString = '[nq:named_query1]';
+      const queryString = '/';
+      const nqName = 'named_query1';
 
-      const [result, delegatorName] = await searchService.searchKeyword(queryString, testUser1, null, { offset: 0, limit: 100 });
+      const [result, delegatorName] = await searchService.searchKeyword(queryString, nqName, testUser1, null, { offset: 0, limit: 100 });
 
       const resultPaths = result.data.map(page => page.path);
       const flag = resultPaths.includes('/user1') && resultPaths.includes('/user1_owner') && resultPaths.includes('/user2_public');

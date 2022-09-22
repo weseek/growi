@@ -1,9 +1,13 @@
 import React from 'react';
-import { useTranslation } from 'react-i18next';
+
 import PropTypes from 'prop-types';
-import { toastSuccess, toastError } from '~/client/util/apiNotification';
-import AppContainer from '~/client/services/AppContainer';
+import { useTranslation } from 'react-i18next';
+
 import AdminUsersContainer from '~/client/services/AdminUsersContainer';
+import AppContainer from '~/client/services/AppContainer';
+import { toastSuccess, toastError } from '~/client/util/apiNotification';
+import { apiv3Put } from '~/client/util/apiv3-client';
+
 import { withUnstatedContainers } from '../../UnstatedUtils';
 
 const SendInvitationEmailButton = (props) => {
@@ -16,7 +20,7 @@ const SendInvitationEmailButton = (props) => {
 
   const onClickSendInvitationEmailButton = async() => {
     try {
-      const res = await appContainer.apiv3Put('users/send-invitation-email', { id: user._id });
+      const res = await apiv3Put('/users/send-invitation-email', { id: user._id });
       const { failedToSendEmail } = res.data;
       if (failedToSendEmail == null) {
         const msg = `Email has been sent<br>・${user.email}`;

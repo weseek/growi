@@ -1,36 +1,37 @@
 import React from 'react';
-import PropTypes from 'prop-types';
-
-import urljoin from 'url-join';
-import * as codemirror from 'codemirror';
-import { Button } from 'reactstrap';
-
-import { JSHINT } from 'jshint';
-
-import * as loadScript from 'simple-load-script';
-import * as loadCssSync from 'load-css-file';
 
 import { createValidator } from '@growi/codemirror-textlint';
-import { UncontrolledCodeMirror } from '../UncontrolledCodeMirror';
+import * as codemirror from 'codemirror';
+import { JSHINT } from 'jshint';
+import * as loadCssSync from 'load-css-file';
+import PropTypes from 'prop-types';
+import { Button } from 'reactstrap';
+import * as loadScript from 'simple-load-script';
+import urljoin from 'url-join';
+
 import InterceptorManager from '~/services/interceptor-manager';
 import loggerFactory from '~/utils/logger';
 
-import AbstractEditor from './AbstractEditor';
-import SimpleCheatsheet from './SimpleCheatsheet';
+import { UncontrolledCodeMirror } from '../UncontrolledCodeMirror';
 
-import pasteHelper from './PasteHelper';
-import EmojiAutoCompleteHelper from './EmojiAutoCompleteHelper';
-import PreventMarkdownListInterceptor from './PreventMarkdownListInterceptor';
-import MarkdownTableInterceptor from './MarkdownTableInterceptor';
-import mlu from './MarkdownLinkUtil';
-import mtu from './MarkdownTableUtil';
-import mdu from './MarkdownDrawioUtil';
-import geu from './GridEditorUtil';
-import GridEditModal from './GridEditModal';
-import LinkEditModal from './LinkEditModal';
-import HandsontableModal from './HandsontableModal';
-import EditorIcon from './EditorIcon';
+import AbstractEditor from './AbstractEditor';
+import CommentMentionHelper from './CommentMentionHelper';
 import DrawioModal from './DrawioModal';
+import EditorIcon from './EditorIcon';
+import EmojiPicker from './EmojiPicker';
+import EmojiPickerHelper from './EmojiPickerHelper';
+import GridEditModal from './GridEditModal';
+import geu from './GridEditorUtil';
+import HandsontableModal from './HandsontableModal';
+import LinkEditModal from './LinkEditModal';
+import mdu from './MarkdownDrawioUtil';
+import markdownLinkUtil from './MarkdownLinkUtil';
+import markdownListUtil from './MarkdownListUtil';
+import MarkdownTableInterceptor from './MarkdownTableInterceptor';
+import mtu from './MarkdownTableUtil';
+import pasteHelper from './PasteHelper';
+import PreventMarkdownListInterceptor from './PreventMarkdownListInterceptor';
+import SimpleCheatsheet from './SimpleCheatsheet';
 
 // Textlint
 window.JSHINT = JSHINT;
@@ -100,7 +101,7 @@ require('codemirror/mode/yaml/yaml');
 const MARKDOWN_TABLE_ACTIVATED_CLASS = 'markdown-table-activated';
 const MARKDOWN_LINK_ACTIVATED_CLASS = 'markdown-link-activated';
 
-export default class CodeMirrorEditor extends AbstractEditor {
+class CodeMirrorEditor extends AbstractEditor {
 
   constructor(props) {
     super(props);
@@ -109,11 +110,12 @@ export default class CodeMirrorEditor extends AbstractEditor {
     this.state = {
       value: this.props.value,
       isGfmMode: this.props.isGfmMode,
-      isEnabledEmojiAutoComplete: false,
       isLoadingKeymap: false,
       isSimpleCheatsheetShown: this.props.isGfmMode && this.props.value.length === 0,
       isCheatsheetModalShown: false,
       additionalClassSet: new Set(),
+      isEmojiPickerShown: false,
+      emojiSearchText: null,
     };
 
     this.gridEditModal = React.createRef();
@@ -138,6 +140,7 @@ export default class CodeMirrorEditor extends AbstractEditor {
     this.pasteHandler = this.pasteHandler.bind(this);
     this.cursorHandler = this.cursorHandler.bind(this);
     this.changeHandler = this.changeHandler.bind(this);
+    this.keyUpHandler = this.keyUpHandler.bind(this);
 
     this.updateCheatsheetStates = this.updateCheatsheetStates.bind(this);
 
@@ -152,6 +155,8 @@ export default class CodeMirrorEditor extends AbstractEditor {
 
     this.foldDrawioSection = this.foldDrawioSection.bind(this);
     this.onSaveForDrawio = this.onSaveForDrawio.bind(this);
+    this.checkWhetherEmojiPickerShouldBeShown = this.checkWhetherEmojiPickerShouldBeShown.bind(this);
+
   }
 
   init() {
@@ -168,52 +173,59 @@ export default class CodeMirrorEditor extends AbstractEditor {
     this.loadedKeymapSet = new Set();
   }
 
-  componentWillMount() {
-    if (this.props.emojiStrategy != null) {
-      this.emojiAutoCompleteHelper = new EmojiAutoCompleteHelper(this.props.emojiStrategy);
-      this.setState({ isEnabledEmojiAutoComplete: true });
-    }
-
-    this.initializeTextlint();
-  }
-
   componentDidMount() {
     // ensure to be able to resolve 'this' to use 'codemirror.commands.save'
     this.getCodeMirror().codeMirrorEditor = this;
 
-    // load theme
-    const theme = this.props.editorOptions.theme;
-    this.loadTheme(theme);
-
-    // set keymap
-    const keymapMode = this.props.editorOptions.keymapMode;
-    this.setKeymapMode(keymapMode);
-
     // fold drawio section
     this.foldDrawioSection();
+
+    // initialize commentMentionHelper if comment editor is opened
+    if (this.props.isComment) {
+      this.commentMentionHelper = new CommentMentionHelper(this.getCodeMirror());
+    }
+    this.emojiPickerHelper = new EmojiPickerHelper(this.getCodeMirror());
+
   }
 
   componentWillReceiveProps(nextProps) {
-    // load theme
-    const theme = nextProps.editorOptions.theme;
-    this.loadTheme(theme);
+    this.initializeEditorSettings(nextProps.editorSettings);
 
-    // set keymap
-    const keymapMode = nextProps.editorOptions.keymapMode;
-    this.setKeymapMode(keymapMode);
+    this.initializeTextlint(nextProps.isTextlintEnabled, nextProps.editorSettings);
 
     // fold drawio section
     this.foldDrawioSection();
   }
 
-  async initializeTextlint() {
-    if (this.props.onInitializeTextlint != null) {
-      await this.props.onInitializeTextlint();
-      // If database has empty array, pass null instead to enable all default rules
-      const rulesForValidator = this.props.textlintRules?.length !== 0 ? this.props.textlintRules : null;
-      this.textlintValidator = createValidator(rulesForValidator);
-      this.codemirrorLintConfig = { getAnnotations: this.textlintValidator, async: true };
+  initializeEditorSettings(editorSettings) {
+    if (editorSettings == null) {
+      return;
     }
+
+    // load theme
+    const theme = editorSettings.theme;
+    if (theme != null) {
+      this.loadTheme(theme);
+    }
+
+    // set keymap
+    const keymapMode = editorSettings.keymapMode;
+    if (keymapMode != null) {
+      this.setKeymapMode(keymapMode);
+    }
+  }
+
+  async initializeTextlint(isTextlintEnabled, editorSettings) {
+    if (!isTextlintEnabled || editorSettings == null) {
+      return;
+    }
+
+    const textlintRules = editorSettings.textlintSettings?.textlintRules;
+
+    // If database has empty array, pass null instead to enable all default rules
+    const rulesForValidator = (textlintRules == null || textlintRules.length === 0) ? null : textlintRules;
+    this.textlintValidator = createValidator(rulesForValidator);
+    this.codemirrorLintConfig = { getAnnotations: this.textlintValidator, async: true };
   }
 
   getCodeMirror() {
@@ -251,7 +263,6 @@ export default class CodeMirrorEditor extends AbstractEditor {
     // update state
     this.setState({
       isGfmMode: bool,
-      isEnabledEmojiAutoComplete: bool,
     });
 
     this.updateCheatsheetStates(bool, null);
@@ -504,14 +515,14 @@ export default class CodeMirrorEditor extends AbstractEditor {
     const context = {
       handlers: [], // list of handlers which process enter key
       editor: this,
-      editorOptions: this.props.editorOptions,
+      autoFormatMarkdownTable: this.props.editorSettings.autoFormatMarkdownTable,
     };
 
     const interceptorManager = this.interceptorManager;
     interceptorManager.process('preHandleEnter', context)
       .then(() => {
         if (context.handlers.length === 0) {
-          codemirror.commands.newlineAndIndentContinueMarkdownList(this.getCodeMirror());
+          markdownListUtil.newlineAndIndentContinueMarkdownList(this);
         }
       });
   }
@@ -538,7 +549,7 @@ export default class CodeMirrorEditor extends AbstractEditor {
     const hasLinkClass = additionalClassSet.has(MARKDOWN_LINK_ACTIVATED_CLASS);
 
     const isInTable = mtu.isInTable(editor);
-    const isInLink = mlu.isInLink(editor);
+    const isInLink = markdownLinkUtil.isInLink(editor);
 
     if (!hasCustomClass && isInTable) {
       additionalClassSet.add(MARKDOWN_TABLE_ACTIVATED_CLASS);
@@ -568,9 +579,16 @@ export default class CodeMirrorEditor extends AbstractEditor {
 
     this.updateCheatsheetStates(null, value);
 
-    // Emoji AutoComplete
-    if (this.state.isEnabledEmojiAutoComplete) {
-      this.emojiAutoCompleteHelper.showHint(editor);
+    // Show username hint on comment editor
+    if (this.props.isComment) {
+      this.commentMentionHelper.showUsernameHint();
+    }
+
+  }
+
+  keyUpHandler(editor, event) {
+    if (event.key !== 'Backspace') {
+      this.checkWhetherEmojiPickerShouldBeShown();
     }
   }
 
@@ -593,6 +611,26 @@ export default class CodeMirrorEditor extends AbstractEditor {
       pasteHelper.pasteText(this, event);
     }
 
+  }
+
+  /**
+   * Show emoji picker component when emoji pattern (`:` + searchWord ) found
+   * eg `:a`, `:ap`
+   */
+  checkWhetherEmojiPickerShouldBeShown() {
+    const searchWord = this.emojiPickerHelper.getEmoji();
+
+    if (searchWord == null) {
+      this.setState({ isEmojiPickerShown: false });
+      this.setState({ emojiSearchText: null });
+    }
+    else {
+      this.setState({ emojiSearchText: searchWord });
+      // Show emoji picker after user stop typing
+      setTimeout(() => {
+        this.setState({ isEmojiPickerShown: true });
+      }, 700);
+    }
   }
 
   /**
@@ -667,6 +705,24 @@ export default class CodeMirrorEditor extends AbstractEditor {
     );
   }
 
+  renderEmojiPicker() {
+    const { emojiSearchText } = this.state;
+    return this.state.isEmojiPickerShown
+      ? (
+        <div className="text-left">
+          <div className="mb-2 d-none d-md-block">
+            <EmojiPicker
+              onClose={() => this.setState({ isEmojiPickerShown: false, emojiSearchText: null })}
+              emojiSearchText={emojiSearchText}
+              emojiPickerHelper={this.emojiPickerHelper}
+              isOpen={this.state.isEmojiPickerShown}
+            />
+          </div>
+        </div>
+      )
+      : '';
+  }
+
   /**
    * return a function to replace a selected range with prefix + selection + suffix
    *
@@ -739,7 +795,7 @@ export default class CodeMirrorEditor extends AbstractEditor {
   }
 
   showLinkEditHandler() {
-    this.linkEditModal.current.show(mlu.getMarkdownLink(this.getCodeMirror()));
+    this.linkEditModal.current.show(markdownLinkUtil.getMarkdownLink(this.getCodeMirror()));
   }
 
   showHandsonTableHandler() {
@@ -749,6 +805,7 @@ export default class CodeMirrorEditor extends AbstractEditor {
   showDrawioHandler() {
     this.drawioModal.current.show(mdu.getMarkdownDrawioMxfile(this.getCodeMirror()));
   }
+
 
   // fold draw.io section (::: drawio ~ :::)
   foldDrawioSection() {
@@ -765,6 +822,7 @@ export default class CodeMirrorEditor extends AbstractEditor {
     this.foldDrawioSection();
     return range;
   }
+
 
   getNavbarItems() {
     return [
@@ -903,11 +961,23 @@ export default class CodeMirrorEditor extends AbstractEditor {
       >
         <EditorIcon icon="Drawio" />
       </Button>,
+      <Button
+        key="nav-item-emoji"
+        color={null}
+        bssize="small"
+        title="Emoji"
+        onClick={() => this.setState({ isEmojiPickerShown: true })}
+      >
+        <EditorIcon icon="Emoji" />
+      </Button>,
     ];
   }
 
+
   render() {
-    const lint = this.props.isTextlintEnabled ? this.codemirrorLintConfig : false;
+    const { isTextlintEnabled } = this.props;
+
+    const lint = isTextlintEnabled ? this.codemirrorLintConfig : false;
     const additionalClasses = Array.from(this.state.additionalClassSet).join(' ');
     const placeholder = this.state.isGfmMode ? 'Input with Markdown..' : 'Input with Plain Text..';
 
@@ -915,7 +985,7 @@ export default class CodeMirrorEditor extends AbstractEditor {
     if (this.props.lineNumbers != null) {
       gutters.push('CodeMirror-linenumbers', 'CodeMirror-foldgutter');
     }
-    if (this.props.isTextlintEnabled === true) {
+    if (isTextlintEnabled) {
       gutters.push('CodeMirror-lint-markers');
     }
 
@@ -934,12 +1004,15 @@ export default class CodeMirrorEditor extends AbstractEditor {
           value={this.state.value}
           options={{
             indentUnit: this.props.indentSize,
+            theme: this.props.editorSettings.theme ?? 'elegant',
+            styleActiveLine: this.props.editorSettings.styleActiveLine,
             lineWrapping: true,
             scrollPastEnd: true,
             autoRefresh: { force: true }, // force option is enabled by autorefresh.ext.js -- Yuki Takei
             autoCloseTags: true,
             placeholder,
             matchBrackets: true,
+            emoji: true,
             matchTags: { bothTags: true },
             // folding
             foldGutter: this.props.lineNumbers,
@@ -972,11 +1045,13 @@ export default class CodeMirrorEditor extends AbstractEditor {
               this.props.onDragEnter(event);
             }
           }}
+          onKeyUp={this.keyUpHandler}
         />
 
         { this.renderLoadingKeymapOverlay() }
 
         { this.renderCheatsheetOverlay() }
+        { this.renderEmojiPicker() }
 
         <GridEditModal
           ref={this.gridEditModal}
@@ -984,12 +1059,12 @@ export default class CodeMirrorEditor extends AbstractEditor {
         />
         <LinkEditModal
           ref={this.linkEditModal}
-          onSave={(linkText) => { return mlu.replaceFocusedMarkdownLinkWithEditor(this.getCodeMirror(), linkText) }}
+          onSave={(linkText) => { return markdownLinkUtil.replaceFocusedMarkdownLinkWithEditor(this.getCodeMirror(), linkText) }}
         />
         <HandsontableModal
           ref={this.handsontableModal}
           onSave={(table) => { return mtu.replaceFocusedMarkdownTableWithEditor(this.getCodeMirror(), table) }}
-          ignoreAutoFormatting={this.props.editorOptions.ignoreMarkdownTableAutoFormatting}
+          autoFormatMarkdownTable={this.props.editorSettings.autoFormatMarkdownTable}
         />
         <DrawioModal
           ref={this.drawioModal}
@@ -1003,17 +1078,15 @@ export default class CodeMirrorEditor extends AbstractEditor {
 }
 
 CodeMirrorEditor.propTypes = Object.assign({
-  editorOptions: PropTypes.object.isRequired,
   isTextlintEnabled: PropTypes.bool,
-  textlintRules: PropTypes.array,
-  emojiStrategy: PropTypes.object,
   lineNumbers: PropTypes.bool,
+  editorSettings: PropTypes.object.isRequired,
   onMarkdownHelpButtonClicked: PropTypes.func,
   onAddAttachmentButtonClicked: PropTypes.func,
-  onInitializeTextlint: PropTypes.func,
 }, AbstractEditor.propTypes);
 
 CodeMirrorEditor.defaultProps = {
   lineNumbers: true,
-  isTextlintEnabled: false,
 };
+
+export default CodeMirrorEditor;

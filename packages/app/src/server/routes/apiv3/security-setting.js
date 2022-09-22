@@ -1,9 +1,12 @@
+import { SupportedAction } from '~/interfaces/activity';
+import { PageDeleteConfigValue } from '~/interfaces/page-delete-config';
 import loggerFactory from '~/utils/logger';
 import { removeNullPropertyFromObject } from '~/utils/object-utils';
-
-import { PageDeleteConfigValue } from '~/interfaces/page-delete-config';
-import { apiV3FormValidator } from '../../middlewares/apiv3-form-validator';
 import { validateDeleteConfigs, prepareDeleteConfigValuesForCalc } from '~/utils/page-delete-config';
+
+import { generateAddActivityMiddleware } from '../../middlewares/add-activity';
+import { apiV3FormValidator } from '../../middlewares/apiv3-form-validator';
+
 
 const logger = loggerFactory('growi:routes:apiv3:security-setting');
 
@@ -12,6 +15,7 @@ const express = require('express');
 const router = express.Router();
 
 const { body } = require('express-validator');
+
 const ErrorV3 = require('../../models/vo/error-apiv3');
 
 const validator = {
@@ -334,6 +338,9 @@ module.exports = (crowi) => {
   const loginRequiredStrictly = require('../../middlewares/login-required')(crowi);
   const adminRequired = require('../../middlewares/admin-required')(crowi);
   const csrf = require('../../middlewares/csrf')(crowi);
+  const addActivity = generateAddActivityMiddleware(crowi);
+
+  const activityEvent = crowi.event('activity');
 
   async function updateAndReloadStrategySettings(authId, params) {
     const { configManager, passportService } = crowi;
@@ -367,7 +374,7 @@ module.exports = (crowi) => {
 
     const securityParams = {
       generalSetting: {
-        restrictGuestMode: await crowi.configManager.getConfig('crowi', 'security:restrictGuestMode'),
+        restrictGuestMode: crowi.aclService.getGuestModeValue(),
         pageDeletionAuthority: await crowi.configManager.getConfig('crowi', 'security:pageDeletionAuthority'),
         pageCompleteDeletionAuthority: await crowi.configManager.getConfig('crowi', 'security:pageCompleteDeletionAuthority'),
         pageRecursiveDeletionAuthority: await crowi.configManager.getConfig('crowi', 'security:pageRecursiveDeletionAuthority'),
@@ -461,7 +468,7 @@ module.exports = (crowi) => {
       googleOAuth: {
         googleClientId: await crowi.configManager.getConfig('crowi', 'security:passport-google:clientId'),
         googleClientSecret: await crowi.configManager.getConfig('crowi', 'security:passport-google:clientSecret'),
-        isSameUsernameTreatedAsIdenticalUser: await crowi.configManager.getConfig('crowi', 'security:passport-google:isSameUsernameTreatedAsIdenticalUser'),
+        isSameEmailTreatedAsIdenticalUser: await crowi.configManager.getConfig('crowi', 'security:passport-google:isSameEmailTreatedAsIdenticalUser'),
       },
       githubOAuth: {
         githubClientId: await crowi.configManager.getConfig('crowi', 'security:passport-github:clientId'),
@@ -504,10 +511,13 @@ module.exports = (crowi) => {
    *                  type: object
    *                  description: updated param
    */
-  router.put('/authentication/enabled', loginRequiredStrictly, adminRequired, csrf, validator.authenticationSetting, apiV3FormValidator, async(req, res) => {
+  // eslint-disable-next-line max-len
+  router.put('/authentication/enabled', loginRequiredStrictly, adminRequired, csrf, addActivity, validator.authenticationSetting, apiV3FormValidator, async(req, res) => {
     const { isEnabled, authId } = req.body;
 
     let setupStrategies = await crowi.passportService.getSetupStrategies();
+
+    const parameters = {};
 
     // Reflect request param
     setupStrategies = setupStrategies.filter(strategy => strategy !== authId);
@@ -524,7 +534,65 @@ module.exports = (crowi) => {
       const responseParams = {
         [`security:passport-${authId}:isEnabled`]: await crowi.configManager.getConfig('crowi', `security:passport-${authId}:isEnabled`),
       };
-
+      switch (authId) {
+        case 'local':
+          if (isEnabled) {
+            parameters.action = SupportedAction.ACTION_ADMIN_AUTH_ID_PASS_ENABLED;
+            break;
+          }
+          parameters.action = SupportedAction.ACTION_ADMIN_AUTH_ID_PASS_DISABLED;
+          break;
+        case 'ldap':
+          if (isEnabled) {
+            parameters.action = SupportedAction.ACTION_ADMIN_AUTH_LDAP_ENABLED;
+            break;
+          }
+          parameters.action = SupportedAction.ACTION_ADMIN_AUTH_LDAP_DISABLED;
+          break;
+        case 'saml':
+          if (isEnabled) {
+            parameters.action = SupportedAction.ACTION_ADMIN_AUTH_SAML_ENABLED;
+            break;
+          }
+          parameters.action = SupportedAction.ACTION_ADMIN_AUTH_SAML_DISABLED;
+          break;
+        case 'oidc':
+          if (isEnabled) {
+            parameters.action = SupportedAction.ACTION_ADMIN_AUTH_OIDC_ENABLED;
+            break;
+          }
+          parameters.action = SupportedAction.ACTION_ADMIN_AUTH_OIDC_DISABLED;
+          break;
+        case 'basic':
+          if (isEnabled) {
+            parameters.action = SupportedAction.ACTION_ADMIN_AUTH_BASIC_ENABLED;
+            break;
+          }
+          parameters.action = SupportedAction.ACTION_ADMIN_AUTH_BASIC_DISABLED;
+          break;
+        case 'google':
+          if (isEnabled) {
+            parameters.action = SupportedAction.ACTION_ADMIN_AUTH_GOOGLE_ENABLED;
+            break;
+          }
+          parameters.action = SupportedAction.ACTION_ADMIN_AUTH_GOOGLE_DISABLED;
+          break;
+        case 'github':
+          if (isEnabled) {
+            parameters.action = SupportedAction.ACTION_ADMIN_AUTH_GITHUB_ENABLED;
+            break;
+          }
+          parameters.action = SupportedAction.ACTION_ADMIN_AUTH_GITHUB_DISABLED;
+          break;
+        case 'twitter':
+          if (isEnabled) {
+            parameters.action = SupportedAction.ACTION_ADMIN_AUTH_TWITTER_ENABLED;
+            break;
+          }
+          parameters.action = SupportedAction.ACTION_ADMIN_AUTH_TWITTER_DISABLED;
+          break;
+      }
+      activityEvent.emit('update', res.locals.activity._id, parameters);
       return res.apiv3({ responseParams });
     }
     catch (err) {
@@ -585,7 +653,7 @@ module.exports = (crowi) => {
    *                schema:
    *                  $ref: '#/components/schemas/GeneralSetting'
    */
-  router.put('/general-setting', loginRequiredStrictly, adminRequired, csrf, validator.generalSetting, apiV3FormValidator, async(req, res) => {
+  router.put('/general-setting', loginRequiredStrictly, adminRequired, csrf, addActivity, validator.generalSetting, apiV3FormValidator, async(req, res) => {
     const updateData = {
       'security:sessionMaxAge': parseInt(req.body.sessionMaxAge),
       'security:restrictGuestMode': req.body.restrictGuestMode,
@@ -625,6 +693,9 @@ module.exports = (crowi) => {
         hideRestrictedByGroup: await crowi.configManager.getConfig('crowi', 'security:list-policy:hideRestrictedByGroup'),
       };
 
+      const parameters = { action: SupportedAction.ACTION_ADMIN_SECURITY_SETTINGS_UPDATE };
+      activityEvent.emit('update', res.locals.activity._id, parameters);
+
       return res.apiv3({ securitySettingParams });
     }
     catch (err) {
@@ -655,7 +726,7 @@ module.exports = (crowi) => {
    *                schema:
    *                  $ref: '#/components/schemas/ShareLinkSetting'
    */
-  router.put('/share-link-setting', loginRequiredStrictly, adminRequired, csrf, validator.generalSetting, apiV3FormValidator, async(req, res) => {
+  router.put('/share-link-setting', loginRequiredStrictly, adminRequired, csrf, addActivity, validator.generalSetting, apiV3FormValidator, async(req, res) => {
     const updateData = {
       'security:disableLinkSharing': req.body.disableLinkSharing,
     };
@@ -664,7 +735,9 @@ module.exports = (crowi) => {
       const securitySettingParams = {
         disableLinkSharing: crowi.configManager.getConfig('crowi', 'security:disableLinkSharing'),
       };
-
+      // eslint-disable-next-line max-len
+      const parameters = { action: updateData['security:disableLinkSharing'] ? SupportedAction.ACTION_ADMIN_REJECT_SHARE_LINK : SupportedAction.ACTION_ADMIN_PERMIT_SHARE_LINK };
+      activityEvent.emit('update', res.locals.activity._id, parameters);
       return res.apiv3({ securitySettingParams });
     }
     catch (err) {
@@ -766,7 +839,7 @@ module.exports = (crowi) => {
    *                schema:
    *                  $ref: '#/components/schemas/LocalSetting'
    */
-  router.put('/local-setting', loginRequiredStrictly, adminRequired, csrf, validator.localSetting, apiV3FormValidator, async(req, res) => {
+  router.put('/local-setting', loginRequiredStrictly, adminRequired, csrf, addActivity, validator.localSetting, apiV3FormValidator, async(req, res) => {
     const requestParams = {
       'security:registrationMode': req.body.registrationMode,
       'security:registrationWhiteList': req.body.registrationWhiteList,
@@ -782,6 +855,8 @@ module.exports = (crowi) => {
         isPasswordResetEnabled: await crowi.configManager.getConfig('crowi', 'security:passport-local:isPasswordResetEnabled'),
         isEmailAuthenticationEnabled: await crowi.configManager.getConfig('crowi', 'security:passport-local:isEmailAuthenticationEnabled'),
       };
+      const parameters = { action: SupportedAction.ACTION_ADMIN_AUTH_ID_PASS_UPDATE };
+      activityEvent.emit('update', res.locals.activity._id, parameters);
       return res.apiv3({ localSettingParams });
     }
     catch (err) {
@@ -812,7 +887,7 @@ module.exports = (crowi) => {
    *                schema:
    *                  $ref: '#/components/schemas/LdapAuthSetting'
    */
-  router.put('/ldap', loginRequiredStrictly, adminRequired, csrf, validator.ldapAuth, apiV3FormValidator, async(req, res) => {
+  router.put('/ldap', loginRequiredStrictly, adminRequired, csrf, addActivity, validator.ldapAuth, apiV3FormValidator, async(req, res) => {
     const requestParams = {
       'security:passport-ldap:serverUrl': req.body.serverUrl,
       'security:passport-ldap:isUserBind': req.body.isUserBind,
@@ -845,6 +920,8 @@ module.exports = (crowi) => {
         ldapGroupSearchFilter: await crowi.configManager.getConfig('crowi', 'security:passport-ldap:groupSearchFilter'),
         ldapGroupDnProperty: await crowi.configManager.getConfig('crowi', 'security:passport-ldap:groupDnProperty'),
       };
+      const parameters = { action: SupportedAction.ACTION_ADMIN_AUTH_LDAP_UPDATE };
+      activityEvent.emit('update', res.locals.activity._id, parameters);
       return res.apiv3({ securitySettingParams });
     }
     catch (err) {
@@ -875,7 +952,7 @@ module.exports = (crowi) => {
    *                schema:
    *                  $ref: '#/components/schemas/SamlAuthSetting'
    */
-  router.put('/saml', loginRequiredStrictly, adminRequired, csrf, validator.samlAuth, apiV3FormValidator, async(req, res) => {
+  router.put('/saml', loginRequiredStrictly, adminRequired, csrf, addActivity, validator.samlAuth, apiV3FormValidator, async(req, res) => {
 
     //  For the value of each mandatory items,
     //  check whether it from the environment variables is empty and form value to update it is empty
@@ -936,6 +1013,8 @@ module.exports = (crowi) => {
         isSameEmailTreatedAsIdenticalUser: await crowi.configManager.getConfig('crowi', 'security:passport-saml:isSameEmailTreatedAsIdenticalUser'),
         samlABLCRule: await crowi.configManager.getConfig('crowi', 'security:passport-saml:ABLCRule'),
       };
+      const parameters = { action: SupportedAction.ACTION_ADMIN_AUTH_SAML_UPDATE };
+      activityEvent.emit('update', res.locals.activity._id, parameters);
       return res.apiv3({ securitySettingParams });
     }
     catch (err) {
@@ -966,7 +1045,7 @@ module.exports = (crowi) => {
    *                schema:
    *                  $ref: '#/components/schemas/OidcAuthSetting'
    */
-  router.put('/oidc', loginRequiredStrictly, adminRequired, csrf, validator.oidcAuth, apiV3FormValidator, async(req, res) => {
+  router.put('/oidc', loginRequiredStrictly, adminRequired, csrf, addActivity, validator.oidcAuth, apiV3FormValidator, async(req, res) => {
     const requestParams = {
       'security:passport-oidc:providerName': req.body.oidcProviderName,
       'security:passport-oidc:issuerHost': req.body.oidcIssuerHost,
@@ -1011,6 +1090,8 @@ module.exports = (crowi) => {
         isSameUsernameTreatedAsIdenticalUser: await crowi.configManager.getConfig('crowi', 'security:passport-oidc:isSameUsernameTreatedAsIdenticalUser'),
         isSameEmailTreatedAsIdenticalUser: await crowi.configManager.getConfig('crowi', 'security:passport-oidc:isSameEmailTreatedAsIdenticalUser'),
       };
+      const parameters = { action: SupportedAction.ACTION_ADMIN_AUTH_OIDC_UPDATE };
+      activityEvent.emit('update', res.locals.activity._id, parameters);
       return res.apiv3({ securitySettingParams });
     }
     catch (err) {
@@ -1041,7 +1122,7 @@ module.exports = (crowi) => {
    *                schema:
    *                  $ref: '#/components/schemas/BasicAuthSetting'
    */
-  router.put('/basic', loginRequiredStrictly, adminRequired, csrf, validator.basicAuth, apiV3FormValidator, async(req, res) => {
+  router.put('/basic', loginRequiredStrictly, adminRequired, csrf, addActivity, validator.basicAuth, apiV3FormValidator, async(req, res) => {
     const requestParams = {
       'security:passport-basic:isSameUsernameTreatedAsIdenticalUser': req.body.isSameUsernameTreatedAsIdenticalUser,
     };
@@ -1052,6 +1133,8 @@ module.exports = (crowi) => {
       const securitySettingParams = {
         isSameUsernameTreatedAsIdenticalUser: await crowi.configManager.getConfig('crowi', 'security:passport-basic:isSameUsernameTreatedAsIdenticalUser'),
       };
+      const parameters = { action: SupportedAction.ACTION_ADMIN_AUTH_BASIC_UPDATE };
+      activityEvent.emit('update', res.locals.activity._id, parameters);
       return res.apiv3({ securitySettingParams });
     }
     catch (err) {
@@ -1082,12 +1165,13 @@ module.exports = (crowi) => {
    *                schema:
    *                  $ref: '#/components/schemas/GoogleOAuthSetting'
    */
-  router.put('/google-oauth', loginRequiredStrictly, adminRequired, csrf, validator.googleOAuth, apiV3FormValidator, async(req, res) => {
+  router.put('/google-oauth', loginRequiredStrictly, adminRequired, csrf, addActivity, validator.googleOAuth, apiV3FormValidator, async(req, res) => {
     const requestParams = {
       'security:passport-google:clientId': req.body.googleClientId,
       'security:passport-google:clientSecret': req.body.googleClientSecret,
-      'security:passport-google:isSameUsernameTreatedAsIdenticalUser': req.body.isSameUsernameTreatedAsIdenticalUser,
+      'security:passport-google:isSameEmailTreatedAsIdenticalUser': req.body.isSameEmailTreatedAsIdenticalUser,
     };
+
 
     try {
       await updateAndReloadStrategySettings('google', requestParams);
@@ -1095,8 +1179,10 @@ module.exports = (crowi) => {
       const securitySettingParams = {
         googleClientId: await crowi.configManager.getConfig('crowi', 'security:passport-google:clientId'),
         googleClientSecret: await crowi.configManager.getConfig('crowi', 'security:passport-google:clientSecret'),
-        isSameUsernameTreatedAsIdenticalUser: await crowi.configManager.getConfig('crowi', 'security:passport-google:isSameUsernameTreatedAsIdenticalUser'),
+        isSameEmailTreatedAsIdenticalUser: await crowi.configManager.getConfig('crowi', 'security:passport-google:isSameEmailTreatedAsIdenticalUser'),
       };
+      const parameters = { action: SupportedAction.ACTION_ADMIN_AUTH_GOOGLE_UPDATE };
+      activityEvent.emit('update', res.locals.activity._id, parameters);
       return res.apiv3({ securitySettingParams });
     }
     catch (err) {
@@ -1127,7 +1213,7 @@ module.exports = (crowi) => {
    *                schema:
    *                  $ref: '#/components/schemas/GitHubOAuthSetting'
    */
-  router.put('/github-oauth', loginRequiredStrictly, adminRequired, csrf, validator.githubOAuth, apiV3FormValidator, async(req, res) => {
+  router.put('/github-oauth', loginRequiredStrictly, adminRequired, csrf, addActivity, validator.githubOAuth, apiV3FormValidator, async(req, res) => {
     const requestParams = {
       'security:passport-github:clientId': req.body.githubClientId,
       'security:passport-github:clientSecret': req.body.githubClientSecret,
@@ -1142,6 +1228,8 @@ module.exports = (crowi) => {
         githubClientSecret: await crowi.configManager.getConfig('crowi', 'security:passport-github:clientSecret'),
         isSameUsernameTreatedAsIdenticalUser: await crowi.configManager.getConfig('crowi', 'security:passport-github:isSameUsernameTreatedAsIdenticalUser'),
       };
+      const parameters = { action: SupportedAction.ACTION_ADMIN_AUTH_GITHUB_UPDATE };
+      activityEvent.emit('update', res.locals.activity._id, parameters);
       return res.apiv3({ securitySettingParams });
     }
     catch (err) {
@@ -1174,7 +1262,7 @@ module.exports = (crowi) => {
    *                schema:
    *                  $ref: '#/components/schemas/TwitterOAuthSetting'
    */
-  router.put('/twitter-oauth', loginRequiredStrictly, adminRequired, csrf, validator.twitterOAuth, apiV3FormValidator, async(req, res) => {
+  router.put('/twitter-oauth', loginRequiredStrictly, adminRequired, csrf, addActivity, validator.twitterOAuth, apiV3FormValidator, async(req, res) => {
 
     let requestParams = {
       'security:passport-twitter:consumerKey': req.body.twitterConsumerKey,
@@ -1192,6 +1280,8 @@ module.exports = (crowi) => {
         twitterConsumerSecret: await crowi.configManager.getConfig('crowi', 'security:passport-twitter:consumerSecret'),
         isSameUsernameTreatedAsIdenticalUser: await crowi.configManager.getConfig('crowi', 'security:passport-twitter:isSameUsernameTreatedAsIdenticalUser'),
       };
+      const parameters = { action: SupportedAction.ACTION_ADMIN_AUTH_TWITTER_UPDATE };
+      activityEvent.emit('update', res.locals.activity._id, parameters);
       return res.apiv3({ securitySettingParams });
     }
     catch (err) {

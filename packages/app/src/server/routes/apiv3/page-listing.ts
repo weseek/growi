@@ -1,18 +1,18 @@
 import express, { Request, Router } from 'express';
 import { query, oneOf } from 'express-validator';
-
 import mongoose from 'mongoose';
 
-import { IPageInfoAll, isIPageInfoForEntity, IPageInfoForListing } from '~/interfaces/page';
+import { isIPageInfoForEntity, IPageInfoForListing, IPageInfo } from '~/interfaces/page';
+import { IUserHasId } from '~/interfaces/user';
 import loggerFactory from '~/utils/logger';
 
+import Crowi from '../../crowi';
+import { apiV3FormValidator } from '../../middlewares/apiv3-form-validator';
 import { PageModel } from '../../models/page';
 import ErrorV3 from '../../models/vo/error-apiv3';
-import Crowi from '../../crowi';
-import { ApiV3Response } from './interfaces/apiv3-response';
 import PageService from '../../service/page';
-import { apiV3FormValidator } from '../../middlewares/apiv3-form-validator';
-import { IUserHasId } from '~/interfaces/user';
+
+import { ApiV3Response } from './interfaces/apiv3-response';
 
 const logger = loggerFactory('growi:routes:apiv3:page-tree');
 
@@ -69,10 +69,9 @@ export default (crowi: Crowi): Router => {
   router.get('/ancestors-children', accessTokenParser, loginRequired, ...validator.pagePathRequired, apiV3FormValidator, async(req: AuthorizedRequest, res: ApiV3Response): Promise<any> => {
     const { path } = req.query;
 
-    const Page: PageModel = crowi.model('Page');
-
+    const pageService: PageService = crowi.pageService!;
     try {
-      const ancestorsChildren = await Page.findAncestorsChildrenByPathAndViewer(path as string, req.user);
+      const ancestorsChildren = await pageService.findAncestorsChildrenByPathAndViewer(path as string, req.user);
       return res.apiv3({ ancestorsChildren });
     }
     catch (err) {
@@ -89,10 +88,10 @@ export default (crowi: Crowi): Router => {
   router.get('/children', accessTokenParser, loginRequired, validator.pageIdOrPathRequired, apiV3FormValidator, async(req: AuthorizedRequest, res: ApiV3Response) => {
     const { id, path } = req.query;
 
-    const Page: PageModel = crowi.model('Page');
+    const pageService: PageService = crowi.pageService!;
 
     try {
-      const pages = await Page.findChildrenByParentPathOrIdAndViewer((id || path)as string, req.user);
+      const pages = await pageService.findChildrenByParentPathOrIdAndViewer((id || path)as string, req.user);
       return res.apiv3({ children: pages });
     }
     catch (err) {
@@ -128,18 +127,19 @@ export default (crowi: Crowi): Router => {
         bookmarkCountMap = await Bookmark.getPageIdToCountMap(foundIds) as Record<string, number>;
       }
 
-      const idToPageInfoMap: Record<string, IPageInfoAll> = {};
+      const idToPageInfoMap: Record<string, IPageInfo | IPageInfoForListing> = {};
 
+      const isGuestUser = req.user == null;
       for (const page of pages) {
         // construct isIPageInfoForListing
-        const basicPageInfo = pageService.constructBasicPageInfo(page);
+        const basicPageInfo = pageService.constructBasicPageInfo(page, isGuestUser);
 
         const pageInfo = (!isIPageInfoForEntity(basicPageInfo))
           ? basicPageInfo
           // create IPageInfoForListing
           : {
             ...basicPageInfo,
-            isAbleToDeleteCompletely: pageService.canDeleteCompletely((page.creator as IUserHasId)?._id, req.user, false), // use normal delete config
+            isAbleToDeleteCompletely: pageService.canDeleteCompletely(page.path, (page.creator as IUserHasId)?._id, req.user, false), // use normal delete config
             bookmarkCount: bookmarkCountMap != null ? bookmarkCountMap[page._id] : undefined,
             revisionShortBody: shortBodiesMap != null ? shortBodiesMap[page._id] : undefined,
           } as IPageInfoForListing;

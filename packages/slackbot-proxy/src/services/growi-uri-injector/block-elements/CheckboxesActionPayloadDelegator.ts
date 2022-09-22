@@ -1,4 +1,5 @@
 import { Service } from '@tsed/di';
+
 import { GrowiUriWithOriginalData, GrowiUriInjector, TypedBlock } from '~/interfaces/growi-uri-injector';
 
 

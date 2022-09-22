@@ -1,8 +1,9 @@
 /* eslint-disable no-unused-vars */
 import { advanceTo } from 'jest-date-mock';
-
 import mongoose from 'mongoose';
 
+import { PageActionType, PageActionStage } from '../../../src/interfaces/page-operation';
+import Tag from '../../../src/server/models/tag';
 import { getInstance } from '../setup-crowi';
 
 describe('PageService page operations with only public pages', () => {
@@ -14,15 +15,18 @@ describe('PageService page operations with only public pages', () => {
   let Page;
   let Revision;
   let User;
-  let Tag;
   let PageTagRelation;
   let Bookmark;
   let Comment;
   let ShareLink;
   let PageRedirect;
+  let PageOperation;
   let xssSpy;
 
   let rootPage;
+
+  // page operation ids
+  let pageOpId1;
 
   beforeAll(async() => {
     crowi = await getInstance();
@@ -31,12 +35,12 @@ describe('PageService page operations with only public pages', () => {
     User = mongoose.model('User');
     Page = mongoose.model('Page');
     Revision = mongoose.model('Revision');
-    Tag = mongoose.model('Tag');
     PageTagRelation = mongoose.model('PageTagRelation');
     Bookmark = mongoose.model('Bookmark');
     Comment = mongoose.model('Comment');
     ShareLink = mongoose.model('ShareLink');
     PageRedirect = mongoose.model('PageRedirect');
+    PageOperation = mongoose.model('PageOperation');
 
     /*
      * Common
@@ -52,6 +56,56 @@ describe('PageService page operations with only public pages', () => {
       const pages = await Page.insertMany([{ path: '/', grant: Page.GRANT_PUBLIC }]);
       rootPage = pages[0];
     }
+
+    /**
+     * create
+     * mc_ => model create
+     * emp => empty => page with isEmpty: true
+     * pub => public => GRANT_PUBLIC
+     */
+    const pageIdCreate1 = new mongoose.Types.ObjectId();
+    await Page.insertMany([
+      {
+        _id: pageIdCreate1,
+        path: '/v5_empty_create_4',
+        grant: Page.GRANT_PUBLIC,
+        parent: rootPage._id,
+        isEmpty: true,
+      },
+      {
+        path: '/v5_empty_create_4/v5_create_5',
+        grant: Page.GRANT_PUBLIC,
+        creator: dummyUser1,
+        lastUpdateUser: dummyUser1._id,
+        parent: pageIdCreate1,
+        isEmpty: false,
+      },
+    ]);
+
+    /**
+     * create by system
+     * mc_ => model create
+     * emp => empty => page with isEmpty: true
+     * pub => public => GRANT_PUBLIC
+     */
+    const pageIdCreateBySystem1 = new mongoose.Types.ObjectId();
+    await Page.insertMany([
+      {
+        _id: pageIdCreateBySystem1,
+        path: '/v5_empty_create_by_system4',
+        grant: Page.GRANT_PUBLIC,
+        parent: rootPage._id,
+        isEmpty: true,
+      },
+      {
+        path: '/v5_empty_create_by_system4/v5_create_by_system5',
+        grant: Page.GRANT_PUBLIC,
+        creator: dummyUser1,
+        lastUpdateUser: dummyUser1._id,
+        parent: pageIdCreateBySystem1,
+        isEmpty: false,
+      },
+    ]);
 
     /*
      * Rename
@@ -80,6 +134,17 @@ describe('PageService page operations with only public pages', () => {
     const pageIdForRename21 = new mongoose.Types.ObjectId();
     const pageIdForRename22 = new mongoose.Types.ObjectId();
     const pageIdForRename23 = new mongoose.Types.ObjectId();
+    const pageIdForRename24 = new mongoose.Types.ObjectId();
+    const pageIdForRename25 = new mongoose.Types.ObjectId();
+    const pageIdForRename26 = new mongoose.Types.ObjectId();
+    const pageIdForRename27 = new mongoose.Types.ObjectId();
+    const pageIdForRename28 = new mongoose.Types.ObjectId();
+
+    const pageIdForRename29 = new mongoose.Types.ObjectId();
+    const pageIdForRename30 = new mongoose.Types.ObjectId();
+
+    pageOpId1 = new mongoose.Types.ObjectId();
+    const pageOpRevisionId1 = new mongoose.Types.ObjectId();
 
     // Create Pages
     await Page.insertMany([
@@ -270,6 +335,105 @@ describe('PageService page operations with only public pages', () => {
         creator: dummyUser1,
         lastUpdateUser: dummyUser1._id,
         parent: pageIdForRename22,
+      },
+      {
+        _id: pageIdForRename24,
+        path: '/v5_pageForRename24',
+        grant: Page.GRANT_PUBLIC,
+        creator: dummyUser1,
+        lastUpdateUser: dummyUser1._id,
+        parent: rootPage._id,
+        descendantCount: 0,
+      },
+      {
+        _id: pageIdForRename25,
+        path: '/v5_pageForRename25',
+        grant: Page.GRANT_PUBLIC,
+        creator: dummyUser1,
+        lastUpdateUser: dummyUser1._id,
+        parent: rootPage._id,
+        descendantCount: 0,
+      },
+      {
+        _id: pageIdForRename26,
+        path: '/v5_pageForRename26',
+        grant: Page.GRANT_PUBLIC,
+        creator: dummyUser1,
+        lastUpdateUser: dummyUser1._id,
+        parent: rootPage._id,
+        descendantCount: 0,
+      },
+      {
+        _id: pageIdForRename27,
+        path: '/v5_pageForRename27',
+        grant: Page.GRANT_PUBLIC,
+        creator: dummyUser1,
+        lastUpdateUser: dummyUser1._id,
+        parent: rootPage._id,
+        descendantCount: 1,
+      },
+      {
+        _id: pageIdForRename28,
+        path: '/v5_pageForRename27/v5_pageForRename28',
+        grant: Page.GRANT_PUBLIC,
+        creator: dummyUser1,
+        lastUpdateUser: dummyUser1._id,
+        parent: pageIdForRename27,
+        descendantCount: 0,
+      },
+      {
+        _id: pageIdForRename29,
+        path: '/v5_pageForRename29',
+        grant: Page.GRANT_PUBLIC,
+        creator: dummyUser1,
+        lastUpdateUser: dummyUser1._id,
+        parent: rootPage._id,
+        descendantCount: 1,
+      },
+      {
+        _id: pageIdForRename30,
+        path: '/v5_pageForRename29/v5_pageForRename30',
+        grant: Page.GRANT_PUBLIC,
+        creator: dummyUser1,
+        lastUpdateUser: dummyUser1._id,
+        parent: pageIdForRename29,
+        descendantCount: 0,
+      },
+    ]);
+
+    await PageOperation.insertMany([
+      {
+        _id: pageOpId1,
+        actionType: 'Rename',
+        actionStage: 'Sub',
+        fromPath: '/v5_pageForRename30',
+        toPath: '/v5_pageForRename29/v5_pageForRename30',
+        page: {
+          _id: pageIdForRename30,
+          parent: rootPage._id,
+          descendantCount: 0,
+          isEmpty: false,
+          path: '/v5_pageForRename30',
+          revision: pageOpRevisionId1,
+          status: 'published',
+          grant: 1,
+          grantedUsers: [],
+          grantedGroup: null,
+          creator: dummyUser1._id,
+          lastUpdateUser: dummyUser1._id,
+        },
+        user: {
+          _id: dummyUser1._id,
+        },
+        options: {
+          createRedirectPage: false,
+          updateMetadata: true,
+        },
+        activityParameters: {
+          ip: '::ffff:127.0.0.1',
+          endpoint: '/_api/v3/pages/rename',
+        },
+        unprocessableExpiryDate: null,
       },
     ]);
 
@@ -887,23 +1051,136 @@ describe('PageService page operations with only public pages', () => {
 
   });
 
+  describe('create', () => {
+
+    test('Should create single page', async() => {
+      const isGrantNormalizedSpy = jest.spyOn(crowi.pageGrantService, 'isGrantNormalized');
+      const page = await crowi.pageService.create('/v5_create1', 'create1', dummyUser1, {});
+      expect(page).toBeTruthy();
+      expect(page.parent).toStrictEqual(rootPage._id);
+      // isGrantNormalized is called when GRANT PUBLIC
+      expect(isGrantNormalizedSpy).toBeCalledTimes(1);
+    });
+
+    test('Should create empty-child and non-empty grandchild', async() => {
+      const isGrantNormalizedSpy = jest.spyOn(crowi.pageGrantService, 'isGrantNormalized');
+      const grandchildPage = await crowi.pageService.create('/v5_empty_create2/v5_create_3', 'grandchild', dummyUser1, {});
+      const childPage = await Page.findOne({ path: '/v5_empty_create2' });
+
+      expect(childPage.isEmpty).toBe(true);
+      expect(grandchildPage).toBeTruthy();
+      expect(childPage).toBeTruthy();
+      expect(childPage.parent).toStrictEqual(rootPage._id);
+      expect(grandchildPage.parent).toStrictEqual(childPage._id);
+      // isGrantNormalized is called when GRANT PUBLIC
+      expect(isGrantNormalizedSpy).toBeCalledTimes(1);
+    });
+
+    test('Should create on empty page', async() => {
+      const isGrantNormalizedSpy = jest.spyOn(crowi.pageGrantService, 'isGrantNormalized');
+      const beforeCreatePage = await Page.findOne({ path: '/v5_empty_create_4' });
+      expect(beforeCreatePage.isEmpty).toBe(true);
+
+      const childPage = await crowi.pageService.create('/v5_empty_create_4', 'body', dummyUser1, {});
+      const grandchildPage = await Page.findOne({ parent: childPage._id });
+
+      expect(childPage).toBeTruthy();
+      expect(childPage.isEmpty).toBe(false);
+      expect(childPage.revision.body).toBe('body');
+      expect(grandchildPage).toBeTruthy();
+      expect(childPage.parent).toStrictEqual(rootPage._id);
+      expect(grandchildPage.parent).toStrictEqual(childPage._id);
+      // isGrantNormalized is called when GRANT PUBLIC
+      expect(isGrantNormalizedSpy).toBeCalledTimes(1);
+    });
+
+  });
+
+  describe('create by system', () => {
+
+    test('Should create single page by system', async() => {
+      const isGrantNormalizedSpy = jest.spyOn(crowi.pageGrantService, 'isGrantNormalized');
+      const page = await crowi.pageService.forceCreateBySystem('/v5_create_by_system1', 'create_by_system1', {});
+      expect(page).toBeTruthy();
+      expect(page.parent).toStrictEqual(rootPage._id);
+      // isGrantNormalized is not called when create by system
+      expect(isGrantNormalizedSpy).toBeCalledTimes(0);
+    });
+
+    test('Should create empty-child and non-empty grandchild', async() => {
+      const isGrantNormalizedSpy = jest.spyOn(crowi.pageGrantService, 'isGrantNormalized');
+      const grandchildPage = await crowi.pageService.forceCreateBySystem('/v5_empty_create_by_system2/v5_create_by_system3', 'grandchild', {});
+      const childPage = await Page.findOne({ path: '/v5_empty_create_by_system2' });
+
+      expect(childPage.isEmpty).toBe(true);
+      expect(grandchildPage).toBeTruthy();
+      expect(childPage).toBeTruthy();
+      expect(childPage.parent).toStrictEqual(rootPage._id);
+      expect(grandchildPage.parent).toStrictEqual(childPage._id);
+      // isGrantNormalized is not called when create by system
+      expect(isGrantNormalizedSpy).toBeCalledTimes(0);
+    });
+
+    test('Should create on empty page', async() => {
+      const isGrantNormalizedSpy = jest.spyOn(crowi.pageGrantService, 'isGrantNormalized');
+      const beforeCreatePage = await Page.findOne({ path: '/v5_empty_create_by_system4' });
+      expect(beforeCreatePage.isEmpty).toBe(true);
+
+      const childPage = await crowi.pageService.forceCreateBySystem('/v5_empty_create_by_system4', 'body', {});
+      const grandchildPage = await Page.findOne({ parent: childPage._id });
+
+      expect(childPage).toBeTruthy();
+      expect(childPage.isEmpty).toBe(false);
+      expect(childPage.revision.body).toBe('body');
+      expect(grandchildPage).toBeTruthy();
+      expect(childPage.parent).toStrictEqual(rootPage._id);
+      expect(grandchildPage.parent).toStrictEqual(childPage._id);
+      // isGrantNormalized is not called when create by system
+      expect(isGrantNormalizedSpy).toBeCalledTimes(0);
+    });
+
+  });
+
   describe('Rename', () => {
 
-    const renamePage = async(page, newPagePath, user, options) => {
+    const renamePage = async(page, newPagePath, user, options, activityParameters?) => {
       // mock return value
       const mockedRenameSubOperation = jest.spyOn(crowi.pageService, 'renameSubOperation').mockReturnValue(null);
-      const mockedCreateAndSendNotifications = jest.spyOn(crowi.pageService, 'createAndSendNotifications').mockReturnValue(null);
-      const renamedPage = await crowi.pageService.renamePage(page, newPagePath, user, options);
+      const renamedPage = await crowi.pageService.renamePage(page, newPagePath, user, options, activityParameters);
 
       // retrieve the arguments passed when calling method renameSubOperation inside renamePage method
       const argsForRenameSubOperation = mockedRenameSubOperation.mock.calls[0];
 
       // restores the original implementation
       mockedRenameSubOperation.mockRestore();
-      mockedCreateAndSendNotifications.mockRestore();
 
       // rename descendants
       await crowi.pageService.renameSubOperation(...argsForRenameSubOperation);
+
+      return renamedPage;
+    };
+
+    /**
+     * This function only execute renameMainOperation. renameSubOperation is basically omitted(only return null)
+     */
+    const renameMainOperation = async(page, newPagePath, user, options, activityParameters?) => {
+      // create page operation from target page
+      const pageOp = await PageOperation.create({
+        actionType: PageActionType.Rename,
+        actionStage: PageActionStage.Main,
+        page,
+        user,
+        fromPath: page.path,
+        toPath: newPagePath,
+        options,
+      });
+
+      // mock return value
+      const mockedRenameSubOperation = jest.spyOn(crowi.pageService, 'renameSubOperation').mockReturnValue(null);
+      const renamedPage = await crowi.pageService.renameMainOperation(page, newPagePath, user, options, pageOp._id, activityParameters);
+
+      // restores the original implementation
+      mockedRenameSubOperation.mockRestore();
 
       return renamedPage;
     };
@@ -912,7 +1189,10 @@ describe('PageService page operations with only public pages', () => {
       expect(rootPage).toBeTruthy();
       let isThrown = false;
       try {
-        await crowi.pageService.renamePage(rootPage, '/new_root', dummyUser1, {});
+        await crowi.pageService.renamePage(rootPage, '/new_root', dummyUser1, {}, {
+          ip: '::ffff:127.0.0.1',
+          endpoint: '/_api/v3/pages/rename',
+        });
       }
       catch (err) {
         isThrown = true;
@@ -928,7 +1208,10 @@ describe('PageService page operations with only public pages', () => {
       expect(parentPage).toBeTruthy();
 
       const newPath = '/v5_ParentForRename1/renamedChildForRename1';
-      const renamedPage = await renamePage(childPage, newPath, dummyUser1, {});
+      const renamedPage = await renamePage(childPage, newPath, dummyUser1, {}, {
+        ip: '::ffff:127.0.0.1',
+        endpoint: '/_api/v3/pages/rename',
+      });
       const childPageBeforeRename = await Page.findOne({ path: '/v5_ChildForRename1' });
 
       expect(xssSpy).toHaveBeenCalled();
@@ -946,7 +1229,10 @@ describe('PageService page operations with only public pages', () => {
       expect(parentPage.isEmpty).toBe(true);
 
       const newPath = '/v5_ParentForRename2/renamedChildForRename2';
-      const renamedPage = await renamePage(childPage, newPath, dummyUser1, {});
+      const renamedPage = await renamePage(childPage, newPath, dummyUser1, {}, {
+        ip: '::ffff:127.0.0.1',
+        endpoint: '/_api/v3/pages/rename',
+      });
       const childPageBeforeRename = await Page.findOne({ path: '/v5_ChildForRename2' });
 
       expect(xssSpy).toHaveBeenCalled();
@@ -965,7 +1251,10 @@ describe('PageService page operations with only public pages', () => {
 
       const newPath = '/v5_ParentForRename3/renamedChildForRename3';
       const oldUpdateAt = childPage.updatedAt;
-      const renamedPage = await renamePage(childPage, newPath, dummyUser2, { updateMetadata: true });
+      const renamedPage = await renamePage(childPage, newPath, dummyUser2, { updateMetadata: true }, {
+        ip: '::ffff:127.0.0.1',
+        endpoint: '/_api/v3/pages/rename',
+      });
 
       expect(xssSpy).toHaveBeenCalled();
       expect(renamedPage.path).toBe(newPath);
@@ -982,7 +1271,10 @@ describe('PageService page operations with only public pages', () => {
 
       const oldPath = childPage.path;
       const newPath = '/v5_ParentForRename4/renamedChildForRename4';
-      const renamedPage = await renamePage(childPage, newPath, dummyUser2, { createRedirectPage: true });
+      const renamedPage = await renamePage(childPage, newPath, dummyUser2, { createRedirectPage: true }, {
+        ip: '::ffff:127.0.0.1',
+        endpoint: '/_api/v3/pages/rename',
+      });
       const pageRedirect = await PageRedirect.findOne({ fromPath: oldPath, toPath: renamedPage.path });
 
       expect(xssSpy).toHaveBeenCalled();
@@ -1001,7 +1293,10 @@ describe('PageService page operations with only public pages', () => {
       expect(grandchild).toBeTruthy();
 
       const newPath = '/v5_ParentForRename5/renamedChildForRename5';
-      const renamedPage = await renamePage(childPage, newPath, dummyUser1, {});
+      const renamedPage = await renamePage(childPage, newPath, dummyUser1, {}, {
+        ip: '::ffff:127.0.0.1',
+        endpoint: '/_api/v3/pages/rename',
+      });
       // find child of renamed page
       const renamedGrandchild = await Page.findOne({ parent: renamedPage._id });
       const childPageBeforeRename = await Page.findOne({ path: '/v5_ChildForRename5' });
@@ -1027,7 +1322,10 @@ describe('PageService page operations with only public pages', () => {
       expect(grandchild).toBeTruthy();
 
       const newPath = '/v5_ParentForRename7/renamedChildForRename7';
-      const renamedPage = await renamePage(childPage, newPath, dummyUser1, {});
+      const renamedPage = await renamePage(childPage, newPath, dummyUser1, {}, {
+        ip: '::ffff:127.0.0.1',
+        endpoint: '/_api/v3/pages/rename',
+      });
       const grandchildAfterRename = await Page.findOne({ parent: renamedPage._id });
       const grandchildBeforeRename = await Page.findOne({ path: '/v5_ChildForRename7/v5_GrandchildForRename7' });
 
@@ -1047,7 +1345,10 @@ describe('PageService page operations with only public pages', () => {
       const newPath = '/v5_ParentForRename9';
       let isThrown;
       try {
-        await renamePage(page, newPath, dummyUser1, {});
+        await renamePage(page, newPath, dummyUser1, {}, {
+          ip: '::ffff:127.0.0.1',
+          endpoint: '/_api/v3/pages/rename',
+        });
       }
       catch (err) {
         isThrown = true;
@@ -1066,7 +1367,10 @@ describe('PageService page operations with only public pages', () => {
 
       const newParentalPath = '/v5_pageForRename17/v5_pageForRename18';
       const newPath = newParentalPath + page1.path;
-      await renamePage(page1, newPath, dummyUser1, {});
+      await renamePage(page1, newPath, dummyUser1, {}, {
+        ip: '::ffff:127.0.0.1',
+        endpoint: '/_api/v3/pages/rename',
+      });
 
       const renamedPage = await Page.findOne({ path: newParentalPath + initialPathForPage1 });
       const renamedPageChild = await Page.findOne({ path: newParentalPath + initialPathForPage2 });
@@ -1103,7 +1407,10 @@ describe('PageService page operations with only public pages', () => {
 
       const newParentalPath = '/v5_pageForRename19/v5_pageForRename20';
       const newPath = newParentalPath + page1.path;
-      await renamePage(page1, newPath, dummyUser1, {});
+      await renamePage(page1, newPath, dummyUser1, {}, {
+        ip: '::ffff:127.0.0.1',
+        endpoint: '/_api/v3/pages/rename',
+      });
 
       const renamedPage = await Page.findOne({ path: newParentalPath + initialPathForPage1 });
       const renamedPageChild = await Page.findOne({ path: newParentalPath + initialPathForPage2 });
@@ -1144,7 +1451,10 @@ describe('PageService page operations with only public pages', () => {
       const newParentalPath = '/v5_pageForRename21/v5_pageForRename22/v5_pageForRename23';
       const newPath = newParentalPath + page1.path;
 
-      await renamePage(page1, newPath, dummyUser1, {});
+      await renamePage(page1, newPath, dummyUser1, {}, {
+        ip: '::ffff:127.0.0.1',
+        endpoint: '/_api/v3/pages/rename',
+      });
 
       const renamedPage = await Page.findOne({ path: newParentalPath + initialPathForPage1 });
       const renamedPageChild = await Page.findOne({ path: newParentalPath + initialPathForPage2 });
@@ -1177,13 +1487,149 @@ describe('PageService page operations with only public pages', () => {
       expect(renamedPageChild.isEmpty).toBeTruthy();
       expect(renamedPageGrandchild.isEmpty).toBe(false);
     });
+
+    test('should add 1 descendantCount to parent page in MainOperation', async() => {
+      // paths before renaming
+      const _path0 = '/v5_pageForRename24'; // out of renaming scope
+      const _path1 = '/v5_pageForRename25'; // not renamed yet
+
+      // paths after renaming
+      const path0 = '/v5_pageForRename24';
+      const path1 = '/v5_pageForRename24/v5_pageForRename25';
+
+      // new path:  same as path1
+      const newPath = '/v5_pageForRename24/v5_pageForRename25';
+
+      // pages
+      const _page0 = await Page.findOne({ path: _path0 });
+      const _page1 = await Page.findOne({ path: _path1 });
+
+      expect(_page0).toBeTruthy();
+      expect(_page1).toBeTruthy();
+      expect(_page0.descendantCount).toBe(0);
+      expect(_page1.descendantCount).toBe(0);
+
+      await renameMainOperation(_page1, newPath, dummyUser1, {});
+
+      const page0 = await Page.findById(_page0._id); // new parent
+      const page1 = await Page.findById(_page1._id); // renamed one
+      expect(page0).toBeTruthy();
+      expect(page1).toBeTruthy();
+
+      expect(page0.path).toBe(path0);
+      expect(page1.path).toBe(path1); // renamed
+      expect(page0.descendantCount).toBe(1); // originally 0, +1 in Main.
+      expect(page1.descendantCount).toBe(0);
+
+      // cleanup
+      await PageOperation.findOneAndDelete({ fromPath: _path1 });
+    });
+
+    test('should subtract 1 descendantCount from a new parent page in renameSubOperation', async() => {
+      // paths before renaming
+      const _path0 = '/v5_pageForRename29'; // out of renaming scope
+      const _path1 = '/v5_pageForRename29/v5_pageForRename30'; // already renamed
+
+      // paths after renaming
+      const path0 = '/v5_pageForRename29';
+      const path1 = '/v5_pageForRename29/v5_pageForRename30';
+
+      // new path:  same as path1
+      const newPath = '/v5_pageForRename29/v5_pageForRename30';
+
+      // page
+      const _page0 = await Page.findOne({ path: _path0 });
+      const _page1 = await Page.findOne({ path: _path1 });
+      expect(_page0).toBeTruthy();
+      expect(_page1).toBeTruthy();
+
+      // page operation
+      const fromPath = '/v5_pageForRename30';
+      const toPath = newPath;
+      const pageOperation = await PageOperation.findOne({
+        _id: pageOpId1, fromPath, toPath, actionType: PageActionType.Rename, actionStage: PageActionStage.Sub,
+      });
+      expect(pageOperation).toBeTruthy();
+
+      // descendantCount
+      expect(_page0.descendantCount).toBe(1);
+      expect(_page1.descendantCount).toBe(0);
+
+      // renameSubOperation only
+      await crowi.pageService.renameSubOperation(_page1, newPath, dummyUser1, {}, _page1, pageOperation._id, {
+        ip: '::ffff:127.0.0.1',
+        endpoint: '/_api/v3/pages/rename',
+        activityId: '62e291bc10e0ab61bd691794',
+      });
+
+      // page
+      const page0 = await Page.findById(_page0._id); // new parent
+      const page1 = await Page.findById(_page1._id); // renamed one
+      expect(page0).toBeTruthy();
+      expect(page1).toBeTruthy();
+      expect(page0.path).toBe(path0);
+      expect(page1.path).toBe(path1); // renamed
+
+      // descendantCount
+      expect(page0.descendantCount).toBe(0); // originally 1, -1 in Sub.
+      expect(page1.descendantCount).toBe(0);
+    });
+
+    test(`should add 1 descendantCount to the a parent page in rename(Main)Operation
+    and subtract 1 descendantCount from the the parent page in rename(Sub)Operation`, async() => {
+      // paths before renaming
+      const _path0 = '/v5_pageForRename26'; // out of renaming scope
+      const _path1 = '/v5_pageForRename27'; // not renamed yet
+      const _path2 = '/v5_pageForRename27/v5_pageForRename28'; // not renamed yet
+
+      // paths after renaming
+      const path0 = '/v5_pageForRename26';
+      const path1 = '/v5_pageForRename26/v5_pageForRename27';
+      const path2 = '/v5_pageForRename26/v5_pageForRename27/v5_pageForRename28';
+
+      // new path: same as path1
+      const newPath = '/v5_pageForRename26/v5_pageForRename27';
+
+      // page
+      const _page0 = await Page.findOne({ path: _path0 });
+      const _page1 = await Page.findOne({ path: _path1 });
+      const _page2 = await Page.findOne({ path: _path2 });
+
+      expect(_page0).toBeTruthy();
+      expect(_page1).toBeTruthy();
+      expect(_page2).toBeTruthy();
+      expect(_page0.descendantCount).toBe(0);
+      expect(_page1.descendantCount).toBe(1);
+      expect(_page2.descendantCount).toBe(0);
+
+      await renamePage(_page1, newPath, dummyUser1, {}, {
+        ip: '::ffff:127.0.0.1',
+        endpoint: '/_api/v3/pages/rename',
+      });
+
+      const page0 = await Page.findById(_page0._id); // new parent
+      const page1 = await Page.findById(_page1._id); // renamed
+      const page2 = await Page.findById(_page2._id); // renamed
+      expect(page0).toBeTruthy();
+      expect(page1).toBeTruthy();
+      expect(page2).toBeTruthy();
+
+      expect(page0.path).toBe(path0);
+      expect(page1.path).toBe(path1);
+      expect(page2.path).toBe(path2);
+      expect(page0.descendantCount).toBe(2); // originally 0, +1 in Main, -1 in Sub, +2 for descendants.
+      expect(page1.descendantCount).toBe(1);
+      expect(page2.descendantCount).toBe(0);
+
+      // cleanup
+      await PageOperation.findOneAndDelete({ fromPath: _path1 });
+    });
   });
   describe('Duplicate', () => {
 
     const duplicate = async(page, newPagePath, user, isRecursively) => {
       // mock return value
       const mockedDuplicateRecursivelyMainOperation = jest.spyOn(crowi.pageService, 'duplicateRecursivelyMainOperation').mockReturnValue(null);
-      const mockedCreateAndSendNotifications = jest.spyOn(crowi.pageService, 'createAndSendNotifications').mockReturnValue(null);
       const duplicatedPage = await crowi.pageService.duplicate(page, newPagePath, user, isRecursively);
 
       // retrieve the arguments passed when calling method duplicateRecursivelyMainOperation inside duplicate method
@@ -1191,7 +1637,6 @@ describe('PageService page operations with only public pages', () => {
 
       // restores the original implementation
       mockedDuplicateRecursivelyMainOperation.mockRestore();
-      mockedCreateAndSendNotifications.mockRestore();
 
       // duplicate descendants
       if (isRecursively) {
@@ -1304,8 +1749,8 @@ describe('PageService page operations with only public pages', () => {
       const basePage = await Page.findOne({ path: '/v5_PageForDuplicate5' });
       const tag1 = await Tag.findOne({ name: 'duplicate_Tag1' });
       const tag2 = await Tag.findOne({ name:  'duplicate_Tag2' });
-      const basePageTagRelation1 = await PageTagRelation.findOne({ relatedTag: tag1._id });
-      const basePageTagRelation2 = await PageTagRelation.findOne({ relatedTag: tag2._id });
+      const basePageTagRelation1 = await PageTagRelation.findOne({ relatedTag: tag1?._id });
+      const basePageTagRelation2 = await PageTagRelation.findOne({ relatedTag: tag2?._id });
       expect(basePage).toBeTruthy();
       expect(tag1).toBeTruthy();
       expect(tag2).toBeTruthy();
@@ -1367,16 +1812,14 @@ describe('PageService page operations with only public pages', () => {
     });
   });
   describe('Delete', () => {
-    const deletePage = async(page, user, options, isRecursively) => {
+    const deletePage = async(page, user, options, isRecursively, activityParameters?) => {
       const mockedDeleteRecursivelyMainOperation = jest.spyOn(crowi.pageService, 'deleteRecursivelyMainOperation').mockReturnValue(null);
-      const mockedCreateAndSendNotifications = jest.spyOn(crowi.pageService, 'createAndSendNotifications').mockReturnValue(null);
 
-      const deletedPage = await crowi.pageService.deletePage(page, user, options, isRecursively);
+      const deletedPage = await crowi.pageService.deletePage(page, user, options, isRecursively, activityParameters);
 
       const argsForDeleteRecursivelyMainOperation = mockedDeleteRecursivelyMainOperation.mock.calls[0];
 
       mockedDeleteRecursivelyMainOperation.mockRestore();
-      mockedCreateAndSendNotifications.mockRestore();
 
       if (isRecursively) {
         await crowi.pageService.deleteRecursivelyMainOperation(...argsForDeleteRecursivelyMainOperation);
@@ -1388,7 +1831,12 @@ describe('PageService page operations with only public pages', () => {
     test('Should NOT delete root page', async() => {
       let isThrown;
       expect(rootPage).toBeTruthy();
-      try { await deletePage(rootPage, dummyUser1, {}, false) }
+      try {
+        await deletePage(rootPage, dummyUser1, {}, false, {
+          ip: '::ffff:127.0.0.1',
+          endpoint: '/_api/v3/pages/delete',
+        });
+      }
       catch (err) { isThrown = true }
 
       const page = await Page.findOne({ path: '/' });
@@ -1402,7 +1850,12 @@ describe('PageService page operations with only public pages', () => {
       expect(trashedPage).toBeTruthy();
 
       let isThrown;
-      try { await deletePage(trashedPage, dummyUser1, {}, false) }
+      try {
+        await deletePage(trashedPage, dummyUser1, {}, false, {
+          ip: '::ffff:127.0.0.1',
+          endpoint: '/_api/v3/pages/delete',
+        });
+      }
       catch (err) { isThrown = true }
 
       const page = await Page.findOne({ path: '/trash/v5_PageForDelete1' });
@@ -1415,7 +1868,12 @@ describe('PageService page operations with only public pages', () => {
       const dummyUser1Page = await Page.findOne({ path: '/user/v5DummyUser1' });
       expect(dummyUser1Page).toBeTruthy();
       let isThrown;
-      try { await deletePage(dummyUser1Page, dummyUser1, {}, false) }
+      try {
+        await deletePage(dummyUser1Page, dummyUser1, {}, false, {
+          ip: '::ffff:127.0.0.1',
+          endpoint: '/_api/v3/pages/delete',
+        });
+      }
       catch (err) { isThrown = true }
 
       const page = await Page.findOne({ path: '/user/v5DummyUser1' });
@@ -1427,7 +1885,10 @@ describe('PageService page operations with only public pages', () => {
     test('Should delete single page', async() => {
       const pageToDelete = await Page.findOne({ path: '/v5_PageForDelete2' });
       expect(pageToDelete).toBeTruthy();
-      const deletedPage = await deletePage(pageToDelete, dummyUser1, {}, false);
+      const deletedPage = await deletePage(pageToDelete, dummyUser1, {}, false, {
+        ip: '::ffff:127.0.0.1',
+        endpoint: '/_api/v3/pages/delete',
+      });
       const page = await Page.findOne({ path: '/v5_PageForDelete2' });
 
       expect(page).toBeNull();
@@ -1443,7 +1904,10 @@ describe('PageService page operations with only public pages', () => {
       expect(parentPage).toBeTruthy();
       expect(childPage).toBeTruthy();
       expect(grandchildPage).toBeTruthy();
-      const deletedParentPage = await deletePage(parentPage, dummyUser1, {}, true);
+      const deletedParentPage = await deletePage(parentPage, dummyUser1, {}, true, {
+        ip: '::ffff:127.0.0.1',
+        endpoint: '/_api/v3/pages/delete',
+      });
       const deletedChildPage = await Page.findOne({ path: '/trash/v5_PageForDelete3/v5_PageForDelete4' });
       const deletedGrandchildPage = await Page.findOne({ path: '/trash/v5_PageForDelete3/v5_PageForDelete4/v5_PageForDelete5' });
 
@@ -1463,14 +1927,17 @@ describe('PageService page operations with only public pages', () => {
       const pageToDelete = await Page.findOne({ path: '/v5_PageForDelete6' });
       const tag1 = await Tag.findOne({ name: 'TagForDelete1' });
       const tag2 = await Tag.findOne({ name: 'TagForDelete2' });
-      const pageRelation1 = await PageTagRelation.findOne({ relatedTag: tag1._id });
-      const pageRelation2 = await PageTagRelation.findOne({ relatedTag: tag2._id });
+      const pageRelation1 = await PageTagRelation.findOne({ relatedTag: tag1?._id });
+      const pageRelation2 = await PageTagRelation.findOne({ relatedTag: tag2?._id });
       expect(pageToDelete).toBeTruthy();
       expect(tag1).toBeTruthy();
       expect(tag2).toBeTruthy();
       expect(pageRelation1).toBeTruthy();
       expect(pageRelation2).toBeTruthy();
-      const deletedPage = await deletePage(pageToDelete, dummyUser1, {}, false);
+      const deletedPage = await deletePage(pageToDelete, dummyUser1, {}, false, {
+        ip: '::ffff:127.0.0.1',
+        endpoint: '/_api/v3/pages/delete',
+      });
       const page = await Page.findOne({ path: '/v5_PageForDelete6' });
       const deletedTagRelation1 = await PageTagRelation.findOne({ _id: pageRelation1._id });
       const deletedTagRelation2 = await PageTagRelation.findOne({ _id: pageRelation2._id });
@@ -1482,16 +1949,14 @@ describe('PageService page operations with only public pages', () => {
     });
   });
   describe('Delete completely', () => {
-    const deleteCompletely = async(page, user, options = {}, isRecursively = false, preventEmitting = false) => {
+    const deleteCompletely = async(page, user, options = {}, isRecursively = false, preventEmitting = false, activityParameters?) => {
       const mockedDeleteCompletelyRecursivelyMainOperation = jest.spyOn(crowi.pageService, 'deleteCompletelyRecursivelyMainOperation').mockReturnValue(null);
-      const mockedCreateAndSendNotifications = jest.spyOn(crowi.pageService, 'createAndSendNotifications').mockReturnValue(null);
 
-      await crowi.pageService.deleteCompletely(page, user, options, isRecursively, preventEmitting);
+      await crowi.pageService.deleteCompletely(page, user, options, isRecursively, preventEmitting, activityParameters);
 
       const argsForDeleteCompletelyRecursivelyMainOperation = mockedDeleteCompletelyRecursivelyMainOperation.mock.calls[0];
 
       mockedDeleteCompletelyRecursivelyMainOperation.mockRestore();
-      mockedCreateAndSendNotifications.mockRestore();
 
       if (isRecursively) {
         await crowi.pageService.deleteCompletelyRecursivelyMainOperation(...argsForDeleteCompletelyRecursivelyMainOperation);
@@ -1503,7 +1968,12 @@ describe('PageService page operations with only public pages', () => {
     test('Should NOT completely delete root page', async() => {
       expect(rootPage).toBeTruthy();
       let isThrown;
-      try { await deleteCompletely(rootPage, dummyUser1, {}, false) }
+      try {
+        await deleteCompletely(rootPage, dummyUser1, {}, false, false, {
+          ip: '::ffff:127.0.0.1',
+          endpoint: '/_api/v3/pages/deletecompletely',
+        });
+      }
       catch (err) { isThrown = true }
       const page = await Page.findOne({ path: '/' });
       expect(page).toBeTruthy();
@@ -1513,7 +1983,10 @@ describe('PageService page operations with only public pages', () => {
       const page = await Page.findOne({ path: '/v5_PageForDeleteCompletely1' });
       expect(page).toBeTruthy();
 
-      await deleteCompletely(page, dummyUser1, {}, false);
+      await deleteCompletely(page, dummyUser1, {}, false, false, {
+        ip: '::ffff:127.0.0.1',
+        endpoint: '/_api/v3/pages/deletecompletely',
+      });
       const deletedPage = await Page.findOne({ _id: page._id, path: '/v5_PageForDeleteCompletely1' });
 
       expect(deletedPage).toBeNull();
@@ -1546,10 +2019,13 @@ describe('PageService page operations with only public pages', () => {
       expect(shareLink1).toBeTruthy();
       expect(shareLink2).toBeTruthy();
 
-      await deleteCompletely(parentPage, dummyUser1, {}, true);
+      await deleteCompletely(parentPage, dummyUser1, {}, true, false, {
+        ip: '::ffff:127.0.0.1',
+        endpoint: '/_api/v3/pages/deletecompletely',
+      });
       const deletedPages = await Page.find({ _id: { $in: [parentPage._id, childPage._id, grandchildPage._id] } });
       const deletedRevisions = await Revision.find({ pageId: { $in: [parentPage._id, grandchildPage._id] } });
-      const tags = await Tag.find({ _id: { $in: [tag1._id, tag2._id] } });
+      const tags = await Tag.find({ _id: { $in: [tag1?._id, tag2?._id] } });
       const deletedPageTagRelations = await PageTagRelation.find({ _id: { $in: [pageTagRelation1._id, pageTagRelation2._id] } });
       const deletedBookmarks = await Bookmark.find({ _id: bookmark._id });
       const deletedComments = await Comment.find({ _id: comment._id });
@@ -1578,7 +2054,10 @@ describe('PageService page operations with only public pages', () => {
       const revision = await Revision.findOne({ pageId: page._id });
       expect(page).toBeTruthy();
       expect(revision).toBeTruthy();
-      await deleteCompletely(page, dummyUser1, {}, false);
+      await deleteCompletely(page, dummyUser1, {}, false, false, {
+        ip: '::ffff:127.0.0.1',
+        endpoint: '/_api/v3/pages/deletecompletely',
+      });
       const deltedPage = await Page.findOne({ _id: page._id });
       const deltedRevision = await Revision.findOne({ _id: revision._id });
 
@@ -1593,7 +2072,10 @@ describe('PageService page operations with only public pages', () => {
       expect(childPage).toBeTruthy();
       expect(grandchildPage).toBeTruthy();
 
-      await deleteCompletely(childPage, dummyUser1, {}, false);
+      await deleteCompletely(childPage, dummyUser1, {}, false, false, {
+        ip: '::ffff:127.0.0.1',
+        endpoint: '/_api/v3/pages/deletecompletely',
+      });
       const parentPageAfterDelete = await Page.findOne({ path: '/v5_PageForDeleteCompletely6' });
       const childPageAfterDelete = await Page.findOne({ path: '/v5_PageForDeleteCompletely6/v5_PageForDeleteCompletely7' });
       const grandchildPageAfterDelete = await Page.findOne({ path: '/v5_PageForDeleteCompletely6/v5_PageForDeleteCompletely7/v5_PageForDeleteCompletely8' });
@@ -1611,10 +2093,10 @@ describe('PageService page operations with only public pages', () => {
     });
   });
   describe('revert', () => {
-    const revertDeletedPage = async(page, user, options = {}, isRecursively = false) => {
+    const revertDeletedPage = async(page, user, options = {}, isRecursively = false, activityParameters?) => {
       // mock return value
       const mockedRevertRecursivelyMainOperation = jest.spyOn(crowi.pageService, 'revertRecursivelyMainOperation').mockReturnValue(null);
-      const revertedPage = await crowi.pageService.revertDeletedPage(page, user, options, isRecursively);
+      const revertedPage = await crowi.pageService.revertDeletedPage(page, user, options, isRecursively, activityParameters);
 
       const argsForRecursivelyMainOperation = mockedRevertRecursivelyMainOperation.mock.calls[0];
 
@@ -1632,14 +2114,17 @@ describe('PageService page operations with only public pages', () => {
       const deletedPage = await Page.findOne({ path: '/trash/v5_revert1', status: Page.STATUS_DELETED });
       const revision = await Revision.findOne({ pageId: deletedPage._id });
       const tag = await Tag.findOne({ name: 'revertTag1' });
-      const deletedPageTagRelation = await PageTagRelation.findOne({ relatedPage: deletedPage._id, relatedTag: tag._id, isPageTrashed: true });
+      const deletedPageTagRelation = await PageTagRelation.findOne({ relatedPage: deletedPage._id, relatedTag: tag?._id, isPageTrashed: true });
       expect(deletedPage).toBeTruthy();
       expect(revision).toBeTruthy();
       expect(tag).toBeTruthy();
       expect(deletedPageTagRelation).toBeTruthy();
 
-      const revertedPage = await revertDeletedPage(deletedPage, dummyUser1, {}, false);
-      const pageTagRelation = await PageTagRelation.findOne({ relatedPage: deletedPage._id, relatedTag: tag._id });
+      const revertedPage = await revertDeletedPage(deletedPage, dummyUser1, {}, false, {
+        ip: '::ffff:127.0.0.1',
+        endpoint: '/_api/v3/pages/revert',
+      });
+      const pageTagRelation = await PageTagRelation.findOne({ relatedPage: deletedPage._id, relatedTag: tag?._id });
 
       expect(revertedPage.parent).toStrictEqual(rootPage._id);
       expect(revertedPage.path).toBe('/v5_revert1');
@@ -1658,7 +2143,10 @@ describe('PageService page operations with only public pages', () => {
       expect(revision1).toBeTruthy();
       expect(revision2).toBeTruthy();
 
-      const revertedPage1 = await revertDeletedPage(deletedPage1, dummyUser1, {}, true);
+      const revertedPage1 = await revertDeletedPage(deletedPage1, dummyUser1, {}, true, {
+        ip: '::ffff:127.0.0.1',
+        endpoint: '/_api/v3/pages/revert',
+      });
       const revertedPage2 = await Page.findOne({ _id: deletedPage2._id });
       const newlyCreatedPage = await Page.findOne({ path: '/v5_revert2/v5_revert3' });
 

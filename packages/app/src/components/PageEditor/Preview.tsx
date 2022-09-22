@@ -1,51 +1,51 @@
 import React, {
-  UIEventHandler, useCallback, useEffect, useMemo, useState,
+  useCallback, useEffect, useMemo, useState, SyntheticEvent, RefObject,
 } from 'react';
 
-import { Subscribe } from 'unstated';
-import { withUnstatedContainers } from '../UnstatedUtils';
-
-import RevisionBody from '../Page/RevisionBody';
 
 import AppContainer from '~/client/services/AppContainer';
-import EditorContainer from '~/client/services/EditorContainer';
+import InterceptorManager from '~/services/interceptor-manager';
+import GrowiRenderer from '~/services/renderer/growi-renderer';
+import { useEditorSettings } from '~/stores/editor';
+
+import RevisionBody from '../Page/RevisionBody';
+import { withUnstatedContainers } from '../UnstatedUtils';
+
+
+declare const interceptorManager: InterceptorManager;
 
 
 type Props = {
-  appContainer: AppContainer,
-  editorContainer: EditorContainer,
-
+  growiRenderer: GrowiRenderer,
   markdown?: string,
   pagePath?: string,
-  inputRef?: React.RefObject<HTMLDivElement>,
   isMathJaxEnabled?: boolean,
   renderMathJaxOnInit?: boolean,
-  onScroll?: UIEventHandler<HTMLDivElement>,
+  onScroll?: (scrollTop: number) => void,
 }
 
+type UnstatedProps = Props & { appContainer: AppContainer };
 
-const Preview = (props: Props): JSX.Element => {
+const Preview = React.forwardRef((props: UnstatedProps, ref: RefObject<HTMLDivElement>): JSX.Element => {
 
   const {
-    appContainer,
+    growiRenderer,
     markdown, pagePath,
-    inputRef,
-    onScroll,
   } = props;
 
   const [html, setHtml] = useState('');
 
-  const { interceptorManager } = appContainer;
-  const growiRenderer = props.appContainer.getRenderer('editor');
+  const { data: editorSettings } = useEditorSettings();
 
   const context = useMemo(() => {
     return {
       markdown,
       pagePath,
+      renderDrawioInRealtime: editorSettings?.renderDrawioInRealtime,
       currentPathname: decodeURIComponent(window.location.pathname),
       parsedHTML: null,
     };
-  }, [markdown, pagePath]);
+  }, [markdown, pagePath, editorSettings?.renderDrawioInRealtime]);
 
   const renderPreview = useCallback(async() => {
     if (interceptorManager != null) {
@@ -61,7 +61,7 @@ const Preview = (props: Props): JSX.Element => {
     }
 
     setHtml(context.parsedHTML ?? '');
-  }, [interceptorManager, context, growiRenderer]);
+  }, [context, growiRenderer]);
 
   useEffect(() => {
     if (markdown == null) {
@@ -82,31 +82,36 @@ const Preview = (props: Props): JSX.Element => {
         parsedHTML: html,
       });
     }
-  }, [context, html, interceptorManager]);
+  }, [context, html]);
 
   return (
-    <Subscribe to={[EditorContainer]}>
-      { editorContainer => (
-        <div
-          className="page-editor-preview-body"
-          ref={inputRef}
-          onScroll={onScroll}
-        >
-          <RevisionBody
-            {...props}
-            html={html}
-            renderMathJaxInRealtime={editorContainer.state.previewOptions.renderMathJaxInRealtime}
-          />
-        </div>
-      ) }
-    </Subscribe>
+    <div
+      className="page-editor-preview-body"
+      ref={ref}
+      onScroll={(event: SyntheticEvent<HTMLDivElement>) => {
+        if (props.onScroll != null) {
+          props.onScroll(event.currentTarget.scrollTop);
+        }
+      }}
+    >
+      <RevisionBody
+        {...props}
+        html={html}
+        renderMathJaxInRealtime={editorSettings?.renderMathJaxInRealtime}
+      />
+    </div>
   );
 
-};
+});
 
 /**
  * Wrapper component for using unstated
  */
 const PreviewWrapper = withUnstatedContainers(Preview, [AppContainer]);
 
-export default PreviewWrapper;
+// eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
+const PreviewWrapper2 = React.forwardRef((props: Props, ref: RefObject<HTMLDivElement>): JSX.Element => {
+  return <PreviewWrapper ref={ref} {...props} />;
+});
+
+export default PreviewWrapper2;

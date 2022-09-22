@@ -1,10 +1,11 @@
-import { Types } from 'mongoose';
 import { getModelSafely } from '@growi/core';
+import { Types } from 'mongoose';
+
 import loggerFactory from '../../utils/logger';
-import ActivityDefine from '../util/activityDefine';
 import Crowi from '../crowi';
 
-import { stringifySnapshot } from '~/models/serializers/in-app-notification-snapshot/page';
+// https://regex101.com/r/Ztxj2j/1
+const USERNAME_PATTERN = new RegExp(/\B@[\w@.-]+/g);
 
 const logger = loggerFactory('growi:service:CommentService');
 
@@ -36,15 +37,6 @@ class CommentService {
       try {
         const Page = getModelSafely('Page') || require('../models/page')(this.crowi);
         await Page.updateCommentCount(savedComment.page);
-
-        const page = await Page.findById(savedComment.page);
-        if (page == null) {
-          logger.error('Page is not found');
-          return;
-        }
-
-        const activity = await this.createActivity(savedComment, ActivityDefine.ACTION_COMMENT_CREATE);
-        await this.createAndSendNotifications(activity, page);
       }
       catch (err) {
         logger.error('Error occurred while handling the comment create event:\n', err);
@@ -53,10 +45,9 @@ class CommentService {
     });
 
     // update
-    this.commentEvent.on('update', async(updatedComment) => {
+    this.commentEvent.on('update', async() => {
       try {
         this.commentEvent.onUpdate();
-        await this.createActivity(updatedComment, ActivityDefine.ACTION_COMMENT_UPDATE);
       }
       catch (err) {
         logger.error('Error occurred while handling the comment update event:\n', err);
@@ -64,12 +55,12 @@ class CommentService {
     });
 
     // remove
-    this.commentEvent.on('remove', async(comment) => {
-      this.commentEvent.onRemove();
+    this.commentEvent.on('delete', async(removedComment) => {
+      this.commentEvent.onDelete();
 
       try {
         const Page = getModelSafely('Page') || require('../models/page')(this.crowi);
-        await Page.updateCommentCount(comment.page);
+        await Page.updateCommentCount(removedComment.page);
       }
       catch (err) {
         logger.error('Error occurred while updating the comment count:\n', err);
@@ -77,31 +68,29 @@ class CommentService {
     });
   }
 
-  private createActivity = async function(comment, action) {
-    const parameters = {
-      user: comment.creator,
-      targetModel: ActivityDefine.MODEL_PAGE,
-      target: comment.page,
-      eventModel: ActivityDefine.MODEL_COMMENT,
-      event: comment._id,
-      action,
-    };
-    const activity = await this.activityService.createByParameters(parameters);
-    return activity;
-  };
+  getMentionedUsers = async(commentId: Types.ObjectId): Promise<Types.ObjectId[]> => {
+    const Comment = getModelSafely('Comment') || require('../models/comment')(this.crowi);
+    const User = getModelSafely('User') || require('../models/user')(this.crowi);
 
-  private createAndSendNotifications = async function(activity, page) {
-    const snapshot = stringifySnapshot(page);
+    // Get comment by comment ID
+    const commentData = await Comment.findOne({ _id: commentId });
+    const { comment } = commentData;
 
-    // Get user to be notified
-    let targetUsers: Types.ObjectId[] = [];
-    targetUsers = await activity.getNotificationTargetUsers();
+    const usernamesFromComment = comment.match(USERNAME_PATTERN);
 
-    // Create and send notifications
-    await this.inAppNotificationService.upsertByActivity(targetUsers, activity, snapshot);
-    await this.inAppNotificationService.emitSocketIo(targetUsers);
-  };
+    // Get username from comment and remove duplicate username
+    const mentionedUsernames = [...new Set(usernamesFromComment?.map((username) => {
+      return username.slice(1);
+    }))];
+
+    // Get mentioned users ID
+    const mentionedUserIDs = await User.find({ username: { $in: mentionedUsernames } });
+    return mentionedUserIDs?.map((user) => {
+      return user._id;
+    });
+  }
 
 }
+
 
 module.exports = CommentService;

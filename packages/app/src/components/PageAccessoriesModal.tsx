@@ -1,25 +1,25 @@
 import React, { useEffect, useMemo, useState } from 'react';
 
+import { useTranslation } from 'react-i18next';
 import {
   Modal, ModalBody, ModalHeader,
 } from 'reactstrap';
 
-import { useTranslation } from 'react-i18next';
 
+import AppContainer from '~/client/services/AppContainer';
 import { useIsGuestUser, useIsSharedUser } from '~/stores/context';
 import { usePageAccessoriesModal, PageAccessoriesModalContents } from '~/stores/modal';
-import AppContainer from '~/client/services/AppContainer';
 
-import HistoryIcon from './Icons/HistoryIcon';
+import { CustomNavTab } from './CustomNavigation/CustomNav';
+import CustomTabContent from './CustomNavigation/CustomTabContent';
+import ExpandOrContractButton from './ExpandOrContractButton';
 import AttachmentIcon from './Icons/AttachmentIcon';
+import HistoryIcon from './Icons/HistoryIcon';
 import ShareLinkIcon from './Icons/ShareLinkIcon';
-import { withUnstatedContainers } from './UnstatedUtils';
 import PageAttachment from './PageAttachment';
 import PageHistory from './PageHistory';
 import ShareLink from './ShareLink/ShareLink';
-import { CustomNavTab } from './CustomNavigation/CustomNav';
-import ExpandOrContractButton from './ExpandOrContractButton';
-import CustomTabContent from './CustomNavigation/CustomTabContent';
+import { withUnstatedContainers } from './UnstatedUtils';
 
 
 type Props = {
@@ -106,6 +106,7 @@ const PageAccessoriesModal = (props: Props): JSX.Element => {
       size="xl"
       isOpen={isOpened}
       toggle={close}
+      data-testid="page-accessories-modal"
       className={`grw-page-accessories-modal ${isWindowExpanded ? 'grw-modal-expanded' : ''} `}
     >
       <ModalHeader className="p-0" toggle={close} close={buttons}>

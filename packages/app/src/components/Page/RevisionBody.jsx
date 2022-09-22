@@ -1,6 +1,6 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 
+import PropTypes from 'prop-types';
 import { debounce } from 'throttle-debounce';
 
 export default class RevisionBody extends React.PureComponent {
@@ -58,11 +58,8 @@ export default class RevisionBody extends React.PureComponent {
     const additionalClassName = this.props.additionalClassName || '';
     return (
       <div
-        ref={(elm) => {
-          this.element = elm;
-          if (this.props.inputRef != null) {
-            this.props.inputRef(elm);
-          }
+        ref={(elem) => {
+          this.element = elem;
         }}
         id="wiki"
         className={`wiki ${additionalClassName}`}
@@ -76,7 +73,6 @@ export default class RevisionBody extends React.PureComponent {
 
 RevisionBody.propTypes = {
   html: PropTypes.string,
-  inputRef: PropTypes.func, // for getting div element
   isMathJaxEnabled: PropTypes.bool,
   renderMathJaxOnInit: PropTypes.bool,
   renderMathJaxInRealtime: PropTypes.bool,

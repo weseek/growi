@@ -1,14 +1,17 @@
 import React from 'react';
-import PropTypes from 'prop-types';
-import { withTranslation } from 'react-i18next';
 
-import { AsyncTypeahead } from 'react-bootstrap-typeahead';
-import { debounce } from 'throttle-debounce';
 import { UserPicture } from '@growi/ui';
-import { withUnstatedContainers } from '../../UnstatedUtils';
-import AppContainer from '~/client/services/AppContainer';
+import PropTypes from 'prop-types';
+import { AsyncTypeahead } from 'react-bootstrap-typeahead';
+import { useTranslation } from 'react-i18next';
+import { debounce } from 'throttle-debounce';
+
 import AdminUserGroupDetailContainer from '~/client/services/AdminUserGroupDetailContainer';
+import AppContainer from '~/client/services/AppContainer';
 import { toastSuccess, toastError } from '~/client/util/apiNotification';
+import Xss from '~/services/xss';
+
+import { withUnstatedContainers } from '../../UnstatedUtils';
 
 class UserGroupUserFormByInput extends React.Component {
 
@@ -23,7 +26,7 @@ class UserGroupUserFormByInput extends React.Component {
       searchError: null,
     };
 
-    this.xss = window.xss;
+    this.xss = new Xss();
 
     this.addUserBySubmit = this.addUserBySubmit.bind(this);
     this.validateForm = this.validateForm.bind(this);
@@ -44,12 +47,16 @@ class UserGroupUserFormByInput extends React.Component {
 
     try {
       await adminUserGroupDetailContainer.addUserByUsername(userName);
+      await adminUserGroupDetailContainer.init();
+      await adminUserGroupDetailContainer.closeUserGroupUserModal();
       toastSuccess(`Added "${this.xss.process(userName)}" to "${this.xss.process(userGroup.name)}"`);
       this.setState({ inputUser: '' });
     }
     catch (err) {
       toastError(new Error(`Unable to add "${this.xss.process(userName)}" to "${this.xss.process(userGroup.name)}"`));
     }
+
+
   }
 
   validateForm() {
@@ -159,9 +166,14 @@ UserGroupUserFormByInput.propTypes = {
   adminUserGroupDetailContainer: PropTypes.instanceOf(AdminUserGroupDetailContainer).isRequired,
 };
 
+const UserGroupUserFormByInputWrapperFC = (props) => {
+  const { t } = useTranslation();
+  return <UserGroupUserFormByInput t={t} {...props} />;
+};
+
 /**
  * Wrapper component for using unstated
  */
-const UserGroupUserFormByInputWrapper = withUnstatedContainers(UserGroupUserFormByInput, [AppContainer, AdminUserGroupDetailContainer]);
+const UserGroupUserFormByInputWrapper = withUnstatedContainers(UserGroupUserFormByInputWrapperFC, [AppContainer, AdminUserGroupDetailContainer]);
 
-export default withTranslation()(UserGroupUserFormByInputWrapper);
+export default UserGroupUserFormByInputWrapper;

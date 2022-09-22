@@ -86,7 +86,7 @@ const SidebarNav: FC<Props> = (props: Props) => {
         <PrimaryItem contents={SidebarContentsType.RECENT} label="Recent Changes" iconName="update" onItemSelected={onItemSelected} />
         {/* <PrimaryItem id="tag" label="Tags" iconName="icon-tag" /> */}
         {/* <PrimaryItem id="favorite" label="Favorite" iconName="fa fa-bookmark-o" /> */}
-        <PrimaryItem contents={SidebarContentsType.TAG} label="Tags" iconName="tag" onItemSelected={onItemSelected} />
+        <PrimaryItem contents={SidebarContentsType.TAG} label="Tags" iconName="local_offer" onItemSelected={onItemSelected} />
         {/* <PrimaryItem id="favorite" label="Favorite" iconName="icon-star" /> */}
         {/* eslint-enable max-len */}
       </div>

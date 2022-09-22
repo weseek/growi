@@ -1,7 +1,7 @@
+import { getOrCreateModel } from '@growi/core';
 import { Types, Schema } from 'mongoose';
 import uniqueValidator from 'mongoose-unique-validator';
 
-import { getOrCreateModel } from '@growi/core';
 
 export interface Config {
   _id: Types.ObjectId;
@@ -135,6 +135,8 @@ export const defaultCrowiConfigs: { [key: string]: any } = {
   'customize:isEnabledStaleNotification': false,
   'customize:isAllReplyShown': false,
   'customize:isSearchScopeChildrenAsDefault': false,
+  'customize:isSidebarDrawerMode': false,
+  'customize:isSidebarClosedAtDockMode': false,
 
   'notification:owner-page:isEnabled': false,
   'notification:group-page:isEnabled': false,
@@ -189,11 +191,14 @@ export const defaultNotificationConfigs: { [key: string]: any } = {
 schema.statics.getLocalconfig = function(crowi) {
   const env = process.env;
 
+  const isDefaultLogo = crowi.configManager.getConfig('crowi', 'customize:isDefaultLogo');
+
   const localConfig = {
     crowi: {
       title: crowi.appService.getAppTitle(),
       url: crowi.appService.getSiteUrl(),
       confidential: crowi.appService.getAppConfidential(),
+      version: crowi.version,
     },
     upload: {
       image: crowi.fileUploadService.getIsUploadable(),
@@ -242,6 +247,14 @@ schema.statics.getLocalconfig = function(crowi) {
     globalLang: crowi.configManager.getConfig('crowi', 'app:globalLang'),
     pageLimitationL: crowi.configManager.getConfig('crowi', 'customize:showPageLimitationL'),
     pageLimitationXL: crowi.configManager.getConfig('crowi', 'customize:showPageLimitationXL'),
+    customizedLogoSrc: isDefaultLogo != null && !isDefaultLogo
+      ? crowi.configManager.getConfig('crowi', 'customize:customizedLogoSrc')
+      : null,
+    auditLogEnabled: crowi.configManager.getConfig('crowi', 'app:auditLogEnabled'),
+    activityExpirationSeconds: crowi.configManager.getConfig('crowi', 'app:activityExpirationSeconds'),
+    auditLogAvailableActions: crowi.activityService.getAvailableActions(false),
+    isSidebarDrawerMode: crowi.configManager.getConfig('crowi', 'customize:isSidebarDrawerMode'),
+    isSidebarClosedAtDockMode: crowi.configManager.getConfig('crowi', 'customize:isSidebarClosedAtDockMode'),
   };
 
   return localConfig;

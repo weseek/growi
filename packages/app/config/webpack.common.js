@@ -2,14 +2,15 @@
  * @author: Yuki Takei <yuki@weseek.co.jp>
  */
 const path = require('path');
+
+const LodashModuleReplacementPlugin = require('lodash-webpack-plugin');
+const TsconfigPathsPlugin = require('tsconfig-paths-webpack-plugin');
 const webpack = require('webpack');
 
 /*
   * Webpack Plugins
   */
 const WebpackAssetsManifest = require('webpack-assets-manifest');
-const LodashModuleReplacementPlugin = require('lodash-webpack-plugin');
-const TsconfigPathsPlugin = require('tsconfig-paths-webpack-plugin');
 
 /*
   * Webpack configuration
@@ -24,6 +25,7 @@ module.exports = (options) => {
       'js/app':                       './src/client/app',
       'js/admin':                     './src/client/admin',
       'js/nologin':                   './src/client/nologin',
+      'js/installer':                   './src/client/installer',
       'js/legacy':                    './src/client/legacy/crowi',
       'js/legacy-presentation':       './src/client/legacy/crowi-presentation',
       'js/plugin':                    './src/client/plugin',
@@ -60,7 +62,6 @@ module.exports = (options) => {
       // require("jquery") is external and available
       //  on the global var jQuery
       jquery: 'jQuery',
-      emojione: 'emojione',
       hljs: 'hljs',
       'dtrace-provider': 'dtrace-provider',
     },
@@ -75,6 +76,7 @@ module.exports = (options) => {
     },
     node: {
       fs: 'empty',
+      module: 'empty',
     },
     module: {
       rules: options.module.rules.concat([

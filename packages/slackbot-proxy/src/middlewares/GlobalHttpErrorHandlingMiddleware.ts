@@ -1,7 +1,6 @@
 import {
   Err, Middleware, Next, PlatformContext, PlatformResponse,
 } from '@tsed/common';
-
 import { HttpError, isHttpError } from 'http-errors';
 
 @Middleware()

@@ -1,7 +1,10 @@
 import React, { useCallback, useEffect, useState } from 'react';
+
+import { defaultSupportedCommandsNameForBroadcastUse, defaultSupportedCommandsNameForSingleUse, defaultSupportedSlackEventActions } from '@growi/slack';
 import PropTypes from 'prop-types';
 import { useTranslation } from 'react-i18next';
-import { defaultSupportedCommandsNameForBroadcastUse, defaultSupportedCommandsNameForSingleUse, defaultSupportedSlackEventActions } from '@growi/slack';
+
+import { apiv3Put } from '~/client/util/apiv3-client';
 import loggerFactory from '~/utils/logger';
 
 import { toastSuccess, toastError } from '../../../client/util/apiNotification';
@@ -153,7 +156,7 @@ SinglePermissionSettingComponent.propTypes = {
 
 
 // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
-const ManageCommandsProcessWithoutProxy = ({ apiv3Put, commandPermission, eventActionsPermission }) => {
+const ManageCommandsProcessWithoutProxy = ({ commandPermission, eventActionsPermission }) => {
   const { t } = useTranslation();
   const [editingCommandPermission, setEditingCommandPermission] = useState({});
   const [editingEventActionsPermission, setEditingEventActionsPermission] = useState({});
@@ -267,7 +270,6 @@ const ManageCommandsProcessWithoutProxy = ({ apiv3Put, commandPermission, eventA
 };
 
 ManageCommandsProcessWithoutProxy.propTypes = {
-  apiv3Put: PropTypes.func,
   commandPermission: PropTypes.object,
   eventActionsPermission: PropTypes.object,
 };

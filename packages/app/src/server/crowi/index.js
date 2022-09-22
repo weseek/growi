@@ -1,40 +1,41 @@
 /* eslint-disable @typescript-eslint/no-this-alias */
 
-import path from 'path';
 import http from 'http';
-import mongoose from 'mongoose';
+import path from 'path';
 
 import { createTerminus } from '@godaddy/terminus';
-
 import { initMongooseGlobalSettings, getMongoUri, mongoOptions } from '@growi/core';
+import mongoose from 'mongoose';
+
+
 import pkg from '^/package.json';
 
+import { PageActionType } from '~/interfaces/page-operation';
 import CdnResourcesService from '~/services/cdn-resources-service';
-import InterceptorManager from '~/services/interceptor-manager';
 import Xss from '~/services/xss';
 import loggerFactory from '~/utils/logger';
 import { projectRoot } from '~/utils/project-dir-utils';
 
-import ConfigManager from '../service/config-manager';
-import AppService from '../service/app';
+import Activity from '../models/activity';
+import PageOperation from '../models/page-operation';
+import PageRedirect from '../models/page-redirect';
+import Tag from '../models/tag';
+import UserGroup from '../models/user-group';
 import AclService from '../service/acl';
-import SearchService from '../service/search';
+import AppService from '../service/app';
 import AttachmentService from '../service/attachment';
+import ConfigManager from '../service/config-manager';
+import { InstallerService } from '../service/installer';
 import PageService from '../service/page';
 import PageGrantService from '../service/page-grant';
 import PageOperationService from '../service/page-operation';
+import SearchService from '../service/search';
 import { SlackIntegrationService } from '../service/slack-integration';
 import { UserNotificationService } from '../service/user-notification';
-import { InstallerService } from '../service/installer';
-import Activity from '../models/activity';
-import UserGroup from '../models/user-group';
-import PageRedirect from '../models/page-redirect';
 
 const logger = loggerFactory('growi:crowi');
 const httpErrorHandler = require('../middlewares/http-error-handler');
-
 const models = require('../models');
-
 const PluginService = require('../plugins/plugin.service');
 
 const sep = path.sep;
@@ -72,7 +73,6 @@ function Crowi() {
   this.pageService = null;
   this.syncPageStatusService = null;
   this.cdnResourcesService = new CdnResourcesService();
-  this.interceptorManager = new InterceptorManager();
   this.slackIntegrationService = null;
   this.inAppNotificationService = null;
   this.activityService = null;
@@ -91,6 +91,7 @@ function Crowi() {
   this.events = {
     user: new (require('../events/user'))(this),
     page: new (require('../events/page'))(this),
+    activity: new (require('../events/activity'))(this),
     bookmark: new (require('../events/bookmark'))(this),
     comment: new (require('../events/comment'))(this),
     tag: new (require('../events/tag'))(this),
@@ -130,7 +131,7 @@ Crowi.prototype.init = async function() {
     this.setUpAcl(),
     this.setUpCustomize(),
     this.setUpRestQiitaAPI(),
-    this.setupUserGroup(),
+    this.setupUserGroupService(),
     this.setupExport(),
     this.setupImport(),
     this.setupPageService(),
@@ -148,6 +149,16 @@ Crowi.prototype.init = async function() {
 
   await this.autoInstall();
 };
+
+/**
+ * Execute functions that should be run after the express server is ready.
+ */
+Crowi.prototype.asyncAfterExpressServerReady = async function() {
+  if (this.pageOperationService != null) {
+    await this.pageOperationService.afterExpressServerReady();
+  }
+};
+
 
 Crowi.prototype.isPageId = function(pageId) {
   if (!pageId) {
@@ -281,6 +292,7 @@ Crowi.prototype.setupModels = async function() {
 
   // include models that independent from crowi
   allModels.Activity = Activity;
+  allModels.Tag = Tag;
   allModels.UserGroup = UserGroup;
   allModels.PageRedirect = PageRedirect;
 
@@ -310,10 +322,6 @@ Crowi.prototype.getSlack = function() {
 
 Crowi.prototype.getSlackLegacy = function() {
   return this.slackLegacy;
-};
-
-Crowi.prototype.getInterceptorManager = function() {
-  return this.interceptorManager;
 };
 
 Crowi.prototype.getGlobalNotificationService = function() {
@@ -399,12 +407,16 @@ Crowi.prototype.autoInstall = function() {
     admin: true,
   };
   const globalLang = this.configManager.getConfig('crowi', 'autoInstall:globalLang');
+  const allowGuestMode = this.configManager.getConfig('crowi', 'autoInstall:allowGuestMode');
   const serverDate = this.configManager.getConfig('crowi', 'autoInstall:serverDate');
 
   const installerService = new InstallerService(this);
 
   try {
-    installerService.install(firstAdminUserToSave, globalLang ?? 'en_US', serverDate);
+    installerService.install(firstAdminUserToSave, globalLang ?? 'en_US', {
+      allowGuestMode,
+      serverDate,
+    });
   }
   catch (err) {
     logger.warn('Automatic installation failed.', err);
@@ -463,6 +475,9 @@ Crowi.prototype.start = async function() {
 
   // setup Global Error Handlers
   this.setupGlobalErrorHandlers();
+
+  // Execute this asynchronously after the express server is ready so it does not block the ongoing process
+  this.asyncAfterExpressServerReady();
 
   return serverListening;
 };
@@ -644,7 +659,7 @@ Crowi.prototype.setUpRestQiitaAPI = async function() {
   }
 };
 
-Crowi.prototype.setupUserGroup = async function() {
+Crowi.prototype.setupUserGroupService = async function() {
   const UserGroupService = require('../service/user-group');
   if (this.userGroupService == null) {
     this.userGroupService = new UserGroupService(this);
@@ -682,7 +697,6 @@ Crowi.prototype.setupPageService = async function() {
   }
   if (this.pageOperationService == null) {
     this.pageOperationService = new PageOperationService(this);
-    // TODO: Remove this code when resuming feature is implemented
     await this.pageOperationService.init();
   }
 };
@@ -698,6 +712,7 @@ Crowi.prototype.setupActivityService = async function() {
   const ActivityService = require('../service/activity');
   if (this.activityService == null) {
     this.activityService = new ActivityService(this);
+    await this.activityService.createTtlIndex();
   }
 };
 

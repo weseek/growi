@@ -1,40 +1,39 @@
 import React, {
-  forwardRef,
-  ForwardRefRenderFunction, memo, useCallback, useImperativeHandle, useRef,
+  forwardRef, useState,
+  ForwardRefRenderFunction, memo, useCallback, useImperativeHandle, useRef, useEffect,
 } from 'react';
 
-import { useTranslation } from 'react-i18next';
-import { CustomInput } from 'reactstrap';
 
-import Clamp from 'react-multiline-clamp';
+import { DevidedPagePath } from '@growi/core';
+import { UserPicture, PageListMeta } from '@growi/ui';
 import { format } from 'date-fns';
+import { useTranslation } from 'react-i18next';
+import Clamp from 'react-multiline-clamp';
+import { CustomInput } from 'reactstrap';
 import urljoin from 'url-join';
 
-import { UserPicture, PageListMeta } from '@growi/ui';
-import { DevidedPagePath } from '@growi/core';
-
-import { useSWRxPageInfo } from '../../stores/page';
 
 import { ISelectable } from '~/client/interfaces/selectable-all';
 import { bookmark, unbookmark } from '~/client/services/page-operation';
-import { useIsDeviceSmallerThanLg } from '~/stores/ui';
 import {
-  usePageRenameModal, usePageDuplicateModal, usePageDeleteModal, usePutBackPageModal,
-} from '~/stores/modal';
-import {
-  IPageInfoAll, IPageInfoForEntity, IPageInfoForListing, IPageWithMeta, isIPageInfoForListing, isIPageInfoForEntity,
+  IPageInfoAll, isIPageInfoForListing, isIPageInfoForEntity, IPageWithMeta, IPageInfoForListing,
 } from '~/interfaces/page';
-import { IPageSearchMeta, isIPageSearchMeta } from '~/interfaces/search';
+import { IPageSearchMeta, IPageWithSearchMeta, isIPageSearchMeta } from '~/interfaces/search';
 import {
   OnDuplicatedFunction, OnRenamedFunction, OnDeletedFunction, OnPutBackedFunction,
 } from '~/interfaces/ui';
 import LinkedPagePath from '~/models/linked-page-path';
+import {
+  usePageRenameModal, usePageDuplicateModal, usePageDeleteModal, usePutBackPageModal,
+} from '~/stores/modal';
+import { useIsDeviceSmallerThanLg } from '~/stores/ui';
 
+import { useSWRxPageInfo } from '../../stores/page';
 import { ForceHideMenuItems, PageItemControl } from '../Common/Dropdown/PageItemControl';
 import PagePathHierarchicalLink from '../PagePathHierarchicalLink';
 
 type Props = {
-  page: IPageWithMeta<IPageInfoForEntity> | IPageWithMeta<IPageSearchMeta> | IPageWithMeta<IPageInfoForListing & IPageSearchMeta>,
+  page: IPageWithSearchMeta | IPageWithMeta<IPageInfoForListing & IPageSearchMeta>,
   isSelected?: boolean, // is item selected(focused)
   isEnableActions?: boolean,
   forceHideMenuItems?: ForceHideMenuItems,
@@ -49,12 +48,14 @@ type Props = {
 
 const PageListItemLSubstance: ForwardRefRenderFunction<ISelectable, Props> = (props: Props, ref): JSX.Element => {
   const {
-    // todo: refactoring variable name to clear what changed
     page: { data: pageData, meta: pageMeta }, isSelected, isEnableActions,
     forceHideMenuItems,
     showPageUpdatedTime,
     onClickItem, onCheckboxChanged, onPageDuplicated, onPageRenamed, onPageDeleted, onPagePutBacked,
   } = props;
+
+  const [likerCount, setLikerCount] = useState(pageData.liker.length);
+  const [bookmarkCount, setBookmarkCount] = useState(pageMeta && pageMeta.bookmarkCount ? pageMeta.bookmarkCount : 0);
 
   const { t } = useTranslation();
 
@@ -97,6 +98,14 @@ const PageListItemLSubstance: ForwardRefRenderFunction<ISelectable, Props> = (pr
 
   const lastUpdateDate = format(new Date(pageData.updatedAt), 'yyyy/MM/dd HH:mm:ss');
 
+  useEffect(() => {
+    if (isIPageInfoForEntity(pageInfo)) {
+      // likerCount
+      setLikerCount(pageInfo.likerIds?.length ?? 0);
+      // bookmarkCount
+      setBookmarkCount(pageInfo.bookmarkCount ?? 0);
+    }
+  }, [pageInfo]);
 
   // click event handler
   const clickHandler = useCallback(() => {
@@ -147,22 +156,6 @@ const PageListItemLSubstance: ForwardRefRenderFunction<ISelectable, Props> = (pr
 
   const shouldDangerouslySetInnerHTMLForPaths = elasticSearchResult != null && elasticSearchResult.highlightedPath != null;
 
-  let likerCount;
-  if (isSelected && isIPageInfoForEntity(pageInfo)) {
-    likerCount = pageInfo.likerIds?.length;
-  }
-  else {
-    likerCount = pageData.liker.length;
-  }
-
-  let bookmarkCount;
-  if (isSelected && isIPageInfoForEntity(pageInfo)) {
-    bookmarkCount = pageInfo.bookmarkCount;
-  }
-  else {
-    bookmarkCount = pageMeta?.bookmarkCount;
-  }
-
   const canRenderESSnippet = elasticSearchResult != null && elasticSearchResult.snippet != null;
   const canRenderRevisionSnippet = revisionShortBody != null;
 
@@ -170,11 +163,10 @@ const PageListItemLSubstance: ForwardRefRenderFunction<ISelectable, Props> = (pr
     <li
       key={pageData._id}
       className={`list-group-item d-flex align-items-center px-3 px-md-1 ${styleListGroupItem} ${styleActive}`}
+      data-testid="page-list-item-L"
+      onClick={clickHandler}
     >
-      <div
-        className="text-break w-100"
-        onClick={clickHandler}
-      >
+      <div className="text-break w-100">
         <div className="d-flex">
           {/* checkbox */}
           {onCheckboxChanged != null && (
@@ -234,6 +226,7 @@ const PageListItemLSubstance: ForwardRefRenderFunction<ISelectable, Props> = (pr
               {/* doropdown icon includes page control buttons */}
               <div className="ml-auto">
                 <PageItemControl
+                  alignRight
                   pageId={pageData._id}
                   pageInfo={isIPageInfoForListing(pageMeta) ? pageMeta : undefined}
                   isEnableActions={isEnableActions}

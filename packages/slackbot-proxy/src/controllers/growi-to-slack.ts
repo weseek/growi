@@ -1,28 +1,25 @@
 import {
+  verifyGrowiToSlackRequest, getConnectionStatuses, getConnectionStatus, REQUEST_TIMEOUT_FOR_PTOG, generateWebClient, BlockKitRequest,
+} from '@growi/slack';
+import { ErrorCode, WebAPICallResult } from '@slack/web-api';
+import {
   Controller, Get, Post, Inject, Req, Res, UseBefore, PathParams, Put, QueryParams,
 } from '@tsed/common';
 import axios from 'axios';
-import createError from 'http-errors';
 import { addHours } from 'date-fns';
+import createError from 'http-errors';
 
-import { ErrorCode, WebAPICallResult } from '@slack/web-api';
-
-import {
-  verifyGrowiToSlackRequest, getConnectionStatuses, getConnectionStatus, REQUEST_TIMEOUT_FOR_PTOG, generateWebClient, BlockKitRequest,
-} from '@growi/slack';
-
-import { WebclientRes, AddWebclientResponseToRes } from '~/middlewares/growi-to-slack/add-webclient-response-to-res';
 
 import { GrowiReq } from '~/interfaces/growi-to-slack/growi-req';
+import { WebclientRes, AddWebclientResponseToRes } from '~/middlewares/growi-to-slack/add-webclient-response-to-res';
 import { InstallationRepository } from '~/repositories/installation';
-import { RelationRepository } from '~/repositories/relation';
 import { OrderRepository } from '~/repositories/order';
-
+import { RelationRepository } from '~/repositories/relation';
 import { InstallerService } from '~/services/InstallerService';
-import loggerFactory from '~/utils/logger';
-import { ViewInteractionPayloadDelegator } from '~/services/growi-uri-injector/ViewInteractionPayloadDelegator';
 import { ActionsBlockPayloadDelegator } from '~/services/growi-uri-injector/ActionsBlockPayloadDelegator';
 import { SectionBlockPayloadDelegator } from '~/services/growi-uri-injector/SectionBlockPayloadDelegator';
+import { ViewInteractionPayloadDelegator } from '~/services/growi-uri-injector/ViewInteractionPayloadDelegator';
+import loggerFactory from '~/utils/logger';
 
 
 const logger = loggerFactory('slackbot-proxy:controllers:growi-to-slack');

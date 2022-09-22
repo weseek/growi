@@ -1,4 +1,4 @@
-# syntax = docker/dockerfile:1
+# syntax = docker/dockerfile:1.4
 
 ##
 ## packages-json-picker
@@ -103,18 +103,16 @@ ENV NODE_ENV production
 ENV optDir /opt
 ENV appDir ${optDir}
 
-# copy artifacts
-COPY --from=deps-resolver-prod --chown=node:node \
-  ${optDir}/dependencies.tar ${appDir}/
-COPY --from=builder --chown=node:node \
-  ${optDir}/packages.tar ${appDir}/
-
-RUN chown node:node ${appDir}
-
 USER node
 
-# extract artifacts
 WORKDIR ${appDir}
+# copy artifacts
+COPY --from=deps-resolver-prod --chown=node:node \
+  ${optDir}/dependencies.tar ./
+COPY --from=builder --chown=node:node \
+  ${optDir}/packages.tar ./
+
+# extract artifacts
 RUN tar -xf dependencies.tar
 RUN tar -xf packages.tar
 RUN rm dependencies.tar packages.tar

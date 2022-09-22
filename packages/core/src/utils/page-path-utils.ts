@@ -1,6 +1,7 @@
 import nodePath from 'path';
 
 import escapeStringRegexp from 'escape-string-regexp';
+
 import { addTrailingSlash } from './path-utils';
 
 /**
@@ -58,6 +59,14 @@ export const isUserPage = (path: string): boolean => {
   }
 
   return false;
+};
+
+/**
+ * Whether path is the top page of users
+ * @param path
+ */
+export const isTrashTopPage = (path: string): boolean => {
+  return path === '/trash';
 };
 
 /**
@@ -265,4 +274,24 @@ export const isPathAreaOverlap = (pathToTest: string, pathToBeTested: string): b
  */
 export const canMoveByPath = (fromPath: string, toPath: string): boolean => {
   return !isPathAreaOverlap(fromPath, toPath);
+};
+
+/**
+ * check if string has '/' in it
+ */
+export const hasSlash = (str: string): boolean => {
+  return str.includes('/');
+};
+
+/**
+ * Generate RegExp instance for one level lower path
+ */
+export const generateChildrenRegExp = (path: string): RegExp => {
+  // https://regex101.com/r/laJGzj/1
+  // ex. /any_level1
+  if (isTopPage(path)) return new RegExp(/^\/[^/]+$/);
+
+  // https://regex101.com/r/mrDJrx/1
+  // ex. /parent/any_child OR /any_level1
+  return new RegExp(`^${path}(\\/[^/]+)\\/?$`);
 };

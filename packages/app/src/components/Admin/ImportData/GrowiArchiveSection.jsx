@@ -1,14 +1,15 @@
 import React, { Fragment } from 'react';
+
 import PropTypes from 'prop-types';
-import { withTranslation } from 'react-i18next';
+import { useTranslation } from 'react-i18next';
 import * as toastr from 'toastr';
 
-import { withUnstatedContainers } from '../../UnstatedUtils';
-import AppContainer from '~/client/services/AppContainer';
+import { apiv3Delete, apiv3Get } from '~/client/util/apiv3-client';
+
 // import { toastSuccess, toastError } from '~/client/util/apiNotification';
 
-import UploadForm from './GrowiArchive/UploadForm';
 import ImportForm from './GrowiArchive/ImportForm';
+import UploadForm from './GrowiArchive/UploadForm';
 
 class GrowiArchiveSection extends React.Component {
 
@@ -32,7 +33,7 @@ class GrowiArchiveSection extends React.Component {
 
   async componentWillMount() {
     // get uploaded file status
-    const res = await this.props.appContainer.apiv3Get('/import/status');
+    const res = await apiv3Get('/import/status');
 
     if (res.data.zipFileStat != null) {
       const { fileName, innerFileStats } = res.data.zipFileStat;
@@ -55,7 +56,7 @@ class GrowiArchiveSection extends React.Component {
   async discardData() {
     try {
       const { fileName } = this.state;
-      await this.props.appContainer.apiv3Delete('/import/all');
+      await apiv3Delete('/import/all');
       this.resetState();
 
       // TODO: toastSuccess, toastError
@@ -149,12 +150,12 @@ class GrowiArchiveSection extends React.Component {
 
 GrowiArchiveSection.propTypes = {
   t: PropTypes.func.isRequired, // i18next
-  appContainer: PropTypes.instanceOf(AppContainer).isRequired,
 };
 
-/**
- * Wrapper component for using unstated
- */
-const GrowiArchiveSectionWrapper = withUnstatedContainers(GrowiArchiveSection, [AppContainer]);
+const GrowiArchiveSectionWrapperFc = (props) => {
+  const { t } = useTranslation();
 
-export default withTranslation()(GrowiArchiveSectionWrapper);
+  return <GrowiArchiveSection t={t} {...props} />;
+};
+
+export default GrowiArchiveSectionWrapperFc;

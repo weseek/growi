@@ -1,16 +1,17 @@
-
 import React, { Fragment } from 'react';
-import PropTypes from 'prop-types';
-import { withTranslation } from 'react-i18next';
 
-import { withUnstatedContainers } from '../UnstatedUtils';
-import { toastError } from '~/client/util/apiNotification';
+import PropTypes from 'prop-types';
+import { useTranslation } from 'react-i18next';
+
 
 import AppContainer from '~/client/services/AppContainer';
-import PersonalContainer from '~/client/services/PersonalContainer';
-import ExternalAccountRow from './ExternalAccountRow';
+import { useSWRxPersonalExternalAccounts } from '~/stores/personal-settings';
+
+import { withUnstatedContainers } from '../UnstatedUtils';
+
 import AssociateModal from './AssociateModal';
 import DisassociateModal from './DisassociateModal';
+import ExternalAccountRow from './ExternalAccountRow';
 
 class ExternalAccountLinkedMe extends React.Component {
 
@@ -27,15 +28,6 @@ class ExternalAccountLinkedMe extends React.Component {
     this.closeAssociateModal = this.closeAssociateModal.bind(this);
     this.openDisassociateModal = this.openDisassociateModal.bind(this);
     this.closeDisassociateModal = this.closeDisassociateModal.bind(this);
-  }
-
-  async componentDidMount() {
-    try {
-      await this.props.personalContainer.retrieveExternalAccounts();
-    }
-    catch (err) {
-      toastError(err);
-    }
   }
 
   openAssociateModal() {
@@ -62,13 +54,17 @@ class ExternalAccountLinkedMe extends React.Component {
   }
 
   render() {
-    const { t, personalContainer } = this.props;
-    const { externalAccounts } = personalContainer.state;
+    const { t, personalExternalAccounts } = this.props;
 
     return (
       <Fragment>
         <h2 className="border-bottom my-4">
-          <button type="button" className="btn btn-outline-secondary btn-sm pull-right" onClick={this.openAssociateModal}>
+          <button
+            type="button"
+            data-testid="grw-external-account-add-button"
+            className="btn btn-outline-secondary btn-sm pull-right"
+            onClick={this.openAssociateModal}
+          >
             <i className="icon-plus" aria-hidden="true" />
             Add
           </button>
@@ -87,7 +83,7 @@ class ExternalAccountLinkedMe extends React.Component {
             </tr>
           </thead>
           <tbody>
-            {externalAccounts !== 0 && externalAccounts.map(account => (
+            {personalExternalAccounts != null && personalExternalAccounts.length > 0 && personalExternalAccounts.map(account => (
               <ExternalAccountRow
                 account={account}
                 key={account._id}
@@ -117,12 +113,22 @@ class ExternalAccountLinkedMe extends React.Component {
 
 }
 
-const ExternalAccountLinkedMeWrapper = withUnstatedContainers(ExternalAccountLinkedMe, [AppContainer, PersonalContainer]);
-
 ExternalAccountLinkedMe.propTypes = {
   t: PropTypes.func.isRequired, // i18next
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
-  personalContainer: PropTypes.instanceOf(PersonalContainer).isRequired,
+  personalExternalAccounts: PropTypes.arrayOf(PropTypes.object),
 };
 
-export default withTranslation()(ExternalAccountLinkedMeWrapper);
+const ExternalAccountLinkedMeWrapperFC = (props) => {
+  const { t } = useTranslation();
+  const { data: personalExternalAccountsData } = useSWRxPersonalExternalAccounts();
+
+  return <ExternalAccountLinkedMe t={t} personalExternalAccounts={personalExternalAccountsData} {...props} />;
+};
+
+/**
+ * Wrapper component for using unstated
+ */
+const ExternalAccountLinkedMeWrapper = withUnstatedContainers(ExternalAccountLinkedMeWrapperFC, [AppContainer]);
+
+export default ExternalAccountLinkedMeWrapper;

@@ -1,20 +1,22 @@
 import { pagePathUtils } from '@growi/core';
-import loggerFactory from '~/utils/logger';
 
-import { AllSubscriptionStatusType } from '~/interfaces/subscription';
+import { SupportedAction, SupportedTargetModel } from '~/interfaces/activity';
+import { AllSubscriptionStatusType, SubscriptionStatusType } from '~/interfaces/subscription';
+import { generateAddActivityMiddleware } from '~/server/middlewares/add-activity';
 import Subscription from '~/server/models/subscription';
+import UserGroup from '~/server/models/user-group';
+import loggerFactory from '~/utils/logger';
 
 import { apiV3FormValidator } from '../../middlewares/apiv3-form-validator';
 
 const logger = loggerFactory('growi:routes:apiv3:page'); // eslint-disable-line no-unused-vars
 
 const express = require('express');
-const { body, query } = require('express-validator');
+const { body, query, param } = require('express-validator');
 
 const router = express.Router();
-const { convertToNewAffiliationPath } = pagePathUtils;
+const { convertToNewAffiliationPath, isTopPage } = pagePathUtils;
 const ErrorV3 = require('../../models/vo/error-apiv3');
-
 
 /**
  * @swagger
@@ -161,11 +163,15 @@ module.exports = (crowi) => {
   const loginRequiredStrictly = require('../../middlewares/login-required')(crowi);
   const csrf = require('../../middlewares/csrf')(crowi);
   const certifySharedPage = require('../../middlewares/certify-shared-page')(crowi);
+  const addActivity = generateAddActivityMiddleware(crowi);
+
+  const configManager = crowi.configManager;
 
   const globalNotificationService = crowi.getGlobalNotificationService();
-  const socketIoService = crowi.socketIoService;
   const { Page, GlobalNotificationSetting, Bookmark } = crowi.models;
   const { pageService, exportService } = crowi;
+
+  const activityEvent = crowi.event('activity');
 
   const validator = {
     getPage: [
@@ -178,6 +184,17 @@ module.exports = (crowi) => {
     ],
     info: [
       query('pageId').isMongoId().withMessage('pageId is required'),
+    ],
+    isGrantNormalized: [
+      query('pageId').isMongoId().withMessage('pageId is required'),
+    ],
+    applicableGrant: [
+      query('pageId').isMongoId().withMessage('pageId is required'),
+    ],
+    updateGrant: [
+      param('pageId').isMongoId().withMessage('pageId is required'),
+      body('grant').isInt().withMessage('grant is required'),
+      body('grantedGroup').optional().isMongoId().withMessage('grantedGroup must be a mongo id'),
     ],
     export: [
       query('format').isString().isIn(['md', 'pdf']),
@@ -202,6 +219,9 @@ module.exports = (crowi) => {
     ],
     subscribeStatus: [
       query('pageId').isString(),
+    ],
+    contentWidth: [
+      body('expandContentWidth').isBoolean(),
     ],
   };
 
@@ -233,7 +253,8 @@ module.exports = (crowi) => {
    *                schema:
    *                  $ref: '#/components/schemas/Page'
    */
-  router.get('/', accessTokenParser, loginRequired, validator.getPage, apiV3FormValidator, async(req, res) => {
+  router.get('/', certifySharedPage, accessTokenParser, loginRequired, validator.getPage, apiV3FormValidator, async(req, res) => {
+    const { user } = req;
     const { pageId, path } = req.query;
 
     if (pageId == null && path == null) {
@@ -243,10 +264,10 @@ module.exports = (crowi) => {
     let page;
     try {
       if (pageId != null) { // prioritized
-        page = await Page.findByIdAndViewer(pageId, req.user);
+        page = await Page.findByIdAndViewer(pageId, user);
       }
       else {
-        page = await Page.findByPathAndViewer(path, req.user);
+        page = await Page.findByPathAndViewer(path, user);
       }
     }
     catch (err) {
@@ -294,7 +315,7 @@ module.exports = (crowi) => {
    *                schema:
    *                  $ref: '#/components/schemas/Page'
    */
-  router.put('/likes', accessTokenParser, loginRequiredStrictly, csrf, validator.likes, apiV3FormValidator, async(req, res) => {
+  router.put('/likes', accessTokenParser, loginRequiredStrictly, csrf, addActivity, validator.likes, apiV3FormValidator, async(req, res) => {
     const { pageId, bool: isLiked } = req.body;
 
     let page;
@@ -318,13 +339,17 @@ module.exports = (crowi) => {
 
     const result = { page };
     result.seenUser = page.seenUsers;
+
+    const parameters = {
+      targetModel: SupportedTargetModel.MODEL_PAGE,
+      target: page,
+      action: isLiked ? SupportedAction.ACTION_PAGE_LIKE : SupportedAction.ACTION_PAGE_UNLIKE,
+    };
+    activityEvent.emit('update', res.locals.activity._id, parameters, page);
+
     res.apiv3({ result });
 
     if (isLiked) {
-      const pageEvent = crowi.event('page');
-      // in-app notification
-      pageEvent.emit('like', page, req.user);
-
       try {
         // global notification
         await globalNotificationService.fire(GlobalNotificationSetting.EVENT.PAGE_LIKE, page, req.user);
@@ -380,6 +405,160 @@ module.exports = (crowi) => {
   });
 
   /**
+   * @swagger
+   *
+   *    /page/is-grant-normalized:
+   *      get:
+   *        tags: [Page]
+   *        summary: /page/info
+   *        description: Retrieve current page's isGrantNormalized value
+   *        operationId: getIsGrantNormalized
+   *        parameters:
+   *          - name: pageId
+   *            in: query
+   *            description: page id
+   *            schema:
+   *              $ref: '#/components/schemas/Page/properties/_id'
+   *        responses:
+   *          200:
+   *            description: Successfully retrieved current isGrantNormalized.
+   *            content:
+   *              application/json:
+   *                schema:
+   *                  type: object
+   *                  properties:
+   *                    isGrantNormalized:
+   *                      type: boolean
+   *          400:
+   *            description: Bad request. Page is unreachable or empty.
+   *          500:
+   *            description: Internal server error.
+   */
+  router.get('/is-grant-normalized', loginRequiredStrictly, validator.isGrantNormalized, apiV3FormValidator, async(req, res) => {
+    const { pageId } = req.query;
+
+    const Page = crowi.model('Page');
+    const page = await Page.findByIdAndViewer(pageId, req.user, null, false);
+
+    if (page == null) {
+      return res.apiv3Err(new ErrorV3('Page is unreachable or empty.', 'page_unreachable_or_empty'), 400);
+    }
+
+    const {
+      path, grant, grantedUsers, grantedGroup,
+    } = page;
+
+    let isGrantNormalized;
+    try {
+      isGrantNormalized = await crowi.pageGrantService.isGrantNormalized(req.user, path, grant, grantedUsers, grantedGroup, false, false);
+    }
+    catch (err) {
+      logger.error('Error occurred while processing isGrantNormalized.', err);
+      return res.apiv3Err(err, 500);
+    }
+
+    const currentPageUserGroup = await UserGroup.findOne({ _id: grantedGroup });
+    const currentPageGrant = {
+      grant,
+      grantedGroup: currentPageUserGroup != null
+        ? {
+          id: currentPageUserGroup._id,
+          name: currentPageUserGroup.name,
+        }
+        : null,
+    };
+
+    // page doesn't have parent page
+    if (page.parent == null) {
+      const grantData = {
+        isForbidden: false,
+        currentPageGrant,
+        parentPageGrant: null,
+      };
+      return res.apiv3({ isGrantNormalized, grantData });
+    }
+
+    const parentPage = await Page.findByIdAndViewer(page.parent, req.user, null, false);
+
+    // user isn't allowed to see parent's grant
+    if (parentPage == null) {
+      const grantData = {
+        isForbidden: true,
+        currentPageGrant,
+        parentPageGrant: null,
+      };
+      return res.apiv3({ isGrantNormalized, grantData });
+    }
+
+    const parentPageUserGroup = await UserGroup.findOne({ _id: parentPage.grantedGroup });
+    const parentPageGrant = {
+      grant: parentPage.grant,
+      grantedGroup: parentPageUserGroup != null
+        ? {
+          id: parentPageUserGroup._id,
+          name: parentPageUserGroup.name,
+        }
+        : null,
+    };
+
+    const grantData = {
+      isForbidden: false,
+      currentPageGrant,
+      parentPageGrant,
+    };
+
+    return res.apiv3({ isGrantNormalized, grantData });
+  });
+
+  router.get('/applicable-grant', loginRequiredStrictly, validator.applicableGrant, apiV3FormValidator, async(req, res) => {
+    const { pageId } = req.query;
+
+    const Page = crowi.model('Page');
+    const page = await Page.findByIdAndViewer(pageId, req.user, null);
+
+    if (page == null) {
+      return res.apiv3Err(new ErrorV3('Page is unreachable or empty.', 'page_unreachable_or_empty'), 400);
+    }
+
+    let data;
+    try {
+      data = await crowi.pageGrantService.calcApplicableGrantData(page, req.user);
+    }
+    catch (err) {
+      logger.error('Error occurred while processing calcApplicableGrantData.', err);
+      return res.apiv3Err(err, 500);
+    }
+
+    return res.apiv3(data);
+  });
+
+  router.put('/:pageId/grant', loginRequiredStrictly, validator.updateGrant, apiV3FormValidator, async(req, res) => {
+    const { pageId } = req.params;
+    const { grant, grantedGroup } = req.body;
+
+    const Page = crowi.model('Page');
+
+    const page = await Page.findByIdAndViewer(pageId, req.user, null, false);
+
+    if (page == null) {
+      return res.apiv3Err(new ErrorV3('Page is unreachable or empty.', 'page_unreachable_or_empty'), 400);
+    }
+
+    let data;
+    try {
+      const shouldUseV4Process = false;
+      const grantData = { grant, grantedGroup };
+      data = await Page.updateGrant(page, req.user, grantData, shouldUseV4Process);
+    }
+    catch (err) {
+      logger.error('Error occurred while processing calcApplicableGrantData.', err);
+      return res.apiv3Err(err, 500);
+    }
+
+    return res.apiv3(data);
+  });
+
+  /**
   * @swagger
   *
   *    /pages/export:
@@ -412,6 +591,11 @@ module.exports = (crowi) => {
 
       const Revision = crowi.model('Revision');
       revision = await Revision.findById(revisionIdForFind);
+
+      // Error if pageId and revison's pageIds do not match
+      if (page._id.toString() !== revision.pageId.toString()) {
+        return res.apiv3Err(new ErrorV3("Haven't the right to see the page."), 403);
+      }
     }
     catch (err) {
       logger.error('Failed to get page data', err);
@@ -432,6 +616,17 @@ module.exports = (crowi) => {
     res.set({
       'Content-Disposition': `attachment;filename*=UTF-8''${fileName}.${format}`,
     });
+
+    const parameters = {
+      ip:  req.ip,
+      endpoint: req.originalUrl,
+      action: SupportedAction.ACTION_PAGE_EXPORT,
+      user: req.user?._id,
+      snapshot: {
+        username: req.user?.username,
+      },
+    };
+    await crowi.activityService.createActivity(parameters);
 
     return stream.pipe(res);
   });
@@ -473,8 +668,12 @@ module.exports = (crowi) => {
     const { fromPath, toPath } = req.query;
 
     try {
-      const fromPage = await Page.findByPath(fromPath);
-      const fromPageDescendants = await Page.findManageableListWithDescendants(fromPage, req.user);
+      const fromPage = await Page.findByPath(fromPath, true);
+      if (fromPage == null) {
+        return res.apiv3Err(new ErrorV3('fromPage is Null'), 400);
+      }
+
+      const fromPageDescendants = await Page.findManageableListWithDescendants(fromPage, req.user, {}, true);
 
       const toPathDescendantsArray = fromPageDescendants.map((subordinatedPage) => {
         return convertToNewAffiliationPath(fromPath, toPath, subordinatedPage.path);
@@ -600,12 +799,24 @@ module.exports = (crowi) => {
    *          500:
    *            description: Internal server error.
    */
-  router.put('/subscribe', accessTokenParser, loginRequiredStrictly, csrf, validator.subscribe, apiV3FormValidator, async(req, res) => {
+  router.put('/subscribe', accessTokenParser, loginRequiredStrictly, csrf, addActivity, validator.subscribe, apiV3FormValidator, async(req, res) => {
     const { pageId, status } = req.body;
     const userId = req.user._id;
 
     try {
       const subscription = await Subscription.subscribeByPageId(userId, pageId, status);
+
+      const parameters = {};
+      if (SubscriptionStatusType.SUBSCRIBE === status) {
+        Object.assign(parameters, { action: SupportedAction.ACTION_PAGE_SUBSCRIBE });
+      }
+      else if (SubscriptionStatusType.UNSUBSCRIBE === status) {
+        Object.assign(parameters, { action: SupportedAction.ACTION_PAGE_UNSUBSCRIBE });
+      }
+      if ('action' in parameters) {
+        activityEvent.emit('update', res.locals.activity._id, parameters);
+      }
+
       return res.apiv3({ subscription });
     }
     catch (err) {
@@ -613,6 +824,28 @@ module.exports = (crowi) => {
       return res.apiv3Err(err, 500);
     }
   });
+
+
+  router.put('/:pageId/content-width', accessTokenParser, loginRequiredStrictly, csrf,
+    validator.contentWidth, apiV3FormValidator, async(req, res) => {
+      const { pageId } = req.params;
+      const { expandContentWidth } = req.body;
+
+      const isContainerFluidBySystem = configManager.getConfig('crowi', 'customize:isContainerFluid');
+
+      try {
+        const updateQuery = expandContentWidth === isContainerFluidBySystem
+          ? { $unset: { expandContentWidth } } // remove if the specified value is the same to the system's one
+          : { $set: { expandContentWidth } };
+
+        const page = await Page.updateOne({ _id: pageId }, updateQuery);
+        return res.apiv3({ page });
+      }
+      catch (err) {
+        logger.error('update-content-width-failed', err);
+        return res.apiv3Err(err, 500);
+      }
+    });
 
   return router;
 };

@@ -12,7 +12,7 @@
   </div>
 </div>
 
-# :pencil: Block Elements
+# :memo: Block Elements
 
 ## Headers
 
@@ -160,7 +160,7 @@ ___
 
 
 
-# :pencil: Typography
+# :memo: Typography
 
 ## Strong Text
 
@@ -200,7 +200,7 @@ This is ___Italic & Bold___.
 This is ***Italic & Bold***.
 This is ___Italic & Bold___.
 
-# :pencil: Images
+# :memo: Images
 
 You can insert `<img>` tag using `![description](URL)`.
 
@@ -221,7 +221,7 @@ The size of the image can be set by using an HTML image tag
 <img src="https://octodex.github.com/images/dojocat.jpg" width="200px">
 
 
-# :pencil: Link
+# :memo: Link
 
 ## Markdown standard
 
@@ -259,7 +259,7 @@ Example of Bootstrap4 is [[here>./Bootstrap4]]
 [[./Bootstrap4]]  
 Example of Bootstrap4 is[[here>./Bootstrap4]]
 
-# :pencil: Lists
+# :memo: Lists
 
 ## Ul Bulleted list
 
@@ -319,7 +319,7 @@ The numbers don’t have to be in numerical order, but the list should start wit
 - [x] Task2
 
 
-# :pencil: Table
+# :memo: Table
 
 ## Markdown Standard
 
@@ -415,7 +415,7 @@ Content Cell,Content Cell
 :::
 
 
-# :pencil: Footnote
+# :memo: Footnote
 
 You can write a reference [^1] to a footnote. You can also add an inline footnote^[Inline_footnote].
 
@@ -428,15 +428,13 @@ Long footnotes can be written as [^longnote].
     Subsequent paragraphs are indented and belong to the previous footnote.
 
 
-# :pencil: Emoji
-
-See [emojione](https://www.emojione.com/)
+# :memo: Emoji
 
 :smiley: :smile: :laughing: :innocent: :drooling_face:
 
-:family: :family_man_boy: :family_man_girl: :family_man_girl_girl: :family_woman_girl_girl:
+:family: :man-boy: :man-girl: :man-girl-girl: :woman-girl-girl:
 
-:thumbsup: :thumbsdown: :open_hands: :raised_hands: :point_right:
+:+1: :-1: :open_hands: :raised_hands: :point_right:
 
 :apple: :green_apple: :strawberry: :cake: :hamburger:
 
@@ -444,7 +442,7 @@ See [emojione](https://www.emojione.com/)
 
 :hearts: :broken_heart: :heartbeat: :heartpulse: :heart_decoration:
 
-:watch: :gear: :gem: :wrench: :envelope:
+:watch: :gear: :gem: :wrench: :email:
 
 
 # :heavy_plus_sign: More..

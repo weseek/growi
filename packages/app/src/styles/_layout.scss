@@ -66,9 +66,8 @@ body.growi-layout-fluid .grw-container-convertible {
 
 .grw-side-contents-sticky-container {
   position: sticky;
-  // growisubnavigation + grw-navbar-boder
-  top: calc(100px + 4px);
-  margin-top: 5px;
+  // growisubnavigation + grw-navbar-boder + some spacing
+  top: calc(100px + 4px + 20px);
 }
 
 .grw-fab {
@@ -147,8 +146,4 @@ body.growi-layout-fluid .grw-container-convertible {
   right: 0.5em;
   bottom: 0;
   opacity: 0.6;
-
-  > span {
-    margin-left: 0.5em;
-  }
 }

@@ -1,21 +1,29 @@
-import mongoose from 'mongoose';
-import fs from 'graceful-fs';
 import path from 'path';
-import ExtensibleCustomError from 'extensible-custom-error';
 
+import { addSeconds } from 'date-fns';
+import ExtensibleCustomError from 'extensible-custom-error';
+import fs from 'graceful-fs';
+import mongoose from 'mongoose';
+
+
+import { Lang } from '~/interfaces/lang';
 import { IPage } from '~/interfaces/page';
 import { IUser } from '~/interfaces/user';
-import { Lang } from '~/interfaces/lang';
 import loggerFactory from '~/utils/logger';
 
 import { generateConfigsForInstalling } from '../models/config';
 
-import SearchService from './search';
 import ConfigManager from './config-manager';
+import SearchService from './search';
 
 const logger = loggerFactory('growi:service:installer');
 
 export class FailedToCreateAdminUserError extends ExtensibleCustomError {
+}
+
+export type AutoInstallOptions = {
+  allowGuestMode?: boolean,
+  serverDate?: Date,
 }
 
 export class InstallerService {
@@ -43,14 +51,9 @@ export class InstallerService {
   }
 
   private async createPage(filePath, pagePath, owner): Promise<IPage|undefined> {
-
-    // TODO typescriptize models/user.js and remove eslint-disable-next-line
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const Page = mongoose.model('Page') as any;
-
     try {
       const markdown = fs.readFileSync(filePath);
-      return Page.create(pagePath, markdown, owner, {}) as IPage;
+      return this.crowi.pageService.create(pagePath, markdown, owner, {}) as IPage;
     }
     catch (err) {
       logger.error(`Failed to create ${pagePath}`, err);
@@ -77,7 +80,20 @@ export class InstallerService {
         // TODO typescriptize models/user.js and remove eslint-disable-next-line
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const Page = mongoose.model('Page') as any;
-        await Page.updateMany({}, { createdAt: initialPagesCreatedAt, updatedAt: initialPagesCreatedAt });
+
+        // Increment timestamp to avoid difference for order in VRT
+        const pagePaths = ['/Sandbox', '/Sandbox/Bootstrap4', '/Sandbox/Diagrams', '/Sandbox/Math'];
+        const promises = pagePaths.map(async(path: string, idx: number) => {
+          const date = addSeconds(initialPagesCreatedAt, idx);
+          return Page.update(
+            { path },
+            {
+              createdAt: date,
+              updatedAt: date,
+            },
+          );
+        });
+        await Promise.all(promises);
       }
       catch (err) {
         logger.error('Failed to update createdAt', err);
@@ -95,16 +111,21 @@ export class InstallerService {
   /**
    * Execute only once for installing application
    */
-  private async initDB(globalLang: Lang): Promise<void> {
+  private async initDB(globalLang: Lang, options?: AutoInstallOptions): Promise<void> {
     const configManager: ConfigManager = this.crowi.configManager;
 
     const initialConfig = generateConfigsForInstalling();
     initialConfig['app:globalLang'] = globalLang;
+
+    if (options?.allowGuestMode) {
+      initialConfig['security:restrictGuestMode'] = 'Readonly';
+    }
+
     return configManager.updateConfigsInTheSameNamespace('crowi', initialConfig, true);
   }
 
-  async install(firstAdminUserToSave: IUser, globalLang: Lang, initialPagesCreatedAt?: Date): Promise<IUser> {
-    await this.initDB(globalLang);
+  async install(firstAdminUserToSave: IUser, globalLang: Lang, options?: AutoInstallOptions): Promise<IUser> {
+    await this.initDB(globalLang, options);
 
     // TODO typescriptize models/user.js and remove eslint-disable-next-line
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -138,11 +159,11 @@ export class InstallerService {
     const rootRevision = await Revision.findOne({ path: '/' });
     rootPage.creator = adminUser._id;
     rootPage.lastUpdateUser = adminUser._id;
-    rootRevision.creator = adminUser._id;
+    rootRevision.author = adminUser._id;
     await Promise.all([rootPage.save(), rootRevision.save()]);
 
     // create initial pages
-    await this.createInitialPages(adminUser, globalLang, initialPagesCreatedAt);
+    await this.createInitialPages(adminUser, globalLang, options?.serverDate);
 
     return adminUser;
   }

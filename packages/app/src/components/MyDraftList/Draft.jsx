@@ -1,18 +1,19 @@
 import React from 'react';
+
 import PropTypes from 'prop-types';
-
-import { withTranslation } from 'react-i18next';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
-
+import { useTranslation } from 'react-i18next';
 import {
   Collapse,
   UncontrolledTooltip,
 } from 'reactstrap';
 
-import { withUnstatedContainers } from '../UnstatedUtils';
 import AppContainer from '~/client/services/AppContainer';
+import GrowiRenderer from '~/services/renderer/growi-renderer';
+import { useDraftRenderer } from '~/stores/renderer';
 
 import RevisionBody from '../Page/RevisionBody';
+import { withUnstatedContainers } from '../UnstatedUtils';
 
 class Draft extends React.Component {
 
@@ -26,7 +27,7 @@ class Draft extends React.Component {
       showCopiedMessage: false,
     };
 
-    this.growiRenderer = this.props.appContainer.getRenderer('draft');
+    this.growiRenderer = this.props.growiRenderer;
 
     this.changeToolTipLabel = this.changeToolTipLabel.bind(this);
     this.expandPanelHandler = this.expandPanelHandler.bind(this);
@@ -60,7 +61,7 @@ class Draft extends React.Component {
     };
 
     const growiRenderer = this.growiRenderer;
-    const interceptorManager = this.props.appContainer.interceptorManager;
+    const { interceptorManager } = window;
     await interceptorManager.process('prePreProcess', context)
       .then(() => {
         context.markdown = growiRenderer.preProcess(context.markdown, context);
@@ -192,15 +193,10 @@ class Draft extends React.Component {
 
 }
 
-/**
- * Wrapper component for using unstated
- */
-const DraftWrapper = withUnstatedContainers(Draft, [AppContainer]);
-
-
 Draft.propTypes = {
   t: PropTypes.func.isRequired,
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
+  growiRenderer: PropTypes.instanceOf(GrowiRenderer).isRequired,
 
   index: PropTypes.number.isRequired,
   path: PropTypes.string.isRequired,
@@ -209,4 +205,19 @@ Draft.propTypes = {
   clearDraft: PropTypes.func.isRequired,
 };
 
-export default withTranslation()(DraftWrapper);
+const DraftWrapperFC = (props) => {
+  const { t } = useTranslation();
+  const { data: growiRenderer } = useDraftRenderer();
+  if (growiRenderer == null) {
+    return <></>;
+  }
+
+  return <Draft t={t} growiRenderer={growiRenderer} {...props} />;
+};
+
+/**
+ * Wrapper component for using unstated
+ */
+const DraftWrapper = withUnstatedContainers(DraftWrapperFC, [AppContainer]);
+
+export default DraftWrapper;

@@ -1,16 +1,20 @@
 import React from 'react';
+
 import PropTypes from 'prop-types';
-import { withTranslation } from 'react-i18next';
+import { useTranslation } from 'react-i18next';
 import urljoin from 'url-join';
 
+import AppContainer from '~/client/services/AppContainer';
+import { toastError } from '~/client/util/apiNotification';
+import { apiv3Post, apiv3Put } from '~/client/util/apiv3-client';
 import loggerFactory from '~/utils/logger';
 
-import { toastError } from '~/client/util/apiNotification';
+
+import { withUnstatedContainers } from '../../UnstatedUtils';
+import AdminUpdateButtonRow from '../Common/AdminUpdateButtonRow';
 
 import TriggerEventCheckBox from './TriggerEventCheckBox';
-import AdminUpdateButtonRow from '../Common/AdminUpdateButtonRow';
-import AppContainer from '~/client/services/AppContainer';
-import { withUnstatedContainers } from '../../UnstatedUtils';
+
 
 const logger = loggerFactory('growi:manageGlobalNotification');
 
@@ -81,10 +85,10 @@ class ManageGlobalNotification extends React.Component {
 
     try {
       if (this.state.globalNotificationId != null) {
-        await this.props.appContainer.apiv3.put(`/notification-setting/global-notification/${this.state.globalNotificationId}`, requestParams);
+        await apiv3Put(`/notification-setting/global-notification/${this.state.globalNotificationId}`, requestParams);
       }
       else {
-        await this.props.appContainer.apiv3.post('/notification-setting/global-notification', requestParams);
+        await apiv3Post('/notification-setting/global-notification', requestParams);
       }
       window.location.href = urljoin(window.location.origin, '/admin/notification#global-notification');
     }
@@ -308,12 +312,19 @@ class ManageGlobalNotification extends React.Component {
 
 }
 
-const ManageGlobalNotificationWrapper = withUnstatedContainers(ManageGlobalNotification, [AppContainer]);
-
 ManageGlobalNotification.propTypes = {
   t: PropTypes.func.isRequired, // i18next
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
 
 };
 
-export default withTranslation()(ManageGlobalNotificationWrapper);
+const ManageGlobalNotificationWrapperFC = (props) => {
+  const { t } = useTranslation();
+
+  return <ManageGlobalNotification t={t} {...props} />;
+};
+
+const ManageGlobalNotificationWrapper = withUnstatedContainers(ManageGlobalNotificationWrapperFC, [AppContainer]);
+
+
+export default ManageGlobalNotificationWrapper;

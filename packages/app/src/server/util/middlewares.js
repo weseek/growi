@@ -4,10 +4,10 @@ import loggerFactory from '~/utils/logger';
 // all new middlewares should be an independent file under /server/middlewares
 // eslint-disable-next-line no-unused-vars
 
-const { formatDistanceStrict } = require('date-fns');
 const { pathUtils } = require('@growi/core');
-const md5 = require('md5');
+const { formatDistanceStrict } = require('date-fns');
 const entities = require('entities');
+const md5 = require('md5');
 
 // eslint-disable-next-line no-unused-vars
 const logger = loggerFactory('growi:lib:middlewares');
@@ -37,25 +37,6 @@ module.exports = (crowi) => {
   };
 
   middlewares.swigFilters = function(swig) {
-    // define a function for Gravatar
-    const generateGravatarSrc = function(user) {
-      const email = user.email || '';
-      const hash = md5(email.trim().toLowerCase());
-      return `https://gravatar.com/avatar/${hash}`;
-    };
-
-    // define a function for uploaded picture
-    const getUploadedPictureSrc = function(user) {
-      if (user.image) {
-        return user.image;
-      }
-      if (user.imageAttachment != null) {
-        return user.imageAttachment.filePathProxied;
-      }
-
-      return '/images/icons/user.svg';
-    };
-
 
     return function(req, res, next) {
       swig.setFilter('path2name', (string) => {
@@ -126,21 +107,6 @@ module.exports = (crowi) => {
           .replace(/\s(https?.+(jpe?g|png|gif))\s/, '\n\n\n![]($1)\n\n\n');
       });
 
-      swig.setFilter('gravatar', generateGravatarSrc);
-      swig.setFilter('uploadedpicture', getUploadedPictureSrc);
-
-      swig.setFilter('picture', (user) => {
-        if (!user) {
-          return '/images/icons/user.svg';
-        }
-
-        if (user.isGravatarEnabled === true) {
-          return generateGravatarSrc(user);
-        }
-
-        return getUploadedPictureSrc(user);
-      });
-
       swig.setFilter('encodeHTML', (string) => {
         return entities.encodeHTML(string);
       });
@@ -151,6 +117,11 @@ module.exports = (crowi) => {
 
       swig.setFilter('slice', (list, start, end) => {
         return list.slice(start, end);
+      });
+
+      swig.setFilter('push', (list, element) => {
+        list.push(element);
+        return list;
       });
 
       next();

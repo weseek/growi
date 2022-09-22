@@ -1,12 +1,14 @@
-import React, { FC, useState } from 'react';
+import React, { FC, useState, useCallback } from 'react';
 
-import { UncontrolledTooltip, Popover, PopoverBody } from 'reactstrap';
 import { useTranslation } from 'react-i18next';
-import UserPictureList from './User/UserPictureList';
-import { withUnstatedContainers } from './UnstatedUtils';
+import { UncontrolledTooltip, Popover, PopoverBody } from 'reactstrap';
 
 import AppContainer from '~/client/services/AppContainer';
+
 import { IUser } from '../interfaces/user';
+
+import { withUnstatedContainers } from './UnstatedUtils';
+import UserPictureList from './User/UserPictureList';
 
 type LikeButtonsProps = {
 
@@ -32,26 +34,41 @@ const LikeButtons: FC<LikeButtonsProps> = (props: LikeButtonsProps) => {
     hideTotalNumber, isGuestUser, isLiked, sumOfLikers, onLikeClicked,
   } = props;
 
+  const getTooltipMessage = useCallback(() => {
+    if (isGuestUser) {
+      return 'Not available for guest';
+    }
+
+    if (isLiked) {
+      return 'tooltip.cancel_like';
+    }
+    return 'tooltip.like';
+  }, [isGuestUser, isLiked]);
+
   return (
     <div className="btn-group" role="group" aria-label="Like buttons">
       <button
         type="button"
         id="like-button"
         onClick={onLikeClicked}
-        className={`btn btn-like border-0
+        className={`shadow-none btn btn-like border-0
             ${isLiked ? 'active' : ''} ${isGuestUser ? 'disabled' : ''}`}
       >
         <i className={`fa ${isLiked ? 'fa-heart' : 'fa-heart-o'}`}></i>
       </button>
-      { isGuestUser && (
-        <UncontrolledTooltip placement="top" target="like-button" fade={false}>
-          {t('Not available for guest')}
-        </UncontrolledTooltip>
-      )}
+
+      <UncontrolledTooltip placement="top" target="like-button" fade={false}>
+        {t(getTooltipMessage())}
+      </UncontrolledTooltip>
 
       { !hideTotalNumber && (
         <>
-          <button type="button" id="po-total-likes" className={`btn btn-like border-0 total-likes ${isLiked ? 'active' : ''}`}>
+          <button
+            type="button"
+            id="po-total-likes"
+            className={`shadow-none btn btn-like border-0
+              total-likes ${isLiked ? 'active' : ''}`}
+          >
             {sumOfLikers}
           </button>
           <Popover placement="bottom" isOpen={isPopoverOpen} target="po-total-likes" toggle={togglePopover} trigger="legacy">
@@ -68,14 +85,4 @@ const LikeButtons: FC<LikeButtonsProps> = (props: LikeButtonsProps) => {
 
 };
 
-/**
- * Wrapper component for using unstated
- */
-const LikeButtonsUnstatedWrapper = withUnstatedContainers(LikeButtons, [AppContainer]);
-
-// eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
-const LikeButtonsWrapper = (props) => {
-  return <LikeButtonsUnstatedWrapper {...props}></LikeButtonsUnstatedWrapper>;
-};
-
-export default LikeButtonsWrapper;
+export default LikeButtons;

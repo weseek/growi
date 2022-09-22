@@ -33,6 +33,7 @@ class ReplayComments extends React.PureComponent {
           comment={reply}
           deleteBtnClicked={this.props.deleteBtnClicked}
           growiRenderer={this.props.growiRenderer}
+          isReadOnly={this.props.isReadOnly}
         />
       </div>
     );
@@ -108,6 +109,7 @@ ReplayComments.propTypes = {
 
   growiRenderer: PropTypes.object.isRequired,
   deleteBtnClicked: PropTypes.func.isRequired,
+  isReadOnly: PropTypes.bool.isRequired,
   replyList: PropTypes.array,
 };
 

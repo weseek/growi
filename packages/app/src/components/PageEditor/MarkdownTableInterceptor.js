@@ -1,7 +1,8 @@
 import { BasicInterceptor } from '@growi/core';
 
-import mtu from './MarkdownTableUtil';
 import MarkdownTable from '~/client/models/MarkdownTable';
+
+import mtu from './MarkdownTableUtil';
 
 /**
  * Interceptor for markdown table
@@ -56,8 +57,8 @@ export default class MarkdownTableInterceptor extends BasicInterceptor {
   async process(contextName, ...args) {
     const context = Object.assign(args[0]); // clone
     const editor = context.editor; // AbstractEditor instance
-    // "ignoreMarkdownTableAutoFormatting" may be undefined, so it is compared to true and converted to bool.
-    const noIntercept = (context.editorOptions.ignoreMarkdownTableAutoFormatting === true);
+    // "autoFormatMarkdownTable" may be undefined, so it is compared to true and converted to bool.
+    const noIntercept = (context.autoFormatMarkdownTable === false);
 
     // do nothing if editor is not a CodeMirrorEditor or no intercept
     if (editor == null || editor.getCodeMirror() == null || noIntercept) {

@@ -1,9 +1,11 @@
-import { Container } from 'unstated';
-
 import { pathUtils } from '@growi/core';
+import { Container } from 'unstated';
 import urljoin from 'url-join';
+
 import loggerFactory from '~/utils/logger';
 import { removeNullPropertyFromObject } from '~/utils/object-utils';
+
+import { apiv3Get, apiv3Put } from '../util/apiv3-client';
 
 const logger = loggerFactory('growi:security:AdminGoogleSecurityContainer');
 
@@ -16,7 +18,6 @@ export default class AdminGoogleSecurityContainer extends Container {
   constructor(appContainer) {
     super();
 
-    this.appContainer = appContainer;
     this.dummyGoogleClientId = 0;
     this.dummyGoogleClientIdForError = 1;
 
@@ -26,7 +27,7 @@ export default class AdminGoogleSecurityContainer extends Container {
       // set dummy value tile for using suspense
       googleClientId: this.dummyGoogleClientId,
       googleClientSecret: '',
-      isSameUsernameTreatedAsIdenticalUser: false,
+      isSameEmailTreatedAsIdenticalUser: false,
     };
 
 
@@ -37,12 +38,12 @@ export default class AdminGoogleSecurityContainer extends Container {
    */
   async retrieveSecurityData() {
     try {
-      const response = await this.appContainer.apiv3.get('/security-setting/');
+      const response = await apiv3Get('/security-setting/');
       const { googleOAuth } = response.data.securityParams;
       this.setState({
         googleClientId: googleOAuth.googleClientId,
         googleClientSecret: googleOAuth.googleClientSecret,
-        isSameUsernameTreatedAsIdenticalUser: googleOAuth.isSameUsernameTreatedAsIdenticalUser,
+        isSameEmailTreatedAsIdenticalUser: googleOAuth.isSameEmailTreatedAsIdenticalUser,
       });
     }
     catch (err) {
@@ -74,30 +75,32 @@ export default class AdminGoogleSecurityContainer extends Container {
   }
 
   /**
-   * Switch isSameUsernameTreatedAsIdenticalUser
+   * Switch isSameEmailTreatedAsIdenticalUser
    */
-  switchIsSameUsernameTreatedAsIdenticalUser() {
-    this.setState({ isSameUsernameTreatedAsIdenticalUser: !this.state.isSameUsernameTreatedAsIdenticalUser });
+  switchIsSameEmailTreatedAsIdenticalUser() {
+    this.setState({ isSameEmailTreatedAsIdenticalUser: !this.state.isSameEmailTreatedAsIdenticalUser });
   }
+
 
   /**
    * Update googleSetting
    */
   async updateGoogleSetting() {
-    const { googleClientId, googleClientSecret, isSameUsernameTreatedAsIdenticalUser } = this.state;
+    const { googleClientId, googleClientSecret, isSameEmailTreatedAsIdenticalUser } = this.state;
+    console.log('updateGoogleSetting', isSameEmailTreatedAsIdenticalUser);
 
     let requestParams = {
-      googleClientId, googleClientSecret, isSameUsernameTreatedAsIdenticalUser,
+      googleClientId, googleClientSecret, isSameEmailTreatedAsIdenticalUser,
     };
 
     requestParams = await removeNullPropertyFromObject(requestParams);
-    const response = await this.appContainer.apiv3.put('/security-setting/google-oauth', requestParams);
+    const response = await apiv3Put('/security-setting/google-oauth', requestParams);
     const { securitySettingParams } = response.data;
 
     this.setState({
       googleClientId: securitySettingParams.googleClientId,
       googleClientSecret: securitySettingParams.googleClientSecret,
-      isSameUsernameTreatedAsIdenticalUser: securitySettingParams.isSameUsernameTreatedAsIdenticalUser,
+      isSameEmailTreatedAsIdenticalUser: securitySettingParams.isSameEmailTreatedAsIdenticalUser,
     });
     return response;
   }

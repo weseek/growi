@@ -1,9 +1,10 @@
 import { Ref, Nullable } from './common';
-import { IUser } from './user';
-import { IRevision, HasRevisionShortbody } from './revision';
-import { ITag } from './tag';
 import { HasObjectId } from './has-object-id';
+import { IPageOperationProcessData } from './page-operation';
+import { IRevision, HasRevisionShortbody } from './revision';
 import { SubscriptionStatusType } from './subscription';
+import { ITag } from './tag';
+import { IUser } from './user';
 
 
 export interface IPage {
@@ -11,14 +12,14 @@ export interface IPage {
   status: string,
   revision: Ref<IRevision>,
   tags: Ref<ITag>[],
-  creator: Ref<IUser>,
+  creator: any,
   createdAt: Date,
   updatedAt: Date,
   seenUsers: Ref<IUser>[],
   parent: Ref<IPage> | null,
   descendantCount: number,
   isEmpty: boolean,
-  grant: number,
+  grant: PageGrant,
   grantedUsers: Ref<IUser>[],
   grantedGroup: Ref<any>,
   lastUpdateUser: Ref<IUser>,
@@ -28,13 +29,23 @@ export interface IPage {
   pageIdOnHackmd: string,
   revisionHackmdSynced: Ref<IRevision>,
   hasDraftOnHackmd: boolean,
+  expandContentWidth?: boolean,
   deleteUser: Ref<IUser>,
   deletedAt: Date,
 }
 
+export const PageGrant = {
+  GRANT_PUBLIC: 1,
+  GRANT_RESTRICTED: 2,
+  GRANT_SPECIFIED: 3, // DEPRECATED
+  GRANT_OWNER: 4,
+  GRANT_USER_GROUP: 5,
+};
+export type PageGrant = typeof PageGrant[keyof typeof PageGrant];
+
 export type IPageHasId = IPage & HasObjectId;
 
-export type IPageForItem = Partial<IPageHasId & {isTarget?: boolean}>;
+export type IPageForItem = Partial<IPageHasId & {isTarget?: boolean, processData?: IPageOperationProcessData}>;
 
 export type IPageInfo = {
   isV5Compatible: boolean,
@@ -46,11 +57,12 @@ export type IPageInfo = {
 }
 
 export type IPageInfoForEntity = IPageInfo & {
-  bookmarkCount?: number,
-  sumOfLikers?: number,
-  likerIds?: string[],
-  sumOfSeenUsers?: number,
-  seenUserIds?: string[],
+  bookmarkCount: number,
+  sumOfLikers: number,
+  likerIds: string[],
+  sumOfSeenUsers: number,
+  seenUserIds: string[],
+  expandContentWidth?: boolean,
 }
 
 export type IPageInfoForOperation = IPageInfoForEntity & {
@@ -65,7 +77,7 @@ export type IPageInfoAll = IPageInfo | IPageInfoForEntity | IPageInfoForOperatio
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const isIPageInfoForEntity = (pageInfo: any | undefined): pageInfo is IPageInfoForEntity => {
-  return pageInfo != null && ('isEmpty' in pageInfo) && pageInfo.isEmpty === false;
+  return pageInfo != null;
 };
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -103,10 +115,18 @@ export type IDataWithMeta<D = unknown, M = unknown> = {
   meta?: M,
 }
 
-export type IPageWithMeta<M = IPageInfoAll> = IDataWithMeta<IPageHasId, M>;
+export type IPageWithMeta<M extends IPageInfo = IPageInfo> = IDataWithMeta<IPageHasId, M>;
 
-export type IPageToDeleteWithMeta = IDataWithMeta<HasObjectId & (IPage | { path: string, revision: string }), IPageInfoForEntity | unknown>;
-export type IPageToRenameWithMeta = IPageToDeleteWithMeta;
+export type IPageToDeleteWithMeta<T = IPageInfoForEntity | unknown> = IDataWithMeta<HasObjectId & (IPage | { path: string, revision: string | null}), T>;
+export type IPageToRenameWithMeta<T = IPageInfoForEntity | unknown> = IPageToDeleteWithMeta<T>;
+
+export type IPageGrantData = {
+  grant: number,
+  grantedGroup?: {
+    id: string,
+    name: string
+  }
+}
 
 export type IDeleteSinglePageApiv1Result = {
   ok: boolean

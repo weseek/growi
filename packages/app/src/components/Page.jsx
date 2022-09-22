@@ -1,30 +1,35 @@
-import React from 'react';
-import PropTypes from 'prop-types';
-import loggerFactory from '~/utils/logger';
+import React, {
+  useCallback, useEffect, useMemo, useRef, useState,
+} from 'react';
 
-import { withUnstatedContainers } from './UnstatedUtils';
-import AppContainer from '~/client/services/AppContainer';
-import PageContainer from '~/client/services/PageContainer';
-import EditorContainer from '~/client/services/EditorContainer';
+import PropTypes from 'prop-types';
+import { debounce } from 'throttle-debounce';
 
 import MarkdownTable from '~/client/models/MarkdownTable';
+import AppContainer from '~/client/services/AppContainer';
+import EditorContainer from '~/client/services/EditorContainer';
+import PageContainer from '~/client/services/PageContainer';
+import { blinkSectionHeaderAtBoot } from '~/client/util/blink-section-header';
+import { getOptionsToSave } from '~/client/util/editor';
+import GrowiRenderer from '~/services/renderer/growi-renderer';
+import {
+  useCurrentPagePath, useIsGuestUser, useIsBlinkedHeaderAtBoot,
+} from '~/stores/context';
+import { useSWRxSlackChannels, useIsSlackEnabled, usePageTagsForEditors } from '~/stores/editor';
+import { useViewRenderer } from '~/stores/renderer';
+import {
+  useEditorMode, useIsMobile, useSelectedGrant, useSelectedGrantGroupId, useSelectedGrantGroupName,
+} from '~/stores/ui';
+import loggerFactory from '~/utils/logger';
 
-import LinkEditModal from './PageEditor/LinkEditModal';
 import RevisionRenderer from './Page/RevisionRenderer';
+import DrawioModal from './PageEditor/DrawioModal';
 import GridEditModal from './PageEditor/GridEditModal';
 import HandsontableModal from './PageEditor/HandsontableModal';
-import DrawioModal from './PageEditor/DrawioModal';
-import mtu from './PageEditor/MarkdownTableUtil';
+import LinkEditModal from './PageEditor/LinkEditModal';
 import mdu from './PageEditor/MarkdownDrawioUtil';
-
-import { getOptionsToSave } from '~/client/util/editor';
-
-// TODO: remove this when omitting unstated is completed
-import {
-  useEditorMode, useSelectedGrant, useSelectedGrantGroupId, useSelectedGrantGroupName,
-} from '~/stores/ui';
-import { useIsSlackEnabled } from '~/stores/editor';
-import { useCurrentPagePath, useSlackChannels } from '~/stores/context';
+import mtu from './PageEditor/MarkdownTableUtil';
+import { withUnstatedContainers } from './UnstatedUtils';
 
 const logger = loggerFactory('growi:Page');
 
@@ -38,8 +43,6 @@ class Page extends React.Component {
       currentTargetDrawioArea: null,
     };
 
-    this.growiRenderer = this.props.appContainer.getRenderer('page');
-
     this.gridEditModal = React.createRef();
     this.linkEditModal = React.createRef();
     this.handsontableModal = React.createRef();
@@ -47,10 +50,6 @@ class Page extends React.Component {
 
     this.saveHandlerForHandsontableModal = this.saveHandlerForHandsontableModal.bind(this);
     this.saveHandlerForDrawioModal = this.saveHandlerForDrawioModal.bind(this);
-  }
-
-  componentWillMount() {
-    this.props.appContainer.registerComponentInstance('Page', this);
   }
 
   /**
@@ -80,9 +79,9 @@ class Page extends React.Component {
 
   async saveHandlerForHandsontableModal(markdownTable) {
     const {
-      isSlackEnabled, slackChannels, pageContainer, editorContainer, grant, grantGroupId, grantGroupName,
+      isSlackEnabled, slackChannels, pageContainer, editorContainer, grant, grantGroupId, grantGroupName, pageTags,
     } = this.props;
-    const optionsToSave = getOptionsToSave(isSlackEnabled, slackChannels, grant, grantGroupId, grantGroupName, editorContainer);
+    const optionsToSave = getOptionsToSave(isSlackEnabled, slackChannels, grant, grantGroupId, grantGroupName, pageTags);
 
     const newMarkdown = mtu.replaceMarkdownTableInMarkdown(
       markdownTable,
@@ -112,9 +111,9 @@ class Page extends React.Component {
 
   async saveHandlerForDrawioModal(drawioData) {
     const {
-      isSlackEnabled, slackChannels, pageContainer, editorContainer, grant, grantGroupId, grantGroupName,
+      isSlackEnabled, slackChannels, pageContainer, pageTags, grant, grantGroupId, grantGroupName, editorContainer,
     } = this.props;
-    const optionsToSave = getOptionsToSave(isSlackEnabled, slackChannels, grant, grantGroupId, grantGroupName, editorContainer);
+    const optionsToSave = getOptionsToSave(isSlackEnabled, slackChannels, grant, grantGroupId, grantGroupName, pageTags);
 
     const newMarkdown = mdu.replaceDrawioInMarkdown(
       drawioData,
@@ -143,19 +142,19 @@ class Page extends React.Component {
   }
 
   render() {
-    const { appContainer, pageContainer, pagePath } = this.props;
-    const { isMobile } = appContainer;
-    const isLoggedIn = appContainer.currentUser != null;
+    const {
+      pageContainer, pagePath, isMobile, isGuestUser,
+    } = this.props;
     const { markdown, revisionId } = pageContainer.state;
 
     return (
       <div className={`mb-5 ${isMobile ? 'page-mobile' : ''}`}>
 
         { revisionId != null && (
-          <RevisionRenderer growiRenderer={this.growiRenderer} markdown={markdown} pagePath={pagePath} />
+          <RevisionRenderer growiRenderer={this.props.growiRenderer} markdown={markdown} pagePath={pagePath} />
         )}
 
-        { isLoggedIn && (
+        { !isGuestUser && (
           <>
             <GridEditModal ref={this.gridEditModal} />
             <LinkEditModal ref={this.LinkEditModal} />
@@ -174,9 +173,13 @@ Page.propTypes = {
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
   pageContainer: PropTypes.instanceOf(PageContainer).isRequired,
   editorContainer: PropTypes.instanceOf(EditorContainer).isRequired,
+  growiRenderer: PropTypes.instanceOf(GrowiRenderer).isRequired,
 
   pagePath: PropTypes.string.isRequired,
+  pageTags:  PropTypes.arrayOf(PropTypes.string),
   editorMode: PropTypes.string.isRequired,
+  isGuestUser: PropTypes.bool.isRequired,
+  isMobile: PropTypes.bool,
   isSlackEnabled: PropTypes.bool.isRequired,
   slackChannels: PropTypes.string.isRequired,
   grant: PropTypes.number.isRequired,
@@ -187,27 +190,103 @@ Page.propTypes = {
 const PageWrapper = (props) => {
   const { data: currentPagePath } = useCurrentPagePath();
   const { data: editorMode } = useEditorMode();
+  const { data: isGuestUser } = useIsGuestUser();
+  const { data: isMobile } = useIsMobile();
+  const { data: slackChannelsData } = useSWRxSlackChannels(currentPagePath);
   const { data: isSlackEnabled } = useIsSlackEnabled();
-  const { data: slackChannels } = useSlackChannels();
+  const { data: pageTags } = usePageTagsForEditors();
   const { data: grant } = useSelectedGrant();
   const { data: grantGroupId } = useSelectedGrantGroupId();
   const { data: grantGroupName } = useSelectedGrantGroupName();
+  const { data: growiRenderer } = useViewRenderer();
+  const { data: isBlinkedAtBoot, mutate: mutateBlinkedAtBoot } = useIsBlinkedHeaderAtBoot();
 
-  if (currentPagePath == null || editorMode == null) {
+  const pageRef = useRef(null);
+
+  // *************************** Blink header at boot ***************************
+  const blinkOnInit = useCallback(() => {
+
+    const result = blinkSectionHeaderAtBoot();
+
+    if (result != null) {
+      mutateBlinkedAtBoot(true);
+    }
+  }, [mutateBlinkedAtBoot]);
+
+  const blinkOnInitDebounced = useMemo(() => debounce(500, blinkOnInit), [blinkOnInit]);
+
+  const observerForBlinkingOnInit = useCallback((elem) => {
+    if (isBlinkedAtBoot || elem == null) {
+      return;
+    }
+
+    const observerCallback = (mutationRecords) => {
+      mutationRecords.forEach(() => blinkOnInitDebounced());
+    };
+
+    const observer = new MutationObserver(observerCallback);
+    observer.observe(elem, { childList: true, subtree: true });
+
+    // first call for the situation that all rendering is complete at this point
+    blinkOnInitDebounced();
+
+    return function cleanup() {
+      observer.disconnect();
+    };
+  }, [blinkOnInitDebounced, isBlinkedAtBoot]);
+  // *******************************  end  *******************************
+
+  // set handler to open DrawioModal
+  useEffect(() => {
+    const handler = (beginLineNumber, endLineNumber) => {
+      if (pageRef?.current != null) {
+        pageRef.current.launchDrawioModal(beginLineNumber, endLineNumber);
+      }
+    };
+    window.globalEmitter.on('launchDrawioModal', handler);
+
+    return function cleanup() {
+      window.globalEmitter.removeListener('launchDrawioModal', handler);
+    };
+  }, []);
+
+  // set handler to open HandsontableModal
+  useEffect(() => {
+    const handler = (beginLineNumber, endLineNumber) => {
+      if (pageRef?.current != null) {
+        pageRef.current.launchHandsontableModal(beginLineNumber, endLineNumber);
+      }
+    };
+    window.globalEmitter.on('launchHandsontableModal', handler);
+
+    return function cleanup() {
+      window.globalEmitter.removeListener('launchHandsontableModal', handler);
+    };
+  }, []);
+
+  if (currentPagePath == null || editorMode == null || isGuestUser == null || growiRenderer == null) {
     return null;
   }
 
+
   return (
-    <Page
-      {...props}
-      pagePath={currentPagePath}
-      editorMode={editorMode}
-      isSlackEnabled={isSlackEnabled}
-      slackChannels={slackChannels}
-      grant={grant}
-      grantGroupId={grantGroupId}
-      grantGroupName={grantGroupName}
-    />
+    <div ref={observerForBlinkingOnInit}>
+      <Page
+        {...props}
+        ref={pageRef}
+        growiRenderer={growiRenderer}
+        pagePath={currentPagePath}
+        editorMode={editorMode}
+        isGuestUser={isGuestUser}
+        isMobile={isMobile}
+        isSlackEnabled={isSlackEnabled}
+        pageTags={pageTags}
+        slackChannels={slackChannelsData.toString()}
+        grant={grant}
+        grantGroupId={grantGroupId}
+        grantGroupName={grantGroupName}
+      />
+    </div>
   );
 };
 

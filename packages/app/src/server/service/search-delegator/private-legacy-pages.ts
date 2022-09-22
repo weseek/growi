@@ -1,16 +1,18 @@
 import mongoose from 'mongoose';
 
-import { PageModel, PageDocument } from '~/server/models/page';
+import { PageModel, PageDocument, PageQueryBuilder } from '~/server/models/page';
 import { SearchDelegatorName } from '~/interfaces/named-query';
 import { IPage } from '~/interfaces/page';
 import {
-  SearchableData, SearchDelegator,
+  QueryTerms, MongoTermsKey,
+  SearchableData, SearchDelegator, UnavailableTermsKey, MongoQueryTerms,
 } from '../../interfaces/search';
 import { serializeUserSecurely } from '../../models/serializers/user-serializer';
 import { ISearchResult } from '~/interfaces/search';
 
+const AVAILABLE_KEYS = ['match', 'not_match', 'prefix', 'not_prefix'];
 
-class PrivateLegacyPagesDelegator implements SearchDelegator<IPage> {
+class PrivateLegacyPagesDelegator implements SearchDelegator<IPage, MongoTermsKey, MongoQueryTerms> {
 
   name!: SearchDelegatorName.PRIVATE_LEGACY_PAGES
 
@@ -18,7 +20,8 @@ class PrivateLegacyPagesDelegator implements SearchDelegator<IPage> {
     this.name = SearchDelegatorName.PRIVATE_LEGACY_PAGES;
   }
 
-  async search(_data: SearchableData | null, user, userGroups, option): Promise<ISearchResult<IPage>> {
+  async search(data: SearchableData<MongoQueryTerms>, user, userGroups, option): Promise<ISearchResult<IPage>> {
+    const { terms } = data;
     const { offset, limit } = option;
 
     if (offset == null || limit == null) {
@@ -37,15 +40,20 @@ class PrivateLegacyPagesDelegator implements SearchDelegator<IPage> {
     const findQueryBuilder = new PageQueryBuilder(Page.find());
     await findQueryBuilder.addConditionAsMigratablePages(user);
 
+    this.addConditionByTerms(countQueryBuilder, terms);
+    this.addConditionByTerms(findQueryBuilder, terms);
+
     const total = await countQueryBuilder.query.count();
 
     const _pages: PageDocument[] = await findQueryBuilder
       .addConditionToPagenate(offset, limit)
       .query
+      .populate('creator')
       .populate('lastUpdateUser')
       .exec();
 
     const pages = _pages.map((page) => {
+      page.creator = serializeUserSecurely(page.creator);
       page.lastUpdateUser = serializeUserSecurely(page.lastUpdateUser);
       return page;
     });
@@ -57,6 +65,41 @@ class PrivateLegacyPagesDelegator implements SearchDelegator<IPage> {
         hitsCount: pages.length,
       },
     };
+  }
+
+  private addConditionByTerms(builder: PageQueryBuilder, terms: MongoQueryTerms): PageQueryBuilder {
+    const {
+      match, not_match: notMatch, prefix, not_prefix: notPrefix,
+    } = terms;
+
+    if (match.length > 0) {
+      match.forEach(m => builder.addConditionToListByMatch(m));
+    }
+    if (notMatch.length > 0) {
+      notMatch.forEach(nm => builder.addConditionToListByNotMatch(nm));
+    }
+    if (prefix.length > 0) {
+      prefix.forEach(p => builder.addConditionToListByStartWith(p));
+    }
+    if (notPrefix.length > 0) {
+      notPrefix.forEach(np => builder.addConditionToListByNotStartWith(np));
+    }
+
+    return builder;
+  }
+
+  isTermsNormalized(terms: Partial<QueryTerms>): terms is MongoQueryTerms {
+    const entries = Object.entries(terms);
+
+    return !entries.some(([key, val]) => !AVAILABLE_KEYS.includes(key) && typeof val?.length === 'number' && val.length > 0);
+  }
+
+  validateTerms(terms: QueryTerms): UnavailableTermsKey<MongoTermsKey>[] {
+    const entries = Object.entries(terms);
+
+    return entries
+      .filter(([key, val]) => !AVAILABLE_KEYS.includes(key) && val.length > 0)
+      .map(([key]) => key as UnavailableTermsKey<MongoTermsKey>); // use "as": https://github.com/microsoft/TypeScript/issues/41173
   }
 
 }

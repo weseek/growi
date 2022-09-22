@@ -1,31 +1,23 @@
+import { getOrCreateModel } from '@growi/core';
+import { addSeconds } from 'date-fns';
 import mongoose, {
   Schema, Model, Document, QueryOptions, FilterQuery,
 } from 'mongoose';
-import { getOrCreateModel } from '@growi/core';
 
+import { PageActionType, PageActionStage } from '~/interfaces/page-operation';
 import {
   IPageForResuming, IUserForResuming, IOptionsForResuming,
-} from '~/server/interfaces/page-operation';
+} from '~/server/models/interfaces/page-operation';
+
+import loggerFactory from '../../utils/logger';
 import { ObjectIdLike } from '../interfaces/mongoose-utils';
+
+const TIME_TO_ADD_SEC = 10;
+
+const logger = loggerFactory('growi:models:page-operation');
 
 type IObjectId = mongoose.Types.ObjectId;
 const ObjectId = mongoose.Schema.Types.ObjectId;
-
-export const PageActionType = {
-  Rename: 'Rename',
-  Duplicate: 'Duplicate',
-  Delete: 'Delete',
-  DeleteCompletely: 'DeleteCompletely',
-  Revert: 'Revert',
-  NormalizeParent: 'NormalizeParent',
-} as const;
-export type PageActionType = typeof PageActionType[keyof typeof PageActionType];
-
-export const PageActionStage = {
-  Main: 'Main',
-  Sub: 'Sub',
-} as const;
-export type PageActionStage = typeof PageActionStage[keyof typeof PageActionStage];
 
 /*
  * Main Schema
@@ -39,6 +31,9 @@ export interface IPageOperation {
   user: IUserForResuming,
   options?: IOptionsForResuming,
   incForUpdatingDescendantCount?: number,
+  unprocessableExpiryDate: Date,
+
+  isProcessable(): boolean
 }
 
 export interface PageOperationDocument extends IPageOperation, Document {}
@@ -48,6 +43,8 @@ export type PageOperationDocumentHasId = PageOperationDocument & { _id: ObjectId
 export interface PageOperationModel extends Model<PageOperationDocument> {
   findByIdAndUpdatePageActionStage(pageOpId: ObjectIdLike, stage: PageActionStage): Promise<PageOperationDocumentHasId | null>
   findMainOps(filter?: FilterQuery<PageOperationDocument>, projection?: any, options?: QueryOptions): Promise<PageOperationDocumentHasId[]>
+  deleteByActionTypes(deleteTypeList: PageActionType[]): Promise<void>
+  extendExpiryDate(operationId: ObjectIdLike): Promise<void>
 }
 
 const pageSchemaForResuming = new Schema<IPageForResuming>({
@@ -94,6 +91,7 @@ const schema = new Schema<PageOperationDocument, PageOperationModel>({
   user: { type: userSchemaForResuming, required: true },
   options: { type: optionsSchemaForResuming },
   incForUpdatingDescendantCount: { type: Number },
+  unprocessableExpiryDate: { type: Date, default: () => addSeconds(new Date(), 10) },
 });
 
 schema.statics.findByIdAndUpdatePageActionStage = async function(
@@ -114,6 +112,27 @@ schema.statics.findMainOps = async function(
     projection,
     options,
   );
+};
+
+schema.statics.deleteByActionTypes = async function(
+    actionTypes: PageActionType[],
+): Promise<void> {
+
+  await this.deleteMany({ actionType: { $in: actionTypes } });
+  logger.info(`Deleted all PageOperation documents with actionType: [${actionTypes}]`);
+};
+
+/**
+ * add TIME_TO_ADD_SEC to current time and update unprocessableExpiryDate with it
+ */
+schema.statics.extendExpiryDate = async function(operationId: ObjectIdLike): Promise<void> {
+  const date = addSeconds(new Date(), TIME_TO_ADD_SEC);
+  await this.findByIdAndUpdate(operationId, { unprocessableExpiryDate: date });
+};
+
+schema.methods.isProcessable = function(): boolean {
+  const { unprocessableExpiryDate } = this;
+  return unprocessableExpiryDate == null || (unprocessableExpiryDate != null && new Date() > unprocessableExpiryDate);
 };
 
 export default getOrCreateModel<PageOperationDocument, PageOperationModel>('PageOperation', schema);

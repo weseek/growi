@@ -1,5 +1,8 @@
 import { Container } from 'unstated';
+
 import loggerFactory from '~/utils/logger';
+
+import { apiv3Get, apiv3Put } from '../util/apiv3-client';
 
 // eslint-disable-next-line no-unused-vars
 const logger = loggerFactory('growi:services:AdminLocalSecurityContainer');
@@ -30,7 +33,7 @@ export default class AdminLocalSecurityContainer extends Container {
 
   async retrieveSecurityData() {
     try {
-      const response = await this.appContainer.apiv3.get('/security-setting/');
+      const response = await apiv3Get('/security-setting/');
       const { localSetting } = response.data.securityParams;
       this.setState({
         useOnlyEnvVars: localSetting.useOnlyEnvVarsForSomeOptions,
@@ -89,7 +92,7 @@ export default class AdminLocalSecurityContainer extends Container {
    */
   async updateLocalSecuritySetting() {
     const { registrationWhiteList, isPasswordResetEnabled, isEmailAuthenticationEnabled } = this.state;
-    const response = await this.appContainer.apiv3.put('/security-setting/local-setting', {
+    const response = await apiv3Put('/security-setting/local-setting', {
       registrationMode: this.state.registrationMode,
       registrationWhiteList,
       isPasswordResetEnabled,

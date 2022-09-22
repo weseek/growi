@@ -1,16 +1,15 @@
-import React from 'react';
+import { Attachment } from '@growi/ui';
+import axios from 'axios'; // import axios from growi dependencies
 import PropTypes from 'prop-types';
+import React from 'react';
 
 // eslint-disable-next-line import/no-unresolved
-import axios from 'axios'; // import axios from growi dependencies
 
-import { Attachment } from '@growi/ui';
-
+import styles from '../../css/index.css';
 import RefsContext from '../util/RefsContext';
 import TagCacheManagerFactory from '../util/TagCacheManagerFactory';
 
 // eslint-disable-next-line no-unused-vars
-import styles from '../../css/index.css';
 
 import ExtractedAttachments from './ExtractedAttachments';
 

@@ -1,15 +1,17 @@
 import loggerFactory from '~/utils/logger';
 
+import { AttachmentType } from '../interfaces/attachment';
+
 // disable no-return-await for model functions
 /* eslint-disable no-return-await */
 
 // eslint-disable-next-line no-unused-vars
 const path = require('path');
 
-const mongoose = require('mongoose');
-const uniqueValidator = require('mongoose-unique-validator');
-const mongoosePaginate = require('mongoose-paginate-v2');
 const { addSeconds } = require('date-fns');
+const mongoose = require('mongoose');
+const mongoosePaginate = require('mongoose-paginate-v2');
+const uniqueValidator = require('mongoose-unique-validator');
 
 // eslint-disable-next-line no-unused-vars
 const logger = loggerFactory('growi:models:attachment');
@@ -32,9 +34,15 @@ module.exports = function(crowi) {
     originalName: { type: String },
     fileFormat: { type: String, required: true },
     fileSize: { type: Number, default: 0 },
-    createdAt: { type: Date, default: Date.now },
     temporaryUrlCached: { type: String },
     temporaryUrlExpiredAt: { type: Date },
+    attachmentType: {
+      type: String,
+      enum: AttachmentType,
+      required: true,
+    },
+  }, {
+    timestamps: { createdAt: true, updatedAt: false },
   });
   attachmentSchema.plugin(uniqueValidator);
   attachmentSchema.plugin(mongoosePaginate);
@@ -51,7 +59,7 @@ module.exports = function(crowi) {
   attachmentSchema.set('toJSON', { virtuals: true });
 
 
-  attachmentSchema.statics.createWithoutSave = function(pageId, user, fileStream, originalName, fileFormat, fileSize) {
+  attachmentSchema.statics.createWithoutSave = function(pageId, user, fileStream, originalName, fileFormat, fileSize, attachmentType) {
     const Attachment = this;
 
     const extname = path.extname(originalName);
@@ -67,8 +75,7 @@ module.exports = function(crowi) {
     attachment.fileName = fileName;
     attachment.fileFormat = fileFormat;
     attachment.fileSize = fileSize;
-    attachment.createdAt = Date.now();
-
+    attachment.attachmentType = attachmentType;
     return attachment;
   };
 

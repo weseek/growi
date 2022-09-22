@@ -1,5 +1,6 @@
-import loggerFactory from '~/utils/logger';
+import { SupportedAction } from '~/interfaces/activity';
 import UserGroup from '~/server/models/user-group';
+import loggerFactory from '~/utils/logger';
 
 const logger = loggerFactory('growi:routes:admin');
 const debug = require('debug')('growi:routes:admin');
@@ -26,6 +27,8 @@ module.exports = function(crowi, app) {
   const actions = {};
 
   const { check, param } = require('express-validator');
+
+  const activityEvent = crowi.event('activity');
 
   const api = {};
 
@@ -101,13 +104,8 @@ module.exports = function(crowi, app) {
   // app.get('/admin/security'                  , admin.security.index);
   actions.security = {};
   actions.security.index = function(req, res) {
-    const isWikiModeForced = aclService.isWikiModeForced();
-    const guestModeValue = aclService.getGuestModeValue();
 
-    return res.render('admin/security', {
-      isWikiModeForced,
-      guestModeValue,
-    });
+    return res.render('admin/security');
   };
 
   // app.get('/admin/markdown'                  , admin.markdown.index);
@@ -294,6 +292,12 @@ module.exports = function(crowi, app) {
     return res.render('admin/user-group-detail', { userGroup });
   };
 
+  // AuditLog
+  actions.auditLog = {};
+  actions.auditLog.index = (req, res) => {
+    return res.render('admin/audit-log');
+  };
+
   // Importer management
   actions.importer = {};
   actions.importer.api = api;
@@ -352,6 +356,16 @@ module.exports = function(crowi, app) {
 
     try {
       const zipFile = exportService.getFile(fileName);
+      const parameters = {
+        ip:  req.ip,
+        endpoint: req.originalUrl,
+        action: SupportedAction.ACTION_ADMIN_ARCHIVE_DATA_DOWNLOAD,
+        user: req.user?._id,
+        snapshot: {
+          username: req.user?.username,
+        },
+      };
+      crowi.activityService.createActivity(parameters);
       return res.download(zipFile);
     }
     catch (err) {
@@ -380,6 +394,8 @@ module.exports = function(crowi, app) {
 
     await configManager.updateConfigsInTheSameNamespace('crowi', form);
     importer.initializeEsaClient(); // let it run in the back aftert res
+    const parameters = { action: SupportedAction.ACTION_ADMIN_ESA_DATA_UPDATED };
+    activityEvent.emit('update', res.locals.activity._id, parameters);
     return res.json(ApiResponse.success());
   };
 
@@ -400,7 +416,8 @@ module.exports = function(crowi, app) {
 
     await configManager.updateConfigsInTheSameNamespace('crowi', form);
     importer.initializeQiitaClient(); // let it run in the back aftert res
-
+    const parameters = { action: SupportedAction.ACTION_ADMIN_QIITA_DATA_UPDATED };
+    activityEvent.emit('update', res.locals.activity._id, parameters);
     return res.json(ApiResponse.success());
   };
 
@@ -416,6 +433,8 @@ module.exports = function(crowi, app) {
 
     try {
       errors = await importer.importDataFromEsa(user);
+      const parameters = { action: SupportedAction.ACTION_ADMIN_ESA_DATA_IMPORTED };
+      activityEvent.emit('update', res.locals.activity._id, parameters);
     }
     catch (err) {
       errors = [err];
@@ -439,6 +458,8 @@ module.exports = function(crowi, app) {
 
     try {
       errors = await importer.importDataFromQiita(user);
+      const parameters = { action: SupportedAction.ACTION_ADMIN_QIITA_DATA_IMPORTED };
+      activityEvent.emit('update', res.locals.activity._id, parameters);
     }
     catch (err) {
       errors = [err];
@@ -459,6 +480,8 @@ module.exports = function(crowi, app) {
   actions.api.testEsaAPI = async(req, res) => {
     try {
       await importer.testConnectionToEsa();
+      const parameters = { action: SupportedAction.ACTION_ADMIN_CONNECTION_TEST_OF_ESA_DATA };
+      activityEvent.emit('update', res.locals.activity._id, parameters);
       return res.json(ApiResponse.success());
     }
     catch (err) {
@@ -475,6 +498,8 @@ module.exports = function(crowi, app) {
   actions.api.testQiitaAPI = async(req, res) => {
     try {
       await importer.testConnectionToQiita();
+      const parameters = { action: SupportedAction.ACTION_ADMIN_CONNECTION_TEST_OF_QIITA_DATA };
+      activityEvent.emit('update', res.locals.activity._id, parameters);
       return res.json(ApiResponse.success());
     }
     catch (err) {

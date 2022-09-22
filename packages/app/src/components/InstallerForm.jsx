@@ -1,10 +1,11 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 
 import i18next from 'i18next';
-import { withTranslation } from 'react-i18next';
+import PropTypes from 'prop-types';
+import { useTranslation } from 'react-i18next';
 
 import { localeMetadatas } from '~/client/util/i18n';
+import { useCsrfToken } from '~/stores/context';
 
 class InstallerForm extends React.Component {
 
@@ -37,7 +38,7 @@ class InstallerForm extends React.Component {
   //     },
   //     responseType: 'json',
   //   });
-  //   axios.get('/_api/check_username', { params: { username: event.target.value } })
+  //   axios.get('/_api/v3/check-username', { params: { username: event.target.value } })
   //     .then((res) => { return this.setState({ isValidUserName: res.data.valid }) });
   // }
 
@@ -175,7 +176,7 @@ class InstallerForm extends React.Component {
               />
             </div>
 
-            <input type="hidden" name="_csrf" value={this.props.csrf} />
+            <input type="hidden" name="_csrf" value={this.props.csrfToken} />
 
             <div className="input-group mt-4 mb-3 d-flex justify-content-center">
               <button
@@ -211,7 +212,14 @@ InstallerForm.propTypes = {
   userName: PropTypes.string,
   name: PropTypes.string,
   email: PropTypes.string,
-  csrf: PropTypes.string,
+  csrfToken: PropTypes.string,
 };
 
-export default withTranslation()(InstallerForm);
+const InstallerFormWrapperFC = (props) => {
+  const { t } = useTranslation();
+  const { data: csrfToken } = useCsrfToken();
+
+  return <InstallerForm t={t} csrfToken={csrfToken} {...props} />;
+};
+
+export default InstallerFormWrapperFC;

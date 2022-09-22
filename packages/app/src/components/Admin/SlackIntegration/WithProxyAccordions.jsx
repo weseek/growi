@@ -1,21 +1,23 @@
 /* eslint-disable react/prop-types */
 import React, { useState, useCallback } from 'react';
-import PropTypes from 'prop-types';
-import { useTranslation } from 'react-i18next';
-import { CopyToClipboard } from 'react-copy-to-clipboard';
 
 import { SlackbotType } from '@growi/slack';
-
+import PropTypes from 'prop-types';
+import { CopyToClipboard } from 'react-copy-to-clipboard';
+import { useTranslation } from 'react-i18next';
 import { Tooltip } from 'reactstrap';
+
+import AppContainer from '~/client/services/AppContainer';
+import { toastSuccess, toastError } from '~/client/util/apiNotification';
+import { apiv3Put, apiv3Post } from '~/client/util/apiv3-client';
 import loggerFactory from '~/utils/logger';
 
 import { withUnstatedContainers } from '../../UnstatedUtils';
-import { toastSuccess, toastError } from '~/client/util/apiNotification';
-import AppContainer from '~/client/services/AppContainer';
 import Accordion from '../Common/Accordion';
-import { addLogs } from './slak-integration-util';
-import MessageBasedOnConnection from './MessageBasedOnConnection';
+
 import ManageCommandsProcess from './ManageCommandsProcess';
+import MessageBasedOnConnection from './MessageBasedOnConnection';
+import { addLogs } from './slak-integration-util';
 
 const logger = loggerFactory('growi:SlackIntegration:WithProxyAccordionsWrapper');
 
@@ -147,7 +149,7 @@ const GeneratingTokensAndRegisteringProxyServiceProcess = withUnstatedContainers
 
   const regenerateTokensHandler = async() => {
     try {
-      await appContainer.apiv3.put(`/slack-integration-settings/slack-app-integrations/${slackAppIntegrationId}/regenerate-tokens`);
+      await apiv3Put(`/slack-integration-settings/slack-app-integrations/${slackAppIntegrationId}/regenerate-tokens`);
       if (props.onUpdateTokens != null) {
         props.onUpdateTokens();
       }
@@ -232,7 +234,7 @@ const GeneratingTokensAndRegisteringProxyServiceProcess = withUnstatedContainers
 }, [AppContainer]);
 
 const TestProcess = ({
-  apiv3Post, slackAppIntegrationId, onSubmitForm, onSubmitFormFailed, isLatestConnectionSuccess,
+  slackAppIntegrationId, onSubmitForm, onSubmitFormFailed, isLatestConnectionSuccess,
 }) => {
 
   const { t } = useTranslation();
@@ -342,7 +344,6 @@ const WithProxyAccordions = (props) => {
     '③': {
       title: 'manage_permission',
       content: <ManageCommandsProcess
-        apiv3Put={props.appContainer.apiv3.put}
         slackAppIntegrationId={props.slackAppIntegrationId}
         permissionsForBroadcastUseCommands={props.permissionsForBroadcastUseCommands}
         permissionsForSingleUseCommands={props.permissionsForSingleUseCommands}
@@ -352,7 +353,6 @@ const WithProxyAccordions = (props) => {
     '④': {
       title: 'test_connection',
       content: <TestProcess
-        apiv3Post={props.appContainer.apiv3.post}
         slackAppIntegrationId={props.slackAppIntegrationId}
         onSubmitForm={submitForm}
         onSubmitFormFailed={submitFormFailed}
@@ -387,7 +387,6 @@ const WithProxyAccordions = (props) => {
     '⑤': {
       title: 'manage_permission',
       content: <ManageCommandsProcess
-        apiv3Put={props.appContainer.apiv3.put}
         slackAppIntegrationId={props.slackAppIntegrationId}
         permissionsForBroadcastUseCommands={props.permissionsForBroadcastUseCommands}
         permissionsForSingleUseCommands={props.permissionsForSingleUseCommands}
@@ -397,7 +396,6 @@ const WithProxyAccordions = (props) => {
     '⑥': {
       title: 'test_connection',
       content: <TestProcess
-        apiv3Post={props.appContainer.apiv3.post}
         slackAppIntegrationId={props.slackAppIntegrationId}
         onSubmitForm={submitForm}
         onSubmitFormFailed={submitFormFailed}

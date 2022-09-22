@@ -1,7 +1,8 @@
 import { Response, NextFunction } from 'express';
-import { InteractionPayloadAccessor } from '../utils/interaction-payload-accessor';
 
 import { RequestFromSlack } from '../interfaces/request-from-slack';
+import { InteractionPayloadAccessor } from '../utils/interaction-payload-accessor';
+
 
 export const parseSlackInteractionRequest = (req: RequestFromSlack, res: Response, next: NextFunction): Record<string, any> | void => {
   // There is no payload in the request from slack

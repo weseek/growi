@@ -1,19 +1,20 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 
+import { HotTable } from '@handsontable/react';
+import Handsontable from 'handsontable';
+import PropTypes from 'prop-types';
 import {
   Collapse,
   Modal, ModalHeader, ModalBody, ModalFooter,
 } from 'reactstrap';
-
-import Handsontable from 'handsontable';
-import { HotTable } from '@handsontable/react';
 import { debounce } from 'throttle-debounce';
 
 
-import MarkdownTableDataImportForm from './MarkdownTableDataImportForm';
 import MarkdownTable from '~/client/models/MarkdownTable';
+
 import ExpandOrContractButton from '../ExpandOrContractButton';
+
+import MarkdownTableDataImportForm from './MarkdownTableDataImportForm';
 
 const DEFAULT_HOT_HEIGHT = 300;
 const MARKDOWNTABLE_TO_HANDSONTABLE_ALIGNMENT_SYMBOL_MAPPING = {
@@ -401,7 +402,7 @@ export default class HandsontableModal extends React.PureComponent {
   get markdownTableOption() {
     return {
       align: [].concat(this.state.markdownTable.options.align),
-      pad: this.props.ignoreAutoFormatting !== true,
+      pad: this.props.autoFormatMarkdownTable !== false,
     };
   }
 
@@ -518,5 +519,5 @@ export default class HandsontableModal extends React.PureComponent {
 
 HandsontableModal.propTypes = {
   onSave: PropTypes.func,
-  ignoreAutoFormatting: PropTypes.bool,
+  autoFormatMarkdownTable: PropTypes.bool,
 };

@@ -59,12 +59,21 @@
 {% endblock %}
 
 {% block html_body %}
-{% if getConfig('crowi', 'customize:isContainerFluid') %}
-  {% set additionalBodyClass = 'growi-layout-fluid' %}
+{% set additionalBodyClasses = []; %}
+{% block html_additional_body_classes %}{% endblock %}
+
+{% if page.expandContentWidth !== undefined %}
+  {% set isContainerFluid = page.expandContentWidth; %}
+{% else %}
+  {% set isContainerFluid = getConfig('crowi', 'customize:isContainerFluid'); %}
 {% endif %}
+
+{% if isContainerFluid  %}
+  {% set additionalBodyClasses = additionalBodyClasses|push('growi-layout-fluid') %}
+{% endif %}
+
 <body
-  class="{% block html_base_css %}{% endblock %} growi {{ additionalBodyClass }}"
-  data-is-admin="{{ user.admin }}"
+  class="{% block html_base_css %}{% endblock %} growi {{ additionalBodyClasses|join(' ') }}"
   data-plugin-enabled="{{ getConfig('crowi', 'plugin:isEnabledPlugins') }}"
   {% block html_base_attr %}{% endblock %}
   data-csrftoken="{{ csrf() }}"
@@ -96,23 +105,25 @@
 </div><!-- /#wrapper -->
 
 {% block fixed-controls %}
-<div id="grw-fab-container"></div>
+<div id="grw-fab-container" data-testid="grw-fab-container"></div>
 {% endblock %}
 
 <div id="grw-hotkeys-manager"></div>
 
-{% include '../widget/system-version.html' %}
+<div id="system-version"></div>
 
 <div id="page-create-modal"></div>
 <div id="page-delete-modal"></div>
+<div id="empty-trash-modal"></div>
 <div id="page-duplicate-modal"></div>
 <div id="page-rename-modal"></div>
 <div id="page-presentation-modal"></div>
 <div id="page-accessories-modal"></div>
 <div id="descendants-page-list-modal"></div>
 <div id="page-put-back-modal"></div>
+<div id="show-page-accessories-modal"></div>
+<div id="shortcuts-modal"></div>
 
-{% include '../modal/shortcuts.html' %}
 
 {% block body_end %}
 {% endblock %}

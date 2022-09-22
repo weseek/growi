@@ -1,7 +1,8 @@
 import axios from 'axios';
 import urljoin from 'url-join';
-import { RespondBodyForResponseUrl } from '../interfaces/response-url';
+
 import { IRespondUtil } from '../interfaces/respond-util';
+import { RespondBodyForResponseUrl } from '../interfaces/response-url';
 
 type AxiosOptions = {
   headers?: {

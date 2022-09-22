@@ -2,6 +2,8 @@ import { Container } from 'unstated';
 
 import loggerFactory from '~/utils/logger';
 
+import { apiv3Delete, apiv3Get } from '../util/apiv3-client';
+
 
 // eslint-disable-next-line no-unused-vars
 const logger = loggerFactory('growi:services:AdminexternalaccountsContainer');
@@ -12,10 +14,8 @@ const logger = loggerFactory('growi:services:AdminexternalaccountsContainer');
  */
 export default class AdminExternalAccountsContainer extends Container {
 
-  constructor(appContainer) {
+  constructor() {
     super();
-
-    this.appContainer = appContainer;
 
     this.state = {
       externalAccounts: [],
@@ -42,7 +42,7 @@ export default class AdminExternalAccountsContainer extends Container {
   async retrieveExternalAccountsByPagingNum(selectedPage) {
 
     const params = { page: selectedPage };
-    const { data } = await this.appContainer.apiv3.get('/users/external-accounts', params);
+    const { data } = await apiv3Get('/users/external-accounts', params);
 
     if (data.paginateResult == null) {
       throw new Error('data must conclude \'paginateResult\' property.');
@@ -64,7 +64,7 @@ export default class AdminExternalAccountsContainer extends Container {
    * @param {string} externalAccountId id of the External Account to be removed
    */
   async removeExternalAccountById(externalAccountId) {
-    const res = await this.appContainer.apiv3.delete(`/users/external-accounts/${externalAccountId}/remove`);
+    const res = await apiv3Delete(`/users/external-accounts/${externalAccountId}/remove`);
     const deletedUserData = res.data.externalAccount;
     await this.retrieveExternalAccountsByPagingNum(this.state.activePage);
     return deletedUserData.accountId;

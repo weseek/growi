@@ -1,16 +1,23 @@
+import { pagePathUtils } from '@growi/core';
 import { Key, SWRResponse } from 'swr';
 import useSWRImmutable from 'swr/immutable';
 
-import { pagePathUtils } from '@growi/core';
 
+import { SupportedActionType } from '~/interfaces/activity';
+import { GrowiRendererConfig } from '~/interfaces/services/renderer';
+
+import { TargetAndAncestors } from '../interfaces/page-listing-results';
 import { IUser } from '../interfaces/user';
 
 import { useStaticSWR } from './use-static-swr';
 
-import { TargetAndAncestors, IsNotFoundPermalink } from '../interfaces/page-listing-results';
 
 type Nullable<T> = T | null;
 
+
+export const useCsrfToken = (initialData?: string): SWRResponse<string, Error> => {
+  return useStaticSWR<string, Error>('csrfToken', initialData);
+};
 
 export const useSiteUrl = (initialData?: string): SWRResponse<string, Error> => {
   return useStaticSWR<string, Error>('siteUrl', initialData);
@@ -30,6 +37,10 @@ export const useCurrentPagePath = (initialData?: Nullable<string>): SWRResponse<
 
 export const useCurrentPageId = (initialData?: Nullable<string>): SWRResponse<Nullable<string>, Error> => {
   return useStaticSWR<Nullable<string>, Error>('currentPageId', initialData);
+};
+
+export const useEmptyPageId = (initialData?: Nullable<string>): SWRResponse<Nullable<string>, Error> => {
+  return useStaticSWR<Nullable<string>, Error>('emptyPageId', initialData);
 };
 
 export const useRevisionCreatedAt = (initialData?: Nullable<any>): SWRResponse<Nullable<any>, Error> => {
@@ -60,10 +71,6 @@ export const useIsTrashPage = (initialData?: boolean): SWRResponse<boolean, Erro
   return useStaticSWR<boolean, Error>('isTrashPage', initialData, { fallbackData: false });
 };
 
-export const useIsDeleted = (initialData?: boolean): SWRResponse<boolean, Error> => {
-  return useStaticSWR<boolean, Error>('isDeleted', initialData, { fallbackData: false });
-};
-
 export const useIsNotCreatable = (initialData?: boolean): SWRResponse<boolean, Error> => {
   return useStaticSWR<boolean, Error>('isNotCreatable', initialData, { fallbackData: false });
 };
@@ -80,16 +87,16 @@ export const useHasChildren = (initialData?: Nullable<any>): SWRResponse<Nullabl
   return useStaticSWR<Nullable<any>, Error>('hasChildren', initialData);
 };
 
-export const useTemplateTagData = (initialData?: Nullable<any>): SWRResponse<Nullable<any>, Error> => {
-  return useStaticSWR<Nullable<any>, Error>('templateTagData', initialData);
+export const useTemplateTagData = (initialData?: Nullable<string>): SWRResponse<Nullable<string>, Error> => {
+  return useStaticSWR<Nullable<string>, Error>('templateTagData', initialData);
 };
 
 export const useShareLinksNumber = (initialData?: Nullable<any>): SWRResponse<Nullable<any>, Error> => {
   return useStaticSWR<Nullable<any>, Error>('shareLinksNumber', initialData);
 };
 
-export const useShareLinkId = (initialData?: Nullable<any>): SWRResponse<Nullable<any>, Error> => {
-  return useStaticSWR<Nullable<any>, Error>('shareLinkId', initialData);
+export const useShareLinkId = (initialData?: Nullable<string>): SWRResponse<Nullable<string>, Error> => {
+  return useStaticSWR<Nullable<string>, Error>('shareLinkId', initialData);
 };
 
 export const useRevisionIdHackmdSynced = (initialData?: Nullable<any>): SWRResponse<Nullable<any>, Error> => {
@@ -120,10 +127,6 @@ export const useRevisionAuthor = (initialData?: Nullable<any>): SWRResponse<Null
   return useStaticSWR<Nullable<any>, Error>('revisionAuthor', initialData);
 };
 
-export const useSlackChannels = (initialData?: Nullable<any>): SWRResponse<Nullable<any>, Error> => {
-  return useStaticSWR<Nullable<any>, Error>('slackChannels', initialData);
-};
-
 export const useIsSearchPage = (initialData?: Nullable<any>) : SWRResponse<Nullable<any>, Error> => {
   return useStaticSWR<Nullable<any>, Error>('isSearchPage', initialData);
 };
@@ -134,10 +137,6 @@ export const useTargetAndAncestors = (initialData?: TargetAndAncestors): SWRResp
 
 export const useNotFoundTargetPathOrId = (initialData?: string): SWRResponse<string, Error> => {
   return useStaticSWR<string, Error>('notFoundTargetPathOrId', initialData);
-};
-
-export const useIsNotFoundPermalink = (initialData?: Nullable<IsNotFoundPermalink>): SWRResponse<Nullable<IsNotFoundPermalink>, Error> => {
-  return useStaticSWR<Nullable<IsNotFoundPermalink>, Error>('isNotFoundPermalink', initialData);
 };
 
 export const useIsAclEnabled = (initialData?: boolean) : SWRResponse<boolean, Error> => {
@@ -154,6 +153,45 @@ export const useIsSearchServiceReachable = (initialData?: boolean) : SWRResponse
 
 export const useIsEnabledAttachTitleHeader = (initialData?: boolean) : SWRResponse<boolean, Error> => {
   return useStaticSWR<boolean, Error>('isEnabledAttachTitleHeader', initialData);
+};
+
+export const useIsEmptyPage = (initialData?: boolean) : SWRResponse<boolean, Error> => {
+  return useStaticSWR<boolean, Error>('isEmptyPage', initialData);
+};
+export const useHasParent = (initialData?: boolean) : SWRResponse<boolean, Error> => {
+  return useStaticSWR<boolean, Error>('hasParent', initialData);
+};
+
+export const useIsIndentSizeForced = (initialData?: boolean) : SWRResponse<boolean, Error> => {
+  return useStaticSWR<boolean, Error>('isIndentSizeForced', initialData);
+};
+
+export const useDefaultIndentSize = (initialData?: number) : SWRResponse<number, Error> => {
+  return useStaticSWR<number, Error>('defaultIndentSize', initialData, { fallbackData: 4 });
+};
+
+export const useAuditLogEnabled = (initialData?: boolean): SWRResponse<boolean, Error> => {
+  return useStaticSWR<boolean, Error>('auditLogEnabled', initialData, { fallbackData: false });
+};
+
+export const useActivityExpirationSeconds = (initialData?: number) : SWRResponse<number, Error> => {
+  return useStaticSWR<number, Error>('activityExpirationSeconds', initialData);
+};
+
+export const useAuditLogAvailableActions = (initialData?: Array<SupportedActionType>) : SWRResponse<Array<SupportedActionType>, Error> => {
+  return useStaticSWR<Array<SupportedActionType>, Error>('auditLogAvailableActions', initialData);
+};
+
+export const useGrowiVersion = (initialData?: string): SWRResponse<string, any> => {
+  return useStaticSWR('growiVersion', initialData);
+};
+
+export const useGrowiRendererConfig = (initialData?: GrowiRendererConfig): SWRResponse<GrowiRendererConfig, any> => {
+  return useStaticSWR('growiRendererConfig', initialData);
+};
+
+export const useIsBlinkedHeaderAtBoot = (): SWRResponse<boolean, Error> => {
+  return useStaticSWR('isBlinkedAtBoot', undefined, { fallbackData: false });
 };
 
 
@@ -185,12 +223,13 @@ export const useIsEditable = (): SWRResponse<boolean, Error> => {
 
 export const useIsSharedUser = (): SWRResponse<boolean, Error> => {
   const { data: isGuestUser } = useIsGuestUser();
-  const { data: currentPagePath } = useCurrentPagePath();
+
+  const pathname = window.location.pathname;
 
   return useSWRImmutable(
-    ['isSharedUser', isGuestUser, currentPagePath],
-    (key: Key, isGuestUser: boolean, currentPagePath: string) => {
-      return isGuestUser && pagePathUtils.isSharedPage(currentPagePath as string);
+    ['isSharedUser', isGuestUser, pathname],
+    (key: Key, isGuestUser: boolean, pathname: string) => {
+      return isGuestUser && pagePathUtils.isSharedPage(pathname);
     },
   );
 };

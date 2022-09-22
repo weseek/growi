@@ -1,8 +1,10 @@
 import React from 'react';
+
 import PropTypes from 'prop-types';
 
-import { PageNode } from '../PageNode';
 import { LsxContext } from '../../util/LsxContext';
+import { PageNode } from '../PageNode';
+
 import { LsxPage } from './LsxPage';
 
 export class LsxListView extends React.Component {
@@ -15,6 +17,7 @@ export class LsxListView extends React.Component {
           depth={1}
           pageNode={pageNode}
           lsxContext={this.props.lsxContext}
+          basisViewersCount={this.props.basisViewersCount}
         />
       );
     });
@@ -45,4 +48,5 @@ export class LsxListView extends React.Component {
 LsxListView.propTypes = {
   nodeTree: PropTypes.arrayOf(PropTypes.instanceOf(PageNode)).isRequired,
   lsxContext: PropTypes.instanceOf(LsxContext).isRequired,
+  basisViewersCount: PropTypes.number,
 };

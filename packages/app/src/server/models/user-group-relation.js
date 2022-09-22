@@ -12,7 +12,8 @@ const ObjectId = mongoose.Schema.Types.ObjectId;
 const schema = new mongoose.Schema({
   relatedGroup: { type: ObjectId, ref: 'UserGroup', required: true },
   relatedUser: { type: ObjectId, ref: 'User', required: true },
-  createdAt: { type: Date, default: Date.now, required: true },
+}, {
+  timestamps: { createdAt: true, updatedAt: false },
 });
 schema.plugin(mongoosePaginate);
 schema.plugin(uniqueValidator);
@@ -311,6 +312,64 @@ class UserGroupRelation {
     });
 
     await this.bulkWrite(insertOperations);
+  }
+
+  /**
+   * Recursively finds descendant groups by populating relations.
+   * @static
+   * @param {UserGroupDocument[]} groups
+   * @param {UserDocument} user
+   * @returns UserGroupDocument[]
+   */
+  static async findGroupsWithDescendantsByGroupAndUser(group, user) {
+    const descendantGroups = [group];
+
+    const incrementGroupsRecursively = async(groups, user) => {
+      const groupIds = groups.map(g => g._id);
+
+      const populatedRelations = await this.aggregate([
+        {
+          $match: {
+            relatedUser: user._id,
+          },
+        },
+        {
+          $lookup: {
+            from: 'usergroups',
+            localField: 'relatedGroup',
+            foreignField: '_id',
+            as: 'relatedGroup',
+          },
+        },
+        {
+          $unwind: {
+            path: '$relatedGroup',
+          },
+        },
+        {
+          $match: {
+            'relatedGroup.parent': { $in: groupIds },
+          },
+        },
+      ]);
+
+      const nextGroups = populatedRelations.map(d => d.relatedGroup);
+
+      // End
+      const shouldEnd = nextGroups.length === 0;
+      if (shouldEnd) {
+        return;
+      }
+
+      // Increment
+      descendantGroups.push(...nextGroups);
+
+      return incrementGroupsRecursively(nextGroups, user);
+    };
+
+    await incrementGroupsRecursively([group], user);
+
+    return descendantGroups;
   }
 
 }
