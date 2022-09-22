@@ -17,8 +17,8 @@ context('Access to search result page', () => {
     cy.getByTestid('search-result-list').should('be.visible');
     cy.getByTestid('search-result-content').should('be.visible');
     cy.get('#wiki').should('be.visible');
-    // eslint-disable-next-line cypress/no-unnecessary-waiting
-    cy.wait(500); // wait for 500 ms for Scroll
+    // for avoid mismatch by auto scrolling
+    cy.get('.search-result-content-body-container').scrollTo('top');
     cy.screenshot(`${ssPrefix}with-q`);
   });
 
@@ -29,6 +29,8 @@ context('Access to search result page', () => {
     cy.getByTestid('search-result-list').should('be.visible');
     cy.getByTestid('search-result-content').should('be.visible');
     cy.get('#wiki').should('be.visible');
+    // for avoid mismatch by auto scrolling
+    cy.get('.search-result-content-body-container').scrollTo('top');
 
     cy.getByTestid('cb-select').first().click({force: true});
     cy.screenshot(`${ssPrefix}the-first-checkbox-on`);
@@ -101,15 +103,17 @@ context('Search all pages', () => {
     cy.getByTestid('search-result-list').should('be.visible');
     cy.getByTestid('search-result-content').should('be.visible');
     cy.get('#wiki').should('be.visible');
-    // eslint-disable-next-line cypress/no-unnecessary-waiting
-    cy.wait(500); // wait for 500 ms for Scroll
+    // for avoid mismatch by auto scrolling
+    cy.get('.search-result-content-body-container').scrollTo('top');
+    // force to add 'active' to pass VRT: https://github.com/weseek/growi/pull/6603
+    cy.getByTestid('page-list-item-L').first().invoke('addClass', 'active');
     cy.screenshot(`${ssPrefix}3-search-page-results`, { capture: 'viewport'});
 
     cy.getByTestid('open-page-item-control-btn').eq(1).click();
     cy.getByTestid('search-result-content').should('be.visible');
     cy.get('#wiki').should('be.visible');
-    // eslint-disable-next-line cypress/no-unnecessary-waiting
-    cy.wait(500); // wait for 500 ms for Scroll
+    // for avoid mismatch by auto scrolling
+    cy.get('.search-result-content-body-container').scrollTo('top');
     cy.screenshot(`${ssPrefix}4-click-three-dots-menu`, {capture: 'viewport'});
 
     //Add bookmark
@@ -168,6 +172,8 @@ context('Search all pages', () => {
     cy.getByTestid('search-result-list').should('be.visible');
     cy.getByTestid('search-result-content').should('be.visible');
     cy.get('#wiki').should('be.visible');
+    // force to add 'active' to pass VRT: https://github.com/weseek/growi/pull/6603
+    cy.getByTestid('page-list-item-L').first().invoke('addClass', 'active');
     cy.screenshot(`${ssPrefix}2-search-with-tag-result`, {capture: 'viewport'});
 
     cy.getByTestid('open-page-item-control-btn').first().click();
@@ -186,6 +192,8 @@ context('Search all pages', () => {
     cy.getByTestid('search-result-list').should('be.visible');
     cy.getByTestid('search-result-content').should('be.visible');
     cy.get('#wiki').should('be.visible');
+    // force to add 'active' to pass VRT: https://github.com/weseek/growi/pull/6603
+    cy.getByTestid('page-list-item-L').first().invoke('addClass', 'active');
     cy.screenshot(`${ssPrefix}1-tag-order-click-tag-name`, {capture: 'viewport'});
 
     cy.get('.grw-search-page-nav').within(() => {
@@ -253,15 +261,15 @@ context('Search current tree with "prefix":', () => {
     cy.getByTestid('search-result-list').should('be.visible');
     cy.getByTestid('search-result-content').should('be.visible');
     cy.get('#wiki').should('be.visible');
-    // eslint-disable-next-line cypress/no-unnecessary-waiting
-    cy.wait(500); // wait for 500 ms for Scroll
+    // for avoid mismatch by auto scrolling
+    cy.get('.search-result-content-body-container').scrollTo('top');
     cy.screenshot(`${ssPrefix}3-search-page-results`, { capture: 'viewport'});
 
     cy.getByTestid('open-page-item-control-btn').first().click();
     cy.getByTestid('search-result-content').should('be.visible');
     cy.get('#wiki').should('be.visible');
-    // eslint-disable-next-line cypress/no-unnecessary-waiting
-    cy.wait(500); // wait for 500 ms for Scroll
+    // for avoid mismatch by auto scrolling
+    cy.get('.search-result-content-body-container').scrollTo('top');
     cy.screenshot(`${ssPrefix}4-click-three-dots-menu`, {capture: 'viewport'});
   });
 
