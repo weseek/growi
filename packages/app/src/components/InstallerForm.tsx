@@ -5,13 +5,7 @@ import { useTranslation, i18n } from 'next-i18next';
 
 import { i18n as i18nConfig } from '^/config/next-i18next.config';
 
-type Props = {
-  userName: string,
-  name: string,
-  email: string,
-};
-
-const InstallerForm = (props: Props): JSX.Element => {
+const InstallerForm = memo((): JSX.Element => {
   const { t } = useTranslation();
 
   const [isValidUserName, setValidUserName] = useState(true);
@@ -114,7 +108,6 @@ const InstallerForm = (props: Props): JSX.Element => {
               className="form-control"
               placeholder={t('User ID')}
               name="registerForm[username]"
-              defaultValue={props.userName}
               // onBlur={checkUserName} // need not to check username before installation -- 2020.07.24 Yuki Takei
               required
             />
@@ -131,7 +124,6 @@ const InstallerForm = (props: Props): JSX.Element => {
               className="form-control"
               placeholder={t('Name')}
               name="registerForm[name]"
-              defaultValue={props.name}
               required
             />
           </div>
@@ -146,7 +138,6 @@ const InstallerForm = (props: Props): JSX.Element => {
               className="form-control"
               placeholder={t('Email')}
               name="registerForm[email]"
-              defaultValue={props.email}
               required
             />
           </div>
@@ -188,6 +179,8 @@ const InstallerForm = (props: Props): JSX.Element => {
       </div>
     </div>
   );
-};
+});
+
+InstallerForm.displayName = 'InstallerForm';
 
 export default InstallerForm;
