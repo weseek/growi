@@ -286,7 +286,11 @@ pWVdnzS1VCO8fKsJ7YYIr+JmHvseph3kFUOI5RqkCcMZlKUv83aUThsTHw==
                       readOnly
                     />
                     <p className="form-text text-muted">
-                      <small dangerouslySetInnerHTML={{ __html: t('security_setting.SAML.Use env var if empty', { env: 'SAML_ATTR_MAPPING_USERNAME' }) }} />
+                      <small>
+                        <span dangerouslySetInnerHTML={{ __html: t('security_setting.SAML.Use env var if empty', { env: 'SAML_ATTR_MAPPING_USERNAME' }) }} />
+                        <br />
+                        <span dangerouslySetInnerHTML={{ __html: t('security_setting.Use default if both are empty', { target: 'username' }) }} />
+                      </small>
                     </p>
                   </td>
                 </tr>
