@@ -93,7 +93,7 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
               {loginErrors.map((err, index) => {
                 return (
                   <span key={index}>
-                    {t(`message.${err.message}`)}<br/>
+                    {t(err.message)}<br/>
                   </span>
                 );
               })}
@@ -272,7 +272,7 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
               {registerErrors.map((err, index) => {
                 return (
                   <span key={index}>
-                    {t(`message.${err.message}`)}<br/>
+                    {t(err.message)}<br/>
                   </span>
                 );
               })}

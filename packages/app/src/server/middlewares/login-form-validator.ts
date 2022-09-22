@@ -48,18 +48,18 @@ export const loginRules = () => {
   return [
     body('loginForm.username')
       .matches(/^[\da-zA-Z\-_.+@]+$/)
-      .withMessage('Username or E-mail has invalid characters')
+      .withMessage('message.Username or E-mail has invalid characters')
       .not()
       .isEmpty()
-      .withMessage('Username field is required'),
+      .withMessage('message.Username field is required'),
     body('loginForm.password')
       .matches(/^[\x20-\x7F]*$/)
-      .withMessage('Password has invalid character')
+      .withMessage('message.Password has invalid character')
       .isLength({ min: 6 })
-      .withMessage('Password minimum character should be more than 6 characters')
+      .withMessage('message.Password minimum character should be more than 6 characters')
       .not()
       .isEmpty()
-      .withMessage('Password field is required'),
+      .withMessage('message.Password field is required'),
   ];
 };
 
