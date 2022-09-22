@@ -59,7 +59,7 @@ export const SavePageControls = (props: Props): JSX.Element | null => {
   }, [mutateIsEnabledUnsavedWarning]);
 
 
-  if (isEditable == null || isAclEnabled == null) {
+  if (isEditable == null || isAclEnabled == null || grantData == null) {
     return null;
   }
 
@@ -67,10 +67,7 @@ export const SavePageControls = (props: Props): JSX.Element | null => {
     return null;
   }
 
-  const grant = grantData?.grant || PageGrant.GRANT_PUBLIC;
-  const grantedGroup = grantData?.grantedGroup;
-
-  // const {  pageContainer } = props;
+  const { grant, grantedGroup } = grantData;
 
   const isRootPage = isTopPage(currentPagePath ?? '');
   const labelSubmitButton = pageId == null ? t('Create') : t('Update');

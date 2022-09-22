@@ -3,6 +3,8 @@ import React, { useState } from 'react';
 
 import { Collapse } from 'reactstrap';
 
+import { RendererOptions } from '~/services/renderer/renderer';
+
 import { ICommentHasId, ICommentHasIdList } from '../../interfaces/comment';
 import { IUser } from '../../interfaces/user';
 import { useIsAllReplyShown } from '../../stores/context';
@@ -13,11 +15,13 @@ import styles from './ReplyComments.module.scss';
 
 
 type ReplycommentsProps = {
+  rendererOptions: RendererOptions,
   isReadOnly: boolean,
   revisionId: string,
   revisionCreatedAt: Date,
   currentUser: IUser,
   replyList: ICommentHasIdList,
+  highlightKeywords?: string[],
   deleteBtnClicked: (comment: ICommentHasId) => void,
   onComment: () => void,
 }
@@ -25,7 +29,8 @@ type ReplycommentsProps = {
 export const ReplyComments = (props: ReplycommentsProps): JSX.Element => {
 
   const {
-    isReadOnly, revisionId, revisionCreatedAt, currentUser, replyList, deleteBtnClicked, onComment,
+    rendererOptions, isReadOnly, revisionId, revisionCreatedAt, currentUser, replyList, highlightKeywords,
+    deleteBtnClicked, onComment,
   } = props;
 
   const { data: isAllReplyShown } = useIsAllReplyShown();
@@ -36,11 +41,13 @@ export const ReplyComments = (props: ReplycommentsProps): JSX.Element => {
     return (
       <div key={reply._id} className={`${styles['page-comment-reply']} ml-4 ml-sm-5 mr-3`}>
         <Comment
+          rendererOptions={rendererOptions}
           comment={reply}
           revisionId={revisionId}
           revisionCreatedAt={revisionCreatedAt}
           currentUser={currentUser}
           isReadOnly={isReadOnly}
+          highlightKeywords={highlightKeywords}
           deleteBtnClicked={deleteBtnClicked}
           onComment={onComment}
         />

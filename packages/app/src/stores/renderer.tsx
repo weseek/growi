@@ -5,7 +5,7 @@ import useSWRImmutable from 'swr/immutable';
 import { RendererConfig } from '~/interfaces/services/renderer';
 import {
   RendererOptions,
-  generatePreviewOptions, generateCommentPreviewOptions, generateOthersOptions,
+  generateSimpleViewOptions, generatePreviewOptions, generateOthersOptions,
   generateViewOptions, generateTocOptions,
 } from '~/services/renderer/renderer';
 
@@ -83,29 +83,56 @@ export const usePreviewOptions = (): SWRResponse<RendererOptions, Error> => {
   const isAllDataValid = currentPagePath != null && rendererConfig != null;
 
   const key = isAllDataValid
-    ? ['previewOptions', currentPagePath, rendererConfig]
+    ? ['previewOptions', rendererConfig, currentPagePath]
     : null;
 
   return useSWRImmutable<RendererOptions, Error>(
     key,
-    (rendererId, currentPagePath, rendererConfig) => generatePreviewOptions(currentPagePath, rendererConfig),
+    (rendererId, rendererConfig, currentPagePath) => generatePreviewOptions(rendererConfig, currentPagePath),
     {
-      fallbackData: isAllDataValid ? generatePreviewOptions(currentPagePath, rendererConfig) : undefined,
+      fallbackData: isAllDataValid ? generatePreviewOptions(rendererConfig, currentPagePath) : undefined,
     },
   );
 };
 
-export const useCommentPreviewOptions = (): SWRResponse<RendererOptions, Error> => {
-  const key = 'commentPreviewOptions';
+export const useCommentForCurrentPageOptions = (): SWRResponse<RendererOptions, Error> => {
+  const { data: currentPagePath } = useCurrentPagePath();
+  const { data: rendererConfig } = useRendererConfig();
 
-  return _useOptionsBase(key, generateCommentPreviewOptions);
+  const isAllDataValid = currentPagePath != null && rendererConfig != null;
+
+  const key = isAllDataValid
+    ? ['commentForCurrentPageOptions', rendererConfig, currentPagePath]
+    : null;
+
+  return useSWRImmutable<RendererOptions, Error>(
+    key,
+    (rendererId, rendererConfig, currentPagePath) => generateSimpleViewOptions(rendererConfig, currentPagePath),
+    {
+      fallbackData: isAllDataValid ? generateSimpleViewOptions(rendererConfig, currentPagePath) : undefined,
+    },
+  );
 };
+export const useCommentPreviewOptions = useCommentForCurrentPageOptions;
 
-export const useSearchResultOptions = (): SWRResponse<RendererOptions, Error> => {
-  const key = 'searchResultOptions';
+export const useSelectedPagePreviewOptions = (pagePath: string, highlightKeywords?: string | string[]): SWRResponse<RendererOptions, Error> => {
+  const { data: rendererConfig } = useRendererConfig();
 
-  return _useOptionsBase(key, generateOthersOptions);
+  const isAllDataValid = rendererConfig != null;
+
+  const key = isAllDataValid
+    ? ['selectedPagePreviewOptions', rendererConfig, pagePath, highlightKeywords]
+    : null;
+
+  return useSWRImmutable<RendererOptions, Error>(
+    key,
+    (rendererId, rendererConfig, pagePath, highlightKeywords) => generateSimpleViewOptions(rendererConfig, pagePath, highlightKeywords),
+    {
+      fallbackData: isAllDataValid ? generateSimpleViewOptions(rendererConfig, pagePath, highlightKeywords) : undefined,
+    },
+  );
 };
+export const useSearchResultOptions = useSelectedPagePreviewOptions;
 
 export const useTimelineOptions = (): SWRResponse<RendererOptions, Error> => {
   const key = 'timelineOptions';

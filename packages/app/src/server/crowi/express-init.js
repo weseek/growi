@@ -170,4 +170,11 @@ module.exports = function(crowi, app) {
   app.use(middlewares.swigFunctions());
 
   // app.use(i18nMiddleware.handle(i18next));
+  // TODO: Remove this workaround implementation when i18n works correctly.
+  //       For now, req.t returns string given to req.t(string)
+  app.use((req, res, next) => {
+    req.t = str => (typeof str === 'string' ? str : '');
+
+    next();
+  });
 };
