@@ -57,18 +57,11 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
 
     window.location.href = `/passport/${auth}`;
   }, []);
-
-  const hadnleLoginformSubmit = useCallback((e) => {
-    e.preventDefault();
-    console.log(e);
-    return;
-  }, []);
-
   const renderLocalOrLdapLoginForm = useCallback(() => {
     const { isLdapStrategySetup } = props;
 
     return (
-      <form role="form" onSubmit={hadnleLoginformSubmit} method="post">
+      <form role="form" action="/login" method="post">
         <div className="input-group">
           <div className="input-group-prepend">
             <span className="input-group-text">
