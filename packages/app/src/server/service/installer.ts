@@ -144,7 +144,7 @@ export class InstallerService {
     const rootRevision = await Revision.findOne({ path: '/' });
     rootPage.creator = adminUser._id;
     rootPage.lastUpdateUser = adminUser._id;
-    rootRevision.creator = adminUser._id;
+    rootRevision.author = adminUser._id;
     await Promise.all([rootPage.save(), rootRevision.save()]);
 
     // create initial pages
