@@ -150,12 +150,11 @@ export const GrowiNavbar = (): JSX.Element => {
         <NavbarRight />
         <Confidential confidential={confidential} />
       </ul>
-
-      { isSearchServiceConfigured && !isDeviceSmallerThanMd && !isSearchPage && (
-        <div className="grw-global-search-container position-absolute">
+      <div className="grw-global-search-container position-absolute">
+        { isSearchServiceConfigured && !isDeviceSmallerThanMd && !isSearchPage && (
           <GlobalSearch />
-        </div>
-      ) }
+        ) }
+      </div>
     </nav>
   );
 
