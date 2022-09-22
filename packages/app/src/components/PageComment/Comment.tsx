@@ -7,7 +7,7 @@ import { useTranslation } from 'next-i18next';
 import dynamic from 'next/dynamic';
 import { UncontrolledTooltip } from 'reactstrap';
 
-import { useCommentPreviewOptions } from '~/stores/renderer';
+import { RendererOptions } from '~/services/renderer/renderer';
 
 import { ICommentHasId } from '../../interfaces/comment';
 import FormattedDistanceDate from '../FormattedDistanceDate';
@@ -24,10 +24,12 @@ const CommentEditor = dynamic<CommentEditorProps>(() => import('./CommentEditor'
 
 type CommentProps = {
   comment: ICommentHasId,
+  rendererOptions: RendererOptions,
   revisionId: string,
   revisionCreatedAt: Date,
   currentUser: IUser,
   isReadOnly: boolean,
+  highlightKeywords?: string[],
   deleteBtnClicked: (comment: ICommentHasId) => void,
   onComment: () => void,
 }
@@ -35,11 +37,11 @@ type CommentProps = {
 export const Comment = (props: CommentProps): JSX.Element => {
 
   const {
-    comment, revisionId, revisionCreatedAt, currentUser, isReadOnly, deleteBtnClicked, onComment,
+    comment, rendererOptions, revisionId, revisionCreatedAt, currentUser, isReadOnly,
+    deleteBtnClicked, onComment,
   } = props;
 
   const { t } = useTranslation();
-  const { data: rendererOptions } = useCommentPreviewOptions();
 
   const [markdown, setMarkdown] = useState('');
   const [isReEdit, setIsReEdit] = useState(false);
