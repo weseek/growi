@@ -13,8 +13,6 @@ import DisplaySwitcher from '~/components/Page/DisplaySwitcher';
 import { CrowiRequest } from '~/interfaces/crowi-request';
 import { RendererConfig } from '~/interfaces/services/renderer';
 import { IShareLinkHasId } from '~/interfaces/share-link';
-import { IUserUISettings } from '~/interfaces/user-ui-settings';
-import UserUISettings from '~/server/models/user-ui-settings';
 import {
   useCurrentUser, useCurrentPagePath, useCurrentPathname, useCurrentPageId, useRendererConfig,
   useShareLinkId, useIsSearchServiceConfigured, useIsSearchServiceReachable, useIsSearchScopeChildrenAsDefault,
@@ -31,7 +29,6 @@ type Props = CommonProps & {
   shareLink?: IShareLinkHasId,
   isExpired: boolean,
   currentUser: IUser,
-  userUISettings?: IUserUISettings,
   disableLinkSharing: boolean,
   isSearchServiceConfigured: boolean,
   isSearchServiceReachable: boolean,
@@ -128,16 +125,6 @@ function injectServerConfigurations(context: GetServerSidePropsContext, props: P
   };
 }
 
-async function injectUserUISettings(context: GetServerSidePropsContext, props: Props): Promise<void> {
-  const req = context.req as CrowiRequest<IUserHasId & any>;
-  const { user } = req;
-  const userUISettings = user == null ? null : await UserUISettings.findOne({ user: user._id }).exec();
-
-  if (userUISettings != null) {
-    props.userUISettings = userUISettings.toObject();
-  }
-}
-
 async function injectNextI18NextConfigurations(context: GetServerSidePropsContext, props: Props, namespacesRequired?: string[] | undefined): Promise<void> {
   const nextI18NextConfig = await getNextI18NextConfig(serverSideTranslations, context, namespacesRequired);
   props._nextI18Next = nextI18NextConfig._nextI18Next;
@@ -171,7 +158,7 @@ export const getServerSideProps: GetServerSideProps = async(context: GetServerSi
   }
 
   injectServerConfigurations(context, props);
-  await injectUserUISettings(context, props);
+  // await injectUserUISettings(context, props);
   await injectNextI18NextConfigurations(context, props);
 
   return {
