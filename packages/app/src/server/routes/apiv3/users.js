@@ -248,7 +248,10 @@ module.exports = (crowi) => {
         },
       ],
     };
-
+    if (typeof forceIncludeAttributes !== 'string') {
+      const msg = 'Bad request';
+      return res.apiv3Err(new ErrorV3(msg, 'user-group-list-fetch-failed'), 400);
+    }
     try {
       if (req.user != null) {
         orConditions.push(
