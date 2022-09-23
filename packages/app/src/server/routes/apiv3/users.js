@@ -250,43 +250,44 @@ module.exports = (crowi) => {
     };
 
     try {
-      if (req.user != null) {
-        orConditions.push(
+      if (Array.isArray(forceIncludeAttributes)) {
+        if (req.user != null) {
+          orConditions.push(
+            {
+              $and: [
+                { isEmailPublished: true },
+                { email: { $in: searchWord } },
+              ],
+            },
+          );
+        }
+        if (forceIncludeAttributes.includes('email')) {
+          orConditions.push({ email: { $in: searchWord } });
+        }
+
+        const paginateResult = await User.paginate(
+          query,
           {
-            $and: [
-              { isEmailPublished: true },
-              { email: { $in: searchWord } },
-            ],
+            sort: sortOutput,
+            page,
+            limit: PAGE_ITEMS,
           },
         );
-      }
-      if (forceIncludeAttributes.includes('email')) {
-        orConditions.push({ email: { $in: searchWord } });
-      }
 
-      const paginateResult = await User.paginate(
-        query,
-        {
-          sort: sortOutput,
-          page,
-          limit: PAGE_ITEMS,
-        },
-      );
+        paginateResult.docs = paginateResult.docs.map((doc) => {
 
-      paginateResult.docs = paginateResult.docs.map((doc) => {
-
-        // return email only when specified by query
-        const { email } = doc;
-        const user = serializeUserSecurely(doc);
-        if (typeof forceIncludeAttributes !== 'string' || forceIncludeAttributes.indexOf('..') !== -1) {
+          // return email only when specified by query
+          const { email } = doc;
+          const user = serializeUserSecurely(doc);
           if (forceIncludeAttributes.includes('email')) {
             user.email = email;
           }
-        }
-        return user;
-      });
 
-      return res.apiv3({ paginateResult });
+          return user;
+        });
+
+        return res.apiv3({ paginateResult });
+      }
     }
     catch (err) {
       const msg = 'Error occurred in fetching user group list';
