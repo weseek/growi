@@ -248,7 +248,10 @@ module.exports = (crowi) => {
         },
       ],
     };
-
+    if (typeof file !== 'string' || forceIncludeAttributes.indexOf('..') !== -1) {
+      const msg = 'Error occurred in fetching user group list';
+      return res.apiv3Err(new ErrorV3(msg, 'user-group-list-fetch-failed'), 500);
+    }
     try {
       if (req.user != null) {
         orConditions.push(
@@ -260,7 +263,7 @@ module.exports = (crowi) => {
           },
         );
       }
-      if (Array.isArray(forceIncludeAttributes) && forceIncludeAttributes.includes('email')) {
+      if (forceIncludeAttributes.includes('email')) {
         orConditions.push({ email: { $in: searchWord } });
       }
 
@@ -278,7 +281,7 @@ module.exports = (crowi) => {
         // return email only when specified by query
         const { email } = doc;
         const user = serializeUserSecurely(doc);
-        if (Array.isArray(forceIncludeAttributes) && forceIncludeAttributes.includes('email')) {
+        if (forceIncludeAttributes.includes('email')) {
           user.email = email;
         }
 
