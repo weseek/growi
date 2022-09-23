@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { FC, useState, useCallback } from 'react';
 
 import { useTranslation } from 'next-i18next';
 
@@ -6,15 +6,15 @@ import { toastSuccess, toastError } from '~/client/util/apiNotification';
 import { apiv3Post } from '~/client/util/apiv3-client';
 
 
-const PasswordResetRequestForm = () => {
+const PasswordResetRequestForm: FC = () => {
   const { t } = useTranslation();
   const [email, setEmail] = useState('');
 
-  const changeEmail = (inputValue) => {
+  const changeEmail = useCallback((inputValue) => {
     setEmail(inputValue);
-  };
+  }, []);
 
-  const sendPasswordResetRequestMail = async(e) => {
+  const sendPasswordResetRequestMail = useCallback(async(e) => {
     e.preventDefault();
     if (email === '') {
       toastError('err', t('forgot_password.email_is_required'));
@@ -28,7 +28,7 @@ const PasswordResetRequestForm = () => {
     catch (err) {
       toastError(err);
     }
-  };
+  }, [t, email]);
 
   return (
     <form onSubmit={sendPasswordResetRequestMail}>
