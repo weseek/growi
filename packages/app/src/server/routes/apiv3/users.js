@@ -248,7 +248,7 @@ module.exports = (crowi) => {
         },
       ],
     };
-    if (typeof file !== 'string' || forceIncludeAttributes.indexOf('..') !== -1) {
+    if (typeof forceIncludeAttributes !== 'string' || forceIncludeAttributes.indexOf('..') !== -1) {
       const msg = 'Error occurred in fetching user group list';
       return res.apiv3Err(new ErrorV3(msg, 'user-group-list-fetch-failed'), 500);
     }
@@ -295,6 +295,7 @@ module.exports = (crowi) => {
       logger.error('Error', err);
       return res.apiv3Err(new ErrorV3(msg, 'user-group-list-fetch-failed'), 500);
     }
+
   });
 
   /**
