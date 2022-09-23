@@ -250,44 +250,42 @@ module.exports = (crowi) => {
     };
 
     try {
-      if (Array.isArray(forceIncludeAttributes)) {
-        if (req.user != null) {
-          orConditions.push(
-            {
-              $and: [
-                { isEmailPublished: true },
-                { email: { $in: searchWord } },
-              ],
-            },
-          );
-        }
-        if (forceIncludeAttributes.includes('email')) {
-          orConditions.push({ email: { $in: searchWord } });
-        }
-
-        const paginateResult = await User.paginate(
-          query,
+      if (req.user != null) {
+        orConditions.push(
           {
-            sort: sortOutput,
-            page,
-            limit: PAGE_ITEMS,
+            $and: [
+              { isEmailPublished: true },
+              { email: { $in: searchWord } },
+            ],
           },
         );
-
-        paginateResult.docs = paginateResult.docs.map((doc) => {
-
-          // return email only when specified by query
-          const { email } = doc;
-          const user = serializeUserSecurely(doc);
-          if (forceIncludeAttributes.includes('email')) {
-            user.email = email;
-          }
-
-          return user;
-        });
-
-        return res.apiv3({ paginateResult });
       }
+      if (Array.isArray(forceIncludeAttributes) && forceIncludeAttributes.includes('email')) {
+        orConditions.push({ email: { $in: searchWord } });
+      }
+
+      const paginateResult = await User.paginate(
+        query,
+        {
+          sort: sortOutput,
+          page,
+          limit: PAGE_ITEMS,
+        },
+      );
+
+      paginateResult.docs = paginateResult.docs.map((doc) => {
+
+        // return email only when specified by query
+        const { email } = doc;
+        const user = serializeUserSecurely(doc);
+        if (Array.isArray(forceIncludeAttributes) && forceIncludeAttributes.includes('email')) {
+          user.email = email;
+        }
+
+        return user;
+      });
+
+      return res.apiv3({ paginateResult });
     }
     catch (err) {
       const msg = 'Error occurred in fetching user group list';
