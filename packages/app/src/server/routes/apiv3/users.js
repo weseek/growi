@@ -278,10 +278,11 @@ module.exports = (crowi) => {
         // return email only when specified by query
         const { email } = doc;
         const user = serializeUserSecurely(doc);
-        if (forceIncludeAttributes.includes('email')) {
-          user.email = email;
+        if (typeof forceIncludeAttributes !== 'string' || forceIncludeAttributes.indexOf('..') !== -1) {
+          if (forceIncludeAttributes.includes('email')) {
+            user.email = email;
+          }
         }
-
         return user;
       });
 
