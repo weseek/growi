@@ -2,6 +2,7 @@ import loggerFactory from '~/utils/logger';
 
 import injectUserRegistrationOrderByTokenMiddleware from '../../middlewares/inject-user-registration-order-by-token-middleware';
 
+import g2gTransfer from './g2g-transfer';
 import pageListing from './page-listing';
 import * as userActivation from './user-activation';
 
@@ -36,6 +37,7 @@ module.exports = (crowi) => {
   routerForAdmin.use('/slack-integration-settings', require('./slack-integration-settings')(crowi));
   routerForAdmin.use('/slack-integration-legacy-settings', require('./slack-integration-legacy-settings')(crowi));
   routerForAdmin.use('/activity', require('./activity')(crowi));
+  routerForAdmin.use('/g2g-transfer', g2gTransfer(crowi));
 
   // auth
   routerForAuth.use('/logout', require('./logout')(crowi));
