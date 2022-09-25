@@ -117,9 +117,11 @@ const G2GDataTransfer = (): JSX.Element => {
         </div>
       </div>
 
-      <p className="mt-4 mb-1">{t('admin:g2g_data_transfer.transfer_key_limit')}</p>
-      <p className="mb-1">{t('admin:g2g_data_transfer.once_transfer_key_used')}</p>
-      <p className="mb-1">{t('admin:g2g_data_transfer.transfer_to_growi_cloud')}</p>
+      <div className="alert alert-warning mt-4">
+        <p className="mb-1">{t('admin:g2g_data_transfer.transfer_key_limit')}</p>
+        <p className="mb-1">{t('admin:g2g_data_transfer.once_transfer_key_used')}</p>
+        <p className="mb-0">{t('admin:g2g_data_transfer.transfer_to_growi_cloud')}</p>
+      </div>
 
       <SelectCollectionsModal
         isOpen={isExportModalOpen}
