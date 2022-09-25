@@ -12,6 +12,7 @@ import { apiv3Put, apiv3Post } from '~/client/util/apiv3-client';
 import { useSiteUrl } from '~/stores/context';
 import loggerFactory from '~/utils/logger';
 
+import CustomCopyToClipBoard from '../../Common/CustomCopyToClipBoard';
 import { withUnstatedContainers } from '../../UnstatedUtils';
 import Accordion from '../Common/Accordion';
 
@@ -115,31 +116,6 @@ const RegisteringProxyUrlProcess = () => {
         </li>
       </ol>
     </div>
-  );
-};
-
-// To get different messages for each copy happend, wrapping CopyToClipBoard and Tooltip together
-const CustomCopyToClipBoard = (props) => {
-  const { t } = useTranslation();
-  const [tooltipOpen, setTooltipOpen] = useState(false);
-
-  const showToolTip = useCallback(() => {
-    setTooltipOpen(true);
-    setTimeout(() => {
-      setTooltipOpen(false);
-    }, 1000);
-  }, []);
-  return (
-    <>
-      <CopyToClipboard text={props.textToBeCopied || ''} onCopy={showToolTip}>
-        <div className="btn input-group-text" id="tooltipTarget">
-          <i className="fa fa-clipboard mx-1" aria-hidden="true"></i>
-        </div>
-      </CopyToClipboard>
-      <Tooltip target="tooltipTarget" fade={false} isOpen={tooltipOpen}>
-        {t(props.message)}
-      </Tooltip>
-    </>
   );
 };
 
