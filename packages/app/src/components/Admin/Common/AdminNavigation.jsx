@@ -38,7 +38,7 @@ const AdminNavigation = (props) => {
         { t('full_text_search_management.full_text_search_management') }</>;
       // TODO: Consider where to place the "AuditLog"
       case 'audit-log':                return <><i className="icon-fw icon-feed"></i>            { t('audit_log_management.audit_log')}</>;
-      case 'data-transfer':            return <><i className="icon-fw icon-arrow-right"></i>     { t('Growi To Growi Data Transfer')}</>;
+      case 'data-transfer':            return <><i className="icon-fw icon-arrow-right"></i>     { t('g2g_data_transfer.data_transfer')}</>;
       case 'cloud':                    return <><i className="icon-fw icon-share-alt"></i>       { t('to_cloud_settings')} </>;
       default:                         return <><i className="icon-fw icon-home"></i>            { t('wiki_management_home_page') }</>;
       /* eslint-enable no-multi-spaces */

@@ -183,7 +183,7 @@ const AdminMarkdownSettingsPage: NextPage<Props> = (props: Props) => {
       component: <AuditLogManagement />,
     },
     'data-transfer': {
-      title: '別GROWIとのデータ移行',
+      title: t('g2g_data_transfer.data_transfer'),
       component: <G2GDataTransfer />,
     },
   };

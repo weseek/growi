@@ -86,28 +86,28 @@ const G2GDataTransfer = (): JSX.Element => {
 
   return (
     <div data-testid="admin-export-archive-data">
-      <h2 className="border-bottom">このGROWIのデータを別GROWIへ移行する</h2>
+      <h2 className="border-bottom">{t('admin:g2g_data_transfer.transfer_data_to_another_growi')}</h2>
 
       <button type="button" className="btn btn-outline-secondary mt-4" disabled={isExporting} onClick={() => setExportModalOpen(true)}>
-        詳細オプション
+        {t('admin:g2g_data_transfer.advanced_options')}
       </button>
 
       <form onSubmit={transferData}>
         <div className="form-group row mt-3">
           <div className="col-9">
-            <input className="form-control" type="text" placeholder="移行キーをここにペースト" />
+            <input className="form-control" type="text" placeholder={t('admin:g2g_data_transfer.paste_transfer_key')} />
           </div>
           <div className="col-3">
-            <button type="submit" className="btn btn-primary w-100">移行を開始する</button>
+            <button type="submit" className="btn btn-primary w-100">{t('admin:g2g_data_transfer.start_transfer')}</button>
           </div>
         </div>
       </form>
 
-      <h2 className="border-bottom mt-5">別GROWIのデータをこのGROWIへ移行する</h2>
+      <h2 className="border-bottom mt-5">{t('admin:g2g_data_transfer.transfer_data_to_this_growi')}</h2>
 
       <div className="form-group row mt-4">
         <div className="col-md-3">
-          <button type="button" className="btn btn-primary w-100" onClick={publishTransferKey}>移行キーを発行する</button>
+          <button type="button" className="btn btn-primary w-100" onClick={publishTransferKey}>{t('admin:g2g_data_transfer.publish_transfer_key')}</button>
         </div>
         <div className="col-md-9">
           <div className="input-group-prepend mx-1">
@@ -117,9 +117,9 @@ const G2GDataTransfer = (): JSX.Element => {
         </div>
       </div>
 
-      <p className="mt-4 mb-1">※ 移行キーの有効期限は発行から1時間となります。</p>
-      <p className="mb-1">※ 移行キーは一度移行に利用するとそれ移行はご利用いただけなくなります。</p>
-      <p className="mb-1">※ GROWI.cloud への移行を実施する場合はこちらをご確認ください。</p>
+      <p className="mt-4 mb-1">{t('admin:g2g_data_transfer.transfer_key_limit')}</p>
+      <p className="mb-1">{t('admin:g2g_data_transfer.once_transfer_key_used')}</p>
+      <p className="mb-1">{t('admin:g2g_data_transfer.transfer_to_growi_cloud')}</p>
 
       <SelectCollectionsModal
         isOpen={isExportModalOpen}

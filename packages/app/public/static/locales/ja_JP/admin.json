@@ -1033,5 +1033,17 @@
     "ADMIN_SEARCH_CONNECTION": "Elasticsearch の再接続の試行",
     "ADMIN_SEARCH_INDICES_NORMALIZE": "Elasticsearch のインデックスの正規化",
     "ADMIN_SEARCH_INDICES_REBUILD": "Elasticsearch のインデックスのリビルド"
+  },
+  "g2g_data_transfer": {
+    "data_transfer": "別GROWIとのデータ移行",
+    "transfer_data_to_another_growi": "このGROWIのデータを別GROWIへ移行する",
+    "transfer_data_to_this_growi": "別GROWIのデータをこのGROWIへ移行する",
+    "advanced_options": "詳細オプション",
+    "start_transfer": "移行を開始する",
+    "publish_transfer_key": "移行キーを発行する",
+    "transfer_key_limit": "※ 移行キーの有効期限は発行から1時間となります。",
+    "once_transfer_key_used": "※ 移行キーは一度移行に利用するとそれ移行はご利用いただけなくなります。",
+    "transfer_to_growi_cloud": "※ GROWI.cloud への移行を実施する場合はこちらをご確認ください。",
+    "paste_transfer_key": "移行キーをここにペースト"
   }
 }
