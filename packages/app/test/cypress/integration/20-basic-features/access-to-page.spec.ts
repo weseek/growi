@@ -21,9 +21,10 @@ context('Access to page', () => {
     // hide fab
     cy.getByTestid('grw-fab-container').invoke('attr', 'style', 'display: none');
 
-    // eslint-disable-next-line cypress/no-unnecessary-waiting
-    cy.wait(2000); // wait for 2 seconds for Header style
-    cy.screenshot(`${ssPrefix}-sandbox-headers`);
+    // black out Headers: https://github.com/weseek/growi/pull/6649
+    cy.screenshot(`${ssPrefix}-sandbox-headers`, {
+      blackout: ['#Headers'],
+    });
   });
 
   it('/Sandbox/Math is successfully loaded', () => {
