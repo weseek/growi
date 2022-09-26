@@ -278,15 +278,14 @@ context('Tag Oprations', () =>{
     cy.getByTestid('search-result-list').within(() => {
       cy.getByTestid('page-list-item-L').first().within(() => {
         cy.getByTestid('open-page-item-control-btn').click();
-        cy.screenshot('hooooooooo');
     });
 
     cy.getByTestid('page-item-control-menu').should('have.class', 'show').first().within(() => {
-    // eslint-disable-next-line cypress/no-unnecessary-waiting
+      // eslint-disable-next-line cypress/no-unnecessary-waiting
       cy.wait(300);
       cy.screenshot(`${ssPrefix}2-open-page-item-control-menu`);
     })
-    });
+  });
 
 
     cy.getByTestid('open-page-duplicate-modal-btn').first().click({force: true});
@@ -318,21 +317,26 @@ context('Tag Oprations', () =>{
     cy.screenshot(`${ssPrefix}1-click-tag-name`, {capture: 'viewport'});
 
     cy.getByTestid('search-result-list').within(() => {
+      cy.getByTestid('page-list-item-L').first().within(() => {
+        cy.getByTestid('open-page-item-control-btn').click();
+    });
+
+    cy.getByTestid('page-item-control-menu').should('have.class', 'show').first().within(() => {
+    // eslint-disable-next-line cypress/no-unnecessary-waiting
+      cy.wait(300);
+      cy.screenshot(`${ssPrefix}2-open-page-item-control-menu`);
+    })
+    });
+
+    cy.getByTestid('search-result-list').within(() => {
       cy.get('.list-group-item').each(($row) => {
         if($row.find('a').text() === oldPageName){
           cy.wrap($row).within(() => {
-            cy.getByTestid('open-page-item-control-btn').click();
+            cy.getByTestid('open-page-move-rename-modal-btn').click();
           });
         }
       });
     });
-    cy.screenshot(`${ssPrefix}2-click-three-dots-menooo`, {capture: 'viewport'});
-    cy.getByTestid('page-item-control-menu').should('have.class', 'show').first().within(() => {
-      // eslint-disable-next-line cypress/no-unnecessary-waiting
-      cy.wait(300);
-      cy.screenshot(`${ssPrefix}2-open-page-item-control-menu`);
-          });
-
 
     cy.getByTestid('page-rename-modal').should('be.visible').within(() => {
       cy.get('.rbt-input-main').clear().type(newPageName,{force: true});
