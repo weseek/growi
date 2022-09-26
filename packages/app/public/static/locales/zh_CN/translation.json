@@ -749,7 +749,6 @@
     "ldap_user_not_valid": "Ldap user is no valid",
     "external_account_not_exist": "查找或创建外部账户失败",
 		"maximum_number_of_users": "注册的用户数不能超过最大值。",
-		"database_error": "发生数据库服务器错误",
 		"sign_in_failure": "登录失败。",
 		"aws_sttings_required": "使用此功能所需的AWS设置。请询问管理员。",
 		"application_already_installed": "应用程序已安装。",

@@ -693,7 +693,6 @@
     "ldap_user_not_valid": "Ldap user is no valid",
     "external_account_not_exist": "外部アカウントが見つからない、または作成に失敗しました",
     "maximum_number_of_users": "ユーザー数が上限を超えたためアクティベートできません。",
-    "database_error":"データベースサーバーに問題があります。",
     "sign_in_failure": "ログインに失敗しました。",
     "aws_sttings_required": "この機能にはAWS設定が必要です。管理者に訪ねて下さい。",
     "application_already_installed": "アプリケーションのインストールが完了しました。",

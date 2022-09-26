@@ -702,7 +702,6 @@
     "ldap_user_not_valid": "Ldap user is no valid",
     "external_account_not_exist": "Failed to find or create External account",
     "maximum_number_of_users": "Can not register more than the maximum number of users.",
-    "database_error": "Database Server Error occured",
     "sign_in_failure": "Sign in failure.",
     "aws_sttings_required": "AWS settings required to use this function. Please ask the administrator.",
     "application_already_installed": "Application already installed.",
