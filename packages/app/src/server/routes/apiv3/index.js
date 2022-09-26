@@ -2,6 +2,7 @@ import loggerFactory from '~/utils/logger';
 
 import { generateAddActivityMiddleware } from '../../middlewares/add-activity';
 import injectUserRegistrationOrderByTokenMiddleware from '../../middlewares/inject-user-registration-order-by-token-middleware';
+import * as loginFormValidator from '../../middlewares/login-form-validator';
 import * as registerFormValidator from '../../middlewares/register-form-validator';
 
 import pageListing from './page-listing';
@@ -48,6 +49,9 @@ module.exports = (crowi, app) => {
 
   routerForAuth.post('/register',
     applicationInstalled, registerFormValidator.registerRules(), registerFormValidator.registerValidation, addActivity, login.register);
+
+  routerForAuth.post('/refister/activated',
+    applicationInstalled, loginFormValidator.inviteRules(), loginFormValidator.inviteValidation, login.invited);
 
   router.use('/in-app-notification', require('./in-app-notification')(crowi));
 
