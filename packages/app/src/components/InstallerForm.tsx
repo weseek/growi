@@ -8,6 +8,7 @@ import { useTranslation, i18n } from 'next-i18next';
 import { i18n as i18nConfig } from '^/config/next-i18next.config';
 
 import { apiv3Post } from '~/client/util/apiv3-client';
+import { toastError } from '~/client/util/apiNotification';
 
 const InstallerForm = memo((): JSX.Element => {
   const { t } = useTranslation();
@@ -67,9 +68,9 @@ const InstallerForm = memo((): JSX.Element => {
       window.location.href = '/';
     }
     catch (err) {
-      // TODO: show toastr https://redmine.weseek.co.jp/issues/105441
+      toastError(t('installer.failed_to_install'));
     }
-  }, [isSubmittingDisabled]);
+  }, [isSubmittingDisabled, t]);
 
   const hasErrorClass = isValidUserName ? '' : ' has-error';
   const unavailableUserId = isValidUserName

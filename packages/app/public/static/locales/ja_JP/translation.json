@@ -184,7 +184,8 @@
     "setup": "セットアップ",
     "create_initial_account": "最初のアカウントの作成",
     "initial_account_will_be_administrator_automatically": "初めに作成するアカウントは、自動的に管理者権限が付与されます",
-    "unavaliable_user_id": "このユーザーIDは利用できません。"
+    "unavaliable_user_id": "このユーザーIDは利用できません。",
+    "failed_to_install": "GROWI のインストールに失敗しました。"
   },
   "breaking_changes": {
     "v346_using_basic_auth": "現在利用中の Basic 認証機能は、近い将来<strong>廃止されます</strong>。%s から設定を削除してください。"

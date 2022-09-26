@@ -186,7 +186,8 @@
 		"setup": "安装",
 		"create_initial_account": "创建初始用户",
 		"initial_account_will_be_administrator_automatically": "初始帐户将自动成为管理员。",
-		"unavaliable_user_id": "用户ID不可用"
+		"unavaliable_user_id": "用户ID不可用",
+    "failed_to_install": "GROWI安装失败。"
 	},
 	"breaking_changes": {
 		"v346_using_basic_auth": "当前使用的基本身份验证在不久的将来将不再可用。从%s中删除设置"
