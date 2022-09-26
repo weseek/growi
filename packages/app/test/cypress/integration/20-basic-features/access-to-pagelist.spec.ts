@@ -50,6 +50,7 @@ context('Access to pagelist', () => {
     cy.getByTestid('page-accessories-modal').parent().should('have.class','show').within(() => {
       cy.get('button.close').eq(0).click();
     });
+
     cy.screenshot(`${ssPrefix}7-page-list-modal-size-fullscreen`, {capture: 'viewport'});
 
     cy.getByTestid('page-accessories-modal').parent().should('have.class','show').within(() => {
@@ -87,6 +88,7 @@ context('Access to timeline', () => {
       cy.get('.nav-title > li').eq(1).find('a').click();
       cy.get('button.close').eq(0).click();
     });
+    cy.get('.modal').should('be.visible').scrollTo('top');
     cy.screenshot(`${ssPrefix}2-timeline-list-fullscreen`, {capture: 'viewport'});
     cy.getByTestid('page-accessories-modal').parent().should('have.class','show').within(() => {
       cy.get('button.close').eq(1).click();
