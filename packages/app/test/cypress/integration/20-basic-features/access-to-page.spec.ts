@@ -40,7 +40,7 @@ context('Access to page', () => {
   it('/Sandbox with edit is successfully loaded', () => {
     cy.visit('/Sandbox#edit');
     // eslint-disable-next-line cypress/no-unnecessary-waiting
-    cy.wait(500);
+    cy.wait(2500);
     cy.screenshot(`${ssPrefix}-sandbox-edit-page`);
   })
 
