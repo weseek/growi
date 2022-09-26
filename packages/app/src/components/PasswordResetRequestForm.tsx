@@ -1,6 +1,7 @@
 import React, { FC, useState, useCallback } from 'react';
 
 import { useTranslation } from 'next-i18next';
+import Link from 'next/link';
 
 import { toastSuccess, toastError } from '~/client/util/apiNotification';
 import { apiv3Post } from '~/client/util/apiv3-client';
@@ -46,9 +47,11 @@ const PasswordResetRequestForm: FC = () => {
           {t('forgot_password.send')}
         </button>
       </div>
-      <a href="/login">
-        <i className="icon-login mr-1"></i>{t('forgot_password.return_to_login')}
-      </a>
+      <Link href='/login' prefetch={false}>
+        <a>
+          <i className="icon-login mr-1" />{t('forgot_password.return_to_login')}
+        </a>
+      </Link>
     </form>
   );
 };
