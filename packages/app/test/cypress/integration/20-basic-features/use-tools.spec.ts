@@ -274,15 +274,20 @@ context('Tag Oprations', () =>{
     cy.getByTestid('page-list-item-L').first().invoke('addClass', 'active');
     cy.screenshot(`${ssPrefix}1-click-tag-name`, {capture: 'viewport'});
 
-    cy.getByTestid('open-page-item-control-btn').first().click({force: true});
+
+    cy.getByTestid('search-result-list').within(() => {
+      cy.getByTestid('page-list-item-L').first().within(() => {
+        cy.getByTestid('open-page-item-control-btn').click();
+        cy.screenshot('hooooooooo');
+    });
+
     cy.getByTestid('page-item-control-menu').should('have.class', 'show').first().within(() => {
     // eslint-disable-next-line cypress/no-unnecessary-waiting
       cy.wait(300);
       cy.screenshot(`${ssPrefix}2-open-page-item-control-menu`);
+    })
     });
-    // eslint-disable-next-line cypress/no-unnecessary-waiting
-    // cy.wait(1500);
-    // cy.screenshot(`${ssPrefix}2-click-three-dots-menu`, {capture: 'viewport'});
+
 
     cy.getByTestid('open-page-duplicate-modal-btn').first().click({force: true});
     cy.getByTestid('page-duplicate-modal').should('be.visible');
