@@ -1,7 +1,9 @@
 import React, { FC, useState, useCallback } from 'react';
 
 import { isInteger } from 'core-js/fn/number';
-import { format, parse, addDays } from 'date-fns';
+import {
+  format, parse, addDays, set,
+} from 'date-fns';
 import { useTranslation } from 'next-i18next';
 
 import { toastSuccess, toastError } from '~/client/util/apiNotification';
@@ -68,9 +70,7 @@ export const ShareLinkForm: FC<Props> = (props: Props) => {
     }
 
     if (expirationType === ExpirationType.CUSTOM) {
-      const formattedDate = format(customExpirationDate, 'yyyy-MM-dd');
-      const formattedTime = format(customExpirationTime, 'HH:mm');
-      return parse(`${formattedDate}T${formattedTime}`, "yyyy-MM-dd'T'HH:mm", new Date());
+      return set(customExpirationDate, { hours: customExpirationTime.getHours(), minutes: customExpirationTime.getMinutes() });
     }
   }, [t, customExpirationTime, customExpirationDate, expirationType, numberOfDays]);
 
