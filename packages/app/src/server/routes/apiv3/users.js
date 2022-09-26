@@ -221,7 +221,7 @@ module.exports = (crowi) => {
     // status
     const { forceIncludeAttributes } = req.query;
     const selectedStatusList = req.query.selectedStatusList || ['active'];
-    const statusNoList = (typeof selectedStatusList === 'object' && selectedStatusList.includes('all'))
+    const statusNoList = (typeof selectedStatusList !== 'string' && selectedStatusList.includes('all'))
       ? Object.values(statusNo)
       : selectedStatusList.map(element => statusNo[element]);
 
@@ -249,53 +249,56 @@ module.exports = (crowi) => {
         },
       ],
     };
-    if (typeof forceIncludeAttributes !== 'object') {
+    if (typeof forceIncludeAttributes !== 'string') {
+      try {
+        if (req.user != null) {
+          orConditions.push(
+            {
+              $and: [
+                { isEmailPublished: true },
+                { email: { $in: searchWord } },
+              ],
+            },
+          );
+        }
+        if (forceIncludeAttributes.includes('email')) {
+          orConditions.push({ email: { $in: searchWord } });
+        }
+
+        const paginateResult = await User.paginate(
+          query,
+          {
+            sort: sortOutput,
+            page,
+            limit: PAGE_ITEMS,
+          },
+        );
+
+        paginateResult.docs = paginateResult.docs.map((doc) => {
+
+          // return email only when specified by query
+          const { email } = doc;
+          const user = serializeUserSecurely(doc);
+          if (forceIncludeAttributes.includes('email')) {
+            user.email = email;
+          }
+
+          return user;
+        });
+
+        return res.apiv3({ paginateResult });
+      }
+      catch (err) {
+        const msg = 'Error occurred in fetching user group list';
+        logger.error('Error', err);
+        return res.apiv3Err(new ErrorV3(msg, 'user-group-list-fetch-failed'), 500);
+      }
+    }
+    else {
       const msg = 'Bad request';
       return res.apiv3Err(new ErrorV3(msg, 'user-group-list-fetch-failed'), 400);
     }
-    try {
-      if (req.user != null) {
-        orConditions.push(
-          {
-            $and: [
-              { isEmailPublished: true },
-              { email: { $in: searchWord } },
-            ],
-          },
-        );
-      }
-      if (forceIncludeAttributes.includes('email')) {
-        orConditions.push({ email: { $in: searchWord } });
-      }
 
-      const paginateResult = await User.paginate(
-        query,
-        {
-          sort: sortOutput,
-          page,
-          limit: PAGE_ITEMS,
-        },
-      );
-
-      paginateResult.docs = paginateResult.docs.map((doc) => {
-
-        // return email only when specified by query
-        const { email } = doc;
-        const user = serializeUserSecurely(doc);
-        if (forceIncludeAttributes.includes('email')) {
-          user.email = email;
-        }
-
-        return user;
-      });
-
-      return res.apiv3({ paginateResult });
-    }
-    catch (err) {
-      const msg = 'Error occurred in fetching user group list';
-      logger.error('Error', err);
-      return res.apiv3Err(new ErrorV3(msg, 'user-group-list-fetch-failed'), 500);
-    }
   });
 
   /**
