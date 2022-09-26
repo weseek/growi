@@ -7,6 +7,7 @@ const express = require('express');
 const router = express.Router();
 
 const noCache = require('nocache');
+
 const ErrorV3 = require('../../models/vo/error-apiv3');
 
 /**
@@ -146,14 +147,19 @@ module.exports = (crowi) => {
     const errors = [];
     const info = {};
 
+    // Add type checking to resolve issue
+    // https://github.com/weseek/growi/security/code-scanning/60
+    // https://github.com/weseek/growi/security/code-scanning/61
+    if (typeof checkServices !== 'string') {
     // connect to MongoDB
-    if (checkServices.includes('mongo')) {
-      await checkMongo(errors, info);
-    }
+      if (checkServices.includes('mongo')) {
+        await checkMongo(errors, info);
+      }
 
-    // connect to search service
-    if (checkServices.includes('search')) {
-      await checkSearch(errors, info);
+      // connect to search service
+      if (checkServices.includes('search')) {
+        await checkSearch(errors, info);
+      }
     }
 
     if (errors.length > 0) {
