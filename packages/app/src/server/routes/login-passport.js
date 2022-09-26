@@ -301,7 +301,6 @@ module.exports = function(crowi, app) {
    * @param {*} next
    */
   const loginWithLocal = (req, res, next) => {
-    const { errors } = req.form;
     if (!passportService.isLocalStrategySetup) {
       debug('LocalStrategy has not been set up');
       return res.apiv3Err('message.strategy_has_not_been_set_up.LocalStrategy', 405);
