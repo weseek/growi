@@ -1,23 +1,23 @@
-context('Switch Sidebar content', () => {
-  const ssPrefix = 'switch-sidebar-content';
+// context('Switch Sidebar content', () => {
+//   const ssPrefix = 'switch-sidebar-content';
 
-  beforeEach(() => {
-    // login
-    cy.fixture("user-admin.json").then(user => {
-      cy.login(user.username, user.password);
-    });
-  });
+//   beforeEach(() => {
+//     // login
+//     cy.fixture("user-admin.json").then(user => {
+//       cy.login(user.username, user.password);
+//     });
+//   });
 
-  it('PageTree is successfully shown', () => {
-    cy.collapseSidebar(false);
-    cy.visit('/page');
-    cy.getByTestid('grw-sidebar-nav-primary-page-tree').click();
-    // eslint-disable-next-line cypress/no-unnecessary-waiting
-    cy.wait(1500);
-    cy.screenshot(`${ssPrefix}-pagetree-after-load`, { capture: 'viewport' });
-  });
+//   it('PageTree is successfully shown', () => {
+//     cy.collapseSidebar(false);
+//     cy.visit('/page');
+//     cy.getByTestid('grw-sidebar-nav-primary-page-tree').click();
+//     // eslint-disable-next-line cypress/no-unnecessary-waiting
+//     cy.wait(1500);
+//     cy.screenshot(`${ssPrefix}-pagetree-after-load`, { capture: 'viewport' });
+//   });
 
-});
+// });
 
 
 context('Modal for page operation', () => {
@@ -98,11 +98,6 @@ context('Modal for page operation', () => {
     });
     cy.get('.toast-error').should('be.visible').invoke('attr', 'style', 'opacity: 1');
     cy.screenshot(`${ssPrefix}create-template-for-descendants-error`, {capture: 'viewport'});
-    cy.get('.toast-error').should('be.visible').click();
-    cy.getByTestid('page-create-modal').should('be.visible').within(() => {
-      cy.get('button.close').click();
-    });
-    cy.screenshot(`${ssPrefix}create-template-close-modal`, {capture: 'viewport'});
   });
 
   it('PageDeleteModal is shown successfully', () => {
