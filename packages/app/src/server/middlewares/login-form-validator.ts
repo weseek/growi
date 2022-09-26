@@ -5,19 +5,19 @@ export const inviteRules = () => {
   return [
     body('invitedForm.username')
       .matches(/^[\da-zA-Z\-_.]+$/)
-      .withMessage('Username has invalid characters')
+      .withMessage('message.Username has invalid characters')
       .not()
       .isEmpty()
-      .withMessage('Username field is required'),
-    body('invitedForm.name').not().isEmpty().withMessage('Name field is required'),
+      .withMessage('message.Username field is required'),
+    body('invitedForm.name').not().isEmpty().withMessage('message.Name field is required'),
     body('invitedForm.password')
       .matches(/^[\x20-\x7F]*$/)
-      .withMessage('Password has invalid character')
+      .withMessage('message.Password has invalid character')
       .isLength({ min: 6 })
-      .withMessage('Password minimum character should be more than 6 characters')
+      .withMessage('message.Password minimum character should be more than 6 characters')
       .not()
       .isEmpty()
-      .withMessage('Password field is required'),
+      .withMessage('message.Password field is required'),
   ];
 };
 
@@ -35,9 +35,10 @@ export const inviteValidation = (req, res, next) => {
   const extractedErrors: string[] = [];
   errors.array().map(err => extractedErrors.push(err.msg));
 
-  req.flash('errorMessages', extractedErrors);
-
-  Object.assign(form, { isValid: false });
+  Object.assign(form, {
+    isValid: false,
+    errors: extractedErrors,
+  });
   req.form = form;
 
   return next();

@@ -7,6 +7,7 @@ import { apiv3Post } from '~/client/util/apiv3-client';
 
 import { useCsrfToken, useCurrentUser } from '../stores/context';
 
+
 export type InvitedFormProps = {
   invitedFormUsername: string,
   invitedFormName: string,
@@ -16,7 +17,7 @@ export const InvitedForm = (props: InvitedFormProps): JSX.Element => {
   const { t } = useTranslation();
   // const { data: csrfToken } = useCsrfToken();
   const { data: user } = useCurrentUser();
-  const router = useRouter();
+  // const router = useRouter();
 
   const { invitedFormUsername, invitedFormName } = props;
 
@@ -29,22 +30,25 @@ export const InvitedForm = (props: InvitedFormProps): JSX.Element => {
     e.preventDefault();
 
     const invitedUserInfo = {
+      email: 'ryoji.s0411@gmail.com',
       username: usernameForInvited,
       name: userForInvited,
       password: passwordForInvited,
     };
-
+    console.log('test');
     try {
       const res = await apiv3Post('/invited/activateInvited', { invitedUserInfo });
+      console.log(invitedUserInfo);
       const { redirectTo } = res.data;
-      router.push(redirectTo);
+      console.log(redirectTo);
+      // router.push(redirectTo);
     }
     catch (err) {
       setLoginErrors(err);
     }
     return;
 
-  }, [usernameForInvited, userForInvited, passwordForInvited, router]);
+  }, [usernameForInvited, userForInvited, passwordForInvited]);
 
   if (user == null) {
     return <></>;

@@ -50,7 +50,7 @@ module.exports = (crowi, app) => {
   routerForAuth.post('/register',
     applicationInstalled, registerFormValidator.registerRules(), registerFormValidator.registerValidation, addActivity, login.register);
 
-  routerForAuth.post('/refister/activated',
+  routerForAuth.post('/invited/activateInvited',
     applicationInstalled, loginFormValidator.inviteRules(), loginFormValidator.inviteValidation, login.invited);
 
   router.use('/in-app-notification', require('./in-app-notification')(crowi));
