@@ -22,7 +22,7 @@ context('Access to page', () => {
     cy.getByTestid('grw-fab-container').invoke('attr', 'style', 'display: none');
 
     // eslint-disable-next-line cypress/no-unnecessary-waiting
-    cy.wait(1500); // wait for 1 seconds for Header style
+    cy.wait(1500); // wait for 1.5 seconds for Header style
     cy.screenshot(`${ssPrefix}-sandbox-headers`);
   });
 
