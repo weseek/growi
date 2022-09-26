@@ -50,7 +50,7 @@ context('Access to pagelist', () => {
     cy.getByTestid('page-accessories-modal').parent().should('have.class','show').within(() => {
       cy.get('button.close').eq(0).click();
     });
-    cy.get('.modal')
+    cy.get('.modal').should('be.visible').scrollTo('top');
     cy.screenshot(`${ssPrefix}7-page-list-modal-size-fullscreen`, {capture: 'viewport'});
 
     cy.getByTestid('page-accessories-modal').parent().should('have.class','show').within(() => {
