@@ -242,7 +242,7 @@ const Editor = React.forwardRef((props: EditorPropsType, ref): JSX.Element => {
         <ul className="pl-2 nav nav-navbar">
           { methods.getNavbarItems?.().map((item, idx) => {
             // eslint-disable-next-line react/no-array-index-key
-            return <li key={`navbarItem-${idx}`}>{item}</li>;
+            return <li key={`navbarItem-${idx}`} data-testid="editor-navbar-button">{item}</li>;
           }) }
         </ul>
       </div>
