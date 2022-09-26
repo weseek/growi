@@ -1,0 +1,880 @@
+#1 [internal] load build definition from Dockerfile
+#1 sha256:61b79b127753eda613eac77d333ead54c87771353ac0533ed9addc592987bda9
+#1 transferring dockerfile: 3.67kB 0.0s done
+#1 DONE 0.1s
+
+#2 [internal] load .dockerignore
+#2 sha256:a2e51d3aee6a64ee06b3243971c94ed33b36b6e88b6f895bfe646991d75394c6
+#2 transferring context: 2B 0.0s done
+#2 DONE 0.1s
+
+#3 resolve image config for docker.io/docker/dockerfile:1.4
+#3 sha256:4c6393aa7d63350bb37611567d30ae32494404c0b27cf79a51e51112ce252eca
+#3 ...
+
+#4 [auth] docker/dockerfile:pull token for registry-1.docker.io
+#4 sha256:63311edba7db92402814076a442a058fb091c896d8f9d83b385ffb4c98039a3f
+#4 DONE 0.0s
+
+#3 resolve image config for docker.io/docker/dockerfile:1.4
+#3 sha256:4c6393aa7d63350bb37611567d30ae32494404c0b27cf79a51e51112ce252eca
+#3 DONE 2.5s
+
+#5 docker-image://docker.io/docker/dockerfile:1.4@sha256:9ba7531bd80fb0a858632727cf7a112fbfd19b17e94c4e84ced81e24ef1a0dbc
+#5 sha256:f8ced039b92255abe2a5d9b1b282755057c6783a74e367c16ca94e7b53ed923b
+#5 CACHED
+
+#6 [internal] load build definition from Dockerfile
+#6 sha256:f53acea95da2c95e42f8898405a9c5be22a6b3b0b7d334f5f9e847cbe6b82d2f
+#6 DONE 0.0s
+
+#7 [internal] load .dockerignore
+#7 sha256:c5f38096bac14b5be6d27276cf28f0b77eede49088d658154fd5ccacd4be9e4f
+#7 DONE 0.0s
+
+#8 [internal] load metadata for docker.io/library/node:16-slim
+#8 sha256:faa605aa367b596b57bbdc1bdcccade69c92d97d03d44e595a34c7e28b8d594e
+#8 ...
+
+#9 [auth] library/node:pull token for registry-1.docker.io
+#9 sha256:6369cf726b85a0980bb63c27ea0b910f59aac5dcb9654597213310c8818a4994
+#9 DONE 0.0s
+
+#8 [internal] load metadata for docker.io/library/node:16-slim
+#8 sha256:faa605aa367b596b57bbdc1bdcccade69c92d97d03d44e595a34c7e28b8d594e
+#8 DONE 1.3s
+
+#8 [internal] load metadata for docker.io/library/node:16-slim
+#8 sha256:faa605aa367b596b57bbdc1bdcccade69c92d97d03d44e595a34c7e28b8d594e
+#8 DONE 1.3s
+
+#12 [prebuilder-default 2/5] WORKDIR /opt
+#12 sha256:16edbd432e8a5f6405e678b92bdf30e3373a67092bffed875abc0f8ee2a93acd
+#12 CACHED
+
+#10 [prebuilder-default 1/5] FROM docker.io/library/node:16-slim@sha256:bd728768518439b05d355f58518a01b31a15f58381592e3ffa78e7939889f4f1
+#10 sha256:1b48ace60105c0da6efcb357018cad6133f8cefdf430284692e7a549bfc9c7d7
+#10 CACHED
+
+#13 [internal] load build context
+#13 sha256:ce84061cdd17fe8ba70e1d4b82303563c5ed195108cee7f3099dce2ebe78680f
+#13 transferring context: 16.62MB 0.6s
+#13 transferring context: 99.95MB 4.1s done
+#13 DONE 4.2s
+
+#11 [stage-6  2/10] RUN set -eux; 	apt-get update; 	apt-get install -y gosu; 	rm -rf /var/lib/apt/lists/*; 	gosu nobody true
+#11 sha256:86fc1f527e7dfe2ba45c3d099f938ff2453155265549867b5545a11e9c1e3ff7
+#11 0.468 + apt-get update
+#11 0.729 Get:1 http://deb.debian.org/debian buster InRelease [122 kB]
+#11 0.768 Get:2 http://deb.debian.org/debian-security buster/updates InRelease [34.8 kB]
+#11 1.248 Get:3 http://deb.debian.org/debian buster-updates InRelease [56.6 kB]
+#11 1.266 Get:4 http://deb.debian.org/debian buster/main amd64 Packages [7909 kB]
+#11 1.891 Get:5 http://deb.debian.org/debian-security buster/updates/main amd64 Packages [360 kB]
+#11 2.099 Get:6 http://deb.debian.org/debian buster-updates/main amd64 Packages [8788 B]
+#11 4.099 Fetched 8491 kB in 3s (2493 kB/s)
+#11 4.099 Reading package lists...
+#11 ...
+
+#14 [packages-json-picker 3/5] COPY [package.json, yarn.lock, lerna.json, ./]
+#14 sha256:6ae5d9d5ee1f02cca5c25c75dfb1b178fa65412cd449872940bcabe5a40272f4
+#14 DONE 0.3s
+
+#15 [packages-json-picker 4/5] COPY packages packages
+#15 sha256:ec6bc7a8af46f418939a4289f6a2a0a3514d7e0a00396db7812dca22cb463be6
+#15 ...
+
+#11 [stage-6  2/10] RUN set -eux; 	apt-get update; 	apt-get install -y gosu; 	rm -rf /var/lib/apt/lists/*; 	gosu nobody true
+#11 sha256:86fc1f527e7dfe2ba45c3d099f938ff2453155265549867b5545a11e9c1e3ff7
+#11 4.099 Reading package lists...
+#11 4.965 + apt-get install -y gosu
+#11 4.984 Reading package lists...
+#11 6.278 Building dependency tree...
+#11 6.441 Reading state information...
+#11 6.627 The following package was automatically installed and is no longer required:
+#11 6.628   lsb-base
+#11 6.628 Use 'apt autoremove' to remove it.
+#11 6.669 The following NEW packages will be installed:
+#11 6.670   gosu
+#11 6.710 0 upgraded, 1 newly installed, 0 to remove and 2 not upgraded.
+#11 6.710 Need to get 523 kB of archives.
+#11 6.710 After this operation, 1665 kB of additional disk space will be used.
+#11 6.710 Get:1 http://deb.debian.org/debian buster/main amd64 gosu amd64 1.10-1+b23 [523 kB]
+#11 7.416 debconf: delaying package configuration, since apt-utils is not installed
+#11 7.462 Fetched 523 kB in 0s (7075 kB/s)
+#11 7.519 Selecting previously unselected package gosu.
+#11 7.519 (Reading database ... (Reading database ... 5%(Reading database ... 10%(Reading database ... 15%(Reading database ... 20%(Reading database ... 25%(Reading database ... 30%(Reading database ... 35%(Reading database ... 40%(Reading database ... 45%(Reading database ... 50%(Reading database ... 55%(Reading database ... 60%(Reading database ... 65%(Reading database ... 70%(Reading database ... 75%(Reading database ... 80%(Reading database ... 85%(Reading database ... 90%(Reading database ... 95%(Reading database ... 100%(Reading database ... 6469 files and directories currently installed.)
+#11 7.609 Preparing to unpack .../gosu_1.10-1+b23_amd64.deb ...
+#11 7.614 Unpacking gosu (1.10-1+b23) ...
+#11 7.759 Setting up gosu (1.10-1+b23) ...
+#11 7.855 + rm -rf /var/lib/apt/lists/auxfiles /var/lib/apt/lists/deb.debian.org_debian-security_dists_buster_updates_InRelease /var/lib/apt/lists/deb.debian.org_debian-security_dists_buster_updates_main_binary-amd64_Packages.lz4 /var/lib/apt/lists/deb.debian.org_debian_dists_buster-updates_InRelease /var/lib/apt/lists/deb.debian.org_debian_dists_buster-updates_main_binary-amd64_Packages.lz4 /var/lib/apt/lists/deb.debian.org_debian_dists_buster_InRelease /var/lib/apt/lists/deb.debian.org_debian_dists_buster_main_binary-amd64_Packages.lz4 /var/lib/apt/lists/lock /var/lib/apt/lists/partial
+#11 7.900 + gosu nobody true
+#11 DONE 8.9s
+
+#15 [packages-json-picker 4/5] COPY packages packages
+#15 sha256:ec6bc7a8af46f418939a4289f6a2a0a3514d7e0a00396db7812dca22cb463be6
+#15 DONE 12.8s
+
+#16 [packages-json-picker 5/5] RUN find packages ! -name "package.json" -mindepth 2 -maxdepth 2 -print | xargs rm -rf
+#16 sha256:5e460ea3a7e6032416b499892ad65341a0d0c85666ab2fc7ee0b795faf35c674
+#16 DONE 0.5s
+
+#17 [deps-resolver 3/7] COPY --from=packages-json-picker /opt .
+#17 sha256:1745a659b6d8765d14e303549c2a34759a3ca53ef8e89766603339b5ffb53ce5
+#17 DONE 0.1s
+
+#18 [deps-resolver 4/7] RUN yarn config set network-timeout 300000
+#18 sha256:ce488d21ab15645675d855fbaf3790f202ae7d7b5d14c2a2faf75930605172a5
+#18 0.749 yarn config v1.22.19
+#18 0.859 success Set "network-timeout" to "300000".
+#18 0.860 Done in 0.13s.
+#18 DONE 0.9s
+
+#19 [deps-resolver 5/7] RUN npx -y lerna bootstrap -- --frozen-lockfile
+#19 sha256:f4edc2008560f34d907f9b51a8285639a423444076cef9ff0cf1dfe32f88122e
+#19 35.91 lerna notice cli v5.5.2
+#19 36.01 lerna info bootstrap root only
+#19 36.27 yarn install v1.22.19
+#19 36.66 [1/5] Validating package.json...
+#19 36.67 [2/5] Resolving packages...
+#19 37.70 [3/5] Fetching packages...
+#19 222.5 [4/5] Linking dependencies...
+#19 222.5 warning " > eslint-config-next@12.1.6" has unmet peer dependency "next@>=10.2.0".
+#19 222.5 warning " > eslint-config-weseek@2.1.0" has unmet peer dependency "@babel/core@^7.17.8".
+#19 222.5 warning " > eslint-config-weseek@2.1.0" has unmet peer dependency "@babel/eslint-parser@^7.17.0".
+#19 222.5 warning " > eslint-config-weseek@2.1.0" has incorrect peer dependency "@typescript-eslint/eslint-plugin@^4.28.5".
+#19 222.5 warning " > eslint-config-weseek@2.1.0" has incorrect peer dependency "@typescript-eslint/parser@^4.28.5".
+#19 222.5 warning " > eslint-config-weseek@2.1.0" has incorrect peer dependency "eslint@^7.32.0".
+#19 222.5 warning " > eslint-config-weseek@2.1.0" has incorrect peer dependency "eslint-import-resolver-typescript@^2.4.0".
+#19 222.5 warning " > eslint-config-weseek@2.1.0" has unmet peer dependency "eslint-plugin-vue@^7.15.0".
+#19 222.5 warning "eslint-config-weseek > eslint-config-airbnb@17.1.0" has incorrect peer dependency "eslint@^4.19.1 || ^5.3.0".
+#19 222.5 warning "eslint-config-weseek > eslint-config-airbnb@17.1.0" has unmet peer dependency "eslint-plugin-jsx-a11y@^6.1.1".
+#19 222.5 warning "eslint-config-weseek > eslint-config-airbnb > eslint-config-airbnb-base@13.1.0" has incorrect peer dependency "eslint@^4.19.1 || ^5.3.0".
+#19 222.5 warning "shipjs > @octokit/rest > @octokit/plugin-request-log@1.0.4" has incorrect peer dependency "@octokit/core@>=3".
+#19 222.5 warning " > @growi/codemirror-textlint@5.1.5-RC.0" has unmet peer dependency "codemirror@^5.62.3".
+#19 222.5 warning "workspace-aggregator-0931c9af-847c-447f-b686-ac6355e8466c > @growi/app > connect-mongo@4.6.0" has unmet peer dependency "mongodb@^4.1.0".
+#19 222.5 warning "workspace-aggregator-0931c9af-847c-447f-b686-ac6355e8466c > @growi/app > mongoose-unique-validator@2.0.3" has incorrect peer dependency "mongoose@^5.2.1".
+#19 222.5 warning "workspace-aggregator-0931c9af-847c-447f-b686-ac6355e8466c > @growi/app > multer-autoreap@1.0.3" has incorrect peer dependency "express@^4.16.3".
+#19 222.5 warning "workspace-aggregator-0931c9af-847c-447f-b686-ac6355e8466c > @growi/app > react-card-flip@1.0.10" has incorrect peer dependency "react@^16.8.6".
+#19 222.5 warning "workspace-aggregator-0931c9af-847c-447f-b686-ac6355e8466c > @growi/app > react-card-flip@1.0.10" has incorrect peer dependency "react-dom@^16.8.6".
+#19 222.5 warning "workspace-aggregator-0931c9af-847c-447f-b686-ac6355e8466c > @growi/app > react-datepicker@4.7.0" has incorrect peer dependency "react@^16.9.0 || ^17".
+#19 222.5 warning "workspace-aggregator-0931c9af-847c-447f-b686-ac6355e8466c > @growi/app > react-datepicker@4.7.0" has incorrect peer dependency "react-dom@^16.9.0 || ^17".
+#19 222.5 warning "workspace-aggregator-0931c9af-847c-447f-b686-ac6355e8466c > @growi/app > react-markdown@8.0.3" has unmet peer dependency "@types/react@>=16".
+#19 222.5 warning "workspace-aggregator-0931c9af-847c-447f-b686-ac6355e8466c > @growi/app > react-codemirror2@6.0.0" has incorrect peer dependency "react@>=15.5 <=16.x".
+#19 222.5 warning "workspace-aggregator-0931c9af-847c-447f-b686-ac6355e8466c > @growi/app > babel-loader@8.2.5" has unmet peer dependency "@babel/core@^7.0.0".
+#19 222.5 warning "workspace-aggregator-0931c9af-847c-447f-b686-ac6355e8466c > @growi/app > babel-loader@8.2.5" has unmet peer dependency "webpack@>=2".
+#19 222.5 warning "workspace-aggregator-0931c9af-847c-447f-b686-ac6355e8466c > @growi/app > bootstrap@4.6.1" has unmet peer dependency "jquery@1.9.1 - 3".
+#19 222.5 warning "workspace-aggregator-0931c9af-847c-447f-b686-ac6355e8466c > @growi/app > bootstrap@4.6.1" has unmet peer dependency "popper.js@^1.16.1".
+#19 222.5 warning "workspace-aggregator-0931c9af-847c-447f-b686-ac6355e8466c > @growi/app > emoji-mart@3.0.1003" has incorrect peer dependency "react@^0.14.0 || ^15.0.0-0 || ^16.0.0".
+#19 222.5 warning "workspace-aggregator-0931c9af-847c-447f-b686-ac6355e8466c > @growi/app > react-copy-to-clipboard@5.0.1" has incorrect peer dependency "react@^15.3.0 || ^16.0.0".
+#19 222.5 warning "workspace-aggregator-0931c9af-847c-447f-b686-ac6355e8466c > @growi/app > react-frame-component@4.0.0" has unmet peer dependency "prop-types@^15.5.9".
+#19 222.5 warning "workspace-aggregator-0931c9af-847c-447f-b686-ac6355e8466c > @growi/app > react-use-ripple@1.5.2" has incorrect peer dependency "react@^16.8.0".
+#19 222.5 warning "workspace-aggregator-0931c9af-847c-447f-b686-ac6355e8466c > @growi/app > react-waypoint@10.1.0" has incorrect peer dependency "react@^15.3.0 || ^16.0.0 || ^17.0.0".
+#19 222.6 warning "workspace-aggregator-0931c9af-847c-447f-b686-ac6355e8466c > @growi/app > simplebar-react@2.3.6" has incorrect peer dependency "react@^0.14.9 || ^15.3.0 || ^16.0.0-rc || ^16.0 || ^17.0".
+#19 222.6 warning "workspace-aggregator-0931c9af-847c-447f-b686-ac6355e8466c > @growi/app > simplebar-react@2.3.6" has incorrect peer dependency "react-dom@^0.14.9 || ^15.3.0 || ^16.0.0-rc || ^16.0 || ^17.0".
+#19 222.6 warning "workspace-aggregator-0931c9af-847c-447f-b686-ac6355e8466c > @growi/app > unstated@2.1.1" has incorrect peer dependency "react@^15.0.0 || ^16.0.0".
+#19 222.6 warning "workspace-aggregator-0931c9af-847c-447f-b686-ac6355e8466c > @growi/plugin-attachment-refs > react-images@1.0.0" has incorrect peer dependency "react@^15.3.0 || ^16.2.0".
+#19 222.6 warning "workspace-aggregator-0931c9af-847c-447f-b686-ac6355e8466c > @growi/plugin-attachment-refs > react-images@1.0.0" has incorrect peer dependency "react-dom@^15.3.0 || ^16.2.0".
+#19 222.6 warning "workspace-aggregator-0931c9af-847c-447f-b686-ac6355e8466c > @growi/plugin-attachment-refs > react-motion@0.5.2" has incorrect peer dependency "react@^0.14.9 || ^15.3.0 || ^16.0.0".
+#19 222.6 warning "workspace-aggregator-0931c9af-847c-447f-b686-ac6355e8466c > @growi/slackbot-proxy > @tsed/platform-express@6.43.0" has unmet peer dependency "@types/multer@^1.4.5".
+#19 222.6 warning "workspace-aggregator-0931c9af-847c-447f-b686-ac6355e8466c > @growi/slackbot-proxy > @tsed/platform-express@6.43.0" has unmet peer dependency "body-parser@1.19.0".
+#19 222.6 warning "workspace-aggregator-0931c9af-847c-447f-b686-ac6355e8466c > @growi/slackbot-proxy > @tsed/json-mapper@6.70.1" has incorrect peer dependency "@tsed/core@^6.70.1".
+#19 222.6 warning "workspace-aggregator-0931c9af-847c-447f-b686-ac6355e8466c > @growi/slackbot-proxy > @tsed/json-mapper@6.70.1" has incorrect peer dependency "@tsed/exceptions@^6.70.1".
+#19 222.6 warning "workspace-aggregator-0931c9af-847c-447f-b686-ac6355e8466c > @growi/slackbot-proxy > @tsed/json-mapper@6.70.1" has incorrect peer dependency "@tsed/schema@^6.70.1".
+#19 222.6 warning "workspace-aggregator-0931c9af-847c-447f-b686-ac6355e8466c > @growi/slackbot-proxy > bootstrap@5.0.2" has unmet peer dependency "@popperjs/core@^2.9.2".
+#19 222.6 warning "workspace-aggregator-0931c9af-847c-447f-b686-ac6355e8466c > @growi/app > react-datepicker > react-onclickoutside@6.12.1" has incorrect peer dependency "react@^15.5.x || ^16.x || ^17.x".
+#19 222.6 warning "workspace-aggregator-0931c9af-847c-447f-b686-ac6355e8466c > @growi/app > react-datepicker > react-onclickoutside@6.12.1" has incorrect peer dependency "react-dom@^15.5.x || ^16.x || ^17.x".
+#19 222.6 warning "workspace-aggregator-0931c9af-847c-447f-b686-ac6355e8466c > @growi/app > react-bootstrap-typeahead > react-popper@1.3.3" has incorrect peer dependency "react@0.14.x || ^15.0.0 || ^16.0.0".
+#19 222.6 warning "workspace-aggregator-0931c9af-847c-447f-b686-ac6355e8466c > @growi/app > reactstrap > react-popper@1.3.11" has incorrect peer dependency "react@0.14.x || ^15.0.0 || ^16.0.0 || ^17.0.0".
+#19 222.6 warning "workspace-aggregator-0931c9af-847c-447f-b686-ac6355e8466c > @growi/app > swagger2openapi > better-ajv-errors@0.6.6" has unmet peer dependency "ajv@4.11.8 - 6".
+#19 222.6 warning "workspace-aggregator-0931c9af-847c-447f-b686-ac6355e8466c > @growi/app > unstated > create-react-context@0.1.6" has unmet peer dependency "prop-types@^15.0.0".
+#19 222.6 warning "workspace-aggregator-0931c9af-847c-447f-b686-ac6355e8466c > @growi/app > unstated > create-react-context@0.1.6" has incorrect peer dependency "react@^14.0.0 || ^15.0.0 || ^16.0.0".
+#19 222.6 warning "workspace-aggregator-0931c9af-847c-447f-b686-ac6355e8466c > @growi/plugin-attachment-refs > react-images > react-full-screen@0.2.5" has unmet peer dependency "prop-types@^15.5".
+#19 222.6 warning "workspace-aggregator-0931c9af-847c-447f-b686-ac6355e8466c > @growi/plugin-attachment-refs > react-images > react-scrolllock@1.0.9" has incorrect peer dependency "react@^0.14 || ^15.0".
+#19 222.6 warning "workspace-aggregator-0931c9af-847c-447f-b686-ac6355e8466c > @growi/plugin-attachment-refs > react-images > react-view-pager@0.6.0" has unmet peer dependency "prop-types@^15.5.8".
+#19 222.6 warning "workspace-aggregator-0931c9af-847c-447f-b686-ac6355e8466c > @growi/remark-growi-plugin > xo > eslint-import-resolver-webpack@0.13.2" has unmet peer dependency "webpack@>=1.11.0".
+#19 222.6 warning "workspace-aggregator-0931c9af-847c-447f-b686-ac6355e8466c > @growi/app > swagger-jsdoc > swagger-parser > @apidevtools/swagger-parser@10.0.2" has unmet peer dependency "openapi-types@>=7".
+#19 222.6 warning "workspace-aggregator-0931c9af-847c-447f-b686-ac6355e8466c > @growi/app > react-bootstrap-typeahead > react-popper > create-react-context@0.2.2" has incorrect peer dependency "react@^0.14.0 || ^15.0.0 || ^16.0.0".
+#19 302.3 [5/5] Building fresh packages...
+#19 310.9 warning Error running install script for optional dependency: "/opt/node_modules/@sematext/gc-stats: Command failed.
+#19 310.9 Exit code: 1
+#19 310.9 Command: npx node-pre-gyp install --fallback-to-build
+#19 310.9 Arguments: 
+#19 310.9 Directory: /opt/node_modules/@sematext/gc-stats
+#19 310.9 Output:
+#19 310.9 node-pre-gyp info it worked if it ends with ok
+#19 310.9 node-pre-gyp info using node-pre-gyp@1.0.8
+#19 310.9 node-pre-gyp info using node@16.17.0 | linux | x64
+#19 310.9 node-pre-gyp info check checked for \"/opt/node_modules/@sematext/gc-stats/build/gcstats/v1.5.5/Release/node-v93-linux-x64-glibc/gcstats.node\" (not found)
+#19 310.9 node-pre-gyp http GET https://github.com/adnanrahic/node-gcstats/releases/download/1.5.5/gcstats/v1.5.5/Release/node-v93-linux-x64-glibc.tar.gz
+#19 310.9 node-pre-gyp ERR! install response status 404 Not Found on https://github.com/adnanrahic/node-gcstats/releases/download/1.5.5/gcstats/v1.5.5/Release/node-v93-linux-x64-glibc.tar.gz 
+#19 310.9 node-pre-gyp WARN Pre-built binaries not installable for @sematext/gc-stats@1.5.5 and node@16.17.0 (node-v93 ABI, glibc) (falling back to source compile with node-gyp) 
+#19 310.9 node-pre-gyp WARN Hit error response status 404 Not Found on https://github.com/adnanrahic/node-gcstats/releases/download/1.5.5/gcstats/v1.5.5/Release/node-v93-linux-x64-glibc.tar.gz 
+#19 310.9 gyp info it worked if it ends with ok
+#19 310.9 gyp info using node-gyp@9.0.0
+#19 310.9 gyp info using node@16.17.0 | linux | x64
+#19 310.9 gyp info ok 
+#19 310.9 gyp info it worked if it ends with ok
+#19 310.9 gyp info using node-gyp@9.0.0
+#19 310.9 gyp info using node@16.17.0 | linux | x64
+#19 310.9 gyp ERR! find Python 
+#19 310.9 gyp ERR! find Python Python is not set from command line or npm configuration
+#19 310.9 gyp ERR! find Python Python is not set from environment variable PYTHON
+#19 310.9 gyp ERR! find Python checking if \"python3\" can be used
+#19 310.9 gyp ERR! find Python - \"python3\" is not in PATH or produced an error
+#19 310.9 gyp ERR! find Python checking if \"python\" can be used
+#19 310.9 gyp ERR! find Python - \"python\" is not in PATH or produced an error
+#19 310.9 gyp ERR! find Python 
+#19 310.9 gyp ERR! find Python **********************************************************
+#19 310.9 gyp ERR! find Python You need to install the latest version of Python.
+#19 310.9 gyp ERR! find Python Node-gyp should be able to find and use Python. If not,
+#19 310.9 gyp ERR! find Python you can try one of the following options:
+#19 310.9 gyp ERR! find Python - Use the switch --python=\"/path/to/pythonexecutable\"
+#19 310.9 gyp ERR! find Python   (accepted by both node-gyp and npm)
+#19 310.9 gyp ERR! find Python - Set the environment variable PYTHON
+#19 310.9 gyp ERR! find Python - Set the npm configuration variable python:
+#19 310.9 gyp ERR! find Python   npm config set python \"/path/to/pythonexecutable\"
+#19 310.9 gyp ERR! find Python For more information consult the documentation at:
+#19 310.9 gyp ERR! find Python https://github.com/nodejs/node-gyp#installation
+#19 310.9 gyp ERR! find Python **********************************************************
+#19 310.9 gyp ERR! find Python 
+#19 310.9 gyp ERR! configure error 
+#19 310.9 gyp ERR! stack Error: Could not find any Python installation to use
+#19 310.9 gyp ERR! stack     at PythonFinder.fail (/usr/local/lib/node_modules/npm/node_modules/node-gyp/lib/find-python.js:330:47)
+#19 310.9 gyp ERR! stack     at PythonFinder.runChecks (/usr/local/lib/node_modules/npm/node_modules/node-gyp/lib/find-python.js:159:21)
+#19 310.9 gyp ERR! stack     at PythonFinder.<anonymous> (/usr/local/lib/node_modules/npm/node_modules/node-gyp/lib/find-python.js:202:16)
+#19 310.9 gyp ERR! stack     at PythonFinder.execFileCallback (/usr/local/lib/node_modules/npm/node_modules/node-gyp/lib/find-python.js:294:16)
+#19 310.9 gyp ERR! stack     at exithandler (node:child_process:408:5)
+#19 310.9 gyp ERR! stack     at ChildProcess.errorhandler (node:child_process:420:5)
+#19 310.9 gyp ERR! stack     at ChildProcess.emit (node:events:513:28)
+#19 310.9 gyp ERR! stack     at Process.ChildProcess._handle.onexit (node:internal/child_process:289:12)
+#19 310.9 gyp ERR! stack     at onErrorNT (node:internal/child_process:478:16)
+#19 310.9 gyp ERR! stack     at processTicksAndRejections (node:internal/process/task_queues:83:21)
+#19 310.9 gyp ERR! System Linux 5.10.25-linuxkit
+#19 310.9 gyp ERR! command \"/usr/local/bin/node\" \"/usr/local/lib/node_modules/npm/node_modules/node-gyp/bin/node-gyp.js\" \"configure\" \"--fallback-to-build\" \"--module=/opt/node_modules/@sematext/gc-stats/build/gcstats/v1.5.5/Release/node-v93-linux-x64-glibc/gcstats.node\" \"--module_name=gcstats\" \"--module_path=/opt/node_modules/@sematext/gc-stats/build/gcstats/v1.5.5/Release/node-v93-linux-x64-glibc\" \"--napi_version=8\" \"--node_abi_napi=napi\" \"--napi_build_version=0\" \"--node_napi_label=node-v93\"
+#19 310.9 gyp ERR! cwd /opt/node_modules/@sematext/gc-stats
+#19 310.9 gyp ERR! node -v v16.17.0
+#19 310.9 gyp ERR! node-gyp -v v9.0.0
+#19 310.9 gyp ERR! not ok 
+#19 310.9 node-pre-gyp ERR! build error 
+#19 310.9 node-pre-gyp ERR! stack Error: Failed to execute '/usr/local/bin/node /usr/local/lib/node_modules/npm/node_modules/node-gyp/bin/node-gyp.js configure --fallback-to-build --module=/opt/node_modules/@sematext/gc-stats/build/gcstats/v1.5.5/Release/node-v93-linux-x64-glibc/gcstats.node --module_name=gcstats --module_path=/opt/node_modules/@sematext/gc-stats/build/gcstats/v1.5.5/Release/node-v93-linux-x64-glibc --napi_version=8 --node_abi_napi=napi --napi_build_version=0 --node_napi_label=node-v93' (1)
+#19 310.9 node-pre-gyp ERR! stack     at ChildProcess.<anonymous> (/opt/node_modules/@mapbox/node-pre-gyp/lib/util/compile.js:89:23)
+#19 310.9 node-pre-gyp ERR! stack     at ChildProcess.emit (node:events:513:28)
+#19 310.9 node-pre-gyp ERR! stack     at maybeClose (node:internal/child_process:1093:16)
+#19 310.9 node-pre-gyp ERR! stack     at Process.ChildProcess._handle.onexit (node:internal/child_process:302:5)
+#19 310.9 node-pre-gyp ERR! System Linux 5.10.25-linuxkit
+#19 310.9 node-pre-gyp ERR! command \"/usr/local/bin/node\" \"/opt/node_modules/@sematext/gc-stats/node_modules/.bin/node-pre-gyp\" \"install\" \"--fallback-to-build\"
+#19 310.9 node-pre-gyp ERR! cwd /opt/node_modules/@sematext/gc-stats
+#19 310.9 node-pre-gyp ERR! node -v v16.17.0
+#19 310.9 node-pre-gyp ERR! node-pre-gyp -v v1.0.8
+#19 310.9 node-pre-gyp ERR! not ok 
+#19 310.9 Failed to execute '/usr/local/bin/node /usr/local/lib/node_modules/npm/node_modules/node-gyp/bin/node-gyp.js configure --fallback-to-build --module=/opt/node_modules/@sematext/gc-stats/build/gcstats/v1.5.5/Release/node-v93-linux-x64-glibc/gcstats.node --module_name=gcstats --module_path=/opt/node_modules/@sematext/gc-stats/build/gcstats/v1.5.5/Release/node-v93-linux-x64-glibc --napi_version=8 --node_abi_napi=napi --napi_build_version=0 --node_napi_label=node-v93' (1)"
+#19 310.9 info This module is OPTIONAL, you can safely ignore this error
+#19 374.1 Done in 337.90s.
+#19 374.3 npm notice 
+#19 374.3 npm notice New minor version of npm available! 8.15.0 -> 8.19.2
+#19 374.3 npm notice Changelog: <https://github.com/npm/cli/releases/tag/v8.19.2>
+#19 374.3 npm notice Run `npm install -g npm@8.19.2` to update!
+#19 374.3 npm notice 
+#19 DONE 375.9s
+
+#20 [deps-resolver 6/7] RUN rm -f $(echo /opt/node_modules/@growi/slackbot-proxy | sed -e "s/,/ /g")
+#20 sha256:81e37a018621703cdfa55f27bf30facad0171e47e9ffd65dd54d2674817fa5e8
+#20 DONE 0.6s
+
+#21 [deps-resolver 7/7] RUN tar -cf node_modules.tar   node_modules   packages/*/node_modules
+#21 sha256:b580b51eea247f8aba01f647fbd314f92d215b61ed53a5d3c3267814620c24f1
+#21 DONE 29.4s
+
+#22 [deps-resolver-prod 1/3] RUN rm -rf packages/slackbot-proxy
+#22 sha256:3343cfa3e0ac899c6827bb150443514c18e45092d541e526fd37b8309fa28a31
+#22 DONE 0.5s
+
+#23 [deps-resolver-prod 2/3] RUN npx -y lerna bootstrap -- --production
+#23 sha256:5836d93fd42e74959ae4de236c0a4871b49ab0191e0e9660ce66cd2744b92661
+#23 1.822 lerna notice cli v4.0.0
+#23 1.943 lerna info bootstrap root only
+#23 2.233 yarn install v1.22.19
+#23 2.691 [1/5] Validating package.json...
+#23 2.713 [2/5] Resolving packages...
+#23 3.597 [3/5] Fetching packages...
+#23 6.917 [4/5] Linking dependencies...
+#23 6.923 warning " > eslint-config-next@12.1.6" has unmet peer dependency "next@>=10.2.0".
+#23 6.925 warning " > eslint-config-weseek@2.1.0" has unmet peer dependency "@babel/core@^7.17.8".
+#23 6.925 warning " > eslint-config-weseek@2.1.0" has unmet peer dependency "@babel/eslint-parser@^7.17.0".
+#23 6.925 warning " > eslint-config-weseek@2.1.0" has incorrect peer dependency "@typescript-eslint/eslint-plugin@^4.28.5".
+#23 6.925 warning " > eslint-config-weseek@2.1.0" has incorrect peer dependency "@typescript-eslint/parser@^4.28.5".
+#23 6.925 warning " > eslint-config-weseek@2.1.0" has incorrect peer dependency "eslint@^7.32.0".
+#23 6.925 warning " > eslint-config-weseek@2.1.0" has incorrect peer dependency "eslint-import-resolver-typescript@^2.4.0".
+#23 6.930 warning " > eslint-config-weseek@2.1.0" has unmet peer dependency "eslint-plugin-vue@^7.15.0".
+#23 6.930 warning "eslint-config-weseek > eslint-config-airbnb@17.1.0" has incorrect peer dependency "eslint@^4.19.1 || ^5.3.0".
+#23 6.930 warning "eslint-config-weseek > eslint-config-airbnb@17.1.0" has unmet peer dependency "eslint-plugin-jsx-a11y@^6.1.1".
+#23 6.930 warning "eslint-config-weseek > eslint-config-airbnb > eslint-config-airbnb-base@13.1.0" has incorrect peer dependency "eslint@^4.19.1 || ^5.3.0".
+#23 6.930 warning "shipjs > @octokit/rest > @octokit/plugin-request-log@1.0.4" has incorrect peer dependency "@octokit/core@>=3".
+#23 6.930 warning " > @growi/codemirror-textlint@5.1.5-RC.0" has unmet peer dependency "codemirror@^5.62.3".
+#23 6.930 warning "workspace-aggregator-43caa2cd-532c-490f-aacf-dd597dabe19f > @growi/app > connect-mongo@4.6.0" has unmet peer dependency "mongodb@^4.1.0".
+#23 6.931 warning "workspace-aggregator-43caa2cd-532c-490f-aacf-dd597dabe19f > @growi/app > mongoose-unique-validator@2.0.3" has incorrect peer dependency "mongoose@^5.2.1".
+#23 6.931 warning "workspace-aggregator-43caa2cd-532c-490f-aacf-dd597dabe19f > @growi/app > multer-autoreap@1.0.3" has incorrect peer dependency "express@^4.16.3".
+#23 6.933 warning "workspace-aggregator-43caa2cd-532c-490f-aacf-dd597dabe19f > @growi/app > react-card-flip@1.0.10" has incorrect peer dependency "react@^16.8.6".
+#23 6.933 warning "workspace-aggregator-43caa2cd-532c-490f-aacf-dd597dabe19f > @growi/app > react-card-flip@1.0.10" has incorrect peer dependency "react-dom@^16.8.6".
+#23 6.933 warning "workspace-aggregator-43caa2cd-532c-490f-aacf-dd597dabe19f > @growi/app > react-datepicker@4.7.0" has incorrect peer dependency "react@^16.9.0 || ^17".
+#23 6.935 warning "workspace-aggregator-43caa2cd-532c-490f-aacf-dd597dabe19f > @growi/app > react-datepicker@4.7.0" has incorrect peer dependency "react-dom@^16.9.0 || ^17".
+#23 6.935 warning "workspace-aggregator-43caa2cd-532c-490f-aacf-dd597dabe19f > @growi/app > react-markdown@8.0.3" has unmet peer dependency "@types/react@>=16".
+#23 6.935 warning "workspace-aggregator-43caa2cd-532c-490f-aacf-dd597dabe19f > @growi/app > react-codemirror2@6.0.0" has incorrect peer dependency "react@>=15.5 <=16.x".
+#23 6.935 warning "workspace-aggregator-43caa2cd-532c-490f-aacf-dd597dabe19f > @growi/plugin-attachment-refs > react-images@1.0.0" has unmet peer dependency "react@^15.3.0 || ^16.2.0".
+#23 6.935 warning "workspace-aggregator-43caa2cd-532c-490f-aacf-dd597dabe19f > @growi/plugin-attachment-refs > react-images@1.0.0" has unmet peer dependency "react-dom@^15.3.0 || ^16.2.0".
+#23 6.935 warning "workspace-aggregator-43caa2cd-532c-490f-aacf-dd597dabe19f > @growi/plugin-attachment-refs > react-motion@0.5.2" has unmet peer dependency "react@^0.14.9 || ^15.3.0 || ^16.0.0".
+#23 6.936 warning "workspace-aggregator-43caa2cd-532c-490f-aacf-dd597dabe19f > @growi/app > next-superjson > babel-loader@8.2.5" has unmet peer dependency "webpack@>=2".
+#23 6.936 warning "workspace-aggregator-43caa2cd-532c-490f-aacf-dd597dabe19f > @growi/app > react-datepicker > react-onclickoutside@6.12.1" has incorrect peer dependency "react@^15.5.x || ^16.x || ^17.x".
+#23 6.937 warning "workspace-aggregator-43caa2cd-532c-490f-aacf-dd597dabe19f > @growi/app > react-datepicker > react-onclickoutside@6.12.1" has incorrect peer dependency "react-dom@^15.5.x || ^16.x || ^17.x".
+#23 6.937 warning "workspace-aggregator-43caa2cd-532c-490f-aacf-dd597dabe19f > @growi/app > react-bootstrap-typeahead > react-popper@1.3.3" has incorrect peer dependency "react@0.14.x || ^15.0.0 || ^16.0.0".
+#23 6.938 warning "workspace-aggregator-43caa2cd-532c-490f-aacf-dd597dabe19f > @growi/app > reactstrap > react-popper@1.3.11" has incorrect peer dependency "react@0.14.x || ^15.0.0 || ^16.0.0 || ^17.0.0".
+#23 6.938 warning "workspace-aggregator-43caa2cd-532c-490f-aacf-dd597dabe19f > @growi/plugin-attachment-refs > react-images > react-full-screen@0.2.5" has unmet peer dependency "prop-types@^15.5".
+#23 6.938 warning "workspace-aggregator-43caa2cd-532c-490f-aacf-dd597dabe19f > @growi/plugin-attachment-refs > react-images > react-scrolllock@1.0.9" has incorrect peer dependency "react@^0.14 || ^15.0".
+#23 6.939 warning "workspace-aggregator-43caa2cd-532c-490f-aacf-dd597dabe19f > @growi/plugin-attachment-refs > react-images > react-view-pager@0.6.0" has unmet peer dependency "prop-types@^15.5.8".
+#23 6.940 warning "workspace-aggregator-43caa2cd-532c-490f-aacf-dd597dabe19f > @growi/app > swagger-jsdoc > swagger-parser > @apidevtools/swagger-parser@10.0.2" has unmet peer dependency "openapi-types@>=7".
+#23 6.940 warning "workspace-aggregator-43caa2cd-532c-490f-aacf-dd597dabe19f > @growi/app > react-bootstrap-typeahead > react-popper > create-react-context@0.2.2" has incorrect peer dependency "react@^0.14.0 || ^15.0.0 || ^16.0.0".
+#23 ...
+
+#26 [prebuilder-default 3/5] COPY --from=deps-resolver   /opt/node_modules.tar /opt/
+#26 sha256:0f4bd734bb738ca0d27d6c4f1d42333908248c94b3e63da2e50bc30988f6f606
+#26 DONE 4.5s
+
+#27 [prebuilder-default 4/5] RUN tar -xf node_modules.tar
+#27 sha256:dbb3fd0a7253b3e56063a3131e3b80fbc9c1216b9a41c89ce720957808c00b55
+#27 DONE 14.8s
+
+#23 [deps-resolver-prod 2/3] RUN npx -y lerna bootstrap -- --production
+#23 sha256:5836d93fd42e74959ae4de236c0a4871b49ab0191e0e9660ce66cd2744b92661
+#23 ...
+
+#28 [prebuilder-default 5/5] RUN rm node_modules.tar
+#28 sha256:c84b40cbbed0bca3d7b1058a52d6958a5ace4213c4497b08d433717b2429247a
+#28 DONE 0.9s
+
+#23 [deps-resolver-prod 2/3] RUN npx -y lerna bootstrap -- --production
+#23 sha256:5836d93fd42e74959ae4de236c0a4871b49ab0191e0e9660ce66cd2744b92661
+#23 ...
+
+#29 [builder  1/12] WORKDIR /opt
+#29 sha256:9e6e8e9d4823c2652427d8a864a1bb832ced82b8f4d144d4aa2dbb24fccf1086
+#29 DONE 0.1s
+
+#30 [builder  2/12] COPY [package.json, lerna.json, tsconfig.base.json, ./]
+#30 sha256:7db45f5a28721e229a28f842c2545e38260c7bb286151d634262f3308fdf3b50
+#30 DONE 0.1s
+
+#31 [builder  3/12] COPY packages/app packages/app
+#31 sha256:46802286d10b646655a7a0e68b24a1e09fcdd07dbc6eea8d8d9aa503122ee3fa
+#31 DONE 9.1s
+
+#32 [builder  4/12] COPY packages/core packages/core
+#32 sha256:2bb01d725299863031e63b14d7d123b0b6a6c7885d803384fbe38cf1f71a8aef
+#32 DONE 0.1s
+
+#23 [deps-resolver-prod 2/3] RUN npx -y lerna bootstrap -- --production
+#23 sha256:5836d93fd42e74959ae4de236c0a4871b49ab0191e0e9660ce66cd2744b92661
+#23 ...
+
+#33 [builder  5/12] COPY packages/codemirror-textlint packages/codemirror-textlint
+#33 sha256:ee589b3e6a6aade2089e2dfea6b11d2b95a230839cd341bdc06d74f0e23e2e93
+#33 DONE 0.1s
+
+#34 [builder  6/12] COPY packages/plugin-attachment-refs packages/plugin-attachment-refs
+#34 sha256:c2a15fc935d714f27f2d1c31cd2a12432dd1ad60b39da2de358b9996822fed72
+#34 DONE 0.1s
+
+#35 [builder  7/12] COPY packages/plugin-lsx packages/plugin-lsx
+#35 sha256:fc4616f22de897789dbd27ca010e1c28c9b274a438bff580b46cd4d036290014
+#35 DONE 0.1s
+
+#23 [deps-resolver-prod 2/3] RUN npx -y lerna bootstrap -- --production
+#23 sha256:5836d93fd42e74959ae4de236c0a4871b49ab0191e0e9660ce66cd2744b92661
+#23 ...
+
+#36 [builder  8/12] COPY packages/slack packages/slack
+#36 sha256:5a35c9bc3a8aed5878cc97beac9bfcba5761e1c83db4b4509f3980015171633d
+#36 DONE 0.1s
+
+#37 [builder  9/12] COPY packages/ui packages/ui
+#37 sha256:3ea992299bb313dcd999d437d32bfe9ef6434798eb0f2668ac1b23f2c591b976
+#37 DONE 0.1s
+
+#38 [builder 10/12] COPY packages/remark-growi-plugin packages/remark-growi-plugin
+#38 sha256:a84b0dadfceae31d0ec9d759a8a1fccebf0ff2276a7316d106e64acafea52419
+#38 DONE 0.1s
+
+#39 [builder 11/12] RUN yarn lerna run build
+#39 sha256:43e828e4b3a3f00c21d9949dab89706cb04e96bb74af52c2db22af50be598bc5
+#39 0.755 yarn run v1.22.19
+#39 0.962 $ /opt/node_modules/.bin/lerna run build
+#39 1.850 lerna notice cli v4.0.0
+#39 1.969 lerna info Executing command in 8 packages: "yarn run build"
+#39 ...
+
+#23 [deps-resolver-prod 2/3] RUN npx -y lerna bootstrap -- --production
+#23 sha256:5836d93fd42e74959ae4de236c0a4871b49ab0191e0e9660ce66cd2744b92661
+#23 41.19 [5/5] Building fresh packages...
+#23 44.29 warning Error running install script for optional dependency: "/opt/node_modules/@sematext/gc-stats: Command failed.
+#23 44.29 Exit code: 1
+#23 44.29 Command: npx node-pre-gyp install --fallback-to-build
+#23 44.29 Arguments: 
+#23 44.29 Directory: /opt/node_modules/@sematext/gc-stats
+#23 44.29 Output:
+#23 44.29 node-pre-gyp info it worked if it ends with ok
+#23 44.29 node-pre-gyp info using node-pre-gyp@1.0.8
+#23 44.29 node-pre-gyp info using node@16.17.0 | linux | x64
+#23 44.29 node-pre-gyp info check checked for \"/opt/node_modules/@sematext/gc-stats/build/gcstats/v1.5.5/Release/node-v93-linux-x64-glibc/gcstats.node\" (not found)
+#23 44.29 node-pre-gyp http GET https://github.com/adnanrahic/node-gcstats/releases/download/1.5.5/gcstats/v1.5.5/Release/node-v93-linux-x64-glibc.tar.gz
+#23 44.29 node-pre-gyp ERR! install response status 404 Not Found on https://github.com/adnanrahic/node-gcstats/releases/download/1.5.5/gcstats/v1.5.5/Release/node-v93-linux-x64-glibc.tar.gz 
+#23 44.29 node-pre-gyp WARN Pre-built binaries not installable for @sematext/gc-stats@1.5.5 and node@16.17.0 (node-v93 ABI, glibc) (falling back to source compile with node-gyp) 
+#23 44.29 node-pre-gyp WARN Hit error response status 404 Not Found on https://github.com/adnanrahic/node-gcstats/releases/download/1.5.5/gcstats/v1.5.5/Release/node-v93-linux-x64-glibc.tar.gz 
+#23 44.29 gyp info it worked if it ends with ok
+#23 44.29 gyp info using node-gyp@9.0.0
+#23 44.29 gyp info using node@16.17.0 | linux | x64
+#23 44.29 gyp info ok 
+#23 44.29 gyp info it worked if it ends with ok
+#23 44.29 gyp info using node-gyp@9.0.0
+#23 44.29 gyp info using node@16.17.0 | linux | x64
+#23 44.29 gyp ERR! find Python 
+#23 44.29 gyp ERR! find Python Python is not set from command line or npm configuration
+#23 44.29 gyp ERR! find Python Python is not set from environment variable PYTHON
+#23 44.29 gyp ERR! find Python checking if \"python3\" can be used
+#23 44.29 gyp ERR! find Python - \"python3\" is not in PATH or produced an error
+#23 44.29 gyp ERR! find Python checking if \"python\" can be used
+#23 44.29 gyp ERR! find Python - \"python\" is not in PATH or produced an error
+#23 44.29 gyp ERR! find Python 
+#23 44.29 gyp ERR! find Python **********************************************************
+#23 44.29 gyp ERR! find Python You need to install the latest version of Python.
+#23 44.29 gyp ERR! find Python Node-gyp should be able to find and use Python. If not,
+#23 44.29 gyp ERR! find Python you can try one of the following options:
+#23 44.29 gyp ERR! find Python - Use the switch --python=\"/path/to/pythonexecutable\"
+#23 44.29 gyp ERR! find Python   (accepted by both node-gyp and npm)
+#23 44.29 gyp ERR! find Python - Set the environment variable PYTHON
+#23 44.29 gyp ERR! find Python - Set the npm configuration variable python:
+#23 44.29 gyp ERR! find Python   npm config set python \"/path/to/pythonexecutable\"
+#23 44.29 gyp ERR! find Python For more information consult the documentation at:
+#23 44.29 gyp ERR! find Python https://github.com/nodejs/node-gyp#installation
+#23 44.29 gyp ERR! find Python **********************************************************
+#23 44.29 gyp ERR! find Python 
+#23 44.29 gyp ERR! configure error 
+#23 44.29 gyp ERR! stack Error: Could not find any Python installation to use
+#23 44.29 gyp ERR! stack     at PythonFinder.fail (/usr/local/lib/node_modules/npm/node_modules/node-gyp/lib/find-python.js:330:47)
+#23 44.29 gyp ERR! stack     at PythonFinder.runChecks (/usr/local/lib/node_modules/npm/node_modules/node-gyp/lib/find-python.js:159:21)
+#23 44.29 gyp ERR! stack     at PythonFinder.<anonymous> (/usr/local/lib/node_modules/npm/node_modules/node-gyp/lib/find-python.js:202:16)
+#23 44.29 gyp ERR! stack     at PythonFinder.execFileCallback (/usr/local/lib/node_modules/npm/node_modules/node-gyp/lib/find-python.js:294:16)
+#23 44.29 gyp ERR! stack     at exithandler (node:child_process:408:5)
+#23 44.29 gyp ERR! stack     at ChildProcess.errorhandler (node:child_process:420:5)
+#23 44.29 gyp ERR! stack     at ChildProcess.emit (node:events:513:28)
+#23 44.29 gyp ERR! stack     at Process.ChildProcess._handle.onexit (node:internal/child_process:289:12)
+#23 44.29 gyp ERR! stack     at onErrorNT (node:internal/child_process:478:16)
+#23 44.29 gyp ERR! stack     at processTicksAndRejections (node:internal/process/task_queues:83:21)
+#23 44.29 gyp ERR! System Linux 5.10.25-linuxkit
+#23 44.29 gyp ERR! command \"/usr/local/bin/node\" \"/usr/local/lib/node_modules/npm/node_modules/node-gyp/bin/node-gyp.js\" \"configure\" \"--fallback-to-build\" \"--module=/opt/node_modules/@sematext/gc-stats/build/gcstats/v1.5.5/Release/node-v93-linux-x64-glibc/gcstats.node\" \"--module_name=gcstats\" \"--module_path=/opt/node_modules/@sematext/gc-stats/build/gcstats/v1.5.5/Release/node-v93-linux-x64-glibc\" \"--napi_version=8\" \"--node_abi_napi=napi\" \"--napi_build_version=0\" \"--node_napi_label=node-v93\"
+#23 44.29 gyp ERR! cwd /opt/node_modules/@sematext/gc-stats
+#23 44.29 gyp ERR! node -v v16.17.0
+#23 44.29 gyp ERR! node-gyp -v v9.0.0
+#23 44.29 gyp ERR! not ok 
+#23 44.29 node-pre-gyp ERR! build error 
+#23 44.29 node-pre-gyp ERR! stack Error: Failed to execute '/usr/local/bin/node /usr/local/lib/node_modules/npm/node_modules/node-gyp/bin/node-gyp.js configure --fallback-to-build --module=/opt/node_modules/@sematext/gc-stats/build/gcstats/v1.5.5/Release/node-v93-linux-x64-glibc/gcstats.node --module_name=gcstats --module_path=/opt/node_modules/@sematext/gc-stats/build/gcstats/v1.5.5/Release/node-v93-linux-x64-glibc --napi_version=8 --node_abi_napi=napi --napi_build_version=0 --node_napi_label=node-v93' (1)
+#23 44.29 node-pre-gyp ERR! stack     at ChildProcess.<anonymous> (/opt/node_modules/@mapbox/node-pre-gyp/lib/util/compile.js:89:23)
+#23 44.29 node-pre-gyp ERR! stack     at ChildProcess.emit (node:events:513:28)
+#23 44.29 node-pre-gyp ERR! stack     at maybeClose (node:internal/child_process:1093:16)
+#23 44.29 node-pre-gyp ERR! stack     at Process.ChildProcess._handle.onexit (node:internal/child_process:302:5)
+#23 44.29 node-pre-gyp ERR! System Linux 5.10.25-linuxkit
+#23 44.29 node-pre-gyp ERR! command \"/usr/local/bin/node\" \"/opt/node_modules/@sematext/gc-stats/node_modules/.bin/node-pre-gyp\" \"install\" \"--fallback-to-build\"
+#23 44.29 node-pre-gyp ERR! cwd /opt/node_modules/@sematext/gc-stats
+#23 44.29 node-pre-gyp ERR! node -v v16.17.0
+#23 44.29 node-pre-gyp ERR! node-pre-gyp -v v1.0.8
+#23 44.29 node-pre-gyp ERR! not ok 
+#23 44.29 Failed to execute '/usr/local/bin/node /usr/local/lib/node_modules/npm/node_modules/node-gyp/bin/node-gyp.js configure --fallback-to-build --module=/opt/node_modules/@sematext/gc-stats/build/gcstats/v1.5.5/Release/node-v93-linux-x64-glibc/gcstats.node --module_name=gcstats --module_path=/opt/node_modules/@sematext/gc-stats/build/gcstats/v1.5.5/Release/node-v93-linux-x64-glibc --napi_version=8 --node_abi_napi=napi --napi_build_version=0 --node_napi_label=node-v93' (1)"
+#23 44.29 info This module is OPTIONAL, you can safely ignore this error
+#23 44.61 success Saved lockfile.
+#23 44.62 Done in 42.39s.
+#23 DONE 44.9s
+
+#24 [deps-resolver-prod 3/3] RUN tar -cf node_modules.tar   node_modules   packages/*/node_modules
+#24 sha256:852c77d007ae935c366d704d2dae66bf3f11af9e124c2af8e5323b932578f352
+#24 ...
+
+#39 [builder 11/12] RUN yarn lerna run build
+#39 sha256:43e828e4b3a3f00c21d9949dab89706cb04e96bb74af52c2db22af50be598bc5
+#39 16.50 lerna info run Ran npm script 'build' in '@growi/codemirror-textlint' in 14.5s:
+#39 16.51 $ yarn tsc && tsc-alias -p tsconfig.build.json
+#39 16.51 $ tsc -p tsconfig.build.json
+#39 16.51 Info: === tsc-alias starting ===
+#39 16.51 Info: 0 files were affected!
+#39 17.41 lerna info run Ran npm script 'build' in '@growi/remark-growi-plugin' in 15.4s:
+#39 17.41 $ yarn tsc && tsc-alias -p tsconfig.build.json
+#39 17.41 $ tsc -p tsconfig.build.json
+#39 17.41 Info: === tsc-alias starting ===
+#39 17.41 Info: 0 files were affected!
+#39 17.99 lerna info run Ran npm script 'build' in '@growi/core' in 16.0s:
+#39 17.99 $ run-p build:*
+#39 17.99 $ tsc -p tsconfig.build.esm.json && tsc-alias -p tsconfig.build.esm.json
+#39 17.99 $ tsc -p tsconfig.build.cjs.json && tsc-alias -p tsconfig.build.cjs.json
+#39 17.99 Info: === tsc-alias starting ===
+#39 17.99 Info: 0 files were affected!
+#39 17.99 Info: === tsc-alias starting ===
+#39 17.99 Info: 0 files were affected!
+#39 18.36 lerna info run Ran npm script 'build' in '@growi/plugin-attachment-refs' in 16.4s:
+#39 18.36 $ run-p build:*
+#39 18.36 $ tsc -p tsconfig.build.cjs.json && tsc-alias -p tsconfig.build.cjs.json
+#39 18.36 $ tsc -p tsconfig.build.esm.json && tsc-alias -p tsconfig.build.esm.json
+#39 18.36 Info: === tsc-alias starting ===
+#39 18.36 Info: 0 files were affected!
+#39 18.36 Info: === tsc-alias starting ===
+#39 18.36 Info: 0 files were affected!
+#39 26.60 lerna info run Ran npm script 'build' in '@growi/slack' in 10.1s:
+#39 26.60 $ yarn tsc && tsc-alias -p tsconfig.build.json
+#39 26.60 $ tsc -p tsconfig.build.json
+#39 26.60 Info: === tsc-alias starting ===
+#39 26.60 Info: 0 files were affected!
+#39 27.94 $ run-p build:*
+#39 27.94 $ tsc -p tsconfig.build.esm.json && tsc-alias -p tsconfig.build.esm.json
+#39 27.94 $ tsc -p tsconfig.build.cjs.json && tsc-alias -p tsconfig.build.cjs.json
+#39 27.94 Info: === tsc-alias starting ===
+#39 27.94 Info: 0 files were affected!
+#39 27.94 Info: === tsc-alias starting ===
+#39 27.94 Info: 0 files were affected!
+#39 27.94 lerna info run Ran npm script 'build' in '@growi/ui' in 10.0s:
+#39 36.30 lerna info run Ran npm script 'build' in '@growi/plugin-lsx' in 8.4s:
+#39 36.30 $ run-p build:*
+#39 36.30 $ tsc -p tsconfig.build.esm.json && tsc-alias -p tsconfig.build.esm.json
+#39 36.30 $ tsc -p tsconfig.build.cjs.json && tsc-alias -p tsconfig.build.cjs.json
+#39 36.30 Info: === tsc-alias starting ===
+#39 36.30 Info: 0 files were affected!
+#39 36.30 Info: === tsc-alias starting ===
+#39 36.30 Info: 0 files were affected!
+#39 ...
+
+#24 [deps-resolver-prod 3/3] RUN tar -cf node_modules.tar   node_modules   packages/*/node_modules
+#24 sha256:852c77d007ae935c366d704d2dae66bf3f11af9e124c2af8e5323b932578f352
+#24 DONE 40.0s
+
+#39 [builder 11/12] RUN yarn lerna run build
+#39 sha256:43e828e4b3a3f00c21d9949dab89706cb04e96bb74af52c2db22af50be598bc5
+#39 ...
+
+#25 [stage-6  3/10] COPY --from=deps-resolver-prod --chown=node:node   /opt/node_modules.tar /opt/growi/
+#25 sha256:70c4bc42b2ee53a09efdc3271bc3a59fd308a3f34340a5a574c64ef843fd3663
+#25 DONE 1.4s
+
+#39 [builder 11/12] RUN yarn lerna run build
+#39 sha256:43e828e4b3a3f00c21d9949dab89706cb04e96bb74af52c2db22af50be598bc5
+#39 260.2 lerna info run Ran npm script 'build' in '@growi/app' in 223.9s:
+#39 260.2 $ yarn cross-env NODE_ENV=production run-p clean resources:*
+#39 260.2 $ /opt/node_modules/.bin/cross-env NODE_ENV=production run-p clean 'resources:*'
+#39 260.2 $ true
+#39 260.2 $ npx -y shx rm -rf dist transpiled
+#39 260.2 $ run-p build:*
+#39 260.2 $ tsc -p tsconfig.build.next.config.json
+#39 260.2 $ yarn cross-env NODE_ENV=production tsc -p tsconfig.build.server.json && tsc-alias -p tsconfig.build.server-tsc-alias.json
+#39 260.2 $ /opt/node_modules/.bin/cross-env NODE_ENV=production tsc -p tsconfig.build.server.json
+#39 260.2 $ yarn next build
+#39 260.2 $ /opt/node_modules/.bin/next build
+#39 260.2 info  - Loaded env from /opt/packages/app/.env.production
+#39 260.2 [next.config.js] Listing scoped packages for transpiling:
+#39 260.2 [
+#39 260.2   "@growi/codemirror-textlint",
+#39 260.2   "@growi/core",
+#39 260.2   "@growi/plugin-attachment-refs",
+#39 260.2   "@growi/plugin-lsx",
+#39 260.2   "@growi/remark-growi-plugin",
+#39 260.2   "@growi/slack",
+#39 260.2   "@growi/ui",
+#39 260.2   "react-markdown",
+#39 260.2   "unified",
+#39 260.2   "character-entities-html4",
+#39 260.2   "comma-separated-tokens",
+#39 260.2   "decode-named-character-reference",
+#39 260.2   "hastscript",
+#39 260.2   "html-void-elements",
+#39 260.2   "is-absolute-url",
+#39 260.2   "longest-streak",
+#39 260.2   "property-information",
+#39 260.2   "space-separated-tokens",
+#39 260.2   "stringify-entities",
+#39 260.2   "trim-lines",
+#39 260.2   "trough",
+#39 260.2   "web-namespaces",
+#39 260.2   "vfile",
+#39 260.2   "zwitch",
+#39 260.2   "emoticon",
+#39 260.2   "direction",
+#39 260.2   "bcp-47-match",
+#39 260.2   "hast-to-hyperscript",
+#39 260.2   "hast-util-from-parse5",
+#39 260.2   "hast-util-has-property",
+#39 260.2   "hast-util-heading-rank",
+#39 260.2   "hast-util-is-element",
+#39 260.2   "hast-util-parse-selector",
+#39 260.2   "hast-util-raw",
+#39 260.2   "hast-util-sanitize",
+#39 260.2   "hast-util-select",
+#39 260.2   "hast-util-to-parse5",
+#39 260.2   "hast-util-to-string",
+#39 260.2   "hast-util-to-text",
+#39 260.2   "hast-util-whitespace",
+#39 260.2   "mdast-comment-marker",
+#39 260.2   "mdast-util-definitions",
+#39 260.2   "mdast-util-find-and-replace",
+#39 260.2   "mdast-util-footnote",
+#39 260.2   "mdast-util-from-markdown",
+#39 260.2   "mdast-util-frontmatter",
+#39 260.2   "mdast-util-gfm",
+#39 260.2   "mdast-util-gfm-autolink-literal",
+#39 260.2   "mdast-util-gfm-footnote",
+#39 260.2   "mdast-util-gfm-strikethrough",
+#39 260.2   "mdast-util-gfm-table",
+#39 260.2   "mdast-util-gfm-task-list-item",
+#39 260.2   "mdast-util-heading-style",
+#39 260.2   "mdast-util-math",
+#39 260.2   "mdast-util-mdx-expression",
+#39 260.2   "mdast-util-to-hast",
+#39 260.2   "mdast-util-to-markdown",
+#39 260.2   "mdast-util-to-nlcst",
+#39 260.2   "mdast-util-to-string",
+#39 260.2   "mdast-util-toc",
+#39 260.2   "mdast-util-wiki-link",
+#39 260.2   "micromark-build",
+#39 260.2   "micromark-core-commonmark",
+#39 260.2   "micromark-extension-footnote",
+#39 260.2   "micromark-extension-frontmatter",
+#39 260.2   "micromark-extension-gfm",
+#39 260.2   "micromark-extension-gfm-autolink-literal",
+#39 260.2   "micromark-extension-gfm-footnote",
+#39 260.2   "micromark-extension-gfm-strikethrough",
+#39 260.2   "micromark-extension-gfm-table",
+#39 260.2   "micromark-extension-gfm-tagfilter",
+#39 260.2   "micromark-extension-gfm-task-list-item",
+#39 260.2   "micromark-extension-math",
+#39 260.2   "micromark-extension-wiki-link",
+#39 260.2   "micromark-factory-destination",
+#39 260.2   "micromark-factory-label",
+#39 260.2   "micromark-factory-space",
+#39 260.2   "micromark-factory-title",
+#39 260.2   "micromark-factory-whitespace",
+#39 260.2   "micromark-util-character",
+#39 260.2   "micromark-util-chunked",
+#39 260.2   "micromark-util-classify-character",
+#39 260.2   "micromark-util-combine-extensions",
+#39 260.2   "micromark-util-decode-numeric-character-reference",
+#39 260.2   "micromark-util-decode-string",
+#39 260.2   "micromark-util-encode",
+#39 260.2   "micromark-util-html-tag-name",
+#39 260.2   "micromark-util-normalize-identifier",
+#39 260.2   "micromark-util-resolve-all",
+#39 260.2   "micromark-util-sanitize-uri",
+#39 260.2   "micromark-util-subtokenize",
+#39 260.2   "micromark-util-symbol",
+#39 260.2   "micromark-util-types",
+#39 260.2   "rehype-katex",
+#39 260.2   "rehype-parse",
+#39 260.2   "rehype-raw",
+#39 260.2   "rehype-rewrite",
+#39 260.2   "rehype-sanitize",
+#39 260.2   "rehype-slug",
+#39 260.2   "rehype-toc",
+#39 260.2   "remark-breaks",
+#39 260.2   "remark-cli",
+#39 260.2   "remark-comment-config",
+#39 260.2   "remark-emoji",
+#39 260.2   "remark-footnotes",
+#39 260.2   "remark-frontmatter",
+#39 260.2   "remark-gfm",
+#39 260.2   "remark-github",
+#39 260.2   "remark-lint",
+#39 260.2   "remark-lint-blockquote-indentation",
+#39 260.2   "remark-lint-checkbox-character-style",
+#39 260.2   "remark-lint-checkbox-content-indent",
+#39 260.2   "remark-lint-code-block-style",
+#39 260.2   "remark-lint-definition-case",
+#39 260.2   "remark-lint-definition-spacing",
+#39 260.2   "remark-lint-emphasis-marker",
+#39 260.2   "remark-lint-fenced-code-flag",
+#39 260.2   "remark-lint-fenced-code-marker",
+#39 260.2   "remark-lint-file-extension",
+#39 260.2   "remark-lint-final-definition",
+#39 260.2   "remark-lint-final-newline",
+#39 260.2   "remark-lint-first-heading-level",
+#39 260.2   "remark-lint-hard-break-spaces",
+#39 260.2   "remark-lint-heading-style",
+#39 260.2   "remark-lint-link-title-style",
+#39 260.2   "remark-lint-list-item-bullet-indent",
+#39 260.2   "remark-lint-list-item-indent",
+#39 260.2   "remark-lint-maximum-heading-length",
+#39 260.2   "remark-lint-maximum-line-length",
+#39 260.2   "remark-lint-no-blockquote-without-marker",
+#39 260.2   "remark-lint-no-consecutive-blank-lines",
+#39 260.2   "remark-lint-no-duplicate-defined-urls",
+#39 260.2   "remark-lint-no-duplicate-definitions",
+#39 260.2   "remark-lint-no-duplicate-headings-in-section",
+#39 260.2   "remark-lint-no-emphasis-as-heading",
+#39 260.2   "remark-lint-no-empty-url",
+#39 260.2   "remark-lint-no-file-name-articles",
+#39 260.2   "remark-lint-no-file-name-consecutive-dashes",
+#39 260.2   "remark-lint-no-file-name-irregular-characters",
+#39 260.2   "remark-lint-no-file-name-mixed-case",
+#39 260.2   "remark-lint-no-file-name-outer-dashes",
+#39 260.2   "remark-lint-no-heading-content-indent",
+#39 260.2   "remark-lint-no-heading-indent",
+#39 260.2   "remark-lint-no-heading-like-paragraph",
+#39 260.2   "remark-lint-no-heading-punctuation",
+#39 260.2   "remark-lint-no-html",
+#39 260.2   "remark-lint-no-inline-padding",
+#39 260.2   "remark-lint-no-literal-urls",
+#39 260.2   "remark-lint-no-missing-blank-lines",
+#39 260.2   "remark-lint-no-multiple-toplevel-headings",
+#39 260.2   "remark-lint-no-paragraph-content-indent",
+#39 260.2   "remark-lint-no-reference-like-url",
+#39 260.2   "remark-lint-no-shell-dollars",
+#39 260.2   "remark-lint-no-shortcut-reference-image",
+#39 260.2   "remark-lint-no-shortcut-reference-link",
+#39 260.2   "remark-lint-no-table-indentation",
+#39 260.2   "remark-lint-no-tabs",
+#39 260.2   "remark-lint-no-undefined-references",
+#39 260.2   "remark-lint-no-unneeded-full-reference-image",
+#39 260.2   "remark-lint-no-unneeded-full-reference-link",
+#39 260.2   "remark-lint-no-unused-definitions",
+#39 260.2   "remark-lint-ordered-list-marker-style",
+#39 260.2   "remark-lint-ordered-list-marker-value",
+#39 260.2   "remark-lint-rule-style",
+#39 260.2   "remark-lint-strong-marker",
+#39 260.2   "remark-lint-table-cell-padding",
+#39 260.2   "remark-lint-table-pipe-alignment",
+#39 260.2   "remark-lint-table-pipes",
+#39 260.2   "remark-lint-unordered-list-marker-style",
+#39 260.2   "remark-math",
+#39 260.2   "remark-message-control",
+#39 260.2   "remark-parse",
+#39 260.2   "remark-preset-lint-recommended",
+#39 260.2   "remark-preset-wooorm",
+#39 260.2   "remark-rehype",
+#39 260.2   "remark-retext",
+#39 260.2   "remark-stringify",
+#39 260.2   "remark-toc",
+#39 260.2   "remark-validate-links",
+#39 260.2   "remark-wiki-link",
+#39 260.2   "unist-builder",
+#39 260.2   "unist-types",
+#39 260.2   "unist-util-filter",
+#39 260.2   "unist-util-find-after",
+#39 260.2   "unist-util-generated",
+#39 260.2   "unist-util-inspect",
+#39 260.2   "unist-util-is",
+#39 260.2   "unist-util-modify-children",
+#39 260.2   "unist-util-position",
+#39 260.2   "unist-util-remove-position",
+#39 260.2   "unist-util-stringify-position",
+#39 260.2   "unist-util-visit",
+#39 260.2   "unist-util-visit-children",
+#39 260.2   "unist-util-visit-parents"
+#39 260.2 ]
+#39 260.2 info  - SWC minify release candidate enabled. https://nextjs.link/swcmin
+#39 260.2 info  - Skipping linting
+#39 260.2 info  - Checking validity of types...
+#39 260.2 Info: === tsc-alias starting ===
+#39 260.2 Info: 595 files were affected!
+#39 260.2 $ npx -y shx echo "Listing files under transpiled" && npx -y shx ls transpiled && npx -y shx mv transpiled/src dist && npx -y shx cp -r transpiled/config/* config && npx -y shx cp -r src/server/views dist/server/ && npx -y shx rm -rf transpiled
+#39 260.2 info  - Creating an optimized production build...
+#39 260.2 info  - Using tsconfig file: tsconfig.build.client.json
+#39 260.2 Listing files under transpiled
+#39 260.2 config
+#39 260.2 package.json
+#39 260.2 resource
+#39 260.2 src
+#39 260.2 tsconfig.build.server.tsbuildinfo
+#39 260.2 Webpack Bundle Analyzer saved report to /opt/packages/app/.next/server/analyze/server.html
+#39 260.2 
+#39 260.2 No bundles were parsed. Analyzer will show only original module sizes from stats file.
+#39 260.2 
+#39 260.2 Webpack Bundle Analyzer saved report to /opt/packages/app/.next/analyze/server.html
+#39 260.2 Webpack Bundle Analyzer saved report to /opt/packages/app/.next/analyze/client.html
+#39 260.2 info  - Collecting page data...
+#39 260.2 info  - Generating static pages (0/8)
+#39 260.2 info  - Generating static pages (2/8)
+#39 260.2 info  - Generating static pages (4/8)
+#39 260.2 info  - Generating static pages (6/8)
+#39 260.2 info  - Generating static pages (8/8)
+#39 260.2 info  - Finalizing page optimization...
+#39 260.2 
+#39 260.2 Route (pages)                              Size     First Load JS
+#39 260.2 ┌   /_app                                  0 B             235 kB
+#39 260.2 ├ λ /_private-legacy-pages                 2.9 kB          283 kB
+#39 260.2 ├ λ /_search                               26.6 kB         378 kB
+#39 260.2 ├   └ css/1483296c3ee99888.css             761 B
+#39 260.2 ├ λ /[[...path]]                           526 kB          892 kB
+#39 260.2 ├   └ css/5f9e11cf9d047375.css             4.71 kB
+#39 260.2 ├ ○ /404                                   191 B           235 kB
+#39 260.2 ├ λ /admin/[[...path]]                     19.1 kB         298 kB
+#39 260.2 ├ λ /installer                             5.52 kB         250 kB
+#39 260.2 ├ λ /invited                               2.9 kB          241 kB
+#39 260.2 ├ λ /login                                 2.95 kB         241 kB
+#39 260.2 ├ λ /maintenance                           6.76 kB         279 kB
+#39 260.2 ├ λ /me/[[...path]]                        4.64 kB         293 kB
+#39 260.2 ├ λ /tags                                  6.92 kB         295 kB
+#39 260.2 └ λ /trash                                 2.4 kB          363 kB
+#39 260.2     └ css/0e7e422845e07bf2.css             3.12 kB
+#39 260.2 + First Load JS shared by all              816 kB
+#39 260.2   ├ chunks/framework-fc7c2f0c6c40640f.js   45.7 kB
+#39 260.2   ├ chunks/main-64c3d83a7f9120d2.js        31.8 kB
+#39 260.2   ├ chunks/pages/_app-3b92d5bf450cf17b.js  151 kB
+#39 260.2   ├ chunks/webpack-3508c82e222f8fb6.js     5.87 kB
+#39 260.2   └ css/28a12118304a552f.css               581 kB
+#39 260.2 
+#39 260.2 λ  (Server)  server-side renders at runtime (uses getInitialProps or getServerSideProps)
+#39 260.2 ○  (Static)  automatically rendered as static HTML (uses no initial props)
+#39 260.2 
+#39 260.2 lerna success run Ran npm script 'build' in 8 packages in 258.3s:
+#39 260.2 lerna success - @growi/app
+#39 260.2 lerna success - @growi/codemirror-textlint
+#39 260.2 lerna success - @growi/core
+#39 260.2 lerna success - @growi/plugin-attachment-refs
+#39 260.2 lerna success - @growi/plugin-lsx
+#39 260.2 lerna success - @growi/remark-growi-plugin
+#39 260.2 lerna success - @growi/slack
+#39 260.2 lerna success - @growi/ui
+#39 260.2 Done in 259.50s.
+#39 DONE 260.8s
+
+#40 [builder 12/12] RUN tar -cf packages.tar   package.json   packages/app/.next   packages/app/config   packages/app/public   packages/app/resource   packages/app/tmp   packages/app/.env.production*   packages/*/package.json   packages/*/dist
+#40 sha256:6957ff78a87ca02d1399fedb0323422d9f6ea700f26fec33fb7b0f6b6819f8e6
+#40 DONE 8.1s
+
+#41 [stage-6  4/10] COPY --from=builder --chown=node:node   /opt/packages.tar /opt/growi/
+#41 sha256:c41a7e2204be730fe19e07a819f6ddbd7dd7e51145837fad0fc1ff574f97c957
+#41 DONE 3.4s
+
+#42 [stage-6  5/10] WORKDIR /opt/growi
+#42 sha256:4809d3d4b6c01571f40fc0391077fea96029d7976b6065a0a567624065b86b10
+#42 DONE 0.0s
+
+#43 [stage-6  6/10] RUN tar -xf node_modules.tar
+#43 sha256:d823c01d34be48b306f384dcc253a9177a9c89348682dad8848afcf1f6f38c5c
+#43 DONE 6.8s
+
+#44 [stage-6  7/10] RUN tar -xf packages.tar
+#44 sha256:245499de91dd8e8b06261332ab0ba0f31245d55f0ea52eeb0c347112f6b9cbee
+#44 DONE 7.6s
+
+#45 [stage-6  8/10] RUN rm node_modules.tar packages.tar
+#45 sha256:0dc8964fcb18d08780cbac6e4d04e57c559d20147b11093c958a48fd1da5fd42
+#45 DONE 0.3s
+
+#46 [stage-6  9/10] COPY --chown=node:node --chmod=700 packages/app/docker/docker-entrypoint.sh /
+#46 sha256:cd7601bf7fdcbb4b6c27c8ad20c56d4fa1357a381eabda1df34b6503f41f640a
+#46 DONE 0.0s
+
+#47 [stage-6 10/10] WORKDIR /opt/growi/packages/app
+#47 sha256:ff0aec8296b77e32f370173797c4bf93daa7abe5415bf5a8ceac9e1d624c3b45
+#47 DONE 0.0s
+
+#48 exporting to image
+#48 sha256:e8c613e07b0b7ff33893b694f7759a10d42e180f2b4dc349fb57dc6b71dcab00
+#48 exporting layers
+#48 exporting layers 29.5s done
+#48 writing image sha256:fa01b0d401bbf02e3d80f611867f3748b98d605eff50898950b02e35e749529d done
+#48 naming to docker.io/library/rcgrowi done
+#48 DONE 29.5s
+
+Use 'docker scan' to run Snyk tests against images to find vulnerabilities and learn how to fix them
