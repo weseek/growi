@@ -30,13 +30,16 @@ context('Access to sidebar', () => {
     cy.get('.list-group-item').should('be.visible');
 
     // Avoid blackout misalignment
+    cy.scrollTo('center');
     cy.screenshot(`${ssPrefix}recent-changes-1-page-list`);
 
     cy.get('#grw-sidebar-contents-wrapper').within(() => {
       cy.get('#recentChangesResize').click({force: true});
       cy.get('.list-group-item').should('be.visible');
     });
+
     // Avoid blackout misalignment
+    cy.scrollTo('center');
     cy.screenshot(`${ssPrefix}recent-changes-2-switch-sidebar-size`);
   });
 
