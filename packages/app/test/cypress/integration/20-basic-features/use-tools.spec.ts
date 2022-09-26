@@ -317,22 +317,15 @@ context('Tag Oprations', () =>{
     cy.screenshot(`${ssPrefix}1-click-tag-name`, {capture: 'viewport'});
 
     cy.getByTestid('search-result-list').within(() => {
-      cy.getByTestid('page-list-item-L').first().within(() => {
-        cy.getByTestid('open-page-item-control-btn').click();
-    });
-
+      cy.get('.list-group-item').each(($row) => {
+        if($row.find('a').text() === oldPageName){
+          cy.wrap($row).within(() => {
+            cy.getByTestid('open-page-move-rename-modal-btn').click({force: true});
     cy.getByTestid('page-item-control-menu').should('have.class', 'show').first().within(() => {
     // eslint-disable-next-line cypress/no-unnecessary-waiting
       cy.wait(300);
       cy.screenshot(`${ssPrefix}2-open-page-item-control-menu`);
     })
-    });
-
-    cy.getByTestid('search-result-list').within(() => {
-      cy.get('.list-group-item').each(($row) => {
-        if($row.find('a').text() === oldPageName){
-          cy.wrap($row).within(() => {
-            cy.getByTestid('open-page-move-rename-modal-btn').click();
           });
         }
       });
