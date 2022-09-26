@@ -52,6 +52,8 @@ module.exports = function(crowi, app) {
   // const hackmd = require('./hackmd')(crowi, app);
   const ogp = require('./ogp')(crowi);
 
+  const apiv3Installer = require('./apiv3/installer')(crowi);
+
   const next = nextFactory(crowi);
 
   const unavailableWhenMaintenanceMode = generateUnavailableWhenMaintenanceModeMiddleware(crowi);
@@ -93,9 +95,8 @@ module.exports = function(crowi, app) {
 
   // installer
   if (!isInstalled) {
-    const installer = require('./installer')(crowi);
+    app.use('/_api/v3/installer', applicationNotInstalled, apiv3Installer);
     app.get('/installer'              , applicationNotInstalled, next.delegateToNext);
-    app.post('/installer'             , applicationNotInstalled , registerFormValidator.registerRules(), registerFormValidator.registerValidation, csrfProtection, addActivity, installer.install);
     return;
   }
 

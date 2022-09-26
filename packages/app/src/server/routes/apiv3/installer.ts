@@ -5,8 +5,9 @@ import ErrorV3 from '~/server/models/vo/error-apiv3';
 import loggerFactory from '~/utils/logger';
 
 import Crowi from '../../crowi';
+import { generateAddActivityMiddleware } from '../../middlewares/add-activity';
 import { apiV3FormValidator } from '../../middlewares/apiv3-form-validator';
-import { registerValidation, registerRules } from '../../middlewares/register-form-validator';
+import { registerRules } from '../../middlewares/register-form-validator';
 import { InstallerService, FailedToCreateAdminUserError } from '../../service/installer';
 
 import { ApiV3Response } from './interfaces/apiv3-response';
@@ -15,20 +16,17 @@ import { ApiV3Response } from './interfaces/apiv3-response';
 const logger = loggerFactory('growi:routes:apiv3:installer');
 
 
-type FormRequest = Request & { form: any };
+type FormRequest = Request & { form: any, logIn: any };
 
 module.exports = (crowi: Crowi): Router => {
-  const adminRequired = require('../../middlewares/admin-required')(crowi);
-  const accessTokenParser = require('../../middlewares/access-token-parser')(crowi);
-  const loginRequiredStrictly = require('../../middlewares/login-required')(crowi);
-  const applicationNotInstalled = require('../../middlewares/application-not-installed')(crowi);
+  const addActivity = generateAddActivityMiddleware(crowi);
 
   const activityEvent = crowi.event('activity');
 
   const router = express.Router();
 
   // eslint-disable-next-line max-len
-  router.post('/', applicationNotInstalled, accessTokenParser, loginRequiredStrictly, adminRequired, registerRules, registerValidation, apiV3FormValidator, async(req: FormRequest, res: ApiV3Response) => {
+  router.post('/', registerRules(), apiV3FormValidator, addActivity, async(req: FormRequest, res: ApiV3Response) => {
     const appService = crowi.appService;
     if (appService == null) {
       return res.apiv3Err(new ErrorV3('GROWI cannot be installed due to an internal error', 'app_service_not_setup'), 500);
@@ -54,27 +52,23 @@ module.exports = (crowi: Crowi): Router => {
     }
     catch (err) {
       if (err instanceof FailedToCreateAdminUserError) {
-        req.form.errors.push(req.t('message.failed_to_create_admin_user', { errMessage: err.message }));
+        return res.apiv3Err(new ErrorV3(err.message, 'failed_to_create_admin_user'));
       }
-      return res.render('installer');
+      return res.apiv3Err(new ErrorV3(err, 'failed_to_create_admin_user'));
     }
 
     await appService.setupAfterInstall();
 
+    const parameters = { action: SupportedAction.ACTION_USER_REGISTRATION_SUCCESS };
+    activityEvent.emit('update', res.locals.activity._id, parameters);
+
     // login with passport
     req.logIn(adminUser, (err) => {
-      if (err) {
-        req.flash('successMessage', req.t('message.complete_to_install1'));
-        req.session.redirectTo = '/';
-        return res.redirect('/login');
+      if (err != null) {
+        return res.apiv3Err(new ErrorV3(err, 'failed_to_login_after_install'));
       }
 
-      req.flash('successMessage', req.t('message.complete_to_install2'));
-
-      const parameters = { action: SupportedAction.ACTION_USER_REGISTRATION_SUCCESS };
-      activityEvent.emit('update', res.locals.activity._id, parameters);
-
-      return res.redirect('/');
+      return res.apiv3({ message: 'Installation completed (Logged in as an admin user)' });
     });
   });
 
