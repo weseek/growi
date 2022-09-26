@@ -323,8 +323,8 @@ context('Tag Oprations', () =>{
             cy.getByTestid('open-page-move-rename-modal-btn').click({force: true});
             cy.getByTestid('page-item-control-menu').should('have.class', 'show').first().within(() => {
             // eslint-disable-next-line cypress/no-unnecessary-waiting
-              cy.wait(300);
-              cy.screenshot(`${ssPrefix}2-open-page-item-control-menu`);
+            cy.wait(300);
+            cy.screenshot(`${ssPrefix}2-open-page-item-control-menu`);
             })
           });
         }
