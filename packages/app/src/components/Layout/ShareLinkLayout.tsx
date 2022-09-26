@@ -39,7 +39,6 @@ export const ShareLinkLayout = ({
       </div>
 
       <GrowiNavbarBottom />
-      {/* <HotkeysManager /> */}
 
       <Fab />
 

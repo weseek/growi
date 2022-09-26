@@ -201,7 +201,7 @@ export const Page = (props) => {
   }, []);
 
   const { data: shareLinkId } = useShareLinkId();
-  const { data: currentPage } = useSWRxCurrentPage(shareLinkId ?? '');
+  const { data: currentPage } = useSWRxCurrentPage(shareLinkId ?? undefined);
   const { data: editorMode } = useEditorMode();
   const { data: isGuestUser } = useIsGuestUser();
   const { data: isMobile } = useIsMobile();

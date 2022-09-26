@@ -9,7 +9,7 @@ import dynamic from 'next/dynamic';
 
 import { ShareLinkLayout } from '~/components/Layout/ShareLinkLayout';
 import GrowiContextualSubNavigation from '~/components/Navbar/GrowiContextualSubNavigation';
-import DisplaySwitcher from '~/components/Page/DisplaySwitcher';
+import { Page } from '~/components/Page';
 import { CrowiRequest } from '~/interfaces/crowi-request';
 import { RendererConfig } from '~/interfaces/services/renderer';
 import { IShareLinkHasId } from '~/interfaces/share-link';
@@ -88,7 +88,7 @@ const SharedPage: NextPage<Props> = (props: Props) => {
             {(isShowSharedPage && props.shareLink != null) && (
               <>
                 <ShareLinkAlert expiredAt={props.shareLink.expiredAt} createdAt={props.shareLink.createdAt} />
-                <DisplaySwitcher />
+                <Page />
               </>
             )}
           </div>
