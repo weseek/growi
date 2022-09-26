@@ -65,7 +65,7 @@ module.exports = function(crowi, app) {
     catch (err) {
       /* eslint-disable no-else-return */
       if (err instanceof NullUsernameToBeRegisteredError) {
-        req.flash('warningMessage', req.t(`message.${err.message}`));
+        logger.error(err.message);
         return;
       }
       else if (err.name === 'DuplicatedUsernameException') {
@@ -74,12 +74,11 @@ module.exports = function(crowi, app) {
           debug(`ExternalAccount '${userInfo.username}' will be created and bound to the exisiting User account`);
           return ExternalAccount.associate(providerId, userInfo.id, err.user);
         }
-
-        req.flash('provider-DuplicatedUsernameException', providerId);
+        logger.error('provider-DuplicatedUsernameException', providerId);
         return;
       }
       else if (err.name === 'UserUpperLimitException') {
-        req.flash('warningMessage', req.t('message.maximum_number_of_users'));
+        logger.error(err.message);
         return;
       }
       /* eslint-enable no-else-return */
@@ -124,11 +123,18 @@ module.exports = function(crowi, app) {
    * @param {*} res
    */
   const loginFailureHandler = async(req, res, message) => {
+    req.flash('errorMessage', message || req.t('message.sign_in_failure'));
 
     const parameters = { action: SupportedAction.ACTION_USER_LOGIN_FAILURE };
     activityEvent.emit('update', res.locals.activity._id, parameters);
 
-    return res.apiv3Err({ errors: req.errors }, 400);
+    return res.redirect('/login');
+  };
+
+  const cannotLoginErrorHadnler = (req, res, next) => {
+    // this is called when all login method is somehow failed without invoking 'return next(<any Error>)'
+    const err = res.locals.err != null ? res.locals.err : Error('message.sign_in_failure');
+    return next(err);
   };
 
   /**
@@ -136,8 +142,12 @@ module.exports = function(crowi, app) {
    * @param {*} req
    * @param {*} res
    */
-  const loginFailure = (req, res) => {
-    return res.redirect('/login');
+  const loginFailure = (error, req, res, next) => {
+
+    const parameters = { action: SupportedAction.ACTION_USER_LOGIN_FAILURE };
+    activityEvent.emit('update', res.locals.activity._id, parameters);
+
+    return res.apiv3Err(error, error.code);
   };
 
   /**
@@ -163,14 +173,13 @@ module.exports = function(crowi, app) {
    * @param {*} next
    */
   const loginWithLdap = async(req, res, next) => {
-    const { errors } = req.form;
     if (!passportService.isLdapStrategySetup) {
       debug('LdapStrategy has not been set up');
       return res.apiv3Err('message.strategy_has_not_been_set_up.LdapStrategy', 405);
     }
 
     if (!req.form.isValid) {
-      return res.apiv3Err(req.form.errors, 400);
+      return next(req.form.errors);
     }
 
     const providerId = 'ldap';
@@ -182,12 +191,12 @@ module.exports = function(crowi, app) {
     }
     catch (err) {
       debug(err.message);
-      return res.apiv3Err(err);
+      return next(err);
     }
 
     // check groups for LDAP
     if (!isValidLdapUserByGroupFilter(ldapAccountInfo)) {
-      return res.apiv3Err('message.ldap_user_not_valid', 400);
+      return next(Error('message.ldap_user_not_valid'));
     }
 
     /*
@@ -212,14 +221,18 @@ module.exports = function(crowi, app) {
 
     const externalAccount = await getOrCreateUser(req, res, userInfo, providerId);
     if (!externalAccount) {
-      return res.apiv3Err('message.external_account_not_exist', 404);
+      res.locals.error = 'message.external_account_not_exist';
+      return next();
     }
 
     const user = await externalAccount.getPopulatedUser();
 
     // login
     await req.logIn(user, (err) => {
-      if (err) { debug(err.message); return res.apiv3Err(err) }
+      if (err) {
+        debug(err.message);
+        return next(err);
+      }
 
       return loginSuccessHandler(req, res, user, SupportedAction.ACTION_USER_LOGIN_WITH_LDAP);
     });
@@ -295,7 +308,7 @@ module.exports = function(crowi, app) {
     }
 
     if (!req.form.isValid) {
-      return res.apiv3Err(req.form.errors, 400);
+      return next(req.form.errors);
     }
 
     passport.authenticate('local', (err, user, info) => {
@@ -305,13 +318,16 @@ module.exports = function(crowi, app) {
 
       if (err) { // DB Error
         logger.error('Database Server Error: ', err);
-        return res.apiv3Err('message.database_error', 500);
+        return next(err);
       }
       if (!user) {
-        return res.apiv3Err('message.user_not_found', 401);
+        return next();
       }
       req.logIn(user, (err) => {
-        if (err) { debug(err.message); return res.apiv3Err(err) }
+        if (err) {
+          debug(err.message);
+          return next(err);
+        }
 
         return loginSuccessHandler(req, res, user, SupportedAction.ACTION_USER_LOGIN_WITH_LOCAL);
       });
@@ -630,6 +646,7 @@ module.exports = function(crowi, app) {
   };
 
   return {
+    cannotLoginErrorHadnler,
     loginFailure,
     loginWithLdap,
     testLdapCredentials,
