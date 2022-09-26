@@ -10,13 +10,13 @@ context('Access to pagelist', () => {
   });
 
   it('Page list modal is successfully opened ', () => {
-    cy.visit('/Sandbox');
+    cy.visit('/');
     cy.getByTestid('pageListButton').click({force: true});
     cy.getByTestid('page-accessories-modal').should('be.visible').screenshot(`${ssPrefix}1-open-pagelist-modal`);
   });
 
   it('Successfully add a bookmark from page list', () => {
-    cy.visit('/Sandbox');
+    cy.visit('/');
     cy.getByTestid('pageListButton').click({force: true});
     cy.getByTestid('page-accessories-modal').parent().should('have.class','show').within(() => {
       cy.getByTestid('open-page-item-control-btn').first().click();
@@ -29,7 +29,7 @@ context('Access to pagelist', () => {
   });
 
   it('Successfully duplicate a page from page list', () => {
-    cy.visit('/Sandbox');
+    cy.visit('/');
     cy.getByTestid('pageListButton').click({force: true});
     cy.getByTestid('page-accessories-modal').parent().should('have.class','show').within(() => {
       cy.getByTestid('open-page-item-control-btn').first().click();
@@ -54,7 +54,7 @@ context('Access to pagelist', () => {
   });
 
   it('Successfully expand and close modal', () => {
-    cy.visit('/Sandbox');
+    cy.visit('/');
     cy.getByTestid('pageListButton').click({force: true});
     cy.getByTestid('page-accessories-modal').parent().should('have.class','show');
     cy.screenshot(`${ssPrefix}6-page-list-modal-size-normal`, {capture: 'viewport'});
@@ -91,7 +91,7 @@ context('Access to timeline', () => {
   });
 
   it('Successfully expand and close modal', () => {
-    cy.visit('/Sandbox');
+    cy.visit('/');
     cy.getByTestid('pageListButton').click({force: true});
     cy.getByTestid('page-accessories-modal').parent().should('have.class','show').within(() => {
       cy.get('.nav-title > li').eq(1).find('a').click();
