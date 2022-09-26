@@ -1,9 +1,10 @@
 import React, { useCallback } from 'react';
 
 import { smoothScrollIntoView } from '~/client/util/smooth-scroll';
-import styles from '~/components/ContentLinkButtons.module.scss';
 import { RecentlyCreatedIcon } from '~/components/Icons/RecentlyCreatedIcon';
 import { usePageUser } from '~/stores/context';
+
+import styles from './ContentLinkButtons.module.scss';
 
 const WIKI_HEADER_LINK = 120;
 
@@ -55,7 +56,7 @@ export const ContentLinkButtons = (): JSX.Element => {
 
   const { data: pageUser } = usePageUser();
 
-  if (pageUser == null || pageUser.name === '') {
+  if (pageUser == null || pageUser.status === 4) {
     return <></>;
   }
 

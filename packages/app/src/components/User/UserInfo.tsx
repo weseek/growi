@@ -10,8 +10,7 @@ export const UserInfo = (): JSX.Element => {
 
   const { data: pageUser } = usePageUser();
 
-  // Do not display when the user does not exist
-  if (pageUser == null || pageUser.name === '') {
+  if (pageUser == null || pageUser.status === 4) {
     return <></>;
   }
 
