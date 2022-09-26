@@ -221,8 +221,9 @@ module.exports = (crowi) => {
     // status
     const { forceIncludeAttributes } = req.query;
     const selectedStatusList = req.query.selectedStatusList || ['active'];
-
-    const statusNoList = (selectedStatusList.includes('all')) ? Object.values(statusNo) : selectedStatusList.map(element => statusNo[element]);
+    const statusNoList = (typeof selectedStatusList === 'object' && selectedStatusList.includes('all'))
+      ? Object.values(statusNo)
+      : selectedStatusList.map(element => statusNo[element]);
 
     // Search from input
     const searchText = req.query.searchText || '';
