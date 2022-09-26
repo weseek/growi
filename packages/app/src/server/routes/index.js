@@ -234,11 +234,13 @@ module.exports = function(crowi, app) {
 
   // app.use('/forgot-password', express.Router()
   //   .use(forgotPassword.checkForgotPasswordEnabledMiddlewareFactory(crowi))
-  //   .get('/', forgotPassword.forgotPassword(crowi))
+  //   .get('/forgot-password', next.delegateToNext)
   //   .get('/:token', injectResetOrderByTokenMiddleware, forgotPassword.resetPassword)
   //   .use(forgotPassword.handleErrosMiddleware));
 
   app.get('/forgot-password', next.delegateToNext);
+
+  // TODO: 104986 /forgot-password/:token
 
   app.get('/_private-legacy-pages', next.delegateToNext);
   app.use('/user-activation', express.Router()
