@@ -13,9 +13,9 @@ export const registerRules = () => {
     body('registerForm.name').not().isEmpty().withMessage('Name field is required'),
     body('registerForm.email')
       .isEmail()
-      .withMessage('Email format is invalid.')
+      .withMessage('Email format is invalid')
       .exists()
-      .withMessage('Email field is required.'),
+      .withMessage('Email field is required'),
     body('registerForm.password')
       .matches(/^[\x20-\x7F]*$/)
       .withMessage('Password has invalid character')

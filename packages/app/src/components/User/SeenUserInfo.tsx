@@ -8,6 +8,10 @@ import { IUser } from '~/interfaces/user';
 
 import UserPictureList from './UserPictureList';
 
+
+import styles from './SeenUserInfo.module.scss';
+
+
 interface Props {
   seenUsers: IUser[],
   sumOfSeenUsers?: number,
@@ -23,7 +27,7 @@ const SeenUserInfo: FC<Props> = (props: Props) => {
   const togglePopover = () => setIsPopoverOpen(!isPopoverOpen);
 
   return (
-    <div className="grw-seen-user-info">
+    <div className={`grw-seen-user-info ${styles['grw-seen-user-info']}`}>
       <button type="button" id="btn-seen-user" className="shadow-none btn btn-seen-user border-0">
         <span className="mr-1 footstamp-icon">
           <FootstampIcon />

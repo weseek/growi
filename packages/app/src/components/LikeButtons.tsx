@@ -45,12 +45,12 @@ const LikeButtons: FC<LikeButtonsProps> = (props: LikeButtonsProps) => {
   }, [isGuestUser, isLiked]);
 
   return (
-    <div className="btn-group" role="group" aria-label="Like buttons">
+    <div className={`btn-group btn-group-like ${styles['btn-group-like']}`} role="group" aria-label="Like buttons">
       <button
         type="button"
         id="like-button"
         onClick={onLikeClicked}
-        className={`shadow-none btn btn-like ${styles['btn-like']} border-0
+        className={`shadow-none btn btn-like border-0
             ${isLiked ? 'active' : ''} ${isGuestUser ? 'disabled' : ''}`}
       >
         <i className={`fa ${isLiked ? 'fa-heart' : 'fa-heart-o'}`}></i>
