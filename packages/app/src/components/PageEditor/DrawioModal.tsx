@@ -32,6 +32,7 @@ export const DrawioModal = React.forwardRef((props: Props, ref: React.LegacyRef<
   const isOpened = drawioModalData?.isOpened ?? false;
   const drawioMxFile = drawioModalData?.drawioMxFile ?? '';
   console.log({ drawioMxFile });
+
   // const { isOpened, drawioMxFile } = drawioModalData;
   // const [drawioMxFile, setDrawioMxFile] = useState('');
 
@@ -146,11 +147,11 @@ export const DrawioModal = React.forwardRef((props: Props, ref: React.LegacyRef<
     >
       <ModalBody className="p-0">
         {/* Loading spinner */}
-        {/* <div className="w-100 h-100 position-absolute d-flex">
+        <div className="w-100 h-100 position-absolute d-flex">
           <div className="mx-auto my-auto">
             <i className="fa fa-3x fa-spinner fa-pulse mx-auto text-muted"></i>
           </div>
-        </div> */}
+        </div>
         {/* iframe */}
         <div className="w-100 h-100 position-absolute d-flex">
           { isOpened && (
@@ -159,7 +160,6 @@ export const DrawioModal = React.forwardRef((props: Props, ref: React.LegacyRef<
               className="border-0 flex-grow-1"
             >
             </iframe>
-            // <>hoge</>
           ) }
         </div>
       </ModalBody>
