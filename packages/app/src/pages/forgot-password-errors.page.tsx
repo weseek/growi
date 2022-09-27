@@ -3,6 +3,7 @@ import React from 'react';
 import { NextPage, GetServerSideProps, GetServerSidePropsContext } from 'next';
 import { useTranslation } from 'next-i18next';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
+import Link from 'next/link';
 
 import {
   CommonProps, getNextI18NextConfig, getServerSideCommonProps,
@@ -14,9 +15,39 @@ type Props = CommonProps & {
 
 const ForgotPasswordErrorsPage: NextPage<Props> = (props: Props) => {
   const { t } = useTranslation();
+  const { errorCode } = props;
 
   return (
-    <>forgot-password-errors</>
+    <div id="main" className="main">
+      <div id="content-main" className="content-main container-lg">
+        <div className="container">
+          <div className="row justify-content-md-center">
+            <div className="col-md-6 mt-5">
+              <div className="text-center">
+                <h1><i className="icon-lock-open large"/></h1>
+                <h2 className="text-center">{ t('forgot_password.reset_password') }</h2>
+
+                { errorCode === 'password-reset-is-unavailable' && <h3 className="text-muted">This feature is unavailable.</h3>}
+
+                { errorCode === 'password-reset-order-is-not-appropriate' && (
+                  <div>
+                    <div className="alert alert-warning mb-3">
+                      <h2>{ t('forgot_password.incorrect_token_or_expired_url') }</h2>
+                    </div>
+                    <Link href="/forgot-password" prefetch={false}>
+                      <a className="link-switch">
+                        <i className="icon-key"></i> { t('forgot_password.forgot_password') }
+                      </a>
+                    </Link>
+                  </div>
+                ) }
+
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
   );
 };
 
