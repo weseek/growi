@@ -130,6 +130,7 @@ export const DrawioModal = React.forwardRef((props: Props, ref: React.LegacyRef<
     url.searchParams.append('ui', 'atlas');
     url.searchParams.append('configure', '1');
 
+    return url;
   }, [growiHydratedEnv?.DRAWIO_URI, personalSettingsInfo?.lang]);
 
 
@@ -156,7 +157,7 @@ export const DrawioModal = React.forwardRef((props: Props, ref: React.LegacyRef<
         <div className="w-100 h-100 position-absolute d-flex">
           { isOpened && (
             <iframe
-              src={drawioUrl}
+                src={drawioUrl.href}
               className="border-0 flex-grow-1"
             >
             </iframe>
