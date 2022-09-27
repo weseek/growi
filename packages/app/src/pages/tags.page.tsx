@@ -5,10 +5,9 @@ import {
 } from '@growi/core';
 import { NextPage, GetServerSideProps, GetServerSidePropsContext } from 'next';
 import { useTranslation } from 'next-i18next';
+import dynamic from 'next/dynamic';
 import Head from 'next/head';
 
-import TagCloudBox from '~/components/TagCloudBox';
-import TagList from '~/components/TagList';
 import { CrowiRequest } from '~/interfaces/crowi-request';
 import { IDataTagCount } from '~/interfaces/tag';
 import { IUserUISettings } from '~/interfaces/user-ui-settings';
@@ -35,6 +34,9 @@ type Props = CommonProps & {
   isSearchScopeChildrenAsDefault: boolean,
   userUISettings?: IUserUISettings
 };
+
+const TagList = dynamic(() => import('~/components/TagList'), { ssr: false });
+const TagCloudBox = dynamic(() => import('~/components/TagCloudBox'), { ssr: false });
 
 const TagPage: NextPage<CommonProps> = (props: Props) => {
   const [activePage, setActivePage] = useState<number>(1);
