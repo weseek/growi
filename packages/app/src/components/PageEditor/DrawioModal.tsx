@@ -2,7 +2,6 @@ import React, {
   useState, useMemo,
 } from 'react';
 
-import i18next from 'i18next';
 import {
   Modal,
   ModalBody,
@@ -12,6 +11,7 @@ import {
 import { getDiagramsNetLangCode } from '~/client/util/locale-utils';
 import { useGrowiHydratedEnv } from '~/stores/context';
 import { useDrawioModal } from '~/stores/modal';
+import { usePersonalSettings } from '~/stores/personal-settings';
 
 const headerColor = '#334455';
 const fontFamily = "Lato, -apple-system, BlinkMacSystemFont, 'Hiragino Kaku Gothic ProN', Meiryo, sans-serif";
@@ -23,6 +23,7 @@ type Props = {
 
 export const DrawioModal = React.forwardRef((props: Props, ref: React.LegacyRef<Modal>): JSX.Element => {
   const { data: growiHydratedEnv } = useGrowiHydratedEnv();
+  const { data: personalSettingsInfo } = usePersonalSettings();
 
   console.log({ growiHydratedEnv });
   // const [isShown, setIsShown] = useState(false);
@@ -125,12 +126,11 @@ export const DrawioModal = React.forwardRef((props: Props, ref: React.LegacyRef<
     // refs: https://desk.draw.io/support/solutions/articles/16000042546-what-url-parameters-are-supported-
     url.searchParams.append('spin', '1');
     url.searchParams.append('embed', '1');
-    url.searchParams.append('lang', getDiagramsNetLangCode(i18next.language));
+    url.searchParams.append('lang', getDiagramsNetLangCode(personalSettingsInfo?.lang || 'en'));
     url.searchParams.append('ui', 'atlas');
     url.searchParams.append('configure', '1');
 
-    return url.toString();
-  }, [growiHydratedEnv?.DRAWIO_URI]);
+  }, [growiHydratedEnv?.DRAWIO_URI, personalSettingsInfo?.lang]);
 
 
   console.log({ drawioUrl });
