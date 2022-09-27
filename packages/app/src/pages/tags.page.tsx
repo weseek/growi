@@ -87,6 +87,7 @@ const TagPage: NextPage<CommonProps> = (props: Props) => {
               </div>
             )
           }
+          <div id="grw-fav-sticky-trigger" className="sticky-top"></div>
         </div>
       </BasicLayout>
     </>
