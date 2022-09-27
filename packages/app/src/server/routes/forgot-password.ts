@@ -1,7 +1,6 @@
 import {
-  NextFunction, Request, RequestHandler, Response,
+  NextFunction, Request, Response,
 } from 'express';
-
 import createError from 'http-errors';
 
 import loggerFactory from '~/utils/logger';
@@ -42,10 +41,26 @@ export const resetPassword = (req: ReqWithPasswordResetOrder, res: Response): vo
   return res.render('reset-password', { email: passwordResetOrder.email });
 };
 
+type Crowi = {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  nextApp: any,
+}
+
+type CrowiReq = Request & {
+  crowi: Crowi,
+}
+
 // middleware to handle error
-export const handleErrosMiddleware = (error: Error & { code: string }, req: Request, res: Response, next: NextFunction): Promise<RequestHandler> | void => {
-  if (error != null) {
-    return res.render('forgot-password/error', { key: error.code });
-  }
-  next(error);
+export const handleErrosMiddleware = (crowi: any) => {
+  return (error: Error & { code: string }, req: CrowiReq, res: Response, next: NextFunction): void => {
+    if (error != null) {
+      const { nextApp } = crowi;
+      req.crowi = crowi;
+
+      nextApp.render(req, res, '/forgot-password-errors', { errorCode: error.code });
+      return;
+    }
+
+    next();
+  };
 };
