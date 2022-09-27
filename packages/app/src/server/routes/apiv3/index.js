@@ -15,7 +15,7 @@ const router = express.Router();
 const routerForAdmin = express.Router();
 const routerForAuth = express.Router();
 
-module.exports = (crowi, app) => {
+module.exports = (crowi, app, isInstalled) => {
 
   // add custom functions to express response
   require('./response')(express, crowi);
@@ -48,6 +48,12 @@ module.exports = (crowi, app) => {
 
   routerForAuth.post('/register',
     applicationInstalled, registerFormValidator.registerRules(), registerFormValidator.registerValidation, addActivity, login.register);
+
+  // installer
+  if (!isInstalled) {
+    routerForAdmin.use('/installer', require('./installer')(crowi));
+    return [router, routerForAdmin, routerForAuth];
+  }
 
   router.use('/in-app-notification', require('./in-app-notification')(crowi));
 
