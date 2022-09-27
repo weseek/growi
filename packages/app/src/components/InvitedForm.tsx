@@ -28,10 +28,7 @@ export const InvitedForm = (props: InvitedFormProps): JSX.Element => {
 
     const formData = e.target.elements;
 
-    console.log(formData)
-
     const {
-      'invitedForm[email]': { value: email },
       'invitedForm[name]': { value: user },
       'invitedForm[password]': { value: password },
       'invitedForm[username]': { value: username },
@@ -39,7 +36,6 @@ export const InvitedForm = (props: InvitedFormProps): JSX.Element => {
 
     const data = {
       invitedForm: {
-        email,
         user,
         password,
         username,
