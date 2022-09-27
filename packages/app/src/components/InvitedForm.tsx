@@ -30,16 +30,14 @@ export const InvitedForm = (props: InvitedFormProps): JSX.Element => {
       'invitedForm[username]': { value: username },
     } = formData;
 
-    const data = {
-      invitedForm: {
-        name,
-        password,
-        username,
-      },
+    const invitedForm = {
+      name,
+      password,
+      username,
     };
 
     try {
-      await apiv3Post('/invited/activateInvited', { data });
+      await apiv3Post('/invited/activateInvited', { invitedForm });
       window.location.href = '/';
     }
     catch (err) {
