@@ -7,8 +7,8 @@ import { useTranslation, i18n } from 'next-i18next';
 
 import { i18n as i18nConfig } from '^/config/next-i18next.config';
 
-import { apiv3Post } from '~/client/util/apiv3-client';
 import { toastError } from '~/client/util/apiNotification';
+import { apiv3Post } from '~/client/util/apiv3-client';
 
 const InstallerForm = memo((): JSX.Element => {
   const { t } = useTranslation();
@@ -67,7 +67,15 @@ const InstallerForm = memo((): JSX.Element => {
       await apiv3Post('/installer', data);
       window.location.href = '/';
     }
-    catch (err) {
+    catch (errs) {
+      const err = errs[0];
+      const code = err.code;
+
+      if (code === 'failed_to_login_after_install') {
+        toastError(t('installer.failed_to_login_after_install'));
+        setTimeout(() => { window.location.href = '/login' }, 700); // Wait 700 ms to show toastr
+      }
+
       toastError(t('installer.failed_to_install'));
     }
   }, [isSubmittingDisabled, t]);

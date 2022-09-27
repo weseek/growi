@@ -52,9 +52,9 @@ module.exports = (crowi: Crowi): Router => {
     }
     catch (err) {
       if (err instanceof FailedToCreateAdminUserError) {
-        return res.apiv3Err(new ErrorV3(err.message, 'failed_to_create_admin_user'));
+        return res.apiv3Err(new ErrorV3(err.message, 'failed_to_install'));
       }
-      return res.apiv3Err(new ErrorV3(err, 'failed_to_create_admin_user'));
+      return res.apiv3Err(new ErrorV3(err, 'failed_to_install'));
     }
 
     await appService.setupAfterInstall();
