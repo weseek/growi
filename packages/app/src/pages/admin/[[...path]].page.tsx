@@ -64,6 +64,7 @@ const AdminLayout = dynamic(() => import('../../components/Layout/AdminLayout'),
 // named export
 const UserGroupPage = dynamic(() => import('../../components/Admin/UserGroup/UserGroupPage').then(mod => mod.UserGroupPage), { ssr: false });
 const AuditLogManagement = dynamic(() => import('../../components/Admin/AuditLogManagement').then(mod => mod.AuditLogManagement), { ssr: false });
+const G2GDataTransfer = dynamic(() => import('../../components/Admin/G2GDataTransfer'), { ssr: false });
 
 const pluginUtils = new PluginUtils();
 
@@ -180,6 +181,10 @@ const AdminMarkdownSettingsPage: NextPage<Props> = (props: Props) => {
     'audit-log': {
       title: t('audit_log_management.audit_log'),
       component: <AuditLogManagement />,
+    },
+    'data-transfer': {
+      title: '別GROWIとのデータ移行',
+      component: <G2GDataTransfer />,
     },
   };
 

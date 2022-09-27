@@ -3,10 +3,8 @@ import React, { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import * as toastr from 'toastr';
 
-import AdminSocketIoContainer from '~/client/services/AdminSocketIoContainer';
 import { apiv3Get } from '~/client/util/apiv3-client';
-
-import { withUnstatedContainers } from '../UnstatedUtils';
+import { useAdminSocket } from '~/stores/socket-io';
 
 import SelectCollectionsModal from './ExportArchiveData/SelectCollectionsModal';
 
@@ -14,14 +12,9 @@ const IGNORED_COLLECTION_NAMES = [
   'sessions', 'rlflx', 'activities',
 ];
 
-type Props = {
-  adminSocketIoContainer: AdminSocketIoContainer,
-};
-
-const G2GDataTransfer = (props: Props): JSX.Element => {
+const G2GDataTransfer = (): JSX.Element => {
+  const { data: socket } = useAdminSocket();
   const { t } = useTranslation();
-
-  const { adminSocketIoContainer } = props;
 
   const [collections, setCollections] = useState<any[]>([]);
   const [zipFileStats, setZipFileStats] = useState<any[]>([]);
@@ -33,8 +26,6 @@ const G2GDataTransfer = (props: Props): JSX.Element => {
   const [transferKey, setTransferKey] = useState('');
 
   const fetchData = useCallback(async() => {
-    // TODO:: use apiv3.get
-    // eslint-disable-next-line no-unused-vars
     const [{ data: collectionsData }, { data: statusData }] = await Promise.all([
       apiv3Get<{collections: any[]}>('/mongo/collections', {}),
       apiv3Get<{status: { zipFileStats: any[], isExporting: boolean, progressList: any[] }}>('/export/status', {}),
@@ -54,39 +45,39 @@ const G2GDataTransfer = (props: Props): JSX.Element => {
   }, []);
 
   const setupWebsocketEventHandler = useCallback(() => {
-    const socket = adminSocketIoContainer.getSocket();
-
-    // websocket event
-    socket.on('admin:onProgressForExport', ({ currentCount, totalCount, progressList }) => {
-      setExporting(true);
-      setProgressList(progressList);
-    });
-
-    // websocket event
-    socket.on('admin:onStartZippingForExport', () => {
-      setZipping(true);
-    });
-
-    // websocket event
-    socket.on('admin:onTerminateForExport', ({ addedZipFileStat }) => {
-
-      setExporting(false);
-      setZipping(false);
-      setExported(true);
-      setZipFileStats(prev => prev.concat([addedZipFileStat]));
-
-      // TODO: toastSuccess, toastError
-      toastr.success(undefined, `New Archive Data '${addedZipFileStat.fileName}' is added`, {
-        closeButton: true,
-        progressBar: true,
-        newestOnTop: false,
-        showDuration: '100',
-        hideDuration: '100',
-        timeOut: '1200',
-        extendedTimeOut: '150',
+    if (socket != null) {
+      // websocket event
+      socket.on('admin:onProgressForExport', ({ currentCount, totalCount, progressList }) => {
+        setExporting(true);
+        setProgressList(progressList);
       });
-    });
-  }, [adminSocketIoContainer]);
+
+      // websocket event
+      socket.on('admin:onStartZippingForExport', () => {
+        setZipping(true);
+      });
+
+      // websocket event
+      socket.on('admin:onTerminateForExport', ({ addedZipFileStat }) => {
+
+        setExporting(false);
+        setZipping(false);
+        setExported(true);
+        setZipFileStats(prev => prev.concat([addedZipFileStat]));
+
+        // TODO: toastSuccess, toastError
+        toastr.success(undefined, `New Archive Data '${addedZipFileStat.fileName}' is added`, {
+          closeButton: true,
+          progressBar: true,
+          newestOnTop: false,
+          showDuration: '100',
+          hideDuration: '100',
+          timeOut: '1200',
+          extendedTimeOut: '150',
+        });
+      });
+    }
+  }, [socket]);
 
   const publishTransferKey = () => {
     // 移行キー発行の処理
@@ -149,9 +140,4 @@ const G2GDataTransfer = (props: Props): JSX.Element => {
   );
 };
 
-/**
- * Wrapper component for using unstated
- */
-const G2GDataTransferWrapper = withUnstatedContainers(G2GDataTransfer, [AdminSocketIoContainer]);
-
-export default G2GDataTransferWrapper;
+export default G2GDataTransfer;

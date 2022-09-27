@@ -30,8 +30,6 @@ const ExportArchiveDataPage = (): JSX.Element => {
   const [isExported, setExported] = useState(false);
 
   const fetchData = useCallback(async() => {
-    // TODO:: use apiv3.get
-    // eslint-disable-next-line no-unused-vars
     const [{ data: collectionsData }, { data: statusData }] = await Promise.all([
       apiv3Get<{collections: any[]}>('/mongo/collections', {}),
       apiv3Get<{status: { zipFileStats: any[], isExporting: boolean, progressList: any[] }}>('/export/status', {}),
