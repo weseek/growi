@@ -7,19 +7,10 @@ const isAnchorLink = (href: string): boolean => {
   return href.toString().length > 0 && href[0] === '#';
 };
 
-const isExternalLink = (href: string, siteUrl: string | undefined): boolean => {
-  let baseUrl: URL;
-  let hrefUrl: URL;
+const isExternalLink = (href: string, siteUrl: URL): boolean => {
+  const hrefUrl = new URL(href, siteUrl);
 
-  try {
-    baseUrl = new URL(siteUrl ?? 'https://example.com');
-    hrefUrl = new URL(href, baseUrl);
-  }
-  catch {
-    return false;
-  }
-
-  return baseUrl.host !== hrefUrl.host;
+  return siteUrl.host !== hrefUrl.host;
 };
 
 type Props = Omit<LinkProps, 'href'> & {
@@ -32,7 +23,15 @@ export const NextLink = ({
   href, children, className, ...props
 }: Props): JSX.Element => {
 
-  const { data: siteUrl } = useSiteUrl();
+  const { data: _siteUrl } = useSiteUrl();
+
+  let siteUrl: URL;
+  try {
+    siteUrl = new URL(_siteUrl ?? 'http://example.com');
+  }
+  catch {
+    return <a className={className}>{children}</a>;
+  }
 
   if (href == null) {
     return <a className={className}>{children}</a>;
