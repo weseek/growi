@@ -1,11 +1,10 @@
-import React, { useState, useCallback } from 'react';
+import React, { useCallback } from 'react';
 
 import { useTranslation } from 'next-i18next';
-import useRouter from 'next/router';
 
 import { apiv3Post } from '~/client/util/apiv3-client';
 
-import { useCsrfToken, useCurrentUser } from '../stores/context';
+import { useCurrentUser } from '../stores/context';
 
 
 export type InvitedFormProps = {
@@ -14,41 +13,48 @@ export type InvitedFormProps = {
 }
 
 export const InvitedForm = (props: InvitedFormProps): JSX.Element => {
+
   const { t } = useTranslation();
-  // const { data: csrfToken } = useCsrfToken();
   const { data: user } = useCurrentUser();
-  // const router = useRouter();
 
   const { invitedFormUsername, invitedFormName } = props;
 
-  const [usernameForInvited, setUsernameForInvited] = useState('');
-  const [userForInvited, setUserForInvited] = useState('');
-  const [passwordForInvited, setPasswordForInvited] = useState('');
-  const [loginErrors, setLoginErrors] = useState<Error[]>([]);
-
-  const handleInvitedWithLocalSubmit = useCallback(async(e) => {
+  const submitHandler = useCallback(async(e) => {
     e.preventDefault();
 
-    const invitedUserInfo = {
-      email: 'ryoji.s0411@gmail.com',
-      username: usernameForInvited,
-      name: userForInvited,
-      password: passwordForInvited,
-    };
-    console.log('test');
+    if (e.target.elements == null) {
+      return;
+    }
+
+    const formData = e.target.elements;
+
+    console.log(formData)
+
+    const {
+      'invitedForm[email]': { value: email },
+      'invitedForm[name]': { value: user },
+      'invitedForm[password]': { value: password },
+      'invitedForm[username]': { value: username },
+    } = formData;
+
+    const data = {
+      invitedForm: {
+        email,
+        user,
+        password,
+        username,
+      }
+    }
+
     try {
-      const res = await apiv3Post('/invited/activateInvited', { invitedUserInfo });
-      console.log(invitedUserInfo);
-      const { redirectTo } = res.data;
-      console.log(redirectTo);
-      // router.push(redirectTo);
+      await apiv3Post('/invited/activateInvited', { data });
+      window.location.href = '/';
     }
     catch (err) {
-      setLoginErrors(err);
+      // TODO: return error log
+      console.log("error")
     }
-    return;
-
-  }, [usernameForInvited, userForInvited, passwordForInvited]);
+  }, []);
 
   if (user == null) {
     return <></>;
@@ -60,7 +66,7 @@ export const InvitedForm = (props: InvitedFormProps): JSX.Element => {
         <strong>{ t('invited.discription_heading') }</strong><br></br>
         <small>{ t('invited.discription') }</small>
       </p>
-      <form role="form" onSubmit={handleInvitedWithLocalSubmit} id="invited-form">
+      <form role="form" onSubmit={submitHandler} id="invited-form">
         {/* Email Form */}
         <div className="input-group">
           <div className="input-group-prepend">
@@ -91,7 +97,6 @@ export const InvitedForm = (props: InvitedFormProps): JSX.Element => {
             placeholder={t('User ID')}
             name="invitedForm[username]"
             value={invitedFormUsername}
-            onChange = {(e) => { setUsernameForInvited(e.target.value) }}
             required
           />
         </div>
@@ -108,7 +113,6 @@ export const InvitedForm = (props: InvitedFormProps): JSX.Element => {
             placeholder={t('Name')}
             name="invitedForm[name]"
             value={invitedFormName}
-            onChange = {(e) => { setUserForInvited(e.target.value) }}
             required
           />
         </div>
@@ -123,7 +127,6 @@ export const InvitedForm = (props: InvitedFormProps): JSX.Element => {
             type="password"
             className="form-control"
             placeholder={t('Password')}
-            onChange = {(e) => { setPasswordForInvited(e.target.value) }}
             name="invitedForm[password]"
             required
           />
