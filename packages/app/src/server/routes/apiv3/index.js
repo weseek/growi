@@ -46,16 +46,14 @@ module.exports = (crowi, app, isInstalled) => {
 
   routerForAuth.use('/logout', require('./logout')(crowi));
 
-<<<<<<< HEAD
+  routerForAuth.post('/register',
+    applicationInstalled, registerFormValidator.registerRules(), registerFormValidator.registerValidation, addActivity, login.register);
+
   // installer
   if (!isInstalled) {
     routerForAdmin.use('/installer', require('./installer')(crowi));
     return [router, routerForAdmin, routerForAuth];
   }
-=======
-  routerForAuth.post('/register',
-    applicationInstalled, registerFormValidator.registerRules(), registerFormValidator.registerValidation, addActivity, login.register);
->>>>>>> support/apply-nextjs-2
 
   router.use('/in-app-notification', require('./in-app-notification')(crowi));
 
