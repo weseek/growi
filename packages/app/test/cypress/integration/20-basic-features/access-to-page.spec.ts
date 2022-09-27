@@ -21,10 +21,10 @@ context('Access to page', () => {
     // hide fab
     cy.getByTestid('grw-fab-container').invoke('attr', 'style', 'display: none');
 
-    // black out Headers: https://github.com/weseek/growi/pull/6649
-    cy.screenshot(`${ssPrefix}-sandbox-headers`, {
-      blackout: ['#Headers'],
-    });
+    // remove animation for screenshot
+    cy.getByTestid('#Headers').invoke('removeClass', 'blink');
+
+    cy.screenshot(`${ssPrefix}-sandbox-headers`);
   });
 
   it('/Sandbox/Math is successfully loaded', () => {
