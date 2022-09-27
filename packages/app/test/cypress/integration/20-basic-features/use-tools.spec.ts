@@ -98,11 +98,6 @@ context('Modal for page operation', () => {
     });
     cy.get('.toast-error').should('be.visible').invoke('attr', 'style', 'opacity: 1');
     cy.screenshot(`${ssPrefix}create-template-for-descendants-error`, {capture: 'viewport'});
-    cy.get('.toast-error').should('be.visible').click();
-    cy.getByTestid('page-create-modal').should('be.visible').within(() => {
-      cy.get('button.close').click();
-    });
-    cy.screenshot(`${ssPrefix}create-template-close-modal`, {capture: 'viewport'});
   });
 
   it('PageDeleteModal is shown successfully', () => {
