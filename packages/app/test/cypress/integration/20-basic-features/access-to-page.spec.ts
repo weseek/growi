@@ -39,7 +39,6 @@ context('Access to page', () => {
 
   it('/Sandbox with edit is successfully loaded', () => {
     cy.visit('/Sandbox#edit');
-    cy.getByTestid('editor-navbar-button').should('be.visible');
     cy.screenshot(`${ssPrefix}-sandbox-edit-page`);
   })
 
