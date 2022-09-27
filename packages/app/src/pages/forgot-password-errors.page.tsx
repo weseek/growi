@@ -41,6 +41,16 @@ export const getServerSideProps: GetServerSideProps = async(context: GetServerSi
     props.errorCode = errorCode;
   }
 
+  // Direct access to '/forgot-password-errors' redirects to '/'
+  if (props.errorCode == null) {
+    return {
+      redirect: {
+        permanent: false,
+        destination: '/',
+      },
+    };
+  }
+
   await injectNextI18NextConfigurations(context, props, ['translation']);
 
   return {
