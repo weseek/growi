@@ -24,6 +24,7 @@ context('Access to pagelist', () => {
         // eslint-disable-next-line cypress/no-unnecessary-waiting
         cy.wait(300);
         cy.screenshot(`${ssPrefix}2-open-page-item-control-menu`);
+        cy.getByTestid('open-page-duplicate-modal-btn').click();
       });
     });
     cy.getByTestid('page-duplicate-modal').should('be.visible').screenshot(`${ssPrefix}3-duplicate-page-modal-opened`);
