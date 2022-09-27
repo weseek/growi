@@ -66,7 +66,7 @@ module.exports = function(crowi, app) {
       /* eslint-disable no-else-return */
       if (err instanceof NullUsernameToBeRegisteredError) {
         logger.error(err.message);
-        return;
+        throw Error(err.message);
       }
       else if (err.name === 'DuplicatedUsernameException') {
         if (isSameEmailTreatedAsIdenticalUser || isSameUsernameTreatedAsIdenticalUser) {
@@ -75,11 +75,11 @@ module.exports = function(crowi, app) {
           return ExternalAccount.associate(providerId, userInfo.id, err.user);
         }
         logger.error('provider-DuplicatedUsernameException', providerId);
-        return;
+        throw Error(`provider-DuplicatedUsernameException: ${providerId}`);
       }
       else if (err.name === 'UserUpperLimitException') {
         logger.error(err.message);
-        return;
+        throw Error(err.message);
       }
       /* eslint-enable no-else-return */
     }
@@ -219,10 +219,16 @@ module.exports = function(crowi, app) {
       email: mailToBeRegistered,
     };
 
-    const externalAccount = await getOrCreateUser(req, res, userInfo, providerId);
-    if (!externalAccount) {
-      res.locals.error = 'message.external_account_not_exist';
-      return next();
+    let externalAccount;
+    try {
+      externalAccount = await getOrCreateUser(req, res, userInfo, providerId);
+
+      if (externalAccount == null) { // just in case the returned value is null or undefined
+        throw Error('message.external_account_not_exist');
+      }
+    }
+    catch (error) {
+      return next(error);
     }
 
     const user = await externalAccount.getPopulatedUser();
