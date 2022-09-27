@@ -15,7 +15,7 @@ context('Access to pagelist', () => {
     cy.getByTestid('page-accessories-modal').should('be.visible').screenshot(`${ssPrefix}1-open-pagelist-modal`);
   });
 
-  it('Successfully add a bookmark from page list', () => {
+  it('Successfully duplicate a page from page list', () => {
     cy.visit('/');
     cy.getByTestid('pageListButton').click({force: true});
     cy.getByTestid('page-accessories-modal').parent().should('have.class','show').within(() => {
@@ -26,17 +26,6 @@ context('Access to pagelist', () => {
         cy.screenshot(`${ssPrefix}2-open-page-item-control-menu`);
       });
     })
-  });
-
-  it('Successfully duplicate a page from page list', () => {
-    cy.visit('/');
-    cy.getByTestid('pageListButton').click({force: true});
-    cy.getByTestid('page-accessories-modal').parent().should('have.class','show').within(() => {
-      cy.getByTestid('open-page-item-control-btn').first().click();
-      cy.get('.dropdown-menu').should('have.class', 'show').first().within(() => {
-        cy.getByTestid('open-page-duplicate-modal-btn').click();
-      });
-    });
     cy.getByTestid('page-duplicate-modal').should('be.visible').screenshot(`${ssPrefix}3-duplicate-page-modal-opened`);
     cy.getByTestid('page-duplicate-modal').should('be.visible').within(() => {
       cy.get('.rbt-input-main').type('-duplicate', {force: true})
