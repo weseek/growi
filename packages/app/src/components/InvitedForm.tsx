@@ -22,25 +22,21 @@ export const InvitedForm = (props: InvitedFormProps): JSX.Element => {
   const submitHandler = useCallback(async(e) => {
     e.preventDefault();
 
-    if (e.target.elements == null) {
-      return;
-    }
-
     const formData = e.target.elements;
 
     const {
-      'invitedForm[name]': { value: user },
+      'invitedForm[name]': { value: name },
       'invitedForm[password]': { value: password },
       'invitedForm[username]': { value: username },
     } = formData;
 
     const data = {
       invitedForm: {
-        user,
+        name,
         password,
         username,
-      }
-    }
+      },
+    };
 
     try {
       await apiv3Post('/invited/activateInvited', { data });
@@ -48,7 +44,6 @@ export const InvitedForm = (props: InvitedFormProps): JSX.Element => {
     }
     catch (err) {
       // TODO: return error log
-      console.log("error")
     }
   }, []);
 
@@ -129,7 +124,6 @@ export const InvitedForm = (props: InvitedFormProps): JSX.Element => {
         </div>
         {/* Create Button */}
         <div className="input-group justify-content-center d-flex mt-5">
-          {/* <input type="hidden" name="_csrf" value={csrfToken} /> */}
           <button type="submit" className="btn btn-fill" id="register">
             <div className="eff"></div>
             <span className="btn-label"><i className="icon-user-follow"></i></span>
