@@ -957,7 +957,7 @@ class CodeMirrorEditor extends AbstractEditor {
         bssize="small"
         title="draw.io"
         // onClick={this.clickDrawioHandler}
-        onClick={this.props.onClickDrawioBtn(mdu.getMarkdownDrawioMxfile(this.getCodeMirror()))}
+        onClick={() => this.props.onClickDrawioBtn(mdu.getMarkdownDrawioMxfile(this.getCodeMirror()))}
       >
         <EditorIcon icon="Drawio" />
       </Button>,
