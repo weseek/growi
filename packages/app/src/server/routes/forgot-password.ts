@@ -51,7 +51,7 @@ type CrowiReq = Request & {
 }
 
 // middleware to handle error
-export const handleErrosMiddleware = (crowi: any) => {
+export const handleErrorsMiddleware = (crowi: any) => {
   return (error: Error & { code: string }, req: CrowiReq, res: Response, next: NextFunction): void => {
     if (error != null) {
       const { nextApp } = crowi;
