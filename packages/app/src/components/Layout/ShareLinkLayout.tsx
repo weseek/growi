@@ -12,7 +12,7 @@ const ShortcutsModal = dynamic(() => import('../ShortcutsModal'), { ssr: false }
 const SystemVersion = dynamic(() => import('../SystemVersion'), { ssr: false });
 
 // Fab
-const Fab = dynamic(() => import('../Fab'), { ssr: false });
+const Fab = dynamic(() => import('../Fab').then(mod => mod.Fab), { ssr: false });
 
 
 type Props = {
