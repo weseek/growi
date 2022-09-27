@@ -32,6 +32,9 @@ context('Access to search result page', () => {
     // for avoid mismatch by auto scrolling
     cy.get('.search-result-content-body-container').scrollTo('top');
 
+    // force to add 'active' to pass VRT: https://github.com/weseek/growi/pull/6603
+    cy.getByTestid('page-list-item-L').first().invoke('addClass', 'active');
+
     cy.getByTestid('cb-select').first().click({force: true});
     cy.screenshot(`${ssPrefix}the-first-checkbox-on`);
     cy.getByTestid('cb-select').first().click({force: true});

@@ -30,7 +30,7 @@ function PageItemLower({ page }) {
         <div className="icon-bubble mr-1 d-inline-block"></div>
         <div className="mr-2 grw-list-counts d-inline-block">{page.commentCount}</div>
       </div>
-      <div className="grw-formatted-distance-date small mt-auto">
+      <div className="grw-formatted-distance-date small mt-auto" data-hide-in-vrt>
         <FormattedDistanceDate id={page._id} date={page.updatedAt} />
       </div>
     </div>
