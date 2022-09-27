@@ -179,6 +179,7 @@ const GrowiContextualSubNavigation = (props: GrowiContextualSubNavigationProps):
   const { data: currentUser } = useCurrentUser();
   const { data: isGuestUser } = useIsGuestUser();
   const { data: isSharedUser } = useIsSharedUser();
+  const { data: isNotFound } = useIsNotFound();
   const { data: shareLinkId } = useShareLinkId();
 
   const { data: isAbleToShowPageManagement } = useIsAbleToShowPageManagement();

@@ -86,7 +86,7 @@ export const GrowiSubNavigation = (props: GrowiSubNavigationProps): JSX.Element 
           <PagePathNav pageId={pageId} pagePath={path} isSingleLineMode={isEditorMode} isCompactMode={isCompactMode} />
         </div>
       </div>
-      {/* Right side. isNotFound for avoid flicker when called ForbiddenPage.tsx */}
+      {/* Right side. */}
       <div className="d-flex">
         <Controls />
         {/* Page Authors */}
