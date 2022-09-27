@@ -3,22 +3,14 @@ import React, { ReactNode } from 'react';
 import dynamic from 'next/dynamic';
 
 import { GrowiNavbar } from '../Navbar/GrowiNavbar';
-import Sidebar from '../Sidebar';
 
 import { RawLayout } from './RawLayout';
 
-const HotkeysManager = dynamic(() => import('../Hotkeys/HotkeysManager'), { ssr: false });
-// const PageCreateModal = dynamic(() => import('../client/js/components/PageCreateModal'), { ssr: false });
+const PageCreateModal = dynamic(() => import('../PageCreateModal'), { ssr: false });
 const GrowiNavbarBottom = dynamic(() => import('../Navbar/GrowiNavbarBottom').then(mod => mod.GrowiNavbarBottom), { ssr: false });
 const ShortcutsModal = dynamic(() => import('../ShortcutsModal'), { ssr: false });
 const SystemVersion = dynamic(() => import('../SystemVersion'), { ssr: false });
-// Page modals
-const PageCreateModal = dynamic(() => import('../PageCreateModal'), { ssr: false });
-const PageDuplicateModal = dynamic(() => import('../PageDuplicateModal'), { ssr: false });
-const PageDeleteModal = dynamic(() => import('../PageDeleteModal'), { ssr: false });
-const PageRenameModal = dynamic(() => import('../PageRenameModal'), { ssr: false });
-const PagePresentationModal = dynamic(() => import('../PagePresentationModal'), { ssr: false });
-const PageAccessoriesModal = dynamic(() => import('../PageAccessoriesModal'), { ssr: false });
+
 // Fab
 const Fab = dynamic(() => import('../Fab').then(mod => mod.Fab), { ssr: false });
 
@@ -30,7 +22,7 @@ type Props = {
   children?: ReactNode
 }
 
-export const BasicLayout = ({
+export const ShareLinkLayout = ({
   children, title, className, expandContainer,
 }: Props): JSX.Element => {
 
@@ -41,10 +33,6 @@ export const BasicLayout = ({
       <GrowiNavbar />
 
       <div className="page-wrapper d-flex d-print-block">
-        <div className="grw-sidebar-wrapper">
-          <Sidebar />
-        </div>
-
         <div className="flex-fill mw-0">
           {children}
         </div>
@@ -52,17 +40,10 @@ export const BasicLayout = ({
 
       <GrowiNavbarBottom />
 
-      <PageCreateModal />
-      <PageDuplicateModal />
-      <PageDeleteModal />
-      <PageRenameModal />
-      <PagePresentationModal />
-      <PageAccessoriesModal />
-      <HotkeysManager />
-
       <Fab />
 
       <ShortcutsModal />
+      <PageCreateModal />
       <SystemVersion showShortcutsButton />
     </RawLayout>
   );

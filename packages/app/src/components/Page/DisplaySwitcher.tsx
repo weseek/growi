@@ -6,7 +6,7 @@ import dynamic from 'next/dynamic';
 
 // import { smoothScrollIntoView } from '~/client/util/smooth-scroll';
 import {
-  useCurrentPagePath, useIsSharedUser, useIsEditable, usePageUser, useShareLinkId, useIsNotFound,
+  useCurrentPagePath, useIsSharedUser, useIsEditable, useShareLinkId, useIsNotFound,
 } from '~/stores/context';
 import { useDescendantsPageListModal } from '~/stores/modal';
 import { useSWRxCurrentPage } from '~/stores/page';
@@ -17,22 +17,19 @@ import CustomTabContent from '../CustomNavigation/CustomTabContent';
 import PageListIcon from '../Icons/PageListIcon';
 import { Page } from '../Page';
 import TableOfContents from '../TableOfContents';
-import { UserInfoProps } from '../User/UserInfo';
-
 
 import styles from './DisplaySwitcher.module.scss';
 
-
-const { isTopPage, isUsersTopPage } = pagePathUtils;
+const { isTopPage, isUsersHomePage } = pagePathUtils;
 
 
 const PageEditor = dynamic(() => import('../PageEditor'), { ssr: false });
 const PageEditorByHackmd = dynamic(() => import('../PageEditorByHackmd').then(mod => mod.PageEditorByHackmd), { ssr: false });
 const EditorNavbarBottom = dynamic(() => import('../PageEditor/EditorNavbarBottom'), { ssr: false });
 const HashChanged = dynamic(() => import('../EventListeneres/HashChanged'), { ssr: false });
-const ContentLinkButtons = dynamic(() => import('../ContentLinkButtons'), { ssr: false });
+const ContentLinkButtons = dynamic(() => import('../ContentLinkButtons').then(mod => mod.ContentLinkButtons), { ssr: false });
 const NotFoundPage = dynamic(() => import('../NotFoundPage'), { ssr: false });
-const UserInfo = dynamic<UserInfoProps>(() => import('../User/UserInfo').then(mod => mod.UserInfo), { ssr: false });
+const UserInfo = dynamic(() => import('../User/UserInfo').then(mod => mod.UserInfo), { ssr: false });
 
 
 const PageView = React.memo((): JSX.Element => {
@@ -41,19 +38,18 @@ const PageView = React.memo((): JSX.Element => {
   const { data: currentPagePath } = useCurrentPagePath();
   const { data: isSharedUser } = useIsSharedUser();
   const { data: shareLinkId } = useShareLinkId();
-  const { data: pageUser } = usePageUser();
   const { data: isNotFound } = useIsNotFound();
   const { data: currentPage } = useSWRxCurrentPage(shareLinkId ?? undefined);
   const { open: openDescendantPageListModal } = useDescendantsPageListModal();
 
   const isTopPagePath = isTopPage(currentPagePath ?? '');
-  const isUsersTopPagePath = isUsersTopPage(currentPagePath ?? '');
+  const isUsersHomePagePath = isUsersHomePage(currentPagePath ?? '');
 
   return (
     <div className="d-flex flex-column flex-lg-row">
 
       <div className="flex-grow-1 flex-basis-0 mw-0">
-        { pageUser != null && isUsersTopPagePath && <UserInfo pageUser={pageUser} />}
+        { isUsersHomePagePath && <UserInfo /> }
         { !isNotFound && <Page /> }
         { isNotFound && <NotFoundPage /> }
       </div>
@@ -98,7 +94,7 @@ const PageView = React.memo((): JSX.Element => {
 
             <div className="d-none d-lg-block">
               <TableOfContents />
-              <ContentLinkButtons />
+              { isUsersHomePagePath && <ContentLinkButtons /> }
             </div>
 
           </div>

@@ -20,6 +20,7 @@ export type IUser = {
   createdAt: Date,
   lastLoginAt?: Date,
   introduction: string,
+  status: number,
 }
 
 export type IUserGroupRelation = {
