@@ -1,47 +1,54 @@
 import React, {
-  useCallback, useEffect, useRef, useState,
+  useCallback, useRef, useState, useEffect,
 } from 'react';
+
+import EventEmitter from 'events';
 
 import { useTranslation } from 'react-i18next';
 
 
-import AppContainer from '~/client/services/AppContainer';
-import PageContainer from '~/client/services/PageContainer';
+import { saveOrUpdate } from '~/client/services/page-operation';
+import { toastError, toastSuccess } from '~/client/util/apiNotification';
 import { apiPost } from '~/client/util/apiv1-client';
 import { getOptionsToSave } from '~/client/util/editor';
 import { IResHackmdIntegrated, IResHackmdDiscard } from '~/interfaces/hackmd';
-import { useCurrentPagePath, useCurrentPageId } from '~/stores/context';
-import { useSWRxSlackChannels, useIsSlackEnabled, usePageTagsForEditors } from '~/stores/editor';
 import {
+  useCurrentPagePath, useCurrentPageId, useHackmdUri, usePageIdOnHackmd, useHasDraftOnHackmd, useRevisionIdHackmdSynced,
+} from '~/stores/context';
+import { useSWRxSlackChannels, useIsSlackEnabled, usePageTagsForEditors } from '~/stores/editor';
+import { useSWRxCurrentPage } from '~/stores/page';
+import {
+  EditorMode,
   useEditorMode, useSelectedGrant,
 } from '~/stores/ui';
 import loggerFactory from '~/utils/logger';
 
 import HackmdEditor from './PageEditorByHackmd/HackmdEditor';
-import { withUnstatedContainers } from './UnstatedUtils';
 
 const logger = loggerFactory('growi:PageEditorByHackmd');
 
-type PageEditorByHackmdProps = {
-  appContainer: AppContainer,
-  pageContainer: PageContainer,
-};
+declare const globalEmitter: EventEmitter;
 
 type HackEditorRef = {
-  getValue: () => string
+  getValue: () => Promise<string>
 };
 
-const PageEditorByHackmd = (props: PageEditorByHackmdProps) => {
-  const { appContainer, pageContainer } = props; // wip
+export const PageEditorByHackmd = (): JSX.Element => {
 
   const { t } = useTranslation();
-  const { data: editorMode } = useEditorMode();
+  const { data: editorMode, mutate: mutateEditorMode } = useEditorMode();
   const { data: currentPagePath } = useCurrentPagePath();
+  const { data: currentPathname } = useCurrentPagePath();
   const { data: slackChannelsData } = useSWRxSlackChannels(currentPagePath);
   const { data: isSlackEnabled } = useIsSlackEnabled();
   const { data: pageId } = useCurrentPageId();
   const { data: pageTags, mutate: updatePageTagsForEditors } = usePageTagsForEditors(pageId);
   const { data: grant } = useSelectedGrant();
+  const { data: hackmdUri } = useHackmdUri();
+
+  // pageData
+  const { data: pageData, mutate: updatePageData } = useSWRxCurrentPage();
+  const revision = pageData?.revision;
 
   const slackChannels = slackChannelsData?.toString();
 
@@ -52,41 +59,61 @@ const PageEditorByHackmd = (props: PageEditorByHackmdProps) => {
   const [errorMessage, setErrorMessage] = useState('');
   const [errorReason, setErrorReason] = useState('');
 
+  // state from pageContainer
+  const { data: pageIdOnHackmd, mutate: mutatePageIdOnHackmd } = usePageIdOnHackmd();
+  const { data: hasDraftOnHackmd, mutate: mutateHasDraftOnHackmd } = useHasDraftOnHackmd();
+  const { data: revisionIdHackmdSynced, mutate: mutateRevisionIdHackmdSynced } = useRevisionIdHackmdSynced();
+  const [isHackmdDraftUpdatingInRealtime, setIsHackmdDraftUpdatingInRealtime] = useState(false);
+  const [remoteRevisionId, setRemoteRevisionId] = useState(revision?._id); // initialize
+
   const hackmdEditorRef = useRef<HackEditorRef>(null);
 
+  const saveAndReturnToViewHandler = useCallback(async(opts?: {overwriteScopesOfDescendants: boolean}) => {
+    if (editorMode !== EditorMode.HackMD) {
+      return;
+    }
+
+    if (isSlackEnabled == null || currentPathname == null || slackChannels == null || grant == null || revision == null || hackmdEditorRef.current == null) {
+      return;
+    }
+
+    let optionsToSave;
+
+    const currentOptionsToSave = getOptionsToSave(
+      isSlackEnabled, slackChannels, grant.grant, grant.grantedGroup?.id, grant.grantedGroup?.name, pageTags ?? [], true,
+    );
+
+    if (opts != null) {
+      optionsToSave = Object.assign(currentOptionsToSave, {
+        ...opts,
+      });
+    }
+    else {
+      optionsToSave = currentOptionsToSave;
+    }
+
+    const markdown = await hackmdEditorRef.current.getValue();
+
+    await saveOrUpdate(optionsToSave, { pageId, path: currentPagePath || currentPathname, revisionId: revision?._id }, markdown);
+    await updatePageData();
+    mutateEditorMode(EditorMode.View);
+  }, [currentPagePath, currentPathname, editorMode, grant, isSlackEnabled, pageId, pageTags, revision, slackChannels, mutateEditorMode, updatePageData]);
+
+  // set handler to save and reload Page
   useEffect(() => {
-    const pageEditorByHackmdInstance = {
-      getMarkdown: () => {
-        if (!isInitialized) {
-          return Promise.reject(new Error(t('hackmd.not_initialized')));
-        }
+    globalEmitter.on('saveAndReturnToView', saveAndReturnToViewHandler);
 
-        if (hackmdEditorRef.current == null) { return }
-
-        return hackmdEditorRef.current.getValue();
-      },
-      reset: () => {
-        setIsInitialized(false);
-      },
+    return function cleanup() {
+      globalEmitter.removeListener('saveAndReturnToView', saveAndReturnToViewHandler);
     };
-    // appContainer.registerComponentInstance('PageEditorByHackmd', pageEditorByHackmdInstance);
-  }, [appContainer, isInitialized, t]);
-
-  const getHackmdUri = useCallback(() => {
-    const envVars = appContainer.getConfig().env;
-    return envVars.HACKMD_URI;
-  }, [appContainer]);
+  }, [saveAndReturnToViewHandler]);
 
   const isResume = useCallback(() => {
-    const {
-      pageIdOnHackmd, hasDraftOnHackmd, isHackmdDraftUpdatingInRealtime,
-    } = pageContainer.state;
     const isPageExistsOnHackmd = (pageIdOnHackmd != null);
     return (isPageExistsOnHackmd && hasDraftOnHackmd) || isHackmdDraftUpdatingInRealtime;
-  }, [pageContainer.state]);
+  }, [hasDraftOnHackmd, isHackmdDraftUpdatingInRealtime, pageIdOnHackmd]);
 
   const startToEdit = useCallback(async() => {
-    const hackmdUri = getHackmdUri();
 
     if (hackmdUri == null) {
       // do nothing
@@ -103,13 +130,11 @@ const PageEditorByHackmd = (props: PageEditorByHackmdProps) => {
         throw new Error(res.error);
       }
 
-      await pageContainer.setState({
-        pageIdOnHackmd: res.pageIdOnHackmd,
-        revisionIdHackmdSynced: res.revisionIdHackmdSynced,
-      });
+      mutatePageIdOnHackmd(res.pageIdOnHackmd);
+      mutateRevisionIdHackmdSynced(res.revisionIdHackmdSynced);
     }
     catch (err) {
-      pageContainer.showErrorToastr(err);
+      toastError(err);
 
       setHasError(true);
       setErrorMessage('GROWI server failed to connect to HackMD.');
@@ -118,7 +143,7 @@ const PageEditorByHackmd = (props: PageEditorByHackmdProps) => {
 
     setIsInitialized(true);
     setIsInitializing(false);
-  }, [getHackmdUri, pageContainer, pageId]);
+  }, [pageId, hackmdUri, mutatePageIdOnHackmd, mutateRevisionIdHackmdSynced]);
 
   /**
    * Start to edit w/o any api request
@@ -128,7 +153,8 @@ const PageEditorByHackmd = (props: PageEditorByHackmdProps) => {
   }, []);
 
   const discardChanges = useCallback(async() => {
-    const { pageId } = pageContainer.state;
+
+    if (pageId == null) { return }
 
     try {
       const res = await apiPost<IResHackmdDiscard>('/hackmd.discard', { pageId });
@@ -137,89 +163,91 @@ const PageEditorByHackmd = (props: PageEditorByHackmdProps) => {
         throw new Error(res.error);
       }
 
-      pageContainer.setState({
-        isHackmdDraftUpdatingInRealtime: false,
-        hasDraftOnHackmd: false,
-        pageIdOnHackmd: res.pageIdOnHackmd,
-        remoteRevisionId: res.revisionIdHackmdSynced,
-        revisionIdHackmdSynced: res.revisionIdHackmdSynced,
-      });
+      setIsHackmdDraftUpdatingInRealtime(false);
+      mutateHasDraftOnHackmd(false);
+      mutatePageIdOnHackmd(res.pageIdOnHackmd);
+      setRemoteRevisionId(res.revisionIdHackmdSynced);
+      mutateRevisionIdHackmdSynced(res.revisionIdHackmdSynced);
+
+
     }
     catch (err) {
       logger.error(err);
-      pageContainer.showErrorToastr(err);
+      toastError(err);
     }
-  }, [pageContainer]);
+  }, [setIsHackmdDraftUpdatingInRealtime, mutateHasDraftOnHackmd, mutatePageIdOnHackmd, mutateRevisionIdHackmdSynced, pageId]);
 
   /**
    * save and update state of containers
    * @param {string} markdown
    */
   const onSaveWithShortcut = useCallback(async(markdown) => {
-    if (isSlackEnabled == null || grant == null || slackChannels == null) { return }
-    const optionsToSave = getOptionsToSave(isSlackEnabled, slackChannels, grant.grant, grant.grantedGroup?.id, grant.grantedGroup?.name, pageTags ?? []);
+    if (
+      isSlackEnabled == null || grant == null || slackChannels == null || pageId == null || revisionIdHackmdSynced == null || currentPathname == null
+    ) { return }
+    const optionsToSave = getOptionsToSave(
+      isSlackEnabled, slackChannels, grant.grant, grant.grantedGroup?.id, grant.grantedGroup?.name, pageTags ?? [], true,
+    );
 
     try {
-      // disable unsaved warning
-      // editorContainer.disableUnsavedWarning(); commentout because disableUnsavedWarning doesn't exitst
+      const res = await saveOrUpdate(optionsToSave, { pageId, path: currentPagePath || currentPathname, revisionId: revisionIdHackmdSynced }, markdown);
 
-      // eslint-disable-next-line no-unused-vars
-      const { page, tags } = await pageContainer.save(markdown, editorMode, optionsToSave);
+      // update pageData
+      updatePageData();
+
+      // set updated data
+      setRemoteRevisionId(res.revision._id);
+      mutateRevisionIdHackmdSynced(res.page.revisionHackmdSynced);
+      mutateHasDraftOnHackmd(res.page.hasDraftOnHackmd);
+      updatePageTagsForEditors(res.tags);
+
+      // call reset
+      setIsInitialized(false);
+
       logger.debug('success to save');
 
-      pageContainer.showSuccessToastr();
-
-      updatePageTagsForEditors(tags);
+      toastSuccess(t('successfully_saved_the_page'));
     }
     catch (error) {
       logger.error('failed to save', error);
-      pageContainer.showErrorToastr(error);
+      toastError(error);
     }
-  }, [editorMode, grant, isSlackEnabled, pageContainer, pageTags, slackChannels, updatePageTagsForEditors]);
+  }, [
+    grant, isSlackEnabled, pageTags, slackChannels, updatePageTagsForEditors, pageId, currentPagePath, currentPathname,
+    revisionIdHackmdSynced, updatePageData, mutateHasDraftOnHackmd, mutateRevisionIdHackmdSynced, t,
+  ]);
 
   /**
    * onChange event of HackmdEditor handler
    */
   const hackmdEditorChangeHandler = useCallback(async(body) => {
-    const hackmdUri = getHackmdUri();
 
-    if (hackmdUri == null) {
+    if (hackmdUri == null || pageId == null) {
       // do nothing
       return;
     }
 
-    // do nothing if contents are same
-    if (pageContainer.state.markdown === body) {
+    if (revision?.body === body) {
       return;
     }
 
-    // enable unsaved warning
-    // editorContainer.enableUnsavedWarning(); commentout because enableUnsavedWarning doesn't exitst
-
-    const params = {
-      pageId: pageContainer.state.pageId,
-    };
     try {
-      await apiPost('/hackmd.saveOnHackmd', params);
+      await apiPost('/hackmd.saveOnHackmd', { pageId });
     }
     catch (err) {
       logger.error(err);
     }
-  }, [getHackmdUri, pageContainer.state.markdown, pageContainer.state.pageId]);
+  }, [pageId, revision?.body, hackmdUri]);
 
   const penpalErrorOccuredHandler = useCallback((error) => {
-    pageContainer.showErrorToastr(error);
+    toastError(error);
 
     setHasError(true);
     setErrorMessage(t('hackmd.fail_to_connect'));
     setErrorReason(error.toString());
-  }, [pageContainer, t]);
+  }, [t]);
 
   const renderPreInitContent = useCallback(() => {
-    const hackmdUri = getHackmdUri();
-    const {
-      revisionId, revisionIdHackmdSynced, remoteRevisionId, pageId,
-    } = pageContainer.state;
     const isPageNotFound = pageId == null;
 
     let content;
@@ -316,7 +344,7 @@ const PageEditorByHackmd = (props: PageEditorByHackmdProps) => {
      * Start to edit
      */
     else {
-      const isRevisionOutdated = revisionId !== remoteRevisionId;
+      const isRevisionOutdated = revision?._id !== remoteRevisionId;
 
       content = (
         <div>
@@ -342,16 +370,11 @@ const PageEditorByHackmd = (props: PageEditorByHackmdProps) => {
         {content}
       </div>
     );
-  }, [discardChanges, getHackmdUri, isInitializing, isResume, pageContainer.state, resumeToEdit, startToEdit, t]);
+  }, [discardChanges, isInitializing, isResume, resumeToEdit, startToEdit, t, hackmdUri, pageId, remoteRevisionId, revisionIdHackmdSynced, revision?._id]);
 
-  if (editorMode == null) {
-    return null;
+  if (editorMode == null || revision == null) {
+    return <></>;
   }
-
-  const hackmdUri = getHackmdUri();
-  const {
-    markdown, pageIdOnHackmd,
-  } = pageContainer.state;
 
   let content;
 
@@ -359,13 +382,13 @@ const PageEditorByHackmd = (props: PageEditorByHackmdProps) => {
   // using any because ref cann't used between FC and class conponent with type safe
   const AnyEditor = HackmdEditor as any;
 
-  if (isInitialized) {
+  if (isInitialized && hackmdUri != null) {
     content = (
       <AnyEditor
         ref={hackmdEditorRef}
         hackmdUri={hackmdUri}
         pageIdOnHackmd={pageIdOnHackmd}
-        initializationMarkdown={isResume() ? null : markdown}
+        initializationMarkdown={isResume() ? null : revision.body}
         onChange={hackmdEditorChangeHandler}
         onSaveWithShortcut={(document) => {
           onSaveWithShortcut(document);
@@ -403,7 +426,3 @@ const PageEditorByHackmd = (props: PageEditorByHackmdProps) => {
   );
 
 };
-
-const PageEditorByHackmdWrapper = withUnstatedContainers(PageEditorByHackmd, [AppContainer, PageContainer]);
-
-export default PageEditorByHackmdWrapper;

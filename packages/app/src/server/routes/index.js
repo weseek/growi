@@ -61,9 +61,9 @@ module.exports = function(crowi, app) {
 
   /* eslint-disable max-len, comma-spacing, no-multi-spaces */
 
-  const [apiV3Router, apiV3AdminRouter, apiV3AuthRouter] = require('./apiv3')(crowi);
+  const [apiV3Router, apiV3AdminRouter, apiV3AuthRouter] = require('./apiv3')(crowi, app, isInstalled);
 
-  app.use('/api-docs', require('./apiv3/docs')(crowi));
+  app.use('/api-docs', require('./apiv3/docs')(crowi, app));
 
   // Rate limiter
   app.use(rateLimiter);
@@ -80,22 +80,19 @@ module.exports = function(crowi, app) {
 
   app.get('/login/error/:reason'      , applicationInstalled, login.error);
   app.get('/login'                    , applicationInstalled, login.preLogin, next.delegateToNext);
-  app.get('/login/invited'            , applicationInstalled, login.invited);
-  app.post('/login/activateInvited'   , applicationInstalled, loginFormValidator.inviteRules(), loginFormValidator.inviteValidation, csrfProtection, login.invited);
+  app.get('/invited'                  , applicationInstalled, next.delegateToNext);
+  app.post('/invited/activateInvited' , applicationInstalled, loginFormValidator.inviteRules(), loginFormValidator.inviteValidation, csrfProtection, login.invited);
   app.post('/login'                   , applicationInstalled, loginFormValidator.loginRules(), loginFormValidator.loginValidation, csrfProtection,  addActivity, loginPassport.loginWithLocal, loginPassport.loginWithLdap, loginPassport.loginFailure);
 
-  app.post('/register'                , applicationInstalled, registerFormValidator.registerRules(), registerFormValidator.registerValidation, csrfProtection, addActivity, login.register);
   app.get('/register'                 , applicationInstalled, login.preLogin, login.register);
 
   app.get('/admin/*'                    , applicationInstalled, loginRequiredStrictly , adminRequired , next.delegateToNext);
-  // app.get('/admin'                    , applicationInstalled, loginRequiredStrictly , adminRequired , admin.index);
+  app.get('/admin'                    , applicationInstalled, loginRequiredStrictly , adminRequired , next.delegateToNext);
   // app.get('/admin/app'                , applicationInstalled, loginRequiredStrictly , adminRequired , admin.app.index);
 
   // installer
   if (!isInstalled) {
-    const installer = require('./installer')(crowi);
     app.get('/installer'              , applicationNotInstalled, next.delegateToNext);
-    app.post('/installer'             , applicationNotInstalled , registerFormValidator.registerRules(), registerFormValidator.registerValidation, csrfProtection, addActivity, installer.install);
     return;
   }
 
@@ -245,7 +242,7 @@ module.exports = function(crowi, app) {
     .use(userActivation.tokenErrorHandlerMiddeware));
   app.post('/user-activation/register', applicationInstalled, csrfProtection, userActivation.registerRules(), userActivation.validateRegisterForm, userActivation.registerAction(crowi));
 
-  app.get('/share/:linkId', page.showSharedPage);
+  app.get('/share/:linkId', next.delegateToNext);
 
   app.use('/ogp', express.Router().get('/:pageId([0-9a-z]{0,})', loginRequired, ogp.pageIdRequired, ogp.ogpValidator, ogp.renderOgp));
 

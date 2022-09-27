@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
 
-
 import { isPopulated } from '@growi/core';
 import { useTranslation } from 'next-i18next';
 import dynamic from 'next/dynamic';
@@ -16,7 +15,7 @@ import { IResTagsUpdateApiv1 } from '~/interfaces/tag';
 import { OnDuplicatedFunction, OnRenamedFunction, OnDeletedFunction } from '~/interfaces/ui';
 import {
   useCurrentPageId,
-  useCurrentPathname,
+  useCurrentPathname, useIsNotFound,
   useCurrentUser, useIsGuestUser, useIsSharedUser, useShareLinkId, useTemplateTagData,
 } from '~/stores/context';
 import { usePageTagsForEditors } from '~/stores/editor';
@@ -40,7 +39,18 @@ import { Skelton } from '../Skelton';
 import { GrowiSubNavigation } from './GrowiSubNavigation';
 import { SubNavButtonsProps } from './SubNavButtons';
 
+
 import PageEditorModeManagerStyles from './PageEditorModeManager.module.scss';
+
+
+const PageEditorModeManager = dynamic(
+  () => import('./PageEditorModeManager'),
+  { ssr: false, loading: () => <Skelton additionalClass={`${PageEditorModeManagerStyles['grw-page-editor-mode-manager-skelton']}`} /> },
+);
+const SubNavButtons = dynamic<SubNavButtonsProps>(
+  () => import('./SubNavButtons').then(mod => mod.SubNavButtons),
+  { ssr: false, loading: () => <Skelton additionalClass='btn-skelton py-2' /> },
+);
 
 
 type AdditionalMenuItemsProps = {
@@ -156,15 +166,6 @@ type GrowiContextualSubNavigationProps = {
 
 const GrowiContextualSubNavigation = (props: GrowiContextualSubNavigationProps): JSX.Element => {
 
-  const PageEditorModeManager = dynamic(
-    () => import('./PageEditorModeManager'),
-    { ssr: false, loading: () => <Skelton additionalClass={`${PageEditorModeManagerStyles['grw-page-editor-mode-manager-skelton']}`} /> },
-  );
-  const SubNavButtons = dynamic<SubNavButtonsProps>(
-    () => import('./SubNavButtons').then(mod => mod.SubNavButtons),
-    { ssr: false, loading: () => <Skelton additionalClass='btn-skelton py-2' /> },
-  );
-
   const { data: currentPage, mutate: mutateCurrentPage } = useSWRxCurrentPage();
   const path = currentPage?.path;
 
@@ -178,6 +179,7 @@ const GrowiContextualSubNavigation = (props: GrowiContextualSubNavigationProps):
   const { data: currentUser } = useCurrentUser();
   const { data: isGuestUser } = useIsGuestUser();
   const { data: isSharedUser } = useIsSharedUser();
+  const { data: isNotFound } = useIsNotFound();
   const { data: shareLinkId } = useShareLinkId();
 
   const { data: isAbleToShowPageManagement } = useIsAbleToShowPageManagement();
@@ -294,14 +296,6 @@ const GrowiContextualSubNavigation = (props: GrowiContextualSubNavigationProps):
 
 
   const ControlComponents = useCallback(() => {
-    if (currentPage == null || pageId == null) {
-      return <></>;
-    }
-
-    function onPageEditorModeButtonClicked(viewType) {
-      mutateEditorMode(viewType);
-    }
-
     const additionalMenuItemsRenderer = () => {
       if (revisionId == null || pageId == null) {
         return <></>;
@@ -321,24 +315,26 @@ const GrowiContextualSubNavigation = (props: GrowiContextualSubNavigationProps):
 
           { isViewMode && (
             <div className="h-50 w-100">
-              <SubNavButtons
-                isCompactMode={isCompactMode}
-                pageId={pageId}
-                revisionId={revisionId}
-                shareLinkId={shareLinkId}
-                path={path}
-                disableSeenUserInfoPopover={isSharedUser}
-                showPageControlDropdown={isAbleToShowPageManagement}
-                additionalMenuItemRenderer={additionalMenuItemsRenderer}
-                onClickDuplicateMenuItem={duplicateItemClickedHandler}
-                onClickRenameMenuItem={renameItemClickedHandler}
-                onClickDeleteMenuItem={deleteItemClickedHandler}
-              />
+              { pageId != null && (
+                <SubNavButtons
+                  isCompactMode={isCompactMode}
+                  pageId={pageId}
+                  revisionId={revisionId}
+                  shareLinkId={shareLinkId}
+                  path={path}
+                  disableSeenUserInfoPopover={isSharedUser}
+                  showPageControlDropdown={isAbleToShowPageManagement}
+                  additionalMenuItemRenderer={additionalMenuItemsRenderer}
+                  onClickDuplicateMenuItem={duplicateItemClickedHandler}
+                  onClickRenameMenuItem={renameItemClickedHandler}
+                  onClickDeleteMenuItem={deleteItemClickedHandler}
+                />
+              ) }
             </div>
           ) }
           {isAbleToShowPageEditorModeManager && (
             <PageEditorModeManager
-              onPageEditorModeButtonClicked={onPageEditorModeButtonClicked}
+              onPageEditorModeButtonClicked={viewType => mutateEditorMode(viewType)}
               isBtnDisabled={isGuestUser}
               editorMode={editorMode}
             />
@@ -353,15 +349,8 @@ const GrowiContextualSubNavigation = (props: GrowiContextualSubNavigationProps):
         )}
       </>
     );
-  }, [
-    currentPage, currentUser, pageId, revisionId, shareLinkId, path, editorMode,
-    isCompactMode, isViewMode, isSharedUser, isAbleToShowPageManagement, isAbleToShowPageEditorModeManager,
-    isLinkSharingDisabled, isGuestUser, isPageTemplateModalShown,
-    duplicateItemClickedHandler, renameItemClickedHandler, deleteItemClickedHandler,
-    PageEditorModeManager, SubNavButtons,
-    mutateEditorMode,
-    templateMenuItemClickHandler,
-  ]);
+  // eslint-disable-next-line max-len
+  }, [currentUser, pageId, revisionId, shareLinkId, path, editorMode, isCompactMode, isViewMode, isSharedUser, isAbleToShowPageManagement, isAbleToShowPageEditorModeManager, isLinkSharingDisabled, isGuestUser, isPageTemplateModalShown, duplicateItemClickedHandler, renameItemClickedHandler, deleteItemClickedHandler, mutateEditorMode, templateMenuItemClickHandler]);
 
   if (currentPathname == null) {
     return <></>;

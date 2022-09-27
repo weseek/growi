@@ -1,13 +1,12 @@
 import React, { useMemo } from 'react';
 
 import { useTranslation } from 'next-i18next';
-import dynamic from 'next/dynamic';
 
+import CustomNavAndContents from './CustomNavigation/CustomNavAndContents';
 import { DescendantsPageListForCurrentPath } from './DescendantsPageList';
 import PageListIcon from './Icons/PageListIcon';
 import TimeLineIcon from './Icons/TimeLineIcon';
 import { PageTimeline } from './PageTimeline';
-import CustomNavAndContents from './CustomNavigation/CustomNavAndContents';
 
 const NotFoundPage = (): JSX.Element => {
   const { t } = useTranslation();
@@ -28,7 +27,6 @@ const NotFoundPage = (): JSX.Element => {
       },
     };
   }, [t]);
-
 
   return (
     <div className="d-edit-none">

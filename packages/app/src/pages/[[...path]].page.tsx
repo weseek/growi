@@ -20,7 +20,8 @@ import superjson from 'superjson';
 import { Comments } from '~/components/Comments';
 import { PageAlerts } from '~/components/PageAlert/PageAlerts';
 // import { useTranslation } from '~/i18n';
-import { PageContentFooter } from '~/components/PageContentFooter';
+import { CurrentPageContentFooter } from '~/components/PageContentFooter';
+import { UsersHomePageFooterProps } from '~/components/UsersHomePageFooter';
 import { CrowiRequest } from '~/interfaces/crowi-request';
 // import { renderScriptTagByName, renderHighlightJsStyleTag } from '~/service/cdn-resources-loader';
 // import { useIndentSize } from '~/stores/editor';
@@ -34,13 +35,12 @@ import { IUserUISettings } from '~/interfaces/user-ui-settings';
 import { PageModel, PageDocument } from '~/server/models/page';
 import { PageRedirectModel } from '~/server/models/page-redirect';
 import { UserUISettingsModel } from '~/server/models/user-ui-settings';
-import { useSWRxCurrentPage, useSWRxIsGrantNormalized, useSWRxPageInfo } from '~/stores/page';
+import { useSWRxCurrentPage, useSWRxIsGrantNormalized } from '~/stores/page';
 import { useRedirectFrom } from '~/stores/page-redirect';
 import {
   usePreferDrawerModeByUser, usePreferDrawerModeOnEditByUser, useSidebarCollapsed, useCurrentSidebarContents, useCurrentProductNavWidth, useSelectedGrant,
 } from '~/stores/ui';
 import loggerFactory from '~/utils/logger';
-
 
 // import { isUserPage, isTrashPage, isSharedPage } from '~/utils/path-utils';
 
@@ -59,10 +59,10 @@ import {
   useIsEnabledStaleNotification, useIsIdenticalPath,
   useIsSearchServiceConfigured, useIsSearchServiceReachable, useDisableLinkSharing,
   useHackmdUri,
-  useIsAclEnabled, useIsUserPage, useIsNotCreatable,
+  useIsAclEnabled, useIsUserPage,
   useCsrfToken, useIsSearchScopeChildrenAsDefault, useCurrentPageId, useCurrentPathname,
-  useIsSlackConfigured, useGrowiHydratedEnv, useRendererConfig, useEditingMarkdown,
-  useEditorConfig, useIsAllReplyShown, useIsUploadableFile, useIsUploadableImage,
+  useIsSlackConfigured,useGrowiHydratedEnv, useRendererConfig, useEditingMarkdown,
+  useEditorConfig, useIsAllReplyShown, useIsUploadableFile, useIsUploadableImage, usePageUser,
 } from '../stores/context';
 
 import {
@@ -70,20 +70,20 @@ import {
 } from './utils/commons';
 // import { useCurrentPageSWR } from '../stores/page';
 
-import styles from './[[...path]].page.module.scss';
 
 const NotCreatablePage = dynamic(() => import('../components/NotCreatablePage').then(mod => mod.NotCreatablePage), { ssr: false });
 const ForbiddenPage = dynamic(() => import('../components/ForbiddenPage'), { ssr: false });
 const UnsavedAlertDialog = dynamic(() => import('./UnsavedAlertDialog'), { ssr: false });
 const GrowiSubNavigationSwitcher = dynamic(() => import('../components/Navbar/GrowiSubNavigationSwitcher'), { ssr: false });
+const UsersHomePageFooter = dynamic<UsersHomePageFooterProps>(() => import('../components/UsersHomePageFooter')
+  .then(mod => mod.UsersHomePageFooter), { ssr: false });
 
 const logger = loggerFactory('growi:pages:all');
 
 const {
-  isPermalink: _isPermalink, isUsersHomePage, isTrashPage: _isTrashPage, isUserPage, isCreatablePage,
+  isPermalink: _isPermalink, isUsersHomePage, isTrashPage: _isTrashPage, isUserPage, isCreatablePage, isTopPage,
 } = pagePathUtils;
 const { removeHeadingSlash } = pathUtils;
-
 
 type IPageToShowRevisionWithMeta = IDataWithMeta<IPagePopulatedToShowRevision & PageDocument, IPageInfoForEntity>;
 type IPageToShowRevisionWithMetaSerialized = IDataWithMeta<string, string>;
@@ -136,7 +136,7 @@ type Props = CommonProps & {
   isIdenticalPathPage?: boolean,
   isForbidden: boolean,
   isNotFound: boolean,
-  IsNotCreatable: boolean,
+  isNotCreatablePage: boolean,
   // isAbleToDeleteCompletely: boolean,
 
   isSearchServiceConfigured: boolean,
@@ -195,9 +195,8 @@ const GrowiPage: NextPage<Props> = (props: Props) => {
   // useOwnerOfCurrentPage(props.pageUser != null ? JSON.parse(props.pageUser) : null);
   useIsForbidden(props.isForbidden);
   useIsNotFound(props.isNotFound);
-  useIsNotCreatable(props.IsNotCreatable);
+  // useIsNotCreatable(props.IsNotCreatable);
   useRedirectFrom(props.redirectFrom);
-  // useIsTrashPage(_isTrashPage(props.currentPagePath));
   // useShared();
   // useShareLinkId(props.shareLinkId);
   useIsSharedUser(false); // this page cann't be routed for '/share'
@@ -238,18 +237,21 @@ const GrowiPage: NextPage<Props> = (props: Props) => {
   }
 
   const pageId = pageWithMeta?.data._id;
+  const pagePath = pageWithMeta?.data.path ?? props.currentPathname;
 
   useCurrentPageId(pageId);
   useSWRxCurrentPage(undefined, pageWithMeta?.data); // store initial data
-  useSWRxPageInfo(pageId, undefined, pageWithMeta?.meta); // store initial data
-  useIsTrashPage(_isTrashPage(pageWithMeta?.data.path ?? ''));
-  useIsUserPage(isUserPage(pageWithMeta?.data.path ?? ''));
-  useIsNotCreatable(props.isForbidden || !isCreatablePage(pageWithMeta?.data.path ?? '')); // TODO: need to include props.isIdentical
-  useCurrentPagePath(pageWithMeta?.data.path);
+  useIsUserPage(isUserPage(pagePath));
+  // useIsNotCreatable(props.isForbidden || !isCreatablePage(pagePath)); // TODO: need to include props.isIdentical
+  useCurrentPagePath(pagePath);
   useCurrentPathname(props.currentPathname);
   useEditingMarkdown(pageWithMeta?.data.revision?.body);
+  useIsTrashPage(_isTrashPage(pagePath));
+
   const { data: grantData } = useSWRxIsGrantNormalized(pageId);
   const { mutate: mutateSelectedGrant } = useSelectedGrant();
+
+  usePageUser(pageWithMeta?.data.creator);
 
   // sync grant data
   useEffect(() => {
@@ -276,6 +278,8 @@ const GrowiPage: NextPage<Props> = (props: Props) => {
   // if (page == null) {
   //   classNames.push('not-found-page');
   // }
+
+  const isTopPagePath = isTopPage(pageWithMeta?.data.path ?? '');
 
   return (
     <>
@@ -308,8 +312,8 @@ const GrowiPage: NextPage<Props> = (props: Props) => {
                   <>
                     <PageAlerts />
                     { props.isForbidden && <ForbiddenPage /> }
-                    { props.IsNotCreatable && <NotCreatablePage />}
-                    { !props.isForbidden && !props.IsNotCreatable && <DisplaySwitcher />}
+                    { props.isNotCreatablePage && <NotCreatablePage />}
+                    { !props.isForbidden && !props.isNotCreatablePage && <DisplaySwitcher />}
                     {/* <DisplaySwitcher /> */}
                     {/* <PageStatusAlert /> */}
                   </>
@@ -323,46 +327,15 @@ const GrowiPage: NextPage<Props> = (props: Props) => {
               </div>
             </div>
           </div>
-          {/* TODO: Check CSS import */}
-          <footer className="footer d-edit-none">
-            {/* TODO: Enable page_list.html */}
-            {/* TODO: Enable isIdenticalPathPage or useIdenticalPath */}
-            {/* { !props.isIdenticalPathPage && ( */}
-            <Comments pageId={pageId} />
-            {/* )} */}
-            {/* TODO: Create UsersHomePageFooter conponent */}
-            { isUsersHomePage(props.currentPathname) && (
-              <div className="container-lg user-page-footer py-5">
-                <div className="grw-user-page-list-m d-edit-none">
-                  <h2 id="bookmarks-list" className="grw-user-page-header border-bottom pb-2 mb-3">
-                    <i style={{ fontSize: '1.3em' }} className="fa fa-fw fa-bookmark-o"></i>
-                    Bookmarks
-                  </h2>
-                  <div id="user-bookmark-list" className={`page-list ${styles['page-list']}`}>
-                    {/* TODO: No need page-list-container class ? */}
-                    <div className="page-list-container">
-                      {/* <BookmarkList userId={pageContainer.state.creator._id} /> */}
-                    </div>
-                  </div>
-                </div>
-                <div className="grw-user-page-list-m mt-5 d-edit-none">
-                  <h2 id="recently-created-list" className="grw-user-page-header border-bottom pb-2 mb-3">
-                    <i id="recent-created-icon" className="mr-1">
-                      {/* <RecentlyCreatedIcon /> */}
-                    </i>
-                    Recently Created
-                  </h2>
-                  <div id="user-created-list" className={`page-list ${styles['page-list']}`}>
-                    {/* TODO: No need page-list-container class ? */}
-                    <div className="page-list-container">
-                      {/* <RecentCreated userId={pageContainer.state.creator._id} /> */}
-                    </div>
-                  </div>
-                </div>
-              </div>
-            )}
-            <PageContentFooter />
-          </footer>
+          { !props.isIdenticalPathPage && !props.isNotFound && (
+            <footer className="footer d-edit-none">
+              { !isTopPagePath && (<Comments pageId={pageId} revision={pageWithMeta?.data.revision} />) }
+              { (pageWithMeta != null && isUsersHomePage(pageWithMeta.data.path)) && (
+                <UsersHomePageFooter creatorId={pageWithMeta.data.creator._id}/>
+              ) }
+              <CurrentPageContentFooter />
+            </footer>
+          )}
 
           <UnsavedAlertDialog />
           <DescendantsPageListModal />
@@ -463,7 +436,7 @@ async function injectRoutingInformation(context: GetServerSidePropsContext, prop
   }
   else if (page == null) {
     props.isNotFound = true;
-    props.IsNotCreatable = !isCreatablePage(currentPathname);
+    props.isNotCreatablePage = !isCreatablePage(currentPathname);
     // check the page is forbidden or just does not exist.
     const count = isPermalink ? await Page.count({ _id: pageId }) : await Page.count({ path: currentPathname });
     props.isForbidden = count > 0;

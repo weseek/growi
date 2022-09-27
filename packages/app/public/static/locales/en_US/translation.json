@@ -150,7 +150,6 @@
   "add_bookmark": "Add to Bookmarks",
   "remove_bookmark": "Remove from Bookmarks",
   "wide_view": "Wide View",
-  "Recent Created": "Recent Created",
   "Recent Changes": "Recent Changes",
   "Page Tree": "Page Tree",
   "original_path":"Original path",
@@ -192,7 +191,9 @@
     "setup": "Setup",
     "create_initial_account": "Create an initial account",
     "initial_account_will_be_administrator_automatically": "The initial account will be administrator automatically.",
-    "unavaliable_user_id": "This 'User ID' is unavailable."
+    "unavaliable_user_id": "This 'User ID' is unavailable.",
+    "failed_to_install": "Failed to install GROWI. Please try again.",
+    "failed_to_login_after_install": "Failed to login after installation. Redirecting to the login form ..."
   },
   "breaking_changes": {
     "v346_using_basic_auth": "Basic Authentication currently in use will <strong>no longer be available</strong> in the near future. Remove settings from %s"
@@ -675,6 +676,10 @@
     "Registration successful": "Registration successful",
     "Setup": "Setup"
   },
+  "invited": {
+    "discription_heading": "Create Account",
+    "discription": "Create an your account with the invited email address"
+  },
   "export_bulk": {
     "failed_to_export": "Failed to export",
     "failed_to_count_pages": "Failed to count pages",
@@ -706,7 +711,17 @@
     "complete_to_install2":"Complete to Install GROWI ! Please check each settings on this page first.",
     "failed_to_create_admin_user":"Failed to create admin user. {{errMessage}}",
     "successfully_send_email_auth":"We sent an email to {{email}}. Please click the URL in the email and complete the registration.",
-    "incorrect_token_or_expired_url": "The token is incorrect or the URL has expired."
+    "incorrect_token_or_expired_url": "The token is incorrect or the URL has expired.",
+    "user_already_loggedin": "You cannot create a new account when you are logged in.",
+    "registration_closed": "You are not authorized to create a new account.",
+    "Username has invalid characters": "Username has invalid characters.",
+    "Username field is required": "User ID field is required",
+    "Name field is required": "Name field is required",
+    "Email format is invalid": "Email format is invalid",
+    "Email field is required": "Email field is required",
+    "Password has invalid character": "Password has invalid character",
+    "Password minimum character should be more than 8 characters": "Password minimum character should be more than 8 characters",
+    "Password field is required": "Password field is required"
   },
   "grid_edit":{
     "create_bootstrap_4_grid":"Create Bootstrap 4 Grid",
@@ -838,5 +853,9 @@
   "page_operation":{
     "paths_recovered": "Paths recovered successfully",
     "path_recovery_failed":"Path recovery failed"
+  },
+  "footer": {
+    "bookmarks": "Bookmarks",
+    "recently_created": "Recently Created"
   }
 }

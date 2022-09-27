@@ -10,10 +10,9 @@ import dynamic from 'next/dynamic';
 
 import { HtmlElementNode } from 'rehype-toc';
 
-import { blinkSectionHeaderAtBoot } from '~/client/util/blink-section-header';
 import { getOptionsToSave } from '~/client/util/editor';
 import {
-  useIsGuestUser, useIsBlinkedHeaderAtBoot, useCurrentPageTocNode,
+  useIsGuestUser, useCurrentPageTocNode, useShareLinkId,
 } from '~/stores/context';
 import {
   useSWRxSlackChannels, useIsSlackEnabled, usePageTagsForEditors, useIsEnabledUnsavedWarning,
@@ -32,12 +31,12 @@ import mdu from './PageEditor/MarkdownDrawioUtil';
 import mtu from './PageEditor/MarkdownTableUtil';
 
 
-// TODO: import dynamically
+declare const globalEmitter: EventEmitter;
+
+// const DrawioModal = dynamic(() => import('./PageEditor/DrawioModal'), { ssr: false });
 const GridEditModal = dynamic(() => import('./PageEditor/GridEditModal'), { ssr: false });
 // const HandsontableModal = dynamic(() => import('./PageEditor/HandsontableModal'), { ssr: false });
 const LinkEditModal = dynamic(() => import('./PageEditor/LinkEditModal'), { ssr: false });
-
-declare const globalEmitter: EventEmitter;
 
 const logger = loggerFactory('growi:Page');
 
@@ -179,7 +178,7 @@ class PageSubstance extends React.Component<PageSubstanceProps> {
       <div className={`mb-5 ${isMobile ? 'page-mobile' : ''}`}>
 
         { revisionId != null && (
-          <RevisionRenderer rendererOptions={rendererOptions} markdown={markdown} pagePath={path} />
+          <RevisionRenderer rendererOptions={rendererOptions} markdown={markdown} />
         )}
 
         { !isGuestUser && (
@@ -208,7 +207,8 @@ export const Page = (props) => {
     tocRef.current = toc;
   }, []);
 
-  const { data: currentPage } = useSWRxCurrentPage();
+  const { data: shareLinkId } = useShareLinkId();
+  const { data: currentPage } = useSWRxCurrentPage(shareLinkId ?? undefined);
   const { data: editorMode } = useEditorMode();
   const { data: isGuestUser } = useIsGuestUser();
   const { data: isMobile } = useIsMobile();
@@ -217,19 +217,9 @@ export const Page = (props) => {
   const { data: pageTags } = usePageTagsForEditors(null); // TODO: pass pageId
   const { data: rendererOptions } = useViewOptions(storeTocNodeHandler);
   const { mutate: mutateIsEnabledUnsavedWarning } = useIsEnabledUnsavedWarning();
-  const { data: isBlinkedAtBoot, mutate: mutateBlinkedAtBoot } = useIsBlinkedHeaderAtBoot();
   const { mutate: mutateCurrentPageTocNode } = useCurrentPageTocNode();
 
   const pageRef = useRef(null);
-
-  useEffect(() => {
-    if (isBlinkedAtBoot) {
-      return;
-    }
-
-    blinkSectionHeaderAtBoot();
-    mutateBlinkedAtBoot(true);
-  }, [isBlinkedAtBoot, mutateBlinkedAtBoot]);
 
   useEffect(() => {
     mutateCurrentPageTocNode(tocRef.current);

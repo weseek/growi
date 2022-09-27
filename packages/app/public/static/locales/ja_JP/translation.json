@@ -143,7 +143,6 @@
   "add_bookmark": "ブックマークに追加",
   "remove_bookmark": "ブックマークから削除",
   "wide_view": "ワイドビュー",
-  "Recent Created": "最新の作成",
   "Recent Changes": "最新の変更",
   "Page Tree": "ページツリー",
   "original_path":"元のパス",
@@ -185,7 +184,9 @@
     "setup": "セットアップ",
     "create_initial_account": "最初のアカウントの作成",
     "initial_account_will_be_administrator_automatically": "初めに作成するアカウントは、自動的に管理者権限が付与されます",
-    "unavaliable_user_id": "このユーザーIDは利用できません。"
+    "unavaliable_user_id": "このユーザーIDは利用できません。",
+    "failed_to_install": "GROWI のインストールに失敗しました。再度お試しください。",
+    "failed_to_login_after_install": "インストール後、ログインに失敗しました。ログインフォームに遷移しています ..."
   },
   "breaking_changes": {
     "v346_using_basic_auth": "現在利用中の Basic 認証機能は、近い将来<strong>廃止されます</strong>。%s から設定を削除してください。"
@@ -666,6 +667,10 @@
     "Registration successful": "登録完了",
     "Setup": "セットアップ"
   },
+  "invited": {
+    "discription_heading": "アカウント作成",
+    "discription": "招待を受け取ったメールアドレスでアカウントを作成します"
+  },
   "export_bulk": {
     "failed_to_export": "ページのエクスポートに失敗しました",
     "failed_to_count_pages": "ページ数の取得に失敗しました",
@@ -697,7 +702,17 @@
     "complete_to_install2":"GROWI のインストールが完了しました！はじめに、このページで各種設定を確認してください。",
     "failed_to_create_admin_user":"管理ユーザーの作成に失敗しました。{{errMessage}}",
     "successfully_send_email_auth":"{{email}} にメールを送信しました。添付されたURLをクリックし、本登録を完了させてください",
-    "incorrect_token_or_expired_url":"トークンが正しくないか、URLの有効期限が切れています。"
+    "incorrect_token_or_expired_url":"トークンが正しくないか、URLの有効期限が切れています。",
+    "user_already_loggedin": "ログイン中のため、新規アカウントを作成できませんでした。",
+    "registration_closed": "新しいアカウントを作成する権限がありません。",
+    "Username has invalid characters": "ユーザー名に不正な文字が含まれています.",
+    "Username field is required": "User ID は必須項目です",
+    "Name field is required": "ユーザーID は必須項目です",
+    "Email format is invalid": "メールアドレスのフォーマットが無効です",
+    "Email field is required": "メールアドレスは必須項目です",
+    "Password has invalid character": "パスワードに無効な文字があります",
+    "Password minimum character should be more than 8 characters": "パスワードの最小文字数は8文字以上です",
+    "Password field is required": "パスワードの欄は必ず入力してください"
   },
   "grid_edit":{
     "create_bootstrap_4_grid":"Bootstrap 4 グリッドを作成",
@@ -829,5 +844,9 @@
   "page_operation":{
     "paths_recovered": "パスを修復しました",
     "path_recovery_failed":"パスを修復できませんでした"
+  },
+  "footer": {
+    "bookmarks": "ブックマーク",
+    "recently_created": "最近作成したページ"
   }
 }

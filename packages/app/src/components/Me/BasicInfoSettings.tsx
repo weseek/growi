@@ -109,7 +109,6 @@ export const BasicInfoSettings = (): JSX.Element => {
             i18nConfig.locales.map((locale) => {
               if (i18n == null) { return }
               const fixedT = i18n.getFixedT(locale);
-              i18n.loadLanguages(i18nConfig.locales);
 
               return (
                 <div key={locale} className="custom-control custom-radio custom-control-inline">

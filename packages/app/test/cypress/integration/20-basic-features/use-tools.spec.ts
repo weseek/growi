@@ -218,7 +218,7 @@ context('Tag Oprations', () =>{
       cy.get('.modal-footer > button.btn').click();
     });
     cy.visit(`/${newPageName}`);
-    cy.get('#wiki').should('not.be.empty');
+    cy.getByTestid('wiki').should('exist');
     cy.screenshot(`${ssPrefix}4-duplicated-page`, {capture: 'viewport'});
   });
 

@@ -1,6 +1,6 @@
 import React from 'react';
 
-const ReturnTopIcon = () => (
+export const ReturnTopIcon = (): JSX.Element => (
   <svg
     xmlns="http://www.w3.org/2000/svg"
     viewBox="0 0 23 23"
@@ -11,10 +11,5 @@ const ReturnTopIcon = () => (
     />
     <path d="M22.35,4.61H.65a.65.65,0,0,1,0-1.3h21.7a.65.65,0,1,1,0,1.3Z" />
     <rect fillOpacity="0" width="23" height="23" />
-
   </svg>
-
 );
-
-
-export default ReturnTopIcon;

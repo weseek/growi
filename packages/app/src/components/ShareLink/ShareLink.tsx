@@ -9,7 +9,7 @@ import { apiv3Delete } from '~/client/util/apiv3-client';
 import { useCurrentPageId } from '~/stores/context';
 import { useSWRxSharelink } from '~/stores/share-link';
 
-import ShareLinkForm from './ShareLinkForm';
+import { ShareLinkForm } from './ShareLinkForm';
 import ShareLinkList from './ShareLinkList';
 
 const ShareLink = (): JSX.Element => {

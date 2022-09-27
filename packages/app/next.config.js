@@ -63,6 +63,9 @@ module.exports = async(phase, { defaultConfig }) => {
     // see: https://github.com/vercel/next.js/discussions/27876
     // experimental: { esmExternals: true }, // Prefer loading of ES Modules over CommonJS
 
+    eslint: {
+      ignoreDuringBuilds: true,
+    },
     reactStrictMode: true,
     swcMinify: true,
     typescript: {

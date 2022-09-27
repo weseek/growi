@@ -1,6 +1,6 @@
 import React, { FC } from 'react';
 
-import { DevidedPagePath } from '@growi/core';
+import { DevidedPagePath, pagePathUtils } from '@growi/core';
 import dynamic from 'next/dynamic';
 
 import { useIsNotFound } from '~/stores/context';
@@ -9,6 +9,7 @@ import LinkedPagePath from '../models/linked-page-path';
 
 import PagePathHierarchicalLink from './PagePathHierarchicalLink';
 
+const { isTrashPage } = pagePathUtils;
 
 type Props = {
   pagePath: string,
@@ -16,6 +17,8 @@ type Props = {
   isSingleLineMode?:boolean,
   isCompactMode?:boolean,
 }
+
+const CopyDropdown = dynamic(() => import('./Page/CopyDropdown'), { ssr: false });
 
 const PagePathNav: FC<Props> = (props: Props) => {
   const {
@@ -25,7 +28,7 @@ const PagePathNav: FC<Props> = (props: Props) => {
 
   const { data: isNotFound } = useIsNotFound();
 
-  const CopyDropdown = dynamic(() => import('./Page/CopyDropdown'), { ssr: false });
+  const isInTrash = isTrashPage(pagePath);
 
   let formerLink;
   let latterLink;
@@ -33,14 +36,14 @@ const PagePathNav: FC<Props> = (props: Props) => {
   // one line
   if (dPagePath.isRoot || dPagePath.isFormerRoot || isSingleLineMode) {
     const linkedPagePath = new LinkedPagePath(pagePath);
-    latterLink = <PagePathHierarchicalLink linkedPagePath={linkedPagePath} />;
+    latterLink = <PagePathHierarchicalLink linkedPagePath={linkedPagePath} isInTrash={isInTrash} />;
   }
   // two line
   else {
     const linkedPagePathFormer = new LinkedPagePath(dPagePath.former);
     const linkedPagePathLatter = new LinkedPagePath(dPagePath.latter);
-    formerLink = <PagePathHierarchicalLink linkedPagePath={linkedPagePathFormer} />;
-    latterLink = <PagePathHierarchicalLink linkedPagePath={linkedPagePathLatter} basePath={dPagePath.former} />;
+    formerLink = <PagePathHierarchicalLink linkedPagePath={linkedPagePathFormer} isInTrash={isInTrash} />;
+    latterLink = <PagePathHierarchicalLink linkedPagePath={linkedPagePathLatter} basePath={dPagePath.former} isInTrash={isInTrash} />;
   }
 
   const copyDropdownId = `copydropdown${isCompactMode ? '-subnav-compact' : ''}-${pageId}`;
