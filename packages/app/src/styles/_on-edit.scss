@@ -165,15 +165,6 @@ body.on-edit {
     }
   }
 
-  .nav:hover {
-    .btn-copy,
-    .btn-edit,
-    .btn-edit-tags {
-      // change button opacity
-      opacity: unset;
-    }
-  }
-
   .grw-copy-dropdown {
     .btn-copy {
       padding: 3px !important; // overwrite padding
