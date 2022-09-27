@@ -244,7 +244,7 @@ module.exports = function(crowi, app) {
     .use(userActivation.tokenErrorHandlerMiddeware));
   app.post('/user-activation/register', applicationInstalled, csrfProtection, userActivation.registerRules(), userActivation.validateRegisterForm, userActivation.registerAction(crowi));
 
-  app.get('/share/:linkId', page.showSharedPage);
+  app.get('/share/:linkId', next.delegateToNext);
 
   app.use('/ogp', express.Router().get('/:pageId([0-9a-z]{0,})', loginRequired, ogp.pageIdRequired, ogp.ogpValidator, ogp.renderOgp));
 
