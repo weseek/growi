@@ -191,7 +191,9 @@
     "setup": "Setup",
     "create_initial_account": "Create an initial account",
     "initial_account_will_be_administrator_automatically": "The initial account will be administrator automatically.",
-    "unavaliable_user_id": "This 'User ID' is unavailable."
+    "unavaliable_user_id": "This 'User ID' is unavailable.",
+    "failed_to_install": "Failed to install GROWI. Please try again.",
+    "failed_to_login_after_install": "Failed to login after installation. Redirecting to the login form ..."
   },
   "breaking_changes": {
     "v346_using_basic_auth": "Basic Authentication currently in use will <strong>no longer be available</strong> in the near future. Remove settings from %s"

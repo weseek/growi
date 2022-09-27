@@ -1,9 +1,14 @@
-import { memo, useCallback, useState } from 'react';
+import {
+  FormEventHandler, memo, useCallback, useState,
+} from 'react';
 
 import i18next from 'i18next';
 import { useTranslation, i18n } from 'next-i18next';
 
 import { i18n as i18nConfig } from '^/config/next-i18next.config';
+
+import { toastError } from '~/client/util/apiNotification';
+import { apiv3Post } from '~/client/util/apiv3-client';
 
 const InstallerForm = memo((): JSX.Element => {
   const { t } = useTranslation();
@@ -23,8 +28,9 @@ const InstallerForm = memo((): JSX.Element => {
     setValidUserName(res.data.valid);
   }, []);
 
-  // TODO: XHRize https://redmine.weseek.co.jp/issues/105252
-  const submitHandler = useCallback(() => {
+  const submitHandler: FormEventHandler = useCallback(async(e: any) => {
+    e.preventDefault();
+
     if (isSubmittingDisabled) {
       return;
     }
@@ -33,7 +39,46 @@ const InstallerForm = memo((): JSX.Element => {
     setTimeout(() => {
       setSubmittingDisabled(false);
     }, 3000);
-  }, [isSubmittingDisabled]);
+
+    if (e.target.elements == null) {
+      return;
+    }
+
+    const formData = e.target.elements;
+
+    const {
+      'registerForm[username]': { value: username },
+      'registerForm[name]': { value: name },
+      'registerForm[email]': { value: email },
+      'registerForm[password]': { value: password },
+    } = formData;
+
+    const data = {
+      registerForm: {
+        username,
+        name,
+        email,
+        password,
+        'app:globalLang': formData['registerForm[app:globalLang]'].value,
+      },
+    };
+
+    try {
+      await apiv3Post('/installer', data);
+      window.location.href = '/';
+    }
+    catch (errs) {
+      const err = errs[0];
+      const code = err.code;
+
+      if (code === 'failed_to_login_after_install') {
+        toastError(t('installer.failed_to_login_after_install'));
+        setTimeout(() => { window.location.href = '/login' }, 700); // Wait 700 ms to show toastr
+      }
+
+      toastError(t('installer.failed_to_install'));
+    }
+  }, [isSubmittingDisabled, t]);
 
   const hasErrorClass = isValidUserName ? '' : ' has-error';
   const unavailableUserId = isValidUserName
@@ -51,7 +96,7 @@ const InstallerForm = memo((): JSX.Element => {
         </div>
       </div>
       <div className="row">
-        <form role="form" action="/installer" method="post" id="register-form" className="col-md-12" onSubmit={submitHandler}>
+        <form role="form" id="register-form" className="col-md-12" onSubmit={submitHandler}>
           <div className="dropdown mb-3">
             <div className="d-flex dropdown-with-icon">
               <i className="icon-bubbles border-0 rounded-0" />
