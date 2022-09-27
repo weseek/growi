@@ -3,11 +3,11 @@
  */
 export class TransferKey {
 
-  private static _internalSeperator = '__grw_internal_tranferkey__'
+  private static _internalSeperator = '__grw_internal_tranferkey__';
 
-  public appUrl: URL
+  public appUrl: URL;
 
-  public key: string
+  public key: string;
 
   constructor(appUrl: URL, key: string) {
     this.appUrl = appUrl;
