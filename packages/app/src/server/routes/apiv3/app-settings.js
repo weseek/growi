@@ -526,7 +526,7 @@ module.exports = (crowi) => {
    *          200:
    *            description: Succeeded to send test mail for smtp
    */
-  router.post('/smtp-test', loginRequiredStrictly, adminRequired, csrf, addActivity, async(req, res) => {
+  router.post('/smtp-test', loginRequiredStrictly, adminRequired, addActivity, async(req, res) => {
     try {
       await sendTestEmail(req.user.email);
       const parameters = { action: SupportedAction.ACTION_ADMIN_MAIL_TEST_SUBMIT };
