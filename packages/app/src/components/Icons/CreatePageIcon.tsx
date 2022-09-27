@@ -1,6 +1,6 @@
 import React from 'react';
 
-const CreatePageIcon = () => (
+export const CreatePageIcon = (): JSX.Element => (
   <svg
     xmlns="http://www.w3.org/2000/svg"
     viewBox="0 0 27 30"
@@ -19,8 +19,4 @@ const CreatePageIcon = () => (
     />
     <rect fillOpacity="0" width="27" height="27" />
   </svg>
-
 );
-
-
-export default CreatePageIcon;

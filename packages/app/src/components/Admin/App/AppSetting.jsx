@@ -79,8 +79,8 @@ const AppSetting = (props) => {
         <div className="col-md-6 py-2">
           {
             i18nConfig.locales.map((locale) => {
-              const fixedT = i18n.getFixedT(locale);
-              i18n.loadLanguages(i18nConfig.locales);
+              if (i18n == null) { return }
+              const fixedT = i18n.getFixedT(locale, 'admin');
 
               return (
                 <div key={locale} className="custom-control custom-radio custom-control-inline">

@@ -56,6 +56,7 @@
     "string-width": "5.0.0 or above exports only ESM."
   },
   "dependencies": {
+    "@akebifiky/remark-simple-plantuml": "^1.0.2",
     "@aws-sdk/client-s3": "^3.58.0",
     "@aws-sdk/s3-request-presigner": "^3.58.0",
     "@browser-bunyan/console-formatted-stream": "^1.8.0",
@@ -129,7 +130,7 @@
     "multer": "~1.4.0",
     "multer-autoreap": "^1.0.3",
     "next": "^12.2.5",
-    "next-i18next": "^11.0.0",
+    "next-i18next": "^11.3.0",
     "next-superjson": "^0.0.4",
     "next-themes": "^0.2.0",
     "nocache": "^3.0.1",
@@ -251,6 +252,7 @@
     "react-dropzone": "^11.2.4",
     "react-frame-component": "^4.0.0",
     "react-hotkeys": "^2.0.0",
+    "react-scroll": "^1.8.7",
     "react-use-ripple": "^1.5.2",
     "react-waypoint": "^10.1.0",
     "reactstrap": "^8.9.0",

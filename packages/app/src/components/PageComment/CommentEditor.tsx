@@ -232,7 +232,13 @@ export const CommentEditor = (props: CommentEditorProps): JSX.Element => {
 
     const errorMessage = <span className="text-danger text-right mr-2">{error}</span>;
     const cancelButton = (
-      <Button outline color="danger" size="xs" className="btn btn-outline-danger rounded-pill" onClick={cancelButtonClickedHandler}>
+      <Button
+        outline
+        color="danger"
+        size="xs"
+        className="btn btn-outline-danger rounded-pill"
+        onClick={cancelButtonClickedHandler}
+      >
         Cancel
       </Button>
     );
