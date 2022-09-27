@@ -8,8 +8,16 @@ const isAnchorLink = (href: string): boolean => {
 };
 
 const isExternalLink = (href: string, siteUrl: string | undefined): boolean => {
-  const baseUrl = new URL(siteUrl ?? 'https://example.com');
-  const hrefUrl = new URL(href, baseUrl);
+  let baseUrl: URL;
+  let hrefUrl: URL;
+
+  try {
+    baseUrl = new URL(siteUrl ?? 'https://example.com');
+    hrefUrl = new URL(href, baseUrl);
+  }
+  catch {
+    return false;
+  }
 
   return baseUrl.host !== hrefUrl.host;
 };
