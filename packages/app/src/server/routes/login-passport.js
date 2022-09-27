@@ -222,13 +222,14 @@ module.exports = function(crowi, app) {
     let externalAccount;
     try {
       externalAccount = await getOrCreateUser(req, res, userInfo, providerId);
-
-      if (externalAccount == null) { // just in case the returned value is null or undefined
-        throw Error('message.external_account_not_exist');
-      }
     }
     catch (error) {
       return next(error);
+    }
+
+    // just in case the returned value is null or undefined
+    if (externalAccount == null) {
+      return next(Error('message.external_account_not_exist'));
     }
 
     const user = await externalAccount.getPopulatedUser();
