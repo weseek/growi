@@ -22,7 +22,7 @@ context('Access to page', () => {
     cy.getByTestid('grw-fab-container').invoke('attr', 'style', 'display: none');
 
     // remove animation for screenshot
-    cy.getByTestid('#Headers').invoke('removeClass', 'blink');
+    cy.get('#Headers').invoke('removeClass', 'blink');
 
     cy.screenshot(`${ssPrefix}-sandbox-headers`);
   });
