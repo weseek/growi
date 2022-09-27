@@ -21,6 +21,11 @@ const validator = {
  * Routes
  */
 module.exports = (crowi: Crowi): Router => {
+  const { g2gTransferService } = crowi;
+  if (g2gTransferService == null) {
+    throw Error('G2GTransferService is not set');
+  }
+
   const isInstalled = crowi.configManager?.getConfig('crowi', 'app:installed');
 
   const accessTokenParser = require('../../middlewares/access-token-parser')(crowi);
@@ -81,7 +86,7 @@ module.exports = (crowi: Crowi): Router => {
     // Save TransferKey document
     let transferKeyString: string;
     try {
-      transferKeyString = await crowi.g2gTransferService.createTransferKey(appSiteUrl);
+      transferKeyString = await g2gTransferService.createTransferKey(appSiteUrl);
     }
     catch (err) {
       logger.error(err);
