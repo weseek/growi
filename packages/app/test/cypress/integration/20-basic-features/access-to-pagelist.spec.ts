@@ -91,7 +91,7 @@ context('Access to timeline', () => {
     });
     cy.get('.modal').should('be.visible').scrollTo('top');
     // eslint-disable-next-line cypress/no-unnecessary-waiting
-    cy.wait(1500); // wait for loading wiki
+    cy.wait(500); // wait for loading wiki
     cy.screenshot(`${ssPrefix}2-timeline-list-fullscreen`, {capture: 'viewport'});
     cy.getByTestid('page-accessories-modal').parent().should('have.class','show').within(() => {
       cy.get('button.close').eq(1).click();
