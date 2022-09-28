@@ -133,21 +133,23 @@ module.exports = function(crowi, app) {
 
   const cannotLoginErrorHadnler = (req, res, next) => {
     // this is called when all login method is somehow failed without invoking 'return next(<any Error>)'
-    const err = res.locals.err != null ? res.locals.err : Error('message.sign_in_failure');
+    const err = Error('message.sign_in_failure');
     return next(err);
   };
 
   /**
    * middleware for login failure
+   * @param {*} error
    * @param {*} req
    * @param {*} res
+   * @param {*} next
    */
   const loginFailure = (error, req, res, next) => {
 
     const parameters = { action: SupportedAction.ACTION_USER_LOGIN_FAILURE };
     activityEvent.emit('update', res.locals.activity._id, parameters);
 
-    return res.apiv3Err(error, error.code);
+    return res.apiv3Err(error);
   };
 
   /**
