@@ -29,7 +29,13 @@ module.exports = function(crowi, app) {
         });
       }
 
-      const { redirectTo } = req.session;
+      let redirectTo;
+      if (userData.password) {
+        redirectTo = req.session.redirectTo;
+      }
+      else {
+        redirectTo = '/me#password';
+      }
       // remove session.redirectTo
       delete req.session.redirectTo;
 
