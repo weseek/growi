@@ -16,7 +16,7 @@ import {
   useCurrentPagePath, useCurrentPageId, useHackmdUri, usePageIdOnHackmd, useHasDraftOnHackmd, useRevisionIdHackmdSynced,
 } from '~/stores/context';
 import { useSWRxSlackChannels, useIsSlackEnabled, usePageTagsForEditors } from '~/stores/editor';
-import { useSWRxCurrentPage } from '~/stores/page';
+import { useSWRxCurrentPage, useSWRxTagsInfo } from '~/stores/page';
 import {
   EditorMode,
   useEditorMode, useSelectedGrant,
@@ -43,6 +43,7 @@ export const PageEditorByHackmd = (): JSX.Element => {
   const { data: isSlackEnabled } = useIsSlackEnabled();
   const { data: pageId } = useCurrentPageId();
   const { data: pageTags } = usePageTagsForEditors(pageId);
+  const { mutate: mutateTagsInfo } = useSWRxTagsInfo(pageId);
   const { data: grant } = useSelectedGrant();
   const { data: hackmdUri } = useHackmdUri();
 
@@ -207,6 +208,7 @@ export const PageEditorByHackmd = (): JSX.Element => {
       setRemoteRevisionId(revision?._id);
       mutateRevisionIdHackmdSynced(pageData.revisionHackmdSynced);
       mutateHasDraftOnHackmd(pageData.hasDraftOnHackmd);
+      mutateTagsInfo();
 
       // call reset
       setIsInitialized(false);
@@ -220,7 +222,7 @@ export const PageEditorByHackmd = (): JSX.Element => {
       toastError(error.message);
     }
   }, [
-    grant, isSlackEnabled, pageTags, slackChannels, pageId, currentPagePath, currentPathname,
+    grant, isSlackEnabled, pageTags, slackChannels, pageId, currentPagePath, currentPathname, mutateTagsInfo, revision?._id,
     revisionIdHackmdSynced, mutatePageData, mutateHasDraftOnHackmd, mutateRevisionIdHackmdSynced, t, pageData,
   ]);
 
