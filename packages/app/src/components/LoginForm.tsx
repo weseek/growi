@@ -7,6 +7,7 @@ import { useRouter } from 'next/router';
 import ReactCardFlip from 'react-card-flip';
 
 import { apiv3Post } from '~/client/util/apiv3-client';
+import { IErrorV3 } from '~/interfaces/errors/v3-error';
 
 type LoginFormProps = {
   username?: string,
@@ -38,13 +39,13 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
   // For Login
   const [usernameForLogin, setUsernameForLogin] = useState('');
   const [passwordForLogin, setPasswordForLogin] = useState('');
-  const [loginErrors, setLoginErrors] = useState<Error[]>([]);
+  const [loginErrors, setLoginErrors] = useState<IErrorV3[]>([]);
   // For Register
   const [usernameForRegister, setUsernameForRegister] = useState('');
   const [nameForRegister, setNameForRegister] = useState('');
   const [emailForRegister, setEmailForRegister] = useState('');
   const [passwordForRegister, setPasswordForRegister] = useState('');
-  const [registerErrors, setRegisterErrors] = useState<Error[]>([]);
+  const [registerErrors, setRegisterErrors] = useState<IErrorV3[]>([]);
 
   useEffect(() => {
     const { hash } = window.location;
@@ -60,8 +61,14 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
     window.location.href = `/passport/${auth}`;
   }, []);
 
+  const resetLoginErrors = useCallback(() => {
+    if (loginErrors.length === 0) return;
+    setLoginErrors([]);
+  }, [loginErrors.length]);
+
   const handleLoginWithLocalSubmit = useCallback(async(e) => {
     e.preventDefault();
+    resetLoginErrors();
 
     const loginForm = {
       username: usernameForLogin,
@@ -78,7 +85,7 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
     }
     return;
 
-  }, [passwordForLogin, router, usernameForLogin]);
+  }, [passwordForLogin, resetLoginErrors, router, usernameForLogin]);
 
   const renderLocalOrLdapLoginForm = useCallback(() => {
     const { isLdapStrategySetup } = props;
@@ -86,15 +93,15 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
       <>
         {
           loginErrors != null && loginErrors.length > 0 && (
-            <p className="alert alert-danger">
+            <ul className="alert alert-danger">
               {loginErrors.map((err, index) => {
                 return (
-                  <span key={index}>
-                    {t(err.message)}<br/>
-                  </span>
+                  <li key={index}>
+                    {t(err.message, err.i18nArg)}<br/>
+                  </li>
                 );
               })}
-            </p>
+            </ul>
           )
         }
         <form role="form" onSubmit={handleLoginWithLocalSubmit} id="login-form">
@@ -221,11 +228,6 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
     }
     return;
   }, [emailForRegister, nameForRegister, passwordForRegister, router, usernameForRegister]);
-
-  const resetLoginErrors = useCallback(() => {
-    if (loginErrors.length === 0) return;
-    setLoginErrors([]);
-  }, [loginErrors.length]);
 
   const resetRegisterErrors = useCallback(() => {
     if (registerErrors.length === 0) return;
