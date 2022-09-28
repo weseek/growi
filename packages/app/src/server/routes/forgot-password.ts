@@ -53,10 +53,12 @@ type CrowiReq = Request & {
 
 // middleware to handle error
 export const handleErrorsMiddleware = (crowi: Crowi) => {
-  return (error: Error & { code: string }, req: CrowiReq, res: Response, next: NextFunction): void => {
+  return (error: Error & { code: string, statusCode: number }, req: CrowiReq, res: Response, next: NextFunction): void => {
     if (error != null) {
       const { nextApp } = crowi;
+
       req.crowi = crowi;
+      res.status(error.statusCode);
 
       nextApp.render(req, res, '/forgot-password-errors', { errorCode: error.code });
       return;

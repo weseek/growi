@@ -12,7 +12,7 @@ import {
 } from './utils/commons';
 
 type Props = CommonProps & {
-  errorCode: forgotPasswordErrorCode
+  errorCode?: forgotPasswordErrorCode
 };
 
 const ForgotPasswordErrorsPage: NextPage<Props> = (props: Props) => {
@@ -28,6 +28,10 @@ const ForgotPasswordErrorsPage: NextPage<Props> = (props: Props) => {
               <div className="text-center">
                 <h1><i className="icon-lock-open large"/></h1>
                 <h2 className="text-center">{ t('forgot_password.reset_password') }</h2>
+
+                { errorCode == null && (
+                  <h3 className="text-muted">errorCode Unknown</h3>
+                )}
 
                 { errorCode === forgotPasswordErrorCode.PASSWORD_RESET_IS_UNAVAILABLE && (
                   <h3 className="text-muted">{ t('forgot_password.feature_is_unavailable') }</h3>
@@ -74,16 +78,6 @@ export const getServerSideProps: GetServerSideProps = async(context: GetServerSi
   const errorCode = context.query.errorCode;
   if (typeof errorCode === 'string') {
     props.errorCode = errorCode as forgotPasswordErrorCode;
-  }
-
-  // Direct access to '/forgot-password-errors' redirects to '/'
-  if (props.errorCode == null) {
-    return {
-      redirect: {
-        permanent: false,
-        destination: '/',
-      },
-    };
   }
 
   await injectNextI18NextConfigurations(context, props, ['translation']);
