@@ -198,7 +198,7 @@ module.exports = function(crowi, app) {
 
     // check groups for LDAP
     if (!isValidLdapUserByGroupFilter(ldapAccountInfo)) {
-      return next(ErrorV3('message.ldap_user_not_valid', 400));
+      return next(ErrorV3('message.ldap_user_not_valid'));
     }
 
     /*
