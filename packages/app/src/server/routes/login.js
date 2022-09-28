@@ -206,9 +206,5 @@ module.exports = function(crowi, app) {
     }
   };
 
-  actions.updateInvitedUser = function(req, res) {
-    return res.redirect('/');
-  };
-
   return actions;
 };

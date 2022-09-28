@@ -37,7 +37,7 @@ export const InvitedForm = (props: InvitedFormProps): JSX.Element => {
     };
 
     try {
-      await apiv3Post('/invited', { invitedForm });
+      await apiv3Post('/invited/activateInvited', { invitedForm });
       window.location.href = '/';
     }
     catch (err) {
