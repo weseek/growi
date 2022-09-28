@@ -167,7 +167,7 @@ type GrowiContextualSubNavigationProps = {
 
 const GrowiContextualSubNavigation = (props: GrowiContextualSubNavigationProps): JSX.Element => {
 
-  const { data: currentPage, mutate: mutateCurrentPage } = useSWRxCurrentPage();
+  const { data: currentPage, error: currentPageError, mutate: mutateCurrentPage } = useSWRxCurrentPage();
   const path = currentPage?.path;
 
   const revision = currentPage?.revision;
@@ -353,17 +353,14 @@ const GrowiContextualSubNavigation = (props: GrowiContextualSubNavigationProps):
   // eslint-disable-next-line max-len
   }, [currentUser, pageId, revisionId, shareLinkId, path, editorMode, isCompactMode, isViewMode, isSharedUser, isAbleToShowPageManagement, isAbleToShowPageEditorModeManager, isLinkSharingDisabled, isGuestUser, isPageTemplateModalShown, duplicateItemClickedHandler, renameItemClickedHandler, deleteItemClickedHandler, mutateEditorMode, templateMenuItemClickHandler]);
 
-  if (currentPathname == null) {
-    return <></>;
-  }
-
+  const isCurrentPageLoading = currentPage === undefined && currentPageError == null;
   const notFoundPage: Partial<IPageHasId> = {
-    path: currentPathname,
+    path: currentPathname ?? '',
   };
 
   return (
     <GrowiSubNavigation
-      page={currentPage ?? notFoundPage}
+      page={isCurrentPageLoading ? undefined : (currentPage ?? notFoundPage)}
       showDrawerToggler={isDrawerMode}
       showTagLabel={isAbleToShowTagLabel}
       showPageAuthors={isAbleToShowPageAuthors}
