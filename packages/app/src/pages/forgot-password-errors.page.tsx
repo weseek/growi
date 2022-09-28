@@ -29,7 +29,9 @@ const ForgotPasswordErrorsPage: NextPage<Props> = (props: Props) => {
                 <h1><i className="icon-lock-open large"/></h1>
                 <h2 className="text-center">{ t('forgot_password.reset_password') }</h2>
 
-                { errorCode === forgotPasswordErrorCode.PASSWORD_RESET_IS_UNAVAILABLE && <h3 className="text-muted">This feature is unavailable.</h3>}
+                { errorCode === forgotPasswordErrorCode.PASSWORD_RESET_IS_UNAVAILABLE && (
+                  <h3 className="text-muted">{ t('forgot_password.feature_is_unavailable') }</h3>
+                )}
 
                 { errorCode === (forgotPasswordErrorCode.PASSWORD_RESET_ORDER_IS_NOT_APPROPRIATE || forgotPasswordErrorCode.TOKEN_NOT_FOUND) && (
                   <div>
