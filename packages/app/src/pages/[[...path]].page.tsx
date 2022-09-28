@@ -408,7 +408,7 @@ async function injectPageData(context: GetServerSidePropsContext, props: Props):
 
   // add user to seen users
   if (page != null && user != null) {
-    await page.seen(req.user);
+    await page.seen(user);
   }
 
   props.pageWithMeta = pageWithMeta;
