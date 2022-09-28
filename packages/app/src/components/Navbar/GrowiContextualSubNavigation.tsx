@@ -39,7 +39,6 @@ import { Skelton } from '../Skelton';
 import { GrowiSubNavigation } from './GrowiSubNavigation';
 import { SubNavButtonsProps } from './SubNavButtons';
 
-
 import PageEditorModeManagerStyles from './PageEditorModeManager.module.scss';
 
 
@@ -47,9 +46,11 @@ const PageEditorModeManager = dynamic(
   () => import('./PageEditorModeManager'),
   { ssr: false, loading: () => <Skelton additionalClass={`${PageEditorModeManagerStyles['grw-page-editor-mode-manager-skelton']}`} /> },
 );
+// TODO: If enable skeleton, we get hydration error when create a page from PageCreateModal
+// { ssr: false, loading: () => <Skelton additionalClass='btn-skelton py-2' /> },
 const SubNavButtons = dynamic<SubNavButtonsProps>(
   () => import('./SubNavButtons').then(mod => mod.SubNavButtons),
-  { ssr: false, loading: () => <Skelton additionalClass='btn-skelton py-2' /> },
+  { ssr: false, loading: () => <></> },
 );
 
 
@@ -309,10 +310,10 @@ const GrowiContextualSubNavigation = (props: GrowiContextualSubNavigationProps):
         />
       );
     };
+
     return (
       <>
         <div className="d-flex flex-column align-items-end justify-content-center py-md-2" style={{ gap: `${isCompactMode ? '5px' : '7px'}` }}>
-
           { isViewMode && (
             <div className="h-50 w-100">
               { pageId != null && (

@@ -61,7 +61,7 @@ module.exports = function(crowi, app) {
 
   /* eslint-disable max-len, comma-spacing, no-multi-spaces */
 
-  const [apiV3Router, apiV3AdminRouter, apiV3AuthRouter] = require('./apiv3')(crowi, app);
+  const [apiV3Router, apiV3AdminRouter, apiV3AuthRouter] = require('./apiv3')(crowi, app, isInstalled);
 
   app.use('/api-docs', require('./apiv3/docs')(crowi, app));
 
@@ -81,7 +81,6 @@ module.exports = function(crowi, app) {
   app.get('/login/error/:reason'      , applicationInstalled, login.error);
   app.get('/login'                    , applicationInstalled, login.preLogin, next.delegateToNext);
   app.get('/invited'                  , applicationInstalled, next.delegateToNext);
-  // app.post('/invited/activateInvited' , applicationInstalled, loginFormValidator.inviteRules(), loginFormValidator.inviteValidation, csrfProtection, login.invited);
   app.post('/login'                   , applicationInstalled, loginFormValidator.loginRules(), loginFormValidator.loginValidation, csrfProtection,  addActivity, loginPassport.loginWithLocal, loginPassport.loginWithLdap, loginPassport.loginFailure);
 
   app.get('/register'                 , applicationInstalled, login.preLogin, login.register);
@@ -92,9 +91,7 @@ module.exports = function(crowi, app) {
 
   // installer
   if (!isInstalled) {
-    const installer = require('./installer')(crowi);
     app.get('/installer'              , applicationNotInstalled, next.delegateToNext);
-    app.post('/installer'             , applicationNotInstalled , registerFormValidator.registerRules(), registerFormValidator.registerValidation, csrfProtection, addActivity, installer.install);
     return;
   }
 

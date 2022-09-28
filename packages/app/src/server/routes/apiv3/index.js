@@ -16,7 +16,7 @@ const router = express.Router();
 const routerForAdmin = express.Router();
 const routerForAuth = express.Router();
 
-module.exports = (crowi, app) => {
+module.exports = (crowi, app, isInstalled) => {
 
   // add custom functions to express response
   require('./response')(express, crowi);
@@ -44,6 +44,10 @@ module.exports = (crowi, app) => {
   const applicationInstalled = require('../../middlewares/application-installed')(crowi);
   const addActivity = generateAddActivityMiddleware(crowi);
   const login = require('../login')(crowi, app);
+  const loginPassport = require('../login-passport')(crowi, app);
+
+  routerForAuth.post('/login', applicationInstalled, loginFormValidator.loginRules(), loginFormValidator.loginValidation,
+    addActivity, loginPassport.loginWithLocal, loginPassport.loginWithLdap, loginPassport.cannotLoginErrorHadnler, loginPassport.loginFailure);
 
   routerForAuth.use('/logout', require('./logout')(crowi));
 
@@ -52,6 +56,12 @@ module.exports = (crowi, app) => {
 
   routerForAuth.post('/invited/activateInvited',
     applicationInstalled, loginFormValidator.inviteRules(), loginFormValidator.inviteValidation, login.invited);
+
+  // installer
+  if (!isInstalled) {
+    routerForAdmin.use('/installer', require('./installer')(crowi));
+    return [router, routerForAdmin, routerForAuth];
+  }
 
   router.use('/in-app-notification', require('./in-app-notification')(crowi));
 

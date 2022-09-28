@@ -184,7 +184,9 @@
     "setup": "セットアップ",
     "create_initial_account": "最初のアカウントの作成",
     "initial_account_will_be_administrator_automatically": "初めに作成するアカウントは、自動的に管理者権限が付与されます",
-    "unavaliable_user_id": "このユーザーIDは利用できません。"
+    "unavaliable_user_id": "このユーザーIDは利用できません。",
+    "failed_to_install": "GROWI のインストールに失敗しました。再度お試しください。",
+    "failed_to_login_after_install": "インストール後、ログインに失敗しました。ログインフォームに遷移しています ..."
   },
   "breaking_changes": {
     "v346_using_basic_auth": "現在利用中の Basic 認証機能は、近い将来<strong>廃止されます</strong>。%s から設定を削除してください。"
@@ -680,9 +682,19 @@
     "fail_to_save_access_token": "アクセストークンの保存に失敗しました、再度お試しください。",
     "fail_to_fetch_access_token": "アクセストークンの取得に失敗しました、再度お試しください。",
     "successfully_disconnected": "切断に成功しました!",
-    "strategy_has_not_been_set_up": "{{strategy}} はセットアップされていません。",
+    "strategy_has_not_been_set_up": {
+      "LocalStrategy"  : "LocalStrategy はセットアップされていません。",
+      "LdapStrategy"   : "LdapStrategy はセットアップされていません。",
+      "GoogleStrategy" : "GoogleStrategy はセットアップされていません。",
+      "GitHubStrategy" : "GitHubStrategy はセットアップされていません。",
+      "TwitterStrategy": "TwitterStrategy はセットアップされていません。",
+      "OidcStrategy"   : "OidcStrategy はセットアップされていません。",
+      "SamlStrategy"   : "SamlStrategy はセットアップされていません。",
+      "Basic"          : "Basic はセットアップされていません。"
+    },
+    "ldap_user_not_valid": "Ldap user is no valid",
+    "external_account_not_exist": "外部アカウントが見つからない、または作成に失敗しました",
     "maximum_number_of_users": "ユーザー数が上限を超えたためアクティベートできません。",
-    "database_error":"データベースサーバーに問題があります。",
     "sign_in_failure": "ログインに失敗しました。",
     "aws_sttings_required": "この機能にはAWS設定が必要です。管理者に訪ねて下さい。",
     "application_already_installed": "アプリケーションのインストールが完了しました。",
@@ -710,7 +722,10 @@
     "Email field is required": "メールアドレスは必須項目です",
     "Password has invalid character": "パスワードに無効な文字があります",
     "Password minimum character should be more than 8 characters": "パスワードの最小文字数は8文字以上です",
-    "Password field is required": "パスワードの欄は必ず入力してください"
+    "Password field is required": "パスワードの欄は必ず入力してください",
+    "Username or E-mail has invalid characters": "ユーザー名または、メールアドレスに無効な文字があります",
+    "Password minimum character should be more than 6 characters": "パスワードの最小文字数は6文字以上です",
+    "user_not_found": "ユーザーが見つかりません"
   },
   "grid_edit":{
     "create_bootstrap_4_grid":"Bootstrap 4 グリッドを作成",

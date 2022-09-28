@@ -109,7 +109,7 @@ export class InstallerService {
     return configManager.updateConfigsInTheSameNamespace('crowi', initialConfig, true);
   }
 
-  async install(firstAdminUserToSave: IUser, globalLang: Lang, options?: AutoInstallOptions): Promise<IUser> {
+  async install(firstAdminUserToSave: Pick<IUser, 'name' | 'username' | 'email' | 'password'>, globalLang: Lang, options?: AutoInstallOptions): Promise<IUser> {
     await this.initDB(globalLang, options);
 
     // TODO typescriptize models/user.js and remove eslint-disable-next-line
