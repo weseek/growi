@@ -407,7 +407,7 @@ async function injectPageData(context: GetServerSidePropsContext, props: Props):
   }
 
   // add user to seen users
-  if (req.user != null) {
+  if (page != null && req.user != null) {
     await page.seen(req.user);
   }
 
