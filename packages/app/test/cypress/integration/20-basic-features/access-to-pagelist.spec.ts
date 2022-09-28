@@ -78,7 +78,7 @@ context('Access to timeline', () => {
       cy.get('.nav-title > li').eq(1).find('a').click();
     });
     // eslint-disable-next-line cypress/no-unnecessary-waiting
-    cy.wait(1500); // wait for loading wiki
+    cy.wait(500); // wait for loading wiki
     cy.screenshot(`${ssPrefix}1-timeline-list`, {capture: 'viewport'});
   });
 
