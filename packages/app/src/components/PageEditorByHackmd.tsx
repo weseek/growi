@@ -42,7 +42,7 @@ export const PageEditorByHackmd = (): JSX.Element => {
   const { data: slackChannelsData } = useSWRxSlackChannels(currentPagePath);
   const { data: isSlackEnabled } = useIsSlackEnabled();
   const { data: pageId } = useCurrentPageId();
-  const { data: pageTags, mutate: updatePageTagsForEditors } = usePageTagsForEditors(pageId);
+  const { data: pageTags } = usePageTagsForEditors(pageId);
   const { data: grant } = useSelectedGrant();
   const { data: hackmdUri } = useHackmdUri();
 
@@ -196,16 +196,17 @@ export const PageEditorByHackmd = (): JSX.Element => {
       const optionsToSave = getOptionsToSave(
         isSlackEnabled, slackChannels, grant.grant, grant.grantedGroup?.id, grant.grantedGroup?.name, pageTags ?? [], true,
       );
-      const res = await saveOrUpdate(optionsToSave, { pageId, path: currentPagePathOrPathname, revisionId: revisionIdHackmdSynced }, markdown);
-
-      // set updated data
-      setRemoteRevisionId(res.revision._id);
-      mutateRevisionIdHackmdSynced(res.page.revisionHackmdSynced);
-      mutateHasDraftOnHackmd(res.page.hasDraftOnHackmd);
-      updatePageTagsForEditors(res.tags);
+      await saveOrUpdate(optionsToSave, { pageId, path: currentPagePathOrPathname, revisionId: revisionIdHackmdSynced }, markdown);
 
       // update pageData
-      mutatePageData();
+      await mutatePageData();
+
+      if (pageData == null) { throw Error('page data is null') }
+
+      // set updated data
+      setRemoteRevisionId(revision?._id);
+      mutateRevisionIdHackmdSynced(pageData.revisionHackmdSynced);
+      mutateHasDraftOnHackmd(pageData.hasDraftOnHackmd);
 
       // call reset
       setIsInitialized(false);
@@ -219,8 +220,8 @@ export const PageEditorByHackmd = (): JSX.Element => {
       toastError(error.message);
     }
   }, [
-    grant, isSlackEnabled, pageTags, slackChannels, updatePageTagsForEditors, pageId, currentPagePath, currentPathname,
-    revisionIdHackmdSynced, mutatePageData, mutateHasDraftOnHackmd, mutateRevisionIdHackmdSynced, t,
+    grant, isSlackEnabled, pageTags, slackChannels, pageId, currentPagePath, currentPathname,
+    revisionIdHackmdSynced, mutatePageData, mutateHasDraftOnHackmd, mutateRevisionIdHackmdSynced, t, pageData,
   ]);
 
   /**
