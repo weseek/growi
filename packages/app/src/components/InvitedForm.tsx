@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from 'react';
+import React, { useCallback } from 'react';
 
 import { useTranslation } from 'next-i18next';
 
@@ -16,8 +16,6 @@ export const InvitedForm = (props: InvitedFormProps): JSX.Element => {
 
   const { t } = useTranslation();
   const { data: user } = useCurrentUser();
-
-  const [loginErrors, setLoginErrors] = useState<Error[]>([]);
 
   const { invitedFormUsername, invitedFormName } = props;
 
@@ -39,11 +37,11 @@ export const InvitedForm = (props: InvitedFormProps): JSX.Element => {
     };
 
     try {
-      const res = await apiv3Post('/invited', { invitedForm });
+      await apiv3Post('/invited', { invitedForm });
       window.location.href = '/';
     }
     catch (err) {
-      setLoginErrors(err);
+      // TODO: show errors
     }
   }, []);
 
@@ -53,26 +51,10 @@ export const InvitedForm = (props: InvitedFormProps): JSX.Element => {
 
   return (
     <div className="noLogin-dialog p-3 mx-auto" id="noLogin-dialog">
-
-      {
-        loginErrors != null && loginErrors.length > 0 ? (
-          <p className="alert alert-danger">
-            {loginErrors.map((err, index) => {
-              return (
-                <span key={index}>
-                  {t(`message.${err.message}`)}<br/>
-                </span>
-              );
-            })}
-          </p>
-        ) : (
-          <p className="alert alert-success">
-            <strong>{ t('invited.discription_heading') }</strong><br></br>
-            <small>{ t('invited.discription') }</small>
-          </p>
-        )
-      }
-
+      <p className="alert alert-success">
+        <strong>{ t('invited.discription_heading') }</strong><br></br>
+        <small>{ t('invited.discription') }</small>
+      </p>
       <form role="form" onSubmit={submitHandler} id="invited-form">
         {/* Email Form */}
         <div className="input-group">
