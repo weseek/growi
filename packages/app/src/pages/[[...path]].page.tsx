@@ -399,16 +399,16 @@ async function injectPageData(context: GetServerSidePropsContext, props: Props):
   const pageWithMeta: IPageToShowRevisionWithMeta = await pageService.findPageAndMetaDataByViewer(pageId, currentPathname, user, true); // includeEmpty = true, isSharedPage = false
   const page = pageWithMeta?.data as unknown as PageDocument;
 
+  // add user to seen users
+  if (page != null && user != null) {
+    await page.seen(user);
+  }
+
   // populate & check if the revision is latest
   if (page != null) {
     page.initLatestRevisionField(revisionId);
     await page.populateDataToShowRevision();
     props.isLatestRevision = page.isLatestRevision();
-  }
-
-  // add user to seen users
-  if (page != null && user != null) {
-    await page.seen(user);
   }
 
   props.pageWithMeta = pageWithMeta;
