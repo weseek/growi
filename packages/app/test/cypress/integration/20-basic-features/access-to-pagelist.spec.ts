@@ -79,7 +79,7 @@ context('Access to timeline', () => {
       cy.get('.nav-title > li').eq(1).find('a').click();
     });
     // eslint-disable-next-line cypress/no-unnecessary-waiting
-    cy.wait(1000); // wait for loading wiki
+    cy.wait(500); // wait for loading wiki
     cy.screenshot(`${ssPrefix}1-timeline-list`, {capture: 'viewport'});
   });
 
@@ -92,7 +92,7 @@ context('Access to timeline', () => {
     });
     cy.get('.modal').should('be.visible').scrollTo('top');
     // eslint-disable-next-line cypress/no-unnecessary-waiting
-    cy.wait(1000); // wait for loading wiki
+    cy.wait(500); // wait for loading wiki
     cy.screenshot(`${ssPrefix}2-timeline-list-fullscreen`, {capture: 'viewport'});
     cy.getByTestid('page-accessories-modal').parent().should('have.class','show').within(() => {
       cy.get('button.close').eq(1).click();
