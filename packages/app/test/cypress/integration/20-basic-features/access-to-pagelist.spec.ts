@@ -12,8 +12,7 @@ context('Access to pagelist', () => {
   it('Page list modal is successfully opened ', () => {
     cy.visit('/');
     cy.getByTestid('pageListButton').click({force: true});
-    cy.getByTestid('page-accessories-modal').parent().should('have.class','show');
-    cy.screenshot(`${ssPrefix}1-open-pagelist-modal`);
+    cy.getByTestid('page-accessories-modal').should('be.visible').screenshot(`${ssPrefix}1-open-pagelist-modal`);
   });
 
   it('Successfully duplicate a page from page list', () => {
@@ -21,8 +20,10 @@ context('Access to pagelist', () => {
     cy.getByTestid('pageListButton').click({force: true});
     cy.getByTestid('page-accessories-modal').parent().should('have.class','show').within(() => {
       cy.getByTestid('open-page-item-control-btn').first().click();
-      cy.screenshot(`${ssPrefix}2-click-on-three-dots-menu`);
-      cy.get('.dropdown-menu').should('have.class', 'show').first().within(() => {
+      cy.getByTestid('page-item-control-menu').should('have.class', 'show').first().within(() => {
+        // eslint-disable-next-line cypress/no-unnecessary-waiting
+        cy.wait(300);
+        cy.screenshot(`${ssPrefix}2-open-page-item-control-menu`);
         cy.getByTestid('open-page-duplicate-modal-btn').click();
       });
     });
