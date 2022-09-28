@@ -8,6 +8,7 @@ import PropTypes from 'prop-types';
 import { Button } from 'reactstrap';
 import * as loadScript from 'simple-load-script';
 import urljoin from 'url-join';
+import { debounce } from 'throttle-debounce';
 
 import InterceptorManager from '~/services/interceptor-manager';
 import loggerFactory from '~/utils/logger';
@@ -586,9 +587,25 @@ class CodeMirrorEditor extends AbstractEditor {
 
   }
 
+  shouldCallCheckWhetherEmojiPickerShouldBeShown(event) { // 引数は要検討
+    const state = {
+      isEmojiPickerMode: true,
+      currentLetter: 'a', // :, Space, Backspace, Enter
+    };
+
+    if (state.currentLetter === 'Space') {
+      state.isEmojiPickerMode = false;
+    }
+    if (state.currentLetter === ':') {
+      state.isEmojiPickerMode = true;
+    }
+
+    return event.key !== 'Backspace';
+  }
+
   keyUpHandler(editor, event) {
-    if (event.key === ':') {
-      this.checkWhetherEmojiPickerShouldBeShown();
+    if (this.shouldCallCheckWhetherEmojiPickerShouldBeShown(event)) {
+      debounce(100, () => this.checkWhetherEmojiPickerShouldBeShown());
     }
   }
 
