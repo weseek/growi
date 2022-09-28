@@ -406,6 +406,11 @@ async function injectPageData(context: GetServerSidePropsContext, props: Props):
     props.isLatestRevision = page.isLatestRevision();
   }
 
+  // add user to seen users
+  if (req.user != null) {
+    await page.seen(req.user);
+  }
+
   props.pageWithMeta = pageWithMeta;
 }
 
