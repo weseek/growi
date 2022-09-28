@@ -7,6 +7,7 @@ export const getOptionsToSave = (
     grantUserGroupId: string | null | undefined,
     grantUserGroupName: string | null | undefined,
     pageTags: string[],
+    isSyncRevisionToHackmd?: boolean,
 ): OptionsToSave => {
   return {
     pageTags,
@@ -15,5 +16,6 @@ export const getOptionsToSave = (
     grant,
     grantUserGroupId,
     grantUserGroupName,
+    isSyncRevisionToHackmd,
   };
 };

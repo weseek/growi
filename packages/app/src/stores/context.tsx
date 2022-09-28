@@ -11,7 +11,7 @@ import { GrowiThemes } from '~/interfaces/theme';
 import InterceptorManager from '~/services/interceptor-manager';
 
 import { TargetAndAncestors } from '../interfaces/page-listing-results';
-import { IUser } from '../interfaces/user';
+import { IUser, IUserHasId } from '../interfaces/user';
 
 import { useStaticSWR } from './use-static-swr';
 
@@ -87,10 +87,9 @@ export const useIsTrashPage = (initialData?: boolean): SWRResponse<boolean, Erro
   return useStaticSWR<boolean, Error>('isTrashPage', initialData, { fallbackData: false });
 };
 
-export const useIsNotCreatable = (initialData?: boolean): SWRResponse<boolean, Error> => {
-  return useStaticSWR<boolean, Error>('isNotCreatable', initialData, { fallbackData: false });
-};
-
+// export const useIsNotCreatable = (initialData?: boolean): SWRResponse<boolean, Error> => {
+//   return useStaticSWR<boolean, Error>('isNotCreatable', initialData, { fallbackData: false });
+// };
 export const useIsForbidden = (initialData?: boolean): SWRResponse<boolean, Error> => {
   return useStaticSWR<boolean, Error>('isForbidden', initialData, { fallbackData: false });
 };
@@ -99,8 +98,8 @@ export const useIsNotFound = (initialData?: boolean): SWRResponse<boolean, Error
   return useStaticSWR<boolean, Error>('isNotFound', initialData, { fallbackData: false });
 };
 
-export const usePageUser = (initialData?: Nullable<any>): SWRResponse<Nullable<any>, Error> => {
-  return useStaticSWR<Nullable<any>, Error>('pageUser', initialData);
+export const usePageUser = (initialData?: IUserHasId): SWRResponse<IUserHasId, Error> => {
+  return useStaticSWR<IUserHasId, Error>('pageUser', initialData);
 };
 
 export const useHasChildren = (initialData?: Nullable<any>): SWRResponse<Nullable<any>, Error> => {
@@ -275,13 +274,14 @@ export const useIsGuestUser = (): SWRResponse<boolean, Error> => {
 
 export const useIsEditable = (): SWRResponse<boolean, Error> => {
   const { data: isGuestUser } = useIsGuestUser();
-  const { data: isNotCreatable } = useIsNotCreatable();
+  const { data: isForbidden } = useIsForbidden();
+  const { data: isIdenticalPath } = useIsIdenticalPath();
   const { data: isTrashPage } = useIsTrashPage();
 
   return useSWRImmutable(
-    ['isEditable', isGuestUser, isTrashPage, isNotCreatable],
-    (key: Key, isGuestUser: boolean, isTrashPage: boolean, isNotCreatable: boolean) => {
-      return (!isNotCreatable && !isTrashPage && !isGuestUser);
+    ['isEditable', isGuestUser, isForbidden, isIdenticalPath, isTrashPage],
+    (key: Key, isGuestUser: boolean, isForbidden: boolean, isIdenticalPath: boolean, isTrashPage: boolean) => {
+      return (!isTrashPage && !isForbidden && !isIdenticalPath && !isGuestUser);
     },
   );
 };

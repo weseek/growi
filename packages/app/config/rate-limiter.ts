@@ -33,7 +33,7 @@ export const defaultConfig: IApiRateLimitEndpointMap = {
     maxRequests: MAX_REQUESTS_TIER_1,
     usersPerIpProspection: 100,
   },
-  '/login/activateInvited': {
+  '/invited/activateInvited': {
     method: 'POST',
     maxRequests: MAX_REQUESTS_TIER_2,
   },

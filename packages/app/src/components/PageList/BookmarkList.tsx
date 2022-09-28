@@ -1,27 +1,27 @@
 import React, { useState, useCallback, useEffect } from 'react';
 
-import PropTypes from 'prop-types';
 import { useTranslation } from 'next-i18next';
 
 import { toastError } from '~/client/util/apiNotification';
 import { apiv3Get } from '~/client/util/apiv3-client';
+import { MyBookmarkList } from '~/interfaces/bookmark-info';
 import loggerFactory from '~/utils/logger';
 
 import PaginationWrapper from '../PaginationWrapper';
 
-
-import PageListItemS from './PageListItemS';
-
+import { PageListItemS } from './PageListItemS';
 
 const logger = loggerFactory('growi:BookmarkList');
 
-const BookmarkList = (props) => {
-  const { t } = useTranslation();
+type BookmarkListProps = {
+  userId: string
+}
 
+export const BookmarkList = (props: BookmarkListProps): JSX.Element => {
   const { userId } = props;
 
-  const [pages, setPages] = useState([]);
-
+  const { t } = useTranslation();
+  const [pages, setPages] = useState<MyBookmarkList>([]);
   const [activePage, setActivePage] = useState(1);
   const [totalItemsCount, setTotalItemsCount] = useState(0);
   const [pagingLimit, setPagingLimit] = useState(10);
@@ -51,24 +51,18 @@ const BookmarkList = (props) => {
     getMyBookmarkList();
   }, [getMyBookmarkList]);
 
-  /**
-   * generate Elements of Page
-   *
-   * @param {any} pages Array of pages Model Obj
-   *
-   */
-  const generatePageList = pages.map(page => (
-    <li key={`my-bookmarks:${page._id}`} className="mt-4">
-      <PageListItemS page={page.page} />
-    </li>
-  ));
-
   return (
     <div className="bookmarks-list-container">
       {pages.length === 0 ? t('No bookmarks yet') : (
         <>
           <ul className="page-list-ul page-list-ul-flat mb-3">
-            {generatePageList}
+
+            {pages.map(page => (
+              <li key={`my-bookmarks:${page._id}`} className="mt-4">
+                <PageListItemS page={page.page} />
+              </li>
+            ))}
+
           </ul>
           <PaginationWrapper
             activePage={activePage}
@@ -82,11 +76,4 @@ const BookmarkList = (props) => {
       )}
     </div>
   );
-
 };
-
-BookmarkList.propTypes = {
-  userId: PropTypes.string.isRequired,
-};
-
-export default BookmarkList;

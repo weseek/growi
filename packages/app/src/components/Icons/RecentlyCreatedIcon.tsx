@@ -1,6 +1,6 @@
 import React from 'react';
 
-const RecentlyCreatedIcon = () => (
+export const RecentlyCreatedIcon = (): JSX.Element => (
   <svg
     xmlns="http://www.w3.org/2000/svg"
     width="20"
@@ -40,5 +40,3 @@ const RecentlyCreatedIcon = () => (
     </g>
   </svg>
 );
-
-export default RecentlyCreatedIcon;

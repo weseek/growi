@@ -109,7 +109,7 @@ export class InstallerService {
     return configManager.updateConfigsInTheSameNamespace('crowi', initialConfig, true);
   }
 
-  async install(firstAdminUserToSave: IUser, globalLang: Lang, options?: AutoInstallOptions): Promise<IUser> {
+  async install(firstAdminUserToSave: Pick<IUser, 'name' | 'username' | 'email' | 'password'>, globalLang: Lang, options?: AutoInstallOptions): Promise<IUser> {
     await this.initDB(globalLang, options);
 
     // TODO typescriptize models/user.js and remove eslint-disable-next-line
@@ -144,7 +144,7 @@ export class InstallerService {
     const rootRevision = await Revision.findOne({ path: '/' });
     rootPage.creator = adminUser._id;
     rootPage.lastUpdateUser = adminUser._id;
-    rootRevision.creator = adminUser._id;
+    rootRevision.author = adminUser._id;
     await Promise.all([rootPage.save(), rootRevision.save()]);
 
     // create initial pages

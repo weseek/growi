@@ -1,15 +1,15 @@
 import React, {
-  FC, useEffect, useState, useMemo, memo, useCallback,
+  FC, useState, useMemo, memo, useCallback,
 } from 'react';
 
+import { IRevisionHasId, isPopulated, getIdForRef } from '@growi/core';
 import dynamic from 'next/dynamic';
 import { Button } from 'reactstrap';
 
 import { toastError } from '~/client/util/apiNotification';
 import { apiPost } from '~/client/util/apiv1-client';
-import { useCurrentPagePath } from '~/stores/context';
-import { useSWRxCurrentPage } from '~/stores/page';
-import { useCommentPreviewOptions } from '~/stores/renderer';
+import { RendererOptions } from '~/services/renderer/renderer';
+import { useCommentForCurrentPageOptions } from '~/stores/renderer';
 
 import { ICommentHasId, ICommentHasIdList } from '../interfaces/comment';
 import { useSWRxPageComment } from '../stores/comment';
@@ -27,9 +27,11 @@ const DeleteCommentModal = dynamic<DeleteCommentModalProps>(
   () => import('./PageComment/DeleteCommentModal').then(mod => mod.DeleteCommentModal), { ssr: false },
 );
 
-
-type PageCommentProps = {
-  pageId?: string,
+export type PageCommentProps = {
+  rendererOptions?: RendererOptions,
+  pageId: string,
+  revision: string | IRevisionHasId,
+  currentUser: any,
   isReadOnly: boolean,
   titleAlign?: 'center' | 'left' | 'right',
   highlightKeywords?: string[],
@@ -39,48 +41,23 @@ type PageCommentProps = {
 export const PageComment: FC<PageCommentProps> = memo((props:PageCommentProps): JSX.Element => {
 
   const {
-    pageId, highlightKeywords, isReadOnly, titleAlign, hideIfEmpty,
+    rendererOptions: rendererOptionsByProps,
+    pageId, revision, currentUser, highlightKeywords, isReadOnly, titleAlign, hideIfEmpty,
   } = props;
 
   const { data: comments, mutate } = useSWRxPageComment(pageId);
-  const { data: rendererOptions } = useCommentPreviewOptions();
-  const { data: currentPage } = useSWRxCurrentPage();
-  const { data: currentPagePath } = useCurrentPagePath();
+  const { data: rendererOptionsForCurrentPage } = useCommentForCurrentPageOptions();
 
   const [commentToBeDeleted, setCommentToBeDeleted] = useState<ICommentHasId | null>(null);
   const [isDeleteConfirmModalShown, setIsDeleteConfirmModalShown] = useState<boolean>(false);
   const [showEditorIds, setShowEditorIds] = useState<Set<string>>(new Set());
-  const [formatedComments, setFormatedComments] = useState<ICommentHasIdList | null>(null);
   const [errorMessageOnDelete, setErrorMessageOnDelete] = useState<string>('');
 
-  const commentsFromOldest = useMemo(() => (formatedComments != null ? [...formatedComments].reverse() : null), [formatedComments]);
+  const commentsFromOldest = useMemo(() => (comments != null ? [...comments].reverse() : null), [comments]);
   const commentsExceptReply: ICommentHasIdList | undefined = useMemo(
     () => commentsFromOldest?.filter(comment => comment.replyTo == null), [commentsFromOldest],
   );
   const allReplies = {};
-
-  const highlightComment = useCallback((comment: string):string => {
-    if (highlightKeywords == null) return comment;
-
-    let highlightedComment = '';
-    highlightKeywords.forEach((highlightKeyword) => {
-      highlightedComment = comment.replaceAll(highlightKeyword, '<em class="highlighted-keyword">$&</em>');
-    });
-    return highlightedComment;
-  }, [highlightKeywords]);
-
-  useEffect(() => {
-    if (comments != null) {
-      const preprocessedCommentList: string[] = comments.map((comment) => {
-        const highlightedComment: string = highlightComment(comment.comment);
-        return highlightedComment;
-      });
-      const preprocessedComments: ICommentHasIdList = comments.map((comment, index) => {
-        return { ...comment, comment: preprocessedCommentList[index] };
-      });
-      setFormatedComments(preprocessedComments);
-    }
-  }, [comments, highlightComment]);
 
   if (commentsFromOldest != null) {
     commentsFromOldest.forEach((comment) => {
@@ -132,8 +109,10 @@ export const PageComment: FC<PageCommentProps> = memo((props:PageCommentProps): 
   let commentTitleClasses = 'border-bottom py-3 mb-3';
   commentTitleClasses = titleAlign != null ? `${commentTitleClasses} text-${titleAlign}` : `${commentTitleClasses} text-center`;
 
-  if (commentsFromOldest == null || commentsExceptReply == null || rendererOptions == null || currentPagePath == null || currentPage == null) {
-    if (hideIfEmpty && comments?.length === 0) {
+  const rendererOptions = rendererOptionsByProps ?? rendererOptionsForCurrentPage;
+
+  if (commentsFromOldest == null || commentsExceptReply == null || rendererOptions == null) {
+    if (hideIfEmpty) {
       return <></>;
     }
     return (
@@ -141,33 +120,33 @@ export const PageComment: FC<PageCommentProps> = memo((props:PageCommentProps): 
     );
   }
 
-  if (currentPage.revision == null) {
-    return <></>;
-  }
+  const revisionId = getIdForRef(revision);
+  const revisionCreatedAt = (isPopulated(revision)) ? revision.createdAt : undefined;
 
   const generateCommentElement = (comment: ICommentHasId) => (
     <Comment
+      rendererOptions={rendererOptions}
       comment={comment}
+      revisionId={revisionId}
+      revisionCreatedAt={revisionCreatedAt as Date}
+      currentUser={currentUser}
       isReadOnly={isReadOnly}
+      highlightKeywords={highlightKeywords}
       deleteBtnClicked={onClickDeleteButton}
       onComment={mutate}
-      rendererOptions={rendererOptions}
-      currentPagePath={currentPagePath}
-      currentRevisionId={currentPage.revision._id}
-      currentRevisionCreatedAt={currentPage.revision.createdAt}
     />
   );
 
   const generateReplyCommentsElement = (replyComments: ICommentHasIdList) => (
     <ReplyComments
+      rendererOptions={rendererOptions}
       isReadOnly={isReadOnly}
+      revisionId={revisionId}
+      revisionCreatedAt={revisionCreatedAt as Date}
+      currentUser={currentUser}
       replyList={replyComments}
       deleteBtnClicked={onClickDeleteButton}
       onComment={mutate}
-      rendererOptions={rendererOptions}
-      currentPagePath={currentPagePath}
-      currentRevisionId={currentPage.revision._id}
-      currentRevisionCreatedAt={currentPage.revision.createdAt}
     />
   );
 
@@ -207,7 +186,7 @@ export const PageComment: FC<PageCommentProps> = memo((props:PageCommentProps): 
                     )}
                     {(!isReadOnly && showEditorIds.has(comment._id)) && (
                       <CommentEditor
-                        rendererOptions={rendererOptions}
+                        pageId={pageId}
                         replyTo={comment._id}
                         onCancelButtonClicked={() => {
                           removeShowEditorId(comment._id);

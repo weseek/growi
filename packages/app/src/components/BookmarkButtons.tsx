@@ -52,12 +52,12 @@ const BookmarkButtons: FC<Props> = (props: Props) => {
   }, [isGuestUser, isBookmarked]);
 
   return (
-    <div className="btn-group" role="group" aria-label="Bookmark buttons">
+    <div className={`btn-group btn-group-bookmark ${styles['btn-group-bookmark']}`} role="group" aria-label="Bookmark buttons">
       <button
         type="button"
         id="bookmark-button"
         onClick={handleClick}
-        className={`shadow-none btn btn-bookmark ${styles['btn-bookmark']} border-0
+        className={`shadow-none btn btn-bookmark border-0
           ${isBookmarked ? 'active' : ''} ${isGuestUser ? 'disabled' : ''}`}
       >
         <i className={`fa ${isBookmarked ? 'fa-bookmark' : 'fa-bookmark-o'}`}></i>

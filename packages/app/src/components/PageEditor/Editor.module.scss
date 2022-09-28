@@ -1,5 +1,6 @@
 @use '~/styles/mixins' as ms;
 @use '~/styles/bootstrap/init' as bs;
+@use './page-editor-inheritance';
 
 
 .editor-container :global {
@@ -127,7 +128,7 @@
 
   // for Navbar editor
   .navbar-editor {
-    height: 30px;
+    height: page-editor-inheritance.$navbar-editor-height;
     padding: 0;
 
     border-bottom: 1px solid transparent;

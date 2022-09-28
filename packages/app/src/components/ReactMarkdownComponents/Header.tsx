@@ -1,5 +1,8 @@
+import { useEffect, useState } from 'react';
+
 import EventEmitter from 'events';
 
+import { useRouter } from 'next/router';
 import { Element } from 'react-markdown/lib/rehype-filter';
 
 import { NextLink } from './NextLink';
@@ -48,10 +51,28 @@ export const Header = (props: HeaderProps): JSX.Element => {
     node, id, children, level,
   } = props;
 
+  const router = useRouter();
+
+  const [isActive, setActive] = useState(false);
+
   const CustomTag = `h${level}` as keyof JSX.IntrinsicElements;
 
+  // update isActive when hash is changed
+  useEffect(() => {
+    const handler = (url: string) => {
+      const hash = (new URL(url, 'https://example.com')).hash.slice(1);
+      setActive(hash === id);
+    };
+
+    router.events.on('hashChangeComplete', handler);
+
+    return () => {
+      router.events.off('hashChangeComplete', handler);
+    };
+  }, [id, router.events]);
+
   return (
-    <CustomTag id={id} className={`revision-head ${styles['revision-head']}`}>
+    <CustomTag id={id} className={`revision-head ${styles['revision-head']} ${isActive ? 'blink' : ''}`}>
       {children}
       <NextLink href={`#${id}`} className="revision-head-link">
         <span className="icon-link"></span>

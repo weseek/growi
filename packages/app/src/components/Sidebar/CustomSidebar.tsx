@@ -62,7 +62,6 @@ const CustomSidebar: FC = () => {
             <RevisionRenderer
               rendererOptions={rendererOptions}
               markdown={markdown}
-              pagePath="/Sidebar"
               additionalClassName="grw-custom-sidebar-content"
             />
           </div>

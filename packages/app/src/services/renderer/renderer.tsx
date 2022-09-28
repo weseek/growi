@@ -12,7 +12,7 @@ import katex from 'rehype-katex';
 import raw from 'rehype-raw';
 import sanitize, { defaultSchema as sanitizeDefaultSchema } from 'rehype-sanitize';
 import slug from 'rehype-slug';
-import toc, { HtmlElementNode } from 'rehype-toc';
+import { HtmlElementNode } from 'rehype-toc';
 import breaks from 'remark-breaks';
 import emoji from 'remark-emoji';
 import gfm from 'remark-gfm';
@@ -29,9 +29,13 @@ import loggerFactory from '~/utils/logger';
 
 import * as addClass from './rehype-plugins/add-class';
 import * as addLineNumberAttribute from './rehype-plugins/add-line-number-attribute';
+import * as keywordHighlighter from './rehype-plugins/keyword-highlighter';
 import { relativeLinks } from './rehype-plugins/relative-links';
 import { relativeLinksByPukiwikiLikeLinker } from './rehype-plugins/relative-links-by-pukiwiki-like-linker';
+import * as toc from './rehype-plugins/relocate-toc';
+import * as plantuml from './remark-plugins/plantuml';
 import { pukiwikiLikeLinker } from './remark-plugins/pukiwiki-like-linker';
+import * as xsvToTable from './remark-plugins/xsv-to-table';
 
 // import CsvToTable from './PreProcessor/CsvToTable';
 // import EasyGrid from './PreProcessor/EasyGrid';
@@ -245,9 +249,8 @@ export type RendererOptions = Omit<ReactMarkdownOptions, 'remarkPlugins' | 'rehy
 const commonSanitizeOption: SanitizeOption = deepmerge(
   sanitizeDefaultSchema,
   {
-    tagNames: ['svg', 'path'],
+    clobberPrefix: 'mdcont-',
     attributes: {
-      path: ['d'],
       '*': ['class', 'className', 'style'],
     },
   },
@@ -261,20 +264,19 @@ const isSanitizePlugin = (pluggable: Pluggable): pluggable is SanitizePlugin => 
   return 'tagNames' in sanitizeOption && 'attributes' in sanitizeOption;
 };
 
-const hasSanitizePluginAtTheLast = (options: RendererOptions): boolean => {
+const hasSanitizePlugin = (options: RendererOptions, shouldBeTheLastItem: boolean): boolean => {
   const { rehypePlugins } = options;
   if (rehypePlugins == null || rehypePlugins.length === 0) {
     return false;
   }
 
-  // get the last element
-  const lastPluggableElem = rehypePlugins.slice(-1)[0];
-
-  return isSanitizePlugin(lastPluggableElem);
+  return shouldBeTheLastItem
+    ? isSanitizePlugin(rehypePlugins.slice(-1)[0]) // evaluate the last one
+    : rehypePlugins.some(rehypePlugin => isSanitizePlugin(rehypePlugin));
 };
 
-const verifySanitizePlugin = (options: RendererOptions): void => {
-  if (hasSanitizePluginAtTheLast(options)) {
+const verifySanitizePlugin = (options: RendererOptions, shouldBeTheLastItem = true): void => {
+  if (hasSanitizePlugin(options, shouldBeTheLastItem)) {
     return;
   }
 
@@ -285,6 +287,7 @@ const generateCommonOptions = (pagePath: string|undefined, config: RendererConfi
   return {
     remarkPlugins: [
       gfm,
+      emoji,
       pukiwikiLikeLinker,
       growiPlugin,
     ],
@@ -315,8 +318,9 @@ export const generateViewOptions = (
 
   // add remark plugins
   remarkPlugins.push(
-    emoji,
     math,
+    [plantuml.remarkPlugin, { baseUrl: config.plantumlUri }],
+    xsvToTable.remarkPlugin,
     lsxGrowiPlugin.remarkPlugin,
   );
   if (config.isEnabledLinebreaks) {
@@ -326,42 +330,17 @@ export const generateViewOptions = (
   // add rehype plugins
   rehypePlugins.push(
     slug,
-    katex,
-    [toc, {
-      nav: false,
-      headings: ['h1', 'h2', 'h3'],
-      customizeTOC: (toc: HtmlElementNode) => {
-        // method for replace <ol> to <ul>
-        const replacer = (children) => {
-          children.forEach((child) => {
-            if (child.type === 'element' && child.tagName === 'ol') {
-              child.tagName = 'ul';
-            }
-            if (child.children) {
-              replacer(child.children);
-            }
-          });
-        };
-        replacer([toc]); // replace <ol> to <ul>
-
-        // For storing tocNode to global state with swr
-        // search: tocRef.current
-        storeTocNode(toc);
-
-        return false; // not show toc in body
-      },
-    }],
     [lsxGrowiPlugin.rehypePlugin, { pagePath }],
+    [sanitize, deepmerge(
+      commonSanitizeOption,
+      lsxGrowiPlugin.sanitizeOption,
+    )],
+    katex,
+    [toc.rehypePluginStore, { storeTocNode }],
     // [autoLinkHeadings, {
     //   behavior: 'append',
     // }]
   );
-
-  const sanitizeOption = deepmerge(
-    commonSanitizeOption,
-    lsxGrowiPlugin.sanitizeOption,
-  );
-  rehypePlugins.push([sanitize, sanitizeOption]);
 
   // add components
   if (components != null) {
@@ -383,7 +362,7 @@ export const generateViewOptions = (
   // renderer.setMarkdownSettings({ breaks: rendererSettings.isEnabledLinebreaks });
   // renderer.configure();
 
-  verifySanitizePlugin(options);
+  verifySanitizePlugin(options, false);
   return options;
 };
 
@@ -391,17 +370,14 @@ export const generateTocOptions = (config: RendererConfig, tocNode: HtmlElementN
 
   const options = generateCommonOptions(undefined, config);
 
-  const { remarkPlugins, rehypePlugins } = options;
+  const { rehypePlugins } = options;
 
   // add remark plugins
-  remarkPlugins.push(emoji);
+  // remarkPlugins.push();
 
   // add rehype plugins
   rehypePlugins.push(
-    [toc, {
-      headings: ['h1', 'h2', 'h3'],
-      customizeTOC: () => tocNode,
-    }],
+    [toc.rehypePluginRestore, { tocNode }],
     [sanitize, commonSanitizeOption],
   );
   // renderer.rehypePlugins.push([autoLinkHeadings, {
@@ -412,25 +388,16 @@ export const generateTocOptions = (config: RendererConfig, tocNode: HtmlElementN
   return options;
 };
 
-export const generatePreviewOptions = (pagePath: string, config: RendererConfig): RendererOptions => {
-  // // Add configurers for preview
-  // renderer.addConfigurers([
-  //   new FooternoteConfigurer(),
-  //   new HeaderLineNumberConfigurer(),
-  //   new TableConfigurer(),
-  // ]);
-
-  // renderer.setMarkdownSettings({ breaks: rendererSettings?.isEnabledLinebreaks });
-  // renderer.configure();
-
+export const generateSimpleViewOptions = (config: RendererConfig, pagePath: string, highlightKeywords?: string | string[]): RendererOptions => {
   const options = generateCommonOptions(pagePath, config);
 
   const { remarkPlugins, rehypePlugins, components } = options;
 
   // add remark plugins
   remarkPlugins.push(
-    emoji,
     math,
+    [plantuml.remarkPlugin, { baseUrl: config.plantumlUri }],
+    xsvToTable.remarkPlugin,
     lsxGrowiPlugin.remarkPlugin,
   );
   if (config.isEnabledLinebreaks) {
@@ -439,53 +406,58 @@ export const generatePreviewOptions = (pagePath: string, config: RendererConfig)
 
   // add rehype plugins
   rehypePlugins.push(
-    katex,
     [lsxGrowiPlugin.rehypePlugin, { pagePath }],
-    addLineNumberAttribute.rehypePlugin,
-    // [autoLinkHeadings, {
-    //   behavior: 'append',
-    // }]
+    [keywordHighlighter.rehypePlugin, { keywords: highlightKeywords }],
+    [sanitize, deepmerge(
+      commonSanitizeOption,
+      lsxGrowiPlugin.sanitizeOption,
+    )],
+    katex,
   );
-
-  const sanitizeOption = deepmerge(
-    commonSanitizeOption,
-    lsxGrowiPlugin.sanitizeOption,
-    addLineNumberAttribute.sanitizeOption,
-  );
-  // rehypePlugins.push([sanitize, sanitizeOption]);
 
   // add components
   if (components != null) {
     components.lsx = props => <Lsx {...props} />;
   }
 
-  // verifySanitizePlugin(options);
+  verifySanitizePlugin(options, false);
   return options;
 };
 
-export const generateCommentPreviewOptions = (config: RendererConfig): RendererOptions => {
-  const options = generateCommonOptions(undefined, config);
-  const { remarkPlugins, rehypePlugins } = options;
+export const generatePreviewOptions = (config: RendererConfig, pagePath: string): RendererOptions => {
+  const options = generateCommonOptions(pagePath, config);
+
+  const { remarkPlugins, rehypePlugins, components } = options;
 
   // add remark plugins
-  remarkPlugins.push(emoji);
-  if (config.isEnabledLinebreaksInComments) {
+  remarkPlugins.push(
+    math,
+    [plantuml.remarkPlugin, { baseUrl: config.plantumlUri }],
+    xsvToTable.remarkPlugin,
+    lsxGrowiPlugin.remarkPlugin,
+  );
+  if (config.isEnabledLinebreaks) {
     remarkPlugins.push(breaks);
   }
 
-  // renderer.addConfigurers([
-  //   new TableConfigurer(),
-  // ]);
-
-  // renderer.setMarkdownSettings({ breaks: rendererSettings.isEnabledLinebreaksInComments });
-  // renderer.configure();
-
   // add rehype plugins
   rehypePlugins.push(
-    [sanitize, commonSanitizeOption],
+    [lsxGrowiPlugin.rehypePlugin, { pagePath }],
+    addLineNumberAttribute.rehypePlugin,
+    [sanitize, deepmerge(
+      commonSanitizeOption,
+      lsxGrowiPlugin.sanitizeOption,
+      addLineNumberAttribute.sanitizeOption,
+    )],
+    katex,
   );
 
-  verifySanitizePlugin(options);
+  // add components
+  if (components != null) {
+    components.lsx = props => <Lsx {...props} />;
+  }
+
+  verifySanitizePlugin(options, false);
   return options;
 };
 
