@@ -528,9 +528,14 @@ module.exports = function(crowi) {
     const User = this;
     const newUser = new User();
 
+    // Create random string (length 13)
+    const getRandomString = () => {
+      return crypto.randomBytes(32).toString('hex').slice(-13);
+    };
+
     /* eslint-disable newline-per-chained-call */
-    const tmpUsername = `temp_${Math.random().toString(36).slice(-16)}`;
-    const password = Math.random().toString(36).slice(-16);
+    const tmpUsername = `temp_${getRandomString()}`;
+    const password = getRandomString();
     /* eslint-enable newline-per-chained-call */
 
     newUser.username = tmpUsername;

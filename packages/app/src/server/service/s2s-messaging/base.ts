@@ -1,6 +1,7 @@
-import loggerFactory from '~/utils/logger';
+import { randomInt } from 'crypto';
 
 import S2sMessage from '~/server/models/vo/s2s-message';
+import loggerFactory from '~/utils/logger';
 
 import { S2sMessageHandlable } from './handlable';
 
@@ -48,7 +49,7 @@ export abstract class AbstractS2sMessagingService implements S2sMessagingService
   handlableList: S2sMessageHandlable[];
 
   constructor(uri: string) {
-    this.uid = Math.floor(Math.random() * 100000);
+    this.uid = randomInt(5);
     this.uri = uri;
 
     if (uri == null) {
