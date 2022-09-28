@@ -37,8 +37,7 @@ import ShareLinkIcon from '../Icons/ShareLinkIcon';
 import { Skelton } from '../Skelton';
 
 import { GrowiSubNavigation } from './GrowiSubNavigation';
-import { SubNavButtonsProps } from './SubNavButtons';
-
+import { SubNavButtons } from './SubNavButtons';
 
 import PageEditorModeManagerStyles from './PageEditorModeManager.module.scss';
 
@@ -46,10 +45,6 @@ import PageEditorModeManagerStyles from './PageEditorModeManager.module.scss';
 const PageEditorModeManager = dynamic(
   () => import('./PageEditorModeManager'),
   { ssr: false, loading: () => <Skelton additionalClass={`${PageEditorModeManagerStyles['grw-page-editor-mode-manager-skelton']}`} /> },
-);
-const SubNavButtons = dynamic<SubNavButtonsProps>(
-  () => import('./SubNavButtons').then(mod => mod.SubNavButtons),
-  { ssr: false, loading: () => <Skelton additionalClass='btn-skelton py-2' /> },
 );
 
 
