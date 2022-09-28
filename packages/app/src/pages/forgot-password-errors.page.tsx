@@ -5,12 +5,14 @@ import { useTranslation } from 'next-i18next';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import Link from 'next/link';
 
+import { forgotPasswordErrorCode } from '~/interfaces/errors/forgot-password';
+
 import {
   CommonProps, getNextI18NextConfig, getServerSideCommonProps,
 } from './utils/commons';
 
 type Props = CommonProps & {
-  errorCode: string
+  errorCode: forgotPasswordErrorCode
 };
 
 const ForgotPasswordErrorsPage: NextPage<Props> = (props: Props) => {
@@ -27,9 +29,9 @@ const ForgotPasswordErrorsPage: NextPage<Props> = (props: Props) => {
                 <h1><i className="icon-lock-open large"/></h1>
                 <h2 className="text-center">{ t('forgot_password.reset_password') }</h2>
 
-                { errorCode === 'password-reset-is-unavailable' && <h3 className="text-muted">This feature is unavailable.</h3>}
+                { errorCode === forgotPasswordErrorCode.PASSWORD_RESET_IS_UNAVAILABLE && <h3 className="text-muted">This feature is unavailable.</h3>}
 
-                { errorCode === 'password-reset-order-is-not-appropriate' && (
+                { errorCode === (forgotPasswordErrorCode.PASSWORD_RESET_ORDER_IS_NOT_APPROPRIATE || forgotPasswordErrorCode.TOKEN_NOT_FOUND) && (
                   <div>
                     <div className="alert alert-warning mb-3">
                       <h2>{ t('forgot_password.incorrect_token_or_expired_url') }</h2>
@@ -69,7 +71,7 @@ export const getServerSideProps: GetServerSideProps = async(context: GetServerSi
 
   const errorCode = context.query.errorCode;
   if (typeof errorCode === 'string') {
-    props.errorCode = errorCode;
+    props.errorCode = errorCode as forgotPasswordErrorCode;
   }
 
   // Direct access to '/forgot-password-errors' redirects to '/'

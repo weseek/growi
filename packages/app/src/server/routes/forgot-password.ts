@@ -3,6 +3,7 @@ import {
 } from 'express';
 import createError from 'http-errors';
 
+import { forgotPasswordErrorCode } from '~/interfaces/errors/forgot-password';
 import loggerFactory from '~/utils/logger';
 
 import { ReqWithPasswordResetOrder } from '../middlewares/inject-reset-order-by-token-middleware';
@@ -24,7 +25,7 @@ export const checkForgotPasswordEnabledMiddlewareFactory = (crowi: any, forApi =
       logger.error(message);
 
       const statusCode = forApi ? 405 : 404;
-      return next(createError(statusCode, message, { code: 'password-reset-is-unavailable' }));
+      return next(createError(statusCode, message, { code: forgotPasswordErrorCode.PASSWORD_RESET_IS_UNAVAILABLE }));
     }
 
     next();
@@ -51,7 +52,7 @@ type CrowiReq = Request & {
 }
 
 // middleware to handle error
-export const handleErrorsMiddleware = (crowi: any) => {
+export const handleErrorsMiddleware = (crowi: Crowi) => {
   return (error: Error & { code: string }, req: CrowiReq, res: Response, next: NextFunction): void => {
     if (error != null) {
       const { nextApp } = crowi;
