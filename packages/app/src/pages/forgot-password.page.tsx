@@ -5,23 +5,14 @@ import { useTranslation } from 'next-i18next';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import dynamic from 'next/dynamic';
 
-import { CrowiRequest } from '~/interfaces/crowi-request';
-
 import {
   CommonProps, getNextI18NextConfig, getServerSideCommonProps,
 } from './utils/commons';
 
 const PasswordResetRequestForm = dynamic(() => import('~/components/PasswordResetRequestForm'), { ssr: false });
 
-type Props = CommonProps & {
-  isLocalStrategySetup: boolean,
-  isPasswordResetEnabled: boolean,
-};
-
-const ForgotPasswordPage: NextPage<Props> = (props: Props) => {
+const ForgotPasswordPage: NextPage = () => {
   const { t } = useTranslation();
-
-  const isEnabled = props.isLocalStrategySetup && props.isPasswordResetEnabled;
 
   return (
     <div id="main" className="main">
@@ -32,10 +23,7 @@ const ForgotPasswordPage: NextPage<Props> = (props: Props) => {
               <div className="text-center">
                 <h1><i className="icon-lock large"></i></h1>
                 <h1 className="text-center">{ t('forgot_password.forgot_password') }</h1>
-                { isEnabled
-                  ? <PasswordResetRequestForm />
-                  : <h3 className="text-muted">This feature is unavailable.</h3>
-                }
+                <PasswordResetRequestForm />
               </div>
             </div>
           </div>
@@ -45,17 +33,10 @@ const ForgotPasswordPage: NextPage<Props> = (props: Props) => {
   );
 };
 
-async function injectNextI18NextConfigurations(context: GetServerSidePropsContext, props: Props, namespacesRequired?: string[] | undefined): Promise<void> {
+// eslint-disable-next-line max-len
+async function injectNextI18NextConfigurations(context: GetServerSidePropsContext, props: CommonProps, namespacesRequired?: string[] | undefined): Promise<void> {
   const nextI18NextConfig = await getNextI18NextConfig(serverSideTranslations, context, namespacesRequired);
   props._nextI18Next = nextI18NextConfig._nextI18Next;
-}
-
-function injectServerConfigurations(context: GetServerSidePropsContext, props: Props): void {
-  const req: CrowiRequest = context.req as CrowiRequest;
-  const { crowi } = req;
-
-  props.isPasswordResetEnabled = crowi.configManager.getConfig('crowi', 'security:passport-local:isPasswordResetEnabled');
-  props.isLocalStrategySetup = crowi.passportService.isLocalStrategySetup;
 }
 
 export const getServerSideProps: GetServerSideProps = async(context: GetServerSidePropsContext) => {
@@ -67,9 +48,8 @@ export const getServerSideProps: GetServerSideProps = async(context: GetServerSi
     throw new Error('invalid getSSP result');
   }
 
-  const props: Props = result.props as Props;
+  const props: CommonProps = result.props as CommonProps;
 
-  injectServerConfigurations(context, props);
   await injectNextI18NextConfigurations(context, props, ['translation']);
 
   return {
