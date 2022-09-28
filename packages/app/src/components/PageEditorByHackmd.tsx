@@ -198,14 +198,14 @@ export const PageEditorByHackmd = (): JSX.Element => {
       );
       const res = await saveOrUpdate(optionsToSave, { pageId, path: currentPagePathOrPathname, revisionId: revisionIdHackmdSynced }, markdown);
 
-      // update pageData
-      mutatePageData();
-
       // set updated data
       setRemoteRevisionId(res.revision._id);
       mutateRevisionIdHackmdSynced(res.page.revisionHackmdSynced);
       mutateHasDraftOnHackmd(res.page.hasDraftOnHackmd);
       updatePageTagsForEditors(res.tags);
+
+      // update pageData
+      mutatePageData();
 
       // call reset
       setIsInitialized(false);
