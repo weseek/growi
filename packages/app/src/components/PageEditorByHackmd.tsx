@@ -47,7 +47,7 @@ export const PageEditorByHackmd = (): JSX.Element => {
   const { data: hackmdUri } = useHackmdUri();
 
   // pageData
-  const { data: pageData, mutate: updatePageData } = useSWRxCurrentPage();
+  const { data: pageData, mutate: mutatePageData } = useSWRxCurrentPage();
   const revision = pageData?.revision;
 
   const slackChannels = slackChannelsData?.toString();
@@ -69,35 +69,40 @@ export const PageEditorByHackmd = (): JSX.Element => {
   const hackmdEditorRef = useRef<HackEditorRef>(null);
 
   const saveAndReturnToViewHandler = useCallback(async(opts?: {overwriteScopesOfDescendants: boolean}) => {
-    if (editorMode !== EditorMode.HackMD) {
-      return;
+    if (editorMode !== EditorMode.HackMD) { return }
+
+    try {
+      if (isSlackEnabled == null || currentPathname == null || slackChannels == null || grant == null || revision == null || hackmdEditorRef.current == null) {
+        throw new Error('Some materials to save are invalid');
+      }
+
+      let optionsToSave;
+
+      const currentOptionsToSave = getOptionsToSave(
+        isSlackEnabled, slackChannels, grant.grant, grant.grantedGroup?.id, grant.grantedGroup?.name, pageTags ?? [], true,
+      );
+
+      if (opts != null) {
+        optionsToSave = Object.assign(currentOptionsToSave, {
+          ...opts,
+        });
+      }
+      else {
+        optionsToSave = currentOptionsToSave;
+      }
+
+      const markdown = await hackmdEditorRef.current.getValue();
+
+      await saveOrUpdate(optionsToSave, { pageId, path: currentPagePath || currentPathname, revisionId: revision?._id }, markdown);
+      await mutatePageData();
+      mutateEditorMode(EditorMode.View);
+      toastSuccess(t('successfully_saved_the_page'));
     }
-
-    if (isSlackEnabled == null || currentPathname == null || slackChannels == null || grant == null || revision == null || hackmdEditorRef.current == null) {
-      return;
+    catch (error) {
+      logger.error('failed to save', error);
+      toastError(error.message);
     }
-
-    let optionsToSave;
-
-    const currentOptionsToSave = getOptionsToSave(
-      isSlackEnabled, slackChannels, grant.grant, grant.grantedGroup?.id, grant.grantedGroup?.name, pageTags ?? [], true,
-    );
-
-    if (opts != null) {
-      optionsToSave = Object.assign(currentOptionsToSave, {
-        ...opts,
-      });
-    }
-    else {
-      optionsToSave = currentOptionsToSave;
-    }
-
-    const markdown = await hackmdEditorRef.current.getValue();
-
-    await saveOrUpdate(optionsToSave, { pageId, path: currentPagePath || currentPathname, revisionId: revision?._id }, markdown);
-    await updatePageData();
-    mutateEditorMode(EditorMode.View);
-  }, [currentPagePath, currentPathname, editorMode, grant, isSlackEnabled, pageId, pageTags, revision, slackChannels, mutateEditorMode, updatePageData]);
+  }, [currentPagePath, currentPathname, editorMode, grant, isSlackEnabled, pageId, pageTags, revision, slackChannels, mutateEditorMode, mutatePageData, t]);
 
   // set handler to save and reload Page
   useEffect(() => {
@@ -134,7 +139,7 @@ export const PageEditorByHackmd = (): JSX.Element => {
       mutateRevisionIdHackmdSynced(res.revisionIdHackmdSynced);
     }
     catch (err) {
-      toastError(err);
+      toastError(err.message);
 
       setHasError(true);
       setErrorMessage('GROWI server failed to connect to HackMD.');
@@ -173,7 +178,7 @@ export const PageEditorByHackmd = (): JSX.Element => {
     }
     catch (err) {
       logger.error(err);
-      toastError(err);
+      toastError(err.message);
     }
   }, [setIsHackmdDraftUpdatingInRealtime, mutateHasDraftOnHackmd, mutatePageIdOnHackmd, mutateRevisionIdHackmdSynced, pageId]);
 
@@ -193,7 +198,7 @@ export const PageEditorByHackmd = (): JSX.Element => {
       const res = await saveOrUpdate(optionsToSave, { pageId, path: currentPagePath || currentPathname, revisionId: revisionIdHackmdSynced }, markdown);
 
       // update pageData
-      updatePageData();
+      mutatePageData();
 
       // set updated data
       setRemoteRevisionId(res.revision._id);
@@ -210,11 +215,11 @@ export const PageEditorByHackmd = (): JSX.Element => {
     }
     catch (error) {
       logger.error('failed to save', error);
-      toastError(error);
+      toastError(error.message);
     }
   }, [
     grant, isSlackEnabled, pageTags, slackChannels, updatePageTagsForEditors, pageId, currentPagePath, currentPathname,
-    revisionIdHackmdSynced, updatePageData, mutateHasDraftOnHackmd, mutateRevisionIdHackmdSynced, t,
+    revisionIdHackmdSynced, mutatePageData, mutateHasDraftOnHackmd, mutateRevisionIdHackmdSynced, t,
   ]);
 
   /**
@@ -240,7 +245,7 @@ export const PageEditorByHackmd = (): JSX.Element => {
   }, [pageId, revision?.body, hackmdUri]);
 
   const penpalErrorOccuredHandler = useCallback((error) => {
-    toastError(error);
+    toastError(error.message);
 
     setHasError(true);
     setErrorMessage(t('hackmd.fail_to_connect'));
