@@ -188,13 +188,15 @@ export const PageEditorByHackmd = (): JSX.Element => {
    */
   const onSaveWithShortcut = useCallback(async(markdown) => {
     try {
+      const currentPagePathOrPathname = currentPagePath || currentPathname;
       if (
-        isSlackEnabled == null || grant == null || slackChannels == null || pageId == null || revisionIdHackmdSynced == null || currentPathname == null
+        isSlackEnabled == null || grant == null || slackChannels == null || pageId == null
+        || revisionIdHackmdSynced == null || currentPagePathOrPathname == null
       ) { throw new Error('Some materials to save are invalid') }
       const optionsToSave = getOptionsToSave(
         isSlackEnabled, slackChannels, grant.grant, grant.grantedGroup?.id, grant.grantedGroup?.name, pageTags ?? [], true,
       );
-      const res = await saveOrUpdate(optionsToSave, { pageId, path: currentPagePath || currentPathname, revisionId: revisionIdHackmdSynced }, markdown);
+      const res = await saveOrUpdate(optionsToSave, { pageId, path: currentPagePathOrPathname, revisionId: revisionIdHackmdSynced }, markdown);
 
       // update pageData
       mutatePageData();
