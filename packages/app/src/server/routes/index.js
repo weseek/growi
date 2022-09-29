@@ -203,6 +203,7 @@ module.exports = function(crowi, app) {
   // app.get('/tags'                     , loginRequired, tag.showPage);
   app.get('/tags', loginRequired, next.delegateToNext);
 
+  app.get('/me'                                 , loginRequiredStrictly, injectUserUISettings, next.delegateToNext);
   app.get('/me/*'                                 , loginRequiredStrictly, injectUserUISettings, next.delegateToNext);
   // external-accounts
   // my in-app-notifications
