@@ -75,7 +75,9 @@ module.exports = function(crowi, app) {
           return ExternalAccount.associate(providerId, userInfo.id, err.user);
         }
         logger.error('provider-DuplicatedUsernameException', providerId);
-        throw new ErrorV3('provider_duplicated_username_exception', '', undefined, providerId);
+
+        throw new ErrorV3('message.provider_duplicated_username_exception', 'provider-duplicated-username-exception',
+          undefined, { failedProviderForDuplicatedUsernameException: providerId });
       }
       else if (err.name === 'UserUpperLimitException') {
         logger.error(err.message);
