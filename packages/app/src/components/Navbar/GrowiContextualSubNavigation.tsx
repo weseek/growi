@@ -296,7 +296,7 @@ const GrowiContextualSubNavigation = (props: GrowiContextualSubNavigationProps):
   }, []);
 
 
-  const ControlComponents = useCallback(() => {
+  const RightComponent = useCallback(() => {
     const additionalMenuItemsRenderer = () => {
       if (revisionId == null || pageId == null) {
         return <></>;
@@ -353,14 +353,14 @@ const GrowiContextualSubNavigation = (props: GrowiContextualSubNavigationProps):
   // eslint-disable-next-line max-len
   }, [currentUser, pageId, revisionId, shareLinkId, path, editorMode, isCompactMode, isViewMode, isSharedUser, isAbleToShowPageManagement, isAbleToShowPageEditorModeManager, isLinkSharingDisabled, isGuestUser, isPageTemplateModalShown, duplicateItemClickedHandler, renameItemClickedHandler, deleteItemClickedHandler, mutateEditorMode, templateMenuItemClickHandler]);
 
-  const isCurrentPageLoading = currentPage === undefined && currentPageError == null;
-  const notFoundPage: Partial<IPageHasId> = {
-    path: currentPathname ?? '',
-  };
+  const pagePath = isNotFound
+    ? (currentPathname ?? undefined)
+    : currentPage?.path;
 
   return (
     <GrowiSubNavigation
-      page={isCurrentPageLoading ? undefined : (currentPage ?? notFoundPage)}
+      pagePath={pagePath}
+      pageId={currentPage?._id}
       showDrawerToggler={isDrawerMode}
       showTagLabel={isAbleToShowTagLabel}
       showPageAuthors={isAbleToShowPageAuthors}
@@ -369,7 +369,7 @@ const GrowiContextualSubNavigation = (props: GrowiContextualSubNavigationProps):
       isCompactMode={isCompactMode}
       tags={isViewMode ? tagsInfoData?.tags : tagsForEditors}
       tagsUpdatedHandler={isViewMode ? tagsUpdatedHandlerForViewMode : tagsUpdatedHandlerForEditMode}
-      controls={ControlComponents}
+      rightComponent={RightComponent}
       additionalClasses={['container-fluid']}
     />
   );

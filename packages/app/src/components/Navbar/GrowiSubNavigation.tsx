@@ -2,8 +2,6 @@ import React from 'react';
 
 import dynamic from 'next/dynamic';
 
-import { IPageHasId } from '~/interfaces/page';
-import { IUser } from '~/interfaces/user';
 import {
   EditorMode, useEditorMode,
 } from '~/stores/ui';
@@ -14,23 +12,25 @@ import { Skelton } from '../Skelton';
 
 import DrawerToggler from './DrawerToggler';
 
-import AuthorInfoStyles from './AuthorInfo.module.scss';
+// import AuthorInfoStyles from './AuthorInfo.module.scss';
 import styles from './GrowiSubNavigation.module.scss';
 
-const AuthorInfoSkelton = () => <Skelton additionalClass={`${AuthorInfoStyles['grw-author-info-skelton']} py-1`} />;
+// const AuthorInfoSkelton = () => <Skelton additionalClass={`${AuthorInfoStyles['grw-author-info-skelton']} py-1`} />;
 
 const TagLabels = dynamic(() => import('../Page/TagLabels').then(mod => mod.TagLabels), {
   ssr: false,
   loading: TagLabelsSkelton,
 });
-const AuthorInfo = dynamic(() => import('./AuthorInfo'), {
-  ssr: false,
-  loading: AuthorInfoSkelton,
-});
+// const AuthorInfo = dynamic(() => import('./AuthorInfo'), {
+//   ssr: false,
+//   loading: AuthorInfoSkelton,
+// });
 
 
 export type GrowiSubNavigationProps = {
-  page?: Partial<IPageHasId>,
+  pagePath?: string,
+  pageId?: string,
+  isNotFound?: boolean,
   showDrawerToggler?: boolean,
   showTagLabel?: boolean,
   showPageAuthors?: boolean,
@@ -39,7 +39,7 @@ export type GrowiSubNavigationProps = {
   isCompactMode?: boolean,
   tags?: string[],
   tagsUpdatedHandler?: (newTags: string[]) => Promise<void> | void,
-  controls: React.FunctionComponent,
+  rightComponent: React.FunctionComponent,
   additionalClasses?: string[],
 }
 
@@ -48,11 +48,11 @@ export const GrowiSubNavigation = (props: GrowiSubNavigationProps): JSX.Element 
   const { data: editorMode } = useEditorMode();
 
   const {
-    page,
-    showDrawerToggler, showTagLabel, showPageAuthors,
+    pageId, pagePath,
+    showDrawerToggler, showTagLabel,
     isGuestUser, isDrawerMode, isCompactMode,
     tags, tagsUpdatedHandler,
-    controls: Controls,
+    rightComponent: RightComponent,
     additionalClasses = [],
   } = props;
 
@@ -73,22 +73,20 @@ export const GrowiSubNavigation = (props: GrowiSubNavigationProps): JSX.Element 
         <div className="grw-path-nav-container">
           { (showTagLabel && !isCompactMode) && (
             <div className="grw-taglabels-container">
-              { page != null
-                ? <TagLabels tags={tags} isGuestUser={isGuestUser ?? false} tagsUpdateInvoked={tagsUpdatedHandler} />
-                : <TagLabelsSkelton />
-              }
+              <TagLabels tags={tags} isGuestUser={isGuestUser ?? false} tagsUpdateInvoked={tagsUpdatedHandler} />
             </div>
           ) }
-          { page != null && page.path != null
-            ? <PagePathNav pageId={page._id} pagePath={page.path} isSingleLineMode={isEditorMode} isCompactMode={isCompactMode} />
+          { pagePath != null
+            ? <PagePathNav pageId={pageId} pagePath={pagePath} isSingleLineMode={isEditorMode} isCompactMode={isCompactMode} />
             : <Skelton />
           }
         </div>
       </div>
       {/* Right side. */}
+      <RightComponent />
+      {/*
       <div className="d-flex">
         <Controls />
-        {/* Page Authors */}
         { (showPageAuthors && !isCompactMode) && (
           <ul className={`${AuthorInfoStyles['grw-author-info']} text-nowrap border-left d-none d-lg-block d-edit-none py-2 pl-4 mb-0 ml-3`}>
             <li className="pb-1">
@@ -106,6 +104,7 @@ export const GrowiSubNavigation = (props: GrowiSubNavigationProps): JSX.Element 
           </ul>
         ) }
       </div>
+      */}
     </div>
   );
 };
