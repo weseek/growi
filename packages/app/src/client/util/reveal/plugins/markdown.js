@@ -41,7 +41,7 @@ export default function( marked ) {
       text = text.replace( new RegExp('\\n? {' + leadingWs + '}', 'g'), '\n' );
     }
 
-    return quotemeta(text);
+    return text;
 
   }
 
