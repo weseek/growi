@@ -24,10 +24,14 @@ context('Switch sidebar mode', () => {
     cy.get('.grw-personal-dropdown').first().click();
 
     cy.get('[for="swSidebarMode"]').click({force: true});
-    cy.screenshot(`${ssPrefix}-switch-sidebar-mode`, { capture: 'viewport' });
+    cy.screenshot(`${ssPrefix}-switch-sidebar-mode`, {
+      blackout: ['#revision-toc'],
+    })
 
     cy.get('[for="swSidebarMode"]').click({force: true});
-    cy.screenshot(`${ssPrefix}-switch-sidebar-mode-back`, { capture: 'viewport' });
+    cy.screenshot(`${ssPrefix}-switch-sidebar-mode-back`, {
+      blackout: ['#revision-toc'],
+    })
   });
 
 });
