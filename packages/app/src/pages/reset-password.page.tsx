@@ -57,7 +57,6 @@ export const getServerSideProps: GetServerSideProps = async(context: GetServerSi
 
   const props: Props = result.props as Props;
 
-
   const email = context.query.email;
   if (typeof email === 'string') {
     props.email = email;
