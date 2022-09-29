@@ -21,7 +21,8 @@ type Props = {
   // onSave: (drawioData) => void,
 };
 
-export const DrawioModal = React.forwardRef((props: Props, ref: React.LegacyRef<Modal>): JSX.Element => {
+// export const DrawioModal = React.forwardRef((props: Props, ref: React.LegacyRef<Modal>): JSX.Element => {
+export const DrawioModal = (props: Props /* , ref: React.LegacyRef<Modal> */): JSX.Element => {
   const { data: growiHydratedEnv } = useGrowiHydratedEnv();
   const { data: personalSettingsInfo } = usePersonalSettings();
 
@@ -103,14 +104,14 @@ export const DrawioModal = React.forwardRef((props: Props, ref: React.LegacyRef<
         // }
       }
 
-      window.removeEventListener('message', receiveFromDrawio);
+      // window.removeEventListener('message', receiveFromDrawio);
       hide();
 
       return;
     }
 
     if (typeof event.data === 'string' && event.data.length === 0) {
-      window.removeEventListener('message', receiveFromDrawio);
+      // window.removeEventListener('message', receiveFromDrawio);
       hide();
 
       return;
@@ -138,7 +139,7 @@ export const DrawioModal = React.forwardRef((props: Props, ref: React.LegacyRef<
 
   return (
     <Modal
-      ref={ref}
+      // ref={ref}
       isOpen={isOpened}
       toggle={cancel}
       backdrop="static"
@@ -166,6 +167,6 @@ export const DrawioModal = React.forwardRef((props: Props, ref: React.LegacyRef<
       </ModalBody>
     </Modal>
   );
-});
+};
 
-DrawioModal.displayName = 'DrawioModal';
+// DrawioModal.displayName = 'DrawioModal';
