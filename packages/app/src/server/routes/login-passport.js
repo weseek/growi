@@ -179,7 +179,7 @@ module.exports = function(crowi, app) {
   const loginWithLdap = async(req, res, next) => {
     if (!passportService.isLdapStrategySetup) {
       debug('LdapStrategy has not been set up');
-      return res.apiv3Err(ErrorV3('message.strategy_has_not_been_set_up', '', null, { strategy: 'LdapStrategy' }), 405);
+      return res.apiv3Err(ErrorV3('message.strategy_has_not_been_set_up', '', undefined, { strategy: 'LdapStrategy' }), 405);
     }
 
     if (!req.form.isValid) {
@@ -314,7 +314,7 @@ module.exports = function(crowi, app) {
   const loginWithLocal = (req, res, next) => {
     if (!passportService.isLocalStrategySetup) {
       debug('LocalStrategy has not been set up');
-      return res.apiv3Err(ErrorV3('message.strategy_has_not_been_set_up', '', null, { strategy: 'LocalStrategy' }), 405);
+      return res.apiv3Err(ErrorV3('message.strategy_has_not_been_set_up', '', undefined, { strategy: 'LocalStrategy' }), 405);
     }
 
     if (!req.form.isValid) {
