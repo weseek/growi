@@ -1,4 +1,4 @@
-import ErrorV3 from '@growi/core/src/models/vo/error-apiv3';
+import { ErrorV3 } from '@growi/core/src/models/vo/error-apiv3';
 
 import { SupportedAction } from '~/interfaces/activity';
 import { NullUsernameToBeRegisteredError } from '~/server/models/errors';

@@ -1,4 +1,4 @@
-import ErrorV3 from '@growi/core/src/models/vo/error-apiv3';
+import { ErrorV3 } from '@growi/core/src/models/vo/error-apiv3';
 import express from 'express';
 import { body } from 'express-validator';
 
