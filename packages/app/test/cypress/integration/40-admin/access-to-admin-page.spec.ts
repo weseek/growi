@@ -52,7 +52,7 @@ context('Access to Admin page', () => {
     cy.visit('/admin/customize');
     cy.getByTestid('admin-customize').should('be.visible');
     /* eslint-disable cypress/no-unnecessary-waiting */
-    cy.wait(1000); // wait for loading layout image
+    cy.wait(500); // wait for loading layout image
     cy.screenshot(`${ssPrefix}-admin-customize`);
   });
 
