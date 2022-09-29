@@ -245,7 +245,12 @@ const PageItemControlDropdownMenu = React.memo((props: DropdownMenuProps): JSX.E
   }
 
   return (
-    <DropdownMenu positionFixed modifiers={{ preventOverflow: { boundariesElement: undefined } }} right={alignRight}>
+    <DropdownMenu
+      data-testid="page-item-control-menu"
+      positionFixed
+      modifiers={{ preventOverflow: { boundariesElement: undefined } }}
+      right={alignRight}
+    >
       {contents}
     </DropdownMenu>
   );

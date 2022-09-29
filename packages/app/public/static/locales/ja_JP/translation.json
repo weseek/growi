@@ -882,8 +882,8 @@
       "attrMapId": "ID",
       "attrMapUsername": "ユーザー名",
       "attrMapMail": "メールアドレス",
-      "attrMapFirstName": "姓",
-      "attrMapLastName": "名",
+      "attrMapFirstName": "名",
+      "attrMapLastName": "姓",
       "ABLCRule": "ルール"
     }
   },
