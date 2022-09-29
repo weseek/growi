@@ -19,7 +19,7 @@ const ApiErrorMessage = (props) => {
         return (
           <>
             <strong><i className="icon-fw icon-ban"></i>{ t('page_api_error.already_exists') }</strong>
-            <small><a href={`${targetPath}`}>{targetPath} <i className="icon-login"></i></a></small>
+            <small><a href={targetPath.toString()}>{targetPath} <i className="icon-login"></i></a></small>
           </>
         );
       case 'notfound_or_forbidden':

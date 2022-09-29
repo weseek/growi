@@ -249,7 +249,7 @@ const PageRenameModal = (): JSX.Element => {
                     type="text"
                     value={pageNameInput}
                     className="form-control"
-                    onChange={e => inputChangeHandler(`${e.target.value}`)}
+                    onChange={e => inputChangeHandler(e.target.value.toString())}
                     required
                     autoFocus
                   />
