@@ -66,7 +66,7 @@ module.exports = function(crowi, app) {
       /* eslint-disable no-else-return */
       if (err instanceof NullUsernameToBeRegisteredError) {
         logger.error(err.message);
-        throw Error(err.message);
+        throw new ErrorV3(err.message);
       }
       else if (err.name === 'DuplicatedUsernameException') {
         if (isSameEmailTreatedAsIdenticalUser || isSameUsernameTreatedAsIdenticalUser) {
@@ -75,11 +75,11 @@ module.exports = function(crowi, app) {
           return ExternalAccount.associate(providerId, userInfo.id, err.user);
         }
         logger.error('provider-DuplicatedUsernameException', providerId);
-        throw Error(`provider-DuplicatedUsernameException: ${providerId}`);
+        throw new ErrorV3('provider_duplicated_username_exception', '', undefined, providerId);
       }
       else if (err.name === 'UserUpperLimitException') {
         logger.error(err.message);
-        throw Error(err.message);
+        throw new ErrorV3(err.message);
       }
       /* eslint-enable no-else-return */
     }
