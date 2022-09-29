@@ -1,3 +1,4 @@
+import quotemeta from 'quotemeta';
 /**
  * The reveal.js markdown plugin. Handles parsing of
  * markdown inside of presentations as well as loading
@@ -40,7 +41,7 @@ export default function( marked ) {
       text = text.replace( new RegExp('\\n? {' + leadingWs + '}', 'g'), '\n' );
     }
 
-    return text;
+    return quotemeta(text);
 
   }
 
@@ -199,7 +200,7 @@ export default function( marked ) {
       if ( section.getAttribute( 'data-markdown' ).length ) {
 
         let xhr = new XMLHttpRequest(),
-          url = section.getAttribute( 'data-markdown' );
+          url = quotemeta(section.getAttribute( 'data-markdown' ));
 
         let datacharset = section.getAttribute( 'data-charset' );
 
