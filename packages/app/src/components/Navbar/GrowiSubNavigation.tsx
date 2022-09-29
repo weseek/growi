@@ -13,23 +13,17 @@ import { Skelton } from '../Skelton';
 
 import DrawerToggler from './DrawerToggler';
 
-// import AuthorInfoStyles from './AuthorInfo.module.scss';
+
 import styles from './GrowiSubNavigation.module.scss';
 
 
 const { isPermalink } = pagePathUtils;
 
 
-// const AuthorInfoSkelton = () => <Skelton additionalClass={`${AuthorInfoStyles['grw-author-info-skelton']} py-1`} />;
-
 const TagLabels = dynamic(() => import('../Page/TagLabels').then(mod => mod.TagLabels), {
   ssr: false,
   loading: TagLabelsSkelton,
 });
-// const AuthorInfo = dynamic(() => import('./AuthorInfo'), {
-//   ssr: false,
-//   loading: AuthorInfoSkelton,
-// });
 
 
 export type GrowiSubNavigationProps = {
@@ -38,7 +32,6 @@ export type GrowiSubNavigationProps = {
   isNotFound?: boolean,
   showDrawerToggler?: boolean,
   showTagLabel?: boolean,
-  showPageAuthors?: boolean,
   isGuestUser?: boolean,
   isDrawerMode?: boolean,
   isCompactMode?: boolean,
@@ -89,27 +82,6 @@ export const GrowiSubNavigation = (props: GrowiSubNavigationProps): JSX.Element 
       </div>
       {/* Right side. */}
       <RightComponent />
-      {/*
-      <div className="d-flex">
-        <Controls />
-        { (showPageAuthors && !isCompactMode) && (
-          <ul className={`${AuthorInfoStyles['grw-author-info']} text-nowrap border-left d-none d-lg-block d-edit-none py-2 pl-4 mb-0 ml-3`}>
-            <li className="pb-1">
-              { page != null
-                ? <AuthorInfo user={page.creator as IUser} date={page.createdAt} locate="subnav" />
-                : <AuthorInfoSkelton />
-              }
-            </li>
-            <li className="mt-1 pt-1 border-top">
-              { page != null
-                ? <AuthorInfo user={page.lastUpdateUser as IUser} date={page.updatedAt} mode="update" locate="subnav" />
-                : <AuthorInfoSkelton />
-              }
-            </li>
-          </ul>
-        ) }
-      </div>
-      */}
     </div>
   );
 };
