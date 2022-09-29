@@ -1,7 +1,7 @@
+import { ErrorV3 } from '@growi/core/src/models/vo/error-apiv3';
 import express, { Request, Router } from 'express';
 
 import { SupportedAction } from '~/interfaces/activity';
-import ErrorV3 from '~/server/models/vo/error-apiv3';
 import loggerFactory from '~/utils/logger';
 
 import Crowi from '../../crowi';
