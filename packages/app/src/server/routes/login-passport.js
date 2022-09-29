@@ -180,7 +180,7 @@ module.exports = function(crowi, app) {
   const loginWithLdap = async(req, res, next) => {
     if (!passportService.isLdapStrategySetup) {
       debug('LdapStrategy has not been set up');
-      return res.apiv3Err(new ErrorV3('message.sign_in_failure'));
+      return next();
     }
 
     if (!req.form.isValid) {
