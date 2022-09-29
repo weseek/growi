@@ -1,3 +1,5 @@
+import ErrorV3 from '@growi/core/src/models/vo/error-apiv3';
+
 import { SupportedAction } from '~/interfaces/activity';
 import { PageDeleteConfigValue } from '~/interfaces/page-delete-config';
 import loggerFactory from '~/utils/logger';
@@ -15,8 +17,6 @@ const express = require('express');
 const router = express.Router();
 
 const { body } = require('express-validator');
-
-const ErrorV3 = require('../../models/vo/error-apiv3');
 
 const validator = {
   generalSetting: [

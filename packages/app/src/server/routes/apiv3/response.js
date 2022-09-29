@@ -1,6 +1,7 @@
+import ErrorV3 from '@growi/core/src/models/vo/error-apiv3';
+
 import { toArrayIfNot } from '~/utils/array-utils';
 
-const ErrorV3 = require('../../models/vo/error-apiv3');
 
 const addCustomFunctionToResponse = (express, crowi) => {
 

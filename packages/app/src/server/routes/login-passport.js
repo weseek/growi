@@ -1,8 +1,9 @@
+import ErrorV3 from '@growi/core/src/models/vo/error-apiv3';
+
 import { SupportedAction } from '~/interfaces/activity';
 import { NullUsernameToBeRegisteredError } from '~/server/models/errors';
 import loggerFactory from '~/utils/logger';
 
-import ErrorV3 from '../models/vo/error-apiv3';
 
 /* eslint-disable no-use-before-define */
 

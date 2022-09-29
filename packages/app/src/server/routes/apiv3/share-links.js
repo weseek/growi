@@ -1,5 +1,7 @@
 // TODO remove this setting after implemented all
 /* eslint-disable no-unused-vars */
+import ErrorV3 from '@growi/core/src/models/vo/error-apiv3';
+
 import { SupportedAction } from '~/interfaces/activity';
 import { generateAddActivityMiddleware } from '~/server/middlewares/add-activity';
 import loggerFactory from '~/utils/logger';
@@ -14,8 +16,6 @@ const express = require('express');
 const router = express.Router();
 
 const { body, query, param } = require('express-validator');
-
-const ErrorV3 = require('../../models/vo/error-apiv3');
 
 const validator = {};
 

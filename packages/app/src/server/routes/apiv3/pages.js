@@ -1,3 +1,5 @@
+import ErrorV3 from '@growi/core/src/models/vo/error-apiv3';
+
 import { SupportedTargetModel, SupportedAction } from '~/interfaces/activity';
 import { subscribeRuleNames } from '~/interfaces/in-app-notification';
 import loggerFactory from '~/utils/logger';
@@ -12,8 +14,6 @@ const express = require('express');
 const { body } = require('express-validator');
 const { query } = require('express-validator');
 const mongoose = require('mongoose');
-
-const ErrorV3 = require('../../models/vo/error-apiv3');
 
 const { isCreatablePage } = pagePathUtils;
 

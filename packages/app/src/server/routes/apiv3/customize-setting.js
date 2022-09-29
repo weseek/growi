@@ -1,5 +1,7 @@
 /* eslint-disable no-unused-vars */
 
+import ErrorV3 from '@growi/core/src/models/vo/error-apiv3';
+
 import { SupportedAction } from '~/interfaces/activity';
 import { AttachmentType } from '~/server/interfaces/attachment';
 import loggerFactory from '~/utils/logger';
@@ -16,8 +18,6 @@ const router = express.Router();
 
 const { body, query } = require('express-validator');
 const multer = require('multer');
-
-const ErrorV3 = require('../../models/vo/error-apiv3');
 
 
 /**

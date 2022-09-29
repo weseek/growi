@@ -1,3 +1,5 @@
+import ErrorV3 from '@growi/core/src/models/vo/error-apiv3';
+
 import { SupportedAction } from '~/interfaces/activity';
 import Activity from '~/server/models/activity';
 import loggerFactory from '~/utils/logger';
@@ -19,7 +21,6 @@ const { isEmail } = require('validator');
 
 const { serializePageSecurely } = require('../../models/serializers/page-serializer');
 const { serializeUserSecurely } = require('../../models/serializers/user-serializer');
-const ErrorV3 = require('../../models/vo/error-apiv3');
 
 const PAGE_ITEMS = 50;
 

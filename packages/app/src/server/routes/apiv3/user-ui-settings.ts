@@ -1,13 +1,12 @@
+import ErrorV3 from '@growi/core/src/models/vo/error-apiv3';
 import express from 'express';
 import { body } from 'express-validator';
-import { AllSidebarContentsType } from '~/interfaces/ui';
 
+import { AllSidebarContentsType } from '~/interfaces/ui';
 import loggerFactory from '~/utils/logger';
 
 import { apiV3FormValidator } from '../../middlewares/apiv3-form-validator';
-
 import UserUISettings from '../../models/user-ui-settings';
-import ErrorV3 from '../../models/vo/error-apiv3';
 
 const logger = loggerFactory('growi:routes:apiv3:user-ui-settings');
 

@@ -1,4 +1,5 @@
 import { pagePathUtils, AllSubscriptionStatusType, SubscriptionStatusType } from '@growi/core';
+import ErrorV3 from '@growi/core/src/models/vo/error-apiv3';
 
 import { SupportedAction, SupportedTargetModel } from '~/interfaces/activity';
 import { generateAddActivityMiddleware } from '~/server/middlewares/add-activity';
@@ -15,7 +16,6 @@ const { body, query, param } = require('express-validator');
 
 const router = express.Router();
 const { convertToNewAffiliationPath, isTopPage } = pagePathUtils;
-const ErrorV3 = require('../../models/vo/error-apiv3');
 
 /**
  * @swagger
