@@ -11,8 +11,8 @@ export const Skelton = (props: SkeltonProps): JSX.Element => {
   } = props;
 
   return (
-    <div className={`${additionalClass}`}>
-      <div className={`grw-skelton h-100 w-100 ${roundedPill ? 'rounded-pill' : ''}`}></div>
+    <div className={`${additionalClass ?? ''}`}>
+      <div className={`grw-skelton h-100 w-100 ${roundedPill ?? ''}`}></div>
     </div>
   );
 };
