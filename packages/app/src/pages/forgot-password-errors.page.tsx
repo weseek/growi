@@ -37,7 +37,7 @@ const ForgotPasswordErrorsPage: NextPage<Props> = (props: Props) => {
                   <h3 className="text-muted">{ t('forgot_password.feature_is_unavailable') }</h3>
                 )}
 
-                { errorCode === (forgotPasswordErrorCode.PASSWORD_RESET_ORDER_IS_NOT_APPROPRIATE || forgotPasswordErrorCode.TOKEN_NOT_FOUND) && (
+                { (errorCode === forgotPasswordErrorCode.PASSWORD_RESET_ORDER_IS_NOT_APPROPRIATE || errorCode === forgotPasswordErrorCode.TOKEN_NOT_FOUND) && (
                   <div>
                     <div className="alert alert-warning mb-3">
                       <h2>{ t('forgot_password.incorrect_token_or_expired_url') }</h2>
