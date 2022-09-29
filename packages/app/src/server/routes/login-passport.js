@@ -135,7 +135,7 @@ module.exports = function(crowi, app) {
 
   const cannotLoginErrorHadnler = (req, res, next) => {
     // this is called when all login method is somehow failed without invoking 'return next(<any Error>)'
-    const err = Error('message.sign_in_failure');
+    const err = new ErrorV3('message.sign_in_failure');
     return next(err);
   };
 
@@ -233,7 +233,7 @@ module.exports = function(crowi, app) {
 
     // just in case the returned value is null or undefined
     if (externalAccount == null) {
-      return next(Error('message.external_account_not_exist'));
+      return next(new ErrorV3('message.external_account_not_exist'));
     }
 
     const user = await externalAccount.getPopulatedUser();
