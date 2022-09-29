@@ -20,7 +20,11 @@
  *            example: { name: 'Josh', age: 20 }
  */
 
-class ErrorV3 extends Error {
+export class ErrorV3 extends Error {
+
+  code: string;
+
+  args?: any;
 
   constructor(message = '', code = '', stack = undefined, args = undefined) {
     super(); // do not provide message to the super constructor
@@ -31,5 +35,3 @@ class ErrorV3 extends Error {
   }
 
 }
-
-module.exports = ErrorV3;
