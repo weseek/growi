@@ -7,6 +7,7 @@ import { useRouter } from 'next/router';
 import ReactCardFlip from 'react-card-flip';
 
 import { apiv3Post } from '~/client/util/apiv3-client';
+import { LoginErrorCode } from '~/interfaces/errors/login-form-error';
 import { IErrorV3 } from '~/interfaces/errors/v3-error';
 
 type LoginFormProps = {
@@ -87,23 +88,51 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
 
   }, [passwordForLogin, resetLoginErrors, router, usernameForLogin]);
 
+  const renderLoginErrors = useCallback((errors, isWithDangerouslySetinnerHtml = false) => {
+    if (errors.length === 0) return;
+
+    return isWithDangerouslySetinnerHtml ? (
+      <div className="alert alert-danger">
+
+        {errors.map((err, index) => {
+          return (
+            <small dangerouslySetInnerHTML={{ __html: t(err.message, err.i18nArg) }} key={index}></small>
+          );
+        })}
+      </div>
+    ) : (
+      <ul className="alert alert-danger">
+        {errors.map((err, index) => {
+          return (
+            <li key={index}>
+              {t(err.message, err.i18nArg)}<br/>
+            </li>
+          );
+        })}
+      </ul>
+    );
+  }, [t]);
+
   const renderLocalOrLdapLoginForm = useCallback(() => {
     const { isLdapStrategySetup } = props;
+
+    const errorsWithDangerouslySetInnerHTML: IErrorV3[] = [];
+    const errorsWithoutDanderouslySetInnerHTML: IErrorV3[] = [];
+
+    loginErrors.forEach((e) => {
+      if (e.code === LoginErrorCode.PROVIDER_DUPLICATED_USERNAME_EXCEPTION) {
+        errorsWithDangerouslySetInnerHTML.push(e);
+      }
+      else {
+        errorsWithoutDanderouslySetInnerHTML.push(e);
+      }
+    });
+
     return (
       <>
-        {
-          loginErrors != null && loginErrors.length > 0 && (
-            <ul className="alert alert-danger">
-              {loginErrors.map((err, index) => {
-                return (
-                  <li key={index}>
-                    {t(err.message, err.i18nArg)}<br/>
-                  </li>
-                );
-              })}
-            </ul>
-          )
-        }
+        {renderLoginErrors(errorsWithDangerouslySetInnerHTML, true)}
+        {renderLoginErrors(errorsWithoutDanderouslySetInnerHTML, false)}
+
         <form role="form" onSubmit={handleLoginWithLocalSubmit} id="login-form">
           <div className="input-group">
             <div className="input-group-prepend">
