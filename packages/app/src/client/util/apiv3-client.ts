@@ -16,6 +16,10 @@ const logger = loggerFactory('growi:apiv3');
 const apiv3ErrorHandler = (_err: any): any[] => {
   // extract api errors from general 400 err
   const err = _err.response ? _err.response.data.errors : _err;
+  // add info into err if any
+  if (_err.response.data.info != null) {
+    err.info = _err.response.data.info;
+  }
   const errs = toArrayIfNot(err);
 
   for (const err of errs) {
