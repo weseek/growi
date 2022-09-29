@@ -49,7 +49,7 @@ const PageView = React.memo((): JSX.Element => {
     <div className="d-flex flex-column flex-lg-row">
 
       <div className="flex-grow-1 flex-basis-0 mw-0">
-        { isUsersHomePagePath && <UserInfo /> }
+        { isUsersHomePagePath && <UserInfo author={currentPage?.creator} /> }
         { !isNotFound && <Page /> }
         { isNotFound && <NotFoundPage /> }
       </div>
@@ -94,7 +94,7 @@ const PageView = React.memo((): JSX.Element => {
 
             <div className="d-none d-lg-block">
               <TableOfContents />
-              { isUsersHomePagePath && <ContentLinkButtons /> }
+              { isUsersHomePagePath && <ContentLinkButtons author={currentPage?.creator} /> }
             </div>
 
           </div>

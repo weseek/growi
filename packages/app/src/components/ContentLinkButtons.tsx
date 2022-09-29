@@ -1,8 +1,9 @@
 import React, { useCallback } from 'react';
 
+import { IUser } from '@growi/core';
+
 import { smoothScrollIntoView } from '~/client/util/smooth-scroll';
 import { RecentlyCreatedIcon } from '~/components/Icons/RecentlyCreatedIcon';
-import { usePageUser } from '~/stores/context';
 
 import styles from './ContentLinkButtons.module.scss';
 
@@ -52,11 +53,16 @@ const RecentlyCreatedLinkButton = React.memo(() => {
 
 RecentlyCreatedLinkButton.displayName = 'RecentlyCreatedLinkButton';
 
-export const ContentLinkButtons = (): JSX.Element => {
 
-  const { data: pageUser } = usePageUser();
+type Props = {
+  author?: IUser,
+}
 
-  if (pageUser == null || pageUser.status === 4) {
+export const ContentLinkButtons = (props: Props): JSX.Element => {
+
+  const { author } = props;
+
+  if (author == null || author.status === 4) {
     return <></>;
   }
 

@@ -5,6 +5,7 @@ import React, {
 import { pagePathUtils, pathUtils } from '@growi/core';
 import { format } from 'date-fns';
 import { useTranslation } from 'next-i18next';
+import { useRouter } from 'next/router';
 import { Modal, ModalHeader, ModalBody } from 'reactstrap';
 import { debounce } from 'throttle-debounce';
 
@@ -21,6 +22,7 @@ const {
 
 const PageCreateModal = () => {
   const { t } = useTranslation();
+  const router = useRouter();
 
   const { data: currentUser } = useCurrentUser();
 
@@ -98,7 +100,7 @@ const PageCreateModal = () => {
   async function redirectToEditor(...paths) {
     try {
       const editorPath = await generateEditorPath(...paths);
-      window.location.href = editorPath;
+      router.push(editorPath);
     }
     catch (err) {
       toastError(err);

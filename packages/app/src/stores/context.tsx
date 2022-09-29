@@ -98,10 +98,6 @@ export const useIsNotFound = (initialData?: boolean): SWRResponse<boolean, Error
   return useStaticSWR<boolean, Error>('isNotFound', initialData, { fallbackData: false });
 };
 
-export const usePageUser = (initialData?: IUserHasId): SWRResponse<IUserHasId, Error> => {
-  return useStaticSWR<IUserHasId, Error>('pageUser', initialData);
-};
-
 export const useHasChildren = (initialData?: Nullable<any>): SWRResponse<Nullable<any>, Error> => {
   return useStaticSWR<Nullable<any>, Error>('hasChildren', initialData);
 };

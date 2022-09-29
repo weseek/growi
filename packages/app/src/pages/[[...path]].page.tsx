@@ -62,7 +62,7 @@ import {
   useIsAclEnabled, useIsUserPage,
   useCsrfToken, useIsSearchScopeChildrenAsDefault, useCurrentPageId, useCurrentPathname,
   useIsSlackConfigured, useRendererConfig, useEditingMarkdown,
-  useEditorConfig, useIsAllReplyShown, useIsUploadableFile, useIsUploadableImage, usePageUser,
+  useEditorConfig, useIsAllReplyShown, useIsUploadableFile, useIsUploadableImage,
 } from '../stores/context';
 
 import {
@@ -126,7 +126,7 @@ const PutbackPageModal = (): JSX.Element => {
 type Props = CommonProps & {
   currentUser: IUser,
 
-  pageWithMeta: IPageToShowRevisionWithMeta,
+  pageWithMeta: IPageToShowRevisionWithMeta | null,
   // pageUser?: any,
   redirectFrom?: string;
 
@@ -231,27 +231,25 @@ const GrowiPage: NextPage<Props> = (props: Props) => {
 
   const { pageWithMeta, userUISettings } = props;
 
-  let shouldRenderPutbackPageModal = false;
-  if (pageWithMeta != null) {
-    shouldRenderPutbackPageModal = _isTrashPage(pageWithMeta.data.path);
-  }
+  useSWRxCurrentPage(undefined, pageWithMeta?.data ?? null); // store initial data
+  useEditingMarkdown(pageWithMeta?.data.revision?.body ?? '');
 
   const pageId = pageWithMeta?.data._id;
   const pagePath = pageWithMeta?.data.path ?? (!_isPermalink(props.currentPathname) ? props.currentPathname : undefined);
 
-  useCurrentPageId(pageId);
-  useSWRxCurrentPage(undefined, pageWithMeta?.data); // store initial data
+  useCurrentPageId(pageId ?? null);
   useIsUserPage(pagePath != null && isUserPage(pagePath));
   // useIsNotCreatable(props.isForbidden || !isCreatablePage(pagePath)); // TODO: need to include props.isIdentical
   useCurrentPagePath(pagePath);
   useCurrentPathname(props.currentPathname);
-  useEditingMarkdown(pageWithMeta?.data.revision?.body);
   useIsTrashPage(pagePath != null && _isTrashPage(pagePath));
 
   const { data: grantData } = useSWRxIsGrantNormalized(pageId);
   const { mutate: mutateSelectedGrant } = useSelectedGrant();
 
-  usePageUser(pageWithMeta?.data.creator);
+  const shouldRenderPutbackPageModal = pageWithMeta != null
+    ? _isTrashPage(pageWithMeta.data.path)
+    : false;
 
   // sync grant data
   useEffect(() => {
@@ -329,8 +327,8 @@ const GrowiPage: NextPage<Props> = (props: Props) => {
           </div>
           { !props.isIdenticalPathPage && !props.isNotFound && (
             <footer className="footer d-edit-none">
-              { !isTopPagePath && (<Comments pageId={pageId} revision={pageWithMeta?.data.revision} />) }
-              { (pageWithMeta != null && isUsersHomePage(pageWithMeta.data.path)) && (
+              { pageWithMeta != null && !isTopPagePath && (<Comments pageId={pageId} revision={pageWithMeta?.data.revision} />) }
+              { pageWithMeta != null && isUsersHomePage(pageWithMeta.data.path) && (
                 <UsersHomePageFooter creatorId={pageWithMeta.data.creator._id}/>
               ) }
               <CurrentPageContentFooter />
@@ -396,7 +394,7 @@ async function injectPageData(context: GetServerSidePropsContext, props: Props):
     }
   }
 
-  const pageWithMeta: IPageToShowRevisionWithMeta = await pageService.findPageAndMetaDataByViewer(pageId, currentPathname, user, true); // includeEmpty = true, isSharedPage = false
+  const pageWithMeta: IPageToShowRevisionWithMeta | null = await pageService.findPageAndMetaDataByViewer(pageId, currentPathname, user, true); // includeEmpty = true, isSharedPage = false
   const page = pageWithMeta?.data as unknown as PageDocument;
 
   // add user to seen users
