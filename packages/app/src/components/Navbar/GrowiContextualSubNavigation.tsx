@@ -9,13 +9,13 @@ import { exportAsMarkdown } from '~/client/services/page-operation';
 import { toastSuccess, toastError } from '~/client/util/apiNotification';
 import { apiPost } from '~/client/util/apiv1-client';
 import {
-  IPageToRenameWithMeta, IPageWithMeta, IPageInfoForEntity, IPageHasId,
+  IPageToRenameWithMeta, IPageWithMeta, IPageInfoForEntity,
 } from '~/interfaces/page';
 import { IResTagsUpdateApiv1 } from '~/interfaces/tag';
 import { OnDuplicatedFunction, OnRenamedFunction, OnDeletedFunction } from '~/interfaces/ui';
 import {
   useCurrentPageId,
-  useCurrentPathname, useIsNotFound,
+  useCurrentPathname,
   useCurrentUser, useIsGuestUser, useIsSharedUser, useShareLinkId, useTemplateTagData,
 } from '~/stores/context';
 import { usePageTagsForEditors } from '~/stores/editor';
@@ -167,7 +167,7 @@ type GrowiContextualSubNavigationProps = {
 
 const GrowiContextualSubNavigation = (props: GrowiContextualSubNavigationProps): JSX.Element => {
 
-  const { data: currentPage, error: currentPageError, mutate: mutateCurrentPage } = useSWRxCurrentPage();
+  const { data: currentPage, mutate: mutateCurrentPage } = useSWRxCurrentPage();
   const path = currentPage?.path;
 
   const revision = currentPage?.revision;
@@ -180,7 +180,6 @@ const GrowiContextualSubNavigation = (props: GrowiContextualSubNavigationProps):
   const { data: currentUser } = useCurrentUser();
   const { data: isGuestUser } = useIsGuestUser();
   const { data: isSharedUser } = useIsSharedUser();
-  const { data: isNotFound } = useIsNotFound();
   const { data: shareLinkId } = useShareLinkId();
 
   const { data: isAbleToShowPageManagement } = useIsAbleToShowPageManagement();
@@ -353,13 +352,9 @@ const GrowiContextualSubNavigation = (props: GrowiContextualSubNavigationProps):
   // eslint-disable-next-line max-len
   }, [currentUser, pageId, revisionId, shareLinkId, path, editorMode, isCompactMode, isViewMode, isSharedUser, isAbleToShowPageManagement, isAbleToShowPageEditorModeManager, isLinkSharingDisabled, isGuestUser, isPageTemplateModalShown, duplicateItemClickedHandler, renameItemClickedHandler, deleteItemClickedHandler, mutateEditorMode, templateMenuItemClickHandler]);
 
-  const pagePath = isNotFound
-    ? (currentPathname ?? undefined)
-    : currentPage?.path;
-
   return (
     <GrowiSubNavigation
-      pagePath={pagePath}
+      pagePath={currentPage?.path ?? currentPathname ?? undefined}
       pageId={currentPage?._id}
       showDrawerToggler={isDrawerMode}
       showTagLabel={isAbleToShowTagLabel}

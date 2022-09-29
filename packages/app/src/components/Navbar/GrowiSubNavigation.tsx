@@ -1,5 +1,6 @@
 import React from 'react';
 
+import { pagePathUtils } from '@growi/core';
 import dynamic from 'next/dynamic';
 
 import {
@@ -14,6 +15,10 @@ import DrawerToggler from './DrawerToggler';
 
 // import AuthorInfoStyles from './AuthorInfo.module.scss';
 import styles from './GrowiSubNavigation.module.scss';
+
+
+const { isPermalink } = pagePathUtils;
+
 
 // const AuthorInfoSkelton = () => <Skelton additionalClass={`${AuthorInfoStyles['grw-author-info-skelton']} py-1`} />;
 
@@ -76,7 +81,7 @@ export const GrowiSubNavigation = (props: GrowiSubNavigationProps): JSX.Element 
               <TagLabels tags={tags} isGuestUser={isGuestUser ?? false} tagsUpdateInvoked={tagsUpdatedHandler} />
             </div>
           ) }
-          { pagePath != null
+          { pagePath != null && !isPermalink(pagePath)
             ? <PagePathNav pageId={pageId} pagePath={pagePath} isSingleLineMode={isEditorMode} isCompactMode={isCompactMode} />
             : <Skelton />
           }
