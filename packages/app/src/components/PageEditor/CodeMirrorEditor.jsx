@@ -238,10 +238,10 @@ class CodeMirrorEditor extends AbstractEditor {
    * @inheritDoc
    */
   forceToFocus() {
-    const editor = this.getCodeMirror();
     // use setInterval with reluctance -- 2018.01.11 Yuki Takei
     const intervalId = setInterval(() => {
-      this.getCodeMirror().focus();
+      const editor = this.getCodeMirror();
+      editor.focus();
       if (editor.hasFocus()) {
         clearInterval(intervalId);
         // refresh
