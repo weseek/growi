@@ -2,13 +2,13 @@ import React, {
   useState, useEffect, useCallback,
 } from 'react';
 
+import { ErrorV3 } from '@growi/core/src/models/vo/error-apiv3';
 import { useTranslation } from 'next-i18next';
 import { useRouter } from 'next/router';
 import ReactCardFlip from 'react-card-flip';
 
 import { apiv3Post } from '~/client/util/apiv3-client';
 import { LoginErrorCode } from '~/interfaces/errors/login-form-error';
-import { IErrorV3 } from '~/interfaces/errors/v3-error';
 
 type LoginFormProps = {
   username?: string,
@@ -40,13 +40,13 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
   // For Login
   const [usernameForLogin, setUsernameForLogin] = useState('');
   const [passwordForLogin, setPasswordForLogin] = useState('');
-  const [loginErrors, setLoginErrors] = useState<IErrorV3[]>([]);
+  const [loginErrors, setLoginErrors] = useState<ErrorV3[]>([]);
   // For Register
   const [usernameForRegister, setUsernameForRegister] = useState('');
   const [nameForRegister, setNameForRegister] = useState('');
   const [emailForRegister, setEmailForRegister] = useState('');
   const [passwordForRegister, setPasswordForRegister] = useState('');
-  const [registerErrors, setRegisterErrors] = useState<IErrorV3[]>([]);
+  const [registerErrors, setRegisterErrors] = useState<ErrorV3[]>([]);
 
   useEffect(() => {
     const { hash } = window.location;
@@ -88,7 +88,7 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
 
   }, [passwordForLogin, resetLoginErrors, router, usernameForLogin]);
 
-  const renderLoginErrors = useCallback((errors, isWithDangerouslySetinnerHtml = false) => {
+  const renderLoginErrors = useCallback((errors: ErrorV3[], isWithDangerouslySetinnerHtml = false) => {
     if (errors.length === 0) return;
 
     return isWithDangerouslySetinnerHtml ? (
@@ -116,8 +116,8 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
   const renderLocalOrLdapLoginForm = useCallback(() => {
     const { isLdapStrategySetup } = props;
 
-    const errorsWithDangerouslySetInnerHTML: IErrorV3[] = [];
-    const errorsWithoutDanderouslySetInnerHTML: IErrorV3[] = [];
+    const errorsWithDangerouslySetInnerHTML: ErrorV3[] = [];
+    const errorsWithoutDanderouslySetInnerHTML: ErrorV3[] = [];
 
     loginErrors.forEach((e) => {
       if (e.code === LoginErrorCode.PROVIDER_DUPLICATED_USERNAME_EXCEPTION) {
@@ -173,7 +173,7 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
         </form>
       </>
     );
-  }, [handleLoginWithLocalSubmit, loginErrors, props, t]);
+  }, [handleLoginWithLocalSubmit, loginErrors, props, renderLoginErrors, t]);
 
   const renderExternalAuthInput = useCallback((auth) => {
     const authIconNames = {
