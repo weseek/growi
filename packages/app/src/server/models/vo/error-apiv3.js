@@ -15,19 +15,19 @@
  *            example: 'someapi-error-with-something'
  *          stack:
  *            type: object
- *          i18nArg:
+ *          args:
  *            type: object
  *            example: { name: 'Josh', age: 20 }
  */
 
 class ErrorV3 extends Error {
 
-  constructor(message = '', code = '', stack = undefined, i18nArg = undefined) {
+  constructor(message = '', code = '', stack = undefined, args = undefined) {
     super(); // do not provide message to the super constructor
     this.message = message;
     this.code = code;
     this.stack = stack;
-    this.i18nArg = i18nArg;
+    this.args = args;
   }
 
 }

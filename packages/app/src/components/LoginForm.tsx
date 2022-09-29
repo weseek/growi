@@ -96,7 +96,7 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
 
         {errors.map((err, index) => {
           return (
-            <small dangerouslySetInnerHTML={{ __html: t(err.message, err.i18nArg) }} key={index}></small>
+            <small dangerouslySetInnerHTML={{ __html: t(err.message, err.args) }} key={index}></small>
           );
         })}
       </div>
@@ -105,7 +105,7 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
         {errors.map((err, index) => {
           return (
             <li key={index}>
-              {t(err.message, err.i18nArg)}<br/>
+              {t(err.message, err.args)}<br/>
             </li>
           );
         })}
