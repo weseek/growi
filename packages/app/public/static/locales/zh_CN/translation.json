@@ -738,16 +738,7 @@
 		"fail_to_save_access_token": "无法保存访问令牌。请再试一次。",
 		"fail_to_fetch_access_token": "无法获取访问令牌。请重新连接。",
 		"successfully_disconnected": "成功断开连接！",
-    "strategy_has_not_been_set_up": {
-      "LocalStrategy"  : "LocalStrategy 尚未设置",
-      "LdapStrategy"   : "LdapStrategy 尚未设置",
-      "GoogleStrategy" : "GoogleStrategy 尚未设置",
-      "GitHubStrategy" : "GitHubStrategy 尚未设置",
-      "TwitterStrategy": "TwitterStrategy 尚未设置",
-      "OidcStrategy"   : "OidcStrategy 尚未设置",
-      "SamlStrategy"   : "SamlStrategy 尚未设置",
-      "Basic"          : "Basic 尚未设置"
-     },
+    "strategy_has_not_been_set_up": "{{strategy}} 尚未设置",
     "ldap_user_not_valid": "Ldap user is no valid",
     "external_account_not_exist": "查找或创建外部账户失败",
 		"maximum_number_of_users": "注册的用户数不能超过最大值。",
