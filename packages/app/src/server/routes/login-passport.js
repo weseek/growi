@@ -92,8 +92,6 @@ module.exports = function(crowi, app) {
    */
   const loginSuccessHandler = async(req, res, user, action) => {
 
-    const User = crowi.model('User');
-
     // update lastLoginAt
     user.updateLastLoginAt(new Date(), (err, userData) => {
       if (err) {
@@ -116,6 +114,9 @@ module.exports = function(crowi, app) {
       },
     };
     await crowi.activityService.createActivity(parameters);
+
+    // for router.push() redirect
+    const User = crowi.model('User');
 
     if (req.user.status === User.STATUS_INVITED) {
       return res.apiv3({ redirectTo: '/invited' });
