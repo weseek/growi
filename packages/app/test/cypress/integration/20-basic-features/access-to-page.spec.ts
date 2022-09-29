@@ -67,7 +67,7 @@ context('Access to /me page', () => {
   it('/me is successfully loaded', () => {
     cy.visit('/me', {  });
     // eslint-disable-next-line cypress/no-unnecessary-waiting
-    cy.wait(1000); // wait loading image
+    cy.wait(500); // wait loading image
     cy.screenshot(`${ssPrefix}-me`);
   });
 
