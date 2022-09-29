@@ -1,6 +1,5 @@
 import React from 'react';
 
-import { pagePathUtils } from '@growi/core';
 import dynamic from 'next/dynamic';
 
 import {
@@ -9,15 +8,11 @@ import {
 
 import { TagLabelsSkelton } from '../Page/TagLabels';
 import PagePathNav from '../PagePathNav';
-import { Skelton } from '../Skelton';
 
 import DrawerToggler from './DrawerToggler';
 
 
 import styles from './GrowiSubNavigation.module.scss';
-
-
-const { isPermalink } = pagePathUtils;
 
 
 const TagLabels = dynamic(() => import('../Page/TagLabels').then(mod => mod.TagLabels), {
@@ -71,13 +66,15 @@ export const GrowiSubNavigation = (props: GrowiSubNavigationProps): JSX.Element 
         <div className="grw-path-nav-container">
           { (showTagLabel && !isCompactMode) && (
             <div className="grw-taglabels-container">
-              <TagLabels tags={tags} isGuestUser={isGuestUser ?? false} tagsUpdateInvoked={tagsUpdatedHandler} />
+              { tags != null
+                ? <TagLabels tags={tags} isGuestUser={isGuestUser ?? false} tagsUpdateInvoked={tagsUpdatedHandler} />
+                : <TagLabelsSkelton />
+              }
             </div>
           ) }
-          { pagePath != null && !isPermalink(pagePath)
-            ? <PagePathNav pageId={pageId} pagePath={pagePath} isSingleLineMode={isEditorMode} isCompactMode={isCompactMode} />
-            : <Skelton />
-          }
+          { pagePath != null && (
+            <PagePathNav pageId={pageId} pagePath={pagePath} isSingleLineMode={isEditorMode} isCompactMode={isCompactMode} />
+          ) }
         </div>
       </div>
       {/* Right side. */}

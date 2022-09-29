@@ -14,8 +14,8 @@ import {
 import { IResTagsUpdateApiv1 } from '~/interfaces/tag';
 import { OnDuplicatedFunction, OnRenamedFunction, OnDeletedFunction } from '~/interfaces/ui';
 import {
-  useCurrentPageId,
-  useCurrentPathname,
+  useCurrentPageId, useCurrentPathname,
+  useIsNotFound,
   useCurrentUser, useIsGuestUser, useIsSharedUser, useShareLinkId, useTemplateTagData,
 } from '~/stores/context';
 import { usePageTagsForEditors } from '~/stores/editor';
@@ -185,6 +185,7 @@ const GrowiContextualSubNavigation = (props: GrowiContextualSubNavigationProps):
   const { data: pageId } = useCurrentPageId();
   const { data: currentPathname } = useCurrentPathname();
   const { data: currentUser } = useCurrentUser();
+  const { data: isNotFound } = useIsNotFound();
   const { data: isGuestUser } = useIsGuestUser();
   const { data: isSharedUser } = useIsSharedUser();
   const { data: shareLinkId } = useShareLinkId();
@@ -378,9 +379,14 @@ const GrowiContextualSubNavigation = (props: GrowiContextualSubNavigationProps):
   // eslint-disable-next-line max-len
   }, [isCompactMode, isViewMode, pageId, revisionId, shareLinkId, path, isSharedUser, isAbleToShowPageManagement, duplicateItemClickedHandler, renameItemClickedHandler, deleteItemClickedHandler, isAbleToShowPageEditorModeManager, isGuestUser, editorMode, isAbleToShowPageAuthors, currentPage, currentUser, isPageTemplateModalShown, isLinkSharingDisabled, templateMenuItemClickHandler, mutateEditorMode]);
 
+
+  const pagePath = isNotFound
+    ? currentPathname
+    : currentPage?.path;
+
   return (
     <GrowiSubNavigation
-      pagePath={currentPage?.path ?? currentPathname ?? undefined}
+      pagePath={pagePath}
       pageId={currentPage?._id}
       showDrawerToggler={isDrawerMode}
       showTagLabel={isAbleToShowTagLabel}
