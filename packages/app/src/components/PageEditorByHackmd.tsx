@@ -96,6 +96,7 @@ export const PageEditorByHackmd = (): JSX.Element => {
 
       await saveOrUpdate(optionsToSave, { pageId, path: currentPagePath || currentPathname, revisionId: revision?._id }, markdown);
       await mutatePageData();
+      await mutateTagsInfo();
       mutateEditorMode(EditorMode.View);
       toastSuccess(t('successfully_saved_the_page'));
     }
