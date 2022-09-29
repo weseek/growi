@@ -3,6 +3,7 @@ import React, {
 } from 'react';
 
 import { pagePathUtils } from '@growi/core';
+import quotemeta from 'quotemeta';
 import { useTranslation } from 'react-i18next';
 import {
   Collapse, Modal, ModalHeader, ModalBody, ModalFooter,
@@ -19,7 +20,6 @@ import { useSWRxPageInfo } from '~/stores/page';
 import DuplicatedPathsTable from './DuplicatedPathsTable';
 import ApiErrorMessageList from './PageManagement/ApiErrorMessageList';
 import PagePathAutoComplete from './PagePathAutoComplete';
-
 
 const isV5Compatible = (meta: unknown): boolean => {
   return isIPageInfoForEntity(meta) ? meta.isV5Compatible : true;
@@ -249,7 +249,7 @@ const PageRenameModal = (): JSX.Element => {
                     type="text"
                     value={pageNameInput}
                     className="form-control"
-                    onChange={e => inputChangeHandler(e.target.value.toString())}
+                    onChange={e => inputChangeHandler(quotemeta(e.target.value))}
                     required
                     autoFocus
                   />

@@ -141,6 +141,7 @@
     "passport-saml": "^3.2.0",
     "passport-twitter": "^1.0.4",
     "prom-client": "^13.0.0",
+    "quotemeta": "^0.0.0",
     "rate-limiter-flexible": "^2.3.7",
     "react-card-flip": "^1.0.10",
     "react-datepicker": "^4.7.0",
