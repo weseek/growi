@@ -157,7 +157,7 @@ export const DrawioModal = React.forwardRef((props: Props, ref: React.LegacyRef<
         <div className="w-100 h-100 position-absolute d-flex">
           { isOpened && (
             <iframe
-                src={drawioUrl.href}
+              src={drawioUrl.href}
               className="border-0 flex-grow-1"
             >
             </iframe>
