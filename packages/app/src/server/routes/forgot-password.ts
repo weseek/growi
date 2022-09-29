@@ -6,7 +6,7 @@ import createError from 'http-errors';
 import { forgotPasswordErrorCode } from '~/interfaces/errors/forgot-password';
 import loggerFactory from '~/utils/logger';
 
-import { ReqWithPasswordResetOrder } from '../middlewares/inject-reset-order-by-token-middleware';
+import { IPasswordResetOrder } from '../models/password-reset-order';
 
 const logger = loggerFactory('growi:routes:forgot-password');
 
@@ -33,15 +33,6 @@ export const checkForgotPasswordEnabledMiddlewareFactory = (crowi: any, forApi =
 
 };
 
-export const forgotPassword = (req: Request, res: Response): void => {
-  return res.render('forgot-password');
-};
-
-export const resetPassword = (req: ReqWithPasswordResetOrder, res: Response): void => {
-  const { passwordResetOrder } = req;
-  return res.render('reset-password', { email: passwordResetOrder.email });
-};
-
 type Crowi = {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   nextApp: any,
@@ -50,6 +41,24 @@ type Crowi = {
 type CrowiReq = Request & {
   crowi: Crowi,
 }
+
+export const renderForgotPassword = (crowi: Crowi) => {
+  return (req: CrowiReq, res: Response, next: NextFunction): void => {
+    const { nextApp } = crowi;
+    req.crowi = crowi;
+    nextApp.render(req, res, '/forgot-password');
+    return;
+  };
+};
+
+export const renderResetPassword = (crowi: Crowi) => {
+  return (req: CrowiReq & { passwordResetOrder: IPasswordResetOrder }, res: Response, next: NextFunction): void => {
+    const { nextApp } = crowi;
+    req.crowi = crowi;
+    nextApp.render(req, res, '/reset-password', { email: req.passwordResetOrder.email });
+    return;
+  };
+};
 
 // middleware to handle error
 export const handleErrorsMiddleware = (crowi: Crowi) => {
