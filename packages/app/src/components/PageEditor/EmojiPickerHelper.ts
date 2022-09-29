@@ -63,28 +63,6 @@ export default class EmojiPickerHelper {
     this.editor.refresh();
   };
 
-  getEmoji = () => {
-    const sc = this.getSearchCursor();
-    const currentPos = this.editor.getCursor();
-
-    if (sc.findPrevious()) {
-      const isInputtingEmoji = (currentPos.line === sc.to().line && currentPos.ch === sc.to().ch);
-      // current search cursor position
-      if (!isInputtingEmoji) {
-        return;
-      }
-      const pos = {
-        line: sc.to().line,
-        ch: sc.to().ch,
-      };
-      const currentSearchText = sc.matches(true, pos).match[0];
-      const searchWord = currentSearchText.replace(':', '');
-      return searchWord;
-    }
-
-    return;
-  };
-
 }
 
 export const getEmojiTranslation = () => {

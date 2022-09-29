@@ -8,7 +8,6 @@ import PropTypes from 'prop-types';
 import { Button } from 'reactstrap';
 import * as loadScript from 'simple-load-script';
 import urljoin from 'url-join';
-import { debounce } from 'throttle-debounce';
 
 import InterceptorManager from '~/services/interceptor-manager';
 import loggerFactory from '~/utils/logger';
@@ -106,7 +105,8 @@ class CodeMirrorEditor extends AbstractEditor {
       isCheatsheetModalShown: false,
       additionalClassSet: new Set(),
       isEmojiPickerShown: false,
-      emojiSearchText: null,
+      emojiSearchText: '',
+      isEmojiPickerMode: false,
     };
 
     this.cm = React.createRef();
@@ -132,7 +132,15 @@ class CodeMirrorEditor extends AbstractEditor {
     this.pasteHandler = this.pasteHandler.bind(this);
     this.cursorHandler = this.cursorHandler.bind(this);
     this.changeHandler = this.changeHandler.bind(this);
-    this.keyUpHandler = this.keyUpHandler.bind(this);
+    this.onEmojiPickerMode = this.onEmojiPickerMode.bind(this);
+    this.offEmojiPickerMode = this.offEmojiPickerMode.bind(this);
+    this.resetEmojiSearchText = this.resetEmojiSearchText.bind(this);
+    this.resetEmojiPickerInfo = this.resetEmojiPickerInfo.bind(this);
+    this.shouldLoadEmojiPicker = this.shouldLoadEmojiPicker.bind(this);
+    this.loadEmojiSearchText = this.loadEmojiSearchText.bind(this);
+    this.showEmojiPicker = this.showEmojiPicker.bind(this);
+    this.loadEmojiPicker = this.loadEmojiPicker.bind(this);
+    this.keyPressHandler = this.keyPressHandler.bind(this);
 
     this.updateCheatsheetStates = this.updateCheatsheetStates.bind(this);
 
@@ -147,7 +155,6 @@ class CodeMirrorEditor extends AbstractEditor {
 
     this.foldDrawioSection = this.foldDrawioSection.bind(this);
     this.onSaveForDrawio = this.onSaveForDrawio.bind(this);
-    this.checkWhetherEmojiPickerShouldBeShown = this.checkWhetherEmojiPickerShouldBeShown.bind(this);
 
   }
 
@@ -584,26 +591,66 @@ class CodeMirrorEditor extends AbstractEditor {
 
   }
 
-  shouldCallCheckWhetherEmojiPickerShouldBeShown(event) { // 引数は要検討
-    const state = {
-      isEmojiPickerMode: true,
-      currentLetter: 'a', // :, Space, Backspace, Enter
-    };
-
-    if (state.currentLetter === 'Space') {
-      state.isEmojiPickerMode = false;
-    }
-    if (state.currentLetter === ':') {
-      state.isEmojiPickerMode = true;
-    }
-
-    return event.key !== 'Backspace';
+  onEmojiPickerMode() {
+    this.setState({ isEmojiPickerMode: true });
   }
 
-  keyUpHandler(editor, event) {
-    if (this.shouldCallCheckWhetherEmojiPickerShouldBeShown(event)) {
-      debounce(100, () => this.checkWhetherEmojiPickerShouldBeShown());
+  offEmojiPickerMode() {
+    this.setState({ isEmojiPickerMode: false });
+  }
+
+  resetEmojiSearchText() {
+    this.setState({ emojiSearchText: '' });
+  }
+
+  resetEmojiPickerInfo() {
+    this.offEmojiPickerMode();
+    this.resetEmojiSearchText();
+  }
+
+  shouldLoadEmojiPicker(ch) {
+    const lowerCh = ch.toLowerCase();
+
+    const isEmojiPickerMode = this.state.isEmojiPickerMode;
+    const isChValid = 'abcdefghijklmnopqrstuvwxyz0123456789-+_'.indexOf(lowerCh) !== -1;
+    return isEmojiPickerMode && isChValid;
+  }
+
+  loadEmojiSearchText(newchar) {
+    if (!this.state.isEmojiPickerMode) {
+      return;
     }
+
+    this.setState(prev => ({ emojiSearchText: prev.emojiSearchText.concat(newchar) }));
+  }
+
+  showEmojiPicker() {
+    // show emoji picker with a stored word
+    this.setState({ isEmojiPickerShown: true });
+    this.offEmojiPickerMode();
+  }
+
+  loadEmojiPicker(ch) {
+    this.loadEmojiSearchText(ch);
+
+    this.showEmojiPicker();
+  }
+
+  keyPressHandler(editor, event) {
+    const char = event.key;
+
+    if (char === ':') {
+      this.onEmojiPickerMode();
+      this.resetEmojiSearchText();
+      return;
+    }
+
+    if (!this.shouldLoadEmojiPicker(char)) {
+      this.resetEmojiPickerInfo();
+      return;
+    }
+
+    this.loadEmojiPicker(char);
   }
 
   /**
@@ -625,26 +672,6 @@ class CodeMirrorEditor extends AbstractEditor {
       pasteHelper.pasteText(this, event);
     }
 
-  }
-
-  /**
-   * Show emoji picker component when emoji pattern (`:` + searchWord ) found
-   * eg `:a`, `:ap`
-   */
-  checkWhetherEmojiPickerShouldBeShown() {
-    const searchWord = this.emojiPickerHelper.getEmoji();
-
-    if (searchWord == null) {
-      this.setState({ isEmojiPickerShown: false });
-      this.setState({ emojiSearchText: null });
-    }
-    else {
-      this.setState({ emojiSearchText: searchWord });
-      // Show emoji picker after user stop typing
-      setTimeout(() => {
-        this.setState({ isEmojiPickerShown: true });
-      }, 700);
-    }
   }
 
   /**
@@ -1060,7 +1087,7 @@ class CodeMirrorEditor extends AbstractEditor {
               this.props.onDragEnter(event);
             }
           }}
-          onKeyUp={this.keyUpHandler}
+          onKeyPress={this.keyPressHandler}
         />
 
         { this.renderLoadingKeymapOverlay() }
