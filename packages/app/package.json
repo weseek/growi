@@ -43,7 +43,7 @@
     "//// misc": "",
     "console": "yarn cross-env NODE_ENV=development yarn ts-node --experimental-repl-await src/server/console.js",
     "swagger-jsdoc": "swagger-jsdoc -o tmp/swagger.json -d config/swagger-definition.js",
-    "openapi:v3": "pwd; yarn cross-env API_VERSION=3 yarn swagger-jsdoc --  \"../core/src/models/**/*.{js,ts}\" \"src/server/routes/apiv3/**/*.js\" \"src/server/models/**/*.js\"",
+    "openapi:v3": "yarn cross-env API_VERSION=3 yarn swagger-jsdoc --  \"../core/src/models/**/*.{js,ts}\" \"src/server/routes/apiv3/**/*.js\" \"src/server/models/**/*.js\"",
     "openapi:v1": "yarn cross-env API_VERSION=1 yarn swagger-jsdoc -- \"src/server/*/*.js\" \"src/server/models/**/*.js\"",
     "resources:dummy": "true",
     "// resources:plugin": "yarn ts-node bin/generate-plugin-definitions-source.ts",
