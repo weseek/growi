@@ -1,5 +1,5 @@
 import React, {
-  useState, useMemo,
+  useMemo,
 } from 'react';
 
 import {
@@ -13,111 +13,21 @@ import { useGrowiHydratedEnv } from '~/stores/context';
 import { useDrawioModal } from '~/stores/modal';
 import { usePersonalSettings } from '~/stores/personal-settings';
 
-const headerColor = '#334455';
-const fontFamily = "Lato, -apple-system, BlinkMacSystemFont, 'Hiragino Kaku Gothic ProN', Meiryo, sans-serif";
-
 
 type Props = {
   // onSave: (drawioData) => void,
 };
 
-// export const DrawioModal = React.forwardRef((props: Props, ref: React.LegacyRef<Modal>): JSX.Element => {
-export const DrawioModal = (props: Props /* , ref: React.LegacyRef<Modal> */): JSX.Element => {
+export const DrawioModal = (props: Props): JSX.Element => {
   const { data: growiHydratedEnv } = useGrowiHydratedEnv();
   const { data: personalSettingsInfo } = usePersonalSettings();
 
-  console.log({ growiHydratedEnv });
-  // const [isShown, setIsShown] = useState(false);
 
   const { data: drawioModalData, close: closeDrawioModal } = useDrawioModal();
-  console.log({ drawioModalData });
   const isOpened = drawioModalData?.isOpened ?? false;
-  const drawioMxFile = drawioModalData?.drawioMxFile ?? '';
-  console.log({ drawioMxFile });
-
-  // const { isOpened, drawioMxFile } = drawioModalData;
-  // const [drawioMxFile, setDrawioMxFile] = useState('');
-
-  // const init = (drawioMxFile) => {
-  //   const initDrawioMxFile = drawioMxFile;
-  //   setDrawioMxFile(initDrawioMxFile);
-  // };
-
-  // const show = (drawioMxFile) => {
-  //   init(drawioMxFile);
-
-  //   window.addEventListener('message', receiveFromDrawio);
-  //   setIsShown(true);
-  // };
-
-  const hide = () => {
-    // setIsShown(false);
-    closeDrawioModal();
-  };
 
   const cancel = () => {
-    hide();
-  };
-
-  const receiveFromDrawio = (event) => {
-    if (event.data === 'ready') {
-      event.source.postMessage(drawioMxFile, '*');
-      return;
-    }
-
-    if (event.data === '{"event":"configure"}') {
-      if (event.source == null) {
-        return;
-      }
-
-      // refs:
-      //  * https://desk.draw.io/support/solutions/articles/16000103852-how-to-customise-the-draw-io-interface
-      //  * https://desk.draw.io/support/solutions/articles/16000042544-how-does-embed-mode-work-
-      //  * https://desk.draw.io/support/solutions/articles/16000058316-how-to-configure-draw-io-
-      event.source.postMessage(JSON.stringify({
-        action: 'configure',
-        config: {
-          css: `
-          .geMenubarContainer { background-color: ${headerColor} !important; }
-          .geMenubar { background-color: ${headerColor} !important; }
-          .geEditor { font-family: ${fontFamily} !important; }
-          html td.mxPopupMenuItem {
-            font-family: ${fontFamily} !important;
-            font-size: 8pt !important;
-          }
-          `,
-          customFonts: ['Lato', 'Charter'],
-        },
-      }), '*');
-
-      return;
-    }
-
-    if (typeof event.data === 'string' && event.data.match(/mxfile/)) {
-      if (event.data.length > 0) {
-        const parser = new DOMParser();
-        const dom = parser.parseFromString(event.data, 'text/xml');
-        const drawioData = dom.getElementsByTagName('diagram')[0].innerHTML;
-
-        // if (props.onSave != null) {
-        //   props.onSave(drawioData);
-        // }
-      }
-
-      // window.removeEventListener('message', receiveFromDrawio);
-      hide();
-
-      return;
-    }
-
-    if (typeof event.data === 'string' && event.data.length === 0) {
-      // window.removeEventListener('message', receiveFromDrawio);
-      hide();
-
-      return;
-    }
-
-    // NOTHING DONE. (Receive unknown iframe message.)
+    closeDrawioModal();
   };
 
   const drawioUrl = useMemo(() => {
@@ -135,11 +45,8 @@ export const DrawioModal = (props: Props /* , ref: React.LegacyRef<Modal> */): J
   }, [growiHydratedEnv?.DRAWIO_URI, personalSettingsInfo?.lang]);
 
 
-  console.log({ drawioUrl });
-
   return (
     <Modal
-      // ref={ref}
       isOpen={isOpened}
       toggle={cancel}
       backdrop="static"
@@ -168,5 +75,3 @@ export const DrawioModal = (props: Props /* , ref: React.LegacyRef<Modal> */): J
     </Modal>
   );
 };
-
-// DrawioModal.displayName = 'DrawioModal';

@@ -510,6 +510,12 @@ export const useDrawioModal = (status?: DrawioModalStatus): SWRResponse<DrawioMo
         const dom = parser.parseFromString(event.data, 'text/xml');
         const drawioData = dom.getElementsByTagName('diagram')[0].innerHTML;
 
+        /*
+        * Saving Drawio will be implemented by the following tasks
+        * https://redmine.weseek.co.jp/issues/100845
+        * https://redmine.weseek.co.jp/issues/104507
+        */
+
         // if (props.onSave != null) {
         //   props.onSave(drawioData);
         // }
