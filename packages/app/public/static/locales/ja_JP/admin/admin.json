@@ -614,7 +614,7 @@
     "SHARE_LINK_NOT_FOUND": "ページ閲覧（存在しない共有リンク）",
     "ATTACHMENT_ADD": "添付データの追加",
     "ATTACHMENT_REMOVE": "添付データの削除",
-    "ACTION_ATTACHMENT_DOWNLOAD": "添付データのダウンロード",
+    "ATTACHMENT_DOWNLOAD": "添付データのダウンロード",
     "SEARCH_PAGE": "ページの検索",
     "SEARCH_PAGE_VIEW": "ページ閲覧（検索結果ページ）",
     "ADMIN_APP_SETTING_UPDATE": "アプリ設定の更新",

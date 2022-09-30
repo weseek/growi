@@ -615,7 +615,7 @@
     "SHARE_LINK_NOT_FOUND": "Page view (Not found share link)",
     "ATTACHMENT_ADD": "Add Attachment",
     "ATTACHMENT_REMOVE": "Delete Attachment",
-    "ACTION_ATTACHMENT_DOWNLOAD": "Download Attachment",
+    "ATTACHMENT_DOWNLOAD": "Download Attachment",
     "SEARCH_PAGE": "Page Search",
     "SEARCH_PAGE_VIEW": "Page view(Search results page)",
     "ADMIN_APP_SETTING_UPDATE": "Update App Settings",
