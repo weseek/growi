@@ -6,7 +6,6 @@ import { GrowiNavbar } from '../Navbar/GrowiNavbar';
 import Sidebar from '../Sidebar';
 
 import { RawLayout } from './RawLayout';
-// const DrawioModal = dynamic(() => import('../PageEditor/DrawioModal').then(mod => mod.DrawioModal), { ssr: false });
 
 const HotkeysManager = dynamic(() => import('../Hotkeys/HotkeysManager'), { ssr: false });
 // const PageCreateModal = dynamic(() => import('../client/js/components/PageCreateModal'), { ssr: false });
@@ -17,7 +16,6 @@ const SystemVersion = dynamic(() => import('../SystemVersion'), { ssr: false });
 const PageCreateModal = dynamic(() => import('../PageCreateModal'), { ssr: false });
 const PageDuplicateModal = dynamic(() => import('../PageDuplicateModal'), { ssr: false });
 const PageDeleteModal = dynamic(() => import('../PageDeleteModal'), { ssr: false });
-
 const PageRenameModal = dynamic(() => import('../PageRenameModal'), { ssr: false });
 const PagePresentationModal = dynamic(() => import('../PagePresentationModal'), { ssr: false });
 const PageAccessoriesModal = dynamic(() => import('../PageAccessoriesModal'), { ssr: false });
