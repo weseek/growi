@@ -15,7 +15,9 @@ import { IResHackmdIntegrated, IResHackmdDiscard } from '~/interfaces/hackmd';
 import {
   useCurrentPagePath, useCurrentPageId, useHackmdUri, usePageIdOnHackmd, useHasDraftOnHackmd, useRevisionIdHackmdSynced,
 } from '~/stores/context';
-import { useSWRxSlackChannels, useIsSlackEnabled, usePageTagsForEditors } from '~/stores/editor';
+import {
+  useSWRxSlackChannels, useIsSlackEnabled, usePageTagsForEditors, useIsEnabledUnsavedWarning,
+} from '~/stores/editor';
 import { useSWRxCurrentPage } from '~/stores/page';
 import {
   EditorMode,
@@ -63,6 +65,7 @@ export const PageEditorByHackmd = (): JSX.Element => {
   const { data: pageIdOnHackmd, mutate: mutatePageIdOnHackmd } = usePageIdOnHackmd();
   const { data: hasDraftOnHackmd, mutate: mutateHasDraftOnHackmd } = useHasDraftOnHackmd();
   const { data: revisionIdHackmdSynced, mutate: mutateRevisionIdHackmdSynced } = useRevisionIdHackmdSynced();
+  const { mutate: mutateIsEnabledUnsavedWarning } = useIsEnabledUnsavedWarning();
   const [isHackmdDraftUpdatingInRealtime, setIsHackmdDraftUpdatingInRealtime] = useState(false);
   const [remoteRevisionId, setRemoteRevisionId] = useState(revision?._id); // initialize
 
@@ -97,7 +100,20 @@ export const PageEditorByHackmd = (): JSX.Element => {
     await saveOrUpdate(optionsToSave, { pageId, path: currentPagePath || currentPathname, revisionId: revision?._id }, markdown);
     await updatePageData();
     mutateEditorMode(EditorMode.View);
-  }, [currentPagePath, currentPathname, editorMode, grant, isSlackEnabled, pageId, pageTags, revision, slackChannels, mutateEditorMode, updatePageData]);
+    mutateIsEnabledUnsavedWarning(false);
+  }, [editorMode,
+      isSlackEnabled,
+      currentPathname,
+      slackChannels,
+      grant,
+      revision,
+      pageTags,
+      pageId,
+      currentPagePath,
+      updatePageData,
+      mutateEditorMode,
+      mutateIsEnabledUnsavedWarning,
+  ]);
 
   // set handler to save and reload Page
   useEffect(() => {
