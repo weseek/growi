@@ -100,7 +100,6 @@ export const PageEditorByHackmd = (): JSX.Element => {
     await saveOrUpdate(optionsToSave, { pageId, path: currentPagePath || currentPathname, revisionId: revision?._id }, markdown);
     await updatePageData();
     mutateEditorMode(EditorMode.View);
-    // disable unsaved warning
     mutateIsEnabledUnsavedWarning(false);
   }, [editorMode,
       isSlackEnabled,
@@ -217,6 +216,7 @@ export const PageEditorByHackmd = (): JSX.Element => {
       mutateRevisionIdHackmdSynced(res.page.revisionHackmdSynced);
       mutateHasDraftOnHackmd(res.page.hasDraftOnHackmd);
       updatePageTagsForEditors(res.tags);
+      mutateIsEnabledUnsavedWarning(false);
 
       // call reset
       setIsInitialized(false);
@@ -229,10 +229,20 @@ export const PageEditorByHackmd = (): JSX.Element => {
       logger.error('failed to save', error);
       toastError(error);
     }
-  }, [
-    grant, isSlackEnabled, pageTags, slackChannels, updatePageTagsForEditors, pageId, currentPagePath, currentPathname,
-    revisionIdHackmdSynced, updatePageData, mutateHasDraftOnHackmd, mutateRevisionIdHackmdSynced, t,
-  ]);
+  }, [isSlackEnabled,
+      grant,
+      slackChannels,
+      pageId,
+      revisionIdHackmdSynced,
+      currentPathname,
+      pageTags,
+      currentPagePath,
+      updatePageData,
+      mutateRevisionIdHackmdSynced,
+      mutateHasDraftOnHackmd,
+      updatePageTagsForEditors,
+      mutateIsEnabledUnsavedWarning,
+      t]);
 
   /**
    * onChange event of HackmdEditor handler
