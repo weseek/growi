@@ -1,13 +1,17 @@
-import React from 'react';
+import React, { useState } from 'react';
 
 import { pagePathUtils } from '@growi/core';
 import {
   NextPage, GetServerSideProps, GetServerSidePropsContext,
 } from 'next';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
+import {
+  Nav, NavItem, NavLink,
+} from 'reactstrap';
 
 import { NoLoginLayout } from '~/components/Layout/NoLoginLayout';
 
+import DataTransferForm from '../components/DataTransferForm';
 import InstallerForm from '../components/InstallerForm';
 import {
   useCurrentPagePath, useCsrfToken,
@@ -33,6 +37,7 @@ type Props = CommonProps & {
 };
 
 const InstallerPage: NextPage<Props> = (props: Props) => {
+  const [isCreateUserTab, setCreateUserTab] = useState(true);
 
   // commons
   useAppTitle(props.appTitle);
@@ -48,7 +53,26 @@ const InstallerPage: NextPage<Props> = (props: Props) => {
   return (
     <NoLoginLayout title={useCustomTitle(props, 'GROWI')} className={classNames.join(' ')}>
       <div id="installer-form-container">
-        <InstallerForm />
+        <div className="noLogin-dialog grw-custom-nav-tab mx-auto">
+          <Nav className="nav-title text-center w-100">
+            <NavItem className={`col-6 p-0 ${isCreateUserTab ? 'active' : ''}`}>
+              <NavLink type="button" className="text-white" onClick={() => setCreateUserTab(true)}>
+              アカウント作成
+              </NavLink>
+            </NavItem>
+            <NavItem className={`col-6 p-0 ${isCreateUserTab ? '' : 'active'}`}>
+              <NavLink type="button" className="text-white" onClick={() => setCreateUserTab(false)}>
+              データ移行
+              </NavLink>
+            </NavItem>
+          </Nav>
+          <hr className="my-0 grw-nav-slide-hr border-none" style={{ width: '50%', marginLeft: isCreateUserTab ? '0%' : '50%', borderColor: 'white' }} />
+        </div>
+        {isCreateUserTab ? (
+          <InstallerForm />
+        ) : (
+          <DataTransferForm />
+        )}
       </div>
     </NoLoginLayout>
   );

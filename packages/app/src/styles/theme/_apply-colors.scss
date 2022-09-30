@@ -379,6 +379,9 @@ ul.pagination {
 
   .grw-nav-slide-hr {
     border-color: $color-link;
+    border-top: 0rem;
+    border-bottom: 3px solid;
+    transition: 0.3s ease-in-out;
   }
 }
 
