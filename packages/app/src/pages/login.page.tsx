@@ -26,6 +26,7 @@ type Props = CommonProps & {
   isMailerSetup: boolean,
   enabledStrategies: unknown,
   registrationWhiteList: string[],
+  isLdapSetupFailed: boolean,
 };
 
 const LoginPage: NextPage<Props> = (props: Props) => {
@@ -45,6 +46,7 @@ const LoginPage: NextPage<Props> = (props: Props) => {
         objOfIsExternalAuthEnableds={props.enabledStrategies}
         isLocalStrategySetup={true}
         isLdapStrategySetup={true}
+        isLdapSetupFailed={props.isLdapSetupFailed}
         isEmailAuthenticationEnabled={false}
         isRegistrationEnabled={true}
         registrationWhiteList={props.registrationWhiteList}
@@ -92,9 +94,11 @@ async function injectServerConfigurations(context: GetServerSidePropsContext, pr
   const {
     mailService,
     configManager,
+    passportService,
   } = crowi;
 
   props.isMailerSetup = mailService.isMailerSetup;
+  props.isLdapSetupFailed = configManager.getConfig('crowi', 'security:passport-ldap:isEnabled') && !passportService.isLdapStrategySetup;
   props.registrationWhiteList = configManager.getConfig('crowi', 'security:registrationWhiteList');
 }
 
