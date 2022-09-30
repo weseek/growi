@@ -2,7 +2,7 @@ import React, {
   useState, useEffect, useCallback,
 } from 'react';
 
-import { ErrorV3 } from '@growi/core/src/models/vo/error-apiv3';
+import { ErrorV3 } from '@growi/core';
 import { useTranslation } from 'next-i18next';
 import { useRouter } from 'next/router';
 import ReactCardFlip from 'react-card-flip';

@@ -1,6 +1,6 @@
 /* eslint-disable no-unused-vars */
 
-import { ErrorV3 } from '@growi/core/src/models/vo/error-apiv3';
+import { ErrorV3 } from '@growi/core';
 
 import { SupportedAction } from '~/interfaces/activity';
 import { AttachmentType } from '~/server/interfaces/attachment';

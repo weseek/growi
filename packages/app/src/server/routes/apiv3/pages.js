@@ -1,4 +1,4 @@
-import { ErrorV3 } from '@growi/core/src/models/vo/error-apiv3';
+import { ErrorV3 } from '@growi/core';
 
 import { SupportedTargetModel, SupportedAction } from '~/interfaces/activity';
 import { subscribeRuleNames } from '~/interfaces/in-app-notification';

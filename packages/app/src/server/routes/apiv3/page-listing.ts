@@ -1,4 +1,4 @@
-import { ErrorV3 } from '@growi/core/src/models/vo/error-apiv3';
+import { ErrorV3 } from '@growi/core';
 import express, { Request, Router } from 'express';
 import { query, oneOf } from 'express-validator';
 import mongoose from 'mongoose';

@@ -1,6 +1,6 @@
 import path from 'path';
 
-import { ErrorV3 } from '@growi/core/src/models/vo/error-apiv3';
+import { ErrorV3 } from '@growi/core';
 import * as express from 'express';
 import { body, validationResult } from 'express-validator';
 

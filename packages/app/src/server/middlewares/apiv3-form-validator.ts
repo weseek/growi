@@ -1,4 +1,4 @@
-import { ErrorV3 } from '@growi/core/src/models/vo/error-apiv3';
+import { ErrorV3 } from '@growi/core';
 import { NextFunction, Request, Response } from 'express';
 
 import loggerFactory from '~/utils/logger';
