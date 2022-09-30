@@ -46,8 +46,6 @@ context('Access to page', () => {
 
   it('/user/admin is successfully loaded', () => {
     cy.visit('/user/admin', {  });
-    // eslint-disable-next-line cypress/no-unnecessary-waiting
-    cy.wait(1000); // wait for loading
     cy.screenshot(`${ssPrefix}-user-admin`);
   });
 
