@@ -135,8 +135,7 @@ class CodeMirrorEditor extends AbstractEditor {
     this.onEmojiPickerMode = this.onEmojiPickerMode.bind(this);
     this.offEmojiPickerMode = this.offEmojiPickerMode.bind(this);
     this.resetEmojiSearchText = this.resetEmojiSearchText.bind(this);
-    this.resetEmojiPickerInfo = this.resetEmojiPickerInfo.bind(this);
-    this.shouldLoadEmojiPicker = this.shouldLoadEmojiPicker.bind(this);
+    this.isCharValidForShowingEmojiPicker = this.isCharValidForShowingEmojiPicker.bind(this);
     this.loadEmojiSearchText = this.loadEmojiSearchText.bind(this);
     this.showEmojiPicker = this.showEmojiPicker.bind(this);
     this.loadEmojiPicker = this.loadEmojiPicker.bind(this);
@@ -603,24 +602,13 @@ class CodeMirrorEditor extends AbstractEditor {
     this.setState({ emojiSearchText: '' });
   }
 
-  resetEmojiPickerInfo() {
-    this.offEmojiPickerMode();
-    this.resetEmojiSearchText();
-  }
-
-  shouldLoadEmojiPicker(ch) {
+  isCharValidForShowingEmojiPicker(ch) {
     const lowerCh = ch.toLowerCase();
 
-    const isEmojiPickerMode = this.state.isEmojiPickerMode;
-    const isChValid = 'abcdefghijklmnopqrstuvwxyz0123456789-+_'.indexOf(lowerCh) !== -1;
-    return isEmojiPickerMode && isChValid;
+    return 'abcdefghijklmnopqrstuvwxyz0123456789-+_'.indexOf(lowerCh) !== -1;
   }
 
   loadEmojiSearchText(newchar) {
-    if (!this.state.isEmojiPickerMode) {
-      return;
-    }
-
     this.setState(prev => ({ emojiSearchText: prev.emojiSearchText.concat(newchar) }));
   }
 
@@ -638,15 +626,21 @@ class CodeMirrorEditor extends AbstractEditor {
 
   keyPressHandler(editor, event) {
     const char = event.key;
+    const isEmojiPickerMode = this.state.isEmojiPickerMode;
 
-    if (char === ':') {
-      this.onEmojiPickerMode();
-      this.resetEmojiSearchText();
+    if (!isEmojiPickerMode) {
+      if (char === ':') { // Turn on emoji picker mode
+        this.onEmojiPickerMode();
+        this.resetEmojiSearchText();
+        return;
+      }
+
       return;
     }
 
-    if (!this.shouldLoadEmojiPicker(char)) {
-      this.resetEmojiPickerInfo();
+    if (!this.isCharValidForShowingEmojiPicker(char)) {
+      this.offEmojiPickerMode();
+      this.resetEmojiSearchText();
       return;
     }
 
