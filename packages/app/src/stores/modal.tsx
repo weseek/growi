@@ -452,7 +452,7 @@ type DrawioModalStatus = {
 type DrawioModalStatusUtils = {
   open(drawioMxFile: string): void,
   close(): void,
-  receiveFromDrawio(event: any, drawioMxFile: string): void,
+  receiveFromDrawio(event, drawioMxFile: string): void,
 }
 
 export const useDrawioModal = (status?: DrawioModalStatus): SWRResponse<DrawioModalStatus, Error> & DrawioModalStatusUtils => {
