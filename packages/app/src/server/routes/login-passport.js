@@ -100,7 +100,7 @@ module.exports = function(crowi, app) {
       }
     });
 
-    const { redirectTo } = req.session;
+    const redirectTo = req.session;
     // remove session.redirectTo
     delete req.session.redirectTo;
 
@@ -115,9 +115,8 @@ module.exports = function(crowi, app) {
     };
     await crowi.activityService.createActivity(parameters);
 
-    // for router.push() redirect
+    // for router.push() redirect to '/invited'
     const User = crowi.model('User');
-
     if (req.user.status === User.STATUS_INVITED) {
       return res.apiv3({ redirectTo: '/invited' });
     }
