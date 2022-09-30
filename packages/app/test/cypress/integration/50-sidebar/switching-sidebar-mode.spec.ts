@@ -25,12 +25,12 @@ context('Switch sidebar mode', () => {
 
     cy.get('[for="swSidebarMode"]').click({force: true});
     cy.screenshot(`${ssPrefix}-switch-sidebar-mode`, {
-      blackout: ['#revision-toc'],
+      blackout: ['#revision-toc', '[data-hide-in-vrt=true]'],
     })
 
     cy.get('[for="swSidebarMode"]').click({force: true});
     cy.screenshot(`${ssPrefix}-switch-sidebar-mode-back`, {
-      blackout: ['#revision-toc'],
+      blackout: ['#revision-toc', '[data-hide-in-vrt=true]'],
     })
   });
 
