@@ -170,7 +170,7 @@ export const SearchResultContent: FC<Props> = (props: Props) => {
     openDeleteModal([pageToDelete], { onDeleted: onDeletedHandler });
   }, [onDeletedHandler, openDeleteModal]);
 
-  const ControlComponents = useCallback(() => {
+  const RightComponent = useCallback(() => {
     if (page == null) {
       return <></>;
     }
@@ -202,8 +202,9 @@ export const SearchResultContent: FC<Props> = (props: Props) => {
     <div key={page._id} data-testid="search-result-content" className="search-result-content grw-page-path-text-muted-container d-flex flex-column">
       <div className="grw-subnav-append-shadow-container">
         <GrowiSubNavigation
-          page={page}
-          controls={ControlComponents}
+          pagePath={page.path}
+          pageId={page._id}
+          rightComponent={RightComponent}
           isCompactMode
           additionalClasses={['px-4']}
         />
