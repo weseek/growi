@@ -137,7 +137,6 @@ const PageEditor = React.memo((): JSX.Element => {
     mutateEditorMode(EditorMode.View);
     // disable unsaved warning
     mutateIsEnabledUnsavedWarning(false);
-
   }, [editorMode, save, mutateEditorMode, mutateIsEnabledUnsavedWarning]);
 
   const saveWithShortcut = useCallback(async() => {
