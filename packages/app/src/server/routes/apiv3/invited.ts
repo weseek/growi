@@ -70,7 +70,7 @@ module.exports = (crowi: Crowi): Router => {
       // check user upper limit
       const isUserCountExceedsUpperLimit = await User.isUserCountExceedsUpperLimit();
       if (isUserCountExceedsUpperLimit) {
-        req.flash('warningMessage', req.t('message.can_not_activate_maximum_number_of_users'));
+        // req.flash('warningMessage', req.t('message.can_not_activate_maximum_number_of_users'));
         return res.apiv3({ redirectTo: '/invited' });
       }
 
@@ -81,12 +81,12 @@ module.exports = (crowi: Crowi): Router => {
           return res.apiv3({ redirectTo: '/' });
         }
         catch (err) {
-          req.flash('warningMessage', req.t('message.failed_to_activate'));
+          // req.flash('warningMessage', req.t('message.failed_to_activate'));
           return res.render('invited');
         }
       }
       else {
-        req.flash('warningMessage', req.t('message.unable_to_use_this_user'));
+        // req.flash('warningMessage', req.t('message.unable_to_use_this_user'));
         debug('username', username);
         return res.render('invited');
       }
