@@ -15,6 +15,7 @@ import { useIsMobile } from '~/stores/ui';
 
 import { IEditorMethods } from '../../interfaces/editor-methods';
 
+import AbstractEditor from './AbstractEditor';
 import Cheatsheet from './Cheatsheet';
 import CodeMirrorEditor from './CodeMirrorEditor';
 import pasteHelper from './PasteHelper';
@@ -59,7 +60,12 @@ const Editor: ForwardRefRenderFunction<IEditorMethods, EditorPropsType> = (props
   const { data: isMobile } = useIsMobile();
 
   const dropzoneRef = useRef<DropzoneRef>(null);
-  const cmEditorRef = useRef<CodeMirrorEditor>(null);
+  // Need to typescriptize CodeMirrorEditor to set the generic type
+  // forwardRef should be typed.
+  // const cmEditorRef = useRef<any>(null);
+  const cmEditorRef = useRef<AbstractEditor<any>>(null);
+
+
   const taEditorRef = useRef<TextAreaEditor>(null);
 
   const editorSubstance = useCallback(() => {
@@ -285,7 +291,6 @@ const Editor: ForwardRefRenderFunction<IEditorMethods, EditorPropsType> = (props
 
                 {/* for PC */}
                 { !isMobile && (
-                  // eslint-disable-next-line arrow-body-style
                   <CodeMirrorEditor
                     ref={cmEditorRef}
                     indentSize={indentSize ?? defaultIndentSize}
