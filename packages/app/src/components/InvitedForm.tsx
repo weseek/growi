@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, useState } from 'react';
 
 import { useTranslation } from 'next-i18next';
 import { useRouter } from 'next/router';
@@ -18,6 +18,7 @@ export const InvitedForm = (props: InvitedFormProps): JSX.Element => {
   const { t } = useTranslation();
   const router = useRouter();
   const { data: user } = useCurrentUser();
+  const [loginErrors, setLoginErrors] = useState<Error[]>([]);
 
   const { invitedFormUsername, invitedFormName } = props;
 
@@ -39,13 +40,37 @@ export const InvitedForm = (props: InvitedFormProps): JSX.Element => {
     };
 
     try {
-      await apiv3Post('/invited/activateInvited', { invitedForm });
-      router.push('/');
+      const res = await apiv3Post('/invited/activateInvited', { invitedForm });
+      const { redirectTo } = res.data;
+      router.push(redirectTo);
     }
     catch (err) {
-      // TODO: show errors
+      setLoginErrors(err);
     }
   }, [router]);
+
+  const formNotification = useCallback(() => {
+    return (
+      <>
+        { loginErrors != null && loginErrors.length > 0 ? (
+          <p className="alert alert-danger">
+            {loginErrors.map((err, index) => {
+              return (
+                <span key={index}>
+                  {t(err.message)}<br/>
+                </span>
+              );
+            })}
+          </p>
+        ) : (
+          <p className="alert alert-success">
+            <strong>{ t('invited.discription_heading') }</strong><br></br>
+            <small>{ t('invited.discription') }</small>
+          </p>
+        ) }
+      </>
+    );
+  }, [loginErrors, t]);
 
   if (user == null) {
     return <></>;
@@ -53,10 +78,7 @@ export const InvitedForm = (props: InvitedFormProps): JSX.Element => {
 
   return (
     <div className="noLogin-dialog p-3 mx-auto" id="noLogin-dialog">
-      <p className="alert alert-success">
-        <strong>{ t('invited.discription_heading') }</strong><br></br>
-        <small>{ t('invited.discription') }</small>
-      </p>
+      { formNotification() }
       <form role="form" onSubmit={submitHandler} id="invited-form">
         {/* Email Form */}
         <div className="input-group">
@@ -120,6 +142,7 @@ export const InvitedForm = (props: InvitedFormProps): JSX.Element => {
             placeholder={t('Password')}
             name="invitedForm[password]"
             required
+            minLength={6}
           />
         </div>
         {/* Create Button */}

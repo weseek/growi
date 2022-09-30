@@ -1,4 +1,5 @@
 import { body, validationResult } from 'express-validator';
+import { Request } from 'express-validator/src/base';
 
 // form rules
 export const invitedRules = () => {
@@ -22,10 +23,11 @@ export const invitedRules = () => {
 };
 
 // validation action
-export const invitedValidation = (req, res, next) => {
+export const invitedValidation = (req: Request, _res: any, next: () => any) => {
   const form = req.body;
 
   const errors = validationResult(req);
+
   if (errors.isEmpty()) {
     Object.assign(form, { isValid: true });
     req.form = form;

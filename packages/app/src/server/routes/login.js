@@ -171,7 +171,7 @@ module.exports = function(crowi, app) {
 
   actions.invited = async function(req, res) {
     if (!req.user) {
-      return res.redirect('/login');
+      return res.apiv3({ redirectTo: '/login' });
     }
 
     if (req.method === 'POST' && req.form.isValid) {
@@ -185,14 +185,14 @@ module.exports = function(crowi, app) {
       const isUserCountExceedsUpperLimit = await User.isUserCountExceedsUpperLimit();
       if (isUserCountExceedsUpperLimit) {
         req.flash('warningMessage', req.t('message.can_not_activate_maximum_number_of_users'));
-        return res.redirect('/invited');
+        return res.apiv3({ redirectTo: '/invited' });
       }
 
       const creatable = await User.isRegisterableUsername(username);
       if (creatable) {
         try {
           await user.activateInvitedUser(username, name, password);
-          return res.redirect('/');
+          return res.apiv3({ redirectTo: '/' });
         }
         catch (err) {
           req.flash('warningMessage', req.t('message.failed_to_activate'));
