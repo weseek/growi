@@ -452,6 +452,7 @@ type DrawioModalStatus = {
 type DrawioModalStatusUtils = {
   open(drawioMxFile: string): void,
   close(): void,
+  receiveFromDrawio(event: any, drawioMxFile: string): void,
 }
 
 export const useDrawioModal = (status?: DrawioModalStatus): SWRResponse<DrawioModalStatus, Error> & DrawioModalStatusUtils => {
@@ -468,20 +469,88 @@ export const useDrawioModal = (status?: DrawioModalStatus): SWRResponse<DrawioMo
   //   swrResponse.mutate({ isOpened: false, drawioMxFile: initDrawioMxFile });
   // };
 
+  const receiveFromDrawio = (event, drawioMxFile: string) => {
+    const headerColor = '#334455';
+    const fontFamily = "Lato, -apple-system, BlinkMacSystemFont, 'Hiragino Kaku Gothic ProN', Meiryo, sans-serif";
+
+    if (event.data === 'ready') {
+      event.source.postMessage(drawioMxFile, '*');
+      return;
+    }
+
+    if (event.data === '{"event":"configure"}') {
+      if (event.source == null) {
+        return;
+      }
+
+      // refs:
+      //  * https://desk.draw.io/support/solutions/articles/16000103852-how-to-customise-the-draw-io-interface
+      //  * https://desk.draw.io/support/solutions/articles/16000042544-how-does-embed-mode-work-
+      //  * https://desk.draw.io/support/solutions/articles/16000058316-how-to-configure-draw-io-
+      event.source.postMessage(JSON.stringify({
+        action: 'configure',
+        config: {
+          css: `
+          .geMenubarContainer { background-color: ${headerColor} !important; }
+          .geMenubar { background-color: ${headerColor} !important; }
+          .geEditor { font-family: ${fontFamily} !important; }
+          html td.mxPopupMenuItem {
+            font-family: ${fontFamily} !important;
+            font-size: 8pt !important;
+          }
+          `,
+          customFonts: ['Lato', 'Charter'],
+        },
+      }), '*');
+
+      return;
+    }
+
+    if (typeof event.data === 'string' && event.data.match(/mxfile/)) {
+      if (event.data.length > 0) {
+        const parser = new DOMParser();
+        const dom = parser.parseFromString(event.data, 'text/xml');
+        const drawioData = dom.getElementsByTagName('diagram')[0].innerHTML;
+
+        // if (props.onSave != null) {
+        //   props.onSave(drawioData);
+        // }
+      }
+
+      window.removeEventListener('message', () => receiveFromDrawio);
+      // hide();
+      close();
+
+      return;
+    }
+
+    if (typeof event.data === 'string' && event.data.length === 0) {
+      // window.removeEventListener('message', () => receiveFromDrawio);
+      // hide();
+      close();
+
+      return;
+    }
+
+    // NOTHING DONE. (Receive unknown iframe message.)
+  };
+
   const open = (drawioMxFile: string): void => {
     // init(drawioMxFile);
-    // window.addEventListener('message', receiveFromDrawio);
+    window.addEventListener('message', e => receiveFromDrawio(e, drawioMxFile));
     // setIsShown(true);
     swrResponse.mutate({ isOpened: true, drawioMxFile });
   };
 
   const close = (): void => {
     swrResponse.mutate({ isOpened: false, drawioMxFile: '' });
+    window.removeEventListener('message', e => receiveFromDrawio(e, ''));
   };
 
   return {
     ...swrResponse,
     open,
     close,
+    receiveFromDrawio,
   };
 };
