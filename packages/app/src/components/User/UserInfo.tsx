@@ -1,16 +1,16 @@
 import React from 'react';
 
-import { IUser } from '@growi/core';
+import { IUserHasId } from '@growi/core';
 import { UserPicture } from '@growi/ui';
 
 import styles from './UserInfo.module.scss';
 
 
-type Props = {
-  author?: IUser,
+export type UserInfoProps = {
+  author?: IUserHasId,
 }
 
-export const UserInfo = (props: Props): JSX.Element => {
+export const UserInfo = (props: UserInfoProps): JSX.Element => {
 
   const { author } = props;
 

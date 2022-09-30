@@ -1,6 +1,6 @@
 import React, { useCallback } from 'react';
 
-import { IUser } from '@growi/core';
+import { IUserHasId } from '@growi/core';
 
 import { smoothScrollIntoView } from '~/client/util/smooth-scroll';
 import { RecentlyCreatedIcon } from '~/components/Icons/RecentlyCreatedIcon';
@@ -54,11 +54,11 @@ const RecentlyCreatedLinkButton = React.memo(() => {
 RecentlyCreatedLinkButton.displayName = 'RecentlyCreatedLinkButton';
 
 
-type Props = {
-  author?: IUser,
+export type ContentLinkButtonsProps = {
+  author?: IUserHasId,
 }
 
-export const ContentLinkButtons = (props: Props): JSX.Element => {
+export const ContentLinkButtons = (props: ContentLinkButtonsProps): JSX.Element => {
 
   const { author } = props;
 

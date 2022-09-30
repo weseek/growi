@@ -11,7 +11,7 @@ import { GrowiThemes } from '~/interfaces/theme';
 import InterceptorManager from '~/services/interceptor-manager';
 
 import { TargetAndAncestors } from '../interfaces/page-listing-results';
-import { IUser, IUserHasId } from '../interfaces/user';
+import { IUser } from '../interfaces/user';
 
 import { useStaticSWR } from './use-static-swr';
 
