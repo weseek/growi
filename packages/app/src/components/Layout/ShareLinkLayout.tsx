@@ -33,7 +33,7 @@ export const ShareLinkLayout = ({
       <GrowiNavbar />
 
       <div className="page-wrapper d-flex d-print-block">
-        <div className="flex-fill mw-0">
+        <div className="flex-fill mw-0" style={{ position: 'relative' }}>
           {children}
         </div>
       </div>

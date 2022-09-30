@@ -3,21 +3,21 @@ import React from 'react';
 import { NextPage, GetServerSideProps, GetServerSidePropsContext } from 'next';
 import { useTranslation } from 'next-i18next';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
-import Link from 'next/link';
-
-import { forgotPasswordErrorCode } from '~/interfaces/errors/forgot-password';
+import dynamic from 'next/dynamic';
 
 import {
   CommonProps, getNextI18NextConfig, getServerSideCommonProps,
 } from './utils/commons';
 
+
 type Props = CommonProps & {
-  errorCode?: forgotPasswordErrorCode
+  email: string
 };
 
-const ForgotPasswordErrorsPage: NextPage<Props> = (props: Props) => {
+const PasswordResetExecutionForm = dynamic(() => import('~/components/PasswordResetExecutionForm'), { ssr: false });
+
+const ForgotPasswordPage: NextPage<Props> = (props: Props) => {
   const { t } = useTranslation();
-  const { errorCode } = props;
 
   return (
     <div id="main" className="main">
@@ -26,30 +26,11 @@ const ForgotPasswordErrorsPage: NextPage<Props> = (props: Props) => {
           <div className="row justify-content-md-center">
             <div className="col-md-6 mt-5">
               <div className="text-center">
-                <h1><i className="icon-lock-open large"/></h1>
+                <h1><i className="icon-lock-open large"></i></h1>
                 <h2 className="text-center">{ t('forgot_password.reset_password') }</h2>
-
-                { errorCode == null && (
-                  <h3 className="text-muted">errorCode Unknown</h3>
-                )}
-
-                { errorCode === forgotPasswordErrorCode.PASSWORD_RESET_IS_UNAVAILABLE && (
-                  <h3 className="text-muted">{ t('forgot_password.feature_is_unavailable') }</h3>
-                )}
-
-                { (errorCode === forgotPasswordErrorCode.PASSWORD_RESET_ORDER_IS_NOT_APPROPRIATE || errorCode === forgotPasswordErrorCode.TOKEN_NOT_FOUND) && (
-                  <div>
-                    <div className="alert alert-warning mb-3">
-                      <h2>{ t('forgot_password.incorrect_token_or_expired_url') }</h2>
-                    </div>
-                    <Link href="/forgot-password" prefetch={false}>
-                      <a className="link-switch">
-                        <i className="icon-key"></i> { t('forgot_password.forgot_password') }
-                      </a>
-                    </Link>
-                  </div>
-                ) }
-
+                <h5>{ props.email }</h5>
+                <p className="mt-4">{ t('forgot_password.password_reset_excecution_desc') }</p>
+                <PasswordResetExecutionForm />
               </div>
             </div>
           </div>
@@ -59,6 +40,7 @@ const ForgotPasswordErrorsPage: NextPage<Props> = (props: Props) => {
   );
 };
 
+// eslint-disable-next-line max-len
 async function injectNextI18NextConfigurations(context: GetServerSidePropsContext, props: Props, namespacesRequired?: string[] | undefined): Promise<void> {
   const nextI18NextConfig = await getNextI18NextConfig(serverSideTranslations, context, namespacesRequired);
   props._nextI18Next = nextI18NextConfig._nextI18Next;
@@ -75,9 +57,9 @@ export const getServerSideProps: GetServerSideProps = async(context: GetServerSi
 
   const props: Props = result.props as Props;
 
-  const errorCode = context.query.errorCode;
-  if (typeof errorCode === 'string') {
-    props.errorCode = errorCode as forgotPasswordErrorCode;
+  const email = context.query.email;
+  if (typeof email === 'string') {
+    props.email = email;
   }
 
   await injectNextI18NextConfigurations(context, props, ['translation']);
@@ -87,4 +69,4 @@ export const getServerSideProps: GetServerSideProps = async(context: GetServerSi
   };
 };
 
-export default ForgotPasswordErrorsPage;
+export default ForgotPasswordPage;
