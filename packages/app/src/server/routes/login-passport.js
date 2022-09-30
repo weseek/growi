@@ -100,7 +100,7 @@ module.exports = function(crowi, app) {
       }
     });
 
-    const redirectTo = req.session;
+    const { redirectTo } = req.session;
     // remove session.redirectTo
     delete req.session.redirectTo;
 
