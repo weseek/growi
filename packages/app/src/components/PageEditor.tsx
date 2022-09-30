@@ -136,6 +136,7 @@ const PageEditor = React.memo((): JSX.Element => {
 
     await save(opts);
     mutateEditorMode(EditorMode.View);
+    // disable unsaved warning
     mutateIsEnabledUnsavedWarning(false);
 
   }, [editorMode, save, mutateEditorMode, mutateIsEnabledUnsavedWarning]);

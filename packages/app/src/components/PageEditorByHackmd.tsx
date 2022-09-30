@@ -100,6 +100,7 @@ export const PageEditorByHackmd = (): JSX.Element => {
     await saveOrUpdate(optionsToSave, { pageId, path: currentPagePath || currentPathname, revisionId: revision?._id }, markdown);
     await updatePageData();
     mutateEditorMode(EditorMode.View);
+    // disable unsaved warning
     mutateIsEnabledUnsavedWarning(false);
   }, [editorMode,
       isSlackEnabled,

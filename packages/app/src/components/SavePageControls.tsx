@@ -36,7 +36,6 @@ export const SavePageControls = (props: Props): JSX.Element | null => {
   const { data: isAclEnabled } = useIsAclEnabled();
   const { data: grantData, mutate: mutateGrant } = useSelectedGrant();
   const { data: pageId } = useCurrentPageId();
-  // const { mutate: mutateIsEnabledUnsavedWarning } = useIsEnabledUnsavedWarning();
 
 
   const updateGrantHandler = useCallback((grantData: IPageGrantData): void => {
@@ -44,16 +43,11 @@ export const SavePageControls = (props: Props): JSX.Element | null => {
   }, [mutateGrant]);
 
   const save = useCallback(async(): Promise<void> => {
-    // disable unsaved warning
-    // mutateIsEnabledaUnsavedWarning(false);
-
     // save
     (window as CustomWindow).globalEmitter.emit('saveAndReturnToView');
   }, []);
 
   const saveAndOverwriteScopesOfDescendants = useCallback(() => {
-    // disable unsaved warning
-    // mutateIsEnabledUnsavedWarning(false);
     // save
     (window as CustomWindow).globalEmitter.emit('saveAndReturnToView', { overwriteScopesOfDescendants: true });
   }, []);
