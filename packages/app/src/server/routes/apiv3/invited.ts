@@ -2,10 +2,13 @@ import express, { Request, Router } from 'express';
 import { body, validationResult } from 'express-validator';
 
 import Crowi from '../../crowi';
+
 import { ApiV3Response } from './interfaces/apiv3-response';
 
-module.exports = (crowi: Crowi, app: any): Router => {
-  const applicationInstalled = require('../middlewares/application-installed')(crowi);
+type InvitedFormRequest = Request & { form: any, user: any };
+
+module.exports = (crowi: Crowi): Router => {
+  const applicationInstalled = require('../../middlewares/application-installed')(crowi);
   const debug = require('debug')('growi:routes:login');
   const User = crowi.model('User');
   const router = express.Router();
@@ -52,7 +55,7 @@ module.exports = (crowi: Crowi, app: any): Router => {
     return next();
   };
 
-  router.post('/invited', applicationInstalled, invitedRules(), invitedValidation, async(req: any, res: ApiV3Response) => {
+  router.post('/invited', applicationInstalled, invitedRules(), invitedValidation, async(req: InvitedFormRequest, res: ApiV3Response) => {
     if (!req.user) {
       return res.redirect('/login');
     }
