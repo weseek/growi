@@ -1,3 +1,4 @@
+import { IUser } from '@growi/core';
 import { HtmlElementNode } from 'rehype-toc';
 import { Key, SWRResponse } from 'swr';
 import useSWRImmutable from 'swr/immutable';
@@ -11,7 +12,6 @@ import { GrowiThemes } from '~/interfaces/theme';
 import InterceptorManager from '~/services/interceptor-manager';
 
 import { TargetAndAncestors } from '../interfaces/page-listing-results';
-import { IUser } from '../interfaces/user';
 
 import { useStaticSWR } from './use-static-swr';
 
