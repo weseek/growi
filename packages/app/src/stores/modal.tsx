@@ -462,12 +462,10 @@ export const useDrawioModal = (status?: DrawioModalStatus): SWRResponse<DrawioMo
   };
   const swrResponse = useStaticSWR<DrawioModalStatus, Error>('drawioModalStatus', status, { fallbackData: initialData });
 
-
-  // const init = (drawioMxFile) => {
-  //   const initDrawioMxFile = drawioMxFile;
-  //   // setDrawioMxFile(initDrawioMxFile);
-  //   swrResponse.mutate({ isOpened: false, drawioMxFile: initDrawioMxFile });
-  // };
+  const close = (): void => {
+    swrResponse.mutate({ isOpened: false, drawioMxFile: '' });
+    window.removeEventListener('message', e => receiveFromDrawio(e, ''));
+  };
 
   const receiveFromDrawio = (event, drawioMxFile: string) => {
     const headerColor = '#334455';
@@ -518,15 +516,12 @@ export const useDrawioModal = (status?: DrawioModalStatus): SWRResponse<DrawioMo
       }
 
       window.removeEventListener('message', () => receiveFromDrawio);
-      // hide();
       close();
 
       return;
     }
 
     if (typeof event.data === 'string' && event.data.length === 0) {
-      // window.removeEventListener('message', () => receiveFromDrawio);
-      // hide();
       close();
 
       return;
@@ -540,11 +535,6 @@ export const useDrawioModal = (status?: DrawioModalStatus): SWRResponse<DrawioMo
     window.addEventListener('message', e => receiveFromDrawio(e, drawioMxFile));
     // setIsShown(true);
     swrResponse.mutate({ isOpened: true, drawioMxFile });
-  };
-
-  const close = (): void => {
-    swrResponse.mutate({ isOpened: false, drawioMxFile: '' });
-    window.removeEventListener('message', e => receiveFromDrawio(e, ''));
   };
 
   return {

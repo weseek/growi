@@ -141,20 +141,20 @@ class PageSubstance extends React.Component<PageSubstanceProps> {
   //   } = this.props;
   //   const optionsToSave = getOptionsToSave(isSlackEnabled, slackChannels, grant, grantGroupId, grantGroupName, pageTags);
 
-  //   const newMarkdown = mdu.replaceDrawioInMarkdown(
-  //     drawioData,
-  //     this.props.pageContainer.state.markdown,
-  //     this.state.currentTargetDrawioArea.beginLineNumber,
-  //     this.state.currentTargetDrawioArea.endLineNumber,
-  //   );
+    //   const newMarkdown = mdu.replaceDrawioInMarkdown(
+    //     drawioData,
+    //     this.props.pageContainer.state.markdown,
+    //     this.state.currentTargetDrawioArea.beginLineNumber,
+    //     this.state.currentTargetDrawioArea.endLineNumber,
+    //   );
 
-  //   try {
-  //     // disable unsaved warning
-  //     mutateIsEnabledUnsavedWarning(false);
+    //   try {
+    //     // disable unsaved warning
+    //     mutateIsEnabledUnsavedWarning(false);
 
-  //     // eslint-disable-next-line no-unused-vars
-  //     const { page, tags } = await pageContainer.save(newMarkdown, this.props.editorMode, optionsToSave);
-  //     logger.debug('success to save');
+    //     // eslint-disable-next-line no-unused-vars
+    //     const { page, tags } = await pageContainer.save(newMarkdown, this.props.editorMode, optionsToSave);
+    //     logger.debug('success to save');
 
   //     pageContainer.showSuccessToastr();
   //   }
@@ -186,6 +186,7 @@ class PageSubstance extends React.Component<PageSubstanceProps> {
             <GridEditModal ref={this.gridEditModal} />
             <LinkEditModal ref={this.linkEditModal} />
             {/* <HandsontableModal ref={this.handsontableModal} onSave={this.saveHandlerForHandsontableModal} /> */}
+            {/* TODO: use global DrawioModal https://redmine.weseek.co.jp/issues/105981 */}
             {/* <DrawioModal
               ref={this.drawioModal}
               onSave={this.saveHandlerForDrawioModal}
@@ -233,10 +234,10 @@ export const Page = (props) => {
   //       pageRef.current.launchDrawioModal(beginLineNumber, endLineNumber);
   //     }
   //   };
-  //   globalEmitter.on('launchDrawioModal', handler);
+  //   window.globalEmitter.on('launchDrawioModal', handler);
 
   //   return function cleanup() {
-  //     globalEmitter.removeListener('launchDrawioModal', handler);
+  //     window.globalEmitter.removeListener('launchDrawioModal', handler);
   //   };
   // }, []);
 
@@ -247,10 +248,10 @@ export const Page = (props) => {
   //       pageRef.current.launchHandsontableModal(beginLineNumber, endLineNumber);
   //     }
   //   };
-  //   globalEmitter.on('launchHandsontableModal', handler);
+  //   window.globalEmitter.on('launchHandsontableModal', handler);
 
   //   return function cleanup() {
-  //     globalEmitter.removeListener('launchHandsontableModal', handler);
+  //     window.globalEmitter.removeListener('launchHandsontableModal', handler);
   //   };
   // }, []);
 

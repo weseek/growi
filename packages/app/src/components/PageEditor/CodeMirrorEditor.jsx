@@ -143,7 +143,6 @@ class CodeMirrorEditor extends AbstractEditor {
     this.showGridEditorHandler = this.showGridEditorHandler.bind(this);
     this.showLinkEditHandler = this.showLinkEditHandler.bind(this);
     this.showHandsonTableHandler = this.showHandsonTableHandler.bind(this);
-    // this.clickDrawioHandler = this.clickDrawioHandler.bind(this);
 
     this.foldDrawioSection = this.foldDrawioSection.bind(this);
     this.onSaveForDrawio = this.onSaveForDrawio.bind(this);
@@ -800,11 +799,6 @@ class CodeMirrorEditor extends AbstractEditor {
     // this.handsontableModal.current.show(mtu.getMarkdownTable(this.getCodeMirror()));
   }
 
-  // clickDrawioHandler() {
-  //   this.props.onClickDrawioBtn(mdu.getMarkdownDrawioMxfile(this.getCodeMirror()));
-  //   // this.drawioModal.current.show(mdu.getMarkdownDrawioMxfile(this.getCodeMirror()));
-  // }
-
 
   // fold draw.io section (::: drawio ~ :::)
   foldDrawioSection() {
@@ -956,7 +950,6 @@ class CodeMirrorEditor extends AbstractEditor {
         color={null}
         bssize="small"
         title="draw.io"
-        // onClick={this.clickDrawioHandler}
         onClick={() => this.props.onClickDrawioBtn(mdu.getMarkdownDrawioMxfile(this.getCodeMirror()))}
       >
         <EditorIcon icon="Drawio" />
@@ -1066,10 +1059,6 @@ class CodeMirrorEditor extends AbstractEditor {
           ref={this.handsontableModal}
           onSave={(table) => { return mtu.replaceFocusedMarkdownTableWithEditor(this.getCodeMirror(), table) }}
           autoFormatMarkdownTable={this.props.editorSettings.autoFormatMarkdownTable}
-        /> */}
-        {/* <DrawioModal
-          ref={this.drawioModal}
-          onSave={this.onSaveForDrawio}
         /> */}
       </div>
     );
