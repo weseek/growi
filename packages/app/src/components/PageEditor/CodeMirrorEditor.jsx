@@ -148,6 +148,7 @@ class CodeMirrorEditor extends AbstractEditor {
     this.loadEmojiSearchText = this.loadEmojiSearchText.bind(this);
     this.showEmojiPicker = this.showEmojiPicker.bind(this);
     this.loadEmojiPicker = this.loadEmojiPicker.bind(this);
+    this.checkAndShowEmojiPicker = this.checkAndShowEmojiPicker.bind(this);
     this.keyPressHandler = this.keyPressHandler.bind(this);
 
     this.updateCheatsheetStates = this.updateCheatsheetStates.bind(this);
@@ -627,7 +628,7 @@ class CodeMirrorEditor extends AbstractEditor {
     this.showEmojiPicker();
   }
 
-  keyPressHandler(editor, event) {
+  checkAndShowEmojiPicker(editor, event) {
     const char = event.key;
     const isEmojiPickerMode = this.state.isEmojiPickerMode;
 
@@ -648,6 +649,10 @@ class CodeMirrorEditor extends AbstractEditor {
     }
 
     this.loadEmojiPicker(char);
+  }
+
+  keyPressHandler(editor, event) {
+    this.checkAndShowEmojiPicker(editor, event);
   }
 
   /**
