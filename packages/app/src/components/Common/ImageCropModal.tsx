@@ -49,6 +49,20 @@ const ImageCropModal: FC<Props> = (props: Props) => {
   const { t } = useTranslation();
   const reset = useCallback(() => {
     if (imageRef) {
+      //  Some SVG files may not have width and height properties, causing the render size to be 0x0
+      // Check if image has width and height property
+      const isImageSizeSet = (imageRef.width || imageRef.height) > 0;
+
+      // If the image has no width and height,
+      // Create a temporary image and take the width and height then set it to imageRef
+
+      // TODO: Optimize code and research for another approach to set image width & height
+      if (!isImageSizeSet) {
+        const tempImage = new Image();
+        tempImage.src = imageRef.src;
+        imageRef.width = tempImage.width;
+        imageRef.height = tempImage.height;
+      }
       const size = Math.min(imageRef.width, imageRef.height);
       setCropOtions({
         aspect: 1,
@@ -63,6 +77,7 @@ const ImageCropModal: FC<Props> = (props: Props) => {
 
   useEffect(() => {
     document.body.style.position = 'static';
+    setIsCropImage(true);
     reset();
   }, [reset]);
 
@@ -105,7 +120,6 @@ const ImageCropModal: FC<Props> = (props: Props) => {
   // Clear image and set isImageCrop true on modal close
   const onModalCloseHandler = async() => {
     setImageRef(null);
-    setIsCropImage(true);
     onModalClose();
   };
 
