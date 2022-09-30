@@ -36,7 +36,7 @@ export const SavePageControls = (props: Props): JSX.Element | null => {
   const { data: isAclEnabled } = useIsAclEnabled();
   const { data: grantData, mutate: mutateGrant } = useSelectedGrant();
   const { data: pageId } = useCurrentPageId();
-  const { mutate: mutateIsEnabledUnsavedWarning } = useIsEnabledUnsavedWarning();
+  // const { mutate: mutateIsEnabledUnsavedWarning } = useIsEnabledUnsavedWarning();
 
 
   const updateGrantHandler = useCallback((grantData: IPageGrantData): void => {
@@ -45,18 +45,18 @@ export const SavePageControls = (props: Props): JSX.Element | null => {
 
   const save = useCallback(async(): Promise<void> => {
     // disable unsaved warning
-    mutateIsEnabledUnsavedWarning(false);
+    // mutateIsEnabledaUnsavedWarning(false);
 
     // save
     (window as CustomWindow).globalEmitter.emit('saveAndReturnToView');
-  }, [mutateIsEnabledUnsavedWarning]);
+  }, []);
 
   const saveAndOverwriteScopesOfDescendants = useCallback(() => {
     // disable unsaved warning
-    mutateIsEnabledUnsavedWarning(false);
+    // mutateIsEnabledUnsavedWarning(false);
     // save
-    (window as CustomWindow).globalEmitter.emit('saveAndReturnToView', { overwriteScopesOfDescendants: true });
-  }, [mutateIsEnabledUnsavedWarning]);
+    // (window as CustomWindow).globalEmitter.emit('saveAndReturnToView', { overwriteScopesOfDescendants: true });
+  }, []);
 
 
   if (isEditable == null || isAclEnabled == null || grantData == null) {

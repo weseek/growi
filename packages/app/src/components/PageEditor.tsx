@@ -90,6 +90,7 @@ const PageEditor = React.memo((): JSX.Element => {
 
 
   const markdownChangedHandler = useCallback((value: string, isClean: boolean): void => {
+    console.log('markdownChangedHandler', value, isClean);
     setMarkdownWithDebounce(value, isClean);
   }, [setMarkdownWithDebounce]);
 

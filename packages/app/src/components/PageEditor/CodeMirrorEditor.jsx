@@ -569,6 +569,7 @@ class CodeMirrorEditor extends AbstractEditor {
   }
 
   changeHandler(editor, data, value) {
+    console.log('aaa', editor);
     if (this.props.onChange != null) {
       const isClean = data.origin == null || editor.isClean();
       this.props.onChange(value, isClean);
