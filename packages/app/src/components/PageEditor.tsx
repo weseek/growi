@@ -136,7 +136,9 @@ const PageEditor = React.memo((): JSX.Element => {
 
     await save(opts);
     mutateEditorMode(EditorMode.View);
-  }, [editorMode, save, mutateEditorMode]);
+    mutateIsEnabledUnsavedWarning(false);
+
+  }, [editorMode, save, mutateEditorMode, mutateIsEnabledUnsavedWarning]);
 
   const saveWithShortcut = useCallback(async() => {
     if (editorMode !== EditorMode.Editor) {

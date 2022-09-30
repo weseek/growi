@@ -55,7 +55,7 @@ export const SavePageControls = (props: Props): JSX.Element | null => {
     // disable unsaved warning
     // mutateIsEnabledUnsavedWarning(false);
     // save
-    // (window as CustomWindow).globalEmitter.emit('saveAndReturnToView', { overwriteScopesOfDescendants: true });
+    (window as CustomWindow).globalEmitter.emit('saveAndReturnToView', { overwriteScopesOfDescendants: true });
   }, []);
 
 
