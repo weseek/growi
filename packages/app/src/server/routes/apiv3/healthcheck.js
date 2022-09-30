@@ -75,6 +75,54 @@ module.exports = (crowi) => {
     }
   }
 
+  /**
+   * @swagger
+   *
+   *  /healthcheck:
+   *    get:
+   *      tags: [Healthcheck]
+   *      operationId: getHealthcheck
+   *      summary: /healthcheck
+   *      description: Check whether the server is healthy or not
+   *      parameters:
+   *        - name: checkServices
+   *          in: query
+   *          description: The list of services to check health
+   *          schema:
+   *            type: array
+   *            items:
+   *              type: string
+   *              enum:
+   *                - mongo
+   *                - search
+   *        - name: strictly
+   *          in: query
+   *          description: Check services and responds 503 if either of these is unhealthy
+   *          schema:
+   *            type: boolean
+   *      responses:
+   *        200:
+   *          description: Healthy
+   *          content:
+   *            application/json:
+   *              schema:
+   *                properties:
+   *                  info:
+   *                    $ref: '#/components/schemas/HealthcheckInfo'
+   *        503:
+   *          description: Unhealthy
+   *          content:
+   *            application/json:
+   *              schema:
+   *                properties:
+   *                  errors:
+   *                    type: array
+   *                    description: Errors
+   *                    items:
+   *                      $ref: '#/components/schemas/ErrorV3'
+   *                  info:
+   *                    $ref: '#/components/schemas/HealthcheckInfo'
+   */
   router.get('/', noCache(), async(req, res) => {
     let checkServices = req.query.checkServices || [];
     let isStrictly = req.query.strictly != null;
