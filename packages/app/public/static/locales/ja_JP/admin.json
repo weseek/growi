@@ -1,4 +1,7 @@
 {
+  "meta": {
+    "display_name": "日本語"
+  },
   "Update": "更新",
   "Delete": "削除",
   "User": "ユーザー",

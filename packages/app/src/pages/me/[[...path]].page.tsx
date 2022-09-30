@@ -169,7 +169,8 @@ async function injectServerConfigurations(context: GetServerSidePropsContext, pr
 //  * @param namespacesRequired
 //  */
 async function injectNextI18NextConfigurations(context: GetServerSidePropsContext, props: Props, namespacesRequired?: string[] | undefined): Promise<void> {
-  const nextI18NextConfig = await getNextI18NextConfig(serverSideTranslations, context, namespacesRequired);
+  // preload all languages because of language lists in user setting
+  const nextI18NextConfig = await getNextI18NextConfig(serverSideTranslations, context, namespacesRequired, true);
   props._nextI18Next = nextI18NextConfig._nextI18Next;
 }
 
@@ -195,7 +196,7 @@ export const getServerSideProps: GetServerSideProps = async(context: GetServerSi
 
   await injectUserUISettings(context, props);
   await injectServerConfigurations(context, props);
-  await injectNextI18NextConfigurations(context, props, ['translation']);
+  await injectNextI18NextConfigurations(context, props, ['translation', 'admin']);
 
   return {
     props,

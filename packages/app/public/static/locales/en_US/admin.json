@@ -1,4 +1,7 @@
 {
+  "meta": {
+    "display_name": "English"
+  },
   "wiki_management_home_page": "Wiki Management Home Page",
   "app_settings": "App Settings",
   "security_settings": {

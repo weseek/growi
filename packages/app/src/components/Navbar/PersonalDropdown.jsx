@@ -2,6 +2,7 @@ import React, { useRef } from 'react';
 
 import { UserPicture } from '@growi/ui';
 import { useTranslation } from 'next-i18next';
+import Link from 'next/link';
 import { useRipple } from 'react-use-ripple';
 
 import { toastError } from '~/client/util/apiNotification';
@@ -53,12 +54,16 @@ const PersonalDropdown = () => {
           </div>
 
           <div className="btn-group btn-block mt-2" role="group">
-            <a className="btn btn-sm btn-outline-secondary col" href={`/user/${user.username}`}>
-              <i className="icon-fw icon-home"></i>{ t('personal_dropdown.home') }
-            </a>
-            <a className="btn btn-sm btn-outline-secondary col" href="/me">
-              <i className="icon-fw icon-wrench"></i>{ t('personal_dropdown.settings') }
-            </a>
+            <Link href={`/user/${user.username}`}>
+              <a className="btn btn-sm btn-outline-secondary col">
+                <i className="icon-fw icon-home"></i>{ t('personal_dropdown.home') }
+              </a>
+            </Link>
+            <Link href="/me">
+              <a className="btn btn-sm btn-outline-secondary col">
+                <i className="icon-fw icon-wrench"></i>{ t('personal_dropdown.settings') }
+              </a>
+            </Link>
           </div>
         </div>
 

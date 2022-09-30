@@ -19,33 +19,56 @@ module.exports = function(crowi, app) {
     req.login(userData, (err) => {
       if (err) {
         logger.debug(err);
-        // I created a flash message in case the user information that processing was successful is not stored in the session.
-        req.flash('successMessage', req.t('message.successfully_created', { username: userData.username }));
       }
       else {
         // update lastLoginAt
-        userData.updateLastLoginAt(new Date(), (err, userData) => {
+        userData.updateLastLoginAt(new Date(), (err) => {
           if (err) {
             logger.error(`updateLastLoginAt dumps error: ${err}`);
           }
         });
       }
-      // RegisterFormValidator.registerRule had code to guarantee that there was a password,
-      // but login.register did not. so I wrote this code.
-      if (!userData.password) {
-        return res.redirect('/me#password');
-      }
 
-      const { redirectTo } = req.session;
+
+      // userData.password cann't be empty but, prepare redirect because password property in User Model is optional
+      // https://github.com/weseek/growi/pull/6670
+      const redirectTo = userData.password ? req.session.redirectTo : '/me#password';
+
       // remove session.redirectTo
       delete req.session.redirectTo;
 
       const parameters = { action: SupportedAction.ACTION_USER_REGISTRATION_SUCCESS };
       activityEvent.emit('update', res.locals.activity._id, parameters);
 
-      return res.safeRedirect(redirectTo);
+      return res.apiv3({ redirectTo });
     });
   };
+
+  async function sendEmailToAllAdmins(userData) {
+    // send mails to all admin users (derived from crowi) -- 2020.06.18 Yuki Takei
+    const admins = await User.findAdmins();
+
+    const appTitle = appService.getAppTitle();
+
+    const promises = admins.map((admin) => {
+      return mailService.send({
+        to: admin.email,
+        subject: `[${appTitle}:admin] A New User Created and Waiting for Activation`,
+        template: path.join(crowi.localeDir, 'en_US/admin/userWaitingActivation.txt'),
+        vars: {
+          createdUser: userData,
+          admin,
+          url: appService.getSiteUrl(),
+          appTitle,
+        },
+      });
+    });
+
+    const results = await Promise.allSettled(promises);
+    results
+      .filter(result => result.status === 'rejected')
+      .forEach(result => logger.error(result.reason));
+  }
 
   actions.error = function(req, res) {
     const reason = req.params.reason;
@@ -83,107 +106,68 @@ module.exports = function(crowi, app) {
     next();
   };
 
-  actions.login = function(req, res) {
-    if (req.form) {
-      debug(req.form.errors);
-    }
-
-    return res.render('login', {});
-  };
-
   actions.register = function(req, res) {
     if (req.user != null) {
-      return res.redirect('/');
+      return res.apiv3Err('user_already_logged_in', 403);
     }
 
     // config で closed ならさよなら
     if (configManager.getConfig('crowi', 'security:registrationMode') === aclService.labels.SECURITY_REGISTRATION_MODE_CLOSED) {
-      return res.redirect('/');
+      return res.apiv3Err('registration_closed', 403);
     }
 
-    if (req.method === 'POST' && req.form.isValid) {
-      const registerForm = req.form.registerForm || {};
-
-      const name = registerForm.name;
-      const username = registerForm.username;
-      const email = registerForm.email;
-      const password = registerForm.password;
-
-      // email と username の unique チェックする
-      User.isRegisterable(email, username, (isRegisterable, errOn) => {
-        let isError = false;
-        if (!User.isEmailValid(email)) {
-          isError = true;
-          req.flash('registerWarningMessage', req.t('message.email_address_could_not_be_used'));
-        }
-        if (!isRegisterable) {
-          if (!errOn.username) {
-            isError = true;
-            req.flash('registerWarningMessage', req.t('message.user_id_is_not_available'));
-          }
-          if (!errOn.email) {
-            isError = true;
-            req.flash('registerWarningMessage', req.t('message.email_address_is_already_registered'));
-          }
-        }
-        if (isError) {
-          debug('isError user register error', errOn);
-          return res.redirect('/register');
-        }
-
-        User.createUserByEmailAndPassword(name, username, email, password, undefined, async(err, userData) => {
-          if (err) {
-            if (err.name === 'UserUpperLimitException') {
-              req.flash('registerWarningMessage', req.t('message.can_not_register_maximum_number_of_users'));
-            }
-            else {
-              req.flash('registerWarningMessage', req.t('message.failed_to_register'));
-            }
-            return res.redirect('/register');
-          }
-
-          if (configManager.getConfig('crowi', 'security:registrationMode') !== aclService.labels.SECURITY_REGISTRATION_MODE_RESTRICTED) {
-            // send mail asynchronous
-            sendEmailToAllAdmins(userData);
-          }
-
-
-          return registerSuccessHandler(req, res, userData);
-        });
-      });
+    if (!req.form.isValid) {
+      const errors = req.form.errors;
+      return res.apiv3Err(errors, 400);
     }
-    else { // method GET of form is not valid
-      debug('session is', req.session);
-      const isRegistering = true;
-      return res.render('login', { isRegistering });
-    }
-  };
 
-  async function sendEmailToAllAdmins(userData) {
-    // send mails to all admin users (derived from crowi) -- 2020.06.18 Yuki Takei
-    const admins = await User.findAdmins();
+    const registerForm = req.form.registerForm || {};
 
-    const appTitle = appService.getAppTitle();
+    const name = registerForm.name;
+    const username = registerForm.username;
+    const email = registerForm.email;
+    const password = registerForm.password;
 
-    const promises = admins.map((admin) => {
-      return mailService.send({
-        to: admin.email,
-        subject: `[${appTitle}:admin] A New User Created and Waiting for Activation`,
-        template: path.join(crowi.localeDir, 'en_US/admin/userWaitingActivation.txt'),
-        vars: {
-          createdUser: userData,
-          admin,
-          url: appService.getSiteUrl(),
-          appTitle,
-        },
+    // email と username の unique チェックする
+    User.isRegisterable(email, username, (isRegisterable, errOn) => {
+      const errors = [];
+      if (!User.isEmailValid(email)) {
+        errors.push('email_address_could_not_be_used');
+      }
+      if (!isRegisterable) {
+        if (!errOn.username) {
+          errors.push('user_id_is_not_available');
+        }
+        if (!errOn.email) {
+          errors.push('email_address_is_already_registered');
+        }
+      }
+      if (errors.length > 0) {
+        debug('isError user register error', errOn);
+        return res.apiv3Err(errors, 400);
+      }
+
+      User.createUserByEmailAndPassword(name, username, email, password, undefined, async(err, userData) => {
+        if (err) {
+          const errors = [];
+          if (err.name === 'UserUpperLimitException') {
+            errors.push('can_not_register_maximum_number_of_users');
+          }
+          else {
+            errors.push('failed_to_register');
+          }
+          return res.apiv3Err(errors, 405);
+        }
+
+        if (configManager.getConfig('crowi', 'security:registrationMode') !== aclService.labels.SECURITY_REGISTRATION_MODE_RESTRICTED) {
+          // send mail asynchronous
+          sendEmailToAllAdmins(userData);
+        }
+
+        return registerSuccessHandler(req, res, userData);
       });
     });
-
-    const results = await Promise.allSettled(promises);
-    results
-      .filter(result => result.status === 'rejected')
-      .forEach(result => logger.error(result.reason));
-  }
+  };
 
   actions.invited = async function(req, res) {
     if (!req.user) {

@@ -10,7 +10,7 @@ import { HtmlElementNode } from 'rehype-toc';
 
 // import { getOptionsToSave } from '~/client/util/editor';
 import {
-  useIsGuestUser, useCurrentPageTocNode,
+  useIsGuestUser, useCurrentPageTocNode, useShareLinkId,
 } from '~/stores/context';
 import {
   useSWRxSlackChannels, useIsSlackEnabled, usePageTagsForEditors, useIsEnabledUnsavedWarning,
@@ -200,7 +200,8 @@ export const Page = (props) => {
     tocRef.current = toc;
   }, []);
 
-  const { data: currentPage } = useSWRxCurrentPage();
+  const { data: shareLinkId } = useShareLinkId();
+  const { data: currentPage } = useSWRxCurrentPage(shareLinkId ?? undefined);
   const { data: editorMode } = useEditorMode();
   const { data: isGuestUser } = useIsGuestUser();
   const { data: isMobile } = useIsMobile();

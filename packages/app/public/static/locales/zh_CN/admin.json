@@ -1,4 +1,7 @@
 {
+  "meta": {
+    "display_name": "简体中文"
+  },
   "Update": "更新",
   "Delete": "删除",
   "User": "用户",
