@@ -39,7 +39,7 @@ export const InvitedForm = (props: InvitedFormProps): JSX.Element => {
     };
 
     try {
-      await apiv3Post('/invited/activateInvited', { invitedForm });
+      await apiv3Post('/invited', { invitedForm });
       router.push('/');
     }
     catch (err) {
