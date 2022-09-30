@@ -44,7 +44,7 @@ export const getServerSideCommonProps: GetServerSideProps<CommonProps> = async(c
     namespacesRequired: ['translation'],
     currentPathname,
     appTitle: appService.getAppTitle(),
-    siteUrl: appService.getSiteUrl(),
+    siteUrl: configManager.getConfig('crowi', 'app:siteUrl'), // DON'T USE appService.getSiteUrl()
     confidential: appService.getAppConfidential() || '',
     theme: configManager.getConfig('crowi', 'customize:theme'),
     customTitleTemplate: customizeService.customTitleTemplate,

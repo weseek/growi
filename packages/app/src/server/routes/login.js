@@ -29,7 +29,11 @@ module.exports = function(crowi, app) {
         });
       }
 
-      const { redirectTo } = req.session;
+
+      // userData.password cann't be empty but, prepare redirect because password property in User Model is optional
+      // https://github.com/weseek/growi/pull/6670
+      const redirectTo = userData.password ? req.session.redirectTo : '/me#password';
+
       // remove session.redirectTo
       delete req.session.redirectTo;
 
@@ -102,14 +106,6 @@ module.exports = function(crowi, app) {
     next();
   };
 
-  actions.login = function(req, res) {
-    if (req.form) {
-      debug(req.form.errors);
-    }
-
-    return res.render('login', {});
-  };
-
   actions.register = function(req, res) {
     if (req.user != null) {
       return res.apiv3Err('user_already_logged_in', 403);
@@ -122,7 +118,7 @@ module.exports = function(crowi, app) {
 
     if (!req.form.isValid) {
       const errors = req.form.errors;
-      return res.apiv3Err(errors, 401);
+      return res.apiv3Err(errors, 400);
     }
 
     const registerForm = req.form.registerForm || {};

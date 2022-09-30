@@ -46,7 +46,7 @@ export const BasicLayout = ({
           <Sidebar />
         </div>
 
-        <div className="flex-fill mw-0">
+        <div className="flex-fill mw-0" style={{ position: 'relative' }}>
           {children}
         </div>
       </div>

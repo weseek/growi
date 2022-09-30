@@ -7,7 +7,6 @@ import { useRouter } from 'next/router';
 import ReactCardFlip from 'react-card-flip';
 
 import { apiv3Post } from '~/client/util/apiv3-client';
-import { useCsrfToken } from '~/stores/context';
 
 type LoginFormProps = {
   username?: string,
@@ -26,22 +25,25 @@ type LoginFormProps = {
 export const LoginForm = (props: LoginFormProps): JSX.Element => {
   const { t } = useTranslation();
   const router = useRouter();
-  const { data: csrfToken } = useCsrfToken();
 
   const {
     isLocalStrategySetup, isLdapStrategySetup, isPasswordResetEnabled, isRegistrationEnabled,
-    isEmailAuthenticationEnabled, registrationMode, registrationWhiteList, isMailerSetup,
+    isEmailAuthenticationEnabled, registrationMode, registrationWhiteList, isMailerSetup, objOfIsExternalAuthEnableds,
   } = props;
   const isLocalOrLdapStrategiesEnabled = isLocalStrategySetup || isLdapStrategySetup;
-  // const isSomeExternalAuthEnabled = Object.values(objOfIsExternalAuthEnableds).some(elem => elem);
-  const isSomeExternalAuthEnabled = true;
+  const isSomeExternalAuthEnabled = Object.values(objOfIsExternalAuthEnableds).some(elem => elem);
 
   // states
   const [isRegistering, setIsRegistering] = useState(false);
-  const [username, setUsername] = useState('');
-  const [name, setName] = useState('');
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  // For Login
+  const [usernameForLogin, setUsernameForLogin] = useState('');
+  const [passwordForLogin, setPasswordForLogin] = useState('');
+  const [loginErrors, setLoginErrors] = useState<Error[]>([]);
+  // For Register
+  const [usernameForRegister, setUsernameForRegister] = useState('');
+  const [nameForRegister, setNameForRegister] = useState('');
+  const [emailForRegister, setEmailForRegister] = useState('');
+  const [passwordForRegister, setPasswordForRegister] = useState('');
   const [registerErrors, setRegisterErrors] = useState<Error[]>([]);
 
   useEffect(() => {
@@ -57,49 +59,86 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
 
     window.location.href = `/passport/${auth}`;
   }, []);
+
+  const handleLoginWithLocalSubmit = useCallback(async(e) => {
+    e.preventDefault();
+
+    const loginForm = {
+      username: usernameForLogin,
+      password: passwordForLogin,
+    };
+
+    try {
+      const res = await apiv3Post('/login', { loginForm });
+      const { redirectTo } = res.data;
+      router.push(redirectTo);
+    }
+    catch (err) {
+      setLoginErrors(err);
+    }
+    return;
+
+  }, [passwordForLogin, router, usernameForLogin]);
+
   const renderLocalOrLdapLoginForm = useCallback(() => {
     const { isLdapStrategySetup } = props;
-
     return (
-      <form role="form" action="/login" method="post">
-        <div className="input-group">
-          <div className="input-group-prepend">
-            <span className="input-group-text">
-              <i className="icon-user"></i>
-            </span>
-          </div>
-          <input type="text" className="form-control rounded-0" data-testid="tiUsernameForLogin" placeholder="Username or E-mail" name="loginForm[username]" />
-          {isLdapStrategySetup && (
-            <div className="input-group-append">
-              <small className="input-group-text text-success">
-                <i className="icon-fw icon-check"></i> LDAP
-              </small>
+      <>
+        {
+          loginErrors != null && loginErrors.length > 0 && (
+            <p className="alert alert-danger">
+              {loginErrors.map((err, index) => {
+                return (
+                  <span key={index}>
+                    {t(err.message)}<br/>
+                  </span>
+                );
+              })}
+            </p>
+          )
+        }
+        <form role="form" onSubmit={handleLoginWithLocalSubmit} id="login-form">
+          <div className="input-group">
+            <div className="input-group-prepend">
+              <span className="input-group-text">
+                <i className="icon-user"></i>
+              </span>
             </div>
-          )}
-        </div>
-
-        <div className="input-group">
-          <div className="input-group-prepend">
-            <span className="input-group-text">
-              <i className="icon-lock"></i>
-            </span>
+            <input type="text" className="form-control rounded-0" data-testid="tiUsernameForLogin" placeholder="Username or E-mail"
+              onChange={(e) => { setUsernameForLogin(e.target.value) }} name="usernameForLogin" />
+            {isLdapStrategySetup && (
+              <div className="input-group-append">
+                <small className="input-group-text text-success">
+                  <i className="icon-fw icon-check"></i> LDAP
+                </small>
+              </div>
+            )}
           </div>
-          <input type="password" className="form-control rounded-0" data-testid="tiPasswordForLogin" placeholder="Password" name="loginForm[password]" />
-        </div>
 
-        <div className="input-group my-4">
-          <input type="hidden" name="_csrf" value={csrfToken} />
-          <button type="submit" id="login" className="btn btn-fill rounded-0 login mx-auto" data-testid="btnSubmitForLogin">
-            <div className="eff"></div>
-            <span className="btn-label">
-              <i className="icon-login"></i>
-            </span>
-            <span className="btn-label-text">{t('Sign in')}</span>
-          </button>
-        </div>
-      </form>
+          <div className="input-group">
+            <div className="input-group-prepend">
+              <span className="input-group-text">
+                <i className="icon-lock"></i>
+              </span>
+            </div>
+            <input type="password" className="form-control rounded-0" data-testid="tiPasswordForLogin" placeholder="Password"
+              onChange={(e) => { setPasswordForLogin(e.target.value) }} name="passwordForLogin" />
+          </div>
+
+          <div className="input-group my-4">
+            <button type="submit" id="login" className="btn btn-fill rounded-0 login mx-auto" data-testid="btnSubmitForLogin">
+              <div className="eff"></div>
+              <span className="btn-label">
+                <i className="icon-login"></i>
+              </span>
+              <span className="btn-label-text">{t('Sign in')}</span>
+            </button>
+          </div>
+        </form>
+      </>
     );
-  }, [csrfToken, props, t]);
+  }, [handleLoginWithLocalSubmit, loginErrors, props, t]);
+
   const renderExternalAuthInput = useCallback((auth) => {
     const authIconNames = {
       google: 'google',
@@ -124,6 +163,7 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
       </div>
     );
   }, [handleLoginWithExternalAuth, t]);
+
   const renderExternalAuthLoginForm = useCallback(() => {
     const { isLocalStrategySetup, isLdapStrategySetup, objOfIsExternalAuthEnableds } = props;
     const isExternalAuthCollapsible = isLocalStrategySetup || isLdapStrategySetup;
@@ -163,10 +203,10 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
     e.preventDefault();
 
     const registerForm = {
-      username,
-      name,
-      email,
-      password,
+      username: usernameForRegister,
+      name: nameForRegister,
+      email: emailForRegister,
+      password: passwordForRegister,
     };
     try {
       const res = await apiv3Post(requestPath, { registerForm });
@@ -180,7 +220,12 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
       }
     }
     return;
-  }, [email, name, password, router, username]);
+  }, [emailForRegister, nameForRegister, passwordForRegister, router, usernameForRegister]);
+
+  const resetLoginErrors = useCallback(() => {
+    if (loginErrors.length === 0) return;
+    setLoginErrors([]);
+  }, [loginErrors.length]);
 
   const resetRegisterErrors = useCallback(() => {
     if (registerErrors.length === 0) return;
@@ -189,8 +234,9 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
 
   const switchForm = useCallback(() => {
     setIsRegistering(!isRegistering);
+    resetLoginErrors();
     resetRegisterErrors();
-  }, [isRegistering, resetRegisterErrors]);
+  }, [isRegistering, resetLoginErrors, resetRegisterErrors]);
 
   const renderRegisterForm = useCallback(() => {
     let registerAction = '/register';
@@ -222,7 +268,7 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
               {registerErrors.map((err, index) => {
                 return (
                   <span key={index}>
-                    {t(`message.${err.message}`)}<br/>
+                    {t(err.message)}<br/>
                   </span>
                 );
               })}
@@ -244,7 +290,7 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
                 <input
                   type="text"
                   className="form-control rounded-0"
-                  onChange={(e) => { setUsername(e.target.value) }}
+                  onChange={(e) => { setUsernameForRegister(e.target.value) }}
                   placeholder={t('User ID')}
                   name="username"
                   defaultValue={props.username}
@@ -263,7 +309,7 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
                 {/* name */}
                 <input type="text"
                   className="form-control rounded-0"
-                  onChange={(e) => { setName(e.target.value) }}
+                  onChange={(e) => { setNameForRegister(e.target.value) }}
                   placeholder={t('Name')}
                   name="name"
                   defaultValue={props.name}
@@ -281,7 +327,7 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
             {/* email */}
             <input type="email"
               className="form-control rounded-0"
-              onChange={(e) => { setEmail(e.target.value) }}
+              onChange={(e) => { setEmailForRegister(e.target.value) }}
               placeholder={t('Email')}
               name="email"
               defaultValue={props.email}
@@ -315,7 +361,7 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
                 {/* Password */}
                 <input type="password"
                   className="form-control rounded-0"
-                  onChange={(e) => { setPassword(e.target.value) }}
+                  onChange={(e) => { setPasswordForRegister(e.target.value) }}
                   placeholder={t('Password')}
                   name="password"
                   required />

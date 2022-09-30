@@ -82,7 +82,6 @@ module.exports = function(crowi, app) {
   app.get('/login'                    , applicationInstalled, login.preLogin, next.delegateToNext);
   app.get('/invited'                  , applicationInstalled, next.delegateToNext);
   app.post('/invited/activateInvited' , applicationInstalled, loginFormValidator.inviteRules(), loginFormValidator.inviteValidation, csrfProtection, login.invited);
-  app.post('/login'                   , applicationInstalled, loginFormValidator.loginRules(), loginFormValidator.loginValidation, csrfProtection,  addActivity, loginPassport.loginWithLocal, loginPassport.loginWithLdap, loginPassport.loginFailure);
 
   app.get('/register'                 , applicationInstalled, login.preLogin, login.register);
 
@@ -204,6 +203,7 @@ module.exports = function(crowi, app) {
   // app.get('/tags'                     , loginRequired, tag.showPage);
   app.get('/tags', loginRequired, next.delegateToNext);
 
+  app.get('/me'                                 , loginRequiredStrictly, injectUserUISettings, next.delegateToNext);
   app.get('/me/*'                                 , loginRequiredStrictly, injectUserUISettings, next.delegateToNext);
   // external-accounts
   // my in-app-notifications
@@ -232,9 +232,9 @@ module.exports = function(crowi, app) {
 
   app.use('/forgot-password', express.Router()
     .use(forgotPassword.checkForgotPasswordEnabledMiddlewareFactory(crowi))
-    .get('/', forgotPassword.forgotPassword)
-    .get('/:token', injectResetOrderByTokenMiddleware, forgotPassword.resetPassword)
-    .use(forgotPassword.handleErrosMiddleware));
+    .get('/', forgotPassword.renderForgotPassword(crowi))
+    .get('/:token', injectResetOrderByTokenMiddleware, forgotPassword.renderResetPassword(crowi))
+    .use(forgotPassword.handleErrorsMiddleware(crowi)));
 
   app.get('/_private-legacy-pages', next.delegateToNext);
   app.use('/user-activation', express.Router()
