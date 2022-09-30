@@ -464,7 +464,6 @@ export const useDrawioModal = (status?: DrawioModalStatus): SWRResponse<DrawioMo
 
   const close = (): void => {
     swrResponse.mutate({ isOpened: false, drawioMxFile: '' });
-    window.removeEventListener('message', e => receiveFromDrawio(e, ''));
   };
 
   const receiveFromDrawio = (event, drawioMxFile: string) => {
