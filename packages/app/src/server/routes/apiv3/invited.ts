@@ -28,8 +28,7 @@ module.exports = (crowi: Crowi): Router => {
       // check user upper limit
       const isUserCountExceedsUpperLimit = await User.isUserCountExceedsUpperLimit();
       if (isUserCountExceedsUpperLimit) {
-        // req.flash('warningMessage', req.t('message.can_not_activate_maximum_number_of_users'));
-        return res.apiv3({ redirectTo: '/invited' });
+        return res.apiv3Err('message.can_not_activate_maximum_number_of_users', 403);
       }
 
       const creatable = await User.isRegisterableUsername(username);
@@ -39,18 +38,16 @@ module.exports = (crowi: Crowi): Router => {
           return res.apiv3({ redirectTo: '/' });
         }
         catch (err) {
-          // req.flash('warningMessage', req.t('message.failed_to_activate'));
-          return res.render('invited');
+          return res.apiv3Err('message.failed_to_activate', 403);
         }
       }
       else {
-        // req.flash('warningMessage', req.t('message.unable_to_use_this_user'));
         debug('username', username);
-        return res.render('invited');
+        return res.apiv3Err('message.unable_to_use_this_user', 403);
       }
     }
     else {
-      return res.render('invited');
+      return res.apiv3Err(400);
     }
   });
 

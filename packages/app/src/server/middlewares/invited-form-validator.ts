@@ -1,8 +1,10 @@
-import { body, validationResult } from 'express-validator';
+import { NextFunction, Response } from 'express';
+import { body, validationResult, ValidationChain } from 'express-validator';
 import { Request } from 'express-validator/src/base';
 
-// form rules
-export const invitedRules = () => {
+const MININUM_PASSWORD_LENGTH = 6;
+
+export const invitedRules = (): ValidationChain[] => {
   return [
     body('invitedForm.username')
       .matches(/^[\da-zA-Z\-_.]+$/)
@@ -17,34 +19,27 @@ export const invitedRules = () => {
     body('invitedForm.password')
       .matches(/^[\x20-\x7F]*$/)
       .withMessage('message.Password has invalid character')
-      .isLength({ min: 6 })
-      .withMessage('message.Password minimum character should be more than 6 characters')
+      .isLength({ min: MININUM_PASSWORD_LENGTH })
+      .withMessage(`message.Password minimum character should be more than ${MININUM_PASSWORD_LENGTH} characters`)
       .not()
       .isEmpty()
       .withMessage('message.Password field is required'),
   ];
 };
 
-// validation action
-export const invitedValidation = (req, _res, next) => {
+export const invitedValidation = (req: Request, _res: Response, next: () => NextFunction): any => {
   const form = req.body;
-
   const errors = validationResult(req);
+  const extractedErrors: string[] = [];
 
   if (errors.isEmpty()) {
     Object.assign(form, { isValid: true });
-    req.form = form;
-    return next();
+  }
+  else {
+    errors.array().map(err => extractedErrors.push(err.msg));
+    Object.assign(form, { isValid: false, errors: extractedErrors });
   }
 
-  const extractedErrors: string[] = [];
-  errors.array().map(err => extractedErrors.push(err.msg));
-
-  Object.assign(form, {
-    isValid: false,
-    errors: extractedErrors,
-  });
   req.form = form;
-
   return next();
 };

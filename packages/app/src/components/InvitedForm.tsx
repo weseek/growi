@@ -54,13 +54,9 @@ export const InvitedForm = (props: InvitedFormProps): JSX.Element => {
       <>
         { loginErrors != null && loginErrors.length > 0 ? (
           <p className="alert alert-danger">
-            {loginErrors.map((err, index) => {
-              return (
-                <span key={index}>
-                  {t(err.message)}<br/>
-                </span>
-              );
-            })}
+            { loginErrors.map((err, index) => {
+              return <span key={index}>{ t(err.message) }<br/></span>;
+            }) }
           </p>
         ) : (
           <p className="alert alert-success">
