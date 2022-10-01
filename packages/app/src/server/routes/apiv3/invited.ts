@@ -13,7 +13,7 @@ module.exports = (crowi: Crowi): Router => {
   const User = crowi.model('User');
   const router = express.Router();
 
-  router.post('/invited', applicationInstalled, invitedRules(), invitedValidation, async(req: InvitedFormRequest, res: ApiV3Response) => {
+  router.post('/', applicationInstalled, invitedRules(), invitedValidation, async(req: InvitedFormRequest, res: ApiV3Response) => {
     if (!req.user) {
       return res.apiv3({ redirectTo: '/login' });
     }
