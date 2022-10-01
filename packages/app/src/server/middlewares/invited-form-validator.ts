@@ -1,6 +1,6 @@
 import { body, validationResult } from 'express-validator';
 
-// eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
+// form rules
 export const invitedRules = () => {
   return [
     body('invitedForm.username')
@@ -9,7 +9,10 @@ export const invitedRules = () => {
       .not()
       .isEmpty()
       .withMessage('message.Username field is required'),
-    body('invitedForm.name').not().isEmpty().withMessage('message.Name field is required'),
+    body('invitedForm.name')
+      .not()
+      .isEmpty()
+      .withMessage('message.Name field is required'),
     body('invitedForm.password')
       .matches(/^[\x20-\x7F]*$/)
       .withMessage('message.Password has invalid character')
@@ -21,7 +24,7 @@ export const invitedRules = () => {
   ];
 };
 
-// eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
+// validation action
 export const invitedValidation = (req, _res, next) => {
   const form = req.body;
 
