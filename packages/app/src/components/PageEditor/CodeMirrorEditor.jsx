@@ -1087,7 +1087,7 @@ const CodeMirrorEditorFc = React.forwardRef((props, ref) => {
     openDrawioModal(drawioMxFile);
   }, [openDrawioModal]);
 
-  return <CodeMirrorEditor ref={ref} {...props} onClickDrawioBtn={openDrawioModalHandler} />;
+  return <CodeMirrorEditor ref={ref} onClickDrawioBtn={openDrawioModalHandler} {...props} />;
 });
 
 CodeMirrorEditorFc.displayName = 'CodeMirrorEditorFc';
