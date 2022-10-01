@@ -1,6 +1,6 @@
 import { body, validationResult } from 'express-validator';
-import { Request } from 'express-validator/src/base';
 
+// eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
 export const invitedRules = () => {
   return [
     body('invitedForm.username')
@@ -21,7 +21,8 @@ export const invitedRules = () => {
   ];
 };
 
-export const invitedValidation = (req: Request, _res: any, next: () => any) => {
+// eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
+export const invitedValidation = (req, _res, next) => {
   const form = req.body;
 
   const errors = validationResult(req);
