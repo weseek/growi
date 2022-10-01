@@ -65,6 +65,7 @@ const Editor: ForwardRefRenderFunction<IEditorMethods, EditorPropsType> = (props
   const { data: isMobile } = useIsMobile();
 
   const dropzoneRef = useRef<DropzoneRef>(null);
+  // CodeMirrorEditor ref
   const cmEditorRef = useRef<AbstractEditor<any>>(null);
 
 
