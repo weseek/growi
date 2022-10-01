@@ -1073,7 +1073,6 @@ CodeMirrorEditor.propTypes = Object.assign({
   onMarkdownHelpButtonClicked: PropTypes.func,
   onAddAttachmentButtonClicked: PropTypes.func,
   onClickDrawioBtn: PropTypes.func,
-  onDragEnter: PropTypes.func,
 }, AbstractEditor.propTypes);
 
 CodeMirrorEditor.defaultProps = {

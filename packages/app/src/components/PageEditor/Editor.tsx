@@ -9,6 +9,7 @@ import {
 } from 'reactstrap';
 
 import { toastError, toastSuccess } from '~/client/util/apiNotification';
+import { IEditorSettings } from '~/interfaces/editor-settings';
 import { useDefaultIndentSize } from '~/stores/context';
 import { useEditorSettings } from '~/stores/editor';
 import { useIsMobile } from '~/stores/ui';
@@ -32,7 +33,11 @@ export type EditorPropsType = {
   isTextlintEnabled?: boolean,
   onChange?: (newValue: string, isClean?: boolean) => void,
   onUpload?: (file) => void,
+  editorSettings?: IEditorSettings,
   indentSize?: number,
+  onDragEnter?: (event: any) => void,
+  onMarkdownHelpButtonClicked?: () => void,
+  onAddAttachmentButtonClicked?: () => void,
   onScroll?: ({ line: number }) => void,
   onScrollCursorIntoView?: (line: number) => void,
   onSave?: () => Promise<void>,
