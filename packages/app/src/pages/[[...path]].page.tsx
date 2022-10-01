@@ -61,7 +61,7 @@ import {
   useHackmdUri,
   useIsAclEnabled, useIsUserPage,
   useCsrfToken, useIsSearchScopeChildrenAsDefault, useCurrentPageId, useCurrentPathname,
-  useIsSlackConfigured,useGrowiHydratedEnv, useRendererConfig, useEditingMarkdown,
+  useIsSlackConfigured, useGrowiHydratedEnv, useRendererConfig, useEditingMarkdown,
   useEditorConfig, useIsAllReplyShown, useIsUploadableFile, useIsUploadableImage, usePageUser,
 } from '../stores/context';
 
