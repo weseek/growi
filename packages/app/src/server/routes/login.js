@@ -169,46 +169,5 @@ module.exports = function(crowi, app) {
     });
   };
 
-  actions.invited = async function(req, res) {
-    if (!req.user) {
-      return res.apiv3({ redirectTo: '/login' });
-    }
-
-    if (req.method === 'POST' && req.form.isValid) {
-      const user = req.user;
-      const invitedForm = req.form.invitedForm || {};
-      const username = invitedForm.username;
-      const name = invitedForm.name;
-      const password = invitedForm.password;
-
-      // check user upper limit
-      const isUserCountExceedsUpperLimit = await User.isUserCountExceedsUpperLimit();
-      if (isUserCountExceedsUpperLimit) {
-        req.flash('warningMessage', req.t('message.can_not_activate_maximum_number_of_users'));
-        return res.apiv3({ redirectTo: '/invited' });
-      }
-
-      const creatable = await User.isRegisterableUsername(username);
-      if (creatable) {
-        try {
-          await user.activateInvitedUser(username, name, password);
-          return res.apiv3({ redirectTo: '/' });
-        }
-        catch (err) {
-          req.flash('warningMessage', req.t('message.failed_to_activate'));
-          return res.render('invited');
-        }
-      }
-      else {
-        req.flash('warningMessage', req.t('message.unable_to_use_this_user'));
-        debug('username', username);
-        return res.render('invited');
-      }
-    }
-    else {
-      return res.render('invited');
-    }
-  };
-
   return actions;
 };

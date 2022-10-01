@@ -2,7 +2,6 @@ import loggerFactory from '~/utils/logger';
 
 import { generateAddActivityMiddleware } from '../../middlewares/add-activity';
 import injectUserRegistrationOrderByTokenMiddleware from '../../middlewares/inject-user-registration-order-by-token-middleware';
-import * as invitedFormValidator from '../../middlewares/invited-form-validator';
 import * as loginFormValidator from '../../middlewares/login-form-validator';
 import * as registerFormValidator from '../../middlewares/register-form-validator';
 
@@ -50,13 +49,12 @@ module.exports = (crowi, app, isInstalled) => {
   routerForAuth.post('/login', applicationInstalled, loginFormValidator.loginRules(), loginFormValidator.loginValidation,
     addActivity, loginPassport.loginWithLocal, loginPassport.loginWithLdap, loginPassport.cannotLoginErrorHadnler, loginPassport.loginFailure);
 
+  routerForAuth.use('/invited', require('./invited')(crowi));
   routerForAuth.use('/logout', require('./logout')(crowi));
 
   routerForAuth.post('/register',
     applicationInstalled, registerFormValidator.registerRules(), registerFormValidator.registerValidation, addActivity, login.register);
 
-  routerForAuth.post('/invited/activateInvited',
-    applicationInstalled, invitedFormValidator.invitedRules(), invitedFormValidator.invitedValidation, login.invited);
 
   // installer
   if (!isInstalled) {

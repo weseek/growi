@@ -11,6 +11,7 @@ module.exports = function(crowi, app) {
   const logger = loggerFactory('growi:routes:login-passport');
   const passport = require('passport');
   const ExternalAccount = crowi.model('ExternalAccount');
+  const User = crowi.model('User');
   const passportService = crowi.passportService;
 
   const activityEvent = crowi.event('activity');
@@ -100,7 +101,9 @@ module.exports = function(crowi, app) {
       }
     });
 
-    const { redirectTo } = req.session;
+    // check for redirection to '/invited'
+    const redirectTo = req.user.status === User.STATUS_INVITED ? '/invited' : req.session;
+
     // remove session.redirectTo
     delete req.session.redirectTo;
 
@@ -113,13 +116,8 @@ module.exports = function(crowi, app) {
         username: req.user.username,
       },
     };
-    await crowi.activityService.createActivity(parameters);
 
-    // for router.push() redirect to '/invited'
-    const User = crowi.model('User');
-    if (req.user.status === User.STATUS_INVITED) {
-      return res.apiv3({ redirectTo: '/invited' });
-    }
+    await crowi.activityService.createActivity(parameters);
 
     return res.apiv3({ redirectTo });
   };

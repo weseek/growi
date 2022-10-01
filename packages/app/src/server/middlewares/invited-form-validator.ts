@@ -10,7 +10,10 @@ export const invitedRules = () => {
       .not()
       .isEmpty()
       .withMessage('message.Username field is required'),
-    body('invitedForm.name').not().isEmpty().withMessage('message.Name field is required'),
+    body('invitedForm.name')
+      .not()
+      .isEmpty()
+      .withMessage('message.Name field is required'),
     body('invitedForm.password')
       .matches(/^[\x20-\x7F]*$/)
       .withMessage('message.Password has invalid character')
@@ -23,7 +26,7 @@ export const invitedRules = () => {
 };
 
 // validation action
-export const invitedValidation = (req: Request, _res: any, next: () => any) => {
+export const invitedValidation = (req, _res, next) => {
   const form = req.body;
 
   const errors = validationResult(req);
