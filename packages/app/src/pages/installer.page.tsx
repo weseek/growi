@@ -5,6 +5,7 @@ import {
   NextPage, GetServerSideProps, GetServerSidePropsContext,
 } from 'next';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
+import { useTranslation } from 'react-i18next';
 import {
   Nav, NavItem, NavLink,
 } from 'reactstrap';
@@ -18,11 +19,11 @@ import {
   useAppTitle, useSiteUrl, useConfidential,
 } from '../stores/context';
 
-
 import {
   CommonProps, getNextI18NextConfig, getServerSideCommonProps, useCustomTitle,
 } from './utils/commons';
 
+import styles from '../components/CustomNavigation/CustomNav.module.scss';
 
 const { isTrashPage: _isTrashPage } = pagePathUtils;
 
@@ -37,6 +38,8 @@ type Props = CommonProps & {
 };
 
 const InstallerPage: NextPage<Props> = (props: Props) => {
+  const { t } = useTranslation();
+
   const [isCreateUserTab, setCreateUserTab] = useState(true);
 
   // commons
@@ -53,16 +56,16 @@ const InstallerPage: NextPage<Props> = (props: Props) => {
   return (
     <NoLoginLayout title={useCustomTitle(props, 'GROWI')} className={classNames.join(' ')}>
       <div id="installer-form-container">
-        <div className="noLogin-dialog grw-custom-nav-tab mx-auto">
+        <div className={`noLogin-dialog grw-custom-nav-tab mx-auto ${styles['grw-custom-nav-tab']}`} >
           <Nav className="nav-title text-center w-100">
             <NavItem className={`col-6 p-0 ${isCreateUserTab ? 'active' : ''}`}>
               <NavLink type="button" className="text-white" onClick={() => setCreateUserTab(true)}>
-              アカウント作成
+                {t('installer.tab')}
               </NavLink>
             </NavItem>
             <NavItem className={`col-6 p-0 ${isCreateUserTab ? '' : 'active'}`}>
               <NavLink type="button" className="text-white" onClick={() => setCreateUserTab(false)}>
-              データ移行
+                {t('g2g_data_transfer.tab')}
               </NavLink>
             </NavItem>
           </Nav>

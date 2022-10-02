@@ -161,6 +161,7 @@
   "not_allowed_to_see_this_page": "You cannot see this page",
   "Confirm": "Confirm",
   "Successfully requested": "Successfully requested.",
+  "copied_to_clipboard": "Copied to clipboard",
   "personal_dropdown": {
     "home": "Home",
     "settings": "Settings",
@@ -188,12 +189,26 @@
     "link_sharing_is_disabled": "Link sharing is disabled."
   },
   "installer": {
+    "tab": "Create account",
     "setup": "Setup",
     "create_initial_account": "Create an initial account",
     "initial_account_will_be_administrator_automatically": "The initial account will be administrator automatically.",
     "unavaliable_user_id": "This 'User ID' is unavailable.",
     "failed_to_install": "Failed to install GROWI. Please try again.",
     "failed_to_login_after_install": "Failed to login after installation. Redirecting to the login form ..."
+  },
+  "g2g_data_transfer": {
+    "tab": "Data transfer",
+    "data_transfer": "Growi To Growi Data Transfer",
+    "transfer_data_to_another_growi": "Transfer data from this GROWI to another GROWI",
+    "transfer_data_to_this_growi": "Transfer data from another GROWI to this GROWI",
+    "advanced_options": "Advanced options",
+    "start_transfer": "Start transfer",
+    "publish_transfer_key": "Publish transfer key",
+    "transfer_key_limit": "Transfer keys are valid for 1 hour after issuance.",
+    "once_transfer_key_used": "Once the transfer key is used for transfer, it cannot be used for any other transfer.",
+    "transfer_to_growi_cloud": "If you wish to transfer to GROWI.cloud, please click here.",
+    "paste_transfer_key": "Paste transter key here"
   },
   "breaking_changes": {
     "v346_using_basic_auth": "Basic Authentication currently in use will <strong>no longer be available</strong> in the near future. Remove settings from %s"

@@ -28,7 +28,7 @@ const DataTransferForm = (): JSX.Element => {
         <div className="col-md-12 mt-1">
           <div className="input-group-prepend">
             <input className="form-control" type="text" value={transferKey} readOnly />
-            <CustomCopyToClipBoard textToBeCopied={transferKey} message="admin:slack_integration.copied_to_clipboard" />
+            <CustomCopyToClipBoard textToBeCopied={transferKey} message="copied_to_clipboard" />
           </div>
         </div>
       </div>
