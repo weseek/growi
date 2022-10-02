@@ -1,3 +1,4 @@
+import { createReadStream, ReadStream } from 'fs';
 import { Readable } from 'stream';
 
 import { Types as MongooseTypes } from 'mongoose';
@@ -40,8 +41,9 @@ interface Pusher {
   /**
    * Start transfer data between GROWIs
    * @param {TransferKey} tk TransferKey object
+   * @param {string[]} collections Collection name string array
    */
-  startTransfer(tk: TransferKey): Promise<Readable>
+  startTransfer(tk: TransferKey, collections: string[]): Promise<void>
 }
 
 interface Receiver {
@@ -109,8 +111,45 @@ export class G2GTransferPusherService implements Pusher {
 
   public async transferAttachments(): Promise<void> { return }
 
-  public async startTransfer(tk: TransferKey): Promise<any> {
-    await customAxiosXTar.post('/_api/v3/g2g-transfer/', { whatItShouldBe: 'a zip file' }, this.generateAxiosRequestConfig(tk));
+  public async startTransfer(tk: TransferKey, collections: string[]): Promise<void> {
+    const { appUrl, key } = tk;
+
+    let zipFileStream: ReadStream;
+    try {
+      const shouldEmit = false;
+      const zipFileStat = await this.crowi.exportService.export(collections, shouldEmit);
+      const zipFilePath = zipFileStat.zipFilePath;
+
+      zipFileStream = createReadStream(zipFilePath);
+    }
+    catch (err) {
+      logger.error(err);
+      throw err;
+    }
+
+    // Send a zip file to other growi via axios
+    try {
+      // TODO: Make zipFileStream work
+      await customAxiosXTar.post('/_api/v3/g2g-transfer/', zipFileStream, {
+        baseURL: appUrl.origin,
+        headers: {
+          [X_GROWI_TRANSFER_KEY_HEADER_NAME]: key,
+        },
+      });
+    }
+    catch (errs) {
+      if (!Array.isArray(errs)) {
+        // TODO: socker.emit(failed_to_transfer);
+        return;
+      }
+
+      const err = errs[0];
+      logger.error(err);
+
+
+      // TODO: socker.emit(failed_to_transfer);
+      return;
+    }
   }
 
   private generateAxiosRequestConfig(tk: TransferKey) {
@@ -175,11 +214,7 @@ export class G2GTransferReceiverService implements Receiver {
     return tkd.value;
   }
 
-  public async receive(zippedGROWIDataStream: Readable): Promise<void> {
-    // FIRST, Save from growi data into config
-    // Maybe save status there as well (completed)
-    // Receive a zip file via stream
-    // Unzip
+  public async receive(zipfile: Readable): Promise<void> {
     // Import data
     // Call onCompleteTransfer when finished
 

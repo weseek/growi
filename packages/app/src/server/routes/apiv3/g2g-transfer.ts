@@ -4,6 +4,7 @@ import { body } from 'express-validator';
 import TransferKeyModel from '~/server/models/transfer-key';
 import { isG2GTransferError } from '~/server/models/vo/g2g-transfer-error';
 import { IDataGROWIInfo, X_GROWI_TRANSFER_KEY_HEADER_NAME } from '~/server/service/g2g-transfer';
+import customAxios from '~/utils/axios';
 import loggerFactory from '~/utils/logger';
 import { TransferKey } from '~/utils/vo/transfer-key';
 
@@ -18,6 +19,7 @@ const logger = loggerFactory('growi:routes:apiv3:transfer');
 const validator = {
   transfer: [
     body('transferKey').isString().withMessage('transferKey is required'),
+    body('collections').isArray().withMessage('collections is required'),
   ],
 };
 
@@ -98,13 +100,19 @@ module.exports = (crowi: Crowi): Router => {
 
   // Auto import
   router.post('/', verifyAndExtractTransferKey, async(req: Request & { transferKey: TransferKey }, res: ApiV3Response) => {
-    const { transferKey } = req;
+    const zipFile = req.body;
+    try {
+      await g2gTransferReceiverService.receive(zipFile);
+    }
+    catch (err) {
+      logger.error(err);
+      return res.apiv3Err(new ErrorV3('Error occurred while importing transfer data.', 'failed_to_receive'));
+    }
 
-
-    return;
+    return res.apiv3({ message: 'Successfully started to receive transfer data.' });
   });
 
-  router.get('/growi-info', /* verifyAndExtractTransferKey, */ async(req: Request & { transferKey: TransferKey }, res: ApiV3Response) => {
+  router.get('/growi-info', verifyAndExtractTransferKey, async(req: Request & { transferKey: TransferKey }, res: ApiV3Response) => {
     let growiInfo: IDataGROWIInfo;
     try {
       growiInfo = await g2gTransferReceiverService.answerGROWIInfo();
@@ -138,7 +146,7 @@ module.exports = (crowi: Crowi): Router => {
     // Save TransferKey document
     let transferKeyString: string;
     try {
-      transferKeyString = await g2gTransferService.createTransferKey(appSiteUrl);
+      transferKeyString = await g2gTransferReceiverService.createTransferKey(appSiteUrl);
     }
     catch (err) {
       logger.error(err);
@@ -152,11 +160,9 @@ module.exports = (crowi: Crowi): Router => {
   // TODO: Use socket to send progress info to the client
   // eslint-disable-next-line max-len
   router.post('/transfer', accessTokenParser, loginRequiredStrictly, adminRequired, validator.transfer, apiV3FormValidator, async(req: Request, res: ApiV3Response) => {
-    // 1. Ask
-    // 2. Start
+    const { transferKey: transferKeyString, collections } = req.body;
 
-    const { transferKey: transferKeyString } = req.body;
-
+    // Parse transfer key
     let tk: TransferKey;
     try {
       tk = TransferKey.parse(transferKeyString);
@@ -166,51 +172,37 @@ module.exports = (crowi: Crowi): Router => {
       return res.apiv3Err(new ErrorV3('Transfer key is invalid', 'transfer_key_invalid'), 400);
     }
 
-    const canTransfer = await g2gTransferPusherService.canTransfer();
-
-    const { appUrl, key } = tk;
-
-    // Generate export zip
-    let zipFileStream;
+    // Ask growi info
+    // TODO: Ask progress as well
+    let fromGROWIInfo: IDataGROWIInfo;
     try {
-      zipFileStream = await g2gTransferPusherService.startTransfer(tk);
+      fromGROWIInfo = await g2gTransferPusherService.askGROWIInfo(tk);
     }
     catch (err) {
       logger.error(err);
-      return res.apiv3Err(new ErrorV3('Error occurred while'));
+      return res.apiv3Err(new ErrorV3('GROWI is incompatible to transfer data.', 'growi_incompatible_to_transfer'));
     }
 
-    // Send a zip file to other growi via axios
-    // (async() => {
-    //   try {
-    //     // TODO: Make zipFileStream work
-    //     await axios.post('/_api/v3/g2g-transfer/', zipFileStream, {
-    //       baseURL: appUrl.origin,
-    //       headers: {
-    //         [X_GROWI_TRANSFER_KEY_HEADER_NAME]: key,
-    //       },
-    //     });
-    //   }
-    //   catch (errs) {
-    //     if (!Array.isArray(errs)) {
-    //       // TODO: socker.emit(failed_to_transfer);
-    //       return;
-    //     }
+    // Check if can transfer
+    const canTransfer = await g2gTransferPusherService.canTransfer(fromGROWIInfo);
+    if (!canTransfer) {
+      logger.debug('Could not transfer.');
+      return res.apiv3Err(new ErrorV3('GROWI is incompatible to transfer data.', 'growi_incompatible_to_transfer'));
+    }
 
-    //     const err = errs[0];
+    // Start transfer
+    try {
+      await g2gTransferPusherService.startTransfer(tk, collections);
+    }
+    catch (err) {
+      logger.error(err);
 
-    //     if (!isG2GTransferError(err)) {
-    //       // TODO: socker.emit(failed_to_transfer);
-    //       return;
-    //     }
+      if (!isG2GTransferError(err)) {
+        return res.apiv3Err(new ErrorV3('Failed to transfer', 'failed_to_transfer'), 500);
+      }
 
-    //     const g2gTransferError = err;
-
-    //     logger.error(g2gTransferError);
-    //     // TODO: socker.emit(failed_to_transfer);
-    //     return;
-    //   }
-    // })();
+      return res.apiv3Err(new ErrorV3(err.message, err.code), 500);
+    }
 
     return res.apiv3({ message: 'Successfully requested auto transfer.' });
   });
