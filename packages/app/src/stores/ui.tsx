@@ -21,7 +21,7 @@ import { UpdateDescCountData } from '~/interfaces/websocket';
 import loggerFactory from '~/utils/logger';
 
 import {
-  useCurrentPageId, useCurrentPagePath, useIsEditable, useIsTrashPage, useIsUserPage, useIsGuestUser,
+  useCurrentPageId, useCurrentPagePath, useIsEditable, useIsTrashPage, useIsGuestUser,
   useIsSharedUser, useIsIdenticalPath, useCurrentUser, useIsNotFound, useShareLinkId,
 } from './context';
 import { localStorageMiddleware } from './middlewares/sync-to-storage';
@@ -458,14 +458,15 @@ export const useIsAbleToShowPageEditorModeManager = (): SWRResponse<boolean, Err
 export const useIsAbleToShowPageAuthors = (): SWRResponse<boolean, Error> => {
   const key = 'isAbleToShowPageAuthors';
   const { data: pageId } = useCurrentPageId();
-  const { data: isUserPage } = useIsUserPage();
+  const { data: pagePath } = useCurrentPagePath();
   const { data: isNotFound } = useIsNotFound();
 
-  const includesUndefined = [pageId, isUserPage, isNotFound].some(v => v === undefined);
+  const includesUndefined = [pageId, pagePath, isNotFound].some(v => v === undefined);
   const isPageExist = (pageId != null) && !isNotFound;
+  const isUsersTopPagePath = pagePath != null && isUsersTopPage(pagePath);
 
   return useSWRImmutable(
-    includesUndefined ? null : [key, pageId],
-    () => isPageExist && !isUserPage,
+    includesUndefined ? null : [key, pageId, pagePath, isNotFound],
+    () => isPageExist && !isUsersTopPagePath,
   );
 };
