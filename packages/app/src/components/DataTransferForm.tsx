@@ -16,7 +16,7 @@ const DataTransferForm = (): JSX.Element => {
   };
 
   return (
-    <div data-testid="installerForm" className="noLogin-dialog p-3 mx-auto">
+    <div data-testid="installerForm" className="p-3">
       <p className="alert alert-success">
         <strong>{ t('g2g_data_transfer.transfer_data_to_this_growi')}</strong>
       </p>

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useMemo } from 'react';
 
 import { pagePathUtils } from '@growi/core';
 import {
@@ -6,12 +6,10 @@ import {
 } from 'next';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import { useTranslation } from 'react-i18next';
-import {
-  Nav, NavItem, NavLink,
-} from 'reactstrap';
 
 import { NoLoginLayout } from '~/components/Layout/NoLoginLayout';
 
+import CustomNavAndContents from '../components/CustomNavigation/CustomNavAndContents';
 import DataTransferForm from '../components/DataTransferForm';
 import InstallerForm from '../components/InstallerForm';
 import {
@@ -22,8 +20,6 @@ import {
 import {
   CommonProps, getNextI18NextConfig, getServerSideCommonProps, useCustomTitle,
 } from './utils/commons';
-
-import styles from '../components/CustomNavigation/CustomNav.module.scss';
 
 const { isTrashPage: _isTrashPage } = pagePathUtils;
 
@@ -40,7 +36,22 @@ type Props = CommonProps & {
 const InstallerPage: NextPage<Props> = (props: Props) => {
   const { t } = useTranslation();
 
-  const [isCreateUserTab, setCreateUserTab] = useState(true);
+  const navTabMapping = useMemo(() => {
+    return {
+      user_infomation: {
+        Icon: () => <i className="icon-fw icon-user"></i>,
+        Content: InstallerForm,
+        i18n: t('installer.tab'),
+        index: 0,
+      },
+      external_accounts: {
+        Icon: () => <i className="icon-fw icon-share-alt"></i>,
+        Content: DataTransferForm,
+        i18n: t('g2g_data_transfer.tab'),
+        index: 1,
+      },
+    };
+  }, [t]);
 
   // commons
   useAppTitle(props.appTitle);
@@ -55,27 +66,8 @@ const InstallerPage: NextPage<Props> = (props: Props) => {
 
   return (
     <NoLoginLayout title={useCustomTitle(props, 'GROWI')} className={classNames.join(' ')}>
-      <div id="installer-form-container">
-        <div className={`noLogin-dialog grw-custom-nav-tab mx-auto ${styles['grw-custom-nav-tab']}`} >
-          <Nav className="nav-title text-center w-100">
-            <NavItem className={`col-6 p-0 ${isCreateUserTab ? 'active' : ''}`}>
-              <NavLink type="button" className="text-white" onClick={() => setCreateUserTab(true)}>
-                {t('installer.tab')}
-              </NavLink>
-            </NavItem>
-            <NavItem className={`col-6 p-0 ${isCreateUserTab ? '' : 'active'}`}>
-              <NavLink type="button" className="text-white" onClick={() => setCreateUserTab(false)}>
-                {t('g2g_data_transfer.tab')}
-              </NavLink>
-            </NavItem>
-          </Nav>
-          <hr className="my-0 grw-nav-slide-hr border-none" style={{ width: '50%', marginLeft: isCreateUserTab ? '0%' : '50%', borderColor: 'white' }} />
-        </div>
-        {isCreateUserTab ? (
-          <InstallerForm />
-        ) : (
-          <DataTransferForm />
-        )}
+      <div id="installer-form-container" className="noLogin-dialog mx-auto">
+        <CustomNavAndContents navTabMapping={navTabMapping} tabContentClasses={['p-0']} />
       </div>
     </NoLoginLayout>
   );
