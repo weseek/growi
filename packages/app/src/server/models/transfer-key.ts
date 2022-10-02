@@ -11,7 +11,7 @@ interface ITransferKeyMethods {
   findOneActiveTransferKey(transferKeyString: string): Promise<HydratedDocument<ITransferKey, ITransferKeyMethods> | null>;
 }
 
-type TransferKeyModel = Model<ITransferKey, {}, ITransferKeyMethods>;
+type TransferKeyModel = Model<ITransferKey, any, ITransferKeyMethods>;
 
 const schema = new Schema<ITransferKey, TransferKeyModel, ITransferKeyMethods>({
   expireAt: { type: Date, default: () => new Date(), expires: '30m' },

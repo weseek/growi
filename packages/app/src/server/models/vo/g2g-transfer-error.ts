@@ -2,6 +2,7 @@ import ExtensibleCustomError from 'extensible-custom-error';
 
 export const G2GTransferErrorCode = {
   INVALID_TRANSFER_KEY_STRING: 'INVALID_TRANSFER_KEY_STRING',
+  FAILED_TO_RETREIVE_GROWI_INFO: 'FAILED_TO_RETREIVE_GROWI_INFO',
 } as const;
 
 export type G2GTransferErrorCode = typeof G2GTransferErrorCode[keyof typeof G2GTransferErrorCode];

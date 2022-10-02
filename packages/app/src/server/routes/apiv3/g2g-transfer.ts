@@ -1,18 +1,17 @@
-import axios from 'axios';
 import express, { NextFunction, Request, Router } from 'express';
 import { body } from 'express-validator';
 
-import loggerFactory from '~/utils/logger';
 import TransferKeyModel from '~/server/models/transfer-key';
+import { isG2GTransferError } from '~/server/models/vo/g2g-transfer-error';
+import { IDataGROWIInfo, X_GROWI_TRANSFER_KEY_HEADER_NAME } from '~/server/service/g2g-transfer';
+import loggerFactory from '~/utils/logger';
+import { TransferKey } from '~/utils/vo/transfer-key';
 
 import Crowi from '../../crowi';
 import { apiV3FormValidator } from '../../middlewares/apiv3-form-validator';
 import ErrorV3 from '../../models/vo/error-apiv3';
 
 import { ApiV3Response } from './interfaces/apiv3-response';
-import { TransferKey } from '~/utils/vo/transfer-key';
-import { isG2GTransferError } from '~/server/models/vo/g2g-transfer-error';
-import { X_GROWI_TRANSFER_KEY_HEADER_NAME } from '~/server/service/g2g-transfer';
 
 const logger = loggerFactory('growi:routes:apiv3:transfer');
 
@@ -26,8 +25,8 @@ const validator = {
  * Routes
  */
 module.exports = (crowi: Crowi): Router => {
-  const { g2gTransferService, exportService } = crowi;
-  if (g2gTransferService == null || exportService == null) {
+  const { g2gTransferPusherService, g2gTransferReceiverService, exportService } = crowi;
+  if (g2gTransferPusherService == null || g2gTransferReceiverService == null || exportService == null) {
     throw Error('GROWI is not ready for g2g transfer');
   }
 
@@ -63,7 +62,7 @@ module.exports = (crowi: Crowi): Router => {
   };
 
   // Local middleware to check if key is valid or not
-  const verifyAndExtractTransferKeyForImport = async(req: Request & { transferKey: any }, res: ApiV3Response, next: NextFunction) => {
+  const verifyAndExtractTransferKey = async(req: Request & { transferKey: TransferKey }, res: ApiV3Response, next: NextFunction) => {
     const transferKeyString = req.headers[X_GROWI_TRANSFER_KEY_HEADER_NAME];
 
     if (typeof transferKeyString !== 'string') {
@@ -84,7 +83,13 @@ module.exports = (crowi: Crowi): Router => {
     }
 
     // Inject transferKey to req
-    req.transferKey = transferKey;
+    try {
+      req.transferKey = TransferKey.parse(transferKey.value);
+    }
+    catch (err) {
+      logger.error(err);
+      return res.apiv3Err(new ErrorV3('Transfer key is invalid.', 'invalid_transfer_key'), 500);
+    }
 
     next();
   };
@@ -92,15 +97,32 @@ module.exports = (crowi: Crowi): Router => {
   const router = express.Router();
 
   // Auto import
-  router.post('/', verifyAndExtractTransferKeyForImport, async(req: Request & { transferKey: any }, res: ApiV3Response) => {
+  router.post('/', verifyAndExtractTransferKey, async(req: Request & { transferKey: TransferKey }, res: ApiV3Response) => {
     const { transferKey } = req;
-
 
 
     return;
   });
 
-  router.post('/generate-key', /* accessTokenParser, adminRequiredIfInstalled, appSiteUrlRequiredIfNotInstalled, */ async(req: Request, res: ApiV3Response) => {
+  router.get('/growi-info', /* verifyAndExtractTransferKey, */ async(req: Request & { transferKey: TransferKey }, res: ApiV3Response) => {
+    let growiInfo: IDataGROWIInfo;
+    try {
+      growiInfo = await g2gTransferReceiverService.answerGROWIInfo();
+    }
+    catch (err) {
+      logger.error(err);
+
+      if (!isG2GTransferError(err)) {
+        return res.apiv3Err(new ErrorV3('Failed to prepare growi info', 'failed_to_prepare_growi_info'), 500);
+      }
+
+      return res.apiv3Err(new ErrorV3(err.message, err.code), 500);
+    }
+
+    return res.apiv3({ growiInfo });
+  });
+
+  router.post('/generate-key', accessTokenParser, adminRequiredIfInstalled, appSiteUrlRequiredIfNotInstalled, async(req: Request, res: ApiV3Response) => {
     const strAppSiteUrl = req.body.appSiteUrl ?? crowi.configManager?.getConfig('crowi', 'app:siteUrl');
 
     // Generate transfer key string
@@ -144,49 +166,51 @@ module.exports = (crowi: Crowi): Router => {
       return res.apiv3Err(new ErrorV3('Transfer key is invalid', 'transfer_key_invalid'), 400);
     }
 
-    const canTransfer = await g2gTransferService.canTransfer();
+    const canTransfer = await g2gTransferPusherService.canTransfer();
 
     const { appUrl, key } = tk;
 
     // Generate export zip
-    let zipFile;
+    let zipFileStream;
     try {
-      zipFile = await g2gTransferService.startTransfer(tk);
+      zipFileStream = await g2gTransferPusherService.startTransfer(tk);
     }
     catch (err) {
-
+      logger.error(err);
+      return res.apiv3Err(new ErrorV3('Error occurred while'));
     }
+
     // Send a zip file to other growi via axios
+    // (async() => {
+    //   try {
+    //     // TODO: Make zipFileStream work
+    //     await axios.post('/_api/v3/g2g-transfer/', zipFileStream, {
+    //       baseURL: appUrl.origin,
+    //       headers: {
+    //         [X_GROWI_TRANSFER_KEY_HEADER_NAME]: key,
+    //       },
+    //     });
+    //   }
+    //   catch (errs) {
+    //     if (!Array.isArray(errs)) {
+    //       // TODO: socker.emit(failed_to_transfer);
+    //       return;
+    //     }
 
-    (async() => {
-      try {
-        await axios.post('/_api/v3/g2g-transfer/', {}, {
-          baseURL: appUrl.origin,
-          headers: {
-            [X_GROWI_TRANSFER_KEY_HEADER_NAME]: key,
-          },
-        });
-      }
-      catch (errs) {
-        if (!Array.isArray(errs)) {
-          // TODO: socker.emit(failed_to_transfer);
-          return;
-        }
+    //     const err = errs[0];
 
-        const err = errs[0];
+    //     if (!isG2GTransferError(err)) {
+    //       // TODO: socker.emit(failed_to_transfer);
+    //       return;
+    //     }
 
-        if (!isG2GTransferError(err)) {
-          // TODO: socker.emit(failed_to_transfer);
-          return;
-        }
+    //     const g2gTransferError = err;
 
-        const g2gTransferError = err;
-
-        logger.error(g2gTransferError);
-        // TODO: socker.emit(failed_to_transfer);
-        return;
-      }
-    })();
+    //     logger.error(g2gTransferError);
+    //     // TODO: socker.emit(failed_to_transfer);
+    //     return;
+    //   }
+    // })();
 
     return res.apiv3({ message: 'Successfully requested auto transfer.' });
   });

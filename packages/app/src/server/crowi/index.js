@@ -22,7 +22,7 @@ import AclService from '../service/acl';
 import AppService from '../service/app';
 import AttachmentService from '../service/attachment';
 import ConfigManager from '../service/config-manager';
-import { G2GTransferService } from '../service/g2g-transfer';
+import { G2GTransferPusherService, G2GTransferReceiverService } from '../service/g2g-transfer';
 import { InstallerService } from '../service/installer';
 import PageService from '../service/page';
 import PageGrantService from '../service/page-grant';
@@ -54,7 +54,8 @@ function Crowi() {
   this.config = {};
   this.configManager = null;
   this.s2sMessagingService = null;
-  this.g2gTransferService = null;
+  this.g2gTransferPusherService = null;
+  this.g2gTransferReceiverService = null;
   this.mailService = null;
   this.passportService = null;
   this.globalNotificationService = null;
@@ -745,8 +746,11 @@ Crowi.prototype.setupSlackIntegrationService = async function() {
 };
 
 Crowi.prototype.setupG2GTransferService = async function() {
-  if (this.g2gTransferService == null) {
-    this.g2gTransferService = new G2GTransferService(this);
+  if (this.g2gTransferPusherService == null) {
+    this.g2gTransferPusherService = new G2GTransferPusherService(this);
+  }
+  if (this.g2gTransferReceiverService == null) {
+    this.g2gTransferReceiverService = new G2GTransferReceiverService(this);
   }
 };
 
