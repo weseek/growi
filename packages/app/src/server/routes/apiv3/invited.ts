@@ -47,7 +47,7 @@ module.exports = (crowi: Crowi): Router => {
       }
     }
     else {
-      return res.apiv3Err(400);
+      return res.apiv3Err(req.form.errors, 400);
     }
   });
 
