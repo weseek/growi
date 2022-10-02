@@ -32,4 +32,14 @@ customAxios.interceptors.response.use((response) => {
   return response;
 });
 
+export const customAxiosXTar = axios.create({
+  headers: {
+    'Content-Type': 'application/x-tar',
+  },
+});
+customAxiosXTar.interceptors.response.use((response) => {
+  convertDates(response.data);
+  return response;
+});
+
 export default customAxios;
