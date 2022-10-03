@@ -3,8 +3,8 @@ import { CSSProperties } from 'react';
 import { Position } from 'codemirror';
 import i18n from 'i18next';
 
-// https://regex101.com/r/bMLnjG/1
-const EMOJI_PATTERN = new RegExp(/\B:[^:\s]+/);
+// https://regex101.com/r/x5LbOZ/1
+const EMOJI_PATTERN = new RegExp(/^:[a-z0-9-+_]+$/);
 
 export default class EmojiPickerHelper {
 
@@ -42,9 +42,9 @@ export default class EmojiPickerHelper {
     }
 
     const currentPos = this.editor.getCursor();
-    const sc = this.editor.getSearchCursor(':', currentPos, { multiline: false }).pos;
+    const sc = this.editor.getSearchCursor(':', currentPos, { multiline: false });
     if (sc.findPrevious()) {
-      return sc.pos;
+      return sc.pos.from;
     }
   }
 
