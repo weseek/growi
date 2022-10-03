@@ -49,10 +49,12 @@ module.exports = (crowi, app, isInstalled) => {
   routerForAuth.post('/login', applicationInstalled, loginFormValidator.loginRules(), loginFormValidator.loginValidation,
     addActivity, loginPassport.loginWithLocal, loginPassport.loginWithLdap, loginPassport.cannotLoginErrorHadnler, loginPassport.loginFailure);
 
+  routerForAuth.use('/invited', require('./invited')(crowi));
   routerForAuth.use('/logout', require('./logout')(crowi));
 
   routerForAuth.post('/register',
     applicationInstalled, registerFormValidator.registerRules(), registerFormValidator.registerValidation, addActivity, login.register);
+
 
   // installer
   if (!isInstalled) {

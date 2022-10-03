@@ -1,8 +1,12 @@
-import React from 'react';
+import React, { useCallback } from 'react';
 
 import { useTranslation } from 'next-i18next';
+import { useRouter } from 'next/router';
 
-import { useCsrfToken, useCurrentUser } from '../stores/context';
+import { apiv3Post } from '~/client/util/apiv3-client';
+
+import { useCurrentUser } from '../stores/context';
+
 
 export type InvitedFormProps = {
   invitedFormUsername: string,
@@ -10,11 +14,39 @@ export type InvitedFormProps = {
 }
 
 export const InvitedForm = (props: InvitedFormProps): JSX.Element => {
+
   const { t } = useTranslation();
-  const { data: csrfToken } = useCsrfToken();
+  const router = useRouter();
   const { data: user } = useCurrentUser();
 
   const { invitedFormUsername, invitedFormName } = props;
+
+  const submitHandler = useCallback(async(e) => {
+    e.preventDefault();
+
+    const formData = e.target.elements;
+
+    const {
+      'invitedForm[name]': { value: name },
+      'invitedForm[password]': { value: password },
+      'invitedForm[username]': { value: username },
+    } = formData;
+
+    const invitedForm = {
+      name,
+      password,
+      username,
+    };
+
+    try {
+      const res = await apiv3Post('/invited', { invitedForm });
+      const { redirectTo } = res.data;
+      router.push(redirectTo);
+    }
+    catch (err) {
+      // TODO: show errors
+    }
+  }, [router]);
 
   if (user == null) {
     return <></>;
@@ -26,7 +58,7 @@ export const InvitedForm = (props: InvitedFormProps): JSX.Element => {
         <strong>{ t('invited.discription_heading') }</strong><br></br>
         <small>{ t('invited.discription') }</small>
       </p>
-      <form role="form" action="/invited/activateInvited" method="post" id="invited-form">
+      <form role="form" onSubmit={submitHandler} id="invited-form">
         {/* Email Form */}
         <div className="input-group">
           <div className="input-group-prepend">
@@ -93,7 +125,6 @@ export const InvitedForm = (props: InvitedFormProps): JSX.Element => {
         </div>
         {/* Create Button */}
         <div className="input-group justify-content-center d-flex mt-5">
-          <input type="hidden" name="_csrf" value={csrfToken} />
           <button type="submit" className="btn btn-fill" id="register">
             <div className="eff"></div>
             <span className="btn-label"><i className="icon-user-follow"></i></span>

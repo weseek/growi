@@ -1,15 +1,19 @@
 import { body, validationResult } from 'express-validator';
 
 // form rules
-export const loginRules = () => {
+export const invitedRules = () => {
   return [
-    body('loginForm.username')
-      .matches(/^[\da-zA-Z\-_.+@]+$/)
-      .withMessage('message.Username or E-mail has invalid characters')
+    body('invitedForm.username')
+      .matches(/^[\da-zA-Z\-_.]+$/)
+      .withMessage('message.Username has invalid characters')
       .not()
       .isEmpty()
       .withMessage('message.Username field is required'),
-    body('loginForm.password')
+    body('invitedForm.name')
+      .not()
+      .isEmpty()
+      .withMessage('message.Name field is required'),
+    body('invitedForm.password')
       .matches(/^[\x20-\x7F]*$/)
       .withMessage('message.Password has invalid character')
       .isLength({ min: 6 })
@@ -21,7 +25,7 @@ export const loginRules = () => {
 };
 
 // validation action
-export const loginValidation = (req, res, next) => {
+export const invitedValidation = (req, _res, next) => {
   const form = req.body;
 
   const errors = validationResult(req);
