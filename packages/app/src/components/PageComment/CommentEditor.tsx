@@ -81,7 +81,7 @@ export const CommentEditor = (props: CommentEditorProps): JSX.Element => {
   const [comment, setComment] = useState(commentBody ?? '');
   const [activeTab, setActiveTab] = useState('comment_editor');
   const [error, setError] = useState();
-  const [slackChannels, setSlackChannels] = useState(slackChannelsData?.toString());
+  const [slackChannels, setSlackChannels] = useState<string>('');
 
   const editorRef = useRef<IEditorMethods>(null);
 
@@ -90,9 +90,19 @@ export const CommentEditor = (props: CommentEditorProps): JSX.Element => {
   }, []);
 
   useEffect(() => {
-    if (slackChannels === undefined) { return }
-    setSlackChannels(slackChannelsData?.toString());
-  }, [slackChannelsData, slackChannels]);
+    if (slackChannelsData != null) {
+      setSlackChannels(slackChannelsData.toString());
+      mutateIsSlackEnabled(false);
+    }
+  }, [mutateIsSlackEnabled, slackChannelsData]);
+
+  const isSlackEnabledToggleHandler = (isSlackEnabled: boolean) => {
+    mutateIsSlackEnabled(isSlackEnabled, false);
+  };
+
+  const slackChannelsChangedHandler = useCallback((slackChannels: string) => {
+    setSlackChannels(slackChannels);
+  }, []);
 
   const initializeEditor = useCallback(() => {
     setComment('');
@@ -289,14 +299,14 @@ export const CommentEditor = (props: CommentEditorProps): JSX.Element => {
             <span className="flex-grow-1" />
             <span className="d-none d-sm-inline">{ errorMessage && errorMessage }</span>
 
-            { isSlackConfigured
+            { isSlackConfigured && isSlackEnabled != null
               && (
                 <div className="form-inline align-self-center mr-md-2">
                   <SlackNotification
-                    isSlackEnabled
-                    slackChannels={slackChannelsData?.toString() ?? ''}
-                    onEnabledFlagChange={isSlackEnabled => mutateIsSlackEnabled(isSlackEnabled, false)}
-                    onChannelChange={setSlackChannels}
+                    isSlackEnabled={isSlackEnabled}
+                    slackChannels={slackChannels}
+                    onEnabledFlagChange={isSlackEnabledToggleHandler}
+                    onChannelChange={slackChannelsChangedHandler}
                     id="idForComment"
                   />
                 </div>
