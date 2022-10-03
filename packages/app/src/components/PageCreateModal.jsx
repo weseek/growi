@@ -101,6 +101,9 @@ const PageCreateModal = () => {
     try {
       const editorPath = await generateEditorPath(...paths);
       router.push(editorPath);
+
+      // close modal
+      closeCreateModal();
     }
     catch (err) {
       toastError(err);
