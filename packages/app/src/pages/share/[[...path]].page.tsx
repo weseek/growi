@@ -10,6 +10,7 @@ import dynamic from 'next/dynamic';
 import { ShareLinkLayout } from '~/components/Layout/ShareLinkLayout';
 import GrowiContextualSubNavigation from '~/components/Navbar/GrowiContextualSubNavigation';
 import { Page } from '~/components/Page';
+import { SupportedAction } from '~/interfaces/activity';
 import { CrowiRequest } from '~/interfaces/crowi-request';
 import { RendererConfig } from '~/interfaces/services/renderer';
 import { IShareLinkHasId } from '~/interfaces/share-link';
@@ -19,7 +20,7 @@ import {
 } from '~/stores/context';
 
 import {
-  CommonProps, getServerSideCommonProps, useCustomTitle, getNextI18NextConfig,
+  CommonProps, getServerSideCommonProps, useCustomTitle, getNextI18NextConfig, addActivity,
 } from '../utils/commons';
 
 const ShareLinkAlert = dynamic(() => import('~/components/Page/ShareLinkAlert'), { ssr: false });
@@ -160,6 +161,10 @@ export const getServerSideProps: GetServerSideProps = async(context: GetServerSi
   injectServerConfigurations(context, props);
   // await injectUserUISettings(context, props);
   await injectNextI18NextConfigurations(context, props);
+
+  // eslint-disable-next-line max-len, no-nested-ternary
+  const action = props.isExpired ? SupportedAction.ACTION_SHARE_LINK_EXPIRED_PAGE_VIEW : props.shareLink == null ? SupportedAction.ACTION_SHARE_LINK_NOT_FOUND : SupportedAction.ACTION_SHARE_LINK_PAGE_VIEW;
+  await addActivity(context, action);
 
   return {
     props,
