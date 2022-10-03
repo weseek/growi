@@ -137,9 +137,9 @@ class CodeMirrorEditor extends AbstractEditor {
     this.turnOnEmojiPickerMode = this.turnOnEmojiPickerMode.bind(this);
     this.turnOffEmojiPickerMode = this.turnOffEmojiPickerMode.bind(this);
     this.windowClickHandler = this.windowClickHandler.bind(this);
-    this.clickHandlerForEmojiPicker = this.clickHandlerForEmojiPicker.bind(this);
     this.keyDownHandler = this.keyDownHandler.bind(this);
     this.keyDownHandlerForEmojiPicker = this.keyDownHandlerForEmojiPicker.bind(this);
+    this.keyDownHandlerForEmojiPickerThrottled = throttle(400, this.keyDownHandlerForEmojiPicker);
     this.showEmojiPicker = this.showEmojiPicker.bind(this);
     this.keyPressHandlerForEmojiPicker = this.keyPressHandlerForEmojiPicker.bind(this);
     this.keyPressHandlerForEmojiPickerThrottled = debounce(50, throttle(200, this.keyPressHandlerForEmojiPicker));
@@ -662,21 +662,21 @@ class CodeMirrorEditor extends AbstractEditor {
   keyDownHandlerForEmojiPicker(editor, event) {
     const key = event.key;
 
+    if (!this.state.isEmojiPickerMode) {
+      return;
+    }
+
     if (['ArrowRight', 'ArrowLeft', 'ArrowUp', 'ArrowDown', 'BackSpace'].includes(key)) {
       this.turnOffEmojiPickerMode();
     }
   }
 
-  clickHandlerForEmojiPicker(event) {
-    this.turnOffEmojiPickerMode();
-  }
-
-  windowClickHandler(event) {
-    this.clickHandlerForEmojiPicker(event);
-  }
-
   keyDownHandler(editor, event) {
-    this.keyDownHandlerForEmojiPicker(editor, event);
+    this.keyDownHandlerForEmojiPickerThrottled(editor, event);
+  }
+
+  windowClickHandler() {
+    this.turnOffEmojiPickerMode();
   }
 
   /**
