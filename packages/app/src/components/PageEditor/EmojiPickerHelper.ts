@@ -1,10 +1,10 @@
 import { CSSProperties } from 'react';
 
+import { Position } from 'codemirror';
 import i18n from 'i18next';
 
-// https://regex101.com/r/Gqhor8/1
-// const EMOJI_PATTERN = new RegExp(/\B:[^:\s]+/);
-const EMOJI_PATTERN = ':';
+// https://regex101.com/r/bMLnjG/1
+const EMOJI_PATTERN = new RegExp(/\B:[^:\s]+/);
 
 export default class EmojiPickerHelper {
 
@@ -14,10 +14,9 @@ export default class EmojiPickerHelper {
 
   constructor(editor) {
     this.editor = editor;
-    this.pattern = EMOJI_PATTERN;
   }
 
-  setStyle = ():CSSProperties => {
+  setStyle = (): CSSProperties => {
     const offset = 20;
     const emojiPickerHeight = 420;
     const cursorPos = this.editor.cursorCoords(true);
@@ -37,29 +36,40 @@ export default class EmojiPickerHelper {
     };
   };
 
-  getSearchCursor = () => {
-    const currentPos = this.editor.getCursor();
-    const sc = this.editor.getSearchCursor(this.pattern, currentPos, { multiline: false });
-    return sc;
-  };
-
-  // Add emoji when triggered by search
-  addEmojiOnSearch = (emoji) => {
-    const currentPos = this.editor.getCursor();
-    const sc = this.getSearchCursor();
-    if (sc.findPrevious()) {
-      sc.replace(`${emoji.colons} `, this.editor.getTokenAt(currentPos).string);
-      this.editor.focus();
-      this.editor.refresh();
+  shouldModeTurnOn = (char: string): Position | null | undefined => {
+    if (char !== ':') {
+      return null;
     }
-  };
 
-
-  // Add emoji when triggered by click emoji icon on top of editor
-  addEmoji = (emoji) => {
     const currentPos = this.editor.getCursor();
+    const sc = this.editor.getSearchCursor(':', currentPos, { multiline: false }).pos;
+    if (sc.findPrevious()) {
+      return sc.pos;
+    }
+  }
+
+  shouldOpen = (startPos: Position): boolean => {
+    const currentPos = this.editor.getCursor();
+    const rangeStr = this.editor.getRange(startPos, currentPos);
+
+    return EMOJI_PATTERN.test(rangeStr);
+  }
+
+  getInitialSearchingText = (startPos: Position): void => {
+    const currentPos = this.editor.getCursor();
+    const rangeStr = this.editor.getRange(startPos, currentPos);
+
+    return rangeStr.slice(1); // return without the heading ':'
+  }
+
+  addEmoji = (emoji: { colons: string }, startPosToReplace: Position|null): void => {
+    const currentPos = this.editor.getCursor();
+
+    const from = startPosToReplace ?? currentPos;
+    const to = currentPos;
+
     const doc = this.editor.getDoc();
-    doc.replaceRange(`${emoji.colons} `, currentPos);
+    doc.replaceRange(`${emoji.colons} `, from, to);
     this.editor.focus();
     this.editor.refresh();
   };
