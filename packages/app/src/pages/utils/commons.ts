@@ -4,9 +4,9 @@ import { SSRConfig, UserConfig } from 'next-i18next';
 
 import * as nextI18NextConfig from '^/config/next-i18next.config';
 
+import { SupportedActionType } from '~/interfaces/activity';
 import { CrowiRequest } from '~/interfaces/crowi-request';
 import { GrowiThemes } from '~/interfaces/theme';
-
 
 export type CommonProps = {
   namespacesRequired: string[], // i18next
@@ -105,4 +105,20 @@ export const useCustomTitleForPage = (props: CommonProps, pagePath: string): str
     .replace('{{pagepath}}', pagePath)
     .replace('{{page}}', dPagePath.latter) // for backward compatibility
     .replace('{{pagename}}', dPagePath.latter);
+};
+
+export const addActivity = async(context: GetServerSidePropsContext, action: SupportedActionType): Promise<void> => {
+  const req: CrowiRequest = context.req as CrowiRequest;
+
+  const parameter = {
+    ip:  req.ip,
+    endpoint: req.originalUrl,
+    action,
+    user: req.user?._id,
+    snapshot: {
+      username: req.user?.username,
+    },
+  };
+
+  await req.crowi.activityService.createActivity(parameter);
 };
