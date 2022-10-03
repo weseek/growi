@@ -117,6 +117,7 @@ class CodeMirrorEditor extends AbstractEditor {
       additionalClassSet: new Set(),
       isEmojiPickerShown: false,
       emojiSearchText: '',
+      startPosWithEmojiPickerModeTurnedOn: null,
       isEmojiPickerMode: false,
     };
 
@@ -142,19 +143,20 @@ class CodeMirrorEditor extends AbstractEditor {
     this.pasteHandler = this.pasteHandler.bind(this);
     this.cursorHandler = this.cursorHandler.bind(this);
     this.changeHandler = this.changeHandler.bind(this);
-    this.onEmojiPickerMode = this.onEmojiPickerMode.bind(this);
-    this.offEmojiPickerMode = this.offEmojiPickerMode.bind(this);
-    this.resetEmojiSearchText = this.resetEmojiSearchText.bind(this);
-    this.isCharValidForShowingEmojiPicker = this.isCharValidForShowingEmojiPicker.bind(this);
-    this.loadEmojiSearchText = this.loadEmojiSearchText.bind(this);
-    this.resetEmojiPickerState = this.resetEmojiPickerState.bind(this);
+    this.turnOnEmojiPickerMode = this.turnOnEmojiPickerMode.bind(this);
+    this.turnOffEmojiPickerMode = this.turnOffEmojiPickerMode.bind(this);
+    // this.resetEmojiSearchText = this.resetEmojiSearchText.bind(this);
+    // this.isCharValidForShowingEmojiPicker = this.isCharValidForShowingEmojiPicker.bind(this);
+    // this.loadEmojiSearchText = this.loadEmojiSearchText.bind(this);
+    // this.resetEmojiPickerState = this.resetEmojiPickerState.bind(this);
     this.windowClickHandler = this.windowClickHandler.bind(this);
     this.clickHandlerForEmojiPicker = this.clickHandlerForEmojiPicker.bind(this);
     this.keyDownHandler = this.keyDownHandler.bind(this);
     this.keyDownHandlerForEmojiPicker = this.keyDownHandlerForEmojiPicker.bind(this);
     this.showEmojiPicker = this.showEmojiPicker.bind(this);
-    this.loadEmojiPicker = this.loadEmojiPicker.bind(this);
+    // this.loadEmojiPicker = this.loadEmojiPicker.bind(this);
     this.keyPressHandlerForEmojiPicker = this.keyPressHandlerForEmojiPicker.bind(this);
+    this.keyPressHandlerForEmojiPickerThrottled = throttle(400, this.keyPressHandlerForEmojiPicker);
     this.keyPressHandler = this.keyPressHandler.bind(this);
 
     this.updateCheatsheetStates = this.updateCheatsheetStates.bind(this);
@@ -607,44 +609,56 @@ class CodeMirrorEditor extends AbstractEditor {
 
   }
 
-  onEmojiPickerMode() {
-    this.setState({ isEmojiPickerMode: true });
+  turnOnEmojiPickerMode(pos) {
+    this.setState({
+      isEmojiPickerMode: true,
+      startPosWithEmojiPickerModeTurnedOn: pos,
+      emojiSearchText: '',
+    });
   }
 
-  offEmojiPickerMode() {
-    this.setState({ isEmojiPickerMode: false });
+  turnOffEmojiPickerMode() {
+    this.setState({
+      isEmojiPickerMode: false,
+      startPosWithEmojiPickerModeTurnedOn: null,
+    });
   }
 
-  resetEmojiSearchText() {
-    this.setState({ emojiSearchText: '' });
-  }
+  // resetEmojiSearchText() {
+  //   this.setState({
+  //     emojiSearchText: '',
+  //     startPosWithEmojiPickerModeTurnedOn: null,
+  //   });
+  // }
 
-  isCharValidForShowingEmojiPicker(ch) {
-    const lowerCh = ch.toLowerCase();
+  // isCharValidForShowingEmojiPicker(ch) {
+  //   const lowerCh = ch.toLowerCase();
 
-    return 'abcdefghijklmnopqrstuvwxyz0123456789-+_'.indexOf(lowerCh) !== -1;
-  }
+  //   return 'abcdefghijklmnopqrstuvwxyz0123456789-+_'.indexOf(lowerCh) !== -1;
+  // }
 
-  loadEmojiSearchText(newchar) {
-    this.setState(prev => ({ emojiSearchText: prev.emojiSearchText.concat(newchar) }));
-  }
-
-  showEmojiPicker() {
+  showEmojiPicker(emojiSearchText) {
     // show emoji picker with a stored word
-    this.setState({ isEmojiPickerShown: true });
-    this.offEmojiPickerMode();
+    this.setState({
+      isEmojiPickerShown: true,
+      emojiSearchText,
+    });
+    this.turnOffEmojiPickerMode();
   }
 
-  loadEmojiPicker(ch) {
-    this.loadEmojiSearchText(ch);
+  // loadEmojiPicker(ch) {
+  //   this.loadEmojiSearchText(ch);
 
-    this.showEmojiPicker();
-  }
+  //   this.showEmojiPicker();
+  // }
 
-  resetEmojiPickerState() {
-    this.offEmojiPickerMode();
-    this.resetEmojiSearchText();
-  }
+  // evalToOpenEmojiPicker(currentPos) {
+  // }
+
+  // resetEmojiPickerState() {
+  //   this.offEmojiPickerMode();
+  //   this.resetEmojiSearchText();
+  // }
 
   keyPressHandlerForEmojiPicker(editor, event) {
     const char = event.key;
@@ -652,42 +666,57 @@ class CodeMirrorEditor extends AbstractEditor {
 
     if (!isEmojiPickerMode) {
       if (char === ':') { // Turn on emoji picker mode
-        this.onEmojiPickerMode();
-        this.resetEmojiSearchText();
+        const currentPos = editor.getCursor();
+        this.turnOnEmojiPickerMode(currentPos);
         return;
       }
 
       return;
     }
 
+    const currentPos = editor.getCursor();
+    const rangeStr = editor.getRange(this.state.startPosWithEmojiPickerModeTurnedOn, currentPos);
+
+    const pattern = new RegExp(/^:[a-z0-9-+_]+$/);
+    if (pattern.test(rangeStr)) {
+      const initialSearchingText = rangeStr.slice(1); // omit heading ':'
+      this.showEmojiPicker(initialSearchingText);
+    }
+
+    // const sc = editor.getSearchCursor(':', currentPos, { multiline: false });
+    // if (sc.findPrevious()) {
+    //   console.log({ currentPos, sc });
+    // }
+
+    // return sc;
+
     // Return not to reset emoji picker state when pressing : many times
-    if (char === ':') {
-      return;
-    }
+    // if (char === ':') {
+    //   return;
+    // }
 
-    if (!this.isCharValidForShowingEmojiPicker(char)) {
-      this.resetEmojiPickerState();
-      return;
-    }
+    // if (!this.isCharValidForShowingEmojiPicker(char)) {
+    //   this.resetEmojiPickerState();
+    //   return;
+    // }
 
-    // TODO: Use throttle https://redmine.weseek.co.jp/issues/106037
-    this.loadEmojiPicker(char);
+    // this.loadEmojiPicker(char);
   }
 
   keyPressHandler(editor, event) {
-    this.keyPressHandlerForEmojiPicker(editor, event);
+    this.keyPressHandlerForEmojiPickerThrottled(editor, event);
   }
 
   keyDownHandlerForEmojiPicker(editor, event) {
     const key = event.key;
 
     if (['ArrowRight', 'ArrowLeft', 'ArrowUp', 'ArrowDown', 'BackSpace'].includes(key)) {
-      this.resetEmojiPickerState();
+      this.turnOffEmojiPickerMode();
     }
   }
 
   clickHandlerForEmojiPicker(event) {
-    this.resetEmojiPickerState();
+    this.turnOffEmojiPickerMode();
   }
 
   windowClickHandler(event) {
