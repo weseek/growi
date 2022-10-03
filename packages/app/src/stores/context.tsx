@@ -1,3 +1,4 @@
+import { IUser } from '@growi/core';
 import { HtmlElementNode } from 'rehype-toc';
 import { Key, SWRResponse } from 'swr';
 import useSWRImmutable from 'swr/immutable';
@@ -11,7 +12,6 @@ import { GrowiThemes } from '~/interfaces/theme';
 import InterceptorManager from '~/services/interceptor-manager';
 
 import { TargetAndAncestors } from '../interfaces/page-listing-results';
-import { IUser, IUserHasId } from '../interfaces/user';
 
 import { useStaticSWR } from './use-static-swr';
 
@@ -96,10 +96,6 @@ export const useIsForbidden = (initialData?: boolean): SWRResponse<boolean, Erro
 
 export const useIsNotFound = (initialData?: boolean): SWRResponse<boolean, Error> => {
   return useStaticSWR<boolean, Error>('isNotFound', initialData, { fallbackData: false });
-};
-
-export const usePageUser = (initialData?: IUserHasId): SWRResponse<IUserHasId, Error> => {
-  return useStaticSWR<IUserHasId, Error>('pageUser', initialData);
 };
 
 export const useHasChildren = (initialData?: Nullable<any>): SWRResponse<Nullable<any>, Error> => {

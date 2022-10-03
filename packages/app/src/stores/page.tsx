@@ -39,14 +39,16 @@ export const useSWRxPageByPath = (path?: string): SWRResponse<IPagePopulatedToSh
   );
 };
 
-export const useSWRxCurrentPage = (shareLinkId?: string, initialData?: IPagePopulatedToShowRevision): SWRResponse<IPagePopulatedToShowRevision|null, Error> => {
+export const useSWRxCurrentPage = (
+    shareLinkId?: string, initialData?: IPagePopulatedToShowRevision|null,
+): SWRResponse<IPagePopulatedToShowRevision|null, Error> => {
   const { data: currentPageId } = useCurrentPageId();
 
   const swrResult = useSWRxPage(currentPageId, shareLinkId);
 
   // use mutate because fallbackData does not work
   // see: https://github.com/weseek/growi/commit/5038473e8d6028c9c91310e374a7b5f48b921a15
-  if (initialData != null) {
+  if (initialData !== undefined) {
     swrResult.mutate(initialData);
   }
 

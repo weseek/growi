@@ -13,7 +13,8 @@ import { apiGet, apiPostForm } from '~/client/util/apiv1-client';
 import { getOptionsToSave } from '~/client/util/editor';
 import { IEditorMethods } from '~/interfaces/editor-methods';
 import {
-  useIsEditable, useIsIndentSizeForced, useCurrentPagePath, useCurrentPathname, useCurrentPageId, useIsUploadableFile, useIsUploadableImage,
+  useCurrentPagePath, useCurrentPathname, useCurrentPageId, useEditingMarkdown,
+  useIsEditable, useIsIndentSizeForced, useIsUploadableFile, useIsUploadableImage,
 } from '~/stores/context';
 import {
   useCurrentIndentSize, useSWRxSlackChannels, useIsSlackEnabled, useIsTextlintEnabled, usePageTagsForEditors,
@@ -51,6 +52,7 @@ const PageEditor = React.memo((): JSX.Element => {
   const { data: currentPagePath } = useCurrentPagePath();
   const { data: currentPathname } = useCurrentPathname();
   const { data: currentPage, mutate: mutateCurrentPage } = useSWRxCurrentPage();
+  const { data: editingMarkdown } = useEditingMarkdown();
   const { data: grantData, mutate: mutateGrant } = useSelectedGrant();
   const { data: pageTags } = usePageTagsForEditors(pageId);
 
@@ -69,10 +71,10 @@ const PageEditor = React.memo((): JSX.Element => {
   const { data: rendererOptions } = usePreviewOptions();
 
   const currentRevisionId = currentPage?.revision?._id;
-  const initialValue = currentPage?.revision?.body;
+  const initialValue = editingMarkdown ?? '';
 
-  const markdownToSave = useRef<string>(initialValue ?? '');
-  const [markdownToPreview, setMarkdownToPreview] = useState<string>(initialValue ?? '');
+  const markdownToSave = useRef<string>(initialValue);
+  const [markdownToPreview, setMarkdownToPreview] = useState<string>(initialValue);
 
   const slackChannels = useMemo(() => (slackChannelsData ? slackChannelsData.toString() : ''), [slackChannelsData]);
 
