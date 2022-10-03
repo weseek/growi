@@ -7,6 +7,7 @@ import * as loadCssSync from 'load-css-file';
 import PropTypes from 'prop-types';
 import { Button } from 'reactstrap';
 import * as loadScript from 'simple-load-script';
+import { throttle } from 'throttle-debounce';
 import urljoin from 'url-join';
 
 import InterceptorManager from '~/services/interceptor-manager';
@@ -137,9 +138,14 @@ class CodeMirrorEditor extends AbstractEditor {
     this.resetEmojiSearchText = this.resetEmojiSearchText.bind(this);
     this.isCharValidForShowingEmojiPicker = this.isCharValidForShowingEmojiPicker.bind(this);
     this.loadEmojiSearchText = this.loadEmojiSearchText.bind(this);
+    this.resetEmojiPickerState = this.resetEmojiPickerState.bind(this);
+    this.windowClickHandler = this.windowClickHandler.bind(this);
+    this.clickHandlerForEmojiPicker = this.clickHandlerForEmojiPicker.bind(this);
+    this.keyDownHandler = this.keyDownHandler.bind(this);
+    this.keyDownHandlerForEmojiPicker = this.keyDownHandlerForEmojiPicker.bind(this);
     this.showEmojiPicker = this.showEmojiPicker.bind(this);
     this.loadEmojiPicker = this.loadEmojiPicker.bind(this);
-    this.checkAndShowEmojiPicker = this.checkAndShowEmojiPicker.bind(this);
+    this.keyPressHandlerForEmojiPicker = this.keyPressHandlerForEmojiPicker.bind(this);
     this.keyPressHandler = this.keyPressHandler.bind(this);
 
     this.updateCheatsheetStates = this.updateCheatsheetStates.bind(this);
@@ -188,6 +194,13 @@ class CodeMirrorEditor extends AbstractEditor {
     }
     this.emojiPickerHelper = new EmojiPickerHelper(this.getCodeMirror());
 
+    // HACKME: Find a better way to handle onClick for Editor
+    document.addEventListener('click', this.windowClickHandler);
+  }
+
+  componentWillUnmount() {
+    // HACKME: Find a better way to handle onClick for Editor
+    document.removeEventListener('click', this.windowClickHandler);
   }
 
   componentWillReceiveProps(nextProps) {
@@ -625,7 +638,12 @@ class CodeMirrorEditor extends AbstractEditor {
     this.showEmojiPicker();
   }
 
-  checkAndShowEmojiPicker(editor, event) {
+  resetEmojiPickerState() {
+    this.offEmojiPickerMode();
+    this.resetEmojiSearchText();
+  }
+
+  keyPressHandlerForEmojiPicker(editor, event) {
     const char = event.key;
     const isEmojiPickerMode = this.state.isEmojiPickerMode;
 
@@ -640,16 +658,36 @@ class CodeMirrorEditor extends AbstractEditor {
     }
 
     if (!this.isCharValidForShowingEmojiPicker(char)) {
-      this.offEmojiPickerMode();
-      this.resetEmojiSearchText();
+      this.resetEmojiPickerState();
       return;
     }
 
+    // TODO: Use throttle https://redmine.weseek.co.jp/issues/106037
     this.loadEmojiPicker(char);
   }
 
   keyPressHandler(editor, event) {
-    this.checkAndShowEmojiPicker(editor, event);
+    this.keyPressHandlerForEmojiPicker(editor, event);
+  }
+
+  keyDownHandlerForEmojiPicker(editor, event) {
+    const key = event.key;
+
+    if (['ArrowRight', 'ArrowLeft', 'ArrorUp', 'ArrowDown', 'BackSpace'].includes(key)) {
+      this.resetEmojiPickerState();
+    }
+  }
+
+  clickHandlerForEmojiPicker(event) {
+    this.resetEmojiPickerState();
+  }
+
+  windowClickHandler(event) {
+    this.clickHandlerForEmojiPicker(event);
+  }
+
+  keyDownHandler(editor, event) {
+    this.keyDownHandlerForEmojiPicker(editor, event);
   }
 
   /**
@@ -1087,6 +1125,7 @@ class CodeMirrorEditor extends AbstractEditor {
             }
           }}
           onKeyPress={this.keyPressHandler}
+          onKeyDown={this.keyDownHandler}
         />
 
         { this.renderLoadingKeymapOverlay() }
