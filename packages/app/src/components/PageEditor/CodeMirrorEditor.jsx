@@ -673,7 +673,7 @@ class CodeMirrorEditor extends AbstractEditor {
   keyDownHandlerForEmojiPicker(editor, event) {
     const key = event.key;
 
-    if (['ArrowRight', 'ArrowLeft', 'ArrorUp', 'ArrowDown', 'BackSpace'].includes(key)) {
+    if (['ArrowRight', 'ArrowLeft', 'ArrowUp', 'ArrowDown', 'BackSpace'].includes(key)) {
       this.resetEmojiPickerState();
     }
   }
