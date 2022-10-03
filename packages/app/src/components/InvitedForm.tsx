@@ -73,7 +73,7 @@ export const InvitedForm = (props: InvitedFormProps): JSX.Element => {
   }
 
   return (
-    <div className="noLogin-dialog p-3 mx-auto" id="noLogin-dialog">
+    <div className="noLogin-dialog px-3 pb-3 mx-auto" id="noLogin-dialog">
       { formNotification() }
       <form role="form" onSubmit={submitHandler} id="invited-form">
         {/* Email Form */}
@@ -142,7 +142,7 @@ export const InvitedForm = (props: InvitedFormProps): JSX.Element => {
           />
         </div>
         {/* Create Button */}
-        <div className="input-group justify-content-center d-flex mt-5">
+        <div className="input-group justify-content-center d-flex mt-4">
           <button type="submit" className="btn btn-fill" id="register">
             <div className="eff"></div>
             <span className="btn-label"><i className="icon-user-follow"></i></span>
@@ -150,7 +150,7 @@ export const InvitedForm = (props: InvitedFormProps): JSX.Element => {
           </button>
         </div>
       </form>
-      <div className="input-group mt-5 d-flex justify-content-center">
+      <div className="input-group mt-4 d-flex justify-content-center">
         <a href="https://growi.org" className="link-growi-org">
           <span className="growi">GROWI</span>.<span className="org">ORG</span>
         </a>
