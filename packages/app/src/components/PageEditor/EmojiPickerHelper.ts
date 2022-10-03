@@ -2,14 +2,15 @@ import { CSSProperties } from 'react';
 
 import i18n from 'i18next';
 
-// https://regex101.com/r/AXxJK3/1
-const EMOJI_PATTERN = new RegExp('^:[a-z0-9-_+]*');
+// https://regex101.com/r/Gqhor8/1
+// const EMOJI_PATTERN = new RegExp(/\B:[^:\s]+/);
+const EMOJI_PATTERN = ':';
 
 export default class EmojiPickerHelper {
 
   editor;
 
-  pattern: RegExp;
+  pattern: string;
 
   constructor(editor) {
     this.editor = editor;
