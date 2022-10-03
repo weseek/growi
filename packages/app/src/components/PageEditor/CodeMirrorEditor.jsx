@@ -151,7 +151,7 @@ class CodeMirrorEditor extends AbstractEditor {
     this.keyDownHandlerForEmojiPicker = this.keyDownHandlerForEmojiPicker.bind(this);
     this.showEmojiPicker = this.showEmojiPicker.bind(this);
     this.keyPressHandlerForEmojiPicker = this.keyPressHandlerForEmojiPicker.bind(this);
-    this.keyPressHandlerForEmojiPickerThrottled = debounce(50, throttle(400, this.keyPressHandlerForEmojiPicker));
+    this.keyPressHandlerForEmojiPickerThrottled = debounce(50, throttle(200, this.keyPressHandlerForEmojiPicker));
     this.keyPressHandler = this.keyPressHandler.bind(this);
 
     this.updateCheatsheetStates = this.updateCheatsheetStates.bind(this);
