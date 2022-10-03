@@ -633,16 +633,18 @@ class CodeMirrorEditor extends AbstractEditor {
     const char = event.key;
     const isEmojiPickerMode = this.state.isEmojiPickerMode;
 
+    // evaluate whether emoji picker mode to be turned on
     if (!isEmojiPickerMode) {
       const startPos = this.emojiPickerHelper.shouldModeTurnOn(char);
-      if (startPos != null) { // Turn on emoji picker mode
-        this.turnOnEmojiPickerMode(startPos);
+      if (startPos == null) {
         return;
       }
 
+      this.turnOnEmojiPickerMode(startPos);
       return;
     }
 
+    // evaluate whether EmojiPicker to be opened
     const startPos = this.state.startPosWithEmojiPickerModeTurnedOn;
     if (this.emojiPickerHelper.shouldOpen(startPos)) {
       const initialSearchingText = this.emojiPickerHelper.getInitialSearchingText(startPos);
