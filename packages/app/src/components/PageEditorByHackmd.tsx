@@ -198,21 +198,16 @@ export const PageEditorByHackmd = (): JSX.Element => {
       const optionsToSave = getOptionsToSave(
         isSlackEnabled, slackChannels, grant.grant, grant.grantedGroup?.id, grant.grantedGroup?.name, pageTags ?? [], true,
       );
-      await saveOrUpdate(optionsToSave, { pageId, path: currentPagePathOrPathname, revisionId: revisionIdHackmdSynced }, markdown);
+      const res = await saveOrUpdate(optionsToSave, { pageId, path: currentPagePathOrPathname, revisionId: revisionIdHackmdSynced }, markdown);
 
       // update pageData
-      await mutatePageData();
-
-      if (pageData == null) { throw Error('page data is null') }
+      mutatePageData(res);
 
       // set updated data
-      setRemoteRevisionId(revision?._id);
-      mutateRevisionIdHackmdSynced(pageData.revisionHackmdSynced);
-      mutateHasDraftOnHackmd(pageData.hasDraftOnHackmd);
+      setRemoteRevisionId(res.revision._id);
+      mutateRevisionIdHackmdSynced(res.page.revisionHackmdSynced);
+      mutateHasDraftOnHackmd(res.page.hasDraftOnHackmd);
       mutateTagsInfo();
-
-      // call reset
-      setIsInitialized(false);
 
       logger.debug('success to save');
 
