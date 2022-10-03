@@ -203,6 +203,7 @@ module.exports = function(crowi, app) {
   // app.get('/tags'                     , loginRequired, tag.showPage);
   app.get('/tags', loginRequired, next.delegateToNext);
 
+  app.get('/me'                                 , loginRequiredStrictly, injectUserUISettings, next.delegateToNext);
   app.get('/me/*'                                 , loginRequiredStrictly, injectUserUISettings, next.delegateToNext);
   // external-accounts
   // my in-app-notifications
@@ -231,8 +232,8 @@ module.exports = function(crowi, app) {
 
   app.use('/forgot-password', express.Router()
     .use(forgotPassword.checkForgotPasswordEnabledMiddlewareFactory(crowi))
-    .get('/forgot-password', next.delegateToNext)
-    .get('/:token', injectResetOrderByTokenMiddleware, forgotPassword.resetPassword, next.delegateToNext) // TODO: 104986
+    .get('/', forgotPassword.renderForgotPassword(crowi))
+    .get('/:token', injectResetOrderByTokenMiddleware, forgotPassword.renderResetPassword(crowi))
     .use(forgotPassword.handleErrorsMiddleware(crowi)));
 
   app.get('/_private-legacy-pages', next.delegateToNext);
