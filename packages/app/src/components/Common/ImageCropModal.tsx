@@ -50,19 +50,12 @@ const ImageCropModal: FC<Props> = (props: Props) => {
   const reset = useCallback(() => {
     if (imageRef) {
       //  Some SVG files may not have width and height properties, causing the render size to be 0x0
-      // Check if image has width and height property
-      const isImageSizeSet = (imageRef.width || imageRef.height) > 0;
+      // Force imageRef to have width and height by create temporary image element then set the imageRef width with tempImage width
+      const tempImage = new Image();
+      tempImage.src = imageRef.src;
+      imageRef.width = tempImage.width;
 
-      // If the image has no width and height,
-      // Create a temporary image and take the width and height then set it to imageRef
-
-      // TODO: Optimize code and research for another approach to set image width & height
-      if (!isImageSizeSet) {
-        const tempImage = new Image();
-        tempImage.src = imageRef.src;
-        imageRef.width = tempImage.width;
-        imageRef.height = tempImage.height;
-      }
+      // Get size of Image, min value of width and height
       const size = Math.min(imageRef.width, imageRef.height);
       setCropOtions({
         aspect: 1,
@@ -93,6 +86,7 @@ const ImageCropModal: FC<Props> = (props: Props) => {
   };
 
   const getCroppedImg = async(image, crop) => {
+    // TODO: SVG image with no width & height not correctly cropped
     const canvas = document.createElement('canvas');
     const scaleX = image.naturalWidth / image.width;
     const scaleY = image.naturalHeight / image.height;
@@ -143,12 +137,21 @@ const ImageCropModal: FC<Props> = (props: Props) => {
       <ModalBody className="my-4">
         {
           isCropImage
-            ? (<ReactCrop src={src} crop={cropOptions} onImageLoaded={onImageLoaded} onChange={onCropChange} circularCrop={isCircular} />)
+            ? (
+              <ReactCrop
+                style={{ backgroundColor: 'transparent' }}
+                src={src}
+                crop={cropOptions}
+                onImageLoaded={onImageLoaded}
+                onChange={onCropChange}
+                circularCrop={isCircular}
+              />
+            )
             : (<img style={{ maxWidth: imageRef?.width }} src={imageRef?.src} />)
         }
       </ModalBody>
       <ModalFooter>
-        <button type="button" className="btn btn-outline-danger rounded-pill mr-auto" onClick={reset}>
+        <button type="button" className="btn btn-outline-danger rounded-pill mr-auto" disabled={!isCropImage} onClick={reset}>
           {t('crop_image_modal.reset')}
         </button>
         { !showCropOption && (
