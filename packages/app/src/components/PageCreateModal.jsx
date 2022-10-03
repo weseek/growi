@@ -208,7 +208,7 @@ const PageCreateModal = () => {
               {isReachable
                 ? (
                   <PagePathAutoComplete
-                    initializedPath={pageNameInput}
+                    initializedPath={pageNameInputInitialValue}
                     addTrailingSlash
                     onSubmit={ppacSubmitHandler}
                     onInputChange={value => setPageNameInput(value)}
