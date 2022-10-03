@@ -657,6 +657,11 @@ class CodeMirrorEditor extends AbstractEditor {
       return;
     }
 
+    // Return not to reset emoji picker state when pressing : many times
+    if (char === ':') {
+      return;
+    }
+
     if (!this.isCharValidForShowingEmojiPicker(char)) {
       this.resetEmojiPickerState();
       return;
