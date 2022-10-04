@@ -45,8 +45,9 @@ interface Pusher {
    * Start transfer data between GROWIs
    * @param {TransferKey} tk TransferKey object
    * @param {string[]} collections Collection name string array
+   * @param {any} optionsMap Options map
    */
-  startTransfer(tk: TransferKey, collections: string[]): Promise<void>
+  startTransfer(tk: TransferKey, collections: string[], optionsMap: any): Promise<void>
 }
 
 interface Receiver {
@@ -114,7 +115,7 @@ export class G2GTransferPusherService implements Pusher {
 
   public async transferAttachments(): Promise<void> { return }
 
-  public async startTransfer(tk: TransferKey, collections: string[]): Promise<void> {
+  public async startTransfer(tk: TransferKey, collections: string[], optionsMap: any): Promise<void> {
     const { appUrl, key } = tk;
 
     let zipFileStream: ReadStream;
@@ -137,6 +138,8 @@ export class G2GTransferPusherService implements Pusher {
 
       const appTitle = this.crowi.appService.getAppTitle();
       form.append('transferDataZipFile', zipFileStream, `${appTitle}-${Date.now}.growi.zip`);
+      form.append('collections', collections);
+      form.append('optionsMap', optionsMap);
       await rawAxios.post('/_api/v3/g2g-transfer/', form, {
         baseURL: appUrl.origin,
         headers: {

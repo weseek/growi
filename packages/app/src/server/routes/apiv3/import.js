@@ -55,7 +55,7 @@ const router = express.Router();
  * @param {object} req Request Object
  * @param {GrowiArchiveImportOption} options GrowiArchiveImportOption instance
  */
-const generateOverwriteParams = (collectionName, req, options) => {
+export const generateOverwriteParams = (collectionName, req, options) => {
   switch (collectionName) {
     case 'pages':
       return require('./overwrite-params/pages')(req, options);

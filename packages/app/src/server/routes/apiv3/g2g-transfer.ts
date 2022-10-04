@@ -4,16 +4,20 @@ import express, { NextFunction, Request, Router } from 'express';
 import { body } from 'express-validator';
 import multer from 'multer';
 
+import { SupportedAction } from '~/interfaces/activity';
+import GrowiArchiveImportOption from '~/models/admin/growi-archive-import-option';
 import TransferKeyModel from '~/server/models/transfer-key';
 import { isG2GTransferError } from '~/server/models/vo/g2g-transfer-error';
 import { IDataGROWIInfo, X_GROWI_TRANSFER_KEY_HEADER_NAME } from '~/server/service/g2g-transfer';
 import loggerFactory from '~/utils/logger';
 import { TransferKey } from '~/utils/vo/transfer-key';
 
+
 import Crowi from '../../crowi';
 import { apiV3FormValidator } from '../../middlewares/apiv3-form-validator';
 import ErrorV3 from '../../models/vo/error-apiv3';
 
+import { generateOverwriteParams } from './import';
 import { ApiV3Response } from './interfaces/apiv3-response';
 
 const logger = loggerFactory('growi:routes:apiv3:transfer');
@@ -131,6 +135,79 @@ module.exports = (crowi: Crowi): Router => {
     const zipFile = importService.getFile(file.filename);
     let data;
 
+    // ぶちこみ
+
+    const { collections, optionsMap } = req.body;
+
+    /*
+     * unzip, parse
+     */
+    let meta;
+    let innerFileStats;
+    try {
+      // unzip
+      await importService.unzip(zipFile);
+
+      // eslint-disable-next-line no-unused-vars
+      const { meta: parsedMeta, innerFileStats: _innerFileStats } = await growiBridgeService.parseZipFile(zipFile);
+      innerFileStats = _innerFileStats;
+      meta = parsedMeta;
+    }
+    catch (err) {
+      logger.error(err);
+      // adminEvent.emit('onErrorForImport', { message: err.message });
+      return;
+    }
+
+    /*
+     * validate with meta.json
+     */
+    try {
+      importService.validate(meta);
+    }
+    catch (err) {
+      logger.error(err);
+      // adminEvent.emit('onErrorForImport', { message: err.message });
+      return;
+    }
+
+    // generate maps of ImportSettings to import
+    const importSettingsMap = {};
+    innerFileStats.forEach(({ fileName, collectionName }) => {
+      // instanciate GrowiArchiveImportOption
+      const options = new GrowiArchiveImportOption(null, optionsMap[collectionName]);
+
+      let importSettings;
+      // generate options
+      if (collectionName === 'configs') {
+        importSettings = importService.generateImportSettings('flushAndInsert');
+      }
+      else {
+        importSettings = importService.generateImportSettings('upsert');
+      }
+      importSettings.jsonFileName = fileName;
+
+      // generate overwrite params
+      importSettings.overwriteParams = generateOverwriteParams(collectionName, req, options);
+
+      importSettingsMap[collectionName] = importSettings;
+    });
+
+    /*
+     * import
+     */
+    try {
+      importService.import(collections, importSettingsMap);
+      const parameters = { action: SupportedAction.ACTION_ADMIN_GROWI_DATA_IMPORTED };
+      // activityEvent.emit('update', res.locals.activity._id, parameters);
+    }
+    catch (err) {
+      logger.error(err);
+      // adminEvent.emit('onErrorForImport', { message: err.message });
+    }
+
+    // ここまで
+
     try {
       data = await growiBridgeService.parseZipFile(zipFile);
     }
@@ -212,7 +289,7 @@ module.exports = (crowi: Crowi): Router => {
   // TODO: Use socket to send progress info to the client
   // eslint-disable-next-line max-len
   pushRouter.post('/transfer', accessTokenParser, loginRequiredStrictly, adminRequired, validator.transfer, apiV3FormValidator, async(req: Request, res: ApiV3Response) => {
-    const { transferKey: transferKeyString, collections } = req.body;
+    const { transferKey: transferKeyString, collections, optionsMap } = req.body;
 
     // Parse transfer key
     let tk: TransferKey;
@@ -244,7 +321,7 @@ module.exports = (crowi: Crowi): Router => {
 
     // Start transfer
     try {
-      await g2gTransferPusherService.startTransfer(tk, collections);
+      await g2gTransferPusherService.startTransfer(tk, collections, optionsMap);
     }
     catch (err) {
       logger.error(err);
