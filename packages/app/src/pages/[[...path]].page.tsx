@@ -35,7 +35,7 @@ import { IUserUISettings } from '~/interfaces/user-ui-settings';
 import { PageModel, PageDocument } from '~/server/models/page';
 import { PageRedirectModel } from '~/server/models/page-redirect';
 import { UserUISettingsModel } from '~/server/models/user-ui-settings';
-import { useSWRxCurrentPage, useSWRxIsGrantNormalized } from '~/stores/page';
+import { useSWRxCurrentPage, useSWRxIsGrantNormalized, useSWRxPageInfo } from '~/stores/page';
 import { useRedirectFrom } from '~/stores/page-redirect';
 import {
   usePreferDrawerModeByUser, usePreferDrawerModeOnEditByUser, useSidebarCollapsed, useCurrentSidebarContents, useCurrentProductNavWidth, useSelectedGrant,
@@ -230,7 +230,7 @@ const GrowiPage: NextPage<Props> = (props: Props) => {
 
   const { pageWithMeta, userUISettings } = props;
 
-  const { data: pageData } = useSWRxCurrentPage(undefined, pageWithMeta?.data ?? null); // store initial data
+  useSWRxCurrentPage(undefined, pageWithMeta?.data ?? null); // store initial data
   useEditingMarkdown(pageWithMeta?.data.revision?.body ?? '');
 
   const pageId = pageWithMeta?.data._id;
@@ -242,6 +242,7 @@ const GrowiPage: NextPage<Props> = (props: Props) => {
   useCurrentPagePath(pagePath);
   useCurrentPathname(props.currentPathname);
   useIsTrashPage(pagePath != null && _isTrashPage(pagePath));
+  const { data: dataPageInfo } = useSWRxPageInfo(pageId);
 
   const { data: grantData } = useSWRxIsGrantNormalized(pageId);
   const { mutate: mutateSelectedGrant } = useSelectedGrant();
@@ -277,6 +278,9 @@ const GrowiPage: NextPage<Props> = (props: Props) => {
   // }
 
   const isTopPagePath = isTopPage(pageWithMeta?.data.path ?? '');
+  const expandContentWidth = dataPageInfo == null || !('expandContentWidth' in dataPageInfo)
+    ? props.isContainerFluid
+    : dataPageInfo.expandContentWidth ?? props.isContainerFluid;
 
   return (
     <>
@@ -291,7 +295,7 @@ const GrowiPage: NextPage<Props> = (props: Props) => {
       <BasicLayout
         title={useCustomTitle(props, 'GROWI')}
         className={classNames.join(' ')}
-        expandContainer={pageData?.expandContentWidth ?? props.isContainerFluid}
+        expandContainer={expandContentWidth ?? props.isContainerFluid}
       >
         <div className="h-100 d-flex flex-column justify-content-between">
           <header className="py-0 position-relative">
