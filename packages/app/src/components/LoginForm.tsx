@@ -7,6 +7,8 @@ import { useRouter } from 'next/router';
 import ReactCardFlip from 'react-card-flip';
 
 import { apiv3Post } from '~/client/util/apiv3-client';
+import { LoginErrorCode } from '~/interfaces/errors/login-error';
+import { IErrorV3 } from '~/interfaces/errors/v3-error';
 
 type LoginFormProps = {
   username?: string,
@@ -19,6 +21,7 @@ type LoginFormProps = {
   isPasswordResetEnabled: boolean,
   isLocalStrategySetup: boolean,
   isLdapStrategySetup: boolean,
+  isLdapSetupFailed: boolean,
   objOfIsExternalAuthEnableds?: any,
   isMailerSetup?: boolean
 }
@@ -27,7 +30,7 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
   const router = useRouter();
 
   const {
-    isLocalStrategySetup, isLdapStrategySetup, isPasswordResetEnabled, isRegistrationEnabled,
+    isLocalStrategySetup, isLdapStrategySetup, isLdapSetupFailed, isPasswordResetEnabled, isRegistrationEnabled,
     isEmailAuthenticationEnabled, registrationMode, registrationWhiteList, isMailerSetup, objOfIsExternalAuthEnableds,
   } = props;
   const isLocalOrLdapStrategiesEnabled = isLocalStrategySetup || isLdapStrategySetup;
@@ -38,13 +41,13 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
   // For Login
   const [usernameForLogin, setUsernameForLogin] = useState('');
   const [passwordForLogin, setPasswordForLogin] = useState('');
-  const [loginErrors, setLoginErrors] = useState<Error[]>([]);
+  const [loginErrors, setLoginErrors] = useState<IErrorV3[]>([]);
   // For Register
   const [usernameForRegister, setUsernameForRegister] = useState('');
   const [nameForRegister, setNameForRegister] = useState('');
   const [emailForRegister, setEmailForRegister] = useState('');
   const [passwordForRegister, setPasswordForRegister] = useState('');
-  const [registerErrors, setRegisterErrors] = useState<Error[]>([]);
+  const [registerErrors, setRegisterErrors] = useState<IErrorV3[]>([]);
 
   useEffect(() => {
     const { hash } = window.location;
@@ -60,8 +63,14 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
     window.location.href = `/passport/${auth}`;
   }, []);
 
+  const resetLoginErrors = useCallback(() => {
+    if (loginErrors.length === 0) return;
+    setLoginErrors([]);
+  }, [loginErrors.length]);
+
   const handleLoginWithLocalSubmit = useCallback(async(e) => {
     e.preventDefault();
+    resetLoginErrors();
 
     const loginForm = {
       username: usernameForLogin,
@@ -78,25 +87,73 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
     }
     return;
 
-  }, [passwordForLogin, router, usernameForLogin]);
+  }, [passwordForLogin, resetLoginErrors, router, usernameForLogin]);
+
+  // separate errors based on error code
+  const separateErrorsBasedOnErrorCode = useCallback((errors: IErrorV3[]) => {
+    const loginErrorListForDangerouslySetInnerHTML: IErrorV3[] = [];
+    const loginErrorList: IErrorV3[] = [];
+
+    errors.forEach((err) => {
+      if (err.code === LoginErrorCode.PROVIDER_DUPLICATED_USERNAME_EXCEPTION) {
+        loginErrorListForDangerouslySetInnerHTML.push(err);
+      }
+      else {
+        loginErrorList.push(err);
+      }
+    });
+
+    return [loginErrorListForDangerouslySetInnerHTML, loginErrorList];
+  }, []);
+
+  // wrap error elements which use dangerouslySetInnerHtml
+  const generateDangerouslySetErrors = useCallback((errors: IErrorV3[]): JSX.Element => {
+    if (errors == null || errors.length === 0) return <></>;
+    return (
+      <div className="alert alert-danger">
+        {errors.map((err, index) => {
+          return <small key={index} dangerouslySetInnerHTML={{ __html: t(err.message, err.args) }}></small>;
+        })}
+      </div>
+    );
+  }, [t]);
+
+  // wrap error elements which do not use dangerouslySetInnerHtml
+  const generateSafelySetErrors = useCallback((errors: IErrorV3[]): JSX.Element => {
+    if (errors == null || errors.length === 0) return <></>;
+    return (
+      <ul className="alert alert-danger">
+        {errors.map((err, index) => {
+          return (
+            <li key={index}>
+              {t(err.message, err.args)}<br/>
+            </li>);
+        })}
+      </ul>
+    );
+  }, [t]);
 
   const renderLocalOrLdapLoginForm = useCallback(() => {
     const { isLdapStrategySetup } = props;
+
+    // separate login errors into two arrays based on error code
+    const [loginErrorListForDangerouslySetInnerHTML, loginErrorList] = separateErrorsBasedOnErrorCode(loginErrors);
+    // Generate login error elements using dangerouslySetInnerHTML
+    const loginErrorElementWithDangerouslySetInnerHTML = generateDangerouslySetErrors(loginErrorListForDangerouslySetInnerHTML);
+    // Generate login error elements using <ul>, <li>
+    const loginErrorElement = generateSafelySetErrors(loginErrorList);
+
     return (
       <>
-        {
-          loginErrors != null && loginErrors.length > 0 && (
-            <p className="alert alert-danger">
-              {loginErrors.map((err, index) => {
-                return (
-                  <span key={index}>
-                    {t(err.message)}<br/>
-                  </span>
-                );
-              })}
-            </p>
-          )
-        }
+        {isLdapSetupFailed && (
+          <div className="alert alert-warning small">
+            <strong><i className="icon-fw icon-info"></i>{t('login.enabled_ldap_has_configuration_problem')}</strong><br/>
+            <span dangerouslySetInnerHTML={{ __html: t('login.set_env_var_for_logs') }}></span>
+          </div>
+        )}
+        {loginErrorElementWithDangerouslySetInnerHTML}
+        {loginErrorElement}
+
         <form role="form" onSubmit={handleLoginWithLocalSubmit} id="login-form">
           <div className="input-group">
             <div className="input-group-prepend">
@@ -137,7 +194,8 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
         </form>
       </>
     );
-  }, [handleLoginWithLocalSubmit, loginErrors, props, t]);
+  }, [generateDangerouslySetErrors, generateSafelySetErrors, handleLoginWithLocalSubmit,
+      isLdapSetupFailed, loginErrors, props, separateErrorsBasedOnErrorCode, t]);
 
   const renderExternalAuthInput = useCallback((auth) => {
     const authIconNames = {
@@ -221,11 +279,6 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
     }
     return;
   }, [emailForRegister, nameForRegister, passwordForRegister, router, usernameForRegister]);
-
-  const resetLoginErrors = useCallback(() => {
-    if (loginErrors.length === 0) return;
-    setLoginErrors([]);
-  }, [loginErrors.length]);
 
   const resetRegisterErrors = useCallback(() => {
     if (registerErrors.length === 0) return;

@@ -665,7 +665,9 @@
   "login": {
     "Sign in error": "ログインエラー",
     "Registration successful": "登録完了",
-    "Setup": "セットアップ"
+    "Setup": "セットアップ",
+    "enabled_ldap_has_configuration_problem":"LDAPは有効ですが、設定に問題があります。",
+    "set_env_var_for_logs": "(ログを取得するためには、環境変数 <code>DEBUG=crowi:service:PassportService</code> を設定してください。)"
   },
   "invited": {
     "discription_heading": "アカウント作成",
@@ -682,16 +684,7 @@
     "fail_to_save_access_token": "アクセストークンの保存に失敗しました、再度お試しください。",
     "fail_to_fetch_access_token": "アクセストークンの取得に失敗しました、再度お試しください。",
     "successfully_disconnected": "切断に成功しました!",
-    "strategy_has_not_been_set_up": {
-      "LocalStrategy"  : "LocalStrategy はセットアップされていません。",
-      "LdapStrategy"   : "LdapStrategy はセットアップされていません。",
-      "GoogleStrategy" : "GoogleStrategy はセットアップされていません。",
-      "GitHubStrategy" : "GitHubStrategy はセットアップされていません。",
-      "TwitterStrategy": "TwitterStrategy はセットアップされていません。",
-      "OidcStrategy"   : "OidcStrategy はセットアップされていません。",
-      "SamlStrategy"   : "SamlStrategy はセットアップされていません。",
-      "Basic"          : "Basic はセットアップされていません。"
-    },
+    "strategy_has_not_been_set_up": "{{strategy}} はセットアップされていません。",
     "ldap_user_not_valid": "Ldap user is no valid",
     "external_account_not_exist": "外部アカウントが見つからない、または作成に失敗しました",
     "maximum_number_of_users": "ユーザー数が上限を超えたためアクティベートできません。",
@@ -725,7 +718,8 @@
     "Password field is required": "パスワードの欄は必ず入力してください",
     "Username or E-mail has invalid characters": "ユーザー名または、メールアドレスに無効な文字があります",
     "Password minimum character should be more than 6 characters": "パスワードの最小文字数は6文字以上です",
-    "user_not_found": "ユーザーが見つかりません"
+    "user_not_found": "ユーザーが見つかりません",
+    "provider_duplicated_username_exception": "<p><strong><i class='icon-fw icon-ban'></i>エラー: DuplicatedUsernameException</strong></p><p class='mb-0'> {{ failedProviderForDuplicatedUsernameException }} 認証は成功しましたが、新しいユーザーを作成できませんでした。詳しくは<a href='https://github.com/weseek/growi/issues/193'>こちら: #193</a>.</p>"
   },
   "grid_edit":{
     "create_bootstrap_4_grid":"Bootstrap 4 グリッドを作成",

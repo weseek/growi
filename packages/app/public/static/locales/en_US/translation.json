@@ -674,7 +674,9 @@
   "login": {
     "Sign in error": "Login error",
     "Registration successful": "Registration successful",
-    "Setup": "Setup"
+    "Setup": "Setup",
+    "enabled_ldap_has_configuration_problem":"LDAP is enabled but the configuration has something wrong.",
+    "set_env_var_for_logs": "(Please set the environment variables <code>DEBUG=crowi:service:PassportService</code> to get the logs)"
   },
   "invited": {
     "discription_heading": "Create Account",
@@ -691,16 +693,7 @@
     "fail_to_save_access_token": "Failed to save access_token. Please try again.",
     "fail_to_fetch_access_token": "Failed to fetch access_token. Please do connect again.",
     "successfully_disconnected": "Successfully Disconnected!",
-    "strategy_has_not_been_set_up": {
-      "LocalStrategy"  : "LocalStrategy has not been set up",
-      "LdapStrategy"   : "LdapStrategy has not been set up",
-      "GoogleStrategy" : "GoogleStrategy has not been set up",
-      "GitHubStrategy" : "GitHubStrategy has not been set up",
-      "TwitterStrategy": "TwitterStrategy has not been set up",
-      "OidcStrategy"   : "OidcStrategy has not been set up",
-      "SamlStrategy"   : "SamlStrategy has not been set up",
-      "Basic"          : "Basic has not been set up"
-    },
+    "strategy_has_not_been_set_up": "{{strategy}} has not been set up",
     "ldap_user_not_valid": "Ldap user is no valid",
     "external_account_not_exist": "Failed to find or create External account",
     "maximum_number_of_users": "Can not register more than the maximum number of users.",
@@ -734,7 +727,8 @@
     "Password field is required": "Password field is required.",
     "Username or E-mail has invalid characters": "Username or E-mail has invalid characters.",
     "Password minimum character should be more than 6 characters": "Password minimum character should be more than 6 characters.",
-    "user_not_found": "User not found."
+    "user_not_found": "User not found.",
+    "provider_duplicated_username_exception": "<p><strong><i class='icon-fw icon-ban'></i>DuplicatedUsernameException occured</strong></p><p class='mb-0'> Your {{ failedProviderForDuplicatedUsernameException }} authentication was succeeded, but a new user could not be created. See the issue <a href='https://github.com/weseek/growi/issues/193'>#193</a>.</p>"
   },
   "grid_edit":{
     "create_bootstrap_4_grid":"Create Bootstrap 4 Grid",

@@ -1,7 +1,8 @@
 import path from 'path';
+
+import { ErrorV3 } from '@growi/core';
 import * as express from 'express';
 import { body, validationResult } from 'express-validator';
-import ErrorV3 from '../../models/vo/error-apiv3';
 
 const PASSOWRD_MINIMUM_NUMBER = 8;
 // validation rules for complete registration form

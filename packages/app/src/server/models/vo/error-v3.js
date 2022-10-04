@@ -1,3 +1,6 @@
+// The jsdoc below is left here intentionally to be referenced by swagger's $ref in a file under src/server/routes/apiv3/**/*.js such as healthcheck.js
+// The actual ErrorV3 Class is moved to packages/core/models/vo/error-v3.js
+
 /**
  * @swagger
  *
@@ -15,17 +18,9 @@
  *            example: 'someapi-error-with-something'
  *          stack:
  *            type: object
+ *          args:
+ *            type: object
+ *            example: { name: 'Josh', age: 20 }
  */
 
-class ErrorV3 extends Error {
-
-  constructor(message = '', code = '', stack = undefined) {
-    super(); // do not provide message to the super constructor
-    this.message = message;
-    this.code = code;
-    this.stack = stack;
-  }
-
-}
-
-module.exports = ErrorV3;
+export {};
