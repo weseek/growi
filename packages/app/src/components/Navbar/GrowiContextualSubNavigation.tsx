@@ -323,7 +323,7 @@ const GrowiContextualSubNavigation = (props: GrowiContextualSubNavigationProps):
         <div className="d-flex">
           <div className="d-flex flex-column align-items-end justify-content-center py-md-2" style={{ gap: `${isCompactMode ? '5px' : '7px'}` }}>
             { isViewMode && (
-              <div className="h-50 w-100">
+              <div className="h-50">
                 { pageId != null && (
                   <SubNavButtons
                     isCompactMode={isCompactMode}
