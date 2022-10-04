@@ -51,6 +51,8 @@ context('Access to Admin page', () => {
   it('/admin/customize is successfully loaded', () => {
     cy.visit('/admin/customize');
     cy.getByTestid('admin-customize').should('be.visible');
+    /* eslint-disable cypress/no-unnecessary-waiting */
+    cy.wait(500); // wait for loading layout image
     cy.screenshot(`${ssPrefix}-admin-customize`);
   });
 
