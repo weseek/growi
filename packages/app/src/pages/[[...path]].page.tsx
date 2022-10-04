@@ -230,7 +230,7 @@ const GrowiPage: NextPage<Props> = (props: Props) => {
 
   const { pageWithMeta, userUISettings } = props;
 
-  useSWRxCurrentPage(undefined, pageWithMeta?.data ?? null); // store initial data
+  const { data: pageData } = useSWRxCurrentPage(undefined, pageWithMeta?.data ?? null); // store initial data
   useEditingMarkdown(pageWithMeta?.data.revision?.body ?? '');
 
   const pageId = pageWithMeta?.data._id;
@@ -288,7 +288,11 @@ const GrowiPage: NextPage<Props> = (props: Props) => {
         */}
       </Head>
       {/* <BasicLayout title={useCustomTitle(props, t('GROWI'))} className={classNames.join(' ')}> */}
-      <BasicLayout title={useCustomTitle(props, 'GROWI')} className={classNames.join(' ')} expandContainer={props.isContainerFluid}>
+      <BasicLayout
+        title={useCustomTitle(props, 'GROWI')}
+        className={classNames.join(' ')}
+        expandContainer={pageData.expandContentWidth ?? props.isContainerFluid}
+      >
         <div className="h-100 d-flex flex-column justify-content-between">
           <header className="py-0 position-relative">
             <GrowiContextualSubNavigation isLinkSharingDisabled={props.disableLinkSharing} />
@@ -406,6 +410,7 @@ async function injectPageData(context: GetServerSidePropsContext, props: Props):
     page.initLatestRevisionField(revisionId);
     await page.populateDataToShowRevision();
     props.isLatestRevision = page.isLatestRevision();
+    props.isContainerFluid = page.expandContentWidth ?? props.isContainerFluid;
   }
 
   props.pageWithMeta = pageWithMeta;
