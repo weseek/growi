@@ -9,7 +9,7 @@ import {
 
 
 import { getDiagramsNetLangCode } from '~/client/util/locale-utils';
-import { useGrowiHydratedEnv } from '~/stores/context';
+import { useDrawioUri } from '~/stores/context';
 import { useDrawioModal } from '~/stores/modal';
 import { usePersonalSettings } from '~/stores/personal-settings';
 
@@ -19,7 +19,7 @@ type Props = {
 };
 
 export const DrawioModal = (props: Props): JSX.Element => {
-  const { data: growiHydratedEnv } = useGrowiHydratedEnv();
+  const { data: growiDrawioUri } = useDrawioUri();
   const { data: personalSettingsInfo } = usePersonalSettings();
 
 
@@ -31,7 +31,7 @@ export const DrawioModal = (props: Props): JSX.Element => {
   };
 
   const drawioUrl = useMemo(() => {
-    const drawioUri = growiHydratedEnv?.DRAWIO_URI || 'https://embed.diagrams.net/';
+    const drawioUri = growiDrawioUri || 'https://embed.diagrams.net/';
     const url = new URL(drawioUri);
 
     // refs: https://desk.draw.io/support/solutions/articles/16000042546-what-url-parameters-are-supported-
@@ -42,7 +42,7 @@ export const DrawioModal = (props: Props): JSX.Element => {
     url.searchParams.append('configure', '1');
 
     return url;
-  }, [growiHydratedEnv?.DRAWIO_URI, personalSettingsInfo?.lang]);
+  }, [growiDrawioUri, personalSettingsInfo?.lang]);
 
 
   return (

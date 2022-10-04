@@ -29,7 +29,7 @@ import { CrowiRequest } from '~/interfaces/crowi-request';
 // import { EditorMode, useEditorMode, useIsMobile } from '~/stores/ui';
 import { EditorConfig } from '~/interfaces/editor-settings';
 import { CustomWindow } from '~/interfaces/global';
-import { GrowiHydratedEnv, RendererConfig } from '~/interfaces/services/renderer';
+import { RendererConfig } from '~/interfaces/services/renderer';
 import { ISidebarConfig } from '~/interfaces/sidebar-config';
 import { IUserUISettings } from '~/interfaces/user-ui-settings';
 import { PageModel, PageDocument } from '~/server/models/page';
@@ -58,10 +58,10 @@ import {
   useIsForbidden, useIsNotFound, useIsTrashPage, useIsSharedUser,
   useIsEnabledStaleNotification, useIsIdenticalPath,
   useIsSearchServiceConfigured, useIsSearchServiceReachable, useDisableLinkSharing,
-  useHackmdUri,
+  useDrawioUri, useHackmdUri,
   useIsAclEnabled, useIsUserPage,
   useCsrfToken, useIsSearchScopeChildrenAsDefault, useCurrentPageId, useCurrentPathname,
-  useIsSlackConfigured, useGrowiHydratedEnv, useRendererConfig, useEditingMarkdown,
+  useIsSlackConfigured, useRendererConfig, useEditingMarkdown,
   useEditorConfig, useIsAllReplyShown, useIsUploadableFile, useIsUploadableImage, usePageUser,
 } from '../stores/context';
 
@@ -147,7 +147,9 @@ type Props = CommonProps & {
   // isMailerSetup: boolean,
   isAclEnabled: boolean,
   // hasSlackConfig: boolean,
+  drawioUri: string,
   hackmdUri: string,
+  noCdn: string,
   // highlightJsStyle: string,
   isAllReplyShown: boolean,
   // isContainerFluid: boolean,
@@ -159,7 +161,6 @@ type Props = CommonProps & {
   // isIndentSizeForced: boolean,
   disableLinkSharing: boolean,
 
-  growiHydratedEnv : GrowiHydratedEnv,
   rendererConfig: RendererConfig,
 
   // UI
@@ -212,13 +213,11 @@ const GrowiPage: NextPage<Props> = (props: Props) => {
   // useIsMailerSetup(props.isMailerSetup);
   useIsAclEnabled(props.isAclEnabled);
   // useHasSlackConfig(props.hasSlackConfig);
-  // useDrawioUri(props.drawioUri);
+  useDrawioUri(props.drawioUri);
   useHackmdUri(props.hackmdUri);
   // useNoCdn(props.noCdn);
   // useIndentSize(props.adminPreferredIndentSize);
   useDisableLinkSharing(props.disableLinkSharing);
-
-  useGrowiHydratedEnv(props.growiHydratedEnv);
   useRendererConfig(props.rendererConfig);
   // useRendererSettings(props.rendererSettingsStr != null ? JSON.parse(props.rendererSettingsStr) : undefined);
   // useGrowiRendererConfig(props.growiRendererConfigStr != null ? JSON.parse(props.growiRendererConfigStr) : undefined);
@@ -496,6 +495,9 @@ function injectServerConfigurations(context: GetServerSidePropsContext, props: P
   // props.highlightJsStyle = configManager.getConfig('crowi', 'customize:highlightJsStyle');
   props.isAllReplyShown = configManager.getConfig('crowi', 'customize:isAllReplyShown');
   // props.isContainerFluid = configManager.getConfig('crowi', 'customize:isContainerFluid');
+  props.drawioUri = configManager.getConfig('crowi', 'app:drawioUri');
+  props.hackmdUri = configManager.getConfig('crowi', 'app:hackmdUri');
+  props.noCdn = configManager.getConfig('crowi', 'app:noCdn');
   props.isEnabledStaleNotification = configManager.getConfig('crowi', 'customize:isEnabledStaleNotification');
   // props.isEnabledLinebreaks = configManager.getConfig('markdown', 'markdown:isEnabledLinebreaks');
   // props.isEnabledLinebreaksInComments = configManager.getConfig('markdown', 'markdown:isEnabledLinebreaksInComments');
@@ -508,14 +510,6 @@ function injectServerConfigurations(context: GetServerSidePropsContext, props: P
   };
   // props.adminPreferredIndentSize = configManager.getConfig('markdown', 'markdown:adminPreferredIndentSize');
   // props.isIndentSizeForced = configManager.getConfig('markdown', 'markdown:isIndentSizeForced');
-
-  props.growiHydratedEnv = {
-    DRAWIO_URI: configManager.getConfig('crowi', 'app:drawioUri'),
-    HACKMD_URI: configManager.getConfig('crowi', 'app:hackmdUri'),
-    NO_CDN: configManager.getConfig('crowi', 'app:noCdn'),
-    GROWI_CLOUD_URI: configManager.getConfig('crowi', 'app:growiCloudUri'),
-    GROWI_APP_ID_FOR_GROWI_CLOUD: configManager.getConfig('crowi', 'app:growiAppIdForCloud'),
-  };
 
   props.rendererConfig = {
     isEnabledLinebreaks: configManager.getConfig('markdown', 'markdown:isEnabledLinebreaks'),

@@ -6,7 +6,7 @@ import useSWRImmutable from 'swr/immutable';
 import { SupportedActionType } from '~/interfaces/activity';
 import { EditorConfig } from '~/interfaces/editor-settings';
 // import { CustomWindow } from '~/interfaces/global';
-import { GrowiHydratedEnv, RendererConfig } from '~/interfaces/services/renderer';
+import { RendererConfig } from '~/interfaces/services/renderer';
 import { GrowiThemes } from '~/interfaces/theme';
 import InterceptorManager from '~/services/interceptor-manager';
 
@@ -134,6 +134,10 @@ export const useRevisionIdHackmdSynced = (initialData?: Nullable<any>): SWRRespo
   return useStaticSWR<Nullable<any>, Error>('revisionIdHackmdSynced', initialData);
 };
 
+export const useDrawioUri = (initialData?: Nullable<string>): SWRResponse<Nullable<string>, Error> => {
+  return useStaticSWR<Nullable<string>, Error>('drawioUri', initialData);
+};
+
 export const useHackmdUri = (initialData?: Nullable<string>): SWRResponse<Nullable<string>, Error> => {
   return useStaticSWR<Nullable<string>, Error>('hackmdUri', initialData);
 };
@@ -228,10 +232,6 @@ export const useIsLatestRevision = (initialData?: boolean): SWRResponse<boolean,
 
 export const useEditorConfig = (initialData?: EditorConfig): SWRResponse<EditorConfig, Error> => {
   return useStaticSWR<EditorConfig, Error>('editorConfig', initialData);
-};
-
-export const useGrowiHydratedEnv = (initialData?: GrowiHydratedEnv): SWRResponse<GrowiHydratedEnv, Error> => {
-  return useStaticSWR('growiHydratedEnv', initialData);
 };
 
 export const useRendererConfig = (initialData?: RendererConfig): SWRResponse<RendererConfig, any> => {
