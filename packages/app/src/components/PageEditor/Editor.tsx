@@ -67,8 +67,6 @@ const Editor: ForwardRefRenderFunction<IEditorMethods, EditorPropsType> = (props
   const dropzoneRef = useRef<DropzoneRef>(null);
   // CodeMirrorEditor ref
   const cmEditorRef = useRef<AbstractEditor<any>>(null);
-
-
   const taEditorRef = useRef<TextAreaEditor>(null);
 
   const editorSubstance = useCallback(() => {

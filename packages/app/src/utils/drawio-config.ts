@@ -1,4 +1,3 @@
-
 const headerColor = '#334455';
 const fontFamily = "Lato, -apple-system, BlinkMacSystemFont, 'Hiragino Kaku Gothic ProN', Meiryo, sans-serif";
 

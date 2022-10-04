@@ -492,12 +492,12 @@ function injectServerConfigurations(context: GetServerSidePropsContext, props: P
   // props.isMailerSetup = mailService.isMailerSetup;
   props.isAclEnabled = aclService.isAclEnabled();
   // props.hasSlackConfig = slackNotificationService.hasSlackConfig();
-  // props.highlightJsStyle = configManager.getConfig('crowi', 'customize:highlightJsStyle');
-  props.isAllReplyShown = configManager.getConfig('crowi', 'customize:isAllReplyShown');
-  // props.isContainerFluid = configManager.getConfig('crowi', 'customize:isContainerFluid');
   props.drawioUri = configManager.getConfig('crowi', 'app:drawioUri');
   props.hackmdUri = configManager.getConfig('crowi', 'app:hackmdUri');
   props.noCdn = configManager.getConfig('crowi', 'app:noCdn');
+  // props.highlightJsStyle = configManager.getConfig('crowi', 'customize:highlightJsStyle');
+  props.isAllReplyShown = configManager.getConfig('crowi', 'customize:isAllReplyShown');
+  // props.isContainerFluid = configManager.getConfig('crowi', 'customize:isContainerFluid');
   props.isEnabledStaleNotification = configManager.getConfig('crowi', 'customize:isEnabledStaleNotification');
   // props.isEnabledLinebreaks = configManager.getConfig('markdown', 'markdown:isEnabledLinebreaks');
   // props.isEnabledLinebreaksInComments = configManager.getConfig('markdown', 'markdown:isEnabledLinebreaksInComments');

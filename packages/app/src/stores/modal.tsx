@@ -524,9 +524,7 @@ export const useDrawioModal = (status?: DrawioModalStatus): SWRResponse<DrawioMo
   };
 
   const open = (drawioMxFile: string): void => {
-    // init(drawioMxFile);
     window.addEventListener('message', e => receiveFromDrawio(e, drawioMxFile));
-    // setIsShown(true);
     swrResponse.mutate({ isOpened: true, drawioMxFile });
   };
 
