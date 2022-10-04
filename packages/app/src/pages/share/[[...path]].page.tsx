@@ -149,7 +149,7 @@ async function addActivity(context: GetServerSidePropsContext, action: Supported
 
 export const getServerSideProps: GetServerSideProps = async(context: GetServerSidePropsContext) => {
   const req = context.req as CrowiRequest<IUserHasId & any>;
-  const { user, crowi } = req;
+  const { user, crowi, params } = req;
   const result = await getServerSideCommonProps(context);
 
   if (!('props' in result)) {
@@ -161,10 +161,9 @@ export const getServerSideProps: GetServerSideProps = async(context: GetServerSi
     props.currentUser = user.toObject();
   }
 
-  const { linkId } = req.params;
   try {
     const ShareLinkModel = crowi.model('ShareLink');
-    const shareLink = await ShareLinkModel.findOne({ _id: linkId }).populate('relatedPage');
+    const shareLink = await ShareLinkModel.findOne({ _id: params.linkId }).populate('relatedPage');
     if (shareLink != null) {
       props.isExpired = shareLink.isExpired();
       props.shareLink = shareLink.toObject();
