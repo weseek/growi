@@ -862,6 +862,7 @@
   "crop_image_modal": {
     "image_crop": "图像裁剪",
     "crop": "修剪",
+    "save": "节省",
     "reset": "重启",
     "cancel": "取消"
   },

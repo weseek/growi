@@ -806,6 +806,7 @@
   "crop_image_modal": {
     "image_crop": "画像の切り抜き",
     "crop": "トリミング",
+    "save": "保存",
     "reset": "リセット",
     "cancel": "キャンセル"
   },
