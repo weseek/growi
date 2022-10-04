@@ -291,7 +291,7 @@ const GrowiPage: NextPage<Props> = (props: Props) => {
       <BasicLayout
         title={useCustomTitle(props, 'GROWI')}
         className={classNames.join(' ')}
-        expandContainer={pageData.expandContentWidth ?? props.isContainerFluid}
+        expandContainer={pageData?.expandContentWidth ?? props.isContainerFluid}
       >
         <div className="h-100 d-flex flex-column justify-content-between">
           <header className="py-0 position-relative">
