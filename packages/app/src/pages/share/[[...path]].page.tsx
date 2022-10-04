@@ -18,10 +18,13 @@ import {
   useCurrentUser, useCurrentPagePath, useCurrentPathname, useCurrentPageId, useRendererConfig,
   useShareLinkId, useIsSearchServiceConfigured, useIsSearchServiceReachable, useIsSearchScopeChildrenAsDefault,
 } from '~/stores/context';
+import loggerFactory from '~/utils/logger';
 
 import {
   CommonProps, getServerSideCommonProps, useCustomTitle, getNextI18NextConfig,
 } from '../utils/commons';
+
+const logger = loggerFactory('growi:next-page:share');
 
 const ShareLinkAlert = dynamic(() => import('~/components/Page/ShareLinkAlert'), { ssr: false });
 const ForbiddenPage = dynamic(() => import('~/components/ForbiddenPage'), { ssr: false });
@@ -185,7 +188,7 @@ export const getServerSideProps: GetServerSideProps = async(context: GetServerSi
     }
   }
   catch (err) {
-    //
+    logger.error(err);
   }
 
   injectServerConfigurations(context, props);
