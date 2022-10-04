@@ -282,7 +282,7 @@ const GrowiPage: NextPage<Props> = (props: Props) => {
   const isTopPagePath = isTopPage(pageWithMeta?.data.path ?? '');
 
   // Use `props.isContainerFluid` as default, `layoutSetting.isContainerFluid` as admin setting, `dataPageInfo.expandContentWidth` as each page's setting
-  const expandContentWidth = dataPageInfo == null || !('expandContentWidth' in dataPageInfo)
+  const isContainerFluid = dataPageInfo == null || !('expandContentWidth' in dataPageInfo)
     ? layoutSetting?.isContainerFluid ?? props.isContainerFluid
     : dataPageInfo.expandContentWidth ?? layoutSetting?.isContainerFluid ?? props.isContainerFluid;
 
@@ -296,11 +296,7 @@ const GrowiPage: NextPage<Props> = (props: Props) => {
         */}
       </Head>
       {/* <BasicLayout title={useCustomTitle(props, t('GROWI'))} className={classNames.join(' ')}> */}
-      <BasicLayout
-        title={useCustomTitle(props, 'GROWI')}
-        className={classNames.join(' ')}
-        expandContainer={expandContentWidth ?? props.isContainerFluid}
-      >
+      <BasicLayout title={useCustomTitle(props, 'GROWI')} className={classNames.join(' ')} expandContainer={isContainerFluid}>
         <div className="h-100 d-flex flex-column justify-content-between">
           <header className="py-0 position-relative">
             <GrowiContextualSubNavigation isLinkSharingDisabled={props.disableLinkSharing} />
@@ -418,7 +414,6 @@ async function injectPageData(context: GetServerSidePropsContext, props: Props):
     page.initLatestRevisionField(revisionId);
     await page.populateDataToShowRevision();
     props.isLatestRevision = page.isLatestRevision();
-    props.isContainerFluid = page.expandContentWidth ?? props.isContainerFluid;
   }
 
   props.pageWithMeta = pageWithMeta;
@@ -508,7 +503,7 @@ function injectServerConfigurations(context: GetServerSidePropsContext, props: P
   props.noCdn = configManager.getConfig('crowi', 'app:noCdn');
   // props.highlightJsStyle = configManager.getConfig('crowi', 'customize:highlightJsStyle');
   props.isAllReplyShown = configManager.getConfig('crowi', 'customize:isAllReplyShown');
-  // props.isContainerFluid = configManager.getConfig('crowi', 'customize:isContainerFluid');
+  props.isContainerFluid = configManager.getConfig('crowi', 'customize:isContainerFluid');
   props.isEnabledStaleNotification = configManager.getConfig('crowi', 'customize:isEnabledStaleNotification');
   // props.isEnabledLinebreaks = configManager.getConfig('markdown', 'markdown:isEnabledLinebreaks');
   // props.isEnabledLinebreaksInComments = configManager.getConfig('markdown', 'markdown:isEnabledLinebreaksInComments');
