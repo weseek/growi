@@ -1,4 +1,4 @@
-import { IUser } from '@growi/core';
+import { IUser, IUserHasId } from '@growi/core';
 import { HtmlElementNode } from 'rehype-toc';
 import { Key, SWRResponse } from 'swr';
 import useSWRImmutable from 'swr/immutable';
