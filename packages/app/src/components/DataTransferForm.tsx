@@ -1,23 +1,20 @@
-import React, { useState, useMemo } from 'react';
+import React, { useCallback } from 'react';
 
 
 import { useTranslation } from 'react-i18next';
-import { debounce } from 'throttle-debounce';
 
-import { apiv3Post } from '~/client/util/apiv3-client';
+import { useGenerateTransferKeyWithThrottle } from '~/client/services/g2g-transfer';
 
 import CustomCopyToClipBoard from './Common/CustomCopyToClipBoard';
 
 const DataTransferForm = (): JSX.Element => {
   const { t } = useTranslation();
 
-  const [transferKey, setTransferKey] = useState('');
+  const { transferKey, generateTransferKeyWithThrottle } = useGenerateTransferKeyWithThrottle();
 
-  const generateTransferKeyWithDebounce = useMemo(() => debounce(1000, async() => {
-    const response = await apiv3Post('/g2g-transfer/generate-key');
-    const { transferKey } = response.data;
-    setTransferKey(transferKey);
-  }), []);
+  const onClickHandler = useCallback(() => {
+    generateTransferKeyWithThrottle();
+  }, [generateTransferKeyWithThrottle]);
 
   return (
     <div data-testid="installerForm" className="p-3">
@@ -27,7 +24,7 @@ const DataTransferForm = (): JSX.Element => {
 
       <div className="form-group row mt-3">
         <div className="col-md-12">
-          <button type="button" className="btn btn-primary w-100" onClick={generateTransferKeyWithDebounce}>
+          <button type="button" className="btn btn-primary w-100" onClick={onClickHandler}>
             {t('g2g_data_transfer.publish_transfer_key')}
           </button>
         </div>
