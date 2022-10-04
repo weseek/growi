@@ -193,5 +193,4 @@ export const getServerSideProps: GetServerSideProps = async(context: GetServerSi
   };
 };
 
-
 export default SharedPage;
