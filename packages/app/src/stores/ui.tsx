@@ -412,8 +412,6 @@ export const useIsAbleToShowPageManagement = (): SWRResponse<boolean, Error> => 
   const { data: isNotFound } = useIsNotFound();
   const { data: isEmptyPage } = useIsEmptyPage();
 
-  console.log(isEmptyPage, '出エンプティ');
-
   const pageId = currentPageId;
   const includesUndefined = [pageId, isTrashPage, isSharedUser, isNotFound, isEmptyPage].some(v => v === undefined);
   const isPageExist = (pageId != null) && !isNotFound;
