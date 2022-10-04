@@ -102,20 +102,44 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
     );
   }, [t]);
 
+  // wrap error elements that use dangerouslySetInnerHtml
+  const generateDangerouslySetErrors = (errors: JSX.Element[]): JSX.Element => {
+    if (errors == null || errors.length === 0) return <></>;
+    return <div className="alert alert-danger">
+      {errors.map(elm => elm)}
+    </div>;
+  };
+  // wrap error elements that do not use dangerouslySetInnerHtml
+  const generateNonDangerouslySetErrors = (errors: JSX.Element[]): JSX.Element => {
+    if (errors == null || errors.length === 0) return <></>;
+    return <ul className="alert alert-danger">
+      {errors.map(elm => elm)}
+    </ul>;
+  };
+
   const renderLocalOrLdapLoginForm = useCallback(() => {
     const { isLdapStrategySetup } = props;
 
-    const errorsWithDangerouslySetInnerHTML: IErrorV3[] = [];
-    const errorsWithoutDanderouslySetInnerHTML: IErrorV3[] = [];
+    const errorsWithDangerouslySetInnerHTMLElement: JSX.Element[] = [];
+    const errorsWithoutDanderouslySetInnerHTMLElement: JSX.Element[] = [];
 
-    loginErrors.forEach((e) => {
-      if (e.code === LoginErrorCode.PROVIDER_DUPLICATED_USERNAME_EXCEPTION) {
-        errorsWithDangerouslySetInnerHTML.push(e);
+    // separate errors based on code property each error has
+    loginErrors.forEach((err, index) => {
+      // generate JSX.Element
+      const elm = generateLoginErrorElement(err, index);
+      // assign Elements into array
+      if (err.code === LoginErrorCode.PROVIDER_DUPLICATED_USERNAME_EXCEPTION) {
+        errorsWithDangerouslySetInnerHTMLElement.push(elm);
       }
       else {
-        errorsWithoutDanderouslySetInnerHTML.push(e);
+        errorsWithoutDanderouslySetInnerHTMLElement.push(elm);
       }
     });
+
+    // For dangerouslySetInnerHTML
+    const dangerouslySetLoginErrors = generateDangerouslySetErrors(errorsWithDangerouslySetInnerHTMLElement);
+    // For non-dangerouslySetInnerHTML
+    const nonDangerouslySetLoginErrors = generateNonDangerouslySetErrors(errorsWithoutDanderouslySetInnerHTMLElement);
 
     return (
       <>
@@ -125,13 +149,8 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
             <span dangerouslySetInnerHTML={{ __html: t('login.set_env_var_for_logs') }}></span>
           </div>
         )}
-        {loginErrors != null && loginErrors.length > 0 && (
-          <ul className="alert alert-danger">
-            {loginErrors.map((err, index) => {
-              return generateLoginErrorElement(err, index);
-            })}
-          </ul>
-        )}
+        {dangerouslySetLoginErrors}
+        {nonDangerouslySetLoginErrors}
 
         <form role="form" onSubmit={handleLoginWithLocalSubmit} id="login-form">
           <div className="input-group">
