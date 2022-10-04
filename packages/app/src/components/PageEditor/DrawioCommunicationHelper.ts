@@ -1,3 +1,8 @@
+import loggerFactory from '~/utils/logger';
+
+
+const logger = loggerFactory('growi:cli:DrawioCommunicationHelper');
+
 export type DrawioConfig = {
   css: string,
   customFonts: string[],
@@ -26,6 +31,15 @@ export class DrawioCommunicationHelper {
   onReceiveMessage(event: MessageEvent, drawioMxFile: string): void {
 
     // check origin
+    if (event.origin != null && this.drawioUri != null) {
+      const originUrl = new URL(event.origin);
+      const drawioUrl = new URL(this.drawioUri);
+
+      if (originUrl.origin !== drawioUrl.origin) {
+        logger.debug(`Skipping the event because the origins are mismatched. expected: '${drawioUrl.origin}', actual: '${originUrl.origin}'`);
+        return;
+      }
+    }
 
     if (event.data === 'ready') {
       event.source?.postMessage(drawioMxFile, { targetOrigin: '*' });
