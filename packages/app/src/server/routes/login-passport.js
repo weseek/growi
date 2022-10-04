@@ -102,7 +102,7 @@ module.exports = function(crowi, app) {
     });
 
     // check for redirection to '/invited'
-    const redirectTo = req.user.status === User.STATUS_INVITED ? '/invited' : req.session;
+    const redirectTo = req.user.status === User.STATUS_INVITED ? '/invited' : req.session.redirectTo;
 
     // remove session.redirectTo
     delete req.session.redirectTo;

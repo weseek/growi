@@ -89,7 +89,7 @@ module.exports = function(crowi, app) {
   };
 
   actions.preLogin = function(req, res, next) {
-    // // user has already logged in
+    // user has already logged in
     // const { user } = req;
     // if (user != null && user.status === User.STATUS_ACTIVE) {
     //   const { redirectTo } = req.session;
