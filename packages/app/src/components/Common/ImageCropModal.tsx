@@ -49,7 +49,7 @@ const ImageCropModal: FC<Props> = (props: Props) => {
   const { t } = useTranslation();
   const reset = useCallback(() => {
     if (imageRef) {
-      //  Some SVG files may not have width and height properties, causing the render size to be 0x0
+      // Some SVG files may not have width and height properties, causing the render size to be 0x0
       // Force imageRef to have width and height by create temporary image element then set the imageRef width with tempImage width
       const tempImage = new Image();
       tempImage.src = imageRef.src;
@@ -81,19 +81,22 @@ const ImageCropModal: FC<Props> = (props: Props) => {
   };
 
 
-  const onCropChange = (crop) => {
-    setCropOtions(crop);
-  };
+  const getCroppedImg = async(image: HTMLImageElement, crop: ICropOptions) => {
+    const {
+      naturalWidth: imageNaturalWidth, naturalHeight: imageNaturalHeight, width: imageWidth, height: imageHeight,
+    } = image;
 
-  const getCroppedImg = async(image, crop) => {
-    // TODO: SVG image with no width & height not correctly cropped
+    const {
+      width: cropWidth, height: cropHeight, x, y,
+    } = crop;
+
     const canvas = document.createElement('canvas');
-    const scaleX = image.naturalWidth / image.width;
-    const scaleY = image.naturalHeight / image.height;
-    canvas.width = crop.width;
-    canvas.height = crop.height;
+    const scaleX = imageNaturalWidth / imageWidth;
+    const scaleY = imageNaturalHeight / imageHeight;
+    canvas.width = cropWidth;
+    canvas.height = cropHeight;
     const ctx = canvas.getContext('2d');
-    ctx?.drawImage(image, crop.x * scaleX, crop.y * scaleY, crop.width * scaleX, crop.height * scaleY, 0, 0, crop.width, crop.height);
+    ctx?.drawImage(image, x * scaleX, y * scaleY, cropWidth * scaleX, cropHeight * scaleY, 0, 0, cropWidth, cropHeight);
     try {
       const blob = await canvasToBlob(canvas);
       return blob;
@@ -143,7 +146,7 @@ const ImageCropModal: FC<Props> = (props: Props) => {
                 src={src}
                 crop={cropOptions}
                 onImageLoaded={onImageLoaded}
-                onChange={onCropChange}
+                onChange={crop => setCropOtions(crop)}
                 circularCrop={isCircular}
               />
             )
