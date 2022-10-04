@@ -114,7 +114,6 @@ export default class AppService implements S2sMessageHandlable {
   }
 
   async setupAfterInstall(): Promise<void> {
-    await this.crowi.pluginService.autoDetectAndLoadPlugins();
     this.crowi.setupRoutesAtLast();
     this.crowi.setupGlobalErrorHandlers();
   }

@@ -153,7 +153,6 @@
   "add_bookmark": "添加到书签",
   "remove_bookmark": "从书签中删除",
   "wide_view": "视野开阔",
-	"Recent Created": "最新创建",
   "Recent Changes": "最新修改",
   "Page Tree": "页面树",
   "original_path":"Original path",
@@ -187,7 +186,9 @@
 		"setup": "安装",
 		"create_initial_account": "创建初始用户",
 		"initial_account_will_be_administrator_automatically": "初始帐户将自动成为管理员。",
-		"unavaliable_user_id": "用户ID不可用"
+		"unavaliable_user_id": "用户ID不可用",
+    "failed_to_install": "GROWI安装失败。请再试一次。",
+    "failed_to_login_after_install": "安装后登录失败。重定向到登录表格..."
 	},
 	"breaking_changes": {
 		"v346_using_basic_auth": "当前使用的基本身份验证在不久的将来将不再可用。从%s中删除设置"
@@ -722,6 +723,10 @@
 		"Registration successful": "注册成功",
 		"Setup": "安装程序"
 	},
+  "invited": {
+    "discription_heading": "创建账户",
+    "discription": "用被邀请的电子邮件地址创建一个你的账户"
+  },
   "export_bulk": {
     "failed_to_export": "导出失败",
     "failed_to_count_pages": "页面计数失败",
@@ -733,9 +738,19 @@
 		"fail_to_save_access_token": "无法保存访问令牌。请再试一次。",
 		"fail_to_fetch_access_token": "无法获取访问令牌。请重新连接。",
 		"successfully_disconnected": "成功断开连接！",
-		"strategy_has_not_been_set_up": "{{strategy}尚未设置",
+    "strategy_has_not_been_set_up": {
+      "LocalStrategy"  : "LocalStrategy 尚未设置",
+      "LdapStrategy"   : "LdapStrategy 尚未设置",
+      "GoogleStrategy" : "GoogleStrategy 尚未设置",
+      "GitHubStrategy" : "GitHubStrategy 尚未设置",
+      "TwitterStrategy": "TwitterStrategy 尚未设置",
+      "OidcStrategy"   : "OidcStrategy 尚未设置",
+      "SamlStrategy"   : "SamlStrategy 尚未设置",
+      "Basic"          : "Basic 尚未设置"
+     },
+    "ldap_user_not_valid": "Ldap user is no valid",
+    "external_account_not_exist": "查找或创建外部账户失败",
 		"maximum_number_of_users": "注册的用户数不能超过最大值。",
-		"database_error": "发生数据库服务器错误",
 		"sign_in_failure": "登录失败。",
 		"aws_sttings_required": "使用此功能所需的AWS设置。请询问管理员。",
 		"application_already_installed": "应用程序已安装。",
@@ -753,7 +768,20 @@
 		"complete_to_install2": "完成安装GROWI！请先检查此页上的每个设置。",
 		"failed_to_create_admin_user": "无法创建管理用户。{{errMessage}",
     "successfully_send_email_auth":"我们向 {{email}} 发送了一封电子邮件。 请点击邮件中的网址并完成注册。",
-    "incorrect_token_or_expired_url":"令牌不正确或 URL 已过期。"
+    "incorrect_token_or_expired_url":"令牌不正确或 URL 已过期。",
+    "user_already_loggedin": "当你登录的时候，你不能创建一个新的账户。",
+    "registration_closed": "你无权创建一个新的账户。",
+    "Username has invalid characters": "用户名有无效字符",
+    "Username field is required": "用户ID字段是必需的",
+    "Name field is required": "姓名字段为必填项",
+    "Email format is invalid": "电子邮件的格式是无效的",
+    "Email field is required": "电子邮件字段是必需的",
+    "Password has invalid character": "密码有无效字符",
+    "Password minimum character should be more than 8 characters": "密码最小字符应超过8个字符",
+    "Password field is required": "密码字段是必需的",
+    "Username or E-mail has invalid characters": "用户名或电子邮件有无效的字符",
+    "Password minimum character should be more than 6 characters": "密码最小字符应超过6个字符",
+    "user_not_found": "未找到用户"
 	},
   "grid_edit":{
     "create_bootstrap_4_grid":"创建Bootstrap 4网格",
@@ -780,6 +808,7 @@
     "confirm_new_password": "确认新密码",
     "email_is_required": "电子邮件是必需的",
     "success_to_send_email": "我发了一封电子邮件",
+    "feature_is_unavailable": "此功能不可用",
     "incorrect_token_or_expired_url":"令牌不正确或 URL 已过期。 请通过以下链接重新发送密码重置请求",
     "password_and_confirm_password_does_not_match": "密码和确认密码不匹配"
   },
@@ -885,5 +914,9 @@
   "page_operation":{
     "paths_recovered": "成功恢复了页面路径",
     "path_recovery_failed":"路径恢复失败"
+  },
+  "footer": {
+    "bookmarks": "书签",
+    "recently_created": "最近创建页面"
   }
 }

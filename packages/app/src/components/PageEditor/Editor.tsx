@@ -1,5 +1,5 @@
 import React, {
-  useState, useRef, useImperativeHandle, useCallback, useMemo,
+  useState, useRef, useImperativeHandle, useCallback, ForwardRefRenderFunction, forwardRef,
 } from 'react';
 
 import Dropzone from 'react-dropzone';
@@ -9,12 +9,14 @@ import {
 } from 'reactstrap';
 
 import { toastError, toastSuccess } from '~/client/util/apiNotification';
+import { IEditorSettings } from '~/interfaces/editor-settings';
 import { useDefaultIndentSize } from '~/stores/context';
 import { useEditorSettings } from '~/stores/editor';
 import { useIsMobile } from '~/stores/ui';
 
 import { IEditorMethods } from '../../interfaces/editor-methods';
 
+import AbstractEditor from './AbstractEditor';
 import Cheatsheet from './Cheatsheet';
 import CodeMirrorEditor from './CodeMirrorEditor';
 import pasteHelper from './PasteHelper';
@@ -22,16 +24,20 @@ import TextAreaEditor from './TextAreaEditor';
 
 import styles from './Editor.module.scss';
 
-type EditorPropsType = {
+export type EditorPropsType = {
   value?: string,
   isGfmMode?: boolean,
   noCdn?: boolean,
   isUploadable?: boolean,
   isUploadableFile?: boolean,
   isTextlintEnabled?: boolean,
-  onChange?: (newValue: string) => void,
+  onChange?: (newValue: string, isClean?: boolean) => void,
   onUpload?: (file) => void,
+  editorSettings?: IEditorSettings,
   indentSize?: number,
+  onDragEnter?: (event: any) => void,
+  onMarkdownHelpButtonClicked?: () => void,
+  onAddAttachmentButtonClicked?: () => void,
   onScroll?: ({ line: number }) => void,
   onScrollCursorIntoView?: (line: number) => void,
   onSave?: () => Promise<void>,
@@ -44,7 +50,7 @@ type DropzoneRef = {
   open: () => void
 }
 
-const Editor = React.forwardRef((props: EditorPropsType, ref): JSX.Element => {
+const Editor: ForwardRefRenderFunction<IEditorMethods, EditorPropsType> = (props, ref): JSX.Element => {
   const {
     onUpload, isUploadable, isUploadableFile, indentSize, isGfmMode = true,
   } = props;
@@ -59,52 +65,37 @@ const Editor = React.forwardRef((props: EditorPropsType, ref): JSX.Element => {
   const { data: isMobile } = useIsMobile();
 
   const dropzoneRef = useRef<DropzoneRef>(null);
-  const cmEditorRef = useRef<CodeMirrorEditor>(null);
+  // CodeMirrorEditor ref
+  const cmEditorRef = useRef<AbstractEditor<any>>(null);
   const taEditorRef = useRef<TextAreaEditor>(null);
 
   const editorSubstance = useCallback(() => {
     return isMobile ? taEditorRef.current : cmEditorRef.current;
   }, [isMobile]);
 
-  const methods: Partial<IEditorMethods> = useMemo(() => {
-    return {
-      forceToFocus: () => {
-        editorSubstance()?.forceToFocus();
-      },
-      setValue: (newValue: string) => {
-        editorSubstance()?.setValue(newValue);
-      },
-      setGfmMode: (bool: boolean) => {
-        editorSubstance()?.setGfmMode(bool);
-      },
-      setCaretLine: (line: number) => {
-        editorSubstance()?.setCaretLine(line);
-      },
-      setScrollTopByLine: (line: number) => {
-        editorSubstance()?.setScrollTopByLine(line);
-      },
-      insertText: (text: string) => {
-        editorSubstance()?.insertText(text);
-      },
-      getNavbarItems: (): JSX.Element[] => {
-        // concat common items and items specific to CodeMirrorEditor or TextAreaEditor
-        const navbarItems = editorSubstance()?.getNavbarItems() ?? [];
-        return navbarItems;
-      },
-    };
-  }, [editorSubstance]);
-
   // methods for ref
   useImperativeHandle(ref, () => ({
-    forceToFocus: methods.forceToFocus,
-    setValue: methods.setValue,
-    setGfmMode: methods.setGfmMode,
-    setCaretLine: methods.setCaretLine,
-    setScrollTopByLine: methods.setScrollTopByLine,
-    insertText: methods.insertText,
+    forceToFocus: () => {
+      editorSubstance()?.forceToFocus();
+    },
+    setValue: (newValue: string) => {
+      editorSubstance()?.setValue(newValue);
+    },
+    setGfmMode: (bool: boolean) => {
+      editorSubstance()?.setGfmMode(bool);
+    },
+    setCaretLine: (line: number) => {
+      editorSubstance()?.setCaretLine(line);
+    },
+    setScrollTopByLine: (line: number) => {
+      editorSubstance()?.setScrollTopByLine(line);
+    },
+    insertText: (text: string) => {
+      editorSubstance()?.insertText(text);
+    },
     /**
-   * remove overlay and set isUploading to false
-   */
+     * remove overlay and set isUploading to false
+     */
     terminateUploadingState: () => {
       setDropzoneActive(false);
       setIsUploading(false);
@@ -239,14 +230,14 @@ const Editor = React.forwardRef((props: EditorPropsType, ref): JSX.Element => {
     return (
       <div className="m-0 navbar navbar-default navbar-editor" style={{ minHeight: 'unset' }}>
         <ul className="pl-2 nav nav-navbar">
-          { methods.getNavbarItems?.().map((item, idx) => {
+          { (editorSubstance()?.getNavbarItems() ?? []).map((item, idx) => {
             // eslint-disable-next-line react/no-array-index-key
             return <li key={`navbarItem-${idx}`}>{item}</li>;
           }) }
         </ul>
       </div>
     );
-  }, [methods]);
+  }, [editorSubstance]);
 
   const renderCheatsheetModal = useCallback(() => {
     const hideCheatsheetModal = () => {
@@ -301,7 +292,6 @@ const Editor = React.forwardRef((props: EditorPropsType, ref): JSX.Element => {
 
                 {/* for PC */}
                 { !isMobile && (
-                  // eslint-disable-next-line arrow-body-style
                   <CodeMirrorEditor
                     ref={cmEditorRef}
                     indentSize={indentSize ?? defaultIndentSize}
@@ -355,8 +345,6 @@ const Editor = React.forwardRef((props: EditorPropsType, ref): JSX.Element => {
       </div>
     </>
   );
-});
+};
 
-Editor.displayName = 'Editor';
-
-export default Editor;
+export default forwardRef(Editor);

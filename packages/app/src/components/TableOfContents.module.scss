@@ -9,6 +9,10 @@
   border-bottom: 1px solid transparent;
 
   .revision-toc-content {
+    ul {
+      list-style-type: disc;
+    }
+
     li {
       margin: 6px;
     }
@@ -22,7 +26,6 @@
     // first level of li
     > ul > li {
       padding: 5px;
-      margin-right: 4px;
       margin-left: 17px;
     }
   }

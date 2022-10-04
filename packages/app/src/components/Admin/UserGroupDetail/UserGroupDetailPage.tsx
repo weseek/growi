@@ -105,15 +105,11 @@ const UserGroupDetailPage = (props: Props): JSX.Element => {
   }, []);
 
   const updateUserGroup = useCallback(async(userGroup: IUserGroupHasId, update: Partial<IUserGroupHasId>, forceUpdateParents: boolean) => {
-    if (update.parent == null) {
-      throw Error('"parent" attr must not be null');
-    }
-
     const parentId = typeof update.parent === 'string' ? update.parent : update.parent?._id;
     const res = await apiv3Put<{ userGroup: IUserGroupHasId }>(`/user-groups/${userGroup._id}`, {
       name: update.name,
       description: update.description,
-      parentId,
+      parentId: parentId ?? null,
       forceUpdateParents,
     });
     const { userGroup: updatedUserGroup } = res.data;
@@ -138,7 +134,7 @@ const UserGroupDetailPage = (props: Props): JSX.Element => {
   );
 
   const onClickSubmitForm = useCallback(async(targetGroup: IUserGroupHasId, userGroupData: Partial<IUserGroupHasId>): Promise<void> => {
-    if (userGroupData?.parent === undefined || typeof userGroupData?.parent === 'string') {
+    if (typeof userGroupData?.parent === 'string') {
       toastError(t('Something went wrong. Please try again.'));
       return;
     }

@@ -1,18 +1,19 @@
+import React from 'react';
+
 import {
   IUser, IUserHasId,
 } from '@growi/core';
-
-import dynamic from 'next/dynamic';
 import { NextPage, GetServerSideProps, GetServerSidePropsContext } from 'next';
+import dynamic from 'next/dynamic';
 
-import GrowiContextualSubNavigation from '~/components/Navbar/GrowiContextualSubNavigation';
 import { CrowiRequest } from '~/interfaces/crowi-request';
 import { IUserUISettings } from '~/interfaces/user-ui-settings';
 import UserUISettings from '~/server/models/user-ui-settings';
 
 import { BasicLayout } from '../components/Layout/BasicLayout';
+import GrowiContextualSubNavigation from '../components/Navbar/GrowiContextualSubNavigation';
 import {
-  useCurrentUser, useIsTrashPage, useCurrentPagePath, useCurrentPathname,
+  useCurrentUser, useCurrentPageId, useCurrentPagePath, useCurrentPathname,
   useIsSearchServiceConfigured, useIsSearchServiceReachable,
   useIsSearchScopeChildrenAsDefault,
 } from '../stores/context';
@@ -20,6 +21,10 @@ import {
 import {
   CommonProps, getServerSideCommonProps, useCustomTitle,
 } from './utils/commons';
+
+const TrashPageList = dynamic(() => import('~/components/TrashPageList').then(mod => mod.TrashPageList), { ssr: false });
+const EmptyTrashModal = dynamic(() => import('~/components/EmptyTrashModal'), { ssr: false });
+const PutbackPageModal = dynamic(() => import('~/components/PutbackPageModal'), { ssr: false });
 
 type Props = CommonProps & {
   currentUser: IUser,
@@ -30,15 +35,13 @@ type Props = CommonProps & {
 };
 
 const TrashPage: NextPage<CommonProps> = (props: Props) => {
-  const TrashPageList = dynamic(() => import('~/components/TrashPageList').then(mod => mod.TrashPageList), { ssr: false });
-
   useCurrentUser(props.currentUser ?? null);
 
   useIsSearchServiceConfigured(props.isSearchServiceConfigured);
   useIsSearchServiceReachable(props.isSearchServiceReachable);
   useIsSearchScopeChildrenAsDefault(props.isSearchScopeChildrenAsDefault);
 
-  useIsTrashPage(true);
+  useCurrentPageId(null);
   useCurrentPathname('/trash');
   useCurrentPagePath('/trash');
 
@@ -48,10 +51,16 @@ const TrashPage: NextPage<CommonProps> = (props: Props) => {
         <header className="py-0 position-relative">
           <GrowiContextualSubNavigation isLinkSharingDisabled={false} />
         </header>
+
         <div className="grw-container-convertible mb-5 pb-5">
           <TrashPageList />
         </div>
+
+        <div id="grw-fav-sticky-trigger" className="sticky-top"></div>
       </BasicLayout>
+
+      <EmptyTrashModal />
+      <PutbackPageModal />
     </>
   );
 };

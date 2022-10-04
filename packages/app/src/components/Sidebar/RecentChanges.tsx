@@ -117,7 +117,7 @@ const SmallPageItem = memo(({ page }: PageItemProps): JSX.Element => {
         <UserPicture user={page.lastUpdateUser} size="md" noTooltip />
         <div className="flex-grow-1 ml-2">
           { !dPagePath.isRoot && <FormerLink /> }
-          <h5 className="my-0">
+          <h5 className="my-0 text-truncate">
             <PagePathHierarchicalLink linkedPagePath={linkedPagePathLatter} basePath={dPagePath.isRoot ? undefined : dPagePath.former} />
             {locked}
           </h5>

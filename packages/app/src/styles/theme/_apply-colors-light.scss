@@ -243,6 +243,15 @@ $dropdown-link-active-bg: $bgcolor-dropdown-link-active;
 }
 
 /*
+ * GROWI ToC
+ */
+.revision-toc-content {
+  ::marker {
+    color: darken($bgcolor-global, 20%);
+  }
+}
+
+/*
  * GROWI on-edit
  */
 .grw-editor-navbar-bottom {

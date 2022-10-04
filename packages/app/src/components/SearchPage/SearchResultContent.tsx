@@ -2,6 +2,7 @@ import React, {
   FC, useCallback, useEffect, useRef,
 } from 'react';
 
+import { getIdForRef } from '@growi/core';
 import { useTranslation } from 'next-i18next';
 import dynamic from 'next/dynamic';
 import { DropdownItem } from 'reactstrap';
@@ -9,9 +10,10 @@ import { DropdownItem } from 'reactstrap';
 import { exportAsMarkdown } from '~/client/services/page-operation';
 import { toastSuccess } from '~/client/util/apiNotification';
 import { smoothScrollIntoView } from '~/client/util/smooth-scroll';
-import { IPageToDeleteWithMeta, IPageToRenameWithMeta, IPageWithMeta } from '~/interfaces/page';
+import { IPageToDeleteWithMeta, IPageToRenameWithMeta } from '~/interfaces/page';
 import { IPageWithSearchMeta } from '~/interfaces/search';
 import { OnDuplicatedFunction, OnRenamedFunction, OnDeletedFunction } from '~/interfaces/ui';
+import { useCurrentUser } from '~/stores/context';
 import {
   usePageDuplicateModal, usePageRenameModal, usePageDeleteModal,
 } from '~/stores/modal';
@@ -19,11 +21,17 @@ import { useDescendantsPageListForCurrentPathTermManager, usePageTreeTermManager
 import { useSearchResultOptions } from '~/stores/renderer';
 import { useFullTextSearchTermManager } from '~/stores/search';
 
-
 import { AdditionalMenuItemsRendererProps, ForceHideMenuItems } from '../Common/Dropdown/PageItemControl';
 import { GrowiSubNavigationProps } from '../Navbar/GrowiSubNavigation';
 import { SubNavButtonsProps } from '../Navbar/SubNavButtons';
+import { PageCommentProps } from '../PageComment';
+import { PageContentFooterProps } from '../PageContentFooter';
 
+const GrowiSubNavigation = dynamic<GrowiSubNavigationProps>(() => import('../Navbar/GrowiSubNavigation').then(mod => mod.GrowiSubNavigation), { ssr: false });
+const SubNavButtons = dynamic<SubNavButtonsProps>(() => import('../Navbar/SubNavButtons').then(mod => mod.SubNavButtons), { ssr: false });
+const RevisionLoader = dynamic(() => import('../Page/RevisionLoader'), { ssr: false });
+const PageComment = dynamic<PageCommentProps>(() => import('../PageComment').then(mod => mod.PageComment), { ssr: false });
+const PageContentFooter = dynamic<PageContentFooterProps>(() => import('../PageContentFooter').then(mod => mod.PageContentFooter), { ssr: false });
 
 type AdditionalMenuItemsProps = AdditionalMenuItemsRendererProps & {
   pageId: string,
@@ -77,11 +85,6 @@ const generateObserverCallback = (doScroll: ()=>void) => {
 };
 
 export const SearchResultContent: FC<Props> = (props: Props) => {
-  const GrowiSubNavigation = dynamic<GrowiSubNavigationProps>(() => import('../Navbar/GrowiSubNavigation').then(mod => mod.GrowiSubNavigation), { ssr: false });
-  const SubNavButtons = dynamic<SubNavButtonsProps>(() => import('../Navbar/SubNavButtons').then(mod => mod.SubNavButtons), { ssr: false });
-  const RevisionLoader = dynamic(() => import('../Page/RevisionLoader'), { ssr: false });
-  const PageComment = dynamic(() => import('../PageComment').then(mod => mod.PageComment), { ssr: false });
-  const PageContentFooter = dynamic(() => import('../PageContentFooter').then(mod => mod.PageContentFooter), { ssr: false });
 
   const scrollElementRef = useRef(null);
 
@@ -120,8 +123,8 @@ export const SearchResultContent: FC<Props> = (props: Props) => {
   const { open: openDuplicateModal } = usePageDuplicateModal();
   const { open: openRenameModal } = usePageRenameModal();
   const { open: openDeleteModal } = usePageDeleteModal();
-
-  const { data: rendererOptions } = useSearchResultOptions();
+  const { data: rendererOptions } = useSearchResultOptions(pageWithMeta.data.path, highlightKeywords);
+  const { data: currentUser } = useCurrentUser();
 
   const duplicateItemClickedHandler = useCallback(async(pageToDuplicate) => {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -167,15 +170,12 @@ export const SearchResultContent: FC<Props> = (props: Props) => {
     openDeleteModal([pageToDelete], { onDeleted: onDeletedHandler });
   }, [onDeletedHandler, openDeleteModal]);
 
-  const ControlComponents = useCallback(() => {
+  const RightComponent = useCallback(() => {
     if (page == null) {
       return <></>;
     }
 
-    const revisionId = typeof page.revision === 'string'
-      ? page.revision
-      : page.revision._id;
-
+    const revisionId = getIdForRef(page.revision);
 
     return (
       <div className="d-flex flex-column align-items-end justify-content-center py-md-2">
@@ -202,8 +202,9 @@ export const SearchResultContent: FC<Props> = (props: Props) => {
     <div key={page._id} data-testid="search-result-content" className="search-result-content grw-page-path-text-muted-container d-flex flex-column">
       <div className="grw-subnav-append-shadow-container">
         <GrowiSubNavigation
-          page={page}
-          controls={ControlComponents}
+          pagePath={page.path}
+          pageId={page._id}
+          rightComponent={RightComponent}
           isCompactMode
           additionalClasses={['px-4']}
         />
@@ -216,8 +217,18 @@ export const SearchResultContent: FC<Props> = (props: Props) => {
           revisionId={page.revision}
           highlightKeywords={highlightKeywords}
         />
-        <PageComment pageId={page._id} highlightKeywords={highlightKeywords} isReadOnly hideIfEmpty />
-        <PageContentFooter />
+        <PageComment
+          rendererOptions={rendererOptions}
+          pageId={page._id}
+          revision={page.revision}
+          currentUser={currentUser}
+          highlightKeywords={highlightKeywords}
+          isReadOnly
+          hideIfEmpty
+        />
+        <PageContentFooter
+          page={page}
+        />
       </div>
     </div>
   );

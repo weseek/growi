@@ -21,6 +21,7 @@ const PagePathHierarchicalLink = memo((props: PagePathHierarchicalLinkProps): JS
   const {
     linkedPagePath, linkedPagePathByHtml, basePath, isInTrash,
   } = props;
+
   // render root element
   if (linkedPagePath.isRoot) {
     if (basePath != null) {
