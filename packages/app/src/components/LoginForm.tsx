@@ -109,24 +109,28 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
   // wrap error elements which use dangerouslySetInnerHtml
   const generateDangerouslySetErrors = useCallback((errors: IErrorV3[]): JSX.Element => {
     if (errors == null || errors.length === 0) return <></>;
-    return <div className="alert alert-danger">
-      {errors.map((err, index) => {
-        return <small key={index} dangerouslySetInnerHTML={{ __html: t(err.message, err.args) }}></small>;
-      })}
-    </div>;
+    return (
+      <div className="alert alert-danger">
+        {errors.map((err, index) => {
+          return <small key={index} dangerouslySetInnerHTML={{ __html: t(err.message, err.args) }}></small>;
+        })}
+      </div>
+    );
   }, [t]);
 
   // wrap error elements which do not use dangerouslySetInnerHtml
   const generateSafelySetErrors = useCallback((errors: IErrorV3[]): JSX.Element => {
     if (errors == null || errors.length === 0) return <></>;
-    return <ul className="alert alert-danger">
-      {errors.map((err, index) => {
-        return (
-          <li key={index}>
-            {t(err.message, err.args)}<br/>
-          </li>);
-      })}
-    </ul>;
+    return (
+      <ul className="alert alert-danger">
+        {errors.map((err, index) => {
+          return (
+            <li key={index}>
+              {t(err.message, err.args)}<br/>
+            </li>);
+        })}
+      </ul>
+    );
   }, [t]);
 
   const renderLocalOrLdapLoginForm = useCallback(() => {
