@@ -1,9 +1,12 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, {
+  useCallback, useEffect, useState, useMemo,
+} from 'react';
 
 import { useTranslation } from 'react-i18next';
+import { debounce } from 'throttle-debounce';
 import * as toastr from 'toastr';
 
-import { apiv3Get } from '~/client/util/apiv3-client';
+import { apiv3Get, apiv3Post } from '~/client/util/apiv3-client';
 import { useAdminSocket } from '~/stores/socket-io';
 
 import CustomCopyToClipBoard from '../Common/CustomCopyToClipBoard';
@@ -67,10 +70,11 @@ const G2GDataTransfer = (): JSX.Element => {
     }
   }, [socket]);
 
-  const publishTransferKey = () => {
-    // 移行キー発行の処理
-    setTransferKey('transferKey');
-  };
+  const generateTransferKeyWithDebounce = useMemo(() => debounce(1000, async() => {
+    const response = await apiv3Post('/g2g-transfer/generate-key');
+    const { transferKey } = response.data;
+    setTransferKey(transferKey);
+  }), []);
 
   const transferData = () => {
     // データ移行の処理
@@ -107,7 +111,9 @@ const G2GDataTransfer = (): JSX.Element => {
 
       <div className="form-group row mt-4">
         <div className="col-md-3">
-          <button type="button" className="btn btn-primary w-100" onClick={publishTransferKey}>{t('g2g_data_transfer.publish_transfer_key')}</button>
+          <button type="button" className="btn btn-primary w-100" onClick={generateTransferKeyWithDebounce}>
+            {t('g2g_data_transfer.publish_transfer_key')}
+          </button>
         </div>
         <div className="col-md-9">
           <div className="input-group-prepend mx-1">

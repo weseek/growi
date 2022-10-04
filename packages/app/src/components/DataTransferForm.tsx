@@ -1,7 +1,10 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 
 
 import { useTranslation } from 'react-i18next';
+import { debounce } from 'throttle-debounce';
+
+import { apiv3Post } from '~/client/util/apiv3-client';
 
 import CustomCopyToClipBoard from './Common/CustomCopyToClipBoard';
 
@@ -10,10 +13,11 @@ const DataTransferForm = (): JSX.Element => {
 
   const [transferKey, setTransferKey] = useState('');
 
-  const publishTransferKey = () => {
-    // 移行キー発行の処理
-    setTransferKey('transferKey');
-  };
+  const generateTransferKeyWithDebounce = useMemo(() => debounce(1000, async() => {
+    const response = await apiv3Post('/g2g-transfer/generate-key');
+    const { transferKey } = response.data;
+    setTransferKey(transferKey);
+  }), []);
 
   return (
     <div data-testid="installerForm" className="p-3">
@@ -23,7 +27,9 @@ const DataTransferForm = (): JSX.Element => {
 
       <div className="form-group row mt-3">
         <div className="col-md-12">
-          <button type="button" className="btn btn-primary w-100" onClick={publishTransferKey}>{t('g2g_data_transfer.publish_transfer_key')}</button>
+          <button type="button" className="btn btn-primary w-100" onClick={generateTransferKeyWithDebounce}>
+            {t('g2g_data_transfer.publish_transfer_key')}
+          </button>
         </div>
         <div className="col-md-12 mt-1">
           <div className="input-group-prepend">
