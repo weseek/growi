@@ -21,6 +21,7 @@ type LoginFormProps = {
   isPasswordResetEnabled: boolean,
   isLocalStrategySetup: boolean,
   isLdapStrategySetup: boolean,
+  isLdapSetupFailed: boolean,
   objOfIsExternalAuthEnableds?: any,
   isMailerSetup?: boolean
 }
@@ -29,7 +30,7 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
   const router = useRouter();
 
   const {
-    isLocalStrategySetup, isLdapStrategySetup, isPasswordResetEnabled, isRegistrationEnabled,
+    isLocalStrategySetup, isLdapStrategySetup, isLdapSetupFailed, isPasswordResetEnabled, isRegistrationEnabled,
     isEmailAuthenticationEnabled, registrationMode, registrationWhiteList, isMailerSetup, objOfIsExternalAuthEnableds,
   } = props;
   const isLocalOrLdapStrategiesEnabled = isLocalStrategySetup || isLdapStrategySetup;
@@ -130,6 +131,12 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
 
     return (
       <>
+        {isLdapSetupFailed && (
+          <div className="alert alert-warning small">
+            <strong><i className="icon-fw icon-info"></i>{t('login.enabled_ldap_has_configuration_problem')}</strong><br/>
+            <span dangerouslySetInnerHTML={{ __html: t('login.set_env_var_for_logs') }}></span>
+          </div>
+        )}
         {renderLoginErrors(errorsWithDangerouslySetInnerHTML, true)}
         {renderLoginErrors(errorsWithoutDanderouslySetInnerHTML, false)}
 
