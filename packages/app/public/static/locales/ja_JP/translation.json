@@ -154,6 +154,7 @@
   "not_allowed_to_see_this_page": "このページは閲覧できません",
   "Confirm": "確認",
   "Successfully requested": "正常に処理を受け付けました",
+  "copied_to_clipboard": "クリップボードにコピーされました。",
   "personal_dropdown": {
     "home": "ホーム",
     "settings": "設定",
@@ -181,12 +182,26 @@
     "link_sharing_is_disabled": "リンクのシェアは無効化されています"
   },
   "installer": {
+    "tab": "アカウント作成",
     "setup": "セットアップ",
     "create_initial_account": "最初のアカウントの作成",
     "initial_account_will_be_administrator_automatically": "初めに作成するアカウントは、自動的に管理者権限が付与されます",
     "unavaliable_user_id": "このユーザーIDは利用できません。",
     "failed_to_install": "GROWI のインストールに失敗しました。再度お試しください。",
     "failed_to_login_after_install": "インストール後、ログインに失敗しました。ログインフォームに遷移しています ..."
+  },
+  "g2g_data_transfer": {
+    "tab": "データ移行",
+    "data_transfer": "別GROWIとのデータ移行",
+    "transfer_data_to_another_growi": "このGROWIのデータを別GROWIへ移行する",
+    "transfer_data_to_this_growi": "別GROWIのデータをこのGROWIへ移行する",
+    "advanced_options": "詳細オプション",
+    "start_transfer": "移行を開始する",
+    "publish_transfer_key": "移行キーを発行する",
+    "transfer_key_limit": "※ 移行キーの有効期限は発行から1時間となります。",
+    "once_transfer_key_used": "※ 移行キーは一度移行に利用するとそれ移行はご利用いただけなくなります。",
+    "transfer_to_growi_cloud": "※ GROWI.cloud への移行を実施する場合はこちらをご確認ください。",
+    "paste_transfer_key": "移行キーをここにペースト"
   },
   "breaking_changes": {
     "v346_using_basic_auth": "現在利用中の Basic 認証機能は、近い将来<strong>廃止されます</strong>。%s から設定を削除してください。"

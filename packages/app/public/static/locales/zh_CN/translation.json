@@ -164,6 +164,7 @@
   "not_allowed_to_see_this_page": "你不能看到这个页面",
   "Confirm": "确定",
   "Successfully requested": "进程成功接受",
+  "copied_to_clipboard": "它已复制到剪贴板。",
 	"form_validation": {
 		"error_message": "有些值不正确",
 		"required": "%s 是必需的",
@@ -183,6 +184,7 @@
     "link_sharing_is_disabled": "链接共享已被禁用"
   },
 	"installer": {
+    "tab": "创建账户",
 		"setup": "安装",
 		"create_initial_account": "创建初始用户",
 		"initial_account_will_be_administrator_automatically": "初始帐户将自动成为管理员。",
@@ -190,6 +192,19 @@
     "failed_to_install": "GROWI安装失败。请再试一次。",
     "failed_to_login_after_install": "安装后登录失败。重定向到登录表格..."
 	},
+  "g2g_data_transfer": {
+    "tab": "数据迁移",
+    "data_transfer": "与另一个GROWI的数据转移",
+    "transfer_data_to_another_growi": "将数据从这个GROWI迁移到另一个GROWI上",
+    "transfer_data_to_this_growi": "将数据从另一个GROWI迁移到这个GROWI上",
+    "advanced_options": "高级选项",
+    "start_transfer": "开始迁移",
+    "publish_transfer_key": "发布迁移密钥",
+    "transfer_key_limit": "迁移密钥在签发后一小时内有效。",
+    "once_transfer_key_used": "一旦迁移密钥被用于迁移，它将不再可用于进一步的迁移。",
+    "transfer_to_growi_cloud": "如果您希望迁移到GROWI.cloud，请点击这里。",
+    "paste_transfer_key": "在这里粘贴过渡键"
+  },
 	"breaking_changes": {
 		"v346_using_basic_auth": "当前使用的基本身份验证在不久的将来将不再可用。从%s中删除设置"
 	},
