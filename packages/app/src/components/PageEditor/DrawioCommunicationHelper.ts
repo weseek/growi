@@ -3,18 +3,27 @@ export type DrawioConfig = {
   customFonts: string[],
 }
 
+export type DrawioCommunicationCallbackOptions = {
+  onClose?: () => void;
+  onSave?: (drawioData: string) => void;
+}
+
 export class DrawioCommunicationHelper {
 
   drawioUri: string;
 
   drawioConfig: DrawioConfig;
 
-  constructor(drawioUri: string, drawioConfig: DrawioConfig) {
+  callbackOpts?: DrawioCommunicationCallbackOptions;
+
+
+  constructor(drawioUri: string, drawioConfig: DrawioConfig, callbackOpts?: DrawioCommunicationCallbackOptions) {
     this.drawioUri = drawioUri;
     this.drawioConfig = drawioConfig;
+    this.callbackOpts = callbackOpts;
   }
 
-  onReceiveMessage(event: MessageEvent, drawioMxFile: string, onClose: () => void): void {
+  onReceiveMessage(event: MessageEvent, drawioMxFile: string): void {
 
     // check origin
 
@@ -52,18 +61,16 @@ export class DrawioCommunicationHelper {
         * https://redmine.weseek.co.jp/issues/104507
         */
 
-        // if (props.onSave != null) {
-        //   props.onSave(drawioData);
-        // }
+        this.callbackOpts?.onSave?.(drawioData);
       }
 
-      onClose();
+      this.callbackOpts?.onClose?.();
 
       return;
     }
 
     if (typeof event.data === 'string' && event.data.length === 0) {
-      onClose();
+      this.callbackOpts?.onClose?.();
       return;
     }
 

@@ -46,14 +46,6 @@ export const DrawioModal = (props: Props): JSX.Element => {
   const { data: drawioModalData, close: closeDrawioModal } = useDrawioModal();
   const isOpened = drawioModalData?.isOpened ?? false;
 
-  const drawioCommunicationHelper = useMemo(() => {
-    if (drawioUri == null) {
-      return undefined;
-    }
-
-    return new DrawioCommunicationHelper(drawioUri, drawioConfig);
-  }, [drawioUri]);
-
   const drawioUriWithParams = useMemo(() => {
     if (drawioUri == null) {
       return undefined;
@@ -71,13 +63,25 @@ export const DrawioModal = (props: Props): JSX.Element => {
     return url;
   }, [drawioUri, personalSettingsInfo?.lang]);
 
+  const drawioCommunicationHelper = useMemo(() => {
+    if (drawioUri == null) {
+      return undefined;
+    }
+
+    return new DrawioCommunicationHelper(
+      drawioUri,
+      drawioConfig,
+      { onClose: closeDrawioModal },
+    );
+  }, [closeDrawioModal, drawioUri]);
+
   const receiveMessageHandler = useCallback((event: MessageEvent) => {
     if (drawioModalData == null) {
       return;
     }
 
-    drawioCommunicationHelper?.onReceiveMessage(event, drawioModalData.drawioMxFile, closeDrawioModal);
-  }, [closeDrawioModal, drawioCommunicationHelper, drawioModalData]);
+    drawioCommunicationHelper?.onReceiveMessage(event, drawioModalData.drawioMxFile);
+  }, [drawioCommunicationHelper, drawioModalData]);
 
   useEffect(() => {
     if (isOpened) {
