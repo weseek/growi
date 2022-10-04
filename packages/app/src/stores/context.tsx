@@ -98,6 +98,10 @@ export const useIsNotFound = (initialData?: boolean): SWRResponse<boolean, Error
   return useStaticSWR<boolean, Error>('isNotFound', initialData, { fallbackData: false });
 };
 
+export const useIsEmptyPage = (initialData?: boolean): SWRResponse<boolean, Error> => {
+  return useStaticSWR<boolean, Error>('isEmptyPage', initialData, { fallbackData: false });
+};
+
 export const usePageUser = (initialData?: IUserHasId): SWRResponse<IUserHasId, Error> => {
   return useStaticSWR<IUserHasId, Error>('pageUser', initialData);
 };

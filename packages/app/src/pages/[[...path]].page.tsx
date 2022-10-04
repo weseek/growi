@@ -56,7 +56,7 @@ import {
   useCurrentUser, useCurrentPagePath,
   useIsLatestRevision,
   useIsForbidden, useIsNotFound, useIsTrashPage, useIsSharedUser,
-  useIsEnabledStaleNotification, useIsIdenticalPath,
+  useIsEnabledStaleNotification, useIsIdenticalPath, useIsEmptyPage,
   useIsSearchServiceConfigured, useIsSearchServiceReachable, useDisableLinkSharing,
   useHackmdUri,
   useIsAclEnabled, useIsUserPage,
@@ -136,6 +136,7 @@ type Props = CommonProps & {
   isIdenticalPathPage?: boolean,
   isForbidden: boolean,
   isNotFound: boolean,
+  isEmptyPage: boolean,
   isNotCreatablePage: boolean,
   // isAbleToDeleteCompletely: boolean,
 
@@ -196,6 +197,7 @@ const GrowiPage: NextPage<Props> = (props: Props) => {
   // useOwnerOfCurrentPage(props.pageUser != null ? JSON.parse(props.pageUser) : null);
   useIsForbidden(props.isForbidden);
   useIsNotFound(props.isNotFound);
+  useIsEmptyPage(props.isEmptyPage);
   // useIsNotCreatable(props.IsNotCreatable);
   useRedirectFrom(props.redirectFrom);
   // useShared();
@@ -448,6 +450,7 @@ async function injectRoutingInformation(context: GetServerSidePropsContext, prop
   }
   else {
     props.isNotFound = page.isEmpty;
+    props.isEmptyPage = page.isEmpty;
 
     // /62a88db47fed8b2d94f30000 ==> /path/to/page
     if (isPermalink && page.isEmpty) {

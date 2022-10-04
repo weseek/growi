@@ -22,7 +22,7 @@ import loggerFactory from '~/utils/logger';
 
 import {
   useCurrentPageId, useCurrentPagePath, useIsEditable, useIsTrashPage, useIsGuestUser,
-  useIsSharedUser, useIsIdenticalPath, useCurrentUser, useIsNotFound, useShareLinkId,
+  useIsSharedUser, useIsIdenticalPath, useCurrentUser, useIsNotFound, useShareLinkId, useIsEmptyPage,
 } from './context';
 import { localStorageMiddleware } from './middlewares/sync-to-storage';
 import { useStaticSWR } from './use-static-swr';
@@ -410,14 +410,17 @@ export const useIsAbleToShowPageManagement = (): SWRResponse<boolean, Error> => 
   const { data: isTrashPage } = useIsTrashPage();
   const { data: isSharedUser } = useIsSharedUser();
   const { data: isNotFound } = useIsNotFound();
+  const { data: isEmptyPage } = useIsEmptyPage();
+
+  console.log(isEmptyPage, '出エンプティ');
 
   const pageId = currentPageId;
-  const includesUndefined = [pageId, isTrashPage, isSharedUser, isNotFound].some(v => v === undefined);
+  const includesUndefined = [pageId, isTrashPage, isSharedUser, isNotFound, isEmptyPage].some(v => v === undefined);
   const isPageExist = (pageId != null) && !isNotFound;
 
   return useSWRImmutable(
     includesUndefined ? null : [key, pageId],
-    () => isPageExist && !isTrashPage && !isSharedUser,
+    () => (isPageExist && !isTrashPage && !isSharedUser) || (isEmptyPage != null && isEmptyPage),
   );
 };
 
