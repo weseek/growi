@@ -103,19 +103,19 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
   }, [t]);
 
   // wrap error elements that use dangerouslySetInnerHtml
-  const generateDangerouslySetErrors = (errors: JSX.Element[]): JSX.Element => {
+  const generateDangerouslySetErrors = useCallback((errors: JSX.Element[]): JSX.Element => {
     if (errors == null || errors.length === 0) return <></>;
     return <div className="alert alert-danger">
       {errors.map(elm => elm)}
     </div>;
-  };
+  }, []);
   // wrap error elements that do not use dangerouslySetInnerHtml
-  const generateNonDangerouslySetErrors = (errors: JSX.Element[]): JSX.Element => {
+  const generateNonDangerouslySetErrors = useCallback((errors: JSX.Element[]): JSX.Element => {
     if (errors == null || errors.length === 0) return <></>;
     return <ul className="alert alert-danger">
       {errors.map(elm => elm)}
     </ul>;
-  };
+  }, []);
 
   const renderLocalOrLdapLoginForm = useCallback(() => {
     const { isLdapStrategySetup } = props;
