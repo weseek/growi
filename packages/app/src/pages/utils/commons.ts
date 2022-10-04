@@ -4,9 +4,9 @@ import { SSRConfig, UserConfig } from 'next-i18next';
 
 import * as nextI18NextConfig from '^/config/next-i18next.config';
 
+import { SupportedActionType } from '~/interfaces/activity';
 import { CrowiRequest } from '~/interfaces/crowi-request';
 import { GrowiThemes } from '~/interfaces/theme';
-
 
 export type CommonProps = {
   namespacesRequired: string[], // i18next

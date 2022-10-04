@@ -414,10 +414,11 @@ export const useIsAbleToShowPageManagement = (): SWRResponse<boolean, Error> => 
   const pageId = currentPageId;
   const includesUndefined = [pageId, isTrashPage, isSharedUser, isNotFound].some(v => v === undefined);
   const isPageExist = (pageId != null) && !isNotFound;
+  const isEmptyPage = (pageId != null) && isNotFound;
 
   return useSWRImmutable(
     includesUndefined ? null : [key, pageId],
-    () => isPageExist && !isTrashPage && !isSharedUser,
+    () => (isPageExist && !isTrashPage && !isSharedUser) || (isEmptyPage != null && isEmptyPage),
   );
 };
 

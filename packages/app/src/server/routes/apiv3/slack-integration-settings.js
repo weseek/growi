@@ -1,3 +1,4 @@
+import { ErrorV3 } from '@growi/core';
 
 import { SupportedAction } from '~/interfaces/activity';
 import loggerFactory from '~/utils/logger';
@@ -19,8 +20,6 @@ const express = require('express');
 const { body, query, param } = require('express-validator');
 const mongoose = require('mongoose');
 const urljoin = require('url-join');
-
-const ErrorV3 = require('../../models/vo/error-apiv3');
 
 const logger = loggerFactory('growi:routes:apiv3:slack-integration-settings');
 

@@ -24,6 +24,7 @@ export * from './interfaces/tag';
 export * from './interfaces/user';
 export * from './plugin/service/tag-cache-manager';
 export * from './models/devided-page-path';
+export * from './models/vo/error-apiv3';
 export * from './service/localstorage-manager';
 export * from './utils/basic-interceptor';
 export * from './utils/browser-utils';

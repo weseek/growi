@@ -1,9 +1,8 @@
+import { ErrorV3 } from '@growi/core';
 import createError from 'http-errors';
 
 import { SlackCommandHandlerError } from '~/server/models/vo/slack-command-handler-error';
 import loggerFactory from '~/utils/logger';
-
-import ErrorV3 from '../../models/vo/error-apiv3';
 
 import {
   markdownSectionBlock, InvalidGrowiCommandError, generateRespondUtil, supportedGrowiCommands,
