@@ -49,6 +49,14 @@ $theme-colors: map-merge($theme-colors, ( primary: $primary ));
 // determine variables with　bootstrap function (These variables can be used after importing bootstrap above)
 $color-modal-header: color-yiq($primary) !default;
 
+:not(pre) {
+  > code {
+    color: $color-inline-code;
+    background-color: $bgcolor-inline-code;
+    border-color: $bordercolor-inline-code;
+  }
+}
+
 .code-inline {
   color: $color-inline-code;
   background-color: $bgcolor-inline-code;
