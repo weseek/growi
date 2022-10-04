@@ -2,6 +2,7 @@
 import { ErrorV3 } from '@growi/core';
 
 import { SupportedAction } from '~/interfaces/activity';
+import { LoginErrorCode } from '~/interfaces/errors/login-error';
 import { NullUsernameToBeRegisteredError } from '~/server/models/errors';
 import loggerFactory from '~/utils/logger';
 
@@ -78,7 +79,7 @@ module.exports = function(crowi, app) {
         }
         logger.error('provider-DuplicatedUsernameException', providerId);
 
-        throw new ErrorV3('message.provider_duplicated_username_exception', 'provider-duplicated-username-exception',
+        throw new ErrorV3('message.provider_duplicated_username_exception', LoginErrorCode.PROVIDER_DUPLICATED_USERNAME_EXCEPTION,
           undefined, { failedProviderForDuplicatedUsernameException: providerId });
       }
       else if (err.name === 'UserUpperLimitException') {

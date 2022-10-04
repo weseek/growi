@@ -7,7 +7,7 @@ import { useRouter } from 'next/router';
 import ReactCardFlip from 'react-card-flip';
 
 import { apiv3Post } from '~/client/util/apiv3-client';
-import { LoginErrorCode } from '~/interfaces/errors/login-form-error';
+import { LoginErrorCode } from '~/interfaces/errors/login-error';
 import { IErrorV3 } from '~/interfaces/errors/v3-error';
 
 type LoginFormProps = {
