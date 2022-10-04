@@ -36,7 +36,7 @@ context('Access to page by guest', () => {
     cy.collapseSidebar(true, true);
 
     // eslint-disable-next-line cypress/no-unnecessary-waiting
-    cy.wait(500);
+    cy.wait(1000);
 
     cy.screenshot(`${ssPrefix}-sandbox-edit-page`);
   })

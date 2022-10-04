@@ -7,6 +7,7 @@ import * as loadCssSync from 'load-css-file';
 import PropTypes from 'prop-types';
 import { Button } from 'reactstrap';
 import * as loadScript from 'simple-load-script';
+import { throttle, debounce } from 'throttle-debounce';
 import urljoin from 'url-join';
 
 import InterceptorManager from '~/services/interceptor-manager';
@@ -115,7 +116,9 @@ class CodeMirrorEditor extends AbstractEditor {
       isCheatsheetModalShown: false,
       additionalClassSet: new Set(),
       isEmojiPickerShown: false,
-      emojiSearchText: null,
+      emojiSearchText: '',
+      startPosWithEmojiPickerModeTurnedOn: null,
+      isEmojiPickerMode: false,
     };
 
     this.gridEditModal = React.createRef();
@@ -140,7 +143,16 @@ class CodeMirrorEditor extends AbstractEditor {
     this.pasteHandler = this.pasteHandler.bind(this);
     this.cursorHandler = this.cursorHandler.bind(this);
     this.changeHandler = this.changeHandler.bind(this);
-    this.keyUpHandler = this.keyUpHandler.bind(this);
+    this.turnOnEmojiPickerMode = this.turnOnEmojiPickerMode.bind(this);
+    this.turnOffEmojiPickerMode = this.turnOffEmojiPickerMode.bind(this);
+    this.windowClickHandler = this.windowClickHandler.bind(this);
+    this.keyDownHandler = this.keyDownHandler.bind(this);
+    this.keyDownHandlerForEmojiPicker = this.keyDownHandlerForEmojiPicker.bind(this);
+    this.keyDownHandlerForEmojiPickerThrottled = throttle(400, this.keyDownHandlerForEmojiPicker);
+    this.showEmojiPicker = this.showEmojiPicker.bind(this);
+    this.keyPressHandlerForEmojiPicker = this.keyPressHandlerForEmojiPicker.bind(this);
+    this.keyPressHandlerForEmojiPickerThrottled = debounce(50, throttle(200, this.keyPressHandlerForEmojiPicker));
+    this.keyPressHandler = this.keyPressHandler.bind(this);
 
     this.updateCheatsheetStates = this.updateCheatsheetStates.bind(this);
 
@@ -155,7 +167,6 @@ class CodeMirrorEditor extends AbstractEditor {
 
     this.foldDrawioSection = this.foldDrawioSection.bind(this);
     this.onSaveForDrawio = this.onSaveForDrawio.bind(this);
-    this.checkWhetherEmojiPickerShouldBeShown = this.checkWhetherEmojiPickerShouldBeShown.bind(this);
 
   }
 
@@ -186,6 +197,13 @@ class CodeMirrorEditor extends AbstractEditor {
     }
     this.emojiPickerHelper = new EmojiPickerHelper(this.getCodeMirror());
 
+    // HACKME: Find a better way to handle onClick for Editor
+    document.addEventListener('click', this.windowClickHandler);
+  }
+
+  componentWillUnmount() {
+    // HACKME: Find a better way to handle onClick for Editor
+    document.removeEventListener('click', this.windowClickHandler);
   }
 
   componentWillReceiveProps(nextProps) {
@@ -586,10 +604,82 @@ class CodeMirrorEditor extends AbstractEditor {
 
   }
 
-  keyUpHandler(editor, event) {
-    if (event.key !== 'Backspace') {
-      this.checkWhetherEmojiPickerShouldBeShown();
+  turnOnEmojiPickerMode(pos) {
+    this.setState({
+      isEmojiPickerMode: true,
+      startPosWithEmojiPickerModeTurnedOn: pos,
+    });
+  }
+
+  turnOffEmojiPickerMode() {
+    this.setState({
+      isEmojiPickerMode: false,
+    });
+  }
+
+  showEmojiPicker(initialSearchingText) {
+    // show emoji picker with a stored word
+    this.setState({
+      isEmojiPickerShown: true,
+      emojiSearchText: initialSearchingText ?? '',
+    });
+
+    const resetStartPos = initialSearchingText == null;
+    if (resetStartPos) {
+      this.setState({ startPosWithEmojiPickerModeTurnedOn: null });
     }
+
+    this.turnOffEmojiPickerMode();
+  }
+
+  keyPressHandlerForEmojiPicker(editor, event) {
+    const char = event.key;
+    const isEmojiPickerMode = this.state.isEmojiPickerMode;
+
+    // evaluate whether emoji picker mode to be turned on
+    if (!isEmojiPickerMode) {
+      const startPos = this.emojiPickerHelper.shouldModeTurnOn(char);
+      if (startPos == null) {
+        return;
+      }
+
+      this.turnOnEmojiPickerMode(startPos);
+      return;
+    }
+
+    // evaluate whether EmojiPicker to be opened
+    const startPos = this.state.startPosWithEmojiPickerModeTurnedOn;
+    if (this.emojiPickerHelper.shouldOpen(startPos)) {
+      const initialSearchingText = this.emojiPickerHelper.getInitialSearchingText(startPos);
+      this.showEmojiPicker(initialSearchingText);
+      return;
+    }
+
+    this.turnOffEmojiPickerMode();
+  }
+
+  keyPressHandler(editor, event) {
+    this.keyPressHandlerForEmojiPickerThrottled(editor, event);
+  }
+
+  keyDownHandlerForEmojiPicker(editor, event) {
+    const key = event.key;
+
+    if (!this.state.isEmojiPickerMode) {
+      return;
+    }
+
+    if (['ArrowRight', 'ArrowLeft', 'ArrowUp', 'ArrowDown', 'BackSpace'].includes(key)) {
+      this.turnOffEmojiPickerMode();
+    }
+  }
+
+  keyDownHandler(editor, event) {
+    this.keyDownHandlerForEmojiPickerThrottled(editor, event);
+  }
+
+  windowClickHandler() {
+    this.turnOffEmojiPickerMode();
   }
 
   /**
@@ -611,26 +701,6 @@ class CodeMirrorEditor extends AbstractEditor {
       pasteHelper.pasteText(this, event);
     }
 
-  }
-
-  /**
-   * Show emoji picker component when emoji pattern (`:` + searchWord ) found
-   * eg `:a`, `:ap`
-   */
-  checkWhetherEmojiPickerShouldBeShown() {
-    const searchWord = this.emojiPickerHelper.getEmoji();
-
-    if (searchWord == null) {
-      this.setState({ isEmojiPickerShown: false });
-      this.setState({ emojiSearchText: null });
-    }
-    else {
-      this.setState({ emojiSearchText: searchWord });
-      // Show emoji picker after user stop typing
-      setTimeout(() => {
-        this.setState({ isEmojiPickerShown: true });
-      }, 700);
-    }
   }
 
   /**
@@ -712,7 +782,8 @@ class CodeMirrorEditor extends AbstractEditor {
         <div className="text-left">
           <div className="mb-2 d-none d-md-block">
             <EmojiPicker
-              onClose={() => this.setState({ isEmojiPickerShown: false, emojiSearchText: null })}
+              onClose={() => this.setState({ isEmojiPickerShown: false })}
+              onSelected={emoji => this.emojiPickerHelper.addEmoji(emoji, this.state.startPosWithEmojiPickerModeTurnedOn)}
               emojiSearchText={emojiSearchText}
               emojiPickerHelper={this.emojiPickerHelper}
               isOpen={this.state.isEmojiPickerShown}
@@ -966,7 +1037,7 @@ class CodeMirrorEditor extends AbstractEditor {
         color={null}
         bssize="small"
         title="Emoji"
-        onClick={() => this.setState({ isEmojiPickerShown: true })}
+        onClick={() => this.showEmojiPicker()}
       >
         <EditorIcon icon="Emoji" />
       </Button>,
@@ -1045,7 +1116,8 @@ class CodeMirrorEditor extends AbstractEditor {
               this.props.onDragEnter(event);
             }
           }}
-          onKeyUp={this.keyUpHandler}
+          onKeyPress={this.keyPressHandler}
+          onKeyDown={this.keyDownHandler}
         />
 
         { this.renderLoadingKeymapOverlay() }
