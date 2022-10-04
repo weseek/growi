@@ -19,7 +19,7 @@ const CustomizeLogoSetting = (): JSX.Element => {
   const [uploadLogoSrc, setUploadLogoSrc] = useState<ArrayBuffer | string | null>(null);
   const [isImageCropModalShow, setIsImageCropModalShow] = useState<boolean>(false);
   const [isDefaultLogo, setIsDefaultLogo] = useState<boolean>(true);
-  const [retrieveError, setRetrieveError] = useState<string | null>(null);
+  const [retrieveError, setRetrieveError] = useState<any>();
   const [customizedLogoSrc, setCustomizedLogoSrc] = useState< string | null >(null);
 
   const retrieveData = useCallback(async() => {

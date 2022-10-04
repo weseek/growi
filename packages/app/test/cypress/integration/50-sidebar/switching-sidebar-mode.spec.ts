@@ -22,7 +22,7 @@ context('Switch sidebar mode', () => {
   it('Switching sidebar mode', () => {
     cy.visit('/');
     cy.collapseSidebar(true, true)
-    cy.get('.grw-personal-dropdown').first().click();
+    cy.get('.grw-apperance-mode-dropdown').first().click();
 
     cy.get('[for="swSidebarMode"]').click({force: true});
     cy.screenshot(`${ssPrefix}-switch-sidebar-mode`, {

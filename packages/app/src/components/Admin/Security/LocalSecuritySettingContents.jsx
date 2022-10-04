@@ -1,14 +1,13 @@
-/* eslint-disable react/no-danger */
 import React from 'react';
 
+import { useTranslation } from 'next-i18next';
 import PropTypes from 'prop-types';
-import { useTranslation } from 'react-i18next';
 
 
 import AdminGeneralSecurityContainer from '~/client/services/AdminGeneralSecurityContainer';
 import AdminLocalSecurityContainer from '~/client/services/AdminLocalSecurityContainer';
-import AppContainer from '~/client/services/AppContainer';
 import { toastSuccess, toastError } from '~/client/util/apiNotification';
+import { useIsMailerSetup } from '~/stores/context';
 
 import { withUnstatedContainers } from '../../UnstatedUtils';
 
@@ -25,7 +24,7 @@ class LocalSecuritySettingContents extends React.Component {
     try {
       await adminLocalSecurityContainer.updateLocalSecuritySetting();
       await adminGeneralSecurityContainer.retrieveSetupStratedies();
-      toastSuccess(t('security_setting.updated_general_security_setting'));
+      toastSuccess(t('security_settings.updated_general_security_setting'));
     }
     catch (err) {
       toastError(err);
@@ -37,14 +36,13 @@ class LocalSecuritySettingContents extends React.Component {
       t,
       adminGeneralSecurityContainer,
       adminLocalSecurityContainer,
-      appContainer,
+      isMailerSetup,
     } = this.props;
     const { registrationMode, isPasswordResetEnabled, isEmailAuthenticationEnabled } = adminLocalSecurityContainer.state;
     const { isLocalEnabled } = adminGeneralSecurityContainer.state;
-    const { isMailerSetup } = appContainer.config;
 
     return (
-      <React.Fragment>
+      <>
         {adminLocalSecurityContainer.state.retrieveError != null && (
           <div className="alert alert-danger">
             <p>
@@ -52,13 +50,13 @@ class LocalSecuritySettingContents extends React.Component {
             </p>
           </div>
         )}
-        <h2 className="alert-anchor border-bottom">{t('security_setting.Local.name')}</h2>
+        <h2 className="alert-anchor border-bottom">{t('security_settings.Local.name')}</h2>
 
         {!isMailerSetup && (
           <div className="row">
             <div className="col-12">
               <div className="alert alert-danger">
-                <span>{t('security_setting.Local.need_complete_mail_setting_warning')}</span>
+                <span>{t('security_settings.Local.need_complete_mail_setting_warning')}</span>
                 <a href="/admin/app#mail-settings"> <i className="fa fa-link"></i> {t('admin:app_setting.mail_settings')}</a>
               </div>
             </div>
@@ -70,7 +68,7 @@ class LocalSecuritySettingContents extends React.Component {
             className="alert alert-info"
             // eslint-disable-next-line max-len
             dangerouslySetInnerHTML={{
-              __html: t('security_setting.Local.note for the only env option', { env: 'LOCAL_STRATEGY_USES_ONLY_ENV_VARS_FOR_SOME_OPTIONS' }),
+              __html: t('security_settings.Local.note for the only env option', { env: 'LOCAL_STRATEGY_USES_ONLY_ENV_VARS_FOR_SOME_OPTIONS' }),
             }}
           />
         )}
@@ -87,18 +85,18 @@ class LocalSecuritySettingContents extends React.Component {
                 disabled={adminLocalSecurityContainer.state.useOnlyEnvVars}
               />
               <label className="custom-control-label" htmlFor="isLocalEnabled">
-                {t('security_setting.Local.enable_local')}
+                {t('security_settings.Local.enable_local')}
               </label>
             </div>
             {!adminGeneralSecurityContainer.state.setupStrategies.includes('local') && isLocalEnabled && (
-              <div className="badge badge-warning">{t('security_setting.setup_is_not_yet_complete')}</div>
+              <div className="badge badge-warning">{t('security_settings.setup_is_not_yet_complete')}</div>
             )}
           </div>
         </div>
 
         {isLocalEnabled && (
-          <React.Fragment>
-            <h3 className="border-bottom">{t('security_setting.configuration')}</h3>
+          <>
+            <h3 className="border-bottom">{t('security_settings.configuration')}</h3>
 
             <div className="row">
               <div className="col-12 col-md-3 text-left text-md-right py-2">
@@ -114,9 +112,9 @@ class LocalSecuritySettingContents extends React.Component {
                     aria-haspopup="true"
                     aria-expanded="true"
                   >
-                    {registrationMode === 'Open' && t('security_setting.registration_mode.open')}
-                    {registrationMode === 'Restricted' && t('security_setting.registration_mode.restricted')}
-                    {registrationMode === 'Closed' && t('security_setting.registration_mode.closed')}
+                    {registrationMode === 'Open' && t('security_settings.registration_mode.open')}
+                    {registrationMode === 'Restricted' && t('security_settings.registration_mode.restricted')}
+                    {registrationMode === 'Closed' && t('security_settings.registration_mode.closed')}
                   </button>
                   <div className="dropdown-menu" aria-labelledby="dropdownMenuButton">
                     <button
@@ -126,7 +124,7 @@ class LocalSecuritySettingContents extends React.Component {
                         adminLocalSecurityContainer.changeRegistrationMode('Open');
                       }}
                     >
-                      {t('security_setting.registration_mode.open')}
+                      {t('security_settings.registration_mode.open')}
                     </button>
                     <button
                       className="dropdown-item"
@@ -135,7 +133,7 @@ class LocalSecuritySettingContents extends React.Component {
                         adminLocalSecurityContainer.changeRegistrationMode('Restricted');
                       }}
                     >
-                      {t('security_setting.registration_mode.restricted')}
+                      {t('security_settings.registration_mode.restricted')}
                     </button>
                     <button
                       className="dropdown-item"
@@ -144,17 +142,17 @@ class LocalSecuritySettingContents extends React.Component {
                         adminLocalSecurityContainer.changeRegistrationMode('Closed');
                       }}
                     >
-                      {t('security_setting.registration_mode.closed')}
+                      {t('security_settings.registration_mode.closed')}
                     </button>
                   </div>
                 </div>
 
-                <p className="form-text text-muted small">{t('security_setting.Register limitation desc')}</p>
+                <p className="form-text text-muted small">{t('security_settings.Register limitation desc')}</p>
               </div>
             </div>
             <div className="row">
               <div className="col-12 col-md-3 text-left text-md-right">
-                <strong dangerouslySetInnerHTML={{ __html: t('The whitelist of registration permission E-mail address') }} />
+                <strong dangerouslySetInnerHTML={{ __html: t('security_settings.The whitelist of registration permission E-mail address') }} />
               </div>
               <div className="col-12 col-md-6">
                 <textarea
@@ -165,19 +163,19 @@ class LocalSecuritySettingContents extends React.Component {
                   onChange={e => adminLocalSecurityContainer.changeRegistrationWhiteList(e.target.value)}
                 />
                 <p className="form-text text-muted small">
-                  {t('security_setting.restrict_emails')}
+                  {t('security_settings.restrict_emails')}
                   <br />
-                  {t('security_setting.for_example')}
+                  {t('security_settings.for_example')}
                   <code>@growi.org</code>
-                  {t('security_setting.in_this_case')}
+                  {t('security_settings.in_this_case')}
                   <br />
-                  {t('security_setting.insert_single')}
+                  {t('security_settings.insert_single')}
                 </p>
               </div>
             </div>
 
             <div className="row">
-              <label className="col-12 col-md-3 text-left text-md-right  col-form-label">{t('security_setting.Local.password_reset_by_users')}</label>
+              <label className="col-12 col-md-3 text-left text-md-right  col-form-label">{t('security_settings.Local.password_reset_by_users')}</label>
               <div className="col-12 col-md-6">
                 <div className="custom-control custom-switch custom-checkbox-success">
                   <input
@@ -188,17 +186,17 @@ class LocalSecuritySettingContents extends React.Component {
                     onChange={() => adminLocalSecurityContainer.switchIsPasswordResetEnabled()}
                   />
                   <label className="custom-control-label" htmlFor="isPasswordResetEnabled">
-                    {t('security_setting.Local.enable_password_reset_by_users')}
+                    {t('security_settings.Local.enable_password_reset_by_users')}
                   </label>
                 </div>
                 <p className="form-text text-muted small">
-                  {t('security_setting.Local.password_reset_desc')}
+                  {t('security_settings.Local.password_reset_desc')}
                 </p>
               </div>
             </div>
 
             <div className="row">
-              <label className="col-12 col-md-3 text-left text-md-right  col-form-label">{t('security_setting.Local.email_authentication')}</label>
+              <label className="col-12 col-md-3 text-left text-md-right  col-form-label">{t('security_settings.Local.email_authentication')}</label>
               <div className="col-12 col-md-6">
                 <div className="custom-control custom-switch custom-checkbox-success">
                   <input
@@ -209,17 +207,17 @@ class LocalSecuritySettingContents extends React.Component {
                     onChange={() => adminLocalSecurityContainer.switchIsEmailAuthenticationEnabled()}
                   />
                   <label className="custom-control-label" htmlFor="isEmailAuthenticationEnabled">
-                    {t('security_setting.Local.enable_email_authentication')}
+                    {t('security_settings.Local.enable_email_authentication')}
                   </label>
                 </div>
                 {!isMailerSetup && (
                   <div className="alert alert-warning p-1 my-1 small d-inline-block">
-                    <span>{t('security_setting.Local.please_enable_mailer')}</span>
-                    <a href="/admin/app#mail-settings"> <i className="fa fa-link"></i> {t('admin:app_setting.mail_settings')}</a>
+                    <span>{t('security_settings.Local.please_enable_mailer')}</span>
+                    <a href="/admin/app#mail-settings"> <i className="fa fa-link"></i> {t('app_setting.mail_settings')}</a>
                   </div>
                 )}
                 <p className="form-text text-muted small">
-                  {t('security_setting.Local.enable_email_authentication_desc')}
+                  {t('security_settings.Local.enable_email_authentication_desc')}
                 </p>
               </div>
             </div>
@@ -236,9 +234,9 @@ class LocalSecuritySettingContents extends React.Component {
                 </button>
               </div>
             </div>
-          </React.Fragment>
+          </>
         )}
-      </React.Fragment>
+      </>
     );
   }
 
@@ -246,18 +244,17 @@ class LocalSecuritySettingContents extends React.Component {
 
 LocalSecuritySettingContents.propTypes = {
   t: PropTypes.func.isRequired, // i18next
-  appContainer: PropTypes.instanceOf(AppContainer).isRequired,
   adminGeneralSecurityContainer: PropTypes.instanceOf(AdminGeneralSecurityContainer).isRequired,
   adminLocalSecurityContainer: PropTypes.instanceOf(AdminLocalSecurityContainer).isRequired,
 };
 
 const LocalSecuritySettingContentsWrapperFC = (props) => {
-  const { t } = useTranslation();
-  return <LocalSecuritySettingContents t={t} {...props} />;
+  const { t } = useTranslation('admin');
+  const { data: isMailerSetup } = useIsMailerSetup();
+  return <LocalSecuritySettingContents t={t} {...props} isMailerSetup={isMailerSetup ?? false} />;
 };
 
 const LocalSecuritySettingContentsWrapper = withUnstatedContainers(LocalSecuritySettingContentsWrapperFC, [
-  AppContainer,
   AdminGeneralSecurityContainer,
   AdminLocalSecurityContainer,
 ]);

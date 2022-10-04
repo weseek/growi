@@ -1,7 +1,9 @@
-import React from 'react';
+import React, { useRef } from 'react';
 
 import { UserPicture } from '@growi/ui';
-import { useTranslation } from 'react-i18next';
+import { useTranslation } from 'next-i18next';
+import Link from 'next/link';
+import { useRipple } from 'react-use-ripple';
 
 import { toastError } from '~/client/util/apiNotification';
 import { apiv3Post } from '~/client/util/apiv3-client';
@@ -10,6 +12,10 @@ import { useCurrentUser } from '~/stores/context';
 const PersonalDropdown = () => {
   const { t } = useTranslation();
   const { data: currentUser } = useCurrentUser();
+
+  // ripple
+  const buttonRef = useRef(null);
+  useRipple(buttonRef, { rippleColor: 'rgba(255, 255, 255, 0.3)' });
 
   const user = currentUser || {};
 
@@ -28,9 +34,9 @@ const PersonalDropdown = () => {
       {/* Button */}
       {/* remove .dropdown-toggle for hide caret */}
       {/* See https://stackoverflow.com/a/44577512/13183572 */}
-      <a className="px-md-3 nav-link waves-effect waves-light" data-toggle="dropdown">
+      <button className="bg-transparent border-0 nav-link" type="button" ref={buttonRef} data-toggle="dropdown">
         <UserPicture user={user} noLink noTooltip /><span className="ml-1 d-none d-lg-inline-block">&nbsp;{user.name}</span>
-      </a>
+      </button>
 
       {/* Menu */}
       <div className="dropdown-menu dropdown-menu-right">
@@ -48,12 +54,16 @@ const PersonalDropdown = () => {
           </div>
 
           <div className="btn-group btn-block mt-2" role="group">
-            <a className="btn btn-sm btn-outline-secondary col" href={`/user/${user.username}`}>
-              <i className="icon-fw icon-home"></i>{ t('personal_dropdown.home') }
-            </a>
-            <a className="btn btn-sm btn-outline-secondary col" href="/me">
-              <i className="icon-fw icon-wrench"></i>{ t('personal_dropdown.settings') }
-            </a>
+            <Link href={`/user/${user.username}`}>
+              <a className="btn btn-sm btn-outline-secondary col">
+                <i className="icon-fw icon-home"></i>{ t('personal_dropdown.home') }
+              </a>
+            </Link>
+            <Link href="/me">
+              <a className="btn btn-sm btn-outline-secondary col">
+                <i className="icon-fw icon-wrench"></i>{ t('personal_dropdown.settings') }
+              </a>
+            </Link>
           </div>
         </div>
 

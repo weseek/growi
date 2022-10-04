@@ -37,6 +37,8 @@ const CustomInput = forwardRef<HTMLInputElement, CustomInputProps>((props: Custo
   );
 });
 
+CustomInput.displayName = 'CustomInput';
+
 type DateRangePickerProps = {
   startDate: Date | null
   endDate: Date | null

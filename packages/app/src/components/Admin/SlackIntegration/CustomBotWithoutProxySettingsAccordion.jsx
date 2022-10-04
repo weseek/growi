@@ -1,12 +1,10 @@
 import React, { useState } from 'react';
 
+import { useTranslation } from 'next-i18next';
 import PropTypes from 'prop-types';
-import { useTranslation } from 'react-i18next';
 
-import AppContainer from '~/client/services/AppContainer';
 import { apiv3Post } from '~/client/util/apiv3-client';
 
-import { withUnstatedContainers } from '../../UnstatedUtils';
 import Accordion from '../Common/Accordion';
 
 import CustomBotWithoutProxySecretTokenSection from './CustomBotWithoutProxySecretTokenSection';
@@ -25,7 +23,7 @@ export const botInstallationStep = {
 
 const CustomBotWithoutProxySettingsAccordion = (props) => {
   const {
-    appContainer, activeStep, onTestConnectionInvoked,
+    activeStep, onTestConnectionInvoked,
     slackSigningSecret, slackBotToken, slackSigningSecretEnv, slackBotTokenEnv, commandPermission, eventActionsPermission,
   } = props;
   const successMessage = 'Successfully sent to Slack workspace.';
@@ -190,12 +188,8 @@ const CustomBotWithoutProxySettingsAccordion = (props) => {
 };
 
 
-const CustomBotWithoutProxySettingsAccordionWrapper = withUnstatedContainers(CustomBotWithoutProxySettingsAccordion, [AppContainer]);
-
-
 CustomBotWithoutProxySettingsAccordion.propTypes = {
   activeStep: PropTypes.oneOf(Object.values(botInstallationStep)).isRequired,
-  appContainer: PropTypes.instanceOf(AppContainer).isRequired,
 
   onUpdatedSecretToken: PropTypes.func,
   onTestConnectionInvoked: PropTypes.func,
@@ -208,4 +202,4 @@ CustomBotWithoutProxySettingsAccordion.propTypes = {
   eventActionsPermission: PropTypes.object,
 };
 
-export default CustomBotWithoutProxySettingsAccordionWrapper;
+export default CustomBotWithoutProxySettingsAccordion;

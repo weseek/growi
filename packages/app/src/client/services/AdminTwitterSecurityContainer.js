@@ -1,4 +1,4 @@
-import { pathUtils } from '@growi/core';
+import { isServer, pathUtils } from '@growi/core';
 import { Container } from 'unstated';
 import urljoin from 'url-join';
 
@@ -18,14 +18,14 @@ export default class AdminTwitterSecurityContainer extends Container {
   constructor(appContainer) {
     super();
 
+    if (isServer()) {
+      return;
+    }
+
     this.appContainer = appContainer;
-    this.dummyTwitterConsumerKey = 0;
-    this.dummyTwitterConsumerKeyForError = 1;
 
     this.state = {
-      callbackUrl: urljoin(pathUtils.removeTrailingSlash(appContainer.config.crowi.url), '/passport/twitter/callback'),
-      // set dummy value tile for using suspense
-      twitterConsumerKey: this.dummyTwitterConsumerKey,
+      twitterConsumerKey: '',
       twitterConsumerSecret: '',
       isSameUsernameTreatedAsIdenticalUser: false,
     };

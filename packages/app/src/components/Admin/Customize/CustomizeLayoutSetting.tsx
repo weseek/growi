@@ -1,19 +1,18 @@
 import React, { useCallback, useEffect, useState } from 'react';
 
-import { useTranslation } from 'react-i18next';
+import { useTranslation } from 'next-i18next';
 
 import { toastSuccess, toastError } from '~/client/util/apiNotification';
 import { apiv3Get, apiv3Put } from '~/client/util/apiv3-client';
-import { isDarkMode as isDarkModeByUtil } from '~/client/util/color-scheme';
-
-const isDarkMode = isDarkModeByUtil();
-const colorText = isDarkMode ? 'dark' : 'light';
+import { useNextThemes } from '~/stores/use-next-themes';
 
 const CustomizeLayoutSetting = (): JSX.Element => {
-  const { t } = useTranslation();
+  const { t } = useTranslation('admin');
+
+  const { resolvedTheme } = useNextThemes();
 
   const [isContainerFluid, setIsContainerFluid] = useState(false);
-  const [retrieveError, setRetrieveError] = useState();
+  const [retrieveError, setRetrieveError] = useState<any>();
 
   const retrieveData = useCallback(async() => {
     try {
@@ -33,7 +32,7 @@ const CustomizeLayoutSetting = (): JSX.Element => {
   const onClickSubmit = async() => {
     try {
       await apiv3Put('/customize-setting/layout', { isContainerFluid });
-      toastSuccess(t('toaster.update_successed', { target: t('admin:customize_setting.layout') }));
+      toastSuccess(t('toaster.update_successed', { target: t('customize_settings.layout') }));
       retrieveData();
     }
     catch (err) {
@@ -45,7 +44,7 @@ const CustomizeLayoutSetting = (): JSX.Element => {
     <React.Fragment>
       <div className="row">
         <div className="col-12">
-          <h2 className="admin-setting-header">{t('admin:customize_setting.layout')}</h2>
+          <h2 className="admin-setting-header">{t('customize_settings.layout')}</h2>
 
           <div className="d-flex justify-content-around mt-5">
             <div id="layoutOptions" className="card-deck">
@@ -54,9 +53,9 @@ const CustomizeLayoutSetting = (): JSX.Element => {
                 onClick={() => setIsContainerFluid(false)}
                 role="button"
               >
-                <img src={`/images/customize-settings/default-${colorText}.svg`} />
+                <img src={`/images/customize-settings/default-${resolvedTheme}.svg`} />
                 <div className="card-body text-center">
-                  {t('admin:customize_setting.layout_options.default')}
+                  {t('customize_settings.layout_options.default')}
                 </div>
               </div>
               <div
@@ -64,9 +63,9 @@ const CustomizeLayoutSetting = (): JSX.Element => {
                 onClick={() => setIsContainerFluid(true)}
                 role="button"
               >
-                <img src={`/images/customize-settings/fluid-${colorText}.svg`} />
+                <img src={`/images/customize-settings/fluid-${resolvedTheme}.svg`} />
                 <div className="card-body  text-center">
-                  {t('admin:customize_setting.layout_options.expanded')}
+                  {t('customize_settings.layout_options.expanded')}
                 </div>
               </div>
             </div>

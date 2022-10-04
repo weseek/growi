@@ -1,41 +1,38 @@
 import React, { FC, useState, useCallback } from 'react';
-import { useTranslation } from 'react-i18next';
 
+import { useTranslation } from 'next-i18next';
+
+import { toastSuccess, toastError } from '~/client/util/apiNotification';
+import { useIsMaintenanceMode } from '~/stores/maintenanceMode';
 import loggerFactory from '~/utils/logger';
 
-import { withUnstatedContainers } from '../../UnstatedUtils';
 import { ConfirmModal } from './ConfirmModal';
-import { toastSuccess, toastError } from '~/client/util/apiNotification';
-
-import AdminAppContainer from '~/client/services/AdminAppContainer';
 
 const logger = loggerFactory('growi:maintenanceMode');
 
-type Props = {
-  adminAppContainer: AdminAppContainer,
-};
 
-const MaintenanceMode: FC<Props> = (props: Props) => {
+export const MaintenanceMode: FC = () => {
   const { t } = useTranslation();
-  const { adminAppContainer } = props;
+
+  const {
+    data: isMaintenanceMode, start: startMaintenanceMode, end: endMaintenanceMode,
+  } = useIsMaintenanceMode();
 
   const [isModalOpen, setModalOpen] = useState<boolean>(false);
-  const [isMaintenanceMode, setMaintenanceMode] = useState<boolean | undefined>(adminAppContainer.state.isMaintenanceMode);
 
-  const openModal = () => { setModalOpen(true) };
-  const closeModal = () => { setModalOpen(false) };
+  const openModal = useCallback(() => { setModalOpen(true) }, []);
+
+  const closeModal = useCallback(() => { setModalOpen(false) }, []);
 
   const onConfirmHandler = useCallback(async() => {
     closeModal();
 
     try {
       if (isMaintenanceMode) {
-        await adminAppContainer.endMaintenanceMode();
-        setMaintenanceMode(false);
+        endMaintenanceMode();
       }
       else {
-        await adminAppContainer.startMaintenanceMode();
-        setMaintenanceMode(true);
+        startMaintenanceMode();
       }
     }
     catch (err) {
@@ -44,7 +41,7 @@ const MaintenanceMode: FC<Props> = (props: Props) => {
 
     // eslint-disable-next-line max-len
     toastSuccess(isMaintenanceMode ? t('admin:maintenance_mode.successfully_ended_maintenance_mode') : t('admin:maintenance_mode.successfully_started_maintenance_mode'));
-  }, [isMaintenanceMode, adminAppContainer, closeModal]);
+  }, [isMaintenanceMode, closeModal, startMaintenanceMode, endMaintenanceMode, t]);
 
   return (
     <div className="mb-5">
@@ -76,5 +73,3 @@ const MaintenanceMode: FC<Props> = (props: Props) => {
     </div>
   );
 };
-
-export default withUnstatedContainers(MaintenanceMode, [AdminAppContainer]);

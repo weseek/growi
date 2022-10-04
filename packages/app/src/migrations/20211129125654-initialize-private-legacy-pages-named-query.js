@@ -1,8 +1,8 @@
-import { getMongoUri, mongoOptions } from '@growi/core';
 import mongoose from 'mongoose';
 
 import { SearchDelegatorName } from '~/interfaces/named-query';
 import NamedQuery from '~/server/models/named-query';
+import { getMongoUri, mongoOptions } from '~/server/util/mongoose-utils';
 import loggerFactory from '~/utils/logger';
 
 

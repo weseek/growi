@@ -1,9 +1,13 @@
 import React, { FC, memo, useCallback } from 'react';
 
+import Link from 'next/link';
+
 import { useUserUISettings } from '~/client/services/user-ui-settings';
 import { SidebarContentsType } from '~/interfaces/ui';
-import { useCurrentUser, useIsGuestUser } from '~/stores/context';
+import { useCurrentUser } from '~/stores/context';
 import { useCurrentSidebarContents } from '~/stores/ui';
+
+import styles from './SidebarNav.module.scss';
 
 
 type PrimaryItemProps = {
@@ -58,18 +62,21 @@ const SecondaryItem: FC<SecondaryItemProps> = memo((props: SecondaryItemProps) =
   const { iconName, href, isBlank } = props;
 
   return (
-    <a href={href} className="d-block btn btn-primary" target={`${isBlank ? '_blank' : ''}`}>
-      <i className="material-icons">{iconName}</i>
-    </a>
+    <Link href={href} prefetch={false}>
+      <a className="d-block btn btn-primary" target={`${isBlank ? '_blank' : ''}`}>
+        <i className="material-icons">{iconName}</i>
+      </a>
+    </Link>
   );
 });
+SecondaryItem.displayName = 'SecondaryItem';
 
 
 type Props = {
   onItemSelected: (contents: SidebarContentsType) => void,
 }
 
-const SidebarNav: FC<Props> = (props: Props) => {
+export const SidebarNav: FC<Props> = (props: Props) => {
 
   const { data: currentUser } = useCurrentUser();
 
@@ -78,7 +85,7 @@ const SidebarNav: FC<Props> = (props: Props) => {
   const { onItemSelected } = props;
 
   return (
-    <div className="grw-sidebar-nav">
+    <div className={`grw-sidebar-nav ${styles['grw-sidebar-nav']}`}>
       <div className="grw-sidebar-nav-primary-container">
         {/* eslint-disable max-len */}
         <PrimaryItem contents={SidebarContentsType.TREE} label="Page Tree" iconName="format_list_bulleted" onItemSelected={onItemSelected} />
@@ -92,7 +99,7 @@ const SidebarNav: FC<Props> = (props: Props) => {
       </div>
       <div className="grw-sidebar-nav-secondary-container">
         {isAdmin && <SecondaryItem label="Admin" iconName="settings" href="/admin" />}
-        <SecondaryItem label="Draft" iconName="file_copy" href="/me/drafts" />
+        {/* <SecondaryItem label="Draft" iconName="file_copy" href="/me/drafts" /> */}
         <SecondaryItem label="Help" iconName="help" href="https://docs.growi.org" isBlank />
         <SecondaryItem label="Trash" iconName="delete" href="/trash" />
       </div>
@@ -100,5 +107,3 @@ const SidebarNav: FC<Props> = (props: Props) => {
   );
 
 };
-
-export default SidebarNav;

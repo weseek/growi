@@ -6,24 +6,24 @@ export const registerRules = () => {
   return [
     body('registerForm.username')
       .matches(/^[\da-zA-Z\-_.]+$/)
-      .withMessage('Username has invalid characters')
+      .withMessage('message.Username has invalid characters')
       .not()
       .isEmpty()
-      .withMessage('Username field is required'),
-    body('registerForm.name').not().isEmpty().withMessage('Name field is required'),
+      .withMessage('message.Username field is required'),
+    body('registerForm.name').not().isEmpty().withMessage('message.Name field is required'),
     body('registerForm.email')
       .isEmail()
-      .withMessage('Email format is invalid.')
+      .withMessage('message.Email format is invalid')
       .exists()
-      .withMessage('Email field is required.'),
+      .withMessage('message.Email field is required'),
     body('registerForm.password')
       .matches(/^[\x20-\x7F]*$/)
-      .withMessage('Password has invalid character')
+      .withMessage('message.Password has invalid character')
       .isLength({ min: PASSOWRD_MINIMUM_NUMBER })
-      .withMessage('Password minimum character should be more than 8 characters')
+      .withMessage('message.Password minimum character should be more than 8 characters')
       .not()
       .isEmpty()
-      .withMessage('Password field is required'),
+      .withMessage('message.Password field is required'),
     body('registerForm[app:globalLang]'),
   ];
 };

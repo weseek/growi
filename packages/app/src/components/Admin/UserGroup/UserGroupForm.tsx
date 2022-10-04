@@ -2,7 +2,7 @@ import React, { FC, useCallback, useState } from 'react';
 
 import dateFnsFormat from 'date-fns/format';
 import { TFunctionResult } from 'i18next';
-import { useTranslation } from 'react-i18next';
+import { useTranslation } from 'next-i18next';
 
 import { IUserGroupHasId } from '~/interfaces/user';
 
@@ -13,9 +13,9 @@ type Props = {
   onSubmit?: (targetGroup: IUserGroupHasId, userGroupData: Partial<IUserGroupHasId>) => Promise<void> | void
 };
 
-const UserGroupForm: FC<Props> = (props: Props) => {
+export const UserGroupForm: FC<Props> = (props: Props) => {
 
-  const { t } = useTranslation();
+  const { t } = useTranslation('admin');
 
   const {
     userGroup, selectableParentUserGroups, submitButtonLabel, onSubmit,
@@ -57,7 +57,7 @@ const UserGroupForm: FC<Props> = (props: Props) => {
     >
 
       <fieldset>
-        <h2 className="admin-setting-header">{t('admin:user_group_management.basic_info')}</h2>
+        <h2 className="admin-setting-header">{t('user_group_management.basic_info')}</h2>
 
         {
           userGroup?.createdAt != null && (
@@ -70,14 +70,14 @@ const UserGroupForm: FC<Props> = (props: Props) => {
 
         <div className="form-group row">
           <label htmlFor="name" className="col-md-2 col-form-label">
-            {t('admin:user_group_management.group_name')}
+            {t('user_group_management.group_name')}
           </label>
           <div className="col-md-4">
             <input
               className="form-control"
               type="text"
               name="name"
-              placeholder={t('admin:user_group_management.group_example')}
+              placeholder={t('user_group_management.group_example')}
               value={currentName}
               onChange={onChangeNameHandler}
               required
@@ -96,7 +96,7 @@ const UserGroupForm: FC<Props> = (props: Props) => {
 
         <div className="form-group row">
           <label htmlFor="parent" className="col-md-2 col-form-label">
-            {t('admin:user_group_management.parent_group')}
+            {t('user_group_management.parent_group')}
           </label>
           <div className="dropdown col-md-4">
             <button
@@ -107,7 +107,7 @@ const UserGroupForm: FC<Props> = (props: Props) => {
                 btn btn-outline-secondary dropdown-toggle mb-3 ${selectableParentUserGroups != null && selectableParentUserGroups.length > 0 ? '' : 'disabled'}
               `}
             >
-              {selectedParent?.name ?? t('admin:user_group_management.select_parent_group')}
+              {selectedParent?.name ?? t('user_group_management.select_parent_group')}
             </button>
             <div className="dropdown-menu" aria-labelledby="dropdownMenuButton">
               {
@@ -135,7 +135,7 @@ const UserGroupForm: FC<Props> = (props: Props) => {
                 className="dropdown-item"
                 type="button"
                 onClick={() => { setSelectedParent(undefined) }}
-              >{t('admin:user_group_management.release_parent_group')}
+              >{t('user_group_management.release_parent_group')}
               </button>
             </div>
           </div>
@@ -152,5 +152,3 @@ const UserGroupForm: FC<Props> = (props: Props) => {
     </form>
   );
 };
-
-export default UserGroupForm;

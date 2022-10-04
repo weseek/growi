@@ -1,8 +1,8 @@
 /* eslint-disable react/no-danger */
 import React from 'react';
 
+import { useTranslation } from 'next-i18next';
 import PropTypes from 'prop-types';
-import { useTranslation } from 'react-i18next';
 
 import AdminMarkDownContainer from '~/client/services/AdminMarkDownContainer';
 import { toastSuccess, toastError } from '~/client/util/apiNotification';
@@ -27,7 +27,7 @@ class LineBreakForm extends React.Component {
 
     try {
       await this.props.adminMarkDownContainer.updateLineBreakSetting();
-      toastSuccess(t('toaster.update_successed', { target: t('admin:markdown_setting.lineBreak_header') }));
+      toastSuccess(t('toaster.update_successed', { target: t('markdown_settings.lineBreak_header') }));
     }
     catch (err) {
       toastError(err);
@@ -39,7 +39,7 @@ class LineBreakForm extends React.Component {
     const { t, adminMarkDownContainer } = this.props;
     const { isEnabledLinebreaks } = adminMarkDownContainer.state;
 
-    const helpLineBreak = { __html: t('admin:markdown_setting.lineBreak_options.enable_lineBreak_desc') };
+    const helpLineBreak = { __html: t('markdown_settings.lineBreak_options.enable_lineBreak_desc') };
 
     return (
       <div className="col">
@@ -52,7 +52,7 @@ class LineBreakForm extends React.Component {
             onChange={() => { adminMarkDownContainer.setState({ isEnabledLinebreaks: !isEnabledLinebreaks }) }}
           />
           <label className="custom-control-label" htmlFor="isEnabledLinebreaks">
-            {t('admin:markdown_setting.lineBreak_options.enable_lineBreak') }
+            {t('markdown_settings.lineBreak_options.enable_lineBreak') }
           </label>
         </div>
         <p className="form-text text-muted" dangerouslySetInnerHTML={helpLineBreak} />
@@ -64,7 +64,7 @@ class LineBreakForm extends React.Component {
     const { t, adminMarkDownContainer } = this.props;
     const { isEnabledLinebreaksInComments } = adminMarkDownContainer.state;
 
-    const helpLineBreakInComment = { __html: t('admin:markdown_setting.lineBreak_options.enable_lineBreak_for_comment_desc') };
+    const helpLineBreakInComment = { __html: t('markdown_settings.lineBreak_options.enable_lineBreak_for_comment_desc') };
 
     return (
       <div className="col">
@@ -77,7 +77,7 @@ class LineBreakForm extends React.Component {
             onChange={() => { adminMarkDownContainer.setState({ isEnabledLinebreaksInComments: !isEnabledLinebreaksInComments }) }}
           />
           <label className="custom-control-label" htmlFor="isEnabledLinebreaksInComments">
-            {t('admin:markdown_setting.lineBreak_options.enable_lineBreak_for_comment') }
+            {t('markdown_settings.lineBreak_options.enable_lineBreak_for_comment') }
           </label>
         </div>
         <p className="form-text text-muted" dangerouslySetInnerHTML={helpLineBreakInComment} />
@@ -102,7 +102,7 @@ class LineBreakForm extends React.Component {
 }
 
 const LineBreakFormFC = (props) => {
-  const { t } = useTranslation();
+  const { t } = useTranslation('admin');
   return <LineBreakForm t={t} {...props} />;
 };
 

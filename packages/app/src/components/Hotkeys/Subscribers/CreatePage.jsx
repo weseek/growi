@@ -1,8 +1,9 @@
 import React, { useEffect } from 'react';
+
 import PropTypes from 'prop-types';
 
-import { usePageCreateModal } from '~/stores/modal';
 import { useCurrentPagePath } from '~/stores/context';
+import { usePageCreateModal } from '~/stores/modal';
 
 const CreatePage = React.memo((props) => {
 
@@ -27,5 +28,7 @@ CreatePage.propTypes = {
 CreatePage.getHotkeyStrokes = () => {
   return [['c']];
 };
+
+CreatePage.displayName = 'CreatePage';
 
 export default CreatePage;

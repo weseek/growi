@@ -1,7 +1,7 @@
-import React from 'react';
+import React, { useCallback } from 'react';
 
 import { createValidator } from '@growi/codemirror-textlint';
-import * as codemirror from 'codemirror';
+import { commands } from 'codemirror';
 import { JSHINT } from 'jshint';
 import * as loadCssSync from 'load-css-file';
 import PropTypes from 'prop-types';
@@ -11,19 +11,20 @@ import { throttle, debounce } from 'throttle-debounce';
 import urljoin from 'url-join';
 
 import InterceptorManager from '~/services/interceptor-manager';
+import { useDrawioModal } from '~/stores/modal';
 import loggerFactory from '~/utils/logger';
 
 import { UncontrolledCodeMirror } from '../UncontrolledCodeMirror';
 
 import AbstractEditor from './AbstractEditor';
 import CommentMentionHelper from './CommentMentionHelper';
-import DrawioModal from './DrawioModal';
+import { DrawioModal } from './DrawioModal';
 import EditorIcon from './EditorIcon';
 import EmojiPicker from './EmojiPicker';
 import EmojiPickerHelper from './EmojiPickerHelper';
 import GridEditModal from './GridEditModal';
 import geu from './GridEditorUtil';
-import HandsontableModal from './HandsontableModal';
+// import HandsontableModal from './HandsontableModal';
 import LinkEditModal from './LinkEditModal';
 import mdu from './MarkdownDrawioUtil';
 import markdownLinkUtil from './MarkdownLinkUtil';
@@ -34,25 +35,18 @@ import pasteHelper from './PasteHelper';
 import PreventMarkdownListInterceptor from './PreventMarkdownListInterceptor';
 import SimpleCheatsheet from './SimpleCheatsheet';
 
+import styles from './CodeMirrorEditor.module.scss';
+
 // Textlint
 window.JSHINT = JSHINT;
 window.kuromojin = { dicPath: '/static/dict' };
 
-// set save handler
-codemirror.commands.save = (instance) => {
-  if (instance.codeMirrorEditor != null) {
-    instance.codeMirrorEditor.dispatchSave();
-  }
-};
-// set CodeMirror instance as 'CodeMirror' so that CDN addons can reference
-window.CodeMirror = require('codemirror');
 require('codemirror/addon/display/placeholder');
 require('codemirror/addon/edit/matchbrackets');
 require('codemirror/addon/edit/matchtags');
 require('codemirror/addon/edit/closetag');
 require('codemirror/addon/edit/continuelist');
 require('codemirror/addon/hint/show-hint');
-require('codemirror/addon/hint/show-hint.css');
 require('codemirror/addon/search/searchcursor');
 require('codemirror/addon/search/match-highlighter');
 require('codemirror/addon/selection/active-line');
@@ -60,12 +54,10 @@ require('codemirror/addon/scroll/annotatescrollbar');
 require('codemirror/addon/scroll/scrollpastend');
 require('codemirror/addon/fold/foldcode');
 require('codemirror/addon/fold/foldgutter');
-require('codemirror/addon/fold/foldgutter.css');
 require('codemirror/addon/fold/markdown-fold');
 require('codemirror/addon/fold/brace-fold');
 require('codemirror/addon/display/placeholder');
 require('codemirror/addon/lint/lint');
-require('codemirror/addon/lint/lint.css');
 require('~/client/util/codemirror/autorefresh.ext');
 require('~/client/util/codemirror/drawio-fold.ext');
 require('~/client/util/codemirror/gfm-growi.mode');
@@ -109,10 +101,9 @@ class CodeMirrorEditor extends AbstractEditor {
     this.logger = loggerFactory('growi:PageEditor:CodeMirrorEditor');
 
     this.state = {
-      value: this.props.value,
       isGfmMode: this.props.isGfmMode,
       isLoadingKeymap: false,
-      isSimpleCheatsheetShown: this.props.isGfmMode && this.props.value.length === 0,
+      isSimpleCheatsheetShown: this.props.isGfmMode && this.props.value?.length === 0,
       isCheatsheetModalShown: false,
       additionalClassSet: new Set(),
       isEmojiPickerShown: false,
@@ -121,6 +112,7 @@ class CodeMirrorEditor extends AbstractEditor {
       isEmojiPickerMode: false,
     };
 
+    this.cm = React.createRef();
     this.gridEditModal = React.createRef();
     this.linkEditModal = React.createRef();
     this.handsontableModal = React.createRef();
@@ -163,7 +155,6 @@ class CodeMirrorEditor extends AbstractEditor {
     this.showGridEditorHandler = this.showGridEditorHandler.bind(this);
     this.showLinkEditHandler = this.showLinkEditHandler.bind(this);
     this.showHandsonTableHandler = this.showHandsonTableHandler.bind(this);
-    this.showDrawioHandler = this.showDrawioHandler.bind(this);
 
     this.foldDrawioSection = this.foldDrawioSection.bind(this);
     this.onSaveForDrawio = this.onSaveForDrawio.bind(this);
@@ -187,6 +178,9 @@ class CodeMirrorEditor extends AbstractEditor {
   componentDidMount() {
     // ensure to be able to resolve 'this' to use 'codemirror.commands.save'
     this.getCodeMirror().codeMirrorEditor = this;
+
+    // mark clean
+    this.getCodeMirror().getDoc().markClean();
 
     // fold drawio section
     this.foldDrawioSection();
@@ -247,17 +241,17 @@ class CodeMirrorEditor extends AbstractEditor {
   }
 
   getCodeMirror() {
-    return this.cm.editor;
+    return this.cm.current?.editor;
   }
 
   /**
    * @inheritDoc
    */
   forceToFocus() {
-    const editor = this.getCodeMirror();
     // use setInterval with reluctance -- 2018.01.11 Yuki Takei
     const intervalId = setInterval(() => {
-      this.getCodeMirror().focus();
+      const editor = this.getCodeMirror();
+      editor.focus();
       if (editor.hasFocus()) {
         clearInterval(intervalId);
         // refresh
@@ -270,8 +264,10 @@ class CodeMirrorEditor extends AbstractEditor {
    * @inheritDoc
    */
   setValue(newValue) {
-    this.setState({ value: newValue });
     this.getCodeMirror().getDoc().setValue(newValue);
+
+    // mark clean
+    this.getCodeMirror().getDoc().markClean();
   }
 
   /**
@@ -299,7 +295,7 @@ class CodeMirrorEditor extends AbstractEditor {
     }
 
     const editor = this.getCodeMirror();
-    const linePosition = Math.max(0, line);
+    const linePosition = Math.max(0, line - 1);
 
     editor.setCursor({ line: linePosition }); // leave 'ch' field as null/undefined to indicate the end of line
 
@@ -526,7 +522,7 @@ class CodeMirrorEditor extends AbstractEditor {
    */
   handleEnterKey() {
     if (!this.state.isGfmMode) {
-      codemirror.commands.newlineAndIndent(this.getCodeMirror());
+      commands.newlineAndIndent(this.getCodeMirror());
       return;
     }
 
@@ -592,7 +588,8 @@ class CodeMirrorEditor extends AbstractEditor {
 
   changeHandler(editor, data, value) {
     if (this.props.onChange != null) {
-      this.props.onChange(value);
+      const isClean = data.origin == null || editor.isClean();
+      this.props.onChange(value, isClean);
     }
 
     this.updateCheatsheetStates(null, value);
@@ -870,11 +867,7 @@ class CodeMirrorEditor extends AbstractEditor {
   }
 
   showHandsonTableHandler() {
-    this.handsontableModal.current.show(mtu.getMarkdownTable(this.getCodeMirror()));
-  }
-
-  showDrawioHandler() {
-    this.drawioModal.current.show(mdu.getMarkdownDrawioMxfile(this.getCodeMirror()));
+    // this.handsontableModal.current.show(mtu.getMarkdownTable(this.getCodeMirror()));
   }
 
 
@@ -1028,7 +1021,7 @@ class CodeMirrorEditor extends AbstractEditor {
         color={null}
         bssize="small"
         title="draw.io"
-        onClick={this.showDrawioHandler}
+        onClick={() => this.props.onClickDrawioBtn(mdu.getMarkdownDrawioMxfile(this.getCodeMirror()))}
       >
         <EditorIcon icon="Drawio" />
       </Button>,
@@ -1061,18 +1054,19 @@ class CodeMirrorEditor extends AbstractEditor {
     }
 
     return (
-      <React.Fragment>
+      <div className={`grw-codemirror-editor ${styles['grw-codemirror-editor']}`}>
 
         <UncontrolledCodeMirror
-          ref={(c) => { this.cm = c }}
+          ref={this.cm}
           className={additionalClasses}
           placeholder="search"
-          editorDidMount={(editor) => {
-          // add event handlers
-            editor.on('paste', this.pasteHandler);
-            editor.on('scrollCursorIntoView', this.scrollCursorIntoViewHandler);
-          }}
-          value={this.state.value}
+          // == temporary deactivate editorDidMount to use https://github.com/scniro/react-codemirror2/issues/284#issuecomment-1155928554
+          // editorDidMount={(editor) => {
+          // // add event handlers
+          //   editor.on('paste', this.pasteHandler);
+          //   editor.on('scrollCursorIntoView', this.scrollCursorIntoViewHandler);
+          // }}
+          value={this.props.value}
           options={{
             indentUnit: this.props.indentSize,
             theme: this.props.editorSettings.theme ?? 'elegant',
@@ -1133,17 +1127,12 @@ class CodeMirrorEditor extends AbstractEditor {
           ref={this.linkEditModal}
           onSave={(linkText) => { return markdownLinkUtil.replaceFocusedMarkdownLinkWithEditor(this.getCodeMirror(), linkText) }}
         />
-        <HandsontableModal
+        {/* <HandsontableModal
           ref={this.handsontableModal}
           onSave={(table) => { return mtu.replaceFocusedMarkdownTableWithEditor(this.getCodeMirror(), table) }}
           autoFormatMarkdownTable={this.props.editorSettings.autoFormatMarkdownTable}
-        />
-        <DrawioModal
-          ref={this.drawioModal}
-          onSave={this.onSaveForDrawio}
-        />
-
-      </React.Fragment>
+        /> */}
+      </div>
     );
   }
 
@@ -1161,4 +1150,17 @@ CodeMirrorEditor.defaultProps = {
   lineNumbers: true,
 };
 
-export default CodeMirrorEditor;
+
+const CodeMirrorEditorFc = React.forwardRef((props, ref) => {
+  const { open: openDrawioModal } = useDrawioModal();
+
+  const openDrawioModalHandler = useCallback((drawioMxFile) => {
+    openDrawioModal(drawioMxFile);
+  }, [openDrawioModal]);
+
+  return <CodeMirrorEditor ref={ref} onClickDrawioBtn={openDrawioModalHandler} {...props} />;
+});
+
+CodeMirrorEditorFc.displayName = 'CodeMirrorEditorFc';
+
+export default CodeMirrorEditorFc;

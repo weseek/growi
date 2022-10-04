@@ -1,5 +1,5 @@
-import { Ref } from './common';
-import { HasObjectId } from './has-object-id';
+import { Ref, HasObjectId } from '@growi/core';
+
 import { IUser } from './user';
 
 // Model

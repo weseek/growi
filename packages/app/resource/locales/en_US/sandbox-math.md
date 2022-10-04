@@ -1,6 +1,6 @@
 # :pencil: Math
 
-See [MathJax](https://www.mathjax.org/).
+See [KaTeX](https://katex.org/).
 
 ## Inline Formula
 

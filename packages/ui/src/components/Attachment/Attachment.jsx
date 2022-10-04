@@ -60,7 +60,9 @@ export class Attachment extends React.Component {
         <span className="mr-1 attachment-userpicture">
           <UserPicture user={attachment.creator} size="sm"></UserPicture>
         </span>
-        <a className="mr-2" href={attachment.filePathProxied}><i className={formatIcon}></i> {attachment.originalName}</a>
+        <a className="mr-2" href={attachment.filePathProxied} target="_blank" rel="noopener noreferrer">
+          <i className={formatIcon}></i> {attachment.originalName}
+        </a>
         <span className="mr-2">{fileType}</span>
         <span className="mr-2">{fileInUse}</span>
         <span className="mr-2">{btnDownload}</span>

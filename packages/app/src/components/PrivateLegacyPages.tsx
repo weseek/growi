@@ -2,13 +2,12 @@ import React, {
   useCallback, useMemo, useRef, useState, useEffect,
 } from 'react';
 
-import { useTranslation } from 'react-i18next';
+import { useTranslation } from 'next-i18next';
 import {
   UncontrolledButtonDropdown, DropdownToggle, DropdownMenu, DropdownItem, Modal, ModalHeader, ModalBody, ModalFooter,
 } from 'reactstrap';
 
 import { ISelectableAll, ISelectableAndIndeterminatable } from '~/client/interfaces/selectable-all';
-import AppContainer from '~/client/services/AppContainer';
 import { toastSuccess, toastError } from '~/client/util/apiNotification';
 import { apiv3Post } from '~/client/util/apiv3-client';
 import { V5ConversionErrCode } from '~/interfaces/errors/v5-conversion-error';
@@ -128,6 +127,8 @@ const SearchResultListHead = React.memo((props: SearchResultListHeadProps): JSX.
   );
 });
 
+SearchResultListHead.displayName = 'SearchResultListHead';
+
 /*
  * ConvertByPathModal
  */
@@ -182,24 +183,17 @@ const ConvertByPathModal = React.memo((props: ConvertByPathModalProps): JSX.Elem
   );
 });
 
+ConvertByPathModal.displayName = 'ConvertByPathModal';
+
 /**
  * LegacyPage
  */
 
-type Props = {
-  appContainer: AppContainer,
-}
-
-const PrivateLegacyPages = (props: Props): JSX.Element => {
+const PrivateLegacyPages = (): JSX.Element => {
   const { t } = useTranslation();
   const { data: currentUser } = useCurrentUser();
 
   const isAdmin = currentUser?.admin;
-
-  const {
-    appContainer,
-  } = props;
-
 
   const [keyword, setKeyword] = useState<string>(initQ);
   const [offset, setOffset] = useState<number>(0);
@@ -438,7 +432,6 @@ const PrivateLegacyPages = (props: Props): JSX.Element => {
     <>
       <SearchPageBase
         ref={searchPageBaseRef}
-        appContainer={appContainer}
         pages={data?.data}
         onSelectedPagesByCheckboxesChanged={selectedPagesByCheckboxesChangedHandler}
         forceHideMenuItems={[MenuItemType.BOOKMARK, MenuItemType.RENAME, MenuItemType.DUPLICATE, MenuItemType.REVERT, MenuItemType.PATH_RECOVERY]}
@@ -459,6 +452,7 @@ const PrivateLegacyPages = (props: Props): JSX.Element => {
             });
             toastSuccess(t('private_legacy_pages.by_path_modal.success'));
             setOpenConvertModal(false);
+            mutate();
           }
           catch (errs) {
             if (errs.length === 1) {

@@ -30,7 +30,7 @@ const formatDate = (date: Date | null) => {
 const PAGING_LIMIT = 10;
 
 export const AuditLogManagement: FC = () => {
-  const { t } = useTranslation();
+  const { t } = useTranslation('admin');
 
   const typeaheadRef = useRef<IClearable>(null);
 
@@ -159,7 +159,7 @@ export const AuditLogManagement: FC = () => {
 
       <h2 className="admin-setting-header mb-3">
         <span>
-          {isSettingPage ? t('AuditLog Settings') : t('AuditLog')}
+          {isSettingPage ? t('audit_log_management.audit_log_settings') : t('audit_log_management.audit_log')}
         </span>
         { !isSettingPage && (
           <button type="button" className="btn btn-sm ml-auto grw-btn-reload" onClick={reloadButtonPushedHandler}>

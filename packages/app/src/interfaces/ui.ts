@@ -1,4 +1,4 @@
-import { Nullable } from './common';
+import { Nullable } from '@growi/core';
 
 export const SidebarContentsType = {
   CUSTOM: 'custom',
@@ -12,7 +12,7 @@ export type SidebarContentsType = typeof SidebarContentsType[keyof typeof Sideba
 
 export type ICustomTabContent = {
   Content: () => JSX.Element,
-  i18n: string,
+  i18n?: string,
   Icon?: () => JSX.Element,
   index?: number,
   isLinkEnabled?: boolean | ((content: ICustomTabContent) => boolean),

@@ -1,6 +1,6 @@
 import React, { useCallback } from 'react';
 
-import { useTranslation } from 'react-i18next';
+import { useTranslation } from 'next-i18next';
 import { Card, CardBody } from 'reactstrap';
 
 import AdminCustomizeContainer from '~/client/services/AdminCustomizeContainer';
@@ -8,7 +8,6 @@ import { toastSuccess, toastError } from '~/client/util/apiNotification';
 
 import { withUnstatedContainers } from '../../UnstatedUtils';
 import AdminUpdateButtonRow from '../Common/AdminUpdateButtonRow';
-import CustomHeaderEditor from '../CustomHeaderEditor';
 
 type Props = {
   adminCustomizeContainer: AdminCustomizeContainer
@@ -54,9 +53,11 @@ const CustomizeHeaderSetting = (props: Props): JSX.Element => {
           </div>
 
           <div className="form-group">
-            <CustomHeaderEditor
+            <textarea
+              className="form-control"
+              name="customizeHeader"
               value={adminCustomizeContainer.state.currentCustomizeHeader || ''}
-              onChange={(inputValue) => { adminCustomizeContainer.changeCustomizeHeader(inputValue) }}
+              onChange={(e) => { adminCustomizeContainer.changeCustomizeHeader(e.target.value) }}
             />
             <p className="form-text text-muted text-right">
               <i className="fa fa-fw fa-keyboard-o" aria-hidden="true"></i>

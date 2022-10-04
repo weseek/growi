@@ -1,3 +1,4 @@
+import { isServer } from '@growi/core';
 import { Container } from 'unstated';
 
 import loggerFactory from '~/utils/logger';
@@ -16,14 +17,15 @@ export default class AdminLdapSecurityContainer extends Container {
   constructor(appContainer) {
     super();
 
+    if (isServer()) {
+      return;
+    }
+
     this.appContainer = appContainer;
-    this.dummyServerUrl = 0;
-    this.dummyServerUrlForError = 1;
 
     this.state = {
       retrieveError: null,
-      // set dummy value tile for using suspense
-      serverUrl: this.dummyServerUrl,
+      serverUrl: '',
       isUserBind: false,
       ldapBindDN: '',
       ldapBindDNPassword: '',

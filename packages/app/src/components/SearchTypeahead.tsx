@@ -6,11 +6,13 @@ import React, {
 import { UserPicture, PageListMeta, PagePathLabel } from '@growi/ui';
 import { AsyncTypeahead, Menu, MenuItem } from 'react-bootstrap-typeahead';
 
-
 import { IFocusable } from '~/client/interfaces/focusable';
 import { TypeaheadProps } from '~/client/interfaces/react-bootstrap-typeahead';
 import { IPageWithSearchMeta } from '~/interfaces/search';
 import { useSWRxSearch } from '~/stores/search';
+
+
+import styles from './SearchTypeahead.module.scss';
 
 
 type ResetFormButtonProps = {
@@ -205,11 +207,11 @@ const SearchTypeahead: ForwardRefRenderFunction<IFocusable, Props> = (props: Pro
     );
   }, [disableIncrementalSearch, helpElement, input, isForcused]);
 
-  const isLoading = searchResult == null && searchError == null;
+  const isLoading = searchResult !== undefined && searchError == null;
   const isOpenAlways = helpElement != null;
 
   return (
-    <div className="search-typeahead">
+    <div className={`search-typeahead ${styles['search-typeahead']}`}>
       <AsyncTypeahead
         {...props}
         id="search-typeahead-asynctypeahead"

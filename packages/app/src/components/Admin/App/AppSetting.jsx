@@ -1,11 +1,12 @@
 import React, { useCallback } from 'react';
 
+import { useTranslation, i18n } from 'next-i18next';
 import PropTypes from 'prop-types';
-import { useTranslation } from 'react-i18next';
+
+import { i18n as i18nConfig } from '^/config/next-i18next.config';
 
 import AdminAppContainer from '~/client/services/AdminAppContainer';
 import { toastSuccess, toastError } from '~/client/util/apiNotification';
-import { localeMetadatas } from '~/client/util/i18n';
 import loggerFactory from '~/utils/logger';
 
 
@@ -17,12 +18,12 @@ const logger = loggerFactory('growi:appSettings');
 
 const AppSetting = (props) => {
   const { adminAppContainer } = props;
-  const { t } = useTranslation();
+  const { t } = useTranslation('admin');
 
   const submitHandler = useCallback(async() => {
     try {
       await adminAppContainer.updateAppSettingHandler();
-      toastSuccess(t('toaster.update_successed', { target: t('App Settings') }));
+      toastSuccess(t('toaster.update_successed', { target: t('app_settings') }));
     }
     catch (err) {
       toastError(err);
@@ -77,22 +78,27 @@ const AppSetting = (props) => {
         </label>
         <div className="col-md-6 py-2">
           {
-            localeMetadatas.map(meta => (
-              <div key={meta.id} className="custom-control custom-radio custom-control-inline">
-                <input
-                  type="radio"
-                  id={`radioLang${meta.id}`}
-                  className="custom-control-input"
-                  name="globalLang"
-                  value={meta.id}
-                  checked={adminAppContainer.state.globalLang === meta.id}
-                  onChange={(e) => {
-                    adminAppContainer.changeGlobalLang(e.target.value);
-                  }}
-                />
-                <label className="custom-control-label" htmlFor={`radioLang${meta.id}`}>{meta.displayName}</label>
-              </div>
-            ))
+            i18nConfig.locales.map((locale) => {
+              if (i18n == null) { return }
+              const fixedT = i18n.getFixedT(locale, 'admin');
+
+              return (
+                <div key={locale} className="custom-control custom-radio custom-control-inline">
+                  <input
+                    type="radio"
+                    id={`radioLang${locale}`}
+                    className="custom-control-input"
+                    name="globalLang"
+                    value={locale}
+                    checked={adminAppContainer.state.globalLang === locale}
+                    onChange={(e) => {
+                      adminAppContainer.changeGlobalLang(e.target.value);
+                    }}
+                  />
+                  <label className="custom-control-label" htmlFor={`radioLang${locale}`}>{fixedT('meta.display_name')}</label>
+                </div>
+              );
+            })
           }
         </div>
       </div>

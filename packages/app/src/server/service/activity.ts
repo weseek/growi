@@ -1,17 +1,14 @@
+import { Ref, IPage, IUser } from '@growi/core';
 import mongoose from 'mongoose';
 
 import {
-  IActivity, SupportedAction, SupportedActionType, AllSupportedActions, ActionGroupSize,
+  IActivity, SupportedActionType, AllSupportedActions, ActionGroupSize,
   AllEssentialActions, AllSmallGroupActions, AllMediumGroupActions, AllLargeGroupActions,
 } from '~/interfaces/activity';
-import { Ref } from '~/interfaces/common';
-import { IPage } from '~/interfaces/page';
-import { IUser } from '~/interfaces/user';
 import Activity from '~/server/models/activity';
 
 import loggerFactory from '../../utils/logger';
 import Crowi from '../crowi';
-import { PageDocument } from '../models/page';
 
 
 const logger = loggerFactory('growi:service:ActivityService');
