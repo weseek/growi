@@ -58,7 +58,7 @@ import {
   useIsForbidden, useIsNotFound, useIsTrashPage, useIsSharedUser,
   useIsEnabledStaleNotification, useIsIdenticalPath,
   useIsSearchServiceConfigured, useIsSearchServiceReachable, useDisableLinkSharing,
-  useHackmdUri,
+  useDrawioUri, useHackmdUri,
   useIsAclEnabled, useIsUserPage,
   useCsrfToken, useIsSearchScopeChildrenAsDefault, useCurrentPageId, useCurrentPathname,
   useIsSlackConfigured, useRendererConfig, useEditingMarkdown,
@@ -147,9 +147,9 @@ type Props = CommonProps & {
   // isMailerSetup: boolean,
   isAclEnabled: boolean,
   // hasSlackConfig: boolean,
-  // drawioUri: string,
+  drawioUri: string,
   hackmdUri: string,
-  // noCdn: string,
+  noCdn: string,
   // highlightJsStyle: string,
   isAllReplyShown: boolean,
   // isContainerFluid: boolean,
@@ -213,12 +213,11 @@ const GrowiPage: NextPage<Props> = (props: Props) => {
   // useIsMailerSetup(props.isMailerSetup);
   useIsAclEnabled(props.isAclEnabled);
   // useHasSlackConfig(props.hasSlackConfig);
-  // useDrawioUri(props.drawioUri);
+  useDrawioUri(props.drawioUri);
   useHackmdUri(props.hackmdUri);
   // useNoCdn(props.noCdn);
   // useIndentSize(props.adminPreferredIndentSize);
   useDisableLinkSharing(props.disableLinkSharing);
-
   useRendererConfig(props.rendererConfig);
   // useRendererSettings(props.rendererSettingsStr != null ? JSON.parse(props.rendererSettingsStr) : undefined);
   // useGrowiRendererConfig(props.growiRendererConfigStr != null ? JSON.parse(props.growiRendererConfigStr) : undefined);
@@ -491,9 +490,9 @@ function injectServerConfigurations(context: GetServerSidePropsContext, props: P
   // props.isMailerSetup = mailService.isMailerSetup;
   props.isAclEnabled = aclService.isAclEnabled();
   // props.hasSlackConfig = slackNotificationService.hasSlackConfig();
-  // props.drawioUri = configManager.getConfig('crowi', 'app:drawioUri');
+  props.drawioUri = configManager.getConfig('crowi', 'app:drawioUri');
   props.hackmdUri = configManager.getConfig('crowi', 'app:hackmdUri');
-  // props.noCdn = configManager.getConfig('crowi', 'app:noCdn');
+  props.noCdn = configManager.getConfig('crowi', 'app:noCdn');
   // props.highlightJsStyle = configManager.getConfig('crowi', 'customize:highlightJsStyle');
   props.isAllReplyShown = configManager.getConfig('crowi', 'customize:isAllReplyShown');
   // props.isContainerFluid = configManager.getConfig('crowi', 'customize:isContainerFluid');

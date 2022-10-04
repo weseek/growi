@@ -5,6 +5,7 @@ import {
   OnDuplicatedFunction, OnRenamedFunction, OnDeletedFunction, OnPutBackedFunction,
 } from '~/interfaces/ui';
 import { IUserGroupHasId } from '~/interfaces/user';
+import { dwawioConfig } from '~/utils/drawio-config';
 
 import { useStaticSWR } from './use-static-swr';
 
@@ -436,5 +437,101 @@ export const useShortcutsModal = (): SWRResponse<ShortcutsModalStatus, Error> & 
     close() {
       swrResponse.mutate({ isOpened: false });
     },
+  };
+};
+
+
+/*
+* DrawioModal
+*/
+
+type DrawioModalStatus = {
+  isOpened: boolean,
+  drawioMxFile: string,
+}
+
+type DrawioModalStatusUtils = {
+  open(drawioMxFile: string): void,
+  close(): void,
+  receiveFromDrawio(event, drawioMxFile: string): void,
+}
+
+export const useDrawioModal = (status?: DrawioModalStatus): SWRResponse<DrawioModalStatus, Error> & DrawioModalStatusUtils => {
+  const initialData: DrawioModalStatus = {
+    isOpened: false,
+    drawioMxFile: '',
+  };
+  const swrResponse = useStaticSWR<DrawioModalStatus, Error>('drawioModalStatus', status, { fallbackData: initialData });
+
+  const close = (): void => {
+    swrResponse.mutate({ isOpened: false, drawioMxFile: '' });
+  };
+
+  const receiveFromDrawio = (event, drawioMxFile: string) => {
+
+    if (event.data === 'ready') {
+      event.source.postMessage(drawioMxFile, '*');
+      return;
+    }
+
+    if (event.data === '{"event":"configure"}') {
+      if (event.source == null) {
+        return;
+      }
+
+      // refs:
+      //  * https://desk.draw.io/support/solutions/articles/16000103852-how-to-customise-the-draw-io-interface
+      //  * https://desk.draw.io/support/solutions/articles/16000042544-how-does-embed-mode-work-
+      //  * https://desk.draw.io/support/solutions/articles/16000058316-how-to-configure-draw-io-
+      event.source.postMessage(JSON.stringify({
+        action: 'configure',
+        config: dwawioConfig,
+      }), '*');
+
+      return;
+    }
+
+    if (typeof event.data === 'string' && event.data.match(/mxfile/)) {
+      if (event.data.length > 0) {
+        const parser = new DOMParser();
+        const dom = parser.parseFromString(event.data, 'text/xml');
+        const drawioData = dom.getElementsByTagName('diagram')[0].innerHTML;
+
+        /*
+        * Saving Drawio will be implemented by the following tasks
+        * https://redmine.weseek.co.jp/issues/100845
+        * https://redmine.weseek.co.jp/issues/104507
+        */
+
+        // if (props.onSave != null) {
+        //   props.onSave(drawioData);
+        // }
+      }
+
+      window.removeEventListener('message', () => receiveFromDrawio);
+      close();
+
+      return;
+    }
+
+    if (typeof event.data === 'string' && event.data.length === 0) {
+      close();
+
+      return;
+    }
+
+    // NOTHING DONE. (Receive unknown iframe message.)
+  };
+
+  const open = (drawioMxFile: string): void => {
+    window.addEventListener('message', e => receiveFromDrawio(e, drawioMxFile));
+    swrResponse.mutate({ isOpened: true, drawioMxFile });
+  };
+
+  return {
+    ...swrResponse,
+    open,
+    close,
+    receiveFromDrawio,
   };
 };

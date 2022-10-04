@@ -130,6 +130,10 @@ export const useRevisionIdHackmdSynced = (initialData?: Nullable<any>): SWRRespo
   return useStaticSWR<Nullable<any>, Error>('revisionIdHackmdSynced', initialData);
 };
 
+export const useDrawioUri = (initialData?: Nullable<string>): SWRResponse<Nullable<string>, Error> => {
+  return useStaticSWR<Nullable<string>, Error>('drawioUri', initialData);
+};
+
 export const useHackmdUri = (initialData?: Nullable<string>): SWRResponse<Nullable<string>, Error> => {
   return useStaticSWR<Nullable<string>, Error>('hackmdUri', initialData);
 };
