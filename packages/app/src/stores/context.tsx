@@ -1,4 +1,4 @@
-import { IUser, IUserHasId } from '@growi/core';
+import { IUser } from '@growi/core';
 import { HtmlElementNode } from 'rehype-toc';
 import { Key, SWRResponse } from 'swr';
 import useSWRImmutable from 'swr/immutable';
@@ -100,10 +100,6 @@ export const useIsNotFound = (initialData?: boolean): SWRResponse<boolean, Error
 
 export const useIsEmptyPage = (initialData?: boolean): SWRResponse<boolean, Error> => {
   return useStaticSWR<boolean, Error>('isEmptyPage', initialData, { fallbackData: false });
-};
-
-export const usePageUser = (initialData?: IUserHasId): SWRResponse<IUserHasId, Error> => {
-  return useStaticSWR<IUserHasId, Error>('pageUser', initialData);
 };
 
 export const useHasChildren = (initialData?: Nullable<any>): SWRResponse<Nullable<any>, Error> => {
