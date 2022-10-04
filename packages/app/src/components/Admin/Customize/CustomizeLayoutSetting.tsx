@@ -3,37 +3,24 @@ import React, { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'next-i18next';
 
 import { toastSuccess, toastError } from '~/client/util/apiNotification';
-import { apiv3Get, apiv3Put } from '~/client/util/apiv3-client';
+import { apiv3Put } from '~/client/util/apiv3-client';
+import { useSWRxLayoutSetting } from '~/stores/admin/customize';
 import { useNextThemes } from '~/stores/use-next-themes';
 
 const CustomizeLayoutSetting = (): JSX.Element => {
   const { t } = useTranslation('admin');
 
   const { resolvedTheme } = useNextThemes();
+  const { data: layoutSetting, mutate: mutateLayoutSetting } = useSWRxLayoutSetting();
 
-  const [isContainerFluid, setIsContainerFluid] = useState(false);
+  const [isContainerFluid, setIsContainerFluid] = useState<boolean>(layoutSetting?.isContainerFluid ?? false);
   const [retrieveError, setRetrieveError] = useState<any>();
-
-  const retrieveData = useCallback(async() => {
-    try {
-      const res = await apiv3Get('/customize-setting/layout');
-      setIsContainerFluid(res.data.isContainerFluid);
-    }
-    catch (err) {
-      setRetrieveError(err);
-      toastError(err);
-    }
-  }, []);
-
-  useEffect(() => {
-    retrieveData();
-  }, [retrieveData]);
 
   const onClickSubmit = async() => {
     try {
       await apiv3Put('/customize-setting/layout', { isContainerFluid });
       toastSuccess(t('toaster.update_successed', { target: t('customize_settings.layout') }));
-      retrieveData();
+      mutateLayoutSetting();
     }
     catch (err) {
       toastError(err);

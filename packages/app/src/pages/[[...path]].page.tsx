@@ -68,6 +68,7 @@ import {
 import {
   CommonProps, getNextI18NextConfig, getServerSideCommonProps, useCustomTitle,
 } from './utils/commons';
+import { useSWRxLayoutSetting } from '~/stores/admin/customize';
 // import { useCurrentPageSWR } from '../stores/page';
 
 
@@ -242,6 +243,7 @@ const GrowiPage: NextPage<Props> = (props: Props) => {
   useCurrentPagePath(pagePath);
   useCurrentPathname(props.currentPathname);
   useIsTrashPage(pagePath != null && _isTrashPage(pagePath));
+  const { data: layoutSetting } = useSWRxLayoutSetting({ isContainerFluid: props.isContainerFluid });
   const { data: dataPageInfo } = useSWRxPageInfo(pageId);
 
   const { data: grantData } = useSWRxIsGrantNormalized(pageId);
@@ -278,9 +280,11 @@ const GrowiPage: NextPage<Props> = (props: Props) => {
   // }
 
   const isTopPagePath = isTopPage(pageWithMeta?.data.path ?? '');
+
+  // Use `props.isContainerFluid` as default, `layoutSetting.isContainerFluid` as admin setting, `dataPageInfo.expandContentWidth` as each page's setting
   const expandContentWidth = dataPageInfo == null || !('expandContentWidth' in dataPageInfo)
-    ? props.isContainerFluid
-    : dataPageInfo.expandContentWidth ?? props.isContainerFluid;
+    ? layoutSetting?.isContainerFluid ?? props.isContainerFluid
+    : dataPageInfo.expandContentWidth ?? layoutSetting?.isContainerFluid ?? props.isContainerFluid;
 
   return (
     <>
