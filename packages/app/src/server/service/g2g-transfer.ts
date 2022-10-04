@@ -1,10 +1,13 @@
 import { createReadStream, ReadStream } from 'fs';
 import { Readable } from 'stream';
 
+// eslint-disable-next-line no-restricted-imports
+import rawAxios from 'axios';
+import FormData from 'form-data';
 import { Types as MongooseTypes } from 'mongoose';
 
 import TransferKeyModel from '~/server/models/transfer-key';
-import axios, { customAxiosXTar } from '~/utils/axios';
+import axios from '~/utils/axios';
 import loggerFactory from '~/utils/logger';
 import { TransferKey } from '~/utils/vo/transfer-key';
 
@@ -129,10 +132,15 @@ export class G2GTransferPusherService implements Pusher {
 
     // Send a zip file to other growi via axios
     try {
-      // TODO: Make zipFileStream work
-      await customAxiosXTar.post('/_api/v3/g2g-transfer/', zipFileStream, {
+      // Use FormData to immitate browser's form data object
+      const form = new FormData();
+
+      const appTitle = this.crowi.appService.getAppTitle();
+      form.append('transferDataZipFile', zipFileStream, `${appTitle}-${Date.now}.growi.zip`);
+      await rawAxios.post('/_api/v3/g2g-transfer/', form, {
         baseURL: appUrl.origin,
         headers: {
+          ...form.getHeaders(), // This generates a unique boundary for multi part form data
           [X_GROWI_TRANSFER_KEY_HEADER_NAME]: key,
         },
       });

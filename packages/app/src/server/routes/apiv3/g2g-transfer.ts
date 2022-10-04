@@ -1,10 +1,12 @@
+import path from 'path';
+
 import express, { NextFunction, Request, Router } from 'express';
 import { body } from 'express-validator';
+import multer from 'multer';
 
 import TransferKeyModel from '~/server/models/transfer-key';
 import { isG2GTransferError } from '~/server/models/vo/g2g-transfer-error';
 import { IDataGROWIInfo, X_GROWI_TRANSFER_KEY_HEADER_NAME } from '~/server/service/g2g-transfer';
-import customAxios from '~/utils/axios';
 import loggerFactory from '~/utils/logger';
 import { TransferKey } from '~/utils/vo/transfer-key';
 
@@ -27,10 +29,32 @@ const validator = {
  * Routes
  */
 module.exports = (crowi: Crowi): Router => {
-  const { g2gTransferPusherService, g2gTransferReceiverService, exportService } = crowi;
-  if (g2gTransferPusherService == null || g2gTransferReceiverService == null || exportService == null) {
+  const {
+    g2gTransferPusherService, g2gTransferReceiverService, exportService, importService,
+    growiBridgeService,
+  } = crowi;
+  if (g2gTransferPusherService == null || g2gTransferReceiverService == null || exportService == null || importService == null
+    || growiBridgeService == null) {
     throw Error('GROWI is not ready for g2g transfer');
   }
+
+  const uploads = multer({
+    storage: multer.diskStorage({
+      destination: (req, file, cb) => {
+        cb(null, importService.baseDir);
+      },
+      filename(req, file, cb) {
+        // to prevent hashing the file name. files with same name will be overwritten.
+        cb(null, file.originalname);
+      },
+    }),
+    fileFilter: (req, file, cb) => {
+      if (path.extname(file.originalname) === '.zip') {
+        return cb(null, true);
+      }
+      cb(new Error('Only ".zip" is allowed'));
+    },
+  });
 
   const isInstalled = crowi.configManager?.getConfig('crowi', 'app:installed');
 
@@ -97,12 +121,39 @@ module.exports = (crowi: Crowi): Router => {
   };
 
   const router = express.Router();
+  const receiveRouter = express.Router();
+  const pushRouter = express.Router();
 
   // Auto import
-  router.post('/', verifyAndExtractTransferKey, async(req: Request & { transferKey: TransferKey }, res: ApiV3Response) => {
-    const zipFile = req.body;
+  receiveRouter.post('/', uploads.single('file'), verifyAndExtractTransferKey, async(req: Request & { transferKey: TransferKey }, res: ApiV3Response) => {
+    const { file } = req;
+
+    const zipFile = importService.getFile(file.filename);
+    let data;
+
     try {
-      await g2gTransferReceiverService.receive(zipFile);
+      data = await growiBridgeService.parseZipFile(zipFile);
+    }
+    catch (err) {
+      logger.error(err);
+      return res.apiv3Err(new ErrorV3('Failed to validate transfer data file.', 'validation_failed'), 500);
+    }
+
+    try {
+      // validate with meta.json
+      importService.validate(data.meta);
+
+      // const parameters = { action: SupportedAction.ACTION_ADMIN_ARCHIVE_DATA_UPLOAD };
+      // activityEvent.emit('update', res.locals.activity._id, parameters);
+    }
+    catch {
+      const msg = 'the version of this growi and the growi that exported the data are not met';
+      const varidationErr = 'versions-are-not-met';
+      return res.apiv3Err(new ErrorV3(msg, varidationErr), 500);
+    }
+
+    try {
+      await g2gTransferReceiverService.receive(file.stream);
     }
     catch (err) {
       logger.error(err);
@@ -112,7 +163,7 @@ module.exports = (crowi: Crowi): Router => {
     return res.apiv3({ message: 'Successfully started to receive transfer data.' });
   });
 
-  router.get('/growi-info', verifyAndExtractTransferKey, async(req: Request & { transferKey: TransferKey }, res: ApiV3Response) => {
+  receiveRouter.get('/growi-info', verifyAndExtractTransferKey, async(req: Request & { transferKey: TransferKey }, res: ApiV3Response) => {
     let growiInfo: IDataGROWIInfo;
     try {
       growiInfo = await g2gTransferReceiverService.answerGROWIInfo();
@@ -130,7 +181,8 @@ module.exports = (crowi: Crowi): Router => {
     return res.apiv3({ growiInfo });
   });
 
-  router.post('/generate-key', accessTokenParser, adminRequiredIfInstalled, appSiteUrlRequiredIfNotInstalled, async(req: Request, res: ApiV3Response) => {
+  // eslint-disable-next-line max-len
+  receiveRouter.post('/generate-key', accessTokenParser, adminRequiredIfInstalled, appSiteUrlRequiredIfNotInstalled, async(req: Request, res: ApiV3Response) => {
     const strAppSiteUrl = req.body.appSiteUrl ?? crowi.configManager?.getConfig('crowi', 'app:siteUrl');
 
     // Generate transfer key string
@@ -159,7 +211,7 @@ module.exports = (crowi: Crowi): Router => {
   // Auto export
   // TODO: Use socket to send progress info to the client
   // eslint-disable-next-line max-len
-  router.post('/transfer', accessTokenParser, loginRequiredStrictly, adminRequired, validator.transfer, apiV3FormValidator, async(req: Request, res: ApiV3Response) => {
+  pushRouter.post('/transfer', accessTokenParser, loginRequiredStrictly, adminRequired, validator.transfer, apiV3FormValidator, async(req: Request, res: ApiV3Response) => {
     const { transferKey: transferKeyString, collections } = req.body;
 
     // Parse transfer key
@@ -206,6 +258,9 @@ module.exports = (crowi: Crowi): Router => {
 
     return res.apiv3({ message: 'Successfully requested auto transfer.' });
   });
+
+  // Merge receiveRouter and pushRouter
+  router.use(receiveRouter, pushRouter);
 
   return router;
 };
