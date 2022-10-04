@@ -20,7 +20,7 @@ import {
 } from '~/stores/context';
 
 import {
-  CommonProps, getServerSideCommonProps, useCustomTitle, getNextI18NextConfig, addActivity,
+  CommonProps, getServerSideCommonProps, useCustomTitle, getNextI18NextConfig,
 } from '../utils/commons';
 
 const ShareLinkAlert = dynamic(() => import('~/components/Page/ShareLinkAlert'), { ssr: false });
@@ -131,6 +131,22 @@ async function injectNextI18NextConfigurations(context: GetServerSidePropsContex
   props._nextI18Next = nextI18NextConfig._nextI18Next;
 }
 
+async function addActivity(context: GetServerSidePropsContext, action: SupportedActionType): Promise<void> {
+  const req: CrowiRequest = context.req as CrowiRequest;
+
+  const parameters = {
+    ip: req.ip,
+    endpoint: req.originalUrl,
+    action,
+    user: req.user?._id,
+    snapshot: {
+      username: req.user?.username,
+    },
+  };
+
+  await req.crowi.activityService.createActivity(parameters);
+}
+
 export const getServerSideProps: GetServerSideProps = async(context: GetServerSidePropsContext) => {
   const req = context.req as CrowiRequest<IUserHasId & any>;
   const { user, crowi } = req;
@@ -159,7 +175,6 @@ export const getServerSideProps: GetServerSideProps = async(context: GetServerSi
   }
 
   injectServerConfigurations(context, props);
-  // await injectUserUISettings(context, props);
   await injectNextI18NextConfigurations(context, props);
 
   let action: SupportedActionType;
@@ -172,12 +187,12 @@ export const getServerSideProps: GetServerSideProps = async(context: GetServerSi
   else {
     action = SupportedAction.ACTION_SHARE_LINK_PAGE_VIEW;
   }
-
   await addActivity(context, action);
 
   return {
     props,
   };
 };
+
 
 export default SharedPage;
