@@ -40,7 +40,7 @@ on:
 jobs:
 
   test-prod-node14:
-    uses: weseek/growi/.github/workflows/reusable-app-prod.yml@support/master
+    uses: weseek/growi/.github/workflows/reusable-app-prod.yml@master
     with:
       node-version: 14.x
       skip-cypress: true
