@@ -131,6 +131,21 @@ async function injectNextI18NextConfigurations(context: GetServerSidePropsContex
   props._nextI18Next = nextI18NextConfig._nextI18Next;
 }
 
+function getAction(props: Props): SupportedActionType {
+  let action: SupportedActionType;
+  if (props.isExpired) {
+    action = SupportedAction.ACTION_SHARE_LINK_EXPIRED_PAGE_VIEW;
+  }
+  else if (props.shareLink == null) {
+    action = SupportedAction.ACTION_SHARE_LINK_NOT_FOUND;
+  }
+  else {
+    action = SupportedAction.ACTION_SHARE_LINK_PAGE_VIEW;
+  }
+
+  return action;
+}
+
 async function addActivity(context: GetServerSidePropsContext, action: SupportedActionType): Promise<void> {
   const req: CrowiRequest = context.req as CrowiRequest;
 
@@ -175,18 +190,7 @@ export const getServerSideProps: GetServerSideProps = async(context: GetServerSi
 
   injectServerConfigurations(context, props);
   await injectNextI18NextConfigurations(context, props);
-
-  let action: SupportedActionType;
-  if (props.isExpired) {
-    action = SupportedAction.ACTION_SHARE_LINK_EXPIRED_PAGE_VIEW;
-  }
-  else if (props.shareLink == null) {
-    action = SupportedAction.ACTION_SHARE_LINK_NOT_FOUND;
-  }
-  else {
-    action = SupportedAction.ACTION_SHARE_LINK_PAGE_VIEW;
-  }
-  await addActivity(context, action);
+  await addActivity(context, getAction(props));
 
   return {
     props,
