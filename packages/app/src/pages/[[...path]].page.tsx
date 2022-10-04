@@ -58,11 +58,11 @@ import {
   useIsForbidden, useIsNotFound, useIsTrashPage, useIsSharedUser,
   useIsEnabledStaleNotification, useIsIdenticalPath,
   useIsSearchServiceConfigured, useIsSearchServiceReachable, useDisableLinkSharing,
-  useHackmdUri,
+  useDrawioUri, useHackmdUri,
   useIsAclEnabled, useIsUserPage,
   useCsrfToken, useIsSearchScopeChildrenAsDefault, useCurrentPageId, useCurrentPathname,
   useIsSlackConfigured, useRendererConfig, useEditingMarkdown,
-  useEditorConfig, useIsAllReplyShown, useIsUploadableFile, useIsUploadableImage, usePageUser,
+  useEditorConfig, useIsAllReplyShown, useIsUploadableFile, useIsUploadableImage,
 } from '../stores/context';
 
 import {
@@ -126,7 +126,7 @@ const PutbackPageModal = (): JSX.Element => {
 type Props = CommonProps & {
   currentUser: IUser,
 
-  pageWithMeta: IPageToShowRevisionWithMeta,
+  pageWithMeta: IPageToShowRevisionWithMeta | null,
   // pageUser?: any,
   redirectFrom?: string;
 
@@ -147,9 +147,9 @@ type Props = CommonProps & {
   // isMailerSetup: boolean,
   isAclEnabled: boolean,
   // hasSlackConfig: boolean,
-  // drawioUri: string,
+  drawioUri: string,
   hackmdUri: string,
-  // noCdn: string,
+  noCdn: string,
   // highlightJsStyle: string,
   isAllReplyShown: boolean,
   // isContainerFluid: boolean,
@@ -213,12 +213,11 @@ const GrowiPage: NextPage<Props> = (props: Props) => {
   // useIsMailerSetup(props.isMailerSetup);
   useIsAclEnabled(props.isAclEnabled);
   // useHasSlackConfig(props.hasSlackConfig);
-  // useDrawioUri(props.drawioUri);
+  useDrawioUri(props.drawioUri);
   useHackmdUri(props.hackmdUri);
   // useNoCdn(props.noCdn);
   // useIndentSize(props.adminPreferredIndentSize);
   useDisableLinkSharing(props.disableLinkSharing);
-
   useRendererConfig(props.rendererConfig);
   // useRendererSettings(props.rendererSettingsStr != null ? JSON.parse(props.rendererSettingsStr) : undefined);
   // useGrowiRendererConfig(props.growiRendererConfigStr != null ? JSON.parse(props.growiRendererConfigStr) : undefined);
@@ -231,27 +230,25 @@ const GrowiPage: NextPage<Props> = (props: Props) => {
 
   const { pageWithMeta, userUISettings } = props;
 
-  let shouldRenderPutbackPageModal = false;
-  if (pageWithMeta != null) {
-    shouldRenderPutbackPageModal = _isTrashPage(pageWithMeta.data.path);
-  }
+  useSWRxCurrentPage(undefined, pageWithMeta?.data ?? null); // store initial data
+  useEditingMarkdown(pageWithMeta?.data.revision?.body ?? '');
 
   const pageId = pageWithMeta?.data._id;
   const pagePath = pageWithMeta?.data.path ?? (!_isPermalink(props.currentPathname) ? props.currentPathname : undefined);
 
-  useCurrentPageId(pageId);
-  useSWRxCurrentPage(undefined, pageWithMeta?.data); // store initial data
+  useCurrentPageId(pageId ?? null);
   useIsUserPage(pagePath != null && isUserPage(pagePath));
   // useIsNotCreatable(props.isForbidden || !isCreatablePage(pagePath)); // TODO: need to include props.isIdentical
   useCurrentPagePath(pagePath);
   useCurrentPathname(props.currentPathname);
-  useEditingMarkdown(pageWithMeta?.data.revision?.body);
   useIsTrashPage(pagePath != null && _isTrashPage(pagePath));
 
   const { data: grantData } = useSWRxIsGrantNormalized(pageId);
   const { mutate: mutateSelectedGrant } = useSelectedGrant();
 
-  usePageUser(pageWithMeta?.data.creator);
+  const shouldRenderPutbackPageModal = pageWithMeta != null
+    ? _isTrashPage(pageWithMeta.data.path)
+    : false;
 
   // sync grant data
   useEffect(() => {
@@ -329,8 +326,8 @@ const GrowiPage: NextPage<Props> = (props: Props) => {
           </div>
           { !props.isIdenticalPathPage && !props.isNotFound && (
             <footer className="footer d-edit-none">
-              { !isTopPagePath && (<Comments pageId={pageId} revision={pageWithMeta?.data.revision} />) }
-              { (pageWithMeta != null && isUsersHomePage(pageWithMeta.data.path)) && (
+              { pageWithMeta != null && !isTopPagePath && (<Comments pageId={pageId} revision={pageWithMeta.data.revision} />) }
+              { pageWithMeta != null && isUsersHomePage(pageWithMeta.data.path) && (
                 <UsersHomePageFooter creatorId={pageWithMeta.data.creator._id}/>
               ) }
               <CurrentPageContentFooter />
@@ -396,7 +393,7 @@ async function injectPageData(context: GetServerSidePropsContext, props: Props):
     }
   }
 
-  const pageWithMeta: IPageToShowRevisionWithMeta = await pageService.findPageAndMetaDataByViewer(pageId, currentPathname, user, true); // includeEmpty = true, isSharedPage = false
+  const pageWithMeta: IPageToShowRevisionWithMeta | null = await pageService.findPageAndMetaDataByViewer(pageId, currentPathname, user, true); // includeEmpty = true, isSharedPage = false
   const page = pageWithMeta?.data as unknown as PageDocument;
 
   // add user to seen users
@@ -493,9 +490,9 @@ function injectServerConfigurations(context: GetServerSidePropsContext, props: P
   // props.isMailerSetup = mailService.isMailerSetup;
   props.isAclEnabled = aclService.isAclEnabled();
   // props.hasSlackConfig = slackNotificationService.hasSlackConfig();
-  // props.drawioUri = configManager.getConfig('crowi', 'app:drawioUri');
+  props.drawioUri = configManager.getConfig('crowi', 'app:drawioUri');
   props.hackmdUri = configManager.getConfig('crowi', 'app:hackmdUri');
-  // props.noCdn = configManager.getConfig('crowi', 'app:noCdn');
+  props.noCdn = configManager.getConfig('crowi', 'app:noCdn');
   // props.highlightJsStyle = configManager.getConfig('crowi', 'customize:highlightJsStyle');
   props.isAllReplyShown = configManager.getConfig('crowi', 'customize:isAllReplyShown');
   // props.isContainerFluid = configManager.getConfig('crowi', 'customize:isContainerFluid');

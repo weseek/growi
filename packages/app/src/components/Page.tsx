@@ -3,12 +3,14 @@ import React, {
   useEffect, useRef, useState,
 } from 'react';
 
+import EventEmitter from 'events';
+
 import dynamic from 'next/dynamic';
 // import { debounce } from 'throttle-debounce';
 
 import { HtmlElementNode } from 'rehype-toc';
 
-// import { getOptionsToSave } from '~/client/util/editor';
+import { getOptionsToSave } from '~/client/util/editor';
 import {
   useIsGuestUser, useCurrentPageTocNode, useShareLinkId,
 } from '~/stores/context';
@@ -23,11 +25,13 @@ import {
 import loggerFactory from '~/utils/logger';
 
 import RevisionRenderer from './Page/RevisionRenderer';
-
-// TODO: import dynamically
+import { DrawioModal } from './PageEditor/DrawioModal';
 // import MarkdownTable from '~/client/models/MarkdownTable';
-// import mdu from './PageEditor/MarkdownDrawioUtil';
-// import mtu from './PageEditor/MarkdownTableUtil';
+import mdu from './PageEditor/MarkdownDrawioUtil';
+import mtu from './PageEditor/MarkdownTableUtil';
+
+
+declare const globalEmitter: EventEmitter;
 
 // const DrawioModal = dynamic(() => import('./PageEditor/DrawioModal'), { ssr: false });
 const GridEditModal = dynamic(() => import('./PageEditor/GridEditModal'), { ssr: false });
@@ -132,35 +136,35 @@ class PageSubstance extends React.Component<PageSubstanceProps> {
   }
 
   async saveHandlerForDrawioModal(drawioData) {
-    // const {
-    //   isSlackEnabled, slackChannels, pageContainer, pageTags, grant, grantGroupId, grantGroupName, mutateIsEnabledUnsavedWarning,
-    // } = this.props;
-    // const optionsToSave = getOptionsToSave(isSlackEnabled, slackChannels, grant, grantGroupId, grantGroupName, pageTags);
+  //   const {
+  //     isSlackEnabled, slackChannels, pageContainer, pageTags, grant, grantGroupId, grantGroupName, mutateIsEnabledUnsavedWarning,
+  //   } = this.props;
+  //   const optionsToSave = getOptionsToSave(isSlackEnabled, slackChannels, grant, grantGroupId, grantGroupName, pageTags);
 
-    // const newMarkdown = mdu.replaceDrawioInMarkdown(
-    //   drawioData,
-    //   this.props.pageContainer.state.markdown,
-    //   this.state.currentTargetDrawioArea.beginLineNumber,
-    //   this.state.currentTargetDrawioArea.endLineNumber,
-    // );
+    //   const newMarkdown = mdu.replaceDrawioInMarkdown(
+    //     drawioData,
+    //     this.props.pageContainer.state.markdown,
+    //     this.state.currentTargetDrawioArea.beginLineNumber,
+    //     this.state.currentTargetDrawioArea.endLineNumber,
+    //   );
 
-    // try {
-    //   // disable unsaved warning
-    //   mutateIsEnabledUnsavedWarning(false);
+    //   try {
+    //     // disable unsaved warning
+    //     mutateIsEnabledUnsavedWarning(false);
 
-    //   // eslint-disable-next-line no-unused-vars
-    //   const { page, tags } = await pageContainer.save(newMarkdown, this.props.editorMode, optionsToSave);
-    //   logger.debug('success to save');
+    //     // eslint-disable-next-line no-unused-vars
+    //     const { page, tags } = await pageContainer.save(newMarkdown, this.props.editorMode, optionsToSave);
+    //     logger.debug('success to save');
 
-    //   pageContainer.showSuccessToastr();
-    // }
-    // catch (error) {
-    //   logger.error('failed to save', error);
-    //   pageContainer.showErrorToastr(error);
-    // }
-    // finally {
-    //   this.setState({ currentTargetDrawioArea: null });
-    // }
+  //     pageContainer.showSuccessToastr();
+  //   }
+  //   catch (error) {
+  //     logger.error('failed to save', error);
+  //     pageContainer.showErrorToastr(error);
+  //   }
+  //   finally {
+  //     this.setState({ currentTargetDrawioArea: null });
+  //   }
   }
 
   override render() {
@@ -182,7 +186,11 @@ class PageSubstance extends React.Component<PageSubstanceProps> {
             <GridEditModal ref={this.gridEditModal} />
             <LinkEditModal ref={this.linkEditModal} />
             {/* <HandsontableModal ref={this.handsontableModal} onSave={this.saveHandlerForHandsontableModal} /> */}
-            {/* <DrawioModal ref={this.drawioModal} onSave={this.saveHandlerForDrawioModal} /> */}
+            {/* TODO: use global DrawioModal https://redmine.weseek.co.jp/issues/105981 */}
+            {/* <DrawioModal
+              ref={this.drawioModal}
+              onSave={this.saveHandlerForDrawioModal}
+            /> */}
           </>
         )}
       </div>
