@@ -1,16 +1,12 @@
 {
   "name": "@growi/ui",
-  "version": "5.1.5-RC.0",
+  "version": "6.0.0-RC.1",
   "description": "GROWI UI Libraries",
   "license": "MIT",
-  "keywords": [
-    "growi"
-  ],
+  "keywords": ["growi"],
   "main": "dist/cjs/index.js",
   "module": "dist/esm/index.js",
-  "files": [
-    "dist"
-  ],
+  "files": ["dist"],
   "scripts": {
     "build": "run-p build:*",
     "build:cjs": "tsc -p tsconfig.build.cjs.json && tsc-alias -p tsconfig.build.cjs.json",
@@ -21,7 +17,7 @@
     "test": "jest --verbose"
   },
   "dependencies": {
-    "@growi/core": "^5.1.5-RC.0"
+    "@growi/core": "^6.0.0-RC.1"
   },
   "devDependencies": {
     "eslint-plugin-regex": "^1.8.0",
