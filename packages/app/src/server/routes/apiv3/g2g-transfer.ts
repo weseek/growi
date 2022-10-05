@@ -1,4 +1,5 @@
 import path from 'path';
+import { Readable } from 'stream';
 
 import express, { NextFunction, Request, Router } from 'express';
 import { body } from 'express-validator';
@@ -274,7 +275,7 @@ module.exports = (crowi: Crowi): Router => {
         return res.apiv3Err(new ErrorV3('Failed to parse body.', 'parse_failed'), 500);
       }
 
-      await g2gTransferReceiverService.receiveAttachment(file.stream, attachmentMap);
+      await g2gTransferReceiverService.receiveAttachment(Readable.from(file.buffer), attachmentMap);
 
       return res.apiv3({ message: 'Successfully imported attached file.' });
     });
