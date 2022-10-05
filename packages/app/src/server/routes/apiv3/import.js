@@ -72,7 +72,7 @@ export const generateOverwriteParams = (collectionName, user, options) => {
   }
 };
 
-module.exports = (crowi) => {
+export default function route(crowi) {
   const { growiBridgeService, importService, socketIoService } = crowi;
   const accessTokenParser = require('../../middlewares/access-token-parser')(crowi);
   const loginRequired = require('../../middlewares/login-required')(crowi);
@@ -389,4 +389,4 @@ module.exports = (crowi) => {
   });
 
   return router;
-};
+}
