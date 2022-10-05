@@ -63,6 +63,7 @@ interface Receiver {
    */
   answerGROWIInfo(): Promise<IDataGROWIInfo>
   /**
+   * DO NOT USE TransferKeyModel.create() directly, instead, use this method to create a TransferKey document.
    * This method receives appSiteUrl to create a TransferKey document and returns generated transfer key string.
    * UUID is the same value as the created document's _id.
    * @param {URL} appSiteUrl URL type appSiteUrl
@@ -106,9 +107,19 @@ export class G2GTransferPusherService implements Pusher {
   }
 
   public async canTransfer(toGROWIInfo: IDataGROWIInfo): Promise<boolean> {
-    // Compare GROWIInfos
+    const configManager = this.crowi.configManager;
+    const userUpperLimit = configManager.getConfig('crowi', 'security:userUpperLimit');
+    const version = this.crowi.version;
 
-    return false;
+    if (version !== toGROWIInfo.version) {
+      return false;
+    }
+
+    if (userUpperLimit < (toGROWIInfo.userUpperLimit ?? Infinity)) {
+      return false;
+    }
+
+    return true;
   }
 
   public async transferAttachments(): Promise<void> { return }
@@ -232,14 +243,14 @@ export class G2GTransferReceiverService implements Receiver {
     // Save TransferKey document
     let tkd;
     try {
-      tkd = await TransferKeyModel.create({ _id: uuid, value: transferKeyString });
+      tkd = await TransferKeyModel.create({ _id: uuid, keyString: transferKeyString });
     }
     catch (err) {
       logger.error(err);
       throw err;
     }
 
-    return tkd.value;
+    return tkd.keyString;
   }
 
   public async receive(zipfile: Readable): Promise<void> {
