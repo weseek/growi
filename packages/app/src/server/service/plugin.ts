@@ -1,11 +1,10 @@
-import fs from 'fs';
 import path from 'path';
 
 import { GrowiPlugin, GrowiPluginOrigin } from '~/interfaces/plugin';
 import loggerFactory from '~/utils/logger';
 import { resolveFromRoot } from '~/utils/project-dir-utils';
 
-const logger = loggerFactory('growi:plugins:plugin-utils');
+const logger = loggerFactory('growi:service:PluginService');
 
 
 const pluginStoringPath = resolveFromRoot('tmp/plugins');
@@ -19,29 +18,37 @@ export class PluginService {
     return;
   }
 
-  static async detectPlugins(origin: GrowiPluginOrigin, installedPath: string): Promise<GrowiPlugin[]> {
-    const packageJson = await import(path.resolve(pluginStoringPath, installedPath, 'package.json'));
+  // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
+  static async detectPlugins(origin: GrowiPluginOrigin, installedPath: string, parentPackageJson?: any): Promise<GrowiPlugin[]> {
+    const packageJsonPath = path.resolve(pluginStoringPath, installedPath, 'package.json');
+    const packageJson = await import(packageJsonPath);
 
+    const { growiPlugin } = packageJson;
     const {
-      growiPlugin, name: packageName, description: packageDesc, author: packageAuthor,
-    } = packageJson;
+      name: packageName, description: packageDesc, author: packageAuthor,
+    } = parentPackageJson ?? packageJson;
+
 
     if (growiPlugin == null) {
       throw new Error('This package does not include \'growiPlugin\' section.');
     }
 
+    // detect sub plugins for monorepo
     if (growiPlugin.isMonorepo && growiPlugin.packages != null) {
-      return growiPlugin.packages.flatmap(async(subPackagePath) => {
-        const subPackageInstalledPath = path.resolve(pluginStoringPath, installedPath, subPackagePath);
-        return this.detectPlugins(origin, subPackageInstalledPath);
-      });
+      const plugins = await Promise.all(
+        growiPlugin.packages.map(async(subPackagePath) => {
+          const subPackageInstalledPath = path.join(installedPath, subPackagePath);
+          return this.detectPlugins(origin, subPackageInstalledPath, packageJson);
+        }),
+      );
+      return plugins.flat();
     }
 
     if (growiPlugin.types == null) {
       throw new Error('\'growiPlugin\' section must have a \'types\' property.');
     }
 
-    return [{
+    const plugin = {
       isEnabled: true,
       installedPath,
       origin,
@@ -51,7 +58,11 @@ export class PluginService {
         author: growiPlugin.author ?? packageAuthor,
         types: growiPlugin.types,
       },
-    }];
+    };
+
+    logger.info('Plugin detected => ', plugin);
+
+    return [plugin];
   }
 
   // /**
