@@ -14,41 +14,34 @@ const logger = loggerFactory('growi:plugins:plugin-utils');
 
 const pluginStoringPath = resolveFromRoot('tmp/plugins');
 
-function downloadZipFile(ghUrl: string, filename:string): void {
+async function downloadZipFile(ghUrl: string, filename:string, crowi): Promise<void> {
+  const { importService } = crowi;
   wget({ url: ghUrl, dest: filename });
+  try {
+    console.log('j;oif', `${filename}master.zip`);
+    const zipFile = await importService.getFile('master.zip');
+    console.log('zip');
+    const file = await importService.unzip(zipFile);
+    console.log('fixl', file);
+  }
+  catch (err) {
+    console.log('fail');
+  }
   return;
 }
-
 export class PluginService {
 
-  static async install(crowi: Crowi, origin: GrowiPluginOrigin): Promise<void> {
-    // const { importServic } = crowi;
+  async install(crowi: Crowi, origin: GrowiPluginOrigin): Promise<void> {
     // download
     const ghUrl = origin.url;
-    // const ghBranch = origin.ghBranch;
-    // const ghTag = origin.ghTag;
     const downloadDir = path.join(process.cwd(), 'tmp/plugins/');
-    downloadZipFile(`${ghUrl}/archive/refs/heads/master.zip`, downloadDir);
-    // const test = '/workspace/growi/packages/app/tmp/plugins/master.zip';
-    // const file = unzip();
-    // // unzip
-    // const files = await unzip(`${downloadDir}master.zip`);
-    // console.log('fle', files);
-    // const file = await importService.unzip(`${downloadDir}master.zip`);
-    // console.log(file);
-    // try {
-    //   // unzip
-    //   const file = await importService.unzip(zipFile);
-    //   console.log('fle', file)
-    // }
-    // catch (err) {
-    //   // TODO:
-    // }
+    await downloadZipFile(`${ghUrl}/archive/refs/heads/master.zip`, downloadDir, crowi);
 
     // TODO: detect plugins
     // TODO: save documents
     return;
   }
+
 
   // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
   static async detectPlugins(origin: GrowiPluginOrigin, installedPath: string, parentPackageJson?: any): Promise<GrowiPlugin[]> {
