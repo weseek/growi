@@ -3,7 +3,7 @@ import React, { ReactNode } from 'react';
 import dynamic from 'next/dynamic';
 
 import { GrowiNavbar } from '../Navbar/GrowiNavbar';
-import Sidebar from '../Sidebar';
+// import Sidebar from '../Sidebar';
 
 import { RawLayout } from './RawLayout';
 
@@ -43,7 +43,7 @@ export const BasicLayout = ({
 
       <div className="page-wrapper d-flex d-print-block">
         <div className="grw-sidebar-wrapper">
-          <Sidebar />
+          {/* <Sidebar /> */}
         </div>
 
         <div className="flex-fill mw-0" style={{ position: 'relative' }}>
