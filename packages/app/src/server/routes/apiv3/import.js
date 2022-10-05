@@ -5,6 +5,10 @@ import loggerFactory from '~/utils/logger';
 
 import { generateAddActivityMiddleware } from '../../middlewares/add-activity';
 
+import overwriteParamsAttachmentFilesChunks from './overwrite-params/attachmentFiles.chunks';
+import overwriteParamsPages from './overwrite-params/pages';
+import overwriteParamsRevisions from './overwrite-params/revisions';
+
 
 const logger = loggerFactory('growi:routes:apiv3:import'); // eslint-disable-line no-unused-vars
 
@@ -58,11 +62,11 @@ const router = express.Router();
 export const generateOverwriteParams = (collectionName, user, options) => {
   switch (collectionName) {
     case 'pages':
-      return require('./overwrite-params/pages')(user, options);
+      return overwriteParamsPages(user, options);
     case 'revisions':
-      return require('./overwrite-params/revisions')(user, options);
+      return overwriteParamsRevisions(user, options);
     case 'attachmentFiles.chunks':
-      return require('./overwrite-params/attachmentFiles.chunks')(user, options);
+      return overwriteParamsAttachmentFilesChunks(user, options);
     default:
       return {};
   }
