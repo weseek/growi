@@ -44,8 +44,6 @@ const G2GDataTransferExportForm = (props: Props): JSX.Element => {
   const [errorsMap, setErrorsMap] = useState<any>([]);
   const [isConfigurationModalOpen, setConfigurationModalOpen] = useState(false);
   const [collectionNameForConfiguration, setCollectionNameForConfiguration] = useState<any>();
-  const [isErrorsViewerOpen, setErrorsViewerOpen] = useState(false);
-  const [collectionNameForErrorsViewer, setCollectionNameForErrorsViewer] = useState<any>();
 
   const checkAll = useCallback(() => {
     setSelectedCollections(new Set(allCollectionNames));
@@ -54,6 +52,16 @@ const G2GDataTransferExportForm = (props: Props): JSX.Element => {
   const uncheckAll = useCallback(() => {
     setSelectedCollections(new Set());
   }, []);
+
+  const updateOption = (collectionName, data) => {
+    const options = optionsMap[collectionName];
+
+    // merge
+    Object.assign(options, data);
+
+    optionsMap[collectionName] = options;
+    setOptionsMap({ ...optionsMap, collectionName: options });
+  };
 
   const ImportItems = ({ collectionNames }): JSX.Element => {
     const toggleCheckbox = (collectionName, bool) => {
@@ -67,27 +75,13 @@ const G2GDataTransferExportForm = (props: Props): JSX.Element => {
 
       setSelectedCollections(collections);
 
+      // TODO: validation
       // this.validate();
-    };
-
-    const updateOption = (collectionName, data) => {
-      const options = optionsMap[collectionName];
-
-      // merge
-      Object.assign(options, data);
-
-      optionsMap[collectionName] = options;
-      setOptionsMap({ ...optionsMap, collectionName: options });
     };
 
     const openConfigurationModal = (collectionName) => {
       setConfigurationModalOpen(true);
       setCollectionNameForConfiguration(collectionName);
-    };
-
-    const showErrorsViewer = (collectionName) => {
-      setErrorsViewerOpen(true);
-      setCollectionNameForErrorsViewer(collectionName);
     };
 
     return (
@@ -117,7 +111,6 @@ const G2GDataTransferExportForm = (props: Props): JSX.Element => {
                 onChange={toggleCheckbox}
                 onOptionChange={updateOption}
                 onConfigButtonClicked={openConfigurationModal}
-                onErrorLinkClicked={showErrorsViewer}
               />
             </div>
           );
@@ -170,6 +163,22 @@ const G2GDataTransferExportForm = (props: Props): JSX.Element => {
     return <GroupImportItems groupList={collectionNames} groupName='Other' errors={[]} />;
   };
 
+  const ConfigurationModal = (): JSX.Element => {
+    if (collectionNameForConfiguration == null) {
+      return <></>;
+    }
+
+    return (
+      <ImportCollectionConfigurationModal
+        isOpen={isConfigurationModalOpen}
+        onClose={setConfigurationModalOpen(false)}
+        onOptionChange={updateOption}
+        collectionName={collectionNameForConfiguration}
+        option={optionsMap[collectionNameForConfiguration]}
+      />
+    );
+  };
+
   const setInitialOptionsMap = () => {
     const initialOptionsMap = {};
     allCollectionNames.forEach((collectionName) => {
@@ -211,8 +220,8 @@ const G2GDataTransferExportForm = (props: Props): JSX.Element => {
 
   const teardownWebsocketEventHandler = () => {
     if (socket != null) {
-      socket.removeAllListeners('admin:onProgressForImport');
-      socket.removeAllListeners('admin:onTerminateForImport');
+      socket.off('admin:onProgressForImport');
+      socket.off('admin:onTerminateForImport');
     }
   };
 
@@ -254,24 +263,7 @@ const G2GDataTransferExportForm = (props: Props): JSX.Element => {
       <GroupImportItems groupList={GROUPS_CONFIG} groupName='Config' errors={[]} />
       <OtherImportItems />
 
-      {/* <div className="mt-4 text-center">
-        <button type="button" className="btn btn-outline-secondary mx-1" onClick={this.props.onDiscard}>
-          {t('admin:importer_management.growi_settings.discard')}
-        </button>
-        <button type="button" className="btn btn-primary mx-1" onClick={this.import} disabled={!canImport || isImporting}>
-          {t('admin:importer_management.import')}
-        </button>
-      </div> */}
-
-      {/* <ImportCollectionConfigurationModal
-        isOpen={isConfigurationModalOpen}
-        onClose={() => this.setState({ isConfigurationModalOpen: false })}
-        onOptionChange={this.updateOption}
-        collectionName={collections}
-        option={optionsMap[collections]}
-      /> */}
-
-      {/* {this.renderErrorsViewer()} */}
+      <ConfigurationModal />
     </>
   );
 };
