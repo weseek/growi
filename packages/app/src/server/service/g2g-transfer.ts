@@ -121,7 +121,9 @@ export class G2GTransferPusherService implements Pusher {
     // TODO: batch get
     for await (const attachment of attachments) {
       try {
-        // TODO: refresh transfer key
+        // TODO: refresh transfer key per X min
+        // TODO: get read stream of each attachment
+
         // TODO: post each attachment file data to receiver
       }
       catch (err) {
@@ -208,13 +210,14 @@ export class G2GTransferReceiverService implements Receiver {
 
   public async answerGROWIInfo(): Promise<IDataGROWIInfo> {
     // TODO: add attachment file limit, storage total limit
-    const configManager = this.crowi.configManager;
+    const { configManager } = this.crowi;
     const userUpperLimit = configManager.getConfig('crowi', 'security:userUpperLimit');
     const version = this.crowi.version;
     const attachmentInfo = {
       type: configManager.getConfig('crowi', 'app:fileUploadType'),
       bucket: undefined,
-      customEndpoint: undefined,
+      customEndpoint: undefined, // for S3
+      uploadNamespace: undefined, // for GCS
     };
 
     // put storage location info to check storage identification
@@ -225,6 +228,7 @@ export class G2GTransferReceiverService implements Receiver {
         break;
       case 'gcs':
         attachmentInfo.bucket = configManager.getConfig('crowi', 'gcs:bucket');
+        attachmentInfo.uploadNamespace = configManager.getConfig('crowi', 'gcs:uploadNamespace');
         break;
       default:
     }
