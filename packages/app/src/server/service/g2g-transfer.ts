@@ -105,7 +105,7 @@ export class G2GTransferPusherService implements Pusher {
     return toGROWIInfo;
   }
 
-  public async canTransfer(fromGROWIInfo: IDataGROWIInfo): Promise<boolean> {
+  public async canTransfer(toGROWIInfo: IDataGROWIInfo): Promise<boolean> {
     // Check if Transfer key is alive
     // Ask toGROWI about toGROWIInfo
     // Compare GROWIInfos

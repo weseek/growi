@@ -303,9 +303,9 @@ module.exports = (crowi: Crowi): Router => {
 
     // Ask growi info
     // TODO: Ask progress as well
-    let fromGROWIInfo: IDataGROWIInfo;
+    let toGROWIInfo: IDataGROWIInfo;
     try {
-      fromGROWIInfo = await g2gTransferPusherService.askGROWIInfo(tk);
+      toGROWIInfo = await g2gTransferPusherService.askGROWIInfo(tk);
     }
     catch (err) {
       logger.error(err);
@@ -313,7 +313,7 @@ module.exports = (crowi: Crowi): Router => {
     }
 
     // Check if can transfer
-    const canTransfer = await g2gTransferPusherService.canTransfer(fromGROWIInfo);
+    const canTransfer = await g2gTransferPusherService.canTransfer(toGROWIInfo);
     if (!canTransfer) {
       logger.debug('Could not transfer.');
       return res.apiv3Err(new ErrorV3('GROWI is incompatible to transfer data.', 'growi_incompatible_to_transfer'));
