@@ -301,6 +301,13 @@ export class G2GTransferReceiverService implements Receiver {
     return;
   }
 
+  public async receiveAttachment(zipfile: Readable): Promise<void> {
+    // Import data
+    // Call onCompleteTransfer when finished
+
+    return;
+  }
+
   /**
    * Sync DB, etc.
    * @returns {Promise<void>}
