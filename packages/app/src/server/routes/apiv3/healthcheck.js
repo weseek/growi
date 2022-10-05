@@ -148,12 +148,12 @@ module.exports = (crowi) => {
     const info = {};
 
     // connect to MongoDB
-    if (checkServices.includes('mongo')) {
+    if (typeof checkServices === 'object' && checkServices.includes('mongo')) {
       await checkMongo(errors, info);
     }
 
     // connect to search service
-    if (checkServices.includes('search')) {
+    if (typeof checkServices === 'object' && checkServices.includes('search')) {
       await checkSearch(errors, info);
     }
 
