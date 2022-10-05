@@ -1,7 +1,7 @@
 export const GrowiPluginResourceType = {
-  Template: 'Template',
-  Style: 'Style',
-  Script: 'Script',
+  Template: 'template',
+  Style: 'style',
+  Script: 'script',
 } as const;
 export type GrowiPluginResourceType = typeof GrowiPluginResourceType[keyof typeof GrowiPluginResourceType];
 
