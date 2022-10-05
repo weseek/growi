@@ -1,0 +1,16 @@
+{
+  "extends": "./tsconfig.base.json",
+  "compilerOptions": {
+    "rootDir": "./src",
+    "outDir": "dist/cjs",
+    "declaration": true,
+    "noResolve": false,
+    "preserveConstEnums": true,
+    "sourceMap": false,
+    "noEmit": false,
+
+    "baseUrl": ".",
+    "paths": {
+    }
+  }
+}
