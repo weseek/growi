@@ -847,6 +847,10 @@
       "force_update_parents_description": "このオプションを有効化すると、親グループ変更後に祖先グループに足りないユーザーが存在した場合にそれらのユーザーを強制的に追加することができます"
     }
   },
+  "plugins-extention": {
+    "title": "プラグイン拡張",
+    "plugin_url": "プラグイン URL",
+  },
   "audit_log_management": {
     "audit_log": "監査ログ",
     "audit_log_settings": "監査ログ設定",

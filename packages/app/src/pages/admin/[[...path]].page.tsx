@@ -182,8 +182,8 @@ const AdminMarkdownSettingsPage: NextPage<Props> = (props: Props) => {
       title: t('audit_log_management.audit_log'),
       component: <AuditLogManagement />,
     },
-    'plugins-extension': {
-      title: t('plugins_extension.title'),
+    'plugins-extention': {
+      title: t('plugins-extention.title'),
       component: <PluginsExtensionPageContents />,
     },
   };

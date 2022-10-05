@@ -5,7 +5,7 @@ import { PluginInstallerForm } from './PluginInstallerForm';
 
 // TODO: i18n
 
-export const PluginExtensionsPageContents = (): JSX.Element => {
+export const PluginsExtensionPageContents = (): JSX.Element => {
   return (
     <div>
       <div className="row">
