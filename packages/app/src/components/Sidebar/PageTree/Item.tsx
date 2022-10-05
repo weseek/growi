@@ -4,9 +4,10 @@ import React, {
 
 import nodePath from 'path';
 
-import { pathUtils, pagePathUtils } from '@growi/core';
+import { pathUtils, pagePathUtils, Nullable } from '@growi/core';
+import { useTranslation } from 'next-i18next';
+import Link from 'next/link';
 import { useDrag, useDrop } from 'react-dnd';
-import { useTranslation } from 'react-i18next';
 import { UncontrolledTooltip, DropdownToggle } from 'reactstrap';
 
 import { bookmark, unbookmark, resumeRenameOperation } from '~/client/services/page-operation';
@@ -35,7 +36,7 @@ const logger = loggerFactory('growi:cli:Item');
 interface ItemProps {
   isEnableActions: boolean
   itemNode: ItemNode
-  targetPathOrId?: string
+  targetPathOrId?: Nullable<string>
   isOpen?: boolean
   isEnabledAttachTitleHeader?: boolean
   onRenamed?(): void
@@ -44,7 +45,7 @@ interface ItemProps {
 }
 
 // Utility to mark target
-const markTarget = (children: ItemNode[], targetPathOrId?: string): void => {
+const markTarget = (children: ItemNode[], targetPathOrId?: Nullable<string>): void => {
   if (targetPathOrId == null) {
     return;
   }
@@ -471,9 +472,11 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
                 </>
               )}
 
-              <a href={`/${page._id}`} className="grw-pagetree-title-anchor flex-grow-1">
-                <p className={`text-truncate m-auto ${page.isEmpty && 'grw-sidebar-text-muted'}`}>{nodePath.basename(page.path ?? '') || '/'}</p>
-              </a>
+              <Link href={`/${page._id}`} prefetch={false}>
+                <a className="grw-pagetree-title-anchor flex-grow-1">
+                  <p className={`text-truncate m-auto ${page.isEmpty && 'grw-sidebar-text-muted'}`}>{nodePath.basename(page.path ?? '') || '/'}</p>
+                </a>
+              </Link>
             </>
           )}
         {descendantCount > 0 && !isRenameInputShown && (

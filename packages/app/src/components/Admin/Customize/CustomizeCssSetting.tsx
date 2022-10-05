@@ -1,18 +1,15 @@
 import React, { useCallback } from 'react';
 
-import { useTranslation } from 'react-i18next';
+import { useTranslation } from 'next-i18next';
 import { Card, CardBody } from 'reactstrap';
 
 import AdminCustomizeContainer from '~/client/services/AdminCustomizeContainer';
-import AppContainer from '~/client/services/AppContainer';
 import { toastSuccess, toastError } from '~/client/util/apiNotification';
 
 import { withUnstatedContainers } from '../../UnstatedUtils';
 import AdminUpdateButtonRow from '../Common/AdminUpdateButtonRow';
-import CustomCssEditor from '../CustomCssEditor';
 
 type Props = {
-  appContainer: AppContainer,
   adminCustomizeContainer: AdminCustomizeContainer
 }
 
@@ -45,9 +42,11 @@ const CustomizeCssSetting = (props: Props): JSX.Element => {
           </Card>
 
           <div className="form-group">
-            <CustomCssEditor
+            <textarea
+              className="form-control"
+              name="customizeCss"
               value={adminCustomizeContainer.state.currentCustomizeCss || ''}
-              onChange={(inputValue) => { adminCustomizeContainer.changeCustomizeCss(inputValue) }}
+              onChange={(e) => { adminCustomizeContainer.changeCustomizeCss(e.target.value) }}
             />
             <p className="form-text text-muted text-right">
               <i className="fa fa-fw fa-keyboard-o" aria-hidden="true" />
@@ -63,6 +62,6 @@ const CustomizeCssSetting = (props: Props): JSX.Element => {
 
 };
 
-const CustomizeCssSettingWrapper = withUnstatedContainers(CustomizeCssSetting, [AppContainer, AdminCustomizeContainer]);
+const CustomizeCssSettingWrapper = withUnstatedContainers(CustomizeCssSetting, [AdminCustomizeContainer]);
 
 export default CustomizeCssSettingWrapper;

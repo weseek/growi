@@ -160,6 +160,8 @@ const PaginationWrapper: FC<Props> = memo((props: Props) => {
 
 });
 
+PaginationWrapper.displayName = 'PaginationWrapper';
+
 PaginationWrapper.defaultProps = {
   align: 'left',
   size: 'md',

@@ -1,10 +1,9 @@
 import React from 'react';
 
+import { useTranslation } from 'next-i18next';
 import PropTypes from 'prop-types';
-import { useTranslation } from 'react-i18next';
 
 import AdminMarkDownContainer from '~/client/services/AdminMarkDownContainer';
-import AppContainer from '~/client/services/AppContainer';
 import { tags, attrs } from '~/services/xss/recommended-whitelist';
 
 import { withUnstatedContainers } from '../../UnstatedUtils';
@@ -38,9 +37,9 @@ class WhiteListInput extends React.Component {
       <>
         <div className="mt-4">
           <div className="d-flex justify-content-between">
-            {t('admin:markdown_setting.xss_options.tag_names')}
+            {t('markdown_settings.xss_options.tag_names')}
             <p id="btn-import-tags" className="btn btn-sm btn-primary mb-0" onClick={this.onClickRecommendTagButton}>
-              {t('admin:markdown_setting.xss_options.import_recommended', { target: 'Tags' })}
+              {t('markdown_settings.xss_options.import_recommended', { target: 'Tags' })}
             </p>
           </div>
           <textarea
@@ -55,9 +54,9 @@ class WhiteListInput extends React.Component {
         </div>
         <div className="mt-4">
           <div className="d-flex justify-content-between">
-            {t('admin:markdown_setting.xss_options.tag_attributes')}
+            {t('markdown_settings.xss_options.tag_attributes')}
             <p id="btn-import-tags" className="btn btn-sm btn-primary mb-0" onClick={this.onClickRecommendAttrButton}>
-              {t('admin:markdown_setting.xss_options.import_recommended', { target: 'Attrs' })}
+              {t('markdown_settings.xss_options.import_recommended', { target: 'Attrs' })}
             </p>
           </div>
           <textarea
@@ -79,17 +78,16 @@ class WhiteListInput extends React.Component {
 
 WhiteListInput.propTypes = {
   t: PropTypes.func.isRequired, // i18next
-  appContainer: PropTypes.instanceOf(AppContainer).isRequired,
   adminMarkDownContainer: PropTypes.instanceOf(AdminMarkDownContainer).isRequired,
 
 };
 
 const PresentationFormWrapperFC = (props) => {
-  const { t } = useTranslation();
+  const { t } = useTranslation('admin');
 
   return <WhiteListInput t={t} {...props} />;
 };
 
-const WhiteListWrapper = withUnstatedContainers(PresentationFormWrapperFC, [AppContainer, AdminMarkDownContainer]);
+const WhiteListWrapper = withUnstatedContainers(PresentationFormWrapperFC, [AdminMarkDownContainer]);
 
 export default WhiteListWrapper;

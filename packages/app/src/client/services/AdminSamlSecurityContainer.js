@@ -1,4 +1,4 @@
-import { pathUtils } from '@growi/core';
+import { isServer, pathUtils } from '@growi/core';
 import { Container } from 'unstated';
 import urljoin from 'url-join';
 
@@ -18,18 +18,18 @@ export default class AdminSamlSecurityContainer extends Container {
   constructor(appContainer) {
     super();
 
+    if (isServer()) {
+      return;
+    }
+
     this.appContainer = appContainer;
-    this.dummySamlEntryPoint = 0;
-    this.dummySamlEntryPointForError = 1;
 
     this.state = {
       retrieveError: null,
       // TODO GW-1324 ABLCRure DB value takes precedence
       useOnlyEnvVars: false,
-      callbackUrl: urljoin(pathUtils.removeTrailingSlash(appContainer.config.crowi.url), '/passport/saml/callback'),
       missingMandatoryConfigKeys: [],
-      // set dummy value tile for using suspense
-      samlEntryPoint: this.dummySamlEntryPoint,
+      samlEntryPoint: '',
       samlIssuer: '',
       samlCert: '',
       samlAttrMapId: '',

@@ -19,7 +19,7 @@ const CustomizeLogoSetting = (): JSX.Element => {
   const [uploadLogoSrc, setUploadLogoSrc] = useState<ArrayBuffer | string | null>(null);
   const [isImageCropModalShow, setIsImageCropModalShow] = useState<boolean>(false);
   const [isDefaultLogo, setIsDefaultLogo] = useState<boolean>(true);
-  const [retrieveError, setRetrieveError] = useState<string | null>(null);
+  const [retrieveError, setRetrieveError] = useState<any>();
   const [customizedLogoSrc, setCustomizedLogoSrc] = useState< string | null >(null);
 
   const retrieveData = useCallback(async() => {
@@ -66,7 +66,6 @@ const CustomizeLogoSetting = (): JSX.Element => {
     }
   }, [t, isDefaultLogo, customizedLogoSrc]);
 
-
   const onClickDeleteBtn = useCallback(async() => {
     try {
       await apiv3Delete('/customize-setting/delete-brand-logo');
@@ -80,7 +79,8 @@ const CustomizeLogoSetting = (): JSX.Element => {
     }
   }, [t]);
 
-  const onCropCompleted = useCallback(async(croppedImage) => {
+
+  const processImageCompletedHandler = useCallback(async(croppedImage) => {
     try {
       const formData = new FormData();
       formData.append('file', croppedImage);
@@ -93,9 +93,7 @@ const CustomizeLogoSetting = (): JSX.Element => {
       setRetrieveError(err);
       throw new Error('Failed to upload brand logo');
     }
-    setIsImageCropModalShow(false);
   }, [t]);
-
 
   return (
     <React.Fragment>
@@ -172,8 +170,9 @@ const CustomizeLogoSetting = (): JSX.Element => {
         isShow={isImageCropModalShow}
         src={uploadLogoSrc}
         onModalClose={() => setIsImageCropModalShow(false)}
-        onCropCompleted={onCropCompleted}
+        onImageProcessCompleted={processImageCompletedHandler}
         isCircular={false}
+        showCropOption={false}
       />
     </React.Fragment>
   );

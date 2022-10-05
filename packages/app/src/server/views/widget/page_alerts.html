@@ -39,7 +39,7 @@
       {% set hasRedirectLink = redirectFrom or req.query.redirectFrom or req.query.withRedirect %}
       {% if user and not page.isDeleted() and hasRedirectLink %}
         <button type="button" id="unlink-page-button" class="btn btn-outline-dark btn-sm float-right">
-          <i class="ti-unlink" aria-hidden="true"></i>
+          <i class="ti ti-unlink" aria-hidden="true"></i>
           Unlink redirection
         </button>
       {% endif %}
@@ -49,13 +49,6 @@
     {% if req.query.unlinked %}
     <div class="alert alert-info d-edit-none py-3 px-4">
       <strong>{{ t('Unlinked') }}: </strong> {{ t('page_page.notice.unlinked') }}
-    </div>
-    {% endif %}
-
-    {% if page and not page.isLatestRevision() %}
-    <div class="alert alert-warning">
-      <strong>{{ t('Warning') }}: </strong> {{ t('page_page.notice.version') }}
-      <a href="{{ encodeURI(page.path) }}"><i class="icon-fw icon-arrow-right-circle"></i>{{ t('Show latest') }}</a>
     </div>
     {% endif %}
 

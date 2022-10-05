@@ -1,6 +1,9 @@
-import { getOrCreateModel } from '@growi/core';
 import { Types, Schema } from 'mongoose';
 import uniqueValidator from 'mongoose-unique-validator';
+
+import { GrowiThemes } from '~/interfaces/theme';
+
+import { getOrCreateModel } from '../util/mongoose-utils';
 
 
 export interface Config {
@@ -123,7 +126,7 @@ export const defaultCrowiConfigs: { [key: string]: any } = {
   'customize:title' : undefined,
   'customize:highlightJsStyle' : 'github',
   'customize:highlightJsStyleBorder' : false,
-  'customize:theme' : 'default',
+  'customize:theme' : GrowiThemes.DEFAULT,
   'customize:isContainerFluid' : false,
   'customize:isEnabledTimeline' : true,
   'customize:isSavedStatesOfTabChanges' : true,

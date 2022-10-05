@@ -1,7 +1,3 @@
 {
-  "ignore": [
-    "package.json",
-    "public/manifest.json",
-    "config/webpack."
-  ]
+  "ignore": ["package.json", ".next", "public/static"]
 }

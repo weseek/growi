@@ -1,7 +1,7 @@
 import React from 'react';
 
+import { useTranslation } from 'next-i18next';
 import PropTypes from 'prop-types';
-import { useTranslation } from 'react-i18next';
 
 const TriggerEventCheckBox = (props) => {
   const { t } = props;
@@ -17,7 +17,7 @@ const TriggerEventCheckBox = (props) => {
       />
       <label className="custom-control-label" htmlFor={`trigger-event-${props.event}`}>
         {props.children}{' '}
-        {t(`notification_setting.event_${props.event}`)}
+        {t(`notification_settings.event_${props.event}`)}
       </label>
     </div>
   );
@@ -36,7 +36,7 @@ TriggerEventCheckBox.propTypes = {
 
 // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
 const TriggerEventCheckBoxWrapperFC = (props) => {
-  const { t } = useTranslation();
+  const { t } = useTranslation('admin');
 
   return <TriggerEventCheckBox t={t} {...props} />;
 };

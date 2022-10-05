@@ -1,3 +1,4 @@
+import { isServer } from '@growi/core';
 import { Container } from 'unstated';
 
 import { apiv3Get, apiv3Put } from '../util/apiv3-client';
@@ -11,14 +12,15 @@ export default class AdminMarkDownContainer extends Container {
   constructor(appContainer) {
     super();
 
+    if (isServer()) {
+      return;
+    }
+
     this.appContainer = appContainer;
-    this.dummyIsEnabledLinebreaks = 0;
-    this.dummyIsEnabledLinebreaksForError = 1;
 
     this.state = {
       retrieveError: null,
-      // set dummy value tile for using suspense
-      isEnabledLinebreaks: this.dummyIsEnabledLinebreaks,
+      isEnabledLinebreaks: false,
       isEnabledLinebreaksInComments: false,
       adminPreferredIndentSize: 4,
       isIndentSizeForced: false,

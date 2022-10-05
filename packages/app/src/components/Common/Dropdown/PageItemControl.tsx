@@ -1,6 +1,6 @@
 import React, { useState, useCallback, useEffect } from 'react';
 
-import { useTranslation } from 'react-i18next';
+import { useTranslation } from 'next-i18next';
 import {
   Dropdown, DropdownMenu, DropdownToggle, DropdownItem,
 } from 'reactstrap';
@@ -245,11 +245,18 @@ const PageItemControlDropdownMenu = React.memo((props: DropdownMenuProps): JSX.E
   }
 
   return (
-    <DropdownMenu positionFixed modifiers={{ preventOverflow: { boundariesElement: undefined } }} right={alignRight}>
+    <DropdownMenu
+      data-testid="page-item-control-menu"
+      positionFixed
+      modifiers={{ preventOverflow: { boundariesElement: undefined } }}
+      right={alignRight}
+    >
       {contents}
     </DropdownMenu>
   );
 });
+
+PageItemControlDropdownMenu.displayName = 'PageItemControl';
 
 
 type PageItemControlSubstanceProps = CommonProps & {
@@ -346,7 +353,7 @@ export const PageItemControlSubstance = (props: PageItemControlSubstanceProps): 
 };
 
 
-type PageItemControlProps = CommonProps & {
+export type PageItemControlProps = CommonProps & {
   pageId?: string,
   children?: React.ReactNode,
   operationProcessData?: IPageOperationProcessData,

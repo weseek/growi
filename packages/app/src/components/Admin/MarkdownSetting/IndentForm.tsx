@@ -1,7 +1,7 @@
 /* eslint-disable react/no-danger */
 import React, { useCallback } from 'react';
 
-import { useTranslation } from 'react-i18next';
+import { useTranslation } from 'next-i18next';
 import {
   UncontrolledDropdown, DropdownToggle, DropdownMenu, DropdownItem,
 } from 'reactstrap';
@@ -21,12 +21,12 @@ type Props = {
 }
 
 const IndentForm = (props: Props) => {
-  const { t } = useTranslation();
+  const { t } = useTranslation('admin');
 
   const onClickSubmit = useCallback(async(props) => {
     try {
       await props.adminMarkDownContainer.updateIndentSetting();
-      toastSuccess(t('toaster.update_successed', { target: t('admin:markdown_setting.indent_header') }));
+      toastSuccess(t('toaster.update_successed', { target: t('markdown_settings.indent_header') }));
     }
     catch (err) {
       toastError(err);
@@ -41,7 +41,7 @@ const IndentForm = (props: Props) => {
     return (
       <div className="col">
         <div>
-          <label htmlFor="adminPreferredIndentSize">{t('admin:markdown_setting.indent_options.indentSize')}</label>
+          <label htmlFor="adminPreferredIndentSize">{t('markdown_settings.indent_options.indentSize')}</label>
           <UncontrolledDropdown id="adminPreferredIndentSize">
             <DropdownToggle caret className="col-3 col-sm-2 col-md-5 col-lg-5 col-xl-3 text-right">
               <span className="float-left">
@@ -60,7 +60,7 @@ const IndentForm = (props: Props) => {
           </UncontrolledDropdown>
         </div>
         <p className="form-text text-muted">
-          {t('admin:markdown_setting.indent_options.indentSize_desc')}
+          {t('markdown_settings.indent_options.indentSize_desc')}
         </p>
       </div>
     );
@@ -70,7 +70,7 @@ const IndentForm = (props: Props) => {
     const { adminMarkDownContainer } = props;
     const { isIndentSizeForced } = adminMarkDownContainer.state;
 
-    const helpIndentInComment = { __html: t('admin:markdown_setting.indent_options.disallow_indent_change_desc') };
+    const helpIndentInComment = { __html: t('markdown_settings.indent_options.disallow_indent_change_desc') };
 
     return (
       <div className="col">
@@ -85,7 +85,7 @@ const IndentForm = (props: Props) => {
             }}
           />
           <label className="custom-control-label" htmlFor="isIndentSizeForced">
-            {t('admin:markdown_setting.indent_options.disallow_indent_change')}
+            {t('markdown_settings.indent_options.disallow_indent_change')}
           </label>
         </div>
         <p className="form-text text-muted" dangerouslySetInnerHTML={helpIndentInComment} />

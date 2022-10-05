@@ -100,14 +100,6 @@ module.exports = function(crowi, app) {
       });
   };
 
-  actions.index = async function(req, res) {
-    const User = crowi.model('User');
-    const userData = await User.findById(req.user.id).populate({ path: 'imageAttachment', select: 'filePathProxied' });
-    const renderVars = {};
-    renderVars.user = userData;
-    return res.render('me/index', renderVars);
-  };
-
   actions.externalAccounts = {};
   actions.externalAccounts.list = function(req, res) {
     const userData = req.user;

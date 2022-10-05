@@ -5,7 +5,7 @@ export type IDataApplicableGroup = {
 }
 
 export type IDataApplicableGrant = null | IDataApplicableGroup;
-export type IRecordApplicableGrant = Record<PageGrant, IDataApplicableGrant>
+export type IRecordApplicableGrant = Partial<Record<PageGrant, IDataApplicableGrant>>
 export type IResApplicableGrant = {
   data?: IRecordApplicableGrant
 }

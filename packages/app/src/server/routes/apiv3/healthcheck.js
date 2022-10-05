@@ -1,3 +1,5 @@
+import { ErrorV3 } from '@growi/core';
+
 import loggerFactory from '~/utils/logger';
 
 const logger = loggerFactory('growi:routes:apiv3:healthcheck'); // eslint-disable-line no-unused-vars
@@ -7,7 +9,6 @@ const express = require('express');
 const router = express.Router();
 
 const noCache = require('nocache');
-const ErrorV3 = require('../../models/vo/error-apiv3');
 
 /**
  * @swagger

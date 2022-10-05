@@ -1,43 +1,40 @@
-import React, { useMemo, useState } from 'react';
-import PropTypes from 'prop-types';
-import { useTranslation } from 'react-i18next';
+import React, { useEffect, useMemo, useState } from 'react';
 
+import { useTranslation } from 'next-i18next';
+import PropTypes from 'prop-types';
+
+import AdminSlackIntegrationLegacyContainer from '~/client/services/AdminSlackIntegrationLegacyContainer';
+import { toastError } from '~/client/util/apiNotification';
+import { toArrayIfNot } from '~/utils/array-utils';
 import loggerFactory from '~/utils/logger';
 
 import { withUnstatedContainers } from '../../UnstatedUtils';
-import { toastError } from '~/client/util/apiNotification';
-import { toArrayIfNot } from '~/utils/array-utils';
-import { withLoadingSppiner } from '../../SuspenseUtils';
 
-import AdminSlackIntegrationLegacyContainer from '~/client/services/AdminSlackIntegrationLegacyContainer';
 
 import SlackConfiguration from './SlackConfiguration';
 
 const logger = loggerFactory('growi:NotificationSetting');
 
-let retrieveErrors = null;
-function LegacySlackIntegration(props) {
+const LegacySlackIntegration = (props) => {
   const { t } = useTranslation();
   const { adminSlackIntegrationLegacyContainer } = props;
 
-  if (adminSlackIntegrationLegacyContainer.state.webhookUrl === adminSlackIntegrationLegacyContainer.dummyWebhookUrl) {
-    throw (async() => {
-      try {
-        await adminSlackIntegrationLegacyContainer.retrieveData();
-      }
-      catch (err) {
-        const errs = toArrayIfNot(err);
-        toastError(errs);
-        logger.error(errs);
-        retrieveErrors = errs;
-        adminSlackIntegrationLegacyContainer.setState({ webhookUrl: adminSlackIntegrationLegacyContainer.dummyWebhookUrlForError });
-      }
-    })();
-  }
 
-  if (adminSlackIntegrationLegacyContainer.state.webhookUrl === adminSlackIntegrationLegacyContainer.dummyWebhookUrlForError) {
-    throw new Error(`${retrieveErrors.length} errors occured`);
-  }
+  useEffect(() => {
+    const fetchLegacySlackIntegrationData = async() => {
+      await adminSlackIntegrationLegacyContainer.retrieveData();
+    };
+
+    try {
+      fetchLegacySlackIntegrationData();
+    }
+    catch (err) {
+      const errs = toArrayIfNot(err);
+      toastError(errs);
+      logger.error(errs);
+    }
+  }, [adminSlackIntegrationLegacyContainer]);
+
 
   const isDisabled = adminSlackIntegrationLegacyContainer.state.isSlackbotConfigured;
 
@@ -60,9 +57,9 @@ function LegacySlackIntegration(props) {
       <SlackConfiguration />
     </div>
   );
-}
+};
 
-const LegacySlackIntegrationWithUnstatedContainer = withUnstatedContainers(withLoadingSppiner(LegacySlackIntegration), [AdminSlackIntegrationLegacyContainer]);
+const LegacySlackIntegrationWithUnstatedContainer = withUnstatedContainers(LegacySlackIntegration, [AdminSlackIntegrationLegacyContainer]);
 
 LegacySlackIntegration.propTypes = {
   adminSlackIntegrationLegacyContainer: PropTypes.instanceOf(AdminSlackIntegrationLegacyContainer).isRequired,

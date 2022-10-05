@@ -1,5 +1,6 @@
-import { BasicInterceptor } from '@growi/core';
 import React from 'react';
+
+import { BasicInterceptor } from '@growi/core';
 import ReactDOM from 'react-dom';
 
 
