@@ -30,7 +30,6 @@ import AdminTwitterSecurityContainer from '~/client/services/AdminTwitterSecurit
 import AdminUsersContainer from '~/client/services/AdminUsersContainer';
 import { SupportedActionType } from '~/interfaces/activity';
 import { CrowiRequest } from '~/interfaces/crowi-request';
-import PluginUtils from '~/server/plugins/plugin-utils';
 import ConfigLoader from '~/server/service/config-loader';
 import {
   useCurrentUser, /* useSearchServiceConfigured, */ useIsAclEnabled, useIsMailerSetup, useIsSearchServiceReachable, useSiteUrl,
@@ -66,8 +65,6 @@ const UserGroupPage = dynamic(() => import('../../components/Admin/UserGroup/Use
 const AuditLogManagement = dynamic(() => import('../../components/Admin/AuditLogManagement').then(mod => mod.AuditLogManagement), { ssr: false });
 const PluginsExtensionPageContents = dynamic(() => import('../../components/Admin/PluginsExtension/PluginsExtensionPageContents')
   .then(mod => mod.PluginsExtensionPageContents), { ssr: false });
-
-const pluginUtils = new PluginUtils();
 
 type Props = CommonProps & {
   currentUser: any,
@@ -293,7 +290,7 @@ async function injectServerConfigurations(context: GetServerSidePropsContext, pr
   props.nodeVersion = crowi.runtimeVersions.versions.node ? crowi.runtimeVersions.versions.node.version.version : null;
   props.npmVersion = crowi.runtimeVersions.versions.npm ? crowi.runtimeVersions.versions.npm.version.version : null;
   props.yarnVersion = crowi.runtimeVersions.versions.yarn ? crowi.runtimeVersions.versions.yarn.version.version : null;
-  props.installedPlugins = pluginUtils.listPlugins();
+  props.installedPlugins = crowi.pluginService.listPlugins();
   props.envVars = await ConfigLoader.getEnvVarsForDisplay(true);
   props.isAclEnabled = aclService.isAclEnabled();
 
