@@ -7,9 +7,10 @@ import { useGenerateTransferKeyWithThrottle } from '~/client/services/g2g-transf
 import { apiv3Get } from '~/client/util/apiv3-client';
 import { useAdminSocket } from '~/stores/socket-io';
 
+
 import CustomCopyToClipBoard from '../Common/CustomCopyToClipBoard';
 
-import SelectCollectionsModal from './ExportArchiveData/SelectCollectionsModal';
+import G2GDataTransferExportForm from './G2GDataTransferExportForm';
 
 const IGNORED_COLLECTION_NAMES = [
   'sessions', 'rlflx', 'activities',
@@ -20,7 +21,7 @@ const G2GDataTransfer = (): JSX.Element => {
   const { t } = useTranslation();
 
   const [collections, setCollections] = useState<any[]>([]);
-  const [isExportModalOpen, setExportModalOpen] = useState(false);
+  const [isShowExportForm, setShowExportForm] = useState(false);
   const [isExporting, setExporting] = useState(false);
   // TODO: データのエクスポートが完了したことが分かるようにする
   const [isExported, setExported] = useState(false);
@@ -77,8 +78,6 @@ const G2GDataTransfer = (): JSX.Element => {
     // データ移行の処理
   };
 
-  const exportingRequestedHandler = useCallback(() => {}, []);
-
   useEffect(() => {
     fetchData();
 
@@ -89,9 +88,15 @@ const G2GDataTransfer = (): JSX.Element => {
     <div data-testid="admin-export-archive-data">
       <h2 className="border-bottom">{t('admin:g2g_data_transfer.transfer_data_to_another_growi')}</h2>
 
-      <button type="button" className="btn btn-outline-secondary mt-4" disabled={isExporting} onClick={() => setExportModalOpen(true)}>
+      <button type="button" className="btn btn-outline-secondary mt-4" disabled={isExporting} onClick={() => setShowExportForm(!isShowExportForm)}>
         {t('admin:g2g_data_transfer.advanced_options')}
       </button>
+
+      {collections.length !== 0 && (
+        <div className={isShowExportForm ? '' : 'd-none'}>
+          <G2GDataTransferExportForm allCollectionNames={collections} />
+        </div>
+      )}
 
       <form onSubmit={transferData}>
         <div className="form-group row mt-3">
@@ -125,14 +130,6 @@ const G2GDataTransfer = (): JSX.Element => {
         <p className="mb-1">{t('admin:g2g_data_transfer.once_transfer_key_used')}</p>
         <p className="mb-0">{t('admin:g2g_data_transfer.transfer_to_growi_cloud')}</p>
       </div>
-
-      <SelectCollectionsModal
-        isOpen={isExportModalOpen}
-        onExportingRequested={exportingRequestedHandler}
-        onClose={() => setExportModalOpen(false)}
-        collections={collections}
-        isAllChecked
-      />
     </div>
   );
 };
