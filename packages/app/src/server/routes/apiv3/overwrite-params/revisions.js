@@ -9,17 +9,17 @@ class RevisionOverwriteParamsFactory {
 
   /**
    * generate overwrite params object
-   * @param {object} user
+   * @param {string} operatorUserId
    * @param {ImportOptionForPages} option
    * @return object
    *  key: property name
    *  value: any value or a function `(value, { document, schema, propertyName }) => { return newValue }`
    */
-  static generate(user, option) {
+  static generate(operatorUserId, option) {
     const params = {};
 
     if (option.isOverwriteAuthorWithCurrentUser) {
-      const userId = ObjectId(user._id);
+      const userId = ObjectId(operatorUserId);
       params.author = userId;
     }
 
@@ -28,4 +28,4 @@ class RevisionOverwriteParamsFactory {
 
 }
 
-module.exports = (user, option) => RevisionOverwriteParamsFactory.generate(user, option);
+module.exports = (operatorUserId, option) => RevisionOverwriteParamsFactory.generate(operatorUserId, option);

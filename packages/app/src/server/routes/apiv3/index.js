@@ -6,6 +6,7 @@ import * as loginFormValidator from '../../middlewares/login-form-validator';
 import * as registerFormValidator from '../../middlewares/register-form-validator';
 
 import g2gTransfer from './g2g-transfer';
+import importRoute from './import';
 import pageListing from './page-listing';
 import * as userActivation from './user-activation';
 
@@ -33,7 +34,7 @@ module.exports = (crowi, app, isInstalled) => {
   routerForAdmin.use('/users', require('./users')(crowi));
   routerForAdmin.use('/user-groups', require('./user-group')(crowi));
   routerForAdmin.use('/export', require('./export')(crowi));
-  routerForAdmin.use('/import', require('./import')(crowi));
+  routerForAdmin.use('/import', importRoute(crowi));
   routerForAdmin.use('/search', require('./search')(crowi));
   routerForAdmin.use('/security-setting', require('./security-setting')(crowi));
   routerForAdmin.use('/mongo', require('./mongo')(crowi));

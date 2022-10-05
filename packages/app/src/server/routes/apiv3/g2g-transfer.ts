@@ -20,6 +20,10 @@ import ErrorV3 from '../../models/vo/error-apiv3';
 import { generateOverwriteParams } from './import';
 import { ApiV3Response } from './interfaces/apiv3-response';
 
+interface AuthorizedRequest extends Request {
+  user?: any
+}
+
 const logger = loggerFactory('growi:routes:apiv3:transfer');
 
 const validator = {
@@ -131,13 +135,13 @@ module.exports = (crowi: Crowi): Router => {
 
   // Auto import
   // eslint-disable-next-line max-len
-  receiveRouter.post('/', uploads.single('transferDataZipFile'), /* verifyAndExtractTransferKey, */ async(req: Request & { transferKey: TransferKey }, res: ApiV3Response) => {
+  receiveRouter.post('/', uploads.single('transferDataZipFile'), /* verifyAndExtractTransferKey, */ async(req: Request & { transferKey: TransferKey, operatorUserId: string }, res: ApiV3Response) => {
     const { file } = req;
 
     const zipFile = importService.getFile(file.filename);
     let data;
 
-    const { collections: strCollections, optionsMap: strOptionsMap } = req.body;
+    const { collections: strCollections, optionsMap: strOptionsMap, operatorUserId } = req.body;
 
     let collections;
     let optionsMap;
@@ -199,7 +203,7 @@ module.exports = (crowi: Crowi): Router => {
       importSettings.jsonFileName = fileName;
 
       // generate overwrite params
-      importSettings.overwriteParams = generateOverwriteParams(collectionName, req.user, options);
+      importSettings.overwriteParams = generateOverwriteParams(collectionName, operatorUserId, options);
 
       importSettingsMap[collectionName] = importSettings;
     });
@@ -299,7 +303,7 @@ module.exports = (crowi: Crowi): Router => {
   // Auto export
   // TODO: Use socket to send progress info to the client
   // eslint-disable-next-line max-len
-  pushRouter.post('/transfer', /* accessTokenParser, loginRequiredStrictly, adminRequired, */ validator.transfer, apiV3FormValidator, async(req: Request, res: ApiV3Response) => {
+  pushRouter.post('/transfer', /* accessTokenParser, loginRequiredStrictly, adminRequired, */ validator.transfer, apiV3FormValidator, async(req: AuthorizedRequest, res: ApiV3Response) => {
     const { transferKey: transferKeyString, collections, optionsMap } = req.body;
 
     // Parse transfer key
@@ -332,7 +336,7 @@ module.exports = (crowi: Crowi): Router => {
 
     // Start transfer
     try {
-      await g2gTransferPusherService.startTransfer(tk, collections, optionsMap);
+      await g2gTransferPusherService.startTransfer(tk, req.user, collections, optionsMap);
     }
     catch (err) {
       logger.error(err);

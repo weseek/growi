@@ -1,5 +1,3 @@
-import mongoose from 'mongoose';
-
 import { SupportedAction } from '~/interfaces/activity';
 import loggerFactory from '~/utils/logger';
 
@@ -56,17 +54,17 @@ const router = express.Router();
 /**
  * generate overwrite params with overwrite-params/* modules
  * @param {string} collectionName
- * @param {object} user User Object
+ * @param {string} operatorUserId Operator user id
  * @param {GrowiArchiveImportOption} options GrowiArchiveImportOption instance
  */
-export const generateOverwriteParams = (collectionName, user, options) => {
+export const generateOverwriteParams = (collectionName, operatorUserId, options) => {
   switch (collectionName) {
     case 'pages':
-      return overwriteParamsPages(user, options);
+      return overwriteParamsPages(operatorUserId, options);
     case 'revisions':
-      return overwriteParamsRevisions(user, options);
+      return overwriteParamsRevisions(operatorUserId, options);
     case 'attachmentFiles.chunks':
-      return overwriteParamsAttachmentFilesChunks(user, options);
+      return overwriteParamsAttachmentFilesChunks(operatorUserId, options);
     default:
       return {};
   }
@@ -287,7 +285,7 @@ export default function route(crowi) {
       importSettings.jsonFileName = fileName;
 
       // generate overwrite params
-      importSettings.overwriteParams = generateOverwriteParams(collectionName, req.user, options);
+      importSettings.overwriteParams = generateOverwriteParams(collectionName, req.user._id, options);
 
       importSettingsMap[collectionName] = importSettings;
     });
