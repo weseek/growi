@@ -8,6 +8,7 @@ import {
   generateSimpleViewOptions, generatePreviewOptions, generateOthersOptions,
   generateViewOptions, generateTocOptions,
 } from '~/services/renderer/renderer';
+import { getGrowiFacade } from '~/utils/growi-facade';
 
 
 import {
@@ -88,7 +89,11 @@ export const usePreviewOptions = (): SWRResponse<RendererOptions, Error> => {
 
   return useSWRImmutable<RendererOptions, Error>(
     key,
-    (rendererId, rendererConfig, currentPagePath) => generatePreviewOptions(rendererConfig, currentPagePath),
+    (rendererId, rendererConfig, pagePath, highlightKeywords) => {
+      // determine options generator
+      const optionsGenerator = getGrowiFacade().markdownRenderer?.optionsGenerators?.customGeneratePreviewOptions ?? generatePreviewOptions;
+      return optionsGenerator(rendererConfig, pagePath, highlightKeywords);
+    },
     {
       fallbackData: isAllDataValid ? generatePreviewOptions(rendererConfig, currentPagePath) : undefined,
     },
