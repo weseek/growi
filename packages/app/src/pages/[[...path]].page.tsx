@@ -17,11 +17,11 @@ import Head from 'next/head';
 import { useRouter } from 'next/router';
 import superjson from 'superjson';
 
-import { Comments } from '~/components/Comments';
-import { PageAlerts } from '~/components/PageAlert/PageAlerts';
+// import { Comments } from '~/components/Comments';
+// import { PageAlerts } from '~/components/PageAlert/PageAlerts';
 // import { useTranslation } from '~/i18n';
-import { CurrentPageContentFooter } from '~/components/PageContentFooter';
-import { UsersHomePageFooterProps } from '~/components/UsersHomePageFooter';
+// import { CurrentPageContentFooter } from '~/components/PageContentFooter';
+// import { UsersHomePageFooterProps } from '~/components/UsersHomePageFooter';
 import { CrowiRequest } from '~/interfaces/crowi-request';
 // import { renderScriptTagByName, renderHighlightJsStyleTag } from '~/service/cdn-resources-loader';
 // import { useIndentSize } from '~/stores/editor';
@@ -71,12 +71,12 @@ import {
 // import { useCurrentPageSWR } from '../stores/page';
 
 
-const NotCreatablePage = dynamic(() => import('../components/NotCreatablePage').then(mod => mod.NotCreatablePage), { ssr: false });
-const ForbiddenPage = dynamic(() => import('../components/ForbiddenPage'), { ssr: false });
-const UnsavedAlertDialog = dynamic(() => import('./UnsavedAlertDialog'), { ssr: false });
+// const NotCreatablePage = dynamic(() => import('../components/NotCreatablePage').then(mod => mod.NotCreatablePage), { ssr: false });
+// const ForbiddenPage = dynamic(() => import('../components/ForbiddenPage'), { ssr: false });
+// const UnsavedAlertDialog = dynamic(() => import('./UnsavedAlertDialog'), { ssr: false });
 const GrowiSubNavigationSwitcher = dynamic(() => import('../components/Navbar/GrowiSubNavigationSwitcher'), { ssr: false });
-const UsersHomePageFooter = dynamic<UsersHomePageFooterProps>(() => import('../components/UsersHomePageFooter')
-  .then(mod => mod.UsersHomePageFooter), { ssr: false });
+// const UsersHomePageFooter = dynamic<UsersHomePageFooterProps>(() => import('../components/UsersHomePageFooter')
+//   .then(mod => mod.UsersHomePageFooter), { ssr: false });
 
 const logger = loggerFactory('growi:pages:all');
 
@@ -113,15 +113,15 @@ superjson.registerCustom<IPageToShowRevisionWithMeta, IPageToShowRevisionWithMet
 );
 
 
-const IdenticalPathPage = (): JSX.Element => {
-  const IdenticalPathPage = dynamic(() => import('../components/IdenticalPathPage').then(mod => mod.IdenticalPathPage), { ssr: false });
-  return <IdenticalPathPage />;
-};
+// const IdenticalPathPage = (): JSX.Element => {
+//   const IdenticalPathPage = dynamic(() => import('../components/IdenticalPathPage').then(mod => mod.IdenticalPathPage), { ssr: false });
+//   return <IdenticalPathPage />;
+// };
 
-const PutbackPageModal = (): JSX.Element => {
-  const PutbackPageModal = dynamic(() => import('../components/PutbackPageModal'), { ssr: false });
-  return <PutbackPageModal />;
-};
+// const PutbackPageModal = (): JSX.Element => {
+//   const PutbackPageModal = dynamic(() => import('../components/PutbackPageModal'), { ssr: false });
+//   return <PutbackPageModal />;
+// };
 
 type Props = CommonProps & {
   currentUser: IUser,
@@ -173,7 +173,7 @@ const GrowiPage: NextPage<Props> = (props: Props) => {
   // const { t } = useTranslation();
   const router = useRouter();
 
-  const { data: currentUser } = useCurrentUser(props.currentUser ?? null);
+  // const { data: currentUser } = useCurrentUser(props.currentUser ?? null);
 
   // register global EventEmitter
   if (isClient()) {
@@ -246,9 +246,9 @@ const GrowiPage: NextPage<Props> = (props: Props) => {
   const { data: grantData } = useSWRxIsGrantNormalized(pageId);
   const { mutate: mutateSelectedGrant } = useSelectedGrant();
 
-  const shouldRenderPutbackPageModal = pageWithMeta != null
-    ? _isTrashPage(pageWithMeta.data.path)
-    : false;
+  // const shouldRenderPutbackPageModal = pageWithMeta != null
+  //   ? _isTrashPage(pageWithMeta.data.path)
+  //   : false;
 
   // sync grant data
   useEffect(() => {
@@ -276,7 +276,7 @@ const GrowiPage: NextPage<Props> = (props: Props) => {
   //   classNames.push('not-found-page');
   // }
 
-  const isTopPagePath = isTopPage(pageWithMeta?.data.path ?? '');
+  // const isTopPagePath = isTopPage(pageWithMeta?.data.path ?? '');
 
   return (
     <>
@@ -303,13 +303,13 @@ const GrowiPage: NextPage<Props> = (props: Props) => {
           <div className="flex-grow-1">
             <div id="main" className={`main ${isUsersHomePage(props.currentPathname) && 'user-page'}`}>
               <div id="content-main" className="content-main grw-container-convertible">
-                { props.isIdenticalPathPage && <IdenticalPathPage /> }
+                {/* { props.isIdenticalPathPage && <IdenticalPathPage /> } */}
 
                 { !props.isIdenticalPathPage && (
                   <>
-                    <PageAlerts />
-                    { props.isForbidden && <ForbiddenPage /> }
-                    { props.isNotCreatablePage && <NotCreatablePage />}
+                    {/* <PageAlerts /> */}
+                    {/* { props.isForbidden && <ForbiddenPage /> } */}
+                    {/* { props.isNotCreatablePage && <NotCreatablePage />} */}
                     { !props.isForbidden && !props.isNotCreatablePage && <DisplaySwitcher />}
                     {/* <DisplaySwitcher /> */}
                     {/* <PageStatusAlert /> */}
@@ -324,7 +324,7 @@ const GrowiPage: NextPage<Props> = (props: Props) => {
               </div>
             </div>
           </div>
-          { !props.isIdenticalPathPage && !props.isNotFound && (
+          {/* { !props.isIdenticalPathPage && !props.isNotFound && (
             <footer className="footer d-edit-none">
               { pageWithMeta != null && !isTopPagePath && (<Comments pageId={pageId} revision={pageWithMeta.data.revision} />) }
               { pageWithMeta != null && isUsersHomePage(pageWithMeta.data.path) && (
@@ -332,11 +332,11 @@ const GrowiPage: NextPage<Props> = (props: Props) => {
               ) }
               <CurrentPageContentFooter />
             </footer>
-          )}
+          )} */}
 
-          <UnsavedAlertDialog />
-          <DescendantsPageListModal />
-          {shouldRenderPutbackPageModal && <PutbackPageModal />}
+          {/* <UnsavedAlertDialog /> */}
+          {/* <DescendantsPageListModal /> */}
+          {/* {shouldRenderPutbackPageModal && <PutbackPageModal />} */}
         </div>
       </BasicLayout>
     </>
