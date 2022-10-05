@@ -336,7 +336,9 @@ module.exports = (crowi: Crowi): Router => {
 
     // Start transfer
     try {
-      await g2gTransferPusherService.startTransfer(tk, req.user, collections, optionsMap);
+      // await g2gTransferPusherService.startTransfer(tk, req.user, collections, optionsMap);
+      logger.debug('This line is just for testing purpose.');
+      await g2gTransferPusherService.startTransfer(tk, { _id: '63330d631de6bd55c9a1ea38' }, collections, optionsMap);
     }
     catch (err) {
       logger.error(err);
