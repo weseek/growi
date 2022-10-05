@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useState, useEffect } from 'react';
 
 import { useTranslation } from 'next-i18next';
 import {
@@ -29,13 +29,14 @@ type Props = {
   onExportingRequested: () => void,
   onClose: () => void,
   collections: string[],
+  allChecked?: boolean,
 };
 
 const SelectCollectionsModal = (props: Props): JSX.Element => {
   const { t } = useTranslation();
 
   const {
-    isOpen, onExportingRequested, onClose, collections,
+    isOpen, onExportingRequested, onClose, collections, allChecked,
   } = props;
 
   const [selectedCollections, setSelectedCollections] = useState<Set<string>>(new Set());
@@ -103,11 +104,11 @@ const SelectCollectionsModal = (props: Props): JSX.Element => {
         timeOut: '3000',
       });
     }
-  }, []);
+  }, [onClose, onExportingRequested, selectedCollections, uncheckAll]);
 
   const validateForm = useCallback(() => {
     return selectedCollections.size > 0;
-  }, []);
+  }, [selectedCollections.size]);
 
   const renderWarnForUser = useCallback(() => {
     // whether selectedCollections includes one of GROUPS_USER
@@ -123,23 +124,7 @@ const SelectCollectionsModal = (props: Props): JSX.Element => {
 
     // eslint-disable-next-line react/no-danger
     return <div className="card well" dangerouslySetInnerHTML={{ __html: html }}></div>;
-  }, []);
-
-  const renderGroups = useCallback((groupList, color?) => {
-    const collectionNames = groupList.filter((collectionName) => {
-      return collections.includes(collectionName);
-    });
-
-    return renderCheckboxes(collectionNames, color);
-  }, []);
-
-  const renderOthers = useCallback(() => {
-    const collectionNames = collections.filter((collectionName) => {
-      return !ALL_GROUPED_COLLECTIONS.includes(collectionName);
-    });
-
-    return renderCheckboxes(collectionNames);
-  }, []);
+  }, [selectedCollections, t]);
 
   const renderCheckboxes = useCallback((collectionNames, color?) => {
     const checkboxColor = color ? `custom-checkbox-${color}` : 'custom-checkbox-info';
@@ -168,7 +153,27 @@ const SelectCollectionsModal = (props: Props): JSX.Element => {
         </div>
       </div>
     );
-  }, []);
+  }, [selectedCollections, toggleCheckbox]);
+
+  const renderGroups = useCallback((groupList, color?) => {
+    const collectionNames = groupList.filter((collectionName) => {
+      return collections.includes(collectionName);
+    });
+
+    return renderCheckboxes(collectionNames, color);
+  }, [collections, renderCheckboxes]);
+
+  const renderOthers = useCallback(() => {
+    const collectionNames = collections.filter((collectionName) => {
+      return !ALL_GROUPED_COLLECTIONS.includes(collectionName);
+    });
+
+    return renderCheckboxes(collectionNames);
+  }, [collections, renderCheckboxes]);
+
+  useEffect(() => {
+    if (allChecked) checkAll();
+  }, [allChecked, checkAll]);
 
   return (
     <Modal isOpen={isOpen} toggle={onClose}>
