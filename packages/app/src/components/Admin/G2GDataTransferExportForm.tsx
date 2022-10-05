@@ -5,7 +5,7 @@ import { useTranslation } from 'next-i18next';
 import GrowiArchiveImportOption from '~/models/admin/growi-archive-import-option';
 import ImportOptionForPages from '~/models/admin/import-option-for-pages';
 import ImportOptionForRevisions from '~/models/admin/import-option-for-revisions';
-import { useAdminSocket } from '~/stores/socket-io';
+// import { useAdminSocket } from '~/stores/socket-io';
 
 import ImportCollectionConfigurationModal from './ImportData/GrowiArchive/ImportCollectionConfigurationModal';
 import ImportCollectionItem, { DEFAULT_MODE, MODE_RESTRICTED_COLLECTION } from './ImportData/GrowiArchive/ImportCollectionItem';
@@ -31,17 +31,17 @@ type Props = {
 };
 
 const G2GDataTransferExportForm = (props: Props): JSX.Element => {
-  const { data: socket } = useAdminSocket();
+  // const { data: socket } = useAdminSocket();
   const { t } = useTranslation('admin');
 
   const { allCollectionNames } = props;
 
   const [selectedCollections, setSelectedCollections] = useState<Set<string>>(new Set(allCollectionNames));
   const [optionsMap, setOptionsMap] = useState<any>({});
-  const [isImporting, setImporting] = useState(false);
-  const [isImported, setImported] = useState(false);
-  const [progressMap, setProgressMap] = useState<any>({});
-  const [errorsMap, setErrorsMap] = useState<any>([]);
+  // const [isImporting, setImporting] = useState(false);
+  // const [isImported, setImported] = useState(false);
+  // const [progressMap, setProgressMap] = useState<any>({});
+  // const [errorsMap, setErrorsMap] = useState<any>([]);
   const [isConfigurationModalOpen, setConfigurationModalOpen] = useState(false);
   const [collectionNameForConfiguration, setCollectionNameForConfiguration] = useState<any>();
 
@@ -59,8 +59,11 @@ const G2GDataTransferExportForm = (props: Props): JSX.Element => {
     // merge
     Object.assign(options, data);
 
-    optionsMap[collectionName] = options;
-    setOptionsMap({ ...optionsMap, collectionName: options });
+    const updatedOptionsMap = {};
+    updatedOptionsMap[collectionName] = options;
+    setOptionsMap((prev) => {
+      return { ...prev, updatedOptionsMap };
+    });
   };
 
   const ImportItems = ({ collectionNames }): JSX.Element => {
@@ -87,8 +90,8 @@ const G2GDataTransferExportForm = (props: Props): JSX.Element => {
     return (
       <div className="row">
         {collectionNames.map((collectionName) => {
-          const collectionProgress = progressMap[collectionName];
-          const errors = errorsMap[collectionName];
+          // const collectionProgress = progressMap[collectionName];
+          // const errors = errorsMap[collectionName];
           const isConfigButtonAvailable = Object.keys(IMPORT_OPTION_CLASS_MAPPING).includes(collectionName);
 
           if (optionsMap[collectionName] == null) {
@@ -98,11 +101,16 @@ const G2GDataTransferExportForm = (props: Props): JSX.Element => {
           return (
             <div className="col-md-6 my-1" key={collectionName}>
               <ImportCollectionItem
-                isImporting={isImporting}
-                isImported={collectionProgress ? isImported : false}
-                insertedCount={collectionProgress ? collectionProgress.insertedCount : 0}
-                modifiedCount={collectionProgress ? collectionProgress.modifiedCount : 0}
-                errorsCount={errors ? errors.length : 0}
+                // isImporting={isImporting}
+                // isImported={collectionProgress ? isImported : false}
+                // insertedCount={collectionProgress ? collectionProgress.insertedCount : 0}
+                // modifiedCount={collectionProgress ? collectionProgress.modifiedCount : 0}
+                // errorsCount={errors ? errors.length : 0}
+                isImporting={0}
+                isImported={false}
+                insertedCount={0}
+                modifiedCount={0}
+                errorsCount={0}
                 collectionName={collectionName}
                 isSelected={selectedCollections.has(collectionName)}
                 option={optionsMap[collectionName]}
@@ -191,44 +199,59 @@ const G2GDataTransferExportForm = (props: Props): JSX.Element => {
     setOptionsMap(initialOptionsMap);
   };
 
-  const setupWebsocketEventHandler = () => {
-    if (socket != null) {
-      socket.on('admin:onProgressForImport', ({ collectionName, collectionProgress, appendedErrors }) => {
-        setImporting(true);
-        setProgressMap((prev) => {
-          return { ...prev, collectionName: collectionProgress };
-        });
-        const errors = errorsMap[collectionName] || [];
-        setErrorsMap((prev) => {
-          return { ...prev, collectionName: errors.concat(appendedErrors) };
-        });
-      });
+  // TODO: use Socket
 
-      // websocket event
-      socket.on('admin:onTerminateForImport', () => {
-        setImporting(false);
-        setImported(true);
-      });
+  // setupWebsocketEventHandler() {
+  //   const socket = this.props.adminSocketIoContainer.getSocket();
 
-      // websocket event
-      socket.on('admin:onErrorForImport', () => {
-        setImporting(false);
-        setImported(false);
-      });
-    }
-  };
+  //   // websocket event
+  //   // eslint-disable-next-line object-curly-newline
+  //   socket.on('admin:onProgressForImport', ({ collectionName, collectionProgress, appendedErrors }) => {
+  //     const { progressMap, errorsMap } = this.state;
+  //     progressMap[collectionName] = collectionProgress;
 
-  const teardownWebsocketEventHandler = () => {
-    if (socket != null) {
-      socket.off('admin:onProgressForImport');
-      socket.off('admin:onTerminateForImport');
-    }
-  };
+  //     const errors = errorsMap[collectionName] || [];
+  //     errorsMap[collectionName] = errors.concat(appendedErrors);
+
+  //     this.setState({
+  //       isImporting: true,
+  //       progressMap,
+  //       errorsMap,
+  //     });
+  //   });
+
+  //   // websocket event
+  //   socket.on('admin:onTerminateForImport', () => {
+  //     this.setState({
+  //       isImporting: false,
+  //       isImported: true,
+  //     });
+
+  //     toastSuccess(undefined, 'Import process has completed.');
+  //   });
+
+  //   // websocket event
+  //   socket.on('admin:onErrorForImport', (err) => {
+  //     this.setState({
+  //       isImporting: false,
+  //       isImported: false,
+  //     });
+
+  //     toastError(err, 'Import process has failed.');
+  //   });
+  // }
+
+  // teardownWebsocketEventHandler() {
+  //   const socket = this.props.adminSocketIoContainer.getSocket();
+
+  //   socket.removeAllListeners('admin:onProgressForImport');
+  //   socket.removeAllListeners('admin:onTerminateForImport');
+  // }
 
   useEffect(() => {
     setInitialOptionsMap();
-    setupWebsocketEventHandler();
-    teardownWebsocketEventHandler();
+    // setupWebsocketEventHandler();
+    // teardownWebsocketEventHandler();
   }, []);
 
   return (

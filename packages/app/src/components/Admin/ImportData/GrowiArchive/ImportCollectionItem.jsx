@@ -17,6 +17,7 @@ export const DEFAULT_MODE = 'insert';
 export const MODE_RESTRICTED_COLLECTION = {
   configs: ['flushAndInsert'],
   users: ['insert', 'upsert'],
+  pages: ['upsert', 'flushAndInsert'],
 };
 
 export default class ImportCollectionItem extends React.Component {
