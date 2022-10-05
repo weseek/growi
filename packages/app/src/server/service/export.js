@@ -231,10 +231,12 @@ class ExportService {
     // send terminate event
     this.emitTerminateEvent(addedZipFileStat);
 
+    return addedZipFileStat;
+
     // TODO: remove broken zip file
   }
 
-  async export(collections) {
+  async export(collections, shouldEmit = true) {
     if (this.currentProgressingStatus != null) {
       throw new Error('There is an exporting process running.');
     }
@@ -242,13 +244,15 @@ class ExportService {
     this.currentProgressingStatus = new ExportProgressingStatus(collections);
     await this.currentProgressingStatus.init();
 
+    let zipFileStat;
     try {
-      await this.exportCollectionsToZippedJson(collections);
+      zipFileStat = await this.exportCollectionsToZippedJson(collections, shouldEmit);
     }
     finally {
       this.currentProgressingStatus = null;
     }
 
+    return zipFileStat;
   }
 
   /**

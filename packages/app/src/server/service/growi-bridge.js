@@ -120,6 +120,7 @@ class GrowiBridgeService {
     return {
       meta,
       fileName: path.basename(zipFile),
+      zipFilePath: zipFile,
       fileStat,
       innerFileStats,
     };
