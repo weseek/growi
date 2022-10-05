@@ -61,7 +61,19 @@ export const useSWRxPageList = (path: string | null, pageNumber?: number, termNu
     }),
   );
 };
-
+export const useSWRInifinitexPageList = (path: string) : SWRInfiniteResponse<(IPageHasId)[], Error> => {
+  const getKey = (page: number) => {
+    return `/pages/list?path=${path}&offset=${page + 1}`;
+  };
+  return useSWRInfinite(
+    getKey,
+    (endpoint: string) => apiv3Get<{ pages:(IPageHasId)[] }>(endpoint).then(response => response.data?.pages),
+    {
+      revalidateFirstPage: false,
+      revalidateAll: false,
+    },
+  );
+};
 export const useDescendantsPageListForCurrentPathTermManager = (isDisabled?: boolean) : SWRResponse<number, Error> & ITermNumberManagerUtil => {
   return useTermNumberManager(isDisabled === true ? null : 'descendantsPageListForCurrentPathTermNumber');
 };
