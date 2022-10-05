@@ -29,14 +29,14 @@ type Props = {
   onExportingRequested: () => void,
   onClose: () => void,
   collections: string[],
-  allChecked?: boolean,
+  isAllChecked?: boolean,
 };
 
 const SelectCollectionsModal = (props: Props): JSX.Element => {
   const { t } = useTranslation();
 
   const {
-    isOpen, onExportingRequested, onClose, collections, allChecked,
+    isOpen, onExportingRequested, onClose, collections, isAllChecked,
   } = props;
 
   const [selectedCollections, setSelectedCollections] = useState<Set<string>>(new Set());
@@ -172,8 +172,8 @@ const SelectCollectionsModal = (props: Props): JSX.Element => {
   }, [collections, renderCheckboxes]);
 
   useEffect(() => {
-    if (allChecked) checkAll();
-  }, [allChecked, checkAll]);
+    if (isAllChecked) checkAll();
+  }, [isAllChecked, checkAll]);
 
   return (
     <Modal isOpen={isOpen} toggle={onClose}>

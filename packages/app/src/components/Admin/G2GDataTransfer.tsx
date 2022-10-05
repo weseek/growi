@@ -131,7 +131,7 @@ const G2GDataTransfer = (): JSX.Element => {
         onExportingRequested={exportingRequestedHandler}
         onClose={() => setExportModalOpen(false)}
         collections={collections}
-        allChecked={true}
+        isAllChecked
       />
     </div>
   );
