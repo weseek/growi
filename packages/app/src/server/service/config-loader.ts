@@ -53,7 +53,7 @@ const ENV_VAR_NAME_TO_CONFIG_INFO = {
     ns:      'crowi',
     key:     'app:fileUploadType',
     type:    ValueType.STRING,
-    default: 'aws',
+    default: 'none',
   },
   FILE_UPLOAD_USES_ONLY_ENV_VAR_FOR_FILE_UPLOAD_TYPE: {
     ns:      'crowi',
