@@ -1,4 +1,4 @@
-import { ErrorV3 } from '@growi/core';
+import { isDatabasePage } from '^/../core/src/utils/page-path-utils';
 
 import { SupportedTargetModel, SupportedAction } from '~/interfaces/activity';
 import { subscribeRuleNames } from '~/interfaces/in-app-notification';
@@ -7,6 +7,8 @@ import loggerFactory from '~/utils/logger';
 import { generateAddActivityMiddleware } from '../../middlewares/add-activity';
 import { apiV3FormValidator } from '../../middlewares/apiv3-form-validator';
 import { isV5ConversionError } from '../../models/vo/v5-conversion-error';
+
+import { ErrorV3 } from '@growi/core';
 
 const logger = loggerFactory('growi:routes:apiv3:pages'); // eslint-disable-line no-unused-vars
 const { pathUtils, pagePathUtils } = require('@growi/core');
@@ -511,6 +513,12 @@ module.exports = (crowi) => {
 
     // check whether path starts slash
     newPagePath = pathUtils.addHeadingSlash(newPagePath);
+
+    const pathPath = (await Page.findById(pageId)).path;
+    if ((!isDatabasePage(pathPath) && isDatabasePage(newPagePath))
+      || (isDatabasePage(pathPath) && !isDatabasePage(newPagePath))) {
+      return res.apiv3Err(new ErrorV3('Could not move regular page as database or vice versa', 'invalid_path'), 403);
+    }
 
     const isExist = await Page.count({ path: newPagePath }) > 0;
     if (isExist) {
