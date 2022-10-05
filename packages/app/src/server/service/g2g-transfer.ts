@@ -129,15 +129,16 @@ export class G2GTransferPusherService implements Pusher {
         logger.warn(`Error occured when getting Attachment(ID=${attachment.id}), skipping: `, err);
         continue;
       }
+      // TODO: get attachmentLists from destination GROWI
       // TODO: refresh transfer key per 1 hour
       // post each attachment file data to receiver
       try {
         // Use FormData to immitate browser's form data object
         const form = new FormData();
 
-        form.append('fileContent', fileStream);
+        form.append('content', fileStream, attachment.fileName);
         form.append('attachmentMetadata', JSON.stringify(attachment));
-        await rawAxios.post('/_api/v3/g2g-attachment-transfer/', form, {
+        await rawAxios.post('/_api/v3/g2g-transfer/attachment', form, {
           baseURL: appUrl.origin,
           headers: {
             ...form.getHeaders(), // This generates a unique boundary for multi part form data
@@ -301,11 +302,15 @@ export class G2GTransferReceiverService implements Receiver {
     return;
   }
 
-  public async receiveAttachment(zipfile: Readable): Promise<void> {
-    // Import data
-    // Call onCompleteTransfer when finished
-
-    return;
+  /**
+   *
+   * @param content Pushed attachment data from source GROWI
+   * @param attachmentMap Map-ped Attachment instance
+   * @returns
+   */
+  public async receiveAttachment(content: Readable, attachmentMap): Promise<void> {
+    const { fileUploadService } = this.crowi;
+    return fileUploadService.uploadFile(content, attachmentMap);
   }
 
   /**

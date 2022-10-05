@@ -65,6 +65,10 @@ module.exports = (crowi: Crowi): Router => {
     },
   });
 
+  const uploadsForAttachment = multer({
+    storage: multer.memoryStorage(),
+  });
+
   const isInstalled = crowi.configManager?.getConfig('crowi', 'app:installed');
 
   const accessTokenParser = require('../../middlewares/access-token-parser')(crowi);
@@ -254,6 +258,26 @@ module.exports = (crowi: Crowi): Router => {
 
     return res.apiv3({ message: 'Successfully started to receive transfer data.' });
   });
+
+  // TODO: verify transfer key
+  receiveRouter.post('/attachment', uploadsForAttachment.single('content'), /* verifyAndExtractTransferKey, */
+    async(req: Request & { transferKey: TransferKey }, res: ApiV3Response) => {
+      const { file } = req;
+      const { attachmentMetadata } = req.body;
+
+      let attachmentMap;
+      try {
+        attachmentMap = JSON.parse(attachmentMetadata);
+      }
+      catch (err) {
+        logger.error(err);
+        return res.apiv3Err(new ErrorV3('Failed to parse body.', 'parse_failed'), 500);
+      }
+
+      await g2gTransferReceiverService.receiveAttachment(file.stream, attachmentMap);
+
+      return res.apiv3({ message: 'Successfully imported attached file.' });
+    });
 
   receiveRouter.get('/growi-info', verifyAndExtractTransferKey, async(req: Request & { transferKey: TransferKey }, res: ApiV3Response) => {
     let growiInfo: IDataGROWIInfo;
