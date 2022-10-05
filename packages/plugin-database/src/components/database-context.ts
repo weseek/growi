@@ -1,16 +1,12 @@
 export class DatabaseContext {
 
-  databasePath: string;
+  path: string;
 
   options?: Record<string, string|undefined>;
 
-  constructor(databasePath: string, options: Record<string, string|undefined>) {
-    this.databasePath = databasePath;
+  constructor(path: string, options: Record<string, string|undefined>) {
+    this.path = path;
 
-    console.log('databasePath');
-    console.log(databasePath);
-    console.log('options');
-    console.log(options);
     // remove undefined keys
     Object.keys(options).forEach(key => options[key] === undefined && delete options[key]);
 

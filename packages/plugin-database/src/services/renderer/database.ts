@@ -8,7 +8,7 @@ import { Plugin } from 'unified';
 import { visit } from 'unist-util-visit';
 
 const NODE_NAME_PATTERN = new RegExp(/database/);
-const SUPPORTED_ATTRIBUTES = ['databasePath'];
+const SUPPORTED_ATTRIBUTES = ['path'];
 
 type DirectiveAttributes = Record<string, string>
 
@@ -35,32 +35,12 @@ export const remarkPlugin: Plugin = function() {
 };
 
 export type DatabaseRehypePluginParams = {
-  databasePath?: string,
+  path?: string,
 }
 
 export const rehypePlugin: Plugin<[DatabaseRehypePluginParams]> = (options = {}) => {
   return (tree) => {
-    return tree;
-    // console.log('tree');
-    // console.log(JSON.stringify(tree));
-    // // assert.notStrictEqual(options.databasePath, null, 'database rehype plugin requires \'databasePath\' option');
-    // console.log('rehypePlugin options');
-    // console.log(options);
-    // if (options.databasePath == null) {
-    //   return;
-    // }
-
-    // const elements = selectAll('database', tree as HastNode);
-
-    // elements.forEach((databaseElem) => {
-    //   if (databaseElem.properties == null) {
-    //     return;
-    //   }
-    //   databaseElem.properties.databasePath = options.databasePath;
-
-    //   console.log('databaseElem.databasePath');
-    //   console.log(databaseElem.databasePath);
-    // });
+    // nothing to do (no need to register this rehypePlugin)
   };
 };
 

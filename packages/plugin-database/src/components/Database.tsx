@@ -7,23 +7,19 @@ import { DatabaseContext } from './database-context';
 import styles from './Database.module.scss';
 
 type Props = {
-  databasePath: string,
+  path: string,
 };
 
 export const Database = (props: Props): JSX.Element => {
 
-  const { databasePath } = props;
+  const { path } = props;
   const [isLoading, setLoading] = useState(false);
   const [isError, setError] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
-  console.log('databasePath');
-  console.log(databasePath);
-  console.log('props');
-  console.log(props);
 
   const databaseContext = useMemo(() => {
-    return new DatabaseContext(databasePath, {});
-  }, [databasePath]);
+    return new DatabaseContext(path, {});
+  }, [path]);
 
   const renderContents = () => {
     if (isError) {
@@ -38,7 +34,7 @@ export const Database = (props: Props): JSX.Element => {
     return (
       <>
         <div>
-          {databaseContext.databasePath}
+          {databaseContext.path}
         </div>
       </>
     );

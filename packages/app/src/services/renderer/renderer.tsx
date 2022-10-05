@@ -334,11 +334,11 @@ export const generateViewOptions = (
   rehypePlugins.push(
     slug,
     [lsxGrowiPlugin.rehypePlugin, { pagePath }],
-    // [databaseGrowiPlugin.rehypePlugin, { pagePath }],
+    [databaseGrowiPlugin.rehypePlugin],
     [sanitize, deepmerge(
       commonSanitizeOption,
       lsxGrowiPlugin.sanitizeOption,
-      // databaseGrowiPlugin.sanitizeOption,
+      databaseGrowiPlugin.sanitizeOption,
     )],
     katex,
     [toc.rehypePluginStore, { storeTocNode }],
@@ -353,11 +353,7 @@ export const generateViewOptions = (
     components.h2 = Header;
     components.h3 = Header;
     components.lsx = props => <Lsx {...props} forceToFetchData />;
-    components.database = (props) => {
-      console.log('components.database.props');
-      console.log(props);
-      return <Database {...props} />;
-    };
+    components.database = props => <Database {...props} />;
   }
 
   // // Add configurers for viewer
@@ -400,8 +396,6 @@ export const generateTocOptions = (config: RendererConfig, tocNode: HtmlElementN
 
 export const generateSimpleViewOptions = (config: RendererConfig, pagePath: string, highlightKeywords?: string | string[]): RendererOptions => {
   const options = generateCommonOptions(pagePath, config);
-  console.log('generateSimpleViewOptions.options');
-  console.log(options);
   const { remarkPlugins, rehypePlugins, components } = options;
 
   // add remark plugins
@@ -419,12 +413,12 @@ export const generateSimpleViewOptions = (config: RendererConfig, pagePath: stri
   // add rehype plugins
   rehypePlugins.push(
     [lsxGrowiPlugin.rehypePlugin, { pagePath }],
-    // [databaseGrowiPlugin.rehypePlugin, { pagePath }],
+    [databaseGrowiPlugin.rehypePlugin],
     [keywordHighlighter.rehypePlugin, { keywords: highlightKeywords }],
     [sanitize, deepmerge(
       commonSanitizeOption,
       lsxGrowiPlugin.sanitizeOption,
-      // databaseGrowiPlugin.sanitizeOption,
+      databaseGrowiPlugin.sanitizeOption,
     )],
     katex,
   );
@@ -432,11 +426,7 @@ export const generateSimpleViewOptions = (config: RendererConfig, pagePath: stri
   // add components
   if (components != null) {
     components.lsx = props => <Lsx {...props} />;
-    components.database = (props) => {
-      console.log('generateSimpleViewOptions.props');
-      console.log(JSON.stringify(props));
-      return <Database {...props} />;
-    };
+    components.database = props => <Database {...props} />;
   }
 
   verifySanitizePlugin(options, false);
@@ -463,12 +453,12 @@ export const generatePreviewOptions = (config: RendererConfig, pagePath: string)
   // add rehype plugins
   rehypePlugins.push(
     [lsxGrowiPlugin.rehypePlugin, { pagePath }],
-    // [databaseGrowiPlugin.rehypePlugin, { pagePath }],
+    [databaseGrowiPlugin.rehypePlugin],
     addLineNumberAttribute.rehypePlugin,
     [sanitize, deepmerge(
       commonSanitizeOption,
       lsxGrowiPlugin.sanitizeOption,
-      // databaseGrowiPlugin.sanitizeOption,
+      databaseGrowiPlugin.sanitizeOption,
       addLineNumberAttribute.sanitizeOption,
     )],
     katex,
