@@ -192,9 +192,26 @@ export class G2GTransferReceiverService implements Receiver {
   }
 
   public async answerGROWIInfo(): Promise<IDataGROWIInfo> {
-    const userUpperLimit = this.crowi.configManager.getConfig('crowi', 'security:userUpperLimit');
+    const configManager = this.crowi.configManager;
+    const userUpperLimit = configManager.getConfig('crowi', 'security:userUpperLimit');
     const version = this.crowi.version;
-    const attachmentInfo = {}; // TODO: Impl
+    const attachmentInfo = {
+      type: configManager.getConfig('crowi', 'app:fileUploadType'),
+      bucket: undefined,
+      customEndpoint: undefined,
+    };
+
+    // put storage location info to check identificat
+    switch (attachmentInfo.type) {
+      case 'aws':
+        attachmentInfo.bucket = configManager.getConfig('crowi', 'aws:s3Bucket');
+        attachmentInfo.customEndpoint = configManager.getConfig('crowi', 'aws:s3CustomEndpoint');
+        break;
+      case 'gcs':
+        attachmentInfo.bucket = configManager.getConfig('crowi', 'gcs:bucket');
+        break;
+      default:
+    }
 
     return { userUpperLimit, version, attachmentInfo };
   }
