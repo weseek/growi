@@ -173,7 +173,7 @@ const GrowiPage: NextPage<Props> = (props: Props) => {
   // const { t } = useTranslation();
   const router = useRouter();
 
-  // const { data: currentUser } = useCurrentUser(props.currentUser ?? null);
+  const { data: currentUser } = useCurrentUser(props.currentUser ?? null);
 
   // register global EventEmitter
   if (isClient()) {
