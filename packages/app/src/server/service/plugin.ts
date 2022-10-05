@@ -37,6 +37,10 @@ export class PluginService {
       });
     }
 
+    if (growiPlugin.types == null) {
+      throw new Error('\'growiPlugin\' section must have a \'types\' property.');
+    }
+
     return [{
       isEnabled: true,
       installedPath,
@@ -45,7 +49,7 @@ export class PluginService {
         name: growiPlugin.name ?? packageName,
         desc: growiPlugin.desc ?? packageDesc,
         author: growiPlugin.author ?? packageAuthor,
-        types: [],
+        types: growiPlugin.types,
       },
     }];
   }
