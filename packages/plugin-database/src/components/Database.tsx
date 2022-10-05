@@ -6,15 +6,24 @@ import { DatabaseContext } from './database-context';
 
 import styles from './Database.module.scss';
 
-export const Database = (): JSX.Element => {
+type Props = {
+  databasePath: string,
+};
 
+export const Database = (props: Props): JSX.Element => {
+
+  const { databasePath } = props;
   const [isLoading, setLoading] = useState(false);
   const [isError, setError] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
+  console.log('databasePath');
+  console.log(databasePath);
+  console.log('props');
+  console.log(props);
 
   const databaseContext = useMemo(() => {
-    return new DatabaseContext();
-  }, []);
+    return new DatabaseContext(databasePath, {});
+  }, [databasePath]);
 
   const renderContents = () => {
     if (isError) {
@@ -29,7 +38,7 @@ export const Database = (): JSX.Element => {
     return (
       <>
         <div>
-          とろろ
+          {databaseContext.databasePath}
         </div>
       </>
     );
