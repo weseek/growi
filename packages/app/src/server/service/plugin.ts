@@ -19,12 +19,35 @@ export class PluginService {
     return;
   }
 
-  static detectPlugins(origin: GrowiPluginOrigin, installedPath: string): GrowiPlugin[] {
-    // const plugins: GrowiPlugin[] = [];
+  static async detectPlugins(origin: GrowiPluginOrigin, installedPath: string): Promise<GrowiPlugin[]> {
+    const packageJson = await import(path.resolve(pluginStoringPath, installedPath, 'package.json'));
 
-    // const package = require(path.resolve(installedPath, 'package.json'));
+    const {
+      growiPlugin, name: packageName, description: packageDesc, author: packageAuthor,
+    } = packageJson;
 
-    // return scopedPackages;
+    if (growiPlugin == null) {
+      throw new Error('This package does not include \'growiPlugin\' section.');
+    }
+
+    if (growiPlugin.isMonorepo && growiPlugin.packages != null) {
+      return growiPlugin.packages.flatmap(async(subPackagePath) => {
+        const subPackageInstalledPath = path.resolve(pluginStoringPath, installedPath, subPackagePath);
+        return this.detectPlugins(origin, subPackageInstalledPath);
+      });
+    }
+
+    return [{
+      isEnabled: true,
+      installedPath,
+      origin,
+      meta: {
+        name: growiPlugin.name ?? packageName,
+        desc: growiPlugin.desc ?? packageDesc,
+        author: growiPlugin.author ?? packageAuthor,
+        types: [],
+      },
+    }];
   }
 
   // /**
