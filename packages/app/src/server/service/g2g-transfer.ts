@@ -113,7 +113,10 @@ export class G2GTransferPusherService implements Pusher {
     return false;
   }
 
-  public async transferAttachments(): Promise<void> { return }
+  public async transferAttachments(tk: TransferKey): Promise<void> {
+    // TODO: Attachment batch get
+    // TODO: post each attachment file data to receiver
+  }
 
   public async startTransfer(tk: TransferKey, collections: string[], optionsMap: any): Promise<void> {
     const { appUrl, key } = tk;
@@ -192,6 +195,7 @@ export class G2GTransferReceiverService implements Receiver {
   }
 
   public async answerGROWIInfo(): Promise<IDataGROWIInfo> {
+    // TODO: add attachment file limit, storage total limit
     const configManager = this.crowi.configManager;
     const userUpperLimit = configManager.getConfig('crowi', 'security:userUpperLimit');
     const version = this.crowi.version;
