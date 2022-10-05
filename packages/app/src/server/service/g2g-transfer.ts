@@ -115,19 +115,51 @@ export class G2GTransferPusherService implements Pusher {
 
   public async transferAttachments(tk: TransferKey): Promise<void> {
     const { appUrl, key } = tk;
+    const { fileUploadService } = this.crowi;
     const Attachment = this.crowi.model('Attachment');
-    const attachments = await Attachment.find();
 
     // TODO: batch get
+    const attachments = await Attachment.find();
     for await (const attachment of attachments) {
+      logger.debug(`processing attachment: ${attachment}`);
+      let fileStream;
       try {
-        // TODO: refresh transfer key per X min
-        // TODO: get read stream of each attachment
-
-        // TODO: post each attachment file data to receiver
+        // get read stream of each attachment
+        fileStream = await fileUploadService.findDeliveryFile(attachment);
       }
       catch (err) {
-        logger.warn(`Error occured when getting Attachment(ID=${attachment.id}) but skipping: `, err);
+        logger.warn(`Error occured when getting Attachment(ID=${attachment.id}), skipping: `, err);
+        continue;
+      }
+      // TODO: refresh transfer key per 1 hour
+      // post each attachment file data to receiver
+      try {
+        // Use FormData to immitate browser's form data object
+        const form = new FormData();
+
+        form.append('fileContent', fileStream);
+        form.append('attachmentMetadata', JSON.stringify(attachment));
+        await rawAxios.post('/_api/v3/g2g-attachment-transfer/', form, {
+          baseURL: appUrl.origin,
+          headers: {
+            ...form.getHeaders(), // This generates a unique boundary for multi part form data
+            [X_GROWI_TRANSFER_KEY_HEADER_NAME]: key,
+          },
+        });
+      }
+      catch (errs) {
+        logger.error(`Error occured when uploading attachment(ID=${attachment.id})`, errs);
+        if (!Array.isArray(errs)) {
+          // TODO: socker.emit(failed_to_transfer);
+          return;
+        }
+
+        const err = errs[0];
+        logger.error(err);
+
+
+        // TODO: socker.emit(failed_to_transfer);
+        return;
       }
     }
   }
