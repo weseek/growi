@@ -20,6 +20,7 @@ export type GrowiPlugin = {
 
 export type GrowiPluginMeta = {
   name: string,
-  type: GrowiPluginResourceType[],
+  types: GrowiPluginResourceType[],
+  desc?: string,
   author?: string,
 }

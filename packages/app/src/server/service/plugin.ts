@@ -8,41 +8,24 @@ import { resolveFromRoot } from '~/utils/project-dir-utils';
 const logger = loggerFactory('growi:plugins:plugin-utils');
 
 
-const pluginStoringPath = path.resolve(__dirname, '../../../tmp/plugins');
+const pluginStoringPath = resolveFromRoot('tmp/plugins');
 
 export class PluginService {
 
   static async install(origin: GrowiPluginOrigin): Promise<void> {
+    // TODO: download
+    // TODO: detect plugins
+    // TODO: save documents
     return;
   }
 
   static detectPlugins(origin: GrowiPluginOrigin, installedPath: string): GrowiPlugin[] {
-    return [];
+    // const plugins: GrowiPlugin[] = [];
+
+    // const package = require(path.resolve(installedPath, 'package.json'));
+
+    // return scopedPackages;
   }
-
-  // listPlugins() {
-  //   const scopedPackages: string[] = [];
-
-  //   fs.readdirSync(nodeModulesPath)
-  //     .filter(name => scopes.includes(name))
-  //     .forEach((scope) => {
-  //       fs.readdirSync(path.resolve(nodeModulesPath, scope))
-  //         .filter(name => !name.startsWith('.'))
-  //         .forEach((folderName) => {
-  //           const { name } = require(path.resolve(
-  //             nodeModulesPath,
-  //             scope,
-  //             folderName,
-  //             'package.json',
-  //           ));
-  //           if (!opts.ignorePackageNames.includes(name)) {
-  //             scopedPackages.push(name);
-  //           }
-  //         });
-  //     });
-
-  //   return scopedPackages;
-  // }
 
   // /**
   //  * list plugin module objects
