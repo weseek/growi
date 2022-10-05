@@ -114,8 +114,20 @@ export class G2GTransferPusherService implements Pusher {
   }
 
   public async transferAttachments(tk: TransferKey): Promise<void> {
-    // TODO: Attachment batch get
-    // TODO: post each attachment file data to receiver
+    const { appUrl, key } = tk;
+    const Attachment = this.crowi.model('Attachment');
+    const attachments = await Attachment.find();
+
+    // TODO: batch get
+    for await (const attachment of attachments) {
+      try {
+        // TODO: refresh transfer key
+        // TODO: post each attachment file data to receiver
+      }
+      catch (err) {
+        logger.warn(`Error occured when getting Attachment(ID=${attachment.id}) but skipping: `, err);
+      }
+    }
   }
 
   public async startTransfer(tk: TransferKey, collections: string[], optionsMap: any): Promise<void> {
