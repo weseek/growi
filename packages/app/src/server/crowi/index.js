@@ -65,6 +65,7 @@ function Crowi() {
   this.growiBridgeService = null;
   this.exportService = null;
   this.importService = null;
+  this.pluginService = null;
   this.searchService = null;
   this.socketIoService = null;
   this.pageService = null;
@@ -130,6 +131,7 @@ Crowi.prototype.init = async function() {
     this.setupUserGroupService(),
     this.setupExport(),
     this.setupImport(),
+    this.setupPluginService(),
     this.setupPageService(),
     this.setupInAppNotificationService(),
     this.setupActivityService(),
@@ -680,6 +682,13 @@ Crowi.prototype.setupImport = async function() {
   const ImportService = require('../service/import');
   if (this.importService == null) {
     this.importService = new ImportService(this);
+  }
+};
+
+Crowi.prototype.setupPluginService = async function() {
+  const { PluginService } = require('../service/plugin');
+  if (this.pluginService == null) {
+    this.pluginService = new PluginService(this);
   }
 };
 

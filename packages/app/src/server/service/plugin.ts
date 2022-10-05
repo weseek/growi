@@ -65,4 +65,9 @@ export class PluginService {
     return [plugin];
   }
 
+
+  async listPlugins(): Promise<GrowiPlugin[]> {
+    return [];
+  }
+
 }
