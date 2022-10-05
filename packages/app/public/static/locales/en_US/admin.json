@@ -1024,5 +1024,18 @@
     "ADMIN_SEARCH_CONNECTION": "Attempting to reconnect to Elasticsearch",
     "ADMIN_SEARCH_INDICES_NORMALIZE": "Normalize of Elasticsearch indexes",
     "ADMIN_SEARCH_INDICES_REBUILD": "Rebuild Elasticsearch indexes"
+  },
+  "g2g_data_transfer": {
+    "tab": "Data transfer",
+    "data_transfer": "Growi To Growi Data Transfer",
+    "transfer_data_to_another_growi": "Transfer data from this GROWI to another GROWI",
+    "transfer_data_to_this_growi": "Transfer data from another GROWI to this GROWI",
+    "advanced_options": "Advanced options",
+    "start_transfer": "Start transfer",
+    "publish_transfer_key": "Publish transfer key",
+    "transfer_key_limit": "Transfer keys are valid for 1 hour after issuance.",
+    "once_transfer_key_used": "Once the transfer key is used for transfer, it cannot be used for any other transfer.",
+    "transfer_to_growi_cloud": "If you wish to transfer to GROWI.cloud, please click here.",
+    "paste_transfer_key": "Paste transter key here"
   }
 }
