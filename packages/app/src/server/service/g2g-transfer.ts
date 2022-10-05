@@ -205,7 +205,7 @@ export class G2GTransferReceiverService implements Receiver {
     // Generate transfer key string
     let transferKeyString: string;
     try {
-      transferKeyString = TransferKey.generateKeyString(appSiteUrl, uuid);
+      transferKeyString = TransferKey.generateKeyString(uuid, appSiteUrl);
     }
     catch (err) {
       logger.error(err);
