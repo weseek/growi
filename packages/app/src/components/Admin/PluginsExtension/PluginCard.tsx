@@ -1,6 +1,6 @@
 import React from 'react';
 
-export const PluginCard = () => {
+export const PluginCard = (): JSX.Element => {
   return (
     <div>
       <div>

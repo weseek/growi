@@ -16364,6 +16364,13 @@ node-releases@^2.0.6:
   resolved "https://registry.yarnpkg.com/node-releases/-/node-releases-2.0.6.tgz#8a7088c63a55e493845683ebf3c828d8c51c5503"
   integrity sha512-PiVXnNuFm5+iYkLBNeq5211hvO38y63T0i2KKh2KnUs3RpzJ+JtODFjkD8yjLwnDkTYF1eKXheUwdssR+NRZdg==
 
+node-wget-js@^1.0.1:
+  version "1.0.1"
+  resolved "https://registry.yarnpkg.com/node-wget-js/-/node-wget-js-1.0.1.tgz#2390bf9c9f99f280cc7a221d07d096103161e78c"
+  integrity sha512-SXzjefvZvJc5kn9kqsZhs0es8aQ1o9pnnIpzA6CPeHb7CaIfl+7OkO1n8uqyVawMzzUfhEXxW6vbqUsWEgSaFw==
+  dependencies:
+    request "^2.88.0"
+
 nodemailer-ses-transport@~1.5.0:
   version "1.5.1"
   resolved "https://registry.yarnpkg.com/nodemailer-ses-transport/-/nodemailer-ses-transport-1.5.1.tgz#dc0598c1bf53e8652e632e8f31692ce022d7dea9"

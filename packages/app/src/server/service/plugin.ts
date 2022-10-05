@@ -1,5 +1,8 @@
-import fs from 'fs';
+
 import path from 'path';
+
+import wget from 'node-wget-js';
+
 
 import { GrowiPlugin, GrowiPluginOrigin } from '~/interfaces/plugin';
 import loggerFactory from '~/utils/logger';
@@ -7,13 +10,46 @@ import { resolveFromRoot } from '~/utils/project-dir-utils';
 
 const logger = loggerFactory('growi:plugins:plugin-utils');
 
-
 const pluginStoringPath = resolveFromRoot('tmp/plugins');
+
+async function downloadURL(urls: string, filename: string) {
+  await wget({ url: urls, dest: filename });
+}
 
 export class PluginService {
 
-  static async install(origin: GrowiPluginOrigin): Promise<void> {
-    // TODO: download
+  static async install(crowi, origin: GrowiPluginOrigin): Promise<void> {
+    const { importService } = crowi;
+    // download
+    const ghUrl = origin.url;
+    const ghBranch = origin.ghBranch;
+    const ghTag = origin.ghTag;
+    const downloadDir = path.join(process.cwd(), 'tmp/plugins/');
+    downloadURL(`${ghUrl}/archive/refs/heads/master.zip`, downloadDir);
+    const test = '/workspace/growi/packages/app/tmp/plugins/master.zip';
+    // try {
+    //   await downloadURL(`${ghUrl}/archive/refs/heads/master.zip`, downloadDir);
+    // }
+    // catch (err) {
+    //   // TODO:
+    // }
+
+    // console.log(`${downloadDir}master.zip`);
+
+    // // unzip
+    // const files = await unzip(`${downloadDir}master.zip`);
+    // console.log('fle', files);
+    // const file = await importService.unzip(`${downloadDir}master.zip`);
+    // console.log(file);
+    // try {
+    //   // unzip
+    //   const file = await importService.unzip(zipFile);
+    //   console.log('fle', file)
+    // }
+    // catch (err) {
+    //   // TODO:
+    // }
+
     // TODO: detect plugins
     // TODO: save documents
     return;

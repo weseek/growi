@@ -64,7 +64,8 @@ const AdminLayout = dynamic(() => import('../../components/Layout/AdminLayout'),
 // named export
 const UserGroupPage = dynamic(() => import('../../components/Admin/UserGroup/UserGroupPage').then(mod => mod.UserGroupPage), { ssr: false });
 const AuditLogManagement = dynamic(() => import('../../components/Admin/AuditLogManagement').then(mod => mod.AuditLogManagement), { ssr: false });
-const PluginsExtensionPageContents = dynamic(() => import('../../components/Admin/PluginsExtension/PluginsExtensionPageContents').then(mod => mod.PluginsExtensionPageContents), { ssr: false });
+const PluginsExtensionPageContents = dynamic(() => import('../../components/Admin/PluginsExtension/PluginsExtensionPageContents')
+  .then(mod => mod.PluginsExtensionPageContents), { ssr: false });
 
 const pluginUtils = new PluginUtils();
 
