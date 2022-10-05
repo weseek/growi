@@ -47,7 +47,7 @@ interface Pusher {
    * @param {string[]} collections Collection name string array
    * @param {any} optionsMap Options map
    */
-  startTransfer(tk: TransferKey, collections: string[], optionsMap: any): Promise<void>
+  startTransfer(tk: TransferKey, user: any, collections: string[], optionsMap: any): Promise<void>
 }
 
 interface Receiver {
@@ -113,7 +113,7 @@ export class G2GTransferPusherService implements Pusher {
 
   public async transferAttachments(): Promise<void> { return }
 
-  public async startTransfer(tk: TransferKey, collections: string[], optionsMap: any): Promise<void> {
+  public async startTransfer(tk: TransferKey, user: any, collections: string[], optionsMap: any): Promise<void> {
     const { appUrl, key } = tk;
 
     let zipFileStream: ReadStream;
@@ -136,8 +136,9 @@ export class G2GTransferPusherService implements Pusher {
 
       const appTitle = this.crowi.appService.getAppTitle();
       form.append('transferDataZipFile', zipFileStream, `${appTitle}-${Date.now}.growi.zip`);
-      form.append('collections', collections);
-      form.append('optionsMap', optionsMap);
+      form.append('collections', JSON.stringify(collections));
+      form.append('optionsMap', JSON.stringify(optionsMap));
+      form.append('operatorUserId', user._id.toString());
       await rawAxios.post('/_api/v3/g2g-transfer/', form, {
         baseURL: appUrl.origin,
         headers: {
@@ -147,6 +148,7 @@ export class G2GTransferPusherService implements Pusher {
       });
     }
     catch (errs) {
+      logger.error(errs);
       if (!Array.isArray(errs)) {
         // TODO: socker.emit(failed_to_transfer);
         return;

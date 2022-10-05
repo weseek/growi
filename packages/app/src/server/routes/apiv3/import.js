@@ -1,9 +1,11 @@
-import mongoose from 'mongoose';
-
 import { SupportedAction } from '~/interfaces/activity';
 import loggerFactory from '~/utils/logger';
 
 import { generateAddActivityMiddleware } from '../../middlewares/add-activity';
+
+import overwriteParamsAttachmentFilesChunks from './overwrite-params/attachmentFiles.chunks';
+import overwriteParamsPages from './overwrite-params/pages';
+import overwriteParamsRevisions from './overwrite-params/revisions';
 
 
 const logger = loggerFactory('growi:routes:apiv3:import'); // eslint-disable-line no-unused-vars
@@ -52,23 +54,23 @@ const router = express.Router();
 /**
  * generate overwrite params with overwrite-params/* modules
  * @param {string} collectionName
- * @param {object} req Request Object
+ * @param {string} operatorUserId Operator user id
  * @param {GrowiArchiveImportOption} options GrowiArchiveImportOption instance
  */
-export const generateOverwriteParams = (collectionName, req, options) => {
+export const generateOverwriteParams = (collectionName, operatorUserId, options) => {
   switch (collectionName) {
     case 'pages':
-      return require('./overwrite-params/pages')(req, options);
+      return overwriteParamsPages(operatorUserId, options);
     case 'revisions':
-      return require('./overwrite-params/revisions')(req, options);
+      return overwriteParamsRevisions(operatorUserId, options);
     case 'attachmentFiles.chunks':
-      return require('./overwrite-params/attachmentFiles.chunks')(req, options);
+      return overwriteParamsAttachmentFilesChunks(operatorUserId, options);
     default:
       return {};
   }
 };
 
-module.exports = (crowi) => {
+export default function route(crowi) {
   const { growiBridgeService, importService, socketIoService } = crowi;
   const accessTokenParser = require('../../middlewares/access-token-parser')(crowi);
   const loginRequired = require('../../middlewares/login-required')(crowi);
@@ -283,7 +285,7 @@ module.exports = (crowi) => {
       importSettings.jsonFileName = fileName;
 
       // generate overwrite params
-      importSettings.overwriteParams = generateOverwriteParams(collectionName, req, options);
+      importSettings.overwriteParams = generateOverwriteParams(collectionName, req.user._id, options);
 
       importSettingsMap[collectionName] = importSettings;
     });
@@ -385,4 +387,4 @@ module.exports = (crowi) => {
   });
 
   return router;
-};
+}
