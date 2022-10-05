@@ -129,7 +129,7 @@ export class G2GTransferPusherService implements Pusher {
         logger.warn(`Error occured when getting Attachment(ID=${attachment.id}), skipping: `, err);
         continue;
       }
-      // TODO: get attachmentLists from destination GROWI
+      // TODO: get attachmentLists from destination GROWI to avoid transferring files that the dest GROWI has
       // TODO: refresh transfer key per 1 hour
       // post each attachment file data to receiver
       try {
