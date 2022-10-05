@@ -20,12 +20,17 @@ import ErrorV3 from '../../models/vo/error-apiv3';
 import { generateOverwriteParams } from './import';
 import { ApiV3Response } from './interfaces/apiv3-response';
 
+interface AuthorizedRequest extends Request {
+  user?: any
+}
+
 const logger = loggerFactory('growi:routes:apiv3:transfer');
 
 const validator = {
   transfer: [
     body('transferKey').isString().withMessage('transferKey is required'),
     body('collections').isArray().withMessage('collections is required'),
+    body('optionsMap').isObject().withMessage('optionsMap is required'),
   ],
 };
 
@@ -129,15 +134,25 @@ module.exports = (crowi: Crowi): Router => {
   const pushRouter = express.Router();
 
   // Auto import
-  receiveRouter.post('/', uploads.single('file'), verifyAndExtractTransferKey, async(req: Request & { transferKey: TransferKey }, res: ApiV3Response) => {
+  // eslint-disable-next-line max-len
+  receiveRouter.post('/', uploads.single('transferDataZipFile'), /* verifyAndExtractTransferKey, */ async(req: Request & { transferKey: TransferKey, operatorUserId: string }, res: ApiV3Response) => {
     const { file } = req;
 
     const zipFile = importService.getFile(file.filename);
     let data;
 
-    // ぶちこみ
+    const { collections: strCollections, optionsMap: strOptionsMap, operatorUserId } = req.body;
 
-    const { collections, optionsMap } = req.body;
+    let collections;
+    let optionsMap;
+    try {
+      collections = JSON.parse(strCollections);
+      optionsMap = JSON.parse(strOptionsMap);
+    }
+    catch (err) {
+      logger.error(err);
+      return res.apiv3Err(new ErrorV3('Failed to parse body.', 'parse_failed'), 500);
+    }
 
     /*
      * unzip, parse
@@ -188,7 +203,7 @@ module.exports = (crowi: Crowi): Router => {
       importSettings.jsonFileName = fileName;
 
       // generate overwrite params
-      importSettings.overwriteParams = generateOverwriteParams(collectionName, req, options);
+      importSettings.overwriteParams = generateOverwriteParams(collectionName, operatorUserId, options);
 
       importSettingsMap[collectionName] = importSettings;
     });
@@ -198,7 +213,7 @@ module.exports = (crowi: Crowi): Router => {
      */
     try {
       importService.import(collections, importSettingsMap);
-      const parameters = { action: SupportedAction.ACTION_ADMIN_GROWI_DATA_IMPORTED };
+      // const parameters = { action: SupportedAction.ACTION_ADMIN_GROWI_DATA_IMPORTED };
       // activityEvent.emit('update', res.locals.activity._id, parameters);
     }
     catch (err) {
@@ -206,7 +221,7 @@ module.exports = (crowi: Crowi): Router => {
       // adminEvent.emit('onErrorForImport', { message: err.message });
     }
 
-    // ここまで
+    // -----
 
     try {
       data = await growiBridgeService.parseZipFile(zipFile);
@@ -288,7 +303,7 @@ module.exports = (crowi: Crowi): Router => {
   // Auto export
   // TODO: Use socket to send progress info to the client
   // eslint-disable-next-line max-len
-  pushRouter.post('/transfer', accessTokenParser, loginRequiredStrictly, adminRequired, validator.transfer, apiV3FormValidator, async(req: Request, res: ApiV3Response) => {
+  pushRouter.post('/transfer', accessTokenParser, loginRequiredStrictly, adminRequired, validator.transfer, apiV3FormValidator, async(req: AuthorizedRequest, res: ApiV3Response) => {
     const { transferKey: transferKeyString, collections, optionsMap } = req.body;
 
     // Parse transfer key
@@ -303,25 +318,25 @@ module.exports = (crowi: Crowi): Router => {
 
     // Ask growi info
     // TODO: Ask progress as well
-    let fromGROWIInfo: IDataGROWIInfo;
-    try {
-      fromGROWIInfo = await g2gTransferPusherService.askGROWIInfo(tk);
-    }
-    catch (err) {
-      logger.error(err);
-      return res.apiv3Err(new ErrorV3('GROWI is incompatible to transfer data.', 'growi_incompatible_to_transfer'));
-    }
+    // let toGROWIInfo: IDataGROWIInfo;
+    // try {
+    //   toGROWIInfo = await g2gTransferPusherService.askGROWIInfo(tk);
+    // }
+    // catch (err) {
+    //   logger.error(err);
+    //   return res.apiv3Err(new ErrorV3('Error occurred while asking GROWI growi info.', 'failed_to_ask_growi_info'));
+    // }
 
     // Check if can transfer
-    const canTransfer = await g2gTransferPusherService.canTransfer(fromGROWIInfo);
-    if (!canTransfer) {
-      logger.debug('Could not transfer.');
-      return res.apiv3Err(new ErrorV3('GROWI is incompatible to transfer data.', 'growi_incompatible_to_transfer'));
-    }
+    // const canTransfer = await g2gTransferPusherService.canTransfer(toGROWIInfo);
+    // if (!canTransfer) {
+    //   logger.debug('Could not transfer.');
+    //   return res.apiv3Err(new ErrorV3('GROWI is incompatible to transfer data.', 'growi_incompatible_to_transfer'));
+    // }
 
     // Start transfer
     try {
-      await g2gTransferPusherService.startTransfer(tk, collections, optionsMap);
+      await g2gTransferPusherService.startTransfer(tk, req.user, collections, optionsMap);
     }
     catch (err) {
       logger.error(err);

@@ -1,6 +1,5 @@
-const mongoose = require('mongoose');
-const { format } = require('date-fns');
 const { pagePathUtils } = require('@growi/core');
+const mongoose = require('mongoose');
 
 const { isTopPage } = pagePathUtils;
 
@@ -17,17 +16,17 @@ class PageOverwriteParamsFactory {
 
   /**
    * generate overwrite params object
-   * @param {object} req
+   * @param {string} operatorUserId
    * @param {ImportOptionForPages} option
    * @return object
    *  key: property name
    *  value: any value or a function `(value, { document, schema, propertyName }) => { return newValue }`
    */
-  static generate(req, option) {
+  static generate(operatorUserId, option) {
     const params = {};
 
     if (option.isOverwriteAuthorWithCurrentUser) {
-      const userId = ObjectId(req.user._id);
+      const userId = ObjectId(operatorUserId);
       params.creator = userId;
       params.lastUpdateUser = userId;
     }
@@ -71,4 +70,4 @@ class PageOverwriteParamsFactory {
 
 }
 
-module.exports = (req, option) => PageOverwriteParamsFactory.generate(req, option);
+module.exports = (operatorUserId, option) => PageOverwriteParamsFactory.generate(operatorUserId, option);
