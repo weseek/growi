@@ -68,6 +68,7 @@
     "@growi/core": "^6.0.0-RC.1",
     "@growi/plugin-attachment-refs": "^6.0.0-RC.1",
     "@growi/plugin-lsx": "^6.0.0-RC.1",
+    "@growi/plugin-database": "^6.0.0-RC.1",
     "@growi/slack": "^6.0.0-RC.1",
     "@promster/express": "^7.0.2",
     "@promster/server": "^7.0.4",
