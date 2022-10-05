@@ -130,10 +130,11 @@ module.exports = (crowi: Crowi): Router => {
   const pushRouter = express.Router();
 
   // Auto import
+  // eslint-disable-next-line max-len
   receiveRouter.post('/', uploads.single('transferDataZipFile'), verifyAndExtractTransferKey, async(req: Request & { transferKey: TransferKey }, res: ApiV3Response) => {
-    const { transferDataZipFile } = req;
+    const { file } = req;
 
-    const zipFile = importService.getFile(transferDataZipFile.filename);
+    const zipFile = importService.getFile(file.filename);
     let data;
 
     const { collections: strCollections, optionsMap: strOptionsMap } = req.body;
