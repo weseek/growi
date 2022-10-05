@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 
 
-import { useTranslation } from 'react-i18next';
+import { useTranslation } from 'next-i18next';
 import {
   Modal, ModalHeader, ModalBody, ModalFooter,
 } from 'reactstrap';
@@ -53,13 +53,22 @@ const PutBackPageModal = () => {
     }
   }
 
-
-  return (
-    <Modal isOpen={isOpened} toggle={closePutBackPageModal} className="grw-create-page">
-      <ModalHeader tag="h4" toggle={closePutBackPageModal} className="bg-info text-light">
+  const HeaderContent = () => {
+    if (!isOpened) {
+      return <></>;
+    }
+    return (
+      <>
         <i className="icon-action-undo mr-2" aria-hidden="true"></i> { t('modal_putback.label.Put Back Page') }
-      </ModalHeader>
-      <ModalBody>
+      </>
+    );
+  };
+  const BodyContent = () => {
+    if (!isOpened) {
+      return <></>;
+    }
+    return (
+      <>
         <div className="form-group">
           <label>{t('modal_putback.label.Put Back Page')}:</label><br />
           <code>{path}</code>
@@ -79,12 +88,34 @@ const PutBackPageModal = () => {
             <code>{ path }</code>{ t('modal_putback.help.recursively') }
           </p>
         </div>
-      </ModalBody>
-      <ModalFooter>
+      </>
+    );
+
+  };
+  const FooterContent = () => {
+    if (!isOpened) {
+      return <></>;
+    }
+    return (
+      <>
         <ApiErrorMessageList errs={errs} targetPath={targetPath} />
         <button type="button" className="btn btn-info" onClick={putbackPageButtonHandler}>
           <i className="icon-action-undo mr-2" aria-hidden="true"></i> { t('Put Back') }
         </button>
+      </>
+    );
+  };
+
+  return (
+    <Modal isOpen={isOpened} toggle={closePutBackPageModal} className="grw-create-page">
+      <ModalHeader tag="h4" toggle={closePutBackPageModal} className="bg-info text-light">
+        <HeaderContent/>
+      </ModalHeader>
+      <ModalBody>
+        <BodyContent/>
+      </ModalBody>
+      <ModalFooter>
+        <FooterContent/>
       </ModalFooter>
     </Modal>
   );

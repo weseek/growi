@@ -6,11 +6,11 @@ export type XssOptionConfig = {
 
 export default class XssOption {
 
-  isEnabledXssPrevention: boolean
+  isEnabledXssPrevention: boolean;
 
-  tagWhiteList: any[]
+  tagWhiteList: any[];
 
-  attrWhiteList: any[]
+  attrWhiteList: any[];
 
   constructor(config: XssOptionConfig) {
     const recommendedWhitelist = require('~/services/xss/recommended-whitelist');

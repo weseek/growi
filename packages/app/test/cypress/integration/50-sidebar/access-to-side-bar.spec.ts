@@ -176,6 +176,7 @@ context('Access to sidebar', () => {
 
   it('Successfully access to trash page', () => {
     cy.visit('/');
+    cy.collapseSidebar(true);
     cy.get('.grw-sidebar-nav-secondary-container').within(() => {
       cy.get('a[href*="/trash"]').click();
     });

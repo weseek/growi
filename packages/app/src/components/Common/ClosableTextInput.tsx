@@ -2,7 +2,7 @@ import React, {
   FC, memo, useEffect, useRef, useState,
 } from 'react';
 
-import { useTranslation } from 'react-i18next';
+import { useTranslation } from 'next-i18next';
 
 export const AlertType = {
   WARNING: 'warning',
@@ -133,5 +133,7 @@ const ClosableTextInput: FC<ClosableTextInputProps> = memo((props: ClosableTextI
     </div>
   );
 });
+
+ClosableTextInput.displayName = 'ClosableTextInput';
 
 export default ClosableTextInput;

@@ -1,11 +1,12 @@
 import crypto from 'crypto';
 
-import { getOrCreateModel } from '@growi/core';
 import { addMinutes } from 'date-fns';
 import mongoose, {
   Schema, Model, Document,
 } from 'mongoose';
 import uniqueValidator from 'mongoose-unique-validator';
+
+import { getOrCreateModel } from '../util/mongoose-utils';
 
 
 const ObjectId = mongoose.Schema.Types.ObjectId;

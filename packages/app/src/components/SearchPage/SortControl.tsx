@@ -1,5 +1,5 @@
 import React, { FC } from 'react';
-import { useTranslation } from 'react-i18next';
+import { useTranslation } from 'next-i18next';
 import { SORT_AXIS, SORT_ORDER } from '../../interfaces/search';
 
 const { DESC, ASC } = SORT_ORDER;

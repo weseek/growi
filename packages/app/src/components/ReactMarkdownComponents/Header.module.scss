@@ -1,0 +1,18 @@
+.revision-head :global {
+  a {
+    text-decoration: none;
+  }
+
+  .revision-head-link,
+  .revision-head-edit-button {
+    margin-left: 0.5em;
+    font-size: 0.6em;
+    opacity: 0;
+  }
+}
+
+.revision-head:hover :global {
+  .revision-head-link, .revision-head-edit-button {
+    opacity: 1 !important;
+  }
+}

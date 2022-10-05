@@ -4,7 +4,7 @@ import React, {
 
 import dateFnsFormat from 'date-fns/format';
 import { TFunctionResult } from 'i18next';
-import { useTranslation } from 'react-i18next';
+import { useTranslation } from 'next-i18next';
 
 import { IUserGroupHasId, IUserGroupRelation, IUserHasId } from '~/interfaces/user';
 
@@ -53,8 +53,8 @@ const generateGroupIdToChildGroupsMap = (childUserGroups: IUserGroupHasId[]): Re
 };
 
 
-const UserGroupTable: FC<Props> = (props: Props) => {
-  const { t } = useTranslation();
+export const UserGroupTable: FC<Props> = (props: Props) => {
+  const { t } = useTranslation('admin');
 
   /*
    * State
@@ -135,7 +135,7 @@ const UserGroupTable: FC<Props> = (props: Props) => {
             <th>{t('Name')}</th>
             <th>{t('Description')}</th>
             <th>{t('User')}</th>
-            <th>{t('ChildUserGroup')}</th>
+            <th>{t('user_group_management.child_user_group')}</th>
             <th style={{ width: 100 }}>{t('Created')}</th>
             <th style={{ width: 70 }}></th>
           </tr>
@@ -219,5 +219,3 @@ const UserGroupTable: FC<Props> = (props: Props) => {
     </>
   );
 };
-
-export default UserGroupTable;

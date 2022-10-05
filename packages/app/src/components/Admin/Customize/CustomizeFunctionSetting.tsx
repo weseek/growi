@@ -1,10 +1,9 @@
 import React, { useCallback } from 'react';
 
-import { useTranslation } from 'react-i18next';
+import { useTranslation } from 'next-i18next';
 import { Card, CardBody } from 'reactstrap';
 
 import AdminCustomizeContainer from '~/client/services/AdminCustomizeContainer';
-import AppContainer from '~/client/services/AppContainer';
 import { toastSuccess, toastError } from '~/client/util/apiNotification';
 
 import { withUnstatedContainers } from '../../UnstatedUtils';
@@ -14,7 +13,6 @@ import CustomizeFunctionOption from './CustomizeFunctionOption';
 import PagingSizeUncontrolledDropdown from './PagingSizeUncontrolledDropdown';
 
 type Props = {
-  appContainer: AppContainer,
   adminCustomizeContainer: AdminCustomizeContainer
 }
 
@@ -158,6 +156,6 @@ const CustomizeFunctionSetting = (props: Props): JSX.Element => {
 
 };
 
-const CustomizeFunctionSettingWrapper = withUnstatedContainers(CustomizeFunctionSetting, [AppContainer, AdminCustomizeContainer]);
+const CustomizeFunctionSettingWrapper = withUnstatedContainers(CustomizeFunctionSetting, [AdminCustomizeContainer]);
 
 export default CustomizeFunctionSettingWrapper;

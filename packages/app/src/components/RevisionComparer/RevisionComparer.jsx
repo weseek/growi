@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
 
 import { pagePathUtils } from '@growi/core';
+import { useTranslation } from 'next-i18next';
 import PropTypes from 'prop-types';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
-import { useTranslation } from 'react-i18next';
 import {
   Dropdown, DropdownToggle, DropdownMenu, DropdownItem,
 } from 'reactstrap';
@@ -78,7 +78,7 @@ const RevisionComparer = (props) => {
             caret
             className="d-block text-muted bg-transparent btn-copy border-0 py-0"
           >
-            <i className="ti-clipboard"></i>
+            <i className="ti ti-clipboard"></i>
           </DropdownToggle>
           <DropdownMenu positionFixed right modifiers={{ preventOverflow: { boundariesElement: undefined } }}>
             {/* Page path URL */}

@@ -1,6 +1,6 @@
 import React, { useCallback } from 'react';
 
-import { useTranslation } from 'react-i18next';
+import { useTranslation } from 'next-i18next';
 
 import AdminAppContainer from '~/client/services/AdminAppContainer';
 import { toastSuccess, toastError } from '~/client/util/apiNotification';
@@ -40,7 +40,7 @@ const FileUploadSetting = (props: Props) => {
         <br />
         <br />
         <span className="text-danger">
-          <i className="ti-unlink"></i>
+          <i className="ti ti-unlink"></i>
           {t('admin:app_setting.change_setting')}
         </span>
       </p>

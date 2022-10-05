@@ -1,15 +1,17 @@
 import React, { FC } from 'react';
-import { useTranslation } from 'react-i18next';
 
 import { DevidedPagePath } from '@growi/core';
+import { useTranslation } from 'next-i18next';
 
-import { IPageHasId } from '~/interfaces/page';
-import { useCurrentPagePath, useIsSharedUser } from '~/stores/context';
+import { useCurrentPathname, useIsSharedUser } from '~/stores/context';
 import { useDescendantsPageListModal } from '~/stores/modal';
-import { useSWRxPageInfoForList } from '~/stores/page';
+import { useSWRxPageInfoForList, useSWRxPagesByPath } from '~/stores/page-listing';
 
 import PageListIcon from './Icons/PageListIcon';
 import { PageListItemL } from './PageList/PageListItemL';
+
+
+import styles from './IdenticalPathPage.module.scss';
 
 
 type IdenticalPathAlertProps = {
@@ -47,28 +49,20 @@ const IdenticalPathAlert : FC<IdenticalPathAlertProps> = (props: IdenticalPathAl
 };
 
 
-type IdenticalPathPageProps= {
-  // add props and types here
-}
-
-
-const jsonNull = 'null';
-
-const IdenticalPathPage:FC<IdenticalPathPageProps> = (props: IdenticalPathPageProps) => {
+export const IdenticalPathPage = (): JSX.Element => {
   const { t } = useTranslation();
 
-  const identicalPageDocument = document.getElementById('identical-path-page');
-  const pages = JSON.parse(identicalPageDocument?.getAttribute('data-identical-path-pages') || jsonNull) as IPageHasId[];
-
-  const pageIds = pages.map(page => page._id) as string[];
-
-
-  const { data: currentPath } = useCurrentPagePath();
+  const { data: currentPath } = useCurrentPathname();
   const { data: isSharedUser } = useIsSharedUser();
 
-  const { injectTo } = useSWRxPageInfoForList(pageIds, true, true);
+  const { data: pages } = useSWRxPagesByPath(currentPath);
+  const { injectTo } = useSWRxPageInfoForList(null, currentPath, true, true);
 
   const { open: openDescendantPageListModal } = useDescendantsPageListModal();
+
+  if (pages == null) {
+    return <></>;
+  }
 
   const injectedPages = injectTo(pages);
 
@@ -76,7 +70,7 @@ const IdenticalPathPage:FC<IdenticalPathPageProps> = (props: IdenticalPathPagePr
     <div className="d-flex flex-column flex-lg-row-reverse">
 
       <div className="grw-side-contents-container">
-        <div className="grw-page-accessories-control pb-1">
+        <div className={`pb-1 grw-page-accessories-control ${styles['grw-page-accessories-control']}`}>
           { currentPath != null && !isSharedUser && (
             <button
               type="button"
@@ -95,7 +89,7 @@ const IdenticalPathPage:FC<IdenticalPathPageProps> = (props: IdenticalPathPagePr
 
         <IdenticalPathAlert path={currentPath} />
 
-        <div className="page-list">
+        <div className={`page-list ${styles['page-list']}`}>
           <ul className="page-list-ul list-group list-group-flush">
             {injectedPages.map((pageWithMeta) => {
               const pageId = pageWithMeta.data._id;
@@ -118,5 +112,3 @@ const IdenticalPathPage:FC<IdenticalPathPageProps> = (props: IdenticalPathPagePr
     </div>
   );
 };
-
-export default IdenticalPathPage;

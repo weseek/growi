@@ -1,13 +1,15 @@
-/* eslint-disable react/no-danger */
 import React from 'react';
 
+import { pathUtils } from '@growi/core';
+import { useTranslation } from 'next-i18next';
 import PropTypes from 'prop-types';
-import { useTranslation } from 'react-i18next';
+import urljoin from 'url-join';
 
 
 import AdminGeneralSecurityContainer from '~/client/services/AdminGeneralSecurityContainer';
 import AdminOidcSecurityContainer from '~/client/services/AdminOidcSecurityContainer';
 import { toastSuccess, toastError } from '~/client/util/apiNotification';
+import { useSiteUrl } from '~/stores/context';
 
 import { withUnstatedContainers } from '../../UnstatedUtils';
 
@@ -25,7 +27,7 @@ class OidcSecurityManagementContents extends React.Component {
     try {
       await adminOidcSecurityContainer.updateOidcSetting();
       await adminGeneralSecurityContainer.retrieveSetupStratedies();
-      toastSuccess(t('security_setting.OAuth.OIDC.updated_oidc'));
+      toastSuccess(t('security_settings.OAuth.OIDC.updated_oidc'));
     }
     catch (err) {
       toastError(err);
@@ -33,15 +35,17 @@ class OidcSecurityManagementContents extends React.Component {
   }
 
   render() {
-    const { t, adminGeneralSecurityContainer, adminOidcSecurityContainer } = this.props;
+    const {
+      t, adminGeneralSecurityContainer, adminOidcSecurityContainer, siteUrl,
+    } = this.props;
     const { isOidcEnabled } = adminGeneralSecurityContainer.state;
+    const oidcCallbackUrl = urljoin(pathUtils.removeTrailingSlash(siteUrl), '/passport/oidc/callback');
 
     return (
 
-      <React.Fragment>
-
+      <>
         <h2 className="alert-anchor border-bottom">
-          {t('security_setting.OAuth.OIDC.name')}
+          {t('security_settings.OAuth.OIDC.name')}
         </h2>
 
         <div className="row mb-5 form-group">
@@ -55,30 +59,30 @@ class OidcSecurityManagementContents extends React.Component {
                 onChange={() => { adminGeneralSecurityContainer.switchIsOidcEnabled() }}
               />
               <label className="custom-control-label" htmlFor="isOidcEnabled">
-                {t('security_setting.OAuth.enable_oidc')}
+                {t('security_settings.OAuth.enable_oidc')}
               </label>
             </div>
             {(!adminGeneralSecurityContainer.state.setupStrategies.includes('oidc') && isOidcEnabled)
-              && <div className="badge badge-warning">{t('security_setting.setup_is_not_yet_complete')}</div>}
+              && <div className="badge badge-warning">{t('security_settings.setup_is_not_yet_complete')}</div>}
           </div>
         </div>
 
         <div className="row mb-5 form-group">
-          <label className="text-left text-md-right col-md-3 col-form-label">{t('security_setting.callback_URL')}</label>
+          <label className="text-left text-md-right col-md-3 col-form-label">{t('security_settings.callback_URL')}</label>
           <div className="col-md-6">
             <input
               className="form-control"
               type="text"
-              value={adminOidcSecurityContainer.state.callbackUrl}
+              value={oidcCallbackUrl}
               readOnly
             />
-            <p className="form-text text-muted small">{t('security_setting.desc_of_callback_URL', { AuthName: 'OAuth' })}</p>
-            {!adminGeneralSecurityContainer.state.appSiteUrl && (
+            <p className="form-text text-muted small">{t('security_settings.desc_of_callback_URL', { AuthName: 'OAuth' })}</p>
+            {(siteUrl == null || siteUrl === '') && (
               <div className="alert alert-danger">
                 <i
                   className="icon-exclamation"
                   // eslint-disable-next-line max-len
-                  dangerouslySetInnerHTML={{ __html: t('security_setting.alert_siteUrl_is_not_set', { link: `<a href="/admin/app">${t('App Settings')}<i class="icon-login"></i></a>` }) }}
+                  dangerouslySetInnerHTML={{ __html: t('security_settings.alert_siteUrl_is_not_set', { link: `<a href="/admin/app">${t('app_settings')}<i class="icon-login"></i></a>` }) }}
                 />
               </div>
             )}
@@ -86,12 +90,12 @@ class OidcSecurityManagementContents extends React.Component {
         </div>
 
         {isOidcEnabled && (
-          <React.Fragment>
+          <>
 
-            <h3 className="border-bottom">{t('security_setting.configuration')}</h3>
+            <h3 className="border-bottom">{t('security_settings.configuration')}</h3>
 
             <div className="row mb-5 form-group">
-              <label htmlFor="oidcProviderName" className="text-left text-md-right col-md-3 col-form-label">{t('security_setting.providerName')}</label>
+              <label htmlFor="oidcProviderName" className="text-left text-md-right col-md-3 col-form-label">{t('security_settings.providerName')}</label>
               <div className="col-md-6">
                 <input
                   className="form-control"
@@ -104,7 +108,7 @@ class OidcSecurityManagementContents extends React.Component {
             </div>
 
             <div className="row mb-5 form-group">
-              <label htmlFor="oidcIssuerHost" className="text-left text-md-right col-md-3 col-form-label">{t('security_setting.issuerHost')}</label>
+              <label htmlFor="oidcIssuerHost" className="text-left text-md-right col-md-3 col-form-label">{t('security_settings.issuerHost')}</label>
               <div className="col-md-6">
                 <input
                   className="form-control"
@@ -114,13 +118,13 @@ class OidcSecurityManagementContents extends React.Component {
                   onChange={e => adminOidcSecurityContainer.changeOidcIssuerHost(e.target.value)}
                 />
                 <p className="form-text text-muted">
-                  <small dangerouslySetInnerHTML={{ __html: t('security_setting.Use env var if empty', { env: 'OAUTH_OIDC_ISSUER_HOST' }) }} />
+                  <small dangerouslySetInnerHTML={{ __html: t('security_settings.Use env var if empty', { env: 'OAUTH_OIDC_ISSUER_HOST' }) }} />
                 </p>
               </div>
             </div>
 
             <div className="row mb-5 form-group">
-              <label htmlFor="oidcClientId" className="text-left text-md-right col-md-3 col-form-label">{t('security_setting.clientID')}</label>
+              <label htmlFor="oidcClientId" className="text-left text-md-right col-md-3 col-form-label">{t('security_settings.clientID')}</label>
               <div className="col-md-6">
                 <input
                   className="form-control"
@@ -130,13 +134,13 @@ class OidcSecurityManagementContents extends React.Component {
                   onChange={e => adminOidcSecurityContainer.changeOidcClientId(e.target.value)}
                 />
                 <p className="form-text text-muted">
-                  <small dangerouslySetInnerHTML={{ __html: t('security_setting.Use env var if empty', { env: 'OAUTH_OIDC_CLIENT_ID' }) }} />
+                  <small dangerouslySetInnerHTML={{ __html: t('security_settings.Use env var if empty', { env: 'OAUTH_OIDC_CLIENT_ID' }) }} />
                 </p>
               </div>
             </div>
 
             <div className="row mb-5 form-group">
-              <label htmlFor="oidcClientSecret" className="text-left text-md-right col-md-3 col-form-label">{t('security_setting.client_secret')}</label>
+              <label htmlFor="oidcClientSecret" className="text-left text-md-right col-md-3 col-form-label">{t('security_settings.client_secret')}</label>
               <div className="col-md-6">
                 <input
                   className="form-control"
@@ -146,14 +150,14 @@ class OidcSecurityManagementContents extends React.Component {
                   onChange={e => adminOidcSecurityContainer.changeOidcClientSecret(e.target.value)}
                 />
                 <p className="form-text text-muted">
-                  <small dangerouslySetInnerHTML={{ __html: t('security_setting.Use env var if empty', { env: 'OAUTH_OIDC_CLIENT_SECRET' }) }} />
+                  <small dangerouslySetInnerHTML={{ __html: t('security_settings.Use env var if empty', { env: 'OAUTH_OIDC_CLIENT_SECRET' }) }} />
                 </p>
               </div>
             </div>
 
             <div className="row mb-5 form-group">
               <label htmlFor="oidcAuthorizationEndpoint" className="text-left text-md-right col-md-3 col-form-label">
-                {t('security_setting.authorization_endpoint')}
+                {t('security_settings.authorization_endpoint')}
               </label>
               <div className="col-md-6">
                 <input
@@ -164,13 +168,13 @@ class OidcSecurityManagementContents extends React.Component {
                   onChange={e => adminOidcSecurityContainer.changeOidcAuthorizationEndpoint(e.target.value)}
                 />
                 <p className="form-text text-muted">
-                  <small dangerouslySetInnerHTML={{ __html: t('security_setting.OAuth.OIDC.Use discovered URL if empty') }} />
+                  <small dangerouslySetInnerHTML={{ __html: t('security_settings.OAuth.OIDC.Use discovered URL if empty') }} />
                 </p>
               </div>
             </div>
 
             <div className="row mb-5 form-group">
-              <label htmlFor="oidcTokenEndpoint" className="text-left text-md-right col-md-3 col-form-label">{t('security_setting.token_endpoint')}</label>
+              <label htmlFor="oidcTokenEndpoint" className="text-left text-md-right col-md-3 col-form-label">{t('security_settings.token_endpoint')}</label>
               <div className="col-md-6">
                 <input
                   className="form-control"
@@ -180,14 +184,14 @@ class OidcSecurityManagementContents extends React.Component {
                   onChange={e => adminOidcSecurityContainer.changeOidcTokenEndpoint(e.target.value)}
                 />
                 <p className="form-text text-muted">
-                  <small dangerouslySetInnerHTML={{ __html: t('security_setting.OAuth.OIDC.Use discovered URL if empty') }} />
+                  <small dangerouslySetInnerHTML={{ __html: t('security_settings.OAuth.OIDC.Use discovered URL if empty') }} />
                 </p>
               </div>
             </div>
 
             <div className="row mb-5 form-group">
               <label htmlFor="oidcRevocationEndpoint" className="text-left text-md-right col-md-3 col-form-label">
-                {t('security_setting.revocation_endpoint')}
+                {t('security_settings.revocation_endpoint')}
               </label>
               <div className="col-md-6">
                 <input
@@ -198,14 +202,14 @@ class OidcSecurityManagementContents extends React.Component {
                   onChange={e => adminOidcSecurityContainer.changeOidcRevocationEndpoint(e.target.value)}
                 />
                 <p className="form-text text-muted">
-                  <small dangerouslySetInnerHTML={{ __html: t('security_setting.OAuth.OIDC.Use discovered URL if empty') }} />
+                  <small dangerouslySetInnerHTML={{ __html: t('security_settings.OAuth.OIDC.Use discovered URL if empty') }} />
                 </p>
               </div>
             </div>
 
             <div className="row mb-5 form-group">
               <label htmlFor="oidcIntrospectionEndpoint" className="text-left text-md-right col-md-3 col-form-label">
-                {t('security_setting.introspection_endpoint')}
+                {t('security_settings.introspection_endpoint')}
               </label>
               <div className="col-md-6">
                 <input
@@ -216,14 +220,14 @@ class OidcSecurityManagementContents extends React.Component {
                   onChange={e => adminOidcSecurityContainer.changeOidcIntrospectionEndpoint(e.target.value)}
                 />
                 <p className="form-text text-muted">
-                  <small dangerouslySetInnerHTML={{ __html: t('security_setting.OAuth.OIDC.Use discovered URL if empty') }} />
+                  <small dangerouslySetInnerHTML={{ __html: t('security_settings.OAuth.OIDC.Use discovered URL if empty') }} />
                 </p>
               </div>
             </div>
 
             <div className="row mb-5 form-group">
               <label htmlFor="oidcUserInfoEndpoint" className="text-left text-md-right col-md-3 col-form-label">
-                {t('security_setting.userinfo_endpoint')}
+                {t('security_settings.userinfo_endpoint')}
               </label>
               <div className="col-md-6">
                 <input
@@ -234,14 +238,14 @@ class OidcSecurityManagementContents extends React.Component {
                   onChange={e => adminOidcSecurityContainer.changeOidcUserInfoEndpoint(e.target.value)}
                 />
                 <p className="form-text text-muted">
-                  <small dangerouslySetInnerHTML={{ __html: t('security_setting.OAuth.OIDC.Use discovered URL if empty') }} />
+                  <small dangerouslySetInnerHTML={{ __html: t('security_settings.OAuth.OIDC.Use discovered URL if empty') }} />
                 </p>
               </div>
             </div>
 
             <div className="row mb-5 form-group">
               <label htmlFor="oidcEndSessionEndpoint" className="text-left text-md-right col-md-3 col-form-label">
-                {t('security_setting.end_session_endpoint')}
+                {t('security_settings.end_session_endpoint')}
               </label>
               <div className="col-md-6">
                 <input
@@ -252,14 +256,14 @@ class OidcSecurityManagementContents extends React.Component {
                   onChange={e => adminOidcSecurityContainer.changeOidcEndSessionEndpoint(e.target.value)}
                 />
                 <p className="form-text text-muted">
-                  <small dangerouslySetInnerHTML={{ __html: t('security_setting.OAuth.OIDC.Use discovered URL if empty') }} />
+                  <small dangerouslySetInnerHTML={{ __html: t('security_settings.OAuth.OIDC.Use discovered URL if empty') }} />
                 </p>
               </div>
             </div>
 
             <div className="row mb-5 form-group">
               <label htmlFor="oidcRegistrationEndpoint" className="text-left text-md-right col-md-3 col-form-label">
-                {t('security_setting.registration_endpoint')}
+                {t('security_settings.registration_endpoint')}
               </label>
               <div className="col-md-6">
                 <input
@@ -270,13 +274,13 @@ class OidcSecurityManagementContents extends React.Component {
                   onChange={e => adminOidcSecurityContainer.changeOidcRegistrationEndpoint(e.target.value)}
                 />
                 <p className="form-text text-muted">
-                  <small dangerouslySetInnerHTML={{ __html: t('security_setting.OAuth.OIDC.Use discovered URL if empty') }} />
+                  <small dangerouslySetInnerHTML={{ __html: t('security_settings.OAuth.OIDC.Use discovered URL if empty') }} />
                 </p>
               </div>
             </div>
 
             <div className="row mb-5 form-group">
-              <label htmlFor="oidcJWKSUri" className="text-left text-md-right col-md-3 col-form-label">{t('security_setting.jwks_uri')}</label>
+              <label htmlFor="oidcJWKSUri" className="text-left text-md-right col-md-3 col-form-label">{t('security_settings.jwks_uri')}</label>
               <div className="col-md-6">
                 <input
                   className="form-control"
@@ -286,13 +290,13 @@ class OidcSecurityManagementContents extends React.Component {
                   onChange={e => adminOidcSecurityContainer.changeOidcJWKSUri(e.target.value)}
                 />
                 <p className="form-text text-muted">
-                  <small dangerouslySetInnerHTML={{ __html: t('security_setting.OAuth.OIDC.Use discovered URL if empty') }} />
+                  <small dangerouslySetInnerHTML={{ __html: t('security_settings.OAuth.OIDC.Use discovered URL if empty') }} />
                 </p>
               </div>
             </div>
 
             <h3 className="alert-anchor border-bottom">
-              Attribute Mapping ({t('security_setting.optional')})
+              Attribute Mapping ({t('security_settings.optional')})
             </h3>
 
             <div className="row mb-5 form-group">
@@ -306,7 +310,7 @@ class OidcSecurityManagementContents extends React.Component {
                   onChange={e => adminOidcSecurityContainer.changeOidcAttrMapId(e.target.value)}
                 />
                 <p className="form-text text-muted">
-                  <small dangerouslySetInnerHTML={{ __html: t('security_setting.OAuth.OIDC.id_detail') }} />
+                  <small dangerouslySetInnerHTML={{ __html: t('security_settings.OAuth.OIDC.id_detail') }} />
                 </p>
               </div>
             </div>
@@ -322,7 +326,7 @@ class OidcSecurityManagementContents extends React.Component {
                   onChange={e => adminOidcSecurityContainer.changeOidcAttrMapUserName(e.target.value)}
                 />
                 <p className="form-text text-muted">
-                  <small dangerouslySetInnerHTML={{ __html: t('security_setting.OAuth.OIDC.username_detail') }} />
+                  <small dangerouslySetInnerHTML={{ __html: t('security_settings.OAuth.OIDC.username_detail') }} />
                 </p>
               </div>
             </div>
@@ -338,7 +342,7 @@ class OidcSecurityManagementContents extends React.Component {
                   onChange={e => adminOidcSecurityContainer.changeOidcAttrMapName(e.target.value)}
                 />
                 <p className="form-text text-muted">
-                  <small dangerouslySetInnerHTML={{ __html: t('security_setting.OAuth.OIDC.name_detail') }} />
+                  <small dangerouslySetInnerHTML={{ __html: t('security_settings.OAuth.OIDC.name_detail') }} />
                 </p>
               </div>
             </div>
@@ -354,27 +358,27 @@ class OidcSecurityManagementContents extends React.Component {
                   onChange={e => adminOidcSecurityContainer.changeOidcAttrMapEmail(e.target.value)}
                 />
                 <p className="form-text text-muted">
-                  <small dangerouslySetInnerHTML={{ __html: t('security_setting.OAuth.OIDC.mapping_detail', { target: t('Email') }) }} />
+                  <small dangerouslySetInnerHTML={{ __html: t('security_settings.OAuth.OIDC.mapping_detail', { target: t('Email') }) }} />
                 </p>
               </div>
             </div>
 
             <div className="row mb-5 form-group">
-              <label className="text-left text-md-right col-md-3 col-form-label">{t('security_setting.callback_URL')}</label>
+              <label className="text-left text-md-right col-md-3 col-form-label">{t('security_settings.callback_URL')}</label>
               <div className="col-md-6">
                 <input
                   className="form-control"
                   type="text"
-                  defaultValue={adminOidcSecurityContainer.state.callbackUrl || ''}
+                  defaultValue={oidcCallbackUrl}
                   readOnly
                 />
-                <p className="form-text text-muted small">{t('security_setting.desc_of_callback_URL', { AuthName: 'OAuth' })}</p>
-                {!adminGeneralSecurityContainer.state.appSiteUrl && (
+                <p className="form-text text-muted small">{t('security_settings.desc_of_callback_URL', { AuthName: 'OAuth' })}</p>
+                {(siteUrl == null || siteUrl === '') && (
                   <div className="alert alert-danger">
                     <i
                       className="icon-exclamation"
                       // eslint-disable-next-line max-len
-                      dangerouslySetInnerHTML={{ __html: t('security_setting.alert_siteUrl_is_not_set', { link: `<a href="/admin/app">${t('App Settings')}<i class="icon-login"></i></a>` }) }}
+                      dangerouslySetInnerHTML={{ __html: t('security_settings.alert_siteUrl_is_not_set', { link: `<a href="/admin/app">${t('app_settings')}<i class="icon-login"></i></a>` }) }}
                     />
                   </div>
                 )}
@@ -394,11 +398,11 @@ class OidcSecurityManagementContents extends React.Component {
                   <label
                     className="custom-control-label"
                     htmlFor="bindByUserName-oidc"
-                    dangerouslySetInnerHTML={{ __html: t('security_setting.Treat username matching as identical') }}
+                    dangerouslySetInnerHTML={{ __html: t('security_settings.Treat username matching as identical') }}
                   />
                 </div>
                 <p className="form-text text-muted">
-                  <small dangerouslySetInnerHTML={{ __html: t('security_setting.Treat username matching as identical_warn') }} />
+                  <small dangerouslySetInnerHTML={{ __html: t('security_settings.Treat username matching as identical_warn') }} />
                 </p>
               </div>
             </div>
@@ -416,11 +420,11 @@ class OidcSecurityManagementContents extends React.Component {
                   <label
                     className="custom-control-label"
                     htmlFor="bindByEmail-oidc"
-                    dangerouslySetInnerHTML={{ __html: t('security_setting.Treat email matching as identical') }}
+                    dangerouslySetInnerHTML={{ __html: t('security_settings.Treat email matching as identical') }}
                   />
                 </div>
                 <p className="form-text text-muted">
-                  <small dangerouslySetInnerHTML={{ __html: t('security_setting.Treat email matching as identical_warn') }} />
+                  <small dangerouslySetInnerHTML={{ __html: t('security_settings.Treat email matching as identical_warn') }} />
                 </p>
               </div>
             </div>
@@ -437,7 +441,7 @@ class OidcSecurityManagementContents extends React.Component {
                 </button>
               </div>
             </div>
-          </React.Fragment>
+          </>
         )}
 
 
@@ -446,16 +450,16 @@ class OidcSecurityManagementContents extends React.Component {
         <div style={{ minHeight: '300px' }}>
           <h4>
             <i className="icon-question" aria-hidden="true" />
-            <a href="#collapseHelpForOidcOauth" data-toggle="collapse"> {t('security_setting.OAuth.how_to.oidc')}</a>
+            <a href="#collapseHelpForOidcOauth" data-toggle="collapse"> {t('security_settings.OAuth.how_to.oidc')}</a>
           </h4>
           <ol id="collapseHelpForOidcOauth" className="collapse">
-            <li>{t('security_setting.OAuth.OIDC.register_1')}</li>
-            <li>{t('security_setting.OAuth.OIDC.register_2')}</li>
-            <li>{t('security_setting.OAuth.OIDC.register_3')}</li>
+            <li>{t('security_settings.OAuth.OIDC.register_1')}</li>
+            <li>{t('security_settings.OAuth.OIDC.register_2')}</li>
+            <li>{t('security_settings.OAuth.OIDC.register_3')}</li>
           </ol>
         </div>
 
-      </React.Fragment>
+      </>
     );
   }
 
@@ -465,11 +469,13 @@ OidcSecurityManagementContents.propTypes = {
   t: PropTypes.func.isRequired, // i18next
   adminGeneralSecurityContainer: PropTypes.instanceOf(AdminGeneralSecurityContainer).isRequired,
   adminOidcSecurityContainer: PropTypes.instanceOf(AdminOidcSecurityContainer).isRequired,
+  siteUrl: PropTypes.string,
 };
 
 const OidcSecurityManagementContentsWrapperFC = (props) => {
-  const { t } = useTranslation();
-  return <OidcSecurityManagementContents t={t} {...props} />;
+  const { t } = useTranslation('admin');
+  const { data: siteUrl } = useSiteUrl();
+  return <OidcSecurityManagementContents t={t} {...props} siteUrl={siteUrl} />;
 };
 
 const OidcSecurityManagementContentsWrapper = withUnstatedContainers(OidcSecurityManagementContentsWrapperFC, [

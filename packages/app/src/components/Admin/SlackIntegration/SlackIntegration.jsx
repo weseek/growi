@@ -1,17 +1,13 @@
 import React, { useState, useEffect, useCallback } from 'react';
 
 import { SlackbotType } from '@growi/slack';
-import PropTypes from 'prop-types';
-import { useTranslation } from 'react-i18next';
+import { useTranslation } from 'next-i18next';
 
 
-import AppContainer from '~/client/services/AppContainer';
 import { toastSuccess, toastError } from '~/client/util/apiNotification';
 import {
   apiv3Delete, apiv3Get, apiv3Post, apiv3Put,
 } from '~/client/util/apiv3-client';
-
-import { withUnstatedContainers } from '../../UnstatedUtils';
 
 import BotTypeCard from './BotTypeCard';
 import ConfirmBotChangeModal from './ConfirmBotChangeModal';
@@ -23,9 +19,8 @@ import OfficialBotSettings from './OfficialBotSettings';
 
 const botTypes = Object.values(SlackbotType);
 
-const SlackIntegration = (props) => {
+const SlackIntegration = () => {
 
-  const { appContainer } = props;
   const { t } = useTranslation();
   const [currentBotType, setCurrentBotType] = useState(null);
   const [selectedBotType, setSelectedBotType] = useState(null);
@@ -256,10 +251,4 @@ const SlackIntegration = (props) => {
   );
 };
 
-const SlackIntegrationWrapper = withUnstatedContainers(SlackIntegration, [AppContainer]);
-
-SlackIntegration.propTypes = {
-  appContainer: PropTypes.instanceOf(AppContainer).isRequired,
-};
-
-export default SlackIntegrationWrapper;
+export default SlackIntegration;
