@@ -303,7 +303,7 @@ module.exports = (crowi: Crowi): Router => {
   // Auto export
   // TODO: Use socket to send progress info to the client
   // eslint-disable-next-line max-len
-  pushRouter.post('/transfer', /* accessTokenParser, loginRequiredStrictly, adminRequired, */ validator.transfer, apiV3FormValidator, async(req: AuthorizedRequest, res: ApiV3Response) => {
+  pushRouter.post('/transfer', accessTokenParser, loginRequiredStrictly, adminRequired, validator.transfer, apiV3FormValidator, async(req: AuthorizedRequest, res: ApiV3Response) => {
     const { transferKey: transferKeyString, collections, optionsMap } = req.body;
 
     // Parse transfer key
@@ -336,9 +336,7 @@ module.exports = (crowi: Crowi): Router => {
 
     // Start transfer
     try {
-      // await g2gTransferPusherService.startTransfer(tk, req.user, collections, optionsMap);
-      logger.debug('This line is just for testing purpose.');
-      await g2gTransferPusherService.startTransfer(tk, { _id: '63330d631de6bd55c9a1ea38' }, collections, optionsMap);
+      await g2gTransferPusherService.startTransfer(tk, req.user, collections, optionsMap);
     }
     catch (err) {
       logger.error(err);
