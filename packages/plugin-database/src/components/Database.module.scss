@@ -1,3 +1,8 @@
+@import '~bootstrap/scss/functions';
+@import '~bootstrap/scss/variables';
+@import '~bootstrap/scss/mixins';
+@import '~bootstrap/scss/_tables';
+
 .database :global {
 
   // workaround
@@ -5,6 +10,13 @@
   .database-blink {
     & :local {
       animation: database-fadeIn 1s ease 0s infinite alternate;
+    }
+  }
+
+  .wiki table {
+    & :local {
+      @extend .table;
+      @extend .table-bordered;
     }
   }
 }
