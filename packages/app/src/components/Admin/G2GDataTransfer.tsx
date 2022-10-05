@@ -3,6 +3,7 @@ import React, { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import * as toastr from 'toastr';
 
+import { useGenerateTransferKeyWithThrottle } from '~/client/services/g2g-transfer';
 import { apiv3Get } from '~/client/util/apiv3-client';
 import { useAdminSocket } from '~/stores/socket-io';
 
@@ -23,7 +24,6 @@ const G2GDataTransfer = (): JSX.Element => {
   const [isExporting, setExporting] = useState(false);
   // TODO: データのエクスポートが完了したことが分かるようにする
   const [isExported, setExported] = useState(false);
-  const [transferKey, setTransferKey] = useState('');
 
   const fetchData = useCallback(async() => {
     const [{ data: collectionsData }, { data: statusData }] = await Promise.all([
@@ -67,10 +67,11 @@ const G2GDataTransfer = (): JSX.Element => {
     }
   }, [socket]);
 
-  const publishTransferKey = () => {
-    // 移行キー発行の処理
-    setTransferKey('transferKey');
-  };
+  const { transferKey, generateTransferKeyWithThrottle } = useGenerateTransferKeyWithThrottle();
+
+  const onClickHandler = useCallback(() => {
+    generateTransferKeyWithThrottle();
+  }, [generateTransferKeyWithThrottle]);
 
   const transferData = () => {
     // データ移行の処理
@@ -86,28 +87,30 @@ const G2GDataTransfer = (): JSX.Element => {
 
   return (
     <div data-testid="admin-export-archive-data">
-      <h2 className="border-bottom">{t('g2g_data_transfer.transfer_data_to_another_growi')}</h2>
+      <h2 className="border-bottom">{t('admin:g2g_data_transfer.transfer_data_to_another_growi')}</h2>
 
       <button type="button" className="btn btn-outline-secondary mt-4" disabled={isExporting} onClick={() => setExportModalOpen(true)}>
-        {t('g2g_data_transfer.advanced_options')}
+        {t('admin:g2g_data_transfer.advanced_options')}
       </button>
 
       <form onSubmit={transferData}>
         <div className="form-group row mt-3">
           <div className="col-9">
-            <input className="form-control" type="text" placeholder={t('g2g_data_transfer.paste_transfer_key')} />
+            <input className="form-control" type="text" placeholder={t('admin:g2g_data_transfer.paste_transfer_key')} />
           </div>
           <div className="col-3">
-            <button type="submit" className="btn btn-primary w-100">{t('g2g_data_transfer.start_transfer')}</button>
+            <button type="submit" className="btn btn-primary w-100">{t('admin:g2g_data_transfer.start_transfer')}</button>
           </div>
         </div>
       </form>
 
-      <h2 className="border-bottom mt-5">{t('g2g_data_transfer.transfer_data_to_this_growi')}</h2>
+      <h2 className="border-bottom mt-5">{t('admin:g2g_data_transfer.transfer_data_to_this_growi')}</h2>
 
       <div className="form-group row mt-4">
         <div className="col-md-3">
-          <button type="button" className="btn btn-primary w-100" onClick={publishTransferKey}>{t('g2g_data_transfer.publish_transfer_key')}</button>
+          <button type="button" className="btn btn-primary w-100" onClick={onClickHandler}>
+            {t('admin:g2g_data_transfer.publish_transfer_key')}
+          </button>
         </div>
         <div className="col-md-9">
           <div className="input-group-prepend mx-1">
@@ -118,9 +121,9 @@ const G2GDataTransfer = (): JSX.Element => {
       </div>
 
       <div className="alert alert-warning mt-4">
-        <p className="mb-1">{t('g2g_data_transfer.transfer_key_limit')}</p>
-        <p className="mb-1">{t('g2g_data_transfer.once_transfer_key_used')}</p>
-        <p className="mb-0">{t('g2g_data_transfer.transfer_to_growi_cloud')}</p>
+        <p className="mb-1">{t('admin:g2g_data_transfer.transfer_key_limit')}</p>
+        <p className="mb-1">{t('admin:g2g_data_transfer.once_transfer_key_used')}</p>
+        <p className="mb-0">{t('admin:g2g_data_transfer.transfer_to_growi_cloud')}</p>
       </div>
 
       <SelectCollectionsModal
