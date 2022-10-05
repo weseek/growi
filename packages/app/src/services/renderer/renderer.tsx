@@ -1,6 +1,8 @@
 // allow only types to import from react
 import { ComponentType } from 'react';
 
+import { Database } from '@growi/plugin-database/components';
+import * as databaseGrowiPlugin from '@growi/plugin-database/services/renderer';
 import { Lsx } from '@growi/plugin-lsx/components';
 import * as lsxGrowiPlugin from '@growi/plugin-lsx/services/renderer';
 import growiPlugin from '@growi/remark-growi-plugin';
@@ -322,6 +324,7 @@ export const generateViewOptions = (
     [plantuml.remarkPlugin, { baseUrl: config.plantumlUri }],
     xsvToTable.remarkPlugin,
     lsxGrowiPlugin.remarkPlugin,
+    databaseGrowiPlugin.remarkPlugin,
   );
   if (config.isEnabledLinebreaks) {
     remarkPlugins.push(breaks);
@@ -331,9 +334,11 @@ export const generateViewOptions = (
   rehypePlugins.push(
     slug,
     [lsxGrowiPlugin.rehypePlugin, { pagePath }],
+    [databaseGrowiPlugin.rehypePlugin, { pagePath }],
     [sanitize, deepmerge(
       commonSanitizeOption,
       lsxGrowiPlugin.sanitizeOption,
+      databaseGrowiPlugin.sanitizeOption,
     )],
     katex,
     [toc.rehypePluginStore, { storeTocNode }],
@@ -348,6 +353,7 @@ export const generateViewOptions = (
     components.h2 = Header;
     components.h3 = Header;
     components.lsx = props => <Lsx {...props} forceToFetchData />;
+    components.database = props => <Database {...props} />;
   }
 
   // // Add configurers for viewer
@@ -399,6 +405,7 @@ export const generateSimpleViewOptions = (config: RendererConfig, pagePath: stri
     [plantuml.remarkPlugin, { baseUrl: config.plantumlUri }],
     xsvToTable.remarkPlugin,
     lsxGrowiPlugin.remarkPlugin,
+    databaseGrowiPlugin.remarkPlugin,
   );
   if (config.isEnabledLinebreaks) {
     remarkPlugins.push(breaks);
@@ -407,10 +414,12 @@ export const generateSimpleViewOptions = (config: RendererConfig, pagePath: stri
   // add rehype plugins
   rehypePlugins.push(
     [lsxGrowiPlugin.rehypePlugin, { pagePath }],
+    [databaseGrowiPlugin.rehypePlugin, { pagePath }],
     [keywordHighlighter.rehypePlugin, { keywords: highlightKeywords }],
     [sanitize, deepmerge(
       commonSanitizeOption,
       lsxGrowiPlugin.sanitizeOption,
+      databaseGrowiPlugin.sanitizeOption,
     )],
     katex,
   );
@@ -418,6 +427,7 @@ export const generateSimpleViewOptions = (config: RendererConfig, pagePath: stri
   // add components
   if (components != null) {
     components.lsx = props => <Lsx {...props} />;
+    components.database = props => <Database {...props} />;
   }
 
   verifySanitizePlugin(options, false);
@@ -435,6 +445,7 @@ export const generatePreviewOptions = (config: RendererConfig, pagePath: string)
     [plantuml.remarkPlugin, { baseUrl: config.plantumlUri }],
     xsvToTable.remarkPlugin,
     lsxGrowiPlugin.remarkPlugin,
+    databaseGrowiPlugin.remarkPlugin,
   );
   if (config.isEnabledLinebreaks) {
     remarkPlugins.push(breaks);
@@ -443,10 +454,12 @@ export const generatePreviewOptions = (config: RendererConfig, pagePath: string)
   // add rehype plugins
   rehypePlugins.push(
     [lsxGrowiPlugin.rehypePlugin, { pagePath }],
+    [databaseGrowiPlugin.rehypePlugin, { pagePath }],
     addLineNumberAttribute.rehypePlugin,
     [sanitize, deepmerge(
       commonSanitizeOption,
       lsxGrowiPlugin.sanitizeOption,
+      databaseGrowiPlugin.sanitizeOption,
       addLineNumberAttribute.sanitizeOption,
     )],
     katex,
@@ -455,6 +468,7 @@ export const generatePreviewOptions = (config: RendererConfig, pagePath: string)
   // add components
   if (components != null) {
     components.lsx = props => <Lsx {...props} />;
+    components.database = props => <Database {...props} />;
   }
 
   verifySanitizePlugin(options, false);

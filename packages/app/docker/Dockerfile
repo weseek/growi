@@ -107,6 +107,7 @@ COPY packages/core packages/core
 COPY packages/codemirror-textlint packages/codemirror-textlint
 COPY packages/plugin-attachment-refs packages/plugin-attachment-refs
 COPY packages/plugin-lsx packages/plugin-lsx
+COPY packages/plugin-database packages/plugin-database
 COPY packages/slack packages/slack
 COPY packages/ui packages/ui
 COPY packages/remark-growi-plugin packages/remark-growi-plugin
