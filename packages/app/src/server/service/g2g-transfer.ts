@@ -201,7 +201,7 @@ export class G2GTransferReceiverService implements Receiver {
       customEndpoint: undefined,
     };
 
-    // put storage location info to check identificat
+    // put storage location info to check storage identification
     switch (attachmentInfo.type) {
       case 'aws':
         attachmentInfo.bucket = configManager.getConfig('crowi', 'aws:s3Bucket');
