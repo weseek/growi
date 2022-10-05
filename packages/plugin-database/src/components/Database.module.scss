@@ -1,3 +1,10 @@
 .database :global {
 
+  // workaround
+  // https://stackoverflow.com/a/57667536
+  .database-blink {
+    & :local {
+      animation: database-fadeIn 1s ease 0s infinite alternate;
+    }
+  }
 }
