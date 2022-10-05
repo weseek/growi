@@ -52,17 +52,17 @@ const router = express.Router();
 /**
  * generate overwrite params with overwrite-params/* modules
  * @param {string} collectionName
- * @param {object} req Request Object
+ * @param {object} user User Object
  * @param {GrowiArchiveImportOption} options GrowiArchiveImportOption instance
  */
-export const generateOverwriteParams = (collectionName, req, options) => {
+export const generateOverwriteParams = (collectionName, user, options) => {
   switch (collectionName) {
     case 'pages':
-      return require('./overwrite-params/pages')(req, options);
+      return require('./overwrite-params/pages')(user, options);
     case 'revisions':
-      return require('./overwrite-params/revisions')(req, options);
+      return require('./overwrite-params/revisions')(user, options);
     case 'attachmentFiles.chunks':
-      return require('./overwrite-params/attachmentFiles.chunks')(req, options);
+      return require('./overwrite-params/attachmentFiles.chunks')(user, options);
     default:
       return {};
   }
@@ -283,7 +283,7 @@ module.exports = (crowi) => {
       importSettings.jsonFileName = fileName;
 
       // generate overwrite params
-      importSettings.overwriteParams = generateOverwriteParams(collectionName, req, options);
+      importSettings.overwriteParams = generateOverwriteParams(collectionName, req.user, options);
 
       importSettingsMap[collectionName] = importSettings;
     });

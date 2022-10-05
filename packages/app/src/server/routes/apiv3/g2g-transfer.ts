@@ -199,7 +199,7 @@ module.exports = (crowi: Crowi): Router => {
       importSettings.jsonFileName = fileName;
 
       // generate overwrite params
-      importSettings.overwriteParams = generateOverwriteParams(collectionName, req, options);
+      importSettings.overwriteParams = generateOverwriteParams(collectionName, req.user, options);
 
       importSettingsMap[collectionName] = importSettings;
     });

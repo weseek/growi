@@ -5,13 +5,13 @@ class AttachmentFilesChunksOverwriteParamsFactory {
 
   /**
    * generate overwrite params object
-   * @param {object} req
+   * @param {object} user
    * @param {ImportOptionForPages} option
    * @return object
    *  key: property name
    *  value: any value or a function `(value, { document, schema, propertyName }) => { return newValue }`
    */
-  static generate(req, option) {
+  static generate(user, option) {
     const params = {};
 
     // Date
