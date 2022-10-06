@@ -1,5 +1,6 @@
 import React from 'react';
 
+import mongoose from 'mongoose';
 import Document, {
   DocumentContext, DocumentInitialProps,
   Html, Head, Main, NextScript,
@@ -66,7 +67,9 @@ class GrowiDocument extends Document<GrowiDocumentProps> {
     const initialProps: DocumentInitialProps = await Document.getInitialProps(ctx);
 
     // TODO: load GrowiPlugin documents from DB
-    // const pluginManifestEntries: GrowiPluginManifestEntries = await ActivatePluginService.retrievePluginManifests(growiPluginsExample);
+    const GrowiPlugin = mongoose.model('GrowiPlugin');
+    const growiPlugins = GrowiPlugin.find({ isEnabled: true });
+    // const pluginManifestEntries: GrowiPluginManifestEntries = await ActivatePluginService.retrievePluginManifests(growiPlugins);
     const pluginManifestEntries: GrowiPluginManifestEntries = await ActivatePluginService.retrievePluginManifests([]);
 
     return { ...initialProps, pluginManifestEntries };

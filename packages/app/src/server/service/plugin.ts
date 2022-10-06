@@ -57,6 +57,11 @@ export class PluginService {
     return;
   }
 
+  parseRepositoryName(ghUrl: string): string {
+    ghUrl.slice();
+    return 'hoge';
+  }
+
   async savePluginMetaData(installedPath: string): Promise<void> {
     const metaData = this.getPluginMetaData(installedPath);
     const GrowiPlugin = mongoose.model('GrowiPlugin');
