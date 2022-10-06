@@ -228,7 +228,7 @@ module.exports = (crowi: Crowi): Router => {
     }
     catch (err) {
       logger.error(err);
-      return res.apiv3Error(new ErrorV3('Failed to import.', 'failed_to_import'), 500);
+      return res.apiv3Err(new ErrorV3('Failed to import.', 'failed_to_import'), 500);
     }
 
     return res.apiv3({ message: 'Successfully started to receive transfer data.' });
