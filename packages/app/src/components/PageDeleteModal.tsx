@@ -20,9 +20,6 @@ import loggerFactory from '~/utils/logger';
 
 import ApiErrorMessageList from './PageManagement/ApiErrorMessageList';
 
-const { isTrashPage } = pagePathUtils;
-
-
 const logger = loggerFactory('growi:cli:PageDeleteModal');
 
 
@@ -71,7 +68,9 @@ const PageDeleteModal: FC = () => {
   // calculate condition to determine modal status
   const forceDeleteCompletelyMode = useMemo(() => {
     if (deleteModalData != null && deleteModalData.pages != null && deleteModalData.pages.length > 0) {
-      return deleteModalData.pages.every(pageWithMeta => isTrashPage(pageWithMeta.data?.path ?? ''));
+      const isDatabasePage = deleteModalData.pages.every(pageWithMeta => pagePathUtils.isDatabasePage(pageWithMeta.data?.path ?? ''));
+      const isTrashPage = deleteModalData.pages.every(pageWithMeta => pagePathUtils.isTrashPage(pageWithMeta.data?.path ?? ''));
+      return isDatabasePage || isTrashPage;
     }
     return false;
   }, [deleteModalData]);
@@ -196,7 +195,7 @@ const PageDeleteModal: FC = () => {
           name="completely"
           id="deleteCompletely"
           type="checkbox"
-          disabled={!isAbleToDeleteCompletely}
+          disabled={!isAbleToDeleteCompletely || deleteModalData?.pages?.every(pageWithMeta => pagePathUtils.isDatabasePage(pageWithMeta.data?.path ?? ''))}
           checked={isDeleteCompletely}
           onChange={changeIsDeleteCompletelyHandler}
         />
