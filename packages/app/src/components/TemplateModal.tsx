@@ -1,5 +1,6 @@
 import React, { useCallback, useState } from 'react';
 
+import { ITemplate } from '@growi/core';
 import { useTranslation } from 'next-i18next';
 import {
   Modal,
@@ -9,56 +10,9 @@ import {
 } from 'reactstrap';
 
 import { usePreviewOptions } from '~/stores/renderer';
+import { useTemplates } from '~/stores/template';
 
 import Preview from './PageEditor/Preview';
-
-
-type ITemplate = {
-  id: string,
-  name: string,
-  markdown: string,
-}
-
-const templates: ITemplate[] = [
-  {
-    id: '__preset1__',
-    name: 'WESEEK Inner Wiki Style',
-    markdown: `# 関連ページ
-
-$lsx()
-
-# `,
-  },
-  {
-    id: '__preset2__',
-    name: 'Qiita Style',
-    markdown: `# <会議体名>
-## 日時
-yyyy/mm/dd hh:mm〜hh:mm
-
-## 場所
-
-## 出席者
--
-
-## 議題
-1. [議題1](#link)
-2.
-3.
-
-## 議事内容
-### <a name="link"></a>議題1
-
-## 決定事項
-- 決定事項1
-
-## アクション事項
-- [ ] アクション
-
-## 次回
-yyyy/mm/dd (予定、時間は追って連絡)`,
-  },
-];
 
 
 type TemplateRadioButtonProps = {
@@ -99,6 +53,7 @@ export const TemplateModal = (props: Props): JSX.Element => {
   const { isOpen, onClose, onSubmit } = props;
 
   const { data: rendererOptions } = usePreviewOptions();
+  const { data: templates } = useTemplates();
 
   const [selectedTemplate, setSelectedTemplate] = useState<ITemplate>();
 
@@ -111,6 +66,10 @@ export const TemplateModal = (props: Props): JSX.Element => {
     onSubmit(template.markdown);
     onClose();
   }, [onClose, onSubmit]);
+
+  if (templates == null) {
+    return <></>;
+  }
 
   return (
     <Modal className="link-edit-modal" isOpen={isOpen} toggle={onClose} size="lg" autoFocus={false}>
