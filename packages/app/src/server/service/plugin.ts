@@ -1,5 +1,6 @@
 
 import { execSync } from 'child_process';
+import fs from 'fs';
 import path from 'path';
 
 import mongoose from 'mongoose';
@@ -45,15 +46,11 @@ export class PluginService {
 
     // TODO: detect plugins
     // save plugin metadata
-    const installedSamplePath = '/workspace/growi/packages/app/tmp/plugins/hogerepository/meta.json';
-    await this.savePluginMetaData(installedSamplePath);
+    const ghRepositoryName = ghUrl.split('/').slice(-1)[0];
+    const installedPath = path.join(downloadDir, ghRepositoryName, 'meta.json');
+    await this.savePluginMetaData(installedPath);
 
     return;
-  }
-
-  parseRepositoryName(ghUrl: string): string {
-    ghUrl.slice();
-    return 'hoge';
   }
 
   async savePluginMetaData(installedPath: string): Promise<void> {
