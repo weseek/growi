@@ -243,7 +243,7 @@ export class G2GTransferPusherService implements Pusher {
       logger.error(errs);
       if (!Array.isArray(errs)) {
         // TODO: socker.emit(failed_to_transfer);
-        return;
+        throw errs;
       }
 
       const err = errs[0];
@@ -251,7 +251,7 @@ export class G2GTransferPusherService implements Pusher {
 
 
       // TODO: socker.emit(failed_to_transfer);
-      return;
+      throw errs;
     }
 
     try {
@@ -259,7 +259,7 @@ export class G2GTransferPusherService implements Pusher {
     }
     catch (err) {
       logger.error(err);
-      return;
+      throw err;
     }
 
     return;

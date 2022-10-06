@@ -224,20 +224,12 @@ module.exports = (crowi: Crowi): Router => {
      * import
      */
     try {
-      importService.import(collections, importSettingsMap);
+      await importService.import(collections, importSettingsMap);
     }
     catch (err) {
       logger.error(err);
-      return;
+      return res.apiv3Error(new ErrorV3('Failed to import.', 'failed_to_import'), 500);
     }
-
-    // try {
-    //   await g2gTransferReceiverService.receive(file.stream);
-    // }
-    // catch (err) {
-    //   logger.error(err);
-    //   return res.apiv3Err(new ErrorV3('Error occurred while importing transfer data.', 'failed_to_receive'));
-    // }
 
     return res.apiv3({ message: 'Successfully started to receive transfer data.' });
   });
