@@ -32,14 +32,14 @@ export const PluginsExtensionPageContents = (): JSX.Element => {
           <h2 className="admin-setting-header">Plugins</h2>
           <div className="d-grid gap-5">
             <PluginCard
-              name={'growi-plugin-markdown-templates'}
-              url={'https://github.com/weseek/growi-plugin-markdown-templates'}
-              description={'growi-plugin-markdown-templates-example'}
+              name={'growi-plugin-templates-for-office'}
+              url={'https://github.com/weseek/growi-plugin-templates-for-office'}
+              description={'growi-plugin-templates-for-office'}
             />
             <PluginCard
-              name={'growi-plugin-styling-example'}
-              url={'https://github.com/weseek/growi-plugin-styling-example'}
-              description={'growi-plugin-styling-example'}
+              name={'growi-plugin-theme-welcome-to-fumiya-room'}
+              url={'https://github.com/weseek/growi-plugin-theme-welcome-to-fumiya-room'}
+              description={'growi-plugin-theme-welcome-to-fumiya-room'}
             />
             <PluginCard
               name={'growi-plugin-copy-code-to-clipboard'}
