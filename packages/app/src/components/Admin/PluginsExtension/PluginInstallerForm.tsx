@@ -19,14 +19,14 @@ export const PluginInstallerForm = (): JSX.Element => {
 
     const {
       'pluginInstallerForm[url]': { value: url },
-      'pluginInstallerForm[ghBranch]': { value: ghBranch },
-      'pluginInstallerForm[ghTag]': { value: ghTag },
+      // 'pluginInstallerForm[ghBranch]': { value: ghBranch },
+      // 'pluginInstallerForm[ghTag]': { value: ghTag },
     } = formData;
 
     const pluginInstallerForm = {
       url,
-      ghBranch,
-      ghTag,
+      // ghBranch,
+      // ghTag,
     };
 
     try {
@@ -42,21 +42,21 @@ export const PluginInstallerForm = (): JSX.Element => {
   return (
     <form role="form" onSubmit={submitHandler}>
       <div className='form-group row'>
-        <label className="text-left text-md-right col-md-3 col-form-label">GitHub repository URL</label>
+        <label className="text-left text-md-right col-md-3 col-form-label">GitHub Repository URL</label>
         <div className="col-md-6">
           <input
             className="form-control"
             type="text"
             // defaultValue={adminAppContainer.state.title || ''}
             name="pluginInstallerForm[url]"
-            placeholder="https://github.com/weseek/growi-plugins/vibrant-dark-ui"
+            placeholder="https://github.com/weseek/growi-plugin-lsx"
             required
           />
-          <p className="form-text text-muted">Install the plugin in GROWI: Enter the URL of the plugin repository and press the Update.</p>
+          <p className="form-text text-muted">You can install plugins by inputting the GitHub URL.</p>
           {/* <p className="form-text text-muted">{t('admin:app_setting.sitename_change')}</p> */}
         </div>
       </div>
-      <div className='form-group row'>
+      {/* <div className='form-group row'>
         <label className="text-left text-md-right col-md-3 col-form-label">branch</label>
         <div className="col-md-6">
           <input
@@ -79,11 +79,11 @@ export const PluginInstallerForm = (): JSX.Element => {
           />
           <p className="form-text text-muted">tag name</p>
         </div>
-      </div>
+      </div> */}
 
       <div className="row my-3">
         <div className="mx-auto">
-          <button type="submit" className="btn btn-primary" >Install</button>
+          <button type="submit" className="btn btn-primary">Install</button>
         </div>
       </div>
     </form>
