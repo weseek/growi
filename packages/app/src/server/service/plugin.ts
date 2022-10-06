@@ -1,47 +1,57 @@
 
+import fs from 'fs';
 import path from 'path';
 
 import wget from 'node-wget-js';
+import streamToPromise from 'stream-to-promise';
+import unzipper from 'unzipper';
 
 import { GrowiPlugin, GrowiPluginOrigin } from '~/interfaces/plugin';
 import loggerFactory from '~/utils/logger';
 import { resolveFromRoot } from '~/utils/project-dir-utils';
 
+
 // eslint-disable-next-line import/no-cycle
 import Crowi from '../crowi';
+
 
 const logger = loggerFactory('growi:plugins:plugin-utils');
 
 const pluginStoringPath = resolveFromRoot('tmp/plugins');
 
-async function downloadZipFile(ghUrl: string, filename:string, crowi): Promise<void> {
-  const { importService } = crowi;
-  wget({ url: ghUrl, dest: filename });
-  try {
-    console.log('j;oif', `${filename}master.zip`);
-    const zipFile = await importService.getFile('master.zip');
-    console.log('zip');
-    const file = await importService.unzip(zipFile);
-    console.log('fixl', file);
-  }
-  catch (err) {
-    console.log('fail');
-  }
-  return;
-}
+
 export class PluginService {
+
+  crowi: any;
+
+  growiBridgeService: any;
+
+  baseDir: any;
+
+  getFile:any;
+
+  constructor(crowi) {
+    this.crowi = crowi;
+    this.growiBridgeService = crowi.growiBridgeService;
+    this.baseDir = path.join(crowi.tmpDir, 'plugins');
+    this.getFile = this.growiBridgeService.getFile.bind(this);
+  }
 
   async install(crowi: Crowi, origin: GrowiPluginOrigin): Promise<void> {
     // download
     const ghUrl = origin.url;
     const downloadDir = path.join(process.cwd(), 'tmp/plugins/');
-    await downloadZipFile(`${ghUrl}/archive/refs/heads/master.zip`, downloadDir, crowi);
+    try {
+      await this.downloadZipFile(`${ghUrl}/archive/refs/heads/master.zip`, downloadDir);
+    }
+    catch (err) {
+      // TODO: error handling
+    }
 
     // TODO: detect plugins
     // TODO: save documents
     return;
   }
-
 
   // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
   static async detectPlugins(origin: GrowiPluginOrigin, installedPath: string, parentPackageJson?: any): Promise<GrowiPlugin[]> {
@@ -93,6 +103,66 @@ export class PluginService {
 
   async listPlugins(): Promise<GrowiPlugin[]> {
     return [];
+  }
+
+  async downloadZipFile(ghUrl: string, filename:string): Promise<void> {
+    wget({ url: ghUrl, dest: filename });
+    try {
+      const zipFile = await this.getFile('master.zip');
+      await this.unzip(zipFile);
+    }
+    catch (err) {
+      // console.log('fail');
+    }
+    return;
+  }
+
+  /**
+   * extract a zip file
+   *
+   * @memberOf ImportService
+   * @param {string} zipFile absolute path to zip file
+   * @return {Array.<string>} array of absolute paths to extracted files
+   */
+  async unzip(zipFile) {
+    // const stream = fs.createReadStream(zipFile).pipe(unzipper.Extract({ path: '/workspace/growi/packages/app/tmp/plugins' }));
+    // try {
+    //   await streamToPromise(stream);
+    // }
+    // catch (err) {
+    //   console.log('err', err);
+    // }
+    const readStream = fs.createReadStream(zipFile);
+    const unzipStream = readStream.pipe(unzipper.parse());
+    const files: any = [];
+
+
+    unzipStream.on('entry', async(entry) => {
+      const fileName = entry.path;
+      // https://regex101.com/r/mD4eZs/6
+      // prevent from unexpecting attack doing unzip file (path traversal attack)
+      // FOR EXAMPLE
+      // ../../src/server/views/admin/markdown.html
+      if (fileName.match(/(\.\.\/|\.\.\\)/)) {
+        logger.error('File path is not appropriate.', fileName);
+        return;
+      }
+
+      if (fileName === this.growiBridgeService.getMetaFileName()) {
+        // skip meta.json
+        entry.autodrain();
+      }
+      else {
+        const jsonFile = path.join(this.baseDir, fileName);
+        const writeStream = fs.createWriteStream(jsonFile, { encoding: this.growiBridgeService.getEncoding() });
+        entry.pipe(writeStream);
+        files.push(jsonFile);
+      }
+    });
+
+    await streamToPromise(unzipStream);
+
+    return files;
   }
 
 }
