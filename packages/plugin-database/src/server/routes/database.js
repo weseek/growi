@@ -45,9 +45,11 @@ module.exports = (crowi, app) => {
 
     // extract
     if (options.extract != null) {
-      body = extract(body, 'row', '2', '==', 'hoge');
+      const [
+        _matchedWhole, direction, index, operation, keyword,
+      ] = options.extract.match(/^(row|col)#(\d+)([<>]=?|==)(.*)$/);
+      body = extract(body, direction, index, operation, keyword);
     }
-
     res.status(200).send(body);
   };
 
