@@ -334,7 +334,7 @@ export const generateViewOptions = (
   rehypePlugins.push(
     slug,
     [lsxGrowiPlugin.rehypePlugin, { pagePath }],
-    [databaseGrowiPlugin.rehypePlugin, { pagePath }],
+    [databaseGrowiPlugin.rehypePlugin],
     [sanitize, deepmerge(
       commonSanitizeOption,
       lsxGrowiPlugin.sanitizeOption,
@@ -396,7 +396,6 @@ export const generateTocOptions = (config: RendererConfig, tocNode: HtmlElementN
 
 export const generateSimpleViewOptions = (config: RendererConfig, pagePath: string, highlightKeywords?: string | string[]): RendererOptions => {
   const options = generateCommonOptions(pagePath, config);
-
   const { remarkPlugins, rehypePlugins, components } = options;
 
   // add remark plugins
@@ -414,7 +413,7 @@ export const generateSimpleViewOptions = (config: RendererConfig, pagePath: stri
   // add rehype plugins
   rehypePlugins.push(
     [lsxGrowiPlugin.rehypePlugin, { pagePath }],
-    [databaseGrowiPlugin.rehypePlugin, { pagePath }],
+    [databaseGrowiPlugin.rehypePlugin],
     [keywordHighlighter.rehypePlugin, { keywords: highlightKeywords }],
     [sanitize, deepmerge(
       commonSanitizeOption,
@@ -454,7 +453,7 @@ export const generatePreviewOptions = (config: RendererConfig, pagePath: string)
   // add rehype plugins
   rehypePlugins.push(
     [lsxGrowiPlugin.rehypePlugin, { pagePath }],
-    [databaseGrowiPlugin.rehypePlugin, { pagePath }],
+    [databaseGrowiPlugin.rehypePlugin],
     addLineNumberAttribute.rehypePlugin,
     [sanitize, deepmerge(
       commonSanitizeOption,

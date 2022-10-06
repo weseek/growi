@@ -8,9 +8,7 @@ import { Plugin } from 'unified';
 import { visit } from 'unist-util-visit';
 
 const NODE_NAME_PATTERN = new RegExp(/database/);
-const SUPPORTED_ATTRIBUTES = ['hoge'];
-
-const { hasHeadingSlash } = pathUtils;
+const SUPPORTED_ATTRIBUTES = ['path'];
 
 type DirectiveAttributes = Record<string, string>
 
@@ -37,47 +35,12 @@ export const remarkPlugin: Plugin = function() {
 };
 
 export type DatabaseRehypePluginParams = {
-  pagePath?: string,
+  path?: string,
 }
-
-const pathResolver = (relativeHref: string, basePath: string): string => {
-  // generate relative pathname
-  const baseUrl = new URL(pathUtils.addTrailingSlash(basePath), 'https://example.com');
-  const relativeUrl = new URL(relativeHref, baseUrl);
-
-  return relativeUrl.pathname;
-};
 
 export const rehypePlugin: Plugin<[DatabaseRehypePluginParams]> = (options = {}) => {
   return (tree) => {
-    if (options.pagePath == null) {
-      return;
-    }
-
-    const basePagePath = options.pagePath;
-    const elements = selectAll('database', tree as HastNode);
-
-    elements.forEach((databaseElem) => {
-      if (databaseElem.properties == null) {
-        return;
-      }
-
-      const prefix = databaseElem.properties.prefix;
-
-      // set basePagePath when prefix is undefined or invalid
-      if (prefix == null || typeof prefix !== 'string') {
-        databaseElem.properties.prefix = basePagePath;
-        return;
-      }
-
-      // return when prefix is already determined and aboslute path
-      if (hasHeadingSlash(prefix)) {
-        return;
-      }
-
-      // resolve relative path
-      databaseElem.properties.prefix = pathResolver(prefix, basePagePath);
-    });
+    // nothing to do (no need to register this rehypePlugin)
   };
 };
 
