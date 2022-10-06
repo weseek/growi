@@ -1,4 +1,5 @@
 
+import { execSync } from 'child_process';
 import fs from 'fs';
 import path from 'path';
 
@@ -105,17 +106,20 @@ export class PluginService {
     return [];
   }
 
-  async downloadZipFile(ghUrl: string, filename:string): Promise<void> {
-    await wget({ url: ghUrl, dest: filename });
-    try {
-      const zipFile = await this.getFile('master.zip');
-      await this.unzip(zipFile);
-      // await this.unzip('/workspace/growi/packages/app/tmp/plugins/master.zip');
+  async downloadZipFile(ghUrl: string, filePath:string): Promise<void> {
+    const stdout1 = execSync(`wget ${ghUrl} -O ${filePath}master.zip`);
+    const stdout2 = execSync(`unzip ${filePath}master.zip -d ${filePath}`);
+    const stdout3 = execSync(`unzip ${filePath}master.zip -d ${filePath}`);
 
-    }
-    catch (err) {
-      console.log(err);
-    }
+    // try {
+    //   const zipFile = await this.getFile('master.zip');
+
+    //   // await this.unzip('/workspace/growi/packages/app/tmp/plugins/master.zip');
+
+    // }
+    // catch (err) {
+    //   console.log(err);
+    // }
     return;
   }
 
