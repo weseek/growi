@@ -91,6 +91,39 @@ const generateAxiosRequestConfigWithTransferKey = (tk: TransferKey, additionalHe
   };
 };
 
+/**
+ * generate GROWIInfo
+ * @param crowi Crowi instance
+ * @returns
+ */
+const generateGROWIInfo = (crowi: any): IDataGROWIInfo => {
+  // TODO: add attachment file limit, storage total limit
+  const { configManager } = crowi;
+  const userUpperLimit = configManager.getConfig('crowi', 'security:userUpperLimit');
+  const version = crowi.version;
+  const attachmentInfo = {
+    type: configManager.getConfig('crowi', 'app:fileUploadType'),
+    bucket: undefined,
+    customEndpoint: undefined, // for S3
+    uploadNamespace: undefined, // for GCS
+  };
+
+  // put storage location info to check storage identification
+  switch (attachmentInfo.type) {
+    case 'aws':
+      attachmentInfo.bucket = configManager.getConfig('crowi', 'aws:s3Bucket');
+      attachmentInfo.customEndpoint = configManager.getConfig('crowi', 'aws:s3CustomEndpoint');
+      break;
+    case 'gcs':
+      attachmentInfo.bucket = configManager.getConfig('crowi', 'gcs:bucket');
+      attachmentInfo.uploadNamespace = configManager.getConfig('crowi', 'gcs:uploadNamespace');
+      break;
+    default:
+  }
+
+  return { userUpperLimit, version, attachmentInfo };
+};
+
 export class G2GTransferPusherService implements Pusher {
 
   crowi: any;
@@ -249,31 +282,7 @@ export class G2GTransferReceiverService implements Receiver {
   }
 
   public async answerGROWIInfo(): Promise<IDataGROWIInfo> {
-    // TODO: add attachment file limit, storage total limit
-    const { configManager } = this.crowi;
-    const userUpperLimit = configManager.getConfig('crowi', 'security:userUpperLimit');
-    const version = this.crowi.version;
-    const attachmentInfo = {
-      type: configManager.getConfig('crowi', 'app:fileUploadType'),
-      bucket: undefined,
-      customEndpoint: undefined, // for S3
-      uploadNamespace: undefined, // for GCS
-    };
-
-    // put storage location info to check storage identification
-    switch (attachmentInfo.type) {
-      case 'aws':
-        attachmentInfo.bucket = configManager.getConfig('crowi', 'aws:s3Bucket');
-        attachmentInfo.customEndpoint = configManager.getConfig('crowi', 'aws:s3CustomEndpoint');
-        break;
-      case 'gcs':
-        attachmentInfo.bucket = configManager.getConfig('crowi', 'gcs:bucket');
-        attachmentInfo.uploadNamespace = configManager.getConfig('crowi', 'gcs:uploadNamespace');
-        break;
-      default:
-    }
-
-    return { userUpperLimit, version, attachmentInfo };
+    return generateGROWIInfo(this.crowi);
   }
 
   public async createTransferKey(appSiteUrl: URL): Promise<string> {
