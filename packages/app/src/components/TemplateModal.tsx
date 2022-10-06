@@ -14,12 +14,14 @@ import Preview from './PageEditor/Preview';
 
 
 type ITemplate = {
+  id: string,
   name: string,
   markdown: string,
 }
 
 const templates: ITemplate[] = [
   {
+    id: '__preset1__',
     name: 'WESEEK Inner Wiki Style',
     markdown: `# 関連ページ
 
@@ -28,6 +30,7 @@ $lsx()
 # `,
   },
   {
+    id: '__preset2__',
     name: 'Qiita Style',
     markdown: `# <会議体名>
 ## 日時
@@ -65,10 +68,10 @@ type TemplateRadioButtonProps = {
 }
 
 const TemplateRadioButton = ({ template, onChange, isSelected }: TemplateRadioButtonProps): JSX.Element => {
-  const radioButtonId = `rb-${template.name}`;
+  const radioButtonId = `rb-${template.id}`;
 
   return (
-    <div key={template.name} className="custom-control custom-radio mb-2">
+    <div key={template.id} className="custom-control custom-radio mb-2">
       <input
         id={radioButtonId}
         type="radio"
@@ -120,10 +123,10 @@ export const TemplateModal = (props: Props): JSX.Element => {
           <div className="col-12">
             { templates.map(template => (
               <TemplateRadioButton
-                key={template.name}
+                key={template.id}
                 template={template}
                 onChange={t => setSelectedTemplate(t)}
-                isSelected={template.name === selectedTemplate?.name}
+                isSelected={template.id === selectedTemplate?.id}
               />
             )) }
           </div>

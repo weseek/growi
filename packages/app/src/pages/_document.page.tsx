@@ -23,6 +23,17 @@ const growiPluginsExample: GrowiPlugin[] = [
       types: [GrowiPluginResourceType.Script],
     },
   },
+  {
+    isEnabled: true,
+    installedPath: 'weseek/growi-plugin-markdown-templates',
+    origin: {
+      url: 'https://github.com/weseek/growi-plugin-markdown-templates',
+    },
+    meta: {
+      name: 'weseek/growi-plugin-markdown-templates',
+      types: [GrowiPluginResourceType.Template],
+    },
+  },
 ];
 // ------------------
 
@@ -37,6 +48,16 @@ const HeadersForGrowiPlugin = (props: HeadersForGrowiPluginProps): JSX.Element =
   return (
     <>
       { pluginManifestEntries.map(([growiPlugin, manifest]) => {
+        // type: template
+        if (growiPlugin.meta.types.includes(GrowiPluginResourceType.Template)) {
+          return (
+            <>
+              {/* eslint-disable-next-line @next/next/no-sync-scripts */ }
+              <script type="module" key={`script_${growiPlugin.installedPath}`}
+                src={`/plugins/${growiPlugin.installedPath}/dist/${manifest['client-entry.tsx'].file}`} />
+            </>
+          );
+        }
         // type: script
         if (growiPlugin.meta.types.includes(GrowiPluginResourceType.Script)) {
           return (

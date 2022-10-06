@@ -85,6 +85,7 @@ const PageEditor = React.memo((): JSX.Element => {
 
   // register to facade
   useEffect(() => {
+    // for markdownRenderer
     registerGrowiFacade({
       markdownRenderer: {
         optionsMutators: {

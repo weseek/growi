@@ -22,6 +22,7 @@ export * from './interfaces/page';
 export * from './interfaces/revision';
 export * from './interfaces/subscription';
 export * from './interfaces/tag';
+export * from './interfaces/template';
 export * from './interfaces/user';
 export * from './plugin/service/tag-cache-manager';
 export * from './models/devided-page-path';
