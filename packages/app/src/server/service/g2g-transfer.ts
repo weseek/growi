@@ -217,7 +217,12 @@ export class G2GTransferPusherService implements Pusher {
     }
   }
 
-  public async startTransfer(tk: TransferKey, user: any, toGROWIInfo: IDataGROWIInfo, collections: string[], optionsMap: any): Promise<void> {
+  // eslint-disable-next-line max-len
+  public async startTransfer(tk: TransferKey, user: any, toGROWIInfo: IDataGROWIInfo, collections: string[], optionsMap: any, shouldEmit = true): Promise<void> {
+    const socket = this.crowi.socketIoService.getDefaultSocket();
+
+    if (shouldEmit) socket.emit('admin:onStartTransferMongoData', {});
+
     if (toGROWIInfo.attachmentInfo.type === 'none') {
       try {
         const targetConfigKeys = [
@@ -284,6 +289,8 @@ export class G2GTransferPusherService implements Pusher {
       throw errs;
     }
 
+    if (shouldEmit) socket.emit('admin:onStartTransferAttachments', {});
+
     try {
       await this.transferAttachments(tk);
     }
@@ -291,6 +298,8 @@ export class G2GTransferPusherService implements Pusher {
       logger.error(err);
       throw err;
     }
+
+    if (shouldEmit) socket.emit('admin:onFinishTransfer', {});
 
     return;
   }
