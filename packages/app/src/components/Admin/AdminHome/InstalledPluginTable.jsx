@@ -27,7 +27,7 @@ const InstalledPluginTable = (props) => {
         </tr>
       </thead>
       <tbody>
-        {adminHomeContainer.state.installedPlugins.map((plugin) => {
+        {/* {adminHomeContainer.state.installedPlugins.map((plugin) => {
           return (
             <tr key={plugin.name}>
               <td>{plugin.name}</td>
@@ -35,7 +35,7 @@ const InstalledPluginTable = (props) => {
               <td data-hide-in-vrt className="text-center">{plugin.installedVersion}</td>
             </tr>
           );
-        })}
+        })} */}
       </tbody>
     </table>
   );
