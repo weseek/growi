@@ -8,6 +8,10 @@ import {
   ModalFooter,
 } from 'reactstrap';
 
+import { usePreviewOptions } from '~/stores/renderer';
+
+import Preview from './PageEditor/Preview';
+
 
 type ITemplate = {
   name: string,
@@ -16,32 +20,63 @@ type ITemplate = {
 
 const templates: ITemplate[] = [
   {
-    name: 'presetA',
-    markdown: '## Preset',
+    name: 'WESEEK Inner Wiki Style',
+    markdown: `# 関連ページ
+
+$lsx()
+
+# `,
   },
   {
-    name: 'presetB',
-    markdown: '### Preset',
-  },
-  {
-    name: 'presetC',
-    markdown: '#### Preset',
+    name: 'Qiita Style',
+    markdown: `# <会議体名>
+## 日時
+yyyy/mm/dd hh:mm〜hh:mm
+
+## 場所
+
+## 出席者
+-
+
+## 議題
+1. [議題1](#link)
+2.
+3.
+
+## 議事内容
+### <a name="link"></a>議題1
+
+## 決定事項
+- 決定事項1
+
+## アクション事項
+- [ ] アクション
+
+## 次回
+yyyy/mm/dd (予定、時間は追って連絡)`,
   },
 ];
 
 
-const TemplateRadioButton = ({ template }: { template: ITemplate }): JSX.Element => {
+type TemplateRadioButtonProps = {
+  template: ITemplate,
+  onChange: (selectedTemplate: ITemplate) => void,
+  isSelected?: boolean,
+}
+
+const TemplateRadioButton = ({ template, onChange, isSelected }: TemplateRadioButtonProps): JSX.Element => {
+  const radioButtonId = `rb-${template.name}`;
+
   return (
-    <div key={template.name} className="custom-control custom-radio">
+    <div key={template.name} className="custom-control custom-radio mb-2">
       <input
+        id={radioButtonId}
         type="radio"
         className="custom-control-input"
-        id="string"
-        defaultValue={template.markdown}
-        // checked={this.state.linkerType === template.value}
-        // onChange={this.handleSelecteLinkerType(template.value)}
+        checked={isSelected}
+        onChange={() => onChange(template)}
       />
-      <label className="custom-control-label" htmlFor="string">
+      <label className="custom-control-label" htmlFor={radioButtonId}>
         {template.name}
       </label>
     </div>
@@ -59,6 +94,10 @@ export const TemplateModal = (props: Props): JSX.Element => {
   const { t } = useTranslation();
 
   const { isOpen, onClose, onSave } = props;
+
+  const { data: rendererOptions } = usePreviewOptions();
+
+  const [selectedTemplate, setSelectedTemplate] = useState<ITemplate>();
 
   const submitHandler = useCallback(() => {
     if (onSave == null) {
@@ -80,13 +119,29 @@ export const TemplateModal = (props: Props): JSX.Element => {
       <ModalBody className="container">
         <div className="row">
           <div className="col-12">
-            { templates.map(template => <TemplateRadioButton key={template.name} template={template} />) }
+            { templates.map(template => (
+              <TemplateRadioButton
+                key={template.name}
+                template={template}
+                onChange={t => setSelectedTemplate(t)}
+                isSelected={template.name === selectedTemplate?.name}
+              />
+            )) }
           </div>
         </div>
 
-        {/* <div className={`linkedit-preview ${styles['linkedit-preview']}`}>
-          <Preview markdown={this.state.markdown}/>
-        </div> */}
+        { rendererOptions != null && (
+          <>
+            <hr />
+            <h3>Preview</h3>
+            <div className='card'>
+              <div className="card-body" style={{ maxHeight: '60vh', overflowY: 'auto' }}>
+                <Preview rendererOptions={rendererOptions} markdown={selectedTemplate?.markdown}/>
+              </div>
+            </div>
+          </>
+        ) }
+
       </ModalBody>
       <ModalFooter>
         <button type="button" className="btn btn-sm btn-outline-secondary mx-1" onClick={onClose}>
