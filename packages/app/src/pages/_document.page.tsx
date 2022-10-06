@@ -9,36 +9,6 @@ import Document, {
 import { ActivatePluginService, GrowiPluginManifestEntries } from '~/client/services/activate-plugin';
 import { GrowiPlugin, GrowiPluginResourceType } from '~/interfaces/plugin';
 
-
-// FIXME: dummy data
-// ------------------
-const growiPluginsExample: GrowiPlugin[] = [
-  {
-    isEnabled: true,
-    installedPath: 'weseek/growi-plugin-copy-code-to-clipboard',
-    origin: {
-      url: 'https://github.com/weseek/growi-plugin-copy-code-to-clipboard',
-    },
-    meta: {
-      name: 'weseek/growi-plugin-copy-code-to-clipboard',
-      types: [GrowiPluginResourceType.Script],
-    },
-  },
-  {
-    isEnabled: true,
-    installedPath: 'weseek/growi-plugin-markdown-templates',
-    origin: {
-      url: 'https://github.com/weseek/growi-plugin-markdown-templates',
-    },
-    meta: {
-      name: 'weseek/growi-plugin-markdown-templates',
-      types: [GrowiPluginResourceType.Template],
-    },
-  },
-];
-// ------------------
-
-
 type HeadersForGrowiPluginProps = {
   pluginManifestEntries: GrowiPluginManifestEntries;
 }
@@ -91,7 +61,6 @@ class GrowiDocument extends Document<GrowiDocumentProps> {
     const GrowiPlugin = mongoose.model<GrowiPlugin>('GrowiPlugin');
     const growiPlugins = await GrowiPlugin.find({ isEnabled: true });
     const pluginManifestEntries: GrowiPluginManifestEntries = await ActivatePluginService.retrievePluginManifests(growiPlugins);
-
     return { ...initialProps, pluginManifestEntries };
   }
 
