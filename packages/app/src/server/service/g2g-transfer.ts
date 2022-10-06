@@ -79,6 +79,18 @@ interface Receiver {
   receive(zippedGROWIDataStream: Readable): Promise<void>
 }
 
+const generateAxiosRequestConfigWithTransferKey = (tk: TransferKey, additionalHeaders: {[key: string]: string} = {}) => {
+  const { appUrl, key } = tk;
+
+  return {
+    baseURL: appUrl.origin,
+    headers: {
+      ...additionalHeaders,
+      [X_GROWI_TRANSFER_KEY_HEADER_NAME]: key,
+    },
+  };
+};
+
 export class G2GTransferPusherService implements Pusher {
 
   crowi: any;
@@ -92,7 +104,7 @@ export class G2GTransferPusherService implements Pusher {
     // axios get
     let toGROWIInfo: IDataGROWIInfo;
     try {
-      const res = await axios.get('/_api/v3/g2g-transfer/growi-info', this.generateAxiosRequestConfig(tk));
+      const res = await axios.get('/_api/v3/g2g-transfer/growi-info', generateAxiosRequestConfigWithTransferKey(tk));
       toGROWIInfo = {
         userUpperLimit: res.data.userUpperLimit,
         version: res.data.version,
@@ -186,13 +198,7 @@ export class G2GTransferPusherService implements Pusher {
       form.append('collections', JSON.stringify(collections));
       form.append('optionsMap', JSON.stringify(optionsMap));
       form.append('operatorUserId', user._id.toString());
-      await rawAxios.post('/_api/v3/g2g-transfer/', form, {
-        baseURL: appUrl.origin,
-        headers: {
-          ...form.getHeaders(), // This generates a unique boundary for multi part form data
-          [X_GROWI_TRANSFER_KEY_HEADER_NAME]: key,
-        },
-      });
+      await rawAxios.post('/_api/v3/g2g-transfer/', form, generateAxiosRequestConfigWithTransferKey(tk, form.getHeaders()));
     }
     catch (errs) {
       logger.error(errs);
@@ -210,17 +216,6 @@ export class G2GTransferPusherService implements Pusher {
     }
   }
 
-  private generateAxiosRequestConfig(tk: TransferKey) {
-    const { appUrl, key } = tk;
-
-    return {
-      baseURL: appUrl.origin,
-      headers: {
-        [X_GROWI_TRANSFER_KEY_HEADER_NAME]: key,
-      },
-    };
-  }
-
   /**
    * transfer attachment to destination GROWI
    * @param tk Transfer key
@@ -233,13 +228,7 @@ export class G2GTransferPusherService implements Pusher {
 
     form.append('content', fileStream, attachment.fileName);
     form.append('attachmentMetadata', JSON.stringify(attachment));
-    await rawAxios.post('/_api/v3/g2g-transfer/attachment', form, {
-      baseURL: tk.appUrl.origin,
-      headers: {
-        ...form.getHeaders(), // This generates a unique boundary for multi part form data
-        [X_GROWI_TRANSFER_KEY_HEADER_NAME]: tk.key,
-      },
-    });
+    await rawAxios.post('/_api/v3/g2g-transfer/attachment', form, generateAxiosRequestConfigWithTransferKey(tk, form.getHeaders()));
   }
 
 }
