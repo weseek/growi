@@ -15,13 +15,13 @@ import { GrowiPlugin, GrowiPluginResourceType } from '~/interfaces/plugin';
 const growiPluginsExample: GrowiPlugin[] = [
   {
     isEnabled: true,
-    installedPath: 'weseek/growi-plugin-copy-code-to-clipboard',
+    installedPath: 'tmp/plugins/growi-plugin-styling-example-main',
     origin: {
-      url: 'https://github.com/weseek/growi-plugin-copy-code-to-clipboard',
+      url: 'https://github.com/weseek/growi-plugin-styling-example',
     },
     meta: {
-      name: 'weseek/growi-plugin-copy-code-to-clipboard',
-      types: [GrowiPluginResourceType.Script],
+      name: 'growi-plugin-styling-example',
+      types: [GrowiPluginResourceType.Style],
     },
   },
   {
@@ -91,7 +91,6 @@ class GrowiDocument extends Document<GrowiDocumentProps> {
     const GrowiPlugin = mongoose.model<GrowiPlugin>('GrowiPlugin');
     const growiPlugins = await GrowiPlugin.find({ isEnabled: true });
     const pluginManifestEntries: GrowiPluginManifestEntries = await ActivatePluginService.retrievePluginManifests(growiPlugins);
-
     return { ...initialProps, pluginManifestEntries };
   }
 
