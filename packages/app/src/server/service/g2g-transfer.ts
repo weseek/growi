@@ -237,7 +237,7 @@ export class G2GTransferPusherService implements Pusher {
       baseURL: tk.appUrl.origin,
       headers: {
         ...form.getHeaders(), // This generates a unique boundary for multi part form data
-        [X_GROWI_TRANSFER_KEY_HEADER_NAME]: key,
+        [X_GROWI_TRANSFER_KEY_HEADER_NAME]: tk.key,
       },
     });
   }
