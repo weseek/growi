@@ -63,6 +63,8 @@ const AdminLayout = dynamic(() => import('../../components/Layout/AdminLayout'),
 // named export
 const UserGroupPage = dynamic(() => import('../../components/Admin/UserGroup/UserGroupPage').then(mod => mod.UserGroupPage), { ssr: false });
 const AuditLogManagement = dynamic(() => import('../../components/Admin/AuditLogManagement').then(mod => mod.AuditLogManagement), { ssr: false });
+const PluginsExtensionPageContents = dynamic(() => import('../../components/Admin/PluginsExtension/PluginsExtensionPageContents')
+  .then(mod => mod.PluginsExtensionPageContents), { ssr: false });
 
 type Props = CommonProps & {
   currentUser: any,
@@ -178,6 +180,10 @@ const AdminMarkdownSettingsPage: NextPage<Props> = (props: Props) => {
       title: t('audit_log_management.audit_log'),
       component: <AuditLogManagement />,
     },
+    'plugins-extention': {
+      title: t('plugins-extention.title'),
+      component: <PluginsExtensionPageContents />,
+    },
   };
 
   const getTargetPageToRender = (pagesMap, keys): {title: string, component: JSX.Element} => {
@@ -284,7 +290,7 @@ async function injectServerConfigurations(context: GetServerSidePropsContext, pr
   props.nodeVersion = crowi.runtimeVersions.versions.node ? crowi.runtimeVersions.versions.node.version.version : null;
   props.npmVersion = crowi.runtimeVersions.versions.npm ? crowi.runtimeVersions.versions.npm.version.version : null;
   props.yarnVersion = crowi.runtimeVersions.versions.yarn ? crowi.runtimeVersions.versions.yarn.version.version : null;
-  props.installedPlugins = crowi.pluginService.listPlugins();
+  props.installedPlugins = crowi.pluginService.listPlugins(crowi.rootDir);
   props.envVars = await ConfigLoader.getEnvVarsForDisplay(true);
   props.isAclEnabled = aclService.isAclEnabled();
 
