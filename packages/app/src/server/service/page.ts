@@ -3494,7 +3494,7 @@ class PageService {
     page.applyScope(user, grant, grantUserGroupId);
 
     // Set parent
-    if (isTopPage(path) || isGrantRestricted) { // set parent to null when GRANT_RESTRICTED
+    if (isTopPage(path) || isGrantRestricted || isDatabasePage(path)) { // set parent to null when GRANT_RESTRICTED or Database page
       page.parent = null;
     }
     else {
