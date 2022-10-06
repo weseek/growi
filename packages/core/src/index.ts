@@ -15,6 +15,7 @@ export * as pageUtils from './utils/page-utils';
 export * from './plugin/interfaces/option-parser';
 export * from './interfaces/attachment';
 export * from './interfaces/common';
+export * from './interfaces/growi-facade';
 export * from './interfaces/has-object-id';
 export * from './interfaces/lang';
 export * from './interfaces/page';
