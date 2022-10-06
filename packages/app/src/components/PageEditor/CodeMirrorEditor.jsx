@@ -14,6 +14,7 @@ import InterceptorManager from '~/services/interceptor-manager';
 import { useDrawioModal } from '~/stores/modal';
 import loggerFactory from '~/utils/logger';
 
+import { TemplateModal } from '../TemplateModal';
 import { UncontrolledCodeMirror } from '../UncontrolledCodeMirror';
 
 import AbstractEditor from './AbstractEditor';
@@ -110,6 +111,7 @@ class CodeMirrorEditor extends AbstractEditor {
       emojiSearchText: '',
       startPosWithEmojiPickerModeTurnedOn: null,
       isEmojiPickerMode: false,
+      isTemplateModalOpened: false,
     };
 
     this.cm = React.createRef();
@@ -158,6 +160,8 @@ class CodeMirrorEditor extends AbstractEditor {
 
     this.foldDrawioSection = this.foldDrawioSection.bind(this);
     this.onSaveForDrawio = this.onSaveForDrawio.bind(this);
+
+    this.showTemplateModal = this.showTemplateModal.bind(this);
 
   }
 
@@ -870,6 +874,9 @@ class CodeMirrorEditor extends AbstractEditor {
     // this.handsontableModal.current.show(mtu.getMarkdownTable(this.getCodeMirror()));
   }
 
+  showTemplateModal() {
+    this.setState({ isTemplateModalOpened: true });
+  }
 
   // fold draw.io section (::: drawio ~ :::)
   foldDrawioSection() {
@@ -1034,6 +1041,15 @@ class CodeMirrorEditor extends AbstractEditor {
       >
         <EditorIcon icon="Emoji" />
       </Button>,
+      <Button
+        key="nav-item-template"
+        color={null}
+        bssize="small"
+        title="Template"
+        onClick={() => this.showTemplateModal()}
+      >
+        <EditorIcon icon="Template" />
+      </Button>,
     ];
   }
 
@@ -1126,6 +1142,11 @@ class CodeMirrorEditor extends AbstractEditor {
         <LinkEditModal
           ref={this.linkEditModal}
           onSave={(linkText) => { return markdownLinkUtil.replaceFocusedMarkdownLinkWithEditor(this.getCodeMirror(), linkText) }}
+        />
+        <TemplateModal
+          isOpen={this.state.isTemplateModalOpened}
+          onClose={() => this.setState({ isTemplateModalOpened: false })}
+          onSubmit={templateText => this.setValue(templateText) }
         />
         {/* <HandsontableModal
           ref={this.handsontableModal}

@@ -39,6 +39,7 @@ const GridEditModal = dynamic(() => import('./PageEditor/GridEditModal'), { ssr:
 // const HandsontableModal = dynamic(() => import('./PageEditor/HandsontableModal'), { ssr: false });
 const LinkEditModal = dynamic(() => import('./PageEditor/LinkEditModal'), { ssr: false });
 
+
 const logger = loggerFactory('growi:Page');
 
 type PageSubstanceProps = {
