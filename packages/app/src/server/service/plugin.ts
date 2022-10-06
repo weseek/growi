@@ -2,11 +2,12 @@
 import fs from 'fs';
 import path from 'path';
 
+import mongoose from 'mongoose';
 import wget from 'node-wget-js';
 import streamToPromise from 'stream-to-promise';
 import unzipper from 'unzipper';
 
-import { GrowiPlugin, GrowiPluginOrigin } from '~/interfaces/plugin';
+import { GrowiPlugin, GrowiPluginMeta, GrowiPluginOrigin } from '~/interfaces/plugin';
 import loggerFactory from '~/utils/logger';
 import { resolveFromRoot } from '~/utils/project-dir-utils';
 
@@ -39,18 +40,41 @@ export class PluginService {
 
   async install(crowi: Crowi, origin: GrowiPluginOrigin): Promise<void> {
     // download
-    const ghUrl = origin.url;
-    const downloadDir = path.join(process.cwd(), 'tmp/plugins/');
-    try {
-      await this.downloadZipFile(`${ghUrl}/archive/refs/heads/master.zip`, downloadDir);
-    }
-    catch (err) {
-      // TODO: error handling
-    }
+    // const ghUrl = origin.url;
+    // const downloadDir = path.join(process.cwd(), 'tmp/plugins/');
+    // try {
+    //   await this.downloadZipFile(`${ghUrl}/archive/refs/heads/master.zip`, downloadDir);
+    // }
+    // catch (err) {
+    //   // TODO: error handling
+    // }
 
     // TODO: detect plugins
     // TODO: save documents
+    const installedSamplePath = '/workspace/growi/packages/app/tmp/plugins/hogerepository/meta.json';
+    await this.savePluginMetaData(installedSamplePath);
+
     return;
+  }
+
+  async savePluginMetaData(installedPath: string): Promise<void> {
+    const metaData = this.getPluginMetaData(installedPath);
+    const GrowiPlugin = mongoose.model('GrowiPlugin');
+
+    // await GrowiPlugin.insertMany({
+    //   isEnabled: true,
+    //   installedPath,
+    //   meta: {
+    //     name: metaData.name,
+    //     types: metaData.types,
+    //     author: metaData.author,
+    //   },
+    // });
+  }
+
+  private getPluginMetaData(installedPath: string): GrowiPluginMeta {
+    const metaDataJSON = JSON.parse(fs.readFileSync(installedPath, 'utf-8'));
+    return metaDataJSON;
   }
 
   // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
