@@ -46,25 +46,17 @@ export class PluginService {
     // TODO: detect plugins
     // save plugin metadata
     const ghRepositoryName = ghUrl.split('/').slice(-1)[0];
-    const installedPath = path.join(downloadDir, `${ghRepositoryName}-master`, 'meta.json');
-    await this.savePluginMetaData(installedPath);
+    const installedPath = path.join(downloadDir, `${ghRepositoryName}-master`);
+    const plugins = await PluginService.detectPlugins(origin, installedPath);
+    await this.savePluginMetaData(plugins);
 
     return;
   }
 
-  async savePluginMetaData(installedPath: string): Promise<void> {
-    const metaData = this.getPluginMetaData(installedPath);
+  async savePluginMetaData(plugins: GrowiPlugin[]): Promise<void> {
     const GrowiPlugin = mongoose.model('GrowiPlugin');
 
-    await GrowiPlugin.insertMany({
-      isEnabled: true,
-      installedPath,
-      meta: {
-        name: metaData.name,
-        types: metaData.types,
-        author: metaData.author,
-      },
-    });
+    await GrowiPlugin.insertMany(plugins);
   }
 
   private getPluginMetaData(installedPath: string): GrowiPluginMeta {
