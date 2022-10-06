@@ -43,6 +43,7 @@ class GrowiDocument extends Document<GrowiDocumentProps> {
           {renderScriptTagsByGroup('basis')}
           {renderStyleTagsByGroup('basis')}
           */}
+          <link rel="stylesheet" href={`/plugins/weseek/growi-plugin-jstest/dist/${pluginsManifest['growi-plugin-jstest']['client-entry.tsx'].css}`} />
           {/* eslint-disable-next-line @next/next/no-sync-scripts */}
           <script type="module" src={`/plugins/weseek/growi-plugin-jstest/dist/${pluginsManifest['growi-plugin-jstest']['client-entry.tsx'].file}`} />
         </Head>
