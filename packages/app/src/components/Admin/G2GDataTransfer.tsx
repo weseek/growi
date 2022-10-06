@@ -15,7 +15,7 @@ import CustomCopyToClipBoard from '../Common/CustomCopyToClipBoard';
 import G2GDataTransferExportForm from './G2GDataTransferExportForm';
 
 const IGNORED_COLLECTION_NAMES = [
-  'sessions', 'rlflx', 'activities',
+  'sessions', 'rlflx', 'activities', 'attachmentFiles.files', 'attachmentFiles.chunks',
 ];
 
 const G2GDataTransfer = (): JSX.Element => {
@@ -98,14 +98,14 @@ const G2GDataTransfer = (): JSX.Element => {
     try {
       await customAxios.post('/_api/v3/g2g-transfer/transfer', {
         transferKey: startTransferKey,
-        collections,
+        collections: selectedCollections,
         optionsMap,
       });
     }
     catch (errs) {
       toastError('Failed to transfer');
     }
-  }, [startTransferKey, collections, optionsMap]);
+  }, [startTransferKey, selectedCollections, optionsMap]);
 
   useEffect(() => {
     setCollectionsAndSelectedCollections();
