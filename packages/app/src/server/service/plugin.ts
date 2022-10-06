@@ -106,10 +106,24 @@ export class PluginService {
     return [];
   }
 
+  sleep(waitMsec) {
+    const startMsec = new Date();
+
+    // 指定ミリ秒間だけループさせる（CPUは常にビジー状態）
+    while (new Date() - startMsec < waitMsec);
+  }
+
   async downloadZipFile(ghUrl: string, filePath:string): Promise<void> {
+
+    console.log(`rm ${filePath}master.zip`);
+
     const stdout1 = execSync(`wget ${ghUrl} -O ${filePath}master.zip`);
+    console.log(`wget ${ghUrl} -O ${filePath}master.zip`);
+    console.log(`unzip ${filePath}master.zip -d ${filePath}`);
+    this.sleep(5000);
     const stdout2 = execSync(`unzip ${filePath}master.zip -d ${filePath}`);
-    const stdout3 = execSync(`unzip ${filePath}master.zip -d ${filePath}`);
+    console.log(`unzip ${filePath}master.zip -d ${filePath}`);
+    const stdout3 = execSync(`rm ${filePath}master.zip`);
 
     // try {
     //   const zipFile = await this.getFile('master.zip');
