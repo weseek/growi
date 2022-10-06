@@ -33,10 +33,9 @@ export class PluginService {
   async install(crowi: Crowi, origin: GrowiPluginOrigin): Promise<void> {
     // download
     const ghUrl = origin.url;
-    const ghBranch = origin.url;
     const downloadDir = path.join(process.cwd(), 'tmp/plugins/');
     try {
-      await this.downloadZipFile(`${ghUrl}/archive/refs/heads/${ghBranch}.zip`, downloadDir, ghBranch);
+      await this.downloadZipFile(`${ghUrl}/archive/refs/heads/master.zip`, downloadDir);
     }
     catch (err) {
       console.log('downloadZipFile error', err);
@@ -98,11 +97,11 @@ export class PluginService {
     return [];
   }
 
-  async downloadZipFile(ghUrl: string, filePath:string, ghBranch: string): Promise<void> {
+  async downloadZipFile(ghUrl: string, filePath:string): Promise<void> {
 
-    const stdout1 = execSync(`wget ${ghUrl} -O ${filePath}${ghBranch}.zip`);
-    const stdout2 = execSync(`unzip ${filePath}${ghBranch}.zip -d ${filePath}`);
-    const stdout3 = execSync(`rm ${filePath}${ghBranch}.zip`);
+    const stdout1 = execSync(`wget ${ghUrl} -O ${filePath}master.zip`);
+    const stdout2 = execSync(`unzip ${filePath}master.zip -d ${filePath}`);
+    const stdout3 = execSync(`rm ${filePath}master.zip`);
 
     return;
   }

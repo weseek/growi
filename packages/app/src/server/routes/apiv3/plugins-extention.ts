@@ -4,7 +4,6 @@ import Crowi from '../../crowi';
 
 import { ApiV3Response } from './interfaces/apiv3-response';
 
-
 type PluginInstallerFormRequest = Request & { form: any };
 
 module.exports = (crowi: Crowi) => {
