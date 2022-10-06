@@ -4,8 +4,10 @@ import { useTranslation } from 'react-i18next';
 import * as toastr from 'toastr';
 
 import { useGenerateTransferKeyWithThrottle } from '~/client/services/g2g-transfer';
+import { toastError } from '~/client/util/apiNotification';
 import { apiv3Get } from '~/client/util/apiv3-client';
 import { useAdminSocket } from '~/stores/socket-io';
+import customAxios from '~/utils/axios';
 
 
 import CustomCopyToClipBoard from '../Common/CustomCopyToClipBoard';
@@ -90,13 +92,20 @@ const G2GDataTransfer = (): JSX.Element => {
     generateTransferKeyWithThrottle();
   }, [generateTransferKeyWithThrottle]);
 
-  const startTransfer = (e) => {
+  const startTransfer = useCallback(async(e) => {
     e.preventDefault();
 
-    // console.log(startTransferKey);
-    // console.log(selectedCollections);
-    // console.log(optionsMap);
-  };
+    try {
+      await customAxios.post('/_api/v3/g2g-transfer/transfer', {
+        transferKey: startTransferKey,
+        collections,
+        optionsMap,
+      });
+    }
+    catch (errs) {
+      toastError('Failed to transfer');
+    }
+  }, [startTransferKey, collections, optionsMap]);
 
   useEffect(() => {
     setCollectionsAndSelectedCollections();
