@@ -7,6 +7,7 @@ import FormData from 'form-data';
 import { Types as MongooseTypes } from 'mongoose';
 
 import TransferKeyModel from '~/server/models/transfer-key';
+import { createBatchStream } from '~/server/util/batch-stream';
 import axios from '~/utils/axios';
 import loggerFactory from '~/utils/logger';
 import { TransferKey } from '~/utils/vo/transfer-key';
@@ -38,9 +39,10 @@ interface Pusher {
    */
   canTransfer(fromGROWIInfo: IDataGROWIInfo): Promise<boolean>
   /**
-   * TODO
+   * Transfer all Attachment data to destination GROWI
+   * @param {TransferKey} tk Transfer key
    */
-  transferAttachments(): Promise<void>
+  transferAttachments(tk: TransferKey): Promise<void>
   /**
    * Start transfer data between GROWIs
    * @param {TransferKey} tk TransferKey object
@@ -112,53 +114,59 @@ export class G2GTransferPusherService implements Pusher {
   }
 
   public async transferAttachments(tk: TransferKey): Promise<void> {
+    const BATCH_SIZE = 100;
+
     const { appUrl, key } = tk;
     const { fileUploadService } = this.crowi;
     const Attachment = this.crowi.model('Attachment');
 
-    // TODO: batch get
-    const attachments = await Attachment.find();
-    for await (const attachment of attachments) {
-      logger.debug(`processing attachment: ${attachment}`);
-      let fileStream;
-      try {
-        // get read stream of each attachment
-        fileStream = await fileUploadService.findDeliveryFile(attachment);
-      }
-      catch (err) {
-        logger.warn(`Error occured when getting Attachment(ID=${attachment.id}), skipping: `, err);
-        continue;
-      }
-      // TODO: get attachmentLists from destination GROWI to avoid transferring files that the dest GROWI has
-      // TODO: refresh transfer key per 1 hour
-      // post each attachment file data to receiver
-      try {
-        // Use FormData to immitate browser's form data object
-        const form = new FormData();
+    // batch get
+    const attachmentsCursor = await Attachment.find().cursor();
+    const batchStream = createBatchStream(BATCH_SIZE);
 
-        form.append('content', fileStream, attachment.fileName);
-        form.append('attachmentMetadata', JSON.stringify(attachment));
-        await rawAxios.post('/_api/v3/g2g-transfer/attachment', form, {
-          baseURL: appUrl.origin,
-          headers: {
-            ...form.getHeaders(), // This generates a unique boundary for multi part form data
-            [X_GROWI_TRANSFER_KEY_HEADER_NAME]: key,
-          },
-        });
-      }
-      catch (errs) {
-        logger.error(`Error occured when uploading attachment(ID=${attachment.id})`, errs);
-        if (!Array.isArray(errs)) {
+    for await (const attachmentBatch of attachmentsCursor.pipe(batchStream)) {
+      for await (const attachment of attachmentBatch) {
+        logger.debug(`processing attachment: ${attachment}`);
+        let fileStream;
+        try {
+          // get read stream of each attachment
+          fileStream = await fileUploadService.findDeliveryFile(attachment);
+        }
+        catch (err) {
+          logger.warn(`Error occured when getting Attachment(ID=${attachment.id}), skipping: `, err);
+          continue;
+        }
+        // TODO: get attachmentLists from destination GROWI to avoid transferring files that the dest GROWI has
+        // TODO: refresh transfer key per 1 hour
+        // post each attachment file data to receiver
+        try {
+          // Use FormData to immitate browser's form data object
+          const form = new FormData();
+
+          form.append('content', fileStream, attachment.fileName);
+          form.append('attachmentMetadata', JSON.stringify(attachment));
+          await rawAxios.post('/_api/v3/g2g-transfer/attachment', form, {
+            baseURL: appUrl.origin,
+            headers: {
+              ...form.getHeaders(), // This generates a unique boundary for multi part form data
+              [X_GROWI_TRANSFER_KEY_HEADER_NAME]: key,
+            },
+          });
+        }
+        catch (errs) {
+          logger.error(`Error occured when uploading attachment(ID=${attachment.id})`, errs);
+          if (!Array.isArray(errs)) {
+            // TODO: socker.emit(failed_to_transfer);
+            return;
+          }
+
+          const err = errs[0];
+          logger.error(err);
+
+
           // TODO: socker.emit(failed_to_transfer);
           return;
         }
-
-        const err = errs[0];
-        logger.error(err);
-
-
-        // TODO: socker.emit(failed_to_transfer);
-        return;
       }
     }
   }
