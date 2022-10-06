@@ -27,9 +27,8 @@ const G2GDataTransfer = (): JSX.Element => {
   const [selectedCollections, setSelectedCollections] = useState<Set<string>>(new Set());
   const [optionsMap, setOptionsMap] = useState<any>({});
   const [isShowExportForm, setShowExportForm] = useState(false);
-  const [isExporting, setExporting] = useState(false);
-  // TODO: データのエクスポートが完了したことが分かるようにする
-  const [isExported, setExported] = useState(false);
+  const [isTransferring, setTransferring] = useState(false);
+  const [statusMessage, setStatusMessage] = useState('');
 
   const updateSelectedCollections = (newSelectedCollections: Set<string>) => {
     setSelectedCollections(newSelectedCollections);
@@ -56,35 +55,25 @@ const G2GDataTransfer = (): JSX.Element => {
 
     setCollections(filteredCollections);
     setSelectedCollections(new Set(filteredCollections));
-    setExporting(statusData.status.isExporting);
   }, []);
 
   const setupWebsocketEventHandler = useCallback(() => {
     if (socket != null) {
-      // websocket event
-      socket.on('admin:onProgressForExport', ({ currentCount, totalCount, progressList }) => {
-        setExporting(true);
+      socket.on('admin:onStartTransferMongoData', () => {
+        setTransferring(true);
+        setStatusMessage(t('Transferring DB data ...'));
       });
 
-      // websocket event
-      socket.on('admin:onTerminateForExport', ({ addedZipFileStat }) => {
+      socket.on('admin:onStartTransferAttachments', () => {
+        setStatusMessage(t('Transferring attachment files ...'));
+      });
 
-        setExporting(false);
-        setExported(true);
-
-        // TODO: toastSuccess, toastError
-        toastr.success(undefined, `New Archive Data '${addedZipFileStat.fileName}' is added`, {
-          closeButton: true,
-          progressBar: true,
-          newestOnTop: false,
-          showDuration: '100',
-          hideDuration: '100',
-          timeOut: '1200',
-          extendedTimeOut: '150',
-        });
+      socket.on('admin:onFinishTransfer', () => {
+        setTransferring(false);
+        setStatusMessage(t('Successfully transferred GROWI. Now you can use new GROWI !'));
       });
     }
-  }, [socket]);
+  }, [socket, t]);
 
   const { transferKey, generateTransferKeyWithThrottle } = useGenerateTransferKeyWithThrottle();
 
@@ -98,7 +87,7 @@ const G2GDataTransfer = (): JSX.Element => {
     try {
       await customAxios.post('/_api/v3/g2g-transfer/transfer', {
         transferKey: startTransferKey,
-        collections: selectedCollections,
+        collections: Array.from(selectedCollections),
         optionsMap,
       });
     }
@@ -117,7 +106,7 @@ const G2GDataTransfer = (): JSX.Element => {
     <div data-testid="admin-export-archive-data">
       <h2 className="border-bottom">{t('admin:g2g_data_transfer.transfer_data_to_another_growi')}</h2>
 
-      <button type="button" className="btn btn-outline-secondary mt-4" disabled={isExporting} onClick={() => setShowExportForm(!isShowExportForm)}>
+      <button type="button" className="btn btn-outline-secondary mt-4" disabled={isTransferring} onClick={() => setShowExportForm(!isShowExportForm)}>
         {t('admin:g2g_data_transfer.advanced_options')}
       </button>
 
@@ -149,6 +138,14 @@ const G2GDataTransfer = (): JSX.Element => {
           </div>
         </div>
       </form>
+
+
+      {statusMessage != null && <p>{statusMessage}</p>}
+      {isTransferring && (
+        <div className="text-muted text-center">
+          <i className="fa fa-2x fa-spinner fa-pulse mr-1"></i>
+        </div>
+      )}
 
       <h2 className="border-bottom mt-5">{t('admin:g2g_data_transfer.transfer_data_to_this_growi')}</h2>
 

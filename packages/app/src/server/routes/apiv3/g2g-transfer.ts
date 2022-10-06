@@ -204,6 +204,12 @@ module.exports = (crowi: Crowi): Router => {
         if (collectionName === 'pages' && options.mode === 'insert') {
           throw Error('`insert` is not available as an import setting for pages collection');
         }
+        if (collectionName === 'attachmentFiles.chunks') {
+          throw Error('`attachmentFiles.chunks` must not be transferred. Please omit it from request body `collections`.');
+        }
+        if (collectionName === 'attachmentFiles.files') {
+          throw Error('`attachmentFiles.files` must not be transferred. Please omit it from request body `collections`.');
+        }
 
         const importSettings = importService.generateImportSettings(options.mode);
 
@@ -224,27 +230,20 @@ module.exports = (crowi: Crowi): Router => {
      * import
      */
     try {
-      importService.import(collections, importSettingsMap);
+      await importService.import(collections, importSettingsMap);
+      await crowi?.setUpFileUpload(true);
+      await crowi?.appService?.setupAfterInstall();
     }
     catch (err) {
       logger.error(err);
-      return;
+      return res.apiv3Err(new ErrorV3('Failed to import.', 'failed_to_import'), 500);
     }
-
-    // try {
-    //   await g2gTransferReceiverService.receive(file.stream);
-    // }
-    // catch (err) {
-    //   logger.error(err);
-    //   return res.apiv3Err(new ErrorV3('Error occurred while importing transfer data.', 'failed_to_receive'));
-    // }
 
     return res.apiv3({ message: 'Successfully started to receive transfer data.' });
   });
 
-  // TODO: verify transfer key
   // This endpoint uses multer's MemoryStorage since the received data should be persisted directly on attachment storage.
-  receiveRouter.post('/attachment', uploadsForAttachment.single('content'), /* verifyAndExtractTransferKey, */
+  receiveRouter.post('/attachment', uploadsForAttachment.single('content'), verifyAndExtractTransferKey,
     async(req: Request & { transferKey: TransferKey }, res: ApiV3Response) => {
       const { file } = req;
       const { attachmentMetadata } = req.body;
@@ -346,7 +345,7 @@ module.exports = (crowi: Crowi): Router => {
 
     // Start transfer
     try {
-      await g2gTransferPusherService.startTransfer(tk, req.user, collections, optionsMap);
+      await g2gTransferPusherService.startTransfer(tk, req.user, toGROWIInfo, collections, optionsMap);
     }
     catch (err) {
       logger.error(err);

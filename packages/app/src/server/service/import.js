@@ -212,6 +212,8 @@ class ImportService {
 
     this.currentProgressingStatus = null;
     this.emitTerminateEvent();
+
+    await this.crowi.configManager.loadConfigs();
   }
 
   /**

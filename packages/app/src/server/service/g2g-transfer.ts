@@ -24,7 +24,12 @@ export const X_GROWI_TRANSFER_KEY_HEADER_NAME = 'x-growi-transfer-key';
 export type IDataGROWIInfo = {
   version: string
   userUpperLimit: number | null // Handle null as Infinity
-  attachmentInfo: any
+  attachmentInfo: {
+    type: string,
+    bucket?: string,
+    customEndpoint?: string, // for S3
+    uploadNamespace?: string, // for GCS
+  };
 }
 
 interface Pusher {
@@ -49,7 +54,7 @@ interface Pusher {
    * @param {string[]} collections Collection name string array
    * @param {any} optionsMap Options map
    */
-  startTransfer(tk: TransferKey, user: any, collections: string[], optionsMap: any): Promise<void>
+  startTransfer(tk: TransferKey, user: any, toGROWIInfo: IDataGROWIInfo, collections: string[], optionsMap: any): Promise<void>
 }
 
 interface Receiver {
@@ -89,6 +94,7 @@ const generateAxiosRequestConfigWithTransferKey = (tk: TransferKey, additionalHe
       ...additionalHeaders,
       [X_GROWI_TRANSFER_KEY_HEADER_NAME]: key,
     },
+    maxBodyLength: Infinity,
   };
 };
 
@@ -168,7 +174,6 @@ export class G2GTransferPusherService implements Pusher {
   public async transferAttachments(tk: TransferKey): Promise<void> {
     const BATCH_SIZE = 100;
 
-    const { appUrl, key } = tk;
     const { fileUploadService } = this.crowi;
     const Attachment = this.crowi.model('Attachment');
 
@@ -192,7 +197,7 @@ export class G2GTransferPusherService implements Pusher {
         // TODO: refresh transfer key per 1 hour
         // post each attachment file data to receiver
         try {
-          this.doTransferAttachment(tk, attachment, fileStream);
+          await this.doTransferAttachment(tk, attachment, fileStream);
         }
         catch (errs) {
           logger.error(`Error occured when uploading attachment(ID=${attachment.id})`, errs);
@@ -212,8 +217,37 @@ export class G2GTransferPusherService implements Pusher {
     }
   }
 
-  public async startTransfer(tk: TransferKey, user: any, collections: string[], optionsMap: any): Promise<void> {
-    const { appUrl, key } = tk;
+  // eslint-disable-next-line max-len
+  public async startTransfer(tk: TransferKey, user: any, toGROWIInfo: IDataGROWIInfo, collections: string[], optionsMap: any, shouldEmit = true): Promise<void> {
+    const socket = this.crowi.socketIoService.getDefaultSocket();
+
+    if (shouldEmit) socket.emit('admin:onStartTransferMongoData', {});
+
+    if (toGROWIInfo.attachmentInfo.type === 'none') {
+      try {
+        const targetConfigKeys = [
+          'app:fileUploadType',
+          'app:useOnlyEnvVarForFileUploadType',
+          'aws:referenceFileWithRelayMode',
+          'aws:lifetimeSecForTemporaryUrl',
+          'gcs:apiKeyJsonPath',
+          'gcs:bucket',
+          'gcs:uploadNamespace',
+          'gcs:referenceFileWithRelayMode',
+          'gcs:useOnlyEnvVarsForSomeOptions',
+        ];
+
+        const updateConfigs = Object.fromEntries(targetConfigKeys.map((key) => {
+          return [key, this.crowi.configManager.getConfig('crowi', key)];
+        }));
+
+        await this.crowi.configManager.updateConfigsInTheSameNamespace('crowi', updateConfigs);
+      }
+      catch (err) {
+        logger.error(err);
+        throw err;
+      }
+    }
 
     let zipFileStream: ReadStream;
     try {
@@ -244,7 +278,7 @@ export class G2GTransferPusherService implements Pusher {
       logger.error(errs);
       if (!Array.isArray(errs)) {
         // TODO: socker.emit(failed_to_transfer);
-        return;
+        throw errs;
       }
 
       const err = errs[0];
@@ -252,8 +286,22 @@ export class G2GTransferPusherService implements Pusher {
 
 
       // TODO: socker.emit(failed_to_transfer);
-      return;
+      throw errs;
     }
+
+    if (shouldEmit) socket.emit('admin:onStartTransferAttachments', {});
+
+    try {
+      await this.transferAttachments(tk);
+    }
+    catch (err) {
+      logger.error(err);
+      throw err;
+    }
+
+    if (shouldEmit) socket.emit('admin:onFinishTransfer', {});
+
+    return;
   }
 
   /**
