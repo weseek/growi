@@ -1146,7 +1146,7 @@ class CodeMirrorEditor extends AbstractEditor {
         <TemplateModal
           isOpen={this.state.isTemplateModalOpened}
           onClose={() => this.setState({ isTemplateModalOpened: false })}
-          onSave={(templateText) => { }}
+          onSubmit={templateText => this.setValue(templateText) }
         />
         {/* <HandsontableModal
           ref={this.handsontableModal}

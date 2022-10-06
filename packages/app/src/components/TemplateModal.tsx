@@ -87,28 +87,27 @@ const TemplateRadioButton = ({ template, onChange, isSelected }: TemplateRadioBu
 type Props = {
   isOpen: boolean,
   onClose: () => void,
-  onSave?: (markdown: string) => void,
+  onSubmit?: (markdown: string) => void,
 }
 
 export const TemplateModal = (props: Props): JSX.Element => {
   const { t } = useTranslation();
 
-  const { isOpen, onClose, onSave } = props;
+  const { isOpen, onClose, onSubmit } = props;
 
   const { data: rendererOptions } = usePreviewOptions();
 
   const [selectedTemplate, setSelectedTemplate] = useState<ITemplate>();
 
-  const submitHandler = useCallback(() => {
-    if (onSave == null) {
+  const submitHandler = useCallback((template?: ITemplate) => {
+    if (onSubmit == null || template == null) {
       onClose();
       return;
     }
 
-    const markdown = '(select one)';
-    onSave(markdown);
+    onSubmit(template.markdown);
     onClose();
-  }, [onClose, onSave]);
+  }, [onClose, onSubmit]);
 
   return (
     <Modal className="link-edit-modal" isOpen={isOpen} toggle={onClose} size="lg" autoFocus={false}>
@@ -147,8 +146,8 @@ export const TemplateModal = (props: Props): JSX.Element => {
         <button type="button" className="btn btn-sm btn-outline-secondary mx-1" onClick={onClose}>
           {t('Cancel')}
         </button>
-        <button type="submit" className="btn btn-sm btn-primary mx-1" onClick={submitHandler}>
-          {t('Done')}
+        <button type="submit" className="btn btn-sm btn-primary mx-1" onClick={() => submitHandler(selectedTemplate)} disabled={selectedTemplate == null}>
+          {t('Update')}
         </button>
       </ModalFooter>
     </Modal>
