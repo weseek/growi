@@ -63,6 +63,7 @@ interface Receiver {
    */
   answerGROWIInfo(): Promise<IDataGROWIInfo>
   /**
+   * DO NOT USE TransferKeyModel.create() directly, instead, use this method to create a TransferKey document.
    * This method receives appSiteUrl to create a TransferKey document and returns generated transfer key string.
    * UUID is the same value as the created document's _id.
    * @param {URL} appSiteUrl URL type appSiteUrl
@@ -91,11 +92,7 @@ export class G2GTransferPusherService implements Pusher {
     let toGROWIInfo: IDataGROWIInfo;
     try {
       const res = await axios.get('/_api/v3/g2g-transfer/growi-info', this.generateAxiosRequestConfig(tk));
-      toGROWIInfo = {
-        userUpperLimit: res.data.userUpperLimit,
-        version: res.data.version,
-        attachmentInfo: res.data.attachmentInfo,
-      };
+      toGROWIInfo = res.data.growiInfo;
     }
     catch (err) {
       logger.error(err);
@@ -106,9 +103,19 @@ export class G2GTransferPusherService implements Pusher {
   }
 
   public async canTransfer(toGROWIInfo: IDataGROWIInfo): Promise<boolean> {
-    // Compare GROWIInfos
+    const configManager = this.crowi.configManager;
+    const userUpperLimit = configManager.getConfig('crowi', 'security:userUpperLimit');
+    const version = this.crowi.version;
 
-    return false;
+    if (version !== toGROWIInfo.version) {
+      return false;
+    }
+
+    if ((userUpperLimit ?? Infinity) < (toGROWIInfo.userUpperLimit ?? 0)) {
+      return false;
+    }
+
+    return true;
   }
 
   public async transferAttachments(tk: TransferKey): Promise<void> {
@@ -285,14 +292,14 @@ export class G2GTransferReceiverService implements Receiver {
     // Save TransferKey document
     let tkd;
     try {
-      tkd = await TransferKeyModel.create({ _id: uuid, value: transferKeyString });
+      tkd = await TransferKeyModel.create({ _id: uuid, keyString: transferKeyString, key: uuid });
     }
     catch (err) {
       logger.error(err);
       throw err;
     }
 
-    return tkd.value;
+    return tkd.keyString;
   }
 
   public async receive(zipfile: Readable): Promise<void> {
