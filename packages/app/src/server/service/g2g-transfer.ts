@@ -151,6 +151,8 @@ export class G2GTransferPusherService implements Pusher {
             ...form.getHeaders(), // This generates a unique boundary for multi part form data
             [X_GROWI_TRANSFER_KEY_HEADER_NAME]: key,
           },
+          maxContentLength: Infinity,
+          maxBodyLength: Infinity,
         });
       }
       catch (errs) {
@@ -202,6 +204,8 @@ export class G2GTransferPusherService implements Pusher {
           ...form.getHeaders(), // This generates a unique boundary for multi part form data
           [X_GROWI_TRANSFER_KEY_HEADER_NAME]: key,
         },
+        maxContentLength: Infinity,
+        maxBodyLength: Infinity,
       });
     }
     catch (errs) {
