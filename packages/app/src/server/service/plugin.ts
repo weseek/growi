@@ -3,7 +3,6 @@ import { execSync } from 'child_process';
 import fs from 'fs';
 import path from 'path';
 
-import wget from 'node-wget-js';
 import streamToPromise from 'stream-to-promise';
 import unzipper from 'unzipper';
 
