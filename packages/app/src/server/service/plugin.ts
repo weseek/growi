@@ -1,8 +1,10 @@
-
 import { execSync } from 'child_process';
+import fs from 'fs';
 import path from 'path';
 
-import { GrowiPlugin, GrowiPluginOrigin } from '~/interfaces/plugin';
+import mongoose from 'mongoose';
+
+import { GrowiPlugin, GrowiPluginMeta, GrowiPluginOrigin } from '~/interfaces/plugin';
 import loggerFactory from '~/utils/logger';
 import { resolveFromRoot } from '~/utils/project-dir-utils';
 
@@ -42,8 +44,32 @@ export class PluginService {
     }
 
     // TODO: detect plugins
-    // TODO: save documents
+    // save plugin metadata
+    const ghRepositoryName = ghUrl.split('/').slice(-1)[0];
+    const installedPath = path.join(downloadDir, `${ghRepositoryName}-master`, 'meta.json');
+    await this.savePluginMetaData(installedPath);
+
     return;
+  }
+
+  async savePluginMetaData(installedPath: string): Promise<void> {
+    const metaData = this.getPluginMetaData(installedPath);
+    const GrowiPlugin = mongoose.model('GrowiPlugin');
+
+    await GrowiPlugin.insertMany({
+      isEnabled: true,
+      installedPath,
+      meta: {
+        name: metaData.name,
+        types: metaData.types,
+        author: metaData.author,
+      },
+    });
+  }
+
+  private getPluginMetaData(installedPath: string): GrowiPluginMeta {
+    const metaDataJSON = JSON.parse(fs.readFileSync(installedPath, 'utf-8'));
+    return metaDataJSON;
   }
 
   // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
