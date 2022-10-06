@@ -234,7 +234,7 @@ export class G2GTransferPusherService implements Pusher {
     form.append('content', fileStream, attachment.fileName);
     form.append('attachmentMetadata', JSON.stringify(attachment));
     await rawAxios.post('/_api/v3/g2g-transfer/attachment', form, {
-      baseURL: appUrl.origin,
+      baseURL: tk.appUrl.origin,
       headers: {
         ...form.getHeaders(), // This generates a unique boundary for multi part form data
         [X_GROWI_TRANSFER_KEY_HEADER_NAME]: key,
