@@ -23,15 +23,14 @@ export const PluginCard = (props: Props) => {
   } = props;
   const [isEnabled, setIsEnabled] = useState(true);
 
-
-  // const updateCheckboxHandler = (event: { target: { checked: boolean }; }) => {
-  //   if (isEnabled === true) {
-  //     setIsEnabled(true);
-  //   }
-  //   else {
-  //     setI
-  //   }
-  // };
+  const updateCheckboxHandler = (event: { target: { checked: boolean }; }) => {
+    if (isEnabled === true) {
+      setIsEnabled(true);
+    }
+    else {
+      setIsEnabled(false);
+    }
+  };
 
   return (
     <div className="card shadow border-0" key={'1'}>
@@ -49,7 +48,7 @@ export const PluginCard = (props: Props) => {
                 type="checkbox"
                 className="custom-control-input border-0"
                 checked={isEnabled}
-                // onChange={updateCheckboxHandler}
+                onChange={updateCheckboxHandler}
               />
               <label className="custom-control-label align-center"></label>
             </div>
