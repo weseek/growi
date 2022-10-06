@@ -107,7 +107,7 @@ const AdminMarkdownSettingsPage: NextPage<Props> = (props: Props) => {
         nodeVersion={props.nodeVersion}
         npmVersion={props.npmVersion}
         yarnVersion={props.yarnVersion}
-        installedPlugins={props.installedPlugins}
+        // installedPlugins={props.installedPlugins}
       />,
     },
     app: {
@@ -284,7 +284,7 @@ async function injectServerConfigurations(context: GetServerSidePropsContext, pr
   props.nodeVersion = crowi.runtimeVersions.versions.node ? crowi.runtimeVersions.versions.node.version.version : null;
   props.npmVersion = crowi.runtimeVersions.versions.npm ? crowi.runtimeVersions.versions.npm.version.version : null;
   props.yarnVersion = crowi.runtimeVersions.versions.yarn ? crowi.runtimeVersions.versions.yarn.version.version : null;
-  props.installedPlugins = crowi.pluginService.listPlugins();
+  // props.installedPlugins = crowi.pluginService.listPlugins();
   props.envVars = await ConfigLoader.getEnvVarsForDisplay(true);
   props.isAclEnabled = aclService.isAclEnabled();
 

@@ -66,7 +66,7 @@ export default class AdminHomeContainer extends Container {
         nodeVersion: adminHomeParams.nodeVersion,
         npmVersion: adminHomeParams.npmVersion,
         yarnVersion: adminHomeParams.yarnVersion,
-        installedPlugins: adminHomeParams.installedPlugins,
+        // installedPlugins: adminHomeParams.installedPlugins,
         envVars: adminHomeParams.envVars,
         isV5Compatible: adminHomeParams.isV5Compatible,
         isMaintenanceMode: adminHomeParams.isMaintenanceMode,

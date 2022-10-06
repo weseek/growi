@@ -14,6 +14,7 @@ import InterceptorManager from '~/services/interceptor-manager';
 import { useDrawioModal } from '~/stores/modal';
 import loggerFactory from '~/utils/logger';
 
+import TemplateModal from '../TemplateModal';
 import { UncontrolledCodeMirror } from '../UncontrolledCodeMirror';
 
 import AbstractEditor from './AbstractEditor';
@@ -115,6 +116,7 @@ class CodeMirrorEditor extends AbstractEditor {
     this.cm = React.createRef();
     this.gridEditModal = React.createRef();
     this.linkEditModal = React.createRef();
+    this.templateModal = React.createRef();
     this.handsontableModal = React.createRef();
     this.drawioModal = React.createRef();
 
@@ -158,6 +160,8 @@ class CodeMirrorEditor extends AbstractEditor {
 
     this.foldDrawioSection = this.foldDrawioSection.bind(this);
     this.onSaveForDrawio = this.onSaveForDrawio.bind(this);
+
+    this.showTemplateModal = this.showTemplateModal.bind(this);
 
   }
 
@@ -870,6 +874,9 @@ class CodeMirrorEditor extends AbstractEditor {
     // this.handsontableModal.current.show(mtu.getMarkdownTable(this.getCodeMirror()));
   }
 
+  showTemplateModal() {
+    this.templateModal.current.show(markdownLinkUtil.getMarkdownLink(this.getCodeMirror()));
+  }
 
   // fold draw.io section (::: drawio ~ :::)
   foldDrawioSection() {
@@ -1034,6 +1041,15 @@ class CodeMirrorEditor extends AbstractEditor {
       >
         <EditorIcon icon="Emoji" />
       </Button>,
+      <Button
+        key="nav-item-template"
+        color={null}
+        bssize="small"
+        title="Template"
+        onClick={() => this.showTemplateModal()}
+      >
+        <EditorIcon icon="Template" />
+      </Button>,
     ];
   }
 
@@ -1126,6 +1142,10 @@ class CodeMirrorEditor extends AbstractEditor {
         <LinkEditModal
           ref={this.linkEditModal}
           onSave={(linkText) => { return markdownLinkUtil.replaceFocusedMarkdownLinkWithEditor(this.getCodeMirror(), linkText) }}
+        />
+        <TemplateModal
+          ref={this.templateModal}
+          onSave={(templateText) => { return markdownLinkUtil.replaceFocusedMarkdownLinkWithEditor(this.getCodeMirror(), templateText) }}
         />
         {/* <HandsontableModal
           ref={this.handsontableModal}
