@@ -193,7 +193,7 @@ export class G2GTransferPusherService implements Pusher {
         // TODO: refresh transfer key per 1 hour
         // post each attachment file data to receiver
         try {
-          this.doTransferAttachment(tk, attachment, fileStream);
+          await this.doTransferAttachment(tk, attachment, fileStream);
         }
         catch (errs) {
           logger.error(`Error occured when uploading attachment(ID=${attachment.id})`, errs);
@@ -214,8 +214,6 @@ export class G2GTransferPusherService implements Pusher {
   }
 
   public async startTransfer(tk: TransferKey, user: any, collections: string[], optionsMap: any): Promise<void> {
-    const { appUrl, key } = tk;
-
     let zipFileStream: ReadStream;
     try {
       const shouldEmit = false;
@@ -255,6 +253,16 @@ export class G2GTransferPusherService implements Pusher {
       // TODO: socker.emit(failed_to_transfer);
       return;
     }
+
+    try {
+      await this.transferAttachments(tk);
+    }
+    catch (err) {
+      logger.error(err);
+      return;
+    }
+
+    return;
   }
 
   /**
