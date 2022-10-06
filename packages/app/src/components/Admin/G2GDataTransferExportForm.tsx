@@ -179,9 +179,7 @@ const G2GDataTransferExportForm = (props: Props): JSX.Element => {
     return <GroupImportItems groupList={collectionNames} groupName='Other' errors={[]} />;
   };
 
-  // TODO: モーダルを表示できるようにする
   const configurationModal = useMemo(() => {
-    console.log(isConfigurationModalOpen);
     if (collectionNameForConfiguration == null) {
       return <></>;
     }
@@ -189,7 +187,7 @@ const G2GDataTransferExportForm = (props: Props): JSX.Element => {
     return (
       <ImportCollectionConfigurationModal
         isOpen={isConfigurationModalOpen}
-        onClose={setConfigurationModalOpen(false)}
+        onClose={() => setConfigurationModalOpen(false)}
         onOptionChange={updateOption}
         collectionName={collectionNameForConfiguration}
         option={optionsMap[collectionNameForConfiguration]}
