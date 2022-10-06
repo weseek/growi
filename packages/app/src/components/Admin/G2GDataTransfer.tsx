@@ -106,7 +106,7 @@ const G2GDataTransfer = (): JSX.Element => {
     <div data-testid="admin-export-archive-data">
       <h2 className="border-bottom">{t('admin:g2g_data_transfer.transfer_data_to_another_growi')}</h2>
 
-      <button type="button" className="btn btn-outline-secondary mt-4" disabled={isExporting} onClick={() => setShowExportForm(!isShowExportForm)}>
+      <button type="button" className="btn btn-outline-secondary mt-4" disabled={isTransferring} onClick={() => setShowExportForm(!isShowExportForm)}>
         {t('admin:g2g_data_transfer.advanced_options')}
       </button>
 
