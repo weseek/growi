@@ -1,9 +1,9 @@
 
+import { execSync } from 'child_process';
 import fs from 'fs';
 import path from 'path';
 
 import mongoose from 'mongoose';
-import wget from 'node-wget-js';
 import streamToPromise from 'stream-to-promise';
 import unzipper from 'unzipper';
 
@@ -40,17 +40,17 @@ export class PluginService {
 
   async install(crowi: Crowi, origin: GrowiPluginOrigin): Promise<void> {
     // download
-    // const ghUrl = origin.url;
-    // const downloadDir = path.join(process.cwd(), 'tmp/plugins/');
-    // try {
-    //   await this.downloadZipFile(`${ghUrl}/archive/refs/heads/master.zip`, downloadDir);
-    // }
-    // catch (err) {
-    //   // TODO: error handling
-    // }
+    const ghUrl = origin.url;
+    const downloadDir = path.join(process.cwd(), 'tmp/plugins/');
+    try {
+      await this.downloadZipFile(`${ghUrl}/archive/refs/heads/master.zip`, downloadDir);
+    }
+    catch (err) {
+      // TODO: error handling
+    }
 
     // TODO: detect plugins
-    // TODO: save documents
+    // save plugin metadata
     const installedSamplePath = '/workspace/growi/packages/app/tmp/plugins/hogerepository/meta.json';
     await this.savePluginMetaData(installedSamplePath);
 
@@ -129,15 +129,33 @@ export class PluginService {
     return [];
   }
 
-  async downloadZipFile(ghUrl: string, filename:string): Promise<void> {
-    wget({ url: ghUrl, dest: filename });
-    try {
-      const zipFile = await this.getFile('master.zip');
-      await this.unzip(zipFile);
-    }
-    catch (err) {
-      // console.log('fail');
-    }
+  sleep(waitMsec) {
+    const startMsec = new Date();
+
+    while (new Date() - startMsec < waitMsec);
+  }
+
+  async downloadZipFile(ghUrl: string, filePath:string): Promise<void> {
+
+    console.log(`rm ${filePath}master.zip`);
+
+    const stdout1 = execSync(`wget ${ghUrl} -O ${filePath}master.zip`);
+    console.log(`wget ${ghUrl} -O ${filePath}master.zip`);
+    console.log(`unzip ${filePath}master.zip -d ${filePath}`);
+    this.sleep(5000);
+    const stdout2 = execSync(`unzip ${filePath}master.zip -d ${filePath}`);
+    console.log(`unzip ${filePath}master.zip -d ${filePath}`);
+    const stdout3 = execSync(`rm ${filePath}master.zip`);
+
+    // try {
+    //   const zipFile = await this.getFile('master.zip');
+
+    //   // await this.unzip('/workspace/growi/packages/app/tmp/plugins/master.zip');
+
+    // }
+    // catch (err) {
+    //   console.log(err);
+    // }
     return;
   }
 
@@ -149,7 +167,7 @@ export class PluginService {
    * @return {Array.<string>} array of absolute paths to extracted files
    */
   async unzip(zipFile) {
-    // const stream = fs.createReadStream(zipFile).pipe(unzipper.Extract({ path: '/workspace/growi/packages/app/tmp/plugins' }));
+    // const stream = fs.createReadStream(zipFile).pipe(unzipper.Extract({ path: '/workspace/growi/packages/app/tmp/plugins/master' }));
     // try {
     //   await streamToPromise(stream);
     // }
@@ -157,7 +175,7 @@ export class PluginService {
     //   console.log('err', err);
     // }
     const readStream = fs.createReadStream(zipFile);
-    const unzipStream = readStream.pipe(unzipper.parse());
+    const unzipStream = readStream.pipe(unzipper.Parse());
     const files: any = [];
 
 

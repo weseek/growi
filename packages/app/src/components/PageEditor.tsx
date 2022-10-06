@@ -26,6 +26,7 @@ import {
   EditorMode,
   useEditorMode, useIsMobile, useSelectedGrant,
 } from '~/stores/ui';
+import { registerGrowiFacade } from '~/utils/growi-facade';
 import loggerFactory from '~/utils/logger';
 
 
@@ -68,7 +69,7 @@ const PageEditor = React.memo((): JSX.Element => {
   const { data: isUploadableFile } = useIsUploadableFile();
   const { data: isUploadableImage } = useIsUploadableImage();
 
-  const { data: rendererOptions } = usePreviewOptions();
+  const { data: rendererOptions, mutate: mutateRendererOptions } = usePreviewOptions();
 
   const currentRevisionId = currentPage?.revision?._id;
   const initialValue = editingMarkdown ?? '';
@@ -81,6 +82,17 @@ const PageEditor = React.memo((): JSX.Element => {
 
   const editorRef = useRef<IEditorMethods>(null);
   const previewRef = useRef<HTMLDivElement>(null);
+
+  // register to facade
+  useEffect(() => {
+    registerGrowiFacade({
+      markdownRenderer: {
+        optionsMutators: {
+          previewOptionsMutator: mutateRendererOptions,
+        },
+      },
+    });
+  }, [mutateRendererOptions]);
 
   const setMarkdownWithDebounce = useMemo(() => debounce(100, throttle(150, (value: string, isClean: boolean) => {
     markdownToSave.current = value;
