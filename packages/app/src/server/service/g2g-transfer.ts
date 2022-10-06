@@ -92,11 +92,7 @@ export class G2GTransferPusherService implements Pusher {
     let toGROWIInfo: IDataGROWIInfo;
     try {
       const res = await axios.get('/_api/v3/g2g-transfer/growi-info', this.generateAxiosRequestConfig(tk));
-      toGROWIInfo = {
-        userUpperLimit: res.data.userUpperLimit,
-        version: res.data.version,
-        attachmentInfo: res.data.attachmentInfo,
-      };
+      toGROWIInfo = res.data.growiInfo;
     }
     catch (err) {
       logger.error(err);

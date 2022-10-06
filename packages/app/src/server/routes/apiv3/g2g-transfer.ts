@@ -197,7 +197,6 @@ module.exports = (crowi: Crowi): Router => {
         // instanciate GrowiArchiveImportOption
         const options = new GrowiArchiveImportOption(null, optionsMap[collectionName]);
 
-        let importSettings;
         // generate options
         if (collectionName === 'configs' && options.mode !== 'flushAndInsert') {
           throw Error('`flushAndInsert` is only available as an import setting for configs collection');
@@ -205,6 +204,8 @@ module.exports = (crowi: Crowi): Router => {
         if (collectionName === 'pages' && options.mode === 'insert') {
           throw Error('`insert` is not available as an import setting for pages collection');
         }
+
+        const importSettings = importService.generateImportSettings(options.mode);
 
         importSettings.jsonFileName = fileName;
 
