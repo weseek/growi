@@ -2,7 +2,6 @@ import {
   Schema, Model, Document,
 } from 'mongoose';
 
-
 import {
   GrowiPlugin, GrowiPluginMeta, GrowiPluginOrigin, GrowiPluginResourceType,
 } from '~/interfaces/plugin';

@@ -61,15 +61,15 @@ export class PluginService {
     const metaData = this.getPluginMetaData(installedPath);
     const GrowiPlugin = mongoose.model('GrowiPlugin');
 
-    // await GrowiPlugin.insertMany({
-    //   isEnabled: true,
-    //   installedPath,
-    //   meta: {
-    //     name: metaData.name,
-    //     types: metaData.types,
-    //     author: metaData.author,
-    //   },
-    // });
+    await GrowiPlugin.insertMany({
+      isEnabled: true,
+      installedPath,
+      meta: {
+        name: metaData.name,
+        types: metaData.types,
+        author: metaData.author,
+      },
+    });
   }
 
   private getPluginMetaData(installedPath: string): GrowiPluginMeta {
