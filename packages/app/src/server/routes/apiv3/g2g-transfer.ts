@@ -225,6 +225,7 @@ module.exports = (crowi: Crowi): Router => {
      */
     try {
       await importService.import(collections, importSettingsMap);
+      await crowi?.setUpFileUpload(true);
     }
     catch (err) {
       logger.error(err);

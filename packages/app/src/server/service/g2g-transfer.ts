@@ -237,7 +237,7 @@ export class G2GTransferPusherService implements Pusher {
           return [key, this.crowi.configManager.getConfig('crowi', key)];
         }));
 
-        await this.crowi.configManager.updateConfigsInTheSameNamespace('crowi', updateConfigs);
+        await this.crowi.configManager.updateConfigsInTheSameNamespace('crowi', updateConfigs, true);
       }
       catch (err) {
         logger.error(err);
