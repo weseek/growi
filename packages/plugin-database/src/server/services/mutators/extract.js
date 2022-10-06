@@ -1,4 +1,5 @@
 import MarkdownTable from '../../../../../app/src/client/models/MarkdownTable';
+import { CalcMethod } from '../../../interfaces/calc';
 
 /*
   direction:string 'col' or 'row'
@@ -17,7 +18,7 @@ export const extract = (mdTableText, direction, index, operation, keyword) => {
   }
 
   let colFilter;
-  const colFilterWrapper = (row, compare) => row.some(col => col.includes('$$calc')) || compare;
+  const colFilterWrapper = (row, compare) => row.some(col => col.includes(CalcMethod.SUM)) || compare;
   const colEqualFilter = row => colFilterWrapper(row, row[arrIndex] === keyword);
   const colLtFilter = row => colFilterWrapper(row, row[arrIndex] < keyword);
   const colLeFilter = row => colFilterWrapper(row, row[arrIndex] <= keyword);
@@ -34,7 +35,7 @@ export const extract = (mdTableText, direction, index, operation, keyword) => {
   }
 
   let rowFilter;
-  const rowFilterWrapper = (item, compare) => item.includes('$$calc') || compare;
+  const rowFilterWrapper = (item, compare) => item.includes(CalcMethod.SUM) || compare;
   const rowEqualFilter = item => rowFilterWrapper(item, item === keyword);
   const rowLtFilter = item => rowFilterWrapper(item, item < keyword);
   const rowLeFilter = item => rowFilterWrapper(item, item <= keyword);
