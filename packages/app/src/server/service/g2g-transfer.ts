@@ -243,7 +243,7 @@ export class G2GTransferReceiverService implements Receiver {
     // Save TransferKey document
     let tkd;
     try {
-      tkd = await TransferKeyModel.create({ _id: uuid, keyString: transferKeyString });
+      tkd = await TransferKeyModel.create({ _id: uuid, keyString: transferKeyString, key: uuid });
     }
     catch (err) {
       logger.error(err);

@@ -1,7 +1,6 @@
 import { Model, Schema, HydratedDocument } from 'mongoose';
 
 import { ITransferKey } from '~/interfaces/transfer-key';
-import { TransferKey } from '~/utils/vo/transfer-key';
 
 import loggerFactory from '../../utils/logger';
 import { getOrCreateModel } from '../util/mongoose-utils';
@@ -17,16 +16,12 @@ type TransferKeyModel = Model<ITransferKey, any, ITransferKeyMethods>;
 const schema = new Schema<ITransferKey, TransferKeyModel, ITransferKeyMethods>({
   expireAt: { type: Date, default: () => new Date(), expires: '30m' },
   keyString: { type: String, unique: true }, // original key string
+  key: { type: String, unique: true },
 }, {
   timestamps: {
     createdAt: true,
     updatedAt: false,
   },
-});
-
-// Virtuals
-schema.virtual('key').get(function() {
-  return TransferKey.parse(this.keyString).key;
 });
 
 schema.statics.findOneActiveTransferKey = async function(key: string): Promise<HydratedDocument<ITransferKey, ITransferKeyMethods> | null> {
