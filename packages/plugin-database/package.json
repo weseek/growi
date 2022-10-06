@@ -25,7 +25,9 @@
   "dependencies": {
     "@growi/core": "^6.0.0-RC.1",
     "@growi/remark-growi-plugin": "^6.0.0-RC.1",
-    "@growi/ui": "^6.0.0-RC.1"
+    "@growi/ui": "^6.0.0-RC.1",
+    "browser-bunyan": "^1.6.3",
+    "bunyan": "^1.8.15"
   },
   "devDependencies": {
     "eslint-plugin-regex": "^1.8.0",

@@ -1,4 +1,7 @@
-import { extract } from '../services/mutators/extract';
+import loggerFactory from '../../utils/logger';
+import { extract, ExtractOptionError } from '../services/mutators/extract';
+
+const logger = loggerFactory('growi-plugin:attachment-refs:routes:refs');
 
 module.exports = (crowi, app) => {
   const Page = crowi.model('Page');
@@ -45,10 +48,21 @@ module.exports = (crowi, app) => {
 
     // extract
     if (options.extract != null) {
-      const [
-        _matchedWhole, direction, index, operation, keyword,
-      ] = options.extract.match(/^(row|col)#(\d+)([<>]=?|==)(.*)$/);
-      body = extract(body, direction, index, operation, keyword);
+      try {
+        const [
+          _matchedWhole,
+          direction, index, operation, keyword,
+        ] = options.extract.match(/^(row|col)#(\d+)([<>]=?|==)(.*)$/);
+        logger.warn('_matchedWhole, direction, index, operation, keyword');
+        logger.warn(_matchedWhole, direction, index, operation, keyword);
+        body = extract(body, direction, index, operation, keyword);
+      }
+      catch (err) {
+        if (err instanceof ExtractOptionError) {
+          logger.warn(err);
+          return res.status(400).send(err);
+        }
+      }
     }
     res.status(200).send(body);
   };
