@@ -14,7 +14,7 @@ import InterceptorManager from '~/services/interceptor-manager';
 import { useDrawioModal } from '~/stores/modal';
 import loggerFactory from '~/utils/logger';
 
-import TemplateModal from '../TemplateModal';
+import { TemplateModal } from '../TemplateModal';
 import { UncontrolledCodeMirror } from '../UncontrolledCodeMirror';
 
 import AbstractEditor from './AbstractEditor';
