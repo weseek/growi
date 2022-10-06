@@ -195,7 +195,7 @@ export default class ImportCollectionItem extends React.Component {
 
   render() {
     const {
-      isSelected,
+      isSelected, isHideProgress,
     } = this.props;
 
     return (
@@ -211,7 +211,7 @@ export default class ImportCollectionItem extends React.Component {
             </span>
           </div>
         </div>
-        {isSelected && (
+        {isSelected && !isHideProgress && (
           <>
             {this.renderProgressBar()}
             <div className="card-body">{this.renderBody()}</div>
@@ -226,6 +226,7 @@ export default class ImportCollectionItem extends React.Component {
 ImportCollectionItem.propTypes = {
   collectionName: PropTypes.string.isRequired,
   isSelected: PropTypes.bool.isRequired,
+  isHideProgress: PropTypes.bool,
   option: PropTypes.instanceOf(GrowiArchiveImportOption).isRequired,
 
   isImporting: PropTypes.bool.isRequired,

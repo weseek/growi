@@ -1,4 +1,6 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, {
+  useState, useEffect, useCallback, useMemo,
+} from 'react';
 
 import { useTranslation } from 'next-i18next';
 
@@ -123,6 +125,8 @@ const G2GDataTransferExportForm = (props: Props): JSX.Element => {
                 onChange={toggleCheckbox}
                 onOptionChange={updateOption}
                 onConfigButtonClicked={openConfigurationModal}
+                // TODO: show progress
+                isHideProgress
               />
             </div>
           );
@@ -175,7 +179,9 @@ const G2GDataTransferExportForm = (props: Props): JSX.Element => {
     return <GroupImportItems groupList={collectionNames} groupName='Other' errors={[]} />;
   };
 
-  const ConfigurationModal = (): JSX.Element => {
+  // TODO: モーダルを表示できるようにする
+  const configurationModal = useMemo(() => {
+    console.log(isConfigurationModalOpen);
     if (collectionNameForConfiguration == null) {
       return <></>;
     }
@@ -189,7 +195,7 @@ const G2GDataTransferExportForm = (props: Props): JSX.Element => {
         option={optionsMap[collectionNameForConfiguration]}
       />
     );
-  };
+  }, [collectionNameForConfiguration, isConfigurationModalOpen]);
 
   const setInitialOptionsMap = () => {
     const initialOptionsMap = {};
@@ -290,7 +296,7 @@ const G2GDataTransferExportForm = (props: Props): JSX.Element => {
       <GroupImportItems groupList={GROUPS_CONFIG} groupName='Config' errors={[]} />
       <OtherImportItems />
 
-      <ConfigurationModal />
+      {configurationModal}
     </>
   );
 };
