@@ -1,6 +1,7 @@
 // allow only types to import from react
 import { ComponentType } from 'react';
 
+import { isClient } from '@growi/core';
 import { Lsx } from '@growi/plugin-lsx/components';
 import * as lsxGrowiPlugin from '@growi/plugin-lsx/services/renderer';
 import growiPlugin from '@growi/remark-growi-plugin';
@@ -25,6 +26,7 @@ import { CodeBlock } from '~/components/ReactMarkdownComponents/CodeBlock';
 import { Header } from '~/components/ReactMarkdownComponents/Header';
 import { NextLink } from '~/components/ReactMarkdownComponents/NextLink';
 import { RendererConfig } from '~/interfaces/services/renderer';
+import { registerGrowiFacade } from '~/utils/growi-facade';
 import loggerFactory from '~/utils/logger';
 
 import * as addClass from './rehype-plugins/add-class';
@@ -480,3 +482,16 @@ export const generateOthersOptions = (config: RendererConfig): RendererOptions =
   verifySanitizePlugin(options);
   return options;
 };
+
+
+// register to facade
+if (isClient()) {
+  registerGrowiFacade({
+    markdownRenderer: {
+      optionsGenerators: {
+        generateViewOptions,
+        generatePreviewOptions,
+      },
+    },
+  });
+}
