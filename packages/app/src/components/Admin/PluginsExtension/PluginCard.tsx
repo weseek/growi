@@ -1,13 +1,13 @@
 // import { faCircleArrowDown, faCircleCheck } from '@fortawesome/free-solid-svg-icons';
 // import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import Image from 'next/image';
-import Link from 'next/link';
+// import Link from 'next/link';
 
 import { SearchResultItem } from '~/models/SearchResultItem';
 
 export const PluginCard = (props: SearchResultItem) => {
   const {
-    name, full_name, description, html_url, topics, stargazers_count, owner,
+    name, fullName, description, htmlUrl, topics, stargazersCount, owner,
   } = props;
 
   return (
