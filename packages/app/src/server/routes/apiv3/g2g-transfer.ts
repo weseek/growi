@@ -1,4 +1,5 @@
 import path from 'path';
+import { Readable } from 'stream';
 
 import express, { NextFunction, Request, Router } from 'express';
 import { body } from 'express-validator';
@@ -63,6 +64,10 @@ module.exports = (crowi: Crowi): Router => {
       }
       cb(new Error('Only ".zip" is allowed'));
     },
+  });
+
+  const uploadsForAttachment = multer({
+    storage: multer.memoryStorage(),
   });
 
   const isInstalled = crowi.configManager?.getConfig('crowi', 'app:installed');
@@ -235,6 +240,29 @@ module.exports = (crowi: Crowi): Router => {
 
     return res.apiv3({ message: 'Successfully started to receive transfer data.' });
   });
+
+  // TODO: verify transfer key
+  // This endpoint uses multer's MemoryStorage since the received data should be persisted directly on attachment storage.
+  receiveRouter.post('/attachment', uploadsForAttachment.single('content'), /* verifyAndExtractTransferKey, */
+    async(req: Request & { transferKey: TransferKey }, res: ApiV3Response) => {
+      const { file } = req;
+      const { attachmentMetadata } = req.body;
+
+      let attachmentMap;
+      try {
+        attachmentMap = JSON.parse(attachmentMetadata);
+      }
+      catch (err) {
+        logger.error(err);
+        return res.apiv3Err(new ErrorV3('Failed to parse body.', 'parse_failed'), 500);
+      }
+
+      // convert Buffer to stream
+      // see: https://stackoverflow.com/a/62143160
+      await g2gTransferReceiverService.receiveAttachment(Readable.from(file.buffer), attachmentMap);
+
+      return res.apiv3({ message: 'Successfully imported attached file.' });
+    });
 
   receiveRouter.get('/growi-info', verifyAndExtractTransferKey, async(req: Request & { transferKey: TransferKey }, res: ApiV3Response) => {
     let growiInfo: IDataGROWIInfo;

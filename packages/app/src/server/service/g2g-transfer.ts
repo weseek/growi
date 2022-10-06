@@ -122,7 +122,57 @@ export class G2GTransferPusherService implements Pusher {
     return true;
   }
 
-  public async transferAttachments(): Promise<void> { return }
+  public async transferAttachments(tk: TransferKey): Promise<void> {
+    const { appUrl, key } = tk;
+    const { fileUploadService } = this.crowi;
+    const Attachment = this.crowi.model('Attachment');
+
+    // TODO: batch get
+    const attachments = await Attachment.find();
+    for await (const attachment of attachments) {
+      logger.debug(`processing attachment: ${attachment}`);
+      let fileStream;
+      try {
+        // get read stream of each attachment
+        fileStream = await fileUploadService.findDeliveryFile(attachment);
+      }
+      catch (err) {
+        logger.warn(`Error occured when getting Attachment(ID=${attachment.id}), skipping: `, err);
+        continue;
+      }
+      // TODO: get attachmentLists from destination GROWI to avoid transferring files that the dest GROWI has
+      // TODO: refresh transfer key per 1 hour
+      // post each attachment file data to receiver
+      try {
+        // Use FormData to immitate browser's form data object
+        const form = new FormData();
+
+        form.append('content', fileStream, attachment.fileName);
+        form.append('attachmentMetadata', JSON.stringify(attachment));
+        await rawAxios.post('/_api/v3/g2g-transfer/attachment', form, {
+          baseURL: appUrl.origin,
+          headers: {
+            ...form.getHeaders(), // This generates a unique boundary for multi part form data
+            [X_GROWI_TRANSFER_KEY_HEADER_NAME]: key,
+          },
+        });
+      }
+      catch (errs) {
+        logger.error(`Error occured when uploading attachment(ID=${attachment.id})`, errs);
+        if (!Array.isArray(errs)) {
+          // TODO: socker.emit(failed_to_transfer);
+          return;
+        }
+
+        const err = errs[0];
+        logger.error(err);
+
+
+        // TODO: socker.emit(failed_to_transfer);
+        return;
+      }
+    }
+  }
 
   public async startTransfer(tk: TransferKey, user: any, collections: string[], optionsMap: any): Promise<void> {
     const { appUrl, key } = tk;
@@ -203,16 +253,18 @@ export class G2GTransferReceiverService implements Receiver {
   }
 
   public async answerGROWIInfo(): Promise<IDataGROWIInfo> {
-    const configManager = this.crowi.configManager;
+    // TODO: add attachment file limit, storage total limit
+    const { configManager } = this.crowi;
     const userUpperLimit = configManager.getConfig('crowi', 'security:userUpperLimit');
     const version = this.crowi.version;
     const attachmentInfo = {
       type: configManager.getConfig('crowi', 'app:fileUploadType'),
       bucket: undefined,
-      customEndpoint: undefined,
+      customEndpoint: undefined, // for S3
+      uploadNamespace: undefined, // for GCS
     };
 
-    // put storage location info to check identificat
+    // put storage location info to check storage identification
     switch (attachmentInfo.type) {
       case 'aws':
         attachmentInfo.bucket = configManager.getConfig('crowi', 'aws:s3Bucket');
@@ -220,6 +272,7 @@ export class G2GTransferReceiverService implements Receiver {
         break;
       case 'gcs':
         attachmentInfo.bucket = configManager.getConfig('crowi', 'gcs:bucket');
+        attachmentInfo.uploadNamespace = configManager.getConfig('crowi', 'gcs:uploadNamespace');
         break;
       default:
     }
@@ -258,6 +311,17 @@ export class G2GTransferReceiverService implements Receiver {
     // Call onCompleteTransfer when finished
 
     return;
+  }
+
+  /**
+   *
+   * @param content Pushed attachment data from source GROWI
+   * @param attachmentMap Map-ped Attachment instance
+   * @returns
+   */
+  public async receiveAttachment(content: Readable, attachmentMap): Promise<void> {
+    const { fileUploadService } = this.crowi;
+    return fileUploadService.uploadFile(content, attachmentMap);
   }
 
   /**
