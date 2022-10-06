@@ -14,12 +14,12 @@ import { GrowiPlugin, GrowiPluginResourceType } from '~/interfaces/plugin';
 const growiPluginsExample: GrowiPlugin[] = [
   {
     isEnabled: true,
-    installedPath: 'weseek/growi-plugin-jstest',
+    installedPath: 'weseek/growi-plugin-copy-code-to-clipboard',
     origin: {
-      url: 'https://github.com/weseek/growi-plugin-jstest',
+      url: 'https://github.com/weseek/growi-plugin-copy-code-to-clipboard',
     },
     meta: {
-      name: 'weseek/growi-plugin-jstest',
+      name: 'weseek/growi-plugin-copy-code-to-clipboard',
       types: [GrowiPluginResourceType.Script],
     },
   },
