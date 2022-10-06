@@ -219,19 +219,6 @@ export class G2GTransferPusherService implements Pusher {
   }
 
   public async startTransfer(tk: TransferKey, user: any, toGROWIInfo: IDataGROWIInfo, collections: string[], optionsMap: any): Promise<void> {
-    let zipFileStream: ReadStream;
-    try {
-      const shouldEmit = false;
-      const zipFileStat = await this.crowi.exportService.export(collections, shouldEmit);
-      const zipFilePath = zipFileStat.zipFilePath;
-
-      zipFileStream = createReadStream(zipFilePath);
-    }
-    catch (err) {
-      logger.error(err);
-      throw err;
-    }
-
     if (toGROWIInfo.attachmentInfo.type === 'none') {
       try {
         const targetConfigKeys = [
@@ -256,6 +243,19 @@ export class G2GTransferPusherService implements Pusher {
         logger.error(err);
         throw err;
       }
+    }
+
+    let zipFileStream: ReadStream;
+    try {
+      const shouldEmit = false;
+      const zipFileStat = await this.crowi.exportService.export(collections, shouldEmit);
+      const zipFilePath = zipFileStat.zipFilePath;
+
+      zipFileStream = createReadStream(zipFilePath);
+    }
+    catch (err) {
+      logger.error(err);
+      throw err;
     }
 
     // Send a zip file to other growi via axios
