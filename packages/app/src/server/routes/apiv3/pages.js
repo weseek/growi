@@ -8,7 +8,7 @@ import { generateAddActivityMiddleware } from '../../middlewares/add-activity';
 import { apiV3FormValidator } from '../../middlewares/apiv3-form-validator';
 import { isV5ConversionError } from '../../models/vo/v5-conversion-error';
 
-import { ErrorV3 } from '@growi/core';
+import { ErrorV3, databaseUtils } from '@growi/core';
 
 const logger = loggerFactory('growi:routes:apiv3:pages'); // eslint-disable-line no-unused-vars
 const { pathUtils, pagePathUtils } = require('@growi/core');
@@ -304,6 +304,12 @@ module.exports = (crowi) => {
     if (grant != null) {
       options.grant = grant;
       options.grantUserGroupId = grantUserGroupId;
+    }
+
+    if (isDatabasePage(path) && !databaseUtils.isAbleToSaveDatabasePage(body)) {
+      const message = 'Only one table can be created in the database page';
+      logger.error(message);
+      return res.apiv3Err(message);
     }
 
     let createdPage;

@@ -1,4 +1,4 @@
-import { pagePathUtils } from '@growi/core';
+import { pagePathUtils, databaseUtils } from '@growi/core';
 import { body } from 'express-validator';
 import mongoose from 'mongoose';
 import urljoin from 'url-join';
@@ -11,7 +11,9 @@ import loggerFactory from '~/utils/logger';
 import { PathAlreadyExistsError } from '../models/errors';
 import UpdatePost from '../models/update-post';
 
-const { isCreatablePage, isTopPage, isUsersHomePage } = pagePathUtils;
+const {
+  isCreatablePage, isTopPage, isUsersHomePage, isDatabasePage,
+} = pagePathUtils;
 const { serializePageSecurely } = require('../models/serializers/page-serializer');
 const { serializeRevisionSecurely } = require('../models/serializers/revision-serializer');
 const { serializeUserSecurely } = require('../models/serializers/user-serializer');
@@ -1012,6 +1014,12 @@ module.exports = function(crowi, app) {
         user: serializeUserSecurely(latestRevision.author),
       };
       return res.json(ApiResponse.error('Posted param "revisionId" is outdated.', 'conflict', returnLatestRevision));
+    }
+
+    if (isDatabasePage(page.path) && !databaseUtils.isAbleToSaveDatabasePage(pageBody)) {
+      const message = 'Only one table can be created in the database page';
+      logger.error(message);
+      return res.json(ApiResponse.error('Only one table can be created in the database page'));
     }
 
     const options = { isSyncRevisionToHackmd };
