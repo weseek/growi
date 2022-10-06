@@ -38,7 +38,6 @@ declare const globalEmitter: EventEmitter;
 const GridEditModal = dynamic(() => import('./PageEditor/GridEditModal'), { ssr: false });
 // const HandsontableModal = dynamic(() => import('./PageEditor/HandsontableModal'), { ssr: false });
 const LinkEditModal = dynamic(() => import('./PageEditor/LinkEditModal'), { ssr: false });
-const TemplateModal = dynamic(() => import('./TemplateModal'), { ssr: false });
 
 
 const logger = loggerFactory('growi:Page');
@@ -60,8 +59,6 @@ class PageSubstance extends React.Component<PageSubstanceProps> {
 
   linkEditModal: any;
 
-  templateModal: any;
-
   handsontableModal: any;
 
   drawioModal: any;
@@ -76,7 +73,6 @@ class PageSubstance extends React.Component<PageSubstanceProps> {
 
     this.gridEditModal = React.createRef();
     this.linkEditModal = React.createRef();
-    this.templateModal = React.createRef();
     this.handsontableModal = React.createRef();
     this.drawioModal = React.createRef();
 
@@ -191,7 +187,6 @@ class PageSubstance extends React.Component<PageSubstanceProps> {
           <>
             <GridEditModal ref={this.gridEditModal} />
             <LinkEditModal ref={this.linkEditModal} />
-            <TemplateModal ref={this.templateModal} />
             {/* <HandsontableModal ref={this.handsontableModal} onSave={this.saveHandlerForHandsontableModal} /> */}
             {/* TODO: use global DrawioModal https://redmine.weseek.co.jp/issues/105981 */}
             {/* <DrawioModal
