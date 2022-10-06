@@ -338,7 +338,7 @@ module.exports = (crowi: Crowi): Router => {
 
     // Start transfer
     try {
-      await g2gTransferPusherService.startTransfer(tk, req.user, collections, optionsMap);
+      await g2gTransferPusherService.startTransfer(tk, req.user, toGROWIInfo, collections, optionsMap);
     }
     catch (err) {
       logger.error(err);
