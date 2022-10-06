@@ -28,16 +28,20 @@ const IMPORT_OPTION_CLASS_MAPPING = {
 
 type Props = {
   allCollectionNames: string[],
+  selectedCollections: Set<string>,
+  updateSelectedCollections: (newSelectedCollections: Set<string>) => void,
+  optionsMap: any,
+  updateOptionsMap: (newOptionsMap: any) => void,
 };
 
 const G2GDataTransferExportForm = (props: Props): JSX.Element => {
   // const { data: socket } = useAdminSocket();
   const { t } = useTranslation('admin');
 
-  const { allCollectionNames } = props;
+  const {
+    allCollectionNames, selectedCollections, updateSelectedCollections, optionsMap, updateOptionsMap,
+  } = props;
 
-  const [selectedCollections, setSelectedCollections] = useState<Set<string>>(new Set(allCollectionNames));
-  const [optionsMap, setOptionsMap] = useState<any>({});
   // const [isImporting, setImporting] = useState(false);
   // const [isImported, setImported] = useState(false);
   // const [progressMap, setProgressMap] = useState<any>({});
@@ -46,12 +50,12 @@ const G2GDataTransferExportForm = (props: Props): JSX.Element => {
   const [collectionNameForConfiguration, setCollectionNameForConfiguration] = useState<any>();
 
   const checkAll = useCallback(() => {
-    setSelectedCollections(new Set(allCollectionNames));
-  }, [allCollectionNames]);
+    updateSelectedCollections(new Set(allCollectionNames));
+  }, [allCollectionNames, updateSelectedCollections]);
 
   const uncheckAll = useCallback(() => {
-    setSelectedCollections(new Set());
-  }, []);
+    updateSelectedCollections(new Set());
+  }, [updateSelectedCollections]);
 
   const updateOption = (collectionName, data) => {
     const options = optionsMap[collectionName];
@@ -61,7 +65,7 @@ const G2GDataTransferExportForm = (props: Props): JSX.Element => {
 
     const updatedOptionsMap = {};
     updatedOptionsMap[collectionName] = options;
-    setOptionsMap((prev) => {
+    updateOptionsMap((prev) => {
       return { ...prev, updatedOptionsMap };
     });
   };
@@ -76,7 +80,7 @@ const G2GDataTransferExportForm = (props: Props): JSX.Element => {
         collections.delete(collectionName);
       }
 
-      setSelectedCollections(collections);
+      updateSelectedCollections(collections);
 
       // TODO: validation
       // this.validate();
@@ -196,7 +200,7 @@ const G2GDataTransferExportForm = (props: Props): JSX.Element => {
       const ImportOption = IMPORT_OPTION_CLASS_MAPPING[collectionName] || GrowiArchiveImportOption;
       initialOptionsMap[collectionName] = new ImportOption(initialMode);
     });
-    setOptionsMap(initialOptionsMap);
+    updateOptionsMap(initialOptionsMap);
   };
 
   // TODO: use Socket
