@@ -6,12 +6,14 @@ import { IGraphViewer } from './graph-viewer';
 
 export type CustomWindow = Window
                         & typeof globalThis
-                        & { activators: {
-                          [key: string]: {
-                            activate: () => void,
-                            deactivate: () => void,
+                        & {
+                          pluginActivators: {
+                            [key: string]: {
+                              activate: () => void,
+                              deactivate: () => void,
+                            },
                           },
-                        } }
-                        & { growiFacade: GrowiFacade }
-                        & { globalEmitter: EventEmitter }
-                        & { GraphViewer: IGraphViewer };
+                          growiFacade: GrowiFacade,
+                          globalEmitter: EventEmitter,
+                          GraphViewer: IGraphViewer,
+                        }
