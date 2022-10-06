@@ -11,11 +11,11 @@ import { PluginInstallerForm } from './PluginInstallerForm';
 // TODO: i18n
 
 export const PluginsExtensionPageContents = (): JSX.Element => {
-  const { data, error } = useInstalledPlugins();
+  // const { data, error } = useInstalledPlugins();
 
-  if (data == null) {
-    return <Loading />;
-  }
+  // if (data == null) {
+  //   return <Loading />;
+  // }
 
   return (
     <div>

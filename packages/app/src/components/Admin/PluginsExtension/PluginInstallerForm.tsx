@@ -19,14 +19,14 @@ export const PluginInstallerForm = (): JSX.Element => {
 
     const {
       'pluginInstallerForm[url]': { value: url },
-      'pluginInstallerForm[ghBranch]': { value: ghBranch },
-      'pluginInstallerForm[ghTag]': { value: ghTag },
+      // 'pluginInstallerForm[ghBranch]': { value: ghBranch },
+      // 'pluginInstallerForm[ghTag]': { value: ghTag },
     } = formData;
 
     const pluginInstallerForm = {
       url,
-      ghBranch,
-      ghTag,
+      // ghBranch,
+      // ghTag,
     };
 
     try {
