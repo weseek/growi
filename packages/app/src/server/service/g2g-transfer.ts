@@ -140,18 +140,7 @@ export class G2GTransferPusherService implements Pusher {
         // TODO: refresh transfer key per 1 hour
         // post each attachment file data to receiver
         try {
-          // Use FormData to immitate browser's form data object
-          const form = new FormData();
-
-          form.append('content', fileStream, attachment.fileName);
-          form.append('attachmentMetadata', JSON.stringify(attachment));
-          await rawAxios.post('/_api/v3/g2g-transfer/attachment', form, {
-            baseURL: appUrl.origin,
-            headers: {
-              ...form.getHeaders(), // This generates a unique boundary for multi part form data
-              [X_GROWI_TRANSFER_KEY_HEADER_NAME]: key,
-            },
-          });
+          this.doTransferAttachment(tk, attachment, fileStream);
         }
         catch (errs) {
           logger.error(`Error occured when uploading attachment(ID=${attachment.id})`, errs);
@@ -230,6 +219,27 @@ export class G2GTransferPusherService implements Pusher {
         [X_GROWI_TRANSFER_KEY_HEADER_NAME]: key,
       },
     };
+  }
+
+  /**
+   * transfer attachment to destination GROWI
+   * @param tk Transfer key
+   * @param attachment Attachment model instance
+   * @param fileStream Attachment data(loaded from storage)
+   */
+  private async doTransferAttachment(tk: TransferKey, attachment, fileStream: Readable) {
+    // Use FormData to immitate browser's form data object
+    const form = new FormData();
+
+    form.append('content', fileStream, attachment.fileName);
+    form.append('attachmentMetadata', JSON.stringify(attachment));
+    await rawAxios.post('/_api/v3/g2g-transfer/attachment', form, {
+      baseURL: appUrl.origin,
+      headers: {
+        ...form.getHeaders(), // This generates a unique boundary for multi part form data
+        [X_GROWI_TRANSFER_KEY_HEADER_NAME]: key,
+      },
+    });
   }
 
 }
