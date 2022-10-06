@@ -98,7 +98,7 @@ const G2GDataTransfer = (): JSX.Element => {
     try {
       await customAxios.post('/_api/v3/g2g-transfer/transfer', {
         transferKey: startTransferKey,
-        collections: selectedCollections,
+        collections: Array.from(selectedCollections),
         optionsMap,
       });
     }

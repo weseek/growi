@@ -242,9 +242,8 @@ module.exports = (crowi: Crowi): Router => {
     return res.apiv3({ message: 'Successfully started to receive transfer data.' });
   });
 
-  // TODO: verify transfer key
   // This endpoint uses multer's MemoryStorage since the received data should be persisted directly on attachment storage.
-  receiveRouter.post('/attachment', uploadsForAttachment.single('content'), /* verifyAndExtractTransferKey, */
+  receiveRouter.post('/attachment', uploadsForAttachment.single('content'), verifyAndExtractTransferKey,
     async(req: Request & { transferKey: TransferKey }, res: ApiV3Response) => {
       const { file } = req;
       const { attachmentMetadata } = req.body;
