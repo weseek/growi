@@ -38,9 +38,9 @@ interface Pusher {
    */
   canTransfer(fromGROWIInfo: IDataGROWIInfo): Promise<boolean>
   /**
-   * TODO
+   * @param {TransferKey} tk Transfer key object
    */
-  transferAttachments(): Promise<void>
+  transferAttachments(tk: TransferKey): Promise<void>
   /**
    * Start transfer data between GROWIs
    * @param {TransferKey} tk TransferKey object
