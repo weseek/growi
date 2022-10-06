@@ -875,7 +875,7 @@ class CodeMirrorEditor extends AbstractEditor {
   }
 
   showTemplateModal() {
-    this.templateModal.current.show(markdownLinkUtil.getMarkdownLink(this.getCodeMirror()));
+    this.templateModal.current.show();
   }
 
   // fold draw.io section (::: drawio ~ :::)
