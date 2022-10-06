@@ -174,7 +174,6 @@ export class G2GTransferPusherService implements Pusher {
   public async transferAttachments(tk: TransferKey): Promise<void> {
     const BATCH_SIZE = 100;
 
-    const { appUrl, key } = tk;
     const { fileUploadService } = this.crowi;
     const Attachment = this.crowi.model('Attachment');
 
