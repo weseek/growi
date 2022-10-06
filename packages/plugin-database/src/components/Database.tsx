@@ -14,19 +14,28 @@ import styles from './Database.module.scss';
 
 type Props = {
   path: string,
+
+  extract?: string,
 };
 
-export const Database = (props: Props): JSX.Element => {
-
-  const { path } = props;
+export const Database = ({
+  path,
+  extract,
+  ...props
+}: Props): JSX.Element => {
   const [isLoading, setLoading] = useState(false);
   const [isError, setError] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
   const [database, setDatabase] = useState<string|undefined>();
 
   const databaseContext = useMemo(() => {
-    return new DatabaseContext(path, {});
-  }, [path]);
+    return new DatabaseContext(
+      path,
+      {
+        extract,
+      },
+    );
+  }, [extract, path]);
 
   const loadData = useCallback(async() => {
     setLoading(true);
@@ -36,6 +45,7 @@ export const Database = (props: Props): JSX.Element => {
       const result = await axios.get('/_api/plugins/database', {
         params: {
           path,
+          options: databaseContext.options,
         },
       });
 
@@ -50,7 +60,7 @@ export const Database = (props: Props): JSX.Element => {
     finally {
       setLoading(false);
     }
-  }, [path]);
+  }, [databaseContext.options, path]);
 
   useEffect(() => {
     loadData();
