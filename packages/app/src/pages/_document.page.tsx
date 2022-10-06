@@ -9,36 +9,6 @@ import Document, {
 import { ActivatePluginService, GrowiPluginManifestEntries } from '~/client/services/activate-plugin';
 import { GrowiPlugin, GrowiPluginResourceType } from '~/interfaces/plugin';
 
-
-// FIXME: dummy data
-// ------------------
-const growiPluginsExample: GrowiPlugin[] = [
-  {
-    isEnabled: true,
-    installedPath: 'tmp/plugins/growi-plugin-styling-example-main',
-    origin: {
-      url: 'https://github.com/weseek/growi-plugin-styling-example',
-    },
-    meta: {
-      name: 'growi-plugin-styling-example',
-      types: [GrowiPluginResourceType.Style],
-    },
-  },
-  {
-    isEnabled: true,
-    installedPath: 'weseek/growi-plugin-markdown-templates',
-    origin: {
-      url: 'https://github.com/weseek/growi-plugin-markdown-templates',
-    },
-    meta: {
-      name: 'weseek/growi-plugin-markdown-templates',
-      types: [GrowiPluginResourceType.Template],
-    },
-  },
-];
-// ------------------
-
-
 type HeadersForGrowiPluginProps = {
   pluginManifestEntries: GrowiPluginManifestEntries;
 }
