@@ -4,9 +4,9 @@ import { i18n } from '^/config/next-i18next.config';
 import { generateGravatarSrc } from '~/utils/gravatar';
 import loggerFactory from '~/utils/logger';
 
-
 const crypto = require('crypto');
 
+const bcrypt = require('bcryptjs');
 const debug = require('debug')('growi:models:user');
 const mongoose = require('mongoose');
 const mongoosePaginate = require('mongoose-paginate-v2');
@@ -127,13 +127,11 @@ module.exports = function(crowi) {
     return password;
   }
 
-  function generatePassword(password) {
+  async function generatePassword(password) {
+    const saltRounds = 10;
     validateCrowi();
-
-    const hasher = crypto.createHash('sha256');
-    hasher.update(crowi.env.PASSWORD_SEED + password);
-
-    return hasher.digest('hex');
+    const hashedPassword = await bcrypt.hash(crowi.env.PASSWORD_SEED + password, saltRounds);
+    return hashedPassword;
   }
 
   function generateApiToken(user) {
@@ -150,12 +148,13 @@ module.exports = function(crowi) {
     return false;
   };
 
-  userSchema.methods.isPasswordValid = function(password) {
-    return this.password === generatePassword(password);
+  userSchema.methods.isPasswordValid = async function(password) {
+    const passwordValid = await bcrypt.compare(password, this.password);
+    return passwordValid;
   };
 
-  userSchema.methods.setPassword = function(password) {
-    this.password = generatePassword(password);
+  userSchema.methods.setPassword = async function(password) {
+    this.password = await generatePassword(password);
     return this;
   };
 
@@ -435,8 +434,8 @@ module.exports = function(crowi) {
       });
   };
 
-  userSchema.statics.findUserByEmailAndPassword = function(email, password, callback) {
-    const hashedPassword = generatePassword(password);
+  userSchema.statics.findUserByEmailAndPassword = async function(email, password, callback) {
+    const hashedPassword = await generatePassword(password);
     this.findOne({ email, password: hashedPassword }, (err, userData) => {
       callback(err, userData);
     });
