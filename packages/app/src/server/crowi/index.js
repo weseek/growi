@@ -26,6 +26,7 @@ import { InstallerService } from '../service/installer';
 import PageService from '../service/page';
 import PageGrantService from '../service/page-grant';
 import PageOperationService from '../service/page-operation';
+import { PluginService } from '../service/plugin';
 import SearchService from '../service/search';
 import { SlackIntegrationService } from '../service/slack-integration';
 import { UserNotificationService } from '../service/user-notification';
@@ -67,6 +68,7 @@ function Crowi() {
   this.importService = null;
   this.pluginService = null;
   this.searchService = null;
+  this.pluginService = null;
   this.socketIoService = null;
   this.pageService = null;
   this.syncPageStatusService = null;
@@ -120,6 +122,7 @@ Crowi.prototype.init = async function() {
     this.scanRuntimeVersions(),
     this.setupPassport(),
     this.setupSearcher(),
+    this.setupPluginer(),
     this.setupMailer(),
     this.setupSlackIntegrationService(),
     this.setUpFileUpload(),
@@ -368,6 +371,13 @@ Crowi.prototype.setupPassport = async function() {
 
 Crowi.prototype.setupSearcher = async function() {
   this.searchService = new SearchService(this);
+};
+
+/**
+ * setup PluginService
+ */
+Crowi.prototype.setupPluginer = async function() {
+  this.pluginService = new PluginService(this);
 };
 
 Crowi.prototype.setupMailer = async function() {
