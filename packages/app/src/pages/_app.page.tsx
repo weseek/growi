@@ -11,6 +11,7 @@ import '~/styles/style-themes.scss';
 
 import * as nextI18nConfig from '^/config/next-i18next.config';
 
+import { ActivatePluginService } from '~/client/services/activate-plugin';
 import { NextThemesProvider } from '~/stores/use-next-themes';
 
 import { useI18nextHMR } from '../services/i18next-hmr';
@@ -35,6 +36,10 @@ function GrowiApp({ Component, pageProps }: GrowiAppProps): JSX.Element {
 
   useEffect(() => {
     import('bootstrap/dist/js/bootstrap');
+  }, []);
+
+  useEffect(() => {
+    ActivatePluginService.activateAll();
   }, []);
 
   const commonPageProps = pageProps as CommonProps;
