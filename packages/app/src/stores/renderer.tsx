@@ -1,5 +1,5 @@
 import { HtmlElementNode } from 'rehype-toc';
-import { Key, SWRResponse } from 'swr';
+import useSWR, { Key, SWRResponse } from 'swr';
 import useSWRImmutable from 'swr/immutable';
 
 import { RendererConfig } from '~/interfaces/services/renderer';
@@ -51,7 +51,7 @@ export const useViewOptions = (storeTocNodeHandler: (toc: HtmlElementNode) => vo
     ? ['viewOptions', currentPagePath, rendererConfig]
     : null;
 
-  return useSWRImmutable<RendererOptions, Error>(
+  return useSWR<RendererOptions, Error>(
     key,
     (rendererId, currentPagePath, rendererConfig) => {
       // determine options generator
@@ -91,7 +91,7 @@ export const usePreviewOptions = (): SWRResponse<RendererOptions, Error> => {
     ? ['previewOptions', rendererConfig, currentPagePath]
     : null;
 
-  return useSWRImmutable<RendererOptions, Error>(
+  return useSWR<RendererOptions, Error>(
     key,
     (rendererId, rendererConfig, pagePath, highlightKeywords) => {
       // determine options generator
