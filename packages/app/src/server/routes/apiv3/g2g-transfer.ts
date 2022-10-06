@@ -204,6 +204,12 @@ module.exports = (crowi: Crowi): Router => {
         if (collectionName === 'pages' && options.mode === 'insert') {
           throw Error('`insert` is not available as an import setting for pages collection');
         }
+        if (collectionName === 'attachmentFiles.chunks') {
+          throw Error('`attachmentFiles.chunks` must not be transferred. Please omit it from request body `collections`.');
+        }
+        if (collectionName === 'attachmentFiles.files') {
+          throw Error('`attachmentFiles.files` must not be transferred. Please omit it from request body `collections`.');
+        }
 
         const importSettings = importService.generateImportSettings(options.mode);
 
