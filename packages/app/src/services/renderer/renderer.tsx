@@ -489,6 +489,7 @@ if (isClient()) {
   registerGrowiFacade({
     markdownRenderer: {
       optionsGenerators: {
+        generateViewOptions,
         generatePreviewOptions,
       },
     },

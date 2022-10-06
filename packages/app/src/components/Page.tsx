@@ -22,6 +22,7 @@ import { useViewOptions } from '~/stores/renderer';
 import {
   useEditorMode, useIsMobile,
 } from '~/stores/ui';
+import { registerGrowiFacade } from '~/utils/growi-facade';
 import loggerFactory from '~/utils/logger';
 
 import RevisionRenderer from './Page/RevisionRenderer';
@@ -216,11 +217,22 @@ export const Page = (props) => {
   const { data: slackChannelsData } = useSWRxSlackChannels(currentPage?.path);
   const { data: isSlackEnabled } = useIsSlackEnabled();
   const { data: pageTags } = usePageTagsForEditors(null); // TODO: pass pageId
-  const { data: rendererOptions } = useViewOptions(storeTocNodeHandler);
+  const { data: rendererOptions, mutate: mutateRendererOptions } = useViewOptions(storeTocNodeHandler);
   const { mutate: mutateIsEnabledUnsavedWarning } = useIsEnabledUnsavedWarning();
   const { mutate: mutateCurrentPageTocNode } = useCurrentPageTocNode();
 
   const pageRef = useRef(null);
+
+  // register to facade
+  useEffect(() => {
+    registerGrowiFacade({
+      markdownRenderer: {
+        optionsMutators: {
+          viewOptionsMutator: mutateRendererOptions,
+        },
+      },
+    });
+  }, [mutateRendererOptions]);
 
   useEffect(() => {
     mutateCurrentPageTocNode(tocRef.current);

@@ -53,7 +53,11 @@ export const useViewOptions = (storeTocNodeHandler: (toc: HtmlElementNode) => vo
 
   return useSWRImmutable<RendererOptions, Error>(
     key,
-    (rendererId, currentPagePath, rendererConfig) => generateViewOptions(currentPagePath, rendererConfig, storeTocNodeHandler),
+    (rendererId, currentPagePath, rendererConfig) => {
+      // determine options generator
+      const optionsGenerator = getGrowiFacade().markdownRenderer?.optionsGenerators?.customGenerateViewOptions ?? generateViewOptions;
+      return optionsGenerator(currentPagePath, rendererConfig, storeTocNodeHandler);
+    },
     {
       fallbackData: isAllDataValid ? generateViewOptions(currentPagePath, rendererConfig, storeTocNodeHandler) : undefined,
     },
