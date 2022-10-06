@@ -1,5 +1,5 @@
-import { faCircleArrowDown, faCircleCheck } from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+// import { faCircleArrowDown, faCircleCheck } from '@fortawesome/free-solid-svg-icons';
+// import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import Image from 'next/image';
 import Link from 'next/link';
 
@@ -15,9 +15,9 @@ export const PluginCard = (props: SearchResultItem) => {
       <div className="card-body px-5 py-4">
         <div className="row mb-3">
           <div className="col-9">
-            <h2 className="card-title h3 border-bottom pb-2 mb-3">
+            {/* <h2 className="card-title h3 border-bottom pb-2 mb-3">
               <Link href={`/${full_name}`}>{name}</Link>
-            </h2>
+            </h2> */}
             <p className="card-text text-muted">{description}</p>
           </div>
           <div className="col-3">
@@ -38,7 +38,7 @@ export const PluginCard = (props: SearchResultItem) => {
       </div>
       <div className="card-footer px-5 border-top-0 mp-bg-light-blue">
         <p className="d-flex justify-content-between align-self-center mb-0">
-          <span>
+          {/* <span>
             {owner.login === 'weseek' ? <FontAwesomeIcon icon={faCircleCheck} className="me-1 text-primary" /> : <></>}
 
             <a href={owner.html_url} target="_blank" rel="noreferrer">
@@ -47,7 +47,7 @@ export const PluginCard = (props: SearchResultItem) => {
           </span>
           <span>
             <FontAwesomeIcon icon={faCircleArrowDown} className="me-1" /> {stargazersCount}
-          </span>
+          </span> */}
         </p>
       </div>
     </div>
