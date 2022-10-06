@@ -15,6 +15,7 @@ import loggerFactory from '~/utils/logger';
 import { projectRoot } from '~/utils/project-dir-utils';
 
 import Activity from '../models/activity';
+import GrowiPlugin from '../models/growi-plugin';
 import PageRedirect from '../models/page-redirect';
 import Tag from '../models/tag';
 import UserGroup from '../models/user-group';
@@ -68,7 +69,6 @@ function Crowi() {
   this.importService = null;
   this.pluginService = null;
   this.searchService = null;
-  this.pluginService = null;
   this.socketIoService = null;
   this.pageService = null;
   this.syncPageStatusService = null;
@@ -296,6 +296,7 @@ Crowi.prototype.setupModels = async function() {
   allModels.Tag = Tag;
   allModels.UserGroup = UserGroup;
   allModels.PageRedirect = PageRedirect;
+  allModels.growiPlugin = GrowiPlugin;
 
   Object.keys(allModels).forEach((key) => {
     return this.model(key, models[key](this));

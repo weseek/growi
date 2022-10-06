@@ -1,8 +1,10 @@
-
 import { execSync } from 'child_process';
+import fs from 'fs';
 import path from 'path';
 
-import { GrowiPlugin, GrowiPluginOrigin } from '~/interfaces/plugin';
+import mongoose from 'mongoose';
+
+import { GrowiPlugin, GrowiPluginMeta, GrowiPluginOrigin } from '~/interfaces/plugin';
 import loggerFactory from '~/utils/logger';
 import { resolveFromRoot } from '~/utils/project-dir-utils';
 
@@ -41,9 +43,18 @@ export class PluginService {
       console.log('downloadZipFile error', err);
     }
 
-    // TODO: detect plugins
-    // TODO: save documents
+    // save plugin metadata
+    const ghRepositoryName = ghUrl.split('/').slice(-1)[0];
+    const installedPath = path.join(downloadDir, `${ghRepositoryName}-main`);
+    const plugins = await PluginService.detectPlugins(origin, installedPath);
+    await this.savePluginMetaData(plugins);
+
     return;
+  }
+
+  async savePluginMetaData(plugins: GrowiPlugin[]): Promise<void> {
+    const GrowiPlugin = mongoose.model('GrowiPlugin');
+    await GrowiPlugin.insertMany(plugins);
   }
 
   // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
@@ -75,7 +86,6 @@ export class PluginService {
     if (growiPlugin.types == null) {
       throw new Error('\'growiPlugin\' section must have a \'types\' property.');
     }
-
     const plugin = {
       isEnabled: true,
       installedPath,
