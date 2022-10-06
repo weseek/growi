@@ -22,7 +22,7 @@ export const PluginsExtensionPageContents = (): JSX.Element => {
 
       <div className="row mb-5">
         <div className="col-lg-12">
-          <h2 className="admin-setting-header">Plugins Installer</h2>
+          <h2 className="admin-setting-header">Plugin Installer</h2>
           <PluginInstallerForm />
         </div>
       </div>
