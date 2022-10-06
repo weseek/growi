@@ -1,3 +1,5 @@
+import { extract } from '../services/mutators/extract';
+
 module.exports = (crowi, app) => {
   const Page = crowi.model('Page');
   const actions = {};
@@ -6,14 +8,17 @@ module.exports = (crowi, app) => {
     const user = req.user;
 
     let path;
-    let page;
+    let options;
 
     try {
       path = req.query.path;
+      options = JSON.parse(req.query.options);
     }
     catch (error) {
       return res.status(400).send(error);
     }
+
+    let page;
 
     try {
       page = await Page.findByPathAndViewer(path, user, null, true);
@@ -26,19 +31,22 @@ module.exports = (crowi, app) => {
       return res.status(500).send(new Error('Page is not found'));
     }
 
-    if (page != null) {
-      try {
-        page.initLatestRevisionField();
+    try {
+      page.initLatestRevisionField();
 
-        // populate
-        page = await page.populateDataToShowRevision();
-      }
-      catch (err) {
-        return res.status(500).send(err);
-      }
+      // populate
+      page = await page.populateDataToShowRevision();
+    }
+    catch (err) {
+      return res.status(500).send(err);
     }
 
-    const body = page.revision.body;
+    let body = page.revision.body;
+
+    // extract
+    if (options.extract != null) {
+      body = extract(body, 'row', '2', '==', 'hoge');
+    }
 
     res.status(200).send(body);
   };

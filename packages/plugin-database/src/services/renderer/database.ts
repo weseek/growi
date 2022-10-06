@@ -8,7 +8,7 @@ import { Plugin } from 'unified';
 import { visit } from 'unist-util-visit';
 
 const NODE_NAME_PATTERN = new RegExp(/database/);
-const SUPPORTED_ATTRIBUTES = ['path'];
+const SUPPORTED_ATTRIBUTES = ['path', 'extract'];
 
 type DirectiveAttributes = Record<string, string>
 
