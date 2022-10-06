@@ -111,12 +111,12 @@ class CodeMirrorEditor extends AbstractEditor {
       emojiSearchText: '',
       startPosWithEmojiPickerModeTurnedOn: null,
       isEmojiPickerMode: false,
+      isTemplateModalOpened: false,
     };
 
     this.cm = React.createRef();
     this.gridEditModal = React.createRef();
     this.linkEditModal = React.createRef();
-    this.templateModal = React.createRef();
     this.handsontableModal = React.createRef();
     this.drawioModal = React.createRef();
 
@@ -875,7 +875,7 @@ class CodeMirrorEditor extends AbstractEditor {
   }
 
   showTemplateModal() {
-    this.templateModal.current.show();
+    this.setState({ isTemplateModalOpened: true });
   }
 
   // fold draw.io section (::: drawio ~ :::)
@@ -1144,8 +1144,9 @@ class CodeMirrorEditor extends AbstractEditor {
           onSave={(linkText) => { return markdownLinkUtil.replaceFocusedMarkdownLinkWithEditor(this.getCodeMirror(), linkText) }}
         />
         <TemplateModal
-          ref={this.templateModal}
-          onSave={(templateText) => { return markdownLinkUtil.replaceFocusedMarkdownLinkWithEditor(this.getCodeMirror(), templateText) }}
+          isOpen={this.state.isTemplateModalOpened}
+          onClose={() => this.setState({ isTemplateModalOpened: false })}
+          onSave={(templateText) => { }}
         />
         {/* <HandsontableModal
           ref={this.handsontableModal}
