@@ -103,15 +103,15 @@ module.exports = (crowi: Crowi): Router => {
 
   // Local middleware to check if key is valid or not
   const verifyAndExtractTransferKey = async(req: Request & { transferKey: TransferKey }, res: ApiV3Response, next: NextFunction) => {
-    const transferKeyString = req.headers[X_GROWI_TRANSFER_KEY_HEADER_NAME];
+    const key = req.headers[X_GROWI_TRANSFER_KEY_HEADER_NAME];
 
-    if (typeof transferKeyString !== 'string') {
+    if (typeof key !== 'string') {
       return res.apiv3Err(new ErrorV3('Invalid transfer key or not set.', 'invalid_transfer_key'), 400);
     }
 
     let transferKey;
     try {
-      transferKey = await (TransferKeyModel as any).findOneActiveTransferKey(transferKeyString); // TODO: Improve TS of models
+      transferKey = await (TransferKeyModel as any).findOneActiveTransferKey(key); // TODO: Improve TS of models
     }
     catch (err) {
       logger.error(err);
@@ -124,7 +124,7 @@ module.exports = (crowi: Crowi): Router => {
 
     // Inject transferKey to req
     try {
-      req.transferKey = TransferKey.parse(transferKey.value);
+      req.transferKey = TransferKey.parse(transferKey.keyString);
     }
     catch (err) {
       logger.error(err);
@@ -140,14 +140,14 @@ module.exports = (crowi: Crowi): Router => {
 
   // Auto import
   // eslint-disable-next-line max-len
-  receiveRouter.post('/', uploads.single('transferDataZipFile'), /* verifyAndExtractTransferKey, */ async(req: Request & { transferKey: TransferKey, operatorUserId: string }, res: ApiV3Response) => {
+  receiveRouter.post('/', uploads.single('transferDataZipFile'), verifyAndExtractTransferKey, async(req: Request & { transferKey: TransferKey, operatorUserId: string }, res: ApiV3Response) => {
     const { file } = req;
 
     const zipFile = importService.getFile(file.filename);
-    let data;
 
     const { collections: strCollections, optionsMap: strOptionsMap, operatorUserId } = req.body;
 
+    // Parse multipart form data
     let collections;
     let optionsMap;
     try {
@@ -175,87 +175,69 @@ module.exports = (crowi: Crowi): Router => {
     }
     catch (err) {
       logger.error(err);
-      // adminEvent.emit('onErrorForImport', { message: err.message });
-      return;
+      return res.apiv3Err(new ErrorV3('Failed to validate transfer data file.', 'validation_failed'), 500);
     }
 
-    /*
-     * validate with meta.json
-     */
     try {
+      // validate with meta.json
       importService.validate(meta);
     }
     catch (err) {
       logger.error(err);
-      // adminEvent.emit('onErrorForImport', { message: err.message });
-      return;
+
+      const msg = 'the version of this growi and the growi that exported the data are not met';
+      const varidationErr = 'version_incompatible';
+      return res.apiv3Err(new ErrorV3(msg, varidationErr), 500);
     }
 
     // generate maps of ImportSettings to import
     const importSettingsMap = {};
-    innerFileStats.forEach(({ fileName, collectionName }) => {
-      // instanciate GrowiArchiveImportOption
-      const options = new GrowiArchiveImportOption(null, optionsMap[collectionName]);
+    try {
+      innerFileStats.forEach(({ fileName, collectionName }) => {
+        // instanciate GrowiArchiveImportOption
+        const options = new GrowiArchiveImportOption(null, optionsMap[collectionName]);
 
-      let importSettings;
-      // generate options
-      if (collectionName === 'configs') {
-        importSettings = importService.generateImportSettings('flushAndInsert');
-      }
-      else {
-        importSettings = importService.generateImportSettings('upsert');
-      }
-      importSettings.jsonFileName = fileName;
+        // generate options
+        if (collectionName === 'configs' && options.mode !== 'flushAndInsert') {
+          throw Error('`flushAndInsert` is only available as an import setting for configs collection');
+        }
+        if (collectionName === 'pages' && options.mode === 'insert') {
+          throw Error('`insert` is not available as an import setting for pages collection');
+        }
 
-      // generate overwrite params
-      importSettings.overwriteParams = generateOverwriteParams(collectionName, operatorUserId, options);
+        const importSettings = importService.generateImportSettings(options.mode);
 
-      importSettingsMap[collectionName] = importSettings;
-    });
+        importSettings.jsonFileName = fileName;
+
+        // generate overwrite params
+        importSettings.overwriteParams = generateOverwriteParams(collectionName, operatorUserId, options);
+
+        importSettingsMap[collectionName] = importSettings;
+      });
+    }
+    catch (err) {
+      logger.error(err);
+      return res.apiv3Err(new ErrorV3('Import settings invalid. See growi docs about details.', 'import_settings_invalid'));
+    }
 
     /*
      * import
      */
     try {
       importService.import(collections, importSettingsMap);
-      // const parameters = { action: SupportedAction.ACTION_ADMIN_GROWI_DATA_IMPORTED };
-      // activityEvent.emit('update', res.locals.activity._id, parameters);
     }
     catch (err) {
       logger.error(err);
-      // adminEvent.emit('onErrorForImport', { message: err.message });
+      return;
     }
 
-    // -----
-
-    try {
-      data = await growiBridgeService.parseZipFile(zipFile);
-    }
-    catch (err) {
-      logger.error(err);
-      return res.apiv3Err(new ErrorV3('Failed to validate transfer data file.', 'validation_failed'), 500);
-    }
-
-    try {
-      // validate with meta.json
-      importService.validate(data.meta);
-
-      // const parameters = { action: SupportedAction.ACTION_ADMIN_ARCHIVE_DATA_UPLOAD };
-      // activityEvent.emit('update', res.locals.activity._id, parameters);
-    }
-    catch {
-      const msg = 'the version of this growi and the growi that exported the data are not met';
-      const varidationErr = 'versions-are-not-met';
-      return res.apiv3Err(new ErrorV3(msg, varidationErr), 500);
-    }
-
-    try {
-      await g2gTransferReceiverService.receive(file.stream);
-    }
-    catch (err) {
-      logger.error(err);
-      return res.apiv3Err(new ErrorV3('Error occurred while importing transfer data.', 'failed_to_receive'));
-    }
+    // try {
+    //   await g2gTransferReceiverService.receive(file.stream);
+    // }
+    // catch (err) {
+    //   logger.error(err);
+    //   return res.apiv3Err(new ErrorV3('Error occurred while importing transfer data.', 'failed_to_receive'));
+    // }
 
     return res.apiv3({ message: 'Successfully started to receive transfer data.' });
   });
@@ -346,21 +328,21 @@ module.exports = (crowi: Crowi): Router => {
 
     // Ask growi info
     // TODO: Ask progress as well
-    // let toGROWIInfo: IDataGROWIInfo;
-    // try {
-    //   toGROWIInfo = await g2gTransferPusherService.askGROWIInfo(tk);
-    // }
-    // catch (err) {
-    //   logger.error(err);
-    //   return res.apiv3Err(new ErrorV3('Error occurred while asking GROWI growi info.', 'failed_to_ask_growi_info'));
-    // }
+    let toGROWIInfo: IDataGROWIInfo;
+    try {
+      toGROWIInfo = await g2gTransferPusherService.askGROWIInfo(tk);
+    }
+    catch (err) {
+      logger.error(err);
+      return res.apiv3Err(new ErrorV3('Error occurred while asking GROWI growi info.', 'failed_to_ask_growi_info'));
+    }
 
     // Check if can transfer
-    // const canTransfer = await g2gTransferPusherService.canTransfer(toGROWIInfo);
-    // if (!canTransfer) {
-    //   logger.debug('Could not transfer.');
-    //   return res.apiv3Err(new ErrorV3('GROWI is incompatible to transfer data.', 'growi_incompatible_to_transfer'));
-    // }
+    const canTransfer = await g2gTransferPusherService.canTransfer(toGROWIInfo);
+    if (!canTransfer) {
+      logger.debug('Could not transfer.');
+      return res.apiv3Err(new ErrorV3('GROWI is incompatible to transfer data.', 'growi_incompatible_to_transfer'));
+    }
 
     // Start transfer
     try {
