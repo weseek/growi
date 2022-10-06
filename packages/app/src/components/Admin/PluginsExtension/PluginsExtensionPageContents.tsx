@@ -31,6 +31,21 @@ export const PluginsExtensionPageContents = (): JSX.Element => {
         <div className="col-lg-12">
           <h2 className="admin-setting-header">Plugins</h2>
           <div className="d-grid gap-5">
+            <PluginCard
+              name={'growi-plugin-markdown-templates'}
+              url={'https://github.com/weseek/growi-plugin-markdown-templates'}
+              description={'growi-plugin-markdown-templates-example'}
+            />
+            <PluginCard
+              name={'growi-plugin-styling-example'}
+              url={'https://github.com/weseek/growi-plugin-styling-example'}
+              description={'growi-plugin-styling-example'}
+            />
+            <PluginCard
+              name={'growi-plugin-copy-code-to-clipboard'}
+              url={'https://github.com/weseek/growi-plugin-copy-code-to-clipboard'}
+              description={'growi-plugin-copy-code-to-clipboard'}
+            />
             {/* {data?.items.map((item: SearchResultItem) => {
               return <PluginCard key={item.name} {...item} />;
             })} */}

@@ -21,7 +21,7 @@ export class PluginService {
 
   baseDir: any;
 
-  getFile:any;
+  getFile: any;
 
   constructor(crowi) {
     this.crowi = crowi;
