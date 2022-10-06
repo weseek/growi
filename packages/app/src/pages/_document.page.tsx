@@ -1,25 +1,52 @@
 import React from 'react';
 
 import fs from 'fs';
+import path from 'path';
 
 import Document, {
   DocumentContext, DocumentInitialProps,
   Html, Head, Main, NextScript,
 } from 'next/document';
 
+import { GrowiPlugin, GrowiPluginResourceType } from '~/interfaces/plugin';
 import { resolveFromRoot } from '~/utils/project-dir-utils';
 
 
+// FIXME: dummy data
+// ------------------
+const growiPluginsExample: GrowiPlugin[] = [
+  {
+    isEnabled: true,
+    installedPath: 'weseek/growi-plugin-jstest',
+    origin: {
+      url: 'https://github.com/weseek/growi-plugin-jstest',
+    },
+    meta: {
+      name: 'weseek/growi-plugin-jstest',
+      types: [GrowiPluginResourceType.Script],
+    },
+  },
+];
+// ------------------
+
+
+type GrowiPluginManifestEntries = [growiPlugin: GrowiPlugin, manifest: any][];
+
 interface GrowiDocumentProps {
-  pluginsManifest: any;
+  pluginManifestEntries: GrowiPluginManifestEntries;
 }
 declare type GrowiDocumentInitialProps = DocumentInitialProps & GrowiDocumentProps;
 
-async function importPluginsManifest(): Promise<any> {
-  const customManifestStr: string = await fs.readFileSync(resolveFromRoot('tmp/plugins/weseek/growi-plugin-jstest/dist/manifest.json'), 'utf-8');
-  return {
-    'growi-plugin-jstest': JSON.parse(customManifestStr),
-  };
+async function retrievePluginManifests(growiPlugins: GrowiPlugin[]): Promise<GrowiPluginManifestEntries> {
+  const entries: GrowiPluginManifestEntries = [];
+
+  growiPlugins.forEach(async(growiPlugin) => {
+    const manifestPath = resolveFromRoot(path.join('tmp/plugins', growiPlugin.installedPath, 'dist/manifest.json'));
+    const customManifestStr: string = await fs.readFileSync(manifestPath, 'utf-8');
+    entries.push([growiPlugin, JSON.parse(customManifestStr)]);
+  });
+
+  return entries;
 }
 
 class GrowiDocument extends Document<GrowiDocumentProps> {
@@ -27,14 +54,16 @@ class GrowiDocument extends Document<GrowiDocumentProps> {
   static override async getInitialProps(ctx: DocumentContext): Promise<GrowiDocumentInitialProps> {
     const initialProps: DocumentInitialProps = await Document.getInitialProps(ctx);
 
-    const pluginsManifest: any = await importPluginsManifest();
+    // TODO: load GrowiPlugin documents from DB
+    // const pluginManifestEntries: GrowiPluginManifestEntries = await retrievePluginManifests(growiPluginsExample);
+    const pluginManifestEntries: GrowiPluginManifestEntries = await retrievePluginManifests([]);
 
-    return { ...initialProps, pluginsManifest };
+    return { ...initialProps, pluginManifestEntries };
   }
 
   override render(): JSX.Element {
 
-    const { pluginsManifest } = this.props;
+    const { pluginManifestEntries } = this.props;
 
     return (
       <Html>
@@ -43,9 +72,17 @@ class GrowiDocument extends Document<GrowiDocumentProps> {
           {renderScriptTagsByGroup('basis')}
           {renderStyleTagsByGroup('basis')}
           */}
-          <link rel="stylesheet" href={`/plugins/weseek/growi-plugin-jstest/dist/${pluginsManifest['growi-plugin-jstest']['client-entry.tsx'].css}`} />
-          {/* eslint-disable-next-line @next/next/no-sync-scripts */}
-          <script type="module" src={`/plugins/weseek/growi-plugin-jstest/dist/${pluginsManifest['growi-plugin-jstest']['client-entry.tsx'].file}`} />
+          { pluginManifestEntries.map(([growiPlugin, manifest]) => (
+            growiPlugin.meta.types.includes(GrowiPluginResourceType.Script) && (
+              <>
+                <link rel="stylesheet" key={`link_${growiPlugin.installedPath}`}
+                  href={`/plugins/${growiPlugin.installedPath}/dist/${manifest['client-entry.tsx'].css}`} />
+                {/* eslint-disable-next-line @next/next/no-sync-scripts */ }
+                <script type="module" key={`script_${growiPlugin.installedPath}`}
+                  src={`/plugins/${growiPlugin.installedPath}/dist/${manifest['client-entry.tsx'].file}`} />
+              </>
+            )
+          )) }
         </Head>
         <body>
           <Main />
