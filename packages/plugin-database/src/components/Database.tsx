@@ -8,6 +8,8 @@ import axios from 'axios';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 
+import { calc } from '../services/mutators/calc';
+
 import { DatabaseContext } from './database-context';
 
 import styles from './Database.module.scss';
@@ -39,7 +41,9 @@ export const Database = (props: Props): JSX.Element => {
         },
       });
 
-      newDatabase = <ReactMarkdown className="wiki" data-testid="wiki" remarkPlugins={[remarkGfm]}>{ result.data }</ReactMarkdown>;
+      const calcResult = calc(result.data);
+
+      newDatabase = <ReactMarkdown className="wiki" data-testid="wiki" remarkPlugins={[remarkGfm]}>{ calcResult }</ReactMarkdown>;
       setDatabase(newDatabase);
       setError(false);
     }
