@@ -115,7 +115,7 @@ export class G2GTransferPusherService implements Pusher {
       return false;
     }
 
-    if (userUpperLimit < (toGROWIInfo.userUpperLimit ?? Infinity)) {
+    if ((userUpperLimit ?? Infinity) < (toGROWIInfo.userUpperLimit ?? 0)) {
       return false;
     }
 
