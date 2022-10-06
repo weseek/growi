@@ -46,7 +46,7 @@ export class PluginService {
     // TODO: detect plugins
     // save plugin metadata
     const ghRepositoryName = ghUrl.split('/').slice(-1)[0];
-    const installedPath = path.join(downloadDir, ghRepositoryName, 'meta.json');
+    const installedPath = path.join(downloadDir, `${ghRepositoryName}-master`, 'meta.json');
     await this.savePluginMetaData(installedPath);
 
     return;
