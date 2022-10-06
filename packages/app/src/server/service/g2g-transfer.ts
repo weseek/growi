@@ -39,12 +39,8 @@ interface Pusher {
    */
   canTransfer(fromGROWIInfo: IDataGROWIInfo): Promise<boolean>
   /**
-<<<<<<< HEAD
-   * @param {TransferKey} tk Transfer key object
-=======
    * Transfer all Attachment data to destination GROWI
    * @param {TransferKey} tk Transfer key
->>>>>>> feat/g2g-nextjs
    */
   transferAttachments(tk: TransferKey): Promise<void>
   /**
@@ -243,19 +239,7 @@ export class G2GTransferPusherService implements Pusher {
       form.append('collections', JSON.stringify(collections));
       form.append('optionsMap', JSON.stringify(optionsMap));
       form.append('operatorUserId', user._id.toString());
-<<<<<<< HEAD
-      await rawAxios.post('/_api/v3/g2g-transfer/', form, {
-        baseURL: appUrl.origin,
-        headers: {
-          ...form.getHeaders(), // This generates a unique boundary for multi part form data
-          [X_GROWI_TRANSFER_KEY_HEADER_NAME]: key,
-        },
-        maxContentLength: Infinity,
-        maxBodyLength: Infinity,
-      });
-=======
       await rawAxios.post('/_api/v3/g2g-transfer/', form, generateAxiosRequestConfigWithTransferKey(tk, form.getHeaders()));
->>>>>>> feat/g2g-nextjs
     }
     catch (errs) {
       logger.error(errs);
