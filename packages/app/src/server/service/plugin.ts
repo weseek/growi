@@ -50,7 +50,7 @@ export class PluginService {
     const ghReposName = match[2];
 
     try {
-      await this.downloadZipFile(`${ghUrl.href}/archive/refs/heads/master.zip`, ghOrganizationName, ghReposName);
+      await this.downloadZipFile(`${ghUrl.href}/archive/refs/heads/main.zip`, ghOrganizationName, ghReposName);
     }
     catch (err) {
       console.log('downloadZipFile error', err);
@@ -67,14 +67,14 @@ export class PluginService {
   async downloadZipFile(url: string, ghOrganizationName: string, ghReposName: string): Promise<void> {
 
     const downloadTargetPath = pluginStoringPath;
-    const zipFilePath = path.join(downloadTargetPath, 'master.zip');
+    const zipFilePath = path.join(downloadTargetPath, 'main.zip');
     const unzipTargetPath = path.join(pluginStoringPath, ghOrganizationName);
 
     const stdout1 = execSync(`wget ${url} -O ${zipFilePath}`);
     const stdout2 = execSync(`mkdir -p ${ghOrganizationName}`);
     const stdout3 = execSync(`rm -rf ${ghOrganizationName}/${ghReposName}`);
     const stdout4 = execSync(`unzip ${zipFilePath} -d ${unzipTargetPath}`);
-    const stdout5 = execSync(`mv ${unzipTargetPath}/${ghReposName}-master ${unzipTargetPath}/${ghReposName}`);
+    const stdout5 = execSync(`mv ${unzipTargetPath}/${ghReposName}-main ${unzipTargetPath}/${ghReposName}`);
     const stdout6 = execSync(`rm ${zipFilePath}`);
 
     return;
