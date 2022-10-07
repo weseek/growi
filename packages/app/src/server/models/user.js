@@ -129,9 +129,12 @@ module.exports = function(crowi) {
 
   async function generatePassword(password) {
     const saltRounds = 10;
+    const salt = await bcrypt.genSalt(saltRounds);
     validateCrowi();
-    const hashedPassword = await bcrypt.hash(crowi.env.PASSWORD_SEED + password, saltRounds);
-    return hashedPassword;
+    if (crowi.env.PASSWORD_SEED) {
+      return bcrypt.hash(crowi.env.PASSWORD_SEED + password, salt);
+    }
+    return bcrypt.hash(password, salt);
   }
 
   function generateApiToken(user) {
@@ -149,8 +152,7 @@ module.exports = function(crowi) {
   };
 
   userSchema.methods.isPasswordValid = async function(password) {
-    const passwordValid = await bcrypt.compare(password, this.password);
-    return passwordValid;
+    return bcrypt.compare(password, this.password);
   };
 
   userSchema.methods.setPassword = async function(password) {
@@ -180,7 +182,7 @@ module.exports = function(crowi) {
   };
 
   userSchema.methods.updatePassword = async function(password) {
-    this.setPassword(password);
+    await this.setPassword(password);
     const userData = await this.save();
     return userData;
   };

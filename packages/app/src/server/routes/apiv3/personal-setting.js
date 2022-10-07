@@ -355,7 +355,7 @@ module.exports = (crowi) => {
     const { body, user } = req;
     const { oldPassword, newPassword } = body;
 
-    if (user.isPasswordSet() && !user.isPasswordValid(oldPassword)) {
+    if (user.isPasswordSet() && !await user.isPasswordValid(oldPassword)) {
       return res.apiv3Err('wrong-current-password', 400);
     }
     try {

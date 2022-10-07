@@ -268,10 +268,10 @@ class PassportService implements S2sMessageHandlable {
       },
       (username, password, done) => {
         // find user
-        User.findUserByUsernameOrEmail(username, password, (err, user) => {
+        User.findUserByUsernameOrEmail(username, password, async(err, user) => {
           if (err) { return done(err) }
           // check existence and password
-          if (!user || !user.isPasswordValid(password)) {
+          if (!user || !await user.isPasswordValid(password)) {
             return done(null, false, { message: 'Incorrect credentials.' });
           }
           return done(null, user);
