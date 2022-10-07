@@ -34,17 +34,17 @@ export const PluginsExtensionPageContents = (): JSX.Element => {
             <PluginCard
               name={'growi-plugin-templates-for-office'}
               url={'https://github.com/weseek/growi-plugin-templates-for-office'}
-              description={'growi-plugin-templates-for-office'}
+              description={'GROWI markdown templates for office.'}
             />
             <PluginCard
               name={'growi-plugin-theme-welcome-to-fumiya-room'}
               url={'https://github.com/weseek/growi-plugin-theme-welcome-to-fumiya-room'}
-              description={'growi-plugin-theme-welcome-to-fumiya-room'}
+              description={'Welcome to fumiya\'s room! This is very very "latest" design...'}
             />
             <PluginCard
               name={'growi-plugin-copy-code-to-clipboard'}
               url={'https://github.com/weseek/growi-plugin-copy-code-to-clipboard'}
-              description={'growi-plugin-copy-code-to-clipboard'}
+              description={'Add copy button on code blocks.'}
             />
             {/* {data?.items.map((item: SearchResultItem) => {
               return <PluginCard key={item.name} {...item} />;
