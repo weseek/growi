@@ -14,7 +14,7 @@ const getCalcPosition = (array: Array<string>): number[] => {
   return calcPosition;
 };
 
-const getCalculatedCollomNumber = (position: number, tableData: string[]) => {
+const getCalculatedCollomNumber = (position: number, tableData: string[]): number => {
   const collom = tableData.map(data => data[position]);
 
   const numberList: number[] = [];
@@ -30,7 +30,7 @@ const getCalculatedCollomNumber = (position: number, tableData: string[]) => {
 };
 
 // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
-export const calc = (body: string) => {
+export const calc = (body: string): string => {
 
   const mdTable = MarkdownTable.fromMarkdownString(body);
 
