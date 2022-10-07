@@ -293,7 +293,7 @@ module.exports = (crowi: Crowi): Router => {
       }
 
       const fileStream = createReadStream(file.path, {
-        flags: 'r', encoding: null, fd: null, mode: '0666', autoClose: true,
+        flags: 'r', mode: 0o666, autoClose: true,
       });
       try {
         await g2gTransferReceiverService.receiveAttachment(fileStream, attachmentMap);
