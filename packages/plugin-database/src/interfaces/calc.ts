@@ -1,3 +1,4 @@
+// TODO: More methods
 export const CalcMethod = {
   SUM: '$$SUM',
 } as const;
