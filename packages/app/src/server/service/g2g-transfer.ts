@@ -231,7 +231,7 @@ export class G2GTransferPusherService implements Pusher {
 
   // eslint-disable-next-line max-len
   public async startTransfer(tk: TransferKey, user: any, toGROWIInfo: IDataGROWIInfo, collections: string[], optionsMap: any, shouldEmit = true): Promise<void> {
-    const socket = this.crowi.socketIoService.getDefaultSocket();
+    const socket = this.crowi.socketIoService.getAdminSocket();
 
     if (shouldEmit) socket.emit('admin:onStartTransferMongoData', {});
 
