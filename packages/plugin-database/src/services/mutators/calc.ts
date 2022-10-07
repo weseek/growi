@@ -34,7 +34,11 @@ export const calc = (body: string) => {
 
   const mdTable = MarkdownTable.fromMarkdownString(body);
 
+  // If calcMethod does not exist in the last line, return body as is
   const calcPositions = getCalcPosition(mdTable.table.pop());
+  if (calcPositions.length === 0) {
+    return body;
+  }
 
   const calcLine = [...Array(mdTable.table[0].length)].map(() => '');
   calcPositions.forEach((position) => {
