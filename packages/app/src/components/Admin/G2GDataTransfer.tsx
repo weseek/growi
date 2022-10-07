@@ -74,6 +74,16 @@ const G2GDataTransfer = (): JSX.Element => {
     }
   }, [socket, t]);
 
+  const cleanUpWebsocketEventHandler = useCallback(() => {
+    if (socket != null) {
+      socket.off('admin:onStartTransferMongoData');
+
+      socket.off('admin:onStartTransferAttachments');
+
+      socket.off('admin:onFinishTransfer');
+    }
+  }, [socket]);
+
   const { transferKey, generateTransferKeyWithThrottle } = useGenerateTransferKeyWithThrottle();
 
   const onClickHandler = useCallback(() => {
@@ -99,7 +109,9 @@ const G2GDataTransfer = (): JSX.Element => {
     setCollectionsAndSelectedCollections();
 
     setupWebsocketEventHandler();
-  }, [setCollectionsAndSelectedCollections, setupWebsocketEventHandler]);
+
+    return cleanUpWebsocketEventHandler();
+  }, [setCollectionsAndSelectedCollections, setupWebsocketEventHandler, cleanUpWebsocketEventHandler]);
 
   return (
     <div data-testid="admin-export-archive-data">
