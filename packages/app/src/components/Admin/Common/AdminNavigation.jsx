@@ -38,7 +38,7 @@ const AdminNavigation = (props) => {
         { t('full_text_search_management.full_text_search_management') }</>;
       // TODO: Consider where to place the "AuditLog"
       case 'audit-log':                return <><i className="icon-fw icon-feed"></i>            { t('audit_log_management.audit_log')}</>;
-      case 'plugins-extention':        return <><i className="icon-fw icon-cloud-download"></i>  { t('plugins-extention.title')}</>;
+      case 'plugins-extention':        return <><i className="icon-fw fa fa-plug"></i>           Plugins Extention </>;
       case 'cloud':                    return <><i className="icon-fw icon-share-alt"></i>       { t('to_cloud_settings')} </>;
       default:                         return <><i className="icon-fw icon-home"></i>            { t('wiki_management_home_page') }</>;
       /* eslint-enable no-multi-spaces */
