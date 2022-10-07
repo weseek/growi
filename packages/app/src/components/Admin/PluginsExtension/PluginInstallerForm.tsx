@@ -4,7 +4,6 @@ import { useTranslation } from 'react-i18next';
 
 import { toastSuccess, toastError } from '~/client/util/apiNotification';
 import { apiv3Post } from '~/client/util/apiv3-client';
-import { success } from '~/server/util/apiResponse';
 
 import AdminInstallButtonRow from '../Common/AdminUpdateButtonRow';
 // TODO: error notification (toast, loggerFactory)
