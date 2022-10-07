@@ -1,10 +1,15 @@
 export type SearchResultItem = {
   id: number,
   name: string,
-  full_name: string,
-  html_url: string,
+  owner: {
+    login: string,
+    html_url: string,
+    avatar_url: string,
+  },
+  fullName: string,
+  htmlUrl: string,
   description: string,
   topics: string[],
   homepage: string,
-  stargazers_count: number,
+  stargazersCount: number,
 }
