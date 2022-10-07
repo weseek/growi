@@ -19,29 +19,27 @@ const HeadersForGrowiPlugin = (props: HeadersForGrowiPluginProps): JSX.Element =
   return (
     <>
       { pluginManifestEntries.map(([growiPlugin, manifest]) => {
-        // type: template
-        if (growiPlugin.meta.types.includes(GrowiPluginResourceType.Template)) {
-          return (
-            <>
-              {/* eslint-disable-next-line @next/next/no-sync-scripts */ }
-              <script type="module" key={`script_${growiPlugin.installedPath}`}
-                src={`/plugins/${growiPlugin.installedPath}/dist/${manifest['client-entry.tsx'].file}`} />
-            </>
-          );
+        const { types } = growiPlugin.meta;
+
+        const elements: JSX.Element[] = [];
+
+        // add script
+        if (types.includes(GrowiPluginResourceType.Script) || types.includes(GrowiPluginResourceType.Template)) {
+          elements.push(<>
+            {/* eslint-disable-next-line @next/next/no-sync-scripts */ }
+            <script type="module" key={`script_${growiPlugin.installedPath}`}
+              src={`/plugins/${growiPlugin.installedPath}/dist/${manifest['client-entry.tsx'].file}`} />
+          </>);
         }
-        // type: script
-        if (growiPlugin.meta.types.includes(GrowiPluginResourceType.Script)) {
-          return (
-            <>
-              <link rel="stylesheet" key={`link_${growiPlugin.installedPath}`}
-                href={`/plugins/${growiPlugin.installedPath}/dist/${manifest['client-entry.tsx'].css}`} />
-              {/* eslint-disable-next-line @next/next/no-sync-scripts */ }
-              <script type="module" key={`script_${growiPlugin.installedPath}`}
-                src={`/plugins/${growiPlugin.installedPath}/dist/${manifest['client-entry.tsx'].file}`} />
-            </>
-          );
+        // add link
+        if (types.includes(GrowiPluginResourceType.Script) || types.includes(GrowiPluginResourceType.Style)) {
+          elements.push(<>
+            <link rel="stylesheet" key={`link_${growiPlugin.installedPath}`}
+              href={`/plugins/${growiPlugin.installedPath}/dist/${manifest['client-entry.tsx'].css}`} />
+          </>);
         }
-        return <></>;
+
+        return elements;
       }) }
     </>
   );
