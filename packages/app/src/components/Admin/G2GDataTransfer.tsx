@@ -151,12 +151,17 @@ const G2GDataTransfer = (): JSX.Element => {
       </form>
 
 
-      {statusMessage != null && <p>{statusMessage}</p>}
-      {isTransferring && (
-        <div className="text-muted text-center">
-          <i className="fa fa-2x fa-spinner fa-pulse mr-1"></i>
-        </div>
+      {statusMessage != null && (
+        <>
+          <div className='alert alert-info'>{statusMessage}</div>
+          {isTransferring && (
+            <div className="text-muted text-center">
+              <i className="fa fa-2x fa-spinner fa-pulse mr-1"></i>
+            </div>
+          )}
+        </>
       )}
+
 
       <h2 className="border-bottom mt-5">{t('admin:g2g_data_transfer.transfer_data_to_this_growi')}</h2>
 
