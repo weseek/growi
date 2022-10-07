@@ -18,6 +18,18 @@ const logger = loggerFactory('growi:service:g2g-transfer');
 
 export const X_GROWI_TRANSFER_KEY_HEADER_NAME = 'x-growi-transfer-key';
 
+export const uploadConfigKeys = [
+  'app:fileUploadType',
+  'app:useOnlyEnvVarForFileUploadType',
+  'aws:referenceFileWithRelayMode',
+  'aws:lifetimeSecForTemporaryUrl',
+  'gcs:apiKeyJsonPath',
+  'gcs:bucket',
+  'gcs:uploadNamespace',
+  'gcs:referenceFileWithRelayMode',
+  'gcs:useOnlyEnvVarsForSomeOptions',
+];
+
 /**
  * Data used for comparing to/from GROWI information
  */
@@ -223,31 +235,11 @@ export class G2GTransferPusherService implements Pusher {
 
     if (shouldEmit) socket.emit('admin:onStartTransferMongoData', {});
 
-    if (toGROWIInfo.attachmentInfo.type === 'none') {
-      try {
-        const targetConfigKeys = [
-          'app:fileUploadType',
-          'app:useOnlyEnvVarForFileUploadType',
-          'aws:referenceFileWithRelayMode',
-          'aws:lifetimeSecForTemporaryUrl',
-          'gcs:apiKeyJsonPath',
-          'gcs:bucket',
-          'gcs:uploadNamespace',
-          'gcs:referenceFileWithRelayMode',
-          'gcs:useOnlyEnvVarsForSomeOptions',
-        ];
+    const targetConfigKeys = uploadConfigKeys;
 
-        const updateConfigs = Object.fromEntries(targetConfigKeys.map((key) => {
-          return [key, this.crowi.configManager.getConfig('crowi', key)];
-        }));
-
-        await this.crowi.configManager.updateConfigsInTheSameNamespace('crowi', updateConfigs);
-      }
-      catch (err) {
-        logger.error(err);
-        throw err;
-      }
-    }
+    const uploadConfigs = Object.fromEntries(targetConfigKeys.map((key) => {
+      return [key, this.crowi.configManager.getConfig('crowi', key)];
+    }));
 
     let zipFileStream: ReadStream;
     try {
@@ -272,6 +264,7 @@ export class G2GTransferPusherService implements Pusher {
       form.append('collections', JSON.stringify(collections));
       form.append('optionsMap', JSON.stringify(optionsMap));
       form.append('operatorUserId', user._id.toString());
+      form.append('uploadConfigs', JSON.stringify(uploadConfigs));
       await rawAxios.post('/_api/v3/g2g-transfer/', form, generateAxiosRequestConfigWithTransferKey(tk, form.getHeaders()));
     }
     catch (errs) {

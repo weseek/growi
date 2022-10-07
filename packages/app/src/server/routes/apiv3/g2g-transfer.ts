@@ -1,5 +1,5 @@
+import { createReadStream } from 'fs';
 import path from 'path';
-import { Readable } from 'stream';
 
 import express, { NextFunction, Request, Router } from 'express';
 import { body } from 'express-validator';
@@ -9,7 +9,7 @@ import { SupportedAction } from '~/interfaces/activity';
 import GrowiArchiveImportOption from '~/models/admin/growi-archive-import-option';
 import TransferKeyModel from '~/server/models/transfer-key';
 import { isG2GTransferError } from '~/server/models/vo/g2g-transfer-error';
-import { IDataGROWIInfo, X_GROWI_TRANSFER_KEY_HEADER_NAME } from '~/server/service/g2g-transfer';
+import { IDataGROWIInfo, uploadConfigKeys, X_GROWI_TRANSFER_KEY_HEADER_NAME } from '~/server/service/g2g-transfer';
 import loggerFactory from '~/utils/logger';
 import { TransferKey } from '~/utils/vo/transfer-key';
 
@@ -41,10 +41,10 @@ const validator = {
 module.exports = (crowi: Crowi): Router => {
   const {
     g2gTransferPusherService, g2gTransferReceiverService, exportService, importService,
-    growiBridgeService,
+    growiBridgeService, configManager,
   } = crowi;
   if (g2gTransferPusherService == null || g2gTransferReceiverService == null || exportService == null || importService == null
-    || growiBridgeService == null) {
+    || growiBridgeService == null || configManager == null) {
     throw Error('GROWI is not ready for g2g transfer');
   }
 
@@ -67,7 +67,15 @@ module.exports = (crowi: Crowi): Router => {
   });
 
   const uploadsForAttachment = multer({
-    storage: multer.memoryStorage(),
+    storage: multer.diskStorage({
+      destination: (req, file, cb) => {
+        cb(null, importService.baseDir);
+      },
+      filename(req, file, cb) {
+        // to prevent hashing the file name. files with same name will be overwritten.
+        cb(null, file.originalname);
+      },
+    }),
   });
 
   const isInstalled = crowi.configManager?.getConfig('crowi', 'app:installed');
@@ -145,14 +153,21 @@ module.exports = (crowi: Crowi): Router => {
 
     const zipFile = importService.getFile(file.filename);
 
-    const { collections: strCollections, optionsMap: strOptionsMap, operatorUserId } = req.body;
+    const {
+      collections: strCollections,
+      optionsMap: strOptionsMap,
+      operatorUserId,
+      uploadConfigs: strUploadConfigs,
+    } = req.body;
 
     // Parse multipart form data
     let collections;
     let optionsMap;
+    let sourceGROWIUploadConfigs;
     try {
       collections = JSON.parse(strCollections);
       optionsMap = JSON.parse(strOptionsMap);
+      sourceGROWIUploadConfigs = JSON.parse(strUploadConfigs);
     }
     catch (err) {
       logger.error(err);
@@ -230,7 +245,27 @@ module.exports = (crowi: Crowi): Router => {
      * import
      */
     try {
+      const shouldKeepUploadConfigs = configManager.getConfig('crowi', 'app:fileUploadType') !== 'none';
+
+      let savedUploadConfigs;
+      if (shouldKeepUploadConfigs) {
+        // save
+        savedUploadConfigs = Object.fromEntries(uploadConfigKeys.map((key) => {
+          return [key, configManager.getConfigFromDB('crowi', key)];
+        }));
+      }
+
       await importService.import(collections, importSettingsMap);
+
+      // remove & save if none
+      if (shouldKeepUploadConfigs) {
+        await configManager.removeConfigsInTheSameNamespace('crowi', uploadConfigKeys);
+        await configManager.updateConfigsInTheSameNamespace('crowi', savedUploadConfigs);
+      }
+      else {
+        await configManager.updateConfigsInTheSameNamespace('crowi', sourceGROWIUploadConfigs);
+      }
+
       await crowi?.setUpFileUpload(true);
       await crowi?.appService?.setupAfterInstall();
     }
@@ -257,9 +292,16 @@ module.exports = (crowi: Crowi): Router => {
         return res.apiv3Err(new ErrorV3('Failed to parse body.', 'parse_failed'), 500);
       }
 
-      // convert Buffer to stream
-      // see: https://stackoverflow.com/a/62143160
-      await g2gTransferReceiverService.receiveAttachment(Readable.from(file.buffer), attachmentMap);
+      const fileStream = createReadStream(file.path, {
+        flags: 'r', mode: 0o666, autoClose: true,
+      });
+      try {
+        await g2gTransferReceiverService.receiveAttachment(fileStream, attachmentMap);
+      }
+      catch (err) {
+        logger.error(err);
+        return res.apiv3Err(new ErrorV3('Failed to upload.', 'upload_failed'), 500);
+      }
 
       return res.apiv3({ message: 'Successfully imported attached file.' });
     });
