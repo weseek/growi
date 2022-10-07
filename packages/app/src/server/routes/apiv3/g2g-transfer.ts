@@ -1,5 +1,5 @@
+import { createReadStream } from 'fs';
 import path from 'path';
-import { Readable } from 'stream';
 
 import express, { NextFunction, Request, Router } from 'express';
 import { body } from 'express-validator';
@@ -67,7 +67,15 @@ module.exports = (crowi: Crowi): Router => {
   });
 
   const uploadsForAttachment = multer({
-    storage: multer.memoryStorage(),
+    storage: multer.diskStorage({
+      destination: (req, file, cb) => {
+        cb(null, importService.baseDir);
+      },
+      filename(req, file, cb) {
+        // to prevent hashing the file name. files with same name will be overwritten.
+        cb(null, file.originalname);
+      },
+    }),
   });
 
   const isInstalled = crowi.configManager?.getConfig('crowi', 'app:installed');
@@ -284,9 +292,10 @@ module.exports = (crowi: Crowi): Router => {
         return res.apiv3Err(new ErrorV3('Failed to parse body.', 'parse_failed'), 500);
       }
 
-      // convert Buffer to stream
-      // see: https://stackoverflow.com/a/62143160
-      await g2gTransferReceiverService.receiveAttachment(Readable.from(file.buffer), attachmentMap);
+      const fileStream = createReadStream(file.path, {
+        flags: 'r', encoding: null, fd: null, mode: '0666', autoClose: true,
+      });
+      await g2gTransferReceiverService.receiveAttachment(fileStream, attachmentMap);
 
       return res.apiv3({ message: 'Successfully imported attached file.' });
     });
