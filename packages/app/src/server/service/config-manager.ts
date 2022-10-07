@@ -187,7 +187,7 @@ export default class ConfigManager implements S2sMessageHandlable {
    *  );
    * ```
    */
-  async updateConfigsInTheSameNamespace(namespace, configs, withoutPublishingS2sMessage) {
+  async updateConfigsInTheSameNamespace(namespace, configs, withoutPublishingS2sMessage?) {
     const queries: any[] = [];
     for (const key of Object.keys(configs)) {
       queries.push({
@@ -195,6 +195,25 @@ export default class ConfigManager implements S2sMessageHandlable {
           filter: { ns: namespace, key },
           update: { ns: namespace, key, value: this.convertInsertValue(configs[key]) },
           upsert: true,
+        },
+      });
+    }
+    await ConfigModel.bulkWrite(queries);
+
+    await this.loadConfigs();
+
+    // publish updated date after reloading
+    if (this.s2sMessagingService != null && !withoutPublishingS2sMessage) {
+      this.publishUpdateMessage();
+    }
+  }
+
+  async removeConfigsInTheSameNamespace(namespace, configKeys: string[], withoutPublishingS2sMessage?) {
+    const queries: any[] = [];
+    for (const key of configKeys) {
+      queries.push({
+        deleteOne: {
+          filter: { ns: namespace, key },
         },
       });
     }

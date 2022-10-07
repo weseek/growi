@@ -1,7 +1,6 @@
 import React, { useCallback, useEffect, useState } from 'react';
 
 import { useTranslation } from 'react-i18next';
-import * as toastr from 'toastr';
 
 import { useGenerateTransferKeyWithThrottle } from '~/client/services/g2g-transfer';
 import { toastError } from '~/client/util/apiNotification';

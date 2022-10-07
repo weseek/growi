@@ -9,7 +9,7 @@ import { SupportedAction } from '~/interfaces/activity';
 import GrowiArchiveImportOption from '~/models/admin/growi-archive-import-option';
 import TransferKeyModel from '~/server/models/transfer-key';
 import { isG2GTransferError } from '~/server/models/vo/g2g-transfer-error';
-import { IDataGROWIInfo, X_GROWI_TRANSFER_KEY_HEADER_NAME } from '~/server/service/g2g-transfer';
+import { IDataGROWIInfo, uploadConfigKeys, X_GROWI_TRANSFER_KEY_HEADER_NAME } from '~/server/service/g2g-transfer';
 import loggerFactory from '~/utils/logger';
 import { TransferKey } from '~/utils/vo/transfer-key';
 
@@ -41,10 +41,10 @@ const validator = {
 module.exports = (crowi: Crowi): Router => {
   const {
     g2gTransferPusherService, g2gTransferReceiverService, exportService, importService,
-    growiBridgeService,
+    growiBridgeService, configManager,
   } = crowi;
   if (g2gTransferPusherService == null || g2gTransferReceiverService == null || exportService == null || importService == null
-    || growiBridgeService == null) {
+    || growiBridgeService == null || configManager == null) {
     throw Error('GROWI is not ready for g2g transfer');
   }
 
@@ -145,14 +145,21 @@ module.exports = (crowi: Crowi): Router => {
 
     const zipFile = importService.getFile(file.filename);
 
-    const { collections: strCollections, optionsMap: strOptionsMap, operatorUserId } = req.body;
+    const {
+      collections: strCollections,
+      optionsMap: strOptionsMap,
+      operatorUserId,
+      uploadConfigs: strUploadConfigs,
+    } = req.body;
 
     // Parse multipart form data
     let collections;
     let optionsMap;
+    let sourceGROWIUploadConfigs;
     try {
       collections = JSON.parse(strCollections);
       optionsMap = JSON.parse(strOptionsMap);
+      sourceGROWIUploadConfigs = JSON.parse(strUploadConfigs);
     }
     catch (err) {
       logger.error(err);
@@ -230,8 +237,28 @@ module.exports = (crowi: Crowi): Router => {
      * import
      */
     try {
+      const shouldKeepUploadConfigs = configManager.getConfig('crowi', 'app:fileUploadType') === 'none';
+
+      let savedUploadConfigs;
+      if (shouldKeepUploadConfigs) {
+        // save
+        savedUploadConfigs = Object.fromEntries(uploadConfigKeys.map((key) => {
+          return [key, configManager.getConfigFromDB('crowi', key)];
+        }));
+      }
+
       await importService.import(collections, importSettingsMap);
       await crowi?.setUpFileUpload(true);
+
+      // remove & save if none
+      if (shouldKeepUploadConfigs) {
+        await configManager.removeConfigsInTheSameNamespace('crowi', uploadConfigKeys);
+        await configManager.updateConfigsInTheSameNamespace('crowi', savedUploadConfigs);
+      }
+      else {
+        await configManager.updateConfigsInTheSameNamespace('crowi', sourceGROWIUploadConfigs);
+      }
+
       await crowi?.appService?.setupAfterInstall();
     }
     catch (err) {
