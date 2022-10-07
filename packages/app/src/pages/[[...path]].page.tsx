@@ -20,7 +20,7 @@ import superjson from 'superjson';
 // import { Comments } from '~/components/Comments';
 // import { PageAlerts } from '~/components/PageAlert/PageAlerts';
 // import { useTranslation } from '~/i18n';
-// import { CurrentPageContentFooter } from '~/components/PageContentFooter';
+import { CurrentPageContentFooter } from '~/components/PageContentFooter';
 // import { UsersHomePageFooterProps } from '~/components/UsersHomePageFooter';
 import { CrowiRequest } from '~/interfaces/crowi-request';
 // import { renderScriptTagByName, renderHighlightJsStyleTag } from '~/service/cdn-resources-loader';
@@ -46,7 +46,7 @@ import loggerFactory from '~/utils/logger';
 
 // import GrowiSubNavigation from '../client/js/components/Navbar/GrowiSubNavigation';
 // import GrowiSubNavigationSwitcher from '../client/js/components/Navbar/GrowiSubNavigationSwitcher';
-// import { DescendantsPageListModal } from '../components/DescendantsPageListModal';
+import { DescendantsPageListModal } from '../components/DescendantsPageListModal';
 import { BasicLayout } from '../components/Layout/BasicLayout';
 import GrowiContextualSubNavigation from '../components/Navbar/GrowiContextualSubNavigation';
 import DisplaySwitcher from '../components/Page/DisplaySwitcher';
@@ -324,18 +324,18 @@ const GrowiPage: NextPage<Props> = (props: Props) => {
               </div>
             </div>
           </div>
-          {/* { !props.isIdenticalPathPage && !props.isNotFound && (
+          { !props.isIdenticalPathPage && !props.isNotFound && (
             <footer className="footer d-edit-none">
-              { pageWithMeta != null && !isTopPagePath && (<Comments pageId={pageId} revision={pageWithMeta.data.revision} />) }
+              {/* { pageWithMeta != null && !isTopPagePath && (<Comments pageId={pageId} revision={pageWithMeta.data.revision} />) }
               { pageWithMeta != null && isUsersHomePage(pageWithMeta.data.path) && (
                 <UsersHomePageFooter creatorId={pageWithMeta.data.creator._id}/>
-              ) }
+              ) } */}
               <CurrentPageContentFooter />
             </footer>
-          )} */}
+          )}
 
           {/* <UnsavedAlertDialog /> */}
-          {/* <DescendantsPageListModal /> */}
+          <DescendantsPageListModal />
           {/* {shouldRenderPutbackPageModal && <PutbackPageModal />} */}
         </div>
       </BasicLayout>
