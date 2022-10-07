@@ -4,13 +4,14 @@ import { useTranslation } from 'react-i18next';
 
 import { toastSuccess, toastError } from '~/client/util/apiNotification';
 import { apiv3Post } from '~/client/util/apiv3-client';
+import { success } from '~/server/util/apiResponse';
 
 import AdminInstallButtonRow from '../Common/AdminUpdateButtonRow';
 // TODO: error notification (toast, loggerFactory)
 // TODO: i18n
 
 export const PluginInstallerForm = (): JSX.Element => {
-  const { t } = useTranslation('admin');
+  // const { t } = useTranslation('admin');
 
   const submitHandler = useCallback(async(e) => {
     e.preventDefault();
@@ -31,13 +32,13 @@ export const PluginInstallerForm = (): JSX.Element => {
 
     try {
       await apiv3Post('/plugins-extention', { pluginInstallerForm });
-      toastSuccess(t('toaster.update_successed', { target: t('app_settings') }));
+      toastSuccess('Plugin Install Successed!');
     }
     catch (err) {
       toastError(err);
       // logger.error(err);
     }
-  }, [t]);
+  }, []);
 
   return (
     <form role="form" onSubmit={submitHandler}>
