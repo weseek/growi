@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { SearchResultItem } from '~/models/SearchResultItem';
+import { PluginItem } from '~/models/SearchResultItem';
 import { useInstalledPlugins } from '~/stores/useInstalledPlugins';
 
 import Loading from './Loading';
@@ -10,12 +10,18 @@ import { PluginInstallerForm } from './PluginInstallerForm';
 
 // TODO: i18n
 
+
 export const PluginsExtensionPageContents = (): JSX.Element => {
   // const { data, error } = useInstalledPlugins();
+  // const { data: data, error } = useSWRxPlugins(pageId, pageNumber);
 
   // if (data == null) {
   //   return <Loading />;
   // }
+
+  // data?.items.map((item: PluginItem) => {
+  //   return <PluginCard name={item.name} url={item.url} description={item.description} />;
+  // })}
 
   return (
     <div>
@@ -39,7 +45,7 @@ export const PluginsExtensionPageContents = (): JSX.Element => {
             <PluginCard
               name={'growi-plugin-theme-welcome-to-fumiya-room'}
               url={'https://github.com/weseek/growi-plugin-theme-welcome-to-fumiya-room'}
-              description={'Welcome to fumiya\'s room! This is very very "latest" design...'}
+              description={'Welcome to fumiya\'s room!'}
             />
             <PluginCard
               name={'growi-plugin-copy-code-to-clipboard'}

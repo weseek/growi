@@ -10,6 +10,10 @@ module.exports = (crowi: Crowi) => {
   const router = express.Router();
   const { pluginService } = crowi;
 
+  // router.get('/', async(req, res) => {
+
+  // });
+
   router.post('/', async(req: PluginInstallerFormRequest, res: ApiV3Response) => {
     if (pluginService == null) {
       return res.apiv3Err(400);
