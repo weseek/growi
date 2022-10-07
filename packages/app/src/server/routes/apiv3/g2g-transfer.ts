@@ -237,7 +237,7 @@ module.exports = (crowi: Crowi): Router => {
      * import
      */
     try {
-      const shouldKeepUploadConfigs = configManager.getConfig('crowi', 'app:fileUploadType') === 'none';
+      const shouldKeepUploadConfigs = configManager.getConfig('crowi', 'app:fileUploadType') !== 'none';
 
       let savedUploadConfigs;
       if (shouldKeepUploadConfigs) {
@@ -248,7 +248,6 @@ module.exports = (crowi: Crowi): Router => {
       }
 
       await importService.import(collections, importSettingsMap);
-      await crowi?.setUpFileUpload(true);
 
       // remove & save if none
       if (shouldKeepUploadConfigs) {
@@ -259,6 +258,7 @@ module.exports = (crowi: Crowi): Router => {
         await configManager.updateConfigsInTheSameNamespace('crowi', sourceGROWIUploadConfigs);
       }
 
+      await crowi?.setUpFileUpload(true);
       await crowi?.appService?.setupAfterInstall();
     }
     catch (err) {
