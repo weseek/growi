@@ -5,7 +5,6 @@ import PropTypes from 'prop-types';
 import { Waypoint } from 'react-waypoint';
 
 import { apiv3Get } from '~/client/util/apiv3-client';
-import { RendererOptions } from '~/services/renderer/renderer';
 import loggerFactory from '~/utils/logger';
 
 import RevisionRenderer from './RevisionRenderer';
