@@ -3,6 +3,7 @@ import path from 'path';
 
 import { CustomWindow } from '~/interfaces/global';
 import { GrowiPlugin } from '~/interfaces/plugin';
+import { initializeGrowiFacade } from '~/utils/growi-facade';
 import { resolveFromRoot } from '~/utils/project-dir-utils';
 
 
@@ -24,6 +25,8 @@ export class ActivatePluginService {
   }
 
   static activateAll(): void {
+    initializeGrowiFacade();
+
     const { pluginActivators } = window as CustomWindow;
 
     if (pluginActivators == null) {

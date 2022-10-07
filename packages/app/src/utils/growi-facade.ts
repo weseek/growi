@@ -3,14 +3,22 @@ import deepmerge from 'ts-deepmerge';
 
 import { CustomWindow } from '~/interfaces/global';
 
-export const getGrowiFacade = (): GrowiFacade => {
+export const initializeGrowiFacade = (): void => {
   if (isServer()) {
-    return {};
+    return;
   }
 
   if ((window as CustomWindow).growiFacade == null) {
     (window as CustomWindow).growiFacade = {};
   }
+};
+
+export const getGrowiFacade = (): GrowiFacade => {
+  if (isServer()) {
+    return {};
+  }
+
+  initializeGrowiFacade();
 
   return (window as CustomWindow).growiFacade;
 };
