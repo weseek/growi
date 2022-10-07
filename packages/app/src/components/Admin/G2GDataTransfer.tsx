@@ -27,7 +27,7 @@ const G2GDataTransfer = (): JSX.Element => {
   const [optionsMap, setOptionsMap] = useState<any>({});
   const [isShowExportForm, setShowExportForm] = useState(false);
   const [isTransferring, setTransferring] = useState(false);
-  const [statusMessage, setStatusMessage] = useState('');
+  const [statusMessage, setStatusMessage] = useState<string | undefined>(undefined);
 
   const updateSelectedCollections = (newSelectedCollections: Set<string>) => {
     setSelectedCollections(newSelectedCollections);
