@@ -15,6 +15,10 @@ const logger = loggerFactory('growi:plugins:plugin-utils');
 
 const pluginStoringPath = resolveFromRoot('tmp/plugins');
 
+// https://regex101.com/r/fK2rV3/1
+const githubReposIdPattern = new RegExp(/^\/([^/]+)\/([^/]+)$/);
+
+
 export class PluginService {
 
   crowi: any;
@@ -34,20 +38,44 @@ export class PluginService {
 
   async install(crowi: Crowi, origin: GrowiPluginOrigin): Promise<void> {
     // download
-    const ghUrl = origin.url;
-    const downloadDir = path.join(process.cwd(), 'tmp/plugins/');
+    const ghUrl = new URL(origin.url);
+    const ghPathname = ghUrl.pathname;
+
+    const match = ghPathname.match(githubReposIdPattern);
+    if (ghUrl.hostname !== 'github.com' || match == null) {
+      throw new Error('The GitHub Repository URL is invalid.');
+    }
+
+    const ghOrganizationName = match[1];
+    const ghReposName = match[2];
+
     try {
-      await this.downloadZipFile(`${ghUrl}/archive/refs/heads/master.zip`, downloadDir);
+      await this.downloadZipFile(`${ghUrl.href}/archive/refs/heads/main.zip`, ghOrganizationName, ghReposName);
     }
     catch (err) {
       console.log('downloadZipFile error', err);
     }
 
     // save plugin metadata
-    const ghRepositoryName = ghUrl.split('/').slice(-1)[0];
-    const installedPath = path.join(`${ghRepositoryName}-main`);
+    const installedPath = `${ghOrganizationName}/${ghReposName}`;
     const plugins = await PluginService.detectPlugins(origin, installedPath);
     await this.savePluginMetaData(plugins);
+
+    return;
+  }
+
+  async downloadZipFile(url: string, ghOrganizationName: string, ghReposName: string): Promise<void> {
+
+    const downloadTargetPath = pluginStoringPath;
+    const zipFilePath = path.join(downloadTargetPath, 'main.zip');
+    const unzipTargetPath = path.join(pluginStoringPath, ghOrganizationName);
+
+    const stdout1 = execSync(`wget ${url} -O ${zipFilePath}`);
+    const stdout2 = execSync(`mkdir -p ${ghOrganizationName}`);
+    const stdout3 = execSync(`rm -rf ${ghOrganizationName}/${ghReposName}`);
+    const stdout4 = execSync(`unzip ${zipFilePath} -d ${unzipTargetPath}`);
+    const stdout5 = execSync(`mv ${unzipTargetPath}/${ghReposName}-main ${unzipTargetPath}/${ghReposName}`);
+    const stdout6 = execSync(`rm ${zipFilePath}`);
 
     return;
   }
@@ -107,13 +135,5 @@ export class PluginService {
     return [];
   }
 
-  async downloadZipFile(ghUrl: string, filePath:string): Promise<void> {
-
-    const stdout1 = execSync(`wget ${ghUrl} -O ${filePath}master.zip`);
-    const stdout2 = execSync(`unzip ${filePath}master.zip -d ${filePath}`);
-    const stdout3 = execSync(`rm ${filePath}master.zip`);
-
-    return;
-  }
 
 }
