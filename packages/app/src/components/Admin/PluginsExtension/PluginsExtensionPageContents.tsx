@@ -36,11 +36,11 @@ export const PluginsExtensionPageContents = (): JSX.Element => {
               url={'https://github.com/weseek/growi-plugin-templates-for-office'}
               description={'GROWI markdown templates for office.'}
             />
-            <PluginCard
+            {/* <PluginCard
               name={'growi-plugin-theme-welcome-to-fumiya-room'}
               url={'https://github.com/weseek/growi-plugin-theme-welcome-to-fumiya-room'}
               description={'Welcome to fumiya\'s room! This is very very "latest" design...'}
-            />
+            /> */}
             <PluginCard
               name={'growi-plugin-copy-code-to-clipboard'}
               url={'https://github.com/weseek/growi-plugin-copy-code-to-clipboard'}
