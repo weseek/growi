@@ -33,7 +33,7 @@ export const PluginCard = (props: Props) => {
   };
 
   return (
-    <div className="card shadow border-0" key={'1'}>
+    <div className="card shadow border-0" key={name}>
       <div className="card-body px-5 py-4">
         <div className="row mb-3">
           <div className="col-9">
