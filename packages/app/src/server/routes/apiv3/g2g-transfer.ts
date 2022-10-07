@@ -295,7 +295,13 @@ module.exports = (crowi: Crowi): Router => {
       const fileStream = createReadStream(file.path, {
         flags: 'r', encoding: null, fd: null, mode: '0666', autoClose: true,
       });
-      await g2gTransferReceiverService.receiveAttachment(fileStream, attachmentMap);
+      try {
+        await g2gTransferReceiverService.receiveAttachment(fileStream, attachmentMap);
+      }
+      catch (err) {
+        logger.error(err);
+        return res.apiv3Err(new ErrorV3('Failed to upload.', 'upload_failed'), 500);
+      }
 
       return res.apiv3({ message: 'Successfully imported attached file.' });
     });
