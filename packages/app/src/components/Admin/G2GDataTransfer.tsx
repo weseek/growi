@@ -109,9 +109,7 @@ const G2GDataTransfer = (): JSX.Element => {
     setCollectionsAndSelectedCollections();
 
     setupWebsocketEventHandler();
-
-    return cleanUpWebsocketEventHandler();
-  }, [setCollectionsAndSelectedCollections, setupWebsocketEventHandler, cleanUpWebsocketEventHandler]);
+  }, [setCollectionsAndSelectedCollections, setupWebsocketEventHandler]);
 
   return (
     <div data-testid="admin-export-archive-data">
@@ -153,15 +151,14 @@ const G2GDataTransfer = (): JSX.Element => {
 
       {statusMessage != null && (
         <>
-          <div className='alert alert-info'>{statusMessage}</div>
-          {isTransferring && (
-            <div className="text-muted text-center">
-              <i className="fa fa-2x fa-spinner fa-pulse mr-1"></i>
-            </div>
-          )}
+          <div className='alert alert-info d-flex align-items-center'>
+            {isTransferring && (
+              <i className="fa fa-2x fa-spinner fa-pulse mr-2"></i>
+            )}
+            <p className="mb-0">{statusMessage}</p>
+          </div>
         </>
       )}
-
 
       <h2 className="border-bottom mt-5">{t('admin:g2g_data_transfer.transfer_data_to_this_growi')}</h2>
 
