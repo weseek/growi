@@ -1,6 +1,7 @@
 import React from 'react';
 
 import { isClient, objectIdUtils } from '@growi/core';
+import mongoose from 'mongoose';
 import {
   NextPage, GetServerSideProps, GetServerSidePropsContext,
 } from 'next';
@@ -28,12 +29,14 @@ import AdminSamlSecurityContainer from '~/client/services/AdminSamlSecurityConta
 import AdminSlackIntegrationLegacyContainer from '~/client/services/AdminSlackIntegrationLegacyContainer';
 import AdminTwitterSecurityContainer from '~/client/services/AdminTwitterSecurityContainer';
 import AdminUsersContainer from '~/client/services/AdminUsersContainer';
+import { ActivatePluginService, GrowiPluginManifestEntries } from '~/client/services/activate-plugin';
 import { SupportedActionType } from '~/interfaces/activity';
 import { CrowiRequest } from '~/interfaces/crowi-request';
+import { GrowiPlugin } from '~/interfaces/plugin';
 import ConfigLoader from '~/server/service/config-loader';
 import {
   useCurrentUser, /* useSearchServiceConfigured, */ useIsAclEnabled, useIsMailerSetup, useIsSearchServiceReachable, useSiteUrl,
-  useAuditLogEnabled, useAuditLogAvailableActions,
+  useAuditLogEnabled, useAuditLogAvailableActions, usePluginEntries,
 } from '~/stores/context';
 import { useIsMaintenanceMode } from '~/stores/maintenanceMode';
 
@@ -80,6 +83,8 @@ type Props = CommonProps & {
   isMailerSetup: boolean,
   auditLogEnabled: boolean,
   auditLogAvailableActions: SupportedActionType[],
+
+  pluginManifestEntries: any,
 
   siteUrl: string,
 };
@@ -208,6 +213,7 @@ const AdminMarkdownSettingsPage: NextPage<Props> = (props: Props) => {
 
   useAuditLogEnabled(props.auditLogEnabled);
   useAuditLogAvailableActions(props.auditLogAvailableActions);
+  usePluginEntries(props.pluginManifestEntries);
 
   const injectableContainers: Container<any>[] = [];
 
@@ -315,6 +321,15 @@ async function injectNextI18NextConfigurations(context: GetServerSidePropsContex
   props._nextI18Next = nextI18NextConfig._nextI18Next;
 }
 
+async function getPluginProps(ctx, props): Promise<any> {
+  // const initialProps: DocumentInitialProps = await Document.getInitialProps(ctx);
+
+  const GrowiPlugin = mongoose.model<GrowiPlugin>('GrowiPlugin');
+  const growiPlugins = await GrowiPlugin.find({ isEnabled: true });
+  const pluginManifestEntries: GrowiPluginManifestEntries = await ActivatePluginService.retrievePluginManifests(growiPlugins);
+  props.pluginManifestEntries = JSON.parse(JSON.stringify(pluginManifestEntries));
+}
+
 export const getServerSideProps: GetServerSideProps = async(context: GetServerSidePropsContext) => {
   const req: CrowiRequest = context.req as CrowiRequest;
 
@@ -334,6 +349,7 @@ export const getServerSideProps: GetServerSideProps = async(context: GetServerSi
 
   injectServerConfigurations(context, props);
   await injectNextI18NextConfigurations(context, props, ['admin']);
+  await getPluginProps(context, props);
 
   return {
     props,

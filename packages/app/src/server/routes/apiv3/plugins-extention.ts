@@ -1,4 +1,5 @@
 import express, { Request } from 'express';
+import { PromiseProvider } from 'mongoose';
 
 import Crowi from '../../crowi';
 
@@ -11,7 +12,18 @@ module.exports = (crowi: Crowi) => {
   const { pluginService } = crowi;
 
   // router.get('/', async(req, res) => {
+  //   if (pluginService == null) {
+  //     // return res.apiv3Err(400);
+  //     return; // console.log('err');
+  //   }
 
+  //   try {
+  //     const res = await pluginService.getPlugins();
+  //     return res.apiv3(res);
+  //   }
+  //   catch (err) {
+  //     // return res.apiv3Err(err, 400);
+  //   }
   // });
 
   router.post('/', async(req: PluginInstallerFormRequest, res: ApiV3Response) => {
@@ -24,7 +36,6 @@ module.exports = (crowi: Crowi) => {
       return res.apiv3({});
     }
     catch (err) {
-      // TODO: error handling
       return res.apiv3Err(err, 400);
     }
   });
