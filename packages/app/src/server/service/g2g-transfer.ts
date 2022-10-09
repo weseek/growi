@@ -168,6 +168,7 @@ export class G2GTransferPusherService implements Pusher {
   }
 
   public async canTransfer(toGROWIInfo: IDataGROWIInfo): Promise<boolean> {
+    // TODO: check FILE_UPLOAD_TOTAL_LIMIT, FILE_UPLOAD_DISABLED
     const configManager = this.crowi.configManager;
     const userUpperLimit = configManager.getConfig('crowi', 'security:userUpperLimit');
     const version = this.crowi.version;
@@ -373,6 +374,7 @@ export class G2GTransferReceiverService implements Receiver {
    * @returns
    */
   public async receiveAttachment(content: Readable, attachmentMap): Promise<void> {
+    // TODO: test with S3, local
     const { fileUploadService } = this.crowi;
     return fileUploadService.uploadFile(content, attachmentMap);
   }

@@ -24,6 +24,7 @@ const schema = new Schema<ITransferKey, TransferKeyModel, ITransferKeyMethods>({
   },
 });
 
+// TODO: validate createdAt
 schema.statics.findOneActiveTransferKey = async function(key: string): Promise<HydratedDocument<ITransferKey, ITransferKeyMethods> | null> {
   return this.findOne({ key });
 };
