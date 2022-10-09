@@ -1,10 +1,10 @@
 import { execSync } from 'child_process';
-import fs from 'fs';
 import path from 'path';
 
 import mongoose from 'mongoose';
 
-import { GrowiPlugin, GrowiPluginMeta, GrowiPluginOrigin } from '~/interfaces/plugin';
+import { ActivatePluginService, GrowiPluginManifestEntries } from '~/client/services/activate-plugin';
+import { GrowiPlugin, GrowiPluginOrigin } from '~/interfaces/plugin';
 import loggerFactory from '~/utils/logger';
 import { resolveFromRoot } from '~/utils/project-dir-utils';
 
@@ -61,6 +61,7 @@ export class PluginService {
     const plugins = await PluginService.detectPlugins(origin, installedPath);
     await this.savePluginMetaData(plugins);
 
+
     return;
   }
 
@@ -83,6 +84,15 @@ export class PluginService {
   async savePluginMetaData(plugins: GrowiPlugin[]): Promise<void> {
     const GrowiPlugin = mongoose.model('GrowiPlugin');
     await GrowiPlugin.insertMany(plugins);
+  }
+
+  async getPlugins(): Promise<any> {
+    // const initialProps: DocumentInitialProps = await Document.getInitialProps(ctx);
+
+    const GrowiPlugin = mongoose.model<GrowiPlugin>('GrowiPlugin');
+    const growiPlugins = await GrowiPlugin.find({ isEnabled: true });
+    const pluginManifestEntries: GrowiPluginManifestEntries = await ActivatePluginService.retrievePluginManifests(growiPlugins);
+    return JSON.parse(JSON.stringify(pluginManifestEntries));
   }
 
   // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types

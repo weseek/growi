@@ -1,13 +1,30 @@
-// import { faCircleArrowDown, faCircleCheck } from '@fortawesome/free-solid-svg-icons';
-// import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { useCallback, useState } from 'react';
 
-import Image from 'next/image';
+import { useState } from 'react';
+
 import Link from 'next/link';
 
-import { SearchResultItem } from '~/models/SearchResultItem';
-
 import styles from './PluginCard.module.scss';
+
+const PluginCardButton = ({ onChange }: any): JSX.Element => {
+  const [isEnabled, setIsEnabled] = useState(true);
+
+  return (
+    <div className={`${styles.plugin_card}`}>
+      <div className="switch">
+        <label className="switch__label">
+          <input
+            type="checkbox"
+            className="switch__input"
+            onChange={() => setIsEnabled(!isEnabled)}
+            checked={isEnabled}
+          />
+          <span className="switch__content"></span>
+          <span className="switch__circle"></span>
+        </label>
+      </div>
+    </div>
+  );
+};
 
 
 type Props = {
@@ -20,11 +37,6 @@ export const PluginCard = (props: Props): JSX.Element => {
   const {
     name, url, description,
   } = props;
-  // const [isEnabled, setIsEnabled] = useState(true);
-
-  // const checkboxHandler = useCallback(() => {
-  //   setIsEnabled(false);
-  // }, []);
 
   return (
     <div className="card shadow border-0" key={name}>
@@ -37,25 +49,7 @@ export const PluginCard = (props: Props): JSX.Element => {
             <p className="card-text text-muted">{description}</p>
           </div>
           <div className='col-3'>
-            <div className={`${styles.plugin_card}`}>
-              <div className="switch">
-                <label className="switch__label">
-                  <input type="checkbox" className="switch__input" checked/>
-                  <span className="switch__content"></span>
-                  <span className="switch__circle"></span>
-                </label>
-              </div>
-            </div>
-            {/* <div className="custom-control custom-switch custom-switch-lg custom-switch-slack">
-              <input
-                type="checkbox"
-                className="custom-control-input border-0"
-                checked={isEnabled}
-                onChange={checkboxHandler}
-              />
-              <label className="custom-control-label align-center"></label>
-            </div> */}
-            {/* <Image className="mx-auto" alt="GitHub avator image" src={owner.avatar_url} width={250} height={250} /> */}
+            <PluginCardButton />
           </div>
         </div>
         <div className="row">
