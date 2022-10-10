@@ -36,7 +36,7 @@ import { GrowiPlugin } from '~/interfaces/plugin';
 import ConfigLoader from '~/server/service/config-loader';
 import {
   useCurrentUser, /* useSearchServiceConfigured, */ useIsAclEnabled, useIsMailerSetup, useIsSearchServiceReachable, useSiteUrl,
-  useAuditLogEnabled, useAuditLogAvailableActions, usePluginEntries,
+  useAuditLogEnabled, useAuditLogAvailableActions,
 } from '~/stores/context';
 import { useIsMaintenanceMode } from '~/stores/maintenanceMode';
 
@@ -185,8 +185,8 @@ const AdminMarkdownSettingsPage: NextPage<Props> = (props: Props) => {
       title: t('audit_log_management.audit_log'),
       component: <AuditLogManagement />,
     },
-    'plugins-extention': {
-      title: 'Plugins Extention',
+    'plugins-extension': {
+      title: 'Plugins Extension',
       component: <PluginsExtensionPageContents />,
     },
   };
@@ -213,7 +213,6 @@ const AdminMarkdownSettingsPage: NextPage<Props> = (props: Props) => {
 
   useAuditLogEnabled(props.auditLogEnabled);
   useAuditLogAvailableActions(props.auditLogAvailableActions);
-  usePluginEntries(props.pluginManifestEntries);
 
   const injectableContainers: Container<any>[] = [];
 

@@ -12,17 +12,23 @@ import { IResAttachmentList } from '~/interfaces/attachment';
 
 import { PluginResult } from '../models/SearchResult';
 
-
+// TODO: Correct types
 const pluginsFetcher = () => {
   return async() => {
-    const reqUrl = '/plugins-extention';
-    const data = await fetch(reqUrl).then(res => res.json());
-    return data.searchResult;
+    const reqUrl = '/plugins-extension';
+    try {
+      const data = await apiv3Get(reqUrl);
+      return data;
+    }
+    catch (err) {
+      // TODO: Error handling
+      console.log('err', err);
+    }
   };
 };
 
-export const useSWRxPlugins = (): SWRResponse<PluginResult | null, Error> => {
-  return useSWR('/extention', pluginsFetcher());
+export const useSWRxPlugins = (): SWRResponse<any | null, Error> => {
+  return useSWR('/extension', pluginsFetcher());
 };
 
 
