@@ -1,3 +1,5 @@
+import { ErrorV3 } from '@growi/core';
+
 import loggerFactory from '~/utils/logger';
 
 import { apiV3FormValidator } from '../../middlewares/apiv3-form-validator';
@@ -5,10 +7,9 @@ import { apiV3FormValidator } from '../../middlewares/apiv3-form-validator';
 const logger = loggerFactory('growi:routes:apiv3:pages');
 
 const express = require('express');
-
 const { query, param } = require('express-validator');
+
 const { serializeUserSecurely } = require('../../models/serializers/user-serializer');
-const ErrorV3 = require('../../models/vo/error-apiv3');
 
 const router = express.Router();
 

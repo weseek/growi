@@ -1,3 +1,5 @@
+import { ErrorV3 } from '@growi/core';
+
 import { SupportedAction } from '~/interfaces/activity';
 import loggerFactory from '~/utils/logger';
 import { removeNullPropertyFromObject } from '~/utils/object-utils';
@@ -15,8 +17,6 @@ const express = require('express');
 const router = express.Router();
 
 const { body } = require('express-validator');
-
-const ErrorV3 = require('../../models/vo/error-apiv3');
 
 const validator = {
   userNotification: [

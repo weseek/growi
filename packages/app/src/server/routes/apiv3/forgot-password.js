@@ -1,10 +1,10 @@
+import { ErrorV3 } from '@growi/core';
 import { format, subSeconds } from 'date-fns';
 
 import { SupportedAction } from '~/interfaces/activity';
 import { generateAddActivityMiddleware } from '~/server/middlewares/add-activity';
 import injectResetOrderByTokenMiddleware from '~/server/middlewares/inject-reset-order-by-token-middleware';
 import PasswordResetOrder from '~/server/models/password-reset-order';
-import ErrorV3 from '~/server/models/vo/error-apiv3';
 import loggerFactory from '~/utils/logger';
 
 import { apiV3FormValidator } from '../../middlewares/apiv3-form-validator';
