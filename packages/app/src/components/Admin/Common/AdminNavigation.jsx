@@ -38,7 +38,7 @@ const AdminNavigation = (props) => {
         { t('full_text_search_management.full_text_search_management') }</>;
       // TODO: Consider where to place the "AuditLog"
       case 'audit-log':                return <><i className="icon-fw icon-feed"></i>            { t('audit_log_management.audit_log')}</>;
-      case 'plugins-extention':        return <><i className="icon-fw fa fa-plug"></i>           Plugins Extention </>;
+      case 'plugins-extension':        return <><i className="icon-fw fa fa-plug"></i>           Plugins Extension </>;
       case 'cloud':                    return <><i className="icon-fw icon-share-alt"></i>       { t('to_cloud_settings')} </>;
       default:                         return <><i className="icon-fw icon-home"></i>            { t('wiki_management_home_page') }</>;
       /* eslint-enable no-multi-spaces */
@@ -95,7 +95,7 @@ const AdminNavigation = (props) => {
         <MenuLink menu="user-groups"  isListGroupItems isActive={isActiveMenu('/user-groups')} />
         <MenuLink menu="search"       isListGroupItems isActive={isActiveMenu('/search')} />
         <MenuLink menu="audit-log"    isListGroupItems isActive={isActiveMenu('/audit-log')} />
-        <MenuLink menu="plugins-extention"    isListGroupItems isActive={isActiveMenu('/plugins-extention')} />
+        <MenuLink menu="plugins-extension"    isListGroupItems isActive={isActiveMenu('/plugins-extension')} />
         {/* {growiCloudUri != null && growiAppIdForGrowiCloud != null
           && (
             <a
@@ -144,7 +144,7 @@ const AdminNavigation = (props) => {
             {isActiveMenu('/user-groups') &&       <MenuLabel menu="user-groups" />}
             {isActiveMenu('/search') &&            <MenuLabel menu="search" />}
             {isActiveMenu('/audit-log') &&         <MenuLabel menu="audit-log" />}
-            {isActiveMenu('/plugins-extention') && <MenuLabel menu="plugins-extention" />}
+            {isActiveMenu('/plugins-extension') && <MenuLabel menu="plugins-extension" />}
             {/* eslint-enable no-multi-spaces */}
           </span>
         </button>

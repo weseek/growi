@@ -1,5 +1,4 @@
 import express, { Request } from 'express';
-import { PromiseProvider } from 'mongoose';
 
 import Crowi from '../../crowi';
 
@@ -11,20 +10,19 @@ module.exports = (crowi: Crowi) => {
   const router = express.Router();
   const { pluginService } = crowi;
 
-  // router.get('/', async(req, res) => {
-  //   if (pluginService == null) {
-  //     // return res.apiv3Err(400);
-  //     return; // console.log('err');
-  //   }
+  router.get('/', async(req: any, res: any) => {
+    if (pluginService == null) {
+      return res.apiv3Err(400);
+    }
 
-  //   try {
-  //     const res = await pluginService.getPlugins();
-  //     return res.apiv3(res);
-  //   }
-  //   catch (err) {
-  //     // return res.apiv3Err(err, 400);
-  //   }
-  // });
+    try {
+      const data = await pluginService.getPlugins();
+      return res.apiv3({ plugins: data });
+    }
+    catch (err) {
+      return res.apiv3Err(err, 400);
+    }
+  });
 
   router.post('/', async(req: PluginInstallerFormRequest, res: ApiV3Response) => {
     if (pluginService == null) {

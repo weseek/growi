@@ -178,10 +178,6 @@ export const useIsMailerSetup = (initialData?: boolean): SWRResponse<boolean, an
   return useStaticSWR('isMailerSetup', initialData);
 };
 
-export const usePluginEntries = (initialData?: any): SWRResponse<any, any> => {
-  return useStaticSWR('pluginEntries', initialData);
-};
-
 export const useIsSearchScopeChildrenAsDefault = (initialData?: boolean) : SWRResponse<boolean, Error> => {
   return useStaticSWR<boolean, Error>('isSearchScopeChildrenAsDefault', initialData);
 };
