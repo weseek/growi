@@ -5,6 +5,7 @@ import useSWRImmutable from 'swr/immutable';
 
 
 import { SupportedActionType } from '~/interfaces/activity';
+import { IResLayoutSetting } from '~/interfaces/customize';
 import { EditorConfig } from '~/interfaces/editor-settings';
 // import { CustomWindow } from '~/interfaces/global';
 import { RendererConfig } from '~/interfaces/services/renderer';
@@ -256,6 +257,10 @@ export const useIsUploadableFile = (initialData?: boolean): SWRResponse<boolean,
 
 export const useShowPageLimitationXL = (initialData?: number): SWRResponse<number, Error> => {
   return useStaticSWR('showPageLimitationXL', initialData);
+};
+
+export const useLayoutSetting = (initialData?: IResLayoutSetting): SWRResponse<IResLayoutSetting, Error> => {
+  return useStaticSWR('layoutSetting', initialData);
 };
 
 /** **********************************************************

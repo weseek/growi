@@ -63,7 +63,7 @@ import {
   useIsAclEnabled, useIsUserPage,
   useCsrfToken, useIsSearchScopeChildrenAsDefault, useCurrentPageId, useCurrentPathname,
   useIsSlackConfigured, useRendererConfig, useEditingMarkdown,
-  useEditorConfig, useIsAllReplyShown, useIsUploadableFile, useIsUploadableImage,
+  useEditorConfig, useIsAllReplyShown, useIsUploadableFile, useIsUploadableImage, useLayoutSetting,
 } from '../stores/context';
 
 import {
@@ -244,7 +244,7 @@ const GrowiPage: NextPage<Props> = (props: Props) => {
   useCurrentPagePath(pagePath);
   useCurrentPathname(props.currentPathname);
   useIsTrashPage(pagePath != null && _isTrashPage(pagePath));
-  const { data: layoutSetting } = useSWRxLayoutSetting({ isContainerFluid: props.isContainerFluid });
+  const { data: layoutSetting } = useLayoutSetting({ isContainerFluid: props.isContainerFluid });
   const { data: dataPageInfo } = useSWRxPageInfo(pageId);
 
   const { data: grantData } = useSWRxIsGrantNormalized(pageId);
