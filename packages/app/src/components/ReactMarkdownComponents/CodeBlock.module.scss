@@ -1,9 +1,9 @@
 @use '~/styles/variables' as var;
 @use '~/styles/bootstrap/init' as bs;
-@use '~/styles/atoms/mixins' as c;
+@use '~/styles/atoms/mixins' as atm;
 
 .code-inline {
-  @include c.code-inline;
+  @include atm.code-inline;
 }
 
 .code-highlighted-title {
