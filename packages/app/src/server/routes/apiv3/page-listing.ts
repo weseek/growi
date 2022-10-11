@@ -1,3 +1,4 @@
+import { ErrorV3 } from '@growi/core';
 import express, { Request, Router } from 'express';
 import { query, oneOf } from 'express-validator';
 import mongoose from 'mongoose';
@@ -9,7 +10,6 @@ import loggerFactory from '~/utils/logger';
 import Crowi from '../../crowi';
 import { apiV3FormValidator } from '../../middlewares/apiv3-form-validator';
 import { PageModel } from '../../models/page';
-import ErrorV3 from '../../models/vo/error-apiv3';
 import PageService from '../../service/page';
 
 import { ApiV3Response } from './interfaces/apiv3-response';

@@ -15,7 +15,7 @@ import GrowiContextualSubNavigation from '../components/Navbar/GrowiContextualSu
 import {
   useCurrentUser, useCurrentPageId, useCurrentPagePath, useCurrentPathname,
   useIsSearchServiceConfigured, useIsSearchServiceReachable,
-  useIsSearchScopeChildrenAsDefault,
+  useIsSearchScopeChildrenAsDefault, useIsSearchPage,
 } from '../stores/context';
 
 import {
@@ -41,6 +41,7 @@ const TrashPage: NextPage<CommonProps> = (props: Props) => {
   useIsSearchServiceReachable(props.isSearchServiceReachable);
   useIsSearchScopeChildrenAsDefault(props.isSearchScopeChildrenAsDefault);
 
+  useIsSearchPage(false);
   useCurrentPageId(null);
   useCurrentPathname('/trash');
   useCurrentPagePath('/trash');

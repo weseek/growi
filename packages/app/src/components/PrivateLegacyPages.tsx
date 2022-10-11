@@ -74,7 +74,7 @@ const SearchResultListHead = React.memo((props: SearchResultListHeadProps): JSX.
 
   if (isSuccess) {
     return (
-      <div className="card border-success mt-3">
+      <div className="card border-success mt-3" data-testid="search-result-private-legacy-pages">
         <div className="card-body">
           <h2 className="card-title text-success">{t('private_legacy_pages.nopages_title')}</h2>
           <p className="card-text">

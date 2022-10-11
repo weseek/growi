@@ -1,8 +1,11 @@
+
+import { ErrorV3 } from '@growi/core';
+
 import { SupportedAction } from '~/interfaces/activity';
+import { LoginErrorCode } from '~/interfaces/errors/login-error';
 import { NullUsernameToBeRegisteredError } from '~/server/models/errors';
 import loggerFactory from '~/utils/logger';
 
-import ErrorV3 from '../models/vo/error-apiv3';
 
 /* eslint-disable no-use-before-define */
 
@@ -67,7 +70,7 @@ module.exports = function(crowi, app) {
       /* eslint-disable no-else-return */
       if (err instanceof NullUsernameToBeRegisteredError) {
         logger.error(err.message);
-        throw Error(err.message);
+        throw new ErrorV3(err.message);
       }
       else if (err.name === 'DuplicatedUsernameException') {
         if (isSameEmailTreatedAsIdenticalUser || isSameUsernameTreatedAsIdenticalUser) {
@@ -76,11 +79,13 @@ module.exports = function(crowi, app) {
           return ExternalAccount.associate(providerId, userInfo.id, err.user);
         }
         logger.error('provider-DuplicatedUsernameException', providerId);
-        throw Error(`provider-DuplicatedUsernameException: ${providerId}`);
+
+        throw new ErrorV3('message.provider_duplicated_username_exception', LoginErrorCode.PROVIDER_DUPLICATED_USERNAME_EXCEPTION,
+          undefined, { failedProviderForDuplicatedUsernameException: providerId });
       }
       else if (err.name === 'UserUpperLimitException') {
         logger.error(err.message);
-        throw Error(err.message);
+        throw new ErrorV3(err.message);
       }
       /* eslint-enable no-else-return */
     }
@@ -138,21 +143,23 @@ module.exports = function(crowi, app) {
 
   const cannotLoginErrorHadnler = (req, res, next) => {
     // this is called when all login method is somehow failed without invoking 'return next(<any Error>)'
-    const err = res.locals.err != null ? res.locals.err : Error('message.sign_in_failure');
+    const err = new ErrorV3('message.sign_in_failure');
     return next(err);
   };
 
   /**
    * middleware for login failure
+   * @param {*} error
    * @param {*} req
    * @param {*} res
+   * @param {*} next
    */
   const loginFailure = (error, req, res, next) => {
 
     const parameters = { action: SupportedAction.ACTION_USER_LOGIN_FAILURE };
     activityEvent.emit('update', res.locals.activity._id, parameters);
 
-    return res.apiv3Err(error, error.code);
+    return res.apiv3Err(error);
   };
 
   /**
@@ -180,7 +187,7 @@ module.exports = function(crowi, app) {
   const loginWithLdap = async(req, res, next) => {
     if (!passportService.isLdapStrategySetup) {
       debug('LdapStrategy has not been set up');
-      return res.apiv3Err('message.strategy_has_not_been_set_up.LdapStrategy', 405);
+      return next();
     }
 
     if (!req.form.isValid) {
@@ -201,7 +208,7 @@ module.exports = function(crowi, app) {
 
     // check groups for LDAP
     if (!isValidLdapUserByGroupFilter(ldapAccountInfo)) {
-      return next(ErrorV3('message.ldap_user_not_valid', 400));
+      return next(new ErrorV3('message.ldap_user_not_valid'));
     }
 
     /*
@@ -234,7 +241,7 @@ module.exports = function(crowi, app) {
 
     // just in case the returned value is null or undefined
     if (externalAccount == null) {
-      return next(Error('message.external_account_not_exist'));
+      return next(new ErrorV3('message.external_account_not_exist'));
     }
 
     const user = await externalAccount.getPopulatedUser();
@@ -315,7 +322,7 @@ module.exports = function(crowi, app) {
   const loginWithLocal = (req, res, next) => {
     if (!passportService.isLocalStrategySetup) {
       debug('LocalStrategy has not been set up');
-      return res.apiv3Err('message.strategy_has_not_been_set_up.LocalStrategy', 405);
+      return res.apiv3Err(new ErrorV3('message.strategy_has_not_been_set_up', '', undefined, { strategy: 'LocalStrategy' }), 405);
     }
 
     if (!req.form.isValid) {
