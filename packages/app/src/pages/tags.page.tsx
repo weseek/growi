@@ -16,7 +16,7 @@ import { useSWRxTagsList } from '~/stores/tag';
 
 import { BasicLayout } from '../components/Layout/BasicLayout';
 import {
-  useCurrentUser,
+  useCurrentUser, useIsSearchPage,
   useIsSearchServiceConfigured, useIsSearchServiceReachable,
   useIsSearchScopeChildrenAsDefault,
 } from '../stores/context';
@@ -55,6 +55,7 @@ const TagPage: NextPage<CommonProps> = (props: Props) => {
   const isLoading = tagDataList === undefined && error == null;
   const classNames: string[] = [];
 
+  useIsSearchPage(false);
   useIsSearchServiceConfigured(props.isSearchServiceConfigured);
   useIsSearchServiceReachable(props.isSearchServiceReachable);
   useIsSearchScopeChildrenAsDefault(props.isSearchScopeChildrenAsDefault);
