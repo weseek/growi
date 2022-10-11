@@ -39,7 +39,7 @@ import {
 import { useIsMaintenanceMode } from '~/stores/maintenanceMode';
 
 import {
-  CommonProps, getServerSideCommonProps, getNextI18NextConfig,
+  CommonProps, getServerSideCommonProps, getNextI18NextConfig, useCustomTitle,
 } from '../utils/commons';
 
 
@@ -269,7 +269,7 @@ const AdminMarkdownSettingsPage: NextPage<Props> = (props: Props) => {
 
   return (
     <Provider inject={[...injectableContainers, ...adminSecurityContainers]}>
-      <AdminLayout title={targetPage.title} selectedNavOpt={firstPath}>
+      <AdminLayout title={useCustomTitle(props, targetPage.title)} selectedNavOpt={firstPath} componentTitle={targetPage.title}>
         {targetPage.component}
       </AdminLayout>
     </Provider>
