@@ -85,7 +85,7 @@ export const SavePageControls = (props: Props): JSX.Element | null => {
       }
 
       <UncontrolledButtonDropdown direction="up">
-        <Button id="caret" color="primary" className="btn-submit" onClick={save}>
+        <Button data-testid="save-page-btn" id="caret" color="primary" className="btn-submit" onClick={save}>
           {labelSubmitButton}
         </Button>
         <DropdownToggle caret color="primary" />

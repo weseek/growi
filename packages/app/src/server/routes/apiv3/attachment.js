@@ -1,16 +1,16 @@
+import { ErrorV3 } from '@growi/core';
+
 import loggerFactory from '~/utils/logger';
 
 import { apiV3FormValidator } from '../../middlewares/apiv3-form-validator';
 
 const logger = loggerFactory('growi:routes:apiv3:attachment'); // eslint-disable-line no-unused-vars
-
 const express = require('express');
 
 const router = express.Router();
 const { query } = require('express-validator');
 
 const { serializeUserSecurely } = require('../../models/serializers/user-serializer');
-const ErrorV3 = require('../../models/vo/error-apiv3');
 
 /**
  * @swagger
