@@ -10,12 +10,12 @@ import loggerFactory from '~/utils/logger';
 
 import RevisionRenderer from './RevisionRenderer';
 
-type Props = {
+export type RevisionLoaderProps = {
   rendererOptions: RendererOptions,
   pageId: string,
   revisionId: Ref<IRevision>,
-  lazy: boolean,
-  onRevisionLoaded: (revision: IRevisionHasId) => void,
+  lazy?: boolean,
+  onRevisionLoaded?: (revision: IRevisionHasId) => void,
 
   pagePath: string,
   highlightKeywords?: string[],
@@ -26,7 +26,7 @@ const logger = loggerFactory('growi:Page:RevisionLoader');
 /**
  * Load data from server and render RevisionBody component
  */
-export const RevisionLoader = (props: Props): JSX.Element => {
+export const RevisionLoader = (props: RevisionLoaderProps): JSX.Element => {
   const { t } = useTranslation();
 
   const {
