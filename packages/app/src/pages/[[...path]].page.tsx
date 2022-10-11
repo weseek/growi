@@ -35,6 +35,7 @@ import { IUserUISettings } from '~/interfaces/user-ui-settings';
 import { PageModel, PageDocument } from '~/server/models/page';
 import { PageRedirectModel } from '~/server/models/page-redirect';
 import { UserUISettingsModel } from '~/server/models/user-ui-settings';
+import { useSWRxLayoutSetting } from '~/stores/admin/customize';
 import { useSWRxCurrentPage, useSWRxIsGrantNormalized, useSWRxPageInfo } from '~/stores/page';
 import { useRedirectFrom } from '~/stores/page-redirect';
 import {
@@ -68,7 +69,7 @@ import {
 import {
   CommonProps, getNextI18NextConfig, getServerSideCommonProps, useCustomTitle,
 } from './utils/commons';
-import { useSWRxLayoutSetting } from '~/stores/admin/customize';
+import { calcIsContainerFluid } from './utils/layout';
 // import { useCurrentPageSWR } from '../stores/page';
 
 
@@ -153,7 +154,7 @@ type Props = CommonProps & {
   noCdn: string,
   // highlightJsStyle: string,
   isAllReplyShown: boolean,
-  // isContainerFluid: boolean,
+  isContainerFluid: boolean,
   editorConfig: EditorConfig,
   isEnabledStaleNotification: boolean,
   // isEnabledLinebreaks: boolean,
@@ -281,10 +282,12 @@ const GrowiPage: NextPage<Props> = (props: Props) => {
 
   const isTopPagePath = isTopPage(pageWithMeta?.data.path ?? '');
 
-  // Use `props.isContainerFluid` as default, `layoutSetting.isContainerFluid` as admin setting, `dataPageInfo.expandContentWidth` as each page's setting
-  const isContainerFluid = dataPageInfo == null || !('expandContentWidth' in dataPageInfo)
-    ? layoutSetting?.isContainerFluid ?? props.isContainerFluid
-    : dataPageInfo.expandContentWidth ?? layoutSetting?.isContainerFluid ?? props.isContainerFluid;
+  const isContainerFluidEachPage = dataPageInfo == null || !('expandContentWidth' in dataPageInfo)
+    ? null
+    : dataPageInfo.expandContentWidth;
+  const isContainerFluidDefault = props.isContainerFluid;
+  const isContainerFluidAdmin = layoutSetting?.isContainerFluid;
+  const isContainerFluid = calcIsContainerFluid(isContainerFluidEachPage, isContainerFluidDefault, isContainerFluidAdmin);
 
   return (
     <>
