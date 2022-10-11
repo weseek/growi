@@ -29,7 +29,7 @@ import { PageContentFooterProps } from '../PageContentFooter';
 
 const GrowiSubNavigation = dynamic<GrowiSubNavigationProps>(() => import('../Navbar/GrowiSubNavigation').then(mod => mod.GrowiSubNavigation), { ssr: false });
 const SubNavButtons = dynamic<SubNavButtonsProps>(() => import('../Navbar/SubNavButtons').then(mod => mod.SubNavButtons), { ssr: false });
-const RevisionLoader = dynamic(() => import('../Page/RevisionLoader'), { ssr: false });
+const RevisionLoader = dynamic(() => import('../Page/RevisionLoader').then(mod => mod.RevisionLoader), { ssr: false });
 const PageComment = dynamic<PageCommentProps>(() => import('../PageComment').then(mod => mod.PageComment), { ssr: false });
 const PageContentFooter = dynamic<PageContentFooterProps>(() => import('../PageContentFooter').then(mod => mod.PageContentFooter), { ssr: false });
 
