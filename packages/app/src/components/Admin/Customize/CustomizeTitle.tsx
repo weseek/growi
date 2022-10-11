@@ -1,4 +1,3 @@
-/* eslint-disable max-len */
 import React, { FC, useState } from 'react';
 
 import { useTranslation } from 'next-i18next';
