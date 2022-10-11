@@ -1,22 +1,24 @@
 import React, { useEffect, useState, useCallback } from 'react';
 
+import { Ref, IRevision, IRevisionHasId } from '@growi/core';
 import { useTranslation } from 'next-i18next';
 import { Waypoint } from 'react-waypoint';
 
 import { apiv3Get } from '~/client/util/apiv3-client';
+import { RendererOptions } from '~/services/renderer/renderer';
 import loggerFactory from '~/utils/logger';
 
 import RevisionRenderer from './RevisionRenderer';
 
 type Props = {
-  rendererOptions: any,
-  pageId: any,
-  revisionId: any,
-  lazy: any,
-  onRevisionLoaded: any,
+  rendererOptions: RendererOptions,
+  pageId: string,
+  revisionId: Ref<IRevision>,
+  lazy: boolean,
+  onRevisionLoaded: (revision: IRevisionHasId) => void,
 
-  pagePath: any,
-  highlightKeywords: any,
+  pagePath: string,
+  highlightKeywords?: string[],
 }
 
 const logger = loggerFactory('growi:Page:RevisionLoader');
