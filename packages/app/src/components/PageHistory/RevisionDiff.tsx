@@ -7,6 +7,8 @@ import { useTranslation } from 'next-i18next';
 
 import UserDate from '../User/UserDate';
 
+import styles from './RevisionDiff.module.scss';
+
 type RevisioinDiffProps = {
   currentRevision: IRevisionHasPageId,
   previousRevision: IRevisionHasPageId,
@@ -46,8 +48,8 @@ export const RevisionDiff = (props: RevisioinDiffProps): JSX.Element => {
   const diffView = { __html: diffViewHTML };
 
   return (
-    <>
-      <div className="comparison-header">
+    <div className={`${styles['revision-diff-container']}`}>
+      <div className='comparison-header'>
         <div className="container pt-1 pr-0">
           <div className="row">
             <div className="col comparison-source-wrapper pt-1 px-0">
@@ -67,7 +69,7 @@ export const RevisionDiff = (props: RevisioinDiffProps): JSX.Element => {
         </div>
       </div>
       <div className="revision-history-diff pb-1" dangerouslySetInnerHTML={diffView} />
-    </>
+    </div>
   );
 
 };

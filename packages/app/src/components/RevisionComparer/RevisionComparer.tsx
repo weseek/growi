@@ -11,6 +11,8 @@ import { useCurrentPagePath } from '~/stores/context';
 
 import { RevisionDiff } from '../PageHistory/RevisionDiff';
 
+import styles from './RevisionComparer.module.scss';
+
 const { encodeSpaces } = pagePathUtils;
 
 const DropdownItemContents = ({ title, contents }) => (
@@ -66,7 +68,7 @@ export const RevisionComparer = (props: RevisionComparerProps): JSX.Element => {
   }
 
   return (
-    <div className="revision-compare">
+    <div className={`${styles['revision-compare']} revision-compare`}>
       <div className="d-flex">
         <h4 className="align-self-center">{ t('page_history.comparing_revisions') }</h4>
         <Dropdown

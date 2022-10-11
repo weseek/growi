@@ -6,7 +6,7 @@ import { useCurrentPageId } from '~/stores/context';
 import { useSWRxPageRevisions } from '~/stores/page';
 import loggerFactory from '~/utils/logger';
 
-import PageRevisionTable from './PageHistory/PageRevisionTable';
+import { PageRevisionTable } from './PageHistory/PageRevisionTable';
 import PaginationWrapper from './PaginationWrapper';
 import { RevisionComparer } from './RevisionComparer/RevisionComparer';
 
@@ -57,8 +57,8 @@ export const PageHistory = (): JSX.Element => {
       <PageRevisionTable
         revisions={revisionsData.revisions}
         pagingLimit={pagingLimit}
-        sourceRevision={sourceRevision}
-        targetRevision={targetRevision}
+        sourceRevision={sourceRevision as IRevisionHasPageId}
+        targetRevision={targetRevision as IRevisionHasPageId}
         onChangeSourceInvoked={setSourceRevision}
         onChangeTargetInvoked={setTargetRevision}
       />
