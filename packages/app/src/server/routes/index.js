@@ -81,7 +81,7 @@ module.exports = function(crowi, app) {
   app.get('/login/error/:reason'      , applicationInstalled, login.error);
   app.get('/login'                    , applicationInstalled, login.preLogin, next.delegateToNext);
   app.get('/invited'                  , applicationInstalled, next.delegateToNext);
-  app.post('/invited/activateInvited' , applicationInstalled, loginFormValidator.inviteRules(), loginFormValidator.inviteValidation, csrfProtection, login.invited);
+  // app.post('/login'                   , applicationInstalled, loginFormValidator.loginRules(), loginFormValidator.loginValidation, csrfProtection,  addActivity, loginPassport.loginWithLocal, loginPassport.loginWithLdap, loginPassport.loginFailure);
 
   app.get('/register'                 , applicationInstalled, login.preLogin, login.register);
 
@@ -207,7 +207,7 @@ module.exports = function(crowi, app) {
   app.get('/me/*'                                 , loginRequiredStrictly, injectUserUISettings, next.delegateToNext);
   // external-accounts
   // my in-app-notifications
-  // app.get('/me/all-in-app-notifications'   , loginRequiredStrictly, allInAppNotifications.list);
+  // app.get('/me/all-in-app-notifications'   , loginRequiredStrictly, injectUserUISettings, allInAppNotifications.list);
   // app.get('/me/external-accounts'               , loginRequiredStrictly, injectUserUISettings, me.externalAccounts.list);
   // // my drafts
   // app.get('/me/drafts'                          , loginRequiredStrictly, injectUserUISettings, me.drafts.list);

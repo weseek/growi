@@ -1,4 +1,5 @@
-import { SupportedAction } from '~/interfaces/activity';
+import { ErrorV3 } from '@growi/core';
+
 import loggerFactory from '~/utils/logger';
 
 import { generateAddActivityMiddleware } from '../../middlewares/add-activity';
@@ -17,8 +18,6 @@ const multer = require('multer');
 
 
 const GrowiArchiveImportOption = require('~/models/admin/growi-archive-import-option');
-
-const ErrorV3 = require('../../models/vo/error-apiv3');
 
 
 const router = express.Router();

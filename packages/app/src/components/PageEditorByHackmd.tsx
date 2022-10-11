@@ -15,8 +15,10 @@ import { IResHackmdIntegrated, IResHackmdDiscard } from '~/interfaces/hackmd';
 import {
   useCurrentPagePath, useCurrentPageId, useHackmdUri, usePageIdOnHackmd, useHasDraftOnHackmd, useRevisionIdHackmdSynced,
 } from '~/stores/context';
-import { useSWRxSlackChannels, useIsSlackEnabled, usePageTagsForEditors } from '~/stores/editor';
-import { useSWRxCurrentPage } from '~/stores/page';
+import {
+  useSWRxSlackChannels, useIsSlackEnabled, usePageTagsForEditors, useIsEnabledUnsavedWarning,
+} from '~/stores/editor';
+import { useSWRxCurrentPage, useSWRxTagsInfo } from '~/stores/page';
 import {
   EditorMode,
   useEditorMode, useSelectedGrant,
@@ -42,12 +44,13 @@ export const PageEditorByHackmd = (): JSX.Element => {
   const { data: slackChannelsData } = useSWRxSlackChannels(currentPagePath);
   const { data: isSlackEnabled } = useIsSlackEnabled();
   const { data: pageId } = useCurrentPageId();
-  const { data: pageTags, mutate: updatePageTagsForEditors } = usePageTagsForEditors(pageId);
+  const { data: pageTags } = usePageTagsForEditors(pageId);
+  const { mutate: mutateTagsInfo } = useSWRxTagsInfo(pageId);
   const { data: grant } = useSelectedGrant();
   const { data: hackmdUri } = useHackmdUri();
 
   // pageData
-  const { data: pageData, mutate: updatePageData } = useSWRxCurrentPage();
+  const { data: pageData, mutate: mutatePageData } = useSWRxCurrentPage();
   const revision = pageData?.revision;
 
   const slackChannels = slackChannelsData?.toString();
@@ -63,41 +66,61 @@ export const PageEditorByHackmd = (): JSX.Element => {
   const { data: pageIdOnHackmd, mutate: mutatePageIdOnHackmd } = usePageIdOnHackmd();
   const { data: hasDraftOnHackmd, mutate: mutateHasDraftOnHackmd } = useHasDraftOnHackmd();
   const { data: revisionIdHackmdSynced, mutate: mutateRevisionIdHackmdSynced } = useRevisionIdHackmdSynced();
+  const { mutate: mutateIsEnabledUnsavedWarning } = useIsEnabledUnsavedWarning();
   const [isHackmdDraftUpdatingInRealtime, setIsHackmdDraftUpdatingInRealtime] = useState(false);
   const [remoteRevisionId, setRemoteRevisionId] = useState(revision?._id); // initialize
 
   const hackmdEditorRef = useRef<HackEditorRef>(null);
 
   const saveAndReturnToViewHandler = useCallback(async(opts?: {overwriteScopesOfDescendants: boolean}) => {
-    if (editorMode !== EditorMode.HackMD) {
-      return;
+    if (editorMode !== EditorMode.HackMD) { return }
+
+    try {
+      if (isSlackEnabled == null || currentPathname == null || slackChannels == null || grant == null || revision == null || hackmdEditorRef.current == null) {
+        throw new Error('Some materials to save are invalid');
+      }
+
+      let optionsToSave;
+
+      const currentOptionsToSave = getOptionsToSave(
+        isSlackEnabled, slackChannels, grant.grant, grant.grantedGroup?.id, grant.grantedGroup?.name, pageTags ?? [], true,
+      );
+
+      if (opts != null) {
+        optionsToSave = Object.assign(currentOptionsToSave, {
+          ...opts,
+        });
+      }
+      else {
+        optionsToSave = currentOptionsToSave;
+      }
+
+      const markdown = await hackmdEditorRef.current.getValue();
+
+      await saveOrUpdate(optionsToSave, { pageId, path: currentPagePath || currentPathname, revisionId: revision?._id }, markdown);
+      await mutatePageData();
+      await mutateTagsInfo();
+      mutateEditorMode(EditorMode.View);
+      mutateIsEnabledUnsavedWarning(false);
     }
-
-    if (isSlackEnabled == null || currentPathname == null || slackChannels == null || grant == null || revision == null || hackmdEditorRef.current == null) {
-      return;
+    catch (error) {
+      logger.error('failed to save', error);
+      toastError(error.message);
     }
-
-    let optionsToSave;
-
-    const currentOptionsToSave = getOptionsToSave(
-      isSlackEnabled, slackChannels, grant.grant, grant.grantedGroup?.id, grant.grantedGroup?.name, pageTags ?? [], true,
-    );
-
-    if (opts != null) {
-      optionsToSave = Object.assign(currentOptionsToSave, {
-        ...opts,
-      });
-    }
-    else {
-      optionsToSave = currentOptionsToSave;
-    }
-
-    const markdown = await hackmdEditorRef.current.getValue();
-
-    await saveOrUpdate(optionsToSave, { pageId, path: currentPagePath || currentPathname, revisionId: revision?._id }, markdown);
-    await updatePageData();
-    mutateEditorMode(EditorMode.View);
-  }, [currentPagePath, currentPathname, editorMode, grant, isSlackEnabled, pageId, pageTags, revision, slackChannels, mutateEditorMode, updatePageData]);
+  }, [editorMode,
+      isSlackEnabled,
+      currentPathname,
+      slackChannels,
+      grant,
+      revision,
+      pageTags,
+      pageId,
+      currentPagePath,
+      mutatePageData,
+      mutateEditorMode,
+      mutateTagsInfo,
+      mutateIsEnabledUnsavedWarning,
+  ]);
 
   // set handler to save and reload Page
   useEffect(() => {
@@ -134,7 +157,7 @@ export const PageEditorByHackmd = (): JSX.Element => {
       mutateRevisionIdHackmdSynced(res.revisionIdHackmdSynced);
     }
     catch (err) {
-      toastError(err);
+      toastError(err.message);
 
       setHasError(true);
       setErrorMessage('GROWI server failed to connect to HackMD.');
@@ -173,7 +196,7 @@ export const PageEditorByHackmd = (): JSX.Element => {
     }
     catch (err) {
       logger.error(err);
-      toastError(err);
+      toastError(err.message);
     }
   }, [setIsHackmdDraftUpdatingInRealtime, mutateHasDraftOnHackmd, mutatePageIdOnHackmd, mutateRevisionIdHackmdSynced, pageId]);
 
@@ -182,27 +205,26 @@ export const PageEditorByHackmd = (): JSX.Element => {
    * @param {string} markdown
    */
   const onSaveWithShortcut = useCallback(async(markdown) => {
-    if (
-      isSlackEnabled == null || grant == null || slackChannels == null || pageId == null || revisionIdHackmdSynced == null || currentPathname == null
-    ) { return }
-    const optionsToSave = getOptionsToSave(
-      isSlackEnabled, slackChannels, grant.grant, grant.grantedGroup?.id, grant.grantedGroup?.name, pageTags ?? [], true,
-    );
-
     try {
-      const res = await saveOrUpdate(optionsToSave, { pageId, path: currentPagePath || currentPathname, revisionId: revisionIdHackmdSynced }, markdown);
+      const currentPagePathOrPathname = currentPagePath || currentPathname;
+      if (
+        isSlackEnabled == null || grant == null || slackChannels == null || pageId == null
+        || revisionIdHackmdSynced == null || currentPagePathOrPathname == null
+      ) { throw new Error('Some materials to save are invalid') }
+      const optionsToSave = getOptionsToSave(
+        isSlackEnabled, slackChannels, grant.grant, grant.grantedGroup?.id, grant.grantedGroup?.name, pageTags ?? [], true,
+      );
+      const res = await saveOrUpdate(optionsToSave, { pageId, path: currentPagePathOrPathname, revisionId: revisionIdHackmdSynced }, markdown);
 
       // update pageData
-      updatePageData();
+      mutatePageData(res);
 
       // set updated data
       setRemoteRevisionId(res.revision._id);
       mutateRevisionIdHackmdSynced(res.page.revisionHackmdSynced);
       mutateHasDraftOnHackmd(res.page.hasDraftOnHackmd);
-      updatePageTagsForEditors(res.tags);
-
-      // call reset
-      setIsInitialized(false);
+      mutateTagsInfo();
+      mutateIsEnabledUnsavedWarning(false);
 
       logger.debug('success to save');
 
@@ -210,12 +232,22 @@ export const PageEditorByHackmd = (): JSX.Element => {
     }
     catch (error) {
       logger.error('failed to save', error);
-      toastError(error);
+      toastError(error.message);
     }
-  }, [
-    grant, isSlackEnabled, pageTags, slackChannels, updatePageTagsForEditors, pageId, currentPagePath, currentPathname,
-    revisionIdHackmdSynced, updatePageData, mutateHasDraftOnHackmd, mutateRevisionIdHackmdSynced, t,
-  ]);
+  }, [isSlackEnabled,
+      grant,
+      slackChannels,
+      pageId,
+      revisionIdHackmdSynced,
+      currentPathname,
+      pageTags,
+      currentPagePath,
+      mutatePageData,
+      mutateRevisionIdHackmdSynced,
+      mutateHasDraftOnHackmd,
+      mutateTagsInfo,
+      mutateIsEnabledUnsavedWarning,
+      t]);
 
   /**
    * onChange event of HackmdEditor handler
@@ -240,7 +272,7 @@ export const PageEditorByHackmd = (): JSX.Element => {
   }, [pageId, revision?.body, hackmdUri]);
 
   const penpalErrorOccuredHandler = useCallback((error) => {
-    toastError(error);
+    toastError(error.message);
 
     setHasError(true);
     setErrorMessage(t('hackmd.fail_to_connect'));

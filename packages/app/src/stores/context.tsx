@@ -1,3 +1,4 @@
+import { IUser } from '@growi/core';
 import { HtmlElementNode } from 'rehype-toc';
 import { Key, SWRResponse } from 'swr';
 import useSWRImmutable from 'swr/immutable';
@@ -11,7 +12,6 @@ import { GrowiThemes } from '~/interfaces/theme';
 import InterceptorManager from '~/services/interceptor-manager';
 
 import { TargetAndAncestors } from '../interfaces/page-listing-results';
-import { IUser, IUserHasId } from '../interfaces/user';
 
 import { useStaticSWR } from './use-static-swr';
 
@@ -98,10 +98,6 @@ export const useIsNotFound = (initialData?: boolean): SWRResponse<boolean, Error
   return useStaticSWR<boolean, Error>('isNotFound', initialData, { fallbackData: false });
 };
 
-export const usePageUser = (initialData?: IUserHasId): SWRResponse<IUserHasId, Error> => {
-  return useStaticSWR<IUserHasId, Error>('pageUser', initialData);
-};
-
 export const useHasChildren = (initialData?: Nullable<any>): SWRResponse<Nullable<any>, Error> => {
   return useStaticSWR<Nullable<any>, Error>('hasChildren', initialData);
 };
@@ -132,6 +128,10 @@ export const useRegistrationWhiteList = (initialData?: Nullable<string[]>): SWRR
 
 export const useRevisionIdHackmdSynced = (initialData?: Nullable<any>): SWRResponse<Nullable<any>, Error> => {
   return useStaticSWR<Nullable<any>, Error>('revisionIdHackmdSynced', initialData);
+};
+
+export const useDrawioUri = (initialData?: string): SWRResponse<string, Error> => {
+  return useStaticSWR('drawioUri', initialData, { fallbackData: 'https://embed.diagrams.net/' });
 };
 
 export const useHackmdUri = (initialData?: Nullable<string>): SWRResponse<Nullable<string>, Error> => {
@@ -256,6 +256,10 @@ export const useIsUploadableFile = (initialData?: boolean): SWRResponse<boolean,
 
 export const useShowPageLimitationXL = (initialData?: number): SWRResponse<number, Error> => {
   return useStaticSWR('showPageLimitationXL', initialData);
+};
+
+export const useCustomizeTitle = (initialData?: string): SWRResponse<string, Error> => {
+  return useStaticSWR('CustomizeTitle', initialData);
 };
 
 /** **********************************************************

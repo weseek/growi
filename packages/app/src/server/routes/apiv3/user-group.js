@@ -1,3 +1,5 @@
+import { ErrorV3 } from '@growi/core';
+
 import { SupportedAction } from '~/interfaces/activity';
 import UserGroup from '~/server/models/user-group';
 import { excludeTestIdsFromTargetIds } from '~/server/util/compare-objectId';
@@ -18,7 +20,6 @@ const { sanitizeQuery } = require('express-validator');
 const mongoose = require('mongoose');
 
 const { serializeUserSecurely } = require('../../models/serializers/user-serializer');
-const ErrorV3 = require('../../models/vo/error-apiv3');
 const { toPagingLimit, toPagingOffset } = require('../../util/express-validator/sanitizer');
 
 const { ObjectId } = mongoose.Types;

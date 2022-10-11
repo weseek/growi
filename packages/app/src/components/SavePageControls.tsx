@@ -36,7 +36,6 @@ export const SavePageControls = (props: Props): JSX.Element | null => {
   const { data: isAclEnabled } = useIsAclEnabled();
   const { data: grantData, mutate: mutateGrant } = useSelectedGrant();
   const { data: pageId } = useCurrentPageId();
-  const { mutate: mutateIsEnabledUnsavedWarning } = useIsEnabledUnsavedWarning();
 
 
   const updateGrantHandler = useCallback((grantData: IPageGrantData): void => {
@@ -44,19 +43,14 @@ export const SavePageControls = (props: Props): JSX.Element | null => {
   }, [mutateGrant]);
 
   const save = useCallback(async(): Promise<void> => {
-    // disable unsaved warning
-    mutateIsEnabledUnsavedWarning(false);
-
     // save
     (window as CustomWindow).globalEmitter.emit('saveAndReturnToView');
-  }, [mutateIsEnabledUnsavedWarning]);
+  }, []);
 
   const saveAndOverwriteScopesOfDescendants = useCallback(() => {
-    // disable unsaved warning
-    mutateIsEnabledUnsavedWarning(false);
     // save
     (window as CustomWindow).globalEmitter.emit('saveAndReturnToView', { overwriteScopesOfDescendants: true });
-  }, [mutateIsEnabledUnsavedWarning]);
+  }, []);
 
 
   if (isEditable == null || isAclEnabled == null || grantData == null) {
@@ -91,7 +85,7 @@ export const SavePageControls = (props: Props): JSX.Element | null => {
       }
 
       <UncontrolledButtonDropdown direction="up">
-        <Button id="caret" color="primary" className="btn-submit" onClick={save}>
+        <Button data-testid="save-page-btn" id="caret" color="primary" className="btn-submit" onClick={save}>
           {labelSubmitButton}
         </Button>
         <DropdownToggle caret color="primary" />

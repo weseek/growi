@@ -323,7 +323,7 @@ const GrowiContextualSubNavigation = (props: GrowiContextualSubNavigationProps):
         <div className="d-flex">
           <div className="d-flex flex-column align-items-end justify-content-center py-md-2" style={{ gap: `${isCompactMode ? '5px' : '7px'}` }}>
             { isViewMode && (
-              <div className="h-50 w-100">
+              <div className="h-50">
                 { pageId != null && (
                   <SubNavButtons
                     isCompactMode={isCompactMode}
@@ -385,19 +385,21 @@ const GrowiContextualSubNavigation = (props: GrowiContextualSubNavigationProps):
     : currentPage?.path;
 
   return (
-    <GrowiSubNavigation
-      pagePath={pagePath}
-      pageId={currentPage?._id}
-      showDrawerToggler={isDrawerMode}
-      showTagLabel={isAbleToShowTagLabel}
-      isGuestUser={isGuestUser}
-      isDrawerMode={isDrawerMode}
-      isCompactMode={isCompactMode}
-      tags={isViewMode ? tagsInfoData?.tags : tagsForEditors}
-      tagsUpdatedHandler={isViewMode ? tagsUpdatedHandlerForViewMode : tagsUpdatedHandlerForEditMode}
-      rightComponent={RightComponent}
-      additionalClasses={['container-fluid']}
-    />
+    <div data-testid="grw-contextual-sub-nav">
+      <GrowiSubNavigation
+        pagePath={pagePath}
+        pageId={currentPage?._id}
+        showDrawerToggler={isDrawerMode}
+        showTagLabel={isAbleToShowTagLabel}
+        isGuestUser={isGuestUser}
+        isDrawerMode={isDrawerMode}
+        isCompactMode={isCompactMode}
+        tags={isViewMode ? tagsInfoData?.tags : tagsForEditors}
+        tagsUpdatedHandler={isViewMode ? tagsUpdatedHandlerForViewMode : tagsUpdatedHandlerForEditMode}
+        rightComponent={RightComponent}
+        additionalClasses={['container-fluid']}
+      />
+    </div>
   );
 };
 

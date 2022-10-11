@@ -10,17 +10,21 @@ import dynamic from 'next/dynamic';
 import { ShareLinkLayout } from '~/components/Layout/ShareLinkLayout';
 import GrowiContextualSubNavigation from '~/components/Navbar/GrowiContextualSubNavigation';
 import { Page } from '~/components/Page';
+import { SupportedAction, SupportedActionType } from '~/interfaces/activity';
 import { CrowiRequest } from '~/interfaces/crowi-request';
 import { RendererConfig } from '~/interfaces/services/renderer';
 import { IShareLinkHasId } from '~/interfaces/share-link';
 import {
-  useCurrentUser, useCurrentPagePath, useCurrentPathname, useCurrentPageId, useRendererConfig,
+  useCurrentUser, useCurrentPagePath, useCurrentPathname, useCurrentPageId, useRendererConfig, useIsSearchPage,
   useShareLinkId, useIsSearchServiceConfigured, useIsSearchServiceReachable, useIsSearchScopeChildrenAsDefault,
 } from '~/stores/context';
+import loggerFactory from '~/utils/logger';
 
 import {
   CommonProps, getServerSideCommonProps, useCustomTitle, getNextI18NextConfig,
 } from '../utils/commons';
+
+const logger = loggerFactory('growi:next-page:share');
 
 const ShareLinkAlert = dynamic(() => import('~/components/Page/ShareLinkAlert'), { ssr: false });
 const ForbiddenPage = dynamic(() => import('~/components/ForbiddenPage'), { ssr: false });
@@ -37,6 +41,7 @@ type Props = CommonProps & {
 };
 
 const SharedPage: NextPage<Props> = (props: Props) => {
+  useIsSearchPage(false);
   useShareLinkId(props.shareLink?._id);
   useCurrentPageId(props.shareLink?.relatedPage._id);
   useCurrentPagePath(props.shareLink?.relatedPage.path);
@@ -130,9 +135,40 @@ async function injectNextI18NextConfigurations(context: GetServerSidePropsContex
   props._nextI18Next = nextI18NextConfig._nextI18Next;
 }
 
+function getAction(props: Props): SupportedActionType {
+  let action: SupportedActionType;
+  if (props.isExpired) {
+    action = SupportedAction.ACTION_SHARE_LINK_EXPIRED_PAGE_VIEW;
+  }
+  else if (props.shareLink == null) {
+    action = SupportedAction.ACTION_SHARE_LINK_NOT_FOUND;
+  }
+  else {
+    action = SupportedAction.ACTION_SHARE_LINK_PAGE_VIEW;
+  }
+
+  return action;
+}
+
+async function addActivity(context: GetServerSidePropsContext, action: SupportedActionType): Promise<void> {
+  const req: CrowiRequest = context.req as CrowiRequest;
+
+  const parameters = {
+    ip: req.ip,
+    endpoint: req.originalUrl,
+    action,
+    user: req.user?._id,
+    snapshot: {
+      username: req.user?.username,
+    },
+  };
+
+  await req.crowi.activityService.createActivity(parameters);
+}
+
 export const getServerSideProps: GetServerSideProps = async(context: GetServerSidePropsContext) => {
   const req = context.req as CrowiRequest<IUserHasId & any>;
-  const { user, crowi } = req;
+  const { user, crowi, params } = req;
   const result = await getServerSideCommonProps(context);
 
   if (!('props' in result)) {
@@ -144,22 +180,21 @@ export const getServerSideProps: GetServerSideProps = async(context: GetServerSi
     props.currentUser = user.toObject();
   }
 
-  const { linkId } = req.params;
   try {
     const ShareLinkModel = crowi.model('ShareLink');
-    const shareLink = await ShareLinkModel.findOne({ _id: linkId }).populate('relatedPage');
+    const shareLink = await ShareLinkModel.findOne({ _id: params.linkId }).populate('relatedPage');
     if (shareLink != null) {
       props.isExpired = shareLink.isExpired();
       props.shareLink = shareLink.toObject();
     }
   }
   catch (err) {
-    //
+    logger.error(err);
   }
 
   injectServerConfigurations(context, props);
-  // await injectUserUISettings(context, props);
   await injectNextI18NextConfigurations(context, props);
+  await addActivity(context, getAction(props));
 
   return {
     props,

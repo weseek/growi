@@ -9,12 +9,14 @@ import {
 } from 'reactstrap';
 
 import { toastError, toastSuccess } from '~/client/util/apiNotification';
+import { IEditorSettings } from '~/interfaces/editor-settings';
 import { useDefaultIndentSize } from '~/stores/context';
 import { useEditorSettings } from '~/stores/editor';
 import { useIsMobile } from '~/stores/ui';
 
 import { IEditorMethods } from '../../interfaces/editor-methods';
 
+import AbstractEditor from './AbstractEditor';
 import Cheatsheet from './Cheatsheet';
 import CodeMirrorEditor from './CodeMirrorEditor';
 import pasteHelper from './PasteHelper';
@@ -31,8 +33,12 @@ export type EditorPropsType = {
   isTextlintEnabled?: boolean,
   onChange?: (newValue: string, isClean?: boolean) => void,
   onUpload?: (file) => void,
+  editorSettings?: IEditorSettings,
   indentSize?: number,
-  onScroll?: ({ line: number }) => void,
+  onDragEnter?: (event: any) => void,
+  onMarkdownHelpButtonClicked?: () => void,
+  onAddAttachmentButtonClicked?: () => void,
+  onScroll?: (line: { line: number }) => void,
   onScrollCursorIntoView?: (line: number) => void,
   onSave?: () => Promise<void>,
   onPasteFiles?: (event: Event) => void,
@@ -59,7 +65,8 @@ const Editor: ForwardRefRenderFunction<IEditorMethods, EditorPropsType> = (props
   const { data: isMobile } = useIsMobile();
 
   const dropzoneRef = useRef<DropzoneRef>(null);
-  const cmEditorRef = useRef<CodeMirrorEditor>(null);
+  // CodeMirrorEditor ref
+  const cmEditorRef = useRef<AbstractEditor<any>>(null);
   const taEditorRef = useRef<TextAreaEditor>(null);
 
   const editorSubstance = useCallback(() => {
@@ -285,7 +292,6 @@ const Editor: ForwardRefRenderFunction<IEditorMethods, EditorPropsType> = (props
 
                 {/* for PC */}
                 { !isMobile && (
-                  // eslint-disable-next-line arrow-body-style
                   <CodeMirrorEditor
                     ref={cmEditorRef}
                     indentSize={indentSize ?? defaultIndentSize}
