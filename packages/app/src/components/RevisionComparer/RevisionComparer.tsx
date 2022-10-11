@@ -1,8 +1,7 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 
-import { pagePathUtils } from '@growi/core';
+import { IRevisionHasPageId, pagePathUtils } from '@growi/core';
 import { useTranslation } from 'next-i18next';
-import PropTypes from 'prop-types';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
 import {
   Dropdown, DropdownToggle, DropdownMenu, DropdownItem,
@@ -10,30 +9,32 @@ import {
 
 import { useCurrentPagePath } from '~/stores/context';
 
-import RevisionDiff from '../PageHistory/RevisionDiff';
-
+import { RevisionDiff } from '../PageHistory/RevisionDiff';
 
 const { encodeSpaces } = pagePathUtils;
 
-/* eslint-disable react/prop-types */
 const DropdownItemContents = ({ title, contents }) => (
   <>
     <div className="h6 mt-1 mb-2"><strong>{title}</strong></div>
     <div className="card well mb-1 p-2">{contents}</div>
   </>
 );
-/* eslint-enable react/prop-types */
 
+type RevisionComparerProps = {
+  sourceRevision: IRevisionHasPageId
+  targetRevision: IRevisionHasPageId
+  currentPageId?: string
+}
 
-const RevisionComparer = (props) => {
-
+export const RevisionComparer = (props: RevisionComparerProps): JSX.Element => {
   const { t } = useTranslation();
+
+  const {
+    sourceRevision, targetRevision, currentPageId,
+  } = props;
+
   const { data: currentPagePath } = useCurrentPagePath();
   const [dropdownOpen, setDropdownOpen] = useState(false);
-  const {
-    sourceRevision, targetRevision,
-    currentPageId,
-  } = props;
 
   function toggleDropdown() {
     setDropdownOpen(!dropdownOpen);
@@ -49,11 +50,10 @@ const RevisionComparer = (props) => {
       url.searchParams.set('compare', urlParams);
     }
 
-    return encodeSpaces(decodeURI(url));
-
+    return encodeSpaces(decodeURI(url.href));
   };
 
-  let isNodiff;
+  let isNodiff: boolean;
   if (sourceRevision == null || targetRevision == null) {
     isNodiff = true;
   }
@@ -115,11 +115,3 @@ const RevisionComparer = (props) => {
     </div>
   );
 };
-
-RevisionComparer.propTypes = {
-  sourceRevision: PropTypes.instanceOf(Object),
-  targetRevision: PropTypes.instanceOf(Object),
-  currentPageId: PropTypes.string,
-};
-
-export default RevisionComparer;
