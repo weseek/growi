@@ -15,7 +15,7 @@ import { CrowiRequest } from '~/interfaces/crowi-request';
 import { RendererConfig } from '~/interfaces/services/renderer';
 import { IShareLinkHasId } from '~/interfaces/share-link';
 import {
-  useCurrentUser, useCurrentPagePath, useCurrentPathname, useCurrentPageId, useRendererConfig,
+  useCurrentUser, useCurrentPagePath, useCurrentPathname, useCurrentPageId, useRendererConfig, useIsSearchPage,
   useShareLinkId, useIsSearchServiceConfigured, useIsSearchServiceReachable, useIsSearchScopeChildrenAsDefault,
 } from '~/stores/context';
 import loggerFactory from '~/utils/logger';
@@ -41,6 +41,7 @@ type Props = CommonProps & {
 };
 
 const SharedPage: NextPage<Props> = (props: Props) => {
+  useIsSearchPage(false);
   useShareLinkId(props.shareLink?._id);
   useCurrentPageId(props.shareLink?.relatedPage._id);
   useCurrentPagePath(props.shareLink?.relatedPage.path);
