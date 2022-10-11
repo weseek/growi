@@ -51,9 +51,11 @@ const ImageCropModal: FC<Props> = (props: Props) => {
     if (imageRef) {
       // Some SVG files may not have width and height properties, causing the render size to be 0x0
       // Force imageRef to have width and height by create temporary image element then set the imageRef width with tempImage width
-      const tempImage = new Image();
-      tempImage.src = imageRef.src;
-      imageRef.width = tempImage.width;
+      // const tempImage = new Image();
+      // tempImage.src = imageRef.src;
+      // imageRef.width = tempImage.width;
+      if (imageRef.width == null) { imageRef.width = 0 }
+      if (imageRef.height == null) { imageRef.height = 0 }
 
       // Get size of Image, min value of width and height
       const size = Math.min(imageRef.width, imageRef.height);
