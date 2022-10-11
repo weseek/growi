@@ -55,7 +55,7 @@ export const PageHistory = (): JSX.Element => {
   return (
     <div className="revision-history" data-testid="page-history">
       <PageRevisionTable
-        revisions={revisionsData.revisions}
+        revisions={revisionsData.revisions as IRevisionHasPageId[]}
         pagingLimit={pagingLimit}
         sourceRevision={sourceRevision as IRevisionHasPageId}
         targetRevision={targetRevision as IRevisionHasPageId}
