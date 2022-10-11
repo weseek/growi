@@ -34,7 +34,7 @@ import PluginUtils from '~/server/plugins/plugin-utils';
 import ConfigLoader from '~/server/service/config-loader';
 import {
   useCurrentUser, /* useSearchServiceConfigured, */ useIsAclEnabled, useIsMailerSetup, useIsSearchServiceReachable, useSiteUrl,
-  useAuditLogEnabled, useAuditLogAvailableActions,
+  useAuditLogEnabled, useAuditLogAvailableActions, useIsSearchPage,
 } from '~/stores/context';
 import { useIsMaintenanceMode } from '~/stores/maintenanceMode';
 
@@ -191,6 +191,7 @@ const AdminMarkdownSettingsPage: NextPage<Props> = (props: Props) => {
 
   const targetPage = getTargetPageToRender(adminPagesMap, pagePathKeys);
 
+  useIsSearchPage(false);
   useCurrentUser(props.currentUser != null ? JSON.parse(props.currentUser) : null);
   useIsMailerSetup(props.isMailerSetup);
   useIsMaintenanceMode(props.isMaintenanceMode);
