@@ -12,7 +12,7 @@
 
 /* eslint-disable no-console  */
 
-const styles = '{{styles}}'; // will be replaced by swig
+const styles = '<%= styles %>'; // will be replaced by ejs
 
 /**
  * Insert link tag to load style file
@@ -20,7 +20,7 @@ const styles = '{{styles}}'; // will be replaced by swig
 function insertStyle() {
   const element = document.createElement('style');
   element.type = 'text/css';
-  element.appendChild(document.createTextNode(unescape(styles)));
+  element.appendChild(document.createTextNode(styles));
   document.getElementsByTagName('head')[0].appendChild(element);
 }
 

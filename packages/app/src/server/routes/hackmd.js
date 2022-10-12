@@ -1,4 +1,4 @@
-import { styles, agent } from '@growi/hackmd';
+import { stylesCSS, styles, agent } from '@growi/hackmd';
 
 import loggerFactory from '~/utils/logger';
 
@@ -78,22 +78,13 @@ module.exports = function(crowi, app) {
    * @param {object} res
    */
   const loadStyles = function(req, res) {
-    // generate swig template
-    if (stylesScriptContentTpl == null) {
-      stylesScriptContentTpl = swig.compileFile(stylesScriptPath);
-    }
-
-    const styleFilePath = path.join(crowi.publicDir, manifest['styles/style-hackmd.css']);
-    const styles = fs
-      .readFileSync(styleFilePath).toString()
-      .replace(/\s+/g, ' ');
 
     // generate definitions to replace
     const definitions = {
-      styles: escape(styles),
+      styles: stylesCSS,
     };
-    // inject
-    const script = stylesScriptContentTpl(definitions);
+    // inject styles to script
+    const script = ejs.render(styles, definitions);
 
     res.set('Content-Type', 'application/javascript');
     res.send(script);
