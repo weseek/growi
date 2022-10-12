@@ -13,6 +13,7 @@ const AdminNotFoundPage = dynamic(() => import('../Admin/NotFoundPage').then(mod
 
 type Props = {
   title: string
+  componentTitle: string
   /**
    * Set the current option of AdminNavigation
    * Expected it is in ["home", "app", "security", "markdown", "customize", "importer", "export",
@@ -24,7 +25,7 @@ type Props = {
 
 
 const AdminLayout = ({
-  children, title, selectedNavOpt,
+  children, title, selectedNavOpt, componentTitle,
 }: Props): JSX.Element => {
 
   const AdminNavigation = dynamic(() => import('~/components/Admin/Common/AdminNavigation'), { ssr: false });
@@ -35,8 +36,8 @@ const AdminLayout = ({
       <div className={`admin-page ${styles['admin-page']}`}>
         <GrowiNavbar />
 
-        <header className="py-0 position-relative">
-          <h1 className="title px-3">{title}</h1>
+        <header className="py-0 container-fluid">
+          <h1 className="title px-3">{componentTitle}</h1>
         </header>
         <div id="main" className="main">
           <div className="container-fluid">
