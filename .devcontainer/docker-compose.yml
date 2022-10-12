@@ -42,57 +42,57 @@ services:
     restart: unless-stopped
     tty: true
 
-  # # This container requires '../../growi-docker-compose' repository
-  # #   cloned from https://github.com/weseek/growi-docker-compose.git
-  # elasticsearch:
-  #   build:
-  #     context: ../../growi-docker-compose/elasticsearch
-  #     dockerfile: ./Dockerfile
-  #     args:
-  #       - version=7.16.1
-  #   container_name: elasticsearch
-  #   restart: unless-stopped
-  #   ports:
-  #     - 9200:9200
-  #   environment:
-  #     - bootstrap.memory_lock=true
-  #     - "ES_JAVA_OPTS=-Xms256m -Xmx256m"
-  #     - LOG4J_FORMAT_MSG_NO_LOOKUPS=true # CVE-2021-44228 mitigation for Elasticsearch <= 6.8.20/7.16.0
-  #   ulimits:
-  #     memlock:
-  #       soft: -1
-  #       hard: -1
-  #   volumes:
-  #     - /usr/share/elasticsearch/data
-  #     - ../../growi-docker-compose/elasticsearch/config/elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml
+  # This container requires '../../growi-docker-compose' repository
+  #   cloned from https://github.com/weseek/growi-docker-compose.git
+  elasticsearch:
+    build:
+      context: ../../growi-docker-compose/elasticsearch
+      dockerfile: ./Dockerfile
+      args:
+        - version=7.16.1
+    container_name: elasticsearch
+    restart: unless-stopped
+    ports:
+      - 9200:9200
+    environment:
+      - bootstrap.memory_lock=true
+      - "ES_JAVA_OPTS=-Xms256m -Xmx256m"
+      - LOG4J_FORMAT_MSG_NO_LOOKUPS=true # CVE-2021-44228 mitigation for Elasticsearch <= 6.8.20/7.16.0
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    volumes:
+      - /usr/share/elasticsearch/data
+      - ../../growi-docker-compose/elasticsearch/config/elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml
 
-  # #need to adjust kibana version based on elasticsearch version (use same version as elasticsearch version)
-  # kibana:
-  #   image: docker.elastic.co/kibana/kibana:7.16.1
-  #   restart: unless-stopped
-  #   environment:
-  #     ELASTICSEARCH_HOSTS: 'http://elasticsearch:9200'
-  #   ports:
-  #     - 5601:5601
-  #   depends_on:
-  #     - elasticsearch
+  #need to adjust kibana version based on elasticsearch version (use same version as elasticsearch version)
+  kibana:
+    image: docker.elastic.co/kibana/kibana:7.16.1
+    restart: unless-stopped
+    environment:
+      ELASTICSEARCH_HOSTS: 'http://elasticsearch:9200'
+    ports:
+      - 5601:5601
+    depends_on:
+      - elasticsearch
 
-  # # This container requires '../../growi-docker-compose' repository
-  # #   cloned from https://github.com/weseek/growi-docker-compose.git
-  # hackmd:
-  #   build:
-  #     context: ../../growi-docker-compose/hackmd
-  #   restart: unless-stopped
-  #   environment:
-  #     - GROWI_URI=http://localhost:3000
-  #     # define 'storage' option value
-  #     # see https://github.com/sequelize/cli/blob/7160d0/src/helpers/config-helper.js#L192
-  #     - CMD_DB_URL=sqlite://dummyhost/hackmd/sqlite/codimd.db
-  #     - CMD_CSP_ENABLE=false
-  #   ports:
-  #     - 3010:3000
-  #   volumes:
-  #     - /files/sqlite
+  # This container requires '../../growi-docker-compose' repository
+  #   cloned from https://github.com/weseek/growi-docker-compose.git
+  hackmd:
+    build:
+      context: ../../growi-docker-compose/hackmd
+    restart: unless-stopped
+    environment:
+      - GROWI_URI=http://localhost:3000
+      # define 'storage' option value
+      # see https://github.com/sequelize/cli/blob/7160d0/src/helpers/config-helper.js#L192
+      - CMD_DB_URL=sqlite://dummyhost/hackmd/sqlite/codimd.db
+      - CMD_CSP_ENABLE=false
+    ports:
+      - 3010:3000
+    volumes:
+      - /files/sqlite
 volumes:
   node_modules:
   node_modules_app:
