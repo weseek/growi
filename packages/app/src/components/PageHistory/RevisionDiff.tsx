@@ -20,30 +20,20 @@ export const RevisionDiff = (props: RevisioinDiffProps): JSX.Element => {
 
   const { currentRevision, previousRevision, revisionDiffOpened } = props;
 
-  let diffViewHTML = '';
-  if (currentRevision.body
-    && previousRevision.body
-    && revisionDiffOpened) {
+  const previousText = (currentRevision._id === previousRevision._id) ? '' : previousRevision.body;
 
-    let previousText = previousRevision.body;
-    // comparing ObjectId
-    // eslint-disable-next-line eqeqeq
-    if (currentRevision._id == previousRevision._id) {
-      previousText = '';
-    }
+  const patch = createPatch(
+    currentRevision.pageId, // currentRevision.path is DEPRECATED
+    previousText,
+    currentRevision.body,
+  );
 
-    const patch = createPatch(
-      currentRevision.pageId, // currentRevision.path is DEPRECATED
-      previousText,
-      currentRevision.body,
-    );
-    const option: Diff2HtmlConfig = {
-      outputFormat: 'side-by-side',
-      drawFileList: false,
-    };
+  const option: Diff2HtmlConfig = {
+    outputFormat: 'side-by-side',
+    drawFileList: false,
+  };
 
-    diffViewHTML = html(patch, option);
-  }
+  const diffViewHTML = (currentRevision.body && previousRevision.body && revisionDiffOpened) ? html(patch, option) : '';
 
   const diffView = { __html: diffViewHTML };
 

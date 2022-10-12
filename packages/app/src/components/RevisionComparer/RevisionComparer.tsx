@@ -38,11 +38,11 @@ export const RevisionComparer = (props: RevisionComparerProps): JSX.Element => {
   const { data: currentPagePath } = useCurrentPagePath();
   const [dropdownOpen, setDropdownOpen] = useState(false);
 
-  function toggleDropdown() {
+  const toggleDropdown = () => {
     setDropdownOpen(!dropdownOpen);
-  }
+  };
 
-  const generateURL = (pathName) => {
+  const generateURL = (pathName: string) => {
     const { origin } = window.location;
 
     const url = new URL(pathName, origin);
@@ -55,13 +55,7 @@ export const RevisionComparer = (props: RevisionComparerProps): JSX.Element => {
     return encodeSpaces(decodeURI(url.href));
   };
 
-  let isNodiff: boolean;
-  if (sourceRevision == null || targetRevision == null) {
-    isNodiff = true;
-  }
-  else {
-    isNodiff = sourceRevision._id === targetRevision._id;
-  }
+  const isNodiff = (sourceRevision == null || targetRevision == null) ? true : sourceRevision._id === targetRevision._id;
 
   if (currentPageId == null || currentPagePath == null) {
     return <>{ t('not_found_page.page_not_exist')}</>;
