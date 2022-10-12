@@ -60,15 +60,15 @@ jobs:
         run: |
           yarn lerna run lint --scope @growi/app --scope @growi/codemirror-textlint --scope @growi/core --scope @growi/slack --scope @growi/ui
 
-      # - name: Slack Notification
-      #   uses: weseek/ghaction-slack-notification@master
-      #   if: failure()
-      #   with:
-      #     type: ${{ job.status }}
-      #     job_name: '*Node CI for growi - lint (${{ matrix.node-version }})*'
-      #     channel: '#ci'
-      #     isCompactMode: true
-      #     url: ${{ secrets.SLACK_WEBHOOK_URL }}
+      - name: Slack Notification
+        uses: weseek/ghaction-slack-notification@master
+        if: failure()
+        with:
+          type: ${{ job.status }}
+          job_name: '*Node CI for growi - lint (${{ matrix.node-version }})*'
+          channel: '#ci'
+          isCompactMode: true
+          url: ${{ secrets.SLACK_WEBHOOK_URL }}
 
   test:
     runs-on: ubuntu-latest
@@ -126,15 +126,15 @@ jobs:
             packages/app/coverage
             packages/remark-growi-plugin/coverage
 
-      # - name: Slack Notification
-      #   uses: weseek/ghaction-slack-notification@master
-      #   if: failure()
-      #   with:
-      #     type: ${{ job.status }}
-      #     job_name: '*Node CI for growi - test (${{ matrix.node-version }})*'
-      #     channel: '#ci'
-      #     isCompactMode: true
-      #     url: ${{ secrets.SLACK_WEBHOOK_URL }}
+      - name: Slack Notification
+        uses: weseek/ghaction-slack-notification@master
+        if: failure()
+        with:
+          type: ${{ job.status }}
+          job_name: '*Node CI for growi - test (${{ matrix.node-version }})*'
+          channel: '#ci'
+          isCompactMode: true
+          url: ${{ secrets.SLACK_WEBHOOK_URL }}
 
   launch-dev:
     runs-on: ubuntu-latest
@@ -182,12 +182,12 @@ jobs:
         env:
           MONGO_URI: mongodb://localhost:${{ job.services.mongodb.ports['27017'] }}/growi_dev
 
-      # - name: Slack Notification
-      #   uses: weseek/ghaction-slack-notification@master
-      #   if: failure()
-      #   with:
-      #     type: ${{ job.status }}
-      #     job_name: '*Node CI for growi - launch-dev (${{ matrix.node-version }})*'
-      #     channel: '#ci'
-      #     isCompactMode: true
-      #     url: ${{ secrets.SLACK_WEBHOOK_URL }}
+      - name: Slack Notification
+        uses: weseek/ghaction-slack-notification@master
+        if: failure()
+        with:
+          type: ${{ job.status }}
+          job_name: '*Node CI for growi - launch-dev (${{ matrix.node-version }})*'
+          channel: '#ci'
+          isCompactMode: true
+          url: ${{ secrets.SLACK_WEBHOOK_URL }}
