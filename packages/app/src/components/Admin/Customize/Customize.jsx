@@ -19,7 +19,7 @@ import CustomizeLogoSetting from './CustomizeLogoSetting';
 import CustomizeScriptSetting from './CustomizeScriptSetting';
 import CustomizeSidebarSetting from './CustomizeSidebarSetting';
 import CustomizeThemeSetting from './CustomizeThemeSetting';
-import CustomizeTitle from './CustomizeTitle';
+import { CustomizeTitle } from './CustomizeTitle';
 
 const logger = loggerFactory('growi:services:AdminCustomizePage');
 

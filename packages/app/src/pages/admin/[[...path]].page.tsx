@@ -34,12 +34,12 @@ import PluginUtils from '~/server/plugins/plugin-utils';
 import ConfigLoader from '~/server/service/config-loader';
 import {
   useCurrentUser, /* useSearchServiceConfigured, */ useIsAclEnabled, useIsMailerSetup, useIsSearchServiceReachable, useSiteUrl,
-  useAuditLogEnabled, useAuditLogAvailableActions,
+  useAuditLogEnabled, useAuditLogAvailableActions, useIsSearchPage, useCustomizeTitle,
 } from '~/stores/context';
 import { useIsMaintenanceMode } from '~/stores/maintenanceMode';
 
 import {
-  CommonProps, getServerSideCommonProps, getNextI18NextConfig,
+  CommonProps, getServerSideCommonProps, getNextI18NextConfig, useCustomTitle,
 } from '../utils/commons';
 
 
@@ -82,6 +82,7 @@ type Props = CommonProps & {
   auditLogEnabled: boolean,
   auditLogAvailableActions: SupportedActionType[],
 
+  customizeTitle: string,
   siteUrl: string,
   attrsForCdnHighlightJsStyleLinkeTag: any,
 };
@@ -192,6 +193,7 @@ const AdminMarkdownSettingsPage: NextPage<Props> = (props: Props) => {
 
   const targetPage = getTargetPageToRender(adminPagesMap, pagePathKeys);
 
+  useIsSearchPage(false);
   useCurrentUser(props.currentUser != null ? JSON.parse(props.currentUser) : null);
   useIsMailerSetup(props.isMailerSetup);
   useIsMaintenanceMode(props.isMaintenanceMode);
@@ -206,6 +208,8 @@ const AdminMarkdownSettingsPage: NextPage<Props> = (props: Props) => {
 
   useAuditLogEnabled(props.auditLogEnabled);
   useAuditLogAvailableActions(props.auditLogAvailableActions);
+
+  useCustomizeTitle(props.customizeTitle);
 
   const injectableContainers: Container<any>[] = [];
 
@@ -269,7 +273,7 @@ const AdminMarkdownSettingsPage: NextPage<Props> = (props: Props) => {
 
   return (
     <Provider inject={[...injectableContainers, ...adminSecurityContainers]}>
-      <AdminLayout title={targetPage.title} selectedNavOpt={firstPath}>
+      <AdminLayout title={useCustomTitle(props, targetPage.title)} selectedNavOpt={firstPath} componentTitle={targetPage.title}>
         {targetPage.component}
       </AdminLayout>
     </Provider>
@@ -303,6 +307,7 @@ async function injectServerConfigurations(context: GetServerSidePropsContext, pr
   props.auditLogAvailableActions = activityService.getAvailableActions(false);
 
   props.attrsForCdnHighlightJsStyleLinkeTag = cdnResourcesService.getAttributesForHighlightJsStyleTag(highlightJsStyle);
+  props.customizeTitle = crowi.configManager.getConfig('crowi', 'customize:title');
 }
 
 /**

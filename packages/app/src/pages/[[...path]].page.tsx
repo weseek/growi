@@ -35,7 +35,8 @@ import { IUserUISettings } from '~/interfaces/user-ui-settings';
 import { PageModel, PageDocument } from '~/server/models/page';
 import { PageRedirectModel } from '~/server/models/page-redirect';
 import { UserUISettingsModel } from '~/server/models/user-ui-settings';
-import { useSWRxCurrentPage, useSWRxIsGrantNormalized } from '~/stores/page';
+import { useSWRxLayoutSetting } from '~/stores/admin/customize';
+import { useSWRxCurrentPage, useSWRxIsGrantNormalized, useSWRxPageInfo } from '~/stores/page';
 import { useRedirectFrom } from '~/stores/page-redirect';
 import {
   usePreferDrawerModeByUser, usePreferDrawerModeOnEditByUser, useSidebarCollapsed, useCurrentSidebarContents, useCurrentProductNavWidth, useSelectedGrant,
@@ -59,15 +60,16 @@ import {
   useIsEnabledStaleNotification, useIsIdenticalPath,
   useIsSearchServiceConfigured, useIsSearchServiceReachable, useDisableLinkSharing,
   useDrawioUri, useHackmdUri,
-  useIsAclEnabled, useIsUserPage,
+  useIsAclEnabled, useIsUserPage, useIsSearchPage,
   useCsrfToken, useIsSearchScopeChildrenAsDefault, useCurrentPageId, useCurrentPathname,
   useIsSlackConfigured, useRendererConfig, useEditingMarkdown,
-  useEditorConfig, useIsAllReplyShown, useIsUploadableFile, useIsUploadableImage,
+  useEditorConfig, useIsAllReplyShown, useIsUploadableFile, useIsUploadableImage, useLayoutSetting,
 } from '../stores/context';
 
 import {
   CommonProps, getNextI18NextConfig, getServerSideCommonProps, useCustomTitle,
 } from './utils/commons';
+import { calcIsContainerFluid } from './utils/layout';
 // import { useCurrentPageSWR } from '../stores/page';
 
 
@@ -152,7 +154,7 @@ type Props = CommonProps & {
   noCdn: string,
   // highlightJsStyle: string,
   isAllReplyShown: boolean,
-  // isContainerFluid: boolean,
+  isContainerFluid: boolean,
   editorConfig: EditorConfig,
   isEnabledStaleNotification: boolean,
   // isEnabledLinebreaks: boolean,
@@ -204,6 +206,7 @@ const GrowiPage: NextPage<Props> = (props: Props) => {
   useIsIdenticalPath(false); // TODO: need to initialize from props
   // useIsAbleToDeleteCompletely(props.isAbleToDeleteCompletely);
   useIsEnabledStaleNotification(props.isEnabledStaleNotification);
+  useIsSearchPage(false);
 
   useIsSearchServiceConfigured(props.isSearchServiceConfigured);
   useIsSearchServiceReachable(props.isSearchServiceReachable);
@@ -242,6 +245,8 @@ const GrowiPage: NextPage<Props> = (props: Props) => {
   useCurrentPagePath(pagePath);
   useCurrentPathname(props.currentPathname);
   useIsTrashPage(pagePath != null && _isTrashPage(pagePath));
+  const { data: layoutSetting } = useLayoutSetting({ isContainerFluid: props.isContainerFluid });
+  const { data: dataPageInfo } = useSWRxPageInfo(pageId);
 
   const { data: grantData } = useSWRxIsGrantNormalized(pageId);
   const { mutate: mutateSelectedGrant } = useSelectedGrant();
@@ -278,6 +283,13 @@ const GrowiPage: NextPage<Props> = (props: Props) => {
 
   const isTopPagePath = isTopPage(pageWithMeta?.data.path ?? '');
 
+  const isContainerFluidEachPage = dataPageInfo == null || !('expandContentWidth' in dataPageInfo)
+    ? null
+    : dataPageInfo.expandContentWidth;
+  const isContainerFluidDefault = props.isContainerFluid;
+  const isContainerFluidAdmin = layoutSetting?.isContainerFluid;
+  const isContainerFluid = calcIsContainerFluid(isContainerFluidEachPage, isContainerFluidDefault, isContainerFluidAdmin);
+
   return (
     <>
       <Head>
@@ -288,7 +300,7 @@ const GrowiPage: NextPage<Props> = (props: Props) => {
         */}
       </Head>
       {/* <BasicLayout title={useCustomTitle(props, t('GROWI'))} className={classNames.join(' ')}> */}
-      <BasicLayout title={useCustomTitle(props, 'GROWI')} className={classNames.join(' ')} expandContainer={props.isContainerFluid}>
+      <BasicLayout title={useCustomTitle(props, 'GROWI')} className={classNames.join(' ')} expandContainer={isContainerFluid}>
         <div className="h-100 d-flex flex-column justify-content-between">
           <header className="py-0 position-relative">
             <GrowiContextualSubNavigation isLinkSharingDisabled={props.disableLinkSharing} />
@@ -495,7 +507,7 @@ function injectServerConfigurations(context: GetServerSidePropsContext, props: P
   props.noCdn = configManager.getConfig('crowi', 'app:noCdn');
   // props.highlightJsStyle = configManager.getConfig('crowi', 'customize:highlightJsStyle');
   props.isAllReplyShown = configManager.getConfig('crowi', 'customize:isAllReplyShown');
-  // props.isContainerFluid = configManager.getConfig('crowi', 'customize:isContainerFluid');
+  props.isContainerFluid = configManager.getConfig('crowi', 'customize:isContainerFluid');
   props.isEnabledStaleNotification = configManager.getConfig('crowi', 'customize:isEnabledStaleNotification');
   // props.isEnabledLinebreaks = configManager.getConfig('markdown', 'markdown:isEnabledLinebreaks');
   // props.isEnabledLinebreaksInComments = configManager.getConfig('markdown', 'markdown:isEnabledLinebreaksInComments');

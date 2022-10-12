@@ -1,0 +1,15 @@
+@use '~/styles/variables' as var;
+@use '~/styles/bootstrap/init' as bs;
+
+@mixin code-inline {
+  padding: 2px 4px;
+  font-family: var.$font-family-monospace-not-strictly;
+  border: 1px solid;
+  border-radius: bs.$border-radius;
+}
+
+@mixin code-inline-color($color-inline-code,$bgcolor-inline-code, $bordercolor-inline-code) {
+  color: $color-inline-code;
+  background-color: $bgcolor-inline-code;
+  border-color: $bordercolor-inline-code;
+}
