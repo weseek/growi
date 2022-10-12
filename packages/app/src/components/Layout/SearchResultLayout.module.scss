@@ -67,7 +67,7 @@
       }
 
       .search-result-content-body-container {
-        position: relative;
+        position: relative; // correct apply overflow scrolling for react-markdown on Chrome OS
         overflow-y: auto;
 
         .wiki {
