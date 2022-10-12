@@ -2,9 +2,9 @@
 @use './bootstrap/init' as bs;
 
 // hljs
-// .wiki {
-//   @import 'hljs';
-// }
+.wiki {
+  @import 'hljs';
+}
 
 .wiki {
   @mixin add-left-border($width) {
