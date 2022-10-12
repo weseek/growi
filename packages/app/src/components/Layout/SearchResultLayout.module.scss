@@ -67,12 +67,14 @@
       }
 
       .search-result-content-body-container {
+        position: relative;
         overflow-y: auto;
 
-        .wiki {
+        .wiki{
           padding: 16px;
           font-size: 13px;
         }
+
       }
     }
   }
