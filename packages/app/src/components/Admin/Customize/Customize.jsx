@@ -24,7 +24,7 @@ import CustomizeTitle from './CustomizeTitle';
 const logger = loggerFactory('growi:services:AdminCustomizePage');
 
 function Customize(props) {
-  const { adminCustomizeContainer } = props;
+  const { adminCustomizeContainer, attrsForCdnHighlightJsStyleLinkeTag } = props;
 
   const fetchCustomizeSettingsData = useCallback(async() => {
     try {
@@ -57,7 +57,7 @@ function Customize(props) {
         <CustomizeFunctionSetting />
       </div>
       <div className="mb-5">
-        <CustomizeHighlightSetting />
+        <CustomizeHighlightSetting attrsForCdnHighlightJsStyleLinkeTag={attrsForCdnHighlightJsStyleLinkeTag} />
       </div>
       <div className="mb-5">
         <CustomizeTitle />

@@ -2,9 +2,10 @@ import loggerFactory from '~/utils/logger';
 import { resolveFromRoot } from '~/utils/project-dir-utils';
 
 const { URL } = require('url');
-const urljoin = require('url-join');
 
 const { envUtils } = require('@growi/core');
+const urljoin = require('url-join');
+
 
 const cdnLocalScriptRoot = 'public/static/js/cdn';
 const cdnLocalScriptWebRoot = '/static/js/cdn';
@@ -114,14 +115,11 @@ class CdnResourcesService {
   }
 
   /**
-   * Generate style tag string
-   *
-   * @param {Object} manifest
+   * private method as this is only used in this class
    */
-  generateStyleTag(manifest) {
+  #generateAttributesForStyleTag(manifest) {
     const attrs = [];
     const args = manifest.args || {};
-
     if (args.async) {
       attrs.push('async');
     }
@@ -134,6 +132,18 @@ class CdnResourcesService {
     const url = this.noCdn
       ? `${urljoin(cdnLocalStyleWebRoot, manifest.name)}.css`
       : manifest.url;
+
+    return { url, attrs };
+  }
+
+  /**
+   * Generate style tag string
+   *
+   * @param {Object} manifest
+   */
+  generateStyleTag(manifest) {
+    const res = this.generateAttributesForStyleTag(manifest);
+    const { url, attrs } = res;
 
     return `<link rel="stylesheet" href="${url}" ${attrs.join(' ')}>`;
   }
@@ -153,7 +163,7 @@ class CdnResourcesService {
       });
   }
 
-  getHighlightJsStyleTag(styleName) {
+  getAttributesForHighlightJsStyleTag(styleName) {
     let manifest = this.getStyleManifestByName('highlight-theme-github');
 
     // replace style
@@ -164,7 +174,7 @@ class CdnResourcesService {
       manifest = Object.assign(manifest, { url: url.toString() });
     }
 
-    return this.generateStyleTag(manifest);
+    return this.#generateAttributesForStyleTag(manifest);
   }
 
 }

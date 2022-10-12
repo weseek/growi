@@ -15,7 +15,8 @@ import { withUnstatedContainers } from '../../UnstatedUtils';
 import AdminUpdateButtonRow from '../Common/AdminUpdateButtonRow';
 
 type Props = {
-  adminCustomizeContainer: AdminCustomizeContainer
+  adminCustomizeContainer: AdminCustomizeContainer,
+  attrsForCdnHighlightJsStyleLinkeTag: any
 }
 
 type HljsDemoProps = {
@@ -47,10 +48,11 @@ const HljsDemo = React.memo((props: HljsDemoProps): JSX.Element => {
 HljsDemo.displayName = 'HljsDemo';
 
 const CustomizeHighlightSetting = (props: Props): JSX.Element => {
-  const { adminCustomizeContainer } = props;
+  const { adminCustomizeContainer, attrsForCdnHighlightJsStyleLinkeTag } = props;
   const { t } = useTranslation();
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const options: IHighlightJsCssSelectorOptions = adminCustomizeContainer.state.highlightJsCssSelectorOptions;
+  const { url, attrs } = attrsForCdnHighlightJsStyleLinkeTag;
 
   const onToggleDropdown = useCallback(() => {
     setIsDropdownOpen(!isDropdownOpen);
@@ -88,6 +90,9 @@ const CustomizeHighlightSetting = (props: Props): JSX.Element => {
 
   return (
     <React.Fragment>
+      <div id="grw-hljs-container-for-demo">
+        <link rel="stylesheet" href={url} {...attrs} />
+      </div>
       <div className="row">
         <div className="col-12">
           <h2 className="admin-setting-header">{t('admin:customize_setting.code_highlight')}</h2>

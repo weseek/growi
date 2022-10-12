@@ -83,6 +83,7 @@ type Props = CommonProps & {
   auditLogAvailableActions: SupportedActionType[],
 
   siteUrl: string,
+  attrsForCdnHighlightJsStyleLinkeTag: any,
 };
 
 const AdminMarkdownSettingsPage: NextPage<Props> = (props: Props) => {
@@ -127,7 +128,7 @@ const AdminMarkdownSettingsPage: NextPage<Props> = (props: Props) => {
     },
     customize: {
       title: t('customize_settings.customize_settings'),
-      component: <CustomizeSettingContents />,
+      component: <CustomizeSettingContents attrsForCdnHighlightJsStyleLinkeTag={props.attrsForCdnHighlightJsStyleLinkeTag}/>,
     },
     importer: {
       title: t('importer_management.import_data'),
@@ -280,8 +281,10 @@ async function injectServerConfigurations(context: GetServerSidePropsContext, pr
   const req: CrowiRequest = context.req as CrowiRequest;
   const { crowi } = req;
   const {
-    appService, mailService, aclService, searchService, activityService,
+    appService, mailService, aclService, searchService, activityService, configManager, cdnResourcesService,
   } = crowi;
+
+  const highlightJsStyle = configManager.getConfig('crowi', 'customize:highlightJsStyle');
 
   props.siteUrl = appService.getSiteUrl();
   props.nodeVersion = crowi.runtimeVersions.versions.node ? crowi.runtimeVersions.versions.node.version.version : null;
@@ -296,8 +299,10 @@ async function injectServerConfigurations(context: GetServerSidePropsContext, pr
 
   props.isMailerSetup = mailService.isMailerSetup;
 
-  props.auditLogEnabled = crowi.configManager.getConfig('crowi', 'app:auditLogEnabled');
+  props.auditLogEnabled = configManager.getConfig('crowi', 'app:auditLogEnabled');
   props.auditLogAvailableActions = activityService.getAvailableActions(false);
+
+  props.attrsForCdnHighlightJsStyleLinkeTag = cdnResourcesService.getAttributesForHighlightJsStyleTag(highlightJsStyle);
 }
 
 /**
