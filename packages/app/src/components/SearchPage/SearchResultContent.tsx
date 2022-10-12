@@ -211,7 +211,7 @@ export const SearchResultContent: FC<Props> = (props: Props) => {
           additionalClasses={['px-4']}
         />
       </div>
-      <div className="search-result-content-body-container" ref={scrollElementRef} >
+      <div className="search-result-content-body-container" ref={scrollElementRef}>
         <RevisionLoader
           rendererOptions={rendererOptions}
           pageId={page._id}
