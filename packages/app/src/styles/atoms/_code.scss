@@ -1,0 +1,12 @@
+@use '~/styles/variables' as var;
+@use '~/styles/bootstrap/init' as bs;
+@use '~/styles/atoms/mixins' as atm;
+
+/*
+ * style of inline-code
+ */
+:not(pre) {
+  > code {
+    @include atm.code-inline;
+  }
+}
