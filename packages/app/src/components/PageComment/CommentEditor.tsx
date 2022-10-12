@@ -20,7 +20,7 @@ import { useSWRxSlackChannels, useIsSlackEnabled } from '~/stores/editor';
 
 import { CustomNavTab } from '../CustomNavigation/CustomNav';
 import NotAvailableForGuest from '../NotAvailableForGuest';
-import { Skelton } from '../Skelton';
+import Editor from '../PageEditor/Editor';
 
 
 import { CommentPreview } from './CommentPreview';
@@ -29,11 +29,6 @@ import styles from './CommentEditor.module.scss';
 
 
 const SlackNotification = dynamic(() => import('../SlackNotification').then(mod => mod.SlackNotification), { ssr: false });
-const Editor = dynamic(() => import('../PageEditor/Editor'),
-  {
-    ssr: false,
-    loading: () => <Skelton additionalClass="grw-skelton page-comment-editor-skelton" />,
-  });
 
 
 const navTabMapping = {

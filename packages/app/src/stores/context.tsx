@@ -258,6 +258,10 @@ export const useShowPageLimitationXL = (initialData?: number): SWRResponse<numbe
   return useStaticSWR('showPageLimitationXL', initialData);
 };
 
+export const useCustomizeTitle = (initialData?: string): SWRResponse<string, Error> => {
+  return useStaticSWR('CustomizeTitle', initialData);
+};
+
 /** **********************************************************
  *                     Computed contexts
  *********************************************************** */
