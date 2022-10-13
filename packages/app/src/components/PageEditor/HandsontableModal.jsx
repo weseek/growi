@@ -66,6 +66,7 @@ export default class HandsontableModal extends React.PureComponent {
     this.importData = this.importData.bind(this);
     this.expandWindow = this.expandWindow.bind(this);
     this.contractWindow = this.contractWindow.bind(this);
+    this.hotTable = React.createRef();
 
     // create debounced method for expanding HotTable
     this.expandHotTableHeightWithDebounce = debounce(100, this.expandHotTableHeight);
@@ -301,6 +302,7 @@ export default class HandsontableModal extends React.PureComponent {
       const newMarkdownTable = new MarkdownTable(prevState.markdownTable.table, { align });
       return { markdownTable: newMarkdownTable };
     }, () => {
+      console.log('afterColumnMoveHandler');
       this.synchronizeAlignment();
     });
   }
@@ -317,6 +319,7 @@ export default class HandsontableModal extends React.PureComponent {
       }
       return { markdownTable: newMarkdownTable };
     }, () => {
+      console.log('align');
       this.synchronizeAlignment();
     });
   }
@@ -329,8 +332,13 @@ export default class HandsontableModal extends React.PureComponent {
       return;
     }
 
+    console.log('this.hotTablehoge', this.hotTable);
+    console.log('this.markdownTable', this.state.markdownTable);
+
     const align = this.state.markdownTable.options.align;
     const hotInstance = this.hotTable.hotInstance;
+
+    console.log({ align });
 
     for (let i = 0; i < align.length; i++) {
       for (let j = 0; j < hotInstance.countRows(); j++) {
@@ -471,11 +479,12 @@ export default class HandsontableModal extends React.PureComponent {
           </div>
           <div ref={(c) => { this.hotTableContainer = c }} className="m-4 hot-table-container">
             <HotTable
-              ref={(c) => { this.hotTable = c }}
+              // ref={(c) => { this.hotTable = c }}
+              ref={this.hotTable}
               data={this.state.markdownTable.table}
               settings={this.handsontableSettings}
               height={this.state.handsontableHeight}
-              // afterLoadData={this.afterLoadDataHandler}
+              afterLoadData={this.afterLoadDataHandler}
               modifyColWidth={this.modifyColWidthHandler}
               beforeColumnMove={this.beforeColumnMoveHandler}
               beforeColumnResize={this.beforeColumnResizeHandler}
