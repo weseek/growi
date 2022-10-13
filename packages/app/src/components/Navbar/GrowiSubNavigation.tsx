@@ -7,7 +7,7 @@ import {
 } from '~/stores/ui';
 
 import { TagLabelsSkelton } from '../Page/TagLabels';
-import PagePathNav from '../PagePathNav';
+// import PagePathNav from '../PagePathNav';
 
 import DrawerToggler from './DrawerToggler';
 
@@ -19,6 +19,8 @@ const TagLabels = dynamic(() => import('../Page/TagLabels').then(mod => mod.TagL
   ssr: false,
   loading: TagLabelsSkelton,
 });
+
+const PagePathNav = dynamic(() => import('../PagePathNav'), { ssr: false });
 
 
 export type GrowiSubNavigationProps = {

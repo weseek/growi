@@ -13,6 +13,7 @@ import { debounce } from 'throttle-debounce';
 import { toastError } from '~/client/util/apiNotification';
 import { useCurrentUser, useIsSearchServiceReachable } from '~/stores/context';
 import { usePageCreateModal } from '~/stores/modal';
+import { EditorMode, useEditorMode } from '~/stores/ui';
 
 import PagePathAutoComplete from './PagePathAutoComplete';
 
@@ -25,6 +26,7 @@ const PageCreateModal = () => {
   const router = useRouter();
 
   const { data: currentUser } = useCurrentUser();
+  const { mutate: mutateEditorMode } = useEditorMode();
 
   const { data: pageCreateModalData, close: closeCreateModal } = usePageCreateModal();
   const { isOpened, path } = pageCreateModalData;
@@ -101,6 +103,7 @@ const PageCreateModal = () => {
     try {
       const editorPath = await generateEditorPath(...paths);
       router.push(editorPath);
+      mutateEditorMode(EditorMode.Editor);
 
       // close modal
       closeCreateModal();

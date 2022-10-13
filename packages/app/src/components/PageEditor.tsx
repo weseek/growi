@@ -109,12 +109,14 @@ const PageEditor = React.memo((): JSX.Element => {
       { ...opts },
     );
 
+    let err;
     try {
-      await saveOrUpdate(optionsToSave, { pageId, path: currentPagePath || currentPathname, revisionId: currentRevisionId }, markdownToSave.current);
+      // await saveOrUpdate(optionsToSave, { pageId, path: currentPagePath || currentPathname, revisionId: currentRevisionId }, markdownToSave.current);
       await mutateCurrentPage();
-      mutateIsEnabledUnsavedWarning(false);
+      // mutateIsEnabledUnsavedWarning(false);
     }
     catch (error) {
+      err = error;
       logger.error('failed to save', error);
       // pageContainer.showErrorToastr(error);
       if (error.code === 'conflict') {
@@ -126,6 +128,8 @@ const PageEditor = React.memo((): JSX.Element => {
         // });
       }
     }
+
+    console.log(err);
 
   // eslint-disable-next-line max-len
   }, [grantData, isSlackEnabled, currentPathname, slackChannels, pageTags, pageId, currentPagePath, currentRevisionId, mutateCurrentPage, mutateIsEnabledUnsavedWarning]);

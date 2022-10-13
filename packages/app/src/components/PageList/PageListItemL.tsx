@@ -8,6 +8,7 @@ import { DevidedPagePath } from '@growi/core';
 import { UserPicture, PageListMeta } from '@growi/ui';
 import { format } from 'date-fns';
 import { useTranslation } from 'next-i18next';
+import dynamic from 'next/dynamic';
 import Link from 'next/link';
 import Clamp from 'react-multiline-clamp';
 import { CustomInput } from 'reactstrap';
@@ -31,7 +32,8 @@ import { useIsDeviceSmallerThanLg } from '~/stores/ui';
 
 import { useSWRxPageInfo } from '../../stores/page';
 import { ForceHideMenuItems, PageItemControl } from '../Common/Dropdown/PageItemControl';
-import PagePathHierarchicalLink from '../PagePathHierarchicalLink';
+
+const PagePathHierarchicalLink = dynamic(() => import('../PagePathHierarchicalLink'), { ssr: false });
 
 type Props = {
   page: IPageWithSearchMeta | IPageWithMeta<IPageInfoForListing & IPageSearchMeta>,

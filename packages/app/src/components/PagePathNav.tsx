@@ -51,7 +51,7 @@ const PagePathNav: FC<Props> = (props: Props) => {
   return (
     <div className="grw-page-path-nav">
       {formerLink}
-      <span className="d-flex align-items-center">
+      <div className="d-flex align-items-center">
         <h1 className="m-0">{latterLink}</h1>
         { pageId != null && !isNotFound && (
           <div className="mx-2">
@@ -60,7 +60,7 @@ const PagePathNav: FC<Props> = (props: Props) => {
             </CopyDropdown>
           </div>
         ) }
-      </span>
+      </div>
     </div>
   );
 };

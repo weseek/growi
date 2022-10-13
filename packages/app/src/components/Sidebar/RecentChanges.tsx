@@ -5,9 +5,9 @@ import React, {
 import { DevidedPagePath, isPopulated } from '@growi/core';
 import { UserPicture, FootstampIcon } from '@growi/ui';
 import { useTranslation } from 'next-i18next';
+import dynamic from 'next/dynamic';
 import Link from 'next/link';
 
-import PagePathHierarchicalLink from '~/components/PagePathHierarchicalLink';
 import { IPageHasId } from '~/interfaces/page';
 import LinkedPagePath from '~/models/linked-page-path';
 import { useSWRInifinitexRecentlyUpdated } from '~/stores/page-listing';
@@ -20,6 +20,7 @@ import InfiniteScroll from './InfiniteScroll';
 import TagLabelsStyles from '../Page/TagLabels.module.scss';
 import styles from './RecentChanges.module.scss';
 
+const PagePathHierarchicalLink = dynamic(() => import('../PagePathHierarchicalLink'), { ssr: false });
 
 const logger = loggerFactory('growi:History');
 
