@@ -54,8 +54,11 @@ export const GrowiSubNavigation = (props: GrowiSubNavigationProps): JSX.Element 
   const compactModeClasses = isCompactMode ? 'grw-subnav-compact d-print-none' : '';
 
   return (
-    <div className={`grw-subnav ${styles['grw-subnav']} d-flex align-items-center justify-content-between ${additionalClasses.join(' ')}
-    ${compactModeClasses}`} >
+    <div className={`
+      grw-subnav ${styles['grw-subnav']} d-flex align-items-center justify-content-between
+      ${additionalClasses.join(' ')}
+      ${compactModeClasses}`}
+    >
       {/* Left side */}
       <div className="d-flex grw-subnav-left-side">
         { (showDrawerToggler && isDrawerMode) && (
