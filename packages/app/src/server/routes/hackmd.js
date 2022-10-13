@@ -38,11 +38,6 @@ module.exports = function(crowi, app) {
   const Page = crowi.models.Page;
   const pageEvent = crowi.event('page');
 
-  // load GROWI agent script for HackMD
-  const manifest = require(path.join(crowi.publicDir, 'manifest.json'));
-  const agentScriptPath = path.join(crowi.publicDir, manifest['js/hackmd-agent.js']);
-  const stylesScriptPath = path.join(crowi.publicDir, manifest['js/hackmd-styles.js']);
-
   /**
    * GET /_hackmd/load-agent
    *
