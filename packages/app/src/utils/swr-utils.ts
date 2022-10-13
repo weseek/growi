@@ -1,5 +1,9 @@
-import { SWRConfiguration } from 'swr';
+import { ProviderConfiguration, PublicConfiguration } from 'swr/dist/types';
 
-export const swrGlobalConfiguration: SWRConfiguration = {
+export type SWRConfigValue = Partial<PublicConfiguration> & Partial<ProviderConfiguration> & {
+  provider?: (cache) => any | undefined,
+};
+
+export const swrGlobalConfiguration: SWRConfigValue = {
   errorRetryCount: 1,
 };
