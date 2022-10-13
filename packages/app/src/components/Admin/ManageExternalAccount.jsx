@@ -9,7 +9,7 @@ import { toastError } from '~/client/util/apiNotification';
 import PaginationWrapper from '../PaginationWrapper';
 import { withUnstatedContainers } from '../UnstatedUtils';
 
-import ExternalAccountTable from './Users/ExternalAccountTable';
+import { ExternalAccountTableWrapper } from './Users/ExternalAccountTable';
 
 
 class ManageExternalAccount extends React.Component {
@@ -60,7 +60,7 @@ class ManageExternalAccount extends React.Component {
         {(totalAccounts !== 0) ? (
           <>
             {pager}
-            <ExternalAccountTable />
+            <ExternalAccountTableWrapper />
             {pager}
           </>
         )
