@@ -10,6 +10,7 @@ import { Config } from '~/server/models/config';
 
 type GrowiDocumentProps = {
   customizeHeaderDocument: Config
+  customizeScriptDocument: Config
 }
 declare type GrowiDocumentInitialProps = GrowiDocumentProps & DocumentInitialProps;
 
@@ -20,13 +21,14 @@ class GrowiDocument extends Document<GrowiDocumentProps> {
 
     const ConfigModel = mongoose.model('Config');
     const customizeHeaderDocument = await ConfigModel.findOne({ key: 'customize:header' }) as unknown as Config;
+    const customizeScriptDocument = await ConfigModel.findOne({ key: 'customize:script' }) as unknown as Config;
 
-    return { ...initialProps, customizeHeaderDocument };
+    return { ...initialProps, customizeHeaderDocument, customizeScriptDocument };
   }
 
   override render(): JSX.Element {
 
-    const { customizeHeaderDocument } = this.props;
+    const { customizeHeaderDocument, customizeScriptDocument } = this.props;
 
     return (
       <Html>
@@ -42,6 +44,10 @@ class GrowiDocument extends Document<GrowiDocumentProps> {
           <Main />
           <NextScript />
         </body>
+        <script dangerouslySetInnerHTML={{
+          __html: JSON.parse(customizeScriptDocument.value),
+        }}>
+        </script>
       </Html>
     );
   }
