@@ -1,10 +1,10 @@
+import { ErrorV3 } from '@growi/core';
 import { NextFunction, Request, Response } from 'express';
+
 import loggerFactory from '~/utils/logger';
 
 const logger = loggerFactory('growi:middlewares:ApiV3FormValidator');
 const { validationResult } = require('express-validator');
-
-const ErrorV3 = require('../models/vo/error-apiv3');
 
 export const apiV3FormValidator = (req: Request, res: Response & { apiv3Err }, next: NextFunction): void => {
   logger.debug('req.query', req.query);

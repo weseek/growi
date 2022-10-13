@@ -3,8 +3,8 @@
 // import each from 'jest-each';
 jest.mock('~/service/localstorage-manager');
 
-import TagCacheManager from '~/plugin/service/tag-cache-manager';
-import LocalStorageManager from '~/service/localstorage-manager';
+import { TagCacheManager } from '~/plugin/service/tag-cache-manager';
+import { LocalStorageManager } from '~/service/localstorage-manager';
 /* eslint-enable import/first */
 
 describe('TagCacheManager.constructor', () => {

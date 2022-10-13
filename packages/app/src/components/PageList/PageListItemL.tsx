@@ -7,7 +7,8 @@ import React, {
 import { DevidedPagePath } from '@growi/core';
 import { UserPicture, PageListMeta } from '@growi/ui';
 import { format } from 'date-fns';
-import { useTranslation } from 'react-i18next';
+import { useTranslation } from 'next-i18next';
+import Link from 'next/link';
 import Clamp from 'react-multiline-clamp';
 import { CustomInput } from 'reactstrap';
 import urljoin from 'url-join';
@@ -16,9 +17,9 @@ import urljoin from 'url-join';
 import { ISelectable } from '~/client/interfaces/selectable-all';
 import { bookmark, unbookmark } from '~/client/services/page-operation';
 import {
-  IPageInfoAll, IPageInfoForEntity, IPageInfoForListing, IPageWithMeta, isIPageInfoForListing, isIPageInfoForEntity,
+  IPageInfoAll, isIPageInfoForListing, isIPageInfoForEntity, IPageWithMeta, IPageInfoForListing,
 } from '~/interfaces/page';
-import { IPageSearchMeta, isIPageSearchMeta } from '~/interfaces/search';
+import { IPageSearchMeta, IPageWithSearchMeta, isIPageSearchMeta } from '~/interfaces/search';
 import {
   OnDuplicatedFunction, OnRenamedFunction, OnDeletedFunction, OnPutBackedFunction,
 } from '~/interfaces/ui';
@@ -34,7 +35,7 @@ import { ForceHideMenuItems, PageItemControl } from '../Common/Dropdown/PageItem
 import PagePathHierarchicalLink from '../PagePathHierarchicalLink';
 
 type Props = {
-  page: IPageWithMeta<IPageInfoForEntity> | IPageWithMeta<IPageSearchMeta> | IPageWithMeta<IPageInfoForListing & IPageSearchMeta>,
+  page: IPageWithSearchMeta | IPageWithMeta<IPageInfoForListing & IPageSearchMeta>,
   isSelected?: boolean, // is item selected(focused)
   isEnableActions?: boolean,
   forceHideMenuItems?: ForceHideMenuItems,
@@ -100,7 +101,7 @@ const PageListItemLSubstance: ForwardRefRenderFunction<ISelectable, Props> = (pr
   const lastUpdateDate = format(new Date(pageData.updatedAt), 'yyyy/MM/dd HH:mm:ss');
 
   useEffect(() => {
-    if (isIPageInfoForEntity(pageInfo) && pageInfo != null) {
+    if (isIPageInfoForEntity(pageInfo)) {
       // likerCount
       setLikerCount(pageInfo.likerIds?.length ?? 0);
       // bookmarkCount
@@ -165,6 +166,7 @@ const PageListItemLSubstance: ForwardRefRenderFunction<ISelectable, Props> = (pr
     <li
       key={pageData._id}
       className={`list-group-item d-flex align-items-center px-3 px-md-1 ${styleListGroupItem} ${styleActive}`}
+      data-testid="page-list-item-L"
       onClick={clickHandler}
     >
       <div className="text-break w-100">
@@ -203,18 +205,19 @@ const PageListItemLSubstance: ForwardRefRenderFunction<ISelectable, Props> = (pr
                 <span className="h5 mb-0">
                   {/* Use permanent links to care for pages with the same name (Cannot use page path url) */}
                   <span className="grw-page-path-hierarchical-link text-break">
-                    {shouldDangerouslySetInnerHTMLForPaths
-                      ? (
-                        <a
-                          className="page-segment"
-                          href={encodeURI(urljoin('/', pageData._id))}
-                          // eslint-disable-next-line react/no-danger
-                          dangerouslySetInnerHTML={{ __html: linkedPagePathHighlightedLatter.pathName }}
-                        >
-                        </a>
-                      )
-                      : <a className="page-segment" href={encodeURI(urljoin('/', pageData._id))}>{linkedPagePathHighlightedLatter.pathName}</a>
-                    }
+                    <Link href={encodeURI(urljoin('/', pageData._id))} prefetch={false}>
+                      {shouldDangerouslySetInnerHTMLForPaths
+                        ? (
+                          <a
+                            className="page-segment"
+                            // eslint-disable-next-line react/no-danger
+                            dangerouslySetInnerHTML={{ __html: linkedPagePathHighlightedLatter.pathName }}
+                          >
+                          </a>
+                        )
+                        : <a className="page-segment">{linkedPagePathHighlightedLatter.pathName}</a>
+                      }
+                    </Link>
                   </span>
                 </span>
               </Clamp>

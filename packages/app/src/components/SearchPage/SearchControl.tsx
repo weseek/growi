@@ -1,14 +1,16 @@
 import React, {
   FC, useCallback, useEffect, useState,
 } from 'react';
-import { useTranslation } from 'react-i18next';
+
+import { useTranslation } from 'next-i18next';
 
 import { SORT_AXIS, SORT_ORDER } from '~/interfaces/search';
 import { ISearchConditions, ISearchConfigurations } from '~/stores/search';
 
+import SearchForm from '../SearchForm';
+
 import SearchOptionModal from './SearchOptionModal';
 import SortControl from './SortControl';
-import SearchForm from '../SearchForm';
 
 type Props = {
   isSearchServiceReachable: boolean,
@@ -165,5 +167,6 @@ const SearchControl: FC <Props> = React.memo((props: Props) => {
   );
 });
 
+SearchControl.displayName = 'SearchControl';
 
 export default SearchControl;

@@ -24,6 +24,12 @@
 .revision-history-diff {
   color: $gray-900;
   table-layout: fixed;
+
+  // revision-history
+  // to stay d2h-code-side-line-number in the revision history diff area
+  .d2h-wrapper {
+    position: relative;
+  }
 }
 
 .comparison-header {

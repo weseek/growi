@@ -2,14 +2,16 @@ import React, {
   FC, forwardRef, ForwardRefRenderFunction, useImperativeHandle,
   useRef, useState,
 } from 'react';
-import { useTranslation } from 'react-i18next';
+
+import { useTranslation } from 'next-i18next';
 
 import { IFocusable } from '~/client/interfaces/focusable';
 import { TypeaheadProps } from '~/client/interfaces/react-bootstrap-typeahead';
-import { IPageWithMeta } from '~/interfaces/page';
-import { IPageSearchMeta } from '~/interfaces/search';
+import { IPageWithSearchMeta } from '~/interfaces/search';
 
 import SearchTypeahead from './SearchTypeahead';
+
+import styles from './SearchForm.module.scss';
 
 
 type SearchFormHelpProps = {
@@ -31,7 +33,7 @@ const SearchFormHelp: FC<SearchFormHelpProps> = React.memo((props: SearchFormHel
   }
 
   return (
-    <table className="table grw-search-table search-help m-0">
+    <table className={`${styles['grw-search-table']} table grw-search-table search-help m-0`}>
       <caption className="text-left text-primary p-2">
         <h5 className="h6"><i className="icon-magnifier pr-2 mb-2" />{ t('search_help.title') }</h5>
       </caption>
@@ -75,13 +77,15 @@ const SearchFormHelp: FC<SearchFormHelpProps> = React.memo((props: SearchFormHel
   );
 });
 
+SearchFormHelp.displayName = 'SearchFormHelp';
+
 
 type Props = TypeaheadProps & {
   isSearchServiceReachable: boolean,
 
   keywordOnInit?: string,
   disableIncrementalSearch?: boolean,
-  onChange?: (data: IPageWithMeta<IPageSearchMeta>[]) => void,
+  onChange?: (data: IPageWithSearchMeta[]) => void,
   onSubmit?: (input: string) => void,
 };
 

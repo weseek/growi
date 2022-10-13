@@ -1,0 +1,33 @@
+@use '~/styles/bootstrap/init' as bs;
+@use './comment-inheritance';
+@use '../PageEditor/page-editor-inheritance';
+
+// display cheatsheet for comment form only
+.comment-editor-styles :global {
+  .comment-form {
+    position: relative;
+    margin-top: 1em;
+
+    // user icon
+    .picture {
+      @extend %picture;
+    }
+
+    // seciton
+    .comment-form-main {
+      @extend %comment-section;
+      margin-left: 4.5em;
+      @include bs.media-breakpoint-down(xs) {
+        margin-left: 3.5em;
+      }
+    }
+
+    // textarea
+    .comment-write {
+      margin-bottom: 0.5em;
+    }
+    .comment-form-preview {
+      padding-top: 0.5em;
+    }
+  }
+}

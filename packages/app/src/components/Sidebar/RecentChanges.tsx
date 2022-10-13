@@ -1,26 +1,33 @@
 import React, {
-  FC,
-  useCallback, useEffect, useState,
+  memo, useCallback, useEffect, useState,
 } from 'react';
-import PropTypes from 'prop-types';
 
-import { useTranslation } from 'react-i18next';
-
+import { DevidedPagePath, isPopulated } from '@growi/core';
 import { UserPicture, FootstampIcon } from '@growi/ui';
-import { DevidedPagePath } from '@growi/core';
+import { useTranslation } from 'next-i18next';
+import Link from 'next/link';
 
 import PagePathHierarchicalLink from '~/components/PagePathHierarchicalLink';
-import { useSWRInifinitexRecentlyUpdated } from '~/stores/page';
-import loggerFactory from '~/utils/logger';
-
+import { IPageHasId } from '~/interfaces/page';
 import LinkedPagePath from '~/models/linked-page-path';
-import InfiniteScroll from './InfiniteScroll';
+import { useSWRInifinitexRecentlyUpdated } from '~/stores/page-listing';
+import loggerFactory from '~/utils/logger';
 
 import FormattedDistanceDate from '../FormattedDistanceDate';
 
+import InfiniteScroll from './InfiniteScroll';
+
+import TagLabelsStyles from '../Page/TagLabels.module.scss';
+import styles from './RecentChanges.module.scss';
+
+
 const logger = loggerFactory('growi:History');
 
-function PageItemLower({ page }) {
+type PageItemProps = {
+  page: IPageHasId,
+}
+
+const PageItemLower = memo(({ page }: PageItemProps): JSX.Element => {
   return (
     <div className="d-flex justify-content-between grw-recent-changes-item-lower pt-1">
       <div className="d-flex">
@@ -29,16 +36,16 @@ function PageItemLower({ page }) {
         <div className="icon-bubble mr-1 d-inline-block"></div>
         <div className="mr-2 grw-list-counts d-inline-block">{page.commentCount}</div>
       </div>
-      <div className="grw-formatted-distance-date small mt-auto">
+      <div className="grw-formatted-distance-date small mt-auto" data-hide-in-vrt>
         <FormattedDistanceDate id={page._id} date={page.updatedAt} />
       </div>
     </div>
   );
-}
-PageItemLower.propTypes = {
-  page: PropTypes.any,
-};
-function LargePageItem({ page }) {
+});
+PageItemLower.displayName = 'PageItemLower';
+
+
+const LargePageItem = memo(({ page }: PageItemProps): JSX.Element => {
   const dPagePath = new DevidedPagePath(page.path, false, true);
   const linkedPagePathFormer = new LinkedPagePath(dPagePath.former);
   const linkedPagePathLatter = new LinkedPagePath(dPagePath.latter);
@@ -55,15 +62,20 @@ function LargePageItem({ page }) {
 
   const tags = page.tags;
   const tagElements = tags.map((tag) => {
+    if (!isPopulated(tag)) {
+      return <></>;
+    }
     return (
-      <a key={tag.name} href={`/_search?q=tag:${tag.name}`} className="grw-tag-label badge badge-secondary mr-2 small">
-        {tag.name}
-      </a>
+      <Link key={tag.name} href={`/_search?q=tag:${tag.name}`} prefetch={false}>
+        <a className="grw-tag-label badge badge-secondary mr-2 small">
+          {tag.name}
+        </a>
+      </Link>
     );
   });
 
   return (
-    <li className="list-group-item py-3 px-0">
+    <li className={`list-group-item ${styles['list-group-item']} py-3 px-0`}>
       <div className="d-flex w-100">
         <UserPicture user={page.lastUpdateUser} size="md" noTooltip />
         <div className="flex-grow-1 ml-2">
@@ -80,12 +92,11 @@ function LargePageItem({ page }) {
       </div>
     </li>
   );
-}
-LargePageItem.propTypes = {
-  page: PropTypes.any,
-};
+});
+LargePageItem.displayName = 'LargePageItem';
 
-function SmallPageItem({ page }) {
+
+const SmallPageItem = memo(({ page }: PageItemProps): JSX.Element => {
   const dPagePath = new DevidedPagePath(page.path, false, true);
   const linkedPagePathFormer = new LinkedPagePath(dPagePath.former);
   const linkedPagePathLatter = new LinkedPagePath(dPagePath.latter);
@@ -106,7 +117,7 @@ function SmallPageItem({ page }) {
         <UserPicture user={page.lastUpdateUser} size="md" noTooltip />
         <div className="flex-grow-1 ml-2">
           { !dPagePath.isRoot && <FormerLink /> }
-          <h5 className="my-0">
+          <h5 className="my-0 text-truncate">
             <PagePathHierarchicalLink linkedPagePath={linkedPagePathLatter} basePath={dPagePath.isRoot ? undefined : dPagePath.former} />
             {locked}
           </h5>
@@ -115,10 +126,8 @@ function SmallPageItem({ page }) {
       </div>
     </li>
   );
-}
-SmallPageItem.propTypes = {
-  page: PropTypes.any,
-};
+});
+SmallPageItem.displayName = 'SmallPageItem';
 
 const RecentChanges = (): JSX.Element => {
   const PER_PAGE = 20;
@@ -144,14 +153,14 @@ const RecentChanges = (): JSX.Element => {
   }, [retrieveSizePreferenceFromLocalStorage]);
 
   return (
-    <>
+    <div data-testid="grw-recent-changes">
       <div className="grw-sidebar-content-header p-3 d-flex">
         <h3 className="mb-0  text-nowrap">{t('Recent Changes')}</h3>
         <button type="button" className="btn btn-sm ml-auto grw-btn-reload" onClick={() => swr.mutate()}>
           <i className="icon icon-reload"></i>
         </button>
         <div className="d-flex align-items-center">
-          <div className="grw-recent-changes-resize-button custom-control custom-switch ml-1">
+          <div className={`grw-recent-changes-resize-button ${styles['grw-recent-changes-resize-button']} custom-control custom-switch ml-1`}>
             <input
               id="recentChangesResize"
               className="custom-control-input"
@@ -179,7 +188,7 @@ const RecentChanges = (): JSX.Element => {
           </InfiniteScroll>
         </ul>
       </div>
-    </>
+    </div>
   );
 
 };

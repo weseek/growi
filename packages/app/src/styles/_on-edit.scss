@@ -1,20 +1,11 @@
-@import 'editor-overlay';
+@import './bootstrap/init' ;
+@import './variables' ;
+@import './mixins' ;
+@import 'sidebar-wiki';
 
-body:not(.on-edit) {
-  // hide .page-editor-footer
-  .page-editor-footer {
-    display: none !important;
-    border: none;
-  }
-}
-
+// global imported
 body.on-edit {
   overflow-y: hidden !important;
-
-  .container-fluid {
-    padding-right: 15px;
-    padding-left: 15px;
-  }
 
   .grw-navbar {
     position: fixed !important;
@@ -26,6 +17,8 @@ body.on-edit {
     height: $grw-subnav-height-on-edit;
     min-height: unset;
     padding-top: 0;
+    padding-right: 15px;
+    padding-left: 15px;
 
     @include media-breakpoint-up(lg) {
       height: $grw-subnav-height-lg-on-edit;
@@ -172,15 +165,6 @@ body.on-edit {
     }
   }
 
-  .nav:hover {
-    .btn-copy,
-    .btn-edit,
-    .btn-edit-tags {
-      // change button opacity
-      opacity: unset;
-    }
-  }
-
   .grw-copy-dropdown {
     .btn-copy {
       padding: 3px !important; // overwrite padding
@@ -296,43 +280,20 @@ body.on-edit {
 }
 
 body.on-edit {
-  &:not(.growi-layout-fluid) .page-editor-preview-body {
+  .wrapper:not(.growi-layout-fluid) .page-editor-preview-body {
     .wiki {
       max-width: 980px;
       margin: 0 auto;
     }
   }
-  &.growi-layout-fluid .page-editor-preview-body {
+  .wrapper.growi-layout-fluid .page-editor-preview-body {
     .wiki {
       margin: 0 auto;
     }
   }
 }
 
-// overwrite .CodeMirror-hints
-.CodeMirror-hints {
-  max-height: 30em !important;
-
-  .CodeMirror-hint.crowi-emoji-autocomplete {
-    font-family: $font-family-monospace-not-strictly;
-    line-height: 1.6em;
-
-    .img-container {
-      display: inline-block;
-      width: 30px;
-    }
-  }
-
-  // active line
-  .CodeMirror-hint-active.crowi-emoji-autocomplete {
-    .img-container {
-      padding-top: 0.3em;
-      padding-bottom: 0.3em;
-      font-size: 15px; // adjust to .wiki
-    }
-  }
-}
-
+// TODO: Never used this id class
 #tag-edit-button-tooltip {
   .tooltip-inner {
     color: black;
@@ -342,51 +303,5 @@ body.on-edit {
 
   .tooltip-arrow {
     border-bottom: 5px solid $gray-300;
-  }
-}
-
-/*
- Grid Edit Modal
-*/
-
-.grw-grid-edit-modal {
-  .desktop-preview,
-  .tablet-preview,
-  .mobile-preview {
-    .row {
-      height: 140px;
-      margin: 0px;
-    }
-  }
-  .desktop-preview {
-    .row {
-      div {
-        padding: 0px;
-      }
-    }
-  }
-
-  .tablet-preview {
-    .row {
-      div {
-        padding: 0px;
-      }
-    }
-  }
-
-  .mobile-preview {
-    width: 75%;
-    .row {
-      div {
-        padding: 0px;
-      }
-    }
-  }
-
-  .grid-division-menu {
-    width: 60vw;
-    @include media-breakpoint-down(lg) {
-      width: 80vw;
-    }
   }
 }

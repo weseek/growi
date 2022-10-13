@@ -1,6 +1,7 @@
 import React, { useCallback, useState } from 'react';
 
-import { useTranslation } from 'react-i18next';
+import { isPopulated } from '@growi/core';
+import { useTranslation } from 'next-i18next';
 import {
   UncontrolledDropdown,
   DropdownToggle, DropdownMenu, DropdownItem,
@@ -8,8 +9,6 @@ import {
   Modal, ModalHeader, ModalBody,
 } from 'reactstrap';
 
-
-import { isPopulated } from '~/interfaces/common';
 import { IUserGroupHasId } from '~/interfaces/user';
 import { useCurrentUser } from '~/stores/context';
 import { useSWRxMyUserGroupRelations } from '~/stores/user-group';
@@ -51,6 +50,8 @@ const GrantSelector = (props: Props): JSX.Element => {
     disabled,
     grantGroupName,
     onUpdateGrant,
+    grant: currentGrant,
+    grantGroupId,
   } = props;
 
 
@@ -94,7 +95,6 @@ const GrantSelector = (props: Props): JSX.Element => {
    * Render grant selector DOM.
    */
   const renderGrantSelector = useCallback(() => {
-    const { grant: currentGrant, grantGroupId } = props;
 
     let dropdownToggleBtnColor;
     let dropdownToggleLabelElm;
@@ -147,7 +147,7 @@ const GrantSelector = (props: Props): JSX.Element => {
         </UncontrolledDropdown>
       </div>
     );
-  }, [changeGrantHandler, disabled, grantGroupName, props, t]);
+  }, [changeGrantHandler, currentGrant, disabled, grantGroupId, grantGroupName, t]);
 
   /**
    * Render select grantgroup modal.

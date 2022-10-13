@@ -1,6 +1,6 @@
 import React, { useCallback } from 'react';
 
-import { useTranslation } from 'react-i18next';
+import { useTranslation } from 'next-i18next';
 
 import { toastSuccess, toastError } from '~/client/util/apiNotification';
 import { apiv3Put } from '~/client/util/apiv3-client';
@@ -86,5 +86,6 @@ const ApiSettings = React.memo((): JSX.Element => {
 
 });
 
+ApiSettings.displayName = 'ApiSettings';
 
 export default ApiSettings;

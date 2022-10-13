@@ -1,3 +1,4 @@
+import { isServer } from '@growi/core';
 import { Container } from 'unstated';
 
 import loggerFactory from '~/utils/logger';
@@ -16,15 +17,13 @@ export default class AdminBasicSecurityContainer extends Container {
   constructor() {
     super();
 
-    this.dummyIsSameUsernameTreatedAsIdenticalUser = 0;
-    this.dummyIsSameUsernameTreatedAsIdenticalUserForError = 1;
+    if (isServer()) {
+      return;
+    }
 
     this.state = {
-      retrieveError: null,
-      // set dummy value tile for using suspense
-      isSameUsernameTreatedAsIdenticalUser: this.dummyIsSameUsernameTreatedAsIdenticalUser,
+      isSameUsernameTreatedAsIdenticalUser: false,
     };
-
   }
 
   /**

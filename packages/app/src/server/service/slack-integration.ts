@@ -1,23 +1,22 @@
-import mongoose from 'mongoose';
-
-import { IncomingWebhookSendArguments } from '@slack/webhook';
-import { ChatPostMessageArguments, WebClient } from '@slack/web-api';
-
 import {
   generateWebClient, GrowiCommand, InteractionPayloadAccessor, markdownSectionBlock, SlackbotType,
   RespondUtil, GrowiBotEvent,
 } from '@growi/slack';
+import { ChatPostMessageArguments, WebClient } from '@slack/web-api';
+import { IncomingWebhookSendArguments } from '@slack/webhook';
+import mongoose from 'mongoose';
+
 
 import loggerFactory from '~/utils/logger';
 
+import { EventActionsPermission } from '../interfaces/slack-integration/events';
 import S2sMessage from '../models/vo/s2s-message';
+import { SlackCommandHandlerError } from '../models/vo/slack-command-handler-error';
 
 import ConfigManager from './config-manager';
 import { S2sMessagingService } from './s2s-messaging/base';
 import { S2sMessageHandlable } from './s2s-messaging/handlable';
-import { SlackCommandHandlerError } from '../models/vo/slack-command-handler-error';
 import { LinkSharedEventHandler } from './slack-event-handler/link-shared';
-import { EventActionsPermission } from '../interfaces/slack-integration/events';
 
 const logger = loggerFactory('growi:service:SlackBotService');
 
@@ -245,11 +244,11 @@ export class SlackIntegrationService implements S2sMessageHandlable {
    */
   async handleCommandRequest(growiCommand: GrowiCommand, client, body, respondUtil: RespondUtil): Promise<void> {
     const { growiCommandType } = growiCommand;
-    const module = `./slack-command-handler/${growiCommandType}`;
+    const modulePath = `./slack-command-handler/${growiCommandType}`;
 
     let handler;
     try {
-      handler = require(module)(this.crowi);
+      handler = require(modulePath)(this.crowi);
     }
     catch (err) {
       const text = `*No command.*\n \`command: ${growiCommand.text}\``;
@@ -275,11 +274,11 @@ export class SlackIntegrationService implements S2sMessageHandlable {
     const commandName = actionId.split(':')[0];
     const handlerMethodName = actionId.split(':')[1];
 
-    const module = `./slack-command-handler/${commandName}`;
+    const modulePath = `./slack-command-handler/${commandName}`;
 
     let handler;
     try {
-      handler = require(module)(this.crowi);
+      handler = require(modulePath)(this.crowi);
     }
     catch (err) {
       throw new SlackCommandHandlerError(`No interaction.\n \`actionId: ${actionId}\``);
@@ -296,11 +295,11 @@ export class SlackIntegrationService implements S2sMessageHandlable {
     const commandName = callbackId.split(':')[0];
     const handlerMethodName = callbackId.split(':')[1];
 
-    const module = `./slack-command-handler/${commandName}`;
+    const modulePath = `./slack-command-handler/${commandName}`;
 
     let handler;
     try {
-      handler = require(module)(this.crowi);
+      handler = require(modulePath)(this.crowi);
     }
     catch (err) {
       throw new SlackCommandHandlerError(`No interaction.\n \`callbackId: ${callbackId}\``);

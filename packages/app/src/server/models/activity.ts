@@ -1,4 +1,4 @@
-import { getOrCreateModel, getModelSafely } from '@growi/core';
+import { Ref, IPage } from '@growi/core';
 import {
   Types, Document, Model, Schema,
 } from 'mongoose';
@@ -11,6 +11,8 @@ import {
 } from '~/interfaces/activity';
 
 import loggerFactory from '../../utils/logger';
+import { getOrCreateModel, getModelSafely } from '../util/mongoose-utils';
+
 
 import Subscription from './subscription';
 
@@ -94,18 +96,8 @@ activitySchema.post('save', function() {
 activitySchema.methods.getNotificationTargetUsers = async function() {
   const User = getModelSafely('User') || require('~/server/models/user')();
   const { user: actionUser, target } = this;
-
-  const [subscribeUsers, unsubscribeUsers] = await Promise.all([
-    Subscription.getSubscription((target as any) as Types.ObjectId),
-    Subscription.getUnsubscription((target as any) as Types.ObjectId),
-  ]);
-
-  const unique = array => Object.values(array.reduce((objects, object) => ({ ...objects, [object.toString()]: object }), {}));
-  const filter = (array, pull) => {
-    const ids = pull.map(object => object.toString());
-    return array.filter(object => !ids.includes(object.toString()));
-  };
-  const notificationUsers = filter(unique([...subscribeUsers]), [...unsubscribeUsers, actionUser]);
+  const subscribedUsers = await Subscription.getSubscription(target as unknown as Ref<IPage>);
+  const notificationUsers = subscribedUsers.filter(item => (item.toString() !== actionUser._id.toString()));
   const activeNotificationUsers = await User.find({
     _id: { $in: notificationUsers },
     status: User.STATUS_ACTIVE,
@@ -124,18 +116,6 @@ activitySchema.statics.updateByParameters = async function(activityId: string, p
   const activity = await this.findOneAndUpdate({ _id: activityId }, parameters, { new: true }) as unknown as IActivity;
 
   return activity;
-};
-
-activitySchema.statics.getPaginatedActivity = async function(limit: number, offset: number, query) {
-  const paginateResult = await this.paginate(
-    query,
-    {
-      limit,
-      offset,
-      sort: { createdAt: -1 },
-    },
-  );
-  return paginateResult;
 };
 
 activitySchema.statics.findSnapshotUsernamesByUsernameRegexWithTotalCount = async function(

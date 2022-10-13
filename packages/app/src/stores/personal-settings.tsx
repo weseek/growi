@@ -1,3 +1,4 @@
+import { useTranslation } from 'next-i18next';
 import useSWR, { SWRResponse } from 'swr';
 
 
@@ -27,6 +28,7 @@ export type IPersonalSettingsInfoOption = {
 }
 
 export const usePersonalSettings = (): SWRResponse<IUser, Error> & IPersonalSettingsInfoOption => {
+  const { i18n } = useTranslation();
   const { data: personalSettingsDataFromDB, mutate: revalidate } = useSWRxPersonalSettings();
   const key = personalSettingsDataFromDB != null ? 'personalSettingsInfo' : null;
 
@@ -57,6 +59,7 @@ export const usePersonalSettings = (): SWRResponse<IUser, Error> & IPersonalSett
     // invoke API
     try {
       await apiv3Put('/personal-setting/', updateData);
+      i18n.changeLanguage(updateData.lang);
     }
     catch (err) {
       logger.error(err);

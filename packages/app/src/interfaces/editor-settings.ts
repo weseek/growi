@@ -24,8 +24,24 @@ export interface IEditorSettings {
   theme: undefined | string,
   keymapMode: undefined | KeyMapMode,
   styleActiveLine: boolean,
-  renderMathJaxInRealtime: boolean,
   renderDrawioInRealtime: boolean,
   autoFormatMarkdownTable: boolean,
   textlintSettings: undefined | ITextlintSettings;
 }
+
+export type EditorConfig = {
+  upload: {
+    isUploadableFile: boolean,
+    isUploadableImage: boolean,
+  }
+}
+
+export type OptionsToSave = {
+  isSlackEnabled: boolean;
+  slackChannels: string;
+  grant: number;
+  pageTags: string[] | null;
+  grantUserGroupId?: string | null;
+  grantUserGroupName?: string | null;
+  isSyncRevisionToHackmd?: boolean;
+};

@@ -1,10 +1,11 @@
 import React from 'react';
 
+import { useTranslation } from 'next-i18next';
 import PropTypes from 'prop-types';
-import { useTranslation } from 'react-i18next';
 
 import AppContainer from '~/client/services/AppContainer';
 import PageContainer from '~/client/services/PageContainer';
+import Username from '~/components/User/Username';
 
 import { withUnstatedContainers } from './UnstatedUtils';
 
@@ -49,7 +50,7 @@ class PageStatusAlert extends React.Component {
         <i className="icon-fw icon-people"></i>
         {t('hackmd.someone_editing')}
       </>,
-      <a href="#hackmd" className="btn btn-outline-white">
+      <a href="#hackmd" key="btnOpenHackmdSomeoneEditing" className="btn btn-outline-white">
         <i className="fa fa-fw fa-file-text-o mr-1"></i>
         Open HackMD Editor
       </a>,
@@ -64,7 +65,7 @@ class PageStatusAlert extends React.Component {
         <i className="icon-fw icon-pencil"></i>
         {t('hackmd.this_page_has_draft')}
       </>,
-      <a href="#hackmd" className="btn btn-outline-white">
+      <a href="#hackmd" key="btnOpenHackmdPageHasDraft" className="btn btn-outline-white">
         <i className="fa fa-fw fa-file-text-o mr-1"></i>
         Open HackMD Editor
       </a>,
@@ -82,9 +83,14 @@ class PageStatusAlert extends React.Component {
       isConflictOnEdit = markdownOnEdit !== pageContainer.state.markdown;
     }
 
-    const label1 = isConflictOnEdit
-      ? t('modal_resolve_conflict.file_conflicting_with_newer_remote')
-      : `${pageContainer.state.lastUpdateUsername} ${t('edited this page')}`;
+    // TODO: re-impl with Next.js way
+    // const usernameComponentToString = ReactDOMServer.renderToString(<Username user={pageContainer.state.lastUpdateUser} />);
+
+    // const label1 = isConflictOnEdit
+    //   ? t('modal_resolve_conflict.file_conflicting_with_newer_remote')
+    //   // eslint-disable-next-line react/no-danger
+    //   : <span dangerouslySetInnerHTML={{ __html: `${usernameComponentToString} ${t('edited this page')}` }} />;
+    const label1 = '(TBD -- 2022.09.13)';
 
     return [
       ['bg-warning'],

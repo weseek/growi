@@ -1,11 +1,10 @@
 
 import React from 'react';
 
-import { useTranslation } from 'react-i18next';
+import { useTranslation } from 'next-i18next';
 
 import AdminAppContainer from '~/client/services/AdminAppContainer';
 
-import { withLoadingSppiner } from '../../SuspenseUtils';
 import { withUnstatedContainers } from '../../UnstatedUtils';
 
 
@@ -82,5 +81,5 @@ const SmtpSetting = (props: Props) => {
 /**
  * Wrapper component for using unstated
  */
-const SmtpSettingWrapper = withUnstatedContainers(withLoadingSppiner(SmtpSetting), [AdminAppContainer]);
+const SmtpSettingWrapper = withUnstatedContainers(SmtpSetting, [AdminAppContainer]);
 export default SmtpSettingWrapper;

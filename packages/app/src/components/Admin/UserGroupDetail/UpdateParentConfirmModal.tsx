@@ -1,5 +1,6 @@
 import React, { FC, useState } from 'react';
-import { useTranslation } from 'react-i18next';
+
+import { useTranslation } from 'next-i18next';
 import {
   Modal, ModalHeader, ModalBody, ModalFooter,
 } from 'reactstrap';
@@ -7,7 +8,7 @@ import {
 import { useUpdateUserGroupConfirmModal } from '~/stores/modal';
 
 
-const UpdateParentConfirmModal: FC = () => {
+export const UpdateParentConfirmModal: FC = () => {
   const { t } = useTranslation();
 
   const [isForceUpdate, setForceUpdate] = useState(false);
@@ -29,7 +30,7 @@ const UpdateParentConfirmModal: FC = () => {
         <i className="icon icon-warning"></i> {t('admin:user_group_management.update_parent_confirm_modal.header')}
       </ModalHeader>
       {
-        targetGroup != null && updateData != null && updateData?.parent !== undefined ? (
+        targetGroup != null && updateData != null ? (
           <>
             <ModalBody>
               <div className="mb-2">
@@ -88,5 +89,3 @@ const UpdateParentConfirmModal: FC = () => {
     </Modal>
   );
 };
-
-export default UpdateParentConfirmModal;

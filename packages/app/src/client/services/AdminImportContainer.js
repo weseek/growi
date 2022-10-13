@@ -1,3 +1,4 @@
+import { isServer } from '@growi/core';
 import { Container } from 'unstated';
 
 import loggerFactory from '~/utils/logger';
@@ -17,14 +18,15 @@ export default class AdminImportContainer extends Container {
   constructor(appContainer) {
     super();
 
+    if (isServer()) {
+      return;
+    }
+
     this.appContainer = appContainer;
-    this.dummyEsaTeamName = 0;
-    this.dummyEsaTeamNameForError = 1;
 
     this.state = {
       retrieveError: null,
-      // set dummy value tile for using suspense
-      esaTeamName: this.dummyEsaTeamName,
+      esaTeamName: '',
       esaAccessToken: '',
       qiitaTeamName: '',
       qiitaAccessToken: '',

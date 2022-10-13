@@ -1,7 +1,7 @@
 import React from 'react';
 
+import { useTranslation } from 'next-i18next';
 import PropTypes from 'prop-types';
-import { useTranslation } from 'react-i18next';
 
 import AdminSlackIntegrationLegacyContainer from '~/client/services/AdminSlackIntegrationLegacyContainer';
 import { toastSuccess, toastError } from '~/client/util/apiNotification';
@@ -25,7 +25,7 @@ class SlackConfiguration extends React.Component {
 
     try {
       await adminSlackIntegrationLegacyContainer.updateSlackAppConfiguration();
-      toastSuccess(t('notification_setting.updated_slackApp'));
+      toastSuccess(t('notification_settings.updated_slackApp'));
     }
     catch (err) {
       toastError(err);
@@ -62,7 +62,7 @@ class SlackConfiguration extends React.Component {
         </div>
         {adminSlackIntegrationLegacyContainer.state.selectSlackOption === 'Incoming Webhooks' ? (
           <React.Fragment>
-            <h2 className="border-bottom mb-5">{t('notification_setting.slack_incoming_configuration')}</h2>
+            <h2 className="border-bottom mb-5">{t('notification_settings.slack_incoming_configuration')}</h2>
 
             <div className="row mb-3">
               <label className="col-md-3 text-left text-md-right">Webhook URL</label>
@@ -87,11 +87,11 @@ class SlackConfiguration extends React.Component {
                     onChange={() => { adminSlackIntegrationLegacyContainer.switchIsIncomingWebhookPrioritized() }}
                   />
                   <label className="custom-control-label" htmlFor="cbPrioritizeIWH">
-                    {t('notification_setting.prioritize_webhook')}
+                    {t('notification_settings.prioritize_webhook')}
                   </label>
                 </div>
                 <p className="form-text text-muted">
-                  {t('notification_setting.prioritize_webhook_desc')}
+                  {t('notification_settings.prioritize_webhook_desc')}
                 </p>
               </div>
             </div>
@@ -99,20 +99,20 @@ class SlackConfiguration extends React.Component {
         )
           : (
             <React.Fragment>
-              <h2 className="border-bottom mb-5">{t('notification_setting.slack_app_configuration')}</h2>
+              <h2 className="border-bottom mb-5">{t('notification_settings.slack_app_configuration')}</h2>
 
               <div className="well card">
                 <span className="text-danger"><i className="icon-fw icon-exclamation"></i>NOT RECOMMENDED</span>
                 <br />
                 {/* eslint-disable-next-line react/no-danger */}
-                <span dangerouslySetInnerHTML={{ __html: t('notification_setting.slack_app_configuration_desc') }} />
+                <span dangerouslySetInnerHTML={{ __html: t('notification_settings.slack_app_configuration_desc') }} />
                 <br />
                 <a
                   href="#slack-incoming-webhooks"
                   data-toggle="tab"
                   onClick={() => adminSlackIntegrationLegacyContainer.switchSlackOption('Incoming Webhooks')}
                 >
-                  {t('notification_setting.use_instead')}
+                  {t('notification_settings.use_instead')}
                 </a>
               </div>
 
@@ -141,24 +141,24 @@ class SlackConfiguration extends React.Component {
 
         <h3>
           <i className="icon-question" aria-hidden="true"></i>{' '}
-          <a href="#collapseHelpForIwh" data-toggle="collapse">{t('notification_setting.how_to.header')}</a>
+          <a href="#collapseHelpForIwh" data-toggle="collapse">{t('notification_settings.how_to.header')}</a>
         </h3>
 
         <ol id="collapseHelpForIwh" className="collapse">
           <li>
-            {t('notification_setting.how_to.workspace')}
+            {t('notification_settings.how_to.workspace')}
             <ol>
               {/* eslint-disable-next-line react/no-danger */}
-              <li dangerouslySetInnerHTML={{ __html:  t('notification_setting.how_to.workspace_desc1') }} />
-              <li>{t('notification_setting.how_to.workspace_desc2')}</li>
-              <li>{t('notification_setting.how_to.workspace_desc3')}</li>
+              <li dangerouslySetInnerHTML={{ __html:  t('notification_settings.how_to.workspace_desc1') }} />
+              <li>{t('notification_settings.how_to.workspace_desc2')}</li>
+              <li>{t('notification_settings.how_to.workspace_desc3')}</li>
             </ol>
           </li>
           <li>
-            {t('notification_setting.how_to.at_growi')}
+            {t('notification_settings.how_to.at_growi')}
             <ol>
               {/* eslint-disable-next-line react/no-danger */}
-              <li dangerouslySetInnerHTML={{ __html: t('notification_setting.how_to.at_growi_desc') }} />
+              <li dangerouslySetInnerHTML={{ __html: t('notification_settings.how_to.at_growi_desc') }} />
             </ol>
           </li>
         </ol>
@@ -177,7 +177,7 @@ SlackConfiguration.propTypes = {
 };
 
 const SlackConfigurationWrapperFc = (props) => {
-  const { t } = useTranslation();
+  const { t } = useTranslation('admin');
 
   return <SlackConfiguration t={t} {...props} />;
 };

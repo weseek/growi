@@ -1,9 +1,6 @@
 import { Container } from 'unstated';
 
-
-import GrowiRenderer, { generatePreviewRenderer } from '~/services/renderer/growi-renderer';
-
-import { i18nFactory } from '../util/i18n';
+// import { i18nFactory } from '../util/i18n';
 
 /**
  * Service container related to options for Application
@@ -23,7 +20,7 @@ export default class AppContainer extends Container {
       const currentUser = JSON.parse(currentUserElem.textContent);
       userLocaleId = currentUser?.lang;
     }
-    this.i18n = i18nFactory(userLocaleId);
+    // this.i18n = i18nFactory(userLocaleId);
 
     this.containerInstances = {};
     this.componentInstances = {};
@@ -59,17 +56,19 @@ export default class AppContainer extends Container {
   }
 
   injectToWindow() {
-    window.appContainer = this;
+    // for fix lint error
 
-    const growiRenderer = new GrowiRenderer(this.getConfig());
-    growiRenderer.init();
+    // window.appContainer = this;
 
-    window.growiRenderer = growiRenderer;
+    // const growiRenderer = new GrowiRenderer(this.getConfig());
+    // growiRenderer.init();
 
-    // backward compatibility
-    window.crowi = this;
-    window.crowiRenderer = window.growiRenderer;
-    window.crowiPlugin = window.growiPlugin;
+    // window.growiRenderer = growiRenderer;
+
+    // // backward compatibility
+    // window.crowi = this;
+    // window.crowiRenderer = window.growiRenderer;
+    // window.crowiPlugin = window.growiPlugin;
   }
 
   getConfig() {
@@ -105,25 +104,30 @@ export default class AppContainer extends Container {
     return this.containerInstances[className];
   }
 
+
+  /*
+  * Note: Use globalEmitter instaead of registerComponentInstance and getComponentInstance
+  */
+
   /**
    * Register React component instance
    * @param {string} id
    * @param {object} instance React component instance
    */
-  registerComponentInstance(id, instance) {
-    if (instance == null) {
-      throw new Error('The specified instance must not be null');
-    }
+  // registerComponentInstance(id, instance) {
+  //   if (instance == null) {
+  //     throw new Error('The specified instance must not be null');
+  //   }
 
-    this.componentInstances[id] = instance;
-  }
+  //   this.componentInstances[id] = instance;
+  // }
 
   /**
    * Get registered React component instance
    * @param {string} id
    */
-  getComponentInstance(id) {
-    return this.componentInstances[id];
-  }
+  // getComponentInstance(id) {
+  //   return this.componentInstances[id];
+  // }
 
 }

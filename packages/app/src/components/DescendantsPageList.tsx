@@ -1,6 +1,6 @@
 import React, { useCallback, useState } from 'react';
 
-import { useTranslation } from 'react-i18next';
+import { useTranslation } from 'next-i18next';
 
 import { toastSuccess } from '~/client/util/apiNotification';
 import {
@@ -12,9 +12,9 @@ import { IPagingResult } from '~/interfaces/paging-result';
 import { OnDeletedFunction, OnPutBackedFunction } from '~/interfaces/ui';
 import { useIsGuestUser, useIsSharedUser, useIsTrashPage } from '~/stores/context';
 import {
-  useSWRxDescendantsPageListForCurrrentPath, useSWRxPageInfoForList, useSWRxPageList, useDescendantsPageListForCurrentPathTermManager,
-} from '~/stores/page';
-import { usePageTreeTermManager } from '~/stores/page-listing';
+  usePageTreeTermManager, useDescendantsPageListForCurrentPathTermManager, useSWRxDescendantsPageListForCurrrentPath,
+  useSWRxPageInfoForList, useSWRxPageList,
+} from '~/stores/page-listing';
 
 import { ForceHideMenuItems, MenuItemType } from './Common/Dropdown/PageItemControl';
 import PageList from './PageList/PageList';
@@ -45,7 +45,7 @@ export const DescendantsPageListSubstance = (props: SubstanceProps): JSX.Element
   const { data: isGuestUser } = useIsGuestUser();
 
   const pageIds = pagingResult?.items?.map(page => page._id);
-  const { injectTo } = useSWRxPageInfoForList(pageIds, true, true);
+  const { injectTo } = useSWRxPageInfoForList(pageIds, null, true, true);
 
   let pageWithMetas: IDataWithMeta<IPageHasId, IPageInfoForOperation>[] = [];
 
@@ -103,7 +103,7 @@ export const DescendantsPageListSubstance = (props: SubstanceProps): JSX.Element
     );
   }
 
-  const showPager = pagingResult.items.length > pagingResult.limit;
+  const showPager = pagingResult.totalCount > pagingResult.limit;
 
   return (
     <>
@@ -130,11 +130,11 @@ export const DescendantsPageListSubstance = (props: SubstanceProps): JSX.Element
   );
 };
 
-type Props = {
+export type DescendantsPageListProps = {
   path: string,
 }
 
-export const DescendantsPageList = (props: Props): JSX.Element => {
+export const DescendantsPageList = (props: DescendantsPageListProps): JSX.Element => {
   const { path } = props;
 
   const [activePage, setActivePage] = useState(1);

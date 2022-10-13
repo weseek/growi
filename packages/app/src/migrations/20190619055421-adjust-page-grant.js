@@ -1,8 +1,8 @@
 import mongoose from 'mongoose';
 
-import { getMongoUri, mongoOptions } from '@growi/core';
-import loggerFactory from '~/utils/logger';
 import getPageModel from '~/server/models/page';
+import { getMongoUri, mongoOptions } from '~/server/util/mongoose-utils';
+import loggerFactory from '~/utils/logger';
 
 const logger = loggerFactory('growi:migrate:adjust-page-grant');
 

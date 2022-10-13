@@ -6,6 +6,8 @@ import {
 
 import { usePagePresentationModal } from '~/stores/modal';
 
+import styles from './PagePresentationModal.module.scss';
+
 const PagePresentationModal = () => {
 
   const { data: presentationData, close: closePresentationModal } = usePagePresentationModal();
@@ -15,7 +17,7 @@ const PagePresentationModal = () => {
       isOpen={presentationData.isOpened}
       toggle={closePresentationModal}
       data-testid="page-presentation-modal"
-      className="grw-presentation-modal"
+      className={`grw-presentation-modal ${styles['grw-presentation-modal']} grw-body-only-modal-expanded`}
       unmountOnClose={false}
     >
       <ModalBody className="modal-body">

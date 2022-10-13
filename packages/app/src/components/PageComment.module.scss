@@ -1,0 +1,23 @@
+@use '~/styles/bootstrap/init' as bs;
+
+.page-comment-styles :global {
+  .page-comments {
+    h4 {
+      margin-bottom: 1em;
+    }
+  }
+
+  // reply button
+  .btn-comment-reply {
+    margin-top: 0.5em;
+    border: none;
+  }
+
+  // TODO: Refacotr Soft-coding
+  .page-comment-button-skelton {
+    width: 70.0167px;
+    height: 26.3833px;
+    margin-top: 0.5em;
+    border: none;
+  }
+}

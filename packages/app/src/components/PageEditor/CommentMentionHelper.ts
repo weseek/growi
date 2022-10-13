@@ -46,7 +46,7 @@ export default class CommentMentionHelper {
         }
       },
     });
-  }
+  };
 
   getUsersList = async(q: string) => {
     const limit = 20;
@@ -55,8 +55,8 @@ export default class CommentMentionHelper {
       text: `@${username} `,
       displayText: username,
     }));
-  }
+  };
 
-showUsernameHint= debounce(800, () => this.getUsernamHint());
+  showUsernameHint = debounce(800, () => this.getUsernamHint());
 
 }

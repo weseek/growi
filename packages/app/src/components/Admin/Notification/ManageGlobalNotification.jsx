@@ -1,12 +1,13 @@
-import React from 'react';
+import React, { useCallback, useState } from 'react';
 
+import { useTranslation } from 'next-i18next';
 import PropTypes from 'prop-types';
-import { useTranslation } from 'react-i18next';
 import urljoin from 'url-join';
 
-import AppContainer from '~/client/services/AppContainer';
+import AdminNotificationContainer from '~/client/services/AdminNotificationContainer';
 import { toastError } from '~/client/util/apiNotification';
 import { apiv3Post, apiv3Put } from '~/client/util/apiv3-client';
+import { useIsMailerSetup } from '~/stores/context';
 import loggerFactory from '~/utils/logger';
 
 
@@ -18,74 +19,44 @@ import TriggerEventCheckBox from './TriggerEventCheckBox';
 
 const logger = loggerFactory('growi:manageGlobalNotification');
 
-class ManageGlobalNotification extends React.Component {
+const ManageGlobalNotification = (props) => {
 
-  constructor() {
-    super();
+  let globalNotification;
+  // TODO: securely fetch the data of globalNotification variable without using swig. URL https://redmine.weseek.co.jp/issues/103901
+  // globalNotification = JSON.parse(document.getElementById('admin-global-notification-setting').getAttribute('data-global-notification'));
 
-    let globalNotification;
-    try {
-      globalNotification = JSON.parse(document.getElementById('admin-global-notification-setting').getAttribute('data-global-notification'));
-    }
-    catch (err) {
-      toastError(err);
-      logger.error(err);
-    }
+  const [globalNotificationId, setGlobalNotificationId] = useState(null);
+  const [triggerPath, setTriggerPath] = useState('');
+  const [notifyToType, setNotifyToType] = useState('mail');
+  const [emailToSend, setEmailToSend] = useState('');
+  const [slackChannelToSend, setSlackChannelToSend] = useState('');
+  const [triggerEvents, setTriggerEvents] = useState(new Set(globalNotification?.triggerEvents));
 
-    this.state = {
-      globalNotificationId: globalNotification._id || null,
-      triggerPath: globalNotification.triggerPath || '',
-      notifyToType: globalNotification.__t || 'mail',
-      emailToSend: globalNotification.toEmail || '',
-      slackChannelToSend: globalNotification.slackChannels || '',
-      triggerEvents: new Set(globalNotification.triggerEvents),
-    };
-
-    this.submitHandler = this.submitHandler.bind(this);
-  }
-
-  onChangeTriggerPath(inputValue) {
-    this.setState({ triggerPath: inputValue });
-  }
-
-  onChangeNotifyToType(notifyToType) {
-    this.setState({ notifyToType });
-  }
-
-  onChangeEmailToSend(inputValue) {
-    this.setState({ emailToSend: inputValue });
-  }
-
-  onChangeSlackChannelToSend(inputValue) {
-    this.setState({ slackChannelToSend: inputValue });
-  }
-
-  onChangeTriggerEvents(triggerEvent) {
-    const { triggerEvents } = this.state;
+  const onChangeTriggerEvents = (triggerEvent) => {
 
     if (triggerEvents.has(triggerEvent)) {
       triggerEvents.delete(triggerEvent);
-      this.setState({ triggerEvents });
+      setTriggerEvents(triggerEvents);
     }
     else {
       triggerEvents.add(triggerEvent);
-      this.setState({ triggerEvents });
+      setTriggerEvents(triggerEvents);
     }
-  }
+  };
 
-  async submitHandler() {
+  const submitHandler = useCallback(async() => {
 
     const requestParams = {
-      triggerPath: this.state.triggerPath,
-      notifyToType: this.state.notifyToType,
-      toEmail: this.state.emailToSend,
-      slackChannels: this.state.slackChannelToSend,
-      triggerEvents: [...this.state.triggerEvents],
+      triggerPath,
+      notifyToType,
+      emailToSend,
+      slackChannelToSend,
+      triggerEvents,
     };
 
     try {
-      if (this.state.globalNotificationId != null) {
-        await apiv3Put(`/notification-setting/global-notification/${this.state.globalNotificationId}`, requestParams);
+      if (globalNotificationId != null) {
+        await apiv3Put(`/notification-setting/global-notification/${globalNotificationId}`, requestParams);
       }
       else {
         await apiv3Post('/notification-setting/global-notification', requestParams);
@@ -96,235 +67,221 @@ class ManageGlobalNotification extends React.Component {
       toastError(err);
       logger.error(err);
     }
-  }
+  }, [emailToSend, globalNotificationId, notifyToType, slackChannelToSend, triggerEvents, triggerPath]);
+
+  const { data: isMailerSetup } = useIsMailerSetup();
+  const { adminNotificationContainer } = props;
+  const { t } = useTranslation('admin');
+
+  return (
+    <>
+      <div className="my-3">
+        <a href="/admin/notification#global-notification" className="btn btn-outline-secondary">
+          <i className="icon-fw ti-arrow-left" aria-hidden="true"></i>
+          {t('notification_settings.back_to_list')}
+        </a>
+      </div>
 
 
-  render() {
-    const { t, appContainer } = this.props;
-    const { isMailerSetup } = appContainer.config;
-
-    return (
-      <React.Fragment>
-
-        <div className="my-3">
-          <a href="/admin/notification#global-notification" className="btn btn-outline-secondary">
-            <i className="icon-fw ti-arrow-left" aria-hidden="true"></i>
-            {t('notification_setting.back_to_list')}
-          </a>
+      <div className="row">
+        <div className="form-box col-md-12">
+          <h2 className="border-bottom mb-5">{t('notification_settings.notification_detail')}</h2>
         </div>
 
-
-        <div className="row">
-          <div className="form-box col-md-12">
-            <h2 className="border-bottom mb-5">{t('notification_setting.notification_detail')}</h2>
+        <div className="col-sm-4">
+          <h3 htmlFor="triggerPath">{t('notification_settings.trigger_path')}
+            {/* eslint-disable-next-line react/no-danger */}
+            <small dangerouslySetInnerHTML={{ __html: t('notification_settings.trigger_path_help', '<code>*</code>') }} />
+          </h3>
+          <div className="form-group">
+            <input
+              className="form-control"
+              type="text"
+              name="triggerPath"
+              value={triggerPath}
+              onChange={(e) => { setTriggerPath(e.target.value) }}
+              required
+            />
           </div>
 
-          <div className="col-sm-4">
-            <h3 htmlFor="triggerPath">{t('notification_setting.trigger_path')}
-              {/* eslint-disable-next-line react/no-danger */}
-              <small dangerouslySetInnerHTML={{ __html: t('notification_setting.trigger_path_help', '<code>*</code>') }} />
-            </h3>
-            <div className="form-group">
+          <h3>{t('notification_settings.notify_to')}</h3>
+          <div className="form-group form-inline">
+            <div className="custom-control custom-radio">
               <input
-                className="form-control"
-                type="text"
-                name="triggerPath"
-                value={this.state.triggerPath}
-                onChange={(e) => { this.onChangeTriggerPath(e.target.value) }}
-                required
+                className="custom-control-input"
+                type="radio"
+                id="mail"
+                name="notifyToType"
+                value="mail"
+                checked={notifyToType === 'mail'}
+                onChange={() => { setNotifyToType('mail') }}
               />
+              <label className="custom-control-label" htmlFor="mail">
+                <p className="font-weight-bold">Email</p>
+              </label>
             </div>
-
-            <h3>{t('notification_setting.notify_to')}</h3>
-            <div className="form-group form-inline">
-              <div className="custom-control custom-radio">
-                <input
-                  className="custom-control-input"
-                  type="radio"
-                  id="mail"
-                  name="notifyToType"
-                  value="mail"
-                  checked={this.state.notifyToType === 'mail'}
-                  onChange={() => { this.onChangeNotifyToType('mail') }}
-                />
-                <label className="custom-control-label" htmlFor="mail">
-                  <p className="font-weight-bold">Email</p>
-                </label>
-              </div>
-              <div className="custom-control custom-radio ml-2">
-                <input
-                  className="custom-control-input"
-                  type="radio"
-                  id="slack"
-                  name="notifyToType"
-                  value="slack"
-                  checked={this.state.notifyToType === 'slack'}
-                  onChange={() => { this.onChangeNotifyToType('slack') }}
-                />
-                <label className="custom-control-label" htmlFor="slack">
-                  <p className="font-weight-bold">Slack</p>
-                </label>
-              </div>
-            </div>
-
-            {this.state.notifyToType === 'mail'
-              ? (
-                <>
-                  <div className="input-group notify-to-option" id="mail-input">
-                    <div className="input-group-prepend">
-                      <span className="input-group-text" id="mail-addon"><i className="ti-email" /></span>
-                    </div>
-                    <input
-                      className="form-control"
-                      type="text"
-                      aria-describedby="mail-addon"
-                      name="toEmail"
-                      placeholder="Email"
-                      value={this.state.emailToSend}
-                      onChange={(e) => { this.onChangeEmailToSend(e.target.value) }}
-                    />
-
-                  </div>
-
-                  <p className="p-2">
-                    {/* eslint-disable-next-line react/no-danger */}
-                    {!isMailerSetup && <span className="form-text text-muted" dangerouslySetInnerHTML={{ __html: t('admin:mailer_setup_required') }} />}
-                    <b>Hint: </b>
-                    <a href="https://ifttt.com/create" target="blank">{t('notification_setting.email.ifttt_link')}
-                      <i className="icon-share-alt" />
-                    </a>
-                  </p>
-                </>
-              )
-              : (
-                <>
-                  <div className="input-group notify-to-option" id="slack-input">
-                    <div className="input-group-prepend">
-                      <span className="input-group-text" id="slack-channel-addon"><i className="fa fa-hashtag" /></span>
-                    </div>
-                    <input
-                      className="form-control"
-                      type="text"
-                      aria-describedby="slack-channel-addon"
-                      name="notificationGlobal[slackChannels]"
-                      placeholder="Slack Channel"
-                      value={this.state.slackChannelToSend}
-                      onChange={(e) => { this.onChangeSlackChannelToSend(e.target.value) }}
-                    />
-                  </div>
-                  <p className="p-2">
-                    {/* eslint-disable-next-line react/no-danger */}
-                    <span dangerouslySetInnerHTML={{ __html: t('notification_setting.channel_desc') }} />
-                  </p>
-                </>
-              )}
-          </div>
-
-          <div className="offset-1 col-sm-5">
-            <div className="form-group">
-              <h3>{t('notification_setting.trigger_events')}</h3>
-              <div className="my-1">
-                <TriggerEventCheckBox
-                  checkbox="success"
-                  event="pageCreate"
-                  checked={this.state.triggerEvents.has('pageCreate')}
-                  onChange={() => this.onChangeTriggerEvents('pageCreate')}
-                >
-                  <span className="badge badge-pill badge-success">
-                    <i className="icon-doc mr-1" /> CREATE
-                  </span>
-                </TriggerEventCheckBox>
-              </div>
-              <div className="my-1">
-                <TriggerEventCheckBox
-                  checkbox="warning"
-                  event="pageEdit"
-                  checked={this.state.triggerEvents.has('pageEdit')}
-                  onChange={() => this.onChangeTriggerEvents('pageEdit')}
-                >
-                  <span className="badge badge-pill badge-warning">
-                    <i className="icon-pencil mr-1" />EDIT
-                  </span>
-                </TriggerEventCheckBox>
-              </div>
-              <div className="my-1">
-                <TriggerEventCheckBox
-                  checkbox="pink"
-                  event="pageMove"
-                  checked={this.state.triggerEvents.has('pageMove')}
-                  onChange={() => this.onChangeTriggerEvents('pageMove')}
-                >
-                  <span className="badge badge-pill badge-pink">
-                    <i className="icon-action-redo mr-1" />MOVE
-                  </span>
-                </TriggerEventCheckBox>
-              </div>
-              <div className="my-1">
-                <TriggerEventCheckBox
-                  checkbox="danger"
-                  event="pageDelete"
-                  checked={this.state.triggerEvents.has('pageDelete')}
-                  onChange={() => this.onChangeTriggerEvents('pageDelete')}
-                >
-                  <span className="badge badge-pill badge-danger">
-                    <i className="icon-fire mr-1" />DELETE
-                  </span>
-                </TriggerEventCheckBox>
-              </div>
-              <div className="my-1">
-                <TriggerEventCheckBox
-                  checkbox="info"
-                  event="pageLike"
-                  checked={this.state.triggerEvents.has('pageLike')}
-                  onChange={() => this.onChangeTriggerEvents('pageLike')}
-                >
-                  <span className="badge badge-pill badge-info">
-                    <i className="fa fa-heart-o mr-1" />LIKE
-                  </span>
-                </TriggerEventCheckBox>
-              </div>
-              <div className="my-1">
-                <TriggerEventCheckBox
-                  checkbox="secondary"
-                  event="comment"
-                  checked={this.state.triggerEvents.has('comment')}
-                  onChange={() => this.onChangeTriggerEvents('comment')}
-                >
-                  <span className="badge badge-pill badge-secondary">
-                    <i className="icon-bubble mr-1" />POST
-                  </span>
-                </TriggerEventCheckBox>
-              </div>
-
+            <div className="custom-control custom-radio ml-2">
+              <input
+                className="custom-control-input"
+                type="radio"
+                id="slack"
+                name="notifyToType"
+                value="slack"
+                checked={notifyToType === 'slack'}
+                onChange={() => { setNotifyToType('slack') }}
+              />
+              <label className="custom-control-label" htmlFor="slack">
+                <p className="font-weight-bold">Slack</p>
+              </label>
             </div>
           </div>
+
+          {notifyToType === 'mail'
+            ? (
+              <>
+                <div className="input-group notify-to-option" id="mail-input">
+                  <div className="input-group-prepend">
+                    <span className="input-group-text" id="mail-addon"><i className="ti ti-email" /></span>
+                  </div>
+                  <input
+                    className="form-control"
+                    type="text"
+                    aria-describedby="mail-addon"
+                    name="toEmail"
+                    placeholder="Email"
+                    value={emailToSend}
+                    onChange={(e) => { setEmailToSend(e.target.value) }}
+                  />
+
+                </div>
+
+                <p className="p-2">
+                  {/* eslint-disable-next-line react/no-danger */}
+                  {!isMailerSetup && <span className="form-text text-muted" dangerouslySetInnerHTML={{ __html: t('admin:mailer_setup_required') }} />}
+                  <b>Hint: </b>
+                  <a href="https://ifttt.com/create" target="blank">{t('notification_settings.email.ifttt_link')}
+                    <i className="icon-share-alt" />
+                  </a>
+                </p>
+              </>
+            )
+            : (
+              <>
+                <div className="input-group notify-to-option" id="slack-input">
+                  <div className="input-group-prepend">
+                    <span className="input-group-text" id="slack-channel-addon"><i className="fa fa-hashtag" /></span>
+                  </div>
+                  <input
+                    className="form-control"
+                    type="text"
+                    aria-describedby="slack-channel-addon"
+                    name="notificationGlobal[slackChannels]"
+                    placeholder="Slack Channel"
+                    value={slackChannelToSend}
+                    onChange={(e) => { setSlackChannelToSend(e.target.value) }}
+                  />
+                </div>
+                <p className="p-2">
+                  {/* eslint-disable-next-line react/no-danger */}
+                  <span dangerouslySetInnerHTML={{ __html: t('notification_settings.channel_desc') }} />
+                </p>
+              </>
+            )}
         </div>
 
-        <AdminUpdateButtonRow
-          onClick={this.submitHandler}
-          disabled={this.state.retrieveError != null}
-        />
+        <div className="offset-1 col-sm-5">
+          <div className="form-group">
+            <h3>{t('notification_settings.trigger_events')}</h3>
+            <div className="my-1">
+              <TriggerEventCheckBox
+                checkbox="success"
+                event="pageCreate"
+                checked={triggerEvents.has('pageCreate')}
+                onChange={() => onChangeTriggerEvents('pageCreate')}
+              >
+                <span className="badge badge-pill badge-success">
+                  <i className="icon-doc mr-1" /> CREATE
+                </span>
+              </TriggerEventCheckBox>
+            </div>
+            <div className="my-1">
+              <TriggerEventCheckBox
+                checkbox="warning"
+                event="pageEdit"
+                checked={triggerEvents.has('pageEdit')}
+                onChange={() => onChangeTriggerEvents('pageEdit')}
+              >
+                <span className="badge badge-pill badge-warning">
+                  <i className="icon-pencil mr-1" />EDIT
+                </span>
+              </TriggerEventCheckBox>
+            </div>
+            <div className="my-1">
+              <TriggerEventCheckBox
+                checkbox="pink"
+                event="pageMove"
+                checked={triggerEvents.has('pageMove')}
+                onChange={() => onChangeTriggerEvents('pageMove')}
+              >
+                <span className="badge badge-pill badge-pink">
+                  <i className="icon-action-redo mr-1" />MOVE
+                </span>
+              </TriggerEventCheckBox>
+            </div>
+            <div className="my-1">
+              <TriggerEventCheckBox
+                checkbox="danger"
+                event="pageDelete"
+                checked={triggerEvents.has('pageDelete')}
+                onChange={() => onChangeTriggerEvents('pageDelete')}
+              >
+                <span className="badge badge-pill badge-danger">
+                  <i className="icon-fire mr-1" />DELETE
+                </span>
+              </TriggerEventCheckBox>
+            </div>
+            <div className="my-1">
+              <TriggerEventCheckBox
+                checkbox="info"
+                event="pageLike"
+                checked={triggerEvents.has('pageLike')}
+                onChange={() => onChangeTriggerEvents('pageLike')}
+              >
+                <span className="badge badge-pill badge-info">
+                  <i className="fa fa-heart-o mr-1" />LIKE
+                </span>
+              </TriggerEventCheckBox>
+            </div>
+            <div className="my-1">
+              <TriggerEventCheckBox
+                checkbox="secondary"
+                event="comment"
+                checked={triggerEvents.has('comment')}
+                onChange={() => onChangeTriggerEvents('comment')}
+              >
+                <span className="badge badge-pill badge-secondary">
+                  <i className="icon-bubble mr-1" />POST
+                </span>
+              </TriggerEventCheckBox>
+            </div>
 
-      </React.Fragment>
+          </div>
+        </div>
+      </div>
 
-    );
-  }
-
-}
+      <AdminUpdateButtonRow
+        onClick={submitHandler}
+        disabled={adminNotificationContainer.state.retrieveError != null}
+      />
+    </>
+  );
+};
 
 ManageGlobalNotification.propTypes = {
-  t: PropTypes.func.isRequired, // i18next
-  appContainer: PropTypes.instanceOf(AppContainer).isRequired,
-
+  adminNotificationContainer: PropTypes.instanceOf(AdminNotificationContainer).isRequired,
 };
 
-const ManageGlobalNotificationWrapperFC = (props) => {
-  const { t } = useTranslation();
-
-  return <ManageGlobalNotification t={t} {...props} />;
-};
-
-const ManageGlobalNotificationWrapper = withUnstatedContainers(ManageGlobalNotificationWrapperFC, [AppContainer]);
+const ManageGlobalNotificationWrapper = withUnstatedContainers(ManageGlobalNotification, [AdminNotificationContainer]);
 
 
 export default ManageGlobalNotificationWrapper;

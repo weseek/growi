@@ -1,10 +1,11 @@
 const WIKI_HEADER_LINK = 120;
 
-export const smoothScrollIntoView = (element: HTMLElement, offsetTop = 0, scrollElement: HTMLElement | Window = window): void => {
-  const targetElement = element || window.document.body;
+export const smoothScrollIntoView = (
+    element: HTMLElement = window.document.body, offsetTop = 0, scrollElement: HTMLElement | Window = window,
+): void => {
 
   // get the distance to the target element top
-  const rectTop = targetElement.getBoundingClientRect().top;
+  const rectTop = element.getBoundingClientRect().top;
 
   const top = window.pageYOffset + rectTop - offsetTop;
 

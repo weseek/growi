@@ -1,12 +1,13 @@
 import React, {
-  useCallback, useState, FC, useEffect,
+  useCallback, useState, FC, useEffect, ReactNode,
 } from 'react';
 
 import nodePath from 'path';
 
-import { pathUtils, pagePathUtils } from '@growi/core';
+import { pathUtils, pagePathUtils, Nullable } from '@growi/core';
+import { useTranslation } from 'next-i18next';
+import Link from 'next/link';
 import { useDrag, useDrop } from 'react-dnd';
-import { useTranslation } from 'react-i18next';
 import { UncontrolledTooltip, DropdownToggle } from 'reactstrap';
 
 import { bookmark, unbookmark, resumeRenameOperation } from '~/client/services/page-operation';
@@ -21,7 +22,7 @@ import { IPageForPageDuplicateModal } from '~/stores/modal';
 import { useSWRxPageChildren } from '~/stores/page-listing';
 import { usePageTreeDescCountMap } from '~/stores/ui';
 import loggerFactory from '~/utils/logger';
-
+import { shouldRecoverPagePaths } from '~/utils/page-operation';
 
 import ClosableTextInput, { AlertInfo, AlertType } from '../../Common/ClosableTextInput';
 import CountBadge from '../../Common/CountBadge';
@@ -36,7 +37,7 @@ const logger = loggerFactory('growi:cli:Item');
 interface ItemProps {
   isEnableActions: boolean
   itemNode: ItemNode
-  targetPathOrId?: string
+  targetPathOrId?: Nullable<string>
   isOpen?: boolean
   isEnabledAttachTitleHeader?: boolean
   onRenamed?(): void
@@ -45,7 +46,7 @@ interface ItemProps {
 }
 
 // Utility to mark target
-const markTarget = (children: ItemNode[], targetPathOrId?: string): void => {
+const markTarget = (children: ItemNode[], targetPathOrId?: Nullable<string>): void => {
   if (targetPathOrId == null) {
     return;
   }
@@ -86,6 +87,15 @@ const isDroppable = (fromPage?: Partial<IPageHasId>, newParentPage?: Partial<IPa
 
   const newPathAfterMoved = getNewPathAfterMoved(fromPage.path, newParentPage.path);
   return pagePathUtils.canMoveByPath(fromPage.path, newPathAfterMoved) && !pagePathUtils.isUsersTopPage(newParentPage.path);
+};
+
+// Component wrapper to make a child element not draggable
+// https://github.com/react-dnd/react-dnd/issues/335
+type NotDraggableProps = {
+  children: ReactNode,
+};
+const NotDraggableForClosableTextInput = (props: NotDraggableProps): JSX.Element => {
+  return <div draggable onDragStart={e => e.preventDefault()}>{props.children}</div>;
 };
 
 
@@ -260,7 +270,7 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
     setRenameInputShown(true);
   }, []);
 
-  const pressEnterForRenameHandler = async(inputText: string) => {
+  const onPressEnterForRenameHandler = async(inputText: string) => {
     const parentPath = pathUtils.addTrailingSlash(nodePath.dirname(page.path ?? ''));
     const newPagePath = nodePath.resolve(parentPath, inputText);
 
@@ -412,7 +422,7 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
 
   // Rename process
   // Icon that draw attention from users for some actions
-  const shouldShowAttentionIcon = !!page.processData?.Rename?.isProcessable;
+  const shouldShowAttentionIcon = page.processData != null ? shouldRecoverPagePaths(page.processData) : false;
 
   return (
     <div
@@ -441,13 +451,17 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
         </div>
         { isRenameInputShown
           ? (
-            <ClosableTextInput
-              value={nodePath.basename(page.path ?? '')}
-              placeholder={t('Input page name')}
-              onClickOutside={() => { setRenameInputShown(false) }}
-              onPressEnter={pressEnterForRenameHandler}
-              inputValidator={inputValidator}
-            />
+            <div className="flex-fill">
+              <NotDraggableForClosableTextInput>
+                <ClosableTextInput
+                  value={nodePath.basename(page.path ?? '')}
+                  placeholder={t('Input page name')}
+                  onClickOutside={() => { setRenameInputShown(false) }}
+                  onPressEnter={onPressEnterForRenameHandler}
+                  inputValidator={inputValidator}
+                />
+              </NotDraggableForClosableTextInput>
+            </div>
           )
           : (
             <>
@@ -460,9 +474,11 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
                 </>
               )}
 
-              <a href={`/${page._id}`} className="grw-pagetree-title-anchor flex-grow-1">
-                <p className={`text-truncate m-auto ${page.isEmpty && 'grw-sidebar-text-muted'}`}>{nodePath.basename(page.path ?? '') || '/'}</p>
-              </a>
+              <Link href={`/${page._id}`} prefetch={false}>
+                <a className="grw-pagetree-title-anchor flex-grow-1">
+                  <p className={`text-truncate m-auto ${page.isEmpty && 'grw-sidebar-text-muted'}`}>{nodePath.basename(page.path ?? '') || '/'}</p>
+                </a>
+              </Link>
             </>
           )}
         {descendantCount > 0 && !isRenameInputShown && (
@@ -501,12 +517,16 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
       </li>
 
       {isEnableActions && isNewPageInputShown && (
-        <ClosableTextInput
-          placeholder={t('Input page name')}
-          onClickOutside={() => { setNewPageInputShown(false) }}
-          onPressEnter={onPressEnterForCreateHandler}
-          inputValidator={inputValidator}
-        />
+        <div className="flex-fill">
+          <NotDraggableForClosableTextInput>
+            <ClosableTextInput
+              placeholder={t('Input page name')}
+              onClickOutside={() => { setNewPageInputShown(false) }}
+              onPressEnter={onPressEnterForCreateHandler}
+              inputValidator={inputValidator}
+            />
+          </NotDraggableForClosableTextInput>
+        </div>
       )}
       {
         isOpen && hasChildren() && currentChildren.map((node, index) => (

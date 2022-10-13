@@ -1,31 +1,24 @@
-import { getOrCreateModel } from '@growi/core';
+import {
+  SubscriptionStatusType, AllSubscriptionStatusType, Ref, IPage, IUser, ISubscription,
+} from '@growi/core';
 import {
   Types, Document, Model, Schema,
 } from 'mongoose';
 
 import { AllSupportedTargetModels } from '~/interfaces/activity';
-import { SubscriptionStatusType, AllSubscriptionStatusType } from '~/interfaces/subscription';
 
+import { getOrCreateModel } from '../util/mongoose-utils';
 
-export interface ISubscription {
-  user: Types.ObjectId
-  targetModel: string
-  target: Types.ObjectId
-  status: string
-  createdAt: Date
-
-  isSubscribing(): boolean
-  isUnsubscribing(): boolean
-}
 
 export interface SubscriptionDocument extends ISubscription, Document {}
 
 export interface SubscriptionModel extends Model<SubscriptionDocument> {
   findByUserIdAndTargetId(userId: Types.ObjectId | string, targetId: Types.ObjectId | string): any
-  upsertSubscription(user: Types.ObjectId, targetModel: string, target: Types.ObjectId, status: string): any
-  subscribeByPageId(user: Types.ObjectId, pageId: Types.ObjectId, status: string): any
-  getSubscription(target: Types.ObjectId): Promise<Types.ObjectId[]>
-  getUnsubscription(target: Types.ObjectId): Promise<Types.ObjectId[]>
+  upsertSubscription(user: Ref<IUser>, targetModel: string, target: Ref<IPage>, status: string): any
+  subscribeByPageId(userId: Types.ObjectId, pageId: Types.ObjectId, status: string): any
+  getSubscription(target: Ref<IPage>): Promise<Ref<IUser>[]>
+  getUnsubscription(target: Ref<IPage>): Promise<Ref<IUser>[]>
+  getSubscriptions(targets: Ref<IPage>[]): Promise<Ref<IUser>[]>
 }
 
 const subscriptionSchema = new Schema<SubscriptionDocument, SubscriptionModel>({
@@ -42,6 +35,7 @@ const subscriptionSchema = new Schema<SubscriptionDocument, SubscriptionModel>({
   },
   target: {
     type: Schema.Types.ObjectId,
+    ref: 'Page',
     refPath: 'targetModel',
     required: true,
   },
@@ -75,16 +69,20 @@ subscriptionSchema.statics.upsertSubscription = function(user, targetModel, targ
   return this.findOneAndUpdate(query, doc, options);
 };
 
-subscriptionSchema.statics.subscribeByPageId = function(user, pageId, status) {
-  return this.upsertSubscription(user, 'Page', pageId, status);
+subscriptionSchema.statics.subscribeByPageId = function(userId, pageId, status) {
+  return this.upsertSubscription(userId, 'Page', pageId, status);
 };
 
-subscriptionSchema.statics.getSubscription = async function(target) {
+subscriptionSchema.statics.getSubscription = async function(target: Ref<IPage>) {
   return this.find({ target, status: SubscriptionStatusType.SUBSCRIBE }).distinct('user');
 };
 
-subscriptionSchema.statics.getUnsubscription = async function(target) {
+subscriptionSchema.statics.getUnsubscription = async function(target: Ref<IPage>) {
   return this.find({ target, status: SubscriptionStatusType.UNSUBSCRIBE }).distinct('user');
+};
+
+subscriptionSchema.statics.getSubscriptions = async function(targets: Ref<IPage>[]) {
+  return this.find({ target: { $in: targets }, status: SubscriptionStatusType.SUBSCRIBE }).distinct('user');
 };
 
 export default getOrCreateModel<SubscriptionDocument, SubscriptionModel>('Subscription', subscriptionSchema);

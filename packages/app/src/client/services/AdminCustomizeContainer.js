@@ -1,3 +1,4 @@
+import { isServer } from '@growi/core';
 import { Container } from 'unstated';
 
 import loggerFactory from '~/utils/logger';
@@ -17,13 +18,12 @@ export default class AdminCustomizeContainer extends Container {
   constructor() {
     super();
 
-    this.dummyCurrentTheme = 0;
-    this.dummyCurrentThemeForError = 1;
+    if (isServer()) {
+      return;
+    }
 
     this.state = {
       retrieveError: null,
-      // set dummy value tile for using suspense
-      currentTheme: this.dummyCurrentTheme,
       isEnabledTimeline: false,
       isSavedStatesOfTabChanges: false,
       isEnabledAttachTitleHeader: false,
@@ -80,7 +80,6 @@ export default class AdminCustomizeContainer extends Container {
       const { customizeParams } = response.data;
 
       this.setState({
-        currentTheme: customizeParams.themeType,
         isEnabledTimeline: customizeParams.isEnabledTimeline,
         isSavedStatesOfTabChanges: customizeParams.isSavedStatesOfTabChanges,
         isEnabledAttachTitleHeader: customizeParams.isEnabledAttachTitleHeader,
@@ -109,17 +108,6 @@ export default class AdminCustomizeContainer extends Container {
     }
   }
 
-  /**
-   * Switch themeType
-   */
-  switchThemeType(themeName) {
-    this.setState({ currentTheme: themeName });
-
-    // preview if production
-    if (process.env.NODE_ENV !== 'development') {
-      this.previewTheme(themeName);
-    }
-  }
 
   /**
    * Switch enabledTimeLine
@@ -240,24 +228,6 @@ export default class AdminCustomizeContainer extends Container {
   }
 
   /**
-   * Preview theme
-   * @param {string} themeName
-   */
-  async previewTheme(themeName) {
-    try {
-      // get theme asset path
-      const response = await apiv3Get('/customize-setting/theme/asset-path', { themeName });
-      const { assetPath } = response.data;
-
-      const themeLink = document.getElementById('grw-theme-link');
-      themeLink.setAttribute('href', assetPath);
-    }
-    catch (err) {
-      toastError(err);
-    }
-  }
-
-  /**
    * Preview hljs style
    * @param {string} styleId
    */
@@ -268,25 +238,6 @@ export default class AdminCustomizeContainer extends Container {
     styleLInk.href = styleLInk.href.replace(/[^/]+\.css$/, `${styleId}.css`);
   }
 
-  /**
-   * Update theme
-   * @memberOf AdminCustomizeContainer
-   */
-  async updateCustomizeTheme() {
-    try {
-      const response = await apiv3Put('/customize-setting/theme', {
-        themeType: this.state.currentTheme,
-      });
-      const { customizedParams } = response.data;
-      this.setState({
-        themeType: customizedParams.themeType,
-      });
-    }
-    catch (err) {
-      logger.error(err);
-      throw new Error('Failed to update data');
-    }
-  }
 
   /**
    * Update function

@@ -3,7 +3,7 @@ import React, {
 } from 'react';
 
 import { pagePathUtils } from '@growi/core';
-import { useTranslation } from 'react-i18next';
+import { useTranslation } from 'next-i18next';
 import {
   Collapse, Modal, ModalHeader, ModalBody, ModalFooter,
 } from 'reactstrap';
@@ -151,15 +151,17 @@ const PageRenameModal = (): JSX.Element => {
   }, [isUsersHomePage, pageNameInput]);
 
   useEffect(() => {
-    if (page != null && pageNameInput !== page.data.path) {
+    if (isOpened && page != null && pageNameInput !== page.data.path) {
       checkExistPathsDebounce(page.data.path, pageNameInput);
       checkIsUsersHomePageDebounce(pageNameInput);
     }
-  }, [pageNameInput, subordinatedPages, checkExistPathsDebounce, page, checkIsUsersHomePageDebounce]);
+  }, [isOpened, pageNameInput, subordinatedPages, checkExistPathsDebounce, page, checkIsUsersHomePageDebounce]);
 
   useEffect(() => {
-    setCanRename(false);
-  }, [pageNameInput]);
+    if (isOpened && page != null) {
+      setCanRename(false);
+    }
+  }, [isOpened, page, pageNameInput]);
 
 
   function ppacInputChangeHandler(value) {
@@ -177,7 +179,7 @@ const PageRenameModal = (): JSX.Element => {
   }
 
   useEffect(() => {
-    if (isOpened) {
+    if (isOpened || page == null) {
       return;
     }
 
@@ -193,37 +195,18 @@ const PageRenameModal = (): JSX.Element => {
       setExpandOtherOptions(false);
     }, 1000);
 
-  }, [isOpened]);
+  }, [isOpened, page]);
 
-  if (page == null) {
-    return <></>;
-  }
+  const bodyContent = () => {
+    if (!isOpened || page == null) {
+      return <></>;
+    }
 
-  const { path } = page.data;
-  const isTargetPageDuplicate = existingPaths.includes(pageNameInput);
+    const { path } = page.data;
+    const isTargetPageDuplicate = existingPaths.includes(pageNameInput);
 
-  let submitButtonDisabled = false;
-
-  if (isMatchedWithUserHomePagePath) {
-    submitButtonDisabled = true;
-  }
-  else if (!canRename) {
-    submitButtonDisabled = true;
-  }
-  else if (isV5Compatible(page.meta)) {
-    submitButtonDisabled = existingPaths.length !== 0; // v5 data
-  }
-  else {
-    submitButtonDisabled = !isRenameRecursively; // v4 data
-  }
-
-
-  return (
-    <Modal size="lg" isOpen={isOpened} toggle={closeRenameModal} data-testid="page-rename-modal" autoFocus={false}>
-      <ModalHeader tag="h4" toggle={closeRenameModal} className="bg-primary text-light">
-        { t('modal_rename.label.Move/Rename page') }
-      </ModalHeader>
-      <ModalBody>
+    return (
+      <>
         <div className="form-group">
           <label>{ t('modal_rename.label.Current page name') }</label><br />
           <code>{ path }</code>
@@ -338,9 +321,31 @@ const PageRenameModal = (): JSX.Element => {
           </div>
           <div> {subordinatedError} </div>
         </Collapse>
+      </>
+    );
+  };
 
-      </ModalBody>
-      <ModalFooter>
+  const footerContent = () => {
+    if (!isOpened || page == null) {
+      return <></>;
+    }
+
+    let submitButtonDisabled = false;
+
+    if (isMatchedWithUserHomePagePath) {
+      submitButtonDisabled = true;
+    }
+    else if (!canRename) {
+      submitButtonDisabled = true;
+    }
+    else if (isV5Compatible(page.meta)) {
+      submitButtonDisabled = existingPaths.length !== 0; // v5 data
+    }
+    else {
+      submitButtonDisabled = !isRenameRecursively; // v4 data
+    }
+    return (
+      <>
         <ApiErrorMessageList errs={errs} targetPath={pageNameInput} />
         <button
           type="button"
@@ -349,6 +354,21 @@ const PageRenameModal = (): JSX.Element => {
           disabled={submitButtonDisabled}
         >Rename
         </button>
+      </>
+    );
+  };
+
+
+  return (
+    <Modal size="lg" isOpen={isOpened} toggle={closeRenameModal} data-testid="page-rename-modal" autoFocus={false}>
+      <ModalHeader tag="h4" toggle={closeRenameModal} className="bg-primary text-light">
+        { t('modal_rename.label.Move/Rename page') }
+      </ModalHeader>
+      <ModalBody>
+        {bodyContent()}
+      </ModalBody>
+      <ModalFooter>
+        {footerContent()}
       </ModalFooter>
     </Modal>
   );
