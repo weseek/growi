@@ -15,7 +15,7 @@ import GrowiContextualSubNavigation from '../components/Navbar/GrowiContextualSu
 import {
   useCurrentUser, useCurrentPageId, useCurrentPagePath, useCurrentPathname,
   useIsSearchServiceConfigured, useIsSearchServiceReachable,
-  useIsSearchScopeChildrenAsDefault, useIsSearchPage,
+  useIsSearchScopeChildrenAsDefault, useIsSearchPage, useShowPageLimitationXL,
 } from '../stores/context';
 
 import {
@@ -31,7 +31,8 @@ type Props = CommonProps & {
   isSearchServiceConfigured: boolean,
   isSearchServiceReachable: boolean,
   isSearchScopeChildrenAsDefault: boolean,
-  userUISettings?: IUserUISettings
+  userUISettings?: IUserUISettings,
+  showPageLimitationXL: number,
 };
 
 const TrashPage: NextPage<CommonProps> = (props: Props) => {
@@ -45,6 +46,8 @@ const TrashPage: NextPage<CommonProps> = (props: Props) => {
   useCurrentPageId(null);
   useCurrentPathname('/trash');
   useCurrentPagePath('/trash');
+
+  useShowPageLimitationXL(props.showPageLimitationXL);
 
   return (
     <>
@@ -86,6 +89,7 @@ function injectServerConfigurations(context: GetServerSidePropsContext, props: P
   props.isSearchServiceConfigured = searchService.isConfigured;
   props.isSearchServiceReachable = searchService.isReachable;
   props.isSearchScopeChildrenAsDefault = configManager.getConfig('crowi', 'customize:isSearchScopeChildrenAsDefault');
+  props.showPageLimitationXL = crowi.configManager.getConfig('crowi', 'customize:showPageLimitationXL');
 }
 
 export const getServerSideProps: GetServerSideProps = async(context: GetServerSidePropsContext) => {
