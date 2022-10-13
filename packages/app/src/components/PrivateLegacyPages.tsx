@@ -18,7 +18,7 @@ import { useCurrentUser } from '~/stores/context';
 import {
   ILegacyPrivatePage, usePrivateLegacyPagesMigrationModal,
 } from '~/stores/modal';
-import { useSWRxV5MigrationStatus } from '~/stores/page-listing';
+import { usePageTreeTermManager, useSWRxV5MigrationStatus } from '~/stores/page-listing';
 import {
   useSWRxSearch,
 } from '~/stores/search';
@@ -213,6 +213,7 @@ const PrivateLegacyPages = (): JSX.Element => {
   });
 
   const { data: migrationStatus, mutate: mutateMigrationStatus } = useSWRxV5MigrationStatus();
+  const { advance: advancePt } = usePageTreeTermManager();
 
   const searchInvokedHandler = useCallback((_keyword: string) => {
     mutateMigrationStatus();
@@ -314,6 +315,7 @@ const PrivateLegacyPages = (): JSX.Element => {
         closeModal();
         mutateMigrationStatus();
         mutate();
+        advancePt();
       },
     );
   }, [data, mutate, openModal, closeModal, mutateMigrationStatus]);
