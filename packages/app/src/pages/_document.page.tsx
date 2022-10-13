@@ -9,7 +9,7 @@ import Document, {
 import { Config } from '~/server/models/config';
 
 type GrowiDocumentProps = {
-  customizeHeaderDocument: Config
+  customizeHeaderDocument: Config | null
 }
 declare type GrowiDocumentInitialProps = GrowiDocumentProps & DocumentInitialProps;
 
@@ -19,7 +19,8 @@ class GrowiDocument extends Document<GrowiDocumentProps> {
     const initialProps: DocumentInitialProps = await Document.getInitialProps(ctx);
 
     const ConfigModel = mongoose.model('Config');
-    const customizeHeaderDocument = await ConfigModel.findOne({ key: 'customize:header' }) as unknown as Config;
+    const foundCustomizeHeaderDocument = await ConfigModel.findOne({ key: 'customize:header' });
+    const customizeHeaderDocument = foundCustomizeHeaderDocument != null ? foundCustomizeHeaderDocument as unknown as Config : null;
 
     return { ...initialProps, customizeHeaderDocument };
   }
@@ -27,6 +28,8 @@ class GrowiDocument extends Document<GrowiDocumentProps> {
   override render(): JSX.Element {
 
     const { customizeHeaderDocument } = this.props;
+
+    const customizeHeader = customizeHeaderDocument != null ? JSON.parse(customizeHeaderDocument.value) : '';
 
     return (
       <Html>
@@ -36,7 +39,7 @@ class GrowiDocument extends Document<GrowiDocumentProps> {
           {renderStyleTagsByGroup('basis')}
           */}
 
-          { JSON.parse(customizeHeaderDocument.value) }
+          { customizeHeader }
         </Head>
         <body>
           <Main />
