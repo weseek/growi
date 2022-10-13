@@ -109,8 +109,10 @@ const ExternalAccountTable = (props: ExternalAccountTableProps): JSX.Element => 
   );
 };
 
-const ExternalAccountTableWrapperFC = (props) => {
+const ExternalAccountTableWrapperFC = (props: any) => {
   return <ExternalAccountTable {...props} />;
 };
 
-export const ExternalAccountTableWrapper = withUnstatedContainers(ExternalAccountTableWrapperFC, [AdminExternalAccountsContainer]);
+const ExternalAccountTableWrapper = withUnstatedContainers(ExternalAccountTableWrapperFC, [AdminExternalAccountsContainer]);
+
+export default ExternalAccountTableWrapper;
