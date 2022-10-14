@@ -12,7 +12,7 @@ context('Click page icons button', () => {
 
   it('Successfully subscribe/unsubscribe a page', () => {
     cy.visit('/Sandbox');
-    cy.get('#grw-subnav-container').within(() => {
+    cy.getByTestid('grw-contextual-sub-nav').within(() => {
       // Subscribe
       cy.get('#subscribe-button').eq(0).click({force: true});
       cy.get('#subscribe-button').eq(0).should('have.class', 'active');
