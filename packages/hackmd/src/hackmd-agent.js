@@ -16,7 +16,7 @@ const DEBUG_PENPAL = false;
 
 /* eslint-disable no-console  */
 
-const allowedOrigin = '{{origin}}'; // will be replaced by swig
+const allowedOrigin = '<%= origin %>'; // will be replaced by ejs
 
 
 /**

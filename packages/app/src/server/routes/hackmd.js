@@ -1,12 +1,16 @@
+import { stylesCSS, stylesJS, agentJS } from '@growi/hackmd';
+
 import loggerFactory from '~/utils/logger';
 
 /* eslint-disable no-use-before-define */
 
 const logger = loggerFactory('growi:routes:hackmd');
 const path = require('path');
+
+const axios = require('axios');
+const ejs = require('ejs');
 const fs = require('graceful-fs');
 const swig = require('swig-templates');
-const axios = require('axios');
 
 const ApiResponse = require('../util/apiResponse');
 
@@ -34,14 +38,6 @@ module.exports = function(crowi, app) {
   const Page = crowi.models.Page;
   const pageEvent = crowi.event('page');
 
-  // load GROWI agent script for HackMD
-  const manifest = require(path.join(crowi.publicDir, 'manifest.json'));
-  const agentScriptPath = path.join(crowi.publicDir, manifest['js/hackmd-agent.js']);
-  const stylesScriptPath = path.join(crowi.publicDir, manifest['js/hackmd-styles.js']);
-  // generate swig template
-  let agentScriptContentTpl;
-  let stylesScriptContentTpl;
-
   /**
    * GET /_hackmd/load-agent
    *
@@ -52,10 +48,6 @@ module.exports = function(crowi, app) {
    * @param {object} res
    */
   const loadAgent = function(req, res) {
-    // generate swig template
-    if (agentScriptContentTpl == null) {
-      agentScriptContentTpl = swig.compileFile(agentScriptPath);
-    }
 
     const origin = crowi.appService.getSiteUrl();
 
@@ -63,8 +55,9 @@ module.exports = function(crowi, app) {
     const definitions = {
       origin,
     };
-    // inject
-    const script = agentScriptContentTpl(definitions);
+
+    // inject origin to script
+    const script = ejs.render(agentJS, definitions);
 
     res.set('Content-Type', 'application/javascript');
     res.send(script);
@@ -80,22 +73,13 @@ module.exports = function(crowi, app) {
    * @param {object} res
    */
   const loadStyles = function(req, res) {
-    // generate swig template
-    if (stylesScriptContentTpl == null) {
-      stylesScriptContentTpl = swig.compileFile(stylesScriptPath);
-    }
-
-    const styleFilePath = path.join(crowi.publicDir, manifest['styles/style-hackmd.css']);
-    const styles = fs
-      .readFileSync(styleFilePath).toString()
-      .replace(/\s+/g, ' ');
 
     // generate definitions to replace
     const definitions = {
-      styles: escape(styles),
+      styles: stylesCSS,
     };
-    // inject
-    const script = stylesScriptContentTpl(definitions);
+    // inject styles to script
+    const script = ejs.render(stylesJS, definitions);
 
     res.set('Content-Type', 'application/javascript');
     res.send(script);
