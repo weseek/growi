@@ -15,7 +15,7 @@ import UserUISettings from '~/server/models/user-ui-settings';
 import Xss from '~/services/xss';
 import {
   useCsrfToken, useCurrentUser, useIsSearchPage, useIsSearchScopeChildrenAsDefault,
-  useIsSearchServiceConfigured, useIsSearchServiceReachable, useRendererConfig,
+  useIsSearchServiceConfigured, useIsSearchServiceReachable, useRendererConfig, useShowPageLimitationL,
 } from '~/stores/context';
 import {
   usePreferDrawerModeByUser, usePreferDrawerModeOnEditByUser, useSidebarCollapsed,
@@ -45,6 +45,9 @@ type Props = CommonProps & {
   // Render config
   rendererConfig: RendererConfig,
 
+  // search limit
+  showPageLimitationL: number
+
 };
 
 const SearchResultPage: NextPage<Props> = (props: Props) => {
@@ -70,6 +73,8 @@ const SearchResultPage: NextPage<Props> = (props: Props) => {
 
   // render config
   useRendererConfig(props.rendererConfig);
+
+  useShowPageLimitationL(props.showPageLimitationL);
 
   const PutbackPageModal = (): JSX.Element => {
     const PutbackPageModal = dynamic(() => import('../components/PutbackPageModal'), { ssr: false });
@@ -140,6 +145,8 @@ function injectServerConfigurations(context: GetServerSidePropsContext, props: P
     tagWhiteList: crowi.xssService.getTagWhiteList(),
     highlightJsStyleBorder: crowi.configManager.getConfig('crowi', 'customize:highlightJsStyleBorder'),
   };
+
+  props.showPageLimitationL = configManager.getConfig('crowi', 'customize:showPageLimitationL');
 }
 
 /**
