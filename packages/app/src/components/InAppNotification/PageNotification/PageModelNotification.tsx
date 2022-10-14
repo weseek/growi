@@ -2,10 +2,10 @@ import React, {
   forwardRef, ForwardRefRenderFunction, useImperativeHandle,
 } from 'react';
 
+import { HasObjectId } from '@growi/core';
 import { PagePathLabel } from '@growi/ui';
 
 import { IInAppNotificationOpenable } from '~/client/interfaces/in-app-notification-openable';
-import { HasObjectId } from '~/interfaces/has-object-id';
 import { IInAppNotification } from '~/interfaces/in-app-notification';
 
 import { parseSnapshot } from '../../../models/serializers/in-app-notification-snapshot/page';

@@ -1,7 +1,7 @@
 import React from 'react';
 
 import PropTypes from 'prop-types';
-import { useTranslation } from 'react-i18next';
+import { useTranslation } from 'next-i18next';
 import {
   Button, Modal, ModalHeader, ModalBody, ModalFooter,
 } from 'reactstrap';
@@ -53,6 +53,8 @@ const DeleteAllShareLinksModal = React.memo((props) => {
   );
 
 });
+DeleteAllShareLinksModal.displayName = 'DeleteAllShareLinksModal';
+
 
 DeleteAllShareLinksModal.propTypes = {
   t: PropTypes.func.isRequired, // i18next

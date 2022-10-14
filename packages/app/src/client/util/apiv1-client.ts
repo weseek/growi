@@ -4,15 +4,6 @@ import axios from '~/utils/axios';
 
 const apiv1Root = '/_api';
 
-// get csrf token from body element
-const body = document.querySelector('body');
-const csrfToken = body?.dataset.csrftoken;
-
-
-type ParamWithCsrfKey = {
-  _csrf: string,
-}
-
 class Apiv1ErrorHandler extends Error {
 
   code;
@@ -50,25 +41,14 @@ export async function apiGet<T>(path: string, params: unknown = {}): Promise<T> 
   return apiRequest<T>('get', path, { params });
 }
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export async function apiPost<T>(path: string, params: any & ParamWithCsrfKey = {}): Promise<T> {
-  if (params._csrf == null) {
-    params._csrf = csrfToken;
-  }
+export async function apiPost<T>(path: string, params: unknown = {}): Promise<T> {
   return apiRequest<T>('post', path, params);
 }
 
 export async function apiPostForm<T>(path: string, formData: FormData): Promise<T> {
-  if (formData.get('_csrf') == null && csrfToken != null) {
-    formData.append('_csrf', csrfToken);
-  }
   return apiPost<T>(path, formData);
 }
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export async function apiDelete<T>(path: string, params: any & ParamWithCsrfKey = {}): Promise<T> {
-  if (params._csrf == null) {
-    params._csrf = csrfToken;
-  }
+export async function apiDelete<T>(path: string, params: unknown = {}): Promise<T> {
   return apiRequest<T>('delete', path, { data: params });
 }

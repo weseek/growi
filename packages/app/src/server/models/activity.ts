@@ -1,4 +1,4 @@
-import { getOrCreateModel, getModelSafely } from '@growi/core';
+import { Ref, IPage } from '@growi/core';
 import {
   Types, Document, Model, Schema,
 } from 'mongoose';
@@ -9,10 +9,10 @@ import {
   AllSupportedTargetModels, SupportedTargetModelType,
   AllSupportedEventModels, SupportedEventModelType,
 } from '~/interfaces/activity';
-import { Ref } from '~/interfaces/common';
-import { IPage } from '~/interfaces/page';
 
 import loggerFactory from '../../utils/logger';
+import { getOrCreateModel, getModelSafely } from '../util/mongoose-utils';
+
 
 import Subscription from './subscription';
 

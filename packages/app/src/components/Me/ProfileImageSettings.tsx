@@ -1,7 +1,7 @@
 import React, { useCallback, useState } from 'react';
 
 
-import { useTranslation } from 'react-i18next';
+import { useTranslation } from 'next-i18next';
 
 import { toastSuccess, toastError } from '~/client/util/apiNotification';
 import { apiPost, apiPostForm } from '~/client/util/apiv1-client';
@@ -42,7 +42,7 @@ const ProfileImageSettings = (): JSX.Element => {
     setShowImageCropModal(true);
   }, []);
 
-  const cropCompletedHandler = useCallback(async(croppedImage) => {
+  const processImageCompletedHandler = useCallback(async(croppedImage) => {
     try {
       const formData = new FormData();
       formData.append('file', croppedImage);
@@ -53,8 +53,6 @@ const ProfileImageSettings = (): JSX.Element => {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       setUploadedPictureSrc((response as any).attachment.filePathProxied);
 
-      // close modal
-      setShowImageCropModal(false);
     }
     catch (err) {
       toastError(err);
@@ -158,8 +156,9 @@ const ProfileImageSettings = (): JSX.Element => {
         isShow={showImageCropModal}
         src={imageCropSrc}
         onModalClose={() => setShowImageCropModal(false)}
-        onCropCompleted={cropCompletedHandler}
+        onImageProcessCompleted={processImageCompletedHandler}
         isCircular
+        showCropOption
       />
 
       <div className="row my-3">

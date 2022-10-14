@@ -1,3 +1,4 @@
+import { ErrorV3 } from '@growi/core';
 import express, { Request, Router } from 'express';
 import { query, oneOf } from 'express-validator';
 import mongoose from 'mongoose';
@@ -9,7 +10,6 @@ import loggerFactory from '~/utils/logger';
 import Crowi from '../../crowi';
 import { apiV3FormValidator } from '../../middlewares/apiv3-form-validator';
 import { PageModel } from '../../models/page';
-import ErrorV3 from '../../models/vo/error-apiv3';
 import PageService from '../../service/page';
 
 import { ApiV3Response } from './interfaces/apiv3-response';
@@ -34,8 +34,11 @@ const validator = {
     query('id').isMongoId(),
     query('path').isString(),
   ], 'id or path is required'),
+  pageIdsOrPathRequired: oneOf([
+    query('pageIds').isArray(),
+    query('path').isString(),
+  ], 'pageIds or path is required'),
   infoParams: [
-    query('pageIds').isArray().withMessage('pageIds is required'),
     query('attachBookmarkCount').isBoolean().optional(),
     query('attachShortBody').isBoolean().optional(),
   ],
@@ -44,7 +47,7 @@ const validator = {
 /*
  * Routes
  */
-export default (crowi: Crowi): Router => {
+const routerFactory = (crowi: Crowi): Router => {
   const accessTokenParser = require('../../middlewares/access-token-parser')(crowi);
   const loginRequired = require('../../middlewares/login-required')(crowi, true);
 
@@ -101,8 +104,10 @@ export default (crowi: Crowi): Router => {
   });
 
   // eslint-disable-next-line max-len
-  router.get('/info', accessTokenParser, loginRequired, validator.infoParams, apiV3FormValidator, async(req: AuthorizedRequest, res: ApiV3Response) => {
-    const { pageIds, attachBookmarkCount: attachBookmarkCountParam, attachShortBody: attachShortBodyParam } = req.query;
+  router.get('/info', accessTokenParser, loginRequired, validator.pageIdsOrPathRequired, validator.infoParams, apiV3FormValidator, async(req: AuthorizedRequest, res: ApiV3Response) => {
+    const {
+      pageIds, path, attachBookmarkCount: attachBookmarkCountParam, attachShortBody: attachShortBodyParam,
+    } = req.query;
 
     const attachBookmarkCount: boolean = attachBookmarkCountParam === 'true';
     const attachShortBody: boolean = attachShortBodyParam === 'true';
@@ -113,7 +118,9 @@ export default (crowi: Crowi): Router => {
     const pageService: PageService = crowi.pageService!;
 
     try {
-      const pages = await Page.findByIdsAndViewer(pageIds as string[], req.user, null, true);
+      const pages = pageIds != null
+        ? await Page.findByIdsAndViewer(pageIds as string[], req.user, null, true)
+        : await Page.findByPathAndViewer(path as string, req.user, null, false, true);
 
       const foundIds = pages.map(page => page._id);
 
@@ -157,3 +164,5 @@ export default (crowi: Crowi): Router => {
 
   return router;
 };
+
+export default routerFactory;

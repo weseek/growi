@@ -1,7 +1,7 @@
 import React from 'react';
 
+import { useTranslation } from 'next-i18next';
 import PropTypes from 'prop-types';
-import { useTranslation } from 'react-i18next';
 import {
   Modal, ModalHeader, ModalBody, ModalFooter,
 } from 'reactstrap';
@@ -9,6 +9,8 @@ import {
 import BootstrapGrid from '~/client/models/BootstrapGrid';
 
 import geu from './GridEditorUtil';
+
+import styles from './GridEditModal.module.scss';
 
 const resSizes = BootstrapGrid.ResponsiveSize;
 const resSizeObj = {
@@ -188,7 +190,7 @@ class GridEditModal extends React.Component {
   render() {
     const { t } = this.props;
     return (
-      <Modal isOpen={this.state.show} toggle={this.cancel} size="xl" className="grw-grid-edit-modal">
+      <Modal isOpen={this.state.show} toggle={this.cancel} size="xl" className={`grw-grid-edit-modal ${styles['grw-grid-edit-modal']}`}>
         <ModalHeader tag="h4" toggle={this.cancel} className="bg-primary text-light">
           {t('grid_edit.create_bootstrap_4_grid')}
         </ModalHeader>

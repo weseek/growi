@@ -1,6 +1,6 @@
 import React, { useCallback, useMemo } from 'react';
 
-import { useTranslation } from 'react-i18next';
+import { useTranslation } from 'next-i18next';
 import { DropdownItem } from 'reactstrap';
 
 import {
@@ -18,7 +18,8 @@ import { useSWRxPageInfo } from '../../stores/page';
 import { useSWRxUsersList } from '../../stores/user';
 import BookmarkButtons from '../BookmarkButtons';
 import {
-  AdditionalMenuItemsRendererProps, ForceHideMenuItems, MenuItemType, PageItemControl,
+  AdditionalMenuItemsRendererProps, ForceHideMenuItems, MenuItemType,
+  PageItemControl,
 } from '../Common/Dropdown/PageItemControl';
 import LikeButtons from '../LikeButtons';
 import SubscribeButton from '../SubscribeButton';
@@ -199,11 +200,12 @@ const SubNavButtonsSubstance = (props: SubNavButtonsSubstanceProps): JSX.Element
     }
   }, [isGuestUser, mutatePageInfo, pageId, pageInfo]);
 
-  const wideviewMenuItemRenderer = useMemo(() => {
+  const additionalMenuItemOnTopRenderer = useMemo(() => {
     if (!isIPageInfoForEntity(pageInfo)) {
       return undefined;
     }
-    return props => <WideViewMenuItem {...props} onClickMenuItem={switchContentWidthClickHandler} />;
+    const wideviewMenuItemRenderer = (props: WideViewMenuItemProps) => <WideViewMenuItem {...props} onClickMenuItem={switchContentWidthClickHandler} />;
+    return wideviewMenuItemRenderer;
   }, [pageInfo, switchContentWidthClickHandler]);
 
   if (!isIPageInfoForOperation(pageInfo)) {
@@ -257,7 +259,7 @@ const SubNavButtonsSubstance = (props: SubNavButtonsSubstanceProps): JSX.Element
           pageInfo={pageInfo}
           isEnableActions={!isGuestUser}
           forceHideMenuItems={forceHideMenuItemsWithBookmark}
-          additionalMenuItemOnTopRenderer={wideviewMenuItemRenderer}
+          additionalMenuItemOnTopRenderer={additionalMenuItemOnTopRenderer}
           additionalMenuItemRenderer={additionalMenuItemRenderer}
           onClickRenameMenuItem={renameMenuItemClickHandler}
           onClickDuplicateMenuItem={duplicateMenuItemClickHandler}
@@ -268,7 +270,7 @@ const SubNavButtonsSubstance = (props: SubNavButtonsSubstanceProps): JSX.Element
   );
 };
 
-type SubNavButtonsProps= CommonProps & {
+export type SubNavButtonsProps = CommonProps & {
   pageId: string,
   shareLinkId?: string | null,
   revisionId?: string | null,

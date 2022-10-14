@@ -49,6 +49,7 @@ jobs:
     - name: Remove unnecessary packages
       run: |
         rm -rf packages/slackbot-proxy
+        rm -f "node_modules/@growi/slackbot-proxy"
 
     - name: Build
       run: |
@@ -59,29 +60,31 @@ jobs:
     - name: Archive production files
       id: archive-prod-files
       run: |
-        tar -cf production.tar \
+        tar -zcf production.tar.gz \
           package.json \
+          packages/app/.next \
           packages/app/config \
           packages/app/public \
           packages/app/resource \
           packages/app/tmp \
-          packages/app/migrate-mongo-config.js \
           packages/app/.env.production* \
           packages/*/package.json \
           packages/*/dist
-        echo ::set-output name=file::production.tar
+        echo ::set-output name=file::production.tar.gz
 
     - name: Upload production files as artifact
       uses: actions/upload-artifact@v3
       with:
-        name: Production Files
+        name: Production Files (node${{ inputs.node-version }})
         path: ${{ steps.archive-prod-files.outputs.file }}
 
     - name: Upload report as artifact
       uses: actions/upload-artifact@v3
       with:
         name: Bundle Analyzing Report
-        path: packages/app/report/bundle-analyzer.html
+        path: |
+          packages/app/.next/analyze/client.html
+          packages/app/.next/analyze/server.html
 
     - name: Slack Notification
       uses: weseek/ghaction-slack-notification@master
@@ -143,6 +146,7 @@ jobs:
     - name: Remove unnecessary packages
       run: |
         rm -rf packages/slackbot-proxy
+        rm -f "node_modules/@growi/slackbot-proxy"
 
     - name: lerna bootstrap --production
       run: |
@@ -151,7 +155,7 @@ jobs:
     - name: Download production files artifact
       uses: actions/download-artifact@v3
       with:
-        name: Production Files
+        name: Production Files (node${{ inputs.node-version }})
 
     - name: Extract procution files artifact
       run: |
@@ -211,7 +215,7 @@ jobs:
 
     - uses: actions/setup-node@v3
       with:
-        node-version: ${{ matrix.node-version }}
+        node-version: ${{ inputs.node-version }}
         cache: 'yarn'
         cache-dependency-path: '**/yarn.lock'
 
@@ -233,7 +237,7 @@ jobs:
     - name: Download production files artifact
       uses: actions/download-artifact@v3
       with:
-        name: Production Files
+        name: Production Files (node${{ inputs.node-version }})
 
     - name: Extract procution files artifact
       run: |

@@ -1,3 +1,4 @@
+import { isServer } from '@growi/core';
 import { Container } from 'unstated';
 
 import {
@@ -18,15 +19,15 @@ export default class AdminGeneralSecurityContainer extends Container {
   constructor(appContainer) {
     super();
 
-    this.dummyCurrentRestrictGuestMode = 0;
-    this.dummyCurrentRestrictGuestModeForError = 1;
+    if (isServer()) {
+      return;
+    }
 
     this.state = {
       retrieveError: null,
       sessionMaxAge: null,
       wikiMode: '',
-      // set dummy value tile for using suspense
-      currentRestrictGuestMode: this.dummyCurrentRestrictGuestMode,
+      currentRestrictGuestMode: '',
       currentPageDeletionAuthority: PageSingleDeleteConfigValue.AdminOnly,
       currentPageRecursiveDeletionAuthority: PageRecursiveDeleteConfigValue.Inherit,
       currentPageCompleteDeletionAuthority: PageSingleDeleteCompConfigValue.AdminOnly,
@@ -37,7 +38,6 @@ export default class AdminGeneralSecurityContainer extends Container {
       expandOtherOptionsForCompleteDeletion: false,
       isShowRestrictedByOwner: false,
       isShowRestrictedByGroup: false,
-      appSiteUrl: appContainer.config.crowi.url || '',
       isLocalEnabled: false,
       isLdapEnabled: false,
       isSamlEnabled: false,

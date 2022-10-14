@@ -1,76 +1,8 @@
-.btn.btn-like {
-  @include button-outline-variant(rgba($secondary, 50%), lighten($red, 15%), rgba(lighten($red, 10%), 0.15), rgba(lighten($red, 10%), 0.5));
-  &:not(:disabled):not(.disabled):active,
-  &:not(:disabled):not(.disabled).active {
-    color: lighten($red, 15%);
-  }
-  &:not(:disabled):not(.disabled):not(:hover) {
-    background-color: transparent;
-  }
-}
-
-.btn.btn-bookmark {
-  @include button-outline-variant(rgba($secondary, 50%), $orange, rgba(lighten($orange, 20%), 0.5), rgba(lighten($orange, 20%), 0.5));
-  &:not(:disabled):not(.disabled):active,
-  &:not(:disabled):not(.disabled).active {
-    color: $orange;
-  }
-  &:not(:disabled):not(.disabled):not(:hover) {
-    background-color: transparent;
-  }
-}
-
-.btn.btn-subscribe {
-  @include button-outline-variant(rgba($secondary, 50%), $success, rgba(lighten($success, 10%), 0.15), rgba(lighten($success, 10%), 0.5));
-  &:not(:disabled):not(.disabled):active,
-  &:not(:disabled):not(.disabled).active {
-    color: lighten($success, 15%);
-  }
-  &:not(:disabled):not(.disabled):not(:hover) {
-    background-color: transparent;
-  }
-  width: 44px;
-}
-
-.btn.btn-seen-user {
-  $color-seen-user: #549c79;
-
-  @include button-outline-variant($color-seen-user, $color-seen-user, rgba(lighten($color-seen-user, 10%), 0.15), rgba(lighten($color-seen-user, 10%), 0.5));
-  @include button-outline-svg-icon-variant($color-seen-user, $color-seen-user);
-  &:not(:disabled):not(.disabled):active,
-  &:not(:disabled):not(.disabled).active {
-    color: $color-seen-user;
-    svg {
-      fill: $color-seen-user;
-    }
-  }
-  &:not(:disabled):not(.disabled):not(:hover) {
-    background-color: transparent;
-  }
-}
-
-.btn-copy,
-.btn-edit {
-  &:not(:hover):not(:active) {
-    background-color: transparent !important;
-  }
-  opacity: 0.5;
-}
-
-.btn-edit-tags {
-  opacity: 0.5;
-
-  &.no-tags {
-    opacity: 0.7;
-  }
-}
-
-.rounded-pill-weak {
-  border-radius: 60px;
-}
+@use '../bootstrap/init' as bs;
+@use '../mixins';
 
 // fill button style
-:root .btn.btn-fill {
+.btn.btn-fill {
   position: relative;
   display: flex;
   justify-content: space-between;

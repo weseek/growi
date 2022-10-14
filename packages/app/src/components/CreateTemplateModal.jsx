@@ -2,7 +2,7 @@ import React from 'react';
 
 import { pathUtils } from '@growi/core';
 import PropTypes from 'prop-types';
-import { useTranslation } from 'react-i18next';
+import { useTranslation } from 'next-i18next';
 import { Modal, ModalHeader, ModalBody } from 'reactstrap';
 import urljoin from 'url-join';
 

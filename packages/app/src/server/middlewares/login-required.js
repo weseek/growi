@@ -27,7 +27,7 @@ module.exports = (crowi, isGuestAllowed = false, fallback = null) => {
         return res.redirect('/login/error/suspended');
       }
       if (req.user.status === User.STATUS_INVITED) {
-        return res.redirect('/login/invited');
+        return res.redirect('/invited');
       }
     }
 

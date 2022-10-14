@@ -7,7 +7,6 @@ import loggerFactory from '~/utils/logger';
 const { pathUtils } = require('@growi/core');
 const { formatDistanceStrict } = require('date-fns');
 const entities = require('entities');
-const md5 = require('md5');
 
 // eslint-disable-next-line no-unused-vars
 const logger = loggerFactory('growi:lib:middlewares');
@@ -16,18 +15,6 @@ module.exports = (crowi) => {
   const { configManager } = crowi;
 
   const middlewares = {};
-
-  middlewares.csrfKeyGenerator = function() {
-    return function(req, res, next) {
-      const csrfKey = (req.session && req.session.id) || 'anon';
-
-      if (req.csrfToken === null) {
-        req.csrfToken = crowi.getTokens().create(csrfKey);
-      }
-
-      next();
-    };
-  };
 
   middlewares.swigFunctions = function() {
     return function(req, res, next) {

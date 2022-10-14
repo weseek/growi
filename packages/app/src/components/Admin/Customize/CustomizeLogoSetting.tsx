@@ -19,7 +19,7 @@ const CustomizeLogoSetting = (): JSX.Element => {
   const [uploadLogoSrc, setUploadLogoSrc] = useState<ArrayBuffer | string | null>(null);
   const [isImageCropModalShow, setIsImageCropModalShow] = useState<boolean>(false);
   const [isDefaultLogo, setIsDefaultLogo] = useState<boolean>(true);
-  const [retrieveError, setRetrieveError] = useState<string | null>(null);
+  const [retrieveError, setRetrieveError] = useState<any>();
   const [customizedLogoSrc, setCustomizedLogoSrc] = useState< string | null >(null);
 
   const retrieveData = useCallback(async() => {
@@ -59,19 +59,18 @@ const CustomizeLogoSetting = (): JSX.Element => {
       const { customizedParams } = response.data;
       setIsDefaultLogo(customizedParams.isDefaultLogo);
       setCustomizedLogoSrc(customizedParams.customizedLogoSrc);
-      toastSuccess(t('toaster.update_successed', { target: t('admin:customize_setting.custom_logo') }));
+      toastSuccess(t('toaster.update_successed', { target: t('admin:customize_settings.custom_logo') }));
     }
     catch (err) {
       toastError(err);
     }
   }, [t, isDefaultLogo, customizedLogoSrc]);
 
-
   const onClickDeleteBtn = useCallback(async() => {
     try {
       await apiv3Delete('/customize-setting/delete-brand-logo');
       setCustomizedLogoSrc(null);
-      toastSuccess(t('toaster.update_successed', { target: t('admin:customize_setting.current_logo') }));
+      toastSuccess(t('toaster.update_successed', { target: t('admin:customize_settings.current_logo') }));
     }
     catch (err) {
       toastError(err);
@@ -80,29 +79,28 @@ const CustomizeLogoSetting = (): JSX.Element => {
     }
   }, [t]);
 
-  const onCropCompleted = useCallback(async(croppedImage) => {
+
+  const processImageCompletedHandler = useCallback(async(croppedImage) => {
     try {
       const formData = new FormData();
       formData.append('file', croppedImage);
       const { data } = await apiv3PostForm('/customize-setting/upload-brand-logo', formData);
       setCustomizedLogoSrc(data.attachment.filePathProxied);
-      toastSuccess(t('toaster.update_successed', { target: t('admin:customize_setting.current_logo') }));
+      toastSuccess(t('toaster.update_successed', { target: t('admin:customize_settings.current_logo') }));
     }
     catch (err) {
       toastError(err);
       setRetrieveError(err);
       throw new Error('Failed to upload brand logo');
     }
-    setIsImageCropModalShow(false);
   }, [t]);
-
 
   return (
     <React.Fragment>
       <div className="row">
         <div className="col-12">
           <div className="mb-5">
-            <h2 className="border-bottom my-4 admin-setting-header">{t('admin:customize_setting.custom_logo')}</h2>
+            <h2 className="border-bottom my-4 admin-setting-header">{t('admin:customize_settings.custom_logo')}</h2>
             <div className="row">
               <div className="col-md-6 col-12 mb-3 mb-md-0">
                 <h4>
@@ -117,7 +115,7 @@ const CustomizeLogoSetting = (): JSX.Element => {
                       onChange={() => { setIsDefaultLogo(true) }}
                     />
                     <label className="custom-control-label" htmlFor="radioDefaultLogo">
-                      {t('admin:customize_setting.default_logo')}
+                      {t('admin:customize_settings.default_logo')}
                     </label>
                   </div>
                 </h4>
@@ -136,26 +134,26 @@ const CustomizeLogoSetting = (): JSX.Element => {
                       onChange={() => { setIsDefaultLogo(false) }}
                     />
                     <label className="custom-control-label" htmlFor="radioUploadLogo">
-                      { t('admin:customize_setting.upload_logo') }
+                      { t('admin:customize_settings.upload_logo') }
                     </label>
                   </div>
                 </h4>
                 <div className="row mb-3">
                   <label className="col-sm-4 col-12 col-form-label text-left">
-                    { t('admin:customize_setting.current_logo') }
+                    { t('admin:customize_settings.current_logo') }
                   </label>
                   <div className="col-sm-8 col-12">
                     <p><img src={customizedLogoSrc || DEFAULT_LOGO} className="picture picture-lg " id="settingBrandLogo" width="64" /></p>
                     {(customizedLogoSrc != null) && (
                       <button type="button" className="btn btn-danger" onClick={onClickDeleteBtn}>
-                        { t('admin:customize_setting.delete_logo') }
+                        { t('admin:customize_settings.delete_logo') }
                       </button>
                     )}
                   </div>
                 </div>
                 <div className="row">
                   <label className="col-sm-4 col-12 col-form-label text-left">
-                    { t('admin:customize_setting.upload_new_logo') }
+                    { t('admin:customize_settings.upload_new_logo') }
                   </label>
                   <div className="col-sm-8 col-12">
                     <input type="file" onChange={onSelectFile} name="brandLogo" accept="image/*" />
@@ -172,8 +170,9 @@ const CustomizeLogoSetting = (): JSX.Element => {
         isShow={isImageCropModalShow}
         src={uploadLogoSrc}
         onModalClose={() => setIsImageCropModalShow(false)}
-        onCropCompleted={onCropCompleted}
+        onImageProcessCompleted={processImageCompletedHandler}
         isCircular={false}
+        showCropOption={false}
       />
     </React.Fragment>
   );
