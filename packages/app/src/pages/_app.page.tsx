@@ -3,8 +3,6 @@ import React, { useEffect } from 'react';
 import { isServer } from '@growi/core';
 import { appWithTranslation } from 'next-i18next';
 import { AppProps } from 'next/app';
-import { DndProvider } from 'react-dnd';
-import { HTML5Backend } from 'react-dnd-html5-backend';
 import { SWRConfig } from 'swr';
 
 import * as nextI18nConfig from '^/config/next-i18next.config';
@@ -60,9 +58,7 @@ function GrowiApp({ Component, pageProps }: GrowiAppProps): JSX.Element {
   return (
     <SWRConfig value={swrConfig}>
       <NextThemesProvider>
-        <DndProvider backend={HTML5Backend}>
-          <Component {...pageProps} />
-        </DndProvider>
+        <Component {...pageProps} />
       </NextThemesProvider>
     </SWRConfig>
   );
