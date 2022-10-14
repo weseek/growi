@@ -1,31 +1,41 @@
-import { Ref, IUser, IUserHasId } from '@growi/core';
+import { Ref, IUser } from '@growi/core';
+import {
+  Types, Document, Model, Schema,
+} from 'mongoose';
 
-import {  Model, Schema, Document } from 'mongoose';
+
+import loggerFactory from '../../utils/logger';
 import { getOrCreateModel } from '../util/mongoose-utils';
 
+const logger = loggerFactory('growi:models:bookmark-folder');
+
+export type IBookmarkFolderDocument = {
+  name: string
+  owner: Ref<IUser>
+  parent?: Ref<IBookmarkFolderDocument>
+}
 export interface BookmarkFolderDocument extends Document {
-  name : string,
-  owner: Ref<IUser>,
-  parent?: BookmarkFolderDocument
+  _id: Types.ObjectId
+  name: string
+  owner: Types.ObjectId
+  parent?: IBookmarkFolderDocument
 }
 
-export type BookmarkFolderModel = Model<BookmarkFolderDocument>
+export interface BookmarkFolderModel extends Model<BookmarkFolderDocument>{
+  createByParameters(params: IBookmarkFolderDocument): IBookmarkFolderDocument
+}
 
 const bookmarkFolderSchema = new Schema<BookmarkFolderDocument, BookmarkFolderModel>({
-  name: {type: String},
-  owner: { type: Schema.Types.ObjectId, ref: 'User'},
-  parent: { type: Schema.Types.ObjectId, ref: 'BookmarkFolder', required: false}
+  name: { type: String },
+  owner: { type: Schema.Types.ObjectId, ref: 'User', index: true },
+  parent: { type: Schema.Types.ObjectId, refPath: 'BookmarkFolder', required: false },
 });
 
-bookmarkFolderSchema.statics.createBookmarkFolder = async function (name: string, user:IUserHasId, parent?: BookmarkFolderDocument ): Promise<BookmarkFolderDocument> {
-  const BookmarkFolder = this;
-  const bookmarkFolder = new BookmarkFolder();
-  bookmarkFolder.name = name;
-  bookmarkFolder.owner = user._id;
-  if(parent != null ){
-    bookmarkFolder.parent = parent._id;
-  }
-  return bookmarkFolder.save()
-}
 
-export default getOrCreateModel<BookmarkFolderDocument, BookmarkFolderModel>('BookmarkFolder', bookmarkFolderSchema)
+bookmarkFolderSchema.statics.createByParameters = async function(params: IBookmarkFolderDocument): Promise<IBookmarkFolderDocument> {
+  const bookmarkFolder = await this.create(params) as unknown as IBookmarkFolderDocument;
+  return bookmarkFolder;
+};
+
+
+export default getOrCreateModel<BookmarkFolderDocument, BookmarkFolderModel>('BookmarkFolder', bookmarkFolderSchema);
