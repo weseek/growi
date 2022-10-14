@@ -109,11 +109,11 @@ const PageEditor = (props: Props): JSX.Element => {
 
 
   const optionsToSave = useMemo(() => {
-    // if (grant == null) {
-    //   return;
-    // }
+    if (grant == null) {
+      return;
+    }
     const slackChannels = slackChannelsData ? slackChannelsData.toString() : '';
-    const optionsToSave = getOptionsToSave(isSlackEnabled ?? false, slackChannels, grant || 1, grantGroupId, grantGroupName, pageTags || []);
+    const optionsToSave = getOptionsToSave(isSlackEnabled ?? false, slackChannels, grant, grantGroupId, grantGroupName, pageTags || []);
     return optionsToSave;
   }, [grant, grantGroupId, grantGroupName, isSlackEnabled, pageTags, slackChannelsData]);
 

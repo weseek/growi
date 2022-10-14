@@ -21,7 +21,6 @@ import { apiv3Post } from '../util/apiv3-client';
 const { isTrashPage } = pagePathUtils;
 
 const logger = loggerFactory('growi:services:PageContainer');
-const globalEmitter = window.globalEmitter;
 
 /**
  * Service container related to Page
@@ -436,7 +435,7 @@ export default class PageContainer extends Container {
     editorContainer.clearDraft(path);
     this.updateStateAfterSave(res.page, res.tags, res.revision, editorMode);
 
-    globalEmitter.emit('updateEditorValue', markdown);
+    window.globalEmitter.emit('updateEditorValue', markdown);
 
     editorContainer.setState({ tags: res.tags });
 
