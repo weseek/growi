@@ -100,7 +100,6 @@ export const SearchPage = (): JSX.Element => {
   const [offset, setOffset] = useState<number>(0);
   const [limit, setLimit] = useState<number>(showPageLimitationL ?? INITIAL_PAGIONG_SIZE);
   const [configurationsByControl, setConfigurationsByControl] = useState<Partial<ISearchConfigurations>>({});
-  console.log({ limit });
   const selectAllControlRef = useRef<ISelectableAndIndeterminatable|null>(null);
   const searchPageBaseRef = useRef<ISelectableAll & IReturnSelectedPageIds|null>(null);
 
