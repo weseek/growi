@@ -233,9 +233,6 @@ const GrowiPage: NextPage<Props> = (props: Props) => {
 
   const { pageWithMeta, userUISettings } = props;
 
-  useSWRxCurrentPage(undefined, pageWithMeta?.data ?? null); // store initial data
-  useEditingMarkdown(pageWithMeta?.data.revision?.body ?? '');
-
   const pageId = pageWithMeta?.data._id;
   const pagePath = pageWithMeta?.data.path ?? (!_isPermalink(props.currentPathname) ? props.currentPathname : undefined);
 
@@ -245,6 +242,10 @@ const GrowiPage: NextPage<Props> = (props: Props) => {
   useCurrentPagePath(pagePath);
   useCurrentPathname(props.currentPathname);
   useIsTrashPage(pagePath != null && _isTrashPage(pagePath));
+
+  useSWRxCurrentPage(undefined, pageWithMeta?.data ?? null); // store initial data
+  useEditingMarkdown(pageWithMeta?.data.revision?.body ?? '');
+
   const { data: layoutSetting } = useLayoutSetting({ isContainerFluid: props.isContainerFluid });
   const { data: dataPageInfo } = useSWRxPageInfo(pageId);
 
