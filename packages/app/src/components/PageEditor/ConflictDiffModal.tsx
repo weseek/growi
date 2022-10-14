@@ -32,7 +32,7 @@ type ConflictDiffModalProps = {
   onClose?: (() => void);
   pageContainer: PageContainer;
   markdownOnEdit: string;
-  optionsToSave: OptionsToSave;
+  optionsToSave: OptionsToSave | null;
 };
 
 type IRevisionOnConflictWithStringDate = Omit<IRevisionOnConflict, 'createdAt'> & {
