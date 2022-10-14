@@ -11,7 +11,6 @@ import { useI18nextHMR } from '~/services/i18next-hmr';
 import {
   useAppTitle, useConfidential, useGrowiTheme, useGrowiVersion, useSiteUrl,
 } from '~/stores/context';
-import { NextThemesProvider } from '~/stores/use-next-themes';
 import { SWRConfigValue, swrGlobalConfiguration } from '~/utils/swr-utils';
 
 
@@ -57,9 +56,7 @@ function GrowiApp({ Component, pageProps }: GrowiAppProps): JSX.Element {
 
   return (
     <SWRConfig value={swrConfig}>
-      <NextThemesProvider>
-        <Component {...pageProps} />
-      </NextThemesProvider>
+      <Component {...pageProps} />
     </SWRConfig>
   );
 }
