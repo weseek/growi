@@ -1,5 +1,4 @@
 import { HasObjectId } from './has-object-id';
-import { HasPageId } from './has-page-id';
 import { IUser } from './user';
 
 export type IRevision = {
@@ -11,6 +10,10 @@ export type IRevision = {
 }
 
 export type IRevisionHasId = IRevision & HasObjectId;
+
+type HasPageId = {
+  pageId: string,
+};
 
 export type IRevisionHasPageId = IRevisionHasId & HasPageId;
 

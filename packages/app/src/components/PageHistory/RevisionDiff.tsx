@@ -9,6 +9,8 @@ import UserDate from '../User/UserDate';
 
 import styles from './RevisionDiff.module.scss';
 
+import 'diff2html/bundles/css/diff2html.min.css';
+
 type RevisioinDiffProps = {
   currentRevision: IRevisionHasPageId,
   previousRevision: IRevisionHasPageId,

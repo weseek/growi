@@ -69,11 +69,9 @@ export const Revision = (props: RevisionProps): JSX.Element => {
     );
   };
 
-
-  if (hasDiff) {
+  if (!hasDiff) {
     return renderSimplifiedNodiff(revision);
   }
 
   return renderFull(revision);
-
 };
