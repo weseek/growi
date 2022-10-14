@@ -10,7 +10,7 @@ import type { RendererConfig } from '~/interfaces/services/renderer';
 import type { ISidebarConfig } from '~/interfaces/sidebar-config';
 import type { IUser, IUserHasId } from '~/interfaces/user';
 import type { IUserUISettings } from '~/interfaces/user-ui-settings';
-import type UserUISettings from '~/server/models/user-ui-settings';
+import type { UserUISettingsModel } from '~/server/models/user-ui-settings';
 import {
   useCsrfToken, useCurrentUser, useIsSearchPage, useIsSearchScopeChildrenAsDefault,
   useIsSearchServiceConfigured, useIsSearchServiceReachable, useRendererConfig,
@@ -88,9 +88,12 @@ const PrivateLegacyPage: NextPage<Props> = (props: Props) => {
 };
 
 async function injectUserUISettings(context: GetServerSidePropsContext, props: Props): Promise<void> {
+  const { model: mongooseModel } = await import('mongoose');
+
   const req = context.req as CrowiRequest<IUserHasId & any>;
   const { user } = req;
 
+  const UserUISettings = mongooseModel('UserUISettings') as UserUISettingsModel;
   const userUISettings = user == null ? null : await UserUISettings.findOne({ user: user._id }).exec();
   if (userUISettings != null) {
     props.userUISettings = userUISettings.toObject();
