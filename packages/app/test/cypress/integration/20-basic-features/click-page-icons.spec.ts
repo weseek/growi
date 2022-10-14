@@ -14,13 +14,13 @@ context('Click page icons button', () => {
     cy.visit('/Sandbox');
     cy.getByTestid('grw-contextual-sub-nav').within(() => {
       // Subscribe
-      cy.get('#subscribe-button').eq(0).click({force: true});
-      cy.get('#subscribe-button').eq(0).should('have.class', 'active');
+      cy.get('#subscribe-button').should('be.visible').click({force: true});
+      cy.get('#subscribe-button').should('have.class', 'active');
       cy.screenshot(`${ssPrefix}1-subscribe-page`);
 
       // Unsubscribe
-      cy.get('#subscribe-button.active').eq(0).click({force: true});
-      cy.get('#subscribe-button').eq(0).should('not.have.class', 'active');
+      cy.get('#subscribe-button.active').should('be.visible').click({force: true});
+      cy.get('#subscribe-button').should('not.have.class', 'active');
       cy.screenshot(`${ssPrefix}2-unsubscribe-page`);
     });
   });
