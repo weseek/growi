@@ -1,4 +1,4 @@
-import { Nullable, HasObjectId, pagePathUtils } from '@growi/core';
+import { Nullable, HasObjectId } from '@growi/core';
 import useSWR, { SWRResponse } from 'swr';
 import useSWRImmutable from 'swr/immutable';
 import useSWRInfinite, { SWRInfiniteResponse } from 'swr/infinite';
@@ -13,10 +13,8 @@ import {
   AncestorsChildrenResult, ChildrenResult, V5MigrationStatus, RootPageResult,
 } from '../interfaces/page-listing-results';
 
-import { useCurrentPagePath, useShowPageLimitationXL } from './context';
+import { useCurrentPagePath } from './context';
 import { ITermNumberManagerUtil, useTermNumberManager } from './use-static-swr';
-
-const { isTrashTopPage } = pagePathUtils;
 
 export const useSWRxPagesByPath = (path?: Nullable<string>): SWRResponse<IPageHasId[], Error> => {
   const findAll = true;
@@ -78,13 +76,9 @@ export const useDescendantsPageListForCurrentPathTermManager = (isDisabled?: boo
   return useTermNumberManager(isDisabled === true ? null : 'descendantsPageListForCurrentPathTermNumber');
 };
 
-export const useSWRxDescendantsPageListForCurrrentPath = (pageNumber?: number): SWRResponse<IPagingResult<IPageHasId>, Error> => {
+export const useSWRxDescendantsPageListForCurrrentPath = (pageNumber?: number, limit?:number): SWRResponse<IPagingResult<IPageHasId>, Error> => {
   const { data: currentPagePath } = useCurrentPagePath();
   const { data: termNumber } = useDescendantsPageListForCurrentPathTermManager();
-  const { data: pageLimitation } = useShowPageLimitationXL();
-
-  // if the curretPath is /trash, then it should not limit the number of pages to fetch.
-  const limit = isTrashTopPage(currentPagePath || '') ? undefined : pageLimitation;
 
   const path = currentPagePath == null || termNumber == null
     ? null
