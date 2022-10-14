@@ -1,4 +1,4 @@
-type OptionsToSave = {
+export type OptionsToSave = {
   isSlackEnabled: boolean;
   slackChannels: string;
   grant: number;
