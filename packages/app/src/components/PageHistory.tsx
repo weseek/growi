@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 
-import { IRevision, IRevisionHasPageId } from '@growi/core';
+import { IRevisionHasPageId } from '@growi/core';
 
 import { useCurrentPageId } from '~/stores/context';
 import { useSWRxPageRevisions } from '~/stores/page';
@@ -20,8 +20,8 @@ export const PageHistory = (): JSX.Element => {
 
   const { data: revisionsData } = useSWRxPageRevisions(activePage, 10, currentPageId);
 
-  const [sourceRevision, setSourceRevision] = useState<IRevision>();
-  const [targetRevision, setTargetRevision] = useState<IRevision>();
+  const [sourceRevision, setSourceRevision] = useState<IRevisionHasPageId>();
+  const [targetRevision, setTargetRevision] = useState<IRevisionHasPageId>();
 
   useEffect(() => {
     if (revisionsData != null) {
@@ -55,10 +55,10 @@ export const PageHistory = (): JSX.Element => {
   return (
     <div className="revision-history" data-testid="page-history">
       <PageRevisionTable
-        revisions={revisionsData.revisions as IRevisionHasPageId[]}
+        revisions={revisionsData.revisions}
         pagingLimit={pagingLimit}
-        sourceRevision={sourceRevision as IRevisionHasPageId}
-        targetRevision={targetRevision as IRevisionHasPageId}
+        sourceRevision={sourceRevision}
+        targetRevision={targetRevision}
         onChangeSourceInvoked={setSourceRevision}
         onChangeTargetInvoked={setTargetRevision}
       />
@@ -66,8 +66,8 @@ export const PageHistory = (): JSX.Element => {
         {pager()}
       </div>
       <RevisionComparer
-        sourceRevision={sourceRevision as IRevisionHasPageId}
-        targetRevision={targetRevision as IRevisionHasPageId}
+        sourceRevision={sourceRevision}
+        targetRevision={targetRevision}
         currentPageId={currentPageId}
       />
     </div>
