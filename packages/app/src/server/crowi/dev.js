@@ -109,19 +109,19 @@ class CrowiDev {
   }
 
   setupBrowserSync(app) {
-    // logger.debug('setupBrowserSync');
+    logger.debug('setupBrowserSync');
 
-    // const browserSync = require('browser-sync');
-    // const bs = browserSync.create().init({
-    //   logSnippet: false,
-    //   notify: false,
-    //   files: [
-    //     `${this.crowi.viewsDir}/**/*.html`,
-    //     `${this.crowi.publicDir}/**/*.js`,
-    //     `${this.crowi.publicDir}/**/*.css`,
-    //   ],
-    // });
-    // app.use(require('connect-browser-sync')(bs));
+    const browserSync = require('browser-sync');
+    const bs = browserSync.create().init({
+      logSnippet: false,
+      notify: false,
+      files: [
+        `${this.crowi.viewsDir}/**/*.html`,
+        `${this.crowi.publicDir}/**/*.js`,
+        `${this.crowi.publicDir}/**/*.css`,
+      ],
+    });
+    app.use(require('connect-browser-sync')(bs));
   }
 
 }
