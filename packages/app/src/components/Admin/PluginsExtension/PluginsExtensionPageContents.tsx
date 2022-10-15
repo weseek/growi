@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { useSWRxPlugins } from '~/stores/plugin-test';
+import { useSWRxPlugins } from '~/stores/plugin';
 
 import Loading from './Loading';
 import { PluginCard } from './PluginCard';
