@@ -1,31 +1,9 @@
 
-import { useState } from 'react';
+import React, { useState } from 'react';
 
 import Link from 'next/link';
 
 import styles from './PluginCard.module.scss';
-
-const PluginCardButton = ({ onChange }: any): JSX.Element => {
-  const [isEnabled, setIsEnabled] = useState(true);
-
-  return (
-    <div className={`${styles.plugin_card}`}>
-      <div className="switch">
-        <label className="switch__label">
-          <input
-            type="checkbox"
-            className="switch__input"
-            onChange={() => setIsEnabled(!isEnabled)}
-            checked={isEnabled}
-          />
-          <span className="switch__content"></span>
-          <span className="switch__circle"></span>
-        </label>
-      </div>
-    </div>
-  );
-};
-
 
 type Props = {
   name: string,
@@ -37,6 +15,27 @@ export const PluginCard = (props: Props): JSX.Element => {
   const {
     name, url, description,
   } = props;
+
+  const PluginCardButton = (): JSX.Element => {
+    const [isEnabled, setIsEnabled] = useState(true);
+
+    return (
+      <div className={`${styles.plugin_card}`}>
+        <div className="switch">
+          <label className="switch__label">
+            <input
+              type="checkbox"
+              className="switch__input"
+              onChange={() => setIsEnabled(!isEnabled)}
+              checked={isEnabled}
+            />
+            <span className="switch__content"></span>
+            <span className="switch__circle"></span>
+          </label>
+        </div>
+      </div>
+    );
+  };
 
   return (
     <div className="card shadow border-0" key={name}>
