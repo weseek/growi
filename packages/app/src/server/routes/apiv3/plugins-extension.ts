@@ -38,5 +38,37 @@ module.exports = (crowi: Crowi) => {
     }
   });
 
+  router.post('/swrplugin', async(req: PluginInstallerFormRequest, res: ApiV3Response) => {
+    if (pluginService == null) {
+      return res.apiv3Err(400);
+    }
+
+    console.log('id2', req.body._id);
+    try {
+      const pluginIsEnabled = await pluginService.switchPluginIsEnabled(req.body._id);
+      console.log('get', pluginIsEnabled);
+      return res.apiv3({ isEnabled: pluginIsEnabled });
+    }
+    catch (err) {
+      return res.apiv3Err(err, 400);
+    }
+  });
+
+  router.post('/plugin', async(req: PluginInstallerFormRequest, res: ApiV3Response) => {
+    if (pluginService == null) {
+      return res.apiv3Err(400);
+    }
+
+    console.log('id2', req.body._id);
+    try {
+      const pluginIsEnabled = await pluginService.switchPluginIsEnabled2(req.body._id);
+      console.log('post', pluginIsEnabled);
+      return res.apiv3({ isEnabled: pluginIsEnabled });
+    }
+    catch (err) {
+      return res.apiv3Err(err, 400);
+    }
+  });
+
   return router;
 };

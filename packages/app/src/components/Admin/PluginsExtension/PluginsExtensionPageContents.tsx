@@ -53,10 +53,21 @@ export const PluginsExtensionPageContents = (): JSX.Element => {
           </h2>
           <div className="d-grid gap-5">
             { data?.data?.plugins.map((item) => {
+              const pluginId = item[0]._id;
+              const pluginIsEnabled = item[0].isEnabled;
               const pluginName = item[0].meta.name;
               const pluginUrl = item[0].origin.url;
               const pluginDiscription = item[0].meta.desc;
-              return <PluginCard key={item[0]._id} name={pluginName} url={pluginUrl} description={pluginDiscription} />;
+              return (
+                <PluginCard
+                  key={pluginId}
+                  id={pluginId}
+                  isEnabled={pluginIsEnabled}
+                  name={pluginName}
+                  url={pluginUrl}
+                  description={pluginDiscription}
+                />
+              );
             })}
           </div>
         </div>

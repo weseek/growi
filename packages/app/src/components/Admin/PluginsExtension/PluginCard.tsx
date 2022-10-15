@@ -3,21 +3,48 @@ import React, { useState } from 'react';
 
 import Link from 'next/link';
 
+import { apiv3Post } from '~/client/util/apiv3-client';
+import { useSWRxPlugin } from '~/stores/plugin';
+
 import styles from './PluginCard.module.scss';
 
+
 type Props = {
+  id: string,
+  isEnabled: boolean,
   name: string,
   url: string,
   description: string,
 }
 
 export const PluginCard = (props: Props): JSX.Element => {
+
   const {
-    name, url, description,
+    id, isEnabled, name, url, description,
   } = props;
 
+  const { data } = useSWRxPlugin(id);
+
+  if (data == null) {
+    return <></>;
+  }
+
+  console.log('first', data.data.isEnabled);
   const PluginCardButton = (): JSX.Element => {
-    const [isEnabled, setIsEnabled] = useState(true);
+    const [isEnabled, setState] = useState<boolean>(data.data.isEnabled);
+
+    const onChangeHandler = async() => {
+      // const { data, mutate } = useSWRxPlugin(id);
+
+      console.log('change');
+      const reqUrl = '/plugins-extension/plugin';
+      console.log('id', id);
+      const res = await apiv3Post(reqUrl, { _id: id });
+      console.log(res.data.isEnabled);
+      setState(res.data.isEnabled);
+      // mutate();
+      // return data;
+    };
 
     return (
       <div className={`${styles.plugin_card}`}>
@@ -26,7 +53,7 @@ export const PluginCard = (props: Props): JSX.Element => {
             <input
               type="checkbox"
               className="switch__input"
-              onChange={() => setIsEnabled(!isEnabled)}
+              onChange={() => onChangeHandler()}
               checked={isEnabled}
             />
             <span className="switch__content"></span>
