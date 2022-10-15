@@ -120,6 +120,7 @@ class RevisionLoader extends React.Component {
 RevisionLoader.propTypes = {
   t: PropTypes.func.isRequired,
 
+  // eslint-disable-next-line no-undef
   rendererOptions: PropTypes.instanceOf(RendererOptions).isRequired,
   pageId: PropTypes.string.isRequired,
   pagePath: PropTypes.string.isRequired,
