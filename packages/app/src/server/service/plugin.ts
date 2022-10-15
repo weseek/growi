@@ -144,31 +144,24 @@ export class PluginService {
   }
 
   /**
-   * Switch plugin enabled
+   * Get plugin isEnabled
    */
-  async switchPluginIsEnabled(targetPluginId: string): Promise<any> {
+  async getPluginIsEnabled(targetPluginId: string): Promise<any> {
     const GrowiPlugin = await mongoose.model<GrowiPlugin>('GrowiPlugin');
     const growiPlugins = await GrowiPlugin.find({ _id: targetPluginId });
-    // await growiPlugins[0].update(
-    //   { isEnabled: !growiPlugins[0].isEnabled },
-    // );
-    console.log(growiPlugins);
     return growiPlugins[0].isEnabled;
   }
 
   /**
    * Switch plugin enabled
    */
-  async switchPluginIsEnabled2(targetPluginId: string): Promise<any> {
+  async switchPluginIsEnabled(targetPluginId: string): Promise<any> {
     const GrowiPlugin = mongoose.model<GrowiPlugin>('GrowiPlugin');
     const growiPlugins = await GrowiPlugin.find({ _id: targetPluginId });
-    console.log('switch', growiPlugins[0].isEnabled);
     await growiPlugins[0].update(
       { isEnabled: !growiPlugins[0].isEnabled },
     );
-    console.log('switched', growiPlugins[0].isEnabled);
     return growiPlugins[0].isEnabled;
   }
-
 
 }

@@ -38,15 +38,13 @@ module.exports = (crowi: Crowi) => {
     }
   });
 
-  router.post('/swrplugin', async(req: PluginInstallerFormRequest, res: ApiV3Response) => {
+  router.post('/swrplugin', async(req: any, res: ApiV3Response) => {
     if (pluginService == null) {
       return res.apiv3Err(400);
     }
 
-    console.log('id2', req.body._id);
     try {
-      const pluginIsEnabled = await pluginService.switchPluginIsEnabled(req.body._id);
-      console.log('get', pluginIsEnabled);
+      const pluginIsEnabled = await pluginService.getPluginIsEnabled(req.body._id);
       return res.apiv3({ isEnabled: pluginIsEnabled });
     }
     catch (err) {
@@ -54,15 +52,13 @@ module.exports = (crowi: Crowi) => {
     }
   });
 
-  router.post('/plugin', async(req: PluginInstallerFormRequest, res: ApiV3Response) => {
+  router.post('/plugin', async(req: any, res: ApiV3Response) => {
     if (pluginService == null) {
       return res.apiv3Err(400);
     }
 
-    console.log('id2', req.body._id);
     try {
-      const pluginIsEnabled = await pluginService.switchPluginIsEnabled2(req.body._id);
-      console.log('post', pluginIsEnabled);
+      const pluginIsEnabled = await pluginService.switchPluginIsEnabled(req.body._id);
       return res.apiv3({ isEnabled: pluginIsEnabled });
     }
     catch (err) {
