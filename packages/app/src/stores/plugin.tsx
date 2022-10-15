@@ -24,7 +24,7 @@ export const useSWRxPlugins = (): SWRResponse<any | null, Error> => {
 
 const pluginFetcher = (id: string) => {
   return async() => {
-    const reqUrl = '/plugins-extension/swrplugin';
+    const reqUrl = '/plugins-extension/get-isenabled';
     try {
       const data = await apiv3Post(reqUrl, { _id: id });
       return data;

@@ -31,7 +31,7 @@ export const PluginCard = (props: Props): JSX.Element => {
     const [isEnabled, setState] = useState<boolean>(data.data.isEnabled);
 
     const onChangeHandler = async() => {
-      const reqUrl = '/plugins-extension/plugin';
+      const reqUrl = '/plugins-extension/switch-isenabled';
 
       try {
         const res = await apiv3Post(reqUrl, { _id: id });

@@ -38,7 +38,7 @@ module.exports = (crowi: Crowi) => {
     }
   });
 
-  router.post('/swrplugin', async(req: any, res: ApiV3Response) => {
+  router.post('/get-isenabled', async(req: any, res: ApiV3Response) => {
     if (pluginService == null) {
       return res.apiv3Err(400);
     }
@@ -52,7 +52,7 @@ module.exports = (crowi: Crowi) => {
     }
   });
 
-  router.post('/plugin', async(req: any, res: ApiV3Response) => {
+  router.post('/switch-isenabled', async(req: any, res: ApiV3Response) => {
     if (pluginService == null) {
       return res.apiv3Err(400);
     }
