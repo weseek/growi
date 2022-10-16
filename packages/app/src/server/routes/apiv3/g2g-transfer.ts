@@ -1,6 +1,7 @@
 import { createReadStream } from 'fs';
 import path from 'path';
 
+import { ErrorV3 } from '@growi/core';
 import express, { NextFunction, Request, Router } from 'express';
 import { body } from 'express-validator';
 import multer from 'multer';
@@ -16,7 +17,6 @@ import { TransferKey } from '~/utils/vo/transfer-key';
 
 import Crowi from '../../crowi';
 import { apiV3FormValidator } from '../../middlewares/apiv3-form-validator';
-import ErrorV3 from '../../models/vo/error-apiv3';
 
 import { generateOverwriteParams } from './import';
 import { ApiV3Response } from './interfaces/apiv3-response';
