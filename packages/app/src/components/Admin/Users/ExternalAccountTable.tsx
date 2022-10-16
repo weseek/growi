@@ -53,7 +53,7 @@ const ExternalAccountTable = (props: ExternalAccountTableProps): JSX.Element => 
                 <small><i className="icon-question" aria-hidden="true"></i></small>
               </span>
             </th>
-            <th style={{ width: '8rem' }}>{ t('Created') }</th>
+            <th style={{ width: '8rem' }}>{ t('admin:Created') }</th>
             <th style={{ width: '3rem' }}></th>
           </tr>
         </thead>
@@ -92,7 +92,7 @@ const ExternalAccountTable = (props: ExternalAccountTableProps): JSX.Element => 
                         role="button"
                         onClick={() => removeExtenalAccount(ea._id)}
                       >
-                        <i className="icon-fw icon-fire text-danger"></i> { t('Delete') }
+                        <i className="icon-fw icon-fire text-danger"></i> { t('admin:Delete') }
                       </button>
                     </ul>
                   </div>
