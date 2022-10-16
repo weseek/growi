@@ -110,21 +110,54 @@ const generateAxiosRequestConfigWithTransferKey = (tk: TransferKey, additionalHe
   };
 };
 
+
+/**
+ * Check whether the storage is writable
+ * @param crowi Crowi instance
+ * @returns Whether the storage is writable
+ */
+const getWritePermission = async(crowi: any): Promise<boolean> => {
+  const { fileUploadService } = crowi;
+
+  let writable = true;
+  const fileStream = new Readable();
+  fileStream.push(new Date().toISOString());
+  fileStream.push(null); // EOF
+  const attachment = {
+    fileName: '.growi',
+    filePath: '',
+    fileFormat: 'text/plain',
+  };
+
+  try {
+    await fileUploadService.uploadFile(fileStream, attachment);
+  }
+  catch (err) {
+    writable = false;
+    logger.error(err);
+  }
+
+  return writable;
+};
+
 /**
  * generate GROWIInfo
  * @param crowi Crowi instance
  * @returns
  */
-const generateGROWIInfo = (crowi: any): IDataGROWIInfo => {
+const generateGROWIInfo = async(crowi: any): Promise<IDataGROWIInfo> => {
   // TODO: add attachment file limit, storage total limit
   const { configManager } = crowi;
   const userUpperLimit = configManager.getConfig('crowi', 'security:userUpperLimit');
   const version = crowi.version;
+  const writable = await getWritePermission(crowi);
+
   const attachmentInfo = {
     type: configManager.getConfig('crowi', 'app:fileUploadType'),
     bucket: undefined,
     customEndpoint: undefined, // for S3
     uploadNamespace: undefined, // for GCS
+    writable,
   };
 
   // put storage location info to check storage identification
