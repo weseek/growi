@@ -754,7 +754,7 @@
     "invite": "Invite",
     "invited": "User was invited",
     "back_to_user_management": "Back to User Management",
-    "authentication_provider": "Authentication provider",
+    "authentication_provider": "Auth provider",
     "manage": "Manage",
     "password_setting": "Password setting",
     "password_setting_help": "Is password set?",
@@ -1028,5 +1028,8 @@
     "ADMIN_SEARCH_CONNECTION": "Attempting to reconnect to Elasticsearch",
     "ADMIN_SEARCH_INDICES_NORMALIZE": "Normalize of Elasticsearch indexes",
     "ADMIN_SEARCH_INDICES_REBUILD": "Rebuild Elasticsearch indexes"
+  },
+  "toaster": {
+    "remove_external_user_success": "Succeeded to remove {{accountId}}"
   }
 }

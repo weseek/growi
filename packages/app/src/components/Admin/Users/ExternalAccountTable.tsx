@@ -1,5 +1,6 @@
 import React, { useCallback } from 'react';
 
+import { IAdminExternalAccount } from '@growi/core';
 import dateFnsFormat from 'date-fns/format';
 import { useTranslation } from 'next-i18next';
 
@@ -7,6 +8,7 @@ import AdminExternalAccountsContainer from '~/client/services/AdminExternalAccou
 import { toastSuccess, toastError } from '~/client/util/apiNotification';
 
 import { withUnstatedContainers } from '../../UnstatedUtils';
+
 
 type ExternalAccountTableProps = {
   adminExternalAccountsContainer: any,
@@ -21,7 +23,7 @@ const ExternalAccountTable = (props: ExternalAccountTableProps): JSX.Element => 
   const removeExtenalAccount = useCallback(async(externalAccountId) => {
     try {
       const accountId = await adminExternalAccountsContainer.removeExternalAccountById(externalAccountId);
-      toastSuccess(t('toaster.remove_external_user_success', { accountId }));
+      toastSuccess(t('admin:toaster.remove_external_user_success', { accountId }));
     }
     catch (err) {
       toastError(err);
@@ -33,55 +35,51 @@ const ExternalAccountTable = (props: ExternalAccountTableProps): JSX.Element => 
       <table className="table table-bordered table-user-list">
         <thead>
           <tr>
-            <th style={{ width: '120px' }}>{ t('admin:user_management.authentication_provider') }</th>
+            <th style={{ width: '10rem' }}>{ t('admin:user_management.authentication_provider') }</th>
             <th><code>accountId</code></th>
             <th>{ t('admin:user_management.related_username') }<code>username</code></th>
             <th>
               { t('admin:user_management.password_setting') }
-              <div
-                className="text-muted"
-                data-toggle="popover"
-                data-placement="top"
-                data-trigger="hover focus"
-                tabIndex={0}
+              {/* TODO: Enable popper */}
+              <span
                 role="button"
-                data-animation="false"
+                className="text-muted px-2"
+                data-toggle="tooltip"
+                data-placement="top"
+                data-trigger="hover"
                 data-html="true"
-                data-content={t('admin:user_management.password_setting_help')}
+                title={t('admin:user_management.password_setting_help')}
               >
-                <small>
-                  <i className="icon-question" aria-hidden="true"></i>
-                </small>
-              </div>
+                <small><i className="icon-question" aria-hidden="true"></i></small>
+              </span>
             </th>
-            <th style={{ width: '100px' }}>{ t('Created') }</th>
-            <th style={{ width: '70px' }}></th>
+            <th style={{ width: '8rem' }}>{ t('Created') }</th>
+            <th style={{ width: '3rem' }}></th>
           </tr>
         </thead>
         <tbody>
-          { adminExternalAccountsContainer.state.externalAccounts.map((ea) => {
-
+          { adminExternalAccountsContainer.state.externalAccounts.map((ea: IAdminExternalAccount) => {
             return (
               <tr key={ea._id}>
-                <td>{ea.providerType}</td>
-                <td>
+                <td style={{ verticalAlign: 'middle' }}>
+                  <span>{ea.providerType}</span>
+                </td>
+                <td style={{ verticalAlign: 'middle' }}>
                   <strong>{ea.accountId}</strong>
                 </td>
-                <td>
+                <td style={{ verticalAlign: 'middle' }}>
                   <strong>{ea.user.username}</strong>
                 </td>
-                <td>
+                <td style={{ verticalAlign: 'middle' }}>
                   {ea.user.password
-                    ? (
-                      <span className="badge badge-info">{ t('admin:user_management.set') }</span>
-                    )
-                    : (
-                      <span className="badge badge-warning">{ t('admin:user_management.unset') }</span>
-                    )
+                    ? (<span className="badge badge-info">{ t('admin:user_management.set') }</span>)
+                    : (<span className="badge badge-warning">{ t('admin:user_management.unset') }</span>)
                   }
                 </td>
-                <td>{dateFnsFormat(new Date(ea.createdAt), 'yyyy-MM-dd')}</td>
-                <td>
+                <td style={{ whiteSpace: 'nowrap', verticalAlign: 'middle' }}>
+                  <span>{dateFnsFormat(new Date(ea.createdAt), 'yyyy-MM-dd')}</span>
+                </td>
+                <td style={{ verticalAlign: 'middle' }}>
                   <div className="btn-group admin-user-menu">
                     <button type="button" className="btn btn-outline-secondary btn-sm dropdown-toggle" data-toggle="dropdown">
                       <i className="icon-settings"></i> <span className="caret"></span>
@@ -92,7 +90,7 @@ const ExternalAccountTable = (props: ExternalAccountTableProps): JSX.Element => 
                         className="dropdown-item"
                         type="button"
                         role="button"
-                        onClick={() => { return removeExtenalAccount(ea._id) }}
+                        onClick={() => removeExtenalAccount(ea._id)}
                       >
                         <i className="icon-fw icon-fire text-danger"></i> { t('Delete') }
                       </button>
@@ -101,7 +99,6 @@ const ExternalAccountTable = (props: ExternalAccountTableProps): JSX.Element => 
                 </td>
               </tr>
             );
-
           }) }
         </tbody>
       </table>
@@ -109,10 +106,6 @@ const ExternalAccountTable = (props: ExternalAccountTableProps): JSX.Element => 
   );
 };
 
-const ExternalAccountTableWrapperFC = (props: any) => {
-  return <ExternalAccountTable {...props} />;
-};
-
-const ExternalAccountTableWrapper = withUnstatedContainers(ExternalAccountTableWrapperFC, [AdminExternalAccountsContainer]);
+const ExternalAccountTableWrapper = withUnstatedContainers(ExternalAccountTable, [AdminExternalAccountsContainer]);
 
 export default ExternalAccountTableWrapper;
