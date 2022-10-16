@@ -9,6 +9,8 @@ import { toastSuccess, toastError } from '~/client/util/apiNotification';
 
 import { withUnstatedContainers } from '../../UnstatedUtils';
 
+import styles from './ExternalAccountTable.module.scss';
+
 
 type ExternalAccountTableProps = {
   adminExternalAccountsContainer: any,
@@ -31,78 +33,68 @@ const ExternalAccountTable = (props: ExternalAccountTableProps): JSX.Element => 
   }, [adminExternalAccountsContainer, t]);
 
   return (
-    <>
-      <table className="table table-bordered table-user-list">
-        <thead>
-          <tr>
-            <th style={{ width: '10rem' }}>{ t('admin:user_management.authentication_provider') }</th>
-            <th><code>accountId</code></th>
-            <th>{ t('admin:user_management.related_username') }<code>username</code></th>
-            <th>
-              { t('admin:user_management.password_setting') }
-              {/* TODO: Enable popper */}
-              <span
-                role="button"
-                className="text-muted px-2"
-                data-toggle="tooltip"
-                data-placement="top"
-                data-trigger="hover"
-                data-html="true"
-                title={t('admin:user_management.password_setting_help')}
-              >
-                <small><i className="icon-question" aria-hidden="true"></i></small>
-              </span>
-            </th>
-            <th style={{ width: '8rem' }}>{ t('admin:Created') }</th>
-            <th style={{ width: '3rem' }}></th>
-          </tr>
-        </thead>
-        <tbody>
-          { adminExternalAccountsContainer.state.externalAccounts.map((ea: IAdminExternalAccount) => {
-            return (
-              <tr key={ea._id}>
-                <td style={{ verticalAlign: 'middle' }}>
-                  <span>{ea.providerType}</span>
-                </td>
-                <td style={{ verticalAlign: 'middle' }}>
-                  <strong>{ea.accountId}</strong>
-                </td>
-                <td style={{ verticalAlign: 'middle' }}>
-                  <strong>{ea.user.username}</strong>
-                </td>
-                <td style={{ verticalAlign: 'middle' }}>
-                  {ea.user.password
-                    ? (<span className="badge badge-info">{ t('admin:user_management.set') }</span>)
-                    : (<span className="badge badge-warning">{ t('admin:user_management.unset') }</span>)
-                  }
-                </td>
-                <td style={{ whiteSpace: 'nowrap', verticalAlign: 'middle' }}>
-                  <span>{dateFnsFormat(new Date(ea.createdAt), 'yyyy-MM-dd')}</span>
-                </td>
-                <td style={{ verticalAlign: 'middle' }}>
-                  <div className="btn-group admin-user-menu">
-                    <button type="button" className="btn btn-outline-secondary btn-sm dropdown-toggle" data-toggle="dropdown">
-                      <i className="icon-settings"></i> <span className="caret"></span>
+    <table className={`${styles['ea-table']} table table-bordered table-user-list`}>
+      <thead>
+        <tr>
+          <th style={{ width: '140px' }}>{ t('admin:user_management.authentication_provider') }</th>
+          <th style={{ width: '400px' }}><code>accountId</code></th>
+          <th style={{ width: '400px' }}>{ t('admin:user_management.related_username') }<code>username</code></th>
+          <th style={{ width: '250px' }}>
+            { t('admin:user_management.password_setting') }
+            {/* TODO: Enable popper */}
+            <span
+              role="button"
+              className="text-muted px-2"
+              data-toggle="tooltip"
+              data-placement="top"
+              data-trigger="hover"
+              data-html="true"
+              title={t('admin:user_management.password_setting_help')}
+            >
+              <small><i className="icon-question" aria-hidden="true"></i></small>
+            </span>
+          </th>
+          <th style={{ width: '120px' }}>{ t('admin:Created') }</th>
+          <th style={{ width: '70px' }}></th>
+        </tr>
+      </thead>
+      <tbody>
+        { adminExternalAccountsContainer.state.externalAccounts.map((ea: IAdminExternalAccount) => {
+          return (
+            <tr key={ea._id}>
+              <td><span>{ea.providerType}</span></td>
+              <td><strong>{ea.accountId}</strong></td>
+              <td><strong>{ea.user.username}</strong></td>
+              <td>
+                {ea.user.password
+                  ? (<span className="badge badge-info">{ t('admin:user_management.set') }</span>)
+                  : (<span className="badge badge-warning">{ t('admin:user_management.unset') }</span>)
+                }
+              </td>
+              <td><span>{dateFnsFormat(new Date(ea.createdAt), 'yyyy-MM-dd')}</span></td>
+              <td>
+                <div className="btn-group admin-user-menu">
+                  <button type="button" className="btn btn-outline-secondary btn-sm dropdown-toggle" data-toggle="dropdown">
+                    <i className="icon-settings"></i> <span className="caret"></span>
+                  </button>
+                  <ul className="dropdown-menu" role="menu">
+                    <li className="dropdown-header">{ t('admin:user_management.user_table.edit_menu') }</li>
+                    <button
+                      className="dropdown-item"
+                      type="button"
+                      role="button"
+                      onClick={() => removeExtenalAccount(ea._id)}
+                    >
+                      <i className="icon-fw icon-fire text-danger"></i> { t('admin:Delete') }
                     </button>
-                    <ul className="dropdown-menu" role="menu">
-                      <li className="dropdown-header">{ t('admin:user_management.user_table.edit_menu') }</li>
-                      <button
-                        className="dropdown-item"
-                        type="button"
-                        role="button"
-                        onClick={() => removeExtenalAccount(ea._id)}
-                      >
-                        <i className="icon-fw icon-fire text-danger"></i> { t('admin:Delete') }
-                      </button>
-                    </ul>
-                  </div>
-                </td>
-              </tr>
-            );
-          }) }
-        </tbody>
-      </table>
-    </>
+                  </ul>
+                </div>
+              </td>
+            </tr>
+          );
+        }) }
+      </tbody>
+    </table>
   );
 };
 
