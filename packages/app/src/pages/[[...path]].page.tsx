@@ -305,7 +305,9 @@ const GrowiPage: NextPage<Props> = (props: Props) => {
       <BasicLayout title={useCustomTitle(props, 'GROWI')} className={classNames.join(' ')} expandContainer={isContainerFluid}>
         <div className="h-100 d-flex flex-column justify-content-between">
           <header className="py-0 position-relative">
-            <GrowiContextualSubNavigation isLinkSharingDisabled={props.disableLinkSharing} />
+            <div id="grw-subnav-container">
+              <GrowiContextualSubNavigation isLinkSharingDisabled={props.disableLinkSharing} />
+            </div>
           </header>
           <div className="d-edit-none">
             <GrowiSubNavigationSwitcher />
