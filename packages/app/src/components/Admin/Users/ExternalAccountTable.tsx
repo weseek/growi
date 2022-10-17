@@ -13,7 +13,7 @@ import styles from './ExternalAccountTable.module.scss';
 
 
 type ExternalAccountTableProps = {
-  adminExternalAccountsContainer: any,
+  adminExternalAccountsContainer: AdminExternalAccountsContainer,
 }
 
 const ExternalAccountTable = (props: ExternalAccountTableProps): JSX.Element => {
@@ -36,16 +36,16 @@ const ExternalAccountTable = (props: ExternalAccountTableProps): JSX.Element => 
     <table className={`${styles['ea-table']} table table-bordered table-user-list`}>
       <thead>
         <tr>
-          <th style={{ width: '140px' }}>{ t('admin:user_management.authentication_provider') }</th>
-          <th style={{ width: '400px' }}><code>accountId</code></th>
-          <th style={{ width: '400px' }}>{ t('admin:user_management.related_username') }<code>username</code></th>
-          <th style={{ width: '250px' }}>
-            { t('admin:user_management.password_setting') }
+          <th style={{ width: '140px' }}>{t('admin:user_management.authentication_provider')}</th>
+          <th style={{ width: '390px' }}><code>accountId</code></th>
+          <th style={{ width: '390px' }}>{t('admin:user_management.related_username')}<code>username</code></th>
+          <th style={{ width: '160px' }}>
+            {t('admin:user_management.password_setting')}
             {/* TODO: Enable popper */}
             <span
               role="button"
               className="text-muted px-2"
-              data-toggle="tooltip"
+              data-toggle="popper"
               data-placement="top"
               data-trigger="hover"
               data-html="true"
@@ -54,7 +54,7 @@ const ExternalAccountTable = (props: ExternalAccountTableProps): JSX.Element => 
               <small><i className="icon-question" aria-hidden="true"></i></small>
             </span>
           </th>
-          <th style={{ width: '120px' }}>{ t('admin:Created') }</th>
+          <th style={{ width: '140px' }}>{t('admin:Created')}</th>
           <th style={{ width: '70px' }}></th>
         </tr>
       </thead>
@@ -67,8 +67,8 @@ const ExternalAccountTable = (props: ExternalAccountTableProps): JSX.Element => 
               <td><strong>{ea.user.username}</strong></td>
               <td>
                 {ea.user.password
-                  ? (<span className="badge badge-info">{ t('admin:user_management.set') }</span>)
-                  : (<span className="badge badge-warning">{ t('admin:user_management.unset') }</span>)
+                  ? (<span className="badge badge-info">{t('admin:user_management.set')}</span>)
+                  : (<span className="badge badge-warning">{t('admin:user_management.unset')}</span>)
                 }
               </td>
               <td><span>{dateFnsFormat(new Date(ea.createdAt), 'yyyy-MM-dd')}</span></td>
@@ -78,14 +78,14 @@ const ExternalAccountTable = (props: ExternalAccountTableProps): JSX.Element => 
                     <i className="icon-settings"></i> <span className="caret"></span>
                   </button>
                   <ul className="dropdown-menu" role="menu">
-                    <li className="dropdown-header">{ t('admin:user_management.user_table.edit_menu') }</li>
+                    <li className="dropdown-header">{t('admin:user_management.user_table.edit_menu')}</li>
                     <button
                       className="dropdown-item"
                       type="button"
                       role="button"
                       onClick={() => removeExtenalAccount(ea._id)}
                     >
-                      <i className="icon-fw icon-fire text-danger"></i> { t('admin:Delete') }
+                      <i className="icon-fw icon-fire text-danger"></i> {t('admin:Delete')}
                     </button>
                   </ul>
                 </div>

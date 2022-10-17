@@ -754,7 +754,7 @@
     "invite": "Invite",
     "invited": "User was invited",
     "back_to_user_management": "Back to User Management",
-    "authentication_provider": "Auth provider",
+    "authentication_provider": "Authentication provider",
     "manage": "Manage",
     "password_setting": "Password setting",
     "password_setting_help": "Is password set?",
