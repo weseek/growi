@@ -11,19 +11,8 @@ import { withUnstatedContainers } from '../UnstatedUtils';
 import ExternalAccountTable from './Users/ExternalAccountTable';
 
 
-type adminEAContainerState = {
-  activePage: number,
-  totalAccounts: number,
-  pagingLimit: number,
-}
-
-type adminEAContainer = {
-  state: adminEAContainerState,
-  retrieveExternalAccountsByPagingNum: (selectedPage: number) => Promise<void>,
-}
-
 type ManageExternalAccountProps = {
-  adminExternalAccountsContainer: adminEAContainer,
+  adminExternalAccountsContainer: AdminExternalAccountsContainer,
 }
 
 const ManageExternalAccount = (props: ManageExternalAccountProps): JSX.Element => {
