@@ -9,6 +9,7 @@ import {
 
 import AdminCustomizeContainer from '~/client/services/AdminCustomizeContainer';
 import { toastSuccess, toastError } from '~/client/util/apiNotification';
+import { DemoCodeBlock } from '~/components/ReactMarkdownComponents/CodeBlock';
 import { IHighlightJsCssSelectorOptions } from '~/interfaces/customize';
 
 import { withUnstatedContainers } from '../../UnstatedUtils';
@@ -141,7 +142,12 @@ const CustomizeHighlightSetting = (props: Props): JSX.Element => {
           <div className="form-text text-muted">
             <label>Examples:</label>
             <div className="wiki">
-              <HljsDemo isHighlightJsStyleBorderEnabled={adminCustomizeContainer.state.isHighlightJsStyleBorderEnabled} />
+              <DemoCodeBlock
+                styleKey={adminCustomizeContainer.state.currentHighlightJsStyleId}
+                lang='javascript'
+              >
+                {HIGHLIGHT_DEMO_CODE_STRING}
+              </DemoCodeBlock>
             </div>
           </div>
 
