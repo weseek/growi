@@ -9,6 +9,7 @@ import ReactCardFlip from 'react-card-flip';
 import { apiv3Post } from '~/client/util/apiv3-client';
 import { LoginErrorCode } from '~/interfaces/errors/login-error';
 import { IErrorV3 } from '~/interfaces/errors/v3-error';
+import { toArrayIfNot } from '~/utils/array-utils';
 
 type LoginFormProps = {
   username?: string,
@@ -80,10 +81,11 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
     try {
       const res = await apiv3Post('/login', { loginForm });
       const { redirectTo } = res.data;
-      router.push(redirectTo);
+      router.push(redirectTo ?? '/');
     }
     catch (err) {
-      setLoginErrors(err);
+      const errs = toArrayIfNot(err);
+      setLoginErrors(errs);
     }
     return;
 
