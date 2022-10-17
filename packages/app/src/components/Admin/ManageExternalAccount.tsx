@@ -51,11 +51,11 @@ const ManageExternalAccount = (props: ManageExternalAccountProps): JSX.Element =
       <p>
         <a className="btn btn-outline-secondary" href="/admin/users">
           <i className="icon-fw ti ti-arrow-left" aria-hidden="true"></i>
-          { t('admin:user_management.back_to_user_management') }
+          {t('admin:user_management.back_to_user_management')}
         </a>
       </p>
-      <h2>{ t('admin:user_management.external_account_list') }</h2>
-      { (totalAccounts !== 0) ? (
+      <h2>{t('admin:user_management.external_account_list')}</h2>
+      {(totalAccounts !== 0) ? (
         <>
           {pager}
           <ExternalAccountTable />
