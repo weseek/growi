@@ -39,3 +39,11 @@ export type IUserGroup = {
 export type IUserHasId = IUser & HasObjectId;
 export type IUserGroupHasId = IUserGroup & HasObjectId;
 export type IUserGroupRelationHasId = IUserGroupRelation & HasObjectId;
+
+export type IAdminExternalAccount = {
+  _id: string,
+  providerType: string,
+  accountId: string,
+  user: IUser,
+  createdAt: Date,
+}

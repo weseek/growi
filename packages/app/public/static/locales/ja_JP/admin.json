@@ -1043,6 +1043,7 @@
   },
   "toaster": {
     "give_user_admin": "{{username}}を管理者に設定しました",
-    "remove_user_admin": "{{username}}を管理者から外しました"
+    "remove_user_admin": "{{username}}を管理者から外しました",
+    "remove_external_user_success": "{{accountId}}を削除しました"
   }
 }
