@@ -21,10 +21,6 @@ type Props = {
   adminCustomizeContainer: AdminCustomizeContainer
 }
 
-type HljsDemoProps = {
-  isHighlightJsStyleBorderEnabled: boolean
-}
-
 const HIGHLIGHT_DEMO_CODE_STRING = `function MersenneTwister(seed) {
   if (arguments.length == 0) {
     seed = new Date().getTime();
@@ -33,30 +29,6 @@ const HIGHLIGHT_DEMO_CODE_STRING = `function MersenneTwister(seed) {
   this._mt = new Array(624);
   this.setSeed(seed);
 }`;
-
-const HljsDemo = React.memo((props: HljsDemoProps): JSX.Element => {
-
-  const { isHighlightJsStyleBorderEnabled } = props;
-
-  /* eslint-disable max-len */
-  const html = `<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">MersenneTwister</span>(<span class="hljs-params">seed</span>) </span>{
-<span class="hljs-keyword">if</span> (<span class="hljs-built_in">arguments</span>.length == <span class="hljs-number">0</span>) {
-  seed = <span class="hljs-keyword">new</span> <span class="hljs-built_in">Date</span>().getTime();
-}
-
-<span class="hljs-keyword">this</span>._mt = <span class="hljs-keyword">new</span> <span class="hljs-built_in">Array</span>(<span class="hljs-number">624</span>);
-<span class="hljs-keyword">this</span>.setSeed(seed);
-}</span>`;
-  /* eslint-enable max-len */
-
-  return (
-    <pre className={`hljs ${!isHighlightJsStyleBorderEnabled && 'hljs-no-border'}`}>
-      {/* eslint-disable-next-line react/no-danger */}
-      <code dangerouslySetInnerHTML={{ __html: html }}></code>
-    </pre>
-  );
-});
-HljsDemo.displayName = 'HljsDemo';
 
 const CustomizeHighlightSetting = (props: Props): JSX.Element => {
   const { adminCustomizeContainer } = props;
