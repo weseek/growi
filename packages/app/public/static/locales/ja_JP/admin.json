@@ -1040,5 +1040,8 @@
     "ADMIN_SEARCH_CONNECTION": "Elasticsearch の再接続の試行",
     "ADMIN_SEARCH_INDICES_NORMALIZE": "Elasticsearch のインデックスの正規化",
     "ADMIN_SEARCH_INDICES_REBUILD": "Elasticsearch のインデックスのリビルド"
+  },
+  "toaster": {
+    "remove_external_user_success": "{{accountId}}を削除しました"
   }
 }
