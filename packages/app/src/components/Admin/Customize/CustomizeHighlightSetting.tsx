@@ -15,6 +15,8 @@ import { IHighlightJsCssSelectorOptions } from '~/interfaces/customize';
 import { withUnstatedContainers } from '../../UnstatedUtils';
 import AdminUpdateButtonRow from '../Common/AdminUpdateButtonRow';
 
+import styles from './CustomizeHighlightSetting.module.scss';
+
 type Props = {
   adminCustomizeContainer: AdminCustomizeContainer
 }
@@ -145,6 +147,7 @@ const CustomizeHighlightSetting = (props: Props): JSX.Element => {
               <DemoCodeBlock
                 styleKey={adminCustomizeContainer.state.currentHighlightJsStyleId}
                 lang='javascript'
+                classNames={`${styles['code-highlight-demo']} ${!adminCustomizeContainer.state.isHighlightJsStyleBorderEnabled && 'hljs-no-border'}`}
               >
                 {HIGHLIGHT_DEMO_CODE_STRING}
               </DemoCodeBlock>
