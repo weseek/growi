@@ -46,8 +46,8 @@ const setupTranspileModules = () => {
     ...listPrefixedPackages(['remark-', 'rehype-', 'hast-', 'mdast-', 'micromark-', 'unist-']),
   ];
 
-  logger.info('{bold:Listing scoped packages for transpiling:}');
-  logger.unprefixed('info', `{grey:${JSON.stringify(packages, null, 2)}}`);
+  // logger.info('{bold:Listing scoped packages for transpiling:}');
+  // logger.unprefixed('info', `{grey:${JSON.stringify(packages, null, 2)}}`);
 
   return require('next-transpile-modules')(packages);
 };

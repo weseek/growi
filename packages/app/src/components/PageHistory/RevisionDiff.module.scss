@@ -1,0 +1,35 @@
+@use '~/styles/bootstrap/init' as bs;
+
+.revision-diff-container :global {
+  .comparison-header {
+    height: 34px;
+    background-color: #ffffff;
+    border: 1px solid bs.$gray-300;
+    .comparison-source-wrapper {
+      height: 26px;
+      margin-right: 1px;
+      border-right: 1px solid bs.$gray-300;
+      .comparison-source {
+        color: bs.$gray-500;
+      }
+    }
+    .comparison-target-wrapper {
+      height: 26px;
+      .comparison-target {
+        color: bs.$gray-500;
+      }
+    }
+  }
+
+  .revision-history-diff {
+    color: bs.$gray-900;
+    table-layout: fixed;
+
+    // revision-history
+    // to stay d2h-code-side-line-number in the revision history diff area
+    .d2h-wrapper {
+      position: relative;
+    }
+  }
+}
+

@@ -26,7 +26,6 @@ const PageCreateModal = () => {
   const router = useRouter();
 
   const { data: currentUser } = useCurrentUser();
-  const { mutate: mutateEditorMode } = useEditorMode();
 
   const { data: pageCreateModalData, close: closeCreateModal } = usePageCreateModal();
   const { isOpened, path } = pageCreateModalData;
@@ -37,6 +36,8 @@ const PageCreateModal = () => {
   const isCreatable = isCreatablePage(pathname) || isUsersHomePage(pathname);
   const pageNameInputInitialValue = isCreatable ? pathUtils.addTrailingSlash(pathname) : '/';
   const now = format(new Date(), 'yyyy/MM/dd');
+
+  const { mutate: mutateEditorMode } = useEditorMode();
 
   const [todayInput1, setTodayInput1] = useState(t('Memo'));
   const [todayInput2, setTodayInput2] = useState('');
@@ -101,8 +102,8 @@ const PageCreateModal = () => {
    */
   async function redirectToEditor(...paths) {
     try {
-      const editorPath = await generateEditorPath(...paths);
-      router.push(editorPath);
+      const editorPath = generateEditorPath(...paths);
+      await router.push(editorPath);
       mutateEditorMode(EditorMode.Editor);
 
       // close modal
