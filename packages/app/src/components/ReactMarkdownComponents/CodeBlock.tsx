@@ -1,8 +1,26 @@
 import { CodeComponent } from 'react-markdown/lib/ast-to-react';
-import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
+import SyntaxHighlighter, { Prism as PrismSyntaxHighlighter } from 'react-syntax-highlighter';
+import {
+  github, githubGist, atomOneLight, atomOneDark, xcode, vs, vs2015, hybrid, monokai, tomorrowNight,
+} from 'react-syntax-highlighter/dist/cjs/styles/hljs';
 import { oneLight } from 'react-syntax-highlighter/dist/cjs/styles/prism';
 
 import styles from './CodeBlock.module.scss';
+
+export const HighlightStyles = {
+  /* eslint-disable quote-props, no-multi-spaces */
+  'github':         github,
+  'github-gist':    githubGist,
+  'atom-one-light': atomOneLight,
+  'xcode':          xcode,
+  'vs':             vs,
+  'atom-one-dark':  atomOneDark,
+  'hybrid':         hybrid,
+  'monokai':        monokai,
+  'tomorrow-night': tomorrowNight,
+  'vs2015':         vs2015,
+  /* eslint-enable quote-props, no-multi-spaces */
+};
 
 export const CodeBlock: CodeComponent = ({ inline, className, children }) => {
   if (inline) {
@@ -20,14 +38,34 @@ export const CodeBlock: CodeComponent = ({ inline, className, children }) => {
       {name != null && (
         <cite className={`code-highlighted-title ${styles['code-highlighted-title']}`}>{name}</cite>
       )}
-      <SyntaxHighlighter
+      <PrismSyntaxHighlighter
         className="code-highlighted"
         PreTag="div"
         style={oneLight}
         language={lang}
       >
         {String(children).replace(/\n$/, '')}
-      </SyntaxHighlighter>
+      </PrismSyntaxHighlighter>
     </>
+  );
+};
+
+type DemoCodeBlockProps = {
+  styleKey:string,
+  lang:string,
+  children:string,
+  className?:string,
+}
+export const DemoCodeBlock = ({
+  styleKey, lang, children, className,
+}: DemoCodeBlockProps): JSX.Element => {
+  return (
+    <SyntaxHighlighter
+      className={className}
+      style={HighlightStyles[styleKey]}
+      language={lang}
+    >
+      {children}
+    </SyntaxHighlighter>
   );
 };
