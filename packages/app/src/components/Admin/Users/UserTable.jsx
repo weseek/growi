@@ -9,7 +9,7 @@ import AdminUsersContainer from '~/client/services/AdminUsersContainer';
 
 import { withUnstatedContainers } from '../../UnstatedUtils';
 
-import SortIcons from './SortIcons';
+import { SortIcons } from './SortIcons';
 import UserMenu from './UserMenu';
 
 
