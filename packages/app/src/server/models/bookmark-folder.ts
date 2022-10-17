@@ -23,6 +23,8 @@ export interface BookmarkFolderDocument extends Document {
 
 export interface BookmarkFolderModel extends Model<BookmarkFolderDocument>{
   createByParameters(params: IBookmarkFolderDocument): IBookmarkFolderDocument
+  findByUser(user: string): IBookmarkFolderDocument[]
+  deleteFolderAndChildren(bookmarkFolderId: string): void
 }
 
 const bookmarkFolderSchema = new Schema<BookmarkFolderDocument, BookmarkFolderModel>({
@@ -37,5 +39,15 @@ bookmarkFolderSchema.statics.createByParameters = async function(params: IBookma
   return bookmarkFolder;
 };
 
+bookmarkFolderSchema.statics.findByUser = async function(userId: string): Promise<BookmarkFolderDocument[]> {
+  // TODO: Get all folder structure
+  return this.find({ owner: userId });
+};
+
+bookmarkFolderSchema.statics.deleteFolderAndChildren = async function(boookmarkFolderId: string): Promise<void> {
+  // Delete parent and all children folder
+  const bookmarkFolder = await this.findByIdAndDelete(boookmarkFolderId);
+  await this.deleteMany({ parent: bookmarkFolder?.id });
+};
 
 export default getOrCreateModel<BookmarkFolderDocument, BookmarkFolderModel>('BookmarkFolder', bookmarkFolderSchema);
