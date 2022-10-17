@@ -1,3 +1,4 @@
+import { randomUUID } from 'crypto';
 import { createReadStream, ReadStream } from 'fs';
 import { Readable } from 'stream';
 
@@ -121,16 +122,17 @@ const getWritePermission = async(crowi: any): Promise<boolean> => {
 
   let writable = true;
   const fileStream = new Readable();
-  fileStream.push(new Date().toISOString());
+  fileStream.push('This file was created during g2g transfer to check write permission. You can safely remove this file.');
   fileStream.push(null); // EOF
   const attachment = {
-    fileName: '.growi',
+    fileName: `${randomUUID()}.growi`,
     filePath: '',
     fileFormat: 'text/plain',
   };
 
   try {
     await fileUploadService.uploadFile(fileStream, attachment);
+    // TODO: remove tmp file
   }
   catch (err) {
     writable = false;
