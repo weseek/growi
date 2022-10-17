@@ -5,7 +5,7 @@ import { defineConfig } from 'vite';
 
 export default defineConfig({
   build: {
-    manifest: true,
+    manifest: false,
     rollupOptions: {
       input: {
         styles: resolve(__dirname, 'src/hackmd-styles.js'),
@@ -13,8 +13,8 @@ export default defineConfig({
         stylesCSS: resolve(__dirname, 'src/styles.scss'),
       },
       output: {
-        entryFileNames: 'assets/[name]_bundle.js',
-        assetFileNames: 'assets/[name]_bundle.css',
+        entryFileNames: '[name].js',
+        assetFileNames: '[name].css',
       },
     },
   },

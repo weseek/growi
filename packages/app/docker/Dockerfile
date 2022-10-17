@@ -115,6 +115,8 @@ COPY packages/hackmd packages/hackmd
 # build
 RUN yarn lerna run build
 
+COPY packages/hackmd/src/index.js packages/hackmd/dist
+
 # make artifacts
 RUN tar -cf packages.tar \
   package.json \
