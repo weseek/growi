@@ -22,6 +22,15 @@ type HljsDemoProps = {
   isHighlightJsStyleBorderEnabled: boolean
 }
 
+const HIGHLIGHT_DEMO_CODE_STRING = `function MersenneTwister(seed) {
+  if (arguments.length == 0) {
+    seed = new Date().getTime();
+  }
+
+  this._mt = new Array(624);
+  this.setSeed(seed);
+}`;
+
 const HljsDemo = React.memo((props: HljsDemoProps): JSX.Element => {
 
   const { isHighlightJsStyleBorderEnabled } = props;
