@@ -119,7 +119,7 @@ const CustomizeHighlightSetting = (props: Props): JSX.Element => {
               <DemoCodeBlock
                 styleKey={adminCustomizeContainer.state.currentHighlightJsStyleId}
                 lang='javascript'
-                classNames={`${styles['code-highlight-demo']} ${!adminCustomizeContainer.state.isHighlightJsStyleBorderEnabled && 'hljs-no-border'}`}
+                classNames={`hljs ${styles['code-highlight-demo']} ${!adminCustomizeContainer.state.isHighlightJsStyleBorderEnabled && 'hljs-no-border'}`}
               >
                 {HIGHLIGHT_DEMO_CODE_STRING}
               </DemoCodeBlock>
