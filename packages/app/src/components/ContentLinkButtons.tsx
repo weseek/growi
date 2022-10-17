@@ -1,6 +1,6 @@
 import React, { useCallback } from 'react';
 
-import { IUserHasId } from '@growi/core';
+import type { IUserHasId } from '@growi/core';
 
 import { smoothScrollIntoView } from '~/client/util/smooth-scroll';
 import { RecentlyCreatedIcon } from '~/components/Icons/RecentlyCreatedIcon';
