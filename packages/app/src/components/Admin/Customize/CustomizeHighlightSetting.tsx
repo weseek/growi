@@ -89,10 +89,6 @@ const CustomizeHighlightSetting = (props: Props): JSX.Element => {
                   {renderMenuItems()}
                 </DropdownMenu>
               </Dropdown>
-              <p className="form-text text-warning">
-                {/* eslint-disable-next-line react/no-danger */}
-                <span dangerouslySetInnerHTML={{ __html: t('admin:customize_settings.nocdn_desc') }} />
-              </p>
             </div>
           </div>
 
