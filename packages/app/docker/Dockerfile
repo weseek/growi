@@ -115,6 +115,7 @@ COPY packages/hackmd packages/hackmd
 # build
 RUN yarn lerna run build
 
+# for hackmd build: https://github.com/weseek/growi/pull/6763
 COPY packages/hackmd/src/index.js packages/hackmd/dist
 
 # make artifacts
