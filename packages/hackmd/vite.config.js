@@ -5,16 +5,17 @@ import { defineConfig } from 'vite';
 
 export default defineConfig({
   build: {
-    manifest: true,
+    manifest: false,
     rollupOptions: {
       input: {
-        styles: resolve(__dirname, 'src/hackmd-styles.js'),
-        agent: resolve(__dirname, 'src/hackmd-agent.js'),
-        stylesCSS: resolve(__dirname, 'src/styles.scss'),
+        index: resolve(__dirname, 'src/index.js'),
+        styles: resolve(__dirname, 'src/styles.js'),
+        agent: resolve(__dirname, 'src/agent.js'),
+        stylesCSS: resolve(__dirname, 'src/styles.css'),
       },
       output: {
-        entryFileNames: 'assets/[name]_bundle.js',
-        assetFileNames: 'assets/[name]_bundle.css',
+        entryFileNames: '[name].js',
+        assetFileNames: '[name].css',
       },
     },
   },

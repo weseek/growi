@@ -1,17 +1,17 @@
-.navbar-header {
-  .navbar-brand {
-    display: none;
-  }
+.navbar-header .navbar-brand {
+  display: none;
 }
 
 .navbar-form {
   margin-left: 15px;
 }
 
-.navbar-right {
-  .ui-new, .ui-publish {
-    display: none;
-  }
+.navbar-right .ui-new {
+  display: none;
+}
+
+.navbar-right .ui-publish {
+  display: none;
 }
 
 .CodeMirror pre.CodeMirror-line {
