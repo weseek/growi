@@ -54,14 +54,14 @@ type DemoCodeBlockProps = {
   styleKey:string,
   lang:string,
   children:string,
-  className?:string,
+  classNames: string
 }
 export const DemoCodeBlock = ({
-  styleKey, lang, children, className,
+  styleKey, lang, children, classNames,
 }: DemoCodeBlockProps): JSX.Element => {
   return (
     <SyntaxHighlighter
-      className={className}
+      className={classNames}
       style={HighlightStyles[styleKey]}
       language={lang}
     >
