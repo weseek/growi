@@ -4,10 +4,12 @@ import React, { useEffect } from 'react';
 import EventEmitter from 'events';
 
 import {
-  IDataWithMeta, IPageInfoForEntity, IPagePopulatedToShowRevision, isClient, isIPageInfoForEntity, IUser, IUserHasId, pagePathUtils, pathUtils,
+  isClient, isIPageInfoForEntity, pagePathUtils, pathUtils,
+} from '@growi/core';
+import type {
+  IDataWithMeta, IPageInfoForEntity, IPagePopulatedToShowRevision, IUser, IUserHasId,
 } from '@growi/core';
 import ExtensibleCustomError from 'extensible-custom-error';
-import { model as mongooseModel } from 'mongoose';
 import {
   NextPage, GetServerSideProps, GetServerSidePropsContext,
 } from 'next';
@@ -22,19 +24,18 @@ import { PageAlerts } from '~/components/PageAlert/PageAlerts';
 // import { useTranslation } from '~/i18n';
 import { CurrentPageContentFooter } from '~/components/PageContentFooter';
 import { UsersHomePageFooterProps } from '~/components/UsersHomePageFooter';
-import { CrowiRequest } from '~/interfaces/crowi-request';
+import type { CrowiRequest } from '~/interfaces/crowi-request';
 // import { renderScriptTagByName, renderHighlightJsStyleTag } from '~/service/cdn-resources-loader';
 // import { useRendererSettings } from '~/stores/renderer';
 // import { EditorMode, useEditorMode, useIsMobile } from '~/stores/ui';
-import { EditorConfig } from '~/interfaces/editor-settings';
-import { CustomWindow } from '~/interfaces/global';
-import { RendererConfig } from '~/interfaces/services/renderer';
-import { ISidebarConfig } from '~/interfaces/sidebar-config';
-import { IUserUISettings } from '~/interfaces/user-ui-settings';
-import { PageModel, PageDocument } from '~/server/models/page';
-import { PageRedirectModel } from '~/server/models/page-redirect';
-import { UserUISettingsModel } from '~/server/models/user-ui-settings';
-import { useSWRxLayoutSetting } from '~/stores/admin/customize';
+import type { EditorConfig } from '~/interfaces/editor-settings';
+import type { CustomWindow } from '~/interfaces/global';
+import type { RendererConfig } from '~/interfaces/services/renderer';
+import type { ISidebarConfig } from '~/interfaces/sidebar-config';
+import type { IUserUISettings } from '~/interfaces/user-ui-settings';
+import type { PageModel, PageDocument } from '~/server/models/page';
+import type { PageRedirectModel } from '~/server/models/page-redirect';
+import type { UserUISettingsModel } from '~/server/models/user-ui-settings';
 import { useSWRxCurrentPage, useSWRxIsGrantNormalized, useSWRxPageInfo } from '~/stores/page';
 import { useRedirectFrom } from '~/stores/page-redirect';
 import {
@@ -74,7 +75,7 @@ import { calcIsContainerFluid } from './utils/layout';
 
 const NotCreatablePage = dynamic(() => import('../components/NotCreatablePage').then(mod => mod.NotCreatablePage), { ssr: false });
 const ForbiddenPage = dynamic(() => import('../components/ForbiddenPage'), { ssr: false });
-const UnsavedAlertDialog = dynamic(() => import('./UnsavedAlertDialog'), { ssr: false });
+const UnsavedAlertDialog = dynamic(() => import('../components/UnsavedAlertDialog'), { ssr: false });
 const GrowiSubNavigationSwitcher = dynamic(() => import('../components/Navbar/GrowiSubNavigationSwitcher'), { ssr: false });
 const UsersHomePageFooter = dynamic<UsersHomePageFooterProps>(() => import('../components/UsersHomePageFooter')
   .then(mod => mod.UsersHomePageFooter), { ssr: false });
@@ -373,6 +374,8 @@ class MultiplePagesHitsError extends ExtensibleCustomError {
 }
 
 async function injectPageData(context: GetServerSidePropsContext, props: Props): Promise<void> {
+  const { model: mongooseModel } = await import('mongoose');
+
   const req: CrowiRequest = context.req as CrowiRequest;
   const { crowi } = req;
   const { revisionId } = req.query;
@@ -425,6 +428,8 @@ async function injectPageData(context: GetServerSidePropsContext, props: Props):
 }
 
 async function injectUserUISettings(context: GetServerSidePropsContext, props: Props): Promise<void> {
+  const { model: mongooseModel } = await import('mongoose');
+
   const req = context.req as CrowiRequest<IUserHasId & any>;
   const { user } = req;
   const UserUISettings = mongooseModel('UserUISettings') as UserUISettingsModel;

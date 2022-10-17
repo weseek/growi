@@ -9,7 +9,7 @@ import { useRouter } from 'next/router';
 
 import { ISelectableAll, ISelectableAndIndeterminatable } from '~/client/interfaces/selectable-all';
 import { IFormattedSearchResult } from '~/interfaces/search';
-import { useIsSearchServiceReachable } from '~/stores/context';
+import { useIsSearchServiceReachable, useShowPageLimitationL } from '~/stores/context';
 import { ISearchConditions, ISearchConfigurations, useSWRxSearch } from '~/stores/search';
 
 import PaginationWrapper from './PaginationWrapper';
@@ -89,6 +89,7 @@ SearchResultListHead.displayName = 'SearchResultListHead';
 
 export const SearchPage = (): JSX.Element => {
   const { t } = useTranslation();
+  const { data: showPageLimitationL } = useShowPageLimitationL();
   const router = useRouter();
 
   // parse URL Query
@@ -97,9 +98,8 @@ export const SearchPage = (): JSX.Element => {
 
   const [keyword, setKeyword] = useState<string>(initQ);
   const [offset, setOffset] = useState<number>(0);
-  const [limit, setLimit] = useState<number>(INITIAL_PAGIONG_SIZE);
+  const [limit, setLimit] = useState<number>(showPageLimitationL ?? INITIAL_PAGIONG_SIZE);
   const [configurationsByControl, setConfigurationsByControl] = useState<Partial<ISearchConfigurations>>({});
-
   const selectAllControlRef = useRef<ISelectableAndIndeterminatable|null>(null);
   const searchPageBaseRef = useRef<ISelectableAll & IReturnSelectedPageIds|null>(null);
 
