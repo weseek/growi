@@ -1,4 +1,4 @@
-import { body } from 'express-validator';
+import { body, param } from 'express-validator';
 
 import { apiV3FormValidator } from '~/server/middlewares/apiv3-form-validator';
 import loggerFactory from '~/utils/logger';
@@ -13,6 +13,7 @@ const router = express.Router();
 
 const validator = {
   bookmarkFolder: [
+    param('parentId').isString().withMessage('parentId is required'),
     body('name').isString().withMessage('name must be a string'),
     body('parent').optional({ nullable: true }),
   ],
@@ -43,12 +44,17 @@ module.exports = (crowi) => {
     }
   });
 
-  // List all bookmark folders
+  // List all main bookmark folders
   router.get('/list', accessTokenParser, loginRequiredStrictly, async(req, res) => {
-    const bookmarkFolders = await BookmarkFolder.findByUser(req.user?._id);
+    const bookmarkFolders = await BookmarkFolder.findParentFolderByUserId(req.user?._id);
     return res.apiv3({ bookmarkFolders });
   });
 
+  router.post('/list-child/', accessTokenParser, loginRequiredStrictly, async(req, res) => {
+    const { parentId } = req.body;
+    const bookmarkFolders = await BookmarkFolder.findChildFolderById(parentId);
+    return res.apiv3({ bookmarkFolders });
+  });
 
   // Delete bookmark folder and children
   router.delete('/', accessTokenParser, loginRequiredStrictly, async(req, res) => {

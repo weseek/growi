@@ -18,12 +18,13 @@ export interface BookmarkFolderDocument extends Document {
   _id: Types.ObjectId
   name: string
   owner: Types.ObjectId
-  parent?: IBookmarkFolderDocument
+  parent?: BookmarkFolderDocument
 }
 
 export interface BookmarkFolderModel extends Model<BookmarkFolderDocument>{
   createByParameters(params: IBookmarkFolderDocument): IBookmarkFolderDocument
-  findByUser(user: string): IBookmarkFolderDocument[]
+  findParentFolderByUserId(user: Types.ObjectId | string): IBookmarkFolderDocument[]
+  findChildFolderById(parentBookmarkFolder: Types.ObjectId | string): Promise<IBookmarkFolderDocument[]>
   deleteFolderAndChildren(bookmarkFolderId: string): void
 }
 
@@ -34,14 +35,20 @@ const bookmarkFolderSchema = new Schema<BookmarkFolderDocument, BookmarkFolderMo
 });
 
 
-bookmarkFolderSchema.statics.createByParameters = async function(params: IBookmarkFolderDocument): Promise<IBookmarkFolderDocument> {
-  const bookmarkFolder = await this.create(params) as unknown as IBookmarkFolderDocument;
+bookmarkFolderSchema.statics.createByParameters = async function(params: IBookmarkFolderDocument): Promise<BookmarkFolderDocument> {
+  const bookmarkFolder = await this.create(params) as unknown as BookmarkFolderDocument;
   return bookmarkFolder;
 };
 
-bookmarkFolderSchema.statics.findByUser = async function(userId: string): Promise<BookmarkFolderDocument[]> {
-  // TODO: Get all folder structure
-  return this.find({ owner: userId });
+bookmarkFolderSchema.statics.findParentFolderByUserId = async function(userId: Types.ObjectId | string): Promise<BookmarkFolderDocument[]> {
+  const bookmarks = this.find({ owner: userId }, { parent: null }) as unknown as BookmarkFolderDocument[];
+  return bookmarks;
+};
+
+bookmarkFolderSchema.statics.findChildFolderById = async function(parentFolderId: Types.ObjectId | string): Promise<BookmarkFolderDocument[]> {
+  const parentFolder = this.findById(parentFolderId) as unknown as BookmarkFolderDocument;
+  const childFolders = this.find({ parent: parentFolder.id });
+  return childFolders;
 };
 
 bookmarkFolderSchema.statics.deleteFolderAndChildren = async function(boookmarkFolderId: string): Promise<void> {
