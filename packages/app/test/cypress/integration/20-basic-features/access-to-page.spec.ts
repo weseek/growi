@@ -71,10 +71,10 @@ context('Access to /me page', () => {
     cy.screenshot(`${ssPrefix}-me`);
   });
 
-  it('Draft page is successfully shown', () => {
-    cy.visit('/me/drafts');
-    cy.screenshot(`${ssPrefix}-draft-page`);
-  });
+  // it('Draft page is successfully shown', () => {
+  //   cy.visit('/me/drafts');
+  //   cy.screenshot(`${ssPrefix}-draft-page`);
+  // });
 
 });
 
