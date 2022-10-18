@@ -13368,9 +13368,9 @@ jmespath@0.15.0:
   resolved "https://registry.yarnpkg.com/jmespath/-/jmespath-0.15.0.tgz#a3f222a9aae9f966f5d27c796510e28091764217"
 
 jose@^4.1.4:
-  version "4.4.0"
-  resolved "https://registry.yarnpkg.com/jose/-/jose-4.4.0.tgz#459954544088244836a361172eb32a704bc55c5f"
-  integrity sha512-3CsqCQWuEUPpNlSLRcLRC8eO/ATFe1tLJMZCtjx2+ma1gkjGQ62HF50oWs3cwtWjLCpM8bdMPpQbxpgc3fhxrQ==
+  version "4.10.0"
+  resolved "https://registry.yarnpkg.com/jose/-/jose-4.10.0.tgz#2e0b7bcc80dd0775f8a4588e55beb9460c37d60a"
+  integrity sha512-KEhB/eLGLomWGPTb+/RNbYsTjIyx03JmbqAyIyiXBuNSa7CmNrJd5ysFhblayzs/e/vbOPMUaLnjHUMhGp4yLw==
 
 jpeg-js@^0.4.0, jpeg-js@^0.4.2:
   version "0.4.3"
