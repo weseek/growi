@@ -167,11 +167,6 @@ const ContextExtractorOnce: FC = () => {
   usePreferDrawerModeOnEditByUser();
   useIsDeviceSmallerThanMd();
 
-  // Navigation
-  usePreferDrawerModeByUser();
-  usePreferDrawerModeOnEditByUser();
-  useIsDeviceSmallerThanMd();
-
   // Editor
   // useSelectedGrant(grant);
   // useSelectedGrantGroupId(grantGroupId);
