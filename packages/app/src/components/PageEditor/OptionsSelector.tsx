@@ -184,7 +184,7 @@ const ConfigurationDropdown = memo(({ onConfirmEnableTextlint }: ConfigurationDr
 
     const iconClasses = ['text-info'];
     if (isActive) {
-      iconClasses.push('ti-check');
+      iconClasses.push('ti ti-check');
     }
     const iconClassName = iconClasses.join(' ');
 
@@ -208,7 +208,7 @@ const ConfigurationDropdown = memo(({ onConfirmEnableTextlint }: ConfigurationDr
 
     const iconClasses = ['text-info'];
     if (isActive) {
-      iconClasses.push('ti-check');
+      iconClasses.push('ti ti-check');
     }
     const iconClassName = iconClasses.join(' ');
 
@@ -232,7 +232,7 @@ const ConfigurationDropdown = memo(({ onConfirmEnableTextlint }: ConfigurationDr
 
     const iconClasses = ['text-info'];
     if (isActive) {
-      iconClasses.push('ti-check');
+      iconClasses.push('ti ti-check');
     }
     const iconClassName = iconClasses.join(' ');
 
@@ -270,7 +270,7 @@ const ConfigurationDropdown = memo(({ onConfirmEnableTextlint }: ConfigurationDr
 
     const iconClasses = ['text-info'];
     if (isTextlintEnabled) {
-      iconClasses.push('ti-check');
+      iconClasses.push('ti ti-check');
     }
     const iconClassName = iconClasses.join(' ');
 
