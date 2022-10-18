@@ -17,21 +17,27 @@ context('Access to pagelist', () => {
 
   it('Successfully duplicate a page from page list', () => {
     cy.visit('/');
-    cy.getByTestid('pageListButton').click({force: true});
-    cy.getByTestid('page-accessories-modal').parent().should('have.class','show').within(() => {
+    cy.getByTestid('pageListButton').should('be.visible').click({force: true});
+    cy.getByTestid('page-accessories-modal').should('be.visible').parent().should('have.class','show').within(() => {
       cy.getByTestid('open-page-item-control-btn').first().click();
       cy.getByTestid('page-item-control-menu').should('have.class', 'show').first().within(() => {
         // eslint-disable-next-line cypress/no-unnecessary-waiting
         cy.wait(300);
         cy.screenshot(`${ssPrefix}2-open-page-item-control-menu`);
+        // open page duplicate modal
         cy.getByTestid('open-page-duplicate-modal-btn').click();
       });
     });
-    cy.getByTestid('page-duplicate-modal').should('be.visible').screenshot(`${ssPrefix}3-duplicate-page-modal-opened`);
-    cy.getByTestid('page-duplicate-modal').should('be.visible').within(() => {
-      cy.get('.rbt-input-main').type('-duplicate', {force: true})
-    }).screenshot(`${ssPrefix}4-input-duplicated-page-name`);
-    cy.getByTestid('page-duplicate-modal').should('be.visible').within(() => {
+
+    // find opened page duplicate modal element
+    cy.getByTestid('page-duplicate-modal').should('be.visible').then(($elm)=>{
+      // take screenshot of modal
+      cy.wrap($elm).screenshot(`${ssPrefix}3-duplicate-page-modal-opened`)
+      // type "-duplicate" in the input box
+      cy.getByTestid('duplicate-modal-input').should('be.visible').type('-duplicate', {force: true})
+      // take screenshot of it
+      cy.wrap($elm).screenshot(`${ssPrefix}4-input-duplicated-page-name`)
+      // click button to duplicate the page with the input name
       cy.get('.modal-footer > button').click();
     });
     cy.get('body').type('{esc}');
