@@ -119,7 +119,7 @@ const generateAxiosRequestConfigWithTransferKey = (tk: TransferKey, additionalHe
  * @param crowi Crowi instance
  * @returns Whether the storage is writable
  */
-const getWritePermission = async(crowi: any): Promise<boolean> => {
+const hasWritePermission = async(crowi: any): Promise<boolean> => {
   const { fileUploadService } = crowi;
 
   let writable = true;
@@ -158,7 +158,7 @@ const generateGROWIInfo = async(crowi: any): Promise<IDataGROWIInfo> => {
     ? configManager.getConfig('crowi', 'gridfs:totalLimit') ?? configManager.getConfig('crowi', 'app:fileUploadTotalLimit')
     : configManager.getConfig('crowi', 'app:fileUploadTotalLimit');
   const version = crowi.version;
-  const writable = await getWritePermission(crowi);
+  const writable = await hasWritePermission(crowi);
 
   const attachmentInfo = {
     type: configManager.getConfig('crowi', 'app:fileUploadType'),
