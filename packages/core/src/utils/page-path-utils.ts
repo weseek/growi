@@ -105,6 +105,27 @@ export const isSharedPage = (path: string): boolean => {
   return false;
 };
 
+/**
+ * Whether path is the top page of users
+ * @param path
+ */
+export const isDatabaseTopPage = (path: string): boolean => {
+  return path === '/database';
+};
+
+/**
+ * Whether path belongs to the database page
+ * @param path
+ */
+export const isDatabasePage = (path: string): boolean => {
+  // https://regex101.com/r/xELlhK/1
+  if (path.match(/^\/database(\/.*)?$/)) {
+    return true;
+  }
+
+  return false;
+};
+
 const restrictedPatternsToCreate: Array<RegExp> = [
   /\^|\$|\*|\+|#|%|\?/,
   /^\/-\/.*/,

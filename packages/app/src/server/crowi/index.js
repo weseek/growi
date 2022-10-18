@@ -3,6 +3,7 @@ import http from 'http';
 import path from 'path';
 
 import { createTerminus } from '@godaddy/terminus';
+import databaseRoutes from '@growi/plugin-database/server/routes';
 import lsxRoutes from '@growi/plugin-lsx/server/routes';
 import mongoose from 'mongoose';
 import next from 'next';
@@ -515,6 +516,7 @@ Crowi.prototype.setupTerminus = function(server) {
 
 Crowi.prototype.setupRoutesForPlugins = function() {
   lsxRoutes(this, this.express);
+  databaseRoutes(this, this.express);
 };
 
 /**

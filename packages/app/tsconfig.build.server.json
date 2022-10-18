@@ -12,6 +12,7 @@
       "~/*": ["./src/*"],
       "^/*": ["./*"],
       "@growi/plugin-lsx/*": ["../plugin-lsx/dist/cjs/*"],
+      "@growi/plugin-database/*": ["../plugin-database/dist/cjs/*"],
       "debug": ["./src/utils/logger/alias-for-debug"]
     }
   },

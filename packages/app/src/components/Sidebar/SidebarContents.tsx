@@ -4,6 +4,7 @@ import { SidebarContentsType } from '~/interfaces/ui';
 import { useCurrentSidebarContents } from '~/stores/ui';
 
 import CustomSidebar from './CustomSidebar';
+import Database from './Database';
 import PageTree from './PageTree';
 import RecentChanges from './RecentChanges';
 import Tag from './Tag';
@@ -21,6 +22,9 @@ export const SidebarContents = (): JSX.Element => {
       break;
     case SidebarContentsType.TAG:
       Contents = Tag;
+      break;
+    case SidebarContentsType.DATABASE:
+      Contents = Database;
       break;
     default:
       Contents = PageTree;

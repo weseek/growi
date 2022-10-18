@@ -10,6 +10,7 @@ export * as objectIdUtils from './utils/objectid-utils';
 export * as pagePathUtils from './utils/page-path-utils';
 export * as pathUtils from './utils/path-utils';
 export * as pageUtils from './utils/page-utils';
+export * as databaseUtils from './utils/database-utils';
 
 // export all
 export * from './plugin/interfaces/option-parser';
