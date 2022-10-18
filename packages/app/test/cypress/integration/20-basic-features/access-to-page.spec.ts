@@ -33,7 +33,6 @@ context('Access to page', () => {
   it('/Sandbox/Math is successfully loaded', () => {
     cy.visit('/Sandbox/Math');
 
-    cy.get('mjx-container').should('be.visible');
     // eslint-disable-next-line cypress/no-unnecessary-waiting
     cy.wait(2000); // wait for 2 seconds for MathJax.typesetPromise();
 
