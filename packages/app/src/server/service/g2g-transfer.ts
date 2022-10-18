@@ -37,6 +37,8 @@ export const uploadConfigKeys = [
 export type IDataGROWIInfo = {
   version: string
   userUpperLimit: number | null // Handle null as Infinity
+  fileUploadDisabled: boolean;
+  fileUploadTotalLimit: number | null // Handle null as Infinity
   attachmentInfo: {
     type: string,
     bucket?: string,
@@ -148,9 +150,13 @@ const getWritePermission = async(crowi: any): Promise<boolean> => {
  * @returns
  */
 const generateGROWIInfo = async(crowi: any): Promise<IDataGROWIInfo> => {
-  // TODO: add attachment file limit, storage total limit
+  // TODO: add attachment file limit
   const { configManager } = crowi;
   const userUpperLimit = configManager.getConfig('crowi', 'security:userUpperLimit');
+  const fileUploadDisabled = configManager.getConfig('crowi', 'app:fileUploadDisabled');
+  const fileUploadTotalLimit = configManager.getConfig('crowi', 'app:fileUploadType') === 'mongodb'
+    ? configManager.getConfig('crowi', 'gridfs:totalLimit') ?? configManager.getConfig('crowi', 'app:fileUploadTotalLimit')
+    : configManager.getConfig('crowi', 'app:fileUploadTotalLimit');
   const version = crowi.version;
   const writable = await getWritePermission(crowi);
 
@@ -175,7 +181,13 @@ const generateGROWIInfo = async(crowi: any): Promise<IDataGROWIInfo> => {
     default:
   }
 
-  return { userUpperLimit, version, attachmentInfo };
+  return {
+    userUpperLimit,
+    fileUploadDisabled,
+    fileUploadTotalLimit,
+    version,
+    attachmentInfo,
+  };
 };
 
 export class G2GTransferPusherService implements Pusher {
@@ -202,17 +214,30 @@ export class G2GTransferPusherService implements Pusher {
     return toGROWIInfo;
   }
 
+  /**
+   * Returns whether g2g transfer is possible
+   * @param toGROWIInfo to-growi info
+   * @returns Whether g2g transfer is possible
+   */
   public async canTransfer(toGROWIInfo: IDataGROWIInfo): Promise<boolean> {
-    // TODO: check FILE_UPLOAD_TOTAL_LIMIT, FILE_UPLOAD_DISABLED
-    const configManager = this.crowi.configManager;
-    const userUpperLimit = configManager.getConfig('crowi', 'security:userUpperLimit');
-    const version = this.crowi.version;
+    const { configManager, fileUploadService } = this.crowi;
 
+    const version = this.crowi.version;
     if (version !== toGROWIInfo.version) {
       return false;
     }
 
+    const userUpperLimit = configManager.getConfig('crowi', 'security:userUpperLimit');
     if ((userUpperLimit ?? Infinity) < (toGROWIInfo.userUpperLimit ?? 0)) {
+      return false;
+    }
+
+    if (toGROWIInfo.fileUploadDisabled) {
+      return false;
+    }
+
+    const totalFileSize = await fileUploadService.getTotalFileSize();
+    if ((toGROWIInfo.fileUploadTotalLimit ?? Infinity) < totalFileSize) {
       return false;
     }
 
