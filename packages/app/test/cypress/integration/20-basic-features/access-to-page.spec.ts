@@ -18,8 +18,9 @@ context('Access to page', () => {
   it('/Sandbox with anchor hash is successfully loaded', () => {
     cy.visit('/Sandbox#Headers');
 
+    // commentout because fab is not display now
     // hide fab
-    cy.getByTestid('grw-fab-container').invoke('attr', 'style', 'display: none');
+    // cy.getByTestid('grw-fab-container').invoke('attr', 'style', 'display: none');
 
     // remove animation for screenshot
     // remove 'blink' class because ::after element cannot be operated
