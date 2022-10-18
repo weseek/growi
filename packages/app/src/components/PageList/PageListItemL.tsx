@@ -32,8 +32,7 @@ import { useIsDeviceSmallerThanLg } from '~/stores/ui';
 
 import { useSWRxPageInfo } from '../../stores/page';
 import { ForceHideMenuItems, PageItemControl } from '../Common/Dropdown/PageItemControl';
-
-const PagePathHierarchicalLink = dynamic(() => import('../PagePathHierarchicalLink'), { ssr: false });
+import PagePathHierarchicalLink from '../PagePathHierarchicalLink';
 
 type Props = {
   page: IPageWithSearchMeta | IPageWithMeta<IPageInfoForListing & IPageSearchMeta>,

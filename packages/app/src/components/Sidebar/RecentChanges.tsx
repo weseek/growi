@@ -14,13 +14,13 @@ import { useSWRInifinitexRecentlyUpdated } from '~/stores/page-listing';
 import loggerFactory from '~/utils/logger';
 
 import FormattedDistanceDate from '../FormattedDistanceDate';
+import PagePathHierarchicalLink from '../PagePathHierarchicalLink';
 
 import InfiniteScroll from './InfiniteScroll';
 
 import TagLabelsStyles from '../Page/TagLabels.module.scss';
 import styles from './RecentChanges.module.scss';
 
-const PagePathHierarchicalLink = dynamic(() => import('../PagePathHierarchicalLink'), { ssr: false });
 
 const logger = loggerFactory('growi:History');
 
