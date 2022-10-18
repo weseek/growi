@@ -4,7 +4,7 @@ import {
   isClient, isServer, pagePathUtils, Nullable, PageGrant,
 } from '@growi/core';
 import { withUtils, SWRResponseWithUtils } from '@growi/core/src/utils/with-utils';
-import { Breakpoint, addBreakpointListener } from '@growi/ui';
+import { Breakpoint, addBreakpointListener, cleanupBreakpointListener } from '@growi/ui';
 import SimpleBar from 'simplebar-react';
 import {
   useSWRConfig, SWRResponse, Key, Fetcher,
@@ -190,6 +190,10 @@ export const useIsDeviceSmallerThanMd = (): SWRResponse<boolean, Error> => {
       if (cache.get(key) == null) {
         mutate(key, !mql.matches);
       }
+
+      return () => {
+        cleanupBreakpointListener(mql, mdOrAvobeHandler);
+      };
     }
   }, [cache, key, mutate]);
 
@@ -214,6 +218,10 @@ export const useIsDeviceSmallerThanLg = (): SWRResponse<boolean, Error> => {
       if (cache.get(key) == null) {
         mutate(key, !mql.matches);
       }
+
+      return () => {
+        cleanupBreakpointListener(mql, lgOrAvobeHandler);
+      };
     }
   }, [cache, key, mutate]);
 
