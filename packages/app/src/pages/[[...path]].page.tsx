@@ -26,7 +26,6 @@ import { CurrentPageContentFooter } from '~/components/PageContentFooter';
 import { UsersHomePageFooterProps } from '~/components/UsersHomePageFooter';
 import type { CrowiRequest } from '~/interfaces/crowi-request';
 // import { renderScriptTagByName, renderHighlightJsStyleTag } from '~/service/cdn-resources-loader';
-// import { useIndentSize } from '~/stores/editor';
 // import { useRendererSettings } from '~/stores/renderer';
 // import { EditorMode, useEditorMode, useIsMobile } from '~/stores/ui';
 import type { EditorConfig } from '~/interfaces/editor-settings';
@@ -60,7 +59,7 @@ import {
   useIsForbidden, useIsNotFound, useIsTrashPage, useIsSharedUser,
   useIsEnabledStaleNotification, useIsIdenticalPath,
   useIsSearchServiceConfigured, useIsSearchServiceReachable, useDisableLinkSharing,
-  useDrawioUri, useHackmdUri,
+  useDrawioUri, useHackmdUri, useDefaultIndentSize, useIsIndentSizeForced,
   useIsAclEnabled, useIsUserPage, useIsSearchPage,
   useCsrfToken, useIsSearchScopeChildrenAsDefault, useCurrentPageId, useCurrentPathname,
   useIsSlackConfigured, useRendererConfig, useEditingMarkdown,
@@ -160,8 +159,8 @@ type Props = CommonProps & {
   isEnabledStaleNotification: boolean,
   // isEnabledLinebreaks: boolean,
   // isEnabledLinebreaksInComments: boolean,
-  // adminPreferredIndentSize: number,
-  // isIndentSizeForced: boolean,
+  adminPreferredIndentSize: number,
+  isIndentSizeForced: boolean,
   disableLinkSharing: boolean,
 
   rendererConfig: RendererConfig,
@@ -220,7 +219,8 @@ const GrowiPage: NextPage<Props> = (props: Props) => {
   useDrawioUri(props.drawioUri);
   useHackmdUri(props.hackmdUri);
   // useNoCdn(props.noCdn);
-  // useIndentSize(props.adminPreferredIndentSize);
+  useDefaultIndentSize(props.adminPreferredIndentSize);
+  useIsIndentSizeForced(props.isIndentSizeForced);
   useDisableLinkSharing(props.disableLinkSharing);
   useRendererConfig(props.rendererConfig);
   // useRendererSettings(props.rendererSettingsStr != null ? JSON.parse(props.rendererSettingsStr) : undefined);
@@ -305,7 +305,9 @@ const GrowiPage: NextPage<Props> = (props: Props) => {
       <BasicLayout title={useCustomTitle(props, 'GROWI')} className={classNames.join(' ')} expandContainer={isContainerFluid}>
         <div className="h-100 d-flex flex-column justify-content-between">
           <header className="py-0 position-relative">
-            <GrowiContextualSubNavigation isLinkSharingDisabled={props.disableLinkSharing} />
+            <div id="grw-subnav-container">
+              <GrowiContextualSubNavigation isLinkSharingDisabled={props.disableLinkSharing} />
+            </div>
           </header>
           <div className="d-edit-none">
             <GrowiSubNavigationSwitcher />
@@ -524,8 +526,8 @@ function injectServerConfigurations(context: GetServerSidePropsContext, props: P
       isUploadableImage: crowi.fileUploadService.getIsUploadable(),
     },
   };
-  // props.adminPreferredIndentSize = configManager.getConfig('markdown', 'markdown:adminPreferredIndentSize');
-  // props.isIndentSizeForced = configManager.getConfig('markdown', 'markdown:isIndentSizeForced');
+  props.adminPreferredIndentSize = configManager.getConfig('markdown', 'markdown:adminPreferredIndentSize');
+  props.isIndentSizeForced = configManager.getConfig('markdown', 'markdown:isIndentSizeForced');
 
   props.rendererConfig = {
     isEnabledLinebreaks: configManager.getConfig('markdown', 'markdown:isEnabledLinebreaks'),
