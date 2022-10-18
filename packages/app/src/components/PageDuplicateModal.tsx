@@ -185,6 +185,7 @@ const PageDuplicateModal = (): JSX.Element => {
                     type="text"
                     value={pageNameInput}
                     className="form-control"
+                    data-testid="duplicate-modal-input"
                     onChange={e => inputChangeHandler(e.target.value)}
                     required
                   />
