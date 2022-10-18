@@ -379,10 +379,10 @@ module.exports = (crowi: Crowi): Router => {
     }
 
     // Check if can transfer
-    const canTransfer = await g2gTransferPusherService.canTransfer(toGROWIInfo);
-    if (!canTransfer) {
+    const transferability = await g2gTransferPusherService.getTransferability(toGROWIInfo);
+    if (!transferability.canTransfer) {
       logger.debug('Could not transfer.');
-      return res.apiv3Err(new ErrorV3('GROWI is incompatible to transfer data.', 'growi_incompatible_to_transfer'));
+      return res.apiv3Err(new ErrorV3(transferability.reason, 'growi_incompatible_to_transfer'));
     }
 
     // Start transfer

@@ -47,6 +47,11 @@ export type IDataGROWIInfo = {
   };
 }
 
+/**
+ * Return type for {@link Pusher.getTransferability}
+ */
+type IGetTransferabilityReturn = { canTransfer: true; } | { canTransfer: false; reason: string; };
+
 interface Pusher {
   /**
    * Send to-growi a request to get growi info
@@ -57,7 +62,7 @@ interface Pusher {
    * Check if transfering is proceedable
    * @param {IDataGROWIInfo} fromGROWIInfo
    */
-  canTransfer(fromGROWIInfo: IDataGROWIInfo): Promise<boolean>
+  getTransferability(fromGROWIInfo: IDataGROWIInfo): Promise<IGetTransferabilityReturn>
   /**
    * Transfer all Attachment data to destination GROWI
    * @param {TransferKey} tk Transfer key
@@ -215,33 +220,46 @@ export class G2GTransferPusherService implements Pusher {
   }
 
   /**
-   * Returns whether g2g transfer is possible
+   * Returns whether g2g transfer is possible and reason for failure
    * @param toGROWIInfo to-growi info
-   * @returns Whether g2g transfer is possible
+   * @returns Whether g2g transfer is possible and reason for failure
    */
-  public async canTransfer(toGROWIInfo: IDataGROWIInfo): Promise<boolean> {
+  public async getTransferability(toGROWIInfo: IDataGROWIInfo): Promise<IGetTransferabilityReturn> {
     const { configManager, fileUploadService } = this.crowi;
 
     const version = this.crowi.version;
     if (version !== toGROWIInfo.version) {
-      return false;
+      return {
+        canTransfer: false,
+        reason: `Growi versions mismatch. From: ${version}, To: ${toGROWIInfo.version}.`,
+      };
     }
 
     const userUpperLimit = configManager.getConfig('crowi', 'security:userUpperLimit');
     if ((userUpperLimit ?? Infinity) < (toGROWIInfo.userUpperLimit ?? 0)) {
-      return false;
+      return {
+        canTransfer: false,
+        reason: `From-Growi's user limit exceeds To-Growi's user limit. From: ${userUpperLimit}, To: ${toGROWIInfo.userUpperLimit}.`,
+      };
     }
 
     if (toGROWIInfo.fileUploadDisabled) {
-      return false;
+      return {
+        canTransfer: false,
+        reason: 'File upload is disabled.',
+      };
     }
 
     const totalFileSize = await fileUploadService.getTotalFileSize();
     if ((toGROWIInfo.fileUploadTotalLimit ?? Infinity) < totalFileSize) {
-      return false;
+      return {
+        canTransfer: false,
+        // eslint-disable-next-line max-len, @typescript-eslint/no-non-null-assertion
+        reason: `Total file size exceeds Growi file upload limit. Requires ${totalFileSize.toLocaleString()} bytes, but got ${toGROWIInfo.fileUploadTotalLimit!.toLocaleString()} bytes.`,
+      };
     }
 
-    return true;
+    return { canTransfer: true };
   }
 
   public async transferAttachments(tk: TransferKey): Promise<void> {
