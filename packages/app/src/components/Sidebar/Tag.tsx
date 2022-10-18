@@ -58,13 +58,15 @@ const Tag: FC = () => {
           </div>
         )
         : (
-          <TagList
-            tagData={tagData}
-            totalTags={totalCount}
-            activePage={activePage}
-            onChangePage={setOffsetByPageNumber}
-            pagingLimit={PAGING_LIMIT}
-          />
+          <div data-testid="grw-tags-list">
+            <TagList
+              tagData={tagData}
+              totalTags={totalCount}
+              activePage={activePage}
+              onChangePage={setOffsetByPageNumber}
+              pagingLimit={PAGING_LIMIT}
+            />
+          </div>
         )
       }
 
