@@ -1,4 +1,4 @@
-import { Nullable } from '@growi/core';
+import { Nullable, withUtils, SWRResponseWithUtils } from '@growi/core';
 import useSWR, { SWRResponse } from 'swr';
 import useSWRImmutable from 'swr/immutable';
 
@@ -20,7 +20,7 @@ type EditorSettingsOperation = {
   turnOffAskingBeforeDownloadLargeFiles: () => void,
 }
 
-export const useEditorSettings = (): SWRResponse<IEditorSettings, Error> & EditorSettingsOperation => {
+export const useEditorSettings = (): SWRResponseWithUtils<EditorSettingsOperation, IEditorSettings, Error> => {
   const { data: currentUser } = useCurrentUser();
   const { data: isGuestUser } = useIsGuestUser();
 
@@ -30,8 +30,7 @@ export const useEditorSettings = (): SWRResponse<IEditorSettings, Error> & Edito
     { use: [localStorageMiddleware] }, // store to localStorage for initialization fastly
   );
 
-  return {
-    ...swrResult,
+  return withUtils<EditorSettingsOperation, IEditorSettings, Error>(swrResult, {
     update: (updateData) => {
       const { data, mutate } = swrResult;
 
@@ -56,7 +55,7 @@ export const useEditorSettings = (): SWRResponse<IEditorSettings, Error> & Edito
       // revalidate
       mutate();
     },
-  };
+  });
 };
 
 export const useIsTextlintEnabled = (): SWRResponse<boolean, Error> => {

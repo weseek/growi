@@ -1,6 +1,6 @@
 {
   "name": "@growi/app",
-  "version": "6.0.0-RC.1",
+  "version": "6.0.0-RC.3",
   "license": "MIT",
   "scripts": {
     "//// for production": "",
@@ -64,11 +64,11 @@
     "@elastic/elasticsearch7": "npm:@elastic/elasticsearch@^7.17.0",
     "@godaddy/terminus": "^4.9.0",
     "@google-cloud/storage": "^5.8.5",
-    "@growi/codemirror-textlint": "^6.0.0-RC.1",
-    "@growi/core": "^6.0.0-RC.1",
-    "@growi/plugin-attachment-refs": "^6.0.0-RC.1",
-    "@growi/plugin-lsx": "^6.0.0-RC.1",
-    "@growi/slack": "^6.0.0-RC.1",
+    "@growi/codemirror-textlint": "^6.0.0-RC.3",
+    "@growi/core": "^6.0.0-RC.3",
+    "@growi/plugin-attachment-refs": "^6.0.0-RC.3",
+    "@growi/plugin-lsx": "^6.0.0-RC.3",
+    "@growi/slack": "^6.0.0-RC.3",
     "@promster/express": "^7.0.2",
     "@promster/server": "^7.0.4",
     "@slack/events-api": "^3.0.0",
@@ -203,7 +203,7 @@
   },
   "devDependencies": {
     "@alienfast/i18next-loader": "^1.1.4",
-    "@growi/ui": "^6.0.0-RC.1",
+    "@growi/ui": "^6.0.0-RC.3",
     "@handsontable/react": "=2.1.0",
     "@icon/themify-icons": "1.0.1-alpha.3",
     "@next/bundle-analyzer": "^12.2.3",
