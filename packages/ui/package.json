@@ -1,6 +1,6 @@
 {
   "name": "@growi/ui",
-  "version": "6.0.0-RC.1",
+  "version": "6.0.0-RC.3",
   "description": "GROWI UI Libraries",
   "license": "MIT",
   "keywords": ["growi"],
@@ -17,7 +17,7 @@
     "test": "jest --verbose"
   },
   "dependencies": {
-    "@growi/core": "^6.0.0-RC.1"
+    "@growi/core": "^6.0.0-RC.3"
   },
   "devDependencies": {
     "eslint-plugin-regex": "^1.8.0",
