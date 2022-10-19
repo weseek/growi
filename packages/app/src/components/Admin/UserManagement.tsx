@@ -82,7 +82,7 @@ const UserManagement = (props: UserManagementProps) => {
           type="checkbox"
           id={`c_${status}`}
           checked={adminUsersContainer.isSelected(status)}
-          onChange={() => { clickHandler(status) }}
+          onChange={() => clickHandler(status)}
         />
         <label className="custom-control-label" htmlFor={`c_${status}`}>
           <span className={`badge badge-pill badge-${statusColor} d-inline-block vt mt-1`}>
@@ -137,6 +137,7 @@ const UserManagement = (props: UserManagementProps) => {
                 ref={inputRef}
                 onChange={changeSearchTextHandler}
               />
+              {/* TODO: Fix position */}
               {
                 adminUsersContainer.state.searchText.length > 0
                 ? ( <i
