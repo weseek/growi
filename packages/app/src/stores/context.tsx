@@ -196,7 +196,7 @@ export const useHasParent = (initialData?: boolean) : SWRResponse<boolean, Error
 };
 
 export const useIsIndentSizeForced = (initialData?: boolean) : SWRResponse<boolean, Error> => {
-  return useStaticSWR<boolean, Error>('isIndentSizeForced', initialData);
+  return useStaticSWR<boolean, Error>('isIndentSizeForced', initialData, { fallbackData: false });
 };
 
 export const useDefaultIndentSize = (initialData?: number) : SWRResponse<number, Error> => {
@@ -253,6 +253,10 @@ export const useIsUploadableImage = (initialData?: boolean): SWRResponse<boolean
 
 export const useIsUploadableFile = (initialData?: boolean): SWRResponse<boolean, Error> => {
   return useStaticSWR('isUploadableFile', initialData);
+};
+
+export const useShowPageLimitationL = (initialData?: number): SWRResponse<number, Error> => {
+  return useStaticSWR('showPageLimitationL', initialData);
 };
 
 export const useShowPageLimitationXL = (initialData?: number): SWRResponse<number, Error> => {
