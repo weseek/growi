@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, memo } from 'react';
 
 import { createValidator } from '@growi/codemirror-textlint';
 import { commands } from 'codemirror';
@@ -1163,4 +1163,4 @@ const CodeMirrorEditorFc = React.forwardRef((props, ref) => {
 
 CodeMirrorEditorFc.displayName = 'CodeMirrorEditorFc';
 
-export default CodeMirrorEditorFc;
+export default memo(CodeMirrorEditorFc);
