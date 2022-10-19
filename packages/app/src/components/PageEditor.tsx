@@ -107,6 +107,16 @@ const PageEditor = (props: Props): JSX.Element => {
   const editorRef = useRef<EditorRef>(null);
   const previewRef = useRef<HTMLDivElement>(null);
 
+
+  const optionsToSave = useMemo(() => {
+    if (grant == null) {
+      return;
+    }
+    const slackChannels = slackChannelsData ? slackChannelsData.toString() : '';
+    const optionsToSave = getOptionsToSave(isSlackEnabled ?? false, slackChannels, grant, grantGroupId, grantGroupName, pageTags || []);
+    return optionsToSave;
+  }, [grant, grantGroupId, grantGroupName, isSlackEnabled, pageTags, slackChannelsData]);
+
   const setMarkdownWithDebounce = useMemo(() => debounce(50, throttle(100, value => setMarkdown(value))), []);
   const saveDraftWithDebounce = useMemo(() => debounce(800, () => {
     editorContainer.saveDraft(pageContainer.state.path, markdown);
@@ -122,14 +132,6 @@ const PageEditor = (props: Props): JSX.Element => {
 
 
   const saveWithShortcut = useCallback(async() => {
-    if (grant == null) {
-      return;
-    }
-
-    const slackChannels = slackChannelsData ? slackChannelsData.toString() : '';
-
-    const optionsToSave = getOptionsToSave(isSlackEnabled ?? false, slackChannels, grant, grantGroupId, grantGroupName, pageTags || []);
-
     try {
       // disable unsaved warning
       editorContainer.disableUnsavedWarning();
@@ -147,7 +149,7 @@ const PageEditor = (props: Props): JSX.Element => {
       logger.error('failed to save', error);
       pageContainer.showErrorToastr(error);
     }
-  }, [editorContainer, editorMode, grant, grantGroupId, grantGroupName, isSlackEnabled, slackChannelsData, markdown, pageContainer, pageTags]);
+  }, [editorContainer, pageContainer, markdown, editorMode, optionsToSave]);
 
 
   /**
@@ -430,6 +432,7 @@ const PageEditor = (props: Props): JSX.Element => {
         onClose={() => pageContainer.setState({ isConflictDiffModalOpen: false })}
         pageContainer={pageContainer}
         markdownOnEdit={markdown}
+        optionsToSave={optionsToSave}
       />
     </div>
   );
