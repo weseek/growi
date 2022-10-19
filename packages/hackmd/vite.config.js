@@ -5,7 +5,6 @@ import { defineConfig } from 'vite';
 
 export default defineConfig({
   build: {
-    manifest: false,
     rollupOptions: {
       input: {
         styles: resolve(__dirname, 'src/hackmd-styles.js'),
