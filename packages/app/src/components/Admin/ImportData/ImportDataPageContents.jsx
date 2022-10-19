@@ -1,13 +1,18 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 
+import { useTranslation } from 'next-i18next';
 import PropTypes from 'prop-types';
-import { useTranslation } from 'react-i18next';
 
 import AdminImportContainer from '~/client/services/AdminImportContainer';
+import { toastError } from '~/client/util/apiNotification';
+import { toArrayIfNot } from '~/utils/array-utils';
+import loggerFactory from '~/utils/logger';
 
 import { withUnstatedContainers } from '../../UnstatedUtils';
 
 import GrowiArchiveSection from './GrowiArchiveSection';
+
+const logger = loggerFactory('growi:importer');
 
 class ImportDataPageContents extends React.Component {
 
@@ -24,7 +29,7 @@ class ImportDataPageContents extends React.Component {
           role="form"
         >
           <fieldset>
-            <h2 className="admin-setting-header">{t('admin:importer_management.import_from', { from: 'esa.io' })}</h2>
+            <h2 className="admin-setting-header">{t('importer_management.import_from', { from: 'esa.io' })}</h2>
             <table className="table table-bordered table-mapping">
               <thead>
                 <tr>
@@ -35,14 +40,14 @@ class ImportDataPageContents extends React.Component {
               </thead>
               <tbody>
                 <tr>
-                  <th>{t('Article')}</th>
+                  <th>{t('importer_management.article')}</th>
                   <th><i className="icon-arrow-right-circle text-success"></i></th>
-                  <th>{t('Page')}</th>
+                  <th>{t('importer_management.page')}</th>
                 </tr>
                 <tr>
-                  <th>{t('Category')}</th>
+                  <th>{t('importer_management.category')}</th>
                   <th><i className="icon-arrow-right-circle text-success"></i></th>
-                  <th>{t('Page Path')}</th>
+                  <th>{t('importer_management.page_path')}</th>
                 </tr>
                 <tr>
                   <th>{t('User')}</th>
@@ -54,7 +59,7 @@ class ImportDataPageContents extends React.Component {
 
             <div className="card well mb-0 small">
               <ul>
-                <li>{t('admin:importer_management.page_skip')}</li>
+                <li>{t('importer_management.page_skip')}</li>
               </ul>
             </div>
 
@@ -64,7 +69,7 @@ class ImportDataPageContents extends React.Component {
 
             <div className="form-group row">
               <label htmlFor="settingForm[importer:esa:team_name]" className="text-left text-md-right col-md-3 col-form-label">
-                {t('admin:importer_management.esa_settings.team_name')}
+                {t('importer_management.esa_settings.team_name')}
               </label>
               <div className="col-md-6">
                 <input
@@ -80,7 +85,7 @@ class ImportDataPageContents extends React.Component {
 
             <div className="form-group row">
               <label htmlFor="settingForm[importer:esa:access_token]" className="text-left text-md-right col-md-3 col-form-label">
-                {t('admin:importer_management.esa_settings.access_token')}
+                {t('importer_management.esa_settings.access_token')}
               </label>
               <div className="col-md-6">
                 <input
@@ -101,7 +106,7 @@ class ImportDataPageContents extends React.Component {
                   className="btn btn-primary btn-esa"
                   name="Esa"
                   onClick={adminImportContainer.esaHandleSubmit}
-                  value={t('admin:importer_management.import')}
+                  value={t('importer_management.import')}
                 />
                 <input type="button" className="btn btn-secondary" onClick={adminImportContainer.esaHandleSubmitUpdate} value={t('Update')} />
                 <span className="offset-0 offset-sm-1">
@@ -111,7 +116,7 @@ class ImportDataPageContents extends React.Component {
                     name="Esa"
                     className="btn btn-secondary btn-esa"
                     onClick={adminImportContainer.esaHandleSubmitTest}
-                    value={t('admin:importer_management.esa_settings.test_connection')}
+                    value={t('importer_management.esa_settings.test_connection')}
                   />
                 </span>
 
@@ -126,7 +131,7 @@ class ImportDataPageContents extends React.Component {
           role="form"
         >
           <fieldset>
-            <h2 className="admin-setting-header">{t('admin:importer_management.import_from', { from: 'Qiita:Team' })}</h2>
+            <h2 className="admin-setting-header">{t('importer_management.import_from', { from: 'Qiita:Team' })}</h2>
             <table className="table table-bordered table-mapping">
               <thead>
                 <tr>
@@ -137,17 +142,17 @@ class ImportDataPageContents extends React.Component {
               </thead>
               <tbody>
                 <tr>
-                  <th>{t('Article')}</th>
+                  <th>{t('importer_management.article')}</th>
                   <th><i className="icon-arrow-right-circle text-success"></i></th>
-                  <th>{t('Page')}</th>
+                  <th>{t('importer_management.page')}</th>
                 </tr>
                 <tr>
-                  <th>{t('Tag')}</th>
+                  <th>{t('importer_management.tag')}</th>
                   <th></th>
                   <th>-</th>
                 </tr>
                 <tr>
-                  <th>{t('admin:importer_management.Directory_hierarchy_tag')}</th>
+                  <th>{t('importer_management.Directory_hierarchy_tag')}</th>
                   <th></th>
                   <th>(TBD)</th>
                 </tr>
@@ -160,7 +165,7 @@ class ImportDataPageContents extends React.Component {
             </table>
             <div className="card well mb-0 small">
               <ul>
-                <li>{t('admin:importer_management.page_skip')}</li>
+                <li>{t('importer_management.page_skip')}</li>
               </ul>
             </div>
 
@@ -169,7 +174,7 @@ class ImportDataPageContents extends React.Component {
             </div>
             <div className="form-group row">
               <label htmlFor="settingForm[importer:qiita:team_name]" className="text-left text-md-right col-md-3 col-form-label">
-                {t('admin:importer_management.qiita_settings.team_name')}
+                {t('importer_management.qiita_settings.team_name')}
               </label>
               <div className="col-md-6">
                 <input
@@ -184,7 +189,7 @@ class ImportDataPageContents extends React.Component {
 
             <div className="form-group row">
               <label htmlFor="settingForm[importer:qiita:access_token]" className="text-left text-md-right col-md-3 col-form-label">
-                {t('admin:importer_management.qiita_settings.access_token')}
+                {t('importer_management.qiita_settings.access_token')}
               </label>
               <div className="col-md-6">
                 <input
@@ -206,7 +211,7 @@ class ImportDataPageContents extends React.Component {
                   className="btn btn-primary btn-qiita"
                   name="Qiita"
                   onClick={adminImportContainer.qiitaHandleSubmit}
-                  value={t('admin:importer_management.import')}
+                  value={t('importer_management.import')}
                 />
                 <input type="button" className="btn btn-secondary" onClick={adminImportContainer.qiitaHandleSubmitUpdate} value={t('Update')} />
                 <span className="offset-0 offset-sm-1">
@@ -216,7 +221,7 @@ class ImportDataPageContents extends React.Component {
                     id="importFromQiita"
                     className="btn btn-secondary btn-qiita"
                     onClick={adminImportContainer.qiitaHandleSubmitTest}
-                    value={t('admin:importer_management.qiita_settings.test_connection')}
+                    value={t('importer_management.qiita_settings.test_connection')}
                   />
                 </span>
 
@@ -240,7 +245,24 @@ ImportDataPageContents.propTypes = {
 };
 
 const ImportDataPageContentsWrapperFc = (props) => {
-  const { t } = useTranslation();
+  const { t } = useTranslation('admin');
+
+  const { adminImportContainer } = props;
+
+  useEffect(() => {
+    const fetchImportSettingsData = async() => {
+      await adminImportContainer.retrieveImportSettingsData();
+    };
+
+    try {
+      fetchImportSettingsData();
+    }
+    catch (err) {
+      const errs = toArrayIfNot(err);
+      toastError(errs);
+      logger.error(errs);
+    }
+  }, [adminImportContainer]);
 
   return <ImportDataPageContents t={t} {...props} />;
 };

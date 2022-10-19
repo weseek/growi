@@ -98,11 +98,6 @@ context('Modal for page operation', () => {
     });
     cy.get('.toast-error').should('be.visible').invoke('attr', 'style', 'opacity: 1');
     cy.screenshot(`${ssPrefix}create-template-for-descendants-error`, {capture: 'viewport'});
-    cy.get('.toast-error').should('be.visible').click();
-    cy.getByTestid('page-create-modal').should('be.visible').within(() => {
-      cy.get('button.close').click();
-    });
-    cy.screenshot(`${ssPrefix}create-template-close-modal`, {capture: 'viewport'});
   });
 
   it('PageDeleteModal is shown successfully', () => {
@@ -275,6 +270,8 @@ context('Tag Oprations', () =>{
     cy.screenshot(`${ssPrefix}1-click-tag-name`, {capture: 'viewport'});
 
     cy.getByTestid('open-page-item-control-btn').first().click({force: true});
+    // eslint-disable-next-line cypress/no-unnecessary-waiting
+    cy.wait(1500); // for wait rendering pagelist info
     cy.screenshot(`${ssPrefix}2-click-three-dots-menu`, {capture: 'viewport'});
 
     cy.getByTestid('open-page-duplicate-modal-btn').first().click({force: true});
@@ -287,7 +284,7 @@ context('Tag Oprations', () =>{
       cy.get('.modal-footer > button.btn').click();
     });
     cy.visit(`/${newPageName}`);
-    cy.get('#wiki').should('not.be.empty');
+    cy.getByTestid('wiki').should('exist');
     cy.screenshot(`${ssPrefix}4-duplicated-page`, {capture: 'viewport'});
   });
 
@@ -309,18 +306,22 @@ context('Tag Oprations', () =>{
       cy.get('.list-group-item').each(($row) => {
         if($row.find('a').text() === oldPageName){
           cy.wrap($row).within(() => {
-            cy.getByTestid('open-page-item-control-btn').click();
+            cy.getByTestid('open-page-item-control-btn').first().click();
+            cy.getByTestid('page-item-control-menu').should('have.class', 'show').first().within(() => {
+            // eslint-disable-next-line cypress/no-unnecessary-waiting
+            cy.wait(300);
+            cy.screenshot(`${ssPrefix}2-open-page-item-control-menu`);
+            })
           });
         }
       });
     });
-    cy.screenshot(`${ssPrefix}2-click-three-dots-menu`, {capture: 'viewport'});
 
     cy.getByTestid('search-result-list').within(() => {
       cy.get('.list-group-item').each(($row) => {
         if($row.find('a').text() === oldPageName){
           cy.wrap($row).within(() => {
-            cy.getByTestid('open-page-move-rename-modal-btn').click();
+            cy.getByTestid('open-page-move-rename-modal-btn').click({force: true});
           });
         }
       });

@@ -1,6 +1,6 @@
 import React, { FC, useState } from 'react';
 
-import { useTranslation } from 'react-i18next';
+import { useTranslation } from 'next-i18next';
 import {
   Modal, ModalHeader, ModalBody, ModalFooter,
 } from 'reactstrap';
@@ -8,7 +8,7 @@ import {
 import { useUpdateUserGroupConfirmModal } from '~/stores/modal';
 
 
-const UpdateParentConfirmModal: FC = () => {
+export const UpdateParentConfirmModal: FC = () => {
   const { t } = useTranslation();
 
   const [isForceUpdate, setForceUpdate] = useState(false);
@@ -89,5 +89,3 @@ const UpdateParentConfirmModal: FC = () => {
     </Modal>
   );
 };
-
-export default UpdateParentConfirmModal;

@@ -1,6 +1,5 @@
-import { Types } from 'mongoose';
-import { IUser } from './user';
 import { IPage } from './page';
+import { IUser } from './user';
 
 export enum InAppNotificationStatuses {
   STATUS_UNREAD = 'UNREAD',
@@ -54,7 +53,7 @@ export interface ISubscribeRule {
   name: subscribeRuleNames;
   isEnabled: boolean;
 }
-export interface IInAppNotificationSettings {
-  userId: Types.ObjectId;
+export interface IInAppNotificationSettings<UserID> {
+  userId: UserID | string;
   subscribeRules: ISubscribeRule[];
 }

@@ -1,11 +1,10 @@
 import mongoose from 'mongoose';
-import { getModelSafely, getMongoUri, mongoOptions } from '@growi/core';
 
-import ConfigModel from '~/server/models/config';
 import {
   PageRecursiveDeleteConfigValue, PageRecursiveDeleteCompConfigValue,
 } from '~/interfaces/page-delete-config';
-
+import ConfigModel from '~/server/models/config';
+import { getModelSafely, getMongoUri, mongoOptions } from '~/server/util/mongoose-utils';
 import loggerFactory from '~/utils/logger';
 
 const logger = loggerFactory('growi:migrate:convert-page-delete-config');

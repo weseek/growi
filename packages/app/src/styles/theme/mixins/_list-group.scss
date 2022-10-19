@@ -1,3 +1,7 @@
+@use '../../bootstrap/init' as bs;
+@use '../../mixins';
+@use './count-badge';
+
 @mixin override-list-group-item($color, $bgcolor, $color-hover: $color, $bgcolor-hover: $bgcolor, $color-active: $color, $bgcolor-active: $bgcolor) {
   .list-group {
     .list-group-item {
@@ -28,13 +32,13 @@
     border-color: $border-color-global;
 
     .grw-count-badge {
-      @include count-badge($btn-color, $bgcolor-hover, 28px);
+      @include count-badge.count-badge($btn-color, $bgcolor-hover, 28px);
     }
 
     .btn.btn-page-item-control {
       color: $btn-color;
       background-color: transparent;
-      @include hover() {
+      @include bs.hover() {
         color: $btn-color-hover;
         background-color: $btn-bgcolor-hover;
       }

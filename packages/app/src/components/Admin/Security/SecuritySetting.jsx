@@ -1,8 +1,8 @@
 /* eslint-disable react/no-danger */
 import React from 'react';
 
+import { useTranslation } from 'next-i18next';
 import PropTypes from 'prop-types';
-import { useTranslation } from 'react-i18next';
 import { Collapse } from 'reactstrap';
 
 import AdminGeneralSecurityContainer from '~/client/services/AdminGeneralSecurityContainer';
@@ -44,13 +44,13 @@ const getDeleteConfigValueForT = (DeleteConfigValue) => {
   switch (DeleteConfigValue) {
     case PageDeleteConfigValue.Anyone:
     case null:
-      return 'security_setting.anyone';
+      return 'security_settings.anyone';
     case PageDeleteConfigValue.Inherit:
-      return 'security_setting.inherit';
+      return 'security_settings.inherit';
     case PageDeleteConfigValue.AdminOnly:
-      return 'security_setting.admin_only';
+      return 'security_settings.admin_only';
     case PageDeleteConfigValue.AdminAndAuthor:
-      return 'security_setting.admin_and_author';
+      return 'security_settings.admin_and_author';
   }
 };
 
@@ -95,7 +95,7 @@ class SecuritySetting extends React.Component {
     const { t, adminGeneralSecurityContainer } = this.props;
     try {
       await adminGeneralSecurityContainer.updateGeneralSecuritySetting();
-      toastSuccess(t('security_setting.updated_general_security_setting'));
+      toastSuccess(t('security_settings.updated_general_security_setting'));
     }
     catch (err) {
       toastError(err);
@@ -209,7 +209,7 @@ class SecuritySetting extends React.Component {
                   type="button"
                   onClick={() => { this.setDeletionConfigState(PageDeleteConfigValue.Inherit, setState, deletionType) }}
                 >
-                  {t('security_setting.inherit')}
+                  {t('security_settings.inherit')}
                 </button>
               )
               : (
@@ -218,7 +218,7 @@ class SecuritySetting extends React.Component {
                   type="button"
                   onClick={() => { this.setDeletionConfigState(PageDeleteConfigValue.Anyone, setState, deletionType) }}
                 >
-                  {t('security_setting.anyone')}
+                  {t('security_settings.anyone')}
                 </button>
               )
           }
@@ -227,18 +227,18 @@ class SecuritySetting extends React.Component {
             type="button"
             onClick={() => { this.setDeletionConfigState(PageDeleteConfigValue.AdminAndAuthor, setState, deletionType) }}
           >
-            {t('security_setting.admin_and_author')}
+            {t('security_settings.admin_and_author')}
           </button>
           <button
             className="dropdown-item"
             type="button"
             onClick={() => { this.setDeletionConfigState(PageDeleteConfigValue.AdminOnly, setState, deletionType) }}
           >
-            {t('security_setting.admin_only')}
+            {t('security_settings.admin_only')}
           </button>
         </div>
         <p className="form-text text-muted small">
-          {t(`security_setting.${getDeletionTypeForT(deletionType)}_explain`)}
+          {t(`security_settings.${getDeletionTypeForT(deletionType)}_explain`)}
         </p>
       </div>
     );
@@ -254,10 +254,10 @@ class SecuritySetting extends React.Component {
 
         <div className="col-md-3 text-md-right">
           {!isRecursiveDeletion(deletionType) && isTypeDeletion(deletionType) && (
-            <strong>{t('security_setting.page_delete')}</strong>
+            <strong>{t('security_settings.page_delete')}</strong>
           )}
           {!isRecursiveDeletion(deletionType) && !isTypeDeletion(deletionType) && (
-            <strong>{t('security_setting.page_delete_completely')}</strong>
+            <strong>{t('security_settings.page_delete_completely')}</strong>
           )}
         </div>
 
@@ -276,7 +276,7 @@ class SecuritySetting extends React.Component {
                     onClick={() => this.setExpantOtherDeleteOptionsState(deletionType, !expantDeleteOptionsState)}
                   >
                     <i className={`fa fa-fw fa-arrow-right ${expantDeleteOptionsState ? 'fa-rotate-90' : ''}`}></i>
-                    { t('security_setting.other_options') }
+                    { t('security_settings.other_options') }
                   </button>
                   <Collapse isOpen={expantDeleteOptionsState}>
                     <div className="pb-4">
@@ -284,13 +284,13 @@ class SecuritySetting extends React.Component {
                         <span className="text-warning">
                           <i className="icon-info"></i>
                           {/* eslint-disable-next-line react/no-danger */}
-                          <span dangerouslySetInnerHTML={{ __html: t('security_setting.page_delete_rights_caution') }} />
+                          <span dangerouslySetInnerHTML={{ __html: t('security_settings.page_delete_rights_caution') }} />
                         </span>
                       </p>
                       { this.previousPageRecursiveAuthorityState(deletionType) !== null && (
                         <div className="mb-3">
                           <strong>
-                            {t('security_setting.forced_update_desc')}
+                            {t('security_settings.forced_update_desc')}
                           </strong>
                           <code>
                             {t(getDeleteConfigValueForT(this.previousPageRecursiveAuthorityState(deletionType)))}
@@ -326,7 +326,7 @@ class SecuritySetting extends React.Component {
     return (
       <React.Fragment>
         <h2 className="alert-anchor border-bottom">
-          {t('security_settings')}
+          {t('security_settings.security_settings')}
         </h2>
 
         {adminGeneralSecurityContainer.retrieveError != null && (
@@ -335,26 +335,26 @@ class SecuritySetting extends React.Component {
           </div>
         )}
 
-        <h4 className="mt-4">{ t('security_setting.page_list_and_search_results') }</h4>
+        <h4 className="mt-4">{ t('security_settings.page_list_and_search_results') }</h4>
         <div className="row justify-content-md-center">
           <table className="table table-bordered col-lg-9 mb-5">
             <thead>
               <tr>
-                <th scope="col">{ t('scope_of_page_disclosure') }</th>
-                <th scope="col">{ t('set_point') }</th>
+                <th scope="col">{ t('security_settings.scope_of_page_disclosure') }</th>
+                <th scope="col">{ t('security_settings.set_point') }</th>
               </tr>
             </thead>
             <tbody>
               <tr>
-                <th scope="row">{ t('Public') }</th>
-                <td>{ t('always_displayed') }</td>
+                <th scope="row">{ t('public') }</th>
+                <td>{ t('security_settings.always_displayed') }</td>
               </tr>
               <tr>
-                <th scope="row">{ t('Anyone with the link') }</th>
-                <td>{ t('always_hidden') }</td>
+                <th scope="row">{ t('anyone_with_the_link') }</th>
+                <td>{ t('security_settings.always_hidden') }</td>
               </tr>
               <tr>
-                <th scope="row">{ t('Only me') }</th>
+                <th scope="row">{ t('only_me') }</th>
                 <td>
                   <div className="custom-control custom-switch custom-checkbox-success">
                     <input
@@ -365,13 +365,13 @@ class SecuritySetting extends React.Component {
                       onChange={() => { adminGeneralSecurityContainer.switchIsShowRestrictedByOwner() }}
                     />
                     <label className="custom-control-label" htmlFor="isShowRestrictedByOwner">
-                      {t('displayed_or_hidden')}
+                      {t('security_settings.displayed_or_hidden')}
                     </label>
                   </div>
                 </td>
               </tr>
               <tr>
-                <th scope="row">{ t('Only inside the group') }</th>
+                <th scope="row">{ t('only_inside_the_group') }</th>
                 <td>
                   <div className="custom-control custom-switch custom-checkbox-success">
                     <input
@@ -382,7 +382,7 @@ class SecuritySetting extends React.Component {
                       onChange={() => { adminGeneralSecurityContainer.switchIsShowRestrictedByGroup() }}
                     />
                     <label className="custom-control-label" htmlFor="isShowRestrictedByGroup">
-                      {t('displayed_or_hidden')}
+                      {t('security_settings.displayed_or_hidden')}
                     </label>
                   </div>
                 </td>
@@ -391,10 +391,10 @@ class SecuritySetting extends React.Component {
           </table>
         </div>
 
-        <h4>{t('security_setting.page_access_rights')}</h4>
+        <h4>{t('security_settings.page_access_rights')}</h4>
         <div className="row mb-4">
           <div className="col-md-3 text-md-right py-2">
-            <strong>{t('security_setting.Guest Users Access')}</strong>
+            <strong>{t('security_settings.Guest Users Access')}</strong>
           </div>
           <div className="col-md-9">
             <div className="dropdown">
@@ -408,16 +408,16 @@ class SecuritySetting extends React.Component {
                 aria-expanded="true"
               >
                 <span className="float-left">
-                  {currentRestrictGuestMode === 'Deny' && t('security_setting.guest_mode.deny')}
-                  {currentRestrictGuestMode === 'Readonly' && t('security_setting.guest_mode.readonly')}
+                  {currentRestrictGuestMode === 'Deny' && t('security_settings.guest_mode.deny')}
+                  {currentRestrictGuestMode === 'Readonly' && t('security_settings.guest_mode.readonly')}
                 </span>
               </button>
               <div className="dropdown-menu" aria-labelledby="dropdownMenuButton">
                 <button className="dropdown-item" type="button" onClick={() => { adminGeneralSecurityContainer.changeRestrictGuestMode('Deny') }}>
-                  {t('security_setting.guest_mode.deny')}
+                  {t('security_settings.guest_mode.deny')}
                 </button>
                 <button className="dropdown-item" type="button" onClick={() => { adminGeneralSecurityContainer.changeRestrictGuestMode('Readonly') }}>
-                  {t('security_setting.guest_mode.readonly')}
+                  {t('security_settings.guest_mode.readonly')}
                 </button>
               </div>
             </div>
@@ -427,7 +427,7 @@ class SecuritySetting extends React.Component {
                 </i><b>FIXED</b><br />
                 <b
                   dangerouslySetInnerHTML={{
-                    __html: t('security_setting.Fixed by env var',
+                    __html: t('security_settings.Fixed by env var',
                       { key: 'FORCE_WIKI_MODE', value: adminGeneralSecurityContainer.state.wikiMode }),
                   }}
                 />
@@ -436,7 +436,7 @@ class SecuritySetting extends React.Component {
           </div>
         </div>
 
-        <h4>{t('security_setting.page_delete_rights')}</h4>
+        <h4>{t('security_settings.page_delete_rights')}</h4>
         {/* Render PageDeletePermission */}
         {
           [
@@ -453,9 +453,9 @@ class SecuritySetting extends React.Component {
           ].map(arr => this.renderPageDeletePermission(arr[0], arr[1], arr[2], arr[3]))
         }
 
-        <h4>{t('security_setting.session')}</h4>
+        <h4>{t('security_settings.session')}aa</h4>
         <div className="form-group row">
-          <label className="text-left text-md-right col-md-3 col-form-label">{t('security_setting.max_age')}</label>
+          <label className="text-left text-md-right col-md-3 col-form-label">{t('security_settings.max_age')}</label>
           <div className="col-md-6">
             <input
               className="form-control col-md-3"
@@ -467,10 +467,10 @@ class SecuritySetting extends React.Component {
               placeholder="2592000000"
             />
             {/* eslint-disable-next-line react/no-danger */}
-            <p className="form-text text-muted" dangerouslySetInnerHTML={{ __html: t('security_setting.max_age_desc') }} />
+            <p className="form-text text-muted" dangerouslySetInnerHTML={{ __html: t('security_settings.max_age_desc') }} />
             <p className="card well">
               <span className="text-warning">
-                <i className="icon-info"></i> {t('security_setting.max_age_caution')}
+                <i className="icon-info"></i> {t('security_settings.max_age_caution')}
               </span>
             </p>
           </div>
@@ -495,7 +495,7 @@ SecuritySetting.propTypes = {
 };
 
 const SecuritySettingWrapperFC = (props) => {
-  const { t } = useTranslation();
+  const { t } = useTranslation('admin');
   return <SecuritySetting t={t} {...props} />;
 };
 

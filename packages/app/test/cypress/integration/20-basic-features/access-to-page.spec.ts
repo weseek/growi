@@ -21,6 +21,11 @@ context('Access to page', () => {
     // hide fab
     cy.getByTestid('grw-fab-container').invoke('attr', 'style', 'display: none');
 
+    // remove animation for screenshot
+    // remove 'blink' class because ::after element cannot be operated
+    // https://stackoverflow.com/questions/5041494/selecting-and-manipulating-css-pseudo-elements-such-as-before-and-after-usin/21709814#21709814
+    cy.get('#Headers').invoke('removeClass', 'blink');
+
     cy.screenshot(`${ssPrefix}-sandbox-headers`);
   });
 
@@ -61,6 +66,8 @@ context('Access to /me page', () => {
 
   it('/me is successfully loaded', () => {
     cy.visit('/me', {  });
+    // eslint-disable-next-line cypress/no-unnecessary-waiting
+    cy.wait(500); // wait loading image
     cy.screenshot(`${ssPrefix}-me`);
   });
 

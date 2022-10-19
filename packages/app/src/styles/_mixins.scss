@@ -1,16 +1,18 @@
+@use './bootstrap/init' as bs;
+
 @mixin variable-font-size($basesize) {
   font-size: $basesize * 0.6;
 
-  @include media-breakpoint-only(sm) {
+  @include bs.media-breakpoint-only(sm) {
     font-size: #{$basesize * 0.7};
   }
-  @include media-breakpoint-only(md) {
+  @include bs.media-breakpoint-only(md) {
     font-size: #{$basesize * 0.8};
   }
-  @include media-breakpoint-only(lg) {
+  @include bs.media-breakpoint-only(lg) {
     font-size: #{$basesize * 0.9};
   }
-  @include media-breakpoint-up(xl) {
+  @include bs.media-breakpoint-up(xl) {
     font-size: $basesize;
   }
 }
@@ -83,33 +85,6 @@
   }
 }
 
-@mixin expand-modal-fullscreen($hasModalHeader: true, $hasModalFooter: true) {
-  // full-screen modal
-  width: auto;
-  max-width: unset !important;
-  height: calc(100vh - 30px);
-  margin: 15px !important;
-
-  .modal-content {
-    height: calc(100vh - 30px);
-  }
-
-  // expand .modal-body (with calculating height)
-  .modal-body {
-    $modal-header: 54px;
-    $modal-footer: 46px;
-
-    $margin: 0px;
-    @if $hasModalHeader {
-      $margin: $margin + $modal-header;
-    }
-    @if $hasModalFooter {
-      $margin: $margin + $modal-footer;
-    }
-    height: calc(100% - #{$margin});
-  }
-}
-
 @mixin apply-navigation-transition() {
   transition-timing-function: cubic-bezier(0.25, 1, 0.5, 1);
   transition-duration: 300ms;
@@ -142,12 +117,13 @@
   }
 }
 
-@mixin blink-bgcolor($bgcolor) {
-  @keyframes fadeout {
-    100% {
-      opacity: 0;
-    }
+@keyframes fadeout {
+  100% {
+    opacity: 0;
   }
+}
+
+@mixin blink-bgcolor($bgcolor) {
   position: relative;
   z-index: 1;
 
@@ -170,7 +146,7 @@
     fill: color-yiq($background);
   }
 
-  @include hover() {
+  @include bs.hover() {
     svg {
       fill: color-yiq($hover-background);
     }
@@ -204,7 +180,7 @@
   svg {
     fill: $value;
   }
-  @include hover() {
+  @include bs.hover() {
     svg {
       fill: $color-hover;
     }
@@ -224,12 +200,22 @@
   }
 }
 
-@mixin count-badge($color, $bg-color, $min-width: initial) {
-  min-width: $min-width;
-  padding: 0.1rem 0.5rem;
-  font-family: $font-family-monospace;
-  font-size: 12px;
-  font-weight: 500;
-  color: $color;
-  background-color: $bg-color;
+@mixin overlay-processing-style($additionalSelector, $contentFontSize: inherit, $contentPadding: inherit) {
+  .overlay.#{$additionalSelector} {
+    background: rgba(255, 255, 255, 0.5);
+    .overlay-content {
+      padding: $contentPadding;
+      font-size: $contentFontSize;
+      color: bs.$gray-700;
+      background: rgba(200, 200, 200, 0.5);
+    }
+  }
+}
+
+@mixin insertSimpleLineIcons($code) {
+  &:before {
+    margin-right: 0.2em;
+    font-family: 'simple-line-icons';
+    content: $code;
+  }
 }

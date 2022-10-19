@@ -76,7 +76,6 @@
   class="{% block html_base_css %}{% endblock %} growi {{ additionalBodyClasses|join(' ') }}"
   data-plugin-enabled="{{ getConfig('crowi', 'plugin:isEnabledPlugins') }}"
   {% block html_base_attr %}{% endblock %}
-  data-csrftoken="{{ csrf() }}"
  >
 
 <div id="growi-context-extractor"></div>

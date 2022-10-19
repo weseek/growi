@@ -1,6 +1,6 @@
 {
   "name": "@growi/plugin-attachment-refs",
-  "version": "5.1.5-RC.0",
+  "version": "6.0.0-RC.3",
   "description": "GROWI Plugin to add ref/refimg/refs/refsimg tags",
   "license": "MIT",
   "keywords": [
@@ -16,6 +16,7 @@
     "build": "run-p build:*",
     "build:cjs": "tsc -p tsconfig.build.cjs.json && tsc-alias -p tsconfig.build.cjs.json",
     "build:esm": "tsc -p tsconfig.build.esm.json && tsc-alias -p tsconfig.build.esm.json",
+    "clean": "npx -y shx rm -rf dist",
     "lint:js": "eslint **/*.{js,jsx,ts,tsx}",
     "lint:styles": "stylelint src/**/*.scss src/**/*.css",
     "lint": "run-p lint:*",
@@ -32,7 +33,7 @@
   "devDependencies": {
     "eslint-plugin-regex": "^1.8.0",
     "npm-run-all": "^4.1.5",
-    "react": "^16.8.3",
-    "react-dom": "^16.8.3"
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0"
   }
 }

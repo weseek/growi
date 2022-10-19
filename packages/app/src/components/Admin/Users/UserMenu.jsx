@@ -1,13 +1,12 @@
 import React, { Fragment } from 'react';
 
+import { useTranslation } from 'next-i18next';
 import PropTypes from 'prop-types';
-import { useTranslation } from 'react-i18next';
 import {
   UncontrolledDropdown, DropdownToggle, DropdownMenu,
 } from 'reactstrap';
 
 import AdminUsersContainer from '~/client/services/AdminUsersContainer';
-import AppContainer from '~/client/services/AppContainer';
 
 import { withUnstatedContainers } from '../../UnstatedUtils';
 
@@ -63,7 +62,7 @@ class UserMenu extends React.Component {
     return (
       <Fragment>
         <li className="dropdown-divider"></li>
-        <li className="dropdown-header">{t('status')}</li>
+        <li className="dropdown-header">{t('user_management.status')}</li>
         <li>
           {(user.status === 1 || user.status === 3) && <StatusActivateButton user={user} />}
           {user.status === 2 && <StatusSuspendedMenuItem user={user} />}
@@ -117,15 +116,14 @@ class UserMenu extends React.Component {
 }
 
 const UserMenuWrapperFC = (props) => {
-  const { t } = useTranslation();
+  const { t } = useTranslation('admin');
   return <UserMenu t={t} {...props} />;
 };
 
-const UserMenuWrapper = withUnstatedContainers(UserMenuWrapperFC, [AppContainer, AdminUsersContainer]);
+const UserMenuWrapper = withUnstatedContainers(UserMenuWrapperFC, [AdminUsersContainer]);
 
 UserMenu.propTypes = {
   t: PropTypes.func.isRequired, // i18next
-  appContainer: PropTypes.instanceOf(AppContainer).isRequired,
   adminUsersContainer: PropTypes.instanceOf(AdminUsersContainer).isRequired,
 
   user: PropTypes.object.isRequired,

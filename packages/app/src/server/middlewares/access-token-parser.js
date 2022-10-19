@@ -26,9 +26,8 @@ module.exports = (crowi) => {
 
     // transforming attributes
     req.user = serializeUserSecurely(user);
-    req.skipCsrfVerify = true;
 
-    logger.debug('Access token parsed: skipCsrfVerify');
+    logger.debug('Access token parsed.');
 
     return next();
   };

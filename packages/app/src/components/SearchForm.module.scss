@@ -1,0 +1,36 @@
+@use '~/styles/bootstrap/init' as bs;
+
+.grw-search-table {
+  caption {
+    display: table-header-group;
+  }
+}
+
+@include bs.media-breakpoint-down(sm) {
+  .grw-search-table {
+    th {
+      text-align: right;
+    }
+
+    td {
+      overflow-wrap: anywhere;
+      white-space: normal !important;
+    }
+
+    @include bs.media-breakpoint-down(xs) {
+      th,
+      td {
+        display: block;
+      }
+
+      th {
+        text-align: left;
+      }
+
+      td {
+        padding-top: 0 !important;
+        border-top: none !important;
+      }
+    }
+  }
+}

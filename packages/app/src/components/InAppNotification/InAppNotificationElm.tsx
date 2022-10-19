@@ -2,12 +2,12 @@ import React, {
   FC, useRef,
 } from 'react';
 
+import { HasObjectId } from '@growi/core';
 import { UserPicture } from '@growi/ui';
 import { DropdownItem } from 'reactstrap';
 
 import { IInAppNotificationOpenable } from '~/client/interfaces/in-app-notification-openable';
 import { apiv3Post } from '~/client/util/apiv3-client';
-import { HasObjectId } from '~/interfaces/has-object-id';
 import { IInAppNotification, InAppNotificationStatuses } from '~/interfaces/in-app-notification';
 
 // Change the display for each targetmodel

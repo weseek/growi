@@ -1,6 +1,9 @@
 import loggerFactory from '~/utils/logger';
 
+import { generateAddActivityMiddleware } from '../../middlewares/add-activity';
 import injectUserRegistrationOrderByTokenMiddleware from '../../middlewares/inject-user-registration-order-by-token-middleware';
+import * as loginFormValidator from '../../middlewares/login-form-validator';
+import * as registerFormValidator from '../../middlewares/register-form-validator';
 
 import pageListing from './page-listing';
 import * as userActivation from './user-activation';
@@ -13,7 +16,7 @@ const router = express.Router();
 const routerForAdmin = express.Router();
 const routerForAuth = express.Router();
 
-module.exports = (crowi) => {
+module.exports = (crowi, app, isInstalled) => {
 
   // add custom functions to express response
   require('./response')(express, crowi);
@@ -38,8 +41,26 @@ module.exports = (crowi) => {
   routerForAdmin.use('/activity', require('./activity')(crowi));
 
   // auth
+  const applicationInstalled = require('../../middlewares/application-installed')(crowi);
+  const addActivity = generateAddActivityMiddleware(crowi);
+  const login = require('../login')(crowi, app);
+  const loginPassport = require('../login-passport')(crowi, app);
+
+  routerForAuth.post('/login', applicationInstalled, loginFormValidator.loginRules(), loginFormValidator.loginValidation,
+    addActivity, loginPassport.loginWithLocal, loginPassport.loginWithLdap, loginPassport.cannotLoginErrorHadnler, loginPassport.loginFailure);
+
+  routerForAuth.use('/invited', require('./invited')(crowi));
   routerForAuth.use('/logout', require('./logout')(crowi));
 
+  routerForAuth.post('/register',
+    applicationInstalled, registerFormValidator.registerRules(), registerFormValidator.registerValidation, addActivity, login.register);
+
+
+  // installer
+  if (!isInstalled) {
+    routerForAdmin.use('/installer', require('./installer')(crowi));
+    return [router, routerForAdmin, routerForAuth];
+  }
 
   router.use('/in-app-notification', require('./in-app-notification')(crowi));
 

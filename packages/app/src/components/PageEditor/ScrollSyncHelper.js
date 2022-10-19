@@ -13,7 +13,7 @@ class ScrollSyncHelper {
     let elements;
     if (!elements) {
       elements = Array.prototype.map.call(
-        parentElement.getElementsByClassName('code-line'),
+        parentElement.getElementsByClassName('has-data-line'),
         (element) => {
           const line = +element.getAttribute('data-line');
           return { element, line };

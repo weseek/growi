@@ -1,16 +1,17 @@
 import React from 'react';
 
+import { useTranslation } from 'next-i18next';
 import PropTypes from 'prop-types';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
-import { useTranslation } from 'react-i18next';
 // import Button from 'react-bootstrap/es/Button';
 import {
   Modal, ModalHeader, ModalBody, ModalFooter,
 } from 'reactstrap';
 
+
 import AdminUsersContainer from '~/client/services/AdminUsersContainer';
-import AppContainer from '~/client/services/AppContainer';
 import { toastSuccess, toastError, toastWarning } from '~/client/util/apiNotification';
+import { useIsMailerSetup } from '~/stores/context';
 
 import { withUnstatedContainers } from '../../UnstatedUtils';
 
@@ -99,9 +100,8 @@ class UserInviteModal extends React.Component {
   }
 
   renderModalFooter() {
-    const { t, appContainer } = this.props;
+    const { t, isMailerSetup } = this.props;
     const { isCreateUserButtonPushed } = this.state;
-    const { isMailerSetup } = appContainer.config;
 
     return (
       <>
@@ -282,18 +282,18 @@ class UserInviteModal extends React.Component {
 
 const UserInviteModalWrapperFC = (props) => {
   const { t } = useTranslation();
-  return <UserInviteModal t={t} {...props} />;
+  const { data: isMailerSetup } = useIsMailerSetup();
+  return <UserInviteModal t={t} isMailerSetup={isMailerSetup ?? false} {...props} />;
 };
 
 /**
  * Wrapper component for using unstated
  */
-const UserInviteModalWrapper = withUnstatedContainers(UserInviteModalWrapperFC, [AppContainer, AdminUsersContainer]);
+const UserInviteModalWrapper = withUnstatedContainers(UserInviteModalWrapperFC, [AdminUsersContainer]);
 
 
 UserInviteModal.propTypes = {
   t: PropTypes.func.isRequired, // i18next
-  appContainer: PropTypes.instanceOf(AppContainer).isRequired,
   adminUsersContainer: PropTypes.instanceOf(AdminUsersContainer).isRequired,
 };
 

@@ -1,9 +1,9 @@
+import { Nullable, withUtils, SWRResponseWithUtils } from '@growi/core';
 import useSWR, { SWRResponse } from 'swr';
 import useSWRImmutable from 'swr/immutable';
 
 import { apiGet } from '~/client/util/apiv1-client';
 import { apiv3Get, apiv3Put } from '~/client/util/apiv3-client';
-import { Nullable } from '~/interfaces/common';
 import { IEditorSettings } from '~/interfaces/editor-settings';
 import { SlackChannels } from '~/interfaces/user-trigger-notification';
 
@@ -20,7 +20,7 @@ type EditorSettingsOperation = {
   turnOffAskingBeforeDownloadLargeFiles: () => void,
 }
 
-export const useEditorSettings = (): SWRResponse<IEditorSettings, Error> & EditorSettingsOperation => {
+export const useEditorSettings = (): SWRResponseWithUtils<EditorSettingsOperation, IEditorSettings, Error> => {
   const { data: currentUser } = useCurrentUser();
   const { data: isGuestUser } = useIsGuestUser();
 
@@ -30,8 +30,7 @@ export const useEditorSettings = (): SWRResponse<IEditorSettings, Error> & Edito
     { use: [localStorageMiddleware] }, // store to localStorage for initialization fastly
   );
 
-  return {
-    ...swrResult,
+  return withUtils<EditorSettingsOperation, IEditorSettings, Error>(swrResult, {
     update: (updateData) => {
       const { data, mutate } = swrResult;
 
@@ -56,7 +55,7 @@ export const useEditorSettings = (): SWRResponse<IEditorSettings, Error> & Edito
       // revalidate
       mutate();
     },
-  };
+  });
 };
 
 export const useIsTextlintEnabled = (): SWRResponse<boolean, Error> => {
@@ -107,4 +106,8 @@ export const usePageTagsForEditors = (pageId: Nullable<string>): SWRResponse<str
       mutate(tagsInfoData?.tags || [], false);
     },
   };
+};
+
+export const useIsEnabledUnsavedWarning = (): SWRResponse<boolean, Error> => {
+  return useStaticSWR<boolean, Error>('isEnabledUnsavedWarning', undefined, { fallbackData: false });
 };

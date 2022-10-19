@@ -1,3 +1,5 @@
+import { ErrorV3 } from '@growi/core';
+
 import { SupportedAction } from '~/interfaces/activity';
 import loggerFactory from '~/utils/logger';
 import { removeNullPropertyFromObject } from '~/utils/object-utils';
@@ -15,8 +17,6 @@ const express = require('express');
 const router = express.Router();
 
 const { body } = require('express-validator');
-
-const ErrorV3 = require('../../models/vo/error-apiv3');
 
 const validator = {
   userNotification: [
@@ -93,7 +93,6 @@ const validator = {
 module.exports = (crowi) => {
   const loginRequiredStrictly = require('../../middlewares/login-required')(crowi);
   const adminRequired = require('../../middlewares/admin-required')(crowi);
-  const csrf = require('../../middlewares/csrf')(crowi);
   const addActivity = generateAddActivityMiddleware(crowi);
 
   const activityEvent = crowi.event('activity');
@@ -165,7 +164,7 @@ module.exports = (crowi) => {
   *                      description: user trigger notifications for updated
   */
   // eslint-disable-next-line max-len
-  router.post('/user-notification', loginRequiredStrictly, adminRequired, csrf, addActivity, validator.userNotification, apiV3FormValidator, async(req, res) => {
+  router.post('/user-notification', loginRequiredStrictly, adminRequired, addActivity, validator.userNotification, apiV3FormValidator, async(req, res) => {
     const { pathPattern, channel } = req.body;
 
     try {
@@ -213,7 +212,7 @@ module.exports = (crowi) => {
    *                      type: object
    *                      description: deleted notification
    */
-  router.delete('/user-notification/:id', loginRequiredStrictly, adminRequired, csrf, addActivity, async(req, res) => {
+  router.delete('/user-notification/:id', loginRequiredStrictly, adminRequired, addActivity, async(req, res) => {
     const { id } = req.params;
 
     try {
@@ -258,7 +257,7 @@ module.exports = (crowi) => {
    *                      description: notification param created
    */
   // eslint-disable-next-line max-len
-  router.post('/global-notification', loginRequiredStrictly, adminRequired, csrf, addActivity, validator.globalNotification, apiV3FormValidator, async(req, res) => {
+  router.post('/global-notification', loginRequiredStrictly, adminRequired, addActivity, validator.globalNotification, apiV3FormValidator, async(req, res) => {
 
     const {
       notifyToType, toEmail, slackChannels, triggerPath, triggerEvents,
@@ -326,7 +325,7 @@ module.exports = (crowi) => {
    *                      description: notification param updated
    */
   // eslint-disable-next-line max-len
-  router.put('/global-notification/:id', loginRequiredStrictly, adminRequired, csrf, addActivity, validator.globalNotification, apiV3FormValidator, async(req, res) => {
+  router.put('/global-notification/:id', loginRequiredStrictly, adminRequired, addActivity, validator.globalNotification, apiV3FormValidator, async(req, res) => {
     const { id } = req.params;
     const {
       notifyToType, toEmail, slackChannels, triggerPath, triggerEvents,
@@ -402,7 +401,7 @@ module.exports = (crowi) => {
    *                  $ref: '#/components/schemas/NotifyForPageGrant'
    */
   // eslint-disable-next-line max-len
-  router.put('/notify-for-page-grant', loginRequiredStrictly, adminRequired, csrf, addActivity, validator.notifyForPageGrant, apiV3FormValidator, async(req, res) => {
+  router.put('/notify-for-page-grant', loginRequiredStrictly, adminRequired, addActivity, validator.notifyForPageGrant, apiV3FormValidator, async(req, res) => {
 
     let requestParams = {
       'notification:owner-page:isEnabled': req.body.isNotificationForOwnerPageEnabled,
@@ -465,7 +464,7 @@ module.exports = (crowi) => {
    *                      type: object
    *                      description: notification id for updated
    */
-  router.put('/global-notification/:id/enabled', loginRequiredStrictly, adminRequired, csrf, addActivity, async(req, res) => {
+  router.put('/global-notification/:id/enabled', loginRequiredStrictly, adminRequired, addActivity, async(req, res) => {
     const { id } = req.params;
     const { isEnabled } = req.body;
 
@@ -520,7 +519,7 @@ module.exports = (crowi) => {
   *                      type: object
   *                      description: deleted notification
   */
-  router.delete('/global-notification/:id', loginRequiredStrictly, adminRequired, csrf, addActivity, async(req, res) => {
+  router.delete('/global-notification/:id', loginRequiredStrictly, adminRequired, addActivity, async(req, res) => {
     const { id } = req.params;
 
     try {

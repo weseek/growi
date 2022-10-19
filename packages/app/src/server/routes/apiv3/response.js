@@ -1,6 +1,7 @@
+import { ErrorV3 } from '@growi/core';
+
 import { toArrayIfNot } from '~/utils/array-utils';
 
-const ErrorV3 = require('../../models/vo/error-apiv3');
 
 const addCustomFunctionToResponse = (express, crowi) => {
 
@@ -27,7 +28,7 @@ const addCustomFunctionToResponse = (express, crowi) => {
         return new ErrorV3(e.message, null, e.stack);
       }
       if (typeof e === 'string') {
-        return { message: e };
+        return { message: e, status };
       }
 
       throw new Error('invalid error supplied to res.apiv3Err');

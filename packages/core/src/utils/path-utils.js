@@ -79,6 +79,22 @@ export function addTrailingSlash(path) {
  * @returns {string}
  * @memberof pathUtils
  */
+export function removeHeadingSlash(path) {
+  if (path === '/') {
+    return path;
+  }
+
+  return hasHeadingSlash(path)
+    ? path.substring(1)
+    : path;
+}
+
+/**
+ *
+ * @param {string} path
+ * @returns {string}
+ * @memberof pathUtils
+ */
 export function removeTrailingSlash(path) {
   if (path === '/') {
     return path;

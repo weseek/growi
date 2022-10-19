@@ -3,11 +3,11 @@ import XssOption, { XssOptionConfig } from '~/services/xss/xssOption';
 
 export default class XssFilter {
 
-  xssOption: XssOption
+  xssOption: XssOption;
 
-  xss
+  xss;
 
-  config: XssOptionConfig
+  config: XssOptionConfig;
 
   constructor(config: XssOptionConfig) {
     this.config = config;

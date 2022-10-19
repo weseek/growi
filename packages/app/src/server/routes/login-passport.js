@@ -1,6 +1,11 @@
+
+import { ErrorV3 } from '@growi/core';
+
 import { SupportedAction } from '~/interfaces/activity';
+import { LoginErrorCode } from '~/interfaces/errors/login-error';
 import { NullUsernameToBeRegisteredError } from '~/server/models/errors';
 import loggerFactory from '~/utils/logger';
+
 
 /* eslint-disable no-use-before-define */
 
@@ -9,11 +14,82 @@ module.exports = function(crowi, app) {
   const logger = loggerFactory('growi:routes:login-passport');
   const passport = require('passport');
   const ExternalAccount = crowi.model('ExternalAccount');
+  const User = crowi.model('User');
   const passportService = crowi.passportService;
 
   const activityEvent = crowi.event('activity');
 
   const ApiResponse = require('../util/apiResponse');
+
+  const promisifiedPassportAuthentication = (strategyName, req, res) => {
+    return new Promise((resolve, reject) => {
+      passport.authenticate(strategyName, (err, response, info) => {
+        if (res.headersSent) { // dirty hack -- 2017.09.25
+          return; //              cz: somehow passport.authenticate called twice when ECONNREFUSED error occurred
+        }
+
+        logger.debug(`--- authenticate with ${strategyName} strategy ---`);
+
+        if (err) {
+          logger.error(`'${strategyName}' passport authentication error: `, err);
+          reject(err);
+        }
+
+        logger.debug('response', response);
+        logger.debug('info', info);
+
+        // authentication failure
+        if (!response) {
+          reject(response);
+        }
+
+        resolve(response);
+      })(req, res);
+    });
+  };
+
+  const getOrCreateUser = async(req, res, userInfo, providerId) => {
+    // get option
+    const isSameUsernameTreatedAsIdenticalUser = crowi.passportService.isSameUsernameTreatedAsIdenticalUser(providerId);
+    const isSameEmailTreatedAsIdenticalUser = crowi.passportService.isSameEmailTreatedAsIdenticalUser(providerId);
+
+    try {
+      // find or register(create) user
+      const externalAccount = await ExternalAccount.findOrRegister(
+        providerId,
+        userInfo.id,
+        userInfo.username,
+        userInfo.name,
+        userInfo.email,
+        isSameUsernameTreatedAsIdenticalUser,
+        isSameEmailTreatedAsIdenticalUser,
+      );
+      return externalAccount;
+    }
+    catch (err) {
+      /* eslint-disable no-else-return */
+      if (err instanceof NullUsernameToBeRegisteredError) {
+        logger.error(err.message);
+        throw new ErrorV3(err.message);
+      }
+      else if (err.name === 'DuplicatedUsernameException') {
+        if (isSameEmailTreatedAsIdenticalUser || isSameUsernameTreatedAsIdenticalUser) {
+          // associate to existing user
+          debug(`ExternalAccount '${userInfo.username}' will be created and bound to the exisiting User account`);
+          return ExternalAccount.associate(providerId, userInfo.id, err.user);
+        }
+        logger.error('provider-DuplicatedUsernameException', providerId);
+
+        throw new ErrorV3('message.provider_duplicated_username_exception', LoginErrorCode.PROVIDER_DUPLICATED_USERNAME_EXCEPTION,
+          undefined, { failedProviderForDuplicatedUsernameException: providerId });
+      }
+      else if (err.name === 'UserUpperLimitException') {
+        logger.error(err.message);
+        throw new ErrorV3(err.message);
+      }
+      /* eslint-enable no-else-return */
+    }
+  };
 
   /**
    * success handler
@@ -21,6 +97,7 @@ module.exports = function(crowi, app) {
    * @param {*} res
    */
   const loginSuccessHandler = async(req, res, user, action) => {
+
     // update lastLoginAt
     user.updateLastLoginAt(new Date(), (err, userData) => {
       if (err) {
@@ -29,7 +106,9 @@ module.exports = function(crowi, app) {
       }
     });
 
-    const { redirectTo } = req.session;
+    // check for redirection to '/invited'
+    const redirectTo = req.user.status === User.STATUS_INVITED ? '/invited' : req.session.redirectTo;
+
     // remove session.redirectTo
     delete req.session.redirectTo;
 
@@ -42,9 +121,10 @@ module.exports = function(crowi, app) {
         username: req.user.username,
       },
     };
+
     await crowi.activityService.createActivity(parameters);
 
-    return res.safeRedirect(redirectTo);
+    return res.apiv3({ redirectTo });
   };
 
   /**
@@ -61,13 +141,25 @@ module.exports = function(crowi, app) {
     return res.redirect('/login');
   };
 
+  const cannotLoginErrorHadnler = (req, res, next) => {
+    // this is called when all login method is somehow failed without invoking 'return next(<any Error>)'
+    const err = new ErrorV3('message.sign_in_failure');
+    return next(err);
+  };
+
   /**
    * middleware for login failure
+   * @param {*} error
    * @param {*} req
    * @param {*} res
+   * @param {*} next
    */
-  const loginFailure = (req, res) => {
-    return loginFailureHandler(req, res, req.t('message.sign_in_failure'));
+  const loginFailure = (error, req, res, next) => {
+
+    const parameters = { action: SupportedAction.ACTION_USER_LOGIN_FAILURE };
+    activityEvent.emit('update', res.locals.activity._id, parameters);
+
+    return res.apiv3Err(error);
   };
 
   /**
@@ -99,9 +191,7 @@ module.exports = function(crowi, app) {
     }
 
     if (!req.form.isValid) {
-      debug('invalid form');
-      return res.render('login', {
-      });
+      return next(req.form.errors);
     }
 
     const providerId = 'ldap';
@@ -113,12 +203,12 @@ module.exports = function(crowi, app) {
     }
     catch (err) {
       debug(err.message);
-      return next();
+      return next(err);
     }
 
     // check groups for LDAP
     if (!isValidLdapUserByGroupFilter(ldapAccountInfo)) {
-      return next();
+      return next(new ErrorV3('message.ldap_user_not_valid'));
     }
 
     /*
@@ -141,16 +231,27 @@ module.exports = function(crowi, app) {
       email: mailToBeRegistered,
     };
 
-    const externalAccount = await getOrCreateUser(req, res, userInfo, providerId);
-    if (!externalAccount) {
-      return next();
+    let externalAccount;
+    try {
+      externalAccount = await getOrCreateUser(req, res, userInfo, providerId);
+    }
+    catch (error) {
+      return next(error);
+    }
+
+    // just in case the returned value is null or undefined
+    if (externalAccount == null) {
+      return next(new ErrorV3('message.external_account_not_exist'));
     }
 
     const user = await externalAccount.getPopulatedUser();
 
     // login
     await req.logIn(user, (err) => {
-      if (err) { debug(err.message); return next() }
+      if (err) {
+        debug(err.message);
+        return next(err);
+      }
 
       return loginSuccessHandler(req, res, user, SupportedAction.ACTION_USER_LOGIN_WITH_LDAP);
     });
@@ -221,13 +322,11 @@ module.exports = function(crowi, app) {
   const loginWithLocal = (req, res, next) => {
     if (!passportService.isLocalStrategySetup) {
       debug('LocalStrategy has not been set up');
-      req.flash('warningMessage', req.t('message.strategy_has_not_been_set_up', { strategy: 'LocalStrategy' }));
-      return next();
+      return res.apiv3Err(new ErrorV3('message.strategy_has_not_been_set_up', '', undefined, { strategy: 'LocalStrategy' }), 405);
     }
 
     if (!req.form.isValid) {
-      return res.render('login', {
-      });
+      return next(req.form.errors);
     }
 
     passport.authenticate('local', (err, user, info) => {
@@ -237,12 +336,16 @@ module.exports = function(crowi, app) {
 
       if (err) { // DB Error
         logger.error('Database Server Error: ', err);
-        req.flash('warningMessage', req.t('message.database_error'));
-        return next(); // pass and the flash message is displayed when all of authentications are failed.
+        return next(err);
       }
-      if (!user) { return next() }
+      if (!user) {
+        return next();
+      }
       req.logIn(user, (err) => {
-        if (err) { debug(err.message); return next() }
+        if (err) {
+          debug(err.message);
+          return next(err);
+        }
 
         return loginSuccessHandler(req, res, user, SupportedAction.ACTION_USER_LOGIN_WITH_LOCAL);
       });
@@ -560,76 +663,8 @@ module.exports = function(crowi, app) {
     });
   };
 
-  const promisifiedPassportAuthentication = (strategyName, req, res) => {
-    return new Promise((resolve, reject) => {
-      passport.authenticate(strategyName, (err, response, info) => {
-        if (res.headersSent) { // dirty hack -- 2017.09.25
-          return; //              cz: somehow passport.authenticate called twice when ECONNREFUSED error occurred
-        }
-
-        logger.debug(`--- authenticate with ${strategyName} strategy ---`);
-
-        if (err) {
-          logger.error(`'${strategyName}' passport authentication error: `, err);
-          reject(err);
-        }
-
-        logger.debug('response', response);
-        logger.debug('info', info);
-
-        // authentication failure
-        if (!response) {
-          reject(response);
-        }
-
-        resolve(response);
-      })(req, res);
-    });
-  };
-
-  const getOrCreateUser = async(req, res, userInfo, providerId) => {
-    // get option
-    const isSameUsernameTreatedAsIdenticalUser = crowi.passportService.isSameUsernameTreatedAsIdenticalUser(providerId);
-    const isSameEmailTreatedAsIdenticalUser = crowi.passportService.isSameEmailTreatedAsIdenticalUser(providerId);
-
-    try {
-      // find or register(create) user
-      const externalAccount = await ExternalAccount.findOrRegister(
-        providerId,
-        userInfo.id,
-        userInfo.username,
-        userInfo.name,
-        userInfo.email,
-        isSameUsernameTreatedAsIdenticalUser,
-        isSameEmailTreatedAsIdenticalUser,
-      );
-      return externalAccount;
-    }
-    catch (err) {
-      /* eslint-disable no-else-return */
-      if (err instanceof NullUsernameToBeRegisteredError) {
-        req.flash('warningMessage', req.t(`message.${err.message}`));
-        return;
-      }
-      else if (err.name === 'DuplicatedUsernameException') {
-        if (isSameEmailTreatedAsIdenticalUser || isSameUsernameTreatedAsIdenticalUser) {
-          // associate to existing user
-          debug(`ExternalAccount '${userInfo.username}' will be created and bound to the exisiting User account`);
-          return ExternalAccount.associate(providerId, userInfo.id, err.user);
-        }
-
-        req.flash('provider-DuplicatedUsernameException', providerId);
-        return;
-      }
-      else if (err.name === 'UserUpperLimitException') {
-        req.flash('warningMessage', req.t('message.maximum_number_of_users'));
-        return;
-      }
-      /* eslint-enable no-else-return */
-    }
-  };
-
   return {
+    cannotLoginErrorHadnler,
     loginFailure,
     loginWithLdap,
     testLdapCredentials,

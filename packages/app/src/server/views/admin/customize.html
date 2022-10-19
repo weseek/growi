@@ -1,19 +1,9 @@
 {% extends '../layout/admin.html' %}
-{% block html_title %}{{ customizeService.generateCustomTitleForFixedPageName(t('Customize')) }}{% endblock %}
 
-{% block html_additional_headers %}
-{% parent %}
-<!-- CodeMirror -->
-{{ cdnStyleTag('jquery-ui') }}
-<style>
-  .CodeMirror {
-    border: 1px solid $gray-100;
-  }
-</style>
-{% endblock %}
+{% block html_title %}{{ customizeService.generateCustomTitleForFixedPageName(t('admin:customize')) }}{% endblock %}
 
 {% block content_header %}
-<h1 class="title">{{ t('Customize') }}</h1>
+<h1 class="title">{{ t('admin:customize') }}</h1>
 {% endblock %}
 
 {% block content_main %}

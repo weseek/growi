@@ -1,16 +1,15 @@
 import React from 'react';
 
+import { useTranslation } from 'next-i18next';
 import PropTypes from 'prop-types';
-import { useTranslation } from 'react-i18next';
 
-import EditorContainer from '~/client/services/EditorContainer';
 import PageContainer from '~/client/services/PageContainer';
 import { apiGet } from '~/client/util/apiv1-client';
 
 import PaginationWrapper from '../PaginationWrapper';
 import { withUnstatedContainers } from '../UnstatedUtils';
 
-import Draft from './Draft';
+import { Draft } from './Draft';
 
 class MyDraftList extends React.Component {
 
@@ -32,7 +31,7 @@ class MyDraftList extends React.Component {
     this.clearAllDrafts = this.clearAllDrafts.bind(this);
   }
 
-  async componentWillMount() {
+  async UNSAFE_componentWillMount() {
     await this.getDraftsFromLocalStorage();
     this.getCurrentDrafts(1);
   }
@@ -105,7 +104,7 @@ class MyDraftList extends React.Component {
   }
 
   clearDraft(path) {
-    this.props.editorContainer.clearDraft(path);
+    // this.props.editorContainer.clearDraft(path);
 
     this.setState((prevState) => {
       return {
@@ -116,7 +115,7 @@ class MyDraftList extends React.Component {
   }
 
   clearAllDrafts() {
-    this.props.editorContainer.clearAllDrafts();
+    // this.props.editorContainer.clearAllDrafts();
 
     this.setState({
       drafts: [],
@@ -172,10 +171,10 @@ class MyDraftList extends React.Component {
 }
 
 MyDraftList.propTypes = {
-  t: PropTypes.func.isRequired, // react-i18next
+  t: PropTypes.func.isRequired, // i18next
 
   pageContainer: PropTypes.instanceOf(PageContainer).isRequired,
-  editorContainer: PropTypes.instanceOf(EditorContainer).isRequired,
+  // editorContainer: PropTypes.instanceOf(EditorContainer).isRequired,
 };
 
 const MyDraftListWrapperFC = (props) => {
@@ -183,9 +182,11 @@ const MyDraftListWrapperFC = (props) => {
   return <MyDraftList t={t} {...props} />;
 };
 
+export default MyDraftListWrapperFC;
+
 /**
  * Wrapper component for using unstated
  */
-const MyDraftListWrapper = withUnstatedContainers(MyDraftListWrapperFC, [PageContainer, EditorContainer]);
+// const MyDraftListWrapper = withUnstatedContainers(MyDraftListWrapperFC, [PageContainer, EditorContainer]);
 
-export default MyDraftListWrapper;
+// export default MyDraftListWrapper;

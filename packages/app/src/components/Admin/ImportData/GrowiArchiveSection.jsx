@@ -1,14 +1,14 @@
 import React, { Fragment } from 'react';
 
+import { useTranslation } from 'next-i18next';
 import PropTypes from 'prop-types';
-import { useTranslation } from 'react-i18next';
 import * as toastr from 'toastr';
 
 import { apiv3Delete, apiv3Get } from '~/client/util/apiv3-client';
 
 // import { toastSuccess, toastError } from '~/client/util/apiNotification';
 
-import ImportForm from './GrowiArchive/ImportForm';
+// import ImportForm from './GrowiArchive/ImportForm';
 import UploadForm from './GrowiArchive/UploadForm';
 
 class GrowiArchiveSection extends React.Component {
@@ -31,7 +31,7 @@ class GrowiArchiveSection extends React.Component {
     this.renderDefferentVersionAlert = this.renderDefferentVersionAlert.bind(this);
   }
 
-  async componentWillMount() {
+  async UNSAFE_componentWillMount() {
     // get uploaded file status
     const res = await apiv3Get('/import/status');
 
@@ -95,7 +95,7 @@ class GrowiArchiveSection extends React.Component {
     const { t } = this.props;
     return (
       <div className="alert alert-warning mt-3">
-        {t('admin:importer_management.growi_settings.errors.different_versions')}
+        {t('importer_management.growi_settings.errors.different_versions')}
       </div>
     );
   }
@@ -110,17 +110,17 @@ class GrowiArchiveSection extends React.Component {
 
     return (
       <Fragment>
-        <h2>{t('admin:importer_management.import_growi_archive')}</h2>
+        <h2>{t('importer_management.import_growi_archive')}</h2>
         <div className="card well mb-4 small">
           <ul>
-            <li>{t('admin:importer_management.skip_username_and_email_when_overlapped')}</li>
-            <li>{t('admin:importer_management.prepare_new_account_for_migration')}</li>
+            <li>{t('importer_management.skip_username_and_email_when_overlapped')}</li>
+            <li>{t('importer_management.prepare_new_account_for_migration')}</li>
             <li>
               <a
-                href={`${t('admin:importer_management.admin_archive_data_import_guide_url')}`}
+                href={`${t('importer_management.admin_archive_data_import_guide_url')}`}
                 target="_blank"
                 rel="noopener noreferrer"
-              >{t('admin:importer_management.archive_data_import_detail')}
+              >{t('importer_management.archive_data_import_detail')}
               </a>
             </li>
           </ul>
@@ -129,11 +129,12 @@ class GrowiArchiveSection extends React.Component {
         {isTheSameVersion === false && this.renderDefferentVersionAlert()}
         {this.state.fileName != null && isTheSameVersion === true ? (
           <div className="px-4">
-            <ImportForm
+            {/* show ImportForm by https://redmine.weseek.co.jp/issues/100061 */}
+            {/* <ImportForm
               fileName={this.state.fileName}
               innerFileStats={this.state.innerFileStats}
               onDiscard={this.discardData}
-            />
+            /> */}
           </div>
         )
           : (
@@ -153,7 +154,7 @@ GrowiArchiveSection.propTypes = {
 };
 
 const GrowiArchiveSectionWrapperFc = (props) => {
-  const { t } = useTranslation();
+  const { t } = useTranslation('admin');
 
   return <GrowiArchiveSection t={t} {...props} />;
 };

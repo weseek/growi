@@ -1,17 +1,19 @@
+import React from 'react';
+
 import { Attachment } from '@growi/ui';
 import axios from 'axios'; // import axios from growi dependencies
 import PropTypes from 'prop-types';
-import React from 'react';
 
 // eslint-disable-next-line import/no-unresolved
 
-import styles from '../../css/index.css';
 import RefsContext from '../util/RefsContext';
 import TagCacheManagerFactory from '../util/TagCacheManagerFactory';
 
 // eslint-disable-next-line no-unused-vars
 
 import ExtractedAttachments from './ExtractedAttachments';
+
+import styles from '../../css/index.css';
 
 const AttachmentLink = Attachment;
 
@@ -32,7 +34,7 @@ export default class AttachmentList extends React.Component {
     this.tagCacheManager = TagCacheManagerFactory.getInstance();
   }
 
-  async componentWillMount() {
+  async UNSAFE_componentWillMount() {
     const { refsContext } = this.props;
 
     // get state object cache

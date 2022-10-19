@@ -1,8 +1,8 @@
 import mongoose from 'mongoose';
 
-import { getModelSafely, getMongoUri, mongoOptions } from '@growi/core';
-import loggerFactory from '~/utils/logger';
 import getPageModel from '~/server/models/page';
+import { getModelSafely, getMongoUri, mongoOptions } from '~/server/util/mongoose-utils';
+import loggerFactory from '~/utils/logger';
 
 const logger = loggerFactory('growi:migrate:add-column-is-trashed');
 

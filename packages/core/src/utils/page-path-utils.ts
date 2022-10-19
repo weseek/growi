@@ -2,6 +2,7 @@ import nodePath from 'path';
 
 import escapeStringRegexp from 'escape-string-regexp';
 
+import { isValidObjectId } from './objectid-utils';
 import { addTrailingSlash } from './path-utils';
 
 /**
@@ -18,6 +19,15 @@ export const isTopPage = (path: string): boolean => {
  */
 export const isUsersTopPage = (path: string): boolean => {
   return path === '/user';
+};
+
+/**
+ * Whether the path is permalink
+ * @param path
+ */
+export const isPermalink = (path: string): boolean => {
+  const pageIdStr = path.substring(1);
+  return isValidObjectId(pageIdStr);
 };
 
 /**
@@ -53,8 +63,8 @@ export const isMovablePage = (path: string): boolean => {
  * @param path
  */
 export const isUserPage = (path: string): boolean => {
-  // https://regex101.com/r/BSDdRr/1
-  if (path.match(/^\/user(\/.*)?$/)) {
+  // https://regex101.com/r/MwifLR/1
+  if (path.match(/^\/user\/.*?$/)) {
     return true;
   }
 

@@ -1,3 +1,4 @@
+import { isServer } from '@growi/core';
 import { Container } from 'unstated';
 
 import { apiv3Get, apiv3Post, apiv3Put } from '../util/apiv3-client';
@@ -11,13 +12,13 @@ export default class AdminAppContainer extends Container {
   constructor() {
     super();
 
-    this.dummyTitle = 0;
-    this.dummyTitleForError = 1;
+    if (isServer()) {
+      return;
+    }
 
     this.state = {
       retrieveError: null,
-      // set dummy value tile for using suspense
-      title: this.dummyTitle,
+      title: '',
       confidential: '',
       globalLang: '',
       isEmailPublishedForNewUser: true,

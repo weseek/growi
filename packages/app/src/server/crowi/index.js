@@ -1,23 +1,20 @@
 /* eslint-disable @typescript-eslint/no-this-alias */
-
 import http from 'http';
 import path from 'path';
 
 import { createTerminus } from '@godaddy/terminus';
-import { initMongooseGlobalSettings, getMongoUri, mongoOptions } from '@growi/core';
+import lsxRoutes from '@growi/plugin-lsx/server/routes';
 import mongoose from 'mongoose';
-
+import next from 'next';
 
 import pkg from '^/package.json';
 
-import { PageActionType } from '~/interfaces/page-operation';
 import CdnResourcesService from '~/services/cdn-resources-service';
 import Xss from '~/services/xss';
 import loggerFactory from '~/utils/logger';
 import { projectRoot } from '~/utils/project-dir-utils';
 
 import Activity from '../models/activity';
-import PageOperation from '../models/page-operation';
 import PageRedirect from '../models/page-redirect';
 import Tag from '../models/tag';
 import UserGroup from '../models/user-group';
@@ -32,11 +29,11 @@ import PageOperationService from '../service/page-operation';
 import SearchService from '../service/search';
 import { SlackIntegrationService } from '../service/slack-integration';
 import { UserNotificationService } from '../service/user-notification';
+import { initMongooseGlobalSettings, getMongoUri, mongoOptions } from '../util/mongoose-utils';
 
 const logger = loggerFactory('growi:crowi');
 const httpErrorHandler = require('../middlewares/http-error-handler');
 const models = require('../models');
-const PluginService = require('../plugins/plugin.service');
 
 const sep = path.sep;
 
@@ -124,7 +121,6 @@ Crowi.prototype.init = async function() {
     this.setupSearcher(),
     this.setupMailer(),
     this.setupSlackIntegrationService(),
-    this.setupCsrf(),
     this.setUpFileUpload(),
     this.setUpFileUploaderSwitchService(),
     this.setupAttachmentService(),
@@ -382,13 +378,6 @@ Crowi.prototype.setupMailer = async function() {
   }
 };
 
-Crowi.prototype.setupCsrf = async function() {
-  const Tokens = require('csrf');
-  this.tokens = new Tokens();
-
-  return Promise.resolve();
-};
-
 Crowi.prototype.autoInstall = function() {
   const isInstalled = this.configManager.getConfig('crowi', 'app:installed');
   const username = this.configManager.getConfig('crowi', 'autoInstall:adminUsername');
@@ -428,21 +417,23 @@ Crowi.prototype.getTokens = function() {
 };
 
 Crowi.prototype.start = async function() {
-  // init CrowiDev
-  if (this.node_env === 'development') {
+  const dev = process.env.NODE_ENV !== 'production';
+
+  await this.init();
+  await this.buildServer();
+
+  // setup Next.js
+  this.nextApp = next({ dev });
+  await this.nextApp.prepare();
+
+  // setup CrowiDev
+  if (dev) {
     const CrowiDev = require('./dev');
     this.crowiDev = new CrowiDev(this);
     this.crowiDev.init();
   }
 
-  await this.init();
-  await this.buildServer();
-
   const { express, configManager } = this;
-
-  // setup plugins
-  this.pluginService = new PluginService(this, express);
-  await this.pluginService.autoDetectAndLoadPlugins();
 
   const app = (this.node_env === 'development') ? this.crowiDev.setupServer(express) : express;
 
@@ -471,6 +462,7 @@ Crowi.prototype.start = async function() {
   }
 
   // setup Express Routes
+  this.setupRoutesForPlugins();
   this.setupRoutesAtLast();
 
   // setup Global Error Handlers
@@ -519,6 +511,10 @@ Crowi.prototype.setupTerminus = function(server) {
       logger.info('Cleanup finished, server is shutting down');
     },
   });
+};
+
+Crowi.prototype.setupRoutesForPlugins = function() {
+  lsxRoutes(this, this.express);
 };
 
 /**

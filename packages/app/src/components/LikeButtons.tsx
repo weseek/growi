@@ -1,14 +1,13 @@
 import React, { FC, useState, useCallback } from 'react';
 
-import { useTranslation } from 'react-i18next';
+import { useTranslation } from 'next-i18next';
 import { UncontrolledTooltip, Popover, PopoverBody } from 'reactstrap';
-
-import AppContainer from '~/client/services/AppContainer';
 
 import { IUser } from '../interfaces/user';
 
-import { withUnstatedContainers } from './UnstatedUtils';
 import UserPictureList from './User/UserPictureList';
+
+import styles from './LikeButtons.module.scss';
 
 type LikeButtonsProps = {
 
@@ -46,7 +45,7 @@ const LikeButtons: FC<LikeButtonsProps> = (props: LikeButtonsProps) => {
   }, [isGuestUser, isLiked]);
 
   return (
-    <div className="btn-group" role="group" aria-label="Like buttons">
+    <div className={`btn-group btn-group-like ${styles['btn-group-like']}`} role="group" aria-label="Like buttons">
       <button
         type="button"
         id="like-button"

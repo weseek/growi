@@ -1,13 +1,15 @@
 /* eslint-disable no-useless-escape */
 import React, { useCallback, useState } from 'react';
 
-import { useTranslation } from 'react-i18next';
+
+import { useTranslation } from 'next-i18next';
 import {
   Dropdown, DropdownToggle, DropdownMenu, DropdownItem,
 } from 'reactstrap';
 
 import AdminCustomizeContainer from '~/client/services/AdminCustomizeContainer';
 import { toastSuccess, toastError } from '~/client/util/apiNotification';
+import { IHighlightJsCssSelectorOptions } from '~/interfaces/customize';
 
 import { withUnstatedContainers } from '../../UnstatedUtils';
 import AdminUpdateButtonRow from '../Common/AdminUpdateButtonRow';
@@ -42,12 +44,13 @@ const HljsDemo = React.memo((props: HljsDemoProps): JSX.Element => {
     </pre>
   );
 });
+HljsDemo.displayName = 'HljsDemo';
 
 const CustomizeHighlightSetting = (props: Props): JSX.Element => {
   const { adminCustomizeContainer } = props;
   const { t } = useTranslation();
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-  const options = adminCustomizeContainer.state.highlightJsCssSelectorOptions;
+  const options: IHighlightJsCssSelectorOptions = adminCustomizeContainer.state.highlightJsCssSelectorOptions;
 
   const onToggleDropdown = useCallback(() => {
     setIsDropdownOpen(!isDropdownOpen);
@@ -56,7 +59,7 @@ const CustomizeHighlightSetting = (props: Props): JSX.Element => {
   const onClickSubmit = useCallback(async() => {
     try {
       await adminCustomizeContainer.updateHighlightJsStyle();
-      toastSuccess(t('toaster.update_successed', { target: t('admin:customize_setting.code_highlight') }));
+      toastSuccess(t('toaster.update_successed', { target: t('admin:customize_settings.code_highlight') }));
     }
     catch (err) {
       toastError(err);
@@ -87,12 +90,12 @@ const CustomizeHighlightSetting = (props: Props): JSX.Element => {
     <React.Fragment>
       <div className="row">
         <div className="col-12">
-          <h2 className="admin-setting-header">{t('admin:customize_setting.code_highlight')}</h2>
+          <h2 className="admin-setting-header">{t('admin:customize_settings.code_highlight')}</h2>
 
           <div className="form-group row">
             <div className="offset-md-3 col-md-6 text-left">
               <div className="my-0">
-                <label>{t('admin:customize_setting.theme')}</label>
+                <label>{t('admin:customize_settings.theme')}</label>
               </div>
               <Dropdown isOpen={isDropdownOpen} toggle={onToggleDropdown}>
                 <DropdownToggle className="text-right col-6" caret>
@@ -104,7 +107,7 @@ const CustomizeHighlightSetting = (props: Props): JSX.Element => {
               </Dropdown>
               <p className="form-text text-warning">
                 {/* eslint-disable-next-line react/no-danger */}
-                <span dangerouslySetInnerHTML={{ __html: t('admin:customize_setting.nocdn_desc') }} />
+                <span dangerouslySetInnerHTML={{ __html: t('admin:customize_settings.nocdn_desc') }} />
               </p>
             </div>
           </div>

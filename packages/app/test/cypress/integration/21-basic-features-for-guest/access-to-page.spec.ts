@@ -11,6 +11,9 @@ context('Access to page by guest', () => {
     cy.visit('/Sandbox#Headers');
     cy.collapseSidebar(true, true);
 
+    // eslint-disable-next-line cypress/no-unnecessary-waiting
+    cy.wait(500);
+
     // hide fab
     cy.getByTestid('grw-fab-container').invoke('attr', 'style', 'display: none');
 
@@ -31,6 +34,10 @@ context('Access to page by guest', () => {
   it('/Sandbox with edit is successfully loaded', () => {
     cy.visit('/Sandbox#edit');
     cy.collapseSidebar(true, true);
+
+    // eslint-disable-next-line cypress/no-unnecessary-waiting
+    cy.wait(1000);
+
     cy.screenshot(`${ssPrefix}-sandbox-edit-page`);
   })
 

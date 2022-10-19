@@ -1,3 +1,4 @@
+import { isServer } from '@growi/core';
 import { Container } from 'unstated';
 
 import loggerFactory from '~/utils/logger';
@@ -17,15 +18,13 @@ export default class AdminCustomizeContainer extends Container {
   constructor() {
     super();
 
-    this.dummyCurrentTheme = 0;
-    this.dummyCurrentThemeForError = 1;
+    if (isServer()) {
+      return;
+    }
 
     this.state = {
       retrieveError: null,
-      // set dummy value tile for using suspense
-      currentTheme: this.dummyCurrentTheme,
       isEnabledTimeline: false,
-      isSavedStatesOfTabChanges: false,
       isEnabledAttachTitleHeader: false,
 
       pageLimitationS: null,
@@ -80,9 +79,7 @@ export default class AdminCustomizeContainer extends Container {
       const { customizeParams } = response.data;
 
       this.setState({
-        currentTheme: customizeParams.themeType,
         isEnabledTimeline: customizeParams.isEnabledTimeline,
-        isSavedStatesOfTabChanges: customizeParams.isSavedStatesOfTabChanges,
         isEnabledAttachTitleHeader: customizeParams.isEnabledAttachTitleHeader,
         pageLimitationS: customizeParams.pageLimitationS,
         pageLimitationM: customizeParams.pageLimitationM,
@@ -109,30 +106,12 @@ export default class AdminCustomizeContainer extends Container {
     }
   }
 
-  /**
-   * Switch themeType
-   */
-  switchThemeType(themeName) {
-    this.setState({ currentTheme: themeName });
-
-    // preview if production
-    if (process.env.NODE_ENV !== 'development') {
-      this.previewTheme(themeName);
-    }
-  }
 
   /**
    * Switch enabledTimeLine
    */
   switchEnableTimeline() {
     this.setState({ isEnabledTimeline:  !this.state.isEnabledTimeline });
-  }
-
-  /**
-   * Switch savedStatesOfTabChanges
-   */
-  switchSavedStatesOfTabChanges() {
-    this.setState({ isSavedStatesOfTabChanges:  !this.state.isSavedStatesOfTabChanges });
   }
 
   /**
@@ -240,24 +219,6 @@ export default class AdminCustomizeContainer extends Container {
   }
 
   /**
-   * Preview theme
-   * @param {string} themeName
-   */
-  async previewTheme(themeName) {
-    try {
-      // get theme asset path
-      const response = await apiv3Get('/customize-setting/theme/asset-path', { themeName });
-      const { assetPath } = response.data;
-
-      const themeLink = document.getElementById('grw-theme-link');
-      themeLink.setAttribute('href', assetPath);
-    }
-    catch (err) {
-      toastError(err);
-    }
-  }
-
-  /**
    * Preview hljs style
    * @param {string} styleId
    */
@@ -268,25 +229,6 @@ export default class AdminCustomizeContainer extends Container {
     styleLInk.href = styleLInk.href.replace(/[^/]+\.css$/, `${styleId}.css`);
   }
 
-  /**
-   * Update theme
-   * @memberOf AdminCustomizeContainer
-   */
-  async updateCustomizeTheme() {
-    try {
-      const response = await apiv3Put('/customize-setting/theme', {
-        themeType: this.state.currentTheme,
-      });
-      const { customizedParams } = response.data;
-      this.setState({
-        themeType: customizedParams.themeType,
-      });
-    }
-    catch (err) {
-      logger.error(err);
-      throw new Error('Failed to update data');
-    }
-  }
 
   /**
    * Update function
@@ -296,7 +238,6 @@ export default class AdminCustomizeContainer extends Container {
     try {
       const response = await apiv3Put('/customize-setting/function', {
         isEnabledTimeline: this.state.isEnabledTimeline,
-        isSavedStatesOfTabChanges: this.state.isSavedStatesOfTabChanges,
         isEnabledAttachTitleHeader: this.state.isEnabledAttachTitleHeader,
         pageLimitationS: this.state.pageLimitationS,
         pageLimitationM: this.state.pageLimitationM,
@@ -309,7 +250,6 @@ export default class AdminCustomizeContainer extends Container {
       const { customizedParams } = response.data;
       this.setState({
         isEnabledTimeline: customizedParams.isEnabledTimeline,
-        isSavedStatesOfTabChanges: customizedParams.isSavedStatesOfTabChanges,
         isEnabledAttachTitleHeader: customizedParams.isEnabledAttachTitleHeader,
         pageLimitationS: customizedParams.pageLimitationS,
         pageLimitationM: customizedParams.pageLimitationM,

@@ -1,16 +1,14 @@
 import React, { useState, useEffect, useCallback } from 'react';
 
 import { SlackbotType } from '@growi/slack';
+import { useTranslation } from 'next-i18next';
 import PropTypes from 'prop-types';
-import { useTranslation } from 'react-i18next';
 
 
-import AppContainer from '~/client/services/AppContainer';
 import { toastSuccess, toastError } from '~/client/util/apiNotification';
 import { apiv3Delete, apiv3Put } from '~/client/util/apiv3-client';
+import { useAppTitle } from '~/stores/context';
 import loggerFactory from '~/utils/logger';
-
-import { withUnstatedContainers } from '../../UnstatedUtils';
 
 
 import CustomBotWithProxyConnectionStatus from './CustomBotWithProxyConnectionStatus';
@@ -22,13 +20,14 @@ const logger = loggerFactory('growi:cli:SlackIntegration:OfficialBotSettings');
 
 const OfficialBotSettings = (props) => {
   const {
-    appContainer, slackAppIntegrations,
+    slackAppIntegrations,
     onClickAddSlackWorkspaceBtn, onPrimaryUpdated,
     connectionStatuses, onUpdateTokens, onSubmitForm,
   } = props;
   const [siteName, setSiteName] = useState('');
   const [integrationIdToDelete, setIntegrationIdToDelete] = useState(null);
   const { t } = useTranslation();
+  const { data: appTitle } = useAppTitle();
 
   const addSlackAppIntegrationHandler = async() => {
     if (onClickAddSlackWorkspaceBtn != null) {
@@ -69,10 +68,10 @@ const OfficialBotSettings = (props) => {
     }
   };
 
+
   useEffect(() => {
-    const siteName = appContainer.config.crowi.title;
-    setSiteName(siteName);
-  }, [appContainer]);
+    setSiteName(appTitle);
+  }, [appTitle]);
 
   return (
     <>
@@ -151,14 +150,12 @@ const OfficialBotSettings = (props) => {
   );
 };
 
-const OfficialBotSettingsWrapper = withUnstatedContainers(OfficialBotSettings, [AppContainer]);
 
 OfficialBotSettings.defaultProps = {
   slackAppIntegrations: [],
 };
 
 OfficialBotSettings.propTypes = {
-  appContainer: PropTypes.instanceOf(AppContainer).isRequired,
 
   slackAppIntegrations: PropTypes.array,
   onClickAddSlackWorkspaceBtn: PropTypes.func,
@@ -169,4 +166,4 @@ OfficialBotSettings.propTypes = {
   onSubmitForm: PropTypes.func,
 };
 
-export default OfficialBotSettingsWrapper;
+export default OfficialBotSettings;

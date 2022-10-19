@@ -1,7 +1,7 @@
 import React from 'react';
 
 import PropTypes from 'prop-types';
-import { useTranslation } from 'react-i18next';
+import { useTranslation } from 'next-i18next';
 import {
   Modal, ModalHeader, ModalBody, ModalFooter,
 } from 'reactstrap';
@@ -17,10 +17,10 @@ class NotificationDeleteModal extends React.PureComponent {
         </ModalHeader>
         <ModalBody>
           <p>
-            {t('notification_setting.delete_notification_pattern_desc1', { path: notificationForConfiguration.triggerPath })}
+            {t('notification_settings.delete_notification_pattern_desc1', { path: notificationForConfiguration.triggerPath })}
           </p>
           <p className="text-danger">
-            {t('notification_setting.delete_notification_pattern_desc2')}
+            {t('notification_settings.delete_notification_pattern_desc2')}
           </p>
         </ModalBody>
         <ModalFooter>

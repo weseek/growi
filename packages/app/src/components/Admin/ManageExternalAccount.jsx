@@ -1,10 +1,9 @@
 import React, { Fragment } from 'react';
 
+import { useTranslation } from 'next-i18next';
 import PropTypes from 'prop-types';
-import { useTranslation } from 'react-i18next';
 
 import AdminExternalAccountsContainer from '~/client/services/AdminExternalAccountsContainer';
-import AppContainer from '~/client/services/AppContainer';
 import { toastError } from '~/client/util/apiNotification';
 
 import PaginationWrapper from '../PaginationWrapper';
@@ -20,7 +19,7 @@ class ManageExternalAccount extends React.Component {
     this.handleExternalAccountPage = this.handleExternalAccountPage.bind(this);
   }
 
-  componentWillMount() {
+  UNSAFE_componentWillMount() {
     this.handleExternalAccountPage(1);
   }
 
@@ -79,7 +78,6 @@ class ManageExternalAccount extends React.Component {
 
 ManageExternalAccount.propTypes = {
   t: PropTypes.func.isRequired, // i18next
-  appContainer: PropTypes.instanceOf(AppContainer).isRequired,
   adminExternalAccountsContainer: PropTypes.instanceOf(AdminExternalAccountsContainer).isRequired,
 };
 
@@ -88,6 +86,6 @@ const ManageExternalAccountWrapperFC = (props) => {
   return <ManageExternalAccount t={t} {...props} />;
 };
 
-const ManageExternalAccountWrapper = withUnstatedContainers(ManageExternalAccountWrapperFC, [AppContainer, AdminExternalAccountsContainer]);
+const ManageExternalAccountWrapper = withUnstatedContainers(ManageExternalAccountWrapperFC, [AdminExternalAccountsContainer]);
 
 export default ManageExternalAccountWrapper;

@@ -1,0 +1,10 @@
+{
+  "extends": "./tsconfig.build.server.json",
+  "compilerOptions": {
+    "paths": {
+      "~/*": ["./src/*"],
+      "^/*": ["./*"],
+      "debug": ["./src/utils/logger/alias-for-debug"]
+    }
+  }
+}

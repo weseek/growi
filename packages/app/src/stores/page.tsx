@@ -1,98 +1,58 @@
+import { IPageInfoForEntity, IPagePopulatedToShowRevision, Nullable } from '@growi/core';
 import useSWR, { SWRResponse } from 'swr';
 import useSWRImmutable from 'swr/immutable';
-import useSWRInfinite, { SWRInfiniteResponse } from 'swr/infinite';
 
+import { apiGet } from '~/client/util/apiv1-client';
 import { apiv3Get } from '~/client/util/apiv3-client';
-import { HasObjectId } from '~/interfaces/has-object-id';
 import {
-  IPageInfo, IPageHasId, IPageInfoForOperation, IPageInfoForListing, IDataWithMeta,
+  IPageInfo, IPageInfoForOperation,
 } from '~/interfaces/page';
 import { IRecordApplicableGrant, IResIsGrantNormalized } from '~/interfaces/page-grant';
-import { IPagingResult } from '~/interfaces/paging-result';
 import { IRevisionsForPagination } from '~/interfaces/revision';
 
-import { apiGet } from '../client/util/apiv1-client';
-import { Nullable } from '../interfaces/common';
 import { IPageTagsInfo } from '../interfaces/tag';
 
-import {
-  useCurrentPageId, useCurrentPagePath,
-} from './context';
-import { ITermNumberManagerUtil, useTermNumberManager } from './use-static-swr';
+import { useCurrentPageId } from './context';
 
 
-export const useSWRxPage = (pageId?: string, shareLinkId?: string): SWRResponse<IPageHasId, Error> => {
-  return useSWR(
+export const useSWRxPage = (pageId?: string|null, shareLinkId?: string): SWRResponse<IPagePopulatedToShowRevision|null, Error> => {
+  return useSWR<IPagePopulatedToShowRevision|null, Error>(
     pageId != null ? ['/page', pageId, shareLinkId] : null,
-    (endpoint, pageId, shareLinkId) => apiv3Get(endpoint, { pageId, shareLinkId }).then(result => result.data.page),
+    (endpoint, pageId, shareLinkId) => apiv3Get<{ page: IPagePopulatedToShowRevision }>(endpoint, { pageId, shareLinkId })
+      .then(result => result.data.page)
+      .catch((errs) => {
+        if (!Array.isArray(errs)) { throw Error('error is not array') }
+        const statusCode = errs[0].status;
+        if (statusCode === 403 || statusCode === 404) {
+          // for NotFoundPage
+          return null;
+        }
+        throw Error('failed to get page');
+      }),
   );
 };
 
-export const useSWRxPageByPath = (path?: string): SWRResponse<IPageHasId, Error> => {
-  return useSWR(
+export const useSWRxPageByPath = (path?: string): SWRResponse<IPagePopulatedToShowRevision, Error> => {
+  return useSWR<IPagePopulatedToShowRevision, Error>(
     path != null ? ['/page', path] : null,
-    (endpoint, path) => apiv3Get(endpoint, { path }).then(result => result.data.page),
+    (endpoint, path) => apiv3Get<{ page: IPagePopulatedToShowRevision }>(endpoint, { path }).then(result => result.data.page),
   );
 };
 
-export const useSWRxCurrentPage = (shareLinkId?: string): SWRResponse<IPageHasId, Error> => {
+export const useSWRxCurrentPage = (
+    shareLinkId?: string, initialData?: IPagePopulatedToShowRevision|null,
+): SWRResponse<IPagePopulatedToShowRevision|null, Error> => {
   const { data: currentPageId } = useCurrentPageId();
 
-  return useSWRxPage(currentPageId ?? undefined, shareLinkId);
-};
+  const swrResult = useSWRxPage(currentPageId, shareLinkId);
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-export const useSWRxRecentlyUpdated = (): SWRResponse<(IPageHasId)[], Error> => {
-  return useSWR(
-    '/pages/recent',
-    endpoint => apiv3Get<{ pages:(IPageHasId)[] }>(endpoint).then(response => response.data?.pages),
-  );
-};
-export const useSWRInifinitexRecentlyUpdated = () : SWRInfiniteResponse<(IPageHasId)[], Error> => {
-  const getKey = (page: number) => {
-    return `/pages/recent?offset=${page + 1}`;
-  };
-  return useSWRInfinite(
-    getKey,
-    (endpoint: string) => apiv3Get<{ pages:(IPageHasId)[] }>(endpoint).then(response => response.data?.pages),
-    {
-      revalidateFirstPage: false,
-      revalidateAll: false,
-    },
-  );
-};
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-export const useSWRxPageList = (path: string | null, pageNumber?: number, termNumber?: number): SWRResponse<IPagingResult<IPageHasId>, Error> => {
+  // use mutate because fallbackData does not work
+  // see: https://github.com/weseek/growi/commit/5038473e8d6028c9c91310e374a7b5f48b921a15
+  if (initialData !== undefined) {
+    swrResult.mutate(initialData);
+  }
 
-  const key = path != null
-    ? [`/pages/list?path=${path}&page=${pageNumber ?? 1}`, termNumber]
-    : null;
-
-  return useSWR(
-    key,
-    (endpoint: string) => apiv3Get<{pages: IPageHasId[], totalCount: number, limit: number}>(endpoint).then((response) => {
-      return {
-        items: response.data.pages,
-        totalCount: response.data.totalCount,
-        limit: response.data.limit,
-      };
-    }),
-  );
-};
-
-export const useDescendantsPageListForCurrentPathTermManager = (isDisabled?: boolean) : SWRResponse<number, Error> & ITermNumberManagerUtil => {
-  return useTermNumberManager(isDisabled === true ? null : 'descendantsPageListForCurrentPathTermNumber');
-};
-
-export const useSWRxDescendantsPageListForCurrrentPath = (pageNumber?: number): SWRResponse<IPagingResult<IPageHasId>, Error> => {
-  const { data: currentPagePath } = useCurrentPagePath();
-  const { data: termNumber } = useDescendantsPageListForCurrentPathTermManager();
-
-  const path = currentPagePath == null || termNumber == null
-    ? null
-    : currentPagePath;
-
-  return useSWRxPageList(path, pageNumber, termNumber);
+  return swrResult;
 };
 
 
@@ -118,63 +78,30 @@ export const useSWRxTagsInfo = (pageId: Nullable<string>): SWRResponse<IPageTags
 export const useSWRxPageInfo = (
     pageId: string | null | undefined,
     shareLinkId?: string | null,
+    initialData?: IPageInfoForEntity,
 ): SWRResponse<IPageInfo | IPageInfoForOperation, Error> => {
 
   // assign null if shareLinkId is undefined in order to identify SWR key only by pageId
   const fixedShareLinkId = shareLinkId ?? null;
 
-  return useSWRImmutable(
+  const swrResult = useSWRImmutable<IPageInfo | IPageInfoForOperation, Error>(
     pageId != null ? ['/page/info', pageId, fixedShareLinkId] : null,
     (endpoint, pageId, shareLinkId) => apiv3Get(endpoint, { pageId, shareLinkId }).then(response => response.data),
-  );
-};
-
-type PageInfoInjector = {
-  injectTo: <D extends HasObjectId>(pages: (D | IDataWithMeta<D>)[]) => IDataWithMeta<D, IPageInfoForOperation>[],
-}
-
-const isIDataWithMeta = (item: HasObjectId | IDataWithMeta): item is IDataWithMeta => {
-  return 'data' in item;
-};
-
-export const useSWRxPageInfoForList = (
-    pageIds: string[] | null | undefined,
-    attachBookmarkCount = false,
-    attachShortBody = false,
-): SWRResponse<Record<string, IPageInfoForListing>, Error> & PageInfoInjector => {
-
-  const shouldFetch = pageIds != null && pageIds.length > 0;
-
-  const swrResult = useSWRImmutable<Record<string, IPageInfoForListing>>(
-    shouldFetch ? ['/page-listing/info', pageIds, attachBookmarkCount, attachShortBody] : null,
-    (endpoint, pageIds, attachBookmarkCount, attachShortBody) => {
-      return apiv3Get(endpoint, { pageIds, attachBookmarkCount, attachShortBody }).then(response => response.data);
-    },
+    { fallbackData: initialData },
   );
 
-  return {
-    ...swrResult,
-    injectTo: <D extends HasObjectId>(pages: (D | IDataWithMeta<D>)[]) => {
-      return pages.map((item) => {
-        const page = isIDataWithMeta(item) ? item.data : item;
-        const orgPageMeta = isIDataWithMeta(item) ? item.meta : undefined;
+  // use mutate because fallbackData does not work
+  if (initialData != null) {
+    swrResult.mutate(initialData);
+  }
 
-        // get an applicable IPageInfo
-        const applicablePageInfo = (swrResult.data ?? {})[page._id];
-
-        return {
-          data: page,
-          meta: applicablePageInfo ?? orgPageMeta,
-        };
-      });
-    },
-  };
+  return swrResult;
 };
 
 export const useSWRxPageRevisions = (
-    pageId: string,
     page: number, // page number of pagination
     limit: number, // max number of pages in one paginate
+    pageId: string | null | undefined,
 ): SWRResponse<IRevisionsForPagination, Error> => {
 
   return useSWRImmutable<IRevisionsForPagination, Error>(

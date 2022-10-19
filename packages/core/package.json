@@ -1,6 +1,6 @@
 {
   "name": "@growi/core",
-  "version": "5.1.5-RC.0",
+  "version": "6.0.0-RC.3",
   "description": "GROWI Core Libraries",
   "license": "MIT",
   "keywords": [
@@ -15,6 +15,7 @@
     "build": "run-p build:*",
     "build:cjs": "tsc -p tsconfig.build.cjs.json && tsc-alias -p tsconfig.build.cjs.json",
     "build:esm": "tsc -p tsconfig.build.esm.json && tsc-alias -p tsconfig.build.esm.json",
+    "clean": "npx -y shx rm -rf dist",
     "lint:js": "eslint **/*.{js,ts}",
     "lint": "npm-run-all -p lint:*",
     "test": "jest --verbose"

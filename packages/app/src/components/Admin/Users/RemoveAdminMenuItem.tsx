@@ -1,6 +1,6 @@
-import React, { useCallback, useMemo } from 'react';
+import React, { useCallback } from 'react';
 
-import { useTranslation } from 'react-i18next';
+import { useTranslation } from 'next-i18next';
 
 import AdminUsersContainer from '~/client/services/AdminUsersContainer';
 import { toastSuccess, toastError } from '~/client/util/apiNotification';
@@ -20,6 +20,7 @@ const RemoveAdminAlert = React.memo((): JSX.Element => {
     </div>
   );
 });
+RemoveAdminAlert.displayName = 'RemoveAdminAlert';
 
 
 type Props = {

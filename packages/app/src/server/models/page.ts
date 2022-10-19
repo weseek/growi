@@ -2,7 +2,7 @@
 
 import nodePath from 'path';
 
-import { getOrCreateModel, pagePathUtils, pathUtils } from '@growi/core';
+import { pagePathUtils, pathUtils } from '@growi/core';
 import escapeStringRegexp from 'escape-string-regexp';
 import mongoose, {
   Schema, Model, Document, AnyObject,
@@ -15,7 +15,7 @@ import { IUserHasId } from '~/interfaces/user';
 import { ObjectIdLike } from '~/server/interfaces/mongoose-utils';
 
 import loggerFactory from '../../utils/logger';
-import Crowi from '../crowi';
+import { getOrCreateModel } from '../util/mongoose-utils';
 
 import { getPageSchema, extractToAncestorsPaths, populateDataToShowRevision } from './obsolete-page';
 
@@ -58,7 +58,9 @@ export type CreateMethod = (path: string, body: string, user, options: PageCreat
 export interface PageModel extends Model<PageDocument> {
   [x: string]: any; // for obsolete static methods
   findByIdsAndViewer(pageIds: ObjectIdLike[], user, userGroups?, includeEmpty?: boolean): Promise<PageDocument[]>
-  findByPathAndViewer(path: string | null, user, userGroups?, useFindOne?: boolean, includeEmpty?: boolean): Promise<PageDocument | PageDocument[] | null>
+  findByPathAndViewer(path: string | null, user, userGroups?, useFindOne?: true, includeEmpty?: boolean): Promise<PageDocument | PageDocument[] | null>
+  findByPathAndViewer(path: string | null, user, userGroups?, useFindOne?: false, includeEmpty?: boolean): Promise<PageDocument[]>
+  countByPathAndViewer(path: string | null, user, userGroups?, includeEmpty?:boolean): Promise<number>
   findTargetAndAncestorsByPathOrId(pathOrId: string): Promise<TargetAndAncestorsResult>
   findRecentUpdatedPages(path: string, user, option, includeEmpty?: boolean): Promise<PaginatedPages>
   generateGrantCondition(
@@ -573,6 +575,19 @@ schema.statics.findByPathAndViewer = async function(
   return queryBuilder.query.exec();
 };
 
+schema.statics.countByPathAndViewer = async function(path: string | null, user, userGroups = null, includeEmpty = false): Promise<number> {
+  if (path == null) {
+    throw new Error('path is required.');
+  }
+
+  const baseQuery = this.count({ path });
+  const queryBuilder = new PageQueryBuilder(baseQuery, includeEmpty);
+
+  await queryBuilder.addViewerCondition(user, userGroups);
+
+  return queryBuilder.query.exec();
+};
+
 schema.statics.findRecentUpdatedPages = async function(
     path: string, user, options, includeEmpty = false,
 ): Promise<PaginatedPages> {
@@ -943,7 +958,9 @@ export type PageCreateOptions = {
 /*
  * Merge obsolete page model methods and define new methods which depend on crowi instance
  */
-export default (crowi: Crowi): any => {
+// remove type for crowi to prevent 'import/no-cycle'
+// eslint-disable-next-line import/no-anonymous-default-export
+export default (crowi): any => {
   let pageEvent;
   if (crowi != null) {
     pageEvent = crowi.event('page');

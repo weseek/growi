@@ -1,12 +1,11 @@
 import React from 'react';
 
+import { useTranslation } from 'next-i18next';
 import PropTypes from 'prop-types';
-import { useTranslation } from 'react-i18next';
 import {
   Modal, ModalHeader, ModalBody, ModalFooter,
 } from 'reactstrap';
 
-import AppContainer from '~/client/services/AppContainer';
 import { toastError } from '~/client/util/apiNotification';
 import { apiv3Put } from '~/client/util/apiv3-client';
 
@@ -26,7 +25,7 @@ class PasswordResetModal extends React.Component {
   }
 
   async resetPassword() {
-    const { t, appContainer, userForPasswordResetModal } = this.props;
+    const { t, userForPasswordResetModal } = this.props;
     try {
       const res = await apiv3Put('/users/reset-password', { id: userForPasswordResetModal._id });
       const { newPassword } = res.data;
@@ -117,11 +116,9 @@ const PasswordResetModalWrapperFC = (props) => {
 /**
  * Wrapper component for using unstated
  */
-const PasswordResetModalWrapper = withUnstatedContainers(PasswordResetModalWrapperFC, [AppContainer]);
 
 PasswordResetModal.propTypes = {
   t: PropTypes.func.isRequired, // i18next
-  appContainer: PropTypes.instanceOf(AppContainer).isRequired,
 
   isOpen: PropTypes.bool.isRequired,
   onClose: PropTypes.func.isRequired,
@@ -129,4 +126,4 @@ PasswordResetModal.propTypes = {
 
 };
 
-export default PasswordResetModalWrapper;
+export default PasswordResetModalWrapperFC;

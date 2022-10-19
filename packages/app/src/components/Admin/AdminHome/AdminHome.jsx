@@ -1,19 +1,22 @@
 import React, { useEffect, useCallback } from 'react';
+
+import { useTranslation } from 'next-i18next';
 import PropTypes from 'prop-types';
-import { useTranslation } from 'react-i18next';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
 import { Tooltip } from 'reactstrap';
+
+import AdminHomeContainer from '~/client/services/AdminHomeContainer';
+import { toastError } from '~/client/util/apiNotification';
+import { useSWRxV5MigrationStatus } from '~/stores/page-listing';
 import loggerFactory from '~/utils/logger';
 
-import { toastError } from '~/client/util/apiNotification';
 
 import { withUnstatedContainers } from '../../UnstatedUtils';
-import AppContainer from '~/client/services/AppContainer';
-import AdminHomeContainer from '~/client/services/AdminHomeContainer';
-import { useSWRxV5MigrationStatus } from '~/stores/page-listing';
-import SystemInfomationTable from './SystemInfomationTable';
-import InstalledPluginTable from './InstalledPluginTable';
+
+
 import EnvVarsTable from './EnvVarsTable';
+import InstalledPluginTable from './InstalledPluginTable';
+import SystemInfomationTable from './SystemInfomationTable';
 
 const logger = loggerFactory('growi:admin');
 
@@ -129,10 +132,9 @@ const AdminHome = (props) => {
 };
 
 
-const AdminHomeWrapper = withUnstatedContainers(AdminHome, [AppContainer, AdminHomeContainer]);
+const AdminHomeWrapper = withUnstatedContainers(AdminHome, [AdminHomeContainer]);
 
 AdminHome.propTypes = {
-  appContainer: PropTypes.instanceOf(AppContainer).isRequired,
   adminHomeContainer: PropTypes.instanceOf(AdminHomeContainer).isRequired,
 };
 

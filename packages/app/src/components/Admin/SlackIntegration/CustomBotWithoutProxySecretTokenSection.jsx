@@ -1,9 +1,8 @@
 import React, { useState, useEffect } from 'react';
 
+import { useTranslation } from 'next-i18next';
 import PropTypes from 'prop-types';
-import { useTranslation } from 'react-i18next';
 
-import AppContainer from '~/client/services/AppContainer';
 import { toastSuccess, toastError } from '~/client/util/apiNotification';
 import { apiv3Put } from '~/client/util/apiv3-client';
 
@@ -13,7 +12,7 @@ import AdminUpdateButtonRow from '../Common/AdminUpdateButtonRow';
 
 const CustomBotWithoutProxySecretTokenSection = (props) => {
   const {
-    appContainer, slackSigningSecret, slackBotToken, slackSigningSecretEnv, slackBotTokenEnv, onUpdatedSecretToken,
+    slackSigningSecret, slackBotToken, slackSigningSecretEnv, slackBotTokenEnv, onUpdatedSecretToken,
   } = props;
   const { t } = useTranslation();
 
@@ -113,11 +112,7 @@ const CustomBotWithoutProxySecretTokenSection = (props) => {
   );
 };
 
-const CustomBotWithoutProxySecretTokenSectionWrapper = withUnstatedContainers(CustomBotWithoutProxySecretTokenSection, [AppContainer]);
-
 CustomBotWithoutProxySecretTokenSection.propTypes = {
-  appContainer: PropTypes.instanceOf(AppContainer).isRequired,
-
   onUpdatedSecretToken: PropTypes.func,
   slackSigningSecret: PropTypes.string,
   slackSigningSecretEnv: PropTypes.string,
@@ -125,4 +120,4 @@ CustomBotWithoutProxySecretTokenSection.propTypes = {
   slackBotTokenEnv: PropTypes.string,
 };
 
-export default CustomBotWithoutProxySecretTokenSectionWrapper;
+export default CustomBotWithoutProxySecretTokenSection;

@@ -1,8 +1,8 @@
-import { getModelSafely } from '@growi/core';
 import { Types } from 'mongoose';
 
 import loggerFactory from '../../utils/logger';
 import Crowi from '../crowi';
+import { getModelSafely } from '../util/mongoose-utils';
 
 // https://regex101.com/r/Ztxj2j/1
 const USERNAME_PATTERN = new RegExp(/\B@[\w@.-]+/g);
@@ -88,7 +88,7 @@ class CommentService {
     return mentionedUserIDs?.map((user) => {
       return user._id;
     });
-  }
+  };
 
 }
 

@@ -27,11 +27,6 @@ module.exports = function(crowi, req, locals) {
     return crowi.runtimeVersions.versions.yarn ? crowi.runtimeVersions.versions.yarn.version : '-';
   };
 
-  // token getter
-  locals.csrf = function() {
-    return req.csrfToken;
-  };
-
   locals.getAppTitleFontSize = function(appTitle) {
     const appTitleWidth = stringWidth(appTitle);
     let fontSize = 22;

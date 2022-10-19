@@ -1,27 +1,26 @@
 import React, { useCallback } from 'react';
 
-import { useTranslation } from 'react-i18next';
+import { useTranslation } from 'next-i18next';
 import { Card, CardBody } from 'reactstrap';
 
 import { toastSuccess, toastError } from '~/client/util/apiNotification';
-import { isDarkMode as isDarkModeByUtil } from '~/client/util/color-scheme';
 import { useSWRxSidebarConfig } from '~/stores/ui';
+import { useNextThemes } from '~/stores/use-next-themes';
 
 const CustomizeSidebarsetting = (): JSX.Element => {
-  const { t } = useTranslation();
+  const { t } = useTranslation('admin');
   const {
     update, isSidebarDrawerMode, isSidebarClosedAtDockMode, setIsSidebarDrawerMode, setIsSidebarClosedAtDockMode,
   } = useSWRxSidebarConfig();
 
-  const isDarkMode = isDarkModeByUtil();
-  const colorText = isDarkMode ? 'dark' : 'light';
-  const drawerIconFileName = `/images/customize-settings/drawer-${colorText}.svg`;
-  const dockIconFileName = `/images/customize-settings/dock-${colorText}.svg`;
+  const { resolvedTheme } = useNextThemes();
+  const drawerIconFileName = `/images/customize-settings/drawer-${resolvedTheme}.svg`;
+  const dockIconFileName = `/images/customize-settings/dock-${resolvedTheme}.svg`;
 
   const onClickSubmit = useCallback(async() => {
     try {
       await update();
-      toastSuccess(t('toaster.update_successed', { target: t('admin:customize_setting.default_sidebar_mode.title') }));
+      toastSuccess(t('toaster.update_successed', { target: t('customize_settings.default_sidebar_mode.title') }));
     }
     catch (err) {
       toastError(err);
@@ -33,11 +32,11 @@ const CustomizeSidebarsetting = (): JSX.Element => {
       <div className="row">
         <div className="col-12">
 
-          <h2 className="admin-setting-header">{t('admin:customize_setting.default_sidebar_mode.title')}</h2>
+          <h2 className="admin-setting-header">{t('customize_settings.default_sidebar_mode.title')}</h2>
 
           <Card className="card well my-3">
             <CardBody className="px-0 py-2">
-              {t('admin:customize_setting.default_sidebar_mode.desc')}
+              {t('customize_settings.default_sidebar_mode.desc')}
             </CardBody>
           </Card>
 
@@ -68,7 +67,7 @@ const CustomizeSidebarsetting = (): JSX.Element => {
 
           <Card className="card well my-5">
             <CardBody className="px-0 py-2">
-              {t('admin:customize_setting.default_sidebar_mode.dock_mode_default_desc')}
+              {t('customize_settings.default_sidebar_mode.dock_mode_default_desc')}
             </CardBody>
           </Card>
 
@@ -79,12 +78,12 @@ const CustomizeSidebarsetting = (): JSX.Element => {
                 id="is-open"
                 className="custom-control-input"
                 name="mailVisibility"
-                checked={!isSidebarDrawerMode && !isSidebarClosedAtDockMode}
+                checked={isSidebarDrawerMode === false && isSidebarClosedAtDockMode === false}
                 disabled={isSidebarDrawerMode}
                 onChange={() => setIsSidebarClosedAtDockMode(false)}
               />
               <label className="custom-control-label" htmlFor="is-open">
-                {t('admin:customize_setting.default_sidebar_mode.dock_mode_default_open')}
+                {t('customize_settings.default_sidebar_mode.dock_mode_default_open')}
               </label>
             </div>
             <div className="custom-control custom-radio my-3">
@@ -93,12 +92,12 @@ const CustomizeSidebarsetting = (): JSX.Element => {
                 id="is-closed"
                 className="custom-control-input"
                 name="mailVisibility"
-                checked={!isSidebarDrawerMode && isSidebarClosedAtDockMode}
+                checked={isSidebarDrawerMode === false && isSidebarClosedAtDockMode === true}
                 disabled={isSidebarDrawerMode}
                 onChange={() => setIsSidebarClosedAtDockMode(true)}
               />
               <label className="custom-control-label" htmlFor="is-closed">
-                {t('admin:customize_setting.default_sidebar_mode.dock_mode_default_close')}
+                {t('customize_settings.default_sidebar_mode.dock_mode_default_close')}
               </label>
             </div>
           </div>

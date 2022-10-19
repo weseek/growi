@@ -1,44 +1,43 @@
 import React, {
-  useEffect, useState, useMemo, useCallback,
+  useEffect, useState, useMemo,
 } from 'react';
 
 import { pagePathUtils, pathUtils } from '@growi/core';
 import { format } from 'date-fns';
-import PropTypes from 'prop-types';
-import { useTranslation } from 'react-i18next';
+import { useTranslation } from 'next-i18next';
+import { useRouter } from 'next/router';
 import { Modal, ModalHeader, ModalBody } from 'reactstrap';
 import { debounce } from 'throttle-debounce';
 
 
-import AppContainer from '~/client/services/AppContainer';
 import { toastError } from '~/client/util/apiNotification';
-import { useCurrentUser } from '~/stores/context';
+import { useCurrentUser, useIsSearchServiceReachable } from '~/stores/context';
 import { usePageCreateModal } from '~/stores/modal';
+import { EditorMode, useEditorMode } from '~/stores/ui';
 
 import PagePathAutoComplete from './PagePathAutoComplete';
-import { withUnstatedContainers } from './UnstatedUtils';
-
 
 const {
   userPageRoot, isCreatablePage, generateEditorPath, isUsersHomePage,
 } = pagePathUtils;
 
-const PageCreateModal = (props) => {
+const PageCreateModal = () => {
   const { t } = useTranslation();
-  const { appContainer } = props;
+  const router = useRouter();
 
   const { data: currentUser } = useCurrentUser();
 
   const { data: pageCreateModalData, close: closeCreateModal } = usePageCreateModal();
   const { isOpened, path } = pageCreateModalData;
 
-  const config = appContainer.getConfig();
-  const isReachable = config.isSearchServiceReachable;
+  const { data: isReachable } = useIsSearchServiceReachable();
   const pathname = path || '';
   const userPageRootPath = userPageRoot(currentUser);
   const isCreatable = isCreatablePage(pathname) || isUsersHomePage(pathname);
   const pageNameInputInitialValue = isCreatable ? pathUtils.addTrailingSlash(pathname) : '/';
   const now = format(new Date(), 'yyyy/MM/dd');
+
+  const { mutate: mutateEditorMode } = useEditorMode();
 
   const [todayInput1, setTodayInput1] = useState(t('Memo'));
   const [todayInput2, setTodayInput2] = useState('');
@@ -48,8 +47,10 @@ const PageCreateModal = (props) => {
 
   // ensure pageNameInput is synced with selectedPagePath || currentPagePath
   useEffect(() => {
-    setPageNameInput(isCreatable ? pathUtils.addTrailingSlash(pathname) : '/');
-  }, [pathname, isCreatable]);
+    if (isOpened) {
+      setPageNameInput(isCreatable ? pathUtils.addTrailingSlash(pathname) : '/');
+    }
+  }, [isOpened, pathname, isCreatable]);
 
   const checkIsUsersHomePageDebounce = useMemo(() => {
     const checkIsUsersHomePage = () => {
@@ -60,8 +61,10 @@ const PageCreateModal = (props) => {
   }, [pageNameInput]);
 
   useEffect(() => {
-    checkIsUsersHomePageDebounce(pageNameInput);
-  }, [checkIsUsersHomePageDebounce, pageNameInput]);
+    if (isOpened) {
+      checkIsUsersHomePageDebounce(pageNameInput);
+    }
+  }, [isOpened, checkIsUsersHomePageDebounce, pageNameInput]);
 
   function transitBySubmitEvent(e, transitHandler) {
     // prevent page transition by submit
@@ -99,8 +102,12 @@ const PageCreateModal = (props) => {
    */
   async function redirectToEditor(...paths) {
     try {
-      const editorPath = await generateEditorPath(...paths);
-      window.location.href = editorPath;
+      const editorPath = generateEditorPath(...paths);
+      await router.push(editorPath);
+      mutateEditorMode(EditorMode.Editor);
+
+      // close modal
+      closeCreateModal();
     }
     catch (err) {
       toastError(err);
@@ -138,6 +145,9 @@ const PageCreateModal = (props) => {
   }
 
   function renderCreateTodayForm() {
+    if (!isOpened) {
+      return <></>;
+    }
     return (
       <div className="row">
         <fieldset className="col-12 mb-4">
@@ -189,6 +199,9 @@ const PageCreateModal = (props) => {
   }
 
   function renderInputPageForm() {
+    if (!isOpened) {
+      return <></>;
+    }
     return (
       <div className="row" data-testid="row-create-page-under-below">
         <fieldset className="col-12 mb-4">
@@ -199,7 +212,7 @@ const PageCreateModal = (props) => {
               {isReachable
                 ? (
                   <PagePathAutoComplete
-                    initializedPath={pageNameInput}
+                    initializedPath={pageNameInputInitialValue}
                     addTrailingSlash
                     onSubmit={ppacSubmitHandler}
                     onInputChange={value => setPageNameInput(value)}
@@ -243,6 +256,9 @@ const PageCreateModal = (props) => {
   }
 
   function renderTemplatePageForm() {
+    if (!isOpened) {
+      return <></>;
+    }
     return (
       <div className="row">
         <fieldset className="col-12">
@@ -311,13 +327,5 @@ const PageCreateModal = (props) => {
   );
 };
 
-PageCreateModal.propTypes = {
-  appContainer: PropTypes.instanceOf(AppContainer).isRequired,
-};
 
-/**
- * Wrapper component for using unstated
- */
-const PageCreateModalWrapper = withUnstatedContainers(PageCreateModal, [AppContainer]);
-
-export default PageCreateModalWrapper;
+export default PageCreateModal;

@@ -34,7 +34,7 @@ export class UserPicture extends React.Component {
 
   RootElmWithoutLink = (props) => {
     return <span {...props}>{props.children}</span>;
-  }
+  };
 
   RootElmWithLink = (props) => {
     const { user } = this.props;
@@ -43,7 +43,7 @@ export class UserPicture extends React.Component {
     // Nested anchor tags causes a warning.
     // https://stackoverflow.com/questions/13052598/creating-anchor-tag-inside-anchor-taga
     return <span onClick={() => { window.location.href = href }} {...props}>{props.children}</span>;
-  }
+  };
 
   withTooltip = (RootElm) => {
     const { user } = this.props;
@@ -58,7 +58,7 @@ export class UserPicture extends React.Component {
         </UncontrolledTooltip>
       </>
     );
-  }
+  };
 
   render() {
     const user = this.props.user;

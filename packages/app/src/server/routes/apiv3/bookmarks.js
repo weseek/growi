@@ -74,7 +74,6 @@ module.exports = (crowi) => {
   const accessTokenParser = require('../../middlewares/access-token-parser')(crowi);
   const loginRequiredStrictly = require('../../middlewares/login-required')(crowi);
   const loginRequired = require('../../middlewares/login-required')(crowi, true);
-  const csrf = require('../../middlewares/csrf')(crowi);
   const addActivity = generateAddActivityMiddleware(crowi);
 
   const activityEvent = crowi.event('activity');
@@ -264,7 +263,7 @@ module.exports = (crowi) => {
    *                schema:
    *                  $ref: '#/components/schemas/Bookmark'
    */
-  router.put('/', accessTokenParser, loginRequiredStrictly, csrf, addActivity, validator.bookmarks, apiV3FormValidator, async(req, res) => {
+  router.put('/', accessTokenParser, loginRequiredStrictly, addActivity, validator.bookmarks, apiV3FormValidator, async(req, res) => {
     const { pageId, bool } = req.body;
     const userId = req.user?._id;
 

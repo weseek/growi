@@ -1,4 +1,3 @@
-import { getOrCreateModel } from '@growi/core';
 import { addSeconds } from 'date-fns';
 import mongoose, {
   Schema, Model, Document, QueryOptions, FilterQuery,
@@ -9,8 +8,10 @@ import {
   IPageForResuming, IUserForResuming, IOptionsForResuming,
 } from '~/server/models/interfaces/page-operation';
 
+
 import loggerFactory from '../../utils/logger';
 import { ObjectIdLike } from '../interfaces/mongoose-utils';
+import { getOrCreateModel } from '../util/mongoose-utils';
 
 const TIME_TO_ADD_SEC = 10;
 

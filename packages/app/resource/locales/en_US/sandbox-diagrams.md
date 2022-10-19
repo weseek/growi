@@ -29,6 +29,7 @@ See [PlantUML](http://plantuml.com/).
 
 ## Sequence diagram
 
+``` plantuml
 @startuml
 skinparam sequenceArrowThickness 2
 skinparam roundcorner 20
@@ -58,13 +59,12 @@ A --> User: Done
 deactivate A
 
 @enduml
-
-<!-- Reset PlantUML -->
-<div class="clearfix"></div>
+```
 
 
 ## Class diagram
 
+``` plantuml
 @startuml
 
 class BaseClass
@@ -86,13 +86,11 @@ namespace net.foo {
 BaseClass <|-- net.unused.Person
 
 @enduml
-
-<!-- Reset PlantUML -->
-<div class="clearfix"></div>
+```
 
 
 ## Component diagram
-
+``` plantuml
 @startuml
 
 package "Some Group" {
@@ -125,14 +123,12 @@ database "MySql" {
 [Folder 3] --> [Frame 4]
 
 @enduml
-
-<!-- Reset PlantUML -->
-<div class="clearfix"></div>
+```
 
 
 ## State diagram
 
-
+``` plantuml
 @startuml
 scale 600 width
 
@@ -153,9 +149,7 @@ State3 --> [*] : Succeeded / Save Result
 State3 --> [*] : Aborted
 
 @enduml
-
-<!-- Reset PlantUML -->
-<div class="clearfix"></div>
+```
 
 
 # :pencil: blockdiag

@@ -1,25 +1,23 @@
 import pathlib from 'path';
 import { Readable, Writable } from 'stream';
 
-import { pagePathUtils, pathUtils } from '@growi/core';
+import {
+  pagePathUtils, pathUtils, Ref, HasObjectId,
+  IUserHasId,
+  IPage, IPageInfo, IPageInfoAll, IPageInfoForEntity, IPageWithMeta,
+} from '@growi/core';
 import escapeStringRegexp from 'escape-string-regexp';
 import mongoose, { ObjectId, QueryCursor } from 'mongoose';
 import streamToPromise from 'stream-to-promise';
 
-import { SupportedAction, SupportedTargetModel } from '~/interfaces/activity';
-import { Ref } from '~/interfaces/common';
+import { SupportedAction } from '~/interfaces/activity';
 import { V5ConversionErrCode } from '~/interfaces/errors/v5-conversion-error';
-import { HasObjectId } from '~/interfaces/has-object-id';
-import {
-  IPage, IPageInfo, IPageInfoAll, IPageInfoForEntity, IPageWithMeta,
-} from '~/interfaces/page';
 import {
   PageDeleteConfigValue, IPageDeleteConfigValueToProcessValidation,
 } from '~/interfaces/page-delete-config';
 import {
   IPageOperationProcessInfo, IPageOperationProcessData, PageActionStage, PageActionType,
 } from '~/interfaces/page-operation';
-import { IUser, IUserHasId } from '~/interfaces/user';
 import { PageMigrationErrorData, SocketEventName, UpdateDescCountRawData } from '~/interfaces/websocket';
 import {
   CreateMethod, PageCreateOptions, PageModel, PageDocument, pushRevision, PageQueryBuilder,
@@ -233,7 +231,7 @@ class PageService {
       page = await Page.findByIdAndViewer(pageId, user, null, includeEmpty);
     }
     else {
-      page = await Page.findByPathAndViewer(path, user, null, includeEmpty);
+      page = await Page.findByPathAndViewer(path, user, null, true, includeEmpty);
     }
 
     if (page == null) {
@@ -2254,7 +2252,7 @@ class PageService {
     });
   }
 
-  constructBasicPageInfo(page: IPage, isGuestUser?: boolean): IPageInfo | IPageInfoForEntity {
+  constructBasicPageInfo(page: PageDocument, isGuestUser?: boolean): IPageInfo | IPageInfoForEntity {
     const isMovable = isGuestUser ? false : isMovablePage(page.path);
 
     if (page.isEmpty) {
@@ -2283,6 +2281,7 @@ class PageService {
       isDeletable: isMovable,
       isAbleToDeleteCompletely: false,
       isRevertible: isTrashPage(page.path),
+      contentAge: page.getContentAge(),
       expandContentWidth,
     };
 
@@ -2485,7 +2484,7 @@ class PageService {
       throw Error(`The maximum number of pageIds allowed is ${LIMIT_FOR_MULTIPLE_PAGE_OP}.`);
     }
 
-    this.normalizeParentRecursivelyByPages(pages, user);
+    await this.normalizeParentRecursivelyByPages(pages, user);
 
     return;
   }

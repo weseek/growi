@@ -1,5 +1,7 @@
 
 
+import { ServerResponse } from 'http';
+
 import {
   markdownSectionBlock, GrowiCommand, parseSlashCommand, respondRejectedErrors, generateWebClient,
   InvalidGrowiCommandError, requiredScopes, REQUEST_TIMEOUT_FOR_PTOG,
@@ -423,7 +425,7 @@ export class SlackCtrl {
   }
 
   @Get('/oauth_redirect')
-  async handleOauthRedirect(@Req() req: Req, @Res() serverRes: Res, @Res() platformRes: PlatformResponse): Promise<void|string> {
+  async handleOauthRedirect(@Req() req: Req, @Res() serverRes: ServerResponse, @Res() platformRes: PlatformResponse): Promise<void|string> {
 
     // create 'Add to Slack' url
     const addToSlackUrl = await this.installerService.installer.generateInstallUrl({

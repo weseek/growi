@@ -1,6 +1,6 @@
 # :tada: GROWI へようこそ
 [![GitHub Releases](https://img.shields.io/github/release/weseek/growi.svg)](https://github.com/weseek/growi/releases/latest)
-[![MIT License](https://img.shields.io/badge/license-MIT-blue.svg?style=flat)](LICENSE)
+[![MIT License](https://img.shields.io/badge/license-MIT-blue.svg?style=flat)](https://github.com/weseek/growi/blob/master/LICENSE)
 
 GROWI は個人・法人向けの Wiki | ナレッジベースツールです。  
 会社や大学の研究室、サークルでのナレッジ情報を簡単に共有でき、作られたページは誰でも編集が可能です。

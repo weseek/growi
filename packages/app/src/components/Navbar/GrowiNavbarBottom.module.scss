@@ -1,0 +1,16 @@
+@use '~/styles/variables' as var;
+@use '~/styles/mixins';
+
+.grw-navbar-bottom :global {
+  height: var.$grw-navbar-bottom-height;
+
+  // apply transition
+  transition-property: bottom;
+  @include mixins.apply-navigation-transition();
+}
+
+.grw-navbar-bottom {
+  &:global(.grw-navbar-bottom-drawer-opened) {
+    bottom: #{-1 * var.$grw-navbar-bottom-height};
+  }
+}

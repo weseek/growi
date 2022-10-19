@@ -4,9 +4,11 @@ import mongoose, {
   Schema, Model, Document,
 } from 'mongoose';
 
-import { getOrCreateModel } from '@growi/core';
-import loggerFactory from '../../utils/logger';
 import { INamedQuery, SearchDelegatorName } from '~/interfaces/named-query';
+
+import loggerFactory from '../../utils/logger';
+import { getOrCreateModel } from '../util/mongoose-utils';
+
 
 const logger = loggerFactory('growi:models:named-query');
 

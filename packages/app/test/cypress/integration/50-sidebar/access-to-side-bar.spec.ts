@@ -27,13 +27,20 @@ context('Access to sidebar', () => {
     });
 
     cy.getByTestid('grw-recent-changes').should('be.visible');
+    cy.get('.list-group-item').should('be.visible');
 
-    cy.getByTestid('grw-contextual-navigation-sub').screenshot(`${ssPrefix}recent-changes-1-page-list`);
+    // Avoid blackout misalignment
+    cy.scrollTo('center');
+    cy.screenshot(`${ssPrefix}recent-changes-1-page-list`);
 
     cy.get('#grw-sidebar-contents-wrapper').within(() => {
       cy.get('#recentChangesResize').click({force: true});
-      cy.screenshot(`${ssPrefix}recent-changes-2-switch-sidebar-size`);
+      cy.get('.list-group-item').should('be.visible');
     });
+
+    // Avoid blackout misalignment
+    cy.scrollTo('center');
+    cy.screenshot(`${ssPrefix}recent-changes-2-switch-sidebar-size`);
   });
 
   it('Successfully create a custom sidebar page', () => {
@@ -169,6 +176,7 @@ context('Access to sidebar', () => {
 
   it('Successfully access to trash page', () => {
     cy.visit('/');
+    cy.collapseSidebar(true);
     cy.get('.grw-sidebar-nav-secondary-container').within(() => {
       cy.get('a[href*="/trash"]').click();
     });
