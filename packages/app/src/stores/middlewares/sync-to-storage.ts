@@ -34,8 +34,8 @@ export const createSyncToStorageMiddlware = (
       }
 
       const swrNext = useSWRNext(key, fetcher, {
-        fallbackData: initData,
         ...config,
+        fallbackData: initData,
       });
 
       return {
