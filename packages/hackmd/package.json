@@ -4,7 +4,7 @@
   "description": "GROWI js and css files to use hackmd",
   "license": "MIT",
   "scripts": {
-    "build": "vite build"
+    "build": "vite build && cp ./src/index.js ./dist"
   },
   "dependencies": {
   },
