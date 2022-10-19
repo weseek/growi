@@ -32,7 +32,7 @@ const UserManagement = (props: UserManagementProps) => {
     catch (err) {
       toastError(err);
     }
-  })
+  });
 
   // componentDidMount
   useEffect(() => {
@@ -43,10 +43,10 @@ const UserManagement = (props: UserManagementProps) => {
     return (adminUsersContainer.isSelected(statusType)) ? (
       adminUsersContainer.state.selectedStatusList.size > 1
     )
-    : (
-      true
-    )
-  }
+      : (
+        true
+      );
+  };
 
   const clickHandler = (statusType: string) => {
     if (!validateToggleStatus(statusType)) {
@@ -57,22 +57,24 @@ const UserManagement = (props: UserManagementProps) => {
       setIsNotifyCommentShow(false);
     }
     adminUsersContainer.handleClick(statusType);
-  }
+  };
 
   const resetButtonClickHandler = (async() => {
     try {
       await adminUsersContainer.resetAllChanges();
       setIsNotifyCommentShow(false);
-      (inputRef.current != null) && (inputRef.current.value = '');
+      if (inputRef.current != null) {
+        inputRef.current.value = '';
+      }
     }
     catch (err) {
       toastError(err);
     }
-  })
+  });
 
   const changeSearchTextHandler = (async(e: React.FormEvent<HTMLInputElement>) => {
     await adminUsersContainer.handleChangeSearchText(e?.currentTarget.value);
-  })
+  });
 
   const renderCheckbox = (status: string, statusLabel: string, statusColor: string) => {
     return (
@@ -90,8 +92,8 @@ const UserManagement = (props: UserManagementProps) => {
           </span>
         </label>
       </div>
-    )
-  }
+    );
+  };
 
   const pager = (
     <div className="my-3">
@@ -119,7 +121,7 @@ const UserManagement = (props: UserManagementProps) => {
       <p>
         <InviteUserControl />
         <a className="btn btn-outline-secondary ml-2" href="/admin/users/external-accounts" role="button">
-          <i className="icon-user-follow" aria-hidden="true"></i>
+          <i className="icon-user-follow mr-1" aria-hidden="true"></i>
           {t('admin:user_management.external_account')}
         </a>
       </p>
@@ -140,15 +142,17 @@ const UserManagement = (props: UserManagementProps) => {
               {/* TODO: Fix position */}
               {
                 adminUsersContainer.state.searchText.length > 0
-                ? ( <i
-                     className={`icon-close ${styles['search-clear']}`}
-                      onClick={async() => {
-                        await adminUsersContainer.clearSearchText();
-                        (inputRef.current != null) && (inputRef.current.value = '');
-                      }}
-                    />
+                  ? (<i
+                    className={`icon-close ${styles['search-clear']}`}
+                    onClick={async() => {
+                      await adminUsersContainer.clearSearchText();
+                      if (inputRef.current != null) {
+                        inputRef.current.value = '';
+                      }
+                    }}
+                  />
                   )
-                : ''
+                  : ''
               }
             </span>
           </div>
@@ -184,9 +188,9 @@ const UserManagement = (props: UserManagementProps) => {
       {pager}
 
     </div>
-  )
+  );
 
-}
+};
 
 const UserManagementWrapper = withUnstatedContainers(UserManagement, [AdminUsersContainer]);
 
