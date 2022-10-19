@@ -5,8 +5,13 @@
   "wiki_management_home_page": "Wiki Management Home Page",
   "app_settings": "App Settings",
   "last_login": "Last login",
+  "anyone_with_the_link": "anyone with the link",
+  "only_me": "only me",
+  "only_inside_the_group": "only inside the group",
   "security_settings": {
     "security_settings": "Security Settings",
+    "scope_of_page_disclosure": "Scope of page disclosure",
+    "set_point": "Set point",
     "Guest Users Access": "Guest users access",
     "always_hidden": "Always hidden",
     "always_displayed": "Always displayed",
