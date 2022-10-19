@@ -99,9 +99,9 @@ export const useSWRxPageInfo = (
 };
 
 export const useSWRxPageRevisions = (
-    pageId: string,
     page: number, // page number of pagination
     limit: number, // max number of pages in one paginate
+    pageId: string | null | undefined,
 ): SWRResponse<IRevisionsForPagination, Error> => {
 
   return useSWRImmutable<IRevisionsForPagination, Error>(

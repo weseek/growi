@@ -1,21 +1,19 @@
 import React from 'react';
 
-import {
-  IUser, IUserHasId,
-} from '@growi/core';
+import type { IUser, IUserHasId } from '@growi/core';
 import { NextPage, GetServerSideProps, GetServerSidePropsContext } from 'next';
 import dynamic from 'next/dynamic';
 
-import { CrowiRequest } from '~/interfaces/crowi-request';
-import { IUserUISettings } from '~/interfaces/user-ui-settings';
-import UserUISettings from '~/server/models/user-ui-settings';
+import type { CrowiRequest } from '~/interfaces/crowi-request';
+import type { IUserUISettings } from '~/interfaces/user-ui-settings';
+import type { UserUISettingsModel } from '~/server/models/user-ui-settings';
 
 import { BasicLayout } from '../components/Layout/BasicLayout';
 import GrowiContextualSubNavigation from '../components/Navbar/GrowiContextualSubNavigation';
 import {
   useCurrentUser, useCurrentPageId, useCurrentPagePath, useCurrentPathname,
   useIsSearchServiceConfigured, useIsSearchServiceReachable,
-  useIsSearchScopeChildrenAsDefault, useIsSearchPage,
+  useIsSearchScopeChildrenAsDefault, useIsSearchPage, useShowPageLimitationXL,
 } from '../stores/context';
 
 import {
@@ -31,7 +29,8 @@ type Props = CommonProps & {
   isSearchServiceConfigured: boolean,
   isSearchServiceReachable: boolean,
   isSearchScopeChildrenAsDefault: boolean,
-  userUISettings?: IUserUISettings
+  userUISettings?: IUserUISettings,
+  showPageLimitationXL: number,
 };
 
 const TrashPage: NextPage<CommonProps> = (props: Props) => {
@@ -45,6 +44,8 @@ const TrashPage: NextPage<CommonProps> = (props: Props) => {
   useCurrentPageId(null);
   useCurrentPathname('/trash');
   useCurrentPagePath('/trash');
+
+  useShowPageLimitationXL(props.showPageLimitationXL);
 
   return (
     <>
@@ -67,8 +68,12 @@ const TrashPage: NextPage<CommonProps> = (props: Props) => {
 };
 
 async function injectUserUISettings(context: GetServerSidePropsContext, props: Props): Promise<void> {
+  const { model: mongooseModel } = await import('mongoose');
+
   const req = context.req as CrowiRequest<IUserHasId & any>;
   const { user } = req;
+
+  const UserUISettings = mongooseModel('UserUISettings') as UserUISettingsModel;
   const userUISettings = user == null ? null : await UserUISettings.findOne({ user: user._id }).exec();
 
   if (userUISettings != null) {
@@ -86,6 +91,7 @@ function injectServerConfigurations(context: GetServerSidePropsContext, props: P
   props.isSearchServiceConfigured = searchService.isConfigured;
   props.isSearchServiceReachable = searchService.isReachable;
   props.isSearchScopeChildrenAsDefault = configManager.getConfig('crowi', 'customize:isSearchScopeChildrenAsDefault');
+  props.showPageLimitationXL = crowi.configManager.getConfig('crowi', 'customize:showPageLimitationXL');
 }
 
 export const getServerSideProps: GetServerSideProps = async(context: GetServerSidePropsContext) => {

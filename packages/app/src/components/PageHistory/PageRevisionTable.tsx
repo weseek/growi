@@ -1,23 +1,35 @@
 import React from 'react';
 
+import { IRevisionHasId } from '@growi/core';
 import { useTranslation } from 'next-i18next';
-import PropTypes from 'prop-types';
 
-import Revision from './Revision';
+import { Revision } from './Revision';
 
-class PageRevisionTable extends React.Component {
+import styles from './PageRevisionTable.module.scss';
 
-  /**
-   * render a row (Revision component and RevisionDiff component)
-   * @param {Revison} revision
-   * @param {Revision} previousRevision
-   * @param {boolean} hasDiff whether revision has difference to previousRevision
-   * @param {boolean} isContiguousNodiff true if the current 'hasDiff' and one of previous row is both false
-   */
-  renderRow(revision, previousRevision, latestRevision, isOldestRevision, hasDiff) {
-    const {
-      t, sourceRevision, targetRevision, onChangeSourceInvoked, onChangeTargetInvoked,
-    } = this.props;
+type PageRevisionTAble = {
+  revisions: IRevisionHasId[],
+  pagingLimit: number,
+  sourceRevision: IRevisionHasId,
+  targetRevision: IRevisionHasId,
+  onChangeSourceInvoked: React.Dispatch<React.SetStateAction<IRevisionHasId | undefined>>,
+  onChangeTargetInvoked: React.Dispatch<React.SetStateAction<IRevisionHasId | undefined>>,
+}
+
+export const PageRevisionTable = (props: PageRevisionTAble): JSX.Element => {
+  const { t } = useTranslation();
+
+  const {
+    revisions, pagingLimit, sourceRevision, targetRevision, onChangeSourceInvoked, onChangeTargetInvoked,
+  } = props;
+
+  const revisionCount = revisions.length;
+  const latestRevision = revisions[0];
+  const oldestRevision = revisions[revisions.length - 1];
+
+  const renderRow = (revision: IRevisionHasId, previousRevision: IRevisionHasId, latestRevision: IRevisionHasId,
+      isOldestRevision: boolean, hasDiff: boolean) => {
+
     const revisionId = revision._id;
 
     const handleCompareLatestRevisionButton = () => {
@@ -35,7 +47,6 @@ class PageRevisionTable extends React.Component {
         <td className="col" key={`revision-history-top-${revisionId}`}>
           <div className="d-lg-flex">
             <Revision
-              t={this.props.t}
               revision={revision}
               isLatestRevision={revision === latestRevision}
               hasDiff={hasDiff}
@@ -98,73 +109,38 @@ class PageRevisionTable extends React.Component {
         </td>
       </tr>
     );
-  }
+  };
 
-  render() {
-    const { t, pagingLimit } = this.props;
+  const revisionList = revisions.map((revision, idx) => {
+    // Returns null because the last revision is for the bottom diff display
+    if (idx === pagingLimit) {
+      return null;
+    }
 
-    const revisions = this.props.revisions;
-    const revisionCount = this.props.revisions.length;
-    const latestRevision = revisions[0];
-    const oldestRevision = revisions[revisions.length - 1];
+    // if it is the first revision, show full text as diff text
+    const previousRevision = (idx + 1 < revisionCount) ? revisions[idx + 1] : revision;
 
-    let hasDiffPrev;
+    const isOldestRevision = revision === oldestRevision;
 
-    const revisionList = this.props.revisions.map((revision, idx) => {
-      // Returns null because the last revision is for the bottom diff display
-      if (idx === pagingLimit) {
-        return null;
-      }
+    // set 'true' if undefined for backward compatibility
+    const hasDiff = revision.hasDiffToPrev !== false;
 
-      let previousRevision;
-      if (idx + 1 < revisionCount) {
-        previousRevision = revisions[idx + 1];
-      }
-      else {
-        previousRevision = revision; // if it is the first revision, show full text as diff text
-      }
+    return renderRow(revision, previousRevision, latestRevision, isOldestRevision, hasDiff);
+  });
 
-      const isOldestRevision = revision === oldestRevision;
+  return (
+    <table className={`${styles['revision-history-table']} table revision-history-table`}>
+      <thead>
+        <tr className="d-flex">
+          <th className="col">{ t('page_history.revision') }</th>
+          <th className="col-1">{ t('page_history.comparing_source') }</th>
+          <th className="col-2">{ t('page_history.comparing_target') }</th>
+        </tr>
+      </thead>
+      <tbody className="overflow-auto d-block">
+        {revisionList}
+      </tbody>
+    </table>
+  );
 
-      const hasDiff = revision.hasDiffToPrev !== false; // set 'true' if undefined for backward compatibility
-
-      hasDiffPrev = hasDiff;
-
-      return this.renderRow(revision, previousRevision, latestRevision, isOldestRevision, hasDiff);
-    });
-
-    return (
-      <table className="table revision-history-table">
-        <thead>
-          <tr className="d-flex">
-            <th className="col">{ t('page_history.revision') }</th>
-            <th className="col-1">{ t('page_history.comparing_source') }</th>
-            <th className="col-2">{ t('page_history.comparing_target') }</th>
-          </tr>
-        </thead>
-        <tbody className="overflow-auto d-block">
-          {revisionList}
-        </tbody>
-      </table>
-    );
-  }
-
-}
-
-PageRevisionTable.propTypes = {
-  t: PropTypes.func.isRequired, // i18next
-
-  revisions: PropTypes.array,
-  pagingLimit: PropTypes.number,
-  sourceRevision: PropTypes.instanceOf(Object),
-  targetRevision: PropTypes.instanceOf(Object),
-  onChangeSourceInvoked: PropTypes.func.isRequired,
-  onChangeTargetInvoked: PropTypes.func.isRequired,
 };
-
-const PageRevisionTableWrapperFC = (props) => {
-  const { t } = useTranslation();
-  return <PageRevisionTable t={t} {...props} />;
-};
-
-export default PageRevisionTableWrapperFC;

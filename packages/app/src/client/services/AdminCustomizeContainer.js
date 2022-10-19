@@ -25,7 +25,6 @@ export default class AdminCustomizeContainer extends Container {
     this.state = {
       retrieveError: null,
       isEnabledTimeline: false,
-      isSavedStatesOfTabChanges: false,
       isEnabledAttachTitleHeader: false,
 
       pageLimitationS: null,
@@ -81,7 +80,6 @@ export default class AdminCustomizeContainer extends Container {
 
       this.setState({
         isEnabledTimeline: customizeParams.isEnabledTimeline,
-        isSavedStatesOfTabChanges: customizeParams.isSavedStatesOfTabChanges,
         isEnabledAttachTitleHeader: customizeParams.isEnabledAttachTitleHeader,
         pageLimitationS: customizeParams.pageLimitationS,
         pageLimitationM: customizeParams.pageLimitationM,
@@ -114,13 +112,6 @@ export default class AdminCustomizeContainer extends Container {
    */
   switchEnableTimeline() {
     this.setState({ isEnabledTimeline:  !this.state.isEnabledTimeline });
-  }
-
-  /**
-   * Switch savedStatesOfTabChanges
-   */
-  switchSavedStatesOfTabChanges() {
-    this.setState({ isSavedStatesOfTabChanges:  !this.state.isSavedStatesOfTabChanges });
   }
 
   /**
@@ -247,7 +238,6 @@ export default class AdminCustomizeContainer extends Container {
     try {
       const response = await apiv3Put('/customize-setting/function', {
         isEnabledTimeline: this.state.isEnabledTimeline,
-        isSavedStatesOfTabChanges: this.state.isSavedStatesOfTabChanges,
         isEnabledAttachTitleHeader: this.state.isEnabledAttachTitleHeader,
         pageLimitationS: this.state.pageLimitationS,
         pageLimitationM: this.state.pageLimitationM,
@@ -260,7 +250,6 @@ export default class AdminCustomizeContainer extends Container {
       const { customizedParams } = response.data;
       this.setState({
         isEnabledTimeline: customizedParams.isEnabledTimeline,
-        isSavedStatesOfTabChanges: customizedParams.isSavedStatesOfTabChanges,
         isEnabledAttachTitleHeader: customizedParams.isEnabledAttachTitleHeader,
         pageLimitationS: customizedParams.pageLimitationS,
         pageLimitationM: customizedParams.pageLimitationM,

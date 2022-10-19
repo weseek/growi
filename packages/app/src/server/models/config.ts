@@ -38,7 +38,6 @@ export const generateConfigsForInstalling = (): { [key: string]: any } => {
   // overwrite
   config['app:installed'] = true;
   config['app:fileUpload'] = true;
-  config['customize:isSavedStatesOfTabChanges'] = false;
   config['app:isV5Compatible'] = true;
 
   return config;
@@ -129,7 +128,6 @@ export const defaultCrowiConfigs: { [key: string]: any } = {
   'customize:theme' : GrowiThemes.DEFAULT,
   'customize:isContainerFluid' : false,
   'customize:isEnabledTimeline' : true,
-  'customize:isSavedStatesOfTabChanges' : true,
   'customize:isEnabledAttachTitleHeader' : false,
   'customize:showPageLimitationS' : 20,
   'customize:showPageLimitationM' : 10,
@@ -228,7 +226,6 @@ schema.statics.getLocalconfig = function(crowi) {
     customizeTitle: crowi.configManager.getConfig('crowi', 'customize:title'),
     customizeHeader: crowi.configManager.getConfig('crowi', 'customize:header'),
     customizeCss: crowi.configManager.getConfig('crowi', 'customize:css'),
-    isSavedStatesOfTabChanges: crowi.configManager.getConfig('crowi', 'customize:isSavedStatesOfTabChanges'),
     isEnabledAttachTitleHeader: crowi.configManager.getConfig('crowi', 'customize:isEnabledAttachTitleHeader'),
     customizeScript: crowi.configManager.getConfig('crowi', 'customize:script'),
     isSlackConfigured: crowi.slackIntegrationService.isSlackConfigured,

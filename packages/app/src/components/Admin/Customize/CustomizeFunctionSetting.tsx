@@ -47,21 +47,6 @@ const CustomizeFunctionSetting = (props: Props): JSX.Element => {
           <div className="form-group row">
             <div className="offset-md-3 col-md-6 text-left">
               <CustomizeFunctionOption
-                optionId="isSavedStatesOfTabChanges"
-                label={t('admin:customize_settings.function_options.tab_switch')}
-                isChecked={adminCustomizeContainer.state.isSavedStatesOfTabChanges}
-                onChecked={() => { adminCustomizeContainer.switchSavedStatesOfTabChanges() }}
-              >
-                <p className="form-text text-muted">
-                  {t('admin:customize_settings.function_options.tab_switch_desc1')}<br />
-                  {t('admin:customize_settings.function_options.tab_switch_desc2')}
-                </p>
-              </CustomizeFunctionOption>
-            </div>
-          </div>
-          <div className="form-group row">
-            <div className="offset-md-3 col-md-6 text-left">
-              <CustomizeFunctionOption
                 optionId="isEnabledAttachTitleHeader"
                 label={t('admin:customize_settings.function_options.attach_title_header')}
                 isChecked={adminCustomizeContainer.state.isEnabledAttachTitleHeader}
