@@ -1,13 +1,11 @@
-import {
-  IUser, IUserHasId,
-} from '@growi/core';
+import type { IUser, IUserHasId } from '@growi/core';
 import { NextPage, GetServerSideProps, GetServerSidePropsContext } from 'next';
 import { useTranslation } from 'next-i18next';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 
 import { toastError } from '~/client/util/apiNotification';
 import { apiv3Post } from '~/client/util/apiv3-client';
-import { CrowiRequest } from '~/interfaces/crowi-request';
+import type { CrowiRequest } from '~/interfaces/crowi-request';
 import { useCurrentUser } from '~/stores/context';
 
 import {

@@ -418,19 +418,20 @@ Crowi.prototype.getTokens = function() {
 
 Crowi.prototype.start = async function() {
   const dev = process.env.NODE_ENV !== 'production';
-  this.nextApp = next({ dev });
 
+  await this.init();
+  await this.buildServer();
+
+  // setup Next.js
+  this.nextApp = next({ dev });
   await this.nextApp.prepare();
 
-  // init CrowiDev
+  // setup CrowiDev
   if (dev) {
     const CrowiDev = require('./dev');
     this.crowiDev = new CrowiDev(this);
     this.crowiDev.init();
   }
-
-  await this.init();
-  await this.buildServer();
 
   const { express, configManager } = this;
 
