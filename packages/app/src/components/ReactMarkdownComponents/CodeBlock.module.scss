@@ -1,13 +1,6 @@
 @use '~/styles/variables' as var;
 @use '~/styles/bootstrap/init' as bs;
 
-.code-highlighted :global {
-  code {
-    padding: 0;
-    border: none;
-  }
-}
-
 .code-highlighted-title {
   position: absolute;
   top: 0;
