@@ -6,7 +6,7 @@ import styles from './CodeBlock.module.scss';
 
 export const CodeBlock: CodeComponent = ({ inline, className, children }) => {
   if (inline) {
-    return <code className={`code-inline ${styles['code-inline']} ${className ?? ''}`}>{children}</code>;
+    return <code className={`code-inline ${className ?? ''}`}>{children}</code>;
   }
 
   // TODO: set border according to the value of 'customize:highlightJsStyleBorder'
@@ -21,7 +21,7 @@ export const CodeBlock: CodeComponent = ({ inline, className, children }) => {
         <cite className={`code-highlighted-title ${styles['code-highlighted-title']}`}>{name}</cite>
       )}
       <SyntaxHighlighter
-        className="code-highlighted"
+        className={`code-highlighted ${styles['code-highlighted']}`}
         PreTag="div"
         style={oneLight}
         language={lang}

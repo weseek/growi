@@ -1,9 +1,11 @@
 @use '~/styles/variables' as var;
 @use '~/styles/bootstrap/init' as bs;
-@use '~/styles/atoms/mixins' as atm;
 
-.code-inline {
-  @include atm.code-inline;
+.code-highlighted :global {
+  code {
+    padding: 0;
+    border: none;
+  }
 }
 
 .code-highlighted-title {

@@ -2,7 +2,8 @@
 @use '../bootstrap/init' as *;
 @use '../mixins';
 @use './mixins/tables'; // comment out and use _reboot-bootstrap-tables instead -- 2020.05.28 Yuki Takei
-@use '../atoms/mixins' as atm;
+@use '../atoms/mixins/code';
+
 //
 //== Apply to Bootstrap
 //
@@ -51,12 +52,12 @@ $color-modal-header: color-yiq($primary) !default;
 
 :not(pre) {
   > code {
-    @include atm.code-inline-color($color-inline-code, $bgcolor-inline-code, $bordercolor-inline-code);
+    @include code.code-inline-color($color-inline-code, $bgcolor-inline-code, $bordercolor-inline-code);
   }
 }
 
-.code-inline {
-  @include atm.code-inline-color($color-inline-code, $bgcolor-inline-code, $bordercolor-inline-code);
+.code {
+  @include code.code-inline-color($color-inline-code, $bgcolor-inline-code, $bordercolor-inline-code);
 }
 
 .code-highlighted {
