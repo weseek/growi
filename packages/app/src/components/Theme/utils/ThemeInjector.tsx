@@ -15,6 +15,7 @@ export const ThemeInjector = ({ children, className: themeClassName, bgImageNode
   // add class name to <body>
   useIsomorphicLayoutEffect(() => {
     document.body.classList.add(themeClassName);
+    document.body.classList.add('growi');
 
     // clean up
     return () => {
