@@ -1,10 +1,10 @@
 import React, { useCallback } from 'react';
 
+import type { IUserHasId } from '@growi/core';
 import { UserPicture } from '@growi/ui';
 import dateFnsFormat from 'date-fns/format';
 import { useTranslation } from 'next-i18next';
 
-import type { IUserHasId } from '@growi/core';
 import AdminUsersContainer from '~/client/services/AdminUsersContainer';
 
 import { withUnstatedContainers } from '../../UnstatedUtils';
@@ -52,13 +52,13 @@ const UserTable = (props: UserTableProps) => {
       <span className={`badge badge-pill ${additionalClassName}`}>
         {text}
       </span>
-    )
-  }
+    );
+  };
 
   const sortIconsClickedHandler = useCallback(async(sort: string, sortOrder: string) => {
     const isAsc = sortOrder === 'asc';
     await adminUsersContainer.sort(sort, isAsc);
-  }, [adminUsersContainer])
+  }, [adminUsersContainer]);
 
   const isCurrentSortOrderAsc = adminUsersContainer.state.sortOrder === 'asc';
 
@@ -67,7 +67,7 @@ const UserTable = (props: UserTableProps) => {
       <table className="table table-default table-bordered table-user-list">
         <thead>
           <tr>
-            <th style={{ width: "100px" }}>#</th>
+            <th style={{ width: '100px' }}>#</th>
             <th>
               <div className="d-flex align-items-center">
                 <div className="mr-3">
@@ -76,7 +76,7 @@ const UserTable = (props: UserTableProps) => {
                 <SortIcons
                   isSelected={adminUsersContainer.state.sort === 'status'}
                   isAsc={isCurrentSortOrderAsc}
-                  onClick={(sortOrder) => sortIconsClickedHandler('status', sortOrder)}
+                  onClick={sortOrder => sortIconsClickedHandler('status', sortOrder)}
                 />
               </div>
             </th>
@@ -88,7 +88,7 @@ const UserTable = (props: UserTableProps) => {
                 <SortIcons
                   isSelected={adminUsersContainer.state.sort === 'username'}
                   isAsc={isCurrentSortOrderAsc}
-                  onClick={(sortOrder) => sortIconsClickedHandler('username', sortOrder)}
+                  onClick={sortOrder => sortIconsClickedHandler('username', sortOrder)}
                 />
               </div>
             </th>
@@ -100,7 +100,7 @@ const UserTable = (props: UserTableProps) => {
                 <SortIcons
                   isSelected={adminUsersContainer.state.sort === 'name'}
                   isAsc={isCurrentSortOrderAsc}
-                  onClick={(sortOrder) => sortIconsClickedHandler('name', sortOrder)}
+                  onClick={sortOrder => sortIconsClickedHandler('name', sortOrder)}
                 />
               </div>
             </th>
@@ -112,11 +112,11 @@ const UserTable = (props: UserTableProps) => {
                 <SortIcons
                   isSelected={adminUsersContainer.state.sort === 'email'}
                   isAsc={isCurrentSortOrderAsc}
-                  onClick={(sortOrder) => sortIconsClickedHandler('email', sortOrder)}
+                  onClick={sortOrder => sortIconsClickedHandler('email', sortOrder)}
                 />
               </div>
             </th>
-            <th style={{ width: "100px" }}>
+            <th style={{ width: '100px' }}>
               <div className="d-flex align-items-center">
                 <div className="mr-3">
                   {t('Created')}
@@ -124,11 +124,11 @@ const UserTable = (props: UserTableProps) => {
                 <SortIcons
                   isSelected={adminUsersContainer.state.sort === 'createdAt'}
                   isAsc={isCurrentSortOrderAsc}
-                  onClick={(sortOrder) => sortIconsClickedHandler('createdAt', sortOrder)}
+                  onClick={sortOrder => sortIconsClickedHandler('createdAt', sortOrder)}
                 />
               </div>
             </th>
-            <th style={{ width: "150px" }}>
+            <th style={{ width: '150px' }}>
               <div className="d-flex align-items-center">
                 <div className="mr-3">
                   {t('last_login')}
@@ -136,11 +136,11 @@ const UserTable = (props: UserTableProps) => {
                 <SortIcons
                   isSelected={adminUsersContainer.state.sort === 'lastLoginAt'}
                   isAsc={isCurrentSortOrderAsc}
-                  onClick={(sortOrder) => sortIconsClickedHandler('lastLoginAt', sortOrder)}
+                  onClick={sortOrder => sortIconsClickedHandler('lastLoginAt', sortOrder)}
                 />
               </div>
             </th>
-            <th style={{ width: "70px" }}></th>
+            <th style={{ width: '70px' }}></th>
           </tr>
         </thead>
         <tbody>
@@ -176,9 +176,9 @@ const UserTable = (props: UserTableProps) => {
         </tbody>
       </table>
     </div>
-  )
+  );
 
-}
+};
 
 const UserTableWrapper = withUnstatedContainers(UserTable, [AdminUsersContainer]);
 
