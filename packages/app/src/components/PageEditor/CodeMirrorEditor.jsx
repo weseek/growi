@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, memo } from 'react';
 
 import { createValidator } from '@growi/codemirror-textlint';
 import { commands } from 'codemirror';
@@ -201,6 +201,16 @@ class CodeMirrorEditor extends AbstractEditor {
   }
 
   componentWillReceiveProps(nextProps) {
+    const currentProps = this.props;
+    // Object.entries(currentProps).forEach(([k, v]) => {
+    //   if (v !== nextProps[k]) {
+    //     console.log(`違うっぴ！ key: ${k}, currentProps[k]: ${currentProps[k]}, nextProps[k]: ${nextProps[k]}`);
+    //     if (typeof v === 'object') {
+    //       console.dir(v);
+    //       console.dir(nextProps[k]);
+    //     }
+    //   }
+    // });
     this.initializeEditorSettings(nextProps.editorSettings);
 
     this.initializeTextlint(nextProps.isTextlintEnabled, nextProps.editorSettings);
@@ -1163,4 +1173,4 @@ const CodeMirrorEditorFc = React.forwardRef((props, ref) => {
 
 CodeMirrorEditorFc.displayName = 'CodeMirrorEditorFc';
 
-export default CodeMirrorEditorFc;
+export default memo(CodeMirrorEditorFc);
