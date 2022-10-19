@@ -22,25 +22,23 @@ const AdminNavigation = (props) => {
   // eslint-disable-next-line react/prop-types
   const MenuLabel = ({ menu }) => {
     switch (menu) {
-      /* eslint-disable no-multi-spaces */
-      case 'app':                      return <><i className="icon-fw icon-settings"></i>        { t('app_settings') }</>;
-      case 'security':                 return <><i className="icon-fw icon-shield"></i>          { t('security_settings.security_settings') }</>;
-      case 'markdown':                 return <><i className="icon-fw icon-note"></i>            { t('markdown_settings.markdown_settings') }</>;
-      case 'customize':                return <><i className="icon-fw icon-wrench"></i>          { t('customize_settings.customize_settings') }</>;
-      case 'importer':                 return <><i className="icon-fw icon-cloud-upload"></i>    { t('importer_management.import_data') }</>;
-      case 'export':                   return <><i className="icon-fw icon-cloud-download"></i>  { t('export_archive_data') }</>;
-      case 'notification':             return <><i className="icon-fw icon-bell"></i>            { t('external_notification.external_notification')}</>;
-      case 'slack-integration':        return <><i className="icon-fw icon-shuffle"></i>         { t('slack_integration.slack_integration') }</>;
-      case 'slack-integration-legacy': return <><i className="icon-fw icon-shuffle"></i>         { t('slack_integration_legacy.slack_integration_legacy')}</>;
-      case 'users':                    return <><i className="icon-fw icon-user"></i>            { t('user_management.user_management') }</>;
-      case 'user-groups':              return <><i className="icon-fw icon-people"></i>          { t('user_group_management.user_group_management') }</>;
-      case 'search':                   return <><i className="icon-fw icon-magnifier"></i>
-        { t('full_text_search_management.full_text_search_management') }</>;
-      // TODO: Consider where to place the "AuditLog"
-      case 'audit-log':                return <><i className="icon-fw icon-feed"></i>            { t('audit_log_management.audit_log')}</>;
-      case 'cloud':                    return <><i className="icon-fw icon-share-alt"></i>       { t('to_cloud_settings')} </>;
-      default:                         return <><i className="icon-fw icon-home"></i>            { t('wiki_management_home_page') }</>;
-      /* eslint-enable no-multi-spaces */
+      /* eslint-disable no-multi-spaces, max-len */
+      case 'app':                      return <><i className="mr-1 icon-fw icon-settings"></i>{        t('app_settings') }</>;
+      case 'security':                 return <><i className="mr-1 icon-fw icon-shield"></i>{          t('security_settings.security_settings') }</>;
+      case 'markdown':                 return <><i className="mr-1 icon-fw icon-note"></i>{            t('markdown_settings.markdown_settings') }</>;
+      case 'customize':                return <><i className="mr-1 icon-fw icon-wrench"></i>{          t('customize_settings.customize_settings') }</>;
+      case 'importer':                 return <><i className="mr-1 icon-fw icon-cloud-upload"></i>{    t('importer_management.import_data') }</>;
+      case 'export':                   return <><i className="mr-1 icon-fw icon-cloud-download"></i>{  t('export_management.export_archive_data') }</>;
+      case 'notification':             return <><i className="mr-1 icon-fw icon-bell"></i>{            t('external_notification.external_notification')}</>;
+      case 'slack-integration':        return <><i className="mr-1 icon-fw icon-shuffle"></i>{         t('slack_integration.slack_integration') }</>;
+      case 'slack-integration-legacy': return <><i className="mr-1 icon-fw icon-shuffle"></i>{         t('slack_integration_legacy.slack_integration_legacy')}</>;
+      case 'users':                    return <><i className="mr-1 icon-fw icon-user"></i>{            t('user_management.user_management') }</>;
+      case 'user-groups':              return <><i className="mr-1 icon-fw icon-people"></i>{          t('user_group_management.user_group_management') }</>;
+      case 'search':                   return <><i className="mr-1 icon-fw icon-magnifier"></i>{       t('full_text_search_management.full_text_search_management') }</>;
+      case 'audit-log':                return <><i className="mr-1 icon-fw icon-feed"></i>{            t('audit_log_management.audit_log')}</>;
+      case 'cloud':                    return <><i className="mr-1 icon-fw icon-share-alt"></i>{       t('to_cloud_settings')} </>;
+      default:                         return <><i className="mr-1 icon-fw icon-home"></i>{            t('wiki_management_home_page') }</>;
+      /* eslint-enable no-multi-spaces, max-len */
     }
   };
 
@@ -92,8 +90,8 @@ const AdminNavigation = (props) => {
         <MenuLink menu="slack-integration-legacy" isListGroupItems isActive={isActiveMenu('/slack-integration-legacy')} />
         <MenuLink menu="users"        isListGroupItems isActive={isActiveMenu('/users')} />
         <MenuLink menu="user-groups"  isListGroupItems isActive={isActiveMenu('/user-groups')} />
-        <MenuLink menu="search"       isListGroupItems isActive={isActiveMenu('/search')} />
         <MenuLink menu="audit-log"    isListGroupItems isActive={isActiveMenu('/audit-log')} />
+        <MenuLink menu="search"       isListGroupItems isActive={isActiveMenu('/search')} />
         {/* {growiCloudUri != null && growiAppIdForGrowiCloud != null
           && (
             <a
