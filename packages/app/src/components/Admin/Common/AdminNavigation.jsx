@@ -28,7 +28,7 @@ const AdminNavigation = (props) => {
       case 'markdown':                 return <><i className="icon-fw icon-note"></i>            { t('markdown_settings.markdown_settings') }</>;
       case 'customize':                return <><i className="icon-fw icon-wrench"></i>          { t('customize_settings.customize_settings') }</>;
       case 'importer':                 return <><i className="icon-fw icon-cloud-upload"></i>    { t('importer_management.import_data') }</>;
-      case 'export':                   return <><i className="icon-fw icon-cloud-download"></i>  { t('export_archive_data') }</>;
+      case 'export':                   return <><i className="icon-fw icon-cloud-download"></i>  { t('export_management.export_archive_data') }</>;
       case 'notification':             return <><i className="icon-fw icon-bell"></i>            { t('external_notification.external_notification')}</>;
       case 'slack-integration':        return <><i className="icon-fw icon-shuffle"></i>         { t('slack_integration.slack_integration') }</>;
       case 'slack-integration-legacy': return <><i className="icon-fw icon-shuffle"></i>         { t('slack_integration_legacy.slack_integration_legacy')}</>;
