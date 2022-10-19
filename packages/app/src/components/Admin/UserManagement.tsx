@@ -1,6 +1,9 @@
-import React, { useEffect, useState, useRef } from 'react';
+import React, {
+  useEffect, useState, useRef, useCallback,
+} from 'react';
 
 import { useTranslation } from 'next-i18next';
+import Link from 'next/link';
 
 import AdminUsersContainer from '~/client/services/AdminUsersContainer';
 import { toastError } from '~/client/util/apiNotification';
@@ -25,19 +28,19 @@ const UserManagement = (props: UserManagementProps) => {
   const [isNotifyCommentShow, setIsNotifyCommentShow] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
 
-  const pagingHandler = (async(selectedPage: number) => {
+  const pagingHandler = useCallback(async(selectedPage: number) => {
     try {
       await adminUsersContainer.retrieveUsersByPagingNum(selectedPage);
     }
     catch (err) {
       toastError(err);
     }
-  });
+  }, [adminUsersContainer]);
 
-  // componentDidMount
+  // for Next routing
   useEffect(() => {
     pagingHandler(1);
-  }, []);
+  }, [pagingHandler]);
 
   const validateToggleStatus = (statusType: string) => {
     return (adminUsersContainer.isSelected(statusType)) ? (
@@ -59,7 +62,7 @@ const UserManagement = (props: UserManagementProps) => {
     adminUsersContainer.handleClick(statusType);
   };
 
-  const resetButtonClickHandler = (async() => {
+  const resetButtonClickHandler = useCallback(async() => {
     try {
       await adminUsersContainer.resetAllChanges();
       setIsNotifyCommentShow(false);
@@ -70,11 +73,11 @@ const UserManagement = (props: UserManagementProps) => {
     catch (err) {
       toastError(err);
     }
-  });
+  }, [adminUsersContainer]);
 
-  const changeSearchTextHandler = (async(e: React.FormEvent<HTMLInputElement>) => {
+  const changeSearchTextHandler = useCallback(async(e: React.FormEvent<HTMLInputElement>) => {
     await adminUsersContainer.handleChangeSearchText(e?.currentTarget.value);
-  });
+  }, [adminUsersContainer]);
 
   const renderCheckbox = (status: string, statusLabel: string, statusColor: string) => {
     return (
@@ -120,10 +123,12 @@ const UserManagement = (props: UserManagementProps) => {
       ) }
       <p>
         <InviteUserControl />
-        <a className="btn btn-outline-secondary ml-2" href="/admin/users/external-accounts" role="button">
-          <i className="icon-user-follow mr-1" aria-hidden="true"></i>
-          {t('admin:user_management.external_account')}
-        </a>
+        <Link href="/admin/users/external-accounts" prefetch={false}>
+          <a className="btn btn-outline-secondary ml-2" role="button">
+            <i className="icon-user-follow mr-1" aria-hidden="true"></i>
+            {t('admin:user_management.external_account')}
+          </a>
+        </Link>
       </p>
 
       <h2>{t('user_management.user_management')}</h2>

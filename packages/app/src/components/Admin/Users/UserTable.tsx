@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useCallback } from 'react';
 
 import { UserPicture } from '@growi/ui';
 import dateFnsFormat from 'date-fns/format';
@@ -20,11 +20,6 @@ const UserTable = (props: UserTableProps) => {
 
   const { t } = useTranslation('admin');
   const { adminUsersContainer } = props;
-
-
-  useEffect(()=>{
-    adminUsersContainer.state.users
-  }, [])
 
   const getUserStatusLabel = (userStatus: number) => {
     let additionalClassName = 'badge-info';
@@ -60,10 +55,10 @@ const UserTable = (props: UserTableProps) => {
     )
   }
 
-  const sortIconsClickedHandler = (async(sort: string, sortOrder: string) => {
+  const sortIconsClickedHandler = useCallback(async(sort: string, sortOrder: string) => {
     const isAsc = sortOrder === 'asc';
     await adminUsersContainer.sort(sort, isAsc);
-  })
+  }, [adminUsersContainer])
 
   const isCurrentSortOrderAsc = adminUsersContainer.state.sortOrder === 'asc';
 
