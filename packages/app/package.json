@@ -67,6 +67,7 @@
     "@google-cloud/storage": "^5.8.5",
     "@growi/codemirror-textlint": "^6.0.0-RC.3",
     "@growi/core": "^6.0.0-RC.3",
+    "@growi/hackmd": "^6.0.0-RC.3",
     "@growi/plugin-attachment-refs": "^6.0.0-RC.3",
     "@growi/plugin-lsx": "^6.0.0-RC.3",
     "@growi/slack": "^6.0.0-RC.3",
