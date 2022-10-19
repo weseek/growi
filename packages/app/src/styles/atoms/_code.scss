@@ -1,12 +1,12 @@
 @use '~/styles/variables' as var;
 @use '~/styles/bootstrap/init' as bs;
-@use '~/styles/atoms/mixins' as atm;
 
 /*
  * style of inline-code
  */
-:not(pre) {
-  > code {
-    @include atm.code-inline;
-  }
+code {
+  padding: 2px 4px;
+  font-family: var.$font-family-monospace-not-strictly;
+  border: 1px solid;
+  border-radius: bs.$border-radius;
 }
