@@ -13,7 +13,6 @@ const router = express.Router();
 
 const validator = {
   bookmarkFolder: [
-    param('parentId').isString().withMessage('parentId is required'),
     body('name').isString().withMessage('name must be a string'),
     body('parent').optional({ nullable: true }),
   ],
@@ -27,14 +26,12 @@ module.exports = (crowi) => {
   router.post('/', accessTokenParser, loginRequiredStrictly, validator.bookmarkFolder, apiV3FormValidator, async(req, res) => {
     const owner = req.user?._id;
     const { name, parent } = req.body;
-    const data = {
-      name,
-      owner,
-      parent,
+    const params = {
+      name, owner, parent,
     };
 
     try {
-      const bookmarkFolder = await BookmarkFolder.createByParameters(data);
+      const bookmarkFolder = BookmarkFolder.createByParameters(params);
       logger.debug('bookmark folder created', bookmarkFolder);
       return res.apiv3({ bookmarkFolder });
     }
@@ -46,14 +43,24 @@ module.exports = (crowi) => {
 
   // List all main bookmark folders
   router.get('/list', accessTokenParser, loginRequiredStrictly, async(req, res) => {
-    const bookmarkFolders = await BookmarkFolder.findParentFolderByUserId(req.user?._id);
-    return res.apiv3({ bookmarkFolders });
+    try {
+      const bookmarkFolders = await BookmarkFolder.findParentFolderByUserId(req.user?._id);
+      return res.apiv3({ bookmarkFolders });
+    }
+    catch (err) {
+      return res.apiv3Err(err, 500);
+    }
   });
 
-  router.post('/list-child/', accessTokenParser, loginRequiredStrictly, async(req, res) => {
-    const { parentId } = req.body;
-    const bookmarkFolders = await BookmarkFolder.findChildFolderById(parentId);
-    return res.apiv3({ bookmarkFolders });
+  router.get('/list-child/:parentId', accessTokenParser, loginRequiredStrictly, async(req, res) => {
+    const { parentId } = req.params;
+    try {
+      const bookmarkFolders = await BookmarkFolder.findChildFolderById(parentId);
+      return res.apiv3({ bookmarkFolders });
+    }
+    catch (err) {
+      return res.apiv3Err(err, 500);
+    }
   });
 
   // Delete bookmark folder and children
@@ -65,6 +72,17 @@ module.exports = (crowi) => {
     }
     catch (err) {
       logger.error(err);
+      return res.apiv3Err(err, 500);
+    }
+  });
+
+  router.put('/', accessTokenParser, loginRequiredStrictly, validator.bookmarkFolder, async(req, res) => {
+    const { bookmarkFolderId, name, parent } = req.body;
+    try {
+      const bookmarkFolder = await BookmarkFolder.updateBookmarkFolder(bookmarkFolderId, name, parent);
+      return res.apiv3({ bookmarkFolder });
+    }
+    catch (err) {
       return res.apiv3Err(err, 500);
     }
   });
