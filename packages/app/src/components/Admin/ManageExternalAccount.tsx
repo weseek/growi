@@ -31,7 +31,7 @@ const ManageExternalAccount = (props: ManageExternalAccountProps): JSX.Element =
     }
   }, [adminExternalAccountsContainer]);
 
-  // componentDidMount
+  // for Next routing
   useEffect(() => {
     ExternalAccountPageHandler(1);
   }, [ExternalAccountPageHandler]);
