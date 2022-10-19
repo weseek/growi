@@ -1,8 +1,15 @@
 # Changelog
 
-## [Unreleased](https://github.com/weseek/growi/compare/v5.1.5...HEAD)
+## [Unreleased](https://github.com/weseek/growi/compare/v5.1.6...HEAD)
 
 *Please do not manually update this file. We've automated the process.*
+
+## [v5.1.6](https://github.com/weseek/growi/compare/v5.1.5...v5.1.6) - 2022-10-19
+
+### 🐛 Bug Fixes
+
+- fix: image not showing and exceed crop modal area (#6712) @mudana-grune
+- fix: Conflict Diff Modal Error getCurrentOptionsToSave is not a function (#6745) @kaoritokashiki
 
 ## [v5.1.5](https://github.com/weseek/growi/compare/v5.1.4...v5.1.5) - 2022-10-04
 
