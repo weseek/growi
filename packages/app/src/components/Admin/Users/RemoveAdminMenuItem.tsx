@@ -1,10 +1,10 @@
 import React, { useCallback } from 'react';
 
+import type { IUserHasId } from '@growi/core';
 import { useTranslation } from 'next-i18next';
 
 import AdminUsersContainer from '~/client/services/AdminUsersContainer';
 import { toastSuccess, toastError } from '~/client/util/apiNotification';
-import { IUserHasId } from '~/interfaces/user';
 import { useCurrentUser } from '~/stores/context';
 
 import { withUnstatedContainers } from '../../UnstatedUtils';
@@ -38,7 +38,7 @@ const RemoveAdminMenuItem = (props: Props): JSX.Element => {
   const clickRemoveAdminBtnHandler = useCallback(async() => {
     try {
       const username = await adminUsersContainer.removeUserAdmin(user._id);
-      toastSuccess(t('toaster.remove_user_admin', { username }));
+      toastSuccess(t('admin:toaster.remove_user_admin', { username }));
     }
     catch (err) {
       toastError(err);

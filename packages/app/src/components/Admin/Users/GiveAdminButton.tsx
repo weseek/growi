@@ -1,0 +1,44 @@
+import React, { useCallback } from 'react';
+
+import type { IUserHasId } from '@growi/core';
+import { useTranslation } from 'next-i18next';
+
+import AdminUsersContainer from '~/client/services/AdminUsersContainer';
+import { toastSuccess, toastError } from '~/client/util/apiNotification';
+
+import { withUnstatedContainers } from '../../UnstatedUtils';
+
+type GiveAdminButtonProps = {
+  adminUsersContainer: AdminUsersContainer,
+  user: IUserHasId,
+}
+
+const GiveAdminButton = (props: GiveAdminButtonProps): JSX.Element => {
+
+  const { t } = useTranslation();
+  const { adminUsersContainer, user } = props;
+
+  const onClickGiveAdminBtnHandler = useCallback(async() => {
+    try {
+      const username = await adminUsersContainer.giveUserAdmin(user._id);
+      toastSuccess(t('admin:toaster.give_user_admin', { username }));
+    }
+    catch (err) {
+      toastError(err);
+    }
+  }, [adminUsersContainer, t, user._id]);
+
+  return (
+    <button className="dropdown-item" type="button" onClick={() => onClickGiveAdminBtnHandler()}>
+      <i className="icon-fw icon-user-following"></i> {t('admin:user_management.user_table.give_admin_access')}
+    </button>
+  );
+
+};
+
+/**
+ * Wrapper component for using unstated
+ */
+const GiveAdminButtonWrapper = withUnstatedContainers(GiveAdminButton, [AdminUsersContainer]);
+
+export default GiveAdminButtonWrapper;
