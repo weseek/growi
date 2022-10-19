@@ -103,7 +103,7 @@ context('Modal for page operation', () => {
   it('PageDeleteModal is shown successfully', () => {
     cy.visit('/Sandbox/Bootstrap4');
 
-    cy.get('grw-subnav-container').within(() => {
+    cy.get('#grw-subnav-container').within(() => {
        cy.getByTestid('open-page-item-control-btn').click();
        cy.getByTestid('open-page-delete-modal-btn').click();
     });
