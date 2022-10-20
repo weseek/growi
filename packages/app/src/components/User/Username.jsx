@@ -1,30 +1,28 @@
 import React from 'react';
+
+import Link from 'next/link';
 import PropTypes from 'prop-types';
 
-export default class Username extends React.Component {
+const Username = (props) => {
+  const { user } = props;
 
-  renderForNull() {
+  if (user == null) {
     return <span>anyone</span>;
   }
 
-  render() {
-    const { user } = this.props;
+  const name = user.name || '(no name)';
+  const username = user.username;
+  const href = `/user/${user.username}`;
 
-    if (user == null) {
-      return this.renderForNull();
-    }
-
-    const name = user.name || '(no name)';
-    const username = user.username;
-    const href = `/user/${user.username}`;
-
-    return (
-      <a href={href}>{name} (@{username})</a>
-    );
-  }
-
-}
+  return (
+    <Link href={href}>
+      <a>{name} (@{username})</a>
+    </Link>
+  );
+};
 
 Username.propTypes = {
   user: PropTypes.oneOfType([PropTypes.object, PropTypes.string]), // Possibility of receiving a string of 'null'
 };
+
+export default Username;
