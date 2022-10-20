@@ -196,7 +196,7 @@ export const useHasParent = (initialData?: boolean) : SWRResponse<boolean, Error
 };
 
 export const useIsIndentSizeForced = (initialData?: boolean) : SWRResponse<boolean, Error> => {
-  return useStaticSWR<boolean, Error>('isIndentSizeForced', initialData);
+  return useStaticSWR<boolean, Error>('isIndentSizeForced', initialData, { fallbackData: false });
 };
 
 export const useDefaultIndentSize = (initialData?: number) : SWRResponse<number, Error> => {
