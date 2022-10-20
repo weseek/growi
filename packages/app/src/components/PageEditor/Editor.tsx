@@ -1,5 +1,6 @@
 import React, {
   useState, useRef, useImperativeHandle, useCallback, ForwardRefRenderFunction, forwardRef,
+  memo,
 } from 'react';
 
 import Dropzone from 'react-dropzone';
@@ -347,4 +348,4 @@ const Editor: ForwardRefRenderFunction<IEditorMethods, EditorPropsType> = (props
   );
 };
 
-export default forwardRef(Editor);
+export default memo(forwardRef(Editor));
