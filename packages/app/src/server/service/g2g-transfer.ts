@@ -225,28 +225,28 @@ export class G2GTransferPusherService implements Pusher {
    * @returns Whether g2g transfer is possible and reason for failure
    */
   public async getTransferability(toGROWIInfo: IDataGROWIInfo): Promise<IGetTransferabilityReturn> {
-    const { configManager, fileUploadService } = this.crowi;
+    const { fileUploadService } = this.crowi;
 
     const version = this.crowi.version;
     if (version !== toGROWIInfo.version) {
       return {
         canTransfer: false,
-        reason: `Growi versions mismatch. From: ${version}, To: ${toGROWIInfo.version}.`,
+        reason: `Growi versions mismatch. This Growi: ${version} / new Growi: ${toGROWIInfo.version}.`,
       };
     }
 
-    const userUpperLimit = configManager.getConfig('crowi', 'security:userUpperLimit');
-    if ((userUpperLimit ?? Infinity) < (toGROWIInfo.userUpperLimit ?? 0)) {
+    const activeUserCount = await this.crowi.model('User').countActiveUsers();
+    if ((toGROWIInfo.userUpperLimit ?? Infinity) < activeUserCount) {
       return {
         canTransfer: false,
-        reason: `From-Growi's user limit exceeds To-Growi's user limit. From: ${userUpperLimit}, To: ${toGROWIInfo.userUpperLimit}.`,
+        reason: `The number of active users (${activeUserCount} users) exceeds the limit of new Growi (to up ${toGROWIInfo.userUpperLimit} users).`,
       };
     }
 
     if (toGROWIInfo.fileUploadDisabled) {
       return {
         canTransfer: false,
-        reason: 'File upload is disabled.',
+        reason: 'File upload is disabled in new Growi.',
       };
     }
 
@@ -255,7 +255,7 @@ export class G2GTransferPusherService implements Pusher {
       return {
         canTransfer: false,
         // eslint-disable-next-line max-len, @typescript-eslint/no-non-null-assertion
-        reason: `Total file size exceeds Growi file upload limit. Requires ${totalFileSize.toLocaleString()} bytes, but got ${toGROWIInfo.fileUploadTotalLimit!.toLocaleString()} bytes.`,
+        reason: `Total file size exceeds file upload limit of new Growi. Requires ${totalFileSize.toLocaleString()} bytes, but got ${toGROWIInfo.fileUploadTotalLimit!.toLocaleString()} bytes.`,
       };
     }
 
