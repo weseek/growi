@@ -72,30 +72,30 @@ export const useIsMobile = (): SWRResponse<boolean, Error> => {
   return useStaticSWR<boolean, Error>(key, undefined, configuration);
 };
 
-const updateBodyClassesByEditorMode = (newEditorMode: EditorMode, isSidebar = false) => {
-  const bodyElement = document.getElementsByTagName('body')[0];
-  if (bodyElement == null) {
-    logger.warn('The body tag was not successfully obtained');
-    return;
-  }
-  switch (newEditorMode) {
-    case EditorMode.View:
-      bodyElement.classList.remove('on-edit', 'builtin-editor', 'hackmd', 'editing-sidebar');
-      break;
-    case EditorMode.Editor:
-      bodyElement.classList.add('on-edit', 'builtin-editor');
-      bodyElement.classList.remove('hackmd');
-      // editing /Sidebar
-      if (isSidebar) {
-        bodyElement.classList.add('editing-sidebar');
-      }
-      break;
-    case EditorMode.HackMD:
-      bodyElement.classList.add('on-edit', 'hackmd');
-      bodyElement.classList.remove('builtin-editor', 'editing-sidebar');
-      break;
-  }
-};
+// const updateBodyClassesByEditorMode = (newEditorMode: EditorMode, isSidebar = false) => {
+//   const bodyElement = document.getElementsByTagName('body')[0];
+//   if (bodyElement == null) {
+//     logger.warn('The body tag was not successfully obtained');
+//     return;
+//   }
+//   switch (newEditorMode) {
+//     case EditorMode.View:
+//       bodyElement.classList.remove('on-edit', 'builtin-editor', 'hackmd', 'editing-sidebar');
+//       break;
+//     case EditorMode.Editor:
+//       bodyElement.classList.add('on-edit', 'builtin-editor');
+//       bodyElement.classList.remove('hackmd');
+//       // editing /Sidebar
+//       if (isSidebar) {
+//         bodyElement.classList.add('editing-sidebar');
+//       }
+//       break;
+//     case EditorMode.HackMD:
+//       bodyElement.classList.add('on-edit', 'hackmd');
+//       bodyElement.classList.remove('builtin-editor', 'editing-sidebar');
+//       break;
+//   }
+// };
 
 const updateHashByEditorMode = (newEditorMode: EditorMode) => {
   const { pathname } = window.location;
@@ -130,7 +130,6 @@ export const determineEditorModeByHash = (): EditorMode => {
   }
 };
 
-let isEditorModeLoaded = false;
 export const useEditorMode = (): SWRResponse<EditorMode, Error> => {
   const { data: _isEditable } = useIsEditable();
 
@@ -140,22 +139,11 @@ export const useEditorMode = (): SWRResponse<EditorMode, Error> => {
   const isEditable = !isLoading && _isEditable;
   const initialData = isEditable ? editorModeByHash : EditorMode.View;
 
-  const { data: currentPagePath } = useCurrentPagePath();
-  const isSidebar = currentPagePath === '/Sidebar';
-
   const swrResponse = useSWRImmutable(
     isLoading ? null : ['editorMode', isEditable],
     null,
     { fallbackData: initialData },
   );
-
-  // initial updating
-  if (!isEditorModeLoaded && !isLoading && swrResponse.data != null) {
-    if (isEditable) {
-      updateBodyClassesByEditorMode(swrResponse.data, isSidebar);
-    }
-    isEditorModeLoaded = true;
-  }
 
   return {
     ...swrResponse,
@@ -165,7 +153,6 @@ export const useEditorMode = (): SWRResponse<EditorMode, Error> => {
       if (!isEditable) {
         return Promise.resolve(EditorMode.View); // fixed if not editable
       }
-      updateBodyClassesByEditorMode(editorMode, isSidebar);
       updateHashByEditorMode(editorMode);
       return swrResponse.mutate(editorMode, shouldRevalidate);
     },
