@@ -45,7 +45,7 @@ const TableOfContents = (): JSX.Element => {
     }
     // bottom - revisionToc top
     return bottom - (containerTop + containerPaddingTop);
-  }, [isUserPage]);
+  }, [rendererOptions]);
 
   return (
     <div id="revision-toc" className={`revision-toc ${styles['revision-toc']}`}>
