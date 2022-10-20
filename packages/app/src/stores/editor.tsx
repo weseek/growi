@@ -10,16 +10,17 @@ import { SlackChannels } from '~/interfaces/user-trigger-notification';
 import {
   useCurrentUser, useDefaultIndentSize, useIsGuestUser,
 } from './context';
-import { localStorageMiddleware } from './middlewares/sync-to-storage';
+// import { localStorageMiddleware } from './middlewares/sync-to-storage';
 import { useSWRxTagsInfo } from './page';
 import { useStaticSWR } from './use-static-swr';
 
 
 type EditorSettingsOperation = {
-  update: (updateData: Partial<IEditorSettings>) => void,
+  update: (updateData: Partial<IEditorSettings>) => Promise<void>,
   turnOffAskingBeforeDownloadLargeFiles: () => void,
 }
 
+// TODO: Enable localStorageMiddleware
 export const useEditorSettings = (): SWRResponseWithUtils<EditorSettingsOperation, IEditorSettings, Error> => {
   const { data: currentUser } = useCurrentUser();
   const { data: isGuestUser } = useIsGuestUser();
@@ -28,13 +29,13 @@ export const useEditorSettings = (): SWRResponseWithUtils<EditorSettingsOperatio
     isGuestUser ? null : ['/personal-setting/editor-settings', currentUser?.username],
     endpoint => apiv3Get(endpoint).then(result => result.data),
     {
-      use: [localStorageMiddleware], // store to localStorage for initialization fastly
-      fallbackData: undefined,
+      // use: [localStorageMiddleware], // store to localStorage for initialization fastly
+      // fallbackData: undefined,
     },
   );
 
   return withUtils<EditorSettingsOperation, IEditorSettings, Error>(swrResult, {
-    update: (updateData) => {
+    update: async(updateData) => {
       const { data, mutate } = swrResult;
 
       if (data == null) {
@@ -44,7 +45,7 @@ export const useEditorSettings = (): SWRResponseWithUtils<EditorSettingsOperatio
       mutate({ ...data, ...updateData }, false);
 
       // invoke API
-      apiv3Put('/personal-setting/editor-settings', updateData);
+      await apiv3Put('/personal-setting/editor-settings', updateData);
     },
     turnOffAskingBeforeDownloadLargeFiles: async() => {
       const { data, mutate } = swrResult;
