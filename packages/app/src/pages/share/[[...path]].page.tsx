@@ -13,7 +13,7 @@ import PageListIcon from '~/components/Icons/PageListIcon';
 import { ShareLinkLayout } from '~/components/Layout/ShareLinkLayout';
 import GrowiContextualSubNavigation from '~/components/Navbar/GrowiContextualSubNavigation';
 import { Page } from '~/components/Page';
-import styles from '~/components/Page/DisplaySwitcher.module.scss';
+import styles from '~/components/Page/DisplaySwitcher.module.scss'; // for PageList toc style
 import TableOfContents from '~/components/TableOfContents';
 import { SupportedAction, SupportedActionType } from '~/interfaces/activity';
 import { CrowiRequest } from '~/interfaces/crowi-request';
@@ -22,7 +22,6 @@ import { IShareLinkHasId } from '~/interfaces/share-link';
 import {
   useCurrentUser, useCurrentPagePath, useCurrentPathname, useCurrentPageId, useRendererConfig, useIsSearchPage,
   useShareLinkId, useIsSearchServiceConfigured, useIsSearchServiceReachable, useIsSearchScopeChildrenAsDefault,
-  useIsSharedUser,
 } from '~/stores/context';
 import { useDescendantsPageListModal } from '~/stores/modal';
 import loggerFactory from '~/utils/logger';
@@ -30,7 +29,6 @@ import loggerFactory from '~/utils/logger';
 import {
   CommonProps, getServerSideCommonProps, useCustomTitle, getNextI18NextConfig,
 } from '../utils/commons';
-
 
 const logger = loggerFactory('growi:next-page:share');
 
@@ -65,8 +63,6 @@ const SharedPage: NextPage<Props> = (props: Props) => {
   const isNotFound = props.shareLink == null || props.shareLink.relatedPage == null || props.shareLink.relatedPage.isEmpty;
   const isShowSharedPage = !props.disableLinkSharing && !isNotFound && !props.isExpired;
   const shareLink = props.shareLink;
-
-  useIsSharedUser(false);
 
   return (
     <ShareLinkLayout title={useCustomTitle(props, 'GROWI')} expandContainer={props.isContainerFluid}>
