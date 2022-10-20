@@ -104,6 +104,8 @@ context('Modal for page operation', () => {
     cy.visit('/Sandbox/Bootstrap4');
 
      cy.get('#grw-subnav-container').within(() => {
+      // eslint-disable-next-line cypress/no-unnecessary-waiting
+      cy.wait(1000)
        cy.getByTestid('open-page-item-control-btn').click();
        cy.getByTestid('open-page-delete-modal-btn').click();
     });
