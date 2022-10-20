@@ -1,6 +1,6 @@
 {
   "name": "@growi/plugin-lsx",
-  "version": "6.0.0-RC.5",
+  "version": "6.0.0-RC.6",
   "description": "GROWI plugin to list pages",
   "license": "MIT",
   "keywords": ["growi", "growi-plugin"],
@@ -23,9 +23,9 @@
     "test": ""
   },
   "dependencies": {
-    "@growi/core": "^6.0.0-RC.5",
-    "@growi/remark-growi-plugin": "^6.0.0-RC.5",
-    "@growi/ui": "^6.0.0-RC.5"
+    "@growi/core": "^6.0.0-RC.6",
+    "@growi/remark-growi-plugin": "^6.0.0-RC.6",
+    "@growi/ui": "^6.0.0-RC.6"
   },
   "devDependencies": {
     "eslint-plugin-regex": "^1.8.0",
