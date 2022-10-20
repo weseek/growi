@@ -1,24 +1,30 @@
 
-import React from 'react';
+import React, { useState } from 'react';
 
 import { useTranslation } from 'react-i18next';
 
-import { toastSuccess } from '~/client/util/apiNotification';
+import { toastSuccess, toastError } from '~/client/util/apiNotification';
+import { apiv3Post } from '~/client/util/apiv3-client';
 import { IPageToDeleteWithMeta } from '~/interfaces/page';
 import { OnDeletedFunction } from '~/interfaces/ui';
-import { useSWRxCurrentUserBookmarks } from '~/stores/bookmark';
+import { useSWRxCurrentUserBookmarkFolders, useSWRxCurrentUserBookmarks } from '~/stores/bookmark';
 import { useIsGuestUser } from '~/stores/context';
 import { usePageDeleteModal } from '~/stores/modal';
 
 
+import BookmarkFolder from './Bookmarks/BookmarkFolder';
 import BookmarkItem from './Bookmarks/BookmarkItem';
-
 
 const Bookmarks = () : JSX.Element => {
   const { t } = useTranslation();
   const { data: isGuestUser } = useIsGuestUser();
   const { data: currentUserBookmarksData, mutate: mutateCurrentUserBookmarks } = useSWRxCurrentUserBookmarks();
+  const { data: currentUserBookmarkFolder, mutate: mutateCurrentUserBookmarkFolder } = useSWRxCurrentUserBookmarkFolders();
   const { open: openDeleteModal } = usePageDeleteModal();
+
+  const [isRenameFolderShown, setIsRenameFolderShown] = useState<boolean>(false);
+  const [folderName, setFolderName] = useState<string>('');
+  const [currentParentFolder, setCurrentParentFolder] = useState(null);
 
   const deleteMenuItemClickHandler = (pageToDelete: IPageToDeleteWithMeta) => {
     const pageDeletedHandler : OnDeletedFunction = (pathOrPathsToDelete, _isRecursively, isCompletely) => {
@@ -36,6 +42,25 @@ const Bookmarks = () : JSX.Element => {
       mutateCurrentUserBookmarks();
     };
     openDeleteModal([pageToDelete], { onDeleted: pageDeletedHandler });
+  };
+
+  const onPressEnterHandler = async(folderName: string) => {
+    setFolderName(folderName);
+    try {
+      await apiv3Post('/bookmark-folder', { name: folderName, parent: currentParentFolder });
+      setIsRenameFolderShown(false);
+      setFolderName('');
+      mutateCurrentUserBookmarkFolder();
+      toastSuccess(t('Create New Bookmark Folder Success'));
+    }
+    catch (err) {
+      toastError(err);
+    }
+  };
+
+  const onClickOutsideHandler = () => {
+    setIsRenameFolderShown(false);
+    setFolderName('');
   };
 
   const renderBookmarkList = () => {
@@ -70,6 +95,19 @@ const Bookmarks = () : JSX.Element => {
       <div className="grw-sidebar-content-header p-3">
         <h3 className="mb-0">{t('Bookmarks')}</h3>
       </div>
+      {!isGuestUser && (
+        <>
+          <BookmarkFolder
+            onClickNewFolder={() => setIsRenameFolderShown(true)}
+            isRenameInputShown={isRenameFolderShown}
+            onClickOutside={onClickOutsideHandler}
+            onPressEnter={onPressEnterHandler}
+            folderName={folderName}
+          />
+          {/* TODO: List Bookmark Folder */}
+        </>
+      )
+      }
       { isGuestUser
         ? (
           <h4 className="pl-3">

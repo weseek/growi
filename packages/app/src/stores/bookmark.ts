@@ -3,6 +3,7 @@ import useSWRImmutable from 'swr/immutable';
 
 import { Nullable } from '~/interfaces/common';
 import { IPageHasId } from '~/interfaces/page';
+import { IBookmarkFolderDocument } from '~/server/models/bookmark-folder';
 
 import { apiv3Get } from '../client/util/apiv3-client';
 import { IBookmarkInfo } from '../interfaces/bookmark-info';
@@ -34,6 +35,15 @@ export const useSWRxCurrentUserBookmarks = (pageNum?: Nullable<number>): SWRResp
           ...item.page,
         };
       });
+    }),
+  );
+};
+
+export const useSWRxCurrentUserBookmarkFolders = () : SWRResponse<IBookmarkFolderDocument[], Error> => {
+  return useSWRImmutable(
+    '/bookmark-folder/list',
+    endpoint => apiv3Get(endpoint).then((response) => {
+      return response.data.bookmarkFolders;
     }),
   );
 };
