@@ -514,10 +514,6 @@
     "page_not_found_in_preview": "\"{{path}}\" というページはありません。"
   },
   "toaster": {
-    "create_succeeded": "新しい{{target}}が作成されました",
-    "create_failed": "{{target}}の作成に失敗しました",
-    "update_successed": "{{target}}を更新しました",
-    "update_failed": "{{target}}の更新に失敗しました",
     "file_upload_succeeded": "ファイルをアップロードしました",
     "file_upload_failed": "ファイルのアップロードに失敗しました",
     "initialize_successed": "{{target}}を初期化しました",

@@ -523,10 +523,6 @@
     "page_not_found_in_preview": "\"{{path}}\" is not a GROWI page."
   },
   "toaster": {
-    "create_succeeded": "Succeeded to create {{target}}",
-    "create_failed": "Failed to create {{target}}",
-    "update_successed": "Succeeded to update {{target}}",
-    "update_failed": "Failed to update {{target}}",
     "file_upload_succeeded": "File upload succeeded.",
     "file_upload_failed": "File upload failed.",
     "initialize_successed": "Succeeded to initialize {{target}}",
