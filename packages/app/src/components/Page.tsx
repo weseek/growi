@@ -10,6 +10,7 @@ import dynamic from 'next/dynamic';
 
 import { HtmlElementNode } from 'rehype-toc';
 
+import { toastSuccess, toastError } from '~/client/util/apiNotification';
 import { getOptionsToSave } from '~/client/util/editor';
 import {
   useIsGuestUser, useCurrentPageTocNode, useShareLinkId,
@@ -124,11 +125,12 @@ class PageSubstance extends React.Component<PageSubstanceProps> {
     //   const { page, tags } = await pageContainer.save(newMarkdown, this.props.editorMode, optionsToSave);
     //   logger.debug('success to save');
 
-    //   pageContainer.showSuccessToastr();
+    // // Todo: add translation
+    // toastSuccess(t(''));
     // }
     // catch (error) {
     //   logger.error('failed to save', error);
-    //   pageContainer.showErrorToastr(error);
+    // toastError(error);
     // }
     // finally {
     //   this.setState({ currentTargetTableArea: null });
@@ -156,11 +158,12 @@ class PageSubstance extends React.Component<PageSubstanceProps> {
     //     const { page, tags } = await pageContainer.save(newMarkdown, this.props.editorMode, optionsToSave);
     //     logger.debug('success to save');
 
-  //     pageContainer.showSuccessToastr();
-  //   }
+    // // Todo: add translation
+    //   toastSuccess(t(''));
+    //   }
   //   catch (error) {
   //     logger.error('failed to save', error);
-  //     pageContainer.showErrorToastr(error);
+  //     toastError(error);
   //   }
   //   finally {
   //     this.setState({ currentTargetDrawioArea: null });
