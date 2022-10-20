@@ -4,9 +4,10 @@ import loggerFactory from '~/utils/logger';
 
 import ConfigModel from '../models/config';
 import S2sMessage from '../models/vo/s2s-message';
+
+import ConfigLoader, { ConfigObject } from './config-loader';
 import { S2sMessagingService } from './s2s-messaging/base';
 import { S2sMessageHandlable } from './s2s-messaging/handlable';
-import ConfigLoader, { ConfigObject } from './config-loader';
 
 const logger = loggerFactory('growi:service:ConfigManager');
 
@@ -373,6 +374,18 @@ export default class ConfigManager implements S2sMessageHandlable {
   async handleS2sMessage(s2sMessage) {
     logger.info('Reload configs by pubsub notification');
     return this.loadConfigs();
+  }
+
+  /**
+   * Returns file upload total limit in bytes.
+   * @returns file upload total limit in bytes
+   */
+  getFileUploadTotalLimit(): number {
+    const fileUploadTotalLimit = this.getConfig('crowi', 'app:fileUploadType') === 'mongodb'
+      // Use app:fileUploadTotalLimit if gridfs:totalLimit is null (default for gridfs:totalLimitd is null)
+      ? this.getConfig('crowi', 'gridfs:totalLimit') ?? this.getConfig('crowi', 'app:fileUploadTotalLimit')
+      : this.getConfig('crowi', 'app:fileUploadTotalLimit');
+    return fileUploadTotalLimit;
   }
 
 }

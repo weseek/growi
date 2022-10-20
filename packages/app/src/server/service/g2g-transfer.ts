@@ -159,9 +159,7 @@ const generateGROWIInfo = async(crowi: any): Promise<IDataGROWIInfo> => {
   const { configManager } = crowi;
   const userUpperLimit = configManager.getConfig('crowi', 'security:userUpperLimit');
   const fileUploadDisabled = configManager.getConfig('crowi', 'app:fileUploadDisabled');
-  const fileUploadTotalLimit = configManager.getConfig('crowi', 'app:fileUploadType') === 'mongodb'
-    ? configManager.getConfig('crowi', 'gridfs:totalLimit') ?? configManager.getConfig('crowi', 'app:fileUploadTotalLimit')
-    : configManager.getConfig('crowi', 'app:fileUploadTotalLimit');
+  const fileUploadTotalLimit = configManager.getFileUploadTotalLimit();
   const version = crowi.version;
   const writable = await hasWritePermission(crowi);
 
