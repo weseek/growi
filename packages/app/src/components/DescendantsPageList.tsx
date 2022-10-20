@@ -10,7 +10,9 @@ import {
 } from '~/interfaces/page';
 import { IPagingResult } from '~/interfaces/paging-result';
 import { OnDeletedFunction, OnPutBackedFunction } from '~/interfaces/ui';
-import { useIsGuestUser, useIsSharedUser, useIsTrashPage } from '~/stores/context';
+import {
+  useIsGuestUser, useIsSharedUser, useIsTrashPage, useShowPageLimitationXL,
+} from '~/stores/context';
 import {
   usePageTreeTermManager, useDescendantsPageListForCurrentPathTermManager, useSWRxDescendantsPageListForCurrrentPath,
   useSWRxPageInfoForList, useSWRxPageList,
@@ -167,7 +169,8 @@ export const DescendantsPageListForCurrentPath = (): JSX.Element => {
   const [activePage, setActivePage] = useState(1);
 
   const { data: isTrashPage } = useIsTrashPage();
-  const { data: pagingResult, error, mutate } = useSWRxDescendantsPageListForCurrrentPath(activePage);
+  const { data: limit } = useShowPageLimitationXL();
+  const { data: pagingResult, error, mutate } = useSWRxDescendantsPageListForCurrrentPath(activePage, limit);
 
   if (error != null) {
     return (

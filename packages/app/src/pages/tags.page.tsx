@@ -1,17 +1,15 @@
 import React, { useState, useCallback } from 'react';
 
-import {
-  IUser, IUserHasId,
-} from '@growi/core';
+import type { IUser, IUserHasId } from '@growi/core';
 import { NextPage, GetServerSideProps, GetServerSidePropsContext } from 'next';
 import { useTranslation } from 'next-i18next';
 import dynamic from 'next/dynamic';
 import Head from 'next/head';
 
-import { CrowiRequest } from '~/interfaces/crowi-request';
-import { IDataTagCount } from '~/interfaces/tag';
-import { IUserUISettings } from '~/interfaces/user-ui-settings';
-import UserUISettings from '~/server/models/user-ui-settings';
+import type { CrowiRequest } from '~/interfaces/crowi-request';
+import type { IDataTagCount } from '~/interfaces/tag';
+import type { IUserUISettings } from '~/interfaces/user-ui-settings';
+import type { UserUISettingsModel } from '~/server/models/user-ui-settings';
 import { useSWRxTagsList } from '~/stores/tag';
 
 import { BasicLayout } from '../components/Layout/BasicLayout';
@@ -96,8 +94,12 @@ const TagPage: NextPage<CommonProps> = (props: Props) => {
 };
 
 async function injectUserUISettings(context: GetServerSidePropsContext, props: Props): Promise<void> {
+  const { model: mongooseModel } = await import('mongoose');
+
   const req = context.req as CrowiRequest<IUserHasId & any>;
   const { user } = req;
+
+  const UserUISettings = mongooseModel('UserUISettings') as UserUISettingsModel;
   const userUISettings = user == null ? null : await UserUISettings.findOne({ user: user._id }).exec();
 
   if (userUISettings != null) {
