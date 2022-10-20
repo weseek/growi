@@ -295,7 +295,7 @@ context('Tag Oprations', () =>{
     const newPageName = '/ourus';
 
     cy.visit('/');
-    cy.get('.grw-taglabels-container > form > a').contains(tag).click();
+    cy.get('.grw-taglabels-container > div > a').contains(tag).click();
     cy.getByTestid('search-result-base').should('be.visible');
     cy.getByTestid('search-result-list').should('be.visible');
     cy.getByTestid('search-result-content').should('be.visible');
