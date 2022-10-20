@@ -33,14 +33,10 @@ export const createSyncToStorageMiddlware = (
         initData = storageSerializer.deserialize(itemInStorage);
       }
 
-      const swrNext = useSWRNext(key, fetcher, {
-        fallbackData: initData,
-        ...config,
-      });
+      config.fallbackData = initData;
+      const swrNext = useSWRNext(key, fetcher, config);
 
-      return {
-        ...swrNext,
-        // override mutate
+      return Object.assign(swrNext, {
         mutate: (data, shouldRevalidate) => {
           return swrNext.mutate(data, shouldRevalidate)
             .then((value) => {
@@ -48,7 +44,7 @@ export const createSyncToStorageMiddlware = (
               return value;
             });
         },
-      };
+      });
     };
   };
 };
