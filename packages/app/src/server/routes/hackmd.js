@@ -1,5 +1,3 @@
-import { stylesCSS, stylesJS, agentJS } from '@growi/hackmd';
-
 import loggerFactory from '~/utils/logger';
 
 /* eslint-disable no-use-before-define */
@@ -7,6 +5,7 @@ import loggerFactory from '~/utils/logger';
 const logger = loggerFactory('growi:routes:hackmd');
 const path = require('path');
 
+const hackmdFiles = require('@growi/hackmd');
 const axios = require('axios');
 const ejs = require('ejs');
 const fs = require('graceful-fs');
@@ -57,7 +56,7 @@ module.exports = function(crowi, app) {
     };
 
     // inject origin to script
-    const script = ejs.render(agentJS, definitions);
+    const script = ejs.render(hackmdFiles.agentJS, definitions);
 
     res.set('Content-Type', 'application/javascript');
     res.send(script);
@@ -76,10 +75,10 @@ module.exports = function(crowi, app) {
 
     // generate definitions to replace
     const definitions = {
-      styles: stylesCSS,
+      styles: hackmdFiles.stylesCSS,
     };
     // inject styles to script
-    const script = ejs.render(stylesJS, definitions);
+    const script = ejs.render(hackmdFiles.stylesJS, definitions);
 
     res.set('Content-Type', 'application/javascript');
     res.send(script);
