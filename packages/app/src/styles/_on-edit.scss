@@ -4,7 +4,7 @@
 @import 'sidebar-wiki';
 
 // global imported
-.layout-root.on-edit {
+.layout-root.editing {
   overflow-y: hidden !important;
 
   .grw-navbar {
@@ -279,7 +279,7 @@
   }
 }
 
-.layout-root.on-edit {
+.layout-root.editing {
   &:not(.growi-layout-fluid) .page-editor-preview-body {
     .wiki {
       max-width: 980px;

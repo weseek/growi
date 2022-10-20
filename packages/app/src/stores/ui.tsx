@@ -76,13 +76,13 @@ const getClassNamesByEditorMode = (editorMode: EditorMode | undefined, isSidebar
   const classNames: string[] = [];
   switch (editorMode) {
     case EditorMode.Editor:
-      classNames.push('on-edit', 'builtin-editor');
+      classNames.push('editing', 'builtin-editor');
       if (isSidebar) {
         classNames.push('editing-sidebar');
       }
       break;
     case EditorMode.HackMD:
-      classNames.push('on-edit', 'hackmd');
+      classNames.push('editing', 'hackmd');
       break;
   }
 

@@ -1,4 +1,4 @@
-html[old-ios] .layout-root:not(.on-edit) {
+html[old-ios] .layout-root:not(.editing) {
   .grw-navbar {
     position: initial !important;
     top: 0 !important;
