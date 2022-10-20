@@ -7,7 +7,9 @@
   "scripts": {
     "build": "vite build && cp ./src/index.js ./dist"
   },
-  "dependencies": {},
+  "dependencies": {
+    "ejs": "^3.1.8"
+  },
   "devDependencies": {
     "penpal": "^4.0.0",
     "throttle-debounce": "^3.0.1",
