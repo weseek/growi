@@ -81,7 +81,7 @@ export const Fab = (): JSX.Element => {
   };
 
   return (
-    <div className={`${styles['grw-fab']} grw-fab d-none d-md-block d-edit-none`} data-testid="grw-fab">
+    <div className={`${styles['grw-fab']} grw-fab d-none d-md-block d-edit-none`} data-testid="grw-fab-container">
       {currentUser != null && renderPageCreateButton()}
       <div className={`rounded-circle position-absolute ${animateClasses}`} style={{ bottom: 0, right: 0 }} data-testid="grw-fab-return-to-top">
         <button
