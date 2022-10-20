@@ -191,21 +191,14 @@ export default class PageContainer extends Container {
     // }
     // this.setState(newState);
 
-    // // Update PageEditor component
-    // if (editorMode !== EditorMode.Editor) {
-    //   // eslint-disable-next-line no-undef
-    //   globalEmitter.emit('updateEditorValue', newState.markdown);
-    // }
-
     // PageEditorByHackmd component
-    const pageEditorByHackmd = this.appContainer.getComponentInstance('PageEditorByHackmd');
-    if (pageEditorByHackmd != null) {
-      // reset
-      if (editorMode !== EditorMode.HackMD) {
-        pageEditorByHackmd.reset();
-      }
-    }
-
+    // const pageEditorByHackmd = this.appContainer.getComponentInstance('PageEditorByHackmd');
+    // if (pageEditorByHackmd != null) {
+    //   // reset
+    //   if (editorMode !== EditorMode.HackMD) {
+    //     pageEditorByHackmd.reset();
+    //   }
+    // }
   }
 
   /**
