@@ -251,7 +251,7 @@ const GrowiPage: NextPage<Props> = (props: Props) => {
   const { mutate: mutateSelectedGrant } = useSelectedGrant();
 
   const { data: layoutSetting } = useLayoutSetting({ isContainerFluid: props.isContainerFluid });
-  const { data: editorMode } = useEditorMode();
+  const { getClassNamesByEditorMode } = useEditorMode();
 
   const shouldRenderPutbackPageModal = pageWithMeta != null
     ? _isTrashPage(pageWithMeta.data.path)
@@ -271,20 +271,9 @@ const GrowiPage: NextPage<Props> = (props: Props) => {
   }, [props.currentPathname, router]);
 
   const classNames: string[] = [];
-  switch (editorMode) {
-    case EditorMode.Editor:
-      classNames.push('on-edit', 'builtin-editor');
-      if (pagePath === '/Sidebar') {
-        classNames.push('editing-sidebar');
-      }
-      break;
-    case EditorMode.HackMD:
-      classNames.push('on-edit', 'hackmd');
-      break;
-  }
-  if (props.isNotFound) {
-    classNames.push('not-found-page');
-  }
+
+  const isSidebar = pagePath === '/Sidebar';
+  classNames.push(...getClassNamesByEditorMode(isSidebar));
 
   const isTopPagePath = isTopPage(pageWithMeta?.data.path ?? '');
 

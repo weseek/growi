@@ -1,4 +1,4 @@
-import { RefObject, useEffect } from 'react';
+import { RefObject, useCallback, useEffect } from 'react';
 
 import {
   isClient, isServer, pagePathUtils, Nullable, PageGrant,
@@ -72,30 +72,22 @@ export const useIsMobile = (): SWRResponse<boolean, Error> => {
   return useStaticSWR<boolean, Error>(key, undefined, configuration);
 };
 
-// const updateBodyClassesByEditorMode = (newEditorMode: EditorMode, isSidebar = false) => {
-//   const bodyElement = document.getElementsByTagName('body')[0];
-//   if (bodyElement == null) {
-//     logger.warn('The body tag was not successfully obtained');
-//     return;
-//   }
-//   switch (newEditorMode) {
-//     case EditorMode.View:
-//       bodyElement.classList.remove('on-edit', 'builtin-editor', 'hackmd', 'editing-sidebar');
-//       break;
-//     case EditorMode.Editor:
-//       bodyElement.classList.add('on-edit', 'builtin-editor');
-//       bodyElement.classList.remove('hackmd');
-//       // editing /Sidebar
-//       if (isSidebar) {
-//         bodyElement.classList.add('editing-sidebar');
-//       }
-//       break;
-//     case EditorMode.HackMD:
-//       bodyElement.classList.add('on-edit', 'hackmd');
-//       bodyElement.classList.remove('builtin-editor', 'editing-sidebar');
-//       break;
-//   }
-// };
+const getClassNamesByEditorMode = (editorMode: EditorMode | undefined, isSidebar = false): string[] => {
+  const classNames: string[] = [];
+  switch (editorMode) {
+    case EditorMode.Editor:
+      classNames.push('on-edit', 'builtin-editor');
+      if (isSidebar) {
+        classNames.push('editing-sidebar');
+      }
+      break;
+    case EditorMode.HackMD:
+      classNames.push('on-edit', 'hackmd');
+      break;
+  }
+
+  return classNames;
+};
 
 const updateHashByEditorMode = (newEditorMode: EditorMode) => {
   const { pathname } = window.location;
@@ -130,7 +122,11 @@ export const determineEditorModeByHash = (): EditorMode => {
   }
 };
 
-export const useEditorMode = (): SWRResponse<EditorMode, Error> => {
+type EditorModeUtils = {
+  getClassNamesByEditorMode: (isEditingSidebar: boolean) => string[],
+}
+
+export const useEditorMode = (): SWRResponseWithUtils<EditorModeUtils, EditorMode> => {
   const { data: _isEditable } = useIsEditable();
 
   const editorModeByHash = determineEditorModeByHash();
@@ -139,24 +135,31 @@ export const useEditorMode = (): SWRResponse<EditorMode, Error> => {
   const isEditable = !isLoading && _isEditable;
   const initialData = isEditable ? editorModeByHash : EditorMode.View;
 
-  const swrResponse = useSWRImmutable(
+  const swrResponse = useSWRImmutable<EditorMode>(
     isLoading ? null : ['editorMode', isEditable],
     null,
     { fallbackData: initialData },
   );
 
-  return {
-    ...swrResponse,
+  // construct overriding mutate method
+  const mutateOriginal = swrResponse.mutate;
+  const mutate = useCallback((editorMode: EditorMode, shouldRevalidate?: boolean) => {
+    if (!isEditable) {
+      return Promise.resolve(EditorMode.View); // fixed if not editable
+    }
+    updateHashByEditorMode(editorMode);
+    return mutateOriginal(editorMode, shouldRevalidate);
+  }, [isEditable, mutateOriginal]);
 
-    // overwrite mutate
-    mutate: (editorMode: EditorMode, shouldRevalidate?: boolean) => {
-      if (!isEditable) {
-        return Promise.resolve(EditorMode.View); // fixed if not editable
-      }
-      updateHashByEditorMode(editorMode);
-      return swrResponse.mutate(editorMode, shouldRevalidate);
-    },
-  };
+  // construct getClassNamesByEditorMode method
+  const getClassNames = useCallback((isEditingSidebar: boolean) => {
+    return getClassNamesByEditorMode(swrResponse.data, isEditingSidebar);
+  }, [swrResponse.data]);
+
+  return Object.assign(swrResponse, {
+    mutate,
+    getClassNamesByEditorMode: getClassNames,
+  });
 };
 
 export const useIsDeviceSmallerThanMd = (): SWRResponse<boolean, Error> => {
