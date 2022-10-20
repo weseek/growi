@@ -18,7 +18,7 @@ import { ISidebarConfig } from '~/interfaces/sidebar-config';
 import { IUserUISettings } from '~/interfaces/user-ui-settings';
 import { UserUISettingsModel } from '~/server/models/user-ui-settings';
 import {
-  useCurrentUser,
+  useCurrentUser, useIsSearchPage,
   useIsSearchServiceConfigured, useIsSearchServiceReachable,
   useCsrfToken, useIsSearchScopeChildrenAsDefault,
   useRegistrationWhiteList, useShowPageLimitationXL,
@@ -84,6 +84,8 @@ const MePage: NextPage<Props> = (props: Props) => {
   };
 
   const targetPage = getTargetPageToRender(mePagesMap, pagePathKeys);
+
+  useIsSearchPage(false);
 
   useCurrentUser(props.currentUser ?? null);
 

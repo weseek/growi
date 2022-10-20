@@ -30,10 +30,4 @@
       padding-top: 0.5em;
     }
   }
-
-  .page-comment-editor-skelton {
-    height: comment-inheritance.$codemirror-default-height;
-    margin-top: page-editor-inheritance.$navbar-editor-height;
-    margin-bottom: bs.$line-height-base + bs.$btn-padding-y;
-  }
 }

@@ -5,17 +5,15 @@ import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import dynamic from 'next/dynamic';
 import Head from 'next/head';
 
-import { BasicLayout } from '~/components/Layout/BasicLayout';
-import { CrowiRequest } from '~/interfaces/crowi-request';
-import { RendererConfig } from '~/interfaces/services/renderer';
-import { ISidebarConfig } from '~/interfaces/sidebar-config';
-import { IUser, IUserHasId } from '~/interfaces/user';
-import { IUserUISettings } from '~/interfaces/user-ui-settings';
-import UserUISettings from '~/server/models/user-ui-settings';
-import Xss from '~/services/xss';
+import type { CrowiRequest } from '~/interfaces/crowi-request';
+import type { RendererConfig } from '~/interfaces/services/renderer';
+import type { ISidebarConfig } from '~/interfaces/sidebar-config';
+import type { IUser, IUserHasId } from '~/interfaces/user';
+import type { IUserUISettings } from '~/interfaces/user-ui-settings';
+import type { UserUISettingsModel } from '~/server/models/user-ui-settings';
 import {
   useCsrfToken, useCurrentUser, useIsSearchPage, useIsSearchScopeChildrenAsDefault,
-  useIsSearchServiceConfigured, useIsSearchServiceReachable, useRendererConfig,
+  useIsSearchServiceConfigured, useIsSearchServiceReachable, useRendererConfig, useShowPageLimitationL,
 } from '~/stores/context';
 import {
   usePreferDrawerModeByUser, usePreferDrawerModeOnEditByUser, useSidebarCollapsed,
@@ -45,6 +43,9 @@ type Props = CommonProps & {
   // Render config
   rendererConfig: RendererConfig,
 
+  // search limit
+  showPageLimitationL: number
+
 };
 
 const SearchResultPage: NextPage<Props> = (props: Props) => {
@@ -70,6 +71,8 @@ const SearchResultPage: NextPage<Props> = (props: Props) => {
 
   // render config
   useRendererConfig(props.rendererConfig);
+
+  useShowPageLimitationL(props.showPageLimitationL);
 
   const PutbackPageModal = (): JSX.Element => {
     const PutbackPageModal = dynamic(() => import('../components/PutbackPageModal'), { ssr: false });
@@ -102,9 +105,12 @@ const SearchResultPage: NextPage<Props> = (props: Props) => {
 };
 
 async function injectUserUISettings(context: GetServerSidePropsContext, props: Props): Promise<void> {
+  const { model: mongooseModel } = await import('mongoose');
+
   const req = context.req as CrowiRequest<IUserHasId & any>;
   const { user } = req;
 
+  const UserUISettings = mongooseModel('UserUISettings') as UserUISettingsModel;
   const userUISettings = user == null ? null : await UserUISettings.findOne({ user: user._id }).exec();
   if (userUISettings != null) {
     props.userUISettings = userUISettings.toObject();
@@ -140,6 +146,8 @@ function injectServerConfigurations(context: GetServerSidePropsContext, props: P
     tagWhiteList: crowi.xssService.getTagWhiteList(),
     highlightJsStyleBorder: crowi.configManager.getConfig('crowi', 'customize:highlightJsStyleBorder'),
   };
+
+  props.showPageLimitationL = configManager.getConfig('crowi', 'customize:showPageLimitationL');
 }
 
 /**

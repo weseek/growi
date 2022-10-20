@@ -5,8 +5,9 @@ import {
   Modal, ModalBody, ModalHeader,
 } from 'reactstrap';
 
-
-import { useDisableLinkSharing, useIsGuestUser, useIsSharedUser } from '~/stores/context';
+import {
+  useDisableLinkSharing, useIsGuestUser, useIsSharedUser,
+} from '~/stores/context';
 import { usePageAccessoriesModal, PageAccessoriesModalContents } from '~/stores/modal';
 
 import { CustomNavTab } from './CustomNavigation/CustomNav';
@@ -16,7 +17,7 @@ import AttachmentIcon from './Icons/AttachmentIcon';
 import HistoryIcon from './Icons/HistoryIcon';
 import ShareLinkIcon from './Icons/ShareLinkIcon';
 import PageAttachment from './PageAttachment';
-import PageHistory from './PageHistory';
+import { PageHistory } from './PageHistory';
 import ShareLink from './ShareLink/ShareLink';
 
 import styles from './PageAccessoriesModal.module.scss';

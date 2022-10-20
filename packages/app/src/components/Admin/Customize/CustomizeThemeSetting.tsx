@@ -35,7 +35,7 @@ const CustomizeThemeSetting = (props: Props): JSX.Element => {
         });
       }
 
-      toastSuccess(t('toaster.update_successed', { target: t('admin:customize_setting.theme') }));
+      toastSuccess(t('toaster.update_successed', { target: t('admin:customize_settings.theme') }));
     }
     catch (err) {
       toastError(err);
@@ -45,7 +45,7 @@ const CustomizeThemeSetting = (props: Props): JSX.Element => {
   return (
     <div className="row">
       <div className="col-12">
-        <h2 className="admin-setting-header">{t('admin:customize_setting.theme')}</h2>
+        <h2 className="admin-setting-header">{t('admin:customize_settings.theme')}</h2>
         <CustomizeThemeOptions onSelected={selectedHandler} currentTheme={currentTheme} />
         <AdminUpdateButtonRow onClick={submitHandler} disabled={adminCustomizeContainer.state.retrieveError != null} />
       </div>

@@ -49,8 +49,6 @@ const multer = require('multer');
  *        properties:
  *          isEnabledTimeline:
  *            type: boolean
- *          isSavedStatesOfTabChanges:
- *            type: boolean
  *          isEnabledAttachTitleHeader:
  *            type: boolean
  *          pageLimitationS:
@@ -122,7 +120,6 @@ module.exports = (crowi) => {
     ],
     function: [
       body('isEnabledTimeline').isBoolean(),
-      body('isSavedStatesOfTabChanges').isBoolean(),
       body('isEnabledAttachTitleHeader').isBoolean(),
       body('pageLimitationS').isInt().isInt({ min: 1, max: 1000 }),
       body('pageLimitationM').isInt().isInt({ min: 1, max: 1000 }),
@@ -180,7 +177,6 @@ module.exports = (crowi) => {
     const customizeParams = {
       themeType: await crowi.configManager.getConfig('crowi', 'customize:theme'),
       isEnabledTimeline: await crowi.configManager.getConfig('crowi', 'customize:isEnabledTimeline'),
-      isSavedStatesOfTabChanges: await crowi.configManager.getConfig('crowi', 'customize:isSavedStatesOfTabChanges'),
       isEnabledAttachTitleHeader: await crowi.configManager.getConfig('crowi', 'customize:isEnabledAttachTitleHeader'),
       pageLimitationS: await crowi.configManager.getConfig('crowi', 'customize:showPageLimitationS'),
       pageLimitationM: await crowi.configManager.getConfig('crowi', 'customize:showPageLimitationM'),
@@ -422,7 +418,6 @@ module.exports = (crowi) => {
   router.put('/function', loginRequiredStrictly, adminRequired, addActivity, validator.function, apiV3FormValidator, async(req, res) => {
     const requestParams = {
       'customize:isEnabledTimeline': req.body.isEnabledTimeline,
-      'customize:isSavedStatesOfTabChanges': req.body.isSavedStatesOfTabChanges,
       'customize:isEnabledAttachTitleHeader': req.body.isEnabledAttachTitleHeader,
       'customize:showPageLimitationS': req.body.pageLimitationS,
       'customize:showPageLimitationM': req.body.pageLimitationM,
@@ -437,7 +432,6 @@ module.exports = (crowi) => {
       await crowi.configManager.updateConfigsInTheSameNamespace('crowi', requestParams);
       const customizedParams = {
         isEnabledTimeline: await crowi.configManager.getConfig('crowi', 'customize:isEnabledTimeline'),
-        isSavedStatesOfTabChanges: await crowi.configManager.getConfig('crowi', 'customize:isSavedStatesOfTabChanges'),
         isEnabledAttachTitleHeader: await crowi.configManager.getConfig('crowi', 'customize:isEnabledAttachTitleHeader'),
         pageLimitationS: await crowi.configManager.getConfig('crowi', 'customize:showPageLimitationS'),
         pageLimitationM: await crowi.configManager.getConfig('crowi', 'customize:showPageLimitationM'),

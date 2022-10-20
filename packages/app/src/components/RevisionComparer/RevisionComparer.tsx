@@ -1,8 +1,7 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 
-import { pagePathUtils } from '@growi/core';
+import { IRevisionHasPageId, pagePathUtils } from '@growi/core';
 import { useTranslation } from 'next-i18next';
-import PropTypes from 'prop-types';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
 import {
   Dropdown, DropdownToggle, DropdownMenu, DropdownItem,
@@ -10,36 +9,40 @@ import {
 
 import { useCurrentPagePath } from '~/stores/context';
 
-import RevisionDiff from '../PageHistory/RevisionDiff';
+import { RevisionDiff } from '../PageHistory/RevisionDiff';
 
+import styles from './RevisionComparer.module.scss';
 
 const { encodeSpaces } = pagePathUtils;
 
-/* eslint-disable react/prop-types */
 const DropdownItemContents = ({ title, contents }) => (
   <>
     <div className="h6 mt-1 mb-2"><strong>{title}</strong></div>
     <div className="card well mb-1 p-2">{contents}</div>
   </>
 );
-/* eslint-enable react/prop-types */
 
+type RevisionComparerProps = {
+  sourceRevision: IRevisionHasPageId
+  targetRevision: IRevisionHasPageId
+  currentPageId?: string
+}
 
-const RevisionComparer = (props) => {
-
+export const RevisionComparer = (props: RevisionComparerProps): JSX.Element => {
   const { t } = useTranslation();
-  const { data: currentPagePath } = useCurrentPagePath();
-  const [dropdownOpen, setDropdownOpen] = useState(false);
+
   const {
-    sourceRevision, targetRevision,
-    currentPageId,
+    sourceRevision, targetRevision, currentPageId,
   } = props;
 
-  function toggleDropdown() {
-    setDropdownOpen(!dropdownOpen);
-  }
+  const { data: currentPagePath } = useCurrentPagePath();
+  const [dropdownOpen, setDropdownOpen] = useState(false);
 
-  const generateURL = (pathName) => {
+  const toggleDropdown = () => {
+    setDropdownOpen(!dropdownOpen);
+  };
+
+  const generateURL = (pathName: string) => {
     const { origin } = window.location;
 
     const url = new URL(pathName, origin);
@@ -49,24 +52,17 @@ const RevisionComparer = (props) => {
       url.searchParams.set('compare', urlParams);
     }
 
-    return encodeSpaces(decodeURI(url));
-
+    return encodeSpaces(decodeURI(url.href));
   };
 
-  let isNodiff;
-  if (sourceRevision == null || targetRevision == null) {
-    isNodiff = true;
-  }
-  else {
-    isNodiff = sourceRevision._id === targetRevision._id;
-  }
+  const isNodiff = (sourceRevision == null || targetRevision == null) ? true : sourceRevision._id === targetRevision._id;
 
   if (currentPageId == null || currentPagePath == null) {
     return <>{ t('not_found_page.page_not_exist')}</>;
   }
 
   return (
-    <div className="revision-compare">
+    <div className={`${styles['revision-compare']} revision-compare`}>
       <div className="d-flex">
         <h4 className="align-self-center">{ t('page_history.comparing_revisions') }</h4>
         <Dropdown
@@ -115,11 +111,3 @@ const RevisionComparer = (props) => {
     </div>
   );
 };
-
-RevisionComparer.propTypes = {
-  sourceRevision: PropTypes.instanceOf(Object),
-  targetRevision: PropTypes.instanceOf(Object),
-  currentPageId: PropTypes.string,
-};
-
-export default RevisionComparer;

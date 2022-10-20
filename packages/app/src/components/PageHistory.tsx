@@ -1,21 +1,27 @@
 import React, { useState, useEffect } from 'react';
 
+import { IRevisionHasPageId } from '@growi/core';
+
 import { useCurrentPageId } from '~/stores/context';
 import { useSWRxPageRevisions } from '~/stores/page';
 import loggerFactory from '~/utils/logger';
 
-import PageRevisionTable from './PageHistory/PageRevisionTable';
+import { PageRevisionTable } from './PageHistory/PageRevisionTable';
 import PaginationWrapper from './PaginationWrapper';
-import RevisionComparer from './RevisionComparer/RevisionComparer';
+import { RevisionComparer } from './RevisionComparer/RevisionComparer';
 
 const logger = loggerFactory('growi:PageHistory');
 
-const PageHistory = () => {
+export const PageHistory = (): JSX.Element => {
+
   const [activePage, setActivePage] = useState(1);
+
   const { data: currentPageId } = useCurrentPageId();
-  const { data: revisionsData } = useSWRxPageRevisions(currentPageId, activePage, 10);
-  const [sourceRevision, setSourceRevision] = useState(null);
-  const [targetRevision, setTargetRevision] = useState(null);
+
+  const { data: revisionsData } = useSWRxPageRevisions(activePage, 10, currentPageId);
+
+  const [sourceRevision, setSourceRevision] = useState<IRevisionHasPageId>();
+  const [targetRevision, setTargetRevision] = useState<IRevisionHasPageId>();
 
   useEffect(() => {
     if (revisionsData != null) {
@@ -24,17 +30,17 @@ const PageHistory = () => {
     }
   }, [revisionsData]);
 
-
   const pagingLimit = 10;
 
-  if (revisionsData == null) {
+  if (revisionsData == null || sourceRevision == null || targetRevision == null || currentPageId == null) {
     return (
       <div className="text-muted text-center">
         <i className="fa fa-2x fa-spinner fa-pulse mt-3"></i>
       </div>
     );
   }
-  function pager() {
+
+  const pager = () => {
     return (
       <PaginationWrapper
         activePage={activePage}
@@ -44,7 +50,7 @@ const PageHistory = () => {
         align="center"
       />
     );
-  }
+  };
 
   return (
     <div className="revision-history" data-testid="page-history">
@@ -67,5 +73,3 @@ const PageHistory = () => {
     </div>
   );
 };
-
-export default PageHistory;

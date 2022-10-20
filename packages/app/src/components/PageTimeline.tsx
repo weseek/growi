@@ -8,7 +8,7 @@ import { IPageHasId } from '~/interfaces/page';
 import { useCurrentPagePath } from '~/stores/context';
 import { useTimelineOptions } from '~/stores/renderer';
 
-import RevisionLoader from './Page/RevisionLoader';
+import { RevisionLoader } from './Page/RevisionLoader';
 import PaginationWrapper from './PaginationWrapper';
 
 import styles from './PageTimeline.module.scss';

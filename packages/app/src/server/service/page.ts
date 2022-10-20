@@ -2484,7 +2484,7 @@ class PageService {
       throw Error(`The maximum number of pageIds allowed is ${LIMIT_FOR_MULTIPLE_PAGE_OP}.`);
     }
 
-    this.normalizeParentRecursivelyByPages(pages, user);
+    await this.normalizeParentRecursivelyByPages(pages, user);
 
     return;
   }

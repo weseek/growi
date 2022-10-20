@@ -19,3 +19,7 @@ export type IHighlightJsCssSelectorOptions = {
     border: boolean
   }
 }
+
+export type IResLayoutSetting = {
+  isContainerFluid: boolean,
+};

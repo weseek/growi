@@ -5,6 +5,7 @@ import useSWRImmutable from 'swr/immutable';
 
 
 import { SupportedActionType } from '~/interfaces/activity';
+import { IResLayoutSetting } from '~/interfaces/customize';
 import { EditorConfig } from '~/interfaces/editor-settings';
 // import { CustomWindow } from '~/interfaces/global';
 import { RendererConfig } from '~/interfaces/services/renderer';
@@ -195,7 +196,7 @@ export const useHasParent = (initialData?: boolean) : SWRResponse<boolean, Error
 };
 
 export const useIsIndentSizeForced = (initialData?: boolean) : SWRResponse<boolean, Error> => {
-  return useStaticSWR<boolean, Error>('isIndentSizeForced', initialData);
+  return useStaticSWR<boolean, Error>('isIndentSizeForced', initialData, { fallbackData: false });
 };
 
 export const useDefaultIndentSize = (initialData?: number) : SWRResponse<number, Error> => {
@@ -254,8 +255,20 @@ export const useIsUploadableFile = (initialData?: boolean): SWRResponse<boolean,
   return useStaticSWR('isUploadableFile', initialData);
 };
 
+export const useShowPageLimitationL = (initialData?: number): SWRResponse<number, Error> => {
+  return useStaticSWR('showPageLimitationL', initialData);
+};
+
 export const useShowPageLimitationXL = (initialData?: number): SWRResponse<number, Error> => {
   return useStaticSWR('showPageLimitationXL', initialData);
+};
+
+export const useLayoutSetting = (initialData?: IResLayoutSetting): SWRResponse<IResLayoutSetting, Error> => {
+  return useStaticSWR('layoutSetting', initialData);
+};
+
+export const useCustomizeTitle = (initialData?: string): SWRResponse<string, Error> => {
+  return useStaticSWR('CustomizeTitle', initialData);
 };
 
 /** **********************************************************

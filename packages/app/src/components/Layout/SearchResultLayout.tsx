@@ -20,7 +20,7 @@ const SearchResultLayout = ({
   }
 
   return (
-    <div className={`${commonStyles['on-search']}`}>
+    <div className={`on-search ${commonStyles['on-search']}`}>
       <BasicLayout title={title} className={classNames.join(' ')}>
         <div id="grw-fav-sticky-trigger" className="sticky-top"></div>
         <div id="main" className="main search-page mt-0">

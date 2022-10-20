@@ -1,6 +1,7 @@
 import assert from 'assert';
+
 import {
-  Key, SWRConfiguration, SWRResponse,
+  Key, SWRConfiguration, SWRResponse, useSWRConfig,
 } from 'swr';
 import useSWRImmutable from 'swr/immutable';
 
@@ -19,12 +20,15 @@ export function useStaticSWR<Data, Error>(
 
   assert.notStrictEqual(configuration?.fetcher, null, 'useStaticSWR does not support \'configuration.fetcher\'');
 
-  const swrResponse = useSWRImmutable(key, null, configuration);
+  const { cache } = useSWRConfig();
+  const swrResponse = useSWRImmutable(key, null, {
+    ...configuration,
+    fallbackData: configuration?.fallbackData ?? cache.get(key),
+  });
 
-  // mutate
+  // write data to cache directly
   if (data !== undefined) {
-    const { mutate } = swrResponse;
-    mutate(data);
+    cache.set(key, data);
   }
 
   return swrResponse;

@@ -21,7 +21,7 @@ const CustomizeCssSetting = (props: Props): JSX.Element => {
   const onClickSubmit = useCallback(async() => {
     try {
       await adminCustomizeContainer.updateCustomizeCss();
-      toastSuccess(t('toaster.update_successed', { target: t('admin:customize_setting.custom_css') }));
+      toastSuccess(t('toaster.update_successed', { target: t('admin:customize_settings.custom_css') }));
     }
     catch (err) {
       toastError(err);
@@ -32,12 +32,12 @@ const CustomizeCssSetting = (props: Props): JSX.Element => {
     <React.Fragment>
       <div className="row">
         <div className="col-12">
-          <h2 className="admin-setting-header">{t('admin:customize_setting.custom_css')}</h2>
+          <h2 className="admin-setting-header">{t('admin:customize_settings.custom_css')}</h2>
 
           <Card className="card well my-3">
             <CardBody className="px-0 py-2">
-              { t('admin:customize_setting.write_css') }<br />
-              { t('admin:customize_setting.reflect_change') }
+              { t('admin:customize_settings.write_css') }<br />
+              { t('admin:customize_settings.reflect_change') }
             </CardBody>
           </Card>
 
@@ -50,7 +50,7 @@ const CustomizeCssSetting = (props: Props): JSX.Element => {
             />
             <p className="form-text text-muted text-right">
               <i className="fa fa-fw fa-keyboard-o" aria-hidden="true" />
-              {t('admin:customize_setting.ctrl_space')}
+              {t('admin:customize_settings.ctrl_space')}
             </p>
           </div>
 

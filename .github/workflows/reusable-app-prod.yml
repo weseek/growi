@@ -215,7 +215,7 @@ jobs:
 
     - uses: actions/setup-node@v3
       with:
-        node-version: ${{ matrix.node-version }}
+        node-version: ${{ inputs.node-version }}
         cache: 'yarn'
         cache-dependency-path: '**/yarn.lock'
 
@@ -237,7 +237,7 @@ jobs:
     - name: Download production files artifact
       uses: actions/download-artifact@v3
       with:
-        name: Production Files
+        name: Production Files (node${{ inputs.node-version }})
 
     - name: Extract procution files artifact
       run: |

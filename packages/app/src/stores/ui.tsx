@@ -1,10 +1,10 @@
-import { RefObject } from 'react';
+import { RefObject, useEffect } from 'react';
 
 import {
   isClient, isServer, pagePathUtils, Nullable, PageGrant,
 } from '@growi/core';
 import { withUtils, SWRResponseWithUtils } from '@growi/core/src/utils/with-utils';
-import { Breakpoint, addBreakpointListener } from '@growi/ui';
+import { Breakpoint, addBreakpointListener, cleanupBreakpointListener } from '@growi/ui';
 import SimpleBar from 'simplebar-react';
 import {
   useSWRConfig, SWRResponse, Key, Fetcher,
@@ -177,21 +177,25 @@ export const useIsDeviceSmallerThanMd = (): SWRResponse<boolean, Error> => {
 
   const { cache, mutate } = useSWRConfig();
 
-  if (isClient()) {
-    const mdOrAvobeHandler = function(this: MediaQueryList): void {
-      // sm -> md: matches will be true
-      // md -> sm: matches will be false
-      mutate(key, !this.matches);
-    };
-    const mql = addBreakpointListener(Breakpoint.MD, mdOrAvobeHandler);
+  useEffect(() => {
+    if (isClient()) {
+      const mdOrAvobeHandler = function(this: MediaQueryList): void {
+        // sm -> md: matches will be true
+        // md -> sm: matches will be false
+        mutate(key, !this.matches);
+      };
+      const mql = addBreakpointListener(Breakpoint.MD, mdOrAvobeHandler);
 
-    // initialize
-    if (cache.get(key) == null) {
-      document.addEventListener('DOMContentLoaded', () => {
+      // initialize
+      if (cache.get(key) == null) {
         mutate(key, !mql.matches);
-      });
+      }
+
+      return () => {
+        cleanupBreakpointListener(mql, mdOrAvobeHandler);
+      };
     }
-  }
+  }, [cache, key, mutate]);
 
   return useStaticSWR(key);
 };
@@ -201,21 +205,25 @@ export const useIsDeviceSmallerThanLg = (): SWRResponse<boolean, Error> => {
 
   const { cache, mutate } = useSWRConfig();
 
-  if (isClient()) {
-    const lgOrAvobeHandler = function(this: MediaQueryList): void {
-      // md -> lg: matches will be true
-      // lg -> md: matches will be false
-      mutate(key, !this.matches);
-    };
-    const mql = addBreakpointListener(Breakpoint.LG, lgOrAvobeHandler);
+  useEffect(() => {
+    if (isClient()) {
+      const lgOrAvobeHandler = function(this: MediaQueryList): void {
+        // md -> lg: matches will be true
+        // lg -> md: matches will be false
+        mutate(key, !this.matches);
+      };
+      const mql = addBreakpointListener(Breakpoint.LG, lgOrAvobeHandler);
 
-    // initialize
-    if (cache.get(key) == null) {
-      document.addEventListener('DOMContentLoaded', () => {
+      // initialize
+      if (cache.get(key) == null) {
         mutate(key, !mql.matches);
-      });
+      }
+
+      return () => {
+        cleanupBreakpointListener(mql, lgOrAvobeHandler);
+      };
     }
-  }
+  }, [cache, key, mutate]);
 
   return useStaticSWR(key);
 };
