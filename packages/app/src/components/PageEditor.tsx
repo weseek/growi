@@ -202,7 +202,7 @@ const PageEditor = React.memo((): JSX.Element => {
       // when if created newly
       if (res.pageCreated) {
         logger.info('Page is created', res.page._id);
-        // pageContainer.updateStateAfterSave(res.page, res.tags, res.revision, editorMode);
+        globalEmitter.emit('resetInitializedHackMdStatus');
         mutateGrant(res.page.grant);
       }
     }
