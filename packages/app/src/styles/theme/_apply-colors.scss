@@ -505,7 +505,7 @@ ul.pagination {
 /*
  * GROWI on-edit
  */
-body.on-edit {
+.layout-root.on-edit {
   .main {
     background-color: darken($bgcolor-global, 2%);
 
