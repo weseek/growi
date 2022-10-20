@@ -146,7 +146,7 @@ const ElasticsearchManagement = () => {
 
   return (
     <>
-      <div className="row">
+      <div data-testid="admin-full-text-search" className="row">
         <div className="col-md-12">
           <StatusTable
             isInitialized={isInitialized}
