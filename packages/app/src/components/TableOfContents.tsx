@@ -45,7 +45,7 @@ const TableOfContents = (): JSX.Element => {
     }
     // bottom - revisionToc top
     return bottom - (containerTop + containerPaddingTop);
-  }, [rendererOptions]);
+  }, [rendererOptions]); // for redo calcViewHeight see: https://github.com/weseek/growi/pull/6791
 
   return (
     <div id="revision-toc" className={`revision-toc ${styles['revision-toc']}`}>
