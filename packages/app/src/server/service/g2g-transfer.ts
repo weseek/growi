@@ -229,6 +229,7 @@ export class G2GTransferPusherService implements Pusher {
     if (version !== toGROWIInfo.version) {
       return {
         canTransfer: false,
+        // TODO: i18n for reason
         reason: `Growi versions mismatch. This Growi: ${version} / new Growi: ${toGROWIInfo.version}.`,
       };
     }
@@ -237,6 +238,7 @@ export class G2GTransferPusherService implements Pusher {
     if ((toGROWIInfo.userUpperLimit ?? Infinity) < activeUserCount) {
       return {
         canTransfer: false,
+        // TODO: i18n for reason
         reason: `The number of active users (${activeUserCount} users) exceeds the limit of new Growi (to up ${toGROWIInfo.userUpperLimit} users).`,
       };
     }
@@ -244,6 +246,7 @@ export class G2GTransferPusherService implements Pusher {
     if (toGROWIInfo.fileUploadDisabled) {
       return {
         canTransfer: false,
+        // TODO: i18n for reason
         reason: 'File upload is disabled in new Growi.',
       };
     }
@@ -252,6 +255,7 @@ export class G2GTransferPusherService implements Pusher {
     if ((toGROWIInfo.fileUploadTotalLimit ?? Infinity) < totalFileSize) {
       return {
         canTransfer: false,
+        // TODO: i18n for reason
         // eslint-disable-next-line max-len, @typescript-eslint/no-non-null-assertion
         reason: `Total file size exceeds file upload limit of new Growi. Requires ${totalFileSize.toLocaleString()} bytes, but got ${toGROWIInfo.fileUploadTotalLimit!.toLocaleString()} bytes.`,
       };
