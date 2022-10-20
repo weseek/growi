@@ -15,7 +15,7 @@ context('Access Home', () => {
     cy.getByTestid('grw-personal-dropdown').click();
     cy.getByTestid('grw-personal-dropdown').find('.dropdown-menu .btn-group > .btn-outline-secondary:eq(0)').click();
 
-    cy.getByTestid('grw-user-page').should('be.visible');
+    cy.get('.user-page').should('be.visible');
 
     cy.screenshot(`${ssPrefix}-visit-home`);
   });
