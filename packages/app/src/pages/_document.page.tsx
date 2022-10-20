@@ -1,3 +1,4 @@
+/* eslint-disable @next/next/google-font-display */
 import React from 'react';
 
 import Document, {
@@ -28,6 +29,10 @@ class GrowiDocument extends Document {
           {renderScriptTagsByGroup('basis')}
           {renderStyleTagsByGroup('basis')}
           */}
+          <link
+            href="https://fonts.googleapis.com/css?family=Lato:400,700"
+            rel="stylesheet"
+          />
         </Head>
         <body>
           <Main />
