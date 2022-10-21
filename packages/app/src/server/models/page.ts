@@ -981,7 +981,7 @@ export default (crowi: Crowi): any => {
       body: string | null,
       previousBody: string | null,
       user,
-      options: {grant?: PageGrant, grantUserGroupId?: ObjectIdLike, isSyncRevisionToHackmd?: boolean} = {},
+      options: {grant?: PageGrant, grantUserGroupId?: ObjectIdLike, isSyncRevisionToHackmd?: boolean, overwriteScopesOfDescendants?: boolean} = {},
   ) {
     if (crowi.configManager == null || crowi.pageGrantService == null || crowi.pageService == null) {
       throw Error('Crowi is not set up');
@@ -1006,10 +1006,13 @@ export default (crowi: Crowi): any => {
 
     const newPageData = pageData;
 
+    const { pageService, pageGrantService } = crowi;
+
     if (shouldBeOnTree) {
       let isGrantNormalized = false;
       try {
-        isGrantNormalized = await crowi.pageGrantService.isGrantNormalized(user, pageData.path, grant, grantedUserIds, grantUserGroupId, true);
+        const shouldCheckDescendants = options.overwriteScopesOfDescendants !== true;
+        isGrantNormalized = await pageGrantService.isGrantNormalized(user, pageData.path, grant, grantedUserIds, grantUserGroupId, shouldCheckDescendants);
       }
       catch (err) {
         logger.error(`Failed to validate grant of page at "${pageData.path}" of grant ${grant}:`, err);
@@ -1020,7 +1023,7 @@ export default (crowi: Crowi): any => {
       }
 
       if (!wasOnTree) {
-        const newParent = await crowi.pageService.getParentAndFillAncestorsByUser(user, newPageData.path);
+        const newParent = await pageService.getParentAndFillAncestorsByUser(user, newPageData.path);
         newPageData.parent = newParent._id;
       }
     }
@@ -1083,14 +1086,14 @@ export default (crowi: Crowi): any => {
     const shouldPlusDescCount = !wasOnTree && shouldBeOnTree;
     const shouldMinusDescCount = wasOnTree && !shouldBeOnTree;
     if (shouldPlusDescCount) {
-      await crowi.pageService.updateDescendantCountOfAncestors(newPageData._id, 1, false);
+      await pageService.updateDescendantCountOfAncestors(newPageData._id, 1, false);
       const newDescendantCount = await this.recountDescendantCount(newPageData._id);
       await this.updateOne({ _id: newPageData._id }, { descendantCount: newDescendantCount });
     }
     else if (shouldMinusDescCount) {
       // Update from parent. Parent is null if newPageData.grant is RESTRECTED.
       if (newPageData.grant === GRANT_RESTRICTED) {
-        await crowi.pageService.updateDescendantCountOfAncestors(exParent, -1, true);
+        await pageService.updateDescendantCountOfAncestors(exParent, -1, true);
       }
     }
 
