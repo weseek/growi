@@ -38,6 +38,7 @@
     box-shadow: none !important;
   }
 
+  // separate style: https://github.com/weseek/growi/pull/6804
   .show > .btn-outline-#{$color}.dropdown-toggle {
     color: $value;
     background-color: rgba($value, 0.1);
