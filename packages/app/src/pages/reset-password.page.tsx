@@ -62,7 +62,7 @@ export const getServerSideProps: GetServerSideProps = async(context: GetServerSi
     props.email = email;
   }
 
-  await injectNextI18NextConfigurations(context, props, ['translation']);
+  await injectNextI18NextConfigurations(context, props, ['translation', 'commons']);
 
   return {
     props,

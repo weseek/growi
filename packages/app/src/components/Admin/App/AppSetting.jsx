@@ -18,12 +18,12 @@ const logger = loggerFactory('growi:appSettings');
 
 const AppSetting = (props) => {
   const { adminAppContainer } = props;
-  const { t } = useTranslation('admin');
+  const { t } = useTranslation(['admin', 'commons']);
 
   const submitHandler = useCallback(async() => {
     try {
       await adminAppContainer.updateAppSettingHandler();
-      toastSuccess(t('toaster.update_successed', { target: t('app_settings') }));
+      toastSuccess(t('toaster.update_successed', { target: t('app_settings'), ns: 'commons' }));
     }
     catch (err) {
       toastError(err);
