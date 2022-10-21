@@ -35,8 +35,8 @@ context('Access User settings', () => {
     // collapse sidebar
     cy.collapseSidebar(true);
     cy.visit('/me');
-    // hide fab
-    cy.getByTestid('grw-fab-container').invoke('attr', 'style', 'display: none');
+    // hide fab // disable fab for sticky-events warning
+    // cy.getByTestid('grw-fab-container').invoke('attr', 'style', 'display: none');
   });
 
   it('Access User information', () => {
