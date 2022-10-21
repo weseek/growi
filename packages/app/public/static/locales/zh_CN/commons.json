@@ -1,0 +1,11 @@
+{
+  "meta": {
+    "display_name": "简体中文"
+  },
+  "toaster": {
+    "create_succeeded": "Succeeded to create {{target}}",
+    "create_failed": "Failed to create {{target}}",
+    "update_successed": "Succeeded to update {{target}}",
+    "update_failed": "Failed to update {{target}}"
+  }
+}

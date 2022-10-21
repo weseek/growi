@@ -14,8 +14,8 @@ context('Access to page by guest', () => {
     // eslint-disable-next-line cypress/no-unnecessary-waiting
     cy.wait(500);
 
-    // hide fab
-    cy.getByTestid('grw-fab-container').invoke('attr', 'style', 'display: none');
+    // hide fab // disable fab for sticky-events warning
+    // cy.getByTestid('grw-fab-container').invoke('attr', 'style', 'display: none');
 
     cy.screenshot(`${ssPrefix}-sandbox-headers`);
   });

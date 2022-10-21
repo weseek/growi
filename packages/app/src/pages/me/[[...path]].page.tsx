@@ -198,7 +198,7 @@ export const getServerSideProps: GetServerSideProps = async(context: GetServerSi
 
   await injectUserUISettings(context, props);
   await injectServerConfigurations(context, props);
-  await injectNextI18NextConfigurations(context, props, ['translation', 'admin']);
+  await injectNextI18NextConfigurations(context, props, ['translation', 'admin', 'commons']);
 
   return {
     props,

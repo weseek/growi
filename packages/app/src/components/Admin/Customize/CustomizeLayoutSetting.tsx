@@ -19,7 +19,7 @@ const CustomizeLayoutSetting = (): JSX.Element => {
   const onClickSubmit = async() => {
     try {
       await apiv3Put('/customize-setting/layout', { isContainerFluid });
-      toastSuccess(t('toaster.update_successed', { target: t('customize_settings.layout') }));
+      toastSuccess(t('toaster.update_successed', { target: t('customize_settings.layout'), ns: 'commons' }));
       mutateLayoutSetting();
     }
     catch (err) {
