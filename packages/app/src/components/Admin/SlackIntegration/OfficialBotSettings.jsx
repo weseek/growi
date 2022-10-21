@@ -46,7 +46,7 @@ const OfficialBotSettings = (props) => {
       if (onPrimaryUpdated != null) {
         onPrimaryUpdated();
       }
-      toastSuccess(t('toaster.update_successed', { target: 'Primary' }));
+      toastSuccess(t('toaster.update_successed', { target: 'Primary', ns: 'commons' }));
     }
     catch (err) {
       toastError(err, 'Failed to change isPrimary');

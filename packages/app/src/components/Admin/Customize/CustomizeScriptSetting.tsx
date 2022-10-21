@@ -21,7 +21,7 @@ const CustomizeScriptSetting = (props: Props): JSX.Element => {
   const onClickSubmit = useCallback(async() => {
     try {
       await adminCustomizeContainer.updateCustomizeScript();
-      toastSuccess(t('toaster.update_successed', { target: t('admin:customize_settings.custom_script') }));
+      toastSuccess(t('toaster.update_successed', { target: t('admin:customize_settings.custom_script'), ns: 'commons' }));
     }
     catch (err) {
       toastError(err);

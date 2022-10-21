@@ -86,7 +86,7 @@ type Props = CommonProps & {
   siteUrl: string,
 };
 
-const AdminMarkdownSettingsPage: NextPage<Props> = (props: Props) => {
+const AdminPage: NextPage<Props> = (props: Props) => {
 
   const { t } = useTranslation('admin');
   const router = useRouter();
@@ -335,11 +335,11 @@ export const getServerSideProps: GetServerSideProps = async(context: GetServerSi
   }
 
   injectServerConfigurations(context, props);
-  await injectNextI18NextConfigurations(context, props, ['admin']);
+  await injectNextI18NextConfigurations(context, props, ['admin', 'commons']);
 
   return {
     props,
   };
 };
 
-export default AdminMarkdownSettingsPage;
+export default AdminPage;
