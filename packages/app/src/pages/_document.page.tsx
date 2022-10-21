@@ -28,6 +28,7 @@ class GrowiDocument extends Document {
           {renderScriptTagsByGroup('basis')}
           {renderStyleTagsByGroup('basis')}
           */}
+          <link rel='preload' href="/static/fonts/PressStart2P.ttf" as="font" type="font/ttf" />
         </Head>
         <body>
           <Main />
