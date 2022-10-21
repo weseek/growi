@@ -153,7 +153,7 @@ const GeneratingTokensAndRegisteringProxyServiceProcess = withUnstatedContainers
       if (props.onUpdateTokens != null) {
         props.onUpdateTokens();
       }
-      toastSuccess(t('toaster.update_successed', { target: 'Token' }));
+      toastSuccess(t('toaster.update_successed', { target: 'Token', ns: 'commons' }));
     }
     catch (err) {
       toastError(err);

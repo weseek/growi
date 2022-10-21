@@ -48,7 +48,7 @@ const ProfileImageSettings = (): JSX.Element => {
       formData.append('file', croppedImage);
       const response = await apiPostForm('/attachments.uploadProfileImage', formData);
 
-      toastSuccess(t('toaster.update_successed', { target: t('Current Image') }));
+      toastSuccess(t('toaster.update_successed', { target: t('Current Image'), ns: 'commons' }));
 
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       setUploadedPictureSrc((response as any).attachment.filePathProxied);
@@ -64,7 +64,7 @@ const ProfileImageSettings = (): JSX.Element => {
       await apiPost('/attachments.removeProfileImage');
 
       setUploadedPictureSrc(undefined);
-      toastSuccess(t('toaster.update_successed', { target: t('Current Image') }));
+      toastSuccess(t('toaster.update_successed', { target: t('Current Image'), ns: 'commons' }));
     }
     catch (err) {
       toastError(err);
@@ -78,7 +78,7 @@ const ProfileImageSettings = (): JSX.Element => {
       const { userData } = response.data;
       setGravatarEnabled(userData.isGravatarEnabled);
 
-      toastSuccess(t('toaster.update_successed', { target: t('Set Profile Image') }));
+      toastSuccess(t('toaster.update_successed', { target: t('Set Profile Image'), ns: 'commons' }));
     }
     catch (err) {
       toastError(err);
