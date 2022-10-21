@@ -86,7 +86,7 @@ type Props = CommonProps & {
   siteUrl: string,
 };
 
-const AdminMarkdownSettingsPage: NextPage<Props> = (props: Props) => {
+const AdminPage: NextPage<Props> = (props: Props) => {
 
   const { t } = useTranslation('admin');
   const router = useRouter();
@@ -342,4 +342,4 @@ export const getServerSideProps: GetServerSideProps = async(context: GetServerSi
   };
 };
 
-export default AdminMarkdownSettingsPage;
+export default AdminPage;
