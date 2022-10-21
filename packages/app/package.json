@@ -141,7 +141,7 @@
     "nodemailer-ses-transport": "~1.5.0",
     "openid-client": "^5.1.2",
     "p-retry": "^4.0.0",
-    "passport": "^0.5.0",
+    "passport": "^0.6.0",
     "passport-github": "^1.1.0",
     "passport-google-oauth20": "^2.0.0",
     "passport-http": "^0.3.0",

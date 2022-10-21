@@ -79,7 +79,7 @@ const CustomizeScriptSetting = (props: Props): JSX.Element => {
 
           <div className="form-text text-muted">
             Examples:
-            <pre className="hljs"><code>{getExampleCode()}</code></pre>
+            <pre><code className='language-javascript'>{getExampleCode()}</code></pre>
           </div>
 
           <div className="form-group">

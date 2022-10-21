@@ -152,7 +152,7 @@ export const PageComment: FC<PageCommentProps> = memo((props:PageCommentProps): 
 
   return (
     <>
-      <div className={`${styles['page-comment-styles']} page-comments-row comment-list`}>
+      <div id="page-comments" className={`${styles['page-comment-styles']} page-comments-row comment-list`}>
         <div className="container-lg">
           <div className="page-comments">
             <h2 className={commentTitleClasses}><i className="icon-fw icon-bubbles"></i>Comments</h2>
