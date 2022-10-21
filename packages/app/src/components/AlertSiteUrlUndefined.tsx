@@ -30,8 +30,8 @@ export const AlertSiteUrlUndefined = (): JSX.Element => {
     <div className="alert alert-danger rounded-0 d-edit-none mb-0 px-4 py-2">
       <i className="icon-exclamation"></i>
       {
-        t('common:security_settings.alert_siteUrl_is_not_set', { link: t('common:app_settings') })
-      } &gt;&gt; <a href="/admin/app">{t('common:app_settings')}<i className="icon-login"></i></a>
+        t('common:alert.alert_siteUrl_is_not_set', { link: t('commons:headers.app_settings') })
+      } &gt;&gt; <a href="/admin/app">{t('commons:headers.app_settings')}<i className="icon-login"></i></a>
     </div>
   );
 };
