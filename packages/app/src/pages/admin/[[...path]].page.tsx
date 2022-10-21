@@ -115,7 +115,7 @@ const AdminPage: NextPage<Props> = (props: Props) => {
       />,
     },
     app: {
-      title: t('app_settings'),
+      title: t('commons:headers.app_settings'),
       component: <AppSettingsPageContents />,
     },
     security: {
