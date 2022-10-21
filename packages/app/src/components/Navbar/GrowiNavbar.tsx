@@ -133,7 +133,7 @@ const GrowiNavbarLogo: FC<NavbarLogoProps> = memo((props: NavbarLogoProps) => {
       // The nature of next/image, which wraps the <img> with other tags such as <div>, makes it difficult to adjust the style of the image.
       // Instead of adding css selectors to the <Image />, wrap the <Image /> in a <div> and add selectors there to control the styles.
       <div id="settingBrandLogo" className='position-relative picture picture-lg mx-2 p-2'>
-        <Image loader={nextImageLoader} className="" alt='logo'
+        <Image loader={nextImageLoader} alt='logo'
           src={logoSrc}
           layout='fill'
           quality='100'
