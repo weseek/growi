@@ -63,7 +63,7 @@ import {
   useIsAclEnabled, useIsUserPage, useIsSearchPage,
   useCsrfToken, useIsSearchScopeChildrenAsDefault, useCurrentPageId, useCurrentPathname,
   useIsSlackConfigured, useRendererConfig, useEditingMarkdown,
-  useEditorConfig, useIsAllReplyShown, useIsUploadableFile, useIsUploadableImage, useLayoutSetting,
+  useEditorConfig, useIsAllReplyShown, useIsUploadableFile, useIsUploadableImage, useLayoutSetting, useCustomizedLogoSrc,
 } from '../stores/context';
 
 import {
@@ -185,6 +185,7 @@ const GrowiPage: NextPage<Props> = (props: Props) => {
   // commons
   useEditorConfig(props.editorConfig);
   useCsrfToken(props.csrfToken);
+  useCustomizedLogoSrc(props.customizedLogoSrc);
 
   // UserUISettings
   usePreferDrawerModeByUser(props.userUISettings?.preferDrawerModeByUser ?? props.sidebarConfig.isSidebarDrawerMode);
