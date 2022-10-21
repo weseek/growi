@@ -1,48 +1,50 @@
-import React from 'react';
+import React, { useCallback, useState } from 'react';
 
-import PropTypes from 'prop-types';
+import { animateScroll } from 'react-scroll';
 import {
   Modal, ModalBody,
 } from 'reactstrap';
 
-import { apiv3Get } from '~/client/util/apiv3-client';
+import { useSWRxStaffs } from '~/stores/staff';
 import loggerFactory from '~/utils/logger';
 
 
 import styles from './StaffCredit.module.scss';
 
 
-/**
- * Page staff credit component
- *
- * @export
- * @class StaffCredit
- * @extends {React.Component}
- */
-
 // eslint-disable-next-line no-unused-vars
 const logger = loggerFactory('growi:cli:StaffCredit');
 
-class StaffCredit extends React.Component {
 
-  constructor(props) {
+type Props = {
+  onClosed?: () => void,
+}
 
-    super(props);
-    this.state = {
-      isShown: true,
-      contributors: null,
-    };
-    this.deleteCredit = this.deleteCredit.bind(this);
-  }
+const StaffCredit = (props: Props): JSX.Element => {
 
-  // to delete the staffCredit and to inform that to Hotkeys.jsx
-  deleteCredit() {
-    if (this.state.isShown) {
-      this.setState({ isShown: false });
+  const { onClosed } = props;
+
+  const { data: contributors } = useSWRxStaffs();
+
+  const [isScrolling, setScrolling] = useState(false);
+
+
+  const closeHandler = useCallback(() => {
+    if (onClosed != null) {
+      onClosed();
     }
-  }
+  }, [onClosed]);
 
-  renderMembers(memberGroup, keyPrefix) {
+  const contentsClickedHandler = useCallback(() => {
+    if (isScrolling) {
+      setScrolling(false);
+    }
+    else {
+      closeHandler();
+    }
+  }, [closeHandler, isScrolling]);
+
+  const renderMembers = useCallback((memberGroup, keyPrefix) => {
     // construct members elements
     const members = memberGroup.members.map((member) => {
       return (
@@ -60,88 +62,78 @@ class StaffCredit extends React.Component {
         {members}
       </React.Fragment>
     );
-  }
+  }, []);
 
-  renderContributors() {
-    if (this.state.isShown) {
-      const credit = this.state.contributors.map((contributor) => {
-        // construct members elements
-        const memberGroups = contributor.memberGroups.map((memberGroup, idx) => {
-          return this.renderMembers(memberGroup, `${contributor.sectionName}-group${idx}`);
-        });
-        return (
-          <React.Fragment key={`${contributor.sectionName}-fragment`}>
-            <div className={`row ${contributor.additionalClass}`} key={`${contributor.sectionName}-row`}>
-              <h2 className="col-md-12 dev-team staff-credit-mt-10rem staff-credit-mb-6rem" key={contributor.sectionName}>{contributor.sectionName}</h2>
-              {memberGroups}
-            </div>
-            <div className="clearfix"></div>
-          </React.Fragment>
-        );
-      });
-      return (
-        <div className="text-center staff-credit-content" onClick={this.deleteCredit}>
-          <h1 className="staff-credit-mb-6rem">GROWI Contributors</h1>
-          <div className="clearfix"></div>
-          {credit}
-        </div>
-      );
-    }
-    return null;
-  }
-
-  async componentDidMount() {
-    const res = await apiv3Get('/staffs');
-    const contributors = res.data.contributors;
-    this.setState({ contributors });
-
-    // setTimeout(() => {
-    //   // px / sec
-    //   const scrollSpeed = 200;
-    //   const target = $('.credit-curtain');
-    //   const scrollTargetHeight = target.children().innerHeight();
-    //   const duration = scrollTargetHeight / scrollSpeed * 1000;
-    //   target.animate({ scrollTop: scrollTargetHeight }, duration, 'linear');
-    //   target.slimScroll({
-    //     height: target.innerHeight(),
-    //     // Able to scroll after automatic schooling is complete so set "bottom" to allow scrolling from the bottom.
-    //     start: 'bottom',
-    //     color: '#FFFFFF',
-    //   });
-    // }, 10);
-  }
-
-  render() {
-    const { onClosed } = this.props;
-
-    if (this.state.contributors === null) {
+  const renderContributors = useCallback(() => {
+    if (contributors == null) {
       return <></>;
     }
 
+    const credit = contributors.map((contributor) => {
+      // construct members elements
+      const memberGroups = contributor.memberGroups.map((memberGroup, idx) => {
+        return renderMembers(memberGroup, `${contributor.sectionName}-group${idx}`);
+      });
+      return (
+        <React.Fragment key={`${contributor.sectionName}-fragment`}>
+          <div className={`row ${contributor.additionalClass}`} key={`${contributor.sectionName}-row`}>
+            <h2 className="col-md-12 dev-team staff-credit-mt-10rem staff-credit-mb-6rem" key={contributor.sectionName}>{contributor.sectionName}</h2>
+            {memberGroups}
+          </div>
+          <div className="clearfix"></div>
+        </React.Fragment>
+      );
+    });
     return (
-      <Modal
-        isOpen={this.state.isShown}
-        onClosed={() => {
-          if (onClosed != null) {
-            onClosed();
-          }
-        }}
-        toggle={this.deleteCredit}
-        scrollable
-        className={`staff-credit ${styles['staff-credit']}`}
-      >
-        <ModalBody className="credit-curtain">
-          {this.renderContributors()}
-        </ModalBody>
-        <div className="background"></div>
-      </Modal>
+      <div className="text-center staff-credit-content" onClick={contentsClickedHandler}>
+        <h1 className="staff-credit-mb-6rem">GROWI Contributors</h1>
+        <div className="clearfix"></div>
+        {credit}
+      </div>
     );
+  }, [contentsClickedHandler, contributors, renderMembers]);
+
+
+  const openedHandler = useCallback(() => {
+    // init
+    animateScroll.scrollTo(0, { containerId: 'modalBody', duration: 0 });
+
+    setScrolling(true);
+
+    // start scrolling
+    animateScroll.scrollToBottom({
+      containerId: 'modalBody',
+      smooth: 'linear',
+      delay: 200,
+      duration: (scrollDistanceInPx: number) => {
+        const scrollSpeed = 200;
+        return scrollDistanceInPx / scrollSpeed * 1000;
+      },
+    });
+  }, []);
+
+
+  const isLoaded = contributors !== undefined;
+
+  if (contributors == null) {
+    return <></>;
   }
 
-}
+  return (
+    <Modal
+      isOpen={isLoaded}
+      toggle={closeHandler}
+      scrollable
+      className={`staff-credit ${styles['staff-credit']}`}
+      onOpened={openedHandler}
+    >
+      <ModalBody id="modalBody" className="credit-curtain">
+        {renderContributors()}
+      </ModalBody>
+      <div className="background"></div>
+    </Modal>
+  );
 
-StaffCredit.propTypes = {
-  onClosed: PropTypes.func,
 };
 
 export default StaffCredit;
