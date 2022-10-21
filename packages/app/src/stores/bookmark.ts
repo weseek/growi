@@ -1,7 +1,7 @@
+import { IUserHasId, Nullable } from '@growi/core';
 import { SWRResponse } from 'swr';
 import useSWRImmutable from 'swr/immutable';
 
-import { Nullable } from '~/interfaces/common';
 import { IPageHasId } from '~/interfaces/page';
 
 import { apiv3Get } from '../client/util/apiv3-client';
@@ -25,8 +25,9 @@ export const useSWRBookmarkInfo = (pageId: string | null | undefined): SWRRespon
 export const useSWRxCurrentUserBookmarks = (pageNum?: Nullable<number>): SWRResponse<IPageHasId[], Error> => {
   const { data: currentUser } = useCurrentUser();
   const currentPage = pageNum ?? 1;
+  const user = currentUser as IUserHasId;
   return useSWRImmutable(
-    currentUser != null ? `/bookmarks/${currentUser._id}` : null,
+    currentUser != null ? `/bookmarks/${user._id}` : null,
     endpoint => apiv3Get(endpoint, { page: currentPage }).then((response) => {
       const { paginationResult } = response.data;
       return paginationResult.docs.map((item) => {

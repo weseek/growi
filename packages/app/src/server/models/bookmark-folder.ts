@@ -1,4 +1,5 @@
 import { Ref, IUser } from '@growi/core';
+import ExtensibleCustomError from 'extensible-custom-error';
 import {
   Types, Document, Model, Schema,
 } from 'mongoose';
@@ -9,10 +10,13 @@ import { getOrCreateModel } from '../util/mongoose-utils';
 
 const logger = loggerFactory('growi:models:bookmark-folder');
 
+export class InvalidParentBookmarkFolder extends ExtensibleCustomError {}
+
+
 export type IBookmarkFolderDocument = {
   name: string
   owner: Ref<IUser>
-  parent?: string
+  parent?: Ref<BookmarkFolderDocument>
 }
 export interface BookmarkFolderDocument extends Document {
   _id: Types.ObjectId
@@ -32,15 +36,31 @@ export interface BookmarkFolderModel extends Model<BookmarkFolderDocument>{
 const bookmarkFolderSchema = new Schema<BookmarkFolderDocument, BookmarkFolderModel>({
   name: { type: String },
   owner: { type: Schema.Types.ObjectId, ref: 'User', index: true },
-  parent: { type: Schema.Types.ObjectId, refPath: 'BookmarkFolder', required: false },
+  parent: { type: Schema.Types.ObjectId, ref: 'BookmarkFolder', required: false },
 });
 
 
 bookmarkFolderSchema.statics.createByParameters = async function(params: IBookmarkFolderDocument): Promise<BookmarkFolderDocument> {
   const { name, owner, parent } = params;
-  const parentFolder = await this.findById(parent);
-
-  const bookmarkFolder = await this.create({ name, owner, parent: parentFolder?._id || null }) as unknown as BookmarkFolderDocument;
+  let bookmarkFolder;
+  try {
+    if (parent === null) {
+      bookmarkFolder = await this.create({ name, owner, parent:  null }) as unknown as BookmarkFolderDocument;
+    }
+    else {
+      const parentFolder = await this.findById(parent);
+      if (!parentFolder) {
+        throw new InvalidParentBookmarkFolder("Parent folder doesn't exists");
+      }
+      bookmarkFolder = await this.create({ name, owner, parent:  parentFolder?._id }) as unknown as BookmarkFolderDocument;
+    }
+  }
+  catch (err) {
+    if (err instanceof InvalidParentBookmarkFolder) {
+      throw new InvalidParentBookmarkFolder(err);
+    }
+    return err;
+  }
   return bookmarkFolder;
 };
 
