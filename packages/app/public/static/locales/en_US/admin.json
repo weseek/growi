@@ -467,8 +467,6 @@
       "select_search_scope_children_as_default": "Select 'Only children of this tree' as default value of search range",
       "select_search_scope_children_as_default_desc": "When the setting value is off, 'All pages' is used as default value of search range."
     },
-    "code_highlight": "Code highlight",
-    "nocdn_desc": "This function is disabled when the environment variable <code>NO_CDN=true</code>.<br>Github style has been forcibly applied.",
     "custom_title": "Custom title",
     "custom_title_detail": "You can customize <code>&lt;title&gt;</code> tag. Following placeholders will be automatically replaced:",
     "custom_title_detail_placeholder1": "<code>&#123;&#123;sitename&#125;&#125;</code> - The site name of this wiki.",
