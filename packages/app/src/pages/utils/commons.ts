@@ -21,6 +21,7 @@ export type CommonProps = {
   growiVersion: string,
   isMaintenanceMode: boolean,
   redirectDestination: string | null,
+  customizedLogoSrc?: string,
 } & Partial<SSRConfig>;
 
 // eslint-disable-next-line max-len
@@ -53,6 +54,7 @@ export const getServerSideCommonProps: GetServerSideProps<CommonProps> = async(c
     growiVersion: crowi.version,
     isMaintenanceMode,
     redirectDestination,
+    customizedLogoSrc: configManager.getConfig('crowi', 'customize:customizedLogoSrc'),
   };
 
   return { props };
