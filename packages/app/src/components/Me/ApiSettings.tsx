@@ -19,7 +19,7 @@ const ApiSettings = React.memo((): JSX.Element => {
       await apiv3Put('/personal-setting/api-token');
       mutateDatabaseData();
 
-      toastSuccess(t('toaster.update_successed', { target: t('page_me_apitoken.api_token') }));
+      toastSuccess(t('toaster.update_successed', { target: t('page_me_apitoken.api_token'), ns: 'commons' }));
     }
     catch (err) {
       toastError(err);
