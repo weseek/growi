@@ -21,7 +21,7 @@ const CustomizeCssSetting = (props: Props): JSX.Element => {
   const onClickSubmit = useCallback(async() => {
     try {
       await adminCustomizeContainer.updateCustomizeCss();
-      toastSuccess(t('toaster.update_successed', { target: t('admin:customize_settings.custom_css') }));
+      toastSuccess(t('toaster.update_successed', { target: t('admin:customize_settings.custom_css'), ns: 'commons' }));
     }
     catch (err) {
       toastError(err);
