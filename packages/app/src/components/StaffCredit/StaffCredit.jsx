@@ -9,6 +9,9 @@ import { apiv3Get } from '~/client/util/apiv3-client';
 import loggerFactory from '~/utils/logger';
 
 
+import styles from './StaffCredit.module.scss';
+
+
 /**
  * Page staff credit component
  *
@@ -92,20 +95,20 @@ class StaffCredit extends React.Component {
     const contributors = res.data.contributors;
     this.setState({ contributors });
 
-    setTimeout(() => {
-      // px / sec
-      const scrollSpeed = 200;
-      const target = $('.credit-curtain');
-      const scrollTargetHeight = target.children().innerHeight();
-      const duration = scrollTargetHeight / scrollSpeed * 1000;
-      target.animate({ scrollTop: scrollTargetHeight }, duration, 'linear');
-      target.slimScroll({
-        height: target.innerHeight(),
-        // Able to scroll after automatic schooling is complete so set "bottom" to allow scrolling from the bottom.
-        start: 'bottom',
-        color: '#FFFFFF',
-      });
-    }, 10);
+    // setTimeout(() => {
+    //   // px / sec
+    //   const scrollSpeed = 200;
+    //   const target = $('.credit-curtain');
+    //   const scrollTargetHeight = target.children().innerHeight();
+    //   const duration = scrollTargetHeight / scrollSpeed * 1000;
+    //   target.animate({ scrollTop: scrollTargetHeight }, duration, 'linear');
+    //   target.slimScroll({
+    //     height: target.innerHeight(),
+    //     // Able to scroll after automatic schooling is complete so set "bottom" to allow scrolling from the bottom.
+    //     start: 'bottom',
+    //     color: '#FFFFFF',
+    //   });
+    // }, 10);
   }
 
   render() {
@@ -125,11 +128,12 @@ class StaffCredit extends React.Component {
         }}
         toggle={this.deleteCredit}
         scrollable
-        className="staff-credit"
+        className={`staff-credit ${styles['staff-credit']}`}
       >
         <ModalBody className="credit-curtain">
           {this.renderContributors()}
         </ModalBody>
+        <div className="background"></div>
       </Modal>
     );
   }
