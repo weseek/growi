@@ -1,6 +1,6 @@
 import React, { useMemo, useCallback } from 'react';
-import PropTypes from 'prop-types';
 
+import PropTypes from 'prop-types';
 import { GlobalHotKeys } from 'react-hotkeys';
 
 import HotkeyStroke from '~/client/models/HotkeyStroke';
