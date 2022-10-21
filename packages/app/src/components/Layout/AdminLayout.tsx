@@ -8,6 +8,9 @@ import { RawLayout } from './RawLayout';
 
 import styles from './Admin.module.scss';
 
+
+const HotkeysManager = dynamic(() => import('../Hotkeys/HotkeysManager'), { ssr: false });
+
 const AdminNotFoundPage = dynamic(() => import('../Admin/NotFoundPage').then(mod => mod.AdminNotFoundPage), { ssr: false });
 
 
@@ -54,6 +57,9 @@ const AdminLayout = ({
 
         <SystemVersion />
       </div>
+
+      <HotkeysManager />
+
     </RawLayout>
   );
 };

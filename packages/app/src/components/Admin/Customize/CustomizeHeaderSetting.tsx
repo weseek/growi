@@ -44,7 +44,7 @@ const CustomizeHeaderSetting = (props: Props): JSX.Element => {
           </Card>
           <div className="form-text text-muted">
             { t('Example') }:
-            <pre className="hljs">
+            <pre>
               {/* eslint-disable-next-line react/no-unescaped-entities */}
               <code className="text-wrap">&lt;script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@9.13.0/build/languages/yaml.min.js"
                 defer&gt;&lt;/script&gt;

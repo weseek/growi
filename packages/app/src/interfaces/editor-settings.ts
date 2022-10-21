@@ -5,7 +5,7 @@ export interface ILintRule {
 }
 
 export interface ITextlintSettings {
-  neverAskBeforeDownloadLargeFiles: boolean;
+  neverAskBeforeDownloadLargeFiles?: boolean;
   textlintRules: ILintRule[];
 }
 
