@@ -29,6 +29,10 @@ class GrowiDocument extends Document {
           {renderStyleTagsByGroup('basis')}
           */}
           <link rel='preload' href="/static/fonts/PressStart2P.ttf" as="font" type="font/ttf" />
+          <link rel='preload' href="/static/fonts/Lato-Regular-latin.woff2" as="font" type="font/woff2" />
+          <link rel='preload' href="/static/fonts/Lato-Regular-latin-ext.woff2" as="font" type="font/woff2" />
+          <link rel='preload' href="/static/fonts/Lato-Bold-latin.woff2" as="font" type="font/woff2" />
+          <link rel='preload' href="/static/fonts/Lato-Bold-latin-ext.woff2" as="font" type="font/woff2" />
         </Head>
         <body>
           <Main />
