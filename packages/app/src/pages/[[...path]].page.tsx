@@ -604,7 +604,7 @@ export const getServerSideProps: GetServerSideProps = async(context: GetServerSi
   await injectUserUISettings(context, props);
   await injectRoutingInformation(context, props);
   injectServerConfigurations(context, props);
-  await injectNextI18NextConfigurations(context, props, ['translation']);
+  await injectNextI18NextConfigurations(context, props, ['translation', 'common']);
 
   return {
     props,
