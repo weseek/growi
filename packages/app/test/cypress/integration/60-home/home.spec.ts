@@ -15,8 +15,9 @@ context('Access Home', () => {
     cy.getByTestid('grw-personal-dropdown').click();
     cy.getByTestid('grw-personal-dropdown').find('.dropdown-menu .btn-group > .btn-outline-secondary:eq(0)').click();
 
-    cy.get('.user-page').should('be.visible');
-    cy.get('.revision-toc-content').should('be.visible');
+    cy.get('.grw-users-info').should('be.visible');
+    // for check download toc data
+    cy.get('.toc-link').should('be.visible');
 
     cy.screenshot(`${ssPrefix}-visit-home`);
   });
