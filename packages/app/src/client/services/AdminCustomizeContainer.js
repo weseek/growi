@@ -35,26 +35,10 @@ export default class AdminCustomizeContainer extends Container {
       isEnabledStaleNotification: false,
       isAllReplyShown: false,
       isSearchScopeChildrenAsDefault: false,
-      currentHighlightJsStyleId: '',
-      isHighlightJsStyleBorderEnabled: false,
       currentCustomizeTitle: '',
       currentCustomizeHeader: '',
       currentCustomizeCss: '',
       currentCustomizeScript: '',
-      /* eslint-disable quote-props, no-multi-spaces */
-      highlightJsCssSelectorOptions: {
-        'github':           { name: '[Light] GitHub',         border: false },
-        'github-gist':      { name: '[Light] GitHub Gist',    border: true },
-        'atom-one-light':   { name: '[Light] Atom One Light', border: true },
-        'xcode':            { name: '[Light] Xcode',          border: true },
-        'vs':               { name: '[Light] Vs',             border: true },
-        'atom-one-dark':    { name: '[Dark] Atom One Dark',   border: false },
-        'hybrid':           { name: '[Dark] Hybrid',          border: false },
-        'monokai':          { name: '[Dark] Monokai',         border: false },
-        'tomorrow-night':   { name: '[Dark] Tomorrow Night',  border: false },
-        'vs2015':           { name: '[Dark] Vs 2015',         border: false },
-      },
-      /* eslint-enable quote-props, no-multi-spaces */
     };
     this.switchPageListLimitationS = this.switchPageListLimitationS.bind(this);
     this.switchPageListLimitationM = this.switchPageListLimitationM.bind(this);
@@ -88,16 +72,11 @@ export default class AdminCustomizeContainer extends Container {
         isEnabledStaleNotification: customizeParams.isEnabledStaleNotification,
         isAllReplyShown: customizeParams.isAllReplyShown,
         isSearchScopeChildrenAsDefault: customizeParams.isSearchScopeChildrenAsDefault,
-        currentHighlightJsStyleId: customizeParams.styleName,
-        isHighlightJsStyleBorderEnabled: customizeParams.styleBorder,
         currentCustomizeTitle: customizeParams.customizeTitle,
         currentCustomizeHeader: customizeParams.customizeHeader,
         currentCustomizeCss: customizeParams.customizeCss,
         currentCustomizeScript: customizeParams.customizeScript,
       });
-
-      // search style name from object for display
-      this.setState({ currentHighlightJsStyleName: this.state.highlightJsCssSelectorOptions[customizeParams.styleName].name });
     }
     catch (err) {
       this.setState({ retrieveError: err });
@@ -172,25 +151,6 @@ export default class AdminCustomizeContainer extends Container {
   }
 
   /**
-   * Switch highlightJsStyle
-   */
-  switchHighlightJsStyle(styleId, styleName, isBorderEnable) {
-    this.setState({ currentHighlightJsStyleId: styleId });
-    this.setState({ currentHighlightJsStyleName: styleName });
-    // recommended settings are applied
-    this.setState({ isHighlightJsStyleBorderEnabled: isBorderEnable });
-
-    this.previewHighlightJsStyle(styleId);
-  }
-
-  /**
-   * Switch highlightJsStyleBorder
-   */
-  switchHighlightJsStyleBorder() {
-    this.setState({ isHighlightJsStyleBorderEnabled: !this.state.isHighlightJsStyleBorderEnabled });
-  }
-
-  /**
    * Change customize Title
    */
   changeCustomizeTitle(inputValue) {
@@ -216,17 +176,6 @@ export default class AdminCustomizeContainer extends Container {
    */
   changeCustomizeScript(inpuValue) {
     this.setState({ currentCustomizeScript: inpuValue });
-  }
-
-  /**
-   * Preview hljs style
-   * @param {string} styleId
-   */
-  previewHighlightJsStyle(styleId) {
-    const styleLInk = document.querySelectorAll('#grw-hljs-container-for-demo link')[0];
-    // replace css url
-    // see https://regex101.com/r/gBNZYu/4
-    styleLInk.href = styleLInk.href.replace(/[^/]+\.css$/, `${styleId}.css`);
   }
 
 
@@ -258,28 +207,6 @@ export default class AdminCustomizeContainer extends Container {
         isEnabledStaleNotification: customizedParams.isEnabledStaleNotification,
         isAllReplyShown: customizedParams.isAllReplyShown,
         isSearchScopeChildrenAsDefault: customizedParams.isSearchScopeChildrenAsDefault,
-      });
-    }
-    catch (err) {
-      logger.error(err);
-      throw new Error('Failed to update data');
-    }
-  }
-
-  /**
-   * Update code highlight
-   * @memberOf AdminCustomizeContainer
-   */
-  async updateHighlightJsStyle() {
-    try {
-      const response = await apiv3Put('/customize-setting/highlight', {
-        highlightJsStyle: this.state.currentHighlightJsStyleId,
-        highlightJsStyleBorder: this.state.isHighlightJsStyleBorderEnabled,
-      });
-      const { customizedParams } = response.data;
-      this.setState({
-        highlightJsStyle: customizedParams.highlightJsStyle,
-        highlightJsStyleBorder: customizedParams.highlightJsStyleBorder,
       });
     }
     catch (err) {

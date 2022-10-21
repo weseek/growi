@@ -174,38 +174,31 @@ export default class PageContainer extends Container {
    */
   updateStateAfterSave(page, tags, revision, editorMode) {
     // update state of PageContainer
-    const newState = {
-      pageId: page._id,
-      revisionId: revision._id,
-      revisionCreatedAt: new Date(revision.createdAt).getTime() / 1000,
-      remoteRevisionId: revision._id,
-      revisionAuthor: revision.author,
-      revisionIdHackmdSynced: page.revisionHackmdSynced,
-      hasDraftOnHackmd: page.hasDraftOnHackmd,
-      markdown: revision.body,
-      createdAt: page.createdAt,
-      updatedAt: page.updatedAt,
-    };
-    if (tags != null) {
-      newState.tags = tags;
-    }
-    this.setState(newState);
-
-    // Update PageEditor component
-    if (editorMode !== EditorMode.Editor) {
-      // eslint-disable-next-line no-undef
-      globalEmitter.emit('updateEditorValue', newState.markdown);
-    }
+    // const newState = {
+    //   pageId: page._id,
+    //   revisionId: revision._id,
+    //   revisionCreatedAt: new Date(revision.createdAt).getTime() / 1000,
+    //   remoteRevisionId: revision._id,
+    //   revisionAuthor: revision.author,
+    //   revisionIdHackmdSynced: page.revisionHackmdSynced,
+    //   hasDraftOnHackmd: page.hasDraftOnHackmd,
+    //   markdown: revision.body,
+    //   createdAt: page.createdAt,
+    //   updatedAt: page.updatedAt,
+    // };
+    // if (tags != null) {
+    //   newState.tags = tags;
+    // }
+    // this.setState(newState);
 
     // PageEditorByHackmd component
-    const pageEditorByHackmd = this.appContainer.getComponentInstance('PageEditorByHackmd');
-    if (pageEditorByHackmd != null) {
-      // reset
-      if (editorMode !== EditorMode.HackMD) {
-        pageEditorByHackmd.reset();
-      }
-    }
-
+    // const pageEditorByHackmd = this.appContainer.getComponentInstance('PageEditorByHackmd');
+    // if (pageEditorByHackmd != null) {
+    //   // reset
+    //   if (editorMode !== EditorMode.HackMD) {
+    //     pageEditorByHackmd.reset();
+    //   }
+    // }
   }
 
   /**

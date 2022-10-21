@@ -6,9 +6,11 @@ import EventEmitter from 'events';
 
 import { envUtils, PageGrant } from '@growi/core';
 import detectIndent from 'detect-indent';
+import { useTranslation } from 'next-i18next';
 import { throttle, debounce } from 'throttle-debounce';
 
 import { saveOrUpdate } from '~/client/services/page-operation';
+import { toastSuccess, toastError } from '~/client/util/apiNotification';
 import { apiGet, apiPostForm } from '~/client/util/apiv1-client';
 import { getOptionsToSave } from '~/client/util/editor';
 import { IEditorMethods } from '~/interfaces/editor-methods';
@@ -48,6 +50,7 @@ let isOriginOfScrollSyncPreview = false;
 
 const PageEditor = React.memo((): JSX.Element => {
 
+  const { t } = useTranslation();
   const { data: pageId } = useCurrentPageId();
   const { data: currentPagePath } = useCurrentPagePath();
   const { data: currentPathname } = useCurrentPathname();
@@ -95,7 +98,8 @@ const PageEditor = React.memo((): JSX.Element => {
     setMarkdownWithDebounce(value, isClean);
   }, [setMarkdownWithDebounce]);
 
-  const save = useCallback(async(opts?: {overwriteScopesOfDescendants: boolean}) => {
+  // return true if the save succeeds, otherwise false.
+  const save = useCallback(async(opts?: {overwriteScopesOfDescendants: boolean}): Promise<boolean> => {
     if (grantData == null || isSlackEnabled == null || currentPathname == null) {
       logger.error('Some materials to save are invalid', { grantData, isSlackEnabled, currentPathname });
       throw new Error('Some materials to save are invalid');
@@ -113,10 +117,11 @@ const PageEditor = React.memo((): JSX.Element => {
       await saveOrUpdate(optionsToSave, { pageId, path: currentPagePath || currentPathname, revisionId: currentRevisionId }, markdownToSave.current);
       await mutateCurrentPage();
       mutateIsEnabledUnsavedWarning(false);
+      return true;
     }
     catch (error) {
       logger.error('failed to save', error);
-      // pageContainer.showErrorToastr(error);
+      toastError(error);
       if (error.code === 'conflict') {
         // pageContainer.setState({
         //   remoteRevisionId: error.data.revisionId,
@@ -125,6 +130,7 @@ const PageEditor = React.memo((): JSX.Element => {
         //   lastUpdateUser: error.data.user,
         // });
       }
+      return false;
     }
 
   // eslint-disable-next-line max-len
@@ -144,11 +150,12 @@ const PageEditor = React.memo((): JSX.Element => {
       return;
     }
 
-    await save();
+    const isSuccess = await save();
+    if (isSuccess) {
+      toastSuccess(t('toaster.save_succeeded'));
+    }
 
-    // TODO: show toastr
-    // pageContainer.showErrorToastr(error);
-  }, [editorMode, save]);
+  }, [editorMode, save, t]);
 
 
   /**
@@ -195,13 +202,13 @@ const PageEditor = React.memo((): JSX.Element => {
       // when if created newly
       if (res.pageCreated) {
         logger.info('Page is created', res.page._id);
-        // pageContainer.updateStateAfterSave(res.page, res.tags, res.revision, editorMode);
+        globalEmitter.emit('resetInitializedHackMdStatus');
         mutateGrant(res.page.grant);
       }
     }
     catch (e) {
       logger.error('failed to upload', e);
-      // pageContainer.showErrorToastr(e);
+      toastError(e);
     }
     finally {
       editorRef.current.terminateUploadingState();
