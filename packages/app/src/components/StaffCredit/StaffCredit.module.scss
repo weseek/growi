@@ -1,5 +1,5 @@
 // Staff Credit
-.staff-credit {
+.staff-credit :global {
   // attached !important for updating from .modal-dialog class style
   width: 80vw !important;
   max-width: unset !important;
@@ -17,13 +17,14 @@
     background-color: black;
     background-image: radial-gradient(rgba(50, 100, 100, 0.75), black 120%);
   }
-  &::after {
+
+  .background {
     position: absolute;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
-    content: '';
+    pointer-events: none;
     background: repeating-linear-gradient(0deg, rgba(black, 0.15), rgba(black, 0.15) 2px, transparent 2px, transparent 4px);
   }
 
@@ -35,7 +36,7 @@
   h6,
   .dev-position,
   .dev-name {
-    font-family: 'Press Start 2P', $font-family-for-staff-credit;
+    font-family: 'Press Start 2P', Lato, -apple-system, BlinkMacSystemFont, 'Hiragino Kaku Gothic ProN', Meiryo, sans-serif;
     color: white;
   }
 
