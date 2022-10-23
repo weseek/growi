@@ -103,48 +103,54 @@ class ImportForm extends React.Component {
   setupWebsocketEventHandler() {
     const { socket } = this.props;
 
-    // websocket event
-    // eslint-disable-next-line object-curly-newline
-    socket.on('admin:onProgressForImport', ({ collectionName, collectionProgress, appendedErrors }) => {
-      const { progressMap, errorsMap } = this.state;
-      progressMap[collectionName] = collectionProgress;
+    if (socket != null) {
+      // websocket event
+      // eslint-disable-next-line object-curly-newline
+      socket.on('admin:onProgressForImport', ({ collectionName, collectionProgress, appendedErrors }) => {
+        const { progressMap, errorsMap } = this.state;
+        progressMap[collectionName] = collectionProgress;
 
-      const errors = errorsMap[collectionName] || [];
-      errorsMap[collectionName] = errors.concat(appendedErrors);
+        const errors = errorsMap[collectionName] || [];
+        errorsMap[collectionName] = errors.concat(appendedErrors);
 
-      this.setState({
-        isImporting: true,
-        progressMap,
-        errorsMap,
-      });
-    });
-
-    // websocket event
-    socket.on('admin:onTerminateForImport', () => {
-      this.setState({
-        isImporting: false,
-        isImported: true,
+        this.setState({
+          isImporting: true,
+          progressMap,
+          errorsMap,
+        });
       });
 
-      toastSuccess(undefined, 'Import process has completed.');
-    });
+      // websocket event
+      socket.on('admin:onTerminateForImport', () => {
+        this.setState({
+          isImporting: false,
+          isImported: true,
+        });
 
-    // websocket event
-    socket.on('admin:onErrorForImport', (err) => {
-      this.setState({
-        isImporting: false,
-        isImported: false,
+        toastSuccess(undefined, 'Import process has completed.');
       });
 
-      toastError(err, 'Import process has failed.');
-    });
+      // websocket event
+      socket.on('admin:onErrorForImport', (err) => {
+        this.setState({
+          isImporting: false,
+          isImported: false,
+        });
+
+        toastError(err, 'Import process has failed.');
+      });
+
+    }
+
   }
 
   teardownWebsocketEventHandler() {
     const { socket } = this.props;
 
-    socket.removeAllListeners('admin:onProgressForImport');
-    socket.removeAllListeners('admin:onTerminateForImport');
+    if (socket != null) {
+      socket.removeAllListeners('admin:onProgressForImport');
+      socket.removeAllListeners('admin:onTerminateForImport');
+    }
   }
 
   async toggleCheckbox(collectionName, bool) {
