@@ -6,12 +6,9 @@ import { useIsUserPage } from '~/stores/context';
 import { useTocOptions } from '~/stores/renderer';
 import loggerFactory from '~/utils/logger';
 
-
 import { StickyStretchableScroller } from './StickyStretchableScroller';
 
-
 import styles from './TableOfContents.module.scss';
-
 
 // eslint-disable-next-line no-unused-vars
 const logger = loggerFactory('growi:TableOfContents');
@@ -28,7 +25,10 @@ const TableOfContents = (): JSX.Element => {
     // calculate absolute top of '#revision-toc' element
     const parentElem = document.querySelector('.grw-side-contents-container');
     const containerElem = document.querySelector('#revision-toc');
-    if (parentElem == null || containerElem == null) {
+
+    // rendererOptions for redo calcViewHeight()
+    // see: https://github.com/weseek/growi/pull/6791
+    if (parentElem == null || containerElem == null || rendererOptions == null) {
       return 0;
     }
     const parentBottom = parentElem.getBoundingClientRect().bottom;
@@ -45,7 +45,7 @@ const TableOfContents = (): JSX.Element => {
     }
     // bottom - revisionToc top
     return bottom - (containerTop + containerPaddingTop);
-  }, [rendererOptions]); // for redo calcViewHeight see: https://github.com/weseek/growi/pull/6791
+  }, [isUserPage, rendererOptions]);
 
   return (
     <div id="revision-toc" className={`revision-toc ${styles['revision-toc']}`}>
