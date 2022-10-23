@@ -1,3 +1,4 @@
+/* eslint-disable @next/next/google-font-display */
 import React from 'react';
 
 import Document, {
