@@ -5,6 +5,7 @@ import urljoin from 'url-join';
 
 import { SupportedTargetModel, SupportedAction } from '~/interfaces/activity';
 import Activity from '~/server/models/activity';
+import { pushRevision } from '~/server/models/page';
 import XssOption from '~/services/xss/xssOption';
 import loggerFactory from '~/utils/logger';
 
@@ -990,8 +991,8 @@ module.exports = function(crowi, app) {
     const isSyncRevisionToHackmd = !!req.body.isSyncRevisionToHackmd; // cast to boolean
     const pageTags = req.body.pageTags || undefined;
 
-    if (pageId === null || pageBody === null || revisionId === null) {
-      return res.json(ApiResponse.error('page_id, body and revision_id are required.'));
+    if (pageId === null || pageBody === null) {
+      return res.json(ApiResponse.error('pageId and paegBody are required.'));
     }
 
     // check page existence
@@ -1002,7 +1003,7 @@ module.exports = function(crowi, app) {
 
     // check revision
     const Revision = crowi.model('Revision');
-    let page = await Page.findByIdAndViewer(pageId, req.user);
+    let page = await Page.findByIdAndViewer(pageId, req.user, null, true);
     if (page != null && revisionId != null && !page.isUpdatable(revisionId)) {
       const latestRevision = await Revision.findById(page.revision).populate('author');
       const returnLatestRevision = {
@@ -1014,13 +1015,25 @@ module.exports = function(crowi, app) {
       return res.json(ApiResponse.error('Posted param "revisionId" is outdated.', 'conflict', returnLatestRevision));
     }
 
+    // update empty page
+    let newRevisionId = null;
+    if (page.isEmpty) {
+      const newRevision = await Revision.prepareRevision(page, pageBody, null, req.user);
+      newRevisionId = newRevision._id.toString();
+      page = await pushRevision(page, newRevision, req.user);
+    }
+
     const options = { isSyncRevisionToHackmd };
     if (grant != null) {
       options.grant = grant;
       options.grantUserGroupId = grantUserGroupId;
     }
 
-    const previousRevision = await Revision.findById(revisionId);
+    if (page.isEmpty) {
+      options.isEmpty = !page.isEmpty;
+    }
+
+    const previousRevision = await Revision.findById(newRevisionId ?? revisionId);
     try {
       page = await Page.updatePage(page, pageBody, previousRevision.body, req.user, options);
     }
