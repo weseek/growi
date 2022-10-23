@@ -124,10 +124,10 @@ const UserGroupDetailPage = (props: Props): JSX.Element => {
     async(targetGroup: IUserGroupHasId, userGroupData: Partial<IUserGroupHasId>, forceUpdateParents: boolean): Promise<void> => {
       try {
         await updateUserGroup(targetGroup, userGroupData, forceUpdateParents);
-        toastSuccess(t('toaster.update_successed', { target: t('UserGroup') }));
+        toastSuccess(t('toaster.update_successed', { target: t('UserGroup'), ns: 'commons' }));
       }
       catch {
-        toastError(t('toaster.update_failed', { target: t('UserGroup') }));
+        toastError(t('toaster.update_failed', { target: t('UserGroup'), ns: 'commons' }));
       }
     },
     [t, updateUserGroup],
@@ -205,7 +205,7 @@ const UserGroupDetailPage = (props: Props): JSX.Element => {
         parentId: userGroupData.parent,
       });
 
-      toastSuccess(t('toaster.update_successed', { target: t('UserGroup') }));
+      toastSuccess(t('toaster.update_successed', { target: t('UserGroup'), ns: 'commons' }));
 
       // mutate
       mutateChildUserGroups();
@@ -244,7 +244,7 @@ const UserGroupDetailPage = (props: Props): JSX.Element => {
         parentId: currentUserGroupId,
       });
 
-      toastSuccess(t('toaster.update_successed', { target: t('UserGroup') }));
+      toastSuccess(t('toaster.update_successed', { target: t('UserGroup'), ns: 'commons' }));
 
       // mutate
       mutateChildUserGroups();
@@ -296,7 +296,7 @@ const UserGroupDetailPage = (props: Props): JSX.Element => {
         parentId: null,
       });
 
-      toastSuccess(t('toaster.update_successed', { target: t('UserGroup') }));
+      toastSuccess(t('toaster.update_successed', { target: t('UserGroup'), ns: 'commons' }));
 
       // mutate
       mutateChildUserGroups();

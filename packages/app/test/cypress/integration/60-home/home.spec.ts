@@ -15,7 +15,9 @@ context('Access Home', () => {
     cy.getByTestid('grw-personal-dropdown').click();
     cy.getByTestid('grw-personal-dropdown').find('.dropdown-menu .btn-group > .btn-outline-secondary:eq(0)').click();
 
-    cy.getByTestid('grw-user-page').should('be.visible');
+    cy.get('.grw-users-info').should('be.visible');
+    // for check download toc data
+    cy.get('.toc-link').should('be.visible');
 
     cy.screenshot(`${ssPrefix}-visit-home`);
   });
@@ -34,8 +36,8 @@ context('Access User settings', () => {
     // collapse sidebar
     cy.collapseSidebar(true);
     cy.visit('/me');
-    // hide fab
-    cy.getByTestid('grw-fab-container').invoke('attr', 'style', 'display: none');
+    // hide fab // disable fab for sticky-events warning
+    // cy.getByTestid('grw-fab-container').invoke('attr', 'style', 'display: none');
   });
 
   it('Access User information', () => {

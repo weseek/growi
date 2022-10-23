@@ -29,10 +29,12 @@ class GrowiDocument extends Document {
           {renderScriptTagsByGroup('basis')}
           {renderStyleTagsByGroup('basis')}
           */}
-          <link
-            href="https://fonts.googleapis.com/css?family=Lato:400,700"
-            rel="stylesheet"
-          />
+          <link rel='preload' href="/static/fonts/PressStart2P-latin.woff2" as="font" type="font/woff2" />
+          <link rel='preload' href="/static/fonts/PressStart2P-latin-ext.woff2" as="font" type="font/woff2" />
+          <link rel='preload' href="/static/fonts/Lato-Regular-latin.woff2" as="font" type="font/woff2" />
+          <link rel='preload' href="/static/fonts/Lato-Regular-latin-ext.woff2" as="font" type="font/woff2" />
+          <link rel='preload' href="/static/fonts/Lato-Bold-latin.woff2" as="font" type="font/woff2" />
+          <link rel='preload' href="/static/fonts/Lato-Bold-latin-ext.woff2" as="font" type="font/woff2" />
         </Head>
         <body>
           <Main />

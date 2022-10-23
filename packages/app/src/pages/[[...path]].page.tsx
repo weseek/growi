@@ -39,7 +39,9 @@ import type { UserUISettingsModel } from '~/server/models/user-ui-settings';
 import { useSWRxCurrentPage, useSWRxIsGrantNormalized, useSWRxPageInfo } from '~/stores/page';
 import { useRedirectFrom } from '~/stores/page-redirect';
 import {
-  usePreferDrawerModeByUser, usePreferDrawerModeOnEditByUser, useSidebarCollapsed, useCurrentSidebarContents, useCurrentProductNavWidth, useSelectedGrant,
+  EditorMode,
+  useEditorMode, useSelectedGrant,
+  usePreferDrawerModeByUser, usePreferDrawerModeOnEditByUser, useSidebarCollapsed, useCurrentSidebarContents, useCurrentProductNavWidth,
 } from '~/stores/ui';
 import loggerFactory from '~/utils/logger';
 
@@ -230,8 +232,6 @@ const GrowiPage: NextPage<Props> = (props: Props) => {
   useIsUploadableFile(props.editorConfig.upload.isUploadableFile);
   useIsUploadableImage(props.editorConfig.upload.isUploadableImage);
 
-  // const { data: editorMode } = useEditorMode();
-
   const { pageWithMeta, userUISettings } = props;
 
   const pageId = pageWithMeta?.data._id;
@@ -246,12 +246,12 @@ const GrowiPage: NextPage<Props> = (props: Props) => {
 
   useSWRxCurrentPage(undefined, pageWithMeta?.data ?? null); // store initial data
   useEditingMarkdown(pageWithMeta?.data.revision?.body ?? '');
-
-  const { data: layoutSetting } = useLayoutSetting({ isContainerFluid: props.isContainerFluid });
   const { data: dataPageInfo } = useSWRxPageInfo(pageId);
-
   const { data: grantData } = useSWRxIsGrantNormalized(pageId);
   const { mutate: mutateSelectedGrant } = useSelectedGrant();
+
+  const { data: layoutSetting } = useLayoutSetting({ isContainerFluid: props.isContainerFluid });
+  const { getClassNamesByEditorMode } = useEditorMode();
 
   const shouldRenderPutbackPageModal = pageWithMeta != null
     ? _isTrashPage(pageWithMeta.data.path)
@@ -271,17 +271,9 @@ const GrowiPage: NextPage<Props> = (props: Props) => {
   }, [props.currentPathname, router]);
 
   const classNames: string[] = [];
-  // switch (editorMode) {
-  //   case EditorMode.Editor:
-  //     classNames.push('on-edit', 'builtin-editor');
-  //     break;
-  //   case EditorMode.HackMD:
-  //     classNames.push('on-edit', 'hackmd');
-  //     break;
-  // }
-  // if (page == null) {
-  //   classNames.push('not-found-page');
-  // }
+
+  const isSidebar = pagePath === '/Sidebar';
+  classNames.push(...getClassNamesByEditorMode(isSidebar));
 
   const isTopPagePath = isTopPage(pageWithMeta?.data.path ?? '');
 
@@ -301,7 +293,6 @@ const GrowiPage: NextPage<Props> = (props: Props) => {
         {renderHighlightJsStyleTag(props.highlightJsStyle)}
         */}
       </Head>
-      {/* <BasicLayout title={useCustomTitle(props, t('GROWI'))} className={classNames.join(' ')}> */}
       <BasicLayout title={useCustomTitle(props, 'GROWI')} className={classNames.join(' ')} expandContainer={isContainerFluid}>
         <div className="h-100 d-flex flex-column justify-content-between">
           <header className="py-0 position-relative">

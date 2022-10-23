@@ -1,0 +1,17 @@
+{
+  "meta": {
+    "display_name": "日本語"
+  },
+  "toaster": {
+    "create_succeeded": "新しい{{target}}が作成されました",
+    "create_failed": "{{target}}の作成に失敗しました",
+    "update_successed": "{{target}}を更新しました",
+    "update_failed": "{{target}}の更新に失敗しました"
+  },
+  "alert": {
+    "siteUrl_is_not_set": "'サイトURL' が設定されていません。{{link}} から設定してください。"
+  },
+  "headers": {
+    "app_settings": "アプリ設定"
+  }
+}
