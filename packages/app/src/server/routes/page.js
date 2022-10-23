@@ -1030,7 +1030,7 @@ module.exports = function(crowi, app) {
     }
 
     if (page.isEmpty) {
-      options.isEmpty = !page.isEmpty;
+      options.isEmpty = false;
     }
 
     const previousRevision = await Revision.findById(newRevisionId ?? revisionId);
