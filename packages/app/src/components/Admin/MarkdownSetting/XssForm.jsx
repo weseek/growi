@@ -28,7 +28,7 @@ class XssForm extends React.Component {
 
     try {
       await this.props.adminMarkDownContainer.updateXssSetting();
-      toastSuccess(t('toaster.update_successed', { target: t('markdown_settings.xss_header') }));
+      toastSuccess(t('toaster.update_successed', { target: t('markdown_settings.xss_header'), ns: 'commons' }));
     }
     catch (err) {
       toastError(err);

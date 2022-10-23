@@ -21,7 +21,7 @@ const CustomizeHeaderSetting = (props: Props): JSX.Element => {
   const onClickSubmit = useCallback(async() => {
     try {
       await adminCustomizeContainer.updateCustomizeHeader();
-      toastSuccess(t('toaster.update_successed', { target: t('admin:customize_settings.custom_header') }));
+      toastSuccess(t('toaster.update_successed', { target: t('admin:customize_settings.custom_header'), ns: 'commons' }));
     }
     catch (err) {
       toastError(err);

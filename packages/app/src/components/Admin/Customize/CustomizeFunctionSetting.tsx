@@ -25,7 +25,7 @@ const CustomizeFunctionSetting = (props: Props): JSX.Element => {
 
     try {
       await adminCustomizeContainer.updateCustomizeFunction();
-      toastSuccess(t('toaster.update_successed', { target: t('admin:customize_settings.function') }));
+      toastSuccess(t('toaster.update_successed', { target: t('admin:customize_settings.function'), ns: 'commons' }));
     }
     catch (err) {
       toastError(err);
