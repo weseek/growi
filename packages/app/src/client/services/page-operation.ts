@@ -98,7 +98,7 @@ const createPage = async(pagePath: string, markdown: string, tmpParams: OptionsT
 };
 
 // TODO: define return type
-const updatePage = async(pageId: string, revisionId: string, markdown: string, tmpParams: OptionsToSave) => {
+const updatePage = async(pageId: string, revisionId: Nullable<string>, markdown: string, tmpParams: OptionsToSave) => {
   // clone
   const params = Object.assign(tmpParams, {
     page_id: pageId,
@@ -115,13 +115,16 @@ const updatePage = async(pageId: string, revisionId: string, markdown: string, t
 
 type PageInfo= {
   path: string,
+  isNotFound?: boolean,
   pageId: Nullable<string>,
   revisionId: Nullable<string>,
 }
 
 // TODO: define return type
 export const saveOrUpdate = async(optionsToSave: OptionsToSave, pageInfo: PageInfo, markdown: string) => {
-  const { path, pageId, revisionId } = pageInfo;
+  const {
+    path, isNotFound, pageId, revisionId,
+  } = pageInfo;
 
   const options = Object.assign({}, optionsToSave);
 
@@ -143,12 +146,14 @@ export const saveOrUpdate = async(optionsToSave: OptionsToSave, pageInfo: PageIn
   // markdown = pageEditor.getMarkdown();
   // }
 
+  const isEmpty = pageId != null && isNotFound;
+
   let res;
   if (pageId == null) {
     res = await createPage(path, markdown, options);
   }
   else {
-    if (revisionId == null) {
+    if (!isEmpty && revisionId == null) {
       const msg = '\'revisionId\' is required to update page';
       throw new Error(msg);
     }

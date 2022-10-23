@@ -13,7 +13,7 @@ import { apiPost } from '~/client/util/apiv1-client';
 import { getOptionsToSave } from '~/client/util/editor';
 import { IResHackmdIntegrated, IResHackmdDiscard } from '~/interfaces/hackmd';
 import {
-  useCurrentPagePath, useCurrentPageId, useHackmdUri, usePageIdOnHackmd, useHasDraftOnHackmd, useRevisionIdHackmdSynced,
+  useCurrentPagePath, useCurrentPageId, useHackmdUri, usePageIdOnHackmd, useHasDraftOnHackmd, useRevisionIdHackmdSynced, useIsNotFound,
 } from '~/stores/context';
 import {
   useSWRxSlackChannels, useIsSlackEnabled, usePageTagsForEditors, useIsEnabledUnsavedWarning,
@@ -48,6 +48,7 @@ export const PageEditorByHackmd = (): JSX.Element => {
   const { mutate: mutateTagsInfo } = useSWRxTagsInfo(pageId);
   const { data: grant } = useSelectedGrant();
   const { data: hackmdUri } = useHackmdUri();
+  const { data: isNotFound } = useIsNotFound();
 
   // pageData
   const { data: pageData, mutate: mutatePageData } = useSWRxCurrentPage();
@@ -97,7 +98,14 @@ export const PageEditorByHackmd = (): JSX.Element => {
 
       const markdown = await hackmdEditorRef.current.getValue();
 
-      await saveOrUpdate(optionsToSave, { pageId, path: currentPagePath || currentPathname, revisionId: revision?._id }, markdown);
+      const pageInfo = {
+        pageId,
+        isNotFound,
+        path: currentPagePath || currentPathname,
+        revisionId: revision?._id,
+      };
+
+      await saveOrUpdate(optionsToSave, pageInfo, markdown);
       await mutatePageData();
       await mutateTagsInfo();
       mutateEditorMode(EditorMode.View);
@@ -116,6 +124,7 @@ export const PageEditorByHackmd = (): JSX.Element => {
       pageTags,
       pageId,
       currentPagePath,
+      isNotFound,
       mutatePageData,
       mutateEditorMode,
       mutateTagsInfo,
@@ -229,7 +238,14 @@ export const PageEditorByHackmd = (): JSX.Element => {
       const optionsToSave = getOptionsToSave(
         isSlackEnabled, slackChannels, grant.grant, grant.grantedGroup?.id, grant.grantedGroup?.name, pageTags ?? [], true,
       );
-      const res = await saveOrUpdate(optionsToSave, { pageId, path: currentPagePathOrPathname, revisionId: revisionIdHackmdSynced }, markdown);
+
+      const pageInfo = {
+        pageId,
+        isNotFound,
+        path: currentPagePathOrPathname,
+        revisionId: revisionIdHackmdSynced,
+      };
+      const res = await saveOrUpdate(optionsToSave, pageInfo, markdown);
 
       // update pageData
       mutatePageData(res);
@@ -257,6 +273,7 @@ export const PageEditorByHackmd = (): JSX.Element => {
       currentPathname,
       pageTags,
       currentPagePath,
+      isNotFound,
       mutatePageData,
       mutateRevisionIdHackmdSynced,
       mutateHasDraftOnHackmd,
