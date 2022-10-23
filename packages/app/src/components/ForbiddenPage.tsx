@@ -40,7 +40,7 @@ const ForbiddenPage = React.memo((props: Props): JSX.Element => {
         <div className="col-sm-12">
           <p className="alert alert-primary py-3 px-4">
             <i className="icon-fw icon-lock" aria-hidden="true" />
-            { props.isLinkSharingDisabled ? t('custom_navigation.link_sharing_is_disabled') : t('Browsing of this page is restricted')}
+            { props.isLinkSharingDisabled ? t('share_links.link_sharing_is_disabled') : t('Browsing of this page is restricted')}
           </p>
         </div>
       </div>

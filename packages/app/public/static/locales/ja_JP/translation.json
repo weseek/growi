@@ -177,8 +177,7 @@
     "could_not_creata_path": "パスを作成できませんでした。"
   },
   "custom_navigation": {
-    "no_page_list": "このページの配下にはページが存在しません。",
-    "link_sharing_is_disabled": "リンクのシェアは無効化されています"
+    "no_page_list": "このページの配下にはページが存在しません。"
   },
   "installer": {
     "setup": "セットアップ",
@@ -247,7 +246,8 @@
     "Unlimited": "無期限",
     "Issue": "発行",
     "share_settings" :"共有設定",
-    "Invalid_Number_of_Date" : "有効期限の日数には整数を入力してください"
+    "Invalid_Number_of_Date" : "有効期限の日数には整数を入力してください",
+    "link_sharing_is_disabled": "リンクのシェアは無効化されています"
   },
   "API Settings": "API設定",
   "API Token Settings": "API Token設定",
