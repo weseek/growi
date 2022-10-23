@@ -50,9 +50,9 @@ const ManageGlobalNotification = (props) => {
     const requestParams = {
       triggerPath,
       notifyToType,
-      emailToSend,
-      slackChannelToSend,
-      triggerEvents,
+      toEmail: emailToSend,
+      slackChannels: slackChannelToSend,
+      triggerEvents: [...triggerEvents],
     };
 
     try {
