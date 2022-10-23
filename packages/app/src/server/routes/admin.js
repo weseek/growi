@@ -124,25 +124,8 @@ module.exports = function(crowi, app) {
   actions.customize.index = function(req, res) {
     const settingForm = configManager.getConfigByPrefix('crowi', 'customize:');
 
-    // TODO delete after apiV3
-    /* eslint-disable quote-props, no-multi-spaces */
-    const highlightJsCssSelectorOptions = {
-      'github':           { name: '[Light] GitHub',         border: false },
-      'github-gist':      { name: '[Light] GitHub Gist',    border: true },
-      'atom-one-light':   { name: '[Light] Atom One Light', border: true },
-      'xcode':            { name: '[Light] Xcode',          border: true },
-      'vs':               { name: '[Light] Vs',             border: true },
-      'atom-one-dark':    { name: '[Dark] Atom One Dark',   border: false },
-      'hybrid':           { name: '[Dark] Hybrid',          border: false },
-      'monokai':          { name: '[Dark] Monokai',         border: false },
-      'tomorrow-night':   { name: '[Dark] Tomorrow Night',  border: false },
-      'vs2015':           { name: '[Dark] Vs 2015',         border: false },
-    };
-    /* eslint-enable quote-props, no-multi-spaces */
-
     return res.render('admin/customize', {
       settingForm,
-      highlightJsCssSelectorOptions,
     });
   };
 

@@ -13,10 +13,12 @@ https://github.com/weseek/growi.
 
 
 1. Apache License, Version 2.0 Derivative Works
-2. crowi/crowi (https://github.com/crowi/crowi)
-3. Microsoft/vscode (https://github.com/Microsoft/vscode)
-4. stephenhutchings/typicons.font (https://github.com/stephenhutchings/typicons.font)
-5. Kuromoji.js (https://github.com/takuyaa/kuromoji.js)
+1. crowi/crowi (https://github.com/crowi/crowi)
+1. Microsoft/vscode (https://github.com/Microsoft/vscode)
+1. Kuromoji.js (https://github.com/takuyaa/kuromoji.js)
+1. Lato (https://fonts.google.com/specimen/Lato)
+1. Press Start 2P (https://fonts.google.com/specimen/Press+Start+2P)
+1. stephenhutchings/typicons.font (https://github.com/stephenhutchings/typicons.font)
 
 
 License Notice for Apache License, Version 2.0 Derivative Works
@@ -90,16 +92,6 @@ SOFTWARE.
 ```
 
 
-License Notice for Typicons
-------------------------
-
-https://creativecommons.org/licenses/by-sa/3.0/
-
-```
-Copyright (c) 2018 Stephen Hutchings
-```
-
-
 License Notice for Kuromoji.js
 ------------------------
 
@@ -107,4 +99,34 @@ https://github.com/takuyaa/kuromoji.js/blob/master/LICENSE-2.0.txt
 
 ```
 author: "Takuya Asano <takuya.a@gmail.com>"
+```
+
+
+License Notice for Lato
+---------------------
+
+https://scripts.sil.org/cms/scripts/page.php?site_id=nrsi&id=OFL
+
+```
+Designed by Łukasz Dziedzic 
+```
+
+
+License Notice for Press Start 2P
+------------------------------
+
+https://scripts.sil.org/cms/scripts/page.php?site_id=nrsi&id=OFL
+
+```
+Designed by CodeMan38
+```
+
+
+License Notice for Typicons
+------------------------
+
+https://creativecommons.org/licenses/by-sa/3.0/
+
+```
+Copyright (c) 2018 Stephen Hutchings
 ```

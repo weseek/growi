@@ -93,7 +93,7 @@ export const UserGroupPage: FC = () => {
         description: userGroupData.description,
       });
 
-      toastSuccess(t('toaster.update_successed', { target: t('UserGroup') }));
+      toastSuccess(t('toaster.update_successed', { target: t('UserGroup'), ns: 'commons' }));
 
       // mutate
       await mutateUserGroups();
@@ -112,7 +112,7 @@ export const UserGroupPage: FC = () => {
         description: userGroupData.description,
       });
 
-      toastSuccess(t('toaster.update_successed', { target: t('UserGroup') }));
+      toastSuccess(t('toaster.update_successed', { target: t('UserGroup'), ns: 'commons' }));
 
       // mutate
       await mutateUserGroups();

@@ -9,6 +9,7 @@ import Sidebar from '../Sidebar';
 
 import { RawLayout } from './RawLayout';
 
+const AlertSiteUrlUndefined = dynamic(() => import('../AlertSiteUrlUndefined').then(mod => mod.AlertSiteUrlUndefined), { ssr: false });
 const HotkeysManager = dynamic(() => import('../Hotkeys/HotkeysManager'), { ssr: false });
 // const PageCreateModal = dynamic(() => import('../client/js/components/PageCreateModal'), { ssr: false });
 const GrowiNavbarBottom = dynamic(() => import('../Navbar/GrowiNavbarBottom').then(mod => mod.GrowiNavbarBottom), { ssr: false });
@@ -51,6 +52,7 @@ export const BasicLayout = ({
           </div>
 
           <div className="flex-fill mw-0" style={{ position: 'relative' }}>
+            <AlertSiteUrlUndefined />
             {children}
           </div>
         </div>
