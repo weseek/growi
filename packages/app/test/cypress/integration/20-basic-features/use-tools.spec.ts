@@ -306,7 +306,7 @@ context('Tag Oprations', () =>{
       cy.get('.list-group-item').each(($row) => {
         if($row.find('a').text() === oldPageName){
           cy.wrap($row).within(() => {
-            cy.getByTestid('open-page-item-control-btn').first().click();
+            cy.getByTestid('open-page-item-control-btn').first().click({force: true});
             cy.getByTestid('page-item-control-menu').should('have.class', 'show').first().within(() => {
             // eslint-disable-next-line cypress/no-unnecessary-waiting
             cy.wait(300);
