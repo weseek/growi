@@ -234,7 +234,7 @@ export const EditorSettings = memo((): JSX.Element => {
   const updateRulesHandler = useCallback(async() => {
     try {
       await updateEditorSettings({ textlintSettings: { textlintRules } });
-      toastSuccess(t('toaster.update_successed', { target: 'Updated Textlint Settings' }));
+      toastSuccess(t('toaster.update_successed', { target: 'Updated Textlint Settings', ns: 'commons' }));
     }
     catch (err) {
       toastError(err);

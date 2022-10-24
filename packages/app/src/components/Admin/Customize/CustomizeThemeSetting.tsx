@@ -35,7 +35,7 @@ const CustomizeThemeSetting = (props: Props): JSX.Element => {
         });
       }
 
-      toastSuccess(t('toaster.update_successed', { target: t('admin:customize_settings.theme') }));
+      toastSuccess(t('toaster.update_successed', { target: t('admin:customize_settings.theme'), ns: 'commons' }));
     }
     catch (err) {
       toastError(err);

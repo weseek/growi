@@ -18,7 +18,7 @@ GROWI是一个针对个人和公司的Wiki - 一个知识库工具。
 - 我们可以通过在行首添加`-`来创建一个要点。
 - 我们还可以复制和粘贴，拖放附件，如图片、PDF、Word/Excel/PowerPoint等。
 - 一旦我们完成了，按 "**更新**"按钮来发布页面。
-    - 我们也可以通过`Ctrl(⌘) +S`来保存。
+    - 我们也可以通过`Ctrl(⌘) + S`来保存。
 
 了解更多信息: [Tutorial#Create New Page](https://docs.growi.org/en/guide/tutorial/create_page.html#create-new-page)
 
@@ -29,7 +29,7 @@ GROWI是一个针对个人和公司的Wiki - 一个知识库工具。
   <div class="card-body">
     <ul>
       <li>Ctrl(⌘) + "/" 显示快速帮助。</li>
-      <li>你可以用 <a href="https://getbootstrap.com/docs/4.5/components/">Bootstrap 4编写HTML</a>.</li>
+      <li>你可以用 <a href="https://getbootstrap.com/docs/4.6/components/">Bootstrap 4编写HTML</a>.</li>
     </ul>
   </div>
 </div>

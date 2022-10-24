@@ -50,7 +50,7 @@ export const getServerSideProps: GetServerSideProps = async(context: GetServerSi
 
   const props: CommonProps = result.props as CommonProps;
 
-  await injectNextI18NextConfigurations(context, props, ['translation']);
+  await injectNextI18NextConfigurations(context, props, ['translation', 'commons']);
 
   return {
     props,

@@ -1,7 +1,7 @@
 import React, { useCallback } from 'react';
 
-import PropTypes from 'prop-types';
 import { useTranslation } from 'next-i18next';
+import PropTypes from 'prop-types';
 
 import { toastSuccess, toastError } from '~/client/util/apiNotification';
 import { apiv3Get, apiv3Put } from '~/client/util/apiv3-client';
@@ -52,7 +52,7 @@ class PasswordSettings extends React.Component {
       if (onSubmit != null) {
         onSubmit();
       }
-      toastSuccess(t('toaster.update_successed', { target: t('Password') }));
+      toastSuccess(t('toaster.update_successed', { target: t('Password'), ns: 'commons' }));
     }
     catch (err) {
       toastError(err);

@@ -18,7 +18,7 @@ Let's increase the information exchange everyday.
 - We can create a bullet point by adding `-`  at the beginning of the line.
 - We can also copy and paste, drag and drop attachments such as images, PDF, Word/Excel/PowerPoint, etc.
 - Once we finished, press the "**Update**" button to publish the page.
-    - We can also save it by `Ctrl(⌘) +S`.
+    - We can also save it by `Ctrl(⌘) + S`.
 
 For more information: [Tutorial#Create New Page](https://docs.growi.org/en/guide/tutorial/create_page.html#create-new-page)
 
@@ -29,7 +29,7 @@ For more information: [Tutorial#Create New Page](https://docs.growi.org/en/guide
   <div class="card-body">
     <ul>
       <li>Ctrl(⌘) + "/" to show quick help.</li>
-      <li>We can write HTML with <a href="https://getbootstrap.com/docs/4.5/components/">Bootstrap 4</a>.</li>
+      <li>We can write HTML with <a href="https://getbootstrap.com/docs/4.6/components/">Bootstrap 4</a>.</li>
     </ul>
   </div>
 </div>
