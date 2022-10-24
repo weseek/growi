@@ -45,7 +45,7 @@ import { useIsMaintenanceMode } from '~/stores/maintenanceMode';
 // import { useEnvVars } from '~/stores/admin-context';
 
 // const AdminHome = dynamic(() => import('./AdminHome/AdminHome'), { ssr: false });
-const AppSettingsPageContents = dynamic(() => import('./App/AppSettingsPageContents'), { ssr: false });
+// const AppSettingsPageContents = dynamic(() => import('./App/AppSettingsPageContents'), { ssr: false });
 // const SecurityManagement = dynamic(() => import('./Security/SecurityManagement'), { ssr: false });
 // const MarkDownSettingContents = dynamic(() => import('./MarkdownSetting/MarkDownSettingContents'), { ssr: false });
 // const CustomizeSettingContents = dynamic(() => import('./Customize/Customize'), { ssr: false });
