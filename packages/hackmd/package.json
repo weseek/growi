@@ -1,0 +1,16 @@
+{
+  "name": "@growi/hackmd",
+  "version": "6.0.0-RC.7",
+  "description": "GROWI js and css files to use hackmd",
+  "license": "MIT",
+  "main": "dist/index.js",
+  "scripts": {
+    "build": "vite build && npx -y shx cp ./src/index.js ./dist"
+  },
+  "dependencies": {},
+  "devDependencies": {
+    "penpal": "^4.0.0",
+    "throttle-debounce": "^3.0.1",
+    "vite": "^3.1.0"
+  }
+}
