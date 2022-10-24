@@ -37,6 +37,8 @@ export const uploadConfigKeys = [
 export type IDataGROWIInfo = {
   version: string
   userUpperLimit: number | null // Handle null as Infinity
+  fileUploadDisabled: boolean;
+  fileUploadTotalLimit: number | null // Handle null as Infinity
   attachmentInfo: {
     type: string,
     bucket?: string,
@@ -44,6 +46,11 @@ export type IDataGROWIInfo = {
     uploadNamespace?: string, // for GCS
   };
 }
+
+/**
+ * Return type for {@link Pusher.getTransferability}
+ */
+type IGetTransferabilityReturn = { canTransfer: true; } | { canTransfer: false; reason: string; };
 
 interface Pusher {
   /**
@@ -55,7 +62,7 @@ interface Pusher {
    * Check if transfering is proceedable
    * @param {IDataGROWIInfo} fromGROWIInfo
    */
-  canTransfer(fromGROWIInfo: IDataGROWIInfo): Promise<boolean>
+  getTransferability(fromGROWIInfo: IDataGROWIInfo): Promise<IGetTransferabilityReturn>
   /**
    * Transfer all Attachment data to destination GROWI
    * @param {TransferKey} tk Transfer key
@@ -117,7 +124,7 @@ const generateAxiosRequestConfigWithTransferKey = (tk: TransferKey, additionalHe
  * @param crowi Crowi instance
  * @returns Whether the storage is writable
  */
-const getWritePermission = async(crowi: any): Promise<boolean> => {
+const hasWritePermission = async(crowi: any): Promise<boolean> => {
   const { fileUploadService } = crowi;
 
   let writable = true;
@@ -148,11 +155,13 @@ const getWritePermission = async(crowi: any): Promise<boolean> => {
  * @returns
  */
 const generateGROWIInfo = async(crowi: any): Promise<IDataGROWIInfo> => {
-  // TODO: add attachment file limit, storage total limit
+  // TODO: add attachment file limit
   const { configManager } = crowi;
   const userUpperLimit = configManager.getConfig('crowi', 'security:userUpperLimit');
+  const fileUploadDisabled = configManager.getConfig('crowi', 'app:fileUploadDisabled');
+  const fileUploadTotalLimit = configManager.getFileUploadTotalLimit();
   const version = crowi.version;
-  const writable = await getWritePermission(crowi);
+  const writable = await hasWritePermission(crowi);
 
   const attachmentInfo = {
     type: configManager.getConfig('crowi', 'app:fileUploadType'),
@@ -175,7 +184,13 @@ const generateGROWIInfo = async(crowi: any): Promise<IDataGROWIInfo> => {
     default:
   }
 
-  return { userUpperLimit, version, attachmentInfo };
+  return {
+    userUpperLimit,
+    fileUploadDisabled,
+    fileUploadTotalLimit,
+    version,
+    attachmentInfo,
+  };
 };
 
 export class G2GTransferPusherService implements Pusher {
@@ -202,21 +217,51 @@ export class G2GTransferPusherService implements Pusher {
     return toGROWIInfo;
   }
 
-  public async canTransfer(toGROWIInfo: IDataGROWIInfo): Promise<boolean> {
-    // TODO: check FILE_UPLOAD_TOTAL_LIMIT, FILE_UPLOAD_DISABLED
-    const configManager = this.crowi.configManager;
-    const userUpperLimit = configManager.getConfig('crowi', 'security:userUpperLimit');
+  /**
+   * Returns whether g2g transfer is possible and reason for failure
+   * @param toGROWIInfo to-growi info
+   * @returns Whether g2g transfer is possible and reason for failure
+   */
+  public async getTransferability(toGROWIInfo: IDataGROWIInfo): Promise<IGetTransferabilityReturn> {
+    const { fileUploadService } = this.crowi;
+
     const version = this.crowi.version;
-
     if (version !== toGROWIInfo.version) {
-      return false;
+      return {
+        canTransfer: false,
+        // TODO: i18n for reason
+        reason: `Growi versions mismatch. This Growi: ${version} / new Growi: ${toGROWIInfo.version}.`,
+      };
     }
 
-    if ((userUpperLimit ?? Infinity) < (toGROWIInfo.userUpperLimit ?? 0)) {
-      return false;
+    const activeUserCount = await this.crowi.model('User').countActiveUsers();
+    if ((toGROWIInfo.userUpperLimit ?? Infinity) < activeUserCount) {
+      return {
+        canTransfer: false,
+        // TODO: i18n for reason
+        reason: `The number of active users (${activeUserCount} users) exceeds the limit of new Growi (to up ${toGROWIInfo.userUpperLimit} users).`,
+      };
     }
 
-    return true;
+    if (toGROWIInfo.fileUploadDisabled) {
+      return {
+        canTransfer: false,
+        // TODO: i18n for reason
+        reason: 'File upload is disabled in new Growi.',
+      };
+    }
+
+    const totalFileSize = await fileUploadService.getTotalFileSize();
+    if ((toGROWIInfo.fileUploadTotalLimit ?? Infinity) < totalFileSize) {
+      return {
+        canTransfer: false,
+        // TODO: i18n for reason
+        // eslint-disable-next-line max-len
+        reason: `Total file size exceeds file upload limit of new Growi. Requires ${totalFileSize.toLocaleString()} bytes, but got ${(toGROWIInfo.fileUploadTotalLimit ?? Infinity).toLocaleString()} bytes.`,
+      };
+    }
+
+    return { canTransfer: true };
   }
 
   public async transferAttachments(tk: TransferKey): Promise<void> {

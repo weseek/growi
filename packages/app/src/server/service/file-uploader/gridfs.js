@@ -1,8 +1,9 @@
 import loggerFactory from '~/utils/logger';
 
 const logger = loggerFactory('growi:service:fileUploaderGridfs');
-const mongoose = require('mongoose');
 const util = require('util');
+
+const mongoose = require('mongoose');
 
 module.exports = function(crowi) {
   const Uploader = require('./uploader');
@@ -85,11 +86,8 @@ module.exports = function(crowi) {
    */
   lib.checkLimit = async(uploadFileSize) => {
     const maxFileSize = crowi.configManager.getConfig('crowi', 'app:maxFileSize');
-
-    // Use app:fileUploadTotalLimit if gridfs:totalLimit is null (default for gridfs:totalLimitd is null)
-    const gridfsTotalLimit = crowi.configManager.getConfig('crowi', 'gridfs:totalLimit')
-      || crowi.configManager.getConfig('crowi', 'app:fileUploadTotalLimit');
-    return lib.doCheckLimit(uploadFileSize, maxFileSize, gridfsTotalLimit);
+    const totalLimit = crowi.configManager.getFileUploadTotalLimit();
+    return lib.doCheckLimit(uploadFileSize, maxFileSize, totalLimit);
   };
 
   lib.uploadFile = async function(fileStream, attachment) {

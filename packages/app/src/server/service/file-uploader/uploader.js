@@ -34,6 +34,23 @@ class Uploader {
   }
 
   /**
+   * Get total file size
+   * @returns Total file size
+   */
+  async getTotalFileSize() {
+    const Attachment = this.crowi.model('Attachment');
+
+    // Get attachment total file size
+    const res = await Attachment.aggregate().group({
+      _id: null,
+      total: { $sum: '$fileSize' },
+    });
+
+    // res is [] if not using
+    return res.length === 0 ? 0 : res[0].total;
+  }
+
+  /**
    * Check files size limits for all uploaders
    *
    * @param {*} uploadFileSize
@@ -46,21 +63,13 @@ class Uploader {
     if (uploadFileSize > maxFileSize) {
       return { isUploadable: false, errorMessage: 'File size exceeds the size limit per file' };
     }
-    const Attachment = this.crowi.model('Attachment');
-    // Get attachment total file size
-    const res = await Attachment.aggregate().group({
-      _id: null,
-      total: { $sum: '$fileSize' },
-    });
-    // Return res is [] if not using
-    const usingFilesSize = res.length === 0 ? 0 : res[0].total;
 
+    const usingFilesSize = await this.getTotalFileSize();
     if (usingFilesSize + uploadFileSize > totalLimit) {
       return { isUploadable: false, errorMessage: 'Uploading files reaches limit' };
     }
 
     return { isUploadable: true };
-
   }
 
   /**
