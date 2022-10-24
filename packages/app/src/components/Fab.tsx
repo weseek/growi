@@ -1,11 +1,11 @@
 import React, {
-  useState, useCallback, useEffect, useRef,
+  useState, useCallback, useRef,
 } from 'react';
 
+import { animateScroll } from 'react-scroll';
 import { useRipple } from 'react-use-ripple';
 import StickyEvents from 'sticky-events';
 
-import { smoothScrollIntoView } from '~/client/util/smooth-scroll';
 import { useCurrentPagePath, useCurrentUser } from '~/stores/context';
 import { usePageCreateModal } from '~/stores/modal';
 import loggerFactory from '~/utils/logger';
@@ -59,39 +59,49 @@ export const Fab = (): JSX.Element => {
   //   };
   // }, [stickyChangeHandler]);
 
-  if (currentPath == null) {
-    return <></>;
-  }
-
-  const renderPageCreateButton = () => {
+  const PageCreateButton = useCallback(() => {
     return (
-      <>
-        <div className={`rounded-circle position-absolute ${animateClasses}`} style={{ bottom: '2.3rem', right: '4rem' }}>
-          <button
-            type="button"
-            className={`btn btn-lg btn-create-page btn-primary rounded-circle p-0 ${buttonClasses}`}
-            ref={createBtnRef}
-            onClick={() => openCreateModal(currentPath)}
-          >
-            <CreatePageIcon />
-          </button>
-        </div>
-      </>
+      <div className={`rounded-circle position-absolute ${animateClasses}`} style={{ bottom: '2.3rem', right: '4rem' }}>
+        <button
+          type="button"
+          className={`btn btn-lg btn-create-page btn-primary rounded-circle p-0 ${buttonClasses}`}
+          ref={createBtnRef}
+          onClick={currentPath != null
+            ? () => openCreateModal(currentPath)
+            : undefined}
+        >
+          <CreatePageIcon />
+        </button>
+      </div>
     );
-  };
+  }, [animateClasses, buttonClasses, currentPath, openCreateModal]);
 
-  return (
-    <div className={`${styles['grw-fab']} grw-fab d-none d-md-block d-edit-none`} data-testid="grw-fab-container">
-      {currentUser != null && renderPageCreateButton()}
+  const ScrollToTopButton = useCallback(() => {
+    const clickHandler = () => {
+      animateScroll.scrollToTop({ smooth: 'easeOutQuart', duration: 800 });
+    };
+
+    return (
       <div className={`rounded-circle position-absolute ${animateClasses}`} style={{ bottom: 0, right: 0 }} data-testid="grw-fab-return-to-top">
         <button
           type="button"
           className={`btn btn-light btn-scroll-to-top rounded-circle p-0 ${buttonClasses}`}
-          onClick={() => smoothScrollIntoView()}
+          onClick={clickHandler}
         >
           <ReturnTopIcon />
         </button>
       </div>
+    );
+  }, [animateClasses, buttonClasses]);
+
+  if (currentPath == null) {
+    return <></>;
+  }
+
+  return (
+    <div className={`${styles['grw-fab']} grw-fab d-none d-md-block d-edit-none`} data-testid="grw-fab-container">
+      {currentUser != null && <PageCreateButton />}
+      <ScrollToTopButton />
     </div>
   );
 
