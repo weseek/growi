@@ -8,6 +8,7 @@ import {
   IPageHasId,
   IPageInfo,
 } from '~/interfaces/page';
+import { useShowPageLimitationXL } from '~/stores/context';
 import { useEmptyTrashModal } from '~/stores/modal';
 import { useSWRxDescendantsPageListForCurrrentPath, useSWRxPageInfoForList } from '~/stores/page-listing';
 
@@ -15,7 +16,8 @@ import { useSWRxDescendantsPageListForCurrrentPath, useSWRxPageInfoForList } fro
 const EmptyTrashButton: FC = () => {
   const { t } = useTranslation();
   const { open: openEmptyTrashModal } = useEmptyTrashModal();
-  const { data: pagingResult, mutate } = useSWRxDescendantsPageListForCurrrentPath();
+  const { data: limit } = useShowPageLimitationXL();
+  const { data: pagingResult, mutate } = useSWRxDescendantsPageListForCurrrentPath(1, limit);
 
   const pageIds = pagingResult?.items?.map(page => page._id);
   const { injectTo } = useSWRxPageInfoForList(pageIds, null, true, true);
