@@ -179,8 +179,7 @@
     "could_not_creata_path": "无法创建路径"
   },
   "custom_navigation": {
-    "no_page_list": "There are no pages under this page.",
-    "link_sharing_is_disabled": "链接共享已被禁用"
+    "no_page_list": "There are no pages under this page."
   },
 	"installer": {
 		"setup": "安装",
@@ -600,7 +599,8 @@
     "Unlimited": "unlimited",
     "Issue": "Issue",
     "share_settings" :"Share settings",
-    "Invalid_Number_of_Date" : "You entered invalid value"
+    "Invalid_Number_of_Date" : "You entered invalid value",
+    "link_sharing_is_disabled": "链接共享已被禁用"
   },
 	"notification_setting": {
 		"slack_incoming_configuration": "Slack Incoming Webhooks configuration",
