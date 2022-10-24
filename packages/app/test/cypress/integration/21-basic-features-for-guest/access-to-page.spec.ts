@@ -24,9 +24,10 @@ context('Access to page by guest', () => {
     cy.visit('/Sandbox/Math');
     cy.collapseSidebar(true, true);
 
-    cy.get('mjx-container').should('be.visible');
-    // eslint-disable-next-line cypress/no-unnecessary-waiting
-    cy.wait(2000); // wait for 2 seconds for MathJax.typesetPromise();
+    cy.get('.math').should('be.visible');
+    cy.get('.katex-html').should('be.visible');
+    // // eslint-disable-next-line cypress/no-unnecessary-waiting
+    // cy.wait(2000); // wait for 2 seconds for MathJax.typesetPromise();
 
     cy.screenshot(`${ssPrefix}-sandbox-math`);
   });
