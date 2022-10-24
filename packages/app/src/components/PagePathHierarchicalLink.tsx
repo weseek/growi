@@ -1,4 +1,4 @@
-import React, { memo } from 'react';
+import React, { memo, useCallback } from 'react';
 
 import Link from 'next/link';
 import urljoin from 'url-join';
@@ -19,8 +19,15 @@ type PagePathHierarchicalLinkProps = {
 // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
 const PagePathHierarchicalLink = memo((props: PagePathHierarchicalLinkProps): JSX.Element => {
   const {
-    linkedPagePath, linkedPagePathByHtml, basePath, isInTrash,
+    linkedPagePath, linkedPagePathByHtml, basePath, isInTrash, isInnerElem,
   } = props;
+
+  // eslint-disable-next-line react/prop-types
+  const RootElm = useCallback(({ children }) => {
+    return isInnerElem
+      ? <>{children}</>
+      : <span className="grw-page-path-hierarchical-link text-break">{children}</span>;
+  }, [isInnerElem]);
 
   // render root element
   if (linkedPagePath.isRoot) {
@@ -30,17 +37,17 @@ const PagePathHierarchicalLink = memo((props: PagePathHierarchicalLinkProps): JS
 
     return isInTrash
       ? (
-        <>
+        <RootElm>
           <span className="path-segment">
             <Link href="/trash" prefetch={false}>
               <a ><i className="icon-trash"></i></a>
             </Link>
           </span>
           <span className="separator"><a href="/">/</a></span>
-        </>
+        </RootElm>
       )
       : (
-        <>
+        <RootElm>
           <span className="path-segment">
             <Link href="/" prefetch={false}>
               <a >
@@ -49,7 +56,7 @@ const PagePathHierarchicalLink = memo((props: PagePathHierarchicalLinkProps): JS
               </a>
             </Link>
           </span>
-        </>
+        </RootElm>
       );
   }
 
@@ -60,13 +67,6 @@ const PagePathHierarchicalLink = memo((props: PagePathHierarchicalLinkProps): JS
   const shouldDangerouslySetInnerHTML = linkedPagePathByHtml != null;
 
   const href = encodeURI(urljoin(basePath || '/', linkedPagePath.href));
-
-  // eslint-disable-next-line react/prop-types
-  const RootElm = ({ children }) => {
-    return props.isInnerElem
-      ? <>{children}</>
-      : <span className="grw-page-path-hierarchical-link text-break">{children}</span>;
-  };
 
   return (
     <RootElm>

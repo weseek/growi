@@ -11,6 +11,7 @@ import {
   Tooltip,
 } from 'reactstrap';
 
+import styles from './CopyDropdown.module.scss';
 
 const { encodeSpaces } = pagePathUtils;
 
@@ -109,7 +110,7 @@ const CopyDropdown = (props) => {
 
   return (
     <>
-      <Dropdown className="grw-copy-dropdown" isOpen={dropdownOpen} toggle={toggleDropdown}>
+      <Dropdown className={`${styles['grw-copy-dropdown']} grw-copy-dropdown`} isOpen={dropdownOpen} toggle={toggleDropdown}>
         <DropdownToggle
           caret
           className={dropdownToggleClassName}
