@@ -215,16 +215,13 @@ export const SearchResultContent: FC<Props> = (props: Props) => {
         <RevisionLoader
           rendererOptions={rendererOptions}
           pageId={page._id}
-          pagePath={page.path}
           revisionId={page.revision}
-          highlightKeywords={highlightKeywords}
         />
         <PageComment
           rendererOptions={rendererOptions}
           pageId={page._id}
           revision={page.revision}
           currentUser={currentUser}
-          highlightKeywords={highlightKeywords}
           isReadOnly
           hideIfEmpty
         />

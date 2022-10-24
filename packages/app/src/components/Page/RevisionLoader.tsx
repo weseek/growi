@@ -16,9 +16,6 @@ export type RevisionLoaderProps = {
   revisionId: Ref<IRevision>,
   lazy?: boolean,
   onRevisionLoaded?: (revision: IRevisionHasId) => void,
-
-  pagePath: string,
-  highlightKeywords?: string[],
 }
 
 const logger = loggerFactory('growi:Page:RevisionLoader');

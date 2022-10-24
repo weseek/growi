@@ -34,7 +34,6 @@ export type PageCommentProps = {
   currentUser: any,
   isReadOnly: boolean,
   titleAlign?: 'center' | 'left' | 'right',
-  highlightKeywords?: string[],
   hideIfEmpty?: boolean,
 }
 
@@ -42,7 +41,7 @@ export const PageComment: FC<PageCommentProps> = memo((props:PageCommentProps): 
 
   const {
     rendererOptions: rendererOptionsByProps,
-    pageId, revision, currentUser, highlightKeywords, isReadOnly, titleAlign, hideIfEmpty,
+    pageId, revision, currentUser, isReadOnly, titleAlign, hideIfEmpty,
   } = props;
 
   const { data: comments, mutate } = useSWRxPageComment(pageId);
@@ -131,7 +130,6 @@ export const PageComment: FC<PageCommentProps> = memo((props:PageCommentProps): 
       revisionCreatedAt={revisionCreatedAt as Date}
       currentUser={currentUser}
       isReadOnly={isReadOnly}
-      highlightKeywords={highlightKeywords}
       deleteBtnClicked={onClickDeleteButton}
       onComment={mutate}
     />
