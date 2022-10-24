@@ -16,7 +16,7 @@ context('Access to search result page', () => {
     cy.getByTestid('search-result-base').should('be.visible');
     cy.getByTestid('search-result-list').should('be.visible');
     cy.getByTestid('search-result-content').should('be.visible');
-    cy.get('#wiki').should('be.visible');
+    cy.get('.wiki').should('be.visible');
     // for avoid mismatch by auto scrolling
     cy.get('.search-result-content-body-container').scrollTo('top');
     cy.screenshot(`${ssPrefix}with-q`);
@@ -28,7 +28,7 @@ context('Access to search result page', () => {
     cy.getByTestid('search-result-base').should('be.visible');
     cy.getByTestid('search-result-list').should('be.visible');
     cy.getByTestid('search-result-content').should('be.visible');
-    cy.get('#wiki').should('be.visible');
+    cy.get('.wiki').should('be.visible');
     // for avoid mismatch by auto scrolling
     cy.get('.search-result-content-body-container').scrollTo('top');
 
