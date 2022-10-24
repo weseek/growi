@@ -48,7 +48,11 @@ module.exports = (crowi) => {
   router.get('/list', accessTokenParser, loginRequiredStrictly, async(req, res) => {
     try {
       const bookmarkFolders = await BookmarkFolder.findParentFolderByUserId(req.user?._id);
-      return res.apiv3({ bookmarkFolders });
+      const bookmarkFolderItems = await Promise.all(bookmarkFolders.map(async bookmarkFolder => ({
+        bookmarkFolder,
+        childCount: await BookmarkFolder.countDocuments({ parent: bookmarkFolder._id }),
+      })));
+      return res.apiv3({ bookmarkFolderItems });
     }
     catch (err) {
       return res.apiv3Err(err, 500);

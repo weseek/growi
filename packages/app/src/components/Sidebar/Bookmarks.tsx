@@ -105,6 +105,13 @@ const Bookmarks = () : JSX.Element => {
             folderName={folderName}
           />
           {/* TODO: List Bookmark Folder */}
+          <ul>
+            {currentUserBookmarkFolder?.map((bookmarkFolder, idx) => {
+              return (
+                <li key={idx}>{bookmarkFolder.name}</li>
+              );
+            })}
+          </ul>
         </>
       )
       }

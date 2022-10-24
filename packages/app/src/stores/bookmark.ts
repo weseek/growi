@@ -44,7 +44,7 @@ export const useSWRxCurrentUserBookmarkFolders = () : SWRResponse<IBookmarkFolde
   return useSWRImmutable(
     '/bookmark-folder/list',
     endpoint => apiv3Get(endpoint).then((response) => {
-      return response.data.bookmarkFolders;
+      return response.data.bookmarkFolderItems;
     }),
   );
 };

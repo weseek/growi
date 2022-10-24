@@ -27,7 +27,7 @@ export interface BookmarkFolderDocument extends Document {
 
 export interface BookmarkFolderModel extends Model<BookmarkFolderDocument>{
   createByParameters(params: IBookmarkFolderDocument): IBookmarkFolderDocument
-  findParentFolderByUserId(user: Types.ObjectId | string): IBookmarkFolderDocument[]
+  findParentFolderByUserId(user: Types.ObjectId | string): BookmarkFolderDocument[]
   findChildFolderById(parentBookmarkFolder: Types.ObjectId | string): Promise<IBookmarkFolderDocument[]>
   deleteFolderAndChildren(bookmarkFolderId: string): void
   updateBookmarkFolder(bookmarkFolderId: string, name: string, parent: string): BookmarkFolderDocument | null
