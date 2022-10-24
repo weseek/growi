@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { ReactNode } from 'react';
 
 import { isClient, objectIdUtils } from '@growi/core';
 import {
@@ -59,7 +59,7 @@ const AppSettingsPageContents = dynamic(() => import('./App/AppSettingsPageConte
 // const ManageExternalAccount = dynamic(() => import('./ManageExternalAccount'), { ssr: false });
 // const ElasticsearchManagement = dynamic(() => import('./ElasticsearchManagement/ElasticsearchManagement'), { ssr: false });
 // const UserGroupDetailPage = dynamic(() => import('./UserGroupDetail/UserGroupDetailPage'), { ssr: false });
-// const AdminLayout = dynamic(() => import('../Layout/AdminLayout'), { ssr: false });
+const AdminLayout = dynamic(() => import('../Layout/AdminLayout'), { ssr: false });
 // // named export
 // const UserGroupPage = dynamic(() => import('./UserGroup/UserGroupPage').then(mod => mod.UserGroupPage), { ssr: false });
 // const AuditLogManagement = dynamic(() => import('./AuditLogManagement').then(mod => mod.AuditLogManagement), { ssr: false });
@@ -68,6 +68,9 @@ const AppSettingsPageContents = dynamic(() => import('./App/AppSettingsPageConte
 
 type Props = CommonProps & {
   currentUser: any,
+
+  title: string
+  component: ReactNode,
 
   nodeVersion: string,
   npmVersion: string,
@@ -272,11 +275,9 @@ const AdminPage: NextPage<Props> = (props: Props) => {
 
   return (
     <Provider inject={[...injectableContainers, ...adminSecurityContainers]}>
-      {/* <AdminLayout title={useCustomTitle(props, targetPage.title)} selectedNavOpt={firstPath} componentTitle={targetPage.title}> */}
-      {/* <AdminLayout title={useCustomTitle(props, t('commons:headers.app_settings'))} selectedNavOpt={firstPath} componentTitle={targetPage.title}> */}
-      {/* {targetPage.component} */}
-      <AppSettingsPageContents />
-      {/* </AdminLayout> */}
+      <AdminLayout title={useCustomTitle(props, props.title)} componentTitle={props.title} >
+        {props.component}
+      </AdminLayout>
     </Provider>
   );
 };

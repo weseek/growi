@@ -17,18 +17,12 @@ const AdminNotFoundPage = dynamic(() => import('../Admin/NotFoundPage').then(mod
 type Props = {
   title: string
   componentTitle: string
-  /**
-   * Set the current option of AdminNavigation
-   * Expected it is in ["home", "app", "security", "markdown", "customize", "importer", "export",
-   * "notification", 'global-notification', "users", "user-groups", "search"]
-   */
-  selectedNavOpt: string
   children?: ReactNode
 }
 
 
 const AdminLayout = ({
-  children, title, selectedNavOpt, componentTitle,
+  children, title, componentTitle,
 }: Props): JSX.Element => {
 
   const AdminNavigation = dynamic(() => import('~/components/Admin/Common/AdminNavigation'), { ssr: false });
@@ -46,7 +40,7 @@ const AdminLayout = ({
           <div className="container-fluid">
             <div className="row">
               <div className="col-lg-3">
-                <AdminNavigation selected={selectedNavOpt} />
+                <AdminNavigation />
               </div>
               <div className="col-lg-9">
                 {children || <AdminNotFoundPage />}

@@ -1,12 +1,16 @@
 import {
   NextPage, GetServerSideProps, GetServerSidePropsContext,
 } from 'next';
+import { useTranslation } from 'next-i18next';
+import dynamic from 'next/dynamic';
 
 import AdminPage from '~/components/Admin/AdminPage';
 import { SupportedActionType } from '~/interfaces/activity';
 import { CommonProps } from '~/pages/utils/commons';
 
 import { retrieveServerSideProps } from '../../utils/admin-page-util';
+
+const AppSettingsPageContents = dynamic(() => import('~/components/Admin/App/AppSettingsPageContents'), { ssr: false });
 
 
 type Props = CommonProps & {
@@ -30,7 +34,8 @@ type Props = CommonProps & {
 
 
 const AdminAppPage: NextPage<Props> = (props) => {
-  return <AdminPage {...props}/>;
+  const { t } = useTranslation();
+  return <AdminPage title={t('commons:headers.app_settings')} component={<AppSettingsPageContents />} {...props}/>;
 
 };
 
