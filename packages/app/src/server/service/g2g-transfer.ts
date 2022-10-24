@@ -256,8 +256,8 @@ export class G2GTransferPusherService implements Pusher {
       return {
         canTransfer: false,
         // TODO: i18n for reason
-        // eslint-disable-next-line max-len, @typescript-eslint/no-non-null-assertion
-        reason: `Total file size exceeds file upload limit of new Growi. Requires ${totalFileSize.toLocaleString()} bytes, but got ${toGROWIInfo.fileUploadTotalLimit!.toLocaleString()} bytes.`,
+        // eslint-disable-next-line max-len
+        reason: `Total file size exceeds file upload limit of new Growi. Requires ${totalFileSize.toLocaleString()} bytes, but got ${(toGROWIInfo.fileUploadTotalLimit ?? Infinity).toLocaleString()} bytes.`,
       };
     }
 
