@@ -11,7 +11,7 @@ const logger = loggerFactory('growi:passwordReset');
 
 
 const PasswordResetExecutionForm: FC = () => {
-  const { t } = useTranslation();
+  const { t } = useTranslation(['translation', 'commons']);
 
   const [newPassword, setNewPassword] = useState('');
   const [newPasswordConfirm, setNewPasswordConfirm] = useState('');
@@ -41,7 +41,7 @@ const PasswordResetExecutionForm: FC = () => {
 
       setValidationErrorI18n('');
 
-      toastSuccess(t('toaster.update_successed', { target: t('Password') }));
+      toastSuccess(t('toaster.update_successed', { target: t('Password'), ns: 'commons' }));
     }
     catch (err) {
       toastError(err);

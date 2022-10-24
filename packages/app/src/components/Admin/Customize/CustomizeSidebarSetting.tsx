@@ -8,7 +8,8 @@ import { useSWRxSidebarConfig } from '~/stores/ui';
 import { useNextThemes } from '~/stores/use-next-themes';
 
 const CustomizeSidebarsetting = (): JSX.Element => {
-  const { t } = useTranslation('admin');
+  const { t } = useTranslation(['admin', 'commons']);
+
   const {
     update, isSidebarDrawerMode, isSidebarClosedAtDockMode, setIsSidebarDrawerMode, setIsSidebarClosedAtDockMode,
   } = useSWRxSidebarConfig();
@@ -20,7 +21,7 @@ const CustomizeSidebarsetting = (): JSX.Element => {
   const onClickSubmit = useCallback(async() => {
     try {
       await update();
-      toastSuccess(t('toaster.update_successed', { target: t('customize_settings.default_sidebar_mode.title') }));
+      toastSuccess(t('toaster.update_successed', { target: t('customize_settings.default_sidebar_mode.title'), ns: 'commons' }));
     }
     catch (err) {
       toastError(err);

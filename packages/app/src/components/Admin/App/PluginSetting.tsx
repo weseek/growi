@@ -23,7 +23,7 @@ const PluginSetting = (props: Props) => {
   const submitHandler = useCallback(async() => {
     try {
       await adminAppContainer.updatePluginSettingHandler();
-      toastSuccess(t('toaster.update_successed', { target: t('admin:app_setting.plugin_settings') }));
+      toastSuccess(t('toaster.update_successed', { target: t('admin:app_setting.plugin_settings'), ns: 'commons' }));
     }
     catch (err) {
       toastError(err);

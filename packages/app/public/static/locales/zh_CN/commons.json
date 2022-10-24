@@ -1,0 +1,17 @@
+{
+  "meta": {
+    "display_name": "简体中文"
+  },
+  "toaster": {
+    "create_succeeded": "Succeeded to create {{target}}",
+    "create_failed": "Failed to create {{target}}",
+    "update_successed": "Succeeded to update {{target}}",
+    "update_failed": "Failed to update {{target}}"
+  },
+  "alert": {
+    "siteUrl_is_not_set": "主页URL未设置，通过 {{link}} 设置"
+  },
+  "headers": {
+    "app_settings": "系统设置"
+  }
+}

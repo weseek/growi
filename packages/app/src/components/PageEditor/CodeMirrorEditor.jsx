@@ -23,7 +23,8 @@ import EditorIcon from './EditorIcon';
 import EmojiPicker from './EmojiPicker';
 import EmojiPickerHelper from './EmojiPickerHelper';
 import GridEditModal from './GridEditModal';
-import geu from './GridEditorUtil';
+// TODO: re-impl with https://redmine.weseek.co.jp/issues/107248
+// import geu from './GridEditorUtil';
 // import HandsontableModal from './HandsontableModal';
 import LinkEditModal from './LinkEditModal';
 import mdu from './MarkdownDrawioUtil';
@@ -152,7 +153,8 @@ class CodeMirrorEditor extends AbstractEditor {
     this.renderCheatsheetModalButton = this.renderCheatsheetModalButton.bind(this);
 
     this.makeHeaderHandler = this.makeHeaderHandler.bind(this);
-    this.showGridEditorHandler = this.showGridEditorHandler.bind(this);
+    // TODO: re-impl with https://redmine.weseek.co.jp/issues/107248
+    // this.showGridEditorHandler = this.showGridEditorHandler.bind(this);
     this.showLinkEditHandler = this.showLinkEditHandler.bind(this);
     this.showHandsonTableHandler = this.showHandsonTableHandler.bind(this);
 
@@ -858,9 +860,10 @@ class CodeMirrorEditor extends AbstractEditor {
     cm.focus();
   }
 
-  showGridEditorHandler() {
-    this.gridEditModal.current.show(geu.getGridHtml(this.getCodeMirror()));
-  }
+  // TODO: re-impl with https://redmine.weseek.co.jp/issues/107248
+  // showGridEditorHandler() {
+  //   this.gridEditModal.current.show(geu.getGridHtml(this.getCodeMirror()));
+  // }
 
   showLinkEditHandler() {
     this.linkEditModal.current.show(markdownLinkUtil.getMarkdownLink(this.getCodeMirror()));
@@ -998,15 +1001,16 @@ class CodeMirrorEditor extends AbstractEditor {
       >
         <EditorIcon icon="Image" />
       </Button>,
-      <Button
-        key="nav-item-grid"
-        color={null}
-        size="sm"
-        title="Grid"
-        onClick={this.showGridEditorHandler}
-      >
-        <EditorIcon icon="Grid" />
-      </Button>,
+      // TODO: re-impl with https://redmine.weseek.co.jp/issues/107248
+      // <Button
+      //   key="nav-item-grid"
+      //   color={null}
+      //   size="sm"
+      //   title="Grid"
+      //   onClick={this.showGridEditorHandler}
+      // >
+      //   <EditorIcon icon="Grid" />
+      // </Button>,
       <Button
         key="nav-item-table"
         color={null}
@@ -1119,10 +1123,14 @@ class CodeMirrorEditor extends AbstractEditor {
         { this.renderCheatsheetOverlay() }
         { this.renderEmojiPicker() }
 
+        {/*
+        // TODO: re-impl with https://redmine.weseek.co.jp/issues/107248
         <GridEditModal
           ref={this.gridEditModal}
           onSave={(grid) => { return geu.replaceGridWithHtmlWithEditor(this.getCodeMirror(), grid) }}
         />
+         */}
+
         <LinkEditModal
           ref={this.linkEditModal}
           onSave={(linkText) => { return markdownLinkUtil.replaceFocusedMarkdownLinkWithEditor(this.getCodeMirror(), linkText) }}

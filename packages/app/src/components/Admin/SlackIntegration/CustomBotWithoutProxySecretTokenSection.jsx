@@ -38,7 +38,7 @@ const CustomBotWithoutProxySecretTokenSection = (props) => {
         onUpdatedSecretToken(inputSigningSecret, inputBotToken);
       }
 
-      toastSuccess(t('toaster.update_successed', { target: t('admin:slack_integration.custom_bot_without_proxy_settings') }));
+      toastSuccess(t('toaster.update_successed', { target: t('admin:slack_integration.custom_bot_without_proxy_settings'), ns: 'commons' }));
     }
     catch (err) {
       toastError(err);

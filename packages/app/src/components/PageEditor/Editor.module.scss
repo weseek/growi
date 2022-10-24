@@ -158,7 +158,7 @@
 .modal-gfm-cheatsheet :global {
   .modal-body {
     .hljs {
-      font-family: bs.$font-family-monospace;
+      font-family: var(--font-family-monospace);
     }
   }
 }
