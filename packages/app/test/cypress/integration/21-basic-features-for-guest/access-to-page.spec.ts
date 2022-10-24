@@ -24,10 +24,11 @@ context('Access to page by guest', () => {
     cy.visit('/Sandbox/Math');
     cy.collapseSidebar(true, true);
 
+    // eslint-disable-next-line cypress/no-unnecessary-waiting
+    cy.wait(2000); // wait for 2 seconds for renderer
+
     cy.get('.math').should('be.visible');
     cy.get('.katex-html').should('be.visible');
-    // // eslint-disable-next-line cypress/no-unnecessary-waiting
-    // cy.wait(2000); // wait for 2 seconds for MathJax.typesetPromise();
 
     cy.screenshot(`${ssPrefix}-sandbox-math`);
   });
@@ -79,10 +80,10 @@ context('Access to special pages by guest', () => {
     // select tags
     cy.getByTestid('grw-sidebar-nav-primary-tags').click();
     cy.getByTestid('grw-sidebar-content-tags').should('be.visible');
+    cy.getByTestid('tags-page').should('be.visible');
     cy.getByTestid('grw-tags-list').should('be.visible');
     cy.getByTestid('grw-tags-list').contains('You have no tag, You can set tags on pages');
 
-    cy.getByTestid('tags-page').should('be.visible');
     cy.screenshot(`${ssPrefix}-tags`);
   });
 
