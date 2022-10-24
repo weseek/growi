@@ -2,6 +2,7 @@ import React from 'react';
 
 import type { IUser, IUserHasId } from '@growi/core';
 import { NextPage, GetServerSideProps, GetServerSidePropsContext } from 'next';
+import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import dynamic from 'next/dynamic';
 
 import type { CrowiRequest } from '~/interfaces/crowi-request';
@@ -17,7 +18,7 @@ import {
 } from '../stores/context';
 
 import {
-  CommonProps, getServerSideCommonProps, useCustomTitle,
+  CommonProps, getServerSideCommonProps, getNextI18NextConfig, useCustomTitle,
 } from './utils/commons';
 
 const TrashPageList = dynamic(() => import('~/components/TrashPageList').then(mod => mod.TrashPageList), { ssr: false });
@@ -94,6 +95,17 @@ function injectServerConfigurations(context: GetServerSidePropsContext, props: P
   props.showPageLimitationXL = crowi.configManager.getConfig('crowi', 'customize:showPageLimitationXL');
 }
 
+/**
+ * for Server Side Translations
+ * @param context
+ * @param props
+ * @param namespacesRequired
+ */
+async function injectNextI18NextConfigurations(context: GetServerSidePropsContext, props: Props, namespacesRequired?: string[] | undefined): Promise<void> {
+  const nextI18NextConfig = await getNextI18NextConfig(serverSideTranslations, context, namespacesRequired);
+  props._nextI18Next = nextI18NextConfig._nextI18Next;
+}
+
 export const getServerSideProps: GetServerSideProps = async(context: GetServerSidePropsContext) => {
   const req = context.req as CrowiRequest<IUserHasId & any>;
   const { user } = req;
@@ -109,6 +121,7 @@ export const getServerSideProps: GetServerSideProps = async(context: GetServerSi
   }
   await injectUserUISettings(context, props);
   injectServerConfigurations(context, props);
+  await injectNextI18NextConfigurations(context, props, ['translation']);
 
   return {
     props,
