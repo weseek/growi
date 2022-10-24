@@ -1,12 +1,13 @@
 import React, {
-  Dispatch,
+  Dispatch, memo,
   FC, SetStateAction, useCallback, useEffect, useState,
+  useMemo,
 } from 'react';
 
 import { useTranslation } from 'next-i18next';
 
 import { toastSuccess, toastError } from '~/client/util/apiNotification';
-import { apiv3Get, apiv3Put } from '~/client/util/apiv3-client';
+import { useEditorSettings } from '~/stores/editor';
 
 
 type EditorSettingsBodyProps = Record<string, never>;
@@ -194,51 +195,62 @@ const RuleListGroup: FC<RuleListGroupProps> = ({
   );
 };
 
+const createRulesFromDefaultList = (rule: { name: string }) => (
+  {
+    name: rule.name,
+    isEnabled: true,
+  }
+);
 
-export const EditorSettings: FC<EditorSettingsBodyProps> = () => {
+
+export const EditorSettings = memo((): JSX.Element => {
   const { t } = useTranslation();
   const [textlintRules, setTextlintRules] = useState<LintRule[]>([]);
 
-  const initializeEditorSettings = useCallback(async() => {
-    const { data } = await apiv3Get('/personal-setting/editor-settings');
-    const retrievedRules: LintRule[] = data?.textlintSettings?.textlintRules;
+  const { data: dataEditorSettings, update: updateEditorSettings } = useEditorSettings();
+
+  const defaultRules = useMemo(() => {
+    const defaultCommonRules = commonRulesMenuItems.map(rule => createRulesFromDefaultList(rule));
+    const defaultJapaneseRules = japaneseRulesMenuItems.map(rule => createRulesFromDefaultList(rule));
+
+    return [...defaultCommonRules, ...defaultJapaneseRules];
+  }, []);
+
+  const initializeEditorSettings = useCallback(() => {
+    if (dataEditorSettings == null) {
+      return;
+    }
+
+    const retrievedRules: LintRule[] | undefined = dataEditorSettings?.textlintSettings?.textlintRules;
 
     // If database is empty, add default rules to state
     if (retrievedRules != null && retrievedRules.length > 0) {
       setTextlintRules(retrievedRules);
+      return;
     }
-    else {
-      const createRulesFromDefaultList = (rule: { name: string }) => (
-        {
-          name: rule.name,
-          isEnabled: true,
-        }
-      );
+    setTextlintRules(defaultRules);
+  }, [dataEditorSettings, defaultRules]);
 
-      const defaultCommonRules = commonRulesMenuItems.map(rule => createRulesFromDefaultList(rule));
-      const defaultJapaneseRules = japaneseRulesMenuItems.map(rule => createRulesFromDefaultList(rule));
-      setTextlintRules([...defaultCommonRules, ...defaultJapaneseRules]);
+  const updateRulesHandler = useCallback(async() => {
+    try {
+      await updateEditorSettings({ textlintSettings: { textlintRules } });
+      toastSuccess(t('toaster.update_successed', { target: 'Updated Textlint Settings', ns: 'commons' }));
     }
-
-  }, []);
+    catch (err) {
+      toastError(err);
+    }
+  }, [t, textlintRules, updateEditorSettings]);
 
   useEffect(() => {
     initializeEditorSettings();
   }, [initializeEditorSettings]);
 
-  const updateRulesHandler = async() => {
-    try {
-      const { data } = await apiv3Put('/personal-setting/editor-settings', { textlintSettings: { textlintRules: [...textlintRules] } });
-      setTextlintRules(data.textlintSettings.textlintRules);
-      toastSuccess(t('toaster.update_successed', { target: 'Updated Textlint Settings' }));
-    }
-    catch (err) {
-      toastError(err);
-    }
-  };
-
   if (textlintRules == null) {
-    return <></>;
+    return (
+      <div className="text-muted text-center">
+        <i className="fa fa-2x fa-spinner fa-pulse"></i>
+      </div>
+    );
   }
 
   return (
@@ -270,4 +282,5 @@ export const EditorSettings: FC<EditorSettingsBodyProps> = () => {
       </div>
     </div>
   );
-};
+});
+EditorSettings.displayName = 'EditorSettings';

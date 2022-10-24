@@ -1,10 +1,5 @@
-@use './variables' as var;
-@use './bootstrap/init' as bs;
-
-// hljs
-// .wiki {
-//   @import 'hljs';
-// }
+@use '../variables' as var;
+@use '../bootstrap/init' as bs;
 
 .wiki {
   @mixin add-left-border($width) {

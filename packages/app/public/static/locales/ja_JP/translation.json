@@ -514,10 +514,6 @@
     "page_not_found_in_preview": "\"{{path}}\" というページはありません。"
   },
   "toaster": {
-    "create_succeeded": "新しい{{target}}が作成されました",
-    "create_failed": "{{target}}の作成に失敗しました",
-    "update_successed": "{{target}}を更新しました",
-    "update_failed": "{{target}}の更新に失敗しました",
     "file_upload_succeeded": "ファイルをアップロードしました",
     "file_upload_failed": "ファイルのアップロードに失敗しました",
     "initialize_successed": "{{target}}を初期化しました",
@@ -531,7 +527,8 @@
     "issue_share_link": "共有リンクを作成しました",
     "remove_share_link": "共有リンクを{{count}}件削除しました",
     "switch_disable_link_sharing_success": "共有リンクの設定を変更しました",
-    "failed_to_reset_password":"パスワードのリセットに失敗しました"
+    "failed_to_reset_password":"パスワードのリセットに失敗しました",
+    "save_succeeded": "保存に成功しました"
   },
   "template": {
     "modal_label": {

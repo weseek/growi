@@ -59,7 +59,7 @@ const CustomizeLogoSetting = (): JSX.Element => {
       const { customizedParams } = response.data;
       setIsDefaultLogo(customizedParams.isDefaultLogo);
       setCustomizedLogoSrc(customizedParams.customizedLogoSrc);
-      toastSuccess(t('toaster.update_successed', { target: t('admin:customize_settings.custom_logo') }));
+      toastSuccess(t('toaster.update_successed', { target: t('admin:customize_settings.custom_logo'), ns: 'commons' }));
     }
     catch (err) {
       toastError(err);
@@ -70,7 +70,7 @@ const CustomizeLogoSetting = (): JSX.Element => {
     try {
       await apiv3Delete('/customize-setting/delete-brand-logo');
       setCustomizedLogoSrc(null);
-      toastSuccess(t('toaster.update_successed', { target: t('admin:customize_settings.current_logo') }));
+      toastSuccess(t('toaster.update_successed', { target: t('admin:customize_settings.current_logo'), ns: 'commons' }));
     }
     catch (err) {
       toastError(err);
@@ -86,7 +86,7 @@ const CustomizeLogoSetting = (): JSX.Element => {
       formData.append('file', croppedImage);
       const { data } = await apiv3PostForm('/customize-setting/upload-brand-logo', formData);
       setCustomizedLogoSrc(data.attachment.filePathProxied);
-      toastSuccess(t('toaster.update_successed', { target: t('admin:customize_settings.current_logo') }));
+      toastSuccess(t('toaster.update_successed', { target: t('admin:customize_settings.current_logo'), ns: 'commons' }));
     }
     catch (err) {
       toastError(err);

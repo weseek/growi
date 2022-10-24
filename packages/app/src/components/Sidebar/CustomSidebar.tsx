@@ -10,6 +10,9 @@ import loggerFactory from '~/utils/logger';
 import RevisionRenderer from '../Page/RevisionRenderer';
 
 
+import styles from './CustomSidebar.module.scss';
+
+
 const logger = loggerFactory('growi:cli:CustomSidebar');
 
 
@@ -58,11 +61,10 @@ const CustomSidebar: FC = () => {
 
       {
         (!isLoading && markdown != null) && (
-          <div className="p-3">
+          <div className={`p-3 grw-custom-sidebar-content ${styles['grw-custom-sidebar-content']}`}>
             <RevisionRenderer
               rendererOptions={rendererOptions}
               markdown={markdown}
-              additionalClassName="grw-custom-sidebar-content"
             />
           </div>
         )
