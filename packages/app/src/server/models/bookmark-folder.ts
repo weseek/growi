@@ -43,24 +43,19 @@ const bookmarkFolderSchema = new Schema<BookmarkFolderDocument, BookmarkFolderMo
 bookmarkFolderSchema.statics.createByParameters = async function(params: IBookmarkFolderDocument): Promise<BookmarkFolderDocument> {
   const { name, owner, parent } = params;
   let bookmarkFolder;
-  try {
-    if (parent === null) {
-      bookmarkFolder = await this.create({ name, owner, parent:  null }) as unknown as BookmarkFolderDocument;
-    }
-    else {
-      const parentFolder = await this.findById(parent);
-      if (!parentFolder) {
-        throw new InvalidParentBookmarkFolder("Parent folder doesn't exists");
-      }
-      bookmarkFolder = await this.create({ name, owner, parent:  parentFolder?._id }) as unknown as BookmarkFolderDocument;
-    }
+
+  if (parent === null) {
+    bookmarkFolder = await this.create({ name, owner, parent:  null }) as unknown as BookmarkFolderDocument;
   }
-  catch (err) {
-    if (err instanceof InvalidParentBookmarkFolder) {
-      throw new InvalidParentBookmarkFolder(err);
+  else {
+    const parentFolder = await this.findById(parent);
+    if (!parentFolder) {
+      throw new InvalidParentBookmarkFolder("Parent folder doesn't exists");
     }
-    return err;
+    bookmarkFolder = await this.create({ name, owner, parent:  parentFolder?._id }) as unknown as BookmarkFolderDocument;
   }
+
+
   return bookmarkFolder;
 };
 

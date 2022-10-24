@@ -1,9 +1,10 @@
-import { body, param } from 'express-validator';
+import { ErrorV3 } from '@growi/core';
+import { body } from 'express-validator';
 
 import { apiV3FormValidator } from '~/server/middlewares/apiv3-form-validator';
 import loggerFactory from '~/utils/logger';
 
-import BookmarkFolder from '../../models/bookmark-folder';
+import BookmarkFolder, { InvalidParentBookmarkFolder } from '../../models/bookmark-folder';
 
 const logger = loggerFactory('growi:routes:apiv3:bookmark-folder');
 
@@ -31,12 +32,14 @@ module.exports = (crowi) => {
     };
 
     try {
-      const bookmarkFolder = BookmarkFolder.createByParameters(params);
+      const bookmarkFolder = await BookmarkFolder.createByParameters(params);
       logger.debug('bookmark folder created', bookmarkFolder);
       return res.apiv3({ bookmarkFolder });
     }
     catch (err) {
-      logger.error('create bookmark folder failed', err);
+      if (err instanceof InvalidParentBookmarkFolder) {
+        return res.apiv3Err(new ErrorV3(err.message, 'failed_to_create_bookmark_folder'));
+      }
       return res.apiv3Err(err, 500);
     }
   });
