@@ -16,7 +16,7 @@ context('Access to search result page', () => {
     cy.getByTestid('search-result-base').should('be.visible');
     cy.getByTestid('search-result-list').should('be.visible');
     cy.getByTestid('search-result-content').should('be.visible');
-    cy.get('#wiki').should('be.visible');
+    cy.get('.wiki').should('be.visible');
     // for avoid mismatch by auto scrolling
     cy.get('.search-result-content-body-container').scrollTo('top');
     cy.screenshot(`${ssPrefix}with-q`);
@@ -28,7 +28,7 @@ context('Access to search result page', () => {
     cy.getByTestid('search-result-base').should('be.visible');
     cy.getByTestid('search-result-list').should('be.visible');
     cy.getByTestid('search-result-content').should('be.visible');
-    cy.get('#wiki').should('be.visible');
+    cy.get('.wiki').should('be.visible');
     // for avoid mismatch by auto scrolling
     cy.get('.search-result-content-body-container').scrollTo('top');
 
@@ -105,7 +105,7 @@ context('Search all pages', () => {
     cy.getByTestid('search-result-base').should('be.visible');
     cy.getByTestid('search-result-list').should('be.visible');
     cy.getByTestid('search-result-content').should('be.visible');
-    cy.get('#wiki').should('be.visible');
+    cy.get('.wiki').should('be.visible');
     // force to add 'active' to pass VRT: https://github.com/weseek/growi/pull/6603
     cy.getByTestid('page-list-item-L').first().invoke('addClass', 'active');
     // for avoid mismatch by auto scrolling
@@ -116,7 +116,7 @@ context('Search all pages', () => {
 
     cy.getByTestid('open-page-item-control-btn').eq(1).click();
     cy.getByTestid('search-result-content').should('be.visible');
-    cy.get('#wiki').should('be.visible');
+    cy.get('.wiki').should('be.visible');
     // for avoid mismatch by auto scrolling
     cy.get('.search-result-content-body-container').scrollTo('top');
     cy.screenshot(`${ssPrefix}4-click-three-dots-menu`, {capture: 'viewport'});
@@ -168,7 +168,7 @@ context('Search all pages', () => {
     });
 
     cy.visit('/');
-    cy.get('.rbt-input').click();
+    cy.get('.rbt-input').click({force: true});
     cy.get('.rbt-input-main').type(`${searchText}`);
     cy.screenshot(`${ssPrefix}1-insert-search-text-with-tag`, { capture: 'viewport'});
     cy.get('.rbt-input-main').type('{enter}');
@@ -176,14 +176,14 @@ context('Search all pages', () => {
     cy.getByTestid('search-result-base').should('be.visible');
     cy.getByTestid('search-result-list').should('be.visible');
     cy.getByTestid('search-result-content').should('be.visible');
-    cy.get('#wiki').should('be.visible');
+    cy.get('.wiki').should('be.visible');
     // force to add 'active' to pass VRT: https://github.com/weseek/growi/pull/6603
     cy.getByTestid('page-list-item-L').first().invoke('addClass', 'active');
     cy.screenshot(`${ssPrefix}2-search-with-tag-result`, {capture: 'viewport'});
 
     cy.getByTestid('open-page-item-control-btn').first().click();
     cy.getByTestid('search-result-content').should('be.visible');
-    cy.get('#wiki').should('be.visible');
+    cy.get('.wiki').should('be.visible');
     cy.screenshot(`${ssPrefix}3-click-three-dots-menu-search-with-tag`, {capture: 'viewport'});
 
   });
@@ -192,11 +192,11 @@ context('Search all pages', () => {
     const tag = 'help';
 
     cy.visit('/');
-    cy.get('.grw-taglabels-container > form > a').contains(tag).click();
+    cy.get('.grw-taglabels-container > div > a').contains(tag).click();
     cy.getByTestid('search-result-base').should('be.visible');
     cy.getByTestid('search-result-list').should('be.visible');
     cy.getByTestid('search-result-content').should('be.visible');
-    cy.get('#wiki').should('be.visible');
+    cy.get('.wiki').should('be.visible');
     // force to add 'active' to pass VRT: https://github.com/weseek/growi/pull/6603
     cy.getByTestid('page-list-item-L').first().invoke('addClass', 'active');
     cy.screenshot(`${ssPrefix}1-tag-order-click-tag-name`, {capture: 'viewport'});
@@ -209,7 +209,7 @@ context('Search all pages', () => {
     cy.getByTestid('search-result-base').should('be.visible');
     cy.getByTestid('search-result-list').should('be.visible');
     cy.getByTestid('search-result-content').should('be.visible');
-    cy.get('#wiki').should('be.visible');
+    cy.get('.wiki').should('be.visible');
     cy.screenshot(`${ssPrefix}2-tag-order-by-relevance`);
 
     cy.get('.grw-search-page-nav').within(() => {
@@ -220,7 +220,7 @@ context('Search all pages', () => {
     cy.getByTestid('search-result-base').should('be.visible');
     cy.getByTestid('search-result-list').should('be.visible');
     cy.getByTestid('search-result-content').should('be.visible');
-    cy.get('#wiki').should('be.visible');
+    cy.get('.wiki').should('be.visible');
     cy.screenshot(`${ssPrefix}3-tag-order-by-creation-date`);
 
     cy.get('.grw-search-page-nav').within(() => {
@@ -231,7 +231,7 @@ context('Search all pages', () => {
     cy.getByTestid('search-result-base').should('be.visible');
     cy.getByTestid('search-result-list').should('be.visible');
     cy.getByTestid('search-result-content').should('be.visible');
-    cy.get('#wiki').should('be.visible');
+    cy.get('.wiki').should('be.visible');
     cy.screenshot(`${ssPrefix}4-tag-order-by-last-update-date`);
   });
 
@@ -265,7 +265,7 @@ context('Search current tree with "prefix":', () => {
     cy.getByTestid('search-result-base').should('be.visible');
     cy.getByTestid('search-result-list').should('be.visible');
     cy.getByTestid('search-result-content').should('be.visible');
-    cy.get('#wiki').should('be.visible');
+    cy.get('.wiki').should('be.visible');
     // force to add 'active' to pass VRT: https://github.com/weseek/growi/pull/6603
     cy.getByTestid('page-list-item-L').first().invoke('addClass', 'active');
     // for avoid mismatch by auto scrolling
@@ -276,7 +276,7 @@ context('Search current tree with "prefix":', () => {
 
     cy.getByTestid('open-page-item-control-btn').first().click();
     cy.getByTestid('search-result-content').should('be.visible');
-    cy.get('#wiki').should('be.visible');
+    cy.get('.wiki').should('be.visible');
     // for avoid mismatch by auto scrolling
     cy.get('.search-result-content-body-container').scrollTo('top');
     cy.screenshot(`${ssPrefix}4-click-three-dots-menu`, {capture: 'viewport'});
