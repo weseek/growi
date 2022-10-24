@@ -168,7 +168,7 @@ context('Search all pages', () => {
     });
 
     cy.visit('/');
-    cy.get('.rbt-input').click();
+    cy.get('.rbt-input').click({force: true});
     cy.get('.rbt-input-main').type(`${searchText}`);
     cy.screenshot(`${ssPrefix}1-insert-search-text-with-tag`, { capture: 'viewport'});
     cy.get('.rbt-input-main').type('{enter}');
@@ -192,7 +192,7 @@ context('Search all pages', () => {
     const tag = 'help';
 
     cy.visit('/');
-    cy.get('.grw-taglabels-container > form > a').contains(tag).click();
+    cy.get('.grw-taglabels-container > div > a').contains(tag).click();
     cy.getByTestid('search-result-base').should('be.visible');
     cy.getByTestid('search-result-list').should('be.visible');
     cy.getByTestid('search-result-content').should('be.visible');
