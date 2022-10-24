@@ -46,7 +46,7 @@ Cypress.Commands.add('collapseSidebar', (isCollapsed, force=false) => {
     return;
   }
 
-  const isGrowiPage = Cypress.$('body.growi').length > 0;
+  const isGrowiPage = Cypress.$('body').hasClass('growi');
   if (!isGrowiPage) {
     cy.visit('/page-to-toggle-sidebar-collapsed');
   }
