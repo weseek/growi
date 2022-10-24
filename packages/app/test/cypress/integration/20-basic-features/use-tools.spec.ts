@@ -269,6 +269,8 @@ context('Tag Oprations', () =>{
     cy.getByTestid('page-list-item-L').first().invoke('addClass', 'active');
     cy.screenshot(`${ssPrefix}1-click-tag-name`, {capture: 'viewport'});
 
+    // eslint-disable-next-line cypress/no-unnecessary-waiting
+    cy.wait(1500); // for wait rendering pageItemControl
     cy.getByTestid('open-page-item-control-btn').first().click({force: true});
     // eslint-disable-next-line cypress/no-unnecessary-waiting
     cy.wait(1500); // for wait rendering pagelist info
