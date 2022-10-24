@@ -1,7 +1,7 @@
 @import './bootstrap/init' ;
 @import './variables' ;
 @import './mixins' ;
-@import 'sidebar-wiki';
+@import './organisms/wiki-custom-sidebar';
 
 // global imported
 .layout-root.editing {
@@ -239,7 +239,6 @@
   &.editing-sidebar {
     .page-editor-preview-body {
       width: 320px;
-      padding-top: 0;
       margin-right: auto;
       margin-left: auto;
 

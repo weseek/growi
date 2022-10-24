@@ -3,7 +3,6 @@
     "display_name": "English"
   },
   "wiki_management_home_page": "Wiki Management Home Page",
-  "app_settings": "App Settings",
   "security_settings": {
     "security_settings": "Security Settings",
     "Guest Users Access": "Guest users access",
@@ -46,7 +45,6 @@
     "page_delete_rights_caution": "The \"Delete / Delete All\" permission (including descendant pages) is forced to be stronger than the \"Delete / Completely Delete\" permission. <br> <br> Admin only > Admin and autor > Anyone",
     "Authentication mechanism settings": "Authentication Mechanism Settings",
     "setup_is_not_yet_complete": "Setup is not yet complete",
-    "alert_siteUrl_is_not_set": "'Site URL' is NOT set. Set it from the {{link}}",
     "xss_prevent_setting": "Prevent XSS(Cross Site Scripting)",
     "xss_prevent_setting_link": "Go to Markdown Settings",
     "callback_URL": "Callback URL",

@@ -9,14 +9,13 @@ $grw-marker-blue: #6cf;
 $grw-marker-cyan: #6ff;
 $grw-marker-green: #6f6;
 
-$font-family-for-staff-credit: Lato, -apple-system, BlinkMacSystemFont, 'Hiragino Kaku Gothic ProN', Meiryo, sans-serif !default;
 $font-family-monospace-not-strictly: Monaco, Menlo, Consolas, 'Courier New', MeiryoKe_Gothic, monospace;
 
 //== Layout
 $grw-navbar-height: 52px;
 $grw-navbar-border-width: 3.3333px;
 // slightly larger than $zindex-sticky
-// https://getbootstrap.jp/docs/4.5/layout/overview/#z-index
+// https://getbootstrap.jp/docs/4.6/layout/overview/#z-index
 $grw-navbar-z-index: 1025;
 
 $grw-subnav-min-height: 95px;
