@@ -27,6 +27,14 @@ const DeleteCommentModal = dynamic<DeleteCommentModalProps>(
   () => import('./PageComment/DeleteCommentModal').then(mod => mod.DeleteCommentModal), { ssr: false },
 );
 
+export const ROOT_ELEM_ID = 'page-comments' as const;
+
+// Always render '#page-comments' for MutationObserver of SearchResultContent
+const PageCommentRoot = (props: React.HTMLAttributes<HTMLDivElement>): JSX.Element => (
+  <div id={ROOT_ELEM_ID} {...props}>{props.children}</div>
+);
+
+
 export type PageCommentProps = {
   rendererOptions?: RendererOptions,
   pageId: string,
@@ -102,7 +110,7 @@ export const PageComment: FC<PageCommentProps> = memo((props:PageCommentProps): 
   }, []);
 
   if (hideIfEmpty && comments?.length === 0) {
-    return <></>;
+    return <PageCommentRoot />;
   }
 
   let commentTitleClasses = 'border-bottom py-3 mb-3';
@@ -112,7 +120,7 @@ export const PageComment: FC<PageCommentProps> = memo((props:PageCommentProps): 
 
   if (commentsFromOldest == null || commentsExceptReply == null || rendererOptions == null) {
     if (hideIfEmpty) {
-      return <></>;
+      return <PageCommentRoot />;
     }
     return (
       <PageCommentSkelton commentTitleClasses={commentTitleClasses}/>
@@ -149,57 +157,55 @@ export const PageComment: FC<PageCommentProps> = memo((props:PageCommentProps): 
   );
 
   return (
-    <>
-      <div id="page-comments" className={`${styles['page-comment-styles']} page-comments-row comment-list`}>
-        <div className="container-lg">
-          <div className="page-comments">
-            <h2 className={commentTitleClasses}><i className="icon-fw icon-bubbles"></i>Comments</h2>
-            <div className="page-comments-list" id="page-comments-list">
-              { commentsExceptReply.map((comment) => {
+    <PageCommentRoot className={`${styles['page-comment-styles']} page-comments-row comment-list`}>
+      <div className="container-lg">
+        <div className="page-comments">
+          <h2 className={commentTitleClasses}><i className="icon-fw icon-bubbles"></i>Comments</h2>
+          <div className="page-comments-list" id="page-comments-list">
+            { commentsExceptReply.map((comment) => {
 
-                const defaultCommentThreadClasses = 'page-comment-thread pb-5';
-                const hasReply: boolean = Object.keys(allReplies).includes(comment._id);
+              const defaultCommentThreadClasses = 'page-comment-thread pb-5';
+              const hasReply: boolean = Object.keys(allReplies).includes(comment._id);
 
-                let commentThreadClasses = '';
-                commentThreadClasses = hasReply ? `${defaultCommentThreadClasses} page-comment-thread-no-replies` : defaultCommentThreadClasses;
+              let commentThreadClasses = '';
+              commentThreadClasses = hasReply ? `${defaultCommentThreadClasses} page-comment-thread-no-replies` : defaultCommentThreadClasses;
 
-                return (
-                  <div key={comment._id} className={commentThreadClasses}>
-                    {generateCommentElement(comment)}
-                    {hasReply && generateReplyCommentsElement(allReplies[comment._id])}
-                    {(!isReadOnly && !showEditorIds.has(comment._id)) && (
-                      <div className="text-right">
-                        <Button
-                          outline
-                          color="secondary"
-                          size="sm"
-                          className="btn-comment-reply"
-                          onClick={() => {
-                            setShowEditorIds(previousState => new Set(previousState.add(comment._id)));
-                          }}
-                        >
-                          <i className="icon-fw icon-action-undo"></i> Reply
-                        </Button>
-                      </div>
-                    )}
-                    {(!isReadOnly && showEditorIds.has(comment._id)) && (
-                      <CommentEditor
-                        pageId={pageId}
-                        replyTo={comment._id}
-                        onCancelButtonClicked={() => {
-                          removeShowEditorId(comment._id);
+              return (
+                <div key={comment._id} className={commentThreadClasses}>
+                  {generateCommentElement(comment)}
+                  {hasReply && generateReplyCommentsElement(allReplies[comment._id])}
+                  {(!isReadOnly && !showEditorIds.has(comment._id)) && (
+                    <div className="text-right">
+                      <Button
+                        outline
+                        color="secondary"
+                        size="sm"
+                        className="btn-comment-reply"
+                        onClick={() => {
+                          setShowEditorIds(previousState => new Set(previousState.add(comment._id)));
                         }}
-                        onCommentButtonClicked={() => {
-                          removeShowEditorId(comment._id);
-                          mutate();
-                        }}
-                      />
-                    )}
-                  </div>
-                );
+                      >
+                        <i className="icon-fw icon-action-undo"></i> Reply
+                      </Button>
+                    </div>
+                  )}
+                  {(!isReadOnly && showEditorIds.has(comment._id)) && (
+                    <CommentEditor
+                      pageId={pageId}
+                      replyTo={comment._id}
+                      onCancelButtonClicked={() => {
+                        removeShowEditorId(comment._id);
+                      }}
+                      onCommentButtonClicked={() => {
+                        removeShowEditorId(comment._id);
+                        mutate();
+                      }}
+                    />
+                  )}
+                </div>
+              );
 
-              })}
-            </div>
+            })}
           </div>
         </div>
       </div>
@@ -212,7 +218,7 @@ export const PageComment: FC<PageCommentProps> = memo((props:PageCommentProps): 
           confirmToDelete={onDeleteComment}
         />
       )}
-    </>
+    </PageCommentRoot>
   );
 });
 

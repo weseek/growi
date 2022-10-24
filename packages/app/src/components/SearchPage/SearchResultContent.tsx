@@ -1,15 +1,16 @@
 import React, {
-  FC, useCallback, useEffect, useRef,
+  FC, useCallback, useEffect, useRef, useState,
 } from 'react';
 
 import { getIdForRef } from '@growi/core';
 import { useTranslation } from 'next-i18next';
 import dynamic from 'next/dynamic';
+import { animateScroll } from 'react-scroll';
 import { DropdownItem } from 'reactstrap';
+
 
 import { exportAsMarkdown } from '~/client/services/page-operation';
 import { toastSuccess } from '~/client/util/apiNotification';
-import { smoothScrollIntoView } from '~/client/util/smooth-scroll';
 import { IPageToDeleteWithMeta, IPageToRenameWithMeta } from '~/interfaces/page';
 import { IPageWithSearchMeta } from '~/interfaces/search';
 import { OnDuplicatedFunction, OnRenamedFunction, OnDeletedFunction } from '~/interfaces/ui';
@@ -24,8 +25,8 @@ import { useFullTextSearchTermManager } from '~/stores/search';
 import { AdditionalMenuItemsRendererProps, ForceHideMenuItems } from '../Common/Dropdown/PageItemControl';
 import { GrowiSubNavigationProps } from '../Navbar/GrowiSubNavigation';
 import { SubNavButtonsProps } from '../Navbar/SubNavButtons';
-import { RevisionLoaderProps } from '../Page/RevisionLoader';
-import { PageCommentProps } from '../PageComment';
+import { ROOT_ELEM_ID as RevisionLoaderRoomElemId, RevisionLoaderProps } from '../Page/RevisionLoader';
+import { ROOT_ELEM_ID as PageCommentRootElemId, PageCommentProps } from '../PageComment';
 import { PageContentFooterProps } from '../PageContentFooter';
 
 
@@ -57,8 +58,8 @@ const AdditionalMenuItems = (props: AdditionalMenuItemsProps): JSX.Element => {
   );
 };
 
-const SCROLL_OFFSET_TOP = 175; // approximate height of (navigation + subnavigation)
-const MUTATION_OBSERVER_CONFIG = { childList: true, subtree: true };
+const SCROLL_OFFSET_TOP = 30;
+const MUTATION_OBSERVER_CONFIG = { childList: true }; // omit 'subtree: true'
 
 type Props ={
   pageWithMeta : IPageWithSearchMeta,
@@ -67,28 +68,26 @@ type Props ={
   forceHideMenuItems?: ForceHideMenuItems,
 }
 
-const scrollTo = (scrollElement:HTMLElement) => {
+const scrollToFirstHighlightedKeyword = (scrollElement: HTMLElement): boolean => {
   // use querySelector to intentionally get the first element found
-  const highlightedKeyword = scrollElement.querySelector('.highlighted-keyword') as HTMLElement | null;
-  if (highlightedKeyword != null) {
-    smoothScrollIntoView(highlightedKeyword, SCROLL_OFFSET_TOP, scrollElement);
+  const toElem = scrollElement.querySelector('.highlighted-keyword') as HTMLElement | null;
+  if (toElem == null) {
+    return false;
   }
-};
 
-const generateObserverCallback = (doScroll: ()=>void) => {
-  return (mutationRecords:MutationRecord[]) => {
-    mutationRecords.forEach((record:MutationRecord) => {
-      const target = record.target as HTMLElement;
-      const targetId = target.id as string;
-      if (targetId !== 'wiki') return;
-      doScroll();
-    });
-  };
+  animateScroll.scrollTo(toElem.offsetTop - SCROLL_OFFSET_TOP, {
+    containerId: scrollElement.id,
+    duration: 200,
+  });
+  return true;
 };
 
 export const SearchResultContent: FC<Props> = (props: Props) => {
 
-  const scrollElementRef = useRef(null);
+  const scrollElementRef = useRef<HTMLDivElement|null>(null);
+
+  const [isRevisionLoaded, setRevisionLoaded] = useState(false);
+  const [isPageCommentLoaded, setPageCommentLoaded] = useState(false);
 
   // for mutation
   const { advance: advancePt } = usePageTreeTermManager();
@@ -97,19 +96,49 @@ export const SearchResultContent: FC<Props> = (props: Props) => {
 
   // ***************************  Auto Scroll  ***************************
   useEffect(() => {
-    const scrollElement = scrollElementRef.current as HTMLElement | null;
+    const scrollElement = scrollElementRef.current;
     if (scrollElement == null) return;
 
-    const observerCallback = generateObserverCallback(() => {
-      scrollTo(scrollElement);
-    });
+    const observerCallback = (mutationRecords:MutationRecord[], thisObs: MutationObserver) => {
+      mutationRecords.forEach((record:MutationRecord) => {
+        const target = record.target as HTMLElement;
+
+        // turn on boolean if loaded
+        Array.from(target.children).forEach((child) => {
+          const childId = (child as HTMLElement).id;
+          if (childId === RevisionLoaderRoomElemId) {
+            setRevisionLoaded(true);
+          }
+          else if (childId === PageCommentRootElemId) {
+            setPageCommentLoaded(true);
+          }
+        });
+      });
+    };
 
     const observer = new MutationObserver(observerCallback);
     observer.observe(scrollElement, MUTATION_OBSERVER_CONFIG);
     return () => {
       observer.disconnect();
     };
-  });
+  }, []);
+
+  useEffect(() => {
+    if (!isRevisionLoaded || !isPageCommentLoaded) {
+      return;
+    }
+    if (scrollElementRef.current == null) {
+      return;
+    }
+
+    const scrollElement = scrollElementRef.current;
+    const isScrollProcessed = scrollToFirstHighlightedKeyword(scrollElement);
+    // retry after 1000ms if highlighted element is absense
+    if (!isScrollProcessed) {
+      setTimeout(() => scrollToFirstHighlightedKeyword(scrollElement), 1000);
+    }
+
+  }, [isPageCommentLoaded, isRevisionLoaded]);
   // *******************************  end  *******************************
 
   const {
@@ -211,12 +240,14 @@ export const SearchResultContent: FC<Props> = (props: Props) => {
           additionalClasses={['px-4']}
         />
       </div>
-      <div className="search-result-content-body-container" ref={scrollElementRef}>
+      <div id="search-result-content-body-container" className="search-result-content-body-container" ref={scrollElementRef}>
+        {/* RevisionLoader will render '#revision-loader' after loaded */}
         <RevisionLoader
           rendererOptions={rendererOptions}
           pageId={page._id}
           revisionId={page.revision}
         />
+        {/* PageComment will render '#page-comment' after loaded */}
         <PageComment
           rendererOptions={rendererOptions}
           pageId={page._id}
