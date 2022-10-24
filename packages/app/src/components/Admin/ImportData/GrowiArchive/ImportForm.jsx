@@ -103,54 +103,48 @@ class ImportForm extends React.Component {
   setupWebsocketEventHandler() {
     const { socket } = this.props;
 
-    if (socket != null) {
-      // websocket event
-      // eslint-disable-next-line object-curly-newline
-      socket.on('admin:onProgressForImport', ({ collectionName, collectionProgress, appendedErrors }) => {
-        const { progressMap, errorsMap } = this.state;
-        progressMap[collectionName] = collectionProgress;
+    // websocket event
+    // eslint-disable-next-line object-curly-newline
+    socket.on('admin:onProgressForImport', ({ collectionName, collectionProgress, appendedErrors }) => {
+      const { progressMap, errorsMap } = this.state;
+      progressMap[collectionName] = collectionProgress;
 
-        const errors = errorsMap[collectionName] || [];
-        errorsMap[collectionName] = errors.concat(appendedErrors);
+      const errors = errorsMap[collectionName] || [];
+      errorsMap[collectionName] = errors.concat(appendedErrors);
 
-        this.setState({
-          isImporting: true,
-          progressMap,
-          errorsMap,
-        });
+      this.setState({
+        isImporting: true,
+        progressMap,
+        errorsMap,
+      });
+    });
+
+    // websocket event
+    socket.on('admin:onTerminateForImport', () => {
+      this.setState({
+        isImporting: false,
+        isImported: true,
       });
 
-      // websocket event
-      socket.on('admin:onTerminateForImport', () => {
-        this.setState({
-          isImporting: false,
-          isImported: true,
-        });
+      toastSuccess(undefined, 'Import process has completed.');
+    });
 
-        toastSuccess(undefined, 'Import process has completed.');
+    // websocket event
+    socket.on('admin:onErrorForImport', (err) => {
+      this.setState({
+        isImporting: false,
+        isImported: false,
       });
 
-      // websocket event
-      socket.on('admin:onErrorForImport', (err) => {
-        this.setState({
-          isImporting: false,
-          isImported: false,
-        });
-
-        toastError(err, 'Import process has failed.');
-      });
-
-    }
-
+      toastError(err, 'Import process has failed.');
+    });
   }
 
   teardownWebsocketEventHandler() {
     const { socket } = this.props;
 
-    if (socket != null) {
-      socket.removeAllListeners('admin:onProgressForImport');
-      socket.removeAllListeners('admin:onTerminateForImport');
-    }
+    socket.removeAllListeners('admin:onProgressForImport');
+    socket.removeAllListeners('admin:onTerminateForImport');
   }
 
   async toggleCheckbox(collectionName, bool) {
@@ -500,7 +494,7 @@ class ImportForm extends React.Component {
 
 ImportForm.propTypes = {
   t: PropTypes.func.isRequired, // i18next
-  socket: PropTypes.object,
+  socket: PropTypes.object.isRequired,
 
   fileName: PropTypes.string,
   innerFileStats: PropTypes.arrayOf(PropTypes.object).isRequired,
@@ -511,6 +505,10 @@ ImportForm.propTypes = {
 const ImportFormWrapperFc = (props) => {
   const { t } = useTranslation('admin');
   const { data: socket } = useAdminSocket();
+
+  if (socket == null) {
+    return;
+  }
 
   return <ImportForm t={t} socket={socket} {...props} />;
 };
