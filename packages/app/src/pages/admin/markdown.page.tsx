@@ -21,10 +21,10 @@ const MarkDownSettingContents = dynamic(() => import('~/components/Admin/Markdow
 type Props = CommonProps & {
   currentUser: any,
 
-  nodeVersion: string,
-  npmVersion: string,
-  yarnVersion: string,
-  installedPlugins: any,
+  // nodeVersion: string,
+  // npmVersion: string,
+  // yarnVersion: string,
+  // installedPlugins: any,
   envVars: any,
   isAclEnabled: boolean,
   isSearchServiceConfigured: boolean,
@@ -38,7 +38,7 @@ type Props = CommonProps & {
 };
 
 
-const AdminAppPage: NextPage<Props> = (props) => {
+const AdminMarkdownPage: NextPage<Props> = (props) => {
   const { t } = useTranslation();
 
   const title = t('markdown_settings.markdown_settings');
@@ -68,4 +68,4 @@ export const getServerSideProps: GetServerSideProps = async(context: GetServerSi
 };
 
 
-export default AdminAppPage;
+export default AdminMarkdownPage;

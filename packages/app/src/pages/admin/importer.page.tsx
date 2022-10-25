@@ -20,10 +20,10 @@ const DataImportPageContents = dynamic(() => import('~/components/Admin/ImportDa
 type Props = CommonProps & {
   currentUser: any,
 
-  nodeVersion: string,
-  npmVersion: string,
-  yarnVersion: string,
-  installedPlugins: any,
+  // nodeVersion: string,
+  // npmVersion: string,
+  // yarnVersion: string,
+  // installedPlugins: any,
   envVars: any,
   isAclEnabled: boolean,
   isSearchServiceConfigured: boolean,
@@ -37,7 +37,7 @@ type Props = CommonProps & {
 };
 
 
-const AdminAppPage: NextPage<Props> = (props) => {
+const AdminDataImportPage: NextPage<Props> = (props) => {
   const { t } = useTranslation();
 
   const title = t('importer_management.import_data');
@@ -67,4 +67,4 @@ export const getServerSideProps: GetServerSideProps = async(context: GetServerSi
 };
 
 
-export default AdminAppPage;
+export default AdminDataImportPage;

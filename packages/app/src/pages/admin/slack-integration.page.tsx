@@ -17,10 +17,10 @@ const SlackIntegration = dynamic(() => import('~/components/Admin/SlackIntegrati
 type Props = CommonProps & {
   currentUser: any,
 
-  nodeVersion: string,
-  npmVersion: string,
-  yarnVersion: string,
-  installedPlugins: any,
+  // nodeVersion: string,
+  // npmVersion: string,
+  // yarnVersion: string,
+  // installedPlugins: any,
   envVars: any,
   isAclEnabled: boolean,
   isSearchServiceConfigured: boolean,
@@ -34,7 +34,7 @@ type Props = CommonProps & {
 };
 
 
-const AdminAppPage: NextPage<Props> = (props) => {
+const AdminSlackIntegrationPage: NextPage<Props> = (props) => {
   const { t } = useTranslation();
   const title = t('slack_integration.slack_integration');
 
@@ -52,4 +52,4 @@ export const getServerSideProps: GetServerSideProps = async(context: GetServerSi
 };
 
 
-export default AdminAppPage;
+export default AdminSlackIntegrationPage;
