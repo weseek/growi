@@ -12,45 +12,51 @@ import { useShowPageLimitationXL } from '~/stores/context';
 import { useEmptyTrashModal } from '~/stores/modal';
 import { useSWRxDescendantsPageListForCurrrentPath, useSWRxPageInfoForList } from '~/stores/page-listing';
 
+type EmptyTrashButtonProps = {
+  emptyTrashClickHandler: () => void,
+  disableEmptyButton: boolean
+};
 
-const EmptyTrashButton: FC = () => {
+
+const EmptyTrashButton = (props: EmptyTrashButtonProps): JSX.Element => {
+  const { emptyTrashClickHandler, disableEmptyButton } = props;
   const { t } = useTranslation();
-  const { open: openEmptyTrashModal } = useEmptyTrashModal();
-  const { data: limit } = useShowPageLimitationXL();
-  const { data: pagingResult, mutate } = useSWRxDescendantsPageListForCurrrentPath(1, limit);
+  // const { open: openEmptyTrashModal } = useEmptyTrashModal();
+  // const { data: limit } = useShowPageLimitationXL();
+  // const { data: pagingResult, mutate } = useSWRxDescendantsPageListForCurrrentPath(1, limit);
 
-  const pageIds = pagingResult?.items?.map(page => page._id);
-  const { injectTo } = useSWRxPageInfoForList(pageIds, null, true, true);
+  // const pageIds = pagingResult?.items?.map(page => page._id);
+  // const { injectTo } = useSWRxPageInfoForList(pageIds, null, true, true);
 
-  let pageWithMetas: IDataWithMeta<IPageHasId, IPageInfo>[] = [];
+  // let pageWithMetas: IDataWithMeta<IPageHasId, IPageInfo>[] = [];
 
-  const convertToIDataWithMeta = (page) => {
-    return { data: page };
-  };
+  // const convertToIDataWithMeta = (page) => {
+  //   return { data: page };
+  // };
 
-  if (pagingResult != null) {
-    const dataWithMetas = pagingResult.items.map(page => convertToIDataWithMeta(page));
-    pageWithMetas = injectTo(dataWithMetas);
-  }
+  // if (pagingResult != null) {
+  //   const dataWithMetas = pagingResult.items.map(page => convertToIDataWithMeta(page));
+  //   pageWithMetas = injectTo(dataWithMetas);
+  // }
 
-  const deletablePages = pageWithMetas.filter(page => page.meta?.isAbleToDeleteCompletely);
+  // const deletablePages = pageWithMetas.filter(page => page.meta?.isAbleToDeleteCompletely);
 
-  const onEmptiedTrashHandler = useCallback(() => {
-    toastSuccess(t('empty_trash'));
+  // const onEmptiedTrashHandler = useCallback(() => {
+  //   toastSuccess(t('empty_trash'));
 
-    mutate();
-  }, [t, mutate]);
+  //   mutate();
+  // }, [t, mutate]);
 
-  const emptyTrashClickHandler = () => {
-    openEmptyTrashModal(deletablePages, { onEmptiedTrash: onEmptiedTrashHandler, canDelepeAllPages: pagingResult?.totalCount === deletablePages.length });
-  };
+  // const emptyTrashClickHandler = () => {
+  //   openEmptyTrashModal(deletablePages, { onEmptiedTrash: onEmptiedTrashHandler, canDelepeAllPages: pagingResult?.totalCount === deletablePages.length });
+  // };
 
   return (
     <div className="d-flex align-items-center">
       <button
         type="button"
         className="btn btn-outline-secondary rounded-pill text-danger d-flex align-items-center"
-        disabled={deletablePages.length === 0}
+        disabled={disableEmptyButton}
         onClick={() => emptyTrashClickHandler()}
       >
         <i className="icon-fw icon-trash"></i>
