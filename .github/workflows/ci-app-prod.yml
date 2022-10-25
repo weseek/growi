@@ -61,7 +61,7 @@ jobs:
       node-version: 16.x
       skip-cypress: ${{ contains( github.event.pull_request.labels.*.name, 'dependencies' ) && contains( github.event.pull_request.labels.*.name, 'github_actions' ) }}
       cypress-report-artifact-name: Cypress report
-      cypress-config-video: ${{ inputs.cypress-config-video }}
+      cypress-config-video: ${{ inputs.cypress-config-video || false }}
     secrets:
       SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
 
