@@ -69,6 +69,11 @@ const G2GDataTransfer = (): JSX.Element => {
         setTransferring(false);
         setStatusMessage(t('Successfully transferred GROWI. Now you can use new GROWI !'));
       });
+
+      socket.on('admin:onG2gError', ({ message }) => {
+        setTransferring(false);
+        setStatusMessage(t(message));
+      });
     }
   }, [socket, t]);
 
@@ -79,6 +84,8 @@ const G2GDataTransfer = (): JSX.Element => {
       socket.off('admin:onStartTransferAttachments');
 
       socket.off('admin:onFinishTransfer');
+
+      socket.off('admin:onG2gError');
     }
   }, [socket]);
 

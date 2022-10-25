@@ -267,6 +267,7 @@ export class G2GTransferPusherService implements Pusher {
   public async transferAttachments(tk: TransferKey): Promise<void> {
     const BATCH_SIZE = 100;
 
+    const socket = this.crowi.socketIoService.getAdminSocket();
     const { fileUploadService } = this.crowi;
     const Attachment = this.crowi.model('Attachment');
 
@@ -292,19 +293,9 @@ export class G2GTransferPusherService implements Pusher {
         try {
           await this.doTransferAttachment(tk, attachment, fileStream);
         }
-        catch (errs) {
-          logger.error(`Error occured when uploading attachment(ID=${attachment.id})`, errs);
-          if (!Array.isArray(errs)) {
-            // TODO: socker.emit(failed_to_transfer);
-            return;
-          }
-
-          const err = errs[0];
-          logger.error(err);
-
-
-          // TODO: socker.emit(failed_to_transfer);
-          return;
+        catch (err) {
+          logger.error(`Error occured when uploading attachment(ID=${attachment.id})`, err);
+          socket.emit('admin:onG2gError', { message: `Failed to upload attachment ${attachment.id}.` });
         }
       }
     }
@@ -332,6 +323,7 @@ export class G2GTransferPusherService implements Pusher {
     }
     catch (err) {
       logger.error(err);
+      socket.emit('admin:onG2gError', { message: 'Failed to generate Growi archive file.' });
       throw err;
     }
 
@@ -348,19 +340,10 @@ export class G2GTransferPusherService implements Pusher {
       form.append('uploadConfigs', JSON.stringify(uploadConfigs));
       await rawAxios.post('/_api/v3/g2g-transfer/', form, generateAxiosRequestConfigWithTransferKey(tk, form.getHeaders()));
     }
-    catch (errs) {
-      logger.error(errs);
-      if (!Array.isArray(errs)) {
-        // TODO: socker.emit(failed_to_transfer);
-        throw errs;
-      }
-
-      const err = errs[0];
+    catch (err) {
       logger.error(err);
-
-
-      // TODO: socker.emit(failed_to_transfer);
-      throw errs;
+      socket.emit('admin:onG2gError', { message: 'Failed to send Growi archive file to new Growi.' });
+      throw err;
     }
 
     if (shouldEmit) socket.emit('admin:onStartTransferAttachments', {});
@@ -370,6 +353,7 @@ export class G2GTransferPusherService implements Pusher {
     }
     catch (err) {
       logger.error(err);
+      socket.emit('admin:onG2gError', { message: 'Failed to transfer attachments.' });
       throw err;
     }
 
