@@ -144,7 +144,7 @@ export const saveOrUpdate = async(optionsToSave: OptionsToSave, pageInfo: PageIn
   // }
 
   let res;
-  if (pageId == null) {
+  if (pageId == null || (pageId != null && revisionId == null)) {
     res = await createPage(path, markdown, options);
   }
   else {
