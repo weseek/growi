@@ -49,7 +49,7 @@ type Props = CommonProps & {
 const AdminAppPage: NextPage<Props> = (props) => {
   const { t } = useTranslation();
 
-  const title = t('commons:headers.app_settings');
+  const title = t('security_settings.security_settings');
   const adminSecurityContainers: Container<any>[] = [];
 
   if (isClient()) {
