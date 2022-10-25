@@ -1,6 +1,7 @@
 import React, { useCallback, memo } from 'react';
 
 import { createValidator } from '@growi/codemirror-textlint';
+import { ConsoleFormattedStream } from 'browser-bunyan';
 import { commands } from 'codemirror';
 import { JSHINT } from 'jshint';
 import * as loadCssSync from 'load-css-file';
@@ -25,7 +26,7 @@ import EmojiPickerHelper from './EmojiPickerHelper';
 import GridEditModal from './GridEditModal';
 // TODO: re-impl with https://redmine.weseek.co.jp/issues/107248
 // import geu from './GridEditorUtil';
-// import HandsontableModal from './HandsontableModal';
+import HandsontableModal from './HandsontableModal';
 import LinkEditModal from './LinkEditModal';
 import mdu from './MarkdownDrawioUtil';
 import markdownLinkUtil from './MarkdownLinkUtil';
@@ -870,7 +871,7 @@ class CodeMirrorEditor extends AbstractEditor {
   }
 
   showHandsonTableHandler() {
-    // this.handsontableModal.current.show(mtu.getMarkdownTable(this.getCodeMirror()));
+    this.handsontableModal.current.show(mtu.getMarkdownTable(this.getCodeMirror()));
   }
 
 
@@ -1135,11 +1136,11 @@ class CodeMirrorEditor extends AbstractEditor {
           ref={this.linkEditModal}
           onSave={(linkText) => { return markdownLinkUtil.replaceFocusedMarkdownLinkWithEditor(this.getCodeMirror(), linkText) }}
         />
-        {/* <HandsontableModal
+        <HandsontableModal
           ref={this.handsontableModal}
           onSave={(table) => { return mtu.replaceFocusedMarkdownTableWithEditor(this.getCodeMirror(), table) }}
           autoFormatMarkdownTable={this.props.editorSettings.autoFormatMarkdownTable}
-        /> */}
+        />
       </div>
     );
   }
