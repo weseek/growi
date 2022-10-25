@@ -9,6 +9,7 @@ import { Container, Provider } from 'unstated';
 import AdminAppContainer from '~/client/services/AdminAppContainer';
 import { SupportedActionType } from '~/interfaces/activity';
 import { CommonProps, useCustomTitle } from '~/pages/utils/commons';
+import { useIsSearchServiceReachable } from '~/stores/context';
 
 import { retrieveServerSideProps } from '../../utils/admin-page-util';
 
@@ -18,23 +19,15 @@ const ElasticsearchManagement = dynamic(() => import('~/components/Admin/Elastic
 
 
 type Props = CommonProps & {
-  currentUser: any,
-
-  envVars: any,
-  isAclEnabled: boolean,
-  isSearchServiceConfigured: boolean,
   isSearchServiceReachable: boolean,
-  isMailerSetup: boolean,
-  auditLogEnabled: boolean,
-  auditLogAvailableActions: SupportedActionType[],
-
-  customizeTitle: string,
-  siteUrl: string,
+  // isMailerSetup: boolean,
+  // siteUrl: string,
 };
 
 
 const AdminFullTextSearchManagementPage: NextPage<Props> = (props) => {
   const { t } = useTranslation();
+  useIsSearchServiceReachable(props.isSearchServiceReachable);
   const title = t('full_text_search_management.full_text_search_management');
 
   return (
