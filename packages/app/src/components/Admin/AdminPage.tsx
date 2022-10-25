@@ -14,7 +14,7 @@ import AdminExternalAccountsContainer from '~/client/services/AdminExternalAccou
 // import AdminGeneralSecurityContainer from '~/client/services/AdminGeneralSecurityContainer';
 // import AdminGitHubSecurityContainer from '~/client/services/AdminGitHubSecurityContainer';
 // import AdminGoogleSecurityContainer from '~/client/services/AdminGoogleSecurityContainer';
-import AdminHomeContainer from '~/client/services/AdminHomeContainer';
+// import AdminHomeContainer from '~/client/services/AdminHomeContainer';
 // import AdminImportContainer from '~/client/services/AdminImportContainer';
 // import AdminLdapSecurityContainer from '~/client/services/AdminLdapSecurityContainer';
 // import AdminLocalSecurityContainer from '~/client/services/AdminLocalSecurityContainer';
@@ -211,7 +211,7 @@ const AdminPage: NextPage<Props> = (props: Props) => {
     // Create unstated container instances (except Security)
     // const adminAppContainer = new AdminAppContainer();
     // const adminImportContainer = new AdminImportContainer();
-    const adminHomeContainer = new AdminHomeContainer();
+    // const adminHomeContainer = new AdminHomeContainer();
     // const adminCustomizeContainer = new AdminCustomizeContainer();
     // const adminUsersContainer = new AdminUsersContainer();
     const adminExternalAccountsContainer = new AdminExternalAccountsContainer();
@@ -222,7 +222,7 @@ const AdminPage: NextPage<Props> = (props: Props) => {
     injectableContainers.push(
       // adminAppContainer,
       // adminImportContainer,
-      adminHomeContainer,
+      // adminHomeContainer,
       // adminCustomizeContainer,
       // adminUsersContainer,
       adminExternalAccountsContainer,
