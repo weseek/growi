@@ -7,24 +7,24 @@ import {
 import dynamic from 'next/dynamic';
 import { Container, Provider } from 'unstated';
 
-import AdminAppContainer from '~/client/services/AdminAppContainer';
-import AdminBasicSecurityContainer from '~/client/services/AdminBasicSecurityContainer';
-import AdminCustomizeContainer from '~/client/services/AdminCustomizeContainer';
+// import AdminAppContainer from '~/client/services/AdminAppContainer';
+// import AdminBasicSecurityContainer from '~/client/services/AdminBasicSecurityContainer';
+// import AdminCustomizeContainer from '~/client/services/AdminCustomizeContainer';
 import AdminExternalAccountsContainer from '~/client/services/AdminExternalAccountsContainer';
-import AdminGeneralSecurityContainer from '~/client/services/AdminGeneralSecurityContainer';
-import AdminGitHubSecurityContainer from '~/client/services/AdminGitHubSecurityContainer';
-import AdminGoogleSecurityContainer from '~/client/services/AdminGoogleSecurityContainer';
+// import AdminGeneralSecurityContainer from '~/client/services/AdminGeneralSecurityContainer';
+// import AdminGitHubSecurityContainer from '~/client/services/AdminGitHubSecurityContainer';
+// import AdminGoogleSecurityContainer from '~/client/services/AdminGoogleSecurityContainer';
 import AdminHomeContainer from '~/client/services/AdminHomeContainer';
-import AdminImportContainer from '~/client/services/AdminImportContainer';
-import AdminLdapSecurityContainer from '~/client/services/AdminLdapSecurityContainer';
-import AdminLocalSecurityContainer from '~/client/services/AdminLocalSecurityContainer';
-import AdminMarkDownContainer from '~/client/services/AdminMarkDownContainer';
-import AdminNotificationContainer from '~/client/services/AdminNotificationContainer';
-import AdminOidcSecurityContainer from '~/client/services/AdminOidcSecurityContainer';
-import AdminSamlSecurityContainer from '~/client/services/AdminSamlSecurityContainer';
-import AdminSlackIntegrationLegacyContainer from '~/client/services/AdminSlackIntegrationLegacyContainer';
-import AdminTwitterSecurityContainer from '~/client/services/AdminTwitterSecurityContainer';
-import AdminUsersContainer from '~/client/services/AdminUsersContainer';
+// import AdminImportContainer from '~/client/services/AdminImportContainer';
+// import AdminLdapSecurityContainer from '~/client/services/AdminLdapSecurityContainer';
+// import AdminLocalSecurityContainer from '~/client/services/AdminLocalSecurityContainer';
+// import AdminMarkDownContainer from '~/client/services/AdminMarkDownContainer';
+// import AdminNotificationContainer from '~/client/services/AdminNotificationContainer';
+// import AdminOidcSecurityContainer from '~/client/services/AdminOidcSecurityContainer';
+// import AdminSamlSecurityContainer from '~/client/services/AdminSamlSecurityContainer';
+// import AdminSlackIntegrationLegacyContainer from '~/client/services/AdminSlackIntegrationLegacyContainer';
+// import AdminTwitterSecurityContainer from '~/client/services/AdminTwitterSecurityContainer';
+// import AdminUsersContainer from '~/client/services/AdminUsersContainer';
 import { SupportedActionType } from '~/interfaces/activity';
 import {
   CommonProps, useCustomTitle,
@@ -209,60 +209,60 @@ const AdminPage: NextPage<Props> = (props: Props) => {
 
   if (isClient()) {
     // Create unstated container instances (except Security)
-    const adminAppContainer = new AdminAppContainer();
-    const adminImportContainer = new AdminImportContainer();
+    // const adminAppContainer = new AdminAppContainer();
+    // const adminImportContainer = new AdminImportContainer();
     const adminHomeContainer = new AdminHomeContainer();
-    const adminCustomizeContainer = new AdminCustomizeContainer();
-    const adminUsersContainer = new AdminUsersContainer();
+    // const adminCustomizeContainer = new AdminCustomizeContainer();
+    // const adminUsersContainer = new AdminUsersContainer();
     const adminExternalAccountsContainer = new AdminExternalAccountsContainer();
-    const adminNotificationContainer = new AdminNotificationContainer();
-    const adminSlackIntegrationLegacyContainer = new AdminSlackIntegrationLegacyContainer();
-    const adminMarkDownContainer = new AdminMarkDownContainer();
+    // const adminNotificationContainer = new AdminNotificationContainer();
+    // const adminSlackIntegrationLegacyContainer = new AdminSlackIntegrationLegacyContainer();
+    // const adminMarkDownContainer = new AdminMarkDownContainer();
 
     injectableContainers.push(
-      adminAppContainer,
-      adminImportContainer,
+      // adminAppContainer,
+      // adminImportContainer,
       adminHomeContainer,
-      adminCustomizeContainer,
-      adminUsersContainer,
+      // adminCustomizeContainer,
+      // adminUsersContainer,
       adminExternalAccountsContainer,
-      adminNotificationContainer,
-      adminSlackIntegrationLegacyContainer,
-      adminMarkDownContainer,
+      // adminNotificationContainer,
+      // adminSlackIntegrationLegacyContainer,
+      // adminMarkDownContainer,
     );
   }
 
 
   const adminSecurityContainers: Container<any>[] = [];
 
-  if (isClient()) {
-    const adminSecuritySettingElem = document.getElementById('admin-security-setting');
+  // if (isClient()) {
+  //   const adminSecuritySettingElem = document.getElementById('admin-security-setting');
 
-    if (adminSecuritySettingElem != null) {
-      // Create unstated container instances (Security)
-      const adminGeneralSecurityContainer = new AdminGeneralSecurityContainer();
-      const adminLocalSecurityContainer = new AdminLocalSecurityContainer();
-      const adminLdapSecurityContainer = new AdminLdapSecurityContainer();
-      const adminSamlSecurityContainer = new AdminSamlSecurityContainer();
-      const adminOidcSecurityContainer = new AdminOidcSecurityContainer();
-      const adminBasicSecurityContainer = new AdminBasicSecurityContainer();
-      const adminGoogleSecurityContainer = new AdminGoogleSecurityContainer();
-      const adminGitHubSecurityContainer = new AdminGitHubSecurityContainer();
-      const adminTwitterSecurityContainer = new AdminTwitterSecurityContainer();
+  //   if (adminSecuritySettingElem != null) {
+  //     // Create unstated container instances (Security)
+  //     const adminGeneralSecurityContainer = new AdminGeneralSecurityContainer();
+  //     const adminLocalSecurityContainer = new AdminLocalSecurityContainer();
+  //     const adminLdapSecurityContainer = new AdminLdapSecurityContainer();
+  //     const adminSamlSecurityContainer = new AdminSamlSecurityContainer();
+  //     const adminOidcSecurityContainer = new AdminOidcSecurityContainer();
+  //     const adminBasicSecurityContainer = new AdminBasicSecurityContainer();
+  //     const adminGoogleSecurityContainer = new AdminGoogleSecurityContainer();
+  //     const adminGitHubSecurityContainer = new AdminGitHubSecurityContainer();
+  //     const adminTwitterSecurityContainer = new AdminTwitterSecurityContainer();
 
-      adminSecurityContainers.push(
-        adminGeneralSecurityContainer,
-        adminLocalSecurityContainer,
-        adminLdapSecurityContainer,
-        adminSamlSecurityContainer,
-        adminOidcSecurityContainer,
-        adminBasicSecurityContainer,
-        adminGoogleSecurityContainer,
-        adminGitHubSecurityContainer,
-        adminTwitterSecurityContainer,
-      );
-    }
-  }
+  //     adminSecurityContainers.push(
+  //       adminGeneralSecurityContainer,
+  //       adminLocalSecurityContainer,
+  //       adminLdapSecurityContainer,
+  //       adminSamlSecurityContainer,
+  //       adminOidcSecurityContainer,
+  //       adminBasicSecurityContainer,
+  //       adminGoogleSecurityContainer,
+  //       adminGitHubSecurityContainer,
+  //       adminTwitterSecurityContainer,
+  //     );
+  //   }
+  // }
 
 
   return (

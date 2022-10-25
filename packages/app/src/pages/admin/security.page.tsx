@@ -56,7 +56,6 @@ const AdminAppPage: NextPage<Props> = (props) => {
     const adminSecuritySettingElem = document.getElementById('admin-security-setting');
 
     if (adminSecuritySettingElem != null) {
-      // Create unstated container instances (Security)
       const adminGeneralSecurityContainer = new AdminGeneralSecurityContainer();
       const adminLocalSecurityContainer = new AdminLocalSecurityContainer();
       const adminLdapSecurityContainer = new AdminLdapSecurityContainer();

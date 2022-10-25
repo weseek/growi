@@ -6,7 +6,7 @@ import { useTranslation } from 'next-i18next';
 import dynamic from 'next/dynamic';
 import { Container, Provider } from 'unstated';
 
-import AdminAppContainer from '~/client/services/AdminAppContainer';
+import AdminCustomizeContainer from '~/client/services/AdminCustomizeContainer';
 import { SupportedActionType } from '~/interfaces/activity';
 import { CommonProps, useCustomTitle } from '~/pages/utils/commons';
 
@@ -40,13 +40,13 @@ type Props = CommonProps & {
 const AdminAppPage: NextPage<Props> = (props) => {
   const { t } = useTranslation();
 
-  const title = t('commons:headers.app_settings');
+  const title = t('customize_settings.customize_settings');
   const injectableContainers: Container<any>[] = [];
 
   if (isClient()) {
-    const adminAppContainer = new AdminAppContainer();
+    const adminCustomizeContainer = new AdminCustomizeContainer();
 
-    injectableContainers.push(adminAppContainer);
+    injectableContainers.push(adminCustomizeContainer);
   }
 
 

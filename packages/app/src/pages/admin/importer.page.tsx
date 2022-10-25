@@ -6,7 +6,7 @@ import { useTranslation } from 'next-i18next';
 import dynamic from 'next/dynamic';
 import { Container, Provider } from 'unstated';
 
-import AdminAppContainer from '~/client/services/AdminAppContainer';
+import AdminImportContainer from '~/client/services/AdminImportContainer';
 import { SupportedActionType } from '~/interfaces/activity';
 import { CommonProps, useCustomTitle } from '~/pages/utils/commons';
 
@@ -14,7 +14,7 @@ import { retrieveServerSideProps } from '../../utils/admin-page-util';
 
 const AdminLayout = dynamic(() => import('~/components/Layout/AdminLayout'), { ssr: false });
 
-const AppSettingsPageContents = dynamic(() => import('~/components/Admin/App/AppSettingsPageContents'), { ssr: false });
+const DataImportPageContents = dynamic(() => import('~/components/Admin/ImportData/ImportDataPageContents'), { ssr: false });
 
 
 type Props = CommonProps & {
@@ -40,20 +40,20 @@ type Props = CommonProps & {
 const AdminAppPage: NextPage<Props> = (props) => {
   const { t } = useTranslation();
 
-  const title = t('commons:headers.app_settings');
+  const title = t('importer_management.import_data');
   const injectableContainers: Container<any>[] = [];
 
   if (isClient()) {
-    const adminAppContainer = new AdminAppContainer();
+    const adminImportContainer = new AdminImportContainer();
 
-    injectableContainers.push(adminAppContainer);
+    injectableContainers.push(adminImportContainer);
   }
 
 
   return (
     <Provider inject={[...injectableContainers]}>
       <AdminLayout title={useCustomTitle(props, title)} componentTitle={title} >
-        <AppSettingsPageContents />
+        <DataImportPageContents />
       </AdminLayout>
     </Provider>
   );

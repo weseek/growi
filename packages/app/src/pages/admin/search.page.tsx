@@ -14,7 +14,7 @@ import { retrieveServerSideProps } from '../../utils/admin-page-util';
 
 const AdminLayout = dynamic(() => import('~/components/Layout/AdminLayout'), { ssr: false });
 
-const AppSettingsPageContents = dynamic(() => import('~/components/Admin/App/AppSettingsPageContents'), { ssr: false });
+const ElasticsearchManagement = dynamic(() => import('~/components/Admin/ElasticsearchManagement/ElasticsearchManagement'), { ssr: false });
 
 
 type Props = CommonProps & {
@@ -39,25 +39,13 @@ type Props = CommonProps & {
 
 const AdminAppPage: NextPage<Props> = (props) => {
   const { t } = useTranslation();
-
-  const title = t('commons:headers.app_settings');
-  const injectableContainers: Container<any>[] = [];
-
-  if (isClient()) {
-    const adminAppContainer = new AdminAppContainer();
-
-    injectableContainers.push(adminAppContainer);
-  }
-
+  const title = t('full_text_search_management.full_text_search_management');
 
   return (
-    <Provider inject={[...injectableContainers]}>
-      <AdminLayout title={useCustomTitle(props, title)} componentTitle={title} >
-        <AppSettingsPageContents />
-      </AdminLayout>
-    </Provider>
+    <AdminLayout title={useCustomTitle(props, title)} componentTitle={title} >
+      <ElasticsearchManagement />
+    </AdminLayout>
   );
-
 };
 
 
