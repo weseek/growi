@@ -27,7 +27,7 @@ context('Access to page by guest', () => {
     // eslint-disable-next-line cypress/no-unnecessary-waiting
     cy.wait(2000); // wait for 2 seconds for renderer
 
-    cy.get('.wiki > p > span').within(() => {
+    cy.get('.wiki').within(() => {
       cy.get('.math').should('be.visible');
     }).screenshot(`${ssPrefix}-sandbox-math`);
     // cy.get('.math').should('be.visible');
@@ -69,7 +69,7 @@ context('Access to special pages by guest', () => {
   it('/trash is successfully loaded', () => {
     cy.visit('/trash', {  });
     cy.collapseSidebar(true, true);
-    cy.getByTestid('trash-page-list').should('be.visible');
+    cy.get('#trash-page-list').should('be.visible');
     cy.screenshot(`${ssPrefix}-trash`);
   });
 
@@ -84,7 +84,7 @@ context('Access to special pages by guest', () => {
     cy.getByTestid('grw-tags-list').should('be.visible');
     cy.getByTestid('grw-tags-list').contains('You have no tag, You can set tags on pages');
 
-    cy.getByTestid('tags-page').should('be.visible');
+    cy.get('#tags-page').should('be.visible');
     cy.screenshot(`${ssPrefix}-tags`);
   });
 

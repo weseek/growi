@@ -27,7 +27,7 @@ export const TrashPageList: FC = () => {
   }, []);
 
   return (
-    <div data-testid="trash-page-list" className="mt-5 d-edit-none">
+    <div id="trash-page-list" className="mt-5 d-edit-none">
       <CustomNavAndContents navTabMapping={navTabMapping} navRightElement={emptyTrashButton} />
     </div>
   );
