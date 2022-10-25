@@ -16,7 +16,7 @@ import { getOptionsToSave } from '~/client/util/editor';
 import { IEditorMethods } from '~/interfaces/editor-methods';
 import {
   useCurrentPagePath, useCurrentPathname, useCurrentPageId, useEditingMarkdown,
-  useIsEditable, useIsIndentSizeForced, useIsUploadableFile, useIsUploadableImage, useIsNotFound,
+  useIsEditable, useIsIndentSizeForced, useIsUploadableFile, useIsUploadableImage,
 } from '~/stores/context';
 import {
   useCurrentIndentSize, useSWRxSlackChannels, useIsSlackEnabled, useIsTextlintEnabled, usePageTagsForEditors,
@@ -58,7 +58,6 @@ const PageEditor = React.memo((): JSX.Element => {
   const { data: editingMarkdown } = useEditingMarkdown();
   const { data: grantData, mutate: mutateGrant } = useSelectedGrant();
   const { data: pageTags } = usePageTagsForEditors(pageId);
-  const { data: isNotFound } = useIsNotFound();
 
   const { data: isEditable } = useIsEditable();
   const { data: editorMode, mutate: mutateEditorMode } = useEditorMode();
@@ -115,13 +114,7 @@ const PageEditor = React.memo((): JSX.Element => {
     );
 
     try {
-      const pageInfo = {
-        pageId,
-        isNotFound,
-        path: currentPagePath || currentPathname,
-        revisionId: currentRevisionId,
-      };
-      await saveOrUpdate(optionsToSave, pageInfo, markdownToSave.current);
+      await saveOrUpdate(optionsToSave, { pageId, path: currentPagePath || currentPathname, revisionId: currentRevisionId }, markdownToSave.current);
       await mutateCurrentPage();
       mutateIsEnabledUnsavedWarning(false);
       return true;
@@ -141,7 +134,7 @@ const PageEditor = React.memo((): JSX.Element => {
     }
 
   // eslint-disable-next-line max-len
-  }, [grantData, isSlackEnabled, currentPathname, slackChannels, pageTags, pageId, currentPagePath, currentRevisionId, isNotFound, mutateCurrentPage, mutateIsEnabledUnsavedWarning]);
+  }, [grantData, isSlackEnabled, currentPathname, slackChannels, pageTags, pageId, currentPagePath, currentRevisionId, mutateCurrentPage, mutateIsEnabledUnsavedWarning]);
 
   const saveAndReturnToViewHandler = useCallback(async(opts?: {overwriteScopesOfDescendants: boolean}) => {
     if (editorMode !== EditorMode.Editor) {

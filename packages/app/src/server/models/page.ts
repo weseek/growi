@@ -998,12 +998,7 @@ export default (crowi): any => {
       body: string | null,
       previousBody: string | null,
       user,
-      options: {
-        grant?: PageGrant,
-        grantUserGroupId?: ObjectIdLike,
-        isSyncRevisionToHackmd?: boolean
-        isEmpty?: boolean,
-      } = {},
+      options: {grant?: PageGrant, grantUserGroupId?: ObjectIdLike, isSyncRevisionToHackmd?: boolean} = {},
   ) {
     if (crowi.configManager == null || crowi.pageGrantService == null || crowi.pageService == null) {
       throw Error('Crowi is not set up');
@@ -1061,10 +1056,6 @@ export default (crowi): any => {
     }
 
     newPageData.applyScope(user, grant, grantUserGroupId);
-
-    if (options.isEmpty != null) {
-      newPageData.isEmpty = options.isEmpty;
-    }
 
     // update existing page
     let savedPage = await newPageData.save();
