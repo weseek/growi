@@ -4,34 +4,24 @@ import {
 import { useTranslation } from 'next-i18next';
 import dynamic from 'next/dynamic';
 
-import { SupportedActionType } from '~/interfaces/activity';
 import { CommonProps, useCustomTitle } from '~/pages/utils/commons';
 
 import { retrieveServerSideProps } from '../../utils/admin-page-util';
+
+import { useSiteUrl } from '~/stores/context';
 
 const AdminLayout = dynamic(() => import('~/components/Layout/AdminLayout'), { ssr: false });
 
 const SlackIntegration = dynamic(() => import('~/components/Admin/SlackIntegration/SlackIntegration'), { ssr: false });
 
 
-type Props = CommonProps & {
-  currentUser: any,
-
-  envVars: any,
-  isAclEnabled: boolean,
-  isSearchServiceConfigured: boolean,
-  isSearchServiceReachable: boolean,
-  isMailerSetup: boolean,
-  auditLogEnabled: boolean,
-  auditLogAvailableActions: SupportedActionType[],
-
-  customizeTitle: string,
-  siteUrl: string,
-};
+type Props = CommonProps & { siteUrl: string };
 
 
 const AdminSlackIntegrationPage: NextPage<Props> = (props) => {
   const { t } = useTranslation();
+  useSiteUrl(props.siteUrl);
+
   const title = t('slack_integration.slack_integration');
 
   return (
