@@ -10,7 +10,6 @@ import Link from 'next/link';
 import { useRipple } from 'react-use-ripple';
 import { UncontrolledTooltip } from 'reactstrap';
 
-import { nextImageLoader } from '~/client/util/next-image';
 import {
   useIsSearchPage, useCurrentPagePath, useIsGuestUser, useIsSearchServiceConfigured, useAppTitle, useConfidential, useCustomizedLogoSrc,
 } from '~/stores/context';
@@ -129,18 +128,8 @@ const GrowiNavbarLogo: FC<NavbarLogoProps> = memo((props: NavbarLogoProps) => {
   const { logoSrc } = props;
 
   return logoSrc != null
-    ? (
-      // The nature of next/image, which wraps the <img> with other tags such as <div>, makes it difficult to adjust the style of the image.
-      // Instead of adding css selectors to the <Image />, wrap the <Image /> in a <div> and add selectors there to control the styles.
-      <div id="settingBrandLogo" className='position-relative picture picture-lg d-flex mx-2'>
-        <Image loader={nextImageLoader} alt='logo'
-          src={logoSrc}
-          layout='fill'
-          quality='100'
-          className='p-2'
-        />
-      </div>
-    )
+    // eslint-disable-next-line @next/next/no-img-element
+    ? (<img src={logoSrc} alt="custom logo" className="picture picture-lg p-2 mx-2" id="settingBrandLogo" width="32" />)
     : <GrowiLogo />;
 });
 
