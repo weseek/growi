@@ -2,7 +2,7 @@
 
 import nodePath from 'path';
 
-import { pagePathUtils, pathUtils } from '@growi/core';
+import { HasObjectId, pagePathUtils, pathUtils } from '@growi/core';
 import escapeStringRegexp from 'escape-string-regexp';
 import mongoose, {
   Schema, Model, Document, AnyObject,
@@ -58,8 +58,8 @@ export type CreateMethod = (path: string, body: string, user, options: PageCreat
 export interface PageModel extends Model<PageDocument> {
   [x: string]: any; // for obsolete static methods
   findByIdsAndViewer(pageIds: ObjectIdLike[], user, userGroups?, includeEmpty?: boolean): Promise<PageDocument[]>
-  findByPathAndViewer(path: string | null, user, userGroups?, useFindOne?: true, includeEmpty?: boolean): Promise<PageDocument | PageDocument[] | null>
-  findByPathAndViewer(path: string | null, user, userGroups?, useFindOne?: false, includeEmpty?: boolean): Promise<PageDocument[]>
+  findByPathAndViewer(path: string | null, user, userGroups?, useFindOne?: true, includeEmpty?: boolean): Promise<PageDocument & HasObjectId | null>
+  findByPathAndViewer(path: string | null, user, userGroups?, useFindOne?: false, includeEmpty?: boolean): Promise<(PageDocument & HasObjectId)[]>
   countByPathAndViewer(path: string | null, user, userGroups?, includeEmpty?:boolean): Promise<number>
   findTargetAndAncestorsByPathOrId(pathOrId: string): Promise<TargetAndAncestorsResult>
   findRecentUpdatedPages(path: string, user, option, includeEmpty?: boolean): Promise<PaginatedPages>
@@ -561,8 +561,8 @@ schema.statics.findByIdsAndViewer = async function(pageIds: string[], user, user
  * Find a page by path and viewer. Pass false to useFindOne to use findOne method.
  */
 schema.statics.findByPathAndViewer = async function(
-    path: string | null, user, userGroups = null, useFindOne = true, includeEmpty = false,
-): Promise<PageDocument | PageDocument[] | null> {
+    path: string | null, user, userGroups = null, useFindOne = false, includeEmpty = false,
+): Promise<(PageDocument | PageDocument[]) & HasObjectId | null> {
   if (path == null) {
     throw new Error('path is required.');
   }
