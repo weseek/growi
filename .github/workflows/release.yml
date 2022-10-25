@@ -38,7 +38,7 @@ jobs:
         sh ./packages/app/bin/github-actions/update-readme.sh
 
     - name: Retrieve information from package.json
-      uses: myrotvorets/info-from-package-json-action@1.1.0
+      uses: myrotvorets/info-from-package-json-action@1.2.0
       id: package-json
 
     - name: Update Changelog
@@ -99,7 +99,7 @@ jobs:
         yarn bump-versions:slackbot-proxy
 
     - name: Retrieve information from package.json
-      uses: myrotvorets/info-from-package-json-action@1.1.0
+      uses: myrotvorets/info-from-package-json-action@1.2.0
       id: package-json
 
     - name: Commit

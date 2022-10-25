@@ -19,7 +19,7 @@ jobs:
       - uses: actions/checkout@v3
 
       - name: Retrieve information from package.json
-        uses: myrotvorets/info-from-package-json-action@1.1.0
+        uses: myrotvorets/info-from-package-json-action@1.2.0
         id: package-json
 
       # Drafts your next Release notes as Pull Requests are merged into "master"
