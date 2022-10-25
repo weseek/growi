@@ -58,7 +58,9 @@ const SlackIntegration = dynamic(() => import('../../components/Admin/SlackInteg
 const LegacySlackIntegration = dynamic(() => import('../../components/Admin/LegacySlackIntegration/LegacySlackIntegration'), { ssr: false });
 const UserManagement = dynamic(() => import('../../components/Admin/UserManagement'), { ssr: false });
 const ManageExternalAccount = dynamic(() => import('../../components/Admin/ManageExternalAccount'), { ssr: false });
-const ElasticsearchManagement = dynamic(() => import('../../components/Admin/ElasticsearchManagement/ElasticsearchManagement'), { ssr: false });
+const FullTextSearchManagement = dynamic(
+  () => import('../../components/Admin/FullTextSearchManagement').then(mod => mod.FullTextSearchManagement), { ssr: false },
+);
 const UserGroupDetailPage = dynamic(() => import('../../components/Admin/UserGroupDetail/UserGroupDetailPage'), { ssr: false });
 const AdminLayout = dynamic(() => import('../../components/Layout/AdminLayout'), { ssr: false });
 // named export
@@ -176,7 +178,7 @@ const AdminPage: NextPage<Props> = (props: Props) => {
     },
     search: {
       title: t('full_text_search_management.full_text_search_management'),
-      component: <ElasticsearchManagement />,
+      component: <FullTextSearchManagement />,
     },
     'audit-log': {
       title: t('audit_log_management.audit_log'),

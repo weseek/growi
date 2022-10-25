@@ -32,7 +32,7 @@ export type GrowiSubNavigationProps = {
   isCompactMode?: boolean,
   tags?: string[],
   tagsUpdatedHandler?: (newTags: string[]) => Promise<void> | void,
-  rightComponent: React.FunctionComponent,
+  rightComponent?: React.FunctionComponent,
   additionalClasses?: string[],
 }
 
@@ -81,7 +81,9 @@ export const GrowiSubNavigation = (props: GrowiSubNavigationProps): JSX.Element 
         </div>
       </div>
       {/* Right side. */}
-      <RightComponent />
+      { RightComponent && (
+        <RightComponent />
+      ) }
     </div>
   );
 };
