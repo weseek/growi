@@ -15,30 +15,22 @@ import AdminLocalSecurityContainer from '~/client/services/AdminLocalSecurityCon
 import AdminOidcSecurityContainer from '~/client/services/AdminOidcSecurityContainer';
 import AdminSamlSecurityContainer from '~/client/services/AdminSamlSecurityContainer';
 import AdminTwitterSecurityContainer from '~/client/services/AdminTwitterSecurityContainer';
-import { SupportedActionType } from '~/interfaces/activity';
 import { CommonProps, useCustomTitle } from '~/pages/utils/commons';
 
 import { retrieveServerSideProps } from '../../utils/admin-page-util';
 
 const AdminLayout = dynamic(() => import('~/components/Layout/AdminLayout'), { ssr: false });
-
-// const SecurityManagement = dynamic(() => import('./Security/SecurityManagement'), { ssr: false });
 const SecurityManagement = dynamic(() => import('~/components/Admin/Security/SecurityManagement'), { ssr: false });
 
 
 type Props = CommonProps & {
-  currentUser: any,
+  // currentUser: any,
 
-  envVars: any,
-  isAclEnabled: boolean,
-  isSearchServiceConfigured: boolean,
-  isSearchServiceReachable: boolean,
-  isMailerSetup: boolean,
-  auditLogEnabled: boolean,
-  auditLogAvailableActions: SupportedActionType[],
+  // isSearchServiceConfigured: boolean,
+  // isSearchServiceReachable: boolean,
+  // isMailerSetup: boolean,
 
-  customizeTitle: string,
-  siteUrl: string,
+  // siteUrl: string,
 };
 
 
