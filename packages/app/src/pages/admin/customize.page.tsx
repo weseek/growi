@@ -7,8 +7,9 @@ import dynamic from 'next/dynamic';
 import { Container, Provider } from 'unstated';
 
 import AdminCustomizeContainer from '~/client/services/AdminCustomizeContainer';
-import { SupportedActionType } from '~/interfaces/activity';
 import { CommonProps, useCustomTitle } from '~/pages/utils/commons';
+
+import { useCustomizeTitle } from '~/stores/context';
 
 import { retrieveServerSideProps } from '../../utils/admin-page-util';
 
@@ -18,23 +19,13 @@ const AppSettingsPageContents = dynamic(() => import('~/components/Admin/App/App
 
 
 type Props = CommonProps & {
-  currentUser: any,
-
-  envVars: any,
-  isAclEnabled: boolean,
-  isSearchServiceConfigured: boolean,
-  isSearchServiceReachable: boolean,
-  isMailerSetup: boolean,
-  auditLogEnabled: boolean,
-  auditLogAvailableActions: SupportedActionType[],
-
   customizeTitle: string,
-  siteUrl: string,
 };
 
 
 const AdminCustomizeSettingsPage: NextPage<Props> = (props) => {
   const { t } = useTranslation();
+  useCustomizeTitle(props.customizeTitle);
 
   const title = t('customize_settings.customize_settings');
   const injectableContainers: Container<any>[] = [];
