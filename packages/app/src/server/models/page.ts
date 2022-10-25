@@ -349,14 +349,14 @@ export class PageQueryBuilder {
   }
 
   // add viewer condition to PageQueryBuilder instance
-  async addViewerCondition(user, userGroups = null): Promise<PageQueryBuilder> {
+  async addViewerCondition(user, userGroups = null, showAnyoneKnowsLink = false): Promise<PageQueryBuilder> {
     let relatedUserGroups = userGroups;
     if (user != null && relatedUserGroups == null) {
       const UserGroupRelation: any = mongoose.model('UserGroupRelation');
       relatedUserGroups = await UserGroupRelation.findAllUserGroupIdsRelatedToUser(user);
     }
 
-    this.addConditionToFilteringByViewer(user, relatedUserGroups, false);
+    this.addConditionToFilteringByViewer(user, relatedUserGroups, showAnyoneKnowsLink);
     return this;
   }
 
@@ -568,9 +568,10 @@ schema.statics.findByPathAndViewer = async function(
   }
 
   const baseQuery = useFindOne ? this.findOne({ path }) : this.find({ path });
+  const showAnyoneKnowsLink = useFindOne;
   const queryBuilder = new PageQueryBuilder(baseQuery, includeEmpty);
 
-  await queryBuilder.addViewerCondition(user, userGroups);
+  await queryBuilder.addViewerCondition(user, userGroups, showAnyoneKnowsLink);
 
   return queryBuilder.query.exec();
 };
