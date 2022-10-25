@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 
 import EventEmitter from 'events';
 
@@ -57,19 +57,24 @@ export const Header = (props: HeaderProps): JSX.Element => {
 
   const CustomTag = `h${level}` as keyof JSX.IntrinsicElements;
 
+  const activateByHash = useCallback((url: string) => {
+    const hash = (new URL(url, 'https://example.com')).hash.slice(1);
+    setActive(hash === id);
+  }, [id]);
+
+  // init
+  useEffect(() => {
+    activateByHash(window.location.href);
+  }, [activateByHash]);
+
   // update isActive when hash is changed
   useEffect(() => {
-    const handler = (url: string) => {
-      const hash = (new URL(url, 'https://example.com')).hash.slice(1);
-      setActive(hash === id);
-    };
-
-    router.events.on('hashChangeComplete', handler);
+    router.events.on('hashChangeComplete', activateByHash);
 
     return () => {
-      router.events.off('hashChangeComplete', handler);
+      router.events.off('hashChangeComplete', activateByHash);
     };
-  }, [id, router.events]);
+  }, [activateByHash, router.events]);
 
   return (
     <CustomTag id={id} className={`revision-head ${styles['revision-head']} ${isActive ? 'blink' : ''}`}>
