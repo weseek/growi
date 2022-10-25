@@ -13,6 +13,10 @@ const logger = loggerFactory('growi:models:bookmark-folder');
 
 export class InvalidParentBookmarkFolder extends ExtensibleCustomError {}
 
+export type BookmarkFolderItems = {
+  bookmarkFolder: IBookmarkFolderDocument
+  childCount: number
+}
 
 export type IBookmarkFolderDocument = {
   name: string

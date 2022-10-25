@@ -13,6 +13,7 @@ import { usePageDeleteModal } from '~/stores/modal';
 
 
 import BookmarkFolder from './Bookmarks/BookmarkFolder';
+import BookmarkFolderTree from './Bookmarks/BookmarkFolderTree';
 import BookmarkItem from './Bookmarks/BookmarkItem';
 
 const Bookmarks = () : JSX.Element => {
@@ -105,13 +106,7 @@ const Bookmarks = () : JSX.Element => {
             folderName={folderName}
           />
           {/* TODO: List Bookmark Folder */}
-          <ul>
-            {currentUserBookmarkFolder?.map((bookmarkFolder, idx) => {
-              return (
-                <li key={idx}>{bookmarkFolder.name}</li>
-              );
-            })}
-          </ul>
+          <BookmarkFolderTree />
         </>
       )
       }
