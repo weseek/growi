@@ -1090,7 +1090,7 @@ module.exports = function(crowi, app) {
       target: page,
       action: SupportedAction.ACTION_PAGE_UPDATE,
     };
-    activityEvent.emit('update', res.locals.activity._id, parameters, page);
+    activityEvent.emit('update', res.locals.activity._id, parameters, { path: page.path, creator: page.creator._id.toString() });
   };
 
   /**
