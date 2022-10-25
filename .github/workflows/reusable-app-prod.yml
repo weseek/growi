@@ -73,7 +73,7 @@ jobs:
           packages/app/.env.production* \
           packages/*/package.json \
           packages/*/dist
-        echo ::set-output name=file::production.tar.gz
+        echo "file=production.tar.gz" >> $GITHUB_OUTPUT
 
     - name: Upload production files as artifact
       uses: actions/upload-artifact@v3
@@ -129,8 +129,8 @@ jobs:
     - name: Get Date
       id: get-date
       run: |
-        echo "::set-output name=dateYmdHM::$(/bin/date -u "+%Y%m%d%H%M")"
-        echo "::set-output name=dateYm::$(/bin/date -u "+%Y%m")"
+        echo "dateYmdHM=$(/bin/date -u "+%Y%m%d%H%M")"" >> $GITHUB_OUTPUT
+        echo "dateYm=$(/bin/date -u "+%Y%m")"" >> $GITHUB_OUTPUT
 
     - name: Cache/Restore node_modules (not reused)
       id: cache-dependencies
@@ -250,7 +250,7 @@ jobs:
       id: determine-spec-exp
       run: |
         SPEC=`node bin/github-actions/generate-cypress-spec-arg.js --prefix="test/cypress/integration/" --suffix="-*/**" "${{ matrix.spec-group }}"`
-        echo "::set-output name=value::$SPEC"
+        echo "value=$SPEC"" >> $GITHUB_OUTPUT
 
     - name: Copy dotenv file for ci
       working-directory: ./packages/app

@@ -48,7 +48,7 @@ jobs:
         id: release-version
         run: |
           RELEASE_VERSION=`npx semver -i patch ${{ needs.update-release-draft.outputs.CURRENT_VERSION }}`
-          echo ::set-output name=RELEASE_VERSION::$RELEASE_VERSION
+          echo "RELEASE_VERSION=$RELEASE_VERSION" >> $GITHUB_OUTPUT
 
       # See: https://github.com/bakunyo/git-pr-release-action/issues/15, https://github.com/samunohito/SimpleVolumeMixer/commit/2059044c71236509466cf9b1bb2d56d515274938
       - name: Create/Update Pull Request
