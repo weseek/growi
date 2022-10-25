@@ -12,8 +12,8 @@ context('Access Home', () => {
 
   it('Visit home', () => {
     cy.visit('/dummy');
-    cy.getByTestid('grw-personal-dropdown').click();
-    cy.getByTestid('grw-personal-dropdown').find('.dropdown-menu > .text-center > .btn-group > .btn-outline-secondary:eq(0)').click();
+    cy.get('.grw-personal-dropdown').click();
+    cy.get('.grw-personal-dropdown').find('.dropdown-menu > .text-center > .btn-group > .btn-outline-secondary:eq(0)').click();
 
     cy.get('.grw-users-info').should('be.visible');
     // for check download toc data
