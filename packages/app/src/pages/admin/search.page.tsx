@@ -20,10 +20,6 @@ const ElasticsearchManagement = dynamic(() => import('~/components/Admin/Elastic
 type Props = CommonProps & {
   currentUser: any,
 
-  // nodeVersion: string,
-  // npmVersion: string,
-  // yarnVersion: string,
-  // installedPlugins: any,
   envVars: any,
   isAclEnabled: boolean,
   isSearchServiceConfigured: boolean,

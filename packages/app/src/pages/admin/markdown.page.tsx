@@ -21,10 +21,6 @@ const MarkDownSettingContents = dynamic(() => import('~/components/Admin/Markdow
 type Props = CommonProps & {
   currentUser: any,
 
-  // nodeVersion: string,
-  // npmVersion: string,
-  // yarnVersion: string,
-  // installedPlugins: any,
   envVars: any,
   isAclEnabled: boolean,
   isSearchServiceConfigured: boolean,

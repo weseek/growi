@@ -20,10 +20,6 @@ const AppSettingsPageContents = dynamic(() => import('~/components/Admin/App/App
 type Props = CommonProps & {
   currentUser: any,
 
-  // nodeVersion: string,
-  // npmVersion: string,
-  // yarnVersion: string,
-  // installedPlugins: any,
   envVars: any,
   isAclEnabled: boolean,
   isSearchServiceConfigured: boolean,

@@ -29,10 +29,6 @@ const SecurityManagement = dynamic(() => import('~/components/Admin/Security/Sec
 type Props = CommonProps & {
   currentUser: any,
 
-  // nodeVersion: string,
-  // npmVersion: string,
-  // yarnVersion: string,
-  // installedPlugins: any,
   envVars: any,
   isAclEnabled: boolean,
   isSearchServiceConfigured: boolean,

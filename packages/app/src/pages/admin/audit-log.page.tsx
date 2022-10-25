@@ -18,10 +18,6 @@ const AuditLogManagement = dynamic(() => import('~/components/Admin/AuditLogMana
 type Props = CommonProps & {
   currentUser: any,
 
-  // nodeVersion: string,
-  // npmVersion: string,
-  // yarnVersion: string,
-  // installedPlugins: any,
   envVars: any,
   isAclEnabled: boolean,
   isSearchServiceConfigured: boolean,

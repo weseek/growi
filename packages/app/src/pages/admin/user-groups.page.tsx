@@ -17,10 +17,6 @@ const UserGroupPage = dynamic(() => import('~/components/Admin/UserGroup/UserGro
 type Props = CommonProps & {
   currentUser: any,
 
-  // nodeVersion: string,
-  // npmVersion: string,
-  // yarnVersion: string,
-  // installedPlugins: any,
   envVars: any,
   isAclEnabled: boolean,
   isSearchServiceConfigured: boolean,
