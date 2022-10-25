@@ -19,7 +19,9 @@ import {
 import {
   CommonProps, getServerSideCommonProps, getNextI18NextConfig, useCustomTitle,
 } from './utils/commons';
-import { useCurrentProductNavWidth, useCurrentSidebarContents, useDrawerMode, usePreferDrawerModeByUser, usePreferDrawerModeOnEditByUser, useSidebarCollapsed } from '~/stores/ui';
+import { 
+  useCurrentProductNavWidth, useCurrentSidebarContents, useDrawerMode, usePreferDrawerModeByUser, usePreferDrawerModeOnEditByUser, useSidebarCollapsed
+} from '~/stores/ui';
 import { GrowiSubNavigation } from '~/components/Navbar/GrowiSubNavigation';
 import { ISidebarConfig } from '~/interfaces/sidebar-config';
 
