@@ -65,7 +65,6 @@ export const PageTimeline = (): JSX.Element => {
                   lazy
                   rendererOptions={rendererOptions}
                   pageId={page._id}
-                  pagePath={page.path}
                   revisionId={page.revision}
                 />
               </div>
