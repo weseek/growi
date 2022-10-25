@@ -15,7 +15,7 @@ const router = express.Router();
 const validator = {
   bookmarkFolder: [
     body('name').isString().withMessage('name must be a string'),
-    body('parent').optional({ nullable: true }),
+    body('parent').isMongoId().optional({ nullable: true }),
   ],
 };
 
@@ -71,11 +71,12 @@ module.exports = (crowi) => {
   });
 
   // Delete bookmark folder and children
-  router.delete('/', accessTokenParser, loginRequiredStrictly, async(req, res) => {
-    const { boookmarkFolderId } = req.body;
+  router.delete('/:id', accessTokenParser, loginRequiredStrictly, async(req, res) => {
+    const { id } = req.params;
     try {
-      await BookmarkFolder.deleteFolderAndChildren(boookmarkFolderId);
-      return res.apiv3();
+      const result = await BookmarkFolder.deleteFolderAndChildren(id);
+      const { deletedCount } = result;
+      return res.apiv3({ deletedCount });
     }
     catch (err) {
       logger.error(err);
