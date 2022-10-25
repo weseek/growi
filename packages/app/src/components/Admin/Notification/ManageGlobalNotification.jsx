@@ -32,26 +32,27 @@ const ManageGlobalNotification = (props) => {
   const [slackChannelToSend, setSlackChannelToSend] = useState('');
   const [triggerEvents, setTriggerEvents] = useState(new Set(globalNotification?.triggerEvents));
 
-  const onChangeTriggerEvents = (triggerEvent) => {
+  const onChangeTriggerEvents = useCallback((triggerEvent) => {
+    let newTriggerEvents;
 
     if (triggerEvents.has(triggerEvent)) {
-      triggerEvents.delete(triggerEvent);
-      setTriggerEvents(triggerEvents);
+      newTriggerEvents = ([...triggerEvents].filter(item => item !== triggerEvent));
+      setTriggerEvents(new Set(newTriggerEvents));
     }
     else {
-      triggerEvents.add(triggerEvent);
-      setTriggerEvents(triggerEvents);
+      newTriggerEvents = [...triggerEvents, triggerEvent];
+      setTriggerEvents(new Set(newTriggerEvents));
     }
-  };
+  }, [triggerEvents]);
 
   const submitHandler = useCallback(async() => {
 
     const requestParams = {
       triggerPath,
       notifyToType,
-      emailToSend,
-      slackChannelToSend,
-      triggerEvents,
+      toEmail: emailToSend,
+      slackChannels: slackChannelToSend,
+      triggerEvents: [...triggerEvents],
     };
 
     try {

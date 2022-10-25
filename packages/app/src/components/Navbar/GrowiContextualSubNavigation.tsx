@@ -61,24 +61,18 @@ const AuthorInfo = dynamic(() => import('./AuthorInfo'), {
   loading: AuthorInfoSkelton,
 });
 
-type AdditionalMenuItemsProps = {
+type PageOperationMenuItemsProps = {
   pageId: string,
   revisionId: string,
   isLinkSharingDisabled?: boolean,
-  onClickTemplateMenuItem: (isPageTemplateModalShown: boolean) => void,
-
 }
 
-const AdditionalMenuItems = (props: AdditionalMenuItemsProps): JSX.Element => {
+const PageOperationMenuItems = (props: PageOperationMenuItemsProps): JSX.Element => {
   const { t } = useTranslation();
 
   const {
-    pageId, revisionId, isLinkSharingDisabled, onClickTemplateMenuItem,
+    pageId, revisionId, isLinkSharingDisabled,
   } = props;
-
-  const openPageTemplateModalHandler = () => {
-    onClickTemplateMenuItem(true);
-  };
 
   const { data: isGuestUser } = useIsGuestUser();
   const { data: isSharedUser } = useIsSharedUser();
@@ -151,9 +145,25 @@ const AdditionalMenuItems = (props: AdditionalMenuItemsProps): JSX.Element => {
         </span>
         {t('share_links.share_link_management')}
       </DropdownItem>
+    </>
+  );
+};
 
-      <DropdownItem divider />
+type CreateTemplateMenuItemsProps = {
+  onClickTemplateMenuItem: (isPageTemplateModalShown: boolean) => void,
+}
 
+const CreateTemplateMenuItems = (props: CreateTemplateMenuItemsProps): JSX.Element => {
+  const { t } = useTranslation();
+
+  const { onClickTemplateMenuItem } = props;
+
+  const openPageTemplateModalHandler = () => {
+    onClickTemplateMenuItem(true);
+  };
+
+  return (
+    <>
       {/* Create template */}
       <DropdownItem
         onClick={openPageTemplateModalHandler}
@@ -175,7 +185,6 @@ type GrowiContextualSubNavigationProps = {
 const GrowiContextualSubNavigation = (props: GrowiContextualSubNavigationProps): JSX.Element => {
 
   const { data: currentPage, mutate: mutateCurrentPage } = useSWRxCurrentPage();
-  const path = currentPage?.path;
 
   const revision = currentPage?.revision;
   const revisionId = (revision != null && isPopulated(revision)) ? revision._id : undefined;
@@ -203,6 +212,7 @@ const GrowiContextualSubNavigation = (props: GrowiContextualSubNavigationProps):
   const { open: openDeleteModal } = usePageDeleteModal();
   const { data: templateTagData } = useTemplateTagData();
 
+  const path = currentPage?.path ?? currentPathname;
 
   useEffect(() => {
     // Run only when tagsInfoData has been updated
@@ -306,15 +316,25 @@ const GrowiContextualSubNavigation = (props: GrowiContextualSubNavigationProps):
   const RightComponent = useCallback(() => {
     const additionalMenuItemsRenderer = () => {
       if (revisionId == null || pageId == null) {
-        return <></>;
+        return (
+          <>
+            <CreateTemplateMenuItems
+              onClickTemplateMenuItem={templateMenuItemClickHandler}
+            />
+          </>);
       }
       return (
-        <AdditionalMenuItems
-          pageId={pageId}
-          revisionId={revisionId}
-          isLinkSharingDisabled={isLinkSharingDisabled}
-          onClickTemplateMenuItem={templateMenuItemClickHandler}
-        />
+        <>
+          <PageOperationMenuItems
+            pageId={pageId}
+            revisionId={revisionId}
+            isLinkSharingDisabled={isLinkSharingDisabled}
+          />
+          <DropdownItem divider />
+          <CreateTemplateMenuItems
+            onClickTemplateMenuItem={templateMenuItemClickHandler}
+          />
+        </>
       );
     };
 
@@ -377,7 +397,7 @@ const GrowiContextualSubNavigation = (props: GrowiContextualSubNavigationProps):
       </>
     );
   // eslint-disable-next-line max-len
-  }, [isCompactMode, isViewMode, pageId, revisionId, shareLinkId, path, isSharedUser, isAbleToShowPageManagement, duplicateItemClickedHandler, renameItemClickedHandler, deleteItemClickedHandler, isAbleToShowPageEditorModeManager, isGuestUser, editorMode, isAbleToShowPageAuthors, currentPage, currentUser, isPageTemplateModalShown, isLinkSharingDisabled, templateMenuItemClickHandler, mutateEditorMode]);
+  }, [isCompactMode, isViewMode, pageId, revisionId, shareLinkId, path, currentPathname, isSharedUser, isAbleToShowPageManagement, duplicateItemClickedHandler, renameItemClickedHandler, deleteItemClickedHandler, isAbleToShowPageEditorModeManager, isGuestUser, editorMode, isAbleToShowPageAuthors, currentPage, currentUser, isPageTemplateModalShown, isLinkSharingDisabled, templateMenuItemClickHandler, mutateEditorMode]);
 
 
   const pagePath = isNotFound

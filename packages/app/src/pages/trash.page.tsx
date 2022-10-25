@@ -5,16 +5,20 @@ import { NextPage, GetServerSideProps, GetServerSidePropsContext } from 'next';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import dynamic from 'next/dynamic';
 
+import { GrowiSubNavigation } from '~/components/Navbar/GrowiSubNavigation';
 import type { CrowiRequest } from '~/interfaces/crowi-request';
+import { ISidebarConfig } from '~/interfaces/sidebar-config';
 import type { IUserUISettings } from '~/interfaces/user-ui-settings';
 import type { UserUISettingsModel } from '~/server/models/user-ui-settings';
+import {
+  useCurrentProductNavWidth, useCurrentSidebarContents, useDrawerMode, usePreferDrawerModeByUser, usePreferDrawerModeOnEditByUser, useSidebarCollapsed,
+} from '~/stores/ui';
 
 import { BasicLayout } from '../components/Layout/BasicLayout';
-import GrowiContextualSubNavigation from '../components/Navbar/GrowiContextualSubNavigation';
 import {
   useCurrentUser, useCurrentPageId, useCurrentPagePath, useCurrentPathname,
   useIsSearchServiceConfigured, useIsSearchServiceReachable,
-  useIsSearchScopeChildrenAsDefault, useIsSearchPage, useShowPageLimitationXL,
+  useIsSearchScopeChildrenAsDefault, useIsSearchPage, useShowPageLimitationXL, useIsGuestUser,
 } from '../stores/context';
 
 import {
@@ -30,8 +34,12 @@ type Props = CommonProps & {
   isSearchServiceConfigured: boolean,
   isSearchServiceReachable: boolean,
   isSearchScopeChildrenAsDefault: boolean,
-  userUISettings?: IUserUISettings,
   showPageLimitationXL: number,
+
+  // UI
+  userUISettings?: IUserUISettings
+  // Sidebar
+  sidebarConfig: ISidebarConfig,
 };
 
 const TrashPage: NextPage<CommonProps> = (props: Props) => {
@@ -46,13 +54,29 @@ const TrashPage: NextPage<CommonProps> = (props: Props) => {
   useCurrentPathname('/trash');
   useCurrentPagePath('/trash');
 
+  // UserUISettings
+  usePreferDrawerModeByUser(props.userUISettings?.preferDrawerModeByUser ?? props.sidebarConfig.isSidebarDrawerMode);
+  usePreferDrawerModeOnEditByUser(props.userUISettings?.preferDrawerModeOnEditByUser);
+  useSidebarCollapsed(props.userUISettings?.isSidebarCollapsed ?? props.sidebarConfig.isSidebarClosedAtDockMode);
+  useCurrentSidebarContents(props.userUISettings?.currentSidebarContents);
+  useCurrentProductNavWidth(props.userUISettings?.currentProductNavWidth);
+
   useShowPageLimitationXL(props.showPageLimitationXL);
+
+  const { data: isDrawerMode } = useDrawerMode();
+  const { data: isGuestUser } = useIsGuestUser();
 
   return (
     <>
       <BasicLayout title={useCustomTitle(props, 'GROWI')} >
         <header className="py-0 position-relative">
-          <GrowiContextualSubNavigation isLinkSharingDisabled={false} />
+          <GrowiSubNavigation
+            pagePath="/trash"
+            showDrawerToggler={isDrawerMode}
+            isGuestUser={isGuestUser}
+            isDrawerMode={isDrawerMode}
+            additionalClasses={['container-fluid']}
+          />
         </header>
 
         <div className="grw-container-convertible mb-5 pb-5">
@@ -93,6 +117,11 @@ function injectServerConfigurations(context: GetServerSidePropsContext, props: P
   props.isSearchServiceReachable = searchService.isReachable;
   props.isSearchScopeChildrenAsDefault = configManager.getConfig('crowi', 'customize:isSearchScopeChildrenAsDefault');
   props.showPageLimitationXL = crowi.configManager.getConfig('crowi', 'customize:showPageLimitationXL');
+
+  props.sidebarConfig = {
+    isSidebarDrawerMode: configManager.getConfig('crowi', 'customize:isSidebarDrawerMode'),
+    isSidebarClosedAtDockMode: configManager.getConfig('crowi', 'customize:isSidebarClosedAtDockMode'),
+  };
 }
 
 /**

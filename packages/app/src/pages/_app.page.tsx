@@ -9,7 +9,7 @@ import * as nextI18nConfig from '^/config/next-i18next.config';
 
 import { useI18nextHMR } from '~/services/i18next-hmr';
 import {
-  useAppTitle, useConfidential, useGrowiTheme, useGrowiVersion, useSiteUrl,
+  useAppTitle, useConfidential, useGrowiTheme, useGrowiVersion, useSiteUrl, useCustomizedLogoSrc,
 } from '~/stores/context';
 import { SWRConfigValue, swrGlobalConfiguration } from '~/utils/swr-utils';
 
@@ -53,6 +53,7 @@ function GrowiApp({ Component, pageProps }: GrowiAppProps): JSX.Element {
   useConfidential(commonPageProps.confidential);
   useGrowiTheme(commonPageProps.theme);
   useGrowiVersion(commonPageProps.growiVersion);
+  useCustomizedLogoSrc(commonPageProps.customizedLogoSrc);
 
   return (
     <SWRConfig value={swrConfig}>
