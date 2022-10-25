@@ -9,7 +9,7 @@ import { Container, Provider } from 'unstated';
 import AdminHomeContainer from '~/client/services/AdminHomeContainer';
 import { CommonProps, useCustomTitle } from '~/pages/utils/commons';
 
-import { retrieveServerSideProps } from '../utils/admin-page-util';
+import { retrieveServerSideProps } from '../../utils/admin-page-util';
 
 const AdminLayout = dynamic(() => import('~/components/Layout/AdminLayout'), { ssr: false });
 const AdminHome = dynamic(() => import('~/components/Admin/AdminHome/AdminHome'), { ssr: false });
