@@ -7,6 +7,7 @@ import dynamic from 'next/dynamic';
 
 import { SupportedActionType } from '~/interfaces/activity';
 import { CommonProps, useCustomTitle } from '~/pages/utils/commons';
+import { useAuditLogEnabled, useAuditLogAvailableActions } from '~/stores/context';
 
 import { retrieveServerSideProps } from '../../utils/admin-page-util';
 
@@ -16,23 +17,16 @@ const AuditLogManagement = dynamic(() => import('~/components/Admin/AuditLogMana
 
 
 type Props = CommonProps & {
-  currentUser: any,
-
-  envVars: any,
-  isAclEnabled: boolean,
-  isSearchServiceConfigured: boolean,
-  isSearchServiceReachable: boolean,
-  isMailerSetup: boolean,
   auditLogEnabled: boolean,
   auditLogAvailableActions: SupportedActionType[],
-
-  customizeTitle: string,
-  siteUrl: string,
 };
 
 
 const AdminAuditLogPage: NextPage<Props> = (props) => {
   const { t } = useTranslation();
+  useAuditLogEnabled(props.auditLogEnabled);
+  useAuditLogAvailableActions(props.auditLogAvailableActions);
+
   const title = t('audit_log_management.audit_log');
 
   return (
