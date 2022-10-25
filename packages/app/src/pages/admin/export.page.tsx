@@ -20,10 +20,6 @@ const ExportArchiveDataPage = dynamic(() => import('~/components/Admin/ExportArc
 type Props = CommonProps & {
   currentUser: any,
 
-  // nodeVersion: string,
-  // npmVersion: string,
-  // yarnVersion: string,
-  // installedPlugins: any,
   envVars: any,
   isAclEnabled: boolean,
   isSearchServiceConfigured: boolean,
