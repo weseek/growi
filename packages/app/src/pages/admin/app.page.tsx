@@ -1,14 +1,18 @@
+import { isClient } from '@growi/core';
 import {
   NextPage, GetServerSideProps, GetServerSidePropsContext,
 } from 'next';
 import { useTranslation } from 'next-i18next';
 import dynamic from 'next/dynamic';
+import { Container, Provider } from 'unstated';
 
-import AdminPage from '~/components/Admin/AdminPage';
+import AdminAppContainer from '~/client/services/AdminAppContainer';
 import { SupportedActionType } from '~/interfaces/activity';
-import { CommonProps } from '~/pages/utils/commons';
+import { CommonProps, useCustomTitle } from '~/pages/utils/commons';
 
 import { retrieveServerSideProps } from '../../utils/admin-page-util';
+
+const AdminLayout = dynamic(() => import('~/components/Layout/AdminLayout'), { ssr: false });
 
 const AppSettingsPageContents = dynamic(() => import('~/components/Admin/App/AppSettingsPageContents'), { ssr: false });
 
@@ -35,7 +39,25 @@ type Props = CommonProps & {
 
 const AdminAppPage: NextPage<Props> = (props) => {
   const { t } = useTranslation();
-  return <AdminPage title={t('commons:headers.app_settings')} component={<AppSettingsPageContents />} {...props}/>;
+
+  const title = t('commons:headers.app_settings');
+  const injectableContainers: Container<any>[] = [];
+
+  if (isClient()) {
+    // Create unstated container instances (except Security)
+    const adminAppContainer = new AdminAppContainer();
+
+    injectableContainers.push(adminAppContainer);
+  }
+
+
+  return (
+    <Provider inject={[...injectableContainers]}>
+      <AdminLayout title={useCustomTitle(props, title)} componentTitle={title} >
+        <AppSettingsPageContents />
+      </AdminLayout>
+    </Provider>
+  );
 
 };
 
