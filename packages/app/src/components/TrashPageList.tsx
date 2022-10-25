@@ -82,7 +82,7 @@ export const TrashPageList: FC = () => {
   }, [deletablePages, onEmptiedTrashHandler, openEmptyTrashModal, canDeleteAllPages]);
 
   const emptyTrashButton = useMemo(() => {
-    return <EmptyTrashButton emptyTrashClickHandler={emptyTrashClickHandler} disableEmptyButton={isButtonDisable} />;
+    return <EmptyTrashButton onEmptyTrashButtonClick={emptyTrashClickHandler} disableEmptyButton={isButtonDisable} />;
   }, [emptyTrashClickHandler, isButtonDisable]);
 
   return (
