@@ -5,12 +5,13 @@ import React, {
 import { isServer } from '@growi/core';
 import { useTranslation } from 'next-i18next';
 import dynamic from 'next/dynamic';
+import Image from 'next/image';
 import Link from 'next/link';
 import { useRipple } from 'react-use-ripple';
 import { UncontrolledTooltip } from 'reactstrap';
 
 import {
-  useIsSearchPage, useCurrentPagePath, useIsGuestUser, useIsSearchServiceConfigured, useAppTitle, useConfidential,
+  useIsSearchPage, useCurrentPagePath, useIsGuestUser, useIsSearchServiceConfigured, useAppTitle, useConfidential, useCustomizedLogoSrc,
 } from '~/stores/context';
 import { usePageCreateModal } from '~/stores/modal';
 import { useIsDeviceSmallerThanMd } from '~/stores/ui';
@@ -119,6 +120,21 @@ const Confidential: FC<ConfidentialProps> = memo((props: ConfidentialProps): JSX
 });
 Confidential.displayName = 'Confidential';
 
+interface NavbarLogoProps {
+  logoSrc?: string,
+}
+
+const GrowiNavbarLogo: FC<NavbarLogoProps> = memo((props: NavbarLogoProps) => {
+  const { logoSrc } = props;
+
+  return logoSrc != null
+    // eslint-disable-next-line @next/next/no-img-element
+    ? (<img src={logoSrc} alt="custom logo" className="picture picture-lg p-2 mx-2" id="settingBrandLogo" width="32" />)
+    : <GrowiLogo />;
+});
+
+GrowiNavbarLogo.displayName = 'GrowiNavbarLogo';
+
 export const GrowiNavbar = (): JSX.Element => {
 
   const GlobalSearch = dynamic<GlobalSearchProps>(() => import('./GlobalSearch').then(mod => mod.GlobalSearch), { ssr: false });
@@ -128,6 +144,7 @@ export const GrowiNavbar = (): JSX.Element => {
   const { data: isSearchServiceConfigured } = useIsSearchServiceConfigured();
   const { data: isDeviceSmallerThanMd } = useIsDeviceSmallerThanMd();
   const { data: isSearchPage } = useIsSearchPage();
+  const { data: customizedLogoSrc } = useCustomizedLogoSrc();
 
   return (
     <nav id="grw-navbar" className={`navbar grw-navbar ${styles['grw-navbar']} navbar-expand navbar-dark sticky-top mb-0 px-0`}>
@@ -135,7 +152,7 @@ export const GrowiNavbar = (): JSX.Element => {
       <div className="navbar-brand mr-0">
         <Link href="/" prefetch={false}>
           <a className="grw-logo d-block">
-            <GrowiLogo />
+            <GrowiNavbarLogo logoSrc={customizedLogoSrc}/>
           </a>
         </Link>
       </div>
