@@ -17,6 +17,8 @@ import AdminSamlSecurityContainer from '~/client/services/AdminSamlSecurityConta
 import AdminTwitterSecurityContainer from '~/client/services/AdminTwitterSecurityContainer';
 import { CommonProps, useCustomTitle } from '~/pages/utils/commons';
 
+import { useSiteUrl } from '~/stores/context';
+
 import { retrieveServerSideProps } from '../../utils/admin-page-util';
 
 const AdminLayout = dynamic(() => import('~/components/Layout/AdminLayout'), { ssr: false });
@@ -26,16 +28,15 @@ const SecurityManagement = dynamic(() => import('~/components/Admin/Security/Sec
 type Props = CommonProps & {
   // currentUser: any,
 
-  // isSearchServiceConfigured: boolean,
-  // isSearchServiceReachable: boolean,
   // isMailerSetup: boolean,
 
-  // siteUrl: string,
+  siteUrl: string,
 };
 
 
 const AdminSecuritySettingsPage: NextPage<Props> = (props) => {
   const { t } = useTranslation();
+  useSiteUrl(props.siteUrl);
 
   const title = t('security_settings.security_settings');
   const adminSecurityContainers: Container<any>[] = [];
