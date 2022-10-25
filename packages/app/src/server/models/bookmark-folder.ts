@@ -1,4 +1,5 @@
 import { Ref, IUser } from '@growi/core';
+import { isValidObjectId } from '@growi/core/src/utils/objectid-utils';
 import ExtensibleCustomError from 'extensible-custom-error';
 import {
   Types, Document, Model, Schema,
@@ -16,7 +17,7 @@ export class InvalidParentBookmarkFolder extends ExtensibleCustomError {}
 export type IBookmarkFolderDocument = {
   name: string
   owner: Ref<IUser>
-  parent?: Ref<BookmarkFolderDocument>
+  parent?: string
 }
 export interface BookmarkFolderDocument extends Document {
   _id: Types.ObjectId
@@ -29,7 +30,7 @@ export interface BookmarkFolderModel extends Model<BookmarkFolderDocument>{
   createByParameters(params: IBookmarkFolderDocument): IBookmarkFolderDocument
   findParentFolderByUserId(user: Types.ObjectId | string): IBookmarkFolderDocument[]
   findChildFolderById(parentBookmarkFolder: Types.ObjectId | string): Promise<IBookmarkFolderDocument[]>
-  deleteFolderAndChildren(bookmarkFolderId: string): void
+  deleteFolderAndChildren(bookmarkFolderId: string): {deletedCount: number}
   updateBookmarkFolder(bookmarkFolderId: string, name: string, parent: string): BookmarkFolderDocument | null
 }
 
@@ -48,13 +49,15 @@ bookmarkFolderSchema.statics.createByParameters = async function(params: IBookma
     bookmarkFolder = await this.create({ name, owner, parent:  null }) as unknown as BookmarkFolderDocument;
   }
   else {
+    // Check if parent folder id is valid and parent folder exists
+    const isParentFolderIdValid = isValidObjectId(parent);
     const parentFolder = await this.findById(parent);
-    if (!parentFolder) {
-      throw new InvalidParentBookmarkFolder("Parent folder doesn't exists");
+
+    if (!isParentFolderIdValid || parentFolder == null) {
+      throw new InvalidParentBookmarkFolder("Parent folder id is invalid or parent folder doesn't exists");
     }
     bookmarkFolder = await this.create({ name, owner, parent:  parentFolder?._id }) as unknown as BookmarkFolderDocument;
   }
-
 
   return bookmarkFolder;
 };
@@ -70,10 +73,15 @@ bookmarkFolderSchema.statics.findChildFolderById = async function(parentFolderId
   return childFolders;
 };
 
-bookmarkFolderSchema.statics.deleteFolderAndChildren = async function(boookmarkFolderId: string): Promise<void> {
+bookmarkFolderSchema.statics.deleteFolderAndChildren = async function(boookmarkFolderId: Types.ObjectId | string): Promise<{deletedCount: number}> {
   // Delete parent and all children folder
   const bookmarkFolder = await this.findByIdAndDelete(boookmarkFolderId);
-  await this.deleteMany({ parent: bookmarkFolder?.id });
+  let deletedCount = 0;
+  if (bookmarkFolder != null) {
+    const childFolders = await this.deleteMany({ parent: bookmarkFolder?.id });
+    deletedCount = childFolders.deletedCount + 1;
+  }
+  return { deletedCount };
 };
 
 bookmarkFolderSchema.statics.updateBookmarkFolder = async function(bookmarkFolderId: string, name: string, parent: string):
