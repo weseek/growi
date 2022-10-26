@@ -1,6 +1,6 @@
 import { IUser } from '@growi/core';
 import { HtmlElementNode } from 'rehype-toc';
-import { Key, mutate, SWRResponse } from 'swr';
+import { Key, SWRResponse } from 'swr';
 import useSWRImmutable from 'swr/immutable';
 
 
