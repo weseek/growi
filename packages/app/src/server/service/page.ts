@@ -2013,7 +2013,7 @@ class PageService {
     const originPage = await Page.findByPath(newPath, includeEmpty);
 
     // throw if any page already exists when recursively operation
-    if ((originPage != null && !originPage.isEmpty) || isRecursively === true) {
+    if (originPage != null && (!originPage.isEmpty || isRecursively === true)) {
       throw new PathAlreadyExistsError('already_exists', originPage.path);
     }
 
