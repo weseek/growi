@@ -863,5 +863,9 @@
   "footer": {
     "bookmarks": "Bookmarks",
     "recently_created": "Recently Created"
+  },
+  "v5_page_migration": {
+    "page_tree_not_avaliable" : "Page tree feature is not available yet.",
+    "go_to_settings": "Go to settings to enable the feature"
   }
 }

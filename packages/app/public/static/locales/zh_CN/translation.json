@@ -909,5 +909,9 @@
   "footer": {
     "bookmarks": "书签",
     "recently_created": "最近创建页面"
+  },
+  "v5_page_migration": {
+    "page_tree_not_avaliable": "Page Tree 功能不可用",
+    "go_to_settings": "进入设置，启用该功能"
   }
 }
