@@ -129,8 +129,8 @@ jobs:
     - name: Get Date
       id: get-date
       run: |
-        echo "dateYmdHM=$(/bin/date -u "+%Y%m%d%H%M")"" >> $GITHUB_OUTPUT
-        echo "dateYm=$(/bin/date -u "+%Y%m")"" >> $GITHUB_OUTPUT
+        echo "dateYmdHM=$(/bin/date -u "+%Y%m%d%H%M")" >> $GITHUB_OUTPUT
+        echo "dateYm=$(/bin/date -u "+%Y%m")" >> $GITHUB_OUTPUT
 
     - name: Cache/Restore node_modules (not reused)
       id: cache-dependencies
@@ -250,7 +250,7 @@ jobs:
       id: determine-spec-exp
       run: |
         SPEC=`node bin/github-actions/generate-cypress-spec-arg.js --prefix="test/cypress/integration/" --suffix="-*/**" "${{ matrix.spec-group }}"`
-        echo "value=$SPEC"" >> $GITHUB_OUTPUT
+        echo "value=$SPEC" >> $GITHUB_OUTPUT
 
     - name: Copy dotenv file for ci
       working-directory: ./packages/app
