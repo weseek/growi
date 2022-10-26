@@ -9,6 +9,8 @@ import useSWR from 'swr';
 import { apiPost } from '~/client/util/apiv1-client';
 import { apiv3Get } from '~/client/util/apiv3-client';
 import { IResAttachmentList } from '~/interfaces/attachment';
+import { useEditingMarkdown } from '~/stores/context';
+import { useSWRxCurrentPage } from '~/stores/page';
 
 type Util = {
   remove(body: { attachment_id: string }): Promise<void>
@@ -21,6 +23,9 @@ type IDataAttachmentList = {
 };
 
 export const useSWRxAttachments = (pageId?: Nullable<string>, pageNumber?: number): SWRResponseWithUtils<Util, IDataAttachmentList, Error> => {
+  const { data: currentPage } = useSWRxCurrentPage();
+  useEditingMarkdown(currentPage?.revision.body);
+
   const shouldFetch = pageId != null && pageNumber != null;
 
   const fetcher = useCallback(async(endpoint, pageId, pageNumber) => {
