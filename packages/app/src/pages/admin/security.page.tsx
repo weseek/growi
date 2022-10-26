@@ -5,6 +5,7 @@ import {
 import { useTranslation } from 'next-i18next';
 import dynamic from 'next/dynamic';
 import { Container, Provider } from 'unstated';
+import { CrowiRequest } from '~/interfaces/crowi-request';
 
 import AdminBasicSecurityContainer from '~/client/services/AdminBasicSecurityContainer';
 import AdminGeneralSecurityContainer from '~/client/services/AdminGeneralSecurityContainer';
@@ -76,12 +77,21 @@ const AdminSecuritySettingsPage: NextPage<Props> = (props) => {
       </AdminLayout>
     </Provider>
   );
-
 };
+
+const injectServerConfigurations = async(context: GetServerSidePropsContext, props: Props): Promise<void> => {
+  const req: CrowiRequest = context.req as CrowiRequest;
+  const { crowi } = req;
+  const { appService, mailService } = crowi;
+
+  props.siteUrl = appService.getSiteUrl();
+  props.isMailerSetup = mailService.isMailerSetup;
+}
+
 
 
 export const getServerSideProps: GetServerSideProps = async(context: GetServerSidePropsContext) => {
-  const props = await retrieveServerSideProps(context);
+  const props = await retrieveServerSideProps(context, injectServerConfigurations);
   return props;
 };
 

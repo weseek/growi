@@ -15,8 +15,6 @@ const AdminLayout = dynamic(() => import('~/components/Layout/AdminLayout'), { s
 const MarkDownSettingContents = dynamic(() => import('~/components/Admin/MarkdownSetting/MarkDownSettingContents'), { ssr: false });
 
 
-
-
 const AdminMarkdownPage: NextPage<CommonProps> = (props) => {
   const { t } = useTranslation();
 

@@ -9,6 +9,7 @@ import { Container, Provider } from 'unstated';
 import AdminUsersContainer from '~/client/services/AdminUsersContainer';
 import { CommonProps, useCustomTitle } from '~/pages/utils/commons';
 import { useCurrentUser,  useIsMailerSetup } from '~/stores/context';
+import { CrowiRequest } from '~/interfaces/crowi-request';
 
 import { retrieveServerSideProps } from '../../../utils/admin-page-util';
 
@@ -48,9 +49,19 @@ const AdminUserManagementPage: NextPage<Props> = (props) => {
 
 };
 
+const injectServerConfigurations = async(context: GetServerSidePropsContext, props: Props): Promise<void> => {
+  const req: CrowiRequest = context.req as CrowiRequest;
+  const { crowi, user } = req;
+  const { mailService } = crowi;
+
+  if (user != null) {
+    props.currentUser = JSON.stringify(user);
+  }
+  props.isMailerSetup = mailService.isMailerSetup;
+}
 
 export const getServerSideProps: GetServerSideProps = async(context: GetServerSidePropsContext) => {
-  const props = await retrieveServerSideProps(context);
+  const props = await retrieveServerSideProps(context, injectServerConfigurations);
   return props;
 };
 

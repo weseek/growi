@@ -4,8 +4,8 @@ import {
 import { useTranslation } from 'next-i18next';
 import dynamic from 'next/dynamic';
 
+import { CrowiRequest } from '~/interfaces/crowi-request';
 import { CommonProps, useCustomTitle } from '~/pages/utils/commons';
-
 import { retrieveServerSideProps } from '../../utils/admin-page-util';
 
 import { useSiteUrl } from '~/stores/context';
@@ -33,8 +33,17 @@ const AdminSlackIntegrationPage: NextPage<Props> = (props) => {
 };
 
 
+const injectServerConfigurations = async(context: GetServerSidePropsContext, props: Props): Promise<void> => {
+  const req: CrowiRequest = context.req as CrowiRequest;
+  const { crowi } = req;
+  const { appService } = crowi;
+
+  props.siteUrl = appService.getSiteUrl();
+}
+
+
 export const getServerSideProps: GetServerSideProps = async(context: GetServerSidePropsContext) => {
-  const props = await retrieveServerSideProps(context);
+  const props = await retrieveServerSideProps(context, injectServerConfigurations);
   return props;
 };
 

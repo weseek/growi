@@ -26,7 +26,6 @@ const AdminAppPage: NextPage<CommonProps> = (props) => {
     injectableContainers.push(adminAppContainer);
   }
 
-
   return (
     <Provider inject={[...injectableContainers]}>
       <AdminLayout title={useCustomTitle(props, title)} componentTitle={title} >
@@ -34,7 +33,6 @@ const AdminAppPage: NextPage<CommonProps> = (props) => {
       </AdminLayout>
     </Provider>
   );
-
 };
 
 

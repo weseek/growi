@@ -5,6 +5,8 @@ import {
 import { useTranslation } from 'next-i18next';
 import dynamic from 'next/dynamic';
 import { Container, Provider } from 'unstated';
+import PluginUtils from '~/server/plugins/plugin-utils';
+import { CrowiRequest } from '~/interfaces/crowi-request';
 
 import AdminHomeContainer from '~/client/services/AdminHomeContainer';
 import { CommonProps, useCustomTitle } from '~/pages/utils/commons';
@@ -48,12 +50,24 @@ const AdminHomePage: NextPage<Props> = (props) => {
       </AdminLayout>
     </Provider>
   );
-
 };
 
 
+const injectServerConfigurations = async(context: GetServerSidePropsContext, props: Props): Promise<void> => {
+  const req: CrowiRequest = context.req as CrowiRequest;
+  const { crowi } = req;
+  const pluginUtils = new PluginUtils();
+
+  props.nodeVersion = crowi.runtimeVersions.versions.node ? crowi.runtimeVersions.versions.node.version.version : null;
+  props.npmVersion = crowi.runtimeVersions.versions.npm ? crowi.runtimeVersions.versions.npm.version.version : null;
+  props.yarnVersion = crowi.runtimeVersions.versions.yarn ? crowi.runtimeVersions.versions.yarn.version.version : null;
+  props.installedPlugins = pluginUtils.listPlugins();
+}
+
+
+
 export const getServerSideProps: GetServerSideProps = async(context: GetServerSidePropsContext) => {
-  const props = await retrieveServerSideProps(context);
+  const props = await retrieveServerSideProps(context, injectServerConfigurations);
   return props;
 };
 
