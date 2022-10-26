@@ -5,6 +5,7 @@ import { useTranslation } from 'next-i18next';
 
 import ClosableTextInput from '~/components/Common/ClosableTextInput';
 
+import BookmarkFolderTree from './BookmarkFolderTree';
 
 type Props = {
   onClickNewFolder: () => void
@@ -18,6 +19,7 @@ const BookmarkFolder = (props: Props): JSX.Element => {
     onClickNewFolder, isRenameInputShown, folderName, onClickOutside, onPressEnter,
   } = props;
   const { t } = useTranslation();
+
   return (
     <>
       <div className="col-8 mb-2 ">
@@ -41,6 +43,7 @@ const BookmarkFolder = (props: Props): JSX.Element => {
           </div>
         )
       }
+      <BookmarkFolderTree />
     </>
   );
 };

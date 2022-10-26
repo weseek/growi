@@ -13,7 +13,6 @@ import { usePageDeleteModal } from '~/stores/modal';
 
 
 import BookmarkFolder from './Bookmarks/BookmarkFolder';
-import BookmarkFolderTree from './Bookmarks/BookmarkFolderTree';
 import BookmarkItem from './Bookmarks/BookmarkItem';
 
 const Bookmarks = () : JSX.Element => {
@@ -25,7 +24,7 @@ const Bookmarks = () : JSX.Element => {
 
   const [isRenameFolderShown, setIsRenameFolderShown] = useState<boolean>(false);
   const [folderName, setFolderName] = useState<string>('');
-  const [currentParentFolder, setCurrentParentFolder] = useState(null);
+  const [currentParentFolder, setCurrentParentFolder] = useState<string | null>(null);
 
   const deleteMenuItemClickHandler = (pageToDelete: IPageToDeleteWithMeta) => {
     const pageDeletedHandler : OnDeletedFunction = (pathOrPathsToDelete, _isRecursively, isCompletely) => {
@@ -105,8 +104,6 @@ const Bookmarks = () : JSX.Element => {
             onPressEnter={onPressEnterHandler}
             folderName={folderName}
           />
-          {/* TODO: List Bookmark Folder */}
-          <BookmarkFolderTree />
         </>
       )
       }

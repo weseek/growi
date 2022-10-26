@@ -48,3 +48,12 @@ export const useSWRxCurrentUserBookmarkFolders = () : SWRResponse<BookmarkFolder
     }),
   );
 };
+
+export const useSWRxChildBookmarkFolders = (isOpen: boolean, parentId: Nullable<string>): SWRResponse<BookmarkFolderItems[], Error> => {
+  return useSWRImmutable(
+    isOpen && parentId != null ? `/bookmark-folder/list-child/${parentId}` : null,
+    endpoint => apiv3Get(endpoint).then((response) => {
+      return response.data.bookmarkFolderItems;
+    }),
+  );
+};

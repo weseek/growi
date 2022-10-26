@@ -1,4 +1,4 @@
-import { Ref, IUser } from '@growi/core';
+import { Ref, IUser, HasObjectId } from '@growi/core';
 import { isValidObjectId } from '@growi/core/src/utils/objectid-utils';
 import ExtensibleCustomError from 'extensible-custom-error';
 import {
@@ -14,7 +14,7 @@ const logger = loggerFactory('growi:models:bookmark-folder');
 export class InvalidParentBookmarkFolder extends ExtensibleCustomError {}
 
 export type BookmarkFolderItems = {
-  bookmarkFolder: IBookmarkFolderDocument
+  bookmarkFolder: IBookmarkFolderDocument & HasObjectId
   childCount: number
 }
 
@@ -33,7 +33,7 @@ export interface BookmarkFolderDocument extends Document {
 export interface BookmarkFolderModel extends Model<BookmarkFolderDocument>{
   createByParameters(params: IBookmarkFolderDocument): IBookmarkFolderDocument
   findParentFolderByUserId(user: Types.ObjectId | string): BookmarkFolderDocument[]
-  findChildFolderById(parentBookmarkFolder: Types.ObjectId | string): Promise<IBookmarkFolderDocument[]>
+  findChildFolderById(parentBookmarkFolder: Types.ObjectId | string): Promise<BookmarkFolderDocument[]>
   deleteFolderAndChildren(bookmarkFolderId: string): {deletedCount: number}
   updateBookmarkFolder(bookmarkFolderId: string, name: string, parent: string): BookmarkFolderDocument | null
 }
