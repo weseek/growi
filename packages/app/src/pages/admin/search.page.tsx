@@ -11,8 +11,9 @@ import { useIsSearchServiceReachable } from '~/stores/context';
 import { retrieveServerSideProps } from '../../utils/admin-page-util';
 
 const AdminLayout = dynamic(() => import('~/components/Layout/AdminLayout'), { ssr: false });
-
-const ElasticsearchManagement = dynamic(() => import('~/components/Admin/ElasticsearchManagement/ElasticsearchManagement'), { ssr: false });
+const FullTextSearchManagement = dynamic(
+  () => import('~/components/Admin//FullTextSearchManagement').then(mod => mod.FullTextSearchManagement), { ssr: false },
+);
 
 
 type Props = CommonProps & {
@@ -28,7 +29,7 @@ const AdminFullTextSearchManagementPage: NextPage<Props> = (props) => {
 
   return (
     <AdminLayout title={useCustomTitle(props, title)} componentTitle={title} >
-      <ElasticsearchManagement />
+      <FullTextSearchManagement />
     </AdminLayout>
   );
 };
@@ -39,7 +40,7 @@ const injectServerConfigurations = async(context: GetServerSidePropsContext, pro
   const { searchService } = crowi;
 
   props.isSearchServiceReachable = searchService.isReachable;
-}
+};
 
 
 export const getServerSideProps: GetServerSideProps = async(context: GetServerSidePropsContext) => {
