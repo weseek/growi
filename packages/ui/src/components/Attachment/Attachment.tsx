@@ -17,11 +17,8 @@ export const Attachment = (props: AttachmentProps): JSX.Element => {
     attachment, inUse, isUserLoggedIn, onAttachmentDeleteClicked,
   } = props;
 
-  const iconNameByFormat = (format) => {
-    if (format.match(/image\/.+/i)) {
-      return 'icon-picture';
-    }
-    return 'icon-doc';
+  const iconNameByFormat = (format: string) => {
+    return (format.match(/image\/.+/i)) ? 'icon-picture' : 'icon-doc';
   };
 
   const _onAttachmentDeleteClicked = () => {
