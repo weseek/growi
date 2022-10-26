@@ -5,11 +5,10 @@ import {
 import { useTranslation } from 'next-i18next';
 import dynamic from 'next/dynamic';
 import { Container, Provider } from 'unstated';
-import { CrowiRequest } from '~/interfaces/crowi-request';
 
 import AdminCustomizeContainer from '~/client/services/AdminCustomizeContainer';
+import { CrowiRequest } from '~/interfaces/crowi-request';
 import { CommonProps, useCustomTitle } from '~/pages/utils/commons';
-
 import { useCustomizeTitle } from '~/stores/context';
 
 import { retrieveServerSideProps } from '../../utils/admin-page-util';
@@ -48,13 +47,12 @@ const AdminCustomizeSettingsPage: NextPage<Props> = (props) => {
 };
 
 
-
 const injectServerConfigurations = async(context: GetServerSidePropsContext, props: Props): Promise<void> => {
   const req: CrowiRequest = context.req as CrowiRequest;
   const { crowi } = req;
 
   props.customizeTitle = crowi.configManager.getConfig('crowi', 'customize:title');
-}
+};
 
 export const getServerSideProps: GetServerSideProps = async(context: GetServerSidePropsContext) => {
   const props = await retrieveServerSideProps(context, injectServerConfigurations);

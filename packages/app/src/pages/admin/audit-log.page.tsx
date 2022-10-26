@@ -4,8 +4,8 @@ import {
 import { useTranslation } from 'next-i18next';
 import dynamic from 'next/dynamic';
 
-import { CrowiRequest } from '~/interfaces/crowi-request';
 import { SupportedActionType } from '~/interfaces/activity';
+import { CrowiRequest } from '~/interfaces/crowi-request';
 import { CommonProps, useCustomTitle } from '~/pages/utils/commons';
 import { useAuditLogEnabled, useAuditLogAvailableActions } from '~/stores/context';
 
@@ -44,8 +44,7 @@ const injectServerConfigurations = async(context: GetServerSidePropsContext, pro
 
   props.auditLogEnabled = crowi.configManager.getConfig('crowi', 'app:auditLogEnabled');
   props.auditLogAvailableActions = activityService.getAvailableActions(false);
-}
-
+};
 
 
 export const getServerSideProps: GetServerSideProps = async(context: GetServerSidePropsContext) => {
