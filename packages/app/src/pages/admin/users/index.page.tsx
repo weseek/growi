@@ -10,7 +10,7 @@ import AdminUsersContainer from '~/client/services/AdminUsersContainer';
 import { SupportedActionType } from '~/interfaces/activity';
 import { CommonProps, useCustomTitle } from '~/pages/utils/commons';
 
-import { retrieveServerSideProps } from '../../utils/admin-page-util';
+import { retrieveServerSideProps } from '../../../utils/admin-page-util';
 
 const AdminLayout = dynamic(() => import('~/components/Layout/AdminLayout'), { ssr: false });
 
