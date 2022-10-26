@@ -15,7 +15,7 @@ import { apiGet, apiPostForm } from '~/client/util/apiv1-client';
 import { getOptionsToSave } from '~/client/util/editor';
 import { IEditorMethods } from '~/interfaces/editor-methods';
 import {
-  useCurrentPagePath, useCurrentPathname, useCurrentPageId, useEditingMarkdown,
+  useCurrentPagePath, useCurrentPathname, useCurrentPageId,
   useIsEditable, useIsIndentSizeForced, useIsUploadableFile, useIsUploadableImage,
 } from '~/stores/context';
 import {
@@ -55,7 +55,6 @@ const PageEditor = React.memo((): JSX.Element => {
   const { data: currentPagePath } = useCurrentPagePath();
   const { data: currentPathname } = useCurrentPathname();
   const { data: currentPage, mutate: mutateCurrentPage } = useSWRxCurrentPage();
-  const { data: editingMarkdown, mutate: mutateEditingMarkdown } = useEditingMarkdown();
   const { data: grantData, mutate: mutateGrant } = useSelectedGrant();
   const { data: pageTags } = usePageTagsForEditors(pageId);
 
@@ -74,7 +73,7 @@ const PageEditor = React.memo((): JSX.Element => {
   const { data: rendererOptions } = usePreviewOptions();
 
   const currentRevisionId = currentPage?.revision?._id;
-  const initialValue = editingMarkdown ?? '';
+  const initialValue = currentPage?.revision.body ?? '';
 
   const markdownToSave = useRef<string>(initialValue);
   const [markdownToPreview, setMarkdownToPreview] = useState<string>(initialValue);
@@ -116,7 +115,7 @@ const PageEditor = React.memo((): JSX.Element => {
     try {
       await saveOrUpdate(optionsToSave, { pageId, path: currentPagePath || currentPathname, revisionId: currentRevisionId }, markdownToSave.current);
       await mutateCurrentPage();
-      mutateEditingMarkdown(markdownToSave.current);
+      // mutateEditingMarkdown(markdownToSave.current);
       mutateIsEnabledUnsavedWarning(false);
       return true;
     }
@@ -135,7 +134,7 @@ const PageEditor = React.memo((): JSX.Element => {
     }
 
   // eslint-disable-next-line max-len
-  }, [grantData, isSlackEnabled, currentPathname, slackChannels, pageTags, pageId, currentPagePath, currentRevisionId, mutateCurrentPage, mutateEditingMarkdown, mutateIsEnabledUnsavedWarning]);
+  }, [grantData, isSlackEnabled, currentPathname, slackChannels, pageTags, pageId, currentPagePath, currentRevisionId, mutateCurrentPage, mutateIsEnabledUnsavedWarning]);
 
   const saveAndReturnToViewHandler = useCallback(async(opts?: {overwriteScopesOfDescendants: boolean}) => {
     if (editorMode !== EditorMode.Editor) {
