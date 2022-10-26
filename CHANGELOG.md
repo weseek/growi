@@ -1,8 +1,14 @@
 # Changelog
 
-## [Unreleased](https://github.com/weseek/growi/compare/v5.1.6...HEAD)
+## [Unreleased](https://github.com/weseek/growi/compare/v5.1.7...HEAD)
 
 *Please do not manually update this file. We've automated the process.*
+
+## [v5.1.7](https://github.com/weseek/growi/compare/v5.1.6...v5.1.7) - 2022-10-26
+
+### 🐛 Bug Fixes
+
+- fix: Page move event notification message (#6823) @hakumizuki
 
 ## [v5.1.6](https://github.com/weseek/growi/compare/v5.1.5...v5.1.6) - 2022-10-19
 
