@@ -7,33 +7,15 @@ import dynamic from 'next/dynamic';
 import { Container, Provider } from 'unstated';
 
 import AdminNotificationContainer from '~/client/services/AdminNotificationContainer';
-import { SupportedActionType } from '~/interfaces/activity';
 import { CommonProps, useCustomTitle } from '~/pages/utils/commons';
 
 import { retrieveServerSideProps } from '../../utils/admin-page-util';
 
 const AdminLayout = dynamic(() => import('~/components/Layout/AdminLayout'), { ssr: false });
-
 const NotificationSetting = dynamic(() => import('~/components/Admin/Notification/NotificationSetting'), { ssr: false });
 
 
-type Props = CommonProps & {
-  currentUser: any,
-
-  envVars: any,
-  isAclEnabled: boolean,
-  isSearchServiceConfigured: boolean,
-  isSearchServiceReachable: boolean,
-  isMailerSetup: boolean,
-  auditLogEnabled: boolean,
-  auditLogAvailableActions: SupportedActionType[],
-
-  customizeTitle: string,
-  siteUrl: string,
-};
-
-
-const AdminExternalNotificationPage: NextPage<Props> = (props) => {
+const AdminExternalNotificationPage: NextPage<CommonProps> = (props) => {
   const { t } = useTranslation();
 
   const title = t('external_notification.external_notification');

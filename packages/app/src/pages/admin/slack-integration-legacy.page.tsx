@@ -7,33 +7,15 @@ import dynamic from 'next/dynamic';
 import { Container, Provider } from 'unstated';
 
 import AdminSlackIntegrationLegacyContainer from '~/client/services/AdminSlackIntegrationLegacyContainer';
-import { SupportedActionType } from '~/interfaces/activity';
 import { CommonProps, useCustomTitle } from '~/pages/utils/commons';
 
 import { retrieveServerSideProps } from '../../utils/admin-page-util';
 
 const AdminLayout = dynamic(() => import('~/components/Layout/AdminLayout'), { ssr: false });
-
 const LegacySlackIntegration = dynamic(() => import('~/components/Admin/LegacySlackIntegration/LegacySlackIntegration'), { ssr: false });
 
 
-type Props = CommonProps & {
-  currentUser: any,
-
-  envVars: any,
-  isAclEnabled: boolean,
-  isSearchServiceConfigured: boolean,
-  isSearchServiceReachable: boolean,
-  isMailerSetup: boolean,
-  auditLogEnabled: boolean,
-  auditLogAvailableActions: SupportedActionType[],
-
-  customizeTitle: string,
-  siteUrl: string,
-};
-
-
-const AdminLegacySlackIntegrationPage: NextPage<Props> = (props) => {
+const AdminLegacySlackIntegrationPage: NextPage<CommonProps> = (props) => {
   const { t } = useTranslation();
 
   const title = t('slack_integration_legacy.slack_integration_legacy');
@@ -41,7 +23,6 @@ const AdminLegacySlackIntegrationPage: NextPage<Props> = (props) => {
 
   if (isClient()) {
     const adminSlackIntegrationLegacyContainer = new AdminSlackIntegrationLegacyContainer();
-
     injectableContainers.push(adminSlackIntegrationLegacyContainer);
   }
 

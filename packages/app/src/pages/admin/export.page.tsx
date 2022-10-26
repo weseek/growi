@@ -7,33 +7,15 @@ import dynamic from 'next/dynamic';
 import { Container, Provider } from 'unstated';
 
 import AdminAppContainer from '~/client/services/AdminAppContainer';
-import { SupportedActionType } from '~/interfaces/activity';
 import { CommonProps, useCustomTitle } from '~/pages/utils/commons';
 
 import { retrieveServerSideProps } from '../../utils/admin-page-util';
 
 const AdminLayout = dynamic(() => import('~/components/Layout/AdminLayout'), { ssr: false });
-
 const ExportArchiveDataPage = dynamic(() => import('~/components/Admin/ExportArchiveDataPage'), { ssr: false });
 
 
-type Props = CommonProps & {
-  currentUser: any,
-
-  envVars: any,
-  isAclEnabled: boolean,
-  isSearchServiceConfigured: boolean,
-  isSearchServiceReachable: boolean,
-  isMailerSetup: boolean,
-  auditLogEnabled: boolean,
-  auditLogAvailableActions: SupportedActionType[],
-
-  customizeTitle: string,
-  siteUrl: string,
-};
-
-
-const AdminExportDataArchivePage: NextPage<Props> = (props) => {
+const AdminExportDataArchivePage: NextPage<CommonProps> = (props) => {
   const { t } = useTranslation();
 
   const title = t('export_archive_data');
@@ -41,10 +23,8 @@ const AdminExportDataArchivePage: NextPage<Props> = (props) => {
 
   if (isClient()) {
     const adminAppContainer = new AdminAppContainer();
-
     injectableContainers.push(adminAppContainer);
   }
-
 
   return (
     <Provider inject={[...injectableContainers]}>
@@ -53,7 +33,6 @@ const AdminExportDataArchivePage: NextPage<Props> = (props) => {
       </AdminLayout>
     </Provider>
   );
-
 };
 
 

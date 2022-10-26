@@ -11,11 +11,12 @@ import { retrieveServerSideProps } from '../../utils/admin-page-util';
 import { useSiteUrl } from '~/stores/context';
 
 const AdminLayout = dynamic(() => import('~/components/Layout/AdminLayout'), { ssr: false });
-
 const SlackIntegration = dynamic(() => import('~/components/Admin/SlackIntegration/SlackIntegration'), { ssr: false });
 
 
-type Props = CommonProps & { siteUrl: string };
+type Props = CommonProps & {
+  siteUrl: string
+};
 
 
 const AdminSlackIntegrationPage: NextPage<Props> = (props) => {

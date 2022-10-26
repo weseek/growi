@@ -14,7 +14,6 @@ const AdminLayout = dynamic(() => import('~/components/Layout/AdminLayout'), { s
 const ManageGlobalNotification = dynamic(() => import('~/components/Admin/Notification/ManageGlobalNotification'), { ssr: false });
 
 
-
 const AdminGlobalNotificationNewPage: NextPage<CommonProps> = (props) => {
   const { t } = useTranslation();
 
