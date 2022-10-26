@@ -2,7 +2,6 @@ import { SubscriptionStatusType, Nullable } from '@growi/core';
 import urljoin from 'url-join';
 
 import { OptionsToSave } from '~/interfaces/editor-settings';
-import { useEditingMarkdown } from '~/stores/context';
 import loggerFactory from '~/utils/logger';
 
 import { toastError } from '../util/apiNotification';
