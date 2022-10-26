@@ -15,7 +15,6 @@ const AdminLayout = dynamic(() => import('~/components/Layout/AdminLayout'), { s
 const ManageExternalAccount = dynamic(() => import('~/components/Admin/ManageExternalAccount'), { ssr: false });
 
 
-
 const AdminUserManagementPage: NextPage<CommonProps> = (props) => {
   const { t } = useTranslation();
 

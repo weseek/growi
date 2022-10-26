@@ -8,7 +8,7 @@ import { Container, Provider } from 'unstated';
 
 import AdminUsersContainer from '~/client/services/AdminUsersContainer';
 import { CommonProps, useCustomTitle } from '~/pages/utils/commons';
-import { useIsMailerSetup } from '~/stores/context';
+import { useCurrentUser,  useIsMailerSetup } from '~/stores/context';
 
 import { retrieveServerSideProps } from '../../../utils/admin-page-util';
 
@@ -18,12 +18,14 @@ const UserManagement = dynamic(() => import('~/components/Admin/UserManagement')
 
 
 type Props = CommonProps & {
+  currentUser: any,
   isMailerSetup: boolean,
 };
 
 
 const AdminUserManagementPage: NextPage<Props> = (props) => {
   const { t } = useTranslation();
+  useCurrentUser(props.currentUser != null ? JSON.parse(props.currentUser) : null);
   useIsMailerSetup(props.isMailerSetup);
 
   const title = t('user_management.user_management');
