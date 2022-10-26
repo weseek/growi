@@ -2012,18 +2012,31 @@ class PageService {
     const includeEmpty = true;
     const originPage = await Page.findByPath(newPath, includeEmpty);
 
-    // throw if any page already exists
-    if (originPage != null) {
+    // throw if any page already exists when recursively operation
+    if (originPage != null && isRecursively === true) {
       throw new PathAlreadyExistsError('already_exists', originPage.path);
     }
 
     // 2. Revert target
     const parent = await this.getParentAndFillAncestorsByUser(user, newPath);
-    const updatedPage = await Page.findByIdAndUpdate(page._id, {
-      $set: {
-        path: newPath, status: Page.STATUS_PUBLISHED, lastUpdateUser: user._id, deleteUser: null, deletedAt: null, parent: parent._id, descendantCount: 0,
-      },
-    }, { new: true });
+    let updatedPage;
+    if (originPage != null) {
+      updatedPage = await Page.findByIdAndUpdate(page._id, {
+        $set: {
+          // eslint-disable-next-line max-len
+          path: newPath, status: Page.STATUS_PUBLISHED, lastUpdateUser: user._id, deleteUser: null, deletedAt: null, descendantCount: originPage.descendantCount,
+        },
+      }, { new: true });
+      updatedPage = await Page.replaceTargetWithPage(originPage, updatedPage, true);
+    }
+    else {
+      updatedPage = await Page.findByIdAndUpdate(page._id, {
+        $set: {
+          path: newPath, status: Page.STATUS_PUBLISHED, lastUpdateUser: user._id, deleteUser: null, deletedAt: null, parent: parent._id, descendantCount: 0,
+        },
+      }, { new: true });
+    }
+
     await PageTagRelation.updateMany({ relatedPage: page._id }, { $set: { isPageTrashed: false } });
 
     this.pageEvent.emit('revert', page, user);
