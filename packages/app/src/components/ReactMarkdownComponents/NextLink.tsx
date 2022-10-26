@@ -1,6 +1,7 @@
 import Link, { LinkProps } from 'next/link';
 import { Link as ScrollLink } from 'react-scroll';
 
+import { DEFAULT_AUTO_SCROLL_OPTS } from '~/client/util/smooth-scroll';
 import { useSiteUrl } from '~/stores/context';
 
 const isAnchorLink = (href: string): boolean => {
@@ -35,7 +36,7 @@ export const NextLink = ({
     const to = href.slice(1);
     return (
       <Link href={href} scroll={false}>
-        <ScrollLink href={href} to={to} className={className} smooth="easeOutQuart" offset={-100} duration={800}>
+        <ScrollLink href={href} to={to} className={className} offset={-100} {...DEFAULT_AUTO_SCROLL_OPTS}>
           {children}
         </ScrollLink>
       </Link>

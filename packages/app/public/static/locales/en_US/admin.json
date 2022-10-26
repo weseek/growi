@@ -290,8 +290,6 @@
     "submit_bug_report": "<a href='https://github.com/weseek/growi/issues/new?assignees=&labels=bug&template=bug-report.md&title=Bug%3A' target='_blank' rel='noreferrer'>then submit your issue to GitHub.</a>"
   },
   "v5_page_migration": {
-    "page_tree_not_avaliable" : "Page tree feature is not available yet.",
-    "go_to_settings": "Go to settings to enable the feature",
     "migration_desc": "There are some pages with old v4 compatibility. To take advantage of new features such as page trees and easy renaming, please convert all your pages to v5 compatibility.",
     "migration_note": "Note: You will lose unique constraints from the page paths.",
     "upgrade_to_v5": "Convert to v5 compatibility",

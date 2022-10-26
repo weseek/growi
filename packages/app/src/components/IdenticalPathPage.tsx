@@ -40,7 +40,7 @@ const IdenticalPathAlert : FC<IdenticalPathAlertProps> = (props: IdenticalPathAl
           { path: _path, pageName: _pageName })}<br />
         <span
           // eslint-disable-next-line react/no-danger
-          dangerouslySetInnerHTML={{ __html: t('See_more_detail_on_new_schema', { url: t('GROWI.5.0_new_schema') }) }}
+          dangerouslySetInnerHTML={{ __html: t('See_more_detail_on_new_schema', { title: t('GROWI.5.0_new_schema') }) }}
         />
       </p>
       <p className="mb-1">{t('duplicated_page_alert.select_page_to_see')}</p>
