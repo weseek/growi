@@ -8,6 +8,7 @@ import { Container, Provider } from 'unstated';
 
 import AdminAppContainer from '~/client/services/AdminAppContainer';
 import { CommonProps, useCustomTitle } from '~/pages/utils/commons';
+import { useIsMaintenanceMode } from '~/stores/maintenanceMode';
 
 import { retrieveServerSideProps } from '../../utils/admin-page-util';
 
@@ -17,6 +18,7 @@ const AppSettingsPageContents = dynamic(() => import('~/components/Admin/App/App
 
 const AdminAppPage: NextPage<CommonProps> = (props) => {
   const { t } = useTranslation();
+  useIsMaintenanceMode(props.isMaintenanceMode);
 
   const title = t('commons:headers.app_settings');
   const injectableContainers: Container<any>[] = [];
@@ -34,7 +36,6 @@ const AdminAppPage: NextPage<CommonProps> = (props) => {
     </Provider>
   );
 };
-
 
 export const getServerSideProps: GetServerSideProps = async(context: GetServerSidePropsContext) => {
   const props = await retrieveServerSideProps(context);
