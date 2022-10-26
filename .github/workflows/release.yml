@@ -140,7 +140,7 @@ jobs:
       id: suffix
       run: |
         [[ ${{ matrix.flavor }} = "nocdn" ]] && suffix="-nocdn" || suffix=""
-        echo "SUFFIX=$suffix"" >> $GITHUB_OUTPUT
+        echo "SUFFIX=$suffix" >> $GITHUB_OUTPUT
 
     - name: Docker meta
       id: meta
