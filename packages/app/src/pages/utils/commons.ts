@@ -78,12 +78,11 @@ export const getNextI18NextConfig = async(
     ?? configManager.getConfig('crowi', 'app:globalLang') as Lang
     ?? Lang.en_US;
 
-  // TODO: Consider to not include translation as default or other architecture idea
-  // see: https://redmine.weseek.co.jp/issues/107092
   const namespaces = ['commons'];
   if (namespacesRequired != null) {
     namespaces.push(...namespacesRequired);
   }
+  // TODO: deprecate 'translation.json' in the future
   else {
     namespaces.push('translation');
   }
