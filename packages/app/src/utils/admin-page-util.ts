@@ -1,9 +1,8 @@
 import {
-  GetServerSidePropsContext,
+  GetServerSideProps, GetServerSidePropsContext,
 } from 'next';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 
-import { CrowiRequest } from '~/interfaces/crowi-request';
 import {
   getServerSideCommonProps, getNextI18NextConfig,
 } from '~/pages/utils/commons';
@@ -21,7 +20,9 @@ async function injectNextI18NextConfigurations(context: GetServerSidePropsContex
 }
 
 
-export const retrieveServerSideProps = async(context: GetServerSidePropsContext, injectServerConfigurations?:(context: GetServerSidePropsContext, props) => Promise<void> ) => {
+export const retrieveServerSideProps: any = async(
+    context: GetServerSidePropsContext, injectServerConfigurations?:(context: GetServerSidePropsContext, props) => Promise<void>,
+) => {
   const result = await getServerSideCommonProps(context);
 
   // check for presence
@@ -31,8 +32,8 @@ export const retrieveServerSideProps = async(context: GetServerSidePropsContext,
   }
 
   const props = result.props;
-  if (injectServerConfigurations != null){
-    injectServerConfigurations(context, props);
+  if (injectServerConfigurations != null) {
+    await injectServerConfigurations(context, props);
   }
   await injectNextI18NextConfigurations(context, props, ['admin', 'commons']);
 
