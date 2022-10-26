@@ -115,7 +115,6 @@ const PageEditor = React.memo((): JSX.Element => {
     try {
       await saveOrUpdate(optionsToSave, { pageId, path: currentPagePath || currentPathname, revisionId: currentRevisionId }, markdownToSave.current);
       await mutateCurrentPage();
-      // mutateEditingMarkdown(markdownToSave.current);
       mutateIsEnabledUnsavedWarning(false);
       return true;
     }
