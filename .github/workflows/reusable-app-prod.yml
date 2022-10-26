@@ -10,6 +10,9 @@ on:
         type: boolean
       cypress-report-artifact-name:
         type: string
+      cypress-config-video:
+        type: boolean
+        default: false
     secrets:
       SLACK_WEBHOOK_URL:
         required: true
@@ -70,7 +73,7 @@ jobs:
           packages/app/.env.production* \
           packages/*/package.json \
           packages/*/dist
-        echo ::set-output name=file::production.tar.gz
+        echo "file=production.tar.gz" >> $GITHUB_OUTPUT
 
     - name: Upload production files as artifact
       uses: actions/upload-artifact@v3
@@ -126,8 +129,8 @@ jobs:
     - name: Get Date
       id: get-date
       run: |
-        echo "::set-output name=dateYmdHM::$(/bin/date -u "+%Y%m%d%H%M")"
-        echo "::set-output name=dateYm::$(/bin/date -u "+%Y%m")"
+        echo "dateYmdHM=$(/bin/date -u "+%Y%m%d%H%M")" >> $GITHUB_OUTPUT
+        echo "dateYm=$(/bin/date -u "+%Y%m")" >> $GITHUB_OUTPUT
 
     - name: Cache/Restore node_modules (not reused)
       id: cache-dependencies
@@ -247,7 +250,7 @@ jobs:
       id: determine-spec-exp
       run: |
         SPEC=`node bin/github-actions/generate-cypress-spec-arg.js --prefix="test/cypress/integration/" --suffix="-*/**" "${{ matrix.spec-group }}"`
-        echo "::set-output name=value::$SPEC"
+        echo "value=$SPEC" >> $GITHUB_OUTPUT
 
     - name: Copy dotenv file for ci
       working-directory: ./packages/app
@@ -274,6 +277,7 @@ jobs:
         spec: '${{ steps.determine-spec-exp.outputs.value }}'
         start: yarn server
         wait-on: 'http://localhost:3000'
+        config: video=${{ inputs.cypress-config-video }}
       env:
         MONGO_URI: mongodb://localhost:${{ job.services.mongodb.ports['27017'] }}/growi-vrt
         ELASTICSEARCH_URI: http://localhost:${{ job.services.elasticsearch.ports['9200'] }}/growi
