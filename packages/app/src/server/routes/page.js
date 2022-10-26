@@ -1281,6 +1281,10 @@ module.exports = function(crowi, app) {
       return res.json(ApiResponse.error(`Page '${pageId}' is not found or forbidden`, 'notfound_or_forbidden'));
     }
 
+    if (page.isEmpty && !isRecursively) {
+      return res.json(ApiResponse.error('Empty pages cannot be single deleted'));
+    }
+
     let creator;
     if (page.isEmpty) {
       // If empty, the creator is inherited from the closest non-empty ancestor page.
