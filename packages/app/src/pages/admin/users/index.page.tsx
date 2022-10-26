@@ -7,8 +7,8 @@ import dynamic from 'next/dynamic';
 import { Container, Provider } from 'unstated';
 
 import AdminUsersContainer from '~/client/services/AdminUsersContainer';
-import { SupportedActionType } from '~/interfaces/activity';
 import { CommonProps, useCustomTitle } from '~/pages/utils/commons';
+import { useIsMailerSetup } from '~/stores/context';
 
 import { retrieveServerSideProps } from '../../../utils/admin-page-util';
 
@@ -18,23 +18,13 @@ const UserManagement = dynamic(() => import('~/components/Admin/UserManagement')
 
 
 type Props = CommonProps & {
-  currentUser: any,
-
-  envVars: any,
-  isAclEnabled: boolean,
-  isSearchServiceConfigured: boolean,
-  isSearchServiceReachable: boolean,
   isMailerSetup: boolean,
-  auditLogEnabled: boolean,
-  auditLogAvailableActions: SupportedActionType[],
-
-  customizeTitle: string,
-  siteUrl: string,
 };
 
 
 const AdminUserManagementPage: NextPage<Props> = (props) => {
   const { t } = useTranslation();
+  useIsMailerSetup(props.isMailerSetup);
 
   const title = t('user_management.user_management');
   const injectableContainers: Container<any>[] = [];
