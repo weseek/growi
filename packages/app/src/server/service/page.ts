@@ -2022,8 +2022,12 @@ class PageService {
     const shouldReplace = originPage != null && originPage.isEmpty;
     let updatedPage = await Page.findByIdAndUpdate(page._id, {
       $set: {
-        // eslint-disable-next-line max-len
-        path: newPath, status: Page.STATUS_PUBLISHED, lastUpdateUser: user._id, deleteUser: null, deletedAt: null, descendantCount: shouldReplace ? originPage.descendantCount : 0,
+        path: newPath,
+        status: Page.STATUS_PUBLISHED,
+        lastUpdateUser: user._id,
+        deleteUser: null,
+        deletedAt: null,
+        descendantCount: shouldReplace ? originPage.descendantCount : 0,
       },
     }, { new: true });
 
