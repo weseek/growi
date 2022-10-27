@@ -1,5 +1,5 @@
 import React, {
-  useState, FC, useMemo, useEffect,
+  useState, FC, useMemo, useEffect, useCallback,
 } from 'react';
 
 import { HasObjectId, pagePathUtils } from '@growi/core';
@@ -76,10 +76,10 @@ const PageDeleteModal: FC = () => {
     return false;
   }, [deleteModalData]);
 
-  const isDisabledDeleteRecursivelyCheckbox = useMemo(() => {
+  const forceDeleteRecursively = useMemo(() => {
     if (deleteModalData != null && deleteModalData.pages != null && deleteModalData.pages.length > 0) {
-      const isNoRevisionPages = deleteModalData.pages.some(pageWithMeta => pageWithMeta.data._id != null && pageWithMeta.data.revision == null);
-      return isNoRevisionPages;
+      const isIncludeNoRevisionPage = deleteModalData.pages.some(pageWithMeta => pageWithMeta.data._id != null && pageWithMeta.data.revision == null);
+      return isIncludeNoRevisionPage;
     }
     return false;
   }, [deleteModalData]);
@@ -184,9 +184,9 @@ const PageDeleteModal: FC = () => {
           className="custom-control-input"
           id="deleteRecursively"
           type="checkbox"
-          checked={isDeleteRecursively}
+          checked={forceDeleteRecursively || isDeleteRecursively}
           onChange={changeIsDeleteRecursivelyHandler}
-          disabled={isDisabledDeleteRecursivelyCheckbox}
+          disabled={forceDeleteRecursively}
           // disabled // Todo: enable this at https://redmine.weseek.co.jp/issues/82222
         />
         <label className="custom-control-label" htmlFor="deleteRecursively">
