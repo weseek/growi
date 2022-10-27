@@ -18,7 +18,7 @@ const ExportArchiveDataPage = dynamic(() => import('~/components/Admin/ExportArc
 const AdminExportDataArchivePage: NextPage<CommonProps> = (props) => {
   const { t } = useTranslation('admin');
 
-  const title = t('export_archive_data');
+  const title = t('export_management.export_archive_data');
   const injectableContainers: Container<any>[] = [];
 
   if (isClient()) {
