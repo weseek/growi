@@ -156,14 +156,14 @@ context('Access to sidebar', () => {
     cy.screenshot(`${ssPrefix}tags-2-check-all-tags`);
   });
 
-  it('Successfully access to My Drafts page', () => {
-    cy.visit('/');
-    cy.collapseSidebar(true);
-    cy.get('.grw-sidebar-nav-secondary-container').within(() => {
-      cy.get('a[href*="/me/drafts"]').click();
-    });
-    cy.screenshot(`${ssPrefix}access-to-drafts-page`);
-  });
+  // it('Successfully access to My Drafts page', () => {
+  //   cy.visit('/');
+  //   cy.collapseSidebar(true);
+  //   cy.get('.grw-sidebar-nav-secondary-container').within(() => {
+  //     cy.get('a[href*="/me/drafts"]').click();
+  //   });
+  //   cy.screenshot(`${ssPrefix}access-to-drafts-page`);
+  // });
   it('Successfully access to Growi Docs page', () => {
     cy.visit('/');
     cy.get('.grw-sidebar-nav-secondary-container').within(() => {
