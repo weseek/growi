@@ -5,7 +5,8 @@ import React, {
 import { HasObjectId, IAttachment } from '@growi/core';
 
 import { useSWRxAttachments } from '~/stores/attachment';
-import { useEditingMarkdown, useCurrentPageId, useIsGuestUser } from '~/stores/context';
+import { useCurrentPageId, useIsGuestUser } from '~/stores/context';
+import { useSWRxCurrentPage } from '~/stores/page';
 
 import { DeleteAttachmentModal } from './PageAttachment/DeleteAttachmentModal';
 import { PageAttachmentList } from './PageAttachment/PageAttachmentList';
@@ -17,10 +18,13 @@ const checkIfFileInUse = (markdown: string, attachment): boolean => {
 };
 
 const PageAttachment = (): JSX.Element => {
+
+  const { data: currentPage } = useSWRxCurrentPage();
+  const markdown = currentPage?.revision.body;
+
   // Static SWRs
   const { data: pageId } = useCurrentPageId();
   const { data: isGuestUser } = useIsGuestUser();
-  const { data: markdown } = useEditingMarkdown();
 
   // States
   const [pageNumber, setPageNumber] = useState(1);
