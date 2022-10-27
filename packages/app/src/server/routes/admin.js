@@ -263,17 +263,17 @@ module.exports = function(crowi, app) {
   };
 
   // グループ詳細
-  actions.userGroup.detail = async function(req, res) {
-    const userGroupId = req.params.id;
-    const userGroup = await UserGroup.findOne({ _id: userGroupId }).populate('parent');
+  // actions.userGroup.detail = async function(req, res) {
+  //   const userGroupId = req.params.id;
+  //   const userGroup = await UserGroup.findOne({ _id: userGroupId }).populate('parent');
 
-    if (userGroup == null) {
-      logger.error('no userGroup is exists. ', userGroupId);
-      return res.redirect('/admin/user-groups');
-    }
+  //   if (userGroup == null) {
+  //     logger.error('no userGroup is exists. ', userGroupId);
+  //     return res.redirect('/admin/user-groups');
+  //   }
 
-    return res.render('admin/user-group-detail', { userGroup });
-  };
+  //   return res.render('admin/user-group-detail', { userGroup });
+  // };
 
   // AuditLog
   actions.auditLog = {};

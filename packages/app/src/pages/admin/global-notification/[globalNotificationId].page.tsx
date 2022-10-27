@@ -17,7 +17,7 @@ const ManageGlobalNotification = dynamic(() => import('~/components/Admin/Notifi
 
 
 const AdminGlobalNotificationNewPage: NextPage<CommonProps> = (props) => {
-  const { t } = useTranslation();
+  const { t } = useTranslation('admin');
   const router = useRouter();
   const { globalNotificationId } = router.query;
 
