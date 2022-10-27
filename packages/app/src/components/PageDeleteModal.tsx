@@ -78,9 +78,8 @@ const PageDeleteModal: FC = () => {
 
   const isDisabledDeleteRecursivelyCheckbox = useMemo(() => {
     if (deleteModalData != null && deleteModalData.pages != null && deleteModalData.pages.length > 0) {
-      const pageData = deleteModalData.pages[0].data;
-      const isNoRevisionPage = pageData._id != null && pageData.revision == null;
-      return isNoRevisionPage;
+      const isNoRevisionPages = deleteModalData.pages.every(pageWithMeta => pageWithMeta.data._id != null && pageWithMeta.data.revision == null);
+      return isNoRevisionPages;
     }
     return false;
   }, [deleteModalData]);
