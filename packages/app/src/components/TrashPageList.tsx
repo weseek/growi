@@ -24,6 +24,10 @@ type EmptyTrashButtonOptions = {
   mutatePageLists: () => void
 }
 
+const convertToIDataWithMeta = (page) => {
+  return { data: page };
+};
+
 const useEmptyTrashButton = (): EmptyTrashButtonOptions => {
 
   const { data: limit } = useShowPageLimitationXL();
@@ -33,10 +37,6 @@ const useEmptyTrashButton = (): EmptyTrashButtonOptions => {
   const { injectTo } = useSWRxPageInfoForList(pageIds, null, true, true);
 
   let pageWithMetas: IDataWithMeta<IPageHasId, IPageInfo>[] = [];
-
-  const convertToIDataWithMeta = useCallback((page) => {
-    return { data: page };
-  }, []);
 
   if (pagingResult != null) {
     const dataWithMetas = pagingResult.items.map(page => convertToIDataWithMeta(page));
