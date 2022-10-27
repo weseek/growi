@@ -271,6 +271,10 @@ export const useCustomizeTitle = (initialData?: string): SWRResponse<string, Err
   return useStaticSWR('CustomizeTitle', initialData);
 };
 
+export const useCustomizedLogoSrc = (initialData?: string): SWRResponse<string, Error> => {
+  return useStaticSWR('customizedLogoSrc', initialData);
+};
+
 /** **********************************************************
  *                     Computed contexts
  *********************************************************** */

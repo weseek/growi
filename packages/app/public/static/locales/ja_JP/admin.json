@@ -12,7 +12,6 @@
   "Description": "説明",
   "last_login": "最終ログイン",
   "wiki_management_home_page": "Wiki管理トップ",
-  "app_settings": "アプリ設定",
   "public": "公開",
   "anyone_with_the_link": "リンクを知っている人のみ",
   "specified_users": "特定ユーザーのみ",
@@ -62,7 +61,6 @@
     "page_delete_rights_caution": "「（子孫ページを含む）ゴミ箱に入れる操作 / 完全に削除する」の権限は、「ゴミ箱に入れる操作 / 完全に削除する」よりも強い権限になるように強制されます。 <br><br> 管理者のみ可能 > 管理者とページ作者が可能 > 誰でも可能",
     "Authentication mechanism settings": "認証機構設定",
     "setup_is_not_yet_complete":"セットアップはまだ完了してません",
-    "alert_siteUrl_is_not_set": "'サイトURL' が設定されていません。{{link}} から設定してください。",
     "xss_prevent_setting": "XSS(Cross Site Scripting)対策設定",
     "xss_prevent_setting_link": "マークダウン設定ページに移動",
     "callback_URL": "コールバックURL",
@@ -324,8 +322,6 @@
     "submit_bug_report": "<a href='https://github.com/weseek/growi/issues/new?assignees=&labels=bug&template=bug-report.md&title=Bug%3A' target='_blank' rel='noreferrer'>次に GitHub で Issue を投稿してください。</a>"
   },
   "v5_page_migration": {
-    "page_tree_not_avaliable" : "Page Tree 機能は現在使用できません。",
-    "go_to_settings": "設定する",
     "migration_desc": "公開されているページに 古い v4 互換形式のものが存在します。ページツリーや簡単なリネームなどの新機能を利用するには、全てのページを v5 互換形式に変換してください。",
     "migration_note": "注意: ページパスからユニーク制約が失われます。",
     "upgrade_to_v5": "v5 互換形式 へ変換",
@@ -499,8 +495,6 @@
       "select_search_scope_children_as_default": "検索範囲のデフォルト設定を「この階層下の子ページ」にする",
       "select_search_scope_children_as_default_desc": "OFFの場合、検索範囲のデフォルト設定は「全てのページ」になります。"
     },
-    "code_highlight": "コードハイライト",
-    "nocdn_desc": "この機能は、環境変数 <code>NO_CDN=true</code> の時は無効化されます。<br>GitHub スタイルが適用されています。",
     "custom_title": "カスタム Title",
     "custom_title_detail": "<code>&lt;title&gt;</code>タグのコンテンツをカスタマイズできます。以下のプレースホルダーは自動的に置換されます:",
     "custom_title_detail_placeholder1": "<code>&#123;&#123;sitename&#125;&#125;</code> - この Wiki のサイト名",

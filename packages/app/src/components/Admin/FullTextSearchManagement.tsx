@@ -4,8 +4,8 @@ import { useTranslation } from 'next-i18next';
 
 import ElasticsearchManagement from './ElasticsearchManagement/ElasticsearchManagement';
 
-const FullTextSearchManagement = (): JSX.Element => {
-  const { t } = useTranslation();
+export const FullTextSearchManagement = (): JSX.Element => {
+  const { t } = useTranslation('admin');
 
   return (
     <div data-testid="admin-full-text-search">
@@ -14,5 +14,3 @@ const FullTextSearchManagement = (): JSX.Element => {
     </div>
   );
 };
-
-export default FullTextSearchManagement;

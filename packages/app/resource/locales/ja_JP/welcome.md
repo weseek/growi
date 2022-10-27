@@ -17,7 +17,7 @@ GROWI は個人・法人向けの Wiki | ナレッジベースツールです。
 - `- ` を行頭につけると、この文章のような箇条書きを書くことができます
 - 画像やPDF、Word/Excel/PowerPointなどの添付ファイルも、コピー＆ペースト、ドラッグ＆ドロップで貼ることができます
 - 書けたら "**更新**" ボタンを押してページを公開しましょう
-    - `Ctrl(⌘) +S` でも保存できます
+    - `Ctrl(⌘) + S` でも保存できます
 
 さらに詳しくはこちら: [チュートリアル#新規ページ作成](https://docs.growi.org/ja/guide/tutorial/create_page.html#新規ページ作成)
 
@@ -25,7 +25,7 @@ GROWI は個人・法人向けの Wiki | ナレッジベースツールです。
   <div class="card-header bg-primary text-light">Tips</div>
   <div class="card-body"><ul>
     <li>Ctrl(⌘) + "/" でショートカットヘルプを表示します</li>
-    <li>HTML/CSS の記述には、<a href="https://getbootstrap.com/docs/4.5/components/">Bootstrap 4</a> を利用できます</li>
+    <li>HTML/CSS の記述には、<a href="https://getbootstrap.com/docs/4.6/components/">Bootstrap 4</a> を利用できます</li>
   </ul></div>
 </div>
 

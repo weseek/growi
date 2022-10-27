@@ -29,7 +29,6 @@ type CommentProps = {
   revisionCreatedAt: Date,
   currentUser: IUser,
   isReadOnly: boolean,
-  highlightKeywords?: string[],
   deleteBtnClicked: (comment: ICommentHasId) => void,
   onComment: () => void,
 }

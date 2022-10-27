@@ -3,8 +3,9 @@ import React, { useMemo } from 'react';
 import { pagePathUtils } from '@growi/core';
 import { useTranslation } from 'next-i18next';
 import dynamic from 'next/dynamic';
+import { Link } from 'react-scroll';
 
-// import { smoothScrollIntoView } from '~/client/util/smooth-scroll';
+import { DEFAULT_AUTO_SCROLL_OPTS } from '~/client/util/smooth-scroll';
 import {
   useCurrentPagePath, useIsSharedUser, useIsEditable, useShareLinkId, useIsNotFound,
 } from '~/stores/context';
@@ -79,18 +80,18 @@ const PageView = React.memo((): JSX.Element => {
             </div>
 
             {/* Comments */}
-            {/* { getCommentListDom != null && !isTopPagePath && ( */}
             { !isTopPagePath && (
               <div className={`mt-2 grw-page-accessories-control ${styles['grw-page-accessories-control']}`}>
-                <button
-                  type="button"
-                  className="btn btn-block btn-outline-secondary grw-btn-page-accessories rounded-pill d-flex justify-content-between align-items-center"
-                  // onClick={() => smoothScrollIntoView(getCommentListDom, WIKI_HEADER_LINK)}
-                >
-                  <i className="icon-fw icon-bubbles grw-page-accessories-control-icon"></i>
-                  <span>Comments</span>
-                  <CountBadge count={currentPage?.commentCount} />
-                </button>
+                <Link to={'page-comments'} offset={-100} {...DEFAULT_AUTO_SCROLL_OPTS}>
+                  <button
+                    type="button"
+                    className="btn btn-block btn-outline-secondary grw-btn-page-accessories rounded-pill d-flex justify-content-between align-items-center"
+                  >
+                    <i className="icon-fw icon-bubbles grw-page-accessories-control-icon"></i>
+                    <span>Comments</span>
+                    <CountBadge count={currentPage?.commentCount} />
+                  </button>
+                </Link>
               </div>
             ) }
 
@@ -109,8 +110,6 @@ PageView.displayName = 'PageView';
 
 
 const DisplaySwitcher = React.memo((): JSX.Element => {
-  // get element for smoothScroll
-  // const getCommentListDom = useMemo(() => { return document.getElementById('page-comments-list') }, []);
 
   const { data: isEditable } = useIsEditable();
 

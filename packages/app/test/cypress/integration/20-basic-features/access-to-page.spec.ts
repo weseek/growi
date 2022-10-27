@@ -18,13 +18,13 @@ context('Access to page', () => {
   it('/Sandbox with anchor hash is successfully loaded', () => {
     cy.visit('/Sandbox#Headers');
 
-    // hide fab
-    cy.getByTestid('grw-fab-container').invoke('attr', 'style', 'display: none');
+    // hide fab // disable fab for sticky-events warning
+    // cy.getByTestid('grw-fab-container').invoke('attr', 'style', 'display: none');
 
     // remove animation for screenshot
     // remove 'blink' class because ::after element cannot be operated
     // https://stackoverflow.com/questions/5041494/selecting-and-manipulating-css-pseudo-elements-such-as-before-and-after-usin/21709814#21709814
-    cy.get('#Headers').invoke('removeClass', 'blink');
+    cy.get('#mdcont-headers').invoke('removeClass', 'blink');
 
     cy.screenshot(`${ssPrefix}-sandbox-headers`);
   });
@@ -32,7 +32,6 @@ context('Access to page', () => {
   it('/Sandbox/Math is successfully loaded', () => {
     cy.visit('/Sandbox/Math');
 
-    cy.get('mjx-container').should('be.visible');
     // eslint-disable-next-line cypress/no-unnecessary-waiting
     cy.wait(2000); // wait for 2 seconds for MathJax.typesetPromise();
 
@@ -71,10 +70,10 @@ context('Access to /me page', () => {
     cy.screenshot(`${ssPrefix}-me`);
   });
 
-  it('Draft page is successfully shown', () => {
-    cy.visit('/me/drafts');
-    cy.screenshot(`${ssPrefix}-draft-page`);
-  });
+  // it('Draft page is successfully shown', () => {
+  //   cy.visit('/me/drafts');
+  //   cy.screenshot(`${ssPrefix}-draft-page`);
+  // });
 
 });
 
@@ -99,10 +98,11 @@ context('Access to special pages', () => {
   });
 
   it('/tags is successfully loaded', () => {
-    cy.visit('/tags');
 
     // open sidebar
     cy.collapseSidebar(false);
+
+    cy.visit('/tags');
     // select tags
     cy.getByTestid('grw-sidebar-nav-primary-tags').click();
     cy.getByTestid('grw-sidebar-content-tags').should('be.visible');

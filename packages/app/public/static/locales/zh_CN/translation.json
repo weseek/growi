@@ -117,7 +117,7 @@
 	"Create under": "Create page under below:",
   "V5 Page Migration": "转换为V5的兼容性",
   "GROWI.5.0_new_schema": "GROWI.5.0 new schema",
-  "See_more_detail_on_new_schema": "更多详情请见<a href='#'>{{url}}</a> <i class='icon-share-alt'></i> ",
+  "See_more_detail_on_new_schema": "更多详情请见<a href='https://docs.growi.org/en/admin-guide/upgrading/50x.html#about-the-new-v5-compatible-format' target='_blank'> {{title}}</a> <i class='icon-share-alt'></i> ",
 	"Site URL settings": "主页URL设置",
 	"Markdown Settings": "Markdown设置",
 	"Notification Settings": "通知设置",
@@ -179,8 +179,7 @@
     "could_not_creata_path": "无法创建路径"
   },
   "custom_navigation": {
-    "no_page_list": "There are no pages under this page.",
-    "link_sharing_is_disabled": "链接共享已被禁用"
+    "no_page_list": "There are no pages under this page."
   },
 	"installer": {
 		"setup": "安装",
@@ -496,10 +495,6 @@
     "page_not_found_in_preview": "\"{{path}}\" is not a GROWI page."
   },
 	"toaster": {
-    "create_succeeded": "Succeeded to create {{target}}",
-    "create_failed": "Failed to create {{target}}",
-		"update_successed": "Succeeded to update {{target}}",
-    "update_failed": "Failed to update {{target}}",
     "file_upload_succeeded": "文件上传成功",
     "file_upload_failed": "文件上传失败",
     "initialize_successed": "Succeeded to initialize {{target}}",
@@ -507,7 +502,8 @@
 		"deactivate_user_success": "Succeeded to deactivate {{username}}",
 		"remove_user_success": "Succeeded to removing {{username}} ",
     "switch_disable_link_sharing_success": "成功更新分享链接设置",
-    "failed_to_reset_password":"Failed to reset password"
+    "failed_to_reset_password":"Failed to reset password",
+    "save_succeeded": "已成功保存"
   },
 	"template": {
 		"modal_label": {
@@ -583,7 +579,6 @@
     "popover_title": "Slack Notification",
     "popover_desc": "Input channel name. You can notify multiple channels by entering a comma-separated list."
   },
-  "security_settings": "安全设置",
   "share_links": {
     "Shere this page link to public": "Shere this page link to public",
     "share_link_list": "Share link list",
@@ -601,7 +596,8 @@
     "Unlimited": "unlimited",
     "Issue": "Issue",
     "share_settings" :"Share settings",
-    "Invalid_Number_of_Date" : "You entered invalid value"
+    "Invalid_Number_of_Date" : "You entered invalid value",
+    "link_sharing_is_disabled": "链接共享已被禁用"
   },
 	"notification_setting": {
 		"slack_incoming_configuration": "Slack Incoming Webhooks configuration",
@@ -910,5 +906,9 @@
   "footer": {
     "bookmarks": "书签",
     "recently_created": "最近创建页面"
+  },
+  "v5_page_migration": {
+    "page_tree_not_avaliable": "Page Tree 功能不可用",
+    "go_to_settings": "进入设置，启用该功能"
   }
 }

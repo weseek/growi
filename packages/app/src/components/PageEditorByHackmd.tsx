@@ -131,6 +131,21 @@ export const PageEditorByHackmd = (): JSX.Element => {
     };
   }, [saveAndReturnToViewHandler]);
 
+  const resetInitializedStatusHandler = useCallback(() => {
+    setIsInitialized(false);
+  }, []);
+
+
+  // set handler to save and reload Page
+  useEffect(() => {
+    globalEmitter.on('resetInitializedHackMdStatus', resetInitializedStatusHandler);
+
+    return function cleanup() {
+      globalEmitter.removeListener('resetInitializedHackMdStatus', resetInitializedStatusHandler);
+    };
+  }, [resetInitializedStatusHandler]);
+
+
   const isResume = useCallback(() => {
     const isPageExistsOnHackmd = (pageIdOnHackmd != null);
     return (isPageExistsOnHackmd && hasDraftOnHackmd) || isHackmdDraftUpdatingInRealtime;

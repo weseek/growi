@@ -1,10 +1,10 @@
 @import './bootstrap/init' ;
 @import './variables' ;
 @import './mixins' ;
-@import 'sidebar-wiki';
+@import './organisms/wiki-custom-sidebar';
 
 // global imported
-body.on-edit {
+.layout-root.editing {
   overflow-y: hidden !important;
 
   .grw-navbar {
@@ -239,7 +239,6 @@ body.on-edit {
   &.editing-sidebar {
     .page-editor-preview-body {
       width: 320px;
-      padding-top: 0;
       margin-right: auto;
       margin-left: auto;
 
@@ -279,14 +278,14 @@ body.on-edit {
   }
 }
 
-body.on-edit {
-  .wrapper:not(.growi-layout-fluid) .page-editor-preview-body {
+.layout-root.editing {
+  &:not(.growi-layout-fluid) .page-editor-preview-body {
     .wiki {
       max-width: 980px;
       margin: 0 auto;
     }
   }
-  .wrapper.growi-layout-fluid .page-editor-preview-body {
+  &.growi-layout-fluid .page-editor-preview-body {
     .wiki {
       margin: 0 auto;
     }

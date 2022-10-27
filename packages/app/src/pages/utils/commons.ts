@@ -21,6 +21,7 @@ export type CommonProps = {
   growiVersion: string,
   isMaintenanceMode: boolean,
   redirectDestination: string | null,
+  customizedLogoSrc?: string,
 } & Partial<SSRConfig>;
 
 // eslint-disable-next-line max-len
@@ -53,6 +54,7 @@ export const getServerSideCommonProps: GetServerSideProps<CommonProps> = async(c
     growiVersion: crowi.version,
     isMaintenanceMode,
     redirectDestination,
+    customizedLogoSrc: configManager.getConfig('crowi', 'customize:customizedLogoSrc'),
   };
 
   return { props };
@@ -76,7 +78,16 @@ export const getNextI18NextConfig = async(
     ?? configManager.getConfig('crowi', 'app:globalLang') as Lang
     ?? Lang.en_US;
 
-  return serverSideTranslations(locale, namespacesRequired ?? ['translation'], nextI18NextConfig, preloadAllLang ? AllLang : false);
+  const namespaces = ['commons'];
+  if (namespacesRequired != null) {
+    namespaces.push(...namespacesRequired);
+  }
+  // TODO: deprecate 'translation.json' in the future
+  else {
+    namespaces.push('translation');
+  }
+
+  return serverSideTranslations(locale, namespaces, nextI18NextConfig, preloadAllLang ? AllLang : false);
 };
 
 /**

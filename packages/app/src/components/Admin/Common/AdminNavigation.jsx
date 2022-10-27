@@ -23,7 +23,7 @@ const AdminNavigation = (props) => {
   const MenuLabel = ({ menu }) => {
     switch (menu) {
       /* eslint-disable no-multi-spaces, max-len */
-      case 'app':                      return <><i className="mr-1 icon-fw icon-settings"></i>{        t('app_settings') }</>;
+      case 'app':                      return <><i className="mr-1 icon-fw icon-settings"></i>{        t('commons:headers.app_settings') }</>;
       case 'security':                 return <><i className="mr-1 icon-fw icon-shield"></i>{          t('security_settings.security_settings') }</>;
       case 'markdown':                 return <><i className="mr-1 icon-fw icon-note"></i>{            t('markdown_settings.markdown_settings') }</>;
       case 'customize':                return <><i className="mr-1 icon-fw icon-wrench"></i>{          t('customize_settings.customize_settings') }</>;

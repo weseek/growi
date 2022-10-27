@@ -2,7 +2,7 @@
 
 import nodePath from 'path';
 
-import { pagePathUtils, pathUtils } from '@growi/core';
+import { HasObjectId, pagePathUtils, pathUtils } from '@growi/core';
 import escapeStringRegexp from 'escape-string-regexp';
 import mongoose, {
   Schema, Model, Document, AnyObject,
@@ -58,13 +58,13 @@ export type CreateMethod = (path: string, body: string, user, options: PageCreat
 export interface PageModel extends Model<PageDocument> {
   [x: string]: any; // for obsolete static methods
   findByIdsAndViewer(pageIds: ObjectIdLike[], user, userGroups?, includeEmpty?: boolean): Promise<PageDocument[]>
-  findByPathAndViewer(path: string | null, user, userGroups?, useFindOne?: true, includeEmpty?: boolean): Promise<PageDocument | PageDocument[] | null>
-  findByPathAndViewer(path: string | null, user, userGroups?, useFindOne?: false, includeEmpty?: boolean): Promise<PageDocument[]>
+  findByPathAndViewer(path: string | null, user, userGroups?, useFindOne?: true, includeEmpty?: boolean): Promise<PageDocument & HasObjectId | null>
+  findByPathAndViewer(path: string | null, user, userGroups?, useFindOne?: false, includeEmpty?: boolean): Promise<(PageDocument & HasObjectId)[]>
   countByPathAndViewer(path: string | null, user, userGroups?, includeEmpty?:boolean): Promise<number>
   findTargetAndAncestorsByPathOrId(pathOrId: string): Promise<TargetAndAncestorsResult>
   findRecentUpdatedPages(path: string, user, option, includeEmpty?: boolean): Promise<PaginatedPages>
   generateGrantCondition(
-    user, userGroups, showAnyoneKnowsLink?: boolean, showPagesRestrictedByOwner?: boolean, showPagesRestrictedByGroup?: boolean,
+    user, userGroups, includeAnyoneWithTheLink?: boolean, showPagesRestrictedByOwner?: boolean, showPagesRestrictedByGroup?: boolean,
   ): { $or: any[] }
 
   PageQueryBuilder: typeof PageQueryBuilder
@@ -140,7 +140,7 @@ export class PageQueryBuilder {
    * @param pathsToFilter The paths to have additional filters as to be applicable
    * @returns PageQueryBuilder
    */
-  addConditionToFilterByApplicableAncestors(pathsToFilter: string[]) {
+  addConditionToFilterByApplicableAncestors(pathsToFilter: string[]): PageQueryBuilder {
     this.query = this.query
       .and(
         {
@@ -156,7 +156,7 @@ export class PageQueryBuilder {
     return this;
   }
 
-  addConditionToExcludeTrashed() {
+  addConditionToExcludeTrashed(): PageQueryBuilder {
     this.query = this.query
       .and({
         $or: [
@@ -172,7 +172,7 @@ export class PageQueryBuilder {
    * generate the query to find the pages '{path}/*' and '{path}' self.
    * If top page, return without doing anything.
    */
-  addConditionToListWithDescendants(path: string, option?) {
+  addConditionToListWithDescendants(path: string, option?): PageQueryBuilder {
     // No request is set for the top page
     if (isTopPage(path)) {
       return this;
@@ -198,7 +198,7 @@ export class PageQueryBuilder {
    * generate the query to find the pages '{path}/*' (exclude '{path}' self).
    * If top page, return without doing anything.
    */
-  addConditionToListOnlyDescendants(path, option) {
+  addConditionToListOnlyDescendants(path, option): PageQueryBuilder {
     // No request is set for the top page
     if (isTopPage(path)) {
       return this;
@@ -215,7 +215,7 @@ export class PageQueryBuilder {
 
   }
 
-  addConditionToListOnlyAncestors(path) {
+  addConditionToListOnlyAncestors(path): PageQueryBuilder {
     const pathNormalized = pathUtils.normalizePath(path);
     const ancestorsPaths = extractToAncestorsPaths(pathNormalized);
 
@@ -299,7 +299,7 @@ export class PageQueryBuilder {
     return this;
   }
 
-  async addConditionForParentNormalization(user) {
+  async addConditionForParentNormalization(user): Promise<PageQueryBuilder> {
     // determine UserGroup condition
     let userGroups;
     if (user != null) {
@@ -332,7 +332,7 @@ export class PageQueryBuilder {
     return this;
   }
 
-  async addConditionAsMigratablePages(user) {
+  async addConditionAsMigratablePages(user): Promise<PageQueryBuilder> {
     this.query = this.query
       .and({
         $or: [
@@ -349,19 +349,21 @@ export class PageQueryBuilder {
   }
 
   // add viewer condition to PageQueryBuilder instance
-  async addViewerCondition(user, userGroups = null): Promise<PageQueryBuilder> {
+  async addViewerCondition(user, userGroups = null, includeAnyoneWithTheLink = false): Promise<PageQueryBuilder> {
     let relatedUserGroups = userGroups;
     if (user != null && relatedUserGroups == null) {
       const UserGroupRelation: any = mongoose.model('UserGroupRelation');
       relatedUserGroups = await UserGroupRelation.findAllUserGroupIdsRelatedToUser(user);
     }
 
-    this.addConditionToFilteringByViewer(user, relatedUserGroups, false);
+    this.addConditionToFilteringByViewer(user, relatedUserGroups, includeAnyoneWithTheLink);
     return this;
   }
 
-  addConditionToFilteringByViewer(user, userGroups, showAnyoneKnowsLink = false, showPagesRestrictedByOwner = false, showPagesRestrictedByGroup = false) {
-    const condition = generateGrantCondition(user, userGroups, showAnyoneKnowsLink, showPagesRestrictedByOwner, showPagesRestrictedByGroup);
+  addConditionToFilteringByViewer(
+      user, userGroups, includeAnyoneWithTheLink = false, showPagesRestrictedByOwner = false, showPagesRestrictedByGroup = false,
+  ): PageQueryBuilder {
+    const condition = generateGrantCondition(user, userGroups, includeAnyoneWithTheLink, showPagesRestrictedByOwner, showPagesRestrictedByGroup);
 
     this.query = this.query
       .and(condition);
@@ -369,27 +371,27 @@ export class PageQueryBuilder {
     return this;
   }
 
-  addConditionToPagenate(offset, limit, sortOpt?) {
+  addConditionToPagenate(offset, limit, sortOpt?): PageQueryBuilder {
     this.query = this.query
       .sort(sortOpt).skip(offset).limit(limit); // eslint-disable-line newline-per-chained-call
 
     return this;
   }
 
-  addConditionAsNonRootPage() {
+  addConditionAsNonRootPage(): PageQueryBuilder {
     this.query = this.query.and({ path: { $ne: '/' } });
 
     return this;
   }
 
-  addConditionAsNotMigrated() {
+  addConditionAsNotMigrated(): PageQueryBuilder {
     this.query = this.query
       .and({ parent: null });
 
     return this;
   }
 
-  addConditionAsOnTree() {
+  addConditionAsOnTree(): PageQueryBuilder {
     this.query = this.query
       .and(
         {
@@ -406,25 +408,25 @@ export class PageQueryBuilder {
   /*
    * Add this condition when get any ancestor pages including the target's parent
    */
-  addConditionToSortPagesByDescPath() {
+  addConditionToSortPagesByDescPath(): PageQueryBuilder {
     this.query = this.query.sort('-path');
 
     return this;
   }
 
-  addConditionToSortPagesByAscPath() {
+  addConditionToSortPagesByAscPath(): PageQueryBuilder {
     this.query = this.query.sort('path');
 
     return this;
   }
 
-  addConditionToMinimizeDataForRendering() {
+  addConditionToMinimizeDataForRendering(): PageQueryBuilder {
     this.query = this.query.select('_id path isEmpty grant revision descendantCount');
 
     return this;
   }
 
-  addConditionToListByPathsArray(paths) {
+  addConditionToListByPathsArray(paths): PageQueryBuilder {
     this.query = this.query
       .and({
         path: {
@@ -435,7 +437,7 @@ export class PageQueryBuilder {
     return this;
   }
 
-  addConditionToListByPageIdsArray(pageIds) {
+  addConditionToListByPageIdsArray(pageIds): PageQueryBuilder {
     this.query = this.query
       .and({
         _id: {
@@ -446,7 +448,7 @@ export class PageQueryBuilder {
     return this;
   }
 
-  addConditionToExcludeByPageIdsArray(pageIds) {
+  addConditionToExcludeByPageIdsArray(pageIds): PageQueryBuilder {
     this.query = this.query
       .and({
         _id: {
@@ -457,7 +459,7 @@ export class PageQueryBuilder {
     return this;
   }
 
-  populateDataToList(userPublicFields) {
+  populateDataToList(userPublicFields): PageQueryBuilder {
     this.query = this.query
       .populate({
         path: 'lastUpdateUser',
@@ -466,12 +468,12 @@ export class PageQueryBuilder {
     return this;
   }
 
-  populateDataToShowRevision(userPublicFields) {
+  populateDataToShowRevision(userPublicFields): PageQueryBuilder {
     this.query = populateDataToShowRevision(this.query, userPublicFields);
     return this;
   }
 
-  addConditionToFilteringByParentId(parentId) {
+  addConditionToFilteringByParentId(parentId): PageQueryBuilder {
     this.query = this.query.and({ parent: parentId });
     return this;
   }
@@ -561,16 +563,17 @@ schema.statics.findByIdsAndViewer = async function(pageIds: string[], user, user
  * Find a page by path and viewer. Pass false to useFindOne to use findOne method.
  */
 schema.statics.findByPathAndViewer = async function(
-    path: string | null, user, userGroups = null, useFindOne = true, includeEmpty = false,
-): Promise<PageDocument | PageDocument[] | null> {
+    path: string | null, user, userGroups = null, useFindOne = false, includeEmpty = false,
+): Promise<(PageDocument | PageDocument[]) & HasObjectId | null> {
   if (path == null) {
     throw new Error('path is required.');
   }
 
   const baseQuery = useFindOne ? this.findOne({ path }) : this.find({ path });
+  const includeAnyoneWithTheLink = useFindOne;
   const queryBuilder = new PageQueryBuilder(baseQuery, includeEmpty);
 
-  await queryBuilder.addViewerCondition(user, userGroups);
+  await queryBuilder.addViewerCondition(user, userGroups, includeAnyoneWithTheLink);
 
   return queryBuilder.query.exec();
 };
@@ -889,14 +892,14 @@ schema.statics.findParent = async function(pageId): Promise<PageDocument | null>
 schema.statics.PageQueryBuilder = PageQueryBuilder as any; // mongoose does not support constructor type as statics attrs type
 
 export function generateGrantCondition(
-    user, userGroups, showAnyoneKnowsLink = false, showPagesRestrictedByOwner = false, showPagesRestrictedByGroup = false,
+    user, userGroups, includeAnyoneWithTheLink = false, showPagesRestrictedByOwner = false, showPagesRestrictedByGroup = false,
 ): { $or: any[] } {
   const grantConditions: AnyObject[] = [
     { grant: null },
     { grant: GRANT_PUBLIC },
   ];
 
-  if (showAnyoneKnowsLink) {
+  if (includeAnyoneWithTheLink) {
     grantConditions.push({ grant: GRANT_RESTRICTED });
   }
 

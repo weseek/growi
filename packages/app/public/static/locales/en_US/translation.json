@@ -115,7 +115,7 @@
   "Create under": "Create page under below:",
   "V5 Page Migration": "Convert To V5 Compatibility",
   "GROWI.5.0_new_schema": "GROWI.5.0 new schema",
-  "See_more_detail_on_new_schema": "See more detail on <a href='#'>{{url}}</a> <i class='icon-share-alt'></i> ",
+  "See_more_detail_on_new_schema": "See more detail on <a href='https://docs.growi.org/en/admin-guide/upgrading/50x.html#about-the-new-v5-compatible-format' target='_blank'>{{title}}</a> <i class='icon-share-alt'></i> ",
   "Site URL settings": "Site URL settings",
   "external_account_management": "External Account Management",
   "UserGroup": "UserGroup",
@@ -184,8 +184,7 @@
     "could_not_creata_path": "Couldn't create path."
   },
   "custom_navigation": {
-    "no_page_list": "There are no pages under this page.",
-    "link_sharing_is_disabled": "Link sharing is disabled."
+    "no_page_list": "There are no pages under this page."
   },
   "installer": {
     "setup": "Setup",
@@ -254,7 +253,8 @@
     "Unlimited": "unlimited",
     "Issue": "Issue",
     "share_settings" :"Share settings",
-    "Invalid_Number_of_Date" : "You entered invalid value"
+    "Invalid_Number_of_Date" : "You entered invalid value",
+    "link_sharing_is_disabled": "Link sharing is disabled"
   },
   "API Settings": "API settings",
   "API Token Settings": "API token settings",
@@ -523,10 +523,6 @@
     "page_not_found_in_preview": "\"{{path}}\" is not a GROWI page."
   },
   "toaster": {
-    "create_succeeded": "Succeeded to create {{target}}",
-    "create_failed": "Failed to create {{target}}",
-    "update_successed": "Succeeded to update {{target}}",
-    "update_failed": "Failed to update {{target}}",
     "file_upload_succeeded": "File upload succeeded.",
     "file_upload_failed": "File upload failed.",
     "initialize_successed": "Succeeded to initialize {{target}}",
@@ -537,7 +533,8 @@
     "issue_share_link": "Succeeded to issue new share link",
     "remove_share_link": "Succeeded to remove {{count}} share links",
     "switch_disable_link_sharing_success": "Succeeded to update share link setting",
-    "failed_to_reset_password":"Failed to reset password"
+    "failed_to_reset_password":"Failed to reset password",
+    "save_succeeded": "Saved successfully"
   },
   "template": {
     "modal_label": {
@@ -863,5 +860,9 @@
   "footer": {
     "bookmarks": "Bookmarks",
     "recently_created": "Recently Created"
+  },
+  "v5_page_migration": {
+    "page_tree_not_avaliable" : "Page tree feature is not available yet.",
+    "go_to_settings": "Go to settings to enable the feature"
   }
 }

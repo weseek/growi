@@ -2,7 +2,6 @@ import React, { useCallback, useState } from 'react';
 
 import { useTranslation } from 'next-i18next';
 import PropTypes from 'prop-types';
-import urljoin from 'url-join';
 
 import AdminNotificationContainer from '~/client/services/AdminNotificationContainer';
 import { toastError } from '~/client/util/apiNotification';
@@ -32,26 +31,27 @@ const ManageGlobalNotification = (props) => {
   const [slackChannelToSend, setSlackChannelToSend] = useState('');
   const [triggerEvents, setTriggerEvents] = useState(new Set(globalNotification?.triggerEvents));
 
-  const onChangeTriggerEvents = (triggerEvent) => {
+  const onChangeTriggerEvents = useCallback((triggerEvent) => {
+    let newTriggerEvents;
 
     if (triggerEvents.has(triggerEvent)) {
-      triggerEvents.delete(triggerEvent);
-      setTriggerEvents(triggerEvents);
+      newTriggerEvents = ([...triggerEvents].filter(item => item !== triggerEvent));
+      setTriggerEvents(new Set(newTriggerEvents));
     }
     else {
-      triggerEvents.add(triggerEvent);
-      setTriggerEvents(triggerEvents);
+      newTriggerEvents = [...triggerEvents, triggerEvent];
+      setTriggerEvents(new Set(newTriggerEvents));
     }
-  };
+  }, [triggerEvents]);
 
-  const submitHandler = useCallback(async() => {
+  const updateButtonClickedHandler = useCallback(async() => {
 
     const requestParams = {
       triggerPath,
       notifyToType,
-      emailToSend,
-      slackChannelToSend,
-      triggerEvents,
+      toEmail: emailToSend,
+      slackChannels: slackChannelToSend,
+      triggerEvents: [...triggerEvents],
     };
 
     try {
@@ -61,7 +61,6 @@ const ManageGlobalNotification = (props) => {
       else {
         await apiv3Post('/notification-setting/global-notification', requestParams);
       }
-      window.location.href = urljoin(window.location.origin, '/admin/notification#global-notification');
     }
     catch (err) {
       toastError(err);
@@ -270,7 +269,7 @@ const ManageGlobalNotification = (props) => {
       </div>
 
       <AdminUpdateButtonRow
-        onClick={submitHandler}
+        onClick={updateButtonClickedHandler}
         disabled={adminNotificationContainer.state.retrieveError != null}
       />
     </>
