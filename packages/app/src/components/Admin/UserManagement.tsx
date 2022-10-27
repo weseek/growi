@@ -144,7 +144,6 @@ const UserManagement = (props: UserManagementProps) => {
                 ref={inputRef}
                 onChange={changeSearchTextHandler}
               />
-              {/* TODO: Fix position */}
               {
                 adminUsersContainer.state.searchText.length > 0
                   ? (<i

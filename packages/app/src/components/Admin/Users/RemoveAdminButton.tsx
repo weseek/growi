@@ -23,7 +23,7 @@ const RemoveAdminButton = (props: RemoveAdminButtonProps): JSX.Element => {
   const onClickRemoveAdminBtnHandler = useCallback(async() => {
     try {
       const username = await adminUsersContainer.removeUserAdmin(user._id);
-      toastSuccess(t('admin:toaster.remove_user_admin', { username }));
+      toastSuccess(t('toaster.remove_user_admin', { username }));
     }
     catch (err) {
       toastError(err);

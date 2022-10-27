@@ -55,7 +55,6 @@ const ExternalAccountTable = (props: ExternalAccountTableProps): JSX.Element => 
             <th style={{ width: '100px' }}>
               <div className="d-flex align-items-center">
                 {t('user_management.password_setting')}
-                {/* TODO: Enable popper */}
                 <span
                   role="button"
                   className="text-muted mx-2"

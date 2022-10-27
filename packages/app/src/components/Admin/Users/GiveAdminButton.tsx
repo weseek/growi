@@ -21,7 +21,7 @@ const GiveAdminButton = (props: GiveAdminButtonProps): JSX.Element => {
   const onClickGiveAdminBtnHandler = useCallback(async() => {
     try {
       const username = await adminUsersContainer.giveUserAdmin(user._id);
-      toastSuccess(t('admin:toaster.give_user_admin', { username }));
+      toastSuccess(t('toaster.give_user_admin', { username }));
     }
     catch (err) {
       toastError(err);
