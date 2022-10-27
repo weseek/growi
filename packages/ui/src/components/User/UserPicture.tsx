@@ -6,8 +6,9 @@ import type { Ref as MongooseRef, IUser } from '@growi/core';
 import { pagePathUtils } from '@growi/core';
 import dynamic from 'next/dynamic';
 import { useRouter } from 'next/router';
+import type { UncontrolledTooltipProps } from 'reactstrap';
 
-const UncontrolledTooltip = dynamic(() => import('reactstrap').then(mod => mod.UncontrolledTooltip), { ssr: false });
+const UncontrolledTooltip = dynamic<UncontrolledTooltipProps>(() => import('reactstrap').then(mod => mod.UncontrolledTooltip), { ssr: false });
 
 const { userPageRoot } = pagePathUtils;
 
