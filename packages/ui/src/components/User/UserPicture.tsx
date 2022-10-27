@@ -1,10 +1,10 @@
 import React, {
-  forwardRef, Ref, useEffect, useRef,
+  forwardRef, Ref, useCallback, useRef,
 } from 'react';
 
 import { IUser, pagePathUtils } from '@growi/core';
 import dynamic from 'next/dynamic';
-
+import { useRouter } from 'next/router';
 
 const UncontrolledTooltip = dynamic(() => import('reactstrap').then(mod => mod.UncontrolledTooltip), { ssr: false });
 
@@ -28,12 +28,19 @@ const UserPictureRootWithoutLink = forwardRef((props: UserPictureRootProps, ref:
 });
 
 const UserPictureRootWithLink = forwardRef((props: UserPictureRootProps, ref: Ref<HTMLSpanElement>) => {
+  const router = useRouter();
+
   const { user } = props;
   const href = userPageRoot(user);
+
+  const clickHandler = useCallback(() => {
+    router.push(href);
+  }, [href, router]);
+
   // Using <span> tag here instead of <a> tag because UserPicture is used in SearchResultList which is essentially a anchor tag.
   // Nested anchor tags causes a warning.
   // https://stackoverflow.com/questions/13052598/creating-anchor-tag-inside-anchor-taga
-  return <span ref={ref} className={props.className} onClick={() => { window.location.href = href }}>{props.children}</span>;
+  return <span ref={ref} className={props.className} onClick={clickHandler} style={{ cursor: 'pointer' }}>{props.children}</span>;
 });
 
 // wrapper with Tooltip
