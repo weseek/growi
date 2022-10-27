@@ -16,7 +16,7 @@ const DataImportPageContents = dynamic(() => import('~/components/Admin/ImportDa
 
 
 const AdminDataImportPage: NextPage<CommonProps> = (props) => {
-  const { t } = useTranslation();
+  const { t } = useTranslation('admin');
 
   const title = t('importer_management.import_data');
   const injectableContainers: Container<any>[] = [];

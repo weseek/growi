@@ -23,7 +23,7 @@ type Props = CommonProps & {
 
 
 const AdminAuditLogPage: NextPage<Props> = (props) => {
-  const { t } = useTranslation();
+  const { t } = useTranslation('admin');
   useAuditLogEnabled(props.auditLogEnabled);
   useAuditLogAvailableActions(props.auditLogAvailableActions);
 

@@ -1,6 +1,4 @@
-import {
-  GetServerSideProps, GetServerSidePropsContext,
-} from 'next';
+import { GetServerSidePropsContext } from 'next';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 
 import {

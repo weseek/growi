@@ -33,7 +33,7 @@ type Props = CommonProps & {
 
 
 const AdminSecuritySettingsPage: NextPage<Props> = (props) => {
-  const { t } = useTranslation();
+  const { t } = useTranslation('admin');
   useSiteUrl(props.siteUrl);
   useIsMailerSetup(props.isMailerSetup);
 

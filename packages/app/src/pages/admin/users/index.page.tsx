@@ -25,7 +25,7 @@ type Props = CommonProps & {
 
 
 const AdminUserManagementPage: NextPage<Props> = (props) => {
-  const { t } = useTranslation();
+  const { t } = useTranslation('admin');
   useCurrentUser(props.currentUser != null ? JSON.parse(props.currentUser) : null);
   useIsMailerSetup(props.isMailerSetup);
 

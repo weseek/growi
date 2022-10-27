@@ -16,7 +16,7 @@ const ManageExternalAccount = dynamic(() => import('~/components/Admin/ManageExt
 
 
 const AdminUserManagementPage: NextPage<CommonProps> = (props) => {
-  const { t } = useTranslation();
+  const { t } = useTranslation('admin');
 
   const title = t('user_management.external_account');
   const injectableContainers: Container<any>[] = [];

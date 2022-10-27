@@ -22,7 +22,7 @@ type Props = CommonProps & {
 
 
 const AdminFullTextSearchManagementPage: NextPage<Props> = (props) => {
-  const { t } = useTranslation();
+  const { t } = useTranslation('admin');
   useIsSearchServiceReachable(props.isSearchServiceReachable);
 
   const title = t('full_text_search_management.full_text_search_management');

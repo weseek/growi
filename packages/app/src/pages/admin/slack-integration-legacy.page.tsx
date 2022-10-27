@@ -16,7 +16,7 @@ const LegacySlackIntegration = dynamic(() => import('~/components/Admin/LegacySl
 
 
 const AdminLegacySlackIntegrationPage: NextPage<CommonProps> = (props) => {
-  const { t } = useTranslation();
+  const { t } = useTranslation('admin');
 
   const title = t('slack_integration_legacy.slack_integration_legacy');
   const injectableContainers: Container<any>[] = [];

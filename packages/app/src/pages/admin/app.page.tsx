@@ -17,7 +17,7 @@ const AppSettingsPageContents = dynamic(() => import('~/components/Admin/App/App
 
 
 const AdminAppPage: NextPage<CommonProps> = (props) => {
-  const { t } = useTranslation();
+  const { t } = useTranslation('admin');
   useIsMaintenanceMode(props.isMaintenanceMode);
 
   const title = t('commons:headers.app_settings');

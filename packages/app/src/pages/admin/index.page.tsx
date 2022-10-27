@@ -26,7 +26,7 @@ type Props = CommonProps & {
 
 
 const AdminHomePage: NextPage<Props> = (props) => {
-  const { t } = useTranslation();
+  const { t } = useTranslation('admin');
 
   const title = t('wiki_management_home_page');
   const injectableContainers: Container<any>[] = [];

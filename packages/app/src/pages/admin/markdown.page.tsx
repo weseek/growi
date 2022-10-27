@@ -16,7 +16,7 @@ const MarkDownSettingContents = dynamic(() => import('~/components/Admin/Markdow
 
 
 const AdminMarkdownPage: NextPage<CommonProps> = (props) => {
-  const { t } = useTranslation();
+  const { t } = useTranslation('admin');
 
   const title = t('markdown_settings.markdown_settings');
   const injectableContainers: Container<any>[] = [];

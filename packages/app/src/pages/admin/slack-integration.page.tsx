@@ -21,7 +21,7 @@ type Props = CommonProps & {
 
 
 const AdminSlackIntegrationPage: NextPage<Props> = (props) => {
-  const { t } = useTranslation();
+  const { t } = useTranslation('admin');
   useSiteUrl(props.siteUrl);
 
   const title = t('slack_integration.slack_integration');

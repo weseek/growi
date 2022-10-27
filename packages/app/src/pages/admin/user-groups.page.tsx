@@ -20,7 +20,7 @@ type Props = CommonProps & {
 
 
 const AdminUserGroupPage: NextPage<Props> = (props) => {
-  const { t } = useTranslation();
+  const { t } = useTranslation('admin');
   useIsAclEnabled(props.isAclEnabled);
 
   const title = t('user_group_management.user_group_management');

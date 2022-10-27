@@ -14,8 +14,7 @@ import { useCustomizeTitle } from '~/stores/context';
 import { retrieveServerSideProps } from '../../utils/admin-page-util';
 
 const AdminLayout = dynamic(() => import('~/components/Layout/AdminLayout'), { ssr: false });
-
-const AppSettingsPageContents = dynamic(() => import('~/components/Admin/App/AppSettingsPageContents'), { ssr: false });
+const CustomizeSettingContents = dynamic(() => import('~/components/Admin//Customize/Customize'), { ssr: false });
 
 
 type Props = CommonProps & {
@@ -24,7 +23,7 @@ type Props = CommonProps & {
 
 
 const AdminCustomizeSettingsPage: NextPage<Props> = (props) => {
-  const { t } = useTranslation();
+  const { t } = useTranslation('admin');
   useCustomizeTitle(props.customizeTitle);
 
   const title = t('customize_settings.customize_settings');
@@ -40,7 +39,7 @@ const AdminCustomizeSettingsPage: NextPage<Props> = (props) => {
   return (
     <Provider inject={[...injectableContainers]}>
       <AdminLayout title={useCustomTitle(props, title)} componentTitle={title} >
-        <AppSettingsPageContents />
+        <CustomizeSettingContents />
       </AdminLayout>
     </Provider>
   );

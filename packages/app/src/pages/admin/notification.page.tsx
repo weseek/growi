@@ -16,7 +16,7 @@ const NotificationSetting = dynamic(() => import('~/components/Admin/Notificatio
 
 
 const AdminExternalNotificationPage: NextPage<CommonProps> = (props) => {
-  const { t } = useTranslation();
+  const { t } = useTranslation('admin');
 
   const title = t('external_notification.external_notification');
   const injectableContainers: Container<any>[] = [];
