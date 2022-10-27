@@ -232,6 +232,24 @@ module.exports = (crowi) => {
 
   });
 
+
+  router.get('/global-notification/:id', loginRequiredStrictly, adminRequired, async(req, res) => {
+
+    const notificationSettingId = req.params.id;
+    let globalNotification;
+
+    if (notificationSettingId) {
+      try {
+        globalNotification = await GlobalNotificationSetting.findOne({ _id: notificationSettingId });
+      }
+      catch (err) {
+        logger.error(`Error in finding a global notification setting with {_id: ${notificationSettingId}}`);
+      }
+    }
+
+    return res.apiv3({ globalNotification });
+  });
+
   /**
    * @swagger
    *

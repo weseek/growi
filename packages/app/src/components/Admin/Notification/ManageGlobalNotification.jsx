@@ -1,11 +1,11 @@
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 
 import { useTranslation } from 'next-i18next';
 import PropTypes from 'prop-types';
 
 import AdminNotificationContainer from '~/client/services/AdminNotificationContainer';
 import { toastError } from '~/client/util/apiNotification';
-import { apiv3Post, apiv3Put } from '~/client/util/apiv3-client';
+import { apiv3Get, apiv3Post, apiv3Put } from '~/client/util/apiv3-client';
 import { useIsMailerSetup } from '~/stores/context';
 import loggerFactory from '~/utils/logger';
 
@@ -18,18 +18,38 @@ import TriggerEventCheckBox from './TriggerEventCheckBox';
 
 const logger = loggerFactory('growi:manageGlobalNotification');
 
+
 const ManageGlobalNotification = (props) => {
-
-  let globalNotification;
-  // TODO: securely fetch the data of globalNotification variable without using swig. URL https://redmine.weseek.co.jp/issues/103901
-  // globalNotification = JSON.parse(document.getElementById('admin-global-notification-setting').getAttribute('data-global-notification'));
-
-  const [globalNotificationId, setGlobalNotificationId] = useState(null);
+  const globalNotificationId = props.globalNotificationId || null;
   const [triggerPath, setTriggerPath] = useState('');
-  const [notifyToType, setNotifyToType] = useState('mail');
+  const [notifyType, setNotifyType] = useState('mail');
   const [emailToSend, setEmailToSend] = useState('');
   const [slackChannelToSend, setSlackChannelToSend] = useState('');
-  const [triggerEvents, setTriggerEvents] = useState(new Set(globalNotification?.triggerEvents));
+  const [triggerEvents, setTriggerEvents] = useState(new Set());
+
+  const retrieveGlobalNotificationData = useCallback(async() => {
+    const response = await apiv3Get(`/notification-setting/global-notification/${globalNotificationId}`);
+    const { globalNotification } = response.data;
+
+    const notifyType = globalNotification.__t;
+    setNotifyType(notifyType);
+
+    setTriggerPath(globalNotification.triggerPath);
+    setTriggerEvents(new Set(globalNotification.triggerEvents));
+
+    if (notifyType === 'mail') {
+      setEmailToSend(globalNotification.toEmail);
+    }
+    else {
+      setSlackChannelToSend(globalNotification.slackChannels);
+    }
+  }, [globalNotificationId]);
+
+  useEffect(() => {
+    if (props.globalNotificationId != null) {
+      retrieveGlobalNotificationData();
+    }
+  }, [props.globalNotificationId, retrieveGlobalNotificationData]);
 
   const onChangeTriggerEvents = useCallback((triggerEvent) => {
     let newTriggerEvents;
@@ -48,7 +68,7 @@ const ManageGlobalNotification = (props) => {
 
     const requestParams = {
       triggerPath,
-      notifyToType,
+      notifyType,
       toEmail: emailToSend,
       slackChannels: slackChannelToSend,
       triggerEvents: [...triggerEvents],
@@ -66,7 +86,7 @@ const ManageGlobalNotification = (props) => {
       toastError(err);
       logger.error(err);
     }
-  }, [emailToSend, globalNotificationId, notifyToType, slackChannelToSend, triggerEvents, triggerPath]);
+  }, [emailToSend, globalNotificationId, notifyType, slackChannelToSend, triggerEvents, triggerPath]);
 
   const { data: isMailerSetup } = useIsMailerSetup();
   const { adminNotificationContainer } = props;
@@ -110,10 +130,10 @@ const ManageGlobalNotification = (props) => {
                 className="custom-control-input"
                 type="radio"
                 id="mail"
-                name="notifyToType"
+                name="notifyType"
                 value="mail"
-                checked={notifyToType === 'mail'}
-                onChange={() => { setNotifyToType('mail') }}
+                checked={notifyType === 'mail'}
+                onChange={() => { setNotifyType('mail') }}
               />
               <label className="custom-control-label" htmlFor="mail">
                 <p className="font-weight-bold">Email</p>
@@ -124,10 +144,10 @@ const ManageGlobalNotification = (props) => {
                 className="custom-control-input"
                 type="radio"
                 id="slack"
-                name="notifyToType"
+                name="notifyType"
                 value="slack"
-                checked={notifyToType === 'slack'}
-                onChange={() => { setNotifyToType('slack') }}
+                checked={notifyType === 'slack'}
+                onChange={() => { setNotifyType('slack') }}
               />
               <label className="custom-control-label" htmlFor="slack">
                 <p className="font-weight-bold">Slack</p>
@@ -135,7 +155,7 @@ const ManageGlobalNotification = (props) => {
             </div>
           </div>
 
-          {notifyToType === 'mail'
+          {notifyType === 'mail'
             ? (
               <>
                 <div className="input-group notify-to-option" id="mail-input">
@@ -278,6 +298,7 @@ const ManageGlobalNotification = (props) => {
 
 ManageGlobalNotification.propTypes = {
   adminNotificationContainer: PropTypes.instanceOf(AdminNotificationContainer).isRequired,
+  globalNotificationId: PropTypes.string,
 };
 
 const ManageGlobalNotificationWrapper = withUnstatedContainers(ManageGlobalNotification, [AdminNotificationContainer]);

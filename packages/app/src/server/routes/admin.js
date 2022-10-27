@@ -175,22 +175,22 @@ module.exports = function(crowi, app) {
     return res.redirect('/admin/notification');
   };
 
-  actions.globalNotification = {};
-  actions.globalNotification.detail = async(req, res) => {
-    const notificationSettingId = req.params.id;
-    let globalNotification;
+  // actions.globalNotification = {};
+  // actions.globalNotification.detail = async(req, res) => {
+  //   const notificationSettingId = req.params.id;
+  //   let globalNotification;
 
-    if (notificationSettingId) {
-      try {
-        globalNotification = await GlobalNotificationSetting.findOne({ _id: notificationSettingId });
-      }
-      catch (err) {
-        logger.error(`Error in finding a global notification setting with {_id: ${notificationSettingId}}`);
-      }
-    }
+  //   if (notificationSettingId) {
+  //     try {
+  //       globalNotification = await GlobalNotificationSetting.findOne({ _id: notificationSettingId });
+  //     }
+  //     catch (err) {
+  //       logger.error(`Error in finding a global notification setting with {_id: ${notificationSettingId}}`);
+  //     }
+  //   }
 
-    return res.render('admin/global-notification-detail', { globalNotification });
-  };
+  //   return res.render('admin/global-notification-detail', { globalNotification });
+  // };
 
   actions.search = {};
   actions.search.index = function(req, res) {
