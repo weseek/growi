@@ -24,7 +24,6 @@ const AdminGlobalNotificationNewPage: NextPage<CommonProps> = (props) => {
   const title = t('external_notification.external_notification');
   const customTitle = useCustomTitle(props, title);
 
-
   const currentGlobalNotificationId = Array.isArray(globalNotificationId) ? globalNotificationId[0] : globalNotificationId;
 
   const injectableContainers: Container<any>[] = [];
