@@ -2,7 +2,6 @@ import React, { useCallback, useState } from 'react';
 
 import { useTranslation } from 'next-i18next';
 import PropTypes from 'prop-types';
-import urljoin from 'url-join';
 
 import AdminNotificationContainer from '~/client/services/AdminNotificationContainer';
 import { toastError } from '~/client/util/apiNotification';
@@ -45,7 +44,7 @@ const ManageGlobalNotification = (props) => {
     }
   }, [triggerEvents]);
 
-  const submitHandler = useCallback(async() => {
+  const updateButtonClickedHandler = useCallback(async() => {
 
     const requestParams = {
       triggerPath,
@@ -62,7 +61,6 @@ const ManageGlobalNotification = (props) => {
       else {
         await apiv3Post('/notification-setting/global-notification', requestParams);
       }
-      window.location.href = urljoin(window.location.origin, '/admin/notification#global-notification');
     }
     catch (err) {
       toastError(err);
@@ -271,7 +269,7 @@ const ManageGlobalNotification = (props) => {
       </div>
 
       <AdminUpdateButtonRow
-        onClick={submitHandler}
+        onClick={updateButtonClickedHandler}
         disabled={adminNotificationContainer.state.retrieveError != null}
       />
     </>

@@ -65,7 +65,7 @@ import {
   useIsAclEnabled, useIsUserPage, useIsSearchPage,
   useCsrfToken, useIsSearchScopeChildrenAsDefault, useCurrentPageId, useCurrentPathname,
   useIsSlackConfigured, useRendererConfig, useEditingMarkdown,
-  useEditorConfig, useIsAllReplyShown, useIsUploadableFile, useIsUploadableImage, useLayoutSetting,
+  useEditorConfig, useIsAllReplyShown, useIsUploadableFile, useIsUploadableImage, useLayoutSetting, useCustomizedLogoSrc,
 } from '../stores/context';
 
 import {
@@ -187,6 +187,7 @@ const GrowiPage: NextPage<Props> = (props: Props) => {
   // commons
   useEditorConfig(props.editorConfig);
   useCsrfToken(props.csrfToken);
+  useCustomizedLogoSrc(props.customizedLogoSrc);
 
   // UserUISettings
   usePreferDrawerModeByUser(props.userUISettings?.preferDrawerModeByUser ?? props.sidebarConfig.isSidebarDrawerMode);
@@ -246,6 +247,7 @@ const GrowiPage: NextPage<Props> = (props: Props) => {
 
   useSWRxCurrentPage(undefined, pageWithMeta?.data ?? null); // store initial data
   useEditingMarkdown(pageWithMeta?.data.revision?.body ?? '');
+
   const { data: dataPageInfo } = useSWRxPageInfo(pageId);
   const { data: grantData } = useSWRxIsGrantNormalized(pageId);
   const { mutate: mutateSelectedGrant } = useSelectedGrant();

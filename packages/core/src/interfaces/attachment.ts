@@ -8,4 +8,8 @@ export type IAttachment = {
 
   // virtual property
   filePathProxied: string,
+
+  fileFormat: string,
+  downloadPathProxied: string,
+  originalName: string,
 };
