@@ -2,7 +2,8 @@ import React, {
   forwardRef, Ref, useCallback, useRef,
 } from 'react';
 
-import { IUser, pagePathUtils } from '@growi/core';
+import type { Ref as MongooseRef, IUser } from '@growi/core';
+import { pagePathUtils } from '@growi/core';
 import dynamic from 'next/dynamic';
 import { useRouter } from 'next/router';
 
@@ -14,7 +15,7 @@ const DEFAULT_IMAGE = '/images/icons/user.svg';
 
 
 type UserPictureRootProps = {
-  user: IUser,
+  user: Partial<IUser>,
   className?: string,
   children?: React.ReactNode,
 }
@@ -63,8 +64,16 @@ const withTooltip = (UserPictureRoot: IUserPictureRootElm): IUserPictureRootElm 
 };
 
 
+/**
+ * type guard to determine whether the specified object is IUser
+ */
+const isUserObj = (obj: Partial<IUser> | MongooseRef<IUser>): obj is Partial<IUser> => {
+  return typeof obj !== 'string' && 'username' in obj;
+};
+
+
 type Props = {
-  user?: IUser,
+  user?: Partial<IUser> | MongooseRef<IUser> | null,
   size?: 'xs' | 'sm' | 'md' | 'lg' | 'xl',
   noLink?: boolean,
   noTooltip?: boolean,
@@ -82,7 +91,7 @@ export const UserPicture = React.memo((props: Props): JSX.Element => {
   }
   const className = classNames.join(' ');
 
-  if (user == null) {
+  if (user == null || !isUserObj(user)) {
     return (
       <img
         src={DEFAULT_IMAGE}
@@ -98,7 +107,7 @@ export const UserPicture = React.memo((props: Props): JSX.Element => {
     UserPictureRootElm = withTooltip(UserPictureRootElm);
   }
 
-  const userPictureSrc = user.imageUrlCached || DEFAULT_IMAGE;
+  const userPictureSrc = user.imageUrlCached ?? DEFAULT_IMAGE;
 
   return (
     <UserPictureRootElm user={user}>
