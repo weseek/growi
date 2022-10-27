@@ -9,7 +9,7 @@ import { Skelton } from './Skelton';
 
 import styles from './PageContentFooter.module.scss';
 
-const AuthorInfo = dynamic(() => import('./Navbar/AuthorInfo'), {
+const AuthorInfo = dynamic(() => import('./Navbar/AuthorInfo').then(mod => mod.AuthorInfo), {
   ssr: false,
   loading: () => <Skelton additionalClass={`${styles['page-content-footer-skelton']} mb-3`} />,
 });

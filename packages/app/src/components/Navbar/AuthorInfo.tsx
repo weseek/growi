@@ -1,17 +1,26 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 import { format } from 'date-fns';
 import { UserPicture } from '@growi/ui';
 import { pagePathUtils } from '@growi/core';
+import type { IUser } from '@growi/core';
+import Link from 'next/link';
 
-const { userPageRoot } = pagePathUtils;
+type AuthorInfoProps = {
+  date: Date,
+  user: IUser,
+  mode: 'create' | 'update',
+  locate: 'subnav' | 'footer',
+}
 
-
-const formatType = 'yyyy/MM/dd HH:mm';
-const AuthorInfo = (props) => {
+export const AuthorInfo = (props: AuthorInfoProps): JSX.Element => {
   const {
-    mode, user, date, locate,
+    date, user, mode = 'create', locate = 'subnav',
   } = props;
+
+  console.log(mode, locate)
+
+  const { userPageRoot } = pagePathUtils;
+  const formatType = 'yyyy/MM/dd HH:mm';
 
   const infoLabelForSubNav = mode === 'create'
     ? 'Created by'
@@ -23,7 +32,11 @@ const AuthorInfo = (props) => {
     ? 'Created at'
     : 'Last revision posted at';
   const userLabel = user != null
-    ? <a href={userPageRoot(user)}>{user.name}</a>
+    ? (
+      <Link href={userPageRoot(user)}>
+        <a>{user.name}</a>
+      </Link>
+    )
     : <i>Unknown</i>;
 
   if (locate === 'footer') {
@@ -61,18 +74,3 @@ const AuthorInfo = (props) => {
     </div>
   );
 };
-
-AuthorInfo.propTypes = {
-  date: PropTypes.instanceOf(Date),
-  user: PropTypes.object,
-  mode: PropTypes.oneOf(['create', 'update']),
-  locate: PropTypes.oneOf(['subnav', 'footer']),
-};
-
-AuthorInfo.defaultProps = {
-  mode: 'create',
-  locate: 'subnav',
-};
-
-
-export default AuthorInfo;

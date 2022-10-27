@@ -56,7 +56,7 @@ const SubNavButtons = dynamic<SubNavButtonsProps>(
   () => import('./SubNavButtons').then(mod => mod.SubNavButtons),
   { ssr: false, loading: () => <></> },
 );
-const AuthorInfo = dynamic(() => import('./AuthorInfo'), {
+const AuthorInfo = dynamic(() => import('./AuthorInfo').then(mod => mod.AuthorInfo), {
   ssr: false,
   loading: AuthorInfoSkelton,
 });
