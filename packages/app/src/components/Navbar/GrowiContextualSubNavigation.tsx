@@ -41,6 +41,7 @@ import { SubNavButtonsProps } from './SubNavButtons';
 
 import AuthorInfoStyles from './AuthorInfo.module.scss';
 import PageEditorModeManagerStyles from './PageEditorModeManager.module.scss';
+import { useRouter } from 'next/router';
 
 
 const AuthorInfoSkelton = () => <Skelton additionalClass={`${AuthorInfoStyles['grw-author-info-skelton']} py-1`} />;
@@ -184,6 +185,8 @@ type GrowiContextualSubNavigationProps = {
 
 const GrowiContextualSubNavigation = (props: GrowiContextualSubNavigationProps): JSX.Element => {
 
+  const router = useRouter();
+
   const { data: currentPage, mutate: mutateCurrentPage } = useSWRxCurrentPage();
 
   const revision = currentPage?.revision;
@@ -270,9 +273,15 @@ const GrowiContextualSubNavigation = (props: GrowiContextualSubNavigationProps):
     return;
   }, [mutatePageTagsForEditors]);
 
+  const reload = useCallback(() => {
+    if (currentPathname != null) {
+      router.push(currentPathname);
+    }
+  }, []);
+
   const duplicateItemClickedHandler = useCallback(async(page: IPageForPageDuplicateModal) => {
     const duplicatedHandler: OnDuplicatedFunction = (fromPath, toPath) => {
-      window.location.href = toPath;
+      router.push(toPath);
     };
     openDuplicateModal(page, { onDuplicated: duplicatedHandler });
   }, [openDuplicateModal]);
@@ -280,33 +289,32 @@ const GrowiContextualSubNavigation = (props: GrowiContextualSubNavigationProps):
   const renameItemClickedHandler = useCallback(async(page: IPageToRenameWithMeta<IPageInfoForEntity>) => {
     const renamedHandler: OnRenamedFunction = () => {
       if (page.data._id !== null) {
-        window.location.href = `/${page.data._id}`;
+        router.push(`/${page.data._id}`);
         return;
       }
-      window.location.reload();
+      reload();
     };
     openRenameModal(page, { onRenamed: renamedHandler });
   }, [openRenameModal]);
 
-  const onDeletedHandler: OnDeletedFunction = useCallback((pathOrPathsToDelete, isRecursively, isCompletely) => {
-    if (typeof pathOrPathsToDelete !== 'string') {
-      return;
-    }
-
-    const path = pathOrPathsToDelete;
-
-    if (isCompletely) {
-      // redirect to NotFound Page
-      window.location.href = path;
-    }
-    else {
-      window.location.reload();
-    }
-  }, []);
-
   const deleteItemClickedHandler = useCallback((pageWithMeta: IPageWithMeta) => {
-    openDeleteModal([pageWithMeta], { onDeleted: onDeletedHandler });
-  }, [onDeletedHandler, openDeleteModal]);
+    const deletedHandler: OnDeletedFunction = (pathOrPathsToDelete, isRecursively, isCompletely) => {
+      if (typeof pathOrPathsToDelete !== 'string') {
+        return;
+      }
+
+      const path = pathOrPathsToDelete;
+
+      if (isCompletely) {
+        // redirect to NotFound Page
+        router.push(path);
+      }
+      else {
+        reload();
+      }
+    };
+    openDeleteModal([pageWithMeta], { onDeleted: deletedHandler });
+  }, [openDeleteModal]);
 
   const templateMenuItemClickHandler = useCallback(() => {
     setIsPageTempleteModalShown(true);
