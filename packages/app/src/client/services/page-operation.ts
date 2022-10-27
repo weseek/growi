@@ -142,8 +142,10 @@ export const saveOrUpdate = async(optionsToSave: OptionsToSave, pageInfo: PageIn
   // markdown = pageEditor.getMarkdown();
   // }
 
+  const isNoRevisionPage = pageId != null && revisionId == null;
+
   let res;
-  if (pageId == null) {
+  if (pageId == null || isNoRevisionPage) {
     res = await createPage(path, markdown, options);
   }
   else {
