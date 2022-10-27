@@ -78,8 +78,9 @@ const PageDeleteModal: FC = () => {
 
   const forceDeleteRecursivelyMode = useMemo(() => {
     if (deleteModalData != null && deleteModalData.pages != null && deleteModalData.pages.length > 0) {
-      const pages = deleteModalData.pages as IPageToDeleteWithMeta<{isEmpty: boolean}>[];
-      return pages[0].meta?.isEmpty ?? false;
+      const pageData = deleteModalData.pages[0].data;
+      const isNoRevisionPage = pageData._id != null && pageData.revision == null;
+      return isNoRevisionPage;
     }
     return false;
   }, [deleteModalData]);
