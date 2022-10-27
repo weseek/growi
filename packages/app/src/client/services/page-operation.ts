@@ -4,7 +4,6 @@ import urljoin from 'url-join';
 import { OptionsToSave } from '~/interfaces/editor-settings';
 import loggerFactory from '~/utils/logger';
 
-
 import { toastError } from '../util/apiNotification';
 import { apiPost } from '../util/apiv1-client';
 import { apiv3Post, apiv3Put } from '../util/apiv3-client';
@@ -143,8 +142,10 @@ export const saveOrUpdate = async(optionsToSave: OptionsToSave, pageInfo: PageIn
   // markdown = pageEditor.getMarkdown();
   // }
 
+  const isNoRevisionPage = pageId != null && revisionId == null;
+
   let res;
-  if (pageId == null || (pageId != null && revisionId == null)) {
+  if (pageId == null || isNoRevisionPage) {
     res = await createPage(path, markdown, options);
   }
   else {
