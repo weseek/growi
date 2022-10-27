@@ -539,23 +539,25 @@ module.exports = (crowi) => {
         return res.apiv3Err(new ErrorV3('Someone could update this page, so couldn\'t delete.', 'notfound_or_forbidden'), 409);
       }
       renamedPage = await crowi.pageService.renamePage(page, newPagePath, req.user, options, activityParameters);
+
+      // Respond before sending notification
+      const result = { page: serializePageSecurely(renamedPage ?? page) };
+      res.apiv3(result);
     }
     catch (err) {
       logger.error(err);
       return res.apiv3Err(new ErrorV3('Failed to update page.', 'unknown'), 500);
     }
-    const result = { page: serializePageSecurely(renamedPage ?? page) };
+
     try {
       // global notification
-      await globalNotificationService.fire(GlobalNotificationSetting.EVENT.PAGE_MOVE, page, req.user, {
-        oldPath: req.body.path,
+      await globalNotificationService.fire(GlobalNotificationSetting.EVENT.PAGE_MOVE, renamedPage, req.user, {
+        oldPath: page.path,
       });
     }
     catch (err) {
       logger.error('Move notification failed', err);
     }
-
-    return res.apiv3(result);
   });
 
   router.post('/resume-rename', accessTokenParser, loginRequiredStrictly, csrf, validator.resumeRenamePage, apiV3FormValidator, async(req, res) => {
