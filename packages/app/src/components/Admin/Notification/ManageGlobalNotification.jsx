@@ -1,6 +1,7 @@
 import React, { useCallback, useEffect, useState } from 'react';
 
 import { useTranslation } from 'next-i18next';
+import { useRouter } from 'next/router';
 import PropTypes from 'prop-types';
 
 import AdminNotificationContainer from '~/client/services/AdminNotificationContainer';
@@ -27,9 +28,16 @@ const ManageGlobalNotification = (props) => {
   const [slackChannelToSend, setSlackChannelToSend] = useState('');
   const [triggerEvents, setTriggerEvents] = useState(new Set());
 
+  const router = useRouter();
+
   const retrieveGlobalNotificationData = useCallback(async() => {
     const response = await apiv3Get(`/notification-setting/global-notification/${globalNotificationId}`);
     const { globalNotification } = response.data;
+
+    if (globalNotification == null) {
+      router.push('/admin/notification');
+      return;
+    }
 
     const notifyType = globalNotification.__t;
     setNotifyType(notifyType);
@@ -43,7 +51,7 @@ const ManageGlobalNotification = (props) => {
     else {
       setSlackChannelToSend(globalNotification.slackChannels);
     }
-  }, [globalNotificationId]);
+  }, [globalNotificationId, router]);
 
 
   useEffect(() => {
