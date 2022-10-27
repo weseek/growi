@@ -1,4 +1,6 @@
-import { isClient } from '@growi/core';
+import { useEffect } from 'react';
+
+import { isClient, objectIdUtils } from '@growi/core';
 import {
   NextPage, GetServerSideProps, GetServerSidePropsContext,
 } from 'next';
@@ -20,11 +22,19 @@ const AdminGlobalNotificationNewPage: NextPage<CommonProps> = (props) => {
   const { t } = useTranslation('admin');
   const router = useRouter();
   const { globalNotificationId } = router.query;
+  const currentGlobalNotificationId = Array.isArray(globalNotificationId) ? globalNotificationId[0] : globalNotificationId;
+
+
+  useEffect(() => {
+    if (globalNotificationId == null || (currentGlobalNotificationId != null && !objectIdUtils.isValidObjectId(currentGlobalNotificationId))) {
+      router.push('/admin/notification');
+    }
+  }, [currentGlobalNotificationId, globalNotificationId, router]);
+
 
   const title = t('external_notification.external_notification');
   const customTitle = useCustomTitle(props, title);
 
-  const currentGlobalNotificationId = Array.isArray(globalNotificationId) ? globalNotificationId[0] : globalNotificationId;
 
   const injectableContainers: Container<any>[] = [];
 
