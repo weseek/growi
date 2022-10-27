@@ -15,7 +15,7 @@ export class InvalidParentBookmarkFolder extends ExtensibleCustomError {}
 
 export type BookmarkFolderItems = {
   bookmarkFolder: IBookmarkFolderDocument & HasObjectId
-  childCount: number
+  children: BookmarkFolderItems[]
 }
 
 export type IBookmarkFolderDocument = {
@@ -32,7 +32,7 @@ export interface BookmarkFolderDocument extends Document {
 
 export interface BookmarkFolderModel extends Model<BookmarkFolderDocument>{
   createByParameters(params: IBookmarkFolderDocument): IBookmarkFolderDocument
-  findParentFolderByUserId(user: Types.ObjectId | string): BookmarkFolderDocument[]
+  findParentFolderByUserId(user: Types.ObjectId | string, parentId: Types.ObjectId | string | null): BookmarkFolderDocument[]
   findChildFolderById(parentBookmarkFolder: Types.ObjectId | string): Promise<BookmarkFolderDocument[]>
   deleteFolderAndChildren(bookmarkFolderId: string): {deletedCount: number}
   updateBookmarkFolder(bookmarkFolderId: string, name: string, parent: string): BookmarkFolderDocument | null
@@ -66,8 +66,11 @@ bookmarkFolderSchema.statics.createByParameters = async function(params: IBookma
   return bookmarkFolder;
 };
 
-bookmarkFolderSchema.statics.findParentFolderByUserId = async function(userId: Types.ObjectId | string): Promise<BookmarkFolderDocument[]> {
-  const bookmarks = this.find({ owner: userId, parent: null }) as unknown as BookmarkFolderDocument[];
+bookmarkFolderSchema.statics.findParentFolderByUserId = async function(
+    userId: Types.ObjectId | string,
+    parentId: Types.ObjectId | string | null,
+): Promise<BookmarkFolderDocument[]> {
+  const bookmarks = this.find({ owner: userId, parent: parentId }) as unknown as BookmarkFolderDocument[];
   return bookmarks;
 };
 

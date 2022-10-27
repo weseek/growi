@@ -7,7 +7,8 @@ import { toastSuccess, toastError } from '~/client/util/apiNotification';
 import { apiv3Post } from '~/client/util/apiv3-client';
 import { IPageToDeleteWithMeta } from '~/interfaces/page';
 import { OnDeletedFunction } from '~/interfaces/ui';
-import { useSWRxCurrentUserBookmarkFolders, useSWRxCurrentUserBookmarks } from '~/stores/bookmark';
+import { useSWRxCurrentUserBookmarks } from '~/stores/bookmark';
+import { useSWRxBookamrkFolderAndChild } from '~/stores/bookmark-folder';
 import { useIsGuestUser } from '~/stores/context';
 import { usePageDeleteModal } from '~/stores/modal';
 
@@ -19,12 +20,11 @@ const Bookmarks = () : JSX.Element => {
   const { t } = useTranslation();
   const { data: isGuestUser } = useIsGuestUser();
   const { data: currentUserBookmarksData, mutate: mutateCurrentUserBookmarks } = useSWRxCurrentUserBookmarks();
-  const { data: currentUserBookmarkFolder, mutate: mutateCurrentUserBookmarkFolder } = useSWRxCurrentUserBookmarkFolders();
+  const { mutate: mutateInitialBookmarkFolderData } = useSWRxBookamrkFolderAndChild(true);
   const { open: openDeleteModal } = usePageDeleteModal();
 
   const [isRenameFolderShown, setIsRenameFolderShown] = useState<boolean>(false);
   const [folderName, setFolderName] = useState<string>('');
-  const [currentParentFolder, setCurrentParentFolder] = useState<string | null>(null);
 
   const deleteMenuItemClickHandler = (pageToDelete: IPageToDeleteWithMeta) => {
     const pageDeletedHandler : OnDeletedFunction = (pathOrPathsToDelete, _isRecursively, isCompletely) => {
@@ -47,10 +47,10 @@ const Bookmarks = () : JSX.Element => {
   const onPressEnterHandler = async(folderName: string) => {
     setFolderName(folderName);
     try {
-      await apiv3Post('/bookmark-folder', { name: folderName, parent: currentParentFolder });
+      await apiv3Post('/bookmark-folder', { name: folderName, parent: null });
       setIsRenameFolderShown(false);
       setFolderName('');
-      mutateCurrentUserBookmarkFolder();
+      mutateInitialBookmarkFolderData();
       toastSuccess(t('Create New Bookmark Folder Success'));
     }
     catch (err) {

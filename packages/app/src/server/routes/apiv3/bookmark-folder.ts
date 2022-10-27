@@ -44,28 +44,15 @@ module.exports = (crowi) => {
     }
   });
 
-  // List all main bookmark folders
-  router.get('/list', accessTokenParser, loginRequiredStrictly, async(req, res) => {
-    try {
-      const bookmarkFolders = await BookmarkFolder.findParentFolderByUserId(req.user?._id);
-      const bookmarkFolderItems = await Promise.all(bookmarkFolders.map(async bookmarkFolder => ({
-        bookmarkFolder,
-        childCount: await BookmarkFolder.countDocuments({ parent: bookmarkFolder._id }),
-      })));
-      return res.apiv3({ bookmarkFolderItems });
-    }
-    catch (err) {
-      return res.apiv3Err(err, 500);
-    }
-  });
-
-  router.get('/list-child/:parentId', accessTokenParser, loginRequiredStrictly, async(req, res) => {
+  // List bookmark folders and child
+  router.get('/list/:parentId?', accessTokenParser, loginRequiredStrictly, async(req, res) => {
     const { parentId } = req.params;
+    const _parentId = parentId != null ? parentId : null;
     try {
-      const bookmarkFolders = await BookmarkFolder.findChildFolderById(parentId);
+      const bookmarkFolders = await BookmarkFolder.findParentFolderByUserId(req.user?._id, _parentId);
       const bookmarkFolderItems = await Promise.all(bookmarkFolders.map(async bookmarkFolder => ({
         bookmarkFolder,
-        childCount: await BookmarkFolder.countDocuments({ parent: bookmarkFolder._id }),
+        children: await BookmarkFolder.find({ parent: bookmarkFolder._id }),
       })));
       return res.apiv3({ bookmarkFolderItems });
     }
