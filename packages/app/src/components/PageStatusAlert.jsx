@@ -3,8 +3,8 @@ import React from 'react';
 import { useTranslation } from 'next-i18next';
 import PropTypes from 'prop-types';
 
-import AppContainer from '~/client/services/AppContainer';
-import PageContainer from '~/client/services/PageContainer';
+// import AppContainer from '~/client/services/AppContainer';
+// import PageContainer from '~/client/services/PageContainer';
 import Username from '~/components/User/Username';
 
 import { withUnstatedContainers } from './UnstatedUtils';
@@ -73,15 +73,15 @@ class PageStatusAlert extends React.Component {
   }
 
   getContentsForUpdatedAlert() {
-    const { t, appContainer, pageContainer } = this.props;
-    const pageEditor = appContainer.getComponentInstance('PageEditor');
+    const { t } = this.props;
+    // const pageEditor = appContainer.getComponentInstance('PageEditor');
 
-    let isConflictOnEdit = false;
+    const isConflictOnEdit = false;
 
-    if (pageEditor != null) {
-      const markdownOnEdit = pageEditor.getMarkdown();
-      isConflictOnEdit = markdownOnEdit !== pageContainer.state.markdown;
-    }
+    // if (pageEditor != null) {
+    //   const markdownOnEdit = pageEditor.getMarkdown();
+    //   isConflictOnEdit = markdownOnEdit !== pageContainer.state.markdown;
+    // }
 
     // TODO: re-impl with Next.js way
     // const usernameComponentToString = ReactDOMServer.renderToString(<Username user={pageContainer.state.lastUpdateUser} />);
@@ -165,8 +165,8 @@ class PageStatusAlert extends React.Component {
 PageStatusAlert.propTypes = {
   t: PropTypes.func.isRequired, // i18next
 
-  appContainer: PropTypes.instanceOf(AppContainer).isRequired,
-  pageContainer: PropTypes.instanceOf(PageContainer).isRequired,
+  // appContainer: PropTypes.instanceOf(AppContainer).isRequired,
+  // pageContainer: PropTypes.instanceOf(PageContainer).isRequired,
 };
 
 const PageStatusAlertWrapperFC = (props) => {
@@ -174,9 +174,4 @@ const PageStatusAlertWrapperFC = (props) => {
   return <PageStatusAlert t={t} {...props} />;
 };
 
-/**
- * Wrapper component for using unstated
- */
-const PageStatusAlertWrapper = withUnstatedContainers(PageStatusAlertWrapperFC, [AppContainer, PageContainer]);
-
-export default PageStatusAlertWrapper;
+export default PageStatusAlertWrapperFC;

@@ -854,5 +854,9 @@
   "footer": {
     "bookmarks": "ブックマーク",
     "recently_created": "最近作成したページ"
+  },
+  "v5_page_migration": {
+    "page_tree_not_avaliable" : "Page Tree 機能は現在使用できません。",
+    "go_to_settings": "設定する"
   }
 }
