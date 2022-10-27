@@ -1,8 +1,8 @@
 import React, {
-  forwardRef, Ref, useCallback, useRef,
+  forwardRef, useCallback, useRef,
 } from 'react';
 
-import type { Ref as MongooseRef, IUser } from '@growi/core';
+import type { Ref, IUser } from '@growi/core';
 import { pagePathUtils } from '@growi/core';
 import dynamic from 'next/dynamic';
 import { useRouter } from 'next/router';
@@ -21,15 +21,11 @@ type UserPictureRootProps = {
   children?: React.ReactNode,
 }
 
-type IUserPictureRootElm =
-  (React.ForwardRefExoticComponent<UserPictureRootProps & React.RefAttributes<HTMLSpanElement>>)
-  | ((props: UserPictureRootProps) => JSX.Element);
-
-const UserPictureRootWithoutLink = forwardRef((props: UserPictureRootProps, ref: Ref<HTMLSpanElement>) => {
+const UserPictureRootWithoutLink = forwardRef<HTMLSpanElement, UserPictureRootProps>((props, ref) => {
   return <span ref={ref} className={props.className}>{props.children}</span>;
 });
 
-const UserPictureRootWithLink = forwardRef((props: UserPictureRootProps, ref: Ref<HTMLSpanElement>) => {
+const UserPictureRootWithLink = forwardRef<HTMLSpanElement, UserPictureRootProps>((props, ref) => {
   const router = useRouter();
 
   const { user } = props;
@@ -45,8 +41,9 @@ const UserPictureRootWithLink = forwardRef((props: UserPictureRootProps, ref: Re
   return <span ref={ref} className={props.className} onClick={clickHandler} style={{ cursor: 'pointer' }}>{props.children}</span>;
 });
 
+
 // wrapper with Tooltip
-const withTooltip = (UserPictureRoot: IUserPictureRootElm): IUserPictureRootElm => {
+const withTooltip = (UserPictureSpanElm: React.ForwardRefExoticComponent<UserPictureRootProps & React.RefAttributes<HTMLSpanElement>>) => {
   return (props: UserPictureRootProps) => {
     const { user } = props;
 
@@ -54,7 +51,7 @@ const withTooltip = (UserPictureRoot: IUserPictureRootElm): IUserPictureRootElm 
 
     return (
       <>
-        <UserPictureRoot ref={userPictureRef} user={user}>{props.children}</UserPictureRoot>
+        <UserPictureSpanElm ref={userPictureRef} user={user}>{props.children}</UserPictureSpanElm>
         <UncontrolledTooltip placement="bottom" target={userPictureRef} delay={0} fade={false}>
           @{user.username}<br />
           {user.name}
@@ -68,13 +65,13 @@ const withTooltip = (UserPictureRoot: IUserPictureRootElm): IUserPictureRootElm 
 /**
  * type guard to determine whether the specified object is IUser
  */
-const isUserObj = (obj: Partial<IUser> | MongooseRef<IUser>): obj is Partial<IUser> => {
+const isUserObj = (obj: Partial<IUser> | Ref<IUser>): obj is Partial<IUser> => {
   return typeof obj !== 'string' && 'username' in obj;
 };
 
 
 type Props = {
-  user?: Partial<IUser> | MongooseRef<IUser> | null,
+  user?: Partial<IUser> | Ref<IUser> | null,
   size?: 'xs' | 'sm' | 'md' | 'lg' | 'xl',
   noLink?: boolean,
   noTooltip?: boolean,
@@ -103,10 +100,10 @@ export const UserPicture = React.memo((props: Props): JSX.Element => {
   }
 
   // determine RootElm
-  let UserPictureRootElm: IUserPictureRootElm = noLink ? UserPictureRootWithoutLink : UserPictureRootWithLink;
-  if (!noTooltip) {
-    UserPictureRootElm = withTooltip(UserPictureRootElm);
-  }
+  const UserPictureSpanElm = noLink ? UserPictureRootWithoutLink : UserPictureRootWithLink;
+  const UserPictureRootElm = noTooltip
+    ? UserPictureSpanElm
+    : withTooltip(UserPictureSpanElm);
 
   const userPictureSrc = user.imageUrlCached ?? DEFAULT_IMAGE;
 
