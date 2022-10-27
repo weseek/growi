@@ -5,8 +5,6 @@ import PropTypes from 'prop-types';
 
 import { useAppTitle } from '~/stores/context';
 
-import { withUnstatedContainers } from '../../UnstatedUtils';
-
 import CustomBotWithoutProxyConnectionStatus from './CustomBotWithoutProxyConnectionStatus';
 import CustomBotWithoutProxySettingsAccordion, { botInstallationStep } from './CustomBotWithoutProxySettingsAccordion';
 

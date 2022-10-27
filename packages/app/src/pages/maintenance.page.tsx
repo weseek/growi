@@ -47,7 +47,7 @@ const MaintenancePage: NextPage<CommonProps> = (props: Props) => {
               && (
                 <p>
                   <i className="icon-arrow-right"></i>
-                  <a className="btn btn-link" href="/admin/home">{ t('maintenance_mode.admin_page') }</a>
+                  <a className="btn btn-link" href="/admin">{ t('maintenance_mode.admin_page') }</a>
                 </p>
               )}
                 {props.currentUser != null
