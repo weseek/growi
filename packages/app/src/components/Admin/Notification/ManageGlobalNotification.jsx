@@ -1,4 +1,6 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, {
+  useCallback, useMemo, useEffect, useState,
+} from 'react';
 
 import { useTranslation } from 'next-i18next';
 import { useRouter } from 'next/router';
@@ -6,8 +8,9 @@ import PropTypes from 'prop-types';
 
 import AdminNotificationContainer from '~/client/services/AdminNotificationContainer';
 import { toastError } from '~/client/util/apiNotification';
-import { apiv3Get, apiv3Post, apiv3Put } from '~/client/util/apiv3-client';
+import { apiv3Post, apiv3Put } from '~/client/util/apiv3-client';
 import { useIsMailerSetup } from '~/stores/context';
+import { useSWRxGlobalNotification } from '~/stores/global-notification';
 import loggerFactory from '~/utils/logger';
 
 
@@ -21,44 +24,45 @@ const logger = loggerFactory('growi:manageGlobalNotification');
 
 
 const ManageGlobalNotification = (props) => {
-  const globalNotificationId = props.globalNotificationId || null;
+
   const [triggerPath, setTriggerPath] = useState('');
   const [notifyType, setNotifyType] = useState('mail');
   const [emailToSend, setEmailToSend] = useState('');
   const [slackChannelToSend, setSlackChannelToSend] = useState('');
   const [triggerEvents, setTriggerEvents] = useState(new Set());
+  const { data: globalNotificationData } = useSWRxGlobalNotification(props.globalNotificationId);
+  const globalNotification = useMemo(() => globalNotificationData?.globalNotification, [globalNotificationData?.globalNotification]);
 
   const router = useRouter();
 
-  const retrieveGlobalNotificationData = useCallback(async() => {
-    const response = await apiv3Get(`/notification-setting/global-notification/${globalNotificationId}`);
-    const { globalNotification } = response.data;
-
-    if (globalNotification == null) {
-      router.push('/admin/notification');
-      return;
-    }
-
-    const notifyType = globalNotification.__t;
-    setNotifyType(notifyType);
-
-    setTriggerPath(globalNotification.triggerPath);
-    setTriggerEvents(new Set(globalNotification.triggerEvents));
-
-    if (notifyType === 'mail') {
-      setEmailToSend(globalNotification.toEmail);
-    }
-    else {
-      setSlackChannelToSend(globalNotification.slackChannels);
-    }
-  }, [globalNotificationId, router]);
-
 
   useEffect(() => {
-    if (props.globalNotificationId != null) {
-      retrieveGlobalNotificationData();
+    if (globalNotification != null) {
+      const notifyType = globalNotification.__t;
+      setNotifyType(notifyType);
+
+      setTriggerPath(globalNotification.triggerPath);
+      setTriggerEvents(new Set(globalNotification.triggerEvents));
+
+      if (notifyType === 'mail') {
+        setEmailToSend(globalNotification.toEmail);
+      }
+      else {
+        setSlackChannelToSend(globalNotification.slackChannels);
+      }
     }
-  }, [props.globalNotificationId, retrieveGlobalNotificationData]);
+
+
+  }, [globalNotification]);
+
+  const isLoading = globalNotificationData === undefined;
+  const notExistsGlobalNotification = !isLoading && globalNotificationData == null;
+
+  useEffect(() => {
+    if (notExistsGlobalNotification) {
+      router.push('/admin/notification');
+    }
+  }, [notExistsGlobalNotification, router]);
 
 
   const onChangeTriggerEvents = useCallback((triggerEvent) => {
@@ -84,6 +88,8 @@ const ManageGlobalNotification = (props) => {
       triggerEvents: [...triggerEvents],
     };
 
+    const { _id: globalNotificationId } = globalNotification;
+
     try {
       if (globalNotificationId != null) {
         await apiv3Put(`/notification-setting/global-notification/${globalNotificationId}`, requestParams);
@@ -96,7 +102,7 @@ const ManageGlobalNotification = (props) => {
       toastError(err);
       logger.error(err);
     }
-  }, [emailToSend, globalNotificationId, notifyType, slackChannelToSend, triggerEvents, triggerPath]);
+  }, [emailToSend, globalNotification, notifyType, slackChannelToSend, triggerEvents, triggerPath]);
 
 
   const { data: isMailerSetup } = useIsMailerSetup();
