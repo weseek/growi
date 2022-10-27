@@ -32,7 +32,7 @@ export const AuthorInfo = (props: AuthorInfoProps): JSX.Element => {
     : 'Last revision posted at';
   const userLabel = user != null
     ? (
-      <Link href={userPageRoot(user)}>
+      <Link href={userPageRoot(user)} prefetch={false}>
         <a>{user.name}</a>
       </Link>
     )

@@ -15,7 +15,7 @@ const Username = (props) => {
   const href = `/user/${user.username}`;
 
   return (
-    <Link href={href}>
+    <Link href={href} prefetch={false}>
       <a>{name} (@{username})</a>
     </Link>
   );
