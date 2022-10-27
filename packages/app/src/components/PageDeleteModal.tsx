@@ -3,7 +3,6 @@ import React, {
 } from 'react';
 
 import { HasObjectId, pagePathUtils } from '@growi/core';
-import { Boolean } from 'aws-sdk/clients/inspector2';
 import { useTranslation } from 'next-i18next';
 import {
   Modal, ModalHeader, ModalBody, ModalFooter,
