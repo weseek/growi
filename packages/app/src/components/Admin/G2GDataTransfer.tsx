@@ -70,9 +70,9 @@ const G2GDataTransfer = (): JSX.Element => {
         setStatusMessage(t('Successfully transferred GROWI. Now you can use new GROWI !'));
       });
 
-      socket.on('admin:onG2gError', ({ message }) => {
+      socket.on('admin:onG2gError', ({ key }) => {
         setTransferring(false);
-        setStatusMessage(t(message));
+        setStatusMessage(t(key));
       });
     }
   }, [socket, t]);

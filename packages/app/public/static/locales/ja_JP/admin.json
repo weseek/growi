@@ -1040,5 +1040,10 @@
     "ADMIN_SEARCH_CONNECTION": "Elasticsearch の再接続の試行",
     "ADMIN_SEARCH_INDICES_NORMALIZE": "Elasticsearch のインデックスの正規化",
     "ADMIN_SEARCH_INDICES_REBUILD": "Elasticsearch のインデックスのリビルド"
+  },
+  "g2g": {
+    "error_upload_attachment": "添付ファイルのアップロードに失敗しました",
+    "error_generate_growi_archive": "GROWI アーカイブファイルの作成に失敗しました",
+    "error_send_growi_archive": "GROWI アーカイブファイルの送信に失敗しました"
   }
 }

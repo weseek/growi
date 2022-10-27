@@ -295,7 +295,6 @@ export class G2GTransferPusherService implements Pusher {
         }
         catch (err) {
           logger.error(`Error occured when uploading attachment(ID=${attachment.id})`, err);
-          socket.emit('admin:onG2gError', { message: `Failed to upload attachment ${attachment.id}.` });
         }
       }
     }
@@ -323,7 +322,7 @@ export class G2GTransferPusherService implements Pusher {
     }
     catch (err) {
       logger.error(err);
-      socket.emit('admin:onG2gError', { message: 'Failed to generate Growi archive file.' });
+      socket.emit('admin:onG2gError', { message: 'Failed to generate GROWI archive file', key: 'error_generate_growi_archive' });
       throw err;
     }
 
@@ -342,7 +341,7 @@ export class G2GTransferPusherService implements Pusher {
     }
     catch (err) {
       logger.error(err);
-      socket.emit('admin:onG2gError', { message: 'Failed to send Growi archive file to new Growi.' });
+      socket.emit('admin:onG2gError', { message: 'Failed to send GROWI archive file to new GROWI', key: 'error_send_growi_archive' });
       throw err;
     }
 
@@ -353,7 +352,7 @@ export class G2GTransferPusherService implements Pusher {
     }
     catch (err) {
       logger.error(err);
-      socket.emit('admin:onG2gError', { message: 'Failed to transfer attachments.' });
+      socket.emit('admin:onG2gError', { message: 'Failed to transfer attachments', key: 'error_upload_attachment' });
       throw err;
     }
 
