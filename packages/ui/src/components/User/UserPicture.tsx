@@ -1,104 +1,106 @@
-import React from 'react';
+import React, {
+  forwardRef, Ref, useEffect, useRef,
+} from 'react';
 
-import { pagePathUtils } from '@growi/core';
-import PropTypes from 'prop-types';
-import { UncontrolledTooltip } from 'reactstrap';
+import { IUser, pagePathUtils } from '@growi/core';
+import dynamic from 'next/dynamic';
 
+
+const UncontrolledTooltip = dynamic(() => import('reactstrap').then(mod => mod.UncontrolledTooltip), { ssr: false });
 
 const { userPageRoot } = pagePathUtils;
 
-
 const DEFAULT_IMAGE = '/images/icons/user.svg';
 
-export class UserPicture extends React.Component {
 
-  getClassName() {
-    const className = ['rounded-circle', 'picture'];
-    // size
-    if (this.props.size) {
-      className.push(`picture-${this.props.size}`);
-    }
+type UserPictureRootProps = {
+  user: IUser,
+  className?: string,
+  children?: React.ReactNode,
+}
 
-    return className.join(' ');
-  }
+type IUserPictureRootElm =
+  (React.ForwardRefExoticComponent<UserPictureRootProps & React.RefAttributes<HTMLSpanElement>>)
+  | ((props: UserPictureRootProps) => JSX.Element);
 
-  renderForNull() {
+const UserPictureRootWithoutLink = forwardRef((props: UserPictureRootProps, ref: Ref<HTMLSpanElement>) => {
+  return <span ref={ref} className={props.className}>{props.children}</span>;
+});
+
+const UserPictureRootWithLink = forwardRef((props: UserPictureRootProps, ref: Ref<HTMLSpanElement>) => {
+  const { user } = props;
+  const href = userPageRoot(user);
+  // Using <span> tag here instead of <a> tag because UserPicture is used in SearchResultList which is essentially a anchor tag.
+  // Nested anchor tags causes a warning.
+  // https://stackoverflow.com/questions/13052598/creating-anchor-tag-inside-anchor-taga
+  return <span ref={ref} className={props.className} onClick={() => { window.location.href = href }}>{props.children}</span>;
+});
+
+// wrapper with Tooltip
+const withTooltip = (UserPictureRoot: IUserPictureRootElm): IUserPictureRootElm => {
+  return (props: UserPictureRootProps) => {
+    const { user } = props;
+
+    const userPictureRef = useRef<HTMLSpanElement>(null);
+
     return (
-      <img
-        src={DEFAULT_IMAGE}
-        alt="someone"
-        className={this.getClassName()}
-      />
-    );
-  }
-
-  RootElmWithoutLink = (props) => {
-    return <span {...props}>{props.children}</span>;
-  };
-
-  RootElmWithLink = (props) => {
-    const { user } = this.props;
-    const href = userPageRoot(user);
-    // Using <span> tag here instead of <a> tag because UserPicture is used in SearchResultList which is essentially a anchor tag.
-    // Nested anchor tags causes a warning.
-    // https://stackoverflow.com/questions/13052598/creating-anchor-tag-inside-anchor-taga
-    return <span onClick={() => { window.location.href = href }} {...props}>{props.children}</span>;
-  };
-
-  withTooltip = (RootElm) => {
-    const { user } = this.props;
-    const id = `user-picture-${Math.random().toString(32).substring(2)}`;
-
-    return props => (
       <>
-        <RootElm id={id}>{props.children}</RootElm>
-        <UncontrolledTooltip placement="bottom" target={id} delay={0} fade={false}>
+        <UserPictureRoot ref={userPictureRef} user={user}>{props.children}</UserPictureRoot>
+        <UncontrolledTooltip placement="bottom" target={userPictureRef} delay={0} fade={false}>
           @{user.username}<br />
           {user.name}
         </UncontrolledTooltip>
       </>
     );
   };
+};
 
-  render() {
-    const user = this.props.user;
 
-    if (user == null) {
-      return this.renderForNull();
-    }
+type Props = {
+  user?: IUser,
+  size?: 'xs' | 'sm' | 'md' | 'lg' | 'xl',
+  noLink?: boolean,
+  noTooltip?: boolean,
+};
 
-    const { noLink, noTooltip } = this.props;
+export const UserPicture = React.memo((props: Props): JSX.Element => {
 
-    // determine RootElm
-    let RootElm = noLink ? this.RootElmWithoutLink : this.RootElmWithLink;
-    if (!noTooltip) {
-      RootElm = this.withTooltip(RootElm);
-    }
+  const {
+    user, size, noLink, noTooltip,
+  } = props;
 
-    const userPictureSrc = user.imageUrlCached || DEFAULT_IMAGE;
+  const classNames = ['rounded-circle', 'picture'];
+  if (size != null) {
+    classNames.push(`picture-${size}`);
+  }
+  const className = classNames.join(' ');
 
+  if (user == null) {
     return (
-      <RootElm>
-        <img
-          src={userPictureSrc}
-          alt={user.username}
-          className={this.getClassName()}
-        />
-      </RootElm>
+      <img
+        src={DEFAULT_IMAGE}
+        alt="someone"
+        className={className}
+      />
     );
   }
 
-}
+  // determine RootElm
+  let UserPictureRootElm: IUserPictureRootElm = noLink ? UserPictureRootWithoutLink : UserPictureRootWithLink;
+  if (!noTooltip) {
+    UserPictureRootElm = withTooltip(UserPictureRootElm);
+  }
 
-UserPicture.propTypes = {
-  user: PropTypes.object,
-  size: PropTypes.oneOf(['xs', 'sm', 'md', 'lg', 'xl']),
-  noLink: PropTypes.bool,
-  noTooltip: PropTypes.bool,
-};
+  const userPictureSrc = user.imageUrlCached || DEFAULT_IMAGE;
 
-UserPicture.defaultProps = {
-  size: null,
-  noLink: false,
-  noTooltip: false,
-};
+  return (
+    <UserPictureRootElm user={user}>
+      <img
+        src={userPictureSrc}
+        alt={user.username}
+        className={className}
+      />
+    </UserPictureRootElm>
+  );
+});
+UserPicture.displayName = 'UserPicture';
