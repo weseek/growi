@@ -1282,7 +1282,7 @@ module.exports = function(crowi, app) {
     }
 
     if (page.isEmpty && !isRecursively) {
-      return res.json(ApiResponse.error('Empty pages cannot be single deleted'));
+      return res.json(ApiResponse.error('Empty pages cannot be single deleted', 'single_deletion_empty_pages'));
     }
 
     let creator;
