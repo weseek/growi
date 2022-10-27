@@ -86,6 +86,12 @@
       "restricted": "制限 (登録完了には管理者の承認が必要)",
       "closed": "非公開 (登録には管理者による招待が必要)"
     },
+    "share_link_management": "共有リンク管理",
+    "delete_all_share_links":"全ての共有リンクを削除します",
+    "Share Link": "共有用リンク",
+    "Page Path": "ページパス",
+    "expire": "有効期限",
+    "description": "概要",
     "share_link_rights": "シェアリンクの権限",
     "enable_link_sharing": "リンクのシェアを許可",
     "all_share_links": "全てのシェアリンク",

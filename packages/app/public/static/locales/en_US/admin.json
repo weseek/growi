@@ -79,6 +79,12 @@
       "restricted": "Restricted (Requires approval by administrators)",
       "closed": "Closed (Invitation Only)"
     },
+    "share_link_management": "Share Link Management",
+    "delete_all_share_links":"Delete all share links",
+    "Share Link": "Share Link",
+    "Page Path": "Page Path",
+    "expire": "Expiration",
+    "description": "Description",
     "share_link_rights": "Share link rights",
     "enable_link_sharing": "Enable link sharing",
     "all_share_links": "All share links",

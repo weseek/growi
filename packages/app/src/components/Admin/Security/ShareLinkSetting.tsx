@@ -110,9 +110,9 @@ const ShareLinkSetting = (props: ShareLinkSettingProps) => {
           type="button"
           onClick={() => setIsDeleteConfirmModalShown(true)}
         >
-          {t('share_links.delete_all_share_links')}
+          {t('security_settings.delete_all_share_links')}
         </button>
-        <h2 className="alert-anchor border-bottom">{t('share_links.share_link_management')}</h2>
+        <h2 className="alert-anchor border-bottom">{t('security_settings.share_link_management')}</h2>
       </div>
       <h4>{t('security_settings.share_link_rights')}</h4>
       <div className="row mb-5">

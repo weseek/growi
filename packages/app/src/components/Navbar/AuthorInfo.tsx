@@ -1,8 +1,9 @@
 import React from 'react';
-import { format } from 'date-fns';
+
 import { pagePathUtils } from '@growi/core';
 import type { IUser } from '@growi/core';
 import { UserPicture } from '@growi/ui';
+import { format } from 'date-fns';
 import Link from 'next/link';
 
 export type AuthorInfoProps = {
