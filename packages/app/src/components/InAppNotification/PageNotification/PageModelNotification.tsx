@@ -4,6 +4,7 @@ import React, {
 
 import { HasObjectId } from '@growi/core';
 import { PagePathLabel } from '@growi/ui';
+import { useRouter } from 'next/router';
 
 import { IInAppNotificationOpenable } from '~/client/interfaces/in-app-notification-openable';
 import { IInAppNotification } from '~/interfaces/in-app-notification';
@@ -24,6 +25,8 @@ const PageModelNotification: ForwardRefRenderFunction<IInAppNotificationOpenable
     notification, actionMsg, actionIcon, actionUsers,
   } = props;
 
+  const router = useRouter();
+
   const snapshot = parseSnapshot(notification.snapshot);
 
   // publish open()
@@ -33,7 +36,7 @@ const PageModelNotification: ForwardRefRenderFunction<IInAppNotificationOpenable
         // jump to target page
         const targetPagePath = notification.target.path;
         if (targetPagePath != null) {
-          window.location.href = targetPagePath;
+          router.push(targetPagePath);
         }
       }
     },
