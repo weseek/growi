@@ -5,7 +5,7 @@ import type { IUser } from '@growi/core';
 import { UserPicture } from '@growi/ui';
 import Link from 'next/link';
 
-type AuthorInfoProps = {
+export type AuthorInfoProps = {
   date: Date,
   user: IUser,
   mode: 'create' | 'update',

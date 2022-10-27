@@ -1,15 +1,17 @@
 import React from 'react';
 
-import { IPage, IUser } from '@growi/core';
+import type { IPage, IUser } from '@growi/core';
 import dynamic from 'next/dynamic';
 
 import { useSWRxCurrentPage } from '~/stores/page';
+
+import { AuthorInfoProps } from './Navbar/AuthorInfo''
 
 import { Skelton } from './Skelton';
 
 import styles from './PageContentFooter.module.scss';
 
-const AuthorInfo = dynamic(() => import('./Navbar/AuthorInfo').then(mod => mod.AuthorInfo), {
+const AuthorInfo = dynamic<AuthorInfoProps>(() => import('./Navbar/AuthorInfo').then(mod => mod.AuthorInfo), {
   ssr: false,
   loading: () => <Skelton additionalClass={`${styles['page-content-footer-skelton']} mb-3`} />,
 });

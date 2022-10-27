@@ -39,6 +39,7 @@ import { Skelton } from '../Skelton';
 import { GrowiSubNavigation } from './GrowiSubNavigation';
 import { SubNavButtonsProps } from './SubNavButtons';
 
+import { AuthorInfoProps } from './AuthorInfo';
 import AuthorInfoStyles from './AuthorInfo.module.scss';
 import PageEditorModeManagerStyles from './PageEditorModeManager.module.scss';
 
@@ -56,7 +57,7 @@ const SubNavButtons = dynamic<SubNavButtonsProps>(
   () => import('./SubNavButtons').then(mod => mod.SubNavButtons),
   { ssr: false, loading: () => <></> },
 );
-const AuthorInfo = dynamic(() => import('./AuthorInfo').then(mod => mod.AuthorInfo), {
+const AuthorInfo = dynamic<AuthorInfoProps>(() => import('./AuthorInfo').then(mod => mod.AuthorInfo), {
   ssr: false,
   loading: AuthorInfoSkelton,
 });
