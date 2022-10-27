@@ -16,7 +16,7 @@ import { getOptionsToSave } from '~/client/util/editor';
 import { IEditorMethods } from '~/interfaces/editor-methods';
 import {
   useCurrentPagePath, useCurrentPathname, useCurrentPageId,
-  useIsEditable, useIsIndentSizeForced, useIsUploadableFile, useIsUploadableImage,
+  useIsEditable, useIsIndentSizeForced, useIsUploadableFile, useIsUploadableImage, useEditingMarkdown,
 } from '~/stores/context';
 import {
   useCurrentIndentSize, useSWRxSlackChannels, useIsSlackEnabled, useIsTextlintEnabled, usePageTagsForEditors,
@@ -57,7 +57,7 @@ const PageEditor = React.memo((): JSX.Element => {
   const { data: currentPage, mutate: mutateCurrentPage } = useSWRxCurrentPage();
   const { data: grantData, mutate: mutateGrant } = useSelectedGrant();
   const { data: pageTags } = usePageTagsForEditors(pageId);
-
+  const { data: editingMarkdown } = useEditingMarkdown();
   const { data: isEditable } = useIsEditable();
   const { data: editorMode, mutate: mutateEditorMode } = useEditorMode();
   const { data: isMobile } = useIsMobile();
@@ -73,7 +73,7 @@ const PageEditor = React.memo((): JSX.Element => {
   const { data: rendererOptions } = usePreviewOptions();
 
   const currentRevisionId = currentPage?.revision?._id;
-  const initialValue = currentPage?.revision.body ?? '';
+  const initialValue = editingMarkdown ?? '';
 
   const markdownToSave = useRef<string>(initialValue);
   const [markdownToPreview, setMarkdownToPreview] = useState<string>(initialValue);
