@@ -22,9 +22,12 @@ const AdminGlobalNotificationNewPage: NextPage<CommonProps> = (props) => {
   const { globalNotificationId } = router.query;
 
   const title = t('external_notification.external_notification');
-  const injectableContainers: Container<any>[] = [];
+  const customTitle = useCustomTitle(props, title);
+
 
   const currentGlobalNotificationId = Array.isArray(globalNotificationId) ? globalNotificationId[0] : globalNotificationId;
+
+  const injectableContainers: Container<any>[] = [];
 
   if (isClient()) {
     const adminNotificationContainer = new AdminNotificationContainer();
@@ -34,7 +37,7 @@ const AdminGlobalNotificationNewPage: NextPage<CommonProps> = (props) => {
 
   return (
     <Provider inject={[...injectableContainers]}>
-      <AdminLayout title={useCustomTitle(props, title)} componentTitle={title} >
+      <AdminLayout title={customTitle} componentTitle={title} >
         {
           currentGlobalNotificationId != null && router.isReady
       && <ManageGlobalNotification globalNotificationId={currentGlobalNotificationId} />

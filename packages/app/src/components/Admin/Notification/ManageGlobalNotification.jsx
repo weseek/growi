@@ -45,11 +45,13 @@ const ManageGlobalNotification = (props) => {
     }
   }, [globalNotificationId]);
 
+
   useEffect(() => {
     if (props.globalNotificationId != null) {
       retrieveGlobalNotificationData();
     }
   }, [props.globalNotificationId, retrieveGlobalNotificationData]);
+
 
   const onChangeTriggerEvents = useCallback((triggerEvent) => {
     let newTriggerEvents;
@@ -64,8 +66,8 @@ const ManageGlobalNotification = (props) => {
     }
   }, [triggerEvents]);
 
-  const updateButtonClickedHandler = useCallback(async() => {
 
+  const updateButtonClickedHandler = useCallback(async() => {
     const requestParams = {
       triggerPath,
       notifyType,
@@ -87,6 +89,7 @@ const ManageGlobalNotification = (props) => {
       logger.error(err);
     }
   }, [emailToSend, globalNotificationId, notifyType, slackChannelToSend, triggerEvents, triggerPath]);
+
 
   const { data: isMailerSetup } = useIsMailerSetup();
   const { adminNotificationContainer } = props;
