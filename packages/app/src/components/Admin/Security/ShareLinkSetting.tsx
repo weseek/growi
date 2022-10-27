@@ -17,7 +17,7 @@ import DeleteAllShareLinksModal from './DeleteAllShareLinksModal';
 
 type PagerProps = {
   activePage: number,
-  handlePage: (page: any) => Promise<void>,
+  pagingHandler: (page: number) => Promise<void>,
   totalLinks: number,
   limit: number,
 }
@@ -28,13 +28,13 @@ type ShareLinkSettingProps = {
 
 const Pager = (props: PagerProps) => {
   const {
-    activePage, handlePage, totalLinks, limit,
+    activePage, pagingHandler, totalLinks, limit,
   } = props;
 
   return (
     <PaginationWrapper
       activePage={activePage}
-      changePage={handlePage}
+      changePage={pagingHandler}
       totalItemsCount={totalLinks}
       pagingLimit={limit}
       align="center"
@@ -137,7 +137,7 @@ const ShareLinkSetting = (props: ShareLinkSettingProps) => {
       <h4>{t('security_settings.all_share_links')}</h4>
       <Pager
         activePage={shareLinksActivePage}
-        handlePage={getShareLinkList}
+        pagingHandler={getShareLinkList}
         totalLinks={totalshareLinks}
         limit={shareLinksPagingLimit}
       />
