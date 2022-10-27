@@ -4,10 +4,9 @@ import { useTranslation } from 'next-i18next';
 
 import { toastSuccess } from '~/client/util/apiNotification';
 import {
-  IDataWithMeta,
   IPageHasId,
-  IPageInfo,
 } from '~/interfaces/page';
+import { IPagingResult } from '~/interfaces/paging-result';
 import { useShowPageLimitationXL } from '~/stores/context';
 import { useEmptyTrashModal } from '~/stores/modal';
 import { useSWRxDescendantsPageListForCurrrentPath, useSWRxPageInfoForList } from '~/stores/page-listing';
@@ -31,14 +30,16 @@ const useEmptyTrashButton = () => {
   const pageIds = pagingResult?.items?.map(page => page._id);
   const { injectTo } = useSWRxPageInfoForList(pageIds, null, true, true);
 
-  let pageWithMetas: IDataWithMeta<IPageHasId, IPageInfo>[] = [];
+  const calculateDeletablePages = useCallback((pagingResult?: IPagingResult<IPageHasId>) => {
+    if (pagingResult == null) { return undefined }
 
-  if (pagingResult != null) {
     const dataWithMetas = pagingResult.items.map(page => convertToIDataWithMeta(page));
-    pageWithMetas = injectTo(dataWithMetas);
-  }
+    const pageWithMetas = injectTo(dataWithMetas);
 
-  const deletablePages = pageWithMetas.filter(page => page.meta?.isAbleToDeleteCompletely);
+    return pageWithMetas.filter(page => page.meta?.isAbleToDeleteCompletely);
+  }, [injectTo]);
+
+  const deletablePages = calculateDeletablePages(pagingResult);
 
   const onEmptiedTrashHandler = useCallback(() => {
     toastSuccess(t('empty_trash'));
@@ -47,19 +48,20 @@ const useEmptyTrashButton = () => {
   }, [t, mutatePageLists]);
 
   const emptyTrashClickHandler = useCallback(() => {
+    if (deletablePages == null) { return }
     openEmptyTrashModal(deletablePages, { onEmptiedTrash: onEmptiedTrashHandler, canDeleteAllPages: pagingResult?.totalCount === deletablePages.length });
   }, [deletablePages, onEmptiedTrashHandler, openEmptyTrashModal, pagingResult?.totalCount]);
 
-  const emptyTrashButtonForTrashPageList = useMemo(() => {
-    return <EmptyTrashButton onEmptyTrashButtonClick={emptyTrashClickHandler} disableEmptyButton={deletablePages.length === 0} />;
-  }, [emptyTrashClickHandler, deletablePages.length]);
+  const emptyTrashButton = useMemo(() => {
+    return <EmptyTrashButton onEmptyTrashButtonClick={emptyTrashClickHandler} disableEmptyButton={deletablePages?.length === 0} />;
+  }, [emptyTrashClickHandler, deletablePages?.length]);
 
-  return emptyTrashButtonForTrashPageList;
+  return emptyTrashButton;
 };
 
 export const TrashPageList: FC = () => {
   const { t } = useTranslation();
-  const emptyTrashButtonForTrashPageList = useEmptyTrashButton();
+  const emptyTrashButton = useEmptyTrashButton();
 
   const navTabMapping = useMemo(() => {
     return {
@@ -74,7 +76,7 @@ export const TrashPageList: FC = () => {
 
   return (
     <div data-testid="trash-page-list" className="mt-5 d-edit-none">
-      <CustomNavAndContents navTabMapping={navTabMapping} navRightElement={emptyTrashButtonForTrashPageList} />
+      <CustomNavAndContents navTabMapping={navTabMapping} navRightElement={emptyTrashButton} />
     </div>
   );
 };
