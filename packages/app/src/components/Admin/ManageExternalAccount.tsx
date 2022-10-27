@@ -22,7 +22,7 @@ const ManageExternalAccount = (props: ManageExternalAccountProps): JSX.Element =
   const { adminExternalAccountsContainer } = props;
   const { activePage, totalAccounts, pagingLimit } = adminExternalAccountsContainer.state;
 
-  const ExternalAccountPageHandler = useCallback(async(selectedPage) => {
+  const externalAccountPageHandler = useCallback(async(selectedPage) => {
     try {
       await adminExternalAccountsContainer.retrieveExternalAccountsByPagingNum(selectedPage);
     }
@@ -33,13 +33,13 @@ const ManageExternalAccount = (props: ManageExternalAccountProps): JSX.Element =
 
   // for Next routing
   useEffect(() => {
-    ExternalAccountPageHandler(1);
-  }, [ExternalAccountPageHandler]);
+    externalAccountPageHandler(1);
+  }, [externalAccountPageHandler]);
 
   const pager = (
     <PaginationWrapper
       activePage={activePage}
-      changePage={ExternalAccountPageHandler}
+      changePage={externalAccountPageHandler}
       totalItemsCount={totalAccounts}
       pagingLimit={pagingLimit}
       align="center"
