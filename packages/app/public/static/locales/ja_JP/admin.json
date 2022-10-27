@@ -322,8 +322,6 @@
     "submit_bug_report": "<a href='https://github.com/weseek/growi/issues/new?assignees=&labels=bug&template=bug-report.md&title=Bug%3A' target='_blank' rel='noreferrer'>次に GitHub で Issue を投稿してください。</a>"
   },
   "v5_page_migration": {
-    "page_tree_not_avaliable" : "Page Tree 機能は現在使用できません。",
-    "go_to_settings": "設定する",
     "migration_desc": "公開されているページに 古い v4 互換形式のものが存在します。ページツリーや簡単なリネームなどの新機能を利用するには、全てのページを v5 互換形式に変換してください。",
     "migration_note": "注意: ページパスからユニーク制約が失われます。",
     "upgrade_to_v5": "v5 互換形式 へ変換",

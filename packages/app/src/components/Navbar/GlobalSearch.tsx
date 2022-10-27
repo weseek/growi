@@ -3,6 +3,7 @@ import React, { useState, useCallback, useRef } from 'react';
 import assert from 'assert';
 
 import { useTranslation } from 'next-i18next';
+import { useRouter } from 'next/router';
 
 import { IFocusable } from '~/client/interfaces/focusable';
 import { IPageWithSearchMeta } from '~/interfaces/search';
@@ -25,6 +26,8 @@ export const GlobalSearch = (props: GlobalSearchProps): JSX.Element => {
 
   const { dropup } = props;
 
+  const router = useRouter();
+
   const globalSearchFormRef = useRef<IFocusable>(null);
 
   useGlobalSearchFormRef(globalSearchFormRef);
@@ -45,9 +48,9 @@ export const GlobalSearch = (props: GlobalSearchProps): JSX.Element => {
 
     // navigate to page
     if (page != null) {
-      window.location.href = `/${page._id}`;
+      router.push(`/${page._id}`);
     }
-  }, []);
+  }, [router]);
 
   const search = useCallback(() => {
     const url = new URL(window.location.href);
@@ -60,8 +63,8 @@ export const GlobalSearch = (props: GlobalSearchProps): JSX.Element => {
     }
     url.searchParams.append('q', q);
 
-    window.location.href = url.href;
-  }, [currentPagePath, isScopeChildren, text]);
+    router.push(url.href);
+  }, [currentPagePath, isScopeChildren, router, text]);
 
   const scopeLabel = isScopeChildren
     ? t('header_search_box.label.This tree')

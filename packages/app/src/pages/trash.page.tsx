@@ -5,9 +5,14 @@ import { NextPage, GetServerSideProps, GetServerSidePropsContext } from 'next';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import dynamic from 'next/dynamic';
 
+import { GrowiSubNavigation } from '~/components/Navbar/GrowiSubNavigation';
 import type { CrowiRequest } from '~/interfaces/crowi-request';
+import { ISidebarConfig } from '~/interfaces/sidebar-config';
 import type { IUserUISettings } from '~/interfaces/user-ui-settings';
 import type { UserUISettingsModel } from '~/server/models/user-ui-settings';
+import {
+  useCurrentProductNavWidth, useCurrentSidebarContents, useDrawerMode, usePreferDrawerModeByUser, usePreferDrawerModeOnEditByUser, useSidebarCollapsed,
+} from '~/stores/ui';
 
 import { BasicLayout } from '../components/Layout/BasicLayout';
 import {
@@ -19,9 +24,6 @@ import {
 import {
   CommonProps, getServerSideCommonProps, getNextI18NextConfig, useCustomTitle,
 } from './utils/commons';
-import { useCurrentProductNavWidth, useCurrentSidebarContents, useDrawerMode, usePreferDrawerModeByUser, usePreferDrawerModeOnEditByUser, useSidebarCollapsed } from '~/stores/ui';
-import { GrowiSubNavigation } from '~/components/Navbar/GrowiSubNavigation';
-import { ISidebarConfig } from '~/interfaces/sidebar-config';
 
 const TrashPageList = dynamic(() => import('~/components/TrashPageList').then(mod => mod.TrashPageList), { ssr: false });
 const EmptyTrashModal = dynamic(() => import('~/components/EmptyTrashModal'), { ssr: false });
