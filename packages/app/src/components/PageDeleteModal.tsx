@@ -76,7 +76,7 @@ const PageDeleteModal: FC = () => {
     return false;
   }, [deleteModalData]);
 
-  const forceDeleteRecursivelyMode = useMemo(() => {
+  const isDisabledDeleteRecursivelyCheckbox = useMemo(() => {
     if (deleteModalData != null && deleteModalData.pages != null && deleteModalData.pages.length > 0) {
       const pageData = deleteModalData.pages[0].data;
       const isNoRevisionPage = pageData._id != null && pageData.revision == null;
@@ -187,7 +187,7 @@ const PageDeleteModal: FC = () => {
           type="checkbox"
           checked={isDeleteRecursively}
           onChange={changeIsDeleteRecursivelyHandler}
-          disabled={forceDeleteRecursivelyMode}
+          disabled={isDisabledDeleteRecursivelyCheckbox}
           // disabled // Todo: enable this at https://redmine.weseek.co.jp/issues/82222
         />
         <label className="custom-control-label" htmlFor="deleteRecursively">
