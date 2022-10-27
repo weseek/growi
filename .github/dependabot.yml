@@ -2,16 +2,18 @@ version: 2
 updates:
   - package-ecosystem: github-actions
     directory: '/'
+    open-pull-requests-limit: 0
     schedule:
-      interval: daily
+      interval: monthly
     commit-message:
       prefix: ci
       include: scope
 
   - package-ecosystem: npm
     directory: '/'
+    open-pull-requests-limit: 0
     schedule:
-      interval: daily
+      interval: weekly
     commit-message:
       prefix: ci
       include: scope
