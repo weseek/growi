@@ -5,7 +5,7 @@ import {
 import { useTranslation } from 'next-i18next';
 import dynamic from 'next/dynamic';
 import { Container, Provider } from 'unstated';
-import { CrowiRequest } from '~/interfaces/crowi-request';
+
 
 import AdminBasicSecurityContainer from '~/client/services/AdminBasicSecurityContainer';
 import AdminGeneralSecurityContainer from '~/client/services/AdminGeneralSecurityContainer';
@@ -16,8 +16,8 @@ import AdminLocalSecurityContainer from '~/client/services/AdminLocalSecurityCon
 import AdminOidcSecurityContainer from '~/client/services/AdminOidcSecurityContainer';
 import AdminSamlSecurityContainer from '~/client/services/AdminSamlSecurityContainer';
 import AdminTwitterSecurityContainer from '~/client/services/AdminTwitterSecurityContainer';
+import { CrowiRequest } from '~/interfaces/crowi-request';
 import { CommonProps, useCustomTitle } from '~/pages/utils/commons';
-
 import { useIsMailerSetup, useSiteUrl } from '~/stores/context';
 
 import { retrieveServerSideProps } from '../../utils/admin-page-util';
@@ -86,8 +86,7 @@ const injectServerConfigurations = async(context: GetServerSidePropsContext, pro
 
   props.siteUrl = appService.getSiteUrl();
   props.isMailerSetup = mailService.isMailerSetup;
-}
-
+};
 
 
 export const getServerSideProps: GetServerSideProps = async(context: GetServerSidePropsContext) => {

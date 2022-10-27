@@ -6,9 +6,10 @@ import dynamic from 'next/dynamic';
 
 import { CrowiRequest } from '~/interfaces/crowi-request';
 import { CommonProps, useCustomTitle } from '~/pages/utils/commons';
+import { useSiteUrl } from '~/stores/context';
+
 import { retrieveServerSideProps } from '../../utils/admin-page-util';
 
-import { useSiteUrl } from '~/stores/context';
 
 const AdminLayout = dynamic(() => import('~/components/Layout/AdminLayout'), { ssr: false });
 const SlackIntegration = dynamic(() => import('~/components/Admin/SlackIntegration/SlackIntegration'), { ssr: false });
@@ -39,7 +40,7 @@ const injectServerConfigurations = async(context: GetServerSidePropsContext, pro
   const { appService } = crowi;
 
   props.siteUrl = appService.getSiteUrl();
-}
+};
 
 
 export const getServerSideProps: GetServerSideProps = async(context: GetServerSidePropsContext) => {

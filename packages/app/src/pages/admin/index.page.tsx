@@ -5,11 +5,11 @@ import {
 import { useTranslation } from 'next-i18next';
 import dynamic from 'next/dynamic';
 import { Container, Provider } from 'unstated';
-import PluginUtils from '~/server/plugins/plugin-utils';
-import { CrowiRequest } from '~/interfaces/crowi-request';
 
 import AdminHomeContainer from '~/client/services/AdminHomeContainer';
+import { CrowiRequest } from '~/interfaces/crowi-request';
 import { CommonProps, useCustomTitle } from '~/pages/utils/commons';
+import PluginUtils from '~/server/plugins/plugin-utils';
 
 import { retrieveServerSideProps } from '../../utils/admin-page-util';
 
@@ -62,8 +62,7 @@ const injectServerConfigurations = async(context: GetServerSidePropsContext, pro
   props.npmVersion = crowi.runtimeVersions.versions.npm ? crowi.runtimeVersions.versions.npm.version.version : null;
   props.yarnVersion = crowi.runtimeVersions.versions.yarn ? crowi.runtimeVersions.versions.yarn.version.version : null;
   props.installedPlugins = pluginUtils.listPlugins();
-}
-
+};
 
 
 export const getServerSideProps: GetServerSideProps = async(context: GetServerSidePropsContext) => {

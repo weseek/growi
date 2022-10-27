@@ -7,9 +7,9 @@ import dynamic from 'next/dynamic';
 import { Container, Provider } from 'unstated';
 
 import AdminUsersContainer from '~/client/services/AdminUsersContainer';
-import { CommonProps, useCustomTitle } from '~/pages/utils/commons';
-import { useCurrentUser,  useIsMailerSetup } from '~/stores/context';
 import { CrowiRequest } from '~/interfaces/crowi-request';
+import { CommonProps, useCustomTitle } from '~/pages/utils/commons';
+import { useCurrentUser, useIsMailerSetup } from '~/stores/context';
 
 import { retrieveServerSideProps } from '../../../utils/admin-page-util';
 
@@ -58,7 +58,7 @@ const injectServerConfigurations = async(context: GetServerSidePropsContext, pro
     props.currentUser = JSON.stringify(user);
   }
   props.isMailerSetup = mailService.isMailerSetup;
-}
+};
 
 export const getServerSideProps: GetServerSideProps = async(context: GetServerSidePropsContext) => {
   const props = await retrieveServerSideProps(context, injectServerConfigurations);
