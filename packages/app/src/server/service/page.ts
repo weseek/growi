@@ -2027,6 +2027,7 @@ class PageService {
         lastUpdateUser: user._id,
         deleteUser: null,
         deletedAt: null,
+        parent: parent._id,
         descendantCount: shouldReplace ? originPage.descendantCount : 0,
       },
     }, { new: true });
