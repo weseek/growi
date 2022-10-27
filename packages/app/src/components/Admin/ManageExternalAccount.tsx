@@ -1,6 +1,7 @@
 import React, { useCallback, useEffect } from 'react';
 
 import { useTranslation } from 'next-i18next';
+import Link from 'next/link';
 
 import AdminExternalAccountsContainer from '~/client/services/AdminExternalAccountsContainer';
 import { toastError } from '~/client/util/apiNotification';
@@ -21,7 +22,7 @@ const ManageExternalAccount = (props: ManageExternalAccountProps): JSX.Element =
   const { adminExternalAccountsContainer } = props;
   const { activePage, totalAccounts, pagingLimit } = adminExternalAccountsContainer.state;
 
-  const handleExternalAccountPage = useCallback(async(selectedPage) => {
+  const ExternalAccountPageHandler = useCallback(async(selectedPage) => {
     try {
       await adminExternalAccountsContainer.retrieveExternalAccountsByPagingNum(selectedPage);
     }
@@ -30,15 +31,15 @@ const ManageExternalAccount = (props: ManageExternalAccountProps): JSX.Element =
     }
   }, [adminExternalAccountsContainer]);
 
-  // componentDidMount
+  // for Next routing
   useEffect(() => {
-    handleExternalAccountPage(1);
-  }, []);
+    ExternalAccountPageHandler(1);
+  }, [ExternalAccountPageHandler]);
 
   const pager = (
     <PaginationWrapper
       activePage={activePage}
-      changePage={handleExternalAccountPage}
+      changePage={ExternalAccountPageHandler}
       totalItemsCount={totalAccounts}
       pagingLimit={pagingLimit}
       align="center"
@@ -49,10 +50,12 @@ const ManageExternalAccount = (props: ManageExternalAccountProps): JSX.Element =
   return (
     <>
       <p>
-        <a className="btn btn-outline-secondary" href="/admin/users">
-          <i className="icon-fw ti ti-arrow-left" aria-hidden="true"></i>
-          {t('admin:user_management.back_to_user_management')}
-        </a>
+        <Link href="/admin/users" prefetch={false}>
+          <a className="btn btn-outline-secondary">
+            <i className="icon-fw ti ti-arrow-left" aria-hidden="true"></i>
+            {t('admin:user_management.back_to_user_management')}
+          </a>
+        </Link>
       </p>
       <h2>{t('admin:user_management.external_account_list')}</h2>
       {(totalAccounts !== 0) ? (
