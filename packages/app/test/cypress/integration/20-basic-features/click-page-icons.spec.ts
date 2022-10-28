@@ -14,13 +14,13 @@ context('Click page icons button', () => {
     cy.visit('/Sandbox');
     cy.get('#grw-subnav-container').within(() => {
       // Subscribe
-      cy.get('#subscribe-button').click({force: true});
-      cy.get('#subscribe-button').should('have.class', 'active');
+      cy.get('#subscribe-button').eq(0).click({force: true});
+      cy.get('#subscribe-button').eq(0).should('have.class', 'active');
       cy.screenshot(`${ssPrefix}1-subscribe-page`);
 
       // Unsubscribe
       cy.get('#subscribe-button.active').eq(0).click({force: true});
-      cy.get('#subscribe-button').should('not.have.class', 'active');
+      cy.get('#subscribe-button').eq(0).should('not.have.class', 'active');
       cy.screenshot(`${ssPrefix}2-unsubscribe-page`);
     });
   });
@@ -77,8 +77,9 @@ context('Click page icons button', () => {
 
   it('Successfully display list of "seen by user"', () => {
     cy.visit('/Sandbox');
-    cy.get('#grw-subnav-container');
-    cy.get('#btn-seen-user').click({force: true});
+    cy.get('#grw-subnav-container').within(() => {
+      cy.get('#btn-seen-user').click({force: true});
+    });
 
     cy.get('.user-list-popover').should('be.visible');
 

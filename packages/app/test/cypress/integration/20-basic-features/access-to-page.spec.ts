@@ -74,7 +74,6 @@ context('Access to /me page', () => {
   //   cy.visit('/me/drafts');
   //   cy.screenshot(`${ssPrefix}-draft-page`);
   // });
-
 });
 
 
@@ -93,7 +92,7 @@ context('Access to special pages', () => {
 
   it('/trash is successfully loaded', () => {
     cy.visit('/trash', {  });
-    cy.getByTestid('trash-page-list', { timeout: 10000 }).should('be.visible');
+    cy.getByTestid('trash-page-list').should('be.visible');
     cy.screenshot(`${ssPrefix}-trash`);
   });
 
