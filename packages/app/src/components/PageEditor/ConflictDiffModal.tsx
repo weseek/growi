@@ -2,6 +2,7 @@ import React, {
   useState, useEffect, useRef, useMemo, useCallback,
 } from 'react';
 
+import type { IUser } from '@growi/core';
 import { UserPicture } from '@growi/ui';
 import CodeMirror from 'codemirror/lib/codemirror';
 import { format } from 'date-fns';
@@ -10,8 +11,7 @@ import {
   Modal, ModalHeader, ModalBody, ModalFooter,
 } from 'reactstrap';
 
-import { OptionsToSave } from '~/client/util/editor';
-import { IUser } from '~/interfaces/user';
+import type { OptionsToSave } from '~/interfaces/editor-settings';
 import { useCurrentUser } from '~/stores/context';
 import { useEditorMode } from '~/stores/ui';
 
@@ -119,7 +119,7 @@ const ConflictDiffModalCore = (props: ConflictDiffModalProps & { currentUser: IU
       // pageContainer.showErrorToastr(error);
     }
 
-  }, [pageContainer, editorMode, props.optionsToSave, close]);
+  }, []);
 
   const resizeAndCloseButtons = useMemo(() => (
     <div className="d-flex flex-nowrap">
