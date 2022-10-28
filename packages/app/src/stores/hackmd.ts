@@ -1,5 +1,5 @@
-import { SWRResponse } from "swr";
-import { useStaticSWR } from "./use-static-swr";
+import { SWRResponse } from 'swr';
+import { useStaticSWR } from './use-static-swr';
 
 type Nullable<T> = T | null;
 
