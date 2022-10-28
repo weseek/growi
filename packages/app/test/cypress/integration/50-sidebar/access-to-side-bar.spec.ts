@@ -56,7 +56,7 @@ context('Access to sidebar', () => {
 
     // create /Sidebar contents
     const content = '# HELLO \n ## Hello\n ### Hello';
-    cy.get('.grw-sidebar-content-header').find('a').click();
+    cy.get('.grw-sidebar-content-header.h5').find('a').click();
     cy.get('.CodeMirror textarea').type(content, {force: true});
     cy.screenshot(`${ssPrefix}custom-sidebar-2-custom-sidebar-editor`);
     cy.getByTestid('save-page-btn').click();
