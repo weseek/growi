@@ -16,7 +16,7 @@ import {
   useCurrentPagePath, useCurrentPageId, useHackmdUri,
 } from '~/stores/context';
 import {
-  usePageIdOnHackmd, useHasDraftOnHackmd, useRevisionIdHackmdSynced,
+  usePageIdOnHackmd, useHasDraftOnHackmd, useRevisionIdHackmdSynced, useRemoteRevisionId,
 } from '~/stores/hackmd';
 import {
   useSWRxSlackChannels, useIsSlackEnabled, usePageTagsForEditors, useIsEnabledUnsavedWarning,
@@ -71,7 +71,7 @@ export const PageEditorByHackmd = (): JSX.Element => {
   const { data: revisionIdHackmdSynced, mutate: mutateRevisionIdHackmdSynced } = useRevisionIdHackmdSynced();
   const { mutate: mutateIsEnabledUnsavedWarning } = useIsEnabledUnsavedWarning();
   const [isHackmdDraftUpdatingInRealtime, setIsHackmdDraftUpdatingInRealtime] = useState(false);
-  const [remoteRevisionId, setRemoteRevisionId] = useState(revision?._id); // initialize
+  const { data: remoteRevisionId, mutate: mutateRemoteRevisionId } = useRemoteRevisionId(revision?._id);
 
   const hackmdEditorRef = useRef<HackEditorRef>(null);
 
@@ -207,7 +207,7 @@ export const PageEditorByHackmd = (): JSX.Element => {
       setIsHackmdDraftUpdatingInRealtime(false);
       mutateHasDraftOnHackmd(false);
       mutatePageIdOnHackmd(res.pageIdOnHackmd);
-      setRemoteRevisionId(res.revisionIdHackmdSynced);
+      mutateRemoteRevisionId(res.revisionIdHackmdSynced);
       mutateRevisionIdHackmdSynced(res.revisionIdHackmdSynced);
 
 
@@ -238,7 +238,7 @@ export const PageEditorByHackmd = (): JSX.Element => {
       mutatePageData(res);
 
       // set updated data
-      setRemoteRevisionId(res.revision._id);
+      mutateRemoteRevisionId(res.revision._id);
       mutateRevisionIdHackmdSynced(res.page.revisionHackmdSynced);
       mutateHasDraftOnHackmd(res.page.hasDraftOnHackmd);
       mutateTagsInfo();

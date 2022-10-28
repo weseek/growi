@@ -16,3 +16,6 @@ export const useRevisionIdHackmdSynced = (initialData?: Nullable<any>): SWRRespo
   return useStaticSWR<Nullable<any>, Error>('revisionIdHackmdSynced', initialData);
 };
 
+export const useRemoteRevisionId = (initialData?: Nullable<any>): SWRResponse<Nullable<any>, Error> => {
+  return useStaticSWR<Nullable<any>, Error>('remoteRevisionId', initialData);
+};
