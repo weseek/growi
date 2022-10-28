@@ -736,8 +736,16 @@ module.exports = (crowi) => {
       let attachment;
       try {
         attachment = await attachmentService.createAttachment(file, req.user, null, AttachmentType.BRAND_LOGO);
+        const { filePathProxied } = attachment;
+
+        // Regex for matching filePathProxied string
+        // https://regex101.com/r/GiHbFe/1
+        const filePathProxiedRe = /^\/attachment\/[0-9a-fA-F]{24}$/;
+
+        // Check if customizedLogoSrc is valid
+        const customizedLogoSrc = filePathProxiedRe.test(filePathProxied) ? filePathProxied : null;
         const attachmentConfigParams = {
-          'customize:customizedLogoSrc': attachment.filePathProxied,
+          'customize:customizedLogoSrc': customizedLogoSrc,
         };
 
         await crowi.configManager.updateConfigsInTheSameNamespace('crowi', attachmentConfigParams);
