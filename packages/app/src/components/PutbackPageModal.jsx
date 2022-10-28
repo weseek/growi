@@ -63,6 +63,7 @@ const PutBackPageModal = () => {
       </>
     );
   };
+
   const BodyContent = () => {
     if (!isOpened) {
       return <></>;

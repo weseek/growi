@@ -84,6 +84,16 @@ const PageEditor = React.memo((): JSX.Element => {
   const editorRef = useRef<IEditorMethods>(null);
   const previewRef = useRef<HTMLDivElement>(null);
 
+
+  const optionsToSave = useMemo(() => {
+    if (grant == null) {
+      return;
+    }
+    const slackChannels = slackChannelsData ? slackChannelsData.toString() : '';
+    const optionsToSave = getOptionsToSave(isSlackEnabled ?? false, slackChannels, grant, grantGroupId, grantGroupName, pageTags || []);
+    return optionsToSave;
+  }, [grant, grantGroupId, grantGroupName, isSlackEnabled, pageTags, slackChannelsData]);
+
   const setMarkdownWithDebounce = useMemo(() => debounce(100, throttle(150, (value: string, isClean: boolean) => {
     markdownToSave.current = value;
     setMarkdownToPreview(value);
@@ -427,6 +437,7 @@ const PageEditor = React.memo((): JSX.Element => {
         onClose={() => pageContainer.setState({ isConflictDiffModalOpen: false })}
         pageContainer={pageContainer}
         markdownOnEdit={markdown}
+        optionsToSave={optionsToSave}
       /> */}
     </div>
   );
