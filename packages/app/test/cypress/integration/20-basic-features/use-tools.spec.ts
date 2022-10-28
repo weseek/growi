@@ -54,7 +54,7 @@ context('Modal for page operation', () => {
     });
     cy.getByTestid('page-editor').should('be.visible');
     cy.getByTestid('save-page-btn').click();
-    cy.get('.layout-root').should('not.have.class', 'editing');
+    cy.get('.layout-root', { timeout: 10000 }).should('not.have.class', 'editing');
 
     cy.getByTestid('grw-contextual-sub-nav').should('be.visible');
     cy.screenshot(`${ssPrefix}create-today-page`);
@@ -72,7 +72,7 @@ context('Modal for page operation', () => {
     });
     cy.getByTestid('page-editor').should('be.visible');
     cy.getByTestid('save-page-btn').click();
-    cy.get('.layout-root').should('not.have.class', 'editing');
+    cy.get('.layout-root', { timeout: 10000 }).should('not.have.class', 'editing');
 
     cy.getByTestid('grw-contextual-sub-nav').should('be.visible');
     cy.screenshot(`${ssPrefix}create-page-under-specific-page`);
@@ -178,7 +178,7 @@ context('Page Accessories Modal', () => {
   it('Page History is shown successfully', () => {
      cy.visit('/Sandbox/Bootstrap4', {  });
      cy.get('#grw-subnav-container').within(() => {
-       cy.getByTestid('open-page-item-control-btn').click();
+       cy.getByTestid('open-page-item-control-btn').eq(0).click();
        cy.getByTestid('open-page-accessories-modal-btn-with-history-tab').click();
     });
 

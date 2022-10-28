@@ -60,7 +60,7 @@ context('Access to sidebar', () => {
     cy.get('.CodeMirror textarea').type(content, {force: true});
     cy.screenshot(`${ssPrefix}custom-sidebar-2-custom-sidebar-editor`);
     cy.getByTestid('save-page-btn').click();
-    cy.get('.layout-root').should('not.have.class', 'editing');
+    cy.get('.layout-root', { timeout: 10000 }).should('not.have.class', 'editing');
 
     // What to do when UserUISettings is not saved in time
     cy.getByTestid('grw-sidebar-nav-primary-custom-sidebar').then(($el) => {
