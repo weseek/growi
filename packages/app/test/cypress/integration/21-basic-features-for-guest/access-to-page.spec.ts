@@ -67,7 +67,8 @@ context('Access to special pages by guest', () => {
   it('/trash is successfully loaded', () => {
     cy.visit('/trash', {  });
     cy.collapseSidebar(true, true);
-    cy.getByTestid('trash-page-list', { timeout: 10000 }).should('be.visible');
+    cy.get('.page-wrapper > div:nth-child(2) > div:nth-child(1) > div').getByTestid('trash-page-list').should('be.visible');
+    // cy.getByTestid('trash-page-list', { timeout: 10000 }).should('be.visible');
     cy.screenshot(`${ssPrefix}-trash`);
   });
 
@@ -82,7 +83,8 @@ context('Access to special pages by guest', () => {
     cy.getByTestid('grw-tags-list').should('be.visible');
     cy.getByTestid('grw-tags-list').contains('You have no tag, You can set tags on pages');
 
-    cy.getByTestid('tags-page', { timeout: 10000 }).should('be.visible');
+    cy.get('div.layout-root > div:nth-child(2) > div:nth-child(2) > div').getByTestid('tags-page').should('be.visible');
+    // cy.getByTestid('tags-page', { timeout: 10000 }).should('be.visible');
     cy.screenshot(`${ssPrefix}-tags`);
   });
 
