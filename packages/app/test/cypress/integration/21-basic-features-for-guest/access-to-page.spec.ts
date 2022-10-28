@@ -24,10 +24,7 @@ context('Access to page by guest', () => {
     cy.visit('/Sandbox/Math');
     cy.collapseSidebar(true, true);
 
-    // // eslint-disable-next-line cypress/no-unnecessary-waiting
-    // cy.wait(2000); // wait for 2 seconds for renderer
-
-    cy.get('.wiki', { timeout: 2000 }).within(() => {
+    cy.get('div.layout-root > div:nth-child(2) > div:nth-child(4) > div.content-main > div:nth-child(2) > div.wiki'),within(() => {
       cy.get('.math').should('be.visible');
     }).screenshot(`${ssPrefix}-sandbox-math`);
   });
