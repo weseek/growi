@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useCallback, useState } from 'react';
 
 
 import { useTranslation } from 'react-i18next';
@@ -53,10 +53,15 @@ const PutBackPageModal = () => {
     }
   }
 
+  const closeModalHandler = useCallback(() => {
+    closePutBackPageModal();
+    setErrs(null);
+  }, [closePutBackPageModal]);
+
 
   return (
-    <Modal isOpen={isOpened} toggle={closePutBackPageModal} className="grw-create-page">
-      <ModalHeader tag="h4" toggle={closePutBackPageModal} className="bg-info text-light">
+    <Modal isOpen={isOpened} toggle={closeModalHandler} className="grw-create-page">
+      <ModalHeader tag="h4" toggle={closeModalHandler} className="bg-info text-light">
         <i className="icon-action-undo mr-2" aria-hidden="true"></i> { t('modal_putback.label.Put Back Page') }
       </ModalHeader>
       <ModalBody>
