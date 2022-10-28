@@ -1,8 +1,9 @@
 import React, { useCallback } from 'react';
 
+import { pagePathUtils } from '@growi/core';
 import ReactMarkdown from 'react-markdown';
 
-import { useIsUserPage } from '~/stores/context';
+import { useCurrentPagePath } from '~/stores/context';
 import { useTocOptions } from '~/stores/renderer';
 import loggerFactory from '~/utils/logger';
 
@@ -10,12 +11,16 @@ import { StickyStretchableScroller } from './StickyStretchableScroller';
 
 import styles from './TableOfContents.module.scss';
 
+const { isUserPage: _isUserPage } = pagePathUtils;
+
 // eslint-disable-next-line no-unused-vars
 const logger = loggerFactory('growi:TableOfContents');
 
 const TableOfContents = (): JSX.Element => {
 
-  const { data: isUserPage } = useIsUserPage();
+  const { data: currentPagePath } = useCurrentPagePath();
+
+  const isUserPage = currentPagePath != null && _isUserPage(currentPagePath);
 
   // const [tocHtml, setTocHtml] = useState('');
 
