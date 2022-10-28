@@ -1041,5 +1041,10 @@
     "once_transfer_key_used": "Once the transfer key is used for transfer, it cannot be used for any other transfer.",
     "transfer_to_growi_cloud": "If you wish to transfer to GROWI.cloud, please click here.",
     "paste_transfer_key": "Paste transter key here"
+  },
+  "g2g": {
+    "error_upload_attachment": "Failed to upload attachment <code>%s</code>",
+    "error_generate_growi_archive": "Failed to generate GROWI archive file",
+    "error_send_growi_archive": "Failed to send GROWI archive file to new GROWI"
   }
 }
