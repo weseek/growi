@@ -109,7 +109,7 @@
   "Create under": "ページを以下に作成",
   "V5 Page Migration": "V5 互換形式 への変換",
   "GROWI.5.0_new_schema": "GROWI.5.0における新スキーマについて",
-  "See_more_detail_on_new_schema": "詳しくは<a href='#'>{{url}}</a><i class='icon-share-alt'></i>を参照ください。",
+  "See_more_detail_on_new_schema": "詳しくは<a href='https://docs.growi.org/ja/admin-guide/upgrading/50x.html#新しい-v5-互換形式について' target='_blank'>{{title}}</a><i class='icon-share-alt'></i>を参照ください。",
   "Site URL settings": "サイトURL設定",
   "external_account_management": "外部アカウント管理",
   "UserGroup": "グループ",
@@ -380,7 +380,8 @@
     "notfound_or_forbidden": "元のページが見つからないか、アクセス権がありません。",
     "already_exists": "そのパスを持つページは既に存在しています。",
     "outdated": "ページが他のユーザーによって更新されました。",
-    "user_not_admin": "権限のあるユーザーのみが削除できます"
+    "user_not_admin": "権限のあるユーザーのみが削除できます",
+    "single_deletion_empty_pages": "空ページの単体削除はできません"
   },
   "page_history": {
     "revision_list": "更新履歴",
@@ -854,5 +855,9 @@
   "footer": {
     "bookmarks": "ブックマーク",
     "recently_created": "最近作成したページ"
+  },
+  "v5_page_migration": {
+    "page_tree_not_avaliable" : "Page Tree 機能は現在使用できません。",
+    "go_to_settings": "設定する"
   }
 }

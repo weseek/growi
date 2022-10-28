@@ -98,10 +98,11 @@ context('Access to special pages', () => {
   });
 
   it('/tags is successfully loaded', () => {
-    cy.visit('/tags');
 
     // open sidebar
     cy.collapseSidebar(false);
+
+    cy.visit('/tags');
     // select tags
     cy.getByTestid('grw-sidebar-nav-primary-tags').click();
     cy.getByTestid('grw-sidebar-content-tags').should('be.visible');

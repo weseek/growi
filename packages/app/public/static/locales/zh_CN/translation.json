@@ -117,7 +117,7 @@
 	"Create under": "Create page under below:",
   "V5 Page Migration": "转换为V5的兼容性",
   "GROWI.5.0_new_schema": "GROWI.5.0 new schema",
-  "See_more_detail_on_new_schema": "更多详情请见<a href='#'>{{url}}</a> <i class='icon-share-alt'></i> ",
+  "See_more_detail_on_new_schema": "更多详情请见<a href='https://docs.growi.org/en/admin-guide/upgrading/50x.html#about-the-new-v5-compatible-format' target='_blank'> {{title}}</a> <i class='icon-share-alt'></i> ",
 	"Site URL settings": "主页URL设置",
 	"Markdown Settings": "Markdown设置",
 	"Notification Settings": "通知设置",
@@ -362,7 +362,8 @@
 		"notfound_or_forbidden": "未找到或禁止原始页。",
 		"already_exists": "具有该路径的页面已存在",
 		"outdated": "页面已被某人更新，现在已过时。",
-		"user_not_admin": "仅管理员用户可以删除"
+		"user_not_admin": "仅管理员用户可以删除",
+    "single_deletion_empty_pages": "空的页面不能被单一删除"
   },
   "page_history": {
     "revision_list": "修订清单",
@@ -909,5 +910,9 @@
   "footer": {
     "bookmarks": "书签",
     "recently_created": "最近创建页面"
+  },
+  "v5_page_migration": {
+    "page_tree_not_avaliable": "Page Tree 功能不可用",
+    "go_to_settings": "进入设置，启用该功能"
   }
 }

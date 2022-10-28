@@ -224,9 +224,9 @@ class PageService {
       pageId: string, path: string, user: IUserHasId, includeEmpty = false, isSharedPage = false,
   ): Promise<IPageWithMeta<IPageInfoAll>|null> {
 
-    const Page = this.crowi.model('Page');
+    const Page = this.crowi.model('Page') as PageModel;
 
-    let page: PageModel & PageDocument & HasObjectId;
+    let page: PageDocument & HasObjectId | null;
     if (pageId != null) { // prioritized
       page = await Page.findByIdAndViewer(pageId, user, null, includeEmpty);
     }
