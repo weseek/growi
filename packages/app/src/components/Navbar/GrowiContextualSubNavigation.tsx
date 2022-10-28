@@ -36,9 +36,9 @@ import PresentationIcon from '../Icons/PresentationIcon';
 import ShareLinkIcon from '../Icons/ShareLinkIcon';
 import { Skelton } from '../Skelton';
 
-import { AuthorInfoProps } from './AuthorInfo';
+import type { AuthorInfoProps } from './AuthorInfo';
 import { GrowiSubNavigation } from './GrowiSubNavigation';
-import { SubNavButtonsProps } from './SubNavButtons';
+import type { SubNavButtonsProps } from './SubNavButtons';
 
 import AuthorInfoStyles from './AuthorInfo.module.scss';
 import PageEditorModeManagerStyles from './PageEditorModeManager.module.scss';

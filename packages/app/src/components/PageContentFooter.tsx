@@ -5,7 +5,7 @@ import dynamic from 'next/dynamic';
 
 import { useSWRxCurrentPage } from '~/stores/page';
 
-import { AuthorInfoProps } from './Navbar/AuthorInfo';
+import type { AuthorInfoProps } from './Navbar/AuthorInfo';
 import { Skelton } from './Skelton';
 
 import styles from './PageContentFooter.module.scss';
