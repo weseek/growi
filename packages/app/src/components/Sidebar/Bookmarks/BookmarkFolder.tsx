@@ -4,6 +4,7 @@ import React from 'react';
 import { useTranslation } from 'next-i18next';
 
 import ClosableTextInput from '~/components/Common/ClosableTextInput';
+import FolderPlusIcon from '~/components/Icons/FolderPlusIcon';
 
 import BookmarkFolderTree from './BookmarkFolderTree';
 
@@ -27,7 +28,7 @@ const BookmarkFolder = (props: Props): JSX.Element => {
           className="btn btn-block btn-outline-secondary rounded-pill d-flex justify-content-start align-middle"
           onClick={onClickNewFolder}
         >
-          <i className="fa fa fa-folder-o" style={{ fontSize: '1.4em' }}></i>
+          <FolderPlusIcon />
           <span className="mx-2 ">New Folder</span>
         </button>
       </div>

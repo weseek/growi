@@ -5,6 +5,7 @@ import {
 import { useTranslation } from 'next-i18next';
 
 import CountBadge from '~/components/Common/CountBadge';
+import FolderIcon from '~/components/Icons/FolderIcon';
 import TriangleIcon from '~/components/Icons/TriangleIcon';
 import { BookmarkFolderItems } from '~/server/models/bookmark-folder';
 import { useSWRxBookamrkFolderAndChild } from '~/stores/bookmark-folder';
@@ -60,11 +61,11 @@ const BookmarkFolderItem: FC<BookmarkFolderItemProps> = (props: BookmarkFolderIt
         </div>
         {
           <div>
-            <i className={`fa fa ${isOpen ? 'fa-folder-open-o' : 'fa-folder-o'} pr-2` } style={{ fontSize: '1.4em' }}></i>
+            <FolderIcon isOpen={isOpen} />
           </div>
         }
         {
-          <div className='grw-foldertree-title-anchor flex-grow-1'>
+          <div className='grw-foldertree-title-anchor flex-grow-1 pl-2'>
             <p className={'text-truncate m-auto '}>{bookmarkFolders.bookmarkFolder.name}</p>
           </div>
         }
