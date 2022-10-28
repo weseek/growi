@@ -288,14 +288,10 @@ const GrowiContextualSubNavigation = (props: GrowiContextualSubNavigationProps):
 
   const renameItemClickedHandler = useCallback(async(page: IPageToRenameWithMeta<IPageInfoForEntity>) => {
     const renamedHandler: OnRenamedFunction = () => {
-      if (page.data._id !== null) {
-        router.push(`/${page.data._id}`);
-        return;
-      }
       reload();
     };
     openRenameModal(page, { onRenamed: renamedHandler });
-  }, [openRenameModal, reload, router]);
+  }, [openRenameModal, reload]);
 
   const deleteItemClickedHandler = useCallback((pageWithMeta: IPageWithMeta) => {
     const deletedHandler: OnDeletedFunction = (pathOrPathsToDelete, isRecursively, isCompletely) => {
