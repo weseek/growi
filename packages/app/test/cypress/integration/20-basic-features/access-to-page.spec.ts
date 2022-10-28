@@ -93,7 +93,7 @@ context('Access to special pages', () => {
 
   it('/trash is successfully loaded', () => {
     cy.visit('/trash', {  });
-    cy.get('#trash-page-list').should('be.visible');
+    cy.getByTestid('trash-page-list', { timeout: 10000 }).should('be.visible');
     cy.screenshot(`${ssPrefix}-trash`);
   });
 
@@ -109,7 +109,7 @@ context('Access to special pages', () => {
     cy.getByTestid('grw-tags-list').should('be.visible');
     cy.getByTestid('grw-tags-list').contains('You have no tag, You can set tags on pages');
 
-    cy.get('#tags-page').should('be.visible');
+    cy.getByTestid('tags-page', { timeout: 10000 }).should('be.visible');
     cy.screenshot(`${ssPrefix}-tags`);
   });
 

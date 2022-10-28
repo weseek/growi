@@ -66,7 +66,7 @@ const NavbarRight = memo((): JSX.Element => {
           <AppearanceModeDropdown isAuthenticated={isAuthenticated} />
         </li>
 
-        <li className="grw-personal-dropdown nav-item dropdown dropdown-toggle dropdown-toggle-no-caret">
+        <li className="grw-personal-dropdown nav-item dropdown dropdown-toggle dropdown-toggle-no-caret" data-testid="grw-personal-dropdown">
           <PersonalDropdown />
         </li>
       </>

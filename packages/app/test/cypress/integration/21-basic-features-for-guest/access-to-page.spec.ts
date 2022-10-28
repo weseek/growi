@@ -11,8 +11,8 @@ context('Access to page by guest', () => {
     cy.visit('/Sandbox#Headers');
     cy.collapseSidebar(true, true);
 
-    // eslint-disable-next-line cypress/no-unnecessary-waiting
-    cy.wait(500);
+    // // eslint-disable-next-line cypress/no-unnecessary-waiting
+    // cy.wait(500);
 
     // hide fab // disable fab for sticky-events warning
     // cy.getByTestid('grw-fab-container').invoke('attr', 'style', 'display: none');
@@ -24,14 +24,12 @@ context('Access to page by guest', () => {
     cy.visit('/Sandbox/Math');
     cy.collapseSidebar(true, true);
 
-    // eslint-disable-next-line cypress/no-unnecessary-waiting
-    cy.wait(2000); // wait for 2 seconds for renderer
+    // // eslint-disable-next-line cypress/no-unnecessary-waiting
+    // cy.wait(2000); // wait for 2 seconds for renderer
 
-    cy.get('.wiki').within(() => {
+    cy.get('.wiki', { timeout: 2000 }).within(() => {
       cy.get('.math').should('be.visible');
     }).screenshot(`${ssPrefix}-sandbox-math`);
-    // cy.get('.math').should('be.visible');
-    // cy.get('.katex-html').should('be.visible');
   });
 
   it('/Sandbox with edit is successfully loaded', () => {
@@ -69,7 +67,7 @@ context('Access to special pages by guest', () => {
   it('/trash is successfully loaded', () => {
     cy.visit('/trash', {  });
     cy.collapseSidebar(true, true);
-    cy.get('#trash-page-list').should('be.visible');
+    cy.getByTestid('trash-page-list', { timeout: 10000 }).should('be.visible');
     cy.screenshot(`${ssPrefix}-trash`);
   });
 
@@ -84,7 +82,7 @@ context('Access to special pages by guest', () => {
     cy.getByTestid('grw-tags-list').should('be.visible');
     cy.getByTestid('grw-tags-list').contains('You have no tag, You can set tags on pages');
 
-    cy.get('#tags-page').should('be.visible');
+    cy.getByTestid('tags-page', { timeout: 10000 }).should('be.visible');
     cy.screenshot(`${ssPrefix}-tags`);
   });
 
