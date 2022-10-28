@@ -13,8 +13,11 @@ import { apiPost } from '~/client/util/apiv1-client';
 import { getOptionsToSave } from '~/client/util/editor';
 import { IResHackmdIntegrated, IResHackmdDiscard } from '~/interfaces/hackmd';
 import {
-  useCurrentPagePath, useCurrentPageId, useHackmdUri, usePageIdOnHackmd, useHasDraftOnHackmd, useRevisionIdHackmdSynced,
+  useCurrentPagePath, useCurrentPageId, useHackmdUri,
 } from '~/stores/context';
+import {
+  usePageIdOnHackmd, useHasDraftOnHackmd, useRevisionIdHackmdSynced,
+} from '~/stores/hackmd';
 import {
   useSWRxSlackChannels, useIsSlackEnabled, usePageTagsForEditors, useIsEnabledUnsavedWarning,
 } from '~/stores/editor';
