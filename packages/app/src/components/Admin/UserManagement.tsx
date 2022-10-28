@@ -137,7 +137,7 @@ const UserManagement = (props: UserManagementProps) => {
         <div className="row d-flex justify-content-start align-items-center my-2">
           <div className="col-md-3 d-flex align-items-center my-2">
             <i className="icon-magnifier mr-1"></i>
-            <span className="search-typeahead">
+            <span className={`search-typeahead ${styles['search-typeahead']}`}>
               <input
                 className="w-100"
                 type="text"
@@ -146,15 +146,16 @@ const UserManagement = (props: UserManagementProps) => {
               />
               {
                 adminUsersContainer.state.searchText.length > 0
-                  ? (<i
-                    className={`icon-close ${styles['search-clear']}`}
-                    onClick={async() => {
-                      await adminUsersContainer.clearSearchText();
-                      if (inputRef.current != null) {
-                        inputRef.current.value = '';
-                      }
-                    }}
-                  />
+                  ? (
+                    <i
+                      className={`icon-close search-clear ${styles['search-clear']}`}
+                      onClick={async() => {
+                        await adminUsersContainer.clearSearchText();
+                        if (inputRef.current != null) {
+                          inputRef.current.value = '';
+                        }
+                      }}
+                    />
                   )
                   : ''
               }
