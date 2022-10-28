@@ -24,9 +24,8 @@ context('Access to page by guest', () => {
     cy.visit('/Sandbox/Math');
     cy.collapseSidebar(true, true);
 
-    cy.get('div.layout-root > div:nth-child(2) > div:nth-child(4) > div.content-main > div:nth-child(2) > div.wiki').within(() => {
-      cy.get('.math').should('be.visible');
-    }).screenshot(`${ssPrefix}-sandbox-math`);
+    cy.get('.math').should('be.visible');
+    cy.screenshot(`${ssPrefix}-sandbox-math`);
   });
 
   it('/Sandbox with edit is successfully loaded', () => {
