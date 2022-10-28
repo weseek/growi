@@ -87,7 +87,7 @@ context('Access to sidebar', () => {
     cy.get('.grw-pagetree-triangle-btn').eq(0).click();
 
     cy.get('.grw-pagetree-item-children').eq(0).within(() => {
-      cy.getByTestid('open-page-item-control-btn').find('button').eq(0).invoke('css','display','block').click()
+      cy.getByTestid('open-page-item-control-btn').find('button').eq(0).invoke('css','display','block').click();
     });
 
     cy.screenshot(`${ssPrefix}page-tree-3-click-three-dots-menu`);
@@ -98,7 +98,7 @@ context('Access to sidebar', () => {
 
 
     cy.get('.grw-pagetree-item-children').eq(0).within(() => {
-      cy.getByTestid('open-page-item-control-btn').find('button').eq(0).invoke('css','display','block').click()
+      cy.getByTestid('open-page-item-control-btn').find('button').eq(0).invoke('css','display','block').click();
     });
     cy.get('.dropdown-menu.show').should('be.visible').within(() => {
       cy.getByTestid('open-page-duplicate-modal-btn').click();
