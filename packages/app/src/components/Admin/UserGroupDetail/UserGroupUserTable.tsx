@@ -44,7 +44,7 @@ export const UserGroupUserTable = (props: Props): JSX.Element => {
           return (
             <tr key={relation._id}>
               <td>
-                <UserPicture user={relatedUser} className="picture rounded-circle" />
+                <UserPicture user={relatedUser} />
               </td>
               <td>
                 <strong>{relatedUser.username}</strong>

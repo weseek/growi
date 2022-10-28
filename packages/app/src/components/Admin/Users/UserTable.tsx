@@ -148,7 +148,7 @@ const UserTable = (props: UserTableProps) => {
             return (
               <tr data-testid="user-table-tr" key={user._id}>
                 <td>
-                  <UserPicture user={user} className="picture rounded-circle" />
+                  <UserPicture user={user} />
                 </td>
                 <td>
                   {getUserStatusLabel(user.status)}

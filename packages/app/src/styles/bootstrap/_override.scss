@@ -167,3 +167,8 @@ fieldset[disabled] .btn {
   word-break: break-word;
   overflow-wrap: break-word;
 }
+
+// prevent tooltip flickering (flashing) on hover
+.tooltip {
+  pointer-events: none;
+}
