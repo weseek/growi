@@ -248,7 +248,11 @@ context('Tag Oprations', () =>{
     });
 
     cy.get('.toast').should('be.visible').trigger('mouseover');
+<<<<<<< HEAD
     cy.get('.grw-taglabels-container > div > a').contains(tag).should('exist');
+=======
+    cy.get('.grw-taglabels-container > .grw-tag-labels > a', { timeout: 10000 }).contains(tag).should('exist');
+>>>>>>> master
     /* eslint-disable cypress/no-unnecessary-waiting */
     cy.wait(150); // wait for toastr to change its color occured by mouseover
     cy.screenshot(`${ssPrefix}4-click-done`, {capture: 'viewport'});
@@ -260,7 +264,7 @@ context('Tag Oprations', () =>{
     const tag = 'we';
     const newPageName = 'our';
     cy.visit('/');
-    cy.get('.grw-taglabels-container > div > a').contains(tag).click();
+    cy.get('.grw-taglabels-container > .grw-tag-labels > a', { timeout: 10000 }).contains(tag).click();
     cy.getByTestid('search-result-base').should('be.visible');
     cy.getByTestid('search-result-list').should('be.visible');
     cy.getByTestid('search-result-content').should('be.visible');
@@ -295,7 +299,11 @@ context('Tag Oprations', () =>{
     const newPageName = '/ourus';
 
     cy.visit('/');
+<<<<<<< HEAD
     cy.get('.grw-taglabels-container > div > a').contains(tag).click();
+=======
+    cy.get('.grw-taglabels-container > .grw-tag-labels > a', { timeout: 10000 }).contains(tag).click();
+>>>>>>> master
     cy.getByTestid('search-result-base').should('be.visible');
     cy.getByTestid('search-result-list').should('be.visible');
     cy.getByTestid('search-result-content').should('be.visible');
