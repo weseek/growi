@@ -148,7 +148,7 @@ const UserManagement = (props: UserManagementProps) => {
                 adminUsersContainer.state.searchText.length > 0
                   ? (
                     <i
-                      className={`icon-close search-clear ${styles['search-clear']}`}
+                      className="icon-close search-clear"
                       onClick={async() => {
                         await adminUsersContainer.clearSearchText();
                         if (inputRef.current != null) {
