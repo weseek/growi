@@ -74,6 +74,7 @@ context('Access to /me page', () => {
   //   cy.visit('/me/drafts');
   //   cy.screenshot(`${ssPrefix}-draft-page`);
   // });
+
 });
 
 
@@ -108,7 +109,7 @@ context('Access to special pages', () => {
     cy.getByTestid('grw-tags-list').should('be.visible');
     cy.getByTestid('grw-tags-list').contains('You have no tag, You can set tags on pages');
 
-    cy.getByTestid('tags-page', { timeout: 10000 }).should('be.visible');
+    cy.getByTestid('tags-page').should('be.visible');
     cy.screenshot(`${ssPrefix}-tags`);
   });
 

@@ -248,11 +248,7 @@ context('Tag Oprations', () =>{
     });
 
     cy.get('.toast').should('be.visible').trigger('mouseover');
-<<<<<<< HEAD
-    cy.get('.grw-taglabels-container > div > a').contains(tag).should('exist');
-=======
     cy.get('.grw-taglabels-container > .grw-tag-labels > a', { timeout: 10000 }).contains(tag).should('exist');
->>>>>>> master
     /* eslint-disable cypress/no-unnecessary-waiting */
     cy.wait(150); // wait for toastr to change its color occured by mouseover
     cy.screenshot(`${ssPrefix}4-click-done`, {capture: 'viewport'});
