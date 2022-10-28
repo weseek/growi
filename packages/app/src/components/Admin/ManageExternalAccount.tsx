@@ -11,7 +11,6 @@ import { withUnstatedContainers } from '../UnstatedUtils';
 
 import ExternalAccountTable from './Users/ExternalAccountTable';
 
-
 type ManageExternalAccountProps = {
   adminExternalAccountsContainer: AdminExternalAccountsContainer,
 }

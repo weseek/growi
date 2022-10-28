@@ -12,7 +12,6 @@ import PaginationWrapper from '../../PaginationWrapper';
 import ShareLinkList from '../../ShareLink/ShareLinkList';
 import { withUnstatedContainers } from '../../UnstatedUtils';
 
-
 import DeleteAllShareLinksModal from './DeleteAllShareLinksModal';
 
 type PagerProps = {

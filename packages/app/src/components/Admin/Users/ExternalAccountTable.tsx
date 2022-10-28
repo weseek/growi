@@ -11,7 +11,6 @@ import { withUnstatedContainers } from '../../UnstatedUtils';
 
 import styles from './ExternalAccountTable.module.scss';
 
-
 type ExternalAccountTableProps = {
   adminExternalAccountsContainer: AdminExternalAccountsContainer,
 }
