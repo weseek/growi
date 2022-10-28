@@ -106,9 +106,14 @@ const PutBackPageModal = () => {
     );
   };
 
+  const closeModalHandler = useCallback(() => {
+    closePutBackPageModal();
+    setErrs(null);
+  }, [closePutBackPageModal]);
+
   return (
-    <Modal isOpen={isOpened} toggle={closePutBackPageModal} className="grw-create-page">
-      <ModalHeader tag="h4" toggle={closePutBackPageModal} className="bg-info text-light">
+    <Modal isOpen={isOpened} toggle={closeModalHandler} className="grw-create-page">
+      <ModalHeader tag="h4" toggle={closeModalHandler} className="bg-info text-light">
         <HeaderContent/>
       </ModalHeader>
       <ModalBody>
