@@ -39,7 +39,7 @@ export const TrashPageAlert = (): JSX.Element => {
   }
 
 
-  const lastUpdateUserName = pageData?.lastUpdateUser?.name;
+  const deleteUser = pageData?.deleteUser;
   const deletedAt = pageData?.deletedAt ? format(new Date(pageData?.deletedAt), 'yyyy/MM/dd HH:mm') : '';
   const revisionId = pageData?.revision?._id;
 
@@ -98,9 +98,9 @@ export const TrashPageAlert = (): JSX.Element => {
         <div className="flex-grow-1">
           This page is in the trash <i className="icon-trash" aria-hidden="true"></i>.
           <br />
-          <UserPicture user={{ username: lastUpdateUserName }} />
+          <UserPicture user={deleteUser} />
           <span className="ml-2">
-            Deleted by { lastUpdateUserName } at {deletedAt || pageData?.updatedAt}
+            Deleted by { deleteUser?.name } at {deletedAt || pageData?.updatedAt}
           </span>
         </div>
         <div className="pt-1 d-flex align-items-end align-items-lg-center">
