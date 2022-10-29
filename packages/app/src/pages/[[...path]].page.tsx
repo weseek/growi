@@ -58,11 +58,11 @@ import DisplaySwitcher from '../components/Page/DisplaySwitcher';
 import {
   useCurrentUser, useCurrentPagePath,
   useIsLatestRevision,
-  useIsForbidden, useIsNotFound, useIsTrashPage, useIsSharedUser,
+  useIsForbidden, useIsNotFound, useIsSharedUser,
   useIsEnabledStaleNotification, useIsIdenticalPath,
   useIsSearchServiceConfigured, useIsSearchServiceReachable, useDisableLinkSharing,
   useDrawioUri, useHackmdUri, useDefaultIndentSize, useIsIndentSizeForced,
-  useIsAclEnabled, useIsUserPage, useIsSearchPage,
+  useIsAclEnabled, useIsSearchPage,
   useCsrfToken, useIsSearchScopeChildrenAsDefault, useCurrentPageId, useCurrentPathname,
   useIsSlackConfigured, useRendererConfig, useEditingMarkdown,
   useEditorConfig, useIsAllReplyShown, useIsUploadableFile, useIsUploadableImage, useLayoutSetting, useCustomizedLogoSrc,
@@ -239,11 +239,9 @@ const GrowiPage: NextPage<Props> = (props: Props) => {
   const pagePath = pageWithMeta?.data.path ?? (!_isPermalink(props.currentPathname) ? props.currentPathname : undefined);
 
   useCurrentPageId(pageId ?? null);
-  useIsUserPage(pagePath != null && isUserPage(pagePath));
   // useIsNotCreatable(props.isForbidden || !isCreatablePage(pagePath)); // TODO: need to include props.isIdentical
   useCurrentPagePath(pagePath);
   useCurrentPathname(props.currentPathname);
-  useIsTrashPage(pagePath != null && _isTrashPage(pagePath));
 
   useSWRxCurrentPage(undefined, pageWithMeta?.data ?? null); // store initial data
   useEditingMarkdown(pageWithMeta?.data.revision?.body ?? '');
