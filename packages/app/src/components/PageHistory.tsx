@@ -18,7 +18,7 @@ export const PageHistory = (): JSX.Element => {
 
   const { data: currentPageId } = useCurrentPageId();
 
-  const { data: revisionsData } = useSWRxPageRevisions(activePage, 10, currentPageId);
+  const { data: revisionsData, mutate: mutatePageRevisions } = useSWRxPageRevisions(activePage, 10, currentPageId);
 
   const [sourceRevision, setSourceRevision] = useState<IRevisionHasPageId>();
   const [targetRevision, setTargetRevision] = useState<IRevisionHasPageId>();
@@ -29,6 +29,10 @@ export const PageHistory = (): JSX.Element => {
       setTargetRevision(revisionsData.revisions[0]);
     }
   }, [revisionsData]);
+
+  useEffect(() => {
+    mutatePageRevisions();
+  });
 
   const pagingLimit = 10;
 
