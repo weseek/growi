@@ -12,7 +12,7 @@ context('Access Home', () => {
 
   it('Visit home', () => {
     cy.visit('/dummy');
-    cy.getByTestid('grw-personal-dropdown').click();
+    cy.getByTestid('grw-personal-dropdown').get('button').click();
     cy.getByTestid('grw-personal-dropdown').find('.dropdown-menu .btn-group > .btn-outline-secondary:eq(0)').click();
 
     cy.get('.grw-users-info').should('be.visible');
