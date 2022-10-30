@@ -15,8 +15,8 @@ import { apiGet, apiPostForm } from '~/client/util/apiv1-client';
 import { getOptionsToSave } from '~/client/util/editor';
 import { IEditorMethods } from '~/interfaces/editor-methods';
 import {
-  useCurrentPagePath, useCurrentPathname, useCurrentPageId, useEditingMarkdown,
-  useIsEditable, useIsIndentSizeForced, useIsUploadableFile, useIsUploadableImage,
+  useCurrentPagePath, useCurrentPathname, useCurrentPageId,
+  useIsEditable, useIsIndentSizeForced, useIsUploadableFile, useIsUploadableImage, useEditingMarkdown,
 } from '~/stores/context';
 import {
   useCurrentIndentSize, useSWRxSlackChannels, useIsSlackEnabled, useIsTextlintEnabled, usePageTagsForEditors,
@@ -55,10 +55,9 @@ const PageEditor = React.memo((): JSX.Element => {
   const { data: currentPagePath } = useCurrentPagePath();
   const { data: currentPathname } = useCurrentPathname();
   const { data: currentPage, mutate: mutateCurrentPage } = useSWRxCurrentPage();
-  const { data: editingMarkdown } = useEditingMarkdown();
   const { data: grantData, mutate: mutateGrant } = useSelectedGrant();
   const { data: pageTags } = usePageTagsForEditors(pageId);
-
+  const { data: editingMarkdown } = useEditingMarkdown();
   const { data: isEditable } = useIsEditable();
   const { data: editorMode, mutate: mutateEditorMode } = useEditorMode();
   const { data: isMobile } = useIsMobile();
@@ -84,6 +83,20 @@ const PageEditor = React.memo((): JSX.Element => {
 
   const editorRef = useRef<IEditorMethods>(null);
   const previewRef = useRef<HTMLDivElement>(null);
+
+
+  // const optionsToSave = useMemo(() => {
+  //   if (grantData == null) {
+  //     return;
+  //   }
+  //   const slackChannels = slackChannelsData ? slackChannelsData.toString() : '';
+  //   const optionsToSave = getOptionsToSave(
+  //     isSlackEnabled ?? false, slackChannels,
+  //     grantData.grant, grantData.grantedGroup?.id, grantData.grantedGroup?.name,
+  //     pageTags || [],
+  //   );
+  //   return optionsToSave;
+  // }, [grantData, isSlackEnabled, pageTags, slackChannelsData]);
 
   const setMarkdownWithDebounce = useMemo(() => debounce(100, throttle(150, (value: string, isClean: boolean) => {
     markdownToSave.current = value;
@@ -428,6 +441,7 @@ const PageEditor = React.memo((): JSX.Element => {
         onClose={() => pageContainer.setState({ isConflictDiffModalOpen: false })}
         pageContainer={pageContainer}
         markdownOnEdit={markdown}
+        optionsToSave={optionsToSave}
       /> */}
     </div>
   );

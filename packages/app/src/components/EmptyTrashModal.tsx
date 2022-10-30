@@ -19,7 +19,7 @@ const EmptyTrashModal: FC = () => {
 
   const isOpened = emptyTrashModalData?.isOpened ?? false;
 
-  const canDeleteAllpages = emptyTrashModalData?.opts?.canDelepeAllPages ?? false;
+  const canDeleteAllpages = emptyTrashModalData?.opts?.canDeleteAllPages ?? false;
 
   const [errs, setErrs] = useState<Error[] | null>(null);
 

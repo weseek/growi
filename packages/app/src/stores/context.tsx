@@ -1,4 +1,4 @@
-import { IUser } from '@growi/core';
+import { IUser, pagePathUtils } from '@growi/core';
 import { HtmlElementNode } from 'rehype-toc';
 import { Key, SWRResponse } from 'swr';
 import useSWRImmutable from 'swr/immutable';
@@ -78,14 +78,6 @@ export const useDeletedAt = (initialData?: Nullable<any>): SWRResponse<Nullable<
 
 export const useIsIdenticalPath = (initialData?: boolean): SWRResponse<boolean, Error> => {
   return useStaticSWR<boolean, Error>('isIdenticalPath', initialData, { fallbackData: false });
-};
-
-export const useIsUserPage = (initialData?: boolean): SWRResponse<boolean, Error> => {
-  return useStaticSWR<boolean, Error>('isUserPage', initialData, { fallbackData: false });
-};
-
-export const useIsTrashPage = (initialData?: boolean): SWRResponse<boolean, Error> => {
-  return useStaticSWR<boolean, Error>('isTrashPage', initialData, { fallbackData: false });
 };
 
 // export const useIsNotCreatable = (initialData?: boolean): SWRResponse<boolean, Error> => {
@@ -271,6 +263,10 @@ export const useCustomizeTitle = (initialData?: string): SWRResponse<string, Err
   return useStaticSWR('CustomizeTitle', initialData);
 };
 
+export const useCustomizedLogoSrc = (initialData?: string): SWRResponse<string, Error> => {
+  return useStaticSWR('customizedLogoSrc', initialData);
+};
+
 /** **********************************************************
  *                     Computed contexts
  *********************************************************** */
@@ -289,12 +285,11 @@ export const useIsEditable = (): SWRResponse<boolean, Error> => {
   const { data: isGuestUser } = useIsGuestUser();
   const { data: isForbidden } = useIsForbidden();
   const { data: isIdenticalPath } = useIsIdenticalPath();
-  const { data: isTrashPage } = useIsTrashPage();
 
   return useSWRImmutable(
-    ['isEditable', isGuestUser, isForbidden, isIdenticalPath, isTrashPage],
-    (key: Key, isGuestUser: boolean, isForbidden: boolean, isIdenticalPath: boolean, isTrashPage: boolean) => {
-      return (!isTrashPage && !isForbidden && !isIdenticalPath && !isGuestUser);
+    ['isEditable', isGuestUser, isForbidden, isIdenticalPath],
+    (key: Key, isGuestUser: boolean, isForbidden: boolean, isIdenticalPath: boolean) => {
+      return (!isForbidden && !isIdenticalPath && !isGuestUser);
     },
   );
 };
@@ -303,4 +298,13 @@ export const useCurrentPageTocNode = (): SWRResponse<HtmlElementNode, any> => {
   const { data: currentPagePath } = useCurrentPagePath();
 
   return useStaticSWR(['currentPageTocNode', currentPagePath]);
+};
+
+export const useIsTrashPage = (): SWRResponse<boolean, Error> => {
+  const { data: pagePath } = useCurrentPagePath();
+
+  return useSWRImmutable(
+    pagePath == null ? null : ['isTrashPage', pagePath],
+    (key: Key, pagePath: string) => pagePathUtils.isTrashPage(pagePath),
+  );
 };

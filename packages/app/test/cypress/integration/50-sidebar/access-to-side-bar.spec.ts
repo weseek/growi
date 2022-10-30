@@ -60,7 +60,7 @@ context('Access to sidebar', () => {
     cy.get('.CodeMirror textarea').type(content, {force: true});
     cy.screenshot(`${ssPrefix}custom-sidebar-2-custom-sidebar-editor`);
     cy.getByTestid('save-page-btn').click();
-    cy.get('layout-root').should('not.have.class', 'editing');
+    cy.get('.layout-root').should('not.have.class', 'editing');
 
     // What to do when UserUISettings is not saved in time
     cy.getByTestid('grw-sidebar-nav-primary-custom-sidebar').then(($el) => {
@@ -156,14 +156,14 @@ context('Access to sidebar', () => {
     cy.screenshot(`${ssPrefix}tags-2-check-all-tags`);
   });
 
-  it('Successfully access to My Drafts page', () => {
-    cy.visit('/');
-    cy.collapseSidebar(true);
-    cy.get('.grw-sidebar-nav-secondary-container').within(() => {
-      cy.get('a[href*="/me/drafts"]').click();
-    });
-    cy.screenshot(`${ssPrefix}access-to-drafts-page`);
-  });
+  // it('Successfully access to My Drafts page', () => {
+  //   cy.visit('/');
+  //   cy.collapseSidebar(true);
+  //   cy.get('.grw-sidebar-nav-secondary-container').within(() => {
+  //     cy.get('a[href*="/me/drafts"]').click();
+  //   });
+  //   cy.screenshot(`${ssPrefix}access-to-drafts-page`);
+  // });
   it('Successfully access to Growi Docs page', () => {
     cy.visit('/');
     cy.get('.grw-sidebar-nav-secondary-container').within(() => {
