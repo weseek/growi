@@ -77,10 +77,10 @@ context('Click page icons button', () => {
 
   it('Successfully display list of "seen by user"', () => {
     cy.visit('/Sandbox');
-    cy.get('#grw-subnav-container').should('be.visible').within(() => {
-      cy.get('div.grw-seen-user-info > button#btn-seen-user').should('be.visible').click({force: true});
+    cy.get('#grw-subnav-container').within(() => {
+      cy.get('div.grw-seen-user-info > button#btn-seen-user').click({force: true});
     });
-    cy.get('div.user-list-popover').should('be.visible');
+    cy.get('.user-list-popover').should('be.visible');
 
     cy.get('#grw-subnav-container').within(() => {
       cy.screenshot(`${ssPrefix}11-seen-user-list`);
