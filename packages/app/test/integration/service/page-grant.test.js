@@ -664,4 +664,36 @@ describe('PageGrantService', () => {
       );
     });
   });
+
+  describe('new method for overwrite scopes of all descendants', () => {
+    test('it should wip', async() => {
+      // -- preprocess
+      // 1. run isGrantNormalized for ancestors
+      // * isGrantNormalized for descendants is unnecessary since it will overwrite all the descendants
+      // -- process
+      // info needed to calc
+      const operator = {}; // user id
+      const updateGrantInfo = {
+        grant: 5,
+        grantedUser: {},
+        grantedUserGroup: {},
+      }; // target page document
+      const descendantPagesGrantInfo = {
+        grantSet: new Set([1, 4, 5]),
+        grantedUsers: new Set([{}, {}]), // only me users
+        grantedUserGroups: new Set([{}, {}]), // user groups
+      };
+      // METHOD consideration
+      // 1. check is tree GRANTED and it returns true when GRANTED
+      //   - GRANTED is the tree with all pages granted by the operator
+      // 2. if not 1. then,
+      //   - when update grant is ONLYME, return false
+      //   - when update grant is PUBLIC, update all granted descendants
+      //   - when update grant is USER_GROUP, update all granted descendants if meets 2 conditions below
+      //      a. if all descendants user groups are children or itself of update user group
+      //      b. if all descendants grantedUsers belong to update user group
+      // 3. return false otherwise
+      expect(1).toBe(1);
+    });
+  });
 });
