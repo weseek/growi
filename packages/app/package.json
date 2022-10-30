@@ -216,7 +216,7 @@
     "@types/react-scroll": "^1.8.4",
     "autoprefixer": "^9.0.0",
     "babel-loader": "^8.2.5",
-    "bootstrap": "^4.6.1",
+    "bootstrap": "^5.2.2",
     "browser-sync": "^2.27.7",
     "bunyan-debug": "^2.0.0",
     "cli": "~1.0.1",
