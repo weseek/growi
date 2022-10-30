@@ -178,11 +178,12 @@ context('Page Accessories Modal', () => {
   it('Page History is shown successfully', () => {
      cy.visit('/Sandbox/Bootstrap4', {  });
      cy.get('#grw-subnav-container').within(() => {
-       cy.getByTestid('open-page-item-control-btn').click();
-       cy.getByTestid('open-page-accessories-modal-btn-with-history-tab').click();
+      cy.getByTestid('open-page-item-control-btn').within(() => {
+        cy.get('button.btn-page-item-control').click({force: true});
+      });
+      cy.getByTestid('open-page-accessories-modal-btn-with-history-tab').click({force: true});
     });
 
-     cy.getByTestid('page-accessories-modal').should('be.visible')
      cy.getByTestid('page-history').should('be.visible')
      cy.screenshot(`${ssPrefix}-open-page-history-bootstrap4`);
   });
