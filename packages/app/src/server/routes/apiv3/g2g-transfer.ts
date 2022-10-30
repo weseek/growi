@@ -146,6 +146,12 @@ module.exports = (crowi: Crowi): Router => {
   const receiveRouter = express.Router();
   const pushRouter = express.Router();
 
+  // eslint-disable-next-line max-len
+  receiveRouter.get('/attachments', verifyAndExtractTransferKey, async(req: Request & { transferKey: TransferKey, operatorUserId: string }, res: ApiV3Response) => {
+    const readStream = crowi.exportService.createExportCollectionStream('attachments');
+    return readStream.pipe(res);
+  });
+
   // Auto import
   // eslint-disable-next-line max-len
   receiveRouter.post('/', uploads.single('transferDataZipFile'), verifyAndExtractTransferKey, async(req: Request & { transferKey: TransferKey, operatorUserId: string }, res: ApiV3Response) => {

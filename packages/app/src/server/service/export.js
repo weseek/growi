@@ -169,6 +169,23 @@ class ExportService {
    *
    * @memberOf ExportService
    * @param {string} collectionName collection name
+   * @return {NodeJS.ReadStream} readstream for the collection
+   */
+  createExportCollectionStream(collectionName) {
+    const collection = mongoose.connection.collection(collectionName);
+    const nativeCursor = collection.find();
+    const readStream = nativeCursor.stream({ transform: JSON.stringify });
+    const transformStream = this.generateTransformStream();
+
+    return readStream
+      .pipe(transformStream);
+  }
+
+  /**
+   * dump a mongodb collection into json
+   *
+   * @memberOf ExportService
+   * @param {string} collectionName collection name
    * @return {string} path to zip file
    */
   async exportCollectionToJson(collectionName) {
