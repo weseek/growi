@@ -77,9 +77,9 @@ context('Click page icons button', () => {
 
   it('Successfully display list of "seen by user"', () => {
     cy.visit('/Sandbox');
-    cy.get('#grw-subnav-container')
-    cy.get('.btn-seen-user').click();
-
+    cy.get('#grw-subnav-container').within(() => {
+      cy.get('#btn-seen-user').click({force: true});
+    });
     cy.get('.user-list-popover').should('be.visible');
 
     cy.get('#grw-subnav-container').within(() => {
