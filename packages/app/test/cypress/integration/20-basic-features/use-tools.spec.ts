@@ -190,7 +190,9 @@ context('Page Accessories Modal', () => {
   it('Page Attachment Data is shown successfully', () => {
      cy.visit('/Sandbox/Bootstrap4', {  });
      cy.get('#grw-subnav-container').within(() => {
-       cy.getByTestid('open-page-item-control-btn').click();
+      cy.getByTestid('open-page-item-control-btn').within(() => {
+        cy.get('button.btn-page-item-control').click({force: true});
+      });
        cy.getByTestid('open-page-accessories-modal-btn-with-attachment-data-tab').click();
     });
 
@@ -201,7 +203,9 @@ context('Page Accessories Modal', () => {
   it('Share Link Management is shown successfully', () => {
     cy.visit('/Sandbox/Bootstrap4', { });
     cy.get('#grw-subnav-container').within(() => {
-      cy.getByTestid('open-page-item-control-btn').click();
+      cy.getByTestid('open-page-item-control-btn').within(() => {
+        cy.get('button.btn-page-item-control').click({force: true});
+      });
       cy.getByTestid('open-page-accessories-modal-btn-with-share-link-management-data-tab').click();
    });
 
