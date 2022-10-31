@@ -7,7 +7,7 @@ import {
 } from 'reactstrap';
 
 import { ICommentHasId } from '../../interfaces/comment';
-import Username from '../User/Username';
+import { Username } from '../User/Username';
 
 import styles from './DeleteCommentModal.module.scss';
 

@@ -37,8 +37,9 @@ import PresentationIcon from '../Icons/PresentationIcon';
 import ShareLinkIcon from '../Icons/ShareLinkIcon';
 import { Skelton } from '../Skelton';
 
+import type { AuthorInfoProps } from './AuthorInfo';
 import { GrowiSubNavigation } from './GrowiSubNavigation';
-import { SubNavButtonsProps } from './SubNavButtons';
+import type { SubNavButtonsProps } from './SubNavButtons';
 
 import AuthorInfoStyles from './AuthorInfo.module.scss';
 import PageEditorModeManagerStyles from './PageEditorModeManager.module.scss';
@@ -57,7 +58,7 @@ const SubNavButtons = dynamic<SubNavButtonsProps>(
   () => import('./SubNavButtons').then(mod => mod.SubNavButtons),
   { ssr: false, loading: () => <></> },
 );
-const AuthorInfo = dynamic(() => import('./AuthorInfo'), {
+const AuthorInfo = dynamic<AuthorInfoProps>(() => import('./AuthorInfo').then(mod => mod.AuthorInfo), {
   ssr: false,
   loading: AuthorInfoSkelton,
 });
@@ -377,7 +378,7 @@ const GrowiContextualSubNavigation = (props: GrowiContextualSubNavigationProps):
             <ul className={`${AuthorInfoStyles['grw-author-info']} text-nowrap border-left d-none d-lg-block d-edit-none py-2 pl-4 mb-0 ml-3`}>
               <li className="pb-1">
                 { currentPage != null
-                  ? <AuthorInfo user={currentPage.creator as IUser} date={currentPage.createdAt} locate="subnav" />
+                  ? <AuthorInfo user={currentPage.creator as IUser} date={currentPage.createdAt} mode="create" locate="subnav" />
                   : <AuthorInfoSkelton />
                 }
               </li>
