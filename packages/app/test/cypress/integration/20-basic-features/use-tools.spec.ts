@@ -115,8 +115,8 @@ context('Modal for page operation', () => {
     cy.visit('/Sandbox/Bootstrap4', {  });
 
     cy.get('#grw-subnav-container').within(() => {
-      cy.getByTestid('open-page-item-control-btn').click();
-      cy.getByTestid('open-page-duplicate-modal-btn').click();
+      cy.getByTestid('open-page-item-control-btn').click({force: true});
+      cy.getByTestid('open-page-duplicate-modal-btn').click({force: true});
     });
 
     cy.getByTestid('page-duplicate-modal').should('be.visible').screenshot(`${ssPrefix}-duplicate-bootstrap4`);
@@ -126,7 +126,7 @@ context('Modal for page operation', () => {
     cy.visit('/Sandbox/Bootstrap4', {  });
 
     cy.get('#grw-subnav-container').within(() => {
-      cy.getByTestid('open-page-item-control-btn').click();
+      cy.getByTestid('open-page-item-control-btn').click({force: true});
       cy.getByTestid('open-page-move-rename-modal-btn').click({force: true});
     });
 
