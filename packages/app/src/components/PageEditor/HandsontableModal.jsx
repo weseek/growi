@@ -470,8 +470,8 @@ export default class HandsontableModal extends React.PureComponent {
             </Collapse>
           </div>
           <div ref={(c) => { this.hotTableContainer = c }} className="m-4 hot-table-container">
-            {/* <HotTable
-              ref={(c) => { this.hotTable = c }}
+            <HotTable
+              // ref={(c) => { this.hotTable = c }}
               data={this.state.markdownTable.table}
               settings={this.handsontableSettings}
               height={this.state.handsontableHeight}
@@ -481,7 +481,7 @@ export default class HandsontableModal extends React.PureComponent {
               beforeColumnResize={this.beforeColumnResizeHandler}
               afterColumnResize={this.afterColumnResizeHandler}
               afterColumnMove={this.afterColumnMoveHandler}
-            /> */}
+            />
           </div>
         </ModalBody>
         <ModalFooter className="grw-modal-footer">
