@@ -48,6 +48,12 @@ export type IDataGROWIInfo = {
 }
 
 /**
+ * Attachment data already exsisting in the new GROWI
+ */
+// TODO: use Attachemnt model type
+export type Attachment = any;
+
+/**
  * Return type for {@link Pusher.getTransferability}
  */
 type IGetTransferabilityReturn = { canTransfer: true; } | { canTransfer: false; reason: string; };
@@ -264,15 +270,26 @@ export class G2GTransferPusherService implements Pusher {
     return { canTransfer: true };
   }
 
+  public async getAttachments(tk: TransferKey): Promise<Attachment[]> {
+    try {
+      const { data } = await axios.get<Attachment[]>('/_api/v3/g2g-transfer/attachments', generateAxiosRequestConfigWithTransferKey(tk));
+      return data;
+    }
+    catch (err) {
+      logger.error(err);
+      throw new G2GTransferError('Failed to retreive attachments', G2GTransferErrorCode.FAILED_TO_RETREIVE_ATTACHMENTS);
+    }
+  }
+
   public async transferAttachments(tk: TransferKey): Promise<void> {
     const BATCH_SIZE = 100;
 
-    const socket = this.crowi.socketIoService.getAdminSocket();
     const { fileUploadService } = this.crowi;
     const Attachment = this.crowi.model('Attachment');
 
     // batch get
-    const attachmentsCursor = await Attachment.find().cursor();
+    const attachmentsFromNewGrowi = await this.getAttachments(tk);
+    const attachmentsCursor = await Attachment.find({ _id: { $nin: attachmentsFromNewGrowi.map(({ _id }) => _id) } }).cursor();
     const batchStream = createBatchStream(BATCH_SIZE);
 
     for await (const attachmentBatch of attachmentsCursor.pipe(batchStream)) {
