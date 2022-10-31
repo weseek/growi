@@ -64,25 +64,10 @@ export const useCurrentPageId = (initialData?: Nullable<string>): SWRResponse<Nu
   return useStaticSWR<Nullable<string>, Error>('currentPageId', initialData);
 };
 
-export const useRevisionCreatedAt = (initialData?: Nullable<any>): SWRResponse<Nullable<any>, Error> => {
-  return useStaticSWR<Nullable<any>, Error>('revisionCreatedAt', initialData);
-};
-
-export const useCurrentUpdatedAt = (initialData?: Nullable<Date>): SWRResponse<Nullable<Date>, Error> => {
-  return useStaticSWR<Nullable<Date>, Error>('updatedAt', initialData);
-};
-
-export const useDeletedAt = (initialData?: Nullable<any>): SWRResponse<Nullable<any>, Error> => {
-  return useStaticSWR<Nullable<any>, Error>('deletedAt', initialData);
-};
-
 export const useIsIdenticalPath = (initialData?: boolean): SWRResponse<boolean, Error> => {
   return useStaticSWR<boolean, Error>('isIdenticalPath', initialData, { fallbackData: false });
 };
 
-// export const useIsNotCreatable = (initialData?: boolean): SWRResponse<boolean, Error> => {
-//   return useStaticSWR<boolean, Error>('isNotCreatable', initialData, { fallbackData: false });
-// };
 export const useIsForbidden = (initialData?: boolean): SWRResponse<boolean, Error> => {
   return useStaticSWR<boolean, Error>('isForbidden', initialData, { fallbackData: false });
 };
@@ -91,20 +76,12 @@ export const useIsNotFound = (initialData?: boolean): SWRResponse<boolean, Error
   return useStaticSWR<boolean, Error>('isNotFound', initialData, { fallbackData: false });
 };
 
-export const useHasChildren = (initialData?: Nullable<any>): SWRResponse<Nullable<any>, Error> => {
-  return useStaticSWR<Nullable<any>, Error>('hasChildren', initialData);
-};
-
 export const useTemplateTagData = (initialData?: Nullable<string>): SWRResponse<Nullable<string>, Error> => {
   return useStaticSWR<Nullable<string>, Error>('templateTagData', initialData);
 };
 
 export const useIsSharedUser = (initialData?: boolean): SWRResponse<boolean, Error> => {
   return useStaticSWR<boolean, Error>('isSharedUser', initialData);
-};
-
-export const useShareLinksNumber = (initialData?: Nullable<any>): SWRResponse<Nullable<any>, Error> => {
-  return useStaticSWR<Nullable<any>, Error>('shareLinksNumber', initialData);
 };
 
 export const useShareLinkId = (initialData?: Nullable<string>): SWRResponse<Nullable<string>, Error> => {
@@ -125,14 +102,6 @@ export const useDrawioUri = (initialData?: string): SWRResponse<string, Error> =
 
 export const useHackmdUri = (initialData?: Nullable<string>): SWRResponse<Nullable<string>, Error> => {
   return useStaticSWR<Nullable<string>, Error>('hackmdUri', initialData);
-};
-
-export const useLastUpdateUsername = (initialData?: Nullable<any>): SWRResponse<Nullable<any>, Error> => {
-  return useStaticSWR<Nullable<any>, Error>('lastUpdateUsername', initialData);
-};
-
-export const useDeleteUsername = (initialData?: Nullable<any>): SWRResponse<Nullable<any>, Error> => {
-  return useStaticSWR<Nullable<any>, Error>('deleteUsername', initialData);
 };
 
 export const useIsSearchPage = (initialData?: Nullable<any>) : SWRResponse<Nullable<any>, Error> => {
@@ -167,14 +136,6 @@ export const useIsSlackConfigured = (initialData?: boolean) : SWRResponse<boolea
   return useStaticSWR<boolean, Error>('isSlackConfigured', initialData);
 };
 
-export const useIsEnabledAttachTitleHeader = (initialData?: boolean) : SWRResponse<boolean, Error> => {
-  return useStaticSWR<boolean, Error>('isEnabledAttachTitleHeader', initialData);
-};
-
-export const useHasParent = (initialData?: boolean) : SWRResponse<boolean, Error> => {
-  return useStaticSWR<boolean, Error>('hasParent', initialData);
-};
-
 export const useIsIndentSizeForced = (initialData?: boolean) : SWRResponse<boolean, Error> => {
   return useStaticSWR<boolean, Error>('isIndentSizeForced', initialData, { fallbackData: false });
 };
@@ -187,6 +148,7 @@ export const useAuditLogEnabled = (initialData?: boolean): SWRResponse<boolean, 
   return useStaticSWR<boolean, Error>('auditLogEnabled', initialData, { fallbackData: false });
 };
 
+// TODO: initialize in [[..path]].page.tsx?
 export const useActivityExpirationSeconds = (initialData?: number) : SWRResponse<number, Error> => {
   return useStaticSWR<number, Error>('activityExpirationSeconds', initialData);
 };
