@@ -38,7 +38,6 @@
     "lint:swagger2openapi": "node node_modules/.bin/oas-validate tmp/swagger.json",
     "lint": "run-p lint:*",
     "test": "cross-env NODE_ENV=test jest --passWithNoTests -- ",
-    "TAICHI": "yarn test packages/app/test/integration/service/page-grant.test.js",
     "test:ci": "cross-env NODE_ENV=test jest",
     "prelint:eslint": "yarn resources:plugin",
     "prelint:swagger2openapi": "yarn openapi:v3",
