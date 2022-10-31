@@ -41,7 +41,7 @@ export const PageStatusAlert = (): JSX.Element => {
     ];
   }, [t]);
 
-  const getContentsForDraftExistsAlert = useCallback((isRealtime) => {
+  const getContentsForDraftExistsAlert = useCallback(() => {
     return [
       ['bg-success', 'd-hackmd-none'],
       <>
@@ -99,31 +99,42 @@ export const PageStatusAlert = (): JSX.Element => {
     ];
   }, [t, onClickResolveConflict, refreshPage]);
 
+  const getFC = useCallback(() => {
+    const isRevisionOutdated = revision?._id !== remoteRevisionId;
+    const isHackmdDocumentOutdated = revisionIdHackmdSynced !== remoteRevisionId;
 
-  const isRevisionOutdated = revision?._id !== remoteRevisionId;
-  const isHackmdDocumentOutdated = revisionIdHackmdSynced !== remoteRevisionId;
+    // when remote revision is newer than both
+    if (isHackmdDocumentOutdated && isRevisionOutdated) {
+      return getContentsForUpdatedAlert();
+    }
 
-  let getContentsFunc;
+    // when someone editing with HackMD
+    if (isHackmdDraftUpdatingInRealtime) {
+      return getContentsForSomeoneEditingAlert();
+    }
 
-  // when remote revision is newer than both
-  if (isHackmdDocumentOutdated && isRevisionOutdated) {
-    getContentsFunc = getContentsForUpdatedAlert;
-  }
-  // when someone editing with HackMD
-  else if (isHackmdDraftUpdatingInRealtime) {
-    getContentsFunc = getContentsForSomeoneEditingAlert;
-  }
-  // when the draft of HackMD is newest
-  else if (hasDraftOnHackmd) {
-    getContentsFunc = getContentsForDraftExistsAlert;
-  }
+    // when the draft of HackMD is newest
+    if (hasDraftOnHackmd) {
+      return getContentsForDraftExistsAlert();
+    }
 
-  if (getContentsFunc === null) {
-    return <></>;
-  }
+    return null;
+  }, [
+    revision?._id,
+    remoteRevisionId,
+    revisionIdHackmdSynced,
+    isHackmdDraftUpdatingInRealtime,
+    hasDraftOnHackmd,
+    getContentsForUpdatedAlert,
+    getContentsForSomeoneEditingAlert,
+    getContentsForDraftExistsAlert,
+  ]);
 
-  const [additionalClasses, label, btn] = getContentsFunc();
+  const alertComponent = getFC();
 
+  if (alertComponent === null) { return <></> }
+
+  const [additionalClasses, label, btn] = alertComponent;
 
   return (
     <div className={`card grw-page-status-alert text-white fixed-bottom animated fadeInUp faster ${additionalClasses.join(' ')}`}>
