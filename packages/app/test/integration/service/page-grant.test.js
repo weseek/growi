@@ -774,9 +774,9 @@ describe('PageGrantService', () => {
     });
   });
 
+  // see: https://dev.growi.org/635a314eac6bcd85cbf359fc about the specification
   describe('canOverwriteDescendants', () => {
     test('it should return true when update grant is GRANT_PUBLIC', async() => {
-      const userA = {};
       const updateGrantInfo = {
         targetPage: {},
         grant: PageGrant.GRANT_PUBLIC,
@@ -790,7 +790,6 @@ describe('PageGrantService', () => {
       expect(res).toBe(true);
     });
     test('it should return true when all descendant pages are granted by the operator', async() => {
-      const userA = {};
       const updateGrantInfo = {
         targetPage: {},
         grant: PageGrant.GRANT_OWNER,
@@ -806,7 +805,6 @@ describe('PageGrantService', () => {
     test(`it should return true when update grant is GRANT_USER_GROUP
     , all user groups of descendants are the children or itself of the update user group
     , and all users of descendants belong to the update user group`, async() => {
-      const userA = {};
       const userGroupAB = {};
       const updateGrantInfo = {
         targetPage: {},
@@ -823,7 +821,6 @@ describe('PageGrantService', () => {
     test(`it should return false when some of descendants is not granted
     , update grant is GRANT_USER_GROUP
     , and some of user groups of descendants are not children or itself of the update user group`, async() => {
-      const userA = {};
       const userGroupAB = {};
       const updateGrantInfo = {
         targetPage: {},
@@ -840,7 +837,6 @@ describe('PageGrantService', () => {
     test(`it should return false when some of descendants is not granted
     , update grant is GRANT_USER_GROUP
     , and some of users of descendants does NOT belong to the update user group`, async() => {
-      const userA = {};
       const updateGrantInfo = {
         targetPage: {},
         grant: PageGrant.GRANT_USER_GROUP,
@@ -854,7 +850,6 @@ describe('PageGrantService', () => {
       expect(res).toBe(false);
     });
     test('it should return false when some of descendants is not granted and update grant is GRANT_OWNER', async() => {
-      const userA = {};
       const updateGrantInfo = {
         targetPage: {},
         grant: PageGrant.GRANT_OWNER,
