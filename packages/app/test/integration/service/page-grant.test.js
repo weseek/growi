@@ -89,39 +89,17 @@ describe('PageGrantService', () => {
   const pageE3GroupChildPath = '/E3/GroupChild';
   const pageE3User1Path = '/E3/User1';
 
-  /*
-   * prepare before all tests
-   */
-  beforeAll(async() => {
-    crowi = await getInstance();
-
-    pageGrantService = crowi.pageGrantService;
-
-    User = mongoose.model('User');
-    Page = mongoose.model('Page');
-    UserGroupRelation = mongoose.model('UserGroupRelation');
-
+  const createDocumentsToTestIsGrantNormalized = async() => {
     // Users
     await User.insertMany([
-      // For tests of isGrantNormalized
       { name: 'User1', username: 'User1', email: 'user1@example.com' },
       { name: 'User2', username: 'User2', email: 'user2@example.com' },
-
-      // For tests of canOverwriteDescendants
-      { name: 'UserA', username: 'UserA', email: 'userA@example.com' },
-      { name: 'UserB', username: 'UserB', email: 'userB@example.com' },
-      { name: 'UserC', username: 'UserC', email: 'userC@example.com' },
     ]);
 
     user1 = await User.findOne({ username: 'User1' });
     user2 = await User.findOne({ username: 'User2' });
-    user3 = await User.findOne({ username: 'User3' });
-    userA = await User.findOne({ username: 'UserA' });
-    userB = await User.findOne({ username: 'UserB' });
-    userC = await User.findOne({ username: 'UserC' });
 
     await UserGroup.insertMany([
-      // For tests of isGrantNormalized
       {
         _id: userGroupIdParent,
         name: 'GroupParent',
@@ -131,46 +109,13 @@ describe('PageGrantService', () => {
         name: 'GroupChild',
         parent: userGroupIdParent,
       },
-
-      // For tests of canOverwriteDescendants
-      {
-        _id: userGroupIdAB,
-        name: 'GroupAB',
-        parent: null,
-      },
-      {
-        _id: userGroupIdA,
-        name: 'GroupA',
-        parent: userGroupIdAB,
-      },
-      {
-        _id: userGroupIdAIsolated,
-        name: 'GroupAIsolated',
-        parent: null, // isolated
-      },
-      {
-        _id: userGroupIdB,
-        name: 'GroupB',
-        parent: userGroupIdAB,
-      },
-      {
-        _id: userGroupIdC,
-        name: 'GroupC',
-        parent: null,
-      },
     ]);
 
     groupParent = await UserGroup.findOne({ name: 'GroupParent' });
     groupChild = await UserGroup.findOne({ name: 'GroupChild' });
-    groupAB = await UserGroup.findOne({ name: 'GroupAB' });
-    groupA = await UserGroup.findOne({ name: 'GroupA' });
-    groupAIsolated = await UserGroup.findOne({ name: 'GroupAIsolated' });
-    groupB = await UserGroup.findOne({ name: 'GroupB' });
-    groupC = await UserGroup.findOne({ name: 'GroupC' });
 
     // UserGroupRelations
     await UserGroupRelation.insertMany([
-      // For tests of isGrantNormalized
       {
         relatedGroup: groupParent._id,
         relatedUser: user1._id,
@@ -182,32 +127,6 @@ describe('PageGrantService', () => {
       {
         relatedGroup: groupChild._id,
         relatedUser: user1._id,
-      },
-
-      // For tests of canOverwriteDescendants
-      {
-        relatedGroup: userGroupIdAB,
-        relatedUser: userA._id,
-      },
-      {
-        relatedGroup: userGroupIdAB,
-        relatedUser: userB._id,
-      },
-      {
-        relatedGroup: userGroupIdA,
-        relatedUser: userA._id,
-      },
-      {
-        relatedGroup: userGroupIdAIsolated,
-        relatedUser: userA._id,
-      },
-      {
-        relatedGroup: userGroupIdB,
-        relatedUser: userB._id,
-      },
-      {
-        relatedGroup: userGroupIdC,
-        relatedUser: userC._id,
       },
     ]);
 
@@ -403,6 +322,112 @@ describe('PageGrantService', () => {
     pageE3GroupParent = await Page.findOne({ path: pageE3GroupParentPath });
     pageE3GroupChild = await Page.findOne({ path: pageE3GroupChildPath });
     pageE3User1 = await Page.findOne({ path: pageE3User1Path });
+  };
+
+  const createDocumentsToTestCanOverwriteDescendants = async() => {
+    // Users
+    await User.insertMany([
+      { name: 'UserA', username: 'UserA', email: 'userA@example.com' },
+      { name: 'UserB', username: 'UserB', email: 'userB@example.com' },
+      { name: 'UserC', username: 'UserC', email: 'userC@example.com' },
+    ]);
+
+    userA = await User.findOne({ username: 'UserA' });
+    userB = await User.findOne({ username: 'UserB' });
+    userC = await User.findOne({ username: 'UserC' });
+
+    await UserGroup.insertMany([
+      {
+        _id: userGroupIdAB,
+        name: 'GroupAB',
+        parent: null,
+      },
+      {
+        _id: userGroupIdA,
+        name: 'GroupA',
+        parent: userGroupIdAB,
+      },
+      {
+        _id: userGroupIdAIsolated,
+        name: 'GroupAIsolated',
+        parent: null, // isolated
+      },
+      {
+        _id: userGroupIdB,
+        name: 'GroupB',
+        parent: userGroupIdAB,
+      },
+      {
+        _id: userGroupIdC,
+        name: 'GroupC',
+        parent: null,
+      },
+    ]);
+
+    groupAB = await UserGroup.findOne({ name: 'GroupAB' });
+    groupA = await UserGroup.findOne({ name: 'GroupA' });
+    groupAIsolated = await UserGroup.findOne({ name: 'GroupAIsolated' });
+    groupB = await UserGroup.findOne({ name: 'GroupB' });
+    groupC = await UserGroup.findOne({ name: 'GroupC' });
+
+    // UserGroupRelations
+    await UserGroupRelation.insertMany([
+      {
+        relatedGroup: userGroupIdAB,
+        relatedUser: userA._id,
+      },
+      {
+        relatedGroup: userGroupIdAB,
+        relatedUser: userB._id,
+      },
+      {
+        relatedGroup: userGroupIdA,
+        relatedUser: userA._id,
+      },
+      {
+        relatedGroup: userGroupIdAIsolated,
+        relatedUser: userA._id,
+      },
+      {
+        relatedGroup: userGroupIdB,
+        relatedUser: userB._id,
+      },
+      {
+        relatedGroup: userGroupIdC,
+        relatedUser: userC._id,
+      },
+    ]);
+
+    // Pages
+    await Page.insertMany([
+      {
+        path: pageRootGroupParentPath,
+        grant: Page.GRANT_USER_GROUP,
+        creator: user1,
+        lastUpdateUser: user1,
+        grantedUsers: null,
+        grantedGroup: groupParent._id,
+        parent: rootPage._id,
+      },
+    ]);
+  };
+
+  /*
+   * prepare before all tests
+   */
+  beforeAll(async() => {
+    crowi = await getInstance();
+
+    pageGrantService = crowi.pageGrantService;
+
+    User = mongoose.model('User');
+    Page = mongoose.model('Page');
+    UserGroupRelation = mongoose.model('UserGroupRelation');
+
+    rootPage = await Page.findOne({ path: '/' });
+
+    await createDocumentsToTestIsGrantNormalized();
+    await createDocumentsToTestCanOverwriteDescendants();
 
     xssSpy = jest.spyOn(crowi.xss, 'process').mockImplementation(path => path);
   });
