@@ -504,6 +504,7 @@ class PageGrantService {
     // METHOD consideration
     // 1. check is tree GRANTED and it returns true when GRANTED
     //   - GRANTED is the tree with all pages granted by the operator
+    //   - get all user groups that the operator belongs
     // 2. if not 1. then,
     //   - when update grant is ONLYME, return false
     //   - when update grant is PUBLIC, return true

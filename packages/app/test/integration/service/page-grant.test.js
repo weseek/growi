@@ -26,9 +26,24 @@ describe('PageGrantService', () => {
 
   let user1;
   let user2;
+  let user3;
+  let userA;
+  let userB;
+  let userC;
 
   let groupParent;
   let groupChild;
+  let groupAB;
+  let groupA;
+  let groupB;
+  let groupC;
+
+  const userGroupIdParent = new mongoose.Types.ObjectId();
+
+  const userGroupIdA = new mongoose.Types.ObjectId();
+  const userGroupIdB = new mongoose.Types.ObjectId();
+  const userGroupIdC = new mongoose.Types.ObjectId();
+  const userGroupIdAB = new mongoose.Types.ObjectId();
 
   let rootPage;
   let rootPublicPage;
@@ -86,33 +101,64 @@ describe('PageGrantService', () => {
 
     // Users
     await User.insertMany([
+      // For tests of isGrantNormalized
       { name: 'User1', username: 'User1', email: 'user1@example.com' },
       { name: 'User2', username: 'User2', email: 'user2@example.com' },
+
+      // For tests of canOverwriteDescendants
+      { name: 'UserA', username: 'UserA', email: 'userA@example.com' },
+      { name: 'UserB', username: 'UserB', email: 'userB@example.com' },
+      { name: 'UserC', username: 'UserC', email: 'userC@example.com' },
     ]);
 
     user1 = await User.findOne({ username: 'User1' });
     user2 = await User.findOne({ username: 'User2' });
+    user3 = await User.findOne({ username: 'User3' });
+    userA = await User.findOne({ username: 'UserA' });
+    userB = await User.findOne({ username: 'UserB' });
+    userC = await User.findOne({ username: 'UserC' });
 
-    // Parent user groups
     await UserGroup.insertMany([
+      // For tests of isGrantNormalized
       {
+        _id: userGroupIdParent,
         name: 'GroupParent',
         parent: null,
       },
-    ]);
-    groupParent = await UserGroup.findOne({ name: 'GroupParent' });
-
-    // Child user groups
-    await UserGroup.insertMany([
       {
         name: 'GroupChild',
-        parent: groupParent._id,
+        parent: userGroupIdParent,
+      },
+
+      // For tests of canOverwriteDescendants
+      {
+        _id: userGroupIdAB,
+        name: 'GroupAB',
+        parent: null,
+      },
+      {
+        _id: userGroupIdA,
+        name: 'GroupA',
+        parent: userGroupIdAB,
+      },
+      {
+        _id: userGroupIdB,
+        name: 'GroupB',
+        parent: userGroupIdAB,
+      },
+      {
+        _id: userGroupIdC,
+        name: 'GroupC',
+        parent: null,
       },
     ]);
+
+    groupParent = await UserGroup.findOne({ name: 'GroupParent' });
     groupChild = await UserGroup.findOne({ name: 'GroupChild' });
 
     // UserGroupRelations
     await UserGroupRelation.insertMany([
+      // For tests of isGrantNormalized
       {
         relatedGroup: groupParent._id,
         relatedUser: user1._id,
@@ -124,6 +170,28 @@ describe('PageGrantService', () => {
       {
         relatedGroup: groupChild._id,
         relatedUser: user1._id,
+      },
+
+      // For tests of canOverwriteDescendants
+      {
+        relatedGroup: userGroupIdAB,
+        relatedUser: userA._id,
+      },
+      {
+        relatedGroup: userGroupIdAB,
+        relatedUser: userB._id,
+      },
+      {
+        relatedGroup: userGroupIdA,
+        relatedUser: userA._id,
+      },
+      {
+        relatedGroup: userGroupIdB,
+        relatedUser: userB._id,
+      },
+      {
+        relatedGroup: userGroupIdC,
+        relatedUser: userC._id,
       },
     ]);
 
