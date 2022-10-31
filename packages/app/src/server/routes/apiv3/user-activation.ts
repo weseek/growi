@@ -4,6 +4,7 @@ import { ErrorV3 } from '@growi/core';
 import { format, subSeconds } from 'date-fns';
 import { body, validationResult } from 'express-validator';
 
+import { successUserActivationEmailSended } from '~/interfaces/user-activation';
 import UserRegistrationOrder from '~/server/models/user-registration-order';
 
 const PASSOWRD_MINIMUM_NUMBER = 8;
@@ -213,8 +214,12 @@ export const registerAction = (crowi) => {
 
     makeRegistrationEmailToken(email, crowi);
 
-    req.flash('successMessage', req.t('message.successfully_send_email_auth', { email }));
+    const resData: successUserActivationEmailSended = {
+      redirectTo: '/login#login',
+      message: 'message.successfully_send_email_auth',
+      email,
+    };
 
-    return res.redirect('/login');
+    res.apiv3(resData);
   };
 };

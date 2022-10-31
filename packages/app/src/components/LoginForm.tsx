@@ -9,6 +9,7 @@ import ReactCardFlip from 'react-card-flip';
 import { apiv3Post } from '~/client/util/apiv3-client';
 import { LoginErrorCode } from '~/interfaces/errors/login-error';
 import { IErrorV3 } from '~/interfaces/errors/v3-error';
+import { successUserActivationEmailSended } from '~/interfaces/user-activation';
 import { toArrayIfNot } from '~/utils/array-utils';
 
 type LoginFormProps = {
@@ -49,6 +50,9 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
   const [emailForRegister, setEmailForRegister] = useState('');
   const [passwordForRegister, setPasswordForRegister] = useState('');
   const [registerErrors, setRegisterErrors] = useState<IErrorV3[]>([]);
+
+  // For UserActivation
+  const [successUserActivationEmailSended, setSuccessUserActivationEmailSended] = useState<successUserActivationEmailSended>();
 
   useEffect(() => {
     const { hash } = window.location;
@@ -272,6 +276,10 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
       const res = await apiv3Post(requestPath, { registerForm });
       const { redirectTo } = res.data;
       router.push(redirectTo);
+
+      if (isEmailAuthenticationEnabled) {
+        setSuccessUserActivationEmailSended(res.data);
+      }
     }
     catch (err) {
       // Execute if error exists
@@ -280,7 +288,7 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
       }
     }
     return;
-  }, [emailForRegister, nameForRegister, passwordForRegister, router, usernameForRegister]);
+  }, [emailForRegister, nameForRegister, passwordForRegister, router, usernameForRegister, isEmailAuthenticationEnabled]);
 
   const resetRegisterErrors = useCallback(() => {
     if (registerErrors.length === 0) return;
