@@ -90,7 +90,7 @@ context('Access to timeline', () => {
       cy.get('.nav-title > li').eq(1).find('a').click();
       cy.get('button.close').eq(0).click();
     });
-    cy.get('.modal').should('be.visible').scrollTo('top');
+    cy.get('.modal').should('be.visible');
     // eslint-disable-next-line cypress/no-unnecessary-waiting
     cy.wait(500); // wait for loading wiki
     cy.screenshot(`${ssPrefix}2-timeline-list-fullscreen`, {capture: 'viewport'});
