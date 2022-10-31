@@ -80,6 +80,7 @@ context('Click page icons button', () => {
     cy.get('#grw-subnav-container').within(() => {
       cy.get('div.grw-seen-user-info > button#btn-seen-user').click({force: true});
     });
+    // TODO:
     // cy.get('div.user-list-popover').should('be.visible');
 
     cy.get('#grw-subnav-container').within(() => {
