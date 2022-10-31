@@ -72,7 +72,7 @@ context('Modal for page operation', () => {
     });
     cy.getByTestid('page-editor').should('be.visible');
     cy.getByTestid('save-page-btn').click();
-    cy.get('layout-root').should('not.have.class', 'editing');
+    cy.get('.layout-root').should('not.have.class', 'editing');
 
     cy.getByTestid('grw-contextual-sub-nav').should('be.visible');
     cy.screenshot(`${ssPrefix}create-page-under-specific-page`);
@@ -248,7 +248,7 @@ context('Tag Oprations', () =>{
     });
 
     cy.get('.toast').should('be.visible').trigger('mouseover');
-    cy.get('.grw-taglabels-container > form > a').contains(tag).should('exist');
+    cy.get('.grw-taglabels-container > .grw-tag-labels > a', { timeout: 10000 }).contains(tag).should('exist');
     /* eslint-disable cypress/no-unnecessary-waiting */
     cy.wait(150); // wait for toastr to change its color occured by mouseover
     cy.screenshot(`${ssPrefix}4-click-done`, {capture: 'viewport'});
@@ -260,7 +260,7 @@ context('Tag Oprations', () =>{
     const tag = 'we';
     const newPageName = 'our';
     cy.visit('/');
-    cy.get('.grw-taglabels-container > form > a').contains(tag).click();
+    cy.get('.grw-taglabels-container > .grw-tag-labels > a', { timeout: 10000 }).contains(tag).click();
     cy.getByTestid('search-result-base').should('be.visible');
     cy.getByTestid('search-result-list').should('be.visible');
     cy.getByTestid('search-result-content').should('be.visible');
@@ -295,7 +295,7 @@ context('Tag Oprations', () =>{
     const newPageName = '/ourus';
 
     cy.visit('/');
-    cy.get('.grw-taglabels-container > form > a').contains(tag).click();
+    cy.get('.grw-taglabels-container > .grw-tag-labels > a', { timeout: 10000 }).contains(tag).click();
     cy.getByTestid('search-result-base').should('be.visible');
     cy.getByTestid('search-result-list').should('be.visible');
     cy.getByTestid('search-result-content').should('be.visible');

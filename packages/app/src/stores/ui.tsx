@@ -405,18 +405,21 @@ export const useIsAbleToShowTrashPageManagementButtons = (): SWRResponse<boolean
 export const useIsAbleToShowPageManagement = (): SWRResponse<boolean, Error> => {
   const key = 'isAbleToShowPageManagement';
   const { data: currentPageId } = useCurrentPageId();
-  const { data: isTrashPage } = useIsTrashPage();
-  const { data: isSharedUser } = useIsSharedUser();
+  const { data: _isTrashPage } = useIsTrashPage();
+  const { data: _isSharedUser } = useIsSharedUser();
   const { data: isNotFound } = useIsNotFound();
 
   const pageId = currentPageId;
-  const includesUndefined = [pageId, isTrashPage, isSharedUser, isNotFound].some(v => v === undefined);
-  const isPageExist = (pageId != null) && !isNotFound;
-  const isEmptyPage = (pageId != null) && isNotFound;
+  const includesUndefined = [pageId, _isTrashPage, _isSharedUser, isNotFound].some(v => v === undefined);
+  const isPageExist = (pageId != null) && isNotFound === false;
+  const isEmptyPage = (pageId != null) && isNotFound === true;
+  const isTrashPage = isPageExist && _isTrashPage === true;
+  const isSharedUser = isPageExist && _isSharedUser === true;
 
   return useSWRImmutable(
-    includesUndefined ? null : [key, pageId],
-    () => (isPageExist && !isTrashPage && !isSharedUser) || (isEmptyPage != null && isEmptyPage),
+    includesUndefined ? null : [key, pageId, isPageExist, isEmptyPage, isTrashPage, isSharedUser],
+    // eslint-disable-next-line max-len
+    (key: string, pageId: string, isPageExist: boolean, isTrashPage: boolean, isSharedUser: boolean) => (isPageExist && !isTrashPage && !isSharedUser) || isEmptyPage,
   );
 };
 
