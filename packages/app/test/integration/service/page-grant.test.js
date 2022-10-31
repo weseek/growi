@@ -35,12 +35,14 @@ describe('PageGrantService', () => {
   let groupChild;
   let groupAB;
   let groupA;
+  let groupAIsolated;
   let groupB;
   let groupC;
 
   const userGroupIdParent = new mongoose.Types.ObjectId();
 
   const userGroupIdA = new mongoose.Types.ObjectId();
+  const userGroupIdAIsolated = new mongoose.Types.ObjectId();
   const userGroupIdB = new mongoose.Types.ObjectId();
   const userGroupIdC = new mongoose.Types.ObjectId();
   const userGroupIdAB = new mongoose.Types.ObjectId();
@@ -142,6 +144,11 @@ describe('PageGrantService', () => {
         parent: userGroupIdAB,
       },
       {
+        _id: userGroupIdAIsolated,
+        name: 'GroupAIsolated',
+        parent: null, // isolated
+      },
+      {
         _id: userGroupIdB,
         name: 'GroupB',
         parent: userGroupIdAB,
@@ -155,6 +162,11 @@ describe('PageGrantService', () => {
 
     groupParent = await UserGroup.findOne({ name: 'GroupParent' });
     groupChild = await UserGroup.findOne({ name: 'GroupChild' });
+    groupAB = await UserGroup.findOne({ name: 'GroupAB' });
+    groupA = await UserGroup.findOne({ name: 'GroupA' });
+    groupAIsolated = await UserGroup.findOne({ name: 'GroupAIsolated' });
+    groupB = await UserGroup.findOne({ name: 'GroupB' });
+    groupC = await UserGroup.findOne({ name: 'GroupC' });
 
     // UserGroupRelations
     await UserGroupRelation.insertMany([
@@ -183,6 +195,10 @@ describe('PageGrantService', () => {
       },
       {
         relatedGroup: userGroupIdA,
+        relatedUser: userA._id,
+      },
+      {
+        relatedGroup: userGroupIdAIsolated,
         relatedUser: userA._id,
       },
       {
