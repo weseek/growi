@@ -1,6 +1,5 @@
 import { Ref, IUser } from '@growi/core';
 import { isValidObjectId } from '@growi/core/src/utils/objectid-utils';
-import ExtensibleCustomError from 'extensible-custom-error';
 import {
   Types, Document, Model, Schema,
 } from 'mongoose';
@@ -9,9 +8,9 @@ import {
 import loggerFactory from '../../utils/logger';
 import { getOrCreateModel } from '../util/mongoose-utils';
 
-const logger = loggerFactory('growi:models:bookmark-folder');
+import { ErrorInvalidParentBookmarkFolder } from './errors';
 
-export class InvalidParentBookmarkFolder extends ExtensibleCustomError {}
+const logger = loggerFactory('growi:models:bookmark-folder');
 
 
 export type IBookmarkFolderDocument = {
@@ -54,7 +53,7 @@ bookmarkFolderSchema.statics.createByParameters = async function(params: IBookma
     const parentFolder = await this.findById(parent);
 
     if (!isParentFolderIdValid || parentFolder == null) {
-      throw new InvalidParentBookmarkFolder("Parent folder id is invalid or parent folder doesn't exists");
+      throw new ErrorInvalidParentBookmarkFolder("Parent folder id is invalid or parent folder doesn't exists");
     }
     bookmarkFolder = await this.create({ name, owner, parent:  parentFolder?._id }) as unknown as BookmarkFolderDocument;
   }
