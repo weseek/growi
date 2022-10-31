@@ -1,4 +1,4 @@
-import { OptionsToSave } from '~/interfaces/editor-settings';
+import type { OptionsToSave } from '~/interfaces/editor-settings';
 
 export const getOptionsToSave = (
     isSlackEnabled: boolean,

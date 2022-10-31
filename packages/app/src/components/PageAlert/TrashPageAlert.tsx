@@ -2,11 +2,10 @@ import React from 'react';
 
 import { UserPicture } from '@growi/ui';
 import { format } from 'date-fns';
+import { useRouter } from 'next/router';
 import { useTranslation } from 'react-i18next';
 
-import {
-  useIsTrashPage, useShareLinkId,
-} from '~/stores/context';
+import { useIsTrashPage } from '~/stores/context';
 import { usePageDeleteModal, usePutBackPageModal } from '~/stores/modal';
 import { useSWRxPageInfo, useSWRxCurrentPage } from '~/stores/page';
 import { useIsAbleToShowTrashPageManagementButtons } from '~/stores/ui';
@@ -21,14 +20,14 @@ const onDeletedHandler = (pathOrPathsToDelete) => {
 
 export const TrashPageAlert = (): JSX.Element => {
   const { t } = useTranslation();
+  const router = useRouter();
 
   const { data: isAbleToShowTrashPageManagementButtons } = useIsAbleToShowTrashPageManagementButtons();
-  const { data: shareLinkId } = useShareLinkId();
   const { data: pageData } = useSWRxCurrentPage();
   const { data: isTrashPage } = useIsTrashPage();
   const pageId = pageData?._id;
   const pagePath = pageData?.path;
-  const { data: pageInfo } = useSWRxPageInfo(pageId ?? null, shareLinkId);
+  const { data: pageInfo } = useSWRxPageInfo(pageId ?? null);
 
 
   const { open: openDeleteModal } = usePageDeleteModal();
@@ -49,7 +48,7 @@ export const TrashPageAlert = (): JSX.Element => {
       return;
     }
     const putBackedHandler = () => {
-      window.location.reload();
+      router.push(`/${pageId}`);
     };
     openPutBackPageModal({ pageId, path: pagePath }, { onPutBacked: putBackedHandler });
   }

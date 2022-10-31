@@ -14,8 +14,6 @@ import {
 import {
   DrawioInterceptor,
 } from '../../services/renderer/interceptor/drawio-interceptor';
-import { toastError } from '../util/apiNotification';
-import { apiPost } from '../util/apiv1-client';
 
 const { isTrashPage } = pagePathUtils;
 
@@ -338,23 +336,17 @@ export default class PageContainer extends Container {
   retrieveMyBookmarkList() {
   }
 
-  async resolveConflict(markdown, editorMode) {
+  async resolveConflict(markdown, editorMode, optionsToSave) {
 
     const { pageId, remoteRevisionId, path } = this.state;
     const editorContainer = this.appContainer.getContainer('EditorContainer');
-    const options = editorContainer.getCurrentOptionsToSave();
-    const optionsToSave = Object.assign({}, options);
 
     const res = await this.updatePage(pageId, remoteRevisionId, markdown, optionsToSave);
 
     editorContainer.clearDraft(path);
     this.updateStateAfterSave(res.page, res.tags, res.revision, editorMode);
 
-    // Update PageEditor component
-    if (editorMode !== EditorMode.Editor) {
-      // eslint-disable-next-line no-undef
-      globalEmitter.emit('updateEditorValue', markdown);
-    }
+    window.globalEmitter.emit('updateEditorValue', markdown);
 
     editorContainer.setState({ tags: res.tags });
 
