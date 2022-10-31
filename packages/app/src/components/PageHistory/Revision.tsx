@@ -5,7 +5,7 @@ import { UserPicture } from '@growi/ui';
 import { useTranslation } from 'next-i18next';
 
 import UserDate from '../User/UserDate';
-import Username from '../User/Username';
+import { Username } from '../User/Username';
 
 import styles from './Revision.module.scss';
 
