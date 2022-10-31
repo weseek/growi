@@ -159,13 +159,10 @@ export const validateRegisterForm = (req, res, next) => {
     return next();
   }
 
-  req.form = { isValid: false };
   const extractedErrors: string[] = [];
   errors.array().map(err => extractedErrors.push(err.msg));
 
-  req.flash('registerWarningMessage', extractedErrors);
-
-  res.redirect('back');
+  return res.apiv3Err(extractedErrors, 400);
 };
 
 async function makeRegistrationEmailToken(email, crowi) {
