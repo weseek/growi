@@ -1,10 +1,13 @@
 import mongoose from 'mongoose';
 
+import { PageGrant } from '~/interfaces/page';
 
 import { getInstance } from '../setup-crowi';
 
 describe('Page', () => {
   let crowi;
+  let pageGrantService;
+
   let Page;
   let Revision;
   let User;
@@ -27,8 +30,292 @@ describe('Page', () => {
   let userGroupIdPModelB;
   let userGroupIdPModelC;
 
+  // To test updatePage overwriting descendants (prefix `upod`)
+  let upodUserA;
+  let upodUserB;
+  let upodUserC;
+  let upodGroupAB;
+  let upodGroupA;
+  let upodGroupAIsolated;
+  let upodGroupB;
+  let upodGroupC;
+  const upodUserGroupIdA = new mongoose.Types.ObjectId();
+  const upodUserGroupIdAIsolated = new mongoose.Types.ObjectId();
+  const upodUserGroupIdB = new mongoose.Types.ObjectId();
+  const upodUserGroupIdC = new mongoose.Types.ObjectId();
+  const upodUserGroupIdAB = new mongoose.Types.ObjectId();
+  const createDocumentsToTestUpdatePageOverwritingDescendants = async() => {
+    // Users
+    await User.insertMany([
+      { name: 'upodUserA', username: 'upodUserA', email: 'upoduserA@example.com' },
+      { name: 'upodUserB', username: 'upodUserB', email: 'upoduserB@example.com' },
+      { name: 'upodUserC', username: 'upodUserC', email: 'upodUserC@example.com' },
+    ]);
+
+    upodUserA = await User.findOne({ username: 'upodUserA' });
+    upodUserB = await User.findOne({ username: 'upodUserB' });
+    upodUserC = await User.findOne({ username: 'upodUserC' });
+
+    await UserGroup.insertMany([
+      {
+        _id: upodUserGroupIdAB,
+        name: 'upodGroupAB',
+        parent: null,
+      },
+      {
+        _id: upodUserGroupIdA,
+        name: 'upodGroupA',
+        parent: upodUserGroupIdAB,
+      },
+      {
+        _id: upodUserGroupIdAIsolated,
+        name: 'upodGroupAIsolated',
+        parent: null,
+      },
+      {
+        _id: upodUserGroupIdB,
+        name: 'upodGroupB',
+        parent: upodUserGroupIdAB,
+      },
+      {
+        _id: upodUserGroupIdC,
+        name: 'upodGroupC',
+        parent: null,
+      },
+    ]);
+
+    upodGroupAB = await UserGroup.findOne({ name: 'upodGroupAB' });
+    upodGroupA = await UserGroup.findOne({ name: 'upodGroupA' });
+    upodGroupAIsolated = await UserGroup.findOne({ name: 'upodGroupAIsolated' });
+    upodGroupB = await UserGroup.findOne({ name: 'upodGroupB' });
+    upodGroupC = await UserGroup.findOne({ name: 'upodGroupC' });
+
+    // UserGroupRelations
+    await UserGroupRelation.insertMany([
+      {
+        relatedGroup: upodUserGroupIdAB,
+        relatedUser: upodUserA._id,
+      },
+      {
+        relatedGroup: upodUserGroupIdAB,
+        relatedUser: upodUserB._id,
+      },
+      {
+        relatedGroup: upodUserGroupIdA,
+        relatedUser: upodUserA._id,
+      },
+      {
+        relatedGroup: upodUserGroupIdAIsolated,
+        relatedUser: upodUserA._id,
+      },
+      {
+        relatedGroup: upodUserGroupIdB,
+        relatedUser: upodUserB._id,
+      },
+      {
+        relatedGroup: upodUserGroupIdC,
+        relatedUser: upodUserC._id,
+      },
+    ]);
+
+    // Pages
+    const pageIdgAB1 = new mongoose.Types.ObjectId();
+    const pageIdPublic2 = new mongoose.Types.ObjectId();
+    const pageIdPublic3 = new mongoose.Types.ObjectId();
+    const pageIdPublic4 = new mongoose.Types.ObjectId();
+    const pageIdPublic5 = new mongoose.Types.ObjectId();
+    const pageIdPublic6 = new mongoose.Types.ObjectId();
+    await Page.insertMany([
+      // case 1
+      {
+        _id: pageIdgAB1,
+        path: '/gAB_canOverwriteDescendants_1', // to GRANT_PUBLIC
+        grant: PageGrant.GRANT_USER_GROUP,
+        creator: upodUserA,
+        lastUpdateUser: upodUserA,
+        grantedUsers: null,
+        grantedGroup: upodUserGroupIdAB,
+        parent: rootPage._id,
+      },
+      {
+        path: '/gB_canOverwriteDescendants_1',
+        grant: PageGrant.GRANT_USER_GROUP,
+        creator: upodUserB,
+        lastUpdateUser: upodUserB,
+        grantedUsers: null,
+        grantedGroup: upodUserGroupIdB,
+        parent: pageIdgAB1,
+      },
+      {
+        path: '/onlyB_canOverwriteDescendants_1',
+        grant: PageGrant.GRANT_OWNER,
+        creator: upodUserB,
+        lastUpdateUser: upodUserB,
+        grantedUsers: [upodUserB._id],
+        grantedGroup: null,
+        parent: pageIdgAB1,
+      },
+      // case 2
+      {
+        _id: pageIdPublic2,
+        path: '/public_canOverwriteDescendants_2', // to Anything
+        grant: PageGrant.GRANT_PUBLIC,
+        creator: upodUserA,
+        lastUpdateUser: upodUserA,
+        grantedUsers: null,
+        grantedGroup: null,
+        parent: rootPage._id,
+      },
+      {
+        path: '/gA_canOverwriteDescendants_2',
+        grant: PageGrant.GRANT_USER_GROUP,
+        creator: upodUserA,
+        lastUpdateUser: upodUserA,
+        grantedUsers: null,
+        grantedGroup: upodUserGroupIdA,
+        parent: pageIdPublic2,
+      },
+      {
+        path: '/gAIsolated_canOverwriteDescendants_2',
+        grant: PageGrant.GRANT_USER_GROUP,
+        creator: upodUserA,
+        lastUpdateUser: upodUserA,
+        grantedUsers: null,
+        grantedGroup: upodUserGroupIdAIsolated,
+        parent: pageIdPublic2,
+      },
+      {
+        path: '/onlyA_canOverwriteDescendants_2',
+        grant: PageGrant.GRANT_OWNER,
+        creator: upodUserA,
+        lastUpdateUser: upodUserA,
+        grantedUsers: [upodUserA._id],
+        grantedGroup: null,
+        parent: pageIdPublic2,
+      },
+      // case 3
+      {
+        _id: pageIdPublic3,
+        path: '/public_canOverwriteDescendants_3', // to GRANT_USER_GROUP with upodGroupAB
+        grant: PageGrant.GRANT_PUBLIC,
+        creator: upodUserA,
+        lastUpdateUser: upodUserA,
+        grantedUsers: null,
+        grantedGroup: null,
+        parent: rootPage._id,
+      },
+      {
+        path: '/gAB_canOverwriteDescendants_3',
+        grant: PageGrant.GRANT_USER_GROUP,
+        creator: upodUserA,
+        lastUpdateUser: upodUserA,
+        grantedUsers: null,
+        grantedGroup: upodUserGroupIdAB,
+        parent: pageIdPublic3,
+      },
+      {
+        path: '/gB_canOverwriteDescendants_3',
+        grant: PageGrant.GRANT_USER_GROUP,
+        creator: upodUserB,
+        lastUpdateUser: upodUserB,
+        grantedUsers: null,
+        grantedGroup: upodUserGroupIdB,
+        parent: pageIdPublic3,
+      },
+      {
+        path: '/onlyB_canOverwriteDescendants_3',
+        grant: PageGrant.GRANT_OWNER,
+        creator: upodUserB,
+        lastUpdateUser: upodUserB,
+        grantedUsers: [upodUserB._id],
+        grantedGroup: null,
+        parent: pageIdPublic3,
+      },
+      // case 4
+      {
+        _id: pageIdPublic4,
+        path: '/public_canOverwriteDescendants_4', // to GRANT_USER_GROUP with upodGroupAB
+        grant: PageGrant.GRANT_PUBLIC,
+        creator: upodUserA,
+        lastUpdateUser: upodUserA,
+        grantedUsers: null,
+        grantedGroup: null,
+        parent: rootPage._id,
+      },
+      {
+        path: '/gA_canOverwriteDescendants_4',
+        grant: PageGrant.GRANT_USER_GROUP,
+        creator: upodUserA,
+        lastUpdateUser: upodUserA,
+        grantedUsers: null,
+        grantedGroup: upodUserGroupIdA,
+        parent: pageIdPublic4,
+      },
+      {
+        path: '/gC_canOverwriteDescendants_4',
+        grant: PageGrant.GRANT_USER_GROUP,
+        creator: upodUserC,
+        lastUpdateUser: upodUserC,
+        grantedUsers: null,
+        grantedGroup: upodUserGroupIdC,
+        parent: pageIdPublic4,
+      },
+      // case 5
+      {
+        _id: pageIdPublic5,
+        path: '/public_canOverwriteDescendants_5', // to GRANT_USER_GROUP with upodGroupAB
+        grant: PageGrant.GRANT_PUBLIC,
+        creator: upodUserA,
+        lastUpdateUser: upodUserA,
+        grantedUsers: null,
+        grantedGroup: null,
+        parent: rootPage._id,
+      },
+      {
+        path: '/gA_canOverwriteDescendants_5',
+        grant: PageGrant.GRANT_USER_GROUP,
+        creator: upodUserA,
+        lastUpdateUser: upodUserA,
+        grantedUsers: null,
+        grantedGroup: upodUserGroupIdA,
+        parent: pageIdPublic5,
+      },
+      {
+        path: '/onlyC_canOverwriteDescendants_5',
+        grant: PageGrant.GRANT_OWNER,
+        creator: upodUserC,
+        lastUpdateUser: upodUserC,
+        grantedUsers: [upodUserC._id],
+        grantedGroup: null,
+        parent: pageIdPublic5,
+      },
+      // case 6
+      {
+        _id: pageIdPublic6,
+        path: '/public_canOverwriteDescendants_6', // to GRANT_USER_GROUP with upodGroupAB
+        grant: PageGrant.GRANT_PUBLIC,
+        creator: upodUserA,
+        lastUpdateUser: upodUserA,
+        grantedUsers: null,
+        grantedGroup: null,
+        parent: rootPage._id,
+      },
+      {
+        path: '/onlyC_canOverwriteDescendants_6',
+        grant: PageGrant.GRANT_OWNER,
+        creator: upodUserC,
+        lastUpdateUser: upodUserC,
+        grantedUsers: [upodUserC._id],
+        grantedGroup: null,
+        parent: pageIdPublic6,
+      },
+    ]);
+  };
+
   beforeAll(async() => {
     crowi = await getInstance();
+    pageGrantService = crowi.pageGrantService;
+
     await crowi.configManager.updateConfigsInTheSameNamespace('crowi', { 'app:isV5Compatible': true });
 
     jest.restoreAllMocks();
@@ -485,14 +772,15 @@ describe('Page', () => {
       },
     ]);
 
+    await createDocumentsToTestUpdatePageOverwritingDescendants();
   });
 
   describe('update', () => {
 
     const updatePage = async(page, newRevisionBody, oldRevisionBody, user, options = {}) => {
-      const mockedRenameSubOperation = jest.spyOn(Page, 'emitPageEventUpdate').mockReturnValue(null);
+      const mockedEmitPageEventUpdate = jest.spyOn(Page, 'emitPageEventUpdate').mockReturnValue(null);
       const savedPage = await Page.updatePage(page, newRevisionBody, oldRevisionBody, user, options);
-      mockedRenameSubOperation.mockRestore();
+      mockedEmitPageEventUpdate.mockRestore();
       return savedPage;
     };
 
@@ -904,5 +1192,93 @@ describe('Page', () => {
 
     });
 
+  });
+
+
+  // see: https://dev.growi.org/635a314eac6bcd85cbf359fc about the specification
+  describe('updatePage with overwriteScopesOfDescendants true', () => {
+    test('(case 1) it should return true when update grant is GRANT_PUBLIC', async() => {
+      const updateGrantInfo = {
+        targetPage: {},
+        grant: PageGrant.GRANT_PUBLIC,
+        grantedUser: null,
+        grantedUserGroup: null,
+      };
+
+      const res = await pageGrantService.canOverwriteDescendants(upodUserA, updateGrantInfo);
+
+      expect(res).toBe(true);
+    });
+    test('(case 2) it should return true when all descendant pages are granted by the operator', async() => {
+      const updateGrantInfo = {
+        targetPage: {},
+        grant: PageGrant.GRANT_OWNER,
+        grantedUser: upodUserA,
+        grantedUserGroup: null,
+      };
+      // TODO: expect page tree
+
+      const res = await pageGrantService.canOverwriteDescendants(upodUserA, updateGrantInfo);
+
+      expect(res).toBe(true);
+    });
+    test(`(case 3) it should return true when update grant is GRANT_USER_GROUP
+    , all user groups of descendants are the children or itself of the update user group
+    , and all users of descendants belong to the update user group`, async() => {
+      const updateGrantInfo = {
+        targetPage: {},
+        grant: PageGrant.GRANT_USER_GROUP,
+        grantedUser: null,
+        grantedUserGroup: upodGroupAB,
+      };
+      // TODO: expect page tree
+
+      const res = await pageGrantService.canOverwriteDescendants(upodUserA, updateGrantInfo);
+
+      expect(res).toBe(true);
+    });
+    test(`(case 4) it should return false when some of descendants is not granted
+    , update grant is GRANT_USER_GROUP
+    , and some of user groups of descendants are not children or itself of the update user group`, async() => {
+      const updateGrantInfo = {
+        targetPage: {},
+        grant: PageGrant.GRANT_USER_GROUP,
+        grantedUser: null,
+        grantedUserGroup: upodGroupAB,
+      };
+      // TODO: expect page tree (include page with gC)
+
+      const res = await pageGrantService.canOverwriteDescendants(upodUserA, updateGrantInfo);
+
+      expect(res).toBe(false);
+    });
+    test(`(case 5) it should return false when some of descendants is not granted
+    , update grant is GRANT_USER_GROUP
+    , and some of users of descendants does NOT belong to the update user group`, async() => {
+      const updateGrantInfo = {
+        targetPage: {},
+        grant: PageGrant.GRANT_USER_GROUP,
+        grantedUser: null,
+        grantedUserGroup: null,
+      };
+      // TODO: expect page tree (include page with onlyC)
+
+      const res = await pageGrantService.canOverwriteDescendants(upodUserA, updateGrantInfo);
+
+      expect(res).toBe(false);
+    });
+    test('(case 6) it should return false when some of descendants is not granted and update grant is GRANT_OWNER', async() => {
+      const updateGrantInfo = {
+        targetPage: {},
+        grant: PageGrant.GRANT_OWNER,
+        grantedUser: upodUserA,
+        grantedUserGroup: null,
+      };
+      // TODO: expect page tree (include page with onlyC)
+
+      const res = await pageGrantService.canOverwriteDescendants(upodUserA, updateGrantInfo);
+
+      expect(res).toBe(false);
+    });
   });
 });
