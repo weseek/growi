@@ -332,6 +332,10 @@ export default class HandsontableModal extends React.PureComponent {
     const align = this.state.markdownTable.options.align;
     const hotInstance = this.hotTable.hotInstance;
 
+    if (hotInstance.isDestroyed === true) {
+      return;
+    }
+
     for (let i = 0; i < align.length; i++) {
       for (let j = 0; j < hotInstance.countRows(); j++) {
         hotInstance.setCellMeta(j, i, 'className', MARKDOWNTABLE_TO_HANDSONTABLE_ALIGNMENT_SYMBOL_MAPPING[align[i]]);
@@ -471,7 +475,7 @@ export default class HandsontableModal extends React.PureComponent {
           </div>
           <div ref={(c) => { this.hotTableContainer = c }} className="m-4 hot-table-container">
             <HotTable
-              // ref={(c) => { this.hotTable = c }}
+              ref={(c) => { this.hotTable = c }}
               data={this.state.markdownTable.table}
               settings={this.handsontableSettings}
               height={this.state.handsontableHeight}
