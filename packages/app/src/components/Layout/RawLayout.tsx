@@ -21,7 +21,7 @@ type Props = {
 }
 
 export const RawLayout = ({ children, title, className }: Props): JSX.Element => {
-  const classNames: string[] = ['layout-root'];
+  const classNames: string[] = ['layout-root', 'growi'];
   if (className != null) {
     classNames.push(className);
   }
