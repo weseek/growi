@@ -211,10 +211,7 @@ export const registerAction = (crowi) => {
 
     if (!isRegisterableEmail) {
       req.body.registerForm.email = email;
-      req.flash('registerWarningMessage', req.t('message.email_address_is_already_registered'));
-      req.flash('email', email);
-
-      return res.redirect('/login#register');
+      return res.apiv3Err(['message.email_address_is_already_registered'], 400);
     }
 
     makeRegistrationEmailToken(email, crowi);
