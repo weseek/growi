@@ -1,10 +1,10 @@
 import path from 'path';
 
 import { ErrorV3 } from '@growi/core';
-import * as express from 'express';
 import { body, validationResult } from 'express-validator';
 
 const PASSOWRD_MINIMUM_NUMBER = 8;
+
 // validation rules for complete registration form
 export const completeRegistrationRules = () => {
   return [
@@ -105,36 +105,42 @@ export const completeRegistrationAction = (crowi) => {
         return res.apiv3Err(new ErrorV3(errorMessage, 'registration-failed'), 403);
       }
 
-      if (configManager.getConfig('crowi', 'security:passport-local:isEmailAuthenticationEnabled') === true) {
-        User.createUserByEmailAndPassword(name, username, email, password, undefined, async(err, userData) => {
-          if (err) {
-            if (err.name === 'UserUpperLimitException') {
-              errorMessage = req.t('message.can_not_register_maximum_number_of_users');
-            }
-            else {
-              errorMessage = req.t('message.failed_to_register');
-            }
-            return res.apiv3Err(new ErrorV3(errorMessage, 'registration-failed'), 403);
-          }
-
-          userRegistrationOrder.revokeOneTimeToken();
-
-          if (configManager.getConfig('crowi', 'security:registrationMode') !== aclService.labels.SECURITY_REGISTRATION_MODE_RESTRICTED) {
-            const admins = await User.findAdmins();
-            const appTitle = appService.getAppTitle();
-            const template = path.join(crowi.localeDir, 'en_US/admin/userWaitingActivation.txt');
-            const url = appService.getSiteUrl();
-
-            sendEmailToAllAdmins(userData, admins, appTitle, mailService, template, url);
-          }
-
-          req.flash('successMessage', req.t('message.successfully_created', { username }));
-          res.apiv3({ status: 'ok' });
-        });
-      }
-      else {
+      if (configManager.getConfig('crowi', 'security:passport-local:isEmailAuthenticationEnabled') !== true) {
         return res.apiv3Err(new ErrorV3('Email authentication configuration is disabled', 'registration-failed'), 403);
       }
+
+      const registrationMode = configManager.getConfig('crowi', 'security:registrationMode');
+      const isMailerSetup = mailService.isMailerSetup ?? false;
+
+      if (!isMailerSetup && registrationMode === aclService.labels.SECURITY_REGISTRATION_MODE_RESTRICTED) {
+        return res.apiv3Err(new ErrorV3('E-mail Settings must be set up.', 'registration-failed'), 403);
+      }
+
+      User.createUserByEmailAndPassword(name, username, email, password, undefined, async(err, userData) => {
+        if (err) {
+          if (err.name === 'UserUpperLimitException') {
+            errorMessage = req.t('message.can_not_register_maximum_number_of_users');
+          }
+          else {
+            errorMessage = req.t('message.failed_to_register');
+          }
+          return res.apiv3Err(new ErrorV3(errorMessage, 'registration-failed'), 403);
+        }
+
+        userRegistrationOrder.revokeOneTimeToken();
+
+        if (registrationMode === aclService.labels.SECURITY_REGISTRATION_MODE_RESTRICTED) {
+          const admins = await User.findAdmins();
+          const appTitle = appService.getAppTitle();
+          const template = path.join(crowi.localeDir, 'en_US/admin/userWaitingActivation.txt');
+          const url = appService.getSiteUrl();
+
+          sendEmailToAllAdmins(userData, admins, appTitle, mailService, template, url);
+        }
+
+        req.flash('successMessage', req.t('message.successfully_created', { username }));
+        res.apiv3({ status: 'ok' });
+      });
     });
   };
 };
