@@ -2,9 +2,16 @@ import React, { useCallback } from 'react';
 
 import { useTranslation } from 'next-i18next';
 
+import { useRemoteRevisionId, useRevisionIdHackmdSynced } from '~/stores/hackmd';
+import { useSWRxCurrentPage } from '~/stores/page';
+
 export const PageStatusAlert = (): JSX.Element => {
 
   const { t } = useTranslation();
+  const { data: revisionIdHackmdSynced } = useRevisionIdHackmdSynced();
+  const { data: remoteRevisionId } = useRemoteRevisionId();
+  const { data: pageData } = useSWRxCurrentPage();
+  const revision = pageData?.revision;
 
   const refreshPage = useCallback(() => {
     window.location.reload();
@@ -89,10 +96,10 @@ export const PageStatusAlert = (): JSX.Element => {
   };
 
 
-  const isRevisionOutdated = revisionId !== remoteRevisionId;
+  const isRevisionOutdated = revision?._id !== remoteRevisionId;
   const isHackmdDocumentOutdated = revisionIdHackmdSynced !== remoteRevisionId;
 
-  let getContentsFunc = null;
+  let getContentsFunc;
 
   // when remote revision is newer than both
   if (isHackmdDocumentOutdated && isRevisionOutdated) {
@@ -106,8 +113,8 @@ export const PageStatusAlert = (): JSX.Element => {
   else if (hasDraftOnHackmd) {
     getContentsFunc = getContentsForDraftExistsAlert;
   }
-  // do not render anything
-  else {
+
+  if (getContentsFunc === null) {
     return <></>;
   }
 
