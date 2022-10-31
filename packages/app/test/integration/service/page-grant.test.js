@@ -399,15 +399,195 @@ describe('PageGrantService', () => {
     ]);
 
     // Pages
+    const pageIdgAB1 = new mongoose.Types.ObjectId();
+    const pageIdPublic2 = new mongoose.Types.ObjectId();
+    const pageIdPublic3 = new mongoose.Types.ObjectId();
+    const pageIdPublic4 = new mongoose.Types.ObjectId();
+    const pageIdPublic5 = new mongoose.Types.ObjectId();
+    const pageIdPublic6 = new mongoose.Types.ObjectId();
     await Page.insertMany([
+      // case 1
       {
-        path: pageRootGroupParentPath,
-        grant: Page.GRANT_USER_GROUP,
-        creator: user1,
-        lastUpdateUser: user1,
+        _id: pageIdgAB1,
+        path: '/gAB_canOverwriteDescendants_1', // to GRANT_PUBLIC
+        grant: PageGrant.GRANT_USER_GROUP,
+        creator: userA,
+        lastUpdateUser: userA,
         grantedUsers: null,
-        grantedGroup: groupParent._id,
+        grantedGroup: userGroupIdAB,
         parent: rootPage._id,
+      },
+      {
+        path: '/gB_canOverwriteDescendants_1',
+        grant: PageGrant.GRANT_USER_GROUP,
+        creator: userB,
+        lastUpdateUser: userB,
+        grantedUsers: null,
+        grantedGroup: userGroupIdB,
+        parent: pageIdgAB1,
+      },
+      {
+        path: '/onlyB_canOverwriteDescendants_1',
+        grant: PageGrant.GRANT_OWNER,
+        creator: userB,
+        lastUpdateUser: userB,
+        grantedUsers: [userB._id],
+        grantedGroup: null,
+        parent: pageIdgAB1,
+      },
+      // case 2
+      {
+        _id: pageIdPublic2,
+        path: '/public_canOverwriteDescendants_2', // to Anything
+        grant: PageGrant.GRANT_PUBLIC,
+        creator: userA,
+        lastUpdateUser: userA,
+        grantedUsers: null,
+        grantedGroup: null,
+        parent: rootPage._id,
+      },
+      {
+        path: '/gA_canOverwriteDescendants_2',
+        grant: PageGrant.GRANT_USER_GROUP,
+        creator: userA,
+        lastUpdateUser: userA,
+        grantedUsers: null,
+        grantedGroup: userGroupIdA,
+        parent: pageIdPublic2,
+      },
+      {
+        path: '/gAIsolated_canOverwriteDescendants_2',
+        grant: PageGrant.GRANT_USER_GROUP,
+        creator: userA,
+        lastUpdateUser: userA,
+        grantedUsers: null,
+        grantedGroup: userGroupIdAIsolated,
+        parent: pageIdPublic2,
+      },
+      {
+        path: '/onlyA_canOverwriteDescendants_2',
+        grant: PageGrant.GRANT_OWNER,
+        creator: userA,
+        lastUpdateUser: userA,
+        grantedUsers: [userA._id],
+        grantedGroup: null,
+        parent: pageIdPublic2,
+      },
+      // case 3
+      {
+        _id: pageIdPublic3,
+        path: '/public_canOverwriteDescendants_3', // to GRANT_USER_GROUP with GroupAB
+        grant: PageGrant.GRANT_PUBLIC,
+        creator: userA,
+        lastUpdateUser: userA,
+        grantedUsers: null,
+        grantedGroup: null,
+        parent: rootPage._id,
+      },
+      {
+        path: '/gAB_canOverwriteDescendants_3',
+        grant: PageGrant.GRANT_USER_GROUP,
+        creator: userA,
+        lastUpdateUser: userA,
+        grantedUsers: null,
+        grantedGroup: userGroupIdAB,
+        parent: pageIdPublic3,
+      },
+      {
+        path: '/gB_canOverwriteDescendants_3',
+        grant: PageGrant.GRANT_USER_GROUP,
+        creator: userB,
+        lastUpdateUser: userB,
+        grantedUsers: null,
+        grantedGroup: userGroupIdB,
+        parent: pageIdPublic3,
+      },
+      {
+        path: '/onlyB_canOverwriteDescendants_3',
+        grant: PageGrant.GRANT_OWNER,
+        creator: userB,
+        lastUpdateUser: userB,
+        grantedUsers: [userB._id],
+        grantedGroup: null,
+        parent: pageIdPublic3,
+      },
+      // case 4
+      {
+        _id: pageIdPublic4,
+        path: '/public_canOverwriteDescendants_4', // to GRANT_USER_GROUP with GroupAB
+        grant: PageGrant.GRANT_PUBLIC,
+        creator: userA,
+        lastUpdateUser: userA,
+        grantedUsers: null,
+        grantedGroup: null,
+        parent: rootPage._id,
+      },
+      {
+        path: '/gA_canOverwriteDescendants_4',
+        grant: PageGrant.GRANT_USER_GROUP,
+        creator: userA,
+        lastUpdateUser: userA,
+        grantedUsers: null,
+        grantedGroup: userGroupIdA,
+        parent: pageIdPublic4,
+      },
+      {
+        path: '/gC_canOverwriteDescendants_4',
+        grant: PageGrant.GRANT_USER_GROUP,
+        creator: userC,
+        lastUpdateUser: userC,
+        grantedUsers: null,
+        grantedGroup: userGroupIdC,
+        parent: pageIdPublic4,
+      },
+      // case 5
+      {
+        _id: pageIdPublic5,
+        path: '/public_canOverwriteDescendants_5', // to GRANT_USER_GROUP with GroupAB
+        grant: PageGrant.GRANT_PUBLIC,
+        creator: userA,
+        lastUpdateUser: userA,
+        grantedUsers: null,
+        grantedGroup: null,
+        parent: rootPage._id,
+      },
+      {
+        path: '/gA_canOverwriteDescendants_5',
+        grant: PageGrant.GRANT_USER_GROUP,
+        creator: userA,
+        lastUpdateUser: userA,
+        grantedUsers: null,
+        grantedGroup: userGroupIdA,
+        parent: pageIdPublic5,
+      },
+      {
+        path: '/onlyC_canOverwriteDescendants_5',
+        grant: PageGrant.GRANT_OWNER,
+        creator: userC,
+        lastUpdateUser: userC,
+        grantedUsers: [userC._id],
+        grantedGroup: null,
+        parent: pageIdPublic5,
+      },
+      // case 6
+      {
+        _id: pageIdPublic6,
+        path: '/public_canOverwriteDescendants_6', // to GRANT_USER_GROUP with GroupAB
+        grant: PageGrant.GRANT_PUBLIC,
+        creator: userA,
+        lastUpdateUser: userA,
+        grantedUsers: null,
+        grantedGroup: null,
+        parent: rootPage._id,
+      },
+      {
+        path: '/onlyC_canOverwriteDescendants_6',
+        grant: PageGrant.GRANT_OWNER,
+        creator: userC,
+        lastUpdateUser: userC,
+        grantedUsers: [userC._id],
+        grantedGroup: null,
+        parent: pageIdPublic6,
       },
     ]);
   };
@@ -776,7 +956,7 @@ describe('PageGrantService', () => {
 
   // see: https://dev.growi.org/635a314eac6bcd85cbf359fc about the specification
   describe('canOverwriteDescendants', () => {
-    test('it should return true when update grant is GRANT_PUBLIC', async() => {
+    test('(case 1) it should return true when update grant is GRANT_PUBLIC', async() => {
       const updateGrantInfo = {
         targetPage: {},
         grant: PageGrant.GRANT_PUBLIC,
@@ -789,7 +969,7 @@ describe('PageGrantService', () => {
 
       expect(res).toBe(true);
     });
-    test('it should return true when all descendant pages are granted by the operator', async() => {
+    test('(case 2) it should return true when all descendant pages are granted by the operator', async() => {
       const updateGrantInfo = {
         targetPage: {},
         grant: PageGrant.GRANT_OWNER,
@@ -802,7 +982,7 @@ describe('PageGrantService', () => {
 
       expect(res).toBe(true);
     });
-    test(`it should return true when update grant is GRANT_USER_GROUP
+    test(`(case 3) it should return true when update grant is GRANT_USER_GROUP
     , all user groups of descendants are the children or itself of the update user group
     , and all users of descendants belong to the update user group`, async() => {
       const userGroupAB = {};
@@ -818,7 +998,7 @@ describe('PageGrantService', () => {
 
       expect(res).toBe(true);
     });
-    test(`it should return false when some of descendants is not granted
+    test(`(case 4) it should return false when some of descendants is not granted
     , update grant is GRANT_USER_GROUP
     , and some of user groups of descendants are not children or itself of the update user group`, async() => {
       const userGroupAB = {};
@@ -834,7 +1014,7 @@ describe('PageGrantService', () => {
 
       expect(res).toBe(false);
     });
-    test(`it should return false when some of descendants is not granted
+    test(`(case 5) it should return false when some of descendants is not granted
     , update grant is GRANT_USER_GROUP
     , and some of users of descendants does NOT belong to the update user group`, async() => {
       const updateGrantInfo = {
@@ -849,7 +1029,7 @@ describe('PageGrantService', () => {
 
       expect(res).toBe(false);
     });
-    test('it should return false when some of descendants is not granted and update grant is GRANT_OWNER', async() => {
+    test('(case 6) it should return false when some of descendants is not granted and update grant is GRANT_OWNER', async() => {
       const updateGrantInfo = {
         targetPage: {},
         grant: PageGrant.GRANT_OWNER,
