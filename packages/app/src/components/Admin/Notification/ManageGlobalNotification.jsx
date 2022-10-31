@@ -30,7 +30,7 @@ const ManageGlobalNotification = (props) => {
   const [emailToSend, setEmailToSend] = useState('');
   const [slackChannelToSend, setSlackChannelToSend] = useState('');
   const [triggerEvents, setTriggerEvents] = useState(new Set());
-  const { data: globalNotificationData } = useSWRxGlobalNotification(props.globalNotificationId);
+  const { data: globalNotificationData, update: updateGlobalNotification } = useSWRxGlobalNotification(props.globalNotificationId);
   const globalNotification = useMemo(() => globalNotificationData?.globalNotification, [globalNotificationData?.globalNotification]);
 
   const router = useRouter();
@@ -92,7 +92,8 @@ const ManageGlobalNotification = (props) => {
 
     try {
       if (globalNotificationId != null) {
-        await apiv3Put(`/notification-setting/global-notification/${globalNotificationId}`, requestParams);
+        await updateGlobalNotification(requestParams);
+        // await apiv3Put(`/notification-setting/global-notification/${globalNotificationId}`, requestParams);
       }
       else {
         await apiv3Post('/notification-setting/global-notification', requestParams);
@@ -102,7 +103,7 @@ const ManageGlobalNotification = (props) => {
       toastError(err);
       logger.error(err);
     }
-  }, [emailToSend, globalNotification, notifyType, slackChannelToSend, triggerEvents, triggerPath]);
+  }, [emailToSend, globalNotification, notifyType, slackChannelToSend, triggerEvents, triggerPath, updateGlobalNotification]);
 
 
   const { data: isMailerSetup } = useIsMailerSetup();
