@@ -276,7 +276,7 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
     try {
       const res = await apiv3Post(requestPath, { registerForm });
       const { redirectTo } = res.data;
-      router.push(redirectTo);
+      router.push(redirectTo ?? '/');
 
       if (isEmailAuthenticationEnabled) {
         setEmailForActivationUser(emailForRegister);
