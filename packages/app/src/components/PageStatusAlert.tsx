@@ -2,12 +2,16 @@ import React, { useCallback } from 'react';
 
 import { useTranslation } from 'next-i18next';
 
-import { useRemoteRevisionId, useRevisionIdHackmdSynced } from '~/stores/hackmd';
+import {
+  useHasDraftOnHackmd, useIsHackmdDraftUpdatingInRealtime, useRemoteRevisionId, useRevisionIdHackmdSynced,
+} from '~/stores/hackmd';
 import { useSWRxCurrentPage } from '~/stores/page';
 
 export const PageStatusAlert = (): JSX.Element => {
 
   const { t } = useTranslation();
+  const { data: isHackmdDraftUpdatingInRealtime } = useIsHackmdDraftUpdatingInRealtime();
+  const { data: hasDraftOnHackmd } = useHasDraftOnHackmd();
   const { data: revisionIdHackmdSynced } = useRevisionIdHackmdSynced();
   const { data: remoteRevisionId } = useRemoteRevisionId();
   const { data: pageData } = useSWRxCurrentPage();
