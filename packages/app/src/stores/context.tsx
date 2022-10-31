@@ -136,6 +136,10 @@ export const useIsSlackConfigured = (initialData?: boolean) : SWRResponse<boolea
   return useStaticSWR<boolean, Error>('isSlackConfigured', initialData);
 };
 
+export const useIsEnabledAttachTitleHeader = (initialData?: boolean) : SWRResponse<boolean, Error> => {
+  return useStaticSWR<boolean, Error>('isEnabledAttachTitleHeader', initialData);
+};
+
 export const useIsIndentSizeForced = (initialData?: boolean) : SWRResponse<boolean, Error> => {
   return useStaticSWR<boolean, Error>('isIndentSizeForced', initialData, { fallbackData: false });
 };
