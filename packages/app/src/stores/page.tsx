@@ -46,11 +46,11 @@ export const useSWRxCurrentPage = (
 
   const swrResult = useSWRxPage(currentPageId, shareLinkId);
 
-  // use mutate because fallbackData does not work
-  // see: https://github.com/weseek/growi/commit/5038473e8d6028c9c91310e374a7b5f48b921a15
-  if (initialData !== undefined) {
-    swrResult.mutate(initialData);
-  }
+  // // use mutate because fallbackData does not work
+  // // see: https://github.com/weseek/growi/commit/5038473e8d6028c9c91310e374a7b5f48b921a15
+  // if (initialData !== undefined) {
+  //   swrResult.mutate(initialData);
+  // }
 
   return swrResult;
 };

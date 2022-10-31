@@ -243,7 +243,7 @@ const GrowiPage: NextPage<Props> = (props: Props) => {
   useCurrentPagePath(pagePath);
   useCurrentPathname(props.currentPathname);
 
-  useSWRxCurrentPage(undefined, pageWithMeta?.data ?? null); // store initial data
+  // useSWRxCurrentPage(undefined, pageWithMeta?.data ?? null); // store initial data
   useEditingMarkdown(pageWithMeta?.data.revision?.body ?? '');
 
   const { data: dataPageInfo } = useSWRxPageInfo(pageId);
