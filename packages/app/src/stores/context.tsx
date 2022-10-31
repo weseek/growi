@@ -1,4 +1,4 @@
-import { IUser } from '@growi/core';
+import { IUser, pagePathUtils } from '@growi/core';
 import { HtmlElementNode } from 'rehype-toc';
 import { Key, SWRResponse } from 'swr';
 import useSWRImmutable from 'swr/immutable';
@@ -80,14 +80,6 @@ export const useIsIdenticalPath = (initialData?: boolean): SWRResponse<boolean, 
   return useStaticSWR<boolean, Error>('isIdenticalPath', initialData, { fallbackData: false });
 };
 
-export const useIsUserPage = (initialData?: boolean): SWRResponse<boolean, Error> => {
-  return useStaticSWR<boolean, Error>('isUserPage', initialData, { fallbackData: false });
-};
-
-export const useIsTrashPage = (initialData?: boolean): SWRResponse<boolean, Error> => {
-  return useStaticSWR<boolean, Error>('isTrashPage', initialData, { fallbackData: false });
-};
-
 // export const useIsNotCreatable = (initialData?: boolean): SWRResponse<boolean, Error> => {
 //   return useStaticSWR<boolean, Error>('isNotCreatable', initialData, { fallbackData: false });
 // };
@@ -127,10 +119,6 @@ export const useRegistrationWhiteList = (initialData?: Nullable<string[]>): SWRR
   return useStaticSWR<Nullable<string[]>, Error>('registrationWhiteList', initialData);
 };
 
-export const useRevisionIdHackmdSynced = (initialData?: Nullable<any>): SWRResponse<Nullable<any>, Error> => {
-  return useStaticSWR<Nullable<any>, Error>('revisionIdHackmdSynced', initialData);
-};
-
 export const useDrawioUri = (initialData?: string): SWRResponse<string, Error> => {
   return useStaticSWR('drawioUri', initialData, { fallbackData: 'https://embed.diagrams.net/' });
 };
@@ -145,14 +133,6 @@ export const useLastUpdateUsername = (initialData?: Nullable<any>): SWRResponse<
 
 export const useDeleteUsername = (initialData?: Nullable<any>): SWRResponse<Nullable<any>, Error> => {
   return useStaticSWR<Nullable<any>, Error>('deleteUsername', initialData);
-};
-
-export const usePageIdOnHackmd = (initialData?: Nullable<any>): SWRResponse<Nullable<any>, Error> => {
-  return useStaticSWR<Nullable<any>, Error>('pageIdOnHackmd', initialData);
-};
-
-export const useHasDraftOnHackmd = (initialData?: Nullable<any>): SWRResponse<Nullable<any>, Error> => {
-  return useStaticSWR<Nullable<any>, Error>('hasDraftOnHackmd', initialData);
 };
 
 export const useIsSearchPage = (initialData?: Nullable<any>) : SWRResponse<Nullable<any>, Error> => {
@@ -293,12 +273,11 @@ export const useIsEditable = (): SWRResponse<boolean, Error> => {
   const { data: isGuestUser } = useIsGuestUser();
   const { data: isForbidden } = useIsForbidden();
   const { data: isIdenticalPath } = useIsIdenticalPath();
-  const { data: isTrashPage } = useIsTrashPage();
 
   return useSWRImmutable(
-    ['isEditable', isGuestUser, isForbidden, isIdenticalPath, isTrashPage],
-    (key: Key, isGuestUser: boolean, isForbidden: boolean, isIdenticalPath: boolean, isTrashPage: boolean) => {
-      return (!isTrashPage && !isForbidden && !isIdenticalPath && !isGuestUser);
+    ['isEditable', isGuestUser, isForbidden, isIdenticalPath],
+    (key: Key, isGuestUser: boolean, isForbidden: boolean, isIdenticalPath: boolean) => {
+      return (!isForbidden && !isIdenticalPath && !isGuestUser);
     },
   );
 };
@@ -307,4 +286,13 @@ export const useCurrentPageTocNode = (): SWRResponse<HtmlElementNode, any> => {
   const { data: currentPagePath } = useCurrentPagePath();
 
   return useStaticSWR(['currentPageTocNode', currentPagePath]);
+};
+
+export const useIsTrashPage = (): SWRResponse<boolean, Error> => {
+  const { data: pagePath } = useCurrentPagePath();
+
+  return useSWRImmutable(
+    pagePath == null ? null : ['isTrashPage', pagePath],
+    (key: Key, pagePath: string) => pagePathUtils.isTrashPage(pagePath),
+  );
 };
