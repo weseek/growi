@@ -1,10 +1,14 @@
-.handsontable {
-  .handsontableInput {
-    max-width: 290px !important;
-  }
+.grw-handsontable :global {
+  .handsontable {
+    position: relative;
 
-  td {
-    word-break: break-all;
+    .handsontableInput{
+      max-width: 290px !important;
+    }
+
+    td {
+      word-break: break-all;
+    }
   }
 }
 
