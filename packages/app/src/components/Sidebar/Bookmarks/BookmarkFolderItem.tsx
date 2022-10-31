@@ -10,6 +10,8 @@ import TriangleIcon from '~/components/Icons/TriangleIcon';
 import { BookmarkFolderItems } from '~/server/models/bookmark-folder';
 import { useSWRxBookamrkFolderAndChild } from '~/stores/bookmark-folder';
 
+import BookmarkFolderNameInput from './BookmarkFolderNameInput';
+
 
 type BookmarkFolderItemProps = {
   bookmarkFolders: BookmarkFolderItems
@@ -22,10 +24,12 @@ const BookmarkFolderItem: FC<BookmarkFolderItemProps> = (props: BookmarkFolderIt
     bookmarkFolders, isOpen: _isOpen = false, updateActiveElement, isActive,
   } = props;
   const { t } = useTranslation();
+  const [isRenameInputShown, setIsRenameInputShown] = useState<boolean>(false);
   const hasChildren = bookmarkFolders.children.length > 0;
   const [currentParentFolder, setCurrentParentFolder] = useState<string | null>(null);
   const [isOpen, setIsOpen] = useState(_isOpen);
   const { data: childBookmarkFolderData, mutate: mutateChildBookmarkData } = useSWRxBookamrkFolderAndChild(isOpen, currentParentFolder);
+  const [folderName, setFolderName] = useState<string>('');
 
   useEffect(() => {
     setCurrentParentFolder(bookmarkFolders.bookmarkFolder._id);
@@ -74,8 +78,27 @@ const BookmarkFolderItem: FC<BookmarkFolderItemProps> = (props: BookmarkFolderIt
             <CountBadge count={ bookmarkFolders.children.length} />
           </div>
         )}
+        <div className="grw-foldertree-control d-flex">
+
+
+          <button
+            type="button"
+            className="border-0 rounded btn btn-page-item-control p-0 grw-visible-on-hover"
+            onClick={() => setIsRenameInputShown(true)}
+          >
+            <i className="icon-plus d-block p-0" />
+          </button>
+
+        </div>
 
       </li>
+      {isRenameInputShown && (
+        <div className="flex-fill">
+          <BookmarkFolderNameInput
+            onClickOutside={() => setIsRenameInputShown(false)}
+          />
+        </div>
+      )}
       {
         isOpen && hasChildren && childBookmarkFolderData?.map(children => (
           <div key={children.bookmarkFolder._id} className="grw-foldertree-item-children">
