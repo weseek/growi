@@ -130,7 +130,7 @@ export const PageComment: FC<PageCommentProps> = memo((props:PageCommentProps): 
   const revisionId = getIdForRef(revision);
   const revisionCreatedAt = (isPopulated(revision)) ? revision.createdAt : undefined;
 
-  const generateCommentElement = (comment: ICommentHasId) => (
+  const commentElement = (comment: ICommentHasId) => (
     <Comment
       rendererOptions={rendererOptions}
       comment={comment}
@@ -143,7 +143,7 @@ export const PageComment: FC<PageCommentProps> = memo((props:PageCommentProps): 
     />
   );
 
-  const generateReplyCommentsElement = (replyComments: ICommentHasIdList) => (
+  const replyCommentsElement = (replyComments: ICommentHasIdList) => (
     <ReplyComments
       rendererOptions={rendererOptions}
       isReadOnly={isReadOnly}
@@ -172,8 +172,8 @@ export const PageComment: FC<PageCommentProps> = memo((props:PageCommentProps): 
 
               return (
                 <div key={comment._id} className={commentThreadClasses}>
-                  {generateCommentElement(comment)}
-                  {hasReply && generateReplyCommentsElement(allReplies[comment._id])}
+                  {commentElement(comment)}
+                  {hasReply && replyCommentsElement(allReplies[comment._id])}
                   {(!isReadOnly && !showEditorIds.has(comment._id)) && (
                     <div className="text-right">
                       <Button

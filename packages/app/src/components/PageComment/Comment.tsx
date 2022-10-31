@@ -13,7 +13,7 @@ import { ICommentHasId } from '../../interfaces/comment';
 import FormattedDistanceDate from '../FormattedDistanceDate';
 import HistoryIcon from '../Icons/HistoryIcon';
 import RevisionRenderer from '../Page/RevisionRenderer';
-import Username from '../User/Username';
+import { Username } from '../User/Username';
 
 import { CommentControl } from './CommentControl';
 import { CommentEditorProps } from './CommentEditor';
