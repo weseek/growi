@@ -41,7 +41,7 @@ export const PageStatusAlert = (): JSX.Element => {
     ];
   }, [t]);
 
-  const getContentsForDraftExistsAlert = (isRealtime) => {
+  const getContentsForDraftExistsAlert = useCallback((isRealtime) => {
     return [
       ['bg-success', 'd-hackmd-none'],
       <>
@@ -53,9 +53,9 @@ export const PageStatusAlert = (): JSX.Element => {
         Open HackMD Editor
       </a>,
     ];
-  };
+  }, [t]);
 
-  const getContentsForUpdatedAlert = () => {
+  const getContentsForUpdatedAlert = useCallback(() => {
     // const pageEditor = appContainer.getComponentInstance('PageEditor');
 
     const isConflictOnEdit = false;
@@ -97,7 +97,7 @@ export const PageStatusAlert = (): JSX.Element => {
         )}
       </>,
     ];
-  };
+  }, [t, onClickResolveConflict, refreshPage]);
 
 
   const isRevisionOutdated = revision?._id !== remoteRevisionId;
