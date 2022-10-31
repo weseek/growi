@@ -473,6 +473,49 @@ class PageGrantService {
     return data;
   }
 
+  /**
+   * see: https://dev.growi.org/635a314eac6bcd85cbf359fc
+   * @param operator
+   * @param updateGrantInfo
+   * @returns {Promise<boolean>}
+   */
+  async canOverwriteDescendants(operator, updateGrantInfo): Promise<boolean> {
+    // info needed to calc
+    const _updateGrantInfo = {
+      targetPageId: '',
+      grant: 5,
+      grantedUser: {},
+      grantedUserGroup: {},
+    };
+    const descendantPagesGrantInfo = {
+      grantSet: new Set([1, 4, 5]),
+      grantedUsers: new Set([{}, {}]), // only me users
+      grantedUserGroups: new Set([{}, {}]), // user groups
+    };
+
+    return this.calcCanOverwriteDescendants(operator, _updateGrantInfo, descendantPagesGrantInfo);
+  }
+
+  private calcCanOverwriteDescendants(operator, updateGrantInfo, descendantPagesGrantInfo): boolean {
+    // -- preprocess
+    // 1. run isGrantNormalized for ancestors
+    // * isGrantNormalized for descendants is unnecessary since it will overwrite all the descendants
+    // -- process
+    // METHOD consideration
+    // 1. check is tree GRANTED and it returns true when GRANTED
+    //   - GRANTED is the tree with all pages granted by the operator
+    // 2. if not 1. then,
+    //   - when update grant is ONLYME, return false
+    //   - when update grant is PUBLIC, return true
+    //   - when update grant is USER_GROUP, return true if meets 2 conditions below
+    //      a. if all descendants user groups are children or itself of update user group
+    //      b. if all descendants grantedUsers belong to update user group
+    // 3. return false otherwise
+    // 4. true means you can do "update all granted descendants", vice versa
+
+    return false;
+  }
+
 }
 
 export default PageGrantService;

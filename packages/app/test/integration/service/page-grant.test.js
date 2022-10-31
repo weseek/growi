@@ -665,35 +665,98 @@ describe('PageGrantService', () => {
     });
   });
 
-  describe('new method for overwrite scopes of all descendants', () => {
-    test('it should wip', async() => {
-      // -- preprocess
-      // 1. run isGrantNormalized for ancestors
-      // * isGrantNormalized for descendants is unnecessary since it will overwrite all the descendants
-      // -- process
-      // info needed to calc
-      const operator = {}; // user id
+  describe('canOverwriteDescendants', () => {
+    test('it should return true when update grant is GRANT_PUBLIC', async() => {
+      const userA = {};
       const updateGrantInfo = {
-        grant: 5,
-        grantedUser: {},
-        grantedUserGroup: {},
-      }; // target page document
-      const descendantPagesGrantInfo = {
-        grantSet: new Set([1, 4, 5]),
-        grantedUsers: new Set([{}, {}]), // only me users
-        grantedUserGroups: new Set([{}, {}]), // user groups
+        targetPage: {},
+        grant: PageGrant.GRANT_PUBLIC,
+        grantedUser: null,
+        grantedUserGroup: null,
       };
-      // METHOD consideration
-      // 1. check is tree GRANTED and it returns true when GRANTED
-      //   - GRANTED is the tree with all pages granted by the operator
-      // 2. if not 1. then,
-      //   - when update grant is ONLYME, return false
-      //   - when update grant is PUBLIC, update all granted descendants
-      //   - when update grant is USER_GROUP, update all granted descendants if meets 2 conditions below
-      //      a. if all descendants user groups are children or itself of update user group
-      //      b. if all descendants grantedUsers belong to update user group
-      // 3. return false otherwise
-      expect(1).toBe(1);
+      // TODO: expect page tree
+
+      const res = await pageGrantService.canOverwriteDescendants(userA, updateGrantInfo);
+
+      expect(res).toBe(true);
+    });
+    test('it should return true when all descendant pages are granted by the operator', async() => {
+      const userA = {};
+      const updateGrantInfo = {
+        targetPage: {},
+        grant: PageGrant.GRANT_OWNER,
+        grantedUser: userA,
+        grantedUserGroup: null,
+      };
+      // TODO: expect page tree
+
+      const res = await pageGrantService.canOverwriteDescendants(userA, updateGrantInfo);
+
+      expect(res).toBe(true);
+    });
+    test(`it should return true when update grant is GRANT_USER_GROUP
+    , all user groups of descendants are the children or itself of the update user group
+    , and all users of descendants belong to the update user group`, async() => {
+      const userA = {};
+      const userGroupAB = {};
+      const updateGrantInfo = {
+        targetPage: {},
+        grant: PageGrant.GRANT_USER_GROUP,
+        grantedUser: null,
+        grantedUserGroup: userGroupAB,
+      };
+      // TODO: expect page tree
+
+      const res = await pageGrantService.canOverwriteDescendants(userA, updateGrantInfo);
+
+      expect(res).toBe(true);
+    });
+    test(`it should return false when some of descendants is not granted
+    , update grant is GRANT_USER_GROUP
+    , and some of user groups of descendants are not children or itself of the update user group`, async() => {
+      const userA = {};
+      const userGroupAB = {};
+      const updateGrantInfo = {
+        targetPage: {},
+        grant: PageGrant.GRANT_USER_GROUP,
+        grantedUser: null,
+        grantedUserGroup: userGroupAB,
+      };
+      // TODO: expect page tree (include page with gC)
+
+      const res = await pageGrantService.canOverwriteDescendants(userA, updateGrantInfo);
+
+      expect(res).toBe(false);
+    });
+    test(`it should return false when some of descendants is not granted
+    , update grant is GRANT_USER_GROUP
+    , and some of users of descendants does NOT belong to the update user group`, async() => {
+      const userA = {};
+      const updateGrantInfo = {
+        targetPage: {},
+        grant: PageGrant.GRANT_USER_GROUP,
+        grantedUser: null,
+        grantedUserGroup: null,
+      };
+      // TODO: expect page tree (include page with onlyC)
+
+      const res = await pageGrantService.canOverwriteDescendants(userA, updateGrantInfo);
+
+      expect(res).toBe(false);
+    });
+    test('it should return false when some of descendants is not granted and update grant is GRANT_OWNER', async() => {
+      const userA = {};
+      const updateGrantInfo = {
+        targetPage: {},
+        grant: PageGrant.GRANT_OWNER,
+        grantedUser: userA,
+        grantedUserGroup: null,
+      };
+      // TODO: expect page tree (include page with onlyC)
+
+      const res = await pageGrantService.canOverwriteDescendants(userA, updateGrantInfo);
+
+      expect(res).toBe(false);
     });
   });
 });
