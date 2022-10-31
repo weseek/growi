@@ -7,6 +7,12 @@ import {
 } from '~/stores/hackmd';
 import { useSWRxCurrentPage } from '~/stores/page';
 
+type AlertComponent = {
+  additionalClasses: string[],
+  label: JSX.Element,
+  btn: JSX.Element
+}
+
 export const PageStatusAlert = (): JSX.Element => {
 
   const { t } = useTranslation();
@@ -27,35 +33,39 @@ export const PageStatusAlert = (): JSX.Element => {
     // });
   }, []);
 
-  const getContentsForSomeoneEditingAlert = useCallback(() => {
-    return [
-      ['bg-success', 'd-hackmd-none'],
-      <>
-        <i className="icon-fw icon-people"></i>
-        {t('hackmd.someone_editing')}
-      </>,
-      <a href="#hackmd" key="btnOpenHackmdSomeoneEditing" className="btn btn-outline-white">
-        <i className="fa fa-fw fa-file-text-o mr-1"></i>
-        Open HackMD Editor
-      </a>,
-    ];
+  const getContentsForSomeoneEditingAlert = useCallback((): AlertComponent => {
+    return {
+      additionalClasses: ['bg-success', 'd-hackmd-none'],
+      label:
+        <>
+          <i className="icon-fw icon-people"></i>
+          {t('hackmd.someone_editing')}
+        </>,
+      btn:
+        <a href="#hackmd" key="btnOpenHackmdSomeoneEditing" className="btn btn-outline-white">
+          <i className="fa fa-fw fa-file-text-o mr-1"></i>
+          Open HackMD Editor
+        </a>,
+    };
   }, [t]);
 
-  const getContentsForDraftExistsAlert = useCallback(() => {
-    return [
-      ['bg-success', 'd-hackmd-none'],
-      <>
-        <i className="icon-fw icon-pencil"></i>
-        {t('hackmd.this_page_has_draft')}
-      </>,
-      <a href="#hackmd" key="btnOpenHackmdPageHasDraft" className="btn btn-outline-white">
-        <i className="fa fa-fw fa-file-text-o mr-1"></i>
-        Open HackMD Editor
-      </a>,
-    ];
+  const getContentsForDraftExistsAlert = useCallback((): AlertComponent => {
+    return {
+      additionalClasses: ['bg-success', 'd-hackmd-none'],
+      label:
+        <>
+          <i className="icon-fw icon-pencil"></i>
+          {t('hackmd.this_page_has_draft')}
+        </>,
+      btn:
+        <a href="#hackmd" key="btnOpenHackmdPageHasDraft" className="btn btn-outline-white">
+          <i className="fa fa-fw fa-file-text-o mr-1"></i>
+          Open HackMD Editor
+        </a>,
+    };
   }, [t]);
 
-  const getContentsForUpdatedAlert = useCallback(() => {
+  const getContentsForUpdatedAlert = useCallback((): AlertComponent => {
     // const pageEditor = appContainer.getComponentInstance('PageEditor');
 
     const isConflictOnEdit = false;
@@ -74,29 +84,31 @@ export const PageStatusAlert = (): JSX.Element => {
     //   : <span dangerouslySetInnerHTML={{ __html: `${usernameComponentToString} ${t('edited this page')}` }} />;
     const label1 = '(TBD -- 2022.09.13)';
 
-    return [
-      ['bg-warning'],
-      <>
-        <i className="icon-fw icon-bulb"></i>
-        {label1}
-      </>,
-      <>
-        <button type="button" onClick={() => refreshPage()} className="btn btn-outline-white mr-4">
-          <i className="icon-fw icon-reload mr-1"></i>
-          {t('Load latest')}
-        </button>
-        { isConflictOnEdit && (
-          <button
-            type="button"
-            onClick={onClickResolveConflict}
-            className="btn btn-outline-white"
-          >
-            <i className="fa fa-fw fa-file-text-o mr-1"></i>
-            {t('modal_resolve_conflict.resolve_conflict')}
+    return {
+      additionalClasses: ['bg-warning'],
+      label:
+        <>
+          <i className="icon-fw icon-bulb"></i>
+          {label1}
+        </>,
+      btn:
+        <>
+          <button type="button" onClick={() => refreshPage()} className="btn btn-outline-white mr-4">
+            <i className="icon-fw icon-reload mr-1"></i>
+            {t('Load latest')}
           </button>
-        )}
-      </>,
-    ];
+          { isConflictOnEdit && (
+            <button
+              type="button"
+              onClick={onClickResolveConflict}
+              className="btn btn-outline-white"
+            >
+              <i className="fa fa-fw fa-file-text-o mr-1"></i>
+              {t('modal_resolve_conflict.resolve_conflict')}
+            </button>
+          )}
+        </>,
+    };
   }, [t, onClickResolveConflict, refreshPage]);
 
   const getFC = useCallback(() => {
@@ -134,7 +146,7 @@ export const PageStatusAlert = (): JSX.Element => {
 
   if (alertComponent === null) { return <></> }
 
-  const [additionalClasses, label, btn] = alertComponent;
+  const { additionalClasses, label, btn } = alertComponent;
 
   return (
     <div className={`card grw-page-status-alert text-white fixed-bottom animated fadeInUp faster ${additionalClasses.join(' ')}`}>
