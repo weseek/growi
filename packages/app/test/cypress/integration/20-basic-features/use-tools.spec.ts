@@ -72,7 +72,7 @@ context('Modal for page operation', () => {
     });
     cy.getByTestid('page-editor').should('be.visible');
     cy.getByTestid('save-page-btn').click();
-    cy.get('layout-root').should('not.have.class', 'editing');
+    cy.get('.layout-root').should('not.have.class', 'editing');
 
     cy.getByTestid('grw-contextual-sub-nav').should('be.visible');
     cy.screenshot(`${ssPrefix}create-page-under-specific-page`);
