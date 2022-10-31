@@ -1,31 +1,27 @@
 import React from 'react';
 
-import PropTypes from 'prop-types';
+type SortIconsProps = {
+  onClick: (sortOrder: string) => void,
+  isSelected: boolean,
+  isAsc: boolean,
+}
 
-const SortIcons = (props) => {
+export const SortIcons = (props: SortIconsProps): JSX.Element => {
 
-  const { isSelected, isAsc } = props;
+  const { onClick, isSelected, isAsc } = props;
 
   return (
     <div className="d-flex flex-column text-center">
       <a
         className={`fa ${isSelected && isAsc ? 'fa-chevron-up' : 'fa-angle-up'}`}
         aria-hidden="true"
-        onClick={() => props.onClick('asc')}
+        onClick={() => onClick('asc')}
       />
       <a
         className={`fa ${isSelected && !isAsc ? 'fa-chevron-down' : 'fa-angle-down'}`}
         aria-hidden="true"
-        onClick={() => props.onClick('desc')}
+        onClick={() => onClick('desc')}
       />
     </div>
   );
 };
-
-SortIcons.propTypes = {
-  onClick: PropTypes.func.isRequired,
-  isSelected: PropTypes.bool.isRequired,
-  isAsc: PropTypes.bool.isRequired,
-};
-
-export default SortIcons;

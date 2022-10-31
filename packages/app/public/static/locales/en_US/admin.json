@@ -3,8 +3,14 @@
     "display_name": "English"
   },
   "wiki_management_home_page": "Wiki Management Home Page",
+  "last_login": "Last login",
+  "anyone_with_the_link": "anyone with the link",
+  "only_me": "only me",
+  "only_inside_the_group": "only inside the group",
   "security_settings": {
     "security_settings": "Security Settings",
+    "scope_of_page_disclosure": "Scope of page disclosure",
+    "set_point": "Set point",
     "Guest Users Access": "Guest users access",
     "always_hidden": "Always hidden",
     "always_displayed": "Always displayed",
@@ -73,6 +79,13 @@
       "restricted": "Restricted (Requires approval by administrators)",
       "closed": "Closed (Invitation Only)"
     },
+    "share_link_management": "Share Link Management",
+    "share_link_notice":"remove all share links",
+    "delete_all_share_links":"Delete all share links",
+    "Share Link": "Share Link",
+    "Page Path": "Page Path",
+    "expire": "Expiration",
+    "description": "Description",
     "share_link_rights": "Share link rights",
     "enable_link_sharing": "Enable link sharing",
     "all_share_links": "All share links",

@@ -5,7 +5,7 @@ import PropTypes from 'prop-types';
 
 // import AppContainer from '~/client/services/AppContainer';
 // import PageContainer from '~/client/services/PageContainer';
-import Username from '~/components/User/Username';
+// import Username from '~/components/User/Username';
 
 import { withUnstatedContainers } from './UnstatedUtils';
 
