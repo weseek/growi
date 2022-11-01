@@ -142,11 +142,9 @@ export const PageStatusAlert = (): JSX.Element => {
     getContentsForDraftExistsAlert,
   ]);
 
-  const alertComponent = alertComponentContents;
+  if (alertComponentContents == null) { return <></> }
 
-  if (alertComponent == null) { return <></> }
-
-  const { additionalClasses, label, btn } = alertComponent;
+  const { additionalClasses, label, btn } = alertComponentContents;
 
   return (
     <div className={`card grw-page-status-alert text-white fixed-bottom animated fadeInUp faster ${additionalClasses.join(' ')}`}>
