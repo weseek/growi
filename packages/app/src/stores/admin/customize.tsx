@@ -17,11 +17,12 @@ export const useSWRxLayoutSetting = (): SWRResponse<IResLayoutSetting, Error> & 
     return res.data;
   }, []);
 
+  const swrResponse = useSWR('/customize-setting/layout', fetcher);
+
   const update = useCallback(async(layoutSetting: IResLayoutSetting) => {
     await apiv3Put('/customize-setting/layout', layoutSetting);
-  }, []);
-
-  const swrResponse = useSWR('/customize-setting/layout', fetcher);
+    await swrResponse.mutate();
+  }, [swrResponse]);
 
   return {
     ...swrResponse,
