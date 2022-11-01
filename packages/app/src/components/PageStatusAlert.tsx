@@ -7,7 +7,7 @@ import {
 } from '~/stores/hackmd';
 import { useSWRxCurrentPage } from '~/stores/page';
 
-type AlertComponentType = {
+type AlertComponentContents = {
   additionalClasses: string[],
   label: JSX.Element,
   btn: JSX.Element
@@ -33,7 +33,7 @@ export const PageStatusAlert = (): JSX.Element => {
     // });
   }, []);
 
-  const getContentsForSomeoneEditingAlert = useCallback((): AlertComponentType => {
+  const getContentsForSomeoneEditingAlert = useCallback((): AlertComponentContents => {
     return {
       additionalClasses: ['bg-success', 'd-hackmd-none'],
       label:
@@ -49,7 +49,7 @@ export const PageStatusAlert = (): JSX.Element => {
     };
   }, [t]);
 
-  const getContentsForDraftExistsAlert = useCallback((): AlertComponentType => {
+  const getContentsForDraftExistsAlert = useCallback((): AlertComponentContents => {
     return {
       additionalClasses: ['bg-success', 'd-hackmd-none'],
       label:
@@ -65,7 +65,7 @@ export const PageStatusAlert = (): JSX.Element => {
     };
   }, [t]);
 
-  const getContentsForUpdatedAlert = useCallback((): AlertComponentType => {
+  const getContentsForUpdatedAlert = useCallback((): AlertComponentContents => {
     // const pageEditor = appContainer.getComponentInstance('PageEditor');
 
     const isConflictOnEdit = false;
@@ -111,7 +111,7 @@ export const PageStatusAlert = (): JSX.Element => {
     };
   }, [t, onClickResolveConflict, refreshPage]);
 
-  const getAlertComponent = useMemo(() => {
+  const alertComponentContents = useMemo(() => {
     const isRevisionOutdated = revision?._id !== remoteRevisionId;
     const isHackmdDocumentOutdated = revisionIdHackmdSynced !== remoteRevisionId;
 
@@ -142,9 +142,9 @@ export const PageStatusAlert = (): JSX.Element => {
     getContentsForDraftExistsAlert,
   ]);
 
-  const alertComponent = getAlertComponent;
+  const alertComponent = alertComponentContents;
 
-  if (alertComponent === null) { return <></> }
+  if (alertComponent == null) { return <></> }
 
   const { additionalClasses, label, btn } = alertComponent;
 
