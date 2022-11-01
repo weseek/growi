@@ -11,9 +11,11 @@ import { Container, Provider } from 'unstated';
 
 import AdminNotificationContainer from '~/client/services/AdminNotificationContainer';
 import { toastError } from '~/client/util/apiNotification';
+import { Props } from '~/components/Admin/Notification/ManageGlobalNotification';
 import { CommonProps, useCustomTitle } from '~/pages/utils/commons';
 
 import { retrieveServerSideProps } from '../../../utils/admin-page-util';
+
 
 const AdminLayout = dynamic(() => import('~/components/Layout/AdminLayout'), { ssr: false });
 const ManageGlobalNotification = dynamic(() => import('~/components/Admin/Notification/ManageGlobalNotification'), { ssr: false });

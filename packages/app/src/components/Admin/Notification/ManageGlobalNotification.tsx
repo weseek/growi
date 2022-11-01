@@ -6,7 +6,6 @@ import { useTranslation } from 'next-i18next';
 import { useRouter } from 'next/router';
 
 import { NotifyType, TriggerEventType } from '~/client/interfaces/global-notification';
-import AdminNotificationContainer from '~/client/services/AdminNotificationContainer';
 import { toastError } from '~/client/util/apiNotification';
 import { apiv3Post } from '~/client/util/apiv3-client';
 import { useIsMailerSetup } from '~/stores/context';
@@ -14,7 +13,6 @@ import { useSWRxGlobalNotification } from '~/stores/global-notification';
 import loggerFactory from '~/utils/logger';
 
 
-import { withUnstatedContainers } from '../../UnstatedUtils';
 import AdminUpdateButtonRow from '../Common/AdminUpdateButtonRow';
 
 import TriggerEventCheckBox from './TriggerEventCheckBox';
@@ -24,10 +22,8 @@ const logger = loggerFactory('growi:manageGlobalNotification');
 
 
 type Props = {
-  adminNotificationContainer: AdminNotificationContainer,
   globalNotificationId?: string,
 }
-
 
 const ManageGlobalNotification = (props: Props): JSX.Element => {
 
@@ -36,7 +32,7 @@ const ManageGlobalNotification = (props: Props): JSX.Element => {
   const [emailToSend, setEmailToSend] = useState('');
   const [slackChannelToSend, setSlackChannelToSend] = useState('');
   const [triggerEvents, setTriggerEvents] = useState(new Set());
-  const { data: globalNotificationData, update: updateGlobalNotification } = useSWRxGlobalNotification(props.globalNotificationId || '');
+  const { data: globalNotificationData, update: updateGlobalNotification } = useSWRxGlobalNotification(props.notificationId || '');
   const globalNotification = useMemo(() => globalNotificationData?.globalNotification, [globalNotificationData?.globalNotification]);
 
   const router = useRouter();
@@ -92,10 +88,8 @@ const ManageGlobalNotification = (props: Props): JSX.Element => {
       triggerEvents: [...triggerEvents],
     };
 
-    const globalNotificationId = globalNotification?._id;
-
     try {
-      if (globalNotificationId != null) {
+      if (props.globalNotificationId != null) {
         await updateGlobalNotification(requestParams);
         router.push('/admin/notification');
       }
@@ -108,11 +102,10 @@ const ManageGlobalNotification = (props: Props): JSX.Element => {
       toastError(err);
       logger.error(err);
     }
-  }, [emailToSend, globalNotification, notifyType, router, slackChannelToSend, triggerEvents, triggerPath, updateGlobalNotification]);
+  }, [emailToSend, notifyType, props.globalNotificationId, router, slackChannelToSend, triggerEvents, triggerPath, updateGlobalNotification]);
 
 
   const { data: isMailerSetup } = useIsMailerSetup();
-  const { adminNotificationContainer } = props;
   const { t } = useTranslation('admin');
 
   return (
@@ -315,13 +308,10 @@ const ManageGlobalNotification = (props: Props): JSX.Element => {
 
       <AdminUpdateButtonRow
         onClick={updateButtonClickedHandler}
-        disabled={adminNotificationContainer.state.retrieveError != null}
+        disabled={false}
       />
     </>
   );
 };
 
-
-const ManageGlobalNotificationWrapper = withUnstatedContainers(ManageGlobalNotification, [AdminNotificationContainer]);
-
-export default ManageGlobalNotificationWrapper;
+export default ManageGlobalNotification;
