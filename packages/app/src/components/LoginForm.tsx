@@ -399,6 +399,7 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
             </div>
             {/* email */}
             <input type="email"
+              readOnly={!isMailerSetup && isEmailAuthenticationEnabled}
               className="form-control rounded-0"
               onChange={(e) => { setEmailForRegister(e.target.value) }}
               placeholder={t('Email')}
