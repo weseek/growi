@@ -82,7 +82,7 @@ class PasswordResetModal extends React.Component {
 
     return (
       <button type="submit" className="btn btn-primary" onClick={this.props.onClose}>
-        {t('Close', { ns: 'commons' })}
+        {t('Close')}
       </button>
     );
   }
