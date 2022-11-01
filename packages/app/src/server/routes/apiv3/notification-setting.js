@@ -26,12 +26,12 @@ const validator = {
   globalNotification: [
     body('triggerPath').isString().trim().not()
       .isEmpty(),
-    body('notifyToType').isString().trim().isIn(['mail', 'slack']),
+    body('notifyType').isString().trim().isIn(['mail', 'slack']),
     body('toEmail').trim().custom((value, { req }) => {
-      return (req.body.notifyToType === 'mail') ? (!!value && value.match(/.+@.+\..+/)) : true;
+      return (req.body.notifyType === 'mail') ? (!!value && value.match(/.+@.+\..+/)) : true;
     }),
     body('slackChannels').trim().custom((value, { req }) => {
-      return (req.body.notifyToType === 'slack') ? !!value : true;
+      return (req.body.notifyType === 'slack') ? !!value : true;
     }),
   ],
   notifyForPageGrant: [
@@ -72,7 +72,7 @@ const validator = {
  *      GlobalNotificationParams:
  *        type: object
  *        properties:
- *          notifyToType:
+ *          notifyType:
  *            type: string
  *            description: What is type for notify
  *          toEmail:
@@ -278,16 +278,16 @@ module.exports = (crowi) => {
   router.post('/global-notification', loginRequiredStrictly, adminRequired, addActivity, validator.globalNotification, apiV3FormValidator, async(req, res) => {
 
     const {
-      notifyToType, toEmail, slackChannels, triggerPath, triggerEvents,
+      notifyType, toEmail, slackChannels, triggerPath, triggerEvents,
     } = req.body;
 
     let notification;
 
-    if (notifyToType === GlobalNotificationSetting.TYPE.MAIL) {
+    if (notifyType === GlobalNotificationSetting.TYPE.MAIL) {
       notification = new GlobalNotificationMailSetting(crowi);
       notification.toEmail = toEmail;
     }
-    if (notifyToType === GlobalNotificationSetting.TYPE.SLACK) {
+    if (notifyType === GlobalNotificationSetting.TYPE.SLACK) {
       notification = new GlobalNotificationSlackSetting(crowi);
       notification.slackChannels = slackChannels;
     }
@@ -346,7 +346,7 @@ module.exports = (crowi) => {
   router.put('/global-notification/:id', loginRequiredStrictly, adminRequired, addActivity, validator.globalNotification, apiV3FormValidator, async(req, res) => {
     const { id } = req.params;
     const {
-      notifyToType, toEmail, slackChannels, triggerPath, triggerEvents,
+      notifyType, toEmail, slackChannels, triggerPath, triggerEvents,
     } = req.body;
 
     const models = {
@@ -360,7 +360,7 @@ module.exports = (crowi) => {
 
       // when switching from one type to another,
       // remove toEmail from slack setting and slackChannels from mail setting
-      if (setting.__t !== notifyToType) {
+      if (setting.__t !== notifyType) {
         setting = models[setting.__t].hydrate(setting);
         setting.toEmail = undefined;
         setting.slackChannels = undefined;
@@ -368,16 +368,16 @@ module.exports = (crowi) => {
         setting = setting.toObject();
       }
 
-      if (notifyToType === GlobalNotificationSetting.TYPE.MAIL) {
+      if (notifyType === GlobalNotificationSetting.TYPE.MAIL) {
         setting = GlobalNotificationMailSetting.hydrate(setting);
         setting.toEmail = toEmail;
       }
-      if (notifyToType === GlobalNotificationSetting.TYPE.SLACK) {
+      if (notifyType === GlobalNotificationSetting.TYPE.SLACK) {
         setting = GlobalNotificationSlackSetting.hydrate(setting);
         setting.slackChannels = slackChannels;
       }
 
-      setting.__t = notifyToType;
+      setting.__t = notifyType;
       setting.triggerPath = triggerPath;
       setting.triggerEvents = triggerEvents || [];
 
