@@ -16,5 +16,12 @@
   },
   "headers": {
     "app_settings": "アプリ設定"
+  },
+
+  "share_links": {
+    "Share Link": "共有用リンク",
+    "Page Path": "ページパス",
+    "expire": "有効期限",
+    "description": "概要"
   }
 }

@@ -69,7 +69,7 @@ type Props = {
 
 const ShareLinkList = (props: Props): JSX.Element => {
 
-  const { t } = useTranslation('admin');
+  const { t } = useTranslation();
 
   function renderShareLinks() {
     return (
@@ -96,10 +96,10 @@ const ShareLinkList = (props: Props): JSX.Element => {
       <table className="table table-bordered">
         <thead>
           <tr>
-            <th>{t('security_settings.Share Link')}</th>
-            {props.isAdmin && <th>{t('security_settings.Page Path')}</th>}
-            <th>{t('security_settings.expire')}</th>
-            <th>{t('security_settings.description')}</th>
+            <th>{t('share_links.Share Link', { ns: 'commons' })}</th>
+            {props.isAdmin && <th>{t('share_links.Page Path', { ns: 'commons' })}</th>}
+            <th>{t('share_links.expire', { ns: 'commons' })}</th>
+            <th>{t('share_links.description', { ns: 'commons' })}</th>
             <th></th>
           </tr>
         </thead>

@@ -16,5 +16,12 @@
   },
   "headers": {
     "app_settings": "App Settings"
+  },
+
+  "share_links": {
+    "Share Link": "Share Link",
+    "Page Path": "Page Path",
+    "expire": "Expiration",
+    "description": "Description"
   }
 }
