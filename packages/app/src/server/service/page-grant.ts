@@ -38,10 +38,19 @@ type ComparableDescendants = {
 
 type UpdateGrantInfo = {
   targetPage: any,
-  grant: PageGrant,
-  grantedUser?: any,
-  grantedUserGroup?: any,
-};
+} & ({
+  grant: typeof PageGrant.GRANT_PUBLIC,
+} | {
+  grant: typeof PageGrant.GRANT_OWNER,
+  grantedUserId: ObjectIdLike,
+} | {
+  grant: typeof PageGrant.GRANT_USER_GROUP,
+  grantedUserGroupInfo: {
+    groupId: ObjectIdLike,
+    userIds: Set<ObjectIdLike>,
+    childrenOrItselfGroupIds: Set<ObjectIdLike>,
+  },
+});
 
 type DescendantPagesGrantInfo = {
   grantSet: Set<number>,
@@ -435,22 +444,22 @@ class PageGrantService {
     const isOnlyPublicApplicable = isTopPage(page.path);
     if (isOnlyPublicApplicable) {
       return {
-        [Page.GRANT_PUBLIC]: null,
+        [PageGrant.GRANT_PUBLIC]: null,
       };
     }
 
     // Increment an object (type IRecordApplicableGrant)
     // grant is never public, anyone with the link, nor specified
     const data: IRecordApplicableGrant = {
-      [Page.GRANT_RESTRICTED]: null, // any page can be restricted
+      [PageGrant.GRANT_RESTRICTED]: null, // any page can be restricted
     };
 
     // -- Any grant is allowed if parent is null
     const isAnyGrantApplicable = page.parent == null;
     if (isAnyGrantApplicable) {
-      data[Page.GRANT_PUBLIC] = null;
-      data[Page.GRANT_OWNER] = null;
-      data[Page.GRANT_USER_GROUP] = await UserGroupRelation.findAllUserGroupIdsRelatedToUser(user);
+      data[PageGrant.GRANT_PUBLIC] = null;
+      data[PageGrant.GRANT_OWNER] = null;
+      data[PageGrant.GRANT_USER_GROUP] = await UserGroupRelation.findAllUserGroupIdsRelatedToUser(user);
       return data;
     }
 
@@ -463,21 +472,21 @@ class PageGrantService {
       grant, grantedUsers, grantedGroup,
     } = parent;
 
-    if (grant === Page.GRANT_PUBLIC) {
-      data[Page.GRANT_PUBLIC] = null;
-      data[Page.GRANT_OWNER] = null;
-      data[Page.GRANT_USER_GROUP] = await UserGroupRelation.findAllUserGroupIdsRelatedToUser(user);
+    if (grant === PageGrant.GRANT_PUBLIC) {
+      data[PageGrant.GRANT_PUBLIC] = null;
+      data[PageGrant.GRANT_OWNER] = null;
+      data[PageGrant.GRANT_USER_GROUP] = await UserGroupRelation.findAllUserGroupIdsRelatedToUser(user);
     }
-    else if (grant === Page.GRANT_OWNER) {
+    else if (grant === PageGrant.GRANT_OWNER) {
       const grantedUser = grantedUsers[0];
 
       const isUserApplicable = grantedUser.toString() === user._id.toString();
 
       if (isUserApplicable) {
-        data[Page.GRANT_OWNER] = null;
+        data[PageGrant.GRANT_OWNER] = null;
       }
     }
-    else if (grant === Page.GRANT_USER_GROUP) {
+    else if (grant === PageGrant.GRANT_USER_GROUP) {
       const group = await UserGroup.findById(grantedGroup);
       if (group == null) {
         throw Error('Group not found to calculate grant data.');
@@ -488,9 +497,9 @@ class PageGrantService {
       const isUserExistInGroup = await UserGroupRelation.countByGroupIdAndUser(group, user) > 0;
 
       if (isUserExistInGroup) {
-        data[Page.GRANT_OWNER] = null;
+        data[PageGrant.GRANT_OWNER] = null;
       }
-      data[Page.GRANT_USER_GROUP] = { applicableGroups };
+      data[PageGrant.GRANT_USER_GROUP] = { applicableGroups };
     }
 
     return data;
@@ -544,23 +553,32 @@ class PageGrantService {
     // - Run isGrantNormalized for ancestors
     //   - isGrantNormalized for descendants is unnecessary since it will overwrite all the descendants
 
-    // -- process
     // 1. check is tree GRANTED and it returns true when GRANTED
     //   - GRANTED is the tree with all pages granted by the operator
-
     const isAllDescendantsGranted = this.calcIsAllDescendantsGrantedByOperator(operatorGrantInfo, descendantPagesGrantInfo);
     if (isAllDescendantsGranted) {
       return true;
     }
 
     // 2. if not 1. then,
-    //   - when update grant is ONLYME, return false
     //   - when update grant is PUBLIC, return true
+    if (updateGrantInfo.grant === PageGrant.GRANT_PUBLIC) {
+      return true;
+    }
+    //   - when update grant is ONLYME, return false
+    if (updateGrantInfo.grant === PageGrant.GRANT_OWNER) {
+      return false;
+    }
     //   - when update grant is USER_GROUP, return true if meets 2 conditions below
     //      a. if all descendants user groups are children or itself of update user group
     //      b. if all descendants grantedUsers belong to update user group
-    // 3. return false otherwise
-    // 4. true means you can do "update all granted descendants", vice versa
+    if (updateGrantInfo.grant === PageGrant.GRANT_USER_GROUP) {
+      const isUpdateGroupUsersIncludeAllDescendantsOwners = excludeTestIdsFromTargetIds(
+        [...descendantPagesGrantInfo.grantedUserIds], [...updateGrantInfo.grantedUserGroupInfo.childrenOrItselfGroupIds],
+      ).length === 0;
+
+      return isUpdateGroupUsersIncludeAllDescendantsOwners;
+    }
 
     return false;
   }
