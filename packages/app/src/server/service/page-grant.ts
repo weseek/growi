@@ -37,8 +37,6 @@ type ComparableDescendants = {
 };
 
 type UpdateGrantInfo = {
-  targetPage: any,
-} & ({
   grant: typeof PageGrant.GRANT_PUBLIC,
 } | {
   grant: typeof PageGrant.GRANT_OWNER,
@@ -50,7 +48,7 @@ type UpdateGrantInfo = {
     userIds: Set<ObjectIdLike>,
     childrenOrItselfGroupIds: Set<ObjectIdLike>,
   },
-});
+};
 
 type DescendantPagesGrantInfo = {
   grantSet: Set<number>,
