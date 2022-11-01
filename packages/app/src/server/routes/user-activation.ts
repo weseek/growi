@@ -13,7 +13,6 @@ type CrowiReq = Request & {
 }
 
 export const renderUserActivationPage = (crowi: Crowi) => {
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   return (req: CrowiReq, res: Response): void => {
     const { userRegistrationOrder } = req;
     const { nextApp } = crowi;
