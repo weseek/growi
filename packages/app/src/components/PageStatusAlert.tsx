@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, useMemo } from 'react';
 
 import { useTranslation } from 'next-i18next';
 
@@ -111,7 +111,7 @@ export const PageStatusAlert = (): JSX.Element => {
     };
   }, [t, onClickResolveConflict, refreshPage]);
 
-  const getAlertComponent = useCallback(() => {
+  const getAlertComponent = useMemo(() => {
     const isRevisionOutdated = revision?._id !== remoteRevisionId;
     const isHackmdDocumentOutdated = revisionIdHackmdSynced !== remoteRevisionId;
 
