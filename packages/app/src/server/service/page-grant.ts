@@ -585,11 +585,14 @@ class PageGrantService {
     //      a. if all descendants user groups are children or itself of update user group
     //      b. if all descendants grantedUsers belong to update user group
     if (updateGrantInfo.grant === PageGrant.GRANT_USER_GROUP) {
+      const isAllDescendantGroupsChildrenOrItselfOfUpdateGroup = excludeTestIdsFromTargetIds(
+        [...descendantPagesGrantInfo.grantedUserGroupIds], [...updateGrantInfo.grantedUserGroupInfo.childrenOrItselfGroupIds],
+      ).length === 0; // a.
       const isUpdateGroupUsersIncludeAllDescendantsOwners = excludeTestIdsFromTargetIds(
-        [...descendantPagesGrantInfo.grantedUserIds], [...updateGrantInfo.grantedUserGroupInfo.childrenOrItselfGroupIds],
-      ).length === 0;
+        [...descendantPagesGrantInfo.grantedUserIds], [...updateGrantInfo.grantedUserGroupInfo.userIds],
+      ).length === 0; // b.
 
-      return isUpdateGroupUsersIncludeAllDescendantsOwners;
+      return isAllDescendantGroupsChildrenOrItselfOfUpdateGroup && isUpdateGroupUsersIncludeAllDescendantsOwners;
     }
 
     return false;
