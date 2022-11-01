@@ -513,7 +513,6 @@ class PageGrantService {
   async canOverwriteDescendants(targetPage, operator: { _id: ObjectIdLike }, updateGrantInfo: UpdateGrantInfo): Promise<boolean> {
     const UserGroupRelationModel = mongoose.model('UserGroupRelation') as any; // TODO: TypeScriptize model
 
-    // TODO: impl
     const relatedGroupIds = await UserGroupRelationModel.findAllUserGroupIdsRelatedToUser(operator);
     const operatorGrantInfo = {
       userId: operator._id,
