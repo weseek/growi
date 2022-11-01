@@ -15,7 +15,7 @@ type GiveAdminButtonProps = {
 
 const GiveAdminButton = (props: GiveAdminButtonProps): JSX.Element => {
 
-  const { t } = useTranslation();
+  const { t } = useTranslation('admin');
   const { adminUsersContainer, user } = props;
 
   const onClickGiveAdminBtnHandler = useCallback(async() => {
@@ -30,7 +30,7 @@ const GiveAdminButton = (props: GiveAdminButtonProps): JSX.Element => {
 
   return (
     <button className="dropdown-item" type="button" onClick={() => onClickGiveAdminBtnHandler()}>
-      <i className="icon-fw icon-user-following"></i> {t('admin:user_management.user_table.give_admin_access')}
+      <i className="icon-fw icon-user-following"></i> {t('user_management.user_table.give_admin_access')}
     </button>
   );
 
