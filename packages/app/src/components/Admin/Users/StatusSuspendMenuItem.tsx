@@ -28,7 +28,7 @@ type Props = {
 }
 
 const StatusSuspendMenuItem = (props: Props): JSX.Element => {
-  const { t } = useTranslation();
+  const { t } = useTranslation('admin');
 
   const { adminUsersContainer, user } = props;
 
@@ -47,7 +47,7 @@ const StatusSuspendMenuItem = (props: Props): JSX.Element => {
   return user.username !== currentUser?.username
     ? (
       <button className="dropdown-item" type="button" onClick={clickDeactiveBtnHandler}>
-        <i className="icon-fw icon-ban"></i> {t('admin:user_management.user_table.deactivate_account')}
+        <i className="icon-fw icon-ban"></i> {t('user_management.user_table.deactivate_account')}
       </button>
     )
     : <SuspendAlert />;
