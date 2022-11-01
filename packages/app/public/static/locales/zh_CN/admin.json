@@ -238,7 +238,7 @@
 			"ABLCRule": "Rule"
 		}
   },
-  "notification_setting": {
+  "notification_settings": {
 		"slack_incoming_configuration": "Slack Incoming Webhooks configuration",
 		"prioritize_webhook": "Prioritize incoming webhook than Slack App",
 		"prioritize_webhook_desc": "Check this option and GROWI use Incoming Webhooks even if Slack App settings are enabled.",
