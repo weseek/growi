@@ -233,7 +233,7 @@ module.exports = (crowi) => {
   });
 
 
-  router.get('/global-notification/:id', loginRequiredStrictly, adminRequired, async(req, res) => {
+  router.get('/global-notification/:id', loginRequiredStrictly, adminRequired, validator.globalNotification, async(req, res) => {
 
     const notificationSettingId = req.params.id;
     let globalNotification;
