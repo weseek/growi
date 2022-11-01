@@ -186,6 +186,11 @@ async function makeRegistrationEmailToken(email, crowi) {
     appService,
   } = crowi;
 
+  const isMailerSetup = mailService.isMailerSetup ?? false;
+  if (!isMailerSetup) {
+    throw Error('mailService is not setup');
+  }
+
   const grobalLang = configManager.getConfig('crowi', 'app:globalLang');
   const i18n = grobalLang;
   const appUrl = appService.getSiteUrl();
@@ -224,7 +229,12 @@ export const registerAction = (crowi) => {
       return res.apiv3Err(['message.email_address_is_already_registered'], 400);
     }
 
-    makeRegistrationEmailToken(email, crowi);
+    try {
+      await makeRegistrationEmailToken(email, crowi);
+    }
+    catch (err) {
+      return res.apiv3Err(err);
+    }
 
     return res.apiv3({ redirectTo: '/login#register' });
   };
