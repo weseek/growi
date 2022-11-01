@@ -1,8 +1,8 @@
 import { pagePathUtils, pathUtils, pageUtils } from '@growi/core';
 import escapeStringRegexp from 'escape-string-regexp';
 import mongoose from 'mongoose';
-import { PageGrant } from '~/interfaces/page';
 
+import { PageGrant } from '~/interfaces/page';
 import { IRecordApplicableGrant } from '~/interfaces/page-grant';
 import { PageDocument, PageModel } from '~/server/models/page';
 import UserGroup from '~/server/models/user-group';
@@ -45,13 +45,17 @@ type UpdateGrantInfo = {
 
 type DescendantPagesGrantInfo = {
   grantSet: Set<number>,
-  grantedUsers: Set<any>, // only me users
-  grantedUserGroups: Set<any>, // user groups
+  grantedUserIds: Set<ObjectIdLike>, // only me users
+  grantedUserGroupIds: Set<ObjectIdLike>, // user groups
 };
 
+/**
+ * @param {ObjectIdLike} userId The _id of the operator.
+ * @param {Set<ObjectIdLike>} userGroupIds The Set of the _id of the user groups that the operator belongs.
+ */
 type OperatorGrantInfo = {
   userId: ObjectIdLike,
-  userGroups: any[],
+  userGroupIds: Set<ObjectIdLike>,
 };
 
 class PageGrantService {
@@ -502,19 +506,34 @@ class PageGrantService {
 
     const operatorGrantInfo = {
       userId: operator._id,
-      userGroups: [],
+      userGroupIds: new Set([]),
     };
     const descendantPagesGrantInfo = {
       grantSet: new Set([1, 4, 5]),
-      grantedUsers: new Set([{}, {}]), // only me users
-      grantedUserGroups: new Set([{}, {}]), // user groups
+      grantedUserIds: new Set(['', '']), // only me users
+      grantedUserGroupIds: new Set(['', '']), // user groups
     };
 
     return this.calcCanOverwriteDescendants(operatorGrantInfo, updateGrantInfo, descendantPagesGrantInfo);
   }
 
-  // TODO: impl
-  private calcIsAllDescendantsGranted(operatorGrantInfo: OperatorGrantInfo, descendantPagesGrantInfo: DescendantPagesGrantInfo): boolean {
+  private calcIsAllDescendantsGrantedByOperator(operatorGrantInfo: OperatorGrantInfo, descendantPagesGrantInfo: DescendantPagesGrantInfo): boolean {
+    if (descendantPagesGrantInfo.grantSet.has(PageGrant.GRANT_OWNER)) {
+      const isNonApplicableOwnerExist = descendantPagesGrantInfo.grantedUserIds.size >= 2
+        || !descendantPagesGrantInfo.grantedUserIds.has(operatorGrantInfo.userId);
+      if (isNonApplicableOwnerExist) {
+        return false;
+      }
+    }
+
+    if (descendantPagesGrantInfo.grantSet.has(PageGrant.GRANT_USER_GROUP)) {
+      // eslint-disable-next-line max-len
+      const isOtherFamilyGroupExist = excludeTestIdsFromTargetIds([...operatorGrantInfo.userGroupIds], [...descendantPagesGrantInfo.grantedUserGroupIds]).length > 0;
+      if (isOtherFamilyGroupExist) {
+        return false;
+      }
+    }
+
     return true;
   }
 
@@ -529,7 +548,7 @@ class PageGrantService {
     // 1. check is tree GRANTED and it returns true when GRANTED
     //   - GRANTED is the tree with all pages granted by the operator
 
-    const isAllDescendantsGranted = this.calcIsAllDescendantsGranted(operatorGrantInfo, descendantPagesGrantInfo);
+    const isAllDescendantsGranted = this.calcIsAllDescendantsGrantedByOperator(operatorGrantInfo, descendantPagesGrantInfo);
     if (isAllDescendantsGranted) {
       return true;
     }
