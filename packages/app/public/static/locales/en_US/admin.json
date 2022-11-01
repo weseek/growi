@@ -80,9 +80,12 @@
       "closed": "Closed (Invitation Only)"
     },
     "share_link_management": "Share Link Management",
-    "No_share_links":"No share links",
     "share_link_notice":"remove all share links",
     "delete_all_share_links":"Delete all share links",
+    "Share Link": "Share Link",
+    "Page Path": "Page Path",
+    "expire": "Expiration",
+    "description": "Description",
     "share_link_rights": "Share link rights",
     "enable_link_sharing": "Enable link sharing",
     "all_share_links": "All share links",
@@ -277,7 +280,8 @@
     "delete_notification_pattern": "Delete notification pattern",
     "delete_notification_pattern_desc1": "Delete Path: {{path}}",
     "delete_notification_pattern_desc2": "Once deleted, it cannot be recovered",
-    "toggle_notification": "Updated setting of {{path}}"
+    "toggle_notification": "Updated setting of {{path}}",
+    "not_found_global_notification_triggerid": "Not found the global notification id"
   },
   "mailer_setup_required":"<a href='/admin/app'>Email settings</a> are required to send.",
   "admin_top": {
@@ -1032,15 +1036,5 @@
     "ADMIN_SEARCH_CONNECTION": "Attempting to reconnect to Elasticsearch",
     "ADMIN_SEARCH_INDICES_NORMALIZE": "Normalize of Elasticsearch indexes",
     "ADMIN_SEARCH_INDICES_REBUILD": "Rebuild Elasticsearch indexes"
-  },
-  "toaster": {
-    "give_user_admin": "Succeeded to give {{username}} admin",
-    "remove_user_admin": "Succeeded to remove {{username}} admin",
-    "activate_user_success": "Succeeded to activating {{username}}",
-    "deactivate_user_success": "Succeeded to deactivate {{username}}",
-    "remove_user_success": "Succeeded to removing {{username}}",
-    "remove_external_user_success": "Succeeded to remove {{accountId}}",
-    "switch_disable_link_sharing_success": "Succeeded to update share link setting",
-    "failed_to_reset_password":"Failed to reset password"
   }
 }
