@@ -4,11 +4,11 @@ import React, {
 
 import { useTranslation } from 'next-i18next';
 import { useRouter } from 'next/router';
-import PropTypes from 'prop-types';
 
+import { NotifyType, TriggerEventType } from '~/client/interfaces/global-notification';
 import AdminNotificationContainer from '~/client/services/AdminNotificationContainer';
 import { toastError } from '~/client/util/apiNotification';
-import { apiv3Post, apiv3Put } from '~/client/util/apiv3-client';
+import { apiv3Post } from '~/client/util/apiv3-client';
 import { useIsMailerSetup } from '~/stores/context';
 import { useSWRxGlobalNotification } from '~/stores/global-notification';
 import loggerFactory from '~/utils/logger';
@@ -23,14 +23,20 @@ import TriggerEventCheckBox from './TriggerEventCheckBox';
 const logger = loggerFactory('growi:manageGlobalNotification');
 
 
-const ManageGlobalNotification = (props) => {
+type Props = {
+  adminNotificationContainer: AdminNotificationContainer,
+  globalNotificationId?: string,
+}
+
+
+const ManageGlobalNotification = (props: Props): JSX.Element => {
 
   const [triggerPath, setTriggerPath] = useState('');
-  const [notifyType, setNotifyType] = useState('mail');
+  const [notifyType, setNotifyType] = useState<NotifyType>(NotifyType.Email);
   const [emailToSend, setEmailToSend] = useState('');
   const [slackChannelToSend, setSlackChannelToSend] = useState('');
   const [triggerEvents, setTriggerEvents] = useState(new Set());
-  const { data: globalNotificationData, update: updateGlobalNotification } = useSWRxGlobalNotification(props.globalNotificationId);
+  const { data: globalNotificationData, update: updateGlobalNotification } = useSWRxGlobalNotification(props.globalNotificationId || '');
   const globalNotification = useMemo(() => globalNotificationData?.globalNotification, [globalNotificationData?.globalNotification]);
 
   const router = useRouter();
@@ -44,15 +50,13 @@ const ManageGlobalNotification = (props) => {
       setTriggerPath(globalNotification.triggerPath);
       setTriggerEvents(new Set(globalNotification.triggerEvents));
 
-      if (notifyType === 'mail') {
+      if (notifyType === NotifyType.Email) {
         setEmailToSend(globalNotification.toEmail);
       }
       else {
         setSlackChannelToSend(globalNotification.slackChannels);
       }
     }
-
-
   }, [globalNotification]);
 
   const isLoading = globalNotificationData === undefined;
@@ -88,13 +92,12 @@ const ManageGlobalNotification = (props) => {
       triggerEvents: [...triggerEvents],
     };
 
-    const { _id: globalNotificationId } = globalNotification;
+    const globalNotificationId = globalNotification?._id;
 
     try {
       if (globalNotificationId != null) {
         await updateGlobalNotification(requestParams);
         router.push('/admin/notification');
-        // await apiv3Put(`/notification-setting/global-notification/${globalNotificationId}`, requestParams);
       }
       else {
         await apiv3Post('/notification-setting/global-notification', requestParams);
@@ -128,9 +131,11 @@ const ManageGlobalNotification = (props) => {
         </div>
 
         <div className="col-sm-4">
-          <h3 htmlFor="triggerPath">{t('notification_settings.trigger_path')}
-            {/* eslint-disable-next-line react/no-danger */}
-            <small dangerouslySetInnerHTML={{ __html: t('notification_settings.trigger_path_help', '<code>*</code>') }} />
+          <h3>
+            <label htmlFor="triggerPath">{t('notification_settings.trigger_path')}
+              {/* eslint-disable-next-line react/no-danger */}
+              <small dangerouslySetInnerHTML={{ __html: t('notification_settings.trigger_path_help', '<code>*</code>') }} />
+            </label>
           </h3>
           <div className="form-group">
             <input
@@ -152,8 +157,8 @@ const ManageGlobalNotification = (props) => {
                 id="mail"
                 name="notifyType"
                 value="mail"
-                checked={notifyType === 'mail'}
-                onChange={() => { setNotifyType('mail') }}
+                checked={notifyType === NotifyType.Email}
+                onChange={() => { setNotifyType(NotifyType.Email) }}
               />
               <label className="custom-control-label" htmlFor="mail">
                 <p className="font-weight-bold">Email</p>
@@ -166,8 +171,8 @@ const ManageGlobalNotification = (props) => {
                 id="slack"
                 name="notifyType"
                 value="slack"
-                checked={notifyType === 'slack'}
-                onChange={() => { setNotifyType('slack') }}
+                checked={notifyType === NotifyType.SLACK}
+                onChange={() => { setNotifyType(NotifyType.SLACK) }}
               />
               <label className="custom-control-label" htmlFor="slack">
                 <p className="font-weight-bold">Slack</p>
@@ -175,7 +180,7 @@ const ManageGlobalNotification = (props) => {
             </div>
           </div>
 
-          {notifyType === 'mail'
+          {notifyType === NotifyType.Email
             ? (
               <>
                 <div className="input-group notify-to-option" id="mail-input">
@@ -234,9 +239,9 @@ const ManageGlobalNotification = (props) => {
             <div className="my-1">
               <TriggerEventCheckBox
                 checkbox="success"
-                event="pageCreate"
-                checked={triggerEvents.has('pageCreate')}
-                onChange={() => onChangeTriggerEvents('pageCreate')}
+                event={TriggerEventType.CREATE}
+                checked={triggerEvents.has(TriggerEventType.CREATE)}
+                onChange={() => onChangeTriggerEvents(TriggerEventType.CREATE)}
               >
                 <span className="badge badge-pill badge-success">
                   <i className="icon-doc mr-1" /> CREATE
@@ -246,9 +251,9 @@ const ManageGlobalNotification = (props) => {
             <div className="my-1">
               <TriggerEventCheckBox
                 checkbox="warning"
-                event="pageEdit"
-                checked={triggerEvents.has('pageEdit')}
-                onChange={() => onChangeTriggerEvents('pageEdit')}
+                event={TriggerEventType.EDIT}
+                checked={triggerEvents.has(TriggerEventType.EDIT)}
+                onChange={() => onChangeTriggerEvents(TriggerEventType.EDIT)}
               >
                 <span className="badge badge-pill badge-warning">
                   <i className="icon-pencil mr-1" />EDIT
@@ -258,9 +263,9 @@ const ManageGlobalNotification = (props) => {
             <div className="my-1">
               <TriggerEventCheckBox
                 checkbox="pink"
-                event="pageMove"
-                checked={triggerEvents.has('pageMove')}
-                onChange={() => onChangeTriggerEvents('pageMove')}
+                event={TriggerEventType.MOVE}
+                checked={triggerEvents.has(TriggerEventType.MOVE)}
+                onChange={() => onChangeTriggerEvents(TriggerEventType.MOVE)}
               >
                 <span className="badge badge-pill badge-pink">
                   <i className="icon-action-redo mr-1" />MOVE
@@ -271,8 +276,8 @@ const ManageGlobalNotification = (props) => {
               <TriggerEventCheckBox
                 checkbox="danger"
                 event="pageDelete"
-                checked={triggerEvents.has('pageDelete')}
-                onChange={() => onChangeTriggerEvents('pageDelete')}
+                checked={triggerEvents.has(TriggerEventType.DELETE)}
+                onChange={() => onChangeTriggerEvents(TriggerEventType.DELETE)}
               >
                 <span className="badge badge-pill badge-danger">
                   <i className="icon-fire mr-1" />DELETE
@@ -282,9 +287,9 @@ const ManageGlobalNotification = (props) => {
             <div className="my-1">
               <TriggerEventCheckBox
                 checkbox="info"
-                event="pageLike"
-                checked={triggerEvents.has('pageLike')}
-                onChange={() => onChangeTriggerEvents('pageLike')}
+                event={TriggerEventType.LIKE}
+                checked={triggerEvents.has(TriggerEventType.LIKE)}
+                onChange={() => onChangeTriggerEvents(TriggerEventType.LIKE)}
               >
                 <span className="badge badge-pill badge-info">
                   <i className="fa fa-heart-o mr-1" />LIKE
@@ -294,9 +299,9 @@ const ManageGlobalNotification = (props) => {
             <div className="my-1">
               <TriggerEventCheckBox
                 checkbox="secondary"
-                event="comment"
-                checked={triggerEvents.has('comment')}
-                onChange={() => onChangeTriggerEvents('comment')}
+                event={TriggerEventType.POST}
+                checked={triggerEvents.has(TriggerEventType.POST)}
+                onChange={() => onChangeTriggerEvents(TriggerEventType.POST)}
               >
                 <span className="badge badge-pill badge-secondary">
                   <i className="icon-bubble mr-1" />POST
@@ -316,12 +321,7 @@ const ManageGlobalNotification = (props) => {
   );
 };
 
-ManageGlobalNotification.propTypes = {
-  adminNotificationContainer: PropTypes.instanceOf(AdminNotificationContainer).isRequired,
-  globalNotificationId: PropTypes.string,
-};
 
 const ManageGlobalNotificationWrapper = withUnstatedContainers(ManageGlobalNotification, [AdminNotificationContainer]);
-
 
 export default ManageGlobalNotificationWrapper;
