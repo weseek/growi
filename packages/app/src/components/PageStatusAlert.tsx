@@ -7,7 +7,7 @@ import {
 } from '~/stores/hackmd';
 import { useSWRxCurrentPage } from '~/stores/page';
 
-type AlertComponent = {
+type AlertComponentType = {
   additionalClasses: string[],
   label: JSX.Element,
   btn: JSX.Element
@@ -33,7 +33,7 @@ export const PageStatusAlert = (): JSX.Element => {
     // });
   }, []);
 
-  const getContentsForSomeoneEditingAlert = useCallback((): AlertComponent => {
+  const getContentsForSomeoneEditingAlert = useCallback((): AlertComponentType => {
     return {
       additionalClasses: ['bg-success', 'd-hackmd-none'],
       label:
@@ -49,7 +49,7 @@ export const PageStatusAlert = (): JSX.Element => {
     };
   }, [t]);
 
-  const getContentsForDraftExistsAlert = useCallback((): AlertComponent => {
+  const getContentsForDraftExistsAlert = useCallback((): AlertComponentType => {
     return {
       additionalClasses: ['bg-success', 'd-hackmd-none'],
       label:
@@ -65,7 +65,7 @@ export const PageStatusAlert = (): JSX.Element => {
     };
   }, [t]);
 
-  const getContentsForUpdatedAlert = useCallback((): AlertComponent => {
+  const getContentsForUpdatedAlert = useCallback((): AlertComponentType => {
     // const pageEditor = appContainer.getComponentInstance('PageEditor');
 
     const isConflictOnEdit = false;
@@ -142,7 +142,7 @@ export const PageStatusAlert = (): JSX.Element => {
     getContentsForDraftExistsAlert,
   ]);
 
-  const alertComponent = getAlertComponent();
+  const alertComponent = getAlertComponent;
 
   if (alertComponent === null) { return <></> }
 
