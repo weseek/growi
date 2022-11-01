@@ -482,7 +482,7 @@ class PageGrantService {
   async canOverwriteDescendants(operator, updateGrantInfo): Promise<boolean> {
     // info needed to calc
     const _updateGrantInfo = {
-      targetPageId: '',
+      targetPage: {},
       grant: 5,
       grantedUser: {},
       grantedUserGroup: {},
