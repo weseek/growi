@@ -1,10 +1,14 @@
 import path from 'path';
 
 import { ErrorV3 } from '@growi/core';
-import * as express from 'express';
 import { body, validationResult } from 'express-validator';
 
+import loggerFactory from '~/utils/logger';
+
+const logger = loggerFactory('growi:routes:apiv3:user-activation');
+
 const PASSOWRD_MINIMUM_NUMBER = 8;
+
 // validation rules for complete registration form
 export const completeRegistrationRules = () => {
   return [
@@ -70,9 +74,14 @@ export const completeRegistrationAction = (crowi) => {
       return res.apiv3Err(new ErrorV3('You have been logged in', 'registration-failed'), 403);
     }
 
-    // config で closed ならさよなら
+    // error when registration is not allowed
     if (configManager.getConfig('crowi', 'security:registrationMode') === aclService.labels.SECURITY_REGISTRATION_MODE_CLOSED) {
       return res.apiv3Err(new ErrorV3('Registration closed', 'registration-failed'), 403);
+    }
+
+    // error when email authentication is disabled
+    if (configManager.getConfig('crowi', 'security:passport-local:isEmailAuthenticationEnabled') !== true) {
+      return res.apiv3Err(new ErrorV3('Email authentication configuration is disabled', 'registration-failed'), 403);
     }
 
     const { userRegistrationOrder } = req;
@@ -105,21 +114,23 @@ export const completeRegistrationAction = (crowi) => {
         return res.apiv3Err(new ErrorV3(errorMessage, 'registration-failed'), 403);
       }
 
-      if (configManager.getConfig('crowi', 'security:passport-local:isEmailAuthenticationEnabled') === true) {
-        User.createUserByEmailAndPassword(name, username, email, password, undefined, async(err, userData) => {
-          if (err) {
-            if (err.name === 'UserUpperLimitException') {
-              errorMessage = req.t('message.can_not_register_maximum_number_of_users');
-            }
-            else {
-              errorMessage = req.t('message.failed_to_register');
-            }
-            return res.apiv3Err(new ErrorV3(errorMessage, 'registration-failed'), 403);
+      User.createUserByEmailAndPassword(name, username, email, password, undefined, async(err, userData) => {
+        if (err) {
+          if (err.name === 'UserUpperLimitException') {
+            errorMessage = req.t('message.can_not_register_maximum_number_of_users');
           }
+          else {
+            errorMessage = req.t('message.failed_to_register');
+          }
+          return res.apiv3Err(new ErrorV3(errorMessage, 'registration-failed'), 403);
+        }
 
-          userRegistrationOrder.revokeOneTimeToken();
+        userRegistrationOrder.revokeOneTimeToken();
 
-          if (configManager.getConfig('crowi', 'security:registrationMode') !== aclService.labels.SECURITY_REGISTRATION_MODE_RESTRICTED) {
+        if (configManager.getConfig('crowi', 'security:registrationMode') === aclService.labels.SECURITY_REGISTRATION_MODE_RESTRICTED) {
+          const isMailerSetup = mailService.isMailerSetup ?? false;
+
+          if (isMailerSetup) {
             const admins = await User.findAdmins();
             const appTitle = appService.getAppTitle();
             const template = path.join(crowi.localeDir, 'en_US/admin/userWaitingActivation.txt');
@@ -127,14 +138,16 @@ export const completeRegistrationAction = (crowi) => {
 
             sendEmailToAllAdmins(userData, admins, appTitle, mailService, template, url);
           }
+          // This 'completeRegistrationAction' should not be able to be called if the email settings is not set up in the first place.
+          // So this method dows not stop processing as an error, but only displays a warning. -- 2022.11.01 Yuki Takei
+          else {
+            logger.warn('E-mail Settings must be set up.');
+          }
+        }
 
-          req.flash('successMessage', req.t('message.successfully_created', { username }));
-          res.apiv3({ status: 'ok' });
-        });
-      }
-      else {
-        return res.apiv3Err(new ErrorV3('Email authentication configuration is disabled', 'registration-failed'), 403);
-      }
+        req.flash('successMessage', req.t('message.successfully_created', { username }));
+        res.apiv3({ status: 'ok' });
+      });
     });
   };
 };
