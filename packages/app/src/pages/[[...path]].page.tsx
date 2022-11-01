@@ -242,7 +242,7 @@ const GrowiPage: NextPage<Props> = (props: Props) => {
   useCurrentPagePath(pagePath);
   useCurrentPathname(props.currentPathname);
 
-  useSWRxCurrentPage(undefined, pageWithMeta?.data ?? null); // store initial data
+  const { data: currentPage } = useSWRxCurrentPage(undefined, pageWithMeta?.data ?? null); // store initial data
   useEditingMarkdown(pageWithMeta?.data.revision?.body ?? '');
 
   const { data: dataPageInfo } = useSWRxPageInfo(pageId);
@@ -275,11 +275,14 @@ const GrowiPage: NextPage<Props> = (props: Props) => {
 
   const isTopPagePath = isTopPage(pageWithMeta?.data.path ?? '');
 
-  const isContainerFluidEachPage = dataPageInfo == null || !('expandContentWidth' in dataPageInfo)
-    ? null
-    : dataPageInfo.expandContentWidth;
-  const isContainerFluidDefault = props.isContainerFluid;
-  const isContainerFluid = isContainerFluidEachPage ?? isContainerFluidDefault;
+  // const isContainerFluidEachPage = dataPageInfo == null || !('expandContentWidth' in dataPageInfo)
+  //   ? null
+  // //   : dataPageInfo.expandContentWidth;
+  // const isContainerFluidDefault = props.isContainerFluid;
+  // const isContainerFluidAdmin = layoutSetting?.isContainerFluid;
+  // const isContainerFluid = calcIsContainerFluid(isContainerFluidEachPage, isContainerFluidDefault, isContainerFluidAdmin);
+
+  const isContainerFluid = currentPage?.expandContentWidth ?? props.isContainerFluid;
 
   return (
     <>
