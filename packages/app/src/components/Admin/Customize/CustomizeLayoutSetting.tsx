@@ -1,9 +1,8 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useState } from 'react';
 
 import { useTranslation } from 'next-i18next';
 
 import { toastSuccess, toastError } from '~/client/util/apiNotification';
-import { apiv3Put } from '~/client/util/apiv3-client';
 import { useSWRxLayoutSetting } from '~/stores/admin/customize';
 import { useNextThemes } from '~/stores/use-next-themes';
 
@@ -16,7 +15,7 @@ const CustomizeLayoutSetting = (): JSX.Element => {
   const [isContainerFluid, setIsContainerFluid] = useState<boolean>(layoutSetting?.isContainerFluid ?? false);
   const [retrieveError, setRetrieveError] = useState<any>();
 
-  const onClickSubmit = async() => {
+  const onClickSubmit = useCallback(async() => {
     try {
       await updateLayoutSetting({ isContainerFluid });
       toastSuccess(t('toaster.update_successed', { target: t('customize_settings.layout'), ns: 'commons' }));
@@ -24,7 +23,7 @@ const CustomizeLayoutSetting = (): JSX.Element => {
     catch (err) {
       toastError(err);
     }
-  };
+  }, [isContainerFluid, updateLayoutSetting, t]);
 
   return (
     <React.Fragment>
