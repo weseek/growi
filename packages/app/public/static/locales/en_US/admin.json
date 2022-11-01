@@ -105,7 +105,6 @@
       "email_authentication": "Email authentication on user registration",
       "enable_email_authentication": "Enable email authentication",
       "enable_email_authentication_desc": "Email authentication is going to be performed for user registration.",
-      "please_enable_mailer": "Please setup mailer first.",
       "need_complete_mail_setting_warning": "To use the following functions, please complete the mail settings."
     },
     "ldap": {

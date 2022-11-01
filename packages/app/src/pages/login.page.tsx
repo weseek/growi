@@ -54,7 +54,7 @@ const LoginPage: NextPage<Props> = (props: Props) => {
         isRegistrationEnabled={true}
         registrationWhiteList={props.registrationWhiteList}
         isPasswordResetEnabled={true}
-        isMailerSetup={true}
+        isMailerSetup={props.isMailerSetup}
       />
     </NoLoginLayout>
   );
