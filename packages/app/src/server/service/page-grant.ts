@@ -508,15 +508,21 @@ class PageGrantService {
   /**
    * see: https://dev.growi.org/635a314eac6bcd85cbf359fc
    * @param operator
-   * @param updateGrantInfo
+   * @param {UpdateGrantInfo} updateGrantInfo
    * @returns {Promise<boolean>}
    */
-  async canOverwriteDescendants(operator, updateGrantInfo: UpdateGrantInfo): Promise<boolean> {
+  async canOverwriteDescendants(operator: { _id: ObjectIdLike }, updateGrantInfo: UpdateGrantInfo): Promise<boolean> {
+    const UserGroupRelationModel = mongoose.model('UserGroupRelation') as any; // TODO: TypeScriptize model
 
+    // TODO: impl
+    const relations = await UserGroupRelationModel.findAllRelationForUser(operator);
     const operatorGrantInfo = {
       userId: operator._id,
-      userGroupIds: new Set([]),
+      userGroupIds: new Set<ObjectIdLike>(relations.map(r => r.relatedGroup._id)),
     };
+    // TODO:
+    //   - find all descendant pages
+    //   - merge grant info of them
     const descendantPagesGrantInfo = {
       grantSet: new Set([1, 4, 5]),
       grantedUserIds: new Set(['', '']), // only me users
