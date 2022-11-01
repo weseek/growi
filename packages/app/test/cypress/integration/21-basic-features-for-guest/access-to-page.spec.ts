@@ -2,7 +2,7 @@ context('Access to page by guest', () => {
   const ssPrefix = 'access-to-page-by-guest-';
 
   it('/Sandbox is successfully loaded', () => {
-    cy.visit('/Sandbox', {  });
+    cy.visit('/Sandbox');
     cy.collapseSidebar(true, true);
     cy.screenshot(`${ssPrefix}-sandbox`);
   });
