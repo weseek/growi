@@ -16,6 +16,9 @@ import ExpandOrContractButton from '../ExpandOrContractButton';
 
 import MarkdownTableDataImportForm from './MarkdownTableDataImportForm';
 
+import styles from './HandsontableModal.module.scss';
+import 'handsontable/dist/handsontable.full.min.css';
+
 const DEFAULT_HOT_HEIGHT = 300;
 const MARKDOWNTABLE_TO_HANDSONTABLE_ALIGNMENT_SYMBOL_MAPPING = {
   r: 'htRight',
@@ -332,6 +335,10 @@ export default class HandsontableModal extends React.PureComponent {
     const align = this.state.markdownTable.options.align;
     const hotInstance = this.hotTable.hotInstance;
 
+    if (hotInstance.isDestroyed === true) {
+      return;
+    }
+
     for (let i = 0; i < align.length; i++) {
       for (let j = 0; j < hotInstance.countRows(); j++) {
         hotInstance.setCellMeta(j, i, 'className', MARKDOWNTABLE_TO_HANDSONTABLE_ALIGNMENT_SYMBOL_MAPPING[align[i]]);
@@ -435,7 +442,8 @@ export default class HandsontableModal extends React.PureComponent {
         backdrop="static"
         keyboard={false}
         size="lg"
-        className={`handsontable-modal ${this.state.isWindowExpanded && 'grw-modal-expanded'}`}
+        className={`handsontable-modal ${styles['grw-handsontable']}
+          ${this.state.isWindowExpanded && `grw-modal-expanded ${styles['grw-modal-expanded']}`}`}
       >
         <ModalHeader tag="h4" toggle={this.cancel} close={buttons} className="bg-primary text-light">
           Edit Table
