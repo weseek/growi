@@ -37,7 +37,7 @@ const UpdateParentConfirmModal = dynamic(() => import('./UpdateParentConfirmModa
 
 
 type Props = {
-  userGroupId?: string,
+  userGroupId: string,
 }
 
 const UserGroupDetailPage = (props: Props): JSX.Element => {

@@ -29,7 +29,7 @@ type Props = {
 }
 
 const RemoveAdminMenuItem = (props: Props): JSX.Element => {
-  const { t } = useTranslation();
+  const { t } = useTranslation('admin');
 
   const { adminUsersContainer, user } = props;
 
@@ -49,7 +49,7 @@ const RemoveAdminMenuItem = (props: Props): JSX.Element => {
   return user.username !== currentUser?.username
     ? (
       <button className="dropdown-item" type="button" onClick={clickRemoveAdminBtnHandler}>
-        <i className="icon-fw icon-user-unfollow"></i> {t('admin:user_management.user_table.remove_admin_access')}
+        <i className="icon-fw icon-user-unfollow"></i> {t('user_management.user_table.remove_admin_access')}
       </button>
     )
     : <RemoveAdminAlert />;

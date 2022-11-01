@@ -237,9 +237,6 @@
     "Shere this page link to public": "Shere this page link to public",
     "share_link_list": "Share link list",
     "share_link_management": "Share Link Management",
-    "No_share_links":"No share links",
-    "Share Link": "Share Link",
-    "Page Path": "Page Path",
     "delete_all_share_links":"Delete all share links",
     "expire": "Expiration",
     "Days": "Days",
@@ -522,19 +519,8 @@
   "toaster": {
     "file_upload_succeeded": "File upload succeeded.",
     "file_upload_failed": "File upload failed.",
-    "initialize_successed": "Succeeded to initialize {{target}}",
-    "give_user_admin": "Succeeded to give {{username}} admin",
-    "remove_user_admin": "Succeeded to remove {{username}} admin",
-    "activate_user_success": "Succeeded to activating {{username}}",
-    "deactivate_user_success": "Succeeded to deactivate {{username}}",
-    "remove_user_success": "Succeeded to removing {{username}}",
-    "remove_external_user_success": "Succeeded to remove {{accountId}}",
-    "remove_share_link_success": "Succeeded to remove {{shareLinkId}}",
-    "issue_share_link": "Succeeded to issue new share link",
-    "remove_share_link": "Succeeded to remove {{count}} share links",
-    "switch_disable_link_sharing_success": "Succeeded to update share link setting",
-    "failed_to_reset_password":"Failed to reset password",
-    "save_succeeded": "Saved successfully"
+    "save_succeeded": "Saved successfully",
+    "issue_share_link": "Succeeded to issue new share link"
   },
   "template": {
     "modal_label": {
