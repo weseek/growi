@@ -24,5 +24,8 @@
     "Page Path": "ページパス",
     "expire": "有効期限",
     "description": "概要"
+  },
+  "not_found_page": {
+    "page_not_exist": "このページは存在しません。"
   }
 }
