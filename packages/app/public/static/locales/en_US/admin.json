@@ -80,6 +80,7 @@
       "closed": "Closed (Invitation Only)"
     },
     "share_link_management": "Share Link Management",
+    "No_share_links":"No share links",
     "share_link_notice":"remove all share links",
     "delete_all_share_links":"Delete all share links",
     "Share Link": "Share Link",

@@ -148,7 +148,7 @@ const ShareLinkSetting = (props: ShareLinkSettingProps) => {
           isAdmin
         />
       )
-        : (<p className="text-center">{t('share_links.No_share_links')}</p>
+        : (<p className="text-center">{t('security_settings.No_share_links')}</p>
         )
       }
 
