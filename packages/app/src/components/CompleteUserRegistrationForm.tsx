@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
+
 import { useTranslation } from 'next-i18next';
+
 import { apiv3Get, apiv3Post } from '~/client/util/apiv3-client';
 
 import { toastSuccess, toastError } from '../client/util/apiNotification';
@@ -66,80 +68,83 @@ const CompleteUserRegistrationForm: React.FC<Props> = (props: Props) => {
           </div>
         )}
       </div>
-      <div id="register-dialog">
 
-        <fieldset id="registration-form" disabled={disableForm}>
-          <input type="hidden" name="token" value={token} />
-          <div className="input-group">
-            <div className="input-group-prepend">
-              <span className="input-group-text"><i className="icon-envelope"></i></span>
-            </div>
-            <input type="text" className="form-control" disabled value={email} />
-          </div>
-          <div className="input-group" id="input-group-username">
-            <div className="input-group-prepend">
-              <span className="input-group-text"><i className="icon-user"></i></span>
-            </div>
-            <input
-              type="text"
-              className="form-control"
-              placeholder={t('User ID')}
-              name="username"
-              onChange={e => setUsername(e.target.value)}
-              required
-            />
-          </div>
-          {!usernameAvailable && (
-            <p className="form-text text-red">
-              <span id="help-block-username"><i className="icon-fw icon-ban"></i>{t('installer.unavaliable_user_id')}</span>
-            </p>
-          )}
+      <div className="noLogin-dialog mx-auto" id="noLogin-dialog">
+        <div className="row mx-0">
+          <div className="col-12">
+            <fieldset id="registration-form" disabled={disableForm}>
+              <input type="hidden" name="token" value={token} />
+              <div className="input-group">
+                <div className="input-group-prepend">
+                  <span className="input-group-text"><i className="icon-envelope"></i></span>
+                </div>
+                <input type="text" className="form-control" disabled value={email} />
+              </div>
+              <div className="input-group" id="input-group-username">
+                <div className="input-group-prepend">
+                  <span className="input-group-text"><i className="icon-user"></i></span>
+                </div>
+                <input
+                  type="text"
+                  className="form-control"
+                  placeholder={t('User ID')}
+                  name="username"
+                  onChange={e => setUsername(e.target.value)}
+                  required
+                />
+              </div>
+              {!usernameAvailable && (
+                <p className="form-text text-red">
+                  <span id="help-block-username"><i className="icon-fw icon-ban"></i>{t('installer.unavaliable_user_id')}</span>
+                </p>
+              )}
 
-          <div className="input-group">
-            <div className="input-group-prepend">
-              <span className="input-group-text"><i className="icon-tag"></i></span>
-            </div>
-            <input
-              type="text"
-              className="form-control"
-              placeholder={t('Name')}
-              name="name"
-              value={name}
-              onChange={e => setName(e.target.value)}
-              required
-            />
-          </div>
+              <div className="input-group">
+                <div className="input-group-prepend">
+                  <span className="input-group-text"><i className="icon-tag"></i></span>
+                </div>
+                <input
+                  type="text"
+                  className="form-control"
+                  placeholder={t('Name')}
+                  name="name"
+                  value={name}
+                  onChange={e => setName(e.target.value)}
+                  required
+                />
+              </div>
 
-          <div className="input-group">
-            <div className="input-group-prepend">
-              <span className="input-group-text"><i className="icon-lock"></i></span>
-            </div>
-            <input
-              type="password"
-              className="form-control"
-              placeholder={t('Password')}
-              name="password"
-              value={password}
-              onChange={e => setPassword(e.target.value)}
-              required
-            />
-          </div>
+              <div className="input-group">
+                <div className="input-group-prepend">
+                  <span className="input-group-text"><i className="icon-lock"></i></span>
+                </div>
+                <input
+                  type="password"
+                  className="form-control"
+                  placeholder={t('Password')}
+                  name="password"
+                  value={password}
+                  onChange={e => setPassword(e.target.value)}
+                  required
+                />
+              </div>
 
-          <div className="input-group justify-content-center d-flex mt-5">
-            <button type="button" onClick={submitRegistration} className="btn btn-fill" id="register">
-              <div className="eff"></div>
-              <span className="btn-label"><i className="icon-user-follow"></i></span>
-              <span className="btn-label-text">{t('Create')}</span>
-            </button>
-          </div>
+              <div className="input-group justify-content-center d-flex mt-5">
+                <button type="button" onClick={submitRegistration} className="btn btn-fill" id="register">
+                  <div className="eff"></div>
+                  <span className="btn-label"><i className="icon-user-follow"></i></span>
+                  <span className="btn-label-text">{t('Create')}</span>
+                </button>
+              </div>
 
-          <div className="input-group mt-5 d-flex justify-content-center">
-            <a href="https://growi.org" className="link-growi-org">
-              <span className="growi">GROWI</span>.<span className="org">ORG</span>
-            </a>
+              <div className="input-group mt-5 d-flex justify-content-center">
+                <a href="https://growi.org" className="link-growi-org">
+                  <span className="growi">GROWI</span>.<span className="org">ORG</span>
+                </a>
+              </div>
+            </fieldset>
           </div>
-
-        </fieldset>
+        </div>
       </div>
     </>
   );
