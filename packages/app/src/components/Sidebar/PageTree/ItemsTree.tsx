@@ -11,10 +11,11 @@ import { IPageHasId, IPageToDeleteWithMeta } from '~/interfaces/page';
 import { AncestorsChildrenResult, RootPageResult, TargetAndAncestors } from '~/interfaces/page-listing-results';
 import { OnDuplicatedFunction, OnDeletedFunction } from '~/interfaces/ui';
 import { SocketEventName, UpdateDescCountData, UpdateDescCountRawData } from '~/interfaces/websocket';
-import { useIsEnabledAttachTitleHeader } from '~/stores/context';
+import { useCurrentPagePath, useIsEnabledAttachTitleHeader } from '~/stores/context';
 import {
   IPageForPageDuplicateModal, usePageDuplicateModal, usePageDeleteModal,
 } from '~/stores/modal';
+import { useSWRxCurrentPage } from '~/stores/page';
 import {
   usePageTreeTermManager, useSWRxPageAncestorsChildren, useSWRxRootPage, useDescendantsPageListForCurrentPathTermManager,
 } from '~/stores/page-listing';
@@ -102,6 +103,7 @@ const ItemsTree = (props: ItemsTreeProps): JSX.Element => {
 
   const { data: ancestorsChildrenResult, error: error1 } = useSWRxPageAncestorsChildren(targetPath);
   const { data: rootPageResult, error: error2 } = useSWRxRootPage();
+  const { data: currentPagePath } = useCurrentPagePath();
   const { data: isEnabledAttachTitleHeader } = useIsEnabledAttachTitleHeader();
   const { open: openDuplicateModal } = usePageDuplicateModal();
   const { open: openDeleteModal } = usePageDeleteModal();
@@ -111,6 +113,7 @@ const ItemsTree = (props: ItemsTreeProps): JSX.Element => {
   const { data: ptDescCountMap, update: updatePtDescCountMap } = usePageTreeDescCountMap();
 
   // for mutation
+  const { mutate: mutateCurrentPage } = useSWRxCurrentPage();
   const { advance: advancePt } = usePageTreeTermManager();
   const { advance: advanceFts } = useFullTextSearchTermManager();
   const { advance: advanceDpl } = useDescendantsPageListForCurrentPathTermManager();
@@ -142,13 +145,17 @@ const ItemsTree = (props: ItemsTreeProps): JSX.Element => {
 
   }, [socket, ptDescCountMap, updatePtDescCountMap]);
 
-  const onRenamed = () => {
+  const onRenamed = useCallback((fromPath: string | undefined, toPath: string) => {
     advancePt();
     advanceFts();
     advanceDpl();
-  };
 
-  const onClickDuplicateMenuItem = (pageToDuplicate: IPageForPageDuplicateModal) => {
+    if (currentPagePath === fromPath || currentPagePath === toPath) {
+      mutateCurrentPage();
+    }
+  }, [advanceDpl, advanceFts, advancePt, currentPagePath, mutateCurrentPage]);
+
+  const onClickDuplicateMenuItem = useCallback((pageToDuplicate: IPageForPageDuplicateModal) => {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const duplicatedHandler: OnDuplicatedFunction = (fromPath, toPath) => {
       toastSuccess(t('duplicated_pages', { fromPath }));
@@ -159,9 +166,9 @@ const ItemsTree = (props: ItemsTreeProps): JSX.Element => {
     };
 
     openDuplicateModal(pageToDuplicate, { onDuplicated: duplicatedHandler });
-  };
+  }, [advanceDpl, advanceFts, advancePt, openDuplicateModal, t]);
 
-  const onClickDeleteMenuItem = (pageToDelete: IPageToDeleteWithMeta) => {
+  const onClickDeleteMenuItem = useCallback((pageToDelete: IPageToDeleteWithMeta) => {
     const onDeletedHandler: OnDeletedFunction = (pathOrPathsToDelete, isRecursively, isCompletely) => {
       if (typeof pathOrPathsToDelete !== 'string') {
         return;
@@ -179,10 +186,14 @@ const ItemsTree = (props: ItemsTreeProps): JSX.Element => {
       advancePt();
       advanceFts();
       advanceDpl();
+
+      if (currentPagePath === pathOrPathsToDelete) {
+        mutateCurrentPage();
+      }
     };
 
     openDeleteModal([pageToDelete], { onDeleted: onDeletedHandler });
-  };
+  }, [advanceDpl, advanceFts, advancePt, currentPagePath, mutateCurrentPage, openDeleteModal, t]);
 
   // ***************************  Scroll on init ***************************
   const scrollOnInit = useCallback(() => {
