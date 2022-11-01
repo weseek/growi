@@ -4,14 +4,14 @@ import { useTranslation } from 'next-i18next';
 
 import { toastSuccess, toastError } from '~/client/util/apiNotification';
 import { apiv3Put } from '~/client/util/apiv3-client';
-import { useLayoutSetting } from '~/stores/context';
+import { useSWRxLayoutSetting } from '~/stores/admin/customize';
 import { useNextThemes } from '~/stores/use-next-themes';
 
 const CustomizeLayoutSetting = (): JSX.Element => {
   const { t } = useTranslation('admin');
 
   const { resolvedTheme } = useNextThemes();
-  const { data: layoutSetting } = useLayoutSetting();
+  const { data: layoutSetting, mutate: mutateLayoutSetting } = useSWRxLayoutSetting();
 
   const [isContainerFluid, setIsContainerFluid] = useState<boolean>(layoutSetting?.isContainerFluid ?? false);
   const [retrieveError, setRetrieveError] = useState<any>();
@@ -20,6 +20,7 @@ const CustomizeLayoutSetting = (): JSX.Element => {
     try {
       await apiv3Put('/customize-setting/layout', { isContainerFluid });
       toastSuccess(t('toaster.update_successed', { target: t('customize_settings.layout'), ns: 'commons' }));
+      mutateLayoutSetting();
     }
     catch (err) {
       toastError(err);
