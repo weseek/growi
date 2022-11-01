@@ -40,12 +40,12 @@ import FullTextSearchManagement from '../components/Admin/FullTextSearchManageme
 import LegacySlackIntegration from '../components/Admin/LegacySlackIntegration/LegacySlackIntegration';
 import ManageExternalAccount from '../components/Admin/ManageExternalAccount';
 // import MarkdownSetting from '../components/Admin/MarkdownSetting/MarkDownSetting';
-import ManageGlobalNotification from '../components/Admin/Notification/ManageGlobalNotification';
+// import ManageGlobalNotification from '../components/Admin/Notification/ManageGlobalNotification';
 import NotificationSetting from '../components/Admin/Notification/NotificationSetting';
 import SecurityManagement from '../components/Admin/Security/SecurityManagement';
 import SlackIntegration from '../components/Admin/SlackIntegration/SlackIntegration';
 import UserGroupPage from '../components/Admin/UserGroup/UserGroupPage';
-import UserGroupDetailPage from '../components/Admin/UserGroupDetail/UserGroupDetailPage';
+// import UserGroupDetailPage from '../components/Admin/UserGroupDetail/UserGroupDetailPage';
 import UserManagement from '../components/Admin/UserManagement';
 import ErrorBoundary from '../components/ErrorBoudary';
 
@@ -102,10 +102,10 @@ Object.assign(componentMappings, {
   'admin-notification-setting': <NotificationSetting />,
   'admin-slack-integration': <SlackIntegration />,
   'admin-slack-integration-legacy': <LegacySlackIntegration />,
-  'admin-global-notification-setting': <ManageGlobalNotification />,
+  // 'admin-global-notification-setting': <ManageGlobalNotification />,
   'admin-user-page': <UserManagement />,
   'admin-external-account-setting': <ManageExternalAccount />,
-  'admin-user-group-detail': <UserGroupDetailPage />,
+  // 'admin-user-group-detail': <UserGroupDetailPage />,
   'admin-full-text-search-management': <FullTextSearchManagement />,
   'admin-user-group-page': <UserGroupPage />,
   'admin-audit-log': <AuditLogManagement />,
