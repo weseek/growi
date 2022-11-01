@@ -60,7 +60,7 @@ context('Access to sidebar', () => {
     cy.get('.CodeMirror textarea').type(content, {force: true});
     cy.screenshot(`${ssPrefix}custom-sidebar-2-custom-sidebar-editor`);
     cy.getByTestid('save-page-btn').click();
-    cy.get('layout-root').should('not.have.class', 'editing');
+    cy.get('.layout-root', { timeout: 10000 }).should('not.have.class', 'editing');
 
     // What to do when UserUISettings is not saved in time
     cy.getByTestid('grw-sidebar-nav-primary-custom-sidebar').then(($el) => {
@@ -87,7 +87,7 @@ context('Access to sidebar', () => {
     cy.get('.grw-pagetree-triangle-btn').eq(0).click();
 
     cy.get('.grw-pagetree-item-children').eq(0).within(() => {
-      cy.getByTestid('open-page-item-control-btn').find('button').eq(0).invoke('css','display','block').click()
+      cy.getByTestid('open-page-item-control-btn').find('button').eq(0).invoke('css','display','block').click();
     });
 
     cy.screenshot(`${ssPrefix}page-tree-3-click-three-dots-menu`);
@@ -98,7 +98,7 @@ context('Access to sidebar', () => {
 
 
     cy.get('.grw-pagetree-item-children').eq(0).within(() => {
-      cy.getByTestid('open-page-item-control-btn').find('button').eq(0).invoke('css','display','block').click()
+      cy.getByTestid('open-page-item-control-btn').find('button').eq(0).invoke('css','display','block').click();
     });
     cy.get('.dropdown-menu.show').should('be.visible').within(() => {
       cy.getByTestid('open-page-duplicate-modal-btn').click();
@@ -156,14 +156,14 @@ context('Access to sidebar', () => {
     cy.screenshot(`${ssPrefix}tags-2-check-all-tags`);
   });
 
-  it('Successfully access to My Drafts page', () => {
-    cy.visit('/');
-    cy.collapseSidebar(true);
-    cy.get('.grw-sidebar-nav-secondary-container').within(() => {
-      cy.get('a[href*="/me/drafts"]').click();
-    });
-    cy.screenshot(`${ssPrefix}access-to-drafts-page`);
-  });
+  // it('Successfully access to My Drafts page', () => {
+  //   cy.visit('/');
+  //   cy.collapseSidebar(true);
+  //   cy.get('.grw-sidebar-nav-secondary-container').within(() => {
+  //     cy.get('a[href*="/me/drafts"]').click();
+  //   });
+  //   cy.screenshot(`${ssPrefix}access-to-drafts-page`);
+  // });
   it('Successfully access to Growi Docs page', () => {
     cy.visit('/');
     cy.get('.grw-sidebar-nav-secondary-container').within(() => {
