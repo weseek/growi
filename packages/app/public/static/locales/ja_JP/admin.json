@@ -283,7 +283,8 @@
     "delete_notification_pattern": "通知パターンを削除しました。",
     "delete_notification_pattern_desc1": "Path: {{path}} を削除します。",
     "delete_notification_pattern_desc2": "Once deleted, it cannot be recovered",
-    "toggle_notification": "{{path}}の通知設定を変更しました"
+    "toggle_notification": "{{path}}の通知設定を変更しました",
+    "not_found_global_notification_triggerid": "アクセス先の通知設定は見つかりませんでした"
   },
   "full_text_search_management": {
     "full_text_search_management": "全文検索管理",
