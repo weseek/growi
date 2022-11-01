@@ -9,6 +9,7 @@ import {
   Modal, ModalHeader, ModalBody,
 } from 'reactstrap';
 
+import { IPageGrantData } from '~/interfaces/page';
 import { IUserGroupHasId } from '~/interfaces/user';
 import { useCurrentUser } from '~/stores/context';
 import { useSWRxMyUserGroupRelations } from '~/stores/user-group';
@@ -37,7 +38,7 @@ type Props = {
   grantGroupId?: string,
   grantGroupName?: string,
 
-  onUpdateGrant?: (args: { grant: number, grantGroupId?: string | null, grantGroupName?: string | null }) => void,
+  onUpdateGrant?: (grantData: IPageGrantData) => void,
 }
 
 /**
@@ -78,13 +79,13 @@ const GrantSelector = (props: Props): JSX.Element => {
     }
 
     if (onUpdateGrant != null) {
-      onUpdateGrant({ grant, grantGroupId: null, grantGroupName: null });
+      onUpdateGrant({ grant, grantedGroup: undefined });
     }
   }, [onUpdateGrant, showSelectGroupModal]);
 
   const groupListItemClickHandler = useCallback((grantGroup: IUserGroupHasId) => {
     if (onUpdateGrant != null) {
-      onUpdateGrant({ grant: 5, grantGroupId: grantGroup._id, grantGroupName: grantGroup.name });
+      onUpdateGrant({ grant: 5, grantedGroup: { id: grantGroup._id, name: grantGroup.name } });
     }
 
     // hide modal
