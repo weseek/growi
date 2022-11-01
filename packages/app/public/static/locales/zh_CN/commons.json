@@ -6,7 +6,10 @@
     "create_succeeded": "Succeeded to create {{target}}",
     "create_failed": "Failed to create {{target}}",
     "update_successed": "Succeeded to update {{target}}",
-    "update_failed": "Failed to update {{target}}"
+    "update_failed": "Failed to update {{target}}",
+
+    "remove_share_link_success": "Succeeded to remove {{shareLinkId}}",
+    "remove_share_link": "Succeeded to remove {{count}} share links"
   },
   "alert": {
     "siteUrl_is_not_set": "主页URL未设置，通过 {{link}} 设置"

@@ -6,7 +6,10 @@
     "create_succeeded": "新しい{{target}}が作成されました",
     "create_failed": "{{target}}の作成に失敗しました",
     "update_successed": "{{target}}を更新しました",
-    "update_failed": "{{target}}の更新に失敗しました"
+    "update_failed": "{{target}}の更新に失敗しました",
+
+    "remove_share_link_success": "{{shareLinkId}}を削除しました",
+    "remove_share_link": "共有リンクを{{count}}件削除しました"
   },
   "alert": {
     "siteUrl_is_not_set": "'サイトURL' が設定されていません。{{link}} から設定してください。"
