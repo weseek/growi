@@ -119,10 +119,6 @@ export const useRegistrationWhiteList = (initialData?: Nullable<string[]>): SWRR
   return useStaticSWR<Nullable<string[]>, Error>('registrationWhiteList', initialData);
 };
 
-export const useRevisionIdHackmdSynced = (initialData?: Nullable<any>): SWRResponse<Nullable<any>, Error> => {
-  return useStaticSWR<Nullable<any>, Error>('revisionIdHackmdSynced', initialData);
-};
-
 export const useDrawioUri = (initialData?: string): SWRResponse<string, Error> => {
   return useStaticSWR('drawioUri', initialData, { fallbackData: 'https://embed.diagrams.net/' });
 };
@@ -137,14 +133,6 @@ export const useLastUpdateUsername = (initialData?: Nullable<any>): SWRResponse<
 
 export const useDeleteUsername = (initialData?: Nullable<any>): SWRResponse<Nullable<any>, Error> => {
   return useStaticSWR<Nullable<any>, Error>('deleteUsername', initialData);
-};
-
-export const usePageIdOnHackmd = (initialData?: Nullable<any>): SWRResponse<Nullable<any>, Error> => {
-  return useStaticSWR<Nullable<any>, Error>('pageIdOnHackmd', initialData);
-};
-
-export const useHasDraftOnHackmd = (initialData?: Nullable<any>): SWRResponse<Nullable<any>, Error> => {
-  return useStaticSWR<Nullable<any>, Error>('hasDraftOnHackmd', initialData);
 };
 
 export const useIsSearchPage = (initialData?: Nullable<any>) : SWRResponse<Nullable<any>, Error> => {

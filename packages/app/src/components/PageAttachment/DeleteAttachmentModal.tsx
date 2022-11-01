@@ -8,7 +8,7 @@ import {
   Modal, ModalHeader, ModalBody, ModalFooter,
 } from 'reactstrap';
 
-import Username from '../User/Username';
+import { Username } from '../User/Username';
 
 import styles from './DeleteAttachmentModal.module.scss';
 

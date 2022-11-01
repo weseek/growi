@@ -1,17 +1,25 @@
 import React from 'react';
-import PropTypes from 'prop-types';
-import { format } from 'date-fns';
-import { UserPicture } from '@growi/ui';
+
 import { pagePathUtils } from '@growi/core';
+import type { IUser } from '@growi/core';
+import { UserPicture } from '@growi/ui';
+import { format } from 'date-fns';
+import Link from 'next/link';
 
-const { userPageRoot } = pagePathUtils;
+export type AuthorInfoProps = {
+  date: Date,
+  user: IUser,
+  mode: 'create' | 'update',
+  locate: 'subnav' | 'footer',
+}
 
-
-const formatType = 'yyyy/MM/dd HH:mm';
-const AuthorInfo = (props) => {
+export const AuthorInfo = (props: AuthorInfoProps): JSX.Element => {
   const {
-    mode, user, date, locate,
+    date, user, mode = 'create', locate = 'subnav',
   } = props;
+
+  const { userPageRoot } = pagePathUtils;
+  const formatType = 'yyyy/MM/dd HH:mm';
 
   const infoLabelForSubNav = mode === 'create'
     ? 'Created by'
@@ -23,16 +31,20 @@ const AuthorInfo = (props) => {
     ? 'Created at'
     : 'Last revision posted at';
   const userLabel = user != null
-    ? <a href={userPageRoot(user)}>{user.name}</a>
+    ? (
+      <Link href={userPageRoot(user)} prefetch={false}>
+        <a>{user.name}</a>
+      </Link>
+    )
     : <i>Unknown</i>;
 
   if (locate === 'footer') {
     try {
-      return <p>{infoLabelForFooter} {format(new Date(date), formatType)} by <UserPicture user={user} size="sm" /> {userLabel}</p>;
+      return <p>{infoLabelForFooter} {format(new Date(date), formatType)} by <UserPicture user={user} size="sm"/> {userLabel}</p>;
     }
     catch (err) {
       if (err instanceof RangeError) {
-        return <p>{nullinfoLabelForFooter} <UserPicture user={user} size="sm" /> {userLabel}</p>;
+        return <p>{nullinfoLabelForFooter} <UserPicture user={user} size="sm"/> {userLabel}</p>;
       }
       return <></>;
     }
@@ -50,7 +62,7 @@ const AuthorInfo = (props) => {
   return (
     <div className="d-flex align-items-center">
       <div className="mr-2">
-        <UserPicture user={user} size="sm" />
+        <UserPicture user={user} size="sm"/>
       </div>
       <div>
         <div>{infoLabelForSubNav} {userLabel}</div>
@@ -61,18 +73,3 @@ const AuthorInfo = (props) => {
     </div>
   );
 };
-
-AuthorInfo.propTypes = {
-  date: PropTypes.instanceOf(Date),
-  user: PropTypes.object,
-  mode: PropTypes.oneOf(['create', 'update']),
-  locate: PropTypes.oneOf(['subnav', 'footer']),
-};
-
-AuthorInfo.defaultProps = {
-  mode: 'create',
-  locate: 'subnav',
-};
-
-
-export default AuthorInfo;

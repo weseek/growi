@@ -1,10 +1,10 @@
 import React, { useCallback } from 'react';
 
+import type { IUserHasId } from '@growi/core';
 import { useTranslation } from 'next-i18next';
 
 import AdminUsersContainer from '~/client/services/AdminUsersContainer';
 import { toastSuccess, toastError } from '~/client/util/apiNotification';
-import { IUserHasId } from '~/interfaces/user';
 import { useCurrentUser } from '~/stores/context';
 
 import { withUnstatedContainers } from '../../UnstatedUtils';

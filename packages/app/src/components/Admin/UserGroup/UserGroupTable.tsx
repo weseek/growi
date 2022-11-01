@@ -2,11 +2,11 @@ import React, {
   FC, useState, useEffect,
 } from 'react';
 
+import type { IUserGroupHasId, IUserGroupRelation, IUserHasId } from '@growi/core';
 import dateFnsFormat from 'date-fns/format';
 import { TFunctionResult } from 'i18next';
 import { useTranslation } from 'next-i18next';
 
-import { IUserGroupHasId, IUserGroupRelation, IUserHasId } from '~/interfaces/user';
 
 type Props = {
   headerLabel?: TFunctionResult,
