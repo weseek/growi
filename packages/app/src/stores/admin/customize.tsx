@@ -2,26 +2,29 @@ import { useCallback } from 'react';
 
 import useSWR, { SWRResponse } from 'swr';
 
-import { apiv3Get } from '~/client/util/apiv3-client';
+import { apiv3Get, apiv3Put } from '~/client/util/apiv3-client';
 import { IResLayoutSetting } from '~/interfaces/customize';
 
-import { useLayoutSetting } from '../context';
+interface updateConfigMethodForAdmin<T> {
+  update: (arg: T) => void
+}
 
 
-export const useSWRxLayoutSetting = (fallbackData?: IResLayoutSetting): SWRResponse<IResLayoutSetting, Error> => {
-  const { mutate: mutateStatic } = useLayoutSetting();
+export const useSWRxLayoutSetting = (): SWRResponse<IResLayoutSetting, Error> & updateConfigMethodForAdmin<IResLayoutSetting> => {
 
   const fetcher = useCallback(async() => {
     const res = await apiv3Get('/customize-setting/layout');
-
-    mutateStatic(res.data);
-
     return res.data;
-  }, [mutateStatic]);
+  }, []);
 
-  return useSWR(
-    '/customize-setting/layout',
-    fetcher,
-    { fallbackData },
-  );
+  const update = useCallback(async(layoutSetting: IResLayoutSetting) => {
+    await apiv3Put('/customize-setting/layout', layoutSetting);
+  }, []);
+
+  const swrResponse = useSWR('/customize-setting/layout', fetcher);
+
+  return {
+    ...swrResponse,
+    update,
+  };
 };
