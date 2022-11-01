@@ -11,16 +11,15 @@ const CustomizeLayoutSetting = (): JSX.Element => {
   const { t } = useTranslation('admin');
 
   const { resolvedTheme } = useNextThemes();
-  const { data: layoutSetting, mutate: mutateLayoutSetting } = useSWRxLayoutSetting();
+  const { data: layoutSetting, update: updateLayoutSetting } = useSWRxLayoutSetting();
 
   const [isContainerFluid, setIsContainerFluid] = useState<boolean>(layoutSetting?.isContainerFluid ?? false);
   const [retrieveError, setRetrieveError] = useState<any>();
 
   const onClickSubmit = async() => {
     try {
-      await apiv3Put('/customize-setting/layout', { isContainerFluid });
+      await updateLayoutSetting({ isContainerFluid });
       toastSuccess(t('toaster.update_successed', { target: t('customize_settings.layout'), ns: 'commons' }));
-      mutateLayoutSetting();
     }
     catch (err) {
       toastError(err);
