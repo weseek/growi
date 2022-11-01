@@ -7,7 +7,7 @@ import { apiv3Get, apiv3Put } from '~/client/util/apiv3-client';
 import { updateConfigMethodForAdmin } from '~/interfaces/admin';
 import { IResLayoutSetting } from '~/interfaces/customize';
 
-export const useSWRxLayoutSetting = (): SWRResponse<IResLayoutSetting, Error> & updateConfigMethodForAdmin<IResLayoutSetting> => {
+export const useSWRxLayoutSetting = (): SWRResponse<IResLayoutSetting, Error> & updateConfigMethodForAdmin<IResLayoutSetting, void> => {
 
   const fetcher = useCallback(async() => {
     const res = await apiv3Get('/customize-setting/layout');
