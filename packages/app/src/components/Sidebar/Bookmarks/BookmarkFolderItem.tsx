@@ -4,6 +4,8 @@ import {
 
 import { useTranslation } from 'next-i18next';
 
+import { toastError, toastSuccess } from '~/client/util/apiNotification';
+import { apiv3Post } from '~/client/util/apiv3-client';
 import CountBadge from '~/components/Common/CountBadge';
 import FolderIcon from '~/components/Icons/FolderIcon';
 import TriangleIcon from '~/components/Icons/TriangleIcon';
@@ -23,35 +25,54 @@ const BookmarkFolderItem: FC<BookmarkFolderItemProps> = (props: BookmarkFolderIt
   const {
     bookmarkFolders, isOpen: _isOpen = false, updateActiveElement, isActive,
   } = props;
+
   const { t } = useTranslation();
+  const { bookmarkFolder, children } = bookmarkFolders;
   const [isRenameInputShown, setIsRenameInputShown] = useState<boolean>(false);
-  const hasChildren = bookmarkFolders.children.length > 0;
-  const [currentParentFolder, setCurrentParentFolder] = useState<string | null>(null);
+  const [currentParentFolder, setCurrentParentFolder] = useState<string | null>(bookmarkFolders.bookmarkFolder?._id);
   const [isOpen, setIsOpen] = useState(_isOpen);
-  const { data: childBookmarkFolderData, mutate: mutateChildBookmarkData } = useSWRxBookamrkFolderAndChild(isOpen, currentParentFolder);
-  const [folderName, setFolderName] = useState<string>('');
+  const { data: childBookmarkFolderData, mutate: mutateChildBookmarkData } = useSWRxBookamrkFolderAndChild(isOpen ? currentParentFolder : null);
+
 
   useEffect(() => {
-    setCurrentParentFolder(bookmarkFolders.bookmarkFolder._id);
-  }, [bookmarkFolders]);
+    setCurrentParentFolder(bookmarkFolder._id);
+  }, [bookmarkFolder]);
+
+  const hasChildren = useCallback((): boolean => {
+    return children.length > 0;
+  }, [children.length]);
 
   const loadChildFolder = useCallback(async() => {
-    setCurrentParentFolder(bookmarkFolders.bookmarkFolder._id);
+    setCurrentParentFolder(bookmarkFolder._id);
     setIsOpen(!isOpen);
-    updateActiveElement?.(!isOpen ? bookmarkFolders.bookmarkFolder._id : null);
+    updateActiveElement?.(!isOpen ? bookmarkFolder._id : null);
     mutateChildBookmarkData();
-  }, [bookmarkFolders, isOpen, updateActiveElement, mutateChildBookmarkData]);
+  }, [bookmarkFolder, isOpen, updateActiveElement, mutateChildBookmarkData]);
 
+
+  const onPressEnterHandler = useCallback(async(folderName: string) => {
+
+    try {
+      await apiv3Post('/bookmark-folder', { name: folderName, parent: currentParentFolder });
+      mutateChildBookmarkData();
+      setIsRenameInputShown(false);
+      toastSuccess(t('Create New Bookmark Folder Success'));
+    }
+    catch (err) {
+      toastError(err);
+    }
+
+  }, [currentParentFolder, mutateChildBookmarkData, t]);
 
   return (
-    <div id={`bookmark-folder-item-${bookmarkFolders.bookmarkFolder._id}`} className="grw-foldertree-item-container"
+    <div id={`bookmark-folder-item-${bookmarkFolder._id}`} className="grw-foldertree-item-container"
     >
       <li className={`list-group-item list-group-item-action border-0 py-0 pr-3 d-flex align-items-center
        ${isActive ? 'grw-foldertree-current-folder-item' : ''}` }
       onClick={loadChildFolder}
       >
         <div className="grw-triangle-container d-flex justify-content-center">
-          {hasChildren && (
+          {hasChildren() && (
             <button
               type="button"
               className={`grw-foldertree-triangle-btn btn ${isOpen ? 'grw-foldertree-open' : ''}`}
@@ -70,12 +91,12 @@ const BookmarkFolderItem: FC<BookmarkFolderItemProps> = (props: BookmarkFolderIt
         }
         {
           <div className='grw-foldertree-title-anchor flex-grow-1 pl-2'>
-            <p className={'text-truncate m-auto '}>{bookmarkFolders.bookmarkFolder.name}</p>
+            <p className={'text-truncate m-auto '}>{bookmarkFolder.name}</p>
           </div>
         }
-        {hasChildren && (
+        {hasChildren() && (
           <div className="grw-foldertree-count-wrapper">
-            <CountBadge count={ bookmarkFolders.children.length} />
+            <CountBadge count={ children.length} />
           </div>
         )}
         <div className="grw-foldertree-control d-flex">
@@ -96,16 +117,17 @@ const BookmarkFolderItem: FC<BookmarkFolderItemProps> = (props: BookmarkFolderIt
         <div className="flex-fill">
           <BookmarkFolderNameInput
             onClickOutside={() => setIsRenameInputShown(false)}
+            parentFolderId={bookmarkFolder._id}
+            onPressEnter={onPressEnterHandler}
           />
         </div>
       )}
       {
-        isOpen && hasChildren && childBookmarkFolderData?.map(children => (
+        isOpen && hasChildren() && childBookmarkFolderData?.map(children => (
           <div key={children.bookmarkFolder._id} className="grw-foldertree-item-children">
             <BookmarkFolderItem
               key={children.bookmarkFolder._id}
               bookmarkFolders={children}
-              isOpen = {false}
               isActive = {isActive}
             />
           </div>

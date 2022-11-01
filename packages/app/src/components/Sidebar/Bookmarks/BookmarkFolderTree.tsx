@@ -11,7 +11,7 @@ import styles from './BookmarkFolderTree.module.scss';
 
 const BookmarkFolderTree = (): JSX.Element => {
   const { t } = useTranslation();
-  const { data: bookmarkFolderData } = useSWRxBookamrkFolderAndChild(true);
+  const { data: bookmarkFolderData } = useSWRxBookamrkFolderAndChild();
   const [activeElement, setActiveElement] = useState<string | null>(null);
 
   const updateActiveElement = (parentId: string | null) => {
