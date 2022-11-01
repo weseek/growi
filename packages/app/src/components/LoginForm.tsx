@@ -323,7 +323,7 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
         )}
         { (!isMailerSetup && isEmailAuthenticationEnabled) && (
           <p className="alert alert-danger">
-            <span>{t('security_settings.Local.please_enable_mailer')}</span>
+            <span>{t('commons:alert.please_enable_mailer')}</span>
           </p>
         )}
 
