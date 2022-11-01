@@ -10,6 +10,7 @@ import { useRouter } from 'next/router';
 import { Container, Provider } from 'unstated';
 
 import AdminNotificationContainer from '~/client/services/AdminNotificationContainer';
+import { toastError } from '~/client/util/apiNotification';
 import { CommonProps, useCustomTitle } from '~/pages/utils/commons';
 
 import { retrieveServerSideProps } from '../../../utils/admin-page-util';
@@ -26,10 +27,15 @@ const AdminGlobalNotificationNewPage: NextPage<CommonProps> = (props) => {
 
 
   useEffect(() => {
-    if (globalNotificationId == null || (currentGlobalNotificationId != null && !objectIdUtils.isValidObjectId(currentGlobalNotificationId))) {
+    if (globalNotificationId == null) {
       router.push('/admin/notification');
     }
-  }, [currentGlobalNotificationId, globalNotificationId, router]);
+    if ((currentGlobalNotificationId != null && !objectIdUtils.isValidObjectId(currentGlobalNotificationId))) {
+      toastError(t('notification_settings.not_found_global_notification_triggerid'));
+      router.push('/admin/global-notification/new');
+      return;
+    }
+  }, [currentGlobalNotificationId, globalNotificationId, router, t]);
 
 
   const title = t('external_notification.external_notification');
