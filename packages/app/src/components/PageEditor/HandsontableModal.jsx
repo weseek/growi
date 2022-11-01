@@ -335,9 +335,9 @@ export default class HandsontableModal extends React.PureComponent {
     const align = this.state.markdownTable.options.align;
     const hotInstance = this.hotTable.hotInstance;
 
-    // if (hotInstance.isDestroyed === true) {
-    //   return;
-    // }
+    if (hotInstance.isDestroyed === true) {
+      return;
+    }
 
     for (let i = 0; i < align.length; i++) {
       for (let j = 0; j < hotInstance.countRows(); j++) {
