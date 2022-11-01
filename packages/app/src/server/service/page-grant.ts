@@ -1,6 +1,7 @@
 import { pagePathUtils, pathUtils, pageUtils } from '@growi/core';
 import escapeStringRegexp from 'escape-string-regexp';
 import mongoose from 'mongoose';
+import { PageGrant } from '~/interfaces/page';
 
 import { IRecordApplicableGrant } from '~/interfaces/page-grant';
 import { PageDocument, PageModel } from '~/server/models/page';
@@ -33,6 +34,24 @@ type ComparableDescendants = {
   isPublicExist: boolean,
   grantedUserIds: ObjectIdLike[],
   grantedGroupIds: ObjectIdLike[],
+};
+
+type UpdateGrantInfo = {
+  targetPage: any,
+  grant: PageGrant,
+  grantedUser?: any,
+  grantedUserGroup?: any,
+};
+
+type DescendantPagesGrantInfo = {
+  grantSet: Set<number>,
+  grantedUsers: Set<any>, // only me users
+  grantedUserGroups: Set<any>, // user groups
+};
+
+type OperatorGrantInfo = {
+  userId: ObjectIdLike,
+  userGroups: any[],
 };
 
 class PageGrantService {
@@ -479,13 +498,11 @@ class PageGrantService {
    * @param updateGrantInfo
    * @returns {Promise<boolean>}
    */
-  async canOverwriteDescendants(operator, updateGrantInfo): Promise<boolean> {
-    // info needed to calc
-    const _updateGrantInfo = {
-      targetPage: {},
-      grant: 5,
-      grantedUser: {},
-      grantedUserGroup: {},
+  async canOverwriteDescendants(operator, updateGrantInfo: UpdateGrantInfo): Promise<boolean> {
+
+    const operatorGrantInfo = {
+      userId: operator._id,
+      userGroups: [],
     };
     const descendantPagesGrantInfo = {
       grantSet: new Set([1, 4, 5]),
@@ -493,18 +510,30 @@ class PageGrantService {
       grantedUserGroups: new Set([{}, {}]), // user groups
     };
 
-    return this.calcCanOverwriteDescendants(operator, _updateGrantInfo, descendantPagesGrantInfo);
+    return this.calcCanOverwriteDescendants(operatorGrantInfo, updateGrantInfo, descendantPagesGrantInfo);
   }
 
-  private calcCanOverwriteDescendants(operator, updateGrantInfo, descendantPagesGrantInfo): boolean {
-    // -- preprocess
-    // 1. run isGrantNormalized for ancestors
-    // * isGrantNormalized for descendants is unnecessary since it will overwrite all the descendants
+  // TODO: impl
+  private calcIsAllDescendantsGranted(operatorGrantInfo: OperatorGrantInfo, descendantPagesGrantInfo: DescendantPagesGrantInfo): boolean {
+    return true;
+  }
+
+  private calcCanOverwriteDescendants(
+      operatorGrantInfo: OperatorGrantInfo, updateGrantInfo: UpdateGrantInfo, descendantPagesGrantInfo: DescendantPagesGrantInfo,
+  ): boolean {
+    // -- preprocess **not in this method**
+    // - Run isGrantNormalized for ancestors
+    //   - isGrantNormalized for descendants is unnecessary since it will overwrite all the descendants
+
     // -- process
-    // METHOD consideration
     // 1. check is tree GRANTED and it returns true when GRANTED
     //   - GRANTED is the tree with all pages granted by the operator
-    //   - get all user groups that the operator belongs
+
+    const isAllDescendantsGranted = this.calcIsAllDescendantsGranted(operatorGrantInfo, descendantPagesGrantInfo);
+    if (isAllDescendantsGranted) {
+      return true;
+    }
+
     // 2. if not 1. then,
     //   - when update grant is ONLYME, return false
     //   - when update grant is PUBLIC, return true
