@@ -111,7 +111,7 @@ export const PageStatusAlert = (): JSX.Element => {
     };
   }, [t, onClickResolveConflict, refreshPage]);
 
-  const getFC = useCallback(() => {
+  const getAlertComponent = useCallback(() => {
     const isRevisionOutdated = revision?._id !== remoteRevisionId;
     const isHackmdDocumentOutdated = revisionIdHackmdSynced !== remoteRevisionId;
 
@@ -142,7 +142,7 @@ export const PageStatusAlert = (): JSX.Element => {
     getContentsForDraftExistsAlert,
   ]);
 
-  const alertComponent = getFC();
+  const alertComponent = getAlertComponent();
 
   if (alertComponent === null) { return <></> }
 
