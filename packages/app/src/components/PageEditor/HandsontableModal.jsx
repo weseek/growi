@@ -442,7 +442,7 @@ export default class HandsontableModal extends React.PureComponent {
         backdrop="static"
         keyboard={false}
         size="lg"
-        className={`handsontable-modal ${styles['handsontable-modal']} ${styles['grw-handsontable']}
+        className={`handsontable-modal ${styles['grw-handsontable']}
           ${this.state.isWindowExpanded && `grw-modal-expanded ${styles['grw-modal-expanded']}`}`}
       >
         <ModalHeader tag="h4" toggle={this.cancel} close={buttons} className="bg-primary text-light">
