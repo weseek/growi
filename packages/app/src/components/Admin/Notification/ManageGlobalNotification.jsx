@@ -93,17 +93,19 @@ const ManageGlobalNotification = (props) => {
     try {
       if (globalNotificationId != null) {
         await updateGlobalNotification(requestParams);
+        router.push('/admin/notification');
         // await apiv3Put(`/notification-setting/global-notification/${globalNotificationId}`, requestParams);
       }
       else {
         await apiv3Post('/notification-setting/global-notification', requestParams);
+        router.push('/admin/notification');
       }
     }
     catch (err) {
       toastError(err);
       logger.error(err);
     }
-  }, [emailToSend, globalNotification, notifyType, slackChannelToSend, triggerEvents, triggerPath, updateGlobalNotification]);
+  }, [emailToSend, globalNotification, notifyType, router, slackChannelToSend, triggerEvents, triggerPath, updateGlobalNotification]);
 
 
   const { data: isMailerSetup } = useIsMailerSetup();
