@@ -292,7 +292,7 @@ class PageGrantService {
    * @param targetPath string of the target path
    * @returns ComparableDescendants
    */
-  private async generateComparableDescendants(targetPath: string, user, includeNotMigratedPages: boolean): Promise<ComparableDescendants> {
+  private async generateComparableDescendants(targetPath: string, user, includeNotMigratedPages = false): Promise<ComparableDescendants> {
     const Page = mongoose.model('Page') as unknown as PageModel;
     const UserGroupRelation = mongoose.model('UserGroupRelation') as any; // TODO: Typescriptize model
 
@@ -507,26 +507,37 @@ class PageGrantService {
 
   /**
    * see: https://dev.growi.org/635a314eac6bcd85cbf359fc
+   * @param targetPage
    * @param operator
    * @param {UpdateGrantInfo} updateGrantInfo
    * @returns {Promise<boolean>}
    */
-  async canOverwriteDescendants(operator: { _id: ObjectIdLike }, updateGrantInfo: UpdateGrantInfo): Promise<boolean> {
+  async canOverwriteDescendants(targetPage, operator: { _id: ObjectIdLike }, updateGrantInfo: UpdateGrantInfo): Promise<boolean> {
     const UserGroupRelationModel = mongoose.model('UserGroupRelation') as any; // TODO: TypeScriptize model
 
     // TODO: impl
-    const relations = await UserGroupRelationModel.findAllRelationForUser(operator);
+    const relatedGroupIds = await UserGroupRelationModel.findAllUserGroupIdsRelatedToUser(operator);
     const operatorGrantInfo = {
       userId: operator._id,
-      userGroupIds: new Set<ObjectIdLike>(relations.map(r => r.relatedGroup._id)),
+      userGroupIds: new Set<ObjectIdLike>(relatedGroupIds),
     };
-    // TODO:
-    //   - find all descendant pages
-    //   - merge grant info of them
+
+    const comparableDescendants = await this.generateComparableDescendants(targetPage.path, operator);
+
+    const grantSet = new Set<PageGrant>();
+    if (comparableDescendants.isPublicExist) {
+      grantSet.add(PageGrant.GRANT_PUBLIC);
+    }
+    if (comparableDescendants.grantedUserIds.length > 0) {
+      grantSet.add(PageGrant.GRANT_OWNER);
+    }
+    if (comparableDescendants.grantedGroupIds.length > 0) {
+      grantSet.add(PageGrant.GRANT_USER_GROUP);
+    }
     const descendantPagesGrantInfo = {
-      grantSet: new Set([1, 4, 5]),
-      grantedUserIds: new Set(['', '']), // only me users
-      grantedUserGroupIds: new Set(['', '']), // user groups
+      grantSet,
+      grantedUserIds: new Set(comparableDescendants.grantedUserIds), // only me users of descendant pages
+      grantedUserGroupIds: new Set(comparableDescendants.grantedGroupIds), // user groups of descendant pages
     };
 
     return this.calcCanOverwriteDescendants(operatorGrantInfo, updateGrantInfo, descendantPagesGrantInfo);
@@ -542,8 +553,10 @@ class PageGrantService {
     }
 
     if (descendantPagesGrantInfo.grantSet.has(PageGrant.GRANT_USER_GROUP)) {
-      // eslint-disable-next-line max-len
-      const isOtherFamilyGroupExist = excludeTestIdsFromTargetIds([...operatorGrantInfo.userGroupIds], [...descendantPagesGrantInfo.grantedUserGroupIds]).length > 0;
+      const isOtherFamilyGroupExist = excludeTestIdsFromTargetIds(
+        [...operatorGrantInfo.userGroupIds], [...descendantPagesGrantInfo.grantedUserGroupIds],
+      ).length > 0;
+
       if (isOtherFamilyGroupExist) {
         return false;
       }
@@ -555,10 +568,6 @@ class PageGrantService {
   private calcCanOverwriteDescendants(
       operatorGrantInfo: OperatorGrantInfo, updateGrantInfo: UpdateGrantInfo, descendantPagesGrantInfo: DescendantPagesGrantInfo,
   ): boolean {
-    // -- preprocess **not in this method**
-    // - Run isGrantNormalized for ancestors
-    //   - isGrantNormalized for descendants is unnecessary since it will overwrite all the descendants
-
     // 1. check is tree GRANTED and it returns true when GRANTED
     //   - GRANTED is the tree with all pages granted by the operator
     const isAllDescendantsGranted = this.calcIsAllDescendantsGrantedByOperator(operatorGrantInfo, descendantPagesGrantInfo);
