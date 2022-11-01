@@ -3,12 +3,8 @@ import { useCallback } from 'react';
 import useSWR, { SWRResponse } from 'swr';
 
 import { apiv3Get, apiv3Put } from '~/client/util/apiv3-client';
+import { updateConfigMethodForAdmin } from '~/interfaces/admin';
 import { IResLayoutSetting } from '~/interfaces/customize';
-
-interface updateConfigMethodForAdmin<T> {
-  update: (arg: T) => void
-}
-
 
 export const useSWRxLayoutSetting = (): SWRResponse<IResLayoutSetting, Error> & updateConfigMethodForAdmin<IResLayoutSetting> => {
 
