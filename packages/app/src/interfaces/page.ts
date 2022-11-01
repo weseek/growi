@@ -40,7 +40,7 @@ export const PageGrant = {
   GRANT_SPECIFIED: 3, // DEPRECATED
   GRANT_OWNER: 4,
   GRANT_USER_GROUP: 5,
-};
+} as const;
 export type PageGrant = typeof PageGrant[keyof typeof PageGrant];
 
 export type IPageHasId = IPage & HasObjectId;
