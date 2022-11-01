@@ -69,7 +69,7 @@ type Props = {
 
 const ShareLinkList = (props: Props): JSX.Element => {
 
-  const { t } = useTranslation();
+  const { t } = useTranslation('commons');
 
   function renderShareLinks() {
     return (
