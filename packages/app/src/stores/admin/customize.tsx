@@ -1,6 +1,7 @@
 import { useCallback } from 'react';
 
-import useSWR, { SWRResponse } from 'swr';
+import { SWRResponse } from 'swr';
+import useSWRImmutable from 'swr/immutable';
 
 import { apiv3Get, apiv3Put } from '~/client/util/apiv3-client';
 import { updateConfigMethodForAdmin } from '~/interfaces/admin';
@@ -13,7 +14,7 @@ export const useSWRxLayoutSetting = (): SWRResponse<IResLayoutSetting, Error> & 
     return res.data;
   }, []);
 
-  const swrResponse = useSWR('/customize-setting/layout', fetcher);
+  const swrResponse = useSWRImmutable('/customize-setting/layout', fetcher);
 
   const update = useCallback(async(layoutSetting: IResLayoutSetting) => {
     await apiv3Put('/customize-setting/layout', layoutSetting);
