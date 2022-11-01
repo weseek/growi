@@ -32,7 +32,7 @@ const ManageGlobalNotification = (props: Props): JSX.Element => {
   const [emailToSend, setEmailToSend] = useState('');
   const [slackChannelToSend, setSlackChannelToSend] = useState('');
   const [triggerEvents, setTriggerEvents] = useState(new Set());
-  const { data: globalNotificationData, update: updateGlobalNotification } = useSWRxGlobalNotification(props.notificationId || '');
+  const { data: globalNotificationData, update: updateGlobalNotification } = useSWRxGlobalNotification(props.globalNotificationId || '');
   const globalNotification = useMemo(() => globalNotificationData?.globalNotification, [globalNotificationData?.globalNotification]);
 
   const router = useRouter();
