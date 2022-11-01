@@ -29,7 +29,7 @@ const ShareLink = (): JSX.Element => {
     try {
       const res = await apiv3Delete('/share-links/', { relatedPage: currentPageId });
       const count = res.data.n;
-      toastSuccess(t('toaster.remove_share_link', { count }));
+      toastSuccess(t('toaster.remove_share_link', { count, ns: 'commons' }));
       mutate();
     }
     catch (err) {

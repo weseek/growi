@@ -70,7 +70,7 @@ const ShareLinkSetting = (props: ShareLinkSettingProps) => {
     try {
       const res = await apiv3Delete('/share-links/all');
       const { deletedCount } = res.data;
-      toastSuccess(t('toaster.remove_share_link', { count: deletedCount }));
+      toastSuccess(t('toaster.remove_share_link', { count: deletedCount, ns: 'commons' }));
     }
     catch (err) {
       toastError(err);
