@@ -3,7 +3,6 @@ import useSWRImmutable from 'swr/immutable';
 
 
 import { apiv3Get, apiv3Put } from '../client/util/apiv3-client';
-// import { IBookmarkInfo } from '../interfaces/bookmark-info';
 
 
 type Util = {
