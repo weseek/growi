@@ -5,7 +5,7 @@ import {
 import { useStaticSWR } from './use-static-swr';
 
 // omit mutate from swr response because context shouldn't be changed
-type ContextSWRResponse<Data = any, Error = any> = Omit<SWRResponse<Data, Error>, 'mutate'>
+export type ContextSWRResponse<Data = any, Error = any> = Omit<SWRResponse<Data, Error>, 'mutate'>
 
 export function useContextSWR<Data, Error>(key: Key): ContextSWRResponse<Data, Error>;
 export function useContextSWR<Data, Error>(key: Key, data: Data | undefined): ContextSWRResponse<Data, Error>;
