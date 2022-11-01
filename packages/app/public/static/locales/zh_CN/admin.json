@@ -285,7 +285,8 @@
 		"delete_notification_pattern": "Delete notification pattern",
 		"delete_notification_pattern_desc1": "Delete Path: {{path}}",
 		"delete_notification_pattern_desc2": "Once deleted, it cannot be recovered",
-		"toggle_notification": "Updated setting of {{path}}"
+		"toggle_notification": "Updated setting of {{path}}",
+    "not_found_global_notification_triggerid": "未找到全局通知 ID"
 	},
   "full_text_search_management": {
     "full_text_search_management": "全文搜索管理",
