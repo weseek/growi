@@ -3,21 +3,23 @@ import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 
 import CompleteUserRegistrationForm from '~/components/CompleteUserRegistrationForm';
 import { NoLoginLayout } from '~/components/Layout/NoLoginLayout';
+import { IUserRegistrationOrder } from '~/server/models/user-registration-order';
 
 import {
   getServerSideCommonProps, getNextI18NextConfig, useCustomTitle, CommonProps,
 } from './utils/commons';
 
 type Props = CommonProps & {
-  //
+  token: string
+  email: string
 }
 
 const UserActivationPage: NextPage<Props> = (props: Props) => {
   return (
     <NoLoginLayout title={useCustomTitle(props, 'GROWI')}>
       <CompleteUserRegistrationForm
-        token='token'
-        email='admin@example.com'
+        token={props.token}
+        email={props.email}
       />
     </NoLoginLayout>
   );
@@ -44,6 +46,12 @@ export const getServerSideProps: GetServerSideProps = async(context: GetServerSi
   }
 
   const props: Props = result.props as Props;
+
+  if (context.query.userRegistrationOrder != null) {
+    const userRegistrationOrder = context.query.userRegistrationOrder as unknown as IUserRegistrationOrder;
+    props.email = userRegistrationOrder.email;
+    props.token = userRegistrationOrder.token;
+  }
 
   await injectNextI18NextConfigurations(context, props, ['translation']);
 
