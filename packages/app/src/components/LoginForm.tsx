@@ -49,6 +49,10 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
   const [emailForRegister, setEmailForRegister] = useState('');
   const [passwordForRegister, setPasswordForRegister] = useState('');
   const [registerErrors, setRegisterErrors] = useState<IErrorV3[]>([]);
+  // For UserActivation
+  const [emailForActivationUser, setEmailForActivationUser] = useState('');
+  const [isSuccessToSendUserActivationEmail, setIsSuccessToSendUserActivationEmail] = useState(false);
+
 
   useEffect(() => {
     const { hash } = window.location;
@@ -261,6 +265,7 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
 
   const handleRegisterFormSubmit = useCallback(async(e, requestPath) => {
     e.preventDefault();
+    setIsSuccessToSendUserActivationEmail(false);
 
     const registerForm = {
       username: usernameForRegister,
@@ -272,6 +277,11 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
       const res = await apiv3Post(requestPath, { registerForm });
       const { redirectTo } = res.data;
       router.push(redirectTo ?? '/');
+
+      if (isEmailAuthenticationEnabled) {
+        setEmailForActivationUser(emailForRegister);
+        setIsSuccessToSendUserActivationEmail(true);
+      }
     }
     catch (err) {
       // Execute if error exists
@@ -280,7 +290,7 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
       }
     }
     return;
-  }, [emailForRegister, nameForRegister, passwordForRegister, router, usernameForRegister]);
+  }, [emailForRegister, nameForRegister, passwordForRegister, router, usernameForRegister, isEmailAuthenticationEnabled]);
 
   const resetRegisterErrors = useCallback(() => {
     if (registerErrors.length === 0) return;
@@ -327,6 +337,14 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
                   </span>
                 );
               })}
+            </p>
+          )
+        }
+
+        {
+          (isEmailAuthenticationEnabled && isSuccessToSendUserActivationEmail) && (
+            <p className="alert alert-success">
+              <span>{t('message.successfully_send_email_auth', { email: emailForActivationUser })}</span>
             </p>
           )
         }
@@ -452,9 +470,11 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
         </div>
       </React.Fragment>
     );
-  }, [handleRegisterFormSubmit, isEmailAuthenticationEnabled, isMailerSetup,
-      props.email, props.name, props.username,
-      registerErrors, registrationMode, registrationWhiteList, switchForm, t]);
+  }, [
+    handleRegisterFormSubmit, isEmailAuthenticationEnabled, isMailerSetup,
+    isSuccessToSendUserActivationEmail, props.email, props.name, props.username,
+    registerErrors, registrationMode, registrationWhiteList, emailForActivationUser, switchForm, t,
+  ]);
 
   return (
     <div className="noLogin-dialog mx-auto" id="noLogin-dialog">

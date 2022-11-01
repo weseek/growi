@@ -1,8 +1,10 @@
 import path from 'path';
 
 import { ErrorV3 } from '@growi/core';
-import * as express from 'express';
+import { format, subSeconds } from 'date-fns';
 import { body, validationResult } from 'express-validator';
+
+import UserRegistrationOrder from '~/server/models/user-registration-order';
 
 const PASSOWRD_MINIMUM_NUMBER = 8;
 // validation rules for complete registration form
@@ -136,5 +138,81 @@ export const completeRegistrationAction = (crowi) => {
         return res.apiv3Err(new ErrorV3('Email authentication configuration is disabled', 'registration-failed'), 403);
       }
     });
+  };
+};
+
+// validation rules for registration form when email authentication enabled
+export const registerRules = () => {
+  return [
+    body('registerForm.email')
+      .isEmail()
+      .withMessage('Email format is invalid.')
+      .exists()
+      .withMessage('Email field is required.'),
+  ];
+};
+
+// middleware to validate register form if email authentication enabled
+export const validateRegisterForm = (req, res, next) => {
+  const errors = validationResult(req);
+  if (errors.isEmpty()) {
+    return next();
+  }
+
+  const extractedErrors: string[] = [];
+  errors.array().map(err => extractedErrors.push(err.msg));
+
+  return res.apiv3Err(extractedErrors, 400);
+};
+
+async function makeRegistrationEmailToken(email, crowi) {
+  const {
+    configManager,
+    mailService,
+    localeDir,
+    appService,
+  } = crowi;
+
+  const grobalLang = configManager.getConfig('crowi', 'app:globalLang');
+  const i18n = grobalLang;
+  const appUrl = appService.getSiteUrl();
+
+  const userRegistrationOrder = await UserRegistrationOrder.createUserRegistrationOrder(email);
+  const grwTzoffsetSec = crowi.appService.getTzoffset() * 60;
+  const expiredAt = subSeconds(userRegistrationOrder.expiredAt, grwTzoffsetSec);
+  const formattedExpiredAt = format(expiredAt, 'yyyy/MM/dd HH:mm');
+  const url = new URL(`/user-activation/${userRegistrationOrder.token}`, appUrl);
+  const oneTimeUrl = url.href;
+  const txtFileName = 'userActivation';
+
+  return mailService.send({
+    to: email,
+    subject: '[GROWI] User Activation',
+    template: path.join(localeDir, `${i18n}/notifications/${txtFileName}.txt`),
+    vars: {
+      appTitle: appService.getAppTitle(),
+      email,
+      expiredAt: formattedExpiredAt,
+      url: oneTimeUrl,
+    },
+  });
+}
+
+export const registerAction = (crowi) => {
+  const User = crowi.model('User');
+
+  return async function(req, res) {
+    const registerForm = req.body.registerForm || {};
+    const email = registerForm.email;
+    const isRegisterableEmail = await User.isRegisterableEmail(email);
+
+    if (!isRegisterableEmail) {
+      req.body.registerForm.email = email;
+      return res.apiv3Err(['message.email_address_is_already_registered'], 400);
+    }
+
+    makeRegistrationEmailToken(email, crowi);
+
+    return res.apiv3({ redirectTo: '/login#register' });
   };
 };
