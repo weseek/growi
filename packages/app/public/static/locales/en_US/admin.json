@@ -276,7 +276,8 @@
     "delete_notification_pattern": "Delete notification pattern",
     "delete_notification_pattern_desc1": "Delete Path: {{path}}",
     "delete_notification_pattern_desc2": "Once deleted, it cannot be recovered",
-    "toggle_notification": "Updated setting of {{path}}"
+    "toggle_notification": "Updated setting of {{path}}",
+    "not_found_global_notification_triggerid": "Not found the global notification id"
   },
   "mailer_setup_required":"<a href='/admin/app'>Email settings</a> are required to send.",
   "admin_top": {
