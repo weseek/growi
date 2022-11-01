@@ -1,7 +1,6 @@
 import React, { useCallback, memo } from 'react';
 
 import { createValidator } from '@growi/codemirror-textlint';
-import { ConsoleFormattedStream } from 'browser-bunyan';
 import { commands } from 'codemirror';
 import { JSHINT } from 'jshint';
 import * as loadCssSync from 'load-css-file';
