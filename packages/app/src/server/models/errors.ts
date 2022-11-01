@@ -18,4 +18,4 @@ export class PathAlreadyExistsError extends ExtensibleCustomError {
 export class NullUsernameToBeRegisteredError extends ExtensibleCustomError {}
 
 // Invalid Parent bookmark folder error
-export class ErrorInvalidParentBookmarkFolder extends ExtensibleCustomError {}
+export class InvalidParentBookmarkFolderError extends ExtensibleCustomError {}

@@ -8,7 +8,7 @@ import {
 import loggerFactory from '../../utils/logger';
 import { getOrCreateModel } from '../util/mongoose-utils';
 
-import { ErrorInvalidParentBookmarkFolder } from './errors';
+import { InvalidParentBookmarkFolderError } from './errors';
 
 const logger = loggerFactory('growi:models:bookmark-folder');
 
@@ -52,8 +52,8 @@ bookmarkFolderSchema.statics.createByParameters = async function(params: IBookma
     const isParentFolderIdValid = isValidObjectId(parent);
     const parentFolder = await this.findById(parent);
 
-    if (!isParentFolderIdValid || parentFolder == null) {
-      throw new ErrorInvalidParentBookmarkFolder("Parent folder id is invalid or parent folder doesn't exists");
+    if (parentFolder != null && !isParentFolderIdValid) {
+      throw new InvalidParentBookmarkFolderError("Parent folder id is invalid or parent folder doesn't exists");
     }
     bookmarkFolder = await this.create({ name, owner, parent:  parentFolder?._id }) as unknown as BookmarkFolderDocument;
   }
