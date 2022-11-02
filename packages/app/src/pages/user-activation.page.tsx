@@ -4,7 +4,7 @@ import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import CompleteUserRegistrationForm from '~/components/CompleteUserRegistrationForm';
 import { NoLoginLayout } from '~/components/Layout/NoLoginLayout';
 import type { CrowiRequest } from '~/interfaces/crowi-request';
-import { userActivationErrorCode } from '~/interfaces/errors/user-activation';
+import type { UserActivationErrorCode } from '~/interfaces/errors/user-activation';
 import { IUserRegistrationOrder } from '~/server/models/user-registration-order';
 
 import {
@@ -14,7 +14,7 @@ import {
 type Props = CommonProps & {
   token: string
   email: string
-  errorCode?: userActivationErrorCode
+  errorCode?: UserActivationErrorCode
   isEmailAuthenticationEnabled: boolean
 }
 
@@ -61,7 +61,7 @@ export const getServerSideProps: GetServerSideProps = async(context: GetServerSi
   }
 
   if (typeof context.query.errorCode === 'string') {
-    props.errorCode = context.query.errorCode as userActivationErrorCode;
+    props.errorCode = context.query.errorCode as UserActivationErrorCode;
   }
 
   props.isEmailAuthenticationEnabled = req.crowi.configManager.getConfig('crowi', 'security:passport-local:isEmailAuthenticationEnabled');

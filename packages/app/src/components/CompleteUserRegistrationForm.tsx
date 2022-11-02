@@ -3,14 +3,14 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { useTranslation } from 'next-i18next';
 
 import { apiv3Get, apiv3Post } from '~/client/util/apiv3-client';
-import { userActivationErrorCode } from '~/interfaces/errors/user-activation';
+import { UserActivationErrorCode } from '~/interfaces/errors/user-activation';
 
 import { toastSuccess, toastError } from '../client/util/apiNotification';
 
 interface Props {
   email: string,
   token: string,
-  errorCode?: userActivationErrorCode,
+  errorCode?: UserActivationErrorCode,
   isEmailAuthenticationEnabled: boolean,
 }
 
@@ -70,13 +70,13 @@ const CompleteUserRegistrationForm: React.FC<Props> = (props: Props) => {
         <div className="row mx-0">
           <div className="col-12">
 
-            { (errorCode != null && errorCode === userActivationErrorCode.TOKEN_NOT_FOUND) && (
+            { (errorCode != null && errorCode === UserActivationErrorCode.TOKEN_NOT_FOUND) && (
               <p className="alert alert-danger">
                 <span>Token not found</span>
               </p>
             )}
 
-            { (errorCode != null && errorCode === userActivationErrorCode.USER_REGISTRATION_ORDER_IS_NOT_APPROPRIATE) && (
+            { (errorCode != null && errorCode === UserActivationErrorCode.USER_REGISTRATION_ORDER_IS_NOT_APPROPRIATE) && (
               <p className="alert alert-danger">
                 <span>{t('message.incorrect_token_or_expired_url')}</span>
               </p>
