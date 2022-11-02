@@ -11,11 +11,11 @@ import { IPageHasId, IPageToDeleteWithMeta } from '~/interfaces/page';
 import { AncestorsChildrenResult, RootPageResult, TargetAndAncestors } from '~/interfaces/page-listing-results';
 import { OnDuplicatedFunction, OnDeletedFunction } from '~/interfaces/ui';
 import { SocketEventName, UpdateDescCountData, UpdateDescCountRawData } from '~/interfaces/websocket';
-import { useCurrentPagePath, useIsEnabledAttachTitleHeader } from '~/stores/context';
+import { useIsEnabledAttachTitleHeader } from '~/stores/context';
 import {
   IPageForPageDuplicateModal, usePageDuplicateModal, usePageDeleteModal,
 } from '~/stores/modal';
-import { useSWRxCurrentPage } from '~/stores/page';
+import { useCurrentPagePath, useSWRxCurrentPage } from '~/stores/page';
 import {
   usePageTreeTermManager, useSWRxPageAncestorsChildren, useSWRxRootPage, useDescendantsPageListForCurrentPathTermManager,
 } from '~/stores/page-listing';

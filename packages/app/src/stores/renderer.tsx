@@ -11,8 +11,10 @@ import {
 
 
 import {
-  useCurrentPagePath, useCurrentPageTocNode, useRendererConfig,
+  useRendererConfig,
 } from './context';
+import { useCurrentPagePath } from './page';
+import { useCurrentPageTocNode } from './ui';
 
 interface ReactMarkdownOptionsGenerator {
   (config: RendererConfig): RendererOptions
