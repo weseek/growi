@@ -3,6 +3,7 @@ import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 
 import CompleteUserRegistrationForm from '~/components/CompleteUserRegistrationForm';
 import { NoLoginLayout } from '~/components/Layout/NoLoginLayout';
+import type { CrowiRequest } from '~/interfaces/crowi-request';
 import { IUserRegistrationOrder } from '~/server/models/user-registration-order';
 
 import {
@@ -12,6 +13,7 @@ import {
 type Props = CommonProps & {
   token: string
   email: string
+  isEmailAuthenticationEnabled: boolean
 }
 
 const UserActivationPage: NextPage<Props> = (props: Props) => {
@@ -20,6 +22,7 @@ const UserActivationPage: NextPage<Props> = (props: Props) => {
       <CompleteUserRegistrationForm
         token={props.token}
         email={props.email}
+        isEmailAuthenticationEnabled={props.isEmailAuthenticationEnabled}
       />
     </NoLoginLayout>
   );
@@ -38,6 +41,7 @@ async function injectNextI18NextConfigurations(context: GetServerSidePropsContex
 
 export const getServerSideProps: GetServerSideProps = async(context: GetServerSidePropsContext) => {
   const result = await getServerSideCommonProps(context);
+  const req: CrowiRequest = context.req as CrowiRequest;
 
   // check for presence
   // see: https://github.com/vercel/next.js/issues/19271#issuecomment-730006862
@@ -52,6 +56,8 @@ export const getServerSideProps: GetServerSideProps = async(context: GetServerSi
     props.email = userRegistrationOrder.email;
     props.token = userRegistrationOrder.token;
   }
+
+  props.isEmailAuthenticationEnabled = req.crowi.configManager.getConfig('crowi', 'security:passport-local:isEmailAuthenticationEnabled');
 
   await injectNextI18NextConfigurations(context, props, ['translation']);
 

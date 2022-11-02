@@ -11,6 +11,7 @@ interface Props {
   inputs?: any,
   email: string,
   token: string,
+  isEmailAuthenticationEnabled: boolean,
 }
 
 const CompleteUserRegistrationForm: React.FC<Props> = (props: Props) => {
@@ -72,6 +73,13 @@ const CompleteUserRegistrationForm: React.FC<Props> = (props: Props) => {
       <div className="noLogin-dialog mx-auto" id="noLogin-dialog">
         <div className="row mx-0">
           <div className="col-12">
+
+            { !props.isEmailAuthenticationEnabled && (
+              <p className="alert alert-danger">
+                <span>{t('message.email_authentication_is_not_enabled')}</span>
+              </p>
+            )}
+
             <fieldset id="registration-form" disabled={disableForm}>
               <input type="hidden" name="token" value={token} />
               <div className="input-group">
