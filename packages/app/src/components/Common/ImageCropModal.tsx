@@ -47,7 +47,8 @@ const ImageCropModal: FC<Props> = (props: Props) => {
   const [imageRef, setImageRef] = useState<HTMLImageElement | null>(null);
   const [cropOptions, setCropOtions] = useState<CropOptions>(null);
   const [isCropImage, setIsCropImage] = useState<boolean>(true);
-  const { t } = useTranslation();
+  const { t } = useTranslation('commons');
+
   const reset = useCallback(() => {
     if (imageRef) {
       // Some SVG files may not have width and height properties, causing the render size to be 0x0
@@ -137,7 +138,7 @@ const ImageCropModal: FC<Props> = (props: Props) => {
   return (
     <Modal isOpen={isShow} toggle={onModalCloseHandler}>
       <ModalHeader tag="h4" toggle={onModalCloseHandler} className="bg-info text-light">
-        {t('crop_image_modal.image_crop', { ns: 'commons' })}
+        {t('crop_image_modal.image_crop')}
       </ModalHeader>
       <ModalBody className="my-4">
         {
@@ -157,7 +158,7 @@ const ImageCropModal: FC<Props> = (props: Props) => {
       </ModalBody>
       <ModalFooter>
         <button type="button" className="btn btn-outline-danger rounded-pill mr-auto" disabled={!isCropImage} onClick={reset}>
-          {t('crop_image_modal.reset', { ns: 'commons' })}
+          {t('crop_image_modal.reset')}
         </button>
         { !showCropOption && (
           <div className="mr-auto">
@@ -170,17 +171,17 @@ const ImageCropModal: FC<Props> = (props: Props) => {
                 onChange={() => { setIsCropImage(!isCropImage) }}
               />
               <label className="custom-control-label" htmlFor="cropImageOption">
-                { t('crop_image_modal.image_crop', { ns: 'commons' }) }
+                { t('crop_image_modal.image_crop') }
               </label>
             </div>
           </div>
         )
         }
         <button type="button" className="btn btn-outline-secondary rounded-pill mr-2" onClick={onModalCloseHandler}>
-          {t('crop_image_modal.cancel', { ns: 'commons' })}
+          {t('crop_image_modal.cancel')}
         </button>
         <button type="button" className="btn btn-outline-primary rounded-pill" onClick={processAndSaveImage}>
-          { isCropImage ? t('crop_image_modal.crop', { ns: 'commons' }) : t('crop_image_modal.save', { ns: 'commons' }) }
+          { isCropImage ? t('crop_image_modal.crop') : t('crop_image_modal.save') }
         </button>
       </ModalFooter>
     </Modal>

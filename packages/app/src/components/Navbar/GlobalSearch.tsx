@@ -22,7 +22,7 @@ export type GlobalSearchProps = {
 }
 
 export const GlobalSearch = (props: GlobalSearchProps): JSX.Element => {
-  const { t } = useTranslation();
+  const { t } = useTranslation('commons');
 
   const { dropup } = props;
 
@@ -67,8 +67,8 @@ export const GlobalSearch = (props: GlobalSearchProps): JSX.Element => {
   }, [currentPagePath, isScopeChildren, router, text]);
 
   const scopeLabel = isScopeChildren
-    ? t('header_search_box.label.This tree', { ns: 'commons' })
-    : t('header_search_box.label.All pages', { ns: 'commons' });
+    ? t('header_search_box.label.This tree')
+    : t('header_search_box.label.All pages');
 
   const isIndicatorShown = !isFocused && (text.length === 0);
 
@@ -98,7 +98,7 @@ export const GlobalSearch = (props: GlobalSearchProps): JSX.Element => {
                 globalSearchFormRef.current?.focus();
               }}
             >
-              { t('header_search_box.item_label.All pages', { ns: 'commons' }) }
+              { t('header_search_box.item_label.All pages') }
             </button>
             <button
               data-tesid="search-current-tree"
@@ -109,7 +109,7 @@ export const GlobalSearch = (props: GlobalSearchProps): JSX.Element => {
                 globalSearchFormRef.current?.focus();
               }}
             >
-              { t('header_search_box.item_label.This tree', { ns: 'commons' }) }
+              { t('header_search_box.item_label.This tree') }
             </button>
           </div>
         </div>
