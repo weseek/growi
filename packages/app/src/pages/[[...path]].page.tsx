@@ -58,20 +58,19 @@ import DisplaySwitcher from '../components/Page/DisplaySwitcher';
 import {
   useCurrentUser, useCurrentPagePath,
   useIsLatestRevision,
-  useIsForbidden, useIsNotFound, useIsTrashPage, useIsSharedUser,
+  useIsForbidden, useIsNotFound, useIsSharedUser,
   useIsEnabledStaleNotification, useIsIdenticalPath,
   useIsSearchServiceConfigured, useIsSearchServiceReachable, useDisableLinkSharing,
   useDrawioUri, useHackmdUri, useDefaultIndentSize, useIsIndentSizeForced,
-  useIsAclEnabled, useIsUserPage, useIsSearchPage,
+  useIsAclEnabled, useIsSearchPage,
   useCsrfToken, useIsSearchScopeChildrenAsDefault, useCurrentPageId, useCurrentPathname,
   useIsSlackConfigured, useRendererConfig, useEditingMarkdown,
-  useEditorConfig, useIsAllReplyShown, useIsUploadableFile, useIsUploadableImage, useLayoutSetting, useCustomizedLogoSrc,
+  useEditorConfig, useIsAllReplyShown, useIsUploadableFile, useIsUploadableImage, useCustomizedLogoSrc,
 } from '../stores/context';
 
 import {
   CommonProps, getNextI18NextConfig, getServerSideCommonProps, useCustomTitle,
 } from './utils/commons';
-import { calcIsContainerFluid } from './utils/layout';
 // import { useCurrentPageSWR } from '../stores/page';
 
 
@@ -239,11 +238,9 @@ const GrowiPage: NextPage<Props> = (props: Props) => {
   const pagePath = pageWithMeta?.data.path ?? (!_isPermalink(props.currentPathname) ? props.currentPathname : undefined);
 
   useCurrentPageId(pageId ?? null);
-  useIsUserPage(pagePath != null && isUserPage(pagePath));
   // useIsNotCreatable(props.isForbidden || !isCreatablePage(pagePath)); // TODO: need to include props.isIdentical
   useCurrentPagePath(pagePath);
   useCurrentPathname(props.currentPathname);
-  useIsTrashPage(pagePath != null && _isTrashPage(pagePath));
 
   useSWRxCurrentPage(undefined, pageWithMeta?.data ?? null); // store initial data
   useEditingMarkdown(pageWithMeta?.data.revision?.body ?? '');
@@ -252,7 +249,6 @@ const GrowiPage: NextPage<Props> = (props: Props) => {
   const { data: grantData } = useSWRxIsGrantNormalized(pageId);
   const { mutate: mutateSelectedGrant } = useSelectedGrant();
 
-  const { data: layoutSetting } = useLayoutSetting({ isContainerFluid: props.isContainerFluid });
   const { getClassNamesByEditorMode } = useEditorMode();
 
   const shouldRenderPutbackPageModal = pageWithMeta != null
@@ -283,8 +279,7 @@ const GrowiPage: NextPage<Props> = (props: Props) => {
     ? null
     : dataPageInfo.expandContentWidth;
   const isContainerFluidDefault = props.isContainerFluid;
-  const isContainerFluidAdmin = layoutSetting?.isContainerFluid;
-  const isContainerFluid = calcIsContainerFluid(isContainerFluidEachPage, isContainerFluidDefault, isContainerFluidAdmin);
+  const isContainerFluid = isContainerFluidEachPage ?? isContainerFluidDefault;
 
   return (
     <>

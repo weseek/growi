@@ -86,6 +86,10 @@
       "restricted": "制限 (登録完了には管理者の承認が必要)",
       "closed": "非公開 (登録には管理者による招待が必要)"
     },
+    "share_link_management": "共有リンク管理",
+    "No_share_links":"共有リンクが存在しません",
+    "share_link_notice":"共有リンクを全て削除します",
+    "delete_all_share_links":"全ての共有リンクを削除します",
     "share_link_rights": "シェアリンクの権限",
     "enable_link_sharing": "リンクのシェアを許可",
     "all_share_links": "全てのシェアリンク",
@@ -108,7 +112,6 @@
       "email_authentication": "ユーザー登録時のメール認証",
       "enable_email_authentication": "メール認証を有効にする",
       "enable_email_authentication_desc": "ユーザー登録時にメール認証を行います。",
-      "please_enable_mailer": "メール認証を有効にするには、メール設定を完了させてください。",
       "need_complete_mail_setting_warning": "以下の機能を使えるようにするには、メール設定を完了させてください。"
     },
     "ldap": {
@@ -276,7 +279,8 @@
     "delete_notification_pattern": "通知パターンを削除しました。",
     "delete_notification_pattern_desc1": "Path: {{path}} を削除します。",
     "delete_notification_pattern_desc2": "Once deleted, it cannot be recovered",
-    "toggle_notification": "{{path}}の通知設定を変更しました"
+    "toggle_notification": "{{path}}の通知設定を変更しました",
+    "not_found_global_notification_triggerid": "アクセス先の通知設定は見つかりませんでした"
   },
   "full_text_search_management": {
     "full_text_search_management": "全文検索管理",
@@ -1034,5 +1038,15 @@
     "ADMIN_SEARCH_CONNECTION": "Elasticsearch の再接続の試行",
     "ADMIN_SEARCH_INDICES_NORMALIZE": "Elasticsearch のインデックスの正規化",
     "ADMIN_SEARCH_INDICES_REBUILD": "Elasticsearch のインデックスのリビルド"
+  },
+  "toaster": {
+    "give_user_admin": "{{username}}を管理者に設定しました",
+    "remove_user_admin": "{{username}}を管理者から外しました",
+    "activate_user_success": "{{username}}を有効化しました",
+    "deactivate_user_success": "{{username}}を無効化しました",
+    "remove_user_success": "{{username}}を削除しました",
+    "remove_external_user_success": "{{accountId}}を削除しました",
+    "switch_disable_link_sharing_success": "共有リンクの設定を変更しました",
+    "failed_to_reset_password":"パスワードのリセットに失敗しました"
   }
 }

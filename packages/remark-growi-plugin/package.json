@@ -1,6 +1,6 @@
 {
   "name": "@growi/remark-growi-plugin",
-  "version": "6.0.0-RC.7",
+  "version": "6.0.0-RC.8",
   "description": "remark plugin to support GROWI plugin (forked from remark-directive@2.0.1)",
   "license": "MIT",
   "keywords": [

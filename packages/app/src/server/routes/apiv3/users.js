@@ -828,7 +828,7 @@ module.exports = (crowi) => {
    *                      type: object
    *                      description: Target user
    */
-  router.put('/reset-password', loginRequiredStrictly, adminRequired, async(req, res) => {
+  router.put('/reset-password', loginRequiredStrictly, adminRequired, addActivity, async(req, res) => {
     const { id } = req.body;
 
     try {

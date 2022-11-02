@@ -3,6 +3,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { isPopulated, IUser } from '@growi/core';
 import { useTranslation } from 'next-i18next';
 import dynamic from 'next/dynamic';
+import { useRouter } from 'next/router';
 import { DropdownItem } from 'reactstrap';
 
 import { exportAsMarkdown } from '~/client/services/page-operation';
@@ -36,12 +37,12 @@ import PresentationIcon from '../Icons/PresentationIcon';
 import ShareLinkIcon from '../Icons/ShareLinkIcon';
 import { Skelton } from '../Skelton';
 
+import type { AuthorInfoProps } from './AuthorInfo';
 import { GrowiSubNavigation } from './GrowiSubNavigation';
-import { SubNavButtonsProps } from './SubNavButtons';
+import type { SubNavButtonsProps } from './SubNavButtons';
 
 import AuthorInfoStyles from './AuthorInfo.module.scss';
 import PageEditorModeManagerStyles from './PageEditorModeManager.module.scss';
-import { useRouter } from 'next/router';
 
 
 const AuthorInfoSkelton = () => <Skelton additionalClass={`${AuthorInfoStyles['grw-author-info-skelton']} py-1`} />;
@@ -57,7 +58,7 @@ const SubNavButtons = dynamic<SubNavButtonsProps>(
   () => import('./SubNavButtons').then(mod => mod.SubNavButtons),
   { ssr: false, loading: () => <></> },
 );
-const AuthorInfo = dynamic(() => import('./AuthorInfo'), {
+const AuthorInfo = dynamic<AuthorInfoProps>(() => import('./AuthorInfo').then(mod => mod.AuthorInfo), {
   ssr: false,
   loading: AuthorInfoSkelton,
 });
@@ -277,25 +278,21 @@ const GrowiContextualSubNavigation = (props: GrowiContextualSubNavigationProps):
     if (currentPathname != null) {
       router.push(currentPathname);
     }
-  }, []);
+  }, [currentPathname, router]);
 
   const duplicateItemClickedHandler = useCallback(async(page: IPageForPageDuplicateModal) => {
     const duplicatedHandler: OnDuplicatedFunction = (fromPath, toPath) => {
       router.push(toPath);
     };
     openDuplicateModal(page, { onDuplicated: duplicatedHandler });
-  }, [openDuplicateModal]);
+  }, [openDuplicateModal, router]);
 
   const renameItemClickedHandler = useCallback(async(page: IPageToRenameWithMeta<IPageInfoForEntity>) => {
     const renamedHandler: OnRenamedFunction = () => {
-      if (page.data._id !== null) {
-        router.push(`/${page.data._id}`);
-        return;
-      }
       reload();
     };
     openRenameModal(page, { onRenamed: renamedHandler });
-  }, [openRenameModal]);
+  }, [openRenameModal, reload]);
 
   const deleteItemClickedHandler = useCallback((pageWithMeta: IPageWithMeta) => {
     const deletedHandler: OnDeletedFunction = (pathOrPathsToDelete, isRecursively, isCompletely) => {
@@ -314,7 +311,7 @@ const GrowiContextualSubNavigation = (props: GrowiContextualSubNavigationProps):
       }
     };
     openDeleteModal([pageWithMeta], { onDeleted: deletedHandler });
-  }, [openDeleteModal]);
+  }, [openDeleteModal, reload, router]);
 
   const templateMenuItemClickHandler = useCallback(() => {
     setIsPageTempleteModalShown(true);
@@ -381,7 +378,7 @@ const GrowiContextualSubNavigation = (props: GrowiContextualSubNavigationProps):
             <ul className={`${AuthorInfoStyles['grw-author-info']} text-nowrap border-left d-none d-lg-block d-edit-none py-2 pl-4 mb-0 ml-3`}>
               <li className="pb-1">
                 { currentPage != null
-                  ? <AuthorInfo user={currentPage.creator as IUser} date={currentPage.createdAt} locate="subnav" />
+                  ? <AuthorInfo user={currentPage.creator as IUser} date={currentPage.createdAt} mode="create" locate="subnav" />
                   : <AuthorInfoSkelton />
                 }
               </li>

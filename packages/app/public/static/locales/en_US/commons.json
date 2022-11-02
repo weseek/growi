@@ -6,12 +6,26 @@
     "create_succeeded": "Succeeded to create {{target}}",
     "create_failed": "Failed to create {{target}}",
     "update_successed": "Succeeded to update {{target}}",
-    "update_failed": "Failed to update {{target}}"
+    "update_failed": "Failed to update {{target}}",
+
+    "remove_share_link_success": "Succeeded to remove {{shareLinkId}}",
+    "remove_share_link": "Succeeded to remove {{count}} share links"
   },
   "alert": {
-    "siteUrl_is_not_set": "'Site URL' is NOT set. Set it from the {{link}}"
+    "siteUrl_is_not_set": "'Site URL' is NOT set. Set it from the {{link}}",
+    "please_enable_mailer": "Please setup mailer first."
   },
   "headers": {
     "app_settings": "App Settings"
+  },
+
+  "share_links": {
+    "Share Link": "Share Link",
+    "Page Path": "Page Path",
+    "expire": "Expiration",
+    "description": "Description"
+  },
+  "not_found_page": {
+    "page_not_exist": "This page does not exist.",
   }
 }

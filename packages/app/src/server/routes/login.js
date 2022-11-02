@@ -1,5 +1,6 @@
 import { SupportedAction } from '~/interfaces/activity';
 import loggerFactory from '~/utils/logger';
+
 // disable all of linting
 // because this file is a deprecated legacy of Crowi
 
@@ -147,6 +148,13 @@ module.exports = function(crowi, app) {
         return res.apiv3Err(errors, 400);
       }
 
+      const registrationMode = configManager.getConfig('crowi', 'security:registrationMode');
+      const isMailerSetup = mailService.isMailerSetup ?? false;
+
+      if (!isMailerSetup && registrationMode === aclService.labels.SECURITY_REGISTRATION_MODE_RESTRICTED) {
+        return res.apiv3Err(['email_settings_is_not_setup'], 403);
+      }
+
       User.createUserByEmailAndPassword(name, username, email, password, undefined, async(err, userData) => {
         if (err) {
           const errors = [];
@@ -159,7 +167,7 @@ module.exports = function(crowi, app) {
           return res.apiv3Err(errors, 405);
         }
 
-        if (configManager.getConfig('crowi', 'security:registrationMode') !== aclService.labels.SECURITY_REGISTRATION_MODE_RESTRICTED) {
+        if (registrationMode === aclService.labels.SECURITY_REGISTRATION_MODE_RESTRICTED) {
           // send mail asynchronous
           sendEmailToAllAdmins(userData);
         }

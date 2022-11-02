@@ -12,7 +12,7 @@ context('Access to page by guest', () => {
     cy.collapseSidebar(true, true);
 
     // eslint-disable-next-line cypress/no-unnecessary-waiting
-    cy.wait(500);
+    // cy.wait(500);
 
     // hide fab // disable fab for sticky-events warning
     // cy.getByTestid('grw-fab-container').invoke('attr', 'style', 'display: none');
@@ -24,10 +24,7 @@ context('Access to page by guest', () => {
     cy.visit('/Sandbox/Math');
     cy.collapseSidebar(true, true);
 
-    cy.get('mjx-container').should('be.visible');
-    // eslint-disable-next-line cypress/no-unnecessary-waiting
-    cy.wait(2000); // wait for 2 seconds for MathJax.typesetPromise();
-
+    cy.get('.math').should('be.visible');
     cy.screenshot(`${ssPrefix}-sandbox-math`);
   });
 

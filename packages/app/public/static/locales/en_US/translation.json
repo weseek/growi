@@ -78,7 +78,6 @@
   "username": "Username",
   "Created": "Created",
   "Last updated": "Updated",
-  "last_login": "Last login",
   "Share": "Share",
   "Markdown Link": "Markdown Link",
   "Create/Edit Template": "Create/Edit template page",
@@ -129,8 +128,6 @@
   "Only me": "Only me",
   "Only inside the group": "Only inside the group",
   "page_list": "Page List",
-  "scope_of_page_disclosure": "Scope of page disclosure",
-  "set_point": "Set point",
   "Reselect the group": "Reselect the group",
   "Shareable link": "Shareable link",
   "The whitelist of registration permission E-mail address": "The whitelist of registration permission E-mail address",
@@ -174,11 +171,6 @@
     "required": "%s is required",
     "invalid_syntax": "The syntax of %s is invalid.",
     "title_required": "Title is required."
-  },
-  "not_found_page": {
-    "Create Page": "Create Page",
-    "page_not_exist": "This page does not exist.",
-    "page_not_exist_alert": "This page does not exist. Please create a new page."
   },
   "not_creatable_page": {
     "could_not_creata_path": "Couldn't create path."
@@ -240,10 +232,6 @@
     "Shere this page link to public": "Shere this page link to public",
     "share_link_list": "Share link list",
     "share_link_management": "Share Link Management",
-    "No_share_links":"No share links",
-    "Share Link": "Share Link",
-    "Page Path": "Page Path",
-    "share_link_notice":"remove all share links",
     "delete_all_share_links":"Delete all share links",
     "expire": "Expiration",
     "Days": "Days",
@@ -526,19 +514,8 @@
   "toaster": {
     "file_upload_succeeded": "File upload succeeded.",
     "file_upload_failed": "File upload failed.",
-    "initialize_successed": "Succeeded to initialize {{target}}",
-    "give_user_admin": "Succeeded to give {{username}} admin",
-    "remove_user_admin": "Succeeded to remove {{username}} admin",
-    "activate_user_success": "Succeeded to activating {{username}}",
-    "deactivate_user_success": "Succeeded to deactivate {{username}}",
-    "remove_user_success": "Succeeded to removing {{username}}",
-    "remove_external_user_success": "Succeeded to remove {{accountId}}",
-    "remove_share_link_success": "Succeeded to remove {{shareLinkId}}",
-    "issue_share_link": "Succeeded to issue new share link",
-    "remove_share_link": "Succeeded to remove {{count}} share links",
-    "switch_disable_link_sharing_success": "Succeeded to update share link setting",
-    "failed_to_reset_password":"Failed to reset password",
-    "save_succeeded": "Saved successfully"
+    "save_succeeded": "Saved successfully",
+    "issue_share_link": "Succeeded to issue new share link"
   },
   "template": {
     "modal_label": {
@@ -703,6 +680,7 @@
     "username_should_not_be_null":"Username should not be null. Please check Authentication Mechanism Settings on admin page",
     "email_address_is_already_registered":"This email address is already registered.",
     "can_not_register_maximum_number_of_users":"Can not register more than the maximum number of users.",
+    "email_settings_is_not_setup":"E-mail settings is not set up. Please ask the administrator.",
     "failed_to_register":"Failed to register.",
     "successfully_created":"The user {{username}} is successfully created.",
     "can_not_activate_maximum_number_of_users":"Can not activate more than the maximum number of users.",
