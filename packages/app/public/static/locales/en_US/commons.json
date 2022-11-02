@@ -29,5 +29,22 @@
   "personal_dropdown": {
     "home": "Home",
     "settings": "Settings"
+  },
+
+  "copy_to_clipboard": {
+    "Copy to clipboard": "Copy to clipboard",
+    "Page path": "Page path",
+    "Page URL": "Page URL",
+    "Permanent link": "Permanent link",
+    "Page path and permanent link": "Page path and permanent link",
+    "Markdown link": "Markdown link"
+  },
+
+  "crop_image_modal": {
+    "image_crop": "Image Crop",
+    "crop": "Crop",
+    "save": "Save",
+    "reset": "Reset",
+    "cancel": "Cancel"
   }
 }

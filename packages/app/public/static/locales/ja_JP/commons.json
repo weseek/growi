@@ -29,5 +29,22 @@
   "personal_dropdown": {
     "home": "ホーム",
     "settings": "設定"
+  },
+
+  "copy_to_clipboard": {
+    "Copy to clipboard": "クリップボードにコピー",
+    "Page path": "ページ名",
+    "Page URL": "ページURL",
+    "Permanent link": "パーマリンク",
+    "Page path and permanent link": "ページ名とパーマリンク",
+    "Markdown link": "マークダウン形式のリンク"
+  },
+
+  "crop_image_modal": {
+    "image_crop": "画像の切り抜き",
+    "crop": "トリミング",
+    "save": "保存",
+    "reset": "リセット",
+    "cancel": "キャンセル"
   }
 }

@@ -12,6 +12,7 @@ import {
   ModalFooter,
 } from 'reactstrap';
 
+
 import { toastError } from '~/client/util/apiNotification';
 import loggerFactory from '~/utils/logger';
 import 'react-image-crop/dist/ReactCrop.css';
@@ -136,7 +137,7 @@ const ImageCropModal: FC<Props> = (props: Props) => {
   return (
     <Modal isOpen={isShow} toggle={onModalCloseHandler}>
       <ModalHeader tag="h4" toggle={onModalCloseHandler} className="bg-info text-light">
-        {t('crop_image_modal.image_crop')}
+        {t('crop_image_modal.image_crop', { ns: 'commons' })}
       </ModalHeader>
       <ModalBody className="my-4">
         {
@@ -156,7 +157,7 @@ const ImageCropModal: FC<Props> = (props: Props) => {
       </ModalBody>
       <ModalFooter>
         <button type="button" className="btn btn-outline-danger rounded-pill mr-auto" disabled={!isCropImage} onClick={reset}>
-          {t('crop_image_modal.reset')}
+          {t('crop_image_modal.reset', { ns: 'commons' })}
         </button>
         { !showCropOption && (
           <div className="mr-auto">
@@ -169,17 +170,17 @@ const ImageCropModal: FC<Props> = (props: Props) => {
                 onChange={() => { setIsCropImage(!isCropImage) }}
               />
               <label className="custom-control-label" htmlFor="cropImageOption">
-                { t('crop_image_modal.image_crop') }
+                { t('crop_image_modal.image_crop', { ns: 'commons' }) }
               </label>
             </div>
           </div>
         )
         }
         <button type="button" className="btn btn-outline-secondary rounded-pill mr-2" onClick={onModalCloseHandler}>
-          {t('crop_image_modal.cancel')}
+          {t('crop_image_modal.cancel', { ns: 'commons' })}
         </button>
         <button type="button" className="btn btn-outline-primary rounded-pill" onClick={processAndSaveImage}>
-          { isCropImage ? t('crop_image_modal.crop') : t('crop_image_modal.save') }
+          { isCropImage ? t('crop_image_modal.crop', { ns: 'commons' }) : t('crop_image_modal.save', { ns: 'commons' }) }
         </button>
       </ModalFooter>
     </Modal>

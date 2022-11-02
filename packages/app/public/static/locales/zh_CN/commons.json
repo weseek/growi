@@ -29,5 +29,22 @@
   "personal_dropdown": {
     "home": "家",
     "settings": "设置"
+  },
+
+	"copy_to_clipboard": {
+		"Copy to clipboard": "复制到剪贴板",
+		"Page path": "页面路径",
+		"Page URL": "页面Url",
+		"Parmanent link": "参数化链接",
+		"Page path and parmanent link": "页面路径及参数化链接",
+		"Markdown link": "Markdown链接"
+	},
+
+  "crop_image_modal": {
+    "image_crop": "图像裁剪",
+    "crop": "修剪",
+    "save": "节省",
+    "reset": "重启",
+    "cancel": "取消"
   }
 }

@@ -122,7 +122,7 @@ const CopyDropdown = (props) => {
 
           <div className="d-flex align-items-center justify-content-between">
             <DropdownItem header className="px-3">
-              { t('copy_to_clipboard.Copy to clipboard') }
+              { t('copy_to_clipboard.Copy to clipboard', { ns: 'commons' }) }
             </DropdownItem>
             { !isShareLinkMode && (
               <div className="px-3 custom-control custom-switch custom-switch-sm">
@@ -143,7 +143,7 @@ const CopyDropdown = (props) => {
           {/* Page path */}
           <CopyToClipboard text={pagePathWithParams} onCopy={showToolTip}>
             <DropdownItem className="px-3">
-              <DropdownItemContents title={t('copy_to_clipboard.Page path')} contents={pagePathWithParams} />
+              <DropdownItemContents title={t('copy_to_clipboard.Page path', { ns: 'commons' })} contents={pagePathWithParams} />
             </DropdownItem>
           </CopyToClipboard>
 
@@ -152,7 +152,7 @@ const CopyDropdown = (props) => {
           {/* Page path URL */}
           <CopyToClipboard text={pagePathUrl} onCopy={showToolTip}>
             <DropdownItem className="px-3">
-              <DropdownItemContents title={t('copy_to_clipboard.Page URL')} contents={pagePathUrl} />
+              <DropdownItemContents title={t('copy_to_clipboard.Page URL', { ns: 'commons' })} contents={pagePathUrl} />
             </DropdownItem>
           </CopyToClipboard>
           <DropdownItem divider className="my-0"></DropdownItem>
@@ -161,7 +161,7 @@ const CopyDropdown = (props) => {
           { pageId && (
             <CopyToClipboard text={permalink} onCopy={showToolTip}>
               <DropdownItem className="px-3">
-                <DropdownItemContents title={t('copy_to_clipboard.Permanent link')} contents={permalink} />
+                <DropdownItemContents title={t('copy_to_clipboard.Permanent link', { ns: 'commons' })} contents={permalink} />
               </DropdownItem>
             </CopyToClipboard>
           )}
@@ -172,7 +172,10 @@ const CopyDropdown = (props) => {
           { pageId && (
             <CopyToClipboard text={`${pagePathWithParams}\n${permalink}`} onCopy={showToolTip}>
               <DropdownItem className="px-3">
-                <DropdownItemContents title={t('copy_to_clipboard.Page path and permanent link')} contents={<>{pagePathWithParams}<br />{permalink}</>} />
+                <DropdownItemContents
+                  title={t('copy_to_clipboard.Page path and permanent link', { ns: 'commons' })}
+                  contents={<>{pagePathWithParams}<br />{permalink}</>}
+                />
               </DropdownItem>
             </CopyToClipboard>
           )}
@@ -183,7 +186,7 @@ const CopyDropdown = (props) => {
           { pageId && (
             <CopyToClipboard text={markdownLink} onCopy={showToolTip}>
               <DropdownItem className="px-3 text-wrap">
-                <DropdownItemContents title={t('copy_to_clipboard.Markdown link')} contents={markdownLink} isContentsWrap />
+                <DropdownItemContents title={t('copy_to_clipboard.Markdown link', { ns: 'commons' })} contents={markdownLink} isContentsWrap />
               </DropdownItem>
             </CopyToClipboard>
           )}
