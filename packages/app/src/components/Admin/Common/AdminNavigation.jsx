@@ -6,7 +6,7 @@ import Link from 'next/link';
 import PropTypes from 'prop-types';
 import urljoin from 'url-join';
 
-
+import { useGrowiCloudUri, useGrowiAppIdForGrowiCloud } from '../../../stores/context';
 // import AppContainer from '~/client/services/AppContainer';
 
 // import { withUnstatedContainers } from '../../UnstatedUtils';
@@ -16,8 +16,8 @@ const AdminNavigation = (props) => {
   // const { appContainer } = props;
   const pathname = window.location.pathname;
 
-  // const growiCloudUri = appContainer.config.env.GROWI_CLOUD_URI;
-  // const growiAppIdForGrowiCloud = appContainer.config.env.GROWI_APP_ID_FOR_GROWI_CLOUD;
+  const { data: growiCloudUri } = useGrowiCloudUri();
+  const { data: growiAppIdForGrowiCloud } = useGrowiAppIdForGrowiCloud();
 
   // eslint-disable-next-line react/prop-types
   const MenuLabel = ({ menu }) => {
@@ -36,7 +36,7 @@ const AdminNavigation = (props) => {
       case 'user-groups':              return <><i className="mr-1 icon-fw icon-people"></i>{          t('user_group_management.user_group_management') }</>;
       case 'search':                   return <><i className="mr-1 icon-fw icon-magnifier"></i>{       t('full_text_search_management.full_text_search_management') }</>;
       case 'audit-log':                return <><i className="mr-1 icon-fw icon-feed"></i>{            t('audit_log_management.audit_log')}</>;
-      case 'cloud':                    return <><i className="mr-1 icon-fw icon-share-alt"></i>{       t('to_cloud_settings')} </>;
+      case 'cloud':                    return <><i className="mr-1 icon-fw icon-share-alt"></i>{       t('cloud_setting_management.to_cloud_settings')} </>;
       default:                         return <><i className="mr-1 icon-fw icon-home"></i>{            t('wiki_management_home_page') }</>;
       /* eslint-enable no-multi-spaces, max-len */
     }
@@ -92,7 +92,7 @@ const AdminNavigation = (props) => {
         <MenuLink menu="user-groups"  isListGroupItems isActive={isActiveMenu('/user-groups')} />
         <MenuLink menu="audit-log"    isListGroupItems isActive={isActiveMenu('/audit-log')} />
         <MenuLink menu="search"       isListGroupItems isActive={isActiveMenu('/search')} />
-        {/* {growiCloudUri != null && growiAppIdForGrowiCloud != null
+        {growiCloudUri != null && growiAppIdForGrowiCloud != null
           && (
             <a
               href={`${growiCloudUri}/my/apps/${growiAppIdForGrowiCloud}`}
@@ -101,7 +101,7 @@ const AdminNavigation = (props) => {
               <MenuLabel menu="cloud" />
             </a>
           )
-        } */}
+        }
         {/* eslint-enable no-multi-spaces */}
       </>
     );

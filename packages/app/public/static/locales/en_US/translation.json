@@ -645,7 +645,6 @@
       "error_duplicate_pages_found": "Multiple pages with the same path name were found. Please rename or delete and try again."
     }
   },
-  "to_cloud_settings": "Open GROWI.cloud Settings",
   "login": {
     "Sign in error": "Login error",
     "Registration successful": "Registration successful",
