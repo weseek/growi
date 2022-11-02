@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 
 import { useTranslation } from 'next-i18next';
 
@@ -45,7 +45,8 @@ const CompleteUserRegistrationForm: React.FC<Props> = (props: Props) => {
     return () => clearTimeout(delayDebounceFn);
   }, [username]);
 
-  async function submitRegistration() {
+  const handleSubmitRegistration = useCallback(async(e) => {
+    e.preventDefault();
     setDisableForm(true);
     try {
       await apiv3Post('/complete-registration', {
@@ -58,7 +59,7 @@ const CompleteUserRegistrationForm: React.FC<Props> = (props: Props) => {
       toastError(err, 'Registration failed');
       setDisableForm(false);
     }
-  }
+  }, [name, password, token, username]);
 
   return (
     <>
@@ -80,7 +81,7 @@ const CompleteUserRegistrationForm: React.FC<Props> = (props: Props) => {
               </p>
             )}
 
-            <fieldset id="registration-form" disabled={disableForm}>
+            <form role="form" onSubmit={handleSubmitRegistration} id="registration-form">
               <input type="hidden" name="token" value={token} />
               <div className="input-group">
                 <div className="input-group-prepend">
@@ -138,7 +139,7 @@ const CompleteUserRegistrationForm: React.FC<Props> = (props: Props) => {
               </div>
 
               <div className="input-group justify-content-center d-flex mt-5">
-                <button type="button" onClick={submitRegistration} className="btn btn-fill" id="register">
+                <button disabled={disableForm} className="btn btn-fill" id="register">
                   <div className="eff"></div>
                   <span className="btn-label"><i className="icon-user-follow"></i></span>
                   <span className="btn-label-text">{t('Create')}</span>
@@ -150,7 +151,7 @@ const CompleteUserRegistrationForm: React.FC<Props> = (props: Props) => {
                   <span className="growi">GROWI</span>.<span className="org">ORG</span>
                 </a>
               </div>
-            </fieldset>
+            </form>
           </div>
         </div>
       </div>
