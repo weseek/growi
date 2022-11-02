@@ -1,6 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
 import createError from 'http-errors';
 
+import { UserActivationErrorCode } from '~/interfaces/errors/user-activation';
 import loggerFactory from '~/utils/logger';
 
 import UserRegistrationOrder, { IUserRegistrationOrder } from '../models/user-registration-order';
@@ -18,7 +19,7 @@ export default async(req: ReqWithUserRegistrationOrder, res: Response, next: Nex
   if (token == null) {
     const msg = 'Token not found';
     logger.error(msg);
-    return next(createError(400, msg, { code: 'token-not-found' }));
+    return next(createError(400, msg, { code: UserActivationErrorCode.TOKEN_NOT_FOUND }));
   }
 
   const userRegistrationOrder = await UserRegistrationOrder.findOne({ token });
@@ -27,7 +28,7 @@ export default async(req: ReqWithUserRegistrationOrder, res: Response, next: Nex
   if (userRegistrationOrder == null || userRegistrationOrder.isExpired() || userRegistrationOrder.isRevoked) {
     const msg = 'userRegistrationOrder is null or expired or revoked';
     logger.error(msg);
-    return next(createError(400, msg, { code: 'user-registration-order-is-not-appropriate' }));
+    return next(createError(400, msg, { code: UserActivationErrorCode.USER_REGISTRATION_ORDER_IS_NOT_APPROPRIATE }));
   }
 
   req.userRegistrationOrder = userRegistrationOrder;

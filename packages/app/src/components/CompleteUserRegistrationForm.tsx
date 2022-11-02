@@ -95,7 +95,7 @@ const CompleteUserRegistrationForm: React.FC<Props> = (props: Props) => {
                 <div className="input-group-prepend">
                   <span className="input-group-text"><i className="icon-envelope"></i></span>
                 </div>
-                <input type="text" className="form-control" disabled value={email} />
+                <input type="text" className="form-control" placeholder={t('Email')} disabled value={email} />
               </div>
 
               <div className="input-group" id="input-group-username">
