@@ -51,10 +51,6 @@ export const useRevisionId = (initialData?: Nullable<any>): SWRResponse<Nullable
   return useStaticSWR<Nullable<any>, Error>('revisionId', initialData);
 };
 
-export const useCurrentPagePath = (initialData?: Nullable<string>): SWRResponse<Nullable<string>, Error> => {
-  return useStaticSWR<Nullable<string>, Error>('currentPagePath', initialData);
-};
-
 export const useCurrentPathname = (initialData?: string): SWRResponse<string, Error> => {
   return useStaticSWR('currentPathname', initialData);
 };
@@ -240,20 +236,5 @@ export const useIsEditable = (): SWRResponse<boolean, Error> => {
     (key: Key, isGuestUser: boolean, isForbidden: boolean, isIdenticalPath: boolean) => {
       return (!isForbidden && !isIdenticalPath && !isGuestUser);
     },
-  );
-};
-
-export const useCurrentPageTocNode = (): SWRResponse<HtmlElementNode, any> => {
-  const { data: currentPagePath } = useCurrentPagePath();
-
-  return useStaticSWR(['currentPageTocNode', currentPagePath]);
-};
-
-export const useIsTrashPage = (): SWRResponse<boolean, Error> => {
-  const { data: pagePath } = useCurrentPagePath();
-
-  return useSWRImmutable(
-    pagePath == null ? null : ['isTrashPage', pagePath],
-    (key: Key, pagePath: string) => pagePathUtils.isTrashPage(pagePath),
   );
 };
