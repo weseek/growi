@@ -55,6 +55,8 @@ module.exports = (crowi, app, isInstalled) => {
   routerForAuth.post('/register',
     applicationInstalled, registerFormValidator.registerRules(), registerFormValidator.registerValidation, addActivity, login.register);
 
+  routerForAuth.post('/user-activation/register', applicationInstalled, userActivation.registerRules(),
+    userActivation.validateRegisterForm, userActivation.registerAction(crowi));
 
   // installer
   if (!isInstalled) {

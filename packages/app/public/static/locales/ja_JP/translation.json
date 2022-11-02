@@ -679,6 +679,7 @@
     "username_should_not_be_null":"Username が null になっています 管理画面の認証機構設定にて設定の確認をしてください",
     "email_address_is_already_registered":"このメールアドレスは既に登録されています。",
     "can_not_register_maximum_number_of_users":"ユーザー数が上限を超えたため登録できません。",
+    "email_settings_is_not_setup":"E-mail 設定が完了していません。管理者に問い合わせてください。",
     "failed_to_register":"登録に失敗しました。",
     "successfully_created":"{{username}} が作成されました。",
     "can_not_activate_maximum_number_of_users":"ユーザーが上限に達したためアクティベートできません。",
