@@ -24,11 +24,13 @@ const CompleteUserRegistrationForm: React.FC<Props> = (props: Props) => {
     isEmailAuthenticationEnabled,
   } = props;
 
+  const forceDisableForm = errorCode != null || !isEmailAuthenticationEnabled;
+
   const [usernameAvailable, setUsernameAvailable] = useState(true);
   const [username, setUsername] = useState('');
   const [name, setName] = useState('');
   const [password, setPassword] = useState('');
-  const [disableForm, setDisableForm] = useState(false);
+  const [disableForm, setDisableForm] = useState(forceDisableForm);
 
   useEffect(() => {
     const delayDebounceFn = setTimeout(async() => {
@@ -88,12 +90,14 @@ const CompleteUserRegistrationForm: React.FC<Props> = (props: Props) => {
 
             <form role="form" onSubmit={handleSubmitRegistration} id="registration-form">
               <input type="hidden" name="token" value={token} />
+
               <div className="input-group">
                 <div className="input-group-prepend">
                   <span className="input-group-text"><i className="icon-envelope"></i></span>
                 </div>
                 <input type="text" className="form-control" disabled value={email} />
               </div>
+
               <div className="input-group" id="input-group-username">
                 <div className="input-group-prepend">
                   <span className="input-group-text"><i className="icon-user"></i></span>
@@ -105,6 +109,7 @@ const CompleteUserRegistrationForm: React.FC<Props> = (props: Props) => {
                   name="username"
                   onChange={e => setUsername(e.target.value)}
                   required
+                  disabled={forceDisableForm || disableForm}
                 />
               </div>
               {!usernameAvailable && (
@@ -125,6 +130,7 @@ const CompleteUserRegistrationForm: React.FC<Props> = (props: Props) => {
                   value={name}
                   onChange={e => setName(e.target.value)}
                   required
+                  disabled={forceDisableForm || disableForm}
                 />
               </div>
 
@@ -140,11 +146,12 @@ const CompleteUserRegistrationForm: React.FC<Props> = (props: Props) => {
                   value={password}
                   onChange={e => setPassword(e.target.value)}
                   required
+                  disabled={forceDisableForm || disableForm}
                 />
               </div>
 
               <div className="input-group justify-content-center d-flex mt-5">
-                <button disabled={disableForm} className="btn btn-fill" id="register">
+                <button disabled={forceDisableForm || disableForm} className="btn btn-fill" id="register">
                   <div className="eff"></div>
                   <span className="btn-label"><i className="icon-user-follow"></i></span>
                   <span className="btn-label-text">{t('Create')}</span>
