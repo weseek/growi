@@ -19,7 +19,7 @@ export default async(req: ReqWithUserRegistrationOrder, res: Response, next: Nex
 
   // check if the token is valid
   if (userRegistrationOrder == null || userRegistrationOrder.isExpired() || userRegistrationOrder.isRevoked) {
-    return next(createError(400, 'userRegistrationOrder is null or expired or revoked', { code: 'password-reset-order-is-not-appropriate' }));
+    return next(createError(400, 'userRegistrationOrder is null or expired or revoked', { code: 'user-registration-order-is-not-appropriate' }));
   }
 
   req.userRegistrationOrder = userRegistrationOrder;

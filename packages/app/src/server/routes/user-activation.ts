@@ -1,5 +1,6 @@
-import { Request, Response, NextFunction } from 'express';
+import { Response, NextFunction } from 'express';
 
+import { userActivationErrorCode } from '~/interfaces/errors/user-activation';
 import { ReqWithUserRegistrationOrder } from '~/server/middlewares/inject-user-registration-order-by-token-middleware';
 
 type Crowi = {
@@ -22,10 +23,15 @@ export const renderUserActivationPage = (crowi: Crowi) => {
 };
 
 // middleware to handle error
-export const tokenErrorHandlerMiddeware = (err, req: Request, res: Response, next: NextFunction) => {
-  if (err != null) {
-    // req.flash('errorMessage', req.t('message.incorrect_token_or_expired_url'));
-    return res.redirect('/login#register');
-  }
-  next();
+export const tokenErrorHandlerMiddeware = (crowi: Crowi) => {
+  return (error: Error & { code: userActivationErrorCode, statusCode: number }, req: CrowiReq, res: Response, next: NextFunction): void => {
+    if (error != null) {
+      const { nextApp } = crowi;
+      req.crowi = crowi;
+      nextApp.render(req, res, '/user-activation', { errorCode: error.code });
+      return;
+    }
+
+    next();
+  };
 };
