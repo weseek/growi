@@ -50,8 +50,8 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
   const [passwordForRegister, setPasswordForRegister] = useState('');
   const [registerErrors, setRegisterErrors] = useState<IErrorV3[]>([]);
   // For UserActivation
-  const [emailForActivationUser, setEmailForActivationUser] = useState('');
-  const [isSuccessToSendUserActivationEmail, setIsSuccessToSendUserActivationEmail] = useState(false);
+  const [emailForRegistrationOrder, setEmailForRegistrationOrder] = useState('');
+  const [isSuccessToSendRegistrationOrderEmail, setIsSuccessToSendRegistrationOrderEmail] = useState(false);
 
 
   useEffect(() => {
@@ -265,7 +265,8 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
 
   const handleRegisterFormSubmit = useCallback(async(e, requestPath) => {
     e.preventDefault();
-    setIsSuccessToSendUserActivationEmail(false);
+    setEmailForRegistrationOrder('');
+    setIsSuccessToSendRegistrationOrderEmail(false);
 
     const registerForm = {
       username: usernameForRegister,
@@ -279,8 +280,8 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
       router.push(redirectTo ?? '/');
 
       if (isEmailAuthenticationEnabled) {
-        setEmailForActivationUser(emailForRegister);
-        setIsSuccessToSendUserActivationEmail(true);
+        setEmailForRegistrationOrder(emailForRegister);
+        setIsSuccessToSendRegistrationOrderEmail(true);
       }
     }
     catch (err) {
@@ -323,7 +324,7 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
         )}
         { (!isMailerSetup && isEmailAuthenticationEnabled) && (
           <p className="alert alert-danger">
-            <span>{t('security_settings.Local.please_enable_mailer')}</span>
+            <span>{t('commons:alert.please_enable_mailer')}</span>
           </p>
         )}
 
@@ -342,9 +343,9 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
         }
 
         {
-          (isEmailAuthenticationEnabled && isSuccessToSendUserActivationEmail) && (
+          (isEmailAuthenticationEnabled && isSuccessToSendRegistrationOrderEmail) && (
             <p className="alert alert-success">
-              <span>{t('message.successfully_send_email_auth', { email: emailForActivationUser })}</span>
+              <span>{t('message.successfully_send_email_auth', { email: emailForRegistrationOrder })}</span>
             </p>
           )
         }
@@ -399,6 +400,7 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
             </div>
             {/* email */}
             <input type="email"
+              disabled={!isMailerSetup && isEmailAuthenticationEnabled}
               className="form-control rounded-0"
               onChange={(e) => { setEmailForRegister(e.target.value) }}
               placeholder={t('Email')}
@@ -472,8 +474,8 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
     );
   }, [
     handleRegisterFormSubmit, isEmailAuthenticationEnabled, isMailerSetup,
-    isSuccessToSendUserActivationEmail, props.email, props.name, props.username,
-    registerErrors, registrationMode, registrationWhiteList, emailForActivationUser, switchForm, t,
+    isSuccessToSendRegistrationOrderEmail, props.email, props.name, props.username,
+    registerErrors, registrationMode, registrationWhiteList, emailForRegistrationOrder, switchForm, t,
   ]);
 
   return (

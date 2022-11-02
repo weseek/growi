@@ -69,6 +69,7 @@ module.exports = (crowi, app, isInstalled) => {
   router.use('/personal-setting', require('./personal-setting')(crowi));
 
   router.use('/user-group-relations', require('./user-group-relation')(crowi));
+  router.use('/user-group-relations', require('./user-group-relation')(crowi));
 
   router.use('/statistics', require('./statistics')(crowi));
 
