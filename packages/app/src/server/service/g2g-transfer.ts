@@ -73,14 +73,21 @@ interface Pusher {
    * Transfer all Attachment data to destination GROWI
    * @param {TransferKey} tk Transfer key
    */
-  transferAttachments(tk: TransferKey): Promise<void>
+  transferAttachments(tk: TransferKey, attachmentsFromNewGrowi: Attachment[]): Promise<void>
   /**
    * Start transfer data between GROWIs
    * @param {TransferKey} tk TransferKey object
    * @param {string[]} collections Collection name string array
    * @param {any} optionsMap Options map
    */
-  startTransfer(tk: TransferKey, user: any, toGROWIInfo: IDataGROWIInfo, collections: string[], optionsMap: any): Promise<void>
+  startTransfer(
+    tk: TransferKey,
+    user: any,
+    toGROWIInfo: IDataGROWIInfo,
+    collections: string[],
+    optionsMap: any,
+    attachmentsFromNewGrowi: Attachment[]
+  ): Promise<void>
 }
 
 interface Receiver {
@@ -281,14 +288,13 @@ export class G2GTransferPusherService implements Pusher {
     }
   }
 
-  public async transferAttachments(tk: TransferKey): Promise<void> {
+  public async transferAttachments(tk: TransferKey, attachmentsFromNewGrowi: Attachment[]): Promise<void> {
     const BATCH_SIZE = 100;
 
     const { fileUploadService } = this.crowi;
     const Attachment = this.crowi.model('Attachment');
 
     // batch get
-    const attachmentsFromNewGrowi = await this.getAttachments(tk);
     const attachmentsCursor = await Attachment.find({ _id: { $nin: attachmentsFromNewGrowi.map(({ _id }) => _id) } }).cursor();
     const batchStream = createBatchStream(BATCH_SIZE);
 
@@ -318,7 +324,7 @@ export class G2GTransferPusherService implements Pusher {
   }
 
   // eslint-disable-next-line max-len
-  public async startTransfer(tk: TransferKey, user: any, toGROWIInfo: IDataGROWIInfo, collections: string[], optionsMap: any, shouldEmit = true): Promise<void> {
+  public async startTransfer(tk: TransferKey, user: any, toGROWIInfo: IDataGROWIInfo, collections: string[], optionsMap: any, attachmentsFromNewGrowi: Attachment[], shouldEmit = true): Promise<void> {
     const socket = this.crowi.socketIoService.getAdminSocket();
 
     if (shouldEmit) socket.emit('admin:onStartTransferMongoData', {});
@@ -365,7 +371,7 @@ export class G2GTransferPusherService implements Pusher {
     if (shouldEmit) socket.emit('admin:onStartTransferAttachments', {});
 
     try {
-      await this.transferAttachments(tk);
+      await this.transferAttachments(tk, attachmentsFromNewGrowi);
     }
     catch (err) {
       logger.error(err);

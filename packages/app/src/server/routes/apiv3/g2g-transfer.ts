@@ -391,9 +391,12 @@ module.exports = (crowi: Crowi): Router => {
       return res.apiv3Err(new ErrorV3(transferability.reason, 'growi_incompatible_to_transfer'));
     }
 
+    // get attachments from new growi
+    const attachmentsFromNewGrowi = await g2gTransferPusherService.getAttachments(tk);
+
     // Start transfer
     try {
-      await g2gTransferPusherService.startTransfer(tk, req.user, toGROWIInfo, collections, optionsMap);
+      await g2gTransferPusherService.startTransfer(tk, req.user, toGROWIInfo, collections, optionsMap, attachmentsFromNewGrowi);
     }
     catch (err) {
       logger.error(err);
