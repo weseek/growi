@@ -2,7 +2,7 @@ import { pagePathUtils, pathUtils, pageUtils } from '@growi/core';
 import escapeStringRegexp from 'escape-string-regexp';
 import mongoose from 'mongoose';
 
-import { PageGrant } from '~/interfaces/page';
+import { PageGrant, PageGrantCanBeOnTree } from '~/interfaces/page';
 import { IRecordApplicableGrant } from '~/interfaces/page-grant';
 import { PageDocument, PageModel } from '~/server/models/page';
 import UserGroup from '~/server/models/user-group';
@@ -538,6 +538,42 @@ class PageGrantService {
     };
 
     return this.calcCanOverwriteDescendants(operatorGrantInfo, updateGrantInfo, descendantPagesGrantInfo);
+  }
+
+  async generateUpdateGrantInfo(operator, updateGrant: PageGrantCanBeOnTree, grantUserGroupId?: ObjectIdLike): Promise<UpdateGrantInfo> {
+    let updateGrantInfo: UpdateGrantInfo | null = null;
+
+    if (updateGrant === PageGrant.GRANT_PUBLIC) {
+      updateGrantInfo = {
+        grant: PageGrant.GRANT_PUBLIC,
+      };
+    }
+    else if (updateGrant === PageGrant.GRANT_OWNER) {
+      updateGrantInfo = {
+        grant: PageGrant.GRANT_OWNER,
+        grantedUserId: operator._id,
+      };
+    }
+    else if (updateGrant === PageGrant.GRANT_USER_GROUP) {
+      if (grantUserGroupId == null) {
+        throw Error('The parameter `grantUserGroupId` is required.');
+      }
+      const userIds = await UserGroup.findAllUserIdsForUserGroup(grantUserGroupId);
+      updateGrantInfo = {
+        grant: PageGrant.GRANT_USER_GROUP,
+        grantedUserGroupInfo: {
+          groupId: grantUserGroupId,
+          userIds: new Set<ObjectIdLike>(userIds),
+          childrenOrItselfGroupIds: new Set<ObjectIdLike>(),
+        },
+      };
+    }
+
+    if (updateGrantInfo == null) {
+      throw Error('The parameter `updateGrant` must be 1, 4, or 5');
+    }
+
+    return updateGrantInfo;
   }
 
   private calcIsAllDescendantsGrantedByOperator(operatorGrantInfo: OperatorGrantInfo, descendantPagesGrantInfo: DescendantPagesGrantInfo): boolean {

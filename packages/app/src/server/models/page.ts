@@ -1032,7 +1032,7 @@ export default (crowi): any => {
       let isGrantNormalized = false;
       try {
         // TODO: fix
-        const shouldCheckDescendants = options.overwriteScopesOfDescendants !== true;
+        const shouldCheckDescendants = !options.overwriteScopesOfDescendants;
         isGrantNormalized = await pageGrantService.isGrantNormalized(user, pageData.path, grant, grantedUserIds, grantUserGroupId, shouldCheckDescendants);
       }
       catch (err) {
@@ -1041,6 +1041,15 @@ export default (crowi): any => {
       }
       if (!isGrantNormalized) {
         throw Error('The selected grant or grantedGroup is not assignable to this page.');
+      }
+
+      if (options.overwriteScopesOfDescendants) {
+        const updateGrantInfo = await pageGrantService.generateUpdateGrantInfo(user, grant, options.grantUserGroupId);
+        const canOverwriteDescendants = await pageGrantService.canOverwriteDescendants(pageData, user, updateGrantInfo);
+
+        if (!canOverwriteDescendants) {
+          throw Error('Cannot overwrite scopes of descendants.');
+        }
       }
 
       if (!wasOnTree) {
