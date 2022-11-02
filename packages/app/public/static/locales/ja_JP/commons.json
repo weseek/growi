@@ -57,5 +57,9 @@
     "save": "保存",
     "reset": "リセット",
     "cancel": "キャンセル"
+  },
+
+  "not_found_page": {
+    "page_not_exist": "このページは存在しません。"
   }
 }

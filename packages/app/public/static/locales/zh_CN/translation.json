@@ -169,11 +169,6 @@
 		"invalid_syntax": "%s的语法无效。",
     "title_required": "标题是必需的。"
   },
-  "not_found_page": {
-    "Create Page": "创建页面",
-    "page_not_exist": "该页面不存在",
-    "page_not_exist_alert": "该页面不存在，请创建一个新页面"
-  },
   "not_creatable_page": {
     "could_not_creata_path": "无法创建路径"
   },
