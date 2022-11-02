@@ -14,7 +14,7 @@ import {
 type Props = CommonProps & {
   token: string
   email: string
-  errorCode: userActivationErrorCode
+  errorCode?: userActivationErrorCode
   isEmailAuthenticationEnabled: boolean
 }
 
