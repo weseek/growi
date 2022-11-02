@@ -180,7 +180,7 @@ GlobalNotificationList.propTypes = {
 };
 
 const GlobalNotificationListWrapperFC = (props) => {
-  const { t } = useTranslation();
+  const { t } = useTranslation('admin');
 
   return <GlobalNotificationList t={t} {...props} />;
 };
