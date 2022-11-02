@@ -1,8 +1,14 @@
+import { Request, Response, NextFunction } from 'express';
 import createError from 'http-errors';
 
-import UserRegistrationOrder from '../models/user-registration-order';
+import UserRegistrationOrder, { IUserRegistrationOrder } from '../models/user-registration-order';
 
-export default async(req, res, next): Promise<void> => {
+export type ReqWithUserRegistrationOrder = Request & {
+  userRegistrationOrder: IUserRegistrationOrder
+};
+
+// eslint-disable-next-line import/no-anonymous-default-export
+export default async(req: ReqWithUserRegistrationOrder, res: Response, next: NextFunction): Promise<void> => {
   const token = req.params.token || req.body.token;
 
   if (token == null) {

@@ -1,15 +1,14 @@
-import { Request, Response } from 'express';
+import { Request, Response, NextFunction } from 'express';
 
-import { IUserRegistrationOrder } from '~/server/models/user-registration-order';
+import { ReqWithUserRegistrationOrder } from '~/server/middlewares/inject-user-registration-order-by-token-middleware';
 
 type Crowi = {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   nextApp: any,
 }
 
-type CrowiReq = Request & {
+type CrowiReq = ReqWithUserRegistrationOrder & {
   crowi: Crowi,
-  userRegistrationOrder: IUserRegistrationOrder
 }
 
 export const renderUserActivationPage = (crowi: Crowi) => {
@@ -23,9 +22,9 @@ export const renderUserActivationPage = (crowi: Crowi) => {
 };
 
 // middleware to handle error
-export const tokenErrorHandlerMiddeware = (err, req, res, next) => {
+export const tokenErrorHandlerMiddeware = (err, req: Request, res: Response, next: NextFunction) => {
   if (err != null) {
-    req.flash('errorMessage', req.t('message.incorrect_token_or_expired_url'));
+    // req.flash('errorMessage', req.t('message.incorrect_token_or_expired_url'));
     return res.redirect('/login#register');
   }
   next();
