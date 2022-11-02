@@ -19,6 +19,17 @@
     "app_settings": "App Settings"
   },
 
+  "header_search_box": {
+    "label": {
+      "All pages": "All pages",
+      "This tree": "This tree"
+    },
+    "item_label": {
+      "All pages": "All pages",
+      "This tree": "Only children of this tree"
+    }
+  },
+
   "share_links": {
     "Share Link": "Share Link",
     "Page Path": "Page Path",

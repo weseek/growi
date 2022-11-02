@@ -67,8 +67,8 @@ export const GlobalSearch = (props: GlobalSearchProps): JSX.Element => {
   }, [currentPagePath, isScopeChildren, router, text]);
 
   const scopeLabel = isScopeChildren
-    ? t('header_search_box.label.This tree')
-    : t('header_search_box.label.All pages');
+    ? t('header_search_box.label.This tree', { ns: 'commons' })
+    : t('header_search_box.label.All pages', { ns: 'commons' });
 
   const isIndicatorShown = !isFocused && (text.length === 0);
 
@@ -98,7 +98,7 @@ export const GlobalSearch = (props: GlobalSearchProps): JSX.Element => {
                 globalSearchFormRef.current?.focus();
               }}
             >
-              { t('header_search_box.item_label.All pages') }
+              { t('header_search_box.item_label.All pages', { ns: 'commons' }) }
             </button>
             <button
               data-tesid="search-current-tree"
@@ -109,7 +109,7 @@ export const GlobalSearch = (props: GlobalSearchProps): JSX.Element => {
                 globalSearchFormRef.current?.focus();
               }}
             >
-              { t('header_search_box.item_label.This tree') }
+              { t('header_search_box.item_label.This tree', { ns: 'commons' }) }
             </button>
           </div>
         </div>

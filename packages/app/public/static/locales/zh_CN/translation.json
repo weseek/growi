@@ -234,16 +234,6 @@
 	"API Token Settings": "API token 设置",
 	"Current API Token": "当前 API token",
 	"Update API Token": "更新 API token",
-	"header_search_box": {
-		"label": {
-			"All pages": "所有页面",
-			"This tree": "当前分支"
-		},
-		"item_label": {
-			"All pages": "所有页面",
-			"This tree": "当前分支以下内容"
-		}
-  },
   "in_app_notification": {
     "notification_list": "应用内通知列表",
     "see_all": "查看通知列表",

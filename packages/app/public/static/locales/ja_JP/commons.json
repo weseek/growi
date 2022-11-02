@@ -19,6 +19,17 @@
     "app_settings": "アプリ設定"
   },
 
+  "header_search_box": {
+    "label": {
+      "All pages": "全てのページ",
+      "This tree": "この階層"
+    },
+    "item_label": {
+      "All pages": "全てのページ",
+      "This tree": "この階層下の子ページのみ"
+    }
+  },
+
   "share_links": {
     "Share Link": "共有用リンク",
     "Page Path": "ページパス",

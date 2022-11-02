@@ -247,16 +247,6 @@
   "API Token Settings": "API Token設定",
   "Current API Token": "現在のAPI Token",
   "Update API Token": "API Tokenを更新",
-  "header_search_box": {
-    "label": {
-      "All pages": "全てのページ",
-      "This tree": "この階層"
-    },
-    "item_label": {
-      "All pages": "全てのページ",
-      "This tree": "この階層下の子ページのみ"
-    }
-  },
   "in_app_notification": {
     "notification_list": "アプリ内通知一覧",
     "see_all": "通知一覧を見る",

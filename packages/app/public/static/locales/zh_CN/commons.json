@@ -19,6 +19,17 @@
     "app_settings": "系统设置"
   },
 
+  "header_search_box": {
+		"label": {
+			"All pages": "所有页面",
+			"This tree": "当前分支"
+		},
+		"item_label": {
+			"All pages": "所有页面",
+			"This tree": "当前分支以下内容"
+		}
+  },
+
   "share_links": {
     "Share Link": "Share Link",
     "Page Path": "Page Path",
