@@ -20,11 +20,10 @@ export function useContextSWR<Data, Error>(
   const [key, data, configuration] = args;
 
   const swrResponse = useStaticSWR<Data, Error>(key, data, configuration);
-  const { data: responseData, error, isValidating } = swrResponse;
+  // const { data: responseData, error, isValidating } = swrResponse;
 
-  return {
-    data: responseData,
-    error,
-    isValidating,
-  };
+  // @ts-expect-error: can't use delete only optional property in ts
+  delete swrResponse.mutate;
+
+  return swrResponse;
 }
