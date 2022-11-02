@@ -172,11 +172,6 @@
     "invalid_syntax": "The syntax of %s is invalid.",
     "title_required": "Title is required."
   },
-  "not_found_page": {
-    "Create Page": "Create Page",
-    "page_not_exist": "This page does not exist.",
-    "page_not_exist_alert": "This page does not exist. Please create a new page."
-  },
   "not_creatable_page": {
     "could_not_creata_path": "Couldn't create path."
   },

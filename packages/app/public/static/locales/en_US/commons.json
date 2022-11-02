@@ -24,5 +24,8 @@
     "Page Path": "Page Path",
     "expire": "Expiration",
     "description": "Description"
+  },
+  "not_found_page": {
+    "page_not_exist": "This page does not exist.",
   }
 }
