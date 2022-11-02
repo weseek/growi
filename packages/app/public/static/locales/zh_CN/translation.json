@@ -169,11 +169,6 @@
 		"invalid_syntax": "%s的语法无效。",
     "title_required": "标题是必需的。"
   },
-  "not_found_page": {
-    "Create Page": "创建页面",
-    "page_not_exist": "该页面不存在",
-    "page_not_exist_alert": "该页面不存在，请创建一个新页面"
-  },
   "not_creatable_page": {
     "could_not_creata_path": "无法创建路径"
   },
@@ -234,16 +229,6 @@
 	"API Token Settings": "API token 设置",
 	"Current API Token": "当前 API token",
 	"Update API Token": "更新 API token",
-	"header_search_box": {
-		"label": {
-			"All pages": "所有页面",
-			"This tree": "当前分支"
-		},
-		"item_label": {
-			"All pages": "所有页面",
-			"This tree": "当前分支以下内容"
-		}
-  },
   "in_app_notification": {
     "notification_list": "应用内通知列表",
     "see_all": "查看通知列表",
@@ -295,14 +280,6 @@
       "no_nfd": "禁止使用 UTF8-MAC 浊音等 NFD。"
     }
   },
-	"copy_to_clipboard": {
-		"Copy to clipboard": "复制到剪贴板",
-		"Page path": "页面路径",
-		"Page URL": "页面Url",
-		"Parmanent link": "参数化链接",
-		"Page path and parmanent link": "页面路径及参数化链接",
-		"Markdown link": "Markdown链接"
-	},
 	"search_help": {
 		"title": "搜索帮助",
 		"and": {
@@ -591,8 +568,6 @@
     "link_sharing_is_disabled": "链接共享已被禁用"
   },
 	"personal_dropdown": {
-		"home": "家",
-		"settings": "设置",
 		"color_mode": "颜色模式",
 		"sidebar_mode": "边栏模式",
 		"sidebar_mode_editor": "编辑器上的边栏模式",
@@ -795,13 +770,6 @@
     "select_group": "选择组别",
     "belonging_to_no_group": "无法找到你所属的团体。",
     "manage_user_groups": "管理用户组"
-  },
-  "crop_image_modal": {
-    "image_crop": "图像裁剪",
-    "crop": "修剪",
-    "save": "节省",
-    "reset": "重启",
-    "cancel": "取消"
   },
   "fix_page_grant": {
     "modal": {

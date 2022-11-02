@@ -112,7 +112,7 @@ const ManageGlobalNotification = (props: Props): JSX.Element => {
     <>
       <div className="my-3">
         <a href="/admin/notification#global-notification" className="btn btn-outline-secondary">
-          <i className="icon-fw ti-arrow-left" aria-hidden="true"></i>
+          <i className="icon-fw ti ti-arrow-left" aria-hidden="true"></i>
           {t('notification_settings.back_to_list')}
         </a>
       </div>

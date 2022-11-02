@@ -8,15 +8,12 @@ import { RawLayout } from './RawLayout';
 
 import styles from './Admin.module.scss';
 
-
 const HotkeysManager = dynamic(() => import('../Hotkeys/HotkeysManager'), { ssr: false });
-
-const AdminNotFoundPage = dynamic(() => import('../Admin/NotFoundPage').then(mod => mod.AdminNotFoundPage), { ssr: false });
 
 
 type Props = {
-  title: string
-  componentTitle: string
+  title?: string
+  componentTitle?: string
   children?: ReactNode
 }
 
@@ -43,7 +40,7 @@ const AdminLayout = ({
                 <AdminNavigation />
               </div>
               <div className="col-lg-9">
-                {children || <AdminNotFoundPage />}
+                {children}
               </div>
             </div>
           </div>
