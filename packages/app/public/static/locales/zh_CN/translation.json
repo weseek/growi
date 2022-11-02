@@ -591,8 +591,6 @@
     "link_sharing_is_disabled": "链接共享已被禁用"
   },
 	"personal_dropdown": {
-		"home": "家",
-		"settings": "设置",
 		"color_mode": "颜色模式",
 		"sidebar_mode": "边栏模式",
 		"sidebar_mode_editor": "编辑器上的边栏模式",

@@ -24,5 +24,10 @@
     "Page Path": "Page Path",
     "expire": "Expiration",
     "description": "Description"
+  },
+
+  "personal_dropdown": {
+    "home": "家",
+    "settings": "设置"
   }
 }

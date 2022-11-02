@@ -24,5 +24,10 @@
     "Page Path": "ページパス",
     "expire": "有効期限",
     "description": "概要"
+  },
+
+  "personal_dropdown": {
+    "home": "ホーム",
+    "settings": "設定"
   }
 }
