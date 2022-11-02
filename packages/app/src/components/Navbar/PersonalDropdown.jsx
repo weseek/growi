@@ -10,7 +10,7 @@ import { apiv3Post } from '~/client/util/apiv3-client';
 import { useCurrentUser } from '~/stores/context';
 
 const PersonalDropdown = () => {
-  const { t } = useTranslation();
+  const { t } = useTranslation('commons');
   const { data: currentUser } = useCurrentUser();
 
   // ripple
@@ -56,12 +56,12 @@ const PersonalDropdown = () => {
           <div className="btn-group btn-block mt-2" role="group">
             <Link href={`/user/${user.username}`}>
               <a className="btn btn-sm btn-outline-secondary col">
-                <i className="icon-fw icon-home"></i>{ t('personal_dropdown.home') }
+                <i className="icon-fw icon-home"></i>{t('personal_dropdown.home')}
               </a>
             </Link>
             <Link href="/me">
               <a className="btn btn-sm btn-outline-secondary col">
-                <i className="icon-fw icon-wrench"></i>{ t('personal_dropdown.settings') }
+                <i className="icon-fw icon-wrench"></i>{t('personal_dropdown.settings')}
               </a>
             </Link>
           </div>
@@ -69,7 +69,7 @@ const PersonalDropdown = () => {
 
         <div className="dropdown-divider"></div>
 
-        <button type="button" className="dropdown-item" onClick={logoutHandler}><i className="icon-fw icon-power"></i>{ t('Sign out') }</button>
+        <button type="button" className="dropdown-item" onClick={logoutHandler}><i className="icon-fw icon-power"></i>{t('Sign out')}</button>
       </div>
 
     </>
