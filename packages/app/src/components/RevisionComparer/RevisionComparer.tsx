@@ -29,7 +29,7 @@ type RevisionComparerProps = {
 }
 
 export const RevisionComparer = (props: RevisionComparerProps): JSX.Element => {
-  const { t } = useTranslation();
+  const { t } = useTranslation(['translation', 'commons']);
 
   const {
     sourceRevision, targetRevision, currentPageId,
