@@ -13,9 +13,9 @@ const logger = loggerFactory('growi:models:bookmark-folder');
 
 export class InvalidParentBookmarkFolder extends ExtensibleCustomError {}
 
-export type BookmarkFolderItems = {
+export interface BookmarkFolderItems {
   bookmarkFolder: IBookmarkFolderDocument & HasObjectId
-  children: BookmarkFolderItems[]
+  children: this[]
 }
 
 export type IBookmarkFolderDocument = {
