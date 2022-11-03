@@ -25,7 +25,7 @@ import EmojiPickerHelper from './EmojiPickerHelper';
 import GridEditModal from './GridEditModal';
 // TODO: re-impl with https://redmine.weseek.co.jp/issues/107248
 // import geu from './GridEditorUtil';
-import HandsontableModal from './HandsontableModal';
+import { HandsontableModal } from './HandsontableModal';
 import LinkEditModal from './LinkEditModal';
 import mdu from './MarkdownDrawioUtil';
 import markdownLinkUtil from './MarkdownLinkUtil';

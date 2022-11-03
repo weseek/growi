@@ -28,6 +28,7 @@ import loggerFactory from '~/utils/logger';
 import RevisionRenderer from './Page/RevisionRenderer';
 import { DrawioModal } from './PageEditor/DrawioModal';
 // import MarkdownTable from '~/client/models/MarkdownTable';
+import type { HandsontableModalProps } from './PageEditor/HandsontableModal';
 import mdu from './PageEditor/MarkdownDrawioUtil';
 import mtu from './PageEditor/MarkdownTableUtil';
 
@@ -36,7 +37,7 @@ declare const globalEmitter: EventEmitter;
 
 // const DrawioModal = dynamic(() => import('./PageEditor/DrawioModal'), { ssr: false });
 const GridEditModal = dynamic(() => import('./PageEditor/GridEditModal'), { ssr: false });
-const HandsontableModal = dynamic(() => import('./PageEditor/HandsontableModal'), { ssr: false });
+const HandsontableModal = dynamic<HandsontableModalProps>(() => import('./PageEditor/HandsontableModal').then(mod => mod.HandsontableModal), { ssr: false });
 const LinkEditModal = dynamic(() => import('./PageEditor/LinkEditModal'), { ssr: false });
 
 const logger = loggerFactory('growi:Page');

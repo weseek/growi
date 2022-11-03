@@ -23,6 +23,7 @@ import { Comments } from '~/components/Comments';
 import { PageAlerts } from '~/components/PageAlert/PageAlerts';
 // import { useTranslation } from '~/i18n';
 import { CurrentPageContentFooter } from '~/components/PageContentFooter';
+import { HandsontableModal } from '~/components/PageEditor/HandsontableModal';
 import { UsersHomePageFooterProps } from '~/components/UsersHomePageFooter';
 import type { CrowiRequest } from '~/interfaces/crowi-request';
 // import { renderScriptTagByName, renderHighlightJsStyleTag } from '~/service/cdn-resources-loader';
@@ -340,6 +341,7 @@ const GrowiPage: NextPage<Props> = (props: Props) => {
 
           <UnsavedAlertDialog />
           <DescendantsPageListModal />
+          <HandsontableModal />
           {shouldRenderPutbackPageModal && <PutbackPageModal />}
         </div>
       </BasicLayout>

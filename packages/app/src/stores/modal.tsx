@@ -34,6 +34,30 @@ export const usePageCreateModal = (status?: CreateModalStatus): SWRResponse<Crea
 };
 
 /*
+* HandsonTableModal
+*/
+type HandsontableModalStatus = {
+  isOpened: boolean,
+  path?: string,
+}
+
+type HandsontableModalStatusUtils = {
+  open(path?: string): Promise<HandsontableModalStatus | undefined>
+  close(): Promise<HandsontableModalStatus | undefined>
+}
+
+export const useHandsontableModal = (status?: HandsontableModalStatus): SWRResponse<HandsontableModalStatus, Error> & HandsontableModalStatusUtils => {
+  const initialData: HandsontableModalStatus = { isOpened: false };
+  const swrResponse = useStaticSWR<HandsontableModalStatus, Error>('handsontableModalStatus', status, { fallbackData: initialData });
+
+  return {
+    ...swrResponse,
+    open: (path?: string) => swrResponse.mutate({ isOpened: true, path }),
+    close: () => swrResponse.mutate({ isOpened: false }),
+  };
+};
+
+/*
 * PageDeleteModal
 */
 export type IDeleteModalOption = {
