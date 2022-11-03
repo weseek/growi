@@ -5,6 +5,7 @@ import React, {
 
 import EventEmitter from 'events';
 
+import { MaxConcurrentPercentage } from 'aws-sdk/clients/cloudformation';
 import dynamic from 'next/dynamic';
 // import { debounce } from 'throttle-debounce';
 
@@ -13,7 +14,7 @@ import { HtmlElementNode } from 'rehype-toc';
 import { toastSuccess, toastError } from '~/client/util/apiNotification';
 import { getOptionsToSave } from '~/client/util/editor';
 import {
-  useIsGuestUser, useCurrentPageTocNode, useShareLinkId, useIsLatestRevision, useEditingMarkdown,
+  useIsGuestUser, useCurrentPageTocNode, useShareLinkId, useIsLatestRevision, useStaticPageData,
 } from '~/stores/context';
 import {
   useSWRxSlackChannels, useIsSlackEnabled, usePageTagsForEditors, useIsEnabledUnsavedWarning,
@@ -50,8 +51,6 @@ type PageSubstanceProps = {
   isMobile?: boolean,
   isSlackEnabled: boolean,
   slackChannels: string,
-  revisionMarkdown: string,
-  isLatestRevision: boolean,
 };
 
 class PageSubstance extends React.Component<PageSubstanceProps> {
@@ -174,11 +173,10 @@ class PageSubstance extends React.Component<PageSubstanceProps> {
 
   override render() {
     const {
-      rendererOptions, page, isMobile, isGuestUser, revisionMarkdown, isLatestRevision,
+      rendererOptions, page, isMobile, isGuestUser,
     } = this.props;
     const { path } = page;
-    const { _id: revisionId } = page.revision;
-    const markdown = isLatestRevision ? page.revision.body : revisionMarkdown;
+    const { _id: revisionId, body: markdown } = page.revision;
 
     return (
       <div className={`mb-5 ${isMobile ? 'page-mobile' : ''}`}>
@@ -226,10 +224,9 @@ export const Page = (props) => {
   const { mutate: mutateIsEnabledUnsavedWarning } = useIsEnabledUnsavedWarning();
   const { mutate: mutateCurrentPageTocNode } = useCurrentPageTocNode();
 
-  // TODO: Refactor useSWRxCurrentPage for keep mutate value.
-  // for History "View this version"
+  // for History "View this version" function on PageAccessoryModal
   const { data: isLatestRevision } = useIsLatestRevision();
-  const { data: markdown } = useEditingMarkdown();
+  const { data: pageWithMetaData } = useStaticPageData();
 
   const pageRef = useRef(null);
 
@@ -266,7 +263,7 @@ export const Page = (props) => {
   //   };
   // }, []);
 
-  if (currentPage == null || editorMode == null || isGuestUser == null || rendererOptions == null || markdown == null || isLatestRevision == null) {
+  if (currentPage == null || editorMode == null || isGuestUser == null || rendererOptions == null) {
     const entries = Object.entries({
       currentPage, editorMode, isGuestUser, rendererOptions,
     })
@@ -277,13 +274,14 @@ export const Page = (props) => {
     return null;
   }
 
+  const page = ((pageWithMetaData != null && isLatestRevision != null) && !isLatestRevision) ? pageWithMetaData : currentPage;
 
   return (
     <PageSubstance
       {...props}
       ref={pageRef}
       rendererOptions={rendererOptions}
-      page={currentPage}
+      page={page}
       editorMode={editorMode}
       isGuestUser={isGuestUser}
       isMobile={isMobile}
@@ -291,8 +289,6 @@ export const Page = (props) => {
       pageTags={pageTags}
       slackChannels={slackChannelsData?.toString()}
       mutateIsEnabledUnsavedWarning={mutateIsEnabledUnsavedWarning}
-      revisionMarkdown={markdown}
-      isLatestRevision={isLatestRevision}
     />
   );
 };

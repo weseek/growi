@@ -1,4 +1,4 @@
-import { IUser, pagePathUtils } from '@growi/core';
+import { IUser, pagePathUtils, IPagePopulatedToShowRevision } from '@growi/core';
 import { HtmlElementNode } from 'rehype-toc';
 import { Key, SWRResponse } from 'swr';
 import useSWRImmutable from 'swr/immutable';
@@ -214,6 +214,10 @@ export const useCustomizeTitle = (initialData?: string): SWRResponse<string, Err
 
 export const useCustomizedLogoSrc = (initialData?: string): SWRResponse<string, Error> => {
   return useStaticSWR('customizedLogoSrc', initialData);
+};
+
+export const useStaticPageData = (initialData?: IPagePopulatedToShowRevision): SWRResponse<IPagePopulatedToShowRevision, Error> => {
+  return useStaticSWR('staticPageData', initialData);
 };
 
 /** **********************************************************

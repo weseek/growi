@@ -66,6 +66,7 @@ import {
   useCsrfToken, useIsSearchScopeChildrenAsDefault, useCurrentPageId, useCurrentPathname,
   useIsSlackConfigured, useRendererConfig, useEditingMarkdown,
   useEditorConfig, useIsAllReplyShown, useIsUploadableFile, useIsUploadableImage, useCustomizedLogoSrc,
+  useStaticPageData,
 } from '../stores/context';
 
 import {
@@ -242,8 +243,9 @@ const GrowiPage: NextPage<Props> = (props: Props) => {
   useCurrentPagePath(pagePath);
   useCurrentPathname(props.currentPathname);
 
-  // useSWRxCurrentPage(undefined, pageWithMeta?.data ?? null); // store initial data
+  useSWRxCurrentPage(undefined, pageWithMeta?.data ?? null); // store initial data
   useEditingMarkdown(pageWithMeta?.data.revision?.body ?? '');
+  useStaticPageData(pageWithMeta?.data); // store page data statically for History function on PageAccessoryModal
 
   const { data: dataPageInfo } = useSWRxPageInfo(pageId);
   const { data: grantData } = useSWRxIsGrantNormalized(pageId);
