@@ -5,7 +5,6 @@ import React, {
 
 import EventEmitter from 'events';
 
-import { MaxConcurrentPercentage } from 'aws-sdk/clients/cloudformation';
 import dynamic from 'next/dynamic';
 // import { debounce } from 'throttle-debounce';
 
