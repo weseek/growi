@@ -22,7 +22,7 @@ export type GlobalSearchProps = {
 }
 
 export const GlobalSearch = (props: GlobalSearchProps): JSX.Element => {
-  const { t } = useTranslation();
+  const { t } = useTranslation('commons');
 
   const { dropup } = props;
 

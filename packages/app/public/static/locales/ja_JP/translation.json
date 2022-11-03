@@ -155,8 +155,6 @@
   "Confirm": "確認",
   "Successfully requested": "正常に処理を受け付けました",
   "personal_dropdown": {
-    "home": "ホーム",
-    "settings": "設定",
     "color_mode": "カラーモード",
     "sidebar_mode": "サイドバーモード",
     "sidebar_mode_editor": "サイドバーモード(編集時)",
@@ -167,11 +165,6 @@
     "required": "%sに値を入力してください",
     "invalid_syntax": "%sの構文が不正です",
     "title_required": "タイトルを入力してください"
-  },
-  "not_found_page": {
-    "Create Page": "ページを作成する",
-    "page_not_exist": "このページは存在しません。",
-    "page_not_exist_alert": "このページは存在しません。新たに作成する必要があります。"
   },
   "not_creatable_page": {
     "could_not_creata_path": "パスを作成できませんでした。"
@@ -233,9 +226,6 @@
     "Shere this page link to public": "外部に共有するリンクを発行する",
     "share_link_list": "共有リンクリスト",
     "share_link_management": "共有リンク管理",
-    "No_share_links":"共有リンクが存在しません",
-    "Share Link": "共有用リンク",
-    "Page Path": "ページパス",
     "delete_all_share_links":"全ての共有リンクを削除します",
     "expire": "有効期限",
     "Days": "日間",
@@ -252,16 +242,6 @@
   "API Token Settings": "API Token設定",
   "Current API Token": "現在のAPI Token",
   "Update API Token": "API Tokenを更新",
-  "header_search_box": {
-    "label": {
-      "All pages": "全てのページ",
-      "This tree": "この階層"
-    },
-    "item_label": {
-      "All pages": "全てのページ",
-      "This tree": "この階層下の子ページのみ"
-    }
-  },
   "in_app_notification": {
     "notification_list": "アプリ内通知一覧",
     "see_all": "通知一覧を見る",
@@ -312,14 +292,6 @@
       "no_mixed_zenkaku_and_hankaku_alphabet": "全角と半角アルファベットを混在をチェックします。",
       "no_nfd": "UTF8-MAC濁点のようなNFDの使用を禁止します。"
     }
-  },
-  "copy_to_clipboard": {
-    "Copy to clipboard": "クリップボードにコピー",
-    "Page path": "ページ名",
-    "Page URL": "ページURL",
-    "Permanent link": "パーマリンク",
-    "Page path and permanent link": "ページ名とパーマリンク",
-    "Markdown link": "マークダウン形式のリンク"
   },
   "search_help": {
     "title": "検索のヘルプ",
@@ -516,19 +488,8 @@
   "toaster": {
     "file_upload_succeeded": "ファイルをアップロードしました",
     "file_upload_failed": "ファイルのアップロードに失敗しました",
-    "initialize_successed": "{{target}}を初期化しました",
-    "give_user_admin": "{{username}}を管理者に設定しました",
-    "remove_user_admin": "{{username}}を管理者から外しました",
-    "activate_user_success": "{{username}}を有効化しました",
-    "deactivate_user_success": "{{username}}を無効化しました",
-    "remove_user_success": "{{username}}を削除しました",
-    "remove_external_user_success": "{{accountId}}を削除しました",
-    "remove_share_link_success": "{{shareLinkId}}を削除しました",
-    "issue_share_link": "共有リンクを作成しました",
-    "remove_share_link": "共有リンクを{{count}}件削除しました",
-    "switch_disable_link_sharing_success": "共有リンクの設定を変更しました",
-    "failed_to_reset_password":"パスワードのリセットに失敗しました",
-    "save_succeeded": "保存に成功しました"
+    "save_succeeded": "保存に成功しました",
+    "issue_share_link": "共有リンクを作成しました"
   },
   "template": {
     "modal_label": {
@@ -693,6 +654,7 @@
     "username_should_not_be_null":"Username が null になっています 管理画面の認証機構設定にて設定の確認をしてください",
     "email_address_is_already_registered":"このメールアドレスは既に登録されています。",
     "can_not_register_maximum_number_of_users":"ユーザー数が上限を超えたため登録できません。",
+    "email_settings_is_not_setup":"E-mail 設定が完了していません。管理者に問い合わせてください。",
     "failed_to_register":"登録に失敗しました。",
     "successfully_created":"{{username}} が作成されました。",
     "can_not_activate_maximum_number_of_users":"ユーザーが上限に達したためアクティベートできません。",
@@ -799,13 +761,6 @@
     "select_group": "グループを選ぶ",
     "belonging_to_no_group": "所属しているグループが見つかりませんでした。",
     "manage_user_groups": "グループ管理"
-  },
-  "crop_image_modal": {
-    "image_crop": "画像の切り抜き",
-    "crop": "トリミング",
-    "save": "保存",
-    "reset": "リセット",
-    "cancel": "キャンセル"
   },
   "fix_page_grant": {
     "modal": {
