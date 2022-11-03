@@ -65,7 +65,7 @@ export const defaultConfigWithRegExp = {
     maxRequests: MAX_REQUESTS_TIER_1,
   },
   '/user-activation/.*': {
-    method: 'ALL',
+    method: 'GET',
     maxRequests: MAX_REQUESTS_TIER_1,
   },
   '/attachment/[0-9a-z]{24}': {
