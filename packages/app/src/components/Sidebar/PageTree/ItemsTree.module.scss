@@ -4,6 +4,17 @@ $grw-sidebar-content-footer-height: 50px;
 $grw-pagetree-item-padding-left: 10px;
 
 .grw-pagetree {
+
+  .grw-pagetree-item-skelton {
+    width: 100%;
+    height: 40px;
+    padding: 12px $grw-pagetree-item-padding-left;
+  }
+
+  .grw-pagetree-item-skelton-children {
+    padding-left: $grw-pagetree-item-padding-left * 2;
+  }
+
   :global {
     min-height: calc(100vh - (var.$grw-navbar-height + var.$grw-navbar-border-width + $grw-sidebar-content-header-height + $grw-sidebar-content-footer-height));
 

@@ -8,6 +8,7 @@ import {
 import { useSWRxV5MigrationStatus } from '~/stores/page-listing';
 
 import ItemsTree from './PageTree/ItemsTree';
+import ItemsTreeSkelton from './PageTree/ItemsTreeSkelton';
 import { PrivateLegacyPagesLink } from './PageTree/PrivateLegacyPagesLink';
 
 const PageTree: FC = memo(() => {
@@ -27,9 +28,7 @@ const PageTree: FC = memo(() => {
         <div className="grw-sidebar-content-header p-3">
           <h3 className="mb-0">{t('Page Tree')}</h3>
         </div>
-        <div className="text-muted text-center mt-3">
-          <i className="fa fa-lg fa-spinner fa-pulse mr-1"></i>
-        </div>
+        <ItemsTreeSkelton />
       </>
     );
   }
