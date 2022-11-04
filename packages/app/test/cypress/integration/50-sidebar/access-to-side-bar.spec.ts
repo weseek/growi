@@ -29,8 +29,7 @@ context('Access to sidebar', () => {
     cy.getByTestid('grw-recent-changes').should('be.visible');
     cy.get('.list-group-item').should('be.visible');
 
-    // Avoid blackout misalignment
-    cy.scrollTo('center');
+    cy.scrollTo('top');
     cy.screenshot(`${ssPrefix}recent-changes-1-page-list`);
 
     cy.get('#grw-sidebar-contents-wrapper').within(() => {
@@ -38,8 +37,7 @@ context('Access to sidebar', () => {
       cy.get('.list-group-item').should('be.visible');
     });
 
-    // Avoid blackout misalignment
-    cy.scrollTo('center');
+    cy.scrollTo('top');
     cy.screenshot(`${ssPrefix}recent-changes-2-switch-sidebar-size`);
   });
 
