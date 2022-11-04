@@ -70,7 +70,7 @@ const ShareLinkSetting = (props: ShareLinkSettingProps) => {
     try {
       const res = await apiv3Delete('/share-links/all');
       const { deletedCount } = res.data;
-      toastSuccess(t('toaster.remove_share_link', { count: deletedCount }));
+      toastSuccess(t('toaster.remove_share_link', { count: deletedCount, ns: 'commons' }));
     }
     catch (err) {
       toastError(err);
@@ -82,7 +82,7 @@ const ShareLinkSetting = (props: ShareLinkSettingProps) => {
     try {
       const res = await apiv3Delete(`/share-links/${shareLinkId}`);
       const { deletedShareLink } = res.data;
-      toastSuccess(t('toaster.remove_share_link_success', { shareLinkId: deletedShareLink._id }));
+      toastSuccess(t('toaster.remove_share_link_success', { shareLinkId: deletedShareLink._id, ns: 'commons' }));
     }
     catch (err) {
       toastError(err);
@@ -148,7 +148,7 @@ const ShareLinkSetting = (props: ShareLinkSettingProps) => {
           isAdmin
         />
       )
-        : (<p className="text-center">{t('share_links.No_share_links')}</p>
+        : (<p className="text-center">{t('security_settings.No_share_links')}</p>
         )
       }
 

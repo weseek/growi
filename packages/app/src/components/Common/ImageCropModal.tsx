@@ -12,6 +12,7 @@ import {
   ModalFooter,
 } from 'reactstrap';
 
+
 import { toastError } from '~/client/util/apiNotification';
 import loggerFactory from '~/utils/logger';
 import 'react-image-crop/dist/ReactCrop.css';
@@ -46,7 +47,8 @@ const ImageCropModal: FC<Props> = (props: Props) => {
   const [imageRef, setImageRef] = useState<HTMLImageElement | null>(null);
   const [cropOptions, setCropOtions] = useState<CropOptions>(null);
   const [isCropImage, setIsCropImage] = useState<boolean>(true);
-  const { t } = useTranslation();
+  const { t } = useTranslation('commons');
+
   const reset = useCallback(() => {
     if (imageRef) {
       // Some SVG files may not have width and height properties, causing the render size to be 0x0
