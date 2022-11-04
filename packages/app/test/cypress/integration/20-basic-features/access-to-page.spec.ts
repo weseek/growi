@@ -48,7 +48,12 @@ context('Access to page', () => {
     cy.visit('/user/admin', {  });
 
     cy.get('.grw-skelton').should('not.exist');
+    // for check download toc data
     cy.get('.toc-link').should('be.visible');
+
+    // eslint-disable-next-line cypress/no-unnecessary-waiting
+    cy.wait(2000); // wait for calcViewHeight and rendering
+
     cy.screenshot(`${ssPrefix}-user-admin`);
   });
 
