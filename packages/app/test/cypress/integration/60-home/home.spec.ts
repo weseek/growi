@@ -19,6 +19,8 @@ context('Access Home', () => {
     // for check download toc data
     cy.get('.toc-link').should('be.visible');
 
+    cy.get('.user-page-footer').should('be.visible');
+
     cy.screenshot(`${ssPrefix}-visit-home`);
   });
 
