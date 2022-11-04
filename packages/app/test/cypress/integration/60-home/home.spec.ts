@@ -15,13 +15,12 @@ context('Access Home', () => {
     cy.getByTestid('grw-personal-dropdown').click();
     cy.getByTestid('grw-personal-dropdown').find('.dropdown-menu .btn-group > .btn-outline-secondary:eq(0)').click();
 
-    cy.get('.grw-users-info').should('be.visible');
+    cy.get('.grw-skelton').should('not.exist');
     // for check download toc data
     cy.get('.toc-link').should('be.visible');
 
-    cy.get('.user-page-footer').should('be.visible');
-
-    cy.get('.comment-form-main').should('be.visible')
+    // eslint-disable-next-line cypress/no-unnecessary-waiting
+    cy.wait(2000); // wait for calcViewHeight and rendering
 
     cy.screenshot(`${ssPrefix}-visit-home`);
   });
