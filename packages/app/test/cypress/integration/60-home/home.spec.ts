@@ -22,6 +22,7 @@ context('Access Home', () => {
     // eslint-disable-next-line cypress/no-unnecessary-waiting
     cy.wait(2000); // wait for calcViewHeight and rendering
 
+    // same screenshot is taken in access-to-page.spec
     cy.screenshot(`${ssPrefix}-visit-home`);
   });
 
