@@ -18,19 +18,15 @@ import BookmarkFolderNameInput from './BookmarkFolderNameInput';
 type BookmarkFolderItemProps = {
   bookmarkFolders: BookmarkFolderItems
   isOpen?: boolean
-  updateActiveElement?: (parentId: string | null) => void
-  isActive?: boolean
 }
 const BookmarkFolderItem: FC<BookmarkFolderItemProps> = (props: BookmarkFolderItemProps) => {
-  const {
-    bookmarkFolders, isOpen: _isOpen = false, updateActiveElement, isActive,
-  } = props;
+  const { bookmarkFolders, isOpen: _isOpen = false } = props;
 
   const { t } = useTranslation();
   const { bookmarkFolder, children } = bookmarkFolders;
   const [currentChildren, setCurrentChildren] = useState<BookmarkFolderItems[]>();
   const [isRenameInputShown, setIsRenameInputShown] = useState<boolean>(false);
-  const [currentParentFolder, setCurrentParentFolder] = useState<string | null>(bookmarkFolders.bookmarkFolder?._id);
+  const [currentParentFolder, setCurrentParentFolder] = useState<string | null>(bookmarkFolder?._id);
   const [isOpen, setIsOpen] = useState(_isOpen);
   const { data: childBookmarkFolderData, mutate: mutateChildBookmarkData } = useSWRxBookamrkFolderAndChild(isOpen ? currentParentFolder : null);
 
@@ -49,8 +45,8 @@ const BookmarkFolderItem: FC<BookmarkFolderItemProps> = (props: BookmarkFolderIt
 
   const loadChildFolder = useCallback(async() => {
     setIsOpen(!isOpen);
-    updateActiveElement?.(!isOpen ? bookmarkFolder._id : null);
-  }, [bookmarkFolder, isOpen, updateActiveElement]);
+    setCurrentParentFolder(bookmarkFolder._id);
+  }, [bookmarkFolder, isOpen]);
 
 
   const onPressEnterHandler = useCallback(async(folderName: string) => {
@@ -59,13 +55,14 @@ const BookmarkFolderItem: FC<BookmarkFolderItemProps> = (props: BookmarkFolderIt
       await apiv3Post('/bookmark-folder', { name: folderName, parent: currentParentFolder });
       setIsOpen(true);
       setIsRenameInputShown(false);
+      mutateChildBookmarkData();
       toastSuccess(t('Create New Bookmark Folder Success'));
     }
     catch (err) {
       toastError(err);
     }
 
-  }, [currentParentFolder, t]);
+  }, [currentParentFolder, mutateChildBookmarkData, t]);
 
   const onClickPlusButton = useCallback(async() => {
     if (!isOpen && hasChildren()) {
@@ -74,12 +71,24 @@ const BookmarkFolderItem: FC<BookmarkFolderItemProps> = (props: BookmarkFolderIt
     setIsRenameInputShown(true);
   }, [hasChildren, isOpen]);
 
+  const RenderChildFolder = () => {
+    return isOpen && currentChildren?.map((childFolder) => {
+      return (
+        <div key={childFolder.bookmarkFolder._id} className="grw-foldertree-item-children">
+          <BookmarkFolderItem
+            key={childFolder.bookmarkFolder._id}
+            bookmarkFolders={childFolder}
+          />
+        </div>
+      );
+    });
+  };
+
+
   return (
     <div id={`bookmark-folder-item-${bookmarkFolder._id}`} className="grw-foldertree-item-container"
     >
-      <li className={`list-group-item list-group-item-action border-0 py-0 pr-3 d-flex align-items-center
-       ${isActive ? 'grw-foldertree-current-folder-item' : ''}` }
-      >
+      <li className="list-group-item list-group-item-action border-0 py-0 pr-3 d-flex align-items-center">
         <div className="grw-triangle-container d-flex justify-content-center">
           {hasChildren() && (
             <button
@@ -132,15 +141,7 @@ const BookmarkFolderItem: FC<BookmarkFolderItemProps> = (props: BookmarkFolderIt
         </div>
       )}
       {
-        isOpen && hasChildren() && currentChildren?.map(children => (
-          <div key={children.bookmarkFolder._id} className="grw-foldertree-item-children">
-            <BookmarkFolderItem
-              key={children.bookmarkFolder._id}
-              bookmarkFolders={children}
-              isActive = {isActive}
-            />
-          </div>
-        ))
+        RenderChildFolder()
       }
     </div>
   );

@@ -12,12 +12,6 @@ import styles from './BookmarkFolderTree.module.scss';
 const BookmarkFolderTree = (): JSX.Element => {
   const { t } = useTranslation();
   const { data: bookmarkFolderData } = useSWRxBookamrkFolderAndChild();
-  const [activeElement, setActiveElement] = useState<string | null>(null);
-
-  const updateActiveElement = (parentId: string | null) => {
-    setActiveElement(parentId);
-  };
-
   if (bookmarkFolderData != null) {
     return (
 
@@ -28,8 +22,6 @@ const BookmarkFolderTree = (): JSX.Element => {
               key={item.bookmarkFolder._id}
               bookmarkFolders={item}
               isOpen={false}
-              updateActiveElement={updateActiveElement}
-              isActive={item.bookmarkFolder._id === activeElement}
             />
           );
         })}
