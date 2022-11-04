@@ -21,6 +21,8 @@ context('Access Home', () => {
 
     cy.get('.user-page-footer').should('be.visible');
 
+    cy.get('.comment-form-main').should('be.visible')
+
     cy.screenshot(`${ssPrefix}-visit-home`);
   });
 
