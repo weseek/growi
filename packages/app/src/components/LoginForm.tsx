@@ -17,7 +17,7 @@ type LoginFormProps = {
   email?: string,
   isRegistrationEnabled: boolean,
   isEmailAuthenticationEnabled: boolean,
-  registrationMode?: string,
+  registrationMode: string,
   registrationWhiteList: string[],
   isPasswordResetEnabled: boolean,
   isLocalStrategySetup: boolean,
