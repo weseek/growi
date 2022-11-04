@@ -19,7 +19,6 @@ context('Access Home', () => {
     // for check download toc data
     cy.get('.toc-link').should('be.visible');
 
-    // same screenshot is taken in access-to-page.spec
     cy.screenshot(`${ssPrefix}-visit-home`);
   });
 
