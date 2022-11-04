@@ -76,7 +76,6 @@ context('Click page icons button', () => {
   });
 
   it('Successfully display list of "seen by user"', () => {
-    cy.login('admin', 'adminadmin');
     cy.visit('/Sandbox');
     cy.get('.grw-skelton').should('not.exist');
     // eslint-disable-next-line cypress/no-unnecessary-waiting
