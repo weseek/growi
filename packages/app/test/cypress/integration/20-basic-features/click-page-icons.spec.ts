@@ -76,12 +76,16 @@ context('Click page icons button', () => {
   });
 
   it('Successfully display list of "seen by user"', () => {
+    cy.login('admin', 'adminadmin');
     cy.visit('/Sandbox');
+    cy.get('.grw-skelton').should('not.exist');
+    // eslint-disable-next-line cypress/no-unnecessary-waiting
+    cy.wait(2000); // wait for get method
     cy.get('#grw-subnav-container').within(() => {
-      cy.get('div.grw-seen-user-info > button#btn-seen-user').click({force: true});
+      cy.get('div.grw-seen-user-info').find('button#btn-seen-user').click({force: true});
     });
 
-    cy.get('.user-list-popover').should('be.visible');
+    cy.get('.user-list-popover').should('be.visible')
 
     cy.get('#grw-subnav-container').within(() => {
       cy.screenshot(`${ssPrefix}11-seen-user-list`);

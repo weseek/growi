@@ -48,6 +48,7 @@ context('Access to page', () => {
     cy.visit('/user/admin', {  });
 
     cy.get('.grw-skelton').should('not.exist');
+    cy.get('.toc-link').should('be.visible');
     cy.screenshot(`${ssPrefix}-user-admin`);
   });
 
