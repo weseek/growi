@@ -15,7 +15,6 @@ import ExpandOrContractButton from '../ExpandOrContractButton';
 
 import MarkdownTableDataImportForm from './MarkdownTableDataImportForm';
 
-
 import styles from './HandsontableModal.module.scss';
 import 'handsontable/dist/handsontable.full.min.css';
 
@@ -39,9 +38,6 @@ export const HandsontableModal = (props: HandsontableModalProps): JSX.Element =>
   const isOpened = handsontableModalData?.isOpened ?? false;
 
   // const { onSave, autoFormatMarkdownTable } = props;
-
-  const [hotTable, setHotTable] = useState<HotTable | null>();
-  const [hotTableContainer, setHotTableContainer] = useState<HTMLDivElement | null>();
 
   const defaultMarkdownTable = () => {
     return new MarkdownTable(
@@ -85,6 +81,8 @@ export const HandsontableModal = (props: HandsontableModalProps): JSX.Element =>
    *
    * However, all operations are reflected in the data to be saved because the HotTable data is used when the save method is called.
    */
+  const [hotTable, setHotTable] = useState<HotTable | null>();
+  const [hotTableContainer, setHotTableContainer] = useState<HTMLDivElement | null>();
   // const [isShow, setIsShow] = useState<boolean>(false);
   const [isDataImportAreaExpanded, setIsDataImportAreaExpanded] = useState<boolean>(false);
   const [isWindowExpanded, setIsWindowExpanded] = useState<boolean>(false);
@@ -99,54 +97,6 @@ export const HandsontableModal = (props: HandsontableModalProps): JSX.Element =>
     manuallyResizedColumnIndicesSet.clear();
   };
 
-  const createCustomizedContextMenu = () => {
-    return {
-      items: {
-        row_above: {},
-        row_below: {},
-        col_left: {},
-        col_right: {},
-        separator1: '---------',
-        remove_row: {},
-        remove_col: {},
-        separator2: '---------',
-        custom_alignment: {
-          name: 'Align columns',
-          key: 'align_columns',
-          submenu: {
-            items: [
-              {
-                name: 'Left',
-                key: 'align_columns:1',
-                callback: (key, selection) => { align('l', selection[0].start.col, selection[0].end.col) },
-              }, {
-                name: 'Center',
-                key: 'align_columns:2',
-                callback: (key, selection) => { align('c', selection[0].start.col, selection[0].end.col) },
-              }, {
-                name: 'Right',
-                key: 'align_columns:3',
-                callback: (key, selection) => { align('r', selection[0].start.col, selection[0].end.col) },
-              },
-            ],
-          },
-        },
-      },
-    };
-  };
-
-  // const show = () => {
-  //   init(markdownTable);
-  //   setIsShow(true);
-  // };
-
-  // included to cancel
-  // const hide = () => {
-  //   setIsShow(false);
-  //   setIsDataImportAreaExpanded(false);
-  //   setIsWindowExpanded(false);
-  // };
-
   /**
    * Reset table data to initial value
    *
@@ -160,10 +110,21 @@ export const HandsontableModal = (props: HandsontableModalProps): JSX.Element =>
 
   const cancel = () => {
     closeHandsontableModal();
+    // hide()
     setIsDataImportAreaExpanded(false);
     setIsWindowExpanded(false);
   };
 
+  // const show = () => {
+  //   init(markdownTable);
+  //   setIsShow(true);
+  // };
+
+  // const hide = () => {
+  //   setIsShow(false);
+  //   setIsDataImportAreaExpanded(false);
+  //   setIsWindowExpanded(false);
+  // };
 
   const save = () => {
     if (hotTable == null) {
@@ -278,7 +239,7 @@ export const HandsontableModal = (props: HandsontableModalProps): JSX.Element =>
    * The updateSettings method calls in the HotTable always lead to call the loadData method because the HotTable passes data source by settings.data.
    * After the loadData method is executed, afterLoadData hooks are called.
    */
-  const afterLoadDataHandler = (initialLoad) => {
+  const afterLoadDataHandler = (initialLoad: boolean) => {
     if (initialLoad) {
       manuallyResizedColumnIndicesSet.clear();
     }
@@ -291,7 +252,8 @@ export const HandsontableModal = (props: HandsontableModalProps): JSX.Element =>
    *
    * This synchronizes alignment when columns are moved by manualColumnMove
    */
-  const afterColumnMoveHandler = (columns, target) => {
+  // TODO: colums type is number[]
+  const afterColumnMoveHandler = (columns: any, target: number) => {
     const align = [].concat(markdownTable.options.align);
     const removed = align.splice(columns[0], columns.length);
 
@@ -358,7 +320,7 @@ export const HandsontableModal = (props: HandsontableModalProps): JSX.Element =>
   /**
    * change the markdownTable alignment and synchronize the handsontable alignment to it
    */
-  const align = (direction, startCol: number, endCol: number) => {
+  const align = (direction: string, startCol: number, endCol: number) => {
     setMarkdownTable((prevMarkdownTable) => {
       // change only align info, so share table data to avoid redundant copy
       const newMarkdownTable = new MarkdownTable(prevMarkdownTable.table, { align: [].concat(prevMarkdownTable.options.align) });
@@ -371,7 +333,7 @@ export const HandsontableModal = (props: HandsontableModalProps): JSX.Element =>
     synchronizeAlignment();
   };
 
-  const alignButtonHandler = (direction) => {
+  const alignButtonHandler = (direction: string) => {
     if (hotTable == null) {
       return;
     }
@@ -379,17 +341,8 @@ export const HandsontableModal = (props: HandsontableModalProps): JSX.Element =>
     const selectedRange = hotTable.hotInstance.getSelectedRange();
     if (selectedRange == null) return;
 
-    let startCol;
-    let endCol;
-
-    if (selectedRange[0].from.col < selectedRange[0].to.col) {
-      startCol = selectedRange[0].from.col;
-      endCol = selectedRange[0].to.col;
-    }
-    else {
-      startCol = selectedRange[0].to.col;
-      endCol = selectedRange[0].from.col;
-    }
+    const startCol = selectedRange[0].from.col < selectedRange[0].to.col ? selectedRange[0].from.col : selectedRange[0].to.col;
+    const endCol = selectedRange[0].from.col < selectedRange[0].to.col ? selectedRange[0].to.col : selectedRange[0].from.col;
 
     align(direction, startCol, endCol);
   };
@@ -405,7 +358,7 @@ export const HandsontableModal = (props: HandsontableModalProps): JSX.Element =>
    * The manualColumnMove operation affects the column order of imported data.
    * https://github.com/handsontable/handsontable/issues/5591
    */
-  const importData = (markdownTable) => {
+  const importData = (markdownTable: MarkdownTable) => {
     init(markdownTable);
     toggleDataImportArea();
   };
@@ -457,6 +410,42 @@ export const HandsontableModal = (props: HandsontableModalProps): JSX.Element =>
       />
     </span>
   );
+
+  const createCustomizedContextMenu = () => {
+    return {
+      items: {
+        row_above: {},
+        row_below: {},
+        col_left: {},
+        col_right: {},
+        separator1: '---------',
+        remove_row: {},
+        remove_col: {},
+        separator2: '---------',
+        custom_alignment: {
+          name: 'Align columns',
+          key: 'align_columns',
+          submenu: {
+            items: [
+              {
+                name: 'Left',
+                key: 'align_columns:1',
+                callback: (key, selection) => { align('l', selection[0].start.col, selection[0].end.col) },
+              }, {
+                name: 'Center',
+                key: 'align_columns:2',
+                callback: (key, selection) => { align('c', selection[0].start.col, selection[0].end.col) },
+              }, {
+                name: 'Right',
+                key: 'align_columns:3',
+                callback: (key, selection) => { align('r', selection[0].start.col, selection[0].end.col) },
+              },
+            ],
+          },
+        },
+      },
+    };
+  };
 
   // generate setting object for HotTable instance
   const handsontableSettings = Object.assign(defaultHandsontableSetting(), {
