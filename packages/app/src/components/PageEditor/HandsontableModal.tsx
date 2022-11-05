@@ -9,10 +9,12 @@ import {
 import { debounce } from 'throttle-debounce';
 
 import MarkdownTable from '~/client/models/MarkdownTable';
+import { useHandsontableModal } from '~/stores/modal';
 
 import ExpandOrContractButton from '../ExpandOrContractButton';
 
 import MarkdownTableDataImportForm from './MarkdownTableDataImportForm';
+
 
 import styles from './HandsontableModal.module.scss';
 import 'handsontable/dist/handsontable.full.min.css';
@@ -26,14 +28,17 @@ const MARKDOWNTABLE_TO_HANDSONTABLE_ALIGNMENT_SYMBOL_MAPPING = {
 };
 
 export type HandsontableModalProps = {
-  ref: any,
-  onSave: (markdownTable: MarkdownTable) => Promise<void>,
-  autoFormatMarkdownTable: boolean,
+  // ref: any,
+  // onSave: (markdownTable: MarkdownTable) => Promise<void>,
+  // autoFormatMarkdownTable: boolean,
 }
 
 export const HandsontableModal = (props: HandsontableModalProps): JSX.Element => {
 
-  const { onSave, autoFormatMarkdownTable } = props;
+  const { data: handsontableModalData, close: closeHandsontableModal } = useHandsontableModal();
+  const isOpened = handsontableModalData?.isOpened ?? false;
+
+  // const { onSave, autoFormatMarkdownTable } = props;
 
   const [hotTable, setHotTable] = useState<HotTable | null>();
   const [hotTableContainer, setHotTableContainer] = useState<HTMLDivElement | null>();
@@ -80,7 +85,7 @@ export const HandsontableModal = (props: HandsontableModalProps): JSX.Element =>
    *
    * However, all operations are reflected in the data to be saved because the HotTable data is used when the save method is called.
    */
-  const [isShow, setIsShow] = useState<boolean>(false);
+  // const [isShow, setIsShow] = useState<boolean>(false);
   const [isDataImportAreaExpanded, setIsDataImportAreaExpanded] = useState<boolean>(false);
   const [isWindowExpanded, setIsWindowExpanded] = useState<boolean>(false);
   const [markdownTableOnInit, setMarkdownTableOnInit] = useState<MarkdownTable>(() => defaultMarkdownTable());
@@ -135,11 +140,12 @@ export const HandsontableModal = (props: HandsontableModalProps): JSX.Element =>
   //   setIsShow(true);
   // };
 
-  const hide = () => {
-    setIsShow(false);
-    setIsDataImportAreaExpanded(false);
-    setIsWindowExpanded(false);
-  };
+  // included to cancel
+  // const hide = () => {
+  //   setIsShow(false);
+  //   setIsDataImportAreaExpanded(false);
+  //   setIsWindowExpanded(false);
+  // };
 
   /**
    * Reset table data to initial value
@@ -153,31 +159,34 @@ export const HandsontableModal = (props: HandsontableModalProps): JSX.Element =>
   };
 
   const cancel = () => {
-    hide();
+    closeHandsontableModal();
+    setIsDataImportAreaExpanded(false);
+    setIsWindowExpanded(false);
   };
 
-  const markdownTableOption = () => {
-    return {
-      align: [].concat(markdownTable.options.align),
-      pad: autoFormatMarkdownTable !== false,
-    };
-  };
 
   const save = () => {
     if (hotTable == null) {
       return;
     }
 
-    const markdownTable = new MarkdownTable(
-      hotTable.hotInstance.getData(),
-      markdownTableOption,
-    ).normalizeCells();
+    // const markdownTableOption = () => {
+    //   return {
+    //     align: [].concat(markdownTable.options.align),
+    //     pad: autoFormatMarkdownTable !== false,
+    //   };
+    // };
 
-    if (onSave != null) {
-      onSave(markdownTable);
-    }
+    // const markdownTable = new MarkdownTable(
+    //   hotTable.hotInstance.getData(),
+    //   markdownTableOption,
+    // ).normalizeCells();
 
-    hide();
+    // if (onSave != null) {
+    //   onSave(markdownTable);
+    // }
+
+    cancel();
   };
 
   const beforeColumnResizeHandler = (currentColumn) => {
@@ -456,7 +465,7 @@ export const HandsontableModal = (props: HandsontableModalProps): JSX.Element =>
 
   return (
     <Modal
-      isOpen={isShow}
+      isOpen={isOpened}
       toggle={cancel}
       backdrop="static"
       keyboard={false}

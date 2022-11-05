@@ -28,7 +28,7 @@ import loggerFactory from '~/utils/logger';
 import RevisionRenderer from './Page/RevisionRenderer';
 import { DrawioModal } from './PageEditor/DrawioModal';
 // import MarkdownTable from '~/client/models/MarkdownTable';
-import type { HandsontableModalProps } from './PageEditor/HandsontableModal';
+// import type { HandsontableModalProps } from './PageEditor/HandsontableModal';
 import mdu from './PageEditor/MarkdownDrawioUtil';
 import mtu from './PageEditor/MarkdownTableUtil';
 
@@ -37,7 +37,7 @@ declare const globalEmitter: EventEmitter;
 
 // const DrawioModal = dynamic(() => import('./PageEditor/DrawioModal'), { ssr: false });
 const GridEditModal = dynamic(() => import('./PageEditor/GridEditModal'), { ssr: false });
-const HandsontableModal = dynamic<HandsontableModalProps>(() => import('./PageEditor/HandsontableModal').then(mod => mod.HandsontableModal), { ssr: false });
+// const HandsontableModal = dynamic<HandsontableModalProps>(() => import('./PageEditor/HandsontableModal').then(mod => mod.HandsontableModal), { ssr: false });
 const LinkEditModal = dynamic(() => import('./PageEditor/LinkEditModal'), { ssr: false });
 
 const logger = loggerFactory('growi:Page');
@@ -59,7 +59,7 @@ class PageSubstance extends React.Component<PageSubstanceProps> {
 
   linkEditModal: any;
 
-  handsontableModal: any;
+  // handsontableModal: any;
 
   drawioModal: any;
 
@@ -73,10 +73,10 @@ class PageSubstance extends React.Component<PageSubstanceProps> {
 
     this.gridEditModal = React.createRef();
     this.linkEditModal = React.createRef();
-    this.handsontableModal = React.createRef();
+    // this.handsontableModal = React.createRef();
     this.drawioModal = React.createRef();
 
-    this.saveHandlerForHandsontableModal = this.saveHandlerForHandsontableModal.bind(this);
+    // this.saveHandlerForHandsontableModal = this.saveHandlerForHandsontableModal.bind(this);
     this.saveHandlerForDrawioModal = this.saveHandlerForDrawioModal.bind(this);
   }
 
@@ -189,7 +189,7 @@ class PageSubstance extends React.Component<PageSubstanceProps> {
           <>
             <GridEditModal ref={this.gridEditModal} />
             <LinkEditModal ref={this.linkEditModal} />
-            <HandsontableModal ref={this.handsontableModal} onSave={this.saveHandlerForHandsontableModal} />
+            {/* <HandsontableModal ref={this.handsontableModal} onSave={this.saveHandlerForHandsontableModal} /> */}
             {/* TODO: use global DrawioModal https://redmine.weseek.co.jp/issues/105981 */}
             {/* <DrawioModal
               ref={this.drawioModal}

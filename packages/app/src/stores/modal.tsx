@@ -34,30 +34,6 @@ export const usePageCreateModal = (status?: CreateModalStatus): SWRResponse<Crea
 };
 
 /*
-* HandsonTableModal
-*/
-type HandsontableModalStatus = {
-  isOpened: boolean,
-  path?: string,
-}
-
-type HandsontableModalStatusUtils = {
-  open(path?: string): Promise<HandsontableModalStatus | undefined>
-  close(): Promise<HandsontableModalStatus | undefined>
-}
-
-export const useHandsontableModal = (status?: HandsontableModalStatus): SWRResponse<HandsontableModalStatus, Error> & HandsontableModalStatusUtils => {
-  const initialData: HandsontableModalStatus = { isOpened: false };
-  const swrResponse = useStaticSWR<HandsontableModalStatus, Error>('handsontableModalStatus', status, { fallbackData: initialData });
-
-  return {
-    ...swrResponse,
-    open: (path?: string) => swrResponse.mutate({ isOpened: true, path }),
-    close: () => swrResponse.mutate({ isOpened: false }),
-  };
-};
-
-/*
 * PageDeleteModal
 */
 export type IDeleteModalOption = {
@@ -485,13 +461,40 @@ export const useDrawioModal = (status?: DrawioModalStatus): SWRResponse<DrawioMo
   };
   const swrResponse = useStaticSWR<DrawioModalStatus, Error>('drawioModalStatus', status, { fallbackData: initialData });
 
+  const open = (drawioMxFile: string): void => {
+    swrResponse.mutate({ isOpened: true, drawioMxFile });
+  };
+
   const close = (): void => {
     swrResponse.mutate({ isOpened: false, drawioMxFile: '' });
   };
 
-  const open = (drawioMxFile: string): void => {
-    swrResponse.mutate({ isOpened: true, drawioMxFile });
+  return {
+    ...swrResponse,
+    open,
+    close,
   };
+};
+
+/*
+* HandsonTableModal
+*/
+type HandsontableModalStatus = {
+  isOpened: boolean,
+  table: string,
+}
+
+type HandsontableModalStatusUtils = {
+  open(table: string): Promise<HandsontableModalStatus | undefined>
+  close(): Promise<HandsontableModalStatus | undefined>
+}
+
+export const useHandsontableModal = (status?: HandsontableModalStatus): SWRResponse<HandsontableModalStatus, Error> & HandsontableModalStatusUtils => {
+  const initialData: HandsontableModalStatus = { isOpened: false, table: '' };
+  const swrResponse = useStaticSWR<HandsontableModalStatus, Error>('handsontableModalStatus', status, { fallbackData: initialData });
+
+  const open = (table: string) => swrResponse.mutate({ isOpened: true, table });
+  const close = () => swrResponse.mutate({ isOpened: false, table: '' });
 
   return {
     ...swrResponse,
