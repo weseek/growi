@@ -52,6 +52,9 @@ export const PluginsExtensionPageContents = (): JSX.Element => {
             </button>
           </h2>
           <div className="d-grid gap-5">
+            { data?.data?.plugins.length === 0 && (
+              <div>Plugin is not installed</div>
+            )}
             { data?.data?.plugins.map((item) => {
               const pluginId = item[0]._id;
               const pluginName = item[0].meta.name;

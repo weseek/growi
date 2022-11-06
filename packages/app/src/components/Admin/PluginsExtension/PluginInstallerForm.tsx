@@ -2,8 +2,11 @@ import React, { useCallback } from 'react';
 
 import { toastSuccess, toastError } from '~/client/util/apiNotification';
 import { apiv3Post } from '~/client/util/apiv3-client';
+import { useSWRxPlugins } from '~/stores/plugin';
 // TODO: i18n
 export const PluginInstallerForm = (): JSX.Element => {
+  const { mutate } = useSWRxPlugins();
+
   const submitHandler = useCallback(async(e) => {
     e.preventDefault();
 
@@ -29,7 +32,10 @@ export const PluginInstallerForm = (): JSX.Element => {
       toastError(err);
       // logger.error(err);
     }
-  }, []);
+    finally {
+      mutate();
+    }
+  }, [mutate]);
 
   return (
     <form role="form" onSubmit={submitHandler}>

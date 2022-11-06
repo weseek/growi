@@ -164,4 +164,18 @@ export class PluginService {
     return growiPlugins[0].isEnabled;
   }
 
+  /**
+   * Delete plugin
+   */
+  async pluginDeleted(targetPluginId: string, targetPluginName: string): Promise<any> {
+    const GrowiPlugin = mongoose.model<GrowiPlugin>('GrowiPlugin');
+    const growiPlugins = await GrowiPlugin.find({ _id: targetPluginId });
+    growiPlugins[0].remove();
+    // TODO: Check remove
+    const ghOrganizationName = 'weseek';
+    const unzipTargetPath = path.join(pluginStoringPath, ghOrganizationName);
+    execSync(`rm -rf ${unzipTargetPath}/${targetPluginName}`);
+    return [];
+  }
+
 }
