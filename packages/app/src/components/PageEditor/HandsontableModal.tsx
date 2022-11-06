@@ -459,11 +459,11 @@ export const HandsontableModal = (props: HandsontableModalProps): JSX.Element =>
       backdrop="static"
       keyboard={false}
       size="lg"
-      className={`handsontable-modal ${styles['grw-handsontable']}
-        ${isWindowExpanded && `grw-modal-expanded ${styles['grw-modal-expanded']}`}`}
+      wrapClassName={`${styles['grw-handsontable']}`}
+      className={`handsontable-modal ${isWindowExpanded && 'grw-modal-expanded'}`}
     >
       <ModalHeader tag="h4" toggle={cancel} close={buttons} className="bg-primary text-light">
-        Edit Table
+          Edit Table
       </ModalHeader>
       <ModalBody className="p-0 d-flex flex-column">
         <div className="grw-hot-modal-navbar px-4 py-3 border-bottom">
