@@ -3,6 +3,7 @@ import React, { useState } from 'react';
 
 import Link from 'next/link';
 
+import { toastSuccess, toastError } from '~/client/util/apiNotification';
 import { apiv3Post } from '~/client/util/apiv3-client';
 import { useSWRxPlugin } from '~/stores/plugin';
 
@@ -36,9 +37,11 @@ export const PluginCard = (props: Props): JSX.Element => {
       try {
         const res = await apiv3Post(reqUrl, { _id: id });
         setState(res.data.isEnabled);
+        const pluginState = !isEnabled ? 'Enabled' : 'Disabled';
+        toastSuccess(`${pluginState} Plugin `);
       }
       catch (err) {
-        console.log('pluginIsEnabled', err);
+        toastError('pluginIsEnabled', err);
       }
       finally {
         mutate();
@@ -63,6 +66,36 @@ export const PluginCard = (props: Props): JSX.Element => {
     );
   };
 
+  const PluginDeleteButton = (): JSX.Element => {
+
+    const onClickPluginDeleteBtnHandler = async() => {
+      const reqUrl = '/plugins-extension/deleted';
+
+      try {
+        await apiv3Post(reqUrl, { _id: id, name });
+        toastSuccess(`${name} Deleted`);
+      }
+      catch (err) {
+        toastError('pluginDelete', err);
+      }
+      finally {
+        mutate();
+      }
+    };
+
+    return (
+      <div className="">
+        <button
+          type="submit"
+          className="btn btn-primary"
+          onClick={() => onClickPluginDeleteBtnHandler()}
+        >
+          Delete
+        </button>
+      </div>
+    );
+  };
+
   return (
     <div className="card shadow border-0" key={name}>
       <div className="card-body px-5 py-4 mt-3">
@@ -74,7 +107,12 @@ export const PluginCard = (props: Props): JSX.Element => {
             <p className="card-text text-muted">{description}</p>
           </div>
           <div className='col-3'>
-            <PluginCardButton />
+            <div>
+              <PluginCardButton />
+            </div>
+            <div className="mt-4">
+              <PluginDeleteButton />
+            </div>
           </div>
         </div>
         <div className="row">

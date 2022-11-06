@@ -66,5 +66,19 @@ module.exports = (crowi: Crowi) => {
     }
   });
 
+  router.post('/deleted', async(req: any, res: ApiV3Response) => {
+    if (pluginService == null) {
+      return res.apiv3Err(400);
+    }
+
+    try {
+      await pluginService.pluginDeleted(req.body._id, req.body.name);
+      return res.apiv3();
+    }
+    catch (err) {
+      return res.apiv3Err(err, 400);
+    }
+  });
+
   return router;
 };
