@@ -1113,9 +1113,8 @@ export default (crowi): any => {
 
     // Sub operation
     // update scopes for descendants
-    // TODO: remove await (cause: tests are not working with await)
     if (options.overwriteScopesOfDescendants) {
-      await this.applyScopesToDescendantsAsyncronously(savedPage, user);
+      this.applyScopesToDescendantsAsyncronously(savedPage, user);
     }
 
     // 1. Update descendantCount
