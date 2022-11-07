@@ -179,9 +179,9 @@ context('Access to sidebar', () => {
       cy.get('a[href*="/trash"]').click();
     });
 
-    cy.get('.grw-page-path-hierarchical-link').within(() => {
-      cy.get('.page-segment').should('have.text', 'trash')
-    });
+    cy.get('.grw-page-path-hierarchical-link').should('be.visible');
+
+    cy.get('.grw-custom-nav-tab').should('be.visible');
 
     cy.screenshot(`${ssPrefix}access-to-trash-page`);
   });
