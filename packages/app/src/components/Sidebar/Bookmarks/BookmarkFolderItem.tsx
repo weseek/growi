@@ -31,6 +31,13 @@ const BookmarkFolderItem: FC<BookmarkFolderItemProps> = (props: BookmarkFolderIt
   const { data: childBookmarkFolderData, mutate: mutateChildBookmarkData } = useSWRxBookamrkFolderAndChild(isOpen ? currentParentFolder : null);
 
 
+  const childCount = useCallback((): number => {
+    if (currentChildren != null && currentChildren.length > children.length) {
+      return currentChildren.length;
+    }
+    return children.length;
+  }, [children.length, currentChildren]);
+
   useEffect(() => {
     if (isOpen && childBookmarkFolderData != null) {
       mutateChildBookmarkData();
@@ -39,8 +46,11 @@ const BookmarkFolderItem: FC<BookmarkFolderItemProps> = (props: BookmarkFolderIt
   }, [childBookmarkFolderData, isOpen, mutateChildBookmarkData]);
 
   const hasChildren = useCallback((): boolean => {
+    if (currentChildren != null && currentChildren.length > children.length) {
+      return currentChildren.length > 0;
+    }
     return children.length > 0;
-  }, [children.length]);
+  }, [children.length, currentChildren]);
 
 
   const loadChildFolder = useCallback(async() => {
@@ -114,7 +124,7 @@ const BookmarkFolderItem: FC<BookmarkFolderItemProps> = (props: BookmarkFolderIt
         }
         {hasChildren() && (
           <div className="grw-foldertree-count-wrapper">
-            <CountBadge count={ children.length} />
+            <CountBadge count={ childCount() } />
           </div>
         )}
         <div className="grw-foldertree-control d-flex">
