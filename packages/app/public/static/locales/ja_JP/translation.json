@@ -623,6 +623,7 @@
   "login": {
     "Sign in error": "ログインエラー",
     "Registration successful": "登録完了",
+    "wait_for_admin_approval": "管理者の承認をお待ちください",
     "Setup": "セットアップ",
     "enabled_ldap_has_configuration_problem":"LDAPは有効ですが、設定に問題があります。",
     "set_env_var_for_logs": "(ログを取得するためには、環境変数 <code>DEBUG=crowi:service:PassportService</code> を設定してください。)"

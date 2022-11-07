@@ -631,6 +631,7 @@
 	"login": {
 		"Sign in error": "登录错误",
 		"Registration successful": "注册成功",
+    "wait_for_admin_approval": "请等待管理员批准",
 		"Setup": "安装程序",
     "enabled_ldap_has_configuration_problem":"启用了LDAP，但配置有问题。",
     "set_env_var_for_logs": "(请设置环境变量 <code>DEBUG=crowi:service:PassportService</code> 以获得日志。)"

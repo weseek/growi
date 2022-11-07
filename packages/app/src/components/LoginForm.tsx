@@ -53,6 +53,8 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
   const [emailForRegistrationOrder, setEmailForRegistrationOrder] = useState('');
   const [isSuccessToSendRegistrationOrderEmail, setIsSuccessToSendRegistrationOrderEmail] = useState(false);
 
+  const [isSuccessToRagistration, setIsSuccessToRagistration] = useState(false);
+
 
   useEffect(() => {
     const { hash } = window.location;
@@ -283,6 +285,10 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
         setEmailForRegistrationOrder(emailForRegister);
         setIsSuccessToSendRegistrationOrderEmail(true);
       }
+
+      if (registrationMode === 'Restricted') {
+        setIsSuccessToRagistration(true);
+      }
     }
     catch (err) {
       // Execute if error exists
@@ -291,7 +297,7 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
       }
     }
     return;
-  }, [emailForRegister, nameForRegister, passwordForRegister, router, usernameForRegister, isEmailAuthenticationEnabled]);
+  }, [usernameForRegister, nameForRegister, emailForRegister, passwordForRegister, router, isEmailAuthenticationEnabled, registrationMode]);
 
   const resetRegisterErrors = useCallback(() => {
     if (registerErrors.length === 0) return;
@@ -477,6 +483,21 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
     isSuccessToSendRegistrationOrderEmail, props.email, props.name, props.username,
     registerErrors, registrationMode, registrationWhiteList, emailForRegistrationOrder, switchForm, t,
   ]);
+
+  if (registrationMode === 'Restricted' && isSuccessToRagistration) {
+    return (
+      <div className="noLogin-dialog mx-auto" id="noLogin-dialog">
+        <div className="row mx-0">
+          <div className="col-12 mb-3 text-center">
+            <p className="alert alert-success">
+              <span>{t('login.Registration successful')}</span>
+            </p>
+            <span>{t('login.wait_for_admin_approval')}</span>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="noLogin-dialog mx-auto" id="noLogin-dialog">

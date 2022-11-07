@@ -629,6 +629,7 @@
   "login": {
     "Sign in error": "Login error",
     "Registration successful": "Registration successful",
+    "wait_for_admin_approval": "Please wait for administrator approval",
     "Setup": "Setup",
     "enabled_ldap_has_configuration_problem":"LDAP is enabled but the configuration has something wrong.",
     "set_env_var_for_logs": "(Please set the environment variables <code>DEBUG=crowi:service:PassportService</code> to get the logs)"
