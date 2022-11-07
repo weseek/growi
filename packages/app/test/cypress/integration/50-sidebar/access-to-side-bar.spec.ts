@@ -178,6 +178,11 @@ context('Access to sidebar', () => {
     cy.get('.grw-sidebar-nav-secondary-container').within(() => {
       cy.get('a[href*="/trash"]').click();
     });
+
+    cy.get('.grw-page-path-hierarchical-link').within(() => {
+      cy.get('.page-segment').should('have.text', 'trash')
+    });
+
     cy.screenshot(`${ssPrefix}access-to-trash-page`);
   });
 });
