@@ -106,19 +106,20 @@ const UserGroupDetailPage = (props: Props): JSX.Element => {
 
   const updateUserGroup = useCallback(async(userGroup: IUserGroupHasId, update: Partial<IUserGroupHasId>, forceUpdateParents: boolean) => {
     const parentId = typeof update.parent === 'string' ? update.parent : update.parent?._id;
-    const res = await apiv3Put<{ userGroup: IUserGroupHasId }>(`/user-groups/${userGroup._id}`, {
+    await apiv3Put<{ userGroup: IUserGroupHasId }>(`/user-groups/${userGroup._id}`, {
       name: update.name,
       description: update.description,
       parentId: parentId ?? null,
       forceUpdateParents,
     });
-    const { userGroup: updatedUserGroup } = res.data;
 
     // mutate
+    mutateChildUserGroups();
     mutateAncestorUserGroups();
     mutateSelectableChildUserGroups();
     mutateSelectableParentUserGroups();
-  }, [mutateAncestorUserGroups, mutateSelectableChildUserGroups, mutateSelectableParentUserGroups]);
+
+  }, [mutateAncestorUserGroups, mutateChildUserGroups, mutateSelectableChildUserGroups, mutateSelectableParentUserGroups]);
 
   const onSubmitUpdateGroup = useCallback(
     async(targetGroup: IUserGroupHasId, userGroupData: Partial<IUserGroupHasId>, forceUpdateParents: boolean): Promise<void> => {
