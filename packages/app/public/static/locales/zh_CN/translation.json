@@ -627,7 +627,6 @@
       "error_duplicate_pages_found": "发现多个具有相同路径名称的页面。请重新命名或删除并重试。"
     }
   },
-	"to_cloud_settings": "進入 GROWI.cloud 的管理界面",
 	"login": {
 		"Sign in error": "登录错误",
 		"Registration successful": "注册成功",
