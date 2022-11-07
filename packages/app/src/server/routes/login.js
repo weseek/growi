@@ -43,6 +43,8 @@ module.exports = function(crowi, app) {
   }
 
   const registerSuccessHandler = async function(req, res, userData, registrationMode) {
+    const parameters = { action: SupportedAction.ACTION_USER_REGISTRATION_SUCCESS };
+    activityEvent.emit('update', res.locals.activity._id, parameters);
 
     if (registrationMode === aclService.labels.SECURITY_REGISTRATION_MODE_RESTRICTED) {
       await sendEmailToAllAdmins(userData);
@@ -62,16 +64,12 @@ module.exports = function(crowi, app) {
         });
       }
 
-
       // userData.password cann't be empty but, prepare redirect because password property in User Model is optional
       // https://github.com/weseek/growi/pull/6670
       const redirectTo = userData.password ? req.session.redirectTo : '/me#password';
 
       // remove session.redirectTo
       delete req.session.redirectTo;
-
-      const parameters = { action: SupportedAction.ACTION_USER_REGISTRATION_SUCCESS };
-      activityEvent.emit('update', res.locals.activity._id, parameters);
 
       return res.apiv3({ redirectTo });
     });
