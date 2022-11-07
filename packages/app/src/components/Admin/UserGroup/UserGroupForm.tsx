@@ -57,8 +57,6 @@ export const UserGroupForm: FC<Props> = (props: Props) => {
     >
 
       <fieldset>
-        <h2 className="admin-setting-header">{t('user_group_management.basic_info')}</h2>
-
         {
           userGroup?.createdAt != null && (
             <div className="form-group row">
@@ -67,7 +65,6 @@ export const UserGroupForm: FC<Props> = (props: Props) => {
             </div>
           )
         }
-
         <div className="form-group row">
           <label htmlFor="name" className="col-md-2 col-form-label">
             {t('user_group_management.group_name')}

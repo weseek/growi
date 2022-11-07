@@ -5,6 +5,7 @@ import React, {
 import { objectIdUtils } from '@growi/core';
 import { useTranslation } from 'next-i18next';
 import dynamic from 'next/dynamic';
+import Link from 'next/link';
 import { useRouter } from 'next/router';
 
 import { toastSuccess, toastError } from '~/client/util/apiNotification';
@@ -27,14 +28,14 @@ import styles from './UserGroupDetailPage.module.scss';
 
 const UserGroupPageList = dynamic(() => import('./UserGroupPageList'), { ssr: false });
 const UserGroupUserTable = dynamic(() => import('./UserGroupUserTable'), { ssr: false });
-
-const UserGroupUserModal = dynamic(() => import('./UserGroupUserModal'), { ssr: false });
-
-const UserGroupDeleteModal = dynamic(() => import('../UserGroup/UserGroupDeleteModal').then(mod => mod.UserGroupDeleteModal), { ssr: false });
 const UserGroupDropdown = dynamic(() => import('../UserGroup/UserGroupDropdown').then(mod => mod.UserGroupDropdown), { ssr: false });
 const UserGroupForm = dynamic(() => import('../UserGroup/UserGroupForm').then(mod => mod.UserGroupForm), { ssr: false });
-const UserGroupModal = dynamic(() => import('../UserGroup/UserGroupModal').then(mod => mod.UserGroupModal), { ssr: false });
 const UserGroupTable = dynamic(() => import('../UserGroup/UserGroupTable').then(mod => mod.UserGroupTable), { ssr: false });
+
+// Modals
+const UserGroupUserModal = dynamic(() => import('./UserGroupUserModal'), { ssr: false });
+const UserGroupModal = dynamic(() => import('../UserGroup/UserGroupModal').then(mod => mod.UserGroupModal), { ssr: false });
+const UserGroupDeleteModal = dynamic(() => import('../UserGroup/UserGroupDeleteModal').then(mod => mod.UserGroupDeleteModal), { ssr: false });
 const UpdateParentConfirmModal = dynamic(() => import('./UpdateParentConfirmModal').then(mod => mod.UpdateParentConfirmModal), { ssr: false });
 
 
@@ -50,17 +51,8 @@ const UserGroupDetailPage = (props: Props): JSX.Element => {
 
   const { data: currentUserGroup } = useSWRxUserGroup(currentUserGroupId);
   const { data: userGroupRelations, mutate: mutateUserGroupRelations } = useSWRxUserGroupRelations(currentUserGroupId);
-  const [searchType, setSearchType] = useState<SearchType>(SearchTypes.PARTIAL);
-  const [isAlsoMailSearched, setAlsoMailSearched] = useState<boolean>(false);
-  const [isAlsoNameSearched, setAlsoNameSearched] = useState<boolean>(false);
-  const [selectedUserGroup, setSelectedUserGroup] = useState<IUserGroupHasId | undefined>(undefined); // not null but undefined (to use defaultProps in UserGroupDeleteModal)
-  const [isCreateModalShown, setCreateModalShown] = useState<boolean>(false);
-  const [isUpdateModalShown, setUpdateModalShown] = useState<boolean>(false);
-  const [isDeleteModalShown, setDeleteModalShown] = useState<boolean>(false);
-  const [isUserGroupUserModalShown, setIsUserGroupUserModalShown] = useState<boolean>(false);
 
-  const isLoading = currentUserGroup === undefined;
-  const notExistsUerGroup = !isLoading && currentUserGroup == null;
+  const notExistsUerGroup = !(currentUserGroup === undefined) && currentUserGroup == null;
 
   useEffect(() => {
     if (!objectIdUtils.isValidObjectId(currentUserGroupId) || notExistsUerGroup) {
@@ -68,28 +60,68 @@ const UserGroupDetailPage = (props: Props): JSX.Element => {
     }
   }, [currentUserGroup, currentUserGroupId, notExistsUerGroup, router]);
 
+  /*
+   * state
+   */
+  const [searchType, setSearchType] = useState<SearchType>(SearchTypes.PARTIAL);
+  const [isAlsoMailSearched, setAlsoMailSearched] = useState<boolean>(false);
+  const [isAlsoNameSearched, setAlsoNameSearched] = useState<boolean>(false);
+  const [selectedUserGroup, setSelectedUserGroup] = useState<IUserGroupHasId | undefined>(undefined); // not null but undefined (to use defaultProps in UserGroupDeleteModal)
+  // Modal State
+  const [isCreateModalShown, setCreateModalShown] = useState<boolean>(false);
+  const [isUpdateModalShown, setUpdateModalShown] = useState<boolean>(false);
+  const [isDeleteModalShown, setDeleteModalShown] = useState<boolean>(false);
+  const [isUserGroupUserModalShown, setIsUserGroupUserModalShown] = useState<boolean>(false);
 
   /*
    * Fetch
    */
-  const { data: userGroupPages } = useSWRxUserGroupPages(currentUserGroupId, 10, 0);
-
   const { data: childUserGroupsList, mutate: mutateChildUserGroups } = useSWRxChildUserGroupList(currentUserGroupId ? [currentUserGroupId] : [], true);
   const childUserGroups = childUserGroupsList != null ? childUserGroupsList.childUserGroups : [];
   const grandChildUserGroups = childUserGroupsList != null ? childUserGroupsList.grandChildUserGroups : [];
   const childUserGroupIds = childUserGroups.map(group => group._id);
-
   const { data: userGroupRelationList } = useSWRxUserGroupRelationList(childUserGroupIds);
   const childUserGroupRelations = userGroupRelationList != null ? userGroupRelationList : [];
 
+  const { data: userGroupPages } = useSWRxUserGroupPages(currentUserGroupId, 10, 0);
   const { data: selectableParentUserGroups, mutate: mutateSelectableParentUserGroups } = useSWRxSelectableParentUserGroups(currentUserGroupId);
   const { data: selectableChildUserGroups, mutate: mutateSelectableChildUserGroups } = useSWRxSelectableChildUserGroups(currentUserGroupId);
-
   const { data: ancestorUserGroups, mutate: mutateAncestorUserGroups } = useSWRxAncestorUserGroups(currentUserGroupId);
-
   const { data: isAclEnabled } = useIsAclEnabled();
 
   const { open: openUpdateParentConfirmModal } = useUpdateUserGroupConfirmModal();
+
+  // Modal function
+  // Update
+  const showUpdateModal = useCallback((group: IUserGroupHasId) => {
+    setUpdateModalShown(true);
+    setSelectedUserGroup(group);
+  }, [setUpdateModalShown]);
+
+  const hideUpdateModal = useCallback(() => {
+    setUpdateModalShown(false);
+    setSelectedUserGroup(undefined);
+  }, [setUpdateModalShown]);
+
+  // Create
+  const showCreateModal = useCallback(() => {
+    setCreateModalShown(true);
+  }, [setCreateModalShown]);
+
+  const hideCreateModal = useCallback(() => {
+    setCreateModalShown(false);
+  }, [setCreateModalShown]);
+
+  // Delete
+  const showDeleteModal = useCallback(async(group: IUserGroupHasId) => {
+    setSelectedUserGroup(group);
+    setDeleteModalShown(true);
+  }, [setSelectedUserGroup, setDeleteModalShown]);
+
+  const hideDeleteModal = useCallback(() => {
+    setSelectedUserGroup(undefined);
+    setDeleteModalShown(false);
+  }, [setSelectedUserGroup, setDeleteModalShown]);
 
   /*
    * Function
@@ -197,16 +229,6 @@ const UserGroupDetailPage = (props: Props): JSX.Element => {
     }
   }, [currentUserGroup?.name, currentUserGroupId, mutateUserGroupRelations, xss]);
 
-  const showUpdateModal = useCallback((group: IUserGroupHasId) => {
-    setUpdateModalShown(true);
-    setSelectedUserGroup(group);
-  }, [setUpdateModalShown]);
-
-  const hideUpdateModal = useCallback(() => {
-    setUpdateModalShown(false);
-    setSelectedUserGroup(undefined);
-  }, [setUpdateModalShown]);
-
   const updateChildUserGroup = useCallback(async(userGroupData: IUserGroupHasId) => {
     try {
       await apiv3Put(`/user-groups/${userGroupData._id}`, {
@@ -238,14 +260,6 @@ const UserGroupDetailPage = (props: Props): JSX.Element => {
     );
   }, [openUpdateParentConfirmModal, currentUserGroupId, onSubmitUpdateGroup]);
 
-  const showCreateModal = useCallback(() => {
-    setCreateModalShown(true);
-  }, [setCreateModalShown]);
-
-  const hideCreateModal = useCallback(() => {
-    setCreateModalShown(false);
-  }, [setCreateModalShown]);
-
   const createChildUserGroup = useCallback(async(userGroupData: IUserGroup) => {
     try {
       await apiv3Post('/user-groups', {
@@ -267,16 +281,6 @@ const UserGroupDetailPage = (props: Props): JSX.Element => {
       toastError(err);
     }
   }, [currentUserGroupId, t, mutateChildUserGroups, mutateSelectableChildUserGroups, mutateSelectableParentUserGroups, hideCreateModal]);
-
-  const showDeleteModal = useCallback(async(group: IUserGroupHasId) => {
-    setSelectedUserGroup(group);
-    setDeleteModalShown(true);
-  }, [setSelectedUserGroup, setDeleteModalShown]);
-
-  const hideDeleteModal = useCallback(() => {
-    setSelectedUserGroup(undefined);
-    setDeleteModalShown(false);
-  }, [setSelectedUserGroup, setDeleteModalShown]);
 
   const deleteChildUserGroupById = useCallback(async(deleteGroupId: string, actionName: string, transferToUserGroupId: string) => {
     try {
@@ -329,25 +333,34 @@ const UserGroupDetailPage = (props: Props): JSX.Element => {
     <div>
       <nav aria-label="breadcrumb">
         <ol className="breadcrumb">
-          <li className="breadcrumb-item"><a href="/admin/user-groups">{t('user_group_management.group_list')}</a></li>
+          <li className="breadcrumb-item">
+            <Link href="/admin/user-groups" prefetch={false}>
+              <a >{t('user_group_management.group_list')}</a>
+            </Link>
+          </li>
           {
-            ancestorUserGroups != null && ancestorUserGroups.length > 0 && (
-              ancestorUserGroups.map((ancestorUserGroup: IUserGroupHasId) => (
-                // eslint-disable-next-line max-len
-                <li key={ancestorUserGroup._id} className={`breadcrumb-item ${ancestorUserGroup._id === currentUserGroupId ? 'active' : ''}`} aria-current="page">
-                  { ancestorUserGroup._id === currentUserGroupId ? (
-                    <>{ancestorUserGroup.name}</>
-                  ) : (
+            ancestorUserGroups != null && ancestorUserGroups.length > 0 && (ancestorUserGroups.map((ancestorUserGroup: IUserGroupHasId) => (
+              <li
+                key={ancestorUserGroup._id}
+                className={`breadcrumb-item ${ancestorUserGroup._id === currentUserGroupId ? 'active' : ''}`}
+                aria-current="page"
+              >
+                { ancestorUserGroup._id === currentUserGroupId ? (
+                  <span>{ancestorUserGroup.name}</span>
+                ) : (
+                  <Link href={`/admin/user-group-detail/${ancestorUserGroup._id}`} prefetch={false}>
                     <a href={`/admin/user-group-detail/${ancestorUserGroup._id}`}>{ancestorUserGroup.name}</a>
-                  )}
-                </li>
-              ))
+                  </Link>
+                ) }
+              </li>
+            ))
             )
           }
         </ol>
       </nav>
 
       <div className="mt-4 form-box">
+        <h2 className="admin-setting-header">{t('user_group_management.basic_info')}</h2>
         <UserGroupForm
           userGroup={currentUserGroup}
           selectableParentUserGroups={selectableParentUserGroups}
@@ -355,32 +368,50 @@ const UserGroupDetailPage = (props: Props): JSX.Element => {
           onSubmit={onClickSubmitForm}
         />
       </div>
-      <h2 className="admin-setting-header mt-4">{t('user_group_management.user_list')}</h2>
-      <UserGroupUserTable
-        userGroupRelations={userGroupRelations}
-        onClickPlusBtn={() => setIsUserGroupUserModalShown(true)}
-        onClickRemoveUserBtn={removeUserByUsername}
-      />
-      <UserGroupUserModal
-        isOpen={isUserGroupUserModalShown}
-        userGroup={currentUserGroup}
-        searchType={searchType}
-        isAlsoMailSearched={isAlsoMailSearched}
-        isAlsoNameSearched={isAlsoNameSearched}
-        onClickAddUserBtn={addUserByUsername}
-        onSearchApplicableUsers={fetchApplicableUsers}
-        onSwitchSearchType={switchSearchType}
-        onClose={() => setIsUserGroupUserModalShown(false)}
-        onToggleIsAlsoMailSearched={toggleIsAlsoMailSearched}
-        onToggleIsAlsoNameSearched={toggleAlsoNameSearched}
-      />
-
-      <h2 className="admin-setting-header mt-4">{t('user_group_management.child_group_list')}</h2>
-      <UserGroupDropdown
-        selectableUserGroups={selectableChildUserGroups}
-        onClickAddExistingUserGroupButton={onClickAddExistingUserGroupButtonHandler}
-        onClickCreateUserGroupButton={showCreateModal}
-      />
+      <div>
+        <h2 className="admin-setting-header mt-4">{t('user_group_management.user_list')}</h2>
+        <UserGroupUserTable
+          userGroupRelations={userGroupRelations}
+          onClickPlusBtn={() => setIsUserGroupUserModalShown(true)}
+          onClickRemoveUserBtn={removeUserByUsername}
+        />
+        <UserGroupUserModal
+          isOpen={isUserGroupUserModalShown}
+          userGroup={currentUserGroup}
+          searchType={searchType}
+          isAlsoMailSearched={isAlsoMailSearched}
+          isAlsoNameSearched={isAlsoNameSearched}
+          onClickAddUserBtn={addUserByUsername}
+          onSearchApplicableUsers={fetchApplicableUsers}
+          onSwitchSearchType={switchSearchType}
+          onClose={() => setIsUserGroupUserModalShown(false)}
+          onToggleIsAlsoMailSearched={toggleIsAlsoMailSearched}
+          onToggleIsAlsoNameSearched={toggleAlsoNameSearched}
+        />
+      </div>
+      <div>
+        <h2 className="admin-setting-header mt-4">{t('user_group_management.child_group_list')}</h2>
+        <UserGroupDropdown
+          selectableUserGroups={selectableChildUserGroups}
+          onClickAddExistingUserGroupButton={onClickAddExistingUserGroupButtonHandler}
+          onClickCreateUserGroupButton={showCreateModal}
+        />
+        <UserGroupTable
+          userGroups={childUserGroups}
+          childUserGroups={grandChildUserGroups}
+          isAclEnabled={isAclEnabled ?? false}
+          onEdit={showUpdateModal}
+          onRemove={removeChildUserGroup}
+          onDelete={showDeleteModal}
+          userGroupRelations={childUserGroupRelations}
+        />
+      </div>
+      <div>
+        <h2 className="admin-setting-header mt-4">{t('Page')}</h2>
+        <div className={`page-list ${styles['page-list']}`}>
+          <UserGroupPageList userGroupId={currentUserGroupId} relatedPages={userGroupPages} />
+        </div>
+      </div>
 
       <UserGroupModal
         userGroup={selectedUserGroup}
@@ -389,26 +420,13 @@ const UserGroupDetailPage = (props: Props): JSX.Element => {
         isShow={isUpdateModalShown}
         onHide={hideUpdateModal}
       />
-
       <UserGroupModal
         buttonLabel={t('Create')}
         onClickSubmit={createChildUserGroup}
         isShow={isCreateModalShown}
         onHide={hideCreateModal}
       />
-
       <UpdateParentConfirmModal />
-
-      <UserGroupTable
-        userGroups={childUserGroups}
-        childUserGroups={grandChildUserGroups}
-        isAclEnabled={isAclEnabled ?? false}
-        onEdit={showUpdateModal}
-        onRemove={removeChildUserGroup}
-        onDelete={showDeleteModal}
-        userGroupRelations={childUserGroupRelations}
-      />
-
       <UserGroupDeleteModal
         userGroups={childUserGroups}
         deleteUserGroup={selectedUserGroup}
@@ -416,11 +434,6 @@ const UserGroupDetailPage = (props: Props): JSX.Element => {
         isShow={isDeleteModalShown}
         onHide={hideDeleteModal}
       />
-
-      <h2 className="admin-setting-header mt-4">{t('Page')}</h2>
-      <div className={`page-list ${styles['page-list']}`}>
-        <UserGroupPageList userGroupId={currentUserGroupId} relatedPages={userGroupPages} />
-      </div>
     </div>
   );
 };
