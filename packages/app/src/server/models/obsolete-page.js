@@ -1,5 +1,6 @@
 import { templateChecker, pagePathUtils, pathUtils } from '@growi/core';
 
+import { createBatchStream } from '~/server/util/batch-stream';
 import loggerFactory from '~/utils/logger';
 
 
@@ -764,6 +765,7 @@ export const getPageSchema = (crowi) => {
     return savedPage;
   };
 
+  // TODO: use updateMany
   pageSchema.statics.applyScopesToDescendantsAsyncronously = async function(parentPage, user, isV4 = false) {
     const builder = new this.PageQueryBuilder(this.find());
     builder.addConditionToListOnlyDescendants(parentPage.path);
@@ -779,14 +781,17 @@ export const getPageSchema = (crowi) => {
     await addConditionToFilteringByViewerToEdit(builder, user);
 
     // get all pages that the specified user can update
-    const pages = await builder.query.exec();
+    const cursor = await builder.query.exec().cursor();
 
-    const promises = pages.map(async(page) => {
-      await page.applyScope(user, parentPage.grant, parentPage.grantedGroup);
-      await page.save();
-    });
+    for await (const batch of cursor.pipe(createBatchStream(100))) {
+      const updates = batch.map((page) => {
+        page.applyScope(user, parentPage.grant, parentPage.grantedGroup);
+        return page;
+      });
 
-    await Promise.all(promises);
+      await this.updateMany();
+    }
+
   };
 
   pageSchema.statics.removeByPath = function(path) {
