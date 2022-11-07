@@ -90,7 +90,7 @@ class TwitterSecuritySettingContents extends React.Component {
                 <i
                   className="icon-exclamation"
                   // eslint-disable-next-line max-len
-                  dangerouslySetInnerHTML={{ __html: t('commons:alert.siteUrl_is_not_set', { link: `<a href="/admin/app">${t('commons:headers.app_settings')}<i class="icon-login"></i></a>` }) }}
+                  dangerouslySetInnerHTML={{ __html: t('alert.siteUrl_is_not_set', { link: `<a href="/admin/app">${t('headers.app_settings', { ns: 'commons' })}<i class="icon-login"></i></a>`, ns: 'commons' }) }}
                 />
               </div>
             )}
