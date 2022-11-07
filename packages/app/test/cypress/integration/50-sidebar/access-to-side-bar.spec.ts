@@ -81,7 +81,7 @@ context('Access to sidebar', () => {
     });
 
     cy.getByTestid('grw-contextual-navigation-sub').should('be.visible')
-    cy.getByTestid('grw-pagetree-item-children').eq(0).should('be.visible');
+    cy.get('.grw-pagetree-item-children').eq(0).should('be.visible');
     cy.screenshot(`${ssPrefix}page-tree-1-access-to-page-tree`);
 
     cy.getByTestid('grw-contextual-navigation-sub').screenshot(`${ssPrefix}page-tree-2-hide-page-tree-item`);
