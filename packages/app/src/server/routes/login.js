@@ -16,7 +16,39 @@ module.exports = function(crowi, app) {
 
   const actions = {};
 
-  const registerSuccessHandler = function(req, res, userData) {
+  async function sendEmailToAllAdmins(userData) {
+    // send mails to all admin users (derived from crowi) -- 2020.06.18 Yuki Takei
+    const admins = await User.findAdmins();
+
+    const appTitle = appService.getAppTitle();
+
+    const promises = admins.map((admin) => {
+      return mailService.send({
+        to: admin.email,
+        subject: `[${appTitle}:admin] A New User Created and Waiting for Activation`,
+        template: path.join(crowi.localeDir, 'en_US/admin/userWaitingActivation.txt'),
+        vars: {
+          createdUser: userData,
+          admin,
+          url: appService.getSiteUrl(),
+          appTitle,
+        },
+      });
+    });
+
+    const results = await Promise.allSettled(promises);
+    results
+      .filter(result => result.status === 'rejected')
+      .forEach(result => logger.error(result.reason));
+  }
+
+  const registerSuccessHandler = async function(req, res, userData, registrationMode) {
+
+    if (registrationMode === aclService.labels.SECURITY_REGISTRATION_MODE_RESTRICTED) {
+      await sendEmailToAllAdmins(userData);
+      return res.apiv3({ redirectTo: '/login#register' });
+    }
+
     req.login(userData, (err) => {
       if (err) {
         logger.debug(err);
@@ -44,32 +76,6 @@ module.exports = function(crowi, app) {
       return res.apiv3({ redirectTo });
     });
   };
-
-  async function sendEmailToAllAdmins(userData) {
-    // send mails to all admin users (derived from crowi) -- 2020.06.18 Yuki Takei
-    const admins = await User.findAdmins();
-
-    const appTitle = appService.getAppTitle();
-
-    const promises = admins.map((admin) => {
-      return mailService.send({
-        to: admin.email,
-        subject: `[${appTitle}:admin] A New User Created and Waiting for Activation`,
-        template: path.join(crowi.localeDir, 'en_US/admin/userWaitingActivation.txt'),
-        vars: {
-          createdUser: userData,
-          admin,
-          url: appService.getSiteUrl(),
-          appTitle,
-        },
-      });
-    });
-
-    const results = await Promise.allSettled(promises);
-    results
-      .filter(result => result.status === 'rejected')
-      .forEach(result => logger.error(result.reason));
-  }
 
   actions.error = function(req, res) {
     const reason = req.params.reason;
@@ -166,13 +172,7 @@ module.exports = function(crowi, app) {
           }
           return res.apiv3Err(errors, 405);
         }
-
-        if (registrationMode === aclService.labels.SECURITY_REGISTRATION_MODE_RESTRICTED) {
-          // send mail asynchronous
-          sendEmailToAllAdmins(userData);
-        }
-
-        return registerSuccessHandler(req, res, userData);
+        return registerSuccessHandler(req, res, userData, registrationMode);
       });
     });
   };
