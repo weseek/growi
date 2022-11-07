@@ -718,6 +718,11 @@ export const getPageSchema = (crowi) => {
 
     pageEvent.emit('create', savedPage, user);
 
+    // update scopes for descendants
+    if (options.overwriteScopesOfDescendants) {
+      Page.applyScopesToDescendantsAsyncronously(savedPage, user, true);
+    }
+
     return savedPage;
   };
 
@@ -748,15 +753,27 @@ export const getPageSchema = (crowi) => {
       }
     }
 
+    // update scopes for descendants
+    if (options.overwriteScopesOfDescendants) {
+      this.applyScopesToDescendantsAsyncronously(savedPage, user, true);
+    }
+
 
     pageEvent.emit('update', savedPage, user);
 
     return savedPage;
   };
 
-  pageSchema.statics.applyScopesToDescendantsAsyncronously = async function(parentPage, user) {
+  pageSchema.statics.applyScopesToDescendantsAsyncronously = async function(parentPage, user, isV4 = false) {
     const builder = new this.PageQueryBuilder(this.find());
-    builder.addConditionToListWithDescendants(parentPage.path);
+    builder.addConditionToListOnlyDescendants(parentPage.path);
+
+    if (isV4) {
+      builder.addConditionAsRootOrNotOnTree();
+    }
+    else {
+      builder.addConditionAsOnTree();
+    }
 
     // add grant conditions
     await addConditionToFilteringByViewerToEdit(builder, user);
@@ -764,15 +781,12 @@ export const getPageSchema = (crowi) => {
     // get all pages that the specified user can update
     const pages = await builder.query.exec();
 
-    for (const page of pages) {
-      // skip parentPage
-      if (page.id === parentPage.id) {
-        continue;
-      }
+    const promises = pages.map(async(page) => {
+      await page.applyScope(user, parentPage.grant, parentPage.grantedGroup);
+      await page.save();
+    });
 
-      page.applyScope(user, parentPage.grant, parentPage.grantedGroup);
-      page.save();
-    }
+    await Promise.all(promises);
   };
 
   pageSchema.statics.removeByPath = function(path) {

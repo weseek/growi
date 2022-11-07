@@ -338,7 +338,7 @@ export class PageQueryBuilder {
           { grant: { $ne: GRANT_SPECIFIED } },
         ],
       });
-    this.addConditionAsNotMigrated();
+    this.addConditionAsRootOrNotOnTree();
     this.addConditionAsNonRootPage();
     this.addConditionToExcludeTrashed();
     await this.addConditionForParentNormalization(user);
@@ -380,7 +380,7 @@ export class PageQueryBuilder {
     return this;
   }
 
-  addConditionAsNotMigrated() {
+  addConditionAsRootOrNotOnTree() {
     this.query = this.query
       .and({ parent: null });
 
@@ -938,6 +938,7 @@ export type PageCreateOptions = {
   format?: string
   grantUserGroupId?: ObjectIdLike
   grant?: number
+  overwriteScopesOfDescendants?: boolean
 }
 
 /*
@@ -1024,7 +1025,7 @@ export default (crowi: Crowi): any => {
 
       if (options.overwriteScopesOfDescendants) {
         const updateGrantInfo = await pageGrantService.generateUpdateGrantInfo(user, grant, options.grantUserGroupId);
-        const canOverwriteDescendants = await pageGrantService.canOverwriteDescendants(pageData, user, updateGrantInfo);
+        const canOverwriteDescendants = await pageGrantService.canOverwriteDescendants(pageData.path, user, updateGrantInfo);
 
         if (!canOverwriteDescendants) {
           throw Error('Cannot overwrite scopes of descendants.');
@@ -1091,6 +1092,12 @@ export default (crowi: Crowi): any => {
     }
 
     // Sub operation
+    // update scopes for descendants
+    // TODO: remove await (cause: tests are not working with await)
+    if (options.overwriteScopesOfDescendants) {
+      await this.applyScopesToDescendantsAsyncronously(savedPage, user);
+    }
+
     // 1. Update descendantCount
     const shouldPlusDescCount = !wasOnTree && shouldBeOnTree;
     const shouldMinusDescCount = wasOnTree && !shouldBeOnTree;

@@ -870,7 +870,7 @@ module.exports = function(crowi, app) {
       return res.json(ApiResponse.error('Page exists', 'already_exists'));
     }
 
-    const options = {};
+    const options = { overwriteScopesOfDescendants };
     if (grant != null) {
       options.grant = grant;
       options.grantUserGroupId = grantUserGroupId;
@@ -890,11 +890,6 @@ module.exports = function(crowi, app) {
       tags: savedTags,
     };
     res.json(ApiResponse.success(result));
-
-    // update scopes for descendants
-    if (overwriteScopesOfDescendants) {
-      Page.applyScopesToDescendantsAsyncronously(createdPage, req.user);
-    }
 
     // global notification
     try {
@@ -1043,11 +1038,6 @@ module.exports = function(crowi, app) {
       tags: savedTags,
     };
     res.json(ApiResponse.success(result));
-
-    // update scopes for descendants
-    if (overwriteScopesOfDescendants) {
-      Page.applyScopesToDescendantsAsyncronously(page, req.user);
-    }
 
     // global notification
     try {

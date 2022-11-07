@@ -52,8 +52,8 @@ type UpdateGrantInfo = {
 
 type DescendantPagesGrantInfo = {
   grantSet: Set<number>,
-  grantedUserIds: Set<ObjectIdLike>, // only me users
-  grantedUserGroupIds: Set<ObjectIdLike>, // user groups
+  grantedUserIds: Set<ObjectIdLike>, // all only me users of descendant pages
+  grantedUserGroupIds: Set<ObjectIdLike>, // all user groups of descendant pages
 };
 
 /**
@@ -505,12 +505,12 @@ class PageGrantService {
 
   /**
    * see: https://dev.growi.org/635a314eac6bcd85cbf359fc
-   * @param targetPage
+   * @param {string} targetPath
    * @param operator
    * @param {UpdateGrantInfo} updateGrantInfo
    * @returns {Promise<boolean>}
    */
-  async canOverwriteDescendants(targetPage, operator: { _id: ObjectIdLike }, updateGrantInfo: UpdateGrantInfo): Promise<boolean> {
+  async canOverwriteDescendants(targetPath: string, operator: { _id: ObjectIdLike }, updateGrantInfo: UpdateGrantInfo): Promise<boolean> {
     const UserGroupRelationModel = mongoose.model('UserGroupRelation') as any; // TODO: TypeScriptize model
 
     const relatedGroupIds = await UserGroupRelationModel.findAllUserGroupIdsRelatedToUser(operator);
@@ -519,7 +519,7 @@ class PageGrantService {
       userGroupIds: new Set<ObjectIdLike>(relatedGroupIds),
     };
 
-    const comparableDescendants = await this.generateComparableDescendants(targetPage.path, operator);
+    const comparableDescendants = await this.generateComparableDescendants(targetPath, operator);
 
     const grantSet = new Set<PageGrant>();
     if (comparableDescendants.isPublicExist) {
@@ -533,8 +533,8 @@ class PageGrantService {
     }
     const descendantPagesGrantInfo = {
       grantSet,
-      grantedUserIds: new Set(comparableDescendants.grantedUserIds), // only me users of descendant pages
-      grantedUserGroupIds: new Set(comparableDescendants.grantedGroupIds), // user groups of descendant pages
+      grantedUserIds: new Set(comparableDescendants.grantedUserIds), // all only me users of descendant pages
+      grantedUserGroupIds: new Set(comparableDescendants.grantedGroupIds), // all user groups of descendant pages
     };
 
     return this.calcCanOverwriteDescendants(operatorGrantInfo, updateGrantInfo, descendantPagesGrantInfo);
@@ -580,18 +580,18 @@ class PageGrantService {
   private calcIsAllDescendantsGrantedByOperator(operatorGrantInfo: OperatorGrantInfo, descendantPagesGrantInfo: DescendantPagesGrantInfo): boolean {
     if (descendantPagesGrantInfo.grantSet.has(PageGrant.GRANT_OWNER)) {
       const isNonApplicableOwnerExist = descendantPagesGrantInfo.grantedUserIds.size >= 2
-        || !descendantPagesGrantInfo.grantedUserIds.has(operatorGrantInfo.userId);
+        || !isIncludesObjectId([...descendantPagesGrantInfo.grantedUserIds], operatorGrantInfo.userId);
       if (isNonApplicableOwnerExist) {
         return false;
       }
     }
 
     if (descendantPagesGrantInfo.grantSet.has(PageGrant.GRANT_USER_GROUP)) {
-      const isOtherFamilyGroupExist = excludeTestIdsFromTargetIds(
-        [...operatorGrantInfo.userGroupIds], [...descendantPagesGrantInfo.grantedUserGroupIds],
+      const isNonApplicableGroupExist = excludeTestIdsFromTargetIds(
+        [...descendantPagesGrantInfo.grantedUserGroupIds], [...operatorGrantInfo.userGroupIds],
       ).length > 0;
 
-      if (isOtherFamilyGroupExist) {
+      if (isNonApplicableGroupExist) {
         return false;
       }
     }
