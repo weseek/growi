@@ -1207,7 +1207,7 @@ describe('Page', () => {
 
 
   // see: https://dev.growi.org/635a314eac6bcd85cbf359fc about the specification
-  describe.only('updatePage with overwriteScopesOfDescendants true', () => {
+  describe('updatePage with overwriteScopesOfDescendants true', () => {
     test('(case 1) it should update all granted descendant pages when update grant is GRANT_PUBLIC', async() => {
       const upodPagegAB = await Page.findOne({ path: '/gAB_upod_1' });
       const upodPagegB = await Page.findOne({ path: '/gAB_upod_1/gB_upod_1' });
