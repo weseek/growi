@@ -4,6 +4,7 @@ import path from 'path';
 import { ErrorV3 } from '@growi/core';
 import express, { NextFunction, Request, Router } from 'express';
 import { body } from 'express-validator';
+import { type Document } from 'mongoose';
 import multer from 'multer';
 
 import { SupportedAction } from '~/interfaces/activity';
@@ -148,7 +149,13 @@ module.exports = (crowi: Crowi): Router => {
 
   // eslint-disable-next-line max-len
   receiveRouter.get('/attachments', verifyAndExtractTransferKey, async(req: Request & { transferKey: TransferKey, operatorUserId: string }, res: ApiV3Response) => {
-    const readStream = crowi.exportService.createExportCollectionStream('attachments');
+    const transform = (doc: Document) => JSON.stringify(doc._id.toString());
+    const readStream = crowi.exportService.createExportCollectionStream(
+      'attachments',
+      undefined,
+      { projection: { _id: 1 } },
+      transform,
+    );
     return readStream.pipe(res);
   });
 
@@ -392,11 +399,11 @@ module.exports = (crowi: Crowi): Router => {
     }
 
     // get attachments from new growi
-    const attachmentsFromNewGrowi = await g2gTransferPusherService.getAttachments(tk);
+    const attachmentIdsFromNewGrowi = await g2gTransferPusherService.getAttachments(tk);
 
     // Start transfer
     try {
-      await g2gTransferPusherService.startTransfer(tk, req.user, toGROWIInfo, collections, optionsMap, attachmentsFromNewGrowi);
+      await g2gTransferPusherService.startTransfer(tk, req.user, toGROWIInfo, collections, optionsMap, attachmentIdsFromNewGrowi);
     }
     catch (err) {
       logger.error(err);

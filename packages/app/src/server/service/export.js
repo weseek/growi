@@ -169,12 +169,15 @@ class ExportService {
    *
    * @memberOf ExportService
    * @param {string} collectionName collection name
+   * @param {Filter<TSchema>} filter find filter
+   * @param {FindOptions} options find options
+   * @param {CursorStreamOptions.transform} transform a transformation method applied to each document emitted by the stream
    * @return {NodeJS.ReadStream} readstream for the collection
    */
-  createExportCollectionStream(collectionName) {
+  createExportCollectionStream(collectionName, filter, options, transform = JSON.stringify) {
     const collection = mongoose.connection.collection(collectionName);
-    const nativeCursor = collection.find();
-    const readStream = nativeCursor.stream({ transform: JSON.stringify });
+    const nativeCursor = collection.find(filter, options);
+    const readStream = nativeCursor.stream({ transform });
     const transformStream = this.generateTransformStream();
 
     return readStream

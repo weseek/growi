@@ -73,7 +73,7 @@ interface Pusher {
    * Transfer all Attachment data to destination GROWI
    * @param {TransferKey} tk Transfer key
    */
-  transferAttachments(tk: TransferKey, attachmentsFromNewGrowi: Attachment[]): Promise<void>
+  transferAttachments(tk: TransferKey, attachmentIdsFromNewGrowi: string[]): Promise<void>
   /**
    * Start transfer data between GROWIs
    * @param {TransferKey} tk TransferKey object
@@ -86,7 +86,7 @@ interface Pusher {
     toGROWIInfo: IDataGROWIInfo,
     collections: string[],
     optionsMap: any,
-    attachmentsFromNewGrowi: Attachment[]
+    attachmentIdsFromNewGrowi: string[]
   ): Promise<void>
 }
 
@@ -277,9 +277,9 @@ export class G2GTransferPusherService implements Pusher {
     return { canTransfer: true };
   }
 
-  public async getAttachments(tk: TransferKey): Promise<Attachment[]> {
+  public async getAttachments(tk: TransferKey): Promise<string[]> {
     try {
-      const { data } = await axios.get<Attachment[]>('/_api/v3/g2g-transfer/attachments', generateAxiosRequestConfigWithTransferKey(tk));
+      const { data } = await axios.get<string[]>('/_api/v3/g2g-transfer/attachments', generateAxiosRequestConfigWithTransferKey(tk));
       return data;
     }
     catch (err) {
@@ -288,14 +288,14 @@ export class G2GTransferPusherService implements Pusher {
     }
   }
 
-  public async transferAttachments(tk: TransferKey, attachmentsFromNewGrowi: Attachment[]): Promise<void> {
+  public async transferAttachments(tk: TransferKey, attachmentIdsFromNewGrowi: string[]): Promise<void> {
     const BATCH_SIZE = 100;
 
     const { fileUploadService } = this.crowi;
     const Attachment = this.crowi.model('Attachment');
 
     // batch get
-    const attachmentsCursor = await Attachment.find({ _id: { $nin: attachmentsFromNewGrowi.map(({ _id }) => _id) } }).cursor();
+    const attachmentsCursor = await Attachment.find({ _id: { $nin: attachmentIdsFromNewGrowi } }).cursor();
     const batchStream = createBatchStream(BATCH_SIZE);
 
     for await (const attachmentBatch of attachmentsCursor.pipe(batchStream)) {
@@ -324,7 +324,7 @@ export class G2GTransferPusherService implements Pusher {
   }
 
   // eslint-disable-next-line max-len
-  public async startTransfer(tk: TransferKey, user: any, toGROWIInfo: IDataGROWIInfo, collections: string[], optionsMap: any, attachmentsFromNewGrowi: Attachment[], shouldEmit = true): Promise<void> {
+  public async startTransfer(tk: TransferKey, user: any, toGROWIInfo: IDataGROWIInfo, collections: string[], optionsMap: any, attachmentIdsFromNewGrowi: string[], shouldEmit = true): Promise<void> {
     const socket = this.crowi.socketIoService.getAdminSocket();
 
     if (shouldEmit) socket.emit('admin:onStartTransferMongoData', {});
@@ -371,7 +371,7 @@ export class G2GTransferPusherService implements Pusher {
     if (shouldEmit) socket.emit('admin:onStartTransferAttachments', {});
 
     try {
-      await this.transferAttachments(tk, attachmentsFromNewGrowi);
+      await this.transferAttachments(tk, attachmentIdsFromNewGrowi);
     }
     catch (err) {
       logger.error(err);
