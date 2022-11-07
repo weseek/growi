@@ -138,7 +138,7 @@ describe('Page', () => {
         parent: rootPage._id,
       },
       {
-        path: '/gB_upod_1',
+        path: '/gAB_upod_1/gB_upod_1',
         grant: PageGrant.GRANT_USER_GROUP,
         creator: upodUserB,
         lastUpdateUser: upodUserB,
@@ -147,7 +147,7 @@ describe('Page', () => {
         parent: upodPageIdgAB1,
       },
       {
-        path: '/onlyB_upod_1',
+        path: '/gAB_upod_1/onlyB_upod_1',
         grant: PageGrant.GRANT_OWNER,
         creator: upodUserB,
         lastUpdateUser: upodUserB,
@@ -167,7 +167,7 @@ describe('Page', () => {
         parent: rootPage._id,
       },
       {
-        path: '/gA_upod_2',
+        path: '/public_upod_2/gA_upod_2',
         grant: PageGrant.GRANT_USER_GROUP,
         creator: upodUserA,
         lastUpdateUser: upodUserA,
@@ -176,7 +176,7 @@ describe('Page', () => {
         parent: upodPageIdPublic2,
       },
       {
-        path: '/gAIsolated_upod_2',
+        path: '/public_upod_2/gAIsolated_upod_2',
         grant: PageGrant.GRANT_USER_GROUP,
         creator: upodUserA,
         lastUpdateUser: upodUserA,
@@ -185,7 +185,7 @@ describe('Page', () => {
         parent: upodPageIdPublic2,
       },
       {
-        path: '/onlyA_upod_2',
+        path: '/public_upod_2/onlyA_upod_2',
         grant: PageGrant.GRANT_OWNER,
         creator: upodUserA,
         lastUpdateUser: upodUserA,
@@ -205,7 +205,7 @@ describe('Page', () => {
         parent: rootPage._id,
       },
       {
-        path: '/gAB_upod_3',
+        path: '/public_upod_3/gAB_upod_3',
         grant: PageGrant.GRANT_USER_GROUP,
         creator: upodUserA,
         lastUpdateUser: upodUserA,
@@ -214,7 +214,7 @@ describe('Page', () => {
         parent: upodPageIdPublic3,
       },
       {
-        path: '/gB_upod_3',
+        path: '/public_upod_3/gB_upod_3',
         grant: PageGrant.GRANT_USER_GROUP,
         creator: upodUserB,
         lastUpdateUser: upodUserB,
@@ -223,7 +223,7 @@ describe('Page', () => {
         parent: upodPageIdPublic3,
       },
       {
-        path: '/onlyB_upod_3',
+        path: '/public_upod_3/onlyB_upod_3',
         grant: PageGrant.GRANT_OWNER,
         creator: upodUserB,
         lastUpdateUser: upodUserB,
@@ -243,7 +243,7 @@ describe('Page', () => {
         parent: rootPage._id,
       },
       {
-        path: '/gA_upod_4',
+        path: '/public_upod_4/gA_upod_4',
         grant: PageGrant.GRANT_USER_GROUP,
         creator: upodUserA,
         lastUpdateUser: upodUserA,
@@ -252,7 +252,7 @@ describe('Page', () => {
         parent: upodPageIdPublic4,
       },
       {
-        path: '/gC_upod_4',
+        path: '/public_upod_4/gC_upod_4',
         grant: PageGrant.GRANT_USER_GROUP,
         creator: upodUserC,
         lastUpdateUser: upodUserC,
@@ -272,7 +272,7 @@ describe('Page', () => {
         parent: rootPage._id,
       },
       {
-        path: '/gA_upod_5',
+        path: '/public_upod_5/gA_upod_5',
         grant: PageGrant.GRANT_USER_GROUP,
         creator: upodUserA,
         lastUpdateUser: upodUserA,
@@ -281,7 +281,7 @@ describe('Page', () => {
         parent: upodPageIdPublic5,
       },
       {
-        path: '/onlyC_upod_5',
+        path: '/public_upod_5/onlyC_upod_5',
         grant: PageGrant.GRANT_OWNER,
         creator: upodUserC,
         lastUpdateUser: upodUserC,
@@ -301,7 +301,7 @@ describe('Page', () => {
         parent: rootPage._id,
       },
       {
-        path: '/onlyC_upod_6',
+        path: '/public_upod_6/onlyC_upod_6',
         grant: PageGrant.GRANT_OWNER,
         creator: upodUserC,
         lastUpdateUser: upodUserC,
@@ -1196,11 +1196,11 @@ describe('Page', () => {
 
 
   // see: https://dev.growi.org/635a314eac6bcd85cbf359fc about the specification
-  describe('updatePage with overwriteScopesOfDescendants true', () => {
+  describe.only('updatePage with overwriteScopesOfDescendants true', () => {
     test('(case 1) it should update all granted descendant pages when update grant is GRANT_PUBLIC', async() => {
       const upodPagegAB = await Page.findOne({ path: '/gAB_upod_1' });
-      const upodPagegB = await Page.findOne({ path: '/gB_upod_1' });
-      const upodPageonlyB = await Page.findOne({ path: '/onlyB_upod_1' });
+      const upodPagegB = await Page.findOne({ path: '/gAB_upod_1/gB_upod_1' });
+      const upodPageonlyB = await Page.findOne({ path: '/gAB_upod_1/onlyB_upod_1' });
 
       expect(upodPagegAB).not.toBeNull();
       expect(upodPagegB).not.toBeNull();
@@ -1217,8 +1217,8 @@ describe('Page', () => {
       };
       const updatedPage = await Page.updatePage(upodPagegAB, 'newRevisionBody', 'oldRevisionBody', upodUserA, options);
 
-      const upodPagegBUpdated = await Page.findOne({ path: '/gB_upod_1' });
-      const upodPageonlyBUpdated = await Page.findOne({ path: '/onlyB_upod_1' });
+      const upodPagegBUpdated = await Page.findOne({ path: '/gAB_upod_1/gB_upod_1' });
+      const upodPageonlyBUpdated = await Page.findOne({ path: '/gAB_upod_1/onlyB_upod_1' });
 
       // Changed
       const newGrant = PageGrant.GRANT_PUBLIC;
@@ -1231,9 +1231,9 @@ describe('Page', () => {
     });
     test('(case 2) it should update all granted descendant pages when all descendant pages are granted by the operator', async() => {
       const upodPagePublic = await Page.findOne({ path: '/public_upod_2' });
-      const upodPagegA = await Page.findOne({ path: '/gA_upod_2' });
-      const upodPagegAIsolated = await Page.findOne({ path: '/gAIsolated_upod_2' });
-      const upodPageonlyA = await Page.findOne({ path: '/onlyA_upod_2' });
+      const upodPagegA = await Page.findOne({ path: '/public_upod_2/gA_upod_2' });
+      const upodPagegAIsolated = await Page.findOne({ path: '/public_upod_2/gAIsolated_upod_2' });
+      const upodPageonlyA = await Page.findOne({ path: '/public_upod_2/onlyA_upod_2' });
 
       expect(upodPagePublic).not.toBeNull();
       expect(upodPagegA).not.toBeNull();
@@ -1252,9 +1252,9 @@ describe('Page', () => {
       };
       const updatedPage = await Page.updatePage(upodPagePublic, 'newRevisionBody', 'oldRevisionBody', upodUserA, options);
 
-      const upodPagegAUpdated = await Page.findOne({ path: '/gA_upod_2' });
-      const upodPagegAIsolatedUpdated = await Page.findOne({ path: '/gAIsolated_upod_2' });
-      const upodPageonlyAUpdated = await Page.findOne({ path: '/onlyA_upod_2' });
+      const upodPagegAUpdated = await Page.findOne({ path: '/public_upod_2/gA_upod_2' });
+      const upodPagegAIsolatedUpdated = await Page.findOne({ path: '/public_upod_2/gAIsolated_upod_2' });
+      const upodPageonlyAUpdated = await Page.findOne({ path: '/public_upod_2/onlyA_upod_2' });
 
       // Changed
       const newGrant = PageGrant.GRANT_OWNER;
@@ -1272,9 +1272,9 @@ describe('Page', () => {
     , all user groups of descendants are the children or itself of the update user group
     , and all users of descendants belong to the update user group`, async() => {
       const upodPagePublic = await Page.findOne({ path: '/public_upod_3' });
-      const upodPagegAB = await Page.findOne({ path: '/gAB_upod_3' });
-      const upodPagegB = await Page.findOne({ path: '/gB_upod_3' });
-      const upodPageonlyB = await Page.findOne({ path: '/onlyB_upod_3' });
+      const upodPagegAB = await Page.findOne({ path: '/public_upod_3/gAB_upod_3' });
+      const upodPagegB = await Page.findOne({ path: '/public_upod_3/gB_upod_3' });
+      const upodPageonlyB = await Page.findOne({ path: '/public_upod_3/onlyB_upod_3' });
 
       expect(upodPagePublic).not.toBeNull();
       expect(upodPagegAB).not.toBeNull();
@@ -1294,9 +1294,9 @@ describe('Page', () => {
       };
       const updatedPage = await Page.updatePage(upodPagePublic, 'newRevisionBody', 'oldRevisionBody', upodUserA, options);
 
-      const upodPagegABUpdated = await Page.findOne({ path: '/gAB_upod_3' });
-      const upodPagegBUpdated = await Page.findOne({ path: '/gB_upod_3' });
-      const upodPageonlyBUpdated = await Page.findOne({ path: '/onlyB_upod_3' });
+      const upodPagegABUpdated = await Page.findOne({ path: '/public_upod_3/gAB_upod_3' });
+      const upodPagegBUpdated = await Page.findOne({ path: '/public_upod_3/gB_upod_3' });
+      const upodPageonlyBUpdated = await Page.findOne({ path: '/public_upod_3/onlyB_upod_3' });
 
       // Changed
       const newGrant = PageGrant.GRANT_USER_GROUP;
@@ -1315,8 +1315,8 @@ describe('Page', () => {
     , update grant is GRANT_USER_GROUP
     , and some of user groups of descendants are not children or itself of the update user group`, async() => {
       const upodPagePublic = await Page.findOne({ path: '/public_upod_4' });
-      const upodPagegA = await Page.findOne({ path: '/gA_upod_4' });
-      const upodPagegC = await Page.findOne({ path: '/gC_upod_4' });
+      const upodPagegA = await Page.findOne({ path: '/public_upod_4/gA_upod_4' });
+      const upodPagegC = await Page.findOne({ path: '/public_upod_4/gC_upod_4' });
 
       expect(upodPagePublic).not.toBeNull();
       expect(upodPagegA).not.toBeNull();
@@ -1334,14 +1334,14 @@ describe('Page', () => {
       };
       const updatedPagePromise = Page.updatePage(upodPagePublic, 'newRevisionBody', 'oldRevisionBody', upodUserA, options);
 
-      await expect(updatedPagePromise).toThrowError();
+      await expect(updatedPagePromise).rejects.toThrowError();
     });
     test(`(case 5) it should throw when some of descendants is not granted
     , update grant is GRANT_USER_GROUP
     , and some of users of descendants does NOT belong to the update user group`, async() => {
       const upodPagePublic = await Page.findOne({ path: '/public_upod_5' });
-      const upodPagegA = await Page.findOne({ path: '/gA_upod_5' });
-      const upodPageonlyC = await Page.findOne({ path: '/onlyC_upod_5' });
+      const upodPagegA = await Page.findOne({ path: '/public_upod_5/gA_upod_5' });
+      const upodPageonlyC = await Page.findOne({ path: '/public_upod_5/onlyC_upod_5' });
 
       expect(upodPagePublic).not.toBeNull();
       expect(upodPagegA).not.toBeNull();
@@ -1359,11 +1359,11 @@ describe('Page', () => {
       };
       const updatedPagePromise = Page.updatePage(upodPagePublic, 'newRevisionBody', 'oldRevisionBody', upodUserA, options);
 
-      await expect(updatedPagePromise).toThrowError();
+      await expect(updatedPagePromise).rejects.toThrowError();
     });
     test('(case 6) it should throw when some of descendants is not granted and update grant is GRANT_OWNER', async() => {
       const upodPagePublic = await Page.findOne({ path: '/public_upod_6' });
-      const upodPageonlyC = await Page.findOne({ path: '/onlyC_upod_6' });
+      const upodPageonlyC = await Page.findOne({ path: '/public_upod_6/onlyC_upod_6' });
 
       expect(upodPagePublic).not.toBeNull();
       expect(upodPageonlyC).not.toBeNull();
@@ -1379,7 +1379,7 @@ describe('Page', () => {
       };
       const updatedPagePromise = Page.updatePage(upodPagePublic, 'newRevisionBody', 'oldRevisionBody', upodUserA, options);
 
-      await expect(updatedPagePromise).toThrowError();
+      await expect(updatedPagePromise).rejects.toThrowError();
     });
   });
 });

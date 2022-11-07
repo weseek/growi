@@ -558,7 +558,8 @@ class PageGrantService {
       if (grantUserGroupId == null) {
         throw Error('The parameter `grantUserGroupId` is required.');
       }
-      const userIds = await UserGroup.findAllUserIdsForUserGroup(grantUserGroupId);
+      const UserGroupRelation = mongoose.model('UserGroupRelation') as any; // TODO: Typescriptize model
+      const userIds = await UserGroupRelation.findAllUserIdsForUserGroup(grantUserGroupId);
       updateGrantInfo = {
         grant: PageGrant.GRANT_USER_GROUP,
         grantedUserGroupInfo: {

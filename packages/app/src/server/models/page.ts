@@ -1011,7 +1011,6 @@ export default (crowi: Crowi): any => {
     if (shouldBeOnTree) {
       let isGrantNormalized = false;
       try {
-        // TODO: fix
         const shouldCheckDescendants = !options.overwriteScopesOfDescendants;
         isGrantNormalized = await pageGrantService.isGrantNormalized(user, pageData.path, grant, grantedUserIds, grantUserGroupId, shouldCheckDescendants);
       }
