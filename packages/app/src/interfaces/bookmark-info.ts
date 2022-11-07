@@ -17,3 +17,9 @@ type BookmarkedPage = {
 }
 
 export type MyBookmarkList = BookmarkedPage[]
+
+export interface IBookmarkFolder {
+  name: string
+  owner: Ref<IUser>
+  parent?: Ref<this>
+}
