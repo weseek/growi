@@ -108,6 +108,7 @@ schema.statics.findGroupsWithAncestorsRecursively = async function(group, ancest
 };
 
 /**
+ * TODO: use $graphLookup
  * Find all descendant groups starting from the UserGroups in the initial groups in "groups".
  * Set "descendants" as "[]" if the initial groups are unnecessary as result.
  * @param groups UserGroupDocument[] including at least one UserGroup
