@@ -544,7 +544,7 @@ class PageGrantService {
     return this.calcCanOverwriteDescendants(operatorGrantInfo, updateGrantInfo, descendantPagesGrantInfo);
   }
 
-  async generateUpdateGrantInfo(operator, updateGrant: PageGrantCanBeOnTree, grantUserGroupId?: ObjectIdLike): Promise<UpdateGrantInfo> {
+  async generateUpdateGrantInfoToOverwriteDescendants(operator, updateGrant: PageGrantCanBeOnTree, grantUserGroupId?: ObjectIdLike): Promise<UpdateGrantInfo> {
     let updateGrantInfo: UpdateGrantInfo | null = null;
 
     if (updateGrant === PageGrant.GRANT_PUBLIC) {

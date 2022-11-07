@@ -1044,7 +1044,7 @@ export default (crowi): any => {
       }
 
       if (options.overwriteScopesOfDescendants) {
-        const updateGrantInfo = await pageGrantService.generateUpdateGrantInfo(user, grant, options.grantUserGroupId);
+        const updateGrantInfo = await pageGrantService.generateUpdateGrantInfoToOverwriteDescendants(user, grant, options.grantUserGroupId);
         const canOverwriteDescendants = await pageGrantService.canOverwriteDescendants(pageData.path, user, updateGrantInfo);
 
         if (!canOverwriteDescendants) {

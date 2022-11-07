@@ -3457,7 +3457,7 @@ class PageService {
       }
 
       if (options?.overwriteScopesOfDescendants) {
-        const updateGrantInfo = await this.crowi.pageGrantService.generateUpdateGrantInfo(user, grant, options.grantUserGroupId);
+        const updateGrantInfo = await this.crowi.pageGrantService.generateUpdateGrantInfoToOverwriteDescendants(user, grant, options.grantUserGroupId);
         const canOverwriteDescendants = await this.crowi.pageGrantService.canOverwriteDescendants(path, user, updateGrantInfo);
 
         if (!canOverwriteDescendants) {
