@@ -17,10 +17,10 @@ const AppSettingsPageContents = dynamic(() => import('~/components/Admin/App/App
 
 
 const AdminAppPage: NextPage<CommonProps> = (props) => {
-  const { t } = useTranslation('admin');
+  const { t } = useTranslation('commons');
   useIsMaintenanceMode(props.isMaintenanceMode);
 
-  const title = t('commons:headers.app_settings');
+  const title = t('headers.app_settings');
   const injectableContainers: Container<any>[] = [];
 
   if (isClient()) {
