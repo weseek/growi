@@ -51,7 +51,6 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
   const [registerErrors, setRegisterErrors] = useState<IErrorV3[]>([]);
   // For UserActivation
   const [emailForRegistrationOrder, setEmailForRegistrationOrder] = useState('');
-  const [isSuccessToSendRegistrationOrderEmail, setIsSuccessToSendRegistrationOrderEmail] = useState(false);
 
   const [isSuccessToRagistration, setIsSuccessToRagistration] = useState(false);
 
@@ -268,7 +267,7 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
   const handleRegisterFormSubmit = useCallback(async(e, requestPath) => {
     e.preventDefault();
     setEmailForRegistrationOrder('');
-    setIsSuccessToSendRegistrationOrderEmail(false);
+    setIsSuccessToRagistration(false);
 
     const registerForm = {
       username: usernameForRegister,
@@ -282,12 +281,14 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
       router.push(redirectTo ?? '/');
 
       if (isEmailAuthenticationEnabled) {
+        setIsSuccessToRagistration(true);
         setEmailForRegistrationOrder(emailForRegister);
-        setIsSuccessToSendRegistrationOrderEmail(true);
+        return;
       }
 
       if (registrationMode === 'Restricted') {
         setIsSuccessToRagistration(true);
+        return;
       }
     }
     catch (err) {
@@ -349,7 +350,7 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
         }
 
         {
-          (isEmailAuthenticationEnabled && isSuccessToSendRegistrationOrderEmail) && (
+          (isEmailAuthenticationEnabled && isSuccessToRagistration) && (
             <p className="alert alert-success">
               <span>{t('message.successfully_send_email_auth', { email: emailForRegistrationOrder })}</span>
             </p>
@@ -479,12 +480,11 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
       </React.Fragment>
     );
   }, [
-    handleRegisterFormSubmit, isEmailAuthenticationEnabled, isMailerSetup,
-    isSuccessToSendRegistrationOrderEmail, props.email, props.name, props.username,
-    registerErrors, registrationMode, registrationWhiteList, emailForRegistrationOrder, switchForm, t,
+    t, isEmailAuthenticationEnabled, registrationMode, isMailerSetup, registerErrors, isSuccessToRagistration,
+    emailForRegistrationOrder, props.username, props.name, props.email, registrationWhiteList, switchForm, handleRegisterFormSubmit,
   ]);
 
-  if (registrationMode === 'Restricted' && isSuccessToRagistration) {
+  if (registrationMode === 'Restricted' && isSuccessToRagistration && !isEmailAuthenticationEnabled) {
     return (
       <div className="noLogin-dialog mx-auto" id="noLogin-dialog">
         <div className="row mx-0">
