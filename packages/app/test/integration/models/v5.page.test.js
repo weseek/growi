@@ -1208,7 +1208,7 @@ describe('Page', () => {
 
 
   // see: https://dev.growi.org/635a314eac6bcd85cbf359fc about the specification
-  describe.only('updatePage with overwriteScopesOfDescendants true', () => {
+  describe('updatePage with overwriteScopesOfDescendants true', () => {
     test('(case 1) it should update all granted descendant pages when update grant is GRANT_PUBLIC', async() => {
       const upodPagegAB = await Page.findOne({ path: '/gAB_upod_1' });
       const upodPagegB = await Page.findOne({ path: '/gAB_upod_1/gB_upod_1' });
@@ -1280,7 +1280,7 @@ describe('Page', () => {
       expect(upodPageonlyAUpdated.grant).toBe(newGrant);
       expect(upodPageonlyAUpdated.grantedUsers).toStrictEqual(newGrantedUsers);
     });
-    test.only(`(case 3) it should update all granted descendant pages when update grant is GRANT_USER_GROUP
+    test(`(case 3) it should update all granted descendant pages when update grant is GRANT_USER_GROUP
     , all user groups of descendants are the children or itself of the update user group
     , and all users of descendants belong to the update user group`, async() => {
       const upodPagePublic = await Page.findOne({ path: '/public_upod_3' });
@@ -1314,12 +1314,12 @@ describe('Page', () => {
       const newGrant = PageGrant.GRANT_USER_GROUP;
       const newGrantedGroup = upodUserGroupIdAB;
       expect(updatedPage.grant).toBe(newGrant);
-      expect(updatedPage.grantedGroup).toStrictEqual(newGrantedGroup);
+      expect(updatedPage.grantedGroup._id).toStrictEqual(newGrantedGroup);
       expect(upodPagegABUpdated.grant).toBe(newGrant);
-      expect(upodPagegABUpdated.grantedGroup).toStrictEqual(newGrantedGroup);
+      expect(upodPagegABUpdated.grantedGroup._id).toStrictEqual(newGrantedGroup);
       // Not changed
       expect(upodPagegBUpdated.grant).toBe(PageGrant.GRANT_USER_GROUP);
-      expect(upodPagegBUpdated.grantedGroup).toStrictEqual(upodPagegB.grantedGroup);
+      expect(upodPagegBUpdated.grantedGroup._id).toStrictEqual(upodPagegB.grantedGroup);
       expect(upodPageonlyBUpdated.grant).toBe(PageGrant.GRANT_OWNER);
       expect(upodPageonlyBUpdated.grantedUsers).toStrictEqual(upodPageonlyB.grantedUsers);
     });
