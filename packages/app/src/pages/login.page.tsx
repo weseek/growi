@@ -1,6 +1,5 @@
 import React from 'react';
 
-
 import {
   NextPage, GetServerSideProps, GetServerSidePropsContext,
 } from 'next';
@@ -9,19 +8,19 @@ import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import { NoLoginLayout } from '~/components/Layout/NoLoginLayout';
 import { LoginForm } from '~/components/LoginForm';
 import type { CrowiRequest } from '~/interfaces/crowi-request';
+import type { RegistrationMode } from '~/interfaces/registration-mode';
 
 import {
   useCsrfToken,
   useCurrentPathname,
 } from '../stores/context';
 
-
 import {
   CommonProps, getServerSideCommonProps, useCustomTitle, getNextI18NextConfig,
 } from './utils/commons';
 
 type Props = CommonProps & {
-  registrationMode: string,
+  registrationMode: RegistrationMode,
   pageWithMetaStr: string,
   isMailerSetup: boolean,
   enabledStrategies: unknown,

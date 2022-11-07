@@ -5,6 +5,7 @@ import CompleteUserRegistrationForm from '~/components/CompleteUserRegistrationF
 import { NoLoginLayout } from '~/components/Layout/NoLoginLayout';
 import type { CrowiRequest } from '~/interfaces/crowi-request';
 import type { UserActivationErrorCode } from '~/interfaces/errors/user-activation';
+import type { RegistrationMode } from '~/interfaces/registration-mode';
 import { IUserRegistrationOrder } from '~/server/models/user-registration-order';
 
 import {
@@ -15,7 +16,7 @@ type Props = CommonProps & {
   token: string
   email: string
   errorCode?: UserActivationErrorCode
-  registrationMode: string
+  registrationMode: RegistrationMode
   isEmailAuthenticationEnabled: boolean
 }
 

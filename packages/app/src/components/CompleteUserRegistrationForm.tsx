@@ -4,6 +4,7 @@ import { useTranslation } from 'next-i18next';
 
 import { apiv3Get, apiv3Post } from '~/client/util/apiv3-client';
 import { UserActivationErrorCode } from '~/interfaces/errors/user-activation';
+import { RegistrationMode } from '~/interfaces/registration-mode';
 
 import { toastSuccess, toastError } from '../client/util/apiNotification';
 
@@ -13,7 +14,7 @@ interface Props {
   email: string,
   token: string,
   errorCode?: UserActivationErrorCode,
-  registrationMode: string,
+  registrationMode: RegistrationMode,
   isEmailAuthenticationEnabled: boolean,
 }
 
@@ -65,7 +66,7 @@ const CompleteUserRegistrationForm: React.FC<Props> = (props: Props) => {
 
       setIsSuccessToRagistration(true);
 
-      if (registrationMode !== 'Restricted') {
+      if (registrationMode !== RegistrationMode.RESTRICTED) {
         window.location.href = '/login';
       }
     }
@@ -76,7 +77,7 @@ const CompleteUserRegistrationForm: React.FC<Props> = (props: Props) => {
     }
   }, [name, password, token, username, registrationMode]);
 
-  if (isSuccessToRagistration && registrationMode === 'Restricted') {
+  if (isSuccessToRagistration && registrationMode === RegistrationMode.RESTRICTED) {
     return <CompleteUserRegistration />;
   }
 

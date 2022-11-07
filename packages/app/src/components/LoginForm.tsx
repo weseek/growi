@@ -9,6 +9,7 @@ import ReactCardFlip from 'react-card-flip';
 import { apiv3Post } from '~/client/util/apiv3-client';
 import { LoginErrorCode } from '~/interfaces/errors/login-error';
 import { IErrorV3 } from '~/interfaces/errors/v3-error';
+import { RegistrationMode } from '~/interfaces/registration-mode';
 import { toArrayIfNot } from '~/utils/array-utils';
 
 import { CompleteUserRegistration } from './CompleteUserRegistration';
@@ -19,7 +20,7 @@ type LoginFormProps = {
   email?: string,
   isRegistrationEnabled: boolean,
   isEmailAuthenticationEnabled: boolean,
-  registrationMode: string,
+  registrationMode: RegistrationMode,
   registrationWhiteList: string[],
   isPasswordResetEnabled: boolean,
   isLocalStrategySetup: boolean,
@@ -288,7 +289,7 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
         return;
       }
 
-      if (registrationMode === 'Restricted') {
+      if (registrationMode === RegistrationMode.RESTRICTED) {
         setIsSuccessToRagistration(true);
         return;
       }
@@ -324,7 +325,7 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
 
     return (
       <React.Fragment>
-        {registrationMode === 'Restricted' && (
+        {registrationMode === RegistrationMode.RESTRICTED && (
           <p className="alert alert-warning">
             {t('page_register.notice.restricted')}
             <br />
@@ -486,7 +487,7 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
     emailForRegistrationOrder, props.username, props.name, props.email, registrationWhiteList, switchForm, handleRegisterFormSubmit,
   ]);
 
-  if (registrationMode === 'Restricted' && isSuccessToRagistration && !isEmailAuthenticationEnabled) {
+  if (registrationMode === RegistrationMode.RESTRICTED && isSuccessToRagistration && !isEmailAuthenticationEnabled) {
     return <CompleteUserRegistration />;
   }
 
