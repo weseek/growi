@@ -342,7 +342,7 @@ class PageService {
     const { PageQueryBuilder } = Page;
 
     const builder = new PageQueryBuilder(Page.find(), true)
-      .addConditionAsNotMigrated() // to avoid affecting v5 pages
+      .addConditionAsRootOrNotOnTree() // to avoid affecting v5 pages
       .addConditionToListOnlyDescendants(targetPagePath);
 
     await Page.addConditionToFilteringByViewerToEdit(builder, userToOperate);
@@ -2379,7 +2379,7 @@ class PageService {
 
     // This validation is not 100% correct since it ignores user to count
     const builder = new PageQueryBuilder(Page.find());
-    builder.addConditionAsNotMigrated();
+    builder.addConditionAsRootOrNotOnTree();
     builder.addConditionToListWithDescendants(path);
     const nEstimatedNormalizationTarget: number = await builder.query.exec('count');
     if (nEstimatedNormalizationTarget === 0) {
@@ -3418,6 +3418,7 @@ class PageService {
       },
       shouldValidateGrant: boolean,
       user?,
+      options?: Partial<PageCreateOptions>,
   ): Promise<boolean> {
     const Page = mongoose.model('Page') as unknown as PageModel;
 
@@ -3456,6 +3457,15 @@ class PageService {
       }
       if (!isGrantNormalized) {
         throw Error('The selected grant or grantedGroup is not assignable to this page.');
+      }
+
+      if (options?.overwriteScopesOfDescendants) {
+        const updateGrantInfo = await this.crowi.pageGrantService.generateUpdateGrantInfoToOverwriteDescendants(user, grant, options.grantUserGroupId);
+        const canOverwriteDescendants = await this.crowi.pageGrantService.canOverwriteDescendants(path, user, updateGrantInfo);
+
+        if (!canOverwriteDescendants) {
+          throw Error('Cannot overwrite scopes of descendants.');
+        }
       }
     }
 
@@ -3540,6 +3550,11 @@ class PageService {
     catch (err) {
       // no throw
       logger.error('Failed to delete PageRedirect');
+    }
+
+    // update scopes for descendants
+    if (options.overwriteScopesOfDescendants) {
+      Page.applyScopesToDescendantsAsyncronously(savedPage, user);
     }
 
     return savedPage;

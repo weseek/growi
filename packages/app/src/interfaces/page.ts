@@ -41,7 +41,13 @@ export const PageGrant = {
   GRANT_OWNER: 4,
   GRANT_USER_GROUP: 5,
 } as const;
-export type PageGrant = typeof PageGrant[keyof typeof PageGrant];
+type UnionPageGrantKeys = keyof typeof PageGrant;
+export type PageGrant = typeof PageGrant[UnionPageGrantKeys];
+
+/**
+ * Neither pages with grant `GRANT_RESTRICTED` nor `GRANT_SPECIFIED` can be on a page tree.
+ */
+export type PageGrantCanBeOnTree = typeof PageGrant[Exclude<UnionPageGrantKeys, 'GRANT_RESTRICTED' | 'GRANT_SPECIFIED'>];
 
 export type IPageHasId = IPage & HasObjectId;
 

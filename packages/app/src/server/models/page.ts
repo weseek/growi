@@ -338,7 +338,7 @@ export class PageQueryBuilder {
           { grant: { $ne: GRANT_SPECIFIED } },
         ],
       });
-    this.addConditionAsNotMigrated();
+    this.addConditionAsRootOrNotOnTree();
     this.addConditionAsNonRootPage();
     this.addConditionToExcludeTrashed();
     await this.addConditionForParentNormalization(user);
@@ -380,7 +380,7 @@ export class PageQueryBuilder {
     return this;
   }
 
-  addConditionAsNotMigrated() {
+  addConditionAsRootOrNotOnTree() {
     this.query = this.query
       .and({ parent: null });
 
@@ -938,6 +938,7 @@ export type PageCreateOptions = {
   format?: string
   grantUserGroupId?: ObjectIdLike
   grant?: number
+  overwriteScopesOfDescendants?: boolean
 }
 
 /*
@@ -1011,8 +1012,7 @@ export default (crowi: Crowi): any => {
     if (shouldBeOnTree) {
       let isGrantNormalized = false;
       try {
-        // TODO: fix
-        const shouldCheckDescendants = options.overwriteScopesOfDescendants !== true;
+        const shouldCheckDescendants = !options.overwriteScopesOfDescendants;
         isGrantNormalized = await pageGrantService.isGrantNormalized(user, pageData.path, grant, grantedUserIds, grantUserGroupId, shouldCheckDescendants);
       }
       catch (err) {
@@ -1021,6 +1021,15 @@ export default (crowi: Crowi): any => {
       }
       if (!isGrantNormalized) {
         throw Error('The selected grant or grantedGroup is not assignable to this page.');
+      }
+
+      if (options.overwriteScopesOfDescendants) {
+        const updateGrantInfo = await pageGrantService.generateUpdateGrantInfoToOverwriteDescendants(user, grant, options.grantUserGroupId);
+        const canOverwriteDescendants = await pageGrantService.canOverwriteDescendants(pageData.path, user, updateGrantInfo);
+
+        if (!canOverwriteDescendants) {
+          throw Error('Cannot overwrite scopes of descendants.');
+        }
       }
 
       if (!wasOnTree) {
@@ -1083,6 +1092,11 @@ export default (crowi: Crowi): any => {
     }
 
     // Sub operation
+    // update scopes for descendants
+    if (options.overwriteScopesOfDescendants) {
+      this.applyScopesToDescendantsAsyncronously(savedPage, user);
+    }
+
     // 1. Update descendantCount
     const shouldPlusDescCount = !wasOnTree && shouldBeOnTree;
     const shouldMinusDescCount = wasOnTree && !shouldBeOnTree;
