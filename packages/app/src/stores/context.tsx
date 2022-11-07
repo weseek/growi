@@ -217,11 +217,11 @@ export const useCustomizedLogoSrc = (initialData?: string): SWRResponse<string, 
 };
 
 export const useGrowiCloudUri = (initialData?: string): SWRResponse<string, Error> => {
-  return useStaticSWR('GrowiCloudUri', initialData);
+  return useStaticSWR('growiCloudUri', initialData);
 };
 
 export const useGrowiAppIdForGrowiCloud = (initialData?: number): SWRResponse<number, Error> => {
-  return useStaticSWR('GrowiAppIdForGrowiCloud', initialData);
+  return useStaticSWR('growiAppIdForGrowiCloud', initialData);
 };
 
 /** **********************************************************
