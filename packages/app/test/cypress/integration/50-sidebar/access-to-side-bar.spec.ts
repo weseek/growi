@@ -79,8 +79,11 @@ context('Access to sidebar', () => {
         cy.getByTestid('grw-navigation-resize-button').click({force: true});
       }
     });
-    cy.getByTestid('grw-contextual-navigation-sub').should('be.visible').screenshot(`${ssPrefix}page-tree-1-access-to-page-tree`);
-    cy.get('.grw-pagetree-triangle-btn').eq(0).click();
+
+    cy.getByTestid('grw-contextual-navigation-sub').should('be.visible')
+    cy.getByTestid('grw-pagetree-item-children').should('be.visible').eq(0).should('be.visible');
+    cy.screenshot(`${ssPrefix}page-tree-1-access-to-page-tree`);
+
     cy.getByTestid('grw-contextual-navigation-sub').screenshot(`${ssPrefix}page-tree-2-hide-page-tree-item`);
     cy.get('.grw-pagetree-triangle-btn').eq(0).click();
 
