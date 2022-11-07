@@ -36,6 +36,10 @@ type ComparableDescendants = {
   grantedGroupIds: ObjectIdLike[],
 };
 
+/**
+ * @param grantedUserGroupInfo This parameter has info to calculate whether the update operation is allowed.
+ *   - See the `calcCanOverwriteDescendants` private method for detail.
+ */
 type UpdateGrantInfo = {
   grant: typeof PageGrant.GRANT_PUBLIC,
 } | {
