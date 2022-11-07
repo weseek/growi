@@ -80,6 +80,7 @@ const UnsavedAlertDialog = dynamic(() => import('../components/UnsavedAlertDialo
 const GrowiSubNavigationSwitcher = dynamic(() => import('../components/Navbar/GrowiSubNavigationSwitcher'), { ssr: false });
 const UsersHomePageFooter = dynamic<UsersHomePageFooterProps>(() => import('../components/UsersHomePageFooter')
   .then(mod => mod.UsersHomePageFooter), { ssr: false });
+const HandsontableModal = dynamic(() => import('../components/PageEditor/HandsontableModal').then(mod => mod.HandsontableModal), { ssr: false });
 
 const logger = loggerFactory('growi:pages:all');
 
@@ -340,6 +341,7 @@ const GrowiPage: NextPage<Props> = (props: Props) => {
 
           <UnsavedAlertDialog />
           <DescendantsPageListModal />
+          <HandsontableModal />
           {shouldRenderPutbackPageModal && <PutbackPageModal />}
         </div>
       </BasicLayout>

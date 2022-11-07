@@ -11,7 +11,7 @@ import { throttle, debounce } from 'throttle-debounce';
 import urljoin from 'url-join';
 
 import InterceptorManager from '~/services/interceptor-manager';
-import { useDrawioModal } from '~/stores/modal';
+import { useHandsontableModal, useDrawioModal } from '~/stores/modal';
 import loggerFactory from '~/utils/logger';
 
 import { UncontrolledCodeMirror } from '../UncontrolledCodeMirror';
@@ -25,7 +25,7 @@ import EmojiPickerHelper from './EmojiPickerHelper';
 import GridEditModal from './GridEditModal';
 // TODO: re-impl with https://redmine.weseek.co.jp/issues/107248
 // import geu from './GridEditorUtil';
-import HandsontableModal from './HandsontableModal';
+// import { HandsontableModal } from './HandsontableModal';
 import LinkEditModal from './LinkEditModal';
 import mdu from './MarkdownDrawioUtil';
 import markdownLinkUtil from './MarkdownLinkUtil';
@@ -116,7 +116,7 @@ class CodeMirrorEditor extends AbstractEditor {
     this.cm = React.createRef();
     this.gridEditModal = React.createRef();
     this.linkEditModal = React.createRef();
-    this.handsontableModal = React.createRef();
+    // this.handsontableModal = React.createRef();
     this.drawioModal = React.createRef();
 
     this.init();
@@ -156,7 +156,7 @@ class CodeMirrorEditor extends AbstractEditor {
     // TODO: re-impl with https://redmine.weseek.co.jp/issues/107248
     // this.showGridEditorHandler = this.showGridEditorHandler.bind(this);
     this.showLinkEditHandler = this.showLinkEditHandler.bind(this);
-    this.showHandsonTableHandler = this.showHandsonTableHandler.bind(this);
+    // this.showHandsonTableHandler = this.showHandsonTableHandler.bind(this);
 
     this.foldDrawioSection = this.foldDrawioSection.bind(this);
     this.onSaveForDrawio = this.onSaveForDrawio.bind(this);
@@ -869,9 +869,9 @@ class CodeMirrorEditor extends AbstractEditor {
     this.linkEditModal.current.show(markdownLinkUtil.getMarkdownLink(this.getCodeMirror()));
   }
 
-  showHandsonTableHandler() {
-    this.handsontableModal.current.show(mtu.getMarkdownTable(this.getCodeMirror()));
-  }
+  // showHandsonTableHandler() {
+  //   this.handsontableModal.current.show(mtu.getMarkdownTable(this.getCodeMirror()));
+  // }
 
 
   // fold draw.io section (::: drawio ~ :::)
@@ -1016,7 +1016,7 @@ class CodeMirrorEditor extends AbstractEditor {
         color={null}
         size="sm"
         title="Table"
-        onClick={this.showHandsonTableHandler}
+        onClick={() => this.props.onClickTableBtn(mtu.getMarkdownTable(this.getCodeMirror()))}
       >
         <EditorIcon icon="Table" />
       </Button>,
@@ -1135,11 +1135,11 @@ class CodeMirrorEditor extends AbstractEditor {
           ref={this.linkEditModal}
           onSave={(linkText) => { return markdownLinkUtil.replaceFocusedMarkdownLinkWithEditor(this.getCodeMirror(), linkText) }}
         />
-        <HandsontableModal
+        {/* <HandsontableModal
           ref={this.handsontableModal}
           onSave={(table) => { return mtu.replaceFocusedMarkdownTableWithEditor(this.getCodeMirror(), table) }}
           autoFormatMarkdownTable={this.props.editorSettings.autoFormatMarkdownTable}
-        />
+        /> */}
       </div>
     );
   }
@@ -1161,12 +1161,17 @@ CodeMirrorEditor.defaultProps = {
 
 const CodeMirrorEditorFc = React.forwardRef((props, ref) => {
   const { open: openDrawioModal } = useDrawioModal();
+  const { open: openHandsontableModal } = useHandsontableModal();
 
   const openDrawioModalHandler = useCallback((drawioMxFile) => {
     openDrawioModal(drawioMxFile);
   }, [openDrawioModal]);
 
-  return <CodeMirrorEditor ref={ref} onClickDrawioBtn={openDrawioModalHandler} {...props} />;
+  const openTableModalHandler = useCallback((table) => {
+    openHandsontableModal(table);
+  }, [openHandsontableModal]);
+
+  return <CodeMirrorEditor ref={ref} onClickDrawioBtn={openDrawioModalHandler} onClickTableBtn={openTableModalHandler} {...props} />;
 });
 
 CodeMirrorEditorFc.displayName = 'CodeMirrorEditorFc';
