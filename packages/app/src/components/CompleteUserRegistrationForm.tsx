@@ -7,10 +7,13 @@ import { UserActivationErrorCode } from '~/interfaces/errors/user-activation';
 
 import { toastSuccess, toastError } from '../client/util/apiNotification';
 
+import { CompleteUserRegistration } from './CompleteUserRegistration';
+
 interface Props {
   email: string,
   token: string,
   errorCode?: UserActivationErrorCode,
+  registrationMode: string,
   isEmailAuthenticationEnabled: boolean,
 }
 
@@ -21,6 +24,7 @@ const CompleteUserRegistrationForm: React.FC<Props> = (props: Props) => {
     email,
     token,
     errorCode,
+    registrationMode,
     isEmailAuthenticationEnabled,
   } = props;
 
@@ -31,6 +35,7 @@ const CompleteUserRegistrationForm: React.FC<Props> = (props: Props) => {
   const [name, setName] = useState('');
   const [password, setPassword] = useState('');
   const [disableForm, setDisableForm] = useState(forceDisableForm);
+  const [isSuccessToRagistration, setIsSuccessToRagistration] = useState(false);
 
   useEffect(() => {
     const delayDebounceFn = setTimeout(async() => {
@@ -55,14 +60,25 @@ const CompleteUserRegistrationForm: React.FC<Props> = (props: Props) => {
       await apiv3Post('/complete-registration', {
         username, name, password, token,
       });
+
       toastSuccess('Registration succeed');
-      window.location.href = '/login';
+
+      setIsSuccessToRagistration(true);
+
+      if (registrationMode !== 'Restricted') {
+        window.location.href = '/login';
+      }
     }
     catch (err) {
       toastError(err, 'Registration failed');
       setDisableForm(false);
+      setIsSuccessToRagistration(false);
     }
-  }, [name, password, token, username]);
+  }, [name, password, token, username, registrationMode]);
+
+  if (isSuccessToRagistration && registrationMode === 'Restricted') {
+    return <CompleteUserRegistration />;
+  }
 
   return (
     <>

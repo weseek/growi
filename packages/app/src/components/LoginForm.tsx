@@ -11,6 +11,8 @@ import { LoginErrorCode } from '~/interfaces/errors/login-error';
 import { IErrorV3 } from '~/interfaces/errors/v3-error';
 import { toArrayIfNot } from '~/utils/array-utils';
 
+import { CompleteUserRegistration } from './CompleteUserRegistration';
+
 type LoginFormProps = {
   username?: string,
   name?: string,
@@ -485,18 +487,7 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
   ]);
 
   if (registrationMode === 'Restricted' && isSuccessToRagistration && !isEmailAuthenticationEnabled) {
-    return (
-      <div className="noLogin-dialog mx-auto" id="noLogin-dialog">
-        <div className="row mx-0">
-          <div className="col-12 mb-3 text-center">
-            <p className="alert alert-success">
-              <span>{t('login.Registration successful')}</span>
-            </p>
-            <span>{t('login.wait_for_admin_approval')}</span>
-          </div>
-        </div>
-      </div>
-    );
+    return <CompleteUserRegistration />;
   }
 
   return (

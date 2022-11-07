@@ -15,6 +15,7 @@ type Props = CommonProps & {
   token: string
   email: string
   errorCode?: UserActivationErrorCode
+  registrationMode: string
   isEmailAuthenticationEnabled: boolean
 }
 
@@ -25,6 +26,7 @@ const UserActivationPage: NextPage<Props> = (props: Props) => {
         token={props.token}
         email={props.email}
         errorCode={props.errorCode}
+        registrationMode={props.registrationMode}
         isEmailAuthenticationEnabled={props.isEmailAuthenticationEnabled}
       />
     </NoLoginLayout>
@@ -64,6 +66,7 @@ export const getServerSideProps: GetServerSideProps = async(context: GetServerSi
     props.errorCode = context.query.errorCode as UserActivationErrorCode;
   }
 
+  props.registrationMode = req.crowi.configManager.getConfig('crowi', 'security:registrationMode');
   props.isEmailAuthenticationEnabled = req.crowi.configManager.getConfig('crowi', 'security:passport-local:isEmailAuthenticationEnabled');
 
   await injectNextI18NextConfigurations(context, props, ['translation']);
