@@ -50,6 +50,25 @@ describe('Page', () => {
   const upodPageIdPublic4 = new mongoose.Types.ObjectId();
   const upodPageIdPublic5 = new mongoose.Types.ObjectId();
   const upodPageIdPublic6 = new mongoose.Types.ObjectId();
+
+  const updatePage = async(page, newRevisionBody, oldRevisionBody, user, options = {}) => {
+    const mockedEmitPageEventUpdate = jest.spyOn(Page, 'emitPageEventUpdate').mockReturnValue(null);
+    const mockedApplyScopesToDescendantsAsyncronously = jest.spyOn(Page, 'applyScopesToDescendantsAsyncronously').mockReturnValue(null);
+
+    const savedPage = await Page.updatePage(page, newRevisionBody, oldRevisionBody, user, options);
+
+    const argsForApplyScopesToDescendantsAsyncronously = mockedApplyScopesToDescendantsAsyncronously.mock.calls[0];
+
+    mockedEmitPageEventUpdate.mockRestore();
+    mockedApplyScopesToDescendantsAsyncronously.mockRestore();
+
+    if (options.overwriteScopesOfDescendants) {
+      await Page.applyScopesToDescendantsAsyncronously(...argsForApplyScopesToDescendantsAsyncronously);
+    }
+
+    return savedPage;
+  };
+
   const createDocumentsToTestUpdatePageOverwritingDescendants = async() => {
     // Users
     await User.insertMany([
@@ -776,26 +795,6 @@ describe('Page', () => {
   });
 
   describe('update', () => {
-
-    // TODO*
-    const updatePage = async(page, newRevisionBody, oldRevisionBody, user, options = {}) => {
-      const mockedEmitPageEventUpdate = jest.spyOn(Page, 'emitPageEventUpdate').mockReturnValue(null);
-      const mockedApplyScopesToDescendantsAsyncronously = jest.spyOn(Page, 'applyScopesToDescendantsAsyncronously').mockReturnValue(null);
-
-      const savedPage = await Page.updatePage(page, newRevisionBody, oldRevisionBody, user, options);
-
-      const argsForApplyScopesToDescendantsAsyncronously = mockedApplyScopesToDescendantsAsyncronously.mock.calls[0];
-
-      mockedEmitPageEventUpdate.mockRestore();
-      mockedApplyScopesToDescendantsAsyncronously.mockRestore();
-
-      if (options.overwriteScopesOfDescendants) {
-        await Page.applyScopesToDescendantsAsyncronously(...argsForApplyScopesToDescendantsAsyncronously);
-      }
-
-      return savedPage;
-    };
-
     describe('Changing grant from PUBLIC to RESTRICTED of', () => {
       test('an only-child page will delete its empty parent page', async() => {
         const pathT = '/mup13_top';
@@ -1208,7 +1207,7 @@ describe('Page', () => {
 
 
   // see: https://dev.growi.org/635a314eac6bcd85cbf359fc about the specification
-  describe('updatePage with overwriteScopesOfDescendants true', () => {
+  describe.only('updatePage with overwriteScopesOfDescendants true', () => {
     test('(case 1) it should update all granted descendant pages when update grant is GRANT_PUBLIC', async() => {
       const upodPagegAB = await Page.findOne({ path: '/gAB_upod_1' });
       const upodPagegB = await Page.findOne({ path: '/gAB_upod_1/gB_upod_1' });
@@ -1227,7 +1226,7 @@ describe('Page', () => {
         grant: PageGrant.GRANT_PUBLIC,
         overwriteScopesOfDescendants: true,
       };
-      const updatedPage = await Page.updatePage(upodPagegAB, 'newRevisionBody', 'oldRevisionBody', upodUserA, options);
+      const updatedPage = await updatePage(upodPagegAB, 'newRevisionBody', 'oldRevisionBody', upodUserA, options);
 
       const upodPagegBUpdated = await Page.findOne({ path: '/gAB_upod_1/gB_upod_1' });
       const upodPageonlyBUpdated = await Page.findOne({ path: '/gAB_upod_1/onlyB_upod_1' });
@@ -1262,7 +1261,7 @@ describe('Page', () => {
         grant: PageGrant.GRANT_OWNER,
         overwriteScopesOfDescendants: true,
       };
-      const updatedPage = await Page.updatePage(upodPagePublic, 'newRevisionBody', 'oldRevisionBody', upodUserA, options);
+      const updatedPage = await updatePage(upodPagePublic, 'newRevisionBody', 'oldRevisionBody', upodUserA, options);
 
       const upodPagegAUpdated = await Page.findOne({ path: '/public_upod_2/gA_upod_2' });
       const upodPagegAIsolatedUpdated = await Page.findOne({ path: '/public_upod_2/gAIsolated_upod_2' });
@@ -1304,7 +1303,7 @@ describe('Page', () => {
         grantUserGroupId: upodUserGroupIdAB,
         overwriteScopesOfDescendants: true,
       };
-      const updatedPage = await Page.updatePage(upodPagePublic, 'newRevisionBody', 'oldRevisionBody', upodUserA, options);
+      const updatedPage = await updatePage(upodPagePublic, 'newRevisionBody', 'oldRevisionBody', upodUserA, options);
 
       const upodPagegABUpdated = await Page.findOne({ path: '/public_upod_3/gAB_upod_3' });
       const upodPagegBUpdated = await Page.findOne({ path: '/public_upod_3/gB_upod_3' });
@@ -1344,7 +1343,7 @@ describe('Page', () => {
         grantUserGroupId: upodUserGroupIdAB,
         overwriteScopesOfDescendants: true,
       };
-      const updatedPagePromise = Page.updatePage(upodPagePublic, 'newRevisionBody', 'oldRevisionBody', upodUserA, options);
+      const updatedPagePromise = updatePage(upodPagePublic, 'newRevisionBody', 'oldRevisionBody', upodUserA, options);
 
       await expect(updatedPagePromise).rejects.toThrowError();
     });
@@ -1369,7 +1368,7 @@ describe('Page', () => {
         grantUserGroupId: upodUserGroupIdAB,
         overwriteScopesOfDescendants: true,
       };
-      const updatedPagePromise = Page.updatePage(upodPagePublic, 'newRevisionBody', 'oldRevisionBody', upodUserA, options);
+      const updatedPagePromise = updatePage(upodPagePublic, 'newRevisionBody', 'oldRevisionBody', upodUserA, options);
 
       await expect(updatedPagePromise).rejects.toThrowError();
     });
@@ -1389,7 +1388,7 @@ describe('Page', () => {
         grantUserGroupId: upodUserGroupIdAB,
         overwriteScopesOfDescendants: true,
       };
-      const updatedPagePromise = Page.updatePage(upodPagePublic, 'newRevisionBody', 'oldRevisionBody', upodUserA, options);
+      const updatedPagePromise = updatePage(upodPagePublic, 'newRevisionBody', 'oldRevisionBody', upodUserA, options);
 
       await expect(updatedPagePromise).rejects.toThrowError();
     });
