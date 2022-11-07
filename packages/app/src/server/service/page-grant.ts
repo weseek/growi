@@ -560,12 +560,14 @@ class PageGrantService {
       }
       const UserGroupRelation = mongoose.model('UserGroupRelation') as any; // TODO: Typescriptize model
       const userIds = await UserGroupRelation.findAllUserIdsForUserGroup(grantUserGroupId);
+      const childrenOrItselfGroupIds = await UserGroup.findGroupsWithDescendantsById(grantUserGroupId).map(d => d._id);
+
       updateGrantInfo = {
         grant: PageGrant.GRANT_USER_GROUP,
         grantedUserGroupInfo: {
           groupId: grantUserGroupId,
           userIds: new Set<ObjectIdLike>(userIds),
-          childrenOrItselfGroupIds: new Set<ObjectIdLike>(),
+          childrenOrItselfGroupIds: new Set<ObjectIdLike>(childrenOrItselfGroupIds),
         },
       };
     }
