@@ -4,7 +4,7 @@ import { Readable, Writable } from 'stream';
 import {
   pagePathUtils, pathUtils, Ref, HasObjectId,
   IUserHasId,
-  IPage, IPageInfo, IPageInfoAll, IPageInfoForEntity, IPageWithMeta,
+  IPage, IPageInfo, IPageInfoAll, IPageInfoForEntity, IPageWithMeta, PageGrant,
 } from '@growi/core';
 import escapeStringRegexp from 'escape-string-regexp';
 import mongoose, { ObjectId, QueryCursor } from 'mongoose';
@@ -18,6 +18,7 @@ import {
 import {
   IPageOperationProcessInfo, IPageOperationProcessData, PageActionStage, PageActionType,
 } from '~/interfaces/page-operation';
+import { IUserHasId } from '~/interfaces/user';
 import { PageMigrationErrorData, SocketEventName, UpdateDescCountRawData } from '~/interfaces/websocket';
 import {
   CreateMethod, PageCreateOptions, PageModel, PageDocument, pushRevision, PageQueryBuilder,
@@ -3406,6 +3407,21 @@ class PageService {
     pageDocument.status = Page.STATUS_PUBLISHED;
   }
 
+  private async validateAppliedScope(user, grant, grantUserGroupId) {
+    if (grant === PageGrant.GRANT_USER_GROUP && grantUserGroupId == null) {
+      throw new Error('grant userGroupId is not specified');
+    }
+
+    if (grant === PageGrant.GRANT_USER_GROUP) {
+      const UserGroupRelation = mongoose.model('UserGroupRelation') as any;
+      const count = await UserGroupRelation.countByGroupIdAndUser(grantUserGroupId, user);
+
+      if (count === 0) {
+        throw new Error('no relations were exist for group and user.');
+      }
+    }
+  }
+
   private async canProcessCreate(
       path: string,
       grantData: {
@@ -3475,7 +3491,7 @@ class PageService {
     // Switch method
     const isV5Compatible = this.crowi.configManager.getConfig('crowi', 'app:isV5Compatible');
     if (!isV5Compatible) {
-      return Page.createV4(path, body, user, options);
+      return this.createV4(path, body, user, options);
     }
 
     // Values
@@ -3547,6 +3563,58 @@ class PageService {
     // update scopes for descendants
     if (options.overwriteScopesOfDescendants) {
       Page.applyScopesToDescendantsAsyncronously(savedPage, user);
+    }
+
+    return savedPage;
+  }
+
+  /**
+   * V4 compatible create method
+   */
+  private async createV4(path, body, user, options: any = {}) {
+    const Page = mongoose.model('Page') as unknown as PageModel;
+    const Revision = mongoose.model('Revision') as any; // TODO: TypeScriptize model
+
+    const format = options.format || 'markdown';
+    const grantUserGroupId = options.grantUserGroupId || null;
+    const expandContentWidth = this.crowi.configManager.getConfig('crowi', 'customize:isContainerFluid');
+
+    // sanitize path
+    path = this.crowi.xss.process(path); // eslint-disable-line no-param-reassign
+
+    let grant = options.grant;
+    // force public
+    if (isTopPage(path)) {
+      grant = PageGrant.GRANT_PUBLIC;
+    }
+
+    const isExist = await Page.count({ path });
+
+    if (isExist) {
+      throw new Error('Cannot create new page to existed path');
+    }
+
+    const page = new Page();
+    page.path = path;
+    page.creator = user;
+    page.lastUpdateUser = user;
+    page.status = PageStatus.STATUS_PUBLISHED;
+    if (expandContentWidth != null) {
+      page.expandContentWidth = expandContentWidth;
+    }
+    await this.validateAppliedScope(user, grant, grantUserGroupId);
+    page.applyScope(user, grant, grantUserGroupId);
+
+    let savedPage = await page.save();
+    const newRevision = Revision.prepareRevision(savedPage, body, null, user, { format });
+    savedPage = await pushRevision(savedPage, newRevision, user);
+    await savedPage.populateDataToShowRevision();
+
+    this.pageEvent.emit('create', savedPage, user);
+
+    // update scopes for descendants
+    if (options.overwriteScopesOfDescendants) {
+      Page.applyScopesToDescendantsAsyncronously(savedPage, user, true);
     }
 
     return savedPage;
@@ -3639,6 +3707,210 @@ class PageService {
 
     // Emit create event
     this.pageEvent.emit('create', savedPage, dummyUser);
+
+    return savedPage;
+  }
+
+  private shouldUseUpdatePageV4(grant: number, isV5Compatible: boolean, isOnTree: boolean): boolean {
+    const isRestricted = grant === PageGrant.GRANT_RESTRICTED;
+    return !isRestricted && (!isV5Compatible || !isOnTree);
+  }
+
+  /**
+   * A wrapper method of updatePage for updating grant only.
+   * @param {PageDocument} page
+   * @param {UserDocument} user
+   * @param options
+   */
+  async updateGrant(page, user, grantData: {grant: PageGrant, grantedGroup: ObjectIdLike}): Promise<PageDocument> {
+    const { grant, grantedGroup } = grantData;
+
+    const options = {
+      grant,
+      grantUserGroupId: grantedGroup,
+      isSyncRevisionToHackmd: false,
+    };
+
+    return this.updatePage(page, null, null, user, options);
+  }
+
+  async updatePage(
+      pageData,
+      body: string | null,
+      previousBody: string | null,
+      user,
+      options: {grant?: PageGrant, grantUserGroupId?: ObjectIdLike, isSyncRevisionToHackmd?: boolean, overwriteScopesOfDescendants?: boolean} = {},
+  ): Promise<PageDocument> {
+    const Page = mongoose.model('Page') as unknown as PageModel;
+    const Revision = mongoose.model('Revision') as any; // TODO: Typescriptize model
+
+    const wasOnTree = pageData.parent != null || isTopPage(pageData.path);
+    const exParent = pageData.parent;
+    const isV5Compatible = this.crowi.configManager.getConfig('crowi', 'app:isV5Compatible');
+
+    const shouldUseV4Process = this.shouldUseUpdatePageV4(pageData.grant, isV5Compatible, wasOnTree);
+    if (shouldUseV4Process) {
+      // v4 compatible process
+      return this.updatePageV4(pageData, body, previousBody, user, options);
+    }
+
+    const grant = options.grant ?? pageData.grant; // use the previous data if absence
+    const grantUserGroupId: undefined | ObjectIdLike = options.grantUserGroupId ?? pageData.grantedGroup?._id.toString();
+
+    const grantedUserIds = pageData.grantedUserIds || [user._id];
+    const shouldBeOnTree = grant !== PageGrant.GRANT_RESTRICTED;
+    const isChildrenExist = await Page.count({ path: new RegExp(`^${escapeStringRegexp(addTrailingSlash(pageData.path))}`), parent: { $ne: null } });
+
+    const newPageData = pageData;
+
+    const { pageService, pageGrantService } = this.crowi;
+
+    if (shouldBeOnTree) {
+      let isGrantNormalized = false;
+      try {
+        const shouldCheckDescendants = !options.overwriteScopesOfDescendants;
+        isGrantNormalized = await pageGrantService.isGrantNormalized(user, pageData.path, grant, grantedUserIds, grantUserGroupId, shouldCheckDescendants);
+      }
+      catch (err) {
+        logger.error(`Failed to validate grant of page at "${pageData.path}" of grant ${grant}:`, err);
+        throw err;
+      }
+      if (!isGrantNormalized) {
+        throw Error('The selected grant or grantedGroup is not assignable to this page.');
+      }
+
+      if (options.overwriteScopesOfDescendants) {
+        const updateGrantInfo = await pageGrantService.generateUpdateGrantInfoToOverwriteDescendants(user, grant, options.grantUserGroupId);
+        const canOverwriteDescendants = await pageGrantService.canOverwriteDescendants(pageData.path, user, updateGrantInfo);
+
+        if (!canOverwriteDescendants) {
+          throw Error('Cannot overwrite scopes of descendants.');
+        }
+      }
+
+      if (!wasOnTree) {
+        const newParent = await pageService.getParentAndFillAncestorsByUser(user, newPageData.path);
+        newPageData.parent = newParent._id;
+      }
+    }
+    else {
+      if (wasOnTree && isChildrenExist) {
+        // Update children's parent with new parent
+        const newParentForChildren = await Page.createEmptyPage(pageData.path, pageData.parent, pageData.descendantCount);
+        await Page.updateMany(
+          { parent: pageData._id },
+          { parent: newParentForChildren._id },
+        );
+      }
+
+      newPageData.parent = null;
+      newPageData.descendantCount = 0;
+    }
+
+    newPageData.applyScope(user, grant, grantUserGroupId);
+
+    // update existing page
+    let savedPage = await newPageData.save();
+
+    // Update body
+    const isSyncRevisionToHackmd = options.isSyncRevisionToHackmd;
+    const isBodyPresent = body != null && previousBody != null;
+    const shouldUpdateBody = isBodyPresent;
+    if (shouldUpdateBody) {
+      const newRevision = await Revision.prepareRevision(newPageData, body, previousBody, user);
+      savedPage = await pushRevision(savedPage, newRevision, user);
+      await savedPage.populateDataToShowRevision();
+
+      if (isSyncRevisionToHackmd) {
+        savedPage = await Page.syncRevisionToHackmd(savedPage);
+      }
+    }
+
+
+    this.pageEvent.emit('update', savedPage, user);
+
+    // Update ex children's parent
+    if (!wasOnTree && shouldBeOnTree) {
+      const emptyPageAtSamePath = await Page.findOne({ path: pageData.path, isEmpty: true }); // this page is necessary to find children
+
+      if (isChildrenExist) {
+        if (emptyPageAtSamePath != null) {
+          // Update children's parent with new parent
+          await Page.updateMany(
+            { parent: emptyPageAtSamePath._id },
+            { parent: savedPage._id },
+          );
+        }
+      }
+
+      await Page.findOneAndDelete({ path: pageData.path, isEmpty: true }); // delete here
+    }
+
+    // Sub operation
+    // update scopes for descendants
+    if (options.overwriteScopesOfDescendants) {
+      Page.applyScopesToDescendantsAsyncronously(savedPage, user);
+    }
+
+    // 1. Update descendantCount
+    const shouldPlusDescCount = !wasOnTree && shouldBeOnTree;
+    const shouldMinusDescCount = wasOnTree && !shouldBeOnTree;
+    if (shouldPlusDescCount) {
+      await pageService.updateDescendantCountOfAncestors(newPageData._id, 1, false);
+      const newDescendantCount = await Page.recountDescendantCount(newPageData._id);
+      await Page.updateOne({ _id: newPageData._id }, { descendantCount: newDescendantCount });
+    }
+    else if (shouldMinusDescCount) {
+      // Update from parent. Parent is null if newPageData.grant is RESTRECTED.
+      if (newPageData.grant === PageGrant.GRANT_RESTRICTED) {
+        await pageService.updateDescendantCountOfAncestors(exParent, -1, true);
+      }
+    }
+
+    // 2. Delete unnecessary empty pages
+    const shouldRemoveLeafEmpPages = wasOnTree && !isChildrenExist;
+    if (shouldRemoveLeafEmpPages) {
+      await Page.removeLeafEmptyPagesRecursively(exParent);
+    }
+
+    return savedPage;
+  }
+
+
+  async updatePageV4(pageData, body, previousBody, user, options: any = {}): Promise<PageDocument> {
+    const Page = mongoose.model('Page') as unknown as PageModel;
+    const Revision = mongoose.model('Revision') as any; // TODO: TypeScriptize model
+
+    const grant = options.grant || pageData.grant; // use the previous data if absence
+    const grantUserGroupId = options.grantUserGroupId || pageData.grantUserGroupId; // use the previous data if absence
+    const isSyncRevisionToHackmd = options.isSyncRevisionToHackmd;
+
+    await this.validateAppliedScope(user, grant, grantUserGroupId);
+    pageData.applyScope(user, grant, grantUserGroupId);
+
+    // update existing page
+    let savedPage = await pageData.save();
+
+    // Update revision
+    const isBodyPresent = body != null && previousBody != null;
+    const shouldUpdateBody = isBodyPresent;
+    if (shouldUpdateBody) {
+      const newRevision = await Revision.prepareRevision(pageData, body, previousBody, user);
+      savedPage = await pushRevision(savedPage, newRevision, user);
+      await savedPage.populateDataToShowRevision();
+
+      if (isSyncRevisionToHackmd) {
+        savedPage = await Page.syncRevisionToHackmd(savedPage);
+      }
+    }
+
+    // update scopes for descendants
+    if (options.overwriteScopesOfDescendants) {
+      Page.applyScopesToDescendantsAsyncronously(savedPage, user, true);
+    }
+
+
+    this.pageEvent.emit('update', savedPage, user);
 
     return savedPage;
   }
