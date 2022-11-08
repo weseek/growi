@@ -32,6 +32,16 @@ export const uploadConfigKeys = [
 ];
 
 /**
+* G2G transfer progress status master
+*/
+const G2G_PROGRESS_STATUS = {
+  PENDING: 'PENDING',
+  IN_PROGRESS: 'IN_PROGRESS',
+  COMPLETED: 'COMPLETED',
+  ERROR: 'ERROR',
+} as const;
+
+/**
  * Data used for comparing to/from GROWI information
  */
 export type IDataGROWIInfo = {
@@ -304,7 +314,12 @@ export class G2GTransferPusherService implements Pusher {
   public async startTransfer(tk: TransferKey, user: any, toGROWIInfo: IDataGROWIInfo, collections: string[], optionsMap: any, shouldEmit = true): Promise<void> {
     const socket = this.crowi.socketIoService.getAdminSocket();
 
-    if (shouldEmit) socket.emit('admin:onStartTransferMongoData', {});
+    if (shouldEmit) {
+      socket.emit('admin:g2gProgress', {
+        mongo: G2G_PROGRESS_STATUS.IN_PROGRESS,
+        attachments: G2G_PROGRESS_STATUS.PENDING,
+      });
+    }
 
     const targetConfigKeys = uploadConfigKeys;
 
@@ -322,7 +337,11 @@ export class G2GTransferPusherService implements Pusher {
     }
     catch (err) {
       logger.error(err);
-      socket.emit('admin:onG2gError', { message: 'Failed to generate GROWI archive file', key: 'error_generate_growi_archive' });
+      socket.emit('admin:g2gProgress', {
+        mongo: G2G_PROGRESS_STATUS.ERROR,
+        attachments: G2G_PROGRESS_STATUS.PENDING,
+      });
+      socket.emit('admin:g2gError', { message: 'Failed to generate GROWI archive file', key: 'admin:g2g:error_generate_growi_archive' });
       throw err;
     }
 
@@ -341,24 +360,40 @@ export class G2GTransferPusherService implements Pusher {
     }
     catch (err) {
       logger.error(err);
-      socket.emit('admin:onG2gError', { message: 'Failed to send GROWI archive file to new GROWI', key: 'error_send_growi_archive' });
+      socket.emit('admin:g2gProgress', {
+        mongo: G2G_PROGRESS_STATUS.ERROR,
+        attachments: G2G_PROGRESS_STATUS.PENDING,
+      });
+      socket.emit('admin:g2gError', { message: 'Failed to send GROWI archive file to new GROWI', key: 'admin:g2g:error_send_growi_archive' });
       throw err;
     }
 
-    if (shouldEmit) socket.emit('admin:onStartTransferAttachments', {});
+    if (shouldEmit) {
+      socket.emit('admin:g2gProgress', {
+        mongo: G2G_PROGRESS_STATUS.COMPLETED,
+        attachments: G2G_PROGRESS_STATUS.IN_PROGRESS,
+      });
+    }
 
     try {
       await this.transferAttachments(tk);
     }
     catch (err) {
       logger.error(err);
-      socket.emit('admin:onG2gError', { message: 'Failed to transfer attachments', key: 'error_upload_attachment' });
+      socket.emit('admin:g2gProgress', {
+        mongo: G2G_PROGRESS_STATUS.COMPLETED,
+        attachments: G2G_PROGRESS_STATUS.ERROR,
+      });
+      socket.emit('admin:g2gError', { message: 'Failed to transfer attachments', key: 'admin:g2g:error_upload_attachment' });
       throw err;
     }
 
-    if (shouldEmit) socket.emit('admin:onFinishTransfer', {});
-
-    return;
+    if (shouldEmit) {
+      socket.emit('admin:g2gProgress', {
+        mongo: G2G_PROGRESS_STATUS.COMPLETED,
+        attachments: G2G_PROGRESS_STATUS.COMPLETED,
+      });
+    }
   }
 
   /**
