@@ -14,7 +14,7 @@ const isValidUrl = (str: string): boolean => {
 };
 
 export const AlertSiteUrlUndefined = (): JSX.Element => {
-  const { t } = useTranslation();
+  const { t } = useTranslation('commons');
   const { data: siteUrl, error: errorSiteUrl } = useSiteUrl();
   const isLoadingSiteUrl = siteUrl === undefined && errorSiteUrl === undefined;
 
@@ -30,8 +30,8 @@ export const AlertSiteUrlUndefined = (): JSX.Element => {
     <div className="alert alert-danger rounded-0 d-edit-none mb-0 px-4 py-2">
       <i className="icon-exclamation"></i>
       {
-        t('commons:alert.siteUrl_is_not_set', { link: t('commons:headers.app_settings') })
-      } &gt;&gt; <a href="/admin/app">{t('commons:headers.app_settings')}<i className="icon-login"></i></a>
+        t('alert.siteUrl_is_not_set', { link: t('headers.app_settings') })
+      } &gt;&gt; <a href="/admin/app">{t('headers.app_settings')}<i className="icon-login"></i></a>
     </div>
   );
 };

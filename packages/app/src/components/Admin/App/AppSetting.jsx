@@ -23,7 +23,7 @@ const AppSetting = (props) => {
   const submitHandler = useCallback(async() => {
     try {
       await adminAppContainer.updateAppSettingHandler();
-      toastSuccess(t('toaster.update_successed', { target: t('commons:headers.app_settings'), ns: 'commons' }));
+      toastSuccess(t('commons:toaster.update_successed', { target: t('commons:headers.app_settings') }));
     }
     catch (err) {
       toastError(err);
