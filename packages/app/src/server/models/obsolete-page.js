@@ -1,5 +1,6 @@
 import { templateChecker, pagePathUtils, pathUtils } from '@growi/core';
 
+import { PageGrant } from '~/interfaces/page';
 import { createBatchStream } from '~/server/util/batch-stream';
 import loggerFactory from '~/utils/logger';
 
@@ -780,17 +781,14 @@ export const getPageSchema = (crowi) => {
     // add grant conditions
     await addConditionToFilteringByViewerToEdit(builder, user);
 
-    // get all pages that the specified user can update
-    const cursor = await builder.query.exec().cursor();
+    const grant = parentPage.grant;
 
-    for await (const batch of cursor.pipe(createBatchStream(100))) {
-      const updates = batch.map((page) => {
-        page.applyScope(user, parentPage.grant, parentPage.grantedGroup);
-        return page;
-      });
+    await builder.query.updateMany({}, {
+      grant,
+      grantedGroup: grant === PageGrant.GRANT_USER_GROUP ? parentPage.grantedGroup : null,
+      grantedUsers: grant === PageGrant.GRANT_OWNER ? [user._id] : null,
+    });
 
-      await this.updateMany();
-    }
 
   };
 
