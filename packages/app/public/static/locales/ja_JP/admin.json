@@ -112,7 +112,6 @@
       "email_authentication": "ユーザー登録時のメール認証",
       "enable_email_authentication": "メール認証を有効にする",
       "enable_email_authentication_desc": "ユーザー登録時にメール認証を行います。",
-      "please_enable_mailer": "メール認証を有効にするには、メール設定を完了させてください。",
       "need_complete_mail_setting_warning": "以下の機能を使えるようにするには、メール設定を完了させてください。"
     },
     "ldap": {
@@ -868,6 +867,9 @@
     "docs_url": {
       "log_type": "https://docs.growi.org/ja/admin-guide/admin-cookbook/audit-log-setup.html#log-types"
     }
+  },
+  "cloud_setting_management": {
+    "to_cloud_settings": "GROWI.cloud の管理画面へ"
   },
   "audit_log_action_category": {
     "Page": "ページ",

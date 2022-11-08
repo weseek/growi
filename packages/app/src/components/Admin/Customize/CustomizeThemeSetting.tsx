@@ -20,12 +20,14 @@ type Props = {
 const CustomizeThemeSetting = (props: Props): JSX.Element => {
 
   const { adminCustomizeContainer } = props;
-  const { data: currentTheme, mutate: mutateGrowiTheme } = useGrowiTheme();
+  const { data: currentTheme } = useGrowiTheme();
   const { t } = useTranslation();
 
   const selectedHandler = useCallback((themeName) => {
-    mutateGrowiTheme(themeName);
-  }, [mutateGrowiTheme]);
+    // TODO: preview without using mutate of useGrowiTheme
+    // https://github.com/weseek/growi/pull/6860
+    // mutateGrowiTheme(themeName);
+  }, []);
 
   const submitHandler = useCallback(async() => {
     try {

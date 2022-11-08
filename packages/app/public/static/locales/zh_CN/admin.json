@@ -114,7 +114,6 @@
       "email_authentication": "用户注册时的电子邮件身份验证",
       "enable_email_authentication": "启用电子邮件身份验证",
       "enable_email_authentication_desc": "用户注册将执行电子邮件身份验证。",
-      "please_enable_mailer": "请先设置邮件程序。",
       "need_complete_mail_setting_warning": "要使用以下功能，请完成邮件设置。"
 		},
 		"ldap": {
@@ -883,7 +882,9 @@
     "docs_url": {
       "log_type": "https://docs.growi.org/en/admin-guide/admin-cookbook/audit-log-setup.html#log-types"
     }
-
+  },
+  "cloud_setting_management": {
+    "to_cloud_settings": "進入 GROWI.cloud 的管理界面"
   },
   "audit_log_action_category": {
     "Page": "页面",
