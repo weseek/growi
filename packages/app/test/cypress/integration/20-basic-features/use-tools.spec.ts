@@ -176,7 +176,7 @@ context('Page Accessories Modal', () => {
   });
 
   it('Page History is shown successfully', () => {
-     cy.visit('/Sandbox/Bootstrap4', {  });
+     cy.visit('/Sandbox/Bootstrap4');
      cy.get('#grw-subnav-container').within(() => {
       cy.getByTestid('open-page-item-control-btn').within(() => {
         cy.get('button.btn-page-item-control').click({force: true});
