@@ -47,6 +47,7 @@ const UserGroupDetailPage = (props: Props): JSX.Element => {
   const { t } = useTranslation('admin');
   const router = useRouter();
   const xss = useMemo(() => new Xss(), []);
+
   const { userGroupId: currentUserGroupId } = props;
 
   const { data: currentUserGroup } = useSWRxUserGroup(currentUserGroupId);
@@ -67,6 +68,7 @@ const UserGroupDetailPage = (props: Props): JSX.Element => {
   const [isAlsoMailSearched, setAlsoMailSearched] = useState<boolean>(false);
   const [isAlsoNameSearched, setAlsoNameSearched] = useState<boolean>(false);
   const [selectedUserGroup, setSelectedUserGroup] = useState<IUserGroupHasId | undefined>(undefined); // not null but undefined (to use defaultProps in UserGroupDeleteModal)
+
   // Modal State
   const [isCreateModalShown, setCreateModalShown] = useState<boolean>(false);
   const [isUpdateModalShown, setUpdateModalShown] = useState<boolean>(false);
@@ -152,7 +154,6 @@ const UserGroupDetailPage = (props: Props): JSX.Element => {
     mutateAncestorUserGroups();
     mutateSelectableChildUserGroups();
     mutateSelectableParentUserGroups();
-
   }, [mutateAncestorUserGroups, mutateChildUserGroups, mutateSelectableChildUserGroups, mutateSelectableParentUserGroups]);
 
   const onSubmitUpdateGroup = useCallback(
@@ -236,9 +237,7 @@ const UserGroupDetailPage = (props: Props): JSX.Element => {
         description: userGroupData.description,
         parentId: userGroupData.parent,
       });
-
       toastSuccess(t('toaster.update_successed', { target: t('UserGroup'), ns: 'commons' }));
-
       // mutate
       mutateChildUserGroups();
 
@@ -267,7 +266,6 @@ const UserGroupDetailPage = (props: Props): JSX.Element => {
         description: userGroupData.description,
         parentId: currentUserGroupId,
       });
-
       toastSuccess(t('toaster.update_successed', { target: t('UserGroup'), ns: 'commons' }));
 
       // mutate
@@ -309,7 +307,6 @@ const UserGroupDetailPage = (props: Props): JSX.Element => {
         description: userGroupData.description,
         parentId: null,
       });
-
       toastSuccess(t('toaster.update_successed', { target: t('UserGroup'), ns: 'commons' }));
 
       // mutate
@@ -375,19 +372,6 @@ const UserGroupDetailPage = (props: Props): JSX.Element => {
           onClickPlusBtn={() => setIsUserGroupUserModalShown(true)}
           onClickRemoveUserBtn={removeUserByUsername}
         />
-        <UserGroupUserModal
-          isOpen={isUserGroupUserModalShown}
-          userGroup={currentUserGroup}
-          searchType={searchType}
-          isAlsoMailSearched={isAlsoMailSearched}
-          isAlsoNameSearched={isAlsoNameSearched}
-          onClickAddUserBtn={addUserByUsername}
-          onSearchApplicableUsers={fetchApplicableUsers}
-          onSwitchSearchType={switchSearchType}
-          onClose={() => setIsUserGroupUserModalShown(false)}
-          onToggleIsAlsoMailSearched={toggleIsAlsoMailSearched}
-          onToggleIsAlsoNameSearched={toggleAlsoNameSearched}
-        />
       </div>
       <div>
         <h2 className="admin-setting-header mt-4">{t('user_group_management.child_group_list')}</h2>
@@ -421,12 +405,26 @@ const UserGroupDetailPage = (props: Props): JSX.Element => {
         onHide={hideUpdateModal}
       />
       <UserGroupModal
+        userGroup={undefined}
         buttonLabel={t('Create')}
         onClickSubmit={createChildUserGroup}
         isShow={isCreateModalShown}
         onHide={hideCreateModal}
       />
       <UpdateParentConfirmModal />
+      <UserGroupUserModal
+        isOpen={isUserGroupUserModalShown}
+        userGroup={currentUserGroup}
+        searchType={searchType}
+        isAlsoMailSearched={isAlsoMailSearched}
+        isAlsoNameSearched={isAlsoNameSearched}
+        onClickAddUserBtn={addUserByUsername}
+        onSearchApplicableUsers={fetchApplicableUsers}
+        onSwitchSearchType={switchSearchType}
+        onClose={() => setIsUserGroupUserModalShown(false)}
+        onToggleIsAlsoMailSearched={toggleIsAlsoMailSearched}
+        onToggleIsAlsoNameSearched={toggleAlsoNameSearched}
+      />
       <UserGroupDeleteModal
         userGroups={childUserGroups}
         deleteUserGroup={selectedUserGroup}
