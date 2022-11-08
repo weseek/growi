@@ -313,15 +313,14 @@ context('Tag Oprations', () =>{
           cy.wrap($row).within(() => {
             cy.getByTestid('open-page-item-control-btn').first().click();
             cy.getByTestid('page-item-control-menu').should('have.class', 'show').first().within(() => {
+              // empty sentence in page list empty: https://github.com/weseek/growi/pull/6880
+              cy.getByTestid('revision-short-body-in-page-list-item-L').invoke('text', '');
+              cy.screenshot(`${ssPrefix}2-open-page-item-control-menu`);
             })
           });
         }
       });
     });
-
-    // eslint-disable-next-line cypress/no-unnecessary-waiting
-    cy.wait(300);
-    cy.screenshot(`${ssPrefix}2-open-page-item-control-menu`);
 
     cy.getByTestid('search-result-list').within(() => {
       cy.get('.list-group-item').each(($row) => {
