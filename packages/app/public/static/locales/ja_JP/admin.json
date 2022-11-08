@@ -868,6 +868,9 @@
       "log_type": "https://docs.growi.org/ja/admin-guide/admin-cookbook/audit-log-setup.html#log-types"
     }
   },
+  "cloud_setting_management": {
+    "to_cloud_settings": "GROWI.cloud の管理画面へ"
+  },
   "audit_log_action_category": {
     "Page": "ページ",
     "Comment": "コメント",
