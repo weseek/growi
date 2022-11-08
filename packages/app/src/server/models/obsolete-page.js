@@ -648,17 +648,6 @@ export const getPageSchema = (crowi) => {
     return { templateBody, templateTags };
   };
 
-  async function pushRevision(pageData, newRevision, user) {
-    await newRevision.save();
-    debug('Successfully saved new revision', newRevision);
-
-    pageData.revision = newRevision;
-    pageData.lastUpdateUser = user;
-    pageData.updatedAt = Date.now();
-
-    return pageData.save();
-  }
-
   pageSchema.statics.applyScopesToDescendantsAsyncronously = async function(parentPage, user, isV4 = false) {
     const builder = new this.PageQueryBuilder(this.find());
     builder.addConditionToListOnlyDescendants(parentPage.path);
