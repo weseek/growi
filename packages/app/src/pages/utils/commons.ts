@@ -1,5 +1,5 @@
 import {
-  DevidedPagePath, Lang, AllLang, IUser,
+  DevidedPagePath, Lang, AllLang, IUser, IUserHasId,
 } from '@growi/core';
 import { GetServerSideProps, GetServerSidePropsContext } from 'next';
 import { SSRConfig, UserConfig } from 'next-i18next';
@@ -30,8 +30,8 @@ export type CommonProps = {
 // eslint-disable-next-line max-len
 export const getServerSideCommonProps: GetServerSideProps<CommonProps> = async(context: GetServerSidePropsContext) => {
 
-  const req: CrowiRequest = context.req as CrowiRequest;
-  const { crowi } = req;
+  const req = context.req as CrowiRequest<IUserHasId & any>;
+  const { crowi, user } = req;
   const {
     appService, configManager, customizeService,
   } = crowi;
@@ -40,6 +40,11 @@ export const getServerSideCommonProps: GetServerSideProps<CommonProps> = async(c
   const currentPathname = decodeURI(url.pathname);
 
   const isMaintenanceMode = appService.isMaintenanceMode();
+
+  let currentUser;
+  if (user != null) {
+    currentUser = user.toObject();
+  }
 
   // eslint-disable-next-line max-len, no-nested-ternary
   const redirectDestination = !isMaintenanceMode && currentPathname === '/maintenance' ? '/' : isMaintenanceMode && !currentPathname.match('/admin/*') && !(currentPathname === '/maintenance') ? '/maintenance' : null;
@@ -58,6 +63,7 @@ export const getServerSideCommonProps: GetServerSideProps<CommonProps> = async(c
     isMaintenanceMode,
     redirectDestination,
     customizedLogoSrc: configManager.getConfig('crowi', 'customize:customizedLogoSrc'),
+    currentUser,
   };
 
   return { props };

@@ -50,12 +50,9 @@ const AdminUserManagementPage: NextPage<Props> = (props) => {
 
 const injectServerConfigurations = async(context: GetServerSidePropsContext, props: Props): Promise<void> => {
   const req: CrowiRequest = context.req as CrowiRequest;
-  const { crowi, user } = req;
+  const { crowi } = req;
   const { mailService } = crowi;
 
-  if (user != null) {
-    props.currentUser = JSON.stringify(user);
-  }
   props.isMailerSetup = mailService.isMailerSetup;
 };
 
