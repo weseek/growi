@@ -176,7 +176,7 @@ context('Page Accessories Modal', () => {
   });
 
   it('Page History is shown successfully', () => {
-     cy.visit('/Sandbox/Bootstrap4', {  });
+     cy.visit('/Sandbox/Bootstrap4');
      cy.get('#grw-subnav-container').within(() => {
       cy.getByTestid('open-page-item-control-btn').within(() => {
         cy.get('button.btn-page-item-control').click({force: true});
@@ -313,9 +313,9 @@ context('Tag Oprations', () =>{
           cy.wrap($row).within(() => {
             cy.getByTestid('open-page-item-control-btn').first().click();
             cy.getByTestid('page-item-control-menu').should('have.class', 'show').first().within(() => {
-            // eslint-disable-next-line cypress/no-unnecessary-waiting
-            cy.wait(300);
-            cy.screenshot(`${ssPrefix}2-open-page-item-control-menu`);
+              // empty sentence in page list empty: https://github.com/weseek/growi/pull/6880
+              cy.getByTestid('revision-short-body-in-page-list-item-L').invoke('text', '');
+              cy.screenshot(`${ssPrefix}2-open-page-item-control-menu`);
             })
           });
         }
