@@ -6,6 +6,7 @@ import dynamic from 'next/dynamic';
 import { useRouter } from 'next/router';
 
 import { CommonProps, useCustomTitle } from '~/pages/utils/commons';
+import { useCurrentUser } from '~/stores/context';
 import { useIsMaintenanceMode } from '~/stores/maintenanceMode';
 
 import { retrieveServerSideProps } from '../../../utils/admin-page-util';
@@ -17,6 +18,7 @@ const UserGroupDetailPage = dynamic(() => import('~/components/Admin/UserGroupDe
 const AdminUserGroupDetailPage: NextPage<CommonProps> = (props) => {
   const { t } = useTranslation('admin');
   useIsMaintenanceMode(props.isMaintenanceMode);
+  useCurrentUser(props.currentUser ?? null);
   const router = useRouter();
   const { userGroupId } = router.query;
 

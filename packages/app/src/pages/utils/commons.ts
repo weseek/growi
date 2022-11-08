@@ -1,4 +1,6 @@
-import { DevidedPagePath, Lang, AllLang } from '@growi/core';
+import {
+  DevidedPagePath, Lang, AllLang, IUser,
+} from '@growi/core';
 import { GetServerSideProps, GetServerSidePropsContext } from 'next';
 import { SSRConfig, UserConfig } from 'next-i18next';
 
@@ -22,6 +24,7 @@ export type CommonProps = {
   isMaintenanceMode: boolean,
   redirectDestination: string | null,
   customizedLogoSrc?: string,
+  currentUser: IUser,
 } & Partial<SSRConfig>;
 
 // eslint-disable-next-line max-len

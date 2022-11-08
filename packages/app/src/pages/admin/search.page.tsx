@@ -6,7 +6,7 @@ import dynamic from 'next/dynamic';
 
 import { CrowiRequest } from '~/interfaces/crowi-request';
 import { CommonProps, useCustomTitle } from '~/pages/utils/commons';
-import { useIsSearchServiceReachable } from '~/stores/context';
+import { useIsSearchServiceReachable, useCurrentUser } from '~/stores/context';
 
 import { retrieveServerSideProps } from '../../utils/admin-page-util';
 
@@ -23,6 +23,7 @@ type Props = CommonProps & {
 
 const AdminFullTextSearchManagementPage: NextPage<Props> = (props) => {
   const { t } = useTranslation('admin');
+  useCurrentUser(props.currentUser ?? null);
   useIsSearchServiceReachable(props.isSearchServiceReachable);
 
   const title = t('full_text_search_management.full_text_search_management');
