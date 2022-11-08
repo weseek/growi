@@ -3,7 +3,6 @@ context('Access to page by guest', () => {
 
   it('/Sandbox is successfully loaded', () => {
     cy.visit('/Sandbox');
-    cy.get('.grw-pagetree-title-anchor').should('be.visible');
     cy.collapseSidebar(true, true);
     cy.screenshot(`${ssPrefix}-sandbox`);
   });
