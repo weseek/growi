@@ -4,6 +4,7 @@ import { ErrorV3 } from '@growi/core';
 import { format, subSeconds } from 'date-fns';
 import { body, validationResult } from 'express-validator';
 
+import { SupportedAction } from '~/interfaces/activity';
 import UserRegistrationOrder from '~/server/models/user-registration-order';
 import loggerFactory from '~/utils/logger';
 
@@ -64,6 +65,7 @@ async function sendEmailToAllAdmins(userData, admins, appTitle, mailService, tem
 
 export const completeRegistrationAction = (crowi) => {
   const User = crowi.model('User');
+  const activityEvent = crowi.event('activity');
   const {
     configManager,
     aclService,
@@ -126,6 +128,9 @@ export const completeRegistrationAction = (crowi) => {
           }
           return res.apiv3Err(new ErrorV3(errorMessage, 'registration-failed'), 403);
         }
+
+        const parameters = { action: SupportedAction.ACTION_USER_REGISTRATION_SUCCESS };
+        activityEvent.emit('update', res.locals.activity._id, parameters);
 
         userRegistrationOrder.revokeOneTimeToken();
 
