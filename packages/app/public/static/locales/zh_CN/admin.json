@@ -882,7 +882,9 @@
     "docs_url": {
       "log_type": "https://docs.growi.org/en/admin-guide/admin-cookbook/audit-log-setup.html#log-types"
     }
-
+  },
+  "cloud_setting_management": {
+    "to_cloud_settings": "進入 GROWI.cloud 的管理界面"
   },
   "audit_log_action_category": {
     "Page": "页面",

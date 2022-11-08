@@ -217,6 +217,14 @@ export const useCustomizedLogoSrc = (initialData?: string): SWRResponse<string, 
   return useContextSWR('customizedLogoSrc', initialData);
 };
 
+export const useGrowiCloudUri = (initialData?: string): SWRResponse<string, Error> => {
+  return useStaticSWR('growiCloudUri', initialData);
+};
+
+export const useGrowiAppIdForGrowiCloud = (initialData?: number): SWRResponse<number, Error> => {
+  return useStaticSWR('growiAppIdForGrowiCloud', initialData);
+};
+
 /** **********************************************************
  *                     Computed contexts
  *********************************************************** */
