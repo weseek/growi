@@ -44,6 +44,12 @@ export const PageGrant = {
 type UnionPageGrantKeys = keyof typeof PageGrant;
 export type PageGrant = typeof PageGrant[UnionPageGrantKeys];
 
+export const PageStatus = {
+  STATUS_PUBLISHED: 'published',
+  STATUS_DELETED: 'deleted',
+} as const;
+export type PageStatus = typeof PageStatus[keyof typeof PageStatus];
+
 /**
  * Neither pages with grant `GRANT_RESTRICTED` nor `GRANT_SPECIFIED` can be on a page tree.
  */
