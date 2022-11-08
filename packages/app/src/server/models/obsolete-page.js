@@ -1,7 +1,6 @@
 import { templateChecker, pagePathUtils, pathUtils } from '@growi/core';
 
 import { PageGrant } from '~/interfaces/page';
-import { createBatchStream } from '~/server/util/batch-stream';
 import loggerFactory from '~/utils/logger';
 
 
@@ -766,7 +765,6 @@ export const getPageSchema = (crowi) => {
     return savedPage;
   };
 
-  // TODO: use updateMany
   pageSchema.statics.applyScopesToDescendantsAsyncronously = async function(parentPage, user, isV4 = false) {
     const builder = new this.PageQueryBuilder(this.find());
     builder.addConditionToListOnlyDescendants(parentPage.path);
