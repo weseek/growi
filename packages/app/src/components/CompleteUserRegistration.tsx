@@ -1,6 +1,7 @@
 import React, { FC } from 'react';
 
 import { useTranslation } from 'next-i18next';
+import Link from 'next/link';
 
 export const CompleteUserRegistration: FC = () => {
   const { t } = useTranslation();
@@ -12,7 +13,11 @@ export const CompleteUserRegistration: FC = () => {
           <p className="alert alert-success">
             <span>{t('login.Registration successful')}</span>
           </p>
-          <span>{t('login.wait_for_admin_approval')}</span>
+          <Link href='/login' prefetch={false}>
+            <a>
+              <i className="icon-login mr-1" />{t('Sign in is here')}
+            </a>
+          </Link>
         </div>
       </div>
     </div>
