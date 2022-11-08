@@ -1,5 +1,6 @@
 import { templateChecker, pagePathUtils, pathUtils } from '@growi/core';
 
+import { PageGrant } from '~/interfaces/page';
 import loggerFactory from '~/utils/logger';
 
 
@@ -778,15 +779,14 @@ export const getPageSchema = (crowi) => {
     // add grant conditions
     await addConditionToFilteringByViewerToEdit(builder, user);
 
-    // get all pages that the specified user can update
-    const pages = await builder.query.exec();
+    const grant = parentPage.grant;
 
-    const promises = pages.map(async(page) => {
-      await page.applyScope(user, parentPage.grant, parentPage.grantedGroup);
-      await page.save();
+    await builder.query.updateMany({}, {
+      grant,
+      grantedGroup: grant === PageGrant.GRANT_USER_GROUP ? parentPage.grantedGroup : null,
+      grantedUsers: grant === PageGrant.GRANT_OWNER ? [user._id] : null,
     });
 
-    await Promise.all(promises);
   };
 
   pageSchema.statics.removeByPath = function(path) {
