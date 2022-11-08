@@ -10,7 +10,7 @@ import { toastError } from '~/client/util/apiNotification';
 import {
   IPageInfoForOperation, IPageToDeleteWithMeta, IPageToRenameWithMeta, isIPageInfoForEntity, isIPageInfoForOperation,
 } from '~/interfaces/page';
-import { useIsGuestUser } from '~/stores/context';
+import { useIsContainerFluid, useIsGuestUser } from '~/stores/context';
 import { IPageForPageDuplicateModal } from '~/stores/modal';
 
 import { useSWRBookmarkInfo } from '../../stores/bookmark';
@@ -28,23 +28,20 @@ import SeenUserInfo from '../User/SeenUserInfo';
 
 type WideViewMenuItemProps = AdditionalMenuItemsRendererProps & {
   onClickMenuItem: (newValue: boolean) => void,
-  expandContentWidth: boolean,
+  expandContentWidth?: boolean,
 }
 
 const WideViewMenuItem = (props: WideViewMenuItemProps): JSX.Element => {
   const { t } = useTranslation();
+  const { data: isContainerFluid } = useIsContainerFluid();
 
   const {
-    pageInfo, onClickMenuItem, expandContentWidth,
+    onClickMenuItem, expandContentWidth,
   } = props;
-
-  if (!isIPageInfoForEntity(pageInfo)) {
-    return <></>;
-  }
 
   return (
     <DropdownItem
-      onClick={() => onClickMenuItem(!expandContentWidth)}
+      onClick={() => onClickMenuItem(!(expandContentWidth ?? isContainerFluid))}
       className="grw-page-control-dropdown-item"
     >
       <div className="custom-control custom-switch ml-1">
@@ -52,7 +49,7 @@ const WideViewMenuItem = (props: WideViewMenuItemProps): JSX.Element => {
           id="switchContentWidth"
           className="custom-control-input"
           type="checkbox"
-          checked={expandContentWidth}
+          checked={expandContentWidth ?? isContainerFluid}
           onChange={() => {}}
         />
         <label className="custom-control-label" htmlFor="switchContentWidth">
@@ -208,7 +205,6 @@ const SubNavButtonsSubstance = (props: SubNavButtonsSubstanceProps): JSX.Element
       return undefined;
     }
     const wideviewMenuItemRenderer = (props: WideViewMenuItemProps) => {
-      if (expandContentWidth == null) { return <></> }
       return <WideViewMenuItem {...props} onClickMenuItem={switchContentWidthClickHandler} expandContentWidth={expandContentWidth} />;
     };
     return wideviewMenuItemRenderer;

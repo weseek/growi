@@ -225,6 +225,10 @@ export const useGrowiAppIdForGrowiCloud = (initialData?: number): SWRResponse<nu
   return useStaticSWR('growiAppIdForGrowiCloud', initialData);
 };
 
+export const useIsContainerFluid = (initialData?: boolean): SWRResponse<boolean, Error> => {
+  return useStaticSWR('isContainerFluid', initialData);
+};
+
 /** **********************************************************
  *                     Computed contexts
  *********************************************************** */

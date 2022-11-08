@@ -65,7 +65,7 @@ import {
   useIsAclEnabled, useIsSearchPage,
   useCsrfToken, useIsSearchScopeChildrenAsDefault, useCurrentPageId, useCurrentPathname,
   useIsSlackConfigured, useRendererConfig, useEditingMarkdown,
-  useEditorConfig, useIsAllReplyShown, useIsUploadableFile, useIsUploadableImage, useCustomizedLogoSrc,
+  useEditorConfig, useIsAllReplyShown, useIsUploadableFile, useIsUploadableImage, useCustomizedLogoSrc, useIsContainerFluid,
 } from '../stores/context';
 
 import {
@@ -197,6 +197,7 @@ const GrowiPage: NextPage<Props> = (props: Props) => {
 
   // page
   useIsLatestRevision(props.isLatestRevision);
+  useIsContainerFluid(props.isContainerFluid);
   // useOwnerOfCurrentPage(props.pageUser != null ? JSON.parse(props.pageUser) : null);
   useIsForbidden(props.isForbidden);
   useIsNotFound(props.isNotFound);
@@ -242,7 +243,7 @@ const GrowiPage: NextPage<Props> = (props: Props) => {
   useCurrentPagePath(pagePath);
   useCurrentPathname(props.currentPathname);
 
-  useSWRxCurrentPage(undefined, pageWithMeta?.data ?? null); // store initial data
+  const { data: currentPage } = useSWRxCurrentPage(undefined, pageWithMeta?.data ?? null); // store initial data
   useEditingMarkdown(pageWithMeta?.data.revision?.body ?? '');
 
   const { data: dataPageInfo } = useSWRxPageInfo(pageId);
@@ -275,9 +276,9 @@ const GrowiPage: NextPage<Props> = (props: Props) => {
 
   const isTopPagePath = isTopPage(pageWithMeta?.data.path ?? '');
 
-  const isContainerFluidEachPage = dataPageInfo == null || !('expandContentWidth' in dataPageInfo)
+  const isContainerFluidEachPage = currentPage == null || !('expandContentWidth' in currentPage)
     ? null
-    : dataPageInfo.expandContentWidth;
+    : currentPage.expandContentWidth;
   const isContainerFluidDefault = props.isContainerFluid;
   const isContainerFluid = isContainerFluidEachPage ?? isContainerFluidDefault;
 
