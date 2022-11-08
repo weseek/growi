@@ -787,7 +787,6 @@ export const getPageSchema = (crowi) => {
       grantedUsers: grant === PageGrant.GRANT_OWNER ? [user._id] : null,
     });
 
-
   };
 
   pageSchema.statics.removeByPath = function(path) {
