@@ -50,7 +50,7 @@ module.exports = (crowi) => {
     const { parentId } = req.params;
     const _parentId = parentId != null ? parentId : null;
     try {
-      const bookmarkFolders = await BookmarkFolder.findParentFolderByUserId(req.user?._id, _parentId);
+      const bookmarkFolders = await BookmarkFolder.findFolderAndChildren(req.user?._id, _parentId);
       const bookmarkFolderItems = await Promise.all(bookmarkFolders.map(async bookmarkFolder => ({
         bookmarkFolder,
         children: await BookmarkFolder.find({ parent: bookmarkFolder._id }),
