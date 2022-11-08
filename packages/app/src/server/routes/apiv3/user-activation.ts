@@ -145,9 +145,30 @@ export const completeRegistrationAction = (crowi) => {
           else {
             logger.warn('E-mail Settings must be set up.');
           }
+
+          return res.apiv3({});
         }
 
-        res.apiv3({ status: 'ok' });
+        req.login(userData, (err) => {
+          if (err) {
+            logger.debug(err);
+          }
+          else {
+            // update lastLoginAt
+            userData.updateLastLoginAt(new Date(), (err) => {
+              if (err) {
+                logger.error(`updateLastLoginAt dumps error: ${err}`);
+              }
+            });
+          }
+
+          // userData.password cann't be empty but, prepare redirect because password property in User Model is optional
+          // https://github.com/weseek/growi/pull/6670
+          const redirectTo = userData.password ? req.session.redirectTo : '/me#password';
+
+          delete req.session.redirectTo;
+          return res.apiv3({ redirectTo });
+        });
       });
     });
   };
