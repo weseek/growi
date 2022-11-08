@@ -176,11 +176,12 @@ const UserGroupDetailPage = (props: Props): JSX.Element => {
       await apiv3Post(`/user-groups/${currentUserGroupId}/users/${username}`);
       setIsUserGroupUserModalShown(false);
       mutateUserGroupRelations();
+      mutateUserGroupRelationList();
     }
     catch (err) {
       toastError(new Error(`Unable to add "${username}" from "${currentUserGroup?.name}"`));
     }
-  }, [currentUserGroup?.name, currentUserGroupId, mutateUserGroupRelations]);
+  }, [currentUserGroup?.name, currentUserGroupId, mutateUserGroupRelationList, mutateUserGroupRelations]);
 
   // Fix: invalid csrf token => https://redmine.weseek.co.jp/issues/102704
   const removeUserByUsername = useCallback(async(username: string) => {
