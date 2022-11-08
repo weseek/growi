@@ -1,12 +1,13 @@
 import React, { useState, useEffect, useCallback } from 'react';
 
 import { useTranslation } from 'next-i18next';
+import { useRouter } from 'next/router';
 
 import { apiv3Get, apiv3Post } from '~/client/util/apiv3-client';
 import { UserActivationErrorCode } from '~/interfaces/errors/user-activation';
 import { RegistrationMode } from '~/interfaces/registration-mode';
 
-import { toastSuccess, toastError } from '../client/util/apiNotification';
+import { toastError } from '../client/util/apiNotification';
 
 import { CompleteUserRegistration } from './CompleteUserRegistration';
 
@@ -38,6 +39,8 @@ const CompleteUserRegistrationForm: React.FC<Props> = (props: Props) => {
   const [disableForm, setDisableForm] = useState(forceDisableForm);
   const [isSuccessToRagistration, setIsSuccessToRagistration] = useState(false);
 
+  const router = useRouter();
+
   useEffect(() => {
     const delayDebounceFn = setTimeout(async() => {
       try {
@@ -58,16 +61,15 @@ const CompleteUserRegistrationForm: React.FC<Props> = (props: Props) => {
     e.preventDefault();
     setDisableForm(true);
     try {
-      await apiv3Post('/complete-registration', {
+      const res = await apiv3Post('/complete-registration', {
         username, name, password, token,
       });
-
-      toastSuccess('Registration succeed');
 
       setIsSuccessToRagistration(true);
 
       if (registrationMode !== RegistrationMode.RESTRICTED) {
-        window.location.href = '/login';
+        const { redirectTo } = res.data;
+        router.push(redirectTo ?? '/');
       }
     }
     catch (err) {
@@ -75,7 +77,7 @@ const CompleteUserRegistrationForm: React.FC<Props> = (props: Props) => {
       setDisableForm(false);
       setIsSuccessToRagistration(false);
     }
-  }, [name, password, token, username, registrationMode]);
+  }, [username, name, password, token, registrationMode, router]);
 
   if (isSuccessToRagistration && registrationMode === RegistrationMode.RESTRICTED) {
     return <CompleteUserRegistration />;
