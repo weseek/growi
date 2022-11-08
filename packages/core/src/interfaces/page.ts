@@ -62,6 +62,11 @@ export type PageGrant = typeof PageGrant[UnionPageGrantKeys];
  */
 export type PageGrantCanBeOnTree = typeof PageGrant[Exclude<UnionPageGrantKeys, 'GRANT_RESTRICTED' | 'GRANT_SPECIFIED'>];
 
+export const PageStatus = {
+  STATUS_PUBLISHED: 'published',
+  STATUS_DELETED: 'deleted',
+} as const;
+export type PageStatus = typeof PageStatus[keyof typeof PageStatus];
 
 export type IPageHasId = IPage & HasObjectId;
 
