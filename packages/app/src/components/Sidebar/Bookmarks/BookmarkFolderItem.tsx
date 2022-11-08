@@ -12,42 +12,45 @@ import { useSWRxBookamrkFolderAndChild } from '~/stores/bookmark-folder';
 
 
 type BookmarkFolderItemProps = {
-  bookmarkFolders: BookmarkFolderItems
+  bookmarkFolder: BookmarkFolderItems
   isOpen?: boolean
-  updateActiveElement?: (parentId: string | null) => void
-  isActive?: boolean
 }
 const BookmarkFolderItem: FC<BookmarkFolderItemProps> = (props: BookmarkFolderItemProps) => {
   const {
-    bookmarkFolders, isOpen: _isOpen = false, updateActiveElement, isActive,
+    bookmarkFolder, isOpen: _isOpen = false,
   } = props;
   const { t } = useTranslation();
-  const hasChildren = bookmarkFolders.children.length > 0;
   const [currentParentFolder, setCurrentParentFolder] = useState<string | null>(null);
   const [isOpen, setIsOpen] = useState(_isOpen);
   const { data: childBookmarkFolderData, mutate: mutateChildBookmarkData } = useSWRxBookamrkFolderAndChild(isOpen, currentParentFolder);
+  const { name, _id: parentId, children } = bookmarkFolder;
+
+  const hasChildren = useCallback((): boolean => {
+    if (children != null) {
+      return children.length > 0;
+    }
+    return false;
+  }, [children]);
 
   useEffect(() => {
-    setCurrentParentFolder(bookmarkFolders.bookmarkFolder._id);
-  }, [bookmarkFolders]);
+    setCurrentParentFolder(parentId);
+  }, [bookmarkFolder, parentId]);
 
   const loadChildFolder = useCallback(async() => {
-    setCurrentParentFolder(bookmarkFolders.bookmarkFolder._id);
+    setCurrentParentFolder(parentId);
     setIsOpen(!isOpen);
-    updateActiveElement?.(!isOpen ? bookmarkFolders.bookmarkFolder._id : null);
     mutateChildBookmarkData();
-  }, [bookmarkFolders, isOpen, updateActiveElement, mutateChildBookmarkData]);
+  }, [parentId, isOpen, mutateChildBookmarkData]);
 
 
   return (
-    <div id={`bookmark-folder-item-${bookmarkFolders.bookmarkFolder._id}`} className="grw-foldertree-item-container"
+    <div id={`bookmark-folder-item-${bookmarkFolder._id}`} className="grw-foldertree-item-container"
     >
-      <li className={`list-group-item list-group-item-action border-0 py-0 pr-3 d-flex align-items-center
-       ${isActive ? 'grw-foldertree-current-folder-item' : ''}` }
-      onClick={loadChildFolder}
+      <li className='list-group-item list-group-item-action border-0 py-0 pr-3 d-flex align-items-center'
+        onClick={loadChildFolder}
       >
         <div className="grw-triangle-container d-flex justify-content-center">
-          {hasChildren && (
+          {hasChildren() && (
             <button
               type="button"
               className={`grw-foldertree-triangle-btn btn ${isOpen ? 'grw-foldertree-open' : ''}`}
@@ -66,24 +69,23 @@ const BookmarkFolderItem: FC<BookmarkFolderItemProps> = (props: BookmarkFolderIt
         }
         {
           <div className='grw-foldertree-title-anchor flex-grow-1 pl-2'>
-            <p className={'text-truncate m-auto '}>{bookmarkFolders.bookmarkFolder.name}</p>
+            <p className={'text-truncate m-auto '}>{name}</p>
           </div>
         }
-        {hasChildren && (
+        {hasChildren() && (
           <div className="grw-foldertree-count-wrapper">
-            <CountBadge count={ bookmarkFolders.children.length} />
+            <CountBadge count={ children.length} />
           </div>
         )}
 
       </li>
       {
-        isOpen && hasChildren && childBookmarkFolderData?.map(children => (
-          <div key={children.bookmarkFolder._id} className="grw-foldertree-item-children">
+        isOpen && hasChildren() && childBookmarkFolderData?.map(children => (
+          <div key={children._id} className="grw-foldertree-item-children">
             <BookmarkFolderItem
-              key={children.bookmarkFolder._id}
-              bookmarkFolders={children}
+              key={children._id}
+              bookmarkFolder={children}
               isOpen = {false}
-              isActive = {isActive}
             />
           </div>
         ))
