@@ -356,6 +356,7 @@ const GrowiContextualSubNavigation = (props: GrowiContextualSubNavigationProps):
                     revisionId={revisionId}
                     shareLinkId={shareLinkId}
                     path={path ?? currentPathname} // If the page is empty, "path" is undefined
+                    expandContentWidth={currentPage?.expandContentWidth}
                     disableSeenUserInfoPopover={isSharedUser}
                     showPageControlDropdown={isAbleToShowPageManagement}
                     additionalMenuItemRenderer={additionalMenuItemsRenderer}
