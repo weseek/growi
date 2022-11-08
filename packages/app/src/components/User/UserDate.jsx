@@ -16,7 +16,7 @@ export default class UserDate extends React.Component {
     const dt = format(date, this.props.format);
 
     return (
-      <span className={this.props.className} data-hide-in-vrt="true">
+      <span className={this.props.className} data-hide-in-vrt>
         {dt}
       </span>
     );
