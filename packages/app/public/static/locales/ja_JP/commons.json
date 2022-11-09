@@ -19,10 +19,47 @@
     "app_settings": "アプリ設定"
   },
 
+  "header_search_box": {
+    "label": {
+      "All pages": "全てのページ",
+      "This tree": "この階層"
+    },
+    "item_label": {
+      "All pages": "全てのページ",
+      "This tree": "この階層下の子ページのみ"
+    }
+  },
+
   "share_links": {
     "Share Link": "共有用リンク",
     "Page Path": "ページパス",
     "expire": "有効期限",
     "description": "概要"
+  },
+
+  "personal_dropdown": {
+    "home": "ホーム",
+    "settings": "設定"
+  },
+
+  "copy_to_clipboard": {
+    "Copy to clipboard": "クリップボードにコピー",
+    "Page path": "ページ名",
+    "Page URL": "ページURL",
+    "Permanent link": "パーマリンク",
+    "Page path and permanent link": "ページ名とパーマリンク",
+    "Markdown link": "マークダウン形式のリンク"
+  },
+
+  "crop_image_modal": {
+    "image_crop": "画像の切り抜き",
+    "crop": "トリミング",
+    "save": "保存",
+    "reset": "リセット",
+    "cancel": "キャンセル"
+  },
+
+  "not_found_page": {
+    "page_not_exist": "このページは存在しません。"
   }
 }

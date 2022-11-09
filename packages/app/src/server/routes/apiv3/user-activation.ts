@@ -147,7 +147,6 @@ export const completeRegistrationAction = (crowi) => {
           }
         }
 
-        req.flash('successMessage', req.t('message.successfully_created', { username }));
         res.apiv3({ status: 'ok' });
       });
     });

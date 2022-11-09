@@ -29,7 +29,7 @@ type RevisionComparerProps = {
 }
 
 export const RevisionComparer = (props: RevisionComparerProps): JSX.Element => {
-  const { t } = useTranslation();
+  const { t } = useTranslation(['translation', 'commons']);
 
   const {
     sourceRevision, targetRevision, currentPageId,
@@ -80,13 +80,13 @@ export const RevisionComparer = (props: RevisionComparerProps): JSX.Element => {
             {/* Page path URL */}
             <CopyToClipboard text={generateURL(currentPagePath)}>
               <DropdownItem className="px-3">
-                <DropdownItemContents title={t('copy_to_clipboard.Page URL')} contents={generateURL(currentPagePath)} />
+                <DropdownItemContents title={t('copy_to_clipboard.Page URL', { ns: 'commons' })} contents={generateURL(currentPagePath)} />
               </DropdownItem>
             </CopyToClipboard>
             {/* Permanent Link URL */}
             <CopyToClipboard text={generateURL(currentPageId)}>
               <DropdownItem className="px-3">
-                <DropdownItemContents title={t('copy_to_clipboard.Permanent link')} contents={generateURL(currentPageId)} />
+                <DropdownItemContents title={t('copy_to_clipboard.Permanent link', { ns: 'commons' })} contents={generateURL(currentPageId)} />
               </DropdownItem>
             </CopyToClipboard>
             <DropdownItem divider className="my-0"></DropdownItem>
