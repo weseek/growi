@@ -16,6 +16,7 @@ const logger = loggerFactory('growi:models:bookmark-folder');
 export interface BookmarkFolderItems {
   _id: string
   name: string
+  parent: string
   children: this[]
 }
 export interface BookmarkFolderDocument extends Document {
