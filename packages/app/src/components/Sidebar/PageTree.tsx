@@ -10,6 +10,7 @@ import { useSWRxV5MigrationStatus } from '~/stores/page-listing';
 import ItemsTree from './PageTree/ItemsTree';
 import ItemsTreeSkelton from './PageTree/ItemsTreeSkelton';
 import { PrivateLegacyPagesLink } from './PageTree/PrivateLegacyPagesLink';
+import { SidebarHeader } from './SidebarHeader';
 
 const PageTree: FC = memo(() => {
   const { t } = useTranslation();
@@ -25,9 +26,7 @@ const PageTree: FC = memo(() => {
   if (migrationStatus == null) {
     return (
       <>
-        <div className="grw-sidebar-content-header p-3">
-          <h3 className="mb-0">{t('Page Tree')}</h3>
-        </div>
+        <SidebarHeader title='Page Tree' />
         <ItemsTreeSkelton />
       </>
     );
@@ -38,9 +37,7 @@ const PageTree: FC = memo(() => {
     // Story : https://redmine.weseek.co.jp/issues/83755
     return (
       <>
-        <div className="grw-sidebar-content-header p-3">
-          <h3 className="mb-0">{t('Page Tree')}</h3>
-        </div>
+        <SidebarHeader title='Page Tree' />
         <div className="mt-5 mx-2 text-center">
           <h3 className="text-gray">{t('v5_page_migration.page_tree_not_avaliable')}</h3>
           <a href="/admin">{t('v5_page_migration.go_to_settings')}</a>
@@ -60,10 +57,7 @@ const PageTree: FC = memo(() => {
 
   return (
     <>
-      <div className="grw-sidebar-content-header p-3">
-        <h3 className="mb-0">{t('Page Tree')}</h3>
-      </div>
-
+      <SidebarHeader title='Page Tree' />
       <ItemsTree
         isEnableActions={!isGuestUser}
         targetPath={path}

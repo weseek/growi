@@ -16,6 +16,7 @@ import loggerFactory from '~/utils/logger';
 import FormattedDistanceDate from '../FormattedDistanceDate';
 
 import InfiniteScroll from './InfiniteScroll';
+import { SidebarHeader } from './SidebarHeader';
 
 import TagLabelsStyles from '../Page/TagLabels.module.scss';
 import styles from './RecentChanges.module.scss';
@@ -154,11 +155,7 @@ const RecentChanges = (): JSX.Element => {
 
   return (
     <div data-testid="grw-recent-changes">
-      <div className="grw-sidebar-content-header p-3 d-flex">
-        <h3 className="mb-0  text-nowrap">{t('Recent Changes')}</h3>
-        <button type="button" className="btn btn-sm ml-auto grw-btn-reload" onClick={() => swr.mutate()}>
-          <i className="icon icon-reload"></i>
-        </button>
+      <SidebarHeader title='Recent Changes' hasButton onClick={swr.mutate} >
         <div className="d-flex align-items-center">
           <div className={`grw-recent-changes-resize-button ${styles['grw-recent-changes-resize-button']} custom-control custom-switch ml-1`}>
             <input
@@ -172,7 +169,7 @@ const RecentChanges = (): JSX.Element => {
             </label>
           </div>
         </div>
-      </div>
+      </SidebarHeader>
       <div className="grw-recent-changes p-3">
         <ul className="list-group list-group-flush">
           <InfiniteScroll

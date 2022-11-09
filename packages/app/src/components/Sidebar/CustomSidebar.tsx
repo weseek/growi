@@ -9,6 +9,7 @@ import loggerFactory from '~/utils/logger';
 
 import RevisionRenderer from '../Page/RevisionRenderer';
 
+import { SidebarHeader } from './SidebarHeader';
 
 import styles from './CustomSidebar.module.scss';
 
@@ -41,16 +42,7 @@ const CustomSidebar: FC = () => {
 
   return (
     <>
-      <div className="grw-sidebar-content-header p-3 d-flex">
-        <h3 className="mb-0">
-          {t('CustomSidebar')}
-          <a className="h6 ml-2" href="/Sidebar"><i className="icon-pencil"></i></a>
-        </h3>
-        <button type="button" className="btn btn-sm ml-auto grw-btn-reload" onClick={() => mutate()}>
-          <i className="icon icon-reload"></i>
-        </button>
-      </div>
-
+      <SidebarHeader title='CustomSidebar' hasButton isCustom onClick={mutate} />
       {
         isLoading && (
           <div className="text-muted text-center">
