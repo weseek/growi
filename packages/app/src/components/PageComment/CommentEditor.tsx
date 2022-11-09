@@ -13,10 +13,11 @@ import { apiPostForm } from '~/client/util/apiv1-client';
 import { IEditorMethods } from '~/interfaces/editor-methods';
 import { useSWRxPageComment } from '~/stores/comment';
 import {
-  useCurrentPagePath, useCurrentUser, useRevisionId, useIsSlackConfigured,
+  useCurrentUser, useRevisionId, useIsSlackConfigured,
   useIsUploadableFile, useIsUploadableImage,
 } from '~/stores/context';
 import { useSWRxSlackChannels, useIsSlackEnabled } from '~/stores/editor';
+import { useCurrentPagePath } from '~/stores/page';
 
 import { CustomNavTab } from '../CustomNavigation/CustomNav';
 import NotAvailableForGuest from '../NotAvailableForGuest';

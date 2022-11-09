@@ -10,8 +10,7 @@ import { NoLoginLayout } from '~/components/Layout/NoLoginLayout';
 
 import InstallerForm from '../components/InstallerForm';
 import {
-  useCurrentPagePath, useCsrfToken,
-  useAppTitle, useSiteUrl, useConfidential,
+  useCsrfToken, useAppTitle, useSiteUrl, useConfidential,
 } from '../stores/context';
 
 
@@ -39,9 +38,6 @@ const InstallerPage: NextPage<Props> = (props: Props) => {
   useSiteUrl(props.siteUrl);
   useConfidential(props.confidential);
   useCsrfToken(props.csrfToken);
-
-  // page
-  useCurrentPagePath(props.currentPathname);
 
   const classNames: string[] = [];
 

@@ -7,8 +7,9 @@ import { useRipple } from 'react-use-ripple';
 import StickyEvents from 'sticky-events';
 
 import { DEFAULT_AUTO_SCROLL_OPTS } from '~/client/util/smooth-scroll';
-import { useCurrentPagePath, useCurrentUser } from '~/stores/context';
+import { useCurrentUser } from '~/stores/context';
 import { usePageCreateModal } from '~/stores/modal';
+import { useCurrentPagePath } from '~/stores/page';
 import loggerFactory from '~/utils/logger';
 
 import { CreatePageIcon } from './Icons/CreatePageIcon';
