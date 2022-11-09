@@ -95,7 +95,7 @@ export const RevisionLoader = (props: RevisionLoaderProps): JSX.Element => {
     return (
       <div className="wiki">
         <div className="text-muted text-center">
-          <i className="fa fa-2x fa-spinner fa-pulse mr-1" data-testid="wiki-loading-spinner"></i>
+          <i className="fa fa-2x fa-spinner fa-pulse mr-1"></i>
         </div>
       </div>
     );
