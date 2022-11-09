@@ -3,8 +3,7 @@ context('Access to page by guest', () => {
 
   it('/Sandbox is successfully loaded', () => {
     cy.visit('/Sandbox');
-    // eslint-disable-next-line cypress/no-unnecessary-waiting
-    cy.wait(500);
+    cy.getByTestid('grw-pagetree-item-container').should('be.visible');
     cy.collapseSidebar(true, true);
     cy.screenshot(`${ssPrefix}-sandbox`);
   });
