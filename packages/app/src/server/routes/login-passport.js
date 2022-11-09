@@ -106,12 +106,6 @@ module.exports = function(crowi, app) {
       }
     });
 
-    // check for redirection to '/invited'
-    const redirectTo = req.user.status === User.STATUS_INVITED ? '/invited' : req.session.redirectTo;
-
-    // remove session.redirectTo
-    delete req.session.redirectTo;
-
     const parameters = {
       ip:  req.ip,
       endpoint: req.originalUrl,
@@ -127,6 +121,12 @@ module.exports = function(crowi, app) {
     if (isExternalAccount) {
       return res.redirect('/');
     }
+
+    // check for redirection to '/invited'
+    const redirectTo = req.user.status === User.STATUS_INVITED ? '/invited' : req.session.redirectTo;
+
+    // remove session.redirectTo
+    delete req.session.redirectTo;
 
     return res.apiv3({ redirectTo });
   };
