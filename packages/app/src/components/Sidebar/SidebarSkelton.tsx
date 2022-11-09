@@ -3,7 +3,8 @@ import React from 'react';
 import { SidebarContentsType } from '~/interfaces/ui';
 import { useCurrentSidebarContents } from '~/stores/ui';
 
-// TODO: PageTree以外のSkelton実装
+// TODO: implement Skelton of other 3 components
+
 // import CustomSidebarSkelton from './CustomSidebarSkelton';
 import PageTreeSkelton from './PageTreeSkelton';
 // import RecentChangesSkelton from './RecentChangesSkelton';
