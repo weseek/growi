@@ -4,6 +4,7 @@ import path from 'path';
 import { ErrorV3 } from '@growi/core';
 import express, { NextFunction, Request, Router } from 'express';
 import { body } from 'express-validator';
+import { type Document } from 'mongoose';
 import multer from 'multer';
 
 import { SupportedAction } from '~/interfaces/activity';
@@ -145,6 +146,18 @@ module.exports = (crowi: Crowi): Router => {
   const router = express.Router();
   const receiveRouter = express.Router();
   const pushRouter = express.Router();
+
+  // eslint-disable-next-line max-len
+  receiveRouter.get('/attachments', verifyAndExtractTransferKey, async(req: Request & { transferKey: TransferKey, operatorUserId: string }, res: ApiV3Response) => {
+    const transform = (doc: Document) => JSON.stringify(doc._id.toString());
+    const readStream = crowi.exportService.createExportCollectionStream(
+      'attachments',
+      undefined,
+      { projection: { _id: 1 } },
+      transform,
+    );
+    return readStream.pipe(res);
+  });
 
   // Auto import
   // eslint-disable-next-line max-len
@@ -385,9 +398,12 @@ module.exports = (crowi: Crowi): Router => {
       return res.apiv3Err(new ErrorV3(transferability.reason, 'growi_incompatible_to_transfer'));
     }
 
+    // get attachments from new growi
+    const attachmentIdsFromNewGrowi = await g2gTransferPusherService.getAttachments(tk);
+
     // Start transfer
     try {
-      await g2gTransferPusherService.startTransfer(tk, req.user, toGROWIInfo, collections, optionsMap);
+      await g2gTransferPusherService.startTransfer(tk, req.user, toGROWIInfo, collections, optionsMap, attachmentIdsFromNewGrowi);
     }
     catch (err) {
       logger.error(err);
