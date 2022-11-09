@@ -286,19 +286,18 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
     try {
       const res = await apiv3Post(requestPath, { registerForm });
 
+      setIsSuccessToRagistration(true);
       resetRegisterErrors();
+
+      if (registrationMode === RegistrationMode.RESTRICTED) {
+        return;
+      }
 
       const { redirectTo } = res.data;
       router.push(redirectTo ?? '/');
 
       if (isEmailAuthenticationEnabled) {
-        setIsSuccessToRagistration(true);
         setEmailForRegistrationOrder(emailForRegister);
-        return;
-      }
-
-      if (registrationMode === RegistrationMode.RESTRICTED) {
-        setIsSuccessToRagistration(true);
         return;
       }
     }
