@@ -14,7 +14,7 @@ import { useIsContainerFluid, useIsGuestUser } from '~/stores/context';
 import { IPageForPageDuplicateModal } from '~/stores/modal';
 
 import { useSWRBookmarkInfo } from '../../stores/bookmark';
-import { useSWRxPageInfo } from '../../stores/page';
+import { useSWRxCurrentPage, useSWRxPageInfo } from '../../stores/page';
 import { useSWRxUsersList } from '../../stores/user';
 import BookmarkButtons from '../BookmarkButtons';
 import {
@@ -92,6 +92,7 @@ const SubNavButtonsSubstance = (props: SubNavButtonsSubstanceProps): JSX.Element
   const { data: isGuestUser } = useIsGuestUser();
 
   const { mutate: mutatePageInfo } = useSWRxPageInfo(pageId, shareLinkId);
+  const { mutate: mutateCrrentPage } = useSWRxCurrentPage();
 
   const { data: bookmarkInfo, mutate: mutateBookmarkInfo } = useSWRBookmarkInfo(pageId);
 
@@ -192,13 +193,12 @@ const SubNavButtonsSubstance = (props: SubNavButtonsSubstanceProps): JSX.Element
     }
     try {
       await updateContentWidth(pageId, newValue);
-      // TODO: mutate wide view info
-      mutatePageInfo();
+      mutateCrrentPage();
     }
     catch (err) {
       toastError(err);
     }
-  }, [isGuestUser, mutatePageInfo, pageId, pageInfo]);
+  }, [isGuestUser, mutateCrrentPage, pageId, pageInfo]);
 
   const additionalMenuItemOnTopRenderer = useMemo(() => {
     if (!isIPageInfoForEntity(pageInfo)) {
