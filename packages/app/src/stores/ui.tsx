@@ -5,6 +5,7 @@ import {
 } from '@growi/core';
 import { withUtils, SWRResponseWithUtils } from '@growi/core/src/utils/with-utils';
 import { Breakpoint, addBreakpointListener, cleanupBreakpointListener } from '@growi/ui';
+import { HtmlElementNode } from 'rehype-toc';
 import SimpleBar from 'simplebar-react';
 import {
   useSWRConfig, SWRResponse, Key, Fetcher,
@@ -21,10 +22,11 @@ import { UpdateDescCountData } from '~/interfaces/websocket';
 import loggerFactory from '~/utils/logger';
 
 import {
-  useCurrentPageId, useCurrentPagePath, useIsEditable, useIsTrashPage, useIsGuestUser,
+  useCurrentPageId, useIsEditable, useIsGuestUser,
   useIsSharedUser, useIsIdenticalPath, useCurrentUser, useIsNotFound, useShareLinkId,
 } from './context';
 import { localStorageMiddleware } from './middlewares/sync-to-storage';
+import { useCurrentPagePath, useIsTrashPage } from './page';
 import { useStaticSWR } from './use-static-swr';
 
 const { isTrashTopPage, isUsersTopPage } = pagePathUtils;
@@ -45,13 +47,18 @@ export type EditorMode = typeof EditorMode[keyof typeof EditorMode];
 
 
 /** **********************************************************
- *                     Storing RefObjects
+ *                     Storing objects to ref
  *********************************************************** */
 
 export const useSidebarScrollerRef = (initialData?: RefObject<SimpleBar>): SWRResponse<RefObject<SimpleBar>, Error> => {
   return useStaticSWR<RefObject<SimpleBar>, Error>('sidebarScrollerRef', initialData);
 };
 
+export const useCurrentPageTocNode = (): SWRResponse<HtmlElementNode, any> => {
+  const { data: currentPagePath } = useCurrentPagePath();
+
+  return useStaticSWR(['currentPageTocNode', currentPagePath]);
+};
 
 /** **********************************************************
  *                          SWR Hooks

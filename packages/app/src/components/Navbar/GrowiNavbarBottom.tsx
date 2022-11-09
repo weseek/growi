@@ -1,7 +1,8 @@
 import React from 'react';
 
-import { useCurrentPagePath, useIsSearchPage } from '~/stores/context';
+import { useIsSearchPage } from '~/stores/context';
 import { usePageCreateModal } from '~/stores/modal';
+import { useCurrentPagePath } from '~/stores/page';
 import { useIsDeviceSmallerThanMd, useDrawerOpened } from '~/stores/ui';
 
 import { GlobalSearch } from './GlobalSearch';

@@ -1,5 +1,8 @@
-import { IPageInfoForEntity, IPagePopulatedToShowRevision, Nullable } from '@growi/core';
-import useSWR, { SWRResponse } from 'swr';
+import type {
+  IPageInfoForEntity, IPagePopulatedToShowRevision, Nullable,
+} from '@growi/core';
+import { pagePathUtils } from '@growi/core';
+import useSWR, { Key, SWRResponse } from 'swr';
 import useSWRImmutable from 'swr/immutable';
 
 import { apiGet } from '~/client/util/apiv1-client';
@@ -12,7 +15,10 @@ import { IRevisionsForPagination } from '~/interfaces/revision';
 
 import { IPageTagsInfo } from '../interfaces/tag';
 
-import { useCurrentPageId } from './context';
+import { useCurrentPageId, useCurrentPathname } from './context';
+
+
+const { isPermalink: _isPermalink } = pagePathUtils;
 
 
 export const useSWRxPage = (pageId?: string|null, shareLinkId?: string): SWRResponse<IPagePopulatedToShowRevision|null, Error> => {
@@ -138,5 +144,41 @@ export const useSWRxApplicableGrant = (
   return useSWRImmutable(
     pageId != null ? ['/page/applicable-grant', pageId] : null,
     (endpoint, pageId) => apiv3Get(endpoint, { pageId }).then(response => response.data),
+  );
+};
+
+
+/** **********************************************************
+ *                     Computed states
+ *********************************************************** */
+
+export const useCurrentPagePath = (): SWRResponse<string | undefined, Error> => {
+  const { data: currentPage } = useSWRxCurrentPage();
+  const { data: currentPathname } = useCurrentPathname();
+
+  return useSWRImmutable(
+    ['currentPagePath', currentPage?.path, currentPathname],
+    (key: Key, pagePath: string|undefined, pathname: string|undefined) => {
+      if (currentPage?.path != null) {
+        return currentPage.path;
+      }
+      if (pathname != null && !_isPermalink(pathname)) {
+        return pathname;
+      }
+      return undefined;
+    },
+    // TODO: set fallbackData
+    // { fallbackData:  }
+  );
+};
+
+export const useIsTrashPage = (): SWRResponse<boolean, Error> => {
+  const { data: pagePath } = useCurrentPagePath();
+
+  return useSWRImmutable(
+    pagePath == null ? null : ['isTrashPage', pagePath],
+    (key: Key, pagePath: string) => pagePathUtils.isTrashPage(pagePath),
+    // TODO: set fallbackData
+    // { fallbackData:  }
   );
 };

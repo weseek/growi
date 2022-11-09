@@ -7,7 +7,7 @@ import {
   Dropdown, DropdownToggle, DropdownMenu, DropdownItem,
 } from 'reactstrap';
 
-import { useCurrentPagePath } from '~/stores/context';
+import { useCurrentPagePath } from '~/stores/page';
 
 import { RevisionDiff } from '../PageHistory/RevisionDiff';
 
