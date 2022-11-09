@@ -48,7 +48,7 @@ module.exports = function(crowi, app) {
 
     if (registrationMode === aclService.labels.SECURITY_REGISTRATION_MODE_RESTRICTED) {
       await sendEmailToAllAdmins(userData);
-      return res.apiv3({ redirectTo: '/login' });
+      return res.apiv3({});
     }
 
     req.login(userData, (err) => {
