@@ -267,6 +267,11 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
     );
   }, [props, renderExternalAuthInput]);
 
+  const resetRegisterErrors = useCallback(() => {
+    if (registerErrors.length === 0) return;
+    setRegisterErrors([]);
+  }, [registerErrors.length]);
+
   const handleRegisterFormSubmit = useCallback(async(e, requestPath) => {
     e.preventDefault();
     setEmailForRegistrationOrder('');
@@ -280,6 +285,9 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
     };
     try {
       const res = await apiv3Post(requestPath, { registerForm });
+
+      resetRegisterErrors();
+
       const { redirectTo } = res.data;
       router.push(redirectTo ?? '/');
 
@@ -301,12 +309,9 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
       }
     }
     return;
-  }, [usernameForRegister, nameForRegister, emailForRegister, passwordForRegister, router, isEmailAuthenticationEnabled, registrationMode]);
-
-  const resetRegisterErrors = useCallback(() => {
-    if (registerErrors.length === 0) return;
-    setRegisterErrors([]);
-  }, [registerErrors.length]);
+  }, [
+    usernameForRegister, nameForRegister, emailForRegister, passwordForRegister, resetRegisterErrors, router, isEmailAuthenticationEnabled, registrationMode,
+  ]);
 
   const switchForm = useCallback(() => {
     setIsRegistering(!isRegistering);
