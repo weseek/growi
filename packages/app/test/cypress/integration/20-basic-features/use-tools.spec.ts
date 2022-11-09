@@ -304,8 +304,7 @@ context('Tag Oprations', () =>{
     cy.getByTestid('search-result-base').should('be.visible');
     cy.getByTestid('search-result-list').should('be.visible');
     cy.getByTestid('search-result-content').should('be.visible');
-    // eslint-disable-next-line cypress/no-unnecessary-waiting
-    cy.wait(300);
+    cy.getByTestid('wiki-loading-spinner').should('not.be.visible');
     cy.screenshot(`${ssPrefix}1-click-tag-name`, {capture: 'viewport'});
 
     cy.getByTestid('search-result-list').within(() => {
