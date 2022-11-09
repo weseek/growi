@@ -13,15 +13,15 @@ import { apiPost } from '~/client/util/apiv1-client';
 import { getOptionsToSave } from '~/client/util/editor';
 import { IResHackmdIntegrated, IResHackmdDiscard } from '~/interfaces/hackmd';
 import {
-  useCurrentPagePath, useCurrentPageId, useHackmdUri,
+  useCurrentPageId, useCurrentPathname, useHackmdUri,
 } from '~/stores/context';
-import {
-  usePageIdOnHackmd, useHasDraftOnHackmd, useRevisionIdHackmdSynced, useRemoteRevisionId,
-} from '~/stores/hackmd';
 import {
   useSWRxSlackChannels, useIsSlackEnabled, usePageTagsForEditors, useIsEnabledUnsavedWarning,
 } from '~/stores/editor';
-import { useSWRxCurrentPage, useSWRxTagsInfo } from '~/stores/page';
+import {
+  usePageIdOnHackmd, useHasDraftOnHackmd, useRevisionIdHackmdSynced, useRemoteRevisionId,
+} from '~/stores/hackmd';
+import { useCurrentPagePath, useSWRxCurrentPage, useSWRxTagsInfo } from '~/stores/page';
 import {
   EditorMode,
   useEditorMode, useSelectedGrant,
@@ -43,7 +43,7 @@ export const PageEditorByHackmd = (): JSX.Element => {
   const { t } = useTranslation();
   const { data: editorMode, mutate: mutateEditorMode } = useEditorMode();
   const { data: currentPagePath } = useCurrentPagePath();
-  const { data: currentPathname } = useCurrentPagePath();
+  const { data: currentPathname } = useCurrentPathname();
   const { data: slackChannelsData } = useSWRxSlackChannels(currentPagePath);
   const { data: isSlackEnabled } = useIsSlackEnabled();
   const { data: pageId } = useCurrentPageId();

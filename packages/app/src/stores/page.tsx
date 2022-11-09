@@ -1,5 +1,8 @@
-import { IPageInfoForEntity, IPagePopulatedToShowRevision, Nullable } from '@growi/core';
-import useSWR, { SWRResponse } from 'swr';
+import type {
+  IPageInfoForEntity, IPagePopulatedToShowRevision, Nullable,
+} from '@growi/core';
+import { pagePathUtils } from '@growi/core';
+import useSWR, { Key, SWRResponse } from 'swr';
 import useSWRImmutable from 'swr/immutable';
 
 import { apiGet } from '~/client/util/apiv1-client';
@@ -12,10 +15,17 @@ import { IRevisionsForPagination } from '~/interfaces/revision';
 
 import { IPageTagsInfo } from '../interfaces/tag';
 
-import { useCurrentPageId } from './context';
+import { useCurrentPageId, useCurrentPathname } from './context';
 
 
-export const useSWRxPage = (pageId?: string|null, shareLinkId?: string): SWRResponse<IPagePopulatedToShowRevision|null, Error> => {
+const { isPermalink: _isPermalink } = pagePathUtils;
+
+
+export const useSWRxPage = (
+    pageId?: string|null,
+    shareLinkId?: string,
+    initialData?: IPagePopulatedToShowRevision|null,
+): SWRResponse<IPagePopulatedToShowRevision|null, Error> => {
   return useSWR<IPagePopulatedToShowRevision|null, Error>(
     pageId != null ? ['/page', pageId, shareLinkId] : null,
     (endpoint, pageId, shareLinkId) => apiv3Get<{ page: IPagePopulatedToShowRevision }>(endpoint, { pageId, shareLinkId })
@@ -29,6 +39,7 @@ export const useSWRxPage = (pageId?: string|null, shareLinkId?: string): SWRResp
         }
         throw Error('failed to get page');
       }),
+    { fallbackData: initialData },
   );
 };
 
@@ -44,13 +55,7 @@ export const useSWRxCurrentPage = (
 ): SWRResponse<IPagePopulatedToShowRevision|null, Error> => {
   const { data: currentPageId } = useCurrentPageId();
 
-  const swrResult = useSWRxPage(currentPageId, shareLinkId);
-
-  // use mutate because fallbackData does not work
-  // see: https://github.com/weseek/growi/commit/5038473e8d6028c9c91310e374a7b5f48b921a15
-  if (initialData !== undefined) {
-    swrResult.mutate(initialData);
-  }
+  const swrResult = useSWRxPage(currentPageId, shareLinkId, initialData);
 
   return swrResult;
 };
@@ -89,11 +94,6 @@ export const useSWRxPageInfo = (
     (endpoint, pageId, shareLinkId) => apiv3Get(endpoint, { pageId, shareLinkId }).then(response => response.data),
     { fallbackData: initialData },
   );
-
-  // use mutate because fallbackData does not work
-  if (initialData != null) {
-    swrResult.mutate(initialData);
-  }
 
   return swrResult;
 };
@@ -138,5 +138,41 @@ export const useSWRxApplicableGrant = (
   return useSWRImmutable(
     pageId != null ? ['/page/applicable-grant', pageId] : null,
     (endpoint, pageId) => apiv3Get(endpoint, { pageId }).then(response => response.data),
+  );
+};
+
+
+/** **********************************************************
+ *                     Computed states
+ *********************************************************** */
+
+export const useCurrentPagePath = (): SWRResponse<string | undefined, Error> => {
+  const { data: currentPage } = useSWRxCurrentPage();
+  const { data: currentPathname } = useCurrentPathname();
+
+  return useSWRImmutable(
+    ['currentPagePath', currentPage?.path, currentPathname],
+    (key: Key, pagePath: string|undefined, pathname: string|undefined) => {
+      if (currentPage?.path != null) {
+        return currentPage.path;
+      }
+      if (pathname != null && !_isPermalink(pathname)) {
+        return pathname;
+      }
+      return undefined;
+    },
+    // TODO: set fallbackData
+    // { fallbackData:  }
+  );
+};
+
+export const useIsTrashPage = (): SWRResponse<boolean, Error> => {
+  const { data: pagePath } = useCurrentPagePath();
+
+  return useSWRImmutable(
+    pagePath == null ? null : ['isTrashPage', pagePath],
+    (key: Key, pagePath: string) => pagePathUtils.isTrashPage(pagePath),
+    // TODO: set fallbackData
+    // { fallbackData:  }
   );
 };
