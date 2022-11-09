@@ -42,14 +42,15 @@ const AdminUserGroupDetailPage: NextPage<Props> = (props: Props) => {
   );
 };
 
-export const getServerSideProps: GetServerSideProps = async(context: GetServerSidePropsContext) => {
-  const props = await retrieveServerSideProps(context);
+const injectServerConfigurations = async(context: GetServerSidePropsContext, props: Props): Promise<void> => {
+  const req: CrowiRequest = context.req as CrowiRequest;
+  props.isAclEnabled = req.crowi.aclService.isAclEnabled();
+};
 
-  const req = context.req as CrowiRequest;
-  props.props.isAclEnabled = req.crowi.aclService.isAclEnabled();
+export const getServerSideProps: GetServerSideProps = async(context: GetServerSidePropsContext) => {
+  const props = await retrieveServerSideProps(context, injectServerConfigurations);
 
   return props;
 };
-
 
 export default AdminUserGroupDetailPage;
