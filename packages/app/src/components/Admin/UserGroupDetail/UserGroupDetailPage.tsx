@@ -5,6 +5,7 @@ import React, {
 import { objectIdUtils } from '@growi/core';
 import { useTranslation } from 'next-i18next';
 import dynamic from 'next/dynamic';
+import Link from 'next/link';
 import { useRouter } from 'next/router';
 
 import { toastSuccess, toastError } from '~/client/util/apiNotification';
@@ -18,7 +19,7 @@ import { useIsAclEnabled } from '~/stores/context';
 import { useUpdateUserGroupConfirmModal } from '~/stores/modal';
 import {
   useSWRxUserGroupPages, useSWRxUserGroupRelationList, useSWRxChildUserGroupList, useSWRxUserGroup,
-  useSWRxSelectableParentUserGroups, useSWRxSelectableChildUserGroups, useSWRxAncestorUserGroups,
+  useSWRxSelectableParentUserGroups, useSWRxSelectableChildUserGroups, useSWRxAncestorUserGroups, useSWRxUserGroupRelations,
 } from '~/stores/user-group';
 
 import styles from './UserGroupDetailPage.module.scss';
@@ -71,13 +72,14 @@ const UserGroupDetailPage = (props: Props): JSX.Element => {
    */
   const { data: userGroupPages } = useSWRxUserGroupPages(currentUserGroupId, 10, 0);
 
+  const { data: userGroupRelations, mutate: mutateUserGroupRelations } = useSWRxUserGroupRelations(currentUserGroupId);
 
   const { data: childUserGroupsList, mutate: mutateChildUserGroups } = useSWRxChildUserGroupList(currentUserGroupId ? [currentUserGroupId] : [], true);
   const childUserGroups = childUserGroupsList != null ? childUserGroupsList.childUserGroups : [];
   const grandChildUserGroups = childUserGroupsList != null ? childUserGroupsList.grandChildUserGroups : [];
   const childUserGroupIds = childUserGroups.map(group => group._id);
 
-  const { data: userGroupRelationList, mutate: mutateUserGroupRelations } = useSWRxUserGroupRelationList(childUserGroupIds);
+  const { data: userGroupRelationList, mutate: mutateUserGroupRelationList } = useSWRxUserGroupRelationList(childUserGroupIds);
   const childUserGroupRelations = userGroupRelationList != null ? userGroupRelationList : [];
 
   const { data: selectableParentUserGroups, mutate: mutateSelectableParentUserGroups } = useSWRxSelectableParentUserGroups(currentUserGroupId);
@@ -106,19 +108,19 @@ const UserGroupDetailPage = (props: Props): JSX.Element => {
 
   const updateUserGroup = useCallback(async(userGroup: IUserGroupHasId, update: Partial<IUserGroupHasId>, forceUpdateParents: boolean) => {
     const parentId = typeof update.parent === 'string' ? update.parent : update.parent?._id;
-    const res = await apiv3Put<{ userGroup: IUserGroupHasId }>(`/user-groups/${userGroup._id}`, {
+    await apiv3Put<{ userGroup: IUserGroupHasId }>(`/user-groups/${userGroup._id}`, {
       name: update.name,
       description: update.description,
       parentId: parentId ?? null,
       forceUpdateParents,
     });
-    const { userGroup: updatedUserGroup } = res.data;
 
     // mutate
+    mutateChildUserGroups();
     mutateAncestorUserGroups();
     mutateSelectableChildUserGroups();
     mutateSelectableParentUserGroups();
-  }, [mutateAncestorUserGroups, mutateSelectableChildUserGroups, mutateSelectableParentUserGroups]);
+  }, [mutateAncestorUserGroups, mutateChildUserGroups, mutateSelectableChildUserGroups, mutateSelectableParentUserGroups]);
 
   const onSubmitUpdateGroup = useCallback(
     async(targetGroup: IUserGroupHasId, userGroupData: Partial<IUserGroupHasId>, forceUpdateParents: boolean): Promise<void> => {
@@ -170,22 +172,28 @@ const UserGroupDetailPage = (props: Props): JSX.Element => {
   }, [currentUserGroupId, searchType, isAlsoMailSearched, isAlsoNameSearched]);
 
   const addUserByUsername = useCallback(async(username: string) => {
-    await apiv3Post(`/user-groups/${currentUserGroupId}/users/${username}`);
-    setIsUserGroupUserModalShown(false);
-    mutateUserGroupRelations();
-  }, [currentUserGroupId, mutateUserGroupRelations]);
+    try {
+      await apiv3Post(`/user-groups/${currentUserGroupId}/users/${username}`);
+      setIsUserGroupUserModalShown(false);
+      mutateUserGroupRelations();
+      mutateUserGroupRelationList();
+    }
+    catch (err) {
+      toastError(new Error(`Unable to add "${username}" from "${currentUserGroup?.name}"`));
+    }
+  }, [currentUserGroup?.name, currentUserGroupId, mutateUserGroupRelationList, mutateUserGroupRelations]);
 
   // Fix: invalid csrf token => https://redmine.weseek.co.jp/issues/102704
   const removeUserByUsername = useCallback(async(username: string) => {
     try {
       await apiv3Delete(`/user-groups/${currentUserGroupId}/users/${username}`);
       toastSuccess(`Removed "${xss.process(username)}" from "${xss.process(currentUserGroup?.name)}"`);
-      mutateUserGroupRelations();
+      mutateUserGroupRelationList();
     }
     catch (err) {
       toastError(new Error(`Unable to remove "${xss.process(username)}" from "${xss.process(currentUserGroup?.name)}"`));
     }
-  }, [currentUserGroup?.name, currentUserGroupId, mutateUserGroupRelations, xss]);
+  }, [currentUserGroup?.name, currentUserGroupId, mutateUserGroupRelationList, xss]);
 
   const showUpdateModal = useCallback((group: IUserGroupHasId) => {
     setUpdateModalShown(true);
@@ -319,19 +327,27 @@ const UserGroupDetailPage = (props: Props): JSX.Element => {
     <div>
       <nav aria-label="breadcrumb">
         <ol className="breadcrumb">
-          <li className="breadcrumb-item"><a href="/admin/user-groups">{t('user_group_management.group_list')}</a></li>
+          <li className="breadcrumb-item">
+            <Link href="/admin/user-groups" prefetch={false}>
+              <a >{t('user_group_management.group_list')}</a>
+            </Link>
+          </li>
           {
-            ancestorUserGroups != null && ancestorUserGroups.length > 0 && (
-              ancestorUserGroups.map((ancestorUserGroup: IUserGroupHasId) => (
-                // eslint-disable-next-line max-len
-                <li key={ancestorUserGroup._id} className={`breadcrumb-item ${ancestorUserGroup._id === currentUserGroupId ? 'active' : ''}`} aria-current="page">
-                  { ancestorUserGroup._id === currentUserGroupId ? (
-                    <>{ancestorUserGroup.name}</>
-                  ) : (
+            ancestorUserGroups != null && ancestorUserGroups.length > 0 && (ancestorUserGroups.map((ancestorUserGroup: IUserGroupHasId) => (
+              <li
+                key={ancestorUserGroup._id}
+                className={`breadcrumb-item ${ancestorUserGroup._id === currentUserGroupId ? 'active' : ''}`}
+                aria-current="page"
+              >
+                { ancestorUserGroup._id === currentUserGroupId ? (
+                  <span>{ancestorUserGroup.name}</span>
+                ) : (
+                  <Link href={`/admin/user-group-detail/${ancestorUserGroup._id}`} prefetch={false}>
                     <a href={`/admin/user-group-detail/${ancestorUserGroup._id}`}>{ancestorUserGroup.name}</a>
-                  )}
-                </li>
-              ))
+                  </Link>
+                ) }
+              </li>
+            ))
             )
           }
         </ol>
@@ -347,8 +363,7 @@ const UserGroupDetailPage = (props: Props): JSX.Element => {
       </div>
       <h2 className="admin-setting-header mt-4">{t('user_group_management.user_list')}</h2>
       <UserGroupUserTable
-        userGroup={currentUserGroup}
-        userGroupRelations={childUserGroupRelations}
+        userGroupRelations={userGroupRelations}
         onClickPlusBtn={() => setIsUserGroupUserModalShown(true)}
         onClickRemoveUserBtn={removeUserByUsername}
       />
