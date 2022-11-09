@@ -2,13 +2,14 @@
 $grw-sidebar-content-header-height: 58px;
 $grw-sidebar-content-footer-height: 50px;
 $grw-pagetree-item-padding-left: 10px;
+$grw-pagetree-item-container-height: 40px;
 
 .grw-pagetree {
 
   .grw-pagetree-item-skelton {
     width: 100%;
-    height: 40px;
-    padding: 12px $grw-pagetree-item-padding-left;
+    height: $grw-pagetree-item-container-height;
+    padding: (($grw-pagetree-item-container-height - 16px) / 2) $grw-pagetree-item-padding-left;
   }
 
   .grw-pagetree-item-skelton-children {
@@ -67,7 +68,7 @@ $grw-pagetree-item-padding-left: 10px;
     .grw-pagetree-item-container {
       .grw-triangle-container {
         min-width: 35px;
-        height: 40px;
+        height: $grw-pagetree-item-container-height;
       }
     }
   }
