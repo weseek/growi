@@ -4,7 +4,7 @@ import { useTranslation } from 'next-i18next';
 import { DropdownItem } from 'reactstrap';
 
 import {
-  toggleBookmark, toggleLike, toggleSubscribe, updateContentWidth,
+  toggleBookmark, toggleLike, toggleSubscribe,
 } from '~/client/services/page-operation';
 import { toastError } from '~/client/util/apiNotification';
 import {
@@ -14,7 +14,7 @@ import { useIsContainerFluid, useIsGuestUser } from '~/stores/context';
 import { IPageForPageDuplicateModal } from '~/stores/modal';
 
 import { useSWRBookmarkInfo } from '../../stores/bookmark';
-import { useSWRxCurrentPage, useSWRxPageInfo } from '../../stores/page';
+import { useSWRxPageInfo } from '../../stores/page';
 import { useSWRxUsersList } from '../../stores/user';
 import BookmarkButtons from '../BookmarkButtons';
 import {
@@ -70,6 +70,7 @@ type CommonProps = {
   onClickDuplicateMenuItem?: (pageToDuplicate: IPageForPageDuplicateModal) => void,
   onClickRenameMenuItem?: (pageToRename: IPageToRenameWithMeta) => void,
   onClickDeleteMenuItem?: (pageToDelete: IPageToDeleteWithMeta) => void,
+  onClickSwitchContentWidth?: (pageId: string, value: boolean) => void,
 }
 
 type SubNavButtonsSubstanceProps = CommonProps & {
@@ -86,13 +87,12 @@ const SubNavButtonsSubstance = (props: SubNavButtonsSubstanceProps): JSX.Element
     pageInfo,
     pageId, revisionId, path, shareLinkId, expandContentWidth,
     isCompactMode, disableSeenUserInfoPopover, showPageControlDropdown, forceHideMenuItems, additionalMenuItemRenderer,
-    onClickDuplicateMenuItem, onClickRenameMenuItem, onClickDeleteMenuItem,
+    onClickDuplicateMenuItem, onClickRenameMenuItem, onClickDeleteMenuItem, onClickSwitchContentWidth,
   } = props;
 
   const { data: isGuestUser } = useIsGuestUser();
 
   const { mutate: mutatePageInfo } = useSWRxPageInfo(pageId, shareLinkId);
-  const { mutate: mutateCrrentPage } = useSWRxCurrentPage();
 
   const { data: bookmarkInfo, mutate: mutateBookmarkInfo } = useSWRBookmarkInfo(pageId);
 
@@ -185,20 +185,19 @@ const SubNavButtonsSubstance = (props: SubNavButtonsSubstanceProps): JSX.Element
   }, [onClickDeleteMenuItem, pageId, pageInfo, path, revisionId]);
 
   const switchContentWidthClickHandler = useCallback(async(newValue: boolean) => {
-    if (isGuestUser == null || isGuestUser) {
+    if (onClickSwitchContentWidth == null || isGuestUser == null || isGuestUser) {
       return;
     }
     if (!isIPageInfoForEntity(pageInfo)) {
       return;
     }
     try {
-      await updateContentWidth(pageId, newValue);
-      mutateCrrentPage();
+      onClickSwitchContentWidth(pageId, newValue);
     }
     catch (err) {
       toastError(err);
     }
-  }, [isGuestUser, mutateCrrentPage, pageId, pageInfo]);
+  }, [isGuestUser, onClickSwitchContentWidth, pageId, pageInfo]);
 
   const additionalMenuItemOnTopRenderer = useMemo(() => {
     if (!isIPageInfoForEntity(pageInfo)) {
@@ -282,7 +281,8 @@ export type SubNavButtonsProps = CommonProps & {
 
 export const SubNavButtons = (props: SubNavButtonsProps): JSX.Element => {
   const {
-    pageId, revisionId, path, shareLinkId, expandContentWidth, onClickDuplicateMenuItem, onClickRenameMenuItem, onClickDeleteMenuItem,
+    pageId, revisionId, path, shareLinkId, expandContentWidth,
+    onClickDuplicateMenuItem, onClickRenameMenuItem, onClickDeleteMenuItem, onClickSwitchContentWidth,
   } = props;
 
   const { data: pageInfo, error } = useSWRxPageInfo(pageId ?? null, shareLinkId);
@@ -305,6 +305,7 @@ export const SubNavButtons = (props: SubNavButtonsProps): JSX.Element => {
       onClickDuplicateMenuItem={onClickDuplicateMenuItem}
       onClickRenameMenuItem={onClickRenameMenuItem}
       onClickDeleteMenuItem={onClickDeleteMenuItem}
+      onClickSwitchContentWidth={onClickSwitchContentWidth}
       expandContentWidth={expandContentWidth}
     />
   );

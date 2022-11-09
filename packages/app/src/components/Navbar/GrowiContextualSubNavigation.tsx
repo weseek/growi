@@ -6,7 +6,7 @@ import dynamic from 'next/dynamic';
 import { useRouter } from 'next/router';
 import { DropdownItem } from 'reactstrap';
 
-import { exportAsMarkdown } from '~/client/services/page-operation';
+import { exportAsMarkdown, updateContentWidth } from '~/client/services/page-operation';
 import { toastSuccess, toastError } from '~/client/util/apiNotification';
 import { apiPost } from '~/client/util/apiv1-client';
 import {
@@ -313,6 +313,11 @@ const GrowiContextualSubNavigation = (props: GrowiContextualSubNavigationProps):
     openDeleteModal([pageWithMeta], { onDeleted: deletedHandler });
   }, [openDeleteModal, reload, router]);
 
+  const switchContentWidthHandler = useCallback(async(pageId: string, value: boolean) => {
+    await updateContentWidth(pageId, value);
+    mutateCurrentPage();
+  }, [mutateCurrentPage]);
+
   const templateMenuItemClickHandler = useCallback(() => {
     setIsPageTempleteModalShown(true);
   }, []);
@@ -363,6 +368,7 @@ const GrowiContextualSubNavigation = (props: GrowiContextualSubNavigationProps):
                     onClickDuplicateMenuItem={duplicateItemClickedHandler}
                     onClickRenameMenuItem={renameItemClickedHandler}
                     onClickDeleteMenuItem={deleteItemClickedHandler}
+                    onClickSwitchContentWidth={switchContentWidthHandler}
                   />
                 ) }
               </div>
@@ -403,7 +409,10 @@ const GrowiContextualSubNavigation = (props: GrowiContextualSubNavigationProps):
       </>
     );
   // eslint-disable-next-line max-len
-  }, [isCompactMode, isViewMode, pageId, revisionId, shareLinkId, path, currentPathname, isSharedUser, isAbleToShowPageManagement, duplicateItemClickedHandler, renameItemClickedHandler, deleteItemClickedHandler, isAbleToShowPageEditorModeManager, isGuestUser, editorMode, isAbleToShowPageAuthors, currentPage, currentUser, isPageTemplateModalShown, isLinkSharingDisabled, templateMenuItemClickHandler, mutateEditorMode]);
+  }, [isCompactMode, isViewMode, pageId, revisionId, shareLinkId, path, currentPathname, isSharedUser, isAbleToShowPageManagement,
+      duplicateItemClickedHandler, renameItemClickedHandler, deleteItemClickedHandler, isAbleToShowPageEditorModeManager, isGuestUser,
+      editorMode, isAbleToShowPageAuthors, currentPage, currentUser, isPageTemplateModalShown, isLinkSharingDisabled, templateMenuItemClickHandler,
+      mutateEditorMode, switchContentWidthHandler]);
 
 
   const pagePath = isNotFound
