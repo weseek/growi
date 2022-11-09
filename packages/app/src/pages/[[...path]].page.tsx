@@ -56,7 +56,7 @@ import DisplaySwitcher from '../components/Page/DisplaySwitcher';
 // import { serializeUserSecurely } from '../server/models/serializers/user-serializer';
 // import PageStatusAlert from '../client/js/components/PageStatusAlert';
 import {
-  useCurrentUser, useCurrentPagePath,
+  useCurrentUser,
   useIsLatestRevision,
   useIsForbidden, useIsNotFound, useIsSharedUser,
   useIsEnabledStaleNotification, useIsIdenticalPath,
@@ -240,7 +240,6 @@ const GrowiPage: NextPage<Props> = (props: Props) => {
 
   useCurrentPageId(pageId ?? null);
   // useIsNotCreatable(props.isForbidden || !isCreatablePage(pagePath)); // TODO: need to include props.isIdentical
-  useCurrentPagePath(pagePath);
   useCurrentPathname(props.currentPathname);
 
   const { data: currentPage } = useSWRxCurrentPage(undefined, pageWithMeta?.data ?? null); // store initial data

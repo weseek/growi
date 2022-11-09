@@ -17,7 +17,7 @@ import validator from 'validator';
 
 import Linker from '~/client/models/Linker';
 import { apiv3Get } from '~/client/util/apiv3-client';
-import { useCurrentPagePath } from '~/stores/context';
+import { useCurrentPagePath } from '~/stores/page';
 
 import PagePreviewIcon from '../Icons/PagePreviewIcon';
 import SearchTypeahead from '../SearchTypeahead';

@@ -248,7 +248,7 @@ const PageListItemLSubstance: ForwardRefRenderFunction<ISelectable, Props> = (pr
                   <div dangerouslySetInnerHTML={{ __html: elasticSearchResult.snippet }}></div>
                 ) }
                 { revisionShortBody != null && (
-                  <div>{revisionShortBody}</div>
+                  <div data-testid="revision-short-body-in-page-list-item-L">{revisionShortBody}</div>
                 ) }
                 {
                   !canRenderESSnippet && !canRenderRevisionSnippet && (

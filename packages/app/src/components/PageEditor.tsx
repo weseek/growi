@@ -15,14 +15,14 @@ import { apiGet, apiPostForm } from '~/client/util/apiv1-client';
 import { getOptionsToSave } from '~/client/util/editor';
 import { IEditorMethods } from '~/interfaces/editor-methods';
 import {
-  useCurrentPagePath, useCurrentPathname, useCurrentPageId,
+  useCurrentPathname, useCurrentPageId,
   useIsEditable, useIsIndentSizeForced, useIsUploadableFile, useIsUploadableImage, useEditingMarkdown,
 } from '~/stores/context';
 import {
   useCurrentIndentSize, useSWRxSlackChannels, useIsSlackEnabled, useIsTextlintEnabled, usePageTagsForEditors,
   useIsEnabledUnsavedWarning,
 } from '~/stores/editor';
-import { useSWRxCurrentPage } from '~/stores/page';
+import { useCurrentPagePath, useSWRxCurrentPage } from '~/stores/page';
 import { usePreviewOptions } from '~/stores/renderer';
 import {
   EditorMode,
