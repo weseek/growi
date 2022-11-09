@@ -25,3 +25,9 @@ export type IGlobalNotification = {
   slackChannelToSend: string,
   triggerEvents: TriggerEventType[],
 };
+
+export type IGlobalNotificationType = {
+  __t: NotifyType
+  _id: string
+  provider: any
+}

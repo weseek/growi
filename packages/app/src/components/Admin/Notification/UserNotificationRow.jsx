@@ -7,7 +7,7 @@ import AdminNotificationContainer from '~/client/services/AdminNotificationConta
 
 import { withUnstatedContainers } from '../../UnstatedUtils';
 
-import NotificationTypeIcon from './NotificationTypeIcon';
+import { GlobalNotificationTypeIcon } from './GlobalNotificationTypeIcon';
 
 class UserNotificationRow extends React.PureComponent {
 
@@ -22,7 +22,7 @@ class UserNotificationRow extends React.PureComponent {
             {notification.pathPattern}
           </td>
           <td className="px-4">
-            <NotificationTypeIcon notification={notification} />{notification.channel}
+            <GlobalNotificationTypeIcon notification={notification} />{notification.channel}
           </td>
           <td>
             <button type="submit" className="btn btn-outline-danger" onClick={() => { this.props.onClickDeleteBtn(notification._id) }}>{t('Delete')}</button>
