@@ -89,11 +89,6 @@ export const useSWRxPageInfo = (
     { fallbackData: initialData },
   );
 
-  // use mutate because fallbackData does not work
-  if (initialData != null) {
-    swrResult.mutate(initialData);
-  }
-
   return swrResult;
 };
 
