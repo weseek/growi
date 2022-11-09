@@ -3,6 +3,7 @@ import { ComponentType } from 'react';
 
 import { Lsx } from '@growi/plugin-lsx/components';
 import * as lsxGrowiPlugin from '@growi/plugin-lsx/services/renderer';
+import * as drawioPlugin from '@growi/remark-drawio-plugin';
 import growiPlugin from '@growi/remark-growi-plugin';
 import { Schema as SanitizeOption } from 'hast-util-sanitize';
 import { SpecialComponents } from 'react-markdown/lib/ast-to-react';
@@ -435,6 +436,7 @@ export const generatePreviewOptions = (config: RendererConfig, pagePath: string)
     [plantuml.remarkPlugin, { baseUrl: config.plantumlUri }],
     xsvToTable.remarkPlugin,
     lsxGrowiPlugin.remarkPlugin,
+    drawioPlugin.remarkPlugin,
   );
   if (config.isEnabledLinebreaks) {
     remarkPlugins.push(breaks);
