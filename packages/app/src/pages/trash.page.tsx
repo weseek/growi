@@ -16,7 +16,7 @@ import {
 
 import { BasicLayout } from '../components/Layout/BasicLayout';
 import {
-  useCurrentUser, useCurrentPageId, useCurrentPagePath, useCurrentPathname,
+  useCurrentUser, useCurrentPageId, useCurrentPathname,
   useIsSearchServiceConfigured, useIsSearchServiceReachable,
   useIsSearchScopeChildrenAsDefault, useIsSearchPage, useShowPageLimitationXL, useIsGuestUser,
 } from '../stores/context';
@@ -52,7 +52,6 @@ const TrashPage: NextPage<CommonProps> = (props: Props) => {
   useIsSearchPage(false);
   useCurrentPageId(null);
   useCurrentPathname('/trash');
-  useCurrentPagePath('/trash');
 
   // UserUISettings
   usePreferDrawerModeByUser(props.userUISettings?.preferDrawerModeByUser ?? props.sidebarConfig.isSidebarDrawerMode);

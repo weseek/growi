@@ -11,9 +11,10 @@ import { useRipple } from 'react-use-ripple';
 import { UncontrolledTooltip } from 'reactstrap';
 
 import {
-  useIsSearchPage, useCurrentPagePath, useIsGuestUser, useIsSearchServiceConfigured, useAppTitle, useConfidential, useCustomizedLogoSrc,
+  useIsSearchPage, useIsGuestUser, useIsSearchServiceConfigured, useAppTitle, useConfidential, useCustomizedLogoSrc,
 } from '~/stores/context';
 import { usePageCreateModal } from '~/stores/modal';
+import { useCurrentPagePath } from '~/stores/page';
 import { useIsDeviceSmallerThanMd } from '~/stores/ui';
 
 import { HasChildren } from '../../interfaces/common';

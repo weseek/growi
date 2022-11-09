@@ -619,7 +619,6 @@
       "error_duplicate_pages_found": "同名のパスを持つページが複数見つかりました。リネームまたは削除してから再度実行してください"
     }
   },
-  "to_cloud_settings": "GROWI.cloud の管理画面へ",
   "login": {
     "Sign in error": "ログインエラー",
     "Registration successful": "登録完了",

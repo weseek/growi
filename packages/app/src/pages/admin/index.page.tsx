@@ -11,6 +11,7 @@ import { CrowiRequest } from '~/interfaces/crowi-request';
 import { CommonProps, useCustomTitle } from '~/pages/utils/commons';
 import PluginUtils from '~/server/plugins/plugin-utils';
 
+import { useGrowiCloudUri, useGrowiAppIdForGrowiCloud } from '../../stores/context';
 import { retrieveServerSideProps } from '../../utils/admin-page-util';
 
 const AdminLayout = dynamic(() => import('~/components/Layout/AdminLayout'), { ssr: false });
@@ -22,10 +23,16 @@ type Props = CommonProps & {
   npmVersion: string,
   yarnVersion: string,
   installedPlugins: any,
+  growiCloudUri: string,
+  growiAppIdForGrowiCloud: number,
 };
 
 
 const AdminHomePage: NextPage<Props> = (props) => {
+
+  useGrowiCloudUri(props.growiCloudUri);
+  useGrowiAppIdForGrowiCloud(props.growiAppIdForGrowiCloud);
+
   const { t } = useTranslation('admin');
 
   const title = t('wiki_management_home_page');
@@ -62,6 +69,8 @@ const injectServerConfigurations = async(context: GetServerSidePropsContext, pro
   props.npmVersion = crowi.runtimeVersions.versions.npm ? crowi.runtimeVersions.versions.npm.version.version : null;
   props.yarnVersion = crowi.runtimeVersions.versions.yarn ? crowi.runtimeVersions.versions.yarn.version.version : null;
   props.installedPlugins = pluginUtils.listPlugins();
+  props.growiCloudUri = await crowi.configManager.getConfig('crowi', 'app:growiCloudUri');
+  props.growiAppIdForGrowiCloud = await crowi.configManager.getConfig('crowi', 'app:growiAppIdForCloud');
 };
 
 

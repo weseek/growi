@@ -13,7 +13,7 @@ import { HtmlElementNode } from 'rehype-toc';
 import { toastSuccess, toastError } from '~/client/util/apiNotification';
 import { getOptionsToSave } from '~/client/util/editor';
 import {
-  useIsGuestUser, useCurrentPageTocNode, useShareLinkId,
+  useIsGuestUser, useShareLinkId,
 } from '~/stores/context';
 import {
   useSWRxSlackChannels, useIsSlackEnabled, usePageTagsForEditors, useIsEnabledUnsavedWarning,
@@ -21,6 +21,7 @@ import {
 import { useSWRxCurrentPage } from '~/stores/page';
 import { useViewOptions } from '~/stores/renderer';
 import {
+  useCurrentPageTocNode,
   useEditorMode, useIsMobile,
 } from '~/stores/ui';
 import loggerFactory from '~/utils/logger';

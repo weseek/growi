@@ -2,7 +2,8 @@ context('Access to page by guest', () => {
   const ssPrefix = 'access-to-page-by-guest-';
 
   it('/Sandbox is successfully loaded', () => {
-    cy.visit('/Sandbox', {  });
+    cy.visit('/Sandbox');
+    cy.getByTestid('grw-pagetree-item-container').should('be.visible');
     cy.collapseSidebar(true, true);
     cy.screenshot(`${ssPrefix}-sandbox`);
   });
