@@ -7,6 +7,7 @@ import rawAxios from 'axios';
 import FormData from 'form-data';
 import { Types as MongooseTypes } from 'mongoose';
 
+import { G2G_PROGRESS_STATUS } from '~/interfaces/g2g-transfer';
 import TransferKeyModel from '~/server/models/transfer-key';
 import { createBatchStream } from '~/server/util/batch-stream';
 import axios from '~/utils/axios';
@@ -30,16 +31,6 @@ export const uploadConfigKeys = [
   'gcs:referenceFileWithRelayMode',
   'gcs:useOnlyEnvVarsForSomeOptions',
 ];
-
-/**
-* G2G transfer progress status master
-*/
-const G2G_PROGRESS_STATUS = {
-  PENDING: 'PENDING',
-  IN_PROGRESS: 'IN_PROGRESS',
-  COMPLETED: 'COMPLETED',
-  ERROR: 'ERROR',
-} as const;
 
 /**
  * Data used for comparing to/from GROWI information

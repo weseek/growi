@@ -5,6 +5,7 @@ import { useTranslation } from 'react-i18next';
 import { useGenerateTransferKeyWithThrottle } from '~/client/services/g2g-transfer';
 import { toastError, toastSuccess } from '~/client/util/apiNotification';
 import { apiv3Get, apiv3Post } from '~/client/util/apiv3-client';
+import { G2G_PROGRESS_STATUS, type G2GProgress } from '~/interfaces/g2g-transfer';
 import { useAdminSocket } from '~/stores/socket-io';
 
 import CustomCopyToClipBoard from '../Common/CustomCopyToClipBoard';
@@ -15,43 +16,6 @@ import G2GDataTransferStatusIcon from './G2GDataTransferStatusIcon';
 const IGNORED_COLLECTION_NAMES = [
   'sessions', 'rlflx', 'activities', 'attachmentFiles.files', 'attachmentFiles.chunks',
 ];
-
-/**
- * Get the union type of all the values in an object, array or array-like type `T`
- * @see {@link https://github.com/piotrwitek/utility-types/blob/df2502ef504c4ba8bd9de81a45baef112b7921d0/src/mapped-types.ts#L589-L597}
- */
-type ValuesType<
-  T extends ReadonlyArray<any> | ArrayLike<any> | Record<any, any>
-> = T extends ReadonlyArray<any>
-  ? T[number]
-  : T extends ArrayLike<any>
-  ? T[number]
-  : T extends object
-  ? T[keyof T]
-  : never;
-
-/**
- * G2G transfer progress status master
- */
-const G2G_PROGRESS_STATUS = {
-  PENDING: 'PENDING',
-  IN_PROGRESS: 'IN_PROGRESS',
-  COMPLETED: 'COMPLETED',
-  ERROR: 'ERROR',
-} as const;
-
-/**
- * G2G transfer progress status
- */
-type G2GProgressStatus = ValuesType<typeof G2G_PROGRESS_STATUS>
-
-/**
- * G2G transfer progress
- */
-interface G2GProgress {
-  mongo: G2GProgressStatus;
-  attachments: G2GProgressStatus;
-}
 
 const G2GDataTransfer = (): JSX.Element => {
   const { data: socket } = useAdminSocket();
