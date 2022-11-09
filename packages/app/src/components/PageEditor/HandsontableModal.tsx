@@ -34,10 +34,10 @@ export type HandsontableModalProps = {
 
 export const HandsontableModal = (props: HandsontableModalProps): JSX.Element => {
 
-  const { data: handsontableModalData, close: closeHandsontableModal } = useHandsontableModal();
+  const { data: handsontableModalData, close: closeHandsontableModal, onSave } = useHandsontableModal();
   const isOpened = handsontableModalData?.isOpened ?? false;
-
-  // const { onSave, autoFormatMarkdownTable } = props;
+  const autoFormatMarkdownTable = handsontableModalData?.autoFormatMarkdownTable;
+  const editor = handsontableModalData?.editor;
 
   const defaultMarkdownTable = () => {
     return new MarkdownTable(
@@ -131,21 +131,21 @@ export const HandsontableModal = (props: HandsontableModalProps): JSX.Element =>
       return;
     }
 
-    // const markdownTableOption = () => {
-    //   return {
-    //     align: [].concat(markdownTable.options.align),
-    //     pad: autoFormatMarkdownTable !== false,
-    //   };
-    // };
+    const markdownTableOption = () => {
+      return {
+        align: [].concat(markdownTable.options.align),
+        pad: autoFormatMarkdownTable !== false,
+      };
+    };
 
-    // const markdownTable = new MarkdownTable(
-    //   hotTable.hotInstance.getData(),
-    //   markdownTableOption,
-    // ).normalizeCells();
+    const markdownTable = new MarkdownTable(
+      hotTable.hotInstance.getData(),
+      markdownTableOption,
+    ).normalizeCells();
 
-    // if (onSave != null) {
-    //   onSave(markdownTable);
-    // }
+    if (onSave != null) {
+      onSave(editor, markdownTable);
+    }
 
     cancel();
   };

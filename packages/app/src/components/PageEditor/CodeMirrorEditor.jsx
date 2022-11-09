@@ -1016,7 +1016,11 @@ class CodeMirrorEditor extends AbstractEditor {
         color={null}
         size="sm"
         title="Table"
-        onClick={() => this.props.onClickTableBtn(mtu.getMarkdownTable(this.getCodeMirror()))}
+        onClick={() => this.props.onClickTableBtn(
+          mtu.getMarkdownTable(this.getCodeMirror()),
+          this.getCodeMirror(),
+          this.props.editorSettings.autoFormatMarkdownTable,
+        )}
       >
         <EditorIcon icon="Table" />
       </Button>,
@@ -1167,9 +1171,10 @@ const CodeMirrorEditorFc = React.forwardRef((props, ref) => {
     openDrawioModal(drawioMxFile);
   }, [openDrawioModal]);
 
-  const openTableModalHandler = useCallback((table) => {
-    openHandsontableModal(table);
-  }, [openHandsontableModal]);
+  const openTableModalHandler = (table, editor, autoFormatMarkdownTable) => {
+    console.log(table, editor, autoFormatMarkdownTable);
+    openHandsontableModal(table, editor, autoFormatMarkdownTable);
+  };
 
   return <CodeMirrorEditor ref={ref} onClickDrawioBtn={openDrawioModalHandler} onClickTableBtn={openTableModalHandler} {...props} />;
 });

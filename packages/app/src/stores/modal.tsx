@@ -1,5 +1,7 @@
 import { SWRResponse } from 'swr';
 
+import MarkdownTable from '~/client/models/MarkdownTable';
+import mtu from '~/components/PageEditor/MarkdownTableUtil';
 import { IPageToDeleteWithMeta, IPageToRenameWithMeta } from '~/interfaces/page';
 import {
   OnDuplicatedFunction, OnRenamedFunction, OnDeletedFunction, OnPutBackedFunction,
@@ -7,7 +9,6 @@ import {
 import { IUserGroupHasId } from '~/interfaces/user';
 
 import { useStaticSWR } from './use-static-swr';
-
 
 /*
 * PageCreateModal
@@ -481,24 +482,45 @@ export const useDrawioModal = (status?: DrawioModalStatus): SWRResponse<DrawioMo
 */
 type HandsontableModalStatus = {
   isOpened: boolean,
-  table: string,
+  table: MarkdownTable,
+  editor: any,
+  autoFormatMarkdownTable: boolean,
 }
 
 type HandsontableModalStatusUtils = {
-  open(table: string): Promise<HandsontableModalStatus | undefined>
+  open(table: MarkdownTable, editor: any, autoFormatMarkdownTable: boolean): Promise<HandsontableModalStatus | undefined>
   close(): Promise<HandsontableModalStatus | undefined>
+  onSave(editor:any, tables: MarkdownTable): void
+  // updateEditor(editor: any): Promise<HandsontableModalStatus | undefined>
+  // updateAutoFormatMarkdownTable(autoFormatMarkdownTable: boolean): Promise<HandsontableModalStatus | undefined>
 }
 
 export const useHandsontableModal = (status?: HandsontableModalStatus): SWRResponse<HandsontableModalStatus, Error> & HandsontableModalStatusUtils => {
-  const initialData: HandsontableModalStatus = { isOpened: false, table: '' };
+  const initialData: HandsontableModalStatus = {
+    isOpened: false, table: new MarkdownTable(), editor: '', autoFormatMarkdownTable: false,
+  };
   const swrResponse = useStaticSWR<HandsontableModalStatus, Error>('handsontableModalStatus', status, { fallbackData: initialData });
 
-  const open = (table: string) => swrResponse.mutate({ isOpened: true, table });
-  const close = () => swrResponse.mutate({ isOpened: false, table: '' });
+  const open = (table: MarkdownTable, editor: any, autoFormatMarkdownTable: boolean) => swrResponse.mutate({
+    isOpened: true, table, editor, autoFormatMarkdownTable,
+  });
+  const close = () => swrResponse.mutate({
+    isOpened: false, table: new MarkdownTable(), editor: '', autoFormatMarkdownTable: false,
+  });
+  const onSave = (editor: any, tables: MarkdownTable) => mtu.replaceFocusedMarkdownTableWithEditor(editor, tables);
+  // const updateEditor = (editor: any) => swrResponse.mutate({
+  //   isOpened: true, table: new MarkdownTable(), editor, autoFormatMarkdownTable: false,
+  // });
+  // const updateAutoFormatMarkdownTable = (autoFormatMarkdownTable: boolean) => swrResponse.mutate({
+  //   isOpened: true, table: new MarkdownTable(), editor: '', autoFormatMarkdownTable,
+  // });
 
   return {
     ...swrResponse,
     open,
     close,
+    onSave,
+    // updateEditor,
+    // updateAutoFormatMarkdownTable,
   };
 };
