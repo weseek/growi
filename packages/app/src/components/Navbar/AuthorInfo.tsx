@@ -66,7 +66,7 @@ export const AuthorInfo = (props: AuthorInfoProps): JSX.Element => {
       </div>
       <div>
         <div>{infoLabelForSubNav} {userLabel}</div>
-        <div className="text-muted text-date" data-hide-in-vrt>
+        <div className="text-muted text-date" data-hide-in-vrt={true}>
           {renderParsedDate()}
         </div>
       </div>
