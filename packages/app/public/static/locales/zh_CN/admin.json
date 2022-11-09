@@ -1008,7 +1008,7 @@
     "ADMIN_SEARCH_INDICES_REBUILD": "重建 Elasticsearch 索引"
   },
   "g2g": {
-    "transfer_success": "G2G transfer successfully completed",
+    "transfer_success": "Completed GROWI to GROWI transfer successfully",
     "error_upload_attachment": "Failed to upload attachment <code>%s</code>",
     "error_generate_growi_archive": "Failed to generate GROWI archive file",
     "error_send_growi_archive": "Failed to send GROWI archive file to new GROWI"
