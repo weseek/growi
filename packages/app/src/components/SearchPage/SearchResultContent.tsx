@@ -9,7 +9,7 @@ import { animateScroll } from 'react-scroll';
 import { DropdownItem } from 'reactstrap';
 
 
-import { exportAsMarkdown } from '~/client/services/page-operation';
+import { exportAsMarkdown, updateContentWidth } from '~/client/services/page-operation';
 import { toastSuccess } from '~/client/util/apiNotification';
 import { IPageToDeleteWithMeta, IPageToRenameWithMeta } from '~/interfaces/page';
 import { IPageWithSearchMeta } from '~/interfaces/search';
@@ -157,6 +157,8 @@ export const SearchResultContent: FC<Props> = (props: Props) => {
   const { data: rendererOptions } = useSearchResultOptions(pageWithMeta.data.path, highlightKeywords);
   const { data: currentUser } = useCurrentUser();
 
+  const [isExpandContentWidth, setIsExpandContentWidth] = useState(page.expandContentWidth);
+
   const duplicateItemClickedHandler = useCallback(async(pageToDuplicate) => {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const duplicatedHandler: OnDuplicatedFunction = (fromPath, toPath) => {
@@ -201,6 +203,11 @@ export const SearchResultContent: FC<Props> = (props: Props) => {
     openDeleteModal([pageToDelete], { onDeleted: onDeletedHandler });
   }, [onDeletedHandler, openDeleteModal]);
 
+  const switchContentWidthHandler = useCallback(async(pageId: string, value: boolean) => {
+    await updateContentWidth(pageId, value);
+    setIsExpandContentWidth(value);
+  }, []);
+
   const RightComponent = useCallback(() => {
     if (page == null) {
       return <></>;
@@ -214,6 +221,7 @@ export const SearchResultContent: FC<Props> = (props: Props) => {
           pageId={page._id}
           revisionId={revisionId}
           path={page.path}
+          expandContentWidth={isExpandContentWidth}
           showPageControlDropdown={showPageControlDropdown}
           forceHideMenuItems={forceHideMenuItems}
           additionalMenuItemRenderer={props => <AdditionalMenuItems {...props} pageId={page._id} revisionId={revisionId} />}
@@ -221,10 +229,12 @@ export const SearchResultContent: FC<Props> = (props: Props) => {
           onClickDuplicateMenuItem={duplicateItemClickedHandler}
           onClickRenameMenuItem={renameItemClickedHandler}
           onClickDeleteMenuItem={deleteItemClickedHandler}
+          onClickSwitchContentWidth={switchContentWidthHandler}
         />
       </div>
     );
-  }, [page, showPageControlDropdown, forceHideMenuItems, duplicateItemClickedHandler, renameItemClickedHandler, deleteItemClickedHandler]);
+  }, [page, isExpandContentWidth, showPageControlDropdown, forceHideMenuItems,
+      duplicateItemClickedHandler, renameItemClickedHandler, deleteItemClickedHandler, switchContentWidthHandler]);
 
   // return if page or growiRenderer is null
   if (page == null || rendererOptions == null) return <></>;
