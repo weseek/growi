@@ -28,8 +28,15 @@ export type IOptionsForUpdate = {
   overwriteScopesOfDescendants?: boolean,
 };
 
+export type IOptionsForCreate = {
+  format?: string,
+  grantUserGroupId?: ObjectIdLike,
+  grant?: PageGrant,
+  overwriteScopesOfDescendants?: boolean,
+};
+
 export type IOptionsForResuming = {
   updateMetadata?: boolean,
   createRedirectPage?: boolean,
   prevDescendantCount?: number,
-} & IOptionsForUpdate;
+} & IOptionsForUpdate & IOptionsForCreate;
