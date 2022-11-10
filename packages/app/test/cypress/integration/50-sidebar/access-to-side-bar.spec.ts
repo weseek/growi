@@ -47,6 +47,9 @@ context('Access to sidebar', () => {
     cy.collapseSidebar(false);
     cy.getByTestid('grw-sidebar-nav-primary-custom-sidebar').click({force: true});
 
+    // eslint-disable-next-line cypress/no-unnecessary-waiting
+    cy.wait(3000);
+
     cy.get('.grw-sidebar-content-header').within(() => {
       cy.get('h3').should('have.text', 'Custom Sidebar');
     });
