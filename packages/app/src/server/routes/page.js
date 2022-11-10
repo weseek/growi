@@ -1017,7 +1017,7 @@ module.exports = function(crowi, app) {
 
     const previousRevision = await Revision.findById(revisionId);
     try {
-      page = await Page.updatePage(page, pageBody, previousRevision.body, req.user, options);
+      page = await crowi.pageService.updatePage(page, pageBody, previousRevision.body, req.user, options);
     }
     catch (err) {
       logger.error('error on _api/pages.update', err);
