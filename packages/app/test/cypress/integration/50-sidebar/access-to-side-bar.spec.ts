@@ -44,7 +44,7 @@ context('Access to sidebar', () => {
   it('Successfully create a custom sidebar page', () => {
     cy.visit('/');
 
-    cy.getByTestid('grw-sidebar-nav-primary-custom-sidebar').click({force: true});
+    cy.getByTestid('grw-sidebar-nav-primary-custom-sidebar').should('be.visible').click({force: true});
     cy.collapseSidebar(false);
 
     // eslint-disable-next-line cypress/no-unnecessary-waiting
