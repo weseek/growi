@@ -3554,15 +3554,25 @@ class PageService {
     // Emit create event
     this.pageEvent.emit('create', savedPage, user);
 
-    // TODO: Separate into sub operation https://redmine.weseek.co.jp/issues/108621
+    this.createSubOperation(savedPage, user, options);
+
+    return savedPage;
+  }
+
+  /**
+   * Used to run sub operation in create method
+   */
+  async createSubOperation(page, user, options): Promise<void> {
+    const Page = mongoose.model('Page') as unknown as PageModel;
+    const PageRedirect = mongoose.model('PageRedirect') as unknown as PageRedirectModel;
+
     // Update descendantCount
-    await this.updateDescendantCountOfAncestors(savedPage._id, 1, false);
+    await this.updateDescendantCountOfAncestors(page._id, 1, false);
 
     // Delete PageRedirect if exists
-    const PageRedirect = mongoose.model('PageRedirect') as unknown as PageRedirectModel;
     try {
-      await PageRedirect.deleteOne({ fromPath: path });
-      logger.warn(`Deleted page redirect after creating a new page at path "${path}".`);
+      await PageRedirect.deleteOne({ fromPath: page.path });
+      logger.warn(`Deleted page redirect after creating a new page at path "${page.path}".`);
     }
     catch (err) {
       // no throw
@@ -3571,10 +3581,8 @@ class PageService {
 
     // update scopes for descendants
     if (options.overwriteScopesOfDescendants) {
-      Page.applyScopesToDescendantsAsyncronously(savedPage, user);
+      await Page.applyScopesToDescendantsAsyncronously(page, user);
     }
-
-    return savedPage;
   }
 
   /**
