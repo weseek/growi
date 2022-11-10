@@ -11,8 +11,8 @@ import loggerFactory from '~/utils/logger';
 
 import { withUnstatedContainers } from '../../UnstatedUtils';
 
-import { GlobalNotificationTypeIcon } from './GlobalNotificationTypeIcon';
 import NotificationDeleteModal from './NotificationDeleteModal';
+import { NotificationTypeIcon } from './NotificationTypeIcon';
 
 
 const logger = loggerFactory('growi:GolobalNotificationList');
@@ -129,7 +129,7 @@ class GlobalNotificationList extends React.Component {
                 </ul>
               </td>
               <td>
-                <GlobalNotificationTypeIcon notification={notification} />
+                <NotificationTypeIcon notification={notification} />
                 { notification.__t === 'mail' && notification.toEmail }
                 { notification.__t === 'slack' && notification.slackChannels }
               </td>

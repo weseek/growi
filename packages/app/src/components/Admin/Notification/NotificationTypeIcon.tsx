@@ -2,18 +2,20 @@ import React from 'react';
 
 import { UncontrolledTooltip } from 'reactstrap';
 
-import type { IGlobalNotificationType } from '~/client/interfaces/global-notification';
+import type { INotificationType } from '~/client/interfaces/notification';
 
 
-type GlobalNotificationTypeIconProps = {
+type NotificationTypeIconProps = {
   // supports 2 types:
   //   User trigger notification -> has 'provider: slack'
   //   Global notification -> has '__t: slack|mail'
-  notification: IGlobalNotificationType
+  notification: INotificationType
 }
 
-export const GlobalNotificationTypeIcon = (props: GlobalNotificationTypeIconProps): JSX.Element => {
+export const NotificationTypeIcon = (props: NotificationTypeIconProps): JSX.Element => {
   const { __t, _id, provider } = props.notification;
+
+  const type = __t != null && __t === 'mail' ? 'mail' : 'slack';
 
   // User trigger notification
   if (provider != null) {
@@ -21,9 +23,9 @@ export const GlobalNotificationTypeIcon = (props: GlobalNotificationTypeIconProp
   }
 
   // Global notification
-  const elemId = `notification-${__t}-${_id}`;
-  const className = __t === 'mail' ? 'icon-fw fa fa-envelope-o' : 'icon-fw fa fa-hashtag';
-  const toolChip = __t === 'mail' ? 'Mail' : 'Slack';
+  const elemId = `notification-${type}-${_id}`;
+  const className = type === 'mail' ? 'icon-fw fa fa-envelope-o' : 'icon-fw fa fa-hashtag';
+  const toolChip = type === 'mail' ? 'Mail' : 'Slack';
 
   return <><i id={elemId} className={className}></i><UncontrolledTooltip target={elemId}>{toolChip}</UncontrolledTooltip></>;
 };
