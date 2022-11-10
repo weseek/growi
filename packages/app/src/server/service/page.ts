@@ -3544,11 +3544,12 @@ class PageService {
     savedPage = await pushRevision(savedPage, newRevision, user);
     await savedPage.populateDataToShowRevision();
 
-    // Update descendantCount
-    await this.updateDescendantCountOfAncestors(savedPage._id, 1, false);
-
     // Emit create event
     this.pageEvent.emit('create', savedPage, user);
+
+    // TODO: Separate into sub operation https://redmine.weseek.co.jp/issues/108621
+    // Update descendantCount
+    await this.updateDescendantCountOfAncestors(savedPage._id, 1, false);
 
     // Delete PageRedirect if exists
     const PageRedirect = mongoose.model('PageRedirect') as unknown as PageRedirectModel;
