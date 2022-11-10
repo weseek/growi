@@ -53,17 +53,15 @@ describe('Page', () => {
   const upodPageIdPublic6 = new mongoose.Types.ObjectId();
 
   const updatePage = async(page, newRevisionBody, oldRevisionBody, user, options = {}) => {
-    const mockedApplyScopesToDescendantsAsyncronously = jest.spyOn(Page, 'applyScopesToDescendantsAsyncronously').mockReturnValue(null);
+    const mockedUpdatePageSubOperation = jest.spyOn(pageService, 'updatePageSubOperation').mockReturnValue(null);
 
     const savedPage = await pageService.updatePage(page, newRevisionBody, oldRevisionBody, user, options);
 
-    const argsForApplyScopesToDescendantsAsyncronously = mockedApplyScopesToDescendantsAsyncronously.mock.calls[0];
+    const argsForUpdatePageSubOperation = mockedUpdatePageSubOperation.mock.calls[0];
 
-    mockedApplyScopesToDescendantsAsyncronously.mockRestore();
+    mockedUpdatePageSubOperation.mockRestore();
 
-    if (options.overwriteScopesOfDescendants) {
-      await Page.applyScopesToDescendantsAsyncronously(...argsForApplyScopesToDescendantsAsyncronously);
-    }
+    await pageService.updatePageSubOperation(...argsForUpdatePageSubOperation);
 
     return savedPage;
   };
@@ -808,7 +806,7 @@ describe('Page', () => {
         expect(page2).toBeTruthy();
 
         const options = { grant: Page.GRANT_RESTRICTED, grantUserGroupId: null };
-        await pageService.updatePage(page2, 'newRevisionBody', 'oldRevisionBody', dummyUser1, options);
+        await updatePage(page2, 'newRevisionBody', 'oldRevisionBody', dummyUser1, options);
 
         const _pageT = await Page.findOne({ path: pathT });
         const _page1 = await Page.findOne({ path: path1 });
@@ -829,7 +827,7 @@ describe('Page', () => {
         expect(page1).toBeTruthy();
         expect(page2).toBeTruthy();
 
-        await pageService.updatePage(page1, 'newRevisionBody', 'oldRevisionBody', dummyUser1, { grant: Page.GRANT_RESTRICTED });
+        await updatePage(page1, 'newRevisionBody', 'oldRevisionBody', dummyUser1, { grant: Page.GRANT_RESTRICTED });
 
         const _top = await Page.findOne({ path: pathT });
         const _page1 = await Page.findOne({ path: path1, grant: Page.GRANT_RESTRICTED });
@@ -856,7 +854,7 @@ describe('Page', () => {
         expect(page1).toBeTruthy();
         expect(count).toBe(1);
 
-        await pageService.updatePage(page1, 'newRevisionBody', 'oldRevisionBody', dummyUser1, { grant: Page.GRANT_RESTRICTED });
+        await updatePage(page1, 'newRevisionBody', 'oldRevisionBody', dummyUser1, { grant: Page.GRANT_RESTRICTED });
 
         const _pageT = await Page.findOne({ path: pathT });
         const _page1 = await Page.findOne({ path: path1, grant: Page.GRANT_RESTRICTED });
@@ -898,7 +896,7 @@ describe('Page', () => {
         expect(page1).toBeNull();
         expect(page2).toBeNull();
 
-        await pageService.updatePage(page3, 'newRevisionBody', 'oldRevisionBody', dummyUser1, { grant: Page.GRANT_PUBLIC });
+        await updatePage(page3, 'newRevisionBody', 'oldRevisionBody', dummyUser1, { grant: Page.GRANT_PUBLIC });
 
         const _pageT = await Page.findOne({ path: pathT });
         const _page1 = await Page.findOne({ path: path1, isEmpty: true });
@@ -925,7 +923,7 @@ describe('Page', () => {
         expect(page2).toBeTruthy();
         expect(page3).toBeTruthy();
 
-        await pageService.updatePage(page2, 'newRevisionBody', 'oldRevisionBody', dummyUser1, { grant: Page.GRANT_PUBLIC });
+        await updatePage(page2, 'newRevisionBody', 'oldRevisionBody', dummyUser1, { grant: Page.GRANT_PUBLIC });
 
         const _pageT = await Page.findOne({ path: pathT });
         const _page1 = await Page.findOne({ path: path1, isEmpty: true }); // should be replaced
