@@ -22,7 +22,6 @@ export const NotificationTypeIcon = (props: NotificationTypeIconProps): JSX.Elem
     // only slack type
   }
 
-  // Global notification
   const elemId = `notification-${type}-${_id}`;
   const className = type === 'mail' ? 'icon-fw fa fa-envelope-o' : 'icon-fw fa fa-hashtag';
   const toolChip = type === 'mail' ? 'Mail' : 'Slack';

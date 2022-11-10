@@ -1,8 +1,8 @@
 import type { NotifyType } from './global-notification';
 
 export type INotificationType = {
-  // Global notification -> has '__t: slack|mail'
   __t: NotifyType | undefined
   _id: string
+  // TOOD: Define the provider type
   provider: any
 }
