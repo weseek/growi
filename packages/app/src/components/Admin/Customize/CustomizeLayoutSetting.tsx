@@ -1,4 +1,6 @@
-import React, { useCallback, useState } from 'react';
+import React, {
+  useCallback, useEffect, useState,
+} from 'react';
 
 import { useTranslation } from 'next-i18next';
 
@@ -6,18 +8,32 @@ import { toastSuccess, toastError } from '~/client/util/apiNotification';
 import { useSWRxLayoutSetting } from '~/stores/admin/customize';
 import { useNextThemes } from '~/stores/use-next-themes';
 
+const useIsContainerFluid = () => {
+  const { data: layoutSetting, update: updateLayoutSetting } = useSWRxLayoutSetting();
+  const [isContainerFluid, setIsContainerFluid] = useState<boolean>();
+
+  useEffect(() => {
+    setIsContainerFluid(layoutSetting?.isContainerFluid);
+  }, [layoutSetting?.isContainerFluid]);
+
+  return {
+    isContainerFluid: isContainerFluid ?? false,
+    setIsContainerFluid,
+    updateLayoutSetting,
+  };
+};
+
 const CustomizeLayoutSetting = (): JSX.Element => {
   const { t } = useTranslation('admin');
 
   const { resolvedTheme } = useNextThemes();
-  const { data: layoutSetting, update: updateLayoutSetting } = useSWRxLayoutSetting();
 
-  const [isContainerFluid, setIsContainerFluid] = useState<boolean>(layoutSetting?.isContainerFluid ?? false);
+  const { isContainerFluid, setIsContainerFluid, updateLayoutSetting } = useIsContainerFluid();
   const [retrieveError, setRetrieveError] = useState<any>();
 
-  const onClickSubmit = useCallback(async() => {
+  const onClickSubmit = useCallback(() => {
     try {
-      await updateLayoutSetting({ isContainerFluid });
+      updateLayoutSetting({ isContainerFluid });
       toastSuccess(t('toaster.update_successed', { target: t('customize_settings.layout'), ns: 'commons' }));
     }
     catch (err) {
