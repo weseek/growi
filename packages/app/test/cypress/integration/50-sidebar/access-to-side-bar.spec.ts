@@ -45,7 +45,11 @@ context('Access to sidebar', () => {
     cy.visit('/');
 
     cy.collapseSidebar(false);
-    cy.getByTestid('grw-sidebar-nav-primary-custom-sidebar').click();
+    cy.getByTestid('grw-sidebar-nav-primary-custom-sidebar').click({force: true});
+
+    cy.get('.grw-sidebar-content-header').within(() => {
+      cy.get('h3').should('have.text', 'Custom Sidebar');
+    });
 
     cy.getByTestid('grw-contextual-navigation-sub').screenshot(`${ssPrefix}custom-sidebar-1-click-on-custom-sidebar`);
 
