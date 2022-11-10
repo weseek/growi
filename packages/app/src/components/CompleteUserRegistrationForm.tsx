@@ -67,9 +67,9 @@ const CompleteUserRegistrationForm: React.FC<Props> = (props: Props) => {
 
       setIsSuccessToRagistration(true);
 
-      if (registrationMode !== RegistrationMode.RESTRICTED) {
-        const { redirectTo } = res.data;
-        router.push(redirectTo ?? '/');
+      const { redirectTo } = res.data;
+      if (redirectTo != null) {
+        router.push(redirectTo);
       }
     }
     catch (err) {
@@ -77,7 +77,7 @@ const CompleteUserRegistrationForm: React.FC<Props> = (props: Props) => {
       setDisableForm(false);
       setIsSuccessToRagistration(false);
     }
-  }, [username, name, password, token, registrationMode, router]);
+  }, [username, name, password, token, router]);
 
   if (isSuccessToRagistration && registrationMode === RegistrationMode.RESTRICTED) {
     return <CompleteUserRegistration />;

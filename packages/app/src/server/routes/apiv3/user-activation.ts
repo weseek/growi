@@ -169,9 +169,7 @@ export const completeRegistrationAction = (crowi) => {
 
           // userData.password cann't be empty but, prepare redirect because password property in User Model is optional
           // https://github.com/weseek/growi/pull/6670
-          const redirectTo = userData.password ? req.session.redirectTo : '/me#password';
-
-          delete req.session.redirectTo;
+          const redirectTo = userData.password != null ? '/' : '/me#password';
           return res.apiv3({ redirectTo });
         });
       });
