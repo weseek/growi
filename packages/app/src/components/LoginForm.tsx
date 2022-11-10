@@ -289,12 +289,10 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
       setIsSuccessToRagistration(true);
       resetRegisterErrors();
 
-      if (registrationMode === RegistrationMode.RESTRICTED) {
-        return;
-      }
-
       const { redirectTo } = res.data;
-      router.push(redirectTo ?? '/');
+      if (redirectTo != null) {
+        router.push(redirectTo);
+      }
 
       if (isEmailAuthenticationEnabled) {
         setEmailForRegistrationOrder(emailForRegister);
@@ -308,9 +306,7 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
       }
     }
     return;
-  }, [
-    usernameForRegister, nameForRegister, emailForRegister, passwordForRegister, resetRegisterErrors, router, isEmailAuthenticationEnabled, registrationMode,
-  ]);
+  }, [usernameForRegister, nameForRegister, emailForRegister, passwordForRegister, resetRegisterErrors, router, isEmailAuthenticationEnabled]);
 
   const switchForm = useCallback(() => {
     setIsRegistering(!isRegistering);
