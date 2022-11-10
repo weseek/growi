@@ -58,7 +58,7 @@ const GlobalNavigation = () => {
 
 const SidebarContentsWrapper = () => {
   const StickyStretchableScroller = dynamic<StickyStretchableScrollerProps>(() => import('./StickyStretchableScroller')
-    .then(mod => mod.StickyStretchableScroller), { ssr: false });
+    .then(mod => mod.StickyStretchableScroller), { ssr: false, loading: () => <SidebarSkelton /> });
   const SidebarContents = dynamic(() => import('./Sidebar/SidebarContents')
     .then(mod => mod.SidebarContents), { ssr: false, loading: () => <SidebarSkelton /> });
   const { mutate: mutateSidebarScroller } = useSidebarScrollerRef();
