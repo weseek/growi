@@ -1,5 +1,5 @@
 export const NotifyType = {
-  Email: 'email',
+  Email: 'mail',
   SLACK: 'slack',
 } as const;
 
