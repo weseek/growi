@@ -46,7 +46,7 @@ context('Access to page', () => {
       cy.getByTestid('editor-button').should('be.visible').click();
     })
     cy.getByTestid('navbar-editor', { timeout: 30000 }).should('be.visible');
-    cy.screenshot(`${ssPrefix}-sandbox-edit-page`);
+    cy.screenshot(`${ssPrefix}-Sandbox-edit-page`);
   })
 
   it('/user/admin is successfully loaded', () => {
