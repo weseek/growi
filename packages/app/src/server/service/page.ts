@@ -3486,7 +3486,7 @@ class PageService {
     return true;
   }
 
-  async create(path: string, body: string, user, options: PageCreateOptions = {}): Promise<PageDocument> {
+  async create(path: string, body: string, user, options: IOptionsForCreate = {}): Promise<PageDocument> {
     const Page = mongoose.model('Page') as unknown as PageModel;
 
     // Switch method
@@ -3547,7 +3547,7 @@ class PageService {
     // Emit create event
     this.pageEvent.emit('create', savedPage, user);
 
-    // Directly run sub operation for now since it might be complex to handle main operation for updating pages -- Taichi Masuyama 2022.11.08
+    // Directly run sub operation for now since it might be complex to handle main operation for creating pages -- Taichi Masuyama 2022.11.08
     let pageOp;
     try {
       pageOp = await PageOperation.create({
