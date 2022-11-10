@@ -21,7 +21,11 @@ import { useCurrentPageId, useCurrentPathname } from './context';
 const { isPermalink: _isPermalink } = pagePathUtils;
 
 
-export const useSWRxPage = (pageId?: string|null, shareLinkId?: string): SWRResponse<IPagePopulatedToShowRevision|null, Error> => {
+export const useSWRxPage = (
+    pageId?: string|null,
+    shareLinkId?: string,
+    initialData?: IPagePopulatedToShowRevision|null,
+): SWRResponse<IPagePopulatedToShowRevision|null, Error> => {
   return useSWR<IPagePopulatedToShowRevision|null, Error>(
     pageId != null ? ['/page', pageId, shareLinkId] : null,
     (endpoint, pageId, shareLinkId) => apiv3Get<{ page: IPagePopulatedToShowRevision }>(endpoint, { pageId, shareLinkId })
@@ -35,6 +39,7 @@ export const useSWRxPage = (pageId?: string|null, shareLinkId?: string): SWRResp
         }
         throw Error('failed to get page');
       }),
+    { fallbackData: initialData },
   );
 };
 
@@ -50,13 +55,7 @@ export const useSWRxCurrentPage = (
 ): SWRResponse<IPagePopulatedToShowRevision|null, Error> => {
   const { data: currentPageId } = useCurrentPageId();
 
-  const swrResult = useSWRxPage(currentPageId, shareLinkId);
-
-  // use mutate because fallbackData does not work
-  // see: https://github.com/weseek/growi/commit/5038473e8d6028c9c91310e374a7b5f48b921a15
-  if (initialData !== undefined) {
-    swrResult.mutate(initialData);
-  }
+  const swrResult = useSWRxPage(currentPageId, shareLinkId, initialData);
 
   return swrResult;
 };
@@ -95,11 +94,6 @@ export const useSWRxPageInfo = (
     (endpoint, pageId, shareLinkId) => apiv3Get(endpoint, { pageId, shareLinkId }).then(response => response.data),
     { fallbackData: initialData },
   );
-
-  // use mutate because fallbackData does not work
-  if (initialData != null) {
-    swrResult.mutate(initialData);
-  }
 
   return swrResult;
 };
