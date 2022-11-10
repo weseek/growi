@@ -33,6 +33,7 @@ export interface IPageOperation {
   options?: IOptionsForResuming,
   incForUpdatingDescendantCount?: number,
   unprocessableExpiryDate: Date,
+  exPage?: IPageForResuming,
 
   isProcessable(): boolean
 }
@@ -89,6 +90,7 @@ const schema = new Schema<PageOperationDocument, PageOperationModel>({
   fromPath: { type: String, required: true, index: true },
   toPath: { type: String, index: true },
   page: { type: pageSchemaForResuming, required: true },
+  exPage: { type: pageSchemaForResuming, required: false },
   user: { type: userSchemaForResuming, required: true },
   options: { type: optionsSchemaForResuming },
   incForUpdatingDescendantCount: { type: Number },
