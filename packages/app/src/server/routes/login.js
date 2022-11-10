@@ -16,35 +16,6 @@ module.exports = function(crowi, app) {
 
   const actions = {};
 
-  const registerSuccessHandler = function(req, res, userData) {
-    req.login(userData, (err) => {
-      if (err) {
-        logger.debug(err);
-      }
-      else {
-        // update lastLoginAt
-        userData.updateLastLoginAt(new Date(), (err) => {
-          if (err) {
-            logger.error(`updateLastLoginAt dumps error: ${err}`);
-          }
-        });
-      }
-
-
-      // userData.password cann't be empty but, prepare redirect because password property in User Model is optional
-      // https://github.com/weseek/growi/pull/6670
-      const redirectTo = userData.password ? req.session.redirectTo : '/me#password';
-
-      // remove session.redirectTo
-      delete req.session.redirectTo;
-
-      const parameters = { action: SupportedAction.ACTION_USER_REGISTRATION_SUCCESS };
-      activityEvent.emit('update', res.locals.activity._id, parameters);
-
-      return res.apiv3({ redirectTo });
-    });
-  };
-
   async function sendEmailToAllAdmins(userData) {
     // send mails to all admin users (derived from crowi) -- 2020.06.18 Yuki Takei
     const admins = await User.findAdmins();
@@ -70,6 +41,39 @@ module.exports = function(crowi, app) {
       .filter(result => result.status === 'rejected')
       .forEach(result => logger.error(result.reason));
   }
+
+  const registerSuccessHandler = async function(req, res, userData, registrationMode) {
+    const parameters = { action: SupportedAction.ACTION_USER_REGISTRATION_SUCCESS };
+    activityEvent.emit('update', res.locals.activity._id, parameters);
+
+    if (registrationMode === aclService.labels.SECURITY_REGISTRATION_MODE_RESTRICTED) {
+      await sendEmailToAllAdmins(userData);
+      return res.apiv3({});
+    }
+
+    req.login(userData, (err) => {
+      if (err) {
+        logger.debug(err);
+      }
+      else {
+        // update lastLoginAt
+        userData.updateLastLoginAt(new Date(), (err) => {
+          if (err) {
+            logger.error(`updateLastLoginAt dumps error: ${err}`);
+          }
+        });
+      }
+
+      // userData.password cann't be empty but, prepare redirect because password property in User Model is optional
+      // https://github.com/weseek/growi/pull/6670
+      const redirectTo = userData.password ? req.session.redirectTo : '/me#password';
+
+      // remove session.redirectTo
+      delete req.session.redirectTo;
+
+      return res.apiv3({ redirectTo });
+    });
+  };
 
   actions.error = function(req, res) {
     const reason = req.params.reason;
@@ -166,13 +170,7 @@ module.exports = function(crowi, app) {
           }
           return res.apiv3Err(errors, 405);
         }
-
-        if (registrationMode === aclService.labels.SECURITY_REGISTRATION_MODE_RESTRICTED) {
-          // send mail asynchronous
-          sendEmailToAllAdmins(userData);
-        }
-
-        return registerSuccessHandler(req, res, userData);
+        return registerSuccessHandler(req, res, userData, registrationMode);
       });
     });
   };

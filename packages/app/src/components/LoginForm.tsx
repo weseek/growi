@@ -9,7 +9,10 @@ import ReactCardFlip from 'react-card-flip';
 import { apiv3Post } from '~/client/util/apiv3-client';
 import { LoginErrorCode } from '~/interfaces/errors/login-error';
 import { IErrorV3 } from '~/interfaces/errors/v3-error';
+import { RegistrationMode } from '~/interfaces/registration-mode';
 import { toArrayIfNot } from '~/utils/array-utils';
+
+import { CompleteUserRegistration } from './CompleteUserRegistration';
 
 type LoginFormProps = {
   username?: string,
@@ -17,7 +20,7 @@ type LoginFormProps = {
   email?: string,
   isRegistrationEnabled: boolean,
   isEmailAuthenticationEnabled: boolean,
-  registrationMode?: string,
+  registrationMode: RegistrationMode,
   registrationWhiteList: string[],
   isPasswordResetEnabled: boolean,
   isLocalStrategySetup: boolean,
@@ -51,7 +54,8 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
   const [registerErrors, setRegisterErrors] = useState<IErrorV3[]>([]);
   // For UserActivation
   const [emailForRegistrationOrder, setEmailForRegistrationOrder] = useState('');
-  const [isSuccessToSendRegistrationOrderEmail, setIsSuccessToSendRegistrationOrderEmail] = useState(false);
+
+  const [isSuccessToRagistration, setIsSuccessToRagistration] = useState(false);
 
 
   useEffect(() => {
@@ -271,7 +275,7 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
   const handleRegisterFormSubmit = useCallback(async(e, requestPath) => {
     e.preventDefault();
     setEmailForRegistrationOrder('');
-    setIsSuccessToSendRegistrationOrderEmail(false);
+    setIsSuccessToRagistration(false);
 
     const registerForm = {
       username: usernameForRegister,
@@ -282,14 +286,17 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
     try {
       const res = await apiv3Post(requestPath, { registerForm });
 
+      setIsSuccessToRagistration(true);
       resetRegisterErrors();
 
       const { redirectTo } = res.data;
-      router.push(redirectTo ?? '/');
+      if (redirectTo != null) {
+        router.push(redirectTo);
+      }
 
       if (isEmailAuthenticationEnabled) {
         setEmailForRegistrationOrder(emailForRegister);
-        setIsSuccessToSendRegistrationOrderEmail(true);
+        return;
       }
     }
     catch (err) {
@@ -318,7 +325,7 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
 
     return (
       <React.Fragment>
-        {registrationMode === 'Restricted' && (
+        {registrationMode === RegistrationMode.RESTRICTED && (
           <p className="alert alert-warning">
             {t('page_register.notice.restricted')}
             <br />
@@ -346,7 +353,7 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
         }
 
         {
-          (isEmailAuthenticationEnabled && isSuccessToSendRegistrationOrderEmail) && (
+          (isEmailAuthenticationEnabled && isSuccessToRagistration) && (
             <p className="alert alert-success">
               <span>{t('message.successfully_send_email_auth', { email: emailForRegistrationOrder })}</span>
             </p>
@@ -476,10 +483,13 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
       </React.Fragment>
     );
   }, [
-    handleRegisterFormSubmit, isEmailAuthenticationEnabled, isMailerSetup,
-    isSuccessToSendRegistrationOrderEmail, props.email, props.name, props.username,
-    registerErrors, registrationMode, registrationWhiteList, emailForRegistrationOrder, switchForm, t,
+    t, isEmailAuthenticationEnabled, registrationMode, isMailerSetup, registerErrors, isSuccessToRagistration,
+    emailForRegistrationOrder, props.username, props.name, props.email, registrationWhiteList, switchForm, handleRegisterFormSubmit,
   ]);
+
+  if (registrationMode === RegistrationMode.RESTRICTED && isSuccessToRagistration && !isEmailAuthenticationEnabled) {
+    return <CompleteUserRegistration />;
+  }
 
   return (
     <div className="noLogin-dialog mx-auto" id="noLogin-dialog">
