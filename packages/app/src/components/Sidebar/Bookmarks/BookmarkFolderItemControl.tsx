@@ -9,10 +9,11 @@ import {
 type BookmarkFolderItemControlProps = {
   children?: React.ReactNode
   onClickRename: () => void
+  onClickDelete: () => void
 }
 const BookmarkFolderItemControl = (props: BookmarkFolderItemControlProps): JSX.Element => {
   const { t } = useTranslation();
-  const { children, onClickRename } = props;
+  const { children, onClickRename, onClickDelete } = props;
   const [isOpen, setIsOpen] = useState(false);
   return (
     <Dropdown isOpen={isOpen} toggle={() => setIsOpen(!isOpen)}>
@@ -36,7 +37,7 @@ const BookmarkFolderItemControl = (props: BookmarkFolderItemControlProps): JSX.E
         <DropdownItem divider/>
         <DropdownItem
           className='pt-2 grw-page-control-dropdown-item text-danger'
-          onClick={() => {}}
+          onClick={onClickDelete}
         >
           <i className="icon-fw icon-trash grw-page-control-dropdown-icon"></i>
           {t('Delete')}
