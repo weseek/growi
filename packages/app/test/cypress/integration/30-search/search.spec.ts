@@ -128,30 +128,27 @@ context('Search all pages', () => {
 
     // Duplicate page
     cy.getByTestid('open-page-duplicate-modal-btn').first().click({force: true});
-    cy.getByTestid('page-duplicate-modal').should('be.visible');
-    // for avoid mismatch by auto scrolling
-    cy.get('.search-result-content-body-container').scrollTo('top');
-    cy.screenshot(`${ssPrefix}6-duplicate-page`, {capture: 'viewport'});
+    cy.getByTestid('page-duplicate-modal').should('be.visible').within(() => {
+      cy.screenshot(`${ssPrefix}6-duplicate-page`, {capture: 'viewport'});
+    });
 
     // Close Modal
     cy.get('body').type('{esc}');
 
     // Move / Rename Page
     cy.getByTestid('open-page-move-rename-modal-btn').first().click({force: true});
-    cy.getByTestid('page-rename-modal').should('be.visible');
-    // for avoid mismatch by auto scrolling
-    cy.get('.search-result-content-body-container').scrollTo('top');
-    cy.screenshot(`${ssPrefix}7-move-rename-page`, {capture: 'viewport'});
+    cy.getByTestid('page-rename-modal').should('be.visible').within(() => {
+      cy.screenshot(`${ssPrefix}7-move-rename-page`, {capture: 'viewport'});
+    });
 
     // Close Modal
     cy.get('body').type('{esc}');
 
     // Delete page
     cy.getByTestid('open-page-delete-modal-btn').first().click({ force: true});
-    cy.getByTestid('page-delete-modal').should('be.visible');
-    // for avoid mismatch by auto scrolling
-    cy.get('.search-result-content-body-container').scrollTo('top');
-    cy.screenshot(`${ssPrefix}8-delete-page`, {capture: 'viewport'});
+    cy.getByTestid('page-delete-modal').should('be.visible').within(() => {
+      cy.screenshot(`${ssPrefix}8-delete-page`, {capture: 'viewport'});
+    });
   });
 
   it(`Search all pages by tag is successfully loaded `, () => {
