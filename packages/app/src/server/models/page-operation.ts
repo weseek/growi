@@ -72,6 +72,11 @@ const optionsSchemaForResuming = new Schema<IOptionsForResuming>({
   createRedirectPage: { type: Boolean },
   updateMetadata: { type: Boolean },
   prevDescendantCount: { type: Number },
+  grant: { type: Number },
+  grantUserGroupId: { type: ObjectId, ref: 'UserGroup' },
+  format: { type: String },
+  isSyncRevisionToHackmd: { type: Boolean },
+  overwriteScopesOfDescendants: { type: Boolean },
 }, { _id: false });
 
 const schema = new Schema<PageOperationDocument, PageOperationModel>({

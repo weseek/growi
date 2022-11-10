@@ -29,7 +29,7 @@ import { prepareDeleteConfigValuesForCalc } from '~/utils/page-delete-config';
 
 import { ObjectIdLike } from '../interfaces/mongoose-utils';
 import { PathAlreadyExistsError } from '../models/errors';
-import { IOptionsForUpdate } from '../models/interfaces/page-operation';
+import { IOptionsForCreate, IOptionsForUpdate } from '../models/interfaces/page-operation';
 import PageOperation, { PageOperationDocument } from '../models/page-operation';
 import { PageRedirectModel } from '../models/page-redirect';
 import { serializePageSecurely } from '../models/serializers/page-serializer';
@@ -3547,7 +3547,24 @@ class PageService {
     // Emit create event
     this.pageEvent.emit('create', savedPage, user);
 
-    this.createSubOperation(savedPage, user, options);
+    // Directly run sub operation for now since it might be complex to handle main operation for updating pages -- Taichi Masuyama 2022.11.08
+    let pageOp;
+    try {
+      pageOp = await PageOperation.create({
+        actionType: PageActionType.Create,
+        actionStage: PageActionStage.Sub,
+        page: savedPage,
+        user,
+        fromPath: path,
+        options,
+      });
+    }
+    catch (err) {
+      logger.error('Failed to create PageOperation document.', err);
+      throw err;
+    }
+
+    this.createSubOperation(savedPage, user, options, pageOp._id);
 
     return savedPage;
   }
@@ -3555,7 +3572,7 @@ class PageService {
   /**
    * Used to run sub operation in create method
    */
-  async createSubOperation(page, user, options): Promise<void> {
+  async createSubOperation(page, user, options: IOptionsForCreate, pageOpId: ObjectIdLike): Promise<void> {
     const Page = mongoose.model('Page') as unknown as PageModel;
     const PageRedirect = mongoose.model('PageRedirect') as unknown as PageRedirectModel;
 
@@ -3576,6 +3593,8 @@ class PageService {
     if (options.overwriteScopesOfDescendants) {
       await Page.applyScopesToDescendantsAsyncronously(page, user);
     }
+
+    await PageOperation.findByIdAndDelete(pageOpId);
   }
 
   /**
