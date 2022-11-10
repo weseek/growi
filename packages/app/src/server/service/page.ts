@@ -29,6 +29,7 @@ import { prepareDeleteConfigValuesForCalc } from '~/utils/page-delete-config';
 
 import { ObjectIdLike } from '../interfaces/mongoose-utils';
 import { PathAlreadyExistsError } from '../models/errors';
+import { IOptionsForUpdate } from '../models/interfaces/page-operation';
 import PageOperation, { PageOperationDocument } from '../models/page-operation';
 import { PageRedirectModel } from '../models/page-redirect';
 import { serializePageSecurely } from '../models/serializers/page-serializer';
@@ -3734,18 +3735,56 @@ class PageService {
     return this.updatePage(page, null, null, user, options);
   }
 
+  async updatePageSubOperation(page, user, exPage, options: IOptionsForUpdate, pageOpId: ObjectIdLike): Promise<void> {
+    const Page = mongoose.model('Page') as unknown as PageModel;
+
+    const currentPage = page;
+
+    const exParent = exPage.parent;
+    const wasOnTree = exPage.parent != null || isTopPage(exPage.path);
+    const shouldBeOnTree = currentPage.grant !== PageGrant.GRANT_RESTRICTED;
+    const isChildrenExist = await Page.count({ path: new RegExp(`^${escapeStringRegexp(addTrailingSlash(currentPage.path))}`), parent: { $ne: null } });
+
+    // 1. Update descendantCount
+    const shouldPlusDescCount = !wasOnTree && shouldBeOnTree;
+    const shouldMinusDescCount = wasOnTree && !shouldBeOnTree;
+    if (shouldPlusDescCount) {
+      await this.updateDescendantCountOfAncestors(currentPage._id, 1, false);
+      const newDescendantCount = await Page.recountDescendantCount(currentPage._id);
+      await Page.updateOne({ _id: currentPage._id }, { descendantCount: newDescendantCount });
+    }
+    else if (shouldMinusDescCount) {
+      // Update from parent. Parent is null if currentPage.grant is RESTRECTED.
+      if (currentPage.grant === PageGrant.GRANT_RESTRICTED) {
+        await this.updateDescendantCountOfAncestors(exParent, -1, true);
+      }
+    }
+
+    // 2. Delete unnecessary empty pages
+    const shouldRemoveLeafEmpPages = wasOnTree && !isChildrenExist;
+    if (shouldRemoveLeafEmpPages) {
+      await Page.removeLeafEmptyPagesRecursively(exParent);
+    }
+
+    // 3. Update scopes for descendants
+    if (options.overwriteScopesOfDescendants) {
+      await Page.applyScopesToDescendantsAsyncronously(currentPage, user);
+    }
+
+    await PageOperation.findByIdAndDelete(pageOpId);
+  }
+
   async updatePage(
       pageData,
       body: string | null,
       previousBody: string | null,
       user,
-      options: {grant?: PageGrant, grantUserGroupId?: ObjectIdLike, isSyncRevisionToHackmd?: boolean, overwriteScopesOfDescendants?: boolean} = {},
+      options: IOptionsForUpdate = {},
   ): Promise<PageDocument> {
     const Page = mongoose.model('Page') as unknown as PageModel;
     const Revision = mongoose.model('Revision') as any; // TODO: Typescriptize model
 
     const wasOnTree = pageData.parent != null || isTopPage(pageData.path);
-    const exParent = pageData.parent;
     const isV5Compatible = this.crowi.configManager.getConfig('crowi', 'app:isV5Compatible');
 
     const shouldUseV4Process = this.shouldUseUpdatePageV4(pageData.grant, isV5Compatible, wasOnTree);
@@ -3754,14 +3793,16 @@ class PageService {
       return this.updatePageV4(pageData, body, previousBody, user, options);
     }
 
-    const grant = options.grant ?? pageData.grant; // use the previous data if absence
-    const grantUserGroupId: undefined | ObjectIdLike = options.grantUserGroupId ?? pageData.grantedGroup?._id.toString();
-
-    const grantedUserIds = pageData.grantedUserIds || [user._id];
-    const shouldBeOnTree = grant !== PageGrant.GRANT_RESTRICTED;
-    const isChildrenExist = await Page.count({ path: new RegExp(`^${escapeStringRegexp(addTrailingSlash(pageData.path))}`), parent: { $ne: null } });
-
+    // Clone page document
+    const clonedPageData = Page.hydrate(pageData.toObject());
     const newPageData = pageData;
+
+    const grant = options.grant ?? clonedPageData.grant; // use the previous data if absence
+    const grantUserGroupId: undefined | ObjectIdLike = options.grantUserGroupId ?? clonedPageData.grantedGroup?._id.toString();
+
+    const grantedUserIds = clonedPageData.grantedUserIds || [user._id];
+    const shouldBeOnTree = grant !== PageGrant.GRANT_RESTRICTED;
+    const isChildrenExist = await Page.count({ path: new RegExp(`^${escapeStringRegexp(addTrailingSlash(clonedPageData.path))}`), parent: { $ne: null } });
 
     const { pageService, pageGrantService } = this.crowi;
 
@@ -3769,10 +3810,11 @@ class PageService {
       let isGrantNormalized = false;
       try {
         const shouldCheckDescendants = !options.overwriteScopesOfDescendants;
-        isGrantNormalized = await pageGrantService.isGrantNormalized(user, pageData.path, grant, grantedUserIds, grantUserGroupId, shouldCheckDescendants);
+        // eslint-disable-next-line max-len
+        isGrantNormalized = await pageGrantService.isGrantNormalized(user, clonedPageData.path, grant, grantedUserIds, grantUserGroupId, shouldCheckDescendants);
       }
       catch (err) {
-        logger.error(`Failed to validate grant of page at "${pageData.path}" of grant ${grant}:`, err);
+        logger.error(`Failed to validate grant of page at "${clonedPageData.path}" of grant ${grant}:`, err);
         throw err;
       }
       if (!isGrantNormalized) {
@@ -3781,7 +3823,7 @@ class PageService {
 
       if (options.overwriteScopesOfDescendants) {
         const updateGrantInfo = await pageGrantService.generateUpdateGrantInfoToOverwriteDescendants(user, grant, options.grantUserGroupId);
-        const canOverwriteDescendants = await pageGrantService.canOverwriteDescendants(pageData.path, user, updateGrantInfo);
+        const canOverwriteDescendants = await pageGrantService.canOverwriteDescendants(clonedPageData.path, user, updateGrantInfo);
 
         if (!canOverwriteDescendants) {
           throw Error('Cannot overwrite scopes of descendants.');
@@ -3796,9 +3838,9 @@ class PageService {
     else {
       if (wasOnTree && isChildrenExist) {
         // Update children's parent with new parent
-        const newParentForChildren = await Page.createEmptyPage(pageData.path, pageData.parent, pageData.descendantCount);
+        const newParentForChildren = await Page.createEmptyPage(clonedPageData.path, clonedPageData.parent, clonedPageData.descendantCount);
         await Page.updateMany(
-          { parent: pageData._id },
+          { parent: clonedPageData._id },
           { parent: newParentForChildren._id },
         );
       }
@@ -3831,7 +3873,7 @@ class PageService {
 
     // Update ex children's parent
     if (!wasOnTree && shouldBeOnTree) {
-      const emptyPageAtSamePath = await Page.findOne({ path: pageData.path, isEmpty: true }); // this page is necessary to find children
+      const emptyPageAtSamePath = await Page.findOne({ path: clonedPageData.path, isEmpty: true }); // this page is necessary to find children
 
       if (isChildrenExist) {
         if (emptyPageAtSamePath != null) {
@@ -3843,35 +3885,28 @@ class PageService {
         }
       }
 
-      await Page.findOneAndDelete({ path: pageData.path, isEmpty: true }); // delete here
+      await Page.findOneAndDelete({ path: clonedPageData.path, isEmpty: true }); // delete here
     }
 
-    // Sub operation
-    // update scopes for descendants
-    if (options.overwriteScopesOfDescendants) {
-      Page.applyScopesToDescendantsAsyncronously(savedPage, user);
+    // Directly run sub operation for now since it might be complex to handle main operation for updating pages -- Taichi Masuyama 2022.11.08
+    let pageOp;
+    try {
+      pageOp = await PageOperation.create({
+        actionType: PageActionType.Update,
+        actionStage: PageActionStage.Sub,
+        page: savedPage,
+        exPage: clonedPageData,
+        user,
+        fromPath: clonedPageData.path,
+        options,
+      });
+    }
+    catch (err) {
+      logger.error('Failed to create PageOperation document.', err);
+      throw err;
     }
 
-    // 1. Update descendantCount
-    const shouldPlusDescCount = !wasOnTree && shouldBeOnTree;
-    const shouldMinusDescCount = wasOnTree && !shouldBeOnTree;
-    if (shouldPlusDescCount) {
-      await pageService.updateDescendantCountOfAncestors(newPageData._id, 1, false);
-      const newDescendantCount = await Page.recountDescendantCount(newPageData._id);
-      await Page.updateOne({ _id: newPageData._id }, { descendantCount: newDescendantCount });
-    }
-    else if (shouldMinusDescCount) {
-      // Update from parent. Parent is null if newPageData.grant is RESTRECTED.
-      if (newPageData.grant === PageGrant.GRANT_RESTRICTED) {
-        await pageService.updateDescendantCountOfAncestors(exParent, -1, true);
-      }
-    }
-
-    // 2. Delete unnecessary empty pages
-    const shouldRemoveLeafEmpPages = wasOnTree && !isChildrenExist;
-    if (shouldRemoveLeafEmpPages) {
-      await Page.removeLeafEmptyPagesRecursively(exParent);
-    }
+    this.updatePageSubOperation(savedPage, user, clonedPageData, options, pageOp._id);
 
     return savedPage;
   }
