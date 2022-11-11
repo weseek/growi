@@ -3,7 +3,7 @@ import { Plugin } from 'unified';
 import { Node } from 'unist';
 import { visit } from 'unist-util-visit';
 
-const SUPPORTED_ATTRIBUTES = ['drawioUri'];
+const SUPPORTED_ATTRIBUTES = ['drawioEmbedUri'];
 
 type Lang = 'drawio';
 
@@ -11,36 +11,34 @@ function isDrawioBlock(lang: unknown): lang is Lang {
   return /^drawio$/.test(lang as string);
 }
 
-function rewriteNode(node: Node, lang: Lang) {
-  const contents = node.value as string;
-
-  // TODO: add node
-  console.log('contents', contents);
+export type DrawioRemarkPluginParams = {
+  drawioEmbedUri?: string,
 }
 
-export const remarkPlugin: Plugin = function() {
+function rewriteNode(node: Node, options: DrawioRemarkPluginParams) {
+  const data = node.data ?? (node.data = {});
+
+  node.type = 'paragraph';
+  node.children = [{ type: 'text', value: node.value }];
+  data.hName = 'drawio';
+  data.hProperties = { drawioEmbedUri: options.drawioEmbedUri };
+}
+
+export const remarkPlugin: Plugin<[DrawioRemarkPluginParams]> = function(options = {}) {
   return (tree) => {
     visit(tree, (node) => {
       if (node.type === 'code') {
         if (isDrawioBlock(node.lang)) {
-          rewriteNode(node, node.lang);
+          rewriteNode(node, options);
         }
       }
     });
   };
 };
 
-export type DrawioRehypePluginParams = {
-  drawioUri: string,
-}
-
-export const rehypePlugin: Plugin<[DrawioRehypePluginParams]> = (options) => {
-  // TODO: impl
-};
-
 export const sanitizeOption: SanitizeOption = {
   tagNames: ['drawio'],
   attributes: {
-    lsx: SUPPORTED_ATTRIBUTES,
+    drawio: SUPPORTED_ATTRIBUTES,
   },
 };

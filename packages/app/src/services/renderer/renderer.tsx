@@ -321,6 +321,7 @@ export const generateViewOptions = (
   remarkPlugins.push(
     math,
     [plantuml.remarkPlugin, { baseUrl: config.plantumlUri }],
+    [drawioPlugin.remarkPlugin, { drawioEmbedUri: config.drawioEmbedUri }],
     xsvToTable.remarkPlugin,
     lsxGrowiPlugin.remarkPlugin,
   );
@@ -334,6 +335,7 @@ export const generateViewOptions = (
     [lsxGrowiPlugin.rehypePlugin, { pagePath }],
     [sanitize, deepmerge(
       commonSanitizeOption,
+      drawioPlugin.sanitizeOption,
       lsxGrowiPlugin.sanitizeOption,
     )],
     katex,
@@ -398,6 +400,7 @@ export const generateSimpleViewOptions = (config: RendererConfig, pagePath: stri
   remarkPlugins.push(
     math,
     [plantuml.remarkPlugin, { baseUrl: config.plantumlUri }],
+    [drawioPlugin.remarkPlugin, { drawioEmbedUri: config.drawioEmbedUri }],
     xsvToTable.remarkPlugin,
     lsxGrowiPlugin.remarkPlugin,
   );
@@ -411,6 +414,7 @@ export const generateSimpleViewOptions = (config: RendererConfig, pagePath: stri
     [keywordHighlighter.rehypePlugin, { keywords: highlightKeywords }],
     [sanitize, deepmerge(
       commonSanitizeOption,
+      drawioPlugin.sanitizeOption,
       lsxGrowiPlugin.sanitizeOption,
     )],
     katex,
@@ -434,9 +438,9 @@ export const generatePreviewOptions = (config: RendererConfig, pagePath: string)
   remarkPlugins.push(
     math,
     [plantuml.remarkPlugin, { baseUrl: config.plantumlUri }],
+    [drawioPlugin.remarkPlugin, { drawioEmbedUri: config.drawioEmbedUri }],
     xsvToTable.remarkPlugin,
     lsxGrowiPlugin.remarkPlugin,
-    drawioPlugin.remarkPlugin,
   );
   if (config.isEnabledLinebreaks) {
     remarkPlugins.push(breaks);
@@ -449,6 +453,7 @@ export const generatePreviewOptions = (config: RendererConfig, pagePath: string)
     [sanitize, deepmerge(
       commonSanitizeOption,
       lsxGrowiPlugin.sanitizeOption,
+      drawioPlugin.sanitizeOption,
       addLineNumberAttribute.sanitizeOption,
     )],
     katex,
@@ -459,7 +464,7 @@ export const generatePreviewOptions = (config: RendererConfig, pagePath: string)
     components.lsx = props => <Lsx {...props} />;
   }
 
-  verifySanitizePlugin(options, false);
+  // verifySanitizePlugin(options, false);
   return options;
 };
 
