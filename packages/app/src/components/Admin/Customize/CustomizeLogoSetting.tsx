@@ -54,17 +54,15 @@ const CustomizeLogoSetting = (): JSX.Element => {
     try {
       const response = await apiv3Put('/customize-setting/customize-logo', {
         isDefaultLogo,
-        customizedLogoSrc,
       });
       const { customizedParams } = response.data;
       setIsDefaultLogo(customizedParams.isDefaultLogo);
-      setCustomizedLogoSrc(customizedParams.customizedLogoSrc);
       toastSuccess(t('toaster.update_successed', { target: t('admin:customize_settings.custom_logo'), ns: 'commons' }));
     }
     catch (err) {
       toastError(err);
     }
-  }, [t, isDefaultLogo, customizedLogoSrc]);
+  }, [t, isDefaultLogo]);
 
   const onClickDeleteBtn = useCallback(async() => {
     try {
