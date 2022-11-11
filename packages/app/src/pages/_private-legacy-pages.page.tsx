@@ -122,6 +122,7 @@ async function injectServerConfigurations(context: GetServerSidePropsContext, pr
 
     plantumlUri: process.env.PLANTUML_URI ?? null,
     blockdiagUri: process.env.BLOCKDIAG_URI ?? null,
+    drawioEmbedUri: crowi.configManager.getConfig('crowi', 'app:drawioUri'),
 
     // XSS Options
     isEnabledXssPrevention: configManager.getConfig('markdown', 'markdown:xss:isEnabledPrevention'),

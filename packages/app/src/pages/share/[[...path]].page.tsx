@@ -165,6 +165,7 @@ function injectServerConfigurations(context: GetServerSidePropsContext, props: P
 
     plantumlUri: process.env.PLANTUML_URI ?? null,
     blockdiagUri: process.env.BLOCKDIAG_URI ?? null,
+    drawioEmbedUri: crowi.configManager.getConfig('crowi', 'app:drawioUri'),
 
     // XSS Options
     isEnabledXssPrevention: crowi.configManager.getConfig('markdown', 'markdown:xss:isEnabledPrevention'),
