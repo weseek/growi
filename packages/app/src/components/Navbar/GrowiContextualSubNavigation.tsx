@@ -17,7 +17,7 @@ import { OnDuplicatedFunction, OnRenamedFunction, OnDeletedFunction } from '~/in
 import {
   useCurrentPageId, useCurrentPathname,
   useIsNotFound,
-  useCurrentUser, useIsGuestUser, useIsSharedUser, useShareLinkId, useTemplateTagData,
+  useCurrentUser, useIsGuestUser, useIsSharedUser, useShareLinkId, useTemplateTagData, useIsContainerFluid,
 } from '~/stores/context';
 import { usePageTagsForEditors } from '~/stores/editor';
 import {
@@ -202,6 +202,7 @@ const GrowiContextualSubNavigation = (props: GrowiContextualSubNavigationProps):
   const { data: isGuestUser } = useIsGuestUser();
   const { data: isSharedUser } = useIsSharedUser();
   const { data: shareLinkId } = useShareLinkId();
+  const { data: isContainerFluid } = useIsContainerFluid();
 
   const { data: isAbleToShowPageManagement } = useIsAbleToShowPageManagement();
   const { data: isAbleToShowTagLabel } = useIsAbleToShowTagLabel();
@@ -361,7 +362,7 @@ const GrowiContextualSubNavigation = (props: GrowiContextualSubNavigationProps):
                     revisionId={revisionId}
                     shareLinkId={shareLinkId}
                     path={path ?? currentPathname} // If the page is empty, "path" is undefined
-                    expandContentWidth={currentPage?.expandContentWidth}
+                    expandContentWidth={currentPage?.expandContentWidth ?? isContainerFluid}
                     disableSeenUserInfoPopover={isSharedUser}
                     showPageControlDropdown={isAbleToShowPageManagement}
                     additionalMenuItemRenderer={additionalMenuItemsRenderer}

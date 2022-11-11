@@ -10,7 +10,7 @@ import { toastError } from '~/client/util/apiNotification';
 import {
   IPageInfoForOperation, IPageToDeleteWithMeta, IPageToRenameWithMeta, isIPageInfoForEntity, isIPageInfoForOperation,
 } from '~/interfaces/page';
-import { useIsContainerFluid, useIsGuestUser } from '~/stores/context';
+import { useIsGuestUser } from '~/stores/context';
 import { IPageForPageDuplicateModal } from '~/stores/modal';
 
 import { useSWRBookmarkInfo } from '../../stores/bookmark';
@@ -33,7 +33,6 @@ type WideViewMenuItemProps = AdditionalMenuItemsRendererProps & {
 
 const WideViewMenuItem = (props: WideViewMenuItemProps): JSX.Element => {
   const { t } = useTranslation();
-  const { data: isContainerFluid } = useIsContainerFluid();
 
   const {
     onClickMenuItem, expandContentWidth,
@@ -41,7 +40,7 @@ const WideViewMenuItem = (props: WideViewMenuItemProps): JSX.Element => {
 
   return (
     <DropdownItem
-      onClick={() => onClickMenuItem(!(expandContentWidth ?? isContainerFluid))}
+      onClick={() => onClickMenuItem(!(expandContentWidth))}
       className="grw-page-control-dropdown-item"
     >
       <div className="custom-control custom-switch ml-1">
@@ -49,7 +48,7 @@ const WideViewMenuItem = (props: WideViewMenuItemProps): JSX.Element => {
           id="switchContentWidth"
           className="custom-control-input"
           type="checkbox"
-          checked={expandContentWidth ?? isContainerFluid}
+          checked={expandContentWidth}
           onChange={() => {}}
         />
         <label className="custom-control-label" htmlFor="switchContentWidth">
@@ -204,6 +203,7 @@ const SubNavButtonsSubstance = (props: SubNavButtonsSubstanceProps): JSX.Element
       return undefined;
     }
     const wideviewMenuItemRenderer = (props: WideViewMenuItemProps) => {
+
       return <WideViewMenuItem {...props} onClickMenuItem={switchContentWidthClickHandler} expandContentWidth={expandContentWidth} />;
     };
     return wideviewMenuItemRenderer;

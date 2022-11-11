@@ -14,7 +14,7 @@ import { toastSuccess } from '~/client/util/apiNotification';
 import { IPageToDeleteWithMeta, IPageToRenameWithMeta } from '~/interfaces/page';
 import { IPageWithSearchMeta } from '~/interfaces/search';
 import { OnDuplicatedFunction, OnRenamedFunction, OnDeletedFunction } from '~/interfaces/ui';
-import { useCurrentUser } from '~/stores/context';
+import { useCurrentUser, useIsContainerFluid } from '~/stores/context';
 import {
   usePageDuplicateModal, usePageRenameModal, usePageDeleteModal,
 } from '~/stores/modal';
@@ -156,6 +156,7 @@ export const SearchResultContent: FC<Props> = (props: Props) => {
   const { open: openDeleteModal } = usePageDeleteModal();
   const { data: rendererOptions } = useSearchResultOptions(pageWithMeta.data.path, highlightKeywords);
   const { data: currentUser } = useCurrentUser();
+  const { data: isContainerFluid } = useIsContainerFluid();
 
   const [isExpandContentWidth, setIsExpandContentWidth] = useState(page.expandContentWidth);
 
@@ -221,7 +222,7 @@ export const SearchResultContent: FC<Props> = (props: Props) => {
           pageId={page._id}
           revisionId={revisionId}
           path={page.path}
-          expandContentWidth={isExpandContentWidth}
+          expandContentWidth={isExpandContentWidth ?? isContainerFluid}
           showPageControlDropdown={showPageControlDropdown}
           forceHideMenuItems={forceHideMenuItems}
           additionalMenuItemRenderer={props => <AdditionalMenuItems {...props} pageId={page._id} revisionId={revisionId} />}
@@ -233,7 +234,7 @@ export const SearchResultContent: FC<Props> = (props: Props) => {
         />
       </div>
     );
-  }, [page, isExpandContentWidth, showPageControlDropdown, forceHideMenuItems,
+  }, [page, isExpandContentWidth, showPageControlDropdown, forceHideMenuItems, isContainerFluid,
       duplicateItemClickedHandler, renameItemClickedHandler, deleteItemClickedHandler, switchContentWidthHandler]);
 
   // return if page or growiRenderer is null
