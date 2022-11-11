@@ -64,12 +64,18 @@ module.exports = function(crowi, app) {
         });
       }
 
-      // userData.password cann't be empty but, prepare redirect because password property in User Model is optional
-      // https://github.com/weseek/growi/pull/6670
-      const redirectTo = userData.password ? req.session.redirectTo : '/me#password';
-
-      // remove session.redirectTo
-      delete req.session.redirectTo;
+      let redirectTo;
+      if (userData.password == null) {
+        // userData.password cann't be empty but, prepare redirect because password property in User Model is optional
+        // https://github.com/weseek/growi/pull/6670
+        redirectTo = '/me#password';
+      }
+      else if (req.session.redirectTo != null) {
+        redirectTo = req.session.redirectTo;
+      }
+      else {
+        redirectTo = '/';
+      }
 
       return res.apiv3({ redirectTo });
     });
