@@ -9,6 +9,7 @@ import { useCurrentSidebarContents } from '~/stores/ui';
 import PageTreeSkelton from './PageTreeSkelton';
 // import RecentChangesSkelton from './RecentChangesSkelton';
 // import TagSkelton from './TagSkelton';
+import SidebarHeaderSkelton from './SidebarHeaderSkelton';
 
 export const SidebarSkelton = (): JSX.Element => {
 
@@ -32,6 +33,9 @@ export const SidebarSkelton = (): JSX.Element => {
   }
 
   return (
-    <Contents />
+    <>
+      <SidebarHeaderSkelton />
+      <Contents />
+    </>
   );
 };

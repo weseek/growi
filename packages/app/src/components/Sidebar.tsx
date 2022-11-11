@@ -17,7 +17,7 @@ import {
 import DrawerToggler from './Navbar/DrawerToggler';
 import { NavigationResizeHexagon } from './Sidebar/NavigationResizeHexagon';
 import { SidebarNav } from './Sidebar/SidebarNav';
-import { SidebarSkelton } from './Sidebar/SidebarSkelton';
+import { SidebarSkelton } from './Sidebar/Skelton/SidebarSkelton';
 import { StickyStretchableScrollerProps } from './StickyStretchableScroller';
 
 import styles from './Sidebar.module.scss';

@@ -2,9 +2,9 @@ import React from 'react';
 
 import { Skelton } from '~/components/Skelton';
 
-import styles from './ItemsTree.module.scss';
+import styles from '../PageTree/ItemsTree.module.scss';
 
-const ItemsTreeSkelton = (): JSX.Element => {
+const PageTreeSkelton = (): JSX.Element => {
 
   return (
     <ul className={`grw-pagetree ${styles['grw-pagetree']} list-group p-3`} >
@@ -15,4 +15,4 @@ const ItemsTreeSkelton = (): JSX.Element => {
   );
 };
 
-export default ItemsTreeSkelton;
+export default PageTreeSkelton;

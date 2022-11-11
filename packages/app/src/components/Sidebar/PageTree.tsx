@@ -9,9 +9,9 @@ import { useCurrentPagePath } from '~/stores/page';
 import { useSWRxV5MigrationStatus } from '~/stores/page-listing';
 
 import ItemsTree from './PageTree/ItemsTree';
-import ItemsTreeSkelton from './PageTree/ItemsTreeSkelton';
 import { PrivateLegacyPagesLink } from './PageTree/PrivateLegacyPagesLink';
 import { SidebarHeader } from './SidebarHeader';
+import PageTreeSkelton from './Skelton/PageTreeSkelton';
 
 const PageTree: FC = memo(() => {
   const { t } = useTranslation();
@@ -28,7 +28,7 @@ const PageTree: FC = memo(() => {
     return (
       <>
         <SidebarHeader title='Page Tree' />
-        <ItemsTreeSkelton />
+        <PageTreeSkelton />
       </>
     );
   }
