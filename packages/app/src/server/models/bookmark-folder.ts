@@ -16,6 +16,7 @@ const logger = loggerFactory('growi:models:bookmark-folder');
 export interface BookmarkFolderItems {
   _id: string
   name: string
+  parentFolder: this
   parent: string
   children: this[]
 }
@@ -44,6 +45,13 @@ bookmarkFolderSchema.virtual('children', {
   ref: 'BookmarkFolder',
   localField: '_id',
   foreignField: 'parent',
+});
+
+bookmarkFolderSchema.virtual('parentFolder', {
+  ref: 'BookmarkFolder',
+  localField: 'parent',
+  foreignField: '_id',
+  justOne: true,
 });
 
 bookmarkFolderSchema.statics.createByParameters = async function(params: IBookmarkFolder): Promise<BookmarkFolderDocument> {
@@ -75,7 +83,9 @@ bookmarkFolderSchema.statics.findFolderAndChildren = async function(
     parentId?: Types.ObjectId | string,
 ): Promise<BookmarkFolderItems[]> {
   const parentFolder = await this.findById(parentId) as unknown as BookmarkFolderDocument;
-  const bookmarks = await this.find({ owner: userId, parent: parentFolder }).populate({ path: 'children' }).exec() as unknown as BookmarkFolderItems[];
+  const populatePaths = [{ path: 'children' }, { path: 'parentFolder' }];
+  const bookmarks = await this.find({ owner: userId, parent: parentFolder })
+    .populate(populatePaths).exec() as unknown as BookmarkFolderItems[];
   return bookmarks;
 };
 
