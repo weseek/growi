@@ -64,12 +64,19 @@ module.exports = function(crowi, app) {
         });
       }
 
-      // userData.password cann't be empty but, prepare redirect because password property in User Model is optional
-      // https://github.com/weseek/growi/pull/6670
-      const redirectTo = userData.password ? req.session.redirectTo : '/me#password';
-
-      // remove session.redirectTo
-      delete req.session.redirectTo;
+      let redirectTo;
+      if (userData.password == null) {
+        // userData.password cann't be empty but, prepare redirect because password property in User Model is optional
+        // https://github.com/weseek/growi/pull/6670
+        redirectTo = '/me#password';
+      }
+      else if (req.session.redirectTo != null) {
+        redirectTo = req.session.redirectTo;
+        delete req.session.redirectTo;
+      }
+      else {
+        redirectTo = '/';
+      }
 
       return res.apiv3({ redirectTo });
     });
@@ -137,14 +144,14 @@ module.exports = function(crowi, app) {
     User.isRegisterable(email, username, (isRegisterable, errOn) => {
       const errors = [];
       if (!User.isEmailValid(email)) {
-        errors.push('email_address_could_not_be_used');
+        errors.push('message.email_address_could_not_be_used');
       }
       if (!isRegisterable) {
         if (!errOn.username) {
-          errors.push('user_id_is_not_available');
+          errors.push('message.user_id_is_not_available');
         }
         if (!errOn.email) {
-          errors.push('email_address_is_already_registered');
+          errors.push('message.email_address_is_already_registered');
         }
       }
       if (errors.length > 0) {
