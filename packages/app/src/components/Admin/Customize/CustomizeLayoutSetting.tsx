@@ -42,8 +42,6 @@ const CustomizeLayoutSetting = (): JSX.Element => {
     }
   }, [isContainerFluid, updateLayoutSetting, t]);
 
-  if (isContainerFluid == null) { return <></> }
-
   return (
     <React.Fragment>
       <div className="row">
