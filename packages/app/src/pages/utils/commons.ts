@@ -24,7 +24,7 @@ export type CommonProps = {
   isMaintenanceMode: boolean,
   redirectDestination: string | null,
   customizedLogoSrc?: string,
-  currentUser: IUser,
+  currentUser?: IUser,
 } & Partial<SSRConfig>;
 
 // eslint-disable-next-line max-len
