@@ -26,7 +26,7 @@ import { useCurrentPagePath, useSWRxCurrentPage } from '~/stores/page';
 import { usePreviewOptions } from '~/stores/renderer';
 import {
   EditorMode,
-  useEditorMode, useIsMobile, useSelectedGrant,
+  useEditorMode, useIsMobile, useIsNotFound, useSelectedGrant,
 } from '~/stores/ui';
 import loggerFactory from '~/utils/logger';
 
@@ -51,9 +51,11 @@ let isOriginOfScrollSyncPreview = false;
 const PageEditor = React.memo((): JSX.Element => {
 
   const { t } = useTranslation();
-  const { data: pageId } = useCurrentPageId();
+
+  const { data: pageId, mutate: mutateCurrentPageId } = useCurrentPageId();
   const { data: currentPagePath } = useCurrentPagePath();
   const { data: currentPathname } = useCurrentPathname();
+  const { mutate: mutateIsNotFound } = useIsNotFound();
   const { data: currentPage, mutate: mutateCurrentPage } = useSWRxCurrentPage();
   const { data: grantData, mutate: mutateGrant } = useSelectedGrant();
   const { data: pageTags } = usePageTagsForEditors(pageId);
@@ -127,8 +129,18 @@ const PageEditor = React.memo((): JSX.Element => {
     );
 
     try {
-      await saveOrUpdate(optionsToSave, { pageId, path: currentPagePath || currentPathname, revisionId: currentRevisionId }, markdownToSave.current);
+      const { page } = await saveOrUpdate(
+        optionsToSave,
+        { pageId, path: currentPagePath || currentPathname, revisionId: currentRevisionId },
+        markdownToSave.current,
+      );
+
+      // TODO: Consider to make a function for this process https://redmine.weseek.co.jp/issues/108795
+      await mutateCurrentPageId(page._id);
       await mutateCurrentPage();
+      if (typeof page?.revision.body === 'string') {
+        await mutateIsNotFound(false);
+      }
       mutateIsEnabledUnsavedWarning(false);
       return true;
     }

@@ -1,6 +1,6 @@
 import { IUser, pagePathUtils } from '@growi/core';
 import { HtmlElementNode } from 'rehype-toc';
-import { Key, SWRResponse } from 'swr';
+import { Key, SWRResponse, useSWRConfig } from 'swr';
 import useSWRImmutable from 'swr/immutable';
 
 
@@ -56,8 +56,15 @@ export const useCurrentPathname = (initialData?: string): SWRResponse<string, Er
   return useContextSWR('currentPathname', initialData);
 };
 
-export const useCurrentPageId = (initialData?: Nullable<string>): SWRResponse<Nullable<string>, Error> => {
-  return useContextSWR<Nullable<string>, Error>('currentPageId', initialData);
+// TODO: Consider place https://redmine.weseek.co.jp/issues/108795
+export const useCurrentPageId = (fallbackData?: Nullable<string>): SWRResponse<Nullable<string>, Error> => {
+  const { fallback } = useSWRConfig();
+
+  if (fallbackData !== undefined) {
+    fallback.currentPageId = fallbackData;
+  }
+
+  return useStaticSWR<Nullable<string>, Error>('currentPageId');
 };
 
 export const useIsIdenticalPath = (initialData?: boolean): SWRResponse<boolean, Error> => {
@@ -66,10 +73,6 @@ export const useIsIdenticalPath = (initialData?: boolean): SWRResponse<boolean, 
 
 export const useIsForbidden = (initialData?: boolean): SWRResponse<boolean, Error> => {
   return useContextSWR<boolean, Error>('isForbidden', initialData, { fallbackData: false });
-};
-
-export const useIsNotFound = (initialData?: boolean): SWRResponse<boolean, Error> => {
-  return useContextSWR<boolean, Error>('isNotFound', initialData, { fallbackData: false });
 };
 
 export const useTemplateTagData = (initialData?: Nullable<string>): SWRResponse<Nullable<string>, Error> => {

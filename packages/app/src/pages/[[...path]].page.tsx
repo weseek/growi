@@ -41,7 +41,7 @@ import { useRedirectFrom } from '~/stores/page-redirect';
 import {
   EditorMode,
   useEditorMode, useSelectedGrant,
-  usePreferDrawerModeByUser, usePreferDrawerModeOnEditByUser, useSidebarCollapsed, useCurrentSidebarContents, useCurrentProductNavWidth,
+  usePreferDrawerModeByUser, usePreferDrawerModeOnEditByUser, useSidebarCollapsed, useCurrentSidebarContents, useCurrentProductNavWidth, useIsNotFound,
 } from '~/stores/ui';
 import loggerFactory from '~/utils/logger';
 
@@ -58,7 +58,7 @@ import DisplaySwitcher from '../components/Page/DisplaySwitcher';
 import {
   useCurrentUser,
   useIsLatestRevision,
-  useIsForbidden, useIsNotFound, useIsSharedUser,
+  useIsForbidden, useIsSharedUser,
   useIsEnabledStaleNotification, useIsIdenticalPath,
   useIsSearchServiceConfigured, useIsSearchServiceReachable, useDisableLinkSharing,
   useDrawioUri, useHackmdUri, useDefaultIndentSize, useIsIndentSizeForced,

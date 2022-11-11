@@ -2,7 +2,7 @@ import React from 'react';
 
 import dynamic from 'next/dynamic';
 
-import { useIsNotFound } from '~/stores/context';
+import { useIsNotFound } from '~/stores/ui';
 
 import { FixPageGrantAlert } from './FixPageGrantAlert';
 import { OldRevisionAlert } from './OldRevisionAlert';
