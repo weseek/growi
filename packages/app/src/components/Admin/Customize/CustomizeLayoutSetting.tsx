@@ -17,7 +17,7 @@ const useIsContainerFluid = () => {
   }, [layoutSetting?.isContainerFluid]);
 
   return {
-    isContainerFluid: isContainerFluid ?? false,
+    isContainerFluid,
     setIsContainerFluid,
     updateLayoutSetting,
   };
@@ -32,6 +32,7 @@ const CustomizeLayoutSetting = (): JSX.Element => {
   const [retrieveError, setRetrieveError] = useState<any>();
 
   const onClickSubmit = useCallback(async() => {
+    if (isContainerFluid == null) { return }
     try {
       await updateLayoutSetting({ isContainerFluid });
       toastSuccess(t('toaster.update_successed', { target: t('customize_settings.layout'), ns: 'commons' }));
@@ -40,6 +41,8 @@ const CustomizeLayoutSetting = (): JSX.Element => {
       toastError(err);
     }
   }, [isContainerFluid, updateLayoutSetting, t]);
+
+  if (isContainerFluid == null) { return <></> }
 
   return (
     <React.Fragment>
