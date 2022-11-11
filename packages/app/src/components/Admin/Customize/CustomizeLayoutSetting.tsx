@@ -31,9 +31,9 @@ const CustomizeLayoutSetting = (): JSX.Element => {
   const { isContainerFluid, setIsContainerFluid, updateLayoutSetting } = useIsContainerFluid();
   const [retrieveError, setRetrieveError] = useState<any>();
 
-  const onClickSubmit = useCallback(() => {
+  const onClickSubmit = useCallback(async() => {
     try {
-      updateLayoutSetting({ isContainerFluid });
+      await updateLayoutSetting({ isContainerFluid });
       toastSuccess(t('toaster.update_successed', { target: t('customize_settings.layout'), ns: 'commons' }));
     }
     catch (err) {
