@@ -72,6 +72,7 @@ module.exports = function(crowi, app) {
       }
       else if (req.session.redirectTo != null) {
         redirectTo = req.session.redirectTo;
+        delete req.session.redirectTo;
       }
       else {
         redirectTo = '/';
