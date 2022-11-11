@@ -2280,7 +2280,6 @@ class PageService {
 
     const likers = page.liker.slice(0, 15) as Ref<IUserHasId>[];
     const seenUsers = page.seenUsers.slice(0, 15) as Ref<IUserHasId>[];
-    const expandContentWidth = page.expandContentWidth ?? this.crowi.configManager.getConfig('crowi', 'customize:isContainerFluid');
 
     return {
       isV5Compatible: isTopPage(page.path) || page.parent != null,
@@ -2294,7 +2293,6 @@ class PageService {
       isAbleToDeleteCompletely: false,
       isRevertible: isTrashPage(page.path),
       contentAge: page.getContentAge(),
-      expandContentWidth,
     };
 
   }
