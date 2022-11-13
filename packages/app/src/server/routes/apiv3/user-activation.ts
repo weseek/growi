@@ -4,6 +4,7 @@ import { ErrorV3 } from '@growi/core';
 import { format, subSeconds } from 'date-fns';
 import { body, validationResult } from 'express-validator';
 
+import { SupportedAction } from '~/interfaces/activity';
 import UserRegistrationOrder from '~/server/models/user-registration-order';
 import loggerFactory from '~/utils/logger';
 
@@ -64,6 +65,7 @@ async function sendEmailToAllAdmins(userData, admins, appTitle, mailService, tem
 
 export const completeRegistrationAction = (crowi) => {
   const User = crowi.model('User');
+  const activityEvent = crowi.event('activity');
   const {
     configManager,
     aclService,
@@ -127,6 +129,9 @@ export const completeRegistrationAction = (crowi) => {
           return res.apiv3Err(new ErrorV3(errorMessage, 'registration-failed'), 403);
         }
 
+        const parameters = { action: SupportedAction.ACTION_USER_REGISTRATION_SUCCESS };
+        activityEvent.emit('update', res.locals.activity._id, parameters);
+
         userRegistrationOrder.revokeOneTimeToken();
 
         if (configManager.getConfig('crowi', 'security:registrationMode') === aclService.labels.SECURITY_REGISTRATION_MODE_RESTRICTED) {
@@ -145,9 +150,28 @@ export const completeRegistrationAction = (crowi) => {
           else {
             logger.warn('E-mail Settings must be set up.');
           }
+
+          return res.apiv3({});
         }
 
-        res.apiv3({ status: 'ok' });
+        req.login(userData, (err) => {
+          if (err) {
+            logger.debug(err);
+          }
+          else {
+            // update lastLoginAt
+            userData.updateLastLoginAt(new Date(), (err) => {
+              if (err) {
+                logger.error(`updateLastLoginAt dumps error: ${err}`);
+              }
+            });
+          }
+
+          // userData.password cann't be empty but, prepare redirect because password property in User Model is optional
+          // https://github.com/weseek/growi/pull/6670
+          const redirectTo = userData.password != null ? '/' : '/me#password';
+          return res.apiv3({ redirectTo });
+        });
       });
     });
   };
@@ -222,10 +246,15 @@ export const registerAction = (crowi) => {
     const registerForm = req.body.registerForm || {};
     const email = registerForm.email;
     const isRegisterableEmail = await User.isRegisterableEmail(email);
+    const isEmailValid = await User.isEmailValid(email);
 
     if (!isRegisterableEmail) {
       req.body.registerForm.email = email;
       return res.apiv3Err(['message.email_address_is_already_registered'], 400);
+    }
+
+    if (!isEmailValid) {
+      return res.apiv3Err(['message.email_address_could_not_be_used'], 400);
     }
 
     try {

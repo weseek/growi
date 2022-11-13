@@ -97,6 +97,7 @@ module.exports = (crowi, app, isInstalled) => {
   router.get('/check-username', user.api.checkUsername);
 
   router.post('/complete-registration',
+    addActivity,
     injectUserRegistrationOrderByTokenMiddleware,
     userActivation.completeRegistrationRules(),
     userActivation.validateCompleteRegistration,

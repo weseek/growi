@@ -11,9 +11,10 @@ import {
 import { CustomWindow } from '~/interfaces/global';
 import { IPageGrantData } from '~/interfaces/page';
 import {
-  useCurrentPagePath, useIsEditable, useCurrentPageId, useIsAclEnabled,
+  useIsEditable, useCurrentPageId, useIsAclEnabled,
 } from '~/stores/context';
 import { useIsEnabledUnsavedWarning } from '~/stores/editor';
+import { useCurrentPagePath } from '~/stores/page';
 import { useSelectedGrant } from '~/stores/ui';
 import loggerFactory from '~/utils/logger';
 

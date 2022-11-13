@@ -2,7 +2,7 @@ import React, { FC, useCallback } from 'react';
 
 import { useTranslation } from 'next-i18next';
 
-import { IUserGroupHasId } from '~/interfaces/user';
+import type { IUserGroupHasId } from '~/interfaces/user';
 
 type Props = {
   selectableUserGroups?: IUserGroupHasId[]

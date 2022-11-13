@@ -1,6 +1,5 @@
 import React from 'react';
 
-
 import {
   NextPage, GetServerSideProps, GetServerSidePropsContext,
 } from 'next';
@@ -9,19 +8,19 @@ import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import { NoLoginLayout } from '~/components/Layout/NoLoginLayout';
 import { LoginForm } from '~/components/LoginForm';
 import type { CrowiRequest } from '~/interfaces/crowi-request';
+import type { RegistrationMode } from '~/interfaces/registration-mode';
 
 import {
   useCsrfToken,
   useCurrentPathname,
 } from '../stores/context';
 
-
 import {
   CommonProps, getServerSideCommonProps, useCustomTitle, getNextI18NextConfig,
 } from './utils/commons';
 
 type Props = CommonProps & {
-
+  registrationMode: RegistrationMode,
   pageWithMetaStr: string,
   isMailerSetup: boolean,
   enabledStrategies: unknown,
@@ -55,6 +54,7 @@ const LoginPage: NextPage<Props> = (props: Props) => {
         registrationWhiteList={props.registrationWhiteList}
         isPasswordResetEnabled={true}
         isMailerSetup={props.isMailerSetup}
+        registrationMode={props.registrationMode}
       />
     </NoLoginLayout>
   );
@@ -106,6 +106,7 @@ async function injectServerConfigurations(context: GetServerSidePropsContext, pr
   props.isLdapSetupFailed = configManager.getConfig('crowi', 'security:passport-ldap:isEnabled') && !props.isLdapStrategySetup;
   props.registrationWhiteList = configManager.getConfig('crowi', 'security:registrationWhiteList');
   props.isEmailAuthenticationEnabled = configManager.getConfig('crowi', 'security:passport-local:isEmailAuthenticationEnabled');
+  props.registrationMode = configManager.getConfig('crowi', 'security:registrationMode');
 }
 
 export const getServerSideProps: GetServerSideProps = async(context: GetServerSidePropsContext) => {
