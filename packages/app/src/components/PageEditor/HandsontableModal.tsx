@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
 import { HotTable } from '@handsontable/react';
 import Handsontable from 'handsontable';
@@ -33,8 +33,11 @@ export const HandsontableModal = (): JSX.Element => {
   const { t } = useTranslation('commons');
   const { data: handsontableModalData, close: closeHandsontableModal, onSave } = useHandsontableModal();
   const isOpened = handsontableModalData?.isOpened ?? false;
+  const tableData = handsontableModalData?.table;
   const autoFormatMarkdownTable = handsontableModalData?.autoFormatMarkdownTable;
   const editor = handsontableModalData?.editor;
+
+  console.log('tableData', tableData);
 
   const defaultMarkdownTable = () => {
     return new MarkdownTable(
@@ -83,8 +86,22 @@ export const HandsontableModal = (): JSX.Element => {
   const [isDataImportAreaExpanded, setIsDataImportAreaExpanded] = useState<boolean>(false);
   const [isWindowExpanded, setIsWindowExpanded] = useState<boolean>(false);
   const [markdownTableOnInit, setMarkdownTableOnInit] = useState<MarkdownTable>(() => defaultMarkdownTable());
-  const [markdownTable, setMarkdownTable] = useState<MarkdownTable>(() => defaultMarkdownTable());
+  const [markdownTable, setMarkdownTable] = useState<MarkdownTable>(tableData ?? defaultMarkdownTable);
   const [handsontableHeight, setHandsontableHeight] = useState<number>(DEFAULT_HOT_HEIGHT);
+
+  useEffect(() => {
+    setMarkdownTable(tableData ?? defaultMarkdownTable);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isOpened]);
+
+  const markdownTableOption = {
+    get latest() {
+      return {
+        align: [].concat(markdownTable.options.align),
+        pad: autoFormatMarkdownTable !== false,
+      };
+    },
+  };
 
   const init = (markdownTable: MarkdownTable) => {
     const initMarkdownTable = markdownTable || defaultMarkdownTable();
@@ -110,27 +127,18 @@ export const HandsontableModal = (): JSX.Element => {
     setIsWindowExpanded(false);
   };
 
-  const markdownTableOption = {
-    get latest() {
-      return {
-        align: [].concat(markdownTable.options.align),
-        pad: autoFormatMarkdownTable !== false,
-      };
-    },
-  };
-
   const save = async() => {
     if (hotTable == null) {
       return;
     }
 
-    const updateMarkdownTable = new MarkdownTable(
+    const newMarkdownTable = new MarkdownTable(
       hotTable.hotInstance.getData(),
       markdownTableOption.latest,
     ).normalizeCells();
 
     if (onSave != null) {
-      onSave(editor, updateMarkdownTable);
+      onSave(editor, newMarkdownTable);
     }
 
     cancel();
@@ -192,7 +200,9 @@ export const HandsontableModal = (): JSX.Element => {
     const align = markdownTable.options.align;
     const hotInstance = hotTable.hotInstance;
 
-    if (hotInstance.isDestroyed === true) {
+    console.log('aa', markdownTable);
+
+    if (hotInstance.isDestroyed === true || align == null) {
       return;
     }
 
