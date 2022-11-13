@@ -33,11 +33,9 @@ export const HandsontableModal = (): JSX.Element => {
   const { t } = useTranslation('commons');
   const { data: handsontableModalData, close: closeHandsontableModal, onSave } = useHandsontableModal();
   const isOpened = handsontableModalData?.isOpened ?? false;
-  const tableData = handsontableModalData?.table;
-  const autoFormatMarkdownTable = handsontableModalData?.autoFormatMarkdownTable;
+  const table = handsontableModalData?.table;
+  const autoFormatMarkdownTable = handsontableModalData?.autoFormatMarkdownTable ?? false;
   const editor = handsontableModalData?.editor;
-
-  console.log('tableData', tableData);
 
   const defaultMarkdownTable = () => {
     return new MarkdownTable(
@@ -85,12 +83,14 @@ export const HandsontableModal = (): JSX.Element => {
   const [hotTableContainer, setHotTableContainer] = useState<HTMLDivElement | null>();
   const [isDataImportAreaExpanded, setIsDataImportAreaExpanded] = useState<boolean>(false);
   const [isWindowExpanded, setIsWindowExpanded] = useState<boolean>(false);
-  const [markdownTableOnInit, setMarkdownTableOnInit] = useState<MarkdownTable>(() => defaultMarkdownTable());
-  const [markdownTable, setMarkdownTable] = useState<MarkdownTable>(tableData ?? defaultMarkdownTable);
+  const [markdownTable, setMarkdownTable] = useState<MarkdownTable>(defaultMarkdownTable);
+  const [markdownTableOnInit, setMarkdownTableOnInit] = useState<MarkdownTable>(defaultMarkdownTable);
   const [handsontableHeight, setHandsontableHeight] = useState<number>(DEFAULT_HOT_HEIGHT);
 
   useEffect(() => {
-    setMarkdownTable(tableData ?? defaultMarkdownTable);
+    const initTableInstance = table == null ? defaultMarkdownTable : table.clone();
+    setMarkdownTable(table ?? defaultMarkdownTable);
+    setMarkdownTableOnInit(initTableInstance);
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isOpened]);
 
@@ -101,13 +101,6 @@ export const HandsontableModal = (): JSX.Element => {
         pad: autoFormatMarkdownTable !== false,
       };
     },
-  };
-
-  const init = (markdownTable: MarkdownTable) => {
-    const initMarkdownTable = markdownTable || defaultMarkdownTable();
-    setMarkdownTableOnInit(initMarkdownTable);
-    setMarkdownTable(initMarkdownTable.clone());
-    manuallyResizedColumnIndicesSet.clear();
   };
 
   /**
@@ -128,7 +121,7 @@ export const HandsontableModal = (): JSX.Element => {
   };
 
   const save = async() => {
-    if (hotTable == null) {
+    if (hotTable == null || editor == null) {
       return;
     }
 
@@ -161,7 +154,7 @@ export const HandsontableModal = (): JSX.Element => {
       return;
     }
 
-    /* c
+    /*
      * The following bug disturbs to use 'beforeColumnResizeHandler' to store column index -- 2018.10.23 Yuki Takei
      * https://github.com/handsontable/handsontable/issues/3328
      *
@@ -199,8 +192,6 @@ export const HandsontableModal = (): JSX.Element => {
 
     const align = markdownTable.options.align;
     const hotInstance = hotTable.hotInstance;
-
-    console.log('aa', markdownTable);
 
     if (hotInstance.isDestroyed === true || align == null) {
       return;
@@ -345,6 +336,13 @@ export const HandsontableModal = (): JSX.Element => {
 
   const toggleDataImportArea = () => {
     setIsDataImportAreaExpanded(!isDataImportAreaExpanded);
+  };
+
+  const init = (markdownTable: MarkdownTable) => {
+    const initMarkdownTable = markdownTable || defaultMarkdownTable;
+    setMarkdownTableOnInit(initMarkdownTable);
+    setMarkdownTable(initMarkdownTable.clone());
+    manuallyResizedColumnIndicesSet.clear();
   };
 
   /**

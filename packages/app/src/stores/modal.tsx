@@ -482,7 +482,7 @@ export const useDrawioModal = (status?: DrawioModalStatus): SWRResponse<DrawioMo
 */
 type HandsontableModalStatus = {
   isOpened: boolean,
-  table: MarkdownTable,
+  table?: MarkdownTable,
   editor: any,
   autoFormatMarkdownTable: boolean,
 }
@@ -495,7 +495,7 @@ type HandsontableModalStatusUtils = {
 
 export const useHandsontableModal = (status?: HandsontableModalStatus): SWRResponse<HandsontableModalStatus, Error> & HandsontableModalStatusUtils => {
   const initialData: HandsontableModalStatus = {
-    isOpened: false, table: new MarkdownTable(), editor: '', autoFormatMarkdownTable: false,
+    isOpened: false, table: undefined, editor: '', autoFormatMarkdownTable: false,
   };
   const swrResponse = useStaticSWR<HandsontableModalStatus, Error>('handsontableModalStatus', status, { fallbackData: initialData });
 
@@ -503,7 +503,7 @@ export const useHandsontableModal = (status?: HandsontableModalStatus): SWRRespo
     isOpened: true, table, editor, autoFormatMarkdownTable,
   });
   const close = () => swrResponse.mutate({
-    isOpened: false, table: new MarkdownTable(), editor: '', autoFormatMarkdownTable: false,
+    isOpened: false, table: undefined, editor: '', autoFormatMarkdownTable: false,
   });
   const onSave = (editor: any, tables: MarkdownTable) => {
     mtu.replaceFocusedMarkdownTableWithEditor(editor, tables);

@@ -93,7 +93,6 @@ class MarkdownTableUtil {
     }
 
     const strFromBotToEot = editor.getDoc().getRange(this.getBot(editor), this.getEot(editor));
-    console.log('get', MarkdownTable.fromMarkdownString(strFromBotToEot));
     return MarkdownTable.fromMarkdownString(strFromBotToEot);
   }
 

@@ -1017,7 +1017,6 @@ class CodeMirrorEditor extends AbstractEditor {
         size="sm"
         title="Table"
         onClick={() => {
-          console.log(mtu.getMarkdownTable(this.getCodeMirror()));
           this.props.onClickTableBtn(
             mtu.getMarkdownTable(this.getCodeMirror()),
             this.getCodeMirror(),
