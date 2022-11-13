@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 
 import { HotTable } from '@handsontable/react';
 import Handsontable from 'handsontable';
+import { useTranslation } from 'next-i18next';
 import {
   Collapse,
   Modal, ModalHeader, ModalBody, ModalFooter,
@@ -13,10 +14,11 @@ import { useHandsontableModal } from '~/stores/modal';
 
 import ExpandOrContractButton from '../ExpandOrContractButton';
 
-import MarkdownTableDataImportForm from './MarkdownTableDataImportForm';
+import { MarkdownTableDataImportForm } from './MarkdownTableDataImportForm';
 
 import styles from './HandsontableModal.module.scss';
 import 'handsontable/dist/handsontable.full.min.css';
+
 
 const DEFAULT_HOT_HEIGHT = 300;
 const MARKDOWNTABLE_TO_HANDSONTABLE_ALIGNMENT_SYMBOL_MAPPING = {
@@ -26,14 +28,9 @@ const MARKDOWNTABLE_TO_HANDSONTABLE_ALIGNMENT_SYMBOL_MAPPING = {
   '': '',
 };
 
-export type HandsontableModalProps = {
-  // ref: any,
-  // onSave: (markdownTable: MarkdownTable) => Promise<void>,
-  // autoFormatMarkdownTable: boolean,
-}
+export const HandsontableModal = (): JSX.Element => {
 
-export const HandsontableModal = (props: HandsontableModalProps): JSX.Element => {
-
+  const { t } = useTranslation('commons');
   const { data: handsontableModalData, close: closeHandsontableModal, onSave } = useHandsontableModal();
   const isOpened = handsontableModalData?.isOpened ?? false;
   const autoFormatMarkdownTable = handsontableModalData?.autoFormatMarkdownTable;
@@ -65,7 +62,7 @@ export const HandsontableModal = (props: HandsontableModalProps): JSX.Element =>
     };
   };
 
-  // a Set instance that stores column indices which are resized manually.
+  // A Set instance that stores column indices which are resized manually.
   // these columns will NOT be determined the width automatically by 'modifyColWidthHandler'
   const manuallyResizedColumnIndicesSet = new Set();
 
@@ -83,7 +80,6 @@ export const HandsontableModal = (props: HandsontableModalProps): JSX.Element =>
    */
   const [hotTable, setHotTable] = useState<HotTable | null>();
   const [hotTableContainer, setHotTableContainer] = useState<HTMLDivElement | null>();
-  // const [isShow, setIsShow] = useState<boolean>(false);
   const [isDataImportAreaExpanded, setIsDataImportAreaExpanded] = useState<boolean>(false);
   const [isWindowExpanded, setIsWindowExpanded] = useState<boolean>(false);
   const [markdownTableOnInit, setMarkdownTableOnInit] = useState<MarkdownTable>(() => defaultMarkdownTable());
@@ -110,41 +106,31 @@ export const HandsontableModal = (props: HandsontableModalProps): JSX.Element =>
 
   const cancel = () => {
     closeHandsontableModal();
-    // hide()
     setIsDataImportAreaExpanded(false);
     setIsWindowExpanded(false);
   };
 
-  // const show = () => {
-  //   init(markdownTable);
-  //   setIsShow(true);
-  // };
-
-  // const hide = () => {
-  //   setIsShow(false);
-  //   setIsDataImportAreaExpanded(false);
-  //   setIsWindowExpanded(false);
-  // };
-
-  const save = () => {
-    if (hotTable == null) {
-      return;
-    }
-
-    const markdownTableOption = () => {
+  const markdownTableOption = {
+    get latest() {
       return {
         align: [].concat(markdownTable.options.align),
         pad: autoFormatMarkdownTable !== false,
       };
-    };
+    },
+  };
 
-    const markdownTable = new MarkdownTable(
+  const save = async() => {
+    if (hotTable == null) {
+      return;
+    }
+
+    const updateMarkdownTable = new MarkdownTable(
       hotTable.hotInstance.getData(),
-      markdownTableOption,
+      markdownTableOption.latest,
     ).normalizeCells();
 
     if (onSave != null) {
-      onSave(editor, markdownTable);
+      onSave(editor, updateMarkdownTable);
     }
 
     cancel();
@@ -375,41 +361,19 @@ export const HandsontableModal = (props: HandsontableModalProps): JSX.Element =>
     }
   };
 
-  // create debounced method for expanding HotTable
-  const expandHotTableHeightWithDebounce = debounce(100, expandHotTableHeight);
-
   const expandWindow = () => {
     setIsWindowExpanded(true);
 
+    // create debounced method for expanding HotTable
     // invoke updateHotTableHeight method with delay
     // cz. Resizing this.refs.hotTableContainer is completed after a little delay after 'isWindowExpanded' set with 'true'
-    expandHotTableHeightWithDebounce();
+    debounce(100, expandHotTableHeight);
   };
 
   const contractWindow = () => {
     setIsWindowExpanded(false);
     setHandsontableHeight(DEFAULT_HOT_HEIGHT);
   };
-
-  const renderCloseButton = () => {
-    return (
-      <button type="button" className="close" onClick={cancel} aria-label="Close">
-        <span aria-hidden="true">&times;</span>
-      </button>
-    );
-  };
-
-  const buttons = (
-    <span>
-      {/* change order because of `float: right` by '.close' class */}
-      {renderCloseButton()}
-      <ExpandOrContractButton
-        isWindowExpanded={isWindowExpanded}
-        contractWindow={contractWindow}
-        expandWindow={expandWindow}
-      />
-    </span>
-  );
 
   const createCustomizedContextMenu = () => {
     return {
@@ -452,6 +416,20 @@ export const HandsontableModal = (props: HandsontableModalProps): JSX.Element =>
     contextMenu: createCustomizedContextMenu(),
   });
 
+  const closeButton = (
+    <span>
+      {/* change order because of `float: right` by '.close' class */}
+      <button type="button" className="close" onClick={cancel} aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+      </button>
+      <ExpandOrContractButton
+        isWindowExpanded={isWindowExpanded}
+        contractWindow={contractWindow}
+        expandWindow={expandWindow}
+      />
+    </span>
+  );
+
   return (
     <Modal
       isOpen={isOpened}
@@ -462,8 +440,8 @@ export const HandsontableModal = (props: HandsontableModalProps): JSX.Element =>
       wrapClassName={`${styles['grw-handsontable']}`}
       className={`handsontable-modal ${isWindowExpanded && 'grw-modal-expanded'}`}
     >
-      <ModalHeader tag="h4" toggle={cancel} close={buttons} className="bg-primary text-light">
-          Edit Table
+      <ModalHeader tag="h4" toggle={cancel} close={closeButton} className="bg-primary text-light">
+        {t('handsontable_modal.title')}
       </ModalHeader>
       <ModalBody className="p-0 d-flex flex-column">
         <div className="grw-hot-modal-navbar px-4 py-3 border-bottom">
@@ -475,7 +453,8 @@ export const HandsontableModal = (props: HandsontableModalProps): JSX.Element =>
             aria-expanded={isDataImportAreaExpanded}
             onClick={toggleDataImportArea}
           >
-            <span className="mr-3">Data Import</span><i className={isDataImportAreaExpanded ? 'fa fa-angle-up' : 'fa fa-angle-down'}></i>
+            <span className="mr-3">{t('handsontable_modal.data_import')}</span>
+            <i className={isDataImportAreaExpanded ? 'fa fa-angle-up' : 'fa fa-angle-down'}></i>
           </button>
           <div role="group" className="btn-group">
             <button type="button" className="btn btn-secondary" onClick={() => { alignButtonHandler('l') }}>
@@ -510,10 +489,10 @@ export const HandsontableModal = (props: HandsontableModalProps): JSX.Element =>
         </div>
       </ModalBody>
       <ModalFooter className="grw-modal-footer">
-        <button type="button" className="btn btn-danger" onClick={reset}>Reset</button>
+        <button type="button" className="btn btn-danger" onClick={reset}>{t('handsontable_modal.reset')}</button>
         <div className="ml-auto">
-          <button type="button" className="mr-2 btn btn-secondary" onClick={cancel}>Cancel</button>
-          <button type="button" className="btn btn-primary" onClick={save}>Done</button>
+          <button type="button" className="mr-2 btn btn-secondary" onClick={cancel}>{t('handsontable_modal.cancel')}</button>
+          <button type="button" className="btn btn-primary" onClick={save}>{t('handsontable_modal.done')}</button>
         </div>
       </ModalFooter>
     </Modal>

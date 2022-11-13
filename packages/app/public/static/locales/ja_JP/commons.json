@@ -59,6 +59,23 @@
     "cancel": "キャンセル"
   },
 
+  "handsontable_modal": {
+    "title": "テーブル編集",
+    "data_import": "データインポート",
+    "save": "保存",
+    "reset": "リセット",
+    "cancel": "キャンセル",
+    "done": "完了",
+    "data_import_form": {
+      "select_data_format": "データフォーマット",
+      "import_data": "インポートデータ",
+      "paste_table_data": "デーブルデータを貼り付け",
+      "parse_error": "パーザーエラー",
+      "cancel": "キャンセル",
+      "import": "インポート"
+    }
+  },
+
   "not_found_page": {
     "page_not_exist": "このページは存在しません。"
   }
