@@ -490,7 +490,7 @@ type HandsontableModalStatus = {
 type HandsontableModalStatusUtils = {
   open(table: MarkdownTable, editor: any, autoFormatMarkdownTable: boolean): Promise<HandsontableModalStatus | undefined>
   close(): Promise<HandsontableModalStatus | undefined>
-  onSave(editor:any, tables: MarkdownTable): void
+  save(editor:any, tables: MarkdownTable): void
 }
 
 export const useHandsontableModal = (status?: HandsontableModalStatus): SWRResponse<HandsontableModalStatus, Error> & HandsontableModalStatusUtils => {
@@ -505,7 +505,7 @@ export const useHandsontableModal = (status?: HandsontableModalStatus): SWRRespo
   const close = () => swrResponse.mutate({
     isOpened: false, table: undefined, editor: '', autoFormatMarkdownTable: false,
   });
-  const onSave = (editor: any, tables: MarkdownTable) => {
+  const save = (editor: any, tables: MarkdownTable) => {
     mtu.replaceFocusedMarkdownTableWithEditor(editor, tables);
   };
 
@@ -513,6 +513,6 @@ export const useHandsontableModal = (status?: HandsontableModalStatus): SWRRespo
     ...swrResponse,
     open,
     close,
-    onSave,
+    save,
   };
 };

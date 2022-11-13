@@ -31,7 +31,7 @@ const MARKDOWNTABLE_TO_HANDSONTABLE_ALIGNMENT_SYMBOL_MAPPING = {
 export const HandsontableModal = (): JSX.Element => {
 
   const { t } = useTranslation('commons');
-  const { data: handsontableModalData, close: closeHandsontableModal, onSave } = useHandsontableModal();
+  const { data: handsontableModalData, close: closeHandsontableModal, save: saveHandsontableModal } = useHandsontableModal();
   const isOpened = handsontableModalData?.isOpened ?? false;
   const table = handsontableModalData?.table;
   const autoFormatMarkdownTable = handsontableModalData?.autoFormatMarkdownTable ?? false;
@@ -120,7 +120,7 @@ export const HandsontableModal = (): JSX.Element => {
     setIsWindowExpanded(false);
   };
 
-  const save = async() => {
+  const save = () => {
     if (hotTable == null || editor == null) {
       return;
     }
@@ -130,8 +130,8 @@ export const HandsontableModal = (): JSX.Element => {
       markdownTableOption.latest,
     ).normalizeCells();
 
-    if (onSave != null) {
-      onSave(editor, newMarkdownTable);
+    if (saveHandsontableModal != null) {
+      saveHandsontableModal(editor, newMarkdownTable);
     }
 
     cancel();
