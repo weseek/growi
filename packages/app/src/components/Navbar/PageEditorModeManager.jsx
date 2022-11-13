@@ -27,6 +27,7 @@ const PageEditorModeButtonWrapper = React.memo(({
       className={classNames.join(' ')}
       onClick={() => { onClick(targetMode) }}
       id={id}
+      data-testId={`${targetMode}-button`}
     >
       <span className="d-flex flex-column flex-md-row justify-content-center">
         <span className="grw-page-editor-mode-manager-icon mr-md-1">{icon}</span>

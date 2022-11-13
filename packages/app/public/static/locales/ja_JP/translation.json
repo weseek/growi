@@ -619,10 +619,9 @@
       "error_duplicate_pages_found": "同名のパスを持つページが複数見つかりました。リネームまたは削除してから再度実行してください"
     }
   },
-  "to_cloud_settings": "GROWI.cloud の管理画面へ",
   "login": {
     "Sign in error": "ログインエラー",
-    "Registration successful": "登録完了",
+    "Registration successful": "登録が完了しました。管理者の承認をお待ちください。",
     "Setup": "セットアップ",
     "enabled_ldap_has_configuration_problem":"LDAPは有効ですが、設定に問題があります。",
     "set_env_var_for_logs": "(ログを取得するためには、環境変数 <code>DEBUG=crowi:service:PassportService</code> を設定してください。)"

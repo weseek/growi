@@ -26,6 +26,7 @@ context('Access to page', () => {
     // https://stackoverflow.com/questions/5041494/selecting-and-manipulating-css-pseudo-elements-such-as-before-and-after-usin/21709814#21709814
     cy.get('#mdcont-headers').invoke('removeClass', 'blink');
 
+    cy.get('.grw-skelton').should('not.exist');
     cy.screenshot(`${ssPrefix}-sandbox-headers`);
   });
 
@@ -39,12 +40,25 @@ context('Access to page', () => {
   });
 
   it('/Sandbox with edit is successfully loaded', () => {
-    cy.visit('/Sandbox#edit');
-    cy.screenshot(`${ssPrefix}-sandbox-edit-page`);
+    cy.visit('/Sandbox');
+    cy.get('.grw-skelton', { timeout: 30000 }).should('not.exist');
+    cy.get('#grw-subnav-container', { timeout: 30000 }).should('be.visible').within(()=>{
+      cy.getByTestid('editor-button', { timeout: 30000 }).should('be.visible').click();
+    })
+    cy.getByTestid('navbar-editor', { timeout: 30000 }).should('be.visible');
+    cy.screenshot(`${ssPrefix}-Sandbox-edit-page`);
   })
 
   it('/user/admin is successfully loaded', () => {
     cy.visit('/user/admin', {  });
+
+    cy.get('.grw-skelton').should('not.exist');
+    // for check download toc data
+    cy.get('.toc-link').should('be.visible');
+
+    // eslint-disable-next-line cypress/no-unnecessary-waiting
+    cy.wait(2000); // wait for calcViewHeight and rendering
+
     cy.screenshot(`${ssPrefix}-user-admin`);
   });
 

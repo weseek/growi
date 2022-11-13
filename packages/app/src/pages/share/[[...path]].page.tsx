@@ -20,7 +20,7 @@ import { CrowiRequest } from '~/interfaces/crowi-request';
 import { RendererConfig } from '~/interfaces/services/renderer';
 import { IShareLinkHasId } from '~/interfaces/share-link';
 import {
-  useCurrentUser, useCurrentPagePath, useCurrentPathname, useCurrentPageId, useRendererConfig, useIsSearchPage,
+  useCurrentUser, useCurrentPathname, useCurrentPageId, useRendererConfig, useIsSearchPage,
   useShareLinkId, useIsSearchServiceConfigured, useIsSearchServiceReachable, useIsSearchScopeChildrenAsDefault,
 } from '~/stores/context';
 import { useDescendantsPageListModal } from '~/stores/modal';
@@ -50,7 +50,6 @@ const SharedPage: NextPage<Props> = (props: Props) => {
   useIsSearchPage(false);
   useShareLinkId(props.shareLink?._id);
   useCurrentPageId(props.shareLink?.relatedPage._id);
-  useCurrentPagePath(props.shareLink?.relatedPage.path);
   useCurrentUser(props.currentUser);
   useCurrentPathname(props.currentPathname);
   useRendererConfig(props.rendererConfig);

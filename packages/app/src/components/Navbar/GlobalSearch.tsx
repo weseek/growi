@@ -8,8 +8,9 @@ import { useRouter } from 'next/router';
 import { IFocusable } from '~/client/interfaces/focusable';
 import { IPageWithSearchMeta } from '~/interfaces/search';
 import {
-  useCurrentPagePath, useIsSearchScopeChildrenAsDefault, useIsSearchServiceReachable,
+  useIsSearchScopeChildrenAsDefault, useIsSearchServiceReachable,
 } from '~/stores/context';
+import { useCurrentPagePath } from '~/stores/page';
 import { useGlobalSearchFormRef } from '~/stores/ui';
 
 import SearchForm from '../SearchForm';
