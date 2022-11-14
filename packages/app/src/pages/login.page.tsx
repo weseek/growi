@@ -50,7 +50,6 @@ const LoginPage: NextPage<Props> = (props: Props) => {
         isLdapStrategySetup={props.isLdapStrategySetup}
         isLdapSetupFailed={props.isLdapSetupFailed}
         isEmailAuthenticationEnabled={props.isEmailAuthenticationEnabled}
-        isRegistrationEnabled={true}
         registrationWhiteList={props.registrationWhiteList}
         isPasswordResetEnabled={true}
         isMailerSetup={props.isMailerSetup}

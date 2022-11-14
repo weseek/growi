@@ -18,7 +18,6 @@ type LoginFormProps = {
   username?: string,
   name?: string,
   email?: string,
-  isRegistrationEnabled: boolean,
   isEmailAuthenticationEnabled: boolean,
   registrationMode: RegistrationMode,
   registrationWhiteList: string[],
@@ -34,7 +33,7 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
   const router = useRouter();
 
   const {
-    isLocalStrategySetup, isLdapStrategySetup, isLdapSetupFailed, isPasswordResetEnabled, isRegistrationEnabled,
+    isLocalStrategySetup, isLdapStrategySetup, isLdapSetupFailed, isPasswordResetEnabled,
     isEmailAuthenticationEnabled, registrationMode, registrationWhiteList, isMailerSetup, objOfIsExternalAuthEnableds,
   } = props;
   const isLocalOrLdapStrategiesEnabled = isLocalStrategySetup || isLdapStrategySetup;
@@ -57,6 +56,7 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
 
   const [isSuccessToRagistration, setIsSuccessToRagistration] = useState(false);
 
+  const isRegistrationEnabled = isLocalStrategySetup && registrationMode !== RegistrationMode.CLOSED;
 
   useEffect(() => {
     const { hash } = window.location;
