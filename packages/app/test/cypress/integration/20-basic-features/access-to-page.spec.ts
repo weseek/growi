@@ -151,9 +151,9 @@ context('Access to Template Editing Mode', () => {
 
     cy.getByTestid('page-template-modal').should('be.visible')
     cy.screenshot(`${ssPrefix}-open-page-template-bootstrap4`);
-    cy.getByTestid('template-button-children').click();
+    cy.getByTestid('template-button-children', { timeout: 30000 }).click();
     cy.get('.grw-skelton', { timeout: 30000 }).should('not.exist').then(()=>{
-      cy.getByTestid('navbar-editor', { timeout: 30000 }).should('be.visible').then(()=>{
+      cy.getByTestid('navbar-editor').should('be.visible').then(()=>{
         cy.url().should('include', '/_template#edit');
         cy.screenshot();
       })
@@ -162,7 +162,7 @@ context('Access to Template Editing Mode', () => {
 
   it('Access to Template Editor mode including decendants successfully', () => {
     cy.visit('/Sandbox/Bootstrap4', {  });
-    cy.get('#grw-subnav-container').within(() => {
+    cy.get('#grw-subnav-container', { timeout: 30000 }).within(() => {
       cy.getByTestid('open-page-item-control-btn').click();
       cy.getByTestid('open-page-template-modal-btn').click();
     });
@@ -170,7 +170,7 @@ context('Access to Template Editing Mode', () => {
     cy.getByTestid('page-template-modal').should('be.visible')
     cy.getByTestid('template-button-decendants').click();
     cy.get('.grw-skelton', { timeout: 30000 }).should('not.exist').then(()=>{
-      cy.getByTestid('navbar-editor', { timeout: 30000 }).should('be.visible').then(()=>{
+      cy.getByTestid('navbar-editor').should('be.visible').then(()=>{
         cy.url().should('include', '/__template#edit');
         cy.screenshot();
       })
