@@ -1116,6 +1116,8 @@ class CodeMirrorEditor extends AbstractEditor {
           }}
           onKeyPress={this.keyPressHandler}
           onKeyDown={this.keyDownHandler}
+          pasteHandler={this.pasteHandler}
+          scrollCursorIntoViewHandler={this.scrollCursorIntoViewHandler}
         />
 
         { this.renderLoadingKeymapOverlay() }

@@ -26,17 +26,27 @@ export interface UncontrolledCodeMirrorProps extends ICodeMirror {
   onSave?: () => Promise<void>;
   onPasteFiles?: (event: Event) => void;
   onCtrlEnter?: (event: Event) => void;
+  pasteHandler: (editor: any, event: Event) => void;
+  scrollCursorIntoViewHandler: (editor: any, event: Event) => void;
 }
 
 export const UncontrolledCodeMirror = React.forwardRef<CodeMirror|null, UncontrolledCodeMirrorProps>((props, forwardedRef): JSX.Element => {
 
-  const wrapperRef = useRef<CodeMirror|null>();
+  const {
+    value, lineNumbers, options,
+    pasteHandler, scrollCursorIntoViewHandler,
+    ...rest
+  } = props;
 
   const editorRef = useRef<Editor>();
 
+  const wrapperRef = useRef<CodeMirror|null>();
+
   const editorDidMountHandler = useCallback((editor: Editor): void => {
     editorRef.current = editor;
-  }, []);
+    editor.on('paste', pasteHandler);
+    editor.on('scrollCursorIntoView', scrollCursorIntoViewHandler);
+  }, [pasteHandler, scrollCursorIntoViewHandler]);
 
   const editorWillUnmountHandler = useCallback((): void => {
     // workaround to fix editor duplicating by https://github.com/scniro/react-codemirror2/issues/284#issuecomment-1155928554
@@ -47,11 +57,6 @@ export const UncontrolledCodeMirror = React.forwardRef<CodeMirror|null, Uncontro
       (wrapperRef.current as any).hydrated = false;
     }
   }, []);
-
-  const {
-    value, lineNumbers, options,
-    ...rest
-  } = props;
 
   // default true
   const isGfmMode = rest.isGfmMode ?? true;
