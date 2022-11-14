@@ -686,18 +686,16 @@ module.exports = (crowi) => {
   router.put('/customize-logo', loginRequiredStrictly, adminRequired, validator.logo, apiV3FormValidator, async(req, res) => {
 
     const {
-      isDefaultLogo, customizedLogoSrc,
+      isDefaultLogo,
     } = req.body;
 
     const requestParams = {
       'customize:isDefaultLogo': isDefaultLogo,
-      'customize:customizedLogoSrc': customizedLogoSrc,
     };
     try {
       await crowi.configManager.updateConfigsInTheSameNamespace('crowi', requestParams);
       const customizedParams = {
         isDefaultLogo: await crowi.configManager.getConfig('crowi', 'customize:isDefaultLogo'),
-        customizedLogoSrc: await crowi.configManager.getConfig('crowi', 'customize:customizedLogoSrc'),
       };
       return res.apiv3({ customizedParams });
     }

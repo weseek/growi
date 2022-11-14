@@ -5,8 +5,10 @@ import { format, subSeconds } from 'date-fns';
 import { body, validationResult } from 'express-validator';
 
 import { SupportedAction } from '~/interfaces/activity';
+import { RegistrationMode } from '~/interfaces/registration-mode';
 import UserRegistrationOrder from '~/server/models/user-registration-order';
 import loggerFactory from '~/utils/logger';
+
 
 const logger = loggerFactory('growi:routes:apiv3:user-activation');
 
@@ -246,10 +248,20 @@ export const registerAction = (crowi) => {
     const registerForm = req.body.registerForm || {};
     const email = registerForm.email;
     const isRegisterableEmail = await User.isRegisterableEmail(email);
+    const registrationMode = crowi.configManager.getConfig('crowi', 'security:registrationMode') as RegistrationMode;
+    const isEmailValid = await User.isEmailValid(email);
+
+    if (registrationMode === RegistrationMode.CLOSED) {
+      return res.apiv3Err(['message.registration_closed'], 400);
+    }
 
     if (!isRegisterableEmail) {
       req.body.registerForm.email = email;
       return res.apiv3Err(['message.email_address_is_already_registered'], 400);
+    }
+
+    if (!isEmailValid) {
+      return res.apiv3Err(['message.email_address_could_not_be_used'], 400);
     }
 
     try {
