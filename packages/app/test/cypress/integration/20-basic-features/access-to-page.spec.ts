@@ -161,14 +161,14 @@ context('Access to Template Editing Mode', () => {
     cy.get('#grw-subnav-container').within(() => {
       cy.getByTestid('open-page-item-control-btn').click();
       cy.getByTestid('open-page-template-modal-btn').click();
-   });
+    });
 
     cy.getByTestid('page-template-modal').should('be.visible')
     // cy.screenshot(`${ssPrefix}-open-page-template-bootstrap4`);
     cy.getByTestid('template-button-decendants').click();
     cy.url().should('include', '/__template#edit');
     cy.screenshot();
- });
+  });
 
 });
 
