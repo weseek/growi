@@ -155,6 +155,8 @@ context('Search all pages', () => {
     const tag = 'help';
     const searchText = `tag:${tag}`;
     cy.visit('/');
+    cy.get('.grw-skelton').should('not.exist');
+
     // Add tag
     cy.get('#edit-tags-btn-wrapper-for-tooltip > a').click({force: true});
     cy.get('#edit-tag-modal').should('be.visible');

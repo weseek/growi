@@ -1,6 +1,13 @@
 context('Access to page by guest', () => {
   const ssPrefix = 'access-to-page-by-guest-';
 
+  beforeEach(() => {
+    // login
+    cy.fixture("user-admin.json").then(user => {
+      cy.login(user.username, user.password);
+    });
+  });
+
   it('/Sandbox is successfully loaded', () => {
     cy.visit('/Sandbox');
     cy.get('.fa-spinner').should('not.exist');
@@ -47,6 +54,13 @@ context('Access to /me page', () => {
   const ssPrefix = 'access-to-me-page-by-guest-';
 
   beforeEach(() => {
+    // login
+    cy.fixture("user-admin.json").then(user => {
+      cy.login(user.username, user.password);
+    });
+  });
+
+  beforeEach(() => {
     // collapse sidebar
     cy.collapseSidebar(true);
   });
@@ -61,6 +75,13 @@ context('Access to /me page', () => {
 
 context('Access to special pages by guest', () => {
   const ssPrefix = 'access-to-special-pages-by-guest-';
+
+  beforeEach(() => {
+    // login
+    cy.fixture("user-admin.json").then(user => {
+      cy.login(user.username, user.password);
+    });
+  });
 
   it('/trash is successfully loaded', () => {
     cy.visit('/trash', {  });
