@@ -7,6 +7,7 @@ import EventEmitter from 'events';
 import { envUtils, PageGrant } from '@growi/core';
 import detectIndent from 'detect-indent';
 import { useTranslation } from 'next-i18next';
+import { useRouter } from 'next/router';
 import { throttle, debounce } from 'throttle-debounce';
 
 import { saveOrUpdate } from '~/client/services/page-operation';
@@ -51,6 +52,8 @@ let isOriginOfScrollSyncPreview = false;
 const PageEditor = React.memo((): JSX.Element => {
 
   const { t } = useTranslation();
+  const router = useRouter();
+
   const { data: pageId } = useCurrentPageId();
   const { data: currentPagePath } = useCurrentPagePath();
   const { data: currentPathname } = useCurrentPathname();
@@ -127,8 +130,13 @@ const PageEditor = React.memo((): JSX.Element => {
     );
 
     try {
-      await saveOrUpdate(optionsToSave, { pageId, path: currentPagePath || currentPathname, revisionId: currentRevisionId }, markdownToSave.current);
-      await mutateCurrentPage();
+      const { page } = await saveOrUpdate(
+        optionsToSave,
+        { pageId, path: currentPagePath || currentPathname, revisionId: currentRevisionId },
+        markdownToSave.current,
+      );
+
+      await router.push(`/${page._id}`);
       mutateIsEnabledUnsavedWarning(false);
       return true;
     }

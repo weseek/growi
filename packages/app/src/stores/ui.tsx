@@ -23,7 +23,7 @@ import loggerFactory from '~/utils/logger';
 
 import {
   useCurrentPageId, useIsEditable, useIsGuestUser,
-  useIsSharedUser, useIsIdenticalPath, useCurrentUser, useIsNotFound, useShareLinkId,
+  useIsSharedUser, useIsIdenticalPath, useCurrentUser, useShareLinkId, useIsNotFound,
 } from './context';
 import { localStorageMiddleware } from './middlewares/sync-to-storage';
 import { useCurrentPagePath, useIsTrashPage } from './page';
@@ -395,7 +395,6 @@ export const usePageTreeDescCountMap = (initialData?: UpdateDescCountData): SWRR
     update: (newData: UpdateDescCountData) => swrResponse.mutate(new Map([...(swrResponse.data || new Map()), ...newData])),
   };
 };
-
 
 /** **********************************************************
  *                          SWR Hooks
