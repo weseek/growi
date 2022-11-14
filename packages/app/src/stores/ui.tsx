@@ -23,7 +23,7 @@ import loggerFactory from '~/utils/logger';
 
 import {
   useCurrentPageId, useIsEditable, useIsGuestUser,
-  useIsSharedUser, useIsIdenticalPath, useCurrentUser, useShareLinkId,
+  useIsSharedUser, useIsIdenticalPath, useCurrentUser, useShareLinkId, useIsNotFound,
 } from './context';
 import { localStorageMiddleware } from './middlewares/sync-to-storage';
 import { useCurrentPagePath, useIsTrashPage } from './page';
@@ -395,12 +395,6 @@ export const usePageTreeDescCountMap = (initialData?: UpdateDescCountData): SWRR
     update: (newData: UpdateDescCountData) => swrResponse.mutate(new Map([...(swrResponse.data || new Map()), ...newData])),
   };
 };
-
-// TODO: Consider place https://redmine.weseek.co.jp/issues/108795
-export const useIsNotFound = (fallbackData?: boolean): SWRResponse<boolean, Error> => {
-  return useStaticSWR<boolean, Error>('isNotFound', undefined, { fallbackData });
-};
-
 
 /** **********************************************************
  *                          SWR Hooks

@@ -7,11 +7,11 @@ import { Link } from 'react-scroll';
 
 import { DEFAULT_AUTO_SCROLL_OPTS } from '~/client/util/smooth-scroll';
 import {
-  useIsSharedUser, useIsEditable, useShareLinkId,
+  useIsSharedUser, useIsEditable, useShareLinkId, useIsNotFound,
 } from '~/stores/context';
 import { useDescendantsPageListModal } from '~/stores/modal';
 import { useCurrentPagePath, useSWRxCurrentPage } from '~/stores/page';
-import { EditorMode, useEditorMode, useIsNotFound } from '~/stores/ui';
+import { EditorMode, useEditorMode } from '~/stores/ui';
 
 import CountBadge from '../Common/CountBadge';
 import { ContentLinkButtonsProps } from '../ContentLinkButtons';

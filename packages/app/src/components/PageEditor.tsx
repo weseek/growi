@@ -7,6 +7,7 @@ import EventEmitter from 'events';
 import { envUtils, PageGrant } from '@growi/core';
 import detectIndent from 'detect-indent';
 import { useTranslation } from 'next-i18next';
+import { useRouter } from 'next/router';
 import { throttle, debounce } from 'throttle-debounce';
 
 import { saveOrUpdate } from '~/client/services/page-operation';
@@ -26,7 +27,7 @@ import { useCurrentPagePath, useSWRxCurrentPage } from '~/stores/page';
 import { usePreviewOptions } from '~/stores/renderer';
 import {
   EditorMode,
-  useEditorMode, useIsMobile, useIsNotFound, useSelectedGrant,
+  useEditorMode, useIsMobile, useSelectedGrant,
 } from '~/stores/ui';
 import loggerFactory from '~/utils/logger';
 
@@ -51,11 +52,11 @@ let isOriginOfScrollSyncPreview = false;
 const PageEditor = React.memo((): JSX.Element => {
 
   const { t } = useTranslation();
+  const router = useRouter();
 
-  const { data: pageId, mutate: mutateCurrentPageId } = useCurrentPageId();
+  const { data: pageId } = useCurrentPageId();
   const { data: currentPagePath } = useCurrentPagePath();
   const { data: currentPathname } = useCurrentPathname();
-  const { mutate: mutateIsNotFound } = useIsNotFound();
   const { data: currentPage, mutate: mutateCurrentPage } = useSWRxCurrentPage();
   const { data: grantData, mutate: mutateGrant } = useSelectedGrant();
   const { data: pageTags } = usePageTagsForEditors(pageId);
@@ -135,12 +136,7 @@ const PageEditor = React.memo((): JSX.Element => {
         markdownToSave.current,
       );
 
-      // TODO: Consider to make a function for this process https://redmine.weseek.co.jp/issues/108795
-      await mutateCurrentPageId(page._id);
-      await mutateCurrentPage();
-      if (typeof page?.revision.body === 'string') {
-        await mutateIsNotFound(false);
-      }
+      await router.push(`/${page._id}`);
       mutateIsEnabledUnsavedWarning(false);
       return true;
     }

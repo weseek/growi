@@ -3,7 +3,7 @@ import React, { FC } from 'react';
 import { DevidedPagePath, pagePathUtils } from '@growi/core';
 import dynamic from 'next/dynamic';
 
-import { useIsNotFound } from '~/stores/ui';
+import { useIsNotFound } from '~/stores/context';
 
 import LinkedPagePath from '../models/linked-page-path';
 
