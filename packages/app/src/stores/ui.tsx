@@ -1,6 +1,7 @@
 import { RefObject, useCallback, useEffect } from 'react';
 
 import {
+  IPagePopulatedToShowRevision,
   isClient, isServer, pagePathUtils, Nullable, PageGrant,
 } from '@growi/core';
 import { withUtils, SWRResponseWithUtils } from '@growi/core/src/utils/with-utils';
@@ -394,6 +395,10 @@ export const usePageTreeDescCountMap = (initialData?: UpdateDescCountData): SWRR
     getDescCount: (pageId?: string) => (pageId != null ? swrResponse.data?.get(pageId) : null),
     update: (newData: UpdateDescCountData) => swrResponse.mutate(new Map([...(swrResponse.data || new Map()), ...newData])),
   };
+};
+
+export const useRequestRevisionPage = (initialData?: IPagePopulatedToShowRevision): SWRResponse<IPagePopulatedToShowRevision, Error> => {
+  return useStaticSWR('requestRevisionPage', initialData);
 };
 
 

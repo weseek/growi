@@ -1,4 +1,4 @@
-import { IUser, pagePathUtils, IPagePopulatedToShowRevision } from '@growi/core';
+import { IUser, pagePathUtils } from '@growi/core';
 import { HtmlElementNode } from 'rehype-toc';
 import { Key, SWRResponse } from 'swr';
 import useSWRImmutable from 'swr/immutable';
@@ -223,10 +223,6 @@ export const useGrowiAppIdForGrowiCloud = (initialData?: number): SWRResponse<nu
 
 export const useIsContainerFluid = (initialData?: boolean): SWRResponse<boolean, Error> => {
   return useStaticSWR('isContainerFluid', initialData);
-};
-
-export const useStaticPageData = (initialData?: IPagePopulatedToShowRevision): SWRResponse<IPagePopulatedToShowRevision, Error> => {
-  return useStaticSWR('staticPageData', initialData);
 };
 
 /** **********************************************************

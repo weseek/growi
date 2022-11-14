@@ -13,7 +13,7 @@ import { HtmlElementNode } from 'rehype-toc';
 import { toastSuccess, toastError } from '~/client/util/apiNotification';
 import { getOptionsToSave } from '~/client/util/editor';
 import {
-  useIsGuestUser, useShareLinkId, useIsLatestRevision, useStaticPageData,
+  useIsGuestUser, useShareLinkId, useIsLatestRevision,
 } from '~/stores/context';
 import {
   useSWRxSlackChannels, useIsSlackEnabled, usePageTagsForEditors, useIsEnabledUnsavedWarning,
@@ -22,7 +22,7 @@ import { useSWRxCurrentPage } from '~/stores/page';
 import { useViewOptions } from '~/stores/renderer';
 import {
   useCurrentPageTocNode,
-  useEditorMode, useIsMobile,
+  useEditorMode, useIsMobile, useRequestRevisionPage,
 } from '~/stores/ui';
 import loggerFactory from '~/utils/logger';
 
@@ -226,7 +226,7 @@ export const Page = (props) => {
 
   // for History "View this version" function on PageAccessoryModal
   const { data: isLatestRevision } = useIsLatestRevision();
-  const { data: pageWithMetaData } = useStaticPageData();
+  const { data: requestRevisionPage } = useRequestRevisionPage();
 
   const pageRef = useRef(null);
 
@@ -274,7 +274,7 @@ export const Page = (props) => {
     return null;
   }
 
-  const page = ((pageWithMetaData != null && isLatestRevision != null) && !isLatestRevision) ? pageWithMetaData : currentPage;
+  const page = ((requestRevisionPage != null && isLatestRevision != null) && !isLatestRevision) ? requestRevisionPage : currentPage;
 
   return (
     <PageSubstance

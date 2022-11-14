@@ -42,6 +42,7 @@ import {
   EditorMode,
   useEditorMode, useSelectedGrant,
   usePreferDrawerModeByUser, usePreferDrawerModeOnEditByUser, useSidebarCollapsed, useCurrentSidebarContents, useCurrentProductNavWidth,
+  useRequestRevisionPage,
 } from '~/stores/ui';
 import loggerFactory from '~/utils/logger';
 
@@ -66,7 +67,6 @@ import {
   useCsrfToken, useIsSearchScopeChildrenAsDefault, useCurrentPageId, useCurrentPathname,
   useIsSlackConfigured, useRendererConfig, useEditingMarkdown,
   useEditorConfig, useIsAllReplyShown, useIsUploadableFile, useIsUploadableImage, useCustomizedLogoSrc, useIsContainerFluid,
-  useStaticPageData,
 } from '../stores/context';
 
 import {
@@ -245,7 +245,7 @@ const GrowiPage: NextPage<Props> = (props: Props) => {
 
   const { data: currentPage } = useSWRxCurrentPage(undefined, pageWithMeta?.data ?? null); // store initial data
   useEditingMarkdown(pageWithMeta?.data.revision?.body ?? '');
-  useStaticPageData(pageWithMeta?.data); // store page data statically for History function on PageAccessoryModal
+  useRequestRevisionPage(pageWithMeta?.data); // store page data statically for History function on PageAccessoryModal
 
   const { data: grantData } = useSWRxIsGrantNormalized(pageId);
   const { mutate: mutateSelectedGrant } = useSelectedGrant();
