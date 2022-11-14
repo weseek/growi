@@ -6,7 +6,7 @@ import dynamic from 'next/dynamic';
 import { useRouter } from 'next/router';
 import { DropdownItem } from 'reactstrap';
 
-import { exportAsMarkdown } from '~/client/services/page-operation';
+import { exportAsMarkdown, updateContentWidth } from '~/client/services/page-operation';
 import { toastSuccess, toastError } from '~/client/util/apiNotification';
 import { apiPost } from '~/client/util/apiv1-client';
 import {
@@ -16,7 +16,7 @@ import { IResTagsUpdateApiv1 } from '~/interfaces/tag';
 import { OnDuplicatedFunction, OnRenamedFunction, OnDeletedFunction } from '~/interfaces/ui';
 import {
   useCurrentPageId, useCurrentPathname, useIsNotFound,
-  useCurrentUser, useIsGuestUser, useIsSharedUser, useShareLinkId, useTemplateTagData,
+  useCurrentUser, useIsGuestUser, useIsSharedUser, useShareLinkId, useTemplateTagData, useIsContainerFluid,
 } from '~/stores/context';
 import { usePageTagsForEditors } from '~/stores/editor';
 import {
@@ -201,6 +201,7 @@ const GrowiContextualSubNavigation = (props: GrowiContextualSubNavigationProps):
   const { data: isGuestUser } = useIsGuestUser();
   const { data: isSharedUser } = useIsSharedUser();
   const { data: shareLinkId } = useShareLinkId();
+  const { data: isContainerFluid } = useIsContainerFluid();
 
   const { data: isAbleToShowPageManagement } = useIsAbleToShowPageManagement();
   const { data: isAbleToShowTagLabel } = useIsAbleToShowTagLabel();
@@ -312,6 +313,11 @@ const GrowiContextualSubNavigation = (props: GrowiContextualSubNavigationProps):
     openDeleteModal([pageWithMeta], { onDeleted: deletedHandler });
   }, [openDeleteModal, reload, router]);
 
+  const switchContentWidthHandler = useCallback(async(pageId: string, value: boolean) => {
+    await updateContentWidth(pageId, value);
+    mutateCurrentPage();
+  }, [mutateCurrentPage]);
+
   const templateMenuItemClickHandler = useCallback(() => {
     setIsPageTempleteModalShown(true);
   }, []);
@@ -355,12 +361,14 @@ const GrowiContextualSubNavigation = (props: GrowiContextualSubNavigationProps):
                     revisionId={revisionId}
                     shareLinkId={shareLinkId}
                     path={path ?? currentPathname} // If the page is empty, "path" is undefined
+                    expandContentWidth={currentPage?.expandContentWidth ?? isContainerFluid}
                     disableSeenUserInfoPopover={isSharedUser}
                     showPageControlDropdown={isAbleToShowPageManagement}
                     additionalMenuItemRenderer={additionalMenuItemsRenderer}
                     onClickDuplicateMenuItem={duplicateItemClickedHandler}
                     onClickRenameMenuItem={renameItemClickedHandler}
                     onClickDeleteMenuItem={deleteItemClickedHandler}
+                    onClickSwitchContentWidth={switchContentWidthHandler}
                   />
                 ) }
               </div>
@@ -401,7 +409,10 @@ const GrowiContextualSubNavigation = (props: GrowiContextualSubNavigationProps):
       </>
     );
   // eslint-disable-next-line max-len
-  }, [isCompactMode, isViewMode, pageId, revisionId, shareLinkId, path, currentPathname, isSharedUser, isAbleToShowPageManagement, duplicateItemClickedHandler, renameItemClickedHandler, deleteItemClickedHandler, isAbleToShowPageEditorModeManager, isGuestUser, editorMode, isAbleToShowPageAuthors, currentPage, currentUser, isPageTemplateModalShown, isLinkSharingDisabled, templateMenuItemClickHandler, mutateEditorMode]);
+  }, [isCompactMode, isViewMode, pageId, revisionId, shareLinkId, path, currentPathname, isSharedUser, isAbleToShowPageManagement,
+      duplicateItemClickedHandler, renameItemClickedHandler, deleteItemClickedHandler, isAbleToShowPageEditorModeManager, isGuestUser,
+      editorMode, isAbleToShowPageAuthors, currentPage, currentUser, isPageTemplateModalShown, isLinkSharingDisabled, templateMenuItemClickHandler,
+      mutateEditorMode, switchContentWidthHandler]);
 
 
   const pagePath = isNotFound

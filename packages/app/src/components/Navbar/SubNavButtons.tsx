@@ -4,7 +4,7 @@ import { useTranslation } from 'next-i18next';
 import { DropdownItem } from 'reactstrap';
 
 import {
-  toggleBookmark, toggleLike, toggleSubscribe, updateContentWidth,
+  toggleBookmark, toggleLike, toggleSubscribe,
 } from '~/client/services/page-operation';
 import { toastError } from '~/client/util/apiNotification';
 import {
@@ -28,22 +28,19 @@ import SeenUserInfo from '../User/SeenUserInfo';
 
 type WideViewMenuItemProps = AdditionalMenuItemsRendererProps & {
   onClickMenuItem: (newValue: boolean) => void,
+  expandContentWidth?: boolean,
 }
 
 const WideViewMenuItem = (props: WideViewMenuItemProps): JSX.Element => {
   const { t } = useTranslation();
 
   const {
-    pageInfo, onClickMenuItem,
+    onClickMenuItem, expandContentWidth,
   } = props;
-
-  if (!isIPageInfoForEntity(pageInfo)) {
-    return <></>;
-  }
 
   return (
     <DropdownItem
-      onClick={() => onClickMenuItem(!pageInfo.expandContentWidth)}
+      onClick={() => onClickMenuItem(!(expandContentWidth))}
       className="grw-page-control-dropdown-item"
     >
       <div className="custom-control custom-switch ml-1">
@@ -51,7 +48,7 @@ const WideViewMenuItem = (props: WideViewMenuItemProps): JSX.Element => {
           id="switchContentWidth"
           className="custom-control-input"
           type="checkbox"
-          checked={pageInfo.expandContentWidth}
+          checked={expandContentWidth}
           onChange={() => {}}
         />
         <label className="custom-control-label" htmlFor="switchContentWidth">
@@ -72,6 +69,7 @@ type CommonProps = {
   onClickDuplicateMenuItem?: (pageToDuplicate: IPageForPageDuplicateModal) => void,
   onClickRenameMenuItem?: (pageToRename: IPageToRenameWithMeta) => void,
   onClickDeleteMenuItem?: (pageToDelete: IPageToDeleteWithMeta) => void,
+  onClickSwitchContentWidth?: (pageId: string, value: boolean) => void,
 }
 
 type SubNavButtonsSubstanceProps = CommonProps & {
@@ -80,14 +78,15 @@ type SubNavButtonsSubstanceProps = CommonProps & {
   revisionId: string | null,
   path?: string | null,
   pageInfo: IPageInfoForOperation,
+  expandContentWidth?: boolean,
 }
 
 const SubNavButtonsSubstance = (props: SubNavButtonsSubstanceProps): JSX.Element => {
   const {
     pageInfo,
-    pageId, revisionId, path, shareLinkId,
+    pageId, revisionId, path, shareLinkId, expandContentWidth,
     isCompactMode, disableSeenUserInfoPopover, showPageControlDropdown, forceHideMenuItems, additionalMenuItemRenderer,
-    onClickDuplicateMenuItem, onClickRenameMenuItem, onClickDeleteMenuItem,
+    onClickDuplicateMenuItem, onClickRenameMenuItem, onClickDeleteMenuItem, onClickSwitchContentWidth,
   } = props;
 
   const { data: isGuestUser } = useIsGuestUser();
@@ -185,28 +184,30 @@ const SubNavButtonsSubstance = (props: SubNavButtonsSubstanceProps): JSX.Element
   }, [onClickDeleteMenuItem, pageId, pageInfo, path, revisionId]);
 
   const switchContentWidthClickHandler = useCallback(async(newValue: boolean) => {
-    if (isGuestUser == null || isGuestUser) {
+    if (onClickSwitchContentWidth == null || isGuestUser == null || isGuestUser) {
       return;
     }
     if (!isIPageInfoForEntity(pageInfo)) {
       return;
     }
     try {
-      await updateContentWidth(pageId, newValue);
-      mutatePageInfo();
+      onClickSwitchContentWidth(pageId, newValue);
     }
     catch (err) {
       toastError(err);
     }
-  }, [isGuestUser, mutatePageInfo, pageId, pageInfo]);
+  }, [isGuestUser, onClickSwitchContentWidth, pageId, pageInfo]);
 
   const additionalMenuItemOnTopRenderer = useMemo(() => {
     if (!isIPageInfoForEntity(pageInfo)) {
       return undefined;
     }
-    const wideviewMenuItemRenderer = (props: WideViewMenuItemProps) => <WideViewMenuItem {...props} onClickMenuItem={switchContentWidthClickHandler} />;
+    const wideviewMenuItemRenderer = (props: WideViewMenuItemProps) => {
+
+      return <WideViewMenuItem {...props} onClickMenuItem={switchContentWidthClickHandler} expandContentWidth={expandContentWidth} />;
+    };
     return wideviewMenuItemRenderer;
-  }, [pageInfo, switchContentWidthClickHandler]);
+  }, [pageInfo, switchContentWidthClickHandler, expandContentWidth]);
 
   if (!isIPageInfoForOperation(pageInfo)) {
     return <></>;
@@ -274,12 +275,14 @@ export type SubNavButtonsProps = CommonProps & {
   pageId: string,
   shareLinkId?: string | null,
   revisionId?: string | null,
-  path?: string | null
+  path?: string | null,
+  expandContentWidth?: boolean,
 };
 
 export const SubNavButtons = (props: SubNavButtonsProps): JSX.Element => {
   const {
-    pageId, revisionId, path, shareLinkId, onClickDuplicateMenuItem, onClickRenameMenuItem, onClickDeleteMenuItem,
+    pageId, revisionId, path, shareLinkId, expandContentWidth,
+    onClickDuplicateMenuItem, onClickRenameMenuItem, onClickDeleteMenuItem, onClickSwitchContentWidth,
   } = props;
 
   const { data: pageInfo, error } = useSWRxPageInfo(pageId ?? null, shareLinkId);
@@ -302,6 +305,8 @@ export const SubNavButtons = (props: SubNavButtonsProps): JSX.Element => {
       onClickDuplicateMenuItem={onClickDuplicateMenuItem}
       onClickRenameMenuItem={onClickRenameMenuItem}
       onClickDeleteMenuItem={onClickDeleteMenuItem}
+      onClickSwitchContentWidth={onClickSwitchContentWidth}
+      expandContentWidth={expandContentWidth}
     />
   );
 };

@@ -28,6 +28,7 @@ type Props = CommonProps & {
   isLocalStrategySetup: boolean,
   isLdapStrategySetup: boolean,
   isLdapSetupFailed: boolean,
+  isPasswordResetEnabled: boolean,
   isEmailAuthenticationEnabled: boolean,
 };
 
@@ -44,15 +45,13 @@ const LoginPage: NextPage<Props> = (props: Props) => {
   return (
     <NoLoginLayout title={useCustomTitle(props, 'GROWI')} className={classNames.join(' ')}>
       <LoginForm
-        // Todo: These props should be set properly. https://redmine.weseek.co.jp/issues/104847
         objOfIsExternalAuthEnableds={props.enabledStrategies}
         isLocalStrategySetup={props.isLocalStrategySetup}
         isLdapStrategySetup={props.isLdapStrategySetup}
         isLdapSetupFailed={props.isLdapSetupFailed}
         isEmailAuthenticationEnabled={props.isEmailAuthenticationEnabled}
-        isRegistrationEnabled={true}
         registrationWhiteList={props.registrationWhiteList}
-        isPasswordResetEnabled={true}
+        isPasswordResetEnabled={props.isPasswordResetEnabled}
         isMailerSetup={props.isMailerSetup}
         registrationMode={props.registrationMode}
       />
@@ -100,6 +99,7 @@ async function injectServerConfigurations(context: GetServerSidePropsContext, pr
     passportService,
   } = crowi;
 
+  props.isPasswordResetEnabled = crowi.configManager.getConfig('crowi', 'security:passport-local:isPasswordResetEnabled');
   props.isMailerSetup = mailService.isMailerSetup;
   props.isLocalStrategySetup = passportService.isLocalStrategySetup;
   props.isLdapStrategySetup = passportService.isLdapStrategySetup;
