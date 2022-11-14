@@ -26,8 +26,8 @@ export interface UncontrolledCodeMirrorProps extends ICodeMirror {
   onSave?: () => Promise<void>;
   onPasteFiles?: (event: Event) => void;
   onCtrlEnter?: (event: Event) => void;
-  pasteHandler: (editor: any, event: Event) => void;
-  scrollCursorIntoViewHandler: (editor: any, event: Event) => void;
+  pasteHandler?: (editor: any, event: Event) => void;
+  scrollCursorIntoViewHandler?: (editor: any, event: Event) => void;
 }
 
 export const UncontrolledCodeMirror = React.forwardRef<CodeMirror|null, UncontrolledCodeMirrorProps>((props, forwardedRef): JSX.Element => {
@@ -44,8 +44,13 @@ export const UncontrolledCodeMirror = React.forwardRef<CodeMirror|null, Uncontro
 
   const editorDidMountHandler = useCallback((editor: Editor): void => {
     editorRef.current = editor;
-    editor.on('paste', pasteHandler);
-    editor.on('scrollCursorIntoView', scrollCursorIntoViewHandler);
+
+    if (pasteHandler != null) {
+      editor.on('paste', pasteHandler);
+    }
+    if (scrollCursorIntoViewHandler != null) {
+      editor.on('scrollCursorIntoView', scrollCursorIntoViewHandler);
+    }
   }, [pasteHandler, scrollCursorIntoViewHandler]);
 
   const editorWillUnmountHandler = useCallback((): void => {
