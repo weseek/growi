@@ -36,13 +36,14 @@ import type { IUserUISettings } from '~/interfaces/user-ui-settings';
 import type { PageModel, PageDocument } from '~/server/models/page';
 import type { PageRedirectModel } from '~/server/models/page-redirect';
 import type { UserUISettingsModel } from '~/server/models/user-ui-settings';
-import { useSWRxCurrentPage, useSWRxIsGrantNormalized, useSWRxPageInfo } from '~/stores/page';
+import {
+  useSWRxCurrentPage, useSWRxIsGrantNormalized, useSWRxPageInfo, useRequestRevisionPage,
+} from '~/stores/page';
 import { useRedirectFrom } from '~/stores/page-redirect';
 import {
   EditorMode,
   useEditorMode, useSelectedGrant,
   usePreferDrawerModeByUser, usePreferDrawerModeOnEditByUser, useSidebarCollapsed, useCurrentSidebarContents, useCurrentProductNavWidth,
-  useRequestRevisionPage,
 } from '~/stores/ui';
 import loggerFactory from '~/utils/logger';
 

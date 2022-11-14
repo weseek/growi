@@ -16,7 +16,7 @@ import { IRevisionsForPagination } from '~/interfaces/revision';
 import { IPageTagsInfo } from '../interfaces/tag';
 
 import { useCurrentPageId, useCurrentPathname } from './context';
-
+import { useStaticSWR } from './use-static-swr';
 
 const { isPermalink: _isPermalink } = pagePathUtils;
 
@@ -139,6 +139,10 @@ export const useSWRxApplicableGrant = (
     pageId != null ? ['/page/applicable-grant', pageId] : null,
     (endpoint, pageId) => apiv3Get(endpoint, { pageId }).then(response => response.data),
   );
+};
+
+export const useRequestRevisionPage = (initialData?: IPagePopulatedToShowRevision): SWRResponse<IPagePopulatedToShowRevision, Error> => {
+  return useStaticSWR('requestRevisionPage', initialData);
 };
 
 

@@ -18,11 +18,11 @@ import {
 import {
   useSWRxSlackChannels, useIsSlackEnabled, usePageTagsForEditors, useIsEnabledUnsavedWarning,
 } from '~/stores/editor';
-import { useSWRxCurrentPage } from '~/stores/page';
+import { useSWRxCurrentPage, useRequestRevisionPage } from '~/stores/page';
 import { useViewOptions } from '~/stores/renderer';
 import {
   useCurrentPageTocNode,
-  useEditorMode, useIsMobile, useRequestRevisionPage,
+  useEditorMode, useIsMobile,
 } from '~/stores/ui';
 import loggerFactory from '~/utils/logger';
 

@@ -397,10 +397,6 @@ export const usePageTreeDescCountMap = (initialData?: UpdateDescCountData): SWRR
   };
 };
 
-export const useRequestRevisionPage = (initialData?: IPagePopulatedToShowRevision): SWRResponse<IPagePopulatedToShowRevision, Error> => {
-  return useStaticSWR('requestRevisionPage', initialData);
-};
-
 
 /** **********************************************************
  *                          SWR Hooks
