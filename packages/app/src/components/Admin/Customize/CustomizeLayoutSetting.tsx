@@ -42,6 +42,14 @@ const CustomizeLayoutSetting = (): JSX.Element => {
     }
   }, [isContainerFluid, updateLayoutSetting, t]);
 
+  if (isContainerFluid == null) {
+    return (
+      <div className="text-muted text-center">
+        <i className="fa fa-2x fa-spinner fa-pulse"></i>
+      </div>
+    );
+  }
+
   return (
     <React.Fragment>
       <div className="row">
