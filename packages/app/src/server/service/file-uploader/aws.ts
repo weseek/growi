@@ -230,5 +230,15 @@ module.exports = (crowi) => {
     return lib.doCheckLimit(uploadFileSize, maxFileSize, totalLimit);
   };
 
+  /**
+   * List files in storage
+   * TODO: implement
+   */
+  lib.listFiles = async() => {
+    return [
+      { filePath: '', fileSize: '' },
+    ];
+  };
+
   return lib;
 };

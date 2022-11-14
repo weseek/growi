@@ -125,5 +125,15 @@ module.exports = function(crowi) {
     return AttachmentFile.read({ _id: attachmentFile._id });
   };
 
+  /**
+   * List files in storage
+   * TODO: implement
+   */
+  lib.listFiles = async() => {
+    return [
+      { filePath: '', fileSize: '' },
+    ];
+  };
+
   return lib;
 };

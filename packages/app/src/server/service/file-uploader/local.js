@@ -4,6 +4,7 @@ const logger = loggerFactory('growi:service:fileUploaderLocal');
 
 const fs = require('fs');
 const path = require('path');
+
 const mkdir = require('mkdirp');
 const streamToPromise = require('stream-to-promise');
 const urljoin = require('url-join');
@@ -124,6 +125,16 @@ module.exports = function(crowi) {
     res.set('X-Accel-Redirect', internalPath);
     res.set('X-Sendfile', storagePath);
     return res.end();
+  };
+
+  /**
+   * List files in storage
+   * TODO: implement
+   */
+  lib.listFiles = async() => {
+    return [
+      { filePath: '', fileSize: '' },
+    ];
   };
 
   return lib;

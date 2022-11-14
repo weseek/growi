@@ -184,5 +184,15 @@ module.exports = function(crowi) {
     return lib.doCheckLimit(uploadFileSize, maxFileSize, gcsTotalLimit);
   };
 
+  /**
+   * List files in storage
+   * TODO: implement
+   */
+  lib.listFiles = async() => {
+    return [
+      { filePath: '', fileSize: '' },
+    ];
+  };
+
   return lib;
 };

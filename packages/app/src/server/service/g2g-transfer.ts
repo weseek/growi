@@ -49,10 +49,12 @@ export type IDataGROWIInfo = {
 }
 
 /**
- * Attachment data already exsisting in the new GROWI
+ * File metadata in storage
  */
-// TODO: use Attachemnt model type
-export type Attachment = any;
+interface FileMeta {
+  filePath: string;
+  fileSize: number;
+}
 
 /**
  * Return type for {@link Pusher.getTransferability}
@@ -71,10 +73,15 @@ interface Pusher {
    */
   getTransferability(fromGROWIInfo: IDataGROWIInfo): Promise<IGetTransferabilityReturn>
   /**
+   * List files in the storage
+   * @param {TransferKey} tk Transfer key
+   */
+  listFilesInStorage(tk: TransferKey): Promise<FileMeta[]>
+  /**
    * Transfer all Attachment data to destination GROWI
    * @param {TransferKey} tk Transfer key
    */
-  transferAttachments(tk: TransferKey, attachmentIdsFromNewGrowi: string[]): Promise<void>
+  transferAttachments(tk: TransferKey): Promise<void>
   /**
    * Start transfer data between GROWIs
    * @param {TransferKey} tk TransferKey object
@@ -87,7 +94,6 @@ interface Pusher {
     toGROWIInfo: IDataGROWIInfo,
     collections: string[],
     optionsMap: any,
-    attachmentIdsFromNewGrowi: string[]
   ): Promise<void>
 }
 
@@ -225,7 +231,7 @@ export class G2GTransferPusherService implements Pusher {
     }
     catch (err) {
       logger.error(err);
-      throw new G2GTransferError('Failed to retreive growi info.', G2GTransferErrorCode.FAILED_TO_RETREIVE_GROWI_INFO);
+      throw new G2GTransferError('Failed to retrieve growi info.', G2GTransferErrorCode.FAILED_TO_RETRIEVE_GROWI_INFO);
     }
 
     return toGROWIInfo;
@@ -278,25 +284,23 @@ export class G2GTransferPusherService implements Pusher {
     return { canTransfer: true };
   }
 
-  public async getAttachments(tk: TransferKey): Promise<string[]> {
+  public async listFilesInStorage(tk: TransferKey): Promise<FileMeta[]> {
     try {
-      const { data } = await axios.get<string[]>('/_api/v3/g2g-transfer/attachments', generateAxiosRequestConfigWithTransferKey(tk));
+      const { data } = await axios.get<FileMeta[]>('/_api/v3/g2g-transfer/attachments', generateAxiosRequestConfigWithTransferKey(tk));
       return data;
     }
     catch (err) {
       logger.error(err);
-      throw new G2GTransferError('Failed to retreive attachments', G2GTransferErrorCode.FAILED_TO_RETREIVE_ATTACHMENTS);
+      throw new G2GTransferError('Failed to retrieve file metadata', G2GTransferErrorCode.FAILED_TO_RETRIEVE_FILE_METADATA);
     }
   }
 
-  public async transferAttachments(tk: TransferKey, attachmentIdsFromNewGrowi: string[]): Promise<void> {
+  public async transferAttachments(tk: TransferKey): Promise<void> {
     const BATCH_SIZE = 100;
-
     const { fileUploadService } = this.crowi;
     const Attachment = this.crowi.model('Attachment');
-
-    // batch get
-    const attachmentsCursor = await Attachment.find({ _id: { $nin: attachmentIdsFromNewGrowi } }).cursor();
+    const filesFromNewGrowi = await this.listFilesInStorage(tk);
+    const attachmentsCursor = await Attachment.find({ _id: { $nin: filesFromNewGrowi } }).cursor();
     const batchStream = createBatchStream(BATCH_SIZE);
 
     for await (const attachmentBatch of attachmentsCursor.pipe(batchStream)) {
@@ -325,7 +329,7 @@ export class G2GTransferPusherService implements Pusher {
   }
 
   // eslint-disable-next-line max-len
-  public async startTransfer(tk: TransferKey, user: any, toGROWIInfo: IDataGROWIInfo, collections: string[], optionsMap: any, attachmentIdsFromNewGrowi: string[], shouldEmit = true): Promise<void> {
+  public async startTransfer(tk: TransferKey, user: any, toGROWIInfo: IDataGROWIInfo, collections: string[], optionsMap: any, shouldEmit = true): Promise<void> {
     const socket = this.crowi.socketIoService.getAdminSocket();
 
     if (shouldEmit) {
@@ -390,7 +394,7 @@ export class G2GTransferPusherService implements Pusher {
     }
 
     try {
-      await this.transferAttachments(tk, attachmentIdsFromNewGrowi);
+      await this.transferAttachments(tk);
     }
     catch (err) {
       logger.error(err);
