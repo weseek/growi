@@ -13,7 +13,7 @@ import { HtmlElementNode } from 'rehype-toc';
 import { toastSuccess, toastError } from '~/client/util/apiNotification';
 import { getOptionsToSave } from '~/client/util/editor';
 import {
-  useIsGuestUser, useShareLinkId,
+  useIsGuestUser, useShareLinkId, useIsLatestRevision, useStaticPageData,
 } from '~/stores/context';
 import {
   useSWRxSlackChannels, useIsSlackEnabled, usePageTagsForEditors, useIsEnabledUnsavedWarning,
@@ -224,9 +224,9 @@ export const Page = (props) => {
   const { mutate: mutateIsEnabledUnsavedWarning } = useIsEnabledUnsavedWarning();
   const { mutate: mutateCurrentPageTocNode } = useCurrentPageTocNode();
 
-  // // for History "View this version" function on PageAccessoryModal
-  // const { data: isLatestRevision } = useIsLatestRevision();
-  // const { data: pageWithMetaData } = useStaticPageData();
+  // for History "View this version" function on PageAccessoryModal
+  const { data: isLatestRevision } = useIsLatestRevision();
+  const { data: pageWithMetaData } = useStaticPageData();
 
   const pageRef = useRef(null);
 
@@ -274,14 +274,14 @@ export const Page = (props) => {
     return null;
   }
 
-  // const page = ((pageWithMetaData != null && isLatestRevision != null) && !isLatestRevision) ? pageWithMetaData : currentPage;
+  const page = ((pageWithMetaData != null && isLatestRevision != null) && !isLatestRevision) ? pageWithMetaData : currentPage;
 
   return (
     <PageSubstance
       {...props}
       ref={pageRef}
       rendererOptions={rendererOptions}
-      // page={page}
+      page={page}
       editorMode={editorMode}
       isGuestUser={isGuestUser}
       isMobile={isMobile}
