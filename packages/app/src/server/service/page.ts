@@ -3463,7 +3463,7 @@ class PageService {
       try {
         // It must check descendants as well if emptyTarget is not null
         const isEmptyPageAlreadyExist = await Page.count({ path, isEmpty: true }) > 0;
-        const shouldCheckDescendants = isEmptyPageAlreadyExist;
+        const shouldCheckDescendants = isEmptyPageAlreadyExist && !options?.overwriteScopesOfDescendants;
 
         isGrantNormalized = await this.crowi.pageGrantService.isGrantNormalized(user, path, grant, grantedUserIds, grantUserGroupId, shouldCheckDescendants);
       }
@@ -3514,7 +3514,7 @@ class PageService {
 
     // Validate
     const shouldValidateGrant = !isGrantRestricted;
-    const canProcessCreate = await this.canProcessCreate(path, grantData, shouldValidateGrant, user);
+    const canProcessCreate = await this.canProcessCreate(path, grantData, shouldValidateGrant, user, options);
     if (!canProcessCreate) {
       throw Error('Cannnot process create');
     }
