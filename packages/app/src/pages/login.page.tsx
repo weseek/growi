@@ -45,7 +45,6 @@ const LoginPage: NextPage<Props> = (props: Props) => {
   return (
     <NoLoginLayout title={useCustomTitle(props, 'GROWI')} className={classNames.join(' ')}>
       <LoginForm
-        // Todo: These props should be set properly. https://redmine.weseek.co.jp/issues/104847
         objOfIsExternalAuthEnableds={props.enabledStrategies}
         isLocalStrategySetup={props.isLocalStrategySetup}
         isLdapStrategySetup={props.isLdapStrategySetup}
