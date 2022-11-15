@@ -101,6 +101,7 @@ module.exports = (crowi, app, isInstalled) => {
 
   router.use('/user-ui-settings', require('./user-ui-settings')(crowi));
 
+  router.use('/bookmark-folder', require('./bookmark-folder')(crowi));
 
   return [router, routerForAdmin, routerForAuth];
 };
