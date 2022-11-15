@@ -12,7 +12,7 @@ import { RevisionComparer } from './RevisionComparer/RevisionComparer';
 
 const logger = loggerFactory('growi:PageHistory');
 
-export const PageHistory = (): JSX.Element => {
+export const PageHistory: React.FC<{ onCloseModal: () => void }> = ({ onCloseModal }) => {
 
   const [activePage, setActivePage] = useState(1);
 
@@ -65,6 +65,7 @@ export const PageHistory = (): JSX.Element => {
         targetRevision={targetRevision}
         onChangeSourceInvoked={setSourceRevision}
         onChangeTargetInvoked={setTargetRevision}
+        onCloseModal={onCloseModal}
       />
       <div className="my-3">
         {pager()}

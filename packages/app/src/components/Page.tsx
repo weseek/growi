@@ -13,12 +13,12 @@ import { HtmlElementNode } from 'rehype-toc';
 import { toastSuccess, toastError } from '~/client/util/apiNotification';
 import { getOptionsToSave } from '~/client/util/editor';
 import {
-  useIsGuestUser, useShareLinkId, useIsLatestRevision,
+  useIsGuestUser, useShareLinkId, useCurrentRevisionId,
 } from '~/stores/context';
 import {
   useSWRxSlackChannels, useIsSlackEnabled, usePageTagsForEditors, useIsEnabledUnsavedWarning,
 } from '~/stores/editor';
-import { useSWRxCurrentPage, useRequestRevisionPage } from '~/stores/page';
+import { useSWRxCurrentPage } from '~/stores/page';
 import { useViewOptions } from '~/stores/renderer';
 import {
   useCurrentPageTocNode,
@@ -212,8 +212,9 @@ export const Page = (props) => {
     tocRef.current = toc;
   }, []);
 
+  const { data: revisionId } = useCurrentRevisionId();
   const { data: shareLinkId } = useShareLinkId();
-  const { data: currentPage } = useSWRxCurrentPage(shareLinkId ?? undefined);
+  const { data: currentPage } = useSWRxCurrentPage(shareLinkId ?? undefined, revisionId ?? undefined);
   const { data: editorMode } = useEditorMode();
   const { data: isGuestUser } = useIsGuestUser();
   const { data: isMobile } = useIsMobile();
@@ -223,10 +224,6 @@ export const Page = (props) => {
   const { data: rendererOptions } = useViewOptions(storeTocNodeHandler);
   const { mutate: mutateIsEnabledUnsavedWarning } = useIsEnabledUnsavedWarning();
   const { mutate: mutateCurrentPageTocNode } = useCurrentPageTocNode();
-
-  // for History "View this version" function on PageAccessoryModal
-  const { data: isLatestRevision } = useIsLatestRevision();
-  const { data: requestRevisionPage } = useRequestRevisionPage();
 
   const pageRef = useRef(null);
 
@@ -274,14 +271,12 @@ export const Page = (props) => {
     return null;
   }
 
-  const page = ((requestRevisionPage != null && isLatestRevision != null) && !isLatestRevision) ? requestRevisionPage : currentPage;
-
   return (
     <PageSubstance
       {...props}
       ref={pageRef}
       rendererOptions={rendererOptions}
-      page={page}
+      page={currentPage}
       editorMode={editorMode}
       isGuestUser={isGuestUser}
       isMobile={isMobile}

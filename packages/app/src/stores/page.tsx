@@ -24,11 +24,12 @@ const { isPermalink: _isPermalink } = pagePathUtils;
 export const useSWRxPage = (
     pageId?: string|null,
     shareLinkId?: string,
+    revisionId?: string,
     initialData?: IPagePopulatedToShowRevision|null,
 ): SWRResponse<IPagePopulatedToShowRevision|null, Error> => {
   return useSWR<IPagePopulatedToShowRevision|null, Error>(
-    pageId != null ? ['/page', pageId, shareLinkId] : null,
-    (endpoint, pageId, shareLinkId) => apiv3Get<{ page: IPagePopulatedToShowRevision }>(endpoint, { pageId, shareLinkId })
+    pageId != null ? ['/page', pageId, shareLinkId, revisionId] : null,
+    (endpoint, pageId, shareLinkId, revisionId) => apiv3Get<{ page: IPagePopulatedToShowRevision }>(endpoint, { pageId, shareLinkId, revisionId })
       .then(result => result.data.page)
       .catch((errs) => {
         if (!Array.isArray(errs)) { throw Error('error is not array') }
@@ -51,11 +52,11 @@ export const useSWRxPageByPath = (path?: string): SWRResponse<IPagePopulatedToSh
 };
 
 export const useSWRxCurrentPage = (
-    shareLinkId?: string, initialData?: IPagePopulatedToShowRevision|null,
+    shareLinkId?: string, revisionId?: string, initialData?: IPagePopulatedToShowRevision|null,
 ): SWRResponse<IPagePopulatedToShowRevision|null, Error> => {
   const { data: currentPageId } = useCurrentPageId();
 
-  const swrResult = useSWRxPage(currentPageId, shareLinkId, initialData);
+  const swrResult = useSWRxPage(currentPageId, shareLinkId, revisionId, initialData);
 
   return swrResult;
 };
@@ -140,11 +141,6 @@ export const useSWRxApplicableGrant = (
     (endpoint, pageId) => apiv3Get(endpoint, { pageId }).then(response => response.data),
   );
 };
-
-export const useRequestRevisionPage = (initialData?: IPagePopulatedToShowRevision): SWRResponse<IPagePopulatedToShowRevision, Error> => {
-  return useStaticSWR('requestRevisionPage', initialData);
-};
-
 
 /** **********************************************************
  *                     Computed states

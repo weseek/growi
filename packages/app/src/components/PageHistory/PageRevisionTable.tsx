@@ -14,13 +14,14 @@ type PageRevisionTAble = {
   targetRevision: IRevisionHasId,
   onChangeSourceInvoked: React.Dispatch<React.SetStateAction<IRevisionHasId | undefined>>,
   onChangeTargetInvoked: React.Dispatch<React.SetStateAction<IRevisionHasId | undefined>>,
+  onCloseModal: () => void,
 }
 
 export const PageRevisionTable = (props: PageRevisionTAble): JSX.Element => {
   const { t } = useTranslation();
 
   const {
-    revisions, pagingLimit, sourceRevision, targetRevision, onChangeSourceInvoked, onChangeTargetInvoked,
+    revisions, pagingLimit, sourceRevision, targetRevision, onChangeSourceInvoked, onChangeTargetInvoked, onCloseModal,
   } = props;
 
   const revisionCount = revisions.length;
@@ -51,6 +52,7 @@ export const PageRevisionTable = (props: PageRevisionTAble): JSX.Element => {
               isLatestRevision={revision === latestRevision}
               hasDiff={hasDiff}
               key={`revision-history-rev-${revisionId}`}
+              onCloseModal={onCloseModal}
             />
             {hasDiff && (
               <div className="ml-md-3 mt-auto">
@@ -132,9 +134,9 @@ export const PageRevisionTable = (props: PageRevisionTAble): JSX.Element => {
     <table className={`${styles['revision-history-table']} table revision-history-table`}>
       <thead>
         <tr className="d-flex">
-          <th className="col">{ t('page_history.revision') }</th>
-          <th className="col-1">{ t('page_history.comparing_source') }</th>
-          <th className="col-2">{ t('page_history.comparing_target') }</th>
+          <th className="col">{t('page_history.revision')}</th>
+          <th className="col-1">{t('page_history.comparing_source')}</th>
+          <th className="col-2">{t('page_history.comparing_target')}</th>
         </tr>
       </thead>
       <tbody className="overflow-auto d-block">

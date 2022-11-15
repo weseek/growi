@@ -37,7 +37,7 @@ import type { PageModel, PageDocument } from '~/server/models/page';
 import type { PageRedirectModel } from '~/server/models/page-redirect';
 import type { UserUISettingsModel } from '~/server/models/user-ui-settings';
 import {
-  useSWRxCurrentPage, useSWRxIsGrantNormalized, useSWRxPageInfo, useRequestRevisionPage,
+  useSWRxCurrentPage, useSWRxIsGrantNormalized, useSWRxPageInfo,
 } from '~/stores/page';
 import { useRedirectFrom } from '~/stores/page-redirect';
 import {
@@ -59,7 +59,7 @@ import DisplaySwitcher from '../components/Page/DisplaySwitcher';
 // import PageStatusAlert from '../client/js/components/PageStatusAlert';
 import {
   useCurrentUser,
-  useIsLatestRevision,
+  useIsLatestRevision, useCurrentRevisionId,
   useIsForbidden, useIsNotFound, useIsSharedUser,
   useIsEnabledStaleNotification, useIsIdenticalPath,
   useIsSearchServiceConfigured, useIsSearchServiceReachable, useDisableLinkSharing,
@@ -136,7 +136,8 @@ type Props = CommonProps & {
   redirectFrom?: string;
 
   // shareLinkId?: string;
-  isLatestRevision?: boolean
+  isLatestRevision?: boolean,
+  revisionId?: string,
 
   isIdenticalPathPage?: boolean,
   isForbidden: boolean,
@@ -244,9 +245,9 @@ const GrowiPage: NextPage<Props> = (props: Props) => {
   // useIsNotCreatable(props.isForbidden || !isCreatablePage(pagePath)); // TODO: need to include props.isIdentical
   useCurrentPathname(props.currentPathname);
 
-  const { data: currentPage } = useSWRxCurrentPage(undefined, pageWithMeta?.data ?? null); // store initial data
+  const { data: currentPage } = useSWRxCurrentPage(undefined, props.revisionId, pageWithMeta?.data ?? null); // store initial data
   useEditingMarkdown(pageWithMeta?.data.revision?.body ?? '');
-  useRequestRevisionPage(pageWithMeta?.data); // store request revisionId page data History function on PageAccessoryModal
+  useCurrentRevisionId(props.revisionId); // store request revisionId page data History function on PageAccessoryModal
 
   const { data: grantData } = useSWRxIsGrantNormalized(pageId);
   const { mutate: mutateSelectedGrant } = useSelectedGrant();
@@ -414,6 +415,10 @@ async function injectPageData(context: GetServerSidePropsContext, props: Props):
     page.initLatestRevisionField(revisionId);
     await page.populateDataToShowRevision();
     props.isLatestRevision = page.isLatestRevision();
+  }
+
+  if (typeof revisionId === 'string' || typeof revisionId === 'undefined') {
+    props.revisionId = revisionId;
   }
 
   props.pageWithMeta = pageWithMeta;
