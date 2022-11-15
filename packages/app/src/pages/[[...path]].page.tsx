@@ -245,7 +245,7 @@ const GrowiPage: NextPage<Props> = (props: Props) => {
 
   const { data: currentPage } = useSWRxCurrentPage(undefined, props.currentRevisionId, pageWithMeta?.data ?? null); // store initial data
   useEditingMarkdown(pageWithMeta?.data.revision?.body ?? '');
-  useCurrentRevisionId(props.currentRevisionId); // store request revisionId page data History function on PageAccessoryModal
+  useCurrentRevisionId(props.currentRevisionId);
 
   const { data: grantData } = useSWRxIsGrantNormalized(pageId);
   const { mutate: mutateSelectedGrant } = useSelectedGrant();
