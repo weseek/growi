@@ -418,7 +418,7 @@ async function injectPageData(context: GetServerSidePropsContext, props: Props):
   }
 
   if (typeof revisionId === 'string' || typeof revisionId === 'undefined') {
-    props.currentRevisionId = revisionId;
+    props.currentRevisionId = props.isLatestRevision && page.latestRevision != null ? page.latestRevision.toString() : revisionId;
   }
 
   props.pageWithMeta = pageWithMeta;
