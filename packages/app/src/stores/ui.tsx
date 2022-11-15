@@ -1,7 +1,6 @@
 import { RefObject, useCallback, useEffect } from 'react';
 
 import {
-  IPagePopulatedToShowRevision,
   isClient, isServer, pagePathUtils, Nullable, PageGrant,
 } from '@growi/core';
 import { withUtils, SWRResponseWithUtils } from '@growi/core/src/utils/with-utils';
