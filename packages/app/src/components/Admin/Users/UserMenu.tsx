@@ -95,9 +95,9 @@ const UserMenu = (props: UserMenuProps) => {
         && <i className={`fa fa-circle text-danger grw-usermenu-notification-icon ${styles['grw-usermenu-notification-icon']}`} />}
       </DropdownToggle>
       <DropdownMenu positionFixed>
-        {renderEditMenu}
-        {user.status !== 4 && renderStatusMenu}
-        {user.status === 2 && renderAdminMenu}
+        {renderEditMenu()}
+        {user.status !== 4 && renderStatusMenu()}
+        {user.status === 2 && renderAdminMenu()}
       </DropdownMenu>
     </UncontrolledDropdown>
   );
