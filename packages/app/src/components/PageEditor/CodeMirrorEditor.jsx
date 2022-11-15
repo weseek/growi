@@ -1064,12 +1064,6 @@ class CodeMirrorEditor extends AbstractEditor {
           ref={this.cm}
           className={additionalClasses}
           placeholder="search"
-          // == temporary deactivate editorDidMount to use https://github.com/scniro/react-codemirror2/issues/284#issuecomment-1155928554
-          // editorDidMount={(editor) => {
-          // // add event handlers
-          //   editor.on('paste', this.pasteHandler);
-          //   editor.on('scrollCursorIntoView', this.scrollCursorIntoViewHandler);
-          // }}
           value={this.props.value}
           options={{
             indentUnit: this.props.indentSize,
@@ -1116,6 +1110,8 @@ class CodeMirrorEditor extends AbstractEditor {
           }}
           onKeyPress={this.keyPressHandler}
           onKeyDown={this.keyDownHandler}
+          onPasteFiles={this.pasteHandler}
+          onScrollCursorIntoView={this.scrollCursorIntoViewHandler}
         />
 
         { this.renderLoadingKeymapOverlay() }
