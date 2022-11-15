@@ -10,6 +10,7 @@ import {
 import { debounce } from 'throttle-debounce';
 
 import MarkdownTable from '~/client/models/MarkdownTable';
+import mtu from '~/components/PageEditor/MarkdownTableUtil';
 import { useHandsontableModal } from '~/stores/modal';
 
 import ExpandOrContractButton from '../ExpandOrContractButton';
@@ -18,7 +19,6 @@ import { MarkdownTableDataImportForm } from './MarkdownTableDataImportForm';
 
 import styles from './HandsontableModal.module.scss';
 import 'handsontable/dist/handsontable.full.min.css';
-
 
 const DEFAULT_HOT_HEIGHT = 300;
 const MARKDOWNTABLE_TO_HANDSONTABLE_ALIGNMENT_SYMBOL_MAPPING = {
@@ -31,7 +31,7 @@ const MARKDOWNTABLE_TO_HANDSONTABLE_ALIGNMENT_SYMBOL_MAPPING = {
 export const HandsontableModal = (): JSX.Element => {
 
   const { t } = useTranslation('commons');
-  const { data: handsontableModalData, close: closeHandsontableModal, save: saveHandsontableModal } = useHandsontableModal();
+  const { data: handsontableModalData, close: closeHandsontableModal } = useHandsontableModal();
   const isOpened = handsontableModalData?.isOpened ?? false;
   const table = handsontableModalData?.table;
   const autoFormatMarkdownTable = handsontableModalData?.autoFormatMarkdownTable ?? false;
@@ -130,9 +130,7 @@ export const HandsontableModal = (): JSX.Element => {
       markdownTableOption.latest,
     ).normalizeCells();
 
-    if (saveHandsontableModal != null) {
-      saveHandsontableModal(editor, newMarkdownTable);
-    }
+    mtu.replaceFocusedMarkdownTableWithEditor(editor, newMarkdownTable);
 
     cancel();
   };

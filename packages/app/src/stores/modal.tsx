@@ -1,7 +1,6 @@
 import { SWRResponse } from 'swr';
 
 import MarkdownTable from '~/client/models/MarkdownTable';
-import mtu from '~/components/PageEditor/MarkdownTableUtil';
 import { IPageToDeleteWithMeta, IPageToRenameWithMeta } from '~/interfaces/page';
 import {
   OnDuplicatedFunction, OnRenamedFunction, OnDeletedFunction, OnPutBackedFunction,
@@ -490,12 +489,11 @@ type HandsontableModalStatus = {
 type HandsontableModalStatusUtils = {
   open(table: MarkdownTable, editor: any, autoFormatMarkdownTable: boolean): Promise<HandsontableModalStatus | undefined>
   close(): Promise<HandsontableModalStatus | undefined>
-  save(editor:any, tables: MarkdownTable): void
 }
 
 export const useHandsontableModal = (status?: HandsontableModalStatus): SWRResponse<HandsontableModalStatus, Error> & HandsontableModalStatusUtils => {
   const initialData: HandsontableModalStatus = {
-    isOpened: false, table: undefined, editor: '', autoFormatMarkdownTable: false,
+    isOpened: false, table: undefined, editor: undefined, autoFormatMarkdownTable: false,
   };
   const swrResponse = useStaticSWR<HandsontableModalStatus, Error>('handsontableModalStatus', status, { fallbackData: initialData });
 
@@ -503,16 +501,12 @@ export const useHandsontableModal = (status?: HandsontableModalStatus): SWRRespo
     isOpened: true, table, editor, autoFormatMarkdownTable,
   });
   const close = () => swrResponse.mutate({
-    isOpened: false, table: undefined, editor: '', autoFormatMarkdownTable: false,
+    isOpened: false, table: undefined, editor: undefined, autoFormatMarkdownTable: false,
   });
-  const save = (editor: any, tables: MarkdownTable) => {
-    mtu.replaceFocusedMarkdownTableWithEditor(editor, tables);
-  };
 
   return {
     ...swrResponse,
     open,
     close,
-    save,
   };
 };
