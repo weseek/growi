@@ -15,6 +15,7 @@ export type IUser = {
   admin: boolean,
   apiToken?: string,
   isEmailPublished: boolean,
+  isInvitationEmailSended: boolean,
   lang: Lang,
   slackMemberId?: string,
   createdAt: Date,
