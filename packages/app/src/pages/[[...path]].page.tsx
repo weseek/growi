@@ -23,6 +23,7 @@ import { Comments } from '~/components/Comments';
 import { PageAlerts } from '~/components/PageAlert/PageAlerts';
 // import { useTranslation } from '~/i18n';
 import { CurrentPageContentFooter } from '~/components/PageContentFooter';
+import { PageStatusAlert } from '~/components/PageStatusAlert';
 import { UsersHomePageFooterProps } from '~/components/UsersHomePageFooter';
 import type { CrowiRequest } from '~/interfaces/crowi-request';
 // import { renderScriptTagByName, renderHighlightJsStyleTag } from '~/service/cdn-resources-loader';
@@ -243,7 +244,7 @@ const GrowiPage: NextPage<Props> = (props: Props) => {
   useCurrentPathname(props.currentPathname);
 
   const { data: currentPage } = useSWRxCurrentPage(undefined, pageWithMeta?.data ?? null); // store initial data
-  useEditingMarkdown(pageWithMeta?.data.revision?.body ?? '');
+  useEditingMarkdown(currentPage?.revision.body ?? '');
 
   const { data: grantData } = useSWRxIsGrantNormalized(pageId);
   const { mutate: mutateSelectedGrant } = useSelectedGrant();
@@ -315,7 +316,7 @@ const GrowiPage: NextPage<Props> = (props: Props) => {
                     { props.isNotCreatablePage && <NotCreatablePage />}
                     { !props.isForbidden && !props.isNotCreatablePage && <DisplaySwitcher />}
                     {/* <DisplaySwitcher /> */}
-                    {/* <PageStatusAlert /> */}
+                    <PageStatusAlert />
                   </>
                 ) }
 
