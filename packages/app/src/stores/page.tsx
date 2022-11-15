@@ -15,7 +15,7 @@ import { IRevisionsForPagination } from '~/interfaces/revision';
 
 import { IPageTagsInfo } from '../interfaces/tag';
 
-import { useCurrentPageId, useCurrentPathname } from './context';
+import { useCurrentPageId, useCurrentPathname, useCurrentRevisionId } from './context';
 import { useStaticSWR } from './use-static-swr';
 
 const { isPermalink: _isPermalink } = pagePathUtils;
@@ -52,11 +52,12 @@ export const useSWRxPageByPath = (path?: string): SWRResponse<IPagePopulatedToSh
 };
 
 export const useSWRxCurrentPage = (
-    shareLinkId?: string, revisionId?: string, initialData?: IPagePopulatedToShowRevision|null,
+    shareLinkId?: string, initialData?: IPagePopulatedToShowRevision|null,
 ): SWRResponse<IPagePopulatedToShowRevision|null, Error> => {
   const { data: currentPageId } = useCurrentPageId();
+  const { data: currentRevisionId } = useCurrentRevisionId();
 
-  const swrResult = useSWRxPage(currentPageId, shareLinkId, revisionId, initialData);
+  const swrResult = useSWRxPage(currentPageId, shareLinkId, currentRevisionId, initialData);
 
   return swrResult;
 };

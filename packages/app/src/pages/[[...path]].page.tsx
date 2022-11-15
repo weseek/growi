@@ -243,10 +243,10 @@ const GrowiPage: NextPage<Props> = (props: Props) => {
   useCurrentPageId(pageId ?? null);
   // useIsNotCreatable(props.isForbidden || !isCreatablePage(pagePath)); // TODO: need to include props.isIdentical
   useCurrentPathname(props.currentPathname);
-
-  const { data: currentPage } = useSWRxCurrentPage(undefined, props.currentRevisionId, pageWithMeta?.data ?? null); // store initial data
-  useEditingMarkdown(pageWithMeta?.data.revision?.body ?? '');
   useCurrentRevisionId(props.currentRevisionId);
+
+  const { data: currentPage } = useSWRxCurrentPage(undefined, pageWithMeta?.data ?? null); // store initial data
+  useEditingMarkdown(pageWithMeta?.data.revision?.body ?? '');
 
   const { data: grantData } = useSWRxIsGrantNormalized(pageId);
   const { mutate: mutateSelectedGrant } = useSelectedGrant();
