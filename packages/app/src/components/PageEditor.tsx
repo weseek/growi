@@ -136,7 +136,12 @@ const PageEditor = React.memo((): JSX.Element => {
         markdownToSave.current,
       );
 
+      // TODO: fix here
+      const _onbeforeunload = onbeforeunload;
+      onbeforeunload = null;
       await router.push(`/${page._id}`);
+      onbeforeunload = _onbeforeunload;
+
       mutateIsEnabledUnsavedWarning(false);
       return true;
     }
