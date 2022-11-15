@@ -48,6 +48,10 @@ export const useCurrentUser = (initialData?: Nullable<IUser>): SWRResponse<Nulla
   return useContextSWR<Nullable<IUser>, Error>('currentUser', initialData);
 };
 
+export const useRevisionId = (initialData?: Nullable<any>): SWRResponse<Nullable<any>, Error> => {
+  return useContextSWR<Nullable<any>, Error>('revisionId', initialData);
+};
+
 export const useCurrentRevisionId = (initialData?: string): SWRResponse<string, Error> => {
   return useContextSWR('currentRevisionId', initialData);
 };
