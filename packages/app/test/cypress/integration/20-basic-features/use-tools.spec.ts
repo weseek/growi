@@ -231,8 +231,7 @@ context('Tag Oprations', () =>{
     const tag = 'we';
     cy.visit('/Sandbox');
     // eslint-disable-next-line cypress/no-unnecessary-waiting
-    cy.get('.grw-skelton').should('exist');
-    cy.get('.grw-skelton').should('not.exist');
+    cy.waitSkeletonDisappear();
 
     cy.get('#edit-tags-btn-wrapper-for-tooltip').should('exist').within(()=>{
       cy.get('a').should('exist').click();
