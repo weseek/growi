@@ -1156,11 +1156,18 @@ const CodeMirrorEditorFc = React.forwardRef((props, ref) => {
     openDrawioModal(drawioMxFile);
   }, [openDrawioModal]);
 
-  const openTableModalHandler = (table, editor, autoFormatMarkdownTable) => {
+  const openTableModalHandler = useCallback((table, editor, autoFormatMarkdownTable) => {
     openHandsontableModal(table, editor, autoFormatMarkdownTable);
-  };
+  }, [openHandsontableModal]);
 
-  return <CodeMirrorEditor ref={ref} onClickDrawioBtn={openDrawioModalHandler} onClickTableBtn={openTableModalHandler} {...props} />;
+  return (
+    <CodeMirrorEditor
+      ref={ref}
+      onClickDrawioBtn={openDrawioModalHandler}
+      onClickTableBtn={openTableModalHandler}
+      {...props}
+    />
+  );
 });
 
 CodeMirrorEditorFc.displayName = 'CodeMirrorEditorFc';
