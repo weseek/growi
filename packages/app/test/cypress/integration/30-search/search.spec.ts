@@ -123,11 +123,7 @@ context('Search all pages', () => {
     cy.screenshot(`${ssPrefix}4-click-three-dots-menu`, {capture: 'viewport'});
 
     //Add bookmark
-    // cy.getByTestid('open-page-item-control-btn', { timeout: 30000 }).eq(1).click({force: true});
-    // cy.get('list-group-item').should('be.visible').within(() => {
-    cy.getByTestid('open-page-item-control-btn').eq(1).click({force: true});
-    cy.getByTestid('add-remove-bookmark-btn', { timeout: 30000 }).should('be.visible').click();
-    // });
+    cy.getByTestid('add-remove-bookmark-btn').click({force: true});
     cy.get('.btn-bookmark.active').should('be.visible');
     cy.screenshot(`${ssPrefix}5-add-bookmark`, {capture: 'viewport'}); //here
 
