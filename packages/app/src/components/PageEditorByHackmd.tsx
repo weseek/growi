@@ -19,7 +19,7 @@ import {
   useSWRxSlackChannels, useIsSlackEnabled, usePageTagsForEditors, useIsEnabledUnsavedWarning,
 } from '~/stores/editor';
 import {
-  usePageIdOnHackmd, useHasDraftOnHackmd, useRevisionIdHackmdSynced, useRemoteRevisionId,
+  usePageIdOnHackmd, useHasDraftOnHackmd, useRevisionIdHackmdSynced, useRemoteRevisionId, useIsHackmdDraftUpdatingInRealtime,
 } from '~/stores/hackmd';
 import { useCurrentPagePath, useSWRxCurrentPage, useSWRxTagsInfo } from '~/stores/page';
 import {
@@ -70,7 +70,7 @@ export const PageEditorByHackmd = (): JSX.Element => {
   const { data: hasDraftOnHackmd, mutate: mutateHasDraftOnHackmd } = useHasDraftOnHackmd();
   const { data: revisionIdHackmdSynced, mutate: mutateRevisionIdHackmdSynced } = useRevisionIdHackmdSynced();
   const { mutate: mutateIsEnabledUnsavedWarning } = useIsEnabledUnsavedWarning();
-  const [isHackmdDraftUpdatingInRealtime, setIsHackmdDraftUpdatingInRealtime] = useState(false);
+  const { data: isHackmdDraftUpdatingInRealtime, mutate: mutateIsHackmdDraftUpdatingInRealtime } = useIsHackmdDraftUpdatingInRealtime(false);
   const { data: remoteRevisionId, mutate: mutateRemoteRevisionId } = useRemoteRevisionId(revision?._id);
 
   const hackmdEditorRef = useRef<HackEditorRef>(null);
@@ -204,7 +204,7 @@ export const PageEditorByHackmd = (): JSX.Element => {
         throw new Error(res.error);
       }
 
-      setIsHackmdDraftUpdatingInRealtime(false);
+      mutateIsHackmdDraftUpdatingInRealtime(false);
       mutateHasDraftOnHackmd(false);
       mutatePageIdOnHackmd(res.pageIdOnHackmd);
       mutateRemoteRevisionId(res.revisionIdHackmdSynced);
@@ -216,7 +216,7 @@ export const PageEditorByHackmd = (): JSX.Element => {
       logger.error(err);
       toastError(err.message);
     }
-  }, [setIsHackmdDraftUpdatingInRealtime, mutateHasDraftOnHackmd, mutatePageIdOnHackmd, mutateRevisionIdHackmdSynced, pageId]);
+  }, [mutateIsHackmdDraftUpdatingInRealtime, mutateHasDraftOnHackmd, mutatePageIdOnHackmd, mutateRevisionIdHackmdSynced, mutateRemoteRevisionId, pageId]);
 
   /**
    * save and update state of containers
@@ -265,6 +265,7 @@ export const PageEditorByHackmd = (): JSX.Element => {
       mutateHasDraftOnHackmd,
       mutateTagsInfo,
       mutateIsEnabledUnsavedWarning,
+      mutateRemoteRevisionId,
       t]);
 
   /**

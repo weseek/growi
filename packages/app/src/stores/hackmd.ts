@@ -1,4 +1,5 @@
 import { SWRResponse } from 'swr';
+
 import { useStaticSWR } from './use-static-swr';
 
 type Nullable<T> = T | null;
@@ -18,4 +19,8 @@ export const useRevisionIdHackmdSynced = (initialData?: Nullable<any>): SWRRespo
 
 export const useRemoteRevisionId = (initialData?: Nullable<any>): SWRResponse<Nullable<any>, Error> => {
   return useStaticSWR<Nullable<any>, Error>('remoteRevisionId', initialData);
+};
+
+export const useIsHackmdDraftUpdatingInRealtime = (initialData?: Nullable<boolean>): SWRResponse<Nullable<boolean>, Error> => {
+  return useStaticSWR<Nullable<boolean>, Error>('isHackmdDraftUpdatingInRealtime', initialData);
 };
