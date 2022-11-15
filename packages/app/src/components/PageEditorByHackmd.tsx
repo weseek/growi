@@ -29,6 +29,7 @@ import {
 import loggerFactory from '~/utils/logger';
 
 import HackmdEditor from './PageEditorByHackmd/HackmdEditor';
+import { useRouter } from 'next/router';
 
 const logger = loggerFactory('growi:PageEditorByHackmd');
 
@@ -41,6 +42,8 @@ type HackEditorRef = {
 export const PageEditorByHackmd = (): JSX.Element => {
 
   const { t } = useTranslation();
+  const router = useRouter();
+
   const { data: editorMode, mutate: mutateEditorMode } = useEditorMode();
   const { data: currentPagePath } = useCurrentPagePath();
   const { data: currentPathname } = useCurrentPathname();
@@ -100,11 +103,16 @@ export const PageEditorByHackmd = (): JSX.Element => {
 
       const markdown = await hackmdEditorRef.current.getValue();
 
-      await saveOrUpdate(optionsToSave, { pageId, path: currentPagePath || currentPathname, revisionId: revision?._id }, markdown);
+      const { page } = await saveOrUpdate(optionsToSave, { pageId, path: currentPagePath || currentPathname, revisionId: revision?._id }, markdown);
       await mutatePageData();
       await mutateTagsInfo();
+
+      if (page == null) {
+        return;
+      }
+      await mutateIsEnabledUnsavedWarning(false);
+      await router.push(`/${page._id}`);
       mutateEditorMode(EditorMode.View);
-      mutateIsEnabledUnsavedWarning(false);
     }
     catch (error) {
       logger.error('failed to save', error);

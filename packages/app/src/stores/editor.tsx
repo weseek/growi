@@ -1,5 +1,5 @@
 import { Nullable, withUtils, SWRResponseWithUtils } from '@growi/core';
-import useSWR, { SWRResponse } from 'swr';
+import useSWR, { SWRResponse, useSWRConfig } from 'swr';
 import useSWRImmutable from 'swr/immutable';
 
 import { apiGet } from '~/client/util/apiv1-client';
@@ -114,6 +114,20 @@ export const usePageTagsForEditors = (pageId: Nullable<string>): SWRResponse<str
   };
 };
 
-export const useIsEnabledUnsavedWarning = (): SWRResponse<boolean, Error> => {
-  return useStaticSWR<boolean, Error>('isEnabledUnsavedWarning', undefined, { fallbackData: false });
+type IUtilsIsEnabledUnsavedWarning = {
+  getIsEnabledUnsavedWarningFromCache(): boolean,
+};
+
+export const useIsEnabledUnsavedWarning = (): SWRResponseWithUtils<IUtilsIsEnabledUnsavedWarning, boolean, Error> => {
+  const key = 'isEnabledUnsavedWarning';
+
+  const { cache } = useSWRConfig();
+
+  const swrResponse = useStaticSWR<boolean, Error>(key, undefined, { fallbackData: false })
+
+  return withUtils(swrResponse, {
+    getIsEnabledUnsavedWarningFromCache() {
+      return cache.get(key);
+    },
+  });
 };

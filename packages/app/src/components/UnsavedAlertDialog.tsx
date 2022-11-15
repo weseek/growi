@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect } from 'react';
+import React, { useCallback, useEffect, memo } from 'react';
 
 import { useTranslation } from 'next-i18next';
 import { useRouter } from 'next/router';
@@ -8,9 +8,10 @@ import { useIsEnabledUnsavedWarning } from '~/stores/editor';
 const UnsavedAlertDialog = (): JSX.Element => {
   const { t } = useTranslation();
   const router = useRouter();
-  const { data: isEnabledUnsavedWarning } = useIsEnabledUnsavedWarning();
+  const { getIsEnabledUnsavedWarningFromCache } = useIsEnabledUnsavedWarning(); // Use getIsEnabledUnsavedWarningFromCache since eventListeners do not wait until states change
 
   const alertUnsavedWarningByBrowser = useCallback((e) => {
+    const isEnabledUnsavedWarning = getIsEnabledUnsavedWarningFromCache();
     if (isEnabledUnsavedWarning) {
       e.preventDefault();
       // returnValue should be set to show alert dialog
@@ -19,15 +20,16 @@ const UnsavedAlertDialog = (): JSX.Element => {
       e.returnValue = '';
       return;
     }
-  }, [isEnabledUnsavedWarning]);
+  }, [getIsEnabledUnsavedWarningFromCache]);
 
   const alertUnsavedWarningByNextRouter = useCallback(() => {
+    const isEnabledUnsavedWarning = getIsEnabledUnsavedWarningFromCache();
     if (isEnabledUnsavedWarning) {
     // eslint-disable-next-line no-alert
       window.alert(t('page_edit.changes_not_saved'));
     }
     return;
-  }, [isEnabledUnsavedWarning, t]);
+  }, [getIsEnabledUnsavedWarningFromCache, t]);
 
   /*
   * Route changes by Browser
@@ -56,4 +58,4 @@ const UnsavedAlertDialog = (): JSX.Element => {
   return <></>;
 };
 
-export default UnsavedAlertDialog;
+export default memo(UnsavedAlertDialog);

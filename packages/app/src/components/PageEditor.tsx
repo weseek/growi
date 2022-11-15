@@ -4,7 +4,7 @@ import React, {
 
 import EventEmitter from 'events';
 
-import { envUtils, PageGrant } from '@growi/core';
+import { envUtils, IPageHasId, PageGrant } from '@growi/core';
 import detectIndent from 'detect-indent';
 import { useTranslation } from 'next-i18next';
 import { useRouter } from 'next/router';
@@ -36,6 +36,7 @@ import loggerFactory from '~/utils/logger';
 import Editor from './PageEditor/Editor';
 import Preview from './PageEditor/Preview';
 import scrollSyncHelper from './PageEditor/ScrollSyncHelper';
+import { useSWRConfig } from 'swr';
 
 
 const logger = loggerFactory('growi:PageEditor');
@@ -115,7 +116,7 @@ const PageEditor = React.memo((): JSX.Element => {
   }, [setMarkdownWithDebounce]);
 
   // return true if the save succeeds, otherwise false.
-  const save = useCallback(async(opts?: {overwriteScopesOfDescendants: boolean}): Promise<boolean> => {
+  const save = useCallback(async(opts?: {overwriteScopesOfDescendants: boolean}): Promise<IPageHasId | null> => {
     if (grantData == null || isSlackEnabled == null || currentPathname == null) {
       logger.error('Some materials to save are invalid', { grantData, isSlackEnabled, currentPathname });
       throw new Error('Some materials to save are invalid');
@@ -136,14 +137,7 @@ const PageEditor = React.memo((): JSX.Element => {
         markdownToSave.current,
       );
 
-      // TODO: fix here
-      const _onbeforeunload = onbeforeunload;
-      onbeforeunload = null;
-      await router.push(`/${page._id}`);
-      onbeforeunload = _onbeforeunload;
-
-      mutateIsEnabledUnsavedWarning(false);
-      return true;
+      return page;
     }
     catch (error) {
       logger.error('failed to save', error);
@@ -156,7 +150,7 @@ const PageEditor = React.memo((): JSX.Element => {
         //   lastUpdateUser: error.data.user,
         // });
       }
-      return false;
+      return null;
     }
 
   // eslint-disable-next-line max-len
@@ -167,7 +161,12 @@ const PageEditor = React.memo((): JSX.Element => {
       return;
     }
 
-    await save(opts);
+    const page = await save(opts);
+    if (page == null) {
+      return;
+    }
+    await mutateIsEnabledUnsavedWarning(false);
+    await router.push(`/${page._id}`);
     mutateEditorMode(EditorMode.View);
   }, [editorMode, save, mutateEditorMode]);
 
