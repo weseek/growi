@@ -206,6 +206,7 @@ context('Page Accessories Modal', () => {
       cy.getByTestid('open-page-item-control-btn').within(() => {
         cy.get('button.btn-page-item-control').click({force: true});
       });
+      cy.getByTestid('open-page-accessories-modal-btn-with-share-link-management-data-tab').should('be.visible');
       cy.getByTestid('open-page-accessories-modal-btn-with-share-link-management-data-tab').click();
    });
 
@@ -304,7 +305,8 @@ context('Tag Oprations', () =>{
     cy.getByTestid('search-result-base').should('be.visible');
     cy.getByTestid('search-result-list').should('be.visible');
     cy.getByTestid('search-result-content').should('be.visible');
-    // cy.get('#wiki').should('be.visible');
+    // eslint-disable-next-line cypress/no-unnecessary-waiting
+    cy.wait(300);
     cy.screenshot(`${ssPrefix}1-click-tag-name`, {capture: 'viewport'});
 
     cy.getByTestid('search-result-list').within(() => {

@@ -12,7 +12,7 @@ import type { IUser, IUserHasId } from '~/interfaces/user';
 import type { IUserUISettings } from '~/interfaces/user-ui-settings';
 import type { UserUISettingsModel } from '~/server/models/user-ui-settings';
 import {
-  useCsrfToken, useCurrentUser, useIsSearchPage, useIsSearchScopeChildrenAsDefault,
+  useCsrfToken, useCurrentUser, useIsContainerFluid, useIsSearchPage, useIsSearchScopeChildrenAsDefault,
   useIsSearchServiceConfigured, useIsSearchServiceReachable, useRendererConfig, useShowPageLimitationL,
 } from '~/stores/context';
 import {
@@ -46,6 +46,8 @@ type Props = CommonProps & {
   // search limit
   showPageLimitationL: number
 
+  isContainerFluid: boolean,
+
 };
 
 const SearchResultPage: NextPage<Props> = (props: Props) => {
@@ -73,6 +75,7 @@ const SearchResultPage: NextPage<Props> = (props: Props) => {
   useRendererConfig(props.rendererConfig);
 
   useShowPageLimitationL(props.showPageLimitationL);
+  useIsContainerFluid(props.isContainerFluid);
 
   const PutbackPageModal = (): JSX.Element => {
     const PutbackPageModal = dynamic(() => import('../components/PutbackPageModal'), { ssr: false });
@@ -125,6 +128,7 @@ function injectServerConfigurations(context: GetServerSidePropsContext, props: P
   props.isSearchServiceConfigured = searchService.isConfigured;
   props.isSearchServiceReachable = searchService.isReachable;
   props.isSearchScopeChildrenAsDefault = configManager.getConfig('crowi', 'customize:isSearchScopeChildrenAsDefault');
+  props.isContainerFluid = configManager.getConfig('crowi', 'customize:isContainerFluid');
 
   props.sidebarConfig = {
     isSidebarDrawerMode: configManager.getConfig('crowi', 'customize:isSidebarDrawerMode'),

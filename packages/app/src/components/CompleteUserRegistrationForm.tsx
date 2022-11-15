@@ -1,16 +1,21 @@
 import React, { useState, useEffect, useCallback } from 'react';
 
 import { useTranslation } from 'next-i18next';
+import { useRouter } from 'next/router';
 
 import { apiv3Get, apiv3Post } from '~/client/util/apiv3-client';
 import { UserActivationErrorCode } from '~/interfaces/errors/user-activation';
+import { RegistrationMode } from '~/interfaces/registration-mode';
 
-import { toastSuccess, toastError } from '../client/util/apiNotification';
+import { toastError } from '../client/util/apiNotification';
+
+import { CompleteUserRegistration } from './CompleteUserRegistration';
 
 interface Props {
   email: string,
   token: string,
   errorCode?: UserActivationErrorCode,
+  registrationMode: RegistrationMode,
   isEmailAuthenticationEnabled: boolean,
 }
 
@@ -21,6 +26,7 @@ const CompleteUserRegistrationForm: React.FC<Props> = (props: Props) => {
     email,
     token,
     errorCode,
+    registrationMode,
     isEmailAuthenticationEnabled,
   } = props;
 
@@ -31,6 +37,9 @@ const CompleteUserRegistrationForm: React.FC<Props> = (props: Props) => {
   const [name, setName] = useState('');
   const [password, setPassword] = useState('');
   const [disableForm, setDisableForm] = useState(forceDisableForm);
+  const [isSuccessToRagistration, setIsSuccessToRagistration] = useState(false);
+
+  const router = useRouter();
 
   useEffect(() => {
     const delayDebounceFn = setTimeout(async() => {
@@ -52,17 +61,27 @@ const CompleteUserRegistrationForm: React.FC<Props> = (props: Props) => {
     e.preventDefault();
     setDisableForm(true);
     try {
-      await apiv3Post('/complete-registration', {
+      const res = await apiv3Post('/complete-registration', {
         username, name, password, token,
       });
-      toastSuccess('Registration succeed');
-      window.location.href = '/login';
+
+      setIsSuccessToRagistration(true);
+
+      const { redirectTo } = res.data;
+      if (redirectTo != null) {
+        router.push(redirectTo);
+      }
     }
     catch (err) {
       toastError(err, 'Registration failed');
       setDisableForm(false);
+      setIsSuccessToRagistration(false);
     }
-  }, [name, password, token, username]);
+  }, [username, name, password, token, router]);
+
+  if (isSuccessToRagistration && registrationMode === RegistrationMode.RESTRICTED) {
+    return <CompleteUserRegistration />;
+  }
 
   return (
     <>

@@ -12,7 +12,7 @@ import loggerFactory from '~/utils/logger';
 import { withUnstatedContainers } from '../../UnstatedUtils';
 
 import NotificationDeleteModal from './NotificationDeleteModal';
-import NotificationTypeIcon from './NotificationTypeIcon';
+import { NotificationTypeIcon } from './NotificationTypeIcon';
 
 
 const logger = loggerFactory('growi:GolobalNotificationList');
