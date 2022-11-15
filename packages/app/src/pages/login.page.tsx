@@ -1,6 +1,5 @@
 import React from 'react';
 
-
 import {
   NextPage, GetServerSideProps, GetServerSidePropsContext,
 } from 'next';
@@ -9,19 +8,19 @@ import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import { NoLoginLayout } from '~/components/Layout/NoLoginLayout';
 import { LoginForm } from '~/components/LoginForm';
 import type { CrowiRequest } from '~/interfaces/crowi-request';
+import type { RegistrationMode } from '~/interfaces/registration-mode';
 
 import {
   useCsrfToken,
   useCurrentPathname,
 } from '../stores/context';
 
-
 import {
   CommonProps, getServerSideCommonProps, useCustomTitle, getNextI18NextConfig,
 } from './utils/commons';
 
 type Props = CommonProps & {
-
+  registrationMode: RegistrationMode,
   pageWithMetaStr: string,
   isMailerSetup: boolean,
   enabledStrategies: unknown,
@@ -29,6 +28,7 @@ type Props = CommonProps & {
   isLocalStrategySetup: boolean,
   isLdapStrategySetup: boolean,
   isLdapSetupFailed: boolean,
+  isPasswordResetEnabled: boolean,
   isEmailAuthenticationEnabled: boolean,
 };
 
@@ -45,16 +45,15 @@ const LoginPage: NextPage<Props> = (props: Props) => {
   return (
     <NoLoginLayout title={useCustomTitle(props, 'GROWI')} className={classNames.join(' ')}>
       <LoginForm
-        // Todo: These props should be set properly. https://redmine.weseek.co.jp/issues/104847
         objOfIsExternalAuthEnableds={props.enabledStrategies}
         isLocalStrategySetup={props.isLocalStrategySetup}
         isLdapStrategySetup={props.isLdapStrategySetup}
         isLdapSetupFailed={props.isLdapSetupFailed}
         isEmailAuthenticationEnabled={props.isEmailAuthenticationEnabled}
-        isRegistrationEnabled={true}
         registrationWhiteList={props.registrationWhiteList}
-        isPasswordResetEnabled={true}
+        isPasswordResetEnabled={props.isPasswordResetEnabled}
         isMailerSetup={props.isMailerSetup}
+        registrationMode={props.registrationMode}
       />
     </NoLoginLayout>
   );
@@ -100,12 +99,14 @@ async function injectServerConfigurations(context: GetServerSidePropsContext, pr
     passportService,
   } = crowi;
 
+  props.isPasswordResetEnabled = crowi.configManager.getConfig('crowi', 'security:passport-local:isPasswordResetEnabled');
   props.isMailerSetup = mailService.isMailerSetup;
   props.isLocalStrategySetup = passportService.isLocalStrategySetup;
   props.isLdapStrategySetup = passportService.isLdapStrategySetup;
   props.isLdapSetupFailed = configManager.getConfig('crowi', 'security:passport-ldap:isEnabled') && !props.isLdapStrategySetup;
   props.registrationWhiteList = configManager.getConfig('crowi', 'security:registrationWhiteList');
   props.isEmailAuthenticationEnabled = configManager.getConfig('crowi', 'security:passport-local:isEmailAuthenticationEnabled');
+  props.registrationMode = configManager.getConfig('crowi', 'security:registrationMode');
 }
 
 export const getServerSideProps: GetServerSideProps = async(context: GetServerSidePropsContext) => {

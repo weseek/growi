@@ -2280,7 +2280,6 @@ class PageService {
 
     const likers = page.liker.slice(0, 15) as Ref<IUserHasId>[];
     const seenUsers = page.seenUsers.slice(0, 15) as Ref<IUserHasId>[];
-    const expandContentWidth = page.expandContentWidth ?? this.crowi.configManager.getConfig('crowi', 'customize:isContainerFluid');
 
     return {
       isV5Compatible: isTopPage(page.path) || page.parent != null,
@@ -2294,7 +2293,6 @@ class PageService {
       isAbleToDeleteCompletely: false,
       isRevertible: isTrashPage(page.path),
       contentAge: page.getContentAge(),
-      expandContentWidth,
     };
 
   }
@@ -3464,8 +3462,6 @@ class PageService {
   async create(path: string, body: string, user, options: PageCreateOptions = {}): Promise<PageDocument> {
     const Page = mongoose.model('Page') as unknown as PageModel;
 
-    const expandContentWidth = this.crowi.configManager.getConfig('crowi', 'customize:isContainerFluid');
-
     // Switch method
     const isV5Compatible = this.crowi.configManager.getConfig('crowi', 'app:isV5Compatible');
     if (!isV5Compatible) {
@@ -3511,9 +3507,6 @@ class PageService {
     else {
       const parent = await this.getParentAndFillAncestorsByUser(user, path);
       page.parent = parent._id;
-    }
-    if (expandContentWidth != null) {
-      page.expandContentWidth = expandContentWidth;
     }
     // Save
     let savedPage = await page.save();

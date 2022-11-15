@@ -48,6 +48,7 @@ export const getServerSideCommonProps: GetServerSideProps<CommonProps> = async(c
 
   // eslint-disable-next-line max-len, no-nested-ternary
   const redirectDestination = !isMaintenanceMode && currentPathname === '/maintenance' ? '/' : isMaintenanceMode && !currentPathname.match('/admin/*') && !(currentPathname === '/maintenance') ? '/maintenance' : null;
+  const isDefaultLogo = crowi.configManager.getConfig('crowi', 'customize:isDefaultLogo');
 
   const props: CommonProps = {
     namespacesRequired: ['translation'],
@@ -62,7 +63,7 @@ export const getServerSideCommonProps: GetServerSideProps<CommonProps> = async(c
     growiVersion: crowi.version,
     isMaintenanceMode,
     redirectDestination,
-    customizedLogoSrc: configManager.getConfig('crowi', 'customize:customizedLogoSrc'),
+    customizedLogoSrc: isDefaultLogo ? null : configManager.getConfig('crowi', 'customize:customizedLogoSrc'),
     currentUser,
   };
 

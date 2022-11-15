@@ -7,7 +7,7 @@ import AdminNotificationContainer from '~/client/services/AdminNotificationConta
 
 import { withUnstatedContainers } from '../../UnstatedUtils';
 
-import NotificationTypeIcon from './NotificationTypeIcon';
+import { NotificationTypeIcon } from './NotificationTypeIcon';
 
 class UserNotificationRow extends React.PureComponent {
 
