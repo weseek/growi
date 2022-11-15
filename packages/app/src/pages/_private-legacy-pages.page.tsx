@@ -4,6 +4,7 @@ import {
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import dynamic from 'next/dynamic';
 import Head from 'next/head';
+import Script from 'next/script';
 
 import type { CrowiRequest } from '~/interfaces/crowi-request';
 import type { RendererConfig } from '~/interfaces/services/renderer';
@@ -77,6 +78,8 @@ const PrivateLegacyPage: NextPage<Props> = (props: Props) => {
         {renderScriptTagByName('highlight-addons')}
         */}
       </Head>
+
+      <Script type="text/javascript" src="https://www.draw.io/js/viewer.min.js"></Script>
 
       <SearchResultLayout title={useCustomTitle(props, 'GROWI')}>
         <div id="private-regacy-pages">

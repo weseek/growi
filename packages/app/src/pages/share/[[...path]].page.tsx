@@ -7,6 +7,7 @@ import {
 import { useTranslation } from 'next-i18next';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import dynamic from 'next/dynamic';
+import Script from 'next/script';
 
 import CountBadge from '~/components/Common/CountBadge';
 import PageListIcon from '~/components/Icons/PageListIcon';
@@ -63,86 +64,90 @@ const SharedPage: NextPage<Props> = (props: Props) => {
   const shareLink = props.shareLink;
 
   return (
-    <ShareLinkLayout title={useCustomTitle(props, 'GROWI')} expandContainer={props.isContainerFluid}>
-      <div className="h-100 d-flex flex-column justify-content-between">
-        <header className="py-0 position-relative">
-          {isShowSharedPage && <GrowiContextualSubNavigation isLinkSharingDisabled={props.disableLinkSharing} />}
-        </header>
+    <>
+      <Script type="text/javascript" src="https://www.draw.io/js/viewer.min.js"></Script>
 
-        <div id="grw-fav-sticky-trigger" className="sticky-top"></div>
+      <ShareLinkLayout title={useCustomTitle(props, 'GROWI')} expandContainer={props.isContainerFluid}>
+        <div className="h-100 d-flex flex-column justify-content-between">
+          <header className="py-0 position-relative">
+            {isShowSharedPage && <GrowiContextualSubNavigation isLinkSharingDisabled={props.disableLinkSharing} />}
+          </header>
 
-        <div className="flex-grow-1">
-          <div id="content-main" className="content-main">
-            <div className="grw-container-convertible">
-              { props.disableLinkSharing && (
-                <div className="mt-4">
-                  <ForbiddenPage isLinkSharingDisabled={props.disableLinkSharing} />
-                </div>
-              )}
+          <div id="grw-fav-sticky-trigger" className="sticky-top"></div>
 
-              { (isNotFound && !props.disableLinkSharing) && (
-                <div className="container-lg">
-                  <h2 className="text-muted mt-4">
-                    <i className="icon-ban" aria-hidden="true" />
-                    <span> Page is not found</span>
-                  </h2>
-                </div>
-              )}
+          <div className="flex-grow-1">
+            <div id="content-main" className="content-main">
+              <div className="grw-container-convertible">
+                { props.disableLinkSharing && (
+                  <div className="mt-4">
+                    <ForbiddenPage isLinkSharingDisabled={props.disableLinkSharing} />
+                  </div>
+                )}
 
-              { (props.isExpired && !props.disableLinkSharing && shareLink != null) && (
-                <div className="container-lg">
-                  <ShareLinkAlert expiredAt={shareLink.expiredAt} createdAt={shareLink.createdAt} />
-                  <h2 className="text-muted mt-4">
-                    <i className="icon-ban" aria-hidden="true" />
-                    <span> Page is expired</span>
-                  </h2>
-                </div>
-              )}
+                { (isNotFound && !props.disableLinkSharing) && (
+                  <div className="container-lg">
+                    <h2 className="text-muted mt-4">
+                      <i className="icon-ban" aria-hidden="true" />
+                      <span> Page is not found</span>
+                    </h2>
+                  </div>
+                )}
 
-              {(isShowSharedPage && shareLink != null) && (
-                <>
-                  <ShareLinkAlert expiredAt={shareLink.expiredAt} createdAt={shareLink.createdAt} />
-                  <div className="d-flex flex-column flex-lg-row-reverse">
+                { (props.isExpired && !props.disableLinkSharing && shareLink != null) && (
+                  <div className="container-lg">
+                    <ShareLinkAlert expiredAt={shareLink.expiredAt} createdAt={shareLink.createdAt} />
+                    <h2 className="text-muted mt-4">
+                      <i className="icon-ban" aria-hidden="true" />
+                      <span> Page is expired</span>
+                    </h2>
+                  </div>
+                )}
 
-                    <div className="grw-side-contents-container">
-                      <div className="grw-side-contents-sticky-container">
+                {(isShowSharedPage && shareLink != null) && (
+                  <>
+                    <ShareLinkAlert expiredAt={shareLink.expiredAt} createdAt={shareLink.createdAt} />
+                    <div className="d-flex flex-column flex-lg-row-reverse">
 
-                        {/* Page list */}
-                        <div className={`grw-page-accessories-control ${styles['grw-page-accessories-control']}`}>
-                          { shareLink.relatedPage.path != null && (
-                            <button
-                              type="button"
-                              className="btn btn-block btn-outline-secondary grw-btn-page-accessories
-                              rounded-pill d-flex justify-content-between align-items-center"
-                              onClick={() => openDescendantPageListModal(shareLink.relatedPage.path)}
-                              data-testid="pageListButton"
-                            >
-                              <div className="grw-page-accessories-control-icon">
-                                <PageListIcon />
-                              </div>
-                              {t('page_list')}
-                              <CountBadge count={shareLink.relatedPage.descendantCount} offset={1} />
-                            </button>
-                          ) }
-                        </div>
+                      <div className="grw-side-contents-container">
+                        <div className="grw-side-contents-sticky-container">
 
-                        <div className="d-none d-lg-block">
-                          <TableOfContents />
+                          {/* Page list */}
+                          <div className={`grw-page-accessories-control ${styles['grw-page-accessories-control']}`}>
+                            { shareLink.relatedPage.path != null && (
+                              <button
+                                type="button"
+                                className="btn btn-block btn-outline-secondary grw-btn-page-accessories
+                                rounded-pill d-flex justify-content-between align-items-center"
+                                onClick={() => openDescendantPageListModal(shareLink.relatedPage.path)}
+                                data-testid="pageListButton"
+                              >
+                                <div className="grw-page-accessories-control-icon">
+                                  <PageListIcon />
+                                </div>
+                                {t('page_list')}
+                                <CountBadge count={shareLink.relatedPage.descendantCount} offset={1} />
+                              </button>
+                            ) }
+                          </div>
+
+                          <div className="d-none d-lg-block">
+                            <TableOfContents />
+                          </div>
                         </div>
                       </div>
-                    </div>
 
-                    <div className="flex-grow-1 flex-basis-0 mw-0">
-                      <Page />
+                      <div className="flex-grow-1 flex-basis-0 mw-0">
+                        <Page />
+                      </div>
                     </div>
-                  </div>
-                </>
-              )}
+                  </>
+                )}
+              </div>
             </div>
           </div>
         </div>
-      </div>
-    </ShareLinkLayout>
+      </ShareLinkLayout>
+    </>
   );
 };
 

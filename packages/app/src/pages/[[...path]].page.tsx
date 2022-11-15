@@ -17,6 +17,7 @@ import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import dynamic from 'next/dynamic';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
+import Script from 'next/script';
 import superjson from 'superjson';
 
 import { Comments } from '~/components/Comments';
@@ -289,7 +290,11 @@ const GrowiPage: NextPage<Props> = (props: Props) => {
         {renderHighlightJsStyleTag(props.highlightJsStyle)}
         */}
       </Head>
+
+      <Script type="text/javascript" src="https://www.draw.io/js/viewer.min.js"></Script>
+
       <BasicLayout title={useCustomTitle(props, 'GROWI')} className={classNames.join(' ')} expandContainer={isContainerFluid}>
+
         <div className="h-100 d-flex flex-column justify-content-between">
           <header className="py-0 position-relative">
             <div id="grw-subnav-container">
