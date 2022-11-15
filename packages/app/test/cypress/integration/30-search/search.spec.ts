@@ -92,19 +92,20 @@ context('Search all pages', () => {
     const searchText = 'help';
 
     cy.visit('/');
-    cy.get('.rbt-input').click();
-    // cy.get('.rbt-menu.dropdown-menu.show').should('be.visible').within(() => {
-    //   cy.screenshot(`${ssPrefix}1-search-input-focused`);
-    // })
+    cy.get('.rbt-input').focus();
+    cy.get('.rbt-menu.dropdown-menu.show').should('be.visible').within(() => {
+      cy.screenshot(`${ssPrefix}1-search-input-focused`);
+    })
 
-    cy.get('.rbt-input-main').type(`${searchText}`);
+    cy.get('.rbt-input-main').type(`${searchText}`)
     cy.screenshot(`${ssPrefix}2-insert-search-text`, { capture: 'viewport'});
     cy.get('.rbt-input-main').type('{enter}');
+    cy.url({ timeout: 30000 }).should('include', '/_search?q=help');
 
 
     cy.getByTestid('search-result-base').should('be.visible');
     cy.getByTestid('search-result-list').should('be.visible');
-    cy.getByTestid('search-result-content').should('be.visible');
+    cy.getByTestid('search-result-content', { timeout: 30000 }).should('be.visible');
     cy.get('.wiki').should('be.visible');
     // force to add 'active' to pass VRT: https://github.com/weseek/growi/pull/6603
     cy.getByTestid('page-list-item-L').first().invoke('addClass', 'active');
@@ -114,18 +115,11 @@ context('Search all pages', () => {
     cy.wait(1500);
     cy.screenshot(`${ssPrefix}3-search-page-results`, { capture: 'viewport'});
 
-    cy.getByTestid('open-page-item-control-btn').eq(1).click();
-    cy.getByTestid('search-result-content').should('be.visible');
+    cy.getByTestid('open-page-item-control-btn').eq(1).click({force: true});
+    cy.getByTestid('search-result-content', { timeout: 30000 }).should('be.visible');
     cy.get('.wiki').should('be.visible');
     // for avoid mismatch by auto scrolling
-    // cy.get('.search-result-content-body-container').scrollTo('top');
-    cy.get('.search-result-content-body-container').within(() => {
-      //       cy.get('.rbt-input-main').type(tag);
-      //       cy.get('#tag-typeahead-asynctypeahead').should('be.visible');
-      //       cy.get('#tag-typeahead-asynctypeahead-item-0').should('be.visible');
-      //       cy.get('a#tag-typeahead-asynctypeahead-item-0').click({force: true})
-      cy.get('.highlighted-keyword').should('be.visible');
-    });
+    cy.get('.search-result-content-body-container').scrollTo('top');
     cy.screenshot(`${ssPrefix}4-click-three-dots-menu`, {capture: 'viewport'});
 
     //Add bookmark
