@@ -22,19 +22,17 @@ export interface UncontrolledCodeMirrorProps extends ICodeMirror {
   value: string;
   isGfmMode?: boolean;
   lineNumbers?: boolean;
-  onScrollCursorIntoView?: (line: number) => void;
   onSave?: () => Promise<void>;
-  onPasteFiles?: (event: Event) => void;
   onCtrlEnter?: (event: Event) => void;
-  pasteHandler?: (editor: any, event: Event) => void;
-  scrollCursorIntoViewHandler?: (editor: any, event: Event) => void;
+  onPasteFiles?: (editor: any, event: Event) => void;
+  onScrollCursorIntoView?: (editor: any, event: Event) => void;
 }
 
 export const UncontrolledCodeMirror = React.forwardRef<CodeMirror|null, UncontrolledCodeMirrorProps>((props, forwardedRef): JSX.Element => {
 
   const {
     value, lineNumbers, options,
-    pasteHandler, scrollCursorIntoViewHandler,
+    onPasteFiles, onScrollCursorIntoView,
     ...rest
   } = props;
 
@@ -44,14 +42,13 @@ export const UncontrolledCodeMirror = React.forwardRef<CodeMirror|null, Uncontro
 
   const editorDidMountHandler = useCallback((editor: Editor): void => {
     editorRef.current = editor;
-
-    if (pasteHandler != null) {
-      editor.on('paste', pasteHandler);
+    if (onPasteFiles != null) {
+      editor.on('paste', onPasteFiles);
     }
-    if (scrollCursorIntoViewHandler != null) {
-      editor.on('scrollCursorIntoView', scrollCursorIntoViewHandler);
+    if (onScrollCursorIntoView != null) {
+      editor.on('scrollCursorIntoView', onScrollCursorIntoView);
     }
-  }, [pasteHandler, scrollCursorIntoViewHandler]);
+  }, [onPasteFiles, onScrollCursorIntoView]);
 
   const editorWillUnmountHandler = useCallback((): void => {
     // workaround to fix editor duplicating by https://github.com/scniro/react-codemirror2/issues/284#issuecomment-1155928554
