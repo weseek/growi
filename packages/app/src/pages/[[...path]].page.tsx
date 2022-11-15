@@ -36,9 +36,7 @@ import type { IUserUISettings } from '~/interfaces/user-ui-settings';
 import type { PageModel, PageDocument } from '~/server/models/page';
 import type { PageRedirectModel } from '~/server/models/page-redirect';
 import type { UserUISettingsModel } from '~/server/models/user-ui-settings';
-import {
-  useSWRxCurrentPage, useSWRxIsGrantNormalized, useSWRxPageInfo,
-} from '~/stores/page';
+import { useSWRxCurrentPage, useSWRxIsGrantNormalized, useSWRxPageInfo } from '~/stores/page';
 import { useRedirectFrom } from '~/stores/page-redirect';
 import {
   EditorMode,
@@ -137,7 +135,7 @@ type Props = CommonProps & {
 
   // shareLinkId?: string;
   isLatestRevision?: boolean,
-  revisionId?: string,
+  currentRevisionId?: string,
 
   isIdenticalPathPage?: boolean,
   isForbidden: boolean,
@@ -245,9 +243,9 @@ const GrowiPage: NextPage<Props> = (props: Props) => {
   // useIsNotCreatable(props.isForbidden || !isCreatablePage(pagePath)); // TODO: need to include props.isIdentical
   useCurrentPathname(props.currentPathname);
 
-  const { data: currentPage } = useSWRxCurrentPage(undefined, props.revisionId, pageWithMeta?.data ?? null); // store initial data
+  const { data: currentPage } = useSWRxCurrentPage(undefined, props.currentRevisionId, pageWithMeta?.data ?? null); // store initial data
   useEditingMarkdown(pageWithMeta?.data.revision?.body ?? '');
-  useCurrentRevisionId(props.revisionId); // store request revisionId page data History function on PageAccessoryModal
+  useCurrentRevisionId(props.currentRevisionId); // store request revisionId page data History function on PageAccessoryModal
 
   const { data: grantData } = useSWRxIsGrantNormalized(pageId);
   const { mutate: mutateSelectedGrant } = useSelectedGrant();
@@ -418,7 +416,7 @@ async function injectPageData(context: GetServerSidePropsContext, props: Props):
   }
 
   if (typeof revisionId === 'string' || typeof revisionId === 'undefined') {
-    props.revisionId = revisionId;
+    props.currentRevisionId = revisionId;
   }
 
   props.pageWithMeta = pageWithMeta;

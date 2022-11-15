@@ -212,9 +212,9 @@ export const Page = (props) => {
     tocRef.current = toc;
   }, []);
 
-  const { data: revisionId } = useCurrentRevisionId();
+  const { data: currentRevisionId } = useCurrentRevisionId();
   const { data: shareLinkId } = useShareLinkId();
-  const { data: currentPage } = useSWRxCurrentPage(shareLinkId ?? undefined, revisionId ?? undefined);
+  const { data: currentPage } = useSWRxCurrentPage(shareLinkId ?? undefined, currentRevisionId ?? undefined);
   const { data: editorMode } = useEditorMode();
   const { data: isGuestUser } = useIsGuestUser();
   const { data: isMobile } = useIsMobile();
