@@ -144,40 +144,48 @@ context('Access to Template Editing Mode', () => {
 
   it('Access to Template Editor mode for only child pages successfully', () => {
     cy.visit('/Sandbox/Bootstrap4', {  });
+    cy.get('#grw-subnav-container').within(() => {
+      cy.getByTestid('open-page-item-control-btn').as('open-page-item-control-btn');
+      cy.get('@open-page-item-control-btn').click({ timeout: 60000 });
+
+      cy.getByTestid('open-page-template-modal-btn').as('open-page-template-modal-btn');
+      cy.get('@open-page-template-modal-btn').click({ timeout: 60000 });
+    });
+
+    cy.getByTestid('page-template-modal').should('be.visible');
+    cy.screenshot(`${ssPrefix}-open-page-template-bootstrap4`);
+
+    cy.getByTestid('template-button-children').as('template-button-children');
+    cy.get('@template-button-children').click({ timeout: 60000 });
+
     cy.get('.grw-skelton').should('not.exist').then(()=>{
-
-      cy.get('#grw-subnav-container').within(() => {
-        cy.getByTestid('open-page-item-control-btn').should('be.visible').click({ timeout: 60000 });
-        cy.getByTestid('open-page-template-modal-btn').should('be.visible').click({ timeout: 60000 });
-      });
-
-      cy.getByTestid('page-template-modal').should('be.visible')
-      cy.screenshot(`${ssPrefix}-open-page-template-bootstrap4`);
-      cy.getByTestid('template-button-children').should('be.visible').click({ timeout: 60000 });
-      cy.get('.grw-skelton').should('not.exist').then(()=>{
-        cy.getByTestid('navbar-editor').should('be.visible').then(()=>{
-          cy.url().should('include', '/_template#edit');
-          cy.screenshot();
-        });
+      cy.getByTestid('navbar-editor').should('be.visible').then(()=>{
+        cy.url().should('include', '/_template#edit');
+        cy.screenshot();
       });
     });
   });
 
   it('Access to Template Editor mode including decendants successfully', () => {
     cy.visit('/Sandbox/Bootstrap4', {  });
-    cy.get('.grw-skelton').should('not.exist').then(()=>{
-      cy.get('#grw-subnav-container').within(() => {
-        cy.getByTestid('open-page-item-control-btn').should('be.visible').click({ timeout: 60000 });
-        cy.getByTestid('open-page-template-modal-btn').should('be.visible').click({ timeout: 60000 });
-      });
+    cy.get('#grw-subnav-container').within(() => {
 
-      cy.getByTestid('page-template-modal').should('be.visible')
-      cy.getByTestid('template-button-decendants').should('be.visible').click({ timeout: 60000 });
-      cy.get('.grw-skelton').should('not.exist').then(()=>{
-        cy.getByTestid('navbar-editor').should('be.visible').then(()=>{
-          cy.url().should('include', '/__template#edit');
-          cy.screenshot();
-        });
+      cy.getByTestid('open-page-item-control-btn').as('open-page-item-control-btn');
+      cy.get('@open-page-item-control-btn').click({ timeout: 60000 });
+
+      cy.getByTestid('open-page-template-modal-btn').as('open-page-template-modal-btn');
+      cy.get('@open-page-template-modal-btn').click({ timeout: 60000 });
+
+    });
+    cy.getByTestid('page-template-modal').should('be.visible');
+
+    cy.getByTestid('template-button-decendants').as('template-button-decendants');
+    cy.get('@template-button-decendants').click({ timeout: 60000 });
+
+    cy.get('.grw-skelton').should('not.exist').then(()=>{
+      cy.getByTestid('navbar-editor').should('be.visible').then(()=>{
+        cy.url().should('include', '/__template#edit');
+        cy.screenshot();
       });
     });
   });
