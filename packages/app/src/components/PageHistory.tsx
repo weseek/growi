@@ -74,6 +74,7 @@ export const PageHistory: React.FC<{ onClose: () => void }> = ({ onClose }) => {
         sourceRevision={sourceRevision}
         targetRevision={targetRevision}
         currentPageId={currentPageId}
+        onClose={onClose}
       />
     </div>
   );
