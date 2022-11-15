@@ -2,6 +2,7 @@ import type {
   IPageInfoForEntity, IPagePopulatedToShowRevision, Nullable,
 } from '@growi/core';
 import { pagePathUtils } from '@growi/core';
+import { useEffect } from 'react';
 import useSWR, { Key, SWRResponse } from 'swr';
 import useSWRImmutable from 'swr/immutable';
 
@@ -26,7 +27,7 @@ export const useSWRxPage = (
     shareLinkId?: string,
     initialData?: IPagePopulatedToShowRevision|null,
 ): SWRResponse<IPagePopulatedToShowRevision|null, Error> => {
-  return useSWR<IPagePopulatedToShowRevision|null, Error>(
+  const swrResponse = useSWR<IPagePopulatedToShowRevision|null, Error>(
     pageId != null ? ['/page', pageId, shareLinkId] : null,
     (endpoint, pageId, shareLinkId) => apiv3Get<{ page: IPagePopulatedToShowRevision }>(endpoint, { pageId, shareLinkId })
       .then(result => result.data.page)
@@ -39,8 +40,15 @@ export const useSWRxPage = (
         }
         throw Error('failed to get page');
       }),
-    { fallbackData: initialData },
   );
+
+  useEffect(() => {
+    if (initialData !== undefined) {
+      swrResponse.mutate(initialData);
+    }
+  }, [initialData]);
+
+  return swrResponse;
 };
 
 export const useSWRxPageByPath = (path?: string): SWRResponse<IPagePopulatedToShowRevision, Error> => {
