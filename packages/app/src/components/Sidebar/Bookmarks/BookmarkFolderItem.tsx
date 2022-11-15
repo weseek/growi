@@ -81,7 +81,7 @@ const BookmarkFolderItem: FC<BookmarkFolderItemProps> = (props: BookmarkFolderIt
     setIsRenameInputShown(true);
   }, [hasChildren, isOpen]);
 
-  const RenderChildFolder = () => {
+  const renderChildFolder = () => {
     return isOpen && currentChildren?.map((childFolder) => {
       return (
         <div key={childFolder._id} className="grw-foldertree-item-children">
@@ -150,7 +150,7 @@ const BookmarkFolderItem: FC<BookmarkFolderItemProps> = (props: BookmarkFolderIt
         </div>
       )}
       {
-        RenderChildFolder()
+        renderChildFolder()
       }
     </div>
   );
