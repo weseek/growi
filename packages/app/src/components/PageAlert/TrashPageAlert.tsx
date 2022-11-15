@@ -5,9 +5,8 @@ import { format } from 'date-fns';
 import { useRouter } from 'next/router';
 import { useTranslation } from 'react-i18next';
 
-import { useIsTrashPage } from '~/stores/context';
 import { usePageDeleteModal, usePutBackPageModal } from '~/stores/modal';
-import { useSWRxPageInfo, useSWRxCurrentPage } from '~/stores/page';
+import { useSWRxPageInfo, useSWRxCurrentPage, useIsTrashPage } from '~/stores/page';
 import { useIsAbleToShowTrashPageManagementButtons } from '~/stores/ui';
 
 const onDeletedHandler = (pathOrPathsToDelete) => {

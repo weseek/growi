@@ -20,7 +20,7 @@ import { CrowiRequest } from '~/interfaces/crowi-request';
 import { RendererConfig } from '~/interfaces/services/renderer';
 import { IShareLinkHasId } from '~/interfaces/share-link';
 import {
-  useCurrentUser, useCurrentPagePath, useCurrentPathname, useCurrentPageId, useRendererConfig, useIsSearchPage,
+  useCurrentUser, useCurrentPathname, useCurrentPageId, useRendererConfig, useIsSearchPage,
   useShareLinkId, useIsSearchServiceConfigured, useIsSearchServiceReachable, useIsSearchScopeChildrenAsDefault,
 } from '~/stores/context';
 import { useDescendantsPageListModal } from '~/stores/modal';
@@ -38,7 +38,6 @@ const ForbiddenPage = dynamic(() => import('~/components/ForbiddenPage'), { ssr:
 type Props = CommonProps & {
   shareLink?: IShareLinkHasId,
   isExpired: boolean,
-  currentUser: IUser,
   disableLinkSharing: boolean,
   isSearchServiceConfigured: boolean,
   isSearchServiceReachable: boolean,
@@ -50,7 +49,6 @@ const SharedPage: NextPage<Props> = (props: Props) => {
   useIsSearchPage(false);
   useShareLinkId(props.shareLink?._id);
   useCurrentPageId(props.shareLink?.relatedPage._id);
-  useCurrentPagePath(props.shareLink?.relatedPage.path);
   useCurrentUser(props.currentUser);
   useCurrentPathname(props.currentPathname);
   useRendererConfig(props.rendererConfig);
@@ -213,17 +211,13 @@ async function addActivity(context: GetServerSidePropsContext, action: Supported
 
 export const getServerSideProps: GetServerSideProps = async(context: GetServerSidePropsContext) => {
   const req = context.req as CrowiRequest<IUserHasId & any>;
-  const { user, crowi, params } = req;
+  const { crowi, params } = req;
   const result = await getServerSideCommonProps(context);
 
   if (!('props' in result)) {
     throw new Error('invalid getSSP result');
   }
   const props: Props = result.props as Props;
-
-  if (user != null) {
-    props.currentUser = user.toObject();
-  }
 
   try {
     const ShareLinkModel = crowi.model('ShareLink');

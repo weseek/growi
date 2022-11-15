@@ -5,8 +5,9 @@ import dynamic from 'next/dynamic';
 
 import { PageComment } from '~/components/PageComment';
 import { useSWRxPageComment } from '~/stores/comment';
+import { useIsTrashPage } from '~/stores/page';
 
-import { useIsTrashPage, useCurrentUser } from '../stores/context';
+import { useCurrentUser } from '../stores/context';
 
 import { CommentEditorProps } from './PageComment/CommentEditor';
 

@@ -13,6 +13,7 @@ import InterceptorManager from '~/services/interceptor-manager';
 
 import { TargetAndAncestors } from '../interfaces/page-listing-results';
 
+import { useContextSWR } from './use-context-swr';
 import { useStaticSWR } from './use-static-swr';
 
 
@@ -20,200 +21,196 @@ type Nullable<T> = T | null;
 
 
 export const useInterceptorManager = (): SWRResponse<InterceptorManager, Error> => {
-  return useStaticSWR<InterceptorManager, Error>('interceptorManager', undefined, { fallbackData: new InterceptorManager() });
+  return useContextSWR<InterceptorManager, Error>('interceptorManager', undefined, { fallbackData: new InterceptorManager() });
 };
 
 export const useCsrfToken = (initialData?: string): SWRResponse<string, Error> => {
-  return useStaticSWR<string, Error>('csrfToken', initialData);
+  return useContextSWR<string, Error>('csrfToken', initialData);
 };
 
 export const useAppTitle = (initialData?: string): SWRResponse<string, Error> => {
-  return useStaticSWR('appTitle', initialData);
+  return useContextSWR('appTitle', initialData);
 };
 
 export const useSiteUrl = (initialData?: string): SWRResponse<string, Error> => {
-  return useStaticSWR<string, Error>('siteUrl', initialData);
+  return useContextSWR<string, Error>('siteUrl', initialData);
 };
 
 export const useConfidential = (initialData?: string): SWRResponse<string, Error> => {
-  return useStaticSWR('confidential', initialData);
+  return useContextSWR('confidential', initialData);
 };
 
 export const useGrowiTheme = (initialData?: GrowiThemes): SWRResponse<GrowiThemes, Error> => {
-  return useStaticSWR('theme', initialData);
+  return useContextSWR('theme', initialData);
 };
 
 export const useCurrentUser = (initialData?: Nullable<IUser>): SWRResponse<Nullable<IUser>, Error> => {
-  return useStaticSWR<Nullable<IUser>, Error>('currentUser', initialData);
+  return useContextSWR<Nullable<IUser>, Error>('currentUser', initialData);
 };
 
 export const useRevisionId = (initialData?: Nullable<any>): SWRResponse<Nullable<any>, Error> => {
-  return useStaticSWR<Nullable<any>, Error>('revisionId', initialData);
-};
-
-export const useCurrentPagePath = (initialData?: Nullable<string>): SWRResponse<Nullable<string>, Error> => {
-  return useStaticSWR<Nullable<string>, Error>('currentPagePath', initialData);
+  return useContextSWR<Nullable<any>, Error>('revisionId', initialData);
 };
 
 export const useCurrentPathname = (initialData?: string): SWRResponse<string, Error> => {
-  return useStaticSWR('currentPathname', initialData);
+  return useContextSWR('currentPathname', initialData);
 };
 
 export const useCurrentPageId = (initialData?: Nullable<string>): SWRResponse<Nullable<string>, Error> => {
-  return useStaticSWR<Nullable<string>, Error>('currentPageId', initialData);
+  return useContextSWR<Nullable<string>, Error>('currentPageId', initialData);
 };
 
 export const useIsIdenticalPath = (initialData?: boolean): SWRResponse<boolean, Error> => {
-  return useStaticSWR<boolean, Error>('isIdenticalPath', initialData, { fallbackData: false });
+  return useContextSWR<boolean, Error>('isIdenticalPath', initialData, { fallbackData: false });
 };
 
 export const useIsForbidden = (initialData?: boolean): SWRResponse<boolean, Error> => {
-  return useStaticSWR<boolean, Error>('isForbidden', initialData, { fallbackData: false });
+  return useContextSWR<boolean, Error>('isForbidden', initialData, { fallbackData: false });
 };
 
 export const useIsNotFound = (initialData?: boolean): SWRResponse<boolean, Error> => {
-  return useStaticSWR<boolean, Error>('isNotFound', initialData, { fallbackData: false });
+  return useContextSWR<boolean, Error>('isNotFound', initialData, { fallbackData: false });
 };
 
 export const useTemplateTagData = (initialData?: Nullable<string>): SWRResponse<Nullable<string>, Error> => {
-  return useStaticSWR<Nullable<string>, Error>('templateTagData', initialData);
+  return useContextSWR<Nullable<string>, Error>('templateTagData', initialData);
 };
 
 export const useIsSharedUser = (initialData?: boolean): SWRResponse<boolean, Error> => {
-  return useStaticSWR<boolean, Error>('isSharedUser', initialData);
+  return useContextSWR<boolean, Error>('isSharedUser', initialData);
 };
 
 export const useShareLinkId = (initialData?: Nullable<string>): SWRResponse<Nullable<string>, Error> => {
-  return useStaticSWR<Nullable<string>, Error>('shareLinkId', initialData);
+  return useContextSWR<Nullable<string>, Error>('shareLinkId', initialData);
 };
 
 export const useDisableLinkSharing = (initialData?: Nullable<boolean>): SWRResponse<Nullable<boolean>, Error> => {
-  return useStaticSWR<Nullable<boolean>, Error>('disableLinkSharing', initialData);
+  return useContextSWR<Nullable<boolean>, Error>('disableLinkSharing', initialData);
 };
 
 export const useRegistrationWhiteList = (initialData?: Nullable<string[]>): SWRResponse<Nullable<string[]>, Error> => {
-  return useStaticSWR<Nullable<string[]>, Error>('registrationWhiteList', initialData);
+  return useContextSWR<Nullable<string[]>, Error>('registrationWhiteList', initialData);
 };
 
 export const useDrawioUri = (initialData?: string): SWRResponse<string, Error> => {
-  return useStaticSWR('drawioUri', initialData, { fallbackData: 'https://embed.diagrams.net/' });
+  return useContextSWR('drawioUri', initialData, { fallbackData: 'https://embed.diagrams.net/' });
 };
 
 export const useHackmdUri = (initialData?: Nullable<string>): SWRResponse<Nullable<string>, Error> => {
-  return useStaticSWR<Nullable<string>, Error>('hackmdUri', initialData);
+  return useContextSWR<Nullable<string>, Error>('hackmdUri', initialData);
 };
 
 export const useIsSearchPage = (initialData?: Nullable<any>) : SWRResponse<Nullable<any>, Error> => {
-  return useStaticSWR<Nullable<any>, Error>('isSearchPage', initialData);
+  return useContextSWR<Nullable<any>, Error>('isSearchPage', initialData);
 };
 
 export const useTargetAndAncestors = (initialData?: TargetAndAncestors): SWRResponse<TargetAndAncestors, Error> => {
-  return useStaticSWR<TargetAndAncestors, Error>('targetAndAncestors', initialData);
+  return useContextSWR<TargetAndAncestors, Error>('targetAndAncestors', initialData);
 };
 
 export const useIsAclEnabled = (initialData?: boolean) : SWRResponse<boolean, Error> => {
-  return useStaticSWR<boolean, Error>('isAclEnabled', initialData);
+  return useContextSWR<boolean, Error>('isAclEnabled', initialData);
 };
 
 export const useIsSearchServiceConfigured = (initialData?: boolean) : SWRResponse<boolean, Error> => {
-  return useStaticSWR<boolean, Error>('isSearchServiceConfigured', initialData);
+  return useContextSWR<boolean, Error>('isSearchServiceConfigured', initialData);
 };
 
 export const useIsSearchServiceReachable = (initialData?: boolean) : SWRResponse<boolean, Error> => {
-  return useStaticSWR<boolean, Error>('isSearchServiceReachable', initialData);
+  return useContextSWR<boolean, Error>('isSearchServiceReachable', initialData);
 };
 
 export const useIsMailerSetup = (initialData?: boolean): SWRResponse<boolean, any> => {
-  return useStaticSWR('isMailerSetup', initialData);
+  return useContextSWR('isMailerSetup', initialData);
 };
 
 export const useIsSearchScopeChildrenAsDefault = (initialData?: boolean) : SWRResponse<boolean, Error> => {
-  return useStaticSWR<boolean, Error>('isSearchScopeChildrenAsDefault', initialData);
+  return useContextSWR<boolean, Error>('isSearchScopeChildrenAsDefault', initialData);
 };
 
 export const useIsSlackConfigured = (initialData?: boolean) : SWRResponse<boolean, Error> => {
-  return useStaticSWR<boolean, Error>('isSlackConfigured', initialData);
+  return useContextSWR<boolean, Error>('isSlackConfigured', initialData);
 };
 
 export const useIsEnabledAttachTitleHeader = (initialData?: boolean) : SWRResponse<boolean, Error> => {
-  return useStaticSWR<boolean, Error>('isEnabledAttachTitleHeader', initialData);
+  return useContextSWR<boolean, Error>('isEnabledAttachTitleHeader', initialData);
 };
 
 export const useIsIndentSizeForced = (initialData?: boolean) : SWRResponse<boolean, Error> => {
-  return useStaticSWR<boolean, Error>('isIndentSizeForced', initialData, { fallbackData: false });
+  return useContextSWR<boolean, Error>('isIndentSizeForced', initialData, { fallbackData: false });
 };
 
 export const useDefaultIndentSize = (initialData?: number) : SWRResponse<number, Error> => {
-  return useStaticSWR<number, Error>('defaultIndentSize', initialData, { fallbackData: 4 });
+  return useContextSWR<number, Error>('defaultIndentSize', initialData, { fallbackData: 4 });
 };
 
 export const useAuditLogEnabled = (initialData?: boolean): SWRResponse<boolean, Error> => {
-  return useStaticSWR<boolean, Error>('auditLogEnabled', initialData, { fallbackData: false });
+  return useContextSWR<boolean, Error>('auditLogEnabled', initialData, { fallbackData: false });
 };
 
 // TODO: initialize in [[..path]].page.tsx?
 export const useActivityExpirationSeconds = (initialData?: number) : SWRResponse<number, Error> => {
-  return useStaticSWR<number, Error>('activityExpirationSeconds', initialData);
+  return useContextSWR<number, Error>('activityExpirationSeconds', initialData);
 };
 
 export const useAuditLogAvailableActions = (initialData?: Array<SupportedActionType>) : SWRResponse<Array<SupportedActionType>, Error> => {
-  return useStaticSWR<Array<SupportedActionType>, Error>('auditLogAvailableActions', initialData);
+  return useContextSWR<Array<SupportedActionType>, Error>('auditLogAvailableActions', initialData);
 };
 
 export const useGrowiVersion = (initialData?: string): SWRResponse<string, any> => {
-  return useStaticSWR('growiVersion', initialData);
+  return useContextSWR('growiVersion', initialData);
 };
 
 export const useIsEnabledStaleNotification = (initialData?: boolean): SWRResponse<boolean, any> => {
-  return useStaticSWR('isEnabledStaleNotification', initialData);
+  return useContextSWR('isEnabledStaleNotification', initialData);
 };
 
 export const useIsLatestRevision = (initialData?: boolean): SWRResponse<boolean, any> => {
-  return useStaticSWR('isLatestRevision', initialData);
+  return useContextSWR('isLatestRevision', initialData);
 };
 
 export const useEditorConfig = (initialData?: EditorConfig): SWRResponse<EditorConfig, Error> => {
-  return useStaticSWR<EditorConfig, Error>('editorConfig', initialData);
+  return useContextSWR<EditorConfig, Error>('editorConfig', initialData);
 };
 
 export const useRendererConfig = (initialData?: RendererConfig): SWRResponse<RendererConfig, any> => {
-  return useStaticSWR('growiRendererConfig', initialData);
+  return useContextSWR('growiRendererConfig', initialData);
 };
 
 export const useIsAllReplyShown = (initialData?: boolean): SWRResponse<boolean, Error> => {
-  return useStaticSWR('isAllReplyShown', initialData);
+  return useContextSWR('isAllReplyShown', initialData);
 };
 
 export const useIsBlinkedHeaderAtBoot = (initialData?: boolean): SWRResponse<boolean, Error> => {
-  return useStaticSWR('isBlinkedAtBoot', initialData, { fallbackData: false });
+  return useContextSWR('isBlinkedAtBoot', initialData, { fallbackData: false });
 };
 
 export const useEditingMarkdown = (initialData?: string): SWRResponse<string, Error> => {
-  return useStaticSWR('currentMarkdown', initialData);
+  return useContextSWR('currentMarkdown', initialData);
 };
 
 export const useIsUploadableImage = (initialData?: boolean): SWRResponse<boolean, Error> => {
-  return useStaticSWR('isUploadableImage', initialData);
+  return useContextSWR('isUploadableImage', initialData);
 };
 
 export const useIsUploadableFile = (initialData?: boolean): SWRResponse<boolean, Error> => {
-  return useStaticSWR('isUploadableFile', initialData);
+  return useContextSWR('isUploadableFile', initialData);
 };
 
 export const useShowPageLimitationL = (initialData?: number): SWRResponse<number, Error> => {
-  return useStaticSWR('showPageLimitationL', initialData);
+  return useContextSWR('showPageLimitationL', initialData);
 };
 
 export const useShowPageLimitationXL = (initialData?: number): SWRResponse<number, Error> => {
-  return useStaticSWR('showPageLimitationXL', initialData);
+  return useContextSWR('showPageLimitationXL', initialData);
 };
 
 export const useCustomizeTitle = (initialData?: string): SWRResponse<string, Error> => {
-  return useStaticSWR('CustomizeTitle', initialData);
+  return useContextSWR('CustomizeTitle', initialData);
 };
 
 export const useCustomizedLogoSrc = (initialData?: string): SWRResponse<string, Error> => {
-  return useStaticSWR('customizedLogoSrc', initialData);
+  return useContextSWR('customizedLogoSrc', initialData);
 };
 
 export const useGrowiCloudUri = (initialData?: string): SWRResponse<string, Error> => {
@@ -222,6 +219,10 @@ export const useGrowiCloudUri = (initialData?: string): SWRResponse<string, Erro
 
 export const useGrowiAppIdForGrowiCloud = (initialData?: number): SWRResponse<number, Error> => {
   return useStaticSWR('growiAppIdForGrowiCloud', initialData);
+};
+
+export const useIsContainerFluid = (initialData?: boolean): SWRResponse<boolean, Error> => {
+  return useStaticSWR('isContainerFluid', initialData);
 };
 
 /** **********************************************************
@@ -248,20 +249,5 @@ export const useIsEditable = (): SWRResponse<boolean, Error> => {
     (key: Key, isGuestUser: boolean, isForbidden: boolean, isIdenticalPath: boolean) => {
       return (!isForbidden && !isIdenticalPath && !isGuestUser);
     },
-  );
-};
-
-export const useCurrentPageTocNode = (): SWRResponse<HtmlElementNode, any> => {
-  const { data: currentPagePath } = useCurrentPagePath();
-
-  return useStaticSWR(['currentPageTocNode', currentPagePath]);
-};
-
-export const useIsTrashPage = (): SWRResponse<boolean, Error> => {
-  const { data: pagePath } = useCurrentPagePath();
-
-  return useSWRImmutable(
-    pagePath == null ? null : ['isTrashPage', pagePath],
-    (key: Key, pagePath: string) => pagePathUtils.isTrashPage(pagePath),
   );
 };

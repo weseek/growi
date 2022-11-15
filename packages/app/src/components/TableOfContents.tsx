@@ -3,7 +3,7 @@ import React, { useCallback } from 'react';
 import { pagePathUtils } from '@growi/core';
 import ReactMarkdown from 'react-markdown';
 
-import { useCurrentPagePath } from '~/stores/context';
+import { useCurrentPagePath } from '~/stores/page';
 import { useTocOptions } from '~/stores/renderer';
 import loggerFactory from '~/utils/logger';
 
