@@ -3,7 +3,7 @@ import { Plugin } from 'unified';
 import { Node } from 'unist';
 import { visit } from 'unist-util-visit';
 
-const SUPPORTED_ATTRIBUTES = ['drawioEmbedUri'];
+const SUPPORTED_ATTRIBUTES = ['diagramIndex', 'drawioEmbedUri', 'bol', 'eol'];
 
 type Lang = 'drawio';
 
@@ -15,21 +15,26 @@ export type DrawioRemarkPluginParams = {
   drawioEmbedUri?: string,
 }
 
-function rewriteNode(node: Node, options: DrawioRemarkPluginParams) {
+function rewriteNode(node: Node, index: number, options: DrawioRemarkPluginParams) {
   const data = node.data ?? (node.data = {});
 
   node.type = 'paragraph';
   node.children = [{ type: 'text', value: node.value }];
   data.hName = 'drawio';
-  data.hProperties = { drawioEmbedUri: options.drawioEmbedUri };
+  data.hProperties = {
+    diagramIndex: index,
+    drawioEmbedUri: options.drawioEmbedUri,
+    bol: node.position?.start.line,
+    eol: node.position?.end.line,
+  };
 }
 
 export const remarkPlugin: Plugin<[DrawioRemarkPluginParams]> = function(options = {}) {
   return (tree) => {
-    visit(tree, (node) => {
+    visit(tree, (node, index) => {
       if (node.type === 'code') {
         if (isDrawioBlock(node.lang)) {
-          rewriteNode(node, options);
+          rewriteNode(node, index ?? 0, options);
         }
       }
     });
