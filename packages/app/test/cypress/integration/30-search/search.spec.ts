@@ -238,7 +238,7 @@ context('Search all pages', () => {
     cy.screenshot(`${ssPrefix}4-tag-order-by-last-update-date`);
   });
 
-// });
+});
 
 context('Search current tree with "prefix":', () => {
   const ssPrefix = 'search-current-tree-';
