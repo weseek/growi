@@ -149,12 +149,12 @@ context('Search all pages', () => {
     // Close Modal
     cy.get('body').type('{esc}');
 
-    //  Delete page
+    // Delete page
     cy.getByTestid('open-page-delete-modal-btn').first().click({ force: true});
     cy.getByTestid('page-delete-modal').should('be.visible').within(() => {
       cy.screenshot(`${ssPrefix}8-delete-page`);
     });
-});
+  });
 
   it(`Search all pages by tag is successfully loaded `, () => {
     const tag = 'help';
