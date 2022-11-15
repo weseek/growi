@@ -33,6 +33,7 @@ export type IOptionsForCreate = {
   grantUserGroupId?: ObjectIdLike,
   grant?: PageGrant,
   overwriteScopesOfDescendants?: boolean,
+  isSynchronously?: boolean,
 };
 
 export type IOptionsForResuming = {
