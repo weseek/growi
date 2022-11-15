@@ -206,6 +206,7 @@ context('Page Accessories Modal', () => {
       cy.getByTestid('open-page-item-control-btn').within(() => {
         cy.get('button.btn-page-item-control').click({force: true});
       });
+      cy.getByTestid('open-page-accessories-modal-btn-with-share-link-management-data-tab').should('be.visible');
       cy.getByTestid('open-page-accessories-modal-btn-with-share-link-management-data-tab').click();
    });
 
