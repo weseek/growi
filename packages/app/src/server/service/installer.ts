@@ -52,7 +52,7 @@ export class InstallerService {
   private async createPage(filePath, pagePath, owner): Promise<IPage|undefined> {
     try {
       const markdown = fs.readFileSync(filePath);
-      return this.crowi.pageService.create(pagePath, markdown, owner, {}) as IPage;
+      return this.crowi.pageService.create(pagePath, markdown, owner, { isSynchronously: true }) as IPage;
     }
     catch (err) {
       logger.error(`Failed to create ${pagePath}`, err);
