@@ -19,14 +19,13 @@ const UserManagement = dynamic(() => import('~/components/Admin/UserManagement')
 
 
 type Props = CommonProps & {
-  currentUser: any,
   isMailerSetup: boolean,
 };
 
 
 const AdminUserManagementPage: NextPage<Props> = (props) => {
   const { t } = useTranslation('admin');
-  useCurrentUser(props.currentUser != null ? JSON.parse(props.currentUser) : null);
+  useCurrentUser(props.currentUser ?? null);
   useIsMailerSetup(props.isMailerSetup);
 
   const title = t('user_management.user_management');
@@ -51,12 +50,9 @@ const AdminUserManagementPage: NextPage<Props> = (props) => {
 
 const injectServerConfigurations = async(context: GetServerSidePropsContext, props: Props): Promise<void> => {
   const req: CrowiRequest = context.req as CrowiRequest;
-  const { crowi, user } = req;
+  const { crowi } = req;
   const { mailService } = crowi;
 
-  if (user != null) {
-    props.currentUser = JSON.stringify(user);
-  }
   props.isMailerSetup = mailService.isMailerSetup;
 };
 
