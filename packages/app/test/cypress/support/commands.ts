@@ -41,6 +41,11 @@ Cypress.Commands.add('login', (username, password) => {
   });
 });
 
+Cypress.Commands.add('waitSkeletonDisappear', () => {
+  cy.get('.grw-skelton').should('exist');
+  cy.get('.grw-skelton').should('not.exist');
+});
+
 let isSidebarCollapsed: boolean | undefined;
 
 Cypress.Commands.add('collapseSidebar', (isCollapsed, force=false) => {
