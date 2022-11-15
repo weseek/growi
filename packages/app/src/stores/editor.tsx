@@ -123,7 +123,7 @@ export const useIsEnabledUnsavedWarning = (): SWRResponseWithUtils<IUtilsIsEnabl
 
   const { cache } = useSWRConfig();
 
-  const swrResponse = useStaticSWR<boolean, Error>(key, undefined, { fallbackData: false })
+  const swrResponse = useStaticSWR<boolean, Error>(key, undefined, { fallbackData: false });
 
   return withUtils(swrResponse, {
     getIsEnabledUnsavedWarningFromCache() {
