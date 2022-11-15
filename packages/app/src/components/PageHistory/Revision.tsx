@@ -10,7 +10,6 @@ import { Username } from '../User/Username';
 
 import styles from './Revision.module.scss';
 
-
 type RevisionProps = {
   revision: IRevisionHasId,
   isLatestRevision: boolean,
