@@ -148,17 +148,17 @@ context('Access to Template Editing Mode', () => {
 
       cy.get('#grw-subnav-container').within(() => {
         cy.getByTestid('open-page-item-control-btn').as('open-page-item-control-btn');
-        cy.get('@open-page-item-control-btn').should('be.visible').click({ timeout: 60000 });
+        cy.get('@open-page-item-control-btn').should('be.visible').click();
 
         cy.getByTestid('open-page-template-modal-btn').as('open-page-template-modal-btn');
-        cy.get('@open-page-template-modal-btn').should('be.visible').click({ timeout: 60000 });
+        cy.get('@open-page-template-modal-btn').should('be.visible').click();
       });
 
       cy.getByTestid('page-template-modal').should('be.visible');
       cy.screenshot(`${ssPrefix}-open-page-template-bootstrap4`);
 
       cy.getByTestid('template-button-children').as('template-button-children');
-      cy.get('@template-button-children').should('be.visible').click({ timeout: 60000 });
+      cy.get('@template-button-children').should('be.visible').click();
 
       cy.get('.grw-skelton').should('not.exist').then(()=>{
         cy.getByTestid('navbar-editor').should('be.visible').then(()=>{
@@ -177,16 +177,16 @@ context('Access to Template Editing Mode', () => {
       cy.get('#grw-subnav-container').within(() => {
 
         cy.getByTestid('open-page-item-control-btn').as('open-page-item-control-btn');
-        cy.get('@open-page-item-control-btn').should('be.visible').click({ timeout: 60000 });
+        cy.get('@open-page-item-control-btn').should('be.visible').click();
 
         cy.getByTestid('open-page-template-modal-btn').as('open-page-template-modal-btn');
-        cy.get('@open-page-template-modal-btn').should('be.visible').click({ timeout: 60000 });
+        cy.get('@open-page-template-modal-btn').should('be.visible').click();
 
       });
       cy.getByTestid('page-template-modal').should('be.visible');
 
       cy.getByTestid('template-button-decendants').as('template-button-decendants');
-      cy.get('@template-button-decendants').should('be.visible').click({ timeout: 60000 });
+      cy.get('@template-button-decendants').should('be.visible').click();
 
       cy.get('.grw-skelton').should('not.exist').then(()=>{
         cy.getByTestid('navbar-editor').should('be.visible').then(()=>{
