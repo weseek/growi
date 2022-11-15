@@ -3488,6 +3488,10 @@ class PageService {
     return true;
   }
 
+  /**
+   * Create a page
+   * Set options.isSynchronously to true to await all process when you want to run this method multiple times at short intervals.
+   */
   async create(path: string, body: string, user, options: IOptionsForCreate = {}): Promise<PageDocument> {
     const Page = mongoose.model('Page') as unknown as PageModel;
 
@@ -3566,7 +3570,12 @@ class PageService {
       throw err;
     }
 
-    this.createSubOperation(savedPage, user, options, pageOp._id);
+    if (options.isSynchronously) {
+      await this.createSubOperation(savedPage, user, options, pageOp._id);
+    }
+    else {
+      this.createSubOperation(savedPage, user, options, pageOp._id);
+    }
 
     return savedPage;
   }
