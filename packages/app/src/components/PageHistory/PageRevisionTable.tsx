@@ -14,14 +14,14 @@ type PageRevisionTAble = {
   targetRevision: IRevisionHasId,
   onChangeSourceInvoked: React.Dispatch<React.SetStateAction<IRevisionHasId | undefined>>,
   onChangeTargetInvoked: React.Dispatch<React.SetStateAction<IRevisionHasId | undefined>>,
-  onCloseModal: () => void,
+  onClose: () => void,
 }
 
 export const PageRevisionTable = (props: PageRevisionTAble): JSX.Element => {
   const { t } = useTranslation();
 
   const {
-    revisions, pagingLimit, sourceRevision, targetRevision, onChangeSourceInvoked, onChangeTargetInvoked, onCloseModal,
+    revisions, pagingLimit, sourceRevision, targetRevision, onChangeSourceInvoked, onChangeTargetInvoked, onClose,
   } = props;
 
   const revisionCount = revisions.length;
@@ -52,7 +52,7 @@ export const PageRevisionTable = (props: PageRevisionTAble): JSX.Element => {
               isLatestRevision={revision === latestRevision}
               hasDiff={hasDiff}
               key={`revision-history-rev-${revisionId}`}
-              onCloseModal={onCloseModal}
+              onClose={onClose}
             />
             {hasDiff && (
               <div className="ml-md-3 mt-auto">

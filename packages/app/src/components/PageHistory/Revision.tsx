@@ -15,14 +15,14 @@ type RevisionProps = {
   revision: IRevisionHasId,
   isLatestRevision: boolean,
   hasDiff: boolean,
-  onCloseModal: () => void,
+  onClose: () => void,
 }
 
 export const Revision = (props: RevisionProps): JSX.Element => {
   const { t } = useTranslation();
 
   const {
-    revision, isLatestRevision, hasDiff, onCloseModal,
+    revision, isLatestRevision, hasDiff, onClose,
   } = props;
 
   const renderSimplifiedNodiff = (revision: IRevisionHasId) => {
@@ -66,7 +66,7 @@ export const Revision = (props: RevisionProps): JSX.Element => {
             <UserDate dateTime={revision.createdAt} />
             <br className="d-xl-none d-block" />
             <Link href={`?revisionId=${revision._id}`} prefetch={false}>
-              <a className="ml-xl-3" onClick={onCloseModal}>
+              <a className="ml-xl-3" onClick={onClose}>
                 <i className="icon-login"></i> {t('Go to this version')}
               </a>
             </Link>

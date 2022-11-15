@@ -57,7 +57,7 @@ const PageAccessoriesModal = (): JSX.Element => {
           if (!isOpened) {
             return <></>;
           }
-          return <PageHistory onCloseModal={close}/>;
+          return <PageHistory onClose={close}/>;
         },
         i18n: t('History'),
         index: 0,
