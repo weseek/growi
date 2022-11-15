@@ -7,7 +7,7 @@ context('Access to page', () => {
       cy.login(user.username, user.password);
     });
     // collapse sidebar
-    cy.collapseSidebar(true);
+    // cy.collapseSidebar(true);
   });
 
   it('/Sandbox is successfully loaded', () => {
@@ -43,7 +43,7 @@ context('Access to page', () => {
     cy.visit('/Sandbox');
     cy.get('.grw-skelton', { timeout: 30000 }).should('not.exist');
     cy.get('#grw-subnav-container', { timeout: 30000 }).should('be.visible').within(()=>{
-      cy.getByTestid('editor-button', { timeout: 30000 }).as('editor-button').get('@editor-button').click()
+      cy.getByTestid('editor-button', { timeout: 30000 }).should('be.visible').then((e) => { Cypress.$(e).click() })
     })
     cy.getByTestid('navbar-editor', { timeout: 30000 }).should('be.visible');
     cy.screenshot(`${ssPrefix}-Sandbox-edit-page`);
