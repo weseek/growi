@@ -34,7 +34,7 @@ export const Drawio = (props: Props): JSX.Element => {
   return (
     <div
       key={`drawio-viewer-${diagramIndex}`}
-      className={`mxgraph-container ${styles['mxgraph-container']}`}
+      className={`drawio-viewer ${styles['drawio-viewer']}`}
       data-begin-line-number-of-markdown={bol}
       data-end-line-number-of-markdown={eol}
     >

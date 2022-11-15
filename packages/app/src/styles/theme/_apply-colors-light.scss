@@ -402,6 +402,13 @@ $dropdown-link-active-bg: $bgcolor-dropdown-link-active;
 }
 
 /*
+ * drawio
+ */
+.drawio-viewer {
+  border-color: $border-color-global;
+}
+
+/*
  * admin settings
  */
 .admin-setting-header {
