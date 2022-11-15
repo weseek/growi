@@ -255,7 +255,9 @@ module.exports = (crowi) => {
    */
   router.get('/', certifySharedPage, accessTokenParser, loginRequired, validator.getPage, apiV3FormValidator, async(req, res) => {
     const { user } = req;
-    const { pageId, path, findAll } = req.query;
+    const {
+      pageId, path, findAll, revisionId,
+    } = req.query;
 
     if (pageId == null && path == null) {
       return res.apiv3Err(new ErrorV3('Either parameter of path or pageId is required.', 'invalid-request'));
@@ -285,7 +287,7 @@ module.exports = (crowi) => {
 
     if (page != null) {
       try {
-        page.initLatestRevisionField();
+        page.initLatestRevisionField(revisionId);
 
         // populate
         page = await page.populateDataToShowRevision();
