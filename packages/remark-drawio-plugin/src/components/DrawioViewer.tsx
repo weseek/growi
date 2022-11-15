@@ -2,7 +2,7 @@ import React, { ReactNode } from 'react';
 
 import { generateMxgraphData } from '../utils/embed';
 
-import styles from './Drawio.module.scss';
+import styles from './DrawioViewer.module.scss';
 
 
 type Props = {
@@ -13,7 +13,7 @@ type Props = {
   children?: ReactNode,
 }
 
-export const Drawio = (props: Props): JSX.Element => {
+export const DrawioViewer = (props: Props): JSX.Element => {
   const {
     diagramIndex, bol, eol, children,
   } = props;
@@ -29,7 +29,7 @@ export const Drawio = (props: Props): JSX.Element => {
 
   const mxgraphData = generateMxgraphData(code, diagramIndex);
 
-  const mxgraphHtml = `<div class="mxgraph" style="max-width: 100%; border: 1px solid transparent" data-mxgraph="${mxgraphData}"></div>`;
+  const mxgraphHtml = `<div class="mxgraph" data-mxgraph="${mxgraphData}"></div>`;
 
   return (
     <div

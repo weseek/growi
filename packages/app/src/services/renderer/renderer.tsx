@@ -351,7 +351,7 @@ export const generateViewOptions = (
     components.h2 = Header;
     components.h3 = Header;
     components.lsx = props => <Lsx {...props} forceToFetchData />;
-    components.drawio = props => <drawioPlugin.Drawio {...props} />;
+    components.drawio = props => <drawioPlugin.DrawioViewer {...props} />;
   }
 
   // // Add configurers for viewer
@@ -424,7 +424,7 @@ export const generateSimpleViewOptions = (config: RendererConfig, pagePath: stri
   // add components
   if (components != null) {
     components.lsx = props => <Lsx {...props} />;
-    components.drawio = props => <drawioPlugin.Drawio {...props} />;
+    components.drawio = props => <drawioPlugin.DrawioViewer {...props} />;
   }
 
   verifySanitizePlugin(options, false);
@@ -464,7 +464,7 @@ export const generatePreviewOptions = (config: RendererConfig, pagePath: string)
   // add components
   if (components != null) {
     components.lsx = props => <Lsx {...props} />;
-    components.drawio = props => <drawioPlugin.Drawio {...props} />;
+    components.drawio = props => <drawioPlugin.DrawioViewer {...props} />;
   }
 
   // verifySanitizePlugin(options, false);
