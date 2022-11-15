@@ -25,7 +25,6 @@ import EmojiPickerHelper from './EmojiPickerHelper';
 import GridEditModal from './GridEditModal';
 // TODO: re-impl with https://redmine.weseek.co.jp/issues/107248
 // import geu from './GridEditorUtil';
-// import { HandsontableModal } from './HandsontableModal';
 import LinkEditModal from './LinkEditModal';
 import mdu from './MarkdownDrawioUtil';
 import markdownLinkUtil from './MarkdownLinkUtil';
@@ -116,7 +115,6 @@ class CodeMirrorEditor extends AbstractEditor {
     this.cm = React.createRef();
     this.gridEditModal = React.createRef();
     this.linkEditModal = React.createRef();
-    // this.handsontableModal = React.createRef();
     this.drawioModal = React.createRef();
 
     this.init();
@@ -156,7 +154,6 @@ class CodeMirrorEditor extends AbstractEditor {
     // TODO: re-impl with https://redmine.weseek.co.jp/issues/107248
     // this.showGridEditorHandler = this.showGridEditorHandler.bind(this);
     this.showLinkEditHandler = this.showLinkEditHandler.bind(this);
-    // this.showHandsonTableHandler = this.showHandsonTableHandler.bind(this);
 
     this.foldDrawioSection = this.foldDrawioSection.bind(this);
     this.onSaveForDrawio = this.onSaveForDrawio.bind(this);
@@ -869,11 +866,6 @@ class CodeMirrorEditor extends AbstractEditor {
     this.linkEditModal.current.show(markdownLinkUtil.getMarkdownLink(this.getCodeMirror()));
   }
 
-  // showHandsonTableHandler() {
-  //   this.handsontableModal.current.show(mtu.getMarkdownTable(this.getCodeMirror()));
-  // }
-
-
   // fold draw.io section (::: drawio ~ :::)
   foldDrawioSection() {
     const editor = this.getCodeMirror();
@@ -1137,11 +1129,6 @@ class CodeMirrorEditor extends AbstractEditor {
           ref={this.linkEditModal}
           onSave={(linkText) => { return markdownLinkUtil.replaceFocusedMarkdownLinkWithEditor(this.getCodeMirror(), linkText) }}
         />
-        {/* <HandsontableModal
-          ref={this.handsontableModal}
-          onSave={(table) => { return mtu.replaceFocusedMarkdownTableWithEditor(this.getCodeMirror(), table) }}
-          autoFormatMarkdownTable={this.props.editorSettings.autoFormatMarkdownTable}
-        /> */}
       </div>
     );
   }
