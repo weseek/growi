@@ -13,7 +13,7 @@ import { HtmlElementNode } from 'rehype-toc';
 import { toastSuccess, toastError } from '~/client/util/apiNotification';
 import { getOptionsToSave } from '~/client/util/editor';
 import {
-  useIsGuestUser, useShareLinkId, useCurrentRevisionId,
+  useIsGuestUser, useShareLinkId,
 } from '~/stores/context';
 import {
   useSWRxSlackChannels, useIsSlackEnabled, usePageTagsForEditors, useIsEnabledUnsavedWarning,
@@ -159,9 +159,8 @@ export const Page = (props) => {
     tocRef.current = toc;
   }, []);
 
-  const { data: currentRevisionId } = useCurrentRevisionId();
   const { data: shareLinkId } = useShareLinkId();
-  const { data: currentPage } = useSWRxCurrentPage(shareLinkId ?? undefined, currentRevisionId ?? undefined);
+  const { data: currentPage } = useSWRxCurrentPage(shareLinkId ?? undefined);
   const { data: editorMode } = useEditorMode();
   const { data: isGuestUser } = useIsGuestUser();
   const { data: isMobile } = useIsMobile();
