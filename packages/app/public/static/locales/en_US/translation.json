@@ -159,8 +159,6 @@
   "Confirm": "Confirm",
   "Successfully requested": "Successfully requested.",
   "personal_dropdown": {
-    "home": "Home",
-    "settings": "Settings",
     "color_mode": "Color mode",
     "sidebar_mode": "Sidebar mode",
     "sidebar_mode_editor": "Sidebar mode on editor",
@@ -171,11 +169,6 @@
     "required": "%s is required",
     "invalid_syntax": "The syntax of %s is invalid.",
     "title_required": "Title is required."
-  },
-  "not_found_page": {
-    "Create Page": "Create Page",
-    "page_not_exist": "This page does not exist.",
-    "page_not_exist_alert": "This page does not exist. Please create a new page."
   },
   "not_creatable_page": {
     "could_not_creata_path": "Couldn't create path."
@@ -253,16 +246,6 @@
   "API Token Settings": "API token settings",
   "Current API Token": "Current API token",
   "Update API Token": "Update API token",
-  "header_search_box": {
-    "label": {
-      "All pages": "All pages",
-      "This tree": "This tree"
-    },
-    "item_label": {
-      "All pages": "All pages",
-      "This tree": "Only children of this tree"
-    }
-  },
   "in_app_notification": {
     "notification_list": "In-App Notification List",
     "see_all": "See All",
@@ -314,14 +297,6 @@
       "no_mixed_zenkaku_and_hankaku_alphabet": "Check for mixed full-width and half-width alphabets.",
       "no_nfd": "textlint rule that disallow to use NFD like UTF8-MAC Sonant mark."
     }
-  },
-  "copy_to_clipboard": {
-    "Copy to clipboard": "Copy to clipboard",
-    "Page path": "Page path",
-    "Page URL": "Page URL",
-    "Permanent link": "Permanent link",
-    "Page path and permanent link": "Page path and permanent link",
-    "Markdown link": "Markdown link"
   },
   "search_help": {
     "title": "Searching Help",
@@ -650,10 +625,9 @@
       "error_duplicate_pages_found": "Multiple pages with the same path name were found. Please rename or delete and try again."
     }
   },
-  "to_cloud_settings": "Open GROWI.cloud Settings",
   "login": {
     "Sign in error": "Login error",
-    "Registration successful": "Registration successful",
+    "Registration successful": "Registration successful. Please wait for administrator approval.",
     "Setup": "Setup",
     "enabled_ldap_has_configuration_problem":"LDAP is enabled but the configuration has something wrong.",
     "set_env_var_for_logs": "(Please set the environment variables <code>DEBUG=crowi:service:PassportService</code> to get the logs)"
@@ -685,6 +659,8 @@
     "username_should_not_be_null":"Username should not be null. Please check Authentication Mechanism Settings on admin page",
     "email_address_is_already_registered":"This email address is already registered.",
     "can_not_register_maximum_number_of_users":"Can not register more than the maximum number of users.",
+    "email_settings_is_not_setup":"E-mail settings is not set up. Please ask the administrator.",
+    "email_authentication_is_not_enabled": "Email authentication is not enabled. Please ask the administrator.",
     "failed_to_register":"Failed to register.",
     "successfully_created":"The user {{username}} is successfully created.",
     "can_not_activate_maximum_number_of_users":"Can not activate more than the maximum number of users.",
@@ -791,13 +767,6 @@
     "select_group": "Select group",
     "belonging_to_no_group": "Could not find the groups you belong to.",
     "manage_user_groups": "Manage user groups"
-  },
-  "crop_image_modal": {
-    "image_crop": "Image Crop",
-    "crop": "Crop",
-    "save": "Save",
-    "reset": "Reset",
-    "cancel": "Cancel"
   },
   "fix_page_grant": {
     "modal": {

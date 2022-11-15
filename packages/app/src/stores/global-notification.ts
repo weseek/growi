@@ -1,6 +1,7 @@
 import { SWRResponseWithUtils, withUtils } from '@growi/core';
 import useSWRImmutable from 'swr/immutable';
 
+import { IGlobalNotification } from '~/client/interfaces/global-notification';
 
 import { apiv3Get, apiv3Put } from '../client/util/apiv3-client';
 
@@ -10,7 +11,6 @@ type Util = {
 };
 
 
-// TODO: typescriptize
 export const useSWRxGlobalNotification = (globalNotificationId: string): SWRResponseWithUtils<Util, any, Error> => {
   const swrResult = useSWRImmutable(
     globalNotificationId != null ? `/notification-setting/global-notification/${globalNotificationId}` : null,
@@ -22,7 +22,7 @@ export const useSWRxGlobalNotification = (globalNotificationId: string): SWRResp
   );
 
 
-  const update = async(updateData) => {
+  const update = async(updateData: IGlobalNotification) => {
     const { data } = swrResult;
 
     if (data == null) {

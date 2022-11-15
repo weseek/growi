@@ -2,8 +2,8 @@ import React, { useEffect } from 'react';
 
 import PropTypes from 'prop-types';
 
-import { useCurrentPagePath } from '~/stores/context';
 import { usePageCreateModal } from '~/stores/modal';
+import { useCurrentPagePath } from '~/stores/page';
 
 const CreatePage = React.memo((props) => {
 

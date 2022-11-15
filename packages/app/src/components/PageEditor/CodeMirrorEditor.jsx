@@ -25,7 +25,7 @@ import EmojiPickerHelper from './EmojiPickerHelper';
 import GridEditModal from './GridEditModal';
 // TODO: re-impl with https://redmine.weseek.co.jp/issues/107248
 // import geu from './GridEditorUtil';
-// import HandsontableModal from './HandsontableModal';
+import HandsontableModal from './HandsontableModal';
 import LinkEditModal from './LinkEditModal';
 import mdu from './MarkdownDrawioUtil';
 import markdownLinkUtil from './MarkdownLinkUtil';
@@ -870,7 +870,7 @@ class CodeMirrorEditor extends AbstractEditor {
   }
 
   showHandsonTableHandler() {
-    // this.handsontableModal.current.show(mtu.getMarkdownTable(this.getCodeMirror()));
+    this.handsontableModal.current.show(mtu.getMarkdownTable(this.getCodeMirror()));
   }
 
 
@@ -1064,12 +1064,6 @@ class CodeMirrorEditor extends AbstractEditor {
           ref={this.cm}
           className={additionalClasses}
           placeholder="search"
-          // == temporary deactivate editorDidMount to use https://github.com/scniro/react-codemirror2/issues/284#issuecomment-1155928554
-          // editorDidMount={(editor) => {
-          // // add event handlers
-          //   editor.on('paste', this.pasteHandler);
-          //   editor.on('scrollCursorIntoView', this.scrollCursorIntoViewHandler);
-          // }}
           value={this.props.value}
           options={{
             indentUnit: this.props.indentSize,
@@ -1116,6 +1110,8 @@ class CodeMirrorEditor extends AbstractEditor {
           }}
           onKeyPress={this.keyPressHandler}
           onKeyDown={this.keyDownHandler}
+          onPasteFiles={this.pasteHandler}
+          onScrollCursorIntoView={this.scrollCursorIntoViewHandler}
         />
 
         { this.renderLoadingKeymapOverlay() }
@@ -1135,11 +1131,11 @@ class CodeMirrorEditor extends AbstractEditor {
           ref={this.linkEditModal}
           onSave={(linkText) => { return markdownLinkUtil.replaceFocusedMarkdownLinkWithEditor(this.getCodeMirror(), linkText) }}
         />
-        {/* <HandsontableModal
+        <HandsontableModal
           ref={this.handsontableModal}
           onSave={(table) => { return mtu.replaceFocusedMarkdownTableWithEditor(this.getCodeMirror(), table) }}
           autoFormatMarkdownTable={this.props.editorSettings.autoFormatMarkdownTable}
-        /> */}
+        />
       </div>
     );
   }

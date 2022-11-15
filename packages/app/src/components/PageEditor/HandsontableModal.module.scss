@@ -1,0 +1,24 @@
+.grw-handsontable :global {
+  .handsontable {
+    position: relative;
+
+    .handsontableInput {
+      max-width: 290px !important;
+    }
+
+    td {
+      word-break: break-all;
+    }
+
+    th {
+      text-align: inherit;
+    }
+  }
+}
+
+// expand .hot-table-container (with flexbox)
+.grw-modal-expanded :global {
+  .hot-table-container {
+    flex: 1;
+  }
+}

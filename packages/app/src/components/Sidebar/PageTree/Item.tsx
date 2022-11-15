@@ -39,7 +39,7 @@ interface ItemProps {
   targetPathOrId?: Nullable<string>
   isOpen?: boolean
   isEnabledAttachTitleHeader?: boolean
-  onRenamed?(): void
+  onRenamed?(fromPath: string | undefined, toPath: string): void
   onClickDuplicateMenuItem?(pageToDuplicate: IPageForPageDuplicateModal): void
   onClickDeleteMenuItem?(pageToDelete: IPageToDeleteWithMeta): void
 }
@@ -191,7 +191,7 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
       await mutateChildren();
 
       if (onRenamed != null) {
-        onRenamed();
+        onRenamed(page.path, newPagePath);
       }
 
       // force open
@@ -286,7 +286,7 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
       });
 
       if (onRenamed != null) {
-        onRenamed();
+        onRenamed(page.path, newPagePath);
       }
 
       toastSuccess(t('renamed_pages', { path: page.path }));
@@ -380,11 +380,6 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
   const pathRecoveryMenuItemClickHandler = async(pageId: string): Promise<void> => {
     try {
       await resumeRenameOperation(pageId);
-
-      if (onRenamed != null) {
-        onRenamed();
-      }
-
       toastSuccess(t('page_operation.paths_recovered'));
     }
     catch {
@@ -425,6 +420,7 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
   return (
     <div
       id={`pagetree-item-${page._id}`}
+      data-testid="grw-pagetree-item-container"
       className={`grw-pagetree-item-container ${isOver ? 'grw-pagetree-is-over' : ''}
     ${shouldHide ? 'd-none' : ''}`}
     >

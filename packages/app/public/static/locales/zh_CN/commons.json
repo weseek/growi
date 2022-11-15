@@ -12,10 +12,22 @@
     "remove_share_link": "Succeeded to remove {{count}} share links"
   },
   "alert": {
-    "siteUrl_is_not_set": "主页URL未设置，通过 {{link}} 设置"
+    "siteUrl_is_not_set": "主页URL未设置，通过 {{link}} 设置",
+    "please_enable_mailer": "请先设置邮件程序。"
   },
   "headers": {
     "app_settings": "系统设置"
+  },
+
+  "header_search_box": {
+		"label": {
+			"All pages": "所有页面",
+			"This tree": "当前分支"
+		},
+		"item_label": {
+			"All pages": "所有页面",
+			"This tree": "当前分支以下内容"
+		}
   },
 
   "share_links": {
@@ -23,5 +35,31 @@
     "Page Path": "Page Path",
     "expire": "Expiration",
     "description": "Description"
+  },
+
+  "personal_dropdown": {
+    "home": "家",
+    "settings": "设置"
+  },
+
+	"copy_to_clipboard": {
+		"Copy to clipboard": "复制到剪贴板",
+		"Page path": "页面路径",
+		"Page URL": "页面Url",
+		"Parmanent link": "参数化链接",
+		"Page path and parmanent link": "页面路径及参数化链接",
+		"Markdown link": "Markdown链接"
+	},
+
+  "crop_image_modal": {
+    "image_crop": "图像裁剪",
+    "crop": "修剪",
+    "save": "节省",
+    "reset": "重启",
+    "cancel": "取消"
+  },
+
+  "not_found_page": {
+    "page_not_exist": "该页面不存在"
   }
 }

@@ -13,7 +13,7 @@ import { HtmlElementNode } from 'rehype-toc';
 import { toastSuccess, toastError } from '~/client/util/apiNotification';
 import { getOptionsToSave } from '~/client/util/editor';
 import {
-  useIsGuestUser, useCurrentPageTocNode, useShareLinkId,
+  useIsGuestUser, useShareLinkId,
 } from '~/stores/context';
 import {
   useSWRxSlackChannels, useIsSlackEnabled, usePageTagsForEditors, useIsEnabledUnsavedWarning,
@@ -21,6 +21,7 @@ import {
 import { useSWRxCurrentPage } from '~/stores/page';
 import { useViewOptions } from '~/stores/renderer';
 import {
+  useCurrentPageTocNode,
   useEditorMode, useIsMobile,
 } from '~/stores/ui';
 import loggerFactory from '~/utils/logger';
@@ -36,7 +37,7 @@ declare const globalEmitter: EventEmitter;
 
 // const DrawioModal = dynamic(() => import('./PageEditor/DrawioModal'), { ssr: false });
 const GridEditModal = dynamic(() => import('./PageEditor/GridEditModal'), { ssr: false });
-// const HandsontableModal = dynamic(() => import('./PageEditor/HandsontableModal'), { ssr: false });
+const HandsontableModal = dynamic(() => import('./PageEditor/HandsontableModal'), { ssr: false });
 const LinkEditModal = dynamic(() => import('./PageEditor/LinkEditModal'), { ssr: false });
 
 const logger = loggerFactory('growi:Page');
@@ -188,7 +189,7 @@ class PageSubstance extends React.Component<PageSubstanceProps> {
           <>
             <GridEditModal ref={this.gridEditModal} />
             <LinkEditModal ref={this.linkEditModal} />
-            {/* <HandsontableModal ref={this.handsontableModal} onSave={this.saveHandlerForHandsontableModal} /> */}
+            <HandsontableModal ref={this.handsontableModal} onSave={this.saveHandlerForHandsontableModal} />
             {/* TODO: use global DrawioModal https://redmine.weseek.co.jp/issues/105981 */}
             {/* <DrawioModal
               ref={this.drawioModal}

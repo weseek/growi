@@ -3,7 +3,7 @@ import { SWRResponse } from 'swr';
 
 import { apiPost } from '~/client/util/apiv1-client';
 
-import { useCurrentPagePath } from './context';
+import { useCurrentPagePath } from './page';
 import { useStaticSWR } from './use-static-swr';
 
 type RedirectFromUtil = {

@@ -11,8 +11,9 @@ import {
 import { IPagingResult } from '~/interfaces/paging-result';
 import { OnDeletedFunction, OnPutBackedFunction } from '~/interfaces/ui';
 import {
-  useIsGuestUser, useIsSharedUser, useIsTrashPage, useShowPageLimitationXL,
+  useIsGuestUser, useIsSharedUser, useShowPageLimitationXL,
 } from '~/stores/context';
+import { useIsTrashPage } from '~/stores/page';
 import {
   usePageTreeTermManager, useDescendantsPageListForCurrentPathTermManager, useSWRxDescendantsPageListForCurrrentPath,
   useSWRxPageInfoForList, useSWRxPageList,

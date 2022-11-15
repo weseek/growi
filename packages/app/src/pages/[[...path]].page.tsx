@@ -56,7 +56,7 @@ import DisplaySwitcher from '../components/Page/DisplaySwitcher';
 // import { serializeUserSecurely } from '../server/models/serializers/user-serializer';
 // import PageStatusAlert from '../client/js/components/PageStatusAlert';
 import {
-  useCurrentUser, useCurrentPagePath,
+  useCurrentUser,
   useIsLatestRevision,
   useIsForbidden, useIsNotFound, useIsSharedUser,
   useIsEnabledStaleNotification, useIsIdenticalPath,
@@ -65,13 +65,12 @@ import {
   useIsAclEnabled, useIsSearchPage,
   useCsrfToken, useIsSearchScopeChildrenAsDefault, useCurrentPageId, useCurrentPathname,
   useIsSlackConfigured, useRendererConfig, useEditingMarkdown,
-  useEditorConfig, useIsAllReplyShown, useIsUploadableFile, useIsUploadableImage, useLayoutSetting, useCustomizedLogoSrc,
+  useEditorConfig, useIsAllReplyShown, useIsUploadableFile, useIsUploadableImage, useCustomizedLogoSrc, useIsContainerFluid,
 } from '../stores/context';
 
 import {
   CommonProps, getNextI18NextConfig, getServerSideCommonProps, useCustomTitle,
 } from './utils/commons';
-import { calcIsContainerFluid } from './utils/layout';
 // import { useCurrentPageSWR } from '../stores/page';
 
 
@@ -198,6 +197,7 @@ const GrowiPage: NextPage<Props> = (props: Props) => {
 
   // page
   useIsLatestRevision(props.isLatestRevision);
+  useIsContainerFluid(props.isContainerFluid);
   // useOwnerOfCurrentPage(props.pageUser != null ? JSON.parse(props.pageUser) : null);
   useIsForbidden(props.isForbidden);
   useIsNotFound(props.isNotFound);
@@ -240,17 +240,14 @@ const GrowiPage: NextPage<Props> = (props: Props) => {
 
   useCurrentPageId(pageId ?? null);
   // useIsNotCreatable(props.isForbidden || !isCreatablePage(pagePath)); // TODO: need to include props.isIdentical
-  useCurrentPagePath(pagePath);
   useCurrentPathname(props.currentPathname);
 
-  useSWRxCurrentPage(undefined, pageWithMeta?.data ?? null); // store initial data
+  const { data: currentPage } = useSWRxCurrentPage(undefined, pageWithMeta?.data ?? null); // store initial data
   useEditingMarkdown(pageWithMeta?.data.revision?.body ?? '');
 
-  const { data: dataPageInfo } = useSWRxPageInfo(pageId);
   const { data: grantData } = useSWRxIsGrantNormalized(pageId);
   const { mutate: mutateSelectedGrant } = useSelectedGrant();
 
-  const { data: layoutSetting } = useLayoutSetting({ isContainerFluid: props.isContainerFluid });
   const { getClassNamesByEditorMode } = useEditorMode();
 
   const shouldRenderPutbackPageModal = pageWithMeta != null
@@ -277,12 +274,11 @@ const GrowiPage: NextPage<Props> = (props: Props) => {
 
   const isTopPagePath = isTopPage(pageWithMeta?.data.path ?? '');
 
-  const isContainerFluidEachPage = dataPageInfo == null || !('expandContentWidth' in dataPageInfo)
+  const isContainerFluidEachPage = currentPage == null || !('expandContentWidth' in currentPage)
     ? null
-    : dataPageInfo.expandContentWidth;
+    : currentPage.expandContentWidth;
   const isContainerFluidDefault = props.isContainerFluid;
-  const isContainerFluidAdmin = layoutSetting?.isContainerFluid;
-  const isContainerFluid = calcIsContainerFluid(isContainerFluidEachPage, isContainerFluidDefault, isContainerFluidAdmin);
+  const isContainerFluid = isContainerFluidEachPage ?? isContainerFluidDefault;
 
   return (
     <>
