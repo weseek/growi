@@ -7,7 +7,7 @@ import {
 } from 'reactstrap';
 
 import FolderIcon from '~/components/Icons/FolderIcon';
-import { BookmarkFolderItems } from '~/server/models/bookmark-folder';
+import { BookmarkFolderItems } from '~/interfaces/bookmark-info';
 
 type DeleteBookmarkFolderModalProps = {
   isOpen: boolean
