@@ -277,15 +277,24 @@ context('Tag Oprations', () =>{
     cy.getByTestid('search-result-content').should('be.visible');
     // cy.get('#wiki').should('be.visible');
     // force to add 'active' to pass VRT: https://github.com/weseek/growi/pull/6603
-    cy.getByTestid('page-list-item-L').eq(1).invoke('addClass', 'active');
+    cy.getByTestid('page-list-item-L').first().invoke('addClass', 'active');
     cy.screenshot(`${ssPrefix}1-click-tag-name`, {capture: 'viewport'});
+    cy.getByTestid('search-result-list').should('be.visible').then(($el)=>{
+      cy.wrap($el).within(()=>{
+        cy.getByTestid('open-page-item-control-btn').first().click();
+      });
 
-    cy.getByTestid('open-page-item-control-btn').eq(1).click({force: true});
-    // eslint-disable-next-line cypress/no-unnecessary-waiting
-    cy.wait(1500); // for wait rendering pagelist info
-    cy.screenshot(`${ssPrefix}2-click-three-dots-menu`, {capture: 'viewport'});
+      // eslint-disable-next-line cypress/no-unnecessary-waiting
+      cy.wait(1500); // for wait rendering pagelist info
+      cy.screenshot(`${ssPrefix}2-click-three-dots-menu`, {capture: 'viewport'});
 
-    cy.getByTestid('open-page-duplicate-modal-btn').eq(1).click({force: true});
+      cy.wrap($el).within(()=>{
+        cy.getByTestid('open-page-item-control-btn').first().within(()=>{
+          cy.getByTestid('open-page-duplicate-modal-btn').click();
+        })
+      });
+    })
+
     cy.getByTestid('page-duplicate-modal').should('be.visible').within(() => {
       cy.get('.rbt-input-main').type(`-${newPageName}`, {force: true});
     }).screenshot(`${ssPrefix}3-duplicate-page`, {capture: 'viewport'});
