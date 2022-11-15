@@ -7,7 +7,7 @@ context('Access to page', () => {
       cy.login(user.username, user.password);
     });
     // collapse sidebar
-    // cy.collapseSidebar(true);
+    cy.collapseSidebar(true);
   });
 
   it('/Sandbox is successfully loaded', () => {
