@@ -57,7 +57,7 @@ import DisplaySwitcher from '../components/Page/DisplaySwitcher';
 // import PageStatusAlert from '../client/js/components/PageStatusAlert';
 import {
   useCurrentUser,
-  useIsLatestRevision,
+  useIsLatestRevision, useCurrentRevisionId,
   useIsForbidden, useIsNotFound, useIsSharedUser,
   useIsEnabledStaleNotification, useIsIdenticalPath,
   useIsSearchServiceConfigured, useIsSearchServiceReachable, useDisableLinkSharing,
@@ -80,6 +80,7 @@ const UnsavedAlertDialog = dynamic(() => import('../components/UnsavedAlertDialo
 const GrowiSubNavigationSwitcher = dynamic(() => import('../components/Navbar/GrowiSubNavigationSwitcher'), { ssr: false });
 const UsersHomePageFooter = dynamic<UsersHomePageFooterProps>(() => import('../components/UsersHomePageFooter')
   .then(mod => mod.UsersHomePageFooter), { ssr: false });
+const HandsontableModal = dynamic(() => import('../components/PageEditor/HandsontableModal').then(mod => mod.HandsontableModal), { ssr: false });
 
 const logger = loggerFactory('growi:pages:all');
 
@@ -134,7 +135,8 @@ type Props = CommonProps & {
   redirectFrom?: string;
 
   // shareLinkId?: string;
-  isLatestRevision?: boolean
+  isLatestRevision?: boolean,
+  currentRevisionId?: string,
 
   isIdenticalPathPage?: boolean,
   isForbidden: boolean,
@@ -241,6 +243,7 @@ const GrowiPage: NextPage<Props> = (props: Props) => {
   useCurrentPageId(pageId ?? null);
   // useIsNotCreatable(props.isForbidden || !isCreatablePage(pagePath)); // TODO: need to include props.isIdentical
   useCurrentPathname(props.currentPathname);
+  useCurrentRevisionId(props.currentRevisionId);
 
   const { data: currentPage } = useSWRxCurrentPage(undefined, pageWithMeta?.data ?? null); // store initial data
   useEditingMarkdown(pageWithMeta?.data.revision?.body ?? '');
@@ -339,6 +342,7 @@ const GrowiPage: NextPage<Props> = (props: Props) => {
 
           <UnsavedAlertDialog />
           <DescendantsPageListModal />
+          <HandsontableModal />
           {shouldRenderPutbackPageModal && <PutbackPageModal />}
         </div>
       </BasicLayout>
@@ -411,6 +415,10 @@ async function injectPageData(context: GetServerSidePropsContext, props: Props):
     page.initLatestRevisionField(revisionId);
     await page.populateDataToShowRevision();
     props.isLatestRevision = page.isLatestRevision();
+  }
+
+  if (typeof revisionId === 'string' || typeof revisionId === 'undefined') {
+    props.currentRevisionId = props.isLatestRevision && page.latestRevision != null ? page.latestRevision.toString() : revisionId;
   }
 
   props.pageWithMeta = pageWithMeta;
