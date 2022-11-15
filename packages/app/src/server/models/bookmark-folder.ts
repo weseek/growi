@@ -3,7 +3,7 @@ import {
   Types, Document, Model, Schema,
 } from 'mongoose';
 
-import { IBookmarkFolder } from '~/interfaces/bookmark-info';
+import { IBookmarkFolder, BookmarkFolderItems } from '~/interfaces/bookmark-info';
 
 
 import loggerFactory from '../../utils/logger';
@@ -13,13 +13,6 @@ import { InvalidParentBookmarkFolderError } from './errors';
 
 const logger = loggerFactory('growi:models:bookmark-folder');
 
-export interface BookmarkFolderItems {
-  _id: string
-  name: string
-  parentFolder: this
-  parent: string
-  children: this[]
-}
 export interface BookmarkFolderDocument extends Document {
   _id: Types.ObjectId
   name: string
@@ -47,12 +40,6 @@ bookmarkFolderSchema.virtual('children', {
   foreignField: 'parent',
 });
 
-bookmarkFolderSchema.virtual('parentFolder', {
-  ref: 'BookmarkFolder',
-  localField: 'parent',
-  foreignField: '_id',
-  justOne: true,
-});
 
 bookmarkFolderSchema.statics.createByParameters = async function(params: IBookmarkFolder): Promise<BookmarkFolderDocument> {
   const { name, owner, parent } = params;
@@ -83,9 +70,8 @@ bookmarkFolderSchema.statics.findFolderAndChildren = async function(
     parentId?: Types.ObjectId | string,
 ): Promise<BookmarkFolderItems[]> {
   const parentFolder = await this.findById(parentId) as unknown as BookmarkFolderDocument;
-  const populatePaths = [{ path: 'children' }, { path: 'parentFolder' }];
   const bookmarks = await this.find({ owner: userId, parent: parentFolder })
-    .populate(populatePaths).exec() as unknown as BookmarkFolderItems[];
+    .populate({ path: 'children' }).exec() as unknown as BookmarkFolderItems[];
   return bookmarks;
 };
 

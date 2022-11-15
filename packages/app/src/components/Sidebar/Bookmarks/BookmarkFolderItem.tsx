@@ -10,7 +10,7 @@ import { apiv3Delete, apiv3Post, apiv3Put } from '~/client/util/apiv3-client';
 import CountBadge from '~/components/Common/CountBadge';
 import FolderIcon from '~/components/Icons/FolderIcon';
 import TriangleIcon from '~/components/Icons/TriangleIcon';
-import { BookmarkFolderItems } from '~/server/models/bookmark-folder';
+import { BookmarkFolderItems } from '~/interfaces/bookmark-info';
 import { useSWRxBookamrkFolderAndChild } from '~/stores/bookmark-folder';
 
 import BookmarkFolderItemControl from './BookmarkFolderItemControl';
@@ -31,10 +31,10 @@ const BookmarkFolderItem: FC<BookmarkFolderItemProps> = (props: BookmarkFolderIt
   } = bookmarkFolder;
   const [currentChildren, setCurrentChildren] = useState<BookmarkFolderItems[]>();
   const [isRenameInputShown, setIsRenameInputShown] = useState<boolean>(false);
-  const [currentParentFolder, setCurrentParentFolder] = useState<string | null>(folderId);
+  const [targetFolder, setTargetFolder] = useState<string | null>(folderId);
   const [isOpen, setIsOpen] = useState(_isOpen);
-  const [isLoadParent, setIsLoadParent] = useState<boolean>(false);
-  const { data: childBookmarkFolderData, mutate: mutateChildBookmarkData } = useSWRxBookamrkFolderAndChild(isOpen || isLoadParent ? currentParentFolder : null);
+  const { data: childBookmarkFolderData, mutate: mutateChildBookmarkData } = useSWRxBookamrkFolderAndChild(targetFolder);
+  const { mutate: mutateParentBookmarkFolder } = useSWRxBookamrkFolderAndChild(parent);
   const [isRenameAction, setIsRenameAction] = useState<boolean>(false);
   const [isDeleteFolderModalShown, setIsDeleteFolderModalShown] = useState<boolean>(false);
 
@@ -46,14 +46,12 @@ const BookmarkFolderItem: FC<BookmarkFolderItemProps> = (props: BookmarkFolderIt
   }, [children.length, currentChildren]);
 
   useEffect(() => {
-    if (isOpen && childBookmarkFolderData != null) {
+    if (isOpen) {
       mutateChildBookmarkData();
       setCurrentChildren(childBookmarkFolderData);
     }
-    else if (isLoadParent) {
-      mutateChildBookmarkData();
-    }
-  }, [childBookmarkFolderData, isLoadParent, isOpen, mutateChildBookmarkData]);
+  }, [childBookmarkFolderData, isOpen, mutateChildBookmarkData]);
+
 
   const hasChildren = useCallback((): boolean => {
     if (currentChildren != null && currentChildren.length > children.length) {
@@ -64,14 +62,12 @@ const BookmarkFolderItem: FC<BookmarkFolderItemProps> = (props: BookmarkFolderIt
 
   const loadChildFolder = useCallback(async() => {
     setIsOpen(!isOpen);
-    setIsLoadParent(false);
-    setCurrentParentFolder(folderId);
+    setTargetFolder(folderId);
   }, [folderId, isOpen]);
 
   const loadParent = useCallback(async() => {
-    setCurrentParentFolder(parent);
-    setIsLoadParent(true);
-  }, [parent]);
+    mutateParentBookmarkFolder();
+  }, [mutateParentBookmarkFolder]);
 
   const onPressEnterHandler = useCallback(async(folderName: string) => {
     try {
@@ -82,7 +78,7 @@ const BookmarkFolderItem: FC<BookmarkFolderItemProps> = (props: BookmarkFolderIt
         toastSuccess(t('Rename Bookmark Folder Success'));
       }
       else {
-        await apiv3Post('/bookmark-folder', { name: folderName, parent: currentParentFolder });
+        await apiv3Post('/bookmark-folder', { name: folderName, parent: targetFolder });
         setIsOpen(true);
         setIsRenameInputShown(false);
         mutateChildBookmarkData();
@@ -93,7 +89,7 @@ const BookmarkFolderItem: FC<BookmarkFolderItemProps> = (props: BookmarkFolderIt
       toastError(err);
     }
 
-  }, [currentParentFolder, folderId, isRenameAction, loadParent, mutateChildBookmarkData, parent, t]);
+  }, [folderId, isRenameAction, loadParent, mutateChildBookmarkData, parent, t, targetFolder]);
 
   const onClickPlusButton = useCallback(async() => {
     if (!isOpen && hasChildren()) {
@@ -131,13 +127,14 @@ const BookmarkFolderItem: FC<BookmarkFolderItemProps> = (props: BookmarkFolderIt
     try {
       await apiv3Delete(`/bookmark-folder/${folderId}`);
       setIsDeleteFolderModalShown(false);
+      loadParent();
       toastSuccess(t('Delete bookmark folder success'));
 
     }
     catch (err) {
       toastError(err);
     }
-  }, [folderId, t]);
+  }, [folderId, loadParent, t]);
 
   return (
     <div id={`bookmark-folder-item-${folderId}`} className="grw-foldertree-item-container"
