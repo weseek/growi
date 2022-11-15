@@ -40,8 +40,20 @@ export const PageGrant = {
   GRANT_SPECIFIED: 3, // DEPRECATED
   GRANT_OWNER: 4,
   GRANT_USER_GROUP: 5,
-};
-export type PageGrant = typeof PageGrant[keyof typeof PageGrant];
+} as const;
+type UnionPageGrantKeys = keyof typeof PageGrant;
+export type PageGrant = typeof PageGrant[UnionPageGrantKeys];
+
+export const PageStatus = {
+  STATUS_PUBLISHED: 'published',
+  STATUS_DELETED: 'deleted',
+} as const;
+export type PageStatus = typeof PageStatus[keyof typeof PageStatus];
+
+/**
+ * Neither pages with grant `GRANT_RESTRICTED` nor `GRANT_SPECIFIED` can be on a page tree.
+ */
+export type PageGrantCanBeOnTree = typeof PageGrant[Exclude<UnionPageGrantKeys, 'GRANT_RESTRICTED' | 'GRANT_SPECIFIED'>];
 
 export type IPageHasId = IPage & HasObjectId;
 

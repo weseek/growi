@@ -37,7 +37,6 @@ class SavePageControls extends React.Component {
     this.updateGrantHandler = this.updateGrantHandler.bind(this);
 
     this.save = this.save.bind(this);
-    this.saveAndOverwriteScopesOfDescendants = this.saveAndOverwriteScopesOfDescendants.bind(this);
 
   }
 
@@ -49,7 +48,7 @@ class SavePageControls extends React.Component {
     mutateGrantGroupName(data.grantGroupName);
   }
 
-  async save() {
+  async save(overwriteScopesOfDescendants = false) {
     const {
       isSlackEnabled, slackChannels, grant, grantGroupId, grantGroupName, pageContainer, editorContainer, pageTags,
     } = this.props;
@@ -58,7 +57,10 @@ class SavePageControls extends React.Component {
 
     try {
       // save
-      const optionsToSave = getOptionsToSave(isSlackEnabled, slackChannels, grant, grantGroupId, grantGroupName, pageTags);
+      const optionsToSave = {
+        ...getOptionsToSave(isSlackEnabled, slackChannels, grant, grantGroupId, grantGroupName, pageTags),
+        overwriteScopesOfDescendants,
+      };
       await pageContainer.saveAndReload(optionsToSave, this.props.editorMode);
     }
     catch (error) {
@@ -73,20 +75,6 @@ class SavePageControls extends React.Component {
         });
       }
     }
-  }
-
-  saveAndOverwriteScopesOfDescendants() {
-    const {
-      isSlackEnabled, slackChannels, grant, grantGroupId, grantGroupName, pageContainer, editorContainer, pageTags,
-    } = this.props;
-    // disable unsaved warning
-    editorContainer.disableUnsavedWarning();
-    // save
-    const currentOptionsToSave = getOptionsToSave(isSlackEnabled, slackChannels, grant, grantGroupId, grantGroupName, pageTags);
-    const optionsToSave = Object.assign(currentOptionsToSave, {
-      overwriteScopesOfDescendants: true,
-    });
-    pageContainer.saveAndReload(optionsToSave, this.props.editorMode);
   }
 
   render() {
@@ -117,10 +105,10 @@ class SavePageControls extends React.Component {
         }
 
         <UncontrolledButtonDropdown direction="up">
-          <Button data-testid="save-page-btn" id="caret" color="primary" className="btn-submit" onClick={this.save}>{labelSubmitButton}</Button>
+          <Button data-testid="save-page-btn" id="caret" color="primary" className="btn-submit" onClick={() => this.save()}>{labelSubmitButton}</Button>
           <DropdownToggle caret color="primary" />
           <DropdownMenu right>
-            <DropdownItem onClick={this.saveAndOverwriteScopesOfDescendants}>
+            <DropdownItem onClick={() => this.save(true)}>
               {labelOverwriteScopes}
             </DropdownItem>
           </DropdownMenu>
