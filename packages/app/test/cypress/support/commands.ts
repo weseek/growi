@@ -41,6 +41,14 @@ Cypress.Commands.add('login', (username, password) => {
   });
 });
 
+/**
+ * use only fot eh page that has skeleton
+ */
+Cypress.Commands.add('waitSkeletonDisappear', () => {
+  cy.get('.grw-skelton').should('not.exist');
+  cy.get('.grw-skelton').should('exist');
+});
+
 let isSidebarCollapsed: boolean | undefined;
 
 Cypress.Commands.add('collapseSidebar', (isCollapsed, force=false) => {
