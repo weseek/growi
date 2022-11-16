@@ -53,6 +53,7 @@ export const Comments = (props: CommentsProps): JSX.Element => {
                 pageId={pageId}
                 isForNewComment
                 onCommentButtonClicked={mutate}
+                revisionId={revision._id}
               />
             </div>
           )}
