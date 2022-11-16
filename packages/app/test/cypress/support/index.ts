@@ -38,6 +38,7 @@ declare global {
        login(username: string, password: string): Chainable<void>,
        collapseSidebar(isCollapsed: boolean, force?: boolean): Chainable<void>,
        waitUntilSkeletonDisappear(): Chainable<void>,
+       waitUntilSpinnerDisappear(): Chainable<void>,
     }
   }
 }
