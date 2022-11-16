@@ -15,7 +15,7 @@ context('Access Home', () => {
     cy.getByTestid('grw-personal-dropdown').click();
     cy.getByTestid('grw-personal-dropdown').find('.dropdown-menu .btn-group > .btn-outline-secondary:eq(0)').click();
 
-    cy.get('.grw-skelton').should('not.exist');
+    cy.get('.grw-skeleton').should('not.exist');
     // for check download toc data
     cy.get('.toc-link').should('be.visible');
 

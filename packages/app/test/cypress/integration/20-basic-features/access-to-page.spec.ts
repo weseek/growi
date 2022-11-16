@@ -26,7 +26,7 @@ context('Access to page', () => {
     // https://stackoverflow.com/questions/5041494/selecting-and-manipulating-css-pseudo-elements-such-as-before-and-after-usin/21709814#21709814
     cy.get('#mdcont-headers').invoke('removeClass', 'blink');
 
-    cy.get('.grw-skelton').should('not.exist');
+    cy.get('.grw-skeleton').should('not.exist');
     cy.screenshot(`${ssPrefix}-sandbox-headers`);
   });
 
@@ -41,7 +41,7 @@ context('Access to page', () => {
 
   it('/Sandbox with edit is successfully loaded', () => {
     cy.visit('/Sandbox');
-    cy.get('.grw-skelton', { timeout: 30000 }).should('not.exist');
+    cy.get('.grw-skeleton', { timeout: 30000 }).should('not.exist');
     cy.get('#grw-subnav-container', { timeout: 30000 }).should('be.visible').within(()=>{
       cy.getByTestid('editor-button', { timeout: 30000 }).should('be.visible').click();
     })
@@ -52,7 +52,7 @@ context('Access to page', () => {
   it('/user/admin is successfully loaded', () => {
     cy.visit('/user/admin', {  });
 
-    cy.get('.grw-skelton').should('not.exist');
+    cy.get('.grw-skeleton').should('not.exist');
     // for check download toc data
     cy.get('.toc-link').should('be.visible');
 

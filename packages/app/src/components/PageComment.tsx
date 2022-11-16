@@ -18,7 +18,7 @@ import { Comment } from './PageComment/Comment';
 import { CommentEditorProps } from './PageComment/CommentEditor';
 import { DeleteCommentModalProps } from './PageComment/DeleteCommentModal';
 import { ReplyComments } from './PageComment/ReplyComments';
-import { PageCommentSkelton } from './PageCommentSkelton';
+import { PageCommentSkeleton } from './PageCommentSkeleton';
 
 import styles from './PageComment.module.scss';
 
@@ -123,7 +123,7 @@ export const PageComment: FC<PageCommentProps> = memo((props:PageCommentProps): 
       return <PageCommentRoot />;
     }
     return (
-      <PageCommentSkelton commentTitleClasses={commentTitleClasses}/>
+      <PageCommentSkeleton commentTitleClasses={commentTitleClasses}/>
     );
   }
 

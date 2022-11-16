@@ -45,8 +45,8 @@ Cypress.Commands.add('login', (username, password) => {
  * use only fot eh page that has skeleton
  */
 Cypress.Commands.add('waitSkeletonDisappear', () => {
-  cy.get('.grw-skelton').should('not.exist');
-  cy.get('.grw-skelton').should('exist');
+  cy.get('.grw-skeleton').should('not.exist');
+  cy.get('.grw-skeleton').should('exist');
 });
 
 let isSidebarCollapsed: boolean | undefined;
