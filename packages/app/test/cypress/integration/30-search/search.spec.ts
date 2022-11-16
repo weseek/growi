@@ -266,7 +266,6 @@ context('Search current tree with "prefix":', () => {
     cy.get('.rbt-input').type(`${searchText}`);
     cy.screenshot(`${ssPrefix}2-insert-search-text`, { capture: 'viewport'});
     cy.get('.rbt-input').type('{enter}');
-    cy.waitUntilSkeletonDisappear();
 
     cy.getByTestid('search-result-base').should('be.visible');
     cy.getByTestid('search-result-list').should('be.visible');
