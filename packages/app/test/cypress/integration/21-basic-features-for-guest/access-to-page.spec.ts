@@ -3,6 +3,7 @@ context('Access to page by guest', () => {
 
   it('/Sandbox is successfully loaded', () => {
     cy.visit('/Sandbox');
+    cy.get('.fa-spinner').should('be.visible');
     cy.get('.fa-spinner').should('not.exist');
     cy.getByTestid('grw-pagetree-item-container').should('be.visible');
     cy.collapseSidebar(true, true);
