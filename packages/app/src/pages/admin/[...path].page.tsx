@@ -4,7 +4,7 @@ import {
 import dynamic from 'next/dynamic';
 
 import { CommonProps } from '~/pages/utils/commons';
-import { useCurrentUser } from '~/stores/context';
+import { useCurrentUser, useIsSearchPage, useIsSearchServiceConfigured } from '~/stores/context';
 import { useIsMaintenanceMode } from '~/stores/maintenanceMode';
 
 import { retrieveServerSideProps } from '../../utils/admin-page-util';
@@ -16,7 +16,8 @@ const AdminNotFoundPage = dynamic(() => import('~/components/Admin/NotFoundPage'
 const AdminAppPage: NextPage<CommonProps> = (props) => {
   useIsMaintenanceMode(props.isMaintenanceMode);
   useCurrentUser(props.currentUser ?? null);
-
+  useIsSearchPage(false);
+  useIsSearchServiceConfigured(props.isSearchServiceConfigured);
 
   return (
     <AdminLayout>

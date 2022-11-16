@@ -18,7 +18,9 @@ import AdminSamlSecurityContainer from '~/client/services/AdminSamlSecurityConta
 import AdminTwitterSecurityContainer from '~/client/services/AdminTwitterSecurityContainer';
 import { CrowiRequest } from '~/interfaces/crowi-request';
 import { CommonProps, useCustomTitle } from '~/pages/utils/commons';
-import { useCurrentUser, useIsMailerSetup, useSiteUrl } from '~/stores/context';
+import {
+  useCurrentUser, useIsMailerSetup, useSiteUrl, useIsSearchPage, useIsSearchServiceConfigured,
+} from '~/stores/context';
 
 import { retrieveServerSideProps } from '../../utils/admin-page-util';
 
@@ -37,6 +39,8 @@ const AdminSecuritySettingsPage: NextPage<Props> = (props) => {
   useCurrentUser(props.currentUser ?? null);
   useSiteUrl(props.siteUrl);
   useIsMailerSetup(props.isMailerSetup);
+  useIsSearchPage(false);
+  useIsSearchServiceConfigured(props.isSearchServiceConfigured);
 
 
   const title = t('security_settings.security_settings');

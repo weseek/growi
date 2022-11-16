@@ -8,7 +8,7 @@ import { Container, Provider } from 'unstated';
 
 import AdminNotificationContainer from '~/client/services/AdminNotificationContainer';
 import { CommonProps, useCustomTitle } from '~/pages/utils/commons';
-import { useCurrentUser } from '~/stores/context';
+import { useCurrentUser, useIsSearchPage, useIsSearchServiceConfigured } from '~/stores/context';
 
 import { retrieveServerSideProps } from '../../utils/admin-page-util';
 
@@ -19,6 +19,8 @@ const NotificationSetting = dynamic(() => import('~/components/Admin/Notificatio
 const AdminExternalNotificationPage: NextPage<CommonProps> = (props) => {
   const { t } = useTranslation('admin');
   useCurrentUser(props.currentUser ?? null);
+  useIsSearchPage(false);
+  useIsSearchServiceConfigured(props.isSearchServiceConfigured);
 
   const title = t('external_notification.external_notification');
   const injectableContainers: Container<any>[] = [];

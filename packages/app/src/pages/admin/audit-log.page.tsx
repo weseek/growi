@@ -7,7 +7,9 @@ import dynamic from 'next/dynamic';
 import { SupportedActionType } from '~/interfaces/activity';
 import { CrowiRequest } from '~/interfaces/crowi-request';
 import { CommonProps, useCustomTitle } from '~/pages/utils/commons';
-import { useCurrentUser, useAuditLogEnabled, useAuditLogAvailableActions } from '~/stores/context';
+import {
+  useCurrentUser, useAuditLogEnabled, useAuditLogAvailableActions, useIsSearchPage, useIsSearchServiceConfigured,
+} from '~/stores/context';
 
 import { retrieveServerSideProps } from '../../utils/admin-page-util';
 
@@ -27,6 +29,8 @@ const AdminAuditLogPage: NextPage<Props> = (props) => {
   useAuditLogEnabled(props.auditLogEnabled);
   useAuditLogAvailableActions(props.auditLogAvailableActions);
   useCurrentUser(props.currentUser ?? null);
+  useIsSearchPage(false);
+  useIsSearchServiceConfigured(props.isSearchServiceConfigured);
 
   const title = t('audit_log_management.audit_log');
 
