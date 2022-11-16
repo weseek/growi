@@ -26,13 +26,14 @@ type RevisionComparerProps = {
   sourceRevision: IRevisionHasPageId
   targetRevision: IRevisionHasPageId
   currentPageId?: string
+  onClose: () => void
 }
 
 export const RevisionComparer = (props: RevisionComparerProps): JSX.Element => {
   const { t } = useTranslation(['translation', 'commons']);
 
   const {
-    sourceRevision, targetRevision, currentPageId,
+    sourceRevision, targetRevision, currentPageId, onClose,
   } = props;
 
   const { data: currentPagePath } = useCurrentPagePath();
@@ -104,6 +105,7 @@ export const RevisionComparer = (props: RevisionComparerProps): JSX.Element => {
               revisionDiffOpened
               previousRevision={sourceRevision}
               currentRevision={targetRevision}
+              onClose={onClose}
             />
           )
         }

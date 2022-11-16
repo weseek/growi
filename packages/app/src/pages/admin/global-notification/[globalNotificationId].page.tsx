@@ -9,9 +9,11 @@ import dynamic from 'next/dynamic';
 import { useRouter } from 'next/router';
 import { Container, Provider } from 'unstated';
 
+
 import AdminNotificationContainer from '~/client/services/AdminNotificationContainer';
 import { toastError } from '~/client/util/apiNotification';
 import { CommonProps, useCustomTitle } from '~/pages/utils/commons';
+import { useCurrentUser } from '~/stores/context';
 
 import { retrieveServerSideProps } from '../../../utils/admin-page-util';
 
@@ -22,6 +24,7 @@ const ManageGlobalNotification = dynamic(() => import('~/components/Admin/Notifi
 
 const AdminGlobalNotificationNewPage: NextPage<CommonProps> = (props) => {
   const { t } = useTranslation('admin');
+  useCurrentUser(props.currentUser ?? null);
   const router = useRouter();
   const { globalNotificationId } = router.query;
   const currentGlobalNotificationId = Array.isArray(globalNotificationId) ? globalNotificationId[0] : globalNotificationId;
