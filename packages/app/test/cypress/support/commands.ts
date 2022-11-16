@@ -42,7 +42,7 @@ Cypress.Commands.add('login', (username, password) => {
 });
 
 /**
- * use only fot eh page that has skeleton
+ * use only for the pages which use component with skeleton
  */
 Cypress.Commands.add('waitSkeletonDisappear', () => {
   cy.get('.grw-skeleton').should('not.exist');
