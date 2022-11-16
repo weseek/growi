@@ -28,7 +28,7 @@ const BookmarkFolder = (): JSX.Element => {
       await apiv3Post('/bookmark-folder', { name: folderName, parent: null });
       await mutateChildBookmarkData();
       setIsRenameInputShown(false);
-      toastSuccess(t('Create New Bookmark Folder Success'));
+      toastSuccess(t('toaster.create_succeeded', { target: t('bookmark_folder.bookmark_folder') }));
     }
     catch (err) {
       toastError(err);
@@ -44,7 +44,7 @@ const BookmarkFolder = (): JSX.Element => {
           onClick={onClickBookmarkFolder}
         >
           <FolderPlusIcon />
-          <span className="mx-2 ">New Folder</span>
+          <span className="mx-2 ">{t('bookmark_folder.new_folder')}</span>
         </button>
       </div>
       {

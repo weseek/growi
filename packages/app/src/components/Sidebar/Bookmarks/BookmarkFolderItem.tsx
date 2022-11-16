@@ -72,17 +72,19 @@ const BookmarkFolderItem: FC<BookmarkFolderItemProps> = (props: BookmarkFolderIt
   const onPressEnterHandler = useCallback(async(folderName: string) => {
     try {
       if (isRenameAction) {
+        // Rename bookmark folder
         await apiv3Put('/bookmark-folder', { bookmarkFolderId: folderId, name: folderName, parent });
         loadParent();
         setIsRenameAction(false);
-        toastSuccess(t('Rename Bookmark Folder Success'));
+        toastSuccess(t('toaster.update_successed', { target: t('bookmark_folder.bookmark_folder') }));
       }
       else {
+        // Create new bookmark folder / subfolder
         await apiv3Post('/bookmark-folder', { name: folderName, parent: targetFolder });
         setIsOpen(true);
         setIsRenameInputShown(false);
         mutateChildBookmarkData();
-        toastSuccess(t('Create New Bookmark Folder Success'));
+        toastSuccess(t('toaster.create_succeeded', { target: t('bookmark_folder.bookmark_folder') }));
       }
     }
     catch (err) {
@@ -128,7 +130,7 @@ const BookmarkFolderItem: FC<BookmarkFolderItemProps> = (props: BookmarkFolderIt
       await apiv3Delete(`/bookmark-folder/${folderId}`);
       setIsDeleteFolderModalShown(false);
       loadParent();
-      toastSuccess(t('Delete bookmark folder success'));
+      toastSuccess(t('toaster.delete_succeeded', { target: t('bookmark_folder.bookmark_folder') }));
 
     }
     catch (err) {

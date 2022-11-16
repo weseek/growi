@@ -531,7 +531,8 @@
     "issue_share_link": "共有リンクを作成しました",
     "remove_share_link": "共有リンクを{{count}}件削除しました",
     "switch_disable_link_sharing_success": "共有リンクの設定を変更しました",
-    "failed_to_reset_password":"パスワードのリセットに失敗しました"
+    "failed_to_reset_password":"パスワードのリセットに失敗しました",
+    "delete_succeeded": "{{target}}の削除に成功しました"
   },
   "template": {
     "modal_label": {
@@ -857,5 +858,16 @@
   "footer": {
     "bookmarks": "ブックマーク",
     "recently_created": "最近作成したページ"
+  },
+  "bookmark_folder":{
+    "bookmark_folder": "ブックマーク フォルダ",
+    "delete_modal": {
+      "modal_header_label": "ブックマークフォルダを削除",
+      "modal_body_description": "このブックマーク フォルダとその内容を削除する",
+      "modal_body_alert": "削除されたフォルダとその内容は復元できません",
+      "modal_footer_button": "フォルダを削除"
+    },
+    "input_placeholder": "入力フォルダ名",
+    "new_folder": "新しいフォルダ"
   }
 }

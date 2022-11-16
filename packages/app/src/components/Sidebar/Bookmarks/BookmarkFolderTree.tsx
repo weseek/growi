@@ -1,6 +1,4 @@
 
-import { useTranslation } from 'next-i18next';
-
 import { useSWRxBookamrkFolderAndChild } from '~/stores/bookmark-folder';
 
 import BookmarkFolderItem from './BookmarkFolderItem';
@@ -9,7 +7,6 @@ import styles from './BookmarkFolderTree.module.scss';
 
 
 const BookmarkFolderTree = (): JSX.Element => {
-  const { t } = useTranslation();
   const { data: bookmarkFolderData } = useSWRxBookamrkFolderAndChild();
   if (bookmarkFolderData != null) {
     return (

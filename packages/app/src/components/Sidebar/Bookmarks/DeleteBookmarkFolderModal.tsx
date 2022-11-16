@@ -26,14 +26,14 @@ const DeleteBookmarkFolderModal = (props: DeleteBookmarkFolderModalProps): JSX.E
     <Modal size="md" isOpen={isOpen} toggle={onModalClose} data-testid="page-delete-modal" className="grw-create-page">
       <ModalHeader tag="h4" toggle={onModalClose} className="bg-danger text-light">
         <i className="icon-fw icon-trash"></i>
-        {t('Delete Bookmark Folder')}
+        {t('bookmark_folder.delete_modal.modal_header_label')}
       </ModalHeader>
       <ModalBody>
         <div className="form-group pb-1">
-          <label>{ t('Delete this bookmark folder and its contents') }:</label><br />
+          <label>{ t('bookmark_folder.delete_modal.modal_body_description') }:</label><br />
           <FolderIcon isOpen={false}/> {bookmarkFolder.name}
         </div>
-        {t('Deleted folder and its contents cannot be recovered')}
+        {t('bookmark_folder.delete_modal.modal_body_alert')}
       </ModalBody>
       <ModalFooter>
         <button
@@ -42,7 +42,7 @@ const DeleteBookmarkFolderModal = (props: DeleteBookmarkFolderModalProps): JSX.E
           onClick={onClickDeleteButton}
         >
           <i className="mr-1 icon-trash" aria-hidden="true"></i>
-          {t('Delete Folder')}
+          {t('bookmark_folder.delete_modal.modal_footer_button')}
         </button>
       </ModalFooter>
     </Modal>
