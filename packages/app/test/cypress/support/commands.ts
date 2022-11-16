@@ -41,9 +41,12 @@ Cypress.Commands.add('login', (username, password) => {
   });
 });
 
-Cypress.Commands.add('waitSkeletonDisappear', () => {
-  cy.get('.grw-skelton').should('exist');
-  cy.get('.grw-skelton').should('not.exist');
+/**
+ * use only for the pages which use component with skeleton
+ */
+Cypress.Commands.add('waitUntilSkeletonDisappear', () => {
+  cy.get('.grw-skeleton').should('exist');
+  cy.get('.grw-skeleton').should('not.exist');
 });
 
 let isSidebarCollapsed: boolean | undefined;

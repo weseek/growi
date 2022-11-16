@@ -1,9 +1,12 @@
+import type { IUserHasId } from '@growi/core';
 import { GetServerSidePropsContext } from 'next';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 
+import type { CrowiRequest } from '~/interfaces/crowi-request';
 import {
-  getServerSideCommonProps, getNextI18NextConfig,
+  getServerSideCommonProps, getNextI18NextConfig, CommonProps,
 } from '~/pages/utils/commons';
+
 
 /**
  * for Server Side Translations
@@ -21,6 +24,9 @@ async function injectNextI18NextConfigurations(context: GetServerSidePropsContex
 export const retrieveServerSideProps: any = async(
     context: GetServerSidePropsContext, injectServerConfigurations?:(context: GetServerSidePropsContext, props) => Promise<void>,
 ) => {
+  const req = context.req as CrowiRequest<IUserHasId & any>;
+  const { user } = req;
+
   const result = await getServerSideCommonProps(context);
 
   // check for presence
@@ -29,10 +35,15 @@ export const retrieveServerSideProps: any = async(
     throw new Error('invalid getSSP result');
   }
 
-  const props = result.props;
+  const props: CommonProps = result.props as CommonProps;
   if (injectServerConfigurations != null) {
     await injectServerConfigurations(context, props);
   }
+
+  if (user != null) {
+    props.currentUser = user.toObject();
+  }
+
   await injectNextI18NextConfigurations(context, props, ['admin', 'commons']);
 
   return {
