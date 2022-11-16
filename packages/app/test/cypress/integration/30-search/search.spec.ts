@@ -97,7 +97,7 @@ context('Search all pages', () => {
       cy.screenshot(`${ssPrefix}1-search-input-focused`);
     })
 
-    cy.get('.rbt-input-main').type(`${searchText}`)
+    cy.get('.rbt-input-main').type(`${searchText}`);
     cy.screenshot(`${ssPrefix}2-insert-search-text`, { capture: 'viewport'});
     cy.get('.rbt-input-main').type('{enter}');
     cy.url({ timeout: 30000 }).should('include', '/_search?q=help');
