@@ -72,8 +72,8 @@ export const useIsNotFound = (initialData?: boolean): SWRResponse<boolean, Error
   return useContextSWR<boolean, Error>('isNotFound', initialData, { fallbackData: false });
 };
 
-export const useTemplateTagData = (initialData?: Nullable<string>): SWRResponse<Nullable<string>, Error> => {
-  return useContextSWR<Nullable<string>, Error>('templateTagData', initialData);
+export const useTemplateTagData = (initialData?: string[]): SWRResponse<string[], Error> => {
+  return useContextSWR<string[], Error>('templateTagData', initialData);
 };
 
 export const useIsSharedUser = (initialData?: boolean): SWRResponse<boolean, Error> => {
