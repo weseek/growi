@@ -186,12 +186,16 @@ context('Access to /me/all-in-app-notifications', () => {
 
   it('All In-App Notification list is successfully loaded', () => {
     cy.visit('/');
-    cy.get('.notification-wrapper > a').click();
+    cy.get('.notification-wrapper').click();
     cy.get('.notification-wrapper > .dropdown-menu > a').click();
+
+    cy.getByTestid('grw-in-app-notification-page').should('be.visible');
+    cy.getByTestid('grw-in-app-notification-page-spinner').should('not.exist');
 
     cy.screenshot(`${ssPrefix}-see-all`, { capture: 'viewport' });
 
     cy.get('.grw-custom-nav-tab > div > ul > li:nth-child(2) > a').click();
+    cy.getByTestid('grw-in-app-notification-page-spinner').should('not.exist');
 
     cy.screenshot(`${ssPrefix}-see-unread`, { capture: 'viewport' });
    });
