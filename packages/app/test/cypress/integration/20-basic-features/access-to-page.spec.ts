@@ -144,9 +144,7 @@ context('Access to Template Editing Mode', () => {
 
   it('Access to Template Editor mode for only child pages successfully', () => {
     cy.visit('/Sandbox/Bootstrap4', {  });
-
-    cy.get('.grw-skelton').should('exist');
-    cy.get('.grw-skelton').should('not.exist');
+    cy.waitUntilSkeletonDisappear();
 
     cy.get('#grw-subnav-container').within(() => {
       // eslint-disable-next-line cypress/no-unnecessary-waiting
@@ -160,20 +158,17 @@ context('Access to Template Editing Mode', () => {
 
     cy.getByTestid('template-button-children').as('template-button-children');
     cy.get('@template-button-children').should('be.visible').click();
+    cy.waitUntilSkeletonDisappear();
 
-    cy.get('.grw-skelton').should('not.exist').then(()=>{
-      cy.getByTestid('navbar-editor').should('be.visible').then(()=>{
-        cy.url().should('include', '/_template#edit');
-        cy.screenshot();
-      });
+    cy.getByTestid('navbar-editor').should('be.visible').then(()=>{
+      cy.url().should('include', '/_template#edit');
+      cy.screenshot();
     });
   });
 
   it('Access to Template Editor mode including decendants successfully', () => {
     cy.visit('/Sandbox/Bootstrap4', {  });
-
-    cy.get('.grw-skelton').should('exist');
-    cy.get('.grw-skelton').should('not.exist');
+    cy.waitUntilSkeletonDisappear();
 
     cy.get('#grw-subnav-container').within(() => {
       // eslint-disable-next-line cypress/no-unnecessary-waiting
@@ -185,12 +180,11 @@ context('Access to Template Editing Mode', () => {
 
     cy.getByTestid('template-button-decendants').as('template-button-decendants');
     cy.get('@template-button-decendants').should('be.visible').click();
+    cy.waitUntilSkeletonDisappear();
 
-    cy.get('.grw-skelton').should('not.exist').then(()=>{
-      cy.getByTestid('navbar-editor').should('be.visible').then(()=>{
-        cy.url().should('include', '/__template#edit');
-        cy.screenshot();
-      });
+    cy.getByTestid('navbar-editor').should('be.visible').then(()=>{
+      cy.url().should('include', '/__template#edit');
+      cy.screenshot();
     });
   });
 
