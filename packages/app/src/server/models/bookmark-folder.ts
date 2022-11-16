@@ -40,6 +40,11 @@ bookmarkFolderSchema.virtual('children', {
   foreignField: 'parent',
 });
 
+bookmarkFolderSchema.virtual('bookmarks', {
+  ref: 'Bookmark',
+  localField: '_id',
+  foreignField: 'folder',
+});
 
 bookmarkFolderSchema.statics.createByParameters = async function(params: IBookmarkFolder): Promise<BookmarkFolderDocument> {
   const { name, owner, parent } = params;
@@ -69,10 +74,13 @@ bookmarkFolderSchema.statics.findFolderAndChildren = async function(
     userId: Types.ObjectId | string,
     parentId?: Types.ObjectId | string,
 ): Promise<BookmarkFolderItems[]> {
-  const parentFolder = await this.findById(parentId) as unknown as BookmarkFolderDocument;
-  const bookmarks = await this.find({ owner: userId, parent: parentFolder })
+
+  const parentFolder = await this.findById(parentId).populate({ path: 'bookmarks' }).exec() as unknown as BookmarkFolderDocument;
+
+  // TODO : forms the return value for the bookmark
+  const bookmarkFolders = await this.find({ owner: userId, parent: parentFolder })
     .populate({ path: 'children' }).exec() as unknown as BookmarkFolderItems[];
-  return bookmarks;
+  return bookmarkFolders;
 };
 
 bookmarkFolderSchema.statics.findChildFolderById = async function(parentFolderId: Types.ObjectId | string): Promise<BookmarkFolderDocument[]> {
