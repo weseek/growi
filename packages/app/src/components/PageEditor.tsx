@@ -16,11 +16,12 @@ import { getOptionsToSave } from '~/client/util/editor';
 import { IEditorMethods } from '~/interfaces/editor-methods';
 import {
   useCurrentPathname, useCurrentPageId,
-  useIsEditable, useIsIndentSizeForced, useIsUploadableFile, useIsUploadableImage, useEditingMarkdown,
+  useIsEditable, useIsIndentSizeForced, useIsUploadableFile, useIsUploadableImage,
 } from '~/stores/context';
 import {
   useCurrentIndentSize, useSWRxSlackChannels, useIsSlackEnabled, useIsTextlintEnabled, usePageTagsForEditors,
   useIsEnabledUnsavedWarning,
+  useEditingPage,
 } from '~/stores/editor';
 import { useCurrentPagePath, useSWRxCurrentPage } from '~/stores/page';
 import { usePreviewOptions } from '~/stores/renderer';
@@ -57,7 +58,7 @@ const PageEditor = React.memo((): JSX.Element => {
   const { data: currentPage, mutate: mutateCurrentPage } = useSWRxCurrentPage();
   const { data: grantData, mutate: mutateGrant } = useSelectedGrant();
   const { data: pageTags } = usePageTagsForEditors(pageId);
-  const { data: editingMarkdown } = useEditingMarkdown();
+  // const { data: editingMarkdown } = useEditingMarkdown();
   const { data: isEditable } = useIsEditable();
   const { data: editorMode, mutate: mutateEditorMode } = useEditorMode();
   const { data: isMobile } = useIsMobile();
@@ -72,11 +73,13 @@ const PageEditor = React.memo((): JSX.Element => {
 
   const { data: rendererOptions } = usePreviewOptions();
 
-  const currentRevisionId = currentPage?.revision?._id;
-  const initialValue = editingMarkdown ?? '';
+  // const currentRevisionId = currentPage?.revision?._id;
+  // const initialValue = editingMarkdown ?? '';
 
-  const markdownToSave = useRef<string>(initialValue);
-  const [markdownToPreview, setMarkdownToPreview] = useState<string>(initialValue);
+  // const markdownToSave = useRef<string>(initialValue);
+  // const [markdownToPreview, setMarkdownToPreview] = useState<string>(initialValue);
+
+  const { editingRevisionId, editingMarkdown, mutateEditingMarkdown } = useEditingPage();
 
   const slackChannels = useMemo(() => (slackChannelsData ? slackChannelsData.toString() : ''), [slackChannelsData]);
 
@@ -99,12 +102,13 @@ const PageEditor = React.memo((): JSX.Element => {
   // }, [grantData, isSlackEnabled, pageTags, slackChannelsData]);
 
   const setMarkdownWithDebounce = useMemo(() => debounce(100, throttle(150, (value: string, isClean: boolean) => {
-    markdownToSave.current = value;
-    setMarkdownToPreview(value);
+    // markdownToSave.current = value;
+    // setMarkdownToPreview(value);
+    mutateEditingMarkdown(value);
 
     // Displays an unsaved warning alert
     mutateIsEnabledUnsavedWarning(!isClean);
-  })), [mutateIsEnabledUnsavedWarning]);
+  })), [mutateEditingMarkdown, mutateIsEnabledUnsavedWarning]);
 
 
   const markdownChangedHandler = useCallback((value: string, isClean: boolean): void => {
@@ -127,7 +131,7 @@ const PageEditor = React.memo((): JSX.Element => {
     );
 
     try {
-      await saveOrUpdate(optionsToSave, { pageId, path: currentPagePath || currentPathname, revisionId: currentRevisionId }, markdownToSave.current);
+      await saveOrUpdate(optionsToSave, { pageId, path: currentPagePath || currentPathname, revisionId: editingRevisionId }, editingMarkdown);
       await mutateCurrentPage();
       mutateIsEnabledUnsavedWarning(false);
       return true;
@@ -147,7 +151,7 @@ const PageEditor = React.memo((): JSX.Element => {
     }
 
   // eslint-disable-next-line max-len
-  }, [grantData, isSlackEnabled, currentPathname, slackChannels, pageTags, pageId, currentPagePath, currentRevisionId, mutateCurrentPage, mutateIsEnabledUnsavedWarning]);
+  }, [grantData, isSlackEnabled, currentPathname, slackChannels, pageTags, pageId, currentPagePath, mutateCurrentPage, mutateIsEnabledUnsavedWarning, editingMarkdown, editingRevisionId]);
 
   const saveAndReturnToViewHandler = useCallback(async(opts?: {overwriteScopesOfDescendants: boolean}) => {
     if (editorMode !== EditorMode.Editor) {
@@ -324,13 +328,14 @@ const PageEditor = React.memo((): JSX.Element => {
 
   // initialize
   useEffect(() => {
-    if (initialValue == null) {
-      return;
-    }
-    markdownToSave.current = initialValue;
-    setMarkdownToPreview(initialValue);
+    // if (initialValue == null) {
+    //   return;
+    // }
+    // markdownToSave.current = initialValue;
+    // setMarkdownToPreview(initialValue);
+    // mutateEditingMarkdown(initial)
     mutateIsEnabledUnsavedWarning(false);
-  }, [initialValue, mutateIsEnabledUnsavedWarning]);
+  }, [mutateIsEnabledUnsavedWarning]);
 
   // initial caret line
   useEffect(() => {
@@ -415,7 +420,7 @@ const PageEditor = React.memo((): JSX.Element => {
       <div className="page-editor-editor-container flex-grow-1 flex-basis-0 mw-0">
         <Editor
           ref={editorRef}
-          value={initialValue}
+          value={editingMarkdown}
           isUploadable={isUploadable}
           isUploadableFile={isUploadableFile}
           isTextlintEnabled={isTextlintEnabled}
@@ -431,7 +436,7 @@ const PageEditor = React.memo((): JSX.Element => {
         <Preview
           ref={previewRef}
           rendererOptions={rendererOptions}
-          markdown={markdownToPreview}
+          markdown={editingMarkdown}
           pagePath={currentPagePath}
           onScroll={offset => scrollEditorByPreviewScrollWithThrottle(offset)}
         />

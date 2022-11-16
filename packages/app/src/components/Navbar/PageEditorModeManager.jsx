@@ -5,6 +5,7 @@ import PropTypes from 'prop-types';
 import { UncontrolledTooltip } from 'reactstrap';
 
 import { useCurrentUser, useHackmdUri } from '~/stores/context';
+import { useEditingPage } from '~/stores/editor';
 import { EditorMode, useIsDeviceSmallerThanMd } from '~/stores/ui';
 
 import styles from './PageEditorModeManager.module.scss';
@@ -49,6 +50,7 @@ function PageEditorModeManager(props) {
   const { data: isDeviceSmallerThanMd } = useIsDeviceSmallerThanMd();
   const { data: currentUser } = useCurrentUser();
   const { data: hackmdUri } = useHackmdUri();
+  const { sync } = useEditingPage();
 
   const isAdmin = currentUser?.admin;
   const isHackmdEnabled = hackmdUri != null;
@@ -62,6 +64,15 @@ function PageEditorModeManager(props) {
       onPageEditorModeButtonClicked(viewType);
     }
   }, [isBtnDisabled, onPageEditorModeButtonClicked]);
+
+  const pageEditorModeButtonClickedHandlerForEdit = useCallback((viewType) => {
+
+    // sync editing data to db
+    sync();
+
+    pageEditorModeButtonClickedHandler(viewType);
+
+  }, [sync, pageEditorModeButtonClickedHandler]);
 
   return (
     <>
@@ -85,7 +96,7 @@ function PageEditorModeManager(props) {
           <PageEditorModeButtonWrapper
             editorMode={editorMode}
             isBtnDisabled={isBtnDisabled}
-            onClick={pageEditorModeButtonClickedHandler}
+            onClick={pageEditorModeButtonClickedHandlerForEdit}
             targetMode={EditorMode.Editor}
             icon={<i className="icon-note" />}
             label={t('Edit')}

@@ -11,7 +11,7 @@ import {
   useCurrentUser, useDefaultIndentSize, useIsGuestUser,
 } from './context';
 // import { localStorageMiddleware } from './middlewares/sync-to-storage';
-import { useSWRxTagsInfo } from './page';
+import { useSWRxCurrentPage, useSWRxTagsInfo } from './page';
 import { useStaticSWR } from './use-static-swr';
 
 
@@ -112,6 +112,49 @@ export const usePageTagsForEditors = (pageId: Nullable<string>): SWRResponse<str
       mutate(tagsInfoData?.tags || [], false);
     },
   };
+};
+
+export const useEditingRevisionId = (): SWRResponse<string, Error> => {
+  return useStaticSWR<string, Error>('editingRevisionId', undefined);
+};
+
+export const useEditingMarkdown = (): SWRResponse<string, Error> => {
+  return useStaticSWR<string, Error>('editingMarkdown', undefined);
+};
+
+type EditingPageOperation = {
+  mutateEditingMarkdown: (markdown: string) => void
+  sync: () => void;
+}
+
+type EditingPage = {
+  editingRevisionId: string,
+  editingMarkdown: string
+}
+
+export const useEditingPage = (): EditingPage & EditingPageOperation => {
+  const { data: currentPage } = useSWRxCurrentPage();
+  const { data: editingRevisionId, mutate: mutateEditingRevisionId } = useEditingRevisionId();
+  const { data: editingMarkdown, mutate: mutateEditingMarkdown } = useEditingMarkdown();
+
+
+  return {
+    editingRevisionId: editingRevisionId ?? '',
+    editingMarkdown: editingMarkdown ?? '',
+    // mutateEditingMarkdown: (value) => {
+    //   mutateEditingMarkdown(value);
+    // },
+    mutateEditingMarkdown,
+    sync: () => {
+      console.log('同期');
+      console.log('currentPage?.revision.body', currentPage?.revision.body);
+      console.log('currentPage?.revision._id', currentPage?.revision._id);
+      mutateEditingMarkdown(currentPage?.revision.body ?? '');
+      mutateEditingRevisionId(currentPage?.revision._id ?? '');
+    },
+  };
+
+
 };
 
 export const useIsEnabledUnsavedWarning = (): SWRResponse<boolean, Error> => {
