@@ -16,7 +16,7 @@ import { IRevisionsForPagination } from '~/interfaces/revision';
 import { IPageTagsInfo } from '../interfaces/tag';
 
 import { useCurrentPageId, useCurrentPathname, useCurrentRevisionId } from './context';
-import { useStaticSWR } from './use-static-swr';
+import { ITermNumberManagerUtil, useStaticSWR, useTermNumberManager } from './use-static-swr';
 
 const { isPermalink: _isPermalink } = pagePathUtils;
 
@@ -82,17 +82,23 @@ export const useSWRxTagsInfo = (pageId: Nullable<string>): SWRResponse<IPageTags
   return useSWRImmutable(key, fetcher);
 };
 
+export const usePageInfoTermManager = (isDisabled?: boolean) : SWRResponse<number, Error> & ITermNumberManagerUtil => {
+  return useTermNumberManager(isDisabled === true ? null : 'descendantsPageListForCurrentPathTermNumber');
+};
+
 export const useSWRxPageInfo = (
     pageId: string | null | undefined,
     shareLinkId?: string | null,
     initialData?: IPageInfoForEntity,
 ): SWRResponse<IPageInfo | IPageInfoForOperation, Error> => {
 
+  const { data: termNumber } = usePageInfoTermManager();
+
   // assign null if shareLinkId is undefined in order to identify SWR key only by pageId
   const fixedShareLinkId = shareLinkId ?? null;
 
   const swrResult = useSWRImmutable<IPageInfo | IPageInfoForOperation, Error>(
-    pageId != null ? ['/page/info', pageId, fixedShareLinkId] : null,
+    pageId != null && termNumber != null ? ['/page/info', pageId, fixedShareLinkId, termNumber] : null,
     (endpoint, pageId, shareLinkId) => apiv3Get(endpoint, { pageId, shareLinkId }).then(response => response.data),
     { fallbackData: initialData },
   );
