@@ -100,7 +100,7 @@ export const useHackmdUri = (initialData?: Nullable<string>): SWRResponse<Nullab
   return useContextSWR<Nullable<string>, Error>('hackmdUri', initialData);
 };
 
-export const useIsSearchPage = (initialData?: Nullable<any>) : SWRResponse<Nullable<any>, Error> => {
+export const useIsSearchPage = (initialData?: Nullable<boolean>) : SWRResponse<Nullable<boolean>, Error> => {
   return useContextSWR<Nullable<any>, Error>('isSearchPage', initialData);
 };
 

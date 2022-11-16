@@ -9,7 +9,7 @@ import { Container, Provider } from 'unstated';
 
 import AdminAppContainer from '~/client/services/AdminAppContainer';
 import { CommonProps, useCustomTitle } from '~/pages/utils/commons';
-import { useCurrentUser } from '~/stores/context';
+import { useCurrentUser, useIsSearchServiceConfigured, useIsSearchPage } from '~/stores/context';
 import { useIsMaintenanceMode } from '~/stores/maintenanceMode';
 
 import { retrieveServerSideProps } from '../../utils/admin-page-util';
@@ -23,6 +23,8 @@ const AdminAppPage: NextPage<CommonProps> = (props) => {
   const { t } = useTranslation('commons');
   useIsMaintenanceMode(props.isMaintenanceMode);
   useCurrentUser(props.currentUser ?? null);
+  useIsSearchPage(false);
+  useIsSearchServiceConfigured(props.isSearchServiceConfigured);
 
   const title = t('headers.app_settings');
   const injectableContainers: Container<any>[] = [];

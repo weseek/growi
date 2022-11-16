@@ -6,7 +6,6 @@ import { SSRConfig, UserConfig } from 'next-i18next';
 
 import * as nextI18NextConfig from '^/config/next-i18next.config';
 
-import { SupportedActionType } from '~/interfaces/activity';
 import { CrowiRequest } from '~/interfaces/crowi-request';
 import { GrowiThemes } from '~/interfaces/theme';
 
@@ -25,6 +24,7 @@ export type CommonProps = {
   redirectDestination: string | null,
   customizedLogoSrc?: string,
   currentUser?: IUser,
+  isSearchServiceConfigured: boolean,
 } & Partial<SSRConfig>;
 
 // eslint-disable-next-line max-len
@@ -33,7 +33,7 @@ export const getServerSideCommonProps: GetServerSideProps<CommonProps> = async(c
   const req = context.req as CrowiRequest<IUserHasId & any>;
   const { crowi, user } = req;
   const {
-    appService, configManager, customizeService,
+    appService, searchService, configManager, customizeService,
   } = crowi;
 
   const url = new URL(context.resolvedUrl, 'http://example.com');
@@ -65,6 +65,8 @@ export const getServerSideCommonProps: GetServerSideProps<CommonProps> = async(c
     redirectDestination,
     customizedLogoSrc: isDefaultLogo ? null : configManager.getConfig('crowi', 'customize:customizedLogoSrc'),
     currentUser,
+    // isSearchPage,
+    isSearchServiceConfigured: searchService.isConfigured,
   };
 
   return { props };
