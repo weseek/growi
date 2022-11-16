@@ -17,6 +17,7 @@ context('Access to page', () => {
 
   it('/Sandbox with anchor hash is successfully loaded', () => {
     cy.visit('/Sandbox#Headers');
+    cy.waitUntilSkeletonDisappear();
 
     // hide fab // disable fab for sticky-events warning
     // cy.getByTestid('grw-fab-container').invoke('attr', 'style', 'display: none');
@@ -26,7 +27,6 @@ context('Access to page', () => {
     // https://stackoverflow.com/questions/5041494/selecting-and-manipulating-css-pseudo-elements-such-as-before-and-after-usin/21709814#21709814
     cy.get('#mdcont-headers').invoke('removeClass', 'blink');
 
-    cy.get('.grw-skeleton').should('not.exist');
     cy.screenshot(`${ssPrefix}-sandbox-headers`);
   });
 
@@ -52,7 +52,7 @@ context('Access to page', () => {
   it('/user/admin is successfully loaded', () => {
     cy.visit('/user/admin', {  });
 
-    cy.get('.grw-skeleton').should('not.exist');
+    cy.waitUntilSkeletonDisappear();
     // for check download toc data
     cy.get('.toc-link').should('be.visible');
 
