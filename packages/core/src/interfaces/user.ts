@@ -21,7 +21,7 @@ export type IUser = {
   createdAt: Date,
   lastLoginAt?: Date,
   introduction: string,
-  status: number,
+  status: IUserStatus,
 }
 
 export type IUserGroupRelation = {
@@ -36,6 +36,15 @@ export type IUserGroup = {
   description: string;
   parent: Ref<IUserGroupHasId> | null;
 }
+
+export const UserStatus = {
+  registered: 1,
+  active: 2,
+  suspended: 3,
+  deleted: 4,
+  invited: 5,
+} as const;
+export type IUserStatus = typeof UserStatus[keyof typeof UserStatus]
 
 export type IUserHasId = IUser & HasObjectId;
 export type IUserGroupHasId = IUserGroup & HasObjectId;

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useCallback } from 'react';
 
 import type { IUserHasId } from '@growi/core';
 import { useTranslation } from 'next-i18next';
@@ -31,15 +31,15 @@ const UserMenu = (props: UserMenuProps) => {
 
   const [isInvitationEmailSended, setIsInvitationEmailSended] = useState<boolean>(user.isInvitationEmailSended);
 
-  const onClickPasswordResetHandler = async() => {
+  const onClickPasswordResetHandler = useCallback(async() => {
     await adminUsersContainer.showPasswordResetModal(user);
-  };
+  }, [adminUsersContainer, user]);
 
-  const onSuccessfullySentInvitationEmailHandler = () => {
+  const onSuccessfullySentInvitationEmailHandler = useCallback(() => {
     setIsInvitationEmailSended(true);
-  };
+  }, []);
 
-  const renderEditMenu = () => {
+  const renderEditMenu = useCallback(() => {
     return (
       <>
         <li className="dropdown-divider"></li>
@@ -51,9 +51,9 @@ const UserMenu = (props: UserMenuProps) => {
         </li>
       </>
     );
-  };
+  }, [onClickPasswordResetHandler, t]);
 
-  const renderStatusMenu = () => {
+  const renderStatusMenu = useCallback(() => {
     return (
       <>
         <li className="dropdown-divider"></li>
@@ -72,9 +72,9 @@ const UserMenu = (props: UserMenuProps) => {
         </li>
       </>
     );
-  };
+  }, [isInvitationEmailSended, onSuccessfullySentInvitationEmailHandler, t, user]);
 
-  const renderAdminMenu = () => {
+  const renderAdminMenu = useCallback(() => {
     return (
       <>
         <li className="dropdown-divider pl-0"></li>
@@ -85,7 +85,7 @@ const UserMenu = (props: UserMenuProps) => {
         </li>
       </>
     );
-  };
+  }, [t, user]);
 
   return (
     <UncontrolledDropdown id="userMenu" size="sm">
