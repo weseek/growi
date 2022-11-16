@@ -45,7 +45,7 @@ export const GlobalSearch = (props: GlobalSearchProps): JSX.Element => {
 
   useEffect(() => {
     if (isSearchScopeChildrenAsDefault !== undefined) {
-      setScopeChildren(isSearchScopeChildrenAsDefault || false);
+      setScopeChildren(isSearchScopeChildrenAsDefault);
     }
   }, [isSearchScopeChildrenAsDefault]);
 
