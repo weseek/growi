@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 
-import { IUserHasId } from '@growi/core';
+import type { IUserHasId } from '@growi/core';
 import { useTranslation } from 'next-i18next';
 import {
   UncontrolledDropdown, DropdownToggle, DropdownMenu,
@@ -43,10 +43,10 @@ const UserMenu = (props: UserMenuProps) => {
     return (
       <>
         <li className="dropdown-divider"></li>
-        <li className="dropdown-header">{t('admin:user_management.user_table.edit_menu')}</li>
+        <li className="dropdown-header">{t('user_management.user_table.edit_menu')}</li>
         <li>
           <button className="dropdown-item" type="button" onClick={onClickPasswordResetHandler}>
-            <i className="icon-fw icon-key"></i>{ t('admin:user_management.reset_password') }
+            <i className="icon-fw icon-key"></i>{ t('user_management.reset_password') }
           </button>
         </li>
       </>
@@ -78,7 +78,7 @@ const UserMenu = (props: UserMenuProps) => {
     return (
       <>
         <li className="dropdown-divider pl-0"></li>
-        <li className="dropdown-header">{t('admin:user_management.user_table.administrator_menu')}</li>
+        <li className="dropdown-header">{t('user_management.user_table.administrator_menu')}</li>
         <li>
           {user.admin === true && <RemoveAdminMenuItem user={user} />}
           {user.admin === false && <GiveAdminButton user={user} />}
