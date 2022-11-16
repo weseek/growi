@@ -6,13 +6,13 @@ import dynamic from 'next/dynamic';
 import { useSWRxCurrentPage } from '~/stores/page';
 
 import type { AuthorInfoProps } from './Navbar/AuthorInfo';
-import { Skelton } from './Skelton';
+import { Skeleton } from './Skeleton';
 
 import styles from './PageContentFooter.module.scss';
 
 const AuthorInfo = dynamic<AuthorInfoProps>(() => import('./Navbar/AuthorInfo').then(mod => mod.AuthorInfo), {
   ssr: false,
-  loading: () => <Skelton additionalClass={`${styles['page-content-footer-skelton']} mb-3`} />,
+  loading: () => <Skeleton additionalClass={`${styles['page-content-footer-skeleton']} mb-3`} />,
 });
 
 export type PageContentFooterProps = {
