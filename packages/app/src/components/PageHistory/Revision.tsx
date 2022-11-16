@@ -3,6 +3,7 @@ import React from 'react';
 import { IRevisionHasId } from '@growi/core';
 import { UserPicture } from '@growi/ui';
 import { useTranslation } from 'next-i18next';
+import Link from 'next/link';
 
 import UserDate from '../User/UserDate';
 import { Username } from '../User/Username';
@@ -13,12 +14,15 @@ type RevisionProps = {
   revision: IRevisionHasId,
   isLatestRevision: boolean,
   hasDiff: boolean,
+  onClose: () => void,
 }
 
 export const Revision = (props: RevisionProps): JSX.Element => {
   const { t } = useTranslation();
 
-  const { revision, isLatestRevision, hasDiff } = props;
+  const {
+    revision, isLatestRevision, hasDiff, onClose,
+  } = props;
 
   const renderSimplifiedNodiff = (revision: IRevisionHasId) => {
 
@@ -34,7 +38,7 @@ export const Revision = (props: RevisionProps): JSX.Element => {
         </div>
         <div className="ml-3">
           <span className="text-muted small">
-            <UserDate dateTime={revision.createdAt} /> ({ t('No diff') })
+            <UserDate dateTime={revision.createdAt} /> {t('No diff')}
           </span>
         </div>
       </div>
@@ -60,9 +64,11 @@ export const Revision = (props: RevisionProps): JSX.Element => {
           <div className="mb-1">
             <UserDate dateTime={revision.createdAt} />
             <br className="d-xl-none d-block" />
-            <a className="ml-xl-3" href={`?revisionId=${revision._id}`}>
-              <i className="icon-login"></i> { t('Go to this version') }
-            </a>
+            <Link href={`?revisionId=${revision._id}`} prefetch={false}>
+              <a className="ml-xl-3" onClick={onClose}>
+                <i className="icon-login"></i> {t('Go to this version')}
+              </a>
+            </Link>
           </div>
         </div>
       </div>

@@ -10,8 +10,8 @@ import AdminHomeContainer from '~/client/services/AdminHomeContainer';
 import { CrowiRequest } from '~/interfaces/crowi-request';
 import { CommonProps, useCustomTitle } from '~/pages/utils/commons';
 import PluginUtils from '~/server/plugins/plugin-utils';
+import { useCurrentUser, useGrowiCloudUri, useGrowiAppIdForGrowiCloud } from '~/stores/context';
 
-import { useGrowiCloudUri, useGrowiAppIdForGrowiCloud } from '../../stores/context';
 import { retrieveServerSideProps } from '../../utils/admin-page-util';
 
 const AdminLayout = dynamic(() => import('~/components/Layout/AdminLayout'), { ssr: false });
@@ -29,7 +29,7 @@ type Props = CommonProps & {
 
 
 const AdminHomePage: NextPage<Props> = (props) => {
-
+  useCurrentUser(props.currentUser ?? null);
   useGrowiCloudUri(props.growiCloudUri);
   useGrowiAppIdForGrowiCloud(props.growiAppIdForGrowiCloud);
 

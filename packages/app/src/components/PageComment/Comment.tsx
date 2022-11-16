@@ -138,6 +138,7 @@ export const Comment = (props: CommentProps): JSX.Element => {
             setIsReEdit(false);
             if (onComment != null) onComment();
           }}
+          revisionId={revisionId}
         />
       ) : (
         <div id={commentId} className={rootClassName}>

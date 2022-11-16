@@ -200,6 +200,7 @@ export const PageComment: FC<PageCommentProps> = memo((props:PageCommentProps): 
                         removeShowEditorId(comment._id);
                         mutate();
                       }}
+                      revisionId={revisionId}
                     />
                   )}
                 </div>
