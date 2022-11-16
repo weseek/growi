@@ -35,7 +35,7 @@ import AttachmentIcon from '../Icons/AttachmentIcon';
 import HistoryIcon from '../Icons/HistoryIcon';
 import PresentationIcon from '../Icons/PresentationIcon';
 import ShareLinkIcon from '../Icons/ShareLinkIcon';
-import { Skelton } from '../Skelton';
+import { Skeleton } from '../Skeleton';
 
 import type { AuthorInfoProps } from './AuthorInfo';
 import { GrowiSubNavigation } from './GrowiSubNavigation';
@@ -45,22 +45,22 @@ import AuthorInfoStyles from './AuthorInfo.module.scss';
 import PageEditorModeManagerStyles from './PageEditorModeManager.module.scss';
 
 
-const AuthorInfoSkelton = () => <Skelton additionalClass={`${AuthorInfoStyles['grw-author-info-skelton']} py-1`} />;
+const AuthorInfoSkeleton = () => <Skeleton additionalClass={`${AuthorInfoStyles['grw-author-info-skeleton']} py-1`} />;
 
 
 const PageEditorModeManager = dynamic(
   () => import('./PageEditorModeManager'),
-  { ssr: false, loading: () => <Skelton additionalClass={`${PageEditorModeManagerStyles['grw-page-editor-mode-manager-skelton']}`} /> },
+  { ssr: false, loading: () => <Skeleton additionalClass={`${PageEditorModeManagerStyles['grw-page-editor-mode-manager-skeleton']}`} /> },
 );
 // TODO: If enable skeleton, we get hydration error when create a page from PageCreateModal
-// { ssr: false, loading: () => <Skelton additionalClass='btn-skelton py-2' /> },
+// { ssr: false, loading: () => <Skeleton additionalClass='btn-skeleton py-2' /> },
 const SubNavButtons = dynamic<SubNavButtonsProps>(
   () => import('./SubNavButtons').then(mod => mod.SubNavButtons),
   { ssr: false, loading: () => <></> },
 );
 const AuthorInfo = dynamic<AuthorInfoProps>(() => import('./AuthorInfo').then(mod => mod.AuthorInfo), {
   ssr: false,
-  loading: AuthorInfoSkelton,
+  loading: AuthorInfoSkeleton,
 });
 
 type PageOperationMenuItemsProps = {
@@ -229,10 +229,7 @@ const GrowiContextualSubNavigation = (props: GrowiContextualSubNavigationProps):
 
   useEffect(() => {
     if (pageId === null && templateTagData != null) {
-      const tags = templateTagData.split(',').filter((str: string) => {
-        return str !== ''; // filter empty values
-      });
-      mutatePageTagsForEditors(tags);
+      mutatePageTagsForEditors(templateTagData);
     }
   }, [pageId, mutatePageTagsForEditors, templateTagData, mutateSWRTagsInfo]);
 
@@ -387,13 +384,13 @@ const GrowiContextualSubNavigation = (props: GrowiContextualSubNavigationProps):
               <li className="pb-1">
                 { currentPage != null
                   ? <AuthorInfo user={currentPage.creator as IUser} date={currentPage.createdAt} mode="create" locate="subnav" />
-                  : <AuthorInfoSkelton />
+                  : <AuthorInfoSkeleton />
                 }
               </li>
               <li className="mt-1 pt-1 border-top">
                 { currentPage != null
                   ? <AuthorInfo user={currentPage.lastUpdateUser as IUser} date={currentPage.updatedAt} mode="update" locate="subnav" />
-                  : <AuthorInfoSkelton />
+                  : <AuthorInfoSkeleton />
                 }
               </li>
             </ul>

@@ -1,17 +1,17 @@
 import React from 'react';
 
-import { Skelton } from './Skelton';
+import { Skeleton } from './Skeleton';
 
 import styles from './PageComment.module.scss';
 import CommentStyles from './PageComment/Comment.module.scss';
 import CommentEditorStyles from './PageComment/CommentEditor.module.scss';
 
-type PageCommentSkeltonProps = {
+type PageCommentSkeletonProps = {
   commentTitleClasses?: string,
   roundedPill?: boolean,
 }
 
-export const PageCommentSkelton = (props: PageCommentSkeltonProps): JSX.Element => {
+export const PageCommentSkeleton = (props: PageCommentSkeletonProps): JSX.Element => {
   const {
     commentTitleClasses,
   } = props;
@@ -27,27 +27,27 @@ export const PageCommentSkelton = (props: PageCommentSkeltonProps): JSX.Element 
               <div className={`${CommentStyles['comment-styles']} page-comment-thread pb-5  page-comment-thread-no-replies`}>
                 <div className='page-comment flex-column'>
                   <div className='page-commnet-writer'>
-                    <Skelton additionalClass='rounded-circle picture' roundedPill />
+                    <Skeleton additionalClass='rounded-circle picture' roundedPill />
                   </div>
-                  <Skelton additionalClass="page-comment-comment-body-skelton grw-skelton" />
+                  <Skeleton additionalClass="page-comment-comment-body-skeleton grw-skeleton" />
                 </div>
                 <div className='page-comment flex-column ml-4 ml-sm-5 mr-3'>
                   <div className='page-commnet-writer mt-3'>
-                    <Skelton additionalClass='rounded-circle picture' roundedPill />
+                    <Skeleton additionalClass='rounded-circle picture' roundedPill />
                   </div>
-                  <Skelton additionalClass="page-comment-comment-body-skelton grw-skelton mt-3" />
+                  <Skeleton additionalClass="page-comment-comment-body-skeleton grw-skeleton mt-3" />
                 </div>
                 <div className="text-right">
-                  <Skelton additionalClass="page-comment-button-skelton btn btn-outline-secondary btn-sm grw-skelton" />
+                  <Skeleton additionalClass="page-comment-button-skeleton btn btn-outline-secondary btn-sm grw-skeleton" />
                 </div>
               </div>
             </div>
             <div className={`${CommentEditorStyles['comment-editor-styles']} form page-comment-form`}>
               <div className='comment-form'>
                 <div className='comment-form-user'>
-                  <Skelton additionalClass='rounded-circle picture' roundedPill />
+                  <Skeleton additionalClass='rounded-circle picture' roundedPill />
                 </div>
-                <Skelton additionalClass="page-comment-commenteditorlazyrenderer-body-skelton grw-skelton" />
+                <Skeleton additionalClass="page-comment-commenteditorlazyrenderer-body-skeleton grw-skeleton" />
               </div>
             </div>
           </div>

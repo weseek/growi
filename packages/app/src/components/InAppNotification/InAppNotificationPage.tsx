@@ -64,7 +64,7 @@ export const InAppNotificationPage: FC = () => {
 
     if (notificationData == null) {
       return (
-        <div className="wiki">
+        <div className="wiki" data-testid="grw-in-app-notification-page-spinner">
           <div className="text-muted text-center">
             <i className="fa fa-2x fa-spinner fa-pulse mr-1"></i>
           </div>
@@ -138,7 +138,9 @@ export const InAppNotificationPage: FC = () => {
   };
 
   return (
-    <CustomNavAndContents navTabMapping={navTabMapping} tabContentClasses={['mt-4']} />
+    <div data-testid="grw-in-app-notification-page">
+      <CustomNavAndContents navTabMapping={navTabMapping} tabContentClasses={['mt-4']} />
+    </div>
   );
 };
 
