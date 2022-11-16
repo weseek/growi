@@ -149,11 +149,10 @@ context('Access to Template Editing Mode', () => {
     cy.get('.grw-skelton').should('not.exist');
 
     cy.get('#grw-subnav-container').within(() => {
-      cy.getByTestid('open-page-item-control-btn').as('open-page-item-control-btn');
-      cy.get('@open-page-item-control-btn').should('be.visible').click();
-
-      cy.getByTestid('open-page-template-modal-btn').as('open-page-template-modal-btn');
-      cy.get('@open-page-template-modal-btn').should('be.visible').click();
+      // eslint-disable-next-line cypress/no-unnecessary-waiting
+      cy.wait(300);
+      cy.getByTestid('open-page-item-control-btn').should('be.visible').click();
+      cy.getByTestid('open-page-template-modal-btn').should('be.visible').click();
     });
 
     cy.getByTestid('page-template-modal').should('be.visible');
@@ -177,13 +176,10 @@ context('Access to Template Editing Mode', () => {
     cy.get('.grw-skelton').should('not.exist');
 
     cy.get('#grw-subnav-container').within(() => {
-
-      cy.getByTestid('open-page-item-control-btn').as('open-page-item-control-btn');
-      cy.get('@open-page-item-control-btn').should('be.visible').click();
-
-      cy.getByTestid('open-page-template-modal-btn').as('open-page-template-modal-btn');
-      cy.get('@open-page-template-modal-btn').should('be.visible').click();
-
+      // eslint-disable-next-line cypress/no-unnecessary-waiting
+      cy.wait(300);
+      cy.getByTestid('open-page-item-control-btn').should('be.visible').click();
+      cy.getByTestid('open-page-template-modal-btn').should('be.visible').click();
     });
     cy.getByTestid('page-template-modal').should('be.visible');
 
