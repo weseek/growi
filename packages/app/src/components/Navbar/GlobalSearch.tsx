@@ -44,14 +44,14 @@ export const GlobalSearch = (props: GlobalSearchProps): JSX.Element => {
   const [isFocused, setFocused] = useState<boolean>(false);
 
   useEffect(() => {
-    setScopeChildren(isSearchScopeChildrenAsDefault || false);
+    if (isSearchScopeChildrenAsDefault !== undefined) {
+      setScopeChildren(isSearchScopeChildrenAsDefault || false);
+    }
   }, [isSearchScopeChildrenAsDefault]);
 
   const isLoadingIsSearchScopeChildrenAsDefault = useMemo(() => {
     return isSearchScopeChildrenAsDefault === undefined;
   }, [isSearchScopeChildrenAsDefault]);
-
-  console.log({ isLoadingIsSearchScopeChildrenAsDefault });
 
 
   const gotoPage = useCallback((data: IPageWithSearchMeta[]) => {
