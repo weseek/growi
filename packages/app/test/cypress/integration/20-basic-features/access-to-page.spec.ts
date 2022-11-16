@@ -184,7 +184,7 @@ context('Access to /me/all-in-app-notifications', () => {
     cy.collapseSidebar(true);
   });
 
-  it('All In-App Notification list is successfully loaded', () => {
+  it('All In-App Notification list is successfully loaded', { scrollBehavior: false },() => {
     cy.visit('/');
     cy.get('.notification-wrapper').click();
     cy.get('.notification-wrapper > .dropdown-menu > a').click();
