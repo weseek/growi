@@ -11,7 +11,7 @@ import { useSWRxV5MigrationStatus } from '~/stores/page-listing';
 import ItemsTree from './PageTree/ItemsTree';
 import { PrivateLegacyPagesLink } from './PageTree/PrivateLegacyPagesLink';
 import { SidebarHeader } from './SidebarHeader';
-import PageTreeSkelton from './Skelton/PageTreeSkelton';
+import PageTreeContentSkelton from './Skelton/PageTreeContentSkelton';
 
 const PageTree: FC = memo(() => {
   const { t } = useTranslation();
@@ -28,7 +28,7 @@ const PageTree: FC = memo(() => {
     return (
       <>
         <SidebarHeader title='Page Tree' />
-        <PageTreeSkelton />
+        <PageTreeContentSkelton />
       </>
     );
   }

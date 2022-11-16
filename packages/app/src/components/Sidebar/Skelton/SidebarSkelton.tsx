@@ -5,37 +5,37 @@ import { useCurrentSidebarContents } from '~/stores/ui';
 
 // TODO: implement Skelton of other 3 components
 
-// import CustomSidebarSkelton from './CustomSidebarSkelton';
-import PageTreeSkelton from './PageTreeSkelton';
-// import RecentChangesSkelton from './RecentChangesSkelton';
-// import TagSkelton from './TagSkelton';
+// import CustomSidebarContentSkelton from './CustomSidebarContentSkelton';
+import PageTreeContentSkelton from './PageTreeContentSkelton';
+// import RecentChangesContentSkelton from './RecentChangesContentSkelton';
+// import TagContentSkelton from './TagContentSkelton';
 import SidebarHeaderSkelton from './SidebarHeaderSkelton';
 
 export const SidebarSkelton = (): JSX.Element => {
 
   const { data: currentSidebarContents } = useCurrentSidebarContents();
 
-  let Contents;
+  let SidebarContentSkelton;
   switch (currentSidebarContents) {
     /*
     case SidebarContentsType.RECENT:
-      Contents = RecentChangesSkelton;
+      SidebarContentSkelton = RecentChangesContentSkelton;
       break;
     case SidebarContentsType.CUSTOM:
-      Contents = CustomSidebarSkelton;
+      SidebarContentSkelton = CustomSidebarContentSkelton;
       break;
     case SidebarContentsType.TAG:
-      Contents = TagSkelton;
+      SidebarContentSkelton = TagContentSkelton;
       break;
     */
     default:
-      Contents = PageTreeSkelton;
+      SidebarContentSkelton = PageTreeContentSkelton;
   }
 
   return (
     <>
       <SidebarHeaderSkelton />
-      <Contents />
+      <SidebarContentSkelton />
     </>
   );
 };
