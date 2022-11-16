@@ -12,13 +12,13 @@ import { RevisionComparer } from './RevisionComparer/RevisionComparer';
 
 const logger = loggerFactory('growi:PageHistory');
 
-export const PageHistory = (): JSX.Element => {
+export const PageHistory: React.FC<{ onClose: () => void }> = ({ onClose }) => {
 
   const [activePage, setActivePage] = useState(1);
 
   const { data: currentPageId } = useCurrentPageId();
 
-  const { data: revisionsData } = useSWRxPageRevisions(activePage, 10, currentPageId);
+  const { data: revisionsData, mutate: mutatePageRevisions } = useSWRxPageRevisions(activePage, 10, currentPageId);
 
   const [sourceRevision, setSourceRevision] = useState<IRevisionHasPageId>();
   const [targetRevision, setTargetRevision] = useState<IRevisionHasPageId>();
@@ -29,6 +29,10 @@ export const PageHistory = (): JSX.Element => {
       setTargetRevision(revisionsData.revisions[0]);
     }
   }, [revisionsData]);
+
+  useEffect(() => {
+    mutatePageRevisions();
+  });
 
   const pagingLimit = 10;
 
@@ -61,6 +65,7 @@ export const PageHistory = (): JSX.Element => {
         targetRevision={targetRevision}
         onChangeSourceInvoked={setSourceRevision}
         onChangeTargetInvoked={setTargetRevision}
+        onClose={onClose}
       />
       <div className="my-3">
         {pager()}
@@ -69,6 +74,7 @@ export const PageHistory = (): JSX.Element => {
         sourceRevision={sourceRevision}
         targetRevision={targetRevision}
         currentPageId={currentPageId}
+        onClose={onClose}
       />
     </div>
   );
