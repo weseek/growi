@@ -255,8 +255,7 @@ context('Search current tree with "prefix":', () => {
   it(`Search current tree by word is successfully loaded`, () => {
     const searchText = 'help';
     cy.visit('/');
-    cy.get('.grw-skelton').should('exist');
-    cy.get('.grw-skelton').should('not.exist');
+    cy.waitUntilSkeletonDisappear();
 
     cy.getByTestid('select-search-scope').click();
     cy.get('.input-group-prepend.show > div > button:nth-child(2)').click();
