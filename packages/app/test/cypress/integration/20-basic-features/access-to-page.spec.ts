@@ -17,6 +17,7 @@ context('Access to page', () => {
 
   it('/Sandbox with anchor hash is successfully loaded', () => {
     cy.visit('/Sandbox#Headers');
+    cy.waitUntilSkeletonDisappear();
 
     // hide fab // disable fab for sticky-events warning
     // cy.getByTestid('grw-fab-container').invoke('attr', 'style', 'display: none');
@@ -26,7 +27,6 @@ context('Access to page', () => {
     // https://stackoverflow.com/questions/5041494/selecting-and-manipulating-css-pseudo-elements-such-as-before-and-after-usin/21709814#21709814
     cy.get('#mdcont-headers').invoke('removeClass', 'blink');
 
-    cy.get('.grw-skelton').should('not.exist');
     cy.screenshot(`${ssPrefix}-sandbox-headers`);
   });
 
@@ -41,7 +41,7 @@ context('Access to page', () => {
 
   it('/Sandbox with edit is successfully loaded', () => {
     cy.visit('/Sandbox');
-    cy.get('.grw-skelton', { timeout: 30000 }).should('not.exist');
+    cy.waitUntilSkeletonDisappear();
     cy.get('#grw-subnav-container', { timeout: 30000 }).should('be.visible').within(()=>{
       cy.getByTestid('editor-button', { timeout: 30000 }).should('be.visible').click();
     })
@@ -52,7 +52,7 @@ context('Access to page', () => {
   it('/user/admin is successfully loaded', () => {
     cy.visit('/user/admin', {  });
 
-    cy.get('.grw-skelton').should('not.exist');
+    cy.waitUntilSkeletonDisappear();
     // for check download toc data
     cy.get('.toc-link').should('be.visible');
 
@@ -208,14 +208,18 @@ context('Access to /me/all-in-app-notifications', () => {
     cy.collapseSidebar(true);
   });
 
-  it('All In-App Notification list is successfully loaded', () => {
+  it('All In-App Notification list is successfully loaded', { scrollBehavior: false },() => {
     cy.visit('/');
-    cy.get('.notification-wrapper > a').click();
+    cy.get('.notification-wrapper').click();
     cy.get('.notification-wrapper > .dropdown-menu > a').click();
+
+    cy.getByTestid('grw-in-app-notification-page').should('be.visible');
+    cy.getByTestid('grw-in-app-notification-page-spinner').should('not.exist');
 
     cy.screenshot(`${ssPrefix}-see-all`, { capture: 'viewport' });
 
     cy.get('.grw-custom-nav-tab > div > ul > li:nth-child(2) > a').click();
+    cy.getByTestid('grw-in-app-notification-page-spinner').should('not.exist');
 
     cy.screenshot(`${ssPrefix}-see-unread`, { capture: 'viewport' });
    });

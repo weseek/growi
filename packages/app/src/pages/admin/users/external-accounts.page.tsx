@@ -8,6 +8,7 @@ import { Container, Provider } from 'unstated';
 
 import AdminExternalAccountsContainer from '~/client/services/AdminExternalAccountsContainer';
 import { CommonProps, useCustomTitle } from '~/pages/utils/commons';
+import { useCurrentUser } from '~/stores/context';
 
 import { retrieveServerSideProps } from '../../../utils/admin-page-util';
 
@@ -17,6 +18,7 @@ const ManageExternalAccount = dynamic(() => import('~/components/Admin/ManageExt
 
 const AdminUserManagementPage: NextPage<CommonProps> = (props) => {
   const { t } = useTranslation('admin');
+  useCurrentUser(props.currentUser ?? null);
 
   const title = t('user_management.external_account');
   const injectableContainers: Container<any>[] = [];

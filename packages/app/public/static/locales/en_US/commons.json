@@ -59,6 +59,23 @@
     "cancel": "Cancel"
   },
 
+  "handsontable_modal": {
+    "title": "Edit Table",
+    "data_import": "Data Import",
+    "save": "Save",
+    "reset": "Reset",
+    "cancel": "Cancel",
+    "done": "Done",
+    "data_import_form": {
+      "select_data_format": "Select Data Format",
+      "import_data": "Import Data",
+      "paste_table_data": "Paste table data",
+      "parse_error": "Parse Error",
+      "cancel": "Cancel",
+      "import": "Import"
+    }
+  },
+
   "not_found_page": {
     "page_not_exist": "This page does not exist."
   }
