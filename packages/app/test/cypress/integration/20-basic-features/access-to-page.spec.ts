@@ -41,7 +41,7 @@ context('Access to page', () => {
 
   it('/Sandbox with edit is successfully loaded', () => {
     cy.visit('/Sandbox');
-    cy.get('.grw-skeleton', { timeout: 30000 }).should('not.exist');
+    cy.waitUntilSkeletonDisappear();
     cy.get('#grw-subnav-container', { timeout: 30000 }).should('be.visible').within(()=>{
       cy.getByTestid('editor-button', { timeout: 30000 }).should('be.visible').click();
     })
