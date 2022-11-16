@@ -9,7 +9,9 @@ import { Container, Provider } from 'unstated';
 
 import AdminAppContainer from '~/client/services/AdminAppContainer';
 import { CommonProps, useCustomTitle } from '~/pages/utils/commons';
-import { useCurrentUser, useIsSearchServiceConfigured, useIsSearchPage } from '~/stores/context';
+import {
+  useCurrentUser, useIsSearchServiceConfigured, useIsSearchPage, useIsSearchScopeChildrenAsDefault,
+} from '~/stores/context';
 import { useIsMaintenanceMode } from '~/stores/maintenanceMode';
 
 import { retrieveServerSideProps } from '../../utils/admin-page-util';
@@ -25,6 +27,7 @@ const AdminAppPage: NextPage<CommonProps> = (props) => {
   useCurrentUser(props.currentUser ?? null);
   useIsSearchPage(false);
   useIsSearchServiceConfigured(props.isSearchServiceConfigured);
+  useIsSearchScopeChildrenAsDefault(props.isSearchScopeChildrenAsDefault);
 
   const title = t('headers.app_settings');
   const injectableContainers: Container<any>[] = [];

@@ -1,5 +1,5 @@
 import React, {
-  useState, useCallback, useRef, useEffect,
+  useState, useCallback, useRef, useEffect, useMemo,
 } from 'react';
 
 import assert from 'assert';
@@ -47,6 +47,12 @@ export const GlobalSearch = (props: GlobalSearchProps): JSX.Element => {
     setScopeChildren(isSearchScopeChildrenAsDefault || false);
   }, [isSearchScopeChildrenAsDefault]);
 
+  const isLoadingIsSearchScopeChildrenAsDefault = useMemo(() => {
+    return isSearchScopeChildrenAsDefault === undefined;
+  }, [isSearchScopeChildrenAsDefault]);
+
+  console.log({ isLoadingIsSearchScopeChildrenAsDefault });
+
 
   const gotoPage = useCallback((data: IPageWithSearchMeta[]) => {
     assert(data.length > 0);
@@ -79,6 +85,10 @@ export const GlobalSearch = (props: GlobalSearchProps): JSX.Element => {
 
   const isIndicatorShown = !isFocused && (text.length === 0);
 
+
+  if (isLoadingIsSearchScopeChildrenAsDefault) {
+    return <></>;
+  }
 
   return (
     <div className={`grw-global-search ${styles['grw-global-search']} form-group mb-0 d-print-none ${isSearchServiceReachable ? '' : 'has-error'}`}>

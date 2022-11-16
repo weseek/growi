@@ -9,7 +9,9 @@ import { Container, Provider } from 'unstated';
 
 import AdminMarkDownContainer from '~/client/services/AdminMarkDownContainer';
 import { CommonProps, useCustomTitle } from '~/pages/utils/commons';
-import { useCurrentUser, useIsSearchPage, useIsSearchServiceConfigured } from '~/stores/context';
+import {
+  useCurrentUser, useIsSearchPage, useIsSearchServiceConfigured, useIsSearchScopeChildrenAsDefault,
+} from '~/stores/context';
 
 import { retrieveServerSideProps } from '../../utils/admin-page-util';
 
@@ -22,6 +24,7 @@ const AdminMarkdownPage: NextPage<CommonProps> = (props) => {
   useCurrentUser(props.currentUser ?? null);
   useIsSearchPage(false);
   useIsSearchServiceConfigured(props.isSearchServiceConfigured);
+  useIsSearchScopeChildrenAsDefault(props.isSearchScopeChildrenAsDefault);
 
   const title = t('markdown_settings.markdown_settings');
   const injectableContainers: Container<any>[] = [];

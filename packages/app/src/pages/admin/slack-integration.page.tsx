@@ -8,6 +8,7 @@ import { CrowiRequest } from '~/interfaces/crowi-request';
 import { CommonProps, useCustomTitle } from '~/pages/utils/commons';
 import {
   useCurrentUser, useSiteUrl, useIsSearchPage, useIsSearchServiceConfigured,
+  useIsSearchScopeChildrenAsDefault,
 } from '~/stores/context';
 
 import { retrieveServerSideProps } from '../../utils/admin-page-util';
@@ -28,6 +29,7 @@ const AdminSlackIntegrationPage: NextPage<Props> = (props) => {
   useSiteUrl(props.siteUrl);
   useIsSearchPage(false);
   useIsSearchServiceConfigured(props.isSearchServiceConfigured);
+  useIsSearchScopeChildrenAsDefault(props.isSearchScopeChildrenAsDefault);
 
   const title = t('slack_integration.slack_integration');
 

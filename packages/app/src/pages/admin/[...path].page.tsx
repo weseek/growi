@@ -4,7 +4,9 @@ import {
 import dynamic from 'next/dynamic';
 
 import { CommonProps } from '~/pages/utils/commons';
-import { useCurrentUser, useIsSearchPage, useIsSearchServiceConfigured } from '~/stores/context';
+import {
+  useCurrentUser, useIsSearchPage, useIsSearchServiceConfigured, useIsSearchScopeChildrenAsDefault,
+} from '~/stores/context';
 import { useIsMaintenanceMode } from '~/stores/maintenanceMode';
 
 import { retrieveServerSideProps } from '../../utils/admin-page-util';
@@ -18,6 +20,7 @@ const AdminAppPage: NextPage<CommonProps> = (props) => {
   useCurrentUser(props.currentUser ?? null);
   useIsSearchPage(false);
   useIsSearchServiceConfigured(props.isSearchServiceConfigured);
+  useIsSearchScopeChildrenAsDefault(props.isSearchScopeChildrenAsDefault);
 
   return (
     <AdminLayout>

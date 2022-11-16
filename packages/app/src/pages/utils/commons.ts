@@ -25,6 +25,7 @@ export type CommonProps = {
   customizedLogoSrc?: string,
   currentUser?: IUser,
   isSearchServiceConfigured: boolean,
+  isSearchScopeChildrenAsDefault?: boolean,
 } & Partial<SSRConfig>;
 
 // eslint-disable-next-line max-len
@@ -67,6 +68,7 @@ export const getServerSideCommonProps: GetServerSideProps<CommonProps> = async(c
     currentUser,
     // isSearchPage,
     isSearchServiceConfigured: searchService.isConfigured,
+    isSearchScopeChildrenAsDefault: crowi.configManager.getConfig('crowi', 'customize:isSearchScopeChildrenAsDefault'),
   };
 
   return { props };

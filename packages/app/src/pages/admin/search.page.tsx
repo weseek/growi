@@ -8,6 +8,7 @@ import { CrowiRequest } from '~/interfaces/crowi-request';
 import { CommonProps, useCustomTitle } from '~/pages/utils/commons';
 import {
   useIsSearchServiceReachable, useCurrentUser, useIsSearchPage, useIsSearchServiceConfigured,
+  useIsSearchScopeChildrenAsDefault,
 } from '~/stores/context';
 
 import { retrieveServerSideProps } from '../../utils/admin-page-util';
@@ -29,6 +30,7 @@ const AdminFullTextSearchManagementPage: NextPage<Props> = (props) => {
   useIsSearchServiceReachable(props.isSearchServiceReachable);
   useIsSearchPage(false);
   useIsSearchServiceConfigured(props.isSearchServiceConfigured);
+  useIsSearchScopeChildrenAsDefault(props.isSearchScopeChildrenAsDefault);
 
   const title = t('full_text_search_management.full_text_search_management');
 

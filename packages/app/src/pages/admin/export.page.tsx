@@ -8,7 +8,9 @@ import { Container, Provider } from 'unstated';
 
 import AdminAppContainer from '~/client/services/AdminAppContainer';
 import { CommonProps, useCustomTitle } from '~/pages/utils/commons';
-import { useCurrentUser, useIsSearchPage, useIsSearchServiceConfigured } from '~/stores/context';
+import {
+  useCurrentUser, useIsSearchPage, useIsSearchServiceConfigured, useIsSearchScopeChildrenAsDefault,
+} from '~/stores/context';
 
 import { retrieveServerSideProps } from '../../utils/admin-page-util';
 
@@ -21,6 +23,7 @@ const AdminExportDataArchivePage: NextPage<CommonProps> = (props) => {
   useCurrentUser(props.currentUser ?? null);
   useIsSearchPage(false);
   useIsSearchServiceConfigured(props.isSearchServiceConfigured);
+  useIsSearchScopeChildrenAsDefault(props.isSearchScopeChildrenAsDefault);
 
   const title = t('export_management.export_archive_data');
   const injectableContainers: Container<any>[] = [];

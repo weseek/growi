@@ -41,7 +41,6 @@ type Props = CommonProps & {
   disableLinkSharing: boolean,
   isSearchServiceConfigured: boolean,
   isSearchServiceReachable: boolean,
-  isSearchScopeChildrenAsDefault: boolean,
   rendererConfig: RendererConfig,
 };
 
@@ -154,7 +153,6 @@ function injectServerConfigurations(context: GetServerSidePropsContext, props: P
 
   props.isSearchServiceConfigured = crowi.searchService.isConfigured;
   props.isSearchServiceReachable = crowi.searchService.isReachable;
-  props.isSearchScopeChildrenAsDefault = crowi.configManager.getConfig('crowi', 'customize:isSearchScopeChildrenAsDefault');
 
   props.rendererConfig = {
     isEnabledLinebreaks: crowi.configManager.getConfig('markdown', 'markdown:isEnabledLinebreaks'),
