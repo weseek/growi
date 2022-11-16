@@ -147,10 +147,10 @@ context('Access to Template Editing Mode', () => {
     cy.waitUntilSkeletonDisappear();
 
     cy.get('#grw-subnav-container').within(() => {
-      // eslint-disable-next-line cypress/no-unnecessary-waiting
-      cy.wait(300);
-      cy.getByTestid('open-page-item-control-btn').should('be.visible').click();
-      cy.getByTestid('open-page-template-modal-btn').should('be.visible').click();
+      cy.getByTestid('open-page-item-control-btn').should('be.visible');
+      cy.getByTestid('open-page-item-control-btn').click();
+      cy.getByTestid('open-page-template-modal-btn').should('be.visible');
+      cy.getByTestid('open-page-template-modal-btn').click();
     });
 
     cy.getByTestid('page-template-modal').should('be.visible');
@@ -171,10 +171,10 @@ context('Access to Template Editing Mode', () => {
     cy.waitUntilSkeletonDisappear();
 
     cy.get('#grw-subnav-container').within(() => {
-      // eslint-disable-next-line cypress/no-unnecessary-waiting
-      cy.wait(300);
-      cy.getByTestid('open-page-item-control-btn').should('be.visible').click();
-      cy.getByTestid('open-page-template-modal-btn').should('be.visible').click();
+      cy.getByTestid('open-page-item-control-btn').should('be.visible');
+      cy.getByTestid('open-page-item-control-btn').click();
+      cy.getByTestid('open-page-template-modal-btn').should('be.visible');
+      cy.getByTestid('open-page-template-modal-btn').click();
     });
     cy.getByTestid('page-template-modal').should('be.visible');
 
