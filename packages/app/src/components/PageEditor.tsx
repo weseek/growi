@@ -36,7 +36,6 @@ import loggerFactory from '~/utils/logger';
 import Editor from './PageEditor/Editor';
 import Preview from './PageEditor/Preview';
 import scrollSyncHelper from './PageEditor/ScrollSyncHelper';
-import { useSWRConfig } from 'swr';
 
 
 const logger = loggerFactory('growi:PageEditor');
@@ -70,7 +69,7 @@ const PageEditor = React.memo((): JSX.Element => {
   const { data: isTextlintEnabled } = useIsTextlintEnabled();
   const { data: isIndentSizeForced } = useIsIndentSizeForced();
   const { data: indentSize, mutate: mutateCurrentIndentSize } = useCurrentIndentSize();
-  const { mutate: mutateIsEnabledUnsavedWarning } = useIsEnabledUnsavedWarning();
+  const { mutate: mutateIsEnabledUnsavedWarning, optimisticMutate: optimisticMutateIsEnabledUnsavedWarning } = useIsEnabledUnsavedWarning();
   const { data: isUploadableFile } = useIsUploadableFile();
   const { data: isUploadableImage } = useIsUploadableImage();
 
@@ -165,7 +164,8 @@ const PageEditor = React.memo((): JSX.Element => {
     if (page == null) {
       return;
     }
-    await mutateIsEnabledUnsavedWarning(false);
+    await optimisticMutateIsEnabledUnsavedWarning(false);
+    // TODO: fix TAICHI
     await router.push(`/${page._id}`);
     mutateEditorMode(EditorMode.View);
   }, [editorMode, save, mutateEditorMode]);
@@ -341,8 +341,9 @@ const PageEditor = React.memo((): JSX.Element => {
     }
     markdownToSave.current = initialValue;
     setMarkdownToPreview(initialValue);
-    mutateIsEnabledUnsavedWarning(false);
-  }, [initialValue, mutateIsEnabledUnsavedWarning]);
+    // mutateIsEnabledUnsavedWarning(false);
+  }, [initialValue]);
+  // }, [initialValue, mutateIsEnabledUnsavedWarning]);
 
   // initial caret line
   useEffect(() => {

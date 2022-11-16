@@ -111,6 +111,7 @@ export const PageEditorByHackmd = (): JSX.Element => {
         return;
       }
       await mutateIsEnabledUnsavedWarning(false);
+      // TODO: fix TAICHI
       await router.push(`/${page._id}`);
       mutateEditorMode(EditorMode.View);
     }
