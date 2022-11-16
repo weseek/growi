@@ -57,7 +57,7 @@ const PageAccessoriesModal = (): JSX.Element => {
           if (!isOpened) {
             return <></>;
           }
-          return <PageHistory />;
+          return <PageHistory onClose={close}/>;
         },
         i18n: t('History'),
         index: 0,
@@ -87,7 +87,7 @@ const PageAccessoriesModal = (): JSX.Element => {
         isLinkEnabled: () => !isGuestUser && !isSharedUser && !isLinkSharingDisabled,
       },
     };
-  }, [status, t, isGuestUser, isSharedUser, isLinkSharingDisabled]);
+  }, [status, t, close, isGuestUser, isSharedUser, isLinkSharingDisabled]);
 
   const buttons = useMemo(() => (
     <div className="d-flex flex-nowrap">

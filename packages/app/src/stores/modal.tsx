@@ -1,5 +1,6 @@
 import { SWRResponse } from 'swr';
 
+import MarkdownTable from '~/client/models/MarkdownTable';
 import { IPageToDeleteWithMeta, IPageToRenameWithMeta } from '~/interfaces/page';
 import {
   OnDuplicatedFunction, OnRenamedFunction, OnDeletedFunction, OnPutBackedFunction,
@@ -7,7 +8,6 @@ import {
 import { IUserGroupHasId } from '~/interfaces/user';
 
 import { useStaticSWR } from './use-static-swr';
-
 
 /*
 * PageCreateModal
@@ -461,13 +461,48 @@ export const useDrawioModal = (status?: DrawioModalStatus): SWRResponse<DrawioMo
   };
   const swrResponse = useStaticSWR<DrawioModalStatus, Error>('drawioModalStatus', status, { fallbackData: initialData });
 
+  const open = (drawioMxFile: string): void => {
+    swrResponse.mutate({ isOpened: true, drawioMxFile });
+  };
+
   const close = (): void => {
     swrResponse.mutate({ isOpened: false, drawioMxFile: '' });
   };
 
-  const open = (drawioMxFile: string): void => {
-    swrResponse.mutate({ isOpened: true, drawioMxFile });
+  return {
+    ...swrResponse,
+    open,
+    close,
   };
+};
+
+/*
+* HandsonTableModal
+*/
+type HandsontableModalStatus = {
+  isOpened: boolean,
+  table?: MarkdownTable,
+  editor: any,
+  autoFormatMarkdownTable: boolean,
+}
+
+type HandsontableModalStatusUtils = {
+  open(table: MarkdownTable, editor: any, autoFormatMarkdownTable: boolean): Promise<HandsontableModalStatus | undefined>
+  close(): Promise<HandsontableModalStatus | undefined>
+}
+
+export const useHandsontableModal = (status?: HandsontableModalStatus): SWRResponse<HandsontableModalStatus, Error> & HandsontableModalStatusUtils => {
+  const initialData: HandsontableModalStatus = {
+    isOpened: false, table: undefined, editor: undefined, autoFormatMarkdownTable: false,
+  };
+  const swrResponse = useStaticSWR<HandsontableModalStatus, Error>('handsontableModalStatus', status, { fallbackData: initialData });
+
+  const open = (table: MarkdownTable, editor: any, autoFormatMarkdownTable: boolean) => swrResponse.mutate({
+    isOpened: true, table, editor, autoFormatMarkdownTable,
+  });
+  const close = () => swrResponse.mutate({
+    isOpened: false, table: undefined, editor: undefined, autoFormatMarkdownTable: false,
+  });
 
   return {
     ...swrResponse,
