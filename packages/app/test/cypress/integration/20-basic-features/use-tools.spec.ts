@@ -83,17 +83,16 @@ context('Modal for page operation', () => {
     cy.getByTestid('newPageBtn').click();
 
     cy.getByTestid('page-create-modal').should('be.visible').within(() => {
-      cy.get('#template-type').should('be.visible').click();
+      cy.get('#template-type').click();
       cy.get('#template-type').next().find('button:eq(0)').click({force: true});
       cy.get('#dd-template-type').next().find('button').click({force: true});
     });
     cy.get('.toast-error').should('be.visible').invoke('attr', 'style', 'opacity: 1');
     cy.screenshot(`${ssPrefix}create-template-for-children-error`, {capture: 'viewport'});
     cy.get('.toast-error').should('be.visible').click();
-    cy.get('.toast-error').should('not.exist');
 
     cy.getByTestid('page-create-modal').should('be.visible').within(() => {
-      cy.get('#template-type').should('be.visible').click();
+      cy.get('#template-type').click();
       cy.get('#template-type').next().find('button:eq(1)').click({force: true});
       cy.get('#dd-template-type').next().find('button').click({force: true});
     });
