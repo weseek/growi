@@ -273,7 +273,7 @@ const PageCreateModal = () => {
           <div className="d-sm-flex align-items-center justify-items-between">
 
             <UncontrolledButtonDropdown id="dd-template-type" className='flex-fill text-center'>
-              <DropdownToggle caret>
+              <DropdownToggle id='template-type' caret>
                 {template == null && t('template.option_label.select')}
                 {template === 'children' && t('template.children.label')}
                 {template === 'decendants' && t('template.decendants.label')}
