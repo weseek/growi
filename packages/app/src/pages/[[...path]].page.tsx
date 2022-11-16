@@ -62,7 +62,7 @@ import {
   useIsEnabledStaleNotification, useIsIdenticalPath,
   useIsSearchServiceConfigured, useIsSearchServiceReachable, useDisableLinkSharing,
   useDrawioUri, useHackmdUri, useDefaultIndentSize, useIsIndentSizeForced,
-  useIsAclEnabled, useIsSearchPage,
+  useIsAclEnabled, useIsSearchPage, useTemplateTagData,
   useCsrfToken, useIsSearchScopeChildrenAsDefault, useCurrentPageId, useCurrentPathname,
   useIsSlackConfigured, useRendererConfig, useEditingMarkdown,
   useEditorConfig, useIsAllReplyShown, useIsUploadableFile, useIsUploadableImage, useCustomizedLogoSrc, useIsContainerFluid,
@@ -144,6 +144,8 @@ type Props = CommonProps & {
   isNotCreatablePage: boolean,
   // isAbleToDeleteCompletely: boolean,
 
+  templateTagData?: string[],
+
   isSearchServiceConfigured: boolean,
   isSearchServiceReachable: boolean,
   isSearchScopeChildrenAsDefault: boolean,
@@ -212,6 +214,8 @@ const GrowiPage: NextPage<Props> = (props: Props) => {
   // useIsAbleToDeleteCompletely(props.isAbleToDeleteCompletely);
   useIsEnabledStaleNotification(props.isEnabledStaleNotification);
   useIsSearchPage(false);
+
+  useTemplateTagData(props.templateTagData);
 
   useIsSearchServiceConfigured(props.isSearchServiceConfigured);
   useIsSearchServiceReachable(props.isSearchServiceReachable);
@@ -419,6 +423,13 @@ async function injectPageData(context: GetServerSidePropsContext, props: Props):
 
   if (typeof revisionId === 'string' || typeof revisionId === 'undefined') {
     props.currentRevisionId = props.isLatestRevision && page.latestRevision != null ? page.latestRevision.toString() : revisionId;
+  }
+
+  if (page == null && user != null) {
+    const template = await Page.findTemplate(props.currentPathname);
+    if (template != null) {
+      props.templateTagData = template.templateTags as string[];
+    }
   }
 
   props.pageWithMeta = pageWithMeta;
