@@ -45,8 +45,8 @@ Cypress.Commands.add('login', (username, password) => {
  * use only for the pages which use component with skeleton
  */
 Cypress.Commands.add('waitUntilSkeletonDisappear', () => {
-  cy.get('.grw-skeleton').should('not.exist');
   cy.get('.grw-skeleton').should('exist');
+  cy.get('.grw-skeleton').should('not.exist');
 });
 
 let isSidebarCollapsed: boolean | undefined;
