@@ -2,10 +2,12 @@ import React, { useCallback, useMemo } from 'react';
 
 import { useTranslation } from 'next-i18next';
 
+import { useEditingPage } from '~/stores/editor';
 import {
   useHasDraftOnHackmd, useIsHackmdDraftUpdatingInRealtime, useRemoteRevisionId, useRevisionIdHackmdSynced,
 } from '~/stores/hackmd';
 import { useSWRxCurrentPage } from '~/stores/page';
+import { useEditorMode } from '~/stores/ui';
 
 type AlertComponentContents = {
   additionalClasses: string[],
@@ -19,9 +21,12 @@ export const PageStatusAlert = (): JSX.Element => {
   const { data: isHackmdDraftUpdatingInRealtime } = useIsHackmdDraftUpdatingInRealtime();
   const { data: hasDraftOnHackmd } = useHasDraftOnHackmd();
   const { data: revisionIdHackmdSynced } = useRevisionIdHackmdSynced();
-  const { data: remoteRevisionId } = useRemoteRevisionId();
+  // const { data: remoteRevisionId } = useRemoteRevisionId();
+  const { data: editorMode } = useEditorMode();
   const { data: pageData } = useSWRxCurrentPage();
   const revision = pageData?.revision;
+
+  const { editingRevisionId } = useEditingPage();
 
   const refreshPage = useCallback(() => {
     window.location.reload();
@@ -112,11 +117,11 @@ export const PageStatusAlert = (): JSX.Element => {
   }, [t, onClickResolveConflict, refreshPage]);
 
   const alertComponentContents = useMemo(() => {
-    const isRevisionOutdated = revision?._id !== remoteRevisionId;
-    const isHackmdDocumentOutdated = revisionIdHackmdSynced !== remoteRevisionId;
+    const isRevisionOutdated = editingRevisionId !== revision?._id;
+    const isHackmdDocumentOutdated = revisionIdHackmdSynced !== revision?._id;
 
     // when remote revision is newer than both
-    if (isHackmdDocumentOutdated && isRevisionOutdated) {
+    if (editorMode === 'editor' && isHackmdDocumentOutdated && isRevisionOutdated) {
       return getContentsForUpdatedAlert();
     }
 
@@ -133,13 +138,14 @@ export const PageStatusAlert = (): JSX.Element => {
     return null;
   }, [
     revision?._id,
-    remoteRevisionId,
+    editingRevisionId,
     revisionIdHackmdSynced,
     isHackmdDraftUpdatingInRealtime,
     hasDraftOnHackmd,
     getContentsForUpdatedAlert,
     getContentsForSomeoneEditingAlert,
     getContentsForDraftExistsAlert,
+    editorMode,
   ]);
 
   if (alertComponentContents == null) { return <></> }
