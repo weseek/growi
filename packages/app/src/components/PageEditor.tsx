@@ -17,7 +17,7 @@ import { getOptionsToSave } from '~/client/util/editor';
 import { IEditorMethods } from '~/interfaces/editor-methods';
 import {
   useCurrentPathname, useCurrentPageId,
-  useIsEditable, useIsIndentSizeForced, useIsUploadableFile, useIsUploadableImage, useEditingMarkdown,
+  useIsEditable, useIsIndentSizeForced, useIsUploadableFile, useIsUploadableImage, useEditingMarkdown, useIsNotFound,
 } from '~/stores/context';
 import {
   useCurrentIndentSize, useSWRxSlackChannels, useIsSlackEnabled, useIsTextlintEnabled, usePageTagsForEditors,
@@ -54,7 +54,8 @@ const PageEditor = React.memo((): JSX.Element => {
   const { t } = useTranslation();
   const router = useRouter();
 
-  const { data: pageId } = useCurrentPageId();
+  const { data: isNotFound } = useIsNotFound();
+  const { data: pageId, mutate: mutateCurrentPageId } = useCurrentPageId();
   const { data: currentPagePath } = useCurrentPagePath();
   const { data: currentPathname } = useCurrentPathname();
   const { data: currentPage, mutate: mutateCurrentPage } = useSWRxCurrentPage();
@@ -69,7 +70,7 @@ const PageEditor = React.memo((): JSX.Element => {
   const { data: isTextlintEnabled } = useIsTextlintEnabled();
   const { data: isIndentSizeForced } = useIsIndentSizeForced();
   const { data: indentSize, mutate: mutateCurrentIndentSize } = useCurrentIndentSize();
-  const { mutate: mutateIsEnabledUnsavedWarning } = useIsEnabledUnsavedWarning();
+  const { data: isEnabledUnsavedWarning, mutate: mutateIsEnabledUnsavedWarning } = useIsEnabledUnsavedWarning();
   const { data: isUploadableFile } = useIsUploadableFile();
   const { data: isUploadableImage } = useIsUploadableImage();
 
@@ -166,11 +167,17 @@ const PageEditor = React.memo((): JSX.Element => {
     }
     // The updateFn should be a promise or asynchronous function to handle the remote mutation
     // it should return updated data. see: https://swr.vercel.app/docs/mutation#optimistic-updates
-    await mutateIsEnabledUnsavedWarning(async() => false, { optimisticData: false });
-    // TODO: fix TAICHI
-    await router.push(`/${page._id}`);
+    // Moreover, `async() => false` does not work since it's too fast to be calculated.
+    await mutateIsEnabledUnsavedWarning(new Promise(r => setTimeout(() => r(false), 10)), { optimisticData: () => false });
+    if (isNotFound) {
+      await router.push(`/${page._id}`);
+    }
+    else {
+      await mutateCurrentPageId(page._id);
+      await mutateCurrentPage();
+    }
     mutateEditorMode(EditorMode.View);
-  }, [editorMode, save, mutateIsEnabledUnsavedWarning, router, mutateEditorMode]);
+  }, [editorMode, save, mutateIsEnabledUnsavedWarning, isNotFound, mutateEditorMode, router, mutateCurrentPageId, mutateCurrentPage]);
 
   const saveWithShortcut = useCallback(async() => {
     if (editorMode !== EditorMode.Editor) {
@@ -343,9 +350,8 @@ const PageEditor = React.memo((): JSX.Element => {
     }
     markdownToSave.current = initialValue;
     setMarkdownToPreview(initialValue);
-    // mutateIsEnabledUnsavedWarning(false);
-  }, [initialValue]);
-  // }, [initialValue, mutateIsEnabledUnsavedWarning]);
+    mutateIsEnabledUnsavedWarning(false);
+  }, [initialValue, mutateIsEnabledUnsavedWarning]);
 
   // initial caret line
   useEffect(() => {

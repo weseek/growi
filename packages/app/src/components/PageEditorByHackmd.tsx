@@ -13,7 +13,7 @@ import { apiPost } from '~/client/util/apiv1-client';
 import { getOptionsToSave } from '~/client/util/editor';
 import { IResHackmdIntegrated, IResHackmdDiscard } from '~/interfaces/hackmd';
 import {
-  useCurrentPageId, useCurrentPathname, useHackmdUri,
+  useCurrentPageId, useCurrentPathname, useHackmdUri, useIsNotFound,
 } from '~/stores/context';
 import {
   useSWRxSlackChannels, useIsSlackEnabled, usePageTagsForEditors, useIsEnabledUnsavedWarning,
@@ -44,12 +44,13 @@ export const PageEditorByHackmd = (): JSX.Element => {
   const { t } = useTranslation();
   const router = useRouter();
 
+  const { data: isNotFound } = useIsNotFound();
   const { data: editorMode, mutate: mutateEditorMode } = useEditorMode();
   const { data: currentPagePath } = useCurrentPagePath();
   const { data: currentPathname } = useCurrentPathname();
   const { data: slackChannelsData } = useSWRxSlackChannels(currentPagePath);
   const { data: isSlackEnabled } = useIsSlackEnabled();
-  const { data: pageId } = useCurrentPageId();
+  const { data: pageId, mutate: mutateCurrentPageId } = useCurrentPageId();
   const { data: pageTags } = usePageTagsForEditors(pageId);
   const { mutate: mutateTagsInfo } = useSWRxTagsInfo(pageId);
   const { data: grant } = useSelectedGrant();
@@ -110,29 +111,25 @@ export const PageEditorByHackmd = (): JSX.Element => {
       if (page == null) {
         return;
       }
-      await mutateIsEnabledUnsavedWarning(false);
-      // TODO: fix TAICHI
-      await router.push(`/${page._id}`);
+      // The updateFn should be a promise or asynchronous function to handle the remote mutation
+      // it should return updated data. see: https://swr.vercel.app/docs/mutation#optimistic-updates
+      // Moreover, `async() => false` does not work since it's too fast to be calculated.
+      await mutateIsEnabledUnsavedWarning(new Promise(r => setTimeout(() => r(false), 10)), { optimisticData: () => false });
+      if (isNotFound) {
+        await router.push(`/${page._id}`);
+      }
+      else {
+        await mutateCurrentPageId(page._id);
+        await mutatePageData();
+      }
       mutateEditorMode(EditorMode.View);
     }
     catch (error) {
       logger.error('failed to save', error);
       toastError(error.message);
     }
-  }, [editorMode,
-      isSlackEnabled,
-      currentPathname,
-      slackChannels,
-      grant,
-      revision,
-      pageTags,
-      pageId,
-      currentPagePath,
-      mutatePageData,
-      mutateEditorMode,
-      mutateTagsInfo,
-      mutateIsEnabledUnsavedWarning,
-  ]);
+  }, [editorMode, isSlackEnabled, currentPathname, slackChannels, grant, revision, pageTags, pageId,
+      currentPagePath, mutatePageData, mutateTagsInfo, mutateIsEnabledUnsavedWarning, isNotFound, mutateEditorMode, router, mutateCurrentPageId]);
 
   // set handler to save and reload Page
   useEffect(() => {
