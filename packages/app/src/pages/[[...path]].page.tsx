@@ -291,7 +291,7 @@ const GrowiPage: NextPage<Props> = (props: Props) => {
         */}
       </Head>
 
-      <Script type="text/javascript" src="https://www.draw.io/js/viewer.min.js"></Script>
+      <Script type="text/javascript" src="https://www.draw.io/js/viewer.min.js" onLoad={() => (window as CustomWindow).GraphViewer.processElements() }></Script>
 
       <BasicLayout title={useCustomTitle(props, 'GROWI')} className={classNames.join(' ')} expandContainer={isContainerFluid}>
 
