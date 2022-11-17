@@ -145,6 +145,7 @@ type Props = CommonProps & {
   // isAbleToDeleteCompletely: boolean,
 
   templateTagData?: string[],
+  templateBodyData?: string,
 
   isSearchServiceConfigured: boolean,
   isSearchServiceReachable: boolean,
@@ -250,7 +251,7 @@ const GrowiPage: NextPage<Props> = (props: Props) => {
   useCurrentRevisionId(props.currentRevisionId);
 
   const { data: currentPage } = useSWRxCurrentPage(undefined, pageWithMeta?.data ?? null); // store initial data
-  useEditingMarkdown(pageWithMeta?.data.revision?.body ?? '');
+  useEditingMarkdown(pageWithMeta?.data.revision?.body ?? props.templateBodyData ?? '');
 
   const { data: grantData } = useSWRxIsGrantNormalized(pageId);
   const { mutate: mutateSelectedGrant } = useSelectedGrant();
@@ -426,9 +427,10 @@ async function injectPageData(context: GetServerSidePropsContext, props: Props):
   }
 
   if (page == null && user != null) {
-    const template = await Page.findTemplate(props.currentPathname);
-    if (template != null) {
-      props.templateTagData = template.templateTags as string[];
+    const templateData = await Page.findTemplate(props.currentPathname);
+    if (templateData != null) {
+      props.templateTagData = templateData.templateTags as string[];
+      props.templateBodyData = templateData.templateBody as string;
     }
   }
 
