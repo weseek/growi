@@ -1,6 +1,6 @@
 import React, { useState, useCallback } from 'react';
 
-import type { IUserHasId } from '@growi/core';
+import { IUserHasId, USER_STATUS } from '@growi/core';
 import { useTranslation } from 'next-i18next';
 import {
   UncontrolledDropdown, DropdownToggle, DropdownMenu,
@@ -59,16 +59,17 @@ const UserMenu = (props: UserMenuProps) => {
         <li className="dropdown-divider"></li>
         <li className="dropdown-header">{t('user_management.status')}</li>
         <li>
-          {(user.status === 1 || user.status === 3) && <StatusActivateButton user={user} />}
-          {user.status === 2 && <StatusSuspendedMenuItem user={user} />}
-          {user.status === 5 && (
+          {(user.status === USER_STATUS.REGISTERED || user.status === USER_STATUS.SUSPENDED) && <StatusActivateButton user={user} />}
+          {user.status === USER_STATUS.ACTIVE && <StatusSuspendedMenuItem user={user} />}
+          {user.status === USER_STATUS.INVITED && (
             <SendInvitationEmailButton
               user={user}
               isInvitationEmailSended={isInvitationEmailSended}
               onSuccessfullySentInvitationEmail={onSuccessfullySentInvitationEmailHandler}
             />
           )}
-          {(user.status === 1 || user.status === 3 || user.status === 5) && <UserRemoveButton user={user} />}
+          {(user.status === USER_STATUS.REGISTERED || user.status === USER_STATUS.SUSPENDED || user.status === USER_STATUS.INVITED)
+          && <UserRemoveButton user={user} />}
         </li>
       </>
     );
@@ -91,13 +92,13 @@ const UserMenu = (props: UserMenuProps) => {
     <UncontrolledDropdown id="userMenu" size="sm">
       <DropdownToggle caret color="secondary" outline>
         <i className="icon-settings" />
-        {(user.status === 5 && !isInvitationEmailSended)
+        {(user.status === USER_STATUS.INVITED && !isInvitationEmailSended)
         && <i className={`fa fa-circle text-danger grw-usermenu-notification-icon ${styles['grw-usermenu-notification-icon']}`} />}
       </DropdownToggle>
       <DropdownMenu positionFixed>
         {renderEditMenu()}
-        {user.status !== 4 && renderStatusMenu()}
-        {user.status === 2 && renderAdminMenu()}
+        {user.status !== USER_STATUS.DELETED && renderStatusMenu()}
+        {user.status === USER_STATUS.ACTIVE && renderAdminMenu()}
       </DropdownMenu>
     </UncontrolledDropdown>
   );
