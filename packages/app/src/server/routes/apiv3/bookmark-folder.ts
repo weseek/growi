@@ -56,7 +56,6 @@ module.exports = (crowi) => {
         name: bookmarkFolder.name,
         parent: bookmarkFolder.parent,
         children: bookmarkFolder.children,
-        bookmarks: bookmarkFolder.bookmarks,
       }));
       return res.apiv3({ bookmarkFolderItems });
     }

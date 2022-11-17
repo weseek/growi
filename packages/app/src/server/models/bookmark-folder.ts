@@ -32,18 +32,14 @@ const bookmarkFolderSchema = new Schema<BookmarkFolderDocument, BookmarkFolderMo
   name: { type: String },
   owner: { type: Schema.Types.ObjectId, ref: 'User', index: true },
   parent: { type: Schema.Types.ObjectId, ref: 'BookmarkFolder', required: false },
+}, {
+  toObject: { virtuals: true },
 });
 
 bookmarkFolderSchema.virtual('children', {
   ref: 'BookmarkFolder',
   localField: '_id',
   foreignField: 'parent',
-});
-
-bookmarkFolderSchema.virtual('bookmarks', {
-  ref: 'Bookmark',
-  localField: '_id',
-  foreignField: 'folder',
 });
 
 bookmarkFolderSchema.statics.createByParameters = async function(params: IBookmarkFolder): Promise<BookmarkFolderDocument> {
@@ -75,9 +71,7 @@ bookmarkFolderSchema.statics.findFolderAndChildren = async function(
     parentId?: Types.ObjectId | string,
 ): Promise<BookmarkFolderItems[]> {
 
-  const parentFolder = await this.findById(parentId).populate({ path: 'bookmarks' }).exec() as unknown as BookmarkFolderDocument;
-
-  // TODO : forms the return value for the bookmark
+  const parentFolder = await this.findById(parentId) as unknown as BookmarkFolderDocument;
   const bookmarkFolders = await this.find({ owner: userId, parent: parentFolder })
     .populate({ path: 'children' }).exec() as unknown as BookmarkFolderItems[];
   return bookmarkFolders;
@@ -112,6 +106,5 @@ bookmarkFolderSchema.statics.updateBookmarkFolder = async function(bookmarkFolde
 
 };
 
-bookmarkFolderSchema.set('toObject', { virtuals: true });
 
 export default getOrCreateModel<BookmarkFolderDocument, BookmarkFolderModel>('BookmarkFolder', bookmarkFolderSchema);

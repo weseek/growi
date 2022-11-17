@@ -16,7 +16,6 @@ module.exports = function(crowi) {
   bookmarkSchema = new mongoose.Schema({
     page: { type: ObjectId, ref: 'Page', index: true },
     user: { type: ObjectId, ref: 'User', index: true },
-    folder: { type: ObjectId, ref: 'BookmarkFolder', required: false },
   }, {
     timestamps: { createdAt: true, updatedAt: false },
   });
