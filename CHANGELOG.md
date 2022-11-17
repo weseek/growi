@@ -1,8 +1,16 @@
 # Changelog
 
-## [Unreleased](https://github.com/weseek/growi/compare/v5.1.7...HEAD)
+## [Unreleased](https://github.com/weseek/growi/compare/v5.1.8...HEAD)
 
 *Please do not manually update this file. We've automated the process.*
+
+## [v5.1.8](https://github.com/weseek/growi/compare/v5.1.7...v5.1.8) - 2022-11-17
+
+### 🐛 Bug Fixes
+
+- fix: Put back page from trash (#6835) @yukendev
+- fix: Updating page content width is not working (#6914) @yukendev
+- fix: Create page at installer (#6930) @hakumizuki @yuki-takei
 
 ## [v5.1.7](https://github.com/weseek/growi/compare/v5.1.6...v5.1.7) - 2022-10-26
 
