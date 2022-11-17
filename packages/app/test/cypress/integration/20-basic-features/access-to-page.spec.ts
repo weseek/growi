@@ -156,6 +156,8 @@ context('Access to Template Editing Mode', () => {
   //   cy.getByTestid('page-template-modal').should('be.visible');
   //   cy.screenshot(`${ssPrefix}-open-page-template-bootstrap4`);
 
+  // Todo: `@`alias may be changed. This code was made in an attempt to solve the error of element being dettached from the dom which couldn't be solved at this time.
+  // Wait for Todo: 109057 is solved and fix or leave the code below for better test code.
   //   cy.getByTestid('template-button-children').as('template-button-children');
   //   cy.get('@template-button-children').should('be.visible').click();
   //   cy.waitUntilSkeletonDisappear();
@@ -179,6 +181,8 @@ context('Access to Template Editing Mode', () => {
   //   });
   //   cy.getByTestid('page-template-modal').should('be.visible');
 
+  // Todo: `@`alias may be changed. This code was made in an attempt to solve the error of element being dettached from the dom which couldn't be solved at this time.
+  // Wait for Todo: 109057 is solved and fix or leave the code below for better test code.
   //   cy.getByTestid('template-button-decendants').as('template-button-decendants');
   //   cy.get('@template-button-decendants').should('be.visible').click();
   //   cy.waitUntilSkeletonDisappear();
