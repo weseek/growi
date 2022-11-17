@@ -89,7 +89,7 @@ const AppSettingsPageContents = (props: Props) => {
 
       <div className="row mt-5">
         <div className="col-lg-12">
-          <h2 className="admin-setting-header">{t('Site URL settings')}</h2>
+          <h2 className="admin-setting-header">{t('site_url.title')}</h2>
           <SiteUrlSetting />
         </div>
       </div>

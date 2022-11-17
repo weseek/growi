@@ -24,7 +24,7 @@ const SiteUrlSetting = (props: Props) => {
   const submitHandler = useCallback(async() => {
     try {
       await adminAppContainer.updateSiteUrlSettingHandler();
-      toastSuccess(t('toaster.update_successed', { target: t('Site URL settings'), ns: 'commons' }));
+      toastSuccess(t('toaster.update_successed', { target: t('admin:app_setting.site_url.desc') }));
     }
     catch (err) {
       toastError(err);
@@ -34,9 +34,9 @@ const SiteUrlSetting = (props: Props) => {
 
   return (
     <React.Fragment>
-      <p className="card well">{t('admin:app_setting.site_url_desc')}</p>
+      <p className="card well">{t('admin:app_setting.site_url.desc')}</p>
       {!adminAppContainer.state.isSetSiteUrl
-          && (<p className="alert alert-danger"><i className="icon-exclamation"></i> {t('admin:app_setting.site_url_warn')}</p>)}
+          && (<p className="alert alert-danger"><i className="icon-exclamation"></i> {t('admin:app_setting.site_url.warn')}</p>)}
 
       <div className="row form-group">
         <div className="col-md-9 offset-md-3">
@@ -64,7 +64,7 @@ const SiteUrlSetting = (props: Props) => {
                   />
                   <p className="form-text text-muted">
                     {/* eslint-disable-next-line react/no-danger */}
-                    <span dangerouslySetInnerHTML={{ __html: t('admin:app_setting.siteurl_help') }} />
+                    <span dangerouslySetInnerHTML={{ __html: t('admin:app_setting.site_url.help') }} />
                   </p>
                 </td>
                 <td>

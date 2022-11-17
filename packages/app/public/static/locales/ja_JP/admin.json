@@ -355,9 +355,12 @@
     "site_name": "サイト名",
     "sitename_change": "ヘッダーや HTML タイトルに使用されるサイト名を変更できます。",
     "header_content": "ここに入力した内容は、ヘッダー等に表示されます。",
-    "site_url_desc": "サイトURLを設定します。",
-    "site_url_warn": "サイトURLが設定されていないため、一部機能が動作しない状態になっています。",
-    "siteurl_help": "<code>http://</code> または <code>https://</code> から始まるサイトのURL",
+    "site_url": {
+      "title": "サイトURL設定",
+      "desc": "サイトURLを設定します。",
+      "warn": "サイトURLが設定されていないため、一部機能が動作しない状態になっています。",
+      "help": "<code>http://</code> または <code>https://</code> から始まるサイトのURL"
+    },
     "confidential_name": "コンフィデンシャル表示",
     "confidential_example": "例: 社外秘",
     "default_language": "新規ユーザーのデフォルト設定言語",
