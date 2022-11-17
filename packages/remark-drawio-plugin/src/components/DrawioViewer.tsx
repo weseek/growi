@@ -4,15 +4,24 @@ import React, {
 
 import { debounce } from 'throttle-debounce';
 
+import type { IGraphViewer } from '../interfaces/graph-viewer';
 import { generateMxgraphData } from '../utils/embed';
+import { isGraphViewer } from '../utils/global';
+
 
 import styles from './DrawioViewer.module.scss';
+
+
+declare global {
+  interface Window {
+    GraphViewer: IGraphViewer,
+  }
+}
 
 type Props = {
   diagramIndex: number,
   bol?: number,
   eol?: number,
-  drawioEmbedUri?: string,
   children?: ReactNode,
 }
 
@@ -24,18 +33,21 @@ export const DrawioViewer = (props: Props): JSX.Element => {
   const drawioContainerRef = useRef<HTMLDivElement>(null);
 
   const renderDrawio = useCallback(() => {
+    if (!isGraphViewer(window.GraphViewer)) {
+      return;
+    }
     if (drawioContainerRef.current == null) {
       return;
     }
 
     const mxgraphs = drawioContainerRef.current.getElementsByClassName('mxgraph');
     if (mxgraphs.length > 0) {
-      // GROWI では、mxgraph element は最初のものをレンダリングする前提とする
+      // This component should have only one '.mxgraph' element
       const div = mxgraphs[0];
 
       if (div != null) {
         div.innerHTML = '';
-        (window as any).GraphViewer.createViewerForElement(div);
+        window.GraphViewer.createViewerForElement(div);
       }
     }
   }, [drawioContainerRef]);
