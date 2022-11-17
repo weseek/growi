@@ -4,7 +4,7 @@ import React, {
 
 import EventEmitter from 'events';
 
-import { envUtils, PageGrant } from '@growi/core';
+import { envUtils, IPageHasId, PageGrant } from '@growi/core';
 import detectIndent from 'detect-indent';
 import { useTranslation } from 'next-i18next';
 import { useRouter } from 'next/router';
@@ -17,7 +17,7 @@ import { getOptionsToSave } from '~/client/util/editor';
 import { IEditorMethods } from '~/interfaces/editor-methods';
 import {
   useCurrentPathname, useCurrentPageId,
-  useIsEditable, useIsIndentSizeForced, useIsUploadableFile, useIsUploadableImage, useEditingMarkdown,
+  useIsEditable, useIsIndentSizeForced, useIsUploadableFile, useIsUploadableImage, useEditingMarkdown, useIsNotFound,
 } from '~/stores/context';
 import {
   useCurrentIndentSize, useSWRxSlackChannels, useIsSlackEnabled, useIsTextlintEnabled, usePageTagsForEditors,
@@ -54,7 +54,8 @@ const PageEditor = React.memo((): JSX.Element => {
   const { t } = useTranslation();
   const router = useRouter();
 
-  const { data: pageId } = useCurrentPageId();
+  const { data: isNotFound } = useIsNotFound();
+  const { data: pageId, mutate: mutateCurrentPageId } = useCurrentPageId();
   const { data: currentPagePath } = useCurrentPagePath();
   const { data: currentPathname } = useCurrentPathname();
   const { data: currentPage, mutate: mutateCurrentPage } = useSWRxCurrentPage();
@@ -69,7 +70,7 @@ const PageEditor = React.memo((): JSX.Element => {
   const { data: isTextlintEnabled } = useIsTextlintEnabled();
   const { data: isIndentSizeForced } = useIsIndentSizeForced();
   const { data: indentSize, mutate: mutateCurrentIndentSize } = useCurrentIndentSize();
-  const { mutate: mutateIsEnabledUnsavedWarning } = useIsEnabledUnsavedWarning();
+  const { data: isEnabledUnsavedWarning, mutate: mutateIsEnabledUnsavedWarning } = useIsEnabledUnsavedWarning();
   const { data: isUploadableFile } = useIsUploadableFile();
   const { data: isUploadableImage } = useIsUploadableImage();
 
@@ -115,7 +116,7 @@ const PageEditor = React.memo((): JSX.Element => {
   }, [setMarkdownWithDebounce]);
 
   // return true if the save succeeds, otherwise false.
-  const save = useCallback(async(opts?: {overwriteScopesOfDescendants: boolean}): Promise<boolean> => {
+  const save = useCallback(async(opts?: {overwriteScopesOfDescendants: boolean}): Promise<IPageHasId | null> => {
     if (grantData == null || isSlackEnabled == null || currentPathname == null) {
       logger.error('Some materials to save are invalid', { grantData, isSlackEnabled, currentPathname });
       throw new Error('Some materials to save are invalid');
@@ -136,9 +137,7 @@ const PageEditor = React.memo((): JSX.Element => {
         markdownToSave.current,
       );
 
-      await router.push(`/${page._id}`);
-      mutateIsEnabledUnsavedWarning(false);
-      return true;
+      return page;
     }
     catch (error) {
       logger.error('failed to save', error);
@@ -151,20 +150,34 @@ const PageEditor = React.memo((): JSX.Element => {
         //   lastUpdateUser: error.data.user,
         // });
       }
-      return false;
+      return null;
     }
 
   // eslint-disable-next-line max-len
-  }, [grantData, isSlackEnabled, currentPathname, slackChannels, pageTags, pageId, currentPagePath, currentRevisionId, mutateCurrentPage, mutateIsEnabledUnsavedWarning]);
+  }, [grantData, isSlackEnabled, currentPathname, slackChannels, pageTags, pageId, currentPagePath, currentRevisionId]);
 
   const saveAndReturnToViewHandler = useCallback(async(opts?: {overwriteScopesOfDescendants: boolean}) => {
     if (editorMode !== EditorMode.Editor) {
       return;
     }
 
-    await save(opts);
+    const page = await save(opts);
+    if (page == null) {
+      return;
+    }
+    // The updateFn should be a promise or asynchronous function to handle the remote mutation
+    // it should return updated data. see: https://swr.vercel.app/docs/mutation#optimistic-updates
+    // Moreover, `async() => false` does not work since it's too fast to be calculated.
+    await mutateIsEnabledUnsavedWarning(new Promise(r => setTimeout(() => r(false), 10)), { optimisticData: () => false });
+    if (isNotFound) {
+      await router.push(`/${page._id}`);
+    }
+    else {
+      await mutateCurrentPageId(page._id);
+      await mutateCurrentPage();
+    }
     mutateEditorMode(EditorMode.View);
-  }, [editorMode, save, mutateEditorMode]);
+  }, [editorMode, save, mutateIsEnabledUnsavedWarning, isNotFound, mutateEditorMode, router, mutateCurrentPageId, mutateCurrentPage]);
 
   const saveWithShortcut = useCallback(async() => {
     if (editorMode !== EditorMode.Editor) {

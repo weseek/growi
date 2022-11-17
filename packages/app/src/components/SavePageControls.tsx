@@ -13,7 +13,6 @@ import { IPageGrantData } from '~/interfaces/page';
 import {
   useIsEditable, useCurrentPageId, useIsAclEnabled,
 } from '~/stores/context';
-import { useIsEnabledUnsavedWarning } from '~/stores/editor';
 import { useCurrentPagePath } from '~/stores/page';
 import { useSelectedGrant } from '~/stores/ui';
 import loggerFactory from '~/utils/logger';
