@@ -16,10 +16,12 @@ export const OldRevisionAlert = (): JSX.Element => {
     return <></>;
   }
 
+  const path = page.path === '/' ? '/' : `/${page._id}`;
+
   return (
     <div className="alert alert-warning">
       <strong>{ t('Warning') }: </strong> { t('page_page.notice.version') }
-      <Link href={`/${page._id}`}>
+      <Link href={path}>
         <a><i className="icon-fw icon-arrow-right-circle"></i>{ t('Show latest') }</a>
       </Link>
     </div>

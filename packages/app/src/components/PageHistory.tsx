@@ -3,7 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { IRevisionHasPageId } from '@growi/core';
 
 import { useCurrentPageId } from '~/stores/context';
-import { useSWRxPageRevisions } from '~/stores/page';
+import { useSWRxPageRevisions, useCurrentPagePath } from '~/stores/page';
 import loggerFactory from '~/utils/logger';
 
 import { PageRevisionTable } from './PageHistory/PageRevisionTable';
@@ -17,6 +17,7 @@ export const PageHistory: React.FC<{ onClose: () => void }> = ({ onClose }) => {
   const [activePage, setActivePage] = useState(1);
 
   const { data: currentPageId } = useCurrentPageId();
+  const { data: currentPagePath } = useCurrentPagePath();
 
   const { data: revisionsData, mutate: mutatePageRevisions } = useSWRxPageRevisions(activePage, 10, currentPageId);
 
@@ -36,7 +37,7 @@ export const PageHistory: React.FC<{ onClose: () => void }> = ({ onClose }) => {
 
   const pagingLimit = 10;
 
-  if (revisionsData == null || sourceRevision == null || targetRevision == null || currentPageId == null) {
+  if (revisionsData == null || sourceRevision == null || targetRevision == null || currentPageId == null || currentPagePath == null) {
     return (
       <div className="text-muted text-center">
         <i className="fa fa-2x fa-spinner fa-pulse mt-3"></i>
@@ -63,6 +64,8 @@ export const PageHistory: React.FC<{ onClose: () => void }> = ({ onClose }) => {
         pagingLimit={pagingLimit}
         sourceRevision={sourceRevision}
         targetRevision={targetRevision}
+        pageId={currentPageId}
+        pagePath={currentPagePath}
         onChangeSourceInvoked={setSourceRevision}
         onChangeTargetInvoked={setTargetRevision}
         onClose={onClose}
