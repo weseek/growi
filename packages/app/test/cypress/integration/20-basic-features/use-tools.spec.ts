@@ -232,7 +232,7 @@ context('Tag Oprations', () =>{
     const tag = 'we';
     cy.visit('/Sandbox');
     // eslint-disable-next-line cypress/no-unnecessary-waiting
-    cy.waitSkeletonDisappear();
+    cy.waitUntilSkeletonDisappear();
 
     cy.get('#edit-tags-btn-wrapper-for-tooltip').should('exist').within(()=>{
       cy.get('a').should('exist').click();
@@ -270,7 +270,7 @@ context('Tag Oprations', () =>{
     const tag = 'we';
     const newPageName = 'our';
     cy.visit('/Sandbox');
-    cy.waitSkeletonDisappear();
+    cy.waitUntilSkeletonDisappear();
 
     cy.get('.grw-taglabels-container > .grw-tag-labels > a', { timeout: 10000 }).contains(tag).click();
     cy.getByTestid('search-result-base').should('be.visible');
@@ -304,7 +304,7 @@ context('Tag Oprations', () =>{
       cy.get('.modal-footer > button.btn').click();
     });
     cy.visit(`Sandbox-${newPageName}`);
-    cy.waitSkeletonDisappear();
+    cy.waitUntilSkeletonDisappear();
     cy.screenshot(`${ssPrefix}4-duplicated-page`, {capture: 'viewport'});
   });
 
@@ -315,9 +315,9 @@ context('Tag Oprations', () =>{
     const newPageName = '/Sandbox-us';
 
     cy.visit('/Sandbox-our');
-    cy.waitSkeletonDisappear();
+    cy.waitUntilSkeletonDisappear();
     cy.get('.grw-tag-label').contains(tag).click();
-    cy.waitSkeletonDisappear();
+    cy.waitUntilSkeletonDisappear();
     cy.getByTestid('search-result-base').should('be.visible');
     cy.getByTestid('search-result-list').should('be.visible');
     cy.getByTestid('search-result-content').should('be.visible');
@@ -361,7 +361,7 @@ context('Tag Oprations', () =>{
     });
 
     cy.visit(`${newPageName}`);
-    cy.waitSkeletonDisappear();
+    cy.waitUntilSkeletonDisappear();
 
     cy.getByTestid('grw-tag-labels').should('be.visible')
     cy.screenshot(`${ssPrefix}4-new-page-name-applied`, {capture: 'viewport'});
