@@ -114,18 +114,6 @@ export const usePageTagsForEditors = (pageId: Nullable<string>): SWRResponse<str
   };
 };
 
-type IUtilsIsEnabledUnsavedWarning = {
-  optimisticMutate(data: boolean, options?: MutatorOptions): Promise<boolean | undefined>,
-};
-
-export const useIsEnabledUnsavedWarning = (): SWRResponseWithUtils<IUtilsIsEnabledUnsavedWarning, boolean, Error> => {
-  const swrResponse = useStaticSWR<boolean, Error>('isEnabledUnsavedWarning');
-
-  // The updateFn should be a promise or asynchronous function to handle the remote mutation
-  // it should return updated data. see: https://swr.vercel.app/docs/mutation#optimistic-updates
-  return withUtils(swrResponse, {
-    optimisticMutate: async(data: boolean, options: MutatorOptions = {}) => {
-      return swrResponse.mutate(async() => data, { ...options, optimisticData: data });
-    },
-  });
+export const useIsEnabledUnsavedWarning = (): SWRResponse<boolean, Error> => {
+  return useStaticSWR<boolean, Error>('isEnabledUnsavedWarning');
 };

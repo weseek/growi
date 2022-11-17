@@ -69,7 +69,7 @@ const PageEditor = React.memo((): JSX.Element => {
   const { data: isTextlintEnabled } = useIsTextlintEnabled();
   const { data: isIndentSizeForced } = useIsIndentSizeForced();
   const { data: indentSize, mutate: mutateCurrentIndentSize } = useCurrentIndentSize();
-  const { mutate: mutateIsEnabledUnsavedWarning, optimisticMutate: optimisticMutateIsEnabledUnsavedWarning } = useIsEnabledUnsavedWarning();
+  const { mutate: mutateIsEnabledUnsavedWarning } = useIsEnabledUnsavedWarning();
   const { data: isUploadableFile } = useIsUploadableFile();
   const { data: isUploadableImage } = useIsUploadableImage();
 
@@ -153,7 +153,7 @@ const PageEditor = React.memo((): JSX.Element => {
     }
 
   // eslint-disable-next-line max-len
-  }, [grantData, isSlackEnabled, currentPathname, slackChannels, pageTags, pageId, currentPagePath, currentRevisionId, mutateCurrentPage, mutateIsEnabledUnsavedWarning]);
+  }, [grantData, isSlackEnabled, currentPathname, slackChannels, pageTags, pageId, currentPagePath, currentRevisionId]);
 
   const saveAndReturnToViewHandler = useCallback(async(opts?: {overwriteScopesOfDescendants: boolean}) => {
     if (editorMode !== EditorMode.Editor) {
@@ -164,11 +164,13 @@ const PageEditor = React.memo((): JSX.Element => {
     if (page == null) {
       return;
     }
-    await optimisticMutateIsEnabledUnsavedWarning(false);
+    // The updateFn should be a promise or asynchronous function to handle the remote mutation
+    // it should return updated data. see: https://swr.vercel.app/docs/mutation#optimistic-updates
+    await mutateIsEnabledUnsavedWarning(async() => false, { optimisticData: false });
     // TODO: fix TAICHI
     await router.push(`/${page._id}`);
     mutateEditorMode(EditorMode.View);
-  }, [editorMode, save, mutateEditorMode]);
+  }, [editorMode, save, mutateIsEnabledUnsavedWarning, router, mutateEditorMode]);
 
   const saveWithShortcut = useCallback(async() => {
     if (editorMode !== EditorMode.Editor) {
