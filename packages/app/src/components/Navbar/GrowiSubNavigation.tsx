@@ -6,7 +6,7 @@ import {
   EditorMode, useEditorMode,
 } from '~/stores/ui';
 
-import { TagLabelsSkelton } from '../Page/TagLabels';
+import { TagLabelsSkeleton } from '../Page/TagLabels';
 import PagePathNav from '../PagePathNav';
 
 import DrawerToggler from './DrawerToggler';
@@ -17,7 +17,7 @@ import styles from './GrowiSubNavigation.module.scss';
 
 const TagLabels = dynamic(() => import('../Page/TagLabels').then(mod => mod.TagLabels), {
   ssr: false,
-  loading: TagLabelsSkelton,
+  loading: TagLabelsSkeleton,
 });
 
 
@@ -71,7 +71,7 @@ export const GrowiSubNavigation = (props: GrowiSubNavigationProps): JSX.Element 
             <div className="grw-taglabels-container">
               { tags != null
                 ? <TagLabels tags={tags} isGuestUser={isGuestUser ?? false} tagsUpdateInvoked={tagsUpdatedHandler} />
-                : <TagLabelsSkelton />
+                : <TagLabelsSkeleton />
               }
             </div>
           ) }

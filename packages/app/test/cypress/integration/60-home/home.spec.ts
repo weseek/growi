@@ -18,7 +18,7 @@ context('Access Home', () => {
     // eslint-disable-next-line cypress/no-unnecessary-waiting
     cy.wait(2000); // wait for calcViewHeight and rendering
 
-    cy.get('.grw-skelton').should('not.exist');
+    cy.waitUntilSkeletonDisappear();
     // for check download toc data
     cy.get('.toc-link').should('be.visible');
 
