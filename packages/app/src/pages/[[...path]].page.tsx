@@ -17,13 +17,13 @@ import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import dynamic from 'next/dynamic';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
-import Script from 'next/script';
 import superjson from 'superjson';
 
 import { Comments } from '~/components/Comments';
 import { PageAlerts } from '~/components/PageAlert/PageAlerts';
 // import { useTranslation } from '~/i18n';
 import { CurrentPageContentFooter } from '~/components/PageContentFooter';
+import { DrawioViewerScript } from '~/components/Script/DrawioViewerScript';
 import { UsersHomePageFooterProps } from '~/components/UsersHomePageFooter';
 import type { CrowiRequest } from '~/interfaces/crowi-request';
 // import { renderScriptTagByName, renderHighlightJsStyleTag } from '~/service/cdn-resources-loader';
@@ -291,7 +291,7 @@ const GrowiPage: NextPage<Props> = (props: Props) => {
         */}
       </Head>
 
-      <Script type="text/javascript" src="https://www.draw.io/js/viewer.min.js" onLoad={() => (window as CustomWindow).GraphViewer.processElements() }></Script>
+      <DrawioViewerScript />
 
       <BasicLayout title={useCustomTitle(props, 'GROWI')} className={classNames.join(' ')} expandContainer={isContainerFluid}>
 

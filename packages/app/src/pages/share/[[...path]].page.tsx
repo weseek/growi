@@ -1,13 +1,12 @@
 import React from 'react';
 
-import { IUser, IUserHasId } from '@growi/core';
+import { IUserHasId } from '@growi/core';
 import {
   NextPage, GetServerSideProps, GetServerSidePropsContext,
 } from 'next';
 import { useTranslation } from 'next-i18next';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import dynamic from 'next/dynamic';
-import Script from 'next/script';
 
 import CountBadge from '~/components/Common/CountBadge';
 import PageListIcon from '~/components/Icons/PageListIcon';
@@ -15,6 +14,7 @@ import { ShareLinkLayout } from '~/components/Layout/ShareLinkLayout';
 import GrowiContextualSubNavigation from '~/components/Navbar/GrowiContextualSubNavigation';
 import { Page } from '~/components/Page';
 import styles from '~/components/Page/DisplaySwitcher.module.scss'; // for PageList toc style
+import { DrawioViewerScript } from '~/components/Script/DrawioViewerScript';
 import TableOfContents from '~/components/TableOfContents';
 import { SupportedAction, SupportedActionType } from '~/interfaces/activity';
 import { CrowiRequest } from '~/interfaces/crowi-request';
@@ -65,7 +65,7 @@ const SharedPage: NextPage<Props> = (props: Props) => {
 
   return (
     <>
-      <Script type="text/javascript" src="https://www.draw.io/js/viewer.min.js"></Script>
+      <DrawioViewerScript />
 
       <ShareLinkLayout title={useCustomTitle(props, 'GROWI')} expandContainer={props.isContainerFluid}>
         <div className="h-100 d-flex flex-column justify-content-between">
