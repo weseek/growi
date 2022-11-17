@@ -27,7 +27,7 @@ type Props = {
   children?: ReactNode,
 }
 
-export const DrawioViewer = (props: Props): JSX.Element => {
+export const DrawioViewer = React.memo((props: Props): JSX.Element => {
   const {
     diagramIndex, bol, eol, children,
   } = props;
@@ -60,22 +60,26 @@ export const DrawioViewer = (props: Props): JSX.Element => {
 
   const renderDrawioWithDebounce = useMemo(() => debounce(200, renderDrawio), [renderDrawio]);
 
+  const mxgraphHtml = useMemo(() => {
+    if (children == null) {
+      return '';
+    }
+
+    const code = children instanceof Array
+      ? children.map(e => e?.toString()).join('')
+      : children.toString();
+
+    const mxgraphData = generateMxgraphData(code, diagramIndex);
+
+    return `<div class="mxgraph" data-mxgraph="${mxgraphData}"></div>`;
+
+  }, [children, diagramIndex]);
+
   useEffect(() => {
-    renderDrawioWithDebounce();
-  }, [renderDrawioWithDebounce]);
-
-
-  if (children == null) {
-    return <></>;
-  }
-
-  const code = children instanceof Array
-    ? children.map(e => e?.toString()).join('')
-    : children.toString();
-
-  const mxgraphData = generateMxgraphData(code, diagramIndex);
-
-  const mxgraphHtml = `<div class="mxgraph" data-mxgraph="${mxgraphData}"></div>`;
+    if (mxgraphHtml.length > 0) {
+      renderDrawioWithDebounce();
+    }
+  }, [mxgraphHtml.length, renderDrawioWithDebounce]);
 
   return (
     <div
@@ -89,4 +93,5 @@ export const DrawioViewer = (props: Props): JSX.Element => {
       <div dangerouslySetInnerHTML={{ __html: mxgraphHtml }} />
     </div>
   );
-};
+});
+DrawioViewer.displayName = 'DrawioViewer';
