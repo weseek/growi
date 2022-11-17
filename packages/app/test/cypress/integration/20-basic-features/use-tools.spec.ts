@@ -335,12 +335,14 @@ context('Tag Oprations', () =>{
         if($row.find('a').text() === oldPageName){
           cy.wrap($row).within(() => {
             cy.getByTestid('open-page-item-control-btn').first().click();
-            cy.getByTestid('page-item-control-menu').should('have.class', 'show').first().then(($el) => {
+            cy.getByTestid('page-item-control-menu').should('have.class', 'show').then(() => {
               // empty sentence in page list empty: https://github.com/weseek/growi/pull/6880
               cy.getByTestid('revision-short-body-in-page-list-item-L').invoke('text', '');
-              cy.wrap($el).within(()=>{
-                cy.screenshot(`${ssPrefix}2-open-page-item-control-menu`);
-              })
+            });
+
+            cy.getByTestid('page-item-control-menu').within(()=>{
+              cy.getByTestid('open-page-delete-modal-btn');
+              cy.screenshot(`${ssPrefix}2-open-page-item-control-menu`);
             })
           });
         }
