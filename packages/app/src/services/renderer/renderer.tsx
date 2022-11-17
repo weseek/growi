@@ -321,7 +321,7 @@ export const generateViewOptions = (
   remarkPlugins.push(
     math,
     [plantuml.remarkPlugin, { baseUrl: config.plantumlUri }],
-    [drawioPlugin.remarkPlugin, { drawioEmbedUri: config.drawioEmbedUri }],
+    drawioPlugin.remarkPlugin,
     xsvToTable.remarkPlugin,
     lsxGrowiPlugin.remarkPlugin,
   );
@@ -401,7 +401,7 @@ export const generateSimpleViewOptions = (config: RendererConfig, pagePath: stri
   remarkPlugins.push(
     math,
     [plantuml.remarkPlugin, { baseUrl: config.plantumlUri }],
-    [drawioPlugin.remarkPlugin, { drawioEmbedUri: config.drawioEmbedUri }],
+    drawioPlugin.remarkPlugin,
     xsvToTable.remarkPlugin,
     lsxGrowiPlugin.remarkPlugin,
   );
@@ -440,7 +440,7 @@ export const generatePreviewOptions = (config: RendererConfig, pagePath: string)
   remarkPlugins.push(
     math,
     [plantuml.remarkPlugin, { baseUrl: config.plantumlUri }],
-    [drawioPlugin.remarkPlugin, { drawioEmbedUri: config.drawioEmbedUri }],
+    drawioPlugin.remarkPlugin,
     xsvToTable.remarkPlugin,
     lsxGrowiPlugin.remarkPlugin,
   );

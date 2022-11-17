@@ -20,7 +20,6 @@ export const DrawioViewer = (props: Props): JSX.Element => {
   const {
     diagramIndex, bol, eol, children,
   } = props;
-  const drawioEmbedUri = props.drawioEmbedUri ?? 'https://embed.diagrams.net/';
 
   const drawioContainerRef = useRef<HTMLDivElement>(null);
 
