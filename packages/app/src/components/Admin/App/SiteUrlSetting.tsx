@@ -24,7 +24,7 @@ const SiteUrlSetting = (props: Props) => {
   const submitHandler = useCallback(async() => {
     try {
       await adminAppContainer.updateSiteUrlSettingHandler();
-      toastSuccess(t('toaster.update_successed', { target: t('site_url.desc') }));
+      toastSuccess(t('toaster.update_successed', { target: t('site_url.title') }));
     }
     catch (err) {
       toastError(err);
