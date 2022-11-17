@@ -116,7 +116,7 @@ const PageEditor = React.memo((): JSX.Element => {
   }, [setMarkdownWithDebounce]);
 
   // return true if the save succeeds, otherwise false.
-  const save = useCallback(async(opts?: {overwriteScopesOfDescendants: boolean}): Promise<boolean> => {
+  const save = useCallback(async(opts?: {overwriteScopesOfDescendants: boolean}, successHandler?: () => void): Promise<boolean> => {
     if (grantData == null || isSlackEnabled == null || currentPathname == null) {
       logger.error('Some materials to save are invalid', { grantData, isSlackEnabled, currentPathname });
       throw new Error('Some materials to save are invalid');
@@ -134,12 +134,16 @@ const PageEditor = React.memo((): JSX.Element => {
       await saveOrUpdate(optionsToSave, { pageId, path: currentPagePath || currentPathname, revisionId: editingRevisionId }, editingMarkdown);
       await mutateCurrentPage();
       mutateIsEnabledUnsavedWarning(false);
+      if (successHandler != null) {
+        successHandler();
+      }
       return true;
     }
     catch (error) {
       logger.error('failed to save', error);
       toastError(error);
       if (error.code === 'conflict') {
+        await mutateCurrentPage();
         // pageContainer.setState({
         //   remoteRevisionId: error.data.revisionId,
         //   remoteRevisionBody: error.data.revisionBody,
@@ -158,8 +162,8 @@ const PageEditor = React.memo((): JSX.Element => {
       return;
     }
 
-    await save(opts);
-    mutateEditorMode(EditorMode.View);
+    await save(opts, () => { mutateEditorMode(EditorMode.View) });
+    // mutateEditorMode(EditorMode.View);
   }, [editorMode, save, mutateEditorMode]);
 
   const saveWithShortcut = useCallback(async() => {
