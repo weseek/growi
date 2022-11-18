@@ -136,11 +136,12 @@ export function attachTitleHeader(path) {
 
 /**
  * If the pagePath is top page path, eliminate the pageId from the url path.
+ *
  * @param {string} path
  * @param {string} id
  * @returns {string}
  * @memberof pathUtils
  */
-export const returnPathForURL = (path, id) => {
+export function returnPathForURL(path, id) {
   return path === '/' ? path : addHeadingSlash(id);
-};
+}
