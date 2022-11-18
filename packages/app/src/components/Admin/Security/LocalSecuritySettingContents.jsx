@@ -100,7 +100,7 @@ class LocalSecuritySettingContents extends React.Component {
 
             <div className="row">
               <div className="col-12 col-md-3 text-left text-md-right py-2">
-                <strong>{t('Register limitation')}</strong>
+                <strong>{t('security_settings.Register limitation')}</strong>
               </div>
               <div className="col-12 col-md-6">
                 <div className="dropdown">

@@ -165,7 +165,7 @@ context('Access to sidebar', () => {
   //   });
   //   cy.screenshot(`${ssPrefix}access-to-drafts-page`);
   // });
-  it('Successfully access to Growi Docs page', () => {
+  it('Successfully access to GROWI Docs page', () => {
     cy.visit('/');
     cy.get('.grw-sidebar-nav-secondary-container').within(() => {
       cy.get('a[href*="https://docs.growi.org"]').then(($a) => {

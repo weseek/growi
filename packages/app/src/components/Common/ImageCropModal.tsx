@@ -158,7 +158,7 @@ const ImageCropModal: FC<Props> = (props: Props) => {
       </ModalBody>
       <ModalFooter>
         <button type="button" className="btn btn-outline-danger rounded-pill mr-auto" disabled={!isCropImage} onClick={reset}>
-          {t('crop_image_modal.reset')}
+          {t('commons:Reset')}
         </button>
         { !showCropOption && (
           <div className="mr-auto">

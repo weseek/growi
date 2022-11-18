@@ -1,4 +1,9 @@
 {
+  "Show": "Show",
+  "Hide": "Hide",
+  "Add": "Add",
+  "Reset": "Reset",
+
   "meta": {
     "display_name": "English"
   },
@@ -55,7 +60,6 @@
     "image_crop": "Image Crop",
     "crop": "Crop",
     "save": "Save",
-    "reset": "Reset",
     "cancel": "Cancel"
   },
 
@@ -63,7 +67,6 @@
     "title": "Edit Table",
     "data_import": "Data Import",
     "save": "Save",
-    "reset": "Reset",
     "cancel": "Cancel",
     "done": "Done",
     "data_import_form": {
