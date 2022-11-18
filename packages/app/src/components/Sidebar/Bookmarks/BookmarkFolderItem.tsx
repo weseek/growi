@@ -30,12 +30,12 @@ const BookmarkFolderItem: FC<BookmarkFolderItemProps> = (props: BookmarkFolderIt
     name, _id: folderId, children, parent,
   } = bookmarkFolder;
   const [currentChildren, setCurrentChildren] = useState<BookmarkFolderItems[]>();
-  const [isRenameInputShown, setIsRenameInputShown] = useState<boolean>(false);
   const [targetFolder, setTargetFolder] = useState<string | null>(folderId);
   const [isOpen, setIsOpen] = useState(_isOpen);
   const { data: childBookmarkFolderData, mutate: mutateChildBookmarkData } = useSWRxBookamrkFolderAndChild(targetFolder);
   const { mutate: mutateParentBookmarkFolder } = useSWRxBookamrkFolderAndChild(parent);
   const [isRenameAction, setIsRenameAction] = useState<boolean>(false);
+  const [isCreateAction, setIsCreateAction] = useState<boolean>(false);
   const [isDeleteFolderModalShown, setIsDeleteFolderModalShown] = useState<boolean>(false);
 
   const childCount = useCallback((): number => {
@@ -46,12 +46,11 @@ const BookmarkFolderItem: FC<BookmarkFolderItemProps> = (props: BookmarkFolderIt
   }, [children.length, currentChildren]);
 
   useEffect(() => {
-    if (isOpen) {
+    if (childBookmarkFolderData != null) {
       mutateChildBookmarkData();
       setCurrentChildren(childBookmarkFolderData);
     }
-  }, [childBookmarkFolderData, isOpen, mutateChildBookmarkData]);
-
+  }, [childBookmarkFolderData, mutateChildBookmarkData]);
 
   const hasChildren = useCallback((): boolean => {
     if (currentChildren != null && currentChildren.length > children.length) {
@@ -69,35 +68,40 @@ const BookmarkFolderItem: FC<BookmarkFolderItemProps> = (props: BookmarkFolderIt
     mutateParentBookmarkFolder();
   }, [mutateParentBookmarkFolder]);
 
-  const onPressEnterHandler = useCallback(async(folderName: string) => {
+  // Rename  for bookmark folder handler
+  const onPressEnterHandlerForRename = useCallback(async(folderName: string) => {
     try {
-      if (isRenameAction) {
-        // Rename bookmark folder
-        await apiv3Put('/bookmark-folder', { bookmarkFolderId: folderId, name: folderName, parent });
-        loadParent();
-        setIsRenameAction(false);
-        toastSuccess(t('toaster.update_successed', { target: t('bookmark_folder.bookmark_folder') }));
-      }
-      else {
-        // Create new bookmark folder / subfolder
-        await apiv3Post('/bookmark-folder', { name: folderName, parent: targetFolder });
-        setIsOpen(true);
-        setIsRenameInputShown(false);
-        mutateChildBookmarkData();
-        toastSuccess(t('toaster.create_succeeded', { target: t('bookmark_folder.bookmark_folder') }));
-      }
+      await apiv3Put('/bookmark-folder', { bookmarkFolderId: folderId, name: folderName, parent });
+      loadParent();
+      setIsRenameAction(false);
+      toastSuccess(t('toaster.update_successed', { target: t('bookmark_folder.bookmark_folder') }));
+    }
+    catch (err) {
+      toastError(err);
+    }
+  }, [folderId, loadParent, parent, t]);
+
+  // Create new folder / subfolder handler
+  const onPressEnterHandlerForCreate = useCallback(async(folderName: string) => {
+    try {
+      await apiv3Post('/bookmark-folder', { name: folderName, parent: targetFolder });
+      setIsOpen(true);
+      setIsCreateAction(false);
+      mutateChildBookmarkData();
+      toastSuccess(t('toaster.create_succeeded', { target: t('bookmark_folder.bookmark_folder') }));
+
     }
     catch (err) {
       toastError(err);
     }
 
-  }, [folderId, isRenameAction, loadParent, mutateChildBookmarkData, parent, t, targetFolder]);
+  }, [mutateChildBookmarkData, t, targetFolder]);
 
   const onClickPlusButton = useCallback(async() => {
     if (!isOpen && hasChildren()) {
       setIsOpen(true);
     }
-    setIsRenameInputShown(true);
+    setIsCreateAction(true);
   }, [hasChildren, isOpen]);
 
   const RenderChildFolder = () => {
@@ -131,7 +135,6 @@ const BookmarkFolderItem: FC<BookmarkFolderItemProps> = (props: BookmarkFolderIt
       setIsDeleteFolderModalShown(false);
       loadParent();
       toastSuccess(t('toaster.delete_succeeded', { target: t('bookmark_folder.bookmark_folder') }));
-
     }
     catch (err) {
       toastError(err);
@@ -163,7 +166,8 @@ const BookmarkFolderItem: FC<BookmarkFolderItemProps> = (props: BookmarkFolderIt
         { isRenameAction ? (
           <BookmarkFolderNameInput
             onClickOutside={() => setIsRenameAction(false)}
-            onPressEnter={onPressEnterHandler} value={name}
+            onPressEnter={onPressEnterHandlerForRename}
+            value={name}
           />
         ) : (
           <>
@@ -199,11 +203,11 @@ const BookmarkFolderItem: FC<BookmarkFolderItemProps> = (props: BookmarkFolderIt
         </div>
 
       </li>
-      {isRenameInputShown && (
+      {isCreateAction && (
         <div className="flex-fill">
           <BookmarkFolderNameInput
-            onClickOutside={() => setIsRenameInputShown(false)}
-            onPressEnter={onPressEnterHandler}
+            onClickOutside={() => setIsCreateAction(false)}
+            onPressEnter={onPressEnterHandlerForCreate}
           />
         </div>
       )}
