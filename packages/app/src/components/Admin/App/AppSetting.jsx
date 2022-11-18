@@ -120,7 +120,7 @@ const AppSetting = (props) => {
               checked={adminAppContainer.state.isEmailPublishedForNewUser === true}
               onChange={() => { adminAppContainer.changeIsEmailPublishedForNewUserShow(true) }}
             />
-            <label className="custom-control-label" htmlFor="radio-email-show">{t('Show')}</label>
+            <label className="custom-control-label" htmlFor="radio-email-show">{t('commons:Show')}</label>
           </div>
 
           <div className="custom-control custom-radio custom-control-inline">
@@ -132,7 +132,7 @@ const AppSetting = (props) => {
               checked={adminAppContainer.state.isEmailPublishedForNewUser === false}
               onChange={() => { adminAppContainer.changeIsEmailPublishedForNewUserShow(false) }}
             />
-            <label className="custom-control-label" htmlFor="radio-email-hide">{t('Hide')}</label>
+            <label className="custom-control-label" htmlFor="radio-email-hide">{t('commons:Hide')}</label>
           </div>
 
         </div>

@@ -11,7 +11,7 @@ $grw-tag-label-font-size: 12px;
 }
 
 
-.grw-tag-labels-skelton :global {
+.grw-tag-labels-skeleton :global {
   width: 137px;
   height: calc(#{$grw-tag-label-font-size} + #{bs.$badge-padding-y} * 2);
   font-size: $grw-tag-label-font-size; // set font-size to use the same em value in bs.$badge-padding-y(https://getbootstrap.jp/docs/5.0/components/badge/#variables)
