@@ -15,8 +15,8 @@ import { IRevisionsForPagination } from '~/interfaces/revision';
 
 import { IPageTagsInfo } from '../interfaces/tag';
 
-import { useCurrentPageId, useCurrentPathname } from './context';
-
+import { useCurrentPageId, useCurrentPathname, useCurrentRevisionId } from './context';
+import { ITermNumberManagerUtil, useStaticSWR, useTermNumberManager } from './use-static-swr';
 
 const { isPermalink: _isPermalink } = pagePathUtils;
 
@@ -24,11 +24,12 @@ const { isPermalink: _isPermalink } = pagePathUtils;
 export const useSWRxPage = (
     pageId?: string|null,
     shareLinkId?: string,
+    revisionId?: string,
     initialData?: IPagePopulatedToShowRevision|null,
 ): SWRResponse<IPagePopulatedToShowRevision|null, Error> => {
   return useSWR<IPagePopulatedToShowRevision|null, Error>(
-    pageId != null ? ['/page', pageId, shareLinkId] : null,
-    (endpoint, pageId, shareLinkId) => apiv3Get<{ page: IPagePopulatedToShowRevision }>(endpoint, { pageId, shareLinkId })
+    pageId != null ? ['/page', pageId, shareLinkId, revisionId] : null,
+    (endpoint, pageId, shareLinkId, revisionId) => apiv3Get<{ page: IPagePopulatedToShowRevision }>(endpoint, { pageId, shareLinkId, revisionId })
       .then(result => result.data.page)
       .catch((errs) => {
         if (!Array.isArray(errs)) { throw Error('error is not array') }
@@ -54,8 +55,9 @@ export const useSWRxCurrentPage = (
     shareLinkId?: string, initialData?: IPagePopulatedToShowRevision|null,
 ): SWRResponse<IPagePopulatedToShowRevision|null, Error> => {
   const { data: currentPageId } = useCurrentPageId();
+  const { data: currentRevisionId } = useCurrentRevisionId();
 
-  const swrResult = useSWRxPage(currentPageId, shareLinkId, initialData);
+  const swrResult = useSWRxPage(currentPageId, shareLinkId, currentRevisionId, initialData);
 
   return swrResult;
 };
@@ -80,17 +82,23 @@ export const useSWRxTagsInfo = (pageId: Nullable<string>): SWRResponse<IPageTags
   return useSWRImmutable(key, fetcher);
 };
 
+export const usePageInfoTermManager = (isDisabled?: boolean) : SWRResponse<number, Error> & ITermNumberManagerUtil => {
+  return useTermNumberManager(isDisabled === true ? null : 'pageInfoTermNumber');
+};
+
 export const useSWRxPageInfo = (
     pageId: string | null | undefined,
     shareLinkId?: string | null,
     initialData?: IPageInfoForEntity,
 ): SWRResponse<IPageInfo | IPageInfoForOperation, Error> => {
 
+  const { data: termNumber } = usePageInfoTermManager();
+
   // assign null if shareLinkId is undefined in order to identify SWR key only by pageId
   const fixedShareLinkId = shareLinkId ?? null;
 
   const swrResult = useSWRImmutable<IPageInfo | IPageInfoForOperation, Error>(
-    pageId != null ? ['/page/info', pageId, fixedShareLinkId] : null,
+    pageId != null && termNumber != null ? ['/page/info', pageId, fixedShareLinkId, termNumber] : null,
     (endpoint, pageId, shareLinkId) => apiv3Get(endpoint, { pageId, shareLinkId }).then(response => response.data),
     { fallbackData: initialData },
   );

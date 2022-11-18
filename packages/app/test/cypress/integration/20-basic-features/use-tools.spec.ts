@@ -191,6 +191,7 @@ context('Page Accessories Modal', () => {
      cy.visit('/Sandbox/Bootstrap4', {  });
      cy.get('#grw-subnav-container').within(() => {
       cy.getByTestid('open-page-item-control-btn').within(() => {
+        cy.getByTestid('open-page-item-control-btn').should('be.visible');
         cy.get('button.btn-page-item-control').click({force: true});
       });
        cy.getByTestid('open-page-accessories-modal-btn-with-attachment-data-tab').click();
@@ -206,6 +207,7 @@ context('Page Accessories Modal', () => {
       cy.getByTestid('open-page-item-control-btn').within(() => {
         cy.get('button.btn-page-item-control').click({force: true});
       });
+      cy.getByTestid('open-page-accessories-modal-btn-with-share-link-management-data-tab').should('be.visible');
       cy.getByTestid('open-page-accessories-modal-btn-with-share-link-management-data-tab').click();
    });
 
@@ -229,9 +231,10 @@ context('Tag Oprations', () =>{
   it('Successfully add new tag', () => {
     const ssPrefix = 'tag-operations-add-new-tag-'
     const tag = 'we';
-    cy.visit('/');
+    cy.visit('/Sandbox');
+    cy.waitUntilSkeletonDisappear();
 
-    cy.get('#edit-tags-btn-wrapper-for-tooltip > a').click({force: true});
+    cy.get('#edit-tags-btn-wrapper-for-tooltip > a').should('be.visible').click();
     cy.get('#edit-tag-modal').should('be.visible').screenshot(`${ssPrefix}1-edit-tag-input`);
 
     cy.get('#edit-tag-modal').within(() => {
@@ -264,8 +267,16 @@ context('Tag Oprations', () =>{
     const ssPrefix = 'tag-operations-page-duplicate-';
     const tag = 'we';
     const newPageName = 'our';
-    cy.visit('/');
-    cy.get('.grw-taglabels-container > .grw-tag-labels > a', { timeout: 10000 }).contains(tag).click();
+    cy.visit('/Sandbox');
+    cy.waitUntilSkeletonDisappear();
+
+    cy.get('.grw-taglabels-container').within(()=>{
+      cy.get('.grw-tag-labels').within(()=>{
+        cy.get('a').then(($el)=>{
+          cy.wrap($el).contains(tag).click();
+        });
+      });
+    });
     cy.getByTestid('search-result-base').should('be.visible');
     cy.getByTestid('search-result-list').should('be.visible');
     cy.getByTestid('search-result-content').should('be.visible');
@@ -273,34 +284,44 @@ context('Tag Oprations', () =>{
     // force to add 'active' to pass VRT: https://github.com/weseek/growi/pull/6603
     cy.getByTestid('page-list-item-L').first().invoke('addClass', 'active');
     cy.screenshot(`${ssPrefix}1-click-tag-name`, {capture: 'viewport'});
+    cy.getByTestid('search-result-list').should('be.visible').then(($el)=>{
+      cy.wrap($el).within(()=>{
+        cy.getByTestid('open-page-item-control-btn').first().click();
+      });
 
-    cy.getByTestid('open-page-item-control-btn').first().click({force: true});
-    // eslint-disable-next-line cypress/no-unnecessary-waiting
-    cy.wait(1500); // for wait rendering pagelist info
-    cy.screenshot(`${ssPrefix}2-click-three-dots-menu`, {capture: 'viewport'});
+      // eslint-disable-next-line cypress/no-unnecessary-waiting
+      cy.wait(1500); // for wait rendering pagelist info
+      cy.screenshot(`${ssPrefix}2-click-three-dots-menu`, {capture: 'viewport'});
 
-    cy.getByTestid('open-page-duplicate-modal-btn').first().click({force: true});
-    cy.getByTestid('page-duplicate-modal').should('be.visible');
-    cy.getByTestid('page-duplicate-modal').within(() => {
-      cy.get('.rbt-input-main').type(newPageName, {force: true});
+      cy.wrap($el).within(()=>{
+        cy.getByTestid('open-page-item-control-btn').first().within(()=>{
+          cy.getByTestid('open-page-duplicate-modal-btn').click();
+        })
+      });
+    })
+
+    cy.getByTestid('page-duplicate-modal').should('be.visible').within(() => {
+      cy.get('.rbt-input-main').type(`-${newPageName}`, {force: true});
     }).screenshot(`${ssPrefix}3-duplicate-page`, {capture: 'viewport'});
 
     cy.getByTestid('page-duplicate-modal').within(() => {
       cy.get('.modal-footer > button.btn').click();
     });
-    cy.visit(`/${newPageName}`);
-    // cy.getByTestid('wiki').should('exist');
+    cy.visit(`Sandbox-${newPageName}`);
+    cy.waitUntilSkeletonDisappear();
     cy.screenshot(`${ssPrefix}4-duplicated-page`, {capture: 'viewport'});
   });
 
   it('Successfully rename page from generated tag', () => {
     const ssPrefix = 'tag-operations-page-rename-';
     const tag = 'we';
-    const oldPageName = '/our';
-    const newPageName = '/ourus';
+    const oldPageName = '/Sandbox-our';
+    const newPageName = '/Sandbox-us';
 
-    cy.visit('/');
-    cy.get('.grw-taglabels-container > .grw-tag-labels > a', { timeout: 10000 }).contains(tag).click();
+    cy.visit('/Sandbox-our');
+    cy.waitUntilSkeletonDisappear();
+    cy.get('.grw-tag-label').should('be.visible').contains(tag).click();
+    cy.waitUntilSkeletonDisappear();
     cy.getByTestid('search-result-base').should('be.visible');
     cy.getByTestid('search-result-list').should('be.visible');
     cy.getByTestid('search-result-content').should('be.visible');
@@ -313,9 +334,13 @@ context('Tag Oprations', () =>{
         if($row.find('a').text() === oldPageName){
           cy.wrap($row).within(() => {
             cy.getByTestid('open-page-item-control-btn').first().click();
-            cy.getByTestid('page-item-control-menu').should('have.class', 'show').first().within(() => {
+            cy.getByTestid('page-item-control-menu').should('have.class', 'show').then(() => {
               // empty sentence in page list empty: https://github.com/weseek/growi/pull/6880
               cy.getByTestid('revision-short-body-in-page-list-item-L').invoke('text', '');
+            });
+
+            cy.getByTestid('page-item-control-menu').within(()=>{
+              cy.getByTestid('open-page-delete-modal-btn');
               cy.screenshot(`${ssPrefix}2-open-page-item-control-menu`);
             })
           });
@@ -341,8 +366,10 @@ context('Tag Oprations', () =>{
       cy.get('.modal-footer > button').click();
     });
 
-    cy.visit(`/${newPageName}`);
-    cy.getByTestid('grw-tag-labels').should('be.visible');
+    cy.visit(`${newPageName}`);
+    cy.waitUntilSkeletonDisappear();
+
+    cy.getByTestid('grw-tag-labels').should('be.visible')
     cy.screenshot(`${ssPrefix}4-new-page-name-applied`, {capture: 'viewport'});
   });
 

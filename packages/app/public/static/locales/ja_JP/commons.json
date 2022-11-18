@@ -1,4 +1,9 @@
 {
+  "Show": "公開",
+  "Hide": "非公開",
+  "Add": "追加",
+  "Reset": "リセット",
+
   "meta": {
     "display_name": "日本語"
   },
@@ -55,8 +60,23 @@
     "image_crop": "画像の切り抜き",
     "crop": "トリミング",
     "save": "保存",
-    "reset": "リセット",
     "cancel": "キャンセル"
+  },
+
+  "handsontable_modal": {
+    "title": "テーブル編集",
+    "data_import": "データインポート",
+    "save": "保存",
+    "cancel": "キャンセル",
+    "done": "完了",
+    "data_import_form": {
+      "select_data_format": "データフォーマット",
+      "import_data": "インポートデータ",
+      "paste_table_data": "テーブルデータを貼り付け",
+      "parse_error": "パーザーエラー",
+      "cancel": "キャンセル",
+      "import": "インポート"
+    }
   },
 
   "not_found_page": {

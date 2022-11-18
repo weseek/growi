@@ -38,7 +38,6 @@ const ForbiddenPage = dynamic(() => import('~/components/ForbiddenPage'), { ssr:
 type Props = CommonProps & {
   shareLink?: IShareLinkHasId,
   isExpired: boolean,
-  currentUser: IUser,
   disableLinkSharing: boolean,
   isSearchServiceConfigured: boolean,
   isSearchServiceReachable: boolean,
@@ -212,17 +211,13 @@ async function addActivity(context: GetServerSidePropsContext, action: Supported
 
 export const getServerSideProps: GetServerSideProps = async(context: GetServerSidePropsContext) => {
   const req = context.req as CrowiRequest<IUserHasId & any>;
-  const { user, crowi, params } = req;
+  const { crowi, params } = req;
   const result = await getServerSideCommonProps(context);
 
   if (!('props' in result)) {
     throw new Error('invalid getSSP result');
   }
   const props: Props = result.props as Props;
-
-  if (user != null) {
-    props.currentUser = user.toObject();
-  }
 
   try {
     const ShareLinkModel = crowi.model('ShareLink');

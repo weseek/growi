@@ -6,8 +6,10 @@ import { useTranslation } from 'next-i18next';
 import dynamic from 'next/dynamic';
 import { Container, Provider } from 'unstated';
 
+
 import AdminMarkDownContainer from '~/client/services/AdminMarkDownContainer';
 import { CommonProps, useCustomTitle } from '~/pages/utils/commons';
+import { useCurrentUser } from '~/stores/context';
 
 import { retrieveServerSideProps } from '../../utils/admin-page-util';
 
@@ -17,6 +19,7 @@ const MarkDownSettingContents = dynamic(() => import('~/components/Admin/Markdow
 
 const AdminMarkdownPage: NextPage<CommonProps> = (props) => {
   const { t } = useTranslation('admin');
+  useCurrentUser(props.currentUser ?? null);
 
   const title = t('markdown_settings.markdown_settings');
   const injectableContainers: Container<any>[] = [];

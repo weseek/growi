@@ -182,7 +182,7 @@ const UserManagement = (props: UserManagementProps) => {
               onClick={resetButtonClickHandler}
             >
               <span className="icon-refresh mr-1"></span>
-              Reset
+              {t('commons:Reset')}
             </button>
           </div>
         </div>

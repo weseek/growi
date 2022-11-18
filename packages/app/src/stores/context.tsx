@@ -48,8 +48,8 @@ export const useCurrentUser = (initialData?: Nullable<IUser>): SWRResponse<Nulla
   return useContextSWR<Nullable<IUser>, Error>('currentUser', initialData);
 };
 
-export const useRevisionId = (initialData?: Nullable<any>): SWRResponse<Nullable<any>, Error> => {
-  return useContextSWR<Nullable<any>, Error>('revisionId', initialData);
+export const useCurrentRevisionId = (initialData?: string): SWRResponse<string, Error> => {
+  return useContextSWR('currentRevisionId', initialData);
 };
 
 export const useCurrentPathname = (initialData?: string): SWRResponse<string, Error> => {
@@ -72,8 +72,8 @@ export const useIsNotFound = (initialData?: boolean): SWRResponse<boolean, Error
   return useContextSWR<boolean, Error>('isNotFound', initialData, { fallbackData: false });
 };
 
-export const useTemplateTagData = (initialData?: Nullable<string>): SWRResponse<Nullable<string>, Error> => {
-  return useContextSWR<Nullable<string>, Error>('templateTagData', initialData);
+export const useTemplateTagData = (initialData?: string[]): SWRResponse<string[], Error> => {
+  return useContextSWR<string[], Error>('templateTagData', initialData);
 };
 
 export const useIsSharedUser = (initialData?: boolean): SWRResponse<boolean, Error> => {
@@ -100,7 +100,7 @@ export const useHackmdUri = (initialData?: Nullable<string>): SWRResponse<Nullab
   return useContextSWR<Nullable<string>, Error>('hackmdUri', initialData);
 };
 
-export const useIsSearchPage = (initialData?: Nullable<any>) : SWRResponse<Nullable<any>, Error> => {
+export const useIsSearchPage = (initialData?: Nullable<boolean>) : SWRResponse<Nullable<boolean>, Error> => {
   return useContextSWR<Nullable<any>, Error>('isSearchPage', initialData);
 };
 
@@ -125,7 +125,7 @@ export const useIsMailerSetup = (initialData?: boolean): SWRResponse<boolean, an
 };
 
 export const useIsSearchScopeChildrenAsDefault = (initialData?: boolean) : SWRResponse<boolean, Error> => {
-  return useContextSWR<boolean, Error>('isSearchScopeChildrenAsDefault', initialData);
+  return useContextSWR<boolean, Error>('isSearchScopeChildrenAsDefault', initialData, { fallbackData: false });
 };
 
 export const useIsSlackConfigured = (initialData?: boolean) : SWRResponse<boolean, Error> => {
