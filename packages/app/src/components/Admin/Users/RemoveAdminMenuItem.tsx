@@ -58,6 +58,7 @@ const RemoveAdminMenuItem = (props: Props): JSX.Element => {
 /**
 * Wrapper component for using unstated
 */
-const RemoveAdminMenuItemWrapper = withUnstatedContainers(RemoveAdminMenuItem, [AdminUsersContainer]);
+// eslint-disable-next-line max-len
+const RemoveAdminMenuItemWrapper: React.ForwardRefExoticComponent<Pick<any, string | number | symbol> & React.RefAttributes<any>> = withUnstatedContainers(RemoveAdminMenuItem, [AdminUsersContainer]);
 
 export default RemoveAdminMenuItemWrapper;
