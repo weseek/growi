@@ -80,13 +80,12 @@ context('Modal for page operation', () => {
 
   it('Trying to create template page under the root page fail', () => {
     cy.visit('/');
-    cy.getByTestid('newPageBtn').click();
 
     cy.waitUntilSkeletonDisappear();
 
+    cy.getByTestid('newPageBtn').click();
+
     cy.getByTestid('page-create-modal').should('be.visible').within(() => {
-      // eslint-disable-next-line cypress/no-unnecessary-waiting
-      cy.wait(2000);
 
       cy.getByTestid('grw-page-create-modal-path-name').should('have.text', '/');
 
@@ -199,6 +198,7 @@ context('Page Accessories Modal', () => {
      cy.visit('/Sandbox/Bootstrap4', {  });
      cy.get('#grw-subnav-container').within(() => {
       cy.getByTestid('open-page-item-control-btn').within(() => {
+        cy.getByTestid('open-page-item-control-btn').should('be.visible');
         cy.get('button.btn-page-item-control').click({force: true});
       });
        cy.getByTestid('open-page-accessories-modal-btn-with-attachment-data-tab').click();
