@@ -85,6 +85,9 @@ context('Modal for page operation', () => {
     cy.waitUntilSkeletonDisappear();
 
     cy.getByTestid('page-create-modal').should('be.visible').within(() => {
+      // eslint-disable-next-line cypress/no-unnecessary-waiting
+      cy.wait(2000);
+
       cy.getByTestid('grw-page-create-modal-path-name').should('have.text', '/');
 
       cy.get('#template-type').click();
