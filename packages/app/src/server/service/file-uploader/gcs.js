@@ -186,12 +186,19 @@ module.exports = function(crowi) {
 
   /**
    * List files in storage
-   * TODO: implement
    */
   lib.listFiles = async() => {
-    return [
-      { filePath: '', fileSize: '' },
-    ];
+    if (!this.getIsReadable()) {
+      throw new Error('GCS is not configured.');
+    }
+
+    const gcs = getGcsInstance();
+    const bucket = gcs.bucket(getGcsBucket());
+    const [files] = await bucket.getFiles();
+
+    return files.map(({ name, metadata: { size } }) => {
+      return { name, size };
+    });
   };
 
   return lib;

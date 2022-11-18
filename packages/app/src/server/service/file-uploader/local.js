@@ -3,6 +3,7 @@ import loggerFactory from '~/utils/logger';
 const logger = loggerFactory('growi:service:fileUploaderLocal');
 
 const fs = require('fs');
+const fsPromises = require('fs/promises');
 const path = require('path');
 
 const mkdir = require('mkdirp');
@@ -27,6 +28,16 @@ module.exports = function(crowi) {
     }
 
     return filePath;
+  }
+
+  async function readdirRecursively(dirPath) {
+    const directories = await fsPromises.readdir(dirPath, { withFileTypes: true });
+    const files = await Promise.all(directories.map((directory) => {
+      const childDirPathOrFilePath = path.resolve(dirPath, directory.name);
+      return directory.isDirectory() ? readdirRecursively(childDirPathOrFilePath) : childDirPathOrFilePath;
+    }));
+
+    return files.flat();
   }
 
   lib.isValidUploadSettings = function() {
@@ -129,12 +140,18 @@ module.exports = function(crowi) {
 
   /**
    * List files in storage
-   * TODO: implement
    */
   lib.listFiles = async() => {
-    return [
-      { filePath: '', fileSize: '' },
-    ];
+    await mkdir(basePath);
+    const filePaths = await readdirRecursively(basePath);
+    return Promise.all(
+      filePaths.map(
+        file => fsPromises.stat(file).then(({ size }) => ({
+          name: path.relative(basePath, file),
+          size,
+        })),
+      ),
+    );
   };
 
   return lib;

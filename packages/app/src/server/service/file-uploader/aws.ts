@@ -6,6 +6,7 @@ import {
   PutObjectCommand,
   DeleteObjectCommand,
   GetObjectCommandOutput,
+  ListObjectsCommand,
 } from '@aws-sdk/client-s3';
 import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
 import urljoin from 'url-join';
@@ -232,12 +233,22 @@ module.exports = (crowi) => {
 
   /**
    * List files in storage
-   * TODO: implement
    */
   lib.listFiles = async() => {
-    return [
-      { filePath: '', fileSize: '' },
-    ];
+    if (!lib.getIsReadable()) {
+      throw new Error('AWS is not configured.');
+    }
+
+    const s3 = S3Factory();
+    const awsConfig = getAwsConfig();
+    const params = {
+      Bucket: awsConfig.bucket,
+    };
+    const { Contents } = await s3.send(new ListObjectsCommand(params));
+
+    return Contents?.map(({ Key: name, Size: size }) => ({
+      name, size,
+    })) ?? [];
   };
 
   return lib;
