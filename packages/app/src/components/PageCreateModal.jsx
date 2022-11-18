@@ -267,7 +267,7 @@ const PageCreateModal = () => {
 
           <h3 className="grw-modal-head pb-2">
             {t('template.modal_label.Create template under')}<br />
-            <code className="h6">{pathname}</code>
+            <code className="h6" data-testid="grw-page-create-modal-path-name">{pathname}</code>
           </h3>
 
           <div className="d-sm-flex align-items-center justify-items-between">
