@@ -147,9 +147,9 @@ module.exports = (crowi: Crowi): Router => {
   const pushRouter = express.Router();
 
   // eslint-disable-next-line max-len
-  receiveRouter.get('/attachments', verifyAndExtractTransferKey, async(req: Request & { transferKey: TransferKey, operatorUserId: string }, res: ApiV3Response) => {
+  receiveRouter.get('/files', verifyAndExtractTransferKey, async(req: Request & { transferKey: TransferKey, operatorUserId: string }, res: ApiV3Response) => {
     const files = await crowi.fileUploadService.listFiles();
-    return res.apiv3(files);
+    return res.apiv3({ files });
   });
 
   // Auto import

@@ -1,5 +1,6 @@
 import { randomUUID } from 'crypto';
 import { createReadStream, ReadStream } from 'fs';
+import { basename } from 'path';
 import { Readable } from 'stream';
 
 // eslint-disable-next-line no-restricted-imports
@@ -52,8 +53,8 @@ export type IDataGROWIInfo = {
  * File metadata in storage
  */
 interface FileMeta {
-  filePath: string;
-  fileSize: number;
+  name: string;
+  size: number;
 }
 
 /**
@@ -286,8 +287,8 @@ export class G2GTransferPusherService implements Pusher {
 
   public async listFilesInStorage(tk: TransferKey): Promise<FileMeta[]> {
     try {
-      const { data } = await axios.get<FileMeta[]>('/_api/v3/g2g-transfer/attachments', generateAxiosRequestConfigWithTransferKey(tk));
-      return data;
+      const { data: { files } } = await axios.get<{ files: FileMeta[] }>('/_api/v3/g2g-transfer/files', generateAxiosRequestConfigWithTransferKey(tk));
+      return files;
     }
     catch (err) {
       logger.error(err);
@@ -300,7 +301,15 @@ export class G2GTransferPusherService implements Pusher {
     const { fileUploadService } = this.crowi;
     const Attachment = this.crowi.model('Attachment');
     const filesFromNewGrowi = await this.listFilesInStorage(tk);
-    const attachmentsCursor = await Attachment.find({ _id: { $nin: filesFromNewGrowi } }).cursor();
+    const filter = filesFromNewGrowi.length > 0 ? {
+      $and: filesFromNewGrowi.map(({ name, size }) => ({
+        $or: [
+          { fileName: { $ne: basename(name) } },
+          { fileSize: { $ne: size } },
+        ],
+      })),
+    } : {};
+    const attachmentsCursor = await Attachment.find(filter).cursor();
     const batchStream = createBatchStream(BATCH_SIZE);
 
     for await (const attachmentBatch of attachmentsCursor.pipe(batchStream)) {
