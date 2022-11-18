@@ -125,7 +125,7 @@ export const useIsMailerSetup = (initialData?: boolean): SWRResponse<boolean, an
 };
 
 export const useIsSearchScopeChildrenAsDefault = (initialData?: boolean) : SWRResponse<boolean, Error> => {
-  return useContextSWR<boolean, Error>('isSearchScopeChildrenAsDefault', initialData);
+  return useContextSWR<boolean, Error>('isSearchScopeChildrenAsDefault', initialData, { fallbackData: false });
 };
 
 export const useIsSlackConfigured = (initialData?: boolean) : SWRResponse<boolean, Error> => {

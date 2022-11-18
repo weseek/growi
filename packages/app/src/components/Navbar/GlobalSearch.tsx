@@ -40,7 +40,7 @@ export const GlobalSearch = (props: GlobalSearchProps): JSX.Element => {
   const { data: currentPagePath } = useCurrentPagePath();
 
   const [text, setText] = useState('');
-  const [isScopeChildren, setScopeChildren] = useState<boolean|undefined>(isSearchScopeChildrenAsDefault);
+  const [isScopeChildren, setScopeChildren] = useState<boolean|undefined>(isSearchScopeChildrenAsDefault ?? false);
   const [isFocused, setFocused] = useState<boolean>(false);
 
   useEffect(() => {
