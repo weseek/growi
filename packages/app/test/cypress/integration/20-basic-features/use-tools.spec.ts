@@ -233,8 +233,7 @@ context('Tag Oprations', () =>{
     cy.visit('/Sandbox');
     cy.waitUntilSkeletonDisappear();
 
-    cy.get('#edit-tags-btn-wrapper-for-tooltip > a').as('add-tag-btn').should('be.visible');
-    cy.get('@add-tag-btn').click();
+    cy.get('#edit-tags-btn-wrapper-for-tooltip > a').should('be.visible').click();
     cy.get('#edit-tag-modal').should('be.visible').screenshot(`${ssPrefix}1-edit-tag-input`);
 
     cy.get('#edit-tag-modal').within(() => {
@@ -320,8 +319,7 @@ context('Tag Oprations', () =>{
 
     cy.visit('/Sandbox-our');
     cy.waitUntilSkeletonDisappear();
-    cy.get('.grw-tag-label').as('label').should('be.visible');
-    cy.get('@label').contains(tag).click();
+    cy.get('.grw-tag-label').should('be.visible').contains(tag).click();
     cy.waitUntilSkeletonDisappear();
     cy.getByTestid('search-result-base').should('be.visible');
     cy.getByTestid('search-result-list').should('be.visible');
