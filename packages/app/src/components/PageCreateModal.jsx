@@ -267,13 +267,13 @@ const PageCreateModal = () => {
 
           <h3 className="grw-modal-head pb-2">
             {t('template.modal_label.Create template under')}<br />
-            <code className="h6">{pathname}</code>
+            <code className="h6" data-testid="grw-page-create-modal-path-name">{pathname}</code>
           </h3>
 
           <div className="d-sm-flex align-items-center justify-items-between">
 
             <UncontrolledButtonDropdown id="dd-template-type" className='flex-fill text-center'>
-              <DropdownToggle caret>
+              <DropdownToggle id="template-type" caret>
                 {template == null && t('template.option_label.select')}
                 {template === 'children' && t('template.children.label')}
                 {template === 'decendants' && t('template.decendants.label')}
@@ -292,6 +292,7 @@ const PageCreateModal = () => {
 
             <div className="d-flex justify-content-end mt-1 mt-sm-0">
               <button
+                data-testid="grw-btn-edit-page"
                 type="button"
                 className='grw-btn-create-page btn btn-outline-primary rounded-pill text-nowrap ml-3'
                 onClick={createTemplatePage}

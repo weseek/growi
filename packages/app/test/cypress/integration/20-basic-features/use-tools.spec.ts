@@ -80,21 +80,28 @@ context('Modal for page operation', () => {
 
   it('Trying to create template page under the root page fail', () => {
     cy.visit('/');
+
+    cy.waitUntilSkeletonDisappear();
+
     cy.getByTestid('newPageBtn').click();
 
     cy.getByTestid('page-create-modal').should('be.visible').within(() => {
+
+      cy.getByTestid('grw-page-create-modal-path-name').should('have.text', '/');
+
       cy.get('#template-type').click();
       cy.get('#template-type').next().find('button:eq(0)').click({force: true});
-      cy.get('#dd-template-type').next().find('button').click({force: true});
+      cy.getByTestid('grw-btn-edit-page').should('be.visible').click();
     });
     cy.get('.toast-error').should('be.visible').invoke('attr', 'style', 'opacity: 1');
     cy.screenshot(`${ssPrefix}create-template-for-children-error`, {capture: 'viewport'});
     cy.get('.toast-error').should('be.visible').click();
+    cy.get('.toast-error').should('not.exist');
 
     cy.getByTestid('page-create-modal').should('be.visible').within(() => {
       cy.get('#template-type').click();
       cy.get('#template-type').next().find('button:eq(1)').click({force: true});
-      cy.get('#dd-template-type').next().find('button').click({force: true});
+      cy.getByTestid('grw-btn-edit-page').should('be.visible').click();
     });
     cy.get('.toast-error').should('be.visible').invoke('attr', 'style', 'opacity: 1');
     cy.screenshot(`${ssPrefix}create-template-for-descendants-error`, {capture: 'viewport'});
