@@ -4,6 +4,7 @@ import React, {
 
 import assert from 'assert';
 
+import { pathUtils } from '@growi/core';
 import { useTranslation } from 'next-i18next';
 import { useRouter } from 'next/router';
 
@@ -28,6 +29,8 @@ export const GlobalSearch = (props: GlobalSearchProps): JSX.Element => {
   const { t } = useTranslation('commons');
 
   const { dropup } = props;
+
+  const { returnPathForURL } = pathUtils;
 
   const router = useRouter();
 
@@ -55,9 +58,9 @@ export const GlobalSearch = (props: GlobalSearchProps): JSX.Element => {
 
     // navigate to page
     if (page != null) {
-      router.push(`/${page._id}`);
+      router.push(returnPathForURL(page.path, page._id));
     }
-  }, [router]);
+  }, [returnPathForURL, router]);
 
   const search = useCallback(() => {
     const url = new URL(window.location.href);
