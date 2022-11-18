@@ -87,7 +87,7 @@ const logger = loggerFactory('growi:pages:all');
 const {
   isPermalink: _isPermalink, isUsersHomePage, isTrashPage: _isTrashPage, isUserPage, isCreatablePage, isTopPage,
 } = pagePathUtils;
-const { removeHeadingSlash } = pathUtils;
+const { removeHeadingSlash, attachTitleHeader } = pathUtils;
 
 type IPageToShowRevisionWithMeta = IDataWithMeta<IPagePopulatedToShowRevision & PageDocument, IPageInfoForEntity>;
 type IPageToShowRevisionWithMetaSerialized = IDataWithMeta<string, string>;
@@ -163,6 +163,7 @@ type Props = CommonProps & {
   isContainerFluid: boolean,
   editorConfig: EditorConfig,
   isEnabledStaleNotification: boolean,
+  isEnabledAttachTitleHeader: boolean,
   // isEnabledLinebreaks: boolean,
   // isEnabledLinebreaksInComments: boolean,
   adminPreferredIndentSize: number,
@@ -251,7 +252,16 @@ const GrowiPage: NextPage<Props> = (props: Props) => {
   useCurrentRevisionId(props.currentRevisionId);
 
   const { data: currentPage } = useSWRxCurrentPage(undefined, pageWithMeta?.data ?? null); // store initial data
-  useEditingMarkdown(pageWithMeta?.data.revision?.body ?? props.templateBodyData ?? '');
+
+  let initialEditingMarkdown = '';
+  if (props.isEnabledAttachTitleHeader && pageWithMeta == null) {
+    initialEditingMarkdown += `${attachTitleHeader(props.currentPathname)}\n`;
+  }
+  if (props.templateBodyData != null) {
+    initialEditingMarkdown += props.templateBodyData;
+  }
+
+  useEditingMarkdown(pageWithMeta?.data.revision?.body ?? initialEditingMarkdown ?? '');
 
   const { data: grantData } = useSWRxIsGrantNormalized(pageId);
   const { mutate: mutateSelectedGrant } = useSelectedGrant();
@@ -536,6 +546,8 @@ function injectServerConfigurations(context: GetServerSidePropsContext, props: P
   };
   props.adminPreferredIndentSize = configManager.getConfig('markdown', 'markdown:adminPreferredIndentSize');
   props.isIndentSizeForced = configManager.getConfig('markdown', 'markdown:isIndentSizeForced');
+
+  props.isEnabledAttachTitleHeader = configManager.getConfig('crowi', 'customize:isEnabledAttachTitleHeader');
 
   props.rendererConfig = {
     isEnabledLinebreaks: configManager.getConfig('markdown', 'markdown:isEnabledLinebreaks'),
