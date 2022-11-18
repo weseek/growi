@@ -155,15 +155,18 @@ context('Search all pages', () => {
     const tag = 'help';
     const searchText = `tag:${tag}`;
     cy.visit('/');
-    // Add tag
-    cy.get('#edit-tags-btn-wrapper-for-tooltip > a').click({force: true});
-    cy.get('#edit-tag-modal').should('be.visible');
+    cy.waitUntilSkeletonDisappear();
 
-    cy.get('#edit-tag-modal').within(() => {
+    // Add tag
+    cy.get('#edit-tags-btn-wrapper-for-tooltip').as('edit-tag-tooltip').should('be.visible');
+    cy.get('@edit-tag-tooltip > a').click();
+    cy.get('#edit-tag-modal').as('tag-modal').should('be.visible');
+
+    cy.get('@tag-modal').within(() => {
       cy.get('.rbt-input-main').type(tag);
       cy.get('#tag-typeahead-asynctypeahead').should('be.visible');
       cy.get('#tag-typeahead-asynctypeahead-item-0').should('be.visible');
-      cy.get('a#tag-typeahead-asynctypeahead-item-0').click({force: true})
+      cy.get('a#tag-typeahead-asynctypeahead-item-0').click()
     });
 
     cy.get('#edit-tag-modal').within(() => {
@@ -171,7 +174,9 @@ context('Search all pages', () => {
     });
 
     cy.visit('/');
-    cy.get('.rbt-input').click({force: true});
+    cy.waitUntilSkeletonDisappear();
+
+    cy.get('.rbt-input').should('be.visible').click();
     cy.get('.rbt-input-main').type(`${searchText}`);
     cy.screenshot(`${ssPrefix}1-insert-search-text-with-tag`, { capture: 'viewport'});
     cy.get('.rbt-input-main').type('{enter}');
