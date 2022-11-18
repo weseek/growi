@@ -52,8 +52,8 @@ export const PageRevisionTable = (props: PageRevisionTAble): JSX.Element => {
           <div className="d-lg-flex">
             <Revision
               revision={revision}
-              pageId={currentPageId}
-              pagePath={currentPagePath}
+              currentPageId={currentPageId}
+              currentPagePath={currentPagePath}
               isLatestRevision={revision === latestRevision}
               hasDiff={hasDiff}
               key={`revision-history-rev-${revisionId}`}
