@@ -46,10 +46,11 @@ export const GlobalSearch = (props: GlobalSearchProps): JSX.Element => {
     assert(data.length > 0);
 
     const page = data[0].data; // should be single page selected
+    const pagePath = page.path === '/' ? '/' : `/${page._id}`;
 
     // navigate to page
     if (page != null) {
-      router.push(`/${page._id}`);
+      router.push(pagePath);
     }
   }, [router]);
 
