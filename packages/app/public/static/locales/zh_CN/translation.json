@@ -117,7 +117,6 @@
   "V5 Page Migration": "转换为V5的兼容性",
   "GROWI.5.0_new_schema": "GROWI.5.0 new schema",
   "See_more_detail_on_new_schema": "更多详情请见<a href='https://docs.growi.org/en/admin-guide/upgrading/50x.html#about-the-new-v5-compatible-format' target='_blank'> {{title}}</a> <i class='icon-share-alt'></i> ",
-	"Site URL settings": "主页URL设置",
 	"Markdown Settings": "Markdown设置",
 	"Notification Settings": "通知设置",
 	"external_account_management": "外部账户管理",
