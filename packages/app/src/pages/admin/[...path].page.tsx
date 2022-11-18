@@ -17,7 +17,6 @@ const AdminAppPage: NextPage<CommonProps> = (props) => {
   useIsMaintenanceMode(props.isMaintenanceMode);
   useCurrentUser(props.currentUser ?? null);
 
-
   return (
     <AdminLayout>
       <AdminNotFoundPage />

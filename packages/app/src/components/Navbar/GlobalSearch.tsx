@@ -1,7 +1,10 @@
-import React, { useState, useCallback, useRef } from 'react';
+import React, {
+  useState, useCallback, useRef, useEffect,
+} from 'react';
 
 import assert from 'assert';
 
+import { pathUtils } from '@growi/core';
 import { useTranslation } from 'next-i18next';
 import { useRouter } from 'next/router';
 
@@ -27,6 +30,8 @@ export const GlobalSearch = (props: GlobalSearchProps): JSX.Element => {
 
   const { dropup } = props;
 
+  const { returnPathForURL } = pathUtils;
+
   const router = useRouter();
 
   const globalSearchFormRef = useRef<IFocusable>(null);
@@ -38,8 +43,12 @@ export const GlobalSearch = (props: GlobalSearchProps): JSX.Element => {
   const { data: currentPagePath } = useCurrentPagePath();
 
   const [text, setText] = useState('');
-  const [isScopeChildren, setScopeChildren] = useState<boolean|undefined>(isSearchScopeChildrenAsDefault);
+  const [isScopeChildren, setScopeChildren] = useState<boolean|undefined>(isSearchScopeChildrenAsDefault ?? false);
   const [isFocused, setFocused] = useState<boolean>(false);
+
+  useEffect(() => {
+    setScopeChildren(isSearchScopeChildrenAsDefault);
+  }, [isSearchScopeChildrenAsDefault]);
 
 
   const gotoPage = useCallback((data: IPageWithSearchMeta[]) => {
@@ -49,9 +58,9 @@ export const GlobalSearch = (props: GlobalSearchProps): JSX.Element => {
 
     // navigate to page
     if (page != null) {
-      router.push(`/${page._id}`);
+      router.push(returnPathForURL(page.path, page._id));
     }
-  }, [router]);
+  }, [returnPathForURL, router]);
 
   const search = useCallback(() => {
     const url = new URL(window.location.href);
@@ -72,6 +81,7 @@ export const GlobalSearch = (props: GlobalSearchProps): JSX.Element => {
     : t('header_search_box.label.All pages');
 
   const isIndicatorShown = !isFocused && (text.length === 0);
+
 
   if (isScopeChildren == null || isSearchServiceReachable == null) {
     return <></>;
@@ -116,7 +126,7 @@ export const GlobalSearch = (props: GlobalSearchProps): JSX.Element => {
         </div>
         <SearchForm
           ref={globalSearchFormRef}
-          isSearchServiceReachable={isSearchServiceReachable}
+          isSearchServiceReachable={isSearchServiceReachable || false}
           dropup={dropup}
           onChange={gotoPage}
           onBlur={() => setFocused(false)}
