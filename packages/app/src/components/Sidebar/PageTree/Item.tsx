@@ -5,6 +5,7 @@ import React, {
 import nodePath from 'path';
 
 import { pathUtils, pagePathUtils, Nullable } from '@growi/core';
+import { returnPathForURL } from '^/../core/src/utils/path-utils';
 import { useTranslation } from 'next-i18next';
 import Link from 'next/link';
 import { useDrag, useDrop } from 'react-dnd';
@@ -417,8 +418,6 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
   // Icon that draw attention from users for some actions
   const shouldShowAttentionIcon = page.processData != null ? shouldRecoverPagePaths(page.processData) : false;
 
-  const pathPath = page.path === '/' ? '/' : `/${page._id}`;
-
   return (
     <div
       id={`pagetree-item-${page._id}`}
@@ -469,12 +468,13 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
                   </UncontrolledTooltip>
                 </>
               )}
-
-              <Link href={pathPath} prefetch={false}>
-                <a className="grw-pagetree-title-anchor flex-grow-1">
-                  <p className={`text-truncate m-auto ${page.isEmpty && 'grw-sidebar-text-muted'}`}>{nodePath.basename(page.path ?? '') || '/'}</p>
-                </a>
-              </Link>
+              { page != null && page.path != null && page._id != null && (
+                <Link href={pathUtils.returnPathForURL(page.path, page._id)} prefetch={false}>
+                  <a className="grw-pagetree-title-anchor flex-grow-1">
+                    <p className={`text-truncate m-auto ${page.isEmpty && 'grw-sidebar-text-muted'}`}>{nodePath.basename(page.path ?? '') || '/'}</p>
+                  </a>
+                </Link>
+              )}
             </>
           )}
         {descendantCount > 0 && !isRenameInputShown && (
