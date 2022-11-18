@@ -83,7 +83,7 @@ export const useSWRxTagsInfo = (pageId: Nullable<string>): SWRResponse<IPageTags
 };
 
 export const usePageInfoTermManager = (isDisabled?: boolean) : SWRResponse<number, Error> & ITermNumberManagerUtil => {
-  return useTermNumberManager(isDisabled === true ? null : 'descendantsPageListForCurrentPathTermNumber');
+  return useTermNumberManager(isDisabled === true ? null : 'pageInfoTermNumber');
 };
 
 export const useSWRxPageInfo = (
