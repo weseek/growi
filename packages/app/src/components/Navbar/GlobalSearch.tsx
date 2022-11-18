@@ -40,17 +40,11 @@ export const GlobalSearch = (props: GlobalSearchProps): JSX.Element => {
   const { data: currentPagePath } = useCurrentPagePath();
 
   const [text, setText] = useState('');
-  const [isScopeChildren, setScopeChildren] = useState<boolean>(false);
+  const [isScopeChildren, setScopeChildren] = useState<boolean|undefined>(isSearchScopeChildrenAsDefault);
   const [isFocused, setFocused] = useState<boolean>(false);
 
   useEffect(() => {
-    if (isSearchScopeChildrenAsDefault !== undefined) {
-      setScopeChildren(isSearchScopeChildrenAsDefault);
-    }
-  }, [isSearchScopeChildrenAsDefault]);
-
-  const isLoadingIsSearchScopeChildrenAsDefault = useMemo(() => {
-    return isSearchScopeChildrenAsDefault === undefined;
+    setScopeChildren(isSearchScopeChildrenAsDefault);
   }, [isSearchScopeChildrenAsDefault]);
 
 
@@ -86,7 +80,7 @@ export const GlobalSearch = (props: GlobalSearchProps): JSX.Element => {
   const isIndicatorShown = !isFocused && (text.length === 0);
 
 
-  if (isLoadingIsSearchScopeChildrenAsDefault) {
+  if (isScopeChildren == null || isSearchServiceReachable == null) {
     return <></>;
   }
 
