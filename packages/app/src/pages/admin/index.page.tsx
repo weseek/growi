@@ -10,10 +10,7 @@ import AdminHomeContainer from '~/client/services/AdminHomeContainer';
 import { CrowiRequest } from '~/interfaces/crowi-request';
 import { CommonProps, useCustomTitle } from '~/pages/utils/commons';
 import PluginUtils from '~/server/plugins/plugin-utils';
-import {
-  useCurrentUser, useGrowiCloudUri, useGrowiAppIdForGrowiCloud, useIsSearchPage, useIsSearchServiceConfigured,
-  useIsSearchScopeChildrenAsDefault,
-} from '~/stores/context';
+import { useCurrentUser, useGrowiCloudUri, useGrowiAppIdForGrowiCloud } from '~/stores/context';
 
 import { retrieveServerSideProps } from '../../utils/admin-page-util';
 
@@ -35,9 +32,6 @@ const AdminHomePage: NextPage<Props> = (props) => {
   useCurrentUser(props.currentUser ?? null);
   useGrowiCloudUri(props.growiCloudUri);
   useGrowiAppIdForGrowiCloud(props.growiAppIdForGrowiCloud);
-  useIsSearchPage(false);
-  useIsSearchServiceConfigured(props.isSearchServiceConfigured);
-  useIsSearchScopeChildrenAsDefault(props.isSearchScopeChildrenAsDefault);
 
   const { t } = useTranslation('admin');
 

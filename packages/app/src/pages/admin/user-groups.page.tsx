@@ -6,10 +6,7 @@ import dynamic from 'next/dynamic';
 
 import { CrowiRequest } from '~/interfaces/crowi-request';
 import { CommonProps, useCustomTitle } from '~/pages/utils/commons';
-import {
-  useIsAclEnabled, useCurrentUser, useIsSearchPage, useIsSearchServiceConfigured,
-  useIsSearchScopeChildrenAsDefault,
-} from '~/stores/context';
+import { useIsAclEnabled, useCurrentUser } from '~/stores/context';
 
 import { retrieveServerSideProps } from '../../utils/admin-page-util';
 
@@ -26,9 +23,6 @@ const AdminUserGroupPage: NextPage<Props> = (props) => {
   const { t } = useTranslation('admin');
   useCurrentUser(props.currentUser ?? null);
   useIsAclEnabled(props.isAclEnabled);
-  useIsSearchPage(false);
-  useIsSearchServiceConfigured(props.isSearchServiceConfigured);
-  useIsSearchScopeChildrenAsDefault(props.isSearchScopeChildrenAsDefault);
 
   const title = t('user_group_management.user_group_management');
 

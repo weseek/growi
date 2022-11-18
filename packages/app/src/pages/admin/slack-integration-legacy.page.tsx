@@ -8,9 +8,7 @@ import { Container, Provider } from 'unstated';
 
 import AdminSlackIntegrationLegacyContainer from '~/client/services/AdminSlackIntegrationLegacyContainer';
 import { CommonProps, useCustomTitle } from '~/pages/utils/commons';
-import {
-  useCurrentUser, useIsSearchPage, useIsSearchServiceConfigured, useIsSearchScopeChildrenAsDefault,
-} from '~/stores/context';
+import { useCurrentUser } from '~/stores/context';
 
 import { retrieveServerSideProps } from '../../utils/admin-page-util';
 
@@ -21,9 +19,6 @@ const LegacySlackIntegration = dynamic(() => import('~/components/Admin/LegacySl
 const AdminLegacySlackIntegrationPage: NextPage<CommonProps> = (props) => {
   const { t } = useTranslation('admin');
   useCurrentUser(props.currentUser ?? null);
-  useIsSearchPage(false);
-  useIsSearchServiceConfigured(props.isSearchServiceConfigured);
-  useIsSearchScopeChildrenAsDefault(props.isSearchScopeChildrenAsDefault);
 
   const title = t('slack_integration_legacy.slack_integration_legacy');
   const injectableContainers: Container<any>[] = [];

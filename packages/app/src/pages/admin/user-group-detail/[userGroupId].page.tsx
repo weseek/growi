@@ -7,7 +7,7 @@ import { useRouter } from 'next/router';
 
 import { CrowiRequest } from '~/interfaces/crowi-request';
 import { CommonProps, useCustomTitle } from '~/pages/utils/commons';
-import { useIsAclEnabled, useCurrentUser, useIsSearchScopeChildrenAsDefault } from '~/stores/context';
+import { useIsAclEnabled, useCurrentUser } from '~/stores/context';
 import { useIsMaintenanceMode } from '~/stores/maintenanceMode';
 
 import { retrieveServerSideProps } from '../../../utils/admin-page-util';
@@ -23,7 +23,6 @@ const AdminUserGroupDetailPage: NextPage<Props> = (props: Props) => {
   const { t } = useTranslation('admin');
   useIsMaintenanceMode(props.isMaintenanceMode);
   useCurrentUser(props.currentUser ?? null);
-  useIsSearchScopeChildrenAsDefault(props.isSearchScopeChildrenAsDefault);
   const router = useRouter();
   const { userGroupId } = router.query;
 

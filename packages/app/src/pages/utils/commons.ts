@@ -24,8 +24,6 @@ export type CommonProps = {
   redirectDestination: string | null,
   customizedLogoSrc?: string,
   currentUser?: IUser,
-  isSearchServiceConfigured: boolean,
-  isSearchScopeChildrenAsDefault?: boolean,
 } & Partial<SSRConfig>;
 
 // eslint-disable-next-line max-len
@@ -34,7 +32,7 @@ export const getServerSideCommonProps: GetServerSideProps<CommonProps> = async(c
   const req = context.req as CrowiRequest<IUserHasId & any>;
   const { crowi, user } = req;
   const {
-    appService, searchService, configManager, customizeService,
+    appService, configManager, customizeService,
   } = crowi;
 
   const url = new URL(context.resolvedUrl, 'http://example.com');
@@ -66,8 +64,6 @@ export const getServerSideCommonProps: GetServerSideProps<CommonProps> = async(c
     redirectDestination,
     customizedLogoSrc: isDefaultLogo ? null : configManager.getConfig('crowi', 'customize:customizedLogoSrc'),
     currentUser,
-    isSearchServiceConfigured: searchService.isConfigured,
-    isSearchScopeChildrenAsDefault: crowi.configManager.getConfig('crowi', 'customize:isSearchScopeChildrenAsDefault'),
   };
 
   return { props };
