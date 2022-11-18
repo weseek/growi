@@ -100,7 +100,7 @@ export const useHackmdUri = (initialData?: Nullable<string>): SWRResponse<Nullab
   return useContextSWR<Nullable<string>, Error>('hackmdUri', initialData);
 };
 
-export const useIsSearchPage = (initialData?: Nullable<any>) : SWRResponse<Nullable<any>, Error> => {
+export const useIsSearchPage = (initialData?: Nullable<boolean>) : SWRResponse<Nullable<boolean>, Error> => {
   return useContextSWR<Nullable<any>, Error>('isSearchPage', initialData);
 };
 
@@ -125,7 +125,7 @@ export const useIsMailerSetup = (initialData?: boolean): SWRResponse<boolean, an
 };
 
 export const useIsSearchScopeChildrenAsDefault = (initialData?: boolean) : SWRResponse<boolean, Error> => {
-  return useContextSWR<boolean, Error>('isSearchScopeChildrenAsDefault', initialData);
+  return useContextSWR<boolean, Error>('isSearchScopeChildrenAsDefault', initialData, { fallbackData: false });
 };
 
 export const useIsSlackConfigured = (initialData?: boolean) : SWRResponse<boolean, Error> => {

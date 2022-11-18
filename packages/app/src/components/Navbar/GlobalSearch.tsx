@@ -1,4 +1,6 @@
-import React, { useState, useCallback, useRef } from 'react';
+import React, {
+  useState, useCallback, useRef, useEffect,
+} from 'react';
 
 import assert from 'assert';
 
@@ -38,8 +40,12 @@ export const GlobalSearch = (props: GlobalSearchProps): JSX.Element => {
   const { data: currentPagePath } = useCurrentPagePath();
 
   const [text, setText] = useState('');
-  const [isScopeChildren, setScopeChildren] = useState<boolean|undefined>(isSearchScopeChildrenAsDefault);
+  const [isScopeChildren, setScopeChildren] = useState<boolean|undefined>(isSearchScopeChildrenAsDefault ?? false);
   const [isFocused, setFocused] = useState<boolean>(false);
+
+  useEffect(() => {
+    setScopeChildren(isSearchScopeChildrenAsDefault);
+  }, [isSearchScopeChildrenAsDefault]);
 
 
   const gotoPage = useCallback((data: IPageWithSearchMeta[]) => {
@@ -72,6 +78,7 @@ export const GlobalSearch = (props: GlobalSearchProps): JSX.Element => {
     : t('header_search_box.label.All pages');
 
   const isIndicatorShown = !isFocused && (text.length === 0);
+
 
   if (isScopeChildren == null || isSearchServiceReachable == null) {
     return <></>;
@@ -116,7 +123,7 @@ export const GlobalSearch = (props: GlobalSearchProps): JSX.Element => {
         </div>
         <SearchForm
           ref={globalSearchFormRef}
-          isSearchServiceReachable={isSearchServiceReachable}
+          isSearchServiceReachable={isSearchServiceReachable || false}
           dropup={dropup}
           onChange={gotoPage}
           onBlur={() => setFocused(false)}
