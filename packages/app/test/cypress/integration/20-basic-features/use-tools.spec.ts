@@ -85,7 +85,7 @@ context('Modal for page operation', () => {
     cy.getByTestid('page-create-modal').should('be.visible').within(() => {
       cy.get('#template-type').click();
       cy.get('#template-type').next().find('button:eq(0)').click({force: true});
-      cy.get('#dd-template-type').next().find('button').click({force: true});
+      cy.getByTestid('grw-btn-edit-page').should('be.visible').click();
     });
     cy.get('.toast-error').should('be.visible').invoke('attr', 'style', 'opacity: 1');
     cy.screenshot(`${ssPrefix}create-template-for-children-error`, {capture: 'viewport'});
@@ -95,7 +95,7 @@ context('Modal for page operation', () => {
     cy.getByTestid('page-create-modal').should('be.visible').within(() => {
       cy.get('#template-type').click();
       cy.get('#template-type').next().find('button:eq(1)').click({force: true});
-      cy.get('#dd-template-type').next().find('button').click({force: true});
+      cy.getByTestid('grw-btn-edit-page').should('be.visible').click();
     });
     cy.get('.toast-error').should('be.visible').invoke('attr', 'style', 'opacity: 1');
     cy.screenshot(`${ssPrefix}create-template-for-descendants-error`, {capture: 'viewport'});
@@ -192,7 +192,6 @@ context('Page Accessories Modal', () => {
      cy.visit('/Sandbox/Bootstrap4', {  });
      cy.get('#grw-subnav-container').within(() => {
       cy.getByTestid('open-page-item-control-btn').within(() => {
-        cy.getByTestid('open-page-item-control-btn').should('be.visible');
         cy.get('button.btn-page-item-control').click({force: true});
       });
        cy.getByTestid('open-page-accessories-modal-btn-with-attachment-data-tab').click();
