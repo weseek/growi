@@ -49,6 +49,11 @@ Cypress.Commands.add('waitUntilSkeletonDisappear', () => {
   cy.get('.grw-skeleton').should('not.exist');
 });
 
+Cypress.Commands.add('waitUntilSpinnerDisappear', () => {
+  cy.get('.fa-spinner').should('exist');
+  cy.get('.fa-spinner').should('not.exist');
+});
+
 let isSidebarCollapsed: boolean | undefined;
 
 Cypress.Commands.add('collapseSidebar', (isCollapsed, force=false) => {

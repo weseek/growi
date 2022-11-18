@@ -39,6 +39,7 @@ const GiveAdminButton = (props: GiveAdminButtonProps): JSX.Element => {
 /**
  * Wrapper component for using unstated
  */
-const GiveAdminButtonWrapper = withUnstatedContainers(GiveAdminButton, [AdminUsersContainer]);
+// eslint-disable-next-line max-len
+const GiveAdminButtonWrapper: React.ForwardRefExoticComponent<Pick<any, string | number | symbol> & React.RefAttributes<any>> = withUnstatedContainers(GiveAdminButton, [AdminUsersContainer]);
 
 export default GiveAdminButtonWrapper;

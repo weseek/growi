@@ -62,7 +62,7 @@ import {
   useIsEnabledStaleNotification, useIsIdenticalPath,
   useIsSearchServiceConfigured, useIsSearchServiceReachable, useDisableLinkSharing,
   useDrawioUri, useHackmdUri, useDefaultIndentSize, useIsIndentSizeForced,
-  useIsAclEnabled, useIsSearchPage,
+  useIsAclEnabled, useIsSearchPage, useTemplateTagData,
   useCsrfToken, useIsSearchScopeChildrenAsDefault, useCurrentPageId, useCurrentPathname,
   useIsSlackConfigured, useRendererConfig, useEditingMarkdown,
   useEditorConfig, useIsAllReplyShown, useIsUploadableFile, useIsUploadableImage, useCustomizedLogoSrc, useIsContainerFluid,
@@ -144,6 +144,9 @@ type Props = CommonProps & {
   isNotCreatablePage: boolean,
   // isAbleToDeleteCompletely: boolean,
 
+  templateTagData?: string[],
+  templateBodyData?: string,
+
   isSearchServiceConfigured: boolean,
   isSearchServiceReachable: boolean,
   isSearchScopeChildrenAsDefault: boolean,
@@ -213,6 +216,8 @@ const GrowiPage: NextPage<Props> = (props: Props) => {
   useIsEnabledStaleNotification(props.isEnabledStaleNotification);
   useIsSearchPage(false);
 
+  useTemplateTagData(props.templateTagData);
+
   useIsSearchServiceConfigured(props.isSearchServiceConfigured);
   useIsSearchServiceReachable(props.isSearchServiceReachable);
   useIsSearchScopeChildrenAsDefault(props.isSearchScopeChildrenAsDefault);
@@ -246,7 +251,7 @@ const GrowiPage: NextPage<Props> = (props: Props) => {
   useCurrentRevisionId(props.currentRevisionId);
 
   const { data: currentPage } = useSWRxCurrentPage(undefined, pageWithMeta?.data ?? null); // store initial data
-  useEditingMarkdown(pageWithMeta?.data.revision?.body ?? '');
+  useEditingMarkdown(pageWithMeta?.data.revision?.body ?? props.templateBodyData ?? '');
 
   const { data: grantData } = useSWRxIsGrantNormalized(pageId);
   const { mutate: mutateSelectedGrant } = useSelectedGrant();
@@ -419,6 +424,14 @@ async function injectPageData(context: GetServerSidePropsContext, props: Props):
 
   if (typeof revisionId === 'string' || typeof revisionId === 'undefined') {
     props.currentRevisionId = props.isLatestRevision && page.latestRevision != null ? page.latestRevision.toString() : revisionId;
+  }
+
+  if (page == null && user != null) {
+    const templateData = await Page.findTemplate(props.currentPathname);
+    if (templateData != null) {
+      props.templateTagData = templateData.templateTags as string[];
+      props.templateBodyData = templateData.templateBody as string;
+    }
   }
 
   props.pageWithMeta = pageWithMeta;

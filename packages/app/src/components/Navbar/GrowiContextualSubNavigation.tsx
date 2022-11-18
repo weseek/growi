@@ -229,10 +229,7 @@ const GrowiContextualSubNavigation = (props: GrowiContextualSubNavigationProps):
 
   useEffect(() => {
     if (pageId === null && templateTagData != null) {
-      const tags = templateTagData.split(',').filter((str: string) => {
-        return str !== ''; // filter empty values
-      });
-      mutatePageTagsForEditors(tags);
+      mutatePageTagsForEditors(templateTagData);
     }
   }, [pageId, mutatePageTagsForEditors, templateTagData, mutateSWRTagsInfo]);
 

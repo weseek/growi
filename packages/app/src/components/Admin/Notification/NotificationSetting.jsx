@@ -74,7 +74,7 @@ const LegacySlackIntegrationListItem = ({ isEnabled }) => {
     <li className="list-group-item">
       <h4>
         <Badge isEnabled={isEnabled} />
-        <a href="/admin/slack-integration-legacy" className="ml-2">{t('legacy_slack_integration')}</a>
+        <a href="/admin/slack-integration-legacy" className="ml-2">{t('slack_integration_legacy.slack_integration_legacy')}</a>
       </h4>
       { isEnabled && (
         <ul className="mt-2 pl-4">
