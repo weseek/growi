@@ -417,6 +417,8 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
   // Icon that draw attention from users for some actions
   const shouldShowAttentionIcon = page.processData != null ? shouldRecoverPagePaths(page.processData) : false;
 
+  const path = page.path === '/' ? '/' : `/${page._id}`;
+
   return (
     <div
       id={`pagetree-item-${page._id}`}
@@ -468,7 +470,7 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
                 </>
               )}
 
-              <Link href={`/${page._id}`} prefetch={false}>
+              <Link href={path} prefetch={false}>
                 <a className="grw-pagetree-title-anchor flex-grow-1">
                   <p className={`text-truncate m-auto ${page.isEmpty && 'grw-sidebar-text-muted'}`}>{nodePath.basename(page.path ?? '') || '/'}</p>
                 </a>
