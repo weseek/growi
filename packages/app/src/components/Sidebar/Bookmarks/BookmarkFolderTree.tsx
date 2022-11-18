@@ -1,4 +1,6 @@
 
+import { useCallback } from 'react';
+
 import { useTranslation } from 'next-i18next';
 
 import { toastSuccess } from '~/client/util/apiNotification';
@@ -20,7 +22,7 @@ const BookmarkFolderTree = (): JSX.Element => {
   const { data: bookmarkFolderData } = useSWRxBookamrkFolderAndChild();
   const { open: openDeleteModal } = usePageDeleteModal();
 
-  const deleteMenuItemClickHandler = (pageToDelete: IPageToDeleteWithMeta) => {
+  const deleteMenuItemClickHandler = useCallback((pageToDelete: IPageToDeleteWithMeta) => {
     const pageDeletedHandler : OnDeletedFunction = (pathOrPathsToDelete, _isRecursively, isCompletely) => {
       if (typeof pathOrPathsToDelete !== 'string') {
         return;
@@ -36,7 +38,7 @@ const BookmarkFolderTree = (): JSX.Element => {
       mutateCurrentUserBookmarks();
     };
     openDeleteModal([pageToDelete], { onDeleted: pageDeletedHandler });
-  };
+  }, [mutateCurrentUserBookmarks, openDeleteModal, t]);
 
   if (bookmarkFolderData != null) {
     return (
