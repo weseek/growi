@@ -258,7 +258,7 @@ const GrowiPage: NextPage<Props> = (props: Props) => {
     initialEditingMarkdown += `${attachTitleHeader(props.currentPathname)}\n`;
   }
   if (props.templateBodyData != null) {
-    initialEditingMarkdown += props.templateBodyData;
+    initialEditingMarkdown += `${props.templateBodyData}\n`;
   }
 
   useEditingMarkdown(pageWithMeta?.data.revision?.body ?? initialEditingMarkdown ?? '');
