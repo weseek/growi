@@ -42,7 +42,11 @@ context('Access to page', () => {
   it('/Sandbox with edit is successfully loaded', () => {
     cy.visit('/Sandbox');
     cy.waitUntilSkeletonDisappear();
-    cy.get('#grw-subnav-container', { timeout: 30000 }).should('be.visible').within(()=>{
+
+    cy.get('#grw-subnav-container', { timeout: 30000 }).should('be.visible').within(() => {
+
+      // eslint-disable-next-line cypress/no-unnecessary-waiting
+      cy.wait(2000);
       cy.getByTestid('editor-button', { timeout: 30000 }).should('be.visible').click();
     })
     cy.getByTestid('navbar-editor', { timeout: 30000 }).should('be.visible');
@@ -224,4 +228,3 @@ context('Access to /me/all-in-app-notifications', () => {
    });
 
 })
-
