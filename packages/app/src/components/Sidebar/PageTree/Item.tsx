@@ -5,7 +5,6 @@ import React, {
 import nodePath from 'path';
 
 import { pathUtils, pagePathUtils, Nullable } from '@growi/core';
-import { returnPathForURL } from '^/../core/src/utils/path-utils';
 import { useTranslation } from 'next-i18next';
 import Link from 'next/link';
 import { useDrag, useDrop } from 'react-dnd';
