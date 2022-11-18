@@ -867,7 +867,7 @@
       "modal_body_alert": "削除されたフォルダとその内容は復元できません",
       "modal_footer_button": "フォルダを削除"
     },
-    "input_placeholder": "入力フォルダ名",
+    "input_placeholder": "フォルダ名を入力してください`",
     "new_folder": "新しいフォルダ"
   }
 }
