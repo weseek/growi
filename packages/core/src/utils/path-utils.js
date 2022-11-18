@@ -143,5 +143,9 @@ export function attachTitleHeader(path) {
  * @memberof pathUtils
  */
 export function returnPathForURL(path, id) {
-  return path === '/' ? path : addHeadingSlash(id);
+  if (path === '/') {
+    return path;
+  }
+
+  return addHeadingSlash(id);
 }
