@@ -2,6 +2,7 @@ import React, { useState, useCallback, useRef } from 'react';
 
 import assert from 'assert';
 
+import { returnPagePathForURL } from '^/../core/src/utils/page-path-utils';
 import { useTranslation } from 'next-i18next';
 import { useRouter } from 'next/router';
 
@@ -46,11 +47,10 @@ export const GlobalSearch = (props: GlobalSearchProps): JSX.Element => {
     assert(data.length > 0);
 
     const page = data[0].data; // should be single page selected
-    const pagePath = page.path === '/' ? '/' : `/${page._id}`;
 
     // navigate to page
     if (page != null) {
-      router.push(pagePath);
+      router.push(returnPagePathForURL(page.path, page._id));
     }
   }, [router]);
 

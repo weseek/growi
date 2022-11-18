@@ -305,3 +305,10 @@ export const generateChildrenRegExp = (path: string): RegExp => {
   // ex. /parent/any_child OR /any_level1
   return new RegExp(`^${path}(\\/[^/]+)\\/?$`);
 };
+
+/**
+ * In the href, if the page path is '/', eliminate the pageId from the url path.
+ */
+export const returnPagePathForURL = (pagePath: string, pageId: string): string => {
+  return pagePath === '/' ? '/' : `/${pageId}`;
+};

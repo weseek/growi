@@ -1,5 +1,6 @@
 import React from 'react';
 
+import { returnPagePathForURL } from '^/../core/src/utils/page-path-utils';
 import Link from 'next/link';
 import { useTranslation } from 'react-i18next';
 
@@ -16,12 +17,10 @@ export const OldRevisionAlert = (): JSX.Element => {
     return <></>;
   }
 
-  const pathPath = page.path === '/' ? '/' : `/${page._id}`;
-
   return (
     <div className="alert alert-warning">
       <strong>{ t('Warning') }: </strong> { t('page_page.notice.version') }
-      <Link href={pathPath}>
+      <Link href={returnPagePathForURL(page.path, page._id)}>
         <a><i className="icon-fw icon-arrow-right-circle"></i>{ t('Show latest') }</a>
       </Link>
     </div>

@@ -2,6 +2,7 @@ import React from 'react';
 
 import { IRevisionHasId } from '@growi/core';
 import { UserPicture } from '@growi/ui';
+import { returnPagePathForURL } from '^/../core/src/utils/page-path-utils';
 import { useTranslation } from 'next-i18next';
 import Link from 'next/link';
 
@@ -53,8 +54,6 @@ export const Revision = (props: RevisionProps): JSX.Element => {
 
     const pic = (typeof author === 'object') ? <UserPicture user={author} size="lg" /> : <></>;
 
-    const path = pagePath === '/' ? `/?revisionId=${revision._id}` : `/${pageId}?revisionId=${revision._id}`;
-
     return (
       <div className={`${styles['revision-history-main']} revision-history-main d-flex`}>
         <div className="picture-container">
@@ -68,7 +67,7 @@ export const Revision = (props: RevisionProps): JSX.Element => {
           <div className="mb-1">
             <UserDate dateTime={revision.createdAt} />
             <br className="d-xl-none d-block" />
-            <Link href={path} prefetch={false}>
+            <Link href={`${returnPagePathForURL(pagePath, pageId)}?revisionId=${revision._id}`} prefetch={false}>
               <a className="ml-xl-3" onClick={onClose}>
                 <i className="icon-login"></i> {t('Go to this version')}
               </a>
