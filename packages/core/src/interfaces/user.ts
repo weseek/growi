@@ -15,12 +15,13 @@ export type IUser = {
   admin: boolean,
   apiToken?: string,
   isEmailPublished: boolean,
+  isInvitationEmailSended: boolean,
   lang: Lang,
   slackMemberId?: string,
   createdAt: Date,
   lastLoginAt?: Date,
   introduction: string,
-  status: number,
+  status: IUserStatus,
 }
 
 export type IUserGroupRelation = {
@@ -35,6 +36,15 @@ export type IUserGroup = {
   description: string;
   parent: Ref<IUserGroupHasId> | null;
 }
+
+export const USER_STATUS = {
+  REGISTERED: 1,
+  ACTIVE: 2,
+  SUSPENDED: 3,
+  DELETED: 4,
+  INVITED: 5,
+} as const;
+export type IUserStatus = typeof USER_STATUS[keyof typeof USER_STATUS]
 
 export type IUserHasId = IUser & HasObjectId;
 export type IUserGroupHasId = IUserGroup & HasObjectId;

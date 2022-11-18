@@ -56,6 +56,7 @@ const StatusSuspendMenuItem = (props: Props): JSX.Element => {
 /**
  * Wrapper component for using unstated
  */
-const StatusSuspendMenuItemWrapper = withUnstatedContainers(StatusSuspendMenuItem, [AdminUsersContainer]);
+// eslint-disable-next-line max-len
+const StatusSuspendMenuItemWrapper: React.ForwardRefExoticComponent<Pick<any, string | number | symbol> & React.RefAttributes<any>> = withUnstatedContainers(StatusSuspendMenuItem, [AdminUsersContainer]);
 
 export default StatusSuspendMenuItemWrapper;
