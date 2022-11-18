@@ -11,7 +11,7 @@ import BookmarkFolderNameInput from './BookmarkFolderNameInput';
 import BookmarkFolderTree from './BookmarkFolderTree';
 
 
-const BookmarkFolder = (): JSX.Element => {
+const BookmarkContents = (): JSX.Element => {
 
   const { t } = useTranslation();
   const [isRenameInputShown, setIsRenameInputShown] = useState<boolean>(false);
@@ -36,7 +36,7 @@ const BookmarkFolder = (): JSX.Element => {
 
   }, [mutateChildBookmarkData, t]);
 
-  return (
+  const renderAddNewBookmarkFolder = () => (
     <>
       <div className="col-8 mb-2 ">
         <button
@@ -57,9 +57,17 @@ const BookmarkFolder = (): JSX.Element => {
           </div>
         )
       }
+    </>
+  );
+
+  return (
+    <>
+      {
+        renderAddNewBookmarkFolder()
+      }
       <BookmarkFolderTree />
     </>
   );
 };
 
-export default BookmarkFolder;
+export default BookmarkContents;
