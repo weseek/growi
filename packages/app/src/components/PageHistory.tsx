@@ -64,8 +64,8 @@ export const PageHistory: React.FC<{ onClose: () => void }> = ({ onClose }) => {
         pagingLimit={pagingLimit}
         sourceRevision={sourceRevision}
         targetRevision={targetRevision}
-        pageId={currentPageId}
-        pagePath={currentPagePath}
+        currentPageId={currentPageId}
+        currentPagePath={currentPagePath}
         onChangeSourceInvoked={setSourceRevision}
         onChangeTargetInvoked={setTargetRevision}
         onClose={onClose}
@@ -77,6 +77,7 @@ export const PageHistory: React.FC<{ onClose: () => void }> = ({ onClose }) => {
         sourceRevision={sourceRevision}
         targetRevision={targetRevision}
         currentPageId={currentPageId}
+        currentPagePath={currentPagePath}
         onClose={onClose}
       />
     </div>

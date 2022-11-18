@@ -133,3 +133,14 @@ export function normalizePath(path) {
 export function attachTitleHeader(path) {
   return `# ${path}`;
 }
+
+/**
+ * If the pagePath is top page path, eliminate the pageId from the url path.
+ * @param {string} pagePath
+ * @param {string} pageId
+ * @returns {string}
+ * @memberof pathUtils
+ */
+export const returnPathForURL = (pagePath, pageId) => {
+  return pagePath === '/' ? pagePath : addHeadingSlash(pageId);
+};

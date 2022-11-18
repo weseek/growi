@@ -2,7 +2,7 @@ import React, { useState, useCallback, useRef } from 'react';
 
 import assert from 'assert';
 
-import { returnPagePathForURL } from '^/../core/src/utils/page-path-utils';
+import { pathUtils } from '@growi/core';
 import { useTranslation } from 'next-i18next';
 import { useRouter } from 'next/router';
 
@@ -28,6 +28,8 @@ export const GlobalSearch = (props: GlobalSearchProps): JSX.Element => {
 
   const { dropup } = props;
 
+  const { returnPathForURL } = pathUtils;
+
   const router = useRouter();
 
   const globalSearchFormRef = useRef<IFocusable>(null);
@@ -50,9 +52,9 @@ export const GlobalSearch = (props: GlobalSearchProps): JSX.Element => {
 
     // navigate to page
     if (page != null) {
-      router.push(returnPagePathForURL(page.path, page._id));
+      router.push(returnPathForURL(page.path, page._id));
     }
-  }, [router]);
+  }, [returnPathForURL, router]);
 
   const search = useCallback(() => {
     const url = new URL(window.location.href);

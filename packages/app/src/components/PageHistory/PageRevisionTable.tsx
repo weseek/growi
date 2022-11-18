@@ -12,8 +12,8 @@ type PageRevisionTAble = {
   pagingLimit: number,
   sourceRevision: IRevisionHasId,
   targetRevision: IRevisionHasId,
-  pageId: string,
-  pagePath: string,
+  currentPageId: string,
+  currentPagePath: string,
   onChangeSourceInvoked: React.Dispatch<React.SetStateAction<IRevisionHasId | undefined>>,
   onChangeTargetInvoked: React.Dispatch<React.SetStateAction<IRevisionHasId | undefined>>,
   onClose: () => void,
@@ -23,7 +23,7 @@ export const PageRevisionTable = (props: PageRevisionTAble): JSX.Element => {
   const { t } = useTranslation();
 
   const {
-    revisions, pagingLimit, sourceRevision, targetRevision, pageId, pagePath,
+    revisions, pagingLimit, sourceRevision, targetRevision, currentPageId, currentPagePath,
     onChangeSourceInvoked, onChangeTargetInvoked, onClose,
   } = props;
 
@@ -52,8 +52,8 @@ export const PageRevisionTable = (props: PageRevisionTAble): JSX.Element => {
           <div className="d-lg-flex">
             <Revision
               revision={revision}
-              pageId={pageId}
-              pagePath={pagePath}
+              pageId={currentPageId}
+              pagePath={currentPagePath}
               isLatestRevision={revision === latestRevision}
               hasDiff={hasDiff}
               key={`revision-history-rev-${revisionId}`}
