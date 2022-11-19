@@ -42,6 +42,11 @@
     "description": "Description"
   },
 
+  "in_app_notification": {
+    "see_all": "See All",
+    "mark_all_as_read": "Mark all as read"
+  },
+
   "personal_dropdown": {
     "home": "Home",
     "settings": "Settings",

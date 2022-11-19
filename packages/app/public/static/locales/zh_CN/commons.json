@@ -42,6 +42,11 @@
     "description": "Description"
   },
 
+  "in_app_notification": {
+    "see_all": "查看通知列表",
+    "mark_all_as_read" : "标记为已读"
+  },
+
   "personal_dropdown": {
     "home": "家",
     "settings": "设置",

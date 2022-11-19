@@ -42,6 +42,11 @@
     "description": "概要"
   },
 
+  "in_app_notification": {
+    "see_all": "通知一覧を見る",
+    "mark_all_as_read": "全て既読にする"
+  },
+
   "personal_dropdown": {
     "home": "ホーム",
     "settings": "設定",
