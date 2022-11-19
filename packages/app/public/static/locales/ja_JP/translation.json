@@ -153,12 +153,6 @@
   "not_allowed_to_see_this_page": "このページは閲覧できません",
   "Confirm": "確認",
   "Successfully requested": "正常に処理を受け付けました",
-  "personal_dropdown": {
-    "color_mode": "カラーモード",
-    "sidebar_mode": "サイドバーモード",
-    "sidebar_mode_editor": "サイドバーモード(編集時)",
-    "use_os_settings": "OS設定を利用する"
-  },
   "form_validation": {
     "error_message": "いくつかの値が設定されていません",
     "required": "%sに値を入力してください",

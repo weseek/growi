@@ -566,12 +566,6 @@
     "Invalid_Number_of_Date" : "You entered invalid value",
     "link_sharing_is_disabled": "链接共享已被禁用"
   },
-	"personal_dropdown": {
-		"color_mode": "颜色模式",
-		"sidebar_mode": "边栏模式",
-		"sidebar_mode_editor": "编辑器上的边栏模式",
-		"use_os_settings": "使用操作系统设置"
-	},
 	"search_result": {
 		"result_meta": "搜索结果:",
 		"deletion_mode_btn_lavel": "选择并删除页面",

@@ -44,7 +44,11 @@
 
   "personal_dropdown": {
     "home": "家",
-    "settings": "设置"
+    "settings": "设置",
+		"color_mode": "颜色模式",
+		"sidebar_mode": "边栏模式",
+		"sidebar_mode_editor": "编辑器上的边栏模式",
+		"use_os_settings": "使用操作系统设置"
   },
 
 	"copy_to_clipboard": {
