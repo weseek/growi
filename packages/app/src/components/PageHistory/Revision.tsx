@@ -56,8 +56,6 @@ export const Revision = (props: RevisionProps): JSX.Element => {
 
     const pic = (typeof author === 'object') ? <UserPicture user={author} size="lg" /> : <></>;
 
-    console.log(currentPageId);
-
     return (
       <div className={`${styles['revision-history-main']} revision-history-main d-flex`}>
         <div className="picture-container">
