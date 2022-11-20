@@ -123,7 +123,8 @@ export const PageComment: FC<PageCommentProps> = memo((props:PageCommentProps): 
       return <PageCommentRoot />;
     }
     return (
-      <PageCommentSkeleton commentTitleClasses={commentTitleClasses}/>
+      // <PageCommentSkeleton commentTitleClasses={commentTitleClasses}/>
+      <></>
     );
   }
 
