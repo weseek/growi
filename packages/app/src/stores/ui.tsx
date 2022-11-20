@@ -97,17 +97,17 @@ const getClassNamesByEditorMode = (editorMode: EditorMode | undefined, isSidebar
 };
 
 const updateHashByEditorMode = (newEditorMode: EditorMode) => {
-  const { pathname } = window.location;
+  const { pathname, search } = window.location;
 
   switch (newEditorMode) {
     case EditorMode.View:
-      window.history.replaceState(null, '', pathname);
+      window.history.replaceState(null, '', `${pathname}${search}`);
       break;
     case EditorMode.Editor:
-      window.history.replaceState(null, '', `${pathname}#edit`);
+      window.history.replaceState(null, '', `${pathname}${search}#edit`);
       break;
     case EditorMode.HackMD:
-      window.history.replaceState(null, '', `${pathname}#hackmd`);
+      window.history.replaceState(null, '', `${pathname}${search}#hackmd`);
       break;
   }
 };
