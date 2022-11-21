@@ -3,6 +3,7 @@
   "Hide": "非公開",
   "Add": "追加",
   "Reset": "リセット",
+  "Sign out": "ログアウト",
 
   "meta": {
     "display_name": "日本語"
@@ -42,9 +43,22 @@
     "description": "概要"
   },
 
+  "in_app_notification": {
+    "notification_list": "アプリ内通知一覧",
+    "see_all": "通知一覧を見る",
+    "no_notification": "通知はありません",
+    "all": "全て",
+    "unopend": "未読",
+    "mark_all_as_read": "全て既読にする"
+  },
+
   "personal_dropdown": {
     "home": "ホーム",
-    "settings": "設定"
+    "settings": "設定",
+    "color_mode": "カラーモード",
+    "sidebar_mode": "サイドバーモード",
+    "sidebar_mode_editor": "サイドバーモード(編集時)",
+    "use_os_settings": "OS設定を利用する"
   },
 
   "copy_to_clipboard": {

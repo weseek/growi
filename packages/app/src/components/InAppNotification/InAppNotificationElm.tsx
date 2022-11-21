@@ -97,7 +97,7 @@ const InAppNotificationElm: FC<Props> = (props: Props) => {
       break;
     case 'PAGE_UPDATE':
       actionMsg = 'updated on';
-      actionIcon = 'ti-agenda';
+      actionIcon = 'ti ti-agenda';
       break;
     case 'PAGE_RENAME':
       actionMsg = 'renamed';

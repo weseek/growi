@@ -20,7 +20,7 @@ const logger = loggerFactory('growi:InAppNotificationPage');
 
 
 export const InAppNotificationPage: FC = () => {
-  const { t } = useTranslation();
+  const { t } = useTranslation('commons');
   const { mutate } = useSWRxInAppNotificationStatus();
 
   const { data: showPageLimitationXL } = useShowPageLimitationXL();
