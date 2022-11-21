@@ -26,7 +26,8 @@ type LoginFormProps = {
   isLdapStrategySetup: boolean,
   isLdapSetupFailed: boolean,
   objOfIsExternalAuthEnableds?: any,
-  isMailerSetup?: boolean
+  isMailerSetup?: boolean,
+  loginError?: IErrorV3,
 }
 export const LoginForm = (props: LoginFormProps): JSX.Element => {
   const { t } = useTranslation();
@@ -44,7 +45,7 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
   // For Login
   const [usernameForLogin, setUsernameForLogin] = useState('');
   const [passwordForLogin, setPasswordForLogin] = useState('');
-  const [loginErrors, setLoginErrors] = useState<IErrorV3[]>([]);
+  const [loginErrors, setLoginErrors] = useState<IErrorV3[]>(props.loginError != null ? [props.loginError] : []);
   // For Register
   const [usernameForRegister, setUsernameForRegister] = useState('');
   const [nameForRegister, setNameForRegister] = useState('');

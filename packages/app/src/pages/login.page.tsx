@@ -5,9 +5,11 @@ import {
 } from 'next';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 
+
 import { NoLoginLayout } from '~/components/Layout/NoLoginLayout';
 import { LoginForm } from '~/components/LoginForm';
 import type { CrowiRequest } from '~/interfaces/crowi-request';
+import type { IErrorV3 } from '~/interfaces/errors/v3-error';
 import type { RegistrationMode } from '~/interfaces/registration-mode';
 
 import {
@@ -30,6 +32,7 @@ type Props = CommonProps & {
   isLdapSetupFailed: boolean,
   isPasswordResetEnabled: boolean,
   isEmailAuthenticationEnabled: boolean,
+  loginError?: IErrorV3,
 };
 
 const LoginPage: NextPage<Props> = (props: Props) => {
@@ -54,6 +57,7 @@ const LoginPage: NextPage<Props> = (props: Props) => {
         isPasswordResetEnabled={props.isPasswordResetEnabled}
         isMailerSetup={props.isMailerSetup}
         registrationMode={props.registrationMode}
+        loginError={props.loginError}
       />
     </NoLoginLayout>
   );
@@ -119,6 +123,16 @@ export const getServerSideProps: GetServerSideProps = async(context: GetServerSi
   }
 
   const props: Props = result.props as Props;
+
+  if (context.query.loginError != null) {
+    const loginError = context.query.loginError as unknown as IErrorV3;
+    props.loginError = {
+      name: loginError.name,
+      message: loginError.message,
+      code: loginError.code,
+      args: loginError.args,
+    };
+  }
 
   injectServerConfigurations(context, props);
   injectEnabledStrategies(context, props);
