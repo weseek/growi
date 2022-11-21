@@ -3,7 +3,7 @@ import { Readable, Writable } from 'stream';
 
 import {
   pagePathUtils, pathUtils, Ref, HasObjectId,
-  IUserHasId,
+  IUserHasId, PageStatus,
   IPage, IPageInfo, IPageInfoAll, IPageInfoForEntity, IPageWithMeta, PageGrant,
 } from '@growi/core';
 import escapeStringRegexp from 'escape-string-regexp';
@@ -18,7 +18,6 @@ import {
 import {
   IPageOperationProcessInfo, IPageOperationProcessData, PageActionStage, PageActionType,
 } from '~/interfaces/page-operation';
-import { IUserHasId } from '~/interfaces/user';
 import { PageMigrationErrorData, SocketEventName, UpdateDescCountRawData } from '~/interfaces/websocket';
 import {
   CreateMethod, PageCreateOptions, PageModel, PageDocument, pushRevision, PageQueryBuilder,

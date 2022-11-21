@@ -962,11 +962,11 @@ export type PageCreateOptions = {
 /*
  * Merge obsolete page model methods and define new methods which depend on crowi instance
  */
-export default (crowi: Crowi): any => {
+export default function PageModel(crowi): any {
   // add old page schema methods
   const pageSchema = getPageSchema(crowi);
   schema.methods = { ...pageSchema.methods, ...schema.methods };
   schema.statics = { ...pageSchema.statics, ...schema.statics };
 
   return getOrCreateModel<PageDocument, PageModel>('Page', schema as any); // TODO: improve type
-};
+}
