@@ -1,11 +1,13 @@
-import React, { useCallback, useMemo } from 'react';
+import React, { useCallback, useEffect, useMemo } from 'react';
 
 import { useTranslation } from 'next-i18next';
 
+import { SocketEventName } from '~/interfaces/websocket';
 import {
   useHasDraftOnHackmd, useIsHackmdDraftUpdatingInRealtime, useRemoteRevisionId, useRevisionIdHackmdSynced,
 } from '~/stores/hackmd';
 import { useSWRxCurrentPage } from '~/stores/page';
+import { useGlobalSocket } from '~/stores/websocket';
 
 type AlertComponentContents = {
   additionalClasses: string[],
@@ -22,6 +24,19 @@ export const PageStatusAlert = (): JSX.Element => {
   const { data: remoteRevisionId } = useRemoteRevisionId();
   const { data: pageData } = useSWRxCurrentPage();
   const revision = pageData?.revision;
+
+  const { data: socket } = useGlobalSocket();
+
+  useEffect(() => {
+    if (socket == null) { return }
+
+    socket.on(SocketEventName.PageUpdated, () => {
+      console.log('page updated');
+    });
+
+    return () => { socket.off(SocketEventName.PageUpdated) };
+
+  }, [socket]);
 
   const refreshPage = useCallback(() => {
     window.location.reload();
