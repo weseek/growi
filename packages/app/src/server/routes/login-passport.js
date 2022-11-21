@@ -168,10 +168,13 @@ module.exports = function(crowi, app) {
     return res.apiv3Err(error);
   };
 
-  const loginFailureForExternalAccount = (error, req, res, next) => {
-    const parameters = { action: SupportedAction.ACTION_USER_LOGIN_FAILURE };
-    activityEvent.emit('update', res.locals.activity._id, parameters);
-
+  const loginFailureForExternalAccount = async(error, req, res, next) => {
+    const parameters = {
+      ip:  req.ip,
+      endpoint: req.originalUrl,
+      action: SupportedAction.ACTION_USER_LOGIN_FAILURE,
+    };
+    await crowi.activityService.createActivity(parameters);
 
     const { nextApp } = crowi;
     req.crowi = crowi;
@@ -496,33 +499,35 @@ module.exports = function(crowi, app) {
     const providerId = 'twitter';
     const strategyName = 'twitter';
 
-    let response;
-    try {
-      response = await promisifiedPassportAuthentication(strategyName, req, res);
-    }
-    catch (err) {
-      return next(new ErrorV3(err.message));
-    }
+    return next(new ErrorV3('message.sign_in_failure'));
 
-    const userInfo = {
-      id: response.id,
-      username: response.username,
-      name: response.displayName,
-    };
+    // let response;
+    // try {
+    //   response = await promisifiedPassportAuthentication(strategyName, req, res);
+    // }
+    // catch (err) {
+    //   return next(new ErrorV3(err.message));
+    // }
 
-    const externalAccount = await getOrCreateUser(req, res, userInfo, providerId);
-    if (!externalAccount) {
-      return next(new ErrorV3('message.sign_in_failure'));
-    }
+    // const userInfo = {
+    //   id: response.id,
+    //   username: response.username,
+    //   name: response.displayName,
+    // };
 
-    const user = await externalAccount.getPopulatedUser();
+    // const externalAccount = await getOrCreateUser(req, res, userInfo, providerId);
+    // if (!externalAccount) {
+    //   return next(new ErrorV3('message.sign_in_failure'));
+    // }
 
-    // login
-    req.logIn(user, async(err) => {
-      if (err) { debug(err.message); return next(new ErrorV3(err.message)) }
+    // const user = await externalAccount.getPopulatedUser();
 
-      return loginSuccessHandler(req, res, user, SupportedAction.ACTION_USER_LOGIN_WITH_TWITTER, true);
-    });
+    // // login
+    // req.logIn(user, async(err) => {
+    //   if (err) { debug(err.message); return next(new ErrorV3(err.message)) }
+
+    //   return loginSuccessHandler(req, res, user, SupportedAction.ACTION_USER_LOGIN_WITH_TWITTER, true);
+    // });
   };
 
   const loginWithOidc = function(req, res, next) {
