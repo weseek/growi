@@ -10,20 +10,9 @@ import { useIsTrashPage } from '~/stores/page';
 import { useCurrentUser } from '../stores/context';
 
 import { CommentEditorProps } from './PageComment/CommentEditor';
-import { PageCommentSkeleton } from './PageCommentSkeleton';
-import { Skeleton } from './Skeleton';
 
-import styles from './PageContentFooter.module.scss';
-
-const PageComment = dynamic<PageCommentProps>(() => import('~/components/PageComment').then(mod => mod.PageComment), {
-  ssr: false,
-  // loading: () => <PageCommentSkeleton />,
-});
-const CommentEditor = dynamic<CommentEditorProps>(() => import('./PageComment/CommentEditor').then(mod => mod.CommentEditor), {
-  ssr: false,
-  // loading: () => <Skeleton additionalClass={`${styles['page-content-footer-skeleton']} mb-3`}/>,
-});
-
+const PageComment = dynamic<PageCommentProps>(() => import('~/components/PageComment').then(mod => mod.PageComment), { ssr: false });
+const CommentEditor = dynamic<CommentEditorProps>(() => import('./PageComment/CommentEditor').then(mod => mod.CommentEditor), { ssr: false });
 
 type CommentsProps = {
   pageId: string,
@@ -44,7 +33,6 @@ export const Comments = (props: CommentsProps): JSX.Element => {
   }
 
   return (
-    // TODO: Check and refactor CSS import
     <div className="page-comments-row mt-5 py-4 d-edit-none d-print-none">
       <div className="container-lg">
         <div className="page-comments">
