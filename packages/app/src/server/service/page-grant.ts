@@ -1,8 +1,10 @@
-import { pagePathUtils, pathUtils, pageUtils } from '@growi/core';
+import {
+  pagePathUtils, pathUtils, pageUtils,
+  PageGrant, PageGrantCanBeOnTree,
+} from '@growi/core';
 import escapeStringRegexp from 'escape-string-regexp';
 import mongoose from 'mongoose';
 
-import { PageGrant, PageGrantCanBeOnTree } from '~/interfaces/page';
 import { IRecordApplicableGrant } from '~/interfaces/page-grant';
 import { PageDocument, PageModel } from '~/server/models/page';
 import UserGroup from '~/server/models/user-group';
