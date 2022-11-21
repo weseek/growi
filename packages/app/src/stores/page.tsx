@@ -47,7 +47,8 @@ export const useSWRxPage = (
     if (initialData !== undefined) {
       swrResponse.mutate(initialData);
     }
-  }, [initialData, swrResponse]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [initialData]); // Only depends on `initialData`
 
   return swrResponse;
 };
