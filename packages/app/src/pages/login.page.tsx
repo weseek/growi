@@ -126,12 +126,7 @@ export const getServerSideProps: GetServerSideProps = async(context: GetServerSi
 
   if (context.query.loginError != null) {
     const loginError = context.query.loginError as unknown as IErrorV3;
-    props.loginError = {
-      name: loginError.name,
-      message: loginError.message,
-      code: loginError.code,
-      args: loginError.args,
-    };
+    props.loginError = { ...loginError };
   }
 
   injectServerConfigurations(context, props);
