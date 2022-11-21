@@ -121,7 +121,7 @@ export const Comment = (props: CommentProps): JSX.Element => {
   }, [comment, isMarkdown, markdown, rendererOptions]);
 
   const rootClassName = getRootClassName(comment);
-  const revHref = `?revision=${comment.revision}`;
+  const revHref = `?revisionId=${comment.revision}`;
   const editedDateId = `editedDate-${comment._id}`;
   const editedDateFormatted = isEdited ? format(updatedAt, 'yyyy/MM/dd HH:mm') : null;
 
