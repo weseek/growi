@@ -3,7 +3,6 @@ import React, {
 } from 'react';
 
 import { IRevisionHasId, isPopulated, getIdForRef } from '@growi/core';
-import dynamic from 'next/dynamic';
 import { Button } from 'reactstrap';
 
 import { toastError } from '~/client/util/apiNotification';
@@ -15,17 +14,11 @@ import { ICommentHasId, ICommentHasIdList } from '../interfaces/comment';
 import { useSWRxPageComment } from '../stores/comment';
 
 import { Comment } from './PageComment/Comment';
-import { CommentEditorProps } from './PageComment/CommentEditor';
-import { DeleteCommentModalProps } from './PageComment/DeleteCommentModal';
+import { CommentEditor } from './PageComment/CommentEditor';
+import { DeleteCommentModal } from './PageComment/DeleteCommentModal';
 import { ReplyComments } from './PageComment/ReplyComments';
-import { PageCommentSkeleton } from './PageCommentSkeleton';
 
 import styles from './PageComment.module.scss';
-
-const CommentEditor = dynamic<CommentEditorProps>(() => import('./PageComment/CommentEditor').then(mod => mod.CommentEditor), { ssr: false });
-const DeleteCommentModal = dynamic<DeleteCommentModalProps>(
-  () => import('./PageComment/DeleteCommentModal').then(mod => mod.DeleteCommentModal), { ssr: false },
-);
 
 export const ROOT_ELEM_ID = 'page-comments' as const;
 
@@ -124,7 +117,6 @@ export const PageComment: FC<PageCommentProps> = memo((props:PageCommentProps): 
       return <PageCommentRoot />;
     }
     return (
-      // <PageCommentSkeleton commentTitleClasses={commentTitleClasses}/>
       <></>
     );
   }

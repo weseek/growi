@@ -22,8 +22,8 @@ export const PageCommentSkeleton = (props: PageCommentSkeletonProps): JSX.Elemen
       <div className={`${styles['page-comment-styles']} page-comments-row comment-list`}>
         <div className="container-lg">
           <div className="page-comments">
-            <h2 className={commentTitleClasses}><i className="icon-fw icon-bubbles"></i>Comments</h2>
-            <div className="page-comments-list" id="page-comments-list">
+            <h2 className="border-bottom py-3 mb-3"><i className="icon-fw icon-bubbles"></i>Comments</h2>
+            {/* <div className="page-comments-list" id="page-comments-list">
               <div className={`${CommentStyles['comment-styles']} page-comment-thread pb-5  page-comment-thread-no-replies`}>
                 <div className='page-comment flex-column'>
                   <div className='page-commnet-writer'>
@@ -41,15 +41,15 @@ export const PageCommentSkeleton = (props: PageCommentSkeletonProps): JSX.Elemen
                   <Skeleton additionalClass="page-comment-button-skeleton btn btn-outline-secondary btn-sm grw-skeleton" />
                 </div>
               </div>
-            </div>
-            <div className={`${CommentEditorStyles['comment-editor-styles']} form page-comment-form`}>
+            </div> */}
+            {/* <div className={`${CommentEditorStyles['comment-editor-styles']} form page-comment-form`}>
               <div className='comment-form'>
                 <div className='comment-form-user'>
                   <Skeleton additionalClass='rounded-circle picture' roundedPill />
                 </div>
                 <Skeleton additionalClass="page-comment-commenteditorlazyrenderer-body-skeleton grw-skeleton" />
               </div>
-            </div>
+            </div> */}
           </div>
         </div>
       </div>

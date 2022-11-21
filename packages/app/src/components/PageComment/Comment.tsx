@@ -4,7 +4,6 @@ import { IUser, pathUtils } from '@growi/core';
 import { UserPicture } from '@growi/ui';
 import { format } from 'date-fns';
 import { useTranslation } from 'next-i18next';
-import dynamic from 'next/dynamic';
 import Link from 'next/link';
 import { UncontrolledTooltip } from 'reactstrap';
 import urljoin from 'url-join';
@@ -18,12 +17,9 @@ import RevisionRenderer from '../Page/RevisionRenderer';
 import { Username } from '../User/Username';
 
 import { CommentControl } from './CommentControl';
-import { CommentEditorProps } from './CommentEditor';
+import { CommentEditor } from './CommentEditor';
 
 import styles from './Comment.module.scss';
-
-
-const CommentEditor = dynamic<CommentEditorProps>(() => import('./CommentEditor').then(mod => mod.CommentEditor), { ssr: false });
 
 type CommentProps = {
   comment: ICommentHasId,

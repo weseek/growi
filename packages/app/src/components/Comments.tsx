@@ -3,16 +3,26 @@ import React from 'react';
 import { IRevisionHasId } from '@growi/core';
 import dynamic from 'next/dynamic';
 
-import { PageComment } from '~/components/PageComment';
+import { PageCommentProps } from '~/components/PageComment';
 import { useSWRxPageComment } from '~/stores/comment';
 import { useIsTrashPage } from '~/stores/page';
 
 import { useCurrentUser } from '../stores/context';
 
 import { CommentEditorProps } from './PageComment/CommentEditor';
+import { PageCommentSkeleton } from './PageCommentSkeleton';
+import { Skeleton } from './Skeleton';
 
+import styles from './PageContentFooter.module.scss';
 
-const CommentEditor = dynamic<CommentEditorProps>(() => import('./PageComment/CommentEditor').then(mod => mod.CommentEditor), { ssr: false });
+const PageComment = dynamic<PageCommentProps>(() => import('~/components/PageComment').then(mod => mod.PageComment), {
+  ssr: false,
+  // loading: () => <PageCommentSkeleton />,
+});
+const CommentEditor = dynamic<CommentEditorProps>(() => import('./PageComment/CommentEditor').then(mod => mod.CommentEditor), {
+  ssr: false,
+  // loading: () => <Skeleton additionalClass={`${styles['page-content-footer-skeleton']} mb-3`}/>,
+});
 
 
 type CommentsProps = {
