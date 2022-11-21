@@ -20,7 +20,7 @@ type AppearanceModeDropdownProps = {
 }
 export const AppearanceModeDropdown:FC<AppearanceModeDropdownProps> = (props: AppearanceModeDropdownProps) => {
 
-  const { t } = useTranslation();
+  const { t } = useTranslation('commons');
 
   const { isAuthenticated } = props;
 
