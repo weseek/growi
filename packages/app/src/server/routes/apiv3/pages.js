@@ -298,7 +298,7 @@ module.exports = (crowi) => {
     // check whether path starts slash
     path = pathUtils.addHeadingSlash(path);
 
-    const options = {};
+    const options = { overwriteScopesOfDescendants };
     if (grant != null) {
       options.grant = grant;
       options.grantUserGroupId = grantUserGroupId;
@@ -322,11 +322,6 @@ module.exports = (crowi) => {
       tags: savedTags,
       revision: serializeRevisionSecurely(createdPage.revision),
     };
-
-    // update scopes for descendants
-    if (overwriteScopesOfDescendants) {
-      Page.applyScopesToDescendantsAsyncronously(createdPage, req.user);
-    }
 
     const parameters = {
       targetModel: SupportedTargetModel.MODEL_PAGE,
