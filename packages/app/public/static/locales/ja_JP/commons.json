@@ -44,7 +44,11 @@
   },
 
   "in_app_notification": {
+    "notification_list": "アプリ内通知一覧",
     "see_all": "通知一覧を見る",
+    "no_notification": "通知はありません",
+    "all": "全て",
+    "unopend": "未読",
     "mark_all_as_read": "全て既読にする"
   },
 

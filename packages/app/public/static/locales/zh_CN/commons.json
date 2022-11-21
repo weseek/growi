@@ -44,7 +44,11 @@
   },
 
   "in_app_notification": {
+    "notification_list": "应用内通知列表",
     "see_all": "查看通知列表",
+    "no_notification": "您没有任何通知",
+    "all": "全部",
+    "unopend": "未读",
     "mark_all_as_read" : "标记为已读"
   },
 

@@ -53,7 +53,7 @@ const InAppNotificationPage = dynamic(
 
 const MePage: NextPage<Props> = (props: Props) => {
   const router = useRouter();
-  const { t } = useTranslation();
+  const { t } = useTranslation(['translation', 'commons']);
   const { path } = router.query;
   const pagePathKeys: string[] = Array.isArray(path) ? path : ['personal-settings'];
 
