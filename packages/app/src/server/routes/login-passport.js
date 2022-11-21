@@ -499,35 +499,33 @@ module.exports = function(crowi, app) {
     const providerId = 'twitter';
     const strategyName = 'twitter';
 
-    return next(new ErrorV3('message.sign_in_failure'));
+    let response;
+    try {
+      response = await promisifiedPassportAuthentication(strategyName, req, res);
+    }
+    catch (err) {
+      return next(new ErrorV3(err.message));
+    }
 
-    // let response;
-    // try {
-    //   response = await promisifiedPassportAuthentication(strategyName, req, res);
-    // }
-    // catch (err) {
-    //   return next(new ErrorV3(err.message));
-    // }
+    const userInfo = {
+      id: response.id,
+      username: response.username,
+      name: response.displayName,
+    };
 
-    // const userInfo = {
-    //   id: response.id,
-    //   username: response.username,
-    //   name: response.displayName,
-    // };
+    const externalAccount = await getOrCreateUser(req, res, userInfo, providerId);
+    if (!externalAccount) {
+      return next(new ErrorV3('message.sign_in_failure'));
+    }
 
-    // const externalAccount = await getOrCreateUser(req, res, userInfo, providerId);
-    // if (!externalAccount) {
-    //   return next(new ErrorV3('message.sign_in_failure'));
-    // }
+    const user = await externalAccount.getPopulatedUser();
 
-    // const user = await externalAccount.getPopulatedUser();
+    // login
+    req.logIn(user, async(err) => {
+      if (err) { debug(err.message); return next(new ErrorV3(err.message)) }
 
-    // // login
-    // req.logIn(user, async(err) => {
-    //   if (err) { debug(err.message); return next(new ErrorV3(err.message)) }
-
-    //   return loginSuccessHandler(req, res, user, SupportedAction.ACTION_USER_LOGIN_WITH_TWITTER, true);
-    // });
+      return loginSuccessHandler(req, res, user, SupportedAction.ACTION_USER_LOGIN_WITH_TWITTER, true);
+    });
   };
 
   const loginWithOidc = function(req, res, next) {
