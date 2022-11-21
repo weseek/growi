@@ -388,7 +388,7 @@ module.exports = function(crowi, app) {
       response = await promisifiedPassportAuthentication(strategyName, req, res);
     }
     catch (err) {
-      return next(ErrorV3(err.message));
+      return next(new ErrorV3(err.message));
     }
 
     let name;
@@ -422,14 +422,14 @@ module.exports = function(crowi, app) {
 
     const externalAccount = await getOrCreateUser(req, res, userInfo, providerId);
     if (!externalAccount) {
-      return next(ErrorV3('message.sign_in_failure'));
+      return next(new ErrorV3('message.sign_in_failure'));
     }
 
     const user = await externalAccount.getPopulatedUser();
 
     // login
     req.logIn(user, async(err) => {
-      if (err) { debug(err.message); return next(ErrorV3(err.message)) }
+      if (err) { debug(err.message); return next(new ErrorV3(err.message)) }
 
       return loginSuccessHandler(req, res, user, SupportedAction.ACTION_USER_LOGIN_WITH_GOOGLE, true);
     });
@@ -454,7 +454,7 @@ module.exports = function(crowi, app) {
       response = await promisifiedPassportAuthentication(strategyName, req, res);
     }
     catch (err) {
-      return next(ErrorV3(err.message));
+      return next(new ErrorV3(err.message));
     }
 
     const userInfo = {
@@ -465,14 +465,14 @@ module.exports = function(crowi, app) {
 
     const externalAccount = await getOrCreateUser(req, res, userInfo, providerId);
     if (!externalAccount) {
-      return next(ErrorV3('message.sign_in_failure'));
+      return next(new ErrorV3('message.sign_in_failure'));
     }
 
     const user = await externalAccount.getPopulatedUser();
 
     // login
     req.logIn(user, async(err) => {
-      if (err) { debug(err.message); return next(ErrorV3(err.message)) }
+      if (err) { debug(err.message); return next(new ErrorV3(err.message)) }
 
       return loginSuccessHandler(req, res, user, SupportedAction.ACTION_USER_LOGIN_WITH_GITHUB, true);
     });
@@ -497,7 +497,7 @@ module.exports = function(crowi, app) {
       response = await promisifiedPassportAuthentication(strategyName, req, res);
     }
     catch (err) {
-      return next(ErrorV3(err.message));
+      return next(new ErrorV3(err.message));
     }
 
     const userInfo = {
@@ -508,14 +508,14 @@ module.exports = function(crowi, app) {
 
     const externalAccount = await getOrCreateUser(req, res, userInfo, providerId);
     if (!externalAccount) {
-      return next(ErrorV3('message.sign_in_failure'));
+      return next(new ErrorV3('message.sign_in_failure'));
     }
 
     const user = await externalAccount.getPopulatedUser();
 
     // login
     req.logIn(user, async(err) => {
-      if (err) { debug(err.message); return next(ErrorV3(err.message)) }
+      if (err) { debug(err.message); return next(new ErrorV3(err.message)) }
 
       return loginSuccessHandler(req, res, user, SupportedAction.ACTION_USER_LOGIN_WITH_TWITTER, true);
     });
@@ -545,7 +545,7 @@ module.exports = function(crowi, app) {
     }
     catch (err) {
       debug(err);
-      return next(ErrorV3(err.message));
+      return next(new ErrorV3(err.message));
     }
 
     const userInfo = {
@@ -558,13 +558,13 @@ module.exports = function(crowi, app) {
 
     const externalAccount = await getOrCreateUser(req, res, userInfo, providerId);
     if (!externalAccount) {
-      return next(ErrorV3('message.sign_in_failure'));
+      return next(new ErrorV3('message.sign_in_failure'));
     }
 
     // login
     const user = await externalAccount.getPopulatedUser();
     req.logIn(user, async(err) => {
-      if (err) { debug(err.message); return next(ErrorV3(err.message)) }
+      if (err) { debug(err.message); return next(new ErrorV3(err.message)) }
 
       return loginSuccessHandler(req, res, user, SupportedAction.ACTION_USER_LOGIN_WITH_OIDC, true);
     });
@@ -594,7 +594,7 @@ module.exports = function(crowi, app) {
       response = await promisifiedPassportAuthentication(strategyName, req, res);
     }
     catch (err) {
-      return next(ErrorV3(err.message));
+      return next(new ErrorV3(err.message));
     }
 
     const userInfo = {
@@ -612,12 +612,12 @@ module.exports = function(crowi, app) {
 
     // Attribute-based Login Control
     if (!crowi.passportService.verifySAMLResponseByABLCRule(response)) {
-      return next(ErrorV3('Sign in failure due to insufficient privileges.'));
+      return next(new ErrorV3('Sign in failure due to insufficient privileges.'));
     }
 
     const externalAccount = await getOrCreateUser(req, res, userInfo, providerId);
     if (!externalAccount) {
-      return next(ErrorV3('message.sign_in_failure'));
+      return next(new ErrorV3('message.sign_in_failure'));
     }
 
     const user = await externalAccount.getPopulatedUser();
@@ -626,7 +626,7 @@ module.exports = function(crowi, app) {
     req.logIn(user, (err) => {
       if (err != null) {
         logger.error(err);
-        return next(ErrorV3(err.message));
+        return next(new ErrorV3(err.message));
       }
 
       return loginSuccessHandler(req, res, user, SupportedAction.ACTION_USER_LOGIN_WITH_SAML, true);
@@ -654,7 +654,7 @@ module.exports = function(crowi, app) {
       userId = await promisifiedPassportAuthentication(strategyName, req, res);
     }
     catch (err) {
-      return next(ErrorV3('message.sign_in_failure'));
+      return next(new ErrorV3('message.sign_in_failure'));
     }
 
     const userInfo = {
@@ -665,12 +665,12 @@ module.exports = function(crowi, app) {
 
     const externalAccount = await getOrCreateUser(req, res, userInfo, providerId);
     if (!externalAccount) {
-      return next(ErrorV3('message.sign_in_failure'));
+      return next(new ErrorV3('message.sign_in_failure'));
     }
 
     const user = await externalAccount.getPopulatedUser();
     await req.logIn(user, (err) => {
-      if (err) { debug(err.message); return next(ErrorV3(err.message)) }
+      if (err) { debug(err.message); return next(new ErrorV3(err.message)) }
 
       return loginSuccessHandler(req, res, user, SupportedAction.ACTION_USER_LOGIN_WITH_BASIC, true);
     });
