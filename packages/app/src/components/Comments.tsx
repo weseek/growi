@@ -17,12 +17,13 @@ const CommentEditor = dynamic<CommentEditorProps>(() => import('./PageComment/Co
 
 type CommentsProps = {
   pageId: string,
+  pagePath: string,
   revision: IRevisionHasId,
 }
 
 export const Comments = (props: CommentsProps): JSX.Element => {
 
-  const { pageId, revision } = props;
+  const { pageId, pagePath, revision } = props;
 
   const { mutate } = useSWRxPageComment(pageId);
   const { data: isDeleted } = useIsTrashPage();
@@ -40,6 +41,7 @@ export const Comments = (props: CommentsProps): JSX.Element => {
           <div id="page-comments-list" className="page-comments-list">
             <PageComment
               pageId={pageId}
+              pagePath={pagePath}
               revision={revision}
               currentUser={currentUser}
               isReadOnly={false}
