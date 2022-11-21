@@ -15,8 +15,7 @@ import {
 import { IResTagsUpdateApiv1 } from '~/interfaces/tag';
 import { OnDuplicatedFunction, OnRenamedFunction, OnDeletedFunction } from '~/interfaces/ui';
 import {
-  useCurrentPageId, useCurrentPathname,
-  useIsNotFound,
+  useCurrentPageId, useCurrentPathname, useIsNotFound,
   useCurrentUser, useIsGuestUser, useIsSharedUser, useShareLinkId, useTemplateTagData, useIsContainerFluid,
 } from '~/stores/context';
 import { usePageTagsForEditors } from '~/stores/editor';

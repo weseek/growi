@@ -133,7 +133,6 @@
   "edited this page": "さんがこのページを編集しました。",
   "List Drafts": "下書き一覧",
   "Deleted Pages": "削除済みページ",
-  "Sign out": "ログアウト",
   "Disassociate": "連携解除",
   "Color mode": "カラーモード",
   "Sidebar mode": "サイドバーモード",
@@ -153,12 +152,6 @@
   "not_allowed_to_see_this_page": "このページは閲覧できません",
   "Confirm": "確認",
   "Successfully requested": "正常に処理を受け付けました",
-  "personal_dropdown": {
-    "color_mode": "カラーモード",
-    "sidebar_mode": "サイドバーモード",
-    "sidebar_mode_editor": "サイドバーモード(編集時)",
-    "use_os_settings": "OS設定を利用する"
-  },
   "form_validation": {
     "error_message": "いくつかの値が設定されていません",
     "required": "%sに値を入力してください",
@@ -241,14 +234,6 @@
   "API Token Settings": "API Token設定",
   "Current API Token": "現在のAPI Token",
   "Update API Token": "API Tokenを更新",
-  "in_app_notification": {
-    "notification_list": "アプリ内通知一覧",
-    "see_all": "通知一覧を見る",
-    "no_notification": "通知はありません",
-    "all": "全て",
-    "unopend": "未読",
-    "mark_all_as_read": "全て既読にする"
-  },
   "in_app_notification_settings": {
     "in_app_notification_settings": "アプリ内通知設定",
     "subscribe_settings": "自動でページをサブスクライブする（通知を受け取る）設定",

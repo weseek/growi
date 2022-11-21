@@ -20,7 +20,7 @@ const logger = loggerFactory('growi:InAppNotificationDropdown');
 
 
 export const InAppNotificationDropdown = (): JSX.Element => {
-  const { t } = useTranslation();
+  const { t } = useTranslation('commons');
 
   const [isOpen, setIsOpen] = useState(false);
   const limit = 6;

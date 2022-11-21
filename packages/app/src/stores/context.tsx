@@ -1,6 +1,6 @@
 import { IUser, pagePathUtils } from '@growi/core';
 import { HtmlElementNode } from 'rehype-toc';
-import { Key, SWRResponse } from 'swr';
+import { Key, SWRResponse, useSWRConfig } from 'swr';
 import useSWRImmutable from 'swr/immutable';
 
 
@@ -57,7 +57,7 @@ export const useCurrentPathname = (initialData?: string): SWRResponse<string, Er
 };
 
 export const useCurrentPageId = (initialData?: Nullable<string>): SWRResponse<Nullable<string>, Error> => {
-  return useContextSWR<Nullable<string>, Error>('currentPageId', initialData);
+  return useStaticSWR<Nullable<string>, Error>('currentPageId', initialData);
 };
 
 export const useIsIdenticalPath = (initialData?: boolean): SWRResponse<boolean, Error> => {
