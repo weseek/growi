@@ -11,7 +11,7 @@ context('Access to page by guest', () => {
 
   it('/Sandbox with anchor hash is successfully loaded', () => {
     cy.visit('/Sandbox#Headers');
-    cy.getByTestid("grw-navigation-resize-button").should('be.visible');
+    cy.getByTestid('grw-pagetree-item-container').should('be.visible');
     cy.collapseSidebar(true, true);
 
     // eslint-disable-next-line cypress/no-unnecessary-waiting
