@@ -1857,8 +1857,28 @@ class PageService {
     return;
   }
 
-  async emptyTrashPage(user, options = {}) {
-    return this.deleteCompletelyDescendantsWithStream({ path: '/trash' }, user, options);
+  async emptyTrashPage(user, options = {}, activityParameters) {
+    const page = { path: '/trash' };
+
+    const parameters = {
+      ...activityParameters,
+      action: SupportedAction.ACTION_PAGE_RECURSIVELY_DELETE_COMPLETELY,
+      user,
+      targetModel: 'Page',
+      snapshot: {
+        username: user.username,
+      },
+    };
+
+    const activity = await this.crowi.activityService.createActivity(parameters);
+
+    const descendantsSubscribedSets = new Set();
+    const pages = await this.deleteCompletelyDescendantsWithStream(page, user, options, true, descendantsSubscribedSets);
+    const descendantsSubscribedUsers = Array.from(descendantsSubscribedSets);
+
+    this.activityEvent.emit('updated', activity, page, descendantsSubscribedUsers);
+
+    return pages;
   }
 
   /**
