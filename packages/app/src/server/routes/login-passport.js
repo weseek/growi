@@ -133,20 +133,6 @@ module.exports = function(crowi, app) {
     return res.apiv3({ redirectTo });
   };
 
-  /**
-   * failure handler
-   * @param {*} req
-   * @param {*} res
-   */
-  const loginFailureHandler = async(req, res, message) => {
-    req.flash('errorMessage', message || req.t('message.sign_in_failure'));
-
-    const parameters = { action: SupportedAction.ACTION_USER_LOGIN_FAILURE };
-    activityEvent.emit('update', res.locals.activity._id, parameters);
-
-    return res.redirect('/login');
-  };
-
   const cannotLoginErrorHadnler = (req, res, next) => {
     // this is called when all login method is somehow failed without invoking 'return next(<any Error>)'
     const err = new ErrorV3('message.sign_in_failure');
