@@ -236,14 +236,6 @@
   "API Token Settings": "API token settings",
   "Current API Token": "Current API token",
   "Update API Token": "Update API token",
-  "in_app_notification": {
-    "notification_list": "In-App Notification List",
-    "see_all": "See All",
-    "no_notification": "You don't have any notificatios.",
-    "all": "All",
-    "unopend": "Unread",
-    "mark_all_as_read": "Mark all as read"
-  },
   "in_app_notification_settings": {
     "in_app_notification_settings": "In-App Notification Settings",
     "subscribe_settings": "Settings to automatically subscribe (Receive notifications) to pages",
