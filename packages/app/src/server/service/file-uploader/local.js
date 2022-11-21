@@ -142,6 +142,7 @@ module.exports = function(crowi) {
    * List files in storage
    */
   lib.listFiles = async() => {
+    // `mkdir -p` to avoid ENOENT error
     await mkdir(basePath);
     const filePaths = await readdirRecursively(basePath);
     return Promise.all(
