@@ -1,4 +1,9 @@
 {
+	"Show": "显示",
+	"Hide": "隐藏",
+  "Add": "添加",
+  "Reset": "重启",
+
   "meta": {
     "display_name": "简体中文"
   },
@@ -55,8 +60,23 @@
     "image_crop": "图像裁剪",
     "crop": "修剪",
     "save": "节省",
-    "reset": "重启",
     "cancel": "取消"
+  },
+
+  "handsontable_modal": {
+    "title": "编辑表格",
+    "data_import": "数据导入",
+    "save": "节省",
+    "cancel": "取消",
+    "done": "完毕",
+    "data_import_form": {
+      "select_data_format": "数据格式",
+      "import_data": "导入数据",
+      "paste_table_data": "粘贴表格数据",
+      "parse_error": "解析错误",
+      "cancel": "取消",
+      "import": "导入"
+    }
   },
 
   "not_found_page": {

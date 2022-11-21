@@ -1,8 +1,6 @@
 import React, { useMemo } from 'react';
 
-import {
-  IUser, IUserHasId,
-} from '@growi/core';
+import { IUserHasId } from '@growi/core';
 import { model as mongooseModel } from 'mongoose';
 import {
   NextPage, GetServerSideProps, GetServerSidePropsContext,
@@ -36,7 +34,6 @@ import {
 const logger = loggerFactory('growi:pages:me');
 
 type Props = CommonProps & {
-  currentUser: IUser,
   isSearchServiceConfigured: boolean,
   isSearchServiceReachable: boolean,
   isSearchScopeChildrenAsDefault: boolean,

@@ -134,19 +134,21 @@ const ShareLinkSetting = (props: ShareLinkSettingProps) => {
         </div>
       </div>
       <h4>{t('security_settings.all_share_links')}</h4>
-      <Pager
-        activePage={shareLinksActivePage}
-        pagingHandler={getShareLinkList}
-        totalLinks={totalshareLinks}
-        limit={shareLinksPagingLimit}
-      />
 
       {(shareLinks.length !== 0) ? (
-        <ShareLinkList
-          shareLinks={shareLinks}
-          onClickDeleteButton={deleteLinkById}
-          isAdmin
-        />
+        <>
+          <Pager
+            activePage={shareLinksActivePage}
+            pagingHandler={getShareLinkList}
+            totalLinks={totalshareLinks}
+            limit={shareLinksPagingLimit}
+          />
+          <ShareLinkList
+            shareLinks={shareLinks}
+            onClickDeleteButton={deleteLinkById}
+            isAdmin
+          />
+        </>
       )
         : (<p className="text-center">{t('security_settings.No_share_links')}</p>
         )
