@@ -4,8 +4,11 @@ import React, {
 
 import EventEmitter from 'events';
 
+import { pathUtils } from '@growi/core';
+import Link from 'next/link';
+import { useRouter } from 'next/router';
 import { useTranslation } from 'react-i18next';
-
+import urljoin from 'url-join';
 
 import { saveOrUpdate } from '~/client/services/page-operation';
 import { toastError, toastSuccess } from '~/client/util/apiNotification';
@@ -29,7 +32,6 @@ import {
 import loggerFactory from '~/utils/logger';
 
 import HackmdEditor from './PageEditorByHackmd/HackmdEditor';
-import { useRouter } from 'next/router';
 
 const logger = loggerFactory('growi:PageEditorByHackmd');
 
@@ -55,6 +57,8 @@ export const PageEditorByHackmd = (): JSX.Element => {
   const { mutate: mutateTagsInfo } = useSWRxTagsInfo(pageId);
   const { data: grant } = useSelectedGrant();
   const { data: hackmdUri } = useHackmdUri();
+
+  const { returnPathForURL } = pathUtils;
 
   // pageData
   const { data: pageData, mutate: mutatePageData } = useSWRxCurrentPage();
@@ -352,8 +356,11 @@ export const PageEditorByHackmd = (): JSX.Element => {
               <div className="card-header bg-warning"><i className="icon-fw icon-info"></i> {t('hackmd.draft_outdated')}</div>
               <div className="card-body text-center">
                 {t('hackmd.based_on_revision')}&nbsp;
-                <a href={`?revisionId=${revisionIdHackmdSynced}`}><span className="badge badge-secondary">{revisionIdHackmdSynced?.substr(-8)}</span></a>
-
+                { pageData != null && (
+                  <Link href={urljoin(returnPathForURL(pageData.path, pageData._id), `?revisionId=${revisionIdHackmdSynced}`)} prefetch={false}>
+                    <a><span className="badge badge-secondary">{revisionIdHackmdSynced?.substr(-8)}</span></a>
+                  </Link>
+                )}
                 <div className="text-center mt-3">
                   <button
                     className="btn btn-link btn-view-outdated-draft p-0"
