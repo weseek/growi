@@ -1,4 +1,6 @@
 export const PageActionType = {
+  Create: 'Create',
+  Update: 'Update',
   Rename: 'Rename',
   Duplicate: 'Duplicate',
   Delete: 'Delete',

@@ -1,10 +1,11 @@
 import React from 'react';
 
-import { IRevisionHasPageId } from '@growi/core';
+import { IRevisionHasPageId, pathUtils } from '@growi/core';
 import { createPatch } from 'diff';
 import { html, Diff2HtmlConfig } from 'diff2html';
 import { useTranslation } from 'next-i18next';
 import Link from 'next/link';
+import urljoin from 'url-join';
 
 import UserDate from '../User/UserDate';
 
@@ -16,6 +17,8 @@ type RevisioinDiffProps = {
   currentRevision: IRevisionHasPageId,
   previousRevision: IRevisionHasPageId,
   revisionDiffOpened: boolean,
+  currentPageId: string,
+  currentPagePath: string,
   onClose: () => void,
 }
 
@@ -23,8 +26,10 @@ export const RevisionDiff = (props: RevisioinDiffProps): JSX.Element => {
   const { t } = useTranslation();
 
   const {
-    currentRevision, previousRevision, revisionDiffOpened, onClose,
+    currentRevision, previousRevision, revisionDiffOpened, currentPageId, currentPagePath, onClose,
   } = props;
+
+  const { returnPathForURL } = pathUtils;
 
   const previousText = (currentRevision._id === previousRevision._id) ? '' : previousRevision.body;
 
@@ -50,7 +55,7 @@ export const RevisionDiff = (props: RevisioinDiffProps): JSX.Element => {
           <div className="row">
             <div className="col comparison-source-wrapper pt-1 px-0">
               <span className="comparison-source pr-3">{t('page_history.comparing_source')}</span><UserDate dateTime={previousRevision.createdAt} />
-              <Link href={`?revisionId=${previousRevision._id}`}>
+              <Link href={urljoin(returnPathForURL(currentPagePath, currentPageId), `?revisionId=${previousRevision._id}`)}>
                 <a className="ml-3" onClick={onClose}>
                   <i className="icon-login"></i>
                 </a>
@@ -58,7 +63,7 @@ export const RevisionDiff = (props: RevisioinDiffProps): JSX.Element => {
             </div>
             <div className="col comparison-target-wrapper pt-1">
               <span className="comparison-target pr-3">{t('page_history.comparing_target')}</span><UserDate dateTime={currentRevision.createdAt} />
-              <Link href={`?revisionId=${currentRevision._id}`}>
+              <Link href={urljoin(returnPathForURL(currentPagePath, currentPageId), `?revisionId=${currentRevision._id}`)}>
                 <a className="ml-3" onClick={onClose}>
                   <i className="icon-login"></i>
                 </a>

@@ -23,7 +23,7 @@ import loggerFactory from '~/utils/logger';
 
 import {
   useCurrentPageId, useIsEditable, useIsGuestUser,
-  useIsSharedUser, useIsIdenticalPath, useCurrentUser, useIsNotFound, useShareLinkId,
+  useIsSharedUser, useIsIdenticalPath, useCurrentUser, useShareLinkId, useIsNotFound,
 } from './context';
 import { localStorageMiddleware } from './middlewares/sync-to-storage';
 import { useCurrentPagePath, useIsTrashPage } from './page';
@@ -97,17 +97,17 @@ const getClassNamesByEditorMode = (editorMode: EditorMode | undefined, isSidebar
 };
 
 const updateHashByEditorMode = (newEditorMode: EditorMode) => {
-  const { pathname } = window.location;
+  const { pathname, search } = window.location;
 
   switch (newEditorMode) {
     case EditorMode.View:
-      window.history.replaceState(null, '', pathname);
+      window.history.replaceState(null, '', `${pathname}${search}`);
       break;
     case EditorMode.Editor:
-      window.history.replaceState(null, '', `${pathname}#edit`);
+      window.history.replaceState(null, '', `${pathname}${search}#edit`);
       break;
     case EditorMode.HackMD:
-      window.history.replaceState(null, '', `${pathname}#hackmd`);
+      window.history.replaceState(null, '', `${pathname}${search}#hackmd`);
       break;
   }
 };
@@ -395,7 +395,6 @@ export const usePageTreeDescCountMap = (initialData?: UpdateDescCountData): SWRR
     update: (newData: UpdateDescCountData) => swrResponse.mutate(new Map([...(swrResponse.data || new Map()), ...newData])),
   };
 };
-
 
 /** **********************************************************
  *                          SWR Hooks
