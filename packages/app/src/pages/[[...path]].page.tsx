@@ -62,7 +62,7 @@ import {
   useIsEnabledStaleNotification, useIsIdenticalPath,
   useIsSearchServiceConfigured, useIsSearchServiceReachable, useDisableLinkSharing,
   useDrawioUri, useHackmdUri, useDefaultIndentSize, useIsIndentSizeForced,
-  useIsAclEnabled, useIsSearchPage, useTemplateTagData,
+  useIsAclEnabled, useIsSearchPage, useTemplateTagData, useTemplateBodyData,
   useCsrfToken, useIsSearchScopeChildrenAsDefault, useCurrentPageId, useCurrentPathname,
   useIsSlackConfigured, useRendererConfig, useEditingMarkdown,
   useEditorConfig, useIsAllReplyShown, useIsUploadableFile, useIsUploadableImage, useCustomizedLogoSrc, useIsContainerFluid,
@@ -218,6 +218,7 @@ const GrowiPage: NextPage<Props> = (props: Props) => {
   useIsSearchPage(false);
 
   useTemplateTagData(props.templateTagData);
+  useTemplateBodyData(props.templateBodyData);
 
   useIsSearchServiceConfigured(props.isSearchServiceConfigured);
   useIsSearchServiceReachable(props.isSearchServiceReachable);
