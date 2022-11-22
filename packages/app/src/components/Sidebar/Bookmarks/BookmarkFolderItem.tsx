@@ -65,8 +65,12 @@ const BookmarkFolderItem: FC<BookmarkFolderItemProps> = (props: BookmarkFolderIt
   }, [folderId, isOpen]);
 
   const loadParent = useCallback(async() => {
-    mutateParentBookmarkFolder();
-  }, [mutateParentBookmarkFolder]);
+    if (parent != null) {
+      mutateParentBookmarkFolder();
+    }
+    setTargetFolder(null);
+
+  }, [mutateParentBookmarkFolder, parent]);
 
   // Rename  for bookmark folder handler
   const onPressEnterHandlerForRename = useCallback(async(folderName: string) => {
@@ -96,6 +100,19 @@ const BookmarkFolderItem: FC<BookmarkFolderItemProps> = (props: BookmarkFolderIt
     }
 
   }, [mutateChildBookmarkData, t, targetFolder]);
+
+  // Delete Fodler handler
+  const onClickDeleteButtonHandler = useCallback(async() => {
+    try {
+      await apiv3Delete(`/bookmark-folder/${folderId}`);
+      setIsDeleteFolderModalShown(false);
+      loadParent();
+      toastSuccess(t('toaster.delete_succeeded', { target: t('bookmark_folder.bookmark_folder') }));
+    }
+    catch (err) {
+      toastError(err);
+    }
+  }, [folderId, loadParent, t]);
 
   const onClickPlusButton = useCallback(async() => {
     if (!isOpen && hasChildren()) {
@@ -129,17 +146,6 @@ const BookmarkFolderItem: FC<BookmarkFolderItemProps> = (props: BookmarkFolderIt
     setIsDeleteFolderModalShown(false);
   }, []);
 
-  const onClickDeleteButtonHandler = useCallback(async() => {
-    try {
-      await apiv3Delete(`/bookmark-folder/${folderId}`);
-      setIsDeleteFolderModalShown(false);
-      loadParent();
-      toastSuccess(t('toaster.delete_succeeded', { target: t('bookmark_folder.bookmark_folder') }));
-    }
-    catch (err) {
-      toastError(err);
-    }
-  }, [folderId, loadParent, t]);
 
   return (
     <div id={`bookmark-folder-item-${folderId}`} className="grw-foldertree-item-container"
