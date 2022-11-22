@@ -4,7 +4,6 @@ import { useTranslation } from 'next-i18next';
 import * as ReactDOMServer from 'react-dom/server';
 
 import { SocketEventName } from '~/interfaces/websocket';
-import { useGetEditingMarkdown } from '~/stores/editor';
 import {
   useHasDraftOnHackmd, useIsHackmdDraftUpdatingInRealtime, useRevisionIdHackmdSynced,
 } from '~/stores/hackmd';
@@ -27,7 +26,6 @@ export const PageStatusAlert = (): JSX.Element => {
   const { t } = useTranslation();
   const { data: isHackmdDraftUpdatingInRealtime } = useIsHackmdDraftUpdatingInRealtime();
   const { data: hasDraftOnHackmd } = useHasDraftOnHackmd();
-  const { data: getEditingMarkdown } = useGetEditingMarkdown();
 
   // store remote latest page data
   const { data: revisionIdHackmdSynced } = useRevisionIdHackmdSynced();
@@ -126,11 +124,11 @@ export const PageStatusAlert = (): JSX.Element => {
 
   const getContentsForUpdatedAlert = useCallback((): AlertComponentContents => {
 
-    let isConflictOnEdit = false;
-    if (getEditingMarkdown != null) {
-      const editingMarkdown = getEditingMarkdown();
-      isConflictOnEdit = editingMarkdown !== remoteRevisionBody;
-    }
+    const isConflictOnEdit = false;
+    // if (getEditingMarkdown != null) {
+    //   const editingMarkdown = getEditingMarkdown();
+    //   isConflictOnEdit = editingMarkdown !== remoteRevisionBody;
+    // }
 
     const usernameComponentToString = ReactDOMServer.renderToString(<Username user={remoteRevisionLastUpdateUser} />);
 
@@ -164,7 +162,7 @@ export const PageStatusAlert = (): JSX.Element => {
           )}
         </>,
     };
-  }, [getEditingMarkdown, remoteRevisionLastUpdateUser, t, onClickResolveConflict, remoteRevisionBody, refreshPage]);
+  }, [remoteRevisionLastUpdateUser, t, onClickResolveConflict, remoteRevisionBody, refreshPage]);
 
   const alertComponentContents = useMemo(() => {
     const isRevisionOutdated = revision?._id !== remoteRevisionId;

@@ -117,7 +117,3 @@ export const usePageTagsForEditors = (pageId: Nullable<string>): SWRResponse<str
 export const useIsEnabledUnsavedWarning = (): SWRResponse<boolean, Error> => {
   return useStaticSWR<boolean, Error>('isEnabledUnsavedWarning', undefined, { fallbackData: false });
 };
-
-export const useGetEditingMarkdown = (): SWRResponse<() => string, Error> => {
-  return useStaticSWR<() => string, Error>('getEditingMarkdown');
-};
