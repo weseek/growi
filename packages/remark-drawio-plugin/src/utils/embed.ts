@@ -83,6 +83,7 @@ export const generateMxgraphData = (code: string): string => {
 `;
   }
 
+  // see options: https://drawio.freshdesk.com/support/solutions/articles/16000042542-embed-html
   const mxGraphData = {
     editable: false,
     highlight: '#0000ff',
@@ -91,9 +92,6 @@ export const generateMxgraphData = (code: string): string => {
     edit: null,
     resize: true,
     lightbox: 'false',
-    // "check-visible-state": false,
-    // "auto-fit": false,
-    // move: false,
     xml,
   };
 
