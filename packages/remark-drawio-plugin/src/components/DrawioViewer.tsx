@@ -4,7 +4,7 @@ import React, {
 
 import { debounce } from 'throttle-debounce';
 
-import { IGraphViewer } from '..';
+import type { IGraphViewer } from '..';
 import { generateMxgraphData } from '../utils/embed';
 import { isGraphViewer } from '../utils/global';
 
@@ -12,12 +12,10 @@ import { isGraphViewer } from '../utils/global';
 import styles from './DrawioViewer.module.scss';
 
 
-interface Window {
-  // declare as an optional property
-  //  because this might be undefined if before load.
-  GraphViewer?: IGraphViewer,
+declare global {
+  // eslint-disable-next-line vars-on-top, no-var
+  var GraphViewer: IGraphViewer;
 }
-declare const window: Window;
 
 
 type Props = {
@@ -41,7 +39,7 @@ export const DrawioViewer = React.memo((props: Props): JSX.Element => {
       return;
     }
 
-    if (!isGraphViewer(window.GraphViewer)) {
+    if (!isGraphViewer(GraphViewer)) {
       // Do nothing if loading has not been terminated.
       // Alternatively, GraphViewer.processElements() will be called in Script.onLoad.
       // see DrawioViewerScript.tsx
@@ -57,7 +55,7 @@ export const DrawioViewer = React.memo((props: Props): JSX.Element => {
         div.innerHTML = '';
 
         try {
-          window.GraphViewer.createViewerForElement(div);
+          GraphViewer.createViewerForElement(div);
         }
         catch (err) {
           setError(err);
