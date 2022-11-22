@@ -85,11 +85,6 @@ code:not([class^='language-']) {
   }
 }
 
-// Form
-.form-control {
-  // @include form-control-focus();
-}
-
 // Tabs
 .nav.nav-tabs .nav-link.active {
   color: $color-link !important;
