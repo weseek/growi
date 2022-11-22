@@ -261,18 +261,18 @@ export const useEditingMarkdown = (): SWRResponse<string, Error> => {
   const { data: templateBodyData } = useTemplateBodyData();
 
   const shoudFetch = !(isNotFound && templateBodyData == null && !isEnabledAttachTitleHeader);
-  const key = [isNotFound, isEnabledAttachTitleHeader, currentPathname, revisionBody, templateBodyData];
+  const key = shoudFetch ? [isNotFound, isEnabledAttachTitleHeader, currentPathname, revisionBody, templateBodyData] : null;
 
   return useSWRImmutable(
-    shoudFetch ? key : null,
-    (isNotFound: boolean, isEnabledAttachTitleHeader: boolean, currentPathname: string, revisionBody?: string, templateBodyData?: string) => {
+    key,
+    (isNotFound: boolean, isEnabledAttachTitleHeader: boolean, currentPathname: string, revisionBody: string, templateBodyData: string) => {
       if (!isNotFound) {
         return revisionBody ?? '';
       }
 
       let initialEditingMarkdown = '';
       if (isEnabledAttachTitleHeader) {
-        initialEditingMarkdown += `${pathUtils.attachTitleHeader(currentPathname ?? '')}\n`;
+        initialEditingMarkdown += `${pathUtils.attachTitleHeader(currentPathname)}\n`;
       }
       if (templateBodyData != null) {
         initialEditingMarkdown += `${templateBodyData}\n`;
