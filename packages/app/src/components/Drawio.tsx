@@ -4,11 +4,11 @@ import React, {
 
 import EventEmitter from 'events';
 
+import { IGraphViewer, isGraphViewer } from '@growi/remark-drawio-plugin';
 import { useTranslation } from 'next-i18next';
 import { debounce } from 'throttle-debounce';
 
 import { CustomWindow } from '~/interfaces/global';
-import { IGraphViewer, isGraphViewer } from '~/interfaces/graph-viewer';
 
 import NotAvailableForGuest from './NotAvailableForGuest';
 
