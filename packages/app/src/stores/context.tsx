@@ -1,13 +1,9 @@
-import { IUser, pagePathUtils, pathUtils } from '@growi/core';
-import { HtmlElementNode } from 'rehype-toc';
-import { Key, SWRResponse, useSWRConfig } from 'swr';
+import { IUser, pathUtils } from '@growi/core';
+import { Key, SWRResponse } from 'swr';
 import useSWRImmutable from 'swr/immutable';
-import { boolean } from 'yargs';
-
 
 import { SupportedActionType } from '~/interfaces/activity';
 import { EditorConfig } from '~/interfaces/editor-settings';
-// import { CustomWindow } from '~/interfaces/global';
 import { RendererConfig } from '~/interfaces/services/renderer';
 import { GrowiThemes } from '~/interfaces/theme';
 import InterceptorManager from '~/services/interceptor-manager';
