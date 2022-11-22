@@ -3,10 +3,12 @@ import React, { useCallback, useEffect, useMemo } from 'react';
 import { useTranslation } from 'next-i18next';
 
 import { SocketEventName } from '~/interfaces/websocket';
+import { useEditingMarkdown } from '~/stores/context';
 import {
-  useHasDraftOnHackmd, useIsHackmdDraftUpdatingInRealtime, useRemoteRevisionId, useRevisionIdHackmdSynced,
+  useHasDraftOnHackmd, useIsHackmdDraftUpdatingInRealtime, useRevisionIdHackmdSynced,
 } from '~/stores/hackmd';
 import { useSWRxCurrentPage } from '~/stores/page';
+import { useRemoteRevisionBody, useRemoteRevisionId } from '~/stores/remote-latest-page';
 import { useGlobalSocket } from '~/stores/websocket';
 
 type AlertComponentContents = {
@@ -20,23 +22,58 @@ export const PageStatusAlert = (): JSX.Element => {
   const { t } = useTranslation();
   const { data: isHackmdDraftUpdatingInRealtime } = useIsHackmdDraftUpdatingInRealtime();
   const { data: hasDraftOnHackmd } = useHasDraftOnHackmd();
+  const { data: editingMarkdown } = useEditingMarkdown();
+
+  // store remote latest page data
   const { data: revisionIdHackmdSynced } = useRevisionIdHackmdSynced();
-  const { data: remoteRevisionId } = useRemoteRevisionId();
+  const { data: remoteRevisionId, mutate: mutateRemoteRevisionId } = useRemoteRevisionId();
+  const { data: remoteRevisionBody, mutate: mutateRemoteRevisionBody } = useRemoteRevisionBody();
+
   const { data: pageData } = useSWRxCurrentPage();
   const revision = pageData?.revision;
+  const pageId = pageData?._id;
 
   const { data: socket } = useGlobalSocket();
+
+  // method from page container
+  // setLatestRemotePageData(s2cMessagePageUpdated) {
+  //   const newState = {
+  //     remoteRevisionId: s2cMessagePageUpdated.revisionId,
+  //     remoteRevisionBody: s2cMessagePageUpdated.revisionBody,
+  //     remoteRevisionUpdateAt: s2cMessagePageUpdated.revisionUpdateAt,
+  //     revisionIdHackmdSynced: s2cMessagePageUpdated.revisionIdHackmdSynced,
+  //     // TODO // TODO remove lastUpdateUsername and refactor parts that lastUpdateUsername is used
+  //     lastUpdateUsername: s2cMessagePageUpdated.lastUpdateUsername,
+  //     lastUpdateUser: s2cMessagePageUpdated.remoteLastUpdateUser,
+  //   };
+
+  //   if (s2cMessagePageUpdated.hasDraftOnHackmd != null) {
+  //     newState.hasDraftOnHackmd = s2cMessagePageUpdated.hasDraftOnHackmd;
+  //   }
+
+  //   this.setState(newState);
+  // }
+
+  const setLatestRemotePageData = useCallback((s2cMessagePageUpdated: any) => {
+
+    mutateRemoteRevisionId(s2cMessagePageUpdated.revisionId);
+    mutateRemoteRevisionBody(s2cMessagePageUpdated.revisionBody);
+
+  }, [mutateRemoteRevisionBody, mutateRemoteRevisionId]);
 
   useEffect(() => {
     if (socket == null) { return }
 
-    socket.on(SocketEventName.PageUpdated, () => {
-      console.log('page updated');
+    socket.on(SocketEventName.PageUpdated, (data) => {
+      const { s2cMessagePageUpdated } = data;
+      if (s2cMessagePageUpdated.pageId === pageId) {
+        setLatestRemotePageData(s2cMessagePageUpdated);
+      }
     });
 
     return () => { socket.off(SocketEventName.PageUpdated) };
 
-  }, [socket]);
+  }, [pageId, setLatestRemotePageData, socket]);
 
   const refreshPage = useCallback(() => {
     window.location.reload();
