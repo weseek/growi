@@ -1,15 +1,18 @@
 import React, { useCallback, useEffect, useMemo } from 'react';
 
 import { useTranslation } from 'next-i18next';
+import * as ReactDOMServer from 'react-dom/server';
 
 import { SocketEventName } from '~/interfaces/websocket';
-import { useEditingMarkdown } from '~/stores/context';
+import { useGetEditingMarkdown } from '~/stores/editor';
 import {
   useHasDraftOnHackmd, useIsHackmdDraftUpdatingInRealtime, useRevisionIdHackmdSynced,
 } from '~/stores/hackmd';
 import { useSWRxCurrentPage } from '~/stores/page';
-import { useRemoteRevisionBody, useRemoteRevisionId } from '~/stores/remote-latest-page';
+import { useRemoteRevisionBody, useRemoteRevisionId, useRemoteRevisionLastUpdatUser } from '~/stores/remote-latest-page';
 import { useGlobalSocket } from '~/stores/websocket';
+
+import { Username } from './User/Username';
 
 import styles from './PageStatusAlert.module.scss';
 
@@ -24,12 +27,13 @@ export const PageStatusAlert = (): JSX.Element => {
   const { t } = useTranslation();
   const { data: isHackmdDraftUpdatingInRealtime } = useIsHackmdDraftUpdatingInRealtime();
   const { data: hasDraftOnHackmd } = useHasDraftOnHackmd();
-  const { data: editingMarkdown } = useEditingMarkdown();
+  const { data: getEditingMarkdown } = useGetEditingMarkdown();
 
   // store remote latest page data
   const { data: revisionIdHackmdSynced } = useRevisionIdHackmdSynced();
   const { data: remoteRevisionId, mutate: mutateRemoteRevisionId } = useRemoteRevisionId();
   const { data: remoteRevisionBody, mutate: mutateRemoteRevisionBody } = useRemoteRevisionBody();
+  const { data: remoteRevisionLastUpdateUser, mutate: mutateRemoteRevisionLastUpdateUser } = useRemoteRevisionLastUpdatUser();
 
   const { data: pageData } = useSWRxCurrentPage();
   const revision = pageData?.revision;
@@ -60,8 +64,9 @@ export const PageStatusAlert = (): JSX.Element => {
 
     mutateRemoteRevisionId(s2cMessagePageUpdated.revisionId);
     mutateRemoteRevisionBody(s2cMessagePageUpdated.revisionBody);
+    mutateRemoteRevisionLastUpdateUser(s2cMessagePageUpdated.remoteLastUpdateUser);
 
-  }, [mutateRemoteRevisionBody, mutateRemoteRevisionId]);
+  }, [mutateRemoteRevisionBody, mutateRemoteRevisionId, mutateRemoteRevisionLastUpdateUser]);
 
   useEffect(() => {
     if (socket == null) { return }
@@ -120,23 +125,20 @@ export const PageStatusAlert = (): JSX.Element => {
   }, [t]);
 
   const getContentsForUpdatedAlert = useCallback((): AlertComponentContents => {
-    // const pageEditor = appContainer.getComponentInstance('PageEditor');
 
-    const isConflictOnEdit = false;
-
-    // if (pageEditor != null) {
-    //   const markdownOnEdit = pageEditor.getMarkdown();
-    //   isConflictOnEdit = markdownOnEdit !== pageContainer.state.markdown;
-    // }
+    let isConflictOnEdit = false;
+    if (getEditingMarkdown != null) {
+      const editingMarkdown = getEditingMarkdown();
+      isConflictOnEdit = editingMarkdown !== remoteRevisionBody;
+    }
 
     // TODO: re-impl with Next.js way
-    // const usernameComponentToString = ReactDOMServer.renderToString(<Username user={pageContainer.state.lastUpdateUser} />);
+    const usernameComponentToString = ReactDOMServer.renderToString(<Username user={remoteRevisionLastUpdateUser} />);
 
-    // const label1 = isConflictOnEdit
-    //   ? t('modal_resolve_conflict.file_conflicting_with_newer_remote')
-    //   // eslint-disable-next-line react/no-danger
-    //   : <span dangerouslySetInnerHTML={{ __html: `${usernameComponentToString} ${t('edited this page')}` }} />;
-    const label1 = '(TBD -- 2022.09.13)';
+    const label1 = isConflictOnEdit
+      ? t('modal_resolve_conflict.file_conflicting_with_newer_remote')
+      // eslint-disable-next-line react/no-danger
+      : <span dangerouslySetInnerHTML={{ __html: `${usernameComponentToString} ${t('edited this page')}` }} />;
 
     return {
       additionalClasses: ['bg-warning'],
@@ -163,7 +165,7 @@ export const PageStatusAlert = (): JSX.Element => {
           )}
         </>,
     };
-  }, [t, onClickResolveConflict, refreshPage]);
+  }, [getEditingMarkdown, remoteRevisionLastUpdateUser, t, onClickResolveConflict, remoteRevisionBody, refreshPage]);
 
   const alertComponentContents = useMemo(() => {
     const isRevisionOutdated = revision?._id !== remoteRevisionId;
