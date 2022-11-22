@@ -62,7 +62,7 @@ import {
   useIsEnabledStaleNotification, useIsIdenticalPath,
   useIsSearchServiceConfigured, useIsSearchServiceReachable, useDisableLinkSharing,
   useDrawioUri, useHackmdUri, useDefaultIndentSize, useIsIndentSizeForced,
-  useIsAclEnabled, useIsSearchPage, useTemplateTagData, useTemplateBodyData,
+  useIsAclEnabled, useIsSearchPage, useTemplateTagData, useTemplateBodyData, useIsEnabledAttachTitleHeader,
   useCsrfToken, useIsSearchScopeChildrenAsDefault, useCurrentPageId, useCurrentPathname,
   useIsSlackConfigured, useRendererConfig, useEditingMarkdown,
   useEditorConfig, useIsAllReplyShown, useIsUploadableFile, useIsUploadableImage, useCustomizedLogoSrc, useIsContainerFluid,
@@ -220,6 +220,7 @@ const GrowiPage: NextPage<Props> = (props: Props) => {
   useTemplateTagData(props.templateTagData);
   useTemplateBodyData(props.templateBodyData);
 
+  useIsEnabledAttachTitleHeader(props.isEnabledAttachTitleHeader);
   useIsSearchServiceConfigured(props.isSearchServiceConfigured);
   useIsSearchServiceReachable(props.isSearchServiceReachable);
   useIsSearchScopeChildrenAsDefault(props.isSearchScopeChildrenAsDefault);
@@ -254,15 +255,7 @@ const GrowiPage: NextPage<Props> = (props: Props) => {
 
   const { data: currentPage } = useSWRxCurrentPage(undefined, pageWithMeta?.data ?? null); // store initial data
 
-  let initialEditingMarkdown = '';
-  if (props.isEnabledAttachTitleHeader && pageWithMeta == null) {
-    initialEditingMarkdown += `${attachTitleHeader(props.currentPathname)}\n`;
-  }
-  if (props.templateBodyData != null) {
-    initialEditingMarkdown += `${props.templateBodyData}\n`;
-  }
-
-  useEditingMarkdown(pageWithMeta?.data.revision?.body ?? initialEditingMarkdown ?? '');
+  useEditingMarkdown(pageWithMeta?.data.revision?.body);
 
   const { data: grantData } = useSWRxIsGrantNormalized(pageId);
   const { mutate: mutateSelectedGrant } = useSelectedGrant();
@@ -476,6 +469,7 @@ async function injectRoutingInformation(context: GetServerSidePropsContext, prop
 
   if (props.isIdenticalPathPage) {
     // TBD
+    props.isNotFound = false;
   }
   else if (page == null) {
     props.isNotFound = true;

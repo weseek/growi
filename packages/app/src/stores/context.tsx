@@ -1,7 +1,8 @@
-import { IUser, pagePathUtils } from '@growi/core';
+import { IUser, pagePathUtils, pathUtils } from '@growi/core';
 import { HtmlElementNode } from 'rehype-toc';
 import { Key, SWRResponse, useSWRConfig } from 'swr';
 import useSWRImmutable from 'swr/immutable';
+import { boolean } from 'yargs';
 
 
 import { SupportedActionType } from '~/interfaces/activity';
@@ -189,10 +190,6 @@ export const useIsBlinkedHeaderAtBoot = (initialData?: boolean): SWRResponse<boo
   return useContextSWR('isBlinkedAtBoot', initialData, { fallbackData: false });
 };
 
-export const useEditingMarkdown = (initialData?: string): SWRResponse<string, Error> => {
-  return useContextSWR('currentMarkdown', initialData);
-};
-
 export const useIsUploadableImage = (initialData?: boolean): SWRResponse<boolean, Error> => {
   return useContextSWR('isUploadableImage', initialData);
 };
@@ -252,6 +249,31 @@ export const useIsEditable = (): SWRResponse<boolean, Error> => {
     ['isEditable', isGuestUser, isForbidden, isIdenticalPath],
     (key: Key, isGuestUser: boolean, isForbidden: boolean, isIdenticalPath: boolean) => {
       return (!isForbidden && !isIdenticalPath && !isGuestUser);
+    },
+  );
+};
+
+export const useEditingMarkdown = (initialData?: string): SWRResponse<string, Error> => {
+  const { data: currentPathname } = useCurrentPathname();
+  const { data: templateBodyData } = useTemplateBodyData();
+  const { data: isNotFound } = useIsNotFound();
+  const { data: isEnabledAttachTitleHeader } = useIsEnabledAttachTitleHeader();
+
+  return useSWRImmutable(
+    ['editingMarkdown', currentPathname, templateBodyData, isNotFound, isEnabledAttachTitleHeader],
+    (key: Key, currentPathname: string, templateBodyData: string, isNotFound: boolean, isEnabledAttachTitleHeader: boolean) => {
+      if (!isNotFound) {
+        return initialData ?? '';
+      }
+
+      let initialEditingMarkdown = '';
+      if (isEnabledAttachTitleHeader) {
+        initialEditingMarkdown += `${pathUtils.attachTitleHeader(currentPathname)}\n`;
+      }
+      if (templateBodyData != null) {
+        initialEditingMarkdown += `${templateBodyData}\n`;
+      }
+      return initialEditingMarkdown;
     },
   );
 };
