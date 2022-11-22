@@ -39,7 +39,7 @@ const PersonalDropdown = () => {
       </button>
 
       {/* Menu */}
-      <div className="dropdown-menu dropdown-menu-right">
+      <div className="dropdown-menu dropdown-menu-right" data-testid="personal-dropdown-menu">
 
         <div className="px-4 pt-3 pb-2 text-center">
           <UserPicture user={user} size="lg" noLink noTooltip />
