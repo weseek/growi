@@ -559,7 +559,7 @@ module.exports = (crowi) => {
     try {
       const shouldUseV4Process = false;
       const grantData = { grant, grantedGroup };
-      data = await Page.updateGrant(page, req.user, grantData, shouldUseV4Process);
+      data = await this.crowi.pageService.updateGrant(page, req.user, grantData, shouldUseV4Process);
     }
     catch (err) {
       logger.error('Error occurred while processing calcApplicableGrantData.', err);

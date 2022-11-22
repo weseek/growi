@@ -467,12 +467,13 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
                   </UncontrolledTooltip>
                 </>
               )}
-
-              <Link href={`/${page._id}`} prefetch={false}>
-                <a className="grw-pagetree-title-anchor flex-grow-1">
-                  <p className={`text-truncate m-auto ${page.isEmpty && 'grw-sidebar-text-muted'}`}>{nodePath.basename(page.path ?? '') || '/'}</p>
-                </a>
-              </Link>
+              { page != null && page.path != null && page._id != null && (
+                <Link href={pathUtils.returnPathForURL(page.path, page._id)} prefetch={false}>
+                  <a className="grw-pagetree-title-anchor flex-grow-1">
+                    <p className={`text-truncate m-auto ${page.isEmpty && 'grw-sidebar-text-muted'}`}>{nodePath.basename(page.path ?? '') || '/'}</p>
+                  </a>
+                </Link>
+              )}
             </>
           )}
         {descendantCount > 0 && !isRenameInputShown && (
