@@ -56,22 +56,13 @@ const escapeHTML = (string): string => {
   });
 };
 
-export const generateMxgraphData = (code: string, idx: number): string => {
+export const generateMxgraphData = (code: string): string => {
   const trimedCode = code.trim();
   if (!trimedCode) {
     return '';
   }
 
-  try {
-    validateInputData(trimedCode);
-  }
-  catch (e) {
-    return `
-  <div class="drawio-viewer-index-${idx} markdownItDrawioViewer markdownItDrawioViewerError">
-    <p>MarkdownItDrawioViewer Error: ${e}</p>
-  </div>
-  `;
-  }
+  validateInputData(trimedCode);
 
   let xml;
   try {

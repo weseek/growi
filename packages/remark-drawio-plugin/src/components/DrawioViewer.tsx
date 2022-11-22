@@ -1,5 +1,5 @@
 import React, {
-  ReactNode, useCallback, useEffect, useMemo, useRef,
+  ReactNode, useCallback, useEffect, useMemo, useRef, useState,
 } from 'react';
 
 import { debounce } from 'throttle-debounce';
@@ -34,6 +34,8 @@ export const DrawioViewer = React.memo((props: Props): JSX.Element => {
 
   const drawioContainerRef = useRef<HTMLDivElement>(null);
 
+  const [error, setError] = useState<Error>();
+
   const renderDrawio = useCallback(() => {
     if (drawioContainerRef.current == null) {
       return;
@@ -53,7 +55,13 @@ export const DrawioViewer = React.memo((props: Props): JSX.Element => {
 
       if (div != null) {
         div.innerHTML = '';
-        window.GraphViewer.createViewerForElement(div);
+
+        try {
+          window.GraphViewer.createViewerForElement(div);
+        }
+        catch (err) {
+          setError(err);
+        }
       }
     }
   }, [drawioContainerRef]);
@@ -61,6 +69,8 @@ export const DrawioViewer = React.memo((props: Props): JSX.Element => {
   const renderDrawioWithDebounce = useMemo(() => debounce(200, renderDrawio), [renderDrawio]);
 
   const mxgraphHtml = useMemo(() => {
+    setError(undefined);
+
     if (children == null) {
       return '';
     }
@@ -69,17 +79,22 @@ export const DrawioViewer = React.memo((props: Props): JSX.Element => {
       ? children.map(e => e?.toString()).join('')
       : children.toString();
 
-    const mxgraphData = generateMxgraphData(code, diagramIndex);
+    let mxgraphData;
+    try {
+      mxgraphData = generateMxgraphData(code);
+    }
+    catch (err) {
+      setError(err);
+    }
 
     return `<div class="mxgraph" data-mxgraph="${mxgraphData}"></div>`;
-
-  }, [children, diagramIndex]);
+  }, [children]);
 
   useEffect(() => {
     if (mxgraphHtml.length > 0) {
       renderDrawioWithDebounce();
     }
-  }, [mxgraphHtml.length, renderDrawioWithDebounce]);
+  }, [mxgraphHtml, renderDrawioWithDebounce]);
 
   return (
     <div
@@ -89,8 +104,18 @@ export const DrawioViewer = React.memo((props: Props): JSX.Element => {
       data-begin-line-number-of-markdown={bol}
       data-end-line-number-of-markdown={eol}
     >
-      {/* eslint-disable-next-line react/no-danger */}
-      <div dangerouslySetInnerHTML={{ __html: mxgraphHtml }} />
+      {/* show error */}
+      { error != null && (
+        <span className="text-muted"><i className="icon-fw icon-exclamation"></i>
+          {error.name && <strong>{error.name}: </strong>}
+          {error.message}
+        </span>
+      ) }
+
+      { error == null && (
+        // eslint-disable-next-line react/no-danger
+        <div dangerouslySetInnerHTML={{ __html: mxgraphHtml }} />
+      ) }
     </div>
   );
 });
