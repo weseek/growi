@@ -87,7 +87,7 @@ const logger = loggerFactory('growi:pages:all');
 const {
   isPermalink: _isPermalink, isUsersHomePage, isTrashPage: _isTrashPage, isUserPage, isCreatablePage, isTopPage,
 } = pagePathUtils;
-const { removeHeadingSlash, attachTitleHeader } = pathUtils;
+const { removeHeadingSlash } = pathUtils;
 
 type IPageToShowRevisionWithMeta = IDataWithMeta<IPagePopulatedToShowRevision & PageDocument, IPageInfoForEntity>;
 type IPageToShowRevisionWithMetaSerialized = IDataWithMeta<string, string>;
