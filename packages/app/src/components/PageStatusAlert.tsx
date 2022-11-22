@@ -11,6 +11,8 @@ import { useSWRxCurrentPage } from '~/stores/page';
 import { useRemoteRevisionBody, useRemoteRevisionId } from '~/stores/remote-latest-page';
 import { useGlobalSocket } from '~/stores/websocket';
 
+import styles from './PageStatusAlert.module.scss';
+
 type AlertComponentContents = {
   additionalClasses: string[],
   label: JSX.Element,
@@ -199,7 +201,7 @@ export const PageStatusAlert = (): JSX.Element => {
   const { additionalClasses, label, btn } = alertComponentContents;
 
   return (
-    <div className={`card grw-page-status-alert text-white fixed-bottom animated fadeInUp faster ${additionalClasses.join(' ')}`}>
+    <div className={`${styles['grw-page-status-alert']} card text-white fixed-bottom animated fadeInUp faster ${additionalClasses.join(' ')}`}>
       <div className="card-body">
         <p className="card-text grw-card-label-container">
           {label}
