@@ -22,14 +22,6 @@ function rewriteNode(node: Node, index: number) {
     bol: node.position?.start.line,
     eol: node.position?.end.line,
   };
-  // omit position to fix the key regardless of its position
-  // see:
-  //   https://github.com/remarkjs/react-markdown/issues/703
-  //   https://github.com/remarkjs/react-markdown/issues/466
-  //
-  //   https://github.com/remarkjs/react-markdown/blob/a80dfdee2703d84ac2120d28b0e4998a5b417c85/lib/ast-to-react.js#L201-L204
-  //   https://github.com/remarkjs/react-markdown/blob/a80dfdee2703d84ac2120d28b0e4998a5b417c85/lib/ast-to-react.js#L217-L222
-  delete node.position;
 }
 
 export const remarkPlugin: Plugin = function() {
@@ -38,6 +30,15 @@ export const remarkPlugin: Plugin = function() {
       if (node.type === 'code') {
         if (isDrawioBlock(node.lang)) {
           rewriteNode(node, index ?? 0);
+
+          // omit position to fix the key regardless of its position
+          // see:
+          //   https://github.com/remarkjs/react-markdown/issues/703
+          //   https://github.com/remarkjs/react-markdown/issues/466
+          //
+          //   https://github.com/remarkjs/react-markdown/blob/a80dfdee2703d84ac2120d28b0e4998a5b417c85/lib/ast-to-react.js#L201-L204
+          //   https://github.com/remarkjs/react-markdown/blob/a80dfdee2703d84ac2120d28b0e4998a5b417c85/lib/ast-to-react.js#L217-L222
+          delete node.position;
         }
       }
     });
