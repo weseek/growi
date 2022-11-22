@@ -262,6 +262,7 @@ export const SearchResultContent: FC<Props> = (props: Props) => {
         <PageComment
           rendererOptions={rendererOptions}
           pageId={page._id}
+          pagePath={page.path}
           revision={page.revision}
           currentUser={currentUser}
           isReadOnly
