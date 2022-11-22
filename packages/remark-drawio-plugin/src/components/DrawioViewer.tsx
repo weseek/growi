@@ -98,7 +98,7 @@ export const DrawioViewer = React.memo((props: Props): JSX.Element => {
     <div
       key={`drawio-viewer-${diagramIndex}`}
       ref={drawioContainerRef}
-      className={`drawio-viewer ${styles['drawio-viewer']}`}
+      className={`drawio-viewer ${styles['drawio-viewer']} p-2`}
       data-begin-line-number-of-markdown={bol}
       data-end-line-number-of-markdown={eol}
     >
