@@ -132,7 +132,6 @@ export const PageStatusAlert = (): JSX.Element => {
       isConflictOnEdit = editingMarkdown !== remoteRevisionBody;
     }
 
-    // TODO: re-impl with Next.js way
     const usernameComponentToString = ReactDOMServer.renderToString(<Username user={remoteRevisionLastUpdateUser} />);
 
     const label1 = isConflictOnEdit
