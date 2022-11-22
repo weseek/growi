@@ -21,6 +21,7 @@ import {
 import {
   useCurrentIndentSize, useSWRxSlackChannels, useIsSlackEnabled, useIsTextlintEnabled, usePageTagsForEditors,
   useIsEnabledUnsavedWarning,
+  useGetEditingMarkdown,
 } from '~/stores/editor';
 import { useCurrentPagePath, useSWRxCurrentPage } from '~/stores/page';
 import { usePreviewOptions } from '~/stores/renderer';
@@ -72,6 +73,8 @@ const PageEditor = React.memo((): JSX.Element => {
 
   const { data: rendererOptions } = usePreviewOptions();
 
+  const { mutate: mutateGetEditingMarkdown } = useGetEditingMarkdown();
+
   const currentRevisionId = currentPage?.revision?._id;
   const initialValue = editingMarkdown ?? '';
 
@@ -98,13 +101,19 @@ const PageEditor = React.memo((): JSX.Element => {
   //   return optionsToSave;
   // }, [grantData, isSlackEnabled, pageTags, slackChannelsData]);
 
+  const getEditingMarkdown = useCallback((): string => {
+    return markdownToPreview;
+  }, [markdownToPreview]);
+
   const setMarkdownWithDebounce = useMemo(() => debounce(100, throttle(150, (value: string, isClean: boolean) => {
     markdownToSave.current = value;
     setMarkdownToPreview(value);
 
+    mutateGetEditingMarkdown(getEditingMarkdown);
+
     // Displays an unsaved warning alert
     mutateIsEnabledUnsavedWarning(!isClean);
-  })), [mutateIsEnabledUnsavedWarning]);
+  })), [getEditingMarkdown, mutateGetEditingMarkdown, mutateIsEnabledUnsavedWarning]);
 
 
   const markdownChangedHandler = useCallback((value: string, isClean: boolean): void => {
