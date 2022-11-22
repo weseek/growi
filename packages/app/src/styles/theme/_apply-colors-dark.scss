@@ -65,6 +65,7 @@ textarea.form-control {
   background-color: darken($bgcolor-global, 5%);
   border-color: $border-color-global;
   &:focus {
+    color: $color-global;
     background-color: $bgcolor-global;
   }
   // FIXME: accent color
