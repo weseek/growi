@@ -57,14 +57,14 @@ import DisplaySwitcher from '../components/Page/DisplaySwitcher';
 // import PageStatusAlert from '../client/js/components/PageStatusAlert';
 import {
   useCurrentUser,
-  useIsLatestRevision, useCurrentRevisionId,
+  useIsLatestRevision, useCurrentRevisionId, useRevisionBody,
   useIsForbidden, useIsNotFound, useIsSharedUser,
   useIsEnabledStaleNotification, useIsIdenticalPath,
   useIsSearchServiceConfigured, useIsSearchServiceReachable, useDisableLinkSharing,
   useDrawioUri, useHackmdUri, useDefaultIndentSize, useIsIndentSizeForced,
   useIsAclEnabled, useIsSearchPage, useTemplateTagData, useTemplateBodyData, useIsEnabledAttachTitleHeader,
   useCsrfToken, useIsSearchScopeChildrenAsDefault, useCurrentPageId, useCurrentPathname,
-  useIsSlackConfigured, useRendererConfig, useEditingMarkdown,
+  useIsSlackConfigured, useRendererConfig,
   useEditorConfig, useIsAllReplyShown, useIsUploadableFile, useIsUploadableImage, useCustomizedLogoSrc, useIsContainerFluid,
 } from '../stores/context';
 
@@ -255,7 +255,7 @@ const GrowiPage: NextPage<Props> = (props: Props) => {
 
   const { data: currentPage } = useSWRxCurrentPage(undefined, pageWithMeta?.data ?? null); // store initial data
 
-  useEditingMarkdown(pageWithMeta?.data.revision?.body);
+  useRevisionBody(pageWithMeta?.data.revision?.body);
 
   const { data: grantData } = useSWRxIsGrantNormalized(pageId);
   const { mutate: mutateSelectedGrant } = useSelectedGrant();
@@ -467,20 +467,18 @@ async function injectRoutingInformation(context: GetServerSidePropsContext, prop
 
   const page = props.pageWithMeta?.data;
 
+  props.isNotFound = !(page != null && !page.isEmpty);
+
   if (props.isIdenticalPathPage) {
     // TBD
-    props.isNotFound = false;
   }
   else if (page == null) {
-    props.isNotFound = true;
     props.isNotCreatablePage = !isCreatablePage(currentPathname);
     // check the page is forbidden or just does not exist.
     const count = isPermalink ? await Page.count({ _id: pageId }) : await Page.count({ path: currentPathname });
     props.isForbidden = count > 0;
   }
   else {
-    props.isNotFound = page.isEmpty;
-
     // /62a88db47fed8b2d94f30000 ==> /path/to/page
     if (isPermalink && page.isEmpty) {
       props.currentPathname = page.path;
