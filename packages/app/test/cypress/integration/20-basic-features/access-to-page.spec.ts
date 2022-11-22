@@ -19,6 +19,8 @@ context('Access to page', () => {
     cy.visit('/Sandbox#Headers');
     cy.waitUntilSkeletonDisappear();
 
+    cy.get('#revision-toc').should('be.visible');
+
     // hide fab // disable fab for sticky-events warning
     // cy.getByTestid('grw-fab-container').invoke('attr', 'style', 'display: none');
 
