@@ -1,4 +1,3 @@
-import { ErrorV3 } from '@growi/core';
 
 import { SupportedTargetModel, SupportedAction } from '~/interfaces/activity';
 import { subscribeRuleNames } from '~/interfaces/in-app-notification';
@@ -7,6 +6,8 @@ import loggerFactory from '~/utils/logger';
 import { generateAddActivityMiddleware } from '../../middlewares/add-activity';
 import { apiV3FormValidator } from '../../middlewares/apiv3-form-validator';
 import { isV5ConversionError } from '../../models/vo/v5-conversion-error';
+
+import { ErrorV3 } from '@growi/core';
 
 const logger = loggerFactory('growi:routes:apiv3:pages'); // eslint-disable-line no-unused-vars
 const { pathUtils, pagePathUtils } = require('@growi/core');
@@ -627,7 +628,11 @@ module.exports = (crowi) => {
     // when all pages are deletable
     else {
       try {
-        const pages = await crowi.pageService.emptyTrashPage(req.user, options);
+        const activityParameters = {
+          ip: req.ip,
+          endpoint: req.originalUrl,
+        };
+        const pages = await crowi.pageService.emptyTrashPage(req.user, options, activityParameters);
 
         activityEvent.emit('update', res.locals.activity._id, parameters);
 
