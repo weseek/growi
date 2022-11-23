@@ -337,7 +337,6 @@ export const generateViewOptions = (
     //   behavior: 'append',
     // }]
   );
-
   if (config.isEnabledXssPrevention) {
     rehypePlugins.push(
       [sanitize, deepmerge(
