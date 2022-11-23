@@ -301,6 +301,48 @@ export class G2GTransferPusherService implements Pusher {
     const { fileUploadService } = this.crowi;
     const Attachment = this.crowi.model('Attachment');
     const filesFromNewGrowi = await this.listFilesInStorage(tk);
+
+    /**
+     * Given these documents,
+     *
+     * | fileName | fileSize |
+     * | -- | -- |
+     * | a.png | 1024 |
+     * | b.png | 2048 |
+     * | c.png | 1024 |
+     * | d.png | 2048 |
+     *
+     * this filter
+     *
+     * ```jsonc
+     * {
+     *   $and: [
+     *     // a file transferred
+     *     {
+     *       $or: [
+     *         { fileName: { $ne: "a.png" } },
+     *         { fileSize: { $ne: 1024 } }
+     *       ]
+     *     },
+     *     // a file failed to transfer
+     *     {
+     *       $or: [
+     *         { fileName: { $ne: "b.png" } },
+     *         { fileSize: { $ne: 0 } }
+     *       ]
+     *     }
+     *   ]
+     * }
+     * ```
+     *
+     * results in
+     *
+     * | fileName | fileSize |
+     * | -- | -- |
+     * | b.png | 2048 |
+     * | c.png | 1024 |
+     * | d.png | 2048 |
+     */
     const filter = filesFromNewGrowi.length > 0 ? {
       $and: filesFromNewGrowi.map(({ name, size }) => ({
         $or: [
