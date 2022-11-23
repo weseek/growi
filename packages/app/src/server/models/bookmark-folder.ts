@@ -24,7 +24,7 @@ export interface BookmarkFolderModel extends Model<BookmarkFolderDocument>{
   createByParameters(params: IBookmarkFolder): BookmarkFolderDocument
   findFolderAndChildren(user: Types.ObjectId | string, parentId?: Types.ObjectId | string): BookmarkFolderItems[]
   findChildFolderById(parentBookmarkFolder: Types.ObjectId | string): Promise<BookmarkFolderDocument[]>
-  deleteFolderAndChildren(bookmarkFolderId: string): {deletedCount: number}
+  deleteFolderAndChildren(bookmarkFolderId: Types.ObjectId | string): {deletedCount: number}
   updateBookmarkFolder(bookmarkFolderId: string, name: string, parent: string): BookmarkFolderDocument | null
 }
 
@@ -88,8 +88,14 @@ bookmarkFolderSchema.statics.deleteFolderAndChildren = async function(boookmarkF
   const bookmarkFolder = await this.findByIdAndDelete(boookmarkFolderId);
   let deletedCount = 0;
   if (bookmarkFolder != null) {
-    const childFolders = await this.deleteMany({ parent: bookmarkFolder?.id });
-    deletedCount = childFolders.deletedCount + 1;
+    // Delete all child recursively and update deleted count
+    const childFolders = await this.find({ parent: bookmarkFolder });
+    await Promise.all(childFolders.map(async(child) => {
+      const deletedChildFolder = await this.deleteFolderAndChildren(child._id);
+      deletedCount += deletedChildFolder.deletedCount;
+    }));
+    const deletedChild = await this.deleteMany({ parent: bookmarkFolder });
+    deletedCount += deletedChild.deletedCount + 1;
   }
   return { deletedCount };
 };

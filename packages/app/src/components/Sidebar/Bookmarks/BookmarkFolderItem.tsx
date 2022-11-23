@@ -65,12 +65,18 @@ const BookmarkFolderItem: FC<BookmarkFolderItemProps> = (props: BookmarkFolderIt
   }, [folderId, isOpen]);
 
   const loadParent = useCallback(async() => {
-    if (parent != null) {
-      mutateParentBookmarkFolder();
+    if (!isRenameAction) {
+      if (parent != null) {
+        await mutateParentBookmarkFolder();
+      }
+      // Reload root folder structure
+      setTargetFolder(null);
     }
-    setTargetFolder(null);
+    else {
+      await mutateParentBookmarkFolder();
+    }
 
-  }, [mutateParentBookmarkFolder, parent]);
+  }, [isRenameAction, mutateParentBookmarkFolder, parent]);
 
   // Rename  for bookmark folder handler
   const onPressEnterHandlerForRename = useCallback(async(folderName: string) => {
