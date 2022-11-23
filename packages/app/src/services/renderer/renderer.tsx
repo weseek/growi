@@ -384,13 +384,19 @@ export const generateTocOptions = (config: RendererConfig, tocNode: HtmlElementN
   // add rehype plugins
   rehypePlugins.push(
     [toc.rehypePluginRestore, { tocNode }],
-    [sanitize, commonSanitizeOption],
   );
+  if (config.isEnabledXssPrevention) {
+    rehypePlugins.push(
+      [sanitize, commonSanitizeOption],
+    );
+  }
   // renderer.rehypePlugins.push([autoLinkHeadings, {
   //   behavior: 'append',
   // }]);
 
-  verifySanitizePlugin(options);
+  if (config.isEnabledXssPrevention) {
+    verifySanitizePlugin(options);
+  }
   return options;
 };
 
@@ -414,19 +420,25 @@ export const generateSimpleViewOptions = (config: RendererConfig, pagePath: stri
   rehypePlugins.push(
     [lsxGrowiPlugin.rehypePlugin, { pagePath }],
     [keywordHighlighter.rehypePlugin, { keywords: highlightKeywords }],
-    [sanitize, deepmerge(
-      commonSanitizeOption,
-      lsxGrowiPlugin.sanitizeOption,
-    )],
     katex,
   );
+  if (config.isEnabledXssPrevention) {
+    rehypePlugins.push(
+      [sanitize, deepmerge(
+        commonSanitizeOption,
+        lsxGrowiPlugin.sanitizeOption,
+      )],
+    );
+  }
 
   // add components
   if (components != null) {
     components.lsx = props => <Lsx {...props} />;
   }
 
-  verifySanitizePlugin(options, false);
+  if (config.isEnabledXssPrevention) {
+    verifySanitizePlugin(options, false);
+  }
   return options;
 };
 
@@ -450,20 +462,22 @@ export const generatePreviewOptions = (config: RendererConfig, pagePath: string)
   rehypePlugins.push(
     [lsxGrowiPlugin.rehypePlugin, { pagePath }],
     addLineNumberAttribute.rehypePlugin,
-    [sanitize, deepmerge(
+    katex,
+  );
+  if (config.isEnabledXssPrevention) {
+    rehypePlugins.push([sanitize, deepmerge(
       commonSanitizeOption,
       lsxGrowiPlugin.sanitizeOption,
       addLineNumberAttribute.sanitizeOption,
-    )],
-    katex,
-  );
-
+    )]);
+  }
   // add components
   if (components != null) {
     components.lsx = props => <Lsx {...props} />;
   }
-
-  verifySanitizePlugin(options, false);
+  if (config.isEnabledXssPrevention) {
+    verifySanitizePlugin(options, false);
+  }
   return options;
 };
 
@@ -479,10 +493,14 @@ export const generateOthersOptions = (config: RendererConfig): RendererOptions =
   // renderer.configure();
 
   // add rehype plugins
-  rehypePlugins.push(
-    [sanitize, commonSanitizeOption],
-  );
+  if (config.isEnabledXssPrevention) {
+    rehypePlugins.push(
+      [sanitize, commonSanitizeOption],
+    );
+  }
 
-  verifySanitizePlugin(options);
+  if (config.isEnabledXssPrevention) {
+    verifySanitizePlugin(options);
+  }
   return options;
 };
