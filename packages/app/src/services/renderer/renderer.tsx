@@ -331,16 +331,21 @@ export const generateViewOptions = (
   rehypePlugins.push(
     slug,
     [lsxGrowiPlugin.rehypePlugin, { pagePath }],
-    [sanitize, deepmerge(
-      commonSanitizeOption,
-      lsxGrowiPlugin.sanitizeOption,
-    )],
     katex,
     [toc.rehypePluginStore, { storeTocNode }],
     // [autoLinkHeadings, {
     //   behavior: 'append',
     // }]
   );
+
+  if (config.isEnabledXssPrevention) {
+    rehypePlugins.push(
+      [sanitize, deepmerge(
+        commonSanitizeOption,
+        lsxGrowiPlugin.sanitizeOption,
+      )],
+    );
+  }
 
   // add components
   if (components != null) {
@@ -362,7 +367,9 @@ export const generateViewOptions = (
   // renderer.setMarkdownSettings({ breaks: rendererSettings.isEnabledLinebreaks });
   // renderer.configure();
 
-  verifySanitizePlugin(options, false);
+  if (config.isEnabledXssPrevention) {
+    verifySanitizePlugin(options, false);
+  }
   return options;
 };
 
