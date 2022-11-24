@@ -45,6 +45,7 @@ context('Access to Admin page', () => {
   it('/admin/markdown is successfully loaded', () => {
     cy.visit('/admin/markdown');
     cy.getByTestid('admin-markdown').should('be.visible');
+    cy.get('#isEnabledLinebreaksInComments').should('be.checked')
     cy.screenshot(`${ssPrefix}-admin-markdown`);
   });
 
