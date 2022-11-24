@@ -123,17 +123,13 @@ const PageEditor = React.memo((): JSX.Element => {
   //   return optionsToSave;
   // }, [grantData, isSlackEnabled, pageTags, slackChannelsData]);
 
-  const getEditingMarkdown = useCallback((): string => {
-    return markdownToPreview;
-  }, [markdownToPreview]);
-
   const setMarkdownWithDebounce = useMemo(() => debounce(100, throttle(150, (value: string, isClean: boolean) => {
     markdownToSave.current = value;
     setMarkdownToPreview(value);
 
     // Displays an unsaved warning alert
     mutateIsEnabledUnsavedWarning(!isClean);
-  })), [getEditingMarkdown, mutateIsEnabledUnsavedWarning]);
+  })), [mutateIsEnabledUnsavedWarning]);
 
 
   const markdownChangedHandler = useCallback((value: string, isClean: boolean): void => {
