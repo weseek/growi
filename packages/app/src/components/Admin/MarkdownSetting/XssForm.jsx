@@ -5,6 +5,7 @@ import PropTypes from 'prop-types';
 
 import AdminMarkDownContainer from '~/client/services/AdminMarkDownContainer';
 import { toastSuccess, toastError } from '~/client/util/apiNotification';
+import { RehypeSanitizeOption } from '~/interfaces/rehype';
 import { tags, attrs } from '~/services/xss/recommended-whitelist';
 import loggerFactory from '~/utils/logger';
 
@@ -52,7 +53,7 @@ class XssForm extends React.Component {
                 id="xssOption2"
                 name="XssOption"
                 checked={xssOption === 1}
-                onChange={() => { adminMarkDownContainer.setState({ xssOption: 1 }) }}
+                onChange={() => { adminMarkDownContainer.setState({ xssOption: RehypeSanitizeOption.RECOMMENDED }) }}
               />
               <label className="custom-control-label w-100" htmlFor="xssOption2">
                 <p className="font-weight-bold">{t('markdown_settings.xss_options.recommended_setting')}</p>
@@ -94,7 +95,7 @@ class XssForm extends React.Component {
                 id="xssOption3"
                 name="XssOption"
                 checked={xssOption === 2}
-                onChange={() => { adminMarkDownContainer.setState({ xssOption: 2 }) }}
+                onChange={() => { adminMarkDownContainer.setState({ xssOption: RehypeSanitizeOption.CUSTOM }) }}
               />
               <label className="custom-control-label w-100" htmlFor="xssOption3">
                 <p className="font-weight-bold">{t('markdown_settings.xss_options.custom_whitelist')}</p>
