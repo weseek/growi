@@ -43,6 +43,7 @@ import {
   useEditorMode, useSelectedGrant,
   usePreferDrawerModeByUser, usePreferDrawerModeOnEditByUser, useSidebarCollapsed, useCurrentSidebarContents, useCurrentProductNavWidth,
 } from '~/stores/ui';
+import { useSetupGlobalSocket, useSetupGlobalSocketForPage } from '~/stores/websocket';
 import loggerFactory from '~/utils/logger';
 
 // import { isUserPage, isTrashPage, isSharedPage } from '~/utils/path-utils';
@@ -81,6 +82,7 @@ const GrowiSubNavigationSwitcher = dynamic(() => import('../components/Navbar/Gr
 const UsersHomePageFooter = dynamic<UsersHomePageFooterProps>(() => import('../components/UsersHomePageFooter')
   .then(mod => mod.UsersHomePageFooter), { ssr: false });
 const HandsontableModal = dynamic(() => import('../components/PageEditor/HandsontableModal').then(mod => mod.HandsontableModal), { ssr: false });
+const PageStatusAlert = dynamic(() => import('../components/PageStatusAlert').then(mod => mod.PageStatusAlert), { ssr: false });
 
 const logger = loggerFactory('growi:pages:all');
 
@@ -256,6 +258,9 @@ const GrowiPage: NextPage<Props> = (props: Props) => {
 
   const { getClassNamesByEditorMode } = useEditorMode();
 
+  useSetupGlobalSocket();
+  useSetupGlobalSocketForPage(pageId);
+
   const shouldRenderPutbackPageModal = pageWithMeta != null
     ? _isTrashPage(pageWithMeta.data.path)
     : false;
@@ -321,7 +326,7 @@ const GrowiPage: NextPage<Props> = (props: Props) => {
                     { props.isNotCreatablePage && <NotCreatablePage />}
                     { !props.isForbidden && !props.isNotCreatablePage && <DisplaySwitcher />}
                     {/* <DisplaySwitcher /> */}
-                    {/* <PageStatusAlert /> */}
+                    <PageStatusAlert />
                   </>
                 ) }
 
