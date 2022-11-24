@@ -18,9 +18,9 @@ const BookmarkContents = (): JSX.Element => {
   const { mutate: mutateChildBookmarkData } = useSWRxBookamrkFolderAndChild(null);
 
 
-  const onClickNewBookmarkFolder = () => {
+  const onClickNewBookmarkFolder = useCallback(() => {
     setIsCreateAction(true);
-  };
+  }, []);
 
   const onPressEnterHandlerForCreate = useCallback(async(folderName: string) => {
 
