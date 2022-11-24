@@ -113,11 +113,11 @@ context('Access to special pages', () => {
     cy.collapseSidebar(true);
   });
 
-  // it('/trash is successfully loaded', () => {
-  //   cy.visit('/trash', {  });
-  //   cy.getByTestid('trash-page-list').should('be.visible');
-  //   cy.screenshot(`${ssPrefix}-trash`);
-  // });
+  it('/trash is successfully loaded', () => {
+    cy.visit('/trash', {  });
+    cy.getByTestid('trash-page-list').should('be.visible');
+    cy.screenshot(`${ssPrefix}-trash`);
+  });
 
   it('/tags is successfully loaded', { scrollBehavior: false } ,() => {
 
