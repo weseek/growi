@@ -58,7 +58,7 @@ import DisplaySwitcher from '../components/Page/DisplaySwitcher';
 // import PageStatusAlert from '../client/js/components/PageStatusAlert';
 import {
   useCurrentUser,
-  useIsLatestRevision, useCurrentRevisionId,
+  useIsLatestRevision,
   useIsForbidden, useIsNotFound, useIsSharedUser,
   useIsEnabledStaleNotification, useIsIdenticalPath,
   useIsSearchServiceConfigured, useIsSearchServiceReachable, useDisableLinkSharing,
@@ -138,7 +138,6 @@ type Props = CommonProps & {
 
   // shareLinkId?: string;
   isLatestRevision?: boolean,
-  currentRevisionId?: string,
 
   isIdenticalPathPage?: boolean,
   isForbidden: boolean,
@@ -250,7 +249,6 @@ const GrowiPage: NextPage<Props> = (props: Props) => {
   useCurrentPageId(pageId ?? null);
   // useIsNotCreatable(props.isForbidden || !isCreatablePage(pagePath)); // TODO: need to include props.isIdentical
   useCurrentPathname(props.currentPathname);
-  useCurrentRevisionId(props.currentRevisionId);
 
   const { data: currentPage } = useSWRxCurrentPage(undefined, pageWithMeta?.data ?? null); // store initial data
 
@@ -341,7 +339,9 @@ const GrowiPage: NextPage<Props> = (props: Props) => {
           </div>
           { !props.isIdenticalPathPage && !props.isNotFound && (
             <footer className="footer d-edit-none">
-              { pageWithMeta != null && !isTopPagePath && (<Comments pageId={pageId} revision={pageWithMeta.data.revision} />) }
+              { pageWithMeta != null && pagePath != null && !isTopPagePath && (
+                <Comments pageId={pageId} pagePath={pagePath} revision={pageWithMeta.data.revision} />
+              ) }
               { pageWithMeta != null && isUsersHomePage(pageWithMeta.data.path) && (
                 <UsersHomePageFooter creatorId={pageWithMeta.data.creator._id}/>
               ) }
@@ -424,10 +424,6 @@ async function injectPageData(context: GetServerSidePropsContext, props: Props):
     page.initLatestRevisionField(revisionId);
     await page.populateDataToShowRevision();
     props.isLatestRevision = page.isLatestRevision();
-  }
-
-  if (typeof revisionId === 'string' || typeof revisionId === 'undefined') {
-    props.currentRevisionId = props.isLatestRevision && page.latestRevision != null ? page.latestRevision.toString() : revisionId;
   }
 
   if (page == null && user != null) {
