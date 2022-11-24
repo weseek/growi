@@ -60,7 +60,7 @@ const TableOfContents = (): JSX.Element => {
       >
         <div
           id="revision-toc-content"
-          // data-testid="revision-toc-content"
+          data-testid="revision-toc-content"
           className="revision-toc-content mb-3"
         >
           {/* parse blank to show toc (https://github.com/weseek/growi/pull/6277) */}
