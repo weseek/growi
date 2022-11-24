@@ -62,7 +62,7 @@ context('Access to sidebar', () => {
 
     // create /Sidebar contents
     const content = '# HELLO \n ## Hello\n ### Hello';
-    cy.get('.grw-sidebar-content-header > h3').find('a').click();
+    cy.get('.grw-sidebar-content-header.h5').find('a').click();
     cy.get('.CodeMirror textarea').type(content, {force: true});
     cy.screenshot(`${ssPrefix}custom-sidebar-2-custom-sidebar-editor`);
     cy.getByTestid('save-page-btn').click();
@@ -90,12 +90,13 @@ context('Access to sidebar', () => {
         cy.getByTestid('grw-navigation-resize-button').click({force: true});
       }
     });
-    cy.getByTestid('grw-contextual-navigation-sub').should('be.visible')
+    cy.get('.grw-pagetree-triangle-btn').eq(0).click();
     cy.screenshot(`${ssPrefix}page-tree-1-access-to-page-tree`);
 
     // hide page tree items
+    cy.getByTestid('grw-contextual-navigation-sub').should('be.visible');
     cy.get('.grw-pagetree-triangle-btn').eq(0).click();
-    cy.getByTestid('grw-contextual-navigation-sub').screenshot(`${ssPrefix}page-tree-2-hide-page-tree-item`);
+    cy.screenshot(`${ssPrefix}page-tree-2-hide-page-tree-item`);
 
     //
     cy.get('.grw-pagetree-triangle-btn').eq(0).click();
