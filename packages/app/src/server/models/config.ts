@@ -156,7 +156,7 @@ export const defaultMarkdownConfigs: { [key: string]: any } = {
   'markdown:xss:tagWhiteList': [],
   'markdown:xss:attrWhiteList': [],
   'markdown:rehypeSanitize:isEnabledPrevention': true,
-  'markdown:rehypeSanitize:option': RehypeSanitizeOption.Recommended,
+  'markdown:rehypeSanitize:option': RehypeSanitizeOption.RECOMMENDED,
   'markdown:rehypeSanitize:tagNames': [],
   'markdown:rehypeSanitize:attributes': {},
   'markdown:isEnabledLinebreaks': false,
