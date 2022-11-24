@@ -77,7 +77,6 @@ const PageEditor = React.memo((): JSX.Element => {
   const currentRevisionId = currentPage?.revision?._id;
   const initialValue = currentPage?.revision?.body ?? '';
 
-  const markdownToSave = useRef<string>(initialValue);
   const [markdownToPreview, setMarkdownToPreview] = useState<string>(initialValue);
 
   const slackChannels = useMemo(() => (slackChannelsData ? slackChannelsData.toString() : ''), [slackChannelsData]);
@@ -124,7 +123,6 @@ const PageEditor = React.memo((): JSX.Element => {
   // }, [grantData, isSlackEnabled, pageTags, slackChannelsData]);
 
   const setMarkdownWithDebounce = useMemo(() => debounce(100, throttle(150, (value: string, isClean: boolean) => {
-    markdownToSave.current = value;
     setMarkdownToPreview(value);
 
     // Displays an unsaved warning alert
@@ -152,7 +150,7 @@ const PageEditor = React.memo((): JSX.Element => {
     );
 
     try {
-      await saveOrUpdate(optionsToSave, { pageId, path: currentPagePath || currentPathname, revisionId: currentRevisionId }, markdownToSave.current);
+      await saveOrUpdate(optionsToSave, { pageId, path: currentPagePath || currentPathname, revisionId: currentRevisionId }, markdownToPreview);
       await mutateCurrentPage();
       mutateIsEnabledUnsavedWarning(false);
       return true;
@@ -172,7 +170,7 @@ const PageEditor = React.memo((): JSX.Element => {
     }
 
   // eslint-disable-next-line max-len
-  }, [grantData, isSlackEnabled, currentPathname, slackChannels, pageTags, pageId, currentPagePath, currentRevisionId, mutateCurrentPage, mutateIsEnabledUnsavedWarning]);
+  }, [grantData, isSlackEnabled, currentPathname, slackChannels, pageTags, pageId, currentPagePath, currentRevisionId, markdownToPreview, mutateCurrentPage, mutateIsEnabledUnsavedWarning]);
 
   const saveAndReturnToViewHandler = useCallback(async(opts?: {overwriteScopesOfDescendants: boolean}) => {
     if (editorMode !== EditorMode.Editor) {
@@ -352,7 +350,6 @@ const PageEditor = React.memo((): JSX.Element => {
     if (initialValue == null) {
       return;
     }
-    markdownToSave.current = initialValue;
     setMarkdownToPreview(initialValue);
     mutateIsEnabledUnsavedWarning(false);
   }, [initialValue, mutateIsEnabledUnsavedWarning]);
