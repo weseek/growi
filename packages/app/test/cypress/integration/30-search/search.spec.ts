@@ -178,7 +178,8 @@ context('Search all pages', () => {
     cy.visit('/');
     cy.waitUntilSkeletonDisappear();
 
-    cy.get('.rbt-input').should('be.visible').click();
+    cy.get('.rbt-input').should('be.visible');
+    cy.get('.rbt-input').click();
     cy.get('.rbt-input-main').type(`${searchText}`);
     cy.screenshot(`${ssPrefix}1-insert-search-text-with-tag`, { capture: 'viewport'});
     cy.get('.rbt-input-main').type('{enter}');
