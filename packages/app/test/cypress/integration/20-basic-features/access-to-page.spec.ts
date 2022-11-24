@@ -127,7 +127,6 @@ context('Access to special pages', () => {
     cy.visit('/tags');
     // select tags
     cy.getByTestid('grw-sidebar-nav-primary-tags').click();
-    cy.waitUntilSpinnerDisappear();
 
     const text = 'You have no tag, You can set tags on pages'
 
