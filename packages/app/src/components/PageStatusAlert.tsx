@@ -4,6 +4,7 @@ import { useTranslation } from 'next-i18next';
 import * as ReactDOMServer from 'react-dom/server';
 
 import { SocketEventName } from '~/interfaces/websocket';
+import { useIsConflict } from '~/stores/editor';
 import {
   useHasDraftOnHackmd, useIsHackmdDraftUpdatingInRealtime, useRevisionIdHackmdSynced,
 } from '~/stores/hackmd';
@@ -26,11 +27,11 @@ export const PageStatusAlert = (): JSX.Element => {
   const { t } = useTranslation();
   const { data: isHackmdDraftUpdatingInRealtime } = useIsHackmdDraftUpdatingInRealtime();
   const { data: hasDraftOnHackmd } = useHasDraftOnHackmd();
+  const { data: isConflict } = useIsConflict();
 
   // store remote latest page data
   const { data: revisionIdHackmdSynced } = useRevisionIdHackmdSynced();
   const { data: remoteRevisionId, mutate: mutateRemoteRevisionId } = useRemoteRevisionId();
-  const { data: remoteRevisionBody, mutate: mutateRemoteRevisionBody } = useRemoteRevisionBody();
   const { data: remoteRevisionLastUpdateUser, mutate: mutateRemoteRevisionLastUpdateUser } = useRemoteRevisionLastUpdatUser();
 
   const { data: pageData } = useSWRxCurrentPage();
@@ -58,25 +59,22 @@ export const PageStatusAlert = (): JSX.Element => {
   //   this.setState(newState);
   // }
 
-  const setLatestRemotePageData = useCallback((s2cMessagePageUpdated: any) => {
+  const setLatestRemotePageData = useCallback((data) => {
+    const { s2cMessagePageUpdated } = data;
 
     mutateRemoteRevisionId(s2cMessagePageUpdated.revisionId);
-    mutateRemoteRevisionBody(s2cMessagePageUpdated.revisionBody);
     mutateRemoteRevisionLastUpdateUser(s2cMessagePageUpdated.remoteLastUpdateUser);
-
-  }, [mutateRemoteRevisionBody, mutateRemoteRevisionId, mutateRemoteRevisionLastUpdateUser]);
+  }, [mutateRemoteRevisionId, mutateRemoteRevisionLastUpdateUser]);
 
   useEffect(() => {
+
     if (socket == null) { return }
 
-    socket.on(SocketEventName.PageUpdated, (data) => {
-      const { s2cMessagePageUpdated } = data;
-      if (s2cMessagePageUpdated.pageId === pageId) {
-        setLatestRemotePageData(s2cMessagePageUpdated);
-      }
-    });
+    socket.on(SocketEventName.PageUpdated, setLatestRemotePageData);
 
-    return () => { socket.off(SocketEventName.PageUpdated) };
+    return () => {
+      socket.off(SocketEventName.PageUpdated, setLatestRemotePageData);
+    };
 
   }, [pageId, setLatestRemotePageData, socket]);
 
@@ -124,15 +122,9 @@ export const PageStatusAlert = (): JSX.Element => {
 
   const getContentsForUpdatedAlert = useCallback((): AlertComponentContents => {
 
-    const isConflictOnEdit = false;
-    // if (getEditingMarkdown != null) {
-    //   const editingMarkdown = getEditingMarkdown();
-    //   isConflictOnEdit = editingMarkdown !== remoteRevisionBody;
-    // }
-
     const usernameComponentToString = ReactDOMServer.renderToString(<Username user={remoteRevisionLastUpdateUser} />);
 
-    const label1 = isConflictOnEdit
+    const label1 = isConflict
       ? t('modal_resolve_conflict.file_conflicting_with_newer_remote')
       // eslint-disable-next-line react/no-danger
       : <span dangerouslySetInnerHTML={{ __html: `${usernameComponentToString} ${t('edited this page')}` }} />;
@@ -150,7 +142,7 @@ export const PageStatusAlert = (): JSX.Element => {
             <i className="icon-fw icon-reload mr-1"></i>
             {t('Load latest')}
           </button>
-          { isConflictOnEdit && (
+          { isConflict && (
             <button
               type="button"
               onClick={onClickResolveConflict}
@@ -162,7 +154,7 @@ export const PageStatusAlert = (): JSX.Element => {
           )}
         </>,
     };
-  }, [remoteRevisionLastUpdateUser, t, onClickResolveConflict, remoteRevisionBody, refreshPage]);
+  }, [remoteRevisionLastUpdateUser, isConflict, t, onClickResolveConflict, refreshPage]);
 
   const alertComponentContents = useMemo(() => {
     const isRevisionOutdated = revision?._id !== remoteRevisionId;
