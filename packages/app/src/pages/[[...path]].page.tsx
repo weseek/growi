@@ -467,18 +467,18 @@ async function injectRoutingInformation(context: GetServerSidePropsContext, prop
 
   const page = props.pageWithMeta?.data;
 
-  props.isNotFound = !(page != null && !page.isEmpty);
-
   if (props.isIdenticalPathPage) {
     // TBD
   }
   else if (page == null) {
+    props.isNotFound = true
     props.isNotCreatablePage = !isCreatablePage(currentPathname);
     // check the page is forbidden or just does not exist.
     const count = isPermalink ? await Page.count({ _id: pageId }) : await Page.count({ path: currentPathname });
     props.isForbidden = count > 0;
   }
   else {
+    props.isNotFound = page.isEmpty;
     // /62a88db47fed8b2d94f30000 ==> /path/to/page
     if (isPermalink && page.isEmpty) {
       props.currentPathname = page.path;
