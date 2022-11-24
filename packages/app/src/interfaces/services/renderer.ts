@@ -1,5 +1,4 @@
-import { XssOptionConfig } from '~/services/xss/xssOption';
-
+import { RehypeSanitizeOptionConfig } from '../rehype';
 
 export type RendererConfig = {
   isEnabledLinebreaks: boolean,
@@ -10,4 +9,4 @@ export type RendererConfig = {
 
   plantumlUri: string | null,
   blockdiagUri: string | null,
-} & XssOptionConfig;
+} & RehypeSanitizeOptionConfig;
