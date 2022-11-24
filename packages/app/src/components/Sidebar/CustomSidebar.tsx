@@ -1,6 +1,7 @@
 import React, { FC } from 'react';
 
 import { useTranslation } from 'next-i18next';
+import Link from 'next/link';
 
 import { IRevision } from '~/interfaces/revision';
 import { useSWRxPageByPath } from '~/stores/page';
@@ -9,6 +10,7 @@ import loggerFactory from '~/utils/logger';
 
 import RevisionRenderer from '../Page/RevisionRenderer';
 
+import { SidebarHeaderReloadButton } from './SidebarHeaderReloadButton';
 
 import styles from './CustomSidebar.module.scss';
 
@@ -19,9 +21,9 @@ const logger = loggerFactory('growi:cli:CustomSidebar');
 const SidebarNotFound = () => {
   return (
     <div className="grw-sidebar-content-header h5 text-center p-3">
-      <a href="/Sidebar#edit">
-        <i className="icon-magic-wand"></i> Create <strong>/Sidebar</strong> page
-      </a>
+      <Link href="/Sidebar#edit">
+        <a><i className="icon-magic-wand"></i> Create <strong>/Sidebar</strong> page</a>
+      </Link>
     </div>
   );
 };
@@ -44,11 +46,9 @@ const CustomSidebar: FC = () => {
       <div className="grw-sidebar-content-header p-3 d-flex">
         <h3 className="mb-0">
           {t('CustomSidebar')}
-          <a className="h6 ml-2" href="/Sidebar"><i className="icon-pencil"></i></a>
+          <Link href="/Sidebar"><a className="h6 ml-2"><i className="icon-pencil"></i></a></Link>
         </h3>
-        <button type="button" className="btn btn-sm ml-auto grw-btn-reload" onClick={() => mutate()}>
-          <i className="icon icon-reload"></i>
-        </button>
+        <SidebarHeaderReloadButton onClick={() => mutate()} />
       </div>
 
       {
