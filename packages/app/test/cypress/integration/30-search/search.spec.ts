@@ -92,6 +92,8 @@ context('Search all pages', () => {
     const searchText = 'help';
 
     cy.visit('/');
+    cy.waitUntilSkeletonDisappear();
+
     cy.get('.rbt-input').click();
     cy.get('.rbt-menu.dropdown-menu.show').should('be.visible').within(() => {
       cy.screenshot(`${ssPrefix}1-search-input-focused`);
