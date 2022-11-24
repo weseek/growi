@@ -16,6 +16,15 @@ import loggerFactory from '~/utils/logger';
 
 const logger = loggerFactory('growi:service:fileUploaderAws');
 
+/**
+ * File metadata in storage
+ * TODO: mv this to "./uploader"
+ */
+  interface FileMeta {
+  name: string;
+  size: number;
+}
+
 type AwsCredential = {
   accessKeyId: string,
   secretAccessKey: string
@@ -239,16 +248,39 @@ module.exports = (crowi) => {
       throw new Error('AWS is not configured.');
     }
 
+    const files: FileMeta[] = [];
     const s3 = S3Factory();
     const awsConfig = getAwsConfig();
     const params = {
       Bucket: awsConfig.bucket,
     };
-    const { Contents } = await s3.send(new ListObjectsCommand(params));
+    let shouldContinue = true;
+    let nextMarker: string | undefined;
 
-    return Contents?.map(({ Key: name, Size: size }) => ({
-      name, size,
-    })) ?? [];
+    // handle pagination
+    while (shouldContinue) {
+      // eslint-disable-next-line no-await-in-loop
+      const { Contents = [], IsTruncated, NextMarker } = await s3.send(new ListObjectsCommand({
+        ...params,
+        Marker: nextMarker,
+      }));
+      files.push(...(
+        Contents.map(({ Key, Size }) => ({
+          name: Key as string,
+          size: Size as number,
+        }))
+      ));
+
+      if (!IsTruncated) {
+        shouldContinue = false;
+        nextMarker = undefined;
+      }
+      else {
+        nextMarker = NextMarker;
+      }
+    }
+
+    return files;
   };
 
   return lib;

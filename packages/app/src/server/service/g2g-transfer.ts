@@ -51,6 +51,7 @@ export type IDataGROWIInfo = {
 
 /**
  * File metadata in storage
+ * TODO: mv this to "./file-uploader/uploader"
  */
 interface FileMeta {
   name: string;
