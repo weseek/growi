@@ -51,8 +51,8 @@ class XssForm extends React.Component {
                 className="custom-control-input"
                 id="xssOption2"
                 name="XssOption"
-                checked={xssOption === 2}
-                onChange={() => { adminMarkDownContainer.setState({ xssOption: 2 }) }}
+                checked={xssOption === 1}
+                onChange={() => { adminMarkDownContainer.setState({ xssOption: 1 }) }}
               />
               <label className="custom-control-label w-100" htmlFor="xssOption2">
                 <p className="font-weight-bold">{t('markdown_settings.xss_options.recommended_setting')}</p>
@@ -93,8 +93,8 @@ class XssForm extends React.Component {
                 className="custom-control-input"
                 id="xssOption3"
                 name="XssOption"
-                checked={xssOption === 3}
-                onChange={() => { adminMarkDownContainer.setState({ xssOption: 3 }) }}
+                checked={xssOption === 2}
+                onChange={() => { adminMarkDownContainer.setState({ xssOption: 2 }) }}
               />
               <label className="custom-control-label w-100" htmlFor="xssOption3">
                 <p className="font-weight-bold">{t('markdown_settings.xss_options.custom_whitelist')}</p>
