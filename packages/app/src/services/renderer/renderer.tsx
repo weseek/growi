@@ -327,24 +327,21 @@ export const generateViewOptions = (
     remarkPlugins.push(breaks);
   }
 
+  const rehypeSanitizePlugin: Pluggable<any[]> | (() => void) = config.isEnabledXssPrevention
+    ? [sanitize, deepmerge(commonSanitizeOption, lsxGrowiPlugin.sanitizeOption)]
+    : () => {};
+
   // add rehype plugins
   rehypePlugins.push(
     slug,
     [lsxGrowiPlugin.rehypePlugin, { pagePath }],
+    rehypeSanitizePlugin,
     katex,
     [toc.rehypePluginStore, { storeTocNode }],
     // [autoLinkHeadings, {
     //   behavior: 'append',
     // }]
   );
-  if (config.isEnabledXssPrevention) {
-    rehypePlugins.push(
-      [sanitize, deepmerge(
-        commonSanitizeOption,
-        lsxGrowiPlugin.sanitizeOption,
-      )],
-    );
-  }
 
   // add components
   if (components != null) {
@@ -381,15 +378,16 @@ export const generateTocOptions = (config: RendererConfig, tocNode: HtmlElementN
   // add remark plugins
   // remarkPlugins.push();
 
+
+  const rehypeSanitizePlugin: Pluggable<any[]> | (() => void) = config.isEnabledXssPrevention
+    ? [sanitize, deepmerge(commonSanitizeOption, lsxGrowiPlugin.sanitizeOption)]
+    : () => {};
+
   // add rehype plugins
   rehypePlugins.push(
     [toc.rehypePluginRestore, { tocNode }],
+    rehypeSanitizePlugin,
   );
-  if (config.isEnabledXssPrevention) {
-    rehypePlugins.push(
-      [sanitize, commonSanitizeOption],
-    );
-  }
   // renderer.rehypePlugins.push([autoLinkHeadings, {
   //   behavior: 'append',
   // }]);
@@ -416,20 +414,17 @@ export const generateSimpleViewOptions = (config: RendererConfig, pagePath: stri
     remarkPlugins.push(breaks);
   }
 
+  const rehypeSanitizePlugin: Pluggable<any[]> | (() => void) = config.isEnabledXssPrevention
+    ? [sanitize, deepmerge(commonSanitizeOption, lsxGrowiPlugin.sanitizeOption)]
+    : () => {};
+
   // add rehype plugins
   rehypePlugins.push(
     [lsxGrowiPlugin.rehypePlugin, { pagePath }],
     [keywordHighlighter.rehypePlugin, { keywords: highlightKeywords }],
+    rehypeSanitizePlugin,
     katex,
   );
-  if (config.isEnabledXssPrevention) {
-    rehypePlugins.push(
-      [sanitize, deepmerge(
-        commonSanitizeOption,
-        lsxGrowiPlugin.sanitizeOption,
-      )],
-    );
-  }
 
   // add components
   if (components != null) {
@@ -458,23 +453,23 @@ export const generatePreviewOptions = (config: RendererConfig, pagePath: string)
     remarkPlugins.push(breaks);
   }
 
+  const rehypeSanitizePlugin: Pluggable<any[]> | (() => void) = config.isEnabledXssPrevention
+    ? [sanitize, deepmerge(commonSanitizeOption, lsxGrowiPlugin.sanitizeOption)]
+    : () => {};
+
   // add rehype plugins
   rehypePlugins.push(
     [lsxGrowiPlugin.rehypePlugin, { pagePath }],
     addLineNumberAttribute.rehypePlugin,
+    rehypeSanitizePlugin,
     katex,
   );
-  if (config.isEnabledXssPrevention) {
-    rehypePlugins.push([sanitize, deepmerge(
-      commonSanitizeOption,
-      lsxGrowiPlugin.sanitizeOption,
-      addLineNumberAttribute.sanitizeOption,
-    )]);
-  }
+
   // add components
   if (components != null) {
     components.lsx = props => <Lsx {...props} />;
   }
+
   if (config.isEnabledXssPrevention) {
     verifySanitizePlugin(options, false);
   }
@@ -492,12 +487,14 @@ export const generateOthersOptions = (config: RendererConfig): RendererOptions =
   // renderer.setMarkdownSettings({ breaks: rendererSettings.isEnabledLinebreaks });
   // renderer.configure();
 
+  const rehypeSanitizePlugin: Pluggable<any[]> | (() => void) = config.isEnabledXssPrevention
+    ? [sanitize, deepmerge(commonSanitizeOption, lsxGrowiPlugin.sanitizeOption)]
+    : () => {};
+
   // add rehype plugins
-  if (config.isEnabledXssPrevention) {
-    rehypePlugins.push(
-      [sanitize, commonSanitizeOption],
-    );
-  }
+  rehypePlugins.push(
+    rehypeSanitizePlugin,
+  );
 
   if (config.isEnabledXssPrevention) {
     verifySanitizePlugin(options);
