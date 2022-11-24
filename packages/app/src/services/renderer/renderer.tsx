@@ -464,10 +464,12 @@ export const generatePreviewOptions = (config: RendererConfig, pagePath: string)
     rehypeSanitizePlugin,
     katex,
   );
+
   // add components
   if (components != null) {
     components.lsx = props => <Lsx {...props} />;
   }
+
   if (config.isEnabledXssPrevention) {
     verifySanitizePlugin(options, false);
   }
