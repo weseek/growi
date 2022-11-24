@@ -36,7 +36,7 @@ const BookmarkContents = (): JSX.Element => {
 
   }, [mutateChildBookmarkData, t]);
 
-  const renderAddNewBookmarkFolder = () => (
+  const renderAddNewBookmarkFolder = useCallback(() => (
     <>
       <div className="col-8 mb-2 ">
         <button
@@ -58,7 +58,7 @@ const BookmarkContents = (): JSX.Element => {
         )
       }
     </>
-  );
+  ), [isCreateAction, onClickNewBookmarkFolder, onPressEnterHandlerForCreate, t]);
 
   return (
     <>
