@@ -183,12 +183,12 @@ context('Search all pages', () => {
     cy.screenshot(`${ssPrefix}1-insert-search-text-with-tag`, { capture: 'viewport'});
     cy.get('.rbt-input-main').type('{enter}');
 
-    cy.waitUntilSpinnerDisappear();
-
     cy.getByTestid('search-result-base').should('be.visible');
     cy.getByTestid('search-result-list').should('be.visible');
     cy.getByTestid('search-result-content').should('be.visible');
     cy.get('.wiki').should('be.visible');
+    cy.waitUntilSpinnerDisappear();
+
     // force to add 'active' to pass VRT: https://github.com/weseek/growi/pull/6603
     cy.getByTestid('page-list-item-L').first().invoke('addClass', 'active');
     cy.screenshot(`${ssPrefix}2-search-with-tag-result`, {capture: 'viewport'});
@@ -245,6 +245,8 @@ context('Search all pages', () => {
     cy.getByTestid('search-result-list').should('be.visible');
     cy.getByTestid('search-result-content').should('be.visible');
     cy.get('.wiki').should('be.visible');
+    cy.waitUntilSpinnerDisappear();
+
     cy.screenshot(`${ssPrefix}4-tag-order-by-last-update-date`);
   });
 
