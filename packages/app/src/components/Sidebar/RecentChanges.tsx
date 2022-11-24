@@ -161,7 +161,7 @@ const RecentChanges = (): JSX.Element => {
   return (
     <div data-testid="grw-recent-changes">
       <div className="grw-sidebar-content-header p-3 d-flex">
-        <h3 className="text-nowrap">{t('Recent Changes')}</h3>
+        <h3 className="mb-0 text-nowrap">{t('Recent Changes')}</h3>
         <SidebarHeaderReloadButton onClick={() => mutate()}/>
         <div className="d-flex align-items-center">
           <div className={`grw-recent-changes-resize-button ${styles['grw-recent-changes-resize-button']} custom-control custom-switch ml-1`}>

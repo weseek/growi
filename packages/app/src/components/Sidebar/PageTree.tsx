@@ -17,7 +17,7 @@ const PageTreeHeader = () => {
 
   return (
     <div className="grw-sidebar-content-header p-3">
-      <h3>{t('Page Tree')}</h3>
+      <h3 className="mb-0">{t('Page Tree')}</h3>
     </div>
   );
 };
