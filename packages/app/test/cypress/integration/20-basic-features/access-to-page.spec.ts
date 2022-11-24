@@ -120,7 +120,15 @@ context('Access to special pages', () => {
   });
 
   it('/tags is successfully loaded', { scrollBehavior: false } ,() => {
+    // open sidebar
+    // cy.collapseSidebar(false);
+
     cy.visit('/tags');
+
+    // cy.getByTestid('grw-sidebar-content-tags').within(() => {
+    //   cy.getByTestid('grw-tags-list').should('be.visible');
+    //   cy.getByTestid('grw-tags-list').contains('You have no tag, You can set tags on pages');
+    // })
 
     cy.getByTestid('tags-page').within(() => {
       cy.getByTestid('grw-tags-list').should('be.visible');
