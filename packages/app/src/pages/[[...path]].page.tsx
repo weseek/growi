@@ -337,7 +337,9 @@ const GrowiPage: NextPage<Props> = (props: Props) => {
           </div>
           { !props.isIdenticalPathPage && !props.isNotFound && (
             <footer className="footer d-edit-none">
-              { pageWithMeta != null && !isTopPagePath && (<Comments pageId={pageId} revision={pageWithMeta.data.revision} />) }
+              { pageWithMeta != null && pagePath != null && !isTopPagePath && (
+                <Comments pageId={pageId} pagePath={pagePath} revision={pageWithMeta.data.revision} />
+              ) }
               { pageWithMeta != null && isUsersHomePage(pageWithMeta.data.path) && (
                 <UsersHomePageFooter creatorId={pageWithMeta.data.creator._id}/>
               ) }

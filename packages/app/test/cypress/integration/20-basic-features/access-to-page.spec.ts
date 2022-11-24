@@ -19,6 +19,9 @@ context('Access to page', () => {
     cy.visit('/Sandbox#Headers');
     cy.waitUntilSkeletonDisappear();
 
+    // for check download toc data
+    cy.get('.toc-link').should('be.visible');
+
     // hide fab // disable fab for sticky-events warning
     // cy.getByTestid('grw-fab-container').invoke('attr', 'style', 'display: none');
 
@@ -32,9 +35,10 @@ context('Access to page', () => {
 
   it('/Sandbox/Math is successfully loaded', () => {
     cy.visit('/Sandbox/Math');
+    cy.waitUntilSkeletonDisappear();
 
-    // eslint-disable-next-line cypress/no-unnecessary-waiting
-    cy.wait(2000); // wait for 2 seconds for MathJax.typesetPromise();
+    // for check download toc data
+    cy.get('.toc-link').should('be.visible');
 
     cy.screenshot(`${ssPrefix}-sandbox-math`);
   });
