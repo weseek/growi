@@ -48,7 +48,7 @@ const CustomSidebar: FC = () => {
           {t('CustomSidebar')}
           <Link href="/Sidebar"><a className="h6 ml-2"><i className="icon-pencil"></i></a></Link>
         </h3>
-        <SidebarHeaderReloadButton onClick={mutate} />
+        <SidebarHeaderReloadButton onClick={() => mutate()} />
       </div>
 
       {

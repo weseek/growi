@@ -131,14 +131,17 @@ const SmallPageItem = memo(({ page }: PageItemProps): JSX.Element => {
 SmallPageItem.displayName = 'SmallPageItem';
 
 const RecentChanges = (): JSX.Element => {
+
   const PER_PAGE = 20;
   const { t } = useTranslation();
   const swr = useSWRInifinitexRecentlyUpdated();
   const { data, error, mutate } = swr;
+
   const [isRecentChangesSidebarSmall, setIsRecentChangesSidebarSmall] = useState(false);
   const isEmpty = data?.[0].length === 0;
   const isLoading = error == null && data === undefined;
   const isReachingEnd = isEmpty || (data && data[data.length - 1]?.length < PER_PAGE);
+
   const retrieveSizePreferenceFromLocalStorage = useCallback(() => {
     if (window.localStorage.isRecentChangesSidebarSmall === 'true') {
       setIsRecentChangesSidebarSmall(true);
@@ -159,7 +162,7 @@ const RecentChanges = (): JSX.Element => {
     <div data-testid="grw-recent-changes">
       <div className="grw-sidebar-content-header p-3 d-flex">
         <h3 className="text-nowrap">{t('Recent Changes')}</h3>
-        <SidebarHeaderReloadButton onClick={mutate}/>
+        <SidebarHeaderReloadButton onClick={() => mutate()}/>
         <div className="d-flex align-items-center">
           <div className={`grw-recent-changes-resize-button ${styles['grw-recent-changes-resize-button']} custom-control custom-switch ml-1`}>
             <input
