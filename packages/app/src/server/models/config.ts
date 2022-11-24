@@ -3,6 +3,7 @@ import uniqueValidator from 'mongoose-unique-validator';
 
 import { GrowiThemes } from '~/interfaces/theme';
 
+import { RehypeSanitizeOption } from '../../interfaces/rehype';
 import { getOrCreateModel } from '../util/mongoose-utils';
 
 
@@ -154,10 +155,10 @@ export const defaultMarkdownConfigs: { [key: string]: any } = {
   'markdown:xss:option': 2,
   'markdown:xss:tagWhiteList': [],
   'markdown:xss:attrWhiteList': [],
-  'markdown:sanitize:isEnabledPrevention': true,
-  'markdown:sanitize:option': 1,
-  'markdown:sanitize:tagWhiteList': [],
-  'markdown:sanitize:attrWhiteList': [],
+  'markdown:rehypeSanitize:isEnabledPrevention': true,
+  'markdown:rehypeSanitize:option': RehypeSanitizeOption.Recommended,
+  'markdown:rehypeSanitize:tagNames': [],
+  'markdown:rehypeSanitize:attributes': {},
   'markdown:isEnabledLinebreaks': false,
   'markdown:isEnabledLinebreaksInComments': true,
   'markdown:adminPreferredIndentSize': 4,
