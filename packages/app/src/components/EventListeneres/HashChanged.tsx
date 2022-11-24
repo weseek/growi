@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect } from 'react';
 
-import { useEditorMode, determineEditorModeByHash } from '~/stores/ui';
 import { useIsEditable } from '~/stores/context';
+import { useEditorMode, determineEditorModeByHash } from '~/stores/ui';
 
 /**
  * Change editorMode by browser forward/back operation
