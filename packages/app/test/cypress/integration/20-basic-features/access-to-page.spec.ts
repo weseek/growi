@@ -119,7 +119,7 @@ context('Access to special pages', () => {
   //   cy.screenshot(`${ssPrefix}-trash`);
   // });
 
-  it('/tags is successfully loaded', () => {
+  it('/tags is successfully loaded', { scrollBehavior: false } ,() => {
 
     // open sidebar
     cy.collapseSidebar(false);
