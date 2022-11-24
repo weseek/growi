@@ -9,7 +9,7 @@ import { useSWRxTagsList } from '~/stores/tag';
 import TagCloudBox from '../TagCloudBox';
 import TagList from '../TagList';
 
-import { SidebarHeader } from './SidebarHeader';
+import { SidebarHeaderReloadButton } from './SidebarHeaderReloadButton';
 
 
 const PAGING_LIMIT = 10;
@@ -43,45 +43,47 @@ const Tag: FC = () => {
 
   // todo: adjust design by XD
   return (
-    <div data-testid="grw-sidebar-content-tags">
-      <SidebarHeader title='Tags' hasButton onClick={onReload} />
-      <div className="grw-container-convertible px-4 mb-5 pb-5">
-        <h3 className="my-3">{t('tag_list')}</h3>
+    <div className="grw-container-convertible px-4 mb-5 pb-5" data-testid="grw-sidebar-content-tags">
+      <div className="grw-sidebar-content-header py-3 d-flex">
+        <h3>{t('Tags')}</h3>
+        <SidebarHeaderReloadButton onClick={onReload}/>
+      </div>
 
-        { isLoading
-          ? (
-            <div className="text-muted text-center">
-              <i className="fa fa-2x fa-spinner fa-pulse mt-3"></i>
-            </div>
-          )
-          : (
-            <div data-testid="grw-tags-list">
-              <TagList
-                tagData={tagData}
-                totalTags={totalCount}
-                activePage={activePage}
-                onChangePage={setOffsetByPageNumber}
-                pagingLimit={PAGING_LIMIT}
-              />
-            </div>
-          )
-        }
+      <h3 className="my-3">{t('tag_list')}</h3>
 
-        <div className="d-flex justify-content-center my-5">
-          <button
-            className="btn btn-primary rounded px-4"
-            type="button"
-            onClick={() => router.push('/tags')}
-          >
-            {t('Check All tags')}
-          </button>
-        </div>
+      { isLoading
+        ? (
+          <div className="text-muted text-center">
+            <i className="fa fa-2x fa-spinner fa-pulse mt-3"></i>
+          </div>
+        )
+        : (
+          <div data-testid="grw-tags-list">
+            <TagList
+              tagData={tagData}
+              totalTags={totalCount}
+              activePage={activePage}
+              onChangePage={setOffsetByPageNumber}
+              pagingLimit={PAGING_LIMIT}
+            />
+          </div>
+        )
+      }
 
-        <h3 className="my-3">{t('popular_tags')}</h3>
+      <div className="d-flex justify-content-center my-5">
+        <button
+          className="btn btn-primary rounded px-4"
+          type="button"
+          onClick={() => router.push('/tags')}
+        >
+          {t('Check All tags')}
+        </button>
+      </div>
 
-        <div className="text-center">
-          <TagCloudBox tags={tagCloudData} />
-        </div>
+      <h3 className="my-3">{t('popular_tags')}</h3>
+
+      <div className="text-center">
+        <TagCloudBox tags={tagCloudData} />
       </div>
     </div>
   );
