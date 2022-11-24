@@ -487,7 +487,6 @@ export const generateOthersOptions = (config: RendererConfig): RendererOptions =
   // renderer.setMarkdownSettings({ breaks: rendererSettings.isEnabledLinebreaks });
   // renderer.configure();
 
-
   const rehypeSanitizePlugin: Pluggable<any[]> | (() => void) = config.isEnabledXssPrevention
     ? [sanitize, deepmerge(commonSanitizeOption, lsxGrowiPlugin.sanitizeOption)]
     : () => {};
