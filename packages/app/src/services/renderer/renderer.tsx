@@ -422,7 +422,6 @@ export const generateSimpleViewOptions = (config: RendererConfig, pagePath: stri
   rehypePlugins.push(
     [lsxGrowiPlugin.rehypePlugin, { pagePath }],
     [keywordHighlighter.rehypePlugin, { keywords: highlightKeywords }],
-    katex,
   );
   if (config.isEnabledXssPrevention) {
     rehypePlugins.push(
@@ -432,6 +431,9 @@ export const generateSimpleViewOptions = (config: RendererConfig, pagePath: stri
       )],
     );
   }
+  rehypePlugins.push(
+    katex,
+  );
 
   // add components
   if (components != null) {
@@ -464,7 +466,6 @@ export const generatePreviewOptions = (config: RendererConfig, pagePath: string)
   rehypePlugins.push(
     [lsxGrowiPlugin.rehypePlugin, { pagePath }],
     addLineNumberAttribute.rehypePlugin,
-    katex,
   );
   if (config.isEnabledXssPrevention) {
     rehypePlugins.push([sanitize, deepmerge(
@@ -473,6 +474,9 @@ export const generatePreviewOptions = (config: RendererConfig, pagePath: string)
       addLineNumberAttribute.sanitizeOption,
     )]);
   }
+  rehypePlugins.push(
+    katex,
+  );
   // add components
   if (components != null) {
     components.lsx = props => <Lsx {...props} />;
