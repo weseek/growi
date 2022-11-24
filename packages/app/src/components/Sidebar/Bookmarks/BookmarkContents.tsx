@@ -11,24 +11,24 @@ import BookmarkFolderNameInput from './BookmarkFolderNameInput';
 import BookmarkFolderTree from './BookmarkFolderTree';
 
 
-const BookmarkFolder = (): JSX.Element => {
+const BookmarkContents = (): JSX.Element => {
 
   const { t } = useTranslation();
-  const [isRenameInputShown, setIsRenameInputShown] = useState<boolean>(false);
+  const [isCreateAction, setIsCreateAction] = useState<boolean>(false);
   const { mutate: mutateChildBookmarkData } = useSWRxBookamrkFolderAndChild(null);
 
 
-  const onClickBookmarkFolder = () => {
-    setIsRenameInputShown(true);
-  };
+  const onClickNewBookmarkFolder = useCallback(() => {
+    setIsCreateAction(true);
+  }, []);
 
-  const onPressEnterHandler = useCallback(async(folderName: string) => {
+  const onPressEnterHandlerForCreate = useCallback(async(folderName: string) => {
 
     try {
       await apiv3Post('/bookmark-folder', { name: folderName, parent: null });
       await mutateChildBookmarkData();
-      setIsRenameInputShown(false);
-      toastSuccess(t('Create New Bookmark Folder Success'));
+      setIsCreateAction(false);
+      toastSuccess(t('toaster.create_succeeded', { target: t('bookmark_folder.bookmark_folder') }));
     }
     catch (err) {
       toastError(err);
@@ -36,30 +36,38 @@ const BookmarkFolder = (): JSX.Element => {
 
   }, [mutateChildBookmarkData, t]);
 
-  return (
+  const renderAddNewBookmarkFolder = useCallback(() => (
     <>
       <div className="col-8 mb-2 ">
         <button
           className="btn btn-block btn-outline-secondary rounded-pill d-flex justify-content-start align-middle"
-          onClick={onClickBookmarkFolder}
+          onClick={onClickNewBookmarkFolder}
         >
           <FolderPlusIcon />
-          <span className="mx-2 ">New Folder</span>
+          <span className="mx-2 ">{t('bookmark_folder.new_folder')}</span>
         </button>
       </div>
       {
-        isRenameInputShown && (
+        isCreateAction && (
           <div className="col-12 mb-2 ">
             <BookmarkFolderNameInput
-              onClickOutside={() => setIsRenameInputShown(false)}
-              onPressEnter={onPressEnterHandler}
+              onClickOutside={() => setIsCreateAction(false)}
+              onPressEnter={onPressEnterHandlerForCreate}
             />
           </div>
         )
+      }
+    </>
+  ), [isCreateAction, onClickNewBookmarkFolder, onPressEnterHandlerForCreate, t]);
+
+  return (
+    <>
+      {
+        renderAddNewBookmarkFolder()
       }
       <BookmarkFolderTree />
     </>
   );
 };
 
-export default BookmarkFolder;
+export default BookmarkContents;

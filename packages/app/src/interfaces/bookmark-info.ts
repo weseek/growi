@@ -23,3 +23,10 @@ export interface IBookmarkFolder {
   owner: Ref<IUser>
   parent?: Ref<this>
 }
+
+export interface BookmarkFolderItems {
+  _id: string
+  name: string
+  parent: string
+  children: this[]
+}

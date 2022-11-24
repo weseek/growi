@@ -540,7 +540,8 @@
     "issue_share_link": "Succeeded to issue new share link",
     "remove_share_link": "Succeeded to remove {{count}} share links",
     "switch_disable_link_sharing_success": "Succeeded to update share link setting",
-    "failed_to_reset_password":"Failed to reset password"
+    "failed_to_reset_password":"Failed to reset password",
+    "delete_succeeded": "Succeeded to delete {{target}}"
   },
   "template": {
     "modal_label": {
@@ -866,5 +867,16 @@
   "footer": {
     "bookmarks": "Bookmarks",
     "recently_created": "Recently Created"
+  },
+  "bookmark_folder":{
+    "bookmark_folder": "bookmark folder",
+    "delete_modal": {
+      "modal_header_label": "Delete Bookmark Folder",
+      "modal_body_description": "Delete this bookmark folder and its contents",
+      "modal_body_alert": "Deleted folder and its contents cannot be recovered",
+      "modal_footer_button": "Delete Folder"
+    },
+    "input_placeholder": "Input folder name",
+    "new_folder": "New Folder"
   }
 }

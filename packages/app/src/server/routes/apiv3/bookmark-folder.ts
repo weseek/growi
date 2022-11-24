@@ -54,6 +54,7 @@ module.exports = (crowi) => {
       const bookmarkFolderItems = bookmarkFolders.map(bookmarkFolder => ({
         _id: bookmarkFolder._id,
         name: bookmarkFolder.name,
+        parent: bookmarkFolder.parent,
         children: bookmarkFolder.children,
       }));
       return res.apiv3({ bookmarkFolderItems });

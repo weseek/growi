@@ -30,7 +30,7 @@ const BookmarkFolderNameInput = (props: Props): JSX.Element => {
     <div className="flex-fill">
       <ClosableTextInput
         value={ value }
-        placeholder={t('Input Folder name')}
+        placeholder={t('bookmark_folder.input_placeholder')}
         onClickOutside={onClickOutside}
         onPressEnter={onPressEnter}
         inputValidator={inputValidator}
