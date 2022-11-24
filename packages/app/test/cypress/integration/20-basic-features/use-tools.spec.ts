@@ -241,7 +241,10 @@ context('Tag Oprations', () =>{
     cy.visit('/Sandbox');
     cy.waitUntilSkeletonDisappear();
 
-    cy.get('#edit-tags-btn-wrapper-for-tooltip > a').should('be.visible').click();
+    cy.get('#edit-tags-btn-wrapper-for-tooltip > a').should('be.visible');
+    // eslint-disable-next-line cypress/no-unnecessary-waiting
+    cy.wait(200);
+    cy.get('#edit-tags-btn-wrapper-for-tooltip > a').click();
     cy.get('#edit-tag-modal').should('be.visible').screenshot(`${ssPrefix}1-edit-tag-input`);
 
     cy.get('#edit-tag-modal').within(() => {
