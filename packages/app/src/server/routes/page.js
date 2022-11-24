@@ -870,7 +870,7 @@ module.exports = function(crowi, app) {
       return res.json(ApiResponse.error('Page exists', 'already_exists'));
     }
 
-    const options = {};
+    const options = { overwriteScopesOfDescendants };
     if (grant != null) {
       options.grant = grant;
       options.grantUserGroupId = grantUserGroupId;
@@ -890,11 +890,6 @@ module.exports = function(crowi, app) {
       tags: savedTags,
     };
     res.json(ApiResponse.success(result));
-
-    // update scopes for descendants
-    if (overwriteScopesOfDescendants) {
-      Page.applyScopesToDescendantsAsyncronously(createdPage, req.user);
-    }
 
     // global notification
     try {
@@ -1014,7 +1009,7 @@ module.exports = function(crowi, app) {
       return res.json(ApiResponse.error('Posted param "revisionId" is outdated.', 'conflict', returnLatestRevision));
     }
 
-    const options = { isSyncRevisionToHackmd };
+    const options = { isSyncRevisionToHackmd, overwriteScopesOfDescendants };
     if (grant != null) {
       options.grant = grant;
       options.grantUserGroupId = grantUserGroupId;
@@ -1022,7 +1017,7 @@ module.exports = function(crowi, app) {
 
     const previousRevision = await Revision.findById(revisionId);
     try {
-      page = await Page.updatePage(page, pageBody, previousRevision.body, req.user, options);
+      page = await crowi.pageService.updatePage(page, pageBody, previousRevision.body, req.user, options);
     }
     catch (err) {
       logger.error('error on _api/pages.update', err);
@@ -1043,11 +1038,6 @@ module.exports = function(crowi, app) {
       tags: savedTags,
     };
     res.json(ApiResponse.success(result));
-
-    // update scopes for descendants
-    if (overwriteScopesOfDescendants) {
-      Page.applyScopesToDescendantsAsyncronously(page, req.user);
-    }
 
     // global notification
     try {

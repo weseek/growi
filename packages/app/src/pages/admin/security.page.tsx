@@ -38,7 +38,6 @@ const AdminSecuritySettingsPage: NextPage<Props> = (props) => {
   useSiteUrl(props.siteUrl);
   useIsMailerSetup(props.isMailerSetup);
 
-
   const title = t('security_settings.security_settings');
   const adminSecurityContainers: Container<any>[] = [];
 

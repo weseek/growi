@@ -1,9 +1,10 @@
 import React from 'react';
 
-import { IRevisionHasId } from '@growi/core';
+import { IRevisionHasId, pathUtils } from '@growi/core';
 import { UserPicture } from '@growi/ui';
 import { useTranslation } from 'next-i18next';
 import Link from 'next/link';
+import urljoin from 'url-join';
 
 import UserDate from '../User/UserDate';
 import { Username } from '../User/Username';
@@ -12,6 +13,8 @@ import styles from './Revision.module.scss';
 
 type RevisionProps = {
   revision: IRevisionHasId,
+  currentPageId: string,
+  currentPagePath: string,
   isLatestRevision: boolean,
   hasDiff: boolean,
   onClose: () => void,
@@ -21,8 +24,10 @@ export const Revision = (props: RevisionProps): JSX.Element => {
   const { t } = useTranslation();
 
   const {
-    revision, isLatestRevision, hasDiff, onClose,
+    revision, currentPageId, currentPagePath, isLatestRevision, hasDiff, onClose,
   } = props;
+
+  const { returnPathForURL } = pathUtils;
 
   const renderSimplifiedNodiff = (revision: IRevisionHasId) => {
 
@@ -64,7 +69,7 @@ export const Revision = (props: RevisionProps): JSX.Element => {
           <div className="mb-1">
             <UserDate dateTime={revision.createdAt} />
             <br className="d-xl-none d-block" />
-            <Link href={`?revisionId=${revision._id}`} prefetch={false}>
+            <Link href={urljoin(returnPathForURL(currentPagePath, currentPageId), `?revisionId=${revision._id}`)} prefetch={false}>
               <a className="ml-xl-3" onClick={onClose}>
                 <i className="icon-login"></i> {t('Go to this version')}
               </a>
