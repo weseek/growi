@@ -331,11 +331,6 @@ export const generateViewOptions = (
   rehypePlugins.push(
     slug,
     [lsxGrowiPlugin.rehypePlugin, { pagePath }],
-    katex,
-    [toc.rehypePluginStore, { storeTocNode }],
-    // [autoLinkHeadings, {
-    //   behavior: 'append',
-    // }]
   );
   if (config.isEnabledXssPrevention) {
     rehypePlugins.push(
@@ -345,6 +340,13 @@ export const generateViewOptions = (
       )],
     );
   }
+  rehypePlugins.push(
+    katex,
+    [toc.rehypePluginStore, { storeTocNode }],
+    // [autoLinkHeadings, {
+    //   behavior: 'append',
+    // }]
+  );
 
   // add components
   if (components != null) {
