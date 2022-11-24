@@ -1,16 +1,14 @@
-import React, { useCallback, useEffect, useMemo } from 'react';
+import React, { useCallback, useMemo } from 'react';
 
 import { useTranslation } from 'next-i18next';
 import * as ReactDOMServer from 'react-dom/server';
 
-import { SocketEventName } from '~/interfaces/websocket';
 import { useIsConflict } from '~/stores/editor';
 import {
   useHasDraftOnHackmd, useIsHackmdDraftUpdatingInRealtime, useRevisionIdHackmdSynced,
 } from '~/stores/hackmd';
 import { useSWRxCurrentPage } from '~/stores/page';
-import { useRemoteRevisionBody, useRemoteRevisionId, useRemoteRevisionLastUpdatUser } from '~/stores/remote-latest-page';
-import { useGlobalSocket } from '~/stores/websocket';
+import { useRemoteRevisionId, useRemoteRevisionLastUpdatUser } from '~/stores/remote-latest-page';
 
 import { Username } from './User/Username';
 
@@ -31,33 +29,11 @@ export const PageStatusAlert = (): JSX.Element => {
 
   // store remote latest page data
   const { data: revisionIdHackmdSynced } = useRevisionIdHackmdSynced();
-  const { data: remoteRevisionId, mutate: mutateRemoteRevisionId } = useRemoteRevisionId();
-  const { data: remoteRevisionLastUpdateUser, mutate: mutateRemoteRevisionLastUpdateUser } = useRemoteRevisionLastUpdatUser();
+  const { data: remoteRevisionId } = useRemoteRevisionId();
+  const { data: remoteRevisionLastUpdateUser } = useRemoteRevisionLastUpdatUser();
 
   const { data: pageData } = useSWRxCurrentPage();
   const revision = pageData?.revision;
-  const pageId = pageData?._id;
-
-  const { data: socket } = useGlobalSocket();
-
-  const setLatestRemotePageData = useCallback((data) => {
-    const { s2cMessagePageUpdated } = data;
-
-    mutateRemoteRevisionId(s2cMessagePageUpdated.revisionId);
-    mutateRemoteRevisionLastUpdateUser(s2cMessagePageUpdated.remoteLastUpdateUser);
-  }, [mutateRemoteRevisionId, mutateRemoteRevisionLastUpdateUser]);
-
-  useEffect(() => {
-
-    if (socket == null) { return }
-
-    socket.on(SocketEventName.PageUpdated, setLatestRemotePageData);
-
-    return () => {
-      socket.off(SocketEventName.PageUpdated, setLatestRemotePageData);
-    };
-
-  }, [pageId, setLatestRemotePageData, socket]);
 
   const refreshPage = useCallback(() => {
     window.location.reload();
