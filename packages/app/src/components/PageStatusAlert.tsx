@@ -40,25 +40,6 @@ export const PageStatusAlert = (): JSX.Element => {
 
   const { data: socket } = useGlobalSocket();
 
-  // method from page container
-  // setLatestRemotePageData(s2cMessagePageUpdated) {
-  //   const newState = {
-  //     remoteRevisionId: s2cMessagePageUpdated.revisionId,
-  //     remoteRevisionBody: s2cMessagePageUpdated.revisionBody,
-  //     remoteRevisionUpdateAt: s2cMessagePageUpdated.revisionUpdateAt,
-  //     revisionIdHackmdSynced: s2cMessagePageUpdated.revisionIdHackmdSynced,
-  //     // TODO // TODO remove lastUpdateUsername and refactor parts that lastUpdateUsername is used
-  //     lastUpdateUsername: s2cMessagePageUpdated.lastUpdateUsername,
-  //     lastUpdateUser: s2cMessagePageUpdated.remoteLastUpdateUser,
-  //   };
-
-  //   if (s2cMessagePageUpdated.hasDraftOnHackmd != null) {
-  //     newState.hasDraftOnHackmd = s2cMessagePageUpdated.hasDraftOnHackmd;
-  //   }
-
-  //   this.setState(newState);
-  // }
-
   const setLatestRemotePageData = useCallback((data) => {
     const { s2cMessagePageUpdated } = data;
 
