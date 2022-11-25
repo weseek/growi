@@ -30,6 +30,7 @@ import type { CrowiRequest } from '~/interfaces/crowi-request';
 // import { EditorMode, useEditorMode, useIsMobile } from '~/stores/ui';
 import type { EditorConfig } from '~/interfaces/editor-settings';
 import type { CustomWindow } from '~/interfaces/global';
+import { RehypeSanitizeOption } from '~/interfaces/rehype';
 import type { RendererConfig } from '~/interfaces/services/renderer';
 import type { ISidebarConfig } from '~/interfaces/sidebar-config';
 import type { IUserUISettings } from '~/interfaces/user-ui-settings';
@@ -512,6 +513,8 @@ function injectServerConfigurations(context: GetServerSidePropsContext, props: P
     appService, searchService, configManager, aclService, slackNotificationService, mailService,
   } = crowi;
 
+  const rehypeSanitizeOption = configManager.getConfig('crowi', 'markdown:rehypeSanitize:option');
+
   props.isSearchServiceConfigured = searchService.isConfigured;
   props.isSearchServiceReachable = searchService.isReachable;
   props.isSearchScopeChildrenAsDefault = configManager.getConfig('crowi', 'customize:isSearchScopeChildrenAsDefault');
@@ -548,11 +551,13 @@ function injectServerConfigurations(context: GetServerSidePropsContext, props: P
     plantumlUri: process.env.PLANTUML_URI ?? null,
     blockdiagUri: process.env.BLOCKDIAG_URI ?? null,
 
-    // XSS Options
-    isEnabledXssPrevention: configManager.getConfig('markdown', 'markdown:xss:isEnabledPrevention'),
-    attrWhiteList: crowi.xssService.getAttrWhiteList(),
-    tagWhiteList: crowi.xssService.getTagWhiteList(),
     highlightJsStyleBorder: crowi.configManager.getConfig('crowi', 'customize:highlightJsStyleBorder'),
+
+    // rehype-sanitize options
+    isEnabledXssPrevention: configManager.getConfig('markdown', 'markdown:rehypeSanitize:isEnabledPrevention'),
+    tagNames: rehypeSanitizeOption === RehypeSanitizeOption.CUSTOM ? configManager.getConfig('markdown', 'markdown:rehypeSanitize:tagNames') : [],
+    attributes: rehypeSanitizeOption === RehypeSanitizeOption.CUSTOM ? configManager.getConfig('markdown', 'markdown:rehypeSanitize:attributes') : {},
+
   };
 
   props.sidebarConfig = {
