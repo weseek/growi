@@ -159,6 +159,7 @@ describe('Access to sidebar', () => {
           cy.getByTestid('page-duplicate-modal').should('be.visible').within(() => {
             cy.get('.rbt-input-main').type('_test');
             cy.screenshot(`${ssPrefix}page-tree-5-duplicate-page`);
+            cy.get('.modal-header > button').click();
           });
         });
 
@@ -187,6 +188,7 @@ describe('Access to sidebar', () => {
           });
           cy.getByTestid('page-delete-modal').should('be.visible').within(() => {
             cy.screenshot(`${ssPrefix}page-tree-7-delete-page`);
+            cy.get('.modal-header > button').click();
           });
         });
       });
