@@ -195,7 +195,7 @@ const ItemsTree = (props: ItemsTreeProps): JSX.Element => {
     };
 
     openDeleteModal([pageToDelete], { onDeleted: onDeletedHandler });
-  }, [advanceDpl, advanceFts, advancePt, currentPagePath, mutateCurrentPage, openDeleteModal, t]);
+  }, [advanceDpl, advanceFts, advancePi, advancePt, currentPagePath, mutateCurrentPage, openDeleteModal, t]);
 
   // ***************************  Scroll on init ***************************
   const scrollOnInit = useCallback(() => {
