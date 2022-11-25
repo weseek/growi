@@ -17,7 +17,7 @@ context('Access Home', () => {
     cy.get('@dropdown').within(()=>{
       cy.getByTestid('personal-dropdown-menu').should('have.css', 'display', 'block');
     });
-    cy.getByTestid('user-home').should('be.visible').click();
+    cy.getByTestid('grw-personal-dropdown-menu-user-home').should('be.visible').click();
 
     // eslint-disable-next-line cypress/no-unnecessary-waiting
     cy.wait(2000); // wait for calcViewHeight and rendering
