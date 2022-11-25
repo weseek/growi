@@ -50,12 +50,12 @@ class XssForm extends React.Component {
               <input
                 type="radio"
                 className="custom-control-input"
-                id="xssOption2"
+                id="xssOption1"
                 name="XssOption"
-                checked={xssOption === 2}
+                checked={xssOption === RehypeSanitizeOption.RECOMMENDED}
                 onChange={() => { adminMarkDownContainer.setState({ xssOption: RehypeSanitizeOption.RECOMMENDED }) }}
               />
-              <label className="custom-control-label w-100" htmlFor="xssOption2">
+              <label className="custom-control-label w-100" htmlFor="xssOption1">
                 <p className="font-weight-bold">{t('markdown_settings.xss_options.recommended_setting')}</p>
                 <div className="mt-4">
                   <div className="d-flex justify-content-between">
