@@ -1,4 +1,4 @@
-import { IUser, pathUtils } from '@growi/core';
+import { IUser } from '@growi/core';
 import { Key, SWRResponse } from 'swr';
 import useSWRImmutable from 'swr/immutable';
 
@@ -186,8 +186,8 @@ export const useIsBlinkedHeaderAtBoot = (initialData?: boolean): SWRResponse<boo
   return useContextSWR('isBlinkedAtBoot', initialData, { fallbackData: false });
 };
 
-export const useRevisionBody = (initialData?: string): SWRResponse<string, Error> => {
-  return useContextSWR('revisionBody', initialData);
+export const useEditingMarkdown = (initialData?: string): SWRResponse<string, Error> => {
+  return useContextSWR('editingMarkdown', initialData);
 };
 
 export const useIsUploadableImage = (initialData?: boolean): SWRResponse<boolean, Error> => {
@@ -249,35 +249,6 @@ export const useIsEditable = (): SWRResponse<boolean, Error> => {
     ['isEditable', isGuestUser, isForbidden, isIdenticalPath],
     (key: Key, isGuestUser: boolean, isForbidden: boolean, isIdenticalPath: boolean) => {
       return (!isForbidden && !isIdenticalPath && !isGuestUser);
-    },
-  );
-};
-
-export const useEditingMarkdown = (): SWRResponse<string, Error> => {
-  const { data: isNotFound } = useIsNotFound();
-  const { data: isEnabledAttachTitleHeader } = useIsEnabledAttachTitleHeader();
-  const { data: currentPathname } = useCurrentPathname();
-  const { data: revisionBody } = useRevisionBody();
-  const { data: templateBodyData } = useTemplateBodyData();
-
-  const shoudFetch = !(isNotFound && templateBodyData == null && !isEnabledAttachTitleHeader);
-  const key = shoudFetch ? [isNotFound, isEnabledAttachTitleHeader, currentPathname, revisionBody, templateBodyData] : null;
-
-  return useSWRImmutable(
-    key,
-    (isNotFound: boolean, isEnabledAttachTitleHeader: boolean, currentPathname: string, revisionBody: string, templateBodyData: string) => {
-      if (!isNotFound) {
-        return revisionBody ?? '';
-      }
-
-      let initialEditingMarkdown = '';
-      if (isEnabledAttachTitleHeader) {
-        initialEditingMarkdown += `${pathUtils.attachTitleHeader(currentPathname)}\n`;
-      }
-      if (templateBodyData != null) {
-        initialEditingMarkdown += `${templateBodyData}\n`;
-      }
-      return initialEditingMarkdown;
     },
   );
 };

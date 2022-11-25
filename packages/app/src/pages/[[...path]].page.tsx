@@ -57,14 +57,14 @@ import DisplaySwitcher from '../components/Page/DisplaySwitcher';
 // import PageStatusAlert from '../client/js/components/PageStatusAlert';
 import {
   useCurrentUser,
-  useIsLatestRevision, useCurrentRevisionId, useRevisionBody,
+  useIsLatestRevision, useCurrentRevisionId,
   useIsForbidden, useIsNotFound, useIsSharedUser,
   useIsEnabledStaleNotification, useIsIdenticalPath,
   useIsSearchServiceConfigured, useIsSearchServiceReachable, useDisableLinkSharing,
   useDrawioUri, useHackmdUri, useDefaultIndentSize, useIsIndentSizeForced,
   useIsAclEnabled, useIsSearchPage, useTemplateTagData, useTemplateBodyData, useIsEnabledAttachTitleHeader,
   useCsrfToken, useIsSearchScopeChildrenAsDefault, useCurrentPageId, useCurrentPathname,
-  useIsSlackConfigured, useRendererConfig,
+  useIsSlackConfigured, useRendererConfig, useEditingMarkdown,
   useEditorConfig, useIsAllReplyShown, useIsUploadableFile, useIsUploadableImage, useCustomizedLogoSrc, useIsContainerFluid,
 } from '../stores/context';
 
@@ -255,7 +255,7 @@ const GrowiPage: NextPage<Props> = (props: Props) => {
 
   const { data: currentPage } = useSWRxCurrentPage(undefined, pageWithMeta?.data ?? null); // store initial data
 
-  useRevisionBody(pageWithMeta?.data.revision?.body);
+  useEditingMarkdown(pageWithMeta?.data.revision?.body);
 
   const { data: grantData } = useSWRxIsGrantNormalized(pageId);
   const { mutate: mutateSelectedGrant } = useSelectedGrant();
@@ -471,7 +471,7 @@ async function injectRoutingInformation(context: GetServerSidePropsContext, prop
     // TBD
   }
   else if (page == null) {
-    props.isNotFound = true
+    props.isNotFound = true;
     props.isNotCreatablePage = !isCreatablePage(currentPathname);
     // check the page is forbidden or just does not exist.
     const count = isPermalink ? await Page.count({ _id: pageId }) : await Page.count({ path: currentPathname });
