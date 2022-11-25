@@ -91,7 +91,6 @@ context('Access to sidebar', () => {
         cy.getByTestid('grw-navigation-resize-button').click({force: true});
       }
     });
-    cy.get('.grw-pagetree-triangle-btn').eq(0).click();
     cy.getByTestid('grw-contextual-navigation-sub').screenshot(`${ssPrefix}page-tree-1-access-to-page-tree`);
 
     // hide page tree items
