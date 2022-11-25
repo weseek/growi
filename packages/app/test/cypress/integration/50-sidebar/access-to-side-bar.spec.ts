@@ -14,7 +14,7 @@ context('Access to sidebar', () => {
     cy.visit('/');
     cy.waitUntilSkeletonDisappear();
 
-    cy.get('.grw-pagetree list-group').should('be.visible');
+    cy.get('.grw-pagetree').should('be.visible');
     cy.screenshot(`${ssPrefix}-1-sidebar-shown`, {capture: 'viewport'});
 
     cy.getByTestid('grw-navigation-resize-button').click({force: true});
@@ -82,6 +82,7 @@ context('Access to sidebar', () => {
   it('Successfully performed page operation from "page tree"', () => {
     cy.visit('/');
     cy.waitUntilSkeletonDisappear();
+    cy.scrollTo('top');
 
     // access default page tree
     cy.getByTestid('grw-sidebar-nav-primary-page-tree').click();
@@ -98,18 +99,27 @@ context('Access to sidebar', () => {
     cy.get('.grw-pagetree-triangle-btn').eq(0).click();
     cy.getByTestid('grw-contextual-navigation-sub').screenshot(`${ssPrefix}page-tree-2-hide-page-tree-item`);
 
-    // show page tree three dots menu dropdown
+    // show page tree three dots menu dropdown, check dropdown menu
     cy.get('.grw-pagetree-triangle-btn').eq(0).click();
     cy.get('.grw-pagetree-item-children').eq(0).within(() => {
       cy.getByTestid('open-page-item-control-btn').find('button').eq(0).invoke('css','display','block').click();
     });
-    cy.screenshot(`${ssPrefix}page-tree-3-click-three-dots-menu`);
+    cy.getByTestid('page-item-control-menu').should('have.class', 'show').first().within(() => {
+      cy.get('.grw-page-control-dropdown-icon').should('be.visible');
+      cy.screenshot(`${ssPrefix}page-tree-3-click-three-dots-menu`);
+    });
 
-    // Click Add to Bookmarks
+    // Click Add to Bookmarks, check dropdown menu
     cy.get('.dropdown-menu.show').should('be.visible').within(() => {
       cy.getByTestid('add-remove-bookmark-btn').click();
     });
-    // cy.screenshot(`${ssPrefix}page-tree-4-add-bookmark`);
+    cy.get('.grw-pagetree-item-children').eq(0).within(() => {
+      cy.getByTestid('open-page-item-control-btn').find('button').eq(0).invoke('css','display','block').click();
+    });
+    cy.getByTestid('page-item-control-menu').should('have.class', 'show').first().within(() => {
+      cy.get('.grw-page-control-dropdown-icon').should('be.visible');
+      cy.screenshot(`${ssPrefix}page-tree-4-add-bookmark`);
+    });
 
     // Check duplicate page modal
     cy.get('.grw-pagetree-item-children').eq(0).within(() => {
@@ -163,13 +173,11 @@ context('Access to sidebar', () => {
     cy.getByTestid('grw-contextual-navigation-sub').screenshot(`${ssPrefix}tags-1-access-to-tags`);
 
     cy.get('.grw-container-convertible > div > .btn-primary').click({force: true});
-
-    // collapse sidebar
     cy.collapseSidebar(true);
-
     cy.screenshot(`${ssPrefix}tags-2-check-all-tags`);
   });
 
+  // TODO: No Draft pages on GROWI version 6
   // it('Successfully access to My Drafts page', () => {
   //   cy.visit('/');
   //   cy.collapseSidebar(true);
