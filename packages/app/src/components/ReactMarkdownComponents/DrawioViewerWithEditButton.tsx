@@ -1,10 +1,12 @@
 import React, { useCallback, useState } from 'react';
 
-import { DrawioViewer, DrawioViewerProps } from '@growi/remark-drawio-plugin';
+import {
+  DrawioViewer, DrawioViewerProps, IGraphViewer,
+} from '@growi/remark-drawio-plugin';
 import { useTranslation } from 'next-i18next';
 
 import { useIsGuestUser, useIsSharedUser } from '~/stores/context';
-
+import { useDrawioModal } from '~/stores/modal';
 
 import styles from './DrawioViewerWithEditButton.module.scss';
 
@@ -14,18 +16,26 @@ export const DrawioViewerWithEditButton = React.memo((props: DrawioViewerProps):
 
   const { data: isGuestUser } = useIsGuestUser();
   const { data: isSharedUser } = useIsSharedUser();
+  const { open: openDrawioModal } = useDrawioModal();
 
   const [isMounted, setMounted] = useState(false);
+  const [mxfile, setMxfile] = useState('');
 
   const editButtonClickHandler = useCallback(() => {
+    // openDrawioModal(mxfile);
   }, []);
 
   const renderingStartHandler = useCallback(() => {
     setMounted(false);
   }, []);
 
-  const renderingUpdatedHandler = useCallback((hasError: boolean) => {
-    setMounted(!hasError);
+  const renderingUpdatedHandler = useCallback((viewer: IGraphViewer | null) => {
+    setMounted(viewer != null);
+
+    if (viewer != null) {
+      // console.log(viewer);
+      // setMxfile(viewer.xml);
+    }
   }, []);
 
   const showEditButton = isMounted && !isGuestUser && !isSharedUser;
