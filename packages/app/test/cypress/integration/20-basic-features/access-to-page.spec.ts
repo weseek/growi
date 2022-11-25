@@ -19,6 +19,9 @@ context('Access to page', () => {
     cy.visit('/Sandbox#Headers');
     cy.waitUntilSkeletonDisappear();
 
+    // for check download toc data
+    cy.get('.toc-link').should('be.visible');
+
     // hide fab // disable fab for sticky-events warning
     // cy.getByTestid('grw-fab-container').invoke('attr', 'style', 'display: none');
 
@@ -32,9 +35,10 @@ context('Access to page', () => {
 
   it('/Sandbox/Math is successfully loaded', () => {
     cy.visit('/Sandbox/Math');
+    cy.waitUntilSkeletonDisappear();
 
-    // eslint-disable-next-line cypress/no-unnecessary-waiting
-    cy.wait(2000); // wait for 2 seconds for MathJax.typesetPromise();
+    // for check download toc data
+    cy.get('.toc-link').should('be.visible');
 
     cy.screenshot(`${ssPrefix}-sandbox-math`);
   });
@@ -115,19 +119,22 @@ context('Access to special pages', () => {
     cy.screenshot(`${ssPrefix}-trash`);
   });
 
-  it('/tags is successfully loaded', () => {
-
+  it('/tags is successfully loaded', { scrollBehavior: false } ,() => {
     // open sidebar
-    cy.collapseSidebar(false);
+    // cy.collapseSidebar(false);
 
     cy.visit('/tags');
-    // select tags
-    cy.getByTestid('grw-sidebar-nav-primary-tags').click();
-    cy.getByTestid('grw-sidebar-content-tags').should('be.visible');
-    cy.getByTestid('grw-tags-list').should('be.visible');
-    cy.getByTestid('grw-tags-list').contains('You have no tag, You can set tags on pages');
 
-    cy.getByTestid('tags-page').should('be.visible');
+    // cy.getByTestid('grw-sidebar-content-tags').within(() => {
+    //   cy.getByTestid('grw-tags-list').should('be.visible');
+    //   cy.getByTestid('grw-tags-list').contains('You have no tag, You can set tags on pages');
+    // })
+
+    cy.getByTestid('tags-page').within(() => {
+      cy.getByTestid('grw-tags-list').should('be.visible');
+      cy.getByTestid('grw-tags-list').contains('You have no tag, You can set tags on pages');
+    });
+
     cy.screenshot(`${ssPrefix}-tags`);
   });
 
