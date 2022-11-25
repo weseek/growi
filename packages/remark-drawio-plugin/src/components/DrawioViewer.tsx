@@ -4,7 +4,7 @@ import React, {
 
 import { debounce } from 'throttle-debounce';
 
-import type { IGraphViewer, IGraphViewerGlobal } from '..';
+import type { IGraphViewerGlobal } from '..';
 import { generateMxgraphData } from '../utils/embed';
 import { isGraphViewerGlobal } from '../utils/global';
 
@@ -24,7 +24,7 @@ export type DrawioViewerProps = {
   eol?: number,
   children?: ReactNode,
   onRenderingStart?: () => void,
-  onRenderingUpdated?: (viewer: IGraphViewer | null) => void,
+  onRenderingUpdated?: (mxfile: string | null) => void,
 }
 
 export const DrawioViewer = React.memo((props: DrawioViewerProps): JSX.Element => {
@@ -44,7 +44,7 @@ export const DrawioViewer = React.memo((props: DrawioViewerProps): JSX.Element =
       return;
     }
 
-    if (!isGraphViewerGlobal(GraphViewer)) {
+    if (GraphViewer == null || !isGraphViewerGlobal(GraphViewer)) {
       // Do nothing if loading has not been terminated.
       // Alternatively, GraphViewer.processElements() will be called in Script.onLoad.
       // see DrawioViewerScript.tsx
@@ -59,18 +59,16 @@ export const DrawioViewer = React.memo((props: DrawioViewerProps): JSX.Element =
       if (div != null) {
         div.innerHTML = '';
 
+        // render diagram with createViewerForElement
         try {
-          GraphViewer.createViewerForElement(div, (viewer) => {
-            onRenderingUpdated?.(viewer);
-          });
+          GraphViewer.createViewerForElement(div);
         }
         catch (err) {
           setError(err);
-          onRenderingUpdated?.(null);
         }
       }
     }
-  }, [onRenderingStart, onRenderingUpdated]);
+  }, [onRenderingStart]);
 
   const renderDrawioWithDebounce = useMemo(() => debounce(200, renderDrawio), [renderDrawio]);
 
@@ -91,17 +89,47 @@ export const DrawioViewer = React.memo((props: DrawioViewerProps): JSX.Element =
     }
     catch (err) {
       setError(err);
-      onRenderingUpdated?.(null);
     }
 
     return `<div class="mxgraph" data-mxgraph="${mxgraphData}"></div>`;
-  }, [children, onRenderingUpdated]);
+  }, [children]);
 
   useEffect(() => {
     if (mxgraphHtml.length > 0) {
       renderDrawioWithDebounce();
     }
   }, [mxgraphHtml, renderDrawioWithDebounce]);
+
+  useEffect(() => {
+    if (error != null) {
+      onRenderingUpdated?.(null);
+    }
+  }, [error, onRenderingUpdated]);
+
+  // ****************  detect data-mxgraph has rendered ****************
+  useEffect(() => {
+    const container = drawioContainerRef.current;
+    if (container == null) return;
+
+    const observerCallback = (mutationRecords:MutationRecord[]) => {
+      mutationRecords.forEach((record:MutationRecord) => {
+        const target = record.target as HTMLElement;
+
+        const mxgraphData = target.dataset.mxgraph;
+        if (mxgraphData != null) {
+          const mxgraph = JSON.parse(mxgraphData);
+          onRenderingUpdated?.(mxgraph.xml);
+        }
+      });
+    };
+
+    const observer = new MutationObserver(observerCallback);
+    observer.observe(container, { childList: true, subtree: true });
+    return () => {
+      observer.disconnect();
+    };
+  }, [onRenderingUpdated]);
+  // *******************************  end  *******************************
 
   return (
     <div

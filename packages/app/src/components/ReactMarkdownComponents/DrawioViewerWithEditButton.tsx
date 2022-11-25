@@ -1,7 +1,7 @@
 import React, { useCallback, useState } from 'react';
 
 import {
-  DrawioViewer, DrawioViewerProps, IGraphViewer,
+  DrawioViewer, DrawioViewerProps,
 } from '@growi/remark-drawio-plugin';
 import { useTranslation } from 'next-i18next';
 
@@ -29,11 +29,11 @@ export const DrawioViewerWithEditButton = React.memo((props: DrawioViewerProps):
     setMounted(false);
   }, []);
 
-  const renderingUpdatedHandler = useCallback((viewer: IGraphViewer | null) => {
-    setMounted(viewer != null);
+  const renderingUpdatedHandler = useCallback((mxfile: string | null) => {
+    setMounted(mxfile != null);
 
-    if (viewer != null) {
-      setMxfile(viewer.xml);
+    if (mxfile != null) {
+      setMxfile(mxfile);
     }
   }, []);
 
