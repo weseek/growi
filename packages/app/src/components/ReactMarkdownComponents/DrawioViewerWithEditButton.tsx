@@ -18,7 +18,7 @@ export const DrawioViewerWithEditButton = React.memo((props: DrawioViewerProps):
   const { data: isSharedUser } = useIsSharedUser();
   const { open: openDrawioModal } = useDrawioModal();
 
-  const [isMounted, setMounted] = useState(false);
+  const [isRendered, setRendered] = useState(false);
   const [mxfile, setMxfile] = useState('');
 
   const editButtonClickHandler = useCallback(() => {
@@ -26,18 +26,18 @@ export const DrawioViewerWithEditButton = React.memo((props: DrawioViewerProps):
   }, [mxfile, openDrawioModal]);
 
   const renderingStartHandler = useCallback(() => {
-    setMounted(false);
+    setRendered(false);
   }, []);
 
   const renderingUpdatedHandler = useCallback((mxfile: string | null) => {
-    setMounted(mxfile != null);
+    setRendered(mxfile != null);
 
     if (mxfile != null) {
       setMxfile(mxfile);
     }
   }, []);
 
-  const showEditButton = isMounted && !isGuestUser && !isSharedUser;
+  const showEditButton = isRendered && !isGuestUser && !isSharedUser;
 
   return (
     <div className={`drawio-viewer-with-edit-button ${styles['drawio-viewer-with-edit-button']}`}>

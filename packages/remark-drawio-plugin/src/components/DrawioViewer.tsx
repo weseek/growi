@@ -38,8 +38,6 @@ export const DrawioViewer = React.memo((props: DrawioViewerProps): JSX.Element =
   const [error, setError] = useState<Error>();
 
   const renderDrawio = useCallback(() => {
-    onRenderingStart?.();
-
     if (drawioContainerRef.current == null) {
       return;
     }
@@ -68,7 +66,7 @@ export const DrawioViewer = React.memo((props: DrawioViewerProps): JSX.Element =
         }
       }
     }
-  }, [onRenderingStart]);
+  }, []);
 
   const renderDrawioWithDebounce = useMemo(() => debounce(200, renderDrawio), [renderDrawio]);
 
@@ -96,9 +94,10 @@ export const DrawioViewer = React.memo((props: DrawioViewerProps): JSX.Element =
 
   useEffect(() => {
     if (mxgraphHtml.length > 0) {
+      onRenderingStart?.();
       renderDrawioWithDebounce();
     }
-  }, [mxgraphHtml, renderDrawioWithDebounce]);
+  }, [mxgraphHtml, onRenderingStart, renderDrawioWithDebounce]);
 
   useEffect(() => {
     if (error != null) {
