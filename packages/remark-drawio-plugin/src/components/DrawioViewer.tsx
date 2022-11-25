@@ -18,14 +18,15 @@ declare global {
 }
 
 
-type Props = {
+export type DrawioViewerProps = {
   diagramIndex: number,
   bol?: number,
   eol?: number,
   children?: ReactNode,
+  onRenderingUpdated?: (hasError: boolean) => void,
 }
 
-export const DrawioViewer = React.memo((props: Props): JSX.Element => {
+export const DrawioViewer = React.memo((props: DrawioViewerProps): JSX.Element => {
   const {
     diagramIndex, bol, eol, children,
   } = props;

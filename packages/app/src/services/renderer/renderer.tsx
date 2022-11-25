@@ -23,6 +23,7 @@ import { PluggableList, Pluggable, PluginTuple } from 'unified';
 
 
 import { CodeBlock } from '~/components/ReactMarkdownComponents/CodeBlock';
+import { DrawioViewerWithEditButton } from '~/components/ReactMarkdownComponents/DrawioViewerWithEditButton';
 import { Header } from '~/components/ReactMarkdownComponents/Header';
 import { NextLink } from '~/components/ReactMarkdownComponents/NextLink';
 import { RendererConfig } from '~/interfaces/services/renderer';
@@ -351,7 +352,7 @@ export const generateViewOptions = (
     components.h2 = Header;
     components.h3 = Header;
     components.lsx = props => <Lsx {...props} forceToFetchData />;
-    components.drawio = drawioPlugin.DrawioViewer;
+    components.drawio = DrawioViewerWithEditButton;
   }
 
   // // Add configurers for viewer
