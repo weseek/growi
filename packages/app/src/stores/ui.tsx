@@ -96,18 +96,27 @@ const getClassNamesByEditorMode = (editorMode: EditorMode | undefined, isSidebar
   return classNames;
 };
 
+export const EditorModeHash = {
+  View: '',
+  Edit: '#edit',
+  HackMD: '#hackmd',
+} as const;
+export type EditorModeHash = typeof EditorModeHash[keyof typeof EditorModeHash];
+
+export const isEditorModeHash = (hash: string): hash is EditorModeHash => Object.values<string>(EditorModeHash).includes(hash);
+
 const updateHashByEditorMode = (newEditorMode: EditorMode) => {
   const { pathname, search } = window.location;
 
   switch (newEditorMode) {
     case EditorMode.View:
-      window.history.replaceState(null, '', `${pathname}${search}`);
+      window.history.replaceState(null, '', `${pathname}${search}${EditorModeHash.View}`);
       break;
     case EditorMode.Editor:
-      window.history.replaceState(null, '', `${pathname}${search}#edit`);
+      window.history.replaceState(null, '', `${pathname}${search}${EditorModeHash.Edit}`);
       break;
     case EditorMode.HackMD:
-      window.history.replaceState(null, '', `${pathname}${search}#hackmd`);
+      window.history.replaceState(null, '', `${pathname}${search}${EditorModeHash.HackMD}`);
       break;
   }
 };
@@ -117,12 +126,12 @@ export const determineEditorModeByHash = (): EditorMode => {
     return EditorMode.View;
   }
 
-  const { hash } = window.location;
+  const hash = window.location.hash;
 
   switch (hash) {
-    case '#edit':
+    case EditorModeHash.Edit:
       return EditorMode.Editor;
-    case '#hackmd':
+    case EditorModeHash.HackMD:
       return EditorMode.HackMD;
     default:
       return EditorMode.View;
