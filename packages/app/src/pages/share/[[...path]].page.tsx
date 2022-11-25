@@ -22,7 +22,7 @@ import { RendererConfig } from '~/interfaces/services/renderer';
 import { IShareLinkHasId } from '~/interfaces/share-link';
 import {
   useCurrentUser, useCurrentPathname, useCurrentPageId, useRendererConfig, useIsSearchPage,
-  useShareLinkId, useIsSearchServiceConfigured, useIsSearchServiceReachable, useIsSearchScopeChildrenAsDefault,
+  useShareLinkId, useIsSearchServiceConfigured, useIsSearchServiceReachable, useIsSearchScopeChildrenAsDefault, useDrawioUri,
 } from '~/stores/context';
 import { useDescendantsPageListModal } from '~/stores/modal';
 import loggerFactory from '~/utils/logger';
@@ -43,6 +43,7 @@ type Props = CommonProps & {
   isSearchServiceConfigured: boolean,
   isSearchServiceReachable: boolean,
   isSearchScopeChildrenAsDefault: boolean,
+  drawioUri: string | null,
   rendererConfig: RendererConfig,
 };
 
@@ -56,6 +57,8 @@ const SharedPage: NextPage<Props> = (props: Props) => {
   useIsSearchServiceConfigured(props.isSearchServiceConfigured);
   useIsSearchServiceReachable(props.isSearchServiceReachable);
   useIsSearchScopeChildrenAsDefault(props.isSearchScopeChildrenAsDefault);
+  useDrawioUri(props.drawioUri);
+
   const { open: openDescendantPageListModal } = useDescendantsPageListModal();
   const { t } = useTranslation();
 
@@ -154,28 +157,30 @@ const SharedPage: NextPage<Props> = (props: Props) => {
 function injectServerConfigurations(context: GetServerSidePropsContext, props: Props): void {
   const req: CrowiRequest = context.req as CrowiRequest;
   const { crowi } = req;
+  const { configManager, searchService, xssService } = crowi;
 
-  props.disableLinkSharing = crowi.configManager.getConfig('crowi', 'security:disableLinkSharing');
+  props.disableLinkSharing = configManager.getConfig('crowi', 'security:disableLinkSharing');
 
-  props.isSearchServiceConfigured = crowi.searchService.isConfigured;
-  props.isSearchServiceReachable = crowi.searchService.isReachable;
-  props.isSearchScopeChildrenAsDefault = crowi.configManager.getConfig('crowi', 'customize:isSearchScopeChildrenAsDefault');
+  props.isSearchServiceConfigured = searchService.isConfigured;
+  props.isSearchServiceReachable = searchService.isReachable;
+  props.isSearchScopeChildrenAsDefault = configManager.getConfig('crowi', 'customize:isSearchScopeChildrenAsDefault');
+
+  props.drawioUri = configManager.getConfig('crowi', 'app:drawioUri');
 
   props.rendererConfig = {
-    isEnabledLinebreaks: crowi.configManager.getConfig('markdown', 'markdown:isEnabledLinebreaks'),
-    isEnabledLinebreaksInComments: crowi.configManager.getConfig('markdown', 'markdown:isEnabledLinebreaksInComments'),
-    adminPreferredIndentSize: crowi.configManager.getConfig('markdown', 'markdown:adminPreferredIndentSize'),
-    isIndentSizeForced: crowi.configManager.getConfig('markdown', 'markdown:isIndentSizeForced'),
+    isEnabledLinebreaks: configManager.getConfig('markdown', 'markdown:isEnabledLinebreaks'),
+    isEnabledLinebreaksInComments: configManager.getConfig('markdown', 'markdown:isEnabledLinebreaksInComments'),
+    adminPreferredIndentSize: configManager.getConfig('markdown', 'markdown:adminPreferredIndentSize'),
+    isIndentSizeForced: configManager.getConfig('markdown', 'markdown:isIndentSizeForced'),
 
     plantumlUri: process.env.PLANTUML_URI ?? null,
     blockdiagUri: process.env.BLOCKDIAG_URI ?? null,
-    drawioEmbedUri: crowi.configManager.getConfig('crowi', 'app:drawioUri'),
 
     // XSS Options
-    isEnabledXssPrevention: crowi.configManager.getConfig('markdown', 'markdown:xss:isEnabledPrevention'),
-    attrWhiteList: crowi.xssService.getAttrWhiteList(),
-    tagWhiteList: crowi.xssService.getTagWhiteList(),
-    highlightJsStyleBorder: crowi.configManager.getConfig('crowi', 'customize:highlightJsStyleBorder'),
+    isEnabledXssPrevention: configManager.getConfig('markdown', 'markdown:xss:isEnabledPrevention'),
+    attrWhiteList: xssService.getAttrWhiteList(),
+    tagWhiteList: xssService.getTagWhiteList(),
+    highlightJsStyleBorder: configManager.getConfig('crowi', 'customize:highlightJsStyleBorder'),
   };
 }
 

@@ -13,7 +13,7 @@ import type { IUser, IUserHasId } from '~/interfaces/user';
 import type { IUserUISettings } from '~/interfaces/user-ui-settings';
 import type { UserUISettingsModel } from '~/server/models/user-ui-settings';
 import {
-  useCsrfToken, useCurrentUser, useIsContainerFluid, useIsSearchPage, useIsSearchScopeChildrenAsDefault,
+  useCsrfToken, useCurrentUser, useDrawioUri, useIsContainerFluid, useIsSearchPage, useIsSearchScopeChildrenAsDefault,
   useIsSearchServiceConfigured, useIsSearchServiceReachable, useRendererConfig, useShowPageLimitationL,
 } from '~/stores/context';
 import {
@@ -35,6 +35,8 @@ type Props = CommonProps & {
   isSearchServiceConfigured: boolean,
   isSearchServiceReachable: boolean,
   isSearchScopeChildrenAsDefault: boolean,
+
+  drawioUri: string | null,
 
   // UI
   userUISettings?: IUserUISettings
@@ -64,6 +66,8 @@ const SearchResultPage: NextPage<Props> = (props: Props) => {
   useIsSearchServiceConfigured(props.isSearchServiceConfigured);
   useIsSearchServiceReachable(props.isSearchServiceReachable);
   useIsSearchScopeChildrenAsDefault(props.isSearchScopeChildrenAsDefault);
+
+  useDrawioUri(props.drawioUri);
 
   // UserUISettings
   usePreferDrawerModeByUser(userUISettings?.preferDrawerModeByUser ?? props.sidebarConfig.isSidebarDrawerMode);
@@ -133,6 +137,8 @@ function injectServerConfigurations(context: GetServerSidePropsContext, props: P
   props.isSearchScopeChildrenAsDefault = configManager.getConfig('crowi', 'customize:isSearchScopeChildrenAsDefault');
   props.isContainerFluid = configManager.getConfig('crowi', 'customize:isContainerFluid');
 
+  props.drawioUri = configManager.getConfig('crowi', 'app:drawioUri');
+
   props.sidebarConfig = {
     isSidebarDrawerMode: configManager.getConfig('crowi', 'customize:isSidebarDrawerMode'),
     isSidebarClosedAtDockMode: configManager.getConfig('crowi', 'customize:isSidebarClosedAtDockMode'),
@@ -146,7 +152,6 @@ function injectServerConfigurations(context: GetServerSidePropsContext, props: P
 
     plantumlUri: process.env.PLANTUML_URI ?? null,
     blockdiagUri: process.env.BLOCKDIAG_URI ?? null,
-    drawioEmbedUri: crowi.configManager.getConfig('crowi', 'app:drawioUri'),
 
     // XSS Options
     isEnabledXssPrevention: configManager.getConfig('markdown', 'markdown:xss:isEnabledPrevention'),
