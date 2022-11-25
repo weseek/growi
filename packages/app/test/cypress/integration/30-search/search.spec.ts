@@ -92,6 +92,8 @@ context('Search all pages', () => {
     const searchText = 'help';
 
     cy.visit('/');
+    cy.waitUntilSkeletonDisappear();
+
     cy.get('.rbt-input').click();
     cy.get('.rbt-menu.dropdown-menu.show').should('be.visible').within(() => {
       cy.screenshot(`${ssPrefix}1-search-input-focused`);
@@ -158,14 +160,17 @@ context('Search all pages', () => {
     cy.waitUntilSkeletonDisappear();
 
     // Add tag
-    cy.get('#edit-tags-btn-wrapper-for-tooltip > a').click({force: true});
-    cy.get('#edit-tag-modal').should('be.visible');
+    cy.get('#edit-tags-btn-wrapper-for-tooltip').as('edit-tag-tooltip').should('be.visible');
+    cy.get('@edit-tag-tooltip').within(()=>{
+      cy.get('a').should('be.visible').click();
+    })
+    cy.get('#edit-tag-modal').as('tag-modal').should('be.visible');
 
-    cy.get('#edit-tag-modal').within(() => {
+    cy.get('@tag-modal').within(() => {
       cy.get('.rbt-input-main').type(tag);
       cy.get('#tag-typeahead-asynctypeahead').should('be.visible');
       cy.get('#tag-typeahead-asynctypeahead-item-0').should('be.visible');
-      cy.get('a#tag-typeahead-asynctypeahead-item-0').click({force: true})
+      cy.get('a#tag-typeahead-asynctypeahead-item-0').click()
     });
 
     cy.get('#edit-tag-modal').within(() => {
@@ -173,7 +178,10 @@ context('Search all pages', () => {
     });
 
     cy.visit('/');
-    cy.get('.rbt-input').click({force: true});
+    cy.waitUntilSkeletonDisappear();
+
+    cy.get('.rbt-input').should('be.visible');
+    cy.get('.rbt-input').click();
     cy.get('.rbt-input-main').type(`${searchText}`);
     cy.screenshot(`${ssPrefix}1-insert-search-text-with-tag`, { capture: 'viewport'});
     cy.get('.rbt-input-main').type('{enter}');
@@ -182,11 +190,12 @@ context('Search all pages', () => {
     cy.getByTestid('search-result-list').should('be.visible');
     cy.getByTestid('search-result-content').should('be.visible');
     cy.get('.wiki').should('be.visible');
+    cy.waitUntilSpinnerDisappear();
+
     // force to add 'active' to pass VRT: https://github.com/weseek/growi/pull/6603
     cy.getByTestid('page-list-item-L').first().invoke('addClass', 'active');
     cy.screenshot(`${ssPrefix}2-search-with-tag-result`, {capture: 'viewport'});
 
-    cy.getByTestid('open-page-item-control-btn').first().click();
     cy.getByTestid('search-result-content').should('be.visible');
     cy.get('.wiki').should('be.visible');
     cy.screenshot(`${ssPrefix}3-click-three-dots-menu-search-with-tag`, {capture: 'viewport'});
@@ -202,6 +211,8 @@ context('Search all pages', () => {
     cy.getByTestid('search-result-list').should('be.visible');
     cy.getByTestid('search-result-content').should('be.visible');
     cy.get('.wiki').should('be.visible');
+    cy.waitUntilSpinnerDisappear();
+
     // force to add 'active' to pass VRT: https://github.com/weseek/growi/pull/6603
     cy.getByTestid('page-list-item-L').first().invoke('addClass', 'active');
     cy.screenshot(`${ssPrefix}1-tag-order-click-tag-name`, {capture: 'viewport'});
@@ -237,6 +248,8 @@ context('Search all pages', () => {
     cy.getByTestid('search-result-list').should('be.visible');
     cy.getByTestid('search-result-content').should('be.visible');
     cy.get('.wiki').should('be.visible');
+    cy.waitUntilSpinnerDisappear();
+
     cy.screenshot(`${ssPrefix}4-tag-order-by-last-update-date`);
   });
 
@@ -257,8 +270,10 @@ context('Search current tree with "prefix":', () => {
   it(`Search current tree by word is successfully loaded`, () => {
     const searchText = 'help';
     cy.visit('/');
-    cy.getByTestid('select-search-scope').first().click({force: true});
-    cy.get('.input-group-prepend.show > div > button:nth-child(2)').click({force: true});
+    cy.waitUntilSkeletonDisappear();
+
+    cy.getByTestid('select-search-scope').click();
+    cy.get('.input-group-prepend.show > div > button:nth-child(2)').click();
     cy.get('.rbt-input').click();
     cy.get('.rbt-menu.dropdown-menu.show').should('be.visible').within(() => {
       cy.screenshot(`${ssPrefix}1-search-input-focused`);
@@ -271,6 +286,8 @@ context('Search current tree with "prefix":', () => {
     cy.getByTestid('search-result-list').should('be.visible');
     cy.getByTestid('search-result-content').should('be.visible');
     cy.get('.wiki').should('be.visible');
+    cy.waitUntilSpinnerDisappear();
+
     // force to add 'active' to pass VRT: https://github.com/weseek/growi/pull/6603
     cy.getByTestid('page-list-item-L').first().invoke('addClass', 'active');
     // for avoid mismatch by auto scrolling
@@ -279,11 +296,14 @@ context('Search current tree with "prefix":', () => {
     cy.wait(1500);
     cy.screenshot(`${ssPrefix}3-search-page-results`, { capture: 'viewport'});
 
-    cy.getByTestid('open-page-item-control-btn').first().click();
-    cy.getByTestid('search-result-content').should('be.visible');
-    cy.get('.wiki').should('be.visible');
+    cy.getByTestid('search-result-list').within(() => {
+      cy.getByTestid('open-page-item-control-btn').first().click();
+    })
+
     // for avoid mismatch by auto scrolling
     cy.get('.search-result-content-body-container').scrollTo('top');
+    // eslint-disable-next-line cypress/no-unnecessary-waiting
+    cy.wait(1500);
     cy.screenshot(`${ssPrefix}4-click-three-dots-menu`, {capture: 'viewport'});
   });
 
