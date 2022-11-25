@@ -1,4 +1,11 @@
 {
+	"Show": "显示",
+	"Hide": "隐藏",
+  "Add": "添加",
+  "Reset": "重启",
+	"Sign out": "退出",
+  "New": "新建",
+
   "meta": {
     "display_name": "简体中文"
   },
@@ -37,9 +44,22 @@
     "description": "Description"
   },
 
+  "in_app_notification": {
+    "notification_list": "应用内通知列表",
+    "see_all": "查看通知列表",
+    "no_notification": "您没有任何通知",
+    "all": "全部",
+    "unopend": "未读",
+    "mark_all_as_read" : "标记为已读"
+  },
+
   "personal_dropdown": {
     "home": "家",
-    "settings": "设置"
+    "settings": "设置",
+		"color_mode": "颜色模式",
+		"sidebar_mode": "边栏模式",
+		"sidebar_mode_editor": "编辑器上的边栏模式",
+		"use_os_settings": "使用操作系统设置"
   },
 
 	"copy_to_clipboard": {
@@ -55,8 +75,23 @@
     "image_crop": "图像裁剪",
     "crop": "修剪",
     "save": "节省",
-    "reset": "重启",
     "cancel": "取消"
+  },
+
+  "handsontable_modal": {
+    "title": "编辑表格",
+    "data_import": "数据导入",
+    "save": "节省",
+    "cancel": "取消",
+    "done": "完毕",
+    "data_import_form": {
+      "select_data_format": "数据格式",
+      "import_data": "导入数据",
+      "paste_table_data": "粘贴表格数据",
+      "parse_error": "解析错误",
+      "cancel": "取消",
+      "import": "导入"
+    }
   },
 
   "not_found_page": {

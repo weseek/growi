@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect } from 'react';
+import React, { useCallback, useEffect, memo } from 'react';
 
 import { useTranslation } from 'next-i18next';
 import { useRouter } from 'next/router';
@@ -56,4 +56,4 @@ const UnsavedAlertDialog = (): JSX.Element => {
   return <></>;
 };
 
-export default UnsavedAlertDialog;
+export default memo(UnsavedAlertDialog);

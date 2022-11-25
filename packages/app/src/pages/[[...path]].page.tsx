@@ -63,7 +63,7 @@ import {
   useIsEnabledStaleNotification, useIsIdenticalPath,
   useIsSearchServiceConfigured, useIsSearchServiceReachable, useDisableLinkSharing,
   useDrawioUri, useHackmdUri, useDefaultIndentSize, useIsIndentSizeForced,
-  useIsAclEnabled, useIsSearchPage,
+  useIsAclEnabled, useIsSearchPage, useTemplateTagData,
   useCsrfToken, useIsSearchScopeChildrenAsDefault, useCurrentPageId, useCurrentPathname,
   useIsSlackConfigured, useRendererConfig, useEditingMarkdown,
   useEditorConfig, useIsAllReplyShown, useIsUploadableFile, useIsUploadableImage, useCustomizedLogoSrc, useIsContainerFluid,
@@ -81,6 +81,7 @@ const UnsavedAlertDialog = dynamic(() => import('../components/UnsavedAlertDialo
 const GrowiSubNavigationSwitcher = dynamic(() => import('../components/Navbar/GrowiSubNavigationSwitcher'), { ssr: false });
 const UsersHomePageFooter = dynamic<UsersHomePageFooterProps>(() => import('../components/UsersHomePageFooter')
   .then(mod => mod.UsersHomePageFooter), { ssr: false });
+const HandsontableModal = dynamic(() => import('../components/PageEditor/HandsontableModal').then(mod => mod.HandsontableModal), { ssr: false });
 
 const logger = loggerFactory('growi:pages:all');
 
@@ -135,13 +136,16 @@ type Props = CommonProps & {
   redirectFrom?: string;
 
   // shareLinkId?: string;
-  isLatestRevision?: boolean
+  isLatestRevision?: boolean,
 
   isIdenticalPathPage?: boolean,
   isForbidden: boolean,
   isNotFound: boolean,
   isNotCreatablePage: boolean,
   // isAbleToDeleteCompletely: boolean,
+
+  templateTagData?: string[],
+  templateBodyData?: string,
 
   isSearchServiceConfigured: boolean,
   isSearchServiceReachable: boolean,
@@ -212,6 +216,8 @@ const GrowiPage: NextPage<Props> = (props: Props) => {
   useIsEnabledStaleNotification(props.isEnabledStaleNotification);
   useIsSearchPage(false);
 
+  useTemplateTagData(props.templateTagData);
+
   useIsSearchServiceConfigured(props.isSearchServiceConfigured);
   useIsSearchServiceReachable(props.isSearchServiceReachable);
   useIsSearchScopeChildrenAsDefault(props.isSearchScopeChildrenAsDefault);
@@ -244,7 +250,7 @@ const GrowiPage: NextPage<Props> = (props: Props) => {
   useCurrentPathname(props.currentPathname);
 
   const { data: currentPage } = useSWRxCurrentPage(undefined, pageWithMeta?.data ?? null); // store initial data
-  useEditingMarkdown(pageWithMeta?.data.revision?.body ?? '');
+  useEditingMarkdown(pageWithMeta?.data.revision?.body ?? props.templateBodyData ?? '');
 
   const { data: grantData } = useSWRxIsGrantNormalized(pageId);
   const { mutate: mutateSelectedGrant } = useSelectedGrant();
@@ -334,7 +340,9 @@ const GrowiPage: NextPage<Props> = (props: Props) => {
           </div>
           { !props.isIdenticalPathPage && !props.isNotFound && (
             <footer className="footer d-edit-none">
-              { pageWithMeta != null && !isTopPagePath && (<Comments pageId={pageId} revision={pageWithMeta.data.revision} />) }
+              { pageWithMeta != null && pagePath != null && !isTopPagePath && (
+                <Comments pageId={pageId} pagePath={pagePath} revision={pageWithMeta.data.revision} />
+              ) }
               { pageWithMeta != null && isUsersHomePage(pageWithMeta.data.path) && (
                 <UsersHomePageFooter creatorId={pageWithMeta.data.creator._id}/>
               ) }
@@ -344,6 +352,7 @@ const GrowiPage: NextPage<Props> = (props: Props) => {
 
           <UnsavedAlertDialog />
           <DescendantsPageListModal />
+          <HandsontableModal />
           {shouldRenderPutbackPageModal && <PutbackPageModal />}
         </div>
       </BasicLayout>
@@ -416,6 +425,14 @@ async function injectPageData(context: GetServerSidePropsContext, props: Props):
     page.initLatestRevisionField(revisionId);
     await page.populateDataToShowRevision();
     props.isLatestRevision = page.isLatestRevision();
+  }
+
+  if (page == null && user != null) {
+    const templateData = await Page.findTemplate(props.currentPathname);
+    if (templateData != null) {
+      props.templateTagData = templateData.templateTags as string[];
+      props.templateBodyData = templateData.templateBody as string;
+    }
   }
 
   props.pageWithMeta = pageWithMeta;
