@@ -42,7 +42,7 @@ export const DrawioViewer = React.memo((props: DrawioViewerProps): JSX.Element =
       return;
     }
 
-    if (GraphViewer == null || !isGraphViewerGlobal(GraphViewer)) {
+    if (!('GraphViewer' in window && isGraphViewerGlobal(GraphViewer))) {
       // Do nothing if loading has not been terminated.
       // Alternatively, GraphViewer.processElements() will be called in Script.onLoad.
       // see DrawioViewerScript.tsx
