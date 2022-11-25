@@ -1,8 +1,11 @@
 @use '../variables' as var;
-@use '../bootstrap/init' as *;
 @use '../mixins';
 @use './mixins/tables'; // comment out and use _reboot-bootstrap-tables instead -- 2020.05.28 Yuki Takei
 @use '../atoms/mixins/code';
+
+@import '../bootstrap/init';
+
+
 
 //
 //== Apply to Bootstrap
