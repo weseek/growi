@@ -1,11 +1,11 @@
 import { useCallback } from 'react';
 
-import type { IGraphViewer } from '@growi/remark-drawio-plugin';
+import type { IGraphViewerGlobal } from '@growi/remark-drawio-plugin';
 import Script from 'next/script';
 
 declare global {
   // eslint-disable-next-line vars-on-top, no-var
-  var GraphViewer: IGraphViewer;
+  var GraphViewer: IGraphViewerGlobal;
 }
 
 export const DrawioViewerScript = (): JSX.Element => {

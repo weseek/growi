@@ -1,5 +1,5 @@
-import { IGraphViewer } from '../interfaces/graph-viewer';
+import { IGraphViewerGlobal } from '../interfaces/graph-viewer';
 
-export const isGraphViewer = (val: unknown): val is IGraphViewer => {
+export const isGraphViewerGlobal = (val: unknown): val is IGraphViewerGlobal => {
   return (typeof val === 'function' && 'createViewerForElement' in val && 'processElements' in val);
 };

@@ -1,9 +1,12 @@
 export interface IGraphViewer {
-  processElements: () => void,
-  createViewerForElement: (Element) => void,
+  lightboxZIndex: number,
+  toolbarZIndex: number,
+  xml: string,
+}
 
-  prototype: {
-    lightboxZIndex: number,
-    toolbarZIndex: number,
-  }
+export interface IGraphViewerGlobal {
+  processElements: () => void,
+  createViewerForElement: (element: Element, callback?: (viewer: IGraphViewer) => void) => void,
+
+  prototype: IGraphViewer,
 }

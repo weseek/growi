@@ -4,9 +4,9 @@ import React, {
 
 import { debounce } from 'throttle-debounce';
 
-import type { IGraphViewer } from '..';
+import type { IGraphViewer, IGraphViewerGlobal } from '..';
 import { generateMxgraphData } from '../utils/embed';
-import { isGraphViewer } from '../utils/global';
+import { isGraphViewerGlobal } from '../utils/global';
 
 
 import styles from './DrawioViewer.module.scss';
@@ -14,7 +14,7 @@ import styles from './DrawioViewer.module.scss';
 
 declare global {
   // eslint-disable-next-line vars-on-top, no-var
-  var GraphViewer: IGraphViewer;
+  var GraphViewer: IGraphViewerGlobal;
 }
 
 
@@ -24,7 +24,7 @@ export type DrawioViewerProps = {
   eol?: number,
   children?: ReactNode,
   onRenderingStart?: () => void,
-  onRenderingUpdated?: (hasError: boolean) => void,
+  onRenderingUpdated?: (viewer: IGraphViewer | null) => void,
 }
 
 export const DrawioViewer = React.memo((props: DrawioViewerProps): JSX.Element => {
@@ -38,11 +38,13 @@ export const DrawioViewer = React.memo((props: DrawioViewerProps): JSX.Element =
   const [error, setError] = useState<Error>();
 
   const renderDrawio = useCallback(() => {
+    onRenderingStart?.();
+
     if (drawioContainerRef.current == null) {
       return;
     }
 
-    if (!isGraphViewer(GraphViewer)) {
+    if (!isGraphViewerGlobal(GraphViewer)) {
       // Do nothing if loading has not been terminated.
       // Alternatively, GraphViewer.processElements() will be called in Script.onLoad.
       // see DrawioViewerScript.tsx
@@ -58,21 +60,22 @@ export const DrawioViewer = React.memo((props: DrawioViewerProps): JSX.Element =
         div.innerHTML = '';
 
         try {
-          GraphViewer.createViewerForElement(div);
+          GraphViewer.createViewerForElement(div, (viewer) => {
+            onRenderingUpdated?.(viewer);
+          });
         }
         catch (err) {
           setError(err);
-          onRenderingUpdated?.(true);
+          onRenderingUpdated?.(null);
         }
       }
     }
-  }, [onRenderingUpdated]);
+  }, [onRenderingStart, onRenderingUpdated]);
 
   const renderDrawioWithDebounce = useMemo(() => debounce(200, renderDrawio), [renderDrawio]);
 
   const mxgraphHtml = useMemo(() => {
     setError(undefined);
-    onRenderingStart?.();
 
     if (children == null) {
       return '';
@@ -85,15 +88,14 @@ export const DrawioViewer = React.memo((props: DrawioViewerProps): JSX.Element =
     let mxgraphData;
     try {
       mxgraphData = generateMxgraphData(code);
-      onRenderingUpdated?.(false);
     }
     catch (err) {
       setError(err);
-      onRenderingUpdated?.(true);
+      onRenderingUpdated?.(null);
     }
 
     return `<div class="mxgraph" data-mxgraph="${mxgraphData}"></div>`;
-  }, [children, onRenderingStart, onRenderingUpdated]);
+  }, [children, onRenderingUpdated]);
 
   useEffect(() => {
     if (mxgraphHtml.length > 0) {
