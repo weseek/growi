@@ -40,6 +40,7 @@ const TagList: FC<TagListProps> = (props:(TagListProps & typeof defaultProps)) =
         >
           <a
             className={tagListClasses}
+            data-testid="grw-tags-list"
           >
             <div className="text-truncate list-tag-name">{tag.name}</div>
             <div className="ml-4 my-auto py-1 px-2 list-tag-count badge badge-secondary text-white">{tag.count}</div>
