@@ -11,6 +11,7 @@ import styles from '~/components/UsersHomePageFooter.module.scss';
 import { useSWRxBookamrkFolderAndChild } from '~/stores/bookmark-folder';
 
 import FolderPlusIcon from './Icons/FolderPlusIcon';
+import BookmarkFolderItem from './Sidebar/Bookmarks/BookmarkFolderItem';
 import BookmarkFolderNameInput from './Sidebar/Bookmarks/BookmarkFolderNameInput';
 
 export type UsersHomePageFooterProps = {
@@ -21,7 +22,7 @@ export const UsersHomePageFooter = (props: UsersHomePageFooterProps): JSX.Elemen
   const { t } = useTranslation();
   const { creatorId } = props;
   const [isCreateAction, setIsCreateAction] = useState<boolean>(false);
-  const { mutate: mutateChildBookmarkData } = useSWRxBookamrkFolderAndChild(null);
+  const { data: bookmarkFolderData, mutate: mutateChildBookmarkData } = useSWRxBookamrkFolderAndChild(null);
 
 
   const onPressEnterHandlerForCreate = useCallback(async(folderName: string) => {
@@ -63,8 +64,21 @@ export const UsersHomePageFooter = (props: UsersHomePageFooterProps): JSX.Elemen
 
           </div>
         )}
+        {
+          <ul className={'grw-foldertree list-group p-3'}>
+            {bookmarkFolderData?.map((item) => {
+              return (
+                <BookmarkFolderItem
+                  key={item._id}
+                  bookmarkFolder={item}
+                  isOpen={false}
+                />
+              );
+            })}
+          </ul>
+        }
         <div id="user-bookmark-list" className={`page-list ${styles['page-list']}`}>
-          <BookmarkList userId={creatorId} />
+          <BookmarkList />
         </div>
       </div>
       <div className="grw-user-page-list-m mt-5 d-edit-none">
