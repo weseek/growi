@@ -3,6 +3,8 @@
   "Hide": "Hide",
   "Add": "Add",
   "Reset": "Reset",
+  "Sign out": "Logout",
+  "New": "New",
 
   "meta": {
     "display_name": "English"
@@ -42,9 +44,22 @@
     "description": "Description"
   },
 
+  "in_app_notification": {
+    "notification_list": "In-App Notification List",
+    "see_all": "See All",
+    "no_notification": "You don't have any notificatios.",
+    "all": "All",
+    "unopend": "Unread",
+    "mark_all_as_read": "Mark all as read"
+  },
+
   "personal_dropdown": {
     "home": "Home",
-    "settings": "Settings"
+    "settings": "Settings",
+    "color_mode": "Color mode",
+    "sidebar_mode": "Sidebar mode",
+    "sidebar_mode_editor": "Sidebar mode on editor",
+    "use_os_settings": "Use OS settings"
   },
 
   "copy_to_clipboard": {

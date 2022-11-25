@@ -1,12 +1,9 @@
-import { IUser, pagePathUtils } from '@growi/core';
-import { HtmlElementNode } from 'rehype-toc';
+import { IUser } from '@growi/core';
 import { Key, SWRResponse } from 'swr';
 import useSWRImmutable from 'swr/immutable';
 
-
 import { SupportedActionType } from '~/interfaces/activity';
 import { EditorConfig } from '~/interfaces/editor-settings';
-// import { CustomWindow } from '~/interfaces/global';
 import { RendererConfig } from '~/interfaces/services/renderer';
 import { GrowiThemes } from '~/interfaces/theme';
 import InterceptorManager from '~/services/interceptor-manager';
@@ -48,16 +45,12 @@ export const useCurrentUser = (initialData?: Nullable<IUser>): SWRResponse<Nulla
   return useContextSWR<Nullable<IUser>, Error>('currentUser', initialData);
 };
 
-export const useCurrentRevisionId = (initialData?: string): SWRResponse<string, Error> => {
-  return useContextSWR('currentRevisionId', initialData);
-};
-
 export const useCurrentPathname = (initialData?: string): SWRResponse<string, Error> => {
   return useContextSWR('currentPathname', initialData);
 };
 
 export const useCurrentPageId = (initialData?: Nullable<string>): SWRResponse<Nullable<string>, Error> => {
-  return useContextSWR<Nullable<string>, Error>('currentPageId', initialData);
+  return useStaticSWR<Nullable<string>, Error>('currentPageId', initialData);
 };
 
 export const useIsIdenticalPath = (initialData?: boolean): SWRResponse<boolean, Error> => {
@@ -74,6 +67,10 @@ export const useIsNotFound = (initialData?: boolean): SWRResponse<boolean, Error
 
 export const useTemplateTagData = (initialData?: string[]): SWRResponse<string[], Error> => {
   return useContextSWR<string[], Error>('templateTagData', initialData);
+};
+
+export const useTemplateBodyData = (initialData?: string): SWRResponse<string, Error> => {
+  return useContextSWR<string, Error>('templateBodyData', initialData);
 };
 
 export const useIsSharedUser = (initialData?: boolean): SWRResponse<boolean, Error> => {

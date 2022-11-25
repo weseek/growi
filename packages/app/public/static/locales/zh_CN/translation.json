@@ -28,7 +28,6 @@
 	"Admin": "管理",
 	"administrator": "管理员",
 	"Tags": "Tags",
-  "New": "新建",
   "Close": "Close",
 	"Shortcuts": "快捷方式",
   "CustomSidebar": "Custom Sidebar",
@@ -145,7 +144,6 @@
 	"edited this page": "edited this page.",
 	"List Drafts": "草稿",
 	"Deleted Pages": "已删除页",
-	"Sign out": "退出",
   "Disassociate": "解除关联",
   "No bookmarks yet": "暂无书签",
   "add_bookmark": "添加到书签",
@@ -228,14 +226,6 @@
 	"API Token Settings": "API token 设置",
 	"Current API Token": "当前 API token",
 	"Update API Token": "更新 API token",
-  "in_app_notification": {
-    "notification_list": "应用内通知列表",
-    "see_all": "查看通知列表",
-    "no_notification": "您没有任何通知",
-    "all": "全部",
-    "unopend": "未读",
-    "mark_all_as_read" : "标记为已读"
-  },
   "in_app_notification_settings": {
     "in_app_notification_settings": "在应用程序通知设置",
     "subscribe_settings": "自动订阅（接收通知）页面的设置",
@@ -566,12 +556,6 @@
     "Invalid_Number_of_Date" : "You entered invalid value",
     "link_sharing_is_disabled": "链接共享已被禁用"
   },
-	"personal_dropdown": {
-		"color_mode": "颜色模式",
-		"sidebar_mode": "边栏模式",
-		"sidebar_mode_editor": "编辑器上的边栏模式",
-		"use_os_settings": "使用操作系统设置"
-	},
 	"search_result": {
 		"result_meta": "搜索结果:",
 		"deletion_mode_btn_lavel": "选择并删除页面",

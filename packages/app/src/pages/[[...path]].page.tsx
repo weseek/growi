@@ -57,12 +57,12 @@ import DisplaySwitcher from '../components/Page/DisplaySwitcher';
 // import PageStatusAlert from '../client/js/components/PageStatusAlert';
 import {
   useCurrentUser,
-  useIsLatestRevision, useCurrentRevisionId,
+  useIsLatestRevision,
   useIsForbidden, useIsNotFound, useIsSharedUser,
   useIsEnabledStaleNotification, useIsIdenticalPath,
   useIsSearchServiceConfigured, useIsSearchServiceReachable, useDisableLinkSharing,
   useDrawioUri, useHackmdUri, useDefaultIndentSize, useIsIndentSizeForced,
-  useIsAclEnabled, useIsSearchPage, useTemplateTagData,
+  useIsAclEnabled, useIsSearchPage, useTemplateTagData, useTemplateBodyData, useIsEnabledAttachTitleHeader,
   useCsrfToken, useIsSearchScopeChildrenAsDefault, useCurrentPageId, useCurrentPathname,
   useIsSlackConfigured, useRendererConfig, useEditingMarkdown,
   useEditorConfig, useIsAllReplyShown, useIsUploadableFile, useIsUploadableImage, useCustomizedLogoSrc, useIsContainerFluid,
@@ -136,7 +136,6 @@ type Props = CommonProps & {
 
   // shareLinkId?: string;
   isLatestRevision?: boolean,
-  currentRevisionId?: string,
 
   isIdenticalPathPage?: boolean,
   isForbidden: boolean,
@@ -163,6 +162,7 @@ type Props = CommonProps & {
   isContainerFluid: boolean,
   editorConfig: EditorConfig,
   isEnabledStaleNotification: boolean,
+  isEnabledAttachTitleHeader: boolean,
   // isEnabledLinebreaks: boolean,
   // isEnabledLinebreaksInComments: boolean,
   adminPreferredIndentSize: number,
@@ -217,7 +217,9 @@ const GrowiPage: NextPage<Props> = (props: Props) => {
   useIsSearchPage(false);
 
   useTemplateTagData(props.templateTagData);
+  useTemplateBodyData(props.templateBodyData);
 
+  useIsEnabledAttachTitleHeader(props.isEnabledAttachTitleHeader);
   useIsSearchServiceConfigured(props.isSearchServiceConfigured);
   useIsSearchServiceReachable(props.isSearchServiceReachable);
   useIsSearchScopeChildrenAsDefault(props.isSearchScopeChildrenAsDefault);
@@ -248,10 +250,10 @@ const GrowiPage: NextPage<Props> = (props: Props) => {
   useCurrentPageId(pageId ?? null);
   // useIsNotCreatable(props.isForbidden || !isCreatablePage(pagePath)); // TODO: need to include props.isIdentical
   useCurrentPathname(props.currentPathname);
-  useCurrentRevisionId(props.currentRevisionId);
 
   const { data: currentPage } = useSWRxCurrentPage(undefined, pageWithMeta?.data ?? null); // store initial data
-  useEditingMarkdown(pageWithMeta?.data.revision?.body ?? props.templateBodyData ?? '');
+
+  useEditingMarkdown(pageWithMeta?.data.revision?.body);
 
   const { data: grantData } = useSWRxIsGrantNormalized(pageId);
   const { mutate: mutateSelectedGrant } = useSelectedGrant();
@@ -337,7 +339,9 @@ const GrowiPage: NextPage<Props> = (props: Props) => {
           </div>
           { !props.isIdenticalPathPage && !props.isNotFound && (
             <footer className="footer d-edit-none">
-              { pageWithMeta != null && !isTopPagePath && (<Comments pageId={pageId} revision={pageWithMeta.data.revision} />) }
+              { pageWithMeta != null && pagePath != null && !isTopPagePath && (
+                <Comments pageId={pageId} pagePath={pagePath} revision={pageWithMeta.data.revision} />
+              ) }
               { pageWithMeta != null && isUsersHomePage(pageWithMeta.data.path) && (
                 <UsersHomePageFooter creatorId={pageWithMeta.data.creator._id}/>
               ) }
@@ -422,10 +426,6 @@ async function injectPageData(context: GetServerSidePropsContext, props: Props):
     props.isLatestRevision = page.isLatestRevision();
   }
 
-  if (typeof revisionId === 'string' || typeof revisionId === 'undefined') {
-    props.currentRevisionId = props.isLatestRevision && page.latestRevision != null ? page.latestRevision.toString() : revisionId;
-  }
-
   if (page == null && user != null) {
     const templateData = await Page.findTemplate(props.currentPathname);
     if (templateData != null) {
@@ -473,7 +473,6 @@ async function injectRoutingInformation(context: GetServerSidePropsContext, prop
   }
   else {
     props.isNotFound = page.isEmpty;
-
     // /62a88db47fed8b2d94f30000 ==> /path/to/page
     if (isPermalink && page.isEmpty) {
       props.currentPathname = page.path;
@@ -536,6 +535,8 @@ function injectServerConfigurations(context: GetServerSidePropsContext, props: P
   };
   props.adminPreferredIndentSize = configManager.getConfig('markdown', 'markdown:adminPreferredIndentSize');
   props.isIndentSizeForced = configManager.getConfig('markdown', 'markdown:isIndentSizeForced');
+
+  props.isEnabledAttachTitleHeader = configManager.getConfig('crowi', 'customize:isEnabledAttachTitleHeader');
 
   props.rendererConfig = {
     isEnabledLinebreaks: configManager.getConfig('markdown', 'markdown:isEnabledLinebreaks'),

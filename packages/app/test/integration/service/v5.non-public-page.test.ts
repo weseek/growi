@@ -83,6 +83,20 @@ describe('PageService page operations with non-public pages', () => {
   const tagIdRevert1 = new mongoose.Types.ObjectId();
   const tagIdRevert2 = new mongoose.Types.ObjectId();
 
+  const create = async(path, body, user, options = {}) => {
+    const mockedCreateSubOperation = jest.spyOn(crowi.pageService, 'createSubOperation').mockReturnValue(null);
+
+    const createdPage = await crowi.pageService.create(path, body, user, options);
+
+    const argsForCreateSubOperation = mockedCreateSubOperation.mock.calls[0];
+
+    mockedCreateSubOperation.mockRestore();
+
+    await crowi.pageService.createSubOperation(...argsForCreateSubOperation);
+
+    return createdPage;
+  };
+
   beforeAll(async() => {
     crowi = await getInstance();
     await crowi.configManager.updateConfigsInTheSameNamespace('crowi', { 'app:isV5Compatible': true });
@@ -746,7 +760,7 @@ describe('PageService page operations with non-public pages', () => {
         expect(page3).toBeNull();
 
         // use existing path
-        await crowi.pageService.create(path1, 'new body', dummyUser1, { grant: Page.GRANT_RESTRICTED });
+        await create(path1, 'new body', dummyUser1, { grant: Page.GRANT_RESTRICTED });
 
         const _pageT = await Page.findOne({ path: pathT });
         const _page1 = await Page.findOne({ path: path1, grant: Page.GRANT_PUBLIC });
@@ -774,7 +788,7 @@ describe('PageService page operations with non-public pages', () => {
         expect(page1).toBeTruthy();
         expect(page2).toBeNull();
 
-        await crowi.pageService.create(pathN, 'new body', dummyUser1, { grant: Page.GRANT_PUBLIC });
+        await create(pathN, 'new body', dummyUser1, { grant: Page.GRANT_PUBLIC });
 
         const _pageT = await Page.findOne({ path: pathT });
         const _page1 = await Page.findOne({ path: path1, grant: Page.GRANT_RESTRICTED });
