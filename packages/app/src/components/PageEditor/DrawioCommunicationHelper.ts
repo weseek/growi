@@ -1,3 +1,5 @@
+import { extractCodeFromMxfile } from '@growi/remark-drawio-plugin';
+
 import loggerFactory from '~/utils/logger';
 
 
@@ -41,11 +43,7 @@ export class DrawioCommunicationHelper {
       }
     }
 
-    if (event.data === 'ready') {
-      event.source?.postMessage(drawioMxFile, { targetOrigin: '*' });
-      return;
-    }
-
+    // configure
     if (event.data === '{"event":"configure"}') {
       if (event.source == null) {
         return;
@@ -60,6 +58,21 @@ export class DrawioCommunicationHelper {
         config: this.drawioConfig,
       }), { targetOrigin: '*' });
 
+      return;
+    }
+
+    // restore diagram data
+    if (event.data === 'ready') {
+      let code = drawioMxFile;
+      try {
+        code = extractCodeFromMxfile(drawioMxFile);
+      }
+      // catch error if drawioMxFile is not XML
+      catch (err) {
+        // do nothing because drawioMxFile might be base64 code
+      }
+
+      event.source?.postMessage(code, { targetOrigin: '*' });
       return;
     }
 

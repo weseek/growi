@@ -2,13 +2,16 @@
 import pako from 'pako';
 import xmldoc from 'xmldoc';
 
+export const extractCodeFromMxfile = (input: string): string => {
+  const doc = new xmldoc.XmlDocument(input);
+  return doc.valueWithPath('diagram');
+};
+
 const validateInputData = (input: string): boolean => {
   let data = input;
 
   try {
-    const doc = new xmldoc.XmlDocument(data);
-    const diagram = doc.valueWithPath('diagram');
-    data = diagram;
+    data = extractCodeFromMxfile(data);
   }
   catch (e) {
     // ignore

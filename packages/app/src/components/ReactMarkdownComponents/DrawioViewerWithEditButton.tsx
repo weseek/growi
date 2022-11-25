@@ -22,8 +22,8 @@ export const DrawioViewerWithEditButton = React.memo((props: DrawioViewerProps):
   const [mxfile, setMxfile] = useState('');
 
   const editButtonClickHandler = useCallback(() => {
-    // openDrawioModal(mxfile);
-  }, []);
+    openDrawioModal(mxfile);
+  }, [mxfile, openDrawioModal]);
 
   const renderingStartHandler = useCallback(() => {
     setMounted(false);
@@ -33,8 +33,7 @@ export const DrawioViewerWithEditButton = React.memo((props: DrawioViewerProps):
     setMounted(viewer != null);
 
     if (viewer != null) {
-      // console.log(viewer);
-      // setMxfile(viewer.xml);
+      setMxfile(viewer.xml);
     }
   }, []);
 
