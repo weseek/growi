@@ -5,6 +5,8 @@ import urljoin from 'url-join';
 
 import LinkedPagePath from '../models/linked-page-path';
 
+import { LinkEditorModeHashChange } from './Common/LinkEditorModeHashChange';
+
 
 type PagePathHierarchicalLinkProps = {
   linkedPagePath: LinkedPagePath,
@@ -49,12 +51,12 @@ const PagePathHierarchicalLink = memo((props: PagePathHierarchicalLinkProps): JS
       : (
         <RootElm>
           <span className="path-segment">
-            <Link href="/" prefetch={false}>
+            <LinkEditorModeHashChange href="/" prefetch={false}>
               <a >
                 <i className="icon-home"></i>
                 <span className="separator">/</span>
               </a>
-            </Link>
+            </LinkEditorModeHashChange>
           </span>
         </RootElm>
       );
