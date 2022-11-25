@@ -12,15 +12,19 @@ context('Access Home', () => {
 
   it('Visit home', () => {
     cy.visit('/dummy');
-    cy.getByTestid('grw-personal-dropdown').click();
-    cy.getByTestid('grw-personal-dropdown').find('.dropdown-menu .btn-group > .btn-outline-secondary:eq(0)').click();
+    cy.waitUntilSkeletonDisappear();
+    cy.get('.grw-personal-dropdown').as('dropdown').should('be.visible').click()
+    cy.get('@dropdown').within(()=>{
+      cy.getByTestid('personal-dropdown-menu').should('have.css', 'display', 'block');
+    });
+    cy.getByTestid('grw-personal-dropdown-menu-user-home').should('be.visible').click();
+    cy.waitUntilSkeletonDisappear();
 
     // eslint-disable-next-line cypress/no-unnecessary-waiting
     cy.wait(2000); // wait for calcViewHeight and rendering
 
-    cy.waitUntilSkeletonDisappear();
     // for check download toc data
-    cy.get('.toc-link').should('be.visible');
+    cy.get('.toc-link', { timeout: 60000 }).should('be.visible');
 
     // same screenshot is taken in access-to-page.spec
     cy.screenshot(`${ssPrefix}-visit-home`);
