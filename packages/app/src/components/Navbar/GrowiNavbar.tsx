@@ -59,7 +59,7 @@ const NavbarRight = memo((): JSX.Element => {
             onClick={() => openCreateModal(currentPagePath || '')}
           >
             <i className="icon-pencil mr-2"></i>
-            <span className="d-none d-lg-block">{ t('New') }</span>
+            <span className="d-none d-lg-block">{ t('commons:New') }</span>
           </button>
         </li>
 
