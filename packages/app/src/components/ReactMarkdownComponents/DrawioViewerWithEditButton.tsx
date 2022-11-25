@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, useState } from 'react';
 
 import { DrawioViewer, DrawioViewerProps } from '@growi/remark-drawio-plugin';
 import { useTranslation } from 'next-i18next';
@@ -8,32 +8,44 @@ import { useIsGuestUser, useIsSharedUser } from '~/stores/context';
 import NotAvailableForGuest from '../NotAvailableForGuest';
 
 
+import styles from './DrawioViewerWithEditButton.module.scss';
+
+
 export const DrawioViewerWithEditButton = React.memo((props: DrawioViewerProps): JSX.Element => {
   const { t } = useTranslation();
 
   const { data: isGuestUser } = useIsGuestUser();
   const { data: isSharedUser } = useIsSharedUser();
 
+  const [isMounted, setMounted] = useState(false);
+
   const editButtonClickHandler = useCallback(() => {
-
   }, []);
 
-  const renderingUpdatedHandler = useCallback(() => {
-
+  const renderingStartHandler = useCallback(() => {
+    setMounted(false);
   }, []);
 
-  const showEditButton = !isGuestUser && !isSharedUser;
+  const renderingUpdatedHandler = useCallback((hasError: boolean) => {
+    setMounted(!hasError);
+  }, []);
+
+  const showEditButton = isMounted && !isGuestUser && !isSharedUser;
 
   return (
-    <div>
+    <div className={`drawio-viewer-with-edit-button ${styles['drawio-viewer-with-edit-button']}`}>
       { showEditButton && (
         <NotAvailableForGuest>
-          <button type="button" className="drawio-iframe-trigger position-absolute btn btn-outline-secondary" onClick={editButtonClickHandler}>
+          <button
+            type="button"
+            className="btn btn-outline-secondary btn-edit-drawio"
+            onClick={editButtonClickHandler}
+          >
             <i className="icon-note mr-1"></i>{t('Edit')}
           </button>
         </NotAvailableForGuest>
       ) }
-      <DrawioViewer {...props} onRenderingUpdated={renderingUpdatedHandler} />
+      <DrawioViewer {...props} onRenderingStart={renderingStartHandler} onRenderingUpdated={renderingUpdatedHandler} />
     </div>
   );
 });

@@ -23,12 +23,14 @@ export type DrawioViewerProps = {
   bol?: number,
   eol?: number,
   children?: ReactNode,
+  onRenderingStart?: () => void,
   onRenderingUpdated?: (hasError: boolean) => void,
 }
 
 export const DrawioViewer = React.memo((props: DrawioViewerProps): JSX.Element => {
   const {
     diagramIndex, bol, eol, children,
+    onRenderingStart, onRenderingUpdated,
   } = props;
 
   const drawioContainerRef = useRef<HTMLDivElement>(null);
@@ -60,15 +62,17 @@ export const DrawioViewer = React.memo((props: DrawioViewerProps): JSX.Element =
         }
         catch (err) {
           setError(err);
+          onRenderingUpdated?.(true);
         }
       }
     }
-  }, [drawioContainerRef]);
+  }, [onRenderingUpdated]);
 
   const renderDrawioWithDebounce = useMemo(() => debounce(200, renderDrawio), [renderDrawio]);
 
   const mxgraphHtml = useMemo(() => {
     setError(undefined);
+    onRenderingStart?.();
 
     if (children == null) {
       return '';
@@ -81,13 +85,15 @@ export const DrawioViewer = React.memo((props: DrawioViewerProps): JSX.Element =
     let mxgraphData;
     try {
       mxgraphData = generateMxgraphData(code);
+      onRenderingUpdated?.(false);
     }
     catch (err) {
       setError(err);
+      onRenderingUpdated?.(true);
     }
 
     return `<div class="mxgraph" data-mxgraph="${mxgraphData}"></div>`;
-  }, [children]);
+  }, [children, onRenderingStart, onRenderingUpdated]);
 
   useEffect(() => {
     if (mxgraphHtml.length > 0) {
