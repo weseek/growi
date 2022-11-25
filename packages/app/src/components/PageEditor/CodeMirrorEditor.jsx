@@ -131,8 +131,10 @@ class CodeMirrorEditor extends AbstractEditor {
     this.handleCtrlEnterKey = this.handleCtrlEnterKey.bind(this);
 
     this.scrollCursorIntoViewHandler = this.scrollCursorIntoViewHandler.bind(this);
+    this.scrollCursorIntoViewHandlerThrottled = throttle(500, this.scrollCursorIntoViewHandler);
     this.pasteHandler = this.pasteHandler.bind(this);
     this.cursorHandler = this.cursorHandler.bind(this);
+    this.cursorHandlerDebounced = debounce(200, throttle(500, this.cursorHandler));
     this.changeHandler = this.changeHandler.bind(this);
     this.turnOnEmojiPickerMode = this.turnOnEmojiPickerMode.bind(this);
     this.turnOffEmojiPickerMode = this.turnOffEmojiPickerMode.bind(this);
@@ -1091,7 +1093,7 @@ class CodeMirrorEditor extends AbstractEditor {
             },
             lint,
           }}
-          onCursor={this.cursorHandler}
+          onCursor={this.cursorHandlerDebounced}
           onScroll={(editor, data) => {
             if (this.props.onScroll != null) {
             // add line data
@@ -1109,7 +1111,7 @@ class CodeMirrorEditor extends AbstractEditor {
           onKeyPress={this.keyPressHandler}
           onKeyDown={this.keyDownHandler}
           onPasteFiles={this.pasteHandler}
-          onScrollCursorIntoView={this.scrollCursorIntoViewHandler}
+          onScrollCursorIntoView={this.scrollCursorIntoViewHandlerThrottled}
         />
 
         { this.renderLoadingKeymapOverlay() }
