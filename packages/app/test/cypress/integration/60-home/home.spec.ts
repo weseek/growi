@@ -18,10 +18,10 @@ context('Access Home', () => {
       cy.getByTestid('personal-dropdown-menu').should('have.css', 'display', 'block');
     });
     cy.getByTestid('grw-personal-dropdown-menu-user-home').should('be.visible').click();
+    cy.waitUntilSkeletonDisappear();
 
     // eslint-disable-next-line cypress/no-unnecessary-waiting
     cy.wait(2000); // wait for calcViewHeight and rendering
-    cy.waitUntilSkeletonDisappear();
 
     // for check download toc data
     cy.get('.toc-link', { timeout: 60000 }).should('be.visible');
