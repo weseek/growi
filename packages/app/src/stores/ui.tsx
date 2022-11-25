@@ -126,7 +126,7 @@ export const determineEditorModeByHash = (): EditorMode => {
     return EditorMode.View;
   }
 
-  const hash = window.location.hash;
+  const { hash } = window.location;
 
   switch (hash) {
     case EditorModeHash.Edit:
