@@ -184,5 +184,22 @@ module.exports = function(crowi) {
     return lib.doCheckLimit(uploadFileSize, maxFileSize, gcsTotalLimit);
   };
 
+  /**
+   * List files in storage
+   */
+  lib.listFiles = async() => {
+    if (!this.getIsReadable()) {
+      throw new Error('GCS is not configured.');
+    }
+
+    const gcs = getGcsInstance();
+    const bucket = gcs.bucket(getGcsBucket());
+    const [files] = await bucket.getFiles();
+
+    return files.map(({ name, metadata: { size } }) => {
+      return { name, size };
+    });
+  };
+
   return lib;
 };

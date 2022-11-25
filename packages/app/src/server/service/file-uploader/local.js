@@ -3,7 +3,9 @@ import loggerFactory from '~/utils/logger';
 const logger = loggerFactory('growi:service:fileUploaderLocal');
 
 const fs = require('fs');
+const fsPromises = require('fs/promises');
 const path = require('path');
+
 const mkdir = require('mkdirp');
 const streamToPromise = require('stream-to-promise');
 const urljoin = require('url-join');
@@ -26,6 +28,16 @@ module.exports = function(crowi) {
     }
 
     return filePath;
+  }
+
+  async function readdirRecursively(dirPath) {
+    const directories = await fsPromises.readdir(dirPath, { withFileTypes: true });
+    const files = await Promise.all(directories.map((directory) => {
+      const childDirPathOrFilePath = path.resolve(dirPath, directory.name);
+      return directory.isDirectory() ? readdirRecursively(childDirPathOrFilePath) : childDirPathOrFilePath;
+    }));
+
+    return files.flat();
   }
 
   lib.isValidUploadSettings = function() {
@@ -124,6 +136,23 @@ module.exports = function(crowi) {
     res.set('X-Accel-Redirect', internalPath);
     res.set('X-Sendfile', storagePath);
     return res.end();
+  };
+
+  /**
+   * List files in storage
+   */
+  lib.listFiles = async() => {
+    // `mkdir -p` to avoid ENOENT error
+    await mkdir(basePath);
+    const filePaths = await readdirRecursively(basePath);
+    return Promise.all(
+      filePaths.map(
+        file => fsPromises.stat(file).then(({ size }) => ({
+          name: path.relative(basePath, file),
+          size,
+        })),
+      ),
+    );
   };
 
   return lib;

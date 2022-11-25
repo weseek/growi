@@ -6,6 +6,7 @@ import {
   PutObjectCommand,
   DeleteObjectCommand,
   GetObjectCommandOutput,
+  ListObjectsCommand,
 } from '@aws-sdk/client-s3';
 import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
 import urljoin from 'url-join';
@@ -14,6 +15,15 @@ import loggerFactory from '~/utils/logger';
 
 
 const logger = loggerFactory('growi:service:fileUploaderAws');
+
+/**
+ * File metadata in storage
+ * TODO: mv this to "./uploader"
+ */
+  interface FileMeta {
+  name: string;
+  size: number;
+}
 
 type AwsCredential = {
   accessKeyId: string,
@@ -228,6 +238,49 @@ module.exports = (crowi) => {
     const maxFileSize = crowi.configManager.getConfig('crowi', 'app:maxFileSize');
     const totalLimit = crowi.configManager.getConfig('crowi', 'app:fileUploadTotalLimit');
     return lib.doCheckLimit(uploadFileSize, maxFileSize, totalLimit);
+  };
+
+  /**
+   * List files in storage
+   */
+  lib.listFiles = async() => {
+    if (!lib.getIsReadable()) {
+      throw new Error('AWS is not configured.');
+    }
+
+    const files: FileMeta[] = [];
+    const s3 = S3Factory();
+    const awsConfig = getAwsConfig();
+    const params = {
+      Bucket: awsConfig.bucket,
+    };
+    let shouldContinue = true;
+    let nextMarker: string | undefined;
+
+    // handle pagination
+    while (shouldContinue) {
+      // eslint-disable-next-line no-await-in-loop
+      const { Contents = [], IsTruncated, NextMarker } = await s3.send(new ListObjectsCommand({
+        ...params,
+        Marker: nextMarker,
+      }));
+      files.push(...(
+        Contents.map(({ Key, Size }) => ({
+          name: Key as string,
+          size: Size as number,
+        }))
+      ));
+
+      if (!IsTruncated) {
+        shouldContinue = false;
+        nextMarker = undefined;
+      }
+      else {
+        nextMarker = NextMarker;
+      }
+    }
+
+    return files;
   };
 
   return lib;
