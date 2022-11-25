@@ -5,8 +5,6 @@ import { useTranslation } from 'next-i18next';
 
 import { useIsGuestUser, useIsSharedUser } from '~/stores/context';
 
-import NotAvailableForGuest from '../NotAvailableForGuest';
-
 
 import styles from './DrawioViewerWithEditButton.module.scss';
 
@@ -35,15 +33,13 @@ export const DrawioViewerWithEditButton = React.memo((props: DrawioViewerProps):
   return (
     <div className={`drawio-viewer-with-edit-button ${styles['drawio-viewer-with-edit-button']}`}>
       { showEditButton && (
-        <NotAvailableForGuest>
-          <button
-            type="button"
-            className="btn btn-outline-secondary btn-edit-drawio"
-            onClick={editButtonClickHandler}
-          >
-            <i className="icon-note mr-1"></i>{t('Edit')}
-          </button>
-        </NotAvailableForGuest>
+        <button
+          type="button"
+          className="btn btn-outline-secondary btn-edit-drawio"
+          onClick={editButtonClickHandler}
+        >
+          <i className="icon-note mr-1"></i>{t('Edit')}
+        </button>
       ) }
       <DrawioViewer {...props} onRenderingStart={renderingStartHandler} onRenderingUpdated={renderingUpdatedHandler} />
     </div>
