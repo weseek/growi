@@ -866,7 +866,7 @@ class CodeMirrorEditor extends AbstractEditor {
     this.linkEditModal.current.show(markdownLinkUtil.getMarkdownLink(this.getCodeMirror()));
   }
 
-  // fold draw.io section (::: drawio ~ :::)
+  // fold draw.io section (``` drawio ~ ```)
   foldDrawioSection() {
     const editor = this.getCodeMirror();
     const lineNumbers = mdu.findAllDrawioSection(editor);
@@ -877,7 +877,7 @@ class CodeMirrorEditor extends AbstractEditor {
 
   onSaveForDrawio(drawioData) {
     const range = mdu.replaceFocusedDrawioWithEditor(this.getCodeMirror(), drawioData);
-    // Fold the section after the drawio section (:::drawio) has been updated.
+    // Fold the section after the drawio section (```drawio) has been updated.
     this.foldDrawioSection();
     return range;
   }

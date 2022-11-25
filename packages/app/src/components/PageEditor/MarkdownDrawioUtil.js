@@ -4,8 +4,8 @@
 class MarkdownDrawioUtil {
 
   constructor() {
-    this.lineBeginPartOfDrawioRE = /^:::(\s.*)drawio$/;
-    this.lineEndPartOfDrawioRE = /^:::$/;
+    this.lineBeginPartOfDrawioRE = /^```(\s.*)drawio$/;
+    this.lineEndPartOfDrawioRE = /^```$/;
   }
 
   /**
@@ -113,7 +113,7 @@ class MarkdownDrawioUtil {
 
   replaceFocusedDrawioWithEditor(editor, drawioData) {
     const curPos = editor.getCursor();
-    const drawioBlock = ['::: drawio', drawioData.toString(), ':::'].join('\n');
+    const drawioBlock = ['``` drawio', drawioData.toString(), '```'].join('\n');
     let beginPos;
     let endPos;
 
