@@ -20,12 +20,12 @@ describe('Access to sidebar', () => {
       describe('Test show/collapse button', () => {
         it('Successfully show sidebar', () => {
           cy.get('.grw-pagetree').should('be.visible');
-          cy.screenshot(`${ssPrefix}-1-sidebar-shown`, {capture: 'viewport'});
+          cy.screenshot(`${ssPrefix}1-sidebar-shown`, {capture: 'viewport'});
         });
 
         it('Successfully collapse sidebar', () => {
           cy.getByTestid('grw-navigation-resize-button').click({force: true});
-          cy.screenshot(`${ssPrefix}-2-sidebar-collapsed`, {capture: 'viewport'});
+          cy.screenshot(`${ssPrefix}2-sidebar-collapsed`, {capture: 'viewport'});
         });
       });
 
@@ -47,7 +47,7 @@ describe('Access to sidebar', () => {
           });
         });
 
-        it('Successfully click on Add to Bookmarks button', () => {
+        it('Successfully click Add to Bookmarks button', () => {
           // click three dots
           cy.get('.grw-pagetree-item-children').eq(0).within(() => {
             cy.getByTestid('open-page-item-control-btn').find('button').eq(0).invoke('css','display','block').click();
@@ -72,7 +72,7 @@ describe('Access to sidebar', () => {
           cy.screenshot(`${ssPrefix}page-tree-4-after-click-button`);
         });
 
-        it('Successfully duplicate page modal', () => {
+        it('Successfully show duplicate page modal', () => {
           cy.get('.grw-pagetree-item-children').eq(0).within(() => {
             cy.getByTestid('open-page-item-control-btn').find('button').eq(0).invoke('css','display','block').click();
           });
@@ -101,8 +101,7 @@ describe('Access to sidebar', () => {
           });
         });
 
-        it('Successfully delete page modal', () => {
-          cy.get('body').click(0,0);
+        it('Successfully show delete page modal', () => {
           cy.getByTestid('grw-contextual-navigation-sub').within(() => {
             cy.get('.grw-pagetree-item-children').eq(0).within(() => {
               cy.getByTestid('open-page-item-control-btn').find('button').eq(0).invoke('css','display','block').click()
@@ -187,7 +186,7 @@ describe('Access to sidebar', () => {
           });
         });
 
-        it('Succesfully check all tags button', () => {
+        it('Succesfully click all tags button', () => {
           cy.get('.grw-container-convertible > div > .btn-primary').click({force: true});
           cy.collapseSidebar(true);
           cy.getByTestid('grw-tags-list').should('be.visible');
