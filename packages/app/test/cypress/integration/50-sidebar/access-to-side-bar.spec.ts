@@ -17,7 +17,7 @@ describe('Access to sidebar', () => {
         cy.scrollTo('top');
       });
 
-      describe('Test show/collapse fetures', () => {
+      describe('Test show/collapse button', () => {
         it('Successfully show sidebar', () => {
           cy.get('.grw-pagetree').should('be.visible');
           cy.screenshot(`${ssPrefix}-1-sidebar-shown`, {capture: 'viewport'});
@@ -29,17 +29,8 @@ describe('Access to sidebar', () => {
         });
       });
 
-      describe('Test page operation from "page tree"', () => {
-        it('Successfully access to page tree tab', () => {
-          cy.getByTestid('grw-sidebar-nav-primary-page-tree').click();
-
-          // TODO: This is not idempotent. Should be fix.
-          cy.getByTestid('grw-contextual-navigation-sub').then(($el) => {
-            if($el.hasClass('d-none')){
-              cy.getByTestid('grw-navigation-resize-button').click({force: true});
-            }
-          });
-
+      describe('Test page tree tab', () => {
+        it('Successfully access to page tree', () => {
           cy.getByTestid('grw-contextual-navigation-sub').within(() => {
             cy.get('.grw-pagetree').should('be.visible');
             cy.screenshot(`${ssPrefix}page-tree-1-access-to-page-tree`);
@@ -56,9 +47,7 @@ describe('Access to sidebar', () => {
           });
         });
 
-        it('Successfully Click Add to Bookmarks, check dropdown menu', () => {
-          // TODO: check text
-
+        it('Successfully click on Add to Bookmarks button', () => {
           // click three dots
           cy.get('.grw-pagetree-item-children').eq(0).within(() => {
             cy.getByTestid('open-page-item-control-btn').find('button').eq(0).invoke('css','display','block').click();
@@ -66,7 +55,7 @@ describe('Access to sidebar', () => {
 
           cy.scrollTo('top');
           cy.getByTestid('page-item-control-menu').should('have.class', 'show');
-          cy.screenshot(`${ssPrefix}page-tree-3-click-three-dots-menu`);
+          cy.screenshot(`${ssPrefix}page-tree-3-before-click-button`);
 
           // click add remove bookmark btn
           cy.getByTestid('page-item-control-menu').should('have.class', 'show').within(() => {
@@ -80,7 +69,7 @@ describe('Access to sidebar', () => {
 
           cy.scrollTo('top');
           cy.getByTestid('page-item-control-menu').should('have.class', 'show');
-          cy.screenshot(`${ssPrefix}page-tree-4-add-bookmark`);
+          cy.screenshot(`${ssPrefix}page-tree-4-after-click-button`);
         });
 
         it('Successfully duplicate page modal', () => {
@@ -92,12 +81,12 @@ describe('Access to sidebar', () => {
           });
           cy.getByTestid('page-duplicate-modal').should('be.visible').within(() => {
             cy.get('.rbt-input-main').type('_test');
-            cy.screenshot(`${ssPrefix}page-tree-5-duplicate-page`);
+            cy.screenshot(`${ssPrefix}page-tree-5-duplicate-page-modal`);
             cy.get('.modal-header > button').click();
           });
         });
 
-        it('Successfully check rename page', () => {
+        it('Successfully rename page', () => {
           cy.getByTestid('grw-contextual-navigation-sub').within(() => {
             cy.get('.grw-pagetree-item-children').eq(0).within(() => {
               cy.getByTestid('open-page-item-control-btn').find('button').eq(0).invoke('css','display','block').click()
@@ -112,7 +101,7 @@ describe('Access to sidebar', () => {
           });
         });
 
-        it('Successfully check delete page modal', () => {
+        it('Successfully delete page modal', () => {
           cy.get('body').click(0,0);
           cy.getByTestid('grw-contextual-navigation-sub').within(() => {
             cy.get('.grw-pagetree-item-children').eq(0).within(() => {
@@ -123,122 +112,86 @@ describe('Access to sidebar', () => {
             });
           });
           cy.getByTestid('page-delete-modal').should('be.visible').within(() => {
-            cy.screenshot(`${ssPrefix}page-tree-7-delete-page`);
+            cy.screenshot(`${ssPrefix}page-tree-7-delete-page-modal`);
             cy.get('.modal-header > button').click();
           });
         });
       });
 
-      describe('Test access custom sidebar', () => {
-        it('Successfully click-on-custom-sidebar', () => {
+      describe('Test custom sidebar tab', () => {
+        it('Successfully access to custom sidebar', () => {
           cy.getByTestid('grw-sidebar-nav-primary-custom-sidebar').click();
 
-          // TODO: This is not idempotent. Should be fix.
-          cy.getByTestid('grw-contextual-navigation-sub').then(($el) => {
-            if($el.hasClass('d-none')){
-              cy.getByTestid('grw-navigation-resize-button').click({force: true});
-            }
-          });
+          // eslint-disable-next-line cypress/no-unnecessary-waiting
+          cy.wait(1500); // Wait debounce for UserUISettings update
 
           cy.getByTestid('grw-contextual-navigation-sub').within(() => {
             cy.get('.grw-sidebar-content-header.h5').find('a');
-            cy.screenshot(`${ssPrefix}custom-sidebar-1-click-on-custom-sidebar`);
+            cy.screenshot(`${ssPrefix}custom-sidebar-1-access-to-custom-sidebar`);
           });
         });
 
-        it('Successfully custom-sidebar-editor', () => {
-          // TODO: This is not idempotent. Should be fix.
-          cy.getByTestid('grw-sidebar-nav-primary-custom-sidebar').click();
-          cy.getByTestid('grw-contextual-navigation-sub').then(($el) => {
-            if($el.hasClass('d-none')){
-              cy.getByTestid('grw-navigation-resize-button').click({force: true});
-            }
-          });
-
+        it('Successfully redirect to editor', () => {
           const content = '# HELLO \n ## Hello\n ### Hello';
 
           cy.get('.grw-sidebar-content-header.h5').find('a').click();
           cy.get('.CodeMirror textarea').type(content, {force: true});
-          cy.screenshot(`${ssPrefix}custom-sidebar-2-custom-sidebar-editor`);
+          cy.screenshot(`${ssPrefix}custom-sidebar-2-redirect-to-editor`);
           cy.getByTestid('save-page-btn').click();
           cy.get('.layout-root').should('not.have.class', 'editing');
         });
 
-        it('Successfully custom-sidebar-created', () => {
-
-          // TODO: This is not idempotent. Should be fix.
-          // What to do when UserUISettings is not saved in time
-          cy.getByTestid('grw-sidebar-nav-primary-custom-sidebar').then(($el) => {
-            if (!$el.hasClass('active')) {
-              cy.wrap($el).click();
-            }
-          });
-
+        it('Successfully create custom sidebar content', () => {
           cy.getByTestid('grw-contextual-navigation-sub').within(() => {
             cy.get('.grw-custom-sidebar-content').should('be.visible');
-            cy.screenshot(`${ssPrefix}custom-sidebar-3-custom-sidebar-created`);
+            cy.screenshot(`${ssPrefix}custom-sidebar-3-content-created`);
           });
         });
       });
 
-      describe('Test access recent changes', () => {
-        it('Successfully access recent changes', () => {
+      describe('Test recent changes tab', () => {
+        it('Successfully access to recent changes', () => {
           cy.getByTestid('grw-sidebar-nav-primary-recent-changes').click();
 
-          // TODO: This is not idempotent. Should be fix.
-          cy.getByTestid('grw-contextual-navigation-sub').then(($el) => {
-            if($el.hasClass('d-none')){
-              cy.getByTestid('grw-navigation-resize-button').click({force: true});
-            }
-          });
+          // eslint-disable-next-line cypress/no-unnecessary-waiting
+          cy.wait(1500); // Wait debounce for UserUISettings update
 
           cy.getByTestid('grw-recent-changes').should('be.visible');
           cy.get('.list-group-item').should('be.visible');
 
           cy.scrollTo('top');
-          cy.screenshot(`${ssPrefix}recent-changes-1-page-list`);
+          cy.screenshot(`${ssPrefix}recent-changes-1-access-to-recent-changes`);
         });
 
-        it('Successfully switch sidebar size', () => {
-
-          // TODO: This is not idempotent. Should be fix.
-          cy.getByTestid('grw-sidebar-nav-primary-recent-changes').click();
-          cy.getByTestid('grw-contextual-navigation-sub').then(($el) => {
-            if($el.hasClass('d-none')){
-              cy.getByTestid('grw-navigation-resize-button').click({force: true});
-            }
-          });
-
+        it('Successfully switch content size', () => {
           cy.get('#grw-sidebar-contents-wrapper').within(() => {
             cy.get('#recentChangesResize').click({force: true});
             cy.get('.list-group-item').should('be.visible');
           });
 
           cy.scrollTo('top');
-          cy.screenshot(`${ssPrefix}recent-changes-2-switch-sidebar-size`);
+          cy.screenshot(`${ssPrefix}recent-changes-2-switch-content-size`);
         });
       });
 
-      describe('Test page operation from "Tags"', () => {
-        it('Successfully access-to-tags', () => {
+      describe('Test tags tab', () => {
+        it('Successfully access to tags', () => {
           cy.getByTestid('grw-sidebar-nav-primary-tags').click();
 
-          // TODO: This is not idempotent. Should be fix.
-          cy.getByTestid('grw-contextual-navigation-sub').then(($el) => {
-            if($el.hasClass('d-none')){
-              cy.getByTestid('grw-navigation-resize-button').click({force: true});
-            }
-          });
+          // eslint-disable-next-line cypress/no-unnecessary-waiting
+          cy.wait(1500); // Wait debounce for UserUISettings update
 
           cy.getByTestid('grw-contextual-navigation-sub').within(() => {
             cy.getByTestid('grw-tags-list').should('be.visible');
             cy.screenshot(`${ssPrefix}tags-1-access-to-tags`);
           });
+        });
 
+        it('Succesfully check all tags button', () => {
           cy.get('.grw-container-convertible > div > .btn-primary').click({force: true});
           cy.collapseSidebar(true);
           cy.getByTestid('grw-tags-list').should('be.visible');
-          cy.screenshot(`${ssPrefix}tags-2-check-all-tags`);
+          cy.screenshot(`${ssPrefix}tags-2-click-all-tags-button`);
         });
       });
 
