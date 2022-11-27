@@ -112,13 +112,15 @@ describe('Access to sidebar', () => {
           });
         });
 
-        it('Successfully Check delete page modal', () => {
+        it('Successfully check delete page modal', () => {
           cy.get('body').click(0,0);
-          cy.get('.grw-pagetree-item-children').eq(0).within(() => {
-            cy.getByTestid('open-page-item-control-btn').find('button').eq(0).invoke('css','display','block').click()
-          });
-          cy.get('.dropdown-menu.show').should('be.visible').within(() => {
-            cy.getByTestid('open-page-delete-modal-btn').click();
+          cy.getByTestid('grw-contextual-navigation-sub').within(() => {
+            cy.get('.grw-pagetree-item-children').eq(0).within(() => {
+              cy.getByTestid('open-page-item-control-btn').find('button').eq(0).invoke('css','display','block').click()
+            });
+            cy.get('.dropdown-menu.show').should('be.visible').within(() => {
+              cy.getByTestid('open-page-delete-modal-btn').click();
+            });
           });
           cy.getByTestid('page-delete-modal').should('be.visible').within(() => {
             cy.screenshot(`${ssPrefix}page-tree-7-delete-page`);
