@@ -29,77 +29,9 @@ describe('Access to sidebar', () => {
         });
       });
 
-      describe('Test access recent changes', () => {
-        it('Successfully page list', () => {
-          cy.getByTestid('grw-sidebar-nav-primary-recent-changes').click();
-          cy.getByTestid('grw-contextual-navigation-sub').then(($el) => {
-            if($el.hasClass('d-none')){
-              cy.getByTestid('grw-navigation-resize-button').click({force: true});
-            }
-          });
-
-          cy.getByTestid('grw-recent-changes').should('be.visible');
-          cy.get('.list-group-item').should('be.visible');
-
-          cy.scrollTo('top');
-          cy.screenshot(`${ssPrefix}recent-changes-1-page-list`);
-        });
-
-        it('Successfully switch sidebar size', () => {
-          cy.get('#grw-sidebar-contents-wrapper').within(() => {
-            cy.get('#recentChangesResize').click({force: true});
-            cy.get('.list-group-item').should('be.visible');
-          });
-
-          cy.scrollTo('top');
-          cy.screenshot(`${ssPrefix}recent-changes-2-switch-sidebar-size`);
-        });
-      });
-
-      describe('Test access custom sidebar', () => {
-        it('Successfully click-on-custom-sidebar', () => {
-          cy.getByTestid('grw-sidebar-nav-primary-custom-sidebar').click();
-          cy.getByTestid('grw-contextual-navigation-sub').then(($el) => {
-            if($el.hasClass('d-none')){
-              cy.getByTestid('grw-navigation-resize-button').click({force: true});
-            }
-          });
-
-          cy.getByTestid('grw-contextual-navigation-sub').within(() => {
-            cy.get('.grw-custom-sidebar-content').should('be.visible');
-            cy.screenshot(`${ssPrefix}custom-sidebar-1-click-on-custom-sidebar`);
-          });
-        });
-
-        it('Successfully create /Sidebar contents', () => {
-          const content = '# HELLO \n ## Hello\n ### Hello';
-
-          cy.get('.grw-sidebar-content-header.h5').find('a').click();
-          cy.get('.CodeMirror textarea').type(content, {force: true});
-          cy.screenshot(`${ssPrefix}custom-sidebar-2-custom-sidebar-editor`);
-          cy.getByTestid('save-page-btn').click();
-          cy.get('.layout-root').should('not.have.class', 'editing');
-        });
-
-        it('Successfully custom-sidebar-created', () => {
-          // What to do when UserUISettings is not saved in time
-          cy.getByTestid('grw-sidebar-nav-primary-custom-sidebar').then(($el) => {
-            if (!$el.hasClass('active')) {
-              cy.wrap($el).click();
-            }
-          });
-
-          cy.getByTestid('grw-contextual-navigation-sub').within(() => {
-            cy.get('.grw-custom-sidebar-content').should('be.visible');
-            cy.screenshot(`${ssPrefix}custom-sidebar-3-custom-sidebar-created`);
-          });
-        });
-      });
-
       describe('Test page operation from "page tree"', () => {
         it('Successfully access to page tree tab', () => {
           cy.getByTestid('grw-sidebar-nav-primary-page-tree').click();
-
           cy.getByTestid('grw-contextual-navigation-sub').then(($el) => {
             if($el.hasClass('d-none')){
               cy.getByTestid('grw-navigation-resize-button').click({force: true});
@@ -190,6 +122,74 @@ describe('Access to sidebar', () => {
             cy.screenshot(`${ssPrefix}page-tree-7-delete-page`);
             cy.get('.modal-header > button').click();
           });
+        });
+      });
+
+      describe('Test access custom sidebar', () => {
+        it('Successfully click-on-custom-sidebar', () => {
+          cy.getByTestid('grw-sidebar-nav-primary-custom-sidebar').click();
+          cy.getByTestid('grw-contextual-navigation-sub').then(($el) => {
+            if($el.hasClass('d-none')){
+              cy.getByTestid('grw-navigation-resize-button').click({force: true});
+            }
+          });
+
+          cy.getByTestid('grw-contextual-navigation-sub').within(() => {
+            cy.get('.grw-sidebar-content-header').eq(1).should('have.text', 'Create');
+            cy.screenshot(`${ssPrefix}custom-sidebar-1-click-on-custom-sidebar`);
+          });
+        });
+
+        it('Successfully create /Sidebar contents', () => {
+          const content = '# HELLO \n ## Hello\n ### Hello';
+
+          cy.get('.grw-sidebar-content-header.h5').find('a').click();
+          cy.get('.CodeMirror textarea').type(content, {force: true});
+          cy.screenshot(`${ssPrefix}custom-sidebar-2-custom-sidebar-editor`);
+          cy.getByTestid('save-page-btn').click();
+          cy.get('.layout-root').should('not.have.class', 'editing');
+        });
+
+        it('Successfully custom-sidebar-created', () => {
+          // What to do when UserUISettings is not saved in time
+          cy.getByTestid('grw-sidebar-nav-primary-custom-sidebar').then(($el) => {
+            if (!$el.hasClass('active')) {
+              cy.wrap($el).click();
+            }
+          });
+
+          cy.getByTestid('grw-contextual-navigation-sub').within(() => {
+            cy.get('.grw-custom-sidebar-content').should('be.visible');
+            cy.screenshot(`${ssPrefix}custom-sidebar-3-custom-sidebar-created`);
+          });
+        });
+      });
+
+      describe('Test access recent changes', () => {
+        it('Successfully access recent changes', () => {
+          cy.getByTestid('grw-sidebar-nav-primary-recent-changes').click();
+
+          cy.getByTestid('grw-contextual-navigation-sub').then(($el) => {
+            if($el.hasClass('d-none')){
+              cy.getByTestid('grw-navigation-resize-button').click({force: true});
+            }
+          });
+
+          cy.getByTestid('grw-recent-changes').should('be.visible');
+          cy.get('.list-group-item').should('be.visible');
+
+          cy.scrollTo('top');
+          cy.screenshot(`${ssPrefix}recent-changes-1-page-list`);
+        });
+
+        it('Successfully switch sidebar size', () => {
+          cy.get('#grw-sidebar-contents-wrapper').within(() => {
+            cy.get('#recentChangesResize').click({force: true});
+            cy.get('.list-group-item').should('be.visible');
+          });
+
+          cy.scrollTo('top');
+          cy.screenshot(`${ssPrefix}recent-changes-2-switch-sidebar-size`);
         });
       });
 
