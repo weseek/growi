@@ -32,11 +32,6 @@ describe('Access to sidebar', () => {
       describe('Test page operation from "page tree"', () => {
         it('Successfully access to page tree tab', () => {
           cy.getByTestid('grw-sidebar-nav-primary-page-tree').click();
-          cy.getByTestid('grw-contextual-navigation-sub').then(($el) => {
-            if($el.hasClass('d-none')){
-              cy.getByTestid('grw-navigation-resize-button').click({force: true});
-            }
-          });
 
           cy.getByTestid('grw-contextual-navigation-sub').within(() => {
             cy.get('.grw-pagetree').should('be.visible');
@@ -128,14 +123,9 @@ describe('Access to sidebar', () => {
       describe('Test access custom sidebar', () => {
         it('Successfully click-on-custom-sidebar', () => {
           cy.getByTestid('grw-sidebar-nav-primary-custom-sidebar').click();
-          cy.getByTestid('grw-contextual-navigation-sub').then(($el) => {
-            if($el.hasClass('d-none')){
-              cy.getByTestid('grw-navigation-resize-button').click({force: true});
-            }
-          });
 
           cy.getByTestid('grw-contextual-navigation-sub').within(() => {
-            cy.get('.grw-sidebar-content-header').eq(1).should('have.text', 'Create');
+            cy.get('.grw-sidebar-content-header').eq(1).should('be.visible');
             cy.screenshot(`${ssPrefix}custom-sidebar-1-click-on-custom-sidebar`);
           });
         });
@@ -169,12 +159,6 @@ describe('Access to sidebar', () => {
         it('Successfully access recent changes', () => {
           cy.getByTestid('grw-sidebar-nav-primary-recent-changes').click();
 
-          cy.getByTestid('grw-contextual-navigation-sub').then(($el) => {
-            if($el.hasClass('d-none')){
-              cy.getByTestid('grw-navigation-resize-button').click({force: true});
-            }
-          });
-
           cy.getByTestid('grw-recent-changes').should('be.visible');
           cy.get('.list-group-item').should('be.visible');
 
@@ -196,11 +180,7 @@ describe('Access to sidebar', () => {
       describe('Test page operation from "Tags"', () => {
         it('Successfully access-to-tags', () => {
           cy.getByTestid('grw-sidebar-nav-primary-tags').click();
-          cy.getByTestid('grw-contextual-navigation-sub').then(($el) => {
-            if($el.hasClass('d-none')){
-              cy.getByTestid('grw-navigation-resize-button').click({force: true});
-            }
-          });
+
           cy.getByTestid('grw-contextual-navigation-sub').within(() => {
             cy.getByTestid('grw-tags-list').should('be.visible');
             cy.screenshot(`${ssPrefix}tags-1-access-to-tags`);

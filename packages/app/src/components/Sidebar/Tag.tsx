@@ -62,7 +62,7 @@ const Tag: FC = () => {
           </div>
         )
         : (
-          <div>
+          <div data-testid="grw-tags-list">
             <TagList
               tagData={tagData}
               totalTags={totalCount}
