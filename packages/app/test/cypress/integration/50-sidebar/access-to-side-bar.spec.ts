@@ -33,6 +33,13 @@ describe('Access to sidebar', () => {
         it('Successfully access to page tree tab', () => {
           cy.getByTestid('grw-sidebar-nav-primary-page-tree').click();
 
+          // TODO: This is not idempotent. Should be fix.
+          cy.getByTestid('grw-contextual-navigation-sub').then(($el) => {
+            if($el.hasClass('d-none')){
+              cy.getByTestid('grw-navigation-resize-button').click({force: true});
+            }
+          });
+
           cy.getByTestid('grw-contextual-navigation-sub').within(() => {
             cy.get('.grw-pagetree').should('be.visible');
             cy.screenshot(`${ssPrefix}page-tree-1-access-to-page-tree`);
@@ -124,6 +131,13 @@ describe('Access to sidebar', () => {
         it('Successfully click-on-custom-sidebar', () => {
           cy.getByTestid('grw-sidebar-nav-primary-custom-sidebar').click();
 
+          // TODO: This is not idempotent. Should be fix.
+          cy.getByTestid('grw-contextual-navigation-sub').then(($el) => {
+            if($el.hasClass('d-none')){
+              cy.getByTestid('grw-navigation-resize-button').click({force: true});
+            }
+          });
+
           cy.getByTestid('grw-contextual-navigation-sub').within(() => {
             cy.get('.grw-sidebar-content-header').eq(1).should('be.visible');
             cy.screenshot(`${ssPrefix}custom-sidebar-1-click-on-custom-sidebar`);
@@ -141,6 +155,8 @@ describe('Access to sidebar', () => {
         });
 
         it('Successfully custom-sidebar-created', () => {
+
+          // TODO: This is not idempotent. Should be fix.
           // What to do when UserUISettings is not saved in time
           cy.getByTestid('grw-sidebar-nav-primary-custom-sidebar').then(($el) => {
             if (!$el.hasClass('active')) {
@@ -158,6 +174,13 @@ describe('Access to sidebar', () => {
       describe('Test access recent changes', () => {
         it('Successfully access recent changes', () => {
           cy.getByTestid('grw-sidebar-nav-primary-recent-changes').click();
+
+          // TODO: This is not idempotent. Should be fix.
+          cy.getByTestid('grw-contextual-navigation-sub').then(($el) => {
+            if($el.hasClass('d-none')){
+              cy.getByTestid('grw-navigation-resize-button').click({force: true});
+            }
+          });
 
           cy.getByTestid('grw-recent-changes').should('be.visible');
           cy.get('.list-group-item').should('be.visible');
@@ -180,6 +203,13 @@ describe('Access to sidebar', () => {
       describe('Test page operation from "Tags"', () => {
         it('Successfully access-to-tags', () => {
           cy.getByTestid('grw-sidebar-nav-primary-tags').click();
+
+          // TODO: This is not idempotent. Should be fix.
+          cy.getByTestid('grw-contextual-navigation-sub').then(($el) => {
+            if($el.hasClass('d-none')){
+              cy.getByTestid('grw-navigation-resize-button').click({force: true});
+            }
+          });
 
           cy.getByTestid('grw-contextual-navigation-sub').within(() => {
             cy.getByTestid('grw-tags-list').should('be.visible');
