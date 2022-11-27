@@ -159,6 +159,7 @@ describe('Access to sidebar', () => {
           cy.get('.list-group-item').should('be.visible');
 
           cy.scrollTo('top');
+          // The scope of the capture is not narrowed because the blackout is shifted
           cy.screenshot(`${ssPrefix}recent-changes-1-access-to-recent-changes`);
         });
 
@@ -169,6 +170,7 @@ describe('Access to sidebar', () => {
           });
 
           cy.scrollTo('top');
+          // The scope of the capture is not narrowed because the blackout is shifted
           cy.screenshot(`${ssPrefix}recent-changes-2-switch-content-size`);
         });
       });
