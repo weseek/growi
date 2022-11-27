@@ -144,7 +144,15 @@ describe('Access to sidebar', () => {
           });
         });
 
-        it('Successfully create /Sidebar contents', () => {
+        it('Successfully custom-sidebar-editor', () => {
+          // TODO: This is not idempotent. Should be fix.
+          cy.getByTestid('grw-sidebar-nav-primary-custom-sidebar').click();
+          cy.getByTestid('grw-contextual-navigation-sub').then(($el) => {
+            if($el.hasClass('d-none')){
+              cy.getByTestid('grw-navigation-resize-button').click({force: true});
+            }
+          });
+
           const content = '# HELLO \n ## Hello\n ### Hello';
 
           cy.get('.grw-sidebar-content-header.h5').find('a').click();
