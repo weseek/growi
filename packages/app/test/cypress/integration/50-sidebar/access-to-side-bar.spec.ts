@@ -43,7 +43,7 @@ describe('Access to sidebar', () => {
 
             // hide page tree tiems
             cy.get('.grw-pagetree-triangle-btn').eq(0).click();
-            cy.screenshot(`${ssPrefix}page-tree-2-hide-page-tree-item`);
+            cy.screenshot(`${ssPrefix}page-tree-2-hide-page-tree-items`);
           });
         });
 
