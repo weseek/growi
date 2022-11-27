@@ -139,7 +139,7 @@ describe('Access to sidebar', () => {
           });
 
           cy.getByTestid('grw-contextual-navigation-sub').within(() => {
-            cy.get('.grw-sidebar-content-header').eq(1).should('be.visible');
+            cy.get('.grw-sidebar-content-header.h5').find('a');
             cy.screenshot(`${ssPrefix}custom-sidebar-1-click-on-custom-sidebar`);
           });
         });
@@ -190,6 +190,15 @@ describe('Access to sidebar', () => {
         });
 
         it('Successfully switch sidebar size', () => {
+
+          // TODO: This is not idempotent. Should be fix.
+          cy.getByTestid('grw-sidebar-nav-primary-recent-changes').click();
+          cy.getByTestid('grw-contextual-navigation-sub').then(($el) => {
+            if($el.hasClass('d-none')){
+              cy.getByTestid('grw-navigation-resize-button').click({force: true});
+            }
+          });
+
           cy.get('#grw-sidebar-contents-wrapper').within(() => {
             cy.get('#recentChangesResize').click({force: true});
             cy.get('.list-group-item').should('be.visible');
@@ -218,6 +227,7 @@ describe('Access to sidebar', () => {
 
           cy.get('.grw-container-convertible > div > .btn-primary').click({force: true});
           cy.collapseSidebar(true);
+          cy.getByTestid('grw-tags-list').should('be.visible');
           cy.screenshot(`${ssPrefix}tags-2-check-all-tags`);
         });
       });
