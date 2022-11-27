@@ -14,5 +14,5 @@
   "viewportHeight": 1024,
 
   "experimentalSessionSupport": true,
-  "defaultCommandTimeout": 10000
+  "defaultCommandTimeout": 30000
 }
