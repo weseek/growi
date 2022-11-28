@@ -96,8 +96,8 @@ const BookmarkItem = (props: Props): JSX.Element => {
   }, [bookmarkedPage, onClickDeleteMenuItem]);
 
   return (
-    <div className="d-flex justify-content-between" key={bookmarkedPage._id}>
-      <li className="list-group-item list-group-item-action border-0 py-0 pr-3 d-flex align-items-center" id={bookmarkItemId}>
+    <div className="grw-foldertree-item-container" key={bookmarkedPage._id}>
+      <li className="bookmark-item-list list-group-item list-group-item-action border-0 py-0 pl-3 d-flex align-items-center" id={bookmarkItemId}>
         { isRenameInputShown ? (
           <ClosableTextInput
             value={nodePath.basename(bookmarkedPage.path ?? '')}
@@ -107,7 +107,7 @@ const BookmarkItem = (props: Props): JSX.Element => {
             inputValidator={inputValidator}
           />
         ) : (
-          <a href={`/${bookmarkedPage._id}`} className="grw-bookmarks-title-anchor flex-grow-1">
+          <a href={`/${bookmarkedPage._id}`} className="grw-foldertree-title-anchor flex-grow-1 pr-3">
             <p className={`text-truncate m-auto ${bookmarkedPage.isEmpty && 'grw-sidebar-text-muted'}`}>{pageTitle}</p>
           </a>
         )}
@@ -130,7 +130,7 @@ const BookmarkItem = (props: Props): JSX.Element => {
           target={bookmarkItemId}
           fade={false}
         >
-          { formerPagePath }
+          { formerPagePath !== null ? `${formerPagePath}/` : '/' }
         </UncontrolledTooltip>
       </li>
     </div>

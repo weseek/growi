@@ -3,7 +3,7 @@ import {
   Types, Document, Model, Schema,
 } from 'mongoose';
 
-import { IBookmarkFolder } from '~/interfaces/bookmark-info';
+import { IBookmarkFolder, BookmarkFolderItems } from '~/interfaces/bookmark-info';
 
 
 import loggerFactory from '../../utils/logger';
@@ -13,11 +13,6 @@ import { InvalidParentBookmarkFolderError } from './errors';
 
 const logger = loggerFactory('growi:models:bookmark-folder');
 
-export interface BookmarkFolderItems {
-  _id: string
-  name: string
-  children: this[]
-}
 export interface BookmarkFolderDocument extends Document {
   _id: Types.ObjectId
   name: string
@@ -29,7 +24,7 @@ export interface BookmarkFolderModel extends Model<BookmarkFolderDocument>{
   createByParameters(params: IBookmarkFolder): BookmarkFolderDocument
   findFolderAndChildren(user: Types.ObjectId | string, parentId?: Types.ObjectId | string): BookmarkFolderItems[]
   findChildFolderById(parentBookmarkFolder: Types.ObjectId | string): Promise<BookmarkFolderDocument[]>
-  deleteFolderAndChildren(bookmarkFolderId: string): {deletedCount: number}
+  deleteFolderAndChildren(bookmarkFolderId: Types.ObjectId | string): {deletedCount: number}
   updateBookmarkFolder(bookmarkFolderId: string, name: string, parent: string): BookmarkFolderDocument | null
 }
 
@@ -37,6 +32,8 @@ const bookmarkFolderSchema = new Schema<BookmarkFolderDocument, BookmarkFolderMo
   name: { type: String },
   owner: { type: Schema.Types.ObjectId, ref: 'User', index: true },
   parent: { type: Schema.Types.ObjectId, ref: 'BookmarkFolder', required: false },
+}, {
+  toObject: { virtuals: true },
 });
 
 bookmarkFolderSchema.virtual('children', {
@@ -73,9 +70,11 @@ bookmarkFolderSchema.statics.findFolderAndChildren = async function(
     userId: Types.ObjectId | string,
     parentId?: Types.ObjectId | string,
 ): Promise<BookmarkFolderItems[]> {
+
   const parentFolder = await this.findById(parentId) as unknown as BookmarkFolderDocument;
-  const bookmarks = await this.find({ owner: userId, parent: parentFolder }).populate({ path: 'children' }).exec() as unknown as BookmarkFolderItems[];
-  return bookmarks;
+  const bookmarkFolders = await this.find({ owner: userId, parent: parentFolder })
+    .populate({ path: 'children' }).exec() as unknown as BookmarkFolderItems[];
+  return bookmarkFolders;
 };
 
 bookmarkFolderSchema.statics.findChildFolderById = async function(parentFolderId: Types.ObjectId | string): Promise<BookmarkFolderDocument[]> {
@@ -89,8 +88,14 @@ bookmarkFolderSchema.statics.deleteFolderAndChildren = async function(boookmarkF
   const bookmarkFolder = await this.findByIdAndDelete(boookmarkFolderId);
   let deletedCount = 0;
   if (bookmarkFolder != null) {
-    const childFolders = await this.deleteMany({ parent: bookmarkFolder?.id });
-    deletedCount = childFolders.deletedCount + 1;
+    // Delete all child recursively and update deleted count
+    const childFolders = await this.find({ parent: bookmarkFolder });
+    await Promise.all(childFolders.map(async(child) => {
+      const deletedChildFolder = await this.deleteFolderAndChildren(child._id);
+      deletedCount += deletedChildFolder.deletedCount;
+    }));
+    const deletedChild = await this.deleteMany({ parent: bookmarkFolder });
+    deletedCount += deletedChild.deletedCount + 1;
   }
   return { deletedCount };
 };
@@ -107,6 +112,5 @@ bookmarkFolderSchema.statics.updateBookmarkFolder = async function(bookmarkFolde
 
 };
 
-bookmarkFolderSchema.set('toObject', { virtuals: true });
 
 export default getOrCreateModel<BookmarkFolderDocument, BookmarkFolderModel>('BookmarkFolder', bookmarkFolderSchema);

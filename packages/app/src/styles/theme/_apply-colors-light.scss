@@ -205,6 +205,22 @@ $dropdown-link-active-bg: $bgcolor-dropdown-link-active;
     }
   }
 
+  // Foldertree
+  .grw-foldertree {
+    @include override-list-group-item-for-pagetree(
+      $color-sidebar-context,
+      darken($bgcolor-sidebar-context, 5%),
+      darken($bgcolor-sidebar-context, 12%),
+      lighten($color-sidebar-context, 10%),
+      lighten($color-sidebar-context, 8%),
+      darken($bgcolor-sidebar-context, 15%),
+      darken($bgcolor-sidebar-context, 24%)
+    );
+    .grw-foldertree-triangle-btn {
+      @include mixins.button-outline-svg-icon-variant($gray-400, $primary);
+    }
+  }
+
   // bookmark
   .grw-bookmarks-list {
     @include override-list-group-item-for-pagetree(

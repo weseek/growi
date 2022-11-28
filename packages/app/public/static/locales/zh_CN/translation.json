@@ -510,7 +510,8 @@
 		"remove_user_success": "Succeeded to removing {{username}} ",
     "remove_external_user_success": "Succeeded to remove {{accountId}} ",
     "switch_disable_link_sharing_success": "成功更新分享链接设置",
-    "failed_to_reset_password":"Failed to reset password"
+    "failed_to_reset_password":"Failed to reset password",
+    "delete_succeeded": "Succeeded to delete {{target}}"
   },
 	"template": {
 		"modal_label": {
@@ -913,5 +914,16 @@
   "footer": {
     "bookmarks": "书签",
     "recently_created": "最近创建页面"
+  },
+  "bookmark_folder":{
+    "bookmark_folder": "书签文件夹",
+    "delete_modal": {
+      "modal_header_label": "删除书签文件夹",
+      "modal_body_description": "删除此书签文件夹及其内容",
+      "modal_body_alert": "已删除的文件夹及其内容无法恢复",
+      "modal_footer_button": "删除文件夹"
+    },
+    "input_placeholder": "输入文件夹名称",
+    "new_folder": "新建文件夹"
   }
 }

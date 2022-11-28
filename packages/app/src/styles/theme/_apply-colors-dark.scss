@@ -316,6 +316,33 @@ ul.pagination {
     }
   }
 
+  // Foldertree
+  .grw-foldertree {
+    @include override-list-group-item-for-pagetree(
+      $color-sidebar-context,
+      lighten($bgcolor-sidebar-context, 8%),
+      lighten($bgcolor-sidebar-context, 15%),
+      darken($color-sidebar-context, 15%),
+      darken($color-sidebar-context, 10%),
+      lighten($bgcolor-sidebar-context, 18%),
+      lighten($bgcolor-sidebar-context, 24%)
+    );
+    .grw-foldertree-triangle-btn {
+      @include mixins.button-outline-svg-icon-variant($secondary, $gray-200);
+    }
+    .btn-page-item-control {
+      @include button-outline-variant($gray-500, $gray-500, $secondary, transparent);
+      @include hover() {
+        background-color: lighten($bgcolor-sidebar-context, 20%);
+      }
+      &:not(:disabled):not(.disabled):active,
+      &:not(:disabled):not(.disabled).active {
+        background-color: lighten($bgcolor-sidebar-context, 34%);
+      }
+      box-shadow: none !important;
+    }
+  }
+
   // bookmarks
   .grw-bookmarks-list {
     @include override-list-group-item-for-pagetree(

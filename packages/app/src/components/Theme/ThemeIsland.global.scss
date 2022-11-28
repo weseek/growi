@@ -127,5 +127,11 @@ $color-themelight: rgba(183, 226, 219, 1);
         @include mixins.button-outline-svg-icon-variant($gray-400, $bgcolor-sidebar);
       }
     }
+    // Foldertree
+    .grw-foldertree {
+      .grw-foldertree-triangle-btn {
+        @include mixins.button-outline-svg-icon-variant($gray-400, $bgcolor-sidebar);
+      }
+    }
   }
 }
