@@ -145,9 +145,9 @@ class MarkdownDrawioUtil {
     if (markdownBeforeDrawio.length > 0) {
       newMarkdown += `${markdownBeforeDrawio.join('\n')}\n`;
     }
-    newMarkdown += '::: drawio\n';
+    newMarkdown += '``` drawio\n';
     newMarkdown += drawioData;
-    newMarkdown += '\n:::';
+    newMarkdown += '\n```';
     if (markdownAfterDrawio.length > 0) {
       newMarkdown += `\n${markdownAfterDrawio.join('\n')}`;
     }
