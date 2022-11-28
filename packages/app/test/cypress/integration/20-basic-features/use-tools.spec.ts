@@ -14,7 +14,7 @@ context('Switch Sidebar content', () => {
     cy.getByTestid('grw-sidebar-nav-primary-page-tree').click();
     // eslint-disable-next-line cypress/no-unnecessary-waiting
     cy.wait(1500);
-    cy.screenshot(`${ssPrefix}-pagetree-after-load`, { capture: 'viewport' });
+    cy.screenshot(`${ssPrefix}-pagetree-after-load`);
   });
 
 });
@@ -40,7 +40,7 @@ context('Modal for page operation', () => {
       cy.get('button.close').click();
 
     });
-    cy.screenshot(`${ssPrefix}page-create-modal-closed`, {capture: 'viewport'});
+    cy.screenshot(`${ssPrefix}page-create-modal-closed`);
   });
   it("Successfully Create Today's page", () => {
     const pageName = "Today's page";
@@ -94,7 +94,7 @@ context('Modal for page operation', () => {
       cy.getByTestid('grw-btn-edit-page').should('be.visible').click();
     });
     cy.get('.toast-error').should('be.visible').invoke('attr', 'style', 'opacity: 1');
-    cy.screenshot(`${ssPrefix}create-template-for-children-error`, {capture: 'viewport'});
+    cy.screenshot(`${ssPrefix}create-template-for-children-error`);
     cy.get('.toast-error').should('be.visible').click();
     cy.get('.toast-error').should('not.exist');
 
@@ -104,7 +104,7 @@ context('Modal for page operation', () => {
       cy.getByTestid('grw-btn-edit-page').should('be.visible').click();
     });
     cy.get('.toast-error').should('be.visible').invoke('attr', 'style', 'opacity: 1');
-    cy.screenshot(`${ssPrefix}create-template-for-descendants-error`, {capture: 'viewport'});
+    cy.screenshot(`${ssPrefix}create-template-for-descendants-error`);
   });
 
   it('PageDeleteModal is shown successfully', () => {
