@@ -32,7 +32,7 @@ const AdminExternalNotificationPage: NextPage<CommonProps> = (props) => {
 
   return (
     <Provider inject={[...injectableContainers]}>
-      <AdminLayout title={useCustomTitle(props, title)} componentTitle={title} >
+      <AdminLayout title={useCustomTitle(props, title)} componentTitle={title} customCss={props.customCss}>
         <NotificationSetting />
       </AdminLayout>
     </Provider>

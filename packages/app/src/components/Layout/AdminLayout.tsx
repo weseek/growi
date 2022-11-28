@@ -14,19 +14,20 @@ const HotkeysManager = dynamic(() => import('../Hotkeys/HotkeysManager'), { ssr:
 type Props = {
   title?: string
   componentTitle?: string
-  children?: ReactNode
+  children?: ReactNode,
+  customCss?: string
 }
 
 
 const AdminLayout = ({
-  children, title, componentTitle,
+  children, title, componentTitle, customCss,
 }: Props): JSX.Element => {
 
   const AdminNavigation = dynamic(() => import('~/components/Admin/Common/AdminNavigation'), { ssr: false });
   const SystemVersion = dynamic(() => import('../SystemVersion'), { ssr: false });
 
   return (
-    <RawLayout title={title}>
+    <RawLayout title={title} customCss={customCss}>
       <div className={`admin-page ${styles['admin-page']}`}>
         <GrowiNavbar />
 

@@ -72,7 +72,7 @@ const AdminSecuritySettingsPage: NextPage<Props> = (props) => {
 
   return (
     <Provider inject={[...adminSecurityContainers]}>
-      <AdminLayout title={useCustomTitle(props, title)} componentTitle={title} >
+      <AdminLayout title={useCustomTitle(props, title)} componentTitle={title} customCss={props.customCss}>
         <SecurityManagement />
       </AdminLayout>
     </Provider>

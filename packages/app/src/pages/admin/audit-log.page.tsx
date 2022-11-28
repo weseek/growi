@@ -31,7 +31,7 @@ const AdminAuditLogPage: NextPage<Props> = (props) => {
   const title = t('audit_log_management.audit_log');
 
   return (
-    <AdminLayout title={useCustomTitle(props, title)} componentTitle={title} >
+    <AdminLayout title={useCustomTitle(props, title)} componentTitle={title} customCss={props.customCss}>
       <AuditLogManagement />
     </AdminLayout>
   );

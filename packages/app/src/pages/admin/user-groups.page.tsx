@@ -27,7 +27,7 @@ const AdminUserGroupPage: NextPage<Props> = (props) => {
   const title = t('user_group_management.user_group_management');
 
   return (
-    <AdminLayout title={useCustomTitle(props, title)} componentTitle={title} >
+    <AdminLayout title={useCustomTitle(props, title)} componentTitle={title} customCss={props.customCss}>
       <UserGroupPage />
     </AdminLayout>
   );

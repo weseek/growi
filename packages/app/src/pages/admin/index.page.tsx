@@ -47,7 +47,7 @@ const AdminHomePage: NextPage<Props> = (props) => {
 
   return (
     <Provider inject={[...injectableContainers]}>
-      <AdminLayout title={useCustomTitle(props, title)} componentTitle={title} >
+      <AdminLayout title={useCustomTitle(props, title)} componentTitle={title} customCss={props.customCss}>
         <AdminHome
           nodeVersion={props.nodeVersion}
           npmVersion={props.npmVersion}

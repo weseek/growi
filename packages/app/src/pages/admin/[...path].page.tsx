@@ -18,7 +18,7 @@ const AdminAppPage: NextPage<CommonProps> = (props) => {
   useCurrentUser(props.currentUser ?? null);
 
   return (
-    <AdminLayout>
+    <AdminLayout customCss={props.customCss}>
       <AdminNotFoundPage />
     </AdminLayout>
   );

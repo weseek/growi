@@ -32,7 +32,7 @@ const AdminMarkdownPage: NextPage<CommonProps> = (props) => {
 
   return (
     <Provider inject={[...injectableContainers]}>
-      <AdminLayout title={useCustomTitle(props, title)} componentTitle={title} >
+      <AdminLayout title={useCustomTitle(props, title)} componentTitle={title} customCss={props.customCss}>
         <MarkDownSettingContents />
       </AdminLayout>
     </Provider>

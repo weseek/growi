@@ -34,7 +34,7 @@ const AdminUserGroupDetailPage: NextPage<Props> = (props: Props) => {
   useIsAclEnabled(props.isAclEnabled);
 
   return (
-    <AdminLayout title={customTitle} componentTitle={title} >
+    <AdminLayout title={customTitle} componentTitle={title} customCss={props.customCss}>
       {
         currentUserGroupId != null && router.isReady
       && <UserGroupDetailPage userGroupId={currentUserGroupId} />

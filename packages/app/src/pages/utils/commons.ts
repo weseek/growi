@@ -24,6 +24,7 @@ export type CommonProps = {
   redirectDestination: string | null,
   customizedLogoSrc?: string,
   currentUser?: IUser,
+  customCss?: string,
 } & Partial<SSRConfig>;
 
 // eslint-disable-next-line max-len
@@ -64,6 +65,7 @@ export const getServerSideCommonProps: GetServerSideProps<CommonProps> = async(c
     redirectDestination,
     customizedLogoSrc: isDefaultLogo ? null : configManager.getConfig('crowi', 'customize:customizedLogoSrc'),
     currentUser,
+    customCss: customizeService.getCustomCss(),
   };
 
   return { props };

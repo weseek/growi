@@ -28,7 +28,7 @@ const AdminSlackIntegrationPage: NextPage<Props> = (props) => {
   const title = t('slack_integration.slack_integration');
 
   return (
-    <AdminLayout title={useCustomTitle(props, title)} componentTitle={title} >
+    <AdminLayout title={useCustomTitle(props, title)} componentTitle={title} customCss={props.customCss}>
       <SlackIntegration />
     </AdminLayout>
   );

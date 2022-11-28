@@ -29,7 +29,7 @@ const AdminFullTextSearchManagementPage: NextPage<Props> = (props) => {
   const title = t('full_text_search_management.full_text_search_management');
 
   return (
-    <AdminLayout title={useCustomTitle(props, title)} componentTitle={title} >
+    <AdminLayout title={useCustomTitle(props, title)} componentTitle={title} customCss={props.customCss}>
       <FullTextSearchManagement />
     </AdminLayout>
   );

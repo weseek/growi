@@ -56,7 +56,7 @@ const AdminGlobalNotificationNewPage: NextPage<CommonProps> = (props) => {
 
   return (
     <Provider inject={[...injectableContainers]}>
-      <AdminLayout title={customTitle} componentTitle={title} >
+      <AdminLayout title={customTitle} componentTitle={title} customCss={props.customCss}>
         {
           currentGlobalNotificationId != null && router.isReady
       && <ManageGlobalNotification globalNotificationId={currentGlobalNotificationId} />

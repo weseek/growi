@@ -31,7 +31,7 @@ const AdminGlobalNotificationNewPage: NextPage<CommonProps> = (props) => {
 
   return (
     <Provider inject={[...injectableContainers]}>
-      <AdminLayout title={useCustomTitle(props, title)} componentTitle={title} >
+      <AdminLayout title={useCustomTitle(props, title)} componentTitle={title} customCss={props.customCss}>
         <ManageGlobalNotification />
       </AdminLayout>
     </Provider>
