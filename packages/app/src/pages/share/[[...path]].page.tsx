@@ -63,7 +63,7 @@ const SharedPage: NextPage<Props> = (props: Props) => {
   const shareLink = props.shareLink;
 
   return (
-    <ShareLinkLayout title={useCustomTitle(props, 'GROWI')} expandContainer={props.isContainerFluid}>
+    <ShareLinkLayout title={useCustomTitle(props, 'GROWI')} expandContainer={props.isContainerFluid} customCss={props.customCss}>
       <div className="h-100 d-flex flex-column justify-content-between">
         <header className="py-0 position-relative">
           {isShowSharedPage && <GrowiContextualSubNavigation isLinkSharingDisabled={props.disableLinkSharing} />}

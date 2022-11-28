@@ -10,17 +10,18 @@ type Props = {
   title: string,
   className?: string,
   children?: ReactNode,
+  customCss?: string,
 }
 
 export const NoLoginLayout = ({
-  children, title, className,
+  children, title, className, customCss,
 }: Props): JSX.Element => {
   const classNames: string[] = ['wrapper'];
   if (className != null) {
     classNames.push(className);
   }
   return (
-    <RawLayout title={title} className={`${commonStyles.nologin}`}>
+    <RawLayout title={title} className={`${commonStyles.nologin}`} customCss={customCss}>
       <div className="nologin">
         <div id="wrapper">
           <div id="page-wrapper">

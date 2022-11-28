@@ -42,7 +42,7 @@ const InstallerPage: NextPage<Props> = (props: Props) => {
   const classNames: string[] = [];
 
   return (
-    <NoLoginLayout title={useCustomTitle(props, 'GROWI')} className={classNames.join(' ')}>
+    <NoLoginLayout title={useCustomTitle(props, 'GROWI')} className={classNames.join(' ')} customCss={props.customCss}>
       <div id="installer-form-container">
         <InstallerForm />
       </div>

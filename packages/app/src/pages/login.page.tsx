@@ -43,7 +43,7 @@ const LoginPage: NextPage<Props> = (props: Props) => {
   const classNames: string[] = ['login-page'];
 
   return (
-    <NoLoginLayout title={useCustomTitle(props, 'GROWI')} className={classNames.join(' ')}>
+    <NoLoginLayout title={useCustomTitle(props, 'GROWI')} className={classNames.join(' ')} customCss={props.customCss}>
       <LoginForm
         objOfIsExternalAuthEnableds={props.enabledStrategies}
         isLocalStrategySetup={props.isLocalStrategySetup}

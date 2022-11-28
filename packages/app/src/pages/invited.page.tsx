@@ -32,7 +32,7 @@ const InvitedPage: NextPage<Props> = (props: Props) => {
   const classNames: string[] = ['invited-page'];
 
   return (
-    <NoLoginLayout title={useCustomTitle(props, 'GROWI')} className={classNames.join(' ')}>
+    <NoLoginLayout title={useCustomTitle(props, 'GROWI')} className={classNames.join(' ')} customCss={props.customCss}>
       <InvitedForm invitedFormUsername={props.invitedFormUsername} invitedFormName={props.invitedFormName} />
     </NoLoginLayout>
   );

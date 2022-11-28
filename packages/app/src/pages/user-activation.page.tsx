@@ -22,7 +22,7 @@ type Props = CommonProps & {
 
 const UserActivationPage: NextPage<Props> = (props: Props) => {
   return (
-    <NoLoginLayout title={useCustomTitle(props, 'GROWI')}>
+    <NoLoginLayout title={useCustomTitle(props, 'GROWI')} customCss={props.customCss}>
       <CompleteUserRegistrationForm
         token={props.token}
         email={props.email}
