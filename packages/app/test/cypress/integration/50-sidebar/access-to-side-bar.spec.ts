@@ -9,12 +9,11 @@ describe('Access to sidebar', () => {
       });
     });
 
-    context('when access to root page', () => {
+    context('when access to root page', { scrollBehavior: false }, () => {
       beforeEach(() => {
         cy.visit('/');
         cy.waitUntilSkeletonDisappear();
         cy.collapseSidebar(false);
-        cy.scrollTo('top');
       });
 
       describe('Test show/collapse button', () => {
@@ -61,7 +60,6 @@ describe('Access to sidebar', () => {
             cy.getByTestid('open-page-item-control-btn').find('button').eq(0).invoke('css','display','block').click();
           });
 
-          cy.scrollTo('top');
           cy.getByTestid('page-item-control-menu').should('have.class', 'show');
           cy.screenshot(`${ssPrefix}page-tree-3-before-click-button`, {
             // Blackout for recalculation of toc content 'calcViewHeight'
@@ -78,7 +76,6 @@ describe('Access to sidebar', () => {
             cy.getByTestid('open-page-item-control-btn').find('button').eq(0).invoke('css','display','block').click();
           });
 
-          cy.scrollTo('top');
           cy.getByTestid('page-item-control-menu').should('have.class', 'show');
           cy.screenshot(`${ssPrefix}page-tree-4-after-click-button`, {
             // Blackout for recalculation of toc content 'calcViewHeight'
@@ -172,7 +169,6 @@ describe('Access to sidebar', () => {
           cy.getByTestid('grw-recent-changes').should('be.visible');
           cy.get('.list-group-item').should('be.visible');
 
-          cy.scrollTo('top');
           // The scope of the capture is not narrowed because the blackout is shifted
           cy.screenshot(`${ssPrefix}recent-changes-1-access-to-recent-changes`, {
             // Blackout for recalculation of toc content 'calcViewHeight'
@@ -186,7 +182,6 @@ describe('Access to sidebar', () => {
             cy.get('.list-group-item').should('be.visible');
           });
 
-          cy.scrollTo('top');
           // The scope of the capture is not narrowed because the blackout is shifted
           cy.screenshot(`${ssPrefix}recent-changes-2-switch-content-size`, {
             // Blackout for recalculation of toc content 'calcViewHeight'
