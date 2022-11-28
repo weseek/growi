@@ -195,20 +195,25 @@ context('Page Accessories Modal', () => {
      cy.getByTestid('page-history').should('be.visible')
      cy.screenshot(`${ssPrefix}-open-page-history-bootstrap4`);
   });
+
   it('Page Attachment Data is shown successfully', () => {
-     cy.visit('/Sandbox/Bootstrap4', {  });
+     cy.visit('/Sandbox/Bootstrap4');
+     cy.waitUntilSkeletonDisappear();
+
      cy.get('#grw-subnav-container').within(() => {
+      cy.getByTestid('open-page-item-control-btn').should('be.visible');
       cy.getByTestid('open-page-item-control-btn').within(() => {
-        cy.getByTestid('open-page-item-control-btn').should('be.visible');
         cy.get('button.btn-page-item-control').click({force: true});
+        cy.getByTestid('page-item-control-menu').should('be.visible');
+        cy.getByTestid('open-page-accessories-modal-btn-with-attachment-data-tab').click();
       });
-       cy.getByTestid('open-page-accessories-modal-btn-with-attachment-data-tab').click();
     });
 
      cy.getByTestid('page-accessories-modal').should('be.visible')
      cy.getByTestid('page-attachment').should('be.visible')
      cy.screenshot(`${ssPrefix}-open-page-attachment-data-bootstrap4`);
   });
+
   it('Share Link Management is shown successfully', () => {
     cy.visit('/Sandbox/Bootstrap4', { });
     cy.get('#grw-subnav-container').within(() => {
@@ -223,7 +228,6 @@ context('Page Accessories Modal', () => {
    cy.getByTestid('share-link-management').should('be.visible');
    cy.screenshot(`${ssPrefix}-open-share-link-management-bootstrap4`);
   });
-
 });
 
 context('Tag Oprations', () =>{
