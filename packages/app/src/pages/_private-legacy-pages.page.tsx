@@ -41,6 +41,8 @@ type Props = CommonProps & {
   // Render config
   rendererConfig: RendererConfig,
 
+  customCss: string,
+
 };
 
 const PrivateLegacyPage: NextPage<Props> = (props: Props) => {
@@ -78,7 +80,7 @@ const PrivateLegacyPage: NextPage<Props> = (props: Props) => {
         */}
       </Head>
 
-      <SearchResultLayout title={useCustomTitle(props, 'GROWI')}>
+      <SearchResultLayout title={useCustomTitle(props, 'GROWI')} customCss={props.customCss}>
         <div id="private-regacy-pages">
           <PrivateLegacyPages />
         </div>
@@ -103,7 +105,7 @@ async function injectUserUISettings(context: GetServerSidePropsContext, props: P
 async function injectServerConfigurations(context: GetServerSidePropsContext, props: Props): Promise<void> {
   const req: CrowiRequest = context.req as CrowiRequest;
   const { crowi } = req;
-  const { configManager, searchService } = crowi;
+  const { configManager, searchService, customizeService } = crowi;
 
   props.isSearchServiceConfigured = searchService.isConfigured;
   props.isSearchServiceReachable = searchService.isReachable;
@@ -129,6 +131,8 @@ async function injectServerConfigurations(context: GetServerSidePropsContext, pr
     tagWhiteList: crowi.xssService.getTagWhiteList(),
     highlightJsStyleBorder: crowi.configManager.getConfig('crowi', 'customize:highlightJsStyleBorder'),
   };
+
+  props.customCss = customizeService.getCustomCss();
 }
 
 /**

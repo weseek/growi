@@ -8,10 +8,11 @@ type Props = {
   title: string,
   className?: string,
   children?: ReactNode,
+  customCss?: string,
 }
 
 const SearchResultLayout = ({
-  children, title, className,
+  children, title, className, customCss,
 }: Props): JSX.Element => {
 
   const classNames: string[] = [];
@@ -21,7 +22,7 @@ const SearchResultLayout = ({
 
   return (
     <div className={`on-search ${commonStyles['on-search']}`}>
-      <BasicLayout title={title} className={classNames.join(' ')}>
+      <BasicLayout title={title} className={classNames.join(' ')} customCss={customCss}>
         <div id="grw-fav-sticky-trigger" className="sticky-top"></div>
         <div id="main" className="main search-page mt-0">
           { children }

@@ -48,6 +48,7 @@ type Props = CommonProps & {
 
   isContainerFluid: boolean,
 
+  customCss: string,
 };
 
 const SearchResultPage: NextPage<Props> = (props: Props) => {
@@ -96,7 +97,7 @@ const SearchResultPage: NextPage<Props> = (props: Props) => {
         */}
       </Head>
 
-      <SearchResultLayout title={useCustomTitle(props, 'GROWI')} className={classNames.join(' ')}>
+      <SearchResultLayout title={useCustomTitle(props, 'GROWI')} className={classNames.join(' ')} customCss={props.customCss}>
         <div id="search-page">
           <SearchPage />
         </div>
@@ -123,7 +124,7 @@ async function injectUserUISettings(context: GetServerSidePropsContext, props: P
 function injectServerConfigurations(context: GetServerSidePropsContext, props: Props): void {
   const req: CrowiRequest = context.req as CrowiRequest;
   const { crowi } = req;
-  const { configManager, searchService } = crowi;
+  const { configManager, searchService, customizeService } = crowi;
 
   props.isSearchServiceConfigured = searchService.isConfigured;
   props.isSearchServiceReachable = searchService.isReachable;
@@ -152,6 +153,7 @@ function injectServerConfigurations(context: GetServerSidePropsContext, props: P
   };
 
   props.showPageLimitationL = configManager.getConfig('crowi', 'customize:showPageLimitationL');
+  props.customCss = customizeService.getCustomCss();
 }
 
 /**

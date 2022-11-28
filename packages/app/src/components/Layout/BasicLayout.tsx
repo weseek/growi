@@ -32,7 +32,7 @@ type Props = {
   className?: string,
   expandContainer?: boolean,
   children?: ReactNode,
-  customCss: string
+  customCss?: string
 }
 
 export const BasicLayout = ({
