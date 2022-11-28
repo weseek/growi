@@ -20,11 +20,17 @@ declare global {
 
 export type DrawioViewerProps = {
   diagramIndex: number,
-  bol?: number,
-  eol?: number,
+  bol: number,
+  eol: number,
   children?: ReactNode,
   onRenderingStart?: () => void,
   onRenderingUpdated?: (mxfile: string | null) => void,
+}
+
+export type DrawioEditByViewerProps = {
+  bol: number,
+  eol: number,
+  drawioMxFile: string,
 }
 
 export const DrawioViewer = React.memo((props: DrawioViewerProps): JSX.Element => {

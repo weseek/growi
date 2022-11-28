@@ -1,7 +1,8 @@
 import React, { useCallback, useState } from 'react';
 
 import {
-  DrawioViewer, DrawioViewerProps,
+  DrawioEditByViewerProps,
+  DrawioViewer, DrawioViewerProps, extractCodeFromMxfile,
 } from '@growi/remark-drawio-plugin';
 import { useTranslation } from 'next-i18next';
 
@@ -14,16 +15,20 @@ import styles from './DrawioViewerWithEditButton.module.scss';
 export const DrawioViewerWithEditButton = React.memo((props: DrawioViewerProps): JSX.Element => {
   const { t } = useTranslation();
 
+  const { bol, eol } = props;
+
   const { data: isGuestUser } = useIsGuestUser();
   const { data: isSharedUser } = useIsSharedUser();
-  const { open: openDrawioModal } = useDrawioModal();
 
   const [isRendered, setRendered] = useState(false);
   const [mxfile, setMxfile] = useState('');
 
   const editButtonClickHandler = useCallback(() => {
-    openDrawioModal(mxfile);
-  }, [mxfile, openDrawioModal]);
+    const data: DrawioEditByViewerProps = {
+      bol, eol, drawioMxFile: extractCodeFromMxfile(mxfile),
+    };
+    window.globalEmitter.emit('launchDrawioModal', data);
+  }, [bol, eol, mxfile]);
 
   const renderingStartHandler = useCallback(() => {
     setRendered(false);

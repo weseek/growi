@@ -472,7 +472,7 @@ export const useDrawioModal = (status?: DrawioModalStatus): SWRResponse<DrawioMo
   };
 
   const close = (): void => {
-    swrResponse.mutate({ isOpened: false, drawioMxFile: '' });
+    swrResponse.mutate({ isOpened: false, drawioMxFile: '', onSave: undefined });
   };
 
   return {
