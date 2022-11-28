@@ -143,32 +143,33 @@ context('Modal for page operation', () => {
 });
 
 
-context('Open presentation modal', () => {
+// TODO: Uncomment after https://redmine.weseek.co.jp/issues/103121 is resolved
+// context('Open presentation modal', () => {
 
-  const ssPrefix = 'access-to-presentation-modal-';
+//   const ssPrefix = 'access-to-presentation-modal-';
 
-  beforeEach(() => {
-    // login
-    cy.fixture("user-admin.json").then(user => {
-      cy.login(user.username, user.password);
-    });
-    cy.collapseSidebar(true);
-  });
+//   beforeEach(() => {
+//     // login
+//     cy.fixture("user-admin.json").then(user => {
+//       cy.login(user.username, user.password);
+//     });
+//     cy.collapseSidebar(true);
+//   });
 
-  it('PresentationModal for "/" is shown successfully', () => {
-    cy.visit('/');
+//   it('PresentationModal for "/" is shown successfully', () => {
+//     cy.visit('/');
 
-    cy.get('#grw-subnav-container').within(() => {
-      cy.getByTestid('open-page-item-control-btn').click({force: true});
-      cy.getByTestid('open-presentation-modal-btn').click({force: true});
-    });
+//     cy.get('#grw-subnav-container').within(() => {
+//       cy.getByTestid('open-page-item-control-btn').click({force: true});
+//       cy.getByTestid('open-presentation-modal-btn').click({force: true});
+//     });
 
-    // eslint-disable-next-line cypress/no-unnecessary-waiting
-    cy.wait(1500);
-    cy.screenshot(`${ssPrefix}-open-top`);
-  });
+//     // eslint-disable-next-line cypress/no-unnecessary-waiting
+//     cy.wait(1500);
+//     cy.screenshot(`${ssPrefix}-open-top`);
+//   });
 
-});
+// });
 
 context('Page Accessories Modal', () => {
 
