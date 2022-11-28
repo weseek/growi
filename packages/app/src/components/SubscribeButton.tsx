@@ -42,7 +42,7 @@ const SubscribeButton: FC<Props> = (props: Props) => {
         <i className={`fa ${isSubscribing ? 'fa-bell' : 'fa-bell-slash-o'}`}></i>
       </button>
 
-      <UncontrolledTooltip placement="top" target="subscribe-button" fade={false}>
+      <UncontrolledTooltip data-testid="subscribe-button-tooltip" placement="top" target="subscribe-button" fade={false}>
         {t(getTooltipMessage())}
       </UncontrolledTooltip>
     </>
