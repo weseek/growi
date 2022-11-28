@@ -362,6 +362,23 @@ ul.pagination {
   }
 }
 
+.grw-user-page-list-m {
+  .grw-foldertree {
+    @include override-list-group-item-for-pagetree(
+      $body-color,
+      lighten($body-bg, 8%),
+      lighten($body-bg, 15%),
+      darken($body-color, 15%),
+      darken($body-color, 10%),
+      lighten($body-bg, 18%),
+      lighten($body-bg, 24%)
+    );
+    .grw-foldertree-triangle-btn {
+      @include mixins.button-outline-svg-icon-variant($secondary, $gray-200);
+    }
+  }
+}
+
 .btn.btn-page-item-control {
   @include button-outline-variant($gray-500, $gray-500, $secondary, transparent);
   @include hover() {

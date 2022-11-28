@@ -1,7 +1,27 @@
 @use '~/styles/molecules/page_list';
+@use '~/styles/molecules/bookmark-folder-tree';
+
 
 .user-page-footer :global {
   .grw-user-page-list-m {
+    .list-group-item {
+      svg{
+        width: 20px;
+        height: 20px;
+      }
+
+    }
+    .grw-triangle-container{
+      svg {
+        width: 12px;
+        height: 12px;
+      }
+    }
+    .grw-foldertree-item-container {
+      input {
+        max-width: 25%;
+      }
+    }
     svg {
       width: 35px;
       height: 35px;

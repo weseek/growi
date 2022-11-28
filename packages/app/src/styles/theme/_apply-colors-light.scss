@@ -240,6 +240,23 @@ $dropdown-link-active-bg: $bgcolor-dropdown-link-active;
   }
 }
 
+.grw-user-page-list-m {
+  .grw-foldertree {
+    @include override-list-group-item-for-pagetree(
+      $body-color,
+      darken($body-bg, 5%),
+      darken($body-bg, 12%),
+      lighten($body-color, 10%),
+      lighten($body-color, 8%),
+      darken($body-bg, 15%),
+      darken($body-bg, 24%)
+    );
+    .grw-foldertree-triangle-btn {
+      @include mixins.button-outline-svg-icon-variant($gray-400, $primary);
+    }
+  }
+}
+
 .btn.btn-page-item-control {
   @include button-outline-variant($gray-500, $primary, lighten($primary, 52%), transparent);
   @include hover() {

@@ -27,7 +27,7 @@ const BookmarkFolderNameInput = (props: Props): JSX.Element => {
   };
 
   return (
-    <div className="flex-fill">
+    <div className="flex-fill folder-name-input">
       <ClosableTextInput
         value={ value }
         placeholder={t('bookmark_folder.input_placeholder')}

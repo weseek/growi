@@ -4,11 +4,10 @@ import { useTranslation } from 'next-i18next';
 
 import { toastError, toastSuccess } from '~/client/util/apiNotification';
 import { apiv3Post } from '~/client/util/apiv3-client';
+import BookmarkFolderNameInput from '~/components/Bookmarks/BookmarkFolderNameInput';
+import BookmarkFolderTree from '~/components/Bookmarks/BookmarkFolderTree';
 import FolderPlusIcon from '~/components/Icons/FolderPlusIcon';
 import { useSWRxBookamrkFolderAndChild } from '~/stores/bookmark-folder';
-
-import BookmarkFolderNameInput from './BookmarkFolderNameInput';
-import BookmarkFolderTree from './BookmarkFolderTree';
 
 
 const BookmarkContents = (): JSX.Element => {

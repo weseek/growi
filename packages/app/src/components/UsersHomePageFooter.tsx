@@ -10,9 +10,10 @@ import { RecentCreated } from '~/components/RecentCreated/RecentCreated';
 import styles from '~/components/UsersHomePageFooter.module.scss';
 import { useSWRxBookamrkFolderAndChild } from '~/stores/bookmark-folder';
 
+import BookmarkFolderItem from './Bookmarks/BookmarkFolderItem';
+import BookmarkFolderNameInput from './Bookmarks/BookmarkFolderNameInput';
 import FolderPlusIcon from './Icons/FolderPlusIcon';
-import BookmarkFolderItem from './Sidebar/Bookmarks/BookmarkFolderItem';
-import BookmarkFolderNameInput from './Sidebar/Bookmarks/BookmarkFolderNameInput';
+
 
 export type UsersHomePageFooterProps = {
   creatorId: string,
@@ -65,21 +66,23 @@ export const UsersHomePageFooter = (props: UsersHomePageFooterProps): JSX.Elemen
           </div>
         )}
         {
-          <ul className={'grw-foldertree list-group p-3'}>
+          <ul className={`grw-foldertree ${styles['grw-foldertree']} list-group p-3`}>
             {bookmarkFolderData?.map((item) => {
               return (
                 <BookmarkFolderItem
                   key={item._id}
                   bookmarkFolder={item}
                   isOpen={false}
+                  isSidebarItem={false}
                 />
               );
             })}
+            <div id="user-bookmark-list" className={`page-list ${styles['page-list']}`}>
+              <BookmarkList />
+            </div>
           </ul>
         }
-        <div id="user-bookmark-list" className={`page-list ${styles['page-list']}`}>
-          <BookmarkList />
-        </div>
+
       </div>
       <div className="grw-user-page-list-m mt-5 d-edit-none">
         <h2 id="recently-created-list" className="grw-user-page-header border-bottom pb-2 mb-3">

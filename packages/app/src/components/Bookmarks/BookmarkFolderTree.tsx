@@ -50,6 +50,7 @@ const BookmarkFolderTree = (): JSX.Element => {
               key={item._id}
               bookmarkFolder={item}
               isOpen={false}
+              isSidebarItem={true}
             />
           );
         })}

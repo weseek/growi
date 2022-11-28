@@ -21,9 +21,10 @@ import DeleteBookmarkFolderModal from './DeleteBookmarkFolderModal';
 type BookmarkFolderItemProps = {
   bookmarkFolder: BookmarkFolderItems
   isOpen?: boolean
+  isSidebarItem: boolean
 }
 const BookmarkFolderItem: FC<BookmarkFolderItemProps> = (props: BookmarkFolderItemProps) => {
-  const { bookmarkFolder, isOpen: _isOpen = false } = props;
+  const { bookmarkFolder, isOpen: _isOpen = false, isSidebarItem } = props;
 
   const { t } = useTranslation();
   const {
@@ -134,6 +135,7 @@ const BookmarkFolderItem: FC<BookmarkFolderItemProps> = (props: BookmarkFolderIt
           <BookmarkFolderItem
             key={childFolder._id}
             bookmarkFolder={childFolder}
+            isSidebarItem={isSidebarItem}
           />
         </div>
       );
@@ -184,9 +186,34 @@ const BookmarkFolderItem: FC<BookmarkFolderItemProps> = (props: BookmarkFolderIt
         ) : (
           <>
             <div className='grw-foldertree-title-anchor flex-grow-1 pl-2' onClick={loadChildFolder}>
-              <p className={'text-truncate m-auto '}>{name}</p>
+              {isSidebarItem ? (
+                <p className={'text-truncate m-auto '}>{name}</p>
+              ) : (
+                <div className="d-flex flex-row">
+                  <div className="p-2">  <p className={'text-truncate m-auto '}>{name}</p></div>
+                  <div className="p-2">
+                    <div className="grw-foldertree-control d-flex">
+                      <BookmarkFolderItemControl
+                        onClickRename={onClickRenameHandler}
+                        onClickDelete={onClickDeleteHandler}
+                      >
+                        <DropdownToggle color="transparent" className="border-0 rounded btn-page-item-control p-0 grw-visible-on-hover mr-1">
+                          <i className="icon-options fa fa-rotate-90 p-1"></i>
+                        </DropdownToggle>
+                      </BookmarkFolderItemControl>
+                      <button
+                        type="button"
+                        className="border-0 rounded btn btn-page-item-control p-0 grw-visible-on-hover"
+                        onClick={onClickPlusButton}
+                      >
+                        <i className="icon-plus d-block p-0" />
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              )}
             </div>
-            {hasChildren() && (
+            {hasChildren() && isSidebarItem && (
               <div className="grw-foldertree-count-wrapper">
                 <CountBadge count={ childCount() } />
               </div>
@@ -195,24 +222,25 @@ const BookmarkFolderItem: FC<BookmarkFolderItemProps> = (props: BookmarkFolderIt
         )
 
         }
-        <div className="grw-foldertree-control d-flex">
-          <BookmarkFolderItemControl
-            onClickRename={onClickRenameHandler}
-            onClickDelete={onClickDeleteHandler}
-          >
-            <DropdownToggle color="transparent" className="border-0 rounded btn-page-item-control p-0 grw-visible-on-hover mr-1">
-              <i className="icon-options fa fa-rotate-90 p-1"></i>
-            </DropdownToggle>
-          </BookmarkFolderItemControl>
-          <button
-            type="button"
-            className="border-0 rounded btn btn-page-item-control p-0 grw-visible-on-hover"
-            onClick={onClickPlusButton}
-          >
-            <i className="icon-plus d-block p-0" />
-          </button>
-
-        </div>
+        { isSidebarItem && (
+          <div className="grw-foldertree-control d-flex">
+            <BookmarkFolderItemControl
+              onClickRename={onClickRenameHandler}
+              onClickDelete={onClickDeleteHandler}
+            >
+              <DropdownToggle color="transparent" className="border-0 rounded btn-page-item-control p-0 grw-visible-on-hover mr-1">
+                <i className="icon-options fa fa-rotate-90 p-1"></i>
+              </DropdownToggle>
+            </BookmarkFolderItemControl>
+            <button
+              type="button"
+              className="border-0 rounded btn btn-page-item-control p-0 grw-visible-on-hover"
+              onClick={onClickPlusButton}
+            >
+              <i className="icon-plus d-block p-0" />
+            </button>
+          </div>
+        )}
 
       </li>
       {isCreateAction && (
