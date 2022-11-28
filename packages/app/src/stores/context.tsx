@@ -181,6 +181,10 @@ export const useIsBlinkedHeaderAtBoot = (initialData?: boolean): SWRResponse<boo
   return useContextSWR('isBlinkedAtBoot', initialData, { fallbackData: false });
 };
 
+export const useEditingMarkdown = (initialData?: string): SWRResponse<string, Error> => {
+  return useContextSWR('currentMarkdown', initialData);
+};
+
 export const useIsUploadableImage = (initialData?: boolean): SWRResponse<boolean, Error> => {
   return useContextSWR('isUploadableImage', initialData);
 };
