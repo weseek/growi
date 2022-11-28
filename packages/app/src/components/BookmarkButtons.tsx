@@ -63,7 +63,7 @@ const BookmarkButtons: FC<Props> = (props: Props) => {
         <i className={`fa ${isBookmarked ? 'fa-bookmark' : 'fa-bookmark-o'}`}></i>
       </button>
 
-      <UncontrolledTooltip placement="top" target="bookmark-button" fade={false}>
+      <UncontrolledTooltip data-testid="bookmark-button-tooltip" placement="top" target="bookmark-button" fade={false}>
         {t(getTooltipMessage())}
       </UncontrolledTooltip>
 
