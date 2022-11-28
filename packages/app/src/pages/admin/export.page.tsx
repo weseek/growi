@@ -30,7 +30,7 @@ const AdminExportDataArchivePage: NextPage<CommonProps> = (props) => {
 
   return (
     <Provider inject={[...injectableContainers]}>
-      <AdminLayout title={useCustomTitle(props, title)} componentTitle={title} customCss={props.customCss} customCss={props.customCss}>
+      <AdminLayout title={useCustomTitle(props, title)} componentTitle={title} customCss={props.customCss}>
         <ExportArchiveDataPage />
       </AdminLayout>
     </Provider>
