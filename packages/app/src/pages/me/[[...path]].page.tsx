@@ -145,7 +145,6 @@ async function injectServerConfigurations(context: GetServerSidePropsContext, pr
   const {
     searchService,
     configManager,
-    customizeService,
   } = crowi;
 
   props.isSearchServiceConfigured = searchService.isConfigured;
@@ -160,8 +159,6 @@ async function injectServerConfigurations(context: GetServerSidePropsContext, pr
     isSidebarDrawerMode: configManager.getConfig('crowi', 'customize:isSidebarDrawerMode'),
     isSidebarClosedAtDockMode: configManager.getConfig('crowi', 'customize:isSidebarClosedAtDockMode'),
   };
-
-  props.customCss = customizeService.getCustomCss();
 }
 
 // /**

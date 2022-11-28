@@ -27,7 +27,6 @@ async function injectNextI18NextConfigurations(context: GetServerSidePropsContex
 }
 
 type Props = CommonProps & {
-
   pageWithMetaStr: string,
 };
 
