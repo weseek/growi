@@ -444,13 +444,19 @@ export const useShortcutsModal = (): SWRResponse<ShortcutsModalStatus, Error> & 
 * DrawioModal
 */
 
+type DrawioModalSaveHandler = (drawioMxFile: string) => void;
+
 type DrawioModalStatus = {
   isOpened: boolean,
   drawioMxFile: string,
+  onSave?: DrawioModalSaveHandler,
 }
 
 type DrawioModalStatusUtils = {
-  open(drawioMxFile: string): void,
+  open(
+    drawioMxFile: string,
+    onSave?: DrawioModalSaveHandler,
+  ): void,
   close(): void,
 }
 
@@ -461,8 +467,8 @@ export const useDrawioModal = (status?: DrawioModalStatus): SWRResponse<DrawioMo
   };
   const swrResponse = useStaticSWR<DrawioModalStatus, Error>('drawioModalStatus', status, { fallbackData: initialData });
 
-  const open = (drawioMxFile: string): void => {
-    swrResponse.mutate({ isOpened: true, drawioMxFile });
+  const open = (drawioMxFile: string, onSave?: DrawioModalSaveHandler): void => {
+    swrResponse.mutate({ isOpened: true, drawioMxFile, onSave });
   };
 
   const close = (): void => {

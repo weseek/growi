@@ -158,7 +158,7 @@ class CodeMirrorEditor extends AbstractEditor {
     this.showLinkEditHandler = this.showLinkEditHandler.bind(this);
 
     this.foldDrawioSection = this.foldDrawioSection.bind(this);
-    this.onSaveForDrawio = this.onSaveForDrawio.bind(this);
+    this.clickDrawioIconHandler = this.clickDrawioIconHandler.bind(this);
 
   }
 
@@ -877,13 +877,19 @@ class CodeMirrorEditor extends AbstractEditor {
     });
   }
 
-  onSaveForDrawio(drawioData) {
-    const range = mdu.replaceFocusedDrawioWithEditor(this.getCodeMirror(), drawioData);
-    // Fold the section after the drawio section (```drawio) has been updated.
-    this.foldDrawioSection();
-    return range;
-  }
+  clickDrawioIconHandler() {
+    const drawioMxFile = mdu.getMarkdownDrawioMxfile(this.getCodeMirror());
 
+    this.props.onClickDrawioBtn(
+      drawioMxFile,
+      // onSave
+      (drawioMxFile) => {
+        mdu.replaceFocusedDrawioWithEditor(this.getCodeMirror(), drawioMxFile);
+        // Fold the section after the drawio section (```drawio) has been updated.
+        this.foldDrawioSection();
+      },
+    );
+  }
 
   getNavbarItems() {
     return [
@@ -1025,7 +1031,7 @@ class CodeMirrorEditor extends AbstractEditor {
         color={null}
         bssize="small"
         title="draw.io"
-        onClick={() => this.props.onClickDrawioBtn(mdu.getMarkdownDrawioMxfile(this.getCodeMirror()))}
+        onClick={this.clickDrawioIconHandler}
       >
         <EditorIcon icon="Drawio" />
       </Button>,
@@ -1154,8 +1160,8 @@ const CodeMirrorEditorFc = React.forwardRef((props, ref) => {
   const { open: openDrawioModal } = useDrawioModal();
   const { open: openHandsontableModal } = useHandsontableModal();
 
-  const openDrawioModalHandler = useCallback((drawioMxFile) => {
-    openDrawioModal(drawioMxFile);
+  const openDrawioModalHandler = useCallback((drawioMxFile, onSave) => {
+    openDrawioModal(drawioMxFile, onSave);
   }, [openDrawioModal]);
 
   const openTableModalHandler = useCallback((table, editor, autoFormatMarkdownTable) => {
