@@ -100,9 +100,9 @@ class MarkdownDrawioUtil {
       const bod = this.getBod(editor);
       const eod = this.getEod(editor);
 
-      // skip block begin sesion("::: drawio")
+      // skip block begin sesion("``` drawio")
       bod.line++;
-      // skip block end sesion(":::")
+      // skip block end sesion("```")
       eod.line--;
       eod.ch = editor.getDoc().getLine(eod.line).length;
 
