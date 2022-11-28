@@ -43,6 +43,8 @@ type Props = CommonProps & {
 
   // config
   registrationWhiteList: string[],
+
+  customCss: string,
 };
 
 const PersonalSettings = dynamic(() => import('~/components/Me/PersonalSettings'), { ssr: false });
@@ -107,7 +109,7 @@ const MePage: NextPage<Props> = (props: Props) => {
 
   return (
     <>
-      <BasicLayout title={useCustomTitle(props, 'GROWI')}>
+      <BasicLayout title={useCustomTitle(props, 'GROWI')} customCss={props.customCss}>
 
         <header className="py-3">
           <div className="container-fluid">
@@ -145,6 +147,7 @@ async function injectServerConfigurations(context: GetServerSidePropsContext, pr
   const {
     searchService,
     configManager,
+    customizeService,
   } = crowi;
 
   props.isSearchServiceConfigured = searchService.isConfigured;
@@ -159,6 +162,8 @@ async function injectServerConfigurations(context: GetServerSidePropsContext, pr
     isSidebarDrawerMode: configManager.getConfig('crowi', 'customize:isSidebarDrawerMode'),
     isSidebarClosedAtDockMode: configManager.getConfig('crowi', 'customize:isSidebarClosedAtDockMode'),
   };
+
+  props.customCss = customizeService.getCustomCss();
 }
 
 // /**

@@ -40,6 +40,8 @@ type Props = CommonProps & {
 
   // sidebar
   sidebarConfig: ISidebarConfig,
+
+  customCss: string
 };
 
 const TagList = dynamic(() => import('~/components/TagList'), { ssr: false });
@@ -77,7 +79,7 @@ const TagPage: NextPage<CommonProps> = (props: Props) => {
     <>
       <Head>
       </Head>
-      <BasicLayout title={useCustomTitle(props, 'GROWI')} className={classNames.join(' ')}>
+      <BasicLayout title={useCustomTitle(props, 'GROWI')} className={classNames.join(' ')} customCss={props.customCss}>
         <div className="grw-container-convertible mb-5 pb-5" data-testid="tags-page">
           <h2 className="my-3">{`${t('Tags')}(${totalCount})`}</h2>
           <div className="px-3 mb-5 text-center">
@@ -126,7 +128,7 @@ function injectServerConfigurations(context: GetServerSidePropsContext, props: P
   const req: CrowiRequest = context.req as CrowiRequest;
   const { crowi } = req;
   const {
-    searchService, configManager,
+    searchService, configManager, customizeService,
   } = crowi;
 
   props.isSearchServiceConfigured = searchService.isConfigured;
@@ -137,6 +139,7 @@ function injectServerConfigurations(context: GetServerSidePropsContext, props: P
     isSidebarDrawerMode: configManager.getConfig('crowi', 'customize:isSidebarDrawerMode'),
     isSidebarClosedAtDockMode: configManager.getConfig('crowi', 'customize:isSidebarClosedAtDockMode'),
   };
+  props.customCss = customizeService.getCustomCss();
 }
 
 export const getServerSideProps: GetServerSideProps = async(context: GetServerSidePropsContext) => {

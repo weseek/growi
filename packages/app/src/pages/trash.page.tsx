@@ -40,6 +40,8 @@ type Props = CommonProps & {
   userUISettings?: IUserUISettings
   // Sidebar
   sidebarConfig: ISidebarConfig,
+
+  customCss: string,
 };
 
 const TrashPage: NextPage<CommonProps> = (props: Props) => {
@@ -67,7 +69,7 @@ const TrashPage: NextPage<CommonProps> = (props: Props) => {
 
   return (
     <>
-      <BasicLayout title={useCustomTitle(props, 'GROWI')} >
+      <BasicLayout title={useCustomTitle(props, 'GROWI')} customCss={props.customCss}>
         <header className="py-0 position-relative">
           <GrowiSubNavigation
             pagePath="/trash"
@@ -109,7 +111,7 @@ function injectServerConfigurations(context: GetServerSidePropsContext, props: P
   const req: CrowiRequest = context.req as CrowiRequest;
   const { crowi } = req;
   const {
-    searchService, configManager,
+    searchService, configManager, customizeService,
   } = crowi;
 
   props.isSearchServiceConfigured = searchService.isConfigured;
@@ -121,6 +123,8 @@ function injectServerConfigurations(context: GetServerSidePropsContext, props: P
     isSidebarDrawerMode: configManager.getConfig('crowi', 'customize:isSidebarDrawerMode'),
     isSidebarClosedAtDockMode: configManager.getConfig('crowi', 'customize:isSidebarClosedAtDockMode'),
   };
+
+  props.customCss = customizeService.getCustomCss();
 }
 
 /**
