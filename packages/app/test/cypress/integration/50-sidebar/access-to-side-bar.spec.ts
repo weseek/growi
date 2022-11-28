@@ -20,12 +20,20 @@ describe('Access to sidebar', () => {
       describe('Test show/collapse button', () => {
         it('Successfully show sidebar', () => {
           cy.get('.grw-pagetree').should('be.visible');
-          cy.screenshot(`${ssPrefix}1-sidebar-shown`, {capture: 'viewport'});
+          cy.screenshot(`${ssPrefix}1-sidebar-shown`, {
+            capture: 'viewport',
+            // Blackout for recalculation of toc content 'calcViewHeight'
+            blackout: ['#revision-toc-content', '[data-hide-in-vrt=true]'],
+          });
         });
 
         it('Successfully collapse sidebar', () => {
           cy.getByTestid('grw-navigation-resize-button').click({force: true});
-          cy.screenshot(`${ssPrefix}2-sidebar-collapsed`, {capture: 'viewport'});
+          cy.screenshot(`${ssPrefix}2-sidebar-collapsed`, {
+            capture: 'viewport',
+            // Blackout for recalculation of toc content 'calcViewHeight'
+            blackout: ['#revision-toc-content', '[data-hide-in-vrt=true]'],
+          });
         });
       });
 
@@ -55,7 +63,10 @@ describe('Access to sidebar', () => {
 
           cy.scrollTo('top');
           cy.getByTestid('page-item-control-menu').should('have.class', 'show');
-          cy.screenshot(`${ssPrefix}page-tree-3-before-click-button`);
+          cy.screenshot(`${ssPrefix}page-tree-3-before-click-button`, {
+            // Blackout for recalculation of toc content 'calcViewHeight'
+            blackout: ['#revision-toc-content', '[data-hide-in-vrt=true]'],
+          });
 
           // click add remove bookmark btn
           cy.getByTestid('page-item-control-menu').should('have.class', 'show').within(() => {
@@ -69,7 +80,10 @@ describe('Access to sidebar', () => {
 
           cy.scrollTo('top');
           cy.getByTestid('page-item-control-menu').should('have.class', 'show');
-          cy.screenshot(`${ssPrefix}page-tree-4-after-click-button`);
+          cy.screenshot(`${ssPrefix}page-tree-4-after-click-button`, {
+            // Blackout for recalculation of toc content 'calcViewHeight'
+            blackout: ['#revision-toc-content', '[data-hide-in-vrt=true]'],
+          });
         });
 
         it('Successfully show duplicate page modal', () => {
@@ -160,7 +174,10 @@ describe('Access to sidebar', () => {
 
           cy.scrollTo('top');
           // The scope of the capture is not narrowed because the blackout is shifted
-          cy.screenshot(`${ssPrefix}recent-changes-1-access-to-recent-changes`);
+          cy.screenshot(`${ssPrefix}recent-changes-1-access-to-recent-changes`, {
+            // Blackout for recalculation of toc content 'calcViewHeight'
+            blackout: ['#revision-toc-content', '[data-hide-in-vrt=true]'],
+          });
         });
 
         it('Successfully switch content size', () => {
@@ -171,7 +188,10 @@ describe('Access to sidebar', () => {
 
           cy.scrollTo('top');
           // The scope of the capture is not narrowed because the blackout is shifted
-          cy.screenshot(`${ssPrefix}recent-changes-2-switch-content-size`);
+          cy.screenshot(`${ssPrefix}recent-changes-2-switch-content-size`, {
+            // Blackout for recalculation of toc content 'calcViewHeight'
+            blackout: ['#revision-toc-content', '[data-hide-in-vrt=true]'],
+          });
         });
       });
 
@@ -196,7 +216,7 @@ describe('Access to sidebar', () => {
         });
       });
 
-      // TODO: No Draft pages on GROWI version 6
+      // TODO: No Drafts pages on GROWI version 6
       // it('Successfully access to My Drafts page', () => {
       //   cy.visit('/');
       //   cy.collapseSidebar(true);

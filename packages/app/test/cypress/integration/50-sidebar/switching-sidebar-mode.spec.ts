@@ -27,14 +27,16 @@ context('Switch sidebar mode', () => {
     cy.get('[for="swSidebarMode"]').click({force: true});
     cy.get('.grw-sidebar-nav').should('not.be.visible');
     cy.screenshot(`${ssPrefix}-switch-sidebar-mode`, {
-      blackout: ['[data-hide-in-vrt=true]'],
-    })
+      // Blackout for recalculation of toc content 'calcViewHeight'
+      blackout: ['#revision-toc-content', '[data-hide-in-vrt=true]'],
+    });
 
     cy.get('[for="swSidebarMode"]').click({force: true});
     cy.get('.grw-sidebar-nav').should('be.visible');
     cy.screenshot(`${ssPrefix}-switch-sidebar-mode-back`, {
-      blackout: ['[data-hide-in-vrt=true]'],
-    })
+      // Blackout for recalculation of toc content 'calcViewHeight'
+      blackout: ['#revision-toc-content','[data-hide-in-vrt=true]'],
+    });
   });
 
 });
