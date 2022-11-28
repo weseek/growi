@@ -128,27 +128,29 @@ context('Click page icons button', () => {
     cy.get('.user-list-popover').should('be.visible');
     cy.get('#grw-subnav-container').within(() => { cy.screenshot(`${ssPrefix}10-bookmarks-counter`) });
   });
-  it('Successfully display list of "seen by user"', () => {
-    cy.visit('/Sandbox');
-    cy.waitUntilSkeletonDisappear();
 
-    cy.get('#grw-subnav-container').within(() => {
-      cy.get('div.grw-seen-user-info').find('button#btn-seen-user').click({force: true});
-    });
+  // user-list-popover is commented out because it is sometimes displayed and sometimes not
+  // it('Successfully display list of "seen by user"', () => {
+  //   cy.visit('/Sandbox');
+  //   cy.waitUntilSkeletonDisappear();
 
-    // position of the element is not fixed to be displayed, so the element is removed
-    cy.get('body').then($body => {
-      if ($body.find('[data-testid="seen-user-info-tooltip"]').length > 0) {
-        cy.getByTestid('seen-user-info-tooltip').invoke('remove');
-      }
-    })
-    cy.getByTestid('seen-user-info-tooltip').should('not.exist');
+  //   cy.get('#grw-subnav-container').within(() => {
+  //     cy.get('div.grw-seen-user-info').find('button#btn-seen-user').click({force: true});
+  //   });
 
-    cy.get('.user-list-popover').should('be.visible')
+  //   // position of the element is not fixed to be displayed, so the element is removed
+  //   cy.get('body').then($body => {
+  //     if ($body.find('[data-testid="seen-user-info-tooltip"]').length > 0) {
+  //       cy.getByTestid('seen-user-info-tooltip').invoke('remove');
+  //     }
+  //   })
+  //   cy.getByTestid('seen-user-info-tooltip').should('not.exist');
 
-    cy.get('#grw-subnav-container').within(() => {
-      cy.screenshot(`${ssPrefix}11-seen-user-list`);
-    });
-  });
+  //   cy.get('.user-list-popover').should('be.visible')
+
+  //   cy.get('#grw-subnav-container').within(() => {
+  //     cy.screenshot(`${ssPrefix}11-seen-user-list`);
+  //   });
+  // });
 
 });
