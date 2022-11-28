@@ -238,6 +238,7 @@ context('Tag Oprations', () =>{
   it('Successfully add new tag', () => {
     const ssPrefix = 'tag-operations-add-new-tag-'
     const tag = 'we';
+
     cy.visit('/Sandbox');
     cy.waitUntilSkeletonDisappear();
 
@@ -258,7 +259,7 @@ context('Tag Oprations', () =>{
       cy.get('#tag-typeahead-asynctypeahead').should('be.visible');
       cy.get('#tag-typeahead-asynctypeahead-item-0').should('be.visible');
       cy.get('a#tag-typeahead-asynctypeahead-item-0').click({force: true})
-      cy.screenshot(`${ssPrefix}3-insert-tag-name`, {capture: 'viewport'});
+      cy.screenshot(`${ssPrefix}3-insert-tag-name`);
     });
 
     cy.get('#edit-tag-modal').within(() => {
@@ -266,11 +267,10 @@ context('Tag Oprations', () =>{
     });
 
     cy.get('.toast').should('be.visible').trigger('mouseover');
-    cy.get('.grw-taglabels-container > .grw-tag-labels > a', { timeout: 10000 }).contains(tag).should('exist');
+    cy.get('.grw-taglabels-container > .grw-tag-labels > a').contains(tag).should('exist');
     /* eslint-disable cypress/no-unnecessary-waiting */
     cy.wait(150); // wait for toastr to change its color occured by mouseover
-    cy.screenshot(`${ssPrefix}4-click-done`, {capture: 'viewport'});
-
+    cy.screenshot(`${ssPrefix}4-click-done`);
   });
 
   it('Successfully duplicate page by generated tag', () => {
@@ -290,10 +290,11 @@ context('Tag Oprations', () =>{
     cy.getByTestid('search-result-base').should('be.visible');
     cy.getByTestid('search-result-list').should('be.visible');
     cy.getByTestid('search-result-content').should('be.visible');
+    cy.waitUntilSpinnerDisappear();
     // cy.get('#wiki').should('be.visible');
     // force to add 'active' to pass VRT: https://github.com/weseek/growi/pull/6603
     cy.getByTestid('page-list-item-L').first().invoke('addClass', 'active');
-    cy.screenshot(`${ssPrefix}1-click-tag-name`, {capture: 'viewport'});
+    cy.screenshot(`${ssPrefix}1-click-tag-name`);
     cy.getByTestid('search-result-list').should('be.visible').then(($el)=>{
       cy.wrap($el).within(()=>{
         cy.getByTestid('open-page-item-control-btn').first().click();
@@ -301,7 +302,7 @@ context('Tag Oprations', () =>{
 
       // eslint-disable-next-line cypress/no-unnecessary-waiting
       cy.wait(1500); // for wait rendering pagelist info
-      cy.screenshot(`${ssPrefix}2-click-three-dots-menu`, {capture: 'viewport'});
+      cy.screenshot(`${ssPrefix}2-click-three-dots-menu`);
 
       cy.wrap($el).within(()=>{
         cy.getByTestid('open-page-item-control-btn').first().within(()=>{
@@ -312,14 +313,14 @@ context('Tag Oprations', () =>{
 
     cy.getByTestid('page-duplicate-modal').should('be.visible').within(() => {
       cy.get('.rbt-input-main').type(`-${newPageName}`, {force: true});
-    }).screenshot(`${ssPrefix}3-duplicate-page`, {capture: 'viewport'});
+    }).screenshot(`${ssPrefix}3-duplicate-page`);
 
     cy.getByTestid('page-duplicate-modal').within(() => {
       cy.get('.modal-footer > button.btn').click();
     });
     cy.visit(`Sandbox-${newPageName}`);
     cy.waitUntilSkeletonDisappear();
-    cy.screenshot(`${ssPrefix}4-duplicated-page`, {capture: 'viewport'});
+    cy.screenshot(`${ssPrefix}4-duplicated-page`);
   });
 
   it('Successfully rename page from generated tag', () => {
@@ -331,13 +332,14 @@ context('Tag Oprations', () =>{
     cy.visit('/Sandbox-our');
     cy.waitUntilSkeletonDisappear();
     cy.get('.grw-tag-label').should('be.visible').contains(tag).click();
-    cy.waitUntilSkeletonDisappear();
+
     cy.getByTestid('search-result-base').should('be.visible');
     cy.getByTestid('search-result-list').should('be.visible');
     cy.getByTestid('search-result-content').should('be.visible');
     // eslint-disable-next-line cypress/no-unnecessary-waiting
     cy.wait(300);
-    cy.screenshot(`${ssPrefix}1-click-tag-name`, {capture: 'viewport'});
+    cy.waitUntilSpinnerDisappear();
+    cy.screenshot(`${ssPrefix}1-click-tag-name`);
 
     cy.getByTestid('search-result-list').within(() => {
       cy.get('.list-group-item').each(($row) => {
@@ -380,7 +382,6 @@ context('Tag Oprations', () =>{
     cy.waitUntilSkeletonDisappear();
 
     cy.getByTestid('grw-tag-labels').should('be.visible')
-    cy.screenshot(`${ssPrefix}4-new-page-name-applied`, {capture: 'viewport'});
+    cy.screenshot(`${ssPrefix}4-new-page-name-applied`);
   });
-
 });
