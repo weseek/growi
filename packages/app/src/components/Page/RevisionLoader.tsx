@@ -24,7 +24,7 @@ const logger = loggerFactory('growi:Page:RevisionLoader');
 
 // Always render '#revision-loader' for MutationObserver of SearchResultContent
 const RevisionLoaderRoot = (props: React.HTMLAttributes<HTMLDivElement>): JSX.Element => (
-  <div data-testid={'テストID'} id={ROOT_ELEM_ID} {...props}>{props.children}</div>
+  <div id={ROOT_ELEM_ID} {...props}>{props.children}</div>
 );
 
 /**
