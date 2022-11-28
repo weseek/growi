@@ -43,8 +43,6 @@ type Props = CommonProps & {
 
   // config
   registrationWhiteList: string[],
-
-  customCss: string,
 };
 
 const PersonalSettings = dynamic(() => import('~/components/Me/PersonalSettings'), { ssr: false });

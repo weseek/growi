@@ -174,8 +174,6 @@ type Props = CommonProps & {
   userUISettings?: IUserUISettings
   // Sidebar
   sidebarConfig: ISidebarConfig,
-
-  customCss: string,
 };
 
 const GrowiPage: NextPage<Props> = (props: Props) => {

@@ -47,8 +47,6 @@ type Props = CommonProps & {
   showPageLimitationL: number
 
   isContainerFluid: boolean,
-
-  customCss: string,
 };
 
 const SearchResultPage: NextPage<Props> = (props: Props) => {

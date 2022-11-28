@@ -40,8 +40,6 @@ type Props = CommonProps & {
   userUISettings?: IUserUISettings
   // Sidebar
   sidebarConfig: ISidebarConfig,
-
-  customCss: string,
 };
 
 const TrashPage: NextPage<CommonProps> = (props: Props) => {
