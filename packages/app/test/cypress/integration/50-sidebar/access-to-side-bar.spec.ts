@@ -21,7 +21,7 @@ describe('Access to sidebar', () => {
           cy.get('.grw-pagetree').should('be.visible');
           cy.screenshot(`${ssPrefix}1-sidebar-shown`, {
             capture: 'viewport',
-            // Blackout for recalculation of toc content 'calcViewHeight'
+            // Blackout for recalculation of toc content hight
             blackout: ['.grw-side-contents-container', '[data-hide-in-vrt=true]'],
           });
         });
@@ -30,7 +30,7 @@ describe('Access to sidebar', () => {
           cy.getByTestid('grw-navigation-resize-button').click({force: true});
           cy.screenshot(`${ssPrefix}2-sidebar-collapsed`, {
             capture: 'viewport',
-            // Blackout for recalculation of toc content 'calcViewHeight'
+            // Blackout for recalculation of toc content hight
             blackout: ['.grw-side-contents-container', '[data-hide-in-vrt=true]'],
           });
         });
@@ -62,7 +62,7 @@ describe('Access to sidebar', () => {
 
           cy.getByTestid('page-item-control-menu').should('have.class', 'show');
           cy.screenshot(`${ssPrefix}page-tree-3-before-click-button`, {
-            // Blackout for recalculation of toc content 'calcViewHeight'
+            // Blackout for recalculation of toc content hight
             blackout: ['.grw-side-contents-container', '[data-hide-in-vrt=true]'],
           });
 
@@ -78,7 +78,7 @@ describe('Access to sidebar', () => {
 
           cy.getByTestid('page-item-control-menu').should('have.class', 'show');
           cy.screenshot(`${ssPrefix}page-tree-4-after-click-button`, {
-            // Blackout for recalculation of toc content 'calcViewHeight'
+            // Blackout for recalculation of toc content hight
             blackout: ['.grw-side-contents-container', '[data-hide-in-vrt=true]'],
           });
         });
@@ -171,7 +171,7 @@ describe('Access to sidebar', () => {
 
           // The scope of the capture is not narrowed because the blackout is shifted
           cy.screenshot(`${ssPrefix}recent-changes-1-access-to-recent-changes`, {
-            // Blackout for recalculation of toc content 'calcViewHeight'
+            // Blackout for recalculation of toc content hight
             blackout: ['.grw-side-contents-container', '[data-hide-in-vrt=true]'],
           });
         });
@@ -184,7 +184,7 @@ describe('Access to sidebar', () => {
 
           // The scope of the capture is not narrowed because the blackout is shifted
           cy.screenshot(`${ssPrefix}recent-changes-2-switch-content-size`, {
-            // Blackout for recalculation of toc content 'calcViewHeight'
+            // Blackout for recalculation of toc content hight
             blackout: ['.grw-side-contents-container', '[data-hide-in-vrt=true]'],
           });
         });
