@@ -31,17 +31,18 @@ type Props = {
   title: string
   className?: string,
   expandContainer?: boolean,
-  children?: ReactNode
+  children?: ReactNode,
+  customCss: string
 }
 
 export const BasicLayout = ({
-  children, title, className, expandContainer,
+  children, title, className, expandContainer, customCss,
 }: Props): JSX.Element => {
 
   const myClassName = `${className ?? ''} ${expandContainer ? 'growi-layout-fluid' : ''}`;
 
   return (
-    <RawLayout title={title} className={myClassName}>
+    <RawLayout title={title} className={myClassName} customCss={customCss}>
 
       <DndProvider backend={HTML5Backend}>
         <GrowiNavbar />

@@ -174,6 +174,8 @@ type Props = CommonProps & {
   userUISettings?: IUserUISettings
   // Sidebar
   sidebarConfig: ISidebarConfig,
+
+  customCss: string,
 };
 
 const GrowiPage: NextPage<Props> = (props: Props) => {
@@ -295,7 +297,7 @@ const GrowiPage: NextPage<Props> = (props: Props) => {
         {renderHighlightJsStyleTag(props.highlightJsStyle)}
         */}
       </Head>
-      <BasicLayout title={useCustomTitle(props, 'GROWI')} className={classNames.join(' ')} expandContainer={isContainerFluid}>
+      <BasicLayout title={useCustomTitle(props, 'GROWI')} className={classNames.join(' ')} expandContainer={isContainerFluid} customCss={props.customCss}>
         <div className="h-100 d-flex flex-column justify-content-between">
           <header className="py-0 position-relative">
             <div id="grw-subnav-container">
@@ -503,7 +505,7 @@ function injectServerConfigurations(context: GetServerSidePropsContext, props: P
   const req: CrowiRequest = context.req as CrowiRequest;
   const { crowi } = req;
   const {
-    appService, searchService, configManager, aclService, slackNotificationService, mailService,
+    appService, searchService, configManager, aclService, slackNotificationService, mailService, customizeService,
   } = crowi;
 
   props.isSearchServiceConfigured = searchService.isConfigured;
@@ -553,6 +555,8 @@ function injectServerConfigurations(context: GetServerSidePropsContext, props: P
     isSidebarDrawerMode: configManager.getConfig('crowi', 'customize:isSidebarDrawerMode'),
     isSidebarClosedAtDockMode: configManager.getConfig('crowi', 'customize:isSidebarClosedAtDockMode'),
   };
+
+  props.customCss = customizeService.getCustomCss();
 }
 
 /**

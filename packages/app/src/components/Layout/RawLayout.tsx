@@ -18,9 +18,12 @@ type Props = {
   title?: string,
   className?: string,
   children?: ReactNode,
+  customCss?: string,
 }
 
-export const RawLayout = ({ children, title, className }: Props): JSX.Element => {
+export const RawLayout = ({
+  children, title, className, customCss,
+}: Props): JSX.Element => {
   const classNames: string[] = ['layout-root', 'growi'];
   if (className != null) {
     classNames.push(className);
@@ -43,6 +46,9 @@ export const RawLayout = ({ children, title, className }: Props): JSX.Element =>
         <title>{title}</title>
         <meta charSet="utf-8" />
         <meta name="viewport" content="initial-scale=1.0, width=device-width" />
+        <style>
+          {customCss}
+        </style>
       </Head>
       <NextThemesProvider>
         <GrowiThemeProvider theme={growiTheme} colorScheme={colorScheme}>
