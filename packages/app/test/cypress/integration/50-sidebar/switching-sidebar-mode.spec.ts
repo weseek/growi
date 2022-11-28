@@ -25,14 +25,18 @@ context('Switch sidebar mode', () => {
     cy.get('.grw-apperance-mode-dropdown').first().click();
 
     cy.get('[for="swSidebarMode"]').click({force: true});
+    cy.get('.grw-sidebar-nav').should('not.be.visible');
     cy.screenshot(`${ssPrefix}-switch-sidebar-mode`, {
-      blackout: ['#revision-toc', '[data-hide-in-vrt=true]'],
-    })
+      // Blackout for recalculation of toc content hight
+      blackout: ['.grw-side-contents-container', '[data-hide-in-vrt=true]'],
+    });
 
     cy.get('[for="swSidebarMode"]').click({force: true});
+    cy.get('.grw-sidebar-nav').should('be.visible');
     cy.screenshot(`${ssPrefix}-switch-sidebar-mode-back`, {
-      blackout: ['#revision-toc', '[data-hide-in-vrt=true]'],
-    })
+      // Blackout for recalculation of toc content hight
+      blackout: ['.grw-side-contents-container','[data-hide-in-vrt=true]'],
+    });
   });
 
 });
