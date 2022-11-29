@@ -1,6 +1,4 @@
-import React from 'react';
-
-import PropTypes from 'prop-types';
+import React, { useMemo } from 'react';
 
 import { PageNode } from '../PageNode';
 import { LsxContext } from '../lsx-context';
@@ -9,46 +7,52 @@ import { LsxPage } from './LsxPage';
 
 import styles from './LsxListView.module.scss';
 
-export class LsxListView extends React.Component {
 
-  render() {
-    const listView = this.props.nodeTree.map((pageNode) => {
-      return (
-        <LsxPage
-          key={pageNode.pagePath}
-          depth={1}
-          pageNode={pageNode}
-          lsxContext={this.props.lsxContext}
-          basisViewersCount={this.props.basisViewersCount}
-        />
-      );
-    });
+type Props = {
+  nodeTree: PageNode[],
+  lsxContext: LsxContext,
+  basisViewersCount?: number,
+};
 
-    // no contents
-    if (this.props.nodeTree.length === 0) {
+
+export const LsxListView = React.memo((props: Props): JSX.Element => {
+
+  const { nodeTree, lsxContext, basisViewersCount } = props;
+
+  const isEmpty = nodeTree.length === 0;
+
+  const contents = useMemo(() => {
+    if (isEmpty) {
       return (
         <div className="text-muted">
           <small>
             <i className="fa fa-fw fa-info-circle" aria-hidden="true"></i>
-            $lsx(<a href={this.props.lsxContext.pagePath}>{this.props.lsxContext.pagePath}</a>) has no contents
+            $lsx(<a href={lsxContext.pagePath}>{lsxContext.pagePath}</a>) has no contents
           </small>
         </div>
       );
     }
 
-    return (
-      <div className={`page-list ${styles['page-list']} lsx`}>
-        <ul className="page-list-ul">
-          {listView}
-        </ul>
-      </div>
-    );
-  }
+    return nodeTree.map((pageNode) => {
+      return (
+        <LsxPage
+          key={pageNode.pagePath}
+          depth={1}
+          pageNode={pageNode}
+          lsxContext={lsxContext}
+          basisViewersCount={basisViewersCount}
+        />
+      );
+    });
+  }, [basisViewersCount, isEmpty, lsxContext, nodeTree]);
 
-}
+  return (
+    <div className={`page-list ${styles['page-list']} lsx`}>
+      <ul className="page-list-ul">
+        {contents}
+      </ul>
+    </div>
+  );
 
-LsxListView.propTypes = {
-  nodeTree: PropTypes.arrayOf(PropTypes.instanceOf(PageNode)).isRequired,
-  lsxContext: PropTypes.instanceOf(LsxContext).isRequired,
-  basisViewersCount: PropTypes.number,
-};
+});
+LsxListView.displayName = 'LsxListView';
