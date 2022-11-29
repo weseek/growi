@@ -14,6 +14,7 @@ on:
       - '!packages/app/docker/**'
       - packages/codemirror-textlint/**
       - packages/core/**
+      - packages/remark-drawio-plugin/**
       - packages/remark-growi-plugin/**
       - packages/slack/**
       - packages/ui/**
@@ -32,6 +33,7 @@ on:
       - '!packages/app/docker/**'
       - packages/codemirror-textlint/**
       - packages/core/**
+      - packages/remark-drawio-plugin/**
       - packages/remark-growi-plugin/**
       - packages/slack/**
       - packages/ui/**

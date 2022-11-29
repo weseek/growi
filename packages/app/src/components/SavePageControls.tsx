@@ -2,7 +2,7 @@ import React, { useCallback } from 'react';
 
 import EventEmitter from 'events';
 
-import { pagePathUtils, PageGrant } from '@growi/core';
+import { pagePathUtils } from '@growi/core';
 import { useTranslation } from 'next-i18next';
 import {
   UncontrolledButtonDropdown, Button,
@@ -19,7 +19,12 @@ import loggerFactory from '~/utils/logger';
 
 import GrantSelector from './SavePageControls/GrantSelector';
 
-declare const globalEmitter: EventEmitter;
+
+declare global {
+  // eslint-disable-next-line vars-on-top, no-var
+  var globalEmitter: EventEmitter;
+}
+
 
 const logger = loggerFactory('growi:SavePageControls');
 
