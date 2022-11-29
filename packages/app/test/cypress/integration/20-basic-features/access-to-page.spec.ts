@@ -11,7 +11,7 @@ context('Access to page', () => {
   });
 
   it('/Sandbox is successfully loaded', () => {
-    cy.visit('/Sandbox', {  });
+    cy.visit('/Sandbox');
     cy.screenshot(`${ssPrefix}-sandbox`);
   });
 
@@ -48,18 +48,18 @@ context('Access to page', () => {
     cy.visit('/Sandbox');
     cy.waitUntilSkeletonDisappear();
 
-    cy.get('#grw-subnav-container', { timeout: 30000 }).should('be.visible').within(() => {
+    cy.get('#grw-subnav-container').should('be.visible').within(() => {
 
       // eslint-disable-next-line cypress/no-unnecessary-waiting
       cy.wait(2000);
-      cy.getByTestid('editor-button', { timeout: 30000 }).should('be.visible').click();
+      cy.getByTestid('editor-button').should('be.visible').click();
     })
-    cy.getByTestid('navbar-editor', { timeout: 30000 }).should('be.visible');
+    cy.getByTestid('navbar-editor').should('be.visible');
     cy.screenshot(`${ssPrefix}-Sandbox-edit-page`);
   })
 
   it('/user/admin is successfully loaded', () => {
-    cy.visit('/user/admin', {  });
+    cy.visit('/user/admin');
 
     cy.waitUntilSkeletonDisappear();
     // for check download toc data
@@ -87,7 +87,7 @@ context('Access to /me page', () => {
   });
 
   it('/me is successfully loaded', () => {
-    cy.visit('/me', {  });
+    cy.visit('/me');
     // eslint-disable-next-line cypress/no-unnecessary-waiting
     cy.wait(500); // wait loading image
     cy.screenshot(`${ssPrefix}-me`);
@@ -115,7 +115,7 @@ context('Access to special pages', () => {
   });
 
   it('/trash is successfully loaded', () => {
-    cy.visit('/trash', {  });
+    cy.visit('/trash');
     cy.getByTestid('trash-page-list').should('be.visible');
     cy.screenshot(`${ssPrefix}-trash`);
   });
@@ -227,12 +227,12 @@ context('Access to /me/all-in-app-notifications', () => {
     cy.getByTestid('grw-in-app-notification-page').should('be.visible');
     cy.getByTestid('grw-in-app-notification-page-spinner').should('not.exist');
 
-    cy.screenshot(`${ssPrefix}-see-all`, { capture: 'viewport' });
+    cy.screenshot(`${ssPrefix}-see-all`);
 
     cy.get('.grw-custom-nav-tab > div > ul > li:nth-child(2) > a').click();
     cy.getByTestid('grw-in-app-notification-page-spinner').should('not.exist');
 
-    cy.screenshot(`${ssPrefix}-see-unread`, { capture: 'viewport' });
+    cy.screenshot(`${ssPrefix}-see-unread`);
    });
 
 })
