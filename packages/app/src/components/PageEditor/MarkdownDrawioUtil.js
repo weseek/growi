@@ -4,8 +4,8 @@
 class MarkdownDrawioUtil {
 
   constructor() {
-    this.lineBeginPartOfDrawioRE = /^:::(\s.*)drawio$/;
-    this.lineEndPartOfDrawioRE = /^:::$/;
+    this.lineBeginPartOfDrawioRE = /^```(\s.*)drawio$/;
+    this.lineEndPartOfDrawioRE = /^```$/;
   }
 
   /**
@@ -100,9 +100,9 @@ class MarkdownDrawioUtil {
       const bod = this.getBod(editor);
       const eod = this.getEod(editor);
 
-      // skip block begin sesion("::: drawio")
+      // skip block begin sesion("``` drawio")
       bod.line++;
-      // skip block end sesion(":::")
+      // skip block end sesion("```")
       eod.line--;
       eod.ch = editor.getDoc().getLine(eod.line).length;
 
@@ -113,7 +113,7 @@ class MarkdownDrawioUtil {
 
   replaceFocusedDrawioWithEditor(editor, drawioData) {
     const curPos = editor.getCursor();
-    const drawioBlock = ['::: drawio', drawioData.toString(), ':::'].join('\n');
+    const drawioBlock = ['``` drawio', drawioData.toString(), '```'].join('\n');
     let beginPos;
     let endPos;
 
@@ -145,9 +145,9 @@ class MarkdownDrawioUtil {
     if (markdownBeforeDrawio.length > 0) {
       newMarkdown += `${markdownBeforeDrawio.join('\n')}\n`;
     }
-    newMarkdown += '::: drawio\n';
+    newMarkdown += '``` drawio\n';
     newMarkdown += drawioData;
-    newMarkdown += '\n:::';
+    newMarkdown += '\n```';
     if (markdownAfterDrawio.length > 0) {
       newMarkdown += `\n${markdownAfterDrawio.join('\n')}`;
     }

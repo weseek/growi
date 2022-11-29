@@ -89,8 +89,8 @@ export const useRegistrationWhiteList = (initialData?: Nullable<string[]>): SWRR
   return useContextSWR<Nullable<string[]>, Error>('registrationWhiteList', initialData);
 };
 
-export const useDrawioUri = (initialData?: string): SWRResponse<string, Error> => {
-  return useContextSWR('drawioUri', initialData, { fallbackData: 'https://embed.diagrams.net/' });
+export const useDrawioUri = (initialData?: Nullable<string>): SWRResponse<string, Error> => {
+  return useContextSWR('drawioUri', initialData ?? undefined, { fallbackData: 'https://embed.diagrams.net/' });
 };
 
 export const useHackmdUri = (initialData?: Nullable<string>): SWRResponse<Nullable<string>, Error> => {
@@ -180,10 +180,6 @@ export const useIsAllReplyShown = (initialData?: boolean): SWRResponse<boolean, 
 
 export const useIsBlinkedHeaderAtBoot = (initialData?: boolean): SWRResponse<boolean, Error> => {
   return useContextSWR('isBlinkedAtBoot', initialData, { fallbackData: false });
-};
-
-export const useEditingMarkdown = (initialData?: string): SWRResponse<string, Error> => {
-  return useContextSWR('currentMarkdown', initialData);
 };
 
 export const useIsUploadableImage = (initialData?: boolean): SWRResponse<boolean, Error> => {
