@@ -330,9 +330,12 @@ const PageRenameModal = (): JSX.Element => {
       return <></>;
     }
 
-    let submitButtonDisabled = false;
+    let submitButtonDisabled = true;
 
     if (isMatchedWithUserHomePagePath) {
+      submitButtonDisabled = true;
+    }
+    else if (page.data.path === pageNameInput) {
       submitButtonDisabled = true;
     }
     else if (!canRename) {
@@ -344,6 +347,7 @@ const PageRenameModal = (): JSX.Element => {
     else {
       submitButtonDisabled = !isRenameRecursively; // v4 data
     }
+
     return (
       <>
         <ApiErrorMessageList errs={errs} targetPath={pageNameInput} />
