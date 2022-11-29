@@ -5,14 +5,13 @@ import { useTranslation } from 'next-i18next';
 import { toastError, toastSuccess } from '~/client/util/apiNotification';
 import { apiv3Post } from '~/client/util/apiv3-client';
 import { RecentlyCreatedIcon } from '~/components/Icons/RecentlyCreatedIcon';
-import { BookmarkList } from '~/components/PageList/BookmarkList';
 import { RecentCreated } from '~/components/RecentCreated/RecentCreated';
 import styles from '~/components/UsersHomePageFooter.module.scss';
 import { useSWRxBookamrkFolderAndChild } from '~/stores/bookmark-folder';
 
-import BookmarkFolderItem from './Bookmarks/BookmarkFolderItem';
 import BookmarkFolderNameInput from './Bookmarks/BookmarkFolderNameInput';
 import FolderPlusIcon from './Icons/FolderPlusIcon';
+import BookmarkContents from './UsersPageBookmarks/BookmarkContents';
 
 
 export type UsersHomePageFooterProps = {
@@ -23,7 +22,7 @@ export const UsersHomePageFooter = (props: UsersHomePageFooterProps): JSX.Elemen
   const { t } = useTranslation();
   const { creatorId } = props;
   const [isCreateAction, setIsCreateAction] = useState<boolean>(false);
-  const { data: bookmarkFolderData, mutate: mutateChildBookmarkData } = useSWRxBookamrkFolderAndChild(null);
+  const { mutate: mutateChildBookmarkData } = useSWRxBookamrkFolderAndChild(null);
 
 
   const onPressEnterHandlerForCreate = useCallback(async(folderName: string) => {
@@ -66,21 +65,7 @@ export const UsersHomePageFooter = (props: UsersHomePageFooterProps): JSX.Elemen
           </div>
         )}
         {
-          <ul className={`grw-foldertree ${styles['grw-foldertree']} list-group p-3`}>
-            {bookmarkFolderData?.map((item) => {
-              return (
-                <BookmarkFolderItem
-                  key={item._id}
-                  bookmarkFolder={item}
-                  isOpen={false}
-                  isSidebarItem={false}
-                />
-              );
-            })}
-            <div id="user-bookmark-list" className={`page-list ${styles['page-list']}`}>
-              <BookmarkList />
-            </div>
-          </ul>
+          <BookmarkContents />
         }
 
       </div>

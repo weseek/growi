@@ -69,6 +69,7 @@ const BookmarkFolderTree = (): JSX.Element => {
               onUnbookmarked={mutateCurrentUserBookmarks}
               onRenamed={mutateCurrentUserBookmarks}
               onClickDeleteMenuItem={deleteMenuItemClickHandler}
+              isSidebarItem={true}
             />
           );
         })}

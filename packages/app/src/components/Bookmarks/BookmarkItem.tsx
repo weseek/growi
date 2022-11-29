@@ -14,19 +14,21 @@ import { IPageHasId, IPageInfoAll, IPageToDeleteWithMeta } from '~/interfaces/pa
 
 import ClosableTextInput, { AlertInfo, AlertType } from '../Common/ClosableTextInput';
 import { MenuItemType, PageItemControl } from '../Common/Dropdown/PageItemControl';
+import { PageListItemS } from '../PageList/PageListItemS';
 
 
 type Props = {
   bookmarkedPage: IPageHasId,
   onUnbookmarked: () => void,
   onRenamed: () => void,
-  onClickDeleteMenuItem: (pageToDelete: IPageToDeleteWithMeta) => void
+  onClickDeleteMenuItem: (pageToDelete: IPageToDeleteWithMeta) => void,
+  isSidebarItem: boolean
 }
 
 const BookmarkItem = (props: Props): JSX.Element => {
   const { t } = useTranslation();
   const {
-    bookmarkedPage, onUnbookmarked, onRenamed, onClickDeleteMenuItem,
+    bookmarkedPage, onUnbookmarked, onRenamed, onClickDeleteMenuItem, isSidebarItem,
   } = props;
   const [isRenameInputShown, setRenameInputShown] = useState(false);
   const dPagePath = new DevidedPagePath(bookmarkedPage.path, false, true);
@@ -94,9 +96,53 @@ const BookmarkItem = (props: Props): JSX.Element => {
     onClickDeleteMenuItem(pageToDelete);
   }, [bookmarkedPage, onClickDeleteMenuItem]);
 
-  return (
-    <div className="grw-foldertree-item-container" key={bookmarkedPage._id}>
-      <li className="bookmark-item-list list-group-item list-group-item-action border-0 py-0 pl-3 d-flex align-items-center" id={bookmarkItemId}>
+  const renderBookmarkListForSidebar = () => {
+    return (
+      <div className="grw-foldertree-item-container" key={bookmarkedPage._id}>
+        <li className="bookmark-item-list list-group-item list-group-item-action border-0 py-0 pl-3 d-flex align-items-center" id={bookmarkItemId}>
+          { isRenameInputShown ? (
+            <ClosableTextInput
+              value={nodePath.basename(bookmarkedPage.path ?? '')}
+              placeholder={t('Input page name')}
+              onClickOutside={() => { setRenameInputShown(false) }}
+              onPressEnter={pressEnterForRenameHandler}
+              inputValidator={inputValidator}
+            />
+          ) : (
+            <a href={`/${bookmarkedPage._id}`} className="grw-foldertree-title-anchor flex-grow-1 pr-3">
+              <p className={`text-truncate m-auto ${bookmarkedPage.isEmpty && 'grw-sidebar-text-muted'}`}>{pageTitle}</p>
+            </a>
+          )}
+          <PageItemControl
+            pageId={bookmarkedPage._id}
+            isEnableActions
+            forceHideMenuItems={[MenuItemType.DUPLICATE]}
+            onClickBookmarkMenuItem={bookmarkMenuItemClickHandler}
+            onClickRenameMenuItem={renameMenuItemClickHandler}
+            onClickDeleteMenuItem={deleteMenuItemClickHandler}
+          >
+            <DropdownToggle color="transparent" className="border-0 rounded btn-page-item-control p-0 grw-visible-on-hover mr-1">
+              <i className="icon-options fa fa-rotate-90 p-1"></i>
+            </DropdownToggle>
+          </PageItemControl>
+          <UncontrolledTooltip
+            modifiers={{ preventOverflow: { boundariesElement: 'window' } }}
+            autohide={false}
+            placement="right"
+            target={bookmarkItemId}
+            fade={false}
+          >
+            { formerPagePath !== null ? `${formerPagePath}/` : '/' }
+          </UncontrolledTooltip>
+        </li>
+      </div>
+    );
+  };
+
+  const renderBookmarkListForUserPage = () => {
+    return (
+      <li key={`my-bookmarks:${bookmarkedPage?._id}`}
+        className="bookmark-item-list list-group-item list-group-item-action border-0 py-2 pl-3 d-flex align-items-center">
         { isRenameInputShown ? (
           <ClosableTextInput
             value={nodePath.basename(bookmarkedPage.path ?? '')}
@@ -105,34 +151,37 @@ const BookmarkItem = (props: Props): JSX.Element => {
             onPressEnter={pressEnterForRenameHandler}
             inputValidator={inputValidator}
           />
+
         ) : (
-          <a href={`/${bookmarkedPage._id}`} className="grw-foldertree-title-anchor flex-grow-1 pr-3">
-            <p className={`text-truncate m-auto ${bookmarkedPage.isEmpty && 'grw-sidebar-text-muted'}`}>{pageTitle}</p>
-          </a>
+          <>
+            <div className='d-flex flex-row'>
+              <PageListItemS page={bookmarkedPage} />
+              <PageItemControl
+                pageId={bookmarkedPage._id}
+                isEnableActions
+                forceHideMenuItems={[MenuItemType.DUPLICATE]}
+                onClickBookmarkMenuItem={bookmarkMenuItemClickHandler}
+                onClickRenameMenuItem={renameMenuItemClickHandler}
+                onClickDeleteMenuItem={deleteMenuItemClickHandler}
+              >
+                <DropdownToggle color="transparent" className="border-0 rounded btn-page-item-control p-0 grw-visible-on-hover mr-1">
+                  <i className="icon-options fa fa-rotate-90 p-1"></i>
+                </DropdownToggle>
+              </PageItemControl>
+            </div>
+          </>
         )}
-        <PageItemControl
-          pageId={bookmarkedPage._id}
-          isEnableActions
-          forceHideMenuItems={[MenuItemType.DUPLICATE]}
-          onClickBookmarkMenuItem={bookmarkMenuItemClickHandler}
-          onClickRenameMenuItem={renameMenuItemClickHandler}
-          onClickDeleteMenuItem={deleteMenuItemClickHandler}
-        >
-          <DropdownToggle color="transparent" className="border-0 rounded btn-page-item-control p-0 grw-visible-on-hover mr-1">
-            <i className="icon-options fa fa-rotate-90 p-1"></i>
-          </DropdownToggle>
-        </PageItemControl>
-        <UncontrolledTooltip
-          modifiers={{ preventOverflow: { boundariesElement: 'window' } }}
-          autohide={false}
-          placement="right"
-          target={bookmarkItemId}
-          fade={false}
-        >
-          { formerPagePath !== null ? `${formerPagePath}/` : '/' }
-        </UncontrolledTooltip>
+
       </li>
-    </div>
+    );
+  };
+  return (
+    <>
+      {isSidebarItem
+        ? renderBookmarkListForSidebar()
+        : renderBookmarkListForUserPage()
+      }
+    </>
   );
 };
 

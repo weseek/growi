@@ -1,11 +1,8 @@
 @use '~/styles/variables' as var;
-$grw-sidebar-content-header-height: 58px;
-$grw-sidebar-content-footer-height: 50px;
 $grw-foldertree-item-padding-left: 10px;
 
 .grw-foldertree {
   :global {
-    min-height: calc(100vh - (var.$grw-navbar-height + var.$grw-navbar-border-width + $grw-sidebar-content-header-height + $grw-sidebar-content-footer-height));
 
     .btn-page-item-control {
       .icon-plus::before {

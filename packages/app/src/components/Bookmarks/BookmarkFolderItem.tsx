@@ -190,7 +190,9 @@ const BookmarkFolderItem: FC<BookmarkFolderItemProps> = (props: BookmarkFolderIt
                 <p className={'text-truncate m-auto '}>{name}</p>
               ) : (
                 <div className="d-flex flex-row">
-                  <div className="p-2">  <p className={'text-truncate m-auto '}>{name}</p></div>
+                  <div className="p-2">
+                    <p className={'text-truncate m-auto '}>{name}</p>
+                  </div>
                   <div className="p-2">
                     <div className="grw-foldertree-control d-flex">
                       <BookmarkFolderItemControl
@@ -209,6 +211,13 @@ const BookmarkFolderItem: FC<BookmarkFolderItemProps> = (props: BookmarkFolderIt
                         <i className="icon-plus d-block p-0" />
                       </button>
                     </div>
+                  </div>
+                  <div className="p-2">
+                    {hasChildren() && (
+                      <div className="grw-foldertree-count-wrapper">
+                        <CountBadge count={ childCount() } />
+                      </div>
+                    )}
                   </div>
                 </div>
               )}
