@@ -189,7 +189,7 @@ const GrowiPage: NextPage<Props> = (props: Props) => {
   const { data: currentUser } = useCurrentUser(props.currentUser ?? null);
 
   // register global EventEmitter
-  if (isClient()) {
+  if (isClient() && window.globalEmitter == null) {
     window.globalEmitter = new EventEmitter();
   }
 
