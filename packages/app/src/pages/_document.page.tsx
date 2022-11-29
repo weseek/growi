@@ -6,25 +6,35 @@ import Document, {
   Html, Head, Main, NextScript,
 } from 'next/document';
 
+import { CrowiRequest } from '~/interfaces/crowi-request';
+
 
 // type GrowiDocumentProps = {};
 // declare type GrowiDocumentInitialProps = GrowiDocumentProps & DocumentInitialProps;
-declare type GrowiDocumentInitialProps = DocumentInitialProps;
+declare type GrowiDocumentInitialProps = DocumentInitialProps & { customCss: string };
 
 
-class GrowiDocument extends Document {
+class GrowiDocument extends Document<GrowiDocumentInitialProps> {
 
   static override async getInitialProps(ctx: DocumentContext): Promise<GrowiDocumentInitialProps> {
     const initialProps: DocumentInitialProps = await Document.getInitialProps(ctx);
+    const { crowi } = ctx.req as CrowiRequest<any>;
+    const { customizeService } = crowi;
+    const customCss: string = customizeService.getCustomCss();
 
-    return initialProps;
+    const props = { ...initialProps, customCss };
+    return props;
   }
 
   override render(): JSX.Element {
+    const { customCss } = this.props;
 
     return (
       <Html>
         <Head>
+          <style>
+            {customCss}
+          </style>
           {/*
           {renderScriptTagsByGroup('basis')}
           {renderStyleTagsByGroup('basis')}
