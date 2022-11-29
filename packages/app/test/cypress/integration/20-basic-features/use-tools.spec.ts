@@ -41,7 +41,7 @@ context('Modal for page operation', () => {
       cy.get('button.close').click();
 
     });
-    cy.screenshot(`${ssPrefix}page-create-modal-closed`, {capture: 'viewport'});
+    cy.screenshot(`${ssPrefix}page-create-modal-closed`);
   });
 
   it("Successfully Create Today's page", () => {
@@ -103,7 +103,7 @@ context('Modal for page operation', () => {
       cy.getByTestid('grw-btn-edit-page').should('be.visible').click();
     });
     cy.get('.toast-error').should('be.visible').invoke('attr', 'style', 'opacity: 1');
-    cy.screenshot(`${ssPrefix}create-template-for-children-error`, {capture: 'viewport'});
+    cy.screenshot(`${ssPrefix}create-template-for-children-error`);
     cy.get('.toast-error').should('be.visible').click();
     cy.get('.toast-error').should('not.exist');
 
@@ -113,7 +113,7 @@ context('Modal for page operation', () => {
       cy.getByTestid('grw-btn-edit-page').should('be.visible').click();
     });
     cy.get('.toast-error').should('be.visible').invoke('attr', 'style', 'opacity: 1');
-    cy.screenshot(`${ssPrefix}create-template-for-descendants-error`, {capture: 'viewport'});
+    cy.screenshot(`${ssPrefix}create-template-for-descendants-error`);
   });
 
   it('PageDeleteModal is shown successfully', () => {
@@ -270,7 +270,7 @@ context('Tag Oprations', { scrollBehavior: false }, () =>{
       cy.get('#tag-typeahead-asynctypeahead').should('be.visible');
       cy.get('#tag-typeahead-asynctypeahead-item-0').should('be.visible');
       cy.get('a#tag-typeahead-asynctypeahead-item-0').click({force: true})
-      cy.screenshot(`${ssPrefix}3-insert-tag-name`, {capture: 'viewport'});
+      cy.screenshot(`${ssPrefix}3-insert-tag-name`);
     });
 
     cy.get('#edit-tag-modal').within(() => {
@@ -281,7 +281,7 @@ context('Tag Oprations', { scrollBehavior: false }, () =>{
     cy.get('.grw-taglabels-container > .grw-tag-labels > a', { timeout: 10000 }).contains(tag).should('exist');
     /* eslint-disable cypress/no-unnecessary-waiting */
     cy.wait(150); // wait for toastr to change its color occured by mouseover
-    cy.screenshot(`${ssPrefix}4-click-done`, {capture: 'viewport'});
+    cy.screenshot(`${ssPrefix}4-click-done`);
 
   });
 
@@ -309,7 +309,7 @@ context('Tag Oprations', { scrollBehavior: false }, () =>{
 
     // force to add 'active' to pass VRT: https://github.com/weseek/growi/pull/6603
     cy.getByTestid('page-list-item-L').first().invoke('addClass', 'active');
-    cy.screenshot(`${ssPrefix}1-click-tag-name`, {capture: 'viewport'});
+    cy.screenshot(`${ssPrefix}1-click-tag-name`);
     cy.getByTestid('search-result-list').should('be.visible').then(($el)=>{
       cy.wrap($el).within(()=>{
         cy.getByTestid('open-page-item-control-btn').first().click();
@@ -317,7 +317,7 @@ context('Tag Oprations', { scrollBehavior: false }, () =>{
 
       // eslint-disable-next-line cypress/no-unnecessary-waiting
       cy.wait(1500); // for wait rendering pagelist info
-      cy.screenshot(`${ssPrefix}2-click-three-dots-menu`, {capture: 'viewport'});
+      cy.screenshot(`${ssPrefix}2-click-three-dots-menu`);
 
       cy.wrap($el).within(()=>{
         cy.getByTestid('open-page-item-control-btn').first().within(()=>{
@@ -328,14 +328,14 @@ context('Tag Oprations', { scrollBehavior: false }, () =>{
 
     cy.getByTestid('page-duplicate-modal').should('be.visible').within(() => {
       cy.get('.rbt-input-main').type(`-${newPageName}`, {force: true});
-    }).screenshot(`${ssPrefix}3-duplicate-page`, {capture: 'viewport'});
+    }).screenshot(`${ssPrefix}3-duplicate-page`);
 
     cy.getByTestid('page-duplicate-modal').within(() => {
       cy.get('.modal-footer > button.btn').click();
     });
     cy.visit(`Sandbox-${newPageName}`);
     cy.waitUntilSkeletonDisappear();
-    cy.screenshot(`${ssPrefix}4-duplicated-page`, {capture: 'viewport'});
+    cy.screenshot(`${ssPrefix}4-duplicated-page`);
   });
 
   it('Successfully rename page from generated tag', () => {
@@ -356,7 +356,7 @@ context('Tag Oprations', { scrollBehavior: false }, () =>{
 
     // eslint-disable-next-line cypress/no-unnecessary-waiting
     cy.wait(300);
-    cy.screenshot(`${ssPrefix}1-click-tag-name`, {capture: 'viewport'});
+    cy.screenshot(`${ssPrefix}1-click-tag-name`);
 
     cy.getByTestid('search-result-list').within(() => {
       cy.get('.list-group-item').each(($row) => {
@@ -399,7 +399,7 @@ context('Tag Oprations', { scrollBehavior: false }, () =>{
     cy.waitUntilSkeletonDisappear();
 
     cy.getByTestid('grw-tag-labels').should('be.visible')
-    cy.screenshot(`${ssPrefix}4-new-page-name-applied`, {capture: 'viewport'});
+    cy.screenshot(`${ssPrefix}4-new-page-name-applied`);
   });
 
 });
