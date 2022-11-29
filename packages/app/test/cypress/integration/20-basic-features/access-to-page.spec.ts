@@ -15,23 +15,24 @@ context('Access to page', () => {
     cy.screenshot(`${ssPrefix}-sandbox`);
   });
 
-  it('/Sandbox with anchor hash is successfully loaded', () => {
-    cy.visit('/Sandbox#Headers');
-    cy.waitUntilSkeletonDisappear();
+  // TODO: https://redmine.weseek.co.jp/issues/109939
+  // it('/Sandbox with anchor hash is successfully loaded', () => {
+  //   cy.visit('/Sandbox#Headers');
+  //   cy.waitUntilSkeletonDisappear();
 
-    // for check download toc data
-    cy.get('.toc-link').should('be.visible');
+  //   // for check download toc data
+  //   cy.get('.toc-link').should('be.visible');
 
-    // hide fab // disable fab for sticky-events warning
-    // cy.getByTestid('grw-fab-container').invoke('attr', 'style', 'display: none');
+  //   // hide fab // disable fab for sticky-events warning
+  //   // cy.getByTestid('grw-fab-container').invoke('attr', 'style', 'display: none');
 
-    // remove animation for screenshot
-    // remove 'blink' class because ::after element cannot be operated
-    // https://stackoverflow.com/questions/5041494/selecting-and-manipulating-css-pseudo-elements-such-as-before-and-after-usin/21709814#21709814
-    cy.get('#mdcont-headers').invoke('removeClass', 'blink');
+  //   // remove animation for screenshot
+  //   // remove 'blink' class because ::after element cannot be operated
+  //   // https://stackoverflow.com/questions/5041494/selecting-and-manipulating-css-pseudo-elements-such-as-before-and-after-usin/21709814#21709814
+  //   cy.get('#mdcont-headers').invoke('removeClass', 'blink');
 
-    cy.screenshot(`${ssPrefix}-sandbox-headers`);
-  });
+  //   cy.screenshot(`${ssPrefix}-sandbox-headers`);
+  // });
 
   it('/Sandbox/Math is successfully loaded', () => {
     cy.visit('/Sandbox/Math');
