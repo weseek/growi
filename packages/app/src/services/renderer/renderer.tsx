@@ -351,7 +351,8 @@ export const generateViewOptions = (
     components.h1 = Header;
     components.h2 = Header;
     components.h3 = Header;
-    components.lsx = props => <Lsx {...props} forceToFetchData />;
+    // components.lsx = props => <Lsx {...props} forceToFetchData />;
+    components.lsx = Lsx;
     components.drawio = DrawioViewerWithEditButton;
   }
 
@@ -424,7 +425,7 @@ export const generateSimpleViewOptions = (config: RendererConfig, pagePath: stri
 
   // add components
   if (components != null) {
-    components.lsx = props => <Lsx {...props} />;
+    components.lsx = Lsx;
     components.drawio = drawioPlugin.DrawioViewer;
   }
 
@@ -464,7 +465,7 @@ export const generatePreviewOptions = (config: RendererConfig, pagePath: string)
 
   // add components
   if (components != null) {
-    components.lsx = props => <Lsx {...props} />;
+    components.lsx = Lsx;
     components.drawio = drawioPlugin.DrawioViewer;
   }
 
