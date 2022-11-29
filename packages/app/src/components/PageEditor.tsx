@@ -5,7 +5,7 @@ import React, {
 import EventEmitter from 'events';
 
 import {
-  envUtils, IPageHasId, PageGrant, pathUtils,
+  IPageHasId, PageGrant, pathUtils,
 } from '@growi/core';
 import detectIndent from 'detect-indent';
 import { useTranslation } from 'next-i18next';
@@ -29,7 +29,7 @@ import { useCurrentPagePath, useSWRxCurrentPage } from '~/stores/page';
 import { usePreviewOptions } from '~/stores/renderer';
 import {
   EditorMode,
-  useEditorMode, useIsMobile, useSelectedGrant,
+  useEditorMode, useSelectedGrant,
 } from '~/stores/ui';
 import loggerFactory from '~/utils/logger';
 
@@ -68,13 +68,12 @@ const PageEditor = React.memo((): JSX.Element => {
   const { data: templateBodyData } = useTemplateBodyData();
   const { data: isEditable } = useIsEditable();
   const { data: editorMode, mutate: mutateEditorMode } = useEditorMode();
-  const { data: isMobile } = useIsMobile();
   const { data: isSlackEnabled } = useIsSlackEnabled();
   const { data: slackChannelsData } = useSWRxSlackChannels(currentPagePath);
   const { data: isTextlintEnabled } = useIsTextlintEnabled();
   const { data: isIndentSizeForced } = useIsIndentSizeForced();
-  const { data: indentSize, mutate: mutateCurrentIndentSize } = useCurrentIndentSize();
-  const { data: isEnabledUnsavedWarning, mutate: mutateIsEnabledUnsavedWarning } = useIsEnabledUnsavedWarning();
+  const { data: currentIndentSize, mutate: mutateCurrentIndentSize } = useCurrentIndentSize();
+  const { mutate: mutateIsEnabledUnsavedWarning } = useIsEnabledUnsavedWarning();
   const { data: isUploadableFile } = useIsUploadableFile();
   const { data: isUploadableImage } = useIsUploadableImage();
 
@@ -105,7 +104,6 @@ const PageEditor = React.memo((): JSX.Element => {
 
   const editorRef = useRef<IEditorMethods>(null);
   const previewRef = useRef<HTMLDivElement>(null);
-
 
   // const optionsToSave = useMemo(() => {
   //   if (grantData == null) {
@@ -411,33 +409,21 @@ const PageEditor = React.memo((): JSX.Element => {
     }
   }, [editorMode]);
 
-  // Unnecessary code. Delete after PageEditor and PageEditorByHackmd implementation has completed. -- 2022.09.06 Yuki Takei
-  //
-  // set handler to update editor value
-  // useEffect(() => {
-  //   const handler = (markdown) => {
-  //     if (editorRef.current != null) {
-  //       editorRef.current.setValue(markdown);
-  //     }
-  //   };
-  //   globalEmitter.on('updateEditorValue', handler);
-
-  //   return function cleanup() {
-  //     globalEmitter.removeListener('updateEditorValue', handler);
-  //   };
-  // }, []);
-
   // Detect indent size from contents (only when users are allowed to change it)
-  // useEffect(() => {
-  //   const currentPageMarkdown = pageContainer.state.markdown;
-  //   if (!isIndentSizeForced && currentPageMarkdown != null) {
-  //     const detectedIndent = detectIndent(currentPageMarkdown);
-  //     if (detectedIndent.type === 'space' && new Set([2, 4]).has(detectedIndent.amount)) {
-  //       mutateCurrentIndentSize(detectedIndent.amount);
-  //     }
-  //   }
-  // }, [isIndentSizeForced, mutateCurrentIndentSize, pageContainer.state.markdown]);
+  useEffect(() => {
+    // do nothing if the indent size fixed
+    if (isIndentSizeForced == null || isIndentSizeForced) {
+      return;
+    }
 
+    // detect from markdown
+    if (initialValue != null) {
+      const detectedIndent = detectIndent(initialValue);
+      if (detectedIndent.type === 'space' && new Set([2, 4]).has(detectedIndent.amount)) {
+        mutateCurrentIndentSize(detectedIndent.amount);
+      }
+    }
+  }, [initialValue, isIndentSizeForced, mutateCurrentIndentSize]);
 
   if (!isEditable) {
     return <></>;
@@ -458,7 +444,7 @@ const PageEditor = React.memo((): JSX.Element => {
           isUploadable={isUploadable}
           isUploadableFile={isUploadableFile}
           isTextlintEnabled={isTextlintEnabled}
-          indentSize={indentSize}
+          indentSize={currentIndentSize}
           onScroll={editorScrolledHandler}
           onScrollCursorIntoView={editorScrollCursorIntoViewHandler}
           onChange={markdownChangedHandler}
