@@ -329,6 +329,8 @@ const PageRenameModal = (): JSX.Element => {
       return <></>;
     }
 
+    const submitButtonDisabled = !canRename;
+
     return (
       <>
         <ApiErrorMessageList errs={errs} targetPath={pageNameInput} />
@@ -336,7 +338,7 @@ const PageRenameModal = (): JSX.Element => {
           type="button"
           className="btn btn-primary"
           onClick={rename}
-          disabled={!canRename}
+          disabled={submitButtonDisabled}
         >Rename
         </button>
       </>
