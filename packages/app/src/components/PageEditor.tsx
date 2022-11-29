@@ -4,7 +4,9 @@ import React, {
 
 import EventEmitter from 'events';
 
-import { envUtils, IPageHasId, PageGrant } from '@growi/core';
+import {
+  envUtils, IPageHasId, PageGrant, pathUtils,
+} from '@growi/core';
 import detectIndent from 'detect-indent';
 import { useTranslation } from 'next-i18next';
 import { useRouter } from 'next/router';
@@ -17,8 +19,8 @@ import { getOptionsToSave } from '~/client/util/editor';
 import { IEditorMethods } from '~/interfaces/editor-methods';
 import { SocketEventName } from '~/interfaces/websocket';
 import {
-  useCurrentPathname, useCurrentPageId,
-  useIsEditable, useIsIndentSizeForced, useIsUploadableFile, useIsUploadableImage, useIsNotFound, useEditingMarkdown,
+  useCurrentPathname, useCurrentPageId, useIsEnabledAttachTitleHeader, useTemplateBodyData,
+  useIsEditable, useIsIndentSizeForced, useIsUploadableFile, useIsUploadableImage, useEditingMarkdown, useIsNotFound,
 } from '~/stores/context';
 import {
   useCurrentIndentSize, useSWRxSlackChannels, useIsSlackEnabled, useIsTextlintEnabled, usePageTagsForEditors,
@@ -65,6 +67,8 @@ const PageEditor = React.memo((): JSX.Element => {
   const { data: grantData, mutate: mutateGrant } = useSelectedGrant();
   const { data: pageTags } = usePageTagsForEditors(pageId);
   const { data: editingMarkdown } = useEditingMarkdown();
+  const { data: isEnabledAttachTitleHeader } = useIsEnabledAttachTitleHeader();
+  const { data: templateBodyData } = useTemplateBodyData();
   const { data: isEditable } = useIsEditable();
   const { data: editorMode, mutate: mutateEditorMode } = useEditorMode();
   const { data: isMobile } = useIsMobile();
@@ -80,7 +84,22 @@ const PageEditor = React.memo((): JSX.Element => {
   const { data: rendererOptions } = usePreviewOptions();
 
   const currentRevisionId = currentPage?.revision?._id;
-  const initialValue = editingMarkdown ?? '';
+
+  const initialValue = useMemo(() => {
+    if (!isNotFound) {
+      return editingMarkdown ?? '';
+    }
+
+    let initialValue = '';
+    if (isEnabledAttachTitleHeader && currentPathname != null) {
+      initialValue += `${pathUtils.attachTitleHeader(currentPathname)}\n`;
+    }
+    if (templateBodyData != null) {
+      initialValue += `${templateBodyData}\n`;
+    }
+    return initialValue;
+
+  }, [isNotFound, currentPathname, editingMarkdown, isEnabledAttachTitleHeader, templateBodyData]);
 
   const markdownToSave = useRef<string>(initialValue);
   const [markdownToPreview, setMarkdownToPreview] = useState<string>(initialValue);

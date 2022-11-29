@@ -63,7 +63,7 @@ import {
   useIsEnabledStaleNotification, useIsIdenticalPath,
   useIsSearchServiceConfigured, useIsSearchServiceReachable, useDisableLinkSharing,
   useDrawioUri, useHackmdUri, useDefaultIndentSize, useIsIndentSizeForced,
-  useIsAclEnabled, useIsSearchPage, useTemplateTagData,
+  useIsAclEnabled, useIsSearchPage, useTemplateTagData, useTemplateBodyData, useIsEnabledAttachTitleHeader,
   useCsrfToken, useIsSearchScopeChildrenAsDefault, useCurrentPageId, useCurrentPathname,
   useIsSlackConfigured, useRendererConfig, useEditingMarkdown,
   useEditorConfig, useIsAllReplyShown, useIsUploadableFile, useIsUploadableImage, useCustomizedLogoSrc, useIsContainerFluid,
@@ -164,6 +164,7 @@ type Props = CommonProps & {
   isContainerFluid: boolean,
   editorConfig: EditorConfig,
   isEnabledStaleNotification: boolean,
+  isEnabledAttachTitleHeader: boolean,
   // isEnabledLinebreaks: boolean,
   // isEnabledLinebreaksInComments: boolean,
   adminPreferredIndentSize: number,
@@ -218,7 +219,9 @@ const GrowiPage: NextPage<Props> = (props: Props) => {
   useIsSearchPage(false);
 
   useTemplateTagData(props.templateTagData);
+  useTemplateBodyData(props.templateBodyData);
 
+  useIsEnabledAttachTitleHeader(props.isEnabledAttachTitleHeader);
   useIsSearchServiceConfigured(props.isSearchServiceConfigured);
   useIsSearchServiceReachable(props.isSearchServiceReachable);
   useIsSearchScopeChildrenAsDefault(props.isSearchScopeChildrenAsDefault);
@@ -251,7 +254,8 @@ const GrowiPage: NextPage<Props> = (props: Props) => {
   useCurrentPathname(props.currentPathname);
 
   const { data: currentPage } = useSWRxCurrentPage(undefined, pageWithMeta?.data ?? null); // store initial data
-  useEditingMarkdown(pageWithMeta?.data.revision?.body ?? props.templateBodyData ?? '');
+
+  useEditingMarkdown(pageWithMeta?.data.revision?.body);
 
   const { data: grantData } = useSWRxIsGrantNormalized(pageId);
   const { mutate: mutateSelectedGrant } = useSelectedGrant();
@@ -474,7 +478,6 @@ async function injectRoutingInformation(context: GetServerSidePropsContext, prop
   }
   else {
     props.isNotFound = page.isEmpty;
-
     // /62a88db47fed8b2d94f30000 ==> /path/to/page
     if (isPermalink && page.isEmpty) {
       props.currentPathname = page.path;
@@ -537,6 +540,8 @@ function injectServerConfigurations(context: GetServerSidePropsContext, props: P
   };
   props.adminPreferredIndentSize = configManager.getConfig('markdown', 'markdown:adminPreferredIndentSize');
   props.isIndentSizeForced = configManager.getConfig('markdown', 'markdown:isIndentSizeForced');
+
+  props.isEnabledAttachTitleHeader = configManager.getConfig('crowi', 'customize:isEnabledAttachTitleHeader');
 
   props.rendererConfig = {
     isEnabledLinebreaks: configManager.getConfig('markdown', 'markdown:isEnabledLinebreaks'),
