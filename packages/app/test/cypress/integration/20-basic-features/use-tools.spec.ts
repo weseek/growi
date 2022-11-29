@@ -76,7 +76,7 @@ context('Modal for page operation', () => {
   it('Successfully create page under specific path', () => {
     const pageName = 'child';
 
-    cy.visit('/SandBox');
+    cy.visit('/Sandbox');
     cy.waitUntilSkeletonDisappear();
 
     cy.getByTestid('newPageBtn').click();
