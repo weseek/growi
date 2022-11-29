@@ -12,6 +12,11 @@ context('Access to page', () => {
 
   it('/Sandbox is successfully loaded', () => {
     cy.visit('/Sandbox');
+    cy.waitUntilSkeletonDisappear();
+
+    // for check download toc data
+    cy.get('.toc-link').should('be.visible');
+
     cy.screenshot(`${ssPrefix}-sandbox`);
   });
 
@@ -55,6 +60,8 @@ context('Access to page', () => {
       cy.getByTestid('editor-button').should('be.visible').click();
     })
     cy.getByTestid('navbar-editor').should('be.visible');
+    cy.get('.grw-editor-navbar-bottom').should('be.visible');
+
     cy.screenshot(`${ssPrefix}-Sandbox-edit-page`);
   })
 
@@ -100,8 +107,6 @@ context('Access to /me page', () => {
 
 });
 
-
-
 context('Access to special pages', () => {
   const ssPrefix = 'access-to-special-pages-';
 
@@ -116,7 +121,9 @@ context('Access to special pages', () => {
 
   it('/trash is successfully loaded', () => {
     cy.visit('/trash');
-    cy.getByTestid('trash-page-list').should('be.visible');
+
+    cy.getByTestid('trash-page-list').contains('There are no pages under this page.');
+
     cy.screenshot(`${ssPrefix}-trash`);
   });
 
