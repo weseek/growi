@@ -1,13 +1,18 @@
-import React, { useCallback, useEffect, useMemo } from 'react';
+import React, { useCallback, useMemo } from 'react';
 
 import { useTranslation } from 'next-i18next';
+import * as ReactDOMServer from 'react-dom/server';
 
-import { SocketEventName } from '~/interfaces/websocket';
+import { useIsConflict } from '~/stores/editor';
 import {
-  useHasDraftOnHackmd, useIsHackmdDraftUpdatingInRealtime, useRemoteRevisionId, useRevisionIdHackmdSynced,
+  useHasDraftOnHackmd, useIsHackmdDraftUpdatingInRealtime, useRevisionIdHackmdSynced,
 } from '~/stores/hackmd';
 import { useSWRxCurrentPage } from '~/stores/page';
-import { useGlobalSocket } from '~/stores/websocket';
+import { useRemoteRevisionId, useRemoteRevisionLastUpdatUser } from '~/stores/remote-latest-page';
+
+import { Username } from './User/Username';
+
+import styles from './PageStatusAlert.module.scss';
 
 type AlertComponentContents = {
   additionalClasses: string[],
@@ -20,23 +25,15 @@ export const PageStatusAlert = (): JSX.Element => {
   const { t } = useTranslation();
   const { data: isHackmdDraftUpdatingInRealtime } = useIsHackmdDraftUpdatingInRealtime();
   const { data: hasDraftOnHackmd } = useHasDraftOnHackmd();
+  const { data: isConflict } = useIsConflict();
+
+  // store remote latest page data
   const { data: revisionIdHackmdSynced } = useRevisionIdHackmdSynced();
   const { data: remoteRevisionId } = useRemoteRevisionId();
+  const { data: remoteRevisionLastUpdateUser } = useRemoteRevisionLastUpdatUser();
+
   const { data: pageData } = useSWRxCurrentPage();
   const revision = pageData?.revision;
-
-  const { data: socket } = useGlobalSocket();
-
-  useEffect(() => {
-    if (socket == null) { return }
-
-    socket.on(SocketEventName.PageUpdated, () => {
-      console.log('page updated');
-    });
-
-    return () => { socket.off(SocketEventName.PageUpdated) };
-
-  }, [socket]);
 
   const refreshPage = useCallback(() => {
     window.location.reload();
@@ -81,23 +78,13 @@ export const PageStatusAlert = (): JSX.Element => {
   }, [t]);
 
   const getContentsForUpdatedAlert = useCallback((): AlertComponentContents => {
-    // const pageEditor = appContainer.getComponentInstance('PageEditor');
 
-    const isConflictOnEdit = false;
+    const usernameComponentToString = ReactDOMServer.renderToString(<Username user={remoteRevisionLastUpdateUser} />);
 
-    // if (pageEditor != null) {
-    //   const markdownOnEdit = pageEditor.getMarkdown();
-    //   isConflictOnEdit = markdownOnEdit !== pageContainer.state.markdown;
-    // }
-
-    // TODO: re-impl with Next.js way
-    // const usernameComponentToString = ReactDOMServer.renderToString(<Username user={pageContainer.state.lastUpdateUser} />);
-
-    // const label1 = isConflictOnEdit
-    //   ? t('modal_resolve_conflict.file_conflicting_with_newer_remote')
-    //   // eslint-disable-next-line react/no-danger
-    //   : <span dangerouslySetInnerHTML={{ __html: `${usernameComponentToString} ${t('edited this page')}` }} />;
-    const label1 = '(TBD -- 2022.09.13)';
+    const label1 = isConflict
+      ? t('modal_resolve_conflict.file_conflicting_with_newer_remote')
+      // eslint-disable-next-line react/no-danger
+      : <span dangerouslySetInnerHTML={{ __html: `${usernameComponentToString} ${t('edited this page')}` }} />;
 
     return {
       additionalClasses: ['bg-warning'],
@@ -112,7 +99,7 @@ export const PageStatusAlert = (): JSX.Element => {
             <i className="icon-fw icon-reload mr-1"></i>
             {t('Load latest')}
           </button>
-          { isConflictOnEdit && (
+          { isConflict && (
             <button
               type="button"
               onClick={onClickResolveConflict}
@@ -124,7 +111,7 @@ export const PageStatusAlert = (): JSX.Element => {
           )}
         </>,
     };
-  }, [t, onClickResolveConflict, refreshPage]);
+  }, [remoteRevisionLastUpdateUser, isConflict, t, onClickResolveConflict, refreshPage]);
 
   const alertComponentContents = useMemo(() => {
     const isRevisionOutdated = revision?._id !== remoteRevisionId;
@@ -162,7 +149,7 @@ export const PageStatusAlert = (): JSX.Element => {
   const { additionalClasses, label, btn } = alertComponentContents;
 
   return (
-    <div className={`card grw-page-status-alert text-white fixed-bottom animated fadeInUp faster ${additionalClasses.join(' ')}`}>
+    <div className={`${styles['grw-page-status-alert']} card text-white fixed-bottom animated fadeInUp faster ${additionalClasses.join(' ')}`}>
       <div className="card-body">
         <p className="card-text grw-card-label-container">
           {label}

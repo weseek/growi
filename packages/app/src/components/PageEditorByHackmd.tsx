@@ -22,9 +22,10 @@ import {
   useSWRxSlackChannels, useIsSlackEnabled, usePageTagsForEditors, useIsEnabledUnsavedWarning,
 } from '~/stores/editor';
 import {
-  usePageIdOnHackmd, useHasDraftOnHackmd, useRevisionIdHackmdSynced, useRemoteRevisionId, useIsHackmdDraftUpdatingInRealtime,
+  usePageIdOnHackmd, useHasDraftOnHackmd, useRevisionIdHackmdSynced, useIsHackmdDraftUpdatingInRealtime,
 } from '~/stores/hackmd';
 import { useCurrentPagePath, useSWRxCurrentPage, useSWRxTagsInfo } from '~/stores/page';
+import { useRemoteRevisionId } from '~/stores/remote-latest-page';
 import {
   EditorMode,
   useEditorMode, useSelectedGrant,
