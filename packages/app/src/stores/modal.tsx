@@ -492,27 +492,42 @@ export const useDrawioModal = (status?: DrawioModalStatus): SWRResponse<DrawioMo
 type HandsontableModalStatus = {
   isOpened: boolean,
   table?: MarkdownTable,
-  editor: any,
-  autoFormatMarkdownTable: boolean,
+  editor?: any,
+  autoFormatMarkdownTable?: boolean,
+  onSave?: (table) => any,
 }
 
 type HandsontableModalStatusUtils = {
-  open(table: MarkdownTable, editor: any, autoFormatMarkdownTable: boolean): Promise<HandsontableModalStatus | undefined>
-  close(): Promise<HandsontableModalStatus | undefined>
+  open(
+    table?: MarkdownTable,
+    editor?: any,
+    autoFormatMarkdownTable?: boolean,
+    onSave?: (table) => any
+  ): void // Promise<HandsontableModalStatus | undefined>
+  close(): void // Promise<HandsontableModalStatus | undefined>
 }
 
 export const useHandsontableModal = (status?: HandsontableModalStatus): SWRResponse<HandsontableModalStatus, Error> & HandsontableModalStatusUtils => {
   const initialData: HandsontableModalStatus = {
-    isOpened: false, table: undefined, editor: undefined, autoFormatMarkdownTable: false,
+    isOpened: false,
+    table: undefined,
+    editor: undefined,
+    autoFormatMarkdownTable: false,
   };
   const swrResponse = useStaticSWR<HandsontableModalStatus, Error>('handsontableModalStatus', status, { fallbackData: initialData });
 
-  const open = (table: MarkdownTable, editor: any, autoFormatMarkdownTable: boolean) => swrResponse.mutate({
-    isOpened: true, table, editor, autoFormatMarkdownTable,
-  });
-  const close = () => swrResponse.mutate({
-    isOpened: false, table: undefined, editor: undefined, autoFormatMarkdownTable: false,
-  });
+  const { mutate } = swrResponse;
+
+  const open = useCallback((table: MarkdownTable, editor?: any, autoFormatMarkdownTable?: boolean, onSave?: (table) => any): void => {
+    mutate({
+      isOpened: true, table, editor, autoFormatMarkdownTable, onSave,
+    });
+  }, [mutate]);
+  const close = useCallback((): void => {
+    mutate({
+      isOpened: false, table: undefined, editor: undefined, autoFormatMarkdownTable: false, onSave: undefined,
+    });
+  }, [mutate]);
 
   return {
     ...swrResponse,

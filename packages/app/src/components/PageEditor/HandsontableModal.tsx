@@ -36,6 +36,7 @@ export const HandsontableModal = (): JSX.Element => {
   const table = handsontableModalData?.table;
   const autoFormatMarkdownTable = handsontableModalData?.autoFormatMarkdownTable ?? false;
   const editor = handsontableModalData?.editor;
+  const onSave = handsontableModalData?.onSave;
 
   const defaultMarkdownTable = () => {
     return new MarkdownTable(
@@ -121,7 +122,7 @@ export const HandsontableModal = (): JSX.Element => {
   };
 
   const save = () => {
-    if (hotTable == null || editor == null) {
+    if (hotTable == null) {
       return;
     }
 
@@ -130,8 +131,13 @@ export const HandsontableModal = (): JSX.Element => {
       markdownTableOption.latest,
     ).normalizeCells();
 
-    mtu.replaceFocusedMarkdownTableWithEditor(editor, newMarkdownTable);
+    if (onSave != null) {
+      onSave(newMarkdownTable);
+      cancel();
+      return;
+    }
 
+    mtu.replaceFocusedMarkdownTableWithEditor(editor, newMarkdownTable);
     cancel();
   };
 

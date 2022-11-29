@@ -10,6 +10,7 @@ import { useTranslation } from 'next-i18next';
 import dynamic from 'next/dynamic';
 import { HtmlElementNode } from 'rehype-toc';
 
+import MarkdownTable from '~/client/models/MarkdownTable';
 import { useSaveOrUpdate } from '~/client/services/page-operation';
 import { toastSuccess, toastError } from '~/client/util/apiNotification';
 import { OptionsToSave } from '~/interfaces/page-operation';
@@ -17,7 +18,7 @@ import {
   useIsGuestUser, useShareLinkId,
 } from '~/stores/context';
 import { useEditingMarkdown } from '~/stores/editor';
-import { useDrawioModal } from '~/stores/modal';
+import { useDrawioModal, useHandsontableModal } from '~/stores/modal';
 import { useSWRxCurrentPage, useSWRxTagsInfo } from '~/stores/page';
 import { useViewOptions } from '~/stores/renderer';
 import {
@@ -28,6 +29,7 @@ import loggerFactory from '~/utils/logger';
 
 import RevisionRenderer from './Page/RevisionRenderer';
 import mdu from './PageEditor/MarkdownDrawioUtil';
+import mtu from './PageEditor/MarkdownTableUtil';
 
 
 declare global {
@@ -62,6 +64,7 @@ export const Page = (props) => {
   const { data: rendererOptions } = useViewOptions(storeTocNodeHandler);
   const { mutate: mutateCurrentPageTocNode } = useCurrentPageTocNode();
   const { open: openDrawioModal } = useDrawioModal();
+  const { open: openHandsontableModal } = useHandsontableModal();
 
   const saveOrUpdate = useSaveOrUpdate();
 
@@ -120,6 +123,71 @@ export const Page = (props) => {
       globalEmitter.removeListener('launchDrawioModal', handler);
     };
   }, [openDrawioModal, saveByDrawioModal]);
+
+  const saveByHandsontableModal = useCallback(async(table: MarkdownTable, bol: number, eol: number) => {
+    if (currentPage == null || tagsInfo == null) {
+      return;
+    }
+
+    const currentMarkdown = currentPage.revision.body;
+    const optionsToSave: OptionsToSave = {
+      isSlackEnabled: false,
+      slackChannels: '',
+      grant: currentPage.grant,
+      grantUserGroupId: currentPage.grantedGroup?._id,
+      grantUserGroupName: currentPage.grantedGroup?.name,
+      pageTags: tagsInfo.tags,
+    };
+
+    const newMarkdown = mtu.replaceMarkdownTableInMarkdown(table, currentMarkdown, bol, eol);
+
+    try {
+      const currentRevisionId = currentPage.revision._id;
+      await saveOrUpdate(
+        newMarkdown,
+        { pageId: currentPage._id, path: currentPage.path, revisionId: currentRevisionId },
+        optionsToSave,
+      );
+
+      toastSuccess(t('toaster.save_succeeded'));
+
+      // rerender
+      mutateCurrentPage();
+      mutateEditingMarkdown(newMarkdown);
+    }
+    catch (error) {
+      logger.error('failed to save', error);
+      toastError(error);
+    }
+  }, [currentPage, mutateCurrentPage, mutateEditingMarkdown, saveOrUpdate, t, tagsInfo]);
+
+
+  const tableByHandsontableModal = useCallback((beginLineNumber, endLineNumber) => {
+    if (currentPage == null) {
+      return;
+    }
+
+    const markdown = currentPage.revision.body;
+    const tableLines = markdown.split(/\r\n|\r|\n/).slice(beginLineNumber - 1, endLineNumber).join('\n');
+    const table = MarkdownTable.fromMarkdownString(tableLines);
+    return table;
+  }, [currentPage]);
+
+  // set handler to open HandsonTableModal
+  useEffect(() => {
+    const handler = (bol, eol) => {
+      const table = tableByHandsontableModal(bol, eol);
+      if (table == null) {
+        return;
+      }
+      openHandsontableModal(table, undefined, false, table => saveByHandsontableModal(table, bol, eol));
+    };
+    globalEmitter.on('launchHandsonTableModal', handler);
+
+    return function cleanup() {
+      globalEmitter.removeListener('launchHandsonTableModal', handler);
+    };
+  }, [openHandsontableModal, saveByHandsontableModal, tableByHandsontableModal]);
 
   if (currentPage == null || isGuestUser == null || rendererOptions == null) {
     const entries = Object.entries({

@@ -1,0 +1,30 @@
+/**
+ * for table with handsontable modal button
+ */
+.test :global {
+  .editable-with-handsontable {
+    position: relative;
+
+    .handsontable-modal-trigger {
+      position: absolute;
+      top: 11px;
+      right: 10px;
+      padding: 0;
+      font-size: 16px;
+      line-height: 1;
+      vertical-align: bottom;
+      background-color: transparent;
+      border: none;
+      opacity: 0;
+    }
+
+    .page-mobile & .handsontable-modal-trigger {
+      opacity: 0.3;
+    }
+
+    &:hover .handsontable-modal-trigger {
+      opacity: 1;
+    }
+  }
+}
+
