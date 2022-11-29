@@ -132,7 +132,7 @@ type StateCache = {
   nodeTree?: PageNode[],
 }
 
-export const Lsx = ({
+export const Lsx = React.memo(({
   prefix,
   num, depth, sort, reverse, filter,
   ...props
@@ -231,35 +231,53 @@ export const Lsx = ({
     loadData();
   }, [forceToFetchData, loadData, retrieveDataFromCache]);
 
-  const renderContents = () => {
-    if (isError) {
-      return (
-        <div className="text-warning">
-          <i className="fa fa-exclamation-triangle fa-fw"></i>
-          {lsxContext.toString()} (-&gt; <small>{errorMessage}</small>)
-        </div>
-      );
+  const Error = useCallback((): JSX.Element => {
+    if (!isError) {
+      return <></>;
     }
 
-    const showListView = nodeTree != null && (!isLoading || nodeTree.length > 0);
+    return (
+      <div className="text-warning">
+        <i className="fa fa-exclamation-triangle fa-fw"></i>
+        {lsxContext.toString()} (-&gt; <small>{errorMessage}</small>)
+      </div>
+    );
+  }, [errorMessage, isError, lsxContext]);
+
+  const Loading = useCallback((): JSX.Element => {
+    if (isError) {
+      return <></>;
+    }
+    if (!isLoading) {
+      return <></>;
+    }
 
     return (
-      <>
-        { isLoading && (
-          <div className={`text-muted ${isLoading ? 'lsx-blink' : ''}`}>
-            <small>
-              <i className="fa fa-spinner fa-pulse mr-1"></i>
-              {lsxContext.toString()}
-              { isCacheExists && <>&nbsp;(Showing cache..)</> }
-            </small>
-          </div>
-        ) }
-        { showListView && (
-          <LsxListView nodeTree={nodeTree} lsxContext={lsxContext} basisViewersCount={basisViewersCount} />
-        ) }
-      </>
+      <div className={`text-muted ${isLoading ? 'lsx-blink' : ''}`}>
+        <small>
+          <i className="fa fa-spinner fa-pulse mr-1"></i>
+          {lsxContext.toString()}
+          { isCacheExists && <>&nbsp;(Showing cache..)</> }
+        </small>
+      </div>
     );
-  };
+  }, [isCacheExists, isError, isLoading, lsxContext]);
 
-  return <div className={`lsx ${styles.lsx}`}>{renderContents()}</div>;
-};
+  const contents = useMemo(() => {
+    const showListView = nodeTree != null && (!isLoading || nodeTree.length > 0);
+    if (!showListView) {
+      return <></>;
+    }
+
+    return <LsxListView nodeTree={nodeTree} lsxContext={lsxContext} basisViewersCount={basisViewersCount} />;
+  }, [basisViewersCount, isLoading, lsxContext, nodeTree]);
+
+  return (
+    <div className={`lsx ${styles.lsx}`}>
+      <Error />
+      <Loading />
+      {contents}
+    </div>
+  );
+});
+Lsx.displayName = 'Lsx';
