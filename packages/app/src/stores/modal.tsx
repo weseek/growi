@@ -1,3 +1,5 @@
+import { useCallback } from 'react';
+
 import { SWRResponse } from 'swr';
 
 import MarkdownTable from '~/client/models/MarkdownTable';
@@ -467,13 +469,15 @@ export const useDrawioModal = (status?: DrawioModalStatus): SWRResponse<DrawioMo
   };
   const swrResponse = useStaticSWR<DrawioModalStatus, Error>('drawioModalStatus', status, { fallbackData: initialData });
 
-  const open = (drawioMxFile: string, onSave?: DrawioModalSaveHandler): void => {
-    swrResponse.mutate({ isOpened: true, drawioMxFile, onSave });
-  };
+  const { mutate } = swrResponse;
 
-  const close = (): void => {
-    swrResponse.mutate({ isOpened: false, drawioMxFile: '', onSave: undefined });
-  };
+  const open = useCallback((drawioMxFile: string, onSave?: DrawioModalSaveHandler): void => {
+    mutate({ isOpened: true, drawioMxFile, onSave });
+  }, [mutate]);
+
+  const close = useCallback((): void => {
+    mutate({ isOpened: false, drawioMxFile: '', onSave: undefined });
+  }, [mutate]);
 
   return {
     ...swrResponse,

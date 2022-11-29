@@ -63,6 +63,13 @@ export const Page = (props) => {
 
   const saveOrUpdate = useSaveOrUpdate();
 
+
+  useEffect(() => {
+    mutateCurrentPageTocNode(tocRef.current);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [mutateCurrentPageTocNode, tocRef.current]); // include tocRef.current to call mutateCurrentPageTocNode when tocRef.current changes
+
+
   const saveByDrawioModal = useCallback(async(drawioMxFile: string, bol: number, eol: number) => {
     if (currentPage == null || tagsInfo == null) {
       return;
@@ -98,11 +105,6 @@ export const Page = (props) => {
       toastError(error);
     }
   }, [currentPage, mutateCurrentPage, saveOrUpdate, t, tagsInfo]);
-
-  useEffect(() => {
-    mutateCurrentPageTocNode(tocRef.current);
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [mutateCurrentPageTocNode, tocRef.current]); // include tocRef.current to call mutateCurrentPageTocNode when tocRef.current changes
 
   // set handler to open DrawioModal
   useEffect(() => {
