@@ -11,6 +11,8 @@ context('Switch Sidebar content', () => {
   it('PageTree is successfully shown', () => {
     cy.collapseSidebar(false);
     cy.visit('/page');
+    cy.waitUntilSkeletonDisappear();
+
     cy.getByTestid('grw-sidebar-nav-primary-page-tree').click();
     // eslint-disable-next-line cypress/no-unnecessary-waiting
     cy.wait(1500);
@@ -47,8 +49,8 @@ context('Modal for page operation', () => {
   it("Successfully Create Today's page", () => {
     const pageName = "Today's page";
     cy.visit('/');
-
     cy.waitUntilSkeletonDisappear();
+
     cy.getByTestid('newPageBtn').click();
 
     cy.getByTestid('page-create-modal').should('be.visible').within(() => {
@@ -61,7 +63,13 @@ context('Modal for page operation', () => {
     cy.get('.layout-root').should('not.have.class', 'editing');
 
     cy.getByTestid('grw-contextual-sub-nav').should('be.visible');
-    cy.waitUntilSkeletonDisappear();
+
+    // eslint-disable-next-line cypress/no-unnecessary-waiting
+    cy.wait(300);
+
+    // Do not use "cy.waitUntilSkeletonDisappear()"
+    cy.get('.grw-skeleton').should('not.exist');
+
     cy.screenshot(`${ssPrefix}create-today-page`);
   });
 
@@ -69,8 +77,8 @@ context('Modal for page operation', () => {
     const pageName = 'child';
 
     cy.visit('/SandBox');
-
     cy.waitUntilSkeletonDisappear();
+
     cy.getByTestid('newPageBtn').click();
 
     cy.getByTestid('page-create-modal').should('be.visible').within(() => {
@@ -83,13 +91,18 @@ context('Modal for page operation', () => {
     cy.get('.layout-root').should('not.have.class', 'editing');
 
     cy.getByTestid('grw-contextual-sub-nav').should('be.visible');
-    cy.waitUntilSkeletonDisappear();
+
+    // eslint-disable-next-line cypress/no-unnecessary-waiting
+    cy.wait(300);
+
+    // Do not use "cy.waitUntilSkeletonDisappear()"
+    cy.get('.grw-skeleton').should('not.exist');
+
     cy.screenshot(`${ssPrefix}create-page-under-specific-page`);
   });
 
   it('Trying to create template page under the root page fail', () => {
     cy.visit('/');
-
     cy.waitUntilSkeletonDisappear();
 
     cy.getByTestid('newPageBtn').click();
@@ -118,6 +131,7 @@ context('Modal for page operation', () => {
 
   it('PageDeleteModal is shown successfully', () => {
     cy.visit('/Sandbox/Bootstrap4');
+    cy.waitUntilSkeletonDisappear();
 
      cy.get('#grw-subnav-container').within(() => {
        cy.getByTestid('open-page-item-control-btn').click({force: true});
@@ -128,7 +142,8 @@ context('Modal for page operation', () => {
   });
 
   it('PageDuplicateModal is shown successfully', () => {
-    cy.visit('/Sandbox/Bootstrap4', {  });
+    cy.visit('/Sandbox/Bootstrap4');
+    cy.waitUntilSkeletonDisappear();
 
     cy.get('#grw-subnav-container').within(() => {
       cy.getByTestid('open-page-item-control-btn').click({force: true});
@@ -197,6 +212,8 @@ context('Page Accessories Modal', () => {
 
   it('Page History is shown successfully', () => {
      cy.visit('/Sandbox/Bootstrap4');
+     cy.waitUntilSkeletonDisappear();
+
      cy.get('#grw-subnav-container').within(() => {
       cy.getByTestid('open-page-item-control-btn').within(() => {
         cy.get('button.btn-page-item-control').click({force: true});
@@ -227,7 +244,9 @@ context('Page Accessories Modal', () => {
   });
 
   it('Share Link Management is shown successfully', () => {
-    cy.visit('/Sandbox/Bootstrap4', { });
+    cy.visit('/Sandbox/Bootstrap4');
+    cy.waitUntilSkeletonDisappear();
+
     cy.get('#grw-subnav-container').within(() => {
       cy.getByTestid('open-page-item-control-btn').within(() => {
         cy.get('button.btn-page-item-control').click({force: true});
@@ -338,6 +357,7 @@ context('Tag Oprations', { scrollBehavior: false }, () =>{
     cy.getByTestid('page-duplicate-modal').within(() => {
       cy.get('.modal-footer > button.btn').click();
     });
+
     cy.visit(`Sandbox-${newPageName}`);
     cy.waitUntilSkeletonDisappear();
     cy.screenshot(`${ssPrefix}4-duplicated-page`);
