@@ -93,3 +93,4 @@ export const LsxPage = React.memo((props: Props): JSX.Element => {
   );
 
 });
+LsxPage.displayName = 'LsxPage';
