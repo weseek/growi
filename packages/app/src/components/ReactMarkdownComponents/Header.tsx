@@ -11,7 +11,11 @@ import { NextLink } from './NextLink';
 import styles from './Header.module.scss';
 
 
-declare const globalEmitter: EventEmitter;
+declare global {
+  // eslint-disable-next-line vars-on-top, no-var
+  var globalEmitter: EventEmitter;
+}
+
 
 function setCaretLine(line?: number): void {
   if (line != null) {

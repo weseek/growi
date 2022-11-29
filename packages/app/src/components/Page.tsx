@@ -30,8 +30,10 @@ import loggerFactory from '~/utils/logger';
 import RevisionRenderer from './Page/RevisionRenderer';
 import mdu from './PageEditor/MarkdownDrawioUtil';
 
-
-declare const globalEmitter: EventEmitter;
+declare global {
+  // eslint-disable-next-line vars-on-top, no-var
+  var globalEmitter: EventEmitter;
+}
 
 // const DrawioModal = dynamic(() => import('./PageEditor/DrawioModal'), { ssr: false });
 const GridEditModal = dynamic(() => import('./PageEditor/GridEditModal'), { ssr: false });
@@ -107,10 +109,10 @@ export const Page = (props) => {
     const handler = (data: DrawioEditByViewerProps) => {
       openDrawioModal(data.drawioMxFile, drawioMxFile => saveByDrawioModal(drawioMxFile, data.bol, data.eol));
     };
-    window.globalEmitter.on('launchDrawioModal', handler);
+    globalEmitter.on('launchDrawioModal', handler);
 
     return function cleanup() {
-      window.globalEmitter.removeListener('launchDrawioModal', handler);
+      globalEmitter.removeListener('launchDrawioModal', handler);
     };
   }, [openDrawioModal, saveByDrawioModal]);
 

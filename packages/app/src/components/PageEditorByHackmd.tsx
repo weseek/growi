@@ -35,7 +35,12 @@ import HackmdEditor from './PageEditorByHackmd/HackmdEditor';
 
 const logger = loggerFactory('growi:PageEditorByHackmd');
 
-declare const globalEmitter: EventEmitter;
+
+declare global {
+  // eslint-disable-next-line vars-on-top, no-var
+  var globalEmitter: EventEmitter;
+}
+
 
 type HackEditorRef = {
   getValue: () => Promise<string>

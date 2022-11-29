@@ -43,7 +43,10 @@ import scrollSyncHelper from './PageEditor/ScrollSyncHelper';
 const logger = loggerFactory('growi:PageEditor');
 
 
-declare const globalEmitter: EventEmitter;
+declare global {
+  // eslint-disable-next-line vars-on-top, no-var
+  var globalEmitter: EventEmitter;
+}
 
 
 // for scrolling

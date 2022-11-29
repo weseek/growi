@@ -1,5 +1,7 @@
 import React, { useCallback, useState } from 'react';
 
+import EventEmitter from 'events';
+
 import {
   DrawioEditByViewerProps,
   DrawioViewer, DrawioViewerProps, extractCodeFromMxfile,
@@ -7,9 +9,14 @@ import {
 import { useTranslation } from 'next-i18next';
 
 import { useIsGuestUser, useIsSharedUser } from '~/stores/context';
-import { useDrawioModal } from '~/stores/modal';
 
 import styles from './DrawioViewerWithEditButton.module.scss';
+
+
+declare global {
+  // eslint-disable-next-line vars-on-top, no-var
+  var globalEmitter: EventEmitter;
+}
 
 
 export const DrawioViewerWithEditButton = React.memo((props: DrawioViewerProps): JSX.Element => {
@@ -27,7 +34,7 @@ export const DrawioViewerWithEditButton = React.memo((props: DrawioViewerProps):
     const data: DrawioEditByViewerProps = {
       bol, eol, drawioMxFile: extractCodeFromMxfile(mxfile),
     };
-    window.globalEmitter.emit('launchDrawioModal', data);
+    globalEmitter.emit('launchDrawioModal', data);
   }, [bol, eol, mxfile]);
 
   const renderingStartHandler = useCallback(() => {
