@@ -17,7 +17,7 @@ export const DrawioViewerScript = (): JSX.Element => {
 
     // Set responsive option.
     // refs: https://github.com/jgraph/drawio/blob/v13.9.1/src/main/webapp/js/diagramly/GraphViewer.js#L89-L95
-    GraphViewer.prototype.responsive = true;
+    // GraphViewer.prototype.responsive = true;
 
     // Set z-index ($zindex-dropdown + 200) for lightbox.
     // 'lightbox' is like a modal dialog that appears when click on a drawio diagram.
