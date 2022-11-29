@@ -10,6 +10,15 @@ declare global {
 
 export const DrawioViewerScript = (): JSX.Element => {
   const loadedHandler = useCallback(() => {
+    // disable useResizeSensor and checkVisibleState
+    //   for preventing resize event by viewer.min.js
+    GraphViewer.useResizeSensor = false;
+    GraphViewer.prototype.checkVisibleState = false;
+
+    // Set responsive option.
+    // refs: https://github.com/jgraph/drawio/blob/v13.9.1/src/main/webapp/js/diagramly/GraphViewer.js#L89-L95
+    GraphViewer.prototype.responsive = true;
+
     // Set z-index ($zindex-dropdown + 200) for lightbox.
     // 'lightbox' is like a modal dialog that appears when click on a drawio diagram.
     // z-index refs: https://github.com/twbs/bootstrap/blob/v4.6.2/scss/_variables.scss#L681
