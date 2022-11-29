@@ -1,6 +1,6 @@
 import React, {
   useCallback,
-  useEffect, useRef, useState,
+  useEffect, useRef,
 } from 'react';
 
 import EventEmitter from 'events';
@@ -8,8 +8,6 @@ import EventEmitter from 'events';
 import { DrawioEditByViewerProps } from '@growi/remark-drawio-plugin';
 import { useTranslation } from 'next-i18next';
 import dynamic from 'next/dynamic';
-// import { debounce } from 'throttle-debounce';
-
 import { HtmlElementNode } from 'rehype-toc';
 
 import { useSaveOrUpdate } from '~/client/services/page-operation';
@@ -18,6 +16,7 @@ import { OptionsToSave } from '~/interfaces/page-operation';
 import {
   useIsGuestUser, useShareLinkId,
 } from '~/stores/context';
+import { useEditingMarkdown } from '~/stores/editor';
 import { useDrawioModal } from '~/stores/modal';
 import { useSWRxCurrentPage, useSWRxTagsInfo } from '~/stores/page';
 import { useViewOptions } from '~/stores/renderer';
@@ -29,6 +28,7 @@ import loggerFactory from '~/utils/logger';
 
 import RevisionRenderer from './Page/RevisionRenderer';
 import mdu from './PageEditor/MarkdownDrawioUtil';
+
 
 declare global {
   // eslint-disable-next-line vars-on-top, no-var
@@ -44,6 +44,7 @@ const logger = loggerFactory('growi:Page');
 
 export const Page = (props) => {
   const { t } = useTranslation();
+
   // Pass tocRef to generateViewOptions (=> rehypePlugin => customizeTOC) to call mutateCurrentPageTocNode when tocRef.current changes.
   // The toc node passed by customizeTOC is assigned to tocRef.current.
   const tocRef = useRef<HtmlElementNode>();
@@ -54,6 +55,7 @@ export const Page = (props) => {
 
   const { data: shareLinkId } = useShareLinkId();
   const { data: currentPage, mutate: mutateCurrentPage } = useSWRxCurrentPage(shareLinkId ?? undefined);
+  const { mutate: mutateEditingMarkdown } = useEditingMarkdown();
   const { data: tagsInfo } = useSWRxTagsInfo(currentPage?._id);
   const { data: isGuestUser } = useIsGuestUser();
   const { data: isMobile } = useIsMobile();
@@ -99,12 +101,13 @@ export const Page = (props) => {
 
       // rerender
       mutateCurrentPage();
+      mutateEditingMarkdown(newMarkdown);
     }
     catch (error) {
       logger.error('failed to save', error);
       toastError(error);
     }
-  }, [currentPage, mutateCurrentPage, saveOrUpdate, t, tagsInfo]);
+  }, [currentPage, mutateCurrentPage, mutateEditingMarkdown, saveOrUpdate, t, tagsInfo]);
 
   // set handler to open DrawioModal
   useEffect(() => {

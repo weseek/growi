@@ -19,11 +19,12 @@ import { IEditorMethods } from '~/interfaces/editor-methods';
 import { OptionsToSave } from '~/interfaces/page-operation';
 import {
   useCurrentPathname, useCurrentPageId, useIsEnabledAttachTitleHeader, useTemplateBodyData,
-  useIsEditable, useIsUploadableFile, useIsUploadableImage, useEditingMarkdown, useIsNotFound,
+  useIsEditable, useIsUploadableFile, useIsUploadableImage, useIsNotFound,
 } from '~/stores/context';
 import {
   useCurrentIndentSize, useSWRxSlackChannels, useIsSlackEnabled, useIsTextlintEnabled, usePageTagsForEditors,
   useIsEnabledUnsavedWarning,
+  useEditingMarkdown,
 } from '~/stores/editor';
 import { useCurrentPagePath, useSWRxCurrentPage } from '~/stores/page';
 import { usePreviewOptions } from '~/stores/renderer';
