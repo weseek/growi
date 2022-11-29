@@ -138,14 +138,13 @@ export const usePageTreeTermManager = (isDisabled?: boolean) : SWRResponse<numbe
 };
 
 export const useSWRxRootPage = (): SWRResponse<RootPageResult, Error> => {
-  return useSWR(
+  return useSWRImmutable(
     '/page-listing/root',
     endpoint => apiv3Get(endpoint).then((response) => {
       return {
         rootPage: response.data.rootPage,
       };
     }),
-    { revalidateOnFocus: false },
   );
 };
 
@@ -154,14 +153,13 @@ export const useSWRxPageAncestorsChildren = (
 ): SWRResponse<AncestorsChildrenResult, Error> => {
   const { data: termNumber } = usePageTreeTermManager();
 
-  return useSWR(
+  return useSWRImmutable(
     path ? [`/page-listing/ancestors-children?path=${path}`, termNumber] : null,
     endpoint => apiv3Get(endpoint).then((response) => {
       return {
         ancestorsChildren: response.data.ancestorsChildren,
       };
     }),
-    { revalidateOnFocus: false },
   );
 };
 

@@ -154,7 +154,7 @@ const ItemsTree = (props: ItemsTreeProps): JSX.Element => {
     if (currentPagePath === fromPath || currentPagePath === toPath) {
       mutateCurrentPage();
     }
-  }, [advanceDpl, advanceFts, advancePt, currentPagePath, mutateCurrentPage]);
+  }, [advanceDpl, advanceFts, currentPagePath, mutateCurrentPage]); // advancePt
 
   const onClickDuplicateMenuItem = useCallback((pageToDuplicate: IPageForPageDuplicateModal) => {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
