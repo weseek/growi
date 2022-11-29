@@ -11,8 +11,18 @@ context('Access to pagelist', () => {
 
   it('Page list modal is successfully opened ', () => {
     cy.visit('/');
+    cy.waitUntilSkeletonDisappear();
+
     cy.getByTestid('pageListButton').click({force: true});
-    cy.getByTestid('page-accessories-modal').should('be.visible').screenshot(`${ssPrefix}1-open-pagelist-modal`);
+    cy.getByTestid('page-accessories-modal').parent().should('have.class','show');
+    cy.getByTestid('page-list-item-L').should('be.visible');
+
+    // Wait until the string "You cannot see this page" is no longer displayed
+    cy.getByTestid('page-list-item-L').eq(0).within(() => {
+      cy.get('.icon-exclamation').should('not.exist');
+    });
+
+    cy.screenshot(`${ssPrefix}1-open-pagelist-modal`);
   });
 
   it('Successfully duplicate a page from page list', () => {
