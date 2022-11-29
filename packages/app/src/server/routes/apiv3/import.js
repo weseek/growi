@@ -1,5 +1,6 @@
 import { ErrorV3 } from '@growi/core';
 
+import { SupportedAction } from '~/interfaces/activity';
 import loggerFactory from '~/utils/logger';
 
 import { generateAddActivityMiddleware } from '../../middlewares/add-activity';
