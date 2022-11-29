@@ -1,8 +1,6 @@
 import React, { useMemo } from 'react';
 
-import {
-  IUser, IUserHasId,
-} from '@growi/core';
+import { IUserHasId } from '@growi/core';
 import { model as mongooseModel } from 'mongoose';
 import {
   NextPage, GetServerSideProps, GetServerSidePropsContext,
@@ -36,7 +34,6 @@ import {
 const logger = loggerFactory('growi:pages:me');
 
 type Props = CommonProps & {
-  currentUser: IUser,
   isSearchServiceConfigured: boolean,
   isSearchServiceReachable: boolean,
   isSearchScopeChildrenAsDefault: boolean,
@@ -56,7 +53,7 @@ const InAppNotificationPage = dynamic(
 
 const MePage: NextPage<Props> = (props: Props) => {
   const router = useRouter();
-  const { t } = useTranslation();
+  const { t } = useTranslation(['translation', 'commons']);
   const { path } = router.query;
   const pagePathKeys: string[] = Array.isArray(path) ? path : ['personal-settings'];
 
@@ -71,7 +68,7 @@ const MePage: NextPage<Props> = (props: Props) => {
       //   component: <MyDraftList />,
       // },
       'all-in-app-notifications': {
-        title: t('in_app_notification.notification_list'),
+        title: t('commons:in_app_notification.notification_list'),
         component: <InAppNotificationPage />,
       },
     };
@@ -198,7 +195,7 @@ export const getServerSideProps: GetServerSideProps = async(context: GetServerSi
 
   await injectUserUISettings(context, props);
   await injectServerConfigurations(context, props);
-  await injectNextI18NextConfigurations(context, props, ['translation', 'admin']);
+  await injectNextI18NextConfigurations(context, props, ['translation', 'admin', 'commons']);
 
   return {
     props,

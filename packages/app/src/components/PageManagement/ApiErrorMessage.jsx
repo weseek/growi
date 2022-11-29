@@ -1,7 +1,7 @@
 import React from 'react';
 
-import PropTypes from 'prop-types';
 import { useTranslation } from 'next-i18next';
+import PropTypes from 'prop-types';
 
 const ApiErrorMessage = (props) => {
   const { t } = useTranslation();
@@ -42,6 +42,10 @@ const ApiErrorMessage = (props) => {
       case 'invalid_path':
         return (
           <strong><i className="icon-fw icon-ban"></i> Invalid path</strong>
+        );
+      case 'single_deletion_empty_pages':
+        return (
+          <strong><i className="icon-fw icon-ban"></i>{ t('page_api_error.single_deletion_empty_pages') }</strong>
         );
       default:
         return (

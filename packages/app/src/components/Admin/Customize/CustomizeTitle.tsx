@@ -22,7 +22,7 @@ export const CustomizeTitle: FC = () => {
       await apiv3Put('/customize-setting/customize-title', {
         customizeTitle: currentCustomizeTitle,
       });
-      toastSuccess(t('toaster.update_successed', { target: t('admin:customize_setting.custom_title') }));
+      toastSuccess(t('toaster.update_successed', { target: t('admin:customize_settings.custom_title'), ns: 'commons' }));
     }
     catch (err) {
       toastError(err);

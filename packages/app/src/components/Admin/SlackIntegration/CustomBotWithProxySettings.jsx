@@ -50,7 +50,7 @@ const CustomBotWithProxySettings = (props) => {
       if (onPrimaryUpdated != null) {
         onPrimaryUpdated();
       }
-      toastSuccess(t('toaster.update_successed', { target: 'Primary' }));
+      toastSuccess(t('toaster.update_successed', { target: 'Primary', ns: 'commons' }));
     }
     catch (err) {
       toastError(err, 'Failed to change isPrimary');
@@ -77,7 +77,7 @@ const CustomBotWithProxySettings = (props) => {
       await apiv3Put('/slack-integration-settings/proxy-uri', {
         proxyUri: newProxyServerUri,
       });
-      toastSuccess(t('toaster.update_successed', { target: 'Proxy URL' }));
+      toastSuccess(t('toaster.update_successed', { target: 'Proxy URL', ns: 'commons' }));
     }
     catch (err) {
       toastError(err, 'Failed to update');

@@ -13,7 +13,7 @@ import {
   AncestorsChildrenResult, ChildrenResult, V5MigrationStatus, RootPageResult,
 } from '../interfaces/page-listing-results';
 
-import { useCurrentPagePath } from './context';
+import { useCurrentPagePath } from './page';
 import { ITermNumberManagerUtil, useTermNumberManager } from './use-static-swr';
 
 export const useSWRxPagesByPath = (path?: Nullable<string>): SWRResponse<IPageHasId[], Error> => {
@@ -44,11 +44,21 @@ export const useSWRInifinitexRecentlyUpdated = () : SWRInfiniteResponse<(IPageHa
   );
 };
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-export const useSWRxPageList = (path: string | null, pageNumber?: number, termNumber?: number): SWRResponse<IPagingResult<IPageHasId>, Error> => {
+export const useSWRxPageList = (
+    path: string | null, pageNumber?: number, termNumber?: number, limit?: number,
+): SWRResponse<IPagingResult<IPageHasId>, Error> => {
 
-  const key = path != null
-    ? [`/pages/list?path=${path}&page=${pageNumber ?? 1}`, termNumber]
-    : null;
+  let key;
+  // if path not exist then the key is null
+  if (path == null) {
+    key = null;
+  }
+  else {
+    const pageListPath = `/pages/list?path=${path}&page=${pageNumber ?? 1}`;
+    // if limit exist then add it as query string
+    const requestPath = limit == null ? pageListPath : `${pageListPath}&limit=${limit}`;
+    key = [requestPath, termNumber];
+  }
 
   return useSWR(
     key,
@@ -66,7 +76,7 @@ export const useDescendantsPageListForCurrentPathTermManager = (isDisabled?: boo
   return useTermNumberManager(isDisabled === true ? null : 'descendantsPageListForCurrentPathTermNumber');
 };
 
-export const useSWRxDescendantsPageListForCurrrentPath = (pageNumber?: number): SWRResponse<IPagingResult<IPageHasId>, Error> => {
+export const useSWRxDescendantsPageListForCurrrentPath = (pageNumber?: number, limit?:number): SWRResponse<IPagingResult<IPageHasId>, Error> => {
   const { data: currentPagePath } = useCurrentPagePath();
   const { data: termNumber } = useDescendantsPageListForCurrentPathTermManager();
 
@@ -74,7 +84,7 @@ export const useSWRxDescendantsPageListForCurrrentPath = (pageNumber?: number): 
     ? null
     : currentPagePath;
 
-  return useSWRxPageList(path, pageNumber, termNumber);
+  return useSWRxPageList(path, pageNumber, termNumber, limit);
 };
 
 

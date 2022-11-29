@@ -28,7 +28,6 @@
   "administrator": "管理者",
   "Tag": "タグ",
   "Tags": "タグ",
-  "New": "作成",
   "Close": "閉じる",
   "Shortcuts": "ショートカット",
   "CustomSidebar": "カスタムサイドバー",
@@ -109,8 +108,7 @@
   "Create under": "ページを以下に作成",
   "V5 Page Migration": "V5 互換形式 への変換",
   "GROWI.5.0_new_schema": "GROWI.5.0における新スキーマについて",
-  "See_more_detail_on_new_schema": "詳しくは<a href='#'>{{url}}</a><i class='icon-share-alt'></i>を参照ください。",
-  "Site URL settings": "サイトURL設定",
+  "See_more_detail_on_new_schema": "詳しくは<a href='https://docs.growi.org/ja/admin-guide/upgrading/50x.html#新しい-v5-互換形式について' target='_blank'>{{title}}</a><i class='icon-share-alt'></i>を参照ください。",
   "external_account_management": "外部アカウント管理",
   "UserGroup": "グループ",
   "Basic Settings": "基本設定",
@@ -134,7 +132,6 @@
   "edited this page": "さんがこのページを編集しました。",
   "List Drafts": "下書き一覧",
   "Deleted Pages": "削除済みページ",
-  "Sign out": "ログアウト",
   "Disassociate": "連携解除",
   "Color mode": "カラーモード",
   "Sidebar mode": "サイドバーモード",
@@ -154,32 +151,17 @@
   "not_allowed_to_see_this_page": "このページは閲覧できません",
   "Confirm": "確認",
   "Successfully requested": "正常に処理を受け付けました",
-  "copied_to_clipboard": "クリップボードにコピーされました。",
-  "personal_dropdown": {
-    "home": "ホーム",
-    "settings": "設定",
-    "color_mode": "カラーモード",
-    "sidebar_mode": "サイドバーモード",
-    "sidebar_mode_editor": "サイドバーモード(編集時)",
-    "use_os_settings": "OS設定を利用する"
-  },
   "form_validation": {
     "error_message": "いくつかの値が設定されていません",
     "required": "%sに値を入力してください",
     "invalid_syntax": "%sの構文が不正です",
     "title_required": "タイトルを入力してください"
   },
-  "not_found_page": {
-    "Create Page": "ページを作成する",
-    "page_not_exist": "このページは存在しません。",
-    "page_not_exist_alert": "このページは存在しません。新たに作成する必要があります。"
-  },
   "not_creatable_page": {
     "could_not_creata_path": "パスを作成できませんでした。"
   },
   "custom_navigation": {
-    "no_page_list": "このページの配下にはページが存在しません。",
-    "link_sharing_is_disabled": "リンクのシェアは無効化されています"
+    "no_page_list": "このページの配下にはページが存在しません。"
   },
   "installer": {
     "tab": "アカウント作成",
@@ -249,10 +231,6 @@
     "Shere this page link to public": "外部に共有するリンクを発行する",
     "share_link_list": "共有リンクリスト",
     "share_link_management": "共有リンク管理",
-    "No_share_links":"共有リンクが存在しません",
-    "Share Link": "共有用リンク",
-    "Page Path": "ページパス",
-    "share_link_notice":"共有リンクを全て削除します",
     "delete_all_share_links":"全ての共有リンクを削除します",
     "expire": "有効期限",
     "Days": "日間",
@@ -262,30 +240,13 @@
     "Unlimited": "無期限",
     "Issue": "発行",
     "share_settings" :"共有設定",
-    "Invalid_Number_of_Date" : "有効期限の日数には整数を入力してください"
+    "Invalid_Number_of_Date" : "有効期限の日数には整数を入力してください",
+    "link_sharing_is_disabled": "リンクのシェアは無効化されています"
   },
   "API Settings": "API設定",
   "API Token Settings": "API Token設定",
   "Current API Token": "現在のAPI Token",
   "Update API Token": "API Tokenを更新",
-  "header_search_box": {
-    "label": {
-      "All pages": "全てのページ",
-      "This tree": "この階層"
-    },
-    "item_label": {
-      "All pages": "全てのページ",
-      "This tree": "この階層下の子ページのみ"
-    }
-  },
-  "in_app_notification": {
-    "notification_list": "アプリ内通知一覧",
-    "see_all": "通知一覧を見る",
-    "no_notification": "通知はありません",
-    "all": "全て",
-    "unopend": "未読",
-    "mark_all_as_read": "全て既読にする"
-  },
   "in_app_notification_settings": {
     "in_app_notification_settings": "アプリ内通知設定",
     "subscribe_settings": "自動でページをサブスクライブする（通知を受け取る）設定",
@@ -329,14 +290,6 @@
       "no_nfd": "UTF8-MAC濁点のようなNFDの使用を禁止します。"
     }
   },
-  "copy_to_clipboard": {
-    "Copy to clipboard": "クリップボードにコピー",
-    "Page path": "ページ名",
-    "Page URL": "ページURL",
-    "Permanent link": "パーマリンク",
-    "Page path and permanent link": "ページ名とパーマリンク",
-    "Markdown link": "マークダウン形式のリンク"
-  },
   "search_help": {
     "title": "検索のヘルプ",
     "and": {
@@ -368,7 +321,7 @@
   },
   "page_page": {
     "notice": {
-      "version": "これは現在の版ではありません。",
+      "version": "これは最新のバージョンではありません。",
       "redirected": "リダイレクト元 >>",
       "redirected_period":"",
       "unlinked": "このページへのリダイレクトは削除されました。",
@@ -395,7 +348,8 @@
     "notfound_or_forbidden": "元のページが見つからないか、アクセス権がありません。",
     "already_exists": "そのパスを持つページは既に存在しています。",
     "outdated": "ページが他のユーザーによって更新されました。",
-    "user_not_admin": "権限のあるユーザーのみが削除できます"
+    "user_not_admin": "権限のあるユーザーのみが削除できます",
+    "single_deletion_empty_pages": "空ページの単体削除はできません"
   },
   "page_history": {
     "revision_list": "更新履歴",
@@ -529,24 +483,10 @@
     "page_not_found_in_preview": "\"{{path}}\" というページはありません。"
   },
   "toaster": {
-    "create_succeeded": "新しい{{target}}が作成されました",
-    "create_failed": "{{target}}の作成に失敗しました",
-    "update_successed": "{{target}}を更新しました",
-    "update_failed": "{{target}}の更新に失敗しました",
     "file_upload_succeeded": "ファイルをアップロードしました",
     "file_upload_failed": "ファイルのアップロードに失敗しました",
-    "initialize_successed": "{{target}}を初期化しました",
-    "give_user_admin": "{{username}}を管理者に設定しました",
-    "remove_user_admin": "{{username}}を管理者から外しました",
-    "activate_user_success": "{{username}}を有効化しました",
-    "deactivate_user_success": "{{username}}を無効化しました",
-    "remove_user_success": "{{username}}を削除しました",
-    "remove_external_user_success": "{{accountId}}を削除しました",
-    "remove_share_link_success": "{{shareLinkId}}を削除しました",
-    "issue_share_link": "共有リンクを作成しました",
-    "remove_share_link": "共有リンクを{{count}}件削除しました",
-    "switch_disable_link_sharing_success": "共有リンクの設定を変更しました",
-    "failed_to_reset_password":"パスワードのリセットに失敗しました"
+    "save_succeeded": "保存に成功しました",
+    "issue_share_link": "共有リンクを作成しました"
   },
   "template": {
     "modal_label": {
@@ -676,10 +616,9 @@
       "error_duplicate_pages_found": "同名のパスを持つページが複数見つかりました。リネームまたは削除してから再度実行してください"
     }
   },
-  "to_cloud_settings": "GROWI.cloud の管理画面へ",
   "login": {
     "Sign in error": "ログインエラー",
-    "Registration successful": "登録完了",
+    "Registration successful": "登録が完了しました。管理者の承認をお待ちください。",
     "Setup": "セットアップ",
     "enabled_ldap_has_configuration_problem":"LDAPは有効ですが、設定に問題があります。",
     "set_env_var_for_logs": "(ログを取得するためには、環境変数 <code>DEBUG=crowi:service:PassportService</code> を設定してください。)"
@@ -711,6 +650,8 @@
     "username_should_not_be_null":"Username が null になっています 管理画面の認証機構設定にて設定の確認をしてください",
     "email_address_is_already_registered":"このメールアドレスは既に登録されています。",
     "can_not_register_maximum_number_of_users":"ユーザー数が上限を超えたため登録できません。",
+    "email_settings_is_not_setup":"E-mail 設定が完了していません。管理者に問い合わせてください。",
+    "email_authentication_is_not_enabled": "メール認証が有効になっていません。管理者に問い合わせてください。",
     "failed_to_register":"登録に失敗しました。",
     "successfully_created":"{{username}} が作成されました。",
     "can_not_activate_maximum_number_of_users":"ユーザーが上限に達したためアクティベートできません。",
@@ -818,13 +759,6 @@
     "belonging_to_no_group": "所属しているグループが見つかりませんでした。",
     "manage_user_groups": "グループ管理"
   },
-  "crop_image_modal": {
-    "image_crop": "画像の切り抜き",
-    "crop": "トリミング",
-    "save": "保存",
-    "reset": "リセット",
-    "cancel": "キャンセル"
-  },
   "fix_page_grant": {
     "modal": {
       "no_grant_available": "選択可能な権限のリストが見つかりませんでした。まず親ページの権限を修正したのちに再試行してください。",
@@ -872,5 +806,9 @@
   "footer": {
     "bookmarks": "ブックマーク",
     "recently_created": "最近作成したページ"
+  },
+  "v5_page_migration": {
+    "page_tree_not_avaliable" : "Page Tree 機能は現在使用できません。",
+    "go_to_settings": "設定する"
   }
 }

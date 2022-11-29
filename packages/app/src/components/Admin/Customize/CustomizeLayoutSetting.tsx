@@ -1,44 +1,54 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, {
+  useCallback, useEffect, useState,
+} from 'react';
 
 import { useTranslation } from 'next-i18next';
 
 import { toastSuccess, toastError } from '~/client/util/apiNotification';
-import { apiv3Get, apiv3Put } from '~/client/util/apiv3-client';
+import { useSWRxLayoutSetting } from '~/stores/admin/customize';
 import { useNextThemes } from '~/stores/use-next-themes';
+
+const useIsContainerFluid = () => {
+  const { data: layoutSetting, update: updateLayoutSetting } = useSWRxLayoutSetting();
+  const [isContainerFluid, setIsContainerFluid] = useState<boolean>();
+
+  useEffect(() => {
+    setIsContainerFluid(layoutSetting?.isContainerFluid);
+  }, [layoutSetting?.isContainerFluid]);
+
+  return {
+    isContainerFluid,
+    setIsContainerFluid,
+    updateLayoutSetting,
+  };
+};
 
 const CustomizeLayoutSetting = (): JSX.Element => {
   const { t } = useTranslation('admin');
 
   const { resolvedTheme } = useNextThemes();
 
-  const [isContainerFluid, setIsContainerFluid] = useState(false);
+  const { isContainerFluid, setIsContainerFluid, updateLayoutSetting } = useIsContainerFluid();
   const [retrieveError, setRetrieveError] = useState<any>();
 
-  const retrieveData = useCallback(async() => {
+  const onClickSubmit = useCallback(async() => {
+    if (isContainerFluid == null) { return }
     try {
-      const res = await apiv3Get('/customize-setting/layout');
-      setIsContainerFluid(res.data.isContainerFluid);
-    }
-    catch (err) {
-      setRetrieveError(err);
-      toastError(err);
-    }
-  }, []);
-
-  useEffect(() => {
-    retrieveData();
-  }, [retrieveData]);
-
-  const onClickSubmit = async() => {
-    try {
-      await apiv3Put('/customize-setting/layout', { isContainerFluid });
-      toastSuccess(t('toaster.update_successed', { target: t('customize_settings.layout') }));
-      retrieveData();
+      await updateLayoutSetting({ isContainerFluid });
+      toastSuccess(t('toaster.update_successed', { target: t('customize_settings.layout'), ns: 'commons' }));
     }
     catch (err) {
       toastError(err);
     }
-  };
+  }, [isContainerFluid, updateLayoutSetting, t]);
+
+  if (isContainerFluid == null) {
+    return (
+      <div className="text-muted text-center">
+        <i className="fa fa-2x fa-spinner fa-pulse"></i>
+      </div>
+    );
+  }
 
   return (
     <React.Fragment>

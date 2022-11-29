@@ -8,7 +8,9 @@ import {
   Modal, ModalHeader, ModalBody, ModalFooter,
 } from 'reactstrap';
 
-import Username from '../User/Username';
+import { Username } from '../User/Username';
+
+import styles from './DeleteAttachmentModal.module.scss';
 
 
 function iconNameByFormat(format: string): string {
@@ -74,7 +76,13 @@ export const DeleteAttachmentModal = (props: Props): JSX.Element => {
 
 
   return (
-    <Modal isOpen={isOpen} className="attachment-delete-modal" size="lg" aria-labelledby="contained-modal-title-lg" fade={false}>
+    <Modal
+      isOpen={isOpen}
+      className={`${styles['attachment-delete-modal']} attachment-delete-modal`}
+      size="lg"
+      aria-labelledby="contained-modal-title-lg"
+      fade={false}
+    >
       <ModalHeader tag="h4" toggle={toggle} className="bg-danger text-light">
         <span id="contained-modal-title-lg">Delete attachment?</span>
       </ModalHeader>

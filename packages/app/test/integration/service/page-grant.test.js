@@ -30,6 +30,8 @@ describe('PageGrantService', () => {
   let groupParent;
   let groupChild;
 
+  const userGroupIdParent = new mongoose.Types.ObjectId();
+
   let rootPage;
   let rootPublicPage;
   let rootOnlyMePage;
@@ -72,18 +74,7 @@ describe('PageGrantService', () => {
   const pageE3GroupChildPath = '/E3/GroupChild';
   const pageE3User1Path = '/E3/User1';
 
-  /*
-   * prepare before all tests
-   */
-  beforeAll(async() => {
-    crowi = await getInstance();
-
-    pageGrantService = crowi.pageGrantService;
-
-    User = mongoose.model('User');
-    Page = mongoose.model('Page');
-    UserGroupRelation = mongoose.model('UserGroupRelation');
-
+  const createDocumentsToTestIsGrantNormalized = async() => {
     // Users
     await User.insertMany([
       { name: 'User1', username: 'User1', email: 'user1@example.com' },
@@ -93,22 +84,19 @@ describe('PageGrantService', () => {
     user1 = await User.findOne({ username: 'User1' });
     user2 = await User.findOne({ username: 'User2' });
 
-    // Parent user groups
     await UserGroup.insertMany([
       {
+        _id: userGroupIdParent,
         name: 'GroupParent',
         parent: null,
       },
-    ]);
-    groupParent = await UserGroup.findOne({ name: 'GroupParent' });
-
-    // Child user groups
-    await UserGroup.insertMany([
       {
         name: 'GroupChild',
-        parent: groupParent._id,
+        parent: userGroupIdParent,
       },
     ]);
+
+    groupParent = await UserGroup.findOne({ name: 'GroupParent' });
     groupChild = await UserGroup.findOne({ name: 'GroupChild' });
 
     // UserGroupRelations
@@ -319,6 +307,23 @@ describe('PageGrantService', () => {
     pageE3GroupParent = await Page.findOne({ path: pageE3GroupParentPath });
     pageE3GroupChild = await Page.findOne({ path: pageE3GroupChildPath });
     pageE3User1 = await Page.findOne({ path: pageE3User1Path });
+  };
+
+  /*
+   * prepare before all tests
+   */
+  beforeAll(async() => {
+    crowi = await getInstance();
+
+    pageGrantService = crowi.pageGrantService;
+
+    User = mongoose.model('User');
+    Page = mongoose.model('Page');
+    UserGroupRelation = mongoose.model('UserGroupRelation');
+
+    rootPage = await Page.findOne({ path: '/' });
+
+    await createDocumentsToTestIsGrantNormalized();
 
     xssSpy = jest.spyOn(crowi.xss, 'process').mockImplementation(path => path);
   });

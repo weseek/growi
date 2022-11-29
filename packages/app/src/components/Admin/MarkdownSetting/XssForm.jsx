@@ -28,7 +28,7 @@ class XssForm extends React.Component {
 
     try {
       await this.props.adminMarkDownContainer.updateXssSetting();
-      toastSuccess(t('toaster.update_successed', { target: t('markdown_settings.xss_header') }));
+      toastSuccess(t('toaster.update_successed', { target: t('markdown_settings.xss_header'), ns: 'commons' }));
     }
     catch (err) {
       toastError(err);
@@ -43,26 +43,8 @@ class XssForm extends React.Component {
     return (
       <div className="form-group col-12 my-3">
         <div className="row">
-          <div className="col-md-4 col-sm-12 align-self-start mb-4">
-            <div className="custom-control custom-radio ">
-              <input
-                type="radio"
-                className="custom-control-input"
-                id="xssOption1"
-                name="XssOption"
-                checked={xssOption === 1}
-                onChange={() => { adminMarkDownContainer.setState({ xssOption: 1 }) }}
-              />
-              <label className="custom-control-label w-100" htmlFor="xssOption1">
-                <p className="font-weight-bold">{t('markdown_settings.xss_options.remove_all_tags')}</p>
-                <div className="mt-4">
-                  {t('markdown_settings.xss_options.remove_all_tags_desc')}
-                </div>
-              </label>
-            </div>
-          </div>
 
-          <div className="col-md-4 col-sm-12 align-self-start mb-4">
+          <div className="col-md-6 col-sm-12 align-self-start mb-4">
             <div className="custom-control custom-radio">
               <input
                 type="radio"
@@ -104,7 +86,7 @@ class XssForm extends React.Component {
             </div>
           </div>
 
-          <div className="col-md-4 col-sm-12 align-self-start mb-4">
+          <div className="col-md-6 col-sm-12 align-self-start mb-4">
             <div className="custom-control custom-radio">
               <input
                 type="radio"

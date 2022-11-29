@@ -1,4 +1,3 @@
-@use '~/styles/variables' as var;
 @use '~/styles/bootstrap/init' as bs;
 
 .grw-codemirror-editor :global {
@@ -17,7 +16,7 @@
     pre.CodeMirror-line.grw-cm-header-line {
       padding-top: 0.16em;
       padding-bottom: 0.08em;
-      font-family: bs.$font-family-monospace;
+      font-family: var(--font-family-monospace);
 
       // '#'
       .cm-formatting-header {
@@ -75,16 +74,6 @@
   // overwrite .CodeMirror-hints
   .CodeMirror-hints {
     max-height: 30em !important;
-
-    .CodeMirror-hint.crowi-emoji-autocomplete {
-      font-family: var.$font-family-monospace-not-strictly;
-      line-height: 1.6em;
-
-      .img-container {
-        display: inline-block;
-        width: 30px;
-      }
-    }
 
     // active line
     .CodeMirror-hint-active.crowi-emoji-autocomplete {

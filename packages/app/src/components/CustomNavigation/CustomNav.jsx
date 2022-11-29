@@ -20,7 +20,7 @@ function getBreakpointOneLevelLarger(breakpoint) {
       return 'xl';
     case 'xl':
     default:
-      return '2xl';
+      return 'xxl';
   }
 }
 

@@ -5,7 +5,7 @@ import Link from 'next/link';
 
 import { apiv3Get } from '~/client/util/apiv3-client';
 import { IPageHasId } from '~/interfaces/page';
-import { useCurrentPagePath } from '~/stores/context';
+import { useCurrentPagePath } from '~/stores/page';
 import { useTimelineOptions } from '~/stores/renderer';
 
 import { RevisionLoader } from './Page/RevisionLoader';
@@ -65,7 +65,6 @@ export const PageTimeline = (): JSX.Element => {
                   lazy
                   rendererOptions={rendererOptions}
                   pageId={page._id}
-                  pagePath={page.path}
                   revisionId={page.revision}
                 />
               </div>

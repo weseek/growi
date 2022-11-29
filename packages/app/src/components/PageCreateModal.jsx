@@ -6,13 +6,16 @@ import { pagePathUtils, pathUtils } from '@growi/core';
 import { format } from 'date-fns';
 import { useTranslation } from 'next-i18next';
 import { useRouter } from 'next/router';
-import { Modal, ModalHeader, ModalBody } from 'reactstrap';
+import {
+  Modal, ModalHeader, ModalBody, UncontrolledButtonDropdown, DropdownToggle, DropdownMenu, DropdownItem,
+} from 'reactstrap';
 import { debounce } from 'throttle-debounce';
 
 
 import { toastError } from '~/client/util/apiNotification';
 import { useCurrentUser, useIsSearchServiceReachable } from '~/stores/context';
 import { usePageCreateModal } from '~/stores/modal';
+import { EditorMode, useEditorMode } from '~/stores/ui';
 
 import PagePathAutoComplete from './PagePathAutoComplete';
 
@@ -35,6 +38,8 @@ const PageCreateModal = () => {
   const isCreatable = isCreatablePage(pathname) || isUsersHomePage(pathname);
   const pageNameInputInitialValue = isCreatable ? pathUtils.addTrailingSlash(pathname) : '/';
   const now = format(new Date(), 'yyyy/MM/dd');
+
+  const { mutate: mutateEditorMode } = useEditorMode();
 
   const [todayInput1, setTodayInput1] = useState(t('Memo'));
   const [todayInput2, setTodayInput2] = useState('');
@@ -99,8 +104,9 @@ const PageCreateModal = () => {
    */
   async function redirectToEditor(...paths) {
     try {
-      const editorPath = await generateEditorPath(...paths);
-      router.push(editorPath);
+      const editorPath = generateEditorPath(...paths);
+      await router.push(editorPath);
+      mutateEditorMode(EditorMode.Editor);
 
       // close modal
       closeCreateModal();
@@ -261,34 +267,36 @@ const PageCreateModal = () => {
 
           <h3 className="grw-modal-head pb-2">
             {t('template.modal_label.Create template under')}<br />
-            <code className="h6">{pathname}</code>
+            <code className="h6" data-testid="grw-page-create-modal-path-name">{pathname}</code>
           </h3>
 
           <div className="d-sm-flex align-items-center justify-items-between">
 
-            <div id="dd-template-type" className="dropdown flex-fill">
-              <button id="template-type" type="button" className="btn btn-secondary btn dropdown-toggle w-100" data-toggle="dropdown">
+            <UncontrolledButtonDropdown id="dd-template-type" className='flex-fill text-center'>
+              <DropdownToggle id="template-type" caret>
                 {template == null && t('template.option_label.select')}
                 {template === 'children' && t('template.children.label')}
                 {template === 'decendants' && t('template.decendants.label')}
-              </button>
-              <div className="dropdown-menu" aria-labelledby="userMenu">
-                <button className="dropdown-item" type="button" onClick={() => onChangeTemplateHandler('children')}>
+              </DropdownToggle>
+              <DropdownMenu>
+                <DropdownItem onClick={() => onChangeTemplateHandler('children')}>
                   {t('template.children.label')} (_template)<br className="d-block d-md-none" />
                   <small className="text-muted text-wrap">- {t('template.children.desc')}</small>
-                </button>
-                <button className="dropdown-item" type="button" onClick={() => onChangeTemplateHandler('decendants')}>
+                </DropdownItem>
+                <DropdownItem onClick={() => onChangeTemplateHandler('decendants')}>
                   {t('template.decendants.label')} (__template) <br className="d-block d-md-none" />
                   <small className="text-muted">- {t('template.decendants.desc')}</small>
-                </button>
-              </div>
-            </div>
+                </DropdownItem>
+              </DropdownMenu>
+            </UncontrolledButtonDropdown>
 
             <div className="d-flex justify-content-end mt-1 mt-sm-0">
               <button
+                data-testid="grw-btn-edit-page"
                 type="button"
-                className={`grw-btn-create-page btn btn-outline-primary rounded-pill text-nowrap ml-3 ${template == null && 'disabled'}`}
+                className='grw-btn-create-page btn btn-outline-primary rounded-pill text-nowrap ml-3'
                 onClick={createTemplatePage}
+                disabled={template == null}
               >
                 <i className="icon-fw icon-doc"></i>{t('Edit')}
               </button>

@@ -12,7 +12,6 @@
   "Description": "説明",
   "last_login": "最終ログイン",
   "wiki_management_home_page": "Wiki管理トップ",
-  "app_settings": "アプリ設定",
   "public": "公開",
   "anyone_with_the_link": "リンクを知っている人のみ",
   "specified_users": "特定ユーザーのみ",
@@ -27,8 +26,8 @@
     "always_displayed": "表示 (固定)",
     "displayed_or_hidden": "表示 / 非表示",
     "Fixed by env var": "環境変数 <code>{{forcewikimode}}={{wikimode}}</code> により固定されています。",
-    "Register limitation": "登録の制限",
-    "Register limitation desc": "新しいユーザーを登録する方法を制限します.",
+    "register_limitation": "登録の制限",
+    "register_limitation_desc": "新しいユーザーを登録する方法を制限します。",
     "The whitelist of registration permission E-mail address": "登録許可メールアドレスの<br>ホワイトリスト",
     "users_without_account": "アカウントを持たないユーザーはアクセス不可",
     "example": "例",
@@ -62,7 +61,6 @@
     "page_delete_rights_caution": "「（子孫ページを含む）ゴミ箱に入れる操作 / 完全に削除する」の権限は、「ゴミ箱に入れる操作 / 完全に削除する」よりも強い権限になるように強制されます。 <br><br> 管理者のみ可能 > 管理者とページ作者が可能 > 誰でも可能",
     "Authentication mechanism settings": "認証機構設定",
     "setup_is_not_yet_complete":"セットアップはまだ完了してません",
-    "alert_siteUrl_is_not_set": "'サイトURL' が設定されていません。{{link}} から設定してください。",
     "xss_prevent_setting": "XSS(Cross Site Scripting)対策設定",
     "xss_prevent_setting_link": "マークダウン設定ページに移動",
     "callback_URL": "コールバックURL",
@@ -88,6 +86,10 @@
       "restricted": "制限 (登録完了には管理者の承認が必要)",
       "closed": "非公開 (登録には管理者による招待が必要)"
     },
+    "share_link_management": "共有リンク管理",
+    "No_share_links":"共有リンクが存在しません",
+    "share_link_notice":"共有リンクを全て削除します",
+    "delete_all_share_links":"全ての共有リンクを削除します",
     "share_link_rights": "シェアリンクの権限",
     "enable_link_sharing": "リンクのシェアを許可",
     "all_share_links": "全てのシェアリンク",
@@ -110,7 +112,6 @@
       "email_authentication": "ユーザー登録時のメール認証",
       "enable_email_authentication": "メール認証を有効にする",
       "enable_email_authentication_desc": "ユーザー登録時にメール認証を行います。",
-      "please_enable_mailer": "メール認証を有効にするには、メール設定を完了させてください。",
       "need_complete_mail_setting_warning": "以下の機能を使えるようにするには、メール設定を完了させてください。"
     },
     "ldap": {
@@ -278,7 +279,8 @@
     "delete_notification_pattern": "通知パターンを削除しました。",
     "delete_notification_pattern_desc1": "Path: {{path}} を削除します。",
     "delete_notification_pattern_desc2": "Once deleted, it cannot be recovered",
-    "toggle_notification": "{{path}}の通知設定を変更しました"
+    "toggle_notification": "{{path}}の通知設定を変更しました",
+    "not_found_global_notification_triggerid": "アクセス先の通知設定は見つかりませんでした"
   },
   "full_text_search_management": {
     "full_text_search_management": "全文検索管理",
@@ -324,8 +326,6 @@
     "submit_bug_report": "<a href='https://github.com/weseek/growi/issues/new?assignees=&labels=bug&template=bug-report.md&title=Bug%3A' target='_blank' rel='noreferrer'>次に GitHub で Issue を投稿してください。</a>"
   },
   "v5_page_migration": {
-    "page_tree_not_avaliable" : "Page Tree 機能は現在使用できません。",
-    "go_to_settings": "設定する",
     "migration_desc": "公開されているページに 古い v4 互換形式のものが存在します。ページツリーや簡単なリネームなどの新機能を利用するには、全てのページを v5 互換形式に変換してください。",
     "migration_note": "注意: ページパスからユニーク制約が失われます。",
     "upgrade_to_v5": "v5 互換形式 へ変換",
@@ -355,9 +355,12 @@
     "site_name": "サイト名",
     "sitename_change": "ヘッダーや HTML タイトルに使用されるサイト名を変更できます。",
     "header_content": "ここに入力した内容は、ヘッダー等に表示されます。",
-    "site_url_desc": "サイトURLを設定します。",
-    "site_url_warn": "サイトURLが設定されていないため、一部機能が動作しない状態になっています。",
-    "siteurl_help": "<code>http://</code> または <code>https://</code> から始まるサイトのURL",
+    "site_url": {
+      "title": "サイトURL設定",
+      "desc": "サイトURLを設定します。",
+      "warn": "サイトURLが設定されていないため、一部機能が動作しない状態になっています。",
+      "help": "<code>http://</code> または <code>https://</code> から始まるサイトのURL"
+    },
     "confidential_name": "コンフィデンシャル表示",
     "confidential_example": "例: 社外秘",
     "default_language": "新規ユーザーのデフォルト設定言語",
@@ -499,8 +502,6 @@
       "select_search_scope_children_as_default": "検索範囲のデフォルト設定を「この階層下の子ページ」にする",
       "select_search_scope_children_as_default_desc": "OFFの場合、検索範囲のデフォルト設定は「全てのページ」になります。"
     },
-    "code_highlight": "コードハイライト",
-    "nocdn_desc": "この機能は、環境変数 <code>NO_CDN=true</code> の時は無効化されます。<br>GitHub スタイルが適用されています。",
     "custom_title": "カスタム Title",
     "custom_title_detail": "<code>&lt;title&gt;</code>タグのコンテンツをカスタマイズできます。以下のプレースホルダーは自動的に置換されます:",
     "custom_title_detail_placeholder1": "<code>&#123;&#123;sitename&#125;&#125;</code> - この Wiki のサイト名",
@@ -533,7 +534,7 @@
     "export": "エクスポート",
     "cancel": "キャンセル",
     "file": "ファイル名",
-    "growi_version": "Growi バージョン",
+    "growi_version": "GROWI バージョン",
     "collections": "コレクション",
     "exported_at": "エクスポートされた時間",
     "export_menu": "エクスポートメニュー",
@@ -870,6 +871,9 @@
       "log_type": "https://docs.growi.org/ja/admin-guide/admin-cookbook/audit-log-setup.html#log-types"
     }
   },
+  "cloud_setting_management": {
+    "to_cloud_settings": "GROWI.cloud の管理画面へ"
+  },
   "audit_log_action_category": {
     "Page": "ページ",
     "Comment": "コメント",
@@ -1046,5 +1050,15 @@
     "error_upload_attachment": "添付ファイルのアップロードに失敗しました",
     "error_generate_growi_archive": "GROWI アーカイブファイルの作成に失敗しました",
     "error_send_growi_archive": "GROWI アーカイブファイルの送信に失敗しました"
+  },
+  "toaster": {
+    "give_user_admin": "{{username}}を管理者に設定しました",
+    "remove_user_admin": "{{username}}を管理者から外しました",
+    "activate_user_success": "{{username}}を有効化しました",
+    "deactivate_user_success": "{{username}}を無効化しました",
+    "remove_user_success": "{{username}}を削除しました",
+    "remove_external_user_success": "{{accountId}}を削除しました",
+    "switch_disable_link_sharing_success": "共有リンクの設定を変更しました",
+    "failed_to_reset_password":"パスワードのリセットに失敗しました"
   }
 }

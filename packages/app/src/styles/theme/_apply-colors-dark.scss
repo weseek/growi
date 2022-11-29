@@ -517,6 +517,13 @@ ul.pagination {
 }
 
 /*
+ * drawio
+ */
+.drawio-viewer {
+  border-color: $border-color-global;
+}
+
+/*
  * modal
  */
 .grw-modal-head {
@@ -524,8 +531,8 @@ ul.pagination {
 }
 
 /*
- * skelton
+ * skeleton
  */
-.grw-skelton {
+.grw-skeleton {
   background-color: lighten($bgcolor-subnav, 15%);
 }

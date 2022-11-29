@@ -9,14 +9,17 @@ import ReactCardFlip from 'react-card-flip';
 import { apiv3Post } from '~/client/util/apiv3-client';
 import { LoginErrorCode } from '~/interfaces/errors/login-error';
 import { IErrorV3 } from '~/interfaces/errors/v3-error';
+import { RegistrationMode } from '~/interfaces/registration-mode';
+import { toArrayIfNot } from '~/utils/array-utils';
+
+import { CompleteUserRegistration } from './CompleteUserRegistration';
 
 type LoginFormProps = {
   username?: string,
   name?: string,
   email?: string,
-  isRegistrationEnabled: boolean,
   isEmailAuthenticationEnabled: boolean,
-  registrationMode?: string,
+  registrationMode: RegistrationMode,
   registrationWhiteList: string[],
   isPasswordResetEnabled: boolean,
   isLocalStrategySetup: boolean,
@@ -30,7 +33,7 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
   const router = useRouter();
 
   const {
-    isLocalStrategySetup, isLdapStrategySetup, isLdapSetupFailed, isPasswordResetEnabled, isRegistrationEnabled,
+    isLocalStrategySetup, isLdapStrategySetup, isLdapSetupFailed, isPasswordResetEnabled,
     isEmailAuthenticationEnabled, registrationMode, registrationWhiteList, isMailerSetup, objOfIsExternalAuthEnableds,
   } = props;
   const isLocalOrLdapStrategiesEnabled = isLocalStrategySetup || isLdapStrategySetup;
@@ -48,6 +51,12 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
   const [emailForRegister, setEmailForRegister] = useState('');
   const [passwordForRegister, setPasswordForRegister] = useState('');
   const [registerErrors, setRegisterErrors] = useState<IErrorV3[]>([]);
+  // For UserActivation
+  const [emailForRegistrationOrder, setEmailForRegistrationOrder] = useState('');
+
+  const [isSuccessToRagistration, setIsSuccessToRagistration] = useState(false);
+
+  const isRegistrationEnabled = isLocalStrategySetup && registrationMode !== RegistrationMode.CLOSED;
 
   useEffect(() => {
     const { hash } = window.location;
@@ -80,10 +89,11 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
     try {
       const res = await apiv3Post('/login', { loginForm });
       const { redirectTo } = res.data;
-      router.push(redirectTo);
+      router.push(redirectTo ?? '/');
     }
     catch (err) {
-      setLoginErrors(err);
+      const errs = toArrayIfNot(err);
+      setLoginErrors(errs);
     }
     return;
 
@@ -257,8 +267,15 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
     );
   }, [props, renderExternalAuthInput]);
 
+  const resetRegisterErrors = useCallback(() => {
+    if (registerErrors.length === 0) return;
+    setRegisterErrors([]);
+  }, [registerErrors.length]);
+
   const handleRegisterFormSubmit = useCallback(async(e, requestPath) => {
     e.preventDefault();
+    setEmailForRegistrationOrder('');
+    setIsSuccessToRagistration(false);
 
     const registerForm = {
       username: usernameForRegister,
@@ -268,8 +285,19 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
     };
     try {
       const res = await apiv3Post(requestPath, { registerForm });
+
+      setIsSuccessToRagistration(true);
+      resetRegisterErrors();
+
       const { redirectTo } = res.data;
-      router.push(redirectTo);
+      if (redirectTo != null) {
+        router.push(redirectTo);
+      }
+
+      if (isEmailAuthenticationEnabled) {
+        setEmailForRegistrationOrder(emailForRegister);
+        return;
+      }
     }
     catch (err) {
       // Execute if error exists
@@ -278,12 +306,7 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
       }
     }
     return;
-  }, [emailForRegister, nameForRegister, passwordForRegister, router, usernameForRegister]);
-
-  const resetRegisterErrors = useCallback(() => {
-    if (registerErrors.length === 0) return;
-    setRegisterErrors([]);
-  }, [registerErrors.length]);
+  }, [usernameForRegister, nameForRegister, emailForRegister, passwordForRegister, resetRegisterErrors, router, isEmailAuthenticationEnabled]);
 
   const switchForm = useCallback(() => {
     setIsRegistering(!isRegistering);
@@ -302,7 +325,7 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
 
     return (
       <React.Fragment>
-        {registrationMode === 'Restricted' && (
+        {registrationMode === RegistrationMode.RESTRICTED && (
           <p className="alert alert-warning">
             {t('page_register.notice.restricted')}
             <br />
@@ -311,7 +334,7 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
         )}
         { (!isMailerSetup && isEmailAuthenticationEnabled) && (
           <p className="alert alert-danger">
-            <span>{t('security_settings.Local.please_enable_mailer')}</span>
+            <span>{t('commons:alert.please_enable_mailer')}</span>
           </p>
         )}
 
@@ -325,6 +348,14 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
                   </span>
                 );
               })}
+            </p>
+          )
+        }
+
+        {
+          (isEmailAuthenticationEnabled && isSuccessToRagistration) && (
+            <p className="alert alert-success">
+              <span>{t('message.successfully_send_email_auth', { email: emailForRegistrationOrder })}</span>
             </p>
           )
         }
@@ -379,6 +410,7 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
             </div>
             {/* email */}
             <input type="email"
+              disabled={!isMailerSetup && isEmailAuthenticationEnabled}
               className="form-control rounded-0"
               onChange={(e) => { setEmailForRegister(e.target.value) }}
               placeholder={t('Email')}
@@ -450,9 +482,14 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
         </div>
       </React.Fragment>
     );
-  }, [handleRegisterFormSubmit, isEmailAuthenticationEnabled, isMailerSetup,
-      props.email, props.name, props.username,
-      registerErrors, registrationMode, registrationWhiteList, switchForm, t]);
+  }, [
+    t, isEmailAuthenticationEnabled, registrationMode, isMailerSetup, registerErrors, isSuccessToRagistration,
+    emailForRegistrationOrder, props.username, props.name, props.email, registrationWhiteList, switchForm, handleRegisterFormSubmit,
+  ]);
+
+  if (registrationMode === RegistrationMode.RESTRICTED && isSuccessToRagistration && !isEmailAuthenticationEnabled) {
+    return <CompleteUserRegistration />;
+  }
 
   return (
     <div className="noLogin-dialog mx-auto" id="noLogin-dialog">

@@ -3,14 +3,12 @@ import React from 'react';
 import { useTranslation } from 'next-i18next';
 import PropTypes from 'prop-types';
 
-import AdminSocketIoContainer from '~/client/services/AdminSocketIoContainer';
 import { toastSuccess, toastError } from '~/client/util/apiNotification';
 import { apiv3Post } from '~/client/util/apiv3-client';
 import GrowiArchiveImportOption from '~/models/admin/growi-archive-import-option';
 import ImportOptionForPages from '~/models/admin/import-option-for-pages';
 import ImportOptionForRevisions from '~/models/admin/import-option-for-revisions';
-
-import { withUnstatedContainers } from '../../../UnstatedUtils';
+import { useAdminSocket } from '~/stores/socket-io';
 
 
 import ErrorViewer from './ErrorViewer';
@@ -103,7 +101,7 @@ class ImportForm extends React.Component {
   }
 
   setupWebsocketEventHandler() {
-    const socket = this.props.adminSocketIoContainer.getSocket();
+    const { socket } = this.props;
 
     // websocket event
     // eslint-disable-next-line object-curly-newline
@@ -143,7 +141,7 @@ class ImportForm extends React.Component {
   }
 
   teardownWebsocketEventHandler() {
-    const socket = this.props.adminSocketIoContainer.getSocket();
+    const { socket } = this.props;
 
     socket.removeAllListeners('admin:onProgressForImport');
     socket.removeAllListeners('admin:onTerminateForImport');
@@ -496,7 +494,7 @@ class ImportForm extends React.Component {
 
 ImportForm.propTypes = {
   t: PropTypes.func.isRequired, // i18next
-  adminSocketIoContainer: PropTypes.instanceOf(AdminSocketIoContainer).isRequired,
+  socket: PropTypes.object.isRequired,
 
   fileName: PropTypes.string,
   innerFileStats: PropTypes.arrayOf(PropTypes.object).isRequired,
@@ -506,13 +504,14 @@ ImportForm.propTypes = {
 
 const ImportFormWrapperFc = (props) => {
   const { t } = useTranslation('admin');
+  const { data: socket } = useAdminSocket();
 
-  return <ImportForm t={t} {...props} />;
+  if (socket == null) {
+    return;
+  }
+
+  return <ImportForm t={t} socket={socket} {...props} />;
 };
 
-/**
- * Wrapper component for using unstated
- */
-const ImportFormWrapper = withUnstatedContainers(ImportFormWrapperFc, [AdminSocketIoContainer]);
 
-export default ImportFormWrapper;
+export default ImportFormWrapperFc;

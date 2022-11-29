@@ -109,7 +109,9 @@ COPY packages/plugin-attachment-refs packages/plugin-attachment-refs
 COPY packages/plugin-lsx packages/plugin-lsx
 COPY packages/slack packages/slack
 COPY packages/ui packages/ui
+COPY packages/remark-drawio-plugin packages/remark-drawio-plugin
 COPY packages/remark-growi-plugin packages/remark-growi-plugin
+COPY packages/hackmd packages/hackmd
 
 # build
 RUN yarn lerna run build

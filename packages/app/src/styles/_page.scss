@@ -1,5 +1,5 @@
-// import diff2html styles
-@import '~diff2html/bundles/css/diff2html.min.css';
+// // import diff2html styles
+// @import '~/diff2html/bundles/css/diff2html.min.css';
 
 /**
  * for table with handsontable modal button
@@ -26,19 +26,6 @@
 
   &:hover .handsontable-modal-trigger {
     opacity: 1;
-  }
-}
-
-/**
- * for drawio with drawio iframe button
- */
-.editable-with-drawio {
-  .drawio-iframe-trigger {
-    top: 11px;
-    right: 10px;
-    z-index: 14;
-    font-size: 12px;
-    line-height: 1;
   }
 }
 

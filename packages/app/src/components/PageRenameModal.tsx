@@ -50,7 +50,6 @@ const PageRenameModal = (): JSX.Element => {
 
   const [subordinatedPages, setSubordinatedPages] = useState([]);
   const [existingPaths, setExistingPaths] = useState<string[]>([]);
-  const [canRename, setCanRename] = useState(false);
   const [isRenameRecursively, setIsRenameRecursively] = useState(true);
   const [isRenameRedirect, setIsRenameRedirect] = useState(false);
   const [isRemainMetadata, setIsRemainMetadata] = useState(false);
@@ -80,6 +79,16 @@ const PageRenameModal = (): JSX.Element => {
       setPageNameInput(page.data.path);
     }
   }, [isOpened, page, updateSubordinatedList]);
+
+  const canRename = useMemo(() => {
+    if (page == null || isMatchedWithUserHomePagePath || page.data.path === pageNameInput) {
+      return false;
+    }
+    if (isV5Compatible(page.meta)) {
+      return existingPaths.length === 0; // v5 data
+    }
+    return isRenameRecursively; // v4 data
+  }, [existingPaths.length, isMatchedWithUserHomePagePath, isRenameRecursively, page, pageNameInput]);
 
   const rename = useCallback(async() => {
     if (page == null || !canRename) {
@@ -127,9 +136,6 @@ const PageRenameModal = (): JSX.Element => {
     try {
       const res = await apiv3Get<{ existPaths: string[]}>('/page/exist-paths', { fromPath, toPath });
       const { existPaths } = res.data;
-      if (existPaths.length === 0) {
-        setCanRename(true);
-      }
       setExistingPaths(existPaths);
     }
     catch (err) {
@@ -156,13 +162,6 @@ const PageRenameModal = (): JSX.Element => {
       checkIsUsersHomePageDebounce(pageNameInput);
     }
   }, [isOpened, pageNameInput, subordinatedPages, checkExistPathsDebounce, page, checkIsUsersHomePageDebounce]);
-
-  useEffect(() => {
-    if (isOpened && page != null) {
-      setCanRename(false);
-    }
-  }, [isOpened, page, pageNameInput]);
-
 
   function ppacInputChangeHandler(value) {
     setErrs(null);
@@ -330,20 +329,8 @@ const PageRenameModal = (): JSX.Element => {
       return <></>;
     }
 
-    let submitButtonDisabled = false;
+    const submitButtonDisabled = !canRename;
 
-    if (isMatchedWithUserHomePagePath) {
-      submitButtonDisabled = true;
-    }
-    else if (!canRename) {
-      submitButtonDisabled = true;
-    }
-    else if (isV5Compatible(page.meta)) {
-      submitButtonDisabled = existingPaths.length !== 0; // v5 data
-    }
-    else {
-      submitButtonDisabled = !isRenameRecursively; // v4 data
-    }
     return (
       <>
         <ApiErrorMessageList errs={errs} targetPath={pageNameInput} />
