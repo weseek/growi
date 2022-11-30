@@ -73,10 +73,6 @@
             "path": "${workspaceFolder}/packages/core"
           },
           {
-            "url": "webpack://_n_e/plugin-attachment-refs",
-            "path": "${workspaceFolder}/packages/plugin-attachment-refs"
-          },
-          {
             "url": "webpack://_n_e/plugin-lsx",
             "path": "${workspaceFolder}/packages/plugin-lsx"
           },
