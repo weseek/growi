@@ -1,4 +1,4 @@
-@use '~/styles/bootstrap/init' as bs;
+@use '~/styles/bootstrap/init' as *;
 
 
 .nologin :global {
@@ -81,40 +81,40 @@
 
   $btn-fill-colors: (
     'login': (
-      rgba(bs.$danger, 0.4),
+      rgba($danger, 0.4),
       rgba(#7e4153, 0.7),
     ),
     'register': (
-      rgba(bs.$success, 0.4),
+      rgba($success, 0.4),
       rgba(#3f7263, 0.7),
     ),
     'google': (
       rgba(#24292e, 0.4),
-      bs.$gray-700,
+      $gray-700,
     ),
     'github': (
       rgba(lighten(black, 20%), 0.4),
-      bs.$gray-700,
+      $gray-700,
     ),
     'facebook': (
       rgba(#29487d, 0.4),
-      bs.$gray-700,
+      $gray-700,
     ),
     'twitter': (
       rgba(#1da1f2, 0.4),
-      bs.$gray-700,
+      $gray-700,
     ),
     'oidc': (
       rgba(#24292e, 0.4),
-      bs.$gray-700,
+      $gray-700,
     ),
     'saml': (
       rgba(#55a79a, 0.4),
-      bs.$gray-700,
+      $gray-700,
     ),
     'basic': (
       rgba(#24292e, 0.4),
-      bs.$gray-700,
+      $gray-700,
     ),
   );
 
@@ -147,7 +147,7 @@
 }
 
 .link-switch {
-  color: bs.$gray-200;
+  color: $gray-200;
 
   &:hover {
     color: white;
