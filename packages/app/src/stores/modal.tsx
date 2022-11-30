@@ -489,43 +489,60 @@ export const useDrawioModal = (status?: DrawioModalStatus): SWRResponse<DrawioMo
 /*
 * HandsonTableModal
 */
+// TODO: Define editor type
+type HandsonTableModalSaveHandler = (table: MarkdownTable) => void;
+
 type HandsontableModalStatus = {
   isOpened: boolean,
-  table?: MarkdownTable,
+  table: MarkdownTable,
   editor?: any,
   autoFormatMarkdownTable?: boolean,
-  onSave?: (table) => any,
+  onSave?: HandsonTableModalSaveHandler
 }
 
 type HandsontableModalStatusUtils = {
   open(
-    table?: MarkdownTable,
+    table: MarkdownTable,
     editor?: any,
     autoFormatMarkdownTable?: boolean,
-    onSave?: (table) => any
-  ): void // Promise<HandsontableModalStatus | undefined>
-  close(): void // Promise<HandsontableModalStatus | undefined>
+    onSave?: HandsonTableModalSaveHandler
+  ): void
+  close(): void
 }
 
 export const useHandsontableModal = (status?: HandsontableModalStatus): SWRResponse<HandsontableModalStatus, Error> & HandsontableModalStatusUtils => {
+  const defaultMarkdownTable = () => {
+    return new MarkdownTable(
+      [
+        ['col1', 'col2', 'col3'],
+        ['', '', ''],
+        ['', '', ''],
+      ],
+      {
+        align: ['', '', ''],
+      },
+    );
+  };
+
   const initialData: HandsontableModalStatus = {
     isOpened: false,
-    table: undefined,
+    table: defaultMarkdownTable(),
     editor: undefined,
     autoFormatMarkdownTable: false,
   };
+
   const swrResponse = useStaticSWR<HandsontableModalStatus, Error>('handsontableModalStatus', status, { fallbackData: initialData });
 
   const { mutate } = swrResponse;
 
-  const open = useCallback((table: MarkdownTable, editor?: any, autoFormatMarkdownTable?: boolean, onSave?: (table) => any): void => {
+  const open = useCallback((table: MarkdownTable, editor?: any, autoFormatMarkdownTable?: boolean, onSave?: HandsonTableModalSaveHandler): void => {
     mutate({
       isOpened: true, table, editor, autoFormatMarkdownTable, onSave,
     });
   }, [mutate]);
   const close = useCallback((): void => {
     mutate({
-      isOpened: false, table: undefined, editor: undefined, autoFormatMarkdownTable: false, onSave: undefined,
+      isOpened: false, table: defaultMarkdownTable(), editor: undefined, autoFormatMarkdownTable: false, onSave: undefined,
     });
   }, [mutate]);
 

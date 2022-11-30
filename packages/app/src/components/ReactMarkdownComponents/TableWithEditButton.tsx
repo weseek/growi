@@ -18,7 +18,6 @@ type TableWithEditButtonProps = {
   node: Element,
 }
 
-
 export const TableWithEditButton = React.memo((props: TableWithEditButtonProps): JSX.Element => {
   const { node, children } = props;
 
@@ -35,17 +34,15 @@ export const TableWithEditButton = React.memo((props: TableWithEditButtonProps):
   const showEditButton = !isGuestUser && !isSharedUser;
 
   return (
-    <div className={`${styles.test}`}>
-      <div className={`editable-with-handsontable ${styles['editable-with-handsontable']}`}>
-        { showEditButton && (
-          <button className="handsontable-modal-trigger" onClick={editButtonClickHandler}>
-            <i className="icon-note"></i>
-          </button>
-        )}
-        <table className="table table-bordered">
-          {children}
-        </table>
-      </div>
+    <div className={`editable-with-handsontable ${styles['editable-with-handsontable']}`}>
+      { showEditButton && (
+        <button className="handsontable-modal-trigger" onClick={editButtonClickHandler}>
+          <i className="icon-note"></i>
+        </button>
+      )}
+      <table className="table table-bordered">
+        {children}
+      </table>
     </div>
   );
 });

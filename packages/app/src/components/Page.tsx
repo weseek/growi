@@ -161,25 +161,14 @@ export const Page = (props) => {
     }
   }, [currentPage, mutateCurrentPage, mutateEditingMarkdown, saveOrUpdate, t, tagsInfo]);
 
-
-  const tableByHandsontableModal = useCallback((beginLineNumber, endLineNumber) => {
-    if (currentPage == null) {
-      return;
-    }
-
-    const markdown = currentPage.revision.body;
-    const tableLines = markdown.split(/\r\n|\r|\n/).slice(beginLineNumber - 1, endLineNumber).join('\n');
-    const table = MarkdownTable.fromMarkdownString(tableLines);
-    return table;
-  }, [currentPage]);
-
   // set handler to open HandsonTableModal
   useEffect(() => {
-    const handler = (bol, eol) => {
-      const table = tableByHandsontableModal(bol, eol);
-      if (table == null) {
+    const handler = (bol: number, eol: number) => {
+      if (currentPage == null) {
         return;
       }
+      const markdown = currentPage.revision.body;
+      const table = mtu.getMarkdownTableFromLine(markdown, bol, eol);
       openHandsontableModal(table, undefined, false, table => saveByHandsontableModal(table, bol, eol));
     };
     globalEmitter.on('launchHandsonTableModal', handler);
@@ -187,7 +176,7 @@ export const Page = (props) => {
     return function cleanup() {
       globalEmitter.removeListener('launchHandsonTableModal', handler);
     };
-  }, [openHandsontableModal, saveByHandsontableModal, tableByHandsontableModal]);
+  }, [currentPage, openHandsontableModal, saveByHandsontableModal]);
 
   if (currentPage == null || isGuestUser == null || rendererOptions == null) {
     const entries = Object.entries({
