@@ -1,5 +1,5 @@
 {
-  "name": "@growi/plugin-lsx",
+  "name": "@growi/remark-lsx",
   "version": "6.0.0-RC.9",
   "description": "GROWI plugin to list pages",
   "license": "MIT",

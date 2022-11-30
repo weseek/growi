@@ -11,7 +11,7 @@
     "paths": {
       "~/*": ["./src/*"],
       "^/*": ["./*"],
-      "@growi/plugin-lsx/*": ["../plugin-lsx/dist/cjs/*"],
+      "@growi/remark-lsx/*": ["../remark-lsx/dist/cjs/*"],
       "debug": ["./src/utils/logger/alias-for-debug"]
     }
   },

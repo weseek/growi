@@ -1,8 +1,8 @@
 // allow only types to import from react
 import { ComponentType } from 'react';
 
-import { Lsx, LsxImmutable } from '@growi/plugin-lsx/components';
-import * as lsxGrowiPlugin from '@growi/plugin-lsx/services/renderer';
+import { Lsx, LsxImmutable } from '@growi/remark-lsx/components';
+import * as lsxGrowiPlugin from '@growi/remark-lsx/services/renderer';
 import * as drawioPlugin from '@growi/remark-drawio-plugin';
 import growiPlugin from '@growi/remark-growi-plugin';
 import { Schema as SanitizeOption } from 'hast-util-sanitize';
