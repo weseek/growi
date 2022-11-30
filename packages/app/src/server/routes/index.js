@@ -48,8 +48,7 @@ module.exports = function(crowi, app) {
   const comment = require('./comment')(crowi, app);
   const tag = require('./tag')(crowi, app);
   const search = require('./search')(crowi, app);
-  // == TODO: Replace the code in hackmd.js getting the script path from manifest.json
-  // const hackmd = require('./hackmd')(crowi, app);
+  const hackmd = require('./hackmd')(crowi, app);
   const ogp = require('./ogp')(crowi);
 
   const next = nextFactory(crowi);
@@ -85,9 +84,11 @@ module.exports = function(crowi, app) {
 
   app.get('/register'                 , applicationInstalled, login.preLogin, login.register);
 
+  // NOTE: get method "/admin/export/:fileName" should be loaded before "/admin/*"
+  app.get('/admin/export/:fileName'   , loginRequiredStrictly , adminRequired ,admin.export.api.validators.export.download(), admin.export.download);
+
   app.get('/admin/*'                    , applicationInstalled, loginRequiredStrictly , adminRequired , next.delegateToNext);
   app.get('/admin'                    , applicationInstalled, loginRequiredStrictly , adminRequired , next.delegateToNext);
-  // app.get('/admin/app'                , applicationInstalled, loginRequiredStrictly , adminRequired , admin.app.index);
 
   // installer
   if (!isInstalled) {
@@ -110,52 +111,13 @@ module.exports = function(crowi, app) {
 
   app.post('/_api/login/testLdap'    , loginRequiredStrictly , loginFormValidator.loginRules() , loginFormValidator.loginValidation , loginPassport.testLdapCredentials);
 
-  // security admin
-  // app.get('/admin/security'          , loginRequiredStrictly , adminRequired , admin.security.index);
-
-  // markdown admin
-  // app.get('/admin/markdown'          , loginRequiredStrictly , adminRequired , admin.markdown.index);
-
-  // customize admin
-  // app.get('/admin/customize'         , loginRequiredStrictly , adminRequired , admin.customize.index);
-
-  // search admin
-  // app.get('/admin/search'            , loginRequiredStrictly , adminRequired , admin.search.index);
-
-  // notification admin
-  // app.get('/admin/notification'                         , loginRequiredStrictly , adminRequired , admin.notification.index);
-  // app.get('/admin/notification/slackAuth'               , loginRequiredStrictly , adminRequired , admin.notification.slackAuth);
-  // app.get('/admin/notification/slackSetting/disconnect' , loginRequiredStrictly , adminRequired , admin.notification.disconnectFromSlack);
-  // app.get('/admin/global-notification/new'              , loginRequiredStrictly , adminRequired , admin.globalNotification.detail);
-  // app.get('/admin/global-notification/:id'              , loginRequiredStrictly , adminRequired , admin.globalNotification.detail);
-  // app.get('/admin/slack-integration-legacy'             , loginRequiredStrictly , adminRequired,  admin.slackIntegrationLegacy);
-  // app.get('/admin/slack-integration'                    , loginRequiredStrictly , adminRequired,  admin.slackIntegration);
-
-  // app.get('/admin/users'                                , loginRequiredStrictly , adminRequired , admin.user.index);
-
-  // app.get('/admin/users/external-accounts'              , loginRequiredStrictly , adminRequired , admin.externalAccount.index);
-
-  // user-groups admin
-  // app.get('/admin/user-groups'                          , loginRequiredStrictly, adminRequired, admin.userGroup.index);
-  // app.get('/admin/user-group-detail/:id'                , loginRequiredStrictly, adminRequired, admin.userGroup.detail);
-
-  // auditLog admin
-  // app.get('/admin/audit-log'                            , loginRequiredStrictly, adminRequired, admin.auditLog.index);
-
   // importer management for admin
-  // app.get('/admin/importer'                     , loginRequiredStrictly , adminRequired , admin.importer.index);
   app.post('/_api/admin/settings/importerEsa'   , loginRequiredStrictly , adminRequired , csrfProtection, addActivity, admin.importer.api.validators.importer.esa(),admin.api.importerSettingEsa);
   app.post('/_api/admin/settings/importerQiita' , loginRequiredStrictly , adminRequired , csrfProtection, addActivity, admin.importer.api.validators.importer.qiita(), admin.api.importerSettingQiita);
   app.post('/_api/admin/import/esa'             , loginRequiredStrictly , adminRequired , csrfProtection, addActivity, admin.api.importDataFromEsa);
   app.post('/_api/admin/import/testEsaAPI'      , loginRequiredStrictly , adminRequired , csrfProtection, addActivity, admin.api.testEsaAPI);
   app.post('/_api/admin/import/qiita'           , loginRequiredStrictly , adminRequired , csrfProtection, addActivity, admin.api.importDataFromQiita);
   app.post('/_api/admin/import/testQiitaAPI'    , loginRequiredStrictly , adminRequired , csrfProtection, addActivity, admin.api.testQiitaAPI);
-
-  // export management for admin
-  // app.get('/admin/export'                       , loginRequiredStrictly , adminRequired ,admin.export.index);
-  // app.get('/admin/export/:fileName'             , loginRequiredStrictly , adminRequired ,admin.export.api.validators.export.download(), admin.export.download);
-
-  // app.get('/admin/*'                            , loginRequiredStrictly ,adminRequired, admin.notFound.index);
 
   /*
    * Routes below are unavailable when maintenance mode
@@ -223,12 +185,11 @@ module.exports = function(crowi, app) {
   app.get('/trash/$'                  , loginRequired, (req, res) => res.redirect('/trash'));
   app.get('/trash/*/$'                , loginRequired, injectUserUISettings, page.deletedPageListShowWrapper);
 
-  // == TODO: Replace the code in hackmd.js getting the script path from manifest.json
-  // app.get('/_hackmd/load-agent'          , hackmd.loadAgent);
-  // app.get('/_hackmd/load-styles'         , hackmd.loadStyles);
-  // app.post('/_api/hackmd.integrate'      , accessTokenParser , loginRequiredStrictly , hackmd.validateForApi, hackmd.integrate);
-  // app.post('/_api/hackmd.discard'        , accessTokenParser , loginRequiredStrictly , hackmd.validateForApi, hackmd.discard);
-  // app.post('/_api/hackmd.saveOnHackmd'   , accessTokenParser , loginRequiredStrictly , hackmd.validateForApi, hackmd.saveOnHackmd);
+  app.get('/_hackmd/load-agent'          , hackmd.loadAgent);
+  app.get('/_hackmd/load-styles'         , hackmd.loadStyles);
+  app.post('/_api/hackmd.integrate'      , accessTokenParser , loginRequiredStrictly , hackmd.validateForApi, hackmd.integrate);
+  app.post('/_api/hackmd.discard'        , accessTokenParser , loginRequiredStrictly , hackmd.validateForApi, hackmd.discard);
+  app.post('/_api/hackmd.saveOnHackmd'   , accessTokenParser , loginRequiredStrictly , hackmd.validateForApi, hackmd.saveOnHackmd);
 
   app.use('/forgot-password', express.Router()
     .use(forgotPassword.checkForgotPasswordEnabledMiddlewareFactory(crowi))
@@ -237,10 +198,10 @@ module.exports = function(crowi, app) {
     .use(forgotPassword.handleErrorsMiddleware(crowi)));
 
   app.get('/_private-legacy-pages', next.delegateToNext);
+
   app.use('/user-activation', express.Router()
-    .get('/:token', applicationInstalled, injectUserRegistrationOrderByTokenMiddleware, userActivation.form)
-    .use(userActivation.tokenErrorHandlerMiddeware));
-  app.post('/user-activation/register', applicationInstalled, csrfProtection, userActivation.registerRules(), userActivation.validateRegisterForm, userActivation.registerAction(crowi));
+    .get('/:token', applicationInstalled, injectUserRegistrationOrderByTokenMiddleware, userActivation.renderUserActivationPage(crowi))
+    .use(userActivation.tokenErrorHandlerMiddeware(crowi)));
 
   app.get('/share/:linkId', next.delegateToNext);
 

@@ -4,10 +4,12 @@ import React, { useEffect } from 'react';
 import EventEmitter from 'events';
 
 import {
-  IDataWithMeta, IPageInfoForEntity, IPagePopulatedToShowRevision, isClient, isIPageInfoForEntity, IUser, IUserHasId, pagePathUtils, pathUtils,
+  isClient, isIPageInfoForEntity, pagePathUtils, pathUtils,
+} from '@growi/core';
+import type {
+  IDataWithMeta, IPageInfoForEntity, IPagePopulatedToShowRevision, IUser, IUserHasId,
 } from '@growi/core';
 import ExtensibleCustomError from 'extensible-custom-error';
-import { model as mongooseModel } from 'mongoose';
 import {
   NextPage, GetServerSideProps, GetServerSidePropsContext,
 } from 'next';
@@ -21,24 +23,25 @@ import { Comments } from '~/components/Comments';
 import { PageAlerts } from '~/components/PageAlert/PageAlerts';
 // import { useTranslation } from '~/i18n';
 import { CurrentPageContentFooter } from '~/components/PageContentFooter';
+import { DrawioViewerScript } from '~/components/Script/DrawioViewerScript';
 import { UsersHomePageFooterProps } from '~/components/UsersHomePageFooter';
-import { CrowiRequest } from '~/interfaces/crowi-request';
+import type { CrowiRequest } from '~/interfaces/crowi-request';
 // import { renderScriptTagByName, renderHighlightJsStyleTag } from '~/service/cdn-resources-loader';
-// import { useIndentSize } from '~/stores/editor';
 // import { useRendererSettings } from '~/stores/renderer';
 // import { EditorMode, useEditorMode, useIsMobile } from '~/stores/ui';
-import { EditorConfig } from '~/interfaces/editor-settings';
-import { CustomWindow } from '~/interfaces/global';
-import { RendererConfig } from '~/interfaces/services/renderer';
-import { ISidebarConfig } from '~/interfaces/sidebar-config';
-import { IUserUISettings } from '~/interfaces/user-ui-settings';
-import { PageModel, PageDocument } from '~/server/models/page';
-import { PageRedirectModel } from '~/server/models/page-redirect';
-import { UserUISettingsModel } from '~/server/models/user-ui-settings';
+import type { EditorConfig } from '~/interfaces/editor-settings';
+import type { RendererConfig } from '~/interfaces/services/renderer';
+import type { ISidebarConfig } from '~/interfaces/sidebar-config';
+import type { IUserUISettings } from '~/interfaces/user-ui-settings';
+import type { PageModel, PageDocument } from '~/server/models/page';
+import type { PageRedirectModel } from '~/server/models/page-redirect';
+import type { UserUISettingsModel } from '~/server/models/user-ui-settings';
+import { useEditingMarkdown } from '~/stores/editor';
 import { useSWRxCurrentPage, useSWRxIsGrantNormalized } from '~/stores/page';
 import { useRedirectFrom } from '~/stores/page-redirect';
 import {
-  usePreferDrawerModeByUser, usePreferDrawerModeOnEditByUser, useSidebarCollapsed, useCurrentSidebarContents, useCurrentProductNavWidth, useSelectedGrant,
+  useEditorMode, useSelectedGrant,
+  usePreferDrawerModeByUser, usePreferDrawerModeOnEditByUser, useSidebarCollapsed, useCurrentSidebarContents, useCurrentProductNavWidth,
 } from '~/stores/ui';
 import loggerFactory from '~/utils/logger';
 
@@ -53,16 +56,16 @@ import DisplaySwitcher from '../components/Page/DisplaySwitcher';
 // import { serializeUserSecurely } from '../server/models/serializers/user-serializer';
 // import PageStatusAlert from '../client/js/components/PageStatusAlert';
 import {
-  useCurrentUser, useCurrentPagePath,
+  useCurrentUser,
   useIsLatestRevision,
-  useIsForbidden, useIsNotFound, useIsTrashPage, useIsSharedUser,
+  useIsForbidden, useIsNotFound, useIsSharedUser,
   useIsEnabledStaleNotification, useIsIdenticalPath,
   useIsSearchServiceConfigured, useIsSearchServiceReachable, useDisableLinkSharing,
-  useDrawioUri, useHackmdUri,
-  useIsAclEnabled, useIsUserPage, useIsSearchPage,
+  useDrawioUri, useHackmdUri, useDefaultIndentSize, useIsIndentSizeForced,
+  useIsAclEnabled, useIsSearchPage, useTemplateTagData, useTemplateBodyData, useIsEnabledAttachTitleHeader,
   useCsrfToken, useIsSearchScopeChildrenAsDefault, useCurrentPageId, useCurrentPathname,
-  useIsSlackConfigured, useRendererConfig, useEditingMarkdown,
-  useEditorConfig, useIsAllReplyShown, useIsUploadableFile, useIsUploadableImage,
+  useIsSlackConfigured, useRendererConfig,
+  useEditorConfig, useIsAllReplyShown, useIsUploadableFile, useIsUploadableImage, useCustomizedLogoSrc, useIsContainerFluid,
 } from '../stores/context';
 
 import {
@@ -71,12 +74,19 @@ import {
 // import { useCurrentPageSWR } from '../stores/page';
 
 
+declare global {
+  // eslint-disable-next-line vars-on-top, no-var
+  var globalEmitter: EventEmitter;
+}
+
+
 const NotCreatablePage = dynamic(() => import('../components/NotCreatablePage').then(mod => mod.NotCreatablePage), { ssr: false });
 const ForbiddenPage = dynamic(() => import('../components/ForbiddenPage'), { ssr: false });
-const UnsavedAlertDialog = dynamic(() => import('./UnsavedAlertDialog'), { ssr: false });
+const UnsavedAlertDialog = dynamic(() => import('../components/UnsavedAlertDialog'), { ssr: false });
 const GrowiSubNavigationSwitcher = dynamic(() => import('../components/Navbar/GrowiSubNavigationSwitcher'), { ssr: false });
 const UsersHomePageFooter = dynamic<UsersHomePageFooterProps>(() => import('../components/UsersHomePageFooter')
   .then(mod => mod.UsersHomePageFooter), { ssr: false });
+const HandsontableModal = dynamic(() => import('../components/PageEditor/HandsontableModal').then(mod => mod.HandsontableModal), { ssr: false });
 
 const logger = loggerFactory('growi:pages:all');
 
@@ -131,13 +141,16 @@ type Props = CommonProps & {
   redirectFrom?: string;
 
   // shareLinkId?: string;
-  isLatestRevision?: boolean
+  isLatestRevision?: boolean,
 
   isIdenticalPathPage?: boolean,
   isForbidden: boolean,
   isNotFound: boolean,
   isNotCreatablePage: boolean,
   // isAbleToDeleteCompletely: boolean,
+
+  templateTagData?: string[],
+  templateBodyData?: string,
 
   isSearchServiceConfigured: boolean,
   isSearchServiceReachable: boolean,
@@ -147,18 +160,19 @@ type Props = CommonProps & {
   // isMailerSetup: boolean,
   isAclEnabled: boolean,
   // hasSlackConfig: boolean,
-  drawioUri: string,
+  drawioUri: string | null,
   hackmdUri: string,
   noCdn: string,
   // highlightJsStyle: string,
   isAllReplyShown: boolean,
-  // isContainerFluid: boolean,
+  isContainerFluid: boolean,
   editorConfig: EditorConfig,
   isEnabledStaleNotification: boolean,
+  isEnabledAttachTitleHeader: boolean,
   // isEnabledLinebreaks: boolean,
   // isEnabledLinebreaksInComments: boolean,
-  // adminPreferredIndentSize: number,
-  // isIndentSizeForced: boolean,
+  adminPreferredIndentSize: number,
+  isIndentSizeForced: boolean,
   disableLinkSharing: boolean,
 
   rendererConfig: RendererConfig,
@@ -176,13 +190,14 @@ const GrowiPage: NextPage<Props> = (props: Props) => {
   const { data: currentUser } = useCurrentUser(props.currentUser ?? null);
 
   // register global EventEmitter
-  if (isClient()) {
-    (window as CustomWindow).globalEmitter = new EventEmitter();
+  if (isClient() && window.globalEmitter == null) {
+    window.globalEmitter = new EventEmitter();
   }
 
   // commons
   useEditorConfig(props.editorConfig);
   useCsrfToken(props.csrfToken);
+  useCustomizedLogoSrc(props.customizedLogoSrc);
 
   // UserUISettings
   usePreferDrawerModeByUser(props.userUISettings?.preferDrawerModeByUser ?? props.sidebarConfig.isSidebarDrawerMode);
@@ -193,6 +208,7 @@ const GrowiPage: NextPage<Props> = (props: Props) => {
 
   // page
   useIsLatestRevision(props.isLatestRevision);
+  useIsContainerFluid(props.isContainerFluid);
   // useOwnerOfCurrentPage(props.pageUser != null ? JSON.parse(props.pageUser) : null);
   useIsForbidden(props.isForbidden);
   useIsNotFound(props.isNotFound);
@@ -206,6 +222,10 @@ const GrowiPage: NextPage<Props> = (props: Props) => {
   useIsEnabledStaleNotification(props.isEnabledStaleNotification);
   useIsSearchPage(false);
 
+  useTemplateTagData(props.templateTagData);
+  useTemplateBodyData(props.templateBodyData);
+
+  useIsEnabledAttachTitleHeader(props.isEnabledAttachTitleHeader);
   useIsSearchServiceConfigured(props.isSearchServiceConfigured);
   useIsSearchServiceReachable(props.isSearchServiceReachable);
   useIsSearchScopeChildrenAsDefault(props.isSearchScopeChildrenAsDefault);
@@ -217,7 +237,8 @@ const GrowiPage: NextPage<Props> = (props: Props) => {
   useDrawioUri(props.drawioUri);
   useHackmdUri(props.hackmdUri);
   // useNoCdn(props.noCdn);
-  // useIndentSize(props.adminPreferredIndentSize);
+  useDefaultIndentSize(props.adminPreferredIndentSize);
+  useIsIndentSizeForced(props.isIndentSizeForced);
   useDisableLinkSharing(props.disableLinkSharing);
   useRendererConfig(props.rendererConfig);
   // useRendererSettings(props.rendererSettingsStr != null ? JSON.parse(props.rendererSettingsStr) : undefined);
@@ -227,25 +248,23 @@ const GrowiPage: NextPage<Props> = (props: Props) => {
   useIsUploadableFile(props.editorConfig.upload.isUploadableFile);
   useIsUploadableImage(props.editorConfig.upload.isUploadableImage);
 
-  // const { data: editorMode } = useEditorMode();
-
   const { pageWithMeta, userUISettings } = props;
-
-  useSWRxCurrentPage(undefined, pageWithMeta?.data ?? null); // store initial data
-  useEditingMarkdown(pageWithMeta?.data.revision?.body ?? '');
 
   const pageId = pageWithMeta?.data._id;
   const pagePath = pageWithMeta?.data.path ?? (!_isPermalink(props.currentPathname) ? props.currentPathname : undefined);
 
   useCurrentPageId(pageId ?? null);
-  useIsUserPage(pagePath != null && isUserPage(pagePath));
   // useIsNotCreatable(props.isForbidden || !isCreatablePage(pagePath)); // TODO: need to include props.isIdentical
-  useCurrentPagePath(pagePath);
   useCurrentPathname(props.currentPathname);
-  useIsTrashPage(pagePath != null && _isTrashPage(pagePath));
+
+  const { data: currentPage } = useSWRxCurrentPage(undefined, pageWithMeta?.data ?? null); // store initial data
+
+  useEditingMarkdown(pageWithMeta?.data.revision?.body);
 
   const { data: grantData } = useSWRxIsGrantNormalized(pageId);
   const { mutate: mutateSelectedGrant } = useSelectedGrant();
+
+  const { getClassNamesByEditorMode } = useEditorMode();
 
   const shouldRenderPutbackPageModal = pageWithMeta != null
     ? _isTrashPage(pageWithMeta.data.path)
@@ -265,19 +284,17 @@ const GrowiPage: NextPage<Props> = (props: Props) => {
   }, [props.currentPathname, router]);
 
   const classNames: string[] = [];
-  // switch (editorMode) {
-  //   case EditorMode.Editor:
-  //     classNames.push('on-edit', 'builtin-editor');
-  //     break;
-  //   case EditorMode.HackMD:
-  //     classNames.push('on-edit', 'hackmd');
-  //     break;
-  // }
-  // if (page == null) {
-  //   classNames.push('not-found-page');
-  // }
+
+  const isSidebar = pagePath === '/Sidebar';
+  classNames.push(...getClassNamesByEditorMode(isSidebar));
 
   const isTopPagePath = isTopPage(pageWithMeta?.data.path ?? '');
+
+  const isContainerFluidEachPage = currentPage == null || !('expandContentWidth' in currentPage)
+    ? null
+    : currentPage.expandContentWidth;
+  const isContainerFluidDefault = props.isContainerFluid;
+  const isContainerFluid = isContainerFluidEachPage ?? isContainerFluidDefault;
 
   return (
     <>
@@ -288,11 +305,16 @@ const GrowiPage: NextPage<Props> = (props: Props) => {
         {renderHighlightJsStyleTag(props.highlightJsStyle)}
         */}
       </Head>
-      {/* <BasicLayout title={useCustomTitle(props, t('GROWI'))} className={classNames.join(' ')}> */}
-      <BasicLayout title={useCustomTitle(props, 'GROWI')} className={classNames.join(' ')} expandContainer={props.isContainerFluid}>
+
+      <DrawioViewerScript />
+
+      <BasicLayout title={useCustomTitle(props, 'GROWI')} className={classNames.join(' ')} expandContainer={isContainerFluid}>
+
         <div className="h-100 d-flex flex-column justify-content-between">
           <header className="py-0 position-relative">
-            <GrowiContextualSubNavigation isLinkSharingDisabled={props.disableLinkSharing} />
+            <div id="grw-subnav-container">
+              <GrowiContextualSubNavigation isLinkSharingDisabled={props.disableLinkSharing} />
+            </div>
           </header>
           <div className="d-edit-none">
             <GrowiSubNavigationSwitcher />
@@ -327,7 +349,9 @@ const GrowiPage: NextPage<Props> = (props: Props) => {
           </div>
           { !props.isIdenticalPathPage && !props.isNotFound && (
             <footer className="footer d-edit-none">
-              { pageWithMeta != null && !isTopPagePath && (<Comments pageId={pageId} revision={pageWithMeta.data.revision} />) }
+              { pageWithMeta != null && pagePath != null && !isTopPagePath && (
+                <Comments pageId={pageId} pagePath={pagePath} revision={pageWithMeta.data.revision} />
+              ) }
               { pageWithMeta != null && isUsersHomePage(pageWithMeta.data.path) && (
                 <UsersHomePageFooter creatorId={pageWithMeta.data.creator._id}/>
               ) }
@@ -337,6 +361,7 @@ const GrowiPage: NextPage<Props> = (props: Props) => {
 
           <UnsavedAlertDialog />
           <DescendantsPageListModal />
+          <HandsontableModal />
           {shouldRenderPutbackPageModal && <PutbackPageModal />}
         </div>
       </BasicLayout>
@@ -361,6 +386,8 @@ class MultiplePagesHitsError extends ExtensibleCustomError {
 }
 
 async function injectPageData(context: GetServerSidePropsContext, props: Props): Promise<void> {
+  const { model: mongooseModel } = await import('mongoose');
+
   const req: CrowiRequest = context.req as CrowiRequest;
   const { crowi } = req;
   const { revisionId } = req.query;
@@ -409,10 +436,20 @@ async function injectPageData(context: GetServerSidePropsContext, props: Props):
     props.isLatestRevision = page.isLatestRevision();
   }
 
+  if (page == null && user != null) {
+    const templateData = await Page.findTemplate(props.currentPathname);
+    if (templateData != null) {
+      props.templateTagData = templateData.templateTags as string[];
+      props.templateBodyData = templateData.templateBody as string;
+    }
+  }
+
   props.pageWithMeta = pageWithMeta;
 }
 
 async function injectUserUISettings(context: GetServerSidePropsContext, props: Props): Promise<void> {
+  const { model: mongooseModel } = await import('mongoose');
+
   const req = context.req as CrowiRequest<IUserHasId & any>;
   const { user } = req;
   const UserUISettings = mongooseModel('UserUISettings') as UserUISettingsModel;
@@ -446,7 +483,6 @@ async function injectRoutingInformation(context: GetServerSidePropsContext, prop
   }
   else {
     props.isNotFound = page.isEmpty;
-
     // /62a88db47fed8b2d94f30000 ==> /path/to/page
     if (isPermalink && page.isEmpty) {
       props.currentPathname = page.path;
@@ -496,7 +532,7 @@ function injectServerConfigurations(context: GetServerSidePropsContext, props: P
   props.noCdn = configManager.getConfig('crowi', 'app:noCdn');
   // props.highlightJsStyle = configManager.getConfig('crowi', 'customize:highlightJsStyle');
   props.isAllReplyShown = configManager.getConfig('crowi', 'customize:isAllReplyShown');
-  // props.isContainerFluid = configManager.getConfig('crowi', 'customize:isContainerFluid');
+  props.isContainerFluid = configManager.getConfig('crowi', 'customize:isContainerFluid');
   props.isEnabledStaleNotification = configManager.getConfig('crowi', 'customize:isEnabledStaleNotification');
   // props.isEnabledLinebreaks = configManager.getConfig('markdown', 'markdown:isEnabledLinebreaks');
   // props.isEnabledLinebreaksInComments = configManager.getConfig('markdown', 'markdown:isEnabledLinebreaksInComments');
@@ -507,8 +543,10 @@ function injectServerConfigurations(context: GetServerSidePropsContext, props: P
       isUploadableImage: crowi.fileUploadService.getIsUploadable(),
     },
   };
-  // props.adminPreferredIndentSize = configManager.getConfig('markdown', 'markdown:adminPreferredIndentSize');
-  // props.isIndentSizeForced = configManager.getConfig('markdown', 'markdown:isIndentSizeForced');
+  props.adminPreferredIndentSize = configManager.getConfig('markdown', 'markdown:adminPreferredIndentSize');
+  props.isIndentSizeForced = configManager.getConfig('markdown', 'markdown:isIndentSizeForced');
+
+  props.isEnabledAttachTitleHeader = configManager.getConfig('crowi', 'customize:isEnabledAttachTitleHeader');
 
   props.rendererConfig = {
     isEnabledLinebreaks: configManager.getConfig('markdown', 'markdown:isEnabledLinebreaks'),

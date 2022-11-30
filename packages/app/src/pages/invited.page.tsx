@@ -1,13 +1,13 @@
 import React from 'react';
 
-import { IUserHasId, IUser } from '@growi/core';
+import type { IUserHasId, IUser } from '@growi/core';
 import { NextPage, GetServerSideProps, GetServerSidePropsContext } from 'next';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import dynamic from 'next/dynamic';
 
 import { InvitedFormProps } from '~/components/InvitedForm';
 import { NoLoginLayout } from '~/components/Layout/NoLoginLayout';
-import { CrowiRequest } from '~/interfaces/crowi-request';
+import type { CrowiRequest } from '~/interfaces/crowi-request';
 
 import { useCsrfToken, useCurrentPathname, useCurrentUser } from '../stores/context';
 

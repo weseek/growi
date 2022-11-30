@@ -4,12 +4,10 @@ import { UserPicture } from '@growi/ui';
 import dateFnsFormat from 'date-fns/format';
 import { useTranslation } from 'next-i18next';
 
-import { IUserGroupHasId, IUserGroupRelation } from '~/interfaces/user';
-import { useSWRxUserGroupRelations } from '~/stores/user-group';
+import type { IUserGroupRelationHasIdPopulatedUser } from '~/interfaces/user-group-response';
 
 type Props = {
-  userGroupRelations: IUserGroupRelation[],
-  userGroup: IUserGroupHasId,
+  userGroupRelations: IUserGroupRelationHasIdPopulatedUser[] | undefined,
   onClickRemoveUserBtn: (username: string) => Promise<void>,
   onClickPlusBtn: () => void,
 }
@@ -18,10 +16,8 @@ export const UserGroupUserTable = (props: Props): JSX.Element => {
   const { t } = useTranslation();
 
   const {
-    userGroup, onClickRemoveUserBtn, onClickPlusBtn,
+    userGroupRelations, onClickRemoveUserBtn, onClickPlusBtn,
   } = props;
-  const { data: userGroupRelations } = useSWRxUserGroupRelations(userGroup._id);
-
 
   return (
     <table className="table table-bordered table-user-list">
@@ -44,7 +40,7 @@ export const UserGroupUserTable = (props: Props): JSX.Element => {
           return (
             <tr key={relation._id}>
               <td>
-                <UserPicture user={relatedUser} className="picture rounded-circle" />
+                <UserPicture user={relatedUser} />
               </td>
               <td>
                 <strong>{relatedUser.username}</strong>

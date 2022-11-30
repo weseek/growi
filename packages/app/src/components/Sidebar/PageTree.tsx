@@ -3,8 +3,9 @@ import React, { FC, memo } from 'react';
 import { useTranslation } from 'next-i18next';
 
 import {
-  useCurrentPagePath, useCurrentPageId, useTargetAndAncestors, useIsGuestUser,
+  useCurrentPageId, useTargetAndAncestors, useIsGuestUser,
 } from '~/stores/context';
+import { useCurrentPagePath } from '~/stores/page';
 import { useSWRxV5MigrationStatus } from '~/stores/page-listing';
 
 import ItemsTree from './PageTree/ItemsTree';
@@ -43,8 +44,8 @@ const PageTree: FC = memo(() => {
           <h3 className="mb-0">{t('Page Tree')}</h3>
         </div>
         <div className="mt-5 mx-2 text-center">
-          <h3 className="text-gray">{t('admin:v5_page_migration.page_tree_not_avaliable')}</h3>
-          <a href="/admin">{t('admin:v5_page_migration.go_to_settings')}</a>
+          <h3 className="text-gray">{t('v5_page_migration.page_tree_not_avaliable')}</h3>
+          <a href="/admin">{t('v5_page_migration.go_to_settings')}</a>
         </div>
       </>
     );

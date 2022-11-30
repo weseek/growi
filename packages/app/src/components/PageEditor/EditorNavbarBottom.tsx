@@ -4,8 +4,9 @@ import dynamic from 'next/dynamic';
 import { Collapse, Button } from 'reactstrap';
 
 
-import { useCurrentPagePath, useIsSlackConfigured } from '~/stores/context';
+import { useIsSlackConfigured } from '~/stores/context';
 import { useSWRxSlackChannels, useIsSlackEnabled } from '~/stores/editor';
+import { useCurrentPagePath } from '~/stores/page';
 import {
   EditorMode, useDrawerOpened, useEditorMode, useIsDeviceSmallerThanMd,
 } from '~/stores/ui';

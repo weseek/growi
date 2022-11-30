@@ -1,5 +1,6 @@
 import React, {
   useState, useRef, useImperativeHandle, useCallback, ForwardRefRenderFunction, forwardRef,
+  memo,
 } from 'react';
 
 import Dropzone from 'react-dropzone';
@@ -228,7 +229,7 @@ const Editor: ForwardRefRenderFunction<IEditorMethods, EditorPropsType> = (props
 
   const renderNavbar = useCallback(() => {
     return (
-      <div className="m-0 navbar navbar-default navbar-editor" style={{ minHeight: 'unset' }}>
+      <div className="m-0 navbar navbar-default navbar-editor" data-testid="navbar-editor" style={{ minHeight: 'unset' }}>
         <ul className="pl-2 nav nav-navbar">
           { (editorSubstance()?.getNavbarItems() ?? []).map((item, idx) => {
             // eslint-disable-next-line react/no-array-index-key
@@ -347,4 +348,4 @@ const Editor: ForwardRefRenderFunction<IEditorMethods, EditorPropsType> = (props
   );
 };
 
-export default forwardRef(Editor);
+export default memo(forwardRef(Editor));

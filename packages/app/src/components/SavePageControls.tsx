@@ -1,35 +1,36 @@
 import React, { useCallback } from 'react';
 
-import { pagePathUtils, PageGrant } from '@growi/core';
+import EventEmitter from 'events';
+
+import { pagePathUtils } from '@growi/core';
 import { useTranslation } from 'next-i18next';
 import {
   UncontrolledButtonDropdown, Button,
   DropdownToggle, DropdownMenu, DropdownItem,
 } from 'reactstrap';
 
-// import PageContainer from '~/client/services/PageContainer';
-import { CustomWindow } from '~/interfaces/global';
 import { IPageGrantData } from '~/interfaces/page';
 import {
-  useCurrentPagePath, useIsEditable, useCurrentPageId, useIsAclEnabled,
+  useIsEditable, useCurrentPageId, useIsAclEnabled,
 } from '~/stores/context';
-import { useIsEnabledUnsavedWarning } from '~/stores/editor';
+import { useCurrentPagePath } from '~/stores/page';
 import { useSelectedGrant } from '~/stores/ui';
 import loggerFactory from '~/utils/logger';
 
 import GrantSelector from './SavePageControls/GrantSelector';
 
-// import { withUnstatedContainers } from './UnstatedUtils';
+
+declare global {
+  // eslint-disable-next-line vars-on-top, no-var
+  var globalEmitter: EventEmitter;
+}
+
 
 const logger = loggerFactory('growi:SavePageControls');
 
-type Props = {
-  // pageContainer: PropTypes.instanceOf(PageContainer).isRequired,
-}
-
 const { isTopPage } = pagePathUtils;
 
-export const SavePageControls = (props: Props): JSX.Element | null => {
+export const SavePageControls = (): JSX.Element | null => {
   const { t } = useTranslation();
   const { data: currentPagePath } = useCurrentPagePath();
   const { data: isEditable } = useIsEditable();
@@ -44,12 +45,12 @@ export const SavePageControls = (props: Props): JSX.Element | null => {
 
   const save = useCallback(async(): Promise<void> => {
     // save
-    (window as CustomWindow).globalEmitter.emit('saveAndReturnToView');
+    globalEmitter.emit('saveAndReturnToView');
   }, []);
 
   const saveAndOverwriteScopesOfDescendants = useCallback(() => {
     // save
-    (window as CustomWindow).globalEmitter.emit('saveAndReturnToView', { overwriteScopesOfDescendants: true });
+    globalEmitter.emit('saveAndReturnToView', { overwriteScopesOfDescendants: true });
   }, []);
 
 

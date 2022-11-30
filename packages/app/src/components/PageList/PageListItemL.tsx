@@ -4,7 +4,7 @@ import React, {
 } from 'react';
 
 
-import { DevidedPagePath } from '@growi/core';
+import { DevidedPagePath, pathUtils } from '@growi/core';
 import { UserPicture, PageListMeta } from '@growi/ui';
 import { format } from 'date-fns';
 import { useTranslation } from 'next-i18next';
@@ -54,6 +54,8 @@ const PageListItemLSubstance: ForwardRefRenderFunction<ISelectable, Props> = (pr
     showPageUpdatedTime,
     onClickItem, onCheckboxChanged, onPageDuplicated, onPageRenamed, onPageDeleted, onPagePutBacked,
   } = props;
+
+  const { returnPathForURL } = pathUtils;
 
   const [likerCount, setLikerCount] = useState(pageData.liker.length);
   const [bookmarkCount, setBookmarkCount] = useState(pageMeta && pageMeta.bookmarkCount ? pageMeta.bookmarkCount : 0);
@@ -203,7 +205,7 @@ const PageListItemLSubstance: ForwardRefRenderFunction<ISelectable, Props> = (pr
                 <span className="h5 mb-0">
                   {/* Use permanent links to care for pages with the same name (Cannot use page path url) */}
                   <span className="grw-page-path-hierarchical-link text-break">
-                    <Link href={encodeURI(urljoin('/', pageData._id))} prefetch={false}>
+                    <Link href={returnPathForURL(pageData.path, pageData._id)} prefetch={false}>
                       {shouldDangerouslySetInnerHTMLForPaths
                         ? (
                           <a
@@ -248,7 +250,7 @@ const PageListItemLSubstance: ForwardRefRenderFunction<ISelectable, Props> = (pr
                   <div dangerouslySetInnerHTML={{ __html: elasticSearchResult.snippet }}></div>
                 ) }
                 { revisionShortBody != null && (
-                  <div>{revisionShortBody}</div>
+                  <div data-testid="revision-short-body-in-page-list-item-L">{revisionShortBody}</div>
                 ) }
                 {
                   !canRenderESSnippet && !canRenderRevisionSnippet && (

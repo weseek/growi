@@ -6,11 +6,11 @@ body {
   overscroll-behavior-y: none;
 }
 
-.wrapper:not(.growi-layout-fluid) .grw-container-convertible {
+.layout-root:not(.growi-layout-fluid) .grw-container-convertible {
   @extend .container-lg;
 }
 
-.wrapper.growi-layout-fluid .grw-container-convertible {
+.layout-root.growi-layout-fluid .grw-container-convertible {
   @extend .container-fluid;
 }
 
@@ -30,7 +30,6 @@ body.not-found-page .grw-container-convertible {
 }
 
 .grw-modal-head {
-  font-size: 1em;
   border-bottom: 1px solid transparent;
 }
 

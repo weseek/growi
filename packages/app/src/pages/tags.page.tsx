@@ -1,18 +1,20 @@
 import React, { useState, useCallback } from 'react';
 
-import {
-  IUser, IUserHasId,
-} from '@growi/core';
+import type { IUser, IUserHasId } from '@growi/core';
 import { NextPage, GetServerSideProps, GetServerSidePropsContext } from 'next';
 import { useTranslation } from 'next-i18next';
 import dynamic from 'next/dynamic';
 import Head from 'next/head';
 
-import { CrowiRequest } from '~/interfaces/crowi-request';
-import { IDataTagCount } from '~/interfaces/tag';
-import { IUserUISettings } from '~/interfaces/user-ui-settings';
-import UserUISettings from '~/server/models/user-ui-settings';
+import type { CrowiRequest } from '~/interfaces/crowi-request';
+import type { ISidebarConfig } from '~/interfaces/sidebar-config';
+import type { IDataTagCount } from '~/interfaces/tag';
+import type { IUserUISettings } from '~/interfaces/user-ui-settings';
+import type { UserUISettingsModel } from '~/server/models/user-ui-settings';
 import { useSWRxTagsList } from '~/stores/tag';
+import {
+  usePreferDrawerModeByUser, usePreferDrawerModeOnEditByUser, useSidebarCollapsed, useCurrentSidebarContents, useCurrentProductNavWidth,
+} from '~/stores/ui';
 
 import { BasicLayout } from '../components/Layout/BasicLayout';
 import {
@@ -32,7 +34,12 @@ type Props = CommonProps & {
   isSearchServiceConfigured: boolean,
   isSearchServiceReachable: boolean,
   isSearchScopeChildrenAsDefault: boolean,
+
+  // ui
   userUISettings?: IUserUISettings
+
+  // sidebar
+  sidebarConfig: ISidebarConfig,
 };
 
 const TagList = dynamic(() => import('~/components/TagList'), { ssr: false });
@@ -60,12 +67,18 @@ const TagPage: NextPage<CommonProps> = (props: Props) => {
   useIsSearchServiceReachable(props.isSearchServiceReachable);
   useIsSearchScopeChildrenAsDefault(props.isSearchScopeChildrenAsDefault);
 
+  usePreferDrawerModeByUser(props.userUISettings?.preferDrawerModeByUser ?? props.sidebarConfig.isSidebarDrawerMode);
+  usePreferDrawerModeOnEditByUser(props.userUISettings?.preferDrawerModeOnEditByUser);
+  useSidebarCollapsed(props.userUISettings?.isSidebarCollapsed ?? props.sidebarConfig.isSidebarClosedAtDockMode);
+  useCurrentSidebarContents(props.userUISettings?.currentSidebarContents);
+  useCurrentProductNavWidth(props.userUISettings?.currentProductNavWidth);
+
   return (
     <>
       <Head>
       </Head>
       <BasicLayout title={useCustomTitle(props, 'GROWI')} className={classNames.join(' ')}>
-        <div className="grw-container-convertible mb-5 pb-5">
+        <div className="grw-container-convertible mb-5 pb-5" data-testid="tags-page">
           <h2 className="my-3">{`${t('Tags')}(${totalCount})`}</h2>
           <div className="px-3 mb-5 text-center">
             <TagCloudBox tags={tagData} minSize={20} />
@@ -96,8 +109,12 @@ const TagPage: NextPage<CommonProps> = (props: Props) => {
 };
 
 async function injectUserUISettings(context: GetServerSidePropsContext, props: Props): Promise<void> {
+  const { model: mongooseModel } = await import('mongoose');
+
   const req = context.req as CrowiRequest<IUserHasId & any>;
   const { user } = req;
+
+  const UserUISettings = mongooseModel('UserUISettings') as UserUISettingsModel;
   const userUISettings = user == null ? null : await UserUISettings.findOne({ user: user._id }).exec();
 
   if (userUISettings != null) {
@@ -115,6 +132,11 @@ function injectServerConfigurations(context: GetServerSidePropsContext, props: P
   props.isSearchServiceConfigured = searchService.isConfigured;
   props.isSearchServiceReachable = searchService.isReachable;
   props.isSearchScopeChildrenAsDefault = configManager.getConfig('crowi', 'customize:isSearchScopeChildrenAsDefault');
+
+  props.sidebarConfig = {
+    isSidebarDrawerMode: configManager.getConfig('crowi', 'customize:isSidebarDrawerMode'),
+    isSidebarClosedAtDockMode: configManager.getConfig('crowi', 'customize:isSidebarClosedAtDockMode'),
+  };
 }
 
 export const getServerSideProps: GetServerSideProps = async(context: GetServerSidePropsContext) => {

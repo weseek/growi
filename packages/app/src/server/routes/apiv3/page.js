@@ -255,7 +255,9 @@ module.exports = (crowi) => {
    */
   router.get('/', certifySharedPage, accessTokenParser, loginRequired, validator.getPage, apiV3FormValidator, async(req, res) => {
     const { user } = req;
-    const { pageId, path, findAll } = req.query;
+    const {
+      pageId, path, findAll, revisionId,
+    } = req.query;
 
     if (pageId == null && path == null) {
       return res.apiv3Err(new ErrorV3('Either parameter of path or pageId is required.', 'invalid-request'));
@@ -285,7 +287,7 @@ module.exports = (crowi) => {
 
     if (page != null) {
       try {
-        page.initLatestRevisionField();
+        page.initLatestRevisionField(revisionId);
 
         // populate
         page = await page.populateDataToShowRevision();
@@ -557,7 +559,7 @@ module.exports = (crowi) => {
     try {
       const shouldUseV4Process = false;
       const grantData = { grant, grantedGroup };
-      data = await Page.updateGrant(page, req.user, grantData, shouldUseV4Process);
+      data = await this.crowi.pageService.updateGrant(page, req.user, grantData, shouldUseV4Process);
     }
     catch (err) {
       logger.error('Error occurred while processing calcApplicableGrantData.', err);

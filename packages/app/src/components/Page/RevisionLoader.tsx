@@ -10,18 +10,22 @@ import loggerFactory from '~/utils/logger';
 
 import RevisionRenderer from './RevisionRenderer';
 
+export const ROOT_ELEM_ID = 'revision-loader' as const;
+
 export type RevisionLoaderProps = {
   rendererOptions: RendererOptions,
   pageId: string,
   revisionId: Ref<IRevision>,
   lazy?: boolean,
   onRevisionLoaded?: (revision: IRevisionHasId) => void,
-
-  pagePath: string,
-  highlightKeywords?: string[],
 }
 
 const logger = loggerFactory('growi:Page:RevisionLoader');
+
+// Always render '#revision-loader' for MutationObserver of SearchResultContent
+const RevisionLoaderRoot = (props: React.HTMLAttributes<HTMLDivElement>): JSX.Element => (
+  <div id={ROOT_ELEM_ID} {...props}>{props.children}</div>
+);
 
 /**
  * Load data from server and render RevisionBody component
@@ -81,7 +85,7 @@ export const RevisionLoader = (props: RevisionLoaderProps): JSX.Element => {
   if (lazy && !isLoaded) {
     return (
       <Waypoint onPositionChange={onWaypointChange} bottomOffset="-100px">
-        <div className="wiki"></div>
+        <></>
       </Waypoint>
     );
   }
@@ -110,9 +114,11 @@ export const RevisionLoader = (props: RevisionLoaderProps): JSX.Element => {
   }
 
   return (
-    <RevisionRenderer
-      rendererOptions={rendererOptions}
-      markdown={markdown}
-    />
+    <RevisionLoaderRoot>
+      <RevisionRenderer
+        rendererOptions={rendererOptions}
+        markdown={markdown}
+      />
+    </RevisionLoaderRoot>
   );
 };

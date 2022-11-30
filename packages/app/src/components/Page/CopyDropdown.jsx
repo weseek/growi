@@ -11,6 +11,7 @@ import {
   Tooltip,
 } from 'reactstrap';
 
+import styles from './CopyDropdown.module.scss';
 
 const { encodeSpaces } = pagePathUtils;
 
@@ -100,7 +101,7 @@ const CopyDropdown = (props) => {
   /*
    * render
    */
-  const { t } = useTranslation();
+  const { t } = useTranslation('commons');
   const {
     dropdownToggleId, pageId, dropdownToggleClassName, children, isShareLinkMode,
   } = props;
@@ -109,7 +110,7 @@ const CopyDropdown = (props) => {
 
   return (
     <>
-      <Dropdown className="grw-copy-dropdown" isOpen={dropdownOpen} toggle={toggleDropdown}>
+      <Dropdown className={`${styles['grw-copy-dropdown']} grw-copy-dropdown`} isOpen={dropdownOpen} toggle={toggleDropdown}>
         <DropdownToggle
           caret
           className={dropdownToggleClassName}
@@ -171,7 +172,10 @@ const CopyDropdown = (props) => {
           { pageId && (
             <CopyToClipboard text={`${pagePathWithParams}\n${permalink}`} onCopy={showToolTip}>
               <DropdownItem className="px-3">
-                <DropdownItemContents title={t('copy_to_clipboard.Page path and permanent link')} contents={<>{pagePathWithParams}<br />{permalink}</>} />
+                <DropdownItemContents
+                  title={t('copy_to_clipboard.Page path and permanent link')}
+                  contents={<>{pagePathWithParams}<br />{permalink}</>}
+                />
               </DropdownItem>
             </CopyToClipboard>
           )}

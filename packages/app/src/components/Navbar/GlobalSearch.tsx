@@ -1,14 +1,19 @@
-import React, { useState, useCallback, useRef } from 'react';
+import React, {
+  useState, useCallback, useRef, useEffect,
+} from 'react';
 
 import assert from 'assert';
 
+import { pathUtils } from '@growi/core';
 import { useTranslation } from 'next-i18next';
+import { useRouter } from 'next/router';
 
 import { IFocusable } from '~/client/interfaces/focusable';
 import { IPageWithSearchMeta } from '~/interfaces/search';
 import {
-  useCurrentPagePath, useIsSearchScopeChildrenAsDefault, useIsSearchServiceReachable,
+  useIsSearchScopeChildrenAsDefault, useIsSearchServiceReachable,
 } from '~/stores/context';
+import { useCurrentPagePath } from '~/stores/page';
 import { useGlobalSearchFormRef } from '~/stores/ui';
 
 import SearchForm from '../SearchForm';
@@ -21,9 +26,13 @@ export type GlobalSearchProps = {
 }
 
 export const GlobalSearch = (props: GlobalSearchProps): JSX.Element => {
-  const { t } = useTranslation();
+  const { t } = useTranslation('commons');
 
   const { dropup } = props;
+
+  const { returnPathForURL } = pathUtils;
+
+  const router = useRouter();
 
   const globalSearchFormRef = useRef<IFocusable>(null);
 
@@ -34,8 +43,12 @@ export const GlobalSearch = (props: GlobalSearchProps): JSX.Element => {
   const { data: currentPagePath } = useCurrentPagePath();
 
   const [text, setText] = useState('');
-  const [isScopeChildren, setScopeChildren] = useState<boolean|undefined>(isSearchScopeChildrenAsDefault);
+  const [isScopeChildren, setScopeChildren] = useState<boolean|undefined>(isSearchScopeChildrenAsDefault ?? false);
   const [isFocused, setFocused] = useState<boolean>(false);
+
+  useEffect(() => {
+    setScopeChildren(isSearchScopeChildrenAsDefault);
+  }, [isSearchScopeChildrenAsDefault]);
 
 
   const gotoPage = useCallback((data: IPageWithSearchMeta[]) => {
@@ -45,9 +58,9 @@ export const GlobalSearch = (props: GlobalSearchProps): JSX.Element => {
 
     // navigate to page
     if (page != null) {
-      window.location.href = `/${page._id}`;
+      router.push(returnPathForURL(page.path, page._id));
     }
-  }, []);
+  }, [returnPathForURL, router]);
 
   const search = useCallback(() => {
     const url = new URL(window.location.href);
@@ -60,14 +73,15 @@ export const GlobalSearch = (props: GlobalSearchProps): JSX.Element => {
     }
     url.searchParams.append('q', q);
 
-    window.location.href = url.href;
-  }, [currentPagePath, isScopeChildren, text]);
+    router.push(url.href);
+  }, [currentPagePath, isScopeChildren, router, text]);
 
   const scopeLabel = isScopeChildren
     ? t('header_search_box.label.This tree')
     : t('header_search_box.label.All pages');
 
   const isIndicatorShown = !isFocused && (text.length === 0);
+
 
   if (isScopeChildren == null || isSearchServiceReachable == null) {
     return <></>;
@@ -112,7 +126,7 @@ export const GlobalSearch = (props: GlobalSearchProps): JSX.Element => {
         </div>
         <SearchForm
           ref={globalSearchFormRef}
-          isSearchServiceReachable={isSearchServiceReachable}
+          isSearchServiceReachable={isSearchServiceReachable || false}
           dropup={dropup}
           onChange={gotoPage}
           onBlur={() => setFocused(false)}

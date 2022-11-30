@@ -11,8 +11,14 @@ export type IRevision = {
 
 export type IRevisionHasId = IRevision & HasObjectId;
 
+type HasPageId = {
+  pageId: string,
+};
+
+export type IRevisionHasPageId = IRevisionHasId & HasPageId;
+
 export type IRevisionsForPagination = {
-  revisions: IRevision[], // revisions in one pagination
+  revisions: IRevisionHasPageId[], // revisions in one pagination
   totalCounts: number // total counts
 }
 

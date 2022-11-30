@@ -26,7 +26,7 @@ const IndentForm = (props: Props) => {
   const onClickSubmit = useCallback(async(props) => {
     try {
       await props.adminMarkDownContainer.updateIndentSetting();
-      toastSuccess(t('toaster.update_successed', { target: t('markdown_settings.indent_header') }));
+      toastSuccess(t('toaster.update_successed', { target: t('markdown_settings.indent_header'), ns: 'commons' }));
     }
     catch (err) {
       toastError(err);

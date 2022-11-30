@@ -13,10 +13,11 @@ import { apiPostForm } from '~/client/util/apiv1-client';
 import { IEditorMethods } from '~/interfaces/editor-methods';
 import { useSWRxPageComment } from '~/stores/comment';
 import {
-  useCurrentPagePath, useCurrentUser, useRevisionId, useIsSlackConfigured,
+  useCurrentUser, useIsSlackConfigured,
   useIsUploadableFile, useIsUploadableImage,
 } from '~/stores/context';
 import { useSWRxSlackChannels, useIsSlackEnabled } from '~/stores/editor';
+import { useCurrentPagePath } from '~/stores/page';
 
 import { CustomNavTab } from '../CustomNavigation/CustomNav';
 import NotAvailableForGuest from '../NotAvailableForGuest';
@@ -48,6 +49,7 @@ export type CommentEditorProps = {
   pageId: string,
   isForNewComment?: boolean,
   replyTo?: string,
+  revisionId: string,
   currentCommentId?: string,
   commentBody?: string,
   onCancelButtonClicked?: () => void,
@@ -58,14 +60,13 @@ export type CommentEditorProps = {
 export const CommentEditor = (props: CommentEditorProps): JSX.Element => {
 
   const {
-    pageId, isForNewComment, replyTo,
+    pageId, isForNewComment, replyTo, revisionId,
     currentCommentId, commentBody, onCancelButtonClicked, onCommentButtonClicked,
   } = props;
 
   const { data: currentUser } = useCurrentUser();
   const { data: currentPagePath } = useCurrentPagePath();
   const { update: updateComment, post: postComment } = useSWRxPageComment(pageId);
-  const { data: revisionId } = useRevisionId();
   const { data: isSlackEnabled, mutate: mutateIsSlackEnabled } = useIsSlackEnabled();
   const { data: slackChannelsData } = useSWRxSlackChannels(currentPagePath);
   const { data: isSlackConfigured } = useIsSlackConfigured();

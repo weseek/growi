@@ -27,12 +27,22 @@
   .btn-outline-#{$color} {
     @include button-outline-variant($value, $color-hover: $value, $active-background: rgba($value, 0.1), $active-border: $value);
     @include mixins.button-outline-svg-icon-variant($value, $color-hover: $value);
+
     &:not(:disabled):not(.disabled):active,
-    &:not(:disabled):not(.disabled).active,
-    .show > &.dropdown-toggle {
+    &:not(:disabled):not(.disabled).active {
       color: $value;
+      background-color: rgba($value, 0.1);
+      border-color: $value;
     }
+
     box-shadow: none !important;
+  }
+
+  // separate style: https://github.com/weseek/growi/pull/6804
+  .show > .btn-outline-#{$color}.dropdown-toggle {
+    color: $value;
+    background-color: rgba($value, 0.1);
+    border-color: $value;
   }
 }
 

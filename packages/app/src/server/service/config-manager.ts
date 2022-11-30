@@ -378,7 +378,8 @@ export default class ConfigManager implements S2sMessageHandlable {
 
   /**
    * Returns file upload total limit in bytes.
-   * {@link https://github.com/weseek/growi/blob/798e44f14ad01544c1d75ba83d4dfb321a94aa0b/src/server/service/file-uploader/gridfs.js#L86-L88 Reference to previous implementation.}
+   * Reference to previous implementation is
+   * {@link https://github.com/weseek/growi/blob/798e44f14ad01544c1d75ba83d4dfb321a94aa0b/src/server/service/file-uploader/gridfs.js#L86-L88}
    * @returns file upload total limit in bytes
    */
   getFileUploadTotalLimit(): number {

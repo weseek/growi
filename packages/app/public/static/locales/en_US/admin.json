@@ -3,16 +3,21 @@
     "display_name": "English"
   },
   "wiki_management_home_page": "Wiki Management Home Page",
-  "app_settings": "App Settings",
+  "last_login": "Last login",
+  "anyone_with_the_link": "anyone with the link",
+  "only_me": "only me",
+  "only_inside_the_group": "only inside the group",
   "security_settings": {
     "security_settings": "Security Settings",
+    "scope_of_page_disclosure": "Scope of page disclosure",
+    "set_point": "Set point",
     "Guest Users Access": "Guest users access",
     "always_hidden": "Always hidden",
     "always_displayed": "Always displayed",
     "displayed_or_hidden": "Displayed / Hidden",
     "Fixed by env var": "This is fixed by the env var <code>{{key}}={{value}}</code>.",
-    "Register limitation": "Register limitation",
-    "Register limitation desc": "Restriction of new users' registration",
+    "register_limitation": "Register limitation",
+    "register_limitation_desc": "Restriction of new users' registration",
     "The whitelist of registration permission E-mail address": "The whitelist of registration permission E-mail address",
     "users_without_account": "Users without account is not accessible",
     "example": "Example",
@@ -46,7 +51,6 @@
     "page_delete_rights_caution": "The \"Delete / Delete All\" permission (including descendant pages) is forced to be stronger than the \"Delete / Completely Delete\" permission. <br> <br> Admin only > Admin and autor > Anyone",
     "Authentication mechanism settings": "Authentication Mechanism Settings",
     "setup_is_not_yet_complete": "Setup is not yet complete",
-    "alert_siteUrl_is_not_set": "'Site URL' is NOT set. Set it from the {{link}}",
     "xss_prevent_setting": "Prevent XSS(Cross Site Scripting)",
     "xss_prevent_setting_link": "Go to Markdown Settings",
     "callback_URL": "Callback URL",
@@ -75,6 +79,10 @@
       "restricted": "Restricted (Requires approval by administrators)",
       "closed": "Closed (Invitation Only)"
     },
+    "share_link_management": "Share Link Management",
+    "No_share_links":"No share links",
+    "share_link_notice":"remove all share links",
+    "delete_all_share_links":"Delete all share links",
     "share_link_rights": "Share link rights",
     "enable_link_sharing": "Enable link sharing",
     "all_share_links": "All share links",
@@ -97,7 +105,6 @@
       "email_authentication": "Email authentication on user registration",
       "enable_email_authentication": "Enable email authentication",
       "enable_email_authentication_desc": "Email authentication is going to be performed for user registration.",
-      "please_enable_mailer": "Please setup mailer first.",
       "need_complete_mail_setting_warning": "To use the following functions, please complete the mail settings."
     },
     "ldap": {
@@ -269,7 +276,8 @@
     "delete_notification_pattern": "Delete notification pattern",
     "delete_notification_pattern_desc1": "Delete Path: {{path}}",
     "delete_notification_pattern_desc2": "Once deleted, it cannot be recovered",
-    "toggle_notification": "Updated setting of {{path}}"
+    "toggle_notification": "Updated setting of {{path}}",
+    "not_found_global_notification_triggerid": "Not found the global notification id"
   },
   "mailer_setup_required":"<a href='/admin/app'>Email settings</a> are required to send.",
   "admin_top": {
@@ -292,8 +300,6 @@
     "submit_bug_report": "<a href='https://github.com/weseek/growi/issues/new?assignees=&labels=bug&template=bug-report.md&title=Bug%3A' target='_blank' rel='noreferrer'>then submit your issue to GitHub.</a>"
   },
   "v5_page_migration": {
-    "page_tree_not_avaliable" : "Page tree feature is not available yet.",
-    "go_to_settings": "Go to settings to enable the feature",
     "migration_desc": "There are some pages with old v4 compatibility. To take advantage of new features such as page trees and easy renaming, please convert all your pages to v5 compatibility.",
     "migration_note": "Note: You will lose unique constraints from the page paths.",
     "upgrade_to_v5": "Convert to v5 compatibility",
@@ -323,9 +329,12 @@
     "site_name": "Site name",
     "sitename_change": "You can change site name which is used for header and HTML title.",
     "header_content": "The contents entered here will be shown in the header etc.",
-    "site_url_desc": "This is for the site URL setting.",
-    "site_url_warn": "Some features don't work because the site URL is not set.",
-    "siteurl_help": "Site full URL beginning from <code>http://</code> or <code>https://</code>.",
+    "site_url": {
+      "title": "Site URL settings",
+      "desc": "This is for the site URL setting.",
+      "warn": "Some features don't work because the site URL is not set.",
+      "help": "Site full URL beginning from <code>http://</code> or <code>https://</code>."
+    },
     "confidential_name": "Confidential name",
     "confidential_example": "ex): internal use only",
     "default_language": "Default language for new users",
@@ -371,7 +380,7 @@
     "custom_endpoint_change": "Input the URL of the endpoint of an object storage service like MinIO that has a S3-compatible API.  Amazon S3 is used if empty.",
     "plugin_settings": "Plugin settings",
     "enable_plugin_loading": "Enable plugin loading",
-    "load_plugins": "Load_plugins",
+    "load_plugins": "Load plugins",
     "enable": "Enable",
     "disable": "Disable",
     "use_env_var_if_empty": "If the value in the database is empty, the value of the environment variable <code>{{variable}}</code> is used.",
@@ -467,8 +476,6 @@
       "select_search_scope_children_as_default": "Select 'Only children of this tree' as default value of search range",
       "select_search_scope_children_as_default_desc": "When the setting value is off, 'All pages' is used as default value of search range."
     },
-    "code_highlight": "Code highlight",
-    "nocdn_desc": "This function is disabled when the environment variable <code>NO_CDN=true</code>.<br>Github style has been forcibly applied.",
     "custom_title": "Custom title",
     "custom_title_detail": "You can customize <code>&lt;title&gt;</code> tag. Following placeholders will be automatically replaced:",
     "custom_title_detail_placeholder1": "<code>&#123;&#123;sitename&#125;&#125;</code> - The site name of this wiki.",
@@ -573,7 +580,7 @@
     "export": "Export",
     "cancel": "Cancel",
     "file": "File",
-    "growi_version": "Growi Version",
+    "growi_version": "GROWI Version",
     "collections": "Collections",
     "exported_at": "Exported At",
     "export_menu": "Export Menu",
@@ -858,6 +865,9 @@
       "log_type": "https://docs.growi.org/en/admin-guide/admin-cookbook/audit-log-setup.html#log-types"
     }
   },
+  "cloud_setting_management": {
+    "to_cloud_settings": "Open GROWI.cloud Settings"
+  },
   "audit_log_action_category": {
     "Page": "Page",
     "Comment": "Comment",
@@ -1047,5 +1057,15 @@
     "error_upload_attachment": "Failed to upload attachment <code>%s</code>",
     "error_generate_growi_archive": "Failed to generate GROWI archive file",
     "error_send_growi_archive": "Failed to send GROWI archive file to new GROWI"
+  },
+  "toaster": {
+    "give_user_admin": "Succeeded to give {{username}} admin",
+    "remove_user_admin": "Succeeded to remove {{username}} admin",
+    "activate_user_success": "Succeeded to activating {{username}}",
+    "deactivate_user_success": "Succeeded to deactivate {{username}}",
+    "remove_user_success": "Succeeded to removing {{username}}",
+    "remove_external_user_success": "Succeeded to remove {{accountId}}",
+    "switch_disable_link_sharing_success": "Succeeded to update share link setting",
+    "failed_to_reset_password":"Failed to reset password"
   }
 }
