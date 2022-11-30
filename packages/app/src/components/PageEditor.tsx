@@ -4,30 +4,33 @@ import React, {
 
 import EventEmitter from 'events';
 
-import { envUtils, IPageHasId, PageGrant } from '@growi/core';
+import {
+  IPageHasId, PageGrant, pathUtils,
+} from '@growi/core';
 import detectIndent from 'detect-indent';
 import { useTranslation } from 'next-i18next';
 import { useRouter } from 'next/router';
 import { throttle, debounce } from 'throttle-debounce';
 
-import { saveOrUpdate } from '~/client/services/page-operation';
+import { useSaveOrUpdate } from '~/client/services/page-operation';
 import { toastSuccess, toastError } from '~/client/util/apiNotification';
 import { apiGet, apiPostForm } from '~/client/util/apiv1-client';
-import { getOptionsToSave } from '~/client/util/editor';
 import { IEditorMethods } from '~/interfaces/editor-methods';
+import { OptionsToSave } from '~/interfaces/page-operation';
 import {
-  useCurrentPathname, useCurrentPageId,
-  useIsEditable, useIsIndentSizeForced, useIsUploadableFile, useIsUploadableImage, useEditingMarkdown, useIsNotFound,
+  useCurrentPathname, useCurrentPageId, useIsEnabledAttachTitleHeader, useTemplateBodyData,
+  useIsEditable, useIsUploadableFile, useIsUploadableImage, useIsNotFound, useIsIndentSizeForced,
 } from '~/stores/context';
 import {
   useCurrentIndentSize, useSWRxSlackChannels, useIsSlackEnabled, useIsTextlintEnabled, usePageTagsForEditors,
   useIsEnabledUnsavedWarning,
+  useEditingMarkdown,
 } from '~/stores/editor';
 import { useCurrentPagePath, useSWRxCurrentPage } from '~/stores/page';
 import { usePreviewOptions } from '~/stores/renderer';
 import {
   EditorMode,
-  useEditorMode, useIsMobile, useSelectedGrant,
+  useEditorMode, useSelectedGrant,
 } from '~/stores/ui';
 import loggerFactory from '~/utils/logger';
 
@@ -41,7 +44,10 @@ import scrollSyncHelper from './PageEditor/ScrollSyncHelper';
 const logger = loggerFactory('growi:PageEditor');
 
 
-declare const globalEmitter: EventEmitter;
+declare global {
+  // eslint-disable-next-line vars-on-top, no-var
+  var globalEmitter: EventEmitter;
+}
 
 
 // for scrolling
@@ -62,45 +68,47 @@ const PageEditor = React.memo((): JSX.Element => {
   const { data: grantData, mutate: mutateGrant } = useSelectedGrant();
   const { data: pageTags } = usePageTagsForEditors(pageId);
   const { data: editingMarkdown } = useEditingMarkdown();
+  const { data: isEnabledAttachTitleHeader } = useIsEnabledAttachTitleHeader();
+  const { data: templateBodyData } = useTemplateBodyData();
   const { data: isEditable } = useIsEditable();
   const { data: editorMode, mutate: mutateEditorMode } = useEditorMode();
-  const { data: isMobile } = useIsMobile();
   const { data: isSlackEnabled } = useIsSlackEnabled();
   const { data: slackChannelsData } = useSWRxSlackChannels(currentPagePath);
   const { data: isTextlintEnabled } = useIsTextlintEnabled();
   const { data: isIndentSizeForced } = useIsIndentSizeForced();
-  const { data: indentSize, mutate: mutateCurrentIndentSize } = useCurrentIndentSize();
-  const { data: isEnabledUnsavedWarning, mutate: mutateIsEnabledUnsavedWarning } = useIsEnabledUnsavedWarning();
+  const { data: currentIndentSize, mutate: mutateCurrentIndentSize } = useCurrentIndentSize();
   const { data: isUploadableFile } = useIsUploadableFile();
   const { data: isUploadableImage } = useIsUploadableImage();
 
   const { data: rendererOptions } = usePreviewOptions();
+  const { mutate: mutateIsEnabledUnsavedWarning } = useIsEnabledUnsavedWarning();
+  const saveOrUpdate = useSaveOrUpdate();
 
   const currentRevisionId = currentPage?.revision?._id;
-  const initialValue = editingMarkdown ?? '';
+
+  const initialValue = useMemo(() => {
+    if (!isNotFound) {
+      return editingMarkdown ?? '';
+    }
+
+    let initialValue = '';
+    if (isEnabledAttachTitleHeader && currentPathname != null) {
+      initialValue += `${pathUtils.attachTitleHeader(currentPathname)}\n`;
+    }
+    if (templateBodyData != null) {
+      initialValue += `${templateBodyData}\n`;
+    }
+    return initialValue;
+
+  }, [isNotFound, currentPathname, editingMarkdown, isEnabledAttachTitleHeader, templateBodyData]);
 
   const markdownToSave = useRef<string>(initialValue);
   const [markdownToPreview, setMarkdownToPreview] = useState<string>(initialValue);
 
   const slackChannels = useMemo(() => (slackChannelsData ? slackChannelsData.toString() : ''), [slackChannelsData]);
 
-
   const editorRef = useRef<IEditorMethods>(null);
   const previewRef = useRef<HTMLDivElement>(null);
-
-
-  // const optionsToSave = useMemo(() => {
-  //   if (grantData == null) {
-  //     return;
-  //   }
-  //   const slackChannels = slackChannelsData ? slackChannelsData.toString() : '';
-  //   const optionsToSave = getOptionsToSave(
-  //     isSlackEnabled ?? false, slackChannels,
-  //     grantData.grant, grantData.grantedGroup?.id, grantData.grantedGroup?.name,
-  //     pageTags || [],
-  //   );
-  //   return optionsToSave;
-  // }, [grantData, isSlackEnabled, pageTags, slackChannelsData]);
 
   const setMarkdownWithDebounce = useMemo(() => debounce(100, throttle(150, (value: string, isClean: boolean) => {
     markdownToSave.current = value;
@@ -125,16 +133,21 @@ const PageEditor = React.memo((): JSX.Element => {
     const grant = grantData.grant || PageGrant.GRANT_PUBLIC;
     const grantedGroup = grantData?.grantedGroup;
 
-    const optionsToSave = Object.assign(
-      getOptionsToSave(isSlackEnabled, slackChannels, grant || 1, grantedGroup?.id, grantedGroup?.name, pageTags || []),
-      { ...opts },
-    );
+    const optionsToSave: OptionsToSave = {
+      isSlackEnabled,
+      slackChannels,
+      grant: grant || 1,
+      pageTags: pageTags || [],
+      grantUserGroupId: grantedGroup?.id,
+      grantUserGroupName: grantedGroup?.name,
+      ...opts,
+    };
 
     try {
       const { page } = await saveOrUpdate(
-        optionsToSave,
-        { pageId, path: currentPagePath || currentPathname, revisionId: currentRevisionId },
         markdownToSave.current,
+        { pageId, path: currentPagePath || currentPathname, revisionId: currentRevisionId },
+        optionsToSave,
       );
 
       return page;
@@ -154,7 +167,7 @@ const PageEditor = React.memo((): JSX.Element => {
     }
 
   // eslint-disable-next-line max-len
-  }, [grantData, isSlackEnabled, currentPathname, slackChannels, pageTags, pageId, currentPagePath, currentRevisionId]);
+  }, [grantData, isSlackEnabled, currentPathname, slackChannels, pageTags, saveOrUpdate, pageId, currentPagePath, currentRevisionId]);
 
   const saveAndReturnToViewHandler = useCallback(async(opts?: {overwriteScopesOfDescendants: boolean}) => {
     if (editorMode !== EditorMode.Editor) {
@@ -165,10 +178,7 @@ const PageEditor = React.memo((): JSX.Element => {
     if (page == null) {
       return;
     }
-    // The updateFn should be a promise or asynchronous function to handle the remote mutation
-    // it should return updated data. see: https://swr.vercel.app/docs/mutation#optimistic-updates
-    // Moreover, `async() => false` does not work since it's too fast to be calculated.
-    await mutateIsEnabledUnsavedWarning(new Promise(r => setTimeout(() => r(false), 10)), { optimisticData: () => false });
+
     if (isNotFound) {
       await router.push(`/${page._id}`);
     }
@@ -177,7 +187,7 @@ const PageEditor = React.memo((): JSX.Element => {
       await mutateCurrentPage();
     }
     mutateEditorMode(EditorMode.View);
-  }, [editorMode, save, mutateIsEnabledUnsavedWarning, isNotFound, mutateEditorMode, router, mutateCurrentPageId, mutateCurrentPage]);
+  }, [editorMode, save, isNotFound, mutateEditorMode, router, mutateCurrentPageId, mutateCurrentPage]);
 
   const saveWithShortcut = useCallback(async() => {
     if (editorMode !== EditorMode.Editor) {
@@ -393,33 +403,21 @@ const PageEditor = React.memo((): JSX.Element => {
     }
   }, [editorMode]);
 
-  // Unnecessary code. Delete after PageEditor and PageEditorByHackmd implementation has completed. -- 2022.09.06 Yuki Takei
-  //
-  // set handler to update editor value
-  // useEffect(() => {
-  //   const handler = (markdown) => {
-  //     if (editorRef.current != null) {
-  //       editorRef.current.setValue(markdown);
-  //     }
-  //   };
-  //   globalEmitter.on('updateEditorValue', handler);
-
-  //   return function cleanup() {
-  //     globalEmitter.removeListener('updateEditorValue', handler);
-  //   };
-  // }, []);
-
   // Detect indent size from contents (only when users are allowed to change it)
-  // useEffect(() => {
-  //   const currentPageMarkdown = pageContainer.state.markdown;
-  //   if (!isIndentSizeForced && currentPageMarkdown != null) {
-  //     const detectedIndent = detectIndent(currentPageMarkdown);
-  //     if (detectedIndent.type === 'space' && new Set([2, 4]).has(detectedIndent.amount)) {
-  //       mutateCurrentIndentSize(detectedIndent.amount);
-  //     }
-  //   }
-  // }, [isIndentSizeForced, mutateCurrentIndentSize, pageContainer.state.markdown]);
+  useEffect(() => {
+    // do nothing if the indent size fixed
+    if (isIndentSizeForced == null || isIndentSizeForced) {
+      return;
+    }
 
+    // detect from markdown
+    if (initialValue != null) {
+      const detectedIndent = detectIndent(initialValue);
+      if (detectedIndent.type === 'space' && new Set([2, 4]).has(detectedIndent.amount)) {
+        mutateCurrentIndentSize(detectedIndent.amount);
+      }
+    }
+  }, [initialValue, isIndentSizeForced, mutateCurrentIndentSize]);
 
   if (!isEditable) {
     return <></>;
@@ -440,7 +438,7 @@ const PageEditor = React.memo((): JSX.Element => {
           isUploadable={isUploadable}
           isUploadableFile={isUploadableFile}
           isTextlintEnabled={isTextlintEnabled}
-          indentSize={indentSize}
+          indentSize={currentIndentSize}
           onScroll={editorScrolledHandler}
           onScrollCursorIntoView={editorScrollCursorIntoViewHandler}
           onChange={markdownChangedHandler}
