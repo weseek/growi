@@ -489,14 +489,15 @@ export const useDrawioModal = (status?: DrawioModalStatus): SWRResponse<DrawioMo
 /*
 * HandsonTableModal
 */
-// TODO: Define editor type
 type HandsonTableModalSaveHandler = (table: MarkdownTable) => void;
 
 type HandsontableModalStatus = {
   isOpened: boolean,
   table: MarkdownTable,
+  // TODO: Define editor type
   editor?: any,
   autoFormatMarkdownTable?: boolean,
+  // onSave is passed only when editing table directly from the page.
   onSave?: HandsonTableModalSaveHandler
 }
 
@@ -510,20 +511,20 @@ type HandsontableModalStatusUtils = {
   close(): void
 }
 
-export const useHandsontableModal = (status?: HandsontableModalStatus): SWRResponse<HandsontableModalStatus, Error> & HandsontableModalStatusUtils => {
-  const defaultMarkdownTable = () => {
-    return new MarkdownTable(
-      [
-        ['col1', 'col2', 'col3'],
-        ['', '', ''],
-        ['', '', ''],
-      ],
-      {
-        align: ['', '', ''],
-      },
-    );
-  };
+const defaultMarkdownTable = () => {
+  return new MarkdownTable(
+    [
+      ['col1', 'col2', 'col3'],
+      ['', '', ''],
+      ['', '', ''],
+    ],
+    {
+      align: ['', '', ''],
+    },
+  );
+};
 
+export const useHandsontableModal = (status?: HandsontableModalStatus): SWRResponse<HandsontableModalStatus, Error> & HandsontableModalStatusUtils => {
   const initialData: HandsontableModalStatus = {
     isOpened: false,
     table: defaultMarkdownTable(),
