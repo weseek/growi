@@ -15,7 +15,11 @@ import BookmarkItem from '../Bookmarks/BookmarkItem';
 
 import styles from './BookmarkContents.module.scss';
 
-const BookmarkContents = (): JSX.Element => {
+type Props = {
+  isExpanded: boolean
+}
+const BookmarkContents = (props: Props): JSX.Element => {
+  const { isExpanded } = props;
   const { t } = useTranslation();
   const { data: bookmarkFolderData } = useSWRxBookamrkFolderAndChild(null);
   const { data: currentUserBookmarksData, mutate: mutateCurrentUserBookmarks } = useSWRxCurrentUserBookmarks();
@@ -39,38 +43,41 @@ const BookmarkContents = (): JSX.Element => {
     openDeleteModal([pageToDelete], { onDeleted: pageDeletedHandler });
   }, [mutateCurrentUserBookmarks, openDeleteModal, t]);
 
-  return (
-    <ul className={`grw-foldertree ${styles['grw-foldertree']} list-group p-3`}>
-      {bookmarkFolderData?.map((item) => {
-        return (
-          <BookmarkFolderItem
-            key={item._id}
-            bookmarkFolder={item}
-            isOpen={false}
-            isSidebarItem={false}
-          />
-        );
-      })}
-      <div id="user-bookmark-list" className={`page-list ${styles['page-list']}`}>
-        {currentUserBookmarksData?.length === 0 ? t('No bookmarks yet') : (
-          <>
-            <ul className="page-list-ul page-list-ul-flat my-3">
-              {currentUserBookmarksData?.map(page => (
-                <BookmarkItem
-                  key={page._id}
-                  onClickDeleteMenuItem={deleteMenuItemClickHandler}
-                  onRenamed={mutateCurrentUserBookmarks}
-                  onUnbookmarked={mutateCurrentUserBookmarks}
-                  bookmarkedPage={page}
-                  isSidebarItem={false}
-                />
-              ))}
 
-            </ul>
-          </>
-        ) }
-      </div>
-    </ul>
+  return (
+    <div className={`${isExpanded ? `${styles.expanded}` : `${styles.compressed}`}`}>
+      <ul className={ `grw-foldertree ${styles['grw-foldertree']} list-group p-3`}>
+        {bookmarkFolderData?.map((item) => {
+          return (
+            <BookmarkFolderItem
+              key={item._id}
+              bookmarkFolder={item}
+              isOpen={false}
+              isSidebarItem={false}
+            />
+          );
+        })}
+        <div id="user-bookmark-list" className={`page-list ${styles['page-list']}`}>
+          {currentUserBookmarksData?.length === 0 ? t('No bookmarks yet') : (
+            <>
+              <ul className="page-list-ul page-list-ul-flat my-3">
+                {currentUserBookmarksData?.map(page => (
+                  <BookmarkItem
+                    key={page._id}
+                    onClickDeleteMenuItem={deleteMenuItemClickHandler}
+                    onRenamed={mutateCurrentUserBookmarks}
+                    onUnbookmarked={mutateCurrentUserBookmarks}
+                    bookmarkedPage={page}
+                    isSidebarItem={false}
+                  />
+                ))}
+
+              </ul>
+            </>
+          ) }
+        </div>
+      </ul>
+    </div>
   );
 };
 

@@ -363,6 +363,13 @@ ul.pagination {
 }
 
 .grw-user-page-list-m {
+  .expand-compress-btn {
+    color: $body-color;
+    background-color: $body-bg;
+  }
+  .active {
+    background-color: lighten($body-bg, 12%),
+  }
   .grw-foldertree {
     @include override-list-group-item-for-pagetree(
       $body-color,

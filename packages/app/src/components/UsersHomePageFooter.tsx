@@ -10,6 +10,7 @@ import styles from '~/components/UsersHomePageFooter.module.scss';
 import { useSWRxBookamrkFolderAndChild } from '~/stores/bookmark-folder';
 
 import BookmarkFolderNameInput from './Bookmarks/BookmarkFolderNameInput';
+import ExpandCompressIcon from './Icons/ExpandCompressIcon';
 import FolderPlusIcon from './Icons/FolderPlusIcon';
 import BookmarkContents from './UsersPageBookmarks/BookmarkContents';
 
@@ -22,6 +23,7 @@ export const UsersHomePageFooter = (props: UsersHomePageFooterProps): JSX.Elemen
   const { t } = useTranslation();
   const { creatorId } = props;
   const [isCreateAction, setIsCreateAction] = useState<boolean>(false);
+  const [isExpanded, setIsExpanded] = useState<boolean>(false);
   const { mutate: mutateChildBookmarkData } = useSWRxBookamrkFolderAndChild(null);
 
 
@@ -40,7 +42,7 @@ export const UsersHomePageFooter = (props: UsersHomePageFooterProps): JSX.Elemen
   return (
     <div className={`container-lg user-page-footer py-5 ${styles['user-page-footer']}`}>
       <div className="grw-user-page-list-m d-edit-none">
-        <h2 id="bookmarks-list" className="grw-user-page-header border-bottom pb-2 mb-3">
+        <h2 id="bookmarks-list" className="grw-user-page-header border-bottom pb-2 mb-3 d-flex">
           <i style={{ fontSize: '1.3em' }} className="fa fa-fw fa-bookmark-o"></i>
           {t('footer.bookmarks')}
           <span className="pl-2">
@@ -50,6 +52,14 @@ export const UsersHomePageFooter = (props: UsersHomePageFooterProps): JSX.Elemen
             >
               <FolderPlusIcon />
               <span className="mx-2 ">{t('bookmark_folder.new_folder')}</span>
+            </button>
+          </span>
+          <span className="ml-auto pl-2 ">
+            <button
+              className={`btn btn-sm expand-compress-btn ${isExpanded ? 'active' : ''}`}
+              onClick={() => setIsExpanded(!isExpanded)}
+            >
+              <ExpandCompressIcon isExpanded={isExpanded}/>
             </button>
           </span>
         </h2>
@@ -65,7 +75,7 @@ export const UsersHomePageFooter = (props: UsersHomePageFooterProps): JSX.Elemen
           </div>
         )}
         {
-          <BookmarkContents />
+          <BookmarkContents isExpanded={isExpanded}/>
         }
 
       </div>
