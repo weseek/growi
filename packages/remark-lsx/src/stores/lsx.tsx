@@ -1,6 +1,6 @@
 import * as url from 'url';
 
-import { IPage, pathUtils } from '@growi/core';
+import { IPageHasId, pathUtils } from '@growi/core';
 import axios from 'axios';
 import useSWR, { SWRResponse } from 'swr';
 
@@ -53,7 +53,7 @@ function generatePageNode(pathToNodeMap: Record<string, PageNode>, rootPagePath:
   return node;
 }
 
-function generatePageNodeTree(rootPagePath: string, pages: IPage[]) {
+function generatePageNodeTree(rootPagePath: string, pages: IPageHasId[]) {
   const pathToNodeMap: Record<string, PageNode> = {};
 
   pages.forEach((page) => {
@@ -91,7 +91,7 @@ function generatePageNodeTree(rootPagePath: string, pages: IPage[]) {
 }
 
 type LsxResponse = {
-  pages: IPage[],
+  pages: IPageHasId[],
   toppageViewersCount: number,
 }
 
