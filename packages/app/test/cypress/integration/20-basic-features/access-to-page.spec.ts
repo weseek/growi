@@ -95,8 +95,9 @@ context('Access to /me page', () => {
 
   it('/me is successfully loaded', () => {
     cy.visit('/me');
-    // eslint-disable-next-line cypress/no-unnecessary-waiting
-    cy.wait(500); // wait loading image
+
+    cy.getByTestid('grw-user-settings').should('be.visible');
+
     cy.screenshot(`${ssPrefix}-me`);
   });
 
