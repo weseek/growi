@@ -110,24 +110,24 @@ const InstallerForm = memo((): JSX.Element => {
               <div className="input-group-prepend">
                 <i className="input-group-text icon-bubbles border-0 rounded-0" />
               </div>
-                <button
-                  type="button"
-                  className="btn btn-secondary dropdown-toggle form-control text-right rounded-right"
-                  id="dropdownLanguage"
-                  data-testid="dropdownLanguage"
-                  data-toggle="dropdown"
-                  aria-haspopup="true"
-                  aria-expanded="true"
-                >
-                  <span className="float-left">
-                    {t('meta.display_name')}
-                  </span>
-                </button>
-                <input
+              <button
+                type="button"
+                className="btn btn-secondary dropdown-toggle form-control text-right rounded-right"
+                id="dropdownLanguage"
+                data-testid="dropdownLanguage"
+                data-toggle="dropdown"
+                aria-haspopup="true"
+                aria-expanded="true"
+              >
+                <span className="float-left">
+                  {t('meta.display_name')}
+                </span>
+              </button>
+              <input
                 type="hidden"
                 name="registerForm[app:globalLang]"
               />
-                <div className="dropdown-menu" aria-labelledby="dropdownLanguage">
+              <div className="dropdown-menu" aria-labelledby="dropdownLanguage">
                 {
                   i18nConfig.locales.map((locale) => {
                     let fixedT;
