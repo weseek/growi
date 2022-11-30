@@ -126,7 +126,7 @@ export const UserGroupTable: FC<Props> = (props: Props) => {
   }, [props.userGroupRelations, props.childUserGroups]);
 
   return (
-    <>
+    <div data-testid="grw-user-group-table">
       <h2>{props.headerLabel}</h2>
 
       <table className="table table-bordered table-user-list">
@@ -216,6 +216,6 @@ export const UserGroupTable: FC<Props> = (props: Props) => {
           })}
         </tbody>
       </table>
-    </>
+    </div>
   );
 };
