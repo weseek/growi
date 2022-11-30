@@ -31,6 +31,8 @@ import RevisionRenderer from './Page/RevisionRenderer';
 import mdu from './PageEditor/MarkdownDrawioUtil';
 import mtu from './PageEditor/MarkdownTableUtil';
 
+import styles from './Page.module.scss';
+
 
 declare global {
   // eslint-disable-next-line vars-on-top, no-var
@@ -203,7 +205,7 @@ export const Page = (props) => {
   const { _id: revisionId, body: markdown } = currentPage.revision;
 
   return (
-    <div className={`mb-5 ${isMobile ? 'page-mobile' : ''}`}>
+    <div className={`mb-5 ${isMobile ? `page-mobile ${styles['page-mobile']}` : ''}`}>
 
       { revisionId != null && (
         <RevisionRenderer rendererOptions={rendererOptions} markdown={markdown} />

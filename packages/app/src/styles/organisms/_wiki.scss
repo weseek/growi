@@ -235,21 +235,6 @@
   }
 }
 
-// mobile
-.page-mobile .wiki .revision-head {
-
-  .revision-head-link,
-  .revision-head-edit-button {
-    opacity: 0.3;
-  }
-}
-
-.page-mobile .editable-with-handsontable {
-  .handsontable-modal-trigger {
-    opacity: 0.3;
-  }
-}
-
 @include bs.media-breakpoint-down(sm) {
   .main .wiki {
     img {

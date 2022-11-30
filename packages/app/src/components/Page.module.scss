@@ -1,0 +1,15 @@
+// mobile
+.page-mobile :global {
+  .wiki .revision-head {
+    .revision-head-link,
+    .revision-head-edit-button {
+      opacity: 0.3;
+    }
+  }
+
+  .editable-with-handsontable {
+    .handsontable-modal-trigger {
+      opacity: 0.3;
+    }
+  }
+}
