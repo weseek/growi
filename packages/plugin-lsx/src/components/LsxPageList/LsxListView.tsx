@@ -9,7 +9,7 @@ import styles from './LsxListView.module.scss';
 
 
 type Props = {
-  nodeTree: PageNode[],
+  nodeTree?: PageNode[],
   lsxContext: LsxContext,
   basisViewersCount?: number,
 };
@@ -19,7 +19,7 @@ export const LsxListView = React.memo((props: Props): JSX.Element => {
 
   const { nodeTree, lsxContext, basisViewersCount } = props;
 
-  const isEmpty = nodeTree.length === 0;
+  const isEmpty = nodeTree == null || nodeTree.length === 0;
 
   const contents = useMemo(() => {
     if (isEmpty) {

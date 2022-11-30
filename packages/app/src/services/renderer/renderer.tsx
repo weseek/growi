@@ -1,7 +1,7 @@
 // allow only types to import from react
 import { ComponentType } from 'react';
 
-import { Lsx } from '@growi/plugin-lsx/components';
+import { Lsx, LsxImmutable } from '@growi/plugin-lsx/components';
 import * as lsxGrowiPlugin from '@growi/plugin-lsx/services/renderer';
 import * as drawioPlugin from '@growi/remark-drawio-plugin';
 import growiPlugin from '@growi/remark-growi-plugin';
@@ -351,7 +351,6 @@ export const generateViewOptions = (
     components.h1 = Header;
     components.h2 = Header;
     components.h3 = Header;
-    // components.lsx = props => <Lsx {...props} forceToFetchData />;
     components.lsx = Lsx;
     components.drawio = DrawioViewerWithEditButton;
   }
@@ -425,7 +424,7 @@ export const generateSimpleViewOptions = (config: RendererConfig, pagePath: stri
 
   // add components
   if (components != null) {
-    components.lsx = Lsx;
+    components.lsx = LsxImmutable;
     components.drawio = drawioPlugin.DrawioViewer;
   }
 
@@ -465,7 +464,7 @@ export const generatePreviewOptions = (config: RendererConfig, pagePath: string)
 
   // add components
   if (components != null) {
-    components.lsx = Lsx;
+    components.lsx = LsxImmutable;
     components.drawio = drawioPlugin.DrawioViewer;
   }
 
