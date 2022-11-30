@@ -26,6 +26,7 @@ import { CodeBlock } from '~/components/ReactMarkdownComponents/CodeBlock';
 import { DrawioViewerWithEditButton } from '~/components/ReactMarkdownComponents/DrawioViewerWithEditButton';
 import { Header } from '~/components/ReactMarkdownComponents/Header';
 import { NextLink } from '~/components/ReactMarkdownComponents/NextLink';
+import { TableWithEditButton } from '~/components/ReactMarkdownComponents/TableWithEditButton';
 import { RendererConfig } from '~/interfaces/services/renderer';
 import loggerFactory from '~/utils/logger';
 
@@ -353,6 +354,7 @@ export const generateViewOptions = (
     components.h3 = Header;
     components.lsx = props => <Lsx {...props} forceToFetchData />;
     components.drawio = DrawioViewerWithEditButton;
+    components.table = TableWithEditButton;
   }
 
   // // Add configurers for viewer
