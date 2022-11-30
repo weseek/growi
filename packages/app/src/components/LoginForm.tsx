@@ -7,8 +7,9 @@ import { useRouter } from 'next/router';
 import ReactCardFlip from 'react-card-flip';
 
 import { apiv3Post } from '~/client/util/apiv3-client';
+import type { IExternalAccountLoginError } from '~/interfaces/errors/external-account-login-error';
 import { LoginErrorCode } from '~/interfaces/errors/login-error';
-import { IErrorV3 } from '~/interfaces/errors/v3-error';
+import type { IErrorV3 } from '~/interfaces/errors/v3-error';
 import { RegistrationMode } from '~/interfaces/registration-mode';
 import { toArrayIfNot } from '~/utils/array-utils';
 
@@ -27,7 +28,7 @@ type LoginFormProps = {
   isLdapSetupFailed: boolean,
   objOfIsExternalAuthEnableds?: any,
   isMailerSetup?: boolean,
-  loginError?: IErrorV3,
+  loginError?: IExternalAccountLoginError,
 }
 export const LoginForm = (props: LoginFormProps): JSX.Element => {
   const { t } = useTranslation();
@@ -45,7 +46,7 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
   // For Login
   const [usernameForLogin, setUsernameForLogin] = useState('');
   const [passwordForLogin, setPasswordForLogin] = useState('');
-  const [loginErrors, setLoginErrors] = useState<IErrorV3[]>(props.loginError != null ? [props.loginError] : []);
+  const [loginErrors, setLoginErrors] = useState<IErrorV3[] | IExternalAccountLoginError[]>(props.loginError != null ? [props.loginError] : []);
   // For Register
   const [usernameForRegister, setUsernameForRegister] = useState('');
   const [nameForRegister, setNameForRegister] = useState('');
@@ -101,7 +102,7 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
   }, [passwordForLogin, resetLoginErrors, router, usernameForLogin]);
 
   // separate errors based on error code
-  const separateErrorsBasedOnErrorCode = useCallback((errors: IErrorV3[]) => {
+  const separateErrorsBasedOnErrorCode = useCallback((errors: IErrorV3[] | IExternalAccountLoginError[]) => {
     const loginErrorListForDangerouslySetInnerHTML: IErrorV3[] = [];
     const loginErrorList: IErrorV3[] = [];
 
