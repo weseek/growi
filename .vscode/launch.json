@@ -73,12 +73,8 @@
             "path": "${workspaceFolder}/packages/core"
           },
           {
-            "url": "webpack://_n_e/plugin-attachment-refs",
-            "path": "${workspaceFolder}/packages/plugin-attachment-refs"
-          },
-          {
-            "url": "webpack://_n_e/plugin-lsx",
-            "path": "${workspaceFolder}/packages/plugin-lsx"
+            "url": "webpack://_n_e/remark-lsx",
+            "path": "${workspaceFolder}/packages/remark-lsx"
           },
           {
             "url": "webpack://_n_e/slack",

@@ -16,11 +16,9 @@ on:
       - '!packages/app/docker/**'
       - packages/codemirror-textlint/**
       - packages/core/**
-      - packages/remark-drawio-plugin/**
-      - packages/remark-growi-plugin/**
+      - packages/remark-*/**
       - packages/slack/**
       - packages/ui/**
-      - packages/plugin-*/**
 
 jobs:
   lint:
@@ -56,7 +54,7 @@ jobs:
 
       - name: lerna run lint for plugins
         run: |
-          yarn lerna run lint --scope @growi/remark-* --scope @growi/plugin-*
+          yarn lerna run lint --scope @growi/remark-*
       - name: lerna run lint for app
         run: |
           yarn lerna run lint --scope @growi/app --scope @growi/codemirror-textlint --scope @growi/core --scope @growi/slack --scope @growi/ui
@@ -110,7 +108,7 @@ jobs:
 
       - name: lerna run test for plugins
         run: |
-          yarn lerna run test --scope @growi/remark-* --scope @growi/plugin-*
+          yarn lerna run test --scope @growi/remark-*
 
       - name: Test app
         working-directory: ./packages/app
