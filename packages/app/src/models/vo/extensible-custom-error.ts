@@ -1,3 +1,4 @@
+// Custom error object for ExternalAccount login
 export class ExtensibleCustomError extends Error {
 
   args?: any;
