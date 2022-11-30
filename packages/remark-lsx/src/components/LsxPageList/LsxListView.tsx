@@ -1,6 +1,6 @@
 import React, { useMemo } from 'react';
 
-import { PageNode } from '../PageNode';
+import type { PageNode } from '../../interfaces/page-node';
 import { LsxContext } from '../lsx-context';
 
 import { LsxPage } from './LsxPage';

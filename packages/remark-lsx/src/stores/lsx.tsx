@@ -4,8 +4,8 @@ import { IPage, pathUtils } from '@growi/core';
 import axios from 'axios';
 import useSWR, { SWRResponse } from 'swr';
 
-import { PageNode } from '../components/PageNode';
 import { LsxContext } from '../components/lsx-context';
+import type { PageNode } from '../interfaces/page-node';
 
 function isEquals(path1: string, path2: string) {
   return pathUtils.removeTrailingSlash(path1) === pathUtils.removeTrailingSlash(path2);
@@ -36,7 +36,7 @@ function generatePageNode(pathToNodeMap: Record<string, PageNode>, rootPagePath:
   }
 
   // generate node
-  const node = new PageNode(pagePath);
+  const node = { pagePath, children: [] };
   pathToNodeMap[pagePath] = node;
 
   /*

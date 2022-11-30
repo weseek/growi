@@ -3,7 +3,7 @@ import React, { useMemo } from 'react';
 import { pathUtils } from '@growi/core';
 import { PagePathLabel, PageListMeta } from '@growi/ui';
 
-import { PageNode } from '../PageNode';
+import type { PageNode } from '../../interfaces/page-node';
 import { LsxContext } from '../lsx-context';
 
 
@@ -19,7 +19,8 @@ export const LsxPage = React.memo((props: Props): JSX.Element => {
     pageNode, lsxContext, depth, basisViewersCount,
   } = props;
 
-  const isExists = pageNode.page !== undefined;
+  const pageId = pageNode.page?._id;
+  const pagePath = pageNode.pagePath;
   const isLinkable = (() => {
     // process depth option
     const optDepth = lsxContext.getOptDepth();
@@ -58,31 +59,38 @@ export const LsxPage = React.memo((props: Props): JSX.Element => {
   }, [basisViewersCount, depth, hasChildren, lsxContext, pageNode.children]);
 
   const iconElement: JSX.Element = useMemo(() => {
+    const isExists = pageId != null;
     return (isExists)
       ? <i className="ti ti-agenda" aria-hidden="true"></i>
       : <i className="ti ti-file lsx-page-not-exist" aria-hidden="true"></i>;
-  }, [isExists]);
+  }, [pageId]);
 
   const pagePathElement: JSX.Element = useMemo(() => {
+    const isExists = pageId != null;
+
     const classNames: string[] = [];
     if (!isExists) {
       classNames.push('lsx-page-not-exist');
     }
 
     // create PagePath element
-    let pagePathNode = <PagePathLabel path={pageNode.pagePath} isLatterOnly additionalClassNames={classNames} />;
+    let pagePathNode = <PagePathLabel path={pagePath} isLatterOnly additionalClassNames={classNames} />;
     if (isLinkable) {
-      pagePathNode = <a className="page-list-link" href={encodeURI(pathUtils.removeTrailingSlash(pageNode.pagePath))}>{pagePathNode}</a>;
+      const href = isExists
+        ? `/${pageId}`
+        : encodeURI(pathUtils.removeTrailingSlash(pagePath));
+
+      pagePathNode = <a className="page-list-link" href={href}>{pagePathNode}</a>;
     }
     return pagePathNode;
-  }, [isExists, isLinkable, pageNode.pagePath]);
+  }, [isLinkable, pageId, pagePath]);
 
   const pageListMetaElement: JSX.Element = useMemo(() => {
-    if (!isExists) {
+    if (pageNode.page == null) {
       return <></>;
     }
     return <PageListMeta page={pageNode.page} basisViewersCount={basisViewersCount} />;
-  }, [basisViewersCount, isExists, pageNode.page]);
+  }, [basisViewersCount, pageNode.page]);
 
   return (
     <li className="page-list-li">
