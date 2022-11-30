@@ -230,16 +230,13 @@ context('Page Accessories Modal', () => {
      cy.waitUntilSkeletonDisappear();
 
      cy.get('#grw-subnav-container').within(() => {
-      cy.getByTestid('open-page-item-control-btn').should('be.visible');
       cy.getByTestid('open-page-item-control-btn').within(() => {
         cy.get('button.btn-page-item-control').click({force: true});
-        cy.getByTestid('page-item-control-menu').should('be.visible');
-        cy.getByTestid('open-page-accessories-modal-btn-with-attachment-data-tab').click();
       });
+      cy.getByTestid('open-page-accessories-modal-btn-with-attachment-data-tab').click({force: true});
     });
 
-     cy.getByTestid('page-accessories-modal').should('be.visible')
-     cy.getByTestid('page-attachment').should('be.visible')
+     cy.getByTestid('page-attachment').should('be.visible').contains('No attachments yet.');
      cy.screenshot(`${ssPrefix}-open-page-attachment-data-bootstrap4`);
   });
 
@@ -329,7 +326,7 @@ context('Tag Oprations', { scrollBehavior: false }, () =>{
     cy.getByTestid('search-result-base').should('be.visible');
     cy.getByTestid('search-result-list').should('be.visible');
     cy.getByTestid('search-result-content').should('be.visible');
-    cy.get('#revision-loader').should('be.visible');
+    cy.get('#revision-loader').should('be.visible').contains('Block Elements');
 
     // force to add 'active' to pass VRT: https://github.com/weseek/growi/pull/6603
     cy.getByTestid('page-list-item-L').first().invoke('addClass', 'active');
@@ -355,9 +352,9 @@ context('Tag Oprations', { scrollBehavior: false }, () =>{
     }).screenshot(`${ssPrefix}3-duplicate-page`);
 
     cy.getByTestid('page-duplicate-modal').within(() => {
-      // Wait for completion of request to '/_api/v3/pages/duplicate'
       cy.intercept('POST', '/_api/v3/pages/duplicate').as('duplicate');
       cy.get('.modal-footer > button.btn').click();
+      // Wait for completion of request to '/_api/v3/pages/duplicate'
       cy.wait('@duplicate')
     });
 
@@ -381,7 +378,7 @@ context('Tag Oprations', { scrollBehavior: false }, () =>{
     cy.getByTestid('search-result-base').should('be.visible');
     cy.getByTestid('search-result-list').should('be.visible');
     cy.getByTestid('search-result-content').should('be.visible');
-    cy.get('#revision-loader').should('be.visible');
+    cy.get('#revision-loader').should('be.visible').contains('Block Elements');
 
     // eslint-disable-next-line cypress/no-unnecessary-waiting
     cy.wait(300);
@@ -421,9 +418,9 @@ context('Tag Oprations', { scrollBehavior: false }, () =>{
     }).screenshot(`${ssPrefix}3-insert-new-page-name`);
 
     cy.getByTestid('page-rename-modal').should('be.visible').within(() => {
-      // Wait for completion of request to '/_api/v3/pages/rename'
       cy.intercept('PUT', '/_api/v3/pages/rename').as('rename');
       cy.getByTestid('grw-page-rename-button').should('not.be.disabled').click();
+      // Wait for completion of request to '/_api/v3/pages/rename'
       cy.wait('@rename')
     });
 
