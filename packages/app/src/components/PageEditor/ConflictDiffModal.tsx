@@ -11,7 +11,7 @@ import {
   Modal, ModalHeader, ModalBody, ModalFooter,
 } from 'reactstrap';
 
-import type { OptionsToSave } from '~/interfaces/editor-settings';
+import { OptionsToSave } from '~/interfaces/page-operation';
 import { useCurrentUser } from '~/stores/context';
 import { useEditorMode } from '~/stores/ui';
 
