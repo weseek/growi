@@ -4,7 +4,7 @@ import EventEmitter from 'events';
 
 import { Element } from 'react-markdown/lib/rehype-filter';
 
-import { useIsGuestUser, useIsSharedUser } from '~/stores/context';
+import { useIsGuestUser, useIsSharedUser, useShareLinkId } from '~/stores/context';
 
 import styles from './TableWithEditButton.module.scss';
 
@@ -23,6 +23,7 @@ export const TableWithEditButton = React.memo((props: TableWithEditButtonProps):
 
   const { data: isGuestUser } = useIsGuestUser();
   const { data: isSharedUser } = useIsSharedUser();
+  const { data: shareLinkId } = useShareLinkId();
 
   const bol = node.position?.start.line;
   const eol = node.position?.end.line;
@@ -31,7 +32,7 @@ export const TableWithEditButton = React.memo((props: TableWithEditButtonProps):
     globalEmitter.emit('launchHandsonTableModal', bol, eol);
   }, [bol, eol]);
 
-  const showEditButton = !isGuestUser && !isSharedUser;
+  const showEditButton = !isGuestUser && !isSharedUser && shareLinkId == null;
 
   return (
     <div className={`editable-with-handsontable ${styles['editable-with-handsontable']}`}>
