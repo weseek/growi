@@ -3,7 +3,7 @@ import http from 'http';
 import path from 'path';
 
 import { createTerminus } from '@godaddy/terminus';
-import lsxRoutes from '@growi/plugin-lsx/server/routes';
+import lsxRoutes from '@growi/remark-lsx/server/routes';
 import mongoose from 'mongoose';
 import next from 'next';
 
