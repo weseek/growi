@@ -37,9 +37,9 @@ export const PageStatusAlert = (): JSX.Element => {
   const revision = pageData?.revision;
 
   const refreshPage = useCallback(async() => {
-    await mutatePageData();
-    mutateEditingMarkdown(pageData?.revision.body);
-  }, [mutateEditingMarkdown, mutatePageData, pageData?.revision.body]);
+    const updatedPageData = await mutatePageData();
+    mutateEditingMarkdown(updatedPageData?.revision.body);
+  }, [mutateEditingMarkdown, mutatePageData]);
 
   const onClickResolveConflict = useCallback(() => {
     // this.props.pageContainer.setState({

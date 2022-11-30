@@ -87,6 +87,7 @@ const PageEditor = React.memo((): JSX.Element => {
   const { mutate: mutateIsEnabledUnsavedWarning } = useIsEnabledUnsavedWarning();
   const saveOrUpdate = useSaveOrUpdate();
 
+
   const currentRevisionId = currentPage?.revision?._id;
 
   const initialValue = useMemo(() => {
@@ -126,6 +127,11 @@ const PageEditor = React.memo((): JSX.Element => {
     mutateIsConflict(isConflict);
 
   }, [markdownToPreview, mutateIsConflict]);
+
+  useEffect(() => {
+    markdownToSave.current = initialValue;
+    setMarkdownToPreview(initialValue);
+  }, [initialValue]);
 
   useEffect(() => {
     if (socket == null) { return }
