@@ -131,8 +131,10 @@ class CodeMirrorEditor extends AbstractEditor {
     this.handleCtrlEnterKey = this.handleCtrlEnterKey.bind(this);
 
     this.scrollCursorIntoViewHandler = this.scrollCursorIntoViewHandler.bind(this);
+    this.scrollCursorIntoViewHandlerThrottled = throttle(500, this.scrollCursorIntoViewHandler);
     this.pasteHandler = this.pasteHandler.bind(this);
     this.cursorHandler = this.cursorHandler.bind(this);
+    this.cursorHandlerDebounced = debounce(200, throttle(500, this.cursorHandler));
     this.changeHandler = this.changeHandler.bind(this);
     this.turnOnEmojiPickerMode = this.turnOnEmojiPickerMode.bind(this);
     this.turnOffEmojiPickerMode = this.turnOffEmojiPickerMode.bind(this);
@@ -156,7 +158,8 @@ class CodeMirrorEditor extends AbstractEditor {
     this.showLinkEditHandler = this.showLinkEditHandler.bind(this);
 
     this.foldDrawioSection = this.foldDrawioSection.bind(this);
-    this.onSaveForDrawio = this.onSaveForDrawio.bind(this);
+    this.clickDrawioIconHandler = this.clickDrawioIconHandler.bind(this);
+    this.clickTableIconHandler = this.clickTableIconHandler.bind(this);
 
   }
 
@@ -866,7 +869,7 @@ class CodeMirrorEditor extends AbstractEditor {
     this.linkEditModal.current.show(markdownLinkUtil.getMarkdownLink(this.getCodeMirror()));
   }
 
-  // fold draw.io section (::: drawio ~ :::)
+  // fold draw.io section (``` drawio ~ ```)
   foldDrawioSection() {
     const editor = this.getCodeMirror();
     const lineNumbers = mdu.findAllDrawioSection(editor);
@@ -875,13 +878,29 @@ class CodeMirrorEditor extends AbstractEditor {
     });
   }
 
-  onSaveForDrawio(drawioData) {
-    const range = mdu.replaceFocusedDrawioWithEditor(this.getCodeMirror(), drawioData);
-    // Fold the section after the drawio section (:::drawio) has been updated.
-    this.foldDrawioSection();
-    return range;
+  clickDrawioIconHandler() {
+    const drawioMxFile = mdu.getMarkdownDrawioMxfile(this.getCodeMirror());
+
+    this.props.onClickDrawioBtn(
+      drawioMxFile,
+      // onSave
+      (drawioMxFile) => {
+        mdu.replaceFocusedDrawioWithEditor(this.getCodeMirror(), drawioMxFile);
+        // Fold the section after the drawio section (```drawio) has been updated.
+        this.foldDrawioSection();
+      },
+    );
   }
 
+  clickTableIconHandler() {
+    const markdownTable = mtu.getMarkdownTable(this.getCodeMirror());
+
+    this.props.onClickTableBtn(
+      markdownTable,
+      this.getCodeMirror(),
+      this.props.editorSettings.autoFormatMarkdownTable,
+    );
+  }
 
   getNavbarItems() {
     return [
@@ -1008,13 +1027,7 @@ class CodeMirrorEditor extends AbstractEditor {
         color={null}
         size="sm"
         title="Table"
-        onClick={() => {
-          this.props.onClickTableBtn(
-            mtu.getMarkdownTable(this.getCodeMirror()),
-            this.getCodeMirror(),
-            this.props.editorSettings.autoFormatMarkdownTable,
-          );
-        }}
+        onClick={this.clickTableIconHandler}
       >
         <EditorIcon icon="Table" />
       </Button>,
@@ -1023,7 +1036,7 @@ class CodeMirrorEditor extends AbstractEditor {
         color={null}
         bssize="small"
         title="draw.io"
-        onClick={() => this.props.onClickDrawioBtn(mdu.getMarkdownDrawioMxfile(this.getCodeMirror()))}
+        onClick={this.clickDrawioIconHandler}
       >
         <EditorIcon icon="Drawio" />
       </Button>,
@@ -1091,7 +1104,7 @@ class CodeMirrorEditor extends AbstractEditor {
             },
             lint,
           }}
-          onCursor={this.cursorHandler}
+          onCursor={this.cursorHandlerDebounced}
           onScroll={(editor, data) => {
             if (this.props.onScroll != null) {
             // add line data
@@ -1109,7 +1122,7 @@ class CodeMirrorEditor extends AbstractEditor {
           onKeyPress={this.keyPressHandler}
           onKeyDown={this.keyDownHandler}
           onPasteFiles={this.pasteHandler}
-          onScrollCursorIntoView={this.scrollCursorIntoViewHandler}
+          onScrollCursorIntoView={this.scrollCursorIntoViewHandlerThrottled}
         />
 
         { this.renderLoadingKeymapOverlay() }
@@ -1152,12 +1165,12 @@ const CodeMirrorEditorFc = React.forwardRef((props, ref) => {
   const { open: openDrawioModal } = useDrawioModal();
   const { open: openHandsontableModal } = useHandsontableModal();
 
-  const openDrawioModalHandler = useCallback((drawioMxFile) => {
-    openDrawioModal(drawioMxFile);
+  const openDrawioModalHandler = useCallback((drawioMxFile, onSave) => {
+    openDrawioModal(drawioMxFile, onSave);
   }, [openDrawioModal]);
 
-  const openTableModalHandler = useCallback((table, editor, autoFormatMarkdownTable) => {
-    openHandsontableModal(table, editor, autoFormatMarkdownTable);
+  const openTableModalHandler = useCallback((markdownTable, editor, autoFormatMarkdownTable) => {
+    openHandsontableModal(markdownTable, editor, autoFormatMarkdownTable);
   }, [openHandsontableModal]);
 
   return (

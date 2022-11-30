@@ -56,7 +56,7 @@ const LikeButtons: FC<LikeButtonsProps> = (props: LikeButtonsProps) => {
         <i className={`fa ${isLiked ? 'fa-heart' : 'fa-heart-o'}`}></i>
       </button>
 
-      <UncontrolledTooltip placement="top" target="like-button" fade={false}>
+      <UncontrolledTooltip data-testid="like-button-tooltip" placement="top" target="like-button" autohide={false} fade={false}>
         {t(getTooltipMessage())}
       </UncontrolledTooltip>
 
