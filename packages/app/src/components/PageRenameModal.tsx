@@ -335,6 +335,7 @@ const PageRenameModal = (): JSX.Element => {
       <>
         <ApiErrorMessageList errs={errs} targetPath={pageNameInput} />
         <button
+          data-testid="grw-page-rename-button"
           type="button"
           className="btn btn-primary"
           onClick={rename}
