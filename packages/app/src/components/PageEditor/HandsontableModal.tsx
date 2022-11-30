@@ -37,7 +37,7 @@ export const HandsontableModal = (): JSX.Element => {
   const table = handsontableModalData?.table;
   const autoFormatMarkdownTable = handsontableModalData?.autoFormatMarkdownTable ?? false;
   const editor = handsontableModalData?.editor;
-  const onSaveDirectlyFromPage = handsontableModalData?.onSave;
+  const onSave = handsontableModalData?.onSave;
 
   const defaultMarkdownTable = () => {
     return new MarkdownTable(
@@ -132,9 +132,9 @@ export const HandsontableModal = (): JSX.Element => {
       markdownTableOption.latest,
     ).normalizeCells();
 
-    // onSaveDirectlyFromPage is passed only when editing table directly from the page.
-    if (onSaveDirectlyFromPage != null) {
-      onSaveDirectlyFromPage(newMarkdownTable);
+    // onSave is passed only when editing table directly from the page.
+    if (onSave != null) {
+      onSave(newMarkdownTable);
       cancel();
       return;
     }

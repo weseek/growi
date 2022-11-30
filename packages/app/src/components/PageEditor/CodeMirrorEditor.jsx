@@ -159,6 +159,7 @@ class CodeMirrorEditor extends AbstractEditor {
 
     this.foldDrawioSection = this.foldDrawioSection.bind(this);
     this.clickDrawioIconHandler = this.clickDrawioIconHandler.bind(this);
+    this.clickTableIconHandler = this.clickTableIconHandler.bind(this);
 
   }
 

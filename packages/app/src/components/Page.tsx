@@ -77,6 +77,7 @@ export const Page = (props) => {
   }, [mutateCurrentPageTocNode, tocRef.current]); // include tocRef.current to call mutateCurrentPageTocNode when tocRef.current changes
 
 
+  // TODO: refactor commonize saveByDrawioModal and saveByHandsontableModal
   const saveByDrawioModal = useCallback(async(drawioMxFile: string, bol: number, eol: number) => {
     if (currentPage == null || tagsInfo == null) {
       return;

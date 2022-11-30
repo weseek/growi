@@ -15,11 +15,13 @@ declare global {
 
 type TableWithEditButtonProps = {
   children: React.ReactNode,
+  className: string
   node: Element,
 }
 
 export const TableWithEditButton = React.memo((props: TableWithEditButtonProps): JSX.Element => {
-  const { node, children } = props;
+
+  const { children, className, node } = props;
 
   const { data: isGuestUser } = useIsGuestUser();
   const { data: isSharedUser } = useIsSharedUser();
@@ -41,7 +43,7 @@ export const TableWithEditButton = React.memo((props: TableWithEditButtonProps):
           <i className="icon-note"></i>
         </button>
       )}
-      <table className="table table-bordered">
+      <table className={`${className}`}>
         {children}
       </table>
     </div>

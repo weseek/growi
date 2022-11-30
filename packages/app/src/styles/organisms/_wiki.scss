@@ -235,6 +235,15 @@
   }
 }
 
+// mobile
+.page-mobile .wiki .revision-head {
+
+  .revision-head-link,
+  .revision-head-edit-button {
+    opacity: 0.3;
+  }
+}
+
 @include bs.media-breakpoint-down(sm) {
   .main .wiki {
     img {
