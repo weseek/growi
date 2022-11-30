@@ -135,7 +135,7 @@ export const Page = (props) => {
   }, [openDrawioModal, saveByDrawioModal, shareLinkId]);
 
   const saveByHandsontableModal = useCallback(async(table: MarkdownTable, bol: number, eol: number) => {
-    if (currentPage == null || tagsInfo == null) {
+    if (currentPage == null || tagsInfo == null || shareLinkId != null) {
       return;
     }
 
@@ -169,24 +169,25 @@ export const Page = (props) => {
       logger.error('failed to save', error);
       toastError(error);
     }
-  }, [currentPage, mutateCurrentPage, mutateEditingMarkdown, saveOrUpdate, t, tagsInfo]);
+  }, [currentPage, mutateCurrentPage, mutateEditingMarkdown, saveOrUpdate, shareLinkId, t, tagsInfo]);
 
   // set handler to open HandsonTableModal
   useEffect(() => {
+    if (currentPage == null || shareLinkId != null) {
+      return;
+    }
+
     const handler = (bol: number, eol: number) => {
-      if (currentPage == null) {
-        return;
-      }
       const markdown = currentPage.revision.body;
-      const table = mtu.getMarkdownTableFromLine(markdown, bol, eol);
-      openHandsontableModal(table, undefined, false, table => saveByHandsontableModal(table, bol, eol));
+      const currentMarkdownTable = mtu.getMarkdownTableFromLine(markdown, bol, eol);
+      openHandsontableModal(currentMarkdownTable, undefined, false, table => saveByHandsontableModal(table, bol, eol));
     };
     globalEmitter.on('launchHandsonTableModal', handler);
 
     return function cleanup() {
       globalEmitter.removeListener('launchHandsonTableModal', handler);
     };
-  }, [currentPage, openHandsontableModal, saveByHandsontableModal]);
+  }, [currentPage, openHandsontableModal, saveByHandsontableModal, shareLinkId]);
 
   if (currentPage == null || isGuestUser == null || rendererOptions == null) {
     const entries = Object.entries({
