@@ -97,7 +97,7 @@ module.exports = function(crowi, app) {
   }
 
   // OAuth
-  app.get('/passport/google'                      , loginPassport.loginWithGoogle, loginPassport.loginFailure);
+  app.get('/passport/google'                      , loginPassport.loginWithGoogle, loginPassport.loginFailureForExternalAccount);
   app.get('/passport/github'                      , loginPassport.loginWithGitHub, loginPassport.loginFailureForExternalAccount);
   app.get('/passport/twitter'                     , loginPassport.loginWithTwitter, loginPassport.loginFailureForExternalAccount);
   app.get('/passport/oidc'                        , loginPassport.loginWithOidc, loginPassport.loginFailureForExternalAccount);
