@@ -508,7 +508,7 @@ module.exports = function(crowi, app) {
 
     // login
     req.logIn(user, async(err) => {
-      if (err) { debug(err.message); return next((new ExternalAccountLoginError(err.message))) }
+      if (err) { debug(err.message); return next(new ExternalAccountLoginError(err.message)) }
 
       return loginSuccessHandler(req, res, user, SupportedAction.ACTION_USER_LOGIN_WITH_TWITTER, true);
     });
