@@ -14,11 +14,9 @@ on:
       - '!packages/app/docker/**'
       - packages/codemirror-textlint/**
       - packages/core/**
-      - packages/remark-drawio-plugin/**
-      - packages/remark-growi-plugin/**
+      - packages/remark-*/**
       - packages/slack/**
       - packages/ui/**
-      - packages/plugin-**
   pull_request:
     branches:
       - master
@@ -33,11 +31,9 @@ on:
       - '!packages/app/docker/**'
       - packages/codemirror-textlint/**
       - packages/core/**
-      - packages/remark-drawio-plugin/**
-      - packages/remark-growi-plugin/**
+      - packages/remark-*/**
       - packages/slack/**
       - packages/ui/**
-      - packages/plugin-**
   workflow_call:
     inputs:
       cypress-config-video:
