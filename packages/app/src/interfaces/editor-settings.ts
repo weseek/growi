@@ -35,13 +35,3 @@ export type EditorConfig = {
     isUploadableImage: boolean,
   }
 }
-
-export type OptionsToSave = {
-  isSlackEnabled: boolean;
-  slackChannels: string;
-  grant: number;
-  pageTags: string[] | null;
-  grantUserGroupId?: string | null;
-  grantUserGroupName?: string | null;
-  isSyncRevisionToHackmd?: boolean;
-};
