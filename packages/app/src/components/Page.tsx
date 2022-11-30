@@ -80,6 +80,11 @@ export const Page = (props) => {
       return;
     }
 
+    // disable if share link
+    if (shareLinkId != null) {
+      return;
+    }
+
     const currentMarkdown = currentPage.revision.body;
     const optionsToSave: OptionsToSave = {
       isSlackEnabled: false,
@@ -110,10 +115,15 @@ export const Page = (props) => {
       logger.error('failed to save', error);
       toastError(error);
     }
-  }, [currentPage, mutateCurrentPage, mutateEditingMarkdown, saveOrUpdate, t, tagsInfo]);
+  }, [currentPage, mutateCurrentPage, mutateEditingMarkdown, saveOrUpdate, shareLinkId, t, tagsInfo]);
 
   // set handler to open DrawioModal
   useEffect(() => {
+    // disable if share link
+    if (shareLinkId != null) {
+      return;
+    }
+
     const handler = (data: DrawioEditByViewerProps) => {
       openDrawioModal(data.drawioMxFile, drawioMxFile => saveByDrawioModal(drawioMxFile, data.bol, data.eol));
     };
@@ -122,7 +132,7 @@ export const Page = (props) => {
     return function cleanup() {
       globalEmitter.removeListener('launchDrawioModal', handler);
     };
-  }, [openDrawioModal, saveByDrawioModal]);
+  }, [openDrawioModal, saveByDrawioModal, shareLinkId]);
 
   const saveByHandsontableModal = useCallback(async(table: MarkdownTable, bol: number, eol: number) => {
     if (currentPage == null || tagsInfo == null) {
