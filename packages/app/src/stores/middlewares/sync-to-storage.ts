@@ -35,10 +35,11 @@ export const createSyncToStorageMiddlware = (
 
       config.fallbackData = initData;
       const swrNext = useSWRNext(key, fetcher, config);
+      const swrMutate = swrNext.mutate;
 
       return Object.assign(swrNext, {
         mutate: (data, shouldRevalidate) => {
-          return swrNext.mutate(data, shouldRevalidate)
+          return swrMutate(data, shouldRevalidate)
             .then((value) => {
               storage.setItem(keyInStorage, storageSerializer.serialize(value));
               return value;
