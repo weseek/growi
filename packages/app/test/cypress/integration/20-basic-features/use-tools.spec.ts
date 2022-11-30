@@ -355,7 +355,10 @@ context('Tag Oprations', { scrollBehavior: false }, () =>{
     }).screenshot(`${ssPrefix}3-duplicate-page`);
 
     cy.getByTestid('page-duplicate-modal').within(() => {
+      // Wait for completion of request to '/_api/v3/pages/duplicate'
+      cy.intercept('POST', '/_api/v3/pages/duplicate').as('duplicate');
       cy.get('.modal-footer > button.btn').click();
+      cy.wait('@duplicate')
     });
 
     cy.visit(`Sandbox-${newPageName}`);
@@ -369,11 +372,12 @@ context('Tag Oprations', { scrollBehavior: false }, () =>{
     const oldPageName = '/Sandbox-our';
     const newPageName = '/Sandbox-us';
 
-    cy.visit('/Sandbox-our');
+    cy.visit(oldPageName);
     cy.waitUntilSkeletonDisappear();
 
-    // Search result page
     cy.get('.grw-tag-label').should('be.visible').contains(tag).click();
+
+    // Search result page
     cy.getByTestid('search-result-base').should('be.visible');
     cy.getByTestid('search-result-list').should('be.visible');
     cy.getByTestid('search-result-content').should('be.visible');
@@ -417,7 +421,10 @@ context('Tag Oprations', { scrollBehavior: false }, () =>{
     }).screenshot(`${ssPrefix}3-insert-new-page-name`);
 
     cy.getByTestid('page-rename-modal').should('be.visible').within(() => {
-      cy.get('.modal-footer > button').click();
+      // Wait for completion of request to '/_api/v3/pages/rename'
+      cy.intercept('PUT', '/_api/v3/pages/rename').as('rename');
+      cy.getByTestid('grw-page-rename-button').should('not.be.disabled').click();
+      cy.wait('@rename')
     });
 
     cy.visit(newPageName);
