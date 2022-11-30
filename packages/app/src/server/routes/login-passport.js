@@ -478,9 +478,7 @@ module.exports = function(crowi, app) {
       return next(error);
     }
 
-    const error = new ExternalAccountLoginError('message.strategy_has_not_been_set_up', { strategy: 'TwitterStrategy' });
-    return next(error);
-    // passport.authenticate('twitter')(req, res);
+    passport.authenticate('twitter')(req, res);
   };
 
   const loginPassportTwitterCallback = async(req, res, next) => {
