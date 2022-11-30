@@ -2,6 +2,7 @@ import React, { useMemo } from 'react';
 
 import { pathUtils } from '@growi/core';
 import { PagePathLabel, PageListMeta } from '@growi/ui';
+import Link from 'next/link';
 
 import type { PageNode } from '../../interfaces/page-node';
 import { LsxContext } from '../lsx-context';
@@ -80,7 +81,11 @@ export const LsxPage = React.memo((props: Props): JSX.Element => {
         ? `/${pageId}`
         : encodeURI(pathUtils.removeTrailingSlash(pagePath));
 
-      pagePathNode = <a className="page-list-link" href={href}>{pagePathNode}</a>;
+      pagePathNode = (
+        <Link href={href} prefetch={false}>
+          <a className="page-list-link" href={href}>{pagePathNode}</a>
+        </Link>
+      );
     }
     return pagePathNode;
   }, [isLinkable, pageId, pagePath]);
