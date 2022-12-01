@@ -82,6 +82,7 @@ context('Modal for page operation', () => {
     cy.getByTestid('newPageBtn').click();
 
     cy.getByTestid('page-create-modal').should('be.visible').within(() => {
+      cy.get('.rbt-input-main').should('have.value', '/Sandbox/');
       cy.get('.rbt-input-main').type(pageName);
       cy.screenshot(`${ssPrefix}under-path-add-page-name`);
       cy.getByTestid('btn-create-page-under-below').click();
