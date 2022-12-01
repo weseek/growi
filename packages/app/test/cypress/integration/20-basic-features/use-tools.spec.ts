@@ -315,13 +315,7 @@ context('Tag Oprations', { scrollBehavior: false }, () =>{
     cy.visit('/Sandbox');
     cy.waitUntilSkeletonDisappear();
 
-    cy.get('.grw-taglabels-container').within(()=>{
-      cy.get('.grw-tag-labels').within(()=>{
-        cy.get('a').then(($el)=>{
-          cy.wrap($el).contains(tag).click();
-        });
-      });
-    });
+    cy.get('.grw-tag-label').should('be.visible').contains(tag).click();
 
     // Search result page
     cy.getByTestid('search-result-base').should('be.visible');
