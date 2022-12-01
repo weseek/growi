@@ -45,7 +45,7 @@ on:
 jobs:
 
   test-prod-node14:
-    uses: weseek/growi/.github/workflows/reusable-app-prod.yml@fix/ci-cypress
+    uses: weseek/growi/.github/workflows/reusable-app-prod.yml@master
     with:
       node-version: 14.x
       skip-cypress: true
@@ -54,7 +54,7 @@ jobs:
 
 
   test-prod-node16:
-    uses: weseek/growi/.github/workflows/reusable-app-prod.yml@fix/ci-cypress
+    uses: weseek/growi/.github/workflows/reusable-app-prod.yml@master
     with:
       node-version: 16.x
       skip-cypress: ${{ contains( github.event.pull_request.labels.*.name, 'dependencies' ) && contains( github.event.pull_request.labels.*.name, 'github_actions' ) }}
@@ -67,7 +67,7 @@ jobs:
   run-reg-suit-node16:
     needs: [test-prod-node16]
 
-    uses: weseek/growi/.github/workflows/reusable-app-reg-suit.yml@fix/ci-cypress
+    uses: weseek/growi/.github/workflows/reusable-app-reg-suit.yml@master
 
     if: always()
 
