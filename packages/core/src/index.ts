@@ -22,7 +22,6 @@ export * from './interfaces/revision';
 export * from './interfaces/subscription';
 export * from './interfaces/tag';
 export * from './interfaces/user';
-export * from './plugin/service/tag-cache-manager';
 export * from './models/devided-page-path';
 export * from './models/vo/error-apiv3';
 export * from './service/localstorage-manager';
