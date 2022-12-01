@@ -128,6 +128,11 @@ const PageEditor = React.memo((): JSX.Element => {
   }, [markdownToPreview, mutateIsConflict]);
 
   useEffect(() => {
+    markdownToSave.current = initialValue;
+    setMarkdownToPreview(initialValue);
+  }, [initialValue]);
+
+  useEffect(() => {
     if (socket == null) { return }
 
     socket.on(SocketEventName.PageUpdated, checkIsConflict);

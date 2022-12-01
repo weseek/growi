@@ -3,7 +3,7 @@ import React, { useCallback, useMemo } from 'react';
 import { useTranslation } from 'next-i18next';
 import * as ReactDOMServer from 'react-dom/server';
 
-import { useIsConflict } from '~/stores/editor';
+import { useEditingMarkdown, useIsConflict } from '~/stores/editor';
 import {
   useHasDraftOnHackmd, useIsHackmdDraftUpdatingInRealtime, useRevisionIdHackmdSynced,
 } from '~/stores/hackmd';
@@ -26,18 +26,20 @@ export const PageStatusAlert = (): JSX.Element => {
   const { data: isHackmdDraftUpdatingInRealtime } = useIsHackmdDraftUpdatingInRealtime();
   const { data: hasDraftOnHackmd } = useHasDraftOnHackmd();
   const { data: isConflict } = useIsConflict();
+  const { mutate: mutateEditingMarkdown } = useEditingMarkdown();
 
   // store remote latest page data
   const { data: revisionIdHackmdSynced } = useRevisionIdHackmdSynced();
   const { data: remoteRevisionId } = useRemoteRevisionId();
   const { data: remoteRevisionLastUpdateUser } = useRemoteRevisionLastUpdatUser();
 
-  const { data: pageData } = useSWRxCurrentPage();
+  const { data: pageData, mutate: mutatePageData } = useSWRxCurrentPage();
   const revision = pageData?.revision;
 
-  const refreshPage = useCallback(() => {
-    window.location.reload();
-  }, []);
+  const refreshPage = useCallback(async() => {
+    const updatedPageData = await mutatePageData();
+    mutateEditingMarkdown(updatedPageData?.revision.body);
+  }, [mutateEditingMarkdown, mutatePageData]);
 
   const onClickResolveConflict = useCallback(() => {
     // this.props.pageContainer.setState({
