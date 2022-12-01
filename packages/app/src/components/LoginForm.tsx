@@ -28,7 +28,7 @@ type LoginFormProps = {
   isLdapSetupFailed: boolean,
   objOfIsExternalAuthEnableds?: any,
   isMailerSetup?: boolean,
-  loginError?: IExternalAccountLoginError,
+  externalAccountLoginError?: IExternalAccountLoginError,
 }
 export const LoginForm = (props: LoginFormProps): JSX.Element => {
   const { t } = useTranslation();
@@ -46,7 +46,7 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
   // For Login
   const [usernameForLogin, setUsernameForLogin] = useState('');
   const [passwordForLogin, setPasswordForLogin] = useState('');
-  const [loginErrors, setLoginErrors] = useState<IErrorV3[] | IExternalAccountLoginError[]>(props.loginError != null ? [props.loginError] : []);
+  const [loginErrors, setLoginErrors] = useState<IErrorV3[]>([]);
   // For Register
   const [usernameForRegister, setUsernameForRegister] = useState('');
   const [nameForRegister, setNameForRegister] = useState('');
@@ -102,7 +102,7 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
   }, [passwordForLogin, resetLoginErrors, router, usernameForLogin]);
 
   // separate errors based on error code
-  const separateErrorsBasedOnErrorCode = useCallback((errors: IErrorV3[] | IExternalAccountLoginError[]) => {
+  const separateErrorsBasedOnErrorCode = useCallback((errors: IErrorV3[]) => {
     const loginErrorListForDangerouslySetInnerHTML: IErrorV3[] = [];
     const loginErrorList: IErrorV3[] = [];
 
@@ -131,7 +131,7 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
   }, [t]);
 
   // wrap error elements which do not use dangerouslySetInnerHtml
-  const generateSafelySetErrors = useCallback((errors: IErrorV3[]): JSX.Element => {
+  const generateSafelySetErrors = useCallback((errors: (IErrorV3 | IExternalAccountLoginError)[]): JSX.Element => {
     if (errors == null || errors.length === 0) return <></>;
     return (
       <ul className="alert alert-danger">
@@ -153,7 +153,10 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
     // Generate login error elements using dangerouslySetInnerHTML
     const loginErrorElementWithDangerouslySetInnerHTML = generateDangerouslySetErrors(loginErrorListForDangerouslySetInnerHTML);
     // Generate login error elements using <ul>, <li>
-    const loginErrorElement = generateSafelySetErrors(loginErrorList);
+
+    const loginErrorElement = props.externalAccountLoginError != null
+      ? generateSafelySetErrors([...loginErrorList, props.externalAccountLoginError])
+      : generateSafelySetErrors(loginErrorList);
 
     return (
       <>
