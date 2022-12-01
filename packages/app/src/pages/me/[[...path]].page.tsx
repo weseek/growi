@@ -8,6 +8,7 @@ import {
 import { useTranslation } from 'next-i18next';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import dynamic from 'next/dynamic';
+import Head from 'next/head';
 import { useRouter } from 'next/router';
 
 import { BasicLayout } from '~/components/Layout/BasicLayout';
@@ -105,26 +106,28 @@ const MePage: NextPage<Props> = (props: Props) => {
   useIsSearchServiceReachable(props.isSearchServiceReachable);
   useIsSearchScopeChildrenAsDefault(props.isSearchScopeChildrenAsDefault);
 
+  const title = useCustomTitle(props, 'GROWI');
+
   return (
-    <>
-      <BasicLayout title={useCustomTitle(props, 'GROWI')}>
-
-        <header className="py-3">
-          <div className="container-fluid">
-            <h1 className="title">{ targetPage.title }</h1>
-          </div>
-        </header>
-
-        <div id="grw-fav-sticky-trigger" className="sticky-top"></div>
-
-        <div id="main" className='main'>
-          <div id="content-main" className="content-main grw-container-convertible">
-            {targetPage.component}
-          </div>
+    <BasicLayout title={useCustomTitle(props, 'GROWI')}>
+      <Head>
+        <title>{title}</title>
+      </Head>
+      <header className="py-3">
+        <div className="container-fluid">
+          <h1 className="title">{ targetPage.title }</h1>
         </div>
+      </header>
 
-      </BasicLayout>
-    </>
+      <div id="grw-fav-sticky-trigger" className="sticky-top"></div>
+
+      <div id="main" className='main'>
+        <div id="content-main" className="content-main grw-container-convertible">
+          {targetPage.component}
+        </div>
+      </div>
+
+    </BasicLayout>
   );
 };
 

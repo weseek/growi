@@ -7,6 +7,7 @@ import {
 import { useTranslation } from 'next-i18next';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import dynamic from 'next/dynamic';
+import Head from 'next/head';
 
 import CountBadge from '~/components/Common/CountBadge';
 import PageListIcon from '~/components/Icons/PageListIcon';
@@ -66,11 +67,17 @@ const SharedPage: NextPage<Props> = (props: Props) => {
   const isShowSharedPage = !props.disableLinkSharing && !isNotFound && !props.isExpired;
   const shareLink = props.shareLink;
 
+  const title = useCustomTitle(props, 'GROWI');
+
   return (
     <>
+      <Head>
+        <title>{title}</title>
+      </Head>
+
       <DrawioViewerScript />
 
-      <ShareLinkLayout title={useCustomTitle(props, 'GROWI')} expandContainer={props.isContainerFluid}>
+      <ShareLinkLayout expandContainer={props.isContainerFluid}>
         <div className="h-100 d-flex flex-column justify-content-between">
           <header className="py-0 position-relative">
             {isShowSharedPage && <GrowiContextualSubNavigation isLinkSharingDisabled={props.disableLinkSharing} />}

@@ -15,12 +15,11 @@ const logger = loggerFactory('growi:cli:RawLayout');
 
 
 type Props = {
-  title?: string,
   className?: string,
   children?: ReactNode,
 }
 
-export const RawLayout = ({ children, title, className }: Props): JSX.Element => {
+export const RawLayout = ({ children, className }: Props): JSX.Element => {
   const classNames: string[] = ['layout-root', 'growi'];
   if (className != null) {
     classNames.push(className);
@@ -40,7 +39,6 @@ export const RawLayout = ({ children, title, className }: Props): JSX.Element =>
   return (
     <>
       <Head>
-        <title>{title}</title>
         <meta charSet="utf-8" />
         <meta name="viewport" content="initial-scale=1.0, width=device-width" />
       </Head>

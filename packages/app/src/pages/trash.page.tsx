@@ -4,6 +4,7 @@ import type { IUser, IUserHasId } from '@growi/core';
 import { NextPage, GetServerSideProps, GetServerSidePropsContext } from 'next';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import dynamic from 'next/dynamic';
+import Head from 'next/head';
 
 import { GrowiSubNavigation } from '~/components/Navbar/GrowiSubNavigation';
 import type { CrowiRequest } from '~/interfaces/crowi-request';
@@ -65,9 +66,14 @@ const TrashPage: NextPage<CommonProps> = (props: Props) => {
   const { data: isDrawerMode } = useDrawerMode();
   const { data: isGuestUser } = useIsGuestUser();
 
+  const title = useCustomTitle(props, 'GROWI');
+
   return (
     <>
-      <BasicLayout title={useCustomTitle(props, 'GROWI')} >
+      <Head>
+        <title>{title}</title>
+      </Head>
+      <BasicLayout>
         <header className="py-0 position-relative">
           <GrowiSubNavigation
             pagePath="/trash"

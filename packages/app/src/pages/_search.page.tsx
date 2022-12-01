@@ -87,6 +87,7 @@ const SearchResultPage: NextPage<Props> = (props: Props) => {
     return <PutbackPageModal />;
   };
 
+  const title = useCustomTitle(props, 'GROWI');
   const classNames: string[] = [];
   // if (props.isContainerFluid) {
   //   classNames.push('growi-layout-fluid');
@@ -95,15 +96,12 @@ const SearchResultPage: NextPage<Props> = (props: Props) => {
   return (
     <>
       <Head>
-        {/*
-        {renderScriptTagByName('drawio-viewer')}
-        {renderScriptTagByName('highlight-addons')}
-        */}
+        <title>{title}</title>
       </Head>
 
       <DrawioViewerScript />
 
-      <SearchResultLayout title={useCustomTitle(props, 'GROWI')} className={classNames.join(' ')}>
+      <SearchResultLayout className={classNames.join(' ')}>
         <div id="search-page">
           <SearchPage />
         </div>

@@ -3,6 +3,7 @@ import {
 } from 'next';
 import { useTranslation } from 'next-i18next';
 import dynamic from 'next/dynamic';
+import Head from 'next/head';
 import { useRouter } from 'next/router';
 
 import { CrowiRequest } from '~/interfaces/crowi-request';
@@ -34,7 +35,10 @@ const AdminUserGroupDetailPage: NextPage<Props> = (props: Props) => {
   useIsAclEnabled(props.isAclEnabled);
 
   return (
-    <AdminLayout title={customTitle} componentTitle={title} >
+    <AdminLayout componentTitle={title}>
+      <Head>
+        <title>{customTitle}</title>
+      </Head>
       {
         currentUserGroupId != null && router.isReady
       && <UserGroupDetailPage userGroupId={currentUserGroupId} />

@@ -5,6 +5,7 @@ import {
   NextPage, GetServerSideProps, GetServerSidePropsContext,
 } from 'next';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
+import Head from 'next/head';
 
 import { NoLoginLayout } from '~/components/Layout/NoLoginLayout';
 
@@ -39,10 +40,14 @@ const InstallerPage: NextPage<Props> = (props: Props) => {
   useConfidential(props.confidential);
   useCsrfToken(props.csrfToken);
 
+  const title = useCustomTitle(props, 'GROWI');
   const classNames: string[] = [];
 
   return (
-    <NoLoginLayout title={useCustomTitle(props, 'GROWI')} className={classNames.join(' ')}>
+    <NoLoginLayout className={classNames.join(' ')}>
+      <Head>
+        <title>{title}</title>
+      </Head>
       <div id="installer-form-container">
         <InstallerForm />
       </div>

@@ -1,5 +1,6 @@
 import { NextPage, GetServerSideProps, GetServerSidePropsContext } from 'next';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
+import Head from 'next/head';
 
 import CompleteUserRegistrationForm from '~/components/CompleteUserRegistrationForm';
 import { NoLoginLayout } from '~/components/Layout/NoLoginLayout';
@@ -21,8 +22,14 @@ type Props = CommonProps & {
 }
 
 const UserActivationPage: NextPage<Props> = (props: Props) => {
+
+  const title = useCustomTitle(props, 'GROWI');
+
   return (
-    <NoLoginLayout title={useCustomTitle(props, 'GROWI')}>
+    <NoLoginLayout>
+      <Head>
+        <title>{title}</title>
+      </Head>
       <CompleteUserRegistrationForm
         token={props.token}
         email={props.email}

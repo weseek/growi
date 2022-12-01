@@ -60,7 +60,7 @@ const TagPage: NextPage<CommonProps> = (props: Props) => {
   const tagData: IDataTagCount[] = tagDataList?.data || [];
   const totalCount: number = tagDataList?.totalCount || 0;
   const isLoading = tagDataList === undefined && error == null;
-  const classNames: string[] = [];
+
 
   useIsSearchPage(false);
   useIsSearchServiceConfigured(props.isSearchServiceConfigured);
@@ -73,38 +73,40 @@ const TagPage: NextPage<CommonProps> = (props: Props) => {
   useCurrentSidebarContents(props.userUISettings?.currentSidebarContents);
   useCurrentProductNavWidth(props.userUISettings?.currentProductNavWidth);
 
+  const title = useCustomTitle(props, 'GROWI');
+  const classNames: string[] = [];
+
   return (
-    <>
+    <BasicLayout className={classNames.join(' ')}>
       <Head>
+        <title>{title}</title>
       </Head>
-      <BasicLayout title={useCustomTitle(props, 'GROWI')} className={classNames.join(' ')}>
-        <div className="grw-container-convertible mb-5 pb-5" data-testid="tags-page">
-          <h2 className="my-3">{`${t('Tags')}(${totalCount})`}</h2>
-          <div className="px-3 mb-5 text-center">
-            <TagCloudBox tags={tagData} minSize={20} />
-          </div>
-          { isLoading
-            ? (
-              <div className="text-muted text-center">
-                <i className="fa fa-2x fa-spinner fa-pulse mt-3"></i>
-              </div>
-            )
-            : (
-              <div data-testid="grw-tags-list">
-                <TagList
-                  tagData={tagData}
-                  totalTags={totalCount}
-                  activePage={activePage}
-                  onChangePage={setOffsetByPageNumber}
-                  pagingLimit={PAGING_LIMIT}
-                />
-              </div>
-            )
-          }
-          <div id="grw-fav-sticky-trigger" className="sticky-top"></div>
+      <div className="grw-container-convertible mb-5 pb-5" data-testid="tags-page">
+        <h2 className="my-3">{`${t('Tags')}(${totalCount})`}</h2>
+        <div className="px-3 mb-5 text-center">
+          <TagCloudBox tags={tagData} minSize={20} />
         </div>
-      </BasicLayout>
-    </>
+        { isLoading
+          ? (
+            <div className="text-muted text-center">
+              <i className="fa fa-2x fa-spinner fa-pulse mt-3"></i>
+            </div>
+          )
+          : (
+            <div data-testid="grw-tags-list">
+              <TagList
+                tagData={tagData}
+                totalTags={totalCount}
+                activePage={activePage}
+                onChangePage={setOffsetByPageNumber}
+                pagingLimit={PAGING_LIMIT}
+              />
+            </div>
+          )
+        }
+        <div id="grw-fav-sticky-trigger" className="sticky-top"></div>
+      </div>
+    </BasicLayout>
   );
 };
 

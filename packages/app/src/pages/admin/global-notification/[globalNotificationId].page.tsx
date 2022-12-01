@@ -6,6 +6,7 @@ import {
 } from 'next';
 import { useTranslation } from 'next-i18next';
 import dynamic from 'next/dynamic';
+import Head from 'next/head';
 import { useRouter } from 'next/router';
 import { Container, Provider } from 'unstated';
 
@@ -56,7 +57,10 @@ const AdminGlobalNotificationNewPage: NextPage<CommonProps> = (props) => {
 
   return (
     <Provider inject={[...injectableContainers]}>
-      <AdminLayout title={customTitle} componentTitle={title} >
+      <AdminLayout componentTitle={title}>
+        <Head>
+          <title>{customTitle}</title>
+        </Head>
         {
           currentGlobalNotificationId != null && router.isReady
       && <ManageGlobalNotification globalNotificationId={currentGlobalNotificationId} />

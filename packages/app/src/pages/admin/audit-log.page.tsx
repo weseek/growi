@@ -3,6 +3,7 @@ import {
 } from 'next';
 import { useTranslation } from 'next-i18next';
 import dynamic from 'next/dynamic';
+import Head from 'next/head';
 
 import { SupportedActionType } from '~/interfaces/activity';
 import { CrowiRequest } from '~/interfaces/crowi-request';
@@ -29,9 +30,13 @@ const AdminAuditLogPage: NextPage<Props> = (props) => {
   useCurrentUser(props.currentUser ?? null);
 
   const title = t('audit_log_management.audit_log');
+  const headTitle = useCustomTitle(props, title);
 
   return (
-    <AdminLayout title={useCustomTitle(props, title)} componentTitle={title} >
+    <AdminLayout componentTitle={title}>
+      <Head>
+        <title>{headTitle}</title>
+      </Head>
       <AuditLogManagement />
     </AdminLayout>
   );

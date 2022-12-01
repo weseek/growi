@@ -4,6 +4,7 @@ import type { IUserHasId, IUser } from '@growi/core';
 import { NextPage, GetServerSideProps, GetServerSidePropsContext } from 'next';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import dynamic from 'next/dynamic';
+import Head from 'next/head';
 
 import { InvitedFormProps } from '~/components/InvitedForm';
 import { NoLoginLayout } from '~/components/Layout/NoLoginLayout';
@@ -29,10 +30,14 @@ const InvitedPage: NextPage<Props> = (props: Props) => {
   useCurrentPathname(props.currentPathname);
   useCurrentUser(props.currentUser);
 
+  const title = useCustomTitle(props, 'GROWI');
   const classNames: string[] = ['invited-page'];
 
   return (
-    <NoLoginLayout title={useCustomTitle(props, 'GROWI')} className={classNames.join(' ')}>
+    <NoLoginLayout className={classNames.join(' ')}>
+      <Head>
+        <title>{title}</title>
+      </Head>
       <InvitedForm invitedFormUsername={props.invitedFormUsername} invitedFormName={props.invitedFormName} />
     </NoLoginLayout>
   );

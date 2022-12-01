@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { ReactElement, useEffect } from 'react';
 
 
 import EventEmitter from 'events';
@@ -184,7 +184,7 @@ type Props = CommonProps & {
   sidebarConfig: ISidebarConfig,
 };
 
-const GrowiPage: NextPage<Props> = (props: Props) => {
+const Page: NextPage<Props> = (props: Props) => {
   // const { t } = useTranslation();
   const router = useRouter();
 
@@ -297,19 +297,16 @@ const GrowiPage: NextPage<Props> = (props: Props) => {
   const isContainerFluidDefault = props.isContainerFluid;
   const isContainerFluid = isContainerFluidEachPage ?? isContainerFluidDefault;
 
+  const title = useCustomTitle(props, 'GROWI');
+
   return (
     <>
       <Head>
-        {/*
-        {renderScriptTagByName('drawio-viewer')}
-        {renderScriptTagByName('highlight-addons')}
-        {renderHighlightJsStyleTag(props.highlightJsStyle)}
-        */}
+        <title>{title}</title>
       </Head>
-
       <DrawioViewerScript />
 
-      <BasicLayout title={useCustomTitle(props, 'GROWI')} className={classNames.join(' ')} expandContainer={isContainerFluid}>
+      <BasicLayout className={classNames.join(' ')} expandContainer={isContainerFluid}>
 
         <div className="h-100 d-flex flex-column justify-content-between">
           <header className="py-0 position-relative">
@@ -632,4 +629,4 @@ export const getServerSideProps: GetServerSideProps = async(context: GetServerSi
   };
 };
 
-export default GrowiPage;
+export default Page;

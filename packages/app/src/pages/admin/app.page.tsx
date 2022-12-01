@@ -4,6 +4,7 @@ import {
 } from 'next';
 import { useTranslation } from 'next-i18next';
 import dynamic from 'next/dynamic';
+import Head from 'next/head';
 import { Container, Provider } from 'unstated';
 
 
@@ -24,7 +25,6 @@ const AdminAppPage: NextPage<CommonProps> = (props) => {
   useIsMaintenanceMode(props.isMaintenanceMode);
   useCurrentUser(props.currentUser ?? null);
 
-  const title = t('headers.app_settings');
   const injectableContainers: Container<any>[] = [];
 
   if (isClient()) {
@@ -32,9 +32,14 @@ const AdminAppPage: NextPage<CommonProps> = (props) => {
     injectableContainers.push(adminAppContainer);
   }
 
+  const title = useCustomTitle(props, t('headers.app_settings'));
+
   return (
     <Provider inject={[...injectableContainers]}>
-      <AdminLayout title={useCustomTitle(props, title)} componentTitle={title} >
+      <AdminLayout componentTitle={title}>
+        <Head>
+          <title>{title}</title>
+        </Head>
         <AppSettingsPageContents />
       </AdminLayout>
     </Provider>

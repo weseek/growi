@@ -74,18 +74,17 @@ const PrivateLegacyPage: NextPage<Props> = (props: Props) => {
   // render config
   useRendererConfig(props.rendererConfig);
 
+  const title = useCustomTitle(props, 'GROWI');
+
   return (
     <>
       <Head>
-        {/*
-        {renderScriptTagByName('drawio-viewer')}
-        {renderScriptTagByName('highlight-addons')}
-        */}
+        <title>{title}</title>
       </Head>
 
       <DrawioViewerScript />
 
-      <SearchResultLayout title={useCustomTitle(props, 'GROWI')}>
+      <SearchResultLayout>
         <div id="private-regacy-pages">
           <PrivateLegacyPages />
         </div>

@@ -4,6 +4,7 @@ import {
   NextPage, GetServerSideProps, GetServerSidePropsContext,
 } from 'next';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
+import Head from 'next/head';
 
 import { NoLoginLayout } from '~/components/Layout/NoLoginLayout';
 import { LoginForm } from '~/components/LoginForm';
@@ -42,10 +43,14 @@ const LoginPage: NextPage<Props> = (props: Props) => {
   // page
   useCurrentPathname(props.currentPathname);
 
+  const title = useCustomTitle(props, 'GROWI');
   const classNames: string[] = ['login-page'];
 
   return (
-    <NoLoginLayout title={useCustomTitle(props, 'GROWI')} className={classNames.join(' ')}>
+    <NoLoginLayout className={classNames.join(' ')}>
+      <Head>
+        <title>{title}</title>
+      </Head>
       <LoginForm
         objOfIsExternalAuthEnableds={props.enabledStrategies}
         isLocalStrategySetup={props.isLocalStrategySetup}

@@ -4,6 +4,7 @@ import {
 } from 'next';
 import { useTranslation } from 'next-i18next';
 import dynamic from 'next/dynamic';
+import Head from 'next/head';
 import { Container, Provider } from 'unstated';
 
 
@@ -38,7 +39,8 @@ const AdminSecuritySettingsPage: NextPage<Props> = (props) => {
   useSiteUrl(props.siteUrl);
   useIsMailerSetup(props.isMailerSetup);
 
-  const title = t('security_settings.security_settings');
+  const componentTitle = t('security_settings.security_settings');
+  const pageTitle = useCustomTitle(props, componentTitle);
   const adminSecurityContainers: Container<any>[] = [];
 
   if (isClient()) {
@@ -69,10 +71,12 @@ const AdminSecuritySettingsPage: NextPage<Props> = (props) => {
     }
   }
 
-
   return (
     <Provider inject={[...adminSecurityContainers]}>
-      <AdminLayout title={useCustomTitle(props, title)} componentTitle={title} >
+      <AdminLayout componentTitle={componentTitle}>
+        <Head>
+          <title>{pageTitle}</title>
+        </Head>
         <SecurityManagement />
       </AdminLayout>
     </Provider>

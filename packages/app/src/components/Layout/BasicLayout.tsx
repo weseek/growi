@@ -27,20 +27,19 @@ const Fab = dynamic(() => import('../Fab').then(mod => mod.Fab), { ssr: false })
 
 
 type Props = {
-  title: string
   className?: string,
   expandContainer?: boolean,
   children?: ReactNode
 }
 
 export const BasicLayout = ({
-  children, title, className, expandContainer,
+  children, className, expandContainer,
 }: Props): JSX.Element => {
 
   const myClassName = `${className ?? ''} ${expandContainer ? 'growi-layout-fluid' : ''}`;
 
   return (
-    <RawLayout title={title} className={myClassName}>
+    <RawLayout className={myClassName}>
 
       <DndProvider backend={HTML5Backend}>
         <GrowiNavbar />

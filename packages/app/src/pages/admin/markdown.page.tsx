@@ -4,6 +4,7 @@ import {
 } from 'next';
 import { useTranslation } from 'next-i18next';
 import dynamic from 'next/dynamic';
+import Head from 'next/head';
 import { Container, Provider } from 'unstated';
 
 
@@ -21,7 +22,9 @@ const AdminMarkdownPage: NextPage<CommonProps> = (props) => {
   const { t } = useTranslation('admin');
   useCurrentUser(props.currentUser ?? null);
 
-  const title = t('markdown_settings.markdown_settings');
+  const componentTitle = t('markdown_settings.markdown_settings');
+  const pageTitle = useCustomTitle(props, componentTitle);
+
   const injectableContainers: Container<any>[] = [];
 
   if (isClient()) {
@@ -32,7 +35,10 @@ const AdminMarkdownPage: NextPage<CommonProps> = (props) => {
 
   return (
     <Provider inject={[...injectableContainers]}>
-      <AdminLayout title={useCustomTitle(props, title)} componentTitle={title} >
+      <AdminLayout componentTitle={componentTitle}>
+        <Head>
+          <title>{pageTitle}</title>
+        </Head>
         <MarkDownSettingContents />
       </AdminLayout>
     </Provider>

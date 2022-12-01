@@ -4,6 +4,7 @@ import {
 } from 'next';
 import { useTranslation } from 'next-i18next';
 import dynamic from 'next/dynamic';
+import Head from 'next/head';
 import { Container, Provider } from 'unstated';
 
 import AdminSlackIntegrationLegacyContainer from '~/client/services/AdminSlackIntegrationLegacyContainer';
@@ -21,6 +22,7 @@ const AdminLegacySlackIntegrationPage: NextPage<CommonProps> = (props) => {
   useCurrentUser(props.currentUser ?? null);
 
   const title = t('slack_integration_legacy.slack_integration_legacy');
+  const headTitle = useCustomTitle(props, title);
   const injectableContainers: Container<any>[] = [];
 
   if (isClient()) {
@@ -31,7 +33,10 @@ const AdminLegacySlackIntegrationPage: NextPage<CommonProps> = (props) => {
 
   return (
     <Provider inject={[...injectableContainers]}>
-      <AdminLayout title={useCustomTitle(props, title)} componentTitle={title} >
+      <AdminLayout componentTitle={title}>
+        <Head>
+          <title>{headTitle}</title>
+        </Head>
         <LegacySlackIntegration />
       </AdminLayout>
     </Provider>
