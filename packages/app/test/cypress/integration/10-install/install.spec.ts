@@ -47,7 +47,7 @@ describe('Install', () => {
 
     cy.getByTestid('btnSubmit').click();
 
-    // Requires a lot of time (more than 10000ms) for redirect to root page
+    // Redirects to the root page take a long time (more than 10000ms)
     cy.waitUntilSkeletonDisappear();
     cy.screenshot(`${ssPrefix}-installed-redirect-to-root-page`, {
       blackout: ['[data-hide-in-vrt=true]']
