@@ -1,5 +1,5 @@
 import React, {
-  useEffect, useRef, useState, useMemo, useCallback,
+  useEffect, useRef, useState, useMemo, useCallback, memo,
 } from 'react';
 
 import { Nullable } from '@growi/core';
@@ -291,4 +291,4 @@ const ItemsTree = (props: ItemsTreeProps): JSX.Element => {
   return <></>;
 };
 
-export default ItemsTree;
+export default memo(ItemsTree);
