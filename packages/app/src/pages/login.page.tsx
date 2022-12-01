@@ -8,6 +8,7 @@ import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import { NoLoginLayout } from '~/components/Layout/NoLoginLayout';
 import { LoginForm } from '~/components/LoginForm';
 import type { CrowiRequest } from '~/interfaces/crowi-request';
+import { IExternalAccountLoginError, isExternalAccountLoginError } from '~/interfaces/errors/external-account-login-error';
 import type { RegistrationMode } from '~/interfaces/registration-mode';
 
 import {
@@ -30,6 +31,7 @@ type Props = CommonProps & {
   isLdapSetupFailed: boolean,
   isPasswordResetEnabled: boolean,
   isEmailAuthenticationEnabled: boolean,
+  externalAccountLoginError?: IExternalAccountLoginError,
 };
 
 const LoginPage: NextPage<Props> = (props: Props) => {
@@ -54,6 +56,7 @@ const LoginPage: NextPage<Props> = (props: Props) => {
         isPasswordResetEnabled={props.isPasswordResetEnabled}
         isMailerSetup={props.isMailerSetup}
         registrationMode={props.registrationMode}
+        externalAccountLoginError={props.externalAccountLoginError}
       />
     </NoLoginLayout>
   );
@@ -119,6 +122,13 @@ export const getServerSideProps: GetServerSideProps = async(context: GetServerSi
   }
 
   const props: Props = result.props as Props;
+
+  if (context.query.externalAccountLoginError != null) {
+    const externalAccountLoginError = context.query.externalAccountLoginError;
+    if (isExternalAccountLoginError(externalAccountLoginError)) {
+      props.externalAccountLoginError = { ...externalAccountLoginError as IExternalAccountLoginError };
+    }
+  }
 
   injectServerConfigurations(context, props);
   injectEnabledStrategies(context, props);
