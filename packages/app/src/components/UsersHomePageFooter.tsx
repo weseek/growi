@@ -10,8 +10,8 @@ import styles from '~/components/UsersHomePageFooter.module.scss';
 import { useSWRxBookamrkFolderAndChild } from '~/stores/bookmark-folder';
 
 import BookmarkFolderNameInput from './Bookmarks/BookmarkFolderNameInput';
+import BookmarkFolderTree from './Bookmarks/BookmarkFolderTree';
 import FolderPlusIcon from './Icons/FolderPlusIcon';
-import BookmarkContents from './UsersPageBookmarks/BookmarkContents';
 
 
 export type UsersHomePageFooterProps = {
@@ -65,7 +65,7 @@ export const UsersHomePageFooter = (props: UsersHomePageFooterProps): JSX.Elemen
           </div>
         )}
         {
-          <BookmarkContents />
+          <BookmarkFolderTree />
         }
 
       </div>
