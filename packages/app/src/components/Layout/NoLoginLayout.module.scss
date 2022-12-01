@@ -63,16 +63,6 @@
     }
   }
 
-  .dropdown-with-icon {
-    .dropdown-toggle {
-      @extend .form-control;
-    }
-    i {
-      @extend .input-group-text;
-      margin-right: -1px;
-    }
-  }
-
   .input-group {
     margin-bottom: 10px;
 
