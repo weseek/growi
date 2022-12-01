@@ -54,7 +54,7 @@ jobs:
 
 
   test-prod-node16:
-    uses: weseek/growi/.github/workflows/reusable-app-prod.yml@imprv/build-prod-before-run-cypress
+    uses: weseek/growi/.github/workflows/reusable-app-prod.yml@master
     with:
       node-version: 16.x
       skip-cypress: ${{ contains( github.event.pull_request.labels.*.name, 'dependencies' ) && contains( github.event.pull_request.labels.*.name, 'github_actions' ) }}
