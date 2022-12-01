@@ -38,10 +38,12 @@ context('Modal for page operation', () => {
 
     cy.getByTestid('newPageBtn').click();
 
+    // eslint-disable-next-line cypress/no-unnecessary-waiting
+    cy.wait(500) // Wait for animation to finish when the Create Page button is pressed
+
     cy.getByTestid('page-create-modal').should('be.visible').within(() => {
       cy.screenshot(`${ssPrefix}new-page-modal-opened`);
       cy.get('button.close').click();
-
     });
     cy.screenshot(`${ssPrefix}page-create-modal-closed`);
   });
