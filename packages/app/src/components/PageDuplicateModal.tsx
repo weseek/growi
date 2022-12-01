@@ -271,7 +271,6 @@ const PageDuplicateModal = (): JSX.Element => {
         {bodyContent()}
       </ModalBody>
       <ModalFooter>
-        <ApiErrorMessageList errs={errs} targetPath={pageNameInput} />
         {footerContent()}
       </ModalFooter>
     </Modal>
