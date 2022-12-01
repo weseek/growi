@@ -10,7 +10,7 @@ $grw-sidebar-content-footer-height: 50px;
 }
 
 .expanded {
-  max-height: calc(200vh - (var.$grw-navbar-height + var.$grw-navbar-border-width + $grw-sidebar-content-header-height + $grw-sidebar-content-footer-height));
+  max-height: calc(100vh - (var.$grw-navbar-height + var.$grw-navbar-border-width + $grw-sidebar-content-header-height + $grw-sidebar-content-footer-height));
   overflow-y: scroll;
 }
 

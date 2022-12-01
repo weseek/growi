@@ -10,7 +10,8 @@ import styles from '~/components/UsersHomePageFooter.module.scss';
 import { useSWRxBookamrkFolderAndChild } from '~/stores/bookmark-folder';
 
 import BookmarkFolderNameInput from './Bookmarks/BookmarkFolderNameInput';
-import ExpandCompressIcon from './Icons/ExpandCompressIcon';
+import CompressIcon from './Icons/CompressIcon';
+import ExpandIcon from './Icons/ExpandIcon';
 import FolderPlusIcon from './Icons/FolderPlusIcon';
 import BookmarkContents from './UsersPageBookmarks/BookmarkContents';
 
@@ -56,10 +57,13 @@ export const UsersHomePageFooter = (props: UsersHomePageFooterProps): JSX.Elemen
           </span>
           <span className="ml-auto pl-2 ">
             <button
-              className={`btn btn-sm expand-compress-btn ${isExpanded ? 'active' : ''}`}
+              className={`btn btn-sm grw-expand-compress-btn ${isExpanded ? 'active' : ''}`}
               onClick={() => setIsExpanded(!isExpanded)}
             >
-              <ExpandCompressIcon isExpanded={isExpanded}/>
+              { isExpanded
+                ? <ExpandIcon/>
+                : <CompressIcon />
+              }
             </button>
           </span>
         </h2>

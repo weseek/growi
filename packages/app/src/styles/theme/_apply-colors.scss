@@ -711,3 +711,17 @@ Emoji picker modal
 .emoji-picker-modal {
   background-color: transparent !important;
 }
+
+/*
+Expand / compress button bookmark list on users page
+*/
+.grw-user-page-list-m {
+  .grw-expand-compress-btn {
+    color: $body-color;
+    background-color: $body-bg;
+    &.active {
+      background-color: darken($body-bg, 12%),
+    }
+  }
+
+}
