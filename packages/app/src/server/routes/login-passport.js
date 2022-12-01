@@ -164,7 +164,7 @@ module.exports = function(crowi, app) {
 
     const { nextApp } = crowi;
     req.crowi = crowi;
-    nextApp.render(req, res, '/login', { loginError: error });
+    nextApp.render(req, res, '/login', { externalAccountLoginError: error });
     return;
   };
 

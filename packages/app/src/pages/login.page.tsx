@@ -31,7 +31,7 @@ type Props = CommonProps & {
   isLdapSetupFailed: boolean,
   isPasswordResetEnabled: boolean,
   isEmailAuthenticationEnabled: boolean,
-  loginError?: IExternalAccountLoginError,
+  externalAccountLoginError?: IExternalAccountLoginError,
 };
 
 const LoginPage: NextPage<Props> = (props: Props) => {
@@ -56,7 +56,7 @@ const LoginPage: NextPage<Props> = (props: Props) => {
         isPasswordResetEnabled={props.isPasswordResetEnabled}
         isMailerSetup={props.isMailerSetup}
         registrationMode={props.registrationMode}
-        loginError={props.loginError}
+        externalAccountLoginError={props.externalAccountLoginError}
       />
     </NoLoginLayout>
   );
@@ -123,10 +123,10 @@ export const getServerSideProps: GetServerSideProps = async(context: GetServerSi
 
   const props: Props = result.props as Props;
 
-  if (context.query.loginError != null) {
-    const loginError = context.query.loginError;
-    if (isExternalAccountLoginError(loginError)) {
-      props.loginError = { ...loginError as IExternalAccountLoginError };
+  if (context.query.externalAccountLoginError != null) {
+    const externalAccountLoginError = context.query.externalAccountLoginError;
+    if (isExternalAccountLoginError(externalAccountLoginError)) {
+      props.externalAccountLoginError = { ...externalAccountLoginError as IExternalAccountLoginError };
     }
   }
 
