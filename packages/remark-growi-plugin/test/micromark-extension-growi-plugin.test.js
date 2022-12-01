@@ -113,7 +113,7 @@ test('micromark-extension-directive (syntax)', (t) => {
     t.equal(
       micromark('$a(', options()),
       '<p>(</p>',
-      'should support a name followed by an unclosed `{`',
+      'should support a name followed by an unclosed `(`',
     );
 
     t.equal(
@@ -125,7 +125,7 @@ test('micromark-extension-directive (syntax)', (t) => {
     t.equal(
       micromark('$a(b', options()),
       '<p>(b</p>',
-      'should support a name followed by an unclosed `{` w/ content',
+      'should support a name followed by an unclosed `(` w/ content',
     );
 
     t.equal(
@@ -324,6 +324,12 @@ test('micromark-extension-directive (syntax)', (t) => {
       micromark('$a(b=c`)', options()),
       '<p>(b=c`)</p>',
       'should not support a grave accent in an unquoted attribute value',
+    );
+
+    t.equal(
+      micromark('a $a(b💚=a💚b)', options()),
+      '<p>a </p>',
+      'should support most other characters in attribute keys',
     );
 
     t.equal(
@@ -548,6 +554,12 @@ test('micromark-extension-directive (syntax)', (t) => {
     // );
 
     t.equal(
+      micromark('$a(b💚=a💚b)', options()),
+      '',
+      'should support most other characters in attribute keys',
+    );
+
+    t.equal(
       micromark('$a(b=a💚b)', options()),
       '',
       'should support most other characters in unquoted attribute values',
@@ -770,6 +782,29 @@ test('micromark-extension-directive (compile)', (t) => {
       '<iframe src="https://www.youtube.com/embed/4" allowfullscreen title="Cat in a box d"></iframe>',
     ].join('\n'),
     'should support directives (youtube)',
+  );
+
+  t.equal(
+    micromark(
+      [
+        'Text:',
+        'a $lsx',
+        'a $lsx()',
+        'a $lsx(num=1)',
+        'a $lsx(/)',
+        'a $lsx(💚)',
+      ].join('\n\n'),
+      options({ lsx }),
+    ),
+    [
+      '<p>Text:</p>',
+      '<p>a <lsx ></lsx></p>',
+      '<p>a <lsx ></lsx></p>',
+      '<p>a <lsx num="1"></lsx></p>',
+      '<p>a <lsx prefix="/"></lsx></p>',
+      '<p>a <lsx prefix="💚"></lsx></p>',
+    ].join('\n'),
+    'should support directives (lsx)',
   );
 
   t.equal(
@@ -1049,6 +1084,26 @@ function youtube(d) {
   }
 
   this.tag('</iframe>');
+}
+
+/** @type {Handle} */
+function lsx(d) {
+  const attrs = d.attributes || {};
+
+  const props = [];
+
+  // eslint-disable-next-line no-restricted-syntax
+  for (const key in attrs) {
+    if (attrs[key].length === 0) {
+      props.push(`prefix="${key}"`);
+    }
+    else {
+      props.push(`${key}="${attrs[key]}"`);
+    }
+  }
+
+  this.tag(`<lsx ${props.join(' ')}>`);
+  this.tag('</lsx>');
 }
 
 /** @type {Handle} */

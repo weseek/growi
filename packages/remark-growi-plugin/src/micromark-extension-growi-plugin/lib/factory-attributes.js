@@ -82,19 +82,25 @@ export function factoryAttributes(
       return shortcutStart(code);
     }
 
-    if (code === codes.colon || code === codes.underscore || code === codes.slash || asciiAlpha(code)) {
-      effects.enter(attributeType);
-      effects.enter(attributeNameType);
-      effects.consume(code);
-      return name;
-    }
-
     if (disallowEol && markdownSpace(code)) {
       return factorySpace(effects, between, types.whitespace)(code);
     }
 
     if (!disallowEol && (markdownLineEndingOrSpaceOrComma(code))) {
       return factoryAttributesDevider(effects, between)(code);
+    }
+
+    if (code !== codes.rightParenthesis
+      && code !== codes.eof
+      && code !== codes.carriageReturn
+      && code !== codes.lineFeed
+      && code !== codes.carriageReturnLineFeed
+      && code !== codes.ampersand
+    ) {
+      effects.enter(attributeType);
+      effects.enter(attributeNameType);
+      effects.consume(code);
+      return name;
     }
 
     return end(code);
@@ -166,11 +172,19 @@ export function factoryAttributes(
   /** @type {State} */
   function name(code) {
     if (
-      code === codes.dash
-      || code === codes.dot
-      || code === codes.colon
-      || code === codes.underscore
-      || asciiAlphanumeric(code)
+      code !== codes.eof
+        && code !== codes.carriageReturn
+        && code !== codes.lineFeed
+        && code !== codes.carriageReturnLineFeed
+        && code !== codes.quotationMark
+        && code !== codes.numberSign
+        && code !== codes.apostrophe
+        && code !== codes.dot
+        && code !== codes.lessThan
+        && code !== codes.equalsTo
+        && code !== codes.greaterThan
+        && code !== codes.graveAccent
+        && code !== codes.rightParenthesis
     ) {
       effects.consume(code);
       return name;
