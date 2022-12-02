@@ -1,3 +1,4 @@
+import { isClient } from '@growi/core';
 import { Middleware } from 'swr';
 
 const generateKeyInStorage = (key: string): string => {
@@ -32,26 +33,31 @@ export const createSyncToStorageMiddlware = (
         initData = storageSerializer.deserialize(itemInStorage);
       }
 
-      const swrNext = useSWRNext(key, fetcher, {
-        fallbackData: initData,
-        ...config,
-      });
+      config.fallbackData = initData;
+      const swrNext = useSWRNext(key, fetcher, config);
+      const swrMutate = swrNext.mutate;
 
-      return {
-        ...swrNext,
-        // override mutate
+      return Object.assign(swrNext, {
         mutate: (data, shouldRevalidate) => {
-          return swrNext.mutate(data, shouldRevalidate)
+          return swrMutate(data, shouldRevalidate)
             .then((value) => {
               storage.setItem(keyInStorage, storageSerializer.serialize(value));
               return value;
             });
         },
-      };
+      });
     };
   };
 };
 
-export const localStorageMiddleware = createSyncToStorageMiddlware(localStorage);
+const passthroughMiddleware: Middleware = (useSWRNext) => {
+  return (key, fetcher, config) => useSWRNext(key, fetcher, config);
+};
 
-export const sessionStorageMiddleware = createSyncToStorageMiddlware(sessionStorage);
+export const localStorageMiddleware = isClient()
+  ? createSyncToStorageMiddlware(localStorage)
+  : passthroughMiddleware;
+
+export const sessionStorageMiddleware = isClient()
+  ? createSyncToStorageMiddlware(sessionStorage)
+  : passthroughMiddleware;

@@ -1,7 +1,8 @@
+import { pathUtils } from '@growi/core';
 import mongoose from 'mongoose';
-import { pathUtils, getMongoUri, mongoOptions } from '@growi/core';
-import getPageModel from '~/server/models/page';
 
+import getPageModel from '~/server/models/page';
+import { getMongoUri, mongoOptions } from '~/server/util/mongoose-utils';
 import loggerFactory from '~/utils/logger';
 
 const logger = loggerFactory('growi:migrate:adjust-pages-path');

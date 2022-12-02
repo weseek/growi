@@ -1,10 +1,9 @@
 import React from 'react';
 
+import { useTranslation } from 'next-i18next';
 import PropTypes from 'prop-types';
-import { useTranslation } from 'react-i18next';
 
 import AdminNotificationContainer from '~/client/services/AdminNotificationContainer';
-import AppContainer from '~/client/services/AppContainer';
 import { toastSuccess, toastError } from '~/client/util/apiNotification';
 import loggerFactory from '~/utils/logger';
 
@@ -55,7 +54,7 @@ class UserTriggerNotification extends React.Component {
 
     try {
       await adminNotificationContainer.addNotificationPattern(this.state.pathPattern, this.state.channel);
-      toastSuccess(t('notification_setting.add_notification_pattern'));
+      toastSuccess(t('notification_settings.add_notification_pattern'));
       this.setState({ pathPattern: '', channel: '' });
     }
     catch (err) {
@@ -69,7 +68,7 @@ class UserTriggerNotification extends React.Component {
 
     try {
       const deletedNotificaton = await adminNotificationContainer.deleteUserTriggerNotificationPattern(notificationIdForDelete);
-      toastSuccess(t('notification_setting.delete_notification_pattern', { path: deletedNotificaton.pathPattern }));
+      toastSuccess(t('notification_settings.delete_notification_pattern', { path: deletedNotificaton.pathPattern }));
     }
     catch (err) {
       toastError(err);
@@ -83,13 +82,13 @@ class UserTriggerNotification extends React.Component {
 
     return (
       <React.Fragment>
-        <h2 className="border-bottom my-4">{t('notification_setting.user_trigger_notification_header')}</h2>
+        <h2 className="border-bottom my-4">{t('notification_settings.user_trigger_notification_header')}</h2>
 
         <table className="table table-bordered">
           <thead>
             <tr>
-              <th>{t('notification_setting.pattern')}</th>
-              <th>{t('notification_setting.channel')}</th>
+              <th>{t('notification_settings.pattern')}</th>
+              <th>{t('notification_settings.channel')}</th>
               <th />
             </tr>
           </thead>
@@ -106,7 +105,7 @@ class UserTriggerNotification extends React.Component {
                 />
                 <p className="p-2 mb-0">
                   {/* eslint-disable-next-line react/no-danger */}
-                  <span dangerouslySetInnerHTML={{ __html: t('notification_setting.pattern_desc') }} />
+                  <span dangerouslySetInnerHTML={{ __html: t('notification_settings.pattern_desc') }} />
                 </p>
               </td>
 
@@ -126,11 +125,11 @@ class UserTriggerNotification extends React.Component {
                 </div>
                 <p className="p-2 mb-0">
                   {/* eslint-disable-next-line react/no-danger */}
-                  <span dangerouslySetInnerHTML={{ __html: t('notification_setting.channel_desc') }} />
+                  <span dangerouslySetInnerHTML={{ __html: t('notification_settings.channel_desc') }} />
                 </p>
               </td>
               <td>
-                <button type="button" className="btn btn-primary" disabled={!this.validateForm()} onClick={this.onClickSubmit}>{t('add')}</button>
+                <button type="button" className="btn btn-primary" disabled={!this.validateForm()} onClick={this.onClickSubmit}>{t('commons:Add')}</button>
               </td>
             </tr>
             {userNotifications.length > 0 && userNotifications.map((notification) => {
@@ -148,17 +147,16 @@ class UserTriggerNotification extends React.Component {
 
 UserTriggerNotification.propTypes = {
   t: PropTypes.func.isRequired, // i18next
-  appContainer: PropTypes.instanceOf(AppContainer).isRequired,
   adminNotificationContainer: PropTypes.instanceOf(AdminNotificationContainer).isRequired,
 
 };
 
 const UserTriggerNotificationWrapperFC = (props) => {
-  const { t } = useTranslation();
+  const { t } = useTranslation('admin');
 
   return <UserTriggerNotification t={t} {...props} />;
 };
 
-const UserTriggerNotificationWrapper = withUnstatedContainers(UserTriggerNotificationWrapperFC, [AppContainer, AdminNotificationContainer]);
+const UserTriggerNotificationWrapper = withUnstatedContainers(UserTriggerNotificationWrapperFC, [AdminNotificationContainer]);
 
 export default UserTriggerNotificationWrapper;

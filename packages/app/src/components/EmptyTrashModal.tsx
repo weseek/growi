@@ -2,7 +2,7 @@ import React, {
   useState, FC,
 } from 'react';
 
-import { useTranslation } from 'react-i18next';
+import { useTranslation } from 'next-i18next';
 import {
   Modal, ModalHeader, ModalBody, ModalFooter,
 } from 'reactstrap';
@@ -19,7 +19,7 @@ const EmptyTrashModal: FC = () => {
 
   const isOpened = emptyTrashModalData?.isOpened ?? false;
 
-  const canDeleteAllpages = emptyTrashModalData?.opts?.canDelepeAllPages ?? false;
+  const canDeleteAllpages = emptyTrashModalData?.opts?.canDeleteAllPages ?? false;
 
   const [errs, setErrs] = useState<Error[] | null>(null);
 

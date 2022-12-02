@@ -3,7 +3,7 @@ import React, {
 } from 'react';
 
 import { TFunctionResult } from 'i18next';
-import { useTranslation } from 'react-i18next';
+import { useTranslation } from 'next-i18next';
 import {
   Modal, ModalHeader, ModalBody, ModalFooter,
 } from 'reactstrap';
@@ -40,7 +40,7 @@ const actionForPages = {
   transfer: 'transfer',
 };
 
-const UserGroupDeleteModal: FC<Props> = (props: Props) => {
+export const UserGroupDeleteModal: FC<Props> = (props: Props) => {
 
   const { t } = useTranslation();
 
@@ -209,5 +209,3 @@ const UserGroupDeleteModal: FC<Props> = (props: Props) => {
     </Modal>
   );
 };
-
-export default UserGroupDeleteModal;

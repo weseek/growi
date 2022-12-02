@@ -1,5 +1,6 @@
 import React from 'react';
-import { useTranslation } from 'react-i18next';
+
+import { useTranslation } from 'next-i18next';
 import PropTypes from 'prop-types';
 import { UncontrolledTooltip } from 'reactstrap';
 
@@ -20,7 +21,7 @@ const BridgeCore = (props) => {
   return (
     <>
       <div id="grw-bridge-container" className={`grw-bridge-container ${withProxy ? 'with-proxy' : ''}`}>
-        <p className="label">
+        <p className={`${withProxy ? 'mt-0' : 'mt-2'}`}>
           <i className={iconClass} />
           <small
             className="ml-2 d-none d-lg-inline"

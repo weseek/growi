@@ -1,6 +1,6 @@
 import React from 'react';
 
-const SlackLogo = () => (
+export const SlackLogo = () => (
   <svg
     xmlns="http://www.w3.org/2000/svg"
     viewBox="0 0 448 448"
@@ -17,5 +17,3 @@ const SlackLogo = () => (
     />
   </svg>
 );
-
-export default SlackLogo;

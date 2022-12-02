@@ -1,21 +1,16 @@
 import React from 'react';
 
-import { useTranslation } from 'react-i18next';
+import { useTranslation, i18n } from 'next-i18next';
 
-import AppContainer from '~/client/services/AppContainer';
+import { i18n as i18nConfig } from '^/config/next-i18next.config';
+
 import { toastSuccess, toastError } from '~/client/util/apiNotification';
-import { localeMetadatas } from '~/client/util/i18n';
+import { useRegistrationWhiteList } from '~/stores/context';
 import { usePersonalSettings } from '~/stores/personal-settings';
 
-import { withUnstatedContainers } from '../UnstatedUtils';
-
-type Props = {
-  appContainer: AppContainer,
-}
-
-const BasicInfoSettings = (props: Props) => {
+export const BasicInfoSettings = (): JSX.Element => {
   const { t } = useTranslation();
-  const { appContainer } = props;
+  const { data: registrationWhiteList } = useRegistrationWhiteList();
 
   const {
     data: personalSettingsInfo, mutate: mutatePersonalSettings, sync, updateBasicInfo, error,
@@ -27,15 +22,12 @@ const BasicInfoSettings = (props: Props) => {
     try {
       await updateBasicInfo();
       sync();
-      toastSuccess(t('toaster.update_successed', { target: t('Basic Info') }));
+      toastSuccess(t('toaster.update_successed', { target: t('Basic Info'), ns: 'commons' }));
     }
     catch (err) {
       toastError(err);
     }
   };
-
-
-  const { registrationWhiteList } = appContainer.getConfig();
 
   const changePersonalSettingsHandler = (updateData) => {
     if (personalSettingsInfo == null) {
@@ -71,7 +63,7 @@ const BasicInfoSettings = (props: Props) => {
             defaultValue={personalSettingsInfo?.email || ''}
             onChange={e => changePersonalSettingsHandler({ email: e.target.value })}
           />
-          {registrationWhiteList.length !== 0 && (
+          {registrationWhiteList != null && registrationWhiteList.length !== 0 && (
             <div className="form-text text-muted">
               {t('page_register.form_help.email')}
               <ul>
@@ -114,19 +106,24 @@ const BasicInfoSettings = (props: Props) => {
         <label className="text-left text-md-right col-md-3 col-form-label">{t('Language')}</label>
         <div className="col-md-6">
           {
-            localeMetadatas.map(meta => (
-              <div key={meta.id} className="custom-control custom-radio custom-control-inline">
-                <input
-                  type="radio"
-                  id={`radioLang${meta.id}`}
-                  className="custom-control-input"
-                  name="userForm[lang]"
-                  checked={personalSettingsInfo?.lang === meta.id}
-                  onChange={() => changePersonalSettingsHandler({ lang: meta.id })}
-                />
-                <label className="custom-control-label" htmlFor={`radioLang${meta.id}`}>{meta.displayName}</label>
-              </div>
-            ))
+            i18nConfig.locales.map((locale) => {
+              if (i18n == null) { return }
+              const fixedT = i18n.getFixedT(locale);
+
+              return (
+                <div key={locale} className="custom-control custom-radio custom-control-inline">
+                  <input
+                    type="radio"
+                    id={`radioLang${locale}`}
+                    className="custom-control-input"
+                    name="userForm[lang]"
+                    checked={personalSettingsInfo?.lang === locale}
+                    onChange={() => changePersonalSettingsHandler({ lang: locale })}
+                  />
+                  <label className="custom-control-label" htmlFor={`radioLang${locale}`}>{fixedT('meta.display_name')}</label>
+                </div>
+              );
+            })
           }
         </div>
       </div>
@@ -161,11 +158,3 @@ const BasicInfoSettings = (props: Props) => {
     </>
   );
 };
-
-
-/**
- * Wrapper component for using unstated
- */
-const BasicInfoSettingsWrapper = withUnstatedContainers(BasicInfoSettings, [AppContainer]);
-
-export default BasicInfoSettingsWrapper;

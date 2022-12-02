@@ -2,17 +2,23 @@ context('Access to page by guest', () => {
   const ssPrefix = 'access-to-page-by-guest-';
 
   it('/Sandbox is successfully loaded', () => {
-    cy.visit('/Sandbox', {  });
+    cy.visit('/Sandbox');
+    cy.waitUntilSpinnerDisappear();
+    cy.getByTestid('grw-pagetree-item-container').should('be.visible');
     cy.collapseSidebar(true, true);
     cy.screenshot(`${ssPrefix}-sandbox`);
   });
 
   it('/Sandbox with anchor hash is successfully loaded', () => {
     cy.visit('/Sandbox#Headers');
+    cy.getByTestid('grw-pagetree-item-container').should('be.visible');
     cy.collapseSidebar(true, true);
 
-    // hide fab
-    cy.getByTestid('grw-fab-container').invoke('attr', 'style', 'display: none');
+    // eslint-disable-next-line cypress/no-unnecessary-waiting
+    // cy.wait(500);
+
+    // hide fab // disable fab for sticky-events warning
+    // cy.getByTestid('grw-fab-container').invoke('attr', 'style', 'display: none');
 
     cy.screenshot(`${ssPrefix}-sandbox-headers`);
   });
@@ -21,16 +27,17 @@ context('Access to page by guest', () => {
     cy.visit('/Sandbox/Math');
     cy.collapseSidebar(true, true);
 
-    cy.get('mjx-container').should('be.visible');
-    // eslint-disable-next-line cypress/no-unnecessary-waiting
-    cy.wait(2000); // wait for 2 seconds for MathJax.typesetPromise();
-
+    cy.get('.math').should('be.visible');
     cy.screenshot(`${ssPrefix}-sandbox-math`);
   });
 
   it('/Sandbox with edit is successfully loaded', () => {
     cy.visit('/Sandbox#edit');
     cy.collapseSidebar(true, true);
+
+    // eslint-disable-next-line cypress/no-unnecessary-waiting
+    cy.wait(1000);
+
     cy.screenshot(`${ssPrefix}-sandbox-edit-page`);
   })
 

@@ -22,6 +22,7 @@ services:
       - node_modules:/workspace/growi/node_modules
       - node_modules_app:/workspace/growi/packages/app/node_modules
       - node_modules_slackbot-proxy:/workspace/growi/packages/slackbot-proxy/node_modules
+      - buildcache_app:/workspace/growi/packages/app/.next
       - ../../growi-docker-compose:/workspace/growi-docker-compose:delegated
 
     tty: true
@@ -96,3 +97,4 @@ volumes:
   node_modules:
   node_modules_app:
   node_modules_slackbot-proxy:
+  buildcache_app:

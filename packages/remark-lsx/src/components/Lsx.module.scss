@@ -1,0 +1,26 @@
+.lsx :global {
+  page-list-ul > li > a:not(:hover) {
+    text-decoration: none;
+  }
+
+  .lsx-page-not-exist {
+    opacity: 0.6;
+  }
+
+  // workaround
+  // https://stackoverflow.com/a/57667536
+  .lsx-blink {
+    & :local {
+      animation: lsx-fadeIn 1s ease 0s infinite alternate;
+    }
+  }
+}
+
+@keyframes lsx-fadeIn {
+  0% {
+    opacity: 0.2;
+  }
+  100% {
+    opacity: 0.9;
+  }
+}

@@ -1,3 +1,5 @@
+import { ErrorV3 } from '@growi/core';
+
 import { SupportedAction } from '~/interfaces/activity';
 import loggerFactory from '~/utils/logger';
 import { removeNullPropertyFromObject } from '~/utils/object-utils';
@@ -16,8 +18,6 @@ const router = express.Router();
 
 const { body } = require('express-validator');
 
-const ErrorV3 = require('../../models/vo/error-apiv3');
-
 const validator = {
   userNotification: [
     body('pathPattern').isString().trim(),
@@ -26,12 +26,12 @@ const validator = {
   globalNotification: [
     body('triggerPath').isString().trim().not()
       .isEmpty(),
-    body('notifyToType').isString().trim().isIn(['mail', 'slack']),
+    body('notifyType').isString().trim().isIn(['mail', 'slack']),
     body('toEmail').trim().custom((value, { req }) => {
-      return (req.body.notifyToType === 'mail') ? (!!value && value.match(/.+@.+\..+/)) : true;
+      return (req.body.notifyType === 'mail') ? (!!value && value.match(/.+@.+\..+/)) : true;
     }),
     body('slackChannels').trim().custom((value, { req }) => {
-      return (req.body.notifyToType === 'slack') ? !!value : true;
+      return (req.body.notifyType === 'slack') ? !!value : true;
     }),
   ],
   notifyForPageGrant: [
@@ -72,7 +72,7 @@ const validator = {
  *      GlobalNotificationParams:
  *        type: object
  *        properties:
- *          notifyToType:
+ *          notifyType:
  *            type: string
  *            description: What is type for notify
  *          toEmail:
@@ -93,7 +93,6 @@ const validator = {
 module.exports = (crowi) => {
   const loginRequiredStrictly = require('../../middlewares/login-required')(crowi);
   const adminRequired = require('../../middlewares/admin-required')(crowi);
-  const csrf = require('../../middlewares/csrf')(crowi);
   const addActivity = generateAddActivityMiddleware(crowi);
 
   const activityEvent = crowi.event('activity');
@@ -165,7 +164,7 @@ module.exports = (crowi) => {
   *                      description: user trigger notifications for updated
   */
   // eslint-disable-next-line max-len
-  router.post('/user-notification', loginRequiredStrictly, adminRequired, csrf, addActivity, validator.userNotification, apiV3FormValidator, async(req, res) => {
+  router.post('/user-notification', loginRequiredStrictly, adminRequired, addActivity, validator.userNotification, apiV3FormValidator, async(req, res) => {
     const { pathPattern, channel } = req.body;
 
     try {
@@ -213,7 +212,7 @@ module.exports = (crowi) => {
    *                      type: object
    *                      description: deleted notification
    */
-  router.delete('/user-notification/:id', loginRequiredStrictly, adminRequired, csrf, addActivity, async(req, res) => {
+  router.delete('/user-notification/:id', loginRequiredStrictly, adminRequired, addActivity, async(req, res) => {
     const { id } = req.params;
 
     try {
@@ -231,6 +230,24 @@ module.exports = (crowi) => {
     }
 
 
+  });
+
+
+  router.get('/global-notification/:id', loginRequiredStrictly, adminRequired, validator.globalNotification, async(req, res) => {
+
+    const notificationSettingId = req.params.id;
+    let globalNotification;
+
+    if (notificationSettingId) {
+      try {
+        globalNotification = await GlobalNotificationSetting.findOne({ _id: notificationSettingId });
+      }
+      catch (err) {
+        logger.error(`Error in finding a global notification setting with {_id: ${notificationSettingId}}`);
+      }
+    }
+
+    return res.apiv3({ globalNotification });
   });
 
   /**
@@ -258,19 +275,19 @@ module.exports = (crowi) => {
    *                      description: notification param created
    */
   // eslint-disable-next-line max-len
-  router.post('/global-notification', loginRequiredStrictly, adminRequired, csrf, addActivity, validator.globalNotification, apiV3FormValidator, async(req, res) => {
+  router.post('/global-notification', loginRequiredStrictly, adminRequired, addActivity, validator.globalNotification, apiV3FormValidator, async(req, res) => {
 
     const {
-      notifyToType, toEmail, slackChannels, triggerPath, triggerEvents,
+      notifyType, toEmail, slackChannels, triggerPath, triggerEvents,
     } = req.body;
 
     let notification;
 
-    if (notifyToType === GlobalNotificationSetting.TYPE.MAIL) {
+    if (notifyType === GlobalNotificationSetting.TYPE.MAIL) {
       notification = new GlobalNotificationMailSetting(crowi);
       notification.toEmail = toEmail;
     }
-    if (notifyToType === GlobalNotificationSetting.TYPE.SLACK) {
+    if (notifyType === GlobalNotificationSetting.TYPE.SLACK) {
       notification = new GlobalNotificationSlackSetting(crowi);
       notification.slackChannels = slackChannels;
     }
@@ -326,10 +343,10 @@ module.exports = (crowi) => {
    *                      description: notification param updated
    */
   // eslint-disable-next-line max-len
-  router.put('/global-notification/:id', loginRequiredStrictly, adminRequired, csrf, addActivity, validator.globalNotification, apiV3FormValidator, async(req, res) => {
+  router.put('/global-notification/:id', loginRequiredStrictly, adminRequired, addActivity, validator.globalNotification, apiV3FormValidator, async(req, res) => {
     const { id } = req.params;
     const {
-      notifyToType, toEmail, slackChannels, triggerPath, triggerEvents,
+      notifyType, toEmail, slackChannels, triggerPath, triggerEvents,
     } = req.body;
 
     const models = {
@@ -343,7 +360,7 @@ module.exports = (crowi) => {
 
       // when switching from one type to another,
       // remove toEmail from slack setting and slackChannels from mail setting
-      if (setting.__t !== notifyToType) {
+      if (setting.__t !== notifyType) {
         setting = models[setting.__t].hydrate(setting);
         setting.toEmail = undefined;
         setting.slackChannels = undefined;
@@ -351,16 +368,16 @@ module.exports = (crowi) => {
         setting = setting.toObject();
       }
 
-      if (notifyToType === GlobalNotificationSetting.TYPE.MAIL) {
+      if (notifyType === GlobalNotificationSetting.TYPE.MAIL) {
         setting = GlobalNotificationMailSetting.hydrate(setting);
         setting.toEmail = toEmail;
       }
-      if (notifyToType === GlobalNotificationSetting.TYPE.SLACK) {
+      if (notifyType === GlobalNotificationSetting.TYPE.SLACK) {
         setting = GlobalNotificationSlackSetting.hydrate(setting);
         setting.slackChannels = slackChannels;
       }
 
-      setting.__t = notifyToType;
+      setting.__t = notifyType;
       setting.triggerPath = triggerPath;
       setting.triggerEvents = triggerEvents || [];
 
@@ -402,7 +419,7 @@ module.exports = (crowi) => {
    *                  $ref: '#/components/schemas/NotifyForPageGrant'
    */
   // eslint-disable-next-line max-len
-  router.put('/notify-for-page-grant', loginRequiredStrictly, adminRequired, csrf, addActivity, validator.notifyForPageGrant, apiV3FormValidator, async(req, res) => {
+  router.put('/notify-for-page-grant', loginRequiredStrictly, adminRequired, addActivity, validator.notifyForPageGrant, apiV3FormValidator, async(req, res) => {
 
     let requestParams = {
       'notification:owner-page:isEnabled': req.body.isNotificationForOwnerPageEnabled,
@@ -465,7 +482,7 @@ module.exports = (crowi) => {
    *                      type: object
    *                      description: notification id for updated
    */
-  router.put('/global-notification/:id/enabled', loginRequiredStrictly, adminRequired, csrf, addActivity, async(req, res) => {
+  router.put('/global-notification/:id/enabled', loginRequiredStrictly, adminRequired, addActivity, async(req, res) => {
     const { id } = req.params;
     const { isEnabled } = req.body;
 
@@ -520,7 +537,7 @@ module.exports = (crowi) => {
   *                      type: object
   *                      description: deleted notification
   */
-  router.delete('/global-notification/:id', loginRequiredStrictly, adminRequired, csrf, addActivity, async(req, res) => {
+  router.delete('/global-notification/:id', loginRequiredStrictly, adminRequired, addActivity, async(req, res) => {
     const { id } = req.params;
 
     try {

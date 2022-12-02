@@ -1,46 +1,5 @@
-// import diff2html styles
-@import '~diff2html/bundles/css/diff2html.min.css';
-
-/**
- * for table with handsontable modal button
- */
-.editable-with-handsontable {
-  position: relative;
-
-  .handsontable-modal-trigger {
-    position: absolute;
-    top: 11px;
-    right: 10px;
-    padding: 0;
-    font-size: 16px;
-    line-height: 1;
-    vertical-align: bottom;
-    background-color: transparent;
-    border: none;
-    opacity: 0;
-  }
-
-  .page-mobile & .handsontable-modal-trigger {
-    opacity: 0.3;
-  }
-
-  &:hover .handsontable-modal-trigger {
-    opacity: 1;
-  }
-}
-
-/**
- * for drawio with drawio iframe button
- */
-.editable-with-drawio {
-  .drawio-iframe-trigger {
-    top: 11px;
-    right: 10px;
-    z-index: 14;
-    font-size: 12px;
-    line-height: 1;
-  }
-}
+// // import diff2html styles
+// @import '~/diff2html/bundles/css/diff2html.min.css';
 
 .card.grw-page-status-alert {
   $margin-bottom: $grw-navbar-bottom-height + 10px;

@@ -1,6 +1,6 @@
 import React, { useCallback } from 'react';
 
-import { useTranslation } from 'react-i18next';
+import { useTranslation } from 'next-i18next';
 
 import AdminAppContainer from '~/client/services/AdminAppContainer';
 import { toastSuccess, toastError } from '~/client/util/apiNotification';
@@ -18,7 +18,7 @@ type Props = {
 
 
 const FileUploadSetting = (props: Props) => {
-  const { t } = useTranslation();
+  const { t } = useTranslation(['admin', 'commons']);
   const { adminAppContainer } = props;
   const { fileUploadType } = adminAppContainer.state;
   const fileUploadTypes = ['aws', 'gcs', 'gridfs', 'local'];
@@ -26,7 +26,7 @@ const FileUploadSetting = (props: Props) => {
   const submitHandler = useCallback(async() => {
     try {
       await adminAppContainer.updateFileUploadSettingHandler();
-      toastSuccess(t('toaster.update_successed', { target: t('admin:app_setting.file_upload_settings') }));
+      toastSuccess(t('toaster.update_successed', { target: t('admin:app_setting.file_upload_settings'), ns: 'commons' }));
     }
     catch (err) {
       toastError(err);
@@ -40,7 +40,7 @@ const FileUploadSetting = (props: Props) => {
         <br />
         <br />
         <span className="text-danger">
-          <i className="ti-unlink"></i>
+          <i className="ti ti-unlink"></i>
           {t('admin:app_setting.change_setting')}
         </span>
       </p>

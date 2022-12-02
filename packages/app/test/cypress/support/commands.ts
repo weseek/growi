@@ -34,8 +34,24 @@ Cypress.Commands.add('login', (username, password) => {
     cy.visit('/page-to-return-after-login');
     cy.getByTestid('tiUsernameForLogin').type(username);
     cy.getByTestid('tiPasswordForLogin').type(password);
+
+    cy.intercept('POST', '/_api/v3/login').as('login');
     cy.getByTestid('btnSubmitForLogin').click();
+    cy.wait('@login')
   });
+});
+
+/**
+ * use only for the pages which use component with skeleton
+ */
+Cypress.Commands.add('waitUntilSkeletonDisappear', () => {
+  cy.get('.grw-skeleton').should('exist');
+  cy.get('.grw-skeleton').should('not.exist');
+});
+
+Cypress.Commands.add('waitUntilSpinnerDisappear', () => {
+  cy.get('.fa-spinner').should('exist');
+  cy.get('.fa-spinner').should('not.exist');
 });
 
 let isSidebarCollapsed: boolean | undefined;
@@ -46,7 +62,7 @@ Cypress.Commands.add('collapseSidebar', (isCollapsed, force=false) => {
     return;
   }
 
-  const isGrowiPage = Cypress.$('body.growi').length > 0;
+  const isGrowiPage = Cypress.$('div.growi').length > 0;
   if (!isGrowiPage) {
     cy.visit('/page-to-toggle-sidebar-collapsed');
   }

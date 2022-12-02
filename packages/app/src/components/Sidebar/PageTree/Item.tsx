@@ -4,9 +4,10 @@ import React, {
 
 import nodePath from 'path';
 
-import { pathUtils, pagePathUtils } from '@growi/core';
+import { pathUtils, pagePathUtils, Nullable } from '@growi/core';
+import { useTranslation } from 'next-i18next';
+import Link from 'next/link';
 import { useDrag, useDrop } from 'react-dnd';
-import { useTranslation } from 'react-i18next';
 import { UncontrolledTooltip, DropdownToggle } from 'reactstrap';
 
 import { bookmark, unbookmark, resumeRenameOperation } from '~/client/services/page-operation';
@@ -35,16 +36,16 @@ const logger = loggerFactory('growi:cli:Item');
 interface ItemProps {
   isEnableActions: boolean
   itemNode: ItemNode
-  targetPathOrId?: string
+  targetPathOrId?: Nullable<string>
   isOpen?: boolean
   isEnabledAttachTitleHeader?: boolean
-  onRenamed?(): void
+  onRenamed?(fromPath: string | undefined, toPath: string): void
   onClickDuplicateMenuItem?(pageToDuplicate: IPageForPageDuplicateModal): void
   onClickDeleteMenuItem?(pageToDelete: IPageToDeleteWithMeta): void
 }
 
 // Utility to mark target
-const markTarget = (children: ItemNode[], targetPathOrId?: string): void => {
+const markTarget = (children: ItemNode[], targetPathOrId?: Nullable<string>): void => {
   if (targetPathOrId == null) {
     return;
   }
@@ -190,7 +191,7 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
       await mutateChildren();
 
       if (onRenamed != null) {
-        onRenamed();
+        onRenamed(page.path, newPagePath);
       }
 
       // force open
@@ -285,7 +286,7 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
       });
 
       if (onRenamed != null) {
-        onRenamed();
+        onRenamed(page.path, newPagePath);
       }
 
       toastSuccess(t('renamed_pages', { path: page.path }));
@@ -379,11 +380,6 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
   const pathRecoveryMenuItemClickHandler = async(pageId: string): Promise<void> => {
     try {
       await resumeRenameOperation(pageId);
-
-      if (onRenamed != null) {
-        onRenamed();
-      }
-
       toastSuccess(t('page_operation.paths_recovered'));
     }
     catch {
@@ -424,6 +420,7 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
   return (
     <div
       id={`pagetree-item-${page._id}`}
+      data-testid="grw-pagetree-item-container"
       className={`grw-pagetree-item-container ${isOver ? 'grw-pagetree-is-over' : ''}
     ${shouldHide ? 'd-none' : ''}`}
     >
@@ -470,10 +467,13 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
                   </UncontrolledTooltip>
                 </>
               )}
-
-              <a href={`/${page._id}`} className="grw-pagetree-title-anchor flex-grow-1">
-                <p className={`text-truncate m-auto ${page.isEmpty && 'grw-sidebar-text-muted'}`}>{nodePath.basename(page.path ?? '') || '/'}</p>
-              </a>
+              { page != null && page.path != null && page._id != null && (
+                <Link href={pathUtils.returnPathForURL(page.path, page._id)} prefetch={false}>
+                  <a className="grw-pagetree-title-anchor flex-grow-1">
+                    <p className={`text-truncate m-auto ${page.isEmpty && 'grw-sidebar-text-muted'}`}>{nodePath.basename(page.path ?? '') || '/'}</p>
+                  </a>
+                </Link>
+              )}
             </>
           )}
         {descendantCount > 0 && !isRenameInputShown && (

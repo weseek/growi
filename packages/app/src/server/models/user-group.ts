@@ -1,10 +1,11 @@
-import { getOrCreateModel } from '@growi/core';
 import mongoose, {
   Schema, Model, Document,
 } from 'mongoose';
 import mongoosePaginate from 'mongoose-paginate-v2';
 
 import { IUserGroup } from '~/interfaces/user';
+
+import { getOrCreateModel } from '../util/mongoose-utils';
 
 
 export interface UserGroupDocument extends IUserGroup, Document {}
@@ -108,6 +109,7 @@ schema.statics.findGroupsWithAncestorsRecursively = async function(group, ancest
 };
 
 /**
+ * TODO: use $graphLookup
  * Find all descendant groups starting from the UserGroups in the initial groups in "groups".
  * Set "descendants" as "[]" if the initial groups are unnecessary as result.
  * @param groups UserGroupDocument[] including at least one UserGroup
