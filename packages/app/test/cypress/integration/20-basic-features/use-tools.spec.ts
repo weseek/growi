@@ -323,7 +323,10 @@ context('Tag Oprations', { scrollBehavior: false }, () =>{
     cy.getByTestid('search-result-base').should('be.visible');
     cy.getByTestid('search-result-list').should('be.visible');
     cy.getByTestid('search-result-content').should('be.visible');
-    cy.get('#revision-loader', { timeout: 60000 }).should('be.visible').contains('Table of Contents');
+
+    cy.get('#revision-loader', { timeout: 60000 }).should('be.visible').within(() => {
+      cy.get('.card-body').contains('Table of Contents');
+    });
 
     // force to add 'active' to pass VRT: https://github.com/weseek/growi/pull/6603
     cy.getByTestid('page-list-item-L').first().invoke('addClass', 'active');
@@ -375,7 +378,10 @@ context('Tag Oprations', { scrollBehavior: false }, () =>{
     cy.getByTestid('search-result-base').should('be.visible');
     cy.getByTestid('search-result-list').should('be.visible');
     cy.getByTestid('search-result-content').should('be.visible');
-    cy.get('#revision-loader', { timeout: 60000 }).should('be.visible').contains('Table of Contents');
+
+    cy.get('#revision-loader', { timeout: 60000 }).should('be.visible').within(() => {
+      cy.get('.card-body').contains('Table of Contents');
+    });
 
     // eslint-disable-next-line cypress/no-unnecessary-waiting
     cy.wait(300);
