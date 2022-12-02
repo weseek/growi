@@ -1,6 +1,7 @@
 import {
   NextPage, GetServerSideProps, GetServerSidePropsContext,
 } from 'next';
+import { useTranslation } from 'next-i18next';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import dynamic from 'next/dynamic';
 import Head from 'next/head';
@@ -47,6 +48,8 @@ type Props = CommonProps & {
 };
 
 const PrivateLegacyPage: NextPage<Props> = (props: Props) => {
+  const { t } = useTranslation();
+
   const { userUISettings } = props;
 
   const PrivateLegacyPages = dynamic(() => import('~/components/PrivateLegacyPages'), { ssr: false });
@@ -74,7 +77,7 @@ const PrivateLegacyPage: NextPage<Props> = (props: Props) => {
   // render config
   useRendererConfig(props.rendererConfig);
 
-  const title = useCustomTitle(props, 'GROWI');
+  const title = useCustomTitle(props, t('private_legacy_pages.title'));
 
   return (
     <>
