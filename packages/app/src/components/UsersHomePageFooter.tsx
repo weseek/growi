@@ -14,9 +14,9 @@ import { useSWRxBookamrkFolderAndChild } from '~/stores/bookmark-folder';
 import { usePageDeleteModal } from '~/stores/modal';
 
 import BookmarkFolderNameInput from './Bookmarks/BookmarkFolderNameInput';
+import BookmarkFolderTree from './Bookmarks/BookmarkFolderTree';
 import CompressIcon from './Icons/CompressIcon';
 import ExpandIcon from './Icons/ExpandIcon';
-import BookmarkFolderTree from './Bookmarks/BookmarkFolderTree';
 import FolderPlusIcon from './Icons/FolderPlusIcon';
 import { BookmarkList } from './PageList/BookmarkList';
 
@@ -104,29 +104,30 @@ export const UsersHomePageFooter = (props: UsersHomePageFooterProps): JSX.Elemen
 
           </div>
         )}
-        {
-          <BookmarkFolderTree />
+        <div className={`${isExpanded ? `${styles['grw-bookarks-contents-expanded']}` : `${styles['grw-bookarks-contents-compressed']}`}`}>
+          {
+            <BookmarkFolderTree />
 
-        }
-        <div id="user-bookmark-list" className={`page-list p-3 ${styles['page-list']}`}>
-          <div className="grw-bookmarks-list-container">
-            {currentUserBookmarksData?.length === 0
-              ? t('No bookmarks yet')
-              : <ul className="list-group page-list-ul page-list-ul-flat mb-3">
-                {currentUserBookmarksData?.map(page => (
-                  <BookmarkList
-                    key={page._id}
-                    page={page}
-                    onRenamed={mutateCurrentUserBookmarks}
-                    onUnbookmarked={mutateCurrentUserBookmarks}
-                    onClickDeleteMenuItem={deleteMenuItemClickHandler}
-                  />
-                ))}
-              </ul>
-            }
+          }
+          <div id="user-bookmark-list" className={`page-list p-3 ${styles['page-list']}`}>
+            <div className="grw-bookmarks-list-container">
+              {currentUserBookmarksData?.length === 0
+                ? t('No bookmarks yet')
+                : <ul className="list-group page-list-ul page-list-ul-flat mb-3">
+                  {currentUserBookmarksData?.map(page => (
+                    <BookmarkList
+                      key={page._id}
+                      page={page}
+                      onRenamed={mutateCurrentUserBookmarks}
+                      onUnbookmarked={mutateCurrentUserBookmarks}
+                      onClickDeleteMenuItem={deleteMenuItemClickHandler}
+                    />
+                  ))}
+                </ul>
+              }
+            </div>
           </div>
         </div>
-
       </div>
       <div className="grw-user-page-list-m mt-5 d-edit-none">
         <h2 id="recently-created-list" className="grw-user-page-header border-bottom pb-2 mb-3">
