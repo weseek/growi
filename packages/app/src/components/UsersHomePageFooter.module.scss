@@ -2,23 +2,40 @@
 
 .user-page-footer :global {
   .grw-user-page-list-m {
-    .list-group-item {
-      svg{
-        width: 20px;
-        height: 20px;
-      }
+    .list-group{
+      .list-group-item {
+        .grw-visible-on-hover {
+          display: none;
+        }
 
-    }
-    .grw-triangle-container{
-      svg {
-        width: 12px;
-        height: 12px;
+        &:hover {
+          .grw-visible-on-hover {
+            display: block;
+          }
+        }
+        .grw-triangle-container{
+          svg {
+            width: 12px;
+            height: 12px;
+          }
+        }
+        svg{
+          width: 20px;
+          height: 20px;
+        }
+        min-height: 40px;
+        border-radius: 0px;
       }
     }
+
     .grw-foldertree-item-container {
       input {
         max-width: 25%;
       }
+    }
+    .grw-foldertree-title-anchor{
+      width: fit-content !important;
+      margin-right: 20px;
     }
     svg {
       width: 35px;

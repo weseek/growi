@@ -1,35 +1,123 @@
-import React from 'react';
+import React, { useCallback, useState } from 'react';
 
+import nodePath from 'path';
+
+import {
+  IPageInfoAll, IPageToDeleteWithMeta, pathUtils,
+} from '@growi/core';
 import { useTranslation } from 'next-i18next';
+import { DropdownToggle } from 'reactstrap';
 
-import { useSWRxCurrentUserBookmarks } from '~/stores/bookmark';
+import { unbookmark } from '~/client/services/page-operation';
+import { toastError, toastSuccess } from '~/client/util/apiNotification';
+import { apiv3Put } from '~/client/util/apiv3-client';
+import { IPageHasId } from '~/interfaces/page';
 import loggerFactory from '~/utils/logger';
+
+import ClosableTextInput, { AlertInfo, AlertType } from '../Common/ClosableTextInput';
+import { MenuItemType, PageItemControl } from '../Common/Dropdown/PageItemControl';
 
 import { PageListItemS } from './PageListItemS';
 
 const logger = loggerFactory('growi:BookmarkList');
 
-export const BookmarkList = (): JSX.Element => {
-
+type Props = {
+  page: IPageHasId
+  onRenamed: () => void
+  onUnbookmarked: () => void
+  onClickDeleteMenuItem: (pageToDelete: IPageToDeleteWithMeta) => void
+}
+export const BookmarkList = (props:Props): JSX.Element => {
+  const {
+    page, onRenamed, onUnbookmarked, onClickDeleteMenuItem,
+  } = props;
   const { t } = useTranslation();
-  const { data: currentUserBookmarksData } = useSWRxCurrentUserBookmarks();
+  const [isRenameInputShown, setIsRenameInputShown] = useState(false);
 
+  const inputValidator = (title: string | null): AlertInfo | null => {
+    if (title == null || title === '' || title.trim() === '') {
+      return {
+        type: AlertType.WARNING,
+        message: t('form_validation.title_required'),
+      };
+    }
+
+    return null;
+  };
+
+  const bookmarkMenuItemClickHandler = useCallback(async() => {
+    await unbookmark(page._id);
+    onUnbookmarked();
+  }, [page._id, onUnbookmarked]);
+
+  const deleteMenuItemClickHandler = useCallback(async(_pageId: string, pageInfo: IPageInfoAll | undefined): Promise<void> => {
+    if (page._id == null || page.path == null) {
+      throw Error('_id and path must not be null.');
+    }
+
+    const pageToDelete: IPageToDeleteWithMeta = {
+      data: {
+        _id: page._id,
+        revision: page.revision as string,
+        path: page.path,
+      },
+      meta: pageInfo,
+    };
+
+    onClickDeleteMenuItem(pageToDelete);
+  }, [onClickDeleteMenuItem, page]);
+
+  const pressEnterForRenameHandler = useCallback(async(inputText: string) => {
+    const parentPath = pathUtils.addTrailingSlash(nodePath.dirname(page.path ?? ''));
+    const newPagePath = nodePath.resolve(parentPath, inputText);
+    if (newPagePath === page.path) {
+      setIsRenameInputShown(false);
+      return;
+    }
+
+    try {
+      setIsRenameInputShown(false);
+      await apiv3Put('/pages/rename', {
+        pageId: page._id,
+        revisionId: page.revision,
+        newPagePath,
+      });
+      onRenamed();
+      toastSuccess(t('renamed_pages', { path: page.path }));
+    }
+    catch (err) {
+      setIsRenameInputShown(true);
+      toastError(err);
+    }
+  }, [onRenamed, page, t]);
 
   return (
-    <div className="bookmarks-list-container">
-      {currentUserBookmarksData?.length === 0 ? t('No bookmarks yet') : (
-        <>
-          <ul className="page-list-ul page-list-ul-flat mb-3">
-
-            {currentUserBookmarksData?.map(page => (
-              <li key={`my-bookmarks:${page?._id}`} className="mt-4">
-                <PageListItemS page={page} />
-              </li>
-            ))}
-
-          </ul>
-        </>
+    <li key={`my-bookmarks:${page?._id}`} className="list-group-item list-group-item-action border-0 py-0 pl-3 d-flex align-items-center">
+      { isRenameInputShown ? (
+        <ClosableTextInput
+          value={nodePath.basename(page.path ?? '')}
+          placeholder={t('Input page name')}
+          onClickOutside={() => { setIsRenameInputShown(false) }}
+          onPressEnter={pressEnterForRenameHandler}
+          inputValidator={inputValidator}
+        />
+      ) : (
+        <PageListItemS page={page} />
       )}
-    </div>
+
+      <PageItemControl
+        pageId={page._id}
+        isEnableActions
+        forceHideMenuItems={[MenuItemType.DUPLICATE]}
+        onClickBookmarkMenuItem={bookmarkMenuItemClickHandler}
+        onClickRenameMenuItem={() => setIsRenameInputShown(true)}
+        onClickDeleteMenuItem={deleteMenuItemClickHandler}
+      >
+        <DropdownToggle color="transparent" className="border-0 rounded btn-page-item-control p-0 grw-visible-on-hover mr-1">
+          <i className="icon-options fa fa-rotate-90 p-1"></i>
+        </DropdownToggle>
+      </PageItemControl>
+    </li>
+
   );
 };
