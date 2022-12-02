@@ -439,12 +439,10 @@ context('Shortcuts', () => {
     });
   });
 
-  it('Successfully updating a page using a shortcut on a previously created page', () => {
-    const body1 = 'hello';
-    const body2 = 'world';
+  it('Successfully updating a page using a shortcut on a previously created page',{ scrollBehavior: false }, () => {
     const savePageShortcutKey = '{ctrl+s}'
 
-    cy.visit('/Sandbox/child');
+    cy.visit('/Sandbox');
     cy.waitUntilSkeletonDisappear();
 
     cy.get('#grw-subnav-container').within(() => {
@@ -455,20 +453,14 @@ context('Shortcuts', () => {
     cy.get('.grw-editor-navbar-bottom').should('be.visible');
 
     // 1st
-    cy.get('.CodeMirror').type(body1);
-    cy.get('.page-editor-preview-body').contains(body1);
     cy.get('.CodeMirror').type(savePageShortcutKey);
-
     cy.get('.toast').should('be.visible').trigger('mouseover');
     cy.screenshot(`${ssPrefix}-update-page-1`);
     cy.get('.toast-close-button').click();
     cy.get('.toast').should('not.exist');
 
     // 2nd
-    cy.get('.CodeMirror').type(body2);
-    cy.get('.page-editor-preview-body').contains(body2);
     cy.get('.CodeMirror').type(savePageShortcutKey);
-
     cy.get('.toast').should('be.visible').trigger('mouseover');
     cy.screenshot(`${ssPrefix}-update-page-2`);
   });
