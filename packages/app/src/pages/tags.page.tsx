@@ -164,6 +164,7 @@ export const getServerSideProps: GetServerSideProps = async(context: GetServerSi
   if (user != null) {
     props.currentUser = user.toObject();
   }
+
   await injectUserUISettings(context, props);
   injectServerConfigurations(context, props);
   await injectNextI18NextConfigurations(context, props, ['translation']);
