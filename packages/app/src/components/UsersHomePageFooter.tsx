@@ -7,13 +7,18 @@ import { apiv3Post } from '~/client/util/apiv3-client';
 import { RecentlyCreatedIcon } from '~/components/Icons/RecentlyCreatedIcon';
 import { RecentCreated } from '~/components/RecentCreated/RecentCreated';
 import styles from '~/components/UsersHomePageFooter.module.scss';
+import { IPageToDeleteWithMeta } from '~/interfaces/page';
+import { OnDeletedFunction } from '~/interfaces/ui';
+import { useSWRxCurrentUserBookmarks } from '~/stores/bookmark';
 import { useSWRxBookamrkFolderAndChild } from '~/stores/bookmark-folder';
+import { usePageDeleteModal } from '~/stores/modal';
 
 import BookmarkFolderNameInput from './Bookmarks/BookmarkFolderNameInput';
 import CompressIcon from './Icons/CompressIcon';
 import ExpandIcon from './Icons/ExpandIcon';
+import BookmarkFolderTree from './Bookmarks/BookmarkFolderTree';
 import FolderPlusIcon from './Icons/FolderPlusIcon';
-import BookmarkContents from './UsersPageBookmarks/BookmarkContents';
+import { BookmarkList } from './PageList/BookmarkList';
 
 
 export type UsersHomePageFooterProps = {
@@ -26,6 +31,27 @@ export const UsersHomePageFooter = (props: UsersHomePageFooterProps): JSX.Elemen
   const [isCreateAction, setIsCreateAction] = useState<boolean>(false);
   const [isExpanded, setIsExpanded] = useState<boolean>(false);
   const { mutate: mutateChildBookmarkData } = useSWRxBookamrkFolderAndChild(null);
+  const { data: currentUserBookmarksData, mutate: mutateCurrentUserBookmarks } = useSWRxCurrentUserBookmarks();
+  const { open: openDeleteModal } = usePageDeleteModal();
+
+
+  const deleteMenuItemClickHandler = useCallback((pageToDelete: IPageToDeleteWithMeta) => {
+    const pageDeletedHandler : OnDeletedFunction = (pathOrPathsToDelete, _isRecursively, isCompletely) => {
+      if (typeof pathOrPathsToDelete !== 'string') {
+        return;
+      }
+      const path = pathOrPathsToDelete;
+
+      if (isCompletely) {
+        toastSuccess(t('deleted_pages_completely', { path }));
+      }
+      else {
+        toastSuccess(t('deleted_pages', { path }));
+      }
+      mutateCurrentUserBookmarks();
+    };
+    openDeleteModal([pageToDelete], { onDeleted: pageDeletedHandler });
+  }, [mutateCurrentUserBookmarks, openDeleteModal, t]);
 
 
   const onPressEnterHandlerForCreate = useCallback(async(folderName: string) => {
@@ -79,8 +105,27 @@ export const UsersHomePageFooter = (props: UsersHomePageFooterProps): JSX.Elemen
           </div>
         )}
         {
-          <BookmarkContents isExpanded={isExpanded}/>
+          <BookmarkFolderTree />
+
         }
+        <div id="user-bookmark-list" className={`page-list p-3 ${styles['page-list']}`}>
+          <div className="grw-bookmarks-list-container">
+            {currentUserBookmarksData?.length === 0
+              ? t('No bookmarks yet')
+              : <ul className="list-group page-list-ul page-list-ul-flat mb-3">
+                {currentUserBookmarksData?.map(page => (
+                  <BookmarkList
+                    key={page._id}
+                    page={page}
+                    onRenamed={mutateCurrentUserBookmarks}
+                    onUnbookmarked={mutateCurrentUserBookmarks}
+                    onClickDeleteMenuItem={deleteMenuItemClickHandler}
+                  />
+                ))}
+              </ul>
+            }
+          </div>
+        </div>
 
       </div>
       <div className="grw-user-page-list-m mt-5 d-edit-none">

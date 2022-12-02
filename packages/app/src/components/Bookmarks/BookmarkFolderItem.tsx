@@ -21,10 +21,9 @@ import DeleteBookmarkFolderModal from './DeleteBookmarkFolderModal';
 type BookmarkFolderItemProps = {
   bookmarkFolder: BookmarkFolderItems
   isOpen?: boolean
-  isSidebarItem: boolean
 }
 const BookmarkFolderItem: FC<BookmarkFolderItemProps> = (props: BookmarkFolderItemProps) => {
-  const { bookmarkFolder, isOpen: _isOpen = false, isSidebarItem } = props;
+  const { bookmarkFolder, isOpen: _isOpen = false } = props;
 
   const { t } = useTranslation();
   const {
@@ -39,7 +38,7 @@ const BookmarkFolderItem: FC<BookmarkFolderItemProps> = (props: BookmarkFolderIt
   const [isCreateAction, setIsCreateAction] = useState<boolean>(false);
   const [isDeleteFolderModalShown, setIsDeleteFolderModalShown] = useState<boolean>(false);
 
-  const childCount = useCallback((): number => {
+  const getChildCount = useCallback((): number => {
     if (currentChildren != null && currentChildren.length > children.length) {
       return currentChildren.length;
     }
@@ -121,7 +120,8 @@ const BookmarkFolderItem: FC<BookmarkFolderItemProps> = (props: BookmarkFolderIt
     }
   }, [folderId, loadParent, t]);
 
-  const onClickPlusButton = useCallback(async() => {
+  const onClickPlusButton = useCallback(async(e) => {
+    e.stopPropagation();
     if (!isOpen && hasChildren()) {
       setIsOpen(true);
     }
@@ -135,7 +135,6 @@ const BookmarkFolderItem: FC<BookmarkFolderItemProps> = (props: BookmarkFolderIt
           <BookmarkFolderItem
             key={childFolder._id}
             bookmarkFolder={childFolder}
-            isSidebarItem={isSidebarItem}
           />
         </div>
       );
@@ -156,7 +155,7 @@ const BookmarkFolderItem: FC<BookmarkFolderItemProps> = (props: BookmarkFolderIt
 
 
   return (
-    <div id={`bookmark-folder-item-${folderId}`} className="grw-foldertree-item-container"
+    <div id={`bookmark-folder-item-${folderId}`} className="grw-foldertree-item-container" onClick={loadChildFolder}
     >
       <li className="list-group-item list-group-item-action border-0 py-0 pr-3 d-flex align-items-center">
         <div className="grw-triangle-container d-flex justify-content-center">
@@ -185,71 +184,38 @@ const BookmarkFolderItem: FC<BookmarkFolderItemProps> = (props: BookmarkFolderIt
           />
         ) : (
           <>
-            <div className='grw-foldertree-title-anchor flex-grow-1 pl-2' onClick={loadChildFolder}>
-              {isSidebarItem ? (
-                <p className={'text-truncate m-auto '}>{name}</p>
-              ) : (
-                <div className="d-flex flex-row">
-                  <div className="p-2">
-                    <p className={'text-truncate m-auto '}>{name}</p>
-                  </div>
-                  <div className="p-2">
-                    <div className="grw-foldertree-control d-flex">
-                      <BookmarkFolderItemControl
-                        onClickRename={onClickRenameHandler}
-                        onClickDelete={onClickDeleteHandler}
-                      >
-                        <DropdownToggle color="transparent" className="border-0 rounded btn-page-item-control p-0 grw-visible-on-hover mr-1">
-                          <i className="icon-options fa fa-rotate-90 p-1"></i>
-                        </DropdownToggle>
-                      </BookmarkFolderItemControl>
-                      <button
-                        type="button"
-                        className="border-0 rounded btn btn-page-item-control p-0 grw-visible-on-hover"
-                        onClick={onClickPlusButton}
-                      >
-                        <i className="icon-plus d-block p-0" />
-                      </button>
-                    </div>
-                  </div>
-                  <div className="p-2">
-                    {hasChildren() && (
-                      <div className="grw-foldertree-count-wrapper">
-                        <CountBadge count={ childCount() } />
-                      </div>
-                    )}
-                  </div>
-                </div>
-              )}
+            <div className='grw-foldertree-title-anchor pl-2' >
+              <p className={'text-truncate m-auto '}>{name}</p>
             </div>
-            {hasChildren() && isSidebarItem && (
+            {hasChildren() && (
               <div className="grw-foldertree-count-wrapper">
-                <CountBadge count={ childCount() } />
+                <CountBadge count={ getChildCount() } />
               </div>
             )}
           </>
         )
 
         }
-        { isSidebarItem && (
-          <div className="grw-foldertree-control d-flex">
-            <BookmarkFolderItemControl
-              onClickRename={onClickRenameHandler}
-              onClickDelete={onClickDeleteHandler}
-            >
+        <div className="grw-foldertree-control d-flex">
+          <BookmarkFolderItemControl
+            onClickRename={onClickRenameHandler}
+            onClickDelete={onClickDeleteHandler}
+          >
+            <div onClick={e => e.stopPropagation()}>
               <DropdownToggle color="transparent" className="border-0 rounded btn-page-item-control p-0 grw-visible-on-hover mr-1">
                 <i className="icon-options fa fa-rotate-90 p-1"></i>
               </DropdownToggle>
-            </BookmarkFolderItemControl>
-            <button
-              type="button"
-              className="border-0 rounded btn btn-page-item-control p-0 grw-visible-on-hover"
-              onClick={onClickPlusButton}
-            >
-              <i className="icon-plus d-block p-0" />
-            </button>
-          </div>
-        )}
+            </div>
+          </BookmarkFolderItemControl>
+          <button
+            type="button"
+            className="border-0 rounded btn btn-page-item-control p-0 grw-visible-on-hover"
+            onClick={onClickPlusButton}
+          >
+            <i className="icon-plus d-block p-0" />
+          </button>
+
+        </div>
 
       </li>
       {isCreateAction && (
