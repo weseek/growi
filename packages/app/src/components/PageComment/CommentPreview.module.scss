@@ -1,0 +1,9 @@
+@use '~/styles/bootstrap/init' as bs;
+@use './comment-inheritance';
+@use '../PageEditor/page-editor-inheritance';
+
+.grw-comment-preview {
+  min-height: page-editor-inheritance.$navbar-editor-height
+    + comment-inheritance.$codemirror-default-height
+    + bs.$line-height-base;
+}

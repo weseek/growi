@@ -1,3 +1,4 @@
+import { isServer } from '@growi/core';
 import { Container } from 'unstated';
 
 import { apiv3Get, apiv3Put } from '../util/apiv3-client';
@@ -11,15 +12,17 @@ export default class AdminSlackIntegrationLegacyContainer extends Container {
   constructor(appContainer) {
     super();
 
+    if (isServer()) {
+      return;
+    }
+
     this.appContainer = appContainer;
-    this.dummyWebhookUrl = 0;
-    this.dummyWebhookUrlForError = 1;
 
     this.state = {
       isSlackbotConfigured: false,
       retrieveError: null,
       selectSlackOption: 'Incoming Webhooks',
-      webhookUrl: this.dummyWebhookUrl,
+      webhookUrl: '',
       isIncomingWebhookPrioritized: false,
       slackToken: '',
     };

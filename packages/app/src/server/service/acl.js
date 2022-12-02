@@ -67,17 +67,17 @@ class AclService {
 
   getRestrictGuestModeLabels() {
     const labels = {};
-    labels[this.labels.SECURITY_RESTRICT_GUEST_MODE_DENY] = 'security_setting.guest_mode.deny';
-    labels[this.labels.SECURITY_RESTRICT_GUEST_MODE_READONLY] = 'security_setting.guest_mode.readonly';
+    labels[this.labels.SECURITY_RESTRICT_GUEST_MODE_DENY] = 'security_settings.guest_mode.deny';
+    labels[this.labels.SECURITY_RESTRICT_GUEST_MODE_READONLY] = 'security_settings.guest_mode.readonly';
 
     return labels;
   }
 
   getRegistrationModeLabels() {
     const labels = {};
-    labels[this.labels.SECURITY_REGISTRATION_MODE_OPEN] = 'security_setting.registration_mode.open';
-    labels[this.labels.SECURITY_REGISTRATION_MODE_RESTRICTED] = 'security_setting.registration_mode.restricted';
-    labels[this.labels.SECURITY_REGISTRATION_MODE_CLOSED] = 'security_setting.registration_mode.closed';
+    labels[this.labels.SECURITY_REGISTRATION_MODE_OPEN] = 'security_settings.registration_mode.open';
+    labels[this.labels.SECURITY_REGISTRATION_MODE_RESTRICTED] = 'security_settings.registration_mode.restricted';
+    labels[this.labels.SECURITY_REGISTRATION_MODE_CLOSED] = 'security_settings.registration_mode.closed';
 
     return labels;
   }

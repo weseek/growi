@@ -7,6 +7,8 @@ import {
   Nav, NavItem, NavLink,
 } from 'reactstrap';
 
+import styles from './CustomNav.module.scss';
+
 
 function getBreakpointOneLevelLarger(breakpoint) {
   switch (breakpoint) {
@@ -18,7 +20,7 @@ function getBreakpointOneLevelLarger(breakpoint) {
       return 'xl';
     case 'xl':
     default:
-      return '2xl';
+      return 'xxl';
   }
 }
 
@@ -149,7 +151,7 @@ export const CustomNavTab = (props) => {
   }
 
   return (
-    <div className="grw-custom-nav-tab">
+    <div className={`grw-custom-nav-tab ${styles['grw-custom-nav-tab']}`}>
       <div ref={navContainer} className="d-flex justify-content-between">
         <Nav className="nav-title">
           {Object.entries(navTabMapping).map(([key, value]) => {

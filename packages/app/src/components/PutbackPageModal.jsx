@@ -1,7 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useCallback } from 'react';
 
 
-import { useTranslation } from 'react-i18next';
+import { useTranslation } from 'next-i18next';
 import {
   Modal, ModalHeader, ModalBody, ModalFooter,
 } from 'reactstrap';
@@ -9,6 +9,7 @@ import {
 import { apiPost } from '~/client/util/apiv1-client';
 import { PathAlreadyExistsError } from '~/server/models/errors';
 import { usePutBackPageModal } from '~/stores/modal';
+import { usePageInfoTermManager } from '~/stores/page';
 
 import ApiErrorMessageList from './PageManagement/ApiErrorMessageList';
 
@@ -16,6 +17,7 @@ const PutBackPageModal = () => {
   const { t } = useTranslation();
 
   const { data: pageDataToRevert, close: closePutBackPageModal } = usePutBackPageModal();
+  const { advance: advancePi } = usePageInfoTermManager();
   const { isOpened, page } = pageDataToRevert;
   const { pageId, path } = page;
   const onPutBacked = pageDataToRevert.opts?.onPutBacked;
@@ -41,6 +43,7 @@ const PutBackPageModal = () => {
         page_id: pageId,
         recursively,
       });
+      advancePi();
 
       if (onPutBacked != null) {
         onPutBacked(response.page.path);
@@ -53,13 +56,23 @@ const PutBackPageModal = () => {
     }
   }
 
-
-  return (
-    <Modal isOpen={isOpened} toggle={closePutBackPageModal} className="grw-create-page">
-      <ModalHeader tag="h4" toggle={closePutBackPageModal} className="bg-info text-light">
+  const HeaderContent = () => {
+    if (!isOpened) {
+      return <></>;
+    }
+    return (
+      <>
         <i className="icon-action-undo mr-2" aria-hidden="true"></i> { t('modal_putback.label.Put Back Page') }
-      </ModalHeader>
-      <ModalBody>
+      </>
+    );
+  };
+
+  const BodyContent = () => {
+    if (!isOpened) {
+      return <></>;
+    }
+    return (
+      <>
         <div className="form-group">
           <label>{t('modal_putback.label.Put Back Page')}:</label><br />
           <code>{path}</code>
@@ -79,12 +92,39 @@ const PutBackPageModal = () => {
             <code>{ path }</code>{ t('modal_putback.help.recursively') }
           </p>
         </div>
-      </ModalBody>
-      <ModalFooter>
+      </>
+    );
+
+  };
+  const FooterContent = () => {
+    if (!isOpened) {
+      return <></>;
+    }
+    return (
+      <>
         <ApiErrorMessageList errs={errs} targetPath={targetPath} />
         <button type="button" className="btn btn-info" onClick={putbackPageButtonHandler}>
           <i className="icon-action-undo mr-2" aria-hidden="true"></i> { t('Put Back') }
         </button>
+      </>
+    );
+  };
+
+  const closeModalHandler = useCallback(() => {
+    closePutBackPageModal();
+    setErrs(null);
+  }, [closePutBackPageModal]);
+
+  return (
+    <Modal isOpen={isOpened} toggle={closeModalHandler} className="grw-create-page">
+      <ModalHeader tag="h4" toggle={closeModalHandler} className="bg-info text-light">
+        <HeaderContent/>
+      </ModalHeader>
+      <ModalBody>
+        <BodyContent/>
+      </ModalBody>
+      <ModalFooter>
+        <FooterContent/>
       </ModalFooter>
     </Modal>
   );

@@ -12,11 +12,21 @@ context('Access Home', () => {
 
   it('Visit home', () => {
     cy.visit('/dummy');
-    cy.getByTestid('grw-personal-dropdown').click();
-    cy.getByTestid('grw-personal-dropdown').find('.dropdown-menu .btn-group > .btn-outline-secondary:eq(0)').click();
+    cy.waitUntilSkeletonDisappear();
+    cy.get('.grw-personal-dropdown').as('dropdown').should('be.visible').click()
+    cy.get('@dropdown').within(()=>{
+      cy.getByTestid('personal-dropdown-menu').should('have.css', 'display', 'block');
+    });
+    cy.getByTestid('grw-personal-dropdown-menu-user-home').should('be.visible').click();
+    cy.waitUntilSkeletonDisappear();
 
-    cy.getByTestid('grw-user-page').should('be.visible');
+    // eslint-disable-next-line cypress/no-unnecessary-waiting
+    cy.wait(2000); // wait for calcViewHeight and rendering
 
+    // for check download toc data
+    cy.get('.toc-link', { timeout: 60000 }).should('be.visible');
+
+    // same screenshot is taken in access-to-page.spec
     cy.screenshot(`${ssPrefix}-visit-home`);
   });
 
@@ -34,8 +44,8 @@ context('Access User settings', () => {
     // collapse sidebar
     cy.collapseSidebar(true);
     cy.visit('/me');
-    // hide fab
-    cy.getByTestid('grw-fab-container').invoke('attr', 'style', 'display: none');
+    // hide fab // disable fab for sticky-events warning
+    // cy.getByTestid('grw-fab-container').invoke('attr', 'style', 'display: none');
   });
 
   it('Access User information', () => {

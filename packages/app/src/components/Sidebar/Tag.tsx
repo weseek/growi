@@ -1,6 +1,7 @@
 import React, { FC, useState, useCallback } from 'react';
 
-import { useTranslation } from 'react-i18next';
+import { useTranslation } from 'next-i18next';
+import { useRouter } from 'next/router';
 
 import { IDataTagCount } from '~/interfaces/tag';
 import { useSWRxTagsList } from '~/stores/tag';
@@ -13,6 +14,9 @@ const PAGING_LIMIT = 10;
 const TAG_CLOUD_LIMIT = 20;
 
 const Tag: FC = () => {
+
+  const router = useRouter();
+
   const [activePage, setActivePage] = useState<number>(1);
   const [offset, setOffset] = useState<number>(0);
 
@@ -58,13 +62,15 @@ const Tag: FC = () => {
           </div>
         )
         : (
-          <TagList
-            tagData={tagData}
-            totalTags={totalCount}
-            activePage={activePage}
-            onChangePage={setOffsetByPageNumber}
-            pagingLimit={PAGING_LIMIT}
-          />
+          <div data-testid="grw-tags-list">
+            <TagList
+              tagData={tagData}
+              totalTags={totalCount}
+              activePage={activePage}
+              onChangePage={setOffsetByPageNumber}
+              pagingLimit={PAGING_LIMIT}
+            />
+          </div>
         )
       }
 
@@ -72,7 +78,7 @@ const Tag: FC = () => {
         <button
           className="btn btn-primary rounded px-4"
           type="button"
-          onClick={() => { window.location.href = '/tags' }}
+          onClick={() => router.push('/tags')}
         >
           {t('Check All tags')}
         </button>

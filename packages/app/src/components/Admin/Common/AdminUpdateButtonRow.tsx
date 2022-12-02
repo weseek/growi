@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { useTranslation } from 'react-i18next';
+import { useTranslation } from 'next-i18next';
 
 type Props = {
   onClick: () => void,
@@ -9,7 +9,7 @@ type Props = {
 }
 
 const AdminUpdateButtonRow = (props: Props): JSX.Element => {
-  const { t } = useTranslation();
+  const { t } = useTranslation('admin');
 
   return (
     <div className="row my-3">

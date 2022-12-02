@@ -1,3 +1,5 @@
+@use '../bootstrap/init' as *;
+
 .dropdown-menu {
   color: $dropdown-color;
   svg {

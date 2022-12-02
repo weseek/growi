@@ -1,40 +1,37 @@
 import React, { useCallback, useState, useEffect } from 'react';
 
-import PropTypes from 'prop-types';
+import dynamic from 'next/dynamic';
 import { Collapse, Button } from 'reactstrap';
 
 
-import AppContainer from '~/client/services/AppContainer';
-import EditorContainer from '~/client/services/EditorContainer';
-import { useCurrentPagePath } from '~/stores/context';
+import { useIsSlackConfigured } from '~/stores/context';
 import { useSWRxSlackChannels, useIsSlackEnabled } from '~/stores/editor';
+import { useCurrentPagePath } from '~/stores/page';
 import {
   EditorMode, useDrawerOpened, useEditorMode, useIsDeviceSmallerThanMd,
 } from '~/stores/ui';
 
-import SavePageControls from '../SavePageControls';
-import SlackLogo from '../SlackLogo';
-import { SlackNotification } from '../SlackNotification';
-import { withUnstatedContainers } from '../UnstatedUtils';
+
+const SavePageControls = dynamic(() => import('~/components/SavePageControls').then(mod => mod.SavePageControls), { ssr: false });
+const SlackLogo = dynamic(() => import('~/components/SlackLogo').then(mod => mod.SlackLogo), { ssr: false });
+const SlackNotification = dynamic(() => import('~/components/SlackNotification').then(mod => mod.SlackNotification), { ssr: false });
+const OptionsSelector = dynamic(() => import('~/components/PageEditor/OptionsSelector').then(mod => mod.OptionsSelector), { ssr: false });
 
 
-import OptionsSelector from './OptionsSelector';
-
-const EditorNavbarBottom = (props) => {
-
-  const { data: editorMode } = useEditorMode();
+const EditorNavbarBottom = (): JSX.Element => {
 
   const [isExpanded, setExpanded] = useState(false);
-
   const [isSlackExpanded, setSlackExpanded] = useState(false);
-  const isSlackConfigured = props.appContainer.getConfig().isSlackConfigured;
 
+  const { data: editorMode } = useEditorMode();
+  const { data: isSlackConfigured } = useIsSlackConfigured();
   const { mutate: mutateDrawerOpened } = useDrawerOpened();
   const { data: isDeviceSmallerThanMd } = useIsDeviceSmallerThanMd();
-  const additionalClasses = ['grw-editor-navbar-bottom'];
   const { data: currentPagePath } = useCurrentPagePath();
   const { data: slackChannelsData } = useSWRxSlackChannels(currentPagePath);
+
   const { data: isSlackEnabled, mutate: mutateIsSlackEnabled } = useIsSlackEnabled();
+  const additionalClasses = ['grw-editor-navbar-bottom'];
 
   const [slackChannelsStr, setSlackChannelsStr] = useState<string>('');
 
@@ -132,7 +129,7 @@ const EditorNavbarBottom = (props) => {
               )}
             </div>
           ))}
-          <SavePageControls slackChannels={slackChannelsStr} isSlackEnabled={isSlackEnabled || false} />
+          <SavePageControls />
           { isCollapsedOptionsSelectorEnabled && renderExpandButton() }
         </form>
       </div>
@@ -152,9 +149,4 @@ const EditorNavbarBottom = (props) => {
   );
 };
 
-EditorNavbarBottom.propTypes = {
-  appContainer: PropTypes.instanceOf(AppContainer).isRequired,
-  editorContainer: PropTypes.instanceOf(EditorContainer).isRequired,
-};
-
-export default withUnstatedContainers(EditorNavbarBottom, [EditorContainer, AppContainer]);
+export default EditorNavbarBottom;

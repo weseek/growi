@@ -3,7 +3,7 @@ import React, {
 } from 'react';
 
 import { pagePathUtils } from '@growi/core';
-import { useTranslation } from 'react-i18next';
+import { useTranslation } from 'next-i18next';
 import {
   Collapse, Modal, ModalHeader, ModalBody, ModalFooter,
 } from 'reactstrap';
@@ -50,7 +50,6 @@ const PageRenameModal = (): JSX.Element => {
 
   const [subordinatedPages, setSubordinatedPages] = useState([]);
   const [existingPaths, setExistingPaths] = useState<string[]>([]);
-  const [canRename, setCanRename] = useState(false);
   const [isRenameRecursively, setIsRenameRecursively] = useState(true);
   const [isRenameRedirect, setIsRenameRedirect] = useState(false);
   const [isRemainMetadata, setIsRemainMetadata] = useState(false);
@@ -80,6 +79,16 @@ const PageRenameModal = (): JSX.Element => {
       setPageNameInput(page.data.path);
     }
   }, [isOpened, page, updateSubordinatedList]);
+
+  const canRename = useMemo(() => {
+    if (page == null || isMatchedWithUserHomePagePath || page.data.path === pageNameInput) {
+      return false;
+    }
+    if (isV5Compatible(page.meta)) {
+      return existingPaths.length === 0; // v5 data
+    }
+    return isRenameRecursively; // v4 data
+  }, [existingPaths.length, isMatchedWithUserHomePagePath, isRenameRecursively, page, pageNameInput]);
 
   const rename = useCallback(async() => {
     if (page == null || !canRename) {
@@ -127,9 +136,6 @@ const PageRenameModal = (): JSX.Element => {
     try {
       const res = await apiv3Get<{ existPaths: string[]}>('/page/exist-paths', { fromPath, toPath });
       const { existPaths } = res.data;
-      if (existPaths.length === 0) {
-        setCanRename(true);
-      }
       setExistingPaths(existPaths);
     }
     catch (err) {
@@ -151,16 +157,11 @@ const PageRenameModal = (): JSX.Element => {
   }, [isUsersHomePage, pageNameInput]);
 
   useEffect(() => {
-    if (page != null && pageNameInput !== page.data.path) {
+    if (isOpened && page != null && pageNameInput !== page.data.path) {
       checkExistPathsDebounce(page.data.path, pageNameInput);
       checkIsUsersHomePageDebounce(pageNameInput);
     }
-  }, [pageNameInput, subordinatedPages, checkExistPathsDebounce, page, checkIsUsersHomePageDebounce]);
-
-  useEffect(() => {
-    setCanRename(false);
-  }, [pageNameInput]);
-
+  }, [isOpened, pageNameInput, subordinatedPages, checkExistPathsDebounce, page, checkIsUsersHomePageDebounce]);
 
   function ppacInputChangeHandler(value) {
     setErrs(null);
@@ -177,7 +178,7 @@ const PageRenameModal = (): JSX.Element => {
   }
 
   useEffect(() => {
-    if (isOpened) {
+    if (isOpened || page == null) {
       return;
     }
 
@@ -193,37 +194,18 @@ const PageRenameModal = (): JSX.Element => {
       setExpandOtherOptions(false);
     }, 1000);
 
-  }, [isOpened]);
+  }, [isOpened, page]);
 
-  if (page == null) {
-    return <></>;
-  }
+  const bodyContent = () => {
+    if (!isOpened || page == null) {
+      return <></>;
+    }
 
-  const { path } = page.data;
-  const isTargetPageDuplicate = existingPaths.includes(pageNameInput);
+    const { path } = page.data;
+    const isTargetPageDuplicate = existingPaths.includes(pageNameInput);
 
-  let submitButtonDisabled = false;
-
-  if (isMatchedWithUserHomePagePath) {
-    submitButtonDisabled = true;
-  }
-  else if (!canRename) {
-    submitButtonDisabled = true;
-  }
-  else if (isV5Compatible(page.meta)) {
-    submitButtonDisabled = existingPaths.length !== 0; // v5 data
-  }
-  else {
-    submitButtonDisabled = !isRenameRecursively; // v4 data
-  }
-
-
-  return (
-    <Modal size="lg" isOpen={isOpened} toggle={closeRenameModal} data-testid="page-rename-modal" autoFocus={false}>
-      <ModalHeader tag="h4" toggle={closeRenameModal} className="bg-primary text-light">
-        { t('modal_rename.label.Move/Rename page') }
-      </ModalHeader>
-      <ModalBody>
+    return (
+      <>
         <div className="form-group">
           <label>{ t('modal_rename.label.Current page name') }</label><br />
           <code>{ path }</code>
@@ -338,17 +320,43 @@ const PageRenameModal = (): JSX.Element => {
           </div>
           <div> {subordinatedError} </div>
         </Collapse>
+      </>
+    );
+  };
 
-      </ModalBody>
-      <ModalFooter>
+  const footerContent = () => {
+    if (!isOpened || page == null) {
+      return <></>;
+    }
+
+    const submitButtonDisabled = !canRename;
+
+    return (
+      <>
         <ApiErrorMessageList errs={errs} targetPath={pageNameInput} />
         <button
+          data-testid="grw-page-rename-button"
           type="button"
           className="btn btn-primary"
           onClick={rename}
           disabled={submitButtonDisabled}
         >Rename
         </button>
+      </>
+    );
+  };
+
+
+  return (
+    <Modal size="lg" isOpen={isOpened} toggle={closeRenameModal} data-testid="page-rename-modal" autoFocus={false}>
+      <ModalHeader tag="h4" toggle={closeRenameModal} className="bg-primary text-light">
+        { t('modal_rename.label.Move/Rename page') }
+      </ModalHeader>
+      <ModalBody>
+        {bodyContent()}
+      </ModalBody>
+      <ModalFooter>
+        {footerContent()}
       </ModalFooter>
     </Modal>
   );

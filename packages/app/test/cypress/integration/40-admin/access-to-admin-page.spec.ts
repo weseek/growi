@@ -39,18 +39,23 @@ context('Access to Admin page', () => {
   it('/admin/security is successfully loaded', () => {
     cy.visit('/admin/security');
     cy.getByTestid('admin-security').should('be.visible');
+    cy.get('#isShowRestrictedByOwner').should('be.checked')
+    cy.get('#isShowRestrictedByGroup').should('be.checked')
     cy.screenshot(`${ssPrefix}-admin-security`);
   });
 
   it('/admin/markdown is successfully loaded', () => {
     cy.visit('/admin/markdown');
     cy.getByTestid('admin-markdown').should('be.visible');
+    cy.get('#isEnabledLinebreaksInComments').should('be.checked')
     cy.screenshot(`${ssPrefix}-admin-markdown`);
   });
 
   it('/admin/customize is successfully loaded', () => {
     cy.visit('/admin/customize');
     cy.getByTestid('admin-customize').should('be.visible');
+    /* eslint-disable cypress/no-unnecessary-waiting */
+    cy.wait(500); // wait for loading layout image
     cy.screenshot(`${ssPrefix}-admin-customize`);
   });
 
@@ -101,6 +106,7 @@ context('Access to Admin page', () => {
   it('/admin/user-groups is successfully loaded', () => {
     cy.visit('/admin/user-groups');
     cy.getByTestid('admin-user-groups').should('be.visible');
+    cy.getByTestid('grw-user-group-table').should('be.visible');
     cy.screenshot(`${ssPrefix}-admin-user-groups`);
   });
 

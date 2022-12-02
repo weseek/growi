@@ -1,10 +1,9 @@
 import React from 'react';
 
+import { useTranslation } from 'next-i18next';
 import PropTypes from 'prop-types';
-import { useTranslation } from 'react-i18next';
 
 import AdminUsersContainer from '~/client/services/AdminUsersContainer';
-import AppContainer from '~/client/services/AppContainer';
 import { toastSuccess, toastError } from '~/client/util/apiNotification';
 
 import { withUnstatedContainers } from '../../UnstatedUtils';
@@ -34,7 +33,7 @@ class StatusActivateButton extends React.Component {
 
     return (
       <button className="dropdown-item" type="button" onClick={() => { this.onClickAcceptBtn() }}>
-        <i className="icon-fw icon-user-following"></i> {t('admin:user_management.user_table.accept')}
+        <i className="icon-fw icon-user-following"></i> {t('user_management.user_table.accept')}
       </button>
     );
   }
@@ -42,18 +41,17 @@ class StatusActivateButton extends React.Component {
 }
 
 const StatusActivateFormWrapperFC = (props) => {
-  const { t } = useTranslation();
+  const { t } = useTranslation('admin');
   return <StatusActivateButton t={t} {...props} />;
 };
 
 /**
  * Wrapper component for using unstated
  */
-const StatusActivateFormWrapper = withUnstatedContainers(StatusActivateFormWrapperFC, [AppContainer, AdminUsersContainer]);
+const StatusActivateFormWrapper = withUnstatedContainers(StatusActivateFormWrapperFC, [AdminUsersContainer]);
 
 StatusActivateButton.propTypes = {
   t: PropTypes.func.isRequired, // i18next
-  appContainer: PropTypes.instanceOf(AppContainer).isRequired,
   adminUsersContainer: PropTypes.instanceOf(AdminUsersContainer).isRequired,
 
   user: PropTypes.object.isRequired,

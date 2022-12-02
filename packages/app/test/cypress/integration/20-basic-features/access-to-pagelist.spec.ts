@@ -11,8 +11,17 @@ context('Access to pagelist', () => {
 
   it('Page list modal is successfully opened ', () => {
     cy.visit('/');
+    cy.waitUntilSkeletonDisappear();
+
     cy.getByTestid('pageListButton').click({force: true});
     cy.getByTestid('page-accessories-modal').parent().should('have.class','show');
+    cy.getByTestid('page-list-item-L').should('be.visible');
+
+    // Wait until the string "You cannot see this page" is no longer displayed
+    cy.getByTestid('page-list-item-L').eq(0).within(() => {
+      cy.get('.icon-exclamation').should('not.exist');
+    });
+
     cy.screenshot(`${ssPrefix}1-open-pagelist-modal`);
   });
 
@@ -21,8 +30,10 @@ context('Access to pagelist', () => {
     cy.getByTestid('pageListButton').click({force: true});
     cy.getByTestid('page-accessories-modal').parent().should('have.class','show').within(() => {
       cy.getByTestid('open-page-item-control-btn').first().click();
-      cy.screenshot(`${ssPrefix}2-click-on-three-dots-menu`);
-      cy.get('.dropdown-menu').should('have.class', 'show').first().within(() => {
+      cy.getByTestid('page-item-control-menu').should('have.class', 'show').first().within(() => {
+        // eslint-disable-next-line cypress/no-unnecessary-waiting
+        cy.wait(300);
+        cy.screenshot(`${ssPrefix}2-open-page-item-control-menu`);
         cy.getByTestid('open-page-duplicate-modal-btn').click();
       });
     });
@@ -44,19 +55,29 @@ context('Access to pagelist', () => {
 
   it('Successfully expand and close modal', () => {
     cy.visit('/');
+
+    cy.waitUntilSkeletonDisappear();
     cy.getByTestid('pageListButton').click({force: true});
     cy.getByTestid('page-accessories-modal').parent().should('have.class','show');
-    cy.screenshot(`${ssPrefix}6-page-list-modal-size-normal`, {capture: 'viewport'});
+    cy.getByTestid('page-list-item-L').should('be.visible');
+
+    // Wait until the string "You cannot see this page" is no longer displayed
+    cy.getByTestid('page-list-item-L').eq(0).within(() => {
+      cy.get('.icon-exclamation').should('not.exist');
+    });
+
+    cy.screenshot(`${ssPrefix}6-page-list-modal-size-normal`);
     cy.getByTestid('page-accessories-modal').parent().should('have.class','show').within(() => {
       cy.get('button.close').eq(0).click();
     });
-    cy.screenshot(`${ssPrefix}7-page-list-modal-size-fullscreen`, {capture: 'viewport'});
+
+    cy.screenshot(`${ssPrefix}7-page-list-modal-size-fullscreen`);
 
     cy.getByTestid('page-accessories-modal').parent().should('have.class','show').within(() => {
       cy.get('button.close').eq(1).click();
     });
 
-    cy.screenshot(`${ssPrefix}8-close-page-list-modal`, {capture: 'viewport'});
+    cy.screenshot(`${ssPrefix}8-close-page-list-modal`);
   });
 });
 
@@ -76,7 +97,8 @@ context('Access to timeline', () => {
     cy.getByTestid('page-accessories-modal').parent().should('have.class','show').within(() => {
       cy.get('.nav-title > li').eq(1).find('a').click();
     });
-    cy.get('#wiki').should('be.visible'); // wait for rendering
+    // eslint-disable-next-line cypress/no-unnecessary-waiting
+    cy.wait(500); // wait for loading wiki
     cy.screenshot(`${ssPrefix}1-timeline-list`, {capture: 'viewport'});
   });
 
@@ -87,6 +109,9 @@ context('Access to timeline', () => {
       cy.get('.nav-title > li').eq(1).find('a').click();
       cy.get('button.close').eq(0).click();
     });
+    cy.get('.modal').should('be.visible');
+    // eslint-disable-next-line cypress/no-unnecessary-waiting
+    cy.wait(500); // wait for loading wiki
     cy.screenshot(`${ssPrefix}2-timeline-list-fullscreen`, {capture: 'viewport'});
     cy.getByTestid('page-accessories-modal').parent().should('have.class','show').within(() => {
       cy.get('button.close').eq(1).click();

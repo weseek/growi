@@ -146,9 +146,9 @@ export class SelectGrowiService implements GrowiCommandProcessor<SelectGrowiComm
 
     const selectGrowiValue = interactionPayloadAccessor.firstAction()?.value;
     if (selectGrowiValue == null) {
-      logger.error('Growi command failed: The first action element must have the value parameter.');
+      logger.error('GROWI command failed: The first action element must have the value parameter.');
       await respond(responseUrl, {
-        text: 'Growi command failed',
+        text: 'GROWI command failed',
         blocks: [
           markdownSectionBlock('Error occurred while processing GROWI command.'),
         ],
@@ -159,9 +159,9 @@ export class SelectGrowiService implements GrowiCommandProcessor<SelectGrowiComm
 
 
     if (growiCommand == null) {
-      logger.error('Growi command failed: The first action value must have growiCommand parameter.');
+      logger.error('GROWI command failed: The first action value must have growiCommand parameter.');
       await respond(responseUrl, {
-        text: 'Growi command failed',
+        text: 'GROWI command failed',
         blocks: [
           markdownSectionBlock('Error occurred while processing GROWI command.'),
         ],
@@ -183,9 +183,9 @@ export class SelectGrowiService implements GrowiCommandProcessor<SelectGrowiComm
       installation = await this.installationRepository.findByTeamIdOrEnterpriseId(installationId!);
     }
     catch (err) {
-      logger.error('Growi command failed: No installation found.\n', err);
+      logger.error('GROWI command failed: No installation found.\n', err);
       await respond(responseUrl, {
-        text: 'Growi command failed',
+        text: 'GROWI command failed',
         blocks: [
           markdownSectionBlock('Error occurred while processing GROWI command.'),
         ],
@@ -200,9 +200,9 @@ export class SelectGrowiService implements GrowiCommandProcessor<SelectGrowiComm
       .getOne();
 
     if (relation == null) {
-      logger.error('Growi command failed: No installation found.');
+      logger.error('GROWI command failed: No installation found.');
       await respond(responseUrl, {
-        text: 'Growi command failed',
+        text: 'GROWI command failed',
         blocks: [
           markdownSectionBlock('Error occurred while processing GROWI command.'),
         ],
@@ -213,9 +213,9 @@ export class SelectGrowiService implements GrowiCommandProcessor<SelectGrowiComm
     // increment sendCommandBody
     const channel = interactionPayloadAccessor.getChannel();
     if (channel == null) {
-      logger.error('Growi command failed: channel not found.');
+      logger.error('GROWI command failed: channel not found.');
       await respond(responseUrl, {
-        text: 'Growi command failed',
+        text: 'GROWI command failed',
         blocks: [
           markdownSectionBlock('Error occurred while processing GROWI command.'),
         ],

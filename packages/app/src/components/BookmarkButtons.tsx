@@ -1,6 +1,6 @@
 import React, { FC, useState, useCallback } from 'react';
 
-import { useTranslation } from 'react-i18next';
+import { useTranslation } from 'next-i18next';
 import { UncontrolledTooltip, Popover, PopoverBody } from 'reactstrap';
 
 import { useIsGuestUser } from '~/stores/context';
@@ -8,6 +8,8 @@ import { useIsGuestUser } from '~/stores/context';
 import { IUser } from '../interfaces/user';
 
 import UserPictureList from './User/UserPictureList';
+
+import styles from './BookmarkButtons.module.scss';
 
 interface Props {
   bookmarkCount?: number
@@ -50,7 +52,7 @@ const BookmarkButtons: FC<Props> = (props: Props) => {
   }, [isGuestUser, isBookmarked]);
 
   return (
-    <div className="btn-group" role="group" aria-label="Bookmark buttons">
+    <div className={`btn-group btn-group-bookmark ${styles['btn-group-bookmark']}`} role="group" aria-label="Bookmark buttons">
       <button
         type="button"
         id="bookmark-button"
@@ -61,7 +63,7 @@ const BookmarkButtons: FC<Props> = (props: Props) => {
         <i className={`fa ${isBookmarked ? 'fa-bookmark' : 'fa-bookmark-o'}`}></i>
       </button>
 
-      <UncontrolledTooltip placement="top" target="bookmark-button" fade={false}>
+      <UncontrolledTooltip data-testid="bookmark-button-tooltip" placement="top" target="bookmark-button" fade={false}>
         {t(getTooltipMessage())}
       </UncontrolledTooltip>
 

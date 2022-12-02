@@ -21,13 +21,22 @@ context('Switch sidebar mode', () => {
 
   it('Switching sidebar mode', () => {
     cy.visit('/');
-    cy.get('.grw-personal-dropdown').first().click();
+    cy.collapseSidebar(true, true)
+    cy.get('.grw-apperance-mode-dropdown').first().click();
 
     cy.get('[for="swSidebarMode"]').click({force: true});
-    cy.screenshot(`${ssPrefix}-switch-sidebar-mode`, { capture: 'viewport' });
+    cy.get('.grw-sidebar-nav').should('not.be.visible');
+    cy.screenshot(`${ssPrefix}-switch-sidebar-mode`, {
+      // Blackout for recalculation of toc content hight
+      blackout: ['.grw-side-contents-container', '[data-hide-in-vrt=true]'],
+    });
 
     cy.get('[for="swSidebarMode"]').click({force: true});
-    cy.screenshot(`${ssPrefix}-switch-sidebar-mode-back`, { capture: 'viewport' });
+    cy.get('.grw-sidebar-nav').should('be.visible');
+    cy.screenshot(`${ssPrefix}-switch-sidebar-mode-back`, {
+      // Blackout for recalculation of toc content hight
+      blackout: ['.grw-side-contents-container','[data-hide-in-vrt=true]'],
+    });
   });
 
 });

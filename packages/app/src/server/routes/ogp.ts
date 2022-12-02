@@ -1,15 +1,17 @@
+import * as fs from 'fs';
+import path from 'path';
+
+import { DevidedPagePath } from '@growi/core';
+// eslint-disable-next-line no-restricted-imports
+import axios from 'axios';
 import {
   Request, Response, NextFunction,
 } from 'express';
 import { param, validationResult, ValidationError } from 'express-validator';
 
-import path from 'path';
-import * as fs from 'fs';
-
-import { DevidedPagePath } from '@growi/core';
-import axios from '~/utils/axios';
 import loggerFactory from '~/utils/logger';
 import { projectRoot } from '~/utils/project-dir-utils';
+
 import { convertStreamToBuffer } from '../util/stream';
 
 const logger = loggerFactory('growi:routes:ogp');

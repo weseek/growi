@@ -148,13 +148,6 @@ module.exports = {
       },
     },
     {
-      name: 'jquery-ui',
-      url: 'https://cdn.jsdelivr.net/jquery.ui/1.11.4/jquery-ui.min.css',
-      args: {
-        integrity: '',
-      },
-    },
-    {
       name: 'highlight-theme-github',
       url: 'https://cdn.jsdelivr.net/npm/highlight.js@9.13.0/styles/github.css',
       args: {

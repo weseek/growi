@@ -11,6 +11,12 @@ export const SocketEventName = {
   // Page migration
   PageMigrationSuccess: 'PageMigrationSuccess',
   PageMigrationError: 'PageMigrationError',
+
+  // Elasticsearch
+  AddPageProgress: 'addPageProgress',
+  FinishAddPage: 'finishAddPage',
+  RebuildingFailed: 'rebuildingFailed',
+
 } as const;
 export type SocketEventName = typeof SocketEventName[keyof typeof SocketEventName];
 

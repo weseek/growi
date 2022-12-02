@@ -47,22 +47,21 @@ module.exports = (crowi) => {
   const accessTokenParser = require('../../middlewares/access-token-parser')(crowi);
   const loginRequired = require('../../middlewares/login-required')(crowi);
   const adminRequired = require('../../middlewares/admin-required')(crowi);
-  const csrf = require('../../middlewares/csrf')(crowi);
   const addActivity = generateAddActivityMiddleware(crowi);
 
   const { exportService, socketIoService } = crowi;
 
   const activityEvent = crowi.event('activity');
-  this.adminEvent = crowi.event('admin');
+  const adminEvent = crowi.event('admin');
 
   // setup event
-  this.adminEvent.on('onProgressForExport', (data) => {
+  adminEvent.on('onProgressForExport', (data) => {
     socketIoService.getAdminSocket().emit('admin:onProgressForExport', data);
   });
-  this.adminEvent.on('onStartZippingForExport', (data) => {
+  adminEvent.on('onStartZippingForExport', (data) => {
     socketIoService.getAdminSocket().emit('admin:onStartZippingForExport', data);
   });
-  this.adminEvent.on('onTerminateForExport', (data) => {
+  adminEvent.on('onTerminateForExport', (data) => {
     socketIoService.getAdminSocket().emit('admin:onTerminateForExport', data);
   });
 
@@ -123,7 +122,7 @@ module.exports = (crowi) => {
    *                  status:
    *                    $ref: '#/components/schemas/ExportStatus'
    */
-  router.post('/', accessTokenParser, loginRequired, adminRequired, csrf, addActivity, async(req, res) => {
+  router.post('/', accessTokenParser, loginRequired, adminRequired, addActivity, async(req, res) => {
     // TODO: add express validator
     try {
       const { collections } = req.body;
@@ -169,7 +168,7 @@ module.exports = (crowi) => {
    *              schema:
    *                type: object
    */
-  router.delete('/:fileName', accessTokenParser, loginRequired, adminRequired, validator.deleteFile, apiV3FormValidator, csrf, addActivity, async(req, res) => {
+  router.delete('/:fileName', accessTokenParser, loginRequired, adminRequired, validator.deleteFile, apiV3FormValidator, addActivity, async(req, res) => {
     // TODO: add express validator
     const { fileName } = req.params;
 

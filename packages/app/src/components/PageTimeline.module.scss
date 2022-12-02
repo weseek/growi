@@ -1,0 +1,14 @@
+@use '../styles/bootstrap/variables' as var;
+
+.card-timeline {
+  :global {
+    border: 1px solid var.$gray-300;
+  }
+
+  &:global {
+    > .card-header {
+      background-color: var.$gray-300;
+    }
+  }
+}
+

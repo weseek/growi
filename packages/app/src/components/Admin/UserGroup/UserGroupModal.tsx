@@ -2,13 +2,13 @@ import React, {
   FC, useState, useEffect, useCallback,
 } from 'react';
 
+import { Ref } from '@growi/core';
 import { TFunctionResult } from 'i18next';
-import { useTranslation } from 'react-i18next';
+import { useTranslation } from 'next-i18next';
 import {
   Modal, ModalHeader, ModalBody, ModalFooter,
 } from 'reactstrap';
 
-import { Ref } from '~/interfaces/common';
 import { IUserGroup, IUserGroupHasId } from '~/interfaces/user';
 
 type Props = {
@@ -19,9 +19,9 @@ type Props = {
   onHide?: () => Promise<void> | void
 };
 
-const UserGroupModal: FC<Props> = (props: Props) => {
+export const UserGroupModal: FC<Props> = (props: Props) => {
 
-  const { t } = useTranslation();
+  const { t } = useTranslation('admin');
 
   const {
     userGroup, buttonLabel, onClickSubmit, isShow, onHide,
@@ -73,19 +73,19 @@ const UserGroupModal: FC<Props> = (props: Props) => {
     <Modal className="modal-md" isOpen={isShow} toggle={onHide}>
       <form onSubmit={onSubmitHandler}>
         <ModalHeader tag="h4" toggle={onHide} className="bg-primary text-light">
-          {t('admin:user_group_management.basic_info')}
+          {t('user_group_management.basic_info')}
         </ModalHeader>
 
         <ModalBody>
           <div className="form-group">
             <label htmlFor="name">
-              {t('admin:user_group_management.group_name')}
+              {t('user_group_management.group_name')}
             </label>
             <input
               className="form-control"
               type="text"
               name="name"
-              placeholder={t('admin:user_group_management.group_example')}
+              placeholder={t('user_group_management.group_example')}
               value={currentName}
               onChange={onChangeNameHandler}
               required
@@ -116,5 +116,3 @@ const UserGroupModal: FC<Props> = (props: Props) => {
     </Modal>
   );
 };
-
-export default UserGroupModal;

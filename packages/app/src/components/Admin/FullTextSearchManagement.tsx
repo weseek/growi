@@ -1,15 +1,11 @@
-import React, { FC } from 'react';
+import React from 'react';
 
-import { useTranslation } from 'react-i18next';
+import { useTranslation } from 'next-i18next';
 
 import ElasticsearchManagement from './ElasticsearchManagement/ElasticsearchManagement';
 
-type Props = {
-
-};
-
-const FullTextSearchManagement: FC<Props> = () => {
-  const { t } = useTranslation();
+export const FullTextSearchManagement = (): JSX.Element => {
+  const { t } = useTranslation('admin');
 
   return (
     <div data-testid="admin-full-text-search">
@@ -18,5 +14,3 @@ const FullTextSearchManagement: FC<Props> = () => {
     </div>
   );
 };
-
-export default FullTextSearchManagement;

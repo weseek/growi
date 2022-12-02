@@ -1,11 +1,12 @@
-import mongoose from 'mongoose';
 import { Writable } from 'stream';
+
+import mongoose from 'mongoose';
 import streamToPromise from 'stream-to-promise';
 
-import { getModelSafely, getMongoUri, mongoOptions } from '@growi/core';
-import loggerFactory from '~/utils/logger';
 import getPageModel from '~/server/models/page';
 import { createBatchStream } from '~/server/util/batch-stream';
+import { getModelSafely, getMongoUri, mongoOptions } from '~/server/util/mongoose-utils';
+import loggerFactory from '~/utils/logger';
 
 
 const logger = loggerFactory('growi:migrate:revision-path-to-page-id-schema-migration');

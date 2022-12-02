@@ -1,7 +1,7 @@
 import React from 'react';
 
+import { useTranslation } from 'next-i18next';
 import PropTypes from 'prop-types';
-import { useTranslation } from 'react-i18next';
 import {
   Button, Modal, ModalHeader, ModalBody, ModalFooter,
 } from 'reactstrap';
@@ -36,11 +36,11 @@ const DeleteAllShareLinksModal = React.memo((props) => {
       <ModalHeader tag="h4" toggle={closeButtonHandler} className="bg-danger text-light">
         <span>
           <i className="icon-fw icon-fire"></i>
-          {t('share_links.delete_all_share_links')}
+          {t('security_settings.delete_all_share_links')}
         </span>
       </ModalHeader>
       <ModalBody>
-        { t('share_links.share_link_notice')}
+        { t('security_settings.share_link_notice')}
       </ModalBody>
       <ModalFooter>
         <Button onClick={closeButtonHandler}>{t('Cancel')}</Button>
@@ -53,6 +53,8 @@ const DeleteAllShareLinksModal = React.memo((props) => {
   );
 
 });
+DeleteAllShareLinksModal.displayName = 'DeleteAllShareLinksModal';
+
 
 DeleteAllShareLinksModal.propTypes = {
   t: PropTypes.func.isRequired, // i18next
@@ -64,7 +66,7 @@ DeleteAllShareLinksModal.propTypes = {
 
 // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
 const DeleteAllShareLinksModalWrapperFC = (props) => {
-  const { t } = useTranslation();
+  const { t } = useTranslation('admin');
 
   return <DeleteAllShareLinksModal t={t} {...props} />;
 };
