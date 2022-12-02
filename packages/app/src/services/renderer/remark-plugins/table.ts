@@ -4,7 +4,7 @@ import { visit } from 'unist-util-visit';
 export const remarkPlugin: Plugin = function() {
   return (tree) => {
     visit(tree, (node) => {
-      if (node.type === 'table' || node.type === 'tableRow') {
+      if (node.type === 'table' || node.type === 'tableCell' || node.type === 'tableRow') {
 
         // omit position to fix the key regardless of its position
         // see:
