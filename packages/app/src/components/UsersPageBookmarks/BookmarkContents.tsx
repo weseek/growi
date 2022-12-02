@@ -45,7 +45,7 @@ const BookmarkContents = (props: Props): JSX.Element => {
 
 
   return (
-    <div className={`${isExpanded ? `${styles.expanded}` : `${styles.compressed}`}`}>
+    <div className={`${isExpanded ? `${styles['grw-bookarks-contents-expanded']}` : `${styles['grw-bookarks-contents-compressed']}`}`}>
       <ul className={ `grw-foldertree ${styles['grw-foldertree']} list-group p-3`}>
         {bookmarkFolderData?.map((item) => {
           return (
