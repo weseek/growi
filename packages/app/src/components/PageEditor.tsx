@@ -194,12 +194,22 @@ const PageEditor = React.memo((): JSX.Element => {
       return;
     }
 
-    const isSuccess = await save();
-    if (isSuccess) {
+    const page = await save();
+    if (page) {
       toastSuccess(t('toaster.save_succeeded'));
     }
+    else {
+      return;
+    }
 
-  }, [editorMode, save, t]);
+    if (isNotFound) {
+      await router.push(`/${page._id}`);
+    }
+    else {
+      await mutateCurrentPageId(page._id);
+      await mutateCurrentPage();
+    }
+  }, [editorMode, isNotFound, mutateCurrentPage, mutateCurrentPageId, router, save, t]);
 
 
   /**
