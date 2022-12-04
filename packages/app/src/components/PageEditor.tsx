@@ -123,7 +123,6 @@ const PageEditor = React.memo((): JSX.Element => {
     setMarkdownWithDebounce(value, isClean);
   }, [setMarkdownWithDebounce]);
 
-  // return true if the save succeeds, otherwise false.
   const save = useCallback(async(opts?: {overwriteScopesOfDescendants: boolean}): Promise<IPageHasId | null> => {
     if (grantData == null || isSlackEnabled == null || currentPathname == null) {
       logger.error('Some materials to save are invalid', { grantData, isSlackEnabled, currentPathname });
@@ -195,7 +194,7 @@ const PageEditor = React.memo((): JSX.Element => {
     }
 
     const page = await save();
-    if (page) {
+    if (page != null) {
       toastSuccess(t('toaster.save_succeeded'));
       await mutateCurrentPageId(page._id);
       await mutateCurrentPage();
