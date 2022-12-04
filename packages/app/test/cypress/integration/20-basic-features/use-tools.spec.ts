@@ -456,6 +456,7 @@ context('Shortcuts', () => {
 
     // 1st
     cy.get('.CodeMirror').type(body1);
+    cy.get('.CodeMirror').contains(body1);
     cy.get('.page-editor-preview-body').contains(body1);
     cy.get('.CodeMirror').type(savePageShortcutKey);
 
@@ -466,6 +467,7 @@ context('Shortcuts', () => {
 
     // 2nd
     cy.get('.CodeMirror').type(body2);
+    cy.get('.CodeMirror').contains(body2);
     cy.get('.page-editor-preview-body').contains(body2);
     cy.get('.CodeMirror').type(savePageShortcutKey);
 
