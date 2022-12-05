@@ -155,9 +155,8 @@ const BookmarkFolderItem: FC<BookmarkFolderItemProps> = (props: BookmarkFolderIt
 
 
   return (
-    <div id={`bookmark-folder-item-${folderId}`} className="grw-foldertree-item-container" onClick={loadChildFolder}
-    >
-      <li className="list-group-item list-group-item-action border-0 py-0 pr-3 d-flex align-items-center">
+    <div id={`grw-bookmark-folder-item-${folderId}`} className="grw-foldertree-item-container">
+      <li className="list-group-item list-group-item-action border-0 py-0 pr-3 d-flex align-items-center" onClick={loadChildFolder}>
         <div className="grw-triangle-container d-flex justify-content-center">
           {hasChildren() && (
             <button

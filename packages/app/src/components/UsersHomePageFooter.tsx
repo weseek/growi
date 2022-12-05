@@ -15,6 +15,8 @@ import { usePageDeleteModal } from '~/stores/modal';
 
 import BookmarkFolderNameInput from './Bookmarks/BookmarkFolderNameInput';
 import BookmarkFolderTree from './Bookmarks/BookmarkFolderTree';
+import CompressIcon from './Icons/CompressIcon';
+import ExpandIcon from './Icons/ExpandIcon';
 import FolderPlusIcon from './Icons/FolderPlusIcon';
 import { BookmarkList } from './PageList/BookmarkList';
 
@@ -27,6 +29,7 @@ export const UsersHomePageFooter = (props: UsersHomePageFooterProps): JSX.Elemen
   const { t } = useTranslation();
   const { creatorId } = props;
   const [isCreateAction, setIsCreateAction] = useState<boolean>(false);
+  const [isExpanded, setIsExpanded] = useState<boolean>(false);
   const { mutate: mutateChildBookmarkData } = useSWRxBookamrkFolderAndChild(null);
   const { data: currentUserBookmarksData, mutate: mutateCurrentUserBookmarks } = useSWRxCurrentUserBookmarks();
   const { open: openDeleteModal } = usePageDeleteModal();
@@ -66,7 +69,7 @@ export const UsersHomePageFooter = (props: UsersHomePageFooterProps): JSX.Elemen
   return (
     <div className={`container-lg user-page-footer py-5 ${styles['user-page-footer']}`}>
       <div className="grw-user-page-list-m d-edit-none">
-        <h2 id="bookmarks-list" className="grw-user-page-header border-bottom pb-2 mb-3">
+        <h2 id="bookmarks-list" className="grw-user-page-header border-bottom pb-2 mb-3 d-flex">
           <i style={{ fontSize: '1.3em' }} className="fa fa-fw fa-bookmark-o"></i>
           {t('footer.bookmarks')}
           <span className="pl-2">
@@ -76,6 +79,17 @@ export const UsersHomePageFooter = (props: UsersHomePageFooterProps): JSX.Elemen
             >
               <FolderPlusIcon />
               <span className="mx-2 ">{t('bookmark_folder.new_folder')}</span>
+            </button>
+          </span>
+          <span className="ml-auto pl-2 ">
+            <button
+              className={`btn btn-sm grw-expand-compress-btn ${isExpanded ? 'active' : ''}`}
+              onClick={() => setIsExpanded(!isExpanded)}
+            >
+              { isExpanded
+                ? <ExpandIcon/>
+                : <CompressIcon />
+              }
             </button>
           </span>
         </h2>
@@ -90,29 +104,30 @@ export const UsersHomePageFooter = (props: UsersHomePageFooterProps): JSX.Elemen
 
           </div>
         )}
-        {
-          <BookmarkFolderTree />
+        <div className={`${isExpanded ? `${styles['grw-bookarks-contents-expanded']}` : `${styles['grw-bookarks-contents-compressed']}`}`}>
+          {
+            <BookmarkFolderTree />
 
-        }
-        <div id="user-bookmark-list" className={`page-list p-3 ${styles['page-list']}`}>
-          <div className="grw-bookmarks-list-container">
-            {currentUserBookmarksData?.length === 0
-              ? t('No bookmarks yet')
-              : <ul className="list-group page-list-ul page-list-ul-flat mb-3">
-                {currentUserBookmarksData?.map(page => (
-                  <BookmarkList
-                    key={page._id}
-                    page={page}
-                    onRenamed={mutateCurrentUserBookmarks}
-                    onUnbookmarked={mutateCurrentUserBookmarks}
-                    onClickDeleteMenuItem={deleteMenuItemClickHandler}
-                  />
-                ))}
-              </ul>
-            }
+          }
+          <div id="user-bookmark-list" className={`page-list p-3 ${styles['page-list']}`}>
+            <div className="grw-bookmarks-list-container">
+              {currentUserBookmarksData?.length === 0
+                ? t('No bookmarks yet')
+                : <ul className="list-group page-list-ul page-list-ul-flat mb-3">
+                  {currentUserBookmarksData?.map(page => (
+                    <BookmarkList
+                      key={page._id}
+                      page={page}
+                      onRenamed={mutateCurrentUserBookmarks}
+                      onUnbookmarked={mutateCurrentUserBookmarks}
+                      onClickDeleteMenuItem={deleteMenuItemClickHandler}
+                    />
+                  ))}
+                </ul>
+              }
+            </div>
           </div>
         </div>
-
       </div>
       <div className="grw-user-page-list-m mt-5 d-edit-none">
         <h2 id="recently-created-list" className="grw-user-page-header border-bottom pb-2 mb-3">
