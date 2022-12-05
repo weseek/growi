@@ -7,7 +7,6 @@ import {
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 
 import { NoLoginLayout } from '~/components/Layout/NoLoginLayout';
-import { CrowiRequest } from '~/interfaces/crowi-request';
 
 import InstallerForm from '../components/InstallerForm';
 import {
@@ -53,17 +52,6 @@ const InstallerPage: NextPage<Props> = (props: Props) => {
 
 export const getServerSideProps: GetServerSideProps = async(context: GetServerSidePropsContext) => {
   const result = await getServerSideCommonProps(context);
-
-  const req = context.req as CrowiRequest;
-  const isInstalled = req.crowi.configManager.getConfig('crowi', 'app:installed');
-  if (isInstalled) {
-    return {
-      redirect: {
-        permanent: false,
-        destination: '/',
-      },
-    };
-  }
 
   // check for presence
   // see: https://github.com/vercel/next.js/issues/19271#issuecomment-730006862
