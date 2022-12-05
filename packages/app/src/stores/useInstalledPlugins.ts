@@ -1,7 +1,6 @@
 import useSWR, { SWRResponse } from 'swr';
 
-import { SearchResult } from '../models/SearchResult';
-import { SearchResultItem } from '../models/SearchResultItem';
+import type { SearchResult, SearchResultItem } from '../interfaces/github-api';
 
 const pluginFetcher = (owner: string, repo: string) => {
   return async() => {

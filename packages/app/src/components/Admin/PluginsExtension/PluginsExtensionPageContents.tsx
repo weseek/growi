@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { SearchResultItem } from '~/models/SearchResultItem';
+import type { SearchResultItem } from '~/interfaces/github-api';
 import { useInstalledPlugins } from '~/stores/useInstalledPlugins';
 
 import Loading from './Loading';
