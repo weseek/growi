@@ -82,8 +82,6 @@ module.exports = function(crowi, app) {
   app.get('/invited'                  , applicationInstalled, next.delegateToNext);
   // app.post('/login'                   , applicationInstalled, loginFormValidator.loginRules(), loginFormValidator.loginValidation, csrfProtection,  addActivity, loginPassport.loginWithLocal, loginPassport.loginWithLdap, loginPassport.loginFailure);
 
-  app.get('/register'                 , applicationInstalled, login.preLogin, login.register);
-
   // NOTE: get method "/admin/export/:fileName" should be loaded before "/admin/*"
   app.get('/admin/export/:fileName'   , loginRequiredStrictly , adminRequired ,admin.export.api.validators.export.download(), admin.export.download);
 
