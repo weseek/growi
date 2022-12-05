@@ -27,7 +27,7 @@ const { isTopPage, isUsersHomePage } = pagePathUtils;
 
 
 const PageEditor = dynamic(() => import('../PageEditor'), { ssr: false });
-// const PageEditorByHackmd = dynamic(() => import('../PageEditorByHackmd').then(mod => mod.PageEditorByHackmd), { ssr: false });
+const PageEditorByHackmd = dynamic(() => import('../PageEditorByHackmd').then(mod => mod.PageEditorByHackmd), { ssr: false });
 const EditorNavbarBottom = dynamic(() => import('../PageEditor/EditorNavbarBottom'), { ssr: false });
 const HashChanged = dynamic(() => import('../EventListeneres/HashChanged'), { ssr: false });
 const ContentLinkButtons = dynamic<ContentLinkButtonsProps>(() => import('../ContentLinkButtons').then(mod => mod.ContentLinkButtons), { ssr: false });
@@ -137,17 +137,17 @@ const DisplaySwitcher = React.memo((): JSX.Element => {
             : <></>
         ),
       },
-      // [EditorMode.HackMD]: {
-      //   Content: () => (
-      //     isEditable
-      //       ? (
-      //         <div id="page-editor-with-hackmd">
-      //           <PageEditorByHackmd />
-      //         </div>
-      //       )
-      //       : <></>
-      //   ),
-      // },
+      [EditorMode.HackMD]: {
+        Content: () => (
+          isEditable
+            ? (
+              <div id="page-editor-with-hackmd">
+                <PageEditorByHackmd />
+              </div>
+            )
+            : <></>
+        ),
+      },
     };
   }, [isEditable]);
 

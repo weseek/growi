@@ -85,9 +85,7 @@ export const Page = (props) => {
   }, [mutateRendererOptions]);
 
   useEffect(() => {
-    if (tocRef.current != null) {
-      mutateCurrentPageTocNode(tocRef.current);
-    }
+    mutateCurrentPageTocNode(tocRef.current);
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [mutateCurrentPageTocNode, tocRef.current]); // include tocRef.current to call mutateCurrentPageTocNode when tocRef.current changes
 

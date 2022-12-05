@@ -327,13 +327,13 @@ const GrowiPage: NextPage<Props> = (props: Props) => {
           <div className="flex-grow-1">
             <div id="main" className={`main ${isUsersHomePage(props.currentPathname) && 'user-page'}`}>
               <div id="content-main" className="content-main grw-container-convertible">
-                {/* { props.isIdenticalPathPage && <IdenticalPathPage /> } */}
+                { props.isIdenticalPathPage && <IdenticalPathPage /> }
 
                 { !props.isIdenticalPathPage && (
                   <>
-                    {/* <PageAlerts /> */}
-                    {/* { props.isForbidden && <ForbiddenPage /> } */}
-                    {/* { props.isNotCreatablePage && <NotCreatablePage />} */}
+                    <PageAlerts />
+                    { props.isForbidden && <ForbiddenPage /> }
+                    { props.isNotCreatablePage && <NotCreatablePage />}
                     { !props.isForbidden && !props.isNotCreatablePage && <DisplaySwitcher />}
                     {/* <DisplaySwitcher /> */}
                     {/* <PageStatusAlert /> */}
@@ -360,7 +360,7 @@ const GrowiPage: NextPage<Props> = (props: Props) => {
             </footer>
           )}
 
-          {/* <UnsavedAlertDialog /> */}
+          <UnsavedAlertDialog />
           <DescendantsPageListModal />
           <DrawioModal />
           <HandsontableModal />

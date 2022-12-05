@@ -1,11 +1,7 @@
 // import { faCircleArrowDown, faCircleCheck } from '@fortawesome/free-solid-svg-icons';
 // import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { useCallback, useState } from 'react';
 
-import Image from 'next/image';
 import Link from 'next/link';
-
-import { SearchResultItem } from '~/models/SearchResultItem';
 
 import styles from './PluginCard.module.scss';
 

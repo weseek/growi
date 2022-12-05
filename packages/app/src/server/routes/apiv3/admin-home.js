@@ -68,7 +68,6 @@ module.exports = (crowi) => {
       nodeVersion: crowi.runtimeVersions.versions.node ? crowi.runtimeVersions.versions.node.version.version : '-',
       npmVersion: crowi.runtimeVersions.versions.npm ? crowi.runtimeVersions.versions.npm.version.version : '-',
       yarnVersion: crowi.runtimeVersions.versions.yarn ? crowi.runtimeVersions.versions.yarn.version.version : '-',
-      installedPlugins: crowi.pluginService.listPlugins(),
       envVars: await ConfigLoader.getEnvVarsForDisplay(true),
       isV5Compatible: crowi.configManager.getConfig('crowi', 'app:isV5Compatible'),
       isMaintenanceMode: crowi.configManager.getConfig('crowi', 'app:isMaintenanceMode'),

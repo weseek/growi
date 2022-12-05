@@ -62,7 +62,6 @@ export const BasicLayout = ({
         <PageDuplicateModal />
         <PageDeleteModal />
         <PageRenameModal />
-        <PagePresentationModal />
         <PageAccessoriesModal />
       </DndProvider>
 

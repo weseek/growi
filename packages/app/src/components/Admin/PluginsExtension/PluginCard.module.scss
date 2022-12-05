@@ -1,6 +1,6 @@
+// TODO: Rewrite according to guidelines
 .plugin_card :global {
 
-  /*** iOS ***/
   .switch__label {
     position: relative;
     display: inline-block;
@@ -36,10 +36,6 @@
     content: '';
     background-color: transparent;
     border-radius: 30px;
-    -webkit-transition: all .5s;
-    -moz-transition: all .5s;
-    -ms-transition: all .5s;
-    -o-transition: all .5s;
     transition: all .5s;
   }
   .switch__input {
@@ -54,14 +50,8 @@
     width: 27px;
     height: 27px;
     background-color: #fff;
-    -webkit-border-radius: 20px;
     border-radius: 20px;
-    -webkit-box-shadow: 0 2px 6px #999;
     box-shadow: 0 2px 6px #999;
-    -webkit-transition: all .5s;
-    -moz-transition: all .5s;
-    -ms-transition: all .5s;
-    -o-transition: all .5s;
     transition: all .5s;
   }
   .switch__input:checked ~ .switch__circle {

@@ -15,7 +15,6 @@ import { withUnstatedContainers } from '../../UnstatedUtils';
 
 
 import EnvVarsTable from './EnvVarsTable';
-import InstalledPluginTable from './InstalledPluginTable';
 import SystemInfomationTable from './SystemInfomationTable';
 
 const logger = loggerFactory('growi:admin');
@@ -82,13 +81,6 @@ const AdminHome = (props) => {
         <div className="col-lg-12">
           <h2 className="admin-setting-header">{t('admin:admin_top.system_information')}</h2>
           <SystemInfomationTable />
-        </div>
-      </div>
-
-      <div className="row mb-5">
-        <div className="col-lg-12">
-          <h2 className="admin-setting-header">{t('admin:admin_top.list_of_installed_plugins')}</h2>
-          <InstalledPluginTable />
         </div>
       </div>
 
