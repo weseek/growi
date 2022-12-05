@@ -214,8 +214,6 @@ module.exports = (crowi) => {
     // TODO: add express validator
     const { fileName, collections, optionsMap } = req.body;
 
-    console.log('fileName', fileName);
-
     // pages collection can only be imported by upsert if isV5Compatible is true
     const isV5Compatible = crowi.configManager.getConfig('crowi', 'app:isV5Compatible');
     const isImportPagesCollection = collections.includes('pages');
