@@ -1,12 +1,17 @@
-import React, { FC, useState, useCallback } from 'react';
+import React, {
+  FC, useState, useCallback,
+} from 'react';
 
 import { useTranslation } from 'next-i18next';
-import { UncontrolledTooltip, Popover, PopoverBody } from 'reactstrap';
+import {
+  UncontrolledTooltip, Popover, PopoverBody, DropdownToggle,
+} from 'reactstrap';
 
 import { useIsGuestUser } from '~/stores/context';
 
 import { IUser } from '../interfaces/user';
 
+import BookmarkFolderDropdown from './Bookmarks/BookmarkFolderDropdown';
 import UserPictureList from './User/UserPictureList';
 
 import styles from './BookmarkButtons.module.scss';
@@ -16,7 +21,6 @@ interface Props {
   isBookmarked?: boolean
   bookmarkedUsers?: IUser[]
   hideTotalNumber?: boolean
-  onBookMarkClicked: ()=>void;
 }
 
 const BookmarkButtons: FC<Props> = (props: Props) => {
@@ -34,12 +38,6 @@ const BookmarkButtons: FC<Props> = (props: Props) => {
     setIsPopoverOpen(!isPopoverOpen);
   };
 
-  const handleClick = async() => {
-    if (props.onBookMarkClicked != null) {
-      props.onBookMarkClicked();
-    }
-  };
-
   const getTooltipMessage = useCallback(() => {
     if (isGuestUser) {
       return 'Not available for guest';
@@ -53,17 +51,14 @@ const BookmarkButtons: FC<Props> = (props: Props) => {
 
   return (
     <div className={`btn-group btn-group-bookmark ${styles['btn-group-bookmark']}`} role="group" aria-label="Bookmark buttons">
-      <button
-        type="button"
-        id="bookmark-button"
-        onClick={handleClick}
-        className={`shadow-none btn btn-bookmark border-0
-          ${isBookmarked ? 'active' : ''} ${isGuestUser ? 'disabled' : ''}`}
-      >
-        <i className={`fa ${isBookmarked ? 'fa-bookmark' : 'fa-bookmark-o'}`}></i>
-      </button>
+      <BookmarkFolderDropdown >
+        <DropdownToggle id='bookmark-dropdown-btn' color="transparent" className={`shadow-none btn btn-bookmark border-0
+          ${isBookmarked ? 'active' : ''} ${isGuestUser ? 'disabled' : ''}`}>
+          <i className={`fa ${isBookmarked ? 'fa-bookmark' : 'fa-bookmark-o'}`}></i>
+        </DropdownToggle>
+      </BookmarkFolderDropdown>
 
-      <UncontrolledTooltip placement="top" target="bookmark-button" fade={false}>
+      <UncontrolledTooltip placement="top" target="bookmark-dropdown-btn" fade={false}>
         {t(getTooltipMessage())}
       </UncontrolledTooltip>
 
