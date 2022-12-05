@@ -56,11 +56,10 @@ module.exports = function(crowi, app) {
   const unavailableWhenMaintenanceMode = generateUnavailableWhenMaintenanceModeMiddleware(crowi);
   const unavailableWhenMaintenanceModeForApi = generateUnavailableWhenMaintenanceModeMiddlewareForApi(crowi);
 
-  const isInstalled = crowi.configManager.getConfig('crowi', 'app:installed');
 
   /* eslint-disable max-len, comma-spacing, no-multi-spaces */
 
-  const [apiV3Router, apiV3AdminRouter, apiV3AuthRouter] = require('./apiv3')(crowi, app, isInstalled);
+  const [apiV3Router, apiV3AdminRouter, apiV3AuthRouter] = require('./apiv3')(crowi, app);
 
   app.use('/api-docs', require('./apiv3/docs')(crowi, app));
 
@@ -91,10 +90,7 @@ module.exports = function(crowi, app) {
   app.get('/admin'                    , applicationInstalled, loginRequiredStrictly , adminRequired , next.delegateToNext);
 
   // installer
-  if (!isInstalled) {
-    app.get('/installer'              , applicationNotInstalled, next.delegateToNext);
-    return;
-  }
+  app.get('/installer'                , applicationNotInstalled, next.delegateToNext);
 
   // OAuth
   app.get('/passport/google'                      , loginPassport.loginWithGoogle, loginPassport.loginFailureForExternalAccount);

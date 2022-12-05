@@ -16,7 +16,8 @@ const router = express.Router();
 const routerForAdmin = express.Router();
 const routerForAuth = express.Router();
 
-module.exports = (crowi, app, isInstalled) => {
+module.exports = (crowi, app) => {
+  const isInstalled = crowi.configManager.getConfig('crowi', 'app:installed');
 
   // add custom functions to express response
   require('./response')(express, crowi);
