@@ -5,20 +5,27 @@ import { useIsomorphicLayoutEffect } from 'usehooks-ts';
 
 type Props = {
   children: JSX.Element,
-  className: string,
+  bodyTagClassName?: string,
+  className?: string,
   bgImageNode?: React.ReactNode,
 }
 
-export const ThemeInjector = ({ children, className: themeClassName, bgImageNode }: Props): JSX.Element => {
-  const className = `${children.props.className ?? ''} ${themeClassName}`;
+export const ThemeInjector = ({
+  children, bodyTagClassName, className: childrenClassName, bgImageNode,
+}: Props): JSX.Element => {
+  const className = `${children.props.className ?? ''} ${childrenClassName ?? ''}`;
 
   // add class name to <body>
   useIsomorphicLayoutEffect(() => {
-    document.body.classList.add(themeClassName);
+    if (bodyTagClassName != null) {
+      document.body.classList.add(bodyTagClassName);
+    }
 
     // clean up
     return () => {
-      document.body.classList.remove(themeClassName);
+      if (bodyTagClassName != null) {
+        document.body.classList.remove(bodyTagClassName);
+      }
     };
   });
 
