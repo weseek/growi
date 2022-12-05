@@ -122,9 +122,6 @@
   }
 
   &:global {
-    /*
-     * Compact Mode
-     */
     &:hover {
       .btn-copy,
       .btn-edit-tags {
@@ -132,6 +129,10 @@
         opacity: unset;
       }
     }
+
+    /*
+     * Compact Mode
+     */
     &.grw-subnav-compact {
       min-height: 70px;
 
