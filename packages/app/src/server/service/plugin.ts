@@ -70,6 +70,7 @@ export class PluginService {
     const zipFilePath = path.join(downloadTargetPath, 'main.zip');
     const unzipTargetPath = path.join(pluginStoringPath, ghOrganizationName);
 
+    // TOD: use stream
     const stdout1 = execSync(`wget ${url} -O ${zipFilePath}`);
     const stdout2 = execSync(`mkdir -p ${ghOrganizationName}`);
     const stdout3 = execSync(`rm -rf ${ghOrganizationName}/${ghReposName}`);
