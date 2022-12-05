@@ -119,17 +119,15 @@
         isolation: isolate;
       }
     }
+
+    .btn-copy,
+    .btn-edit-tags:hover {
+      // change button opacity
+      opacity: unset;
+    }
   }
 
   &:global {
-    &:hover {
-      .btn-copy,
-      .btn-edit-tags {
-        // change button opacity
-        opacity: unset;
-      }
-    }
-
     /*
      * Compact Mode
      */
