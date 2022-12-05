@@ -13,13 +13,12 @@ import { withUnstatedContainers } from '../../UnstatedUtils';
 import CustomizeCssSetting from './CustomizeCssSetting';
 import CustomizeFunctionSetting from './CustomizeFunctionSetting';
 import CustomizeHeaderSetting from './CustomizeHeaderSetting';
-import CustomizeHighlightSetting from './CustomizeHighlightSetting';
 import CustomizeLayoutSetting from './CustomizeLayoutSetting';
 import CustomizeLogoSetting from './CustomizeLogoSetting';
 import CustomizeScriptSetting from './CustomizeScriptSetting';
 import CustomizeSidebarSetting from './CustomizeSidebarSetting';
 import CustomizeThemeSetting from './CustomizeThemeSetting';
-import CustomizeTitle from './CustomizeTitle';
+import { CustomizeTitle } from './CustomizeTitle';
 
 const logger = loggerFactory('growi:services:AdminCustomizePage');
 
@@ -55,9 +54,6 @@ function Customize(props) {
       </div>
       <div className="mb-5">
         <CustomizeFunctionSetting />
-      </div>
-      <div className="mb-5">
-        <CustomizeHighlightSetting />
       </div>
       <div className="mb-5">
         <CustomizeTitle />

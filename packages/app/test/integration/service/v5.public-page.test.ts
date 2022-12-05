@@ -28,6 +28,20 @@ describe('PageService page operations with only public pages', () => {
   // page operation ids
   let pageOpId1;
 
+  const create = async(path, body, user, options = {}) => {
+    const mockedCreateSubOperation = jest.spyOn(crowi.pageService, 'createSubOperation').mockReturnValue(null);
+
+    const createdPage = await crowi.pageService.create(path, body, user, options);
+
+    const argsForCreateSubOperation = mockedCreateSubOperation.mock.calls[0];
+
+    mockedCreateSubOperation.mockRestore();
+
+    await crowi.pageService.createSubOperation(...argsForCreateSubOperation);
+
+    return createdPage;
+  };
+
   beforeAll(async() => {
     crowi = await getInstance();
     await crowi.configManager.updateConfigsInTheSameNamespace('crowi', { 'app:isV5Compatible': true });
@@ -1055,7 +1069,7 @@ describe('PageService page operations with only public pages', () => {
 
     test('Should create single page', async() => {
       const isGrantNormalizedSpy = jest.spyOn(crowi.pageGrantService, 'isGrantNormalized');
-      const page = await crowi.pageService.create('/v5_create1', 'create1', dummyUser1, {});
+      const page = await create('/v5_create1', 'create1', dummyUser1, {});
       expect(page).toBeTruthy();
       expect(page.parent).toStrictEqual(rootPage._id);
       // isGrantNormalized is called when GRANT PUBLIC
@@ -1064,7 +1078,7 @@ describe('PageService page operations with only public pages', () => {
 
     test('Should create empty-child and non-empty grandchild', async() => {
       const isGrantNormalizedSpy = jest.spyOn(crowi.pageGrantService, 'isGrantNormalized');
-      const grandchildPage = await crowi.pageService.create('/v5_empty_create2/v5_create_3', 'grandchild', dummyUser1, {});
+      const grandchildPage = await create('/v5_empty_create2/v5_create_3', 'grandchild', dummyUser1, {});
       const childPage = await Page.findOne({ path: '/v5_empty_create2' });
 
       expect(childPage.isEmpty).toBe(true);
@@ -1081,7 +1095,7 @@ describe('PageService page operations with only public pages', () => {
       const beforeCreatePage = await Page.findOne({ path: '/v5_empty_create_4' });
       expect(beforeCreatePage.isEmpty).toBe(true);
 
-      const childPage = await crowi.pageService.create('/v5_empty_create_4', 'body', dummyUser1, {});
+      const childPage = await create('/v5_empty_create_4', 'body', dummyUser1, {});
       const grandchildPage = await Page.findOne({ parent: childPage._id });
 
       expect(childPage).toBeTruthy();

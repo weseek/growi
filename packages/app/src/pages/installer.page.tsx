@@ -10,8 +10,7 @@ import { NoLoginLayout } from '~/components/Layout/NoLoginLayout';
 
 import InstallerForm from '../components/InstallerForm';
 import {
-  useCurrentPagePath, useCsrfToken,
-  useAppTitle, useSiteUrl, useConfidential,
+  useCsrfToken, useAppTitle, useSiteUrl, useConfidential,
 } from '../stores/context';
 
 
@@ -23,7 +22,7 @@ import {
 const { isTrashPage: _isTrashPage } = pagePathUtils;
 
 async function injectNextI18NextConfigurations(context: GetServerSidePropsContext, props: Props, namespacesRequired?: string[] | undefined): Promise<void> {
-  const nextI18NextConfig = await getNextI18NextConfig(serverSideTranslations, context, namespacesRequired);
+  const nextI18NextConfig = await getNextI18NextConfig(serverSideTranslations, context, namespacesRequired, true);
   props._nextI18Next = nextI18NextConfig._nextI18Next;
 }
 
@@ -39,9 +38,6 @@ const InstallerPage: NextPage<Props> = (props: Props) => {
   useSiteUrl(props.siteUrl);
   useConfidential(props.confidential);
   useCsrfToken(props.csrfToken);
-
-  // page
-  useCurrentPagePath(props.currentPathname);
 
   const classNames: string[] = [];
 
@@ -65,7 +61,7 @@ export const getServerSideProps: GetServerSideProps = async(context: GetServerSi
 
   const props: Props = result.props as Props;
 
-  injectNextI18NextConfigurations(context, props, ['translation']);
+  await injectNextI18NextConfigurations(context, props, ['translation']);
 
   return {
     props,

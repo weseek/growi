@@ -3,7 +3,7 @@ import http from 'http';
 import path from 'path';
 
 import { createTerminus } from '@godaddy/terminus';
-import lsxRoutes from '@growi/plugin-lsx/server/routes';
+import lsxRoutes from '@growi/remark-lsx/server/routes';
 import mongoose from 'mongoose';
 import next from 'next';
 
@@ -432,19 +432,20 @@ Crowi.prototype.getTokens = function() {
 
 Crowi.prototype.start = async function() {
   const dev = process.env.NODE_ENV !== 'production';
-  this.nextApp = next({ dev });
 
+  await this.init();
+  await this.buildServer();
+
+  // setup Next.js
+  this.nextApp = next({ dev });
   await this.nextApp.prepare();
 
-  // init CrowiDev
+  // setup CrowiDev
   if (dev) {
     const CrowiDev = require('./dev');
     this.crowiDev = new CrowiDev(this);
     this.crowiDev.init();
   }
-
-  await this.init();
-  await this.buildServer();
 
   const { express, configManager } = this;
 

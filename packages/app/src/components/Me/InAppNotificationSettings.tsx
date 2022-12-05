@@ -54,7 +54,7 @@ const InAppNotificationSettings: FC = () => {
     try {
       const { data } = await apiv3Put('/personal-setting/in-app-notification-settings', { subscribeRules });
       setSubscribeRules(data.subscribeRules);
-      toastSuccess(t('toaster.update_successed', { target: 'InAppNotification Settings' }));
+      toastSuccess(t('toaster.update_successed', { target: 'InAppNotification Settings', ns: 'commons' }));
     }
     catch (err) {
       toastError(err);

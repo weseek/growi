@@ -6,7 +6,7 @@ import {
   EditorMode, useEditorMode,
 } from '~/stores/ui';
 
-import { TagLabelsSkelton } from '../Page/TagLabels';
+import { TagLabelsSkeleton } from '../Page/TagLabels';
 import PagePathNav from '../PagePathNav';
 
 import DrawerToggler from './DrawerToggler';
@@ -17,7 +17,7 @@ import styles from './GrowiSubNavigation.module.scss';
 
 const TagLabels = dynamic(() => import('../Page/TagLabels').then(mod => mod.TagLabels), {
   ssr: false,
-  loading: TagLabelsSkelton,
+  loading: TagLabelsSkeleton,
 });
 
 
@@ -32,7 +32,7 @@ export type GrowiSubNavigationProps = {
   isCompactMode?: boolean,
   tags?: string[],
   tagsUpdatedHandler?: (newTags: string[]) => Promise<void> | void,
-  rightComponent: React.FunctionComponent,
+  rightComponent?: React.FunctionComponent,
   additionalClasses?: string[],
 }
 
@@ -54,8 +54,11 @@ export const GrowiSubNavigation = (props: GrowiSubNavigationProps): JSX.Element 
   const compactModeClasses = isCompactMode ? 'grw-subnav-compact d-print-none' : '';
 
   return (
-    <div className={`grw-subnav ${styles['grw-subnav']} d-flex align-items-center justify-content-between ${additionalClasses.join(' ')}
-    ${compactModeClasses}`} >
+    <div className={`
+      grw-subnav ${styles['grw-subnav']} d-flex align-items-center justify-content-between
+      ${additionalClasses.join(' ')}
+      ${compactModeClasses}`}
+    >
       {/* Left side */}
       <div className="d-flex grw-subnav-left-side">
         { (showDrawerToggler && isDrawerMode) && (
@@ -68,7 +71,7 @@ export const GrowiSubNavigation = (props: GrowiSubNavigationProps): JSX.Element 
             <div className="grw-taglabels-container">
               { tags != null
                 ? <TagLabels tags={tags} isGuestUser={isGuestUser ?? false} tagsUpdateInvoked={tagsUpdatedHandler} />
-                : <TagLabelsSkelton />
+                : <TagLabelsSkeleton />
               }
             </div>
           ) }
@@ -78,7 +81,9 @@ export const GrowiSubNavigation = (props: GrowiSubNavigationProps): JSX.Element 
         </div>
       </div>
       {/* Right side. */}
-      <RightComponent />
+      { RightComponent && (
+        <RightComponent />
+      ) }
     </div>
   );
 };

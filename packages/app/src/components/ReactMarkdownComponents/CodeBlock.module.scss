@@ -1,13 +1,6 @@
 @use '~/styles/variables' as var;
 @use '~/styles/bootstrap/init' as bs;
 
-.code-inline {
-  padding: 2px 4px;
-  font-family: var.$font-family-monospace-not-strictly;
-  border: 1px solid;
-  border-radius: bs.$border-radius;
-}
-
 .code-highlighted-title {
   position: absolute;
   top: 0;
@@ -18,5 +11,5 @@
   color: bs.$gray-900;
   background: bs.$gray-300;
   border-radius: bs.$border-radius;
-  opacity: 0.6;
+  opacity: 0.8;
 }

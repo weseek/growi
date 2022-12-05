@@ -2,6 +2,7 @@ import React, {
   useState, useEffect, useRef, useMemo, useCallback,
 } from 'react';
 
+import type { IUser } from '@growi/core';
 import { UserPicture } from '@growi/ui';
 import CodeMirror from 'codemirror/lib/codemirror';
 import { format } from 'date-fns';
@@ -10,11 +11,10 @@ import {
   Modal, ModalHeader, ModalBody, ModalFooter,
 } from 'reactstrap';
 
-import { IUser } from '~/interfaces/user';
+import { OptionsToSave } from '~/interfaces/page-operation';
 import { useCurrentUser } from '~/stores/context';
 import { useEditorMode } from '~/stores/ui';
 
-import PageContainer from '../../client/services/PageContainer';
 import { IRevisionOnConflict } from '../../interfaces/revision';
 import ExpandOrContractButton from '../ExpandOrContractButton';
 import { UncontrolledCodeMirror } from '../UncontrolledCodeMirror';
@@ -29,8 +29,9 @@ Object.keys(DMP).forEach((key) => { window[key] = DMP[key] });
 type ConflictDiffModalProps = {
   isOpen?: boolean;
   onClose?: (() => void);
-  pageContainer: PageContainer;
+  // pageContainer: PageContainer;
   markdownOnEdit: string;
+  optionsToSave: OptionsToSave | undefined;
 };
 
 type IRevisionOnConflictWithStringDate = Omit<IRevisionOnConflict, 'createdAt'> & {
@@ -38,7 +39,7 @@ type IRevisionOnConflictWithStringDate = Omit<IRevisionOnConflict, 'createdAt'> 
 }
 
 const ConflictDiffModalCore = (props: ConflictDiffModalProps & { currentUser: IUser }): JSX.Element => {
-  const { currentUser, pageContainer, onClose } = props;
+  const { currentUser, onClose } = props;
 
   const { data: editorMode } = useEditorMode();
 
@@ -59,16 +60,25 @@ const ConflictDiffModalCore = (props: ConflictDiffModalProps & { currentUser: IU
     user: currentUser,
   };
   const origin: IRevisionOnConflictWithStringDate = {
-    revisionId: pageContainer.state.revisionId || '',
-    revisionBody: pageContainer.state.markdown || '',
-    createdAt: pageContainer.state.updatedAt || '',
-    user: pageContainer.state.revisionAuthor,
+    // revisionId: pageContainer.state.revisionId || '',
+    // revisionBody: pageContainer.state.markdown || '',
+    // createdAt: pageContainer.state.updatedAt || '',
+    // user: pageContainer.state.revisionAuthor,
+    revisionId:  '',
+    revisionBody: '',
+    createdAt: '',
+    user: {} as IUser,
   };
   const latest: IRevisionOnConflictWithStringDate = {
-    revisionId: pageContainer.state.remoteRevisionId || '',
-    revisionBody: pageContainer.state.remoteRevisionBody || '',
-    createdAt: format(new Date(pageContainer.state.remoteRevisionUpdateAt || currentTime.toString()), 'yyyy/MM/dd HH:mm:ss'),
-    user: pageContainer.state.lastUpdateUser,
+    // revisionId: pageContainer.state.remoteRevisionId || '',
+    // revisionBody: pageContainer.state.remoteRevisionBody || '',
+    // createdAt: format(new Date(pageContainer.state.remoteRevisionUpdateAt || currentTime.toString()), 'yyyy/MM/dd HH:mm:ss'),
+    // user: pageContainer.state.lastUpdateUser,
+    revisionId: '',
+    revisionBody: '',
+    createdAt: format(new Date(''), 'yyyy/MM/dd HH:mm:ss'),
+    user: {} as IUser,
+
   };
 
   useEffect(() => {
@@ -101,15 +111,15 @@ const ConflictDiffModalCore = (props: ConflictDiffModalProps & { currentUser: IU
     const codeMirrorVal = uncontrolledRef.current?.editor.doc.getValue();
 
     try {
-      await pageContainer.resolveConflict(codeMirrorVal, editorMode);
-      close();
-      pageContainer.showSuccessToastr();
+      // await pageContainer.resolveConflict(codeMirrorVal, editorMode, props.optionsToSave);
+      // close();
+      // pageContainer.showSuccessToastr();
     }
     catch (error) {
-      pageContainer.showErrorToastr(error);
+      // pageContainer.showErrorToastr(error);
     }
 
-  }, [editorMode, close, pageContainer]);
+  }, []);
 
   const resizeAndCloseButtons = useMemo(() => (
     <div className="d-flex flex-nowrap">

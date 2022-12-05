@@ -29,54 +29,37 @@
 @import 'atoms/buttons';
 @import 'atoms/spinners';
 @import 'atoms/custom_control';
+@import 'atoms/code';
 
 // molecules
 @import 'molecules/toastr';
 // @import 'molecules/copy-dropdown';
-// @import 'molecules/page-editor-mode-manager';
 // @import 'molecules/slack-notification';
 // @import 'molecules/duplicated-paths-table.scss';
 
+// organisms
+@import 'organisms/wiki';
+
 // // growi component
-// @import 'admin';
 // @import 'attachments';
 // @import 'comment';
 // @import 'comment_growi';
 // @import 'create-page';
 // @import 'draft';
-// @import 'editor-attachment';
-// @import 'editor-navbar';
-// @import 'page-content-footer';
+@import 'editor';
+@import 'fonts';
 // @import 'handsontable';
 @import 'layout';
-// @import 'login';
 // @import 'me';
-// @import 'mirror_mode';
+@import 'mirror_mode';
 @import 'modal';
-// @import 'navbar';
 // @import 'old-ios';
-@import 'on-edit';
 // @import 'page-duplicate-modal';
-
-// @import 'page-path';
-// @import 'page-tree';
+@import 'page-path';
 // @import 'page';
-// @import 'page-presentation';
-// @import 'page-history';
-// @import 'recent-changes';
 @import 'search';
-// @import 'shortcuts';
-// @import 'sidebar';
-// @import 'sidebar-wiki';
-// @import 'subnav';
 @import 'tag';
-// @import 'toc';
 // @import 'user';
-// @import 'staff_credit';
-// @import 'waves';
-@import 'wiki';
-// @import 'sharelink';
-// @import 'linkedit-preview';
 
 
 /*

@@ -1,5 +1,8 @@
+import { useCallback } from 'react';
+
 import { SWRResponse } from 'swr';
 
+import MarkdownTable from '~/client/models/MarkdownTable';
 import { IPageToDeleteWithMeta, IPageToRenameWithMeta } from '~/interfaces/page';
 import {
   OnDuplicatedFunction, OnRenamedFunction, OnDeletedFunction, OnPutBackedFunction,
@@ -7,7 +10,6 @@ import {
 import { IUserGroupHasId } from '~/interfaces/user';
 
 import { useStaticSWR } from './use-static-swr';
-
 
 /*
 * PageCreateModal
@@ -78,7 +80,7 @@ export const usePageDeleteModal = (status?: DeleteModalStatus): SWRResponse<Dele
 */
 type IEmptyTrashModalOption = {
   onEmptiedTrash?: () => void,
-  canDelepeAllPages: boolean,
+  canDeleteAllPages: boolean,
 }
 
 type EmptyTrashModalStatus = {
@@ -444,13 +446,19 @@ export const useShortcutsModal = (): SWRResponse<ShortcutsModalStatus, Error> & 
 * DrawioModal
 */
 
+type DrawioModalSaveHandler = (drawioMxFile: string) => void;
+
 type DrawioModalStatus = {
   isOpened: boolean,
   drawioMxFile: string,
+  onSave?: DrawioModalSaveHandler,
 }
 
 type DrawioModalStatusUtils = {
-  open(drawioMxFile: string): void,
+  open(
+    drawioMxFile: string,
+    onSave?: DrawioModalSaveHandler,
+  ): void,
   close(): void,
 }
 
@@ -461,13 +469,83 @@ export const useDrawioModal = (status?: DrawioModalStatus): SWRResponse<DrawioMo
   };
   const swrResponse = useStaticSWR<DrawioModalStatus, Error>('drawioModalStatus', status, { fallbackData: initialData });
 
-  const close = (): void => {
-    swrResponse.mutate({ isOpened: false, drawioMxFile: '' });
+  const { mutate } = swrResponse;
+
+  const open = useCallback((drawioMxFile: string, onSave?: DrawioModalSaveHandler): void => {
+    mutate({ isOpened: true, drawioMxFile, onSave });
+  }, [mutate]);
+
+  const close = useCallback((): void => {
+    mutate({ isOpened: false, drawioMxFile: '', onSave: undefined });
+  }, [mutate]);
+
+  return {
+    ...swrResponse,
+    open,
+    close,
+  };
+};
+
+/*
+* HandsonTableModal
+*/
+type HandsonTableModalSaveHandler = (table: MarkdownTable) => void;
+
+type HandsontableModalStatus = {
+  isOpened: boolean,
+  table: MarkdownTable,
+  // TODO: Define editor type
+  editor?: any,
+  autoFormatMarkdownTable?: boolean,
+  // onSave is passed only when editing table directly from the page.
+  onSave?: HandsonTableModalSaveHandler
+}
+
+type HandsontableModalStatusUtils = {
+  open(
+    table: MarkdownTable,
+    editor?: any,
+    autoFormatMarkdownTable?: boolean,
+    onSave?: HandsonTableModalSaveHandler
+  ): void
+  close(): void
+}
+
+const defaultMarkdownTable = () => {
+  return new MarkdownTable(
+    [
+      ['col1', 'col2', 'col3'],
+      ['', '', ''],
+      ['', '', ''],
+    ],
+    {
+      align: ['', '', ''],
+    },
+  );
+};
+
+export const useHandsontableModal = (status?: HandsontableModalStatus): SWRResponse<HandsontableModalStatus, Error> & HandsontableModalStatusUtils => {
+  const initialData: HandsontableModalStatus = {
+    isOpened: false,
+    table: defaultMarkdownTable(),
+    editor: undefined,
+    autoFormatMarkdownTable: false,
   };
 
-  const open = (drawioMxFile: string): void => {
-    swrResponse.mutate({ isOpened: true, drawioMxFile });
-  };
+  const swrResponse = useStaticSWR<HandsontableModalStatus, Error>('handsontableModalStatus', status, { fallbackData: initialData });
+
+  const { mutate } = swrResponse;
+
+  const open = useCallback((table: MarkdownTable, editor?: any, autoFormatMarkdownTable?: boolean, onSave?: HandsonTableModalSaveHandler): void => {
+    mutate({
+      isOpened: true, table, editor, autoFormatMarkdownTable, onSave,
+    });
+  }, [mutate]);
+  const close = useCallback((): void => {
+    mutate({
+      isOpened: false, table: defaultMarkdownTable(), editor: undefined, autoFormatMarkdownTable: false, onSave: undefined,
+    });
+  }, [mutate]);
 
   return {
     ...swrResponse,

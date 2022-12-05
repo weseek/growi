@@ -1,3 +1,4 @@
+/* eslint-disable @next/next/google-font-display */
 import React from 'react';
 
 import mongoose from 'mongoose';
@@ -7,6 +8,7 @@ import Document, {
 } from 'next/document';
 
 import { ActivatePluginService, GrowiPluginManifestEntries } from '~/client/services/activate-plugin';
+import { CrowiRequest } from '~/interfaces/crowi-request';
 import { GrowiPlugin, GrowiPluginResourceType } from '~/interfaces/plugin';
 
 type HeadersForGrowiPluginProps = {
@@ -46,33 +48,45 @@ const HeadersForGrowiPlugin = (props: HeadersForGrowiPluginProps): JSX.Element =
 };
 
 interface GrowiDocumentProps {
+  customCss: string;
   pluginManifestEntries: GrowiPluginManifestEntries;
 }
 declare type GrowiDocumentInitialProps = DocumentInitialProps & GrowiDocumentProps;
 
-class GrowiDocument extends Document<GrowiDocumentProps> {
+class GrowiDocument extends Document<GrowiDocumentInitialProps> {
 
   static override async getInitialProps(ctx: DocumentContext): Promise<GrowiDocumentInitialProps> {
     const initialProps: DocumentInitialProps = await Document.getInitialProps(ctx);
+    const { crowi } = ctx.req as CrowiRequest<any>;
+    const { customizeService } = crowi;
+    const customCss: string = customizeService.getCustomCss();
 
-    // TODO: load GrowiPlugin documents from DB
     const GrowiPlugin = mongoose.model<GrowiPlugin>('GrowiPlugin');
     const growiPlugins = await GrowiPlugin.find({ isEnabled: true });
     const pluginManifestEntries: GrowiPluginManifestEntries = await ActivatePluginService.retrievePluginManifests(growiPlugins);
-    return { ...initialProps, pluginManifestEntries };
+
+    return { ...initialProps, customCss, pluginManifestEntries };
   }
 
   override render(): JSX.Element {
-
-    const { pluginManifestEntries } = this.props;
+    const { customCss, pluginManifestEntries } = this.props;
 
     return (
       <Html>
         <Head>
+          <style>
+            {customCss}
+          </style>
           {/*
           {renderScriptTagsByGroup('basis')}
           {renderStyleTagsByGroup('basis')}
           */}
+          <link rel='preload' href="/static/fonts/PressStart2P-latin.woff2" as="font" type="font/woff2" />
+          <link rel='preload' href="/static/fonts/PressStart2P-latin-ext.woff2" as="font" type="font/woff2" />
+          <link rel='preload' href="/static/fonts/Lato-Regular-latin.woff2" as="font" type="font/woff2" />
+          <link rel='preload' href="/static/fonts/Lato-Regular-latin-ext.woff2" as="font" type="font/woff2" />
+          <link rel='preload' href="/static/fonts/Lato-Bold-latin.woff2" as="font" type="font/woff2" />
+          <link rel='preload' href="/static/fonts/Lato-Bold-latin-ext.woff2" as="font" type="font/woff2" />
           <HeadersForGrowiPlugin pluginManifestEntries={pluginManifestEntries} />
         </Head>
         <body>

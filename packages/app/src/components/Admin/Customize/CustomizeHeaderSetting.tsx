@@ -21,7 +21,7 @@ const CustomizeHeaderSetting = (props: Props): JSX.Element => {
   const onClickSubmit = useCallback(async() => {
     try {
       await adminCustomizeContainer.updateCustomizeHeader();
-      toastSuccess(t('toaster.update_successed', { target: t('admin:customize_setting.custom_header') }));
+      toastSuccess(t('toaster.update_successed', { target: t('admin:customize_settings.custom_header'), ns: 'commons' }));
     }
     catch (err) {
       toastError(err);
@@ -32,19 +32,19 @@ const CustomizeHeaderSetting = (props: Props): JSX.Element => {
     <React.Fragment>
       <div className="row">
         <div className="col-12">
-          <h2 className="admin-setting-header">{t('admin:customize_setting.custom_header')}</h2>
+          <h2 className="admin-setting-header">{t('admin:customize_settings.custom_header')}</h2>
 
           <Card className="card well my-3">
             <CardBody className="px-0 py-2">
               <span
                 // eslint-disable-next-line react/no-danger
-                dangerouslySetInnerHTML={{ __html: t('admin:customize_setting.custom_header_detail') }}
+                dangerouslySetInnerHTML={{ __html: t('admin:customize_settings.custom_header_detail') }}
               />
             </CardBody>
           </Card>
           <div className="form-text text-muted">
             { t('Example') }:
-            <pre className="hljs">
+            <pre>
               {/* eslint-disable-next-line react/no-unescaped-entities */}
               <code className="text-wrap">&lt;script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@9.13.0/build/languages/yaml.min.js"
                 defer&gt;&lt;/script&gt;
@@ -61,7 +61,7 @@ const CustomizeHeaderSetting = (props: Props): JSX.Element => {
             />
             <p className="form-text text-muted text-right">
               <i className="fa fa-fw fa-keyboard-o" aria-hidden="true"></i>
-              {t('admin:customize_setting.ctrl_space')}
+              {t('admin:customize_settings.ctrl_space')}
             </p>
           </div>
           <AdminUpdateButtonRow onClick={onClickSubmit} disabled={adminCustomizeContainer.state.retrieveError != null} />

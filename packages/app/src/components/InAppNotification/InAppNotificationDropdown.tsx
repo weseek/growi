@@ -20,7 +20,7 @@ const logger = loggerFactory('growi:InAppNotificationDropdown');
 
 
 export const InAppNotificationDropdown = (): JSX.Element => {
-  const { t } = useTranslation();
+  const { t } = useTranslation('commons');
 
   const [isOpen, setIsOpen] = useState(false);
   const limit = 6;
@@ -80,7 +80,7 @@ export const InAppNotificationDropdown = (): JSX.Element => {
 
   return (
     <Dropdown className="notification-wrapper grw-notification-dropdown" isOpen={isOpen} toggle={toggleDropdownHandler}>
-      <DropdownToggle tag="a" className="px-3 nav-link border-0 bg-transparentt" innerRef={buttonRef}>
+      <DropdownToggle className="px-3 nav-link border-0 bg-transparent" innerRef={buttonRef}>
         <i className="icon-bell" /> {badge}
       </DropdownToggle>
       <DropdownMenu right>

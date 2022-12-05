@@ -252,7 +252,7 @@ $dropdown-link-active-bg: $bgcolor-dropdown-link-active;
 }
 
 /*
- * GROWI on-edit
+ * GROWI Editor
  */
 .grw-editor-navbar-bottom {
   background-color: $gray-50;
@@ -402,6 +402,13 @@ $dropdown-link-active-bg: $bgcolor-dropdown-link-active;
 }
 
 /*
+ * drawio
+ */
+.drawio-viewer {
+  border-color: $border-color-global;
+}
+
+/*
  * admin settings
  */
 .admin-setting-header {
@@ -416,8 +423,8 @@ $dropdown-link-active-bg: $bgcolor-dropdown-link-active;
 }
 
 /*
- * skelton
+ * skeleton
  */
-.grw-skelton {
+.grw-skeleton {
   background-color: darken($bgcolor-subnav, 10%);
 }

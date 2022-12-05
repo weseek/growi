@@ -9,8 +9,8 @@
   "Created": "创建",
   "Edit": "编辑",
   "Description": "描述",
+  "last_login": "上次登录",
   "wiki_management_home_page": "Wiki管理首页",
-  "app_settings": "系统设置",
   "public": "公共",
   "anyone_with_the_link": "任何人",
   "specified_users": "仅指定用户",
@@ -25,8 +25,8 @@
     "displayed_or_hidden": "显示/隐藏",
     "Guest Users Access": "来宾用户访问",
 		"Fixed by env var": "这是由env var<code>%s=%s</code>修复的。",
-		"Register limitation": "注册限制",
-		"Register limitation desc": "限制新用户注册",
+		"register_limitation": "注册限制",
+		"register_limitation_desc": "限制新用户注册",
 		"The whitelist of registration permission E-mail address": "注册许可电子邮件地址的白名单",
 		"users_without_account": "无法访问没有帐户的用户",
 		"example": "例子",
@@ -60,7 +60,6 @@
     "page_delete_rights_caution": "\"删除/全部删除\"权限（包括后代页面）被强制强于\"删除/完全删除\"权限。 <br> <br> 仅管理员 > 管理员|作者 > 何人",
 		"Authentication mechanism settings": "身份验证机制设置",
 		"setup_is_not_yet_complete": "安装尚未完成",
-		"alert_siteUrl_is_not_set": "主页URL未设置，通过 {{link}} 设置",
 		"xss_prevent_setting": "阻止XSS（跨站点脚本）",
 		"xss_prevent_setting_link": "转到Markdown设置",
 		"callback_URL": "回调URL",
@@ -89,6 +88,10 @@
 			"restricted": "受限（需要管理员批准）",
 			"closed": "已关闭（仅限邀请）"
 		},
+    "share_link_management": "Share Link Management",
+    "No_share_links":"No share links",
+    "share_link_notice":"remove all share links",
+    "delete_all_share_links":"Delete all share links",
     "share_link_rights": "分享链接权",
     "enable_link_sharing": "启用链接共享",
     "all_share_links": "所有共享链接",
@@ -111,7 +114,6 @@
       "email_authentication": "用户注册时的电子邮件身份验证",
       "enable_email_authentication": "启用电子邮件身份验证",
       "enable_email_authentication_desc": "用户注册将执行电子邮件身份验证。",
-      "please_enable_mailer": "请先设置邮件程序。",
       "need_complete_mail_setting_warning": "要使用以下功能，请完成邮件设置。"
 		},
 		"ldap": {
@@ -235,6 +237,56 @@
 			"ABLCRule": "Rule"
 		}
   },
+  "notification_settings": {
+		"slack_incoming_configuration": "Slack Incoming Webhooks configuration",
+		"prioritize_webhook": "Prioritize incoming webhook than Slack App",
+		"prioritize_webhook_desc": "Check this option and GROWI use Incoming Webhooks even if Slack App settings are enabled.",
+		"slack_app_configuration": "Slack app configuration",
+		"slack_app_configuration_desc": "This is the way that compatible with Crowi,<br /> but not recommended in GROWI because it is <strong>too complex</strong>.",
+		"use_instead": "Please use Slack Incoming Webhooks Configuration instead.",
+		"how_to": {
+			"header": "How to configure Incoming Webhooks?",
+			"workspace": "(At Workspace) Add a hook",
+			"workspace_desc1": "Go to <a href='https://slack.com/services/new/incoming-webhook'>Incoming Webhooks configuration page</a>.",
+			"workspace_desc2": "Choose the default channel to post.",
+			"workspace_desc3": "Add.",
+			"at_growi": "(At GROWI admin page) Set Webhook URL",
+			"at_growi_desc": "Input &rdquo;Webhook URL&rdquo; and submit on this page."
+		},
+		"user_trigger_notification_header": "Default notification settings for patterns",
+		"pattern": "Pattern",
+		"channel": "Channel",
+		"pattern_desc": "Path name of wiki. Pattern expression with <code>*</code> can be used.",
+		"channel_desc": "Slack channel name. Without <code>#</code>.",
+		"valid_page": "启用/禁用通知",
+		"link_notification_help": "<strong>只有那些知道“链接的任何人”链接的人才能查看的页面并不总是得到通知。</strong> ",
+		"just_me_notification_help": "<strong>被“仅限我”限制的页在编辑时被通知。</strong>",
+		"group_notification_help": "<strong>被“用户组”限制的页面在编辑时被通知。</strong>",
+		"notification_list": "List of notification settings",
+		"add_notification": "Add new",
+		"trigger_path": "Trigger path",
+		"trigger_path_help": "(expression with <code>*</code> is supported)",
+		"trigger_events": "Trigger events",
+		"notify_to": "Notify to",
+		"back_to_list": "Go back to list",
+		"notification_detail": "Notification Setting Details",
+		"event_pageCreate": "When new page is \"CREATED\"",
+		"event_pageEdit": "When page is \"EDITED\"",
+		"event_pageDelete": "When page is \"DELETED\"",
+		"event_pageMove": "When page is \"MOVED\" (renamed)",
+		"event_pageLike": "When someone \"LIKES\" page",
+		"event_comment": "When someone \"COMMENTS\" on page",
+		"email": {
+			"ifttt_link": "Create a new IFTTT applet with Email trigger"
+		},
+		"updated_slackApp": "Succeeded to update Slack App Configuration setting",
+		"add_notification_pattern": "Add user trigger notification patterns",
+		"delete_notification_pattern": "Delete notification pattern",
+		"delete_notification_pattern_desc1": "Delete Path: {{path}}",
+		"delete_notification_pattern_desc2": "Once deleted, it cannot be recovered",
+		"toggle_notification": "Updated setting of {{path}}",
+    "not_found_global_notification_triggerid": "未找到全局通知 ID"
+	},
   "full_text_search_management": {
     "full_text_search_management": "全文搜索管理",
 		"elasticsearch_management": "Elasticsearch管理",
@@ -279,8 +331,6 @@
     "submit_bug_report": "<a href='https://github.com/weseek/growi/issues/new?assignees=&labels=bug&template=bug-report.md&title=Bug%3A' target='_blank' rel='noreferrer'>然后提交你的问题到GitHub。</a>"
   },
   "v5_page_migration": {
-    "page_tree_not_avaliable": "Page Tree 功能不可用",
-    "go_to_settings": "进入设置，启用该功能",
     "migration_desc": "有一些页面具有旧的v4兼容性。为了利用新的功能，如页面树和容易重命名，请将您的所有页面转换为v5兼容性。",
     "migration_note": "注意：你将失去页面路径的唯一约束。",
     "upgrade_to_v5": "转换为v5兼容性",
@@ -310,9 +360,12 @@
     "site_name": "网站名称 ",
     "sitename_change": "您可以更改用于标题和HTML标题的网站名称。",
     "header_content": "此处输入的内容将显示在标题等中。",
-    "site_url_desc": "用于网站URL设置。",
-    "site_url_warn": "某些功能不起作用，因为未设置网站URL。",
-    "siteurl_help": "网站完整URL起始于 <code>http://</code> or <code>https://</code>.",
+    "site_url": {
+      "title": "主页URL设置",
+      "desc": "用于网站URL设置。",
+      "warn": "某些功能不起作用，因为未设置网站URL。",
+      "help": "网站完整URL起始于 <code>http://</code> or <code>https://</code>."
+    },
     "confidential_name": "内部名称",
     "confidential_example": "ex）：仅供内部使用",
     "default_language": "新用户的默认语言",
@@ -464,8 +517,6 @@
       "select_search_scope_children_as_default": "选择“当前分支以下内容”, 作为搜索范围的默认值",
       "select_search_scope_children_as_default_desc": "当设置值为“关”时，“所有页面”被作为搜索范围的默认值。"
     },
-    "code_highlight": "代码突出显示",
-    "nocdn_desc": "当强制应用环境变量<code>NO_CDN=true</code><br>Github样式时，此函数被禁用。",
     "custom_title": "自定义标题",
     "custom_title_detail": "您可以自定义<code>&lt；title&gt；</code>标记。<br><code>&123；&123；sitename&&125；&125；</code>将自动替换为应用程序名称，并且<code>&123；&123；page&&125；&125；</code>将替换为页面名称/路径。",
     "custom_title_detail_placeholder1": "<code>&#123；&#123；站点名称&#125；&#125；</code>-此wiki的站点名称。",
@@ -575,7 +626,7 @@
     "export": "导出",
     "cancel": "取消",
     "file": "文件",
-    "growi_version": "Growi Version",
+    "growi_version": "GROWI Version",
     "collections": "Collections",
     "exported_at": "Exported At",
     "export_menu": "导出菜单",
@@ -834,7 +885,9 @@
     "docs_url": {
       "log_type": "https://docs.growi.org/en/admin-guide/admin-cookbook/audit-log-setup.html#log-types"
     }
-
+  },
+  "cloud_setting_management": {
+    "to_cloud_settings": "進入 GROWI.cloud 的管理界面"
   },
   "audit_log_action_category": {
     "Page": "页面",
@@ -1006,5 +1059,15 @@
     "ADMIN_SEARCH_CONNECTION": "重试Elasticsearch连接",
     "ADMIN_SEARCH_INDICES_NORMALIZE": "试图重新连接Elasticsearch",
     "ADMIN_SEARCH_INDICES_REBUILD": "重建 Elasticsearch 索引"
+  },
+  "toaster": {
+    "give_user_admin": "Succeeded to give {{username}} admin",
+    "remove_user_admin": "Succeeded to remove {{username}} admin ",
+		"activate_user_success": "Succeeded to activating {{username}}",
+		"deactivate_user_success": "Succeeded to deactivate {{username}}",
+    "remove_user_success": "Succeeded to removing {{username}}",
+    "remove_external_user_success": "Succeeded to remove {{accountId}}",
+    "switch_disable_link_sharing_success": "成功更新分享链接设置",
+    "failed_to_reset_password":"Failed to reset password"
   }
 }

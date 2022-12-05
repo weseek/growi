@@ -1,15 +1,19 @@
 import { GrowiFacade, isServer } from '@growi/core';
 import deepmerge from 'ts-deepmerge';
 
-import { CustomWindow } from '~/interfaces/global';
+declare global {
+  // eslint-disable-next-line vars-on-top, no-var
+  var growiFacade: GrowiFacade;
+}
+
 
 export const initializeGrowiFacade = (): void => {
   if (isServer()) {
     return;
   }
 
-  if ((window as CustomWindow).growiFacade == null) {
-    (window as CustomWindow).growiFacade = {};
+  if (window.growiFacade == null) {
+    window.growiFacade = {};
   }
 };
 
@@ -20,7 +24,7 @@ export const getGrowiFacade = (): GrowiFacade => {
 
   initializeGrowiFacade();
 
-  return (window as CustomWindow).growiFacade;
+  return window.growiFacade;
 };
 
 export const registerGrowiFacade = (addedFacade: GrowiFacade): void => {
@@ -28,7 +32,7 @@ export const registerGrowiFacade = (addedFacade: GrowiFacade): void => {
     throw new Error('This method is available only in client.');
   }
 
-  (window as CustomWindow).growiFacade = deepmerge(
+  window.growiFacade = deepmerge(
     getGrowiFacade(),
     addedFacade,
   );

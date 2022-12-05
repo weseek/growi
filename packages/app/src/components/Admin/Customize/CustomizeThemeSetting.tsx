@@ -20,12 +20,14 @@ type Props = {
 const CustomizeThemeSetting = (props: Props): JSX.Element => {
 
   const { adminCustomizeContainer } = props;
-  const { data: currentTheme, mutate: mutateGrowiTheme } = useGrowiTheme();
+  const { data: currentTheme } = useGrowiTheme();
   const { t } = useTranslation();
 
   const selectedHandler = useCallback((themeName) => {
-    mutateGrowiTheme(themeName);
-  }, [mutateGrowiTheme]);
+    // TODO: preview without using mutate of useGrowiTheme
+    // https://github.com/weseek/growi/pull/6860
+    // mutateGrowiTheme(themeName);
+  }, []);
 
   const submitHandler = useCallback(async() => {
     try {
@@ -35,7 +37,7 @@ const CustomizeThemeSetting = (props: Props): JSX.Element => {
         });
       }
 
-      toastSuccess(t('toaster.update_successed', { target: t('admin:customize_setting.theme') }));
+      toastSuccess(t('toaster.update_successed', { target: t('admin:customize_settings.theme'), ns: 'commons' }));
     }
     catch (err) {
       toastError(err);
@@ -45,7 +47,7 @@ const CustomizeThemeSetting = (props: Props): JSX.Element => {
   return (
     <div className="row">
       <div className="col-12">
-        <h2 className="admin-setting-header">{t('admin:customize_setting.theme')}</h2>
+        <h2 className="admin-setting-header">{t('admin:customize_settings.theme')}</h2>
         <CustomizeThemeOptions onSelected={selectedHandler} currentTheme={currentTheme} />
         <AdminUpdateButtonRow onClick={submitHandler} disabled={adminCustomizeContainer.state.retrieveError != null} />
       </div>

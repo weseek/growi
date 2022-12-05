@@ -1,10 +1,11 @@
-import { RefObject } from 'react';
+import { RefObject, useCallback, useEffect } from 'react';
 
 import {
   isClient, isServer, pagePathUtils, Nullable, PageGrant,
 } from '@growi/core';
 import { withUtils, SWRResponseWithUtils } from '@growi/core/src/utils/with-utils';
-import { Breakpoint, addBreakpointListener } from '@growi/ui';
+import { Breakpoint, addBreakpointListener, cleanupBreakpointListener } from '@growi/ui';
+import { HtmlElementNode } from 'rehype-toc';
 import SimpleBar from 'simplebar-react';
 import {
   useSWRConfig, SWRResponse, Key, Fetcher,
@@ -21,10 +22,11 @@ import { UpdateDescCountData } from '~/interfaces/websocket';
 import loggerFactory from '~/utils/logger';
 
 import {
-  useCurrentPageId, useCurrentPagePath, useIsEditable, useIsTrashPage, useIsGuestUser,
-  useIsSharedUser, useIsIdenticalPath, useCurrentUser, useIsNotFound, useShareLinkId,
+  useCurrentPageId, useIsEditable, useIsGuestUser,
+  useIsSharedUser, useIsIdenticalPath, useCurrentUser, useShareLinkId, useIsNotFound,
 } from './context';
 import { localStorageMiddleware } from './middlewares/sync-to-storage';
+import { useCurrentPagePath, useIsTrashPage } from './page';
 import { useStaticSWR } from './use-static-swr';
 
 const { isTrashTopPage, isUsersTopPage } = pagePathUtils;
@@ -45,13 +47,18 @@ export type EditorMode = typeof EditorMode[keyof typeof EditorMode];
 
 
 /** **********************************************************
- *                     Storing RefObjects
+ *                     Storing objects to ref
  *********************************************************** */
 
 export const useSidebarScrollerRef = (initialData?: RefObject<SimpleBar>): SWRResponse<RefObject<SimpleBar>, Error> => {
   return useStaticSWR<RefObject<SimpleBar>, Error>('sidebarScrollerRef', initialData);
 };
 
+export const useCurrentPageTocNode = (): SWRResponse<HtmlElementNode, any> => {
+  const { data: currentPagePath } = useCurrentPagePath();
+
+  return useStaticSWR(['currentPageTocNode', currentPagePath]);
+};
 
 /** **********************************************************
  *                          SWR Hooks
@@ -72,43 +79,44 @@ export const useIsMobile = (): SWRResponse<boolean, Error> => {
   return useStaticSWR<boolean, Error>(key, undefined, configuration);
 };
 
-const updateBodyClassesByEditorMode = (newEditorMode: EditorMode, isSidebar = false) => {
-  const bodyElement = document.getElementsByTagName('body')[0];
-  if (bodyElement == null) {
-    logger.warn('The body tag was not successfully obtained');
-    return;
-  }
-  switch (newEditorMode) {
-    case EditorMode.View:
-      bodyElement.classList.remove('on-edit', 'builtin-editor', 'hackmd', 'editing-sidebar');
-      break;
+const getClassNamesByEditorMode = (editorMode: EditorMode | undefined, isSidebar = false): string[] => {
+  const classNames: string[] = [];
+  switch (editorMode) {
     case EditorMode.Editor:
-      bodyElement.classList.add('on-edit', 'builtin-editor');
-      bodyElement.classList.remove('hackmd');
-      // editing /Sidebar
+      classNames.push('editing', 'builtin-editor');
       if (isSidebar) {
-        bodyElement.classList.add('editing-sidebar');
+        classNames.push('editing-sidebar');
       }
       break;
     case EditorMode.HackMD:
-      bodyElement.classList.add('on-edit', 'hackmd');
-      bodyElement.classList.remove('builtin-editor', 'editing-sidebar');
+      classNames.push('editing', 'hackmd');
       break;
   }
+
+  return classNames;
 };
 
+export const EditorModeHash = {
+  View: '',
+  Edit: '#edit',
+  HackMD: '#hackmd',
+} as const;
+export type EditorModeHash = typeof EditorModeHash[keyof typeof EditorModeHash];
+
+export const isEditorModeHash = (hash: string): hash is EditorModeHash => Object.values<string>(EditorModeHash).includes(hash);
+
 const updateHashByEditorMode = (newEditorMode: EditorMode) => {
-  const { pathname } = window.location;
+  const { pathname, search } = window.location;
 
   switch (newEditorMode) {
     case EditorMode.View:
-      window.history.replaceState(null, '', pathname);
+      window.history.replaceState(null, '', `${pathname}${search}${EditorModeHash.View}`);
       break;
     case EditorMode.Editor:
-      window.history.replaceState(null, '', `${pathname}#edit`);
+      window.history.replaceState(null, '', `${pathname}${search}${EditorModeHash.Edit}`);
       break;
     case EditorMode.HackMD:
-      window.history.replaceState(null, '', `${pathname}#hackmd`);
+      window.history.replaceState(null, '', `${pathname}${search}${EditorModeHash.HackMD}`);
       break;
   }
 };
@@ -121,17 +129,20 @@ export const determineEditorModeByHash = (): EditorMode => {
   const { hash } = window.location;
 
   switch (hash) {
-    case '#edit':
+    case EditorModeHash.Edit:
       return EditorMode.Editor;
-    case '#hackmd':
+    case EditorModeHash.HackMD:
       return EditorMode.HackMD;
     default:
       return EditorMode.View;
   }
 };
 
-let isEditorModeLoaded = false;
-export const useEditorMode = (): SWRResponse<EditorMode, Error> => {
+type EditorModeUtils = {
+  getClassNamesByEditorMode: (isEditingSidebar: boolean) => string[],
+}
+
+export const useEditorMode = (): SWRResponseWithUtils<EditorModeUtils, EditorMode> => {
   const { data: _isEditable } = useIsEditable();
 
   const editorModeByHash = determineEditorModeByHash();
@@ -140,36 +151,31 @@ export const useEditorMode = (): SWRResponse<EditorMode, Error> => {
   const isEditable = !isLoading && _isEditable;
   const initialData = isEditable ? editorModeByHash : EditorMode.View;
 
-  const { data: currentPagePath } = useCurrentPagePath();
-  const isSidebar = currentPagePath === '/Sidebar';
-
-  const swrResponse = useSWRImmutable(
+  const swrResponse = useSWRImmutable<EditorMode>(
     isLoading ? null : ['editorMode', isEditable],
     null,
     { fallbackData: initialData },
   );
 
-  // initial updating
-  if (!isEditorModeLoaded && !isLoading && swrResponse.data != null) {
-    if (isEditable) {
-      updateBodyClassesByEditorMode(swrResponse.data, isSidebar);
+  // construct overriding mutate method
+  const mutateOriginal = swrResponse.mutate;
+  const mutate = useCallback((editorMode: EditorMode, shouldRevalidate?: boolean) => {
+    if (!isEditable) {
+      return Promise.resolve(EditorMode.View); // fixed if not editable
     }
-    isEditorModeLoaded = true;
-  }
+    updateHashByEditorMode(editorMode);
+    return mutateOriginal(editorMode, shouldRevalidate);
+  }, [isEditable, mutateOriginal]);
 
-  return {
-    ...swrResponse,
+  // construct getClassNamesByEditorMode method
+  const getClassNames = useCallback((isEditingSidebar: boolean) => {
+    return getClassNamesByEditorMode(swrResponse.data, isEditingSidebar);
+  }, [swrResponse.data]);
 
-    // overwrite mutate
-    mutate: (editorMode: EditorMode, shouldRevalidate?: boolean) => {
-      if (!isEditable) {
-        return Promise.resolve(EditorMode.View); // fixed if not editable
-      }
-      updateBodyClassesByEditorMode(editorMode, isSidebar);
-      updateHashByEditorMode(editorMode);
-      return swrResponse.mutate(editorMode, shouldRevalidate);
-    },
-  };
+  return Object.assign(swrResponse, {
+    mutate,
+    getClassNamesByEditorMode: getClassNames,
+  });
 };
 
 export const useIsDeviceSmallerThanMd = (): SWRResponse<boolean, Error> => {
@@ -177,21 +183,25 @@ export const useIsDeviceSmallerThanMd = (): SWRResponse<boolean, Error> => {
 
   const { cache, mutate } = useSWRConfig();
 
-  if (isClient()) {
-    const mdOrAvobeHandler = function(this: MediaQueryList): void {
-      // sm -> md: matches will be true
-      // md -> sm: matches will be false
-      mutate(key, !this.matches);
-    };
-    const mql = addBreakpointListener(Breakpoint.MD, mdOrAvobeHandler);
+  useEffect(() => {
+    if (isClient()) {
+      const mdOrAvobeHandler = function(this: MediaQueryList): void {
+        // sm -> md: matches will be true
+        // md -> sm: matches will be false
+        mutate(key, !this.matches);
+      };
+      const mql = addBreakpointListener(Breakpoint.MD, mdOrAvobeHandler);
 
-    // initialize
-    if (cache.get(key) == null) {
-      document.addEventListener('DOMContentLoaded', () => {
+      // initialize
+      if (cache.get(key) == null) {
         mutate(key, !mql.matches);
-      });
+      }
+
+      return () => {
+        cleanupBreakpointListener(mql, mdOrAvobeHandler);
+      };
     }
-  }
+  }, [cache, key, mutate]);
 
   return useStaticSWR(key);
 };
@@ -201,21 +211,25 @@ export const useIsDeviceSmallerThanLg = (): SWRResponse<boolean, Error> => {
 
   const { cache, mutate } = useSWRConfig();
 
-  if (isClient()) {
-    const lgOrAvobeHandler = function(this: MediaQueryList): void {
-      // md -> lg: matches will be true
-      // lg -> md: matches will be false
-      mutate(key, !this.matches);
-    };
-    const mql = addBreakpointListener(Breakpoint.LG, lgOrAvobeHandler);
+  useEffect(() => {
+    if (isClient()) {
+      const lgOrAvobeHandler = function(this: MediaQueryList): void {
+        // md -> lg: matches will be true
+        // lg -> md: matches will be false
+        mutate(key, !this.matches);
+      };
+      const mql = addBreakpointListener(Breakpoint.LG, lgOrAvobeHandler);
 
-    // initialize
-    if (cache.get(key) == null) {
-      document.addEventListener('DOMContentLoaded', () => {
+      // initialize
+      if (cache.get(key) == null) {
         mutate(key, !mql.matches);
-      });
+      }
+
+      return () => {
+        cleanupBreakpointListener(mql, lgOrAvobeHandler);
+      };
     }
-  }
+  }, [cache, key, mutate]);
 
   return useStaticSWR(key);
 };
@@ -391,7 +405,6 @@ export const usePageTreeDescCountMap = (initialData?: UpdateDescCountData): SWRR
   };
 };
 
-
 /** **********************************************************
  *                          SWR Hooks
  *                Determined value by context
@@ -407,18 +420,21 @@ export const useIsAbleToShowTrashPageManagementButtons = (): SWRResponse<boolean
 export const useIsAbleToShowPageManagement = (): SWRResponse<boolean, Error> => {
   const key = 'isAbleToShowPageManagement';
   const { data: currentPageId } = useCurrentPageId();
-  const { data: isTrashPage } = useIsTrashPage();
-  const { data: isSharedUser } = useIsSharedUser();
+  const { data: _isTrashPage } = useIsTrashPage();
+  const { data: _isSharedUser } = useIsSharedUser();
   const { data: isNotFound } = useIsNotFound();
 
   const pageId = currentPageId;
-  const includesUndefined = [pageId, isTrashPage, isSharedUser, isNotFound].some(v => v === undefined);
-  const isPageExist = (pageId != null) && !isNotFound;
-  const isEmptyPage = (pageId != null) && isNotFound;
+  const includesUndefined = [pageId, _isTrashPage, _isSharedUser, isNotFound].some(v => v === undefined);
+  const isPageExist = (pageId != null) && isNotFound === false;
+  const isEmptyPage = (pageId != null) && isNotFound === true;
+  const isTrashPage = isPageExist && _isTrashPage === true;
+  const isSharedUser = isPageExist && _isSharedUser === true;
 
   return useSWRImmutable(
-    includesUndefined ? null : [key, pageId],
-    () => (isPageExist && !isTrashPage && !isSharedUser) || (isEmptyPage != null && isEmptyPage),
+    includesUndefined ? null : [key, pageId, isPageExist, isEmptyPage, isTrashPage, isSharedUser],
+    // eslint-disable-next-line max-len
+    (key: string, pageId: string, isPageExist: boolean, isTrashPage: boolean, isSharedUser: boolean) => (isPageExist && !isTrashPage && !isSharedUser) || isEmptyPage,
   );
 };
 

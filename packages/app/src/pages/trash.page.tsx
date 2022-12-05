@@ -1,25 +1,28 @@
 import React from 'react';
 
-import {
-  IUser, IUserHasId,
-} from '@growi/core';
+import type { IUser, IUserHasId } from '@growi/core';
 import { NextPage, GetServerSideProps, GetServerSidePropsContext } from 'next';
+import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import dynamic from 'next/dynamic';
 
-import { CrowiRequest } from '~/interfaces/crowi-request';
-import { IUserUISettings } from '~/interfaces/user-ui-settings';
-import UserUISettings from '~/server/models/user-ui-settings';
+import { GrowiSubNavigation } from '~/components/Navbar/GrowiSubNavigation';
+import type { CrowiRequest } from '~/interfaces/crowi-request';
+import { ISidebarConfig } from '~/interfaces/sidebar-config';
+import type { IUserUISettings } from '~/interfaces/user-ui-settings';
+import type { UserUISettingsModel } from '~/server/models/user-ui-settings';
+import {
+  useCurrentProductNavWidth, useCurrentSidebarContents, useDrawerMode, usePreferDrawerModeByUser, usePreferDrawerModeOnEditByUser, useSidebarCollapsed,
+} from '~/stores/ui';
 
 import { BasicLayout } from '../components/Layout/BasicLayout';
-import GrowiContextualSubNavigation from '../components/Navbar/GrowiContextualSubNavigation';
 import {
-  useCurrentUser, useCurrentPageId, useCurrentPagePath, useCurrentPathname,
+  useCurrentUser, useCurrentPageId, useCurrentPathname,
   useIsSearchServiceConfigured, useIsSearchServiceReachable,
-  useIsSearchScopeChildrenAsDefault,
+  useIsSearchScopeChildrenAsDefault, useIsSearchPage, useShowPageLimitationXL, useIsGuestUser,
 } from '../stores/context';
 
 import {
-  CommonProps, getServerSideCommonProps, useCustomTitle,
+  CommonProps, getServerSideCommonProps, getNextI18NextConfig, useCustomTitle,
 } from './utils/commons';
 
 const TrashPageList = dynamic(() => import('~/components/TrashPageList').then(mod => mod.TrashPageList), { ssr: false });
@@ -31,7 +34,12 @@ type Props = CommonProps & {
   isSearchServiceConfigured: boolean,
   isSearchServiceReachable: boolean,
   isSearchScopeChildrenAsDefault: boolean,
+  showPageLimitationXL: number,
+
+  // UI
   userUISettings?: IUserUISettings
+  // Sidebar
+  sidebarConfig: ISidebarConfig,
 };
 
 const TrashPage: NextPage<CommonProps> = (props: Props) => {
@@ -41,15 +49,33 @@ const TrashPage: NextPage<CommonProps> = (props: Props) => {
   useIsSearchServiceReachable(props.isSearchServiceReachable);
   useIsSearchScopeChildrenAsDefault(props.isSearchScopeChildrenAsDefault);
 
+  useIsSearchPage(false);
   useCurrentPageId(null);
   useCurrentPathname('/trash');
-  useCurrentPagePath('/trash');
+
+  // UserUISettings
+  usePreferDrawerModeByUser(props.userUISettings?.preferDrawerModeByUser ?? props.sidebarConfig.isSidebarDrawerMode);
+  usePreferDrawerModeOnEditByUser(props.userUISettings?.preferDrawerModeOnEditByUser);
+  useSidebarCollapsed(props.userUISettings?.isSidebarCollapsed ?? props.sidebarConfig.isSidebarClosedAtDockMode);
+  useCurrentSidebarContents(props.userUISettings?.currentSidebarContents);
+  useCurrentProductNavWidth(props.userUISettings?.currentProductNavWidth);
+
+  useShowPageLimitationXL(props.showPageLimitationXL);
+
+  const { data: isDrawerMode } = useDrawerMode();
+  const { data: isGuestUser } = useIsGuestUser();
 
   return (
     <>
       <BasicLayout title={useCustomTitle(props, 'GROWI')} >
         <header className="py-0 position-relative">
-          <GrowiContextualSubNavigation isLinkSharingDisabled={false} />
+          <GrowiSubNavigation
+            pagePath="/trash"
+            showDrawerToggler={isDrawerMode}
+            isGuestUser={isGuestUser}
+            isDrawerMode={isDrawerMode}
+            additionalClasses={['container-fluid']}
+          />
         </header>
 
         <div className="grw-container-convertible mb-5 pb-5">
@@ -66,8 +92,12 @@ const TrashPage: NextPage<CommonProps> = (props: Props) => {
 };
 
 async function injectUserUISettings(context: GetServerSidePropsContext, props: Props): Promise<void> {
+  const { model: mongooseModel } = await import('mongoose');
+
   const req = context.req as CrowiRequest<IUserHasId & any>;
   const { user } = req;
+
+  const UserUISettings = mongooseModel('UserUISettings') as UserUISettingsModel;
   const userUISettings = user == null ? null : await UserUISettings.findOne({ user: user._id }).exec();
 
   if (userUISettings != null) {
@@ -85,6 +115,23 @@ function injectServerConfigurations(context: GetServerSidePropsContext, props: P
   props.isSearchServiceConfigured = searchService.isConfigured;
   props.isSearchServiceReachable = searchService.isReachable;
   props.isSearchScopeChildrenAsDefault = configManager.getConfig('crowi', 'customize:isSearchScopeChildrenAsDefault');
+  props.showPageLimitationXL = crowi.configManager.getConfig('crowi', 'customize:showPageLimitationXL');
+
+  props.sidebarConfig = {
+    isSidebarDrawerMode: configManager.getConfig('crowi', 'customize:isSidebarDrawerMode'),
+    isSidebarClosedAtDockMode: configManager.getConfig('crowi', 'customize:isSidebarClosedAtDockMode'),
+  };
+}
+
+/**
+ * for Server Side Translations
+ * @param context
+ * @param props
+ * @param namespacesRequired
+ */
+async function injectNextI18NextConfigurations(context: GetServerSidePropsContext, props: Props, namespacesRequired?: string[] | undefined): Promise<void> {
+  const nextI18NextConfig = await getNextI18NextConfig(serverSideTranslations, context, namespacesRequired);
+  props._nextI18Next = nextI18NextConfig._nextI18Next;
 }
 
 export const getServerSideProps: GetServerSideProps = async(context: GetServerSidePropsContext) => {
@@ -102,6 +149,7 @@ export const getServerSideProps: GetServerSideProps = async(context: GetServerSi
   }
   await injectUserUISettings(context, props);
   injectServerConfigurations(context, props);
+  await injectNextI18NextConfigurations(context, props, ['translation']);
 
   return {
     props,

@@ -25,6 +25,7 @@ const setupTranspileModules = () => {
     // listing ESM packages until experimental.esmExternals works correctly to avoid ERR_REQUIRE_ESM
     'react-markdown',
     'unified',
+    'markdown-table',
     'character-entities-html4',
     'comma-separated-tokens',
     'decode-named-character-reference',
@@ -46,8 +47,8 @@ const setupTranspileModules = () => {
     ...listPrefixedPackages(['remark-', 'rehype-', 'hast-', 'mdast-', 'micromark-', 'unist-']),
   ];
 
-  logger.info('{bold:Listing scoped packages for transpiling:}');
-  logger.unprefixed('info', `{grey:${JSON.stringify(packages, null, 2)}}`);
+  // logger.info('{bold:Listing scoped packages for transpiling:}');
+  // logger.unprefixed('info', `{grey:${JSON.stringify(packages, null, 2)}}`);
 
   return require('next-transpile-modules')(packages);
 };

@@ -1,27 +1,29 @@
 import React, { ReactNode } from 'react';
 
 import dynamic from 'next/dynamic';
+import { DndProvider } from 'react-dnd';
+import { HTML5Backend } from 'react-dnd-html5-backend';
 
 import { GrowiNavbar } from '../Navbar/GrowiNavbar';
 import Sidebar from '../Sidebar';
 
 import { RawLayout } from './RawLayout';
 
-// const HotkeysManager = dynamic(() => import('../Hotkeys/HotkeysManager'), { ssr: false });
+const AlertSiteUrlUndefined = dynamic(() => import('../AlertSiteUrlUndefined').then(mod => mod.AlertSiteUrlUndefined), { ssr: false });
+const HotkeysManager = dynamic(() => import('../Hotkeys/HotkeysManager'), { ssr: false });
 // const PageCreateModal = dynamic(() => import('../client/js/components/PageCreateModal'), { ssr: false });
-// const GrowiNavbarBottom = dynamic(() => import('../Navbar/GrowiNavbarBottom').then(mod => mod.GrowiNavbarBottom), { ssr: false });
-// const ShortcutsModal = dynamic(() => import('../ShortcutsModal'), { ssr: false });
-// const SystemVersion = dynamic(() => import('../SystemVersion'), { ssr: false });
+const GrowiNavbarBottom = dynamic(() => import('../Navbar/GrowiNavbarBottom').then(mod => mod.GrowiNavbarBottom), { ssr: false });
+const ShortcutsModal = dynamic(() => import('../ShortcutsModal'), { ssr: false });
+const SystemVersion = dynamic(() => import('../SystemVersion'), { ssr: false });
 // Page modals
 const PageCreateModal = dynamic(() => import('../PageCreateModal'), { ssr: false });
-// const PageDuplicateModal = dynamic(() => import('../PageDuplicateModal'), { ssr: false });
+const PageDuplicateModal = dynamic(() => import('../PageDuplicateModal'), { ssr: false });
 const PageDeleteModal = dynamic(() => import('../PageDeleteModal'), { ssr: false });
-// const PageRenameModal = dynamic(() => import('../PageRenameModal'), { ssr: false });
-// const PagePresentationModal = dynamic(() => import('../PagePresentationModal'), { ssr: false });
-// const PageAccessoriesModal = dynamic(() => import('../PageAccessoriesModal'), { ssr: false });
-// const DrawioModal = dynamic(() => import('../PageEditor/DrawioModal').then(mod => mod.DrawioModal), { ssr: false });
+const PageRenameModal = dynamic(() => import('../PageRenameModal'), { ssr: false });
+const PagePresentationModal = dynamic(() => import('../PagePresentationModal'), { ssr: false });
+const PageAccessoriesModal = dynamic(() => import('../PageAccessoriesModal'), { ssr: false });
 // Fab
-// const Fab = dynamic(() => import('../Fab').then(mod => mod.Fab), { ssr: false });
+const Fab = dynamic(() => import('../Fab').then(mod => mod.Fab), { ssr: false });
 
 
 type Props = {
@@ -39,33 +41,38 @@ export const BasicLayout = ({
 
   return (
     <RawLayout title={title} className={myClassName}>
-      <GrowiNavbar />
 
-      <div className="page-wrapper d-flex d-print-block">
-        <div className="grw-sidebar-wrapper">
-          <Sidebar />
+      <DndProvider backend={HTML5Backend}>
+        <GrowiNavbar />
+
+        <div className="page-wrapper d-flex d-print-block">
+          <div className="grw-sidebar-wrapper">
+            <Sidebar />
+          </div>
+
+          <div className="flex-fill mw-0" style={{ position: 'relative' }}>
+            <AlertSiteUrlUndefined />
+            {children}
+          </div>
         </div>
 
-        <div className="flex-fill mw-0" style={{ position: 'relative' }}>
-          {children}
-        </div>
-      </div>
+        <GrowiNavbarBottom />
 
-      {/* <GrowiNavbarBottom /> */}
+        <PageCreateModal />
+        <PageDuplicateModal />
+        <PageDeleteModal />
+        <PageRenameModal />
+        <PagePresentationModal />
+        <PageAccessoriesModal />
+      </DndProvider>
 
-      <PageCreateModal />
-      {/* <PageDuplicateModal /> */}
-      <PageDeleteModal />
-      {/* <PageRenameModal /> */}
-      {/* <PagePresentationModal /> */}
-      {/* <PageAccessoriesModal /> */}
-      {/* <DrawioModal /> */}
-      {/* <HotkeysManager /> */}
+      <PagePresentationModal />
+      <HotkeysManager />
 
-      {/* <Fab /> */}
+      <Fab />
 
-      {/* <ShortcutsModal /> */}
-      {/* <SystemVersion showShortcutsButton /> */}
+      <ShortcutsModal />
+      <SystemVersion showShortcutsButton />
     </RawLayout>
   );
 };

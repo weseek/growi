@@ -1,7 +1,8 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 
 import { format } from 'date-fns';
+import PropTypes from 'prop-types';
+
 
 /**
  * UserDate
@@ -15,7 +16,7 @@ export default class UserDate extends React.Component {
     const dt = format(date, this.props.format);
 
     return (
-      <span className={this.props.className}>
+      <span className={this.props.className} data-hide-in-vrt>
         {dt}
       </span>
     );

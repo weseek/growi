@@ -1,6 +1,5 @@
 import React from 'react';
 
-
 import {
   NextPage, GetServerSideProps, GetServerSidePropsContext,
 } from 'next';
@@ -8,20 +7,21 @@ import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 
 import { NoLoginLayout } from '~/components/Layout/NoLoginLayout';
 import { LoginForm } from '~/components/LoginForm';
-import { CrowiRequest } from '~/interfaces/crowi-request';
+import type { CrowiRequest } from '~/interfaces/crowi-request';
+import { IExternalAccountLoginError, isExternalAccountLoginError } from '~/interfaces/errors/external-account-login-error';
+import type { RegistrationMode } from '~/interfaces/registration-mode';
 
 import {
   useCsrfToken,
   useCurrentPathname,
 } from '../stores/context';
 
-
 import {
   CommonProps, getServerSideCommonProps, useCustomTitle, getNextI18NextConfig,
 } from './utils/commons';
 
 type Props = CommonProps & {
-
+  registrationMode: RegistrationMode,
   pageWithMetaStr: string,
   isMailerSetup: boolean,
   enabledStrategies: unknown,
@@ -29,6 +29,9 @@ type Props = CommonProps & {
   isLocalStrategySetup: boolean,
   isLdapStrategySetup: boolean,
   isLdapSetupFailed: boolean,
+  isPasswordResetEnabled: boolean,
+  isEmailAuthenticationEnabled: boolean,
+  externalAccountLoginError?: IExternalAccountLoginError,
 };
 
 const LoginPage: NextPage<Props> = (props: Props) => {
@@ -44,16 +47,16 @@ const LoginPage: NextPage<Props> = (props: Props) => {
   return (
     <NoLoginLayout title={useCustomTitle(props, 'GROWI')} className={classNames.join(' ')}>
       <LoginForm
-        // Todo: These props should be set properly. https://redmine.weseek.co.jp/issues/104847
         objOfIsExternalAuthEnableds={props.enabledStrategies}
         isLocalStrategySetup={props.isLocalStrategySetup}
         isLdapStrategySetup={props.isLdapStrategySetup}
         isLdapSetupFailed={props.isLdapSetupFailed}
-        isEmailAuthenticationEnabled={false}
-        isRegistrationEnabled={true}
+        isEmailAuthenticationEnabled={props.isEmailAuthenticationEnabled}
         registrationWhiteList={props.registrationWhiteList}
-        isPasswordResetEnabled={true}
-        isMailerSetup={false}
+        isPasswordResetEnabled={props.isPasswordResetEnabled}
+        isMailerSetup={props.isMailerSetup}
+        registrationMode={props.registrationMode}
+        externalAccountLoginError={props.externalAccountLoginError}
       />
     </NoLoginLayout>
   );
@@ -82,7 +85,7 @@ function injectEnabledStrategies(context: GetServerSidePropsContext, props: Prop
     github: configManager.getConfig('crowi', 'security:passport-github:isEnabled'),
     facebook: false,
     twitter: configManager.getConfig('crowi', 'security:passport-twitter:isEnabled'),
-    smal: configManager.getConfig('crowi', 'security:passport-saml:isEnabled'),
+    saml: configManager.getConfig('crowi', 'security:passport-saml:isEnabled'),
     oidc: configManager.getConfig('crowi', 'security:passport-oidc:isEnabled'),
     basic: configManager.getConfig('crowi', 'security:passport-basic:isEnabled'),
   };
@@ -99,11 +102,14 @@ async function injectServerConfigurations(context: GetServerSidePropsContext, pr
     passportService,
   } = crowi;
 
+  props.isPasswordResetEnabled = crowi.configManager.getConfig('crowi', 'security:passport-local:isPasswordResetEnabled');
   props.isMailerSetup = mailService.isMailerSetup;
   props.isLocalStrategySetup = passportService.isLocalStrategySetup;
   props.isLdapStrategySetup = passportService.isLdapStrategySetup;
   props.isLdapSetupFailed = configManager.getConfig('crowi', 'security:passport-ldap:isEnabled') && !props.isLdapStrategySetup;
   props.registrationWhiteList = configManager.getConfig('crowi', 'security:registrationWhiteList');
+  props.isEmailAuthenticationEnabled = configManager.getConfig('crowi', 'security:passport-local:isEmailAuthenticationEnabled');
+  props.registrationMode = configManager.getConfig('crowi', 'security:registrationMode');
 }
 
 export const getServerSideProps: GetServerSideProps = async(context: GetServerSidePropsContext) => {
@@ -116,6 +122,13 @@ export const getServerSideProps: GetServerSideProps = async(context: GetServerSi
   }
 
   const props: Props = result.props as Props;
+
+  if (context.query.externalAccountLoginError != null) {
+    const externalAccountLoginError = context.query.externalAccountLoginError;
+    if (isExternalAccountLoginError(externalAccountLoginError)) {
+      props.externalAccountLoginError = { ...externalAccountLoginError as IExternalAccountLoginError };
+    }
+  }
 
   injectServerConfigurations(context, props);
   injectEnabledStrategies(context, props);

@@ -5,15 +5,15 @@ import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import dynamic from 'next/dynamic';
 import Head from 'next/head';
 
-import { BasicLayout } from '~/components/Layout/BasicLayout';
-import { CrowiRequest } from '~/interfaces/crowi-request';
-import { RendererConfig } from '~/interfaces/services/renderer';
-import { ISidebarConfig } from '~/interfaces/sidebar-config';
-import { IUser, IUserHasId } from '~/interfaces/user';
-import { IUserUISettings } from '~/interfaces/user-ui-settings';
-import UserUISettings from '~/server/models/user-ui-settings';
+import { DrawioViewerScript } from '~/components/Script/DrawioViewerScript';
+import type { CrowiRequest } from '~/interfaces/crowi-request';
+import type { RendererConfig } from '~/interfaces/services/renderer';
+import type { ISidebarConfig } from '~/interfaces/sidebar-config';
+import type { IUser, IUserHasId } from '~/interfaces/user';
+import type { IUserUISettings } from '~/interfaces/user-ui-settings';
+import type { UserUISettingsModel } from '~/server/models/user-ui-settings';
 import {
-  useCsrfToken, useCurrentUser, useIsSearchPage, useIsSearchScopeChildrenAsDefault,
+  useCsrfToken, useCurrentUser, useDrawioUri, useIsSearchPage, useIsSearchScopeChildrenAsDefault,
   useIsSearchServiceConfigured, useIsSearchServiceReachable, useRendererConfig,
 } from '~/stores/context';
 import {
@@ -33,6 +33,8 @@ type Props = CommonProps & {
   isSearchServiceConfigured: boolean,
   isSearchServiceReachable: boolean,
   isSearchScopeChildrenAsDefault: boolean,
+
+  drawioUri: string | null,
 
   // UI
   userUISettings?: IUserUISettings
@@ -60,6 +62,8 @@ const PrivateLegacyPage: NextPage<Props> = (props: Props) => {
   useIsSearchServiceReachable(props.isSearchServiceReachable);
   useIsSearchScopeChildrenAsDefault(props.isSearchScopeChildrenAsDefault);
 
+  useDrawioUri(props.drawioUri);
+
   // UserUISettings
   usePreferDrawerModeByUser(userUISettings?.preferDrawerModeByUser ?? props.sidebarConfig.isSidebarDrawerMode);
   usePreferDrawerModeOnEditByUser(userUISettings?.preferDrawerModeOnEditByUser);
@@ -79,6 +83,8 @@ const PrivateLegacyPage: NextPage<Props> = (props: Props) => {
         */}
       </Head>
 
+      <DrawioViewerScript />
+
       <SearchResultLayout title={useCustomTitle(props, 'GROWI')}>
         <div id="private-regacy-pages">
           <PrivateLegacyPages />
@@ -89,9 +95,12 @@ const PrivateLegacyPage: NextPage<Props> = (props: Props) => {
 };
 
 async function injectUserUISettings(context: GetServerSidePropsContext, props: Props): Promise<void> {
+  const { model: mongooseModel } = await import('mongoose');
+
   const req = context.req as CrowiRequest<IUserHasId & any>;
   const { user } = req;
 
+  const UserUISettings = mongooseModel('UserUISettings') as UserUISettingsModel;
   const userUISettings = user == null ? null : await UserUISettings.findOne({ user: user._id }).exec();
   if (userUISettings != null) {
     props.userUISettings = userUISettings.toObject();
@@ -106,6 +115,8 @@ async function injectServerConfigurations(context: GetServerSidePropsContext, pr
   props.isSearchServiceConfigured = searchService.isConfigured;
   props.isSearchServiceReachable = searchService.isReachable;
   props.isSearchScopeChildrenAsDefault = configManager.getConfig('crowi', 'customize:isSearchScopeChildrenAsDefault');
+
+  props.drawioUri = configManager.getConfig('crowi', 'app:drawioUri');
 
   props.sidebarConfig = {
     isSidebarDrawerMode: configManager.getConfig('crowi', 'customize:isSidebarDrawerMode'),

@@ -1,29 +1,37 @@
 import React, { useEffect } from 'react';
 
+import { isServer } from '@growi/core';
 import { appWithTranslation } from 'next-i18next';
 import { AppProps } from 'next/app';
-import { DndProvider } from 'react-dnd';
-import { HTML5Backend } from 'react-dnd-html5-backend';
-
-import '~/styles/style-next.scss';
-import '~/styles/style-themes.scss';
-// import InterceptorManager from '~/service/interceptor-manager';
+import { SWRConfig } from 'swr';
 
 import * as nextI18nConfig from '^/config/next-i18next.config';
 
 import { ActivatePluginService } from '~/client/services/activate-plugin';
-import { NextThemesProvider } from '~/stores/use-next-themes';
-
-import { useI18nextHMR } from '../services/i18next-hmr';
+import { useI18nextHMR } from '~/services/i18next-hmr';
 import {
-  useAppTitle, useConfidential, useGrowiTheme, useGrowiVersion, useSiteUrl,
-} from '../stores/context';
+  useAppTitle, useConfidential, useGrowiTheme, useGrowiVersion, useSiteUrl, useCustomizedLogoSrc,
+} from '~/stores/context';
+import { SWRConfigValue, swrGlobalConfiguration } from '~/utils/swr-utils';
+
 
 import { CommonProps } from './utils/commons';
 import { registerTransformerForObjectId } from './utils/objectid-transformer';
-// import { useInterceptorManager } from '~/stores/interceptor';
+
+import '~/styles/style-next.scss';
+import '~/styles/style-themes.scss';
+
 
 const isDev = process.env.NODE_ENV === 'development';
+
+const swrConfig: SWRConfigValue = {
+  ...swrGlobalConfiguration,
+  // set the request scoped cache provider in server
+  provider: isServer()
+    ? cache => new Map(cache)
+    : undefined,
+};
+
 
 type GrowiAppProps = AppProps & {
   pageProps: CommonProps;
@@ -42,6 +50,7 @@ function GrowiApp({ Component, pageProps }: GrowiAppProps): JSX.Element {
     ActivatePluginService.activateAll();
   }, []);
 
+
   const commonPageProps = pageProps as CommonProps;
   // useInterceptorManager(new InterceptorManager());
   useAppTitle(commonPageProps.appTitle);
@@ -49,13 +58,12 @@ function GrowiApp({ Component, pageProps }: GrowiAppProps): JSX.Element {
   useConfidential(commonPageProps.confidential);
   useGrowiTheme(commonPageProps.theme);
   useGrowiVersion(commonPageProps.growiVersion);
+  useCustomizedLogoSrc(commonPageProps.customizedLogoSrc);
 
   return (
-    <NextThemesProvider>
-      <DndProvider backend={HTML5Backend}>
-        <Component {...pageProps} />
-      </DndProvider>
-    </NextThemesProvider>
+    <SWRConfig value={swrConfig}>
+      <Component {...pageProps} />
+    </SWRConfig>
   );
 }
 
