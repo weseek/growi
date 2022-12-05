@@ -112,7 +112,7 @@ const SmallPageItem = memo(({ page }: PageItemProps): JSX.Element => {
   }
 
   return (
-    <li className="list-group-item py-2 px-0">
+    <li className={`list-group-item ${styles['list-group-item']} py-2 px-0`}>
       <div className="d-flex w-100">
         <UserPicture user={page.lastUpdateUser} size="md" noTooltip />
         <div className="flex-grow-1 ml-2">
