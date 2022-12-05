@@ -49,6 +49,7 @@ describe('Install', () => {
 
     // Redirects to the root page take a long time (more than 10000ms)
     cy.waitUntilSkeletonDisappear();
+    cy.getByTestid('grw-pagetree-item-container').should('be.visible');
     cy.screenshot(`${ssPrefix}-installed-redirect-to-root-page`, {
       blackout: ['[data-hide-in-vrt=true]']
     });
