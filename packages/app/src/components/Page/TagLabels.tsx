@@ -37,7 +37,7 @@ export const TagLabels:FC<Props> = (props: Props) => {
   return (
     <>
       <div className={`${styles['grw-tag-labels']} grw-tag-labels d-flex align-items-center`} data-testid="grw-tag-labels">
-        <span className="icon-tag" />
+        <i className="tag-icon icon-tag mr-2"></i>
         <RenderTagLabels
           tags={tags}
           openEditorModal={openEditorModal}

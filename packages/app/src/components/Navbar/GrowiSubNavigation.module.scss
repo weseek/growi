@@ -119,18 +119,19 @@
         isolation: isolate;
       }
     }
-
-    .btn-copy,
-    .btn-edit-tags:hover {
-      // change button opacity
-      opacity: unset;
-    }
   }
 
   &:global {
     /*
      * Compact Mode
      */
+    &:hover {
+      .btn-copy,
+      .btn-edit-tags {
+        // change button opacity
+        opacity: unset;
+      }
+    }
     &.grw-subnav-compact {
       min-height: 70px;
 
