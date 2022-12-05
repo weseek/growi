@@ -79,7 +79,7 @@ module.exports = function(crowi, app) {
 
   app.get('/login/error/:reason'      , applicationInstalled, login.error);
   app.get('/login'                    , applicationInstalled, login.preLogin, next.delegateToNext);
-  app.get('/invited'                  , applicationInstalled, next.delegateToNext);
+  app.get('/invited'                  , applicationInstalled, login.preLogin,  next.delegateToNext);
   // app.post('/login'                   , applicationInstalled, loginFormValidator.loginRules(), loginFormValidator.loginValidation, csrfProtection,  addActivity, loginPassport.loginWithLocal, loginPassport.loginWithLdap, loginPassport.loginFailure);
 
   app.get('/register'                 , applicationInstalled, login.preLogin, login.register);
