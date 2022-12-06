@@ -15,7 +15,7 @@ context('Access to page', () => {
     cy.waitUntilSkeletonDisappear();
 
     // for check download toc data
-    cy.get('.toc-link').should('be.visible');
+    cy.get('.toc-link').eq(0).contains('Table of Contents');
 
     cy.screenshot(`${ssPrefix}-sandbox`);
   });
@@ -59,8 +59,11 @@ context('Access to page', () => {
       cy.wait(2000);
       cy.getByTestid('editor-button').should('be.visible').click();
     })
+
     cy.getByTestid('navbar-editor').should('be.visible');
     cy.get('.grw-editor-navbar-bottom').should('be.visible');
+    cy.getByTestid('save-page-btn').should('be.visible');
+    cy.get('.grw-grant-selector').should('be.visible')
 
     cy.screenshot(`${ssPrefix}-Sandbox-edit-page`);
   })
@@ -95,8 +98,9 @@ context('Access to /me page', () => {
 
   it('/me is successfully loaded', () => {
     cy.visit('/me');
-    // eslint-disable-next-line cypress/no-unnecessary-waiting
-    cy.wait(500); // wait loading image
+
+    cy.getByTestid('grw-user-settings').should('be.visible');
+
     cy.screenshot(`${ssPrefix}-me`);
   });
 

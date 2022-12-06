@@ -38,10 +38,12 @@ context('Modal for page operation', () => {
 
     cy.getByTestid('newPageBtn').click();
 
+    // eslint-disable-next-line cypress/no-unnecessary-waiting
+    cy.wait(500) // Wait for animation to finish when the Create Page button is pressed
+
     cy.getByTestid('page-create-modal').should('be.visible').within(() => {
       cy.screenshot(`${ssPrefix}new-page-modal-opened`);
       cy.get('button.close').click();
-
     });
     cy.screenshot(`${ssPrefix}page-create-modal-closed`);
   });
@@ -82,6 +84,7 @@ context('Modal for page operation', () => {
     cy.getByTestid('newPageBtn').click();
 
     cy.getByTestid('page-create-modal').should('be.visible').within(() => {
+      cy.get('.rbt-input-main').should('have.value', '/Sandbox/');
       cy.get('.rbt-input-main').type(pageName);
       cy.screenshot(`${ssPrefix}under-path-add-page-name`);
       cy.getByTestid('btn-create-page-under-below').click();
@@ -230,16 +233,13 @@ context('Page Accessories Modal', () => {
      cy.waitUntilSkeletonDisappear();
 
      cy.get('#grw-subnav-container').within(() => {
-      cy.getByTestid('open-page-item-control-btn').should('be.visible');
       cy.getByTestid('open-page-item-control-btn').within(() => {
         cy.get('button.btn-page-item-control').click({force: true});
-        cy.getByTestid('page-item-control-menu').should('be.visible');
-        cy.getByTestid('open-page-accessories-modal-btn-with-attachment-data-tab').click();
       });
+      cy.getByTestid('open-page-accessories-modal-btn-with-attachment-data-tab').click({force: true});
     });
 
-     cy.getByTestid('page-accessories-modal').should('be.visible')
-     cy.getByTestid('page-attachment').should('be.visible')
+     cy.getByTestid('page-attachment').should('be.visible').contains('No attachments yet.');
      cy.screenshot(`${ssPrefix}-open-page-attachment-data-bootstrap4`);
   });
 
@@ -317,19 +317,13 @@ context('Tag Oprations', { scrollBehavior: false }, () =>{
     cy.visit('/Sandbox');
     cy.waitUntilSkeletonDisappear();
 
-    cy.get('.grw-taglabels-container').within(()=>{
-      cy.get('.grw-tag-labels').within(()=>{
-        cy.get('a').then(($el)=>{
-          cy.wrap($el).contains(tag).click();
-        });
-      });
-    });
+    cy.get('.grw-tag-label').should('be.visible').contains(tag).click();
 
     // Search result page
     cy.getByTestid('search-result-base').should('be.visible');
     cy.getByTestid('search-result-list').should('be.visible');
-    cy.getByTestid('search-result-content').should('be.visible');
-    cy.get('#revision-loader').should('be.visible');
+    cy.getByTestid('search-result-content', { timeout: 60000 }).should('be.visible');
+    cy.get('#revision-loader', { timeout: 60000 }).contains('Table of Contents', { timeout: 60000 });
 
     // force to add 'active' to pass VRT: https://github.com/weseek/growi/pull/6603
     cy.getByTestid('page-list-item-L').first().invoke('addClass', 'active');
@@ -355,7 +349,10 @@ context('Tag Oprations', { scrollBehavior: false }, () =>{
     }).screenshot(`${ssPrefix}3-duplicate-page`);
 
     cy.getByTestid('page-duplicate-modal').within(() => {
+      cy.intercept('POST', '/_api/v3/pages/duplicate').as('duplicate');
       cy.get('.modal-footer > button.btn').click();
+      // Wait for completion of request to '/_api/v3/pages/duplicate'
+      cy.wait('@duplicate')
     });
 
     cy.visit(`Sandbox-${newPageName}`);
@@ -369,15 +366,16 @@ context('Tag Oprations', { scrollBehavior: false }, () =>{
     const oldPageName = '/Sandbox-our';
     const newPageName = '/Sandbox-us';
 
-    cy.visit('/Sandbox-our');
+    cy.visit(oldPageName);
     cy.waitUntilSkeletonDisappear();
 
-    // Search result page
     cy.get('.grw-tag-label').should('be.visible').contains(tag).click();
+
+    // Search result page
     cy.getByTestid('search-result-base').should('be.visible');
     cy.getByTestid('search-result-list').should('be.visible');
-    cy.getByTestid('search-result-content').should('be.visible');
-    cy.get('#revision-loader').should('be.visible');
+    cy.getByTestid('search-result-content', { timeout: 60000 }).should('be.visible');
+    cy.get('#revision-loader', { timeout: 60000 }).contains('Table of Contents', { timeout: 60000 });
 
     // eslint-disable-next-line cypress/no-unnecessary-waiting
     cy.wait(300);
@@ -417,7 +415,10 @@ context('Tag Oprations', { scrollBehavior: false }, () =>{
     }).screenshot(`${ssPrefix}3-insert-new-page-name`);
 
     cy.getByTestid('page-rename-modal').should('be.visible').within(() => {
-      cy.get('.modal-footer > button').click();
+      cy.intercept('PUT', '/_api/v3/pages/rename').as('rename');
+      cy.getByTestid('grw-page-rename-button').should('not.be.disabled').click();
+      // Wait for completion of request to '/_api/v3/pages/rename'
+      cy.wait('@rename')
     });
 
     cy.visit(newPageName);
@@ -425,5 +426,52 @@ context('Tag Oprations', { scrollBehavior: false }, () =>{
 
     cy.getByTestid('grw-tag-labels').should('be.visible')
     cy.screenshot(`${ssPrefix}4-new-page-name-applied`);
+  });
+});
+
+context('Shortcuts', () => {
+  const ssPrefix = 'shortcuts';
+
+  beforeEach(() => {
+    // login
+    cy.fixture("user-admin.json").then(user => {
+      cy.login(user.username, user.password);
+    });
+  });
+
+  it('Successfully updating a page using a shortcut on a previously created page', () => {
+    const body1 = 'hello';
+    const body2 = 'world';
+    const savePageShortcutKey = '{ctrl+s}'
+
+    cy.visit('/Sandbox/child');
+    cy.waitUntilSkeletonDisappear();
+
+    cy.get('#grw-subnav-container').within(() => {
+      cy.getByTestid('editor-button').should('be.visible').click();
+    })
+
+    cy.get('.layout-root').should('have.class', 'editing');
+    cy.get('.grw-editor-navbar-bottom').should('be.visible');
+
+    // 1st
+    cy.get('.CodeMirror').type(body1);
+    cy.get('.CodeMirror').contains(body1);
+    cy.get('.page-editor-preview-body').contains(body1);
+    cy.get('.CodeMirror').type(savePageShortcutKey);
+
+    cy.get('.toast').should('be.visible').trigger('mouseover');
+    cy.screenshot(`${ssPrefix}-update-page-1`);
+    cy.get('.toast-close-button').click();
+    cy.get('.toast').should('not.exist');
+
+    // 2nd
+    cy.get('.CodeMirror').type(body2);
+    cy.get('.CodeMirror').contains(body2);
+    cy.get('.page-editor-preview-body').contains(body2);
+    cy.get('.CodeMirror').type(savePageShortcutKey);
+
+    cy.get('.toast').should('be.visible').trigger('mouseover');
+    cy.screenshot(`${ssPrefix}-update-page-2`);
   });
 });

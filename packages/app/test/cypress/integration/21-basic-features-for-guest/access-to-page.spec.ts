@@ -25,6 +25,7 @@ context('Access to page by guest', () => {
 
   it('/Sandbox/Math is successfully loaded', () => {
     cy.visit('/Sandbox/Math');
+    cy.getByTestid('revision-toc-content').should('be.visible');
     cy.collapseSidebar(true, true);
 
     cy.get('.math').should('be.visible');
