@@ -527,7 +527,6 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
         isOpen && hasChildren() && currentChildren.map((node, index) => (
           <div key={node.page._id} className="grw-pagetree-item-children">
             <Item
-              key={node.page.path}
               isEnableActions={isEnableActions}
               itemNode={node}
               isOpen={false}
