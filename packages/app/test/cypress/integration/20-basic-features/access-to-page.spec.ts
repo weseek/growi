@@ -11,27 +11,33 @@ context('Access to page', () => {
   });
 
   it('/Sandbox is successfully loaded', () => {
-    cy.visit('/Sandbox', {  });
-    cy.screenshot(`${ssPrefix}-sandbox`);
-  });
-
-  it('/Sandbox with anchor hash is successfully loaded', () => {
-    cy.visit('/Sandbox#Headers');
+    cy.visit('/Sandbox');
     cy.waitUntilSkeletonDisappear();
 
     // for check download toc data
-    cy.get('.toc-link').should('be.visible');
+    cy.get('.toc-link').eq(0).contains('Table of Contents');
 
-    // hide fab // disable fab for sticky-events warning
-    // cy.getByTestid('grw-fab-container').invoke('attr', 'style', 'display: none');
-
-    // remove animation for screenshot
-    // remove 'blink' class because ::after element cannot be operated
-    // https://stackoverflow.com/questions/5041494/selecting-and-manipulating-css-pseudo-elements-such-as-before-and-after-usin/21709814#21709814
-    cy.get('#mdcont-headers').invoke('removeClass', 'blink');
-
-    cy.screenshot(`${ssPrefix}-sandbox-headers`);
+    cy.screenshot(`${ssPrefix}-sandbox`);
   });
+
+  // TODO: https://redmine.weseek.co.jp/issues/109939
+  // it('/Sandbox with anchor hash is successfully loaded', () => {
+  //   cy.visit('/Sandbox#Headers');
+  //   cy.waitUntilSkeletonDisappear();
+
+  //   // for check download toc data
+  //   cy.get('.toc-link').should('be.visible');
+
+  //   // hide fab // disable fab for sticky-events warning
+  //   // cy.getByTestid('grw-fab-container').invoke('attr', 'style', 'display: none');
+
+  //   // remove animation for screenshot
+  //   // remove 'blink' class because ::after element cannot be operated
+  //   // https://stackoverflow.com/questions/5041494/selecting-and-manipulating-css-pseudo-elements-such-as-before-and-after-usin/21709814#21709814
+  //   cy.get('#mdcont-headers').invoke('removeClass', 'blink');
+
+  //   cy.screenshot(`${ssPrefix}-sandbox-headers`);
+  // });
 
   it('/Sandbox/Math is successfully loaded', () => {
     cy.visit('/Sandbox/Math');
@@ -47,18 +53,23 @@ context('Access to page', () => {
     cy.visit('/Sandbox');
     cy.waitUntilSkeletonDisappear();
 
-    cy.get('#grw-subnav-container', { timeout: 30000 }).should('be.visible').within(() => {
+    cy.get('#grw-subnav-container').should('be.visible').within(() => {
 
       // eslint-disable-next-line cypress/no-unnecessary-waiting
       cy.wait(2000);
-      cy.getByTestid('editor-button', { timeout: 30000 }).should('be.visible').click();
+      cy.getByTestid('editor-button').should('be.visible').click();
     })
-    cy.getByTestid('navbar-editor', { timeout: 30000 }).should('be.visible');
+
+    cy.getByTestid('navbar-editor').should('be.visible');
+    cy.get('.grw-editor-navbar-bottom').should('be.visible');
+    cy.getByTestid('save-page-btn').should('be.visible');
+    cy.get('.grw-grant-selector').should('be.visible')
+
     cy.screenshot(`${ssPrefix}-Sandbox-edit-page`);
   })
 
   it('/user/admin is successfully loaded', () => {
-    cy.visit('/user/admin', {  });
+    cy.visit('/user/admin');
 
     cy.waitUntilSkeletonDisappear();
     // for check download toc data
@@ -86,9 +97,10 @@ context('Access to /me page', () => {
   });
 
   it('/me is successfully loaded', () => {
-    cy.visit('/me', {  });
-    // eslint-disable-next-line cypress/no-unnecessary-waiting
-    cy.wait(500); // wait loading image
+    cy.visit('/me');
+
+    cy.getByTestid('grw-user-settings').should('be.visible');
+
     cy.screenshot(`${ssPrefix}-me`);
   });
 
@@ -98,8 +110,6 @@ context('Access to /me page', () => {
   // });
 
 });
-
-
 
 context('Access to special pages', () => {
   const ssPrefix = 'access-to-special-pages-';
@@ -114,8 +124,10 @@ context('Access to special pages', () => {
   });
 
   it('/trash is successfully loaded', () => {
-    cy.visit('/trash', {  });
-    cy.getByTestid('trash-page-list').should('be.visible');
+    cy.visit('/trash');
+
+    cy.getByTestid('trash-page-list').contains('There are no pages under this page.');
+
     cy.screenshot(`${ssPrefix}-trash`);
   });
 
@@ -226,12 +238,12 @@ context('Access to /me/all-in-app-notifications', () => {
     cy.getByTestid('grw-in-app-notification-page').should('be.visible');
     cy.getByTestid('grw-in-app-notification-page-spinner').should('not.exist');
 
-    cy.screenshot(`${ssPrefix}-see-all`, { capture: 'viewport' });
+    cy.screenshot(`${ssPrefix}-see-all`);
 
     cy.get('.grw-custom-nav-tab > div > ul > li:nth-child(2) > a').click();
     cy.getByTestid('grw-in-app-notification-page-spinner').should('not.exist');
 
-    cy.screenshot(`${ssPrefix}-see-unread`, { capture: 'viewport' });
+    cy.screenshot(`${ssPrefix}-see-unread`);
    });
 
 })

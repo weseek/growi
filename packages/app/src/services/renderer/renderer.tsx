@@ -1,9 +1,10 @@
 // allow only types to import from react
 import { ComponentType } from 'react';
 
-import { Lsx } from '@growi/plugin-lsx/components';
-import * as lsxGrowiPlugin from '@growi/plugin-lsx/services/renderer';
+import * as drawioPlugin from '@growi/remark-drawio-plugin';
 import growiPlugin from '@growi/remark-growi-plugin';
+import { Lsx, LsxImmutable } from '@growi/remark-lsx/components';
+import * as lsxGrowiPlugin from '@growi/remark-lsx/services/renderer';
 import { Schema as SanitizeOption } from 'hast-util-sanitize';
 import { SpecialComponents } from 'react-markdown/lib/ast-to-react';
 import { NormalComponents } from 'react-markdown/lib/complex-types';
@@ -22,8 +23,11 @@ import { PluggableList, Pluggable, PluginTuple } from 'unified';
 
 
 import { CodeBlock } from '~/components/ReactMarkdownComponents/CodeBlock';
+import { DrawioViewerWithEditButton } from '~/components/ReactMarkdownComponents/DrawioViewerWithEditButton';
 import { Header } from '~/components/ReactMarkdownComponents/Header';
 import { NextLink } from '~/components/ReactMarkdownComponents/NextLink';
+import { Table } from '~/components/ReactMarkdownComponents/Table';
+import { TableWithEditButton } from '~/components/ReactMarkdownComponents/TableWithEditButton';
 import { RendererConfig } from '~/interfaces/services/renderer';
 import loggerFactory from '~/utils/logger';
 
@@ -35,6 +39,7 @@ import { relativeLinksByPukiwikiLikeLinker } from './rehype-plugins/relative-lin
 import * as toc from './rehype-plugins/relocate-toc';
 import * as plantuml from './remark-plugins/plantuml';
 import { pukiwikiLikeLinker } from './remark-plugins/pukiwiki-like-linker';
+import * as table from './remark-plugins/table';
 import * as xsvToTable from './remark-plugins/xsv-to-table';
 
 // import CsvToTable from './PreProcessor/CsvToTable';
@@ -320,6 +325,7 @@ export const generateViewOptions = (
   remarkPlugins.push(
     math,
     [plantuml.remarkPlugin, { baseUrl: config.plantumlUri }],
+    drawioPlugin.remarkPlugin,
     xsvToTable.remarkPlugin,
     lsxGrowiPlugin.remarkPlugin,
   );
@@ -333,6 +339,7 @@ export const generateViewOptions = (
     [lsxGrowiPlugin.rehypePlugin, { pagePath }],
     [sanitize, deepmerge(
       commonSanitizeOption,
+      drawioPlugin.sanitizeOption,
       lsxGrowiPlugin.sanitizeOption,
     )],
     katex,
@@ -347,7 +354,9 @@ export const generateViewOptions = (
     components.h1 = Header;
     components.h2 = Header;
     components.h3 = Header;
-    components.lsx = props => <Lsx {...props} forceToFetchData />;
+    components.lsx = Lsx;
+    components.drawio = DrawioViewerWithEditButton;
+    components.table = TableWithEditButton;
   }
 
   // // Add configurers for viewer
@@ -397,8 +406,10 @@ export const generateSimpleViewOptions = (config: RendererConfig, pagePath: stri
   remarkPlugins.push(
     math,
     [plantuml.remarkPlugin, { baseUrl: config.plantumlUri }],
+    drawioPlugin.remarkPlugin,
     xsvToTable.remarkPlugin,
     lsxGrowiPlugin.remarkPlugin,
+    table.remarkPlugin,
   );
   if (config.isEnabledLinebreaks) {
     remarkPlugins.push(breaks);
@@ -410,6 +421,7 @@ export const generateSimpleViewOptions = (config: RendererConfig, pagePath: stri
     [keywordHighlighter.rehypePlugin, { keywords: highlightKeywords }],
     [sanitize, deepmerge(
       commonSanitizeOption,
+      drawioPlugin.sanitizeOption,
       lsxGrowiPlugin.sanitizeOption,
     )],
     katex,
@@ -417,7 +429,9 @@ export const generateSimpleViewOptions = (config: RendererConfig, pagePath: stri
 
   // add components
   if (components != null) {
-    components.lsx = props => <Lsx {...props} />;
+    components.lsx = LsxImmutable;
+    components.drawio = drawioPlugin.DrawioViewer;
+    components.table = Table;
   }
 
   verifySanitizePlugin(options, false);
@@ -433,8 +447,10 @@ export const generatePreviewOptions = (config: RendererConfig, pagePath: string)
   remarkPlugins.push(
     math,
     [plantuml.remarkPlugin, { baseUrl: config.plantumlUri }],
+    drawioPlugin.remarkPlugin,
     xsvToTable.remarkPlugin,
     lsxGrowiPlugin.remarkPlugin,
+    table.remarkPlugin,
   );
   if (config.isEnabledLinebreaks) {
     remarkPlugins.push(breaks);
@@ -447,6 +463,7 @@ export const generatePreviewOptions = (config: RendererConfig, pagePath: string)
     [sanitize, deepmerge(
       commonSanitizeOption,
       lsxGrowiPlugin.sanitizeOption,
+      drawioPlugin.sanitizeOption,
       addLineNumberAttribute.sanitizeOption,
     )],
     katex,
@@ -454,10 +471,12 @@ export const generatePreviewOptions = (config: RendererConfig, pagePath: string)
 
   // add components
   if (components != null) {
-    components.lsx = props => <Lsx {...props} />;
+    components.lsx = LsxImmutable;
+    components.drawio = drawioPlugin.DrawioViewer;
+    components.table = Table;
   }
 
-  verifySanitizePlugin(options, false);
+  // verifySanitizePlugin(options, false);
   return options;
 };
 

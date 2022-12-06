@@ -1,6 +1,7 @@
 import React, { FC } from 'react';
 
 import { useTranslation } from 'next-i18next';
+import Link from 'next/link';
 
 import { IRevision } from '~/interfaces/revision';
 import { useSWRxPageByPath } from '~/stores/page';
@@ -19,9 +20,11 @@ const logger = loggerFactory('growi:cli:CustomSidebar');
 const SidebarNotFound = () => {
   return (
     <div className="grw-sidebar-content-header h5 text-center p-3">
-      <a href="/Sidebar#edit">
-        <i className="icon-magic-wand"></i> Create <strong>/Sidebar</strong> page
-      </a>
+      <Link href="/Sidebar#edit">
+        <a href="/Sidebar#edit">
+          <i className="icon-magic-wand"></i> Create <strong>/Sidebar</strong> page
+        </a>
+      </Link>
     </div>
   );
 };
