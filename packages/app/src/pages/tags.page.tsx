@@ -3,6 +3,7 @@ import React, { useState, useCallback } from 'react';
 import type { IUser, IUserHasId } from '@growi/core';
 import { NextPage, GetServerSideProps, GetServerSidePropsContext } from 'next';
 import { useTranslation } from 'next-i18next';
+import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import dynamic from 'next/dynamic';
 import Head from 'next/head';
 
@@ -24,7 +25,7 @@ import {
 } from '../stores/context';
 
 import {
-  CommonProps, getServerSideCommonProps, useCustomTitle,
+  CommonProps, getServerSideCommonProps, getNextI18NextConfig, useCustomTitle,
 } from './utils/commons';
 
 const PAGING_LIMIT = 10;
@@ -139,6 +140,17 @@ function injectServerConfigurations(context: GetServerSidePropsContext, props: P
   };
 }
 
+/**
+ * for Server Side Translations
+ * @param context
+ * @param props
+ * @param namespacesRequired
+ */
+async function injectNextI18NextConfigurations(context: GetServerSidePropsContext, props: Props, namespacesRequired?: string[] | undefined): Promise<void> {
+  const nextI18NextConfig = await getNextI18NextConfig(serverSideTranslations, context, namespacesRequired);
+  props._nextI18Next = nextI18NextConfig._nextI18Next;
+}
+
 export const getServerSideProps: GetServerSideProps = async(context: GetServerSidePropsContext) => {
   const req = context.req as CrowiRequest<IUserHasId & any>;
   const { user } = req;
@@ -152,8 +164,10 @@ export const getServerSideProps: GetServerSideProps = async(context: GetServerSi
   if (user != null) {
     props.currentUser = user.toObject();
   }
+
   await injectUserUISettings(context, props);
   injectServerConfigurations(context, props);
+  await injectNextI18NextConfigurations(context, props, ['translation']);
 
   return {
     props,
