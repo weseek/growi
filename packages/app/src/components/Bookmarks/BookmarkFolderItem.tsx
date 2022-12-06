@@ -38,7 +38,7 @@ const BookmarkFolderItem: FC<BookmarkFolderItemProps> = (props: BookmarkFolderIt
   const [isCreateAction, setIsCreateAction] = useState<boolean>(false);
   const [isDeleteFolderModalShown, setIsDeleteFolderModalShown] = useState<boolean>(false);
 
-  const getChildCount = useMemo((): number => {
+  const childCount = useMemo((): number => {
     if (currentChildren != null && currentChildren.length > children.length) {
       return currentChildren.length;
     }
@@ -188,7 +188,7 @@ const BookmarkFolderItem: FC<BookmarkFolderItemProps> = (props: BookmarkFolderIt
             </div>
             {hasChildren() && (
               <div className="grw-foldertree-count-wrapper">
-                <CountBadge count={ getChildCount } />
+                <CountBadge count={ childCount } />
               </div>
             )}
           </>
