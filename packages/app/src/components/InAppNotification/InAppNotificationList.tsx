@@ -26,7 +26,7 @@ const InAppNotificationList: FC<Props> = (props: Props) => {
     );
   }
 
-  const notifications = inAppNotificationData.docs;
+  const notifications = inAppNotificationData.docs.filter((notification) => { return typeof notification.snapshot === 'string' });
 
   return (
     <>
