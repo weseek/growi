@@ -233,6 +233,8 @@ export const CommentEditor = (props: CommentEditorProps): JSX.Element => {
     );
   }, []);
 
+  const onChangeHandler = useCallback((newValue: string) => setComment(newValue), []);
+
   const renderReady = () => {
     const commentPreview = getCommentHtml();
 
@@ -272,7 +274,7 @@ export const CommentEditor = (props: CommentEditorProps): JSX.Element => {
                 value={comment}
                 isUploadable={isUploadable}
                 isUploadableFile={isUploadableFile}
-                onChange={setComment}
+                onChange={onChangeHandler}
                 onUpload={uploadHandler}
                 onCtrlEnter={ctrlEnterHandler}
                 isComment
