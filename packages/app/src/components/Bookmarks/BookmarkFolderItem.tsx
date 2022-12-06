@@ -1,5 +1,5 @@
 import {
-  FC, useCallback, useEffect, useState,
+  FC, useCallback, useEffect, useState, useMemo,
 } from 'react';
 
 import { useTranslation } from 'next-i18next';
@@ -38,7 +38,7 @@ const BookmarkFolderItem: FC<BookmarkFolderItemProps> = (props: BookmarkFolderIt
   const [isCreateAction, setIsCreateAction] = useState<boolean>(false);
   const [isDeleteFolderModalShown, setIsDeleteFolderModalShown] = useState<boolean>(false);
 
-  const childCount = useCallback((): number => {
+  const childCount = useMemo((): number => {
     if (currentChildren != null && currentChildren.length > children.length) {
       return currentChildren.length;
     }
@@ -120,7 +120,8 @@ const BookmarkFolderItem: FC<BookmarkFolderItemProps> = (props: BookmarkFolderIt
     }
   }, [folderId, loadParent, t]);
 
-  const onClickPlusButton = useCallback(async() => {
+  const onClickPlusButton = useCallback(async(e) => {
+    e.stopPropagation();
     if (!isOpen && hasChildren()) {
       setIsOpen(true);
     }
@@ -154,9 +155,8 @@ const BookmarkFolderItem: FC<BookmarkFolderItemProps> = (props: BookmarkFolderIt
 
 
   return (
-    <div id={`bookmark-folder-item-${folderId}`} className="grw-foldertree-item-container"
-    >
-      <li className="list-group-item list-group-item-action border-0 py-0 pr-3 d-flex align-items-center">
+    <div id={`grw-bookmark-folder-item-${folderId}`} className="grw-foldertree-item-container">
+      <li className="list-group-item list-group-item-action border-0 py-0 pr-3 d-flex align-items-center" onClick={loadChildFolder}>
         <div className="grw-triangle-container d-flex justify-content-center">
           {hasChildren() && (
             <button
@@ -183,12 +183,12 @@ const BookmarkFolderItem: FC<BookmarkFolderItemProps> = (props: BookmarkFolderIt
           />
         ) : (
           <>
-            <div className='grw-foldertree-title-anchor flex-grow-1 pl-2' onClick={loadChildFolder}>
+            <div className='grw-foldertree-title-anchor pl-2' >
               <p className={'text-truncate m-auto '}>{name}</p>
             </div>
             {hasChildren() && (
               <div className="grw-foldertree-count-wrapper">
-                <CountBadge count={ childCount() } />
+                <CountBadge count={ childCount } />
               </div>
             )}
           </>
@@ -200,9 +200,11 @@ const BookmarkFolderItem: FC<BookmarkFolderItemProps> = (props: BookmarkFolderIt
             onClickRename={onClickRenameHandler}
             onClickDelete={onClickDeleteHandler}
           >
-            <DropdownToggle color="transparent" className="border-0 rounded btn-page-item-control p-0 grw-visible-on-hover mr-1">
-              <i className="icon-options fa fa-rotate-90 p-1"></i>
-            </DropdownToggle>
+            <div onClick={e => e.stopPropagation()}>
+              <DropdownToggle color="transparent" className="border-0 rounded btn-page-item-control p-0 grw-visible-on-hover mr-1">
+                <i className="icon-options fa fa-rotate-90 p-1"></i>
+              </DropdownToggle>
+            </div>
           </BookmarkFolderItemControl>
           <button
             type="button"

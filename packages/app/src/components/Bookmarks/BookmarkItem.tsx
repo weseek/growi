@@ -1,4 +1,3 @@
-
 import React, { useCallback, useState } from 'react';
 
 import nodePath from 'path';
@@ -13,8 +12,8 @@ import { apiv3Put } from '~/client/util/apiv3-client';
 import { IPageHasId, IPageInfoAll, IPageToDeleteWithMeta } from '~/interfaces/page';
 
 
-import ClosableTextInput, { AlertInfo, AlertType } from '../../Common/ClosableTextInput';
-import { MenuItemType, PageItemControl } from '../../Common/Dropdown/PageItemControl';
+import ClosableTextInput, { AlertInfo, AlertType } from '../Common/ClosableTextInput';
+import { MenuItemType, PageItemControl } from '../Common/Dropdown/PageItemControl';
 
 
 type Props = {
