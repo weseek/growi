@@ -165,7 +165,7 @@ export const useSWRxPageAncestorsChildren = (
     }),
     {
       fallbackData: prevSWRRes.data, // avoid data to be undefined due to the termNumber to change
-    }
+    },
   );
 };
 
