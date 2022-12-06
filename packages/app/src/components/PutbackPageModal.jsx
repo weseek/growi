@@ -116,7 +116,7 @@ const PutBackPageModal = () => {
   }, [closePutBackPageModal]);
 
   return (
-    <Modal isOpen={isOpened} toggle={closeModalHandler} className="grw-create-page">
+    <Modal isOpen={isOpened} toggle={closeModalHandler}>
       <ModalHeader tag="h4" toggle={closeModalHandler} className="bg-info text-light">
         <HeaderContent/>
       </ModalHeader>

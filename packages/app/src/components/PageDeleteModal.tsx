@@ -281,7 +281,7 @@ const PageDeleteModal: FC = () => {
   };
 
   return (
-    <Modal size="lg" isOpen={isOpened} toggle={closeDeleteModal} data-testid="page-delete-modal" className="grw-create-page">
+    <Modal size="lg" isOpen={isOpened} toggle={closeDeleteModal} data-testid="page-delete-modal">
       <ModalHeader tag="h4" toggle={closeDeleteModal} className={`bg-${deleteIconAndKey[deleteMode].color} text-light`}>
         {headerContent()}
       </ModalHeader>
