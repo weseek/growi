@@ -47,7 +47,6 @@
     "openapi:v1": "yarn cross-env API_VERSION=1 yarn swagger-jsdoc -- \"src/server/*/*.js\" \"src/server/models/**/*.js\"",
     "resources:hackmd": "yarn lerna run build --scope=@growi/hackmd",
     "resources:dummy": "true",
-    "// resources:plugin": "yarn ts-node bin/generate-plugin-definitions-source.ts",
     "// resources:dl-resources": "yarn ts-node bin/download-cdn-resources.ts",
     "ts-node": "node -r ts-node/register -r tsconfig-paths/register -r dotenv-flow/config"
   },
