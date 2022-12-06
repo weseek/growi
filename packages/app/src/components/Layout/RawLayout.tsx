@@ -44,13 +44,13 @@ export const RawLayout = ({ children, title, className }: Props): JSX.Element =>
         <meta charSet="utf-8" />
         <meta name="viewport" content="initial-scale=1.0, width=device-width" />
       </Head>
-      <NextThemesProvider>
-        <GrowiThemeProvider theme={growiTheme} colorScheme={colorScheme}>
+      <GrowiThemeProvider theme={growiTheme} colorScheme={colorScheme}>
+        <NextThemesProvider>
           <div className={classNames.join(' ')} data-color-scheme={colorScheme}>
             {children}
           </div>
-        </GrowiThemeProvider>
-      </NextThemesProvider>
+        </NextThemesProvider>
+      </GrowiThemeProvider>
     </>
   );
 };
