@@ -153,6 +153,9 @@ export const useSWRxPageAncestorsChildren = (
 ): SWRResponse<AncestorsChildrenResult, Error> => {
   const { data: termNumber } = usePageTreeTermManager();
 
+  const prevTermNumber = termNumber ? termNumber - 1 : 0;
+  const prevSWRRes = useSWRImmutable(path ? [`/page-listing/ancestors-children?path=${path}`, prevTermNumber] : null);
+
   return useSWRImmutable(
     path ? [`/page-listing/ancestors-children?path=${path}`, termNumber] : null,
     endpoint => apiv3Get(endpoint).then((response) => {
@@ -160,6 +163,9 @@ export const useSWRxPageAncestorsChildren = (
         ancestorsChildren: response.data.ancestorsChildren,
       };
     }),
+    {
+      fallbackData: prevSWRRes.data, // avoid data to be undefined due to the termNumber to change
+    }
   );
 };
 
