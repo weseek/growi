@@ -226,7 +226,6 @@ context('Search all pages', () => {
     cy.getByTestid('search-result-list').should('be.visible');
     cy.getByTestid('search-result-content').should('be.visible');
     cy.getByTestid('wiki').should('exists');
-    cy.get('#revision-loader').should('be.visible').contains('Block Elements');
     cy.screenshot(`${ssPrefix}2-tag-order-by-relevance`);
 
     cy.get('.grw-search-page-nav').within(() => {
@@ -238,7 +237,6 @@ context('Search all pages', () => {
     cy.getByTestid('search-result-list').should('be.visible');
     cy.getByTestid('search-result-content').should('be.visible');
     cy.getByTestid('wiki').should('exists');
-    cy.get('#revision-loader').should('be.visible').contains('Block Elements');
     cy.screenshot(`${ssPrefix}3-tag-order-by-creation-date`);
 
     cy.get('.grw-search-page-nav').within(() => {
