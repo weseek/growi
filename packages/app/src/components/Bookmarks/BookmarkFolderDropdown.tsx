@@ -2,58 +2,53 @@ import React, { useState } from 'react';
 
 import { useTranslation } from 'next-i18next';
 import {
-  Dropdown, DropdownItem, DropdownMenu,
+  Dropdown, DropdownItem, DropdownMenu, DropdownToggle, Nav, NavItem, UncontrolledDropdown,
 } from 'reactstrap';
 
 import { useSWRxBookamrkFolderAndChild } from '~/stores/bookmark-folder';
 
 import FolderIcon from '../Icons/FolderIcon';
 
+import BookmarkFolderSubMenu from './BookmarkFolderSubMenu';
+
 
 type Props = {
   children?: React.ReactNode
 }
+
 const BookmarkFolderDropdown = (props: Props): JSX.Element => {
   const { t } = useTranslation();
   const { children } = props;
   const [isOpen, setIsOpen] = useState(false);
+
   const { data: bookmarkFolderData } = useSWRxBookamrkFolderAndChild();
 
+
   return (
-    <Dropdown isOpen={isOpen} toggle={() => setIsOpen(!isOpen)}>
-      { children }
-      <DropdownMenu
-        positionFixed
-        modifiers={{ preventOverflow: { boundariesElement: undefined } }}
-        right={true}
-        className="rounded-0"
-      >
-        <DropdownItem
-          onClick={() => {}}
-        >
-          <FolderIcon isOpen={false} />
-          <span className='ml-2'>{t('bookmark_folder.new_folder')}</span>
-
-        </DropdownItem>
-
-        <DropdownItem divider/>
-        {
-          bookmarkFolderData?.map((folder) => {
-            return (
+    <Nav className="ml-auto">
+      <UncontrolledDropdown nav >
+        {children}
+        <DropdownMenu right >
+          {bookmarkFolderData?.map((folder) => {
+            return folder.children.length > 0 ? (
               <>
-                <DropdownItem
-                  toggle={false}
-                  key={folder._id}
-                >
-                  { folder.name }
+                <DropdownItem >
+                  {folder.name}
                 </DropdownItem>
-              </>
-            );
-          })
-        }
 
-      </DropdownMenu>
-    </Dropdown>
+                {folder.children.map(child => (
+                  <BookmarkFolderSubMenu key={child._id} item={child} />
+                ))}
+              </>
+            ) : (
+              <DropdownItem>
+                {folder.name}
+              </DropdownItem>
+            );
+          })}
+        </DropdownMenu>
+      </UncontrolledDropdown>
+    </Nav>
   );
 };
 
