@@ -9,7 +9,6 @@ import { Container, Provider } from 'unstated';
 import AdminHomeContainer from '~/client/services/AdminHomeContainer';
 import { CrowiRequest } from '~/interfaces/crowi-request';
 import { CommonProps, useCustomTitle } from '~/pages/utils/commons';
-import PluginUtils from '~/server/plugins/plugin-utils';
 import { useCurrentUser, useGrowiCloudUri, useGrowiAppIdForGrowiCloud } from '~/stores/context';
 
 import { retrieveServerSideProps } from '../../utils/admin-page-util';
@@ -63,12 +62,10 @@ const AdminHomePage: NextPage<Props> = (props) => {
 const injectServerConfigurations = async(context: GetServerSidePropsContext, props: Props): Promise<void> => {
   const req: CrowiRequest = context.req as CrowiRequest;
   const { crowi } = req;
-  const pluginUtils = new PluginUtils();
 
   props.nodeVersion = crowi.runtimeVersions.versions.node ? crowi.runtimeVersions.versions.node.version.version : null;
   props.npmVersion = crowi.runtimeVersions.versions.npm ? crowi.runtimeVersions.versions.npm.version.version : null;
   props.yarnVersion = crowi.runtimeVersions.versions.yarn ? crowi.runtimeVersions.versions.yarn.version.version : null;
-  props.installedPlugins = pluginUtils.listPlugins();
   props.growiCloudUri = await crowi.configManager.getConfig('crowi', 'app:growiCloudUri');
   props.growiAppIdForGrowiCloud = await crowi.configManager.getConfig('crowi', 'app:growiAppIdForCloud');
 };
