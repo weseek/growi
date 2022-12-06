@@ -25,6 +25,7 @@ import {
   useCurrentPageTocNode,
   useIsMobile,
 } from '~/stores/ui';
+import { registerGrowiFacade } from '~/utils/growi-facade';
 import loggerFactory from '~/utils/logger';
 
 import RevisionRenderer from './Page/RevisionRenderer';
@@ -42,6 +43,7 @@ declare global {
 // const DrawioModal = dynamic(() => import('./PageEditor/DrawioModal'), { ssr: false });
 const GridEditModal = dynamic(() => import('./PageEditor/GridEditModal'), { ssr: false });
 const LinkEditModal = dynamic(() => import('./PageEditor/LinkEditModal'), { ssr: false });
+
 
 const logger = loggerFactory('growi:Page');
 
@@ -63,13 +65,24 @@ export const Page = (props) => {
   const { data: tagsInfo } = useSWRxTagsInfo(currentPage?._id);
   const { data: isGuestUser } = useIsGuestUser();
   const { data: isMobile } = useIsMobile();
-  const { data: rendererOptions } = useViewOptions(storeTocNodeHandler);
+  const { data: rendererOptions, mutate: mutateRendererOptions } = useViewOptions(storeTocNodeHandler);
   const { mutate: mutateCurrentPageTocNode } = useCurrentPageTocNode();
   const { open: openDrawioModal } = useDrawioModal();
   const { open: openHandsontableModal } = useHandsontableModal();
 
   const saveOrUpdate = useSaveOrUpdate();
 
+
+  // register to facade
+  useEffect(() => {
+    registerGrowiFacade({
+      markdownRenderer: {
+        optionsMutators: {
+          viewOptionsMutator: mutateRendererOptions,
+        },
+      },
+    });
+  }, [mutateRendererOptions]);
 
   useEffect(() => {
     mutateCurrentPageTocNode(tocRef.current);

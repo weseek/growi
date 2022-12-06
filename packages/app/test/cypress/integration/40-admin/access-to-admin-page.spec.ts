@@ -26,7 +26,6 @@ context('Access to Admin page', () => {
     cy.visit('/admin');
     cy.getByTestid('admin-home').should('be.visible');
     cy.getByTestid('admin-system-information-table').should('be.visible');
-    cy.getByTestid('admin-installed-plugin-table').should('be.visible');
     cy.screenshot(`${ssPrefix}-admin`);
   });
 

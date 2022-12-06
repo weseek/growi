@@ -16,7 +16,7 @@
 
 //== Light Mode
 //
-:root[data-theme='light'] .theme-default {
+:root[data-theme='light'] {
   $primary: #122c55;
   $accent: #209fd8;
 
@@ -116,7 +116,7 @@
 
 //== Dark Mode
 //
-:root[data-theme='dark'] .theme-default {
+:root[data-theme='dark'] {
   $primary: #115cd3;
   $accent: #db00c2;
 
