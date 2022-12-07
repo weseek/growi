@@ -2,10 +2,7 @@ import { Model, Schema, HydratedDocument } from 'mongoose';
 
 import { ITransferKey } from '~/interfaces/transfer-key';
 
-import loggerFactory from '../../utils/logger';
 import { getOrCreateModel } from '../util/mongoose-utils';
-
-const logger = loggerFactory('growi:models:transfer-key');
 
 interface ITransferKeyMethods {
   findOneActiveTransferKey(key: string): Promise<HydratedDocument<ITransferKey, ITransferKeyMethods> | null>;
