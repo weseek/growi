@@ -233,6 +233,8 @@ export const CommentEditor = (props: CommentEditorProps): JSX.Element => {
     );
   }, []);
 
+  const onChangeHandler = useCallback((newValue: string) => setComment(newValue), []);
+
   const renderReady = () => {
     const commentPreview = getCommentHtml();
 
@@ -269,10 +271,10 @@ export const CommentEditor = (props: CommentEditorProps): JSX.Element => {
             <TabPane tabId="comment_editor">
               <Editor
                 ref={editorRef}
-                value={comment}
+                value={commentBody ?? ''} // DO NOT use state
                 isUploadable={isUploadable}
                 isUploadableFile={isUploadableFile}
-                onChange={setComment}
+                onChange={onChangeHandler}
                 onUpload={uploadHandler}
                 onCtrlEnter={ctrlEnterHandler}
                 isComment
