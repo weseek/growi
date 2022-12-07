@@ -316,7 +316,6 @@
     "system_information": "系统信息",
     "wiki_administrator": "只有wiki管理员可以访问此页",
     "assign_administrator": "您可以使用“授予管理员访问权限”按钮在“用户管理”页上将所选用户指定为wiki管理员",
-    "list_of_installed_plugins": "已安装插件列表",
     "package_name": "包名称",
     "specified_version": "指定版本",
     "installed_version": "已安装版本",

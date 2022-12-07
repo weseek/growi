@@ -36,6 +36,7 @@ const AdminNavigation = (props) => {
       case 'user-groups':              return <><i className="mr-1 icon-fw icon-people"></i>{          t('user_group_management.user_group_management') }</>;
       case 'search':                   return <><i className="mr-1 icon-fw icon-magnifier"></i>{       t('full_text_search_management.full_text_search_management') }</>;
       case 'audit-log':                return <><i className="mr-1 icon-fw icon-feed"></i>{            t('audit_log_management.audit_log')}</>;
+      case 'plugins':                  return <><i className="mr-1 icon-fw icon-puzzle"></i>{           'Plugins Extention'}</>;
       case 'cloud':                    return <><i className="mr-1 icon-fw icon-share-alt"></i>{       t('cloud_setting_management.to_cloud_settings')} </>;
       default:                         return <><i className="mr-1 icon-fw icon-home"></i>{            t('wiki_management_home_page') }</>;
       /* eslint-enable no-multi-spaces, max-len */
@@ -91,6 +92,7 @@ const AdminNavigation = (props) => {
         <MenuLink menu="users"        isListGroupItems isActive={isActiveMenu('/users')} />
         <MenuLink menu="user-groups"  isListGroupItems isActive={isActiveMenu('/user-groups')} />
         <MenuLink menu="audit-log"    isListGroupItems isActive={isActiveMenu('/audit-log')} />
+        <MenuLink menu="plugins"      isListGroupItems isActive={isActiveMenu('/plugins')} />
         <MenuLink menu="search"       isListGroupItems isActive={isActiveMenu('/search')} />
         {growiCloudUri != null && growiAppIdForGrowiCloud != null
           && (
@@ -140,6 +142,7 @@ const AdminNavigation = (props) => {
             {isActiveMenu('/user-groups') &&       <MenuLabel menu="user-groups" />}
             {isActiveMenu('/search') &&            <MenuLabel menu="search" />}
             {isActiveMenu('/audit-log') &&         <MenuLabel menu="audit-log" />}
+            {isActiveMenu('/plugins') &&           <MenuLabel menu="plugins" />}
             {/* eslint-enable no-multi-spaces */}
           </span>
         </button>

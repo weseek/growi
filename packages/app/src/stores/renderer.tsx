@@ -1,5 +1,5 @@
 import { HtmlElementNode } from 'rehype-toc';
-import { Key, SWRResponse } from 'swr';
+import useSWR, { Key, SWRResponse } from 'swr';
 import useSWRImmutable from 'swr/immutable';
 
 import { RendererConfig } from '~/interfaces/services/renderer';
@@ -8,6 +8,7 @@ import {
   generateSimpleViewOptions, generatePreviewOptions, generateOthersOptions,
   generateViewOptions, generateTocOptions,
 } from '~/services/renderer/renderer';
+import { getGrowiFacade } from '~/utils/growi-facade';
 
 
 import {
@@ -52,9 +53,13 @@ export const useViewOptions = (storeTocNodeHandler: (toc: HtmlElementNode) => vo
     ? ['viewOptions', currentPagePath, rendererConfig]
     : null;
 
-  return useSWRImmutable<RendererOptions, Error>(
+  return useSWR<RendererOptions, Error>(
     key,
-    (rendererId, currentPagePath, rendererConfig) => generateViewOptions(currentPagePath, rendererConfig, storeTocNodeHandler),
+    (rendererId, currentPagePath, rendererConfig) => {
+      // determine options generator
+      const optionsGenerator = getGrowiFacade().markdownRenderer?.optionsGenerators?.customGenerateViewOptions ?? generateViewOptions;
+      return optionsGenerator(currentPagePath, rendererConfig, storeTocNodeHandler);
+    },
     {
       fallbackData: isAllDataValid ? generateViewOptions(currentPagePath, rendererConfig, storeTocNodeHandler) : undefined,
     },
@@ -88,9 +93,13 @@ export const usePreviewOptions = (): SWRResponse<RendererOptions, Error> => {
     ? ['previewOptions', rendererConfig, currentPagePath]
     : null;
 
-  return useSWRImmutable<RendererOptions, Error>(
+  return useSWR<RendererOptions, Error>(
     key,
-    (rendererId, rendererConfig, currentPagePath) => generatePreviewOptions(rendererConfig, currentPagePath),
+    (rendererId, rendererConfig, pagePath, highlightKeywords) => {
+      // determine options generator
+      const optionsGenerator = getGrowiFacade().markdownRenderer?.optionsGenerators?.customGeneratePreviewOptions ?? generatePreviewOptions;
+      return optionsGenerator(rendererConfig, pagePath, highlightKeywords);
+    },
     {
       fallbackData: isAllDataValid ? generatePreviewOptions(rendererConfig, currentPagePath) : undefined,
     },

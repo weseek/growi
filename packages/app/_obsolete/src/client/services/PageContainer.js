@@ -277,12 +277,13 @@ export default class PageContainer extends Container {
     });
   }
 
-  // request to server so the client to join a room for each page
-  emitJoinPageRoomRequest() {
-    const socketIoContainer = this.appContainer.getContainer('SocketIoContainer');
-    const socket = socketIoContainer.getSocket();
-    socket.emit('join:page', { socketId: socket.id, pageId: this.state.pageId });
-  }
+  // replaced accompanied by omiting container: https://github.com/weseek/growi/pull/6968
+  // // request to server so the client to join a room for each page
+  // emitJoinPageRoomRequest() {
+  //   const socketIoContainer = this.appContainer.getContainer('SocketIoContainer');
+  //   const socket = socketIoContainer.getSocket();
+  //   socket.emit('join:page', { socketId: socket.id, pageId: this.state.pageId });
+  // }
 
   addWebSocketEventHandlers() {
     // eslint-disable-next-line @typescript-eslint/no-this-alias
@@ -300,15 +301,16 @@ export default class PageContainer extends Container {
       }
     });
 
-    socket.on('page:update', (data) => {
-      logger.debug({ obj: data }, `websocket on 'page:update'`); // eslint-disable-line quotes
+    // replaced accompanied by omiting container: https://github.com/weseek/growi/pull/6968
+    // socket.on('page:update', (data) => {
+    //   logger.debug({ obj: data }, `websocket on 'page:update'`); // eslint-disable-line quotes
 
-      // update remote page data
-      const { s2cMessagePageUpdated } = data;
-      if (s2cMessagePageUpdated.pageId === pageContainer.state.pageId) {
-        pageContainer.setLatestRemotePageData(s2cMessagePageUpdated);
-      }
-    });
+    //   // update remote page data
+    //   const { s2cMessagePageUpdated } = data;
+    //   if (s2cMessagePageUpdated.pageId === pageContainer.state.pageId) {
+    //     pageContainer.setLatestRemotePageData(s2cMessagePageUpdated);
+    //   }
+    // });
 
     socket.on('page:delete', (data) => {
       logger.debug({ obj: data }, `websocket on 'page:delete'`); // eslint-disable-line quotes
