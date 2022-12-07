@@ -112,8 +112,11 @@ module.exports = function(crowi, app) {
   });
 
   app.set('port', crowi.port);
+
   const staticOption = (crowi.node_env === 'production') ? { maxAge: '30d' } : {};
   app.use(express.static(crowi.publicDir, staticOption));
+  app.use('/plugins', express.static(path.resolve(__dirname, '../../../tmp/plugins')));
+
   app.engine('html', swig.renderFile);
   // app.set('view cache', false);  // Default: true in production, otherwise undefined. -- 2017.07.04 Yuki Takei
   app.set('view engine', 'html');
