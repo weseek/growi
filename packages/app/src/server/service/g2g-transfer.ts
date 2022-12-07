@@ -491,11 +491,21 @@ export class G2GTransferReceiverService implements Receiver {
     this.crowi = crowi;
   }
 
-  public async validateTransferKey(transferKeyString: string): Promise<void> {
-    // Parse to tk
-    // Find active tkd
+  public async validateTransferKey(key: string): Promise<void> {
+    const { TransferKeyModel } = this.crowi;
+    const transferKey = await (TransferKeyModel as any).find({ key });
 
-    return;
+    if (transferKey == null) {
+      throw new Error(`Transfer key "${key}" was expired or not found`);
+    }
+
+    try {
+      TransferKey.parse(transferKey.keyString);
+    }
+    catch (err) {
+      logger.error(err);
+      throw new Error(`Transfer key "${key}" is invalid`);
+    }
   }
 
   public async answerGROWIInfo(): Promise<IDataGROWIInfo> {

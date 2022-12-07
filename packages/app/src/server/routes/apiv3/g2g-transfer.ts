@@ -110,23 +110,13 @@ module.exports = (crowi: Crowi): Router => {
 
   // Local middleware to check if key is valid or not
   const validateTransferKey = async(req: Request, res: ApiV3Response, next: NextFunction) => {
-    const key = req.headers[X_GROWI_TRANSFER_KEY_HEADER_NAME];
+    const transferKey = req.headers[X_GROWI_TRANSFER_KEY_HEADER_NAME] as string;
 
-    if (typeof key !== 'string') {
-      return res.apiv3Err(new ErrorV3('Invalid transfer key or not set.', 'invalid_transfer_key'), 400);
-    }
-
-    let transferKey;
     try {
-      transferKey = await (TransferKeyModel as any).findOneActiveTransferKey(key); // TODO: Improve TS of models
+      await g2gTransferReceiverService.validateTransferKey(transferKey);
     }
     catch (err) {
-      logger.error(err);
-      return res.apiv3Err(new ErrorV3('Error occurred while trying to fing a transfer key.', 'failed_to_find_transfer_key'), 500);
-    }
-
-    if (transferKey == null) {
-      return res.apiv3Err(new ErrorV3('Transfer key has expired or not found.', 'transfer_key_expired_or_not_found'), 404);
+      return res.apiv3Err(new ErrorV3('Invalid transfer key', 'invalid_transfer_key'), 403);
     }
 
     next();
