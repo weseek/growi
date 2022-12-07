@@ -131,7 +131,7 @@ const generateAxiosRequestConfigWithTransferKey = (tk: TransferKey, additionalHe
   const { appUrl, key } = tk;
 
   return {
-    baseURL: appUrl.origin,
+    baseURL: appUrl,
     headers: {
       ...additionalHeaders,
       [X_GROWI_TRANSFER_KEY_HEADER_NAME]: key,

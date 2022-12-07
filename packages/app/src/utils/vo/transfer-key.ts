@@ -5,11 +5,11 @@ export class TransferKey {
 
   private static _internalSeperator = '__grw_internal_tranferkey__';
 
-  public appUrl: URL;
+  public appUrl: string;
 
   public key: string;
 
-  constructor(appUrl: URL, key: string) {
+  constructor(appUrl: string, key: string) {
     this.appUrl = appUrl;
     this.key = key;
   }
@@ -34,15 +34,15 @@ export class TransferKey {
     const key = splitted[0];
     const appUrlString = splitted[1];
 
-    let appUrl: URL | null;
+    let appSiteOrigin: string;
     try {
-      appUrl = new URL(appUrlString);
+      appSiteOrigin = new URL(appUrlString).origin;
     }
     catch (e) {
       throw Error(generalErrorPhrase + (e as Error));
     }
 
-    return new TransferKey(appUrl, key);
+    return new TransferKey(appSiteOrigin, key);
   }
 
   /**
