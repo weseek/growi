@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React, { useCallback, useEffect, useMemo } from 'react';
 
 import { pagePathUtils } from '@growi/core';
 import { useTranslation } from 'next-i18next';
@@ -6,12 +6,15 @@ import dynamic from 'next/dynamic';
 import { Link } from 'react-scroll';
 
 import { DEFAULT_AUTO_SCROLL_OPTS } from '~/client/util/smooth-scroll';
+import { SocketEventName } from '~/interfaces/websocket';
 import {
   useIsSharedUser, useIsEditable, useShareLinkId, useIsNotFound,
 } from '~/stores/context';
 import { useDescendantsPageListModal } from '~/stores/modal';
 import { useCurrentPagePath, useSWRxCurrentPage } from '~/stores/page';
+import { useRemoteRevisionId, useRemoteRevisionLastUpdatUser } from '~/stores/remote-latest-page';
 import { EditorMode, useEditorMode } from '~/stores/ui';
+import { useGlobalSocket } from '~/stores/websocket';
 
 import CountBadge from '../Common/CountBadge';
 import { ContentLinkButtonsProps } from '../ContentLinkButtons';
@@ -44,9 +47,33 @@ const PageView = React.memo((): JSX.Element => {
   const { data: isNotFound } = useIsNotFound();
   const { data: currentPage } = useSWRxCurrentPage(shareLinkId ?? undefined);
   const { open: openDescendantPageListModal } = useDescendantsPageListModal();
+  const { mutate: mutateRemoteRevisionId } = useRemoteRevisionId();
+  const { mutate: mutateRemoteRevisionLastUpdateUser } = useRemoteRevisionLastUpdatUser();
 
   const isTopPagePath = isTopPage(currentPagePath ?? '');
   const isUsersHomePagePath = isUsersHomePage(currentPagePath ?? '');
+
+  const { data: socket } = useGlobalSocket();
+
+  const setLatestRemotePageData = useCallback((data) => {
+    const { s2cMessagePageUpdated } = data;
+
+    mutateRemoteRevisionId(s2cMessagePageUpdated.revisionId);
+    mutateRemoteRevisionLastUpdateUser(s2cMessagePageUpdated.remoteLastUpdateUser);
+  }, [mutateRemoteRevisionId, mutateRemoteRevisionLastUpdateUser]);
+
+  // listen socket for someone updating this page
+  useEffect(() => {
+
+    if (socket == null) { return }
+
+    socket.on(SocketEventName.PageUpdated, setLatestRemotePageData);
+
+    return () => {
+      socket.off(SocketEventName.PageUpdated, setLatestRemotePageData);
+    };
+
+  }, [setLatestRemotePageData, socket]);
 
   return (
     <div className="d-flex flex-column flex-lg-row">
