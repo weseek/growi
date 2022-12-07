@@ -7,11 +7,12 @@ import {
   UncontrolledTooltip, Popover, PopoverBody, DropdownToggle,
 } from 'reactstrap';
 
+import { useSWRxBookamrkFolderAndChild } from '~/stores/bookmark-folder';
 import { useIsGuestUser } from '~/stores/context';
 
 import { IUser } from '../interfaces/user';
 
-import BookmarkFolderDropdown from './Bookmarks/BookmarkFolderDropdown';
+import BookmarkFolderMenu from './Bookmarks/BookmarkFolderMenu';
 import UserPictureList from './User/UserPictureList';
 
 import styles from './BookmarkButtons.module.scss';
@@ -33,6 +34,8 @@ const BookmarkButtons: FC<Props> = (props: Props) => {
   const [isPopoverOpen, setIsPopoverOpen] = useState(false);
 
   const { data: isGuestUser } = useIsGuestUser();
+  const { data: bookmarkFolderData, mutate: mutatebookmarkFolderData } = useSWRxBookamrkFolderAndChild();
+
 
   const togglePopover = () => {
     setIsPopoverOpen(!isPopoverOpen);
@@ -49,14 +52,18 @@ const BookmarkButtons: FC<Props> = (props: Props) => {
     return 'tooltip.bookmark';
   }, [isGuestUser, isBookmarked]);
 
+  const onClickBookmarkButtonHandler = useCallback(() => {
+    mutatebookmarkFolderData();
+  }, [mutatebookmarkFolderData]);
+
   return (
     <div className={`btn-group btn-group-bookmark ${styles['btn-group-bookmark']}`} role="group" aria-label="Bookmark buttons">
-      <BookmarkFolderDropdown >
-        <DropdownToggle id='bookmark-dropdown-btn' color="transparent" className={`shadow-none btn btn-bookmark border-0
+      <BookmarkFolderMenu bookmarkFolders={bookmarkFolderData}>
+        <DropdownToggle id='bookmark-dropdown-btn' color="transparent" onClick={onClickBookmarkButtonHandler} className={`shadow-none btn btn-bookmark border-0
           ${isBookmarked ? 'active' : ''} ${isGuestUser ? 'disabled' : ''}`}>
           <i className={`fa ${isBookmarked ? 'fa-bookmark' : 'fa-bookmark-o'}`}></i>
         </DropdownToggle>
-      </BookmarkFolderDropdown>
+      </BookmarkFolderMenu>
 
       <UncontrolledTooltip placement="top" target="bookmark-dropdown-btn" fade={false}>
         {t(getTooltipMessage())}
