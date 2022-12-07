@@ -2,6 +2,7 @@ import React, {
   useCallback, useEffect, useMemo, useRef, useState,
 } from 'react';
 
+
 import EventEmitter from 'events';
 
 import {
@@ -13,8 +14,8 @@ import { useRouter } from 'next/router';
 import { throttle, debounce } from 'throttle-debounce';
 
 import { useSaveOrUpdate } from '~/client/services/page-operation';
-import { toastSuccess, toastError } from '~/client/util/apiNotification';
 import { apiGet, apiPostForm } from '~/client/util/apiv1-client';
+import { toastError, toastSuccess } from '~/client/util/toastr';
 import { IEditorMethods } from '~/interfaces/editor-methods';
 import { OptionsToSave } from '~/interfaces/page-operation';
 import {
