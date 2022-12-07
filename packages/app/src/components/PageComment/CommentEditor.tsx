@@ -271,7 +271,7 @@ export const CommentEditor = (props: CommentEditorProps): JSX.Element => {
             <TabPane tabId="comment_editor">
               <Editor
                 ref={editorRef}
-                value={comment}
+                value={commentBody ?? ''} // DO NOT use state
                 isUploadable={isUploadable}
                 isUploadableFile={isUploadableFile}
                 onChange={onChangeHandler}
