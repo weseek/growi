@@ -31,14 +31,16 @@ const RenderTagLabels = React.memo((props: RenderTagLabelsProps) => {
           </a>
         );
       })}
-      <a
-        id="edit-tags-btn-wrapper-for-tooltip"
-        className={`p-0 btn btn-link btn-edit-tags text-muted d-flex align-items-center ${isTagsEmpty ? 'ml-2 no-tags' : ''} ${isGuestUser ? 'disabled' : ''}`}
-        onClick={openEditorHandler}
-      >
-        { isTagsEmpty && <>{ t('Add tags for this page') }</>}
-        <span className="ml-2 icon-plus"/>
-      </a>
+      <div id="edit-tags-btn-wrapper-for-tooltip">
+        <a
+          className={`p-0 btn btn-link btn-edit-tags text-muted d-flex align-items-center
+          ${isTagsEmpty ? 'ml-2 no-tags' : ''} ${isGuestUser ? 'disabled' : ''}`}
+          onClick={openEditorHandler}
+        >
+          { isTagsEmpty && <>{ t('Add tags for this page') }</>}
+          <span className="ml-2 icon-plus"/>
+        </a>
+      </div>
       {isGuestUser && (
         <UncontrolledTooltip placement="top" target="edit-tags-btn-wrapper-for-tooltip" fade={false}>
           {t('Not available for guest')}
