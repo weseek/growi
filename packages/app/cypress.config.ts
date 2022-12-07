@@ -5,6 +5,17 @@ export default defineConfig({
     baseUrl: 'http://localhost:3000',
     specPattern: 'test/cypress/integration',
     supportFile: 'test/cypress/support/index.ts',
+    setupNodeEvents: (on, config) => {
+      // change screen size
+      // see: https://docs.cypress.io/api/plugins/browser-launch-api#Set-screen-size-when-running-headless
+      on('before:browser:launch', (browser, launchOptions) => {
+        if (browser.name === 'chrome' && browser.isHeadless) {
+          launchOptions.args.push('--window-size=1400,1024');
+          launchOptions.args.push('--force-device-scale-factor=1');
+        }
+        return launchOptions;
+      });
+    },
   },
   fileServerFolder: 'test/cypress',
   fixturesFolder: 'test/cypress/fixtures',
