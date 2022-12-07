@@ -35,6 +35,7 @@ import {
   useEditorMode, useSelectedGrant,
 } from '~/stores/ui';
 import { useGlobalSocket } from '~/stores/websocket';
+import { registerGrowiFacade } from '~/utils/growi-facade';
 import loggerFactory from '~/utils/logger';
 
 
@@ -83,7 +84,7 @@ const PageEditor = React.memo((): JSX.Element => {
   const { data: isUploadableFile } = useIsUploadableFile();
   const { data: isUploadableImage } = useIsUploadableImage();
 
-  const { data: rendererOptions } = usePreviewOptions();
+  const { data: rendererOptions, mutate: mutateRendererOptions } = usePreviewOptions();
   const { mutate: mutateIsEnabledUnsavedWarning } = useIsEnabledUnsavedWarning();
   const saveOrUpdate = useSaveOrUpdate();
 
@@ -155,6 +156,17 @@ const PageEditor = React.memo((): JSX.Element => {
   //   );
   //   return optionsToSave;
   // }, [grantData, isSlackEnabled, pageTags, slackChannelsData]);
+  // register to facade
+  useEffect(() => {
+    // for markdownRenderer
+    registerGrowiFacade({
+      markdownRenderer: {
+        optionsMutators: {
+          previewOptionsMutator: mutateRendererOptions,
+        },
+      },
+    });
+  }, [mutateRendererOptions]);
 
   const setMarkdownWithDebounce = useMemo(() => debounce(100, throttle(150, (value: string, isClean: boolean) => {
     markdownToSave.current = value;
@@ -169,7 +181,6 @@ const PageEditor = React.memo((): JSX.Element => {
     setMarkdownWithDebounce(value, isClean);
   }, [setMarkdownWithDebounce]);
 
-  // return true if the save succeeds, otherwise false.
   const save = useCallback(async(opts?: {overwriteScopesOfDescendants: boolean}): Promise<IPageHasId | null> => {
     if (grantData == null || isSlackEnabled == null || currentPathname == null) {
       logger.error('Some materials to save are invalid', { grantData, isSlackEnabled, currentPathname });
@@ -240,12 +251,13 @@ const PageEditor = React.memo((): JSX.Element => {
       return;
     }
 
-    const isSuccess = await save();
-    if (isSuccess) {
+    const page = await save();
+    if (page != null) {
       toastSuccess(t('toaster.save_succeeded'));
+      await mutateCurrentPageId(page._id);
+      await mutateCurrentPage();
     }
-
-  }, [editorMode, save, t]);
+  }, [editorMode, mutateCurrentPage, mutateCurrentPageId, save, t]);
 
 
   /**
