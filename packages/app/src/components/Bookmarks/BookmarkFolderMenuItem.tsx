@@ -52,7 +52,6 @@ const BookmarkFolderMenuItem = (props: Props):JSX.Element => {
                   <div className='dropdown-item' tabIndex={0} role="menuitem">
                     <BookmarkFolderMenuItem item={child} />
                   </div>
-
                 ) : (
                   <DropdownItem toggle={false}>
                     {child.name}
