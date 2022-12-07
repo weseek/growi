@@ -23,7 +23,7 @@ const RenderTagLabels = React.memo((props: RenderTagLabelsProps) => {
   const isTagsEmpty = tags.length === 0;
 
   return (
-    <div className='d-flex align-items-center'>
+    <>
       {tags.map((tag) => {
         return (
           <a key={tag} href={`/_search?q=tag:${tag}`} className="ml-2 grw-tag-label badge badge-secondary">
@@ -33,12 +33,11 @@ const RenderTagLabels = React.memo((props: RenderTagLabelsProps) => {
       })}
       <div id="edit-tags-btn-wrapper-for-tooltip">
         <a
-          className={`p-0 btn btn-link btn-edit-tags text-muted d-flex align-items-center
-          ${isTagsEmpty ? 'ml-2 no-tags' : ''} ${isGuestUser ? 'disabled' : ''}`}
+          className={`btn btn-link btn-edit-tags text-muted ${isTagsEmpty ? 'px-2 no-tags' : 'p-0'} ${isGuestUser && 'disabled'}`}
           onClick={openEditorHandler}
         >
-          { isTagsEmpty && <>{ t('Add tags for this page') }</>}
-          <span className="ml-2 icon-plus"/>
+          { isTagsEmpty && <span>{ t('Add tags for this page') }</span>}
+          <span className={'ml-1 icon-plus'}/>
         </a>
       </div>
       {isGuestUser && (
@@ -46,7 +45,7 @@ const RenderTagLabels = React.memo((props: RenderTagLabelsProps) => {
           {t('Not available for guest')}
         </UncontrolledTooltip>
       )}
-    </div>
+    </>
   );
 
 });
