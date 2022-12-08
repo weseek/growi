@@ -518,8 +518,7 @@ const PageEditor = React.memo((): JSX.Element => {
       </div>
       <ConflictDiffModal
         isOpen={conflictDiffModalStatus?.isOpened}
-        onClose={() => closeConflictDiffModal()} // use useCallback
-        // pageContainer={pageContainer}
+        onClose={() => closeConflictDiffModal()}
         markdownOnEdit={markdownToPreview}
         optionsToSave={undefined} // replace undefined
       />
