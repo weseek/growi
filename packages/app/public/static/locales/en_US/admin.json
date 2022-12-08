@@ -285,7 +285,6 @@
     "system_information": "System information",
     "wiki_administrator": "Only wiki administrator can access this page",
     "assign_administrator": "You can assign the selected user to be a wiki administrator on the User Management page using the 'Give admin access' button",
-    "list_of_installed_plugins": "List of installed plugins",
     "package_name": "Package name",
     "specified_version": "Specified version",
     "installed_version": "Installed version",

@@ -148,7 +148,7 @@ const ConvertByPathModal = React.memo((props: ConvertByPathModalProps): JSX.Elem
   }, [props.isOpen]);
 
   return (
-    <Modal size="lg" isOpen={props.isOpen} toggle={props.close} className="grw-create-page">
+    <Modal size="lg" isOpen={props.isOpen} toggle={props.close}>
       <ModalHeader tag="h4" toggle={props.close} className="bg-primary text-light">
         { t('private_legacy_pages.by_path_modal.title') }
       </ModalHeader>
