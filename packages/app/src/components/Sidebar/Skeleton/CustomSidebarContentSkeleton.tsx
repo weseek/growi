@@ -9,9 +9,8 @@ const CustomSidebarContentSkeleton = (): JSX.Element => {
 
   return (
     <div className={`p-3 grw-custom-sidebar-content ${customSidebarStyles['grw-custom-sidebar-content']}`}>
-      <Skeleton additionalClass={`${styles['grw-sidebar-skeleton-text-full']} my-3`} />
-      <Skeleton additionalClass={`${styles['grw-sidebar-skeleton-text-full']} my-3`} />
-      <Skeleton additionalClass={`${styles['grw-sidebar-skeleton-text-large']} my-3`} />
+      <Skeleton additionalClass={`${styles['grw-sidebar-skeleton-text-full']} mt-3`} />
+      <Skeleton additionalClass={`${styles['grw-sidebar-skeleton-text-full']} my-4`} />
     </div>
   );
 };
