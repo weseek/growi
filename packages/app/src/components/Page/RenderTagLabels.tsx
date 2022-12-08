@@ -36,8 +36,8 @@ const RenderTagLabels = React.memo((props: RenderTagLabelsProps) => {
           className={`btn btn-link btn-edit-tags text-muted ${isTagsEmpty ? 'px-2 py-0 no-tags' : 'p-0'} ${isGuestUser && 'disabled'}`}
           onClick={openEditorHandler}
         >
-          { isTagsEmpty && <span>{ t('Add tags for this page') }</span>}
-          <span className={'ml-1 icon-plus'}/>
+          { isTagsEmpty && <>{ t('Add tags for this page') }</>}
+          <i className={'ml-1 icon-plus'}/>
         </a>
       </div>
       {isGuestUser && (
