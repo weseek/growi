@@ -11,6 +11,10 @@ import { ActivatePluginService, GrowiPluginManifestEntries } from '~/client/serv
 import { CrowiRequest } from '~/interfaces/crowi-request';
 import { GrowiPlugin, GrowiPluginResourceType } from '~/interfaces/plugin';
 
+const jsdom = require('jsdom');
+
+const { JSDOM } = jsdom;
+
 type HeadersForGrowiPluginProps = {
   pluginManifestEntries: GrowiPluginManifestEntries;
 }
@@ -49,6 +53,7 @@ const HeadersForGrowiPlugin = (props: HeadersForGrowiPluginProps): JSX.Element =
 
 interface GrowiDocumentProps {
   customCss: string;
+  customHtmlHeaderStr: string;
   pluginManifestEntries: GrowiPluginManifestEntries;
 }
 declare type GrowiDocumentInitialProps = DocumentInitialProps & GrowiDocumentProps;
@@ -58,22 +63,33 @@ class GrowiDocument extends Document<GrowiDocumentInitialProps> {
   static override async getInitialProps(ctx: DocumentContext): Promise<GrowiDocumentInitialProps> {
     const initialProps: DocumentInitialProps = await Document.getInitialProps(ctx);
     const { crowi } = ctx.req as CrowiRequest<any>;
-    const { customizeService } = crowi;
-    const customCss: string = customizeService.getCustomCss();
+    const { customizeService, configManager } = crowi;
+    const customCss: string = customizeService.getCustomCss() || '';
+    const customHtmlHeaderStr: string = configManager.getConfig('crowi', 'customize:header') || '';
 
     const GrowiPlugin = mongoose.model<GrowiPlugin>('GrowiPlugin');
     const growiPlugins = await GrowiPlugin.find({ isEnabled: true });
     const pluginManifestEntries: GrowiPluginManifestEntries = await ActivatePluginService.retrievePluginManifests(growiPlugins);
 
-    return { ...initialProps, customCss, pluginManifestEntries };
+    return {
+      ...initialProps, customCss, customHtmlHeaderStr, pluginManifestEntries,
+    };
   }
 
   override render(): JSX.Element {
-    const { customCss, pluginManifestEntries } = this.props;
+    const { customCss, customHtmlHeaderStr, pluginManifestEntries } = this.props;
+
+    const dom = new JSDOM(customHtmlHeaderStr, { runScripts: 'dangerously', resources: 'usable' });
+    const customHtmlHeader = dom.window.document;
+
 
     return (
       <Html>
         <Head>
+          {/* Error occurd
+            Objects are not valid as a React child (found: [object Document]). If you meant to render a collection of children, use an array instead.
+          */}
+          {customHtmlHeader}
           <style>
             {customCss}
           </style>
