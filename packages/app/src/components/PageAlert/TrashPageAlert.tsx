@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useCallback } from 'react';
 
 import { UserPicture } from '@growi/ui';
 import { format } from 'date-fns';
@@ -32,27 +32,23 @@ export const TrashPageAlert = (): JSX.Element => {
   const { open: openDeleteModal } = usePageDeleteModal();
   const { open: openPutBackPageModal } = usePutBackPageModal();
 
-  if (!isTrashPage) {
-    return <></>;
-  }
-
 
   const deleteUser = pageData?.deleteUser;
   const deletedAt = pageData?.deletedAt ? format(new Date(pageData?.deletedAt), 'yyyy/MM/dd HH:mm') : '';
   const revisionId = pageData?.revision?._id;
 
 
-  function openPutbackPageModalHandler() {
+  const openPutbackPageModalHandler = useCallback(() => {
     if (pageId === undefined || pagePath === undefined) {
       return;
     }
     const putBackedHandler = () => {
-      router.push(`/${pageId}`);
+      router.reload();
     };
     openPutBackPageModal({ pageId, path: pagePath }, { onPutBacked: putBackedHandler });
-  }
+  }, [openPutBackPageModal, pageId, pagePath, router]);
 
-  function openPageDeleteModalHandler() {
+  const openPageDeleteModalHandler = useCallback(() => {
     if (pageId === undefined || revisionId === undefined || pagePath === undefined) {
       return;
     }
@@ -65,9 +61,9 @@ export const TrashPageAlert = (): JSX.Element => {
       meta: pageInfo,
     };
     openDeleteModal([pageToDelete], { onDeleted: onDeletedHandler });
-  }
+  }, [openDeleteModal, pageId, pageInfo, pagePath, revisionId]);
 
-  function renderTrashPageManagementButtons() {
+  const renderTrashPageManagementButtons = useCallback(() => {
     return (
       <>
         <button
@@ -88,6 +84,10 @@ export const TrashPageAlert = (): JSX.Element => {
         </button>
       </>
     );
+  }, [openPageDeleteModalHandler, openPutbackPageModalHandler, pageInfo?.isAbleToDeleteCompletely, t]);
+
+  if (!isTrashPage) {
+    return <></>;
   }
 
   return (
