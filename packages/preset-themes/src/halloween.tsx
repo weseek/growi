@@ -1,1 +1,1 @@
-import './halloween.scss';
+import './styles/halloween.scss';
