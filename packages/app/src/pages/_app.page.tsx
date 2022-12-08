@@ -19,7 +19,7 @@ import { CommonProps } from './utils/commons';
 import { registerTransformerForObjectId } from './utils/objectid-transformer';
 
 import '~/styles/style-app.scss';
-import '~/styles/style-themes.scss';
+import '~/styles/style-theming.scss';
 
 
 const isDev = process.env.NODE_ENV === 'development';
