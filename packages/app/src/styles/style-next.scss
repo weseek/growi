@@ -2,9 +2,6 @@
 
 @import 'mixins';
 
-// // override codemirror
-// @import 'override-codemirror';
-
 // react-bootstrap-typeahead
 @import '~react-bootstrap-typeahead/css/Typeahead';
 @import 'override-rbt';
@@ -33,7 +30,6 @@
 
 // molecules
 @import 'molecules/toastr';
-// @import 'molecules/copy-dropdown';
 // @import 'molecules/slack-notification';
 // @import 'molecules/duplicated-paths-table.scss';
 
@@ -44,11 +40,9 @@
 // @import 'attachments';
 // @import 'comment';
 // @import 'comment_growi';
-// @import 'create-page';
 // @import 'draft';
 @import 'editor';
 @import 'fonts';
-// @import 'handsontable';
 @import 'layout';
 // @import 'me';
 @import 'mirror_mode';
@@ -56,7 +50,6 @@
 // @import 'old-ios';
 // @import 'page-duplicate-modal';
 @import 'page-path';
-// @import 'page';
 @import 'search';
 @import 'tag';
 // @import 'user';
