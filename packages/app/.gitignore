@@ -13,6 +13,7 @@ test/cypress/videos
 /transpiled/
 /public/static/js
 /public/static/styles
+/public/static/preset-themes
 /public/uploads
 /tmp/
 

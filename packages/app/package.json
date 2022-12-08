@@ -46,7 +46,7 @@
     "openapi:v3": "yarn cross-env API_VERSION=3 yarn swagger-jsdoc -- \"src/server/routes/apiv3/**/*.js\" \"src/server/models/**/*.js\"",
     "openapi:v1": "yarn cross-env API_VERSION=1 yarn swagger-jsdoc -- \"src/server/*/*.js\" \"src/server/models/**/*.js\"",
     "resources:hackmd": "yarn lerna run build --scope=@growi/hackmd",
-    "resources:dummy": "true",
+    "resources:preset-themes": "yarn lerna run build --scope=@growi/preset-themes && npx shx mkdir -p public/static/preset-themes && npx -y shx cp -r ../preset-themes/dist/* public/static/preset-themes/",
     "// resources:dl-resources": "yarn ts-node bin/download-cdn-resources.ts",
     "ts-node": "node -r ts-node/register -r tsconfig-paths/register -r dotenv-flow/config"
   },
