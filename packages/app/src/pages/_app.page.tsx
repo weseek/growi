@@ -18,7 +18,7 @@ import { SWRConfigValue, swrGlobalConfiguration } from '~/utils/swr-utils';
 import { CommonProps } from './utils/commons';
 import { registerTransformerForObjectId } from './utils/objectid-transformer';
 
-import '~/styles/style-next.scss';
+import '~/styles/style-app.scss';
 import '~/styles/style-themes.scss';
 
 
