@@ -22,15 +22,13 @@ const RevisionRenderer = React.memo((props: Props): JSX.Element => {
   } = props;
 
   return (
-    <>
-      <ReactMarkdown
-        {...rendererOptions}
-        className={`wiki ${additionalClassName ?? ''}`}
-      >
-        {markdown}
-      </ReactMarkdown>
-      <div className="d-none" data-testid="wiki"></div>
-    </>
+    <ReactMarkdown
+      data-testid="wiki"
+      {...rendererOptions}
+      className={`wiki ${additionalClassName ?? ''}`}
+    >
+      {markdown}
+    </ReactMarkdown>
   );
 
   // const [html, setHtml] = useState('');
