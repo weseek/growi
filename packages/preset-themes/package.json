@@ -1,0 +1,22 @@
+{
+  "name": "@growi/preset-themes",
+  "description": "GROWI preset themes",
+  "version": "6.0.0-RC.9",
+  "license": "MIT",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc && vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "react-innertext": "^1.1.5"
+  },
+  "devDependencies": {
+    "bootstrap": "^4.6.1",
+    "sass": "^1.55.0",
+    "vite": "^3.2.5"
+  }
+}
