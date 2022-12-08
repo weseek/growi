@@ -134,7 +134,7 @@ export const useSWRxPageInfoForList = (
 };
 
 export const usePageTreeTermManager = (isDisabled?: boolean) : SWRResponse<number, Error> & ITermNumberManagerUtil => {
-  return useTermNumberManager(isDisabled === true ? null : 'fullTextSearchTermNumber');
+  return useTermNumberManager(isDisabled === true ? null : 'pageTreeTermManager');
 };
 
 export const useSWRxRootPage = (): SWRResponse<RootPageResult, Error> => {
