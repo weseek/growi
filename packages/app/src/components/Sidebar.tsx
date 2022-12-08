@@ -17,7 +17,7 @@ import {
 import DrawerToggler from './Navbar/DrawerToggler';
 import { NavigationResizeHexagon } from './Sidebar/NavigationResizeHexagon';
 import { SidebarNav } from './Sidebar/SidebarNav';
-import { SidebarSkelton } from './Sidebar/Skelton/SidebarSkelton';
+import { SidebarSkeleton } from './Sidebar/Skeleton/SidebarSkeleton';
 import { StickyStretchableScrollerProps } from './StickyStretchableScroller';
 
 import styles from './Sidebar.module.scss';
@@ -58,9 +58,9 @@ const GlobalNavigation = () => {
 
 const SidebarContentsWrapper = () => {
   const StickyStretchableScroller = dynamic<StickyStretchableScrollerProps>(() => import('./StickyStretchableScroller')
-    .then(mod => mod.StickyStretchableScroller), { ssr: false, loading: () => <SidebarSkelton /> });
+    .then(mod => mod.StickyStretchableScroller), { ssr: false, loading: () => <SidebarSkeleton /> });
   const SidebarContents = dynamic(() => import('./Sidebar/SidebarContents')
-    .then(mod => mod.SidebarContents), { ssr: false, loading: () => <SidebarSkelton /> });
+    .then(mod => mod.SidebarContents), { ssr: false, loading: () => <SidebarSkeleton /> });
   const { mutate: mutateSidebarScroller } = useSidebarScrollerRef();
 
   const calcViewHeight = useCallback(() => {

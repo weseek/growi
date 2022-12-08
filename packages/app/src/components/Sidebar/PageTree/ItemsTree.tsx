@@ -24,7 +24,7 @@ import { usePageTreeDescCountMap, useSidebarScrollerRef } from '~/stores/ui';
 import { useGlobalSocket } from '~/stores/websocket';
 import loggerFactory from '~/utils/logger';
 
-import PageTreeContentSkelton from '../Skelton/PageTreeContentSkelton';
+import PageTreeContentSkeleton from '../Skeleton/PageTreeContentSkeleton';
 
 import Item from './Item';
 import { ItemNode } from './ItemNode';
@@ -290,7 +290,7 @@ const ItemsTree = (props: ItemsTreeProps): JSX.Element => {
     );
   }
 
-  return <PageTreeContentSkelton />;
+  return <PageTreeContentSkeleton />;
 };
 
 export default ItemsTree;

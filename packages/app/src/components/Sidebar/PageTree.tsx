@@ -10,7 +10,7 @@ import { useSWRxV5MigrationStatus } from '~/stores/page-listing';
 
 import ItemsTree from './PageTree/ItemsTree';
 import { PrivateLegacyPagesLink } from './PageTree/PrivateLegacyPagesLink';
-import PageTreeContentSkelton from './Skelton/PageTreeContentSkelton';
+import PageTreeContentSkeleton from './Skeleton/PageTreeContentSkeleton';
 
 const PageTreeHeader = () => {
   const { t } = useTranslation();
@@ -37,7 +37,7 @@ const PageTree: FC = memo(() => {
     return (
       <>
         <PageTreeHeader />
-        <PageTreeContentSkelton />
+        <PageTreeContentSkeleton />
       </>
     );
   }
