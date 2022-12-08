@@ -7,7 +7,6 @@ import { body } from 'express-validator';
 import multer from 'multer';
 
 import GrowiArchiveImportOption from '~/models/admin/growi-archive-import-option';
-import TransferKeyModel from '~/server/models/transfer-key';
 import { isG2GTransferError } from '~/server/models/vo/g2g-transfer-error';
 import { IDataGROWIInfo, uploadConfigKeys, X_GROWI_TRANSFER_KEY_HEADER_NAME } from '~/server/service/g2g-transfer';
 import loggerFactory from '~/utils/logger';
