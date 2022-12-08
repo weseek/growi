@@ -324,9 +324,9 @@ module.exports = (crowi: Crowi): Router => {
   receiveRouter.post('/generate-key', accessTokenParser, adminRequiredIfInstalled, appSiteUrlRequiredIfNotInstalled, async(req: Request, res: ApiV3Response) => {
     const appSiteUrl = req.body.appSiteUrl ?? crowi.configManager?.getConfig('crowi', 'app:siteUrl');
 
-    let appSiteOrigin: string;
+    let appSiteUrlOrigin: string;
     try {
-      appSiteOrigin = new URL(appSiteUrl).origin;
+      appSiteUrlOrigin = new URL(appSiteUrl).origin;
     }
     catch (err) {
       logger.error(err);
@@ -336,7 +336,7 @@ module.exports = (crowi: Crowi): Router => {
     // Save TransferKey document
     let transferKeyString: string;
     try {
-      transferKeyString = await g2gTransferReceiverService.createTransferKey(appSiteOrigin);
+      transferKeyString = await g2gTransferReceiverService.createTransferKey(appSiteUrlOrigin);
     }
     catch (err) {
       logger.error(err);
