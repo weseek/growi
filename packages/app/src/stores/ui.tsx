@@ -267,7 +267,7 @@ export const useSidebarCollapsed = (initialData?: boolean): SWRResponse<boolean,
 };
 
 export const useCurrentSidebarContents = (initialData?: SidebarContentsType): SWRResponse<SidebarContentsType, Error> => {
-  return useStaticSWR('sidebarContents', initialData, { fallbackData: SidebarContentsType.TREE });
+  return useStaticSWR('sidebarContents', initialData, { fallbackData: SidebarContentsType.CUSTOM });
 };
 
 export const useCurrentProductNavWidth = (initialData?: number): SWRResponse<number, Error> => {
