@@ -1,6 +1,6 @@
-@use '../../styles/variables' as *;
-@use '../../styles/bootstrap/variables' as *;
-@use '../../styles/theme/mixins/page-editor-mode-manager';
+@use './variables' as *;
+@use './bootstrap/variables' as *;
+@use './theme/mixins/page-editor-mode-manager';
 
 $themecolor: #aa4a04;
 $themelight: #f0f8ff;
@@ -28,9 +28,7 @@ $light: lighten($secondary, 10%);
 }
 
 
-//== Light Mode
-//
-:root .theme-halloween {
+:root[data-theme] {
   // Background colors
   $bgcolor-global: #050000;
   $bgcolor-inline-code: #1f1f22; //optional
@@ -101,8 +99,8 @@ $light: lighten($secondary, 10%);
   // admin theme box
   $color-theme-color-box: lighten($primary, 20%);
 
-  @import '../../styles/theme/apply-colors';
-  @import '../../styles/theme/apply-colors-dark';
+  @import './theme/apply-colors';
+  @import './theme/apply-colors-dark';
 
   .grw-navbar {
     background-image: url('/images/themes/halloween/halloween-navbar.jpg') !important;

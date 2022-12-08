@@ -5,7 +5,7 @@ export default defineConfig({
   build: {
     manifest: true,
     rollupOptions: {
-      input: ['/client-entry.tsx'],
+      input: ['/src/halloween.tsx'],
     },
   },
 });
