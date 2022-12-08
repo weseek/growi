@@ -2,7 +2,7 @@ import React from 'react';
 
 import { Skeleton } from '~/components/Skeleton';
 
-import styles from './SidebarHeaderSkeleton.module.scss';
+import styles from './SidebarSkeleton.module.scss';
 
 const SidebarHeaderSkeleton = (): JSX.Element => {
   return (

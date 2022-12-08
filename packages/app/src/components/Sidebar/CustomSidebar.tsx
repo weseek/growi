@@ -11,6 +11,7 @@ import loggerFactory from '~/utils/logger';
 import RevisionRenderer from '../Page/RevisionRenderer';
 
 import { SidebarHeaderReloadButton } from './SidebarHeaderReloadButton';
+import CustomSidebarContentSkeleton from './Skeleton/CustomSidebarContentSkeleton';
 
 import styles from './CustomSidebar.module.scss';
 
@@ -53,9 +54,7 @@ const CustomSidebar: FC = () => {
 
       {
         isLoading && (
-          <div className="text-muted text-center">
-            <i className="fa fa-2x fa-spinner fa-pulse mr-1"></i>
-          </div>
+          <CustomSidebarContentSkeleton />
         )
       }
 

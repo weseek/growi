@@ -17,6 +17,7 @@ import FormattedDistanceDate from '../FormattedDistanceDate';
 
 import InfiniteScroll from './InfiniteScroll';
 import { SidebarHeaderReloadButton } from './SidebarHeaderReloadButton';
+import RecentChangesContentSkeleton from './Skeleton/RecentChangesContentSkeleton';
 
 import TagLabelsStyles from '../Page/TagLabels.module.scss';
 import styles from './RecentChanges.module.scss';
@@ -177,21 +178,25 @@ const RecentChanges = (): JSX.Element => {
           </div>
         </div>
       </div>
-      <div className="grw-recent-changes p-3">
-        <ul className="list-group list-group-flush">
-          <InfiniteScroll
-            swrInifiniteResponse={swr}
-            isReachingEnd={isReachingEnd}
-          >
-            {pages => pages.map(page => (
-              isRecentChangesSidebarSmall
-                ? <SmallPageItem key={page._id} page={page} />
-                : <LargePageItem key={page._id} page={page} />
-            ))
-            }
-          </InfiniteScroll>
-        </ul>
-      </div>
+      {
+        isLoading ? <RecentChangesContentSkeleton /> : (
+          <div className="grw-recent-changes p-3">
+            <ul className="list-group list-group-flush">
+              <InfiniteScroll
+                swrInifiniteResponse={swr}
+                isReachingEnd={isReachingEnd}
+              >
+                {pages => pages.map(page => (
+                  isRecentChangesSidebarSmall
+                    ? <SmallPageItem key={page._id} page={page} />
+                    : <LargePageItem key={page._id} page={page} />
+                ))
+                }
+              </InfiniteScroll>
+            </ul>
+          </div>
+        )
+      }
     </div>
   );
 

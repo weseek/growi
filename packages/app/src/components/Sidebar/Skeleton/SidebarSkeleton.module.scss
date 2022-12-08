@@ -1,0 +1,44 @@
+$h3-line-height: 30px;
+$h5-line-height: 18px;
+
+.grw-sidebar-content-header-skeleton {
+  max-width: 160px;
+  height: $h3-line-height;
+  padding: (($h3-line-height - 16px) / 2) 0;
+}
+
+.grw-sidebar-skeleton-text {
+  height: 1rem;
+}
+
+.grw-sidebar-skeleton-text-medium {
+  max-width: 120px;
+  height: 1rem;
+}
+
+.grw-sidebar-skeleton-text-large {
+  max-width: 200px;
+  height: 1rem;
+}
+
+.grw-sidebar-skeleton-text-full {
+  max-width: 100%;
+  height: 1rem;
+}
+
+.grw-skeleton-h3 {
+  max-width: 160px;
+  height: $h5-line-height;
+  padding: (($h5-line-height - 14px) / 2) 0;
+}
+
+.grw-skeleton-h5 {
+  max-width: 160px;
+  height: $h5-line-height;
+  padding: (($h5-line-height - 16px) / 2) 0;
+}
+
+.grw-sidebar-skeleton-recent-changes-icons {
+  width: 80px;
+  height: 1rem;
+}

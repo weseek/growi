@@ -10,6 +10,7 @@ import TagCloudBox from '../TagCloudBox';
 import TagList from '../TagList';
 
 import { SidebarHeaderReloadButton } from './SidebarHeaderReloadButton';
+import TagContentSkeleton from './Skeleton/TagContentSkeleton';
 
 
 const PAGING_LIMIT = 10;
@@ -53,9 +54,7 @@ const Tag: FC = () => {
 
       { isLoading
         ? (
-          <div className="text-muted text-center">
-            <i className="fa fa-2x fa-spinner fa-pulse mt-3"></i>
-          </div>
+          <TagContentSkeleton />
         )
         : (
           <div data-testid="grw-tags-list">
