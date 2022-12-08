@@ -281,7 +281,7 @@ jobs:
         spec: '${{ steps.determine-spec-exp.outputs.value }}'
         start: yarn server
         wait-on: 'http://localhost:3000'
-        config: video=${{ inputs.cypress-config-video }}
+        config: video=${{ inputs.cypress-config-video }},screenshotsFolder=packages/app/test/cypress/screenshots/${{ matrix.spec-group }}
       env:
         MONGO_URI: mongodb://localhost:${{ job.services.mongodb.ports['27017'] }}/growi-vrt
         ELASTICSEARCH_URI: http://localhost:${{ job.services.elasticsearch.ports['9200'] }}/growi
