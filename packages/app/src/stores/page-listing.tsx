@@ -153,6 +153,7 @@ export const useSWRxPageAncestorsChildren = (
 ): SWRResponse<AncestorsChildrenResult, Error> => {
   const { data: termNumber } = usePageTreeTermManager();
 
+  // HACKME: Consider using global mutation from useSWRConfig and not to use term number -- 2022/12/08 @hakumizuki
   const prevTermNumber = termNumber ? termNumber - 1 : 0;
   const prevSWRRes = useSWRImmutable(path ? [`/page-listing/ancestors-children?path=${path}`, prevTermNumber] : null);
 
