@@ -141,65 +141,6 @@
   }
 }
 
-@mixin button-svg-icon-variant($background, $hover-background: darken($background, 7.5%), $active-background: darken($background, 10%)) {
-  svg {
-    fill: color-yiq($background);
-  }
-
-  @include bs.hover() {
-    svg {
-      fill: color-yiq($hover-background);
-    }
-  }
-
-  &:focus,
-  &.focus {
-    svg {
-      fill: color-yiq($hover-background);
-    }
-  }
-
-  // Disabled comes first so active can properly restyle
-  &.disabled,
-  &:disabled {
-    svg {
-      fill: color-yiq($background);
-    }
-  }
-
-  &:not(:disabled):not(.disabled):active,
-  &:not(:disabled):not(.disabled).active,
-  .show > &.dropdown-toggle {
-    svg {
-      fill: color-yiq($active-background);
-    }
-  }
-}
-
-@mixin button-outline-svg-icon-variant($value, $color-hover: $value) {
-  svg {
-    fill: $value;
-  }
-  @include bs.hover() {
-    svg {
-      fill: $color-hover;
-    }
-  }
-  &.disabled,
-  &:disabled {
-    svg {
-      fill: $value;
-    }
-  }
-  &:not(:disabled):not(.disabled):active,
-  &:not(:disabled):not(.disabled).active,
-  .show > &.dropdown-toggle {
-    svg {
-      fill: $color-hover;
-    }
-  }
-}
-
 @mixin overlay-processing-style($additionalSelector, $contentFontSize: inherit, $contentPadding: inherit) {
   .overlay.#{$additionalSelector} {
     background: rgba(255, 255, 255, 0.5);
