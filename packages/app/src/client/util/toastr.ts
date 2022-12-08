@@ -1,15 +1,14 @@
-// pre-configured toastr
-
-import { toast, ToastOptions } from 'react-toastify';
+import { toast, ToastContent, ToastOptions } from 'react-toastify';
 import * as toastrLegacy from 'toastr';
 
 import { toArrayIfNot } from '~/utils/array-utils';
+
 
 export const toastErrorOption: ToastOptions = {
   autoClose: 0,
   closeButton: true,
 };
-export const toastError = (err: Error | Error[], option: ToastOptions = toastErrorOption): void => {
+export const toastError = (err: string | Error | Error[], option: ToastOptions = toastErrorOption): void => {
   const errs = toArrayIfNot(err);
 
   if (errs.length === 0) {
@@ -17,7 +16,8 @@ export const toastError = (err: Error | Error[], option: ToastOptions = toastErr
   }
 
   for (const err of errs) {
-    toast.error(err.message || err, option);
+    const message = (typeof err === 'string') ? err : err.message;
+    toast.error(message || err, option);
   }
 };
 
@@ -25,7 +25,7 @@ export const toastSuccessOption: ToastOptions = {
   autoClose: 2000,
   closeButton: true,
 };
-export const toastSuccess = (content: unknown, option: ToastOptions = toastSuccessOption): void => {
+export const toastSuccess = (content: ToastContent, option: ToastOptions = toastSuccessOption): void => {
   toast.success(content, option);
 };
 
@@ -33,7 +33,7 @@ export const toastWarningOption: ToastOptions = {
   autoClose: 5000,
   closeButton: true,
 };
-export const toastWarning = (content: unknown, option: ToastOptions = toastWarningOption): void => {
+export const toastWarning = (content: ToastContent, option: ToastOptions = toastWarningOption): void => {
   toastrLegacy.warning(content, option);
 };
 
@@ -67,7 +67,7 @@ const toastrLegacyOption = {
 
 export const legacy = {
   // accepts both a single error and an array of errors
-  toastError: (err: Error | Error[], header = 'Error', option = toastrLegacyOption.error): void => {
+  toastError: (err: string | Error | Error[], header = 'Error', option = toastrLegacyOption.error): void => {
     const errs = toArrayIfNot(err);
 
     if (errs.length === 0) {
@@ -75,7 +75,8 @@ export const legacy = {
     }
 
     for (const err of errs) {
-      toastrLegacy.error(err.message || err, header, option);
+      const message = (typeof err === 'string') ? err : err.message;
+      toastrLegacy.error(message || err, header, option);
     }
   },
 
