@@ -1,0 +1,10 @@
+.grw-bookmark-folder-dropdown :global {
+  .grw-bookmark-folder-menu {
+    .grw-bookmark-folder-menu-item {
+      svg,
+      .grw-bookmark-folder-menu-toggle-btn svg {
+        background-color: transparent;
+      }
+    }
+  }
+}
