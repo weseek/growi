@@ -129,14 +129,6 @@ module.exports = (crowi: Crowi): Router => {
       return res.apiv3Err(new ErrorV3('Transfer key has expired or not found.', 'transfer_key_expired_or_not_found'), 404);
     }
 
-    try {
-      TransferKey.parse(transferKey.keyString);
-    }
-    catch (err) {
-      logger.error(err);
-      return res.apiv3Err(new ErrorV3('Transfer key is invalid.', 'invalid_transfer_key'), 500);
-    }
-
     next();
   };
 
