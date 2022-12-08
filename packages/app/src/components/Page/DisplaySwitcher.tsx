@@ -12,7 +12,9 @@ import {
 } from '~/stores/context';
 import { useDescendantsPageListModal } from '~/stores/modal';
 import { useCurrentPagePath, useSWRxCurrentPage } from '~/stores/page';
-import { useRemoteRevisionId, useRemoteRevisionLastUpdatUser } from '~/stores/remote-latest-page';
+import {
+  useRemoteRevisionBody, useRemoteRevisionId, useRemoteRevisionLastUpdatedAt, useRemoteRevisionLastUpdatUser,
+} from '~/stores/remote-latest-page';
 import { EditorMode, useEditorMode } from '~/stores/ui';
 import { useGlobalSocket } from '~/stores/websocket';
 
@@ -49,6 +51,8 @@ const PageView = React.memo((): JSX.Element => {
   const { open: openDescendantPageListModal } = useDescendantsPageListModal();
   const { mutate: mutateRemoteRevisionId } = useRemoteRevisionId();
   const { mutate: mutateRemoteRevisionLastUpdateUser } = useRemoteRevisionLastUpdatUser();
+  const { mutate: mutateRemoteRevisionBody } = useRemoteRevisionBody();
+  const { mutate: mutateRemoteRevisionLastUpdatedAt } = useRemoteRevisionLastUpdatedAt();
 
   const isTopPagePath = isTopPage(currentPagePath ?? '');
   const isUsersHomePagePath = isUsersHomePage(currentPagePath ?? '');
@@ -59,8 +63,10 @@ const PageView = React.memo((): JSX.Element => {
     const { s2cMessagePageUpdated } = data;
 
     mutateRemoteRevisionId(s2cMessagePageUpdated.revisionId);
+    mutateRemoteRevisionBody(s2cMessagePageUpdated.revisionBody);
     mutateRemoteRevisionLastUpdateUser(s2cMessagePageUpdated.remoteLastUpdateUser);
-  }, [mutateRemoteRevisionId, mutateRemoteRevisionLastUpdateUser]);
+    mutateRemoteRevisionLastUpdatedAt(s2cMessagePageUpdated.revisionUpdateAt);
+  }, [mutateRemoteRevisionBody, mutateRemoteRevisionId, mutateRemoteRevisionLastUpdateUser, mutateRemoteRevisionLastUpdatedAt]);
 
   // listen socket for someone updating this page
   useEffect(() => {
