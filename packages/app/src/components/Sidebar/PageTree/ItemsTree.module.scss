@@ -6,13 +6,13 @@ $grw-pagetree-item-container-height: 40px;
 
 .grw-pagetree {
 
-  .grw-pagetree-item-skelton {
+  .grw-pagetree-item-skeleton {
     width: 100%;
     height: $grw-pagetree-item-container-height;
     padding: (($grw-pagetree-item-container-height - 16px) / 2) $grw-pagetree-item-padding-left;
   }
 
-  .grw-pagetree-item-skelton-children {
+  .grw-pagetree-item-skeleton-children {
     padding-left: $grw-pagetree-item-padding-left * 2;
   }
 
