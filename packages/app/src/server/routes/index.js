@@ -56,11 +56,10 @@ module.exports = function(crowi, app) {
   const unavailableWhenMaintenanceMode = generateUnavailableWhenMaintenanceModeMiddleware(crowi);
   const unavailableWhenMaintenanceModeForApi = generateUnavailableWhenMaintenanceModeMiddlewareForApi(crowi);
 
-  const isInstalled = crowi.configManager.getConfig('crowi', 'app:installed');
 
   /* eslint-disable max-len, comma-spacing, no-multi-spaces */
 
-  const [apiV3Router, apiV3AdminRouter, apiV3AuthRouter] = require('./apiv3')(crowi, app, isInstalled);
+  const [apiV3Router, apiV3AdminRouter, apiV3AuthRouter] = require('./apiv3')(crowi, app);
 
   app.use('/api-docs', require('./apiv3/docs')(crowi, app));
 
@@ -82,8 +81,6 @@ module.exports = function(crowi, app) {
   app.get('/invited'                  , applicationInstalled, next.delegateToNext);
   // app.post('/login'                   , applicationInstalled, loginFormValidator.loginRules(), loginFormValidator.loginValidation, csrfProtection,  addActivity, loginPassport.loginWithLocal, loginPassport.loginWithLdap, loginPassport.loginFailure);
 
-  app.get('/register'                 , applicationInstalled, login.preLogin, login.register);
-
   // NOTE: get method "/admin/export/:fileName" should be loaded before "/admin/*"
   app.get('/admin/export/:fileName'   , loginRequiredStrictly , adminRequired ,admin.export.api.validators.export.download(), admin.export.download);
 
@@ -91,23 +88,20 @@ module.exports = function(crowi, app) {
   app.get('/admin'                    , applicationInstalled, loginRequiredStrictly , adminRequired , next.delegateToNext);
 
   // installer
-  if (!isInstalled) {
-    app.get('/installer'              , applicationNotInstalled, next.delegateToNext);
-    return;
-  }
+  app.get('/installer'                , applicationNotInstalled, next.delegateToNext);
 
   // OAuth
-  app.get('/passport/google'                      , loginPassport.loginWithGoogle, loginPassport.loginFailure);
-  app.get('/passport/github'                      , loginPassport.loginWithGitHub, loginPassport.loginFailure);
-  app.get('/passport/twitter'                     , loginPassport.loginWithTwitter, loginPassport.loginFailure);
-  app.get('/passport/oidc'                        , loginPassport.loginWithOidc, loginPassport.loginFailure);
-  app.get('/passport/saml'                        , loginPassport.loginWithSaml, loginPassport.loginFailure);
-  app.get('/passport/basic'                       , loginPassport.loginWithBasic, loginPassport.loginFailure);
-  app.get('/passport/google/callback'             , loginPassport.loginPassportGoogleCallback   , loginPassport.loginFailure);
-  app.get('/passport/github/callback'             , loginPassport.loginPassportGitHubCallback   , loginPassport.loginFailure);
-  app.get('/passport/twitter/callback'            , loginPassport.loginPassportTwitterCallback  , loginPassport.loginFailure);
-  app.get('/passport/oidc/callback'               , loginPassport.loginPassportOidcCallback     , loginPassport.loginFailure);
-  app.post('/passport/saml/callback'              , addActivity, loginPassport.loginPassportSamlCallback, loginPassport.loginFailure);
+  app.get('/passport/google'                      , loginPassport.loginWithGoogle, loginPassport.loginFailureForExternalAccount);
+  app.get('/passport/github'                      , loginPassport.loginWithGitHub, loginPassport.loginFailureForExternalAccount);
+  app.get('/passport/twitter'                     , loginPassport.loginWithTwitter, loginPassport.loginFailureForExternalAccount);
+  app.get('/passport/oidc'                        , loginPassport.loginWithOidc, loginPassport.loginFailureForExternalAccount);
+  app.get('/passport/saml'                        , loginPassport.loginWithSaml, loginPassport.loginFailureForExternalAccount);
+  app.get('/passport/basic'                       , loginPassport.loginWithBasic, loginPassport.loginFailureForExternalAccount);
+  app.get('/passport/google/callback'             , loginPassport.loginPassportGoogleCallback   , loginPassport.loginFailureForExternalAccount);
+  app.get('/passport/github/callback'             , loginPassport.loginPassportGitHubCallback   , loginPassport.loginFailureForExternalAccount);
+  app.get('/passport/twitter/callback'            , loginPassport.loginPassportTwitterCallback  , loginPassport.loginFailureForExternalAccount);
+  app.get('/passport/oidc/callback'               , loginPassport.loginPassportOidcCallback     , loginPassport.loginFailureForExternalAccount);
+  app.post('/passport/saml/callback'              , addActivity, loginPassport.loginPassportSamlCallback, loginPassport.loginFailureForExternalAccount);
 
   app.post('/_api/login/testLdap'    , loginRequiredStrictly , loginFormValidator.loginRules() , loginFormValidator.loginValidation , loginPassport.testLdapCredentials);
 

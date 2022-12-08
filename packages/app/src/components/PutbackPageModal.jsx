@@ -9,6 +9,7 @@ import {
 import { apiPost } from '~/client/util/apiv1-client';
 import { PathAlreadyExistsError } from '~/server/models/errors';
 import { usePutBackPageModal } from '~/stores/modal';
+import { usePageInfoTermManager } from '~/stores/page';
 
 import ApiErrorMessageList from './PageManagement/ApiErrorMessageList';
 
@@ -16,6 +17,7 @@ const PutBackPageModal = () => {
   const { t } = useTranslation();
 
   const { data: pageDataToRevert, close: closePutBackPageModal } = usePutBackPageModal();
+  const { advance: advancePi } = usePageInfoTermManager();
   const { isOpened, page } = pageDataToRevert;
   const { pageId, path } = page;
   const onPutBacked = pageDataToRevert.opts?.onPutBacked;
@@ -41,6 +43,7 @@ const PutBackPageModal = () => {
         page_id: pageId,
         recursively,
       });
+      advancePi();
 
       if (onPutBacked != null) {
         onPutBacked(response.page.path);
@@ -113,7 +116,7 @@ const PutBackPageModal = () => {
   }, [closePutBackPageModal]);
 
   return (
-    <Modal isOpen={isOpened} toggle={closeModalHandler} className="grw-create-page">
+    <Modal isOpen={isOpened} toggle={closeModalHandler}>
       <ModalHeader tag="h4" toggle={closeModalHandler} className="bg-info text-light">
         <HeaderContent/>
       </ModalHeader>

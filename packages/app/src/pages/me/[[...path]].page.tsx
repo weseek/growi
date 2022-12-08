@@ -1,8 +1,6 @@
 import React, { useMemo } from 'react';
 
-import {
-  IUser, IUserHasId,
-} from '@growi/core';
+import { IUserHasId } from '@growi/core';
 import { model as mongooseModel } from 'mongoose';
 import {
   NextPage, GetServerSideProps, GetServerSidePropsContext,
@@ -14,6 +12,7 @@ import { useRouter } from 'next/router';
 
 import { BasicLayout } from '~/components/Layout/BasicLayout';
 import { CrowiRequest } from '~/interfaces/crowi-request';
+import type { RendererConfig } from '~/interfaces/services/renderer';
 import { ISidebarConfig } from '~/interfaces/sidebar-config';
 import { IUserUISettings } from '~/interfaces/user-ui-settings';
 import { UserUISettingsModel } from '~/server/models/user-ui-settings';
@@ -21,7 +20,7 @@ import {
   useCurrentUser, useIsSearchPage,
   useIsSearchServiceConfigured, useIsSearchServiceReachable,
   useCsrfToken, useIsSearchScopeChildrenAsDefault,
-  useRegistrationWhiteList, useShowPageLimitationXL,
+  useRegistrationWhiteList, useShowPageLimitationXL, useRendererConfig,
 } from '~/stores/context';
 import {
   usePreferDrawerModeByUser, usePreferDrawerModeOnEditByUser, useSidebarCollapsed, useCurrentSidebarContents, useCurrentProductNavWidth,
@@ -36,12 +35,12 @@ import {
 const logger = loggerFactory('growi:pages:me');
 
 type Props = CommonProps & {
-  currentUser: IUser,
   isSearchServiceConfigured: boolean,
   isSearchServiceReachable: boolean,
   isSearchScopeChildrenAsDefault: boolean,
   userUISettings?: IUserUISettings
   sidebarConfig: ISidebarConfig,
+  rendererConfig: RendererConfig,
   showPageLimitationXL: number,
 
   // config
@@ -56,7 +55,7 @@ const InAppNotificationPage = dynamic(
 
 const MePage: NextPage<Props> = (props: Props) => {
   const router = useRouter();
-  const { t } = useTranslation();
+  const { t } = useTranslation(['translation', 'commons']);
   const { path } = router.query;
   const pagePathKeys: string[] = Array.isArray(path) ? path : ['personal-settings'];
 
@@ -71,7 +70,7 @@ const MePage: NextPage<Props> = (props: Props) => {
       //   component: <MyDraftList />,
       // },
       'all-in-app-notifications': {
-        title: t('in_app_notification.notification_list'),
+        title: t('commons:in_app_notification.notification_list'),
         component: <InAppNotificationPage />,
       },
     };
@@ -96,17 +95,19 @@ const MePage: NextPage<Props> = (props: Props) => {
   // commons
   useCsrfToken(props.csrfToken);
 
-  // // UserUISettings
+  // UserUISettings
   usePreferDrawerModeByUser(props.userUISettings?.preferDrawerModeByUser ?? props.sidebarConfig.isSidebarDrawerMode);
   usePreferDrawerModeOnEditByUser(props.userUISettings?.preferDrawerModeOnEditByUser);
   useSidebarCollapsed(props.userUISettings?.isSidebarCollapsed ?? props.sidebarConfig.isSidebarClosedAtDockMode);
   useCurrentSidebarContents(props.userUISettings?.currentSidebarContents);
   useCurrentProductNavWidth(props.userUISettings?.currentProductNavWidth);
 
-  // // page
+  // page
   useIsSearchServiceConfigured(props.isSearchServiceConfigured);
   useIsSearchServiceReachable(props.isSearchServiceReachable);
   useIsSearchScopeChildrenAsDefault(props.isSearchScopeChildrenAsDefault);
+
+  useRendererConfig(props.rendererConfig);
 
   return (
     <>
@@ -161,6 +162,22 @@ async function injectServerConfigurations(context: GetServerSidePropsContext, pr
   props.sidebarConfig = {
     isSidebarDrawerMode: configManager.getConfig('crowi', 'customize:isSidebarDrawerMode'),
     isSidebarClosedAtDockMode: configManager.getConfig('crowi', 'customize:isSidebarClosedAtDockMode'),
+  };
+
+  props.rendererConfig = {
+    isEnabledLinebreaks: configManager.getConfig('markdown', 'markdown:isEnabledLinebreaks'),
+    isEnabledLinebreaksInComments: configManager.getConfig('markdown', 'markdown:isEnabledLinebreaksInComments'),
+    adminPreferredIndentSize: configManager.getConfig('markdown', 'markdown:adminPreferredIndentSize'),
+    isIndentSizeForced: configManager.getConfig('markdown', 'markdown:isIndentSizeForced'),
+
+    plantumlUri: process.env.PLANTUML_URI ?? null,
+    blockdiagUri: process.env.BLOCKDIAG_URI ?? null,
+
+    // XSS Options
+    isEnabledXssPrevention: configManager.getConfig('markdown', 'markdown:xss:isEnabledPrevention'),
+    attrWhiteList: crowi.xssService.getAttrWhiteList(),
+    tagWhiteList: crowi.xssService.getTagWhiteList(),
+    highlightJsStyleBorder: crowi.configManager.getConfig('crowi', 'customize:highlightJsStyleBorder'),
   };
 }
 

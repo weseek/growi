@@ -73,7 +73,7 @@ export const PrivateLegacyPagesMigrationModal = (): JSX.Element => {
   };
 
   return (
-    <Modal size="lg" isOpen={isOpened} toggle={close} className="grw-create-page">
+    <Modal size="lg" isOpen={isOpened} toggle={close}>
       <ModalHeader tag="h4" toggle={close} className="bg-primary text-light">
         { t('private_legacy_pages.modal.title') }
       </ModalHeader>

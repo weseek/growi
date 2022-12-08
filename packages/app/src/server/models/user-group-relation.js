@@ -93,6 +93,15 @@ class UserGroupRelation {
       .exec();
   }
 
+  static async findAllUserIdsForUserGroup(userGroup) {
+    const relations = await this
+      .find({ relatedGroup: userGroup })
+      .select('relatedUser')
+      .exec();
+
+    return relations.map(r => r.relatedUser);
+  }
+
   /**
    * find all user and group relation of UserGroups
    *

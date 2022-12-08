@@ -3,7 +3,6 @@ import React, {
 } from 'react';
 
 import { IRevisionHasId, isPopulated, getIdForRef } from '@growi/core';
-import dynamic from 'next/dynamic';
 import { Button } from 'reactstrap';
 
 import { toastError } from '~/client/util/apiNotification';
@@ -15,17 +14,11 @@ import { ICommentHasId, ICommentHasIdList } from '../interfaces/comment';
 import { useSWRxPageComment } from '../stores/comment';
 
 import { Comment } from './PageComment/Comment';
-import { CommentEditorProps } from './PageComment/CommentEditor';
-import { DeleteCommentModalProps } from './PageComment/DeleteCommentModal';
+import { CommentEditor } from './PageComment/CommentEditor';
+import { DeleteCommentModal } from './PageComment/DeleteCommentModal';
 import { ReplyComments } from './PageComment/ReplyComments';
-import { PageCommentSkelton } from './PageCommentSkelton';
 
 import styles from './PageComment.module.scss';
-
-const CommentEditor = dynamic<CommentEditorProps>(() => import('./PageComment/CommentEditor').then(mod => mod.CommentEditor), { ssr: false });
-const DeleteCommentModal = dynamic<DeleteCommentModalProps>(
-  () => import('./PageComment/DeleteCommentModal').then(mod => mod.DeleteCommentModal), { ssr: false },
-);
 
 export const ROOT_ELEM_ID = 'page-comments' as const;
 
@@ -38,6 +31,7 @@ const PageCommentRoot = (props: React.HTMLAttributes<HTMLDivElement>): JSX.Eleme
 export type PageCommentProps = {
   rendererOptions?: RendererOptions,
   pageId: string,
+  pagePath: string,
   revision: string | IRevisionHasId,
   currentUser: any,
   isReadOnly: boolean,
@@ -49,7 +43,7 @@ export const PageComment: FC<PageCommentProps> = memo((props:PageCommentProps): 
 
   const {
     rendererOptions: rendererOptionsByProps,
-    pageId, revision, currentUser, isReadOnly, titleAlign, hideIfEmpty,
+    pageId, pagePath, revision, currentUser, isReadOnly, titleAlign, hideIfEmpty,
   } = props;
 
   const { data: comments, mutate } = useSWRxPageComment(pageId);
@@ -123,7 +117,7 @@ export const PageComment: FC<PageCommentProps> = memo((props:PageCommentProps): 
       return <PageCommentRoot />;
     }
     return (
-      <PageCommentSkelton commentTitleClasses={commentTitleClasses}/>
+      <></>
     );
   }
 
@@ -138,6 +132,8 @@ export const PageComment: FC<PageCommentProps> = memo((props:PageCommentProps): 
       revisionCreatedAt={revisionCreatedAt as Date}
       currentUser={currentUser}
       isReadOnly={isReadOnly}
+      pageId={pageId}
+      pagePath={pagePath}
       deleteBtnClicked={onClickDeleteButton}
       onComment={mutate}
     />
@@ -151,6 +147,8 @@ export const PageComment: FC<PageCommentProps> = memo((props:PageCommentProps): 
       revisionCreatedAt={revisionCreatedAt as Date}
       currentUser={currentUser}
       replyList={replyComments}
+      pageId={pageId}
+      pagePath={pagePath}
       deleteBtnClicked={onClickDeleteButton}
       onComment={mutate}
     />
@@ -200,6 +198,7 @@ export const PageComment: FC<PageCommentProps> = memo((props:PageCommentProps): 
                         removeShowEditorId(comment._id);
                         mutate();
                       }}
+                      revisionId={revisionId}
                     />
                   )}
                 </div>

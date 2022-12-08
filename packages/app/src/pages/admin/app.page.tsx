@@ -6,11 +6,14 @@ import { useTranslation } from 'next-i18next';
 import dynamic from 'next/dynamic';
 import { Container, Provider } from 'unstated';
 
+
 import AdminAppContainer from '~/client/services/AdminAppContainer';
 import { CommonProps, useCustomTitle } from '~/pages/utils/commons';
+import { useCurrentUser } from '~/stores/context';
 import { useIsMaintenanceMode } from '~/stores/maintenanceMode';
 
 import { retrieveServerSideProps } from '../../utils/admin-page-util';
+
 
 const AdminLayout = dynamic(() => import('~/components/Layout/AdminLayout'), { ssr: false });
 const AppSettingsPageContents = dynamic(() => import('~/components/Admin/App/AppSettingsPageContents'), { ssr: false });
@@ -19,6 +22,7 @@ const AppSettingsPageContents = dynamic(() => import('~/components/Admin/App/App
 const AdminAppPage: NextPage<CommonProps> = (props) => {
   const { t } = useTranslation('commons');
   useIsMaintenanceMode(props.isMaintenanceMode);
+  useCurrentUser(props.currentUser ?? null);
 
   const title = t('headers.app_settings');
   const injectableContainers: Container<any>[] = [];

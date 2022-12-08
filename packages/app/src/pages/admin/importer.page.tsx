@@ -8,6 +8,7 @@ import { Container, Provider } from 'unstated';
 
 import AdminImportContainer from '~/client/services/AdminImportContainer';
 import { CommonProps, useCustomTitle } from '~/pages/utils/commons';
+import { useCurrentUser } from '~/stores/context';
 
 import { retrieveServerSideProps } from '../../utils/admin-page-util';
 
@@ -17,6 +18,7 @@ const DataImportPageContents = dynamic(() => import('~/components/Admin/ImportDa
 
 const AdminDataImportPage: NextPage<CommonProps> = (props) => {
   const { t } = useTranslation('admin');
+  useCurrentUser(props.currentUser ?? null);
 
   const title = t('importer_management.import_data');
   const injectableContainers: Container<any>[] = [];

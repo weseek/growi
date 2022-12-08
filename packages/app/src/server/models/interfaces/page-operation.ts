@@ -1,3 +1,5 @@
+import { PageGrant } from '~/interfaces/page';
+
 import { ObjectIdLike } from '../../interfaces/mongoose-utils';
 
 export type IPageForResuming = {
@@ -19,8 +21,23 @@ export type IUserForResuming = {
   _id: ObjectIdLike,
 };
 
+export type IOptionsForUpdate = {
+  grant?: PageGrant,
+  grantUserGroupId?: ObjectIdLike,
+  isSyncRevisionToHackmd?: boolean,
+  overwriteScopesOfDescendants?: boolean,
+};
+
+export type IOptionsForCreate = {
+  format?: string,
+  grantUserGroupId?: ObjectIdLike,
+  grant?: PageGrant,
+  overwriteScopesOfDescendants?: boolean,
+  isSynchronously?: boolean,
+};
+
 export type IOptionsForResuming = {
   updateMetadata?: boolean,
   createRedirectPage?: boolean,
   prevDescendantCount?: number,
-};
+} & IOptionsForUpdate & IOptionsForCreate;

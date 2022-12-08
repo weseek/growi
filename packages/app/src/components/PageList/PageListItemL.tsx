@@ -4,7 +4,7 @@ import React, {
 } from 'react';
 
 
-import { DevidedPagePath } from '@growi/core';
+import { DevidedPagePath, pathUtils } from '@growi/core';
 import { UserPicture, PageListMeta } from '@growi/ui';
 import { format } from 'date-fns';
 import { useTranslation } from 'next-i18next';
@@ -54,6 +54,8 @@ const PageListItemLSubstance: ForwardRefRenderFunction<ISelectable, Props> = (pr
     showPageUpdatedTime,
     onClickItem, onCheckboxChanged, onPageDuplicated, onPageRenamed, onPageDeleted, onPagePutBacked,
   } = props;
+
+  const { returnPathForURL } = pathUtils;
 
   const [likerCount, setLikerCount] = useState(pageData.liker.length);
   const [bookmarkCount, setBookmarkCount] = useState(pageMeta && pageMeta.bookmarkCount ? pageMeta.bookmarkCount : 0);
@@ -160,6 +162,8 @@ const PageListItemLSubstance: ForwardRefRenderFunction<ISelectable, Props> = (pr
   const canRenderESSnippet = elasticSearchResult != null && elasticSearchResult.snippet != null;
   const canRenderRevisionSnippet = revisionShortBody != null;
 
+  const hasBrowsingRights = canRenderESSnippet || canRenderRevisionSnippet;
+
   return (
     <li
       key={pageData._id}
@@ -203,7 +207,7 @@ const PageListItemLSubstance: ForwardRefRenderFunction<ISelectable, Props> = (pr
                 <span className="h5 mb-0">
                   {/* Use permanent links to care for pages with the same name (Cannot use page path url) */}
                   <span className="grw-page-path-hierarchical-link text-break">
-                    <Link href={encodeURI(urljoin('/', pageData._id))} prefetch={false}>
+                    <Link href={returnPathForURL(pageData.path, pageData._id)} prefetch={false}>
                       {shouldDangerouslySetInnerHTMLForPaths
                         ? (
                           <a
@@ -226,7 +230,8 @@ const PageListItemLSubstance: ForwardRefRenderFunction<ISelectable, Props> = (pr
               </div>
 
               {/* doropdown icon includes page control buttons */}
-              <div className="ml-auto">
+              {hasBrowsingRights
+              && <div className="ml-auto">
                 <PageItemControl
                   alignRight
                   pageId={pageData._id}
@@ -240,6 +245,7 @@ const PageListItemLSubstance: ForwardRefRenderFunction<ISelectable, Props> = (pr
                   onClickRevertMenuItem={revertMenuItemClickHandler}
                 />
               </div>
+              }
             </div>
             <div className="page-list-snippet py-1">
               <Clamp lines={2}>
@@ -251,7 +257,7 @@ const PageListItemLSubstance: ForwardRefRenderFunction<ISelectable, Props> = (pr
                   <div data-testid="revision-short-body-in-page-list-item-L">{revisionShortBody}</div>
                 ) }
                 {
-                  !canRenderESSnippet && !canRenderRevisionSnippet && (
+                  !hasBrowsingRights && (
                     <>
                       <i className="icon-exclamation p-1"></i>
                       {t('not_allowed_to_see_this_page')}

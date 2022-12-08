@@ -151,7 +151,7 @@ const PageDuplicateModal = (): JSX.Element => {
   }, [isOpened]);
 
 
-  const bodyContent = () => {
+  const renderBodyContent = () => {
     if (!isOpened || page == null) {
       return <></>;
     }
@@ -238,7 +238,7 @@ const PageDuplicateModal = (): JSX.Element => {
     );
   };
 
-  const footerContent = () => {
+  const renderFooterContent = () => {
     if (!isOpened || page == null) {
       return <></>;
     }
@@ -268,11 +268,10 @@ const PageDuplicateModal = (): JSX.Element => {
         { t('modal_duplicate.label.Duplicate page') }
       </ModalHeader>
       <ModalBody>
-        {bodyContent()}
+        {renderBodyContent()}
       </ModalBody>
       <ModalFooter>
-        <ApiErrorMessageList errs={errs} targetPath={pageNameInput} />
-        {footerContent()}
+        {renderFooterContent()}
       </ModalFooter>
     </Modal>
   );

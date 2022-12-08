@@ -1,12 +1,9 @@
-import { IUser, pagePathUtils } from '@growi/core';
-import { HtmlElementNode } from 'rehype-toc';
+import { IUser } from '@growi/core';
 import { Key, SWRResponse } from 'swr';
 import useSWRImmutable from 'swr/immutable';
 
-
 import { SupportedActionType } from '~/interfaces/activity';
 import { EditorConfig } from '~/interfaces/editor-settings';
-// import { CustomWindow } from '~/interfaces/global';
 import { RendererConfig } from '~/interfaces/services/renderer';
 import { GrowiThemes } from '~/interfaces/theme';
 import InterceptorManager from '~/services/interceptor-manager';
@@ -48,16 +45,12 @@ export const useCurrentUser = (initialData?: Nullable<IUser>): SWRResponse<Nulla
   return useContextSWR<Nullable<IUser>, Error>('currentUser', initialData);
 };
 
-export const useRevisionId = (initialData?: Nullable<any>): SWRResponse<Nullable<any>, Error> => {
-  return useContextSWR<Nullable<any>, Error>('revisionId', initialData);
-};
-
 export const useCurrentPathname = (initialData?: string): SWRResponse<string, Error> => {
   return useContextSWR('currentPathname', initialData);
 };
 
 export const useCurrentPageId = (initialData?: Nullable<string>): SWRResponse<Nullable<string>, Error> => {
-  return useContextSWR<Nullable<string>, Error>('currentPageId', initialData);
+  return useStaticSWR<Nullable<string>, Error>('currentPageId', initialData);
 };
 
 export const useIsIdenticalPath = (initialData?: boolean): SWRResponse<boolean, Error> => {
@@ -72,8 +65,12 @@ export const useIsNotFound = (initialData?: boolean): SWRResponse<boolean, Error
   return useContextSWR<boolean, Error>('isNotFound', initialData, { fallbackData: false });
 };
 
-export const useTemplateTagData = (initialData?: Nullable<string>): SWRResponse<Nullable<string>, Error> => {
-  return useContextSWR<Nullable<string>, Error>('templateTagData', initialData);
+export const useTemplateTagData = (initialData?: string[]): SWRResponse<string[], Error> => {
+  return useContextSWR<string[], Error>('templateTagData', initialData);
+};
+
+export const useTemplateBodyData = (initialData?: string): SWRResponse<string, Error> => {
+  return useContextSWR<string, Error>('templateBodyData', initialData);
 };
 
 export const useIsSharedUser = (initialData?: boolean): SWRResponse<boolean, Error> => {
@@ -92,15 +89,15 @@ export const useRegistrationWhiteList = (initialData?: Nullable<string[]>): SWRR
   return useContextSWR<Nullable<string[]>, Error>('registrationWhiteList', initialData);
 };
 
-export const useDrawioUri = (initialData?: string): SWRResponse<string, Error> => {
-  return useContextSWR('drawioUri', initialData, { fallbackData: 'https://embed.diagrams.net/' });
+export const useDrawioUri = (initialData?: Nullable<string>): SWRResponse<string, Error> => {
+  return useContextSWR('drawioUri', initialData ?? undefined, { fallbackData: 'https://embed.diagrams.net/' });
 };
 
 export const useHackmdUri = (initialData?: Nullable<string>): SWRResponse<Nullable<string>, Error> => {
   return useContextSWR<Nullable<string>, Error>('hackmdUri', initialData);
 };
 
-export const useIsSearchPage = (initialData?: Nullable<any>) : SWRResponse<Nullable<any>, Error> => {
+export const useIsSearchPage = (initialData?: Nullable<boolean>) : SWRResponse<Nullable<boolean>, Error> => {
   return useContextSWR<Nullable<any>, Error>('isSearchPage', initialData);
 };
 
@@ -125,7 +122,7 @@ export const useIsMailerSetup = (initialData?: boolean): SWRResponse<boolean, an
 };
 
 export const useIsSearchScopeChildrenAsDefault = (initialData?: boolean) : SWRResponse<boolean, Error> => {
-  return useContextSWR<boolean, Error>('isSearchScopeChildrenAsDefault', initialData);
+  return useContextSWR<boolean, Error>('isSearchScopeChildrenAsDefault', initialData, { fallbackData: false });
 };
 
 export const useIsSlackConfigured = (initialData?: boolean) : SWRResponse<boolean, Error> => {
@@ -183,10 +180,6 @@ export const useIsAllReplyShown = (initialData?: boolean): SWRResponse<boolean, 
 
 export const useIsBlinkedHeaderAtBoot = (initialData?: boolean): SWRResponse<boolean, Error> => {
   return useContextSWR('isBlinkedAtBoot', initialData, { fallbackData: false });
-};
-
-export const useEditingMarkdown = (initialData?: string): SWRResponse<string, Error> => {
-  return useContextSWR('currentMarkdown', initialData);
 };
 
 export const useIsUploadableImage = (initialData?: boolean): SWRResponse<boolean, Error> => {

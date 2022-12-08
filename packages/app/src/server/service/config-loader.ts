@@ -149,7 +149,7 @@ const ENV_VAR_NAME_TO_CONFIG_INFO = {
     ns:      'crowi',
     key:     'app:drawioUri',
     type:    ValueType.STRING,
-    default: 'https://embed.diagrams.net/',
+    default: null,
   },
   NCHAN_URI: {
     ns:      'crowi',

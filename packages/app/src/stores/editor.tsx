@@ -15,6 +15,11 @@ import { useSWRxTagsInfo } from './page';
 import { useStaticSWR } from './use-static-swr';
 
 
+export const useEditingMarkdown = (initialData?: string): SWRResponse<string, Error> => {
+  return useStaticSWR('editingMarkdown', initialData);
+};
+
+
 type EditorSettingsOperation = {
   update: (updateData: Partial<IEditorSettings>) => Promise<void>,
   turnOffAskingBeforeDownloadLargeFiles: () => void,
@@ -115,5 +120,9 @@ export const usePageTagsForEditors = (pageId: Nullable<string>): SWRResponse<str
 };
 
 export const useIsEnabledUnsavedWarning = (): SWRResponse<boolean, Error> => {
-  return useStaticSWR<boolean, Error>('isEnabledUnsavedWarning', undefined, { fallbackData: false });
+  return useStaticSWR<boolean, Error>('isEnabledUnsavedWarning');
+};
+
+export const useIsConflict = (): SWRResponse<boolean, Error> => {
+  return useStaticSWR<boolean, Error>('isConflict', undefined, { fallbackData: false });
 };

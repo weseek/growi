@@ -35,7 +35,7 @@ const Badge = ({ isEnabled }) => {
     : <span className="badge badge-secondary">{t('external_notification.disabled')}</span>;
 };
 
-const SkeltonListItem = () => (
+const SkeletonListItem = () => (
   <li className="list-group-item">
     <h4 className="mb-2">
       <span className="badge badge-secondary">――</span>
@@ -74,7 +74,7 @@ const LegacySlackIntegrationListItem = ({ isEnabled }) => {
     <li className="list-group-item">
       <h4>
         <Badge isEnabled={isEnabled} />
-        <a href="/admin/slack-integration-legacy" className="ml-2">{t('legacy_slack_integration')}</a>
+        <a href="/admin/slack-integration-legacy" className="ml-2">{t('slack_integration_legacy.slack_integration_legacy')}</a>
       </h4>
       { isEnabled && (
         <ul className="mt-2 pl-4">
@@ -144,7 +144,7 @@ function NotificationSetting(props) {
     <div data-testid="admin-notification">
       <h2 className="admin-setting-header">{t('external_notification.header_status')}</h2>
       <ul className="list-group">
-        { !isMounted && <SkeltonListItem />}
+        { !isMounted && <SkeletonListItem />}
         { isMounted && (
           <>
             <SlackIntegrationListItem isEnabled={isSlackEnabled} currentBotType={currentBotType} />

@@ -28,7 +28,6 @@
   "administrator": "管理者",
   "Tag": "タグ",
   "Tags": "タグ",
-  "New": "作成",
   "Close": "閉じる",
   "Shortcuts": "ショートカット",
   "CustomSidebar": "カスタムサイドバー",
@@ -110,7 +109,6 @@
   "V5 Page Migration": "V5 互換形式 への変換",
   "GROWI.5.0_new_schema": "GROWI.5.0における新スキーマについて",
   "See_more_detail_on_new_schema": "詳しくは<a href='https://docs.growi.org/ja/admin-guide/upgrading/50x.html#新しい-v5-互換形式について' target='_blank'>{{title}}</a><i class='icon-share-alt'></i>を参照ください。",
-  "Site URL settings": "サイトURL設定",
   "external_account_management": "外部アカウント管理",
   "UserGroup": "グループ",
   "Basic Settings": "基本設定",
@@ -134,7 +132,6 @@
   "edited this page": "さんがこのページを編集しました。",
   "List Drafts": "下書き一覧",
   "Deleted Pages": "削除済みページ",
-  "Sign out": "ログアウト",
   "Disassociate": "連携解除",
   "Color mode": "カラーモード",
   "Sidebar mode": "サイドバーモード",
@@ -154,12 +151,6 @@
   "not_allowed_to_see_this_page": "このページは閲覧できません",
   "Confirm": "確認",
   "Successfully requested": "正常に処理を受け付けました",
-  "personal_dropdown": {
-    "color_mode": "カラーモード",
-    "sidebar_mode": "サイドバーモード",
-    "sidebar_mode_editor": "サイドバーモード(編集時)",
-    "use_os_settings": "OS設定を利用する"
-  },
   "form_validation": {
     "error_message": "いくつかの値が設定されていません",
     "required": "%sに値を入力してください",
@@ -242,14 +233,6 @@
   "API Token Settings": "API Token設定",
   "Current API Token": "現在のAPI Token",
   "Update API Token": "API Tokenを更新",
-  "in_app_notification": {
-    "notification_list": "アプリ内通知一覧",
-    "see_all": "通知一覧を見る",
-    "no_notification": "通知はありません",
-    "all": "全て",
-    "unopend": "未読",
-    "mark_all_as_read": "全て既読にする"
-  },
   "in_app_notification_settings": {
     "in_app_notification_settings": "アプリ内通知設定",
     "subscribe_settings": "自動でページをサブスクライブする（通知を受け取る）設定",
@@ -324,7 +307,7 @@
   },
   "page_page": {
     "notice": {
-      "version": "これは現在の版ではありません。",
+      "version": "これは最新のバージョンではありません。",
       "redirected": "リダイレクト元 >>",
       "redirected_period":"",
       "unlinked": "このページへのリダイレクトは削除されました。",

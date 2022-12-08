@@ -23,7 +23,7 @@ import loggerFactory from '~/utils/logger';
 
 import {
   useCurrentPageId, useIsEditable, useIsGuestUser,
-  useIsSharedUser, useIsIdenticalPath, useCurrentUser, useIsNotFound, useShareLinkId,
+  useIsSharedUser, useIsIdenticalPath, useCurrentUser, useShareLinkId, useIsNotFound,
 } from './context';
 import { localStorageMiddleware } from './middlewares/sync-to-storage';
 import { useCurrentPagePath, useIsTrashPage } from './page';
@@ -96,18 +96,27 @@ const getClassNamesByEditorMode = (editorMode: EditorMode | undefined, isSidebar
   return classNames;
 };
 
+export const EditorModeHash = {
+  View: '',
+  Edit: '#edit',
+  HackMD: '#hackmd',
+} as const;
+export type EditorModeHash = typeof EditorModeHash[keyof typeof EditorModeHash];
+
+export const isEditorModeHash = (hash: string): hash is EditorModeHash => Object.values<string>(EditorModeHash).includes(hash);
+
 const updateHashByEditorMode = (newEditorMode: EditorMode) => {
-  const { pathname } = window.location;
+  const { pathname, search } = window.location;
 
   switch (newEditorMode) {
     case EditorMode.View:
-      window.history.replaceState(null, '', pathname);
+      window.history.replaceState(null, '', `${pathname}${search}${EditorModeHash.View}`);
       break;
     case EditorMode.Editor:
-      window.history.replaceState(null, '', `${pathname}#edit`);
+      window.history.replaceState(null, '', `${pathname}${search}${EditorModeHash.Edit}`);
       break;
     case EditorMode.HackMD:
-      window.history.replaceState(null, '', `${pathname}#hackmd`);
+      window.history.replaceState(null, '', `${pathname}${search}${EditorModeHash.HackMD}`);
       break;
   }
 };
@@ -120,9 +129,9 @@ export const determineEditorModeByHash = (): EditorMode => {
   const { hash } = window.location;
 
   switch (hash) {
-    case '#edit':
+    case EditorModeHash.Edit:
       return EditorMode.Editor;
-    case '#hackmd':
+    case EditorModeHash.HackMD:
       return EditorMode.HackMD;
     default:
       return EditorMode.View;
@@ -395,7 +404,6 @@ export const usePageTreeDescCountMap = (initialData?: UpdateDescCountData): SWRR
     update: (newData: UpdateDescCountData) => swrResponse.mutate(new Map([...(swrResponse.data || new Map()), ...newData])),
   };
 };
-
 
 /** **********************************************************
  *                          SWR Hooks

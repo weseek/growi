@@ -1,6 +1,7 @@
 import React from 'react';
 
 import type { IUserHasId, IUser } from '@growi/core';
+import { USER_STATUS } from '@growi/core';
 import { NextPage, GetServerSideProps, GetServerSidePropsContext } from 'next';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import dynamic from 'next/dynamic';
@@ -76,6 +77,17 @@ export const getServerSideProps: GetServerSideProps = async(context: GetServerSi
 
   if (user != null) {
     props.currentUser = user.toObject();
+
+    // Only invited user can access to /invited page
+    if (props.currentUser.status !== USER_STATUS.INVITED) {
+      return {
+        redirect: {
+          permanent: false,
+          destination: '/',
+        },
+      };
+    }
+
   }
 
   await injectServerConfigurations(context, props);
