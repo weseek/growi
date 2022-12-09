@@ -3,7 +3,6 @@ import React, { FC } from 'react';
 import { HasObjectId } from '@growi/core';
 
 import type { IInAppNotification, PaginateResult } from '~/interfaces/in-app-notification';
-import { isIPageSnapshot } from '~/models/serializers/in-app-notification-snapshot/page';
 
 import InAppNotificationElm from './InAppNotificationElm';
 
@@ -27,7 +26,7 @@ const InAppNotificationList: FC<Props> = (props: Props) => {
     );
   }
 
-  const notifications = inAppNotificationData.docs.filter((notification) => { return isIPageSnapshot(notification.snapshot) });
+  const notifications = inAppNotificationData.docs.filter((notification) => { return notification.parsedSnapshot != null });
 
   return (
     <>

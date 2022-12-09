@@ -22,7 +22,7 @@ export const useSWRxInAppNotifications = <Data, Error>(
       const inAppNotificationPaginateResult = response.data as inAppNotificationPaginateResult;
       inAppNotificationPaginateResult.docs.forEach((doc) => {
         try {
-          doc.snapshot = parseSnapshot(doc.snapshot as string);
+          doc.parsedSnapshot = parseSnapshot(doc.snapshot as string);
         }
         catch (err) {
           logger.warn('Failed to parse snapshot', err);
