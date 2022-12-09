@@ -113,12 +113,12 @@ interface Receiver {
   answerGROWIInfo(): Promise<IDataGROWIInfo>
   /**
    * DO NOT USE TransferKeyModel.create() directly, instead, use this method to create a TransferKey document.
-   * This method receives appSiteUrl to create a TransferKey document and returns generated transfer key string.
+   * This method receives appSiteUrlOrigin to create a TransferKey document and returns generated transfer key string.
    * UUID is the same value as the created document's _id.
-   * @param {URL} appSiteUrl URL type appSiteUrl
+   * @param {string} appSiteUrlOrigin GROWI app site URL origin
    * @returns {string} Transfer key string (e.g. http://localhost:3000__grw_internal_tranferkey__<uuid>)
    */
-  createTransferKey(appSiteUrl: URL): Promise<string>
+  createTransferKey(appSiteUrlOrigin: string): Promise<string>
   /**
    * Receive transfer request and import data.
    * @param {Readable} zippedGROWIDataStream
@@ -128,10 +128,10 @@ interface Receiver {
 }
 
 const generateAxiosRequestConfigWithTransferKey = (tk: TransferKey, additionalHeaders: {[key: string]: string} = {}) => {
-  const { appUrl, key } = tk;
+  const { appSiteUrlOrigin, key } = tk;
 
   return {
-    baseURL: appUrl.origin,
+    baseURL: appSiteUrlOrigin,
     headers: {
       ...additionalHeaders,
       [X_GROWI_TRANSFER_KEY_HEADER_NAME]: key,
@@ -502,18 +502,9 @@ export class G2GTransferReceiverService implements Receiver {
     return generateGROWIInfo(this.crowi);
   }
 
-  public async createTransferKey(appSiteUrl: URL): Promise<string> {
+  public async createTransferKey(appSiteUrlOrigin: string): Promise<string> {
     const uuid = new MongooseTypes.ObjectId().toString();
-
-    // Generate transfer key string
-    let transferKeyString: string;
-    try {
-      transferKeyString = TransferKey.generateKeyString(uuid, appSiteUrl);
-    }
-    catch (err) {
-      logger.error(err);
-      throw err;
-    }
+    const transferKeyString = TransferKey.generateKeyString(uuid, appSiteUrlOrigin);
 
     // Save TransferKey document
     let tkd;

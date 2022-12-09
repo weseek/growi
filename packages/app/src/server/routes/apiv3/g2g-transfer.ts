@@ -6,7 +6,6 @@ import express, { NextFunction, Request, Router } from 'express';
 import { body } from 'express-validator';
 import multer from 'multer';
 
-import { SupportedAction } from '~/interfaces/activity';
 import GrowiArchiveImportOption from '~/models/admin/growi-archive-import-option';
 import TransferKeyModel from '~/server/models/transfer-key';
 import { isG2GTransferError } from '~/server/models/vo/g2g-transfer-error';
@@ -110,7 +109,7 @@ module.exports = (crowi: Crowi): Router => {
   };
 
   // Local middleware to check if key is valid or not
-  const verifyAndExtractTransferKey = async(req: Request & { transferKey: TransferKey }, res: ApiV3Response, next: NextFunction) => {
+  const validateTransferKey = async(req: Request, res: ApiV3Response, next: NextFunction) => {
     const key = req.headers[X_GROWI_TRANSFER_KEY_HEADER_NAME];
 
     if (typeof key !== 'string') {
@@ -130,15 +129,6 @@ module.exports = (crowi: Crowi): Router => {
       return res.apiv3Err(new ErrorV3('Transfer key has expired or not found.', 'transfer_key_expired_or_not_found'), 404);
     }
 
-    // Inject transferKey to req
-    try {
-      req.transferKey = TransferKey.parse(transferKey.keyString);
-    }
-    catch (err) {
-      logger.error(err);
-      return res.apiv3Err(new ErrorV3('Transfer key is invalid.', 'invalid_transfer_key'), 500);
-    }
-
     next();
   };
 
@@ -147,14 +137,14 @@ module.exports = (crowi: Crowi): Router => {
   const pushRouter = express.Router();
 
   // eslint-disable-next-line max-len
-  receiveRouter.get('/files', verifyAndExtractTransferKey, async(req: Request & { transferKey: TransferKey, operatorUserId: string }, res: ApiV3Response) => {
+  receiveRouter.get('/files', validateTransferKey, async(req: Request, res: ApiV3Response) => {
     const files = await crowi.fileUploadService.listFiles();
     return res.apiv3({ files });
   });
 
   // Auto import
   // eslint-disable-next-line max-len
-  receiveRouter.post('/', uploads.single('transferDataZipFile'), verifyAndExtractTransferKey, async(req: Request & { transferKey: TransferKey, operatorUserId: string }, res: ApiV3Response) => {
+  receiveRouter.post('/', uploads.single('transferDataZipFile'), validateTransferKey, async(req: Request, res: ApiV3Response) => {
     const { file } = req;
 
     const zipFile = importService.getFile(file.filename);
@@ -284,8 +274,8 @@ module.exports = (crowi: Crowi): Router => {
   });
 
   // This endpoint uses multer's MemoryStorage since the received data should be persisted directly on attachment storage.
-  receiveRouter.post('/attachment', uploadsForAttachment.single('content'), verifyAndExtractTransferKey,
-    async(req: Request & { transferKey: TransferKey }, res: ApiV3Response) => {
+  receiveRouter.post('/attachment', uploadsForAttachment.single('content'), validateTransferKey,
+    async(req: Request, res: ApiV3Response) => {
       const { file } = req;
       const { attachmentMetadata } = req.body;
 
@@ -312,7 +302,7 @@ module.exports = (crowi: Crowi): Router => {
       return res.apiv3({ message: 'Successfully imported attached file.' });
     });
 
-  receiveRouter.get('/growi-info', verifyAndExtractTransferKey, async(req: Request & { transferKey: TransferKey }, res: ApiV3Response) => {
+  receiveRouter.get('/growi-info', validateTransferKey, async(req: Request, res: ApiV3Response) => {
     let growiInfo: IDataGROWIInfo;
     try {
       growiInfo = await g2gTransferReceiverService.answerGROWIInfo();
@@ -332,12 +322,11 @@ module.exports = (crowi: Crowi): Router => {
 
   // eslint-disable-next-line max-len
   receiveRouter.post('/generate-key', accessTokenParser, adminRequiredIfInstalled, appSiteUrlRequiredIfNotInstalled, async(req: Request, res: ApiV3Response) => {
-    const strAppSiteUrl = req.body.appSiteUrl ?? crowi.configManager?.getConfig('crowi', 'app:siteUrl');
+    const appSiteUrl = req.body.appSiteUrl ?? crowi.configManager?.getConfig('crowi', 'app:siteUrl');
 
-    // Generate transfer key string
-    let appSiteUrl: URL;
+    let appSiteUrlOrigin: string;
     try {
-      appSiteUrl = new URL(strAppSiteUrl);
+      appSiteUrlOrigin = new URL(appSiteUrl).origin;
     }
     catch (err) {
       logger.error(err);
@@ -347,7 +336,7 @@ module.exports = (crowi: Crowi): Router => {
     // Save TransferKey document
     let transferKeyString: string;
     try {
-      transferKeyString = await g2gTransferReceiverService.createTransferKey(appSiteUrl);
+      transferKeyString = await g2gTransferReceiverService.createTransferKey(appSiteUrlOrigin);
     }
     catch (err) {
       logger.error(err);
