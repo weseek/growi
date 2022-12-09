@@ -6,10 +6,10 @@ import { HasObjectId } from '@growi/core';
 import { PagePathLabel } from '@growi/ui';
 import { useRouter } from 'next/router';
 
-import { IInAppNotificationOpenable } from '~/client/interfaces/in-app-notification-openable';
-import { IInAppNotification } from '~/interfaces/in-app-notification';
+import type { IInAppNotificationOpenable } from '~/client/interfaces/in-app-notification-openable';
+import type { IInAppNotification } from '~/interfaces/in-app-notification';
+import type { IPageSnapshot } from '~/models/serializers/in-app-notification-snapshot/page';
 
-import { parseSnapshot } from '../../../models/serializers/in-app-notification-snapshot/page';
 import FormattedDistanceDate from '../../FormattedDistanceDate';
 
 interface Props {
@@ -27,7 +27,8 @@ const PageModelNotification: ForwardRefRenderFunction<IInAppNotificationOpenable
 
   const router = useRouter();
 
-  const snapshot = parseSnapshot(notification.snapshot);
+  // Type is determined by type guard in InAppNotificationList.tsx
+  const snapshot = notification.snapshot as IPageSnapshot;
 
   // publish open()
   useImperativeHandle(ref, () => ({
