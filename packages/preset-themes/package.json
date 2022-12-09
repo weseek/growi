@@ -3,11 +3,12 @@
   "description": "GROWI preset themes",
   "version": "6.0.0-RC.9",
   "license": "MIT",
-  "type": "module",
+  "main": "dist/libs/index.js",
   "scripts": {
-    "dev": "vite",
-    "build": "vite build",
-    "build:w": "vite build -w",
+    "build": "yarn build:libs & yarn build:themes",
+    "build:w": "yarn build:libs -w & yarn build:themes -w",
+    "build:libs": "vite -c vite.libs.config.ts build",
+    "build:themes": "vite -c vite.themes.config.ts build",
     "preview": "vite preview"
   },
   "dependencies": {
