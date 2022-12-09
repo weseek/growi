@@ -304,7 +304,9 @@ const GrowiContextualSubNavigation = (props: GrowiContextualSubNavigationProps):
         router.push(path);
       }
       else {
-        reload();
+        // Do not use "router.push(`/${pageId}`)" to avoid `Error: Invariant: attempted to hard navigate to the same URL`
+        // See: https://github.com/weseek/growi/pull/7061
+        router.reload();
       }
     };
     openDeleteModal([pageWithMeta], { onDeleted: deletedHandler });
