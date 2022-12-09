@@ -14,7 +14,7 @@
 // 3. Set an explicit initial text-align value so that we can later use
 //    the `inherit` value on things like `<th>` elements.
 
-& {
+&, body {
   color: $body-color;
   background-color: $body-bg; // 2
 
