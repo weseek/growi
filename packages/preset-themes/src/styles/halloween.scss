@@ -23,7 +23,7 @@ $light: lighten($secondary, 10%);
 .growi:not(.login-page) {
   // add background-image
   .page-editor-preview-container {
-    background-image: url('/images/themes/halloween/halloween.jpg');
+    background-image: url('../images/halloween/halloween.jpg');
   }
 }
 
@@ -102,8 +102,12 @@ $light: lighten($secondary, 10%);
   @import './theme/apply-colors';
   @import './theme/apply-colors-dark';
 
+  &, body {
+    background-image: url('../images/halloween/halloween.jpg');
+  }
+
   .grw-navbar {
-    background-image: url('/images/themes/halloween/halloween-navbar.jpg') !important;
+    background-image: url('../images/halloween/halloween-navbar.jpg') !important;
   }
 
   // Button

@@ -413,7 +413,7 @@ ul.pagination {
     }
     &::after {
       background-color: darken($color-slack, 5%);
-      background-image: url(/images/icons/slack/slack-logo-dark-off.svg);
+      // background-image: url(/images/icons/slack/slack-logo-dark-off.svg); -- should be specified in app -- 2022.12.09 Yuki Takei
     }
   }
 
@@ -423,7 +423,7 @@ ul.pagination {
     }
     &::after {
       background-color: darken($color-slack, 5%);
-      background-image: url(/images/icons/slack/slack-logo-dark-on.svg);
+      // background-image: url(/images/icons/slack/slack-logo-dark-on.svg); -- should be specified in app -- 2022.12.09 Yuki Takei
     }
   }
   .grw-slack-logo svg {
