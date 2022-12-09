@@ -1,6 +1,6 @@
-@use '../../styles/variables' as *;
-@use '../../styles/bootstrap/variables' as *;
-@use '../../styles/theme/mixins/page-editor-mode-manager';
+@use './variables' as *;
+@use './bootstrap/variables' as *;
+@use './theme/mixins/page-editor-mode-manager';
 
 // == Define Bootstrap theme colors
 //
@@ -103,8 +103,8 @@
   // admin theme box
   $color-theme-color-box: lighten($primary, 20%);
 
-  @import '../../styles/theme/apply-colors';
-  @import '../../styles/theme/apply-colors-light';
+  @import './theme/apply-colors';
+  @import './theme/apply-colors-light';
 
   // Button
   .btn-group.grw-page-editor-mode-manager {
@@ -200,8 +200,8 @@
   // admin theme box
   $color-theme-color-box: $primary;
 
-  @import '../../styles/theme/apply-colors';
-  @import '../../styles/theme/apply-colors-dark';
+  @import './theme/apply-colors';
+  @import './theme/apply-colors-dark';
 
   //Button
   .btn-group.grw-page-editor-mode-manager {

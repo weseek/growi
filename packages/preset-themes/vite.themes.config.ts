@@ -7,6 +7,7 @@ export default defineConfig({
     manifest: true,
     rollupOptions: {
       input: [
+        '/src/styles/default.scss',
         '/src/styles/halloween.scss',
       ],
     },
