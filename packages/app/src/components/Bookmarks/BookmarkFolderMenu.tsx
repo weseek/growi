@@ -27,7 +27,7 @@ const BookmarkFolderMenu = (props: Props): JSX.Element => {
   const { children, bookmarkFolders } = props;
   const [isCreateAction, setIsCreateAction] = useState(false);
   const { mutate: mutateChildBookmarkData } = useSWRxBookamrkFolderAndChild(null);
-
+  const [selectedItem, setSelectedItem] = useState<string | null>(null);
 
   const onClickNewBookmarkFolder = useCallback(() => {
     setIsCreateAction(true);
@@ -46,6 +46,10 @@ const BookmarkFolderMenu = (props: Props): JSX.Element => {
     }
 
   }, [mutateChildBookmarkData, t]);
+
+  const onMenuItemClickHandler = useCallback((itemId: string) => {
+    setSelectedItem(itemId);
+  }, []);
 
   return (
     <UncontrolledDropdown className={`grw-bookmark-folder-dropdown ${styles['grw-bookmark-folder-dropdown']}`}>
@@ -68,15 +72,26 @@ const BookmarkFolderMenu = (props: Props): JSX.Element => {
         {bookmarkFolders?.map(folder => (
           <div key={folder._id} >
             { folder.children.length > 0 ? (
-              <div className='dropdown-item grw-bookmark-folder-menu-item' tabIndex={0} role="menuitem">
-                <BookmarkFolderMenuItem item={folder} />
+              <div className='dropdown-item grw-bookmark-folder-menu-item' tabIndex={0} role="menuitem" onClick={() => onMenuItemClickHandler(folder._id)}>
+                <BookmarkFolderMenuItem
+                  isSelected={selectedItem === folder._id}
+                  item={folder}
+                  onSelectedChild={() => setSelectedItem(null)}
+                />
               </div>
             ) : (
-              <DropdownItem toggle={false} className='grw-bookmark-folder-menu-item'>
-                <div className='grw-bookmark-folder-menu-item-title'>
+              <div className='dropdown-item grw-bookmark-folder-menu-item' tabIndex={0} role="menuitem" onClick={() => onMenuItemClickHandler(folder._id)}>
+                <input
+                  type="radio"
+                  checked={selectedItem === folder._id}
+                  name="bookmark-folder-menu-item"
+                  id={`bookmark-folder-menu-item-${folder._id}`}
+                  onChange={e => e.stopPropagation() }
+                />
+                <label htmlFor={`bookmark-folder-menu-item-${folder._id}`} className='p-2 m-0 grw-bookmark-folder-menu-item-title mr-auto'>
                   {folder.name}
-                </div>
-              </DropdownItem>
+                </label>
+              </div>
             )}
           </div>
         ))}

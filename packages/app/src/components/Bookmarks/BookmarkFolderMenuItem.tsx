@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useState } from 'react';
 
 import {
-  DropdownItem, DropdownMenu, DropdownToggle, UncontrolledDropdown, Button,
+  DropdownMenu, DropdownToggle, UncontrolledDropdown,
 } from 'reactstrap';
 
 import { BookmarkFolderItems } from '~/interfaces/bookmark-info';
@@ -12,11 +12,16 @@ import TriangleIcon from '../Icons/TriangleIcon';
 
 type Props ={
   item: BookmarkFolderItems
+  isSelected: boolean
+  onSelectedChild: () => void
 }
 const BookmarkFolderMenuItem = (props: Props):JSX.Element => {
-  const { item } = props;
+  const {
+    item, isSelected, onSelectedChild,
+  } = props;
   const [isOpen, setIsOpen] = useState(false);
   const { data: childFolders, mutate: mutateChildFolders } = useSWRxBookamrkFolderAndChild(item._id);
+  const [selectedItem, setSelectedItem] = useState<string | null>(null);
 
   useEffect(() => {
     if (isOpen) {
@@ -31,6 +36,12 @@ const BookmarkFolderMenuItem = (props: Props):JSX.Element => {
     setIsOpen(!isOpen);
   }, [isOpen]);
 
+  const onClickChildMenuItemHandler = useCallback((e, item) => {
+    e.stopPropagation();
+    setSelectedItem(item._id);
+    onSelectedChild();
+  }, [onSelectedChild]);
+
   return (
     <UncontrolledDropdown
       direction="right"
@@ -39,26 +50,46 @@ const BookmarkFolderMenuItem = (props: Props):JSX.Element => {
       toggle={toggleHandler}
       onMouseLeave={onMouseLeaveHandler}
     >
-      <Button color="transparent" className='pl-0 grw-bookmark-folder-menu-item-title'>
-        {item.name}
-      </Button>
-      <DropdownToggle color="transparent" className='grw-bookmark-folder-menu-toggle-btn'>
+      <div className='d-flex justify-content-start  grw-bookmark-folder-menu-item-title'>
+        <input
+          type="radio"
+          checked={isSelected}
+          name="bookmark-folder-menu-item"
+          id={`bookmark-folder-menu-item-${item._id}`}
+          onChange={e => e.stopPropagation() }
+        />
+        <label htmlFor={`bookmark-folder-menu-item-${item._id}`} className='p-2 m-0'>
+          {item.name}
+        </label>
+      </div>
+      <DropdownToggle color="transparent" className='grw-bookmark-folder-menu-toggle-btn ' onClick={e => e.stopPropagation()}>
         <TriangleIcon/>
       </DropdownToggle>
       { childFolders != null && (
-        <DropdownMenu>
+        <DropdownMenu className='m-0'>
           {childFolders?.map(child => (
             <div key={child._id} >
               {child.children.length > 0 ? (
-                <div className='dropdown-item grw-bookmark-folder-menu-item' tabIndex={0} role="menuitem">
-                  <BookmarkFolderMenuItem item={child} />
+                <div className='dropdown-item grw-bookmark-folder-menu-item' tabIndex={0} role="menuitem" onClick={e => onClickChildMenuItemHandler(e, child)}>
+                  <BookmarkFolderMenuItem
+                    onSelectedChild={() => setSelectedItem(null)}
+                    isSelected={selectedItem === child._id}
+                    item={child}
+                  />
                 </div>
               ) : (
-                <DropdownItem toggle={false} className='grw-bookmark-folder-menu-item'>
-                  <div className='grw-bookmark-folder-menu-item-title'>
+                <div className='dropdown-item grw-bookmark-folder-menu-item' tabIndex={0} role="menuitem" onClick={() => setSelectedItem(child._id)}>
+                  <input
+                    type="radio"
+                    checked={selectedItem === child._id}
+                    name="bookmark-folder-menu-item"
+                    id={`bookmark-folder-menu-item-${child._id}`}
+                    onChange={e => e.stopPropagation() }
+                  />
+                  <label htmlFor={`bookmark-folder-menu-item-${child._id}`} className='p-2 m-0 grw-bookmark-folder-menu-item-title mr-auto'>
                     {child.name}
-                  </div>
-                </DropdownItem>
+                  </label>
+                </div>
               )}
             </div>
           ))}
