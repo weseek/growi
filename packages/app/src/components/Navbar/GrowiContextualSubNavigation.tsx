@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
 
-import { isPopulated, IUser } from '@growi/core';
+import { isPopulated, IUser, pagePathUtils } from '@growi/core';
 import { useTranslation } from 'next-i18next';
 import dynamic from 'next/dynamic';
 import { useRouter } from 'next/router';
@@ -43,6 +43,7 @@ import type { SubNavButtonsProps } from './SubNavButtons';
 import AuthorInfoStyles from './AuthorInfo.module.scss';
 import PageEditorModeManagerStyles from './PageEditorModeManager.module.scss';
 
+const { isUsersHomePage } = pagePathUtils;
 
 const AuthorInfoSkeleton = () => <Skeleton additionalClass={`${AuthorInfoStyles['grw-author-info-skeleton']} py-1`} />;
 
@@ -378,7 +379,7 @@ const GrowiContextualSubNavigation = (props: GrowiContextualSubNavigationProps):
               />
             )}
           </div>
-          { (isAbleToShowPageAuthors && !isCompactMode) && (
+          { (isAbleToShowPageAuthors && !isCompactMode && !isUsersHomePage(path ?? '')) && (
             <ul className={`${AuthorInfoStyles['grw-author-info']} text-nowrap border-left d-none d-lg-block d-edit-none py-2 pl-4 mb-0 ml-3`}>
               <li className="pb-1">
                 { currentPage != null
