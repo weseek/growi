@@ -1,3 +1,5 @@
+import type { IPageSnapshot } from '~/models/serializers/in-app-notification-snapshot/page';
+
 import { IPage } from './page';
 import { IUser } from './user';
 
@@ -15,7 +17,7 @@ export interface IInAppNotification {
   status: InAppNotificationStatuses
   actionUsers: IUser[]
   createdAt: Date
-  snapshot: string
+  snapshot: string | IPageSnapshot;
 }
 
 /*
