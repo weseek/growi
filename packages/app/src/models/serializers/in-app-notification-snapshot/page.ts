@@ -6,12 +6,6 @@ export interface IPageSnapshot {
   creator: IUser
 }
 
-// type guard
-// eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
-export const isIPageSnapshot = (args: any): args is IPageSnapshot => {
-  return args.path != null && args.creator != null;
-};
-
 export const stringifySnapshot = (page: IPage): string => {
   return JSON.stringify({
     path: page.path,
