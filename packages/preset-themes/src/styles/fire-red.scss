@@ -1,8 +1,8 @@
-@use '../../styles/variables' as *;
-@use '../../styles/bootstrap/variables' as *;
-@use '../../styles/theme/mixins/page-editor-mode-manager';
+@use './variables' as *;
+@use './bootstrap/variables' as *;
+@use './theme/mixins/page-editor-mode-manager';
 
-:root[data-theme='light'] .theme-fire-red {
+:root[data-theme='light'] {
   // Theme colors
   $themecolor: #ea5532;
   $themelight: #ffffff;
@@ -71,8 +71,8 @@
   // admin theme box
   $color-theme-color-box: $primary;
 
-  @import '../../styles/theme/apply-colors';
-  @import '../../styles/theme/apply-colors-light';
+  @import './theme/apply-colors';
+  @import './theme/apply-colors-light';
 
   // Navs {
   .nav-tabs {
@@ -95,7 +95,7 @@
   }
 }
 
-:root[data-theme='dark'] .theme-fire-red {
+:root[data-theme='dark'] {
   // Theme colors
   $themecolor: #ea5532;
   $themedark: #333333;
@@ -172,8 +172,8 @@
   // admin theme box
   $color-theme-color-box: $primary;
 
-  @import '../../styles/theme/apply-colors';
-  @import '../../styles/theme/apply-colors-dark';
+  @import './theme/apply-colors';
+  @import './theme/apply-colors-dark';
 
   // Navs
   .nav-tabs {

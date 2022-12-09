@@ -1,6 +1,6 @@
-@use '../../styles/variables' as *;
-@use '../../styles/bootstrap/variables' as *;
-@use '../../styles/theme/mixins/page-editor-mode-manager';
+@use './variables' as *;
+@use './bootstrap/variables' as *;
+@use './theme/mixins/page-editor-mode-manager';
 
 // == Define Bootstrap theme colors
 //
@@ -36,7 +36,7 @@ $themelight: #f5f3ee;
 
 //== Light Mode
 //
-:root .theme-wood {
+:root {
   $primary: #aaa45f;
 
   // Background colors
@@ -113,8 +113,15 @@ $themelight: #f5f3ee;
   // portal
   $info: lighten($themecolor, 10%);
 
-  @import '../../styles/theme/apply-colors';
-  @import '../../styles/theme/apply-colors-light';
+  @import './theme/apply-colors';
+  @import './theme/apply-colors-light';
+
+  &, body {
+    background-image: url('../images/wood/wood.jpg');
+    background-attachment: fixed;
+    background-position: 50%;
+    background-size: cover;
+  }
 
   /*
    * Modal

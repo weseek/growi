@@ -12,7 +12,9 @@ import Document, {
 import { ActivatePluginService, GrowiPluginManifestEntries } from '~/client/services/activate-plugin';
 import { CrowiRequest } from '~/interfaces/crowi-request';
 import { GrowiPlugin, GrowiPluginResourceType } from '~/interfaces/plugin';
+import loggerFactory from '~/utils/logger';
 
+const logger = loggerFactory('growi:page:_document');
 
 type HeadersForPresetThemesProps = {
   manifest: PresetThemesManifest,
@@ -21,8 +23,12 @@ const HeadersForPresetThemes = (props: HeadersForPresetThemesProps): JSX.Element
   const { manifest } = props;
 
   const themeName = 'default';
-  const manifestResourceKey = getManifestKeyFromTheme(themeName);
-  const href = `/static/preset-themes/${manifest[manifestResourceKey].file}`; // configured by express.static
+  let themeKey = getManifestKeyFromTheme(themeName);
+  if (!(themeKey in manifest)) {
+    logger.warn(`The key for '${themeName} does not exist in preset-themes manifest`);
+    themeKey = getManifestKeyFromTheme('default');
+  }
+  const href = `/static/preset-themes/${manifest[themeKey].file}`; // configured by express.static
 
   const elements: JSX.Element[] = [];
 

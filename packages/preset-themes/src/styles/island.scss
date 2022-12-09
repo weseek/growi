@@ -1,12 +1,12 @@
-@use '../../styles/variables' as *;
-@use '../../styles/bootstrap/variables' as *;
-@use '../../styles/theme/mixins/page-editor-mode-manager';
-@use '../../styles/mixins';
+@use './variables' as *;
+@use './bootstrap/variables' as *;
+@use './theme/mixins/page-editor-mode-manager';
+@use './atoms/mixins/buttons' as mixins-buttons;
 
 $color-primary: #97cbc3;
 $color-themelight: rgba(183, 226, 219, 1);
 
-:root .theme-island {
+:root {
   $primary: $color-primary;
   // Background colors
   $bgcolor-card: $gray-50;
@@ -82,8 +82,13 @@ $color-themelight: rgba(183, 226, 219, 1);
   // admin theme box
   $color-theme-color-box: darken($primary, 15%);
 
-  @import '../../styles/theme/apply-colors';
-  @import '../../styles/theme/apply-colors-light';
+  @import './theme/apply-colors';
+  @import './theme/apply-colors-light';
+
+  &, body {
+    background-image: url('../images/island/island.png');
+    background-attachment: fixed;
+  }
 
   .rbt-menu {
     background: lighten($color-themelight, 5%);
@@ -124,7 +129,7 @@ $color-themelight: rgba(183, 226, 219, 1);
     // Pagetree
     .grw-pagetree {
       .grw-pagetree-triangle-btn {
-        @include mixins.button-outline-svg-icon-variant($gray-400, $bgcolor-sidebar);
+        @include mixins-buttons.button-outline-svg-icon-variant($gray-400, $bgcolor-sidebar);
       }
     }
   }

@@ -1,6 +1,6 @@
-@use '../../styles/variables' as *;
-@use '../../styles/bootstrap/variables' as *;
-@use '../../styles/theme/mixins/page-editor-mode-manager';
+@use './variables' as *;
+@use './bootstrap/variables' as *;
+@use './theme/mixins/page-editor-mode-manager';
 
 // == Define Bootstrap theme colors
 //
@@ -37,7 +37,7 @@ $color-link-wiki-hover: lighten($color-link-wiki, 15%);
 
 //== Light Mode
 //
-:root .theme-christmas {
+:root {
   $primary: #d3c665;
   // Background colors
   $bgcolor-card: $gray-50;
@@ -101,8 +101,14 @@ $color-link-wiki-hover: lighten($color-link-wiki, 15%);
   // admin theme box
   $color-theme-color-box: lighten($themecolor, 20%);
 
-  @import '../../styles/theme/apply-colors';
-  @import '../../styles/theme/apply-colors-light';
+  @import './theme/apply-colors';
+  @import './theme/apply-colors-light';
+
+  &, body {
+    background-image: url('../images/christmas/christmas.jpg');
+    background-attachment: fixed;
+    background-size: cover;
+  }
 
   // change color of highlighted header in wiki (default: orange)
 

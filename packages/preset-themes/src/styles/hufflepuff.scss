@@ -1,6 +1,6 @@
-@use '../../styles/variables' as *;
-@use '../../styles/bootstrap/variables' as *;
-@use '../../styles/theme/mixins/page-editor-mode-manager';
+@use './variables' as *;
+@use './bootstrap/variables' as *;
+@use './theme/mixins/page-editor-mode-manager';
 
 // == Define Bootstrap theme colors
 //
@@ -20,7 +20,7 @@
 
 //== Light Mode
 //
-:root[data-theme='light'] .theme-hufflepuff {
+:root[data-theme='light'] {
   // Theme colors
   $themecolor: #eaab20;
   $themelight: #efe2cf;
@@ -92,10 +92,14 @@
   // admin theme box
   $color-theme-color-box: darken($primary, 5%);
 
-  @import '../../styles/theme/apply-colors';
-  @import '../../styles/theme/apply-colors-light';
+  @import './theme/apply-colors';
+  @import './theme/apply-colors-light';
 
-  //Button
+  &, body {
+    background-image: url('../images/hufflepuff/badger-light3.png');
+  }
+
+  // Button
   .btn.btn-outline-primary {
     @include page-editor-mode-manager.btn-page-editor-mode-manager(darken($primary, 50%), darken($primary, 50%), lighten($primary, 20%));
   }
@@ -108,7 +112,7 @@
   .growi:not(.login-page) {
     // add background-image
     .page-editor-preview-container {
-      background-image: url('/images/themes/hufflepuff/badger-light3.png');
+      background-image: url('../images/themes/hufflepuff/badger-light3.png');
       background-attachment: fixed;
       background-position: bottom;
       background-size: cover;
@@ -119,7 +123,7 @@
   .nologin {
     #page-wrapper {
       background-color: $themelight;
-      background-image: url('/images/themes/hufflepuff/badger-light.png');
+      background-image: url('../images/themes/hufflepuff/badger-light.png');
       background-attachment: fixed;
       background-position: bottom;
       background-size: cover;
@@ -156,7 +160,7 @@
   }
 }
 
-:root[data-theme='dark'] .theme-hufflepuff {
+:root[data-theme='dark'] {
   // Theme colors
   $themecolor: #eaab20;
   $themedark: #3d3f38;
@@ -234,8 +238,12 @@
   // admin theme box
   $color-theme-color-box: $primary;
 
-  @import '../../styles/theme/apply-colors';
-  @import '../../styles/theme/apply-colors-dark';
+  @import './theme/apply-colors';
+  @import './theme/apply-colors-dark';
+
+  &, body {
+    background-image: url('../images/hufflepuff/badger-dark.jpg');
+  }
 
   // Navs
   .nav-tabs {
@@ -275,7 +283,7 @@
   .growi:not(.login-page) {
     // add background-image
     .page-editor-preview-container {
-      background-image: url('/images/themes/hufflepuff/badger-dark.jpg');
+      background-image: url('../images/themes/hufflepuff/badger-dark.jpg');
       background-attachment: fixed;
       background-position: bottom;
       background-size: cover;
@@ -286,7 +294,7 @@
   .nologin {
     #page-wrapper {
       background-color: $themedark;
-      background-image: url('/images/themes/hufflepuff/badger-light.png');
+      background-image: url('../images/themes/hufflepuff/badger-light.png');
       background-attachment: fixed;
       background-position: bottom;
       background-size: cover;

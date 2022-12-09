@@ -28,7 +28,7 @@ $light: lighten($secondary, 10%);
 }
 
 
-:root[data-theme] {
+:root {
   // Background colors
   $bgcolor-global: #050000;
   $bgcolor-inline-code: #1f1f22; //optional

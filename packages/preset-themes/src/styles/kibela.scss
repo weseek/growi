@@ -1,6 +1,6 @@
-@use '../../styles/variables' as *;
-@use '../../styles/bootstrap/variables' as *;
-@use '../../styles/theme/mixins/page-editor-mode-manager';
+@use './variables' as *;
+@use './bootstrap/variables' as *;
+@use './theme/mixins/page-editor-mode-manager';
 
 $bgcolor-theme: rgb(18, 86, 163);
 $themelight: #f4f5f6;
@@ -8,7 +8,7 @@ $subthemecolor: rgb(88, 130, 250);
 $lightthemecolor: rgba(181, 203, 247, 0.61);
 
 // Light Mode
-:root .theme-kibela {
+:root {
   // Background colors
   $bgcolor-navbar: white;
   $bgcolor-navbar-active: $bgcolor-theme;
@@ -78,8 +78,8 @@ $lightthemecolor: rgba(181, 203, 247, 0.61);
   // Sidebar list group
   $bgcolor-sidebar-list-group: #fafbff; // optional
 
-  @import '../../styles/theme/apply-colors';
-  @import '../../styles/theme/apply-colors-light';
+  @import './theme/apply-colors';
+  @import './theme/apply-colors-light';
 
   .main {
     .container,

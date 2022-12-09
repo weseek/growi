@@ -1,6 +1,6 @@
-@use '../../styles/variables' as *;
-@use '../../styles/bootstrap/variables' as *;
-@use '../../styles/theme/mixins/page-editor-mode-manager';
+@use './variables' as *;
+@use './bootstrap/variables' as *;
+@use './theme/mixins/page-editor-mode-manager';
 
 // == Define Bootstrap theme colors
 //
@@ -43,7 +43,7 @@ $accentcolor: #ffd700;
 
 //== Light Mode
 //
-:root .theme-antarctic {
+:root {
   $primary: $themecolor;
 
   // Background colors
@@ -109,8 +109,15 @@ $accentcolor: #ffd700;
   // admin theme box
   $color-theme-color-box: lighten($themecolor, 20%);
 
-  @import '../../styles/theme/apply-colors';
-  @import '../../styles/theme/apply-colors-light';
+  @import './theme/apply-colors';
+  @import './theme/apply-colors-light';
+
+  &, body {
+    background-image: url('../images/antarctic/bg.svg');
+    background-attachment: fixed;
+    background-position: 50%;
+    background-size: cover;
+  }
 
   //Button
   .btn-group.grw-page-editor-mode-manager {
@@ -142,56 +149,3 @@ $accentcolor: #ffd700;
     }
   }
 }
-
-//== Dark Mode
-//
-// html[dark] {
-//   $primary: #d65a31;
-
-//   $basecolor: #222831;
-
-//   // Background colors
-//   $bgcolor-global: $basecolor;
-//   $bgcolor-navbar: #151515;
-//   $bgcolor-inline-code: darken($basecolor, 5%);
-//   $bgcolor-card: darken($basecolor, 5%);
-
-//   // Font colors
-//   $color-global: #eeeeee;
-//   $color-reversal: $gray-900;
-//   // $color-header: desaturate($primary, 20%);
-//   $color-link: $primary;
-//   $color-link-hover: lighten($color-link, 10%);
-//   $color-link-wiki: lighten($basecolor, 50%);
-//   $color-link-wiki-hover: darken($color-link-wiki, 5%);
-//   $color-link-nabvar: $color-global;
-//   $color-inline-code: #c7254e; // optional
-
-//   // List Group colors
-//   $color-list: $color-global;
-//   $bgcolor-list: $bgcolor-global;
-//   $color-list-active: $color-reversal;
-//   $bgcolor-list-active: $primary;
-//   $color-list-hover: $color-reversal;
-
-//   // Logo colors
-//   $bgcolor-logo: $bgcolor-navbar;
-//   $fillcolor-logo-mark: $gray-700;
-
-//   // Icon colors
-//   $color-editor-icons: darken($accentcolor, 15%);
-
-//   // Border colors
-//   $border-color-theme: black; // former: `$navbar-border: $gray-300;`
-
-//   // Dropdown colors
-//   $bgcolor-dropdown-link-active: $primary;
-
-//   // Sidebar
-//   $bgcolor-sidebar: $bgcolor-navbar;
-//   $color-sidebar-context: $color-global;
-//   $bgcolor-sidebar-context: lighten($bgcolor-navbar, 5%);
-
-//   @import 'apply-colors';
-//   @import 'apply-colors-dark';
-// }

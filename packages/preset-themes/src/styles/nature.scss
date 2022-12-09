@@ -1,6 +1,6 @@
-@use '../../styles/variables' as *;
-@use '../../styles/bootstrap/variables' as *;
-@use '../../styles/theme/mixins/page-editor-mode-manager';
+@use './variables' as *;
+@use './bootstrap/variables' as *;
+@use './theme/mixins/page-editor-mode-manager';
 
 // == Define Bootstrap theme colors
 //
@@ -36,7 +36,7 @@ $themecolor: #12b105;
 
 //== Light Mode
 //
-:root .theme-nature {
+:root {
   $primary: #460039;
   $light: $gray-100;
 
@@ -90,8 +90,8 @@ $themecolor: #12b105;
   // admin theme box
   $color-theme-color-box: lighten($primary, 20%);
 
-  @import '../../styles/theme/apply-colors';
-  @import '../../styles/theme/apply-colors-light';
+  @import './theme/apply-colors';
+  @import './theme/apply-colors-light';
 
   // Search Top
   .grw-global-search {

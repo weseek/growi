@@ -1,7 +1,7 @@
-@use '../../styles/variables' as *;
-@use '../../styles/bootstrap/variables' as *;
-@use '../../styles/theme/mixins/page-editor-mode-manager';
-@use '../../styles/bootstrap/init' as bs;
+@use './variables' as *;
+@use './bootstrap/variables' as *;
+@use './theme/mixins/page-editor-mode-manager';
+@use './bootstrap/init' as bs;
 
 // == Define Bootstrap theme colors
 //
@@ -27,7 +27,7 @@ $accentcolor: #e08dbc;
 
 //== Light Mode
 //
-:root .theme-spring {
+:root {
   $primary: $themecolor;
   $secondary: $accentcolor;
 
@@ -91,8 +91,15 @@ $accentcolor: #e08dbc;
   // admin theme box
   $color-theme-color-box: darken($primary, 20%);
 
-  @import '../../styles/theme/apply-colors';
-  @import '../../styles/theme/apply-colors-light';
+  @import './theme/apply-colors';
+  @import './theme/apply-colors-light';
+
+  &, body {
+    background-image: url('../images/spring/spring02.svg');
+    background-attachment: fixed;
+    background-position: bottom;
+    background-size: cover;
+  }
 
   //Button
   // Outline buttons are applyed the accent color to this spring theme cuz the primary is too light and it looks like unable to click them.

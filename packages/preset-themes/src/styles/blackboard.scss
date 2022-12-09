@@ -1,8 +1,8 @@
-@use '../../styles/variables' as *;
-@use '../../styles/bootstrap/variables' as *;
-@use '../../styles/theme/mixins/page-editor-mode-manager';
+@use './variables' as *;
+@use './bootstrap/variables' as *;
+@use './theme/mixins/page-editor-mode-manager';
 
-:root .theme-blackboard {
+:root {
   // Theme colors
   $themecolor: #da8506;
   $themelight: #223729;
@@ -79,8 +79,8 @@
   // admin theme box
   $color-theme-color-box: $primary;
 
-  @import '../../styles/theme/apply-colors';
-  @import '../../styles/theme/apply-colors-dark';
+  @import './theme/apply-colors';
+  @import './theme/apply-colors-dark';
 
   // Navs
   .nav-tabs {
