@@ -1,1 +1,1 @@
-# GROWI Plugin Theme Welcome to fumiya's room
+# GROWI Preset Themes
