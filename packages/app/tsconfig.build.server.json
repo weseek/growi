@@ -11,6 +11,7 @@
     "paths": {
       "~/*": ["./src/*"],
       "^/*": ["./*"],
+      "@growi/preset-themes/*": ["../preset-themes/*"],
       "@growi/remark-lsx/*": ["../remark-lsx/dist/cjs/*"],
       "debug": ["./src/utils/logger/alias-for-debug"]
     }

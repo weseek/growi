@@ -1,9 +1,8 @@
 /* eslint-disable @next/next/google-font-display */
 import React from 'react';
 
-import { readFileSync } from 'fs';
-
 import type { PresetThemesManifest } from '@growi/preset-themes';
+import presetThemesManifest from '@growi/preset-themes/dist/manifest.json';
 import mongoose from 'mongoose';
 import Document, {
   DocumentContext, DocumentInitialProps,
@@ -13,18 +12,14 @@ import Document, {
 import { ActivatePluginService, GrowiPluginManifestEntries } from '~/client/services/activate-plugin';
 import { CrowiRequest } from '~/interfaces/crowi-request';
 import { GrowiPlugin, GrowiPluginResourceType } from '~/interfaces/plugin';
-import { resolveFromRoot } from '~/utils/project-dir-utils';
 
-type HeadersForPresetThemesProps = {
-  manifest: PresetThemesManifest;
-}
 
-const HeadersForPresetThemes = (props: HeadersForPresetThemesProps): JSX.Element => {
-  const { manifest } = props;
+const HeadersForPresetThemes = (): JSX.Element => {
+  const manifest: PresetThemesManifest = presetThemesManifest;
 
   const themeName = 'halloween';
   const manifestResourceKey = `src/${themeName}.css`;
-  const href = `/static/preset-themes/${manifest[manifestResourceKey].file}`;
+  const href = `/static/preset-themes/${manifest[manifestResourceKey].file}`; // configured by express.static
 
   const elements: JSX.Element[] = [];
 
@@ -72,7 +67,6 @@ const HeadersForGrowiPlugin = (props: HeadersForGrowiPluginProps): JSX.Element =
 
 interface GrowiDocumentProps {
   customCss: string;
-  presetThemeManifest: PresetThemesManifest;
   pluginManifestEntries: GrowiPluginManifestEntries;
 }
 declare type GrowiDocumentInitialProps = DocumentInitialProps & GrowiDocumentProps;
@@ -85,23 +79,18 @@ class GrowiDocument extends Document<GrowiDocumentInitialProps> {
     const { customizeService } = crowi;
     const customCss: string = customizeService.getCustomCss();
 
-    // retrieve preset-theme manifest
-    const presetThemeManifestPath = resolveFromRoot('public/static/preset-themes/manifest.json');
-    const presetThemeManifestStr: string = await readFileSync(presetThemeManifestPath, 'utf-8');
-    const presetThemeManifest = JSON.parse(presetThemeManifestStr);
-
     // retrieve plugin manifests
     const GrowiPlugin = mongoose.model<GrowiPlugin>('GrowiPlugin');
     const growiPlugins = await GrowiPlugin.find({ isEnabled: true });
     const pluginManifestEntries: GrowiPluginManifestEntries = await ActivatePluginService.retrievePluginManifests(growiPlugins);
 
     return {
-      ...initialProps, customCss, presetThemeManifest, pluginManifestEntries,
+      ...initialProps, customCss, pluginManifestEntries,
     };
   }
 
   override render(): JSX.Element {
-    const { customCss, presetThemeManifest, pluginManifestEntries } = this.props;
+    const { customCss, pluginManifestEntries } = this.props;
 
     return (
       <Html>
@@ -119,7 +108,7 @@ class GrowiDocument extends Document<GrowiDocumentInitialProps> {
           <link rel='preload' href="/static/fonts/Lato-Regular-latin-ext.woff2" as="font" type="font/woff2" />
           <link rel='preload' href="/static/fonts/Lato-Bold-latin.woff2" as="font" type="font/woff2" />
           <link rel='preload' href="/static/fonts/Lato-Bold-latin-ext.woff2" as="font" type="font/woff2" />
-          <HeadersForPresetThemes manifest={presetThemeManifest} />
+          <HeadersForPresetThemes />
           <HeadersForGrowiPlugin pluginManifestEntries={pluginManifestEntries} />
         </Head>
         <body>

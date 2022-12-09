@@ -4,6 +4,7 @@ import mongoose from 'mongoose';
 import { i18n, localePath } from '^/config/next-i18next.config';
 
 import loggerFactory from '~/utils/logger';
+import { resolveFromRoot } from '~/utils/project-dir-utils';
 
 const logger = loggerFactory('growi:crowi:express-init');
 
@@ -115,6 +116,7 @@ module.exports = function(crowi, app) {
 
   const staticOption = (crowi.node_env === 'production') ? { maxAge: '30d' } : {};
   app.use(express.static(crowi.publicDir, staticOption));
+  app.use('/static/preset-themes', express.static(resolveFromRoot('../../node_modules/@growi/preset-themes/dist')));
   app.use('/plugins', express.static(path.resolve(__dirname, '../../../tmp/plugins')));
 
   app.engine('html', swig.renderFile);
