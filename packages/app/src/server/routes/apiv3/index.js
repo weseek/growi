@@ -16,7 +16,8 @@ const router = express.Router();
 const routerForAdmin = express.Router();
 const routerForAuth = express.Router();
 
-module.exports = (crowi, app, isInstalled) => {
+module.exports = (crowi, app) => {
+  const isInstalled = crowi.configManager.getConfig('crowi', 'app:installed');
 
   // add custom functions to express response
   require('./response')(express, crowi);
@@ -103,7 +104,7 @@ module.exports = (crowi, app, isInstalled) => {
     userActivation.validateCompleteRegistration,
     userActivation.completeRegistrationAction(crowi));
 
-  router.use('/plugins-extention', require('./plugins-extention')(crowi));
+  router.use('/plugins-extension', require('./plugins-extension')(crowi));
 
   router.use('/user-ui-settings', require('./user-ui-settings')(crowi));
 

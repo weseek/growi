@@ -2,6 +2,7 @@ import React, {
   useCallback, useEffect, useMemo, useRef, useState,
 } from 'react';
 
+
 import EventEmitter from 'events';
 
 import {
@@ -13,10 +14,11 @@ import { useRouter } from 'next/router';
 import { throttle, debounce } from 'throttle-debounce';
 
 import { useSaveOrUpdate } from '~/client/services/page-operation';
-import { toastSuccess, toastError } from '~/client/util/apiNotification';
 import { apiGet, apiPostForm } from '~/client/util/apiv1-client';
+import { toastError, toastSuccess } from '~/client/util/toastr';
 import { IEditorMethods } from '~/interfaces/editor-methods';
 import { OptionsToSave } from '~/interfaces/page-operation';
+import { SocketEventName } from '~/interfaces/websocket';
 import {
   useCurrentPathname, useCurrentPageId, useIsEnabledAttachTitleHeader, useTemplateBodyData,
   useIsEditable, useIsUploadableFile, useIsUploadableImage, useIsNotFound, useIsIndentSizeForced,
@@ -24,6 +26,7 @@ import {
 import {
   useCurrentIndentSize, useSWRxSlackChannels, useIsSlackEnabled, useIsTextlintEnabled, usePageTagsForEditors,
   useIsEnabledUnsavedWarning,
+  useIsConflict,
   useEditingMarkdown,
 } from '~/stores/editor';
 import { useCurrentPagePath, useSWRxCurrentPage } from '~/stores/page';
@@ -32,6 +35,7 @@ import {
   EditorMode,
   useEditorMode, useSelectedGrant,
 } from '~/stores/ui';
+import { useGlobalSocket } from '~/stores/websocket';
 import { registerGrowiFacade } from '~/utils/growi-facade';
 import loggerFactory from '~/utils/logger';
 
@@ -108,9 +112,51 @@ const PageEditor = React.memo((): JSX.Element => {
 
   const slackChannels = useMemo(() => (slackChannelsData ? slackChannelsData.toString() : ''), [slackChannelsData]);
 
+  const { data: socket } = useGlobalSocket();
+
+  const { mutate: mutateIsConflict } = useIsConflict();
+
+
   const editorRef = useRef<IEditorMethods>(null);
   const previewRef = useRef<HTMLDivElement>(null);
 
+  const checkIsConflict = useCallback((data) => {
+    const { s2cMessagePageUpdated } = data;
+
+    const isConflict = markdownToPreview !== s2cMessagePageUpdated.revisionBody;
+
+    mutateIsConflict(isConflict);
+
+  }, [markdownToPreview, mutateIsConflict]);
+
+  useEffect(() => {
+    markdownToSave.current = initialValue;
+    setMarkdownToPreview(initialValue);
+  }, [initialValue]);
+
+  useEffect(() => {
+    if (socket == null) { return }
+
+    socket.on(SocketEventName.PageUpdated, checkIsConflict);
+
+    return () => {
+      socket.off(SocketEventName.PageUpdated, checkIsConflict);
+    };
+
+  }, [socket, checkIsConflict]);
+
+  // const optionsToSave = useMemo(() => {
+  //   if (grantData == null) {
+  //     return;
+  //   }
+  //   const slackChannels = slackChannelsData ? slackChannelsData.toString() : '';
+  //   const optionsToSave = getOptionsToSave(
+  //     isSlackEnabled ?? false, slackChannels,
+  //     grantData.grant, grantData.grantedGroup?.id, grantData.grantedGroup?.name,
+  //     pageTags || [],
+  //   );
+  //   return optionsToSave;
+  // }, [grantData, isSlackEnabled, pageTags, slackChannelsData]);
   // register to facade
   useEffect(() => {
     // for markdownRenderer

@@ -19,12 +19,13 @@ import {
   useCurrentPageId, useCurrentPathname, useHackmdUri, useIsNotFound,
 } from '~/stores/context';
 import {
-  useSWRxSlackChannels, useIsSlackEnabled, usePageTagsForEditors,
+  useSWRxSlackChannels, useIsSlackEnabled, usePageTagsForEditors, useIsEnabledUnsavedWarning,
 } from '~/stores/editor';
 import {
-  usePageIdOnHackmd, useHasDraftOnHackmd, useRevisionIdHackmdSynced, useRemoteRevisionId,
+  usePageIdOnHackmd, useHasDraftOnHackmd, useRevisionIdHackmdSynced, useIsHackmdDraftUpdatingInRealtime,
 } from '~/stores/hackmd';
 import { useCurrentPagePath, useSWRxCurrentPage, useSWRxTagsInfo } from '~/stores/page';
+import { useRemoteRevisionId } from '~/stores/remote-latest-page';
 import {
   EditorMode,
   useEditorMode, useSelectedGrant,
@@ -83,7 +84,8 @@ export const PageEditorByHackmd = (): JSX.Element => {
   const { data: pageIdOnHackmd, mutate: mutatePageIdOnHackmd } = usePageIdOnHackmd();
   const { data: hasDraftOnHackmd, mutate: mutateHasDraftOnHackmd } = useHasDraftOnHackmd();
   const { data: revisionIdHackmdSynced, mutate: mutateRevisionIdHackmdSynced } = useRevisionIdHackmdSynced();
-  const [isHackmdDraftUpdatingInRealtime, setIsHackmdDraftUpdatingInRealtime] = useState(false);
+  const { mutate: mutateIsEnabledUnsavedWarning } = useIsEnabledUnsavedWarning();
+  const { data: isHackmdDraftUpdatingInRealtime, mutate: mutateIsHackmdDraftUpdatingInRealtime } = useIsHackmdDraftUpdatingInRealtime(false);
   const { data: remoteRevisionId, mutate: mutateRemoteRevisionId } = useRemoteRevisionId(revision?._id);
 
   const hackmdEditorRef = useRef<HackEditorRef>(null);
@@ -211,7 +213,7 @@ export const PageEditorByHackmd = (): JSX.Element => {
         throw new Error(res.error);
       }
 
-      setIsHackmdDraftUpdatingInRealtime(false);
+      mutateIsHackmdDraftUpdatingInRealtime(false);
       mutateHasDraftOnHackmd(false);
       mutatePageIdOnHackmd(res.pageIdOnHackmd);
       mutateRemoteRevisionId(res.revisionIdHackmdSynced);
@@ -223,7 +225,7 @@ export const PageEditorByHackmd = (): JSX.Element => {
       logger.error(err);
       toastError(err.message);
     }
-  }, [pageId, mutateHasDraftOnHackmd, mutatePageIdOnHackmd, mutateRemoteRevisionId, mutateRevisionIdHackmdSynced]);
+  }, [mutateIsHackmdDraftUpdatingInRealtime, mutateHasDraftOnHackmd, mutatePageIdOnHackmd, mutateRevisionIdHackmdSynced, mutateRemoteRevisionId, pageId]);
 
   /**
    * save and update state of containers
@@ -264,8 +266,9 @@ export const PageEditorByHackmd = (): JSX.Element => {
       logger.error('failed to save', error);
       toastError(error.message);
     }
-  // eslint-disable-next-line max-len
-  }, [currentPagePath, currentPathname, isSlackEnabled, grant, slackChannels, pageId, revisionIdHackmdSynced, pageTags, saveOrUpdate, mutatePageData, mutateRemoteRevisionId, mutateRevisionIdHackmdSynced, mutateHasDraftOnHackmd, mutateTagsInfo, t]);
+  }, [
+    currentPagePath, currentPathname, isSlackEnabled, grant, slackChannels, pageId, revisionIdHackmdSynced, pageTags,
+    saveOrUpdate, mutatePageData, mutateRemoteRevisionId, mutateRevisionIdHackmdSynced, mutateHasDraftOnHackmd, mutateTagsInfo, t]);
 
   /**
    * onChange event of HackmdEditor handler
