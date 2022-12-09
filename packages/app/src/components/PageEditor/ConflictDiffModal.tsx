@@ -13,6 +13,10 @@ import {
 
 import { OptionsToSave } from '~/interfaces/page-operation';
 import { useCurrentUser } from '~/stores/context';
+import { useSWRxCurrentPage } from '~/stores/page';
+import {
+  useRemoteRevisionBody, useRemoteRevisionId, useRemoteRevisionLastUpdatedAt, useRemoteRevisionLastUpdatUser,
+} from '~/stores/remote-latest-page';
 import { useEditorMode } from '~/stores/ui';
 
 import { IRevisionOnConflict } from '../../interfaces/revision';
@@ -29,17 +33,27 @@ Object.keys(DMP).forEach((key) => { window[key] = DMP[key] });
 type ConflictDiffModalProps = {
   isOpen?: boolean;
   onClose?: (() => void);
-  // pageContainer: PageContainer;
   markdownOnEdit: string;
   optionsToSave: OptionsToSave | undefined;
+};
+
+type ConflictDiffModalCoreProps = {
+  isOpen?: boolean;
+  onClose?: (() => void);
+  optionsToSave: OptionsToSave | undefined;
+  request: IRevisionOnConflictWithStringDate,
+  origin: IRevisionOnConflictWithStringDate,
+  latest: IRevisionOnConflictWithStringDate,
 };
 
 type IRevisionOnConflictWithStringDate = Omit<IRevisionOnConflict, 'createdAt'> & {
   createdAt: string
 }
 
-const ConflictDiffModalCore = (props: ConflictDiffModalProps & { currentUser: IUser }): JSX.Element => {
-  const { currentUser, onClose } = props;
+const ConflictDiffModalCore = (props: ConflictDiffModalCoreProps): JSX.Element => {
+  const {
+    onClose, request, origin, latest,
+  } = props;
 
   const { data: editorMode } = useEditorMode();
 
@@ -50,36 +64,6 @@ const ConflictDiffModalCore = (props: ConflictDiffModalProps & { currentUser: IU
   const [codeMirrorRef, setCodeMirrorRef] = useState<HTMLDivElement | null>(null);
 
   const uncontrolledRef = useRef<CodeMirror>(null);
-
-  const currentTime: Date = new Date();
-
-  const request: IRevisionOnConflictWithStringDate = {
-    revisionId: '',
-    revisionBody: props.markdownOnEdit,
-    createdAt: format(currentTime, 'yyyy/MM/dd HH:mm:ss'),
-    user: currentUser,
-  };
-  const origin: IRevisionOnConflictWithStringDate = {
-    // revisionId: pageContainer.state.revisionId || '',
-    // revisionBody: pageContainer.state.markdown || '',
-    // createdAt: pageContainer.state.updatedAt || '',
-    // user: pageContainer.state.revisionAuthor,
-    revisionId:  '',
-    revisionBody: '',
-    createdAt: '',
-    user: {} as IUser,
-  };
-  const latest: IRevisionOnConflictWithStringDate = {
-    // revisionId: pageContainer.state.remoteRevisionId || '',
-    // revisionBody: pageContainer.state.remoteRevisionBody || '',
-    // createdAt: format(new Date(pageContainer.state.remoteRevisionUpdateAt || currentTime.toString()), 'yyyy/MM/dd HH:mm:ss'),
-    // user: pageContainer.state.lastUpdateUser,
-    revisionId: '',
-    revisionBody: '',
-    createdAt: format(new Date(''), 'yyyy/MM/dd HH:mm:ss'),
-    user: {} as IUser,
-
-  };
 
   useEffect(() => {
     if (codeMirrorRef != null) {
@@ -274,12 +258,53 @@ const ConflictDiffModalCore = (props: ConflictDiffModalProps & { currentUser: IU
 
 
 export const ConflictDiffModal = (props: ConflictDiffModalProps): JSX.Element => {
-  const { isOpen } = props;
+  const { isOpen, onClose, optionsToSave } = props;
   const { data: currentUser } = useCurrentUser();
 
-  if (!isOpen || currentUser == null) {
+  // state for current page
+  const { data: currentPage } = useSWRxCurrentPage();
+
+  // state for latest page
+  const { data: remoteRevisionId } = useRemoteRevisionId();
+  const { data: remoteRevisionBody } = useRemoteRevisionBody();
+  const { data: remoteRevisionLastUpdatUser } = useRemoteRevisionLastUpdatUser();
+  const { data: remoteRevisionLastUpdatedAt } = useRemoteRevisionLastUpdatedAt();
+
+  const currentTime: Date = new Date();
+
+  const isRemotePageDataInappropriate = remoteRevisionId == null || remoteRevisionBody == null || remoteRevisionLastUpdatUser == null;
+
+  if (!isOpen || currentUser == null || currentPage == null || isRemotePageDataInappropriate) {
     return <></>;
   }
 
-  return <ConflictDiffModalCore {...props} currentUser={currentUser} />;
+  const request: IRevisionOnConflictWithStringDate = {
+    revisionId: '',
+    revisionBody: props.markdownOnEdit,
+    createdAt: format(currentTime, 'yyyy/MM/dd HH:mm:ss'),
+    user: currentUser,
+  };
+  const origin: IRevisionOnConflictWithStringDate = {
+    revisionId: currentPage?.revision._id,
+    revisionBody: currentPage?.revision.body,
+    createdAt: format(currentPage.updatedAt, 'yyyy/MM/dd HH:mm:ss'),
+    user: currentPage?.lastUpdateUser,
+  };
+  const latest: IRevisionOnConflictWithStringDate = {
+    revisionId: remoteRevisionId,
+    revisionBody: remoteRevisionBody,
+    createdAt: format(new Date(remoteRevisionLastUpdatedAt || currentTime.toString()), 'yyyy/MM/dd HH:mm:ss'),
+    user: remoteRevisionLastUpdatUser,
+  };
+
+  const propsForCore = {
+    isOpen,
+    onClose,
+    optionsToSave,
+    request,
+    origin,
+    latest,
+  };
+
+  return <ConflictDiffModalCore {...propsForCore}/>;
 };

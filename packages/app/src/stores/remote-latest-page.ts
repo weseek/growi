@@ -16,3 +16,7 @@ export const useRemoteRevisionBody = (initialData?: string): SWRResponse<string,
 export const useRemoteRevisionLastUpdatUser = (initialData?: IUser): SWRResponse<IUser, Error> => {
   return useStaticSWR<IUser, Error>('remoteRevisionLastUpdatUser', initialData);
 };
+
+export const useRemoteRevisionLastUpdatedAt = (initialData?: Date): SWRResponse<Date, Error> => {
+  return useStaticSWR<Date, Error>('remoteRevisionLastUpdatedAt', initialData);
+};

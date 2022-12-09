@@ -29,6 +29,7 @@ import {
   useIsConflict,
   useEditingMarkdown,
 } from '~/stores/editor';
+import { useConflictDiffModal } from '~/stores/modal';
 import { useCurrentPagePath, useSWRxCurrentPage } from '~/stores/page';
 import { usePreviewOptions } from '~/stores/renderer';
 import {
@@ -41,6 +42,7 @@ import loggerFactory from '~/utils/logger';
 
 
 // import { ConflictDiffModal } from './PageEditor/ConflictDiffModal';
+import { ConflictDiffModal } from './PageEditor/ConflictDiffModal';
 import Editor from './PageEditor/Editor';
 import Preview from './PageEditor/Preview';
 import scrollSyncHelper from './PageEditor/ScrollSyncHelper';
@@ -84,6 +86,7 @@ const PageEditor = React.memo((): JSX.Element => {
   const { data: currentIndentSize, mutate: mutateCurrentIndentSize } = useCurrentIndentSize();
   const { data: isUploadableFile } = useIsUploadableFile();
   const { data: isUploadableImage } = useIsUploadableImage();
+  const { data: conflictDiffModalStatus, close: closeConflictDiffModal } = useConflictDiffModal();
 
   const { data: rendererOptions, mutate: mutateRendererOptions } = usePreviewOptions();
   const { mutate: mutateIsEnabledUnsavedWarning } = useIsEnabledUnsavedWarning();
@@ -514,13 +517,12 @@ const PageEditor = React.memo((): JSX.Element => {
           onScroll={offset => scrollEditorByPreviewScrollWithThrottle(offset)}
         />
       </div>
-      {/* <ConflictDiffModal
-        isOpen={pageContainer.state.isConflictDiffModalOpen}
-        onClose={() => pageContainer.setState({ isConflictDiffModalOpen: false })}
-        pageContainer={pageContainer}
-        markdownOnEdit={markdown}
-        optionsToSave={optionsToSave}
-      /> */}
+      <ConflictDiffModal
+        isOpen={conflictDiffModalStatus?.isOpened}
+        onClose={() => closeConflictDiffModal()}
+        markdownOnEdit={markdownToPreview}
+        optionsToSave={undefined} // replace undefined
+      />
     </div>
   );
 });
