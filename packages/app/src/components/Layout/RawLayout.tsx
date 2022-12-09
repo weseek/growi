@@ -9,9 +9,6 @@ import { ColorScheme, useNextThemes, NextThemesProvider } from '~/stores/use-nex
 import loggerFactory from '~/utils/logger';
 
 
-import { ThemeProvider as GrowiThemeProvider } from '../Theme/utils/ThemeProvider';
-
-
 const logger = loggerFactory('growi:cli:RawLayout');
 
 
@@ -46,12 +43,10 @@ export const RawLayout = ({ children, title, className }: Props): JSX.Element =>
         <meta name="viewport" content="initial-scale=1.0, width=device-width" />
       </Head>
       <NextThemesProvider>
-        <GrowiThemeProvider theme={growiTheme} colorScheme={colorScheme}>
-          <div className={classNames.join(' ')} data-color-scheme={colorScheme}>
-            {children}
-            <ToastContainer theme={colorScheme} />
-          </div>
-        </GrowiThemeProvider>
+        <div className={classNames.join(' ')} data-color-scheme={colorScheme}>
+          {children}
+          <ToastContainer theme={colorScheme} />
+        </div>
       </NextThemesProvider>
     </>
   );
