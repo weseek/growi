@@ -1,10 +1,12 @@
 import useSWR, { SWRResponse } from 'swr';
 
-import { toastWarning } from '~/client/util/toastr';
 import type { InAppNotificationStatuses, IInAppNotification, PaginateResult } from '~/interfaces/in-app-notification';
 import { parseSnapshot } from '~/models/serializers/in-app-notification-snapshot/page';
+import loggerFactory from '~/utils/logger';
 
 import { apiv3Get } from '../client/util/apiv3-client';
+
+const logger = loggerFactory('growi:cli:InAppNotification');
 
 type inAppNotificationPaginateResult = PaginateResult<IInAppNotification>
 
@@ -23,7 +25,7 @@ export const useSWRxInAppNotifications = <Data, Error>(
           doc.snapshot = parseSnapshot(doc.snapshot as string);
         }
         catch (err) {
-          toastWarning(err);
+          logger.warn('Failed to parse snapshot', err);
         }
       });
       return inAppNotificationPaginateResult;
