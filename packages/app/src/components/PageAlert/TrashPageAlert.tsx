@@ -44,6 +44,7 @@ export const TrashPageAlert = (): JSX.Element => {
     }
     const putBackedHandler = () => {
       // Do not use "router.push(path)" to avoid Err"
+      // See: https://github.com/weseek/growi/pull/7054
       router.reload();
     };
     openPutBackPageModal({ pageId, path: pagePath }, { onPutBacked: putBackedHandler });
