@@ -43,7 +43,7 @@ export const TrashPageAlert = (): JSX.Element => {
       return;
     }
     const putBackedHandler = () => {
-      // Do not use "router.push(path)" to avoid Err"
+      // Do not use "router.push(`/${pageId}`)" to avoid Err"
       // See: https://github.com/weseek/growi/pull/7054
       router.reload();
     };
