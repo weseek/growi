@@ -1,3 +1,4 @@
+import { manifestPath as presetThemesManifestPath } from '@growi/preset-themes';
 import csrf from 'csurf';
 import mongoose from 'mongoose';
 
@@ -116,7 +117,9 @@ module.exports = function(crowi, app) {
 
   const staticOption = (crowi.node_env === 'production') ? { maxAge: '30d' } : {};
   app.use(express.static(crowi.publicDir, staticOption));
-  app.use('/static/preset-themes', express.static(resolveFromRoot('../../node_modules/@growi/preset-themes/dist')));
+  app.use('/static/preset-themes', express.static(
+    resolveFromRoot(`../../node_modules/@growi/preset-themes/${path.dirname(presetThemesManifestPath)}`),
+  ));
   app.use('/plugins', express.static(path.resolve(__dirname, '../../../tmp/plugins')));
 
   app.engine('html', swig.renderFile);
