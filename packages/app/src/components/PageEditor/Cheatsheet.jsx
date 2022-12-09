@@ -2,23 +2,38 @@
 
 import React from 'react';
 
-import PropTypes from 'prop-types';
 import { useTranslation } from 'next-i18next';
+import PropTypes from 'prop-types';
+import { PrismAsyncLight } from 'react-syntax-highlighter';
+import { oneDark } from 'react-syntax-highlighter/dist/cjs/styles/prism';
 
 class Cheatsheet extends React.Component {
 
   render() {
     const { t } = this.props;
 
+    // const match = /language-(\w+)(:?.+)?/.exec(className || '');
+    // const lang = match && match[1] ? match[1] : '';
+
+    const codeStr = `<li><code># </code>{t('sandbox.header_x', { index: '1' })}</li>
+    <li><code>## </code>{t('sandbox.header_x', { index: '2' })}</li>
+    <li><code>### </code>{t('sandbox.header_x', { index: '3' })}</li>`;
+
     return (
       <div className="row small">
         <div className="col-sm-6">
           <h4>{t('sandbox.header')}</h4>
-          <ul className="hljs">
-            <li><code># </code>{t('sandbox.header_x', { index: '1' })}</li>
-            <li><code>## </code>{t('sandbox.header_x', { index: '2' })}</li>
-            <li><code>### </code>{t('sandbox.header_x', { index: '3' })}</li>
-          </ul>
+          {/* <ul className="hljs"> */}
+
+          <PrismAsyncLight
+            className="code-highlighted"
+            PreTag="div"
+            style={oneDark}
+            language={'jsx'}
+          >
+            {codeStr}
+          </PrismAsyncLight>
+          {/* </ul> */}
           <h4>{t('sandbox.block')}</h4>
           <p className="mb-1"><code>[{t('sandbox.empty_line')}]</code>{t('sandbox.block_detail')}</p>
           <ul className="hljs">
@@ -26,6 +41,14 @@ class Cheatsheet extends React.Component {
             <li></li>
             <li>text</li>
           </ul>
+          <PrismAsyncLight
+            className="code-highlighted"
+            PreTag="div"
+            style={oneDark}
+            language={'jsx'}
+          >
+            text/\n/text
+          </PrismAsyncLight>
           <h4>{t('sandbox.line_break')}</h4>
           <p className="mb-1"><code>[ ][ ]</code> {t('sandbox.line_break_detail')}</p>
           <ul className="hljs">
