@@ -571,13 +571,12 @@ export const useConflictDiffModal = (): SWRResponse<ConflictDiffModalStatus, Err
   const initialStatus: ConflictDiffModalStatus = { isOpened: false };
   const swrResponse = useStaticSWR<ConflictDiffModalStatus, Error>('conflictDiffModal', undefined, { fallbackData: initialStatus });
 
-  return {
-    ...swrResponse,
-    open() {
+  return Object.assign(swrResponse, {
+    open: () => {
       swrResponse.mutate({ isOpened: true });
     },
-    close() {
+    close: () => {
       swrResponse.mutate({ isOpened: false });
     },
-  };
+  });
 };
