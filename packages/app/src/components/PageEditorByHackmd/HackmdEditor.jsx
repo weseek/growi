@@ -29,7 +29,8 @@ export default class HackmdEditor extends React.PureComponent {
   }
 
   async initHackmdWithPenpal() {
-    if (document.getElementById('iframe-hackmd') != null) {
+    const shouldInit = document.getElementById('iframe-hackmd') != null;
+    if (shouldInit) {
       return;
     }
 
