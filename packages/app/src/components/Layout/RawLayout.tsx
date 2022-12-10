@@ -4,7 +4,6 @@ import Head from 'next/head';
 import { ToastContainer } from 'react-toastify';
 import { useIsomorphicLayoutEffect } from 'usehooks-ts';
 
-import { useGrowiTheme } from '~/stores/context';
 import { ColorScheme, useNextThemes, NextThemesProvider } from '~/stores/use-next-themes';
 import loggerFactory from '~/utils/logger';
 
@@ -23,8 +22,6 @@ export const RawLayout = ({ children, title, className }: Props): JSX.Element =>
   if (className != null) {
     classNames.push(className);
   }
-  const { data: growiTheme } = useGrowiTheme();
-
   // get color scheme from next-themes
   const { resolvedTheme, resolvedThemeByAttributes } = useNextThemes();
 
