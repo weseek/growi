@@ -55,6 +55,10 @@ const PageCreateModal = () => {
     }
   }, [isOpened, pathname, isCreatable]);
 
+  useEffect(() => {
+    setTodayInput1(t('Memo'));
+  }, [t]);
+
   const checkIsUsersHomePageDebounce = useMemo(() => {
     const checkIsUsersHomePage = () => {
       setIsMatchedWithUserHomePagePath(isUsersHomePage(pageNameInput));
