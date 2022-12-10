@@ -33,7 +33,7 @@ export const RawLayout = ({ children, title, className }: Props): JSX.Element =>
   // set colorScheme in CSR
   useIsomorphicLayoutEffect(() => {
     setColorScheme(resolvedTheme ?? resolvedThemeByAttributes);
-  }, [resolvedTheme]);
+  }, [resolvedTheme, resolvedThemeByAttributes]);
 
   return (
     <>
