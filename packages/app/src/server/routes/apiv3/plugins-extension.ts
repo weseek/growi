@@ -16,11 +16,10 @@ module.exports = (crowi: Crowi) => {
     }
 
     try {
-      await pluginService.install(crowi, req.body.pluginInstallerForm);
+      await pluginService.install(req.body.pluginInstallerForm);
       return res.apiv3({});
     }
     catch (err) {
-      // TODO: error handling
       return res.apiv3Err(err, 400);
     }
   });
