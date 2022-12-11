@@ -448,8 +448,7 @@ export class G2GTransferReceiverService implements Receiver {
   }
 
   public async validateTransferKey(key: string): Promise<void> {
-    const { TransferKeyModel } = this.crowi;
-    const transferKey = await (TransferKeyModel as any).find({ key });
+    const transferKey = await (TransferKeyModel as any).findOne({ key });
 
     if (transferKey == null) {
       throw new Error(`Transfer key "${key}" was expired or not found`);

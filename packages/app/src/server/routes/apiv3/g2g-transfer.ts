@@ -339,12 +339,12 @@ module.exports = (crowi: Crowi): Router => {
   // TODO: Use socket to send progress info to the client
   // eslint-disable-next-line max-len
   pushRouter.post('/transfer', accessTokenParser, loginRequiredStrictly, adminRequired, validator.transfer, apiV3FormValidator, async(req: AuthorizedRequest, res: ApiV3Response) => {
-    const { transferKey: transferKeyString, collections, optionsMap } = req.body;
+    const { transferKey, collections, optionsMap } = req.body;
 
     // Parse transfer key
     let tk: TransferKey;
     try {
-      tk = TransferKey.parse(transferKeyString);
+      tk = TransferKey.parse(transferKey);
     }
     catch (err) {
       logger.error(err);
