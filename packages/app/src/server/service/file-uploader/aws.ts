@@ -86,7 +86,7 @@ module.exports = (crowi) => {
     return true;
   };
 
-  lib.isValidUploadSettings = () => {
+  lib.isValidUploadSettings = function() {
     return configManager.getConfig('crowi', 'aws:s3AccessKeyId') != null
       && configManager.getConfig('crowi', 'aws:s3SecretAccessKey') != null
       && (
@@ -96,11 +96,11 @@ module.exports = (crowi) => {
       && configManager.getConfig('crowi', 'aws:s3Bucket') != null;
   };
 
-  lib.canRespond = () => {
+  lib.canRespond = function() {
     return !configManager.getConfig('crowi', 'aws:referenceFileWithRelayMode');
   };
 
-  lib.respond = async(res, attachment) => {
+  lib.respond = async function(res, attachment) {
     if (!lib.getIsUploadable()) {
       throw new Error('AWS is not configured.');
     }
@@ -134,12 +134,12 @@ module.exports = (crowi) => {
 
   };
 
-  lib.deleteFile = async(attachment) => {
+  lib.deleteFile = async function(attachment) {
     const filePath = getFilePathOnStorage(attachment);
     return lib.deleteFileByFilePath(filePath);
   };
 
-  lib.deleteFiles = async(attachments) => {
+  lib.deleteFiles = async function(attachments) {
     if (!lib.getIsUploadable()) {
       throw new Error('AWS is not configured.');
     }
@@ -157,7 +157,7 @@ module.exports = (crowi) => {
     return s3.send(new DeleteObjectsCommand(totalParams));
   };
 
-  lib.deleteFileByFilePath = async(filePath) => {
+  lib.deleteFileByFilePath = async function(filePath) {
     if (!lib.getIsUploadable()) {
       throw new Error('AWS is not configured.');
     }
@@ -179,7 +179,7 @@ module.exports = (crowi) => {
     return s3.send(new DeleteObjectCommand(params));
   };
 
-  lib.uploadAttachment = async(fileStream, attachment) => {
+  lib.uploadAttachment = async function(fileStream, attachment) {
     if (!lib.getIsUploadable()) {
       throw new Error('AWS is not configured.');
     }
@@ -201,7 +201,7 @@ module.exports = (crowi) => {
     return s3.send(new PutObjectCommand(params));
   };
 
-  lib.findDeliveryFile = async(attachment) => {
+  lib.findDeliveryFile = async function(attachment) {
     if (!lib.getIsReadable()) {
       throw new Error('AWS is not configured.');
     }
@@ -234,7 +234,7 @@ module.exports = (crowi) => {
     return stream;
   };
 
-  lib.checkLimit = async(uploadFileSize) => {
+  lib.checkLimit = async function(uploadFileSize) {
     const maxFileSize = crowi.configManager.getConfig('crowi', 'app:maxFileSize');
     const totalLimit = crowi.configManager.getConfig('crowi', 'app:fileUploadTotalLimit');
     return lib.doCheckLimit(uploadFileSize, maxFileSize, totalLimit);

@@ -50,16 +50,16 @@ module.exports = function(crowi) {
   }
 
   lib.isValidUploadSettings = function() {
-    return this.configManager.getConfig('crowi', 'gcs:apiKeyJsonPath') != null
-      && this.configManager.getConfig('crowi', 'gcs:bucket') != null;
+    return lib.configManager.getConfig('crowi', 'gcs:apiKeyJsonPath') != null
+      && lib.configManager.getConfig('crowi', 'gcs:bucket') != null;
   };
 
   lib.canRespond = function() {
-    return !this.configManager.getConfig('crowi', 'gcs:referenceFileWithRelayMode');
+    return !lib.configManager.getConfig('crowi', 'gcs:referenceFileWithRelayMode');
   };
 
   lib.respond = async function(res, attachment) {
-    if (!this.getIsUploadable()) {
+    if (!lib.getIsUploadable()) {
       throw new Error('GCS is not configured.');
     }
     const temporaryUrl = attachment.getValidTemporaryUrl();
@@ -71,7 +71,7 @@ module.exports = function(crowi) {
     const myBucket = gcs.bucket(getGcsBucket());
     const filePath = getFilePathOnStorage(attachment);
     const file = myBucket.file(filePath);
-    const lifetimeSecForTemporaryUrl = this.configManager.getConfig('crowi', 'gcs:lifetimeSecForTemporaryUrl');
+    const lifetimeSecForTemporaryUrl = lib.configManager.getConfig('crowi', 'gcs:lifetimeSecForTemporaryUrl');
 
     // issue signed url (default: expires 120 seconds)
     // https://cloud.google.com/storage/docs/access-control/signed-urls
@@ -104,7 +104,7 @@ module.exports = function(crowi) {
   };
 
   lib.deleteFilesByFilePaths = function(filePaths) {
-    if (!this.getIsUploadable()) {
+    if (!lib.getIsUploadable()) {
       throw new Error('GCS is not configured.');
     }
 
@@ -121,7 +121,7 @@ module.exports = function(crowi) {
   };
 
   lib.uploadAttachment = function(fileStream, attachment) {
-    if (!this.getIsUploadable()) {
+    if (!lib.getIsUploadable()) {
       throw new Error('GCS is not configured.');
     }
 
@@ -144,7 +144,7 @@ module.exports = function(crowi) {
    * @return {stream.Readable} readable stream
    */
   lib.findDeliveryFile = async function(attachment) {
-    if (!this.getIsReadable()) {
+    if (!lib.getIsReadable()) {
       throw new Error('GCS is not configured.');
     }
 
@@ -178,7 +178,7 @@ module.exports = function(crowi) {
    * In detail, the followings are checked.
    * - per-file size limit (specified by MAX_FILE_SIZE)
    */
-  lib.checkLimit = async(uploadFileSize) => {
+  lib.checkLimit = async function(uploadFileSize) {
     const maxFileSize = crowi.configManager.getConfig('crowi', 'app:maxFileSize');
     const gcsTotalLimit = crowi.configManager.getConfig('crowi', 'app:fileUploadTotalLimit');
     return lib.doCheckLimit(uploadFileSize, maxFileSize, gcsTotalLimit);
@@ -188,7 +188,7 @@ module.exports = function(crowi) {
    * List files in storage
    */
   lib.listFiles = async function() {
-    if (!this.getIsReadable()) {
+    if (!lib.getIsReadable()) {
       throw new Error('GCS is not configured.');
     }
 
