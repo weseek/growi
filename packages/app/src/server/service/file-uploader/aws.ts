@@ -179,7 +179,7 @@ module.exports = (crowi) => {
     return s3.send(new DeleteObjectCommand(params));
   };
 
-  lib.uploadFile = async(fileStream, attachment) => {
+  lib.uploadAttachment = async(fileStream, attachment) => {
     if (!lib.getIsUploadable()) {
       throw new Error('AWS is not configured.');
     }

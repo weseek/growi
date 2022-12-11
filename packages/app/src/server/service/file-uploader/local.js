@@ -68,7 +68,7 @@ module.exports = function(crowi) {
     return fs.unlinkSync(filePath);
   };
 
-  lib.uploadFile = async function(fileStream, attachment) {
+  lib.uploadAttachment = async function(fileStream, attachment) {
     logger.debug(`File uploading: fileName=${attachment.fileName}`);
 
     const filePath = getFilePathOnStorage(attachment);

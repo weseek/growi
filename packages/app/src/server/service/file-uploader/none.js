@@ -19,7 +19,7 @@ module.exports = function(crowi) {
     throw new Error('not implemented');
   };
 
-  lib.uploadFile = function(filePath, contentType, fileStream, options) {
+  lib.uploadAttachment = function(filePath, contentType, fileStream, options) {
     debug(`File uploading: ${filePath}`);
     throw new Error('not implemented');
   };

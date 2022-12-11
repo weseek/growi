@@ -160,7 +160,7 @@ const hasWritePermission = async(crowi: any): Promise<boolean> => {
   };
 
   try {
-    await fileUploadService.uploadFile(fileStream, attachment);
+    await fileUploadService.uploadAttachment(fileStream, attachment);
     // TODO: remove tmp file
   }
   catch (err) {
@@ -538,7 +538,7 @@ export class G2GTransferReceiverService implements Receiver {
   public async receiveAttachment(content: Readable, attachmentMap): Promise<void> {
     // TODO: test with S3, local
     const { fileUploadService } = this.crowi;
-    return fileUploadService.uploadFile(content, attachmentMap);
+    return fileUploadService.uploadAttachment(content, attachmentMap);
   }
 
   /**

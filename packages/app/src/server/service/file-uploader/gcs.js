@@ -120,7 +120,7 @@ module.exports = function(crowi) {
     });
   };
 
-  lib.uploadFile = function(fileStream, attachment) {
+  lib.uploadAttachment = function(fileStream, attachment) {
     if (!this.getIsUploadable()) {
       throw new Error('GCS is not configured.');
     }

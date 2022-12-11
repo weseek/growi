@@ -90,7 +90,7 @@ module.exports = function(crowi) {
     return lib.doCheckLimit(uploadFileSize, maxFileSize, totalLimit);
   };
 
-  lib.uploadFile = async function(fileStream, attachment) {
+  lib.uploadAttachment = async function(fileStream, attachment) {
     logger.debug(`File uploading: fileName=${attachment.fileName}`);
 
     return AttachmentFile.promisifiedWrite(
