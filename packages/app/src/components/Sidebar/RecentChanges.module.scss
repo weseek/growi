@@ -1,3 +1,5 @@
+@use './Skeleton/SidebarSkeleton.module.scss' as *;
+
 .grw-recent-changes-resize-button :global {
   font-size: 12px;
   line-height: normal;
@@ -15,6 +17,20 @@
 }
 
 .list-group-item :global {
+  .grw-recent-changes-skeleton-text {
+    @include grw-skeleton-text(120px);
+  }
+
+  .grw-recent-changes-skeleton-h5 {
+    @include grw-skeleton-h5;
+    max-width: 120px;
+  }
+
+  .grw-recent-changes-skeleton-date {
+    width: 90px;
+    height: 13.5;
+  }
+
   .grw-recent-changes-item-lower {
     height: 17.5px;
   }
