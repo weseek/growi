@@ -39,7 +39,7 @@ context('Modal for page operation', () => {
     cy.getByTestid('newPageBtn').click();
 
     // eslint-disable-next-line cypress/no-unnecessary-waiting
-    cy.wait(500) // Wait for animation to finish when the Create Page button is pressed
+    cy.wait(1000) // Wait for animation to finish when the Create Page button is pressed
 
     cy.getByTestid('page-create-modal').should('be.visible').within(() => {
       cy.screenshot(`${ssPrefix}new-page-modal-opened`);
@@ -80,6 +80,9 @@ context('Modal for page operation', () => {
 
     cy.visit('/Sandbox');
     cy.waitUntilSkeletonDisappear();
+
+    // eslint-disable-next-line cypress/no-unnecessary-waiting
+    cy.wait(1000);
 
     cy.getByTestid('newPageBtn').click();
 
@@ -460,10 +463,10 @@ context('Shortcuts', () => {
     cy.get('.page-editor-preview-body').contains(body1);
     cy.get('.CodeMirror').type(savePageShortcutKey);
 
-    cy.get('.toast').should('be.visible').trigger('mouseover');
+    cy.get('.Toastify__close-button').should('be.visible').click();
+    cy.get('.Toastify').should('not.be.visible');
     cy.screenshot(`${ssPrefix}-update-page-1`);
-    cy.get('.toast-close-button').click();
-    cy.get('.toast').should('not.exist');
+
 
     // 2nd
     cy.get('.CodeMirror').type(body2);
@@ -471,7 +474,8 @@ context('Shortcuts', () => {
     cy.get('.page-editor-preview-body').contains(body2);
     cy.get('.CodeMirror').type(savePageShortcutKey);
 
-    cy.get('.toast').should('be.visible').trigger('mouseover');
+    cy.get('.Toastify__close-button').should('be.visible').click();
+    cy.get('.Toastify').should('not.be.visible');
     cy.screenshot(`${ssPrefix}-update-page-2`);
   });
 });
