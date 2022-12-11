@@ -128,7 +128,7 @@ module.exports = function(crowi) {
   /**
    * List files in storage
    */
-  lib.listFiles = async() => {
+  lib.listFiles = async function() {
     const attachmentFiles = await AttachmentFile.find();
     return attachmentFiles.map(({ filename: name, length: size }) => ({
       name, size,

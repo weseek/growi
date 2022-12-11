@@ -187,7 +187,7 @@ module.exports = function(crowi) {
   /**
    * List files in storage
    */
-  lib.listFiles = async() => {
+  lib.listFiles = async function() {
     if (!this.getIsReadable()) {
       throw new Error('GCS is not configured.');
     }

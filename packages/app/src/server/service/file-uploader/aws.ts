@@ -243,7 +243,7 @@ module.exports = (crowi) => {
   /**
    * List files in storage
    */
-  lib.listFiles = async() => {
+  lib.listFiles = async function() {
     if (!lib.getIsReadable()) {
       throw new Error('AWS is not configured.');
     }

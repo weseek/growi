@@ -32,7 +32,7 @@ module.exports = function(crowi) {
   /**
    * List files in storage
    */
-  lib.listFiles = async() => {
+  lib.listFiles = async function() {
     debug('Listing files in storage');
     throw new Error('not implemented');
   };
