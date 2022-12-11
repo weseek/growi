@@ -1,16 +1,11 @@
 import React, { useCallback } from 'react';
 
-import { useTranslation } from 'react-i18next';
-
 import { toastSuccess, toastError } from '~/client/util/apiNotification';
 import { apiv3Post } from '~/client/util/apiv3-client';
-
-import AdminInstallButtonRow from '../Common/AdminUpdateButtonRow';
-// TODO: error notification (toast, loggerFactory)
+import { useSWRxPlugins } from '~/stores/plugin';
 // TODO: i18n
-
 export const PluginInstallerForm = (): JSX.Element => {
-  // const { t } = useTranslation('admin');
+  const { mutate } = useSWRxPlugins();
 
   const submitHandler = useCallback(async(e) => {
     e.preventDefault();
@@ -37,7 +32,10 @@ export const PluginInstallerForm = (): JSX.Element => {
       toastError(err);
       // logger.error(err);
     }
-  }, []);
+    finally {
+      mutate();
+    }
+  }, [mutate]);
 
   return (
     <form role="form" onSubmit={submitHandler}>
@@ -47,39 +45,13 @@ export const PluginInstallerForm = (): JSX.Element => {
           <input
             className="form-control"
             type="text"
-            // defaultValue={adminAppContainer.state.title || ''}
             name="pluginInstallerForm[url]"
             placeholder="https://github.com/weseek/growi-plugin-lsx"
             required
           />
           <p className="form-text text-muted">You can install plugins by inputting the GitHub URL.</p>
-          {/* <p className="form-text text-muted">{t('admin:app_setting.sitename_change')}</p> */}
         </div>
       </div>
-      {/* <div className='form-group row'>
-        <label className="text-left text-md-right col-md-3 col-form-label">branch</label>
-        <div className="col-md-6">
-          <input
-            className="form-control"
-            type="text"
-            name="pluginInstallerForm[ghBranch]"
-            placeholder="main"
-          />
-          <p className="form-text text-muted">branch name</p>
-        </div>
-      </div>
-      <div className='form-group row'>
-        <label className="text-left text-md-right col-md-3 col-form-label">tag</label>
-        <div className="col-md-6">
-          <input
-            className="form-control"
-            type="text"
-            name="pluginInstallerForm[ghTag]"
-            placeholder="tags"
-          />
-          <p className="form-text text-muted">tag name</p>
-        </div>
-      </div> */}
 
       <div className="row my-3">
         <div className="mx-auto">

@@ -1,13 +1,9 @@
-import {
-  Spinner,
-} from 'reactstrap';
+import { Spinner } from 'reactstrap';
 
-const Loading = () => {
+export const Loading = (): JSX.Element => {
   return (
     <Spinner className='d-flex justify-content-center aligh-items-center'>
       Loading...
     </Spinner>
   );
 };
-
-export default Loading;

@@ -19,3 +19,9 @@ export type SearchResultItem = {
   homepage: string,
   stargazersCount: number,
 }
+
+export type PluginItem = {
+  name: string,
+  url: string,
+  description: string,
+}

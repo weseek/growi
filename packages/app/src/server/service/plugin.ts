@@ -1,10 +1,10 @@
 import { execSync } from 'child_process';
-import fs from 'fs';
 import path from 'path';
 
 import mongoose from 'mongoose';
 
-import type { GrowiPlugin, GrowiPluginMeta, GrowiPluginOrigin } from '~/interfaces/plugin';
+import { ActivatePluginService, GrowiPluginManifestEntries } from '~/client/services/activate-plugin';
+import { GrowiPlugin, GrowiPluginOrigin } from '~/interfaces/plugin';
 import loggerFactory from '~/utils/logger';
 import { resolveFromRoot } from '~/utils/project-dir-utils';
 
@@ -61,6 +61,7 @@ export class PluginService {
     const plugins = await PluginService.detectPlugins(origin, installedPath);
     await this.savePluginMetaData(plugins);
 
+
     return;
   }
 
@@ -83,6 +84,13 @@ export class PluginService {
   async savePluginMetaData(plugins: GrowiPlugin[]): Promise<void> {
     const GrowiPlugin = mongoose.model('GrowiPlugin');
     await GrowiPlugin.insertMany(plugins);
+  }
+
+  async getPlugins(): Promise<any> {
+    const GrowiPlugin = mongoose.model<GrowiPlugin>('GrowiPlugin');
+    const growiPlugins = await GrowiPlugin.find({});
+    const pluginManifestEntries: GrowiPluginManifestEntries = await ActivatePluginService.retrievePluginManifests(growiPlugins);
+    return JSON.parse(JSON.stringify(pluginManifestEntries));
   }
 
   // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
@@ -135,5 +143,39 @@ export class PluginService {
     return [];
   }
 
+  /**
+   * Get plugin isEnabled
+   */
+  async getPluginIsEnabled(targetPluginId: string): Promise<any> {
+    const GrowiPlugin = await mongoose.model<GrowiPlugin>('GrowiPlugin');
+    const growiPlugins = await GrowiPlugin.find({ _id: targetPluginId });
+    return growiPlugins[0].isEnabled;
+  }
+
+  /**
+   * Switch plugin enabled
+   */
+  async switchPluginIsEnabled(targetPluginId: string): Promise<any> {
+    const GrowiPlugin = mongoose.model<GrowiPlugin>('GrowiPlugin');
+    const growiPlugins = await GrowiPlugin.find({ _id: targetPluginId });
+    await growiPlugins[0].update(
+      { isEnabled: !growiPlugins[0].isEnabled },
+    );
+    return growiPlugins[0].isEnabled;
+  }
+
+  /**
+   * Delete plugin
+   */
+  async pluginDeleted(targetPluginId: string, targetPluginName: string): Promise<any> {
+    const GrowiPlugin = mongoose.model<GrowiPlugin>('GrowiPlugin');
+    const growiPlugins = await GrowiPlugin.find({ _id: targetPluginId });
+    growiPlugins[0].remove();
+    // TODO: Check remove
+    const ghOrganizationName = 'weseek';
+    const unzipTargetPath = path.join(pluginStoringPath, ghOrganizationName);
+    execSync(`rm -rf ${unzipTargetPath}/${targetPluginName}`);
+    return [];
+  }
 
 }
