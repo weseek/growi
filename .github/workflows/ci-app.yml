@@ -1,192 +1,192 @@
-name: Node CI for app development
+# name: Node CI for app development
 
-on:
-  push:
-    branches-ignore:
-      - release/**
-      - rc/**
-      - chore/**
-      - support/prepare-v**
-    paths:
-      - .github/workflows/ci-app.yml
-      - .eslint*
-      - tsconfig.base.json
-      - yarn.lock
-      - packages/app/**
-      - '!packages/app/docker/**'
-      - packages/codemirror-textlint/**
-      - packages/core/**
-      - packages/remark-*/**
-      - packages/slack/**
-      - packages/ui/**
+# on:
+#   push:
+#     branches-ignore:
+#       - release/**
+#       - rc/**
+#       - chore/**
+#       - support/prepare-v**
+#     paths:
+#       - .github/workflows/ci-app.yml
+#       - .eslint*
+#       - tsconfig.base.json
+#       - yarn.lock
+#       - packages/app/**
+#       - '!packages/app/docker/**'
+#       - packages/codemirror-textlint/**
+#       - packages/core/**
+#       - packages/remark-*/**
+#       - packages/slack/**
+#       - packages/ui/**
 
-jobs:
-  lint:
-    runs-on: ubuntu-latest
+# jobs:
+#   lint:
+#     runs-on: ubuntu-latest
 
-    strategy:
-      matrix:
-        node-version: [16.x]
+#     strategy:
+#       matrix:
+#         node-version: [16.x]
 
-    steps:
-      - uses: actions/checkout@v3
+#     steps:
+#       - uses: actions/checkout@v3
 
-      - uses: actions/setup-node@v3
-        with:
-          node-version: ${{ matrix.node-version }}
-          cache: 'yarn'
-          cache-dependency-path: '**/yarn.lock'
+#       - uses: actions/setup-node@v3
+#         with:
+#           node-version: ${{ matrix.node-version }}
+#           cache: 'yarn'
+#           cache-dependency-path: '**/yarn.lock'
 
-      - name: Cache/Restore node_modules
-        id: cache-dependencies
-        uses: actions/cache@v3
-        with:
-          path: |
-            **/node_modules
-          key: node_modules-${{ runner.OS }}-node${{ matrix.node-version }}-${{ hashFiles('**/yarn.lock') }}-${{ hashFiles('packages/app/package.json') }}
-          restore-keys: |
-            node_modules-${{ runner.OS }}-node${{ matrix.node-version }}-${{ hashFiles('**/yarn.lock') }}-
-            node_modules-${{ runner.OS }}-node${{ matrix.node-version }}-
+#       - name: Cache/Restore node_modules
+#         id: cache-dependencies
+#         uses: actions/cache@v3
+#         with:
+#           path: |
+#             **/node_modules
+#           key: node_modules-${{ runner.OS }}-node${{ matrix.node-version }}-${{ hashFiles('**/yarn.lock') }}-${{ hashFiles('packages/app/package.json') }}
+#           restore-keys: |
+#             node_modules-${{ runner.OS }}-node${{ matrix.node-version }}-${{ hashFiles('**/yarn.lock') }}-
+#             node_modules-${{ runner.OS }}-node${{ matrix.node-version }}-
 
-      - name: lerna bootstrap
-        run: |
-          npx lerna bootstrap -- --frozen-lockfile
+#       - name: lerna bootstrap
+#         run: |
+#           npx lerna bootstrap -- --frozen-lockfile
 
-      - name: lerna run lint for plugins
-        run: |
-          yarn lerna run lint --scope @growi/remark-*
-      - name: lerna run lint for app
-        run: |
-          yarn lerna run lint --scope @growi/app --scope @growi/codemirror-textlint --scope @growi/core --scope @growi/slack --scope @growi/ui
+#       - name: lerna run lint for plugins
+#         run: |
+#           yarn lerna run lint --scope @growi/remark-*
+#       - name: lerna run lint for app
+#         run: |
+#           yarn lerna run lint --scope @growi/app --scope @growi/codemirror-textlint --scope @growi/core --scope @growi/slack --scope @growi/ui
 
-      - name: Slack Notification
-        uses: weseek/ghaction-slack-notification@master
-        if: failure()
-        with:
-          type: ${{ job.status }}
-          job_name: '*Node CI for growi - lint (${{ matrix.node-version }})*'
-          channel: '#ci'
-          isCompactMode: true
-          url: ${{ secrets.SLACK_WEBHOOK_URL }}
+#       - name: Slack Notification
+#         uses: weseek/ghaction-slack-notification@master
+#         if: failure()
+#         with:
+#           type: ${{ job.status }}
+#           job_name: '*Node CI for growi - lint (${{ matrix.node-version }})*'
+#           channel: '#ci'
+#           isCompactMode: true
+#           url: ${{ secrets.SLACK_WEBHOOK_URL }}
 
-  test:
-    runs-on: ubuntu-latest
+#   test:
+#     runs-on: ubuntu-latest
 
-    strategy:
-      matrix:
-        node-version: [16.x]
+#     strategy:
+#       matrix:
+#         node-version: [16.x]
 
-    services:
-      mongodb:
-        image: mongo:4.4
-        ports:
-          - 27017/tcp
+#     services:
+#       mongodb:
+#         image: mongo:4.4
+#         ports:
+#           - 27017/tcp
 
-    steps:
-      - uses: actions/checkout@v3
+#     steps:
+#       - uses: actions/checkout@v3
 
-      - uses: actions/setup-node@v3
-        with:
-          node-version: ${{ matrix.node-version }}
-          cache: 'yarn'
-          cache-dependency-path: '**/yarn.lock'
+#       - uses: actions/setup-node@v3
+#         with:
+#           node-version: ${{ matrix.node-version }}
+#           cache: 'yarn'
+#           cache-dependency-path: '**/yarn.lock'
 
-      - name: Cache/Restore node_modules
-        id: cache-dependencies
-        uses: actions/cache@v3
-        with:
-          path: |
-            **/node_modules
-          key: node_modules-${{ runner.OS }}-node${{ matrix.node-version }}-${{ hashFiles('**/yarn.lock') }}-${{ hashFiles('packages/app/package.json') }}
-          restore-keys: |
-            node_modules-${{ runner.OS }}-node${{ matrix.node-version }}-${{ hashFiles('**/yarn.lock') }}-
-            node_modules-${{ runner.OS }}-node${{ matrix.node-version }}-
+#       - name: Cache/Restore node_modules
+#         id: cache-dependencies
+#         uses: actions/cache@v3
+#         with:
+#           path: |
+#             **/node_modules
+#           key: node_modules-${{ runner.OS }}-node${{ matrix.node-version }}-${{ hashFiles('**/yarn.lock') }}-${{ hashFiles('packages/app/package.json') }}
+#           restore-keys: |
+#             node_modules-${{ runner.OS }}-node${{ matrix.node-version }}-${{ hashFiles('**/yarn.lock') }}-
+#             node_modules-${{ runner.OS }}-node${{ matrix.node-version }}-
 
-      - name: lerna bootstrap
-        run: |
-          npx lerna bootstrap -- --frozen-lockfile
+#       - name: lerna bootstrap
+#         run: |
+#           npx lerna bootstrap -- --frozen-lockfile
 
-      - name: lerna run test for plugins
-        run: |
-          yarn lerna run test --scope @growi/remark-*
+#       - name: lerna run test for plugins
+#         run: |
+#           yarn lerna run test --scope @growi/remark-*
 
-      - name: Test app
-        working-directory: ./packages/app
-        run: |
-          yarn test:ci --selectProjects unit server ; yarn test:ci --selectProjects server-v5
-        env:
-          MONGO_URI: mongodb://localhost:${{ job.services.mongodb.ports['27017'] }}/growi_test
+#       - name: Test app
+#         working-directory: ./packages/app
+#         run: |
+#           yarn test:ci --selectProjects unit server ; yarn test:ci --selectProjects server-v5
+#         env:
+#           MONGO_URI: mongodb://localhost:${{ job.services.mongodb.ports['27017'] }}/growi_test
 
-      - name: Upload coverage report as artifact
-        uses: actions/upload-artifact@v3
-        with:
-          name: Coverage Report
-          path: |
-            packages/app/coverage
-            packages/remark-growi-plugin/coverage
+#       - name: Upload coverage report as artifact
+#         uses: actions/upload-artifact@v3
+#         with:
+#           name: Coverage Report
+#           path: |
+#             packages/app/coverage
+#             packages/remark-growi-plugin/coverage
 
-      - name: Slack Notification
-        uses: weseek/ghaction-slack-notification@master
-        if: failure()
-        with:
-          type: ${{ job.status }}
-          job_name: '*Node CI for growi - test (${{ matrix.node-version }})*'
-          channel: '#ci'
-          isCompactMode: true
-          url: ${{ secrets.SLACK_WEBHOOK_URL }}
+#       - name: Slack Notification
+#         uses: weseek/ghaction-slack-notification@master
+#         if: failure()
+#         with:
+#           type: ${{ job.status }}
+#           job_name: '*Node CI for growi - test (${{ matrix.node-version }})*'
+#           channel: '#ci'
+#           isCompactMode: true
+#           url: ${{ secrets.SLACK_WEBHOOK_URL }}
 
-  launch-dev:
-    runs-on: ubuntu-latest
+#   launch-dev:
+#     runs-on: ubuntu-latest
 
-    strategy:
-      matrix:
-        node-version: [16.x]
+#     strategy:
+#       matrix:
+#         node-version: [16.x]
 
-    services:
-      mongodb:
-        image: mongo:4.4
-        ports:
-          - 27017/tcp
+#     services:
+#       mongodb:
+#         image: mongo:4.4
+#         ports:
+#           - 27017/tcp
 
-    steps:
-      - uses: actions/checkout@v3
+#     steps:
+#       - uses: actions/checkout@v3
 
-      - uses: actions/setup-node@v3
-        with:
-          node-version: ${{ matrix.node-version }}
-          cache: 'yarn'
-          cache-dependency-path: '**/yarn.lock'
+#       - uses: actions/setup-node@v3
+#         with:
+#           node-version: ${{ matrix.node-version }}
+#           cache: 'yarn'
+#           cache-dependency-path: '**/yarn.lock'
 
-      - name: Cache/Restore node_modules and next cache files
-        id: cache-dependencies
-        uses: actions/cache@v3
-        with:
-          path: |
-            **/node_modules
-            ${{ github.workspace }}/packages/app/.next/cache
-          key: dev-${{ runner.OS }}-node${{ matrix.node-version }}-${{ hashFiles('**/yarn.lock') }}-${{ hashFiles('packages/app/package.json') }}
-          restore-keys: |
-            dev-${{ runner.OS }}-node${{ matrix.node-version }}-${{ hashFiles('**/yarn.lock') }}-
-            dev-${{ runner.OS }}-node${{ matrix.node-version }}-
+#       - name: Cache/Restore node_modules and next cache files
+#         id: cache-dependencies
+#         uses: actions/cache@v3
+#         with:
+#           path: |
+#             **/node_modules
+#             ${{ github.workspace }}/packages/app/.next/cache
+#           key: dev-${{ runner.OS }}-node${{ matrix.node-version }}-${{ hashFiles('**/yarn.lock') }}-${{ hashFiles('packages/app/package.json') }}
+#           restore-keys: |
+#             dev-${{ runner.OS }}-node${{ matrix.node-version }}-${{ hashFiles('**/yarn.lock') }}-
+#             dev-${{ runner.OS }}-node${{ matrix.node-version }}-
 
-      - name: lerna bootstrap
-        run: |
-          npx lerna bootstrap -- --frozen-lockfile
+#       - name: lerna bootstrap
+#         run: |
+#           npx lerna bootstrap -- --frozen-lockfile
 
-      - name: yarn dev:ci
-        working-directory: ./packages/app
-        run: |
-          cp config/ci/.env.local.for-ci .env.development.local
-          yarn dev:ci
-        env:
-          MONGO_URI: mongodb://localhost:${{ job.services.mongodb.ports['27017'] }}/growi_dev
+#       - name: yarn dev:ci
+#         working-directory: ./packages/app
+#         run: |
+#           cp config/ci/.env.local.for-ci .env.development.local
+#           yarn dev:ci
+#         env:
+#           MONGO_URI: mongodb://localhost:${{ job.services.mongodb.ports['27017'] }}/growi_dev
 
-      - name: Slack Notification
-        uses: weseek/ghaction-slack-notification@master
-        if: failure()
-        with:
-          type: ${{ job.status }}
-          job_name: '*Node CI for growi - launch-dev (${{ matrix.node-version }})*'
-          channel: '#ci'
-          isCompactMode: true
-          url: ${{ secrets.SLACK_WEBHOOK_URL }}
+#       - name: Slack Notification
+#         uses: weseek/ghaction-slack-notification@master
+#         if: failure()
+#         with:
+#           type: ${{ job.status }}
+#           job_name: '*Node CI for growi - launch-dev (${{ matrix.node-version }})*'
+#           channel: '#ci'
+#           isCompactMode: true
+#           url: ${{ secrets.SLACK_WEBHOOK_URL }}
