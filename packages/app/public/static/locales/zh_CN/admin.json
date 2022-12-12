@@ -7,6 +7,7 @@
   "User": "用户",
   "Name": "姓名",
   "Created": "创建",
+  "Page": "页面",
   "Edit": "编辑",
   "Description": "描述",
   "last_login": "上次登录",
@@ -79,7 +80,7 @@
 		"client_secret": "客户机密",
 		"updated_general_security_setting": "更新安全设置成功",
 		"setup_not_completed_yet": "安装尚未完成",
-		"guest_mode": {
+    "guest_mode": {
 			"deny": "拒绝（仅限注册用户）",
 			"readonly": "接受（来宾可以只读）"
 		},
@@ -212,7 +213,7 @@
 				"username_detail": "Specification of mappings for <code>username</code> when creating new users",
 				"name_detail": "Specification of mappings for <code>name</code> when creating new users",
 				"mapping_detail": "Specification of mappings for %s when creating new users",
-				"register_1": "Contant to OIDC IdP Administrator",
+				"register_1": "Contact to OIDC IdP Administrator",
 				"register_2": "Register your OIDC App with \"Authorization callback URL\" as <code>%s</code>",
 				"register_3": "Copy and paste your ClientID and Client Secret above",
 				"updated_oidc": "Succeeded to update OpenID Connect",
@@ -238,6 +239,7 @@
 		}
   },
   "notification_settings": {
+    "notification_settings": "通知设置",
 		"slack_incoming_configuration": "Slack Incoming Webhooks configuration",
 		"prioritize_webhook": "Prioritize incoming webhook than Slack App",
 		"prioritize_webhook_desc": "Check this option and GROWI use Incoming Webhooks even if Slack App settings are enabled.",
@@ -316,7 +318,6 @@
     "system_information": "系统信息",
     "wiki_administrator": "只有wiki管理员可以访问此页",
     "assign_administrator": "您可以使用“授予管理员访问权限”按钮在“用户管理”页上将所选用户指定为wiki管理员",
-    "list_of_installed_plugins": "已安装插件列表",
     "package_name": "包名称",
     "specified_version": "指定版本",
     "installed_version": "已安装版本",
@@ -400,9 +401,10 @@
     "aws_label": "AWS(S3)",
     "local_label": "Local",
     "gridfs_label": "MongoDB(GridFS)",
+    "fixed_by_env_var": "这是由env var 修复的 <code>{{key}}={{value}}</code>.",
+    "file_upload": "This is for uploading file settings. If you complete file upload settings, file upload function, profile picture function etc will be enabled.",
     "ses_settings": "SES设置",
     "test_connection": "测试邮件服务器连接",
-    "": "如果您没有SMTP设置，电子邮件将通过SES发送。您需要从电子邮件地址和生产设置进行验证。",
     "change_setting": "注意：如果你更改此设置未完成，您将无法访问迄今为止上传的文件。",
     "region": "Region",
     "bucket_name": "Bucket name",
@@ -475,17 +477,6 @@
       "expanded": "内容宽度100％ "
     },
     "theme": "主体",
-    "behavior": "行为",
-    "behavior_desc": {
-      "growi_text1": "<code>/page</code> and <code>/page/</code> 都显示同一页。",
-      "growi_text2": "<code>/nonexistent_page</code> 显示编辑表单",
-      "growi_text3": "如果使用GROWI增强布局，则所有页面都显示子页面列表",
-      "crowi_text1": "<code>/page</code> 显示页面",
-      "crowi_text2": "<code>/page/</code> 显示子页列表",
-      "crowi_text3": "如果portal应用于<code>/page/</code>，则会显示portal和子页面列表",
-      "crowi_text4": "<code>/nonexistent_page</code> 显示编辑表单<",
-      "crowi_text5": "<code>/nonexistent_page/</code> 子页列表"
-    },
     "theme_desc": {
       "light_and_dark": "明暗模式",
       "unique": "只有一种模式"

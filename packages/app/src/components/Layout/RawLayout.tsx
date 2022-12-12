@@ -1,6 +1,7 @@
 import React, { ReactNode, useState } from 'react';
 
 import Head from 'next/head';
+import { ToastContainer } from 'react-toastify';
 import { useIsomorphicLayoutEffect } from 'usehooks-ts';
 
 import { useGrowiTheme } from '~/stores/context';
@@ -46,6 +47,7 @@ export const RawLayout = ({ children, className }: Props): JSX.Element => {
         <GrowiThemeProvider theme={growiTheme} colorScheme={colorScheme}>
           <div className={classNames.join(' ')} data-color-scheme={colorScheme}>
             {children}
+            <ToastContainer theme={colorScheme} />
           </div>
         </GrowiThemeProvider>
       </NextThemesProvider>

@@ -11,13 +11,14 @@ import {
 } from 'reactstrap';
 import { debounce } from 'throttle-debounce';
 
-
 import { toastError } from '~/client/util/apiNotification';
 import { useCurrentUser, useIsSearchServiceReachable } from '~/stores/context';
 import { usePageCreateModal } from '~/stores/modal';
 import { EditorMode, useEditorMode } from '~/stores/ui';
 
 import PagePathAutoComplete from './PagePathAutoComplete';
+
+import styles from './PageCreateModal.module.scss';
 
 const {
   userPageRoot, isCreatablePage, generateEditorPath, isUsersHomePage,
@@ -53,6 +54,10 @@ const PageCreateModal = () => {
       setPageNameInput(isCreatable ? pathUtils.addTrailingSlash(pathname) : '/');
     }
   }, [isOpened, pathname, isCreatable]);
+
+  useEffect(() => {
+    setTodayInput1(t('Memo'));
+  }, [t]);
 
   const checkIsUsersHomePageDebounce = useMemo(() => {
     const checkIsUsersHomePage = () => {
@@ -315,7 +320,7 @@ const PageCreateModal = () => {
       isOpen={isOpened}
       toggle={() => closeCreateModal()}
       data-testid="page-create-modal"
-      className="grw-create-page"
+      className={`grw-create-page ${styles['grw-create-page']}`}
       autoFocus={false}
     >
       <ModalHeader tag="h4" toggle={() => closeCreateModal()} className="bg-primary text-light">

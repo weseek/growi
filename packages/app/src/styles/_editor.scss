@@ -69,9 +69,6 @@
     display: none;
   }
 
-  .toast-top-right {
-    top: 64px;
-  }
 
   /*****************
    * Expand Editor
@@ -276,6 +273,15 @@
       vertical-align: unset;
     }
   }
+
+
+  /*****************
+   *     Toastr
+   *****************/
+  .Toastify .Toastify__toast-container {
+    top: 4.5em;
+  }
+
 }
 
 .layout-root.editing {

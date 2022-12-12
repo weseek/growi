@@ -18,7 +18,7 @@ describe('Access to sidebar', () => {
 
       describe('Test show/collapse button', () => {
         it('Successfully show sidebar', () => {
-          cy.get('.grw-pagetree').should('be.visible');
+          cy.getByTestid('grw-pagetree-item-container').should('be.visible');
           cy.screenshot(`${ssPrefix}1-sidebar-shown`, {
             capture: 'viewport',
             // Blackout for recalculation of toc content hight
@@ -39,7 +39,7 @@ describe('Access to sidebar', () => {
       describe('Test page tree tab', () => {
         it('Successfully access to page tree', () => {
           cy.getByTestid('grw-contextual-navigation-sub').within(() => {
-            cy.get('.grw-pagetree').should('be.visible');
+            cy.getByTestid('grw-pagetree-item-container').should('be.visible');
             cy.screenshot(`${ssPrefix}page-tree-1-access-to-page-tree`);
           });
         });
