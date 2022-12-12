@@ -73,10 +73,9 @@ module.exports = function(crowi, app) {
    */
   const loadStyles = function(req, res) {
 
-    const stylesCSSLineBreaksRemoved = hackmdFiles.stylesCSS.replace(/(\r\n|\n|\r)/gm, ''); // https://stackoverflow.com/questions/10805125/how-to-remove-all-line-breaks-from-a-string
     // generate definitions to replace
     const definitions = {
-      styles: stylesCSSLineBreaksRemoved,
+      styles: hackmdFiles.stylesCSS,
     };
     // inject styles to script
     const script = ejs.render(hackmdFiles.stylesJS, definitions);
