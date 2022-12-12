@@ -32,6 +32,7 @@ context('Access to Admin page', () => {
   it('/admin/app is successfully loaded', () => {
     cy.visit('/admin/app');
     cy.getByTestid('admin-app-settings').should('be.visible');
+    cy.getByTestid('v5-page-migration').should('be.visible');
     cy.screenshot(`${ssPrefix}-admin-app`);
   });
 
