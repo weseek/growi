@@ -30,7 +30,7 @@ import {
   useEditingMarkdown,
 } from '~/stores/editor';
 import { useConflictDiffModal } from '~/stores/modal';
-import { useCurrentPagePath, useSWRxCurrentPage } from '~/stores/page';
+import { useCurrentPagePath, useSWRxCurrentPage, useSWRxTagsInfo } from '~/stores/page';
 import { usePreviewOptions } from '~/stores/renderer';
 import {
   EditorMode,
@@ -73,8 +73,9 @@ const PageEditor = React.memo((): JSX.Element => {
   const { data: currentPathname } = useCurrentPathname();
   const { data: currentPage, mutate: mutateCurrentPage } = useSWRxCurrentPage();
   const { data: grantData, mutate: mutateGrant } = useSelectedGrant();
-  const { data: pageTags } = usePageTagsForEditors(pageId);
-  const { data: editingMarkdown } = useEditingMarkdown();
+  const { data: pageTags, sync: syncTagsInfoForEditor } = usePageTagsForEditors(pageId);
+  const { mutate: mutateTagsInfo } = useSWRxTagsInfo(pageId);
+  const { data: editingMarkdown, mutate: mutateEditingMarkdown } = useEditingMarkdown();
   const { data: isEnabledAttachTitleHeader } = useIsEnabledAttachTitleHeader();
   const { data: templateBodyData } = useTemplateBodyData();
   const { data: isEditable } = useIsEditable();
@@ -414,6 +415,26 @@ const PageEditor = React.memo((): JSX.Element => {
   }, []);
   const scrollEditorByPreviewScrollWithThrottle = useMemo(() => throttle(20, scrollEditorByPreviewScroll), [scrollEditorByPreviewScroll]);
 
+  const afterResolvedHandler = useCallback(async() => {
+    // get page data from db
+    const pageData = await mutateCurrentPage();
+
+    // update tag
+    await mutateTagsInfo(); // get from DB
+    syncTagsInfoForEditor(); // sync global state for client
+
+    // showToaster
+    toastSuccess('Saved successfully');
+
+    // clear isConflict
+    mutateIsConflict(false);
+
+    // set resolved markdown in editing markdown
+    const markdown = pageData?.revision.body ?? '';
+    mutateEditingMarkdown(markdown);
+
+  }, [mutateCurrentPage, mutateEditingMarkdown, mutateIsConflict, mutateTagsInfo, syncTagsInfoForEditor]);
+
 
   // initialize
   useEffect(() => {
@@ -522,6 +543,7 @@ const PageEditor = React.memo((): JSX.Element => {
         onClose={() => closeConflictDiffModal()}
         markdownOnEdit={markdownToPreview}
         optionsToSave={undefined} // replace undefined
+        afterResolvedHandler={afterResolvedHandler}
       />
     </div>
   );
