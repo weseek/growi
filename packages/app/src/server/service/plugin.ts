@@ -55,34 +55,34 @@ export class PluginService {
 
     const downloadFile = async(requestUrl: string, filePath: string) => {
       try {
-        const validUrl = await ssrf.url(requestUrl);
-
-        return new Promise<void>((resolve, reject) => {
-          axios({
-            method: 'GET',
-            url: validUrl,
-            responseType: 'stream',
-          })
-            .then((res) => {
-              if (res.status === 200) {
-                const file = fs.createWriteStream(filePath);
-                res.data.pipe(file)
-                  .on('close', () => file.close())
-                  .on('finish', () => {
-                    resolve();
-                  });
-              }
-              else {
-                reject(res.status);
-              }
-            }).catch((err) => {
-              reject(err);
-            });
-        });
+        await ssrf.url(requestUrl);
       }
       catch (err) {
-        throw new Error(err);
+        throw new Error('This request URL is invalid.');
       }
+
+      return new Promise<void>((resolve, reject) => {
+        axios({
+          method: 'GET',
+          url: requestUrl,
+          responseType: 'stream',
+        })
+          .then((res) => {
+            if (res.status === 200) {
+              const file = fs.createWriteStream(filePath);
+              res.data.pipe(file)
+                .on('close', () => file.close())
+                .on('finish', () => {
+                  resolve();
+                });
+            }
+            else {
+              reject(res.status);
+            }
+          }).catch((err) => {
+            reject(err);
+          });
+      });
     };
 
     const unzip = (zipFilePath: fs.PathLike, unzippedPath: fs.PathLike) => {
