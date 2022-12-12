@@ -26,7 +26,7 @@ import {
 } from '../stores/context';
 
 import {
-  CommonProps, getServerSideCommonProps, getNextI18NextConfig, useCustomTitle,
+  CommonProps, getServerSideCommonProps, getNextI18NextConfig, generateCustomTitle,
 } from './utils/commons';
 
 const PAGING_LIMIT = 10;
@@ -79,7 +79,7 @@ const TagPage: NextPage<CommonProps> = (props: Props) => {
 
   useRendererConfig(props.rendererConfig);
 
-  const title = useCustomTitle(props, 'GROWI');
+  const title = generateCustomTitle(props, 'GROWI');
   const classNames: string[] = [];
 
   return (

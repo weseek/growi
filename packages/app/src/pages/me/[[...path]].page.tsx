@@ -29,7 +29,7 @@ import {
 import loggerFactory from '~/utils/logger';
 
 import {
-  CommonProps, getNextI18NextConfig, getServerSideCommonProps, useCustomTitle,
+  CommonProps, getNextI18NextConfig, getServerSideCommonProps, generateCustomTitle,
 } from '../utils/commons';
 
 
@@ -110,7 +110,7 @@ const MePage: NextPage<Props> = (props: Props) => {
 
   useRendererConfig(props.rendererConfig);
 
-  const title = useCustomTitle(props, 'GROWI');
+  const title = generateCustomTitle(props, 'GROWI');
 
   return (
     <BasicLayout>

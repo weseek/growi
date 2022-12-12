@@ -14,7 +14,7 @@ import type { CrowiRequest } from '~/interfaces/crowi-request';
 import { useCsrfToken, useCurrentPathname, useCurrentUser } from '../stores/context';
 
 import {
-  CommonProps, getServerSideCommonProps, useCustomTitle, getNextI18NextConfig,
+  CommonProps, getServerSideCommonProps, generateCustomTitle, getNextI18NextConfig,
 } from './utils/commons';
 
 const InvitedForm = dynamic<InvitedFormProps>(() => import('~/components/InvitedForm').then(mod => mod.InvitedForm), { ssr: false });
@@ -31,7 +31,7 @@ const InvitedPage: NextPage<Props> = (props: Props) => {
   useCurrentPathname(props.currentPathname);
   useCurrentUser(props.currentUser);
 
-  const title = useCustomTitle(props, 'GROWI');
+  const title = generateCustomTitle(props, 'GROWI');
   const classNames: string[] = ['invited-page'];
 
   return (

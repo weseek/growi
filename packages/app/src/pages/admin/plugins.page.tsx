@@ -8,7 +8,7 @@ import { Container, Provider } from 'unstated';
 
 
 import AdminAppContainer from '~/client/services/AdminAppContainer';
-import { CommonProps, useCustomTitle } from '~/pages/utils/commons';
+import { CommonProps, generateCustomTitle } from '~/pages/utils/commons';
 import { useCurrentUser } from '~/stores/context';
 import { useIsMaintenanceMode } from '~/stores/maintenanceMode';
 
@@ -37,7 +37,7 @@ const AdminAppPage: NextPage<CommonProps> = (props) => {
 
   return (
     <Provider inject={[...injectableContainers]}>
-      <AdminLayout title={useCustomTitle(props, title)} componentTitle={title} >
+      <AdminLayout title={generateCustomTitle(props, title)} componentTitle={title} >
         <PluginsExtensionPageContents />
       </AdminLayout>
     </Provider>

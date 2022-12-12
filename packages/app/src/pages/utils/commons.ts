@@ -104,7 +104,7 @@ export const getNextI18NextConfig = async(
  * @param props
  * @param title
  */
-export const useCustomTitle = (props: CommonProps, title: string): string => {
+export const generateCustomTitle = (props: CommonProps, title: string): string => {
   return props.customTitleTemplate
     .replace('{{sitename}}', props.appTitle)
     .replace('{{page}}', title)
@@ -117,7 +117,7 @@ export const useCustomTitle = (props: CommonProps, title: string): string => {
  * @param props
  * @param pagePath
  */
-export const useCustomTitleForPage = (props: CommonProps, pagePath: string): string => {
+export const generateCustomTitleForPage = (props: CommonProps, pagePath: string): string => {
   const dPagePath = new DevidedPagePath(pagePath, true, true);
 
   return props.customTitleTemplate

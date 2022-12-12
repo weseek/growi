@@ -4,7 +4,7 @@ import {
 import dynamic from 'next/dynamic';
 import Head from 'next/head';
 
-import { CommonProps, useCustomTitle } from '~/pages/utils/commons';
+import { CommonProps, generateCustomTitle } from '~/pages/utils/commons';
 import { useCurrentUser } from '~/stores/context';
 import { useIsMaintenanceMode } from '~/stores/maintenanceMode';
 
@@ -18,7 +18,7 @@ const AdminAppPage: NextPage<CommonProps> = (props) => {
   useIsMaintenanceMode(props.isMaintenanceMode);
   useCurrentUser(props.currentUser ?? null);
 
-  const title = useCustomTitle(props, 'GROWI');
+  const title = generateCustomTitle(props, 'GROWI');
 
   return (
     <AdminLayout>

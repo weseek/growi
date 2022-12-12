@@ -9,7 +9,7 @@ import { Container, Provider } from 'unstated';
 
 import AdminUsersContainer from '~/client/services/AdminUsersContainer';
 import { CrowiRequest } from '~/interfaces/crowi-request';
-import { CommonProps, useCustomTitle } from '~/pages/utils/commons';
+import { CommonProps, generateCustomTitle } from '~/pages/utils/commons';
 import { useCurrentUser, useIsMailerSetup } from '~/stores/context';
 
 import { retrieveServerSideProps } from '../../../utils/admin-page-util';
@@ -30,7 +30,7 @@ const AdminUserManagementPage: NextPage<Props> = (props) => {
   useIsMailerSetup(props.isMailerSetup);
 
   const title = t('user_management.user_management');
-  const headTitle = useCustomTitle(props, title);
+  const headTitle = generateCustomTitle(props, title);
   const injectableContainers: Container<any>[] = [];
 
   if (isClient()) {

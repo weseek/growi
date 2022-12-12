@@ -24,7 +24,7 @@ import {
 } from '../stores/context';
 
 import {
-  CommonProps, getServerSideCommonProps, getNextI18NextConfig, useCustomTitle,
+  CommonProps, getServerSideCommonProps, getNextI18NextConfig, generateCustomTitle,
 } from './utils/commons';
 
 const TrashPageList = dynamic(() => import('~/components/TrashPageList').then(mod => mod.TrashPageList), { ssr: false });
@@ -71,7 +71,7 @@ const TrashPage: NextPage<CommonProps> = (props: Props) => {
   const { data: isDrawerMode } = useDrawerMode();
   const { data: isGuestUser } = useIsGuestUser();
 
-  const title = useCustomTitle(props, 'GROWI');
+  const title = generateCustomTitle(props, 'GROWI');
 
   return (
     <>

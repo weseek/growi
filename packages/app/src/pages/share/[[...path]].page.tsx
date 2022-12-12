@@ -29,7 +29,7 @@ import { useDescendantsPageListModal } from '~/stores/modal';
 import loggerFactory from '~/utils/logger';
 
 import {
-  CommonProps, getServerSideCommonProps, useCustomTitle, getNextI18NextConfig,
+  CommonProps, getServerSideCommonProps, generateCustomTitle, getNextI18NextConfig,
 } from '../utils/commons';
 
 const logger = loggerFactory('growi:next-page:share');
@@ -67,7 +67,7 @@ const SharedPage: NextPage<Props> = (props: Props) => {
   const isShowSharedPage = !props.disableLinkSharing && !isNotFound && !props.isExpired;
   const shareLink = props.shareLink;
 
-  const title = useCustomTitle(props, 'GROWI');
+  const title = generateCustomTitle(props, 'GROWI');
 
   return (
     <>

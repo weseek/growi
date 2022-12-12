@@ -70,7 +70,7 @@ import {
 } from '../stores/context';
 
 import {
-  CommonProps, getNextI18NextConfig, getServerSideCommonProps, useCustomTitle,
+  CommonProps, getNextI18NextConfig, getServerSideCommonProps, generateCustomTitle,
 } from './utils/commons';
 // import { useCurrentPageSWR } from '../stores/page';
 
@@ -302,7 +302,7 @@ const Page: NextPage<Props> = (props: Props) => {
   const isContainerFluidDefault = props.isContainerFluid;
   const isContainerFluid = isContainerFluidEachPage ?? isContainerFluidDefault;
 
-  const title = useCustomTitle(props, 'GROWI');
+  const title = generateCustomTitle(props, 'GROWI');
 
   return (
     <>

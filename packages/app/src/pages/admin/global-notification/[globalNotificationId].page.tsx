@@ -13,7 +13,7 @@ import { Container, Provider } from 'unstated';
 
 import AdminNotificationContainer from '~/client/services/AdminNotificationContainer';
 import { toastError } from '~/client/util/apiNotification';
-import { CommonProps, useCustomTitle } from '~/pages/utils/commons';
+import { CommonProps, generateCustomTitle } from '~/pages/utils/commons';
 import { useCurrentUser } from '~/stores/context';
 
 import { retrieveServerSideProps } from '../../../utils/admin-page-util';
@@ -44,7 +44,7 @@ const AdminGlobalNotificationNewPage: NextPage<CommonProps> = (props) => {
 
 
   const title = t('external_notification.external_notification');
-  const customTitle = useCustomTitle(props, title);
+  const customTitle = generateCustomTitle(props, title);
 
 
   const injectableContainers: Container<any>[] = [];

@@ -24,7 +24,7 @@ import {
 import { SearchPage } from '../components/SearchPage';
 
 import {
-  CommonProps, getNextI18NextConfig, getServerSideCommonProps, useCustomTitle,
+  CommonProps, getNextI18NextConfig, getServerSideCommonProps, generateCustomTitle,
 } from './utils/commons';
 
 const SearchResultLayout = dynamic(() => import('~/components/Layout/SearchResultLayout'), { ssr: false });
@@ -87,7 +87,7 @@ const SearchResultPage: NextPage<Props> = (props: Props) => {
     return <PutbackPageModal />;
   };
 
-  const title = useCustomTitle(props, 'GROWI');
+  const title = generateCustomTitle(props, 'GROWI');
   const classNames: string[] = [];
   // if (props.isContainerFluid) {
   //   classNames.push('growi-layout-fluid');

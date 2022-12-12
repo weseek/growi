@@ -8,7 +8,7 @@ import Head from 'next/head';
 import { Container, Provider } from 'unstated';
 
 import AdminAppContainer from '~/client/services/AdminAppContainer';
-import { CommonProps, useCustomTitle } from '~/pages/utils/commons';
+import { CommonProps, generateCustomTitle } from '~/pages/utils/commons';
 import { useCurrentUser } from '~/stores/context';
 
 import { retrieveServerSideProps } from '../../utils/admin-page-util';
@@ -22,7 +22,7 @@ const AdminExportDataArchivePage: NextPage<CommonProps> = (props) => {
   useCurrentUser(props.currentUser ?? null);
 
   const componentTitle = t('export_management.export_archive_data');
-  const pageTitle = useCustomTitle(props, componentTitle);
+  const pageTitle = generateCustomTitle(props, componentTitle);
   const injectableContainers: Container<any>[] = [];
 
   if (isClient()) {

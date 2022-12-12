@@ -18,7 +18,7 @@ import {
 } from '../stores/context';
 
 import {
-  CommonProps, getServerSideCommonProps, useCustomTitle, getNextI18NextConfig,
+  CommonProps, getServerSideCommonProps, generateCustomTitle, getNextI18NextConfig,
 } from './utils/commons';
 
 type Props = CommonProps & {
@@ -43,7 +43,7 @@ const LoginPage: NextPage<Props> = (props: Props) => {
   // page
   useCurrentPathname(props.currentPathname);
 
-  const title = useCustomTitle(props, 'GROWI');
+  const title = generateCustomTitle(props, 'GROWI');
   const classNames: string[] = ['login-page'];
 
   return (

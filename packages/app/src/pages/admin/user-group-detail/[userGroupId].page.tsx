@@ -7,7 +7,7 @@ import Head from 'next/head';
 import { useRouter } from 'next/router';
 
 import { CrowiRequest } from '~/interfaces/crowi-request';
-import { CommonProps, useCustomTitle } from '~/pages/utils/commons';
+import { CommonProps, generateCustomTitle } from '~/pages/utils/commons';
 import { useIsAclEnabled, useCurrentUser } from '~/stores/context';
 import { useIsMaintenanceMode } from '~/stores/maintenanceMode';
 
@@ -28,7 +28,7 @@ const AdminUserGroupDetailPage: NextPage<Props> = (props: Props) => {
   const { userGroupId } = router.query;
 
   const title = t('user_group_management.user_group_management');
-  const customTitle = useCustomTitle(props, title);
+  const customTitle = generateCustomTitle(props, title);
 
   const currentUserGroupId = Array.isArray(userGroupId) ? userGroupId[0] : userGroupId;
 

@@ -6,7 +6,7 @@ import dynamic from 'next/dynamic';
 import Head from 'next/head';
 
 import { CrowiRequest } from '~/interfaces/crowi-request';
-import { CommonProps, useCustomTitle } from '~/pages/utils/commons';
+import { CommonProps, generateCustomTitle } from '~/pages/utils/commons';
 import { useCurrentUser, useSiteUrl } from '~/stores/context';
 
 import { retrieveServerSideProps } from '../../utils/admin-page-util';
@@ -27,7 +27,7 @@ const AdminSlackIntegrationPage: NextPage<Props> = (props) => {
   useSiteUrl(props.siteUrl);
 
   const componentTitle = t('slack_integration.slack_integration');
-  const pageTitle = useCustomTitle(props, componentTitle);
+  const pageTitle = generateCustomTitle(props, componentTitle);
 
   return (
     <AdminLayout componentTitle={componentTitle}>

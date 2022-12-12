@@ -6,7 +6,7 @@ import dynamic from 'next/dynamic';
 import Head from 'next/head';
 
 import { CrowiRequest } from '~/interfaces/crowi-request';
-import { CommonProps, useCustomTitle } from '~/pages/utils/commons';
+import { CommonProps, generateCustomTitle } from '~/pages/utils/commons';
 import { useIsAclEnabled, useCurrentUser } from '~/stores/context';
 
 import { retrieveServerSideProps } from '../../utils/admin-page-util';
@@ -26,7 +26,7 @@ const AdminUserGroupPage: NextPage<Props> = (props) => {
   useIsAclEnabled(props.isAclEnabled);
 
   const title = t('user_group_management.user_group_management');
-  const headTitle = useCustomTitle(props, title);
+  const headTitle = generateCustomTitle(props, title);
 
   return (
     <AdminLayout componentTitle={title}>

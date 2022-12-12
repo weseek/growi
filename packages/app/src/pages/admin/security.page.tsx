@@ -18,7 +18,7 @@ import AdminOidcSecurityContainer from '~/client/services/AdminOidcSecurityConta
 import AdminSamlSecurityContainer from '~/client/services/AdminSamlSecurityContainer';
 import AdminTwitterSecurityContainer from '~/client/services/AdminTwitterSecurityContainer';
 import { CrowiRequest } from '~/interfaces/crowi-request';
-import { CommonProps, useCustomTitle } from '~/pages/utils/commons';
+import { CommonProps, generateCustomTitle } from '~/pages/utils/commons';
 import { useCurrentUser, useIsMailerSetup, useSiteUrl } from '~/stores/context';
 
 import { retrieveServerSideProps } from '../../utils/admin-page-util';
@@ -40,7 +40,7 @@ const AdminSecuritySettingsPage: NextPage<Props> = (props) => {
   useIsMailerSetup(props.isMailerSetup);
 
   const componentTitle = t('security_settings.security_settings');
-  const pageTitle = useCustomTitle(props, componentTitle);
+  const pageTitle = generateCustomTitle(props, componentTitle);
   const adminSecurityContainers: Container<any>[] = [];
 
   if (isClient()) {

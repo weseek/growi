@@ -9,7 +9,7 @@ import { Container, Provider } from 'unstated';
 
 import AdminCustomizeContainer from '~/client/services/AdminCustomizeContainer';
 import { CrowiRequest } from '~/interfaces/crowi-request';
-import { CommonProps, useCustomTitle } from '~/pages/utils/commons';
+import { CommonProps, generateCustomTitle } from '~/pages/utils/commons';
 import { useCustomizeTitle, useCurrentUser } from '~/stores/context';
 
 import { retrieveServerSideProps } from '../../utils/admin-page-util';
@@ -29,7 +29,7 @@ const AdminCustomizeSettingsPage: NextPage<Props> = (props) => {
   useCurrentUser(props.currentUser ?? null);
 
   const componentTitle = t('customize_settings.customize_settings');
-  const pageTitle = useCustomTitle(props, componentTitle);
+  const pageTitle = generateCustomTitle(props, componentTitle);
   const injectableContainers: Container<any>[] = [];
 
   if (isClient()) {

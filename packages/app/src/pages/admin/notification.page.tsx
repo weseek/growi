@@ -8,7 +8,7 @@ import Head from 'next/head';
 import { Container, Provider } from 'unstated';
 
 import AdminNotificationContainer from '~/client/services/AdminNotificationContainer';
-import { CommonProps, useCustomTitle } from '~/pages/utils/commons';
+import { CommonProps, generateCustomTitle } from '~/pages/utils/commons';
 import { useCurrentUser } from '~/stores/context';
 
 import { retrieveServerSideProps } from '../../utils/admin-page-util';
@@ -22,7 +22,7 @@ const AdminExternalNotificationPage: NextPage<CommonProps> = (props) => {
   useCurrentUser(props.currentUser ?? null);
 
   const componentTitle = t('external_notification.external_notification');
-  const pageTitle = useCustomTitle(props, componentTitle);
+  const pageTitle = generateCustomTitle(props, componentTitle);
   const injectableContainers: Container<any>[] = [];
 
   if (isClient()) {

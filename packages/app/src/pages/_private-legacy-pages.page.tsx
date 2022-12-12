@@ -23,7 +23,7 @@ import {
 } from '~/stores/ui';
 
 import {
-  CommonProps, getNextI18NextConfig, getServerSideCommonProps, useCustomTitle,
+  CommonProps, getNextI18NextConfig, getServerSideCommonProps, generateCustomTitle,
 } from './utils/commons';
 
 const SearchResultLayout = dynamic(() => import('~/components/Layout/SearchResultLayout'), { ssr: false });
@@ -77,7 +77,7 @@ const PrivateLegacyPage: NextPage<Props> = (props: Props) => {
   // render config
   useRendererConfig(props.rendererConfig);
 
-  const title = useCustomTitle(props, t('private_legacy_pages.title'));
+  const title = generateCustomTitle(props, t('private_legacy_pages.title'));
 
   return (
     <>

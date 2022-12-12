@@ -9,7 +9,7 @@ import { Container, Provider } from 'unstated';
 
 
 import AdminAppContainer from '~/client/services/AdminAppContainer';
-import { CommonProps, useCustomTitle } from '~/pages/utils/commons';
+import { CommonProps, generateCustomTitle } from '~/pages/utils/commons';
 import { useCurrentUser } from '~/stores/context';
 import { useIsMaintenanceMode } from '~/stores/maintenanceMode';
 
@@ -32,7 +32,7 @@ const AdminAppPage: NextPage<CommonProps> = (props) => {
     injectableContainers.push(adminAppContainer);
   }
 
-  const title = useCustomTitle(props, t('headers.app_settings'));
+  const title = generateCustomTitle(props, t('headers.app_settings'));
 
   return (
     <Provider inject={[...injectableContainers]}>
