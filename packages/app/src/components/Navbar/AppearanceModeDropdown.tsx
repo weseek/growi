@@ -120,7 +120,6 @@ export const AppearanceModeDropdown:FC<AppearanceModeDropdownProps> = (props: Ap
         {/* side bar mode on editor */}
         {isAuthenticated && [renderSidebarModeSwitch(true), dropdownDivider]}
 
-
         {/* color mode */}
         <h6 className="dropdown-header">{t('personal_dropdown.color_mode')}</h6>
         <form className="px-4">
