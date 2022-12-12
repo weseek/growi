@@ -4,12 +4,12 @@ import path from 'path';
 // eslint-disable-next-line no-restricted-imports
 import axios from 'axios';
 import mongoose from 'mongoose';
+import ssrfFilter from 'ssrf-req-filter';
 import unzipper from 'unzipper';
 
 import type { GrowiPlugin, GrowiPluginOrigin } from '~/interfaces/plugin';
 import loggerFactory from '~/utils/logger';
 import { resolveFromRoot } from '~/utils/project-dir-utils';
-
 
 const logger = loggerFactory('growi:plugins:plugin-utils');
 
@@ -51,27 +51,31 @@ export class PluginService {
     const zipFilePath = path.join(pluginStoringPath, 'main.zip');
     const unzippedPath = path.join(pluginStoringPath, ghOrganizationName);
 
-    const downloadFile = (reqUrl, filePath) => {
+    const downloadFile = async(reqUrl, filePath) => {
       return new Promise<void>((resolve, reject) => {
-        axios({
-          method: 'GET',
-          url: reqUrl,
-          responseType: 'stream',
-        }).then((res) => {
-          if (res.status === 200) {
-            const file = fs.createWriteStream(filePath);
-            res.data.pipe(file)
-              .on('close', () => file.close())
-              .on('finish', () => {
-                resolve();
-              });
-          }
-          else {
-            reject(res.status);
-          }
-        }).catch((err) => {
-          reject(err);
-        });
+        axios
+          .get(
+            reqUrl,
+            {
+              httpsAgent: ssrfFilter(reqUrl),
+              responseType: 'stream',
+            },
+          )
+          .then((res) => {
+            if (res.status === 200) {
+              const file = fs.createWriteStream(filePath);
+              res.data.pipe(file)
+                .on('close', () => file.close())
+                .on('finish', () => {
+                  resolve();
+                });
+            }
+            else {
+              reject(res.status);
+            }
+          }).catch((err) => {
+            reject(err);
+          });
       });
     };
 

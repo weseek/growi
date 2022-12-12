@@ -184,6 +184,7 @@
     "rimraf": "^3.0.0",
     "simplebar-react": "^2.3.6",
     "socket.io": "^4.2.0",
+    "ssrf-req-filter": "^1.0.5",
     "sticky-events": "^3.4.11",
     "stream-to-promise": "^3.0.0",
     "string-width": "=4.2.2",
