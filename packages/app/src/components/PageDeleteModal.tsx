@@ -272,9 +272,10 @@ const PageDeleteModal: FC = () => {
           className={`btn btn-${deleteIconAndKey[deleteMode].color}`}
           disabled={!isDeletable}
           onClick={deleteButtonHandler}
+          data-testid="delete-page-button"
         >
           <i className={`mr-1 icon-${deleteIconAndKey[deleteMode].icon}`} aria-hidden="true"></i>
-          { t(`modal_delete.delete_${deleteIconAndKey[deleteMode].translationKey}`) }
+          { t(`modal_delete.delete_${deleteIconAndKey[deleteMode].translationKey}`) }hogewww
         </button>
       </>
     );
