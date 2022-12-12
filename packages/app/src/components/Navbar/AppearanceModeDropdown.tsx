@@ -31,8 +31,6 @@ export const AppearanceModeDropdown:FC<AppearanceModeDropdownProps> = (props: Ap
   const { data: isPreferDrawerModeOnEdit, mutate: mutatePreferDrawerModeOnEdit } = usePreferDrawerModeOnEditByUser();
   const { scheduleToPut } = useUserUISettings();
 
-  console.log('isPreferDrawerMode', isPreferDrawerMode);
-
   // ripple
   const buttonRef = useRef(null);
   useRipple(buttonRef, { rippleColor: 'rgba(255, 255, 255, 0.3)' });
