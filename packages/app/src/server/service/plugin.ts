@@ -48,17 +48,9 @@ export class PluginService {
   async download(url: string, ghOrganizationName: string, ghReposName: string): Promise<void> {
 
     const zipFilePath = path.join(pluginStoringPath, 'main.zip');
-    const unzipFolderPath = path.join(pluginStoringPath, ghOrganizationName);
-    const unzippedFolderPath = `${unzipFolderPath}/${ghReposName}-main`;
-    const newFolderPath = `${unzipFolderPath}/${ghReposName}`;
+    const unzippedPath = path.join(pluginStoringPath, ghOrganizationName);
 
-    const deleteFile = (path: fs.PathLike) => {
-      fs.unlink(path, (err) => {
-        if (err) throw err;
-      });
-    };
-
-    const downloadRepository = () => {
+    const downloadZipFile = () => {
       const writeStream = fs.createWriteStream(zipFilePath);
 
       return new Promise<void>((resolve, reject) => {
@@ -73,24 +65,32 @@ export class PluginService {
 
     const unzip = () => {
       const stream = fs.createReadStream(zipFilePath);
+      const deleteZipFile = (path: fs.PathLike) => {
+        fs.unlink(path, (err) => {
+          if (err) throw err;
+        });
+      };
 
       return new Promise<void>((resolve, reject) => {
-        stream.pipe(unzipper.Extract({ path: unzipFolderPath }))
+        stream.pipe(unzipper.Extract({ path: unzippedPath }))
           .on('finish', () => {
-            deleteFile(zipFilePath);
+            deleteZipFile(zipFilePath);
             resolve();
           })
           .on('error', (error: any) => reject(error));
       });
     };
 
-    const rename = async() => {
-      fs.renameSync(unzippedFolderPath, newFolderPath);
+    const renameUnzipFolderPath = async() => {
+      const oldPath = `${unzippedPath}/${ghReposName}-main`;
+      const newPath = `${unzippedPath}/${ghReposName}`;
+
+      fs.renameSync(oldPath, newPath);
     };
 
-    await downloadRepository();
+    await downloadZipFile();
     await unzip();
-    await rename();
+    await renameUnzipFolderPath();
 
     return;
   }
