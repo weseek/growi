@@ -54,9 +54,12 @@ const ElasticsearchManagement = () => {
             setIsConfigured(false);
           }
         }
+        toastError(errors as Error[]);
+      }
+      else {
+        toastError(errors as Error);
       }
 
-      toastError(errors);
     }
     finally {
       setIsInitialized(true);
