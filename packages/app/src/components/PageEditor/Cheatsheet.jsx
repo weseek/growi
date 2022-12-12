@@ -15,9 +15,15 @@ class Cheatsheet extends React.Component {
     // const match = /language-(\w+)(:?.+)?/.exec(className || '');
     // const lang = match && match[1] ? match[1] : '';
 
-    const codeStr = `<li><code># </code>{t('sandbox.header_x', { index: '1' })}</li>
-    <li><code>## </code>{t('sandbox.header_x', { index: '2' })}</li>
-    <li><code>### </code>{t('sandbox.header_x', { index: '3' })}</li>`;
+    // const codeStr = `# ${t('sandbox.header_x', { index: '1' })}
+    // ## ${t('sandbox.header_x', { index: '2' })}
+    // ### ${t('sandbox.header_x', { index: '3' })}`;
+
+    const codeStr = `# ${t('sandbox.header_x', { index: '1' })}\n## ${t('sandbox.header_x', { index: '2' })}\n### ${t('sandbox.header_x', { index: '3' })}`;
+
+    const codeList = `- ${t('sandbox.unordered_list_x', { index: '1' })}
+    - ${t('sandbox.unordered_list_x', { index: '1.1' })}
+    - ${t('sandbox.unordered_list_x', { index: '2' })}`;
 
     return (
       <div className="row small">
@@ -29,8 +35,9 @@ class Cheatsheet extends React.Component {
             className="code-highlighted"
             PreTag="div"
             style={oneDark}
-            language={'jsx'}
+            language={'text'}
           >
+            {/* {String(codeStr).replace(/\n$/, '')} */}
             {codeStr}
           </PrismAsyncLight>
           {/* </ul> */}
@@ -45,7 +52,7 @@ class Cheatsheet extends React.Component {
             className="code-highlighted"
             PreTag="div"
             style={oneDark}
-            language={'jsx'}
+            language={'text'}
           >
             text/\n/text
           </PrismAsyncLight>
@@ -76,11 +83,16 @@ class Cheatsheet extends React.Component {
         </div>
         <div className="col-sm-6">
           <h4>{t('sandbox.list')}</h4>
-          <ul className="hljs">
-            <li>- {t('sandbox.unordered_list_x', { index: '1' })}</li>
-            <li>&nbsp;&nbsp;- {t('sandbox.unordered_list_x', { index: '1.1' })}</li>
-            <li>- {t('sandbox.unordered_list_x', { index: '2' })}</li>
-          </ul>
+          {/* <ul className="hljs"> */}
+          <PrismAsyncLight
+            className="code-highlighted"
+            PreTag="div"
+            style={oneDark}
+            language={'text'}
+          >
+            {String(codeList).replace(/\n$/, '')}
+          </PrismAsyncLight>
+          {/* </ul> */}
           <ul className="hljs">
             <li>1. {t('sandbox.ordered_list_x', { index: '1' })}</li>
             <li>1. {t('sandbox.ordered_list_x', { index: '2' })}</li>
