@@ -73,6 +73,7 @@ import {
 import {
   CommonProps, getNextI18NextConfig, getServerSideCommonProps, useCustomTitle,
 } from './utils/commons';
+import { useRemoteRevisionId } from '~/stores/remote-latest-page';
 // import { useCurrentPageSWR } from '../stores/page';
 
 
@@ -259,6 +260,7 @@ const GrowiPage: NextPage<Props> = (props: Props) => {
 
   useCurrentPageId(pageId ?? null);
   useRevisionIdHackmdSynced(pageWithMeta?.data.revisionHackmdSynced);
+  useRemoteRevisionId(pageWithMeta?.data.revision._id);
   // useIsNotCreatable(props.isForbidden || !isCreatablePage(pagePath)); // TODO: need to include props.isIdentical
   useCurrentPathname(props.currentPathname);
 
