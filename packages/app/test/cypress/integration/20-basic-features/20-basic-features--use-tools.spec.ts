@@ -146,8 +146,14 @@ context('Modal for page operation', () => {
         cy.getByTestid('delete-page-button').click();
       });
       cy.getByTestid('trash-page-alert').should('be.visible');
-      cy.screenshot(`${ssPrefix}-bootstrap4-is-in-garbage-box`)
+      cy.screenshot(`${ssPrefix}-bootstrap4-is-in-garbage-box`);
 
+      cy.getByTestid('put-back-button').click();
+      cy.getByTestid('put-back-page-modal').should('be.visible').within(() => {
+        cy.screenshot(`${ssPrefix}-put-back-modal`);
+        cy.getByTestid('put-back-execution-button').should('be.visible').click();
+      });
+      cy.screenshot(`${ssPrefix}-put-backed-bootstrap4-page`);
   });
 
   // it('PageDuplicateModal is shown successfully', () => {

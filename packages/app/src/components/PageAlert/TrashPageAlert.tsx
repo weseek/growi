@@ -73,8 +73,9 @@ export const TrashPageAlert = (): JSX.Element => {
           className="btn btn-info rounded-pill btn-sm ml-auto mr-2"
           onClick={openPutbackPageModalHandler}
           data-toggle="modal"
+          data-testid="put-back-button"
         >
-          <i className="icon-action-undo" aria-hidden="true"></i> { t('Put Back') }
+          <i className="icon-action-undo" aria-hidden="true"></i> { t('Put Back') }aaa
         </button>
         <button
           type="button"
