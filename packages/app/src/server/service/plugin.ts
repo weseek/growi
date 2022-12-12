@@ -1,15 +1,14 @@
-import { execSync } from 'child_process';
+import fs from 'fs';
 import path from 'path';
 
 import mongoose from 'mongoose';
+import request from 'superagent';
+import unzipper from 'unzipper';
 
-import { ActivatePluginService, GrowiPluginManifestEntries } from '~/client/services/activate-plugin';
-import { GrowiPlugin, GrowiPluginOrigin } from '~/interfaces/plugin';
+import type { GrowiPlugin, GrowiPluginOrigin } from '~/interfaces/plugin';
 import loggerFactory from '~/utils/logger';
 import { resolveFromRoot } from '~/utils/project-dir-utils';
 
-// eslint-disable-next-line import/no-cycle
-import Crowi from '../crowi';
 
 const logger = loggerFactory('growi:plugins:plugin-utils');
 
@@ -21,22 +20,7 @@ const githubReposIdPattern = new RegExp(/^\/([^/]+)\/([^/]+)$/);
 
 export class PluginService {
 
-  crowi: any;
-
-  growiBridgeService: any;
-
-  baseDir: any;
-
-  getFile:any;
-
-  constructor(crowi) {
-    this.crowi = crowi;
-    this.growiBridgeService = crowi.growiBridgeService;
-    this.baseDir = path.join(crowi.tmpDir, 'plugins');
-    this.getFile = this.growiBridgeService.getFile.bind(this);
-  }
-
-  async install(crowi: Crowi, origin: GrowiPluginOrigin): Promise<void> {
+  async install(origin: GrowiPluginOrigin): Promise<void> {
     // download
     const ghUrl = new URL(origin.url);
     const ghPathname = ghUrl.pathname;
@@ -48,13 +32,10 @@ export class PluginService {
 
     const ghOrganizationName = match[1];
     const ghReposName = match[2];
+    const requestUrl = `https://github.com/${ghOrganizationName}/${ghReposName}/archive/refs/heads/main.zip`;
 
-    try {
-      await this.downloadZipFile(`${ghUrl.href}/archive/refs/heads/main.zip`, ghOrganizationName, ghReposName);
-    }
-    catch (err) {
-      console.log('downloadZipFile error', err);
-    }
+    // download github repository to local file system
+    await this.download(requestUrl, ghOrganizationName, ghReposName);
 
     // save plugin metadata
     const installedPath = `${ghOrganizationName}/${ghReposName}`;
@@ -65,18 +46,52 @@ export class PluginService {
     return;
   }
 
-  async downloadZipFile(url: string, ghOrganizationName: string, ghReposName: string): Promise<void> {
+  async download(url: string, ghOrganizationName: string, ghReposName: string): Promise<void> {
 
-    const downloadTargetPath = pluginStoringPath;
-    const zipFilePath = path.join(downloadTargetPath, 'main.zip');
-    const unzipTargetPath = path.join(pluginStoringPath, ghOrganizationName);
+    const zipFilePath = path.join(pluginStoringPath, 'main.zip');
+    const unzippedPath = path.join(pluginStoringPath, ghOrganizationName);
 
-    const stdout1 = execSync(`wget ${url} -O ${zipFilePath}`);
-    const stdout2 = execSync(`mkdir -p ${ghOrganizationName}`);
-    const stdout3 = execSync(`rm -rf ${ghOrganizationName}/${ghReposName}`);
-    const stdout4 = execSync(`unzip ${zipFilePath} -d ${unzipTargetPath}`);
-    const stdout5 = execSync(`mv ${unzipTargetPath}/${ghReposName}-main ${unzipTargetPath}/${ghReposName}`);
-    const stdout6 = execSync(`rm ${zipFilePath}`);
+    const downloadZipFile = () => {
+      const writeStream = fs.createWriteStream(zipFilePath);
+
+      return new Promise<void>((resolve, reject) => {
+        request
+          .get(url)
+          .pipe(writeStream)
+          .on('close', () => writeStream.close())
+          .on('finish', () => resolve())
+          .on('error', (error: any) => reject(error));
+      });
+    };
+
+    const unzip = () => {
+      const stream = fs.createReadStream(zipFilePath);
+      const deleteZipFile = (path: fs.PathLike) => {
+        fs.unlink(path, (err) => {
+          if (err) throw err;
+        });
+      };
+
+      return new Promise<void>((resolve, reject) => {
+        stream.pipe(unzipper.Extract({ path: unzippedPath }))
+          .on('finish', () => {
+            deleteZipFile(zipFilePath);
+            resolve();
+          })
+          .on('error', (error: any) => reject(error));
+      });
+    };
+
+    const renameUnzipFolderPath = async() => {
+      const oldPath = `${unzippedPath}/${ghReposName}-main`;
+      const newPath = `${unzippedPath}/${ghReposName}`;
+
+      fs.renameSync(oldPath, newPath);
+    };
+
+    await downloadZipFile();
+    await unzip();
+    await renameUnzipFolderPath();
 
     return;
   }
@@ -140,41 +155,6 @@ export class PluginService {
   }
 
   async listPlugins(): Promise<GrowiPlugin[]> {
-    return [];
-  }
-
-  /**
-   * Get plugin isEnabled
-   */
-  async getPluginIsEnabled(targetPluginId: string): Promise<any> {
-    const GrowiPlugin = await mongoose.model<GrowiPlugin>('GrowiPlugin');
-    const growiPlugins = await GrowiPlugin.find({ _id: targetPluginId });
-    return growiPlugins[0].isEnabled;
-  }
-
-  /**
-   * Switch plugin enabled
-   */
-  async switchPluginIsEnabled(targetPluginId: string): Promise<any> {
-    const GrowiPlugin = mongoose.model<GrowiPlugin>('GrowiPlugin');
-    const growiPlugins = await GrowiPlugin.find({ _id: targetPluginId });
-    await growiPlugins[0].update(
-      { isEnabled: !growiPlugins[0].isEnabled },
-    );
-    return growiPlugins[0].isEnabled;
-  }
-
-  /**
-   * Delete plugin
-   */
-  async pluginDeleted(targetPluginId: string, targetPluginName: string): Promise<any> {
-    const GrowiPlugin = mongoose.model<GrowiPlugin>('GrowiPlugin');
-    const growiPlugins = await GrowiPlugin.find({ _id: targetPluginId });
-    growiPlugins[0].remove();
-    // TODO: Check remove
-    const ghOrganizationName = 'weseek';
-    const unzipTargetPath = path.join(pluginStoringPath, ghOrganizationName);
-    execSync(`rm -rf ${unzipTargetPath}/${targetPluginName}`);
     return [];
   }
 

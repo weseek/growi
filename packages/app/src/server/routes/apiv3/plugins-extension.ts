@@ -30,7 +30,7 @@ module.exports = (crowi: Crowi) => {
     }
 
     try {
-      await pluginService.install(crowi, req.body.pluginInstallerForm);
+      await pluginService.install(req.body.pluginInstallerForm);
       return res.apiv3({});
     }
     catch (err) {
