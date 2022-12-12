@@ -2,7 +2,6 @@ import React, {
   useState, useEffect, useRef, useMemo, useCallback,
 } from 'react';
 
-import type { IUser } from '@growi/core';
 import { UserPicture } from '@growi/ui';
 import CodeMirror from 'codemirror/lib/codemirror';
 import { format } from 'date-fns';
@@ -11,13 +10,14 @@ import {
   Modal, ModalHeader, ModalBody, ModalFooter,
 } from 'reactstrap';
 
+import { useSaveOrUpdate } from '~/client/services/page-operation';
+import { toastError, toastSuccess } from '~/client/util/toastr';
 import { OptionsToSave } from '~/interfaces/page-operation';
-import { useCurrentUser } from '~/stores/context';
-import { useSWRxCurrentPage } from '~/stores/page';
+import { useCurrentPageId, useCurrentPathname, useCurrentUser } from '~/stores/context';
+import { useCurrentPagePath, useSWRxCurrentPage } from '~/stores/page';
 import {
-  useRemoteRevisionBody, useRemoteRevisionId, useRemoteRevisionLastUpdatedAt, useRemoteRevisionLastUpdatUser,
+  useRemoteRevisionBody, useRemoteRevisionId, useRemoteRevisionLastUpdatedAt, useRemoteRevisionLastUpdateUser, useSetRemoteLatestPageData,
 } from '~/stores/remote-latest-page';
-import { useEditorMode } from '~/stores/ui';
 
 import { IRevisionOnConflict } from '../../interfaces/revision';
 import ExpandOrContractButton from '../ExpandOrContractButton';
@@ -35,6 +35,7 @@ type ConflictDiffModalProps = {
   onClose?: (() => void);
   markdownOnEdit: string;
   optionsToSave: OptionsToSave | undefined;
+  afterResolvedHandler: () => void,
 };
 
 type ConflictDiffModalCoreProps = {
@@ -44,6 +45,7 @@ type ConflictDiffModalCoreProps = {
   request: IRevisionOnConflictWithStringDate,
   origin: IRevisionOnConflictWithStringDate,
   latest: IRevisionOnConflictWithStringDate,
+  afterResolvedHandler: () => void,
 };
 
 type IRevisionOnConflictWithStringDate = Omit<IRevisionOnConflict, 'createdAt'> & {
@@ -52,16 +54,22 @@ type IRevisionOnConflictWithStringDate = Omit<IRevisionOnConflict, 'createdAt'> 
 
 const ConflictDiffModalCore = (props: ConflictDiffModalCoreProps): JSX.Element => {
   const {
-    onClose, request, origin, latest,
+    onClose, request, origin, latest, optionsToSave, afterResolvedHandler,
   } = props;
-
-  const { data: editorMode } = useEditorMode();
 
   const { t } = useTranslation('');
   const [resolvedRevision, setResolvedRevision] = useState<string>('');
   const [isRevisionselected, setIsRevisionSelected] = useState<boolean>(false);
   const [isModalExpanded, setIsModalExpanded] = useState<boolean>(false);
   const [codeMirrorRef, setCodeMirrorRef] = useState<HTMLDivElement | null>(null);
+
+  const { data: remoteRevisionId } = useRemoteRevisionId();
+  const { setRemoteLatestPageData } = useSetRemoteLatestPageData();
+  const { data: pageId } = useCurrentPageId();
+  const { data: currentPagePath } = useCurrentPagePath();
+  const { data: currentPathname } = useCurrentPathname();
+
+  const saveOrUpdate = useSaveOrUpdate();
 
   const uncontrolledRef = useRef<CodeMirror>(null);
 
@@ -89,21 +97,36 @@ const ConflictDiffModalCore = (props: ConflictDiffModalCoreProps): JSX.Element =
   }, [onClose]);
 
   const onResolveConflict = useCallback(async() => {
+    if (currentPathname == null) { return }
     // disable button after clicked
     setIsRevisionSelected(false);
 
     const codeMirrorVal = uncontrolledRef.current?.editor.doc.getValue();
 
     try {
-      // await pageContainer.resolveConflict(codeMirrorVal, editorMode, props.optionsToSave);
-      // close();
-      // pageContainer.showSuccessToastr();
+      const { page } = await saveOrUpdate(
+        codeMirrorVal,
+        { pageId, path: currentPagePath || currentPathname, revisionId: remoteRevisionId },
+        optionsToSave,
+      );
+      const remotePageData = {
+        remoteRevisionId: page.revision._id,
+        remoteRevisionBody: page.revision.body,
+        remoteRevisionLastUpdateUser: page.lastUpdateUser,
+        remoteRevisionLastUpdatedAt: page.updatedAt,
+      };
+      setRemoteLatestPageData(remotePageData);
+      afterResolvedHandler();
+
+      close();
+
+      toastSuccess('Saved successfully');
     }
     catch (error) {
-      // pageContainer.showErrorToastr(error);
+      toastError(`Error occured: ${error.message}`);
     }
 
-  }, []);
+  }, [afterResolvedHandler, close, currentPagePath, currentPathname, optionsToSave, pageId, remoteRevisionId, saveOrUpdate, setRemoteLatestPageData]);
 
   const resizeAndCloseButtons = useMemo(() => (
     <div className="d-flex flex-nowrap">
@@ -258,7 +281,9 @@ const ConflictDiffModalCore = (props: ConflictDiffModalCoreProps): JSX.Element =
 
 
 export const ConflictDiffModal = (props: ConflictDiffModalProps): JSX.Element => {
-  const { isOpen, onClose, optionsToSave } = props;
+  const {
+    isOpen, onClose, optionsToSave, afterResolvedHandler,
+  } = props;
   const { data: currentUser } = useCurrentUser();
 
   // state for current page
@@ -267,12 +292,12 @@ export const ConflictDiffModal = (props: ConflictDiffModalProps): JSX.Element =>
   // state for latest page
   const { data: remoteRevisionId } = useRemoteRevisionId();
   const { data: remoteRevisionBody } = useRemoteRevisionBody();
-  const { data: remoteRevisionLastUpdatUser } = useRemoteRevisionLastUpdatUser();
+  const { data: remoteRevisionLastUpdateUser } = useRemoteRevisionLastUpdateUser();
   const { data: remoteRevisionLastUpdatedAt } = useRemoteRevisionLastUpdatedAt();
 
   const currentTime: Date = new Date();
 
-  const isRemotePageDataInappropriate = remoteRevisionId == null || remoteRevisionBody == null || remoteRevisionLastUpdatUser == null;
+  const isRemotePageDataInappropriate = remoteRevisionId == null || remoteRevisionBody == null || remoteRevisionLastUpdateUser == null;
 
   if (!isOpen || currentUser == null || currentPage == null || isRemotePageDataInappropriate) {
     return <></>;
@@ -294,7 +319,7 @@ export const ConflictDiffModal = (props: ConflictDiffModalProps): JSX.Element =>
     revisionId: remoteRevisionId,
     revisionBody: remoteRevisionBody,
     createdAt: format(new Date(remoteRevisionLastUpdatedAt || currentTime.toString()), 'yyyy/MM/dd HH:mm:ss'),
-    user: remoteRevisionLastUpdatUser,
+    user: remoteRevisionLastUpdateUser,
   };
 
   const propsForCore = {
@@ -304,6 +329,7 @@ export const ConflictDiffModal = (props: ConflictDiffModalProps): JSX.Element =>
     request,
     origin,
     latest,
+    afterResolvedHandler,
   };
 
   return <ConflictDiffModalCore {...propsForCore}/>;
