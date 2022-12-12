@@ -1,3 +1,5 @@
+import { Readable } from 'stream';
+
 import loggerFactory from '~/utils/logger';
 
 const logger = loggerFactory('growi:service:fileUploaderGridfs');
@@ -99,6 +101,20 @@ module.exports = function(crowi) {
         contentType: attachment.fileFormat,
       },
       fileStream,
+    );
+  };
+
+  lib.saveFile = async function({ filePath, contentType, data }) {
+    const readable = new Readable();
+    readable.push(data);
+    readable.push(null); // EOF
+
+    return AttachmentFile.promisifiedWrite(
+      {
+        filename: filePath,
+        contentType,
+      },
+      readable,
     );
   };
 

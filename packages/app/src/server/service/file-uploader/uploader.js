@@ -1,3 +1,10 @@
+import { randomUUID } from 'crypto';
+import { Readable } from 'stream';
+
+import loggerFactory from '~/utils/logger';
+
+const logger = loggerFactory('growi:service:fileUploader');
+
 // file uploader virtual class
 // 各アップローダーで共通のメソッドはここで定義する
 
@@ -10,6 +17,30 @@ class Uploader {
 
   getIsUploadable() {
     return !this.configManager.getConfig('crowi', 'app:fileUploadDisabled') && this.isValidUploadSettings();
+  }
+
+  /**
+   * Get whether write opration to the storage is permitted
+   * @returns Whether write opration to the storage is permitted
+   */
+  async getIsWritable() {
+    const filePath = `${randomUUID()}.growi`;
+    const data = 'This file was created during g2g transfer to check write permission. You can safely remove this file.';
+
+    try {
+      await this.saveFile({
+        filePath,
+        contentType: 'text/plain',
+        data,
+      });
+      // TODO: delete tmp file in background
+
+      return true;
+    }
+    catch (err) {
+      logger.error(err);
+      return false;
+    }
   }
 
   // File reading is possible even if uploading is disabled

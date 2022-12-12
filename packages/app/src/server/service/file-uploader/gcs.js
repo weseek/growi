@@ -137,6 +137,13 @@ module.exports = function(crowi) {
     return myBucket.upload(fileStream.path, options);
   };
 
+  lib.saveFile = async function({ filePath, contentType, data }) {
+    const gcs = getGcsInstance();
+    const myBucket = gcs.bucket(getGcsBucket());
+
+    return myBucket.file(filePath).save(data, { resumable: false });
+  };
+
   /**
    * Find data substance
    *

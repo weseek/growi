@@ -1,3 +1,5 @@
+import { Readable } from 'stream';
+
 import loggerFactory from '~/utils/logger';
 
 const logger = loggerFactory('growi:service:fileUploaderLocal');
@@ -78,6 +80,20 @@ module.exports = function(crowi) {
     mkdir.sync(dirpath);
 
     const stream = fileStream.pipe(fs.createWriteStream(filePath));
+    return streamToPromise(stream);
+  };
+
+  lib.saveFile = async function({ filePath, contentType, data }) {
+    const absFilePath = path.posix.join(basePath, filePath);
+    const dirpath = path.posix.dirname(absFilePath);
+
+    // mkdir -p
+    mkdir.sync(dirpath);
+
+    const fileStream = new Readable();
+    fileStream.push(data);
+    fileStream.push(null); // EOF
+    const stream = fileStream.pipe(fs.createWriteStream(absFilePath));
     return streamToPromise(stream);
   };
 

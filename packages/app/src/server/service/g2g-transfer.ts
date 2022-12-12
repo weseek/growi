@@ -1,4 +1,3 @@
-import { randomUUID } from 'crypto';
 import { createReadStream, ReadStream } from 'fs';
 import { basename } from 'path';
 import { Readable } from 'stream';
@@ -138,37 +137,6 @@ const generateAxiosRequestConfigWithTransferKey = (tk: TransferKey, additionalHe
     },
     maxBodyLength: Infinity,
   };
-};
-
-
-/**
- * Check whether the storage is writable
- * @param crowi Crowi instance
- * @returns Whether the storage is writable
- */
-const hasWritePermission = async(crowi: any): Promise<boolean> => {
-  const { fileUploadService } = crowi;
-
-  let writable = true;
-  const fileStream = new Readable();
-  fileStream.push('This file was created during g2g transfer to check write permission. You can safely remove this file.');
-  fileStream.push(null); // EOF
-  const attachment = {
-    fileName: `${randomUUID()}.growi`,
-    filePath: '',
-    fileFormat: 'text/plain',
-  };
-
-  try {
-    await fileUploadService.uploadAttachment(fileStream, attachment);
-    // TODO: remove tmp file
-  }
-  catch (err) {
-    writable = false;
-    logger.error(err);
-  }
-
-  return writable;
 };
 
 export class G2GTransferPusherService implements Pusher {
@@ -469,18 +437,18 @@ export class G2GTransferReceiverService implements Receiver {
    */
   public async answerGROWIInfo(): Promise<IDataGROWIInfo> {
     // TODO: add attachment file limit
-    const { version, configManager } = this.crowi;
+    const { version, configManager, fileUploadService } = this.crowi;
     const userUpperLimit = configManager.getConfig('crowi', 'security:userUpperLimit');
     const fileUploadDisabled = configManager.getConfig('crowi', 'app:fileUploadDisabled');
     const fileUploadTotalLimit = configManager.getFileUploadTotalLimit();
-    const writable = await hasWritePermission(this.crowi);
+    const isWritable = await fileUploadService.getIsWritable();
 
     const attachmentInfo = {
       type: configManager.getConfig('crowi', 'app:fileUploadType'),
       bucket: undefined,
       customEndpoint: undefined, // for S3
       uploadNamespace: undefined, // for GCS
-      writable,
+      writable: isWritable,
     };
 
     // put storage location info to check storage identification

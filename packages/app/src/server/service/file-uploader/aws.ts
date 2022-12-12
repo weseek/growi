@@ -201,6 +201,21 @@ module.exports = (crowi) => {
     return s3.send(new PutObjectCommand(params));
   };
 
+  lib.saveFile = async function({ filePath, contentType, data }) {
+    const s3 = S3Factory();
+    const awsConfig = getAwsConfig();
+
+    const params = {
+      Bucket: awsConfig.bucket,
+      ContentType: contentType,
+      Key: filePath,
+      Body: data,
+      ACL: 'public-read',
+    };
+
+    return s3.send(new PutObjectCommand(params));
+  };
+
   lib.findDeliveryFile = async function(attachment) {
     if (!lib.getIsReadable()) {
       throw new Error('AWS is not configured.');
