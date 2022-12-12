@@ -11,7 +11,7 @@ import * as nextI18nConfig from '^/config/next-i18next.config';
 import { ActivatePluginService } from '~/client/services/activate-plugin';
 import { useI18nextHMR } from '~/services/i18next-hmr';
 import {
-  useAppTitle, useConfidential, useGrowiTheme, useGrowiVersion, useSiteUrl, useCustomizedLogoSrc,
+  useAppTitle, useConfidential, useGrowiVersion, useSiteUrl, useCustomizedLogoSrc,
 } from '~/stores/context';
 import { SWRConfigValue, swrGlobalConfiguration } from '~/utils/swr-utils';
 
@@ -19,8 +19,7 @@ import { SWRConfigValue, swrGlobalConfiguration } from '~/utils/swr-utils';
 import { CommonProps } from './utils/commons';
 import { registerTransformerForObjectId } from './utils/objectid-transformer';
 
-import '~/styles/style-next.scss';
-import '~/styles/style-themes.scss';
+import '~/styles/style-app.scss';
 
 
 const isDev = process.env.NODE_ENV === 'development';
@@ -64,7 +63,6 @@ function GrowiApp({ Component, pageProps }: GrowiAppProps): JSX.Element {
   useAppTitle(commonPageProps.appTitle);
   useSiteUrl(commonPageProps.siteUrl);
   useConfidential(commonPageProps.confidential);
-  useGrowiTheme(commonPageProps.theme);
   useGrowiVersion(commonPageProps.growiVersion);
   useCustomizedLogoSrc(commonPageProps.customizedLogoSrc);
 

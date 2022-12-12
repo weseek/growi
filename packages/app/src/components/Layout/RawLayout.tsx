@@ -4,12 +4,8 @@ import Head from 'next/head';
 import { ToastContainer } from 'react-toastify';
 import { useIsomorphicLayoutEffect } from 'usehooks-ts';
 
-import { useGrowiTheme } from '~/stores/context';
 import { ColorScheme, useNextThemes, NextThemesProvider } from '~/stores/use-next-themes';
 import loggerFactory from '~/utils/logger';
-
-
-import { ThemeProvider as GrowiThemeProvider } from '../Theme/utils/ThemeProvider';
 
 
 const logger = loggerFactory('growi:cli:RawLayout');
@@ -25,8 +21,6 @@ export const RawLayout = ({ children, className }: Props): JSX.Element => {
   if (className != null) {
     classNames.push(className);
   }
-  const { data: growiTheme } = useGrowiTheme();
-
   // get color scheme from next-themes
   const { resolvedTheme, resolvedThemeByAttributes } = useNextThemes();
 
@@ -35,7 +29,7 @@ export const RawLayout = ({ children, className }: Props): JSX.Element => {
   // set colorScheme in CSR
   useIsomorphicLayoutEffect(() => {
     setColorScheme(resolvedTheme ?? resolvedThemeByAttributes);
-  }, [resolvedTheme]);
+  }, [resolvedTheme, resolvedThemeByAttributes]);
 
   return (
     <>
@@ -44,12 +38,10 @@ export const RawLayout = ({ children, className }: Props): JSX.Element => {
         <meta name="viewport" content="initial-scale=1.0, width=device-width" />
       </Head>
       <NextThemesProvider>
-        <GrowiThemeProvider theme={growiTheme} colorScheme={colorScheme}>
-          <div className={classNames.join(' ')} data-color-scheme={colorScheme}>
-            {children}
-            <ToastContainer theme={colorScheme} />
-          </div>
-        </GrowiThemeProvider>
+        <div className={classNames.join(' ')} data-color-scheme={colorScheme}>
+          {children}
+          <ToastContainer theme={colorScheme} />
+        </div>
       </NextThemesProvider>
     </>
   );

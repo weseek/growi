@@ -7,7 +7,6 @@ import { SSRConfig, UserConfig } from 'next-i18next';
 import * as nextI18NextConfig from '^/config/next-i18next.config';
 
 import { CrowiRequest } from '~/interfaces/crowi-request';
-import { GrowiThemes } from '~/interfaces/theme';
 
 export type CommonProps = {
   namespacesRequired: string[], // i18next
@@ -15,7 +14,6 @@ export type CommonProps = {
   appTitle: string,
   siteUrl: string,
   confidential: string,
-  theme: GrowiThemes,
   customTitleTemplate: string,
   csrfToken: string,
   isContainerFluid: boolean,
@@ -55,7 +53,6 @@ export const getServerSideCommonProps: GetServerSideProps<CommonProps> = async(c
     appTitle: appService.getAppTitle(),
     siteUrl: configManager.getConfig('crowi', 'app:siteUrl'), // DON'T USE appService.getSiteUrl()
     confidential: appService.getAppConfidential() || '',
-    theme: configManager.getConfig('crowi', 'customize:theme'),
     customTitleTemplate: customizeService.customTitleTemplate,
     csrfToken: req.csrfToken(),
     isContainerFluid: configManager.getConfig('crowi', 'customize:isContainerFluid') ?? false,
