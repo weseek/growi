@@ -442,7 +442,7 @@ context('Shortcuts', () => {
     });
   });
 
-  it('Successfully updating a page using a shortcut on a previously created page', () => {
+  it('Successfully updating a page using a shortcut on a previously created page', { scrollBehavior: false }, () => {
     const body1 = 'hello';
     const body2 = 'world';
     const savePageShortcutKey = '{ctrl+s}'
