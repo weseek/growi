@@ -10,7 +10,7 @@ export const useRemoteRevisionId = (initialData?: string): SWRResponse<string, E
 };
 
 export const useRemoteRevisionBody = (initialData?: string): SWRResponse<string, Error> => {
-  return useStaticSWR<string, Error>('remoteRevisionId', initialData);
+  return useStaticSWR<string, Error>('remoteRevisionBody', initialData);
 };
 
 export const useRemoteRevisionLastUpdatUser = (initialData?: IUser): SWRResponse<IUser, Error> => {
