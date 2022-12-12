@@ -13,7 +13,7 @@ import {
 import { useDescendantsPageListModal } from '~/stores/modal';
 import { useCurrentPagePath, useSWRxCurrentPage } from '~/stores/page';
 import {
-  useRemoteRevisionBody, useRemoteRevisionId, useRemoteRevisionLastUpdatedAt, useRemoteRevisionLastUpdatUser,
+  useRemoteRevisionBody, useRemoteRevisionId, useRemoteRevisionLastUpdatedAt, useRemoteRevisionLastUpdatUser, useSetRemoteLatestPageData,
 } from '~/stores/remote-latest-page';
 import { EditorMode, useEditorMode } from '~/stores/ui';
 import { useGlobalSocket } from '~/stores/websocket';
@@ -49,10 +49,11 @@ const PageView = React.memo((): JSX.Element => {
   const { data: isNotFound } = useIsNotFound();
   const { data: currentPage } = useSWRxCurrentPage(shareLinkId ?? undefined);
   const { open: openDescendantPageListModal } = useDescendantsPageListModal();
-  const { mutate: mutateRemoteRevisionId } = useRemoteRevisionId();
-  const { mutate: mutateRemoteRevisionLastUpdateUser } = useRemoteRevisionLastUpdatUser();
-  const { mutate: mutateRemoteRevisionBody } = useRemoteRevisionBody();
-  const { mutate: mutateRemoteRevisionLastUpdatedAt } = useRemoteRevisionLastUpdatedAt();
+  const { setRemoteLatestPageData } = useSetRemoteLatestPageData();
+  // const { mutate: mutateRemoteRevisionId } = useRemoteRevisionId();
+  // const { mutate: mutateRemoteRevisionLastUpdateUser } = useRemoteRevisionLastUpdatUser();
+  // const { mutate: mutateRemoteRevisionBody } = useRemoteRevisionBody();
+  // const { mutate: mutateRemoteRevisionLastUpdatedAt } = useRemoteRevisionLastUpdatedAt();
 
   const isTopPagePath = isTopPage(currentPagePath ?? '');
   const isUsersHomePagePath = isUsersHomePage(currentPagePath ?? '');
@@ -62,11 +63,14 @@ const PageView = React.memo((): JSX.Element => {
   const setLatestRemotePageData = useCallback((data) => {
     const { s2cMessagePageUpdated } = data;
 
-    mutateRemoteRevisionId(s2cMessagePageUpdated.revisionId);
-    mutateRemoteRevisionBody(s2cMessagePageUpdated.revisionBody);
-    mutateRemoteRevisionLastUpdateUser(s2cMessagePageUpdated.remoteLastUpdateUser);
-    mutateRemoteRevisionLastUpdatedAt(s2cMessagePageUpdated.revisionUpdateAt);
-  }, [mutateRemoteRevisionBody, mutateRemoteRevisionId, mutateRemoteRevisionLastUpdateUser, mutateRemoteRevisionLastUpdatedAt]);
+    const remoteData = {
+      remoteRevisionId: s2cMessagePageUpdated.revisionId,
+      remoteRevisionBody: s2cMessagePageUpdated.revisionBody,
+      remoteRevisionLastUpdateUser: s2cMessagePageUpdated.remoteLastUpdateUser,
+      remoteRevisionLastUpdatedAt: s2cMessagePageUpdated.revisionUpdateAt,
+    };
+    setRemoteLatestPageData(remoteData);
+  }, [setRemoteLatestPageData]);
 
   // listen socket for someone updating this page
   useEffect(() => {

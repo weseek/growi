@@ -423,9 +423,6 @@ const PageEditor = React.memo((): JSX.Element => {
     await mutateTagsInfo(); // get from DB
     syncTagsInfoForEditor(); // sync global state for client
 
-    // showToaster
-    toastSuccess('Saved successfully');
-
     // clear isConflict
     mutateIsConflict(false);
 
