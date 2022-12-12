@@ -2,11 +2,13 @@
   "meta": {
     "display_name": "English"
   },
-  "wiki_management_home_page": "Wiki Management Home Page",
   "last_login": "Last login",
-  "anyone_with_the_link": "anyone with the link",
-  "only_me": "only me",
-  "only_inside_the_group": "only inside the group",
+  "wiki_management_home_page": "Wiki Management Home Page",
+  "public": "Public",
+  "anyone_with_the_link": "Anyone with the link",
+  "specified_users": "Specified users",
+  "only_me": "Only me",
+  "only_inside_the_group": "Only inside the group",
   "security_settings": {
     "security_settings": "Security Settings",
     "scope_of_page_disclosure": "Scope of page disclosure",
@@ -203,7 +205,7 @@
         "username_detail": "Specification of mappings for <code>username</code> when creating new users",
         "name_detail": "Specification of mappings for <code>name</code> when creating new users",
         "mapping_detail": "Specification of mappings for %s when creating new users",
-        "register_1": "Contant to OIDC IdP Administrator",
+        "register_1": "Contact to OIDC IdP Administrator",
         "register_2": "Register your OIDC App with \"Authorization callback URL\" as <code>%s</code>",
         "register_3": "Copy and paste your ClientID and Client Secret above",
         "updated_oidc": "Succeeded to update OpenID Connect",
@@ -278,6 +280,29 @@
     "delete_notification_pattern_desc2": "Once deleted, it cannot be recovered",
     "toggle_notification": "Updated setting of {{path}}",
     "not_found_global_notification_triggerid": "Not found the global notification id"
+  },
+  "full_text_search_management": {
+    "full_text_search_management": "Full Text Search Management",
+    "elasticsearch_management": "Elasticsearch management",
+    "connection_status": "Connection status",
+    "connection_status_label_unconfigured": "UNCONFIGURED",
+    "connection_status_label_connected": "CONNECTED",
+    "connection_status_label_disconnected": "DISCONNECTED",
+    "connection_status_label_erroroccured": "ERROR OCCURED ON SEARCH SERVICE",
+    "indices_status": "Indices Status",
+    "indices_status_label_normalized": "NORMALIZED",
+    "indices_status_label_unnormalized": "REBUILDING or BROKEN",
+    "indices_summary": "Indices summary",
+    "reconnect": "Reconnect",
+    "reconnect_button": "Try to reconnect",
+    "reconnect_description": "Click the button to try to reconnect to Elasticsearch.",
+    "normalize": "Normalize",
+    "normalize_button": "Normalize indices",
+    "normalize_description": "Click the button to repair broken indices.",
+    "rebuild": "Rebuild",
+    "rebuild_button": "Rebuild index",
+    "rebuild_description_1": "Click the button to rebuild index and add all page datas.",
+    "rebuild_description_2": "This may take a while."
   },
   "mailer_setup_required":"<a href='/admin/app'>Email settings</a> are required to send.",
   "admin_top": {
@@ -497,6 +522,11 @@
   },
   "importer_management": {
     "import_data": "Import Data",
+    "article": "Article",
+    "category": "Category",
+    "tag": "Tag",
+    "page": "Page",
+    "page_path": "Page Path",
     "beta_warning": "This function is Beta.",
     "import_from": "Import from {{from}}",
     "import_growi_archive": "Import GROWI archive",
@@ -635,7 +665,6 @@
     "integration_procedure": "Integration Procedure",
     "custom_bot_without_proxy_settings": "Custom Bot without proxy Settings",
     "integration_failed":"Integration failed",
-    "official_bot_settings": "Official bot Settings",
     "reset": "Reset",
     "reset_all_settings": "Reset all settings",
     "delete_slackbot_settings": "Delete Slack Bot settings",
@@ -708,7 +737,6 @@
   "slack_integration_legacy": {
     "slack_integration_legacy": "Legacy Slack Integration",
     "alert_disabled": "This 'Slack Legacy Intenfation' has been currently disabled since <a href='/admin/slack-integration'>New settings</a> are enabled",
-    "alert_Pd": "This 'Legacy Slack Integration' is currently disabled because <a href='/admin/slack-integration'>the new settings</a> is enabled.",
     "alert_deplicated": "This 'Legacy Slack Integration' is outdated and will be discontinued in the future. Use <a href='/admin/slack-integration'>the new settings</a> instead. "
   },
   "user_management": {
@@ -817,29 +845,6 @@
       "force_update_parents_label": "Forcibly add missing users",
       "force_update_parents_description": "Enable this option to force the addition of missing users to the ancestor groups if they exist after changing a parent group."
     }
-  },
-  "full_text_search_management": {
-    "full_text_search_management": "Full Text Search Management",
-    "elasticsearch_management": "Elasticsearch management",
-    "connection_status": "Connection status",
-    "connection_status_label_unconfigured": "UNCONFIGURED",
-    "connection_status_label_connected": "CONNECTED",
-    "connection_status_label_disconnected": "DISCONNECTED",
-    "connection_status_label_erroroccured": "ERROR OCCURED ON SEARCH SERVICE",
-    "indices_status": "Indices Status",
-    "indices_status_label_normalized": "NORMALIZED",
-    "indices_status_label_unnormalized": "REBUILDING or BROKEN",
-    "indices_summary": "Indices summary",
-    "reconnect": "Reconnect",
-    "reconnect_button": "Try to reconnect",
-    "reconnect_description": "Click the button to try to reconnect to Elasticsearch.",
-    "normalize": "Normalize",
-    "normalize_button": "Normalize indices",
-    "normalize_description": "Click the button to repair broken indices.",
-    "rebuild": "Rebuild",
-    "rebuild_button": "Rebuild index",
-    "rebuild_description_1": "Click the button to rebuild index and add all page datas.",
-    "rebuild_description_2": "This may take a while."
   },
   "audit_log_management": {
     "audit_log": "Audit Log",

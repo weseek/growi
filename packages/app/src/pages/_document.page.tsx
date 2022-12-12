@@ -107,7 +107,9 @@ class GrowiDocument extends Document<GrowiDocumentInitialProps> {
   }
 
   override render(): JSX.Element {
-    const { customCss, theme, presetThemesManifest, pluginManifestEntries } = this.props;
+    const {
+      customCss, theme, presetThemesManifest, pluginManifestEntries,
+    } = this.props;
 
     return (
       <Html>
