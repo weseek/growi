@@ -18,7 +18,6 @@ import { useCurrentPagePath, useSWRxCurrentPage } from '~/stores/page';
 import {
   useRemoteRevisionBody, useRemoteRevisionId, useRemoteRevisionLastUpdatedAt, useRemoteRevisionLastUpdateUser, useSetRemoteLatestPageData,
 } from '~/stores/remote-latest-page';
-import { useEditorMode } from '~/stores/ui';
 
 import { IRevisionOnConflict } from '../../interfaces/revision';
 import ExpandOrContractButton from '../ExpandOrContractButton';
@@ -98,16 +97,16 @@ const ConflictDiffModalCore = (props: ConflictDiffModalCoreProps): JSX.Element =
   }, [onClose]);
 
   const onResolveConflict = useCallback(async() => {
+    if (currentPathname == null) { return }
     // disable button after clicked
     setIsRevisionSelected(false);
 
     const codeMirrorVal = uncontrolledRef.current?.editor.doc.getValue();
 
     try {
-      // TODO: consider using saveOrUpdate or create new method
       const { page } = await saveOrUpdate(
         codeMirrorVal,
-        { pageId, path: currentPagePath || currentPathname || '', revisionId: remoteRevisionId },
+        { pageId, path: currentPagePath || currentPathname, revisionId: remoteRevisionId },
         optionsToSave,
       );
       const remotePageData = {
