@@ -37,6 +37,7 @@ import type { PageModel, PageDocument } from '~/server/models/page';
 import type { PageRedirectModel } from '~/server/models/page-redirect';
 import type { UserUISettingsModel } from '~/server/models/user-ui-settings';
 import { useEditingMarkdown } from '~/stores/editor';
+import { useRevisionIdHackmdSynced } from '~/stores/hackmd';
 import { useSWRxCurrentPage, useSWRxIsGrantNormalized } from '~/stores/page';
 import { useRedirectFrom } from '~/stores/page-redirect';
 import {
@@ -257,6 +258,7 @@ const GrowiPage: NextPage<Props> = (props: Props) => {
   const pagePath = pageWithMeta?.data.path ?? (!_isPermalink(props.currentPathname) ? props.currentPathname : undefined);
 
   useCurrentPageId(pageId ?? null);
+  useRevisionIdHackmdSynced(pageWithMeta?.data.revisionHackmdSynced);
   // useIsNotCreatable(props.isForbidden || !isCreatablePage(pagePath)); // TODO: need to include props.isIdentical
   useCurrentPathname(props.currentPathname);
 
