@@ -4,7 +4,7 @@ import path from 'path';
 // eslint-disable-next-line no-restricted-imports
 import axios from 'axios';
 import mongoose from 'mongoose';
-import ssrfFilter from 'ssrf-req-filter';
+import ssrf from 'ssrf';
 import unzipper from 'unzipper';
 
 import type { GrowiPlugin, GrowiPluginOrigin } from '~/interfaces/plugin';
@@ -25,6 +25,8 @@ export class PluginService {
     // download
     const ghUrl = new URL(origin.url);
     const ghPathname = ghUrl.pathname;
+    // TODO: Branch names can be specified.
+    const ghBranch = 'main';
 
     const match = ghPathname.match(githubReposIdPattern);
     if (ghUrl.hostname !== 'github.com' || match == null) {
@@ -33,10 +35,10 @@ export class PluginService {
 
     const ghOrganizationName = match[1];
     const ghReposName = match[2];
-    const requestUrl = `https://github.com/${ghOrganizationName}/${ghReposName}/archive/refs/heads/main.zip`;
+    const requestUrl = `https://github.com/${ghOrganizationName}/${ghReposName}/archive/refs/heads/${ghBranch}.zip`;
 
     // download github repository to local file system
-    await this.download(requestUrl, ghOrganizationName, ghReposName);
+    await this.download(requestUrl, ghOrganizationName, ghReposName, ghBranch);
 
     // save plugin metadata
     const installedPath = `${ghOrganizationName}/${ghReposName}`;
@@ -46,38 +48,44 @@ export class PluginService {
     return;
   }
 
-  async download(reqUrl: string, ghOrganizationName: string, ghReposName: string): Promise<void> {
+  async download(requestUrl: string, ghOrganizationName: string, ghReposName: string, ghBranch: string): Promise<void> {
 
-    const zipFilePath = path.join(pluginStoringPath, 'main.zip');
+    const zipFilePath = path.join(pluginStoringPath, `${ghBranch}.zip`);
     const unzippedPath = path.join(pluginStoringPath, ghOrganizationName);
 
-    const downloadFile = async(reqUrl, filePath) => {
-      return new Promise<void>((resolve, reject) => {
-        axios({
-          method: 'GET',
-          url: reqUrl,
-          httpsAgent: ssrfFilter(reqUrl),
-          responseType: 'stream',
-        })
-          .then((res) => {
-            if (res.status === 200) {
-              const file = fs.createWriteStream(filePath);
-              res.data.pipe(file)
-                .on('close', () => file.close())
-                .on('finish', () => {
-                  resolve();
-                });
-            }
-            else {
-              reject(res.status);
-            }
-          }).catch((err) => {
-            reject(err);
-          });
-      });
+    const downloadFile = async(requestUrl: string, filePath: string) => {
+      try {
+        const validUrl = await ssrf.url(requestUrl);
+
+        return new Promise<void>((resolve, reject) => {
+          axios({
+            method: 'GET',
+            url: validUrl,
+            responseType: 'stream',
+          })
+            .then((res) => {
+              if (res.status === 200) {
+                const file = fs.createWriteStream(filePath);
+                res.data.pipe(file)
+                  .on('close', () => file.close())
+                  .on('finish', () => {
+                    resolve();
+                  });
+              }
+              else {
+                reject(res.status);
+              }
+            }).catch((err) => {
+              reject(err);
+            });
+        });
+      }
+      catch (err) {
+        throw new Error(err);
+      }
     };
 
-    const unzip = (zipFilePath, unzippedPath) => {
+    const unzip = (zipFilePath: fs.PathLike, unzippedPath: fs.PathLike) => {
       const stream = fs.createReadStream(zipFilePath);
       const deleteZipFile = (path: fs.PathLike) => {
         fs.unlink(path, (err) => {
@@ -86,7 +94,8 @@ export class PluginService {
       };
 
       return new Promise<void>((resolve, reject) => {
-        stream.pipe(unzipper.Extract({ path: unzippedPath }))
+        stream
+          .pipe(unzipper.Extract({ path: unzippedPath }))
           .on('finish', () => {
             deleteZipFile(zipFilePath);
             resolve();
@@ -95,14 +104,14 @@ export class PluginService {
       });
     };
 
-    const renamePath = async(oldPath, newPath) => {
+    const renamePath = async(oldPath: fs.PathLike, newPath: fs.PathLike) => {
       fs.renameSync(oldPath, newPath);
     };
 
     try {
-      await downloadFile(reqUrl, zipFilePath);
+      await downloadFile(requestUrl, zipFilePath);
       await unzip(zipFilePath, unzippedPath);
-      await renamePath(`${unzippedPath}/${ghReposName}-main`, `${unzippedPath}/${ghReposName}`);
+      await renamePath(`${unzippedPath}/${ghReposName}-${ghBranch}`, `${unzippedPath}/${ghReposName}`);
     }
     catch (err) {
       throw new Error(err);
