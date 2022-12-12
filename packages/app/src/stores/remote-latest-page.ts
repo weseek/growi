@@ -13,8 +13,8 @@ export const useRemoteRevisionBody = (initialData?: string): SWRResponse<string,
   return useStaticSWR<string, Error>('remoteRevisionBody', initialData);
 };
 
-export const useRemoteRevisionLastUpdatUser = (initialData?: IUser): SWRResponse<IUser, Error> => {
-  return useStaticSWR<IUser, Error>('remoteRevisionLastUpdatUser', initialData);
+export const useRemoteRevisionLastUpdateUser = (initialData?: IUser): SWRResponse<IUser, Error> => {
+  return useStaticSWR<IUser, Error>('remoteRevisionLastUpdateUser', initialData);
 };
 
 export const useRemoteRevisionLastUpdatedAt = (initialData?: Date): SWRResponse<Date, Error> => {
@@ -26,23 +26,23 @@ export const useRemoteRevisionLastUpdatedAt = (initialData?: Date): SWRResponse<
 export const useSetRemoteLatestPageData = (): { setRemoteLatestPageData: (pageData: any) => void } => {
   const { mutate: mutateRemoteRevisionId } = useRemoteRevisionId();
   const { mutate: mutateRemoteRevisionBody } = useRemoteRevisionBody();
-  const { mutate: mutateRemoteRevisionLastUpdatUser } = useRemoteRevisionLastUpdatUser();
+  const { mutate: mutateRemoteRevisionLastUpdateUser } = useRemoteRevisionLastUpdateUser();
   const { mutate: mutateRemoteRevisionLastUpdatedAt } = useRemoteRevisionLastUpdatedAt();
 
   type RemoteRevisionData = {
     remoteRevisionId: string,
     remoteRevisionBody: string,
-    remoteRevisionLastUpdatUser: IUser,
+    remoteRevisionLastUpdateUser: IUser,
     remoteRevisionLastUpdatedAt: Date
   }
 
   const setRemoteLatestPageData = (remoteRevisionData: RemoteRevisionData) => {
     const {
-      remoteRevisionId, remoteRevisionBody, remoteRevisionLastUpdatUser, remoteRevisionLastUpdatedAt,
+      remoteRevisionId, remoteRevisionBody, remoteRevisionLastUpdateUser, remoteRevisionLastUpdatedAt,
     } = remoteRevisionData;
     mutateRemoteRevisionId(remoteRevisionId);
     mutateRemoteRevisionBody(remoteRevisionBody);
-    mutateRemoteRevisionLastUpdatUser(remoteRevisionLastUpdatUser);
+    mutateRemoteRevisionLastUpdateUser(remoteRevisionLastUpdateUser);
     mutateRemoteRevisionLastUpdatedAt(remoteRevisionLastUpdatedAt);
   };
 

@@ -16,7 +16,7 @@ import { OptionsToSave } from '~/interfaces/page-operation';
 import { useCurrentPageId, useCurrentPathname, useCurrentUser } from '~/stores/context';
 import { useCurrentPagePath, useSWRxCurrentPage } from '~/stores/page';
 import {
-  useRemoteRevisionBody, useRemoteRevisionId, useRemoteRevisionLastUpdatedAt, useRemoteRevisionLastUpdatUser, useSetRemoteLatestPageData,
+  useRemoteRevisionBody, useRemoteRevisionId, useRemoteRevisionLastUpdatedAt, useRemoteRevisionLastUpdateUser, useSetRemoteLatestPageData,
 } from '~/stores/remote-latest-page';
 import { useEditorMode } from '~/stores/ui';
 
@@ -293,12 +293,12 @@ export const ConflictDiffModal = (props: ConflictDiffModalProps): JSX.Element =>
   // state for latest page
   const { data: remoteRevisionId } = useRemoteRevisionId();
   const { data: remoteRevisionBody } = useRemoteRevisionBody();
-  const { data: remoteRevisionLastUpdatUser } = useRemoteRevisionLastUpdatUser();
+  const { data: remoteRevisionLastUpdateUser } = useRemoteRevisionLastUpdateUser();
   const { data: remoteRevisionLastUpdatedAt } = useRemoteRevisionLastUpdatedAt();
 
   const currentTime: Date = new Date();
 
-  const isRemotePageDataInappropriate = remoteRevisionId == null || remoteRevisionBody == null || remoteRevisionLastUpdatUser == null;
+  const isRemotePageDataInappropriate = remoteRevisionId == null || remoteRevisionBody == null || remoteRevisionLastUpdateUser == null;
 
   if (!isOpen || currentUser == null || currentPage == null || isRemotePageDataInappropriate) {
     return <></>;
@@ -320,7 +320,7 @@ export const ConflictDiffModal = (props: ConflictDiffModalProps): JSX.Element =>
     revisionId: remoteRevisionId,
     revisionBody: remoteRevisionBody,
     createdAt: format(new Date(remoteRevisionLastUpdatedAt || currentTime.toString()), 'yyyy/MM/dd HH:mm:ss'),
-    user: remoteRevisionLastUpdatUser,
+    user: remoteRevisionLastUpdateUser,
   };
 
   const propsForCore = {

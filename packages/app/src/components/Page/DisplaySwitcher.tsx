@@ -13,7 +13,7 @@ import {
 import { useDescendantsPageListModal } from '~/stores/modal';
 import { useCurrentPagePath, useSWRxCurrentPage } from '~/stores/page';
 import {
-  useRemoteRevisionBody, useRemoteRevisionId, useRemoteRevisionLastUpdatedAt, useRemoteRevisionLastUpdatUser, useSetRemoteLatestPageData,
+  useSetRemoteLatestPageData,
 } from '~/stores/remote-latest-page';
 import { EditorMode, useEditorMode } from '~/stores/ui';
 import { useGlobalSocket } from '~/stores/websocket';
@@ -50,10 +50,6 @@ const PageView = React.memo((): JSX.Element => {
   const { data: currentPage } = useSWRxCurrentPage(shareLinkId ?? undefined);
   const { open: openDescendantPageListModal } = useDescendantsPageListModal();
   const { setRemoteLatestPageData } = useSetRemoteLatestPageData();
-  // const { mutate: mutateRemoteRevisionId } = useRemoteRevisionId();
-  // const { mutate: mutateRemoteRevisionLastUpdateUser } = useRemoteRevisionLastUpdatUser();
-  // const { mutate: mutateRemoteRevisionBody } = useRemoteRevisionBody();
-  // const { mutate: mutateRemoteRevisionLastUpdatedAt } = useRemoteRevisionLastUpdatedAt();
 
   const isTopPagePath = isTopPage(currentPagePath ?? '');
   const isUsersHomePagePath = isUsersHomePage(currentPagePath ?? '');
