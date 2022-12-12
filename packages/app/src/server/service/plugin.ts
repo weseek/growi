@@ -32,9 +32,10 @@ export class PluginService {
 
     const ghOrganizationName = match[1];
     const ghReposName = match[2];
+    const requestUrl = `https://github.com/${ghOrganizationName}/${ghReposName}/archive/refs/heads/main.zip`;
 
     // download github repository to local file system
-    await this.download(`${ghUrl.href}/archive/refs/heads/main.zip`, ghOrganizationName, ghReposName);
+    await this.download(requestUrl, ghOrganizationName, ghReposName);
 
     // save plugin metadata
     const installedPath = `${ghOrganizationName}/${ghReposName}`;
