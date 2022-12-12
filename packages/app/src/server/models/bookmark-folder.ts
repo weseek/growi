@@ -4,14 +4,17 @@ import {
 } from 'mongoose';
 
 import { IBookmarkFolder, BookmarkFolderItems } from '~/interfaces/bookmark-info';
-
+import { IPageHasId } from '~/interfaces/page';
+import { IUserHasId } from '~/interfaces/user';
 
 import loggerFactory from '../../utils/logger';
 import { getOrCreateModel } from '../util/mongoose-utils';
 
 import { InvalidParentBookmarkFolderError } from './errors';
 
+
 const logger = loggerFactory('growi:models:bookmark-folder');
+const Bookmark = require('./bookmark');
 
 export interface BookmarkFolderDocument extends Document {
   _id: Types.ObjectId
@@ -110,6 +113,13 @@ bookmarkFolderSchema.statics.updateBookmarkFolder = async function(bookmarkFolde
   const bookmarkFolder = await this.findByIdAndUpdate(bookmarkFolderId, { $set: updateFields }, { new: true });
   return bookmarkFolder;
 
+};
+
+bookmarkFolderSchema.statics.insertOrUpdateBookmarkedPage = async function(page: IPageHasId, user: IUserHasId, bookmarkFolderId: string):
+Promise<BookmarkFolderDocument> {
+  const bookmarkedPage = await Bookmark.findOneAndUpdate({ page, user }, { new: true, upsert: true });
+  const bookmarkFolder = await this.findByIdAndUpdate(bookmarkFolderId, { $set: { bookmarks: bookmarkedPage } }, { new: true, upsert: true });
+  return bookmarkFolder;
 };
 
 

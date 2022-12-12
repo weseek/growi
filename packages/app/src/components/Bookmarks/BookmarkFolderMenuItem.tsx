@@ -78,7 +78,7 @@ const BookmarkFolderMenuItem = (props: Props):JSX.Element => {
                   />
                 </div>
               ) : (
-                <div className='dropdown-item grw-bookmark-folder-menu-item' tabIndex={0} role="menuitem" onClick={() => setSelectedItem(child._id)}>
+                <div className='dropdown-item grw-bookmark-folder-menu-item' tabIndex={0} role="menuitem" onClick={e => onClickChildMenuItemHandler(e, child)}>
                   <input
                     type="radio"
                     checked={selectedItem === child._id}
