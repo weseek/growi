@@ -21,20 +21,20 @@ export const useRemoteRevisionLastUpdatedAt = (initialData?: Date): SWRResponse<
   return useStaticSWR<Date, Error>('remoteRevisionLastUpdatedAt', initialData);
 };
 
+type RemoteRevisionData = {
+  remoteRevisionId: string,
+  remoteRevisionBody: string,
+  remoteRevisionLastUpdateUser: IUser,
+  remoteRevisionLastUpdatedAt: Date
+}
+
 
 // set remote data all at once
-export const useSetRemoteLatestPageData = (): { setRemoteLatestPageData: (pageData: any) => void } => {
+export const useSetRemoteLatestPageData = (): { setRemoteLatestPageData: (pageData: RemoteRevisionData) => void } => {
   const { mutate: mutateRemoteRevisionId } = useRemoteRevisionId();
   const { mutate: mutateRemoteRevisionBody } = useRemoteRevisionBody();
   const { mutate: mutateRemoteRevisionLastUpdateUser } = useRemoteRevisionLastUpdateUser();
   const { mutate: mutateRemoteRevisionLastUpdatedAt } = useRemoteRevisionLastUpdatedAt();
-
-  type RemoteRevisionData = {
-    remoteRevisionId: string,
-    remoteRevisionBody: string,
-    remoteRevisionLastUpdateUser: IUser,
-    remoteRevisionLastUpdatedAt: Date
-  }
 
   const setRemoteLatestPageData = (remoteRevisionData: RemoteRevisionData) => {
     const {
