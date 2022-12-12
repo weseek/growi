@@ -5,7 +5,6 @@
     "paths": {
       "~/*": ["./src/*"],
       "^/*": ["./*"],
-      "@growi/preset-themes/*": ["../preset-themes/*"],
       "@growi/remark-lsx/*": ["../remark-lsx/src/*"],
       "@growi/*": ["../*/src"],
       "debug": ["./src/server/utils/logger/alias-for-debug"]
