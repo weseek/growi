@@ -1,8 +1,9 @@
 import fs from 'fs';
 import path from 'path';
 
+// eslint-disable-next-line no-restricted-imports
+import axios from 'axios';
 import mongoose from 'mongoose';
-import request from 'superagent';
 import unzipper from 'unzipper';
 
 import type { GrowiPlugin, GrowiPluginOrigin } from '~/interfaces/plugin';
@@ -45,25 +46,36 @@ export class PluginService {
     return;
   }
 
-  async download(url: string, ghOrganizationName: string, ghReposName: string): Promise<void> {
+  async download(reqUrl: string, ghOrganizationName: string, ghReposName: string): Promise<void> {
 
     const zipFilePath = path.join(pluginStoringPath, 'main.zip');
     const unzippedPath = path.join(pluginStoringPath, ghOrganizationName);
 
-    const downloadZipFile = () => {
-      const writeStream = fs.createWriteStream(zipFilePath);
-
+    const downloadFile = (reqUrl, filePath) => {
       return new Promise<void>((resolve, reject) => {
-        request
-          .get(url)
-          .pipe(writeStream)
-          .on('close', () => writeStream.close())
-          .on('finish', () => resolve())
-          .on('error', (error: any) => reject(error));
+        axios({
+          method: 'GET',
+          url: reqUrl,
+          responseType: 'stream',
+        }).then((res) => {
+          if (res.status === 200) {
+            const file = fs.createWriteStream(filePath);
+            res.data.pipe(file)
+              .on('close', () => file.close())
+              .on('finish', () => {
+                resolve();
+              });
+          }
+          else {
+            reject(res.status);
+          }
+        }).catch((err) => {
+          reject(err);
+        });
       });
     };
 
-    const unzip = () => {
+    const unzip = (zipFilePath, unzippedPath) => {
       const stream = fs.createReadStream(zipFilePath);
       const deleteZipFile = (path: fs.PathLike) => {
         fs.unlink(path, (err) => {
@@ -81,16 +93,18 @@ export class PluginService {
       });
     };
 
-    const renameUnzipFolderPath = async() => {
-      const oldPath = `${unzippedPath}/${ghReposName}-main`;
-      const newPath = `${unzippedPath}/${ghReposName}`;
-
+    const renamePath = async(oldPath, newPath) => {
       fs.renameSync(oldPath, newPath);
     };
 
-    await downloadZipFile();
-    await unzip();
-    await renameUnzipFolderPath();
+    try {
+      await downloadFile(reqUrl, zipFilePath);
+      await unzip(zipFilePath, unzippedPath);
+      await renamePath(`${unzippedPath}/${ghReposName}-main`, `${unzippedPath}/${ghReposName}`);
+    }
+    catch (err) {
+      throw new Error(err);
+    }
 
     return;
   }
