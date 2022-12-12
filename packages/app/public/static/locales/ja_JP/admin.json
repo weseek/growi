@@ -213,9 +213,9 @@
         "username_detail": "新規ユーザーのアカウント名(<code>username</code>)に関連付ける属性",
         "name_detail": "新規ユーザー名(<code>name</code>)に関連付ける属性",
         "mapping_detail": "新規ユーザーの{{target}}に関連付ける属性",
-        "register_1": "Contant to OIDC IdP Administrator",
-        "register_2": "Register your OIDC App with \"Authorization callback URL\" as <code>%s</code>",
-        "register_3": "Copy and paste your ClientID and Client Secret above",
+        "register_1": "OIDC IdP Administrator へ接続します。",
+        "register_2": "OIDCアプリの認証コールバックURLを<code>%s</code>として登録します。",
+        "register_3": "上記のClientIDとClient Secretをコピー＆ペーストしてください。",
         "updated_oidc": "OpenID Connect を更新しました",
         "Use discovered URL if empty": "データベース側の値が空の場合、\"Issuer Host\"から検出した値を利用します。"
       },
