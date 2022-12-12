@@ -54,8 +54,9 @@ export class PluginService {
     const unzippedPath = path.join(pluginStoringPath, ghOrganizationName);
 
     const downloadFile = async(requestUrl: string, filePath: string) => {
+      let validUrl;
       try {
-        await ssrf.url(requestUrl);
+        validUrl = await ssrf.url(requestUrl);
       }
       catch (err) {
         throw new Error('This request URL is invalid.');
@@ -64,7 +65,7 @@ export class PluginService {
       return new Promise<void>((resolve, reject) => {
         axios({
           method: 'GET',
-          url: requestUrl,
+          url: validUrl,
           responseType: 'stream',
         })
           .then((res) => {
