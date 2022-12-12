@@ -49,14 +49,13 @@ const uniqueTheme = [{
 
 const CustomizeThemeOptions = (props) => {
 
-  const { adminCustomizeContainer, currentTheme } = props;
-  const { currentLayout } = adminCustomizeContainer.state;
+  const { selectedTheme } = props;
 
   const { t } = useTranslation('admin');
 
 
   return (
-    <div id="themeOptions" className={`${currentLayout === 'kibela' && 'disabled'}`}>
+    <div id="themeOptions">
       {/* Light and Dark Themes */}
       <div>
         <h3>{t('customize_settings.theme_desc.light_and_dark')}</h3>
@@ -65,7 +64,7 @@ const CustomizeThemeOptions = (props) => {
             return (
               <ThemeColorBox
                 key={theme.name}
-                isSelected={currentTheme === theme.name}
+                isSelected={selectedTheme === theme.name}
                 onSelected={() => props.onSelected(theme.name)}
                 {...theme}
               />
@@ -81,7 +80,7 @@ const CustomizeThemeOptions = (props) => {
             return (
               <ThemeColorBox
                 key={theme.name}
-                isSelected={currentTheme === theme.name}
+                isSelected={selectedTheme === theme.name}
                 onSelected={() => props.onSelected(theme.name)}
                 {...theme}
               />
@@ -97,9 +96,8 @@ const CustomizeThemeOptions = (props) => {
 const CustomizeThemeOptionsWrapper = withUnstatedContainers(CustomizeThemeOptions, [AdminCustomizeContainer]);
 
 CustomizeThemeOptions.propTypes = {
-  adminCustomizeContainer: PropTypes.instanceOf(AdminCustomizeContainer).isRequired,
   onSelected: PropTypes.func,
-  currentTheme: PropTypes.string,
+  selectedTheme: PropTypes.string,
 };
 
 export default CustomizeThemeOptionsWrapper;
