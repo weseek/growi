@@ -64,6 +64,9 @@
     "xss_prevent_setting": "XSS(Cross Site Scripting)対策設定",
     "xss_prevent_setting_link": "マークダウン設定ページに移動",
     "callback_URL": "コールバックURL",
+    "providerName": "プロバイダ名",
+    "issuerHost": "発行ホスト",
+    "scope": "範囲",
     "desc_of_callback_URL": "{{AuthName}} プロバイダ側の設定で利用してください。",
     "authorization_endpoint": "認可エンドポイント",
     "token_endpoint": "トークンエンドポイント",
@@ -210,13 +213,17 @@
         "username_detail": "新規ユーザーのアカウント名(<code>username</code>)に関連付ける属性",
         "name_detail": "新規ユーザー名(<code>name</code>)に関連付ける属性",
         "mapping_detail": "新規ユーザーの{{target}}に関連付ける属性",
+        "register_1": "OIDC IdP Administrator へ接続します。",
+        "register_2": "OIDCアプリの認証コールバックURLを<code>%s</code>として登録します。",
+        "register_3": "上記のClientIDとClient Secretをコピー＆ペーストしてください。",
         "updated_oidc": "OpenID Connect を更新しました",
         "Use discovered URL if empty": "データベース側の値が空の場合、\"Issuer Host\"から検出した値を利用します。"
       },
       "how_to": {
         "google": "Google OAuth の設定方法",
         "github": "GitHub OAuth の設定方法",
-        "twitter": "Twitter OAuth の設定方法"
+        "twitter": "Twitter OAuth の設定方法",
+        "oidc": "OIDC の設定方法"
       }
     },
     "form_item_name": {
@@ -521,25 +528,6 @@
     "upload_new_logo": "新しいロゴをアップロードする",
     "delete_logo": "ロゴを削除"
   },
-  "export_management": {
-    "export_archive_data": "データアーカイブ",
-    "exporting_collection_list": "エクスポート中のコレクション",
-    "exported_data_list": "エクスポートされたアーカイブリスト",
-    "export_collections": "コレクションのエクスポート",
-    "check_all": "全てにチェックを付ける",
-    "uncheck_all": "全てからチェックを外す",
-    "desc_password_seed": "<p>ユーザーデータをバックアップ/リストアする場合、現在の <code>PASSWORD_SEED</code> を新しい GROWI システムにセットすることを忘れないでください。さもなくば、ユーザーがパスワードでログインできなくなります。<br><br><strong>ヒント:</strong><br>現在の <code>PASSWORD_SEED</code> は、エクスポートされる ZIP 中の <code>meta.json</code> に保存されます。</p>",
-    "create_new_archive_data": "アーカイブデータの新規作成",
-    "export": "エクスポート",
-    "cancel": "キャンセル",
-    "file": "ファイル名",
-    "growi_version": "GROWI バージョン",
-    "collections": "コレクション",
-    "exported_at": "エクスポートされた時間",
-    "export_menu": "エクスポートメニュー",
-    "download": "ダウンロード",
-    "delete": "削除"
-  },
   "importer_management": {
     "import_data": "データインポート",
     "article": "記事",
@@ -616,6 +604,25 @@
     "admin_archive_data_import_guide_url": "https://docs.growi.org/ja/admin-guide/management-cookbook/import.html#growi-%E3%82%A2%E3%83%BC%E3%82%AB%E3%82%A4%E3%83%96%E3%83%87%E3%83%BC%E3%82%BF%E3%82%A4%E3%83%B3%E3%83%9D%E3%83%BC%E3%83%88",
     "page_skip": "既に GROWI 側に同名のページが存在する場合、そのページはスキップされます",
     "Directory_hierarchy_tag": "ディレクトリ階層タグ"
+  },
+  "export_management": {
+    "export_archive_data": "データアーカイブ",
+    "exporting_collection_list": "エクスポート中のコレクション",
+    "exported_data_list": "エクスポートされたアーカイブリスト",
+    "export_collections": "コレクションのエクスポート",
+    "check_all": "全てにチェックを付ける",
+    "uncheck_all": "全てからチェックを外す",
+    "desc_password_seed": "<p>ユーザーデータをバックアップ/リストアする場合、現在の <code>PASSWORD_SEED</code> を新しい GROWI システムにセットすることを忘れないでください。さもなくば、ユーザーがパスワードでログインできなくなります。<br><br><strong>ヒント:</strong><br>現在の <code>PASSWORD_SEED</code> は、エクスポートされる ZIP 中の <code>meta.json</code> に保存されます。</p>",
+    "create_new_archive_data": "アーカイブデータの新規作成",
+    "export": "エクスポート",
+    "cancel": "キャンセル",
+    "file": "ファイル名",
+    "growi_version": "GROWI バージョン",
+    "collections": "コレクション",
+    "exported_at": "エクスポートされた時間",
+    "export_menu": "エクスポートメニュー",
+    "download": "ダウンロード",
+    "delete": "削除"
   },
   "external_notification": {
     "external_notification": "外部ツールへの通知",

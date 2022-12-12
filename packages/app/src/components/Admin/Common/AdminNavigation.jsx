@@ -36,7 +36,7 @@ const AdminNavigation = (props) => {
       case 'user-groups':              return <><i className="mr-1 icon-fw icon-people"></i>{          t('user_group_management.user_group_management') }</>;
       case 'search':                   return <><i className="mr-1 icon-fw icon-magnifier"></i>{       t('full_text_search_management.full_text_search_management') }</>;
       case 'audit-log':                return <><i className="mr-1 icon-fw icon-feed"></i>{            t('audit_log_management.audit_log')}</>;
-      case 'plugins':                  return <><i className="mr-1 icon-fw icon-puzzle"></i>{           'Plugins Extention'}</>;
+      case 'plugins':                  return <><i className="mr-1 icon-fw icon-puzzle"></i>{           'Plugins Extension'}</>;
       case 'cloud':                    return <><i className="mr-1 icon-fw icon-share-alt"></i>{       t('cloud_setting_management.to_cloud_settings')} </>;
       default:                         return <><i className="mr-1 icon-fw icon-home"></i>{            t('wiki_management_home_page') }</>;
       /* eslint-enable no-multi-spaces, max-len */
