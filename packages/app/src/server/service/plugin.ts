@@ -53,14 +53,12 @@ export class PluginService {
 
     const downloadFile = async(reqUrl, filePath) => {
       return new Promise<void>((resolve, reject) => {
-        axios
-          .get(
-            reqUrl,
-            {
-              httpsAgent: ssrfFilter(reqUrl),
-              responseType: 'stream',
-            },
-          )
+        axios({
+          method: 'GET',
+          url: reqUrl,
+          httpsAgent: ssrfFilter(reqUrl),
+          responseType: 'stream',
+        })
           .then((res) => {
             if (res.status === 200) {
               const file = fs.createWriteStream(filePath);
