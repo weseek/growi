@@ -75,7 +75,7 @@ export const TrashPageAlert = (): JSX.Element => {
           data-toggle="modal"
           data-testid="put-back-button"
         >
-          <i className="icon-action-undo" aria-hidden="true"></i> { t('Put Back') }aaa
+          <i className="icon-action-undo" aria-hidden="true"></i> { t('Put Back') }
         </button>
         <button
           type="button"

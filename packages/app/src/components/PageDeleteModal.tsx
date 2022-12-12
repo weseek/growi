@@ -275,7 +275,7 @@ const PageDeleteModal: FC = () => {
           data-testid="delete-page-button"
         >
           <i className={`mr-1 icon-${deleteIconAndKey[deleteMode].icon}`} aria-hidden="true"></i>
-          { t(`modal_delete.delete_${deleteIconAndKey[deleteMode].translationKey}`) }hogewww
+          { t(`modal_delete.delete_${deleteIconAndKey[deleteMode].translationKey}`) }
         </button>
       </>
     );
