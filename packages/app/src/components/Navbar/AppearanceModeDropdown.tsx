@@ -31,6 +31,8 @@ export const AppearanceModeDropdown:FC<AppearanceModeDropdownProps> = (props: Ap
   const { data: isPreferDrawerModeOnEdit, mutate: mutatePreferDrawerModeOnEdit } = usePreferDrawerModeOnEditByUser();
   const { scheduleToPut } = useUserUISettings();
 
+  console.log('isPreferDrawerMode', isPreferDrawerMode);
+
   // ripple
   const buttonRef = useRef(null);
   useRipple(buttonRef, { rippleColor: 'rgba(255, 255, 255, 0.3)' });
@@ -67,6 +69,8 @@ export const AppearanceModeDropdown:FC<AppearanceModeDropdownProps> = (props: Ap
       <UncontrolledTooltip placement="bottom" fade={false} target={id}>{label}</UncontrolledTooltip>
     </>
   );
+
+  const dropdownDivider = <div className="dropdown-divider"></div>;
 
   const renderSidebarModeSwitch = useCallback((isEditMode: boolean) => {
     return (
@@ -111,14 +115,11 @@ export const AppearanceModeDropdown:FC<AppearanceModeDropdownProps> = (props: Ap
       <div className="dropdown-menu dropdown-menu-right">
 
         {/* sidebar mode */}
-        {renderSidebarModeSwitch(false)}
-
-        <div className="dropdown-divider"></div>
+        {[renderSidebarModeSwitch(false), dropdownDivider]}
 
         {/* side bar mode on editor */}
-        {isAuthenticated && renderSidebarModeSwitch(true)}
+        {isAuthenticated && [renderSidebarModeSwitch(true), dropdownDivider]}
 
-        <div className="dropdown-divider"></div>
 
         {/* color mode */}
         <h6 className="dropdown-header">{t('personal_dropdown.color_mode')}</h6>
