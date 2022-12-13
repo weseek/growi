@@ -10824,7 +10824,7 @@ ip@^2.0.0:
   resolved "https://registry.yarnpkg.com/ip/-/ip-2.0.0.tgz#4cf4ab182fee2314c75ede1276f8c80b479936da"
   integrity sha512-WKa+XuLG1A1R0UWhl2+1XQSi+fZWMsYKffMZTTYsiZaUD8k2yDAj5atimTUD2TZkyCkNEeYE5NhFZmupOGtjYQ==
 
-ipaddr.js@1.9.1, ipaddr.js@^1.1.0:
+ipaddr.js@1.9.1:
   version "1.9.1"
   resolved "https://registry.yarnpkg.com/ipaddr.js/-/ipaddr.js-1.9.1.tgz#bff38543eeb8984825079ff3a2a8e6cbd46781b3"
   integrity sha512-0KI/607xoxSToH7GjN1FfSbLoU0+btTicjsQSWQlh/hZykN8KpmMf7uYwPW3R+akZ6R/w18ZlXSHBYXiYUPO3g==
@@ -19513,13 +19513,6 @@ sshpk@^1.14.1, sshpk@^1.7.0:
     jsbn "~0.1.0"
     safer-buffer "^2.0.2"
     tweetnacl "~0.14.0"
-
-ssrf@^1.0.2:
-  version "1.0.2"
-  resolved "https://registry.yarnpkg.com/ssrf/-/ssrf-1.0.2.tgz#0792cf5318d79d474133c249db3d0e5b89bda592"
-  integrity sha512-BOoCT0WGuHMiaWlMf9ta9IVh2lgWM1slXA3WhAGDlNVu4QjMLdodmV09tfk+Cmr7KE7BLQ0PbJsRrzWDh6o9XQ==
-  dependencies:
-    ipaddr.js "^1.1.0"
 
 ssri@^8.0.0, ssri@^8.0.1:
   version "8.0.1"
