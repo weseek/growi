@@ -88,10 +88,6 @@ const SearchResultPage: NextPage<Props> = (props: Props) => {
   };
 
   const title = generateCustomTitle(props, 'GROWI');
-  const classNames: string[] = [];
-  // if (props.isContainerFluid) {
-  //   classNames.push('growi-layout-fluid');
-  // }
 
   return (
     <>
@@ -101,7 +97,7 @@ const SearchResultPage: NextPage<Props> = (props: Props) => {
 
       <DrawioViewerScript />
 
-      <SearchResultLayout className={classNames.join(' ')}>
+      <SearchResultLayout>
         <div id="search-page">
           <SearchPage />
         </div>

@@ -362,10 +362,12 @@ const Page: NextPage<Props> = (props: Props) => {
             </footer>
           )}
 
+          {/* TODO: move these components outside of BasicLayout */}
           <UnsavedAlertDialog />
           <DescendantsPageListModal />
           <DrawioModal />
           <HandsontableModal />
+
           {shouldRenderPutbackPageModal && <PutbackPageModal />}
         </div>
       </BasicLayout>
