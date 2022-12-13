@@ -37,9 +37,10 @@ import type { PageModel, PageDocument } from '~/server/models/page';
 import type { PageRedirectModel } from '~/server/models/page-redirect';
 import type { UserUISettingsModel } from '~/server/models/user-ui-settings';
 import { useEditingMarkdown } from '~/stores/editor';
-import { usePageIdOnHackmd, useRevisionIdHackmdSynced } from '~/stores/hackmd';
+import { useHasDraftOnHackmd, usePageIdOnHackmd, useRevisionIdHackmdSynced } from '~/stores/hackmd';
 import { useSWRxCurrentPage, useSWRxIsGrantNormalized } from '~/stores/page';
 import { useRedirectFrom } from '~/stores/page-redirect';
+import { useRemoteRevisionId } from '~/stores/remote-latest-page';
 import {
   useEditorMode, useSelectedGrant,
   usePreferDrawerModeByUser, usePreferDrawerModeOnEditByUser, useSidebarCollapsed, useCurrentSidebarContents, useCurrentProductNavWidth,
@@ -73,7 +74,6 @@ import {
 import {
   CommonProps, getNextI18NextConfig, getServerSideCommonProps, useCustomTitle,
 } from './utils/commons';
-import { useRemoteRevisionId } from '~/stores/remote-latest-page';
 // import { useCurrentPageSWR } from '../stores/page';
 
 
@@ -262,6 +262,7 @@ const GrowiPage: NextPage<Props> = (props: Props) => {
   useRevisionIdHackmdSynced(pageWithMeta?.data.revisionHackmdSynced);
   useRemoteRevisionId(pageWithMeta?.data.revision._id);
   usePageIdOnHackmd(pageWithMeta?.data.pageIdOnHackmd);
+  useHasDraftOnHackmd(pageWithMeta?.data.hasDraftOnHackmd);
   // useIsNotCreatable(props.isForbidden || !isCreatablePage(pagePath)); // TODO: need to include props.isIdentical
   useCurrentPathname(props.currentPathname);
 
