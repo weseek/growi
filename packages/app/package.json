@@ -181,6 +181,7 @@
     "remark-gfm": "^3.0.1",
     "remark-math": "^5.1.1",
     "remark-wiki-link": "^1.0.4",
+    "request-filtering-agent": "^1.1.2",
     "rimraf": "^3.0.0",
     "simplebar-react": "^2.3.6",
     "socket.io": "^4.2.0",

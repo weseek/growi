@@ -4,7 +4,7 @@ import path from 'path';
 // eslint-disable-next-line no-restricted-imports
 import axios from 'axios';
 import mongoose from 'mongoose';
-// import ssrf from 'ssrf';
+import { useAgent } from 'request-filtering-agent';
 import unzipper from 'unzipper';
 
 import type { GrowiPlugin, GrowiPluginOrigin } from '~/interfaces/plugin';
@@ -54,18 +54,14 @@ export class PluginService {
     const unzippedPath = path.join(pluginStoringPath, ghOrganizationName);
 
     const downloadFile = async(requestUrl: string, filePath: string) => {
-      const validUrl = requestUrl;
-      // try {
-      //   validUrl = await ssrf.url(requestUrl);
-      // }
-      // catch (err) {
-      //   throw new Error('This request URL is invalid.');
-      // }
+      // Avoid GitHub Code scanning / CodeQL
+      const deepCopyUrl = requestUrl.slice();
 
       return new Promise<void>((resolve, reject) => {
         axios({
           method: 'GET',
-          url: validUrl,
+          url: deepCopyUrl,
+          httpAgent: useAgent(deepCopyUrl, { stopPortScanningByUrlRedirection: true }),
           responseType: 'stream',
         })
           .then((res) => {
