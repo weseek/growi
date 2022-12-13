@@ -1,7 +1,13 @@
 @use '~/styles/organisms/wiki-custom-sidebar.scss';
+@use '~/styles/mixins' as *;
 
 .grw-custom-sidebar-content :global {
   .wiki {
     @extend %grw-custom-sidebar-content;
+  }
+
+  .grw-custom-sidebar-skeleton-text {
+    @include grw-skeleton-text(16px, 16px);
+    max-width: 100%;
   }
 }

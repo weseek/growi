@@ -219,3 +219,24 @@
     content: $code;
   }
 }
+
+@mixin grw-skeleton-text($font-size, $line-height) {
+  height: $line-height;
+  padding: (($line-height - $font-size)  / 2) 0;
+}
+/*
+.example {
+  @include grw-skeleton-text($font-size:$size, $line-height:$height);
+  max-width: 100%;
+}
+*/
+
+// values from './bootstrap/override'
+
+@mixin grw-skeleton-h3 {
+  @include grw-skeleton-text(21px, 30px);
+}
+
+@mixin grw-skeleton-h5 {
+  @include grw-skeleton-text(16px, 18px);
+}

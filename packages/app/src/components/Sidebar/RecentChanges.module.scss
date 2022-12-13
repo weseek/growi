@@ -1,4 +1,4 @@
-@use './Skeleton/SidebarSkeleton.module.scss' as *;
+@use '~/styles/mixins' as *;
 
 .grw-recent-changes-resize-button :global {
   font-size: 12px;
@@ -17,8 +17,9 @@
 }
 
 .list-group-item :global {
-  .grw-recent-changes-skeleton-text {
-    @include grw-skeleton-text(120px);
+  .grw-recent-changes-skeleton-small {
+    @include grw-skeleton-text($font-size:14px, $line-height:16px);
+    max-width: 120px;
   }
 
   .grw-recent-changes-skeleton-h5 {
@@ -27,8 +28,8 @@
   }
 
   .grw-recent-changes-skeleton-date {
+    @include grw-skeleton-text($font-size:10px, $line-height:12px);
     width: 90px;
-    height: 13.5;
   }
 
   .grw-recent-changes-item-lower {
