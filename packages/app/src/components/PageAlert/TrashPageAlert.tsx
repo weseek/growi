@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useCallback } from 'react';
 
 import { UserPicture } from '@growi/ui';
 import { format } from 'date-fns';
@@ -32,27 +32,25 @@ export const TrashPageAlert = (): JSX.Element => {
   const { open: openDeleteModal } = usePageDeleteModal();
   const { open: openPutBackPageModal } = usePutBackPageModal();
 
-  if (!isTrashPage) {
-    return <></>;
-  }
-
 
   const deleteUser = pageData?.deleteUser;
   const deletedAt = pageData?.deletedAt ? format(new Date(pageData?.deletedAt), 'yyyy/MM/dd HH:mm') : '';
   const revisionId = pageData?.revision?._id;
 
 
-  function openPutbackPageModalHandler() {
+  const openPutbackPageModalHandler = useCallback(() => {
     if (pageId === undefined || pagePath === undefined) {
       return;
     }
     const putBackedHandler = () => {
-      router.push(`/${pageId}`);
+      // Do not use "router.push(`/${pageId}`)" to avoid `Error: Invariant: attempted to hard navigate to the same URL`
+      // See: https://github.com/weseek/growi/pull/7054
+      router.reload();
     };
     openPutBackPageModal({ pageId, path: pagePath }, { onPutBacked: putBackedHandler });
-  }
+  }, [openPutBackPageModal, pageId, pagePath, router]);
 
-  function openPageDeleteModalHandler() {
+  const openPageDeleteModalHandler = useCallback(() => {
     if (pageId === undefined || revisionId === undefined || pagePath === undefined) {
       return;
     }
@@ -65,9 +63,9 @@ export const TrashPageAlert = (): JSX.Element => {
       meta: pageInfo,
     };
     openDeleteModal([pageToDelete], { onDeleted: onDeletedHandler });
-  }
+  }, [openDeleteModal, pageId, pageInfo, pagePath, revisionId]);
 
-  function renderTrashPageManagementButtons() {
+  const renderTrashPageManagementButtons = useCallback(() => {
     return (
       <>
         <button
@@ -75,6 +73,7 @@ export const TrashPageAlert = (): JSX.Element => {
           className="btn btn-info rounded-pill btn-sm ml-auto mr-2"
           onClick={openPutbackPageModalHandler}
           data-toggle="modal"
+          data-testid="put-back-button"
         >
           <i className="icon-action-undo" aria-hidden="true"></i> { t('Put Back') }
         </button>
@@ -88,11 +87,15 @@ export const TrashPageAlert = (): JSX.Element => {
         </button>
       </>
     );
+  }, [openPageDeleteModalHandler, openPutbackPageModalHandler, pageInfo?.isAbleToDeleteCompletely, t]);
+
+  if (!isTrashPage) {
+    return <></>;
   }
 
   return (
     <>
-      <div className="alert alert-warning py-3 pl-4 d-flex flex-column flex-lg-row">
+      <div className="alert alert-warning py-3 pl-4 d-flex flex-column flex-lg-row" data-testid="trash-page-alert">
         <div className="flex-grow-1">
           This page is in the trash <i className="icon-trash" aria-hidden="true"></i>.
           <br />
