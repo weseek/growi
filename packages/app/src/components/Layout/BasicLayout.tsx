@@ -4,14 +4,11 @@ import dynamic from 'next/dynamic';
 import { DndProvider } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
 
-import { useIsContainerFluid } from '~/stores/context';
-import { useSWRxCurrentPage } from '~/stores/page';
-
 import { GrowiNavbar } from '../Navbar/GrowiNavbar';
 import Sidebar from '../Sidebar';
 
 import { RawLayout } from './RawLayout';
-import { useEditorMode } from '~/stores/ui';
+import { useCurrentLayoutClassName } from './custom-hooks/use-current-layout-class-name';
 
 const AlertSiteUrlUndefined = dynamic(() => import('../AlertSiteUrlUndefined').then(mod => mod.AlertSiteUrlUndefined), { ssr: false });
 const HotkeysManager = dynamic(() => import('../Hotkeys/HotkeysManager'), { ssr: false });
@@ -32,30 +29,12 @@ const Fab = dynamic(() => import('../Fab').then(mod => mod.Fab), { ssr: false })
 
 type Props = {
   children?: ReactNode
+  className?: string
 }
 
-export const BasicLayout = ({ children }: Props): JSX.Element => {
-  const { data: currentPage } = useSWRxCurrentPage(); // Only /page, /share
-  const { data: dataIsContainerFluid } = useIsContainerFluid(); // Only /page, /share
-  const { getClassNamesByEditorMode } = useEditorMode(); // Only /page
-
-  // Only /page, /share
-  const isContainerFluidEachPage = currentPage == null || !('expandContentWidth' in currentPage)
-    ? null
-    : currentPage.expandContentWidth;
-  const isContainerFluidDefault = dataIsContainerFluid;
-  const isContainerFluid = isContainerFluidEachPage ?? isContainerFluidDefault;
-
-  // Only /page
-  const classNames: string[] = [];
-  const isSidebar = currentPage?.path === '/Sidebar';
-  classNames.push(...getClassNamesByEditorMode(isSidebar));
-
-  const myClassName = `${classNames.join(' ') ?? ''} ${isContainerFluid ? 'growi-layout-fluid' : ''}`;
-
+export const BasicLayout = ({ children, className }: Props): JSX.Element => {
   return (
-    <RawLayout className={myClassName}>
-
+    <RawLayout className={className ?? ''}>
       <DndProvider backend={HTML5Backend}>
         <GrowiNavbar />
 
@@ -87,5 +66,15 @@ export const BasicLayout = ({ children }: Props): JSX.Element => {
       <ShortcutsModal />
       <SystemVersion showShortcutsButton />
     </RawLayout>
+  );
+};
+
+export const BasicLayoutWithCurrentPage = ({ children }: Props): JSX.Element => {
+  const className = useCurrentLayoutClassName();
+
+  return (
+    <BasicLayout className={className}>
+      {children}
+    </BasicLayout>
   );
 };

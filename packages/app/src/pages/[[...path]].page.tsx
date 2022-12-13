@@ -40,7 +40,7 @@ import { useEditingMarkdown } from '~/stores/editor';
 import { useSWRxCurrentPage, useSWRxIsGrantNormalized } from '~/stores/page';
 import { useRedirectFrom } from '~/stores/page-redirect';
 import {
-  useEditorMode, useSelectedGrant,
+  useSelectedGrant,
   usePreferDrawerModeByUser, usePreferDrawerModeOnEditByUser, useSidebarCollapsed, useCurrentSidebarContents, useCurrentProductNavWidth,
 } from '~/stores/ui';
 import { useSetupGlobalSocket, useSetupGlobalSocketForPage } from '~/stores/websocket';
@@ -51,7 +51,7 @@ import loggerFactory from '~/utils/logger';
 // import GrowiSubNavigation from '../client/js/components/Navbar/GrowiSubNavigation';
 // import GrowiSubNavigationSwitcher from '../client/js/components/Navbar/GrowiSubNavigationSwitcher';
 import { DescendantsPageListModal } from '../components/DescendantsPageListModal';
-import { BasicLayout } from '../components/Layout/BasicLayout';
+import { BasicLayoutWithCurrentPage } from '../components/Layout/BasicLayout';
 import GrowiContextualSubNavigation from '../components/Navbar/GrowiContextualSubNavigation';
 import DisplaySwitcher from '../components/Page/DisplaySwitcher';
 // import { serializeUserSecurely } from '../server/models/serializers/user-serializer';
@@ -72,7 +72,6 @@ import {
 import {
   CommonProps, getNextI18NextConfig, getServerSideCommonProps, generateCustomTitle,
 } from './utils/commons';
-// import { useCurrentPageSWR } from '../stores/page';
 
 
 declare global {
@@ -298,7 +297,7 @@ const Page: NextPage<Props> = (props: Props) => {
       </Head>
       <DrawioViewerScript />
 
-      <BasicLayout>
+      <BasicLayoutWithCurrentPage>
 
         <div className="h-100 d-flex flex-column justify-content-between">
           <header className="py-0 position-relative">
@@ -349,7 +348,7 @@ const Page: NextPage<Props> = (props: Props) => {
             </footer>
           )}
 
-          {/* TODO: move these components outside of BasicLayout */}
+          {/* TODO: move these components outside of BasicLayoutWithCurrentPage */}
           <UnsavedAlertDialog />
           <DescendantsPageListModal />
           <DrawioModal />
@@ -357,7 +356,7 @@ const Page: NextPage<Props> = (props: Props) => {
 
           {shouldRenderPutbackPageModal && <PutbackPageModal />}
         </div>
-      </BasicLayout>
+      </BasicLayoutWithCurrentPage>
     </>
   );
 };
