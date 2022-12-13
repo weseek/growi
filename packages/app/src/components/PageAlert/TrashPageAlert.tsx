@@ -45,9 +45,9 @@ export const TrashPageAlert = (): JSX.Element => {
       return;
     }
     const putBackedHandler = () => {
+      unlink();
       // Do not use "router.push(`/${pageId}`)" to avoid `Error: Invariant: attempted to hard navigate to the same URL`
       // See: https://github.com/weseek/growi/pull/7054
-      unlink();
       router.reload();
     };
     openPutBackPageModal({ pageId, path: pagePath }, { onPutBacked: putBackedHandler });
