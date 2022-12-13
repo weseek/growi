@@ -12,32 +12,32 @@
 $border-image-navbar: linear-gradient(to right, $gray-300 0%, $gray-300 100%) !default;
 $bgcolor-search-top-dropdown: $secondary !default;
 $bgcolor-sidebar-nav-item-active: darken($bgcolor-sidebar, 10%) !default;
-$text-shadow-sidebar-nav-item-active: 1px 1px 2px $primary !default;
+$text-shadow-sidebar-nav-item-active: var(--text-shadow-sidebar-nav-item-active,1px 1px 2px var(--primary));
 $bgcolor-inline-code: $gray-100 !default;
 $color-inline-code: darken($red, 15%) !default;
 $bordercolor-inline-code: $gray-400 !default;
 $bordercolor-nav-tabs: $gray-300 !default;
 $bordercolor-nav-tabs-hover: $gray-200 $gray-200 $bordercolor-nav-tabs !default;
 $color-nav-tabs-link-active: $gray-600 !default;
-$bordercolor-nav-tabs-active: $bordercolor-nav-tabs $bordercolor-nav-tabs $bgcolor-global !default;
+$bordercolor-nav-tabs-active: var(--ordercolor-nav-tabs-active,var(--bordercolor-nav-tabs) var(--bordercolor-nav-tabs) var(--bgcolor-global));
 $color-btn-reload-in-sidebar: $gray-500;
 $bgcolor-keyword-highlighted: var.$grw-marker-yellow !default;
-$bgcolor-page-list-group-item-active: lighten($primary, 76%) !default;
-$color-page-list-group-item-meta: $gray-500 !default;
-$color-search-page-list-title: $color-global !default;
-$bgcolor-subnav: darken($bgcolor-global, 3%) !default;
+$bgcolor-page-list-group-item-active: var(--bgcolor-page-list-group-item-active,var(--primary-lighten76));
+$color-page-list-group-item-meta: var(--color-page-list-group-item-meta,var(--gray-500));
+$color-search-page-list-title: var(--color-search-page-list-title,var(--color-global));
+$bgcolor-subnav: var(--bgcolor-subnav,var(--bgcolor-global-darken3));
 
 // override bootstrap variables
-$body-bg: $bgcolor-global;
-$body-color: $color-global;
-$link-color: $color-link;
-$link-hover-color: $color-link-hover;
-$input-focus-color: $color-global;
+$body-bg: var(--bgcolor-global);
+$body-color: var(--color-global);
+$link-color: var(--color-link);
+$link-hover-color: var(--color-link-hover);
+$input-focus-color: var(--color-global);
 $nav-tabs-border-color: $bordercolor-nav-tabs;
 $nav-tabs-link-hover-border-color: $bordercolor-nav-tabs-hover;
 $nav-tabs-link-active-color: $color-nav-tabs-link-active;
-$nav-tabs-link-active-bg: $bgcolor-global;
-$nav-tabs-link-active-border-color: $bordercolor-nav-tabs-active;
+$nav-tabs-link-active-bg: var(--bgcolor-global);
+$nav-tabs-link-active-border-color: var(--bordercolor-nav-tabs-active);
 $theme-colors: map-merge($theme-colors, ( primary: $primary ));
 
 @import 'reboot-bootstrap-buttons';
@@ -45,7 +45,6 @@ $theme-colors: map-merge($theme-colors, ( primary: $primary ));
 @import 'reboot-bootstrap-theme-colors';
 @import 'reboot-bootstrap-nav';
 @import 'reboot-toastr-colors';
-@import '~emoji-mart/css/emoji-mart'; // Emoji-mart style
 
 // determine variables with　bootstrap function (These variables can be used after importing bootstrap above)
 $color-modal-header: color-yiq($primary) !default;
@@ -78,7 +77,7 @@ code:not([class^='language-']) {
     fill: $secondary;
   }
   .grw-color-mode-icon svg {
-    fill: $color-global;
+    fill: var(--color-global);
   }
   .grw-color-mode-icon-muted svg {
     fill: $secondary;
@@ -92,12 +91,12 @@ code:not([class^='language-']) {
 
 // Tabs
 .nav.nav-tabs .nav-link.active {
-  color: $color-link !important;
+  color: var(--color-link);
   background: transparent;
 
   &:hover,
   &:focus {
-    color: $color-link-hover !important;
+    color: var(--color-link-hover);
   }
 }
 
@@ -169,7 +168,7 @@ ul.pagination {
 .grw-navbar {
   background: $bgcolor-navbar;
   .nav-item .nav-link {
-    color: $color-link-nabvar;
+    color: var(--color-link-nabvar);
   }
 
   border-image: $border-image-navbar;
@@ -187,13 +186,13 @@ ul.pagination {
 
   // for https://youtrack.weseek.co.jp/issue/GW-2603
   .search-typeahead {
-    background-color: rgba($bgcolor-global, 0.9);
+    background-color: var(--bgcolor-global); opacity:0.9;
   }
 }
 
 .grw-sidebar {
   .grw-navigation-resize-button {
-    $color-resize-button: $color-global !default;
+    $color-resize-button: var(--color-resize-button--,var(--color-global));
     $bgcolor-resize-button: white !default;
     $color-resize-button-hover: $color-reversal !default;
     $bgcolor-resize-button-hover: lighten($bgcolor-resize-button, 5%) !default;
@@ -222,8 +221,8 @@ ul.pagination {
   }
   div.grw-contextual-navigation {
     > div {
-      color: $color-sidebar-context;
-      background-color: $bgcolor-sidebar-context;
+      color: var(--color-sidebar-context);
+      background-color: var(--bgcolor-sidebar-context);
     }
   }
 
@@ -242,11 +241,12 @@ ul.pagination {
   .grw-sidebar-nav-primary-container {
     .btn.active {
       i {
-        text-shadow: $text-shadow-sidebar-nav-item-active;
+        text-shadow: var(--text-shadow-sidebar-nav-item-active);
       }
       // fukidashi
       &:after {
-        border-right-color: $bgcolor-sidebar-context;
+        border-right-color: var(--bgcolor-sidebar-context)
+        ;
       }
     }
   }
@@ -262,20 +262,20 @@ ul.pagination {
       }
 
       .custom-control-label::after {
-        background-color: $bgcolor-global;
+        background-color: var(--bgcolor-global);
       }
 
       .custom-control-input:not(:checked) + .custom-control-label::before {
-        color: $bgcolor-global;
+        color: var(--bgcolor-global);
       }
 
       .custom-control-input:checked + .custom-control-label::before {
-        color: $bgcolor-global;
+        color: var(--bgcolor-global);
         background-color: $primary;
         // border-color: $primary !important;
       }
       .custom-control-input:checked + .custom-control-label::after {
-        color: $bgcolor-global;
+        color: var(--bgcolor-global);
       }
     }
   }
@@ -299,7 +299,7 @@ ul.pagination {
         background-color: transparent;
 
         .icon-lock {
-          color: $color-link;
+          color: var(--color-link);
         }
 
         .grw-recent-changes-item-lower {
@@ -318,7 +318,7 @@ ul.pagination {
  * Icon
  */
 .editor-container .navbar-editor svg {
-  fill: $color-editor-icons;
+  fill: var(--color-editor-icons);
 }
 
 // page preview button in link form
@@ -345,7 +345,7 @@ ul.pagination {
   }
 
   .modal-content {
-    background-color: $bgcolor-global;
+    background-color: var(--bgcolor-global);
   }
 
   .modal-footer {
@@ -357,13 +357,13 @@ ul.pagination {
   .nav-item {
     &:hover,
     &:focus {
-      background-color: rgba($color-link, 0.08);
+      background-color: var(--color-link); opacity:0.9;
     }
     .nav-link {
       -webkit-appearance: none;
-      color: $color-link;
+      color: var(--color-link);
       svg {
-        fill: $color-link;
+        fill: var(--color-link);
       }
 
       // Disabled state lightens text
@@ -377,7 +377,7 @@ ul.pagination {
   }
 
   .grw-nav-slide-hr {
-    border-color: $color-link;
+    border-color: var(--color-link);
   }
 }
 
@@ -393,8 +393,8 @@ ul.pagination {
  * cards
  */
 .card.well {
-  color: $color-global;
-  background-color: $bgcolor-card;
+  color: var(--color-global);
+  background-color: var(--bgcolor-card);
   border-color: $light;
   box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.05);
 }
@@ -447,21 +447,21 @@ ul.pagination {
   }
 
   a {
-    color: $color-link-wiki;
+    color: var(--color-link-wiki);
 
     &:hover {
-      color: $color-link-wiki-hover;
+      color: var(--color-link-wiki-hover);
     }
   }
 
   // table with handsontable modal button
   .editable-with-handsontable {
     button {
-      color: $color-link-wiki;
+      color: var(--color-link-wiki);
     }
 
     button:hover {
-      color: $color-link-wiki-hover;
+      color: var(--color-link-wiki-hover);
     }
   }
 }
@@ -475,26 +475,26 @@ ul.pagination {
     .list-group-item {
       a {
         svg {
-          fill: $color-global;
+          fill: var(--color-global);
         }
 
         @include hover() {
           svg {
-            fill: $color-global;
+            fill: var(--color-global);
           }
         }
       }
 
       .page-list-meta {
-        color: $color-page-list-group-item-meta;
+        color: var(--color-page-list-group-item-meta);
         svg {
-          fill: $color-page-list-group-item-meta;
+          fill: var(--color-page-list-group-item-meta);
         }
       }
 
       &.list-group-item-action {
         &.active {
-          background-color: $bgcolor-page-list-group-item-active;
+          background-color: var(--bgcolor-page-list-group-item-active);
           border-left-color: $primary;
         }
       }
@@ -507,19 +507,19 @@ ul.pagination {
  */
 .layout-root.editing {
   .main {
-    background-color: darken($bgcolor-global, 2%);
+    background-color: var(--bgcolor-global-darken2);
 
     .page-editor-editor-container {
       border-right-color: $border-color-theme;
 
       .navbar-editor {
-        background-color: $bgcolor-global; // same color with active tab
+        background-color: var(--bgcolor-global); // same color with active tab
         border-bottom-color: $border-color-theme;
       }
     }
 
     .page-editor-preview-container {
-      background-color: $bgcolor-global;
+      background-color: var(--bgcolor-global);
     }
   }
 }
@@ -529,8 +529,8 @@ ul.pagination {
  */
 body.editing-sidebar {
   .page-editor-preview-body {
-    color: $color-sidebar-context;
-    background-color: $bgcolor-sidebar-context;
+    color: var(--color-sidebar-context);
+    background-color: var(--bgcolor-sidebar-context);
   }
 }
 
@@ -541,10 +541,10 @@ body.editing-sidebar {
   .desktop-preview,
   .tablet-preview,
   .mobile-preview {
-    background: $bgcolor-global;
+    background: var(--bgcolor-global);
   }
   .grid-edit-border-for-each-cols {
-    border: 2px solid $bgcolor-global;
+    border: 2px solid var(--bgcolor-global);
   }
 }
 
@@ -568,10 +568,10 @@ body.editing-sidebar {
  * GROWI comment
  */
 .page-comment-meta .page-comment-revision svg {
-  fill: $color-link;
+  fill: var(--color-link);
 
   &:hover {
-    fill: $color-link-hover;
+    fill: var(--color-link-hover);
   }
 }
 
@@ -581,17 +581,17 @@ body.editing-sidebar {
 .page-comments {
   .page-comment .page-comment-main,
   .page-comment-form .comment-form-main {
-    background-color: $bgcolor-global;
+    background-color: var(--bgcolor-global);
 
     &:before {
-      border-right-color: $bgcolor-global;
+      border-right-color: var(--bgcolor-global);
     }
 
     .nav.nav-tabs {
       > li > a.active {
         background: transparent;
-        border-bottom: solid 1px darken($bgcolor-global, 4%);
-        border-bottom-color: darken($bgcolor-global, 4%);
+        border-bottom: solid 1px var(--bgcolor-global-darken4);
+        border-bottom-color: var(--bgcolor-global-darken4);
       }
     }
   }
@@ -602,10 +602,10 @@ body.editing-sidebar {
  */
 .search-result-base {
   .grw-search-page-nav {
-    background-color: $bgcolor-subnav;
+    background-color: var(--bgcolor-subnav);
   }
   .search-control {
-    background-color: $bgcolor-global;
+    background-color: var(--bgcolor-global);
   }
   .page-list {
     .highlighted-keyword {
@@ -626,7 +626,7 @@ mark.rbt-highlight-text {
  * GROWI page content footer
  */
 .page-content-footer {
-  background-color: darken($bgcolor-global, 2%);
+  background-color: var(--bgcolor-global-darken2);
   border-top-color: $border-color-theme;
 }
 
@@ -645,7 +645,7 @@ mark.rbt-highlight-text {
   #themeOptions {
     .theme-option-container.active {
       .theme-option-name {
-        color: $color-global;
+        color: var(--color-global);
       }
       a {
         background-color: $color-theme-color-box;
@@ -659,7 +659,7 @@ mark.rbt-highlight-text {
  * HackMd
  */
 .bg-box {
-  background-color: $bgcolor-global;
+  background-color: var(--bgcolor-global);
 }
 
 .grw-fab {

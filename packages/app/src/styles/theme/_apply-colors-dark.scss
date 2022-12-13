@@ -4,14 +4,14 @@
 @use './mixins/count-badge';
 
 // determine optional variables
-$color-list: $color-global !default;
-$bgcolor-list: $bgcolor-global !default;
-$color-list-hover: $color-global !default;
-$bgcolor-list-hover: lighten($bgcolor-global, 8%) !default;
+$color-list: var(--color-list,var(--color-global));
+$bgcolor-list: var(--bgcolor-list,var(--bgcolor-global));
+$color-list-hover: var(--color-list-hover,var(--color-global));
+$bgcolor-list-hover: var(--bgcolor-list-hover,var(--bgcolor-global-lighten8));
 $color-list-active: $color-reversal !default;
 $bgcolor-list-active: $primary !default;
-$bgcolor-subnav: lighten($bgcolor-global, 3%) !default;
-$color-table: white !default;
+$bgcolor-subnav: var(--bgcolor-subnav,var(--bgcolor-global-lighten3));
+$color-table: var(--color-table,white);
 $bgcolor-table: #343a40 !default;
 $border-color-table: lighten($bgcolor-table, 7.5%) !default;
 $color-table-hover: rgba(white, 0.075) !default;
@@ -21,29 +21,29 @@ $color-tags: #949494 !default;
 $bgcolor-tags: $dark !default;
 $border-color-global: $gray-500 !default;
 $border-color-toc: $border-color-global !default;
-$color-dropdown: $color-global !default;
-$bgcolor-dropdown: $bgcolor-global !default;
-$color-dropdown-link: $color-global !default;
+$color-dropdown: var(--color-dropdown,var(--color-global));
+$bgcolor-dropdown: var(--bgcolor-dropdown,var(--bgcolor-global));
+$color-dropdown-link: var(--color-dropdown-link,var(--color-global));
 $color-dropdown-link-hover: $light !default;
-$bgcolor-dropdown-link-hover: lighten($bgcolor-global, 15%) !default;
+$bgcolor-dropdown-link-hover: var(--bgcolor-dropdown-link-hover,var(--bgcolor-global-lighten15));
 $color-dropdown-link-active: $light !default;
 $bgcolor-dropdown-link-active: $primary !default;
 
 // override bootstrap variables
 $text-muted: $gray-550;
-$table-dark-color: $color-table;
+$table-dark-color: var(--color-table);
 $table-dark-bg: $bgcolor-table;
 $table-dark-border-color: $border-color-table;
-$table-dark-hover-color: $color-table-hover;
+$table-dark-hover-color: var(--color-table-hover);
 $table-dark-hover-bg: $bgcolor-table-hover;
 $border-color: $border-color-global;
-$dropdown-color: $color-dropdown;
-$dropdown-bg: $bgcolor-dropdown;
-$dropdown-link-color: $color-dropdown-link;
-$dropdown-link-hover-color: $color-dropdown-link-hover;
-$dropdown-link-hover-bg: $bgcolor-dropdown-link-hover;
-$dropdown-link-active-color: $color-dropdown-link-active;
-$dropdown-link-active-bg: $bgcolor-dropdown-link-active;
+$dropdown-color: var(--color-dropdown);
+$dropdown-bg: var(--bgcolor-dropdown);
+$dropdown-link-color: var(--color-dropdown-link);
+$dropdown-link-hover-color: var(--color-dropdown-link-hover);
+$dropdown-link-hover-bg: var(--bgcolor-dropdown-link-hover);
+$dropdown-link-active-color: var(--color-dropdown-link-active);
+$dropdown-link-active-bg: bar(--bgcolor-dropdown-link-active);
 
 @import './mixins/list-group';
 @import './reboot-bootstrap-text';
@@ -61,11 +61,11 @@ input.form-control,
 select.form-control,
 select.custom-select,
 textarea.form-control {
-  color: $color-global;
-  background-color: darken($bgcolor-global, 5%);
+  color: var(--color-global);
+  background-color: var(--bgcolor-global-darken5);
   border-color: $border-color-global;
   &:focus {
-    background-color: $bgcolor-global;
+    background-color: var(--bgcolor-global);
   }
   // FIXME: accent color
   // border: 1px solid darken($border, 30%);
@@ -73,8 +73,8 @@ textarea.form-control {
 
 .form-control[disabled],
 .form-control[readonly] {
-  color: lighten($color-global, 10%);
-  background-color: lighten($bgcolor-global, 5%);
+  color: var(--color-global-lighten10);
+  background-color: var(--bgcolor-global-lighten5);
 }
 
 .input-group > .input-group-prepend > .input-group-text {
@@ -92,7 +92,7 @@ textarea.form-control {
 }
 
 label.custom-control-label::before {
-  background-color: darken($bgcolor-global, 5%);
+  background-color: var(--bgcolor-global-darken5);
 }
 
 /*
@@ -226,7 +226,7 @@ ul.pagination {
   .page-list-ul {
     > li {
       > span.page-list-meta {
-        color: darken($color-global, 10%);
+        color: var(--color-global-darken10);
       }
     }
   }
@@ -234,13 +234,13 @@ ul.pagination {
   // List group
   .list-group-item {
     &.active {
-      background-color: lighten($bgcolor-global, 9%) !important;
+      background-color: var(--bgcolor-global-lighten9) !important;
     }
     .list-group-item-action:hover {
       background-color: $bgcolor-list-hover;
     }
     .page-list-snippet {
-      color: darken($body-color, 10%);
+      color: var(--color-global-darken10);
     }
   }
 }
@@ -250,7 +250,7 @@ ul.pagination {
  */
 .revision-toc-content {
   ::marker {
-    color: lighten($bgcolor-global, 30%);
+    color: var(--bgcolor-global-lighten30);
   }
 }
 
@@ -258,11 +258,11 @@ ul.pagination {
  * GROWI subnavigation
  */
 .grw-subnav {
-  background-color: $bgcolor-subnav;
+  background-color: var(--bgcolor-subnav);
 }
 
 .grw-subnav-fixed-container .grw-subnav {
-  background-color: rgba($bgcolor-subnav, 0.85);
+  background-color: var(--bgcolor-subnav); opacity:0.85;
 }
 
 .grw-page-editor-mode-manager {
@@ -276,7 +276,7 @@ ul.pagination {
 
 // Search drop down
 #search-typeahead-asynctypeahead {
-  background-color: $bgcolor-global;
+  background-color: var(--bgcolor-global);
   .table {
     background-color: transparent;
   }
@@ -306,11 +306,11 @@ ul.pagination {
     .btn-page-item-control {
       @include button-outline-variant($gray-500, $gray-500, $secondary, transparent);
       @include hover() {
-        background-color: lighten($bgcolor-sidebar-context, 20%);
+        background-color: var(--bgcolor-sidebar-context-lighten20);
       }
       &:not(:disabled):not(.disabled):active,
       &:not(:disabled):not(.disabled).active {
-        background-color: lighten($bgcolor-sidebar-context, 34%);
+        background-color: var(--bgcolor-sidebar-context-lighten34);
       }
       box-shadow: none !important;
     }
@@ -339,7 +339,7 @@ ul.pagination {
  * Popover
  */
 .popover {
-  background-color: $bgcolor-global;
+  background-color: var(--bgcolor-global);
   border-color: $secondary;
   .popover-header {
     color: $white;
@@ -356,7 +356,7 @@ ul.pagination {
     }
 
     &::after {
-      border-top-color: $bgcolor-global;
+      border-top-color: var(--bgcolor-global);
     }
   }
   &.bs-popover-bottom .arrow {
@@ -365,7 +365,7 @@ ul.pagination {
     }
 
     &::after {
-      border-bottom-color: $bgcolor-global;
+      border-bottom-color: var(--bgcolor-global);
     }
   }
   &.bs-popover-right .arrow {
@@ -374,7 +374,7 @@ ul.pagination {
     }
 
     &::after {
-      border-right-color: $bgcolor-global;
+      border-right-color: var(--bgcolor-global);
     }
   }
   &.bs-popover-left .arrow {
@@ -383,7 +383,7 @@ ul.pagination {
     }
 
     &::after {
-      border-left-color: $bgcolor-global;
+      border-left-color: var(--bgcolor-global);
     }
   }
 }
@@ -403,7 +403,7 @@ ul.pagination {
   $color-slack: #4b144c;
 
   .form-control {
-    background: $bgcolor-global;
+    background: var(--bgcolor-global);
   }
 
   .custom-control-label {
@@ -413,7 +413,7 @@ ul.pagination {
     }
     &::after {
       background-color: darken($color-slack, 5%);
-      background-image: url(/images/icons/slack/slack-logo-dark-off.svg);
+      // background-image: url(/images/icons/slack/slack-logo-dark-off.svg); -- should be specified in app -- 2022.12.09 Yuki Takei
     }
   }
 
@@ -423,7 +423,7 @@ ul.pagination {
     }
     &::after {
       background-color: darken($color-slack, 5%);
-      background-image: url(/images/icons/slack/slack-logo-dark-on.svg);
+      // background-image: url(/images/icons/slack/slack-logo-dark-on.svg); -- should be specified in app -- 2022.12.09 Yuki Takei
     }
   }
   .grw-slack-logo svg {
@@ -469,7 +469,7 @@ ul.pagination {
 }
 
 .page-comments-row {
-  background: $bgcolor-subnav;
+  background: var(--bgcolor-subnav);
 }
 
 /*
@@ -534,5 +534,5 @@ ul.pagination {
  * skeleton
  */
 .grw-skeleton {
-  background-color: lighten($bgcolor-subnav, 15%);
+  background-color: var(--bgcolor-subnav-lighten15);
 }

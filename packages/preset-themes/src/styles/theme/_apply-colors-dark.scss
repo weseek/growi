@@ -4,14 +4,8 @@
 @use './mixins/count-badge';
 
 // determine optional variables
-$color-list: $color-global !default;
-$bgcolor-list: $bgcolor-global !default;
-$color-list-hover: $color-global !default;
-$bgcolor-list-hover: lighten($bgcolor-global, 8%) !default;
 $color-list-active: $color-reversal !default;
 $bgcolor-list-active: $primary !default;
-$bgcolor-subnav: lighten($bgcolor-global, 3%) !default;
-$color-table: white !default;
 $bgcolor-table: #343a40 !default;
 $border-color-table: lighten($bgcolor-table, 7.5%) !default;
 $color-table-hover: rgba(white, 0.075) !default;
@@ -21,29 +15,16 @@ $color-tags: #949494 !default;
 $bgcolor-tags: $dark !default;
 $border-color-global: $gray-500 !default;
 $border-color-toc: $border-color-global !default;
-$color-dropdown: $color-global !default;
-$bgcolor-dropdown: $bgcolor-global !default;
-$color-dropdown-link: $color-global !default;
 $color-dropdown-link-hover: $light !default;
-$bgcolor-dropdown-link-hover: lighten($bgcolor-global, 15%) !default;
 $color-dropdown-link-active: $light !default;
 $bgcolor-dropdown-link-active: $primary !default;
 
 // override bootstrap variables
 $text-muted: $gray-550;
-$table-dark-color: $color-table;
 $table-dark-bg: $bgcolor-table;
 $table-dark-border-color: $border-color-table;
-$table-dark-hover-color: $color-table-hover;
 $table-dark-hover-bg: $bgcolor-table-hover;
 $border-color: $border-color-global;
-$dropdown-color: $color-dropdown;
-$dropdown-bg: $bgcolor-dropdown;
-$dropdown-link-color: $color-dropdown-link;
-$dropdown-link-hover-color: $color-dropdown-link-hover;
-$dropdown-link-hover-bg: $bgcolor-dropdown-link-hover;
-$dropdown-link-active-color: $color-dropdown-link-active;
-$dropdown-link-active-bg: $bgcolor-dropdown-link-active;
 
 @import './mixins/list-group';
 @import './reboot-bootstrap-text';
@@ -61,11 +42,8 @@ input.form-control,
 select.form-control,
 select.custom-select,
 textarea.form-control {
-  color: $color-global;
-  background-color: darken($bgcolor-global, 5%);
   border-color: $border-color-global;
   &:focus {
-    background-color: $bgcolor-global;
   }
   // FIXME: accent color
   // border: 1px solid darken($border, 30%);
@@ -73,8 +51,6 @@ textarea.form-control {
 
 .form-control[disabled],
 .form-control[readonly] {
-  color: lighten($color-global, 10%);
-  background-color: lighten($bgcolor-global, 5%);
 }
 
 .input-group > .input-group-prepend > .input-group-text {
@@ -92,7 +68,6 @@ textarea.form-control {
 }
 
 label.custom-control-label::before {
-  background-color: darken($bgcolor-global, 5%);
 }
 
 /*
@@ -226,7 +201,6 @@ ul.pagination {
   .page-list-ul {
     > li {
       > span.page-list-meta {
-        color: darken($color-global, 10%);
       }
     }
   }
@@ -234,13 +208,11 @@ ul.pagination {
   // List group
   .list-group-item {
     &.active {
-      background-color: lighten($bgcolor-global, 9%) !important;
     }
     .list-group-item-action:hover {
       background-color: $bgcolor-list-hover;
     }
     .page-list-snippet {
-      color: darken($body-color, 10%);
     }
   }
 }
@@ -250,7 +222,6 @@ ul.pagination {
  */
 .revision-toc-content {
   ::marker {
-    color: lighten($bgcolor-global, 30%);
   }
 }
 
@@ -258,11 +229,9 @@ ul.pagination {
  * GROWI subnavigation
  */
 .grw-subnav {
-  background-color: $bgcolor-subnav;
 }
 
 .grw-subnav-fixed-container .grw-subnav {
-  background-color: rgba($bgcolor-subnav, 0.85);
 }
 
 .grw-page-editor-mode-manager {
@@ -276,7 +245,7 @@ ul.pagination {
 
 // Search drop down
 #search-typeahead-asynctypeahead {
-  background-color: $bgcolor-global;
+  background-color: var(--bgcolor-global);
   .table {
     background-color: transparent;
   }
@@ -306,11 +275,9 @@ ul.pagination {
     .btn-page-item-control {
       @include button-outline-variant($gray-500, $gray-500, $secondary, transparent);
       @include hover() {
-        background-color: lighten($bgcolor-sidebar-context, 20%);
       }
       &:not(:disabled):not(.disabled):active,
       &:not(:disabled):not(.disabled).active {
-        background-color: lighten($bgcolor-sidebar-context, 34%);
       }
       box-shadow: none !important;
     }
@@ -339,7 +306,6 @@ ul.pagination {
  * Popover
  */
 .popover {
-  background-color: $bgcolor-global;
   border-color: $secondary;
   .popover-header {
     color: $white;
@@ -356,7 +322,6 @@ ul.pagination {
     }
 
     &::after {
-      border-top-color: $bgcolor-global;
     }
   }
   &.bs-popover-bottom .arrow {
@@ -365,7 +330,6 @@ ul.pagination {
     }
 
     &::after {
-      border-bottom-color: $bgcolor-global;
     }
   }
   &.bs-popover-right .arrow {
@@ -374,7 +338,6 @@ ul.pagination {
     }
 
     &::after {
-      border-right-color: $bgcolor-global;
     }
   }
   &.bs-popover-left .arrow {
@@ -383,7 +346,6 @@ ul.pagination {
     }
 
     &::after {
-      border-left-color: $bgcolor-global;
     }
   }
 }
@@ -403,7 +365,6 @@ ul.pagination {
   $color-slack: #4b144c;
 
   .form-control {
-    background: $bgcolor-global;
   }
 
   .custom-control-label {
@@ -469,7 +430,6 @@ ul.pagination {
 }
 
 .page-comments-row {
-  background: $bgcolor-subnav;
 }
 
 /*
@@ -534,5 +494,4 @@ ul.pagination {
  * skeleton
  */
 .grw-skeleton {
-  background-color: lighten($bgcolor-subnav, 15%);
 }
