@@ -25,7 +25,7 @@ import {
   usePageIdOnHackmd, useHasDraftOnHackmd, useRevisionIdHackmdSynced, useIsHackmdDraftUpdatingInRealtime,
 } from '~/stores/hackmd';
 import { useCurrentPagePath, useSWRxCurrentPage, useSWRxTagsInfo } from '~/stores/page';
-import { useRemoteRevisionId } from '~/stores/remote-latest-page';
+import { useRemoteRevisionId, useSetRemoteLatestPageData } from '~/stores/remote-latest-page';
 import {
   EditorMode,
   useEditorMode, useSelectedGrant,
@@ -88,7 +88,31 @@ export const PageEditorByHackmd = (): JSX.Element => {
   const { data: isHackmdDraftUpdatingInRealtime, mutate: mutateIsHackmdDraftUpdatingInRealtime } = useIsHackmdDraftUpdatingInRealtime();
   const { data: remoteRevisionId, mutate: mutateRemoteRevisionId } = useRemoteRevisionId();
 
+  const { setRemoteLatestPageData } = useSetRemoteLatestPageData();
+
   const hackmdEditorRef = useRef<HackEditorRef>(null);
+
+  const updateStateAfterSave = useCallback(async(pageId: string) => {
+
+    // update swr 'currentPageId', 'currentPage', remote states
+
+    await mutateCurrentPageId(pageId);
+    const updatedPage = await mutatePageData();
+
+    if (updatedPage == null) { return }
+
+    const remoterevisionData = {
+      remoteRevisionId: updatedPage.revision._id,
+      remoteRevisionBody: updatedPage.revision.body,
+      remoteRevisionLastUpdateUser: updatedPage.lastUpdateUser,
+      remoteRevisionLastUpdatedAt: updatedPage.updatedAt,
+      revisionIdHackmdSynced: updatedPage.revisionHackmdSynced.toString(),
+      hasDraftOnHackmd: updatedPage.hasDraftOnHackmd,
+    };
+
+    setRemoteLatestPageData(remoterevisionData);
+
+  }, [mutateCurrentPageId, mutatePageData, setRemoteLatestPageData]);
 
   const saveAndReturnToViewHandler = useCallback(async(opts?: {overwriteScopesOfDescendants: boolean}) => {
     if (editorMode !== EditorMode.HackMD) { return }
@@ -123,8 +147,7 @@ export const PageEditorByHackmd = (): JSX.Element => {
         await router.push(`/${page._id}`);
       }
       else {
-        await mutateCurrentPageId(page._id);
-        await mutatePageData();
+        updateStateAfterSave(page._id);
       }
       setIsInitialized(false);
       mutateEditorMode(EditorMode.View);
@@ -134,7 +157,7 @@ export const PageEditorByHackmd = (): JSX.Element => {
       toastError(error.message);
     }
   // eslint-disable-next-line max-len
-  }, [editorMode, isSlackEnabled, currentPathname, slackChannels, grant, revision, revisionIdHackmdSynced, pageTags, saveOrUpdate, pageId, currentPagePath, mutatePageData, mutateTagsInfo, isNotFound, mutateEditorMode, router, mutateCurrentPageId]);
+  }, [editorMode, isSlackEnabled, currentPathname, slackChannels, grant, revision, revisionIdHackmdSynced, pageTags, saveOrUpdate, pageId, currentPagePath, mutatePageData, mutateTagsInfo, isNotFound, mutateEditorMode, router, updateStateAfterSave]);
 
   // set handler to save and reload Page
   useEffect(() => {
@@ -255,9 +278,8 @@ export const PageEditorByHackmd = (): JSX.Element => {
       mutatePageData(res);
 
       // set updated data
-      mutateRemoteRevisionId(res.revision._id);
-      mutateRevisionIdHackmdSynced(res.page.revisionHackmdSynced);
-      mutateHasDraftOnHackmd(res.page.hasDraftOnHackmd);
+      // remote更新する必要がある
+      updateStateAfterSave(res._id);
       mutateTagsInfo();
 
       logger.debug('success to save');
@@ -269,8 +291,9 @@ export const PageEditorByHackmd = (): JSX.Element => {
       toastError(error.message);
     }
   }, [
-    currentPagePath, currentPathname, isSlackEnabled, grant, slackChannels, pageId, revisionIdHackmdSynced, pageTags,
-    saveOrUpdate, mutatePageData, mutateRemoteRevisionId, mutateRevisionIdHackmdSynced, mutateHasDraftOnHackmd, mutateTagsInfo, t]);
+    currentPagePath, currentPathname, isSlackEnabled, grant, slackChannels, pageId, revisionIdHackmdSynced,
+    pageTags, saveOrUpdate, mutatePageData, updateStateAfterSave, mutateTagsInfo, t,
+  ]);
 
   /**
    * onChange event of HackmdEditor handler
