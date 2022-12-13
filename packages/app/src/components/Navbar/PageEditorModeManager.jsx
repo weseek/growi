@@ -110,11 +110,6 @@ function PageEditorModeManager(props) {
           </>
         )}
       </div>
-      {isBtnDisabled && (
-        <UncontrolledTooltip placement="top" target="grw-page-editor-mode-manager" fade={false}>
-          {t('Not available for guest')}
-        </UncontrolledTooltip>
-      )}
     </>
   );
 
