@@ -4,7 +4,7 @@ import path from 'path';
 // eslint-disable-next-line no-restricted-imports
 import axios from 'axios';
 import mongoose from 'mongoose';
-import ssrf from 'ssrf';
+// import ssrf from 'ssrf';
 import unzipper from 'unzipper';
 
 import type { GrowiPlugin, GrowiPluginOrigin } from '~/interfaces/plugin';
@@ -54,13 +54,13 @@ export class PluginService {
     const unzippedPath = path.join(pluginStoringPath, ghOrganizationName);
 
     const downloadFile = async(requestUrl: string, filePath: string) => {
-      let validUrl;
-      try {
-        validUrl = await ssrf.url(requestUrl);
-      }
-      catch (err) {
-        throw new Error('This request URL is invalid.');
-      }
+      const validUrl = requestUrl;
+      // try {
+      //   validUrl = await ssrf.url(requestUrl);
+      // }
+      // catch (err) {
+      //   throw new Error('This request URL is invalid.');
+      // }
 
       return new Promise<void>((resolve, reject) => {
         axios({
