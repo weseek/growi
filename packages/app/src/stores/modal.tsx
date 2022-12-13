@@ -553,3 +553,30 @@ export const useHandsontableModal = (status?: HandsontableModalStatus): SWRRespo
     close,
   };
 };
+
+/*
+ * ConflictDiffModal
+ */
+type ConflictDiffModalStatus = {
+  isOpened: boolean,
+}
+
+type ConflictDiffModalUtils = {
+  open(): void,
+  close(): void,
+}
+
+export const useConflictDiffModal = (): SWRResponse<ConflictDiffModalStatus, Error> & ConflictDiffModalUtils => {
+
+  const initialStatus: ConflictDiffModalStatus = { isOpened: false };
+  const swrResponse = useStaticSWR<ConflictDiffModalStatus, Error>('conflictDiffModal', undefined, { fallbackData: initialStatus });
+
+  return Object.assign(swrResponse, {
+    open: () => {
+      swrResponse.mutate({ isOpened: true });
+    },
+    close: () => {
+      swrResponse.mutate({ isOpened: false });
+    },
+  });
+};
