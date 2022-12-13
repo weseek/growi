@@ -73,6 +73,7 @@ export const TrashPageAlert = (): JSX.Element => {
           className="btn btn-info rounded-pill btn-sm ml-auto mr-2"
           onClick={openPutbackPageModalHandler}
           data-toggle="modal"
+          data-testid="put-back-button"
         >
           <i className="icon-action-undo" aria-hidden="true"></i> { t('Put Back') }
         </button>
@@ -94,7 +95,7 @@ export const TrashPageAlert = (): JSX.Element => {
 
   return (
     <>
-      <div className="alert alert-warning py-3 pl-4 d-flex flex-column flex-lg-row">
+      <div className="alert alert-warning py-3 pl-4 d-flex flex-column flex-lg-row" data-testid="trash-page-alert">
         <div className="flex-grow-1">
           This page is in the trash <i className="icon-trash" aria-hidden="true"></i>.
           <br />
