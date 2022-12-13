@@ -52,15 +52,15 @@
 #         run: |
 #           npx lerna bootstrap -- --frozen-lockfile
 
-      # - name: lerna run lint for dependent packages
-      #   run: |
-      #     yarn lerna run lint --scope @growi/codemirror-textlint --scope @growi/core --scope @growi/hackmd --scope @growi/preset-themes --scope @growi/remark-* --scope @growi/slack --scope @growi/ui
-      # - name: build dependent packages
-      #   run: |
-      #     yarn lerna run build --scope @growi/preset-themes
-      # - name: lerna run lint for app
-      #   run: |
-      #     yarn lerna run lint --scope @growi/app
+# - name: lerna run lint for dependent packages
+#   run: |
+#     yarn lerna run lint --scope @growi/codemirror-textlint --scope @growi/core --scope @growi/hackmd --scope @growi/preset-themes --scope @growi/remark-* --scope @growi/slack --scope @growi/ui
+# - name: build dependent packages
+#   run: |
+#     yarn lerna run build --scope @growi/preset-themes
+# - name: lerna run lint for app
+#   run: |
+#     yarn lerna run lint --scope @growi/app
 
 #       - name: Slack Notification
 #         uses: weseek/ghaction-slack-notification@master
