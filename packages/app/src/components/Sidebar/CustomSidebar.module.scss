@@ -7,7 +7,8 @@
   }
 
   .grw-custom-sidebar-skeleton-text {
-    @include grw-skeleton-text(16px, 16px);
+    @include grw-skeleton-text($font-size:15px, $line-height:21.42px);
     max-width: 100%;
+    margin: 15px 0;
   }
 }
