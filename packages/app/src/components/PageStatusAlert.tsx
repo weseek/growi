@@ -7,8 +7,9 @@ import { useEditingMarkdown, useIsConflict } from '~/stores/editor';
 import {
   useHasDraftOnHackmd, useIsHackmdDraftUpdatingInRealtime, useRevisionIdHackmdSynced,
 } from '~/stores/hackmd';
+import { useConflictDiffModal } from '~/stores/modal';
 import { useSWRxCurrentPage } from '~/stores/page';
-import { useRemoteRevisionId, useRemoteRevisionLastUpdatUser } from '~/stores/remote-latest-page';
+import { useRemoteRevisionId, useRemoteRevisionLastUpdateUser } from '~/stores/remote-latest-page';
 
 import { Username } from './User/Username';
 
@@ -27,11 +28,12 @@ export const PageStatusAlert = (): JSX.Element => {
   const { data: hasDraftOnHackmd } = useHasDraftOnHackmd();
   const { data: isConflict } = useIsConflict();
   const { mutate: mutateEditingMarkdown } = useEditingMarkdown();
+  const { open: openConflictDiffModal } = useConflictDiffModal();
 
   // store remote latest page data
   const { data: revisionIdHackmdSynced } = useRevisionIdHackmdSynced();
   const { data: remoteRevisionId } = useRemoteRevisionId();
-  const { data: remoteRevisionLastUpdateUser } = useRemoteRevisionLastUpdatUser();
+  const { data: remoteRevisionLastUpdateUser } = useRemoteRevisionLastUpdateUser();
 
   const { data: pageData, mutate: mutatePageData } = useSWRxCurrentPage();
   const revision = pageData?.revision;
@@ -42,10 +44,8 @@ export const PageStatusAlert = (): JSX.Element => {
   }, [mutateEditingMarkdown, mutatePageData]);
 
   const onClickResolveConflict = useCallback(() => {
-    // this.props.pageContainer.setState({
-    //   isConflictDiffModalOpen: true,
-    // });
-  }, []);
+    openConflictDiffModal();
+  }, [openConflictDiffModal]);
 
   const getContentsForSomeoneEditingAlert = useCallback((): AlertComponentContents => {
     return {

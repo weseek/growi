@@ -50,6 +50,12 @@ $grid-breakpoints: (
   xxl: 1480px,
 );
 
+// Links
+//
+// Style anchor elements.
+
+$link-hover-decoration: none !default;
+
 // Grid containers
 //
 // Define the maximum width of `.container` for different screen sizes.
