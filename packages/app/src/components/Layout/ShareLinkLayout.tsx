@@ -2,6 +2,9 @@ import React, { ReactNode } from 'react';
 
 import dynamic from 'next/dynamic';
 
+import { useIsContainerFluid } from '~/stores/context';
+import { useSWRxCurrentPage } from '~/stores/page';
+
 import { GrowiNavbar } from '../Navbar/GrowiNavbar';
 
 import { RawLayout } from './RawLayout';
@@ -16,16 +19,20 @@ const Fab = dynamic(() => import('../Fab').then(mod => mod.Fab), { ssr: false })
 
 
 type Props = {
-  className?: string,
-  expandContainer?: boolean,
   children?: ReactNode
 }
 
-export const ShareLinkLayout = ({
-  children, className, expandContainer,
-}: Props): JSX.Element => {
+export const ShareLinkLayout = ({ children }: Props): JSX.Element => {
+  const { data: currentPage } = useSWRxCurrentPage();
+  const { data: dataIsContainerFluid } = useIsContainerFluid();
 
-  const myClassName = `${className ?? ''} ${expandContainer ? 'growi-layout-fluid' : ''}`;
+  const isContainerFluidEachPage = currentPage == null || !('expandContentWidth' in currentPage)
+    ? null
+    : currentPage.expandContentWidth;
+  const isContainerFluidDefault = dataIsContainerFluid;
+  const isContainerFluid = isContainerFluidEachPage ?? isContainerFluidDefault;
+
+  const myClassName = `${isContainerFluid ? 'growi-layout-fluid' : ''}`;
 
   return (
     <RawLayout className={myClassName}>

@@ -23,7 +23,7 @@ import { RendererConfig } from '~/interfaces/services/renderer';
 import { IShareLinkHasId } from '~/interfaces/share-link';
 import {
   useCurrentUser, useCurrentPathname, useCurrentPageId, useRendererConfig, useIsSearchPage,
-  useShareLinkId, useIsSearchServiceConfigured, useIsSearchServiceReachable, useIsSearchScopeChildrenAsDefault, useDrawioUri,
+  useShareLinkId, useIsSearchServiceConfigured, useIsSearchServiceReachable, useIsSearchScopeChildrenAsDefault, useDrawioUri, useIsContainerFluid,
 } from '~/stores/context';
 import { useDescendantsPageListModal } from '~/stores/modal';
 import loggerFactory from '~/utils/logger';
@@ -59,6 +59,7 @@ const SharedPage: NextPage<Props> = (props: Props) => {
   useIsSearchServiceReachable(props.isSearchServiceReachable);
   useIsSearchScopeChildrenAsDefault(props.isSearchScopeChildrenAsDefault);
   useDrawioUri(props.drawioUri);
+  useIsContainerFluid(props.isContainerFluid);
 
   const { open: openDescendantPageListModal } = useDescendantsPageListModal();
   const { t } = useTranslation();
@@ -77,7 +78,7 @@ const SharedPage: NextPage<Props> = (props: Props) => {
 
       <DrawioViewerScript />
 
-      <ShareLinkLayout expandContainer={props.isContainerFluid}>
+      <ShareLinkLayout>
         <div className="h-100 d-flex flex-column justify-content-between">
           <header className="py-0 position-relative">
             {isShowSharedPage && <GrowiContextualSubNavigation isLinkSharingDisabled={props.disableLinkSharing} />}

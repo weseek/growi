@@ -260,7 +260,7 @@ const Page: NextPage<Props> = (props: Props) => {
   // useIsNotCreatable(props.isForbidden || !isCreatablePage(pagePath)); // TODO: need to include props.isIdentical
   useCurrentPathname(props.currentPathname);
 
-  const { data: currentPage } = useSWRxCurrentPage(undefined, pageWithMeta?.data ?? null); // store initial data
+  useSWRxCurrentPage(undefined, pageWithMeta?.data ?? null); // store initial data
 
   useEditingMarkdown(pageWithMeta?.data.revision?.body);
 
@@ -296,12 +296,6 @@ const Page: NextPage<Props> = (props: Props) => {
 
   const isTopPagePath = isTopPage(pageWithMeta?.data.path ?? '');
 
-  const isContainerFluidEachPage = currentPage == null || !('expandContentWidth' in currentPage)
-    ? null
-    : currentPage.expandContentWidth;
-  const isContainerFluidDefault = props.isContainerFluid;
-  const isContainerFluid = isContainerFluidEachPage ?? isContainerFluidDefault;
-
   const title = generateCustomTitle(props, 'GROWI');
 
   return (
@@ -311,7 +305,7 @@ const Page: NextPage<Props> = (props: Props) => {
       </Head>
       <DrawioViewerScript />
 
-      <BasicLayout className={classNames.join(' ')} expandContainer={isContainerFluid}>
+      <BasicLayout>
 
         <div className="h-100 d-flex flex-column justify-content-between">
           <header className="py-0 position-relative">

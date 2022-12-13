@@ -4,6 +4,9 @@ import dynamic from 'next/dynamic';
 import { DndProvider } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
 
+import { useIsContainerFluid } from '~/stores/context';
+import { useSWRxCurrentPage } from '~/stores/page';
+
 import { GrowiNavbar } from '../Navbar/GrowiNavbar';
 import Sidebar from '../Sidebar';
 
@@ -28,15 +31,20 @@ const Fab = dynamic(() => import('../Fab').then(mod => mod.Fab), { ssr: false })
 
 type Props = {
   className?: string,
-  expandContainer?: boolean,
   children?: ReactNode
 }
 
-export const BasicLayout = ({
-  children, className, expandContainer,
-}: Props): JSX.Element => {
+export const BasicLayout = ({ children, className }: Props): JSX.Element => {
+  const { data: currentPage } = useSWRxCurrentPage();
+  const { data: dataIsContainerFluid } = useIsContainerFluid();
 
-  const myClassName = `${className ?? ''} ${expandContainer ? 'growi-layout-fluid' : ''}`;
+  const isContainerFluidEachPage = currentPage == null || !('expandContentWidth' in currentPage)
+    ? null
+    : currentPage.expandContentWidth;
+  const isContainerFluidDefault = dataIsContainerFluid;
+  const isContainerFluid = isContainerFluidEachPage ?? isContainerFluidDefault;
+
+  const myClassName = `${className ?? ''} ${isContainerFluid ? 'growi-layout-fluid' : ''}`;
 
   return (
     <RawLayout className={myClassName}>
