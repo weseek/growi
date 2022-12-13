@@ -447,12 +447,8 @@ context('Shortcuts', () => {
     const body2 = 'world';
     const savePageShortcutKey = '{ctrl+s}'
 
-    cy.visit('/Sandbox/child');
+    cy.visit('/Sandbox/child#edit');
     cy.waitUntilSkeletonDisappear();
-
-    cy.get('#grw-subnav-container').within(() => {
-      cy.getByTestid('editor-button').should('be.visible').click();
-    })
 
     cy.get('.layout-root').should('have.class', 'editing');
     cy.get('.grw-editor-navbar-bottom').should('be.visible');
@@ -466,7 +462,6 @@ context('Shortcuts', () => {
     cy.get('.Toastify__close-button').should('be.visible').click();
     cy.get('.Toastify').should('not.be.visible');
     cy.screenshot(`${ssPrefix}-update-page-1`);
-
 
     // 2nd
     cy.get('.CodeMirror').type(body2);
