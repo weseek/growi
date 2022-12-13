@@ -1,8 +1,10 @@
+
 import fs from 'fs';
 import path from 'path';
 
 // eslint-disable-next-line no-restricted-imports
 import axios from 'axios';
+import ObjectID from 'bson-objectid';
 import mongoose from 'mongoose';
 import streamToPromise from 'stream-to-promise';
 import unzipper from 'unzipper';
@@ -175,36 +177,61 @@ export class PluginService {
   /**
    * Get plugin isEnabled
    */
-  async getPluginIsEnabled(targetPluginId: string): Promise<any> {
-    const GrowiPlugin = await mongoose.model<GrowiPlugin>('GrowiPlugin');
-    const growiPlugins = await GrowiPlugin.find({ _id: targetPluginId });
-    return growiPlugins[0].isEnabled;
+  async getPluginIsEnabled(targetPluginId: string): Promise<boolean> {
+    const ObjectID = mongoose.Types.ObjectId;
+    const isValidObjectId = (id) => {
+      return ObjectID.isValid(id) && (new ObjectID(id).toString() === id);
+    };
+
+    if (isValidObjectId(targetPluginId)) {
+      const GrowiPlugin = mongoose.model<GrowiPlugin>('GrowiPlugin');
+      const growiPlugins = await GrowiPlugin.find({ _id: new ObjectID(targetPluginId).toString() });
+      return growiPlugins[0].isEnabled;
+    }
+
+    throw new Error('Invalid id');
   }
 
   /**
    * Switch plugin enabled
    */
-  async switchPluginIsEnabled(targetPluginId: string): Promise<any> {
-    const GrowiPlugin = mongoose.model<GrowiPlugin>('GrowiPlugin');
-    const growiPlugins = await GrowiPlugin.find({ _id: targetPluginId });
-    await growiPlugins[0].update(
-      { isEnabled: !growiPlugins[0].isEnabled },
-    );
-    return growiPlugins[0].isEnabled;
+  async switchPluginIsEnabled(targetPluginId: string): Promise<boolean> {
+    const ObjectID = mongoose.Types.ObjectId;
+    const isValidObjectId = (id) => {
+      return ObjectID.isValid(id) && (new ObjectID(id).toString() === id);
+    };
+
+    if (isValidObjectId(targetPluginId)) {
+      const GrowiPlugin = mongoose.model<GrowiPlugin>('GrowiPlugin');
+      const growiPlugins = await GrowiPlugin.find({ _id: new ObjectID(targetPluginId).toString() });
+      await growiPlugins[0].update(
+        { isEnabled: !growiPlugins[0].isEnabled },
+      );
+      return growiPlugins[0].isEnabled;
+    }
+
+    throw new Error('Invalid id');
   }
 
   /**
    * Delete plugin
    */
-  async pluginDeleted(targetPluginId: string, targetPluginName: string): Promise<any> {
-    const GrowiPlugin = mongoose.model<GrowiPlugin>('GrowiPlugin');
-    const growiPlugins = await GrowiPlugin.find({ _id: targetPluginId });
-    growiPlugins[0].remove();
-    // TODO: Check remove
-    const ghOrganizationName = 'weseek';
-    const unzipTargetPath = path.join(pluginStoringPath, ghOrganizationName);
-    // execSync(`rm -rf ${unzipTargetPath}/${targetPluginName}`);
-    return [];
+  async pluginDeleted(targetPluginId: string): Promise<void> {
+    const ObjectID = mongoose.Types.ObjectId;
+    const isValidObjectId = (id) => {
+      return ObjectID.isValid(id) && (new ObjectID(id).toString() === id);
+    };
+
+    if (isValidObjectId(targetPluginId)) {
+      const GrowiPlugin = mongoose.model<GrowiPlugin>('GrowiPlugin');
+      const growiPlugins = await GrowiPlugin.find({ _id: new ObjectID(targetPluginId).toString() });
+      growiPlugins[0].remove();
+      const deleteZipFile = (path: fs.PathLike) => fs.unlink(path, (err) => { return err });
+      deleteZipFile(growiPlugins[0].installedPath);
+      return;
+    }
+
+    throw new Error('Invalid id');
   }
 
 }

@@ -72,7 +72,7 @@ module.exports = (crowi: Crowi) => {
     }
 
     try {
-      await pluginService.pluginDeleted(req.body._id, req.body.name);
+      await pluginService.pluginDeleted(req.body._id);
       return res.apiv3();
     }
     catch (err) {

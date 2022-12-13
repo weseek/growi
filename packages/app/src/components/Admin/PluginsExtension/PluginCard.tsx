@@ -31,7 +31,7 @@ export const PluginCard = (props: Props): JSX.Element => {
     const [isEnabled, setState] = useState<boolean>(data.data.isEnabled);
 
     const onChangeHandler = async() => {
-      const reqUrl = '/plugins-extension/switch-isenabled';
+      const reqUrl = '/plugins/switch-isenabled';
 
       try {
         const res = await apiv3Post(reqUrl, { _id: id });
@@ -68,7 +68,7 @@ export const PluginCard = (props: Props): JSX.Element => {
   const PluginDeleteButton = (): JSX.Element => {
 
     const onClickPluginDeleteBtnHandler = async() => {
-      const reqUrl = '/plugins-extension/deleted';
+      const reqUrl = '/plugins/deleted';
 
       try {
         await apiv3Post(reqUrl, { _id: id, name });

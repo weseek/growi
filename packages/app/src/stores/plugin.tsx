@@ -6,7 +6,7 @@ import { apiv3Get, apiv3Post } from '~/client/util/apiv3-client';
 // TODO: Correct types
 const pluginsFetcher = () => {
   return async() => {
-    const reqUrl = '/plugins-extension';
+    const reqUrl = '/plugins';
     try {
       const data = await apiv3Get(reqUrl);
       return data;
@@ -24,7 +24,7 @@ export const useSWRxPlugins = (): SWRResponse<any | null, Error> => {
 
 const pluginFetcher = (id: string) => {
   return async() => {
-    const reqUrl = '/plugins-extension/get-isenabled';
+    const reqUrl = '/plugins/get-isenabled';
     try {
       const data = await apiv3Post(reqUrl, { _id: id });
       return data;
