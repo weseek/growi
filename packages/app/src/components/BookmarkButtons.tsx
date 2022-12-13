@@ -42,14 +42,14 @@ const BookmarkButtons: FC<Props> = (props: Props) => {
 
   const getTooltipMessage = useCallback(() => {
     if (isGuestUser) {
-      return 'Not available for guest';
+      return t('Not available for guest');
     }
 
     if (isBookmarked) {
       return 'tooltip.cancel_bookmark';
     }
     return 'tooltip.bookmark';
-  }, [isGuestUser, isBookmarked]);
+  }, [isGuestUser, isBookmarked, t]);
 
   return (
     <div className={`btn-group btn-group-bookmark ${styles['btn-group-bookmark']}`} role="group" aria-label="Bookmark buttons">

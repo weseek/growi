@@ -35,14 +35,14 @@ const LikeButtons: FC<LikeButtonsProps> = (props: LikeButtonsProps) => {
 
   const getTooltipMessage = useCallback(() => {
     if (isGuestUser) {
-      return 'Not available for guest';
+      return t('Not available for guest');
     }
 
     if (isLiked) {
       return 'tooltip.cancel_like';
     }
     return 'tooltip.like';
-  }, [isGuestUser, isLiked]);
+  }, [isGuestUser, isLiked, t]);
 
   return (
     <div className={`btn-group btn-group-like ${styles['btn-group-like']}`} role="group" aria-label="Like buttons">
