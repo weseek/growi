@@ -24,7 +24,7 @@ const RenderTagLabels = React.memo((props: RenderTagLabelsProps) => {
   const isTagsEmpty = tags.length === 0;
 
   return (
-    <NotAvailableForGuest>
+    <>
       {tags.map((tag) => {
         return (
           <a key={tag} href={`/_search?q=tag:${tag}`} className="grw-tag-label badge badge-secondary mr-2">
@@ -32,16 +32,19 @@ const RenderTagLabels = React.memo((props: RenderTagLabelsProps) => {
           </a>
         );
       })}
-      <div id="edit-tags-btn-wrapper-for-tooltip">
-        <a
-          className={`btn btn-link btn-edit-tags text-muted p-0 d-flex align-items-center ${isTagsEmpty && 'no-tags'} ${isGuestUser && 'disabled'}`}
-          onClick={openEditorHandler}
-        >
-          { isTagsEmpty && <>{ t('Add tags for this page') }</>}
-          <i className={`icon-plus ${isTagsEmpty && 'ml-1'}`}/>
-        </a>
-      </div>
-    </NotAvailableForGuest>
+      <NotAvailableForGuest>
+        <div id="edit-tags-btn-wrapper-for-tooltip">
+          <a
+            className={`btn btn-link btn-edit-tags text-muted p-0 d-flex align-items-center ${isTagsEmpty && 'no-tags'} ${isGuestUser && 'disabled'}`}
+            onClick={openEditorHandler}
+          >
+            { isTagsEmpty && <>{ t('Add tags for this page') }</>}
+            <i className={`icon-plus ${isTagsEmpty && 'ml-1'}`}/>
+          </a>
+        </div>
+      </NotAvailableForGuest>
+    </>
+
   );
 
 });

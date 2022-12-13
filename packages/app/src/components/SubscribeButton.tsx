@@ -20,15 +20,12 @@ const SubscribeButton: FC<Props> = (props: Props) => {
   const isSubscribing = status === SubscriptionStatusType.SUBSCRIBE;
 
   const getTooltipMessage = useCallback(() => {
-    if (isGuestUser) {
-      return t('Not available for guest');
-    }
 
     if (isSubscribing) {
       return 'tooltip.stop_notification';
     }
     return 'tooltip.receive_notifications';
-  }, [isGuestUser, isSubscribing, t]);
+  }, [isSubscribing]);
 
   return (
     <>
