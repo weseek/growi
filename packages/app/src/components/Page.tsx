@@ -5,7 +5,7 @@ import React, {
 
 import EventEmitter from 'events';
 
-import { DrawioEditByViewerProps } from '@growi/remark-drawio-plugin';
+import { DrawioEditByViewerProps } from '@growi/remark-drawio';
 import { useTranslation } from 'next-i18next';
 import dynamic from 'next/dynamic';
 import { HtmlElementNode } from 'rehype-toc';
