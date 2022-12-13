@@ -4,6 +4,7 @@ import path from 'path';
 // eslint-disable-next-line no-restricted-imports
 import axios from 'axios';
 import mongoose from 'mongoose';
+import streamToPromise from 'stream-to-promise';
 import unzipper from 'unzipper';
 
 import type { GrowiPlugin, GrowiPluginOrigin } from '~/interfaces/plugin';
@@ -52,6 +53,10 @@ export class PluginService {
     const zipFilePath = path.join(pluginStoringPath, `${ghBranch}.zip`);
     const unzippedPath = path.join(pluginStoringPath, ghOrganizationName);
 
+    const renamePath = async(oldPath: fs.PathLike, newPath: fs.PathLike) => {
+      fs.renameSync(oldPath, newPath);
+    };
+
     const downloadFile = async(requestUrl: string, filePath: string) => {
       return new Promise<void>((resolve, reject) => {
         axios({
@@ -65,39 +70,29 @@ export class PluginService {
               res.data.pipe(file)
                 .on('close', () => file.close())
                 .on('finish', () => {
-                  resolve();
+                  return resolve();
                 });
             }
             else {
-              reject(res.status);
+              return reject(res.status);
             }
           }).catch((err) => {
-            reject(err);
+            return reject(err);
           });
       });
     };
 
-    const unzip = (zipFilePath: fs.PathLike, unzippedPath: fs.PathLike) => {
+    const unzip = async(zipFilePath: fs.PathLike, unzippedPath: fs.PathLike) => {
       const stream = fs.createReadStream(zipFilePath);
-      const deleteZipFile = (path: fs.PathLike) => {
-        fs.unlink(path, (err) => {
-          if (err) throw err;
-        });
-      };
+      const unzipStream = stream.pipe(unzipper.Extract({ path: unzippedPath }));
 
-      return new Promise<void>((resolve, reject) => {
-        stream
-          .pipe(unzipper.Extract({ path: unzippedPath }))
-          .on('finish', () => {
-            deleteZipFile(zipFilePath);
-            resolve();
-          })
-          .on('error', (error: any) => reject(error));
-      });
-    };
-
-    const renamePath = async(oldPath: fs.PathLike, newPath: fs.PathLike) => {
-      fs.renameSync(oldPath, newPath);
+      try {
+        await streamToPromise(unzipStream);
+        fs.unlink(zipFilePath, (err) => { return err });
+      }
+      catch (err) {
+        return err;
+      }
     };
 
     try {
@@ -106,6 +101,7 @@ export class PluginService {
       await renamePath(`${unzippedPath}/${ghReposName}-${ghBranch}`, `${unzippedPath}/${ghReposName}`);
     }
     catch (err) {
+      logger.error(err);
       throw new Error(err);
     }
 
