@@ -34,7 +34,7 @@
       <span>
         {% set fromPath = req.query.redirectFrom %}
         {% if redirectFrom or req.query.redirectFrom %}
-        <div id="redirected-alert"></div>hoge
+        <div id="redirected-alert"></div>
         {% endif %}
       </span>
       {% set hasRedirectLink = redirectFrom or req.query.redirectFrom or req.query.withRedirect %}
