@@ -26,6 +26,7 @@ class Cheatsheet extends React.Component {
     - ${t('sandbox.unordered_list_x', { index: '2' })}`;
 
     const codeBlock = 'text\n\ntext';
+    const lineBlock = 'text\ntext';
 
     return (
       <div className="row small">
@@ -56,10 +57,16 @@ class Cheatsheet extends React.Component {
           {/* Line Break */}
           <h4>{t('sandbox.line_break')}</h4>
           <p className="mb-1"><code>[ ][ ]</code> {t('sandbox.line_break_detail')}</p>
-          <ul className="hljs">
-            <li>text&nbsp;&nbsp;</li>
-            <li>text</li>
-          </ul>
+          <PrismAsyncLight
+            className="code-highlighted"
+            PreTag="div"
+            style={oneDark}
+            language={'text'}
+          >
+            {String(lineBlock).replace(/\n$/, '')}
+          </PrismAsyncLight>
+
+
           <h4>{t('sandbox.typography')}</h4>
           <ul className="hljs">
             <li><i>*{t('sandbox.italics')}*</i></li>
