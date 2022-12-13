@@ -13,7 +13,9 @@ import {
 import { useIsHackmdDraftUpdatingInRealtime } from '~/stores/hackmd';
 import { useDescendantsPageListModal } from '~/stores/modal';
 import { useCurrentPagePath, useSWRxCurrentPage } from '~/stores/page';
-import { useRemoteRevisionId, useRemoteRevisionLastUpdatUser } from '~/stores/remote-latest-page';
+import {
+  useSetRemoteLatestPageData,
+} from '~/stores/remote-latest-page';
 import { EditorMode, useEditorMode } from '~/stores/ui';
 import { useGlobalSocket } from '~/stores/websocket';
 
@@ -48,8 +50,7 @@ const PageView = React.memo((): JSX.Element => {
   const { data: isNotFound } = useIsNotFound();
   const { data: currentPage } = useSWRxCurrentPage(shareLinkId ?? undefined);
   const { open: openDescendantPageListModal } = useDescendantsPageListModal();
-  const { mutate: mutateRemoteRevisionId } = useRemoteRevisionId();
-  const { mutate: mutateRemoteRevisionLastUpdateUser } = useRemoteRevisionLastUpdatUser();
+  const { setRemoteLatestPageData } = useSetRemoteLatestPageData();
 
   const { mutate: mutateIsHackmdDraftUpdatingInRealtime } = useIsHackmdDraftUpdatingInRealtime();
 
@@ -61,9 +62,14 @@ const PageView = React.memo((): JSX.Element => {
   const setLatestRemotePageData = useCallback((data) => {
     const { s2cMessagePageUpdated } = data;
 
-    mutateRemoteRevisionId(s2cMessagePageUpdated.revisionId);
-    mutateRemoteRevisionLastUpdateUser(s2cMessagePageUpdated.remoteLastUpdateUser);
-  }, [mutateRemoteRevisionId, mutateRemoteRevisionLastUpdateUser]);
+    const remoteData = {
+      remoteRevisionId: s2cMessagePageUpdated.revisionId,
+      remoteRevisionBody: s2cMessagePageUpdated.revisionBody,
+      remoteRevisionLastUpdateUser: s2cMessagePageUpdated.remoteLastUpdateUser,
+      remoteRevisionLastUpdatedAt: s2cMessagePageUpdated.revisionUpdateAt,
+    };
+    setRemoteLatestPageData(remoteData);
+  }, [setRemoteLatestPageData]);
 
   const setIsHackmdDraftUpdatingInRealtime = useCallback((data) => {
     const { s2cMessagePageUpdated } = data;
