@@ -28,7 +28,7 @@ export const PluginInstallerForm = (): JSX.Element => {
     };
 
     try {
-      await apiv3Post('/plugins-extension', { pluginInstallerForm });
+      await apiv3Post('/plugins', { pluginInstallerForm });
       toastSuccess('Plugin Install Successed!');
     }
     catch (err) {
