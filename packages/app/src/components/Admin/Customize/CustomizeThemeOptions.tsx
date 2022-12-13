@@ -2,22 +2,21 @@ import React from 'react';
 
 import { GrowiThemeSchemeType, PresetThemesSummaries } from '@growi/preset-themes';
 import { useTranslation } from 'next-i18next';
-import PropTypes from 'prop-types';
 
-
-import AdminCustomizeContainer from '~/client/services/AdminCustomizeContainer';
-
-import { withUnstatedContainers } from '../../UnstatedUtils';
-
-import ThemeColorBox from './ThemeColorBox';
+import { ThemeColorBox } from './ThemeColorBox';
 
 const lightNDarkTheme = PresetThemesSummaries.filter(s => s.schemeType === GrowiThemeSchemeType.BOTH);
 const uniqueTheme = PresetThemesSummaries.filter(s => s.schemeType !== GrowiThemeSchemeType.BOTH);
 
 
-const CustomizeThemeOptions = (props) => {
+type Props = {
+  selectedTheme: string,
+  onSelected?: (themeName: string) => void,
+};
 
-  const { selectedTheme } = props;
+const CustomizeThemeOptions = (props: Props): JSX.Element => {
+
+  const { selectedTheme, onSelected } = props;
 
   const { t } = useTranslation('admin');
 
@@ -33,7 +32,7 @@ const CustomizeThemeOptions = (props) => {
               <ThemeColorBox
                 key={theme.name}
                 isSelected={selectedTheme === theme.name}
-                onSelected={() => props.onSelected(theme.name)}
+                onSelected={() => onSelected?.(theme.name)}
                 {...theme}
               />
             );
@@ -49,7 +48,7 @@ const CustomizeThemeOptions = (props) => {
               <ThemeColorBox
                 key={theme.name}
                 isSelected={selectedTheme === theme.name}
-                onSelected={() => props.onSelected(theme.name)}
+                onSelected={() => onSelected?.(theme.name)}
                 {...theme}
               />
             );
@@ -61,11 +60,5 @@ const CustomizeThemeOptions = (props) => {
 
 };
 
-const CustomizeThemeOptionsWrapper = withUnstatedContainers(CustomizeThemeOptions, [AdminCustomizeContainer]);
 
-CustomizeThemeOptions.propTypes = {
-  onSelected: PropTypes.func,
-  selectedTheme: PropTypes.string,
-};
-
-export default CustomizeThemeOptionsWrapper;
+export default CustomizeThemeOptions;
