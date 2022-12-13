@@ -2,10 +2,10 @@ import React, { ReactNode } from 'react';
 
 import dynamic from 'next/dynamic';
 
+import { useCurrentLayoutClassName } from '../../client/services/use-current-layout-class-name';
 import { GrowiNavbar } from '../Navbar/GrowiNavbar';
 
 import { RawLayout } from './RawLayout';
-import { useCurrentLayoutClassName } from './custom-hooks/use-current-layout-class-name';
 
 const PageCreateModal = dynamic(() => import('../PageCreateModal'), { ssr: false });
 const GrowiNavbarBottom = dynamic(() => import('../Navbar/GrowiNavbarBottom').then(mod => mod.GrowiNavbarBottom), { ssr: false });

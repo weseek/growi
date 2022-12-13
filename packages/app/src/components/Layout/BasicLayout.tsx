@@ -4,11 +4,11 @@ import dynamic from 'next/dynamic';
 import { DndProvider } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
 
+import { useCurrentLayoutClassName } from '../../client/services/use-current-layout-class-name';
 import { GrowiNavbar } from '../Navbar/GrowiNavbar';
 import Sidebar from '../Sidebar';
 
 import { RawLayout } from './RawLayout';
-import { useCurrentLayoutClassName } from './custom-hooks/use-current-layout-class-name';
 
 const AlertSiteUrlUndefined = dynamic(() => import('../AlertSiteUrlUndefined').then(mod => mod.AlertSiteUrlUndefined), { ssr: false });
 const HotkeysManager = dynamic(() => import('../Hotkeys/HotkeysManager'), { ssr: false });
