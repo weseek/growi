@@ -67,6 +67,8 @@ const PageView = React.memo((): JSX.Element => {
       remoteRevisionBody: s2cMessagePageUpdated.revisionBody,
       remoteRevisionLastUpdateUser: s2cMessagePageUpdated.remoteLastUpdateUser,
       remoteRevisionLastUpdatedAt: s2cMessagePageUpdated.revisionUpdateAt,
+      revisionIdHackmdSynced: s2cMessagePageUpdated.revisionIdHackmdSynced,
+      hasDraftOnHackmd: s2cMessagePageUpdated.hasDraftOnHackmd,
     };
     setRemoteLatestPageData(remoteData);
   }, [setRemoteLatestPageData]);
