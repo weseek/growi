@@ -31,7 +31,7 @@ context('Access to page by guest', () => {
     cy.get('.math').should('be.visible');
 
     cy.screenshot(`${ssPrefix}-sandbox-math`, {
-      blackout: ['.revision-toc']
+      blackout: ['.revision-toc', '[data-hide-in-vrt=true]']
     });
   });
 
