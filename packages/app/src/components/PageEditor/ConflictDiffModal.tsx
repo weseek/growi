@@ -114,6 +114,8 @@ const ConflictDiffModalCore = (props: ConflictDiffModalCoreProps): JSX.Element =
         remoteRevisionBody: page.revision.body,
         remoteRevisionLastUpdateUser: page.lastUpdateUser,
         remoteRevisionLastUpdatedAt: page.updatedAt,
+        revisionIdHackmdSynced: page.revisionIdHackmdSynced,
+        hasDraftOnHackmd: page.hasDraftOnHackmd,
       };
       setRemoteLatestPageData(remotePageData);
       afterResolvedHandler();
