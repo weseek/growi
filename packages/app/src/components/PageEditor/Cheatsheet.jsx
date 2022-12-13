@@ -27,6 +27,10 @@ class Cheatsheet extends React.Component {
 
     const codeBlock = 'text\n\ntext';
     const lineBlock = 'text\ntext';
+    const typography = `*{t('sandbox.italics')}*\n**{t('sandbox.bold')}**\n
+    ***{t('sandbox.italic_bold')}***\n
+    ~~{t('sandbox.strikethrough')}~~ {t('sandbox.strikethrough')}`;
+
 
     return (
       <div className="row small">
@@ -66,14 +70,22 @@ class Cheatsheet extends React.Component {
             {String(lineBlock).replace(/\n$/, '')}
           </PrismAsyncLight>
 
-
+          {/* Typography */}
           <h4>{t('sandbox.typography')}</h4>
-          <ul className="hljs">
+          <PrismAsyncLight
+            className="code-highlighted"
+            PreTag="div"
+            style={oneDark}
+            language={'text'}
+          >
+            {String(typography).replace(/\n$/, '')}
+          </PrismAsyncLight>
+          {/* <ul className="hljs">
             <li><i>*{t('sandbox.italics')}*</i></li>
             <li><b>**{t('sandbox.bold')}**</b></li>
             <li><i><b>***{t('sandbox.italic_bold')}***</b></i></li>
             <li>~~{t('sandbox.strikethrough')}~~ =&lt; <s>{t('sandbox.strikethrough')}</s></li>
-          </ul>
+          </ul> */}
 
           {/* Link */}
           <h4>{t('sandbox.link')}</h4>
