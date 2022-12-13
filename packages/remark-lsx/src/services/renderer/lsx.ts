@@ -1,7 +1,7 @@
 import assert from 'assert';
 
 import { pathUtils } from '@growi/core';
-import { RemarkGrowiPluginType } from '@growi/remark-growi-plugin';
+import { remarkGrowiDirectivePluginType } from '@growi/remark-growi-directive';
 import { Schema as SanitizeOption } from 'hast-util-sanitize';
 import { selectAll, HastNode } from 'hast-util-select';
 import { Plugin } from 'unified';
@@ -18,7 +18,7 @@ type DirectiveAttributes = Record<string, string>
 export const remarkPlugin: Plugin = function() {
   return (tree) => {
     visit(tree, (node) => {
-      if (node.type === RemarkGrowiPluginType.Text || node.type === RemarkGrowiPluginType.Leaf) {
+      if (node.type === remarkGrowiDirectivePluginType.Text || node.type === remarkGrowiDirectivePluginType.Leaf) {
         if (typeof node.name !== 'string') {
           return;
         }
