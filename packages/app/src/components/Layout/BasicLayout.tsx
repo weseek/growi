@@ -11,6 +11,7 @@ import { GrowiNavbar } from '../Navbar/GrowiNavbar';
 import Sidebar from '../Sidebar';
 
 import { RawLayout } from './RawLayout';
+import { useEditorMode } from '~/stores/ui';
 
 const AlertSiteUrlUndefined = dynamic(() => import('../AlertSiteUrlUndefined').then(mod => mod.AlertSiteUrlUndefined), { ssr: false });
 const HotkeysManager = dynamic(() => import('../Hotkeys/HotkeysManager'), { ssr: false });
@@ -30,21 +31,27 @@ const Fab = dynamic(() => import('../Fab').then(mod => mod.Fab), { ssr: false })
 
 
 type Props = {
-  className?: string,
   children?: ReactNode
 }
 
-export const BasicLayout = ({ children, className }: Props): JSX.Element => {
-  const { data: currentPage } = useSWRxCurrentPage();
-  const { data: dataIsContainerFluid } = useIsContainerFluid();
+export const BasicLayout = ({ children }: Props): JSX.Element => {
+  const { data: currentPage } = useSWRxCurrentPage(); // Only /page, /share
+  const { data: dataIsContainerFluid } = useIsContainerFluid(); // Only /page, /share
+  const { getClassNamesByEditorMode } = useEditorMode(); // Only /page
 
+  // Only /page, /share
   const isContainerFluidEachPage = currentPage == null || !('expandContentWidth' in currentPage)
     ? null
     : currentPage.expandContentWidth;
   const isContainerFluidDefault = dataIsContainerFluid;
   const isContainerFluid = isContainerFluidEachPage ?? isContainerFluidDefault;
 
-  const myClassName = `${className ?? ''} ${isContainerFluid ? 'growi-layout-fluid' : ''}`;
+  // Only /page
+  const classNames: string[] = [];
+  const isSidebar = currentPage?.path === '/Sidebar';
+  classNames.push(...getClassNamesByEditorMode(isSidebar));
+
+  const myClassName = `${classNames.join(' ') ?? ''} ${isContainerFluid ? 'growi-layout-fluid' : ''}`;
 
   return (
     <RawLayout className={myClassName}>

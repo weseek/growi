@@ -267,8 +267,6 @@ const Page: NextPage<Props> = (props: Props) => {
   const { data: grantData } = useSWRxIsGrantNormalized(pageId);
   const { mutate: mutateSelectedGrant } = useSelectedGrant();
 
-  const { getClassNamesByEditorMode } = useEditorMode();
-
   useSetupGlobalSocket();
   useSetupGlobalSocketForPage(pageId);
 
@@ -288,11 +286,6 @@ const Page: NextPage<Props> = (props: Props) => {
       router.replace(props.currentPathname, undefined, { shallow: true });
     }
   }, [props.currentPathname, router]);
-
-  const classNames: string[] = [];
-
-  const isSidebar = pagePath === '/Sidebar';
-  classNames.push(...getClassNamesByEditorMode(isSidebar));
 
   const isTopPagePath = isTopPage(pageWithMeta?.data.path ?? '');
 
