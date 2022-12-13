@@ -9,5 +9,5 @@ module.exports = (crowi, app) => {
   const loginRequired = crowi.require('../middlewares/login-required')(crowi, true, loginRequiredFallback);
   const accessTokenParser = crowi.require('../middlewares/access-token-parser')(crowi);
 
-  app.get('/_api/plugins/lsx', accessTokenParser, loginRequired, lsx.listPages);
+  app.get('/_api/lsx', accessTokenParser, loginRequired, lsx.listPages);
 };

@@ -120,7 +120,7 @@ module.exports = function(crowi, app) {
   app.use('/static/preset-themes', express.static(
     resolveFromRoot(`../../node_modules/@growi/preset-themes/${path.dirname(presetThemesManifestPath)}`),
   ));
-  app.use('/plugins', express.static(path.resolve(__dirname, '../../../tmp/plugins')));
+  app.use('/static/plugins', express.static(path.resolve(__dirname, '../../../tmp/plugins')));
 
   app.engine('html', swig.renderFile);
   // app.set('view cache', false);  // Default: true in production, otherwise undefined. -- 2017.07.04 Yuki Takei

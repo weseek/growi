@@ -2,7 +2,10 @@ import React, { useCallback } from 'react';
 
 import { toastSuccess, toastError } from '~/client/util/apiNotification';
 import { apiv3Post } from '~/client/util/apiv3-client';
+// import { toastError, toastSuccess } from '~/client/util/toastr';
 import { useSWRxPlugins } from '~/stores/plugin';
+
+// TODO: error notification (toast, loggerFactory)
 // TODO: i18n
 export const PluginInstallerForm = (): JSX.Element => {
   const { mutate } = useSWRxPlugins();
@@ -25,12 +28,11 @@ export const PluginInstallerForm = (): JSX.Element => {
     };
 
     try {
-      await apiv3Post('/plugins-extension', { pluginInstallerForm });
+      await apiv3Post('/plugins', { pluginInstallerForm });
       toastSuccess('Plugin Install Successed!');
     }
     catch (err) {
       toastError(err);
-      // logger.error(err);
     }
     finally {
       mutate();
