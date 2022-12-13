@@ -14,6 +14,7 @@ import { bookmark, unbookmark, resumeRenameOperation } from '~/client/services/p
 import { toastWarning, toastError, toastSuccess } from '~/client/util/apiNotification';
 import { apiv3Put, apiv3Post } from '~/client/util/apiv3-client';
 import TriangleIcon from '~/components/Icons/TriangleIcon';
+import NotAvailableForGuest from '~/components/NotAvailableForGuest';
 import {
   IPageHasId, IPageInfoAll, IPageToDeleteWithMeta,
 } from '~/interfaces/page';
@@ -482,31 +483,38 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
           </div>
         )}
         <div className="grw-pagetree-control d-flex">
-          <PageItemControl
-            pageId={page._id}
-            isEnableActions={isEnableActions}
-            onClickBookmarkMenuItem={bookmarkMenuItemClickHandler}
-            onClickDuplicateMenuItem={duplicateMenuItemClickHandler}
-            onClickRenameMenuItem={renameMenuItemClickHandler}
-            onClickDeleteMenuItem={deleteMenuItemClickHandler}
-            onClickPathRecoveryMenuItem={pathRecoveryMenuItemClickHandler}
-            isInstantRename
-            // Todo: It is wanted to find a better way to pass operationProcessData to PageItemControl
-            operationProcessData={page.processData}
-          >
-            {/* pass the color property to reactstrap dropdownToggle props. https://6-4-0--reactstrap.netlify.app/components/dropdowns/  */}
-            <DropdownToggle color="transparent" className="border-0 rounded btn-page-item-control p-0 grw-visible-on-hover mr-1">
-              <i className="icon-options fa fa-rotate-90 p-1"></i>
-            </DropdownToggle>
-          </PageItemControl>
+          <NotAvailableForGuest>
+            <div id='option-button-in-page-tree'>
+              <PageItemControl
+                pageId={page._id}
+                isEnableActions={isEnableActions}
+                onClickBookmarkMenuItem={bookmarkMenuItemClickHandler}
+                onClickDuplicateMenuItem={duplicateMenuItemClickHandler}
+                onClickRenameMenuItem={renameMenuItemClickHandler}
+                onClickDeleteMenuItem={deleteMenuItemClickHandler}
+                onClickPathRecoveryMenuItem={pathRecoveryMenuItemClickHandler}
+                isInstantRename
+                // Todo: It is wanted to find a better way to pass operationProcessData to PageItemControl
+                operationProcessData={page.processData}
+              >
+                {/* pass the color property to reactstrap dropdownToggle props. https://6-4-0--reactstrap.netlify.app/components/dropdowns/  */}
+                <DropdownToggle color="transparent" className="border-0 rounded btn-page-item-control p-0 grw-visible-on-hover mr-1">
+                  <i className="icon-options fa fa-rotate-90 p-1"></i>
+                </DropdownToggle>
+              </PageItemControl>
+            </div>
+          </NotAvailableForGuest>
           {!pagePathUtils.isUsersTopPage(page.path ?? '') && (
-            <button
-              type="button"
-              className="border-0 rounded btn btn-page-item-control p-0 grw-visible-on-hover"
-              onClick={onClickPlusButton}
-            >
-              <i className="icon-plus d-block p-0" />
-            </button>
+            <NotAvailableForGuest>
+              <button
+                id='page-create-button-in-page-tree'
+                type="button"
+                className="border-0 rounded btn btn-page-item-control p-0 grw-visible-on-hover"
+                onClick={onClickPlusButton}
+              >
+                <i className="icon-plus d-block p-0" />
+              </button>
+            </NotAvailableForGuest>
           )}
         </div>
       </li>
