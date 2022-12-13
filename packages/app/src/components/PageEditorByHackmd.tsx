@@ -126,6 +126,7 @@ export const PageEditorByHackmd = (): JSX.Element => {
         await mutateCurrentPageId(page._id);
         await mutatePageData();
       }
+      setIsInitialized(false);
       mutateEditorMode(EditorMode.View);
     }
     catch (error) {
