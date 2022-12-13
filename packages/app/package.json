@@ -187,7 +187,6 @@
     "sticky-events": "^3.4.11",
     "stream-to-promise": "^3.0.0",
     "string-width": "=4.2.2",
-    "superagent": "^8.0.6",
     "superjson": "^1.9.1",
     "swagger-jsdoc": "^6.1.0",
     "swig-templates": "^2.0.2",

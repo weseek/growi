@@ -46,7 +46,6 @@ export class PluginService {
     const plugins = await PluginService.detectPlugins(origin, installedPath);
     await this.savePluginMetaData(plugins);
 
-
     return;
   }
 
