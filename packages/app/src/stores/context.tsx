@@ -37,10 +37,6 @@ export const useConfidential = (initialData?: string): SWRResponse<string, Error
   return useContextSWR('confidential', initialData);
 };
 
-export const useGrowiTheme = (initialData?: GrowiThemes): SWRResponse<GrowiThemes, Error> => {
-  return useContextSWR('theme', initialData);
-};
-
 export const useCurrentUser = (initialData?: Nullable<IUser>): SWRResponse<Nullable<IUser>, Error> => {
   return useContextSWR<Nullable<IUser>, Error>('currentUser', initialData);
 };

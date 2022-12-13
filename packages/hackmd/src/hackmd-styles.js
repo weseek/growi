@@ -19,7 +19,6 @@ const styles = '<%= styles %>'; // will be replaced by ejs
  */
 function insertStyle() {
   const element = document.createElement('style');
-  element.type = 'text/css';
   element.appendChild(document.createTextNode(unescape(styles)));
   document.getElementsByTagName('head')[0].appendChild(element);
 }

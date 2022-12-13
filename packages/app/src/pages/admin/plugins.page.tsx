@@ -27,7 +27,7 @@ const AdminAppPage: NextPage<CommonProps> = (props) => {
   useIsMaintenanceMode(props.isMaintenanceMode);
   useCurrentUser(props.currentUser ?? null);
 
-  const title = 'Plugins Extention';
+  const title = 'Plugins Extension';
   const injectableContainers: Container<any>[] = [];
 
   if (isClient()) {

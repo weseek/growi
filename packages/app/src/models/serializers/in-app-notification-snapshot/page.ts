@@ -1,5 +1,5 @@
-import { IUser } from '~/interfaces/user';
-import { IPage } from '~/interfaces/page';
+import type { IPage } from '~/interfaces/page';
+import type { IUser } from '~/interfaces/user';
 
 export interface IPageSnapshot {
   path: string

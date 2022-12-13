@@ -111,6 +111,7 @@ COPY packages/remark-drawio-plugin packages/remark-drawio-plugin
 COPY packages/remark-growi-plugin packages/remark-growi-plugin
 COPY packages/remark-lsx packages/remark-lsx
 COPY packages/hackmd packages/hackmd
+COPY packages/preset-themes packages/preset-themes
 
 # build
 RUN yarn lerna run build
