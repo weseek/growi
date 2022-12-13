@@ -27,9 +27,9 @@ class Cheatsheet extends React.Component {
 
     const codeBlock = 'text\n\ntext';
     const lineBlock = 'text\ntext';
-    const typography = `*{t('sandbox.italics')}*\n**{t('sandbox.bold')}**\n
-    ***{t('sandbox.italic_bold')}***\n
-    ~~{t('sandbox.strikethrough')}~~ {t('sandbox.strikethrough')}`;
+    const typography = `*${t('sandbox.italics')}*\n**${t('sandbox.bold')}**\n
+    ***${t('sandbox.italic_bold')}***\n
+    ~~${t('sandbox.strikethrough')}~~ ${t('sandbox.strikethrough')}`;
 
 
     return (
