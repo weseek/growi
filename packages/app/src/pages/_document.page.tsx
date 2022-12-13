@@ -12,13 +12,12 @@ import Document, {
 import { ActivatePluginService, GrowiPluginManifestEntries } from '~/client/services/activate-plugin';
 import type { CrowiRequest } from '~/interfaces/crowi-request';
 import { GrowiPlugin, GrowiPluginResourceType } from '~/interfaces/plugin';
-import type { GrowiThemes } from '~/interfaces/theme';
 import loggerFactory from '~/utils/logger';
 
 const logger = loggerFactory('growi:page:_document');
 
 type HeadersForPresetThemesProps = {
-  theme: GrowiThemes,
+  theme: string,
   manifest: PresetThemesManifest,
 }
 const HeadersForPresetThemes = (props: HeadersForPresetThemesProps): JSX.Element => {
@@ -76,7 +75,7 @@ const HeadersForGrowiPlugin = (props: HeadersForGrowiPluginProps): JSX.Element =
 };
 
 interface GrowiDocumentProps {
-  theme: GrowiThemes,
+  theme: string,
   customCss: string;
   presetThemesManifest: PresetThemesManifest,
   pluginManifestEntries: GrowiPluginManifestEntries;
