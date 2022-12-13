@@ -85,10 +85,11 @@ export class PluginService {
     const unzip = async(zipFilePath: fs.PathLike, unzippedPath: fs.PathLike) => {
       const stream = fs.createReadStream(zipFilePath);
       const unzipStream = stream.pipe(unzipper.Extract({ path: unzippedPath }));
+      const deleteZipFile = (path: fs.PathLike) => fs.unlink(path, (err) => { return err });
 
       try {
         await streamToPromise(unzipStream);
-        fs.unlink(zipFilePath, (err) => { return err });
+        deleteZipFile(zipFilePath);
       }
       catch (err) {
         return err;
