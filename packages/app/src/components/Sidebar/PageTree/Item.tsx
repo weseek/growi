@@ -18,6 +18,7 @@ import NotAvailableForGuest from '~/components/NotAvailableForGuest';
 import {
   IPageHasId, IPageInfoAll, IPageToDeleteWithMeta,
 } from '~/interfaces/page';
+import { useIsGuestUser } from '~/stores/context';
 import { IPageForPageDuplicateModal } from '~/stores/modal';
 import { useSWRxPageChildren } from '~/stores/page-listing';
 import { usePageTreeDescCountMap } from '~/stores/ui';
@@ -122,6 +123,7 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
   const [isCreating, setCreating] = useState(false);
 
   const { data, mutate: mutateChildren } = useSWRxPageChildren(isOpen ? page._id : null);
+  const { data: isGuest } = useIsGuestUser();
 
   // descendantCount
   const { getDescCount } = usePageTreeDescCountMap();
@@ -507,6 +509,7 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
         {!pagePathUtils.isUsersTopPage(page.path ?? '') && (
           <NotAvailableForGuest>
             <button
+              disabled={isGuest}
               id='page-create-button-in-page-tree'
               type="button"
               className="border-0 rounded btn btn-page-item-control p-0 grw-visible-on-hover"

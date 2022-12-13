@@ -9,6 +9,7 @@ import {
   IPageInfoAll, isIPageInfoForOperation,
 } from '~/interfaces/page';
 import { IPageOperationProcessData } from '~/interfaces/page-operation';
+import { useIsGuestUser } from '~/stores/context';
 import { useSWRxPageInfo } from '~/stores/page';
 import loggerFactory from '~/utils/logger';
 import { shouldRecoverPagePaths } from '~/utils/page-operation';
@@ -278,6 +279,8 @@ export const PageItemControlSubstance = (props: PageItemControlSubstanceProps): 
 
   const { data: fetchedPageInfo, mutate: mutatePageInfo } = useSWRxPageInfo(shouldFetch ? pageId : null);
 
+  const { data: isGuest } = useIsGuestUser();
+
   // update shouldFetch (and will never be false)
   useEffect(() => {
     if (shouldFetch) {
@@ -330,9 +333,12 @@ export const PageItemControlSubstance = (props: PageItemControlSubstanceProps): 
   }, [onClickPathRecoveryMenuItem, pageId]);
 
   return (
-    <Dropdown isOpen={isOpen} toggle={() => setIsOpen(!isOpen)} data-testid="open-page-item-control-btn">
+    <Dropdown disabled={isGuest} isOpen={isOpen} toggle={() => setIsOpen(!isOpen)} data-testid="open-page-item-control-btn">
       { children ?? (
-        <DropdownToggle color="transparent" className="border-0 rounded btn-page-item-control d-flex align-items-center justify-content-center">
+        <DropdownToggle
+          color="transparent"
+          className="border-0 rounded btn-page-item-control d-flex align-items-center justify-content-center"
+        >
           <i className="icon-options"></i>
         </DropdownToggle>
       ) }
