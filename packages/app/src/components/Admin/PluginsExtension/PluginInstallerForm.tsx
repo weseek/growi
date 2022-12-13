@@ -1,9 +1,7 @@
 import React, { useCallback } from 'react';
 
-import { useTranslation } from 'react-i18next';
-
-import { toastSuccess, toastError } from '~/client/util/apiNotification';
 import { apiv3Post } from '~/client/util/apiv3-client';
+import { toastError, toastSuccess } from '~/client/util/toastr';
 
 import AdminInstallButtonRow from '../Common/AdminUpdateButtonRow';
 // TODO: error notification (toast, loggerFactory)
@@ -35,7 +33,6 @@ export const PluginInstallerForm = (): JSX.Element => {
     }
     catch (err) {
       toastError(err);
-      // logger.error(err);
     }
   }, []);
 
