@@ -2,7 +2,7 @@
 import { ComponentType } from 'react';
 
 import { isClient } from '@growi/core';
-import * as drawioPlugin from '@growi/remark-drawio-plugin';
+import * as drawioPlugin from '@growi/remark-drawio';
 import growiPlugin from '@growi/remark-growi-plugin';
 import { Lsx, LsxImmutable } from '@growi/remark-lsx/components';
 import * as lsxGrowiPlugin from '@growi/remark-lsx/services/renderer';
