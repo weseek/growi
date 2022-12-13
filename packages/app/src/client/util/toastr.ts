@@ -5,7 +5,7 @@ import { toArrayIfNot } from '~/utils/array-utils';
 
 
 export const toastErrorOption: ToastOptions = {
-  autoClose: 0,
+  autoClose: false,
   closeButton: true,
 };
 export const toastError = (err: string | Error | Error[], option: ToastOptions = toastErrorOption): void => {
