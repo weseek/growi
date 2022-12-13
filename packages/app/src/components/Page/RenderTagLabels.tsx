@@ -3,6 +3,8 @@ import React from 'react';
 import { useTranslation } from 'next-i18next';
 import { UncontrolledTooltip } from 'reactstrap';
 
+import NotAvailableForGuest from '../NotAvailableForGuest';
+
 type RenderTagLabelsProps = {
   tags: string[],
   isGuestUser: boolean,
@@ -23,7 +25,7 @@ const RenderTagLabels = React.memo((props: RenderTagLabelsProps) => {
   const isTagsEmpty = tags.length === 0;
 
   return (
-    <>
+    <NotAvailableForGuest>
       {tags.map((tag) => {
         return (
           <a key={tag} href={`/_search?q=tag:${tag}`} className="grw-tag-label badge badge-secondary mr-2">
@@ -40,12 +42,7 @@ const RenderTagLabels = React.memo((props: RenderTagLabelsProps) => {
           <i className={`icon-plus ${isTagsEmpty && 'ml-1'}`}/>
         </a>
       </div>
-      {isGuestUser && (
-        <UncontrolledTooltip placement="top" target="edit-tags-btn-wrapper-for-tooltip" fade={false}>
-          {t('Not available for guest')}
-        </UncontrolledTooltip>
-      )}
-    </>
+    </NotAvailableForGuest>
   );
 
 });
