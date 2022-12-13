@@ -45,7 +45,7 @@ export const PluginInstallerForm = (): JSX.Element => {
             className="form-control"
             type="text"
             name="pluginInstallerForm[url]"
-            placeholder="https://github.com/weseek/growi-plugin-lsx"
+            placeholder="https://github.com/growi/plugins"
             required
           />
           <p className="form-text text-muted">You can install plugins by inputting the GitHub URL.</p>
