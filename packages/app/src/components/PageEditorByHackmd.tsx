@@ -278,7 +278,6 @@ export const PageEditorByHackmd = (): JSX.Element => {
       mutatePageData(res);
 
       // set updated data
-      // remote更新する必要がある
       updateStateAfterSave(res._id);
       mutateTagsInfo();
 
