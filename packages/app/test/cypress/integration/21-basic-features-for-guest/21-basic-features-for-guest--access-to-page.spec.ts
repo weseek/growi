@@ -29,7 +29,10 @@ context('Access to page by guest', () => {
     cy.collapseSidebar(true, true);
 
     cy.get('.math').should('be.visible');
-    cy.screenshot(`${ssPrefix}-sandbox-math`);
+
+    cy.screenshot(`${ssPrefix}-sandbox-math`, {
+      blackout: ['.revision-toc']
+    });
   });
 
   it('/Sandbox with edit is successfully loaded', () => {
