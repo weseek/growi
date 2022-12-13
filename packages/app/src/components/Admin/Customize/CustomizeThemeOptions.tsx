@@ -1,25 +1,28 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 
-import { GrowiThemeSchemeType, PresetThemesSummaries } from '@growi/preset-themes';
+import { GrowiThemeColorSummary, GrowiThemeSchemeType } from '@growi/preset-themes';
 import { useTranslation } from 'next-i18next';
 
 import { ThemeColorBox } from './ThemeColorBox';
 
-const lightNDarkTheme = PresetThemesSummaries.filter(s => s.schemeType === GrowiThemeSchemeType.BOTH);
-const uniqueTheme = PresetThemesSummaries.filter(s => s.schemeType !== GrowiThemeSchemeType.BOTH);
-
 
 type Props = {
-  selectedTheme: string,
+  availableThemes: GrowiThemeColorSummary[],
+  selectedTheme?: string,
   onSelected?: (themeName: string) => void,
 };
 
 const CustomizeThemeOptions = (props: Props): JSX.Element => {
-
-  const { selectedTheme, onSelected } = props;
-
   const { t } = useTranslation('admin');
 
+  const { availableThemes, selectedTheme, onSelected } = props;
+
+  const lightNDarkThemes = useMemo(() => {
+    return availableThemes.filter(s => s.schemeType === GrowiThemeSchemeType.BOTH);
+  }, [availableThemes]);
+  const oneModeThemes = useMemo(() => {
+    return availableThemes.filter(s => s.schemeType !== GrowiThemeSchemeType.BOTH);
+  }, [availableThemes]);
 
   return (
     <div id="themeOptions">
@@ -27,11 +30,11 @@ const CustomizeThemeOptions = (props: Props): JSX.Element => {
       <div>
         <h3>{t('customize_settings.theme_desc.light_and_dark')}</h3>
         <div className="d-flex flex-wrap">
-          {lightNDarkTheme.map((theme) => {
+          {lightNDarkThemes.map((theme) => {
             return (
               <ThemeColorBox
                 key={theme.name}
-                isSelected={selectedTheme === theme.name}
+                isSelected={selectedTheme != null && selectedTheme === theme.name}
                 onSelected={() => onSelected?.(theme.name)}
                 {...theme}
               />
@@ -39,15 +42,15 @@ const CustomizeThemeOptions = (props: Props): JSX.Element => {
           })}
         </div>
       </div>
-      {/* Unique Theme */}
+      {/* Only one mode Theme */}
       <div className="mt-3">
         <h3>{t('customize_settings.theme_desc.unique')}</h3>
         <div className="d-flex flex-wrap">
-          {uniqueTheme.map((theme) => {
+          {oneModeThemes.map((theme) => {
             return (
               <ThemeColorBox
                 key={theme.name}
-                isSelected={selectedTheme === theme.name}
+                isSelected={selectedTheme != null && selectedTheme === theme.name}
                 onSelected={() => onSelected?.(theme.name)}
                 {...theme}
               />

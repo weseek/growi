@@ -1,5 +1,6 @@
 import React, { useCallback, useEffect, useState } from 'react';
 
+import { PresetThemesSummaries } from '@growi/preset-themes';
 import { useTranslation } from 'next-i18next';
 
 import { apiv3Put } from '~/client/util/apiv3-client';
@@ -9,6 +10,7 @@ import { useSWRxGrowiTheme } from '~/stores/admin/customize';
 import AdminUpdateButtonRow from '../Common/AdminUpdateButtonRow';
 
 import CustomizeThemeOptions from './CustomizeThemeOptions';
+
 
 // eslint-disable-next-line @typescript-eslint/ban-types
 type Props = {
@@ -51,7 +53,7 @@ const CustomizeThemeSetting = (props: Props): JSX.Element => {
     <div className="row">
       <div className="col-12">
         <h2 className="admin-setting-header">{t('admin:customize_settings.theme')}</h2>
-        <CustomizeThemeOptions onSelected={selectedHandler} selectedTheme={selectedTheme} />
+        <CustomizeThemeOptions onSelected={selectedHandler} availableThemes={PresetThemesSummaries} selectedTheme={selectedTheme} />
         <AdminUpdateButtonRow onClick={submitHandler} disabled={error != null} />
       </div>
     </div>
