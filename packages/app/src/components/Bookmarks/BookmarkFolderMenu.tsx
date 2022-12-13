@@ -9,6 +9,7 @@ import { toastError, toastSuccess } from '~/client/util/apiNotification';
 import { apiv3Post } from '~/client/util/apiv3-client';
 import { BookmarkFolderItems } from '~/interfaces/bookmark-info';
 import { useSWRxBookamrkFolderAndChild } from '~/stores/bookmark-folder';
+import { useSWRxCurrentPage } from '~/stores/page';
 
 import FolderIcon from '../Icons/FolderIcon';
 
@@ -28,6 +29,7 @@ const BookmarkFolderMenu = (props: Props): JSX.Element => {
   const [isCreateAction, setIsCreateAction] = useState(false);
   const { mutate: mutateChildBookmarkData } = useSWRxBookamrkFolderAndChild(null);
   const [selectedItem, setSelectedItem] = useState<string | null>(null);
+  const { data: currentPage } = useSWRxCurrentPage();
 
   const onClickNewBookmarkFolder = useCallback(() => {
     setIsCreateAction(true);
@@ -47,9 +49,21 @@ const BookmarkFolderMenu = (props: Props): JSX.Element => {
 
   }, [mutateChildBookmarkData, t]);
 
+  const addBookmarkToFolder = useCallback(async(folderId: string) => {
+    try {
+      await apiv3Post('/bookmark-folder/add-boookmark-to-folder', { page: currentPage, folderId });
+      toastSuccess('Bookmark added to bookmark folder successfully');
+    }
+    catch (err) {
+      toastError(err);
+    }
+
+  }, [currentPage]);
+
   const onMenuItemClickHandler = useCallback((itemId: string) => {
     setSelectedItem(itemId);
-  }, []);
+    addBookmarkToFolder(itemId);
+  }, [addBookmarkToFolder]);
 
   return (
     <UncontrolledDropdown className={`grw-bookmark-folder-dropdown ${styles['grw-bookmark-folder-dropdown']}`}>

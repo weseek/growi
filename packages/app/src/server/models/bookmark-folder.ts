@@ -1,11 +1,10 @@
 import { isValidObjectId } from '@growi/core/src/utils/objectid-utils';
 import {
-  Types, Document, Model, Schema,
+  Types, Document, Model, Schema, model,
 } from 'mongoose';
 
-import { IBookmarkFolder, BookmarkFolderItems } from '~/interfaces/bookmark-info';
+import { IBookmarkFolder, BookmarkFolderItems, MyBookmarkList } from '~/interfaces/bookmark-info';
 import { IPageHasId } from '~/interfaces/page';
-import { IUserHasId } from '~/interfaces/user';
 
 import loggerFactory from '../../utils/logger';
 import { getOrCreateModel } from '../util/mongoose-utils';
@@ -16,11 +15,14 @@ import { InvalidParentBookmarkFolderError } from './errors';
 const logger = loggerFactory('growi:models:bookmark-folder');
 const Bookmark = require('./bookmark');
 
+const BookmarkSchema = model('Bookmark').schema;
+
 export interface BookmarkFolderDocument extends Document {
   _id: Types.ObjectId
   name: string
   owner: Types.ObjectId
   parent?: [this]
+  bookmarks: MyBookmarkList
 }
 
 export interface BookmarkFolderModel extends Model<BookmarkFolderDocument>{
@@ -29,12 +31,14 @@ export interface BookmarkFolderModel extends Model<BookmarkFolderDocument>{
   findChildFolderById(parentBookmarkFolder: Types.ObjectId | string): Promise<BookmarkFolderDocument[]>
   deleteFolderAndChildren(bookmarkFolderId: Types.ObjectId | string): {deletedCount: number}
   updateBookmarkFolder(bookmarkFolderId: string, name: string, parent: string): BookmarkFolderDocument | null
+  insertOrUpdateBookmarkedPage(page: IPageHasId, userId: Types.ObjectId | string, folderId: string)
 }
 
 const bookmarkFolderSchema = new Schema<BookmarkFolderDocument, BookmarkFolderModel>({
   name: { type: String },
   owner: { type: Schema.Types.ObjectId, ref: 'User', index: true },
   parent: { type: Schema.Types.ObjectId, ref: 'BookmarkFolder', required: false },
+  bookmarks: { type: [BookmarkSchema], default: [], required: false },
 }, {
   toObject: { virtuals: true },
 });
@@ -115,10 +119,10 @@ bookmarkFolderSchema.statics.updateBookmarkFolder = async function(bookmarkFolde
 
 };
 
-bookmarkFolderSchema.statics.insertOrUpdateBookmarkedPage = async function(page: IPageHasId, user: IUserHasId, bookmarkFolderId: string):
+bookmarkFolderSchema.statics.insertOrUpdateBookmarkedPage = async function(page: IPageHasId, userId: Types.ObjectId | string, folderId: string):
 Promise<BookmarkFolderDocument> {
-  const bookmarkedPage = await Bookmark.findOneAndUpdate({ page, user }, { new: true, upsert: true });
-  const bookmarkFolder = await this.findByIdAndUpdate(bookmarkFolderId, { $set: { bookmarks: bookmarkedPage } }, { new: true, upsert: true });
+  const bookmarkedPage = await Bookmark.findOneAndUpdate({ page: page._id, user: userId }, { new: true, upsert: true });
+  const bookmarkFolder = await this.findByIdAndUpdate(folderId, { $addToSet: { bookmarks: bookmarkedPage } }, { new: true, upsert: true });
   return bookmarkFolder;
 };
 

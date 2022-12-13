@@ -88,5 +88,20 @@ module.exports = (crowi) => {
       return res.apiv3Err(err, 500);
     }
   });
+
+  router.post('/add-boookmark-to-folder', accessTokenParser, loginRequiredStrictly, validator.bookmarkFolder, apiV3FormValidator, async(req, res) => {
+    const userId = req.user?._id;
+    const { page, folderId } = req.body;
+
+    try {
+      const bookmarkFolder = await BookmarkFolder.insertOrUpdateBookmarkedPage(page, userId, folderId);
+      logger.debug('bookmark added to folder created', bookmarkFolder);
+      return res.apiv3({ bookmarkFolder });
+    }
+    catch (err) {
+      return res.apiv3Err(err, 500);
+    }
+  });
+
   return router;
 };
