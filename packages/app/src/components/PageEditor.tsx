@@ -31,6 +31,7 @@ import {
 } from '~/stores/editor';
 import { useConflictDiffModal } from '~/stores/modal';
 import { useCurrentPagePath, useSWRxCurrentPage, useSWRxTagsInfo } from '~/stores/page';
+import { useSetRemoteLatestPageData } from '~/stores/remote-latest-page';
 import { usePreviewOptions } from '~/stores/renderer';
 import {
   EditorMode,
@@ -92,6 +93,8 @@ const PageEditor = React.memo((): JSX.Element => {
   const { data: rendererOptions, mutate: mutateRendererOptions } = usePreviewOptions();
   const { mutate: mutateIsEnabledUnsavedWarning } = useIsEnabledUnsavedWarning();
   const saveOrUpdate = useSaveOrUpdate();
+
+  const { setRemoteLatestPageData } = useSetRemoteLatestPageData();
 
   const currentRevisionId = currentPage?.revision?._id;
 
@@ -231,6 +234,28 @@ const PageEditor = React.memo((): JSX.Element => {
   // eslint-disable-next-line max-len
   }, [grantData, isSlackEnabled, currentPathname, slackChannels, pageTags, saveOrUpdate, pageId, currentPagePath, currentRevisionId]);
 
+  const updateStateAfterSave = useCallback(async(pageId: string) => {
+
+    // update swr 'currentPageId', 'currentPage', remote states
+
+    await mutateCurrentPageId(pageId);
+    const updatedPage = await mutateCurrentPage();
+
+    if (updatedPage == null) { return }
+
+    const remoterevisionData = {
+      remoteRevisionId: updatedPage.revision._id,
+      remoteRevisionBody: updatedPage.revision.body,
+      remoteRevisionLastUpdateUser: updatedPage.lastUpdateUser,
+      remoteRevisionLastUpdatedAt: updatedPage.updatedAt,
+      revisionIdHackmdSynced: updatedPage.revisionHackmdSynced.toString(),
+      hasDraftOnHackmd: updatedPage.hasDraftOnHackmd,
+    };
+
+    setRemoteLatestPageData(remoterevisionData);
+
+  }, [mutateCurrentPage, mutateCurrentPageId, setRemoteLatestPageData]);
+
   const saveAndReturnToViewHandler = useCallback(async(opts?: {overwriteScopesOfDescendants: boolean}) => {
     if (editorMode !== EditorMode.Editor) {
       return;
@@ -245,11 +270,10 @@ const PageEditor = React.memo((): JSX.Element => {
       await router.push(`/${page._id}`);
     }
     else {
-      await mutateCurrentPageId(page._id);
-      await mutateCurrentPage();
+      updateStateAfterSave(page._id);
     }
     mutateEditorMode(EditorMode.View);
-  }, [editorMode, save, isNotFound, mutateEditorMode, router, mutateCurrentPageId, mutateCurrentPage]);
+  }, [editorMode, save, isNotFound, mutateEditorMode, router, updateStateAfterSave]);
 
   const saveWithShortcut = useCallback(async() => {
     if (editorMode !== EditorMode.Editor) {
@@ -258,11 +282,10 @@ const PageEditor = React.memo((): JSX.Element => {
 
     const page = await save();
     if (page != null) {
+      updateStateAfterSave(page._id);
       toastSuccess(t('toaster.save_succeeded'));
-      await mutateCurrentPageId(page._id);
-      await mutateCurrentPage();
     }
-  }, [editorMode, mutateCurrentPage, mutateCurrentPageId, save, t]);
+  }, [editorMode, save, t, updateStateAfterSave]);
 
 
   /**
