@@ -54,14 +54,12 @@ export class PluginService {
     const unzippedPath = path.join(pluginStoringPath, ghOrganizationName);
 
     const downloadFile = async(requestUrl: string, filePath: string) => {
-      // Avoid GitHub Code scanning / CodeQL
-      const deepCopyUrl = requestUrl.slice();
-
       return new Promise<void>((resolve, reject) => {
         axios({
           method: 'GET',
-          url: deepCopyUrl,
-          httpAgent: useAgent(deepCopyUrl, { stopPortScanningByUrlRedirection: true }),
+          url: requestUrl,
+          httpAgent: useAgent(requestUrl, { stopPortScanningByUrlRedirection: true }),
+          httpsAgent: useAgent(requestUrl, { stopPortScanningByUrlRedirection: true }),
           responseType: 'stream',
         })
           .then((res) => {
