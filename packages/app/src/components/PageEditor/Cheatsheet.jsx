@@ -30,9 +30,8 @@ class Cheatsheet extends React.Component {
     return (
       <div className="row small">
         <div className="col-sm-6">
+          {/* Header */}
           <h4>{t('sandbox.header')}</h4>
-          {/* <ul className="hljs"> */}
-
           <PrismAsyncLight
             className="code-highlighted"
             PreTag="div"
@@ -41,14 +40,10 @@ class Cheatsheet extends React.Component {
           >
             {codeStr}
           </PrismAsyncLight>
-          {/* </ul> */}
+
+          {/* Block */}
           <h4>{t('sandbox.block')}</h4>
           <p className="mb-1"><code>[{t('sandbox.empty_line')}]</code>{t('sandbox.block_detail')}</p>
-          {/* <ul className="hljs">
-            <li>text</li>
-            <li></li>
-            <li>text</li>
-          </ul> */}
           <PrismAsyncLight
             className="code-highlighted"
             PreTag="div"
@@ -57,6 +52,8 @@ class Cheatsheet extends React.Component {
           >
             {String(codeBlock).replace(/\n$/, '')}
           </PrismAsyncLight>
+
+          {/* Line Break */}
           <h4>{t('sandbox.line_break')}</h4>
           <p className="mb-1"><code>[ ][ ]</code> {t('sandbox.line_break_detail')}</p>
           <ul className="hljs">
@@ -70,6 +67,8 @@ class Cheatsheet extends React.Component {
             <li><i><b>***{t('sandbox.italic_bold')}***</b></i></li>
             <li>~~{t('sandbox.strikethrough')}~~ =&lt; <s>{t('sandbox.strikethrough')}</s></li>
           </ul>
+
+          {/* Link */}
           <h4>{t('sandbox.link')}</h4>
           <ul className="hljs">
             <li>[Google](https://www.google.co.jp/)</li>
@@ -82,7 +81,9 @@ class Cheatsheet extends React.Component {
             <li>```</li>
           </ul>
         </div>
+
         <div className="col-sm-6">
+          {/* List */}
           <h4>{t('sandbox.list')}</h4>
           {/* <ul className="hljs"> */}
           <PrismAsyncLight
@@ -102,6 +103,8 @@ class Cheatsheet extends React.Component {
             <li>- [ ] {t('sandbox.task')}({t('sandbox.task_unchecked')})</li>
             <li>- [x] {t('sandbox.task')}({t('sandbox.task_checked')})</li>
           </ul>
+
+          {/* Quote */}
           <h4>{t('sandbox.quote')}</h4>
           <ul className="hljs">
             <li>&gt; {t('sandbox.quote1')}</li>
@@ -112,6 +115,8 @@ class Cheatsheet extends React.Component {
             <li>&gt;&gt;&gt; {t('sandbox.quote_nested')}</li>
             <li>&gt;&gt;&gt;&gt; {t('sandbox.quote_nested')}</li>
           </ul>
+
+          {/* Table */}
           <h4>{t('sandbox.table')}</h4>
           <pre className="border-0">
             |Left&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;Mid&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Right|<br />
@@ -119,6 +124,8 @@ class Cheatsheet extends React.Component {
             |col 1&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;col 2&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;col 3|<br />
             |col 1&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;col 2&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;col 3|<br />
           </pre>
+
+          {/* Image */}
           <h4>{t('sandbox.image')}</h4>
           <p className="mb-1"><code> ![{t('sandbox.alt_text')}](URL)</code> {t('sandbox.insert_image')}</p>
           <ul className="hljs">
