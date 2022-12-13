@@ -2,6 +2,7 @@ import React, { ReactNode } from 'react';
 
 import dynamic from 'next/dynamic';
 
+import { useCurrentLayoutClassName } from '../../client/services/use-current-layout-class-name';
 import { GrowiNavbar } from '../Navbar/GrowiNavbar';
 
 import { RawLayout } from './RawLayout';
@@ -16,19 +17,14 @@ const Fab = dynamic(() => import('../Fab').then(mod => mod.Fab), { ssr: false })
 
 
 type Props = {
-  className?: string,
-  expandContainer?: boolean,
   children?: ReactNode
 }
 
-export const ShareLinkLayout = ({
-  children, className, expandContainer,
-}: Props): JSX.Element => {
-
-  const myClassName = `${className ?? ''} ${expandContainer ? 'growi-layout-fluid' : ''}`;
+export const ShareLinkLayout = ({ children }: Props): JSX.Element => {
+  const className = useCurrentLayoutClassName();
 
   return (
-    <RawLayout className={myClassName}>
+    <RawLayout className={className}>
       <GrowiNavbar />
 
       <div className="page-wrapper d-flex d-print-block">

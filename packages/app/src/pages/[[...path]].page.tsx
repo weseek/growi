@@ -40,7 +40,7 @@ import { useEditingMarkdown } from '~/stores/editor';
 import { useSWRxCurrentPage, useSWRxIsGrantNormalized } from '~/stores/page';
 import { useRedirectFrom } from '~/stores/page-redirect';
 import {
-  useEditorMode, useSelectedGrant,
+  useSelectedGrant,
   usePreferDrawerModeByUser, usePreferDrawerModeOnEditByUser, useSidebarCollapsed, useCurrentSidebarContents, useCurrentProductNavWidth,
 } from '~/stores/ui';
 import { useSetupGlobalSocket, useSetupGlobalSocketForPage } from '~/stores/websocket';
@@ -51,7 +51,7 @@ import loggerFactory from '~/utils/logger';
 // import GrowiSubNavigation from '../client/js/components/Navbar/GrowiSubNavigation';
 // import GrowiSubNavigationSwitcher from '../client/js/components/Navbar/GrowiSubNavigationSwitcher';
 import { DescendantsPageListModal } from '../components/DescendantsPageListModal';
-import { BasicLayout } from '../components/Layout/BasicLayout';
+import { BasicLayoutWithCurrentPage } from '../components/Layout/BasicLayout';
 import GrowiContextualSubNavigation from '../components/Navbar/GrowiContextualSubNavigation';
 import DisplaySwitcher from '../components/Page/DisplaySwitcher';
 // import { serializeUserSecurely } from '../server/models/serializers/user-serializer';
@@ -72,7 +72,6 @@ import {
 import {
   CommonProps, getNextI18NextConfig, getServerSideCommonProps, generateCustomTitle,
 } from './utils/commons';
-// import { useCurrentPageSWR } from '../stores/page';
 
 
 declare global {
@@ -260,14 +259,12 @@ const Page: NextPage<Props> = (props: Props) => {
   // useIsNotCreatable(props.isForbidden || !isCreatablePage(pagePath)); // TODO: need to include props.isIdentical
   useCurrentPathname(props.currentPathname);
 
-  const { data: currentPage } = useSWRxCurrentPage(undefined, pageWithMeta?.data ?? null); // store initial data
+  useSWRxCurrentPage(undefined, pageWithMeta?.data ?? null); // store initial data
 
   useEditingMarkdown(pageWithMeta?.data.revision?.body);
 
   const { data: grantData } = useSWRxIsGrantNormalized(pageId);
   const { mutate: mutateSelectedGrant } = useSelectedGrant();
-
-  const { getClassNamesByEditorMode } = useEditorMode();
 
   useSetupGlobalSocket();
   useSetupGlobalSocketForPage(pageId);
@@ -289,18 +286,7 @@ const Page: NextPage<Props> = (props: Props) => {
     }
   }, [props.currentPathname, router]);
 
-  const classNames: string[] = [];
-
-  const isSidebar = pagePath === '/Sidebar';
-  classNames.push(...getClassNamesByEditorMode(isSidebar));
-
   const isTopPagePath = isTopPage(pageWithMeta?.data.path ?? '');
-
-  const isContainerFluidEachPage = currentPage == null || !('expandContentWidth' in currentPage)
-    ? null
-    : currentPage.expandContentWidth;
-  const isContainerFluidDefault = props.isContainerFluid;
-  const isContainerFluid = isContainerFluidEachPage ?? isContainerFluidDefault;
 
   const title = generateCustomTitle(props, 'GROWI');
 
@@ -311,7 +297,7 @@ const Page: NextPage<Props> = (props: Props) => {
       </Head>
       <DrawioViewerScript />
 
-      <BasicLayout className={classNames.join(' ')} expandContainer={isContainerFluid}>
+      <BasicLayoutWithCurrentPage>
 
         <div className="h-100 d-flex flex-column justify-content-between">
           <header className="py-0 position-relative">
@@ -362,13 +348,15 @@ const Page: NextPage<Props> = (props: Props) => {
             </footer>
           )}
 
+          {/* TODO: move these components outside of BasicLayoutWithCurrentPage */}
           <UnsavedAlertDialog />
           <DescendantsPageListModal />
           <DrawioModal />
           <HandsontableModal />
+
           {shouldRenderPutbackPageModal && <PutbackPageModal />}
         </div>
-      </BasicLayout>
+      </BasicLayoutWithCurrentPage>
     </>
   );
 };

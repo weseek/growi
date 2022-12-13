@@ -80,10 +80,9 @@ const TagPage: NextPage<CommonProps> = (props: Props) => {
   useRendererConfig(props.rendererConfig);
 
   const title = generateCustomTitle(props, 'GROWI');
-  const classNames: string[] = [];
 
   return (
-    <BasicLayout className={classNames.join(' ')}>
+    <BasicLayout>
       <Head>
         <title>{title}</title>
       </Head>

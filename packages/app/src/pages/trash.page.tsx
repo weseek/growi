@@ -16,7 +16,7 @@ import {
   useCurrentProductNavWidth, useCurrentSidebarContents, useDrawerMode, usePreferDrawerModeByUser, usePreferDrawerModeOnEditByUser, useSidebarCollapsed,
 } from '~/stores/ui';
 
-import { BasicLayout } from '../components/Layout/BasicLayout';
+import { BasicLayoutWithCurrentPage } from '../components/Layout/BasicLayout';
 import {
   useCurrentUser, useCurrentPageId, useCurrentPathname,
   useIsSearchServiceConfigured, useIsSearchServiceReachable,
@@ -78,7 +78,7 @@ const TrashPage: NextPage<CommonProps> = (props: Props) => {
       <Head>
         <title>{title}</title>
       </Head>
-      <BasicLayout>
+      <BasicLayoutWithCurrentPage>
         <header className="py-0 position-relative">
           <GrowiSubNavigation
             pagePath="/trash"
@@ -94,7 +94,7 @@ const TrashPage: NextPage<CommonProps> = (props: Props) => {
         </div>
 
         <div id="grw-fav-sticky-trigger" className="sticky-top"></div>
-      </BasicLayout>
+      </BasicLayoutWithCurrentPage>
 
       <EmptyTrashModal />
       <PutbackPageModal />
