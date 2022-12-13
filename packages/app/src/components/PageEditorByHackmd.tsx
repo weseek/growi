@@ -86,7 +86,7 @@ export const PageEditorByHackmd = (): JSX.Element => {
   const { data: revisionIdHackmdSynced, mutate: mutateRevisionIdHackmdSynced } = useRevisionIdHackmdSynced();
   const { mutate: mutateIsEnabledUnsavedWarning } = useIsEnabledUnsavedWarning();
   const { data: isHackmdDraftUpdatingInRealtime, mutate: mutateIsHackmdDraftUpdatingInRealtime } = useIsHackmdDraftUpdatingInRealtime();
-  const { data: remoteRevisionId, mutate: mutateRemoteRevisionId } = useRemoteRevisionId(revision?._id);
+  const { data: remoteRevisionId, mutate: mutateRemoteRevisionId } = useRemoteRevisionId();
 
   const hackmdEditorRef = useRef<HackEditorRef>(null);
 
