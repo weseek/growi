@@ -160,8 +160,8 @@ const RecentChanges = (): JSX.Element => {
   }, [retrieveSizePreferenceFromLocalStorage]);
 
   return (
-    <div data-testid="grw-recent-changes">
-      <div className="grw-sidebar-content-header p-3 d-flex">
+    <div className="px-3" data-testid="grw-recent-changes">
+      <div className="grw-sidebar-content-header py-3 d-flex">
         <h3 className="mb-0 text-nowrap">{t('Recent Changes')}</h3>
         <SidebarHeaderReloadButton onClick={() => mutate()}/>
         <div className="d-flex align-items-center">
@@ -180,7 +180,7 @@ const RecentChanges = (): JSX.Element => {
       </div>
       {
         isLoading ? <RecentChangesContentSkeleton /> : (
-          <div className="grw-recent-changes p-3">
+          <div className="grw-recent-changes py-3">
             <ul className="list-group list-group-flush">
               <InfiniteScroll
                 swrInifiniteResponse={swr}

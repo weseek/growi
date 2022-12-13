@@ -16,7 +16,7 @@ const PageTreeHeader = () => {
   const { t } = useTranslation();
 
   return (
-    <div className="grw-sidebar-content-header p-3">
+    <div className="grw-sidebar-content-header py-3 d-flex">
       <h3 className="mb-0">{t('Page Tree')}</h3>
     </div>
   );
@@ -35,10 +35,10 @@ const PageTree: FC = memo(() => {
 
   if (migrationStatus == null) {
     return (
-      <>
+      <div className="px-3">
         <PageTreeHeader />
         <PageTreeContentSkeleton />
-      </>
+      </div>
     );
   }
 
@@ -46,13 +46,13 @@ const PageTree: FC = memo(() => {
     // TODO : improve design
     // Story : https://redmine.weseek.co.jp/issues/83755
     return (
-      <>
+      <div className="px-3">
         <PageTreeHeader />
         <div className="mt-5 mx-2 text-center">
           <h3 className="text-gray">{t('v5_page_migration.page_tree_not_avaliable')}</h3>
           <a href="/admin">{t('v5_page_migration.go_to_settings')}</a>
         </div>
-      </>
+      </div>
     );
   }
 
@@ -66,7 +66,7 @@ const PageTree: FC = memo(() => {
   const path = currentPath || '/';
 
   return (
-    <>
+    <div className="px-3">
       <PageTreeHeader />
       <ItemsTree
         isEnableActions={!isGuestUser}
@@ -76,13 +76,13 @@ const PageTree: FC = memo(() => {
       />
 
       {!isGuestUser && migrationStatus?.migratablePagesCount != null && migrationStatus.migratablePagesCount !== 0 && (
-        <div className="grw-pagetree-footer border-top p-3 w-100">
+        <div className="grw-pagetree-footer border-top py-3 w-100">
           <div className="private-legacy-pages-link px-3 py-2">
             <PrivateLegacyPagesLink />
           </div>
         </div>
       )}
-    </>
+    </div>
   );
 });
 

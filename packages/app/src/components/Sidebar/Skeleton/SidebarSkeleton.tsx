@@ -13,7 +13,7 @@ import styles from './SidebarSkeleton.module.scss';
 
 export const SidebarHeaderSkeleton = (): JSX.Element => {
   return (
-    <div className="grw-sidebar-content-header p-3">
+    <div className="grw-sidebar-content-header py-3">
       <Skeleton additionalClass={styles['grw-sidebar-content-header-skeleton']} />
     </div>
   );
@@ -29,22 +29,22 @@ export const SidebarSkeleton = (): JSX.Element => {
     case SidebarContentsType.TAG:
       SidebarContentSkeleton = TagContentSkeleton;
       break;
-    case SidebarContentsType.TREE:
-      SidebarContentSkeleton = PageTreeContentSkeleton;
-      break;
     case SidebarContentsType.RECENT:
       SidebarContentSkeleton = RecentChangesContentSkeleton;
       break;
     case SidebarContentsType.CUSTOM:
-    default:
       SidebarContentSkeleton = CustomSidebarContentSkeleton;
+      break;
+    case SidebarContentsType.TREE:
+    default:
+      SidebarContentSkeleton = PageTreeContentSkeleton;
       break;
   }
 
   return (
-    <>
+    <div className={currentSidebarContents === SidebarContentsType.TAG ? 'px-4' : 'px-3'}>
       <SidebarHeaderSkeleton />
       <SidebarContentSkeleton />
-    </>
+    </div>
   );
 };

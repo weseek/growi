@@ -21,7 +21,7 @@ const logger = loggerFactory('growi:cli:CustomSidebar');
 
 const SidebarNotFound = () => {
   return (
-    <div className="grw-sidebar-content-header h5 text-center p-3">
+    <div className="grw-sidebar-content-header h5 text-center py-3">
       <Link href="/Sidebar#edit">
         <a><i className="icon-magic-wand"></i> Create <strong>/Sidebar</strong> page</a>
       </Link>
@@ -43,8 +43,8 @@ const CustomSidebar: FC = () => {
   const markdown = (page?.revision as IRevision | undefined)?.body;
 
   return (
-    <>
-      <div className="grw-sidebar-content-header p-3 d-flex">
+    <div className="px-3">
+      <div className="grw-sidebar-content-header py-3 d-flex">
         <h3 className="mb-0">
           {t('CustomSidebar')}
           <Link href="/Sidebar"><a className="h6 ml-2"><i className="icon-pencil"></i></a></Link>
@@ -60,7 +60,7 @@ const CustomSidebar: FC = () => {
 
       {
         (!isLoading && markdown != null) && (
-          <div className={`p-3 grw-custom-sidebar-content ${styles['grw-custom-sidebar-content']}`}>
+          <div className={`py-3 grw-custom-sidebar-content ${styles['grw-custom-sidebar-content']}`}>
             <RevisionRenderer
               rendererOptions={rendererOptions}
               markdown={markdown}
@@ -74,7 +74,7 @@ const CustomSidebar: FC = () => {
           <SidebarNotFound />
         )
       }
-    </>
+    </div>
   );
 };
 

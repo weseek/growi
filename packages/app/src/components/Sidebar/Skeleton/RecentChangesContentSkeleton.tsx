@@ -27,7 +27,7 @@ const SkeletonItem = () => {
 const RecentChangesContentSkeleton = (): JSX.Element => {
 
   return (
-    <div className="grw-recent-changes p-3">
+    <div className="grw-recent-changes py-3">
       <ul className="list-group list-group-flush">
         <SkeletonItem />
         <SkeletonItem />
