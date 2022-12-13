@@ -4,7 +4,6 @@ import path from 'path';
 // eslint-disable-next-line no-restricted-imports
 import axios from 'axios';
 import mongoose from 'mongoose';
-import { useAgent } from 'request-filtering-agent';
 import unzipper from 'unzipper';
 
 import type { GrowiPlugin, GrowiPluginOrigin } from '~/interfaces/plugin';
@@ -58,8 +57,6 @@ export class PluginService {
         axios({
           method: 'GET',
           url: requestUrl,
-          httpAgent: useAgent(requestUrl, { stopPortScanningByUrlRedirection: true }),
-          httpsAgent: useAgent(requestUrl, { stopPortScanningByUrlRedirection: true }),
           responseType: 'stream',
         })
           .then((res) => {
