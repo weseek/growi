@@ -1,3 +1,5 @@
+import { Readable } from 'stream';
+
 import loggerFactory from '~/utils/logger';
 
 const logger = loggerFactory('growi:service:fileUploaderLocal');
@@ -12,6 +14,7 @@ const urljoin = require('url-join');
 
 module.exports = function(crowi) {
   const Uploader = require('./uploader');
+  const { configManager } = crowi;
   const lib = new Uploader(crowi);
   const basePath = path.posix.join(crowi.publicDir, 'uploads');
 
@@ -51,7 +54,7 @@ module.exports = function(crowi) {
 
   lib.deleteFiles = async function(attachments) {
     attachments.map((attachment) => {
-      return this.deleteFile(attachment);
+      return lib.deleteFile(attachment);
     });
   };
 
@@ -68,7 +71,7 @@ module.exports = function(crowi) {
     return fs.unlinkSync(filePath);
   };
 
-  lib.uploadFile = async function(fileStream, attachment) {
+  lib.uploadAttachment = async function(fileStream, attachment) {
     logger.debug(`File uploading: fileName=${attachment.fileName}`);
 
     const filePath = getFilePathOnStorage(attachment);
@@ -78,6 +81,20 @@ module.exports = function(crowi) {
     mkdir.sync(dirpath);
 
     const stream = fileStream.pipe(fs.createWriteStream(filePath));
+    return streamToPromise(stream);
+  };
+
+  lib.saveFile = async function({ filePath, contentType, data }) {
+    const absFilePath = path.posix.join(basePath, filePath);
+    const dirpath = path.posix.dirname(absFilePath);
+
+    // mkdir -p
+    mkdir.sync(dirpath);
+
+    const fileStream = new Readable();
+    fileStream.push(data);
+    fileStream.push(null); // EOF
+    const stream = fileStream.pipe(fs.createWriteStream(absFilePath));
     return streamToPromise(stream);
   };
 
@@ -108,18 +125,18 @@ module.exports = function(crowi) {
    * In detail, the followings are checked.
    * - per-file size limit (specified by MAX_FILE_SIZE)
    */
-  lib.checkLimit = async(uploadFileSize) => {
-    const maxFileSize = crowi.configManager.getConfig('crowi', 'app:maxFileSize');
-    const totalLimit = crowi.configManager.getConfig('crowi', 'app:fileUploadTotalLimit');
+  lib.checkLimit = async function(uploadFileSize) {
+    const maxFileSize = configManager.getConfig('crowi', 'app:maxFileSize');
+    const totalLimit = configManager.getConfig('crowi', 'app:fileUploadTotalLimit');
     return lib.doCheckLimit(uploadFileSize, maxFileSize, totalLimit);
   };
 
   /**
    * Checks if Uploader can respond to the HTTP request.
    */
-  lib.canRespond = () => {
+  lib.canRespond = function() {
     // Check whether to use internal redirect of nginx or Apache.
-    return lib.configManager.getConfig('crowi', 'fileUpload:local:useInternalRedirect');
+    return configManager.getConfig('crowi', 'fileUpload:local:useInternalRedirect');
   };
 
   /**
@@ -127,11 +144,11 @@ module.exports = function(crowi) {
    * @param {Response} res
    * @param {Response} attachment
    */
-  lib.respond = (res, attachment) => {
+  lib.respond = function(res, attachment) {
     // Responce using internal redirect of nginx or Apache.
     const storagePath = getFilePathOnStorage(attachment);
     const relativePath = path.relative(crowi.publicDir, storagePath);
-    const internalPathRoot = lib.configManager.getConfig('crowi', 'fileUpload:local:internalRedirectPath');
+    const internalPathRoot = configManager.getConfig('crowi', 'fileUpload:local:internalRedirectPath');
     const internalPath = urljoin(internalPathRoot, relativePath);
     res.set('X-Accel-Redirect', internalPath);
     res.set('X-Sendfile', storagePath);
@@ -141,7 +158,7 @@ module.exports = function(crowi) {
   /**
    * List files in storage
    */
-  lib.listFiles = async() => {
+  lib.listFiles = async function() {
     // `mkdir -p` to avoid ENOENT error
     await mkdir(basePath);
     const filePaths = await readdirRecursively(basePath);

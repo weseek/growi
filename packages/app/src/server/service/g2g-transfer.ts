@@ -1,4 +1,3 @@
-import { randomUUID } from 'crypto';
 import { createReadStream, ReadStream } from 'fs';
 import { basename } from 'path';
 import { Readable } from 'stream';
@@ -137,81 +136,6 @@ const generateAxiosRequestConfigWithTransferKey = (tk: TransferKey, additionalHe
       [X_GROWI_TRANSFER_KEY_HEADER_NAME]: key,
     },
     maxBodyLength: Infinity,
-  };
-};
-
-
-/**
- * Check whether the storage is writable
- * @param crowi Crowi instance
- * @returns Whether the storage is writable
- */
-const hasWritePermission = async(crowi: any): Promise<boolean> => {
-  const { fileUploadService } = crowi;
-
-  let writable = true;
-  const fileStream = new Readable();
-  fileStream.push('This file was created during g2g transfer to check write permission. You can safely remove this file.');
-  fileStream.push(null); // EOF
-  const attachment = {
-    fileName: `${randomUUID()}.growi`,
-    filePath: '',
-    fileFormat: 'text/plain',
-  };
-
-  try {
-    await fileUploadService.uploadFile(fileStream, attachment);
-    // TODO: remove tmp file
-  }
-  catch (err) {
-    writable = false;
-    logger.error(err);
-  }
-
-  return writable;
-};
-
-/**
- * generate GROWIInfo
- * @param crowi Crowi instance
- * @returns
- */
-const generateGROWIInfo = async(crowi: any): Promise<IDataGROWIInfo> => {
-  // TODO: add attachment file limit
-  const { configManager } = crowi;
-  const userUpperLimit = configManager.getConfig('crowi', 'security:userUpperLimit');
-  const fileUploadDisabled = configManager.getConfig('crowi', 'app:fileUploadDisabled');
-  const fileUploadTotalLimit = configManager.getFileUploadTotalLimit();
-  const version = crowi.version;
-  const writable = await hasWritePermission(crowi);
-
-  const attachmentInfo = {
-    type: configManager.getConfig('crowi', 'app:fileUploadType'),
-    bucket: undefined,
-    customEndpoint: undefined, // for S3
-    uploadNamespace: undefined, // for GCS
-    writable,
-  };
-
-  // put storage location info to check storage identification
-  switch (attachmentInfo.type) {
-    case 'aws':
-      attachmentInfo.bucket = configManager.getConfig('crowi', 'aws:s3Bucket');
-      attachmentInfo.customEndpoint = configManager.getConfig('crowi', 'aws:s3CustomEndpoint');
-      break;
-    case 'gcs':
-      attachmentInfo.bucket = configManager.getConfig('crowi', 'gcs:bucket');
-      attachmentInfo.uploadNamespace = configManager.getConfig('crowi', 'gcs:uploadNamespace');
-      break;
-    default:
-  }
-
-  return {
-    userUpperLimit,
-    fileUploadDisabled,
-    fileUploadTotalLimit,
-    version,
-    attachmentInfo,
   };
 };
 
@@ -491,15 +415,62 @@ export class G2GTransferReceiverService implements Receiver {
     this.crowi = crowi;
   }
 
-  public async validateTransferKey(transferKeyString: string): Promise<void> {
-    // Parse to tk
-    // Find active tkd
+  public async validateTransferKey(key: string): Promise<void> {
+    const transferKey = await (TransferKeyModel as any).findOne({ key });
 
-    return;
+    if (transferKey == null) {
+      throw new Error(`Transfer key "${key}" was expired or not found`);
+    }
+
+    try {
+      TransferKey.parse(transferKey.keyString);
+    }
+    catch (err) {
+      logger.error(err);
+      throw new Error(`Transfer key "${key}" is invalid`);
+    }
   }
 
+  /**
+   * generate GROWIInfo
+   * @returns
+   */
   public async answerGROWIInfo(): Promise<IDataGROWIInfo> {
-    return generateGROWIInfo(this.crowi);
+    // TODO: add attachment file limit
+    const { version, configManager, fileUploadService } = this.crowi;
+    const userUpperLimit = configManager.getConfig('crowi', 'security:userUpperLimit');
+    const fileUploadDisabled = configManager.getConfig('crowi', 'app:fileUploadDisabled');
+    const fileUploadTotalLimit = configManager.getFileUploadTotalLimit();
+    const isWritable = await fileUploadService.isWritable();
+
+    const attachmentInfo = {
+      type: configManager.getConfig('crowi', 'app:fileUploadType'),
+      bucket: undefined,
+      customEndpoint: undefined, // for S3
+      uploadNamespace: undefined, // for GCS
+      writable: isWritable,
+    };
+
+    // put storage location info to check storage identification
+    switch (attachmentInfo.type) {
+      case 'aws':
+        attachmentInfo.bucket = configManager.getConfig('crowi', 'aws:s3Bucket');
+        attachmentInfo.customEndpoint = configManager.getConfig('crowi', 'aws:s3CustomEndpoint');
+        break;
+      case 'gcs':
+        attachmentInfo.bucket = configManager.getConfig('crowi', 'gcs:bucket');
+        attachmentInfo.uploadNamespace = configManager.getConfig('crowi', 'gcs:uploadNamespace');
+        break;
+      default:
+    }
+
+    return {
+      userUpperLimit,
+      fileUploadDisabled,
+      fileUploadTotalLimit,
+      version,
+      attachmentInfo,
+    };
   }
 
   public async createTransferKey(appSiteUrlOrigin: string): Promise<string> {
@@ -535,7 +506,7 @@ export class G2GTransferReceiverService implements Receiver {
   public async receiveAttachment(content: Readable, attachmentMap): Promise<void> {
     // TODO: test with S3, local
     const { fileUploadService } = this.crowi;
-    return fileUploadService.uploadFile(content, attachmentMap);
+    return fileUploadService.uploadAttachment(content, attachmentMap);
   }
 
   /**
