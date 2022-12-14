@@ -17,3 +17,7 @@ export type GrowiThemeColorSummary = {
 export type GrowiCustomThemeSummary = GrowiThemeColorSummary & {
   manifestKey: string,
 };
+
+export const isCustomTheme = (summary: GrowiThemeColorSummary): summary is GrowiCustomThemeSummary => {
+  return 'manifestKey' in summary;
+};

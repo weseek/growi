@@ -5,7 +5,7 @@ import { useTranslation } from 'next-i18next';
 
 import { apiv3Put } from '~/client/util/apiv3-client';
 import { toastSuccess, toastError, toastWarning } from '~/client/util/toastr';
-import { useSWRxGrowiTheme } from '~/stores/admin/customize';
+import { useSWRxGrowiThemeSetting } from '~/stores/admin/customize';
 
 import AdminUpdateButtonRow from '../Common/AdminUpdateButtonRow';
 
@@ -20,12 +20,12 @@ type Props = {
 const CustomizeThemeSetting = (props: Props): JSX.Element => {
   const { t } = useTranslation();
 
-  const { data: currentTheme, error } = useSWRxGrowiTheme();
-  const [selectedTheme, setSelectedTheme] = useState(currentTheme);
+  const { data, error } = useSWRxGrowiThemeSetting();
+  const [selectedTheme, setSelectedTheme] = useState(data?.currentTheme);
 
   useEffect(() => {
-    setSelectedTheme(currentTheme);
-  }, [currentTheme]);
+    setSelectedTheme(data?.currentTheme);
+  }, [data?.currentTheme]);
 
   const selectedHandler = useCallback((themeName: string) => {
     setSelectedTheme(themeName);
@@ -49,11 +49,19 @@ const CustomizeThemeSetting = (props: Props): JSX.Element => {
     }
   }, [selectedTheme, t]);
 
+  const availableThemes = data?.customThemeSummaries == null
+    ? PresetThemesSummaries
+    : PresetThemesSummaries.concat(data.customThemeSummaries);
+
   return (
     <div className="row">
       <div className="col-12">
         <h2 className="admin-setting-header">{t('admin:customize_settings.theme')}</h2>
-        <CustomizeThemeOptions onSelected={selectedHandler} availableThemes={PresetThemesSummaries} selectedTheme={selectedTheme} />
+        <CustomizeThemeOptions
+          onSelected={selectedHandler}
+          availableThemes={availableThemes}
+          selectedTheme={selectedTheme}
+        />
         <AdminUpdateButtonRow onClick={submitHandler} disabled={error != null} />
       </div>
     </div>

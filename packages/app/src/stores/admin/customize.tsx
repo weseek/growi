@@ -27,22 +27,28 @@ export const useSWRxLayoutSetting = (): SWRResponse<IResLayoutSetting, Error> & 
   };
 };
 
-export const useSWRxGrowiTheme = (): SWRResponse<string, Error> => {
+export const useSWRxGrowiThemeSetting = (): SWRResponse<IResGrowiTheme, Error> => {
 
   const fetcher = useCallback(async() => {
     const res = await apiv3Get<IResGrowiTheme>('/customize-setting/theme');
-    return res.data.theme;
+    return res.data;
   }, []);
 
   const swrResponse = useSWRImmutable('/customize-setting/theme', fetcher);
 
   const update = async(theme: string) => {
     await apiv3Put('/customize-setting/layout', { theme });
-    await swrResponse.mutate();
+
+    if (swrResponse.data == null) {
+      swrResponse.mutate();
+      return;
+    }
+
+    const newData = { ...swrResponse.data, currentTheme: theme };
     // The updateFn should be a promise or asynchronous function to handle the remote mutation
     // it should return updated data. see: https://swr.vercel.app/docs/mutation#optimistic-updates
     // Moreover, `async() => false` does not work since it's too fast to be calculated.
-    await swrResponse.mutate(new Promise(r => setTimeout(() => r(theme), 10)), { optimisticData: () => theme });
+    await swrResponse.mutate(new Promise(r => setTimeout(() => r(newData), 10)), { optimisticData: () => newData });
   };
 
   return Object.assign(

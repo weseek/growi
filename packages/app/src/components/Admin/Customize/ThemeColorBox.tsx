@@ -8,19 +8,20 @@ type Props = {
   topbar: string,
   sidebar: string,
   theme: string,
+  isCustomTheme?: boolean,
   onSelected?: () => void,
 };
 
 export const ThemeColorBox = (props: Props): JSX.Element => {
 
   const {
-    isSelected, onSelected, name, bg, topbar, sidebar, theme,
+    isSelected, onSelected, name, bg, topbar, sidebar, theme, isCustomTheme,
   } = props;
 
   return (
     <div
       id={`theme-option-${name}`}
-      className={`theme-option-container d-flex flex-column align-items-center ${isSelected && 'active'}`}
+      className={`theme-option-container d-flex flex-column align-items-center ${isSelected ? 'active' : ''}`}
       onClick={onSelected}
     >
       <a id={name} role="button" className={`m-0 ${name} theme-button`}>
@@ -34,6 +35,7 @@ export const ThemeColorBox = (props: Props): JSX.Element => {
         </svg>
       </a>
       <span className="theme-option-name"><b>{ name }</b></span>
+      { isCustomTheme && <span className='theme-option-badge badge badge-primary mt-1'>Plugin</span> }
     </div>
   );
 

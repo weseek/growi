@@ -1,6 +1,6 @@
 import React, { useMemo } from 'react';
 
-import { GrowiThemeColorSummary, GrowiThemeSchemeType } from '@growi/core';
+import { GrowiThemeColorSummary, GrowiThemeSchemeType, isCustomTheme } from '@growi/core';
 import { useTranslation } from 'next-i18next';
 
 import { ThemeColorBox } from './ThemeColorBox';
@@ -35,6 +35,7 @@ const CustomizeThemeOptions = (props: Props): JSX.Element => {
               <ThemeColorBox
                 key={theme.name}
                 isSelected={selectedTheme != null && selectedTheme === theme.name}
+                isCustomTheme={isCustomTheme(theme)}
                 onSelected={() => onSelected?.(theme.name)}
                 {...theme}
               />
@@ -51,6 +52,7 @@ const CustomizeThemeOptions = (props: Props): JSX.Element => {
               <ThemeColorBox
                 key={theme.name}
                 isSelected={selectedTheme != null && selectedTheme === theme.name}
+                isCustomTheme={isCustomTheme(theme)}
                 onSelected={() => onSelected?.(theme.name)}
                 {...theme}
               />
