@@ -2,7 +2,7 @@ import React from 'react';
 
 import { useTranslation } from 'next-i18next';
 
-import NotAvailableForGuest from '../NotAvailableForGuest';
+import { NotAvailableForGuest } from '../NotAvailableForGuest';
 
 type RenderTagLabelsProps = {
   tags: string[],
