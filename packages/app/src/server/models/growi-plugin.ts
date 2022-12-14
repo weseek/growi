@@ -18,6 +18,7 @@ export interface GrowiPluginModel extends Model<GrowiPluginDocument> {
 
 const growiPluginMetaThemesSchema = new Schema<GrowiCustomThemeSummary>({
   name: { type: String, required: true },
+  manifestKey: { type: String, required: true },
   schemeType: {
     type: String,
     enum: GrowiThemeSchemeType,
