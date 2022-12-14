@@ -51,7 +51,7 @@ const BookmarkFolderMenu = (props: Props): JSX.Element => {
 
   const addBookmarkToFolder = useCallback(async(folderId: string) => {
     try {
-      await apiv3Post('/bookmark-folder/add-boookmark-to-folder', { page: currentPage, folderId });
+      await apiv3Post('/bookmark-folder/add-boookmark-to-folder', { pageId: currentPage?._id, folderId });
       toastSuccess('Bookmark added to bookmark folder successfully');
     }
     catch (err) {

@@ -1,9 +1,10 @@
 import { isValidObjectId } from '@growi/core/src/utils/objectid-utils';
-import {
-  Types, Document, Model, Schema, model,
+import monggoose, {
+  Types, Document, Model, Schema,
 } from 'mongoose';
 
-import { IBookmarkFolder, BookmarkFolderItems, MyBookmarkList } from '~/interfaces/bookmark-info';
+
+import { IBookmarkFolder, BookmarkFolderItems } from '~/interfaces/bookmark-info';
 import { IPageHasId } from '~/interfaces/page';
 
 import loggerFactory from '../../utils/logger';
@@ -13,16 +14,15 @@ import { InvalidParentBookmarkFolderError } from './errors';
 
 
 const logger = loggerFactory('growi:models:bookmark-folder');
-const Bookmark = require('./bookmark');
+const Bookmark = monggoose.model('Bookmark');
 
-const BookmarkSchema = model('Bookmark').schema;
 
 export interface BookmarkFolderDocument extends Document {
   _id: Types.ObjectId
   name: string
   owner: Types.ObjectId
   parent?: [this]
-  bookmarks: MyBookmarkList
+  bookmarks: [Types.ObjectId]
 }
 
 export interface BookmarkFolderModel extends Model<BookmarkFolderDocument>{
@@ -31,14 +31,16 @@ export interface BookmarkFolderModel extends Model<BookmarkFolderDocument>{
   findChildFolderById(parentBookmarkFolder: Types.ObjectId | string): Promise<BookmarkFolderDocument[]>
   deleteFolderAndChildren(bookmarkFolderId: Types.ObjectId | string): {deletedCount: number}
   updateBookmarkFolder(bookmarkFolderId: string, name: string, parent: string): BookmarkFolderDocument | null
-  insertOrUpdateBookmarkedPage(page: IPageHasId, userId: Types.ObjectId | string, folderId: string)
+  insertOrUpdateBookmarkedPage(pageId: IPageHasId, userId: Types.ObjectId | string, folderId: string)
 }
 
 const bookmarkFolderSchema = new Schema<BookmarkFolderDocument, BookmarkFolderModel>({
   name: { type: String },
   owner: { type: Schema.Types.ObjectId, ref: 'User', index: true },
   parent: { type: Schema.Types.ObjectId, ref: 'BookmarkFolder', required: false },
-  bookmarks: { type: [BookmarkSchema], default: [], required: false },
+  bookmarks: [{
+    type: Schema.Types.ObjectId, ref: 'Bookmark', default: [], required: false,
+  }],
 }, {
   toObject: { virtuals: true },
 });
@@ -80,7 +82,7 @@ bookmarkFolderSchema.statics.findFolderAndChildren = async function(
 
   const parentFolder = await this.findById(parentId) as unknown as BookmarkFolderDocument;
   const bookmarkFolders = await this.find({ owner: userId, parent: parentFolder })
-    .populate({ path: 'children' }).exec() as unknown as BookmarkFolderItems[];
+    .populate({ path: 'children' }).populate({ path: 'bookmarks' }).exec() as unknown as BookmarkFolderItems[];
   return bookmarkFolders;
 };
 
@@ -119,9 +121,9 @@ bookmarkFolderSchema.statics.updateBookmarkFolder = async function(bookmarkFolde
 
 };
 
-bookmarkFolderSchema.statics.insertOrUpdateBookmarkedPage = async function(page: IPageHasId, userId: Types.ObjectId | string, folderId: string):
-Promise<BookmarkFolderDocument> {
-  const bookmarkedPage = await Bookmark.findOneAndUpdate({ page: page._id, user: userId }, { new: true, upsert: true });
+bookmarkFolderSchema.statics.insertOrUpdateBookmarkedPage = async function(pageId: IPageHasId, userId: Types.ObjectId | string, folderId: string):
+Promise<BookmarkFolderDocument | null> {
+  const bookmarkedPage = await Bookmark.findOneAndUpdate({ page: pageId, user: userId }, { page: pageId, user: userId }, { new: true, upsert: true });
   const bookmarkFolder = await this.findByIdAndUpdate(folderId, { $addToSet: { bookmarks: bookmarkedPage } }, { new: true, upsert: true });
   return bookmarkFolder;
 };

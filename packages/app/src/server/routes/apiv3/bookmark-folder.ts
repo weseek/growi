@@ -18,6 +18,10 @@ const validator = {
     body('name').isString().withMessage('name must be a string'),
     body('parent').isMongoId().optional({ nullable: true }),
   ],
+  bookmarkPage: [
+    body('pageId').isMongoId().withMessage('Page ID must be a valid mongo ID'),
+    body('folderId').isMongoId().withMessage('Folder ID must be a valid mongo ID'),
+  ],
 };
 
 module.exports = (crowi) => {
@@ -51,11 +55,13 @@ module.exports = (crowi) => {
     const _parentId = parentId ?? null;
     try {
       const bookmarkFolders = await BookmarkFolder.findFolderAndChildren(req.user?._id, _parentId);
+      console.log(bookmarkFolders);
       const bookmarkFolderItems = bookmarkFolders.map(bookmarkFolder => ({
         _id: bookmarkFolder._id,
         name: bookmarkFolder.name,
         parent: bookmarkFolder.parent,
         children: bookmarkFolder.children,
+        bookmarkedPages: bookmarkFolder.bookmarks,
       }));
       return res.apiv3({ bookmarkFolderItems });
     }
@@ -89,12 +95,12 @@ module.exports = (crowi) => {
     }
   });
 
-  router.post('/add-boookmark-to-folder', accessTokenParser, loginRequiredStrictly, validator.bookmarkFolder, apiV3FormValidator, async(req, res) => {
+  router.post('/add-boookmark-to-folder', accessTokenParser, loginRequiredStrictly, validator.bookmarkPage, apiV3FormValidator, async(req, res) => {
     const userId = req.user?._id;
-    const { page, folderId } = req.body;
+    const { pageId, folderId } = req.body;
 
     try {
-      const bookmarkFolder = await BookmarkFolder.insertOrUpdateBookmarkedPage(page, userId, folderId);
+      const bookmarkFolder = await BookmarkFolder.insertOrUpdateBookmarkedPage(pageId, userId, folderId);
       logger.debug('bookmark added to folder created', bookmarkFolder);
       return res.apiv3({ bookmarkFolder });
     }
