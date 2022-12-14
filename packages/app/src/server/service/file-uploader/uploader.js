@@ -20,10 +20,10 @@ class Uploader {
   }
 
   /**
-   * Get whether write opration to the storage is permitted
+   * Returns whether write opration to the storage is permitted
    * @returns Whether write opration to the storage is permitted
    */
-  async getIsWritable() {
+  async isWritable() {
     const filePath = `${randomUUID()}.growi`;
     const data = 'This file was created during g2g transfer to check write permission. You can safely remove this file.';
 
