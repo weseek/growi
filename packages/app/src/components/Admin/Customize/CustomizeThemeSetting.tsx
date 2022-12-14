@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useState } from 'react';
 
-import { PresetThemesSummaries } from '@growi/preset-themes';
+import { PresetThemesMetadatas } from '@growi/preset-themes';
 import { useTranslation } from 'next-i18next';
 
 import { apiv3Put } from '~/client/util/apiv3-client';
@@ -50,8 +50,8 @@ const CustomizeThemeSetting = (props: Props): JSX.Element => {
   }, [selectedTheme, t]);
 
   const availableThemes = data?.customThemeSummaries == null
-    ? PresetThemesSummaries
-    : PresetThemesSummaries.concat(data.customThemeSummaries);
+    ? PresetThemesMetadatas
+    : PresetThemesMetadatas.concat(data.customThemeSummaries);
 
   return (
     <div className="row">

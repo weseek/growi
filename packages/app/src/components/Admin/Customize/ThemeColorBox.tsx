@@ -1,22 +1,22 @@
 import React from 'react';
 
+import type { GrowiThemeMetadata } from '@growi/core';
+
 
 type Props = {
   isSelected: boolean,
-  name: string,
-  bg: string,
-  topbar: string,
-  sidebar: string,
-  theme: string,
-  isCustomTheme?: boolean,
+  metadata: GrowiThemeMetadata,
   onSelected?: () => void,
 };
 
 export const ThemeColorBox = (props: Props): JSX.Element => {
 
   const {
-    isSelected, onSelected, name, bg, topbar, sidebar, theme, isCustomTheme,
+    isSelected, metadata, onSelected,
   } = props;
+  const {
+    name, bg, topbar, sidebar, accent, isPresetTheme,
+  } = metadata;
 
   return (
     <div
@@ -30,12 +30,12 @@ export const ThemeColorBox = (props: Props): JSX.Element => {
             <path d="M -1 -1 L65 -1 L65 65 L-1 65 L-1 -1 Z" fill={bg}></path>
             <path d="M -1 -1 L65 -1 L65 15 L-1 15 L-1 -1 Z" fill={topbar}></path>
             <path d="M -1 15 L15 15 L15 65 L-1 65 L-1 15 Z" fill={sidebar}></path>
-            <path d="M 65 45 L65 65 L45 65 L65 45 Z" fill={theme}></path>
+            <path d="M 65 45 L65 65 L45 65 L65 45 Z" fill={accent}></path>
           </g>
         </svg>
       </a>
       <span className="theme-option-name"><b>{ name }</b></span>
-      { isCustomTheme && <span className='theme-option-badge badge badge-primary mt-1'>Plugin</span> }
+      { !isPresetTheme && <span className='theme-option-badge badge badge-primary mt-1'>Plugin</span> }
     </div>
   );
 

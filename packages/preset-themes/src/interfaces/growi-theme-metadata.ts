@@ -5,11 +5,13 @@ export const GrowiThemeSchemeType = {
 } as const;
 export type GrowiThemeSchemeType = typeof GrowiThemeSchemeType[keyof typeof GrowiThemeSchemeType];
 
-export type GrowiThemeColorSummary = {
+export type GrowiThemeMetadata = {
   name: string,
+  manifestKey: string,
   schemeType: GrowiThemeSchemeType,
   bg: string,
   topbar: string,
   sidebar: string,
-  theme: string,
+  accent: string,
+  isPresetTheme?: boolean,
 };

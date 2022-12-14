@@ -1,2 +1,3 @@
 export * from './consts/preset-themes';
-export * from './utils';
+
+export const manifestPath = 'dist/themes/manifest.json';

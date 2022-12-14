@@ -16,7 +16,7 @@ export * from './plugin/interfaces/option-parser';
 export * from './interfaces/attachment';
 export * from './interfaces/common';
 export * from './interfaces/growi-facade';
-export * from './interfaces/growi-custom-theme-summary';
+export * from './interfaces/growi-theme-metadata';
 export * from './interfaces/has-object-id';
 export * from './interfaces/lang';
 export * from './interfaces/page';

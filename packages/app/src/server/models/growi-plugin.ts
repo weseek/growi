@@ -1,4 +1,4 @@
-import { GrowiCustomThemeSummary, GrowiThemeSchemeType } from '@growi/core';
+import { GrowiThemeMetadata, GrowiThemeSchemeType } from '@growi/core';
 import {
   Schema, Model, Document,
 } from 'mongoose';
@@ -16,7 +16,7 @@ export interface GrowiPluginModel extends Model<GrowiPluginDocument> {
   findEnabledPluginsIncludingTypes(includingTypes: GrowiPluginResourceType[]): Promise<GrowiPlugin[]>
 }
 
-const growiPluginMetaThemesSchema = new Schema<GrowiCustomThemeSummary>({
+const growiThemeMetadataSchema = new Schema<GrowiThemeMetadata>({
   name: { type: String, required: true },
   manifestKey: { type: String, required: true },
   schemeType: {
@@ -27,7 +27,7 @@ const growiPluginMetaThemesSchema = new Schema<GrowiCustomThemeSummary>({
   bg: { type: String, required: true },
   topbar: { type: String, required: true },
   sidebar: { type: String, required: true },
-  theme: { type: String, required: true },
+  accent: { type: String, required: true },
 });
 
 const growiPluginMetaSchema = new Schema<GrowiPluginMeta|GrowiThemePluginMeta>({
@@ -39,7 +39,7 @@ const growiPluginMetaSchema = new Schema<GrowiPluginMeta|GrowiThemePluginMeta>({
   },
   desc: { type: String },
   author: { type: String },
-  themes: [growiPluginMetaThemesSchema],
+  themes: [growiThemeMetadataSchema],
 });
 
 const growiPluginOriginSchema = new Schema<GrowiPluginOrigin>({

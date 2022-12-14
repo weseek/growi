@@ -1,8 +1,8 @@
 /* eslint-disable @next/next/google-font-display */
 import React from 'react';
 
-import type { GrowiCustomThemeSummary, ViteManifest, ViteManifestValue } from '@growi/core';
-import { getManifestKeyFromTheme } from '@growi/preset-themes';
+import type { ViteManifest } from '@growi/core';
+import { DefaultThemeMetadata, PresetThemesMetadatas } from '@growi/preset-themes';
 import mongoose from 'mongoose';
 import Document, {
   DocumentContext, DocumentInitialProps,
@@ -28,18 +28,20 @@ const HeadersForThemes = (props: HeadersForThemesProps): JSX.Element => {
 
   const elements: JSX.Element[] = [];
 
+  // when plugin theme is specified
   if (pluginThemeHref != null) {
     elements.push(
       <link rel="stylesheet" key={`link_custom-themes-${theme}`} href={pluginThemeHref} />,
     );
   }
+  // preset theme
   else {
-    let themeKey = getManifestKeyFromTheme(theme);
-    if (!(themeKey in presetThemesManifest)) {
+    const themeMetadata = PresetThemesMetadatas.find(p => p.name === theme);
+    const manifestKey = themeMetadata?.manifestKey ?? DefaultThemeMetadata.manifestKey;
+    if (themeMetadata == null || !(themeMetadata.manifestKey in presetThemesManifest)) {
       logger.warn(`Use default theme because the key for '${theme} does not exist in preset-themes manifest`);
-      themeKey = getManifestKeyFromTheme('default');
     }
-    const href = `/static/preset-themes/${presetThemesManifest[themeKey].file}`; // configured by express.static
+    const href = `/static/preset-themes/${presetThemesManifest[manifestKey].file}`; // configured by express.static
     elements.push(
       <link rel="stylesheet" key={`link_preset-themes-${theme}`} href={href} />,
     );

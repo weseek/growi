@@ -1,4 +1,4 @@
-import { GrowiCustomThemeSummary } from '@growi/core';
+import { GrowiThemeMetadata } from '@growi/core';
 
 export const GrowiPluginResourceType = {
   Template: 'template',
@@ -29,5 +29,5 @@ export type GrowiPluginMeta = {
 }
 
 export type GrowiThemePluginMeta = GrowiPluginMeta & {
-  themes: GrowiCustomThemeSummary[]
+  themes: GrowiThemeMetadata[]
 }

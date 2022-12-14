@@ -1,9 +1,9 @@
 import { readFileSync } from 'fs';
 import path from 'path';
 
-import { GrowiCustomThemeSummary, ViteManifest } from '@growi/core';
+import { GrowiThemeMetadata, ViteManifest } from '@growi/core';
 
-import { GrowiPlugin, GrowiPluginResourceType } from '~/interfaces/plugin';
+import { GrowiPlugin, GrowiPluginResourceType, GrowiThemePluginMeta } from '~/interfaces/plugin';
 import { initializeGrowiFacade } from '~/utils/growi-facade';
 import loggerFactory from '~/utils/logger';
 import { resolveFromRoot } from '~/utils/project-dir-utils';
@@ -21,7 +21,6 @@ declare global {
 
 const logger = loggerFactory('growi:cli:ActivatePluginService');
 
-export type GrowiPluginThemeSummariesEntries = [growiPlugin: GrowiPlugin, summaries: GrowiCustomThemeSummary[]][];
 export type GrowiPluginManifestEntries = [growiPlugin: GrowiPlugin, manifest: ViteManifest][];
 
 
@@ -34,40 +33,28 @@ async function retrievePluginManifest(growiPlugin: GrowiPlugin): Promise<ViteMan
 export class ActivatePluginService {
 
   static async retrieveThemeHref(growiPlugins: GrowiPlugin[], theme: string): Promise<string | undefined> {
-    const entries = await this.retrievePluginThemeSummariesEntries(growiPlugins);
 
     let matchedPlugin: GrowiPlugin | undefined;
-    let matchedSummary: GrowiCustomThemeSummary | undefined;
-    for (const [growiPlugin, summaries] of entries) {
-      matchedSummary = summaries.find(s => s.name === theme);
-      if (matchedSummary == null) {
-        continue;
-      }
-
-      // found
-      matchedPlugin = growiPlugin;
-      break;
-    }
-
-    if (matchedPlugin != null && matchedSummary != null) {
-      const manifest = await retrievePluginManifest(matchedPlugin);
-      return '/static/plugins' // configured by express.static
-        + `/${matchedPlugin.installedPath}/dist/${manifest[matchedSummary.manifestKey].file}`;
-    }
-  }
-
-  static async retrievePluginThemeSummariesEntries(growiPlugins: GrowiPlugin[]): Promise<GrowiPluginThemeSummariesEntries> {
-    const entries: GrowiPluginThemeSummariesEntries = [];
+    let matchedThemeMetadata: GrowiThemeMetadata | undefined;
 
     growiPlugins
       .filter(p => p.meta.types.includes(GrowiPluginResourceType.Theme))
       .forEach(async(growiPlugin) => {
-        const summaryPath = resolveFromRoot(path.join('tmp/plugins', growiPlugin.installedPath, 'summary.json'));
-        const summaryStr: string = await readFileSync(summaryPath, 'utf-8');
-        entries.push([growiPlugin, JSON.parse(summaryStr)]);
+        const themeMetadatas = (growiPlugin.meta as GrowiThemePluginMeta).themes;
+        const themeMetadata = themeMetadatas.find(t => t.name === theme);
+
+        // found
+        if (themeMetadata != null) {
+          matchedPlugin = growiPlugin;
+          matchedThemeMetadata = themeMetadata;
+        }
       });
 
-    return entries;
+    if (matchedPlugin != null && matchedThemeMetadata != null) {
+      const manifest = await retrievePluginManifest(matchedPlugin);
+      return '/static/plugins' // configured by express.static
+        + `/${matchedPlugin.installedPath}/dist/${manifest[matchedThemeMetadata.manifestKey].file}`;
+    }
   }
 
   static async retrievePluginManifestEntries(growiPlugins: GrowiPlugin[]): Promise<GrowiPluginManifestEntries> {
