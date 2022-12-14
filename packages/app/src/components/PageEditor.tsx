@@ -96,7 +96,7 @@ const PageEditor = React.memo((): JSX.Element => {
   const currentRevisionId = currentPage?.revision?._id;
 
   const initialValue = useMemo(() => {
-    if (!isNotFound) {
+    if (!isNotFound || currentPage != null) {
       return editingMarkdown ?? '';
     }
 
@@ -109,7 +109,7 @@ const PageEditor = React.memo((): JSX.Element => {
     }
     return initialValue;
 
-  }, [isNotFound, currentPathname, editingMarkdown, isEnabledAttachTitleHeader, templateBodyData]);
+  }, [isNotFound, currentPage, isEnabledAttachTitleHeader, currentPathname, templateBodyData, editingMarkdown]);
 
   const markdownToSave = useRef<string>(initialValue);
   const [markdownToPreview, setMarkdownToPreview] = useState<string>(initialValue);
@@ -132,6 +132,13 @@ const PageEditor = React.memo((): JSX.Element => {
     mutateIsConflict(isConflict);
 
   }, [markdownToPreview, mutateIsConflict]);
+
+  useEffect(() => {
+    if (currentPage == null) return;
+
+    mutateEditingMarkdown(currentPage.revision.body ?? '');
+  }, [currentPage, mutateEditingMarkdown]);
+
 
   useEffect(() => {
     markdownToSave.current = initialValue;
