@@ -9,6 +9,7 @@ const mongoose = require('mongoose');
 
 module.exports = function(crowi) {
   const Uploader = require('./uploader');
+  const { configManager } = crowi;
   const lib = new Uploader(crowi);
   const COLLECTION_NAME = 'attachmentFiles';
   const CHUNK_COLLECTION_NAME = `${COLLECTION_NAME}.chunks`;
@@ -87,8 +88,8 @@ module.exports = function(crowi) {
    * - mongodb(gridfs) size limit (specified by MONGO_GRIDFS_TOTAL_LIMIT)
    */
   lib.checkLimit = async function(uploadFileSize) {
-    const maxFileSize = crowi.configManager.getConfig('crowi', 'app:maxFileSize');
-    const totalLimit = crowi.configManager.getFileUploadTotalLimit();
+    const maxFileSize = configManager.getConfig('crowi', 'app:maxFileSize');
+    const totalLimit = configManager.getFileUploadTotalLimit();
     return lib.doCheckLimit(uploadFileSize, maxFileSize, totalLimit);
   };
 

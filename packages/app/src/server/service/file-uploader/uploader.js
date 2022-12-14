@@ -1,5 +1,4 @@
 import { randomUUID } from 'crypto';
-import { Readable } from 'stream';
 
 import loggerFactory from '~/utils/logger';
 

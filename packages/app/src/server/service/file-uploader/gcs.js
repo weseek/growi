@@ -50,12 +50,12 @@ module.exports = function(crowi) {
   }
 
   lib.isValidUploadSettings = function() {
-    return lib.configManager.getConfig('crowi', 'gcs:apiKeyJsonPath') != null
-      && lib.configManager.getConfig('crowi', 'gcs:bucket') != null;
+    return configManager.getConfig('crowi', 'gcs:apiKeyJsonPath') != null
+      && configManager.getConfig('crowi', 'gcs:bucket') != null;
   };
 
   lib.canRespond = function() {
-    return !lib.configManager.getConfig('crowi', 'gcs:referenceFileWithRelayMode');
+    return !configManager.getConfig('crowi', 'gcs:referenceFileWithRelayMode');
   };
 
   lib.respond = async function(res, attachment) {
@@ -71,7 +71,7 @@ module.exports = function(crowi) {
     const myBucket = gcs.bucket(getGcsBucket());
     const filePath = getFilePathOnStorage(attachment);
     const file = myBucket.file(filePath);
-    const lifetimeSecForTemporaryUrl = lib.configManager.getConfig('crowi', 'gcs:lifetimeSecForTemporaryUrl');
+    const lifetimeSecForTemporaryUrl = configManager.getConfig('crowi', 'gcs:lifetimeSecForTemporaryUrl');
 
     // issue signed url (default: expires 120 seconds)
     // https://cloud.google.com/storage/docs/access-control/signed-urls
@@ -186,8 +186,8 @@ module.exports = function(crowi) {
    * - per-file size limit (specified by MAX_FILE_SIZE)
    */
   lib.checkLimit = async function(uploadFileSize) {
-    const maxFileSize = crowi.configManager.getConfig('crowi', 'app:maxFileSize');
-    const gcsTotalLimit = crowi.configManager.getConfig('crowi', 'app:fileUploadTotalLimit');
+    const maxFileSize = configManager.getConfig('crowi', 'app:maxFileSize');
+    const gcsTotalLimit = configManager.getConfig('crowi', 'app:fileUploadTotalLimit');
     return lib.doCheckLimit(uploadFileSize, maxFileSize, gcsTotalLimit);
   };
 
