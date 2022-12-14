@@ -27,7 +27,7 @@
 
 a {
   color: var(--link-color);
-  text-decoration: var(--link-decoration);
+  text-decoration: $link-decoration;
   background-color: transparent; // Remove the gray background on active links in IE 10.
 
   svg {
@@ -36,7 +36,7 @@ a {
 
   @include hover() {
     color: var(--link-hover-color);
-    text-decoration: var(--link-hover-decoration);
+    text-decoration: $link-hover-decoration;
 
     svg {
       fill: var(--link-hover-color);

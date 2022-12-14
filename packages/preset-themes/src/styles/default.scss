@@ -18,55 +18,36 @@
 //
 :root[data-theme='light'] {
   --primary: #122c55;
-  --primary-lighten77: hsl(from var(--bgcolor-global) h s calc(l 77%));
-  --primary-lighten76: hsl(from var(--bgcolor-global) h s calc(l 76%));
   $accent: #209fd8;
 
   // Background colors
   --bgcolor-global: white;
   --body-bg: var(--bgcolor-global);
-  --bgcolor-global-darken2: hsl(from var(--bgcolor-global) h s calc(l - 2%));
-  --bgcolor-global-darken3: hsl(from var(--bgcolor-global) h s calc(l - 3%));
-  --bgcolor-global-darken4: hsl(from var(--bgcolor-global) h s calc(l - 4%));
-  --bgcolor-global-darken5: hsl(from var(--bgcolor-global) h s calc(l - 5%));
-  --bgcolor-global-darken20: hsl(from var(--bgcolor-global) h s calc(l - 20%));
   $bgcolor-inline-code: $gray-100; //optional
-  --bgcolor-card: var(--gray-50);
-  --bgcolor-card-darken5: hsl(from var(--bgcolor-card) h s calc(l - 5%));
+  --bgcolor-card: #{$gray-50};
   $bgcolor-blinked-section: rgba($primary, 0.1);
   //$bgcolor-keyword-highlighted: $grw-marker-yellow;
 
   // Font colors
   --color-global: #112744;
   --body-color: var(--color-global);
-  $color-global: var(--color-global);
-  --color-global-lighten10: hsl(from var(--color-global) h s calc(l 10%));
-  --color-global-darken10: hsl(from var(--color-global) h s calc(l - 10%));
   $color-reversal: $light;
   // $color-header: #2b2b2b;
   --color-link: #1938ba;
   --link-color: var(--color-link);
-  --color-link-lighten20: hsl(from var(--color-link) h s calc(l 20%));
   --link-hover-color: var(--color-link-hover);
-  --color-link-hover: var(--link-color-lighten20);
+  --color-link-hover: hsl(from var(--color-link) h s calc(l 20%));
   --color-link-wiki: var(--color-link);
-  --color-link-wiki-lighten20: hsl(from var(--color-link-wiki) h s calc(l 20%));
-  --color-link-wiki-hover: var(--color-link-wiki-lighten20);
-  --color-link-nabvar: var(--gray-500);
+  --color-link-wiki-hover:  hsl(from var(--color-link-wiki) h s calc(l 20%));
+  --color-link-nabvar: #{gray-500};
   $color-inline-code: darken($red, 15%); // optional
 
   // List Group colors
-  $color-list: black;
   --color-list: var(--color-global); // optional
-  $bgcolor-list-active: black;
   // --bgcolor-list: var(--bgcolor-global); // optional
-  $bgcolor-list: black;
   // --color-list-hover: va(--color-global); // optional
-  $color-list-hover: black;
-  // --bgcolor-list-hover: var(--bgcolor-global-lighten3); // optional
-  $bgcolor-list-hover: black;
+  --bgcolor-list-hover: hsl(from var(--bgcolor-global) h s calc(l 3%)); // optional
   // --color-list-active:white ; // optional
-  $color-list-active: black;
   // $bgcolor-list-active: $primary; // optional
 
   // Table colors
@@ -77,18 +58,17 @@
   // --bgcolor-table-hover: #; // optional
 
   // Navbar
-  --bgcolor-navbar: $gray-900;
-  --bgcolor-navbar-lighten:
+  --bgcolor-navbar: #{$gray-900};
   $bgcolor-search-top-dropdown: $accent;
   $border-image-navbar: linear-gradient(to right, #36c9ff 0%, #36c9ff 33%, #7926ff 66%, #ff2eff 100%);
 
   // Logo colors
   --bgcolor-logo: var(--bgcolor-navbar);
-  $bgcolor-navbar: black;
-  $fillcolor-logo-mark: lighten(desaturate($bgcolor-navbar, 10%), 15%);
+  --fillcolor-logo-mark: lighten(desaturate(var(--bgcolor-navbar), 10%), 15%);
 
   // Sidebar
-  $bgcolor-sidebar: $primary;
+  --bgcolor-sidebar: var(--primary);
+  $bgcolor-sidebar: #122c55;
   $bgcolor-sidebar-nav-item-active: rgba(black, 0.37); // optional
   --text-shadow-sidebar-nav-item-active: 0px 0px 10px #0099ff; // optional
   // Sidebar resize button
@@ -98,16 +78,12 @@
   $bgcolor-resize-button-hover: lighten($bgcolor-resize-button, 5%);
   // Sidebar contents
   --color-sidebar-context: var(--color-global);
-  --bgcolor-sidebar-context: var(--primary-lighten77);
-  $color-sidebar-context: black;
-  $bgcolor-sidebar-context: black;
 
   // Sidebar list group
-  $bgcolor-sidebar-list-group: $gray-50; // optional
+  --bgcolor-sidebar-list-group: #{gray-50}; // optional
 
   // Subnavigation
-  --bgcolor-subnav: #fafafa; // optional
-  --bgcolor-subnav-lighten10: hsl(from var(--bgcolor-subnav) h s calc(l 10%));
+  // --bgcolor-subnav: #fafafa; // optional
 
   // Tabs
   // $color-nav-tabs-link-active: #; //optional
@@ -137,7 +113,7 @@
   // Button
   .btn-group.grw-page-editor-mode-manager {
     .btn.btn-outline-primary {
-      @include page-editor-mode-manager.btn-page-editor-mode-manager($primary, lighten($primary, 65%), lighten($primary, 70%));
+      @include page-editor-mode-manager.btn-page-editor-mode-manager(primary, lighten($primary, 65%), lighten($primary, 70%));
     }
   }
 }
@@ -145,52 +121,34 @@
 //== Dark Mode
 //
 :root[data-theme='dark'] {
-  $primary: #115cd3;
+  --primary: #115cd3;
   $accent: #db00c2;
 
   // Background colors
   --bgcolor-global: #131418;
-  --bgcolor-global-darken2: hsl(from var(--bgcolor-global) h s calc(l - 2%));
-  --bgcolor-global-darken4: hsl(from var(--bgcolor-global) h s calc(l - 4%));
-  --bgcolor-global-darken5: hsl(from var(--bgcolor-global) h s calc(l - 5%));
-  --bgcolor-global-lighten3: hsl(from var(--bgcolor-global) h s calc(l 3%));
-  --bgcolor-global-lighten4: hsl(from var(--bgcolor-global) h s calc(l 4%));
-  --bgcolor-global-lighten5: hsl(from var(--bgcolor-global) h s calc(l 5%));
-  --bgcolor-global-lighten8: hsl(from var(--bgcolor-global) h s calc(l 8%));
-  --bgcolor-global-lighten9: hsl(from var(--bgcolor-global) h s calc(l 9%));
-  --bgcolor-global-lighten15: hsl(from var(--bgcolor-global) h s calc(l 15%));
-  --bgcolor-global-lighten30: hsl(from var(--bgcolor-global) h s calc(l 30%));
   $bgcolor-inline-code: #1f1f22; //optional
-  --bgcolor-card: var(--bgcolor-global-darken5);
+  --bgcolor-card: hsl(from var(--bgcolor-global) h s calc(l - 5%));
   $bgcolor-blinked-section: rgba($primary, 0.4);
   $bgcolor-keyword-highlighted: darken($grw-marker-red, 30%);
 
   // Font colors
-  --color-global: var(--gray-400);
+  --color-global: #{$gray-400};
   $color-global: var(--color-global);
   $color-reversal: $gray-900;
   // $color-header: desaturate($primary, 20%);
   --color-link: #7b9ad5;
-  --color-link-lighten10: hsl(from var(--color-link) h s calc(l 10%));
-  --color-link-hover: var( --color-link-lighten10);
+  --color-link-hover: hsl(from var(--color-link) h s calc(l 10%));
   --color-link-wiki: var(--color-link);
-  --color-link--wiki-lighten10: hsl(from var(--color-link-wiki) h s calc(l 10%));
-  --color-link-wiki-hover: var(--color-link--wiki-lighten10);
+  --color-link-wiki-hover: hsl(from var(--color-link-wiki) h s calc(l 10%));
   --color-link-nabvar: #a7a7a7;
   --color-inline-code: #c7254e; // optional
 
   // List Group colors
-  $color-list: black;
   --color-list: var(--color-global); // optional
-  $bgcolor-list-active: black;
   // --bgcolor-list: var(--bgcolor-global); // optional
-  $bgcolor-list: black;
   // --color-list-hover: va(--color-global); // optional
-  $color-list-hover: black;
-  // --bgcolor-list-hover: var(--bgcolor-global-lighten3); // optional
-  $bgcolor-list-hover: black;
+  --bgcolor-list-hover: hsl(from var(--bgcolor-global) h s calc(l 3%)); // optional
   // --color-list-active:white ; // optional
-  $color-list-active: black;
   // $bgcolor-list-active: $primary; // optional
 
   // Table colors
@@ -207,9 +165,10 @@
 
   // Logo colors
   $bgcolor-logo: var(--bgcolor-navbar);
-  $fillcolor-logo-mark: $gray-700;
+  --fillcolor-logo-mark: #{$gray-700};
 
   // Sidebar
+  --bgcolor-sidebar: #122c55;
   $bgcolor-sidebar: #122c55;
   $bgcolor-sidebar-nav-item-active: rgba(#969494, 0.3); // optional
   --text-shadow-sidebar-nav-item-active: 0px 0px 10px #0099ff; // optional
@@ -219,17 +178,13 @@
   $color-resize-button-hover: white;
   $bgcolor-resize-button-hover: darken($bgcolor-resize-button, 5%);
   // Sidebar contents
-  --bgcolor-sidebar-context: var(--bgcolor-global-lighten8);
   --color-sidebar-context: var(--color-global);
-  $color-sidebar-context: black;
-  $bgcolor-sidebar-context: black;
+
   // Sidebar list group
-  $bgcolor-sidebar-list-group: #1c2a3e; // optional
+  --bgcolor-sidebar-list-group: #1c2a3e; // optional
 
   // Subnavigation
-  --bgcolor-subnav: var(--bgcolor-global-lighten4); // optional
-  --bgcolor-subnav-lighten15: hsl(from var(--bgcolor-subnav) h s calc(l 15%));
-
+  --bgcolor-subnav: hsl(from var(--bgcolor-global) h s calc(l 4%)); // optional
 
   // Tabs
   $bordercolor-nav-tabs: $gray-700; // optional

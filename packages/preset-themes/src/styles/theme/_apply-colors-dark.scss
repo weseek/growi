@@ -10,7 +10,6 @@ $bgcolor-table: #343a40 !default;
 $border-color-table: lighten($bgcolor-table, 7.5%) !default;
 $color-table-hover: rgba(white, 0.075) !default;
 $bgcolor-table-hover: lighten($bgcolor-table, 7.5%) !default;
-$bgcolor-sidebar-list-group: $bgcolor-list !default;
 $color-tags: #949494 !default;
 $bgcolor-tags: $dark !default;
 $border-color-global: $gray-500 !default;
@@ -33,8 +32,6 @@ $border-color: $border-color-global;
 @import './reboot-bootstrap-dropdown';
 
 // List Group
-@include override-list-group-item($color-list, $bgcolor-list, $color-list-hover, $bgcolor-list-hover, $color-list-active, $bgcolor-list-active);
-
 /*
   * Form
   */
@@ -210,7 +207,6 @@ ul.pagination {
     &.active {
     }
     .list-group-item-action:hover {
-      background-color: $bgcolor-list-hover;
     }
     .page-list-snippet {
     }
@@ -237,7 +233,6 @@ ul.pagination {
 .grw-page-editor-mode-manager {
   .btn-outline-primary {
     &:hover {
-      color: $primary;
       background-color: $gray-700;
     }
   }
@@ -255,37 +250,17 @@ ul.pagination {
  * GROWI Sidebar
  */
 .grw-sidebar {
-  // List
-  @include override-list-group-item($color-list, $bgcolor-sidebar-list-group, $color-list-hover, $bgcolor-list-hover, $color-list-active, $bgcolor-list-active);
-
-  // Pagetree
-  .grw-pagetree {
-    @include override-list-group-item-for-pagetree(
-      $color-sidebar-context,
-      lighten($bgcolor-sidebar-context, 8%),
-      lighten($bgcolor-sidebar-context, 15%),
-      darken($color-sidebar-context, 15%),
-      darken($color-sidebar-context, 10%),
-      lighten($bgcolor-sidebar-context, 18%),
-      lighten($bgcolor-sidebar-context, 24%)
-    );
-    .grw-pagetree-triangle-btn {
-      @include mixins-buttons.button-outline-svg-icon-variant($secondary, $gray-200);
-    }
-    .btn-page-item-control {
-      @include button-outline-variant($gray-500, $gray-500, $secondary, transparent);
-      @include hover() {
-      }
-      &:not(:disabled):not(.disabled):active,
-      &:not(:disabled):not(.disabled).active {
-      }
-      box-shadow: none !important;
-    }
+  .grw-pagetree-triangle-btn {
+    @include mixins-buttons.button-outline-svg-icon-variant($secondary, $gray-200);
   }
-  .private-legacy-pages-link {
-    &:hover {
-      background: $bgcolor-list-hover;
+  .btn-page-item-control {
+    @include button-outline-variant($gray-500, $gray-500, $secondary, transparent);
+    @include hover() {
     }
+    &:not(:disabled):not(.disabled):active,
+    &:not(:disabled):not(.disabled).active {
+    }
+    box-shadow: none !important;
   }
 }
 

@@ -132,10 +132,6 @@ ul.pagination {
     transition: fill 0.8s ease-out;
   }
 
-  svg {
-    fill: $fillcolor-logo-mark;
-  }
-
   &:hover {
     svg {
       .group1 {
@@ -157,7 +153,6 @@ ul.pagination {
   border-image-slice: 1;
 
   .grw-app-title {
-    color: $fillcolor-logo-mark;
   }
 }
 
@@ -196,7 +191,6 @@ ul.pagination {
   }
   div.grw-global-navigation {
     > div {
-      background-color: $bgcolor-sidebar;
     }
   }
   div.grw-contextual-navigation {

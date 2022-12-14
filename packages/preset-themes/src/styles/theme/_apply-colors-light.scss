@@ -4,13 +4,11 @@
 @use './mixins/count-badge';
 
 // determine optional variables
-$bgcolor-list-hover: lighten($primary, 72%) !default;
 $bgcolor-list-active: lighten($primary, 65%) !default;
 $color-list-active: color-yiq($bgcolor-list-active) !default;
 $bgcolor-table: null !default;
 $border-color-table: $gray-200 !default;
 $bgcolor-table-hover: rgba(black, 0.075) !default;
-$bgcolor-sidebar-list-group: $bgcolor-list !default;
 $color-tags: $secondary !default;
 $bgcolor-tags: $gray-200 !default;
 $border-color-global: $gray-300 !default;
@@ -32,8 +30,6 @@ $border-color: $border-color-global;
 @import './reboot-bootstrap-dropdown';
 
 // List Group
-@include override-list-group-item($color-list, $bgcolor-list, $color-list-hover, $bgcolor-list-hover, $color-list-active, $bgcolor-list-active);
-
 /*
  * Form
  */
@@ -161,7 +157,6 @@ $border-color: $border-color-global;
  */
 .grw-sidebar {
   // List
-  @include override-list-group-item($color-list, $bgcolor-sidebar-list-group, $color-list-hover, $bgcolor-list-hover, $color-list-active, $bgcolor-list-active);
   // sidebar-centent-bg
   .grw-navigation-wrap {
     // Drop a shadow on the light theme. The dark theme makes '$ bgcolor-sidebar-context' brighter than the body.
@@ -169,22 +164,12 @@ $border-color: $border-color-global;
   }
   // Pagetree
   .grw-pagetree {
-    @include override-list-group-item-for-pagetree(
-      $color-sidebar-context,
-      darken($bgcolor-sidebar-context, 5%),
-      darken($bgcolor-sidebar-context, 12%),
-      lighten($color-sidebar-context, 10%),
-      lighten($color-sidebar-context, 8%),
-      darken($bgcolor-sidebar-context, 15%),
-      darken($bgcolor-sidebar-context, 24%)
-    );
     .grw-pagetree-triangle-btn {
       @include mixins-buttons.button-outline-svg-icon-variant($gray-400, $primary);
     }
   }
   .private-legacy-pages-link {
     &:hover {
-      background: $bgcolor-list-hover;
     }
   }
 }

@@ -7,16 +7,15 @@
 $color-list: var(--color-list,var(--color-global));
 $bgcolor-list: var(--bgcolor-list,var(--bgcolor-global));
 $color-list-hover: var(--color-list-hover,var(--color-global));
-$bgcolor-list-hover: var(--bgcolor-list-hover,var(--bgcolor-global-lighten8));
 $color-list-active: $color-reversal !default;
-$bgcolor-list-active: $primary !default;
-$bgcolor-subnav: var(--bgcolor-subnav,var(--bgcolor-global-lighten3));
+$bgcolor-list-active: var(--bgcolor-list-active,var(--primary));
+$bgcolor-subnav: var(--bgcolor-subnav,hsl(from var(--bgcolor-global) h s calc(l 3%)));
 $color-table: var(--color-table,white);
 $bgcolor-table: #343a40 !default;
 $border-color-table: lighten($bgcolor-table, 7.5%) !default;
 $color-table-hover: rgba(white, 0.075) !default;
 $bgcolor-table-hover: lighten($bgcolor-table, 7.5%) !default;
-$bgcolor-sidebar-list-group: $bgcolor-list !default;
+$bgcolor-sidebar-list-group: var(--bgcolor-sidebar-list-group,var(--bgcolor-list));
 $color-tags: #949494 !default;
 $bgcolor-tags: $dark !default;
 $border-color-global: $gray-500 !default;
@@ -25,9 +24,9 @@ $color-dropdown: var(--color-dropdown,var(--color-global));
 $bgcolor-dropdown: var(--bgcolor-dropdown,var(--bgcolor-global));
 $color-dropdown-link: var(--color-dropdown-link,var(--color-global));
 $color-dropdown-link-hover: $light !default;
-$bgcolor-dropdown-link-hover: var(--bgcolor-dropdown-link-hover,var(--bgcolor-global-lighten15));
+$bgcolor-dropdown-link-hover: var(--bgcolor-dropdown-link-hover,hsl(from var(--bgcolor-global) h s calc(l 15%)));
 $color-dropdown-link-active: $light !default;
-$bgcolor-dropdown-link-active: $primary !default;
+$bgcolor-dropdown-link-active: var(--bgcolor-dropdown-link-active,var(--primary));
 
 // override bootstrap variables
 $text-muted: $gray-550;
@@ -52,8 +51,14 @@ $dropdown-link-active-bg: bar(--bgcolor-dropdown-link-active);
 @import './reboot-bootstrap-dropdown';
 
 // List Group
-@include override-list-group-item($color-list, $bgcolor-list, $color-list-hover, $bgcolor-list-hover, $color-list-active, $bgcolor-list-active);
-
+@include override-list-group-item(
+  var(--color-list),
+  var(--bgcolor-sidebar-list-group),
+  var(--color-list-hover),
+  var(--bgcolor-list-hover),
+  var(--color-list-active),
+  var(--bgcolor-list-active)
+);
 /*
   * Form
   */
@@ -62,7 +67,7 @@ select.form-control,
 select.custom-select,
 textarea.form-control {
   color: var(--color-global);
-  background-color: var(--bgcolor-global-darken5);
+  background-color: hsl(from var(--bgcolor-global) h s calc(l - 5%));
   border-color: $border-color-global;
   &:focus {
     background-color: var(--bgcolor-global);
@@ -73,8 +78,8 @@ textarea.form-control {
 
 .form-control[disabled],
 .form-control[readonly] {
-  color: var(--color-global-lighten10);
-  background-color: var(--bgcolor-global-lighten5);
+  color: hsl(from var(--color-global) h s calc(l 10%));
+  background-color: hsl(from var(--bgcolor-global) h s calc(l 5%));
 }
 
 .input-group > .input-group-prepend > .input-group-text {
@@ -92,7 +97,7 @@ textarea.form-control {
 }
 
 label.custom-control-label::before {
-  background-color: var(--bgcolor-global-darken5);
+  background-color: hsl(from var(--bgcolor-global) h s calc(l - 5%));
 }
 
 /*
@@ -226,7 +231,7 @@ ul.pagination {
   .page-list-ul {
     > li {
       > span.page-list-meta {
-        color: var(--color-global-darken10);
+        color: hsl(from var(--color-global) h s calc(l - 10%));
       }
     }
   }
@@ -234,13 +239,13 @@ ul.pagination {
   // List group
   .list-group-item {
     &.active {
-      background-color: var(--bgcolor-global-lighten9) !important;
+      background-color: hsl(from var(--bgcolor-global) h s calc(l 9%));
     }
     .list-group-item-action:hover {
-      background-color: $bgcolor-list-hover;
+      background-color: var(--bgcolor-list-hover);
     }
     .page-list-snippet {
-      color: var(--color-global-darken10);
+      color: hsl(from var(--color-global) h s calc(l - 10%));
     }
   }
 }
@@ -250,7 +255,7 @@ ul.pagination {
  */
 .revision-toc-content {
   ::marker {
-    color: var(--bgcolor-global-lighten30);
+    color: hsl(from var(--bgcolor-global) h s calc(l 30%));;
   }
 }
 
@@ -268,7 +273,7 @@ ul.pagination {
 .grw-page-editor-mode-manager {
   .btn-outline-primary {
     &:hover {
-      color: $primary;
+      color: var(--primary);
       background-color: $gray-700;
     }
   }
@@ -287,18 +292,30 @@ ul.pagination {
  */
 .grw-sidebar {
   // List
-  @include override-list-group-item($color-list, $bgcolor-sidebar-list-group, $color-list-hover, $bgcolor-list-hover, $color-list-active, $bgcolor-list-active);
-
+  @include override-list-group-item(
+    var(--color-list),
+    var(--bgcolor-sidebar-list-group),
+    var(--color-list-hover),
+    var(--bgcolor-list-hover),
+    var(--color-list-active),
+    var(--bgcolor-list-active)
+  );
   // Pagetree
   .grw-pagetree {
+    --bgcolor-sidebar-context-lighten8: hsl(from var(--bgcolor-sidebar-context) h s calc(l 8%));
+    --bgcolor-sidebar-context-lighten15: hsl(from var(--bgcolor-sidebar-context) h s calc(l 15%));
+    --color-sidebar-context-darken15: hsl(from var(--bgcolor-sidebar-context) h s calc(l - 15%));
+    --color-sidebar-context-darken10: hsl(from var(--bgcolor-sidebar-context) h s calc(l - 10%));
+    --bgcolor-sidebar-context-lighten18: hsl(from var(--bgcolor-sidebar-context) h s calc(l 18%));
+    --bgcolor-sidebar-context-lighten24: hsl(from var(--bgcolor-sidebar-context) h s calc(l 24%));
     @include override-list-group-item-for-pagetree(
-      $color-sidebar-context,
-      lighten($bgcolor-sidebar-context, 8%),
-      lighten($bgcolor-sidebar-context, 15%),
-      darken($color-sidebar-context, 15%),
-      darken($color-sidebar-context, 10%),
-      lighten($bgcolor-sidebar-context, 18%),
-      lighten($bgcolor-sidebar-context, 24%)
+      var(--color-sidebar-context),
+      var(--bgcolor-sidebar-context-lighten8),
+      var(--bgcolor-sidebar-context-lighten15),
+      var(--color-sidebar-context-darken15),
+      var(--color-sidebar-context-darken10),
+      var(--bgcolor-sidebar-context-lighten18),
+      var(--bgcolor-sidebar-context-lighten24)
     );
     .grw-pagetree-triangle-btn {
       @include mixins-buttons.button-outline-svg-icon-variant($secondary, $gray-200);
@@ -317,7 +334,7 @@ ul.pagination {
   }
   .private-legacy-pages-link {
     &:hover {
-      background: $bgcolor-list-hover;
+      background: var(--bgcolor-list-hover);
     }
   }
 }
@@ -534,5 +551,4 @@ ul.pagination {
  * skeleton
  */
 .grw-skeleton {
-  background-color: var(--bgcolor-subnav-lighten15);
 }
