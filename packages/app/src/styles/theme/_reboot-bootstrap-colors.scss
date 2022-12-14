@@ -15,31 +15,31 @@
 //    the `inherit` value on things like `<th>` elements.
 
 &, body {
-  color: $body-color;
-  background-color: $body-bg; // 2
+  color: var(--body-color);
+  background-color: var(--body-bg); // 2
 
   svg {
-    fill: $body-color;
+    fill: var(--body-color);
   }
 }
 
 // Links
 
 a {
-  color: $link-color;
+  color: var(--link-color);
   text-decoration: $link-decoration;
   background-color: transparent; // Remove the gray background on active links in IE 10.
 
   svg {
-    fill: $link-color;
+    fill: var(--link-color);
   }
 
   @include hover() {
-    color: $link-hover-color;
+    color: var(--link-hover-color);
     text-decoration: $link-hover-decoration;
 
     svg {
-      fill: $link-hover-color;
+      fill: var(--link-hover-color);
     }
   }
 }

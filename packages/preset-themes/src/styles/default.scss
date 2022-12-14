@@ -17,88 +17,92 @@
 //== Light Mode
 //
 :root[data-theme='light'] {
-  $primary: #122c55;
+  --primary: #122c55;
   $accent: #209fd8;
 
   // Background colors
-  $bgcolor-global: white;
+  --bgcolor-global: white;
+  --body-bg: var(--bgcolor-global);
   $bgcolor-inline-code: $gray-100; //optional
-  $bgcolor-card: $gray-50;
+  --bgcolor-card: #{$gray-50};
   $bgcolor-blinked-section: rgba($primary, 0.1);
   //$bgcolor-keyword-highlighted: $grw-marker-yellow;
 
   // Font colors
-  $color-global: #112744;
+  --color-global: #112744;
+  --body-color: var(--color-global);
   $color-reversal: $light;
   // $color-header: #2b2b2b;
-  $color-link: #1938ba;
-  $color-link-hover: lighten($color-link, 20%);
-  $color-link-wiki: $color-link;
-  $color-link-wiki-hover: lighten($color-link-wiki, 20%);
-  $color-link-nabvar: $gray-500;
+  --color-link: #1938ba;
+  --link-color: var(--color-link);
+  --link-hover-color: var(--color-link-hover);
+  --color-link-hover: hsl(from var(--color-link) h s calc(l 20%));
+  --color-link-wiki: var(--color-link);
+  --color-link-wiki-hover:  hsl(from var(--color-link-wiki) h s calc(l 20%));
+  --color-link-nabvar: #{gray-500};
   $color-inline-code: darken($red, 15%); // optional
 
   // List Group colors
-  // $color-list: $color-global; // optional
-  // $bgcolor-list: $bgcolor-global; // optional
-  // $color-list-hover: $color-global; // optional
-  // $bgcolor-list-hover: darken($bgcolor-global, 3%); // optional
-  // $color-list-active: $color-reversal; // optional
+  --color-list: var(--color-global); // optional
+  // --bgcolor-list: var(--bgcolor-global); // optional
+  // --color-list-hover: va(--color-global); // optional
+  --bgcolor-list-hover: hsl(from var(--bgcolor-global) h s calc(l 3%)); // optional
+  // --color-list-active:white ; // optional
   // $bgcolor-list-active: $primary; // optional
 
   // Table colors
-  // $bgcolor-subnav: #; // optional
-  // $color-table: #; // optional
-  // $bgcolor-table: #; // optional
-  // $border-color-table: #; // optional
-  // $color-table-hover: #; // optional
-  // $bgcolor-table-hover: #; // optional
+  // --color-table: #; // optional
+  // --bgcolor-table: #; // optional
+  // --border-color-table: #; // optional
+  // --color-table-hover: #; // optional
+  // --bgcolor-table-hover: #; // optional
 
   // Navbar
-  $bgcolor-navbar: $gray-900;
+  --bgcolor-navbar: #{$gray-900};
   $bgcolor-search-top-dropdown: $accent;
   $border-image-navbar: linear-gradient(to right, #36c9ff 0%, #36c9ff 33%, #7926ff 66%, #ff2eff 100%);
 
   // Logo colors
-  $bgcolor-logo: $bgcolor-navbar;
-  $fillcolor-logo-mark: lighten(desaturate($bgcolor-navbar, 10%), 15%);
+  --bgcolor-logo: var(--bgcolor-navbar);
+  --fillcolor-logo-mark: lighten(desaturate(var(--bgcolor-navbar), 10%), 15%);
 
   // Sidebar
-  $bgcolor-sidebar: $primary;
+  --bgcolor-sidebar: var(--primary);
+  $bgcolor-sidebar: #122c55;
   $bgcolor-sidebar-nav-item-active: rgba(black, 0.37); // optional
-  $text-shadow-sidebar-nav-item-active: 0px 0px 10px #0099ff; // optional
+  --text-shadow-sidebar-nav-item-active: 0px 0px 10px #0099ff; // optional
   // Sidebar resize button
   $color-resize-button: $color-reversal;
   $bgcolor-resize-button: $accent;
   $color-resize-button-hover: $color-reversal;
   $bgcolor-resize-button-hover: lighten($bgcolor-resize-button, 5%);
   // Sidebar contents
-  $color-sidebar-context: $color-global;
-  $bgcolor-sidebar-context: lighten($primary, 77%);
+  --color-sidebar-context: var(--color-global);
+
   // Sidebar list group
-  $bgcolor-sidebar-list-group: $gray-50; // optional
+  --bgcolor-sidebar-list-group: #{gray-50}; // optional
 
   // Subnavigation
-  // $bgcolor-subnav: #fafafa; // optional
+  // --bgcolor-subnav: #fafafa; // optional
 
   // Tabs
   // $color-nav-tabs-link-active: #; //optional
   // $bordercolor-nav-tabs-hover: # # $bordercolor-nav-tabs; // optional
-  // $bordercolor-nav-tabs-active: # # $bgcolor-global; // optional
+  // $bordercolor-nav-tabs-active: # # --bgcolor-global; // optional
 
   // Tags
   // $color-tags: #; //optional
   // $bgcolor-tags: #; //optional
 
   // Icon colors
-  $color-editor-icons: $color-global;
+  --color-editor-icons: var(--color-global);
 
   // Border colors
   $border-color-theme: $gray-400;
   $bordercolor-inline-code: $gray-400; // optional
 
   // Dropdown colors
-  $bgcolor-dropdown-link-active: $growi-blue;
+  --bgcolor-dropdown-link-active: $growi-blue;
 
   // admin theme box
   $color-theme-color-box: lighten($primary, 20%);
@@ -109,7 +113,7 @@
   // Button
   .btn-group.grw-page-editor-mode-manager {
     .btn.btn-outline-primary {
-      @include page-editor-mode-manager.btn-page-editor-mode-manager($primary, lighten($primary, 65%), lighten($primary, 70%));
+      @include page-editor-mode-manager.btn-page-editor-mode-manager(primary, lighten($primary, 65%), lighten($primary, 70%));
     }
   }
 }
@@ -117,81 +121,83 @@
 //== Dark Mode
 //
 :root[data-theme='dark'] {
-  $primary: #115cd3;
+  --primary: #115cd3;
   $accent: #db00c2;
 
   // Background colors
-  $bgcolor-global: #131418;
+  --bgcolor-global: #131418;
   $bgcolor-inline-code: #1f1f22; //optional
-  $bgcolor-card: darken($bgcolor-global, 5%);
+  --bgcolor-card: hsl(from var(--bgcolor-global) h s calc(l - 5%));
   $bgcolor-blinked-section: rgba($primary, 0.4);
   $bgcolor-keyword-highlighted: darken($grw-marker-red, 30%);
 
   // Font colors
-  $color-global: $gray-400;
+  --color-global: #{$gray-400};
+  $color-global: var(--color-global);
   $color-reversal: $gray-900;
   // $color-header: desaturate($primary, 20%);
-  $color-link: #7b9ad5;
-  $color-link-hover: lighten($color-link, 10%);
-  $color-link-wiki: $color-link;
-  $color-link-wiki-hover: lighten($color-link-wiki, 10%);
-  $color-link-nabvar: #a7a7a7;
-  $color-inline-code: #c7254e; // optional
+  --color-link: #7b9ad5;
+  --color-link-hover: hsl(from var(--color-link) h s calc(l 10%));
+  --color-link-wiki: var(--color-link);
+  --color-link-wiki-hover: hsl(from var(--color-link-wiki) h s calc(l 10%));
+  --color-link-nabvar: #a7a7a7;
+  --color-inline-code: #c7254e; // optional
 
   // List Group colors
-  // $color-list: $color-global; // optional
-  // $bgcolor-list: $bgcolor-global; // optional
-  // $color-list-hover: $color-global; // optional
-  // $bgcolor-list-hover: lighten($bgcolor-global, 3%); // optional
-  // $color-list-active:white ; // optional
+  --color-list: var(--color-global); // optional
+  // --bgcolor-list: var(--bgcolor-global); // optional
+  // --color-list-hover: va(--color-global); // optional
+  --bgcolor-list-hover: hsl(from var(--bgcolor-global) h s calc(l 3%)); // optional
+  // --color-list-active:white ; // optional
   // $bgcolor-list-active: $primary; // optional
 
   // Table colors
-  // $color-table: #; // optional
-  // $bgcolor-table: #; // optional
-  // $border-color-table: #; // optional
-  // $color-table-hover: #; // optional
-  // $bgcolor-table-hover: #; // optional
+  // --color-table: #; // optional
+  // --bgcolor-table: #; // optional
+  // --border-color-table: #; // optional
+  // --color-table-hover: #; // optional
+  // --bgcolor-table-hover: #; // optional
 
   // Navbar
-  $bgcolor-navbar: #2a2929;
+  --bgcolor-navbar: #2a2929;
   $bgcolor-search-top-dropdown: $accent;
   $border-image-navbar: linear-gradient(to right, #44bfe3 0%, #b04aff 50%, #ff1794 100%);
 
   // Logo colors
-  $bgcolor-logo: $bgcolor-navbar;
-  $fillcolor-logo-mark: $gray-700;
+  $bgcolor-logo: var(--bgcolor-navbar);
+  --fillcolor-logo-mark: #{$gray-700};
 
   // Sidebar
+  --bgcolor-sidebar: #122c55;
   $bgcolor-sidebar: #122c55;
   $bgcolor-sidebar-nav-item-active: rgba(#969494, 0.3); // optional
-  $text-shadow-sidebar-nav-item-active: 0px 0px 10px #0099ff; // optional
+  --text-shadow-sidebar-nav-item-active: 0px 0px 10px #0099ff; // optional
   // Sidebar resize button
   $color-resize-button: white;
   $bgcolor-resize-button: $accent;
   $color-resize-button-hover: white;
   $bgcolor-resize-button-hover: darken($bgcolor-resize-button, 5%);
   // Sidebar contents
-  $bgcolor-sidebar-context: lighten($bgcolor-global, 8%);
-  $color-sidebar-context: $color-global;
+  --color-sidebar-context: var(--color-global);
+
   // Sidebar list group
-  $bgcolor-sidebar-list-group: #1c2a3e; // optional
+  --bgcolor-sidebar-list-group: #1c2a3e; // optional
 
   // Subnavigation
-  $bgcolor-subnav: lighten($bgcolor-global, 4%); // optional
+  --bgcolor-subnav: hsl(from var(--bgcolor-global) h s calc(l 4%)); // optional
 
   // Tabs
   $bordercolor-nav-tabs: $gray-700; // optional
   // $color-nav-tabs-link-active: #; //optional
   $bordercolor-nav-tabs-hover: #666 #666 $bordercolor-nav-tabs; // optional
-  // $bordercolor-nav-tabs-active: # # $bgcolor-global; // optional
+  // $bordercolor-nav-tabs-active: # # var(--bgcolor-global); // optional
 
   // Tags
   // $color-tags: #; //optional
   // $bgcolor-tags: #; //optional
 
   // Icon colors
-  $color-editor-icons: $color-global;
+  --color-editor-icons: var(--color-global);
 
   // Border colors
   $border-color-theme: $gray-400;
