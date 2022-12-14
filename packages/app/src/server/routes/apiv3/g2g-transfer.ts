@@ -335,8 +335,6 @@ module.exports = (crowi: Crowi): Router => {
     return res.apiv3({ transferKey: transferKeyString });
   });
 
-  // Auto export
-  // TODO: Use socket to send progress info to the client
   // eslint-disable-next-line max-len
   pushRouter.post('/transfer', accessTokenParser, loginRequiredStrictly, adminRequired, validator.transfer, apiV3FormValidator, async(req: AuthorizedRequest, res: ApiV3Response) => {
     const { transferKey, collections, optionsMap } = req.body;
@@ -351,8 +349,7 @@ module.exports = (crowi: Crowi): Router => {
       return res.apiv3Err(new ErrorV3('Transfer key is invalid', 'transfer_key_invalid'), 400);
     }
 
-    // Ask growi info
-    // TODO: Ask progress as well
+    // get growi info
     let toGROWIInfo: IDataGROWIInfo;
     try {
       toGROWIInfo = await g2gTransferPusherService.askGROWIInfo(tk);

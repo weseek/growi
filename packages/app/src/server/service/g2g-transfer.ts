@@ -41,10 +41,11 @@ export type IDataGROWIInfo = {
   fileUploadDisabled: boolean;
   fileUploadTotalLimit: number | null // Handle null as Infinity
   attachmentInfo: {
-    type: string,
-    bucket?: string,
-    customEndpoint?: string, // for S3
-    uploadNamespace?: string, // for GCS
+    type: string;
+    writable: boolean;
+    bucket?: string;
+    customEndpoint?: string; // for S3
+    uploadNamespace?: string; // for GCS
   };
 }
 
@@ -149,18 +150,14 @@ export class G2GTransferPusherService implements Pusher {
   }
 
   public async askGROWIInfo(tk: TransferKey): Promise<IDataGROWIInfo> {
-    // axios get
-    let toGROWIInfo: IDataGROWIInfo;
     try {
-      const res = await axios.get('/_api/v3/g2g-transfer/growi-info', generateAxiosRequestConfigWithTransferKey(tk));
-      toGROWIInfo = res.data.growiInfo;
+      const { data: { growiInfo } } = await axios.get('/_api/v3/g2g-transfer/growi-info', generateAxiosRequestConfigWithTransferKey(tk));
+      return growiInfo;
     }
     catch (err) {
       logger.error(err);
       throw new G2GTransferError('Failed to retrieve growi info.', G2GTransferErrorCode.FAILED_TO_RETRIEVE_GROWI_INFO);
     }
-
-    return toGROWIInfo;
   }
 
   /**
@@ -194,6 +191,14 @@ export class G2GTransferPusherService implements Pusher {
         canTransfer: false,
         // TODO: i18n for reason
         reason: 'File upload is disabled in new Growi.',
+      };
+    }
+
+    if (!toGROWIInfo.attachmentInfo.writable) {
+      return {
+        canTransfer: false,
+        // TODO: i18n for reason
+        reason: 'The storage of new Growi is not writable.',
       };
     }
 
@@ -445,10 +450,10 @@ export class G2GTransferReceiverService implements Receiver {
 
     const attachmentInfo = {
       type: configManager.getConfig('crowi', 'app:fileUploadType'),
+      writable: isWritable,
       bucket: undefined,
       customEndpoint: undefined, // for S3
       uploadNamespace: undefined, // for GCS
-      writable: isWritable,
     };
 
     // put storage location info to check storage identification
