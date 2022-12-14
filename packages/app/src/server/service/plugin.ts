@@ -7,7 +7,9 @@ import mongoose from 'mongoose';
 import streamToPromise from 'stream-to-promise';
 import unzipper from 'unzipper';
 
-import type { GrowiPlugin, GrowiPluginOrigin } from '~/interfaces/plugin';
+import {
+  GrowiPlugin, GrowiPluginOrigin, GrowiPluginResourceType, GrowiThemePluginMeta,
+} from '~/interfaces/plugin';
 import loggerFactory from '~/utils/logger';
 import { resolveFromRoot } from '~/utils/project-dir-utils';
 
@@ -154,6 +156,14 @@ export class PluginService {
         types: growiPlugin.types,
       },
     };
+
+    // add theme metadata
+    if (growiPlugin.types.includes(GrowiPluginResourceType.Theme)) {
+      (plugin as GrowiPlugin<GrowiThemePluginMeta>).meta = {
+        ...plugin.meta,
+        themes: growiPlugin.themes,
+      };
+    }
 
     logger.info('Plugin detected => ', plugin);
 

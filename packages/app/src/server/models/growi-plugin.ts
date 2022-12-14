@@ -1,18 +1,35 @@
+import { GrowiCustomThemeSummary, GrowiThemeSchemeType } from '@growi/core';
 import {
   Schema, Model, Document,
 } from 'mongoose';
 
 import {
-  GrowiPlugin, GrowiPluginMeta, GrowiPluginOrigin, GrowiPluginResourceType,
+  GrowiPlugin, GrowiPluginMeta, GrowiPluginOrigin, GrowiPluginResourceType, GrowiThemePluginMeta,
 } from '~/interfaces/plugin';
 
 import { getOrCreateModel } from '../util/mongoose-utils';
 
 export interface GrowiPluginDocument extends GrowiPlugin, Document {
 }
-export type GrowiPluginModel = Model<GrowiPluginDocument>
+export interface GrowiPluginModel extends Model<GrowiPluginDocument> {
+  findEnabledPlugins(): Promise<GrowiPlugin[]>
+  findEnabledPluginsIncludingTypes(includingTypes: GrowiPluginResourceType[]): Promise<GrowiPlugin[]>
+}
 
-const growiPluginMetaSchema = new Schema<GrowiPluginMeta>({
+const growiPluginMetaThemesSchema = new Schema<GrowiCustomThemeSummary>({
+  name: { type: String, required: true },
+  schemeType: {
+    type: String,
+    enum: GrowiThemeSchemeType,
+    require: true,
+  },
+  bg: { type: String, required: true },
+  topbar: { type: String, required: true },
+  sidebar: { type: String, required: true },
+  theme: { type: String, required: true },
+});
+
+const growiPluginMetaSchema = new Schema<GrowiPluginMeta|GrowiThemePluginMeta>({
   name: { type: String, required: true },
   types: {
     type: [String],
@@ -21,6 +38,7 @@ const growiPluginMetaSchema = new Schema<GrowiPluginMeta>({
   },
   desc: { type: String },
   author: { type: String },
+  themes: [growiPluginMetaThemesSchema],
 });
 
 const growiPluginOriginSchema = new Schema<GrowiPluginOrigin>({
@@ -36,5 +54,14 @@ const growiPluginSchema = new Schema<GrowiPluginDocument, GrowiPluginModel>({
   meta: growiPluginMetaSchema,
 });
 
+growiPluginSchema.statics.findEnabledPlugins = async function(): Promise<GrowiPlugin[]> {
+  return this.find({ isEnabled: true });
+};
+growiPluginSchema.statics.findEnabledPluginsIncludingAnyTypes = async function(types: GrowiPluginResourceType[]): Promise<GrowiPlugin[]> {
+  return this.find({
+    isEnabled: true,
+    'meta.types': { $in: types },
+  });
+};
 
 export default getOrCreateModel<GrowiPluginDocument, GrowiPluginModel>('GrowiPlugin', growiPluginSchema);
