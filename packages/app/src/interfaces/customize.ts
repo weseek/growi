@@ -1,7 +1,10 @@
+import { GrowiCustomThemeSummary } from '@growi/core';
+
 export type IResLayoutSetting = {
   isContainerFluid: boolean,
 };
 
 export type IResGrowiTheme = {
-  theme: string,
+  currentTheme: string,
+  customThemeSummaries: GrowiCustomThemeSummary[],
 }
