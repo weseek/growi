@@ -1,4 +1,5 @@
 @use '~/styles/variables' as var;
+@use '~/styles/mixins' as *;
 $grw-sidebar-content-header-height: 58px;
 $grw-sidebar-content-footer-height: 50px;
 $grw-pagetree-item-padding-left: 10px;
@@ -6,14 +7,14 @@ $grw-pagetree-item-container-height: 40px;
 
 .grw-pagetree {
 
-  .grw-pagetree-item-skeleton {
-    width: 100%;
-    height: $grw-pagetree-item-container-height;
-    padding: (($grw-pagetree-item-container-height - 16px) / 2) $grw-pagetree-item-padding-left;
+  .grw-pagetree-item-skeleton-text {
+    @include grw-skeleton-text($font-size:16px, $line-height:$grw-pagetree-item-container-height);
+    padding-left: 12px;
   }
 
-  .grw-pagetree-item-skeleton-children {
-    padding-left: $grw-pagetree-item-padding-left * 2;
+  .grw-pagetree-item-skeleton-text-child {
+    @extend .grw-pagetree-item-skeleton-text;
+    padding-left: 12px + $grw-pagetree-item-padding-left;
   }
 
   :global {
