@@ -85,7 +85,7 @@ export const PageEditorByHackmd = (): JSX.Element => {
   const { data: hasDraftOnHackmd, mutate: mutateHasDraftOnHackmd } = useHasDraftOnHackmd();
   const { data: revisionIdHackmdSynced, mutate: mutateRevisionIdHackmdSynced } = useRevisionIdHackmdSynced();
   const { mutate: mutateIsEnabledUnsavedWarning } = useIsEnabledUnsavedWarning();
-  const { data: isHackmdDraftUpdatingInRealtime, mutate: mutateIsHackmdDraftUpdatingInRealtime } = useIsHackmdDraftUpdatingInRealtime(false);
+  const { data: isHackmdDraftUpdatingInRealtime, mutate: mutateIsHackmdDraftUpdatingInRealtime } = useIsHackmdDraftUpdatingInRealtime();
   const { data: remoteRevisionId, mutate: mutateRemoteRevisionId } = useRemoteRevisionId(revision?._id);
 
   const hackmdEditorRef = useRef<HackEditorRef>(null);
@@ -94,7 +94,8 @@ export const PageEditorByHackmd = (): JSX.Element => {
     if (editorMode !== EditorMode.HackMD) { return }
 
     try {
-      if (isSlackEnabled == null || currentPathname == null || slackChannels == null || grant == null || revision == null || hackmdEditorRef.current == null) {
+      if (isSlackEnabled == null || currentPathname == null || slackChannels == null || grant == null
+          || revision == null || hackmdEditorRef.current == null || revisionIdHackmdSynced == null) {
         throw new Error('Some materials to save are invalid');
       }
 
@@ -111,7 +112,7 @@ export const PageEditorByHackmd = (): JSX.Element => {
 
       const markdown = await hackmdEditorRef.current.getValue();
 
-      const { page } = await saveOrUpdate(markdown, { pageId, path: currentPagePath || currentPathname, revisionId: revision?._id }, optionsToSave);
+      const { page } = await saveOrUpdate(markdown, { pageId, path: currentPagePath || currentPathname, revisionId: revisionIdHackmdSynced }, optionsToSave);
       await mutatePageData();
       await mutateTagsInfo();
 
@@ -125,6 +126,7 @@ export const PageEditorByHackmd = (): JSX.Element => {
         await mutateCurrentPageId(page._id);
         await mutatePageData();
       }
+      setIsInitialized(false);
       mutateEditorMode(EditorMode.View);
     }
     catch (error) {
@@ -132,7 +134,7 @@ export const PageEditorByHackmd = (): JSX.Element => {
       toastError(error.message);
     }
   // eslint-disable-next-line max-len
-  }, [editorMode, isSlackEnabled, currentPathname, slackChannels, grant, revision, pageTags, saveOrUpdate, pageId, currentPagePath, mutatePageData, mutateTagsInfo, isNotFound, mutateEditorMode, router, mutateCurrentPageId]);
+  }, [editorMode, isSlackEnabled, currentPathname, slackChannels, grant, revision, revisionIdHackmdSynced, pageTags, saveOrUpdate, pageId, currentPagePath, mutatePageData, mutateTagsInfo, isNotFound, mutateEditorMode, router, mutateCurrentPageId]);
 
   // set handler to save and reload Page
   useEffect(() => {

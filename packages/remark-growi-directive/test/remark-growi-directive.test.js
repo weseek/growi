@@ -11,15 +11,15 @@ import test from 'tape';
 import { readSync } from 'to-vfile';
 import { unified } from 'unified';
 
-import { remarkGrowiPlugin } from '../src/remark-growi-plugin.js';
+import { remarkGrowiDirectivePlugin } from '../src/remark-growi-directive.js';
 
 test('directive()', (t) => {
   t.doesNotThrow(() => {
-    remark().use(remarkGrowiPlugin).freeze();
+    remark().use(remarkGrowiDirectivePlugin).freeze();
   }, 'should not throw if not passed options');
 
   t.doesNotThrow(() => {
-    unified().use(remarkGrowiPlugin).freeze();
+    unified().use(remarkGrowiDirectivePlugin).freeze();
   }, 'should not throw if without parser or compiler');
 
   t.end();
@@ -39,7 +39,7 @@ test('fixtures', (t) => {
       const input = String(file);
       const outputPath = path.join(base, fixture, 'output.md');
       const treePath = path.join(base, fixture, 'tree.json');
-      const proc = remark().use(remarkGrowiPlugin).freeze();
+      const proc = remark().use(remarkGrowiDirectivePlugin).freeze();
       const actual = proc.parse(file);
       /** @type {string} */
       let output;

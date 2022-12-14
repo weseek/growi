@@ -1,5 +1,6 @@
 import React from 'react';
 
+import { useTranslation } from 'next-i18next';
 import PropTypes from 'prop-types';
 import { UncontrolledTooltip } from 'reactstrap';
 
@@ -7,6 +8,7 @@ import { useIsGuestUser } from '~/stores/context';
 
 const NotAvailableForGuest = (props) => {
   const { children } = props;
+  const { t } = useTranslation();
 
   const { data: isGuestUser } = useIsGuestUser();
 
@@ -26,7 +28,7 @@ const NotAvailableForGuest = (props) => {
   return (
     <>
       { clonedChild }
-      <UncontrolledTooltip placement="top" target={id}>Not available for guest</UncontrolledTooltip>
+      <UncontrolledTooltip placement="top" target={id}>{t('Not available for guest')}</UncontrolledTooltip>
     </>
   );
 

@@ -58,14 +58,14 @@ const HeadersForGrowiPlugin = (props: HeadersForGrowiPluginProps): JSX.Element =
           elements.push(<>
             {/* eslint-disable-next-line @next/next/no-sync-scripts */ }
             <script type="module" key={`script_${growiPlugin.installedPath}`}
-              src={`/plugins/${growiPlugin.installedPath}/dist/${manifest['client-entry.tsx'].file}`} />
+              src={`/static/plugins/${growiPlugin.installedPath}/dist/${manifest['client-entry.tsx'].file}`} />
           </>);
         }
         // add link
         if (types.includes(GrowiPluginResourceType.Script) || types.includes(GrowiPluginResourceType.Style)) {
           elements.push(<>
             <link rel="stylesheet" key={`link_${growiPlugin.installedPath}`}
-              href={`/plugins/${growiPlugin.installedPath}/dist/${manifest['client-entry.tsx'].css}`} />
+              href={`/static/plugins/${growiPlugin.installedPath}/dist/${manifest['client-entry.tsx'].css}`} />
           </>);
         }
 
