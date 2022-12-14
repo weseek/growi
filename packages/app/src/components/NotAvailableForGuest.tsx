@@ -1,20 +1,20 @@
 import React from 'react';
 
 import { useTranslation } from 'next-i18next';
-import PropTypes from 'prop-types';
+import { Disable } from 'react-disable';
 import { UncontrolledTooltip } from 'reactstrap';
 
 import { useIsGuestUser } from '~/stores/context';
 
-const NotAvailableForGuest = (props) => {
-  const { children } = props;
+type NotAvailableForGuestProps = {
+  children: JSX.Element
+}
+
+export const NotAvailableForGuest = ({ children }: NotAvailableForGuestProps): JSX.Element => {
   const { t } = useTranslation();
 
   const { data: isGuestUser } = useIsGuestUser();
-
-  if (!isGuestUser) {
-    return props.children;
-  }
+  const isDisabled = !!isGuestUser;
 
   const id = children.props.id || `grw-not-available-for-guest-${Math.random().toString(32).substring(2)}`;
 
@@ -22,20 +22,17 @@ const NotAvailableForGuest = (props) => {
   const clonedChild = React.cloneElement(children, {
     id,
     className: `${children.props.className} grw-not-available-for-guest`,
-    onClick: () => { /* do nothing */ },
   });
+
 
   return (
     <>
-      { clonedChild }
+      <div id={id}>
+        <Disable disabled={isDisabled}>
+          { clonedChild }
+        </Disable>
+      </div>
       <UncontrolledTooltip placement="top" target={id}>{t('Not available for guest')}</UncontrolledTooltip>
     </>
   );
-
 };
-
-NotAvailableForGuest.propTypes = {
-  children: PropTypes.node.isRequired,
-};
-
-export default NotAvailableForGuest;
