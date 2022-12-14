@@ -96,6 +96,8 @@ declare type GrowiDocumentInitialProps = DocumentInitialProps & GrowiDocumentPro
 
 class GrowiDocument extends Document<GrowiDocumentInitialProps> {
 
+  static presetThemesManifest: ViteManifest;
+
   static override async getInitialProps(ctx: DocumentContext): Promise<GrowiDocumentInitialProps> {
     const initialProps: DocumentInitialProps = await Document.getInitialProps(ctx);
     const { crowi } = ctx.req as CrowiRequest<any>;
@@ -105,7 +107,9 @@ class GrowiDocument extends Document<GrowiDocumentInitialProps> {
     const customCss: string = customizeService.getCustomCss();
 
     // import preset-themes manifest
-    const presetThemesManifest = await import('@growi/preset-themes/dist/themes/manifest.json').then(imported => imported.default);
+    if (this.presetThemesManifest == null) {
+      this.presetThemesManifest = await import('@growi/preset-themes/dist/themes/manifest.json').then(imported => imported.default);
+    }
 
     // retrieve plugin manifests
     const GrowiPlugin = mongoose.model<GrowiPlugin>('GrowiPlugin');
@@ -114,7 +118,12 @@ class GrowiDocument extends Document<GrowiDocumentInitialProps> {
     const pluginThemeHref = await ActivatePluginService.retrieveThemeHref(growiPlugins, theme);
 
     return {
-      ...initialProps, theme, customCss, presetThemesManifest, pluginThemeHref, pluginManifestEntries,
+      ...initialProps,
+      theme,
+      customCss,
+      presetThemesManifest: this.presetThemesManifest,
+      pluginThemeHref,
+      pluginManifestEntries,
     };
   }
 
