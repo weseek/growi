@@ -4,41 +4,41 @@
 @use './mixins/count-badge';
 
 // determine optional variables
-$color-list: var(--color-list,var(--color-global));
-$bgcolor-list: var(--bgcolor-list,var(--bgcolor-global));
-$color-list-hover: var(--color-list-hover,var(--color-global));
+$color-list: $color-global !default;
+$bgcolor-list: $bgcolor-global !default;
+$color-list-hover: $color-global !default;
+$bgcolor-list-hover: lighten($primary, 72%) !default;
 $bgcolor-list-active: lighten($primary, 65%) !default;
 $color-list-active: color-yiq($bgcolor-list-active) !default;
-$color-table: var(--color-table,var(--color-global));
+$color-table: $color-global !default;
 $bgcolor-table: null !default;
 $border-color-table: $gray-200 !default;
-$color-table-hover: var(--color-table-hover,var(--color-table));
+$color-table-hover: $color-table !default;
 $bgcolor-table-hover: rgba(black, 0.075) !default;
-$bgcolor-sidebar-list-group: var(--bgcolor-sidebar-list-group,var(--bgcolor-list));
+$bgcolor-sidebar-list-group: $bgcolor-list !default;
 $color-tags: $secondary !default;
 $bgcolor-tags: $gray-200 !default;
 $border-color-global: $gray-300 !default;
 $border-color-toc: $border-color-global !default;
-$color-dropdown: var(--color-dropdown,var(--color-global));
-$color-dropdown-link: var(--color-dropdown-link,var(--color-global));
-$color-dropdown-link-hover: var(--color-dropdown-link-hover,var(--color-global));
-$color-dropdown-link-active: var(--color-reversal);
+$color-dropdown: $color-global !default;
+$color-dropdown-link: $color-global !default;
+$color-dropdown-link-hover: $color-global !default;
+$color-dropdown-link-active: $color-reversal !default;
 $bgcolor-dropdown-link-active: $primary !default;
-
 
 // override bootstrap variables
 $text-muted: $gray-500;
-$table-color: var(--color-table);
+$table-color: $color-table;
 $table-bg: $bgcolor-table;
 $table-border-color: $border-color-table;
-$table-hover-color: var(--color-table-hover);
+$table-hover-color: $color-table-hover;
 $table-hover-bg: $bgcolor-table-hover;
 $border-color: $border-color-global;
-$dropdown-color: var(--color-dropdown);
-$dropdown-link-color: var(--color-dropdown-link);
-$dropdown-link-hover-color: var(--color-dropdown-link-hover);
-$dropdown-link-active-color: var(--color-dropdown-link-active);
-$dropdown-link-active-bg: var(--bgcolor-dropdown-link-active);
+$dropdown-color: $color-dropdown;
+$dropdown-link-color: $color-dropdown-link;
+$dropdown-link-hover-color: $color-dropdown-link-hover;
+$dropdown-link-active-color: $color-dropdown-link-active;
+$dropdown-link-active-bg: $bgcolor-dropdown-link-active;
 
 @import './mixins/list-group';
 @import './reboot-bootstrap-text';
@@ -47,36 +47,30 @@ $dropdown-link-active-bg: var(--bgcolor-dropdown-link-active);
 @import './reboot-bootstrap-dropdown';
 
 // List Group
-@include override-list-group-item(
-  var(--color-list),
-  var(--bgcolor-sidebar-list-group),
-  var(--color-list-hover),
-  var(--bgcolor-list-hover),
-  var(--color-list-active),
-  var(--bgcolor-list-active)
-);
+@include override-list-group-item($color-list, $bgcolor-list, $color-list-hover, $bgcolor-list-hover, $color-list-active, $bgcolor-list-active);
+
 /*
  * Form
  */
 .form-control {
-  background-color: var(--bgcolor-global);
+  background-color: $bgcolor-global;
 }
 
 .form-control::placeholder {
-  color: hsl(from var(--bgcolor-global) h s calc(l - 20%));
+  color: darken($bgcolor-global, 20%);
 }
 
 .form-control[disabled],
 .form-control[readonly] {
-  color: hsl(from var(--color-global) h s calc(l 10%));
-  background-color: hsl(from var(--bgcolor-global) h s calc(l - 5%));
+  color: lighten($color-global, 10%);
+  background-color: darken($bgcolor-global, 5%);
 }
 
 /*
  * card
  */
 .card.card-disabled {
-  background-color: var(--background-color);
+  background-color: darken($bgcolor-card, 5%);
   border-color: $gray-200;
 }
 
@@ -163,11 +157,11 @@ $dropdown-link-active-bg: var(--bgcolor-dropdown-link-active);
  * GROWI subnavigation
  */
 .grw-subnav {
-  background-color: var(--bgcolor-subnav);
+  background-color: $bgcolor-subnav;
 }
 
 .grw-subnav-fixed-container .grw-subnav {
-  background-color: var(--bgcolor-subnav); opacity:0.85;
+  background-color: rgba($bgcolor-subnav, 0.85);
 }
 
 .grw-page-editor-mode-manager {
@@ -188,16 +182,8 @@ $dropdown-link-active-bg: var(--bgcolor-dropdown-link-active);
  * GROWI Sidebar
  */
 .grw-sidebar {
-  --bgcolor-sidebar-context: hsl(from var(--primary) h s calc(l 77%));
   // List
-  @include override-list-group-item(
-    var(--color-list),
-    var(--bgcolor-sidebar-list-group),
-    var(--color-list-hover),
-    var(--bgcolor-list-hover),
-    var(--color-list-active),
-    var(--bgcolor-list-active)
-  );
+  @include override-list-group-item($color-list, $bgcolor-sidebar-list-group, $color-list-hover, $bgcolor-list-hover, $color-list-active, $bgcolor-list-active);
   // sidebar-centent-bg
   .grw-navigation-wrap {
     // Drop a shadow on the light theme. The dark theme makes '$ bgcolor-sidebar-context' brighter than the body.
@@ -205,20 +191,14 @@ $dropdown-link-active-bg: var(--bgcolor-dropdown-link-active);
   }
   // Pagetree
   .grw-pagetree {
-    --bgcolor-sidebar-context-darken5: hsl(from var(--bgcolor-sidebar-context) h s calc(l - 5%));
-    --bgcolor-sidebar-context-darken12: hsl(from var(--bgcolor-sidebar-context) h s calc(l - 12%));
-    --color-sidebar-context-lighten10: hsl(from var(--color-sidebar-context) h s calc(l 10%));
-    --color-sidebar-context-lighten8: hsl(from var(--color-sidebar-context) h s calc(l 8%));
-    --bgcolor-sidebar-context-darken12: hsl(from var(--bgcolor-sidebar-context) h s calc(l - 15%));
-    --bgcolor-sidebar-context-darken12: hsl(from var(--bgcolor-sidebar-context) h s calc(l - 24%));
     @include override-list-group-item-for-pagetree(
-      var(--color-sidebar-context),
-      var(--bgcolor-sidebar-context-darken5),
-      var(--bgcolor-sidebar-context-darken12),
-      var(--color-sidebar-context-lighten10),
-      var(--color-sidebar-context-lighten8),
-      var(--bgcolor-sidebar-context-darken15),
-      var(--bgcolor-sidebar-context-darken24)
+      $color-sidebar-context,
+      darken($bgcolor-sidebar-context, 5%),
+      darken($bgcolor-sidebar-context, 12%),
+      lighten($color-sidebar-context, 10%),
+      lighten($color-sidebar-context, 8%),
+      darken($bgcolor-sidebar-context, 15%),
+      darken($bgcolor-sidebar-context, 24%)
     );
     .grw-pagetree-triangle-btn {
       @include mixins-buttons.button-outline-svg-icon-variant($gray-400, $primary);
@@ -226,7 +206,7 @@ $dropdown-link-active-bg: var(--bgcolor-dropdown-link-active);
   }
   .private-legacy-pages-link {
     &:hover {
-      background: var(--bgcolor-list-hover);
+      background: $bgcolor-list-hover;
     }
   }
 }
@@ -250,14 +230,14 @@ $dropdown-link-active-bg: var(--bgcolor-dropdown-link-active);
   .page-list-ul {
     > li {
       > span.page-list-meta {
-        color: hsl(from var(--color-global) h s calc(l 10%));
+        color: lighten($color-global, 10%);
       }
     }
   }
   // List group
   .list-group-item {
     .page-list-snippet {
-      color: hsl(from var(--color-global) h s calc(l 10%));
+      color: lighten($body-color, 10%);
     }
   }
 }
@@ -267,7 +247,7 @@ $dropdown-link-active-bg: var(--bgcolor-dropdown-link-active);
  */
 .revision-toc-content {
   ::marker {
-    color: hsl(from var(--bgcolor-global) h s calc(l - 20%));
+    color: darken($bgcolor-global, 20%);
   }
 }
 
@@ -327,7 +307,7 @@ $dropdown-link-active-bg: var(--bgcolor-dropdown-link-active);
     }
     &::after {
       background-color: white;
-      // background-image: url(/images/icons/slack/slack-logo-off.svg); -- should be specified in app -- 2022.12.09 Yuki Takei
+      background-image: url(/images/icons/slack/slack-logo-off.svg);
     }
   }
   .custom-control-input:checked ~ .custom-control-label {
@@ -335,7 +315,7 @@ $dropdown-link-active-bg: var(--bgcolor-dropdown-link-active);
       background-color: lighten($color-slack, 60%);
     }
     &::after {
-      // background-image: url(/images/icons/slack/slack-logo-on.svg); -- should be specified in app -- 2022.12.09 Yuki Takei
+      background-image: url(/images/icons/slack/slack-logo-on.svg);
     }
   }
   .grw-slack-logo svg {
@@ -382,7 +362,7 @@ $dropdown-link-active-bg: var(--bgcolor-dropdown-link-active);
 }
 
 .page-comments-row {
-  background: var(--bgcolor-subnav);
+  background: $bgcolor-subnav;
 }
 
 /*
@@ -446,5 +426,5 @@ $dropdown-link-active-bg: var(--bgcolor-dropdown-link-active);
  * skeleton
  */
 .grw-skeleton {
-  background-color: hsl(from var(--bgcolor-subnav) h s calc(l 10%));
+  background-color: darken($bgcolor-subnav, 10%);
 }
