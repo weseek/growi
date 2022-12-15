@@ -310,15 +310,13 @@ export class G2GTransferPusherService implements Pusher {
   }
 
   // eslint-disable-next-line max-len
-  public async startTransfer(tk: TransferKey, user: any, toGROWIInfo: IDataGROWIInfo, collections: string[], optionsMap: any, shouldEmit = true): Promise<void> {
+  public async startTransfer(tk: TransferKey, user: any, toGROWIInfo: IDataGROWIInfo, collections: string[], optionsMap: any): Promise<void> {
     const socket = this.crowi.socketIoService.getAdminSocket();
 
-    if (shouldEmit) {
-      socket.emit('admin:g2gProgress', {
-        mongo: G2G_PROGRESS_STATUS.IN_PROGRESS,
-        attachments: G2G_PROGRESS_STATUS.PENDING,
-      });
-    }
+    socket.emit('admin:g2gProgress', {
+      mongo: G2G_PROGRESS_STATUS.IN_PROGRESS,
+      attachments: G2G_PROGRESS_STATUS.PENDING,
+    });
 
     const targetConfigKeys = uploadConfigKeys;
 
@@ -328,8 +326,7 @@ export class G2GTransferPusherService implements Pusher {
 
     let zipFileStream: ReadStream;
     try {
-      const shouldEmit = false;
-      const zipFileStat = await this.crowi.exportService.export(collections, shouldEmit);
+      const zipFileStat = await this.crowi.exportService.export(collections);
       const zipFilePath = zipFileStat.zipFilePath;
 
       zipFileStream = createReadStream(zipFilePath);
@@ -367,12 +364,10 @@ export class G2GTransferPusherService implements Pusher {
       throw err;
     }
 
-    if (shouldEmit) {
-      socket.emit('admin:g2gProgress', {
-        mongo: G2G_PROGRESS_STATUS.COMPLETED,
-        attachments: G2G_PROGRESS_STATUS.IN_PROGRESS,
-      });
-    }
+    socket.emit('admin:g2gProgress', {
+      mongo: G2G_PROGRESS_STATUS.COMPLETED,
+      attachments: G2G_PROGRESS_STATUS.IN_PROGRESS,
+    });
 
     try {
       await this.transferAttachments(tk);
@@ -387,12 +382,10 @@ export class G2GTransferPusherService implements Pusher {
       throw err;
     }
 
-    if (shouldEmit) {
-      socket.emit('admin:g2gProgress', {
-        mongo: G2G_PROGRESS_STATUS.COMPLETED,
-        attachments: G2G_PROGRESS_STATUS.COMPLETED,
-      });
-    }
+    socket.emit('admin:g2gProgress', {
+      mongo: G2G_PROGRESS_STATUS.COMPLETED,
+      attachments: G2G_PROGRESS_STATUS.COMPLETED,
+    });
   }
 
   /**
