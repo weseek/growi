@@ -175,27 +175,27 @@ export const useSaveOrUpdate = (): SaveOrUpdateFunction => {
   };
 };
 
-export const useUpdateStateAfterSave = async(pageId: string) => {
+export const useUpdateStateAfterSave = () => {
   const { mutate: mutateCurrentPageId } = useCurrentPageId();
   const { mutate: mutateCurrentPage } = useSWRxCurrentPage();
   const { setRemoteLatestPageData } = useSetRemoteLatestPageData();
 
   // update swr 'currentPageId', 'currentPage', remote states
+  return async(pageId: string) => {
+    await mutateCurrentPageId(pageId);
+    const updatedPage = await mutateCurrentPage();
 
-  await mutateCurrentPageId(pageId);
-  const updatedPage = await mutateCurrentPage();
+    if (updatedPage == null) { return }
 
-  if (updatedPage == null) { return }
+    const remoterevisionData = {
+      remoteRevisionId: updatedPage.revision._id,
+      remoteRevisionBody: updatedPage.revision.body,
+      remoteRevisionLastUpdateUser: updatedPage.lastUpdateUser,
+      remoteRevisionLastUpdatedAt: updatedPage.updatedAt,
+      revisionIdHackmdSynced: updatedPage.revisionHackmdSynced.toString(),
+      hasDraftOnHackmd: updatedPage.hasDraftOnHackmd,
+    };
 
-  const remoterevisionData = {
-    remoteRevisionId: updatedPage.revision._id,
-    remoteRevisionBody: updatedPage.revision.body,
-    remoteRevisionLastUpdateUser: updatedPage.lastUpdateUser,
-    remoteRevisionLastUpdatedAt: updatedPage.updatedAt,
-    revisionIdHackmdSynced: updatedPage.revisionHackmdSynced.toString(),
-    hasDraftOnHackmd: updatedPage.hasDraftOnHackmd,
-  };
-
-  setRemoteLatestPageData(remoterevisionData);
-
+    setRemoteLatestPageData(remoterevisionData);
+  }
 };

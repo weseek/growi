@@ -94,7 +94,7 @@ const PageEditor = React.memo((): JSX.Element => {
   const { mutate: mutateIsEnabledUnsavedWarning } = useIsEnabledUnsavedWarning();
   const saveOrUpdate = useSaveOrUpdate();
 
-  const { setRemoteLatestPageData } = useSetRemoteLatestPageData();
+  const updateStateAfterSave = useUpdateStateAfterSave();
 
   const currentRevisionId = currentPage?.revision?._id;
 
@@ -248,7 +248,7 @@ const PageEditor = React.memo((): JSX.Element => {
       await router.push(`/${page._id}`);
     }
     else {
-      useUpdateStateAfterSave(page._id);
+      updateStateAfterSave(page._id);
     }
     mutateEditorMode(EditorMode.View);
   }, [editorMode, save, isNotFound, mutateEditorMode, router, useUpdateStateAfterSave]);
@@ -260,7 +260,7 @@ const PageEditor = React.memo((): JSX.Element => {
 
     const page = await save();
     if (page != null) {
-      useUpdateStateAfterSave(page._id);
+      updateStateAfterSave(page._id);
       toastSuccess(t('toaster.save_succeeded'));
     }
   }, [editorMode, save, t, useUpdateStateAfterSave]);

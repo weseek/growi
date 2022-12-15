@@ -88,7 +88,7 @@ export const PageEditorByHackmd = (): JSX.Element => {
   const { data: isHackmdDraftUpdatingInRealtime, mutate: mutateIsHackmdDraftUpdatingInRealtime } = useIsHackmdDraftUpdatingInRealtime();
   const { data: remoteRevisionId, mutate: mutateRemoteRevisionId } = useRemoteRevisionId();
 
-  const { setRemoteLatestPageData } = useSetRemoteLatestPageData();
+  const updateStateAfterSave = useUpdateStateAfterSave();
 
   const hackmdEditorRef = useRef<HackEditorRef>(null);
 
@@ -125,7 +125,7 @@ export const PageEditorByHackmd = (): JSX.Element => {
         await router.push(`/${page._id}`);
       }
       else {
-        useUpdateStateAfterSave(page._id);
+        updateStateAfterSave(page._id);
       }
       setIsInitialized(false);
       mutateEditorMode(EditorMode.View);
@@ -256,7 +256,7 @@ export const PageEditorByHackmd = (): JSX.Element => {
       mutatePageData(res);
 
       // set updated data
-      useUpdateStateAfterSave(res._id);
+      updateStateAfterSave(res._id);
       mutateTagsInfo();
 
       logger.debug('success to save');
