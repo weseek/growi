@@ -1,10 +1,19 @@
 import React from 'react';
 
+import { Spinner } from 'reactstrap';
+
 import { useSWRxPlugins } from '~/stores/plugin';
 
-import { Loading } from './Loading';
 import { PluginCard } from './PluginCard';
 import { PluginInstallerForm } from './PluginInstallerForm';
+
+const Loading = (): JSX.Element => {
+  return (
+    <Spinner className='d-flex justify-content-center aligh-items-center'>
+      Loading...
+    </Spinner>
+  );
+};
 
 export const PluginsExtensionPageContents = (): JSX.Element => {
   const { data, mutate } = useSWRxPlugins();
