@@ -81,9 +81,8 @@ export const useSWRxCurrentPage = (
 
 
 export const useSWRxTagsInfo = (pageId: Nullable<string>): SWRResponse<IPageTagsInfo | undefined, Error> => {
-
   const endpoint = `/pages.getPageTag?pageId=${pageId}`;
-  const key = [endpoint, pageId];
+  const key = pageId != null ? [endpoint, pageId] : null;
 
   const fetcher = async(endpoint: string, pageId: Nullable<string>) => {
     let tags: string[] = [];
