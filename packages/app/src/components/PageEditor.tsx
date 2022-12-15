@@ -13,7 +13,7 @@ import { useTranslation } from 'next-i18next';
 import { useRouter } from 'next/router';
 import { throttle, debounce } from 'throttle-debounce';
 
-import { updateStateAfterSave, useSaveOrUpdate } from '~/client/services/page-operation';
+import { useUpdateStateAfterSave, useSaveOrUpdate } from '~/client/services/page-operation';
 import { apiGet, apiPostForm } from '~/client/util/apiv1-client';
 import { toastError, toastSuccess } from '~/client/util/toastr';
 import { IEditorMethods } from '~/interfaces/editor-methods';
@@ -248,10 +248,10 @@ const PageEditor = React.memo((): JSX.Element => {
       await router.push(`/${page._id}`);
     }
     else {
-      updateStateAfterSave(page._id);
+      useUpdateStateAfterSave(page._id);
     }
     mutateEditorMode(EditorMode.View);
-  }, [editorMode, save, isNotFound, mutateEditorMode, router, updateStateAfterSave]);
+  }, [editorMode, save, isNotFound, mutateEditorMode, router, useUpdateStateAfterSave]);
 
   const saveWithShortcut = useCallback(async() => {
     if (editorMode !== EditorMode.Editor) {
@@ -260,10 +260,10 @@ const PageEditor = React.memo((): JSX.Element => {
 
     const page = await save();
     if (page != null) {
-      updateStateAfterSave(page._id);
+      useUpdateStateAfterSave(page._id);
       toastSuccess(t('toaster.save_succeeded'));
     }
-  }, [editorMode, save, t, updateStateAfterSave]);
+  }, [editorMode, save, t, useUpdateStateAfterSave]);
 
 
   /**

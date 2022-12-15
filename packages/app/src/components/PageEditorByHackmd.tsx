@@ -10,7 +10,7 @@ import { useRouter } from 'next/router';
 import { useTranslation } from 'react-i18next';
 import urljoin from 'url-join';
 
-import { updateStateAfterSave, useSaveOrUpdate } from '~/client/services/page-operation';
+import { useUpdateStateAfterSave, useSaveOrUpdate } from '~/client/services/page-operation';
 import { toastError, toastSuccess } from '~/client/util/apiNotification';
 import { apiPost } from '~/client/util/apiv1-client';
 import { IResHackmdIntegrated, IResHackmdDiscard } from '~/interfaces/hackmd';
@@ -125,7 +125,7 @@ export const PageEditorByHackmd = (): JSX.Element => {
         await router.push(`/${page._id}`);
       }
       else {
-        updateStateAfterSave(page._id);
+        useUpdateStateAfterSave(page._id);
       }
       setIsInitialized(false);
       mutateEditorMode(EditorMode.View);
@@ -135,7 +135,7 @@ export const PageEditorByHackmd = (): JSX.Element => {
       toastError(error.message);
     }
   // eslint-disable-next-line max-len
-  }, [editorMode, isSlackEnabled, currentPathname, slackChannels, grant, revision, revisionIdHackmdSynced, pageTags, saveOrUpdate, pageId, currentPagePath, mutatePageData, mutateTagsInfo, isNotFound, mutateEditorMode, router, updateStateAfterSave]);
+  }, [editorMode, isSlackEnabled, currentPathname, slackChannels, grant, revision, revisionIdHackmdSynced, pageTags, saveOrUpdate, pageId, currentPagePath, mutatePageData, mutateTagsInfo, isNotFound, mutateEditorMode, router, useUpdateStateAfterSave]);
 
   // set handler to save and reload Page
   useEffect(() => {
@@ -256,7 +256,7 @@ export const PageEditorByHackmd = (): JSX.Element => {
       mutatePageData(res);
 
       // set updated data
-      updateStateAfterSave(res._id);
+      useUpdateStateAfterSave(res._id);
       mutateTagsInfo();
 
       logger.debug('success to save');
@@ -269,7 +269,7 @@ export const PageEditorByHackmd = (): JSX.Element => {
     }
   }, [
     currentPagePath, currentPathname, isSlackEnabled, grant, slackChannels, pageId, revisionIdHackmdSynced,
-    pageTags, saveOrUpdate, mutatePageData, updateStateAfterSave, mutateTagsInfo, t,
+    pageTags, saveOrUpdate, mutatePageData, useUpdateStateAfterSave, mutateTagsInfo, t,
   ]);
 
   /**
