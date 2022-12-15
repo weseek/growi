@@ -1,14 +1,14 @@
 /**
- * @typedef {import('../src/micromark-extension-growi-plugin/index.js').HtmlOptions} HtmlOptions
- * @typedef {import('../src/micromark-extension-growi-plugin/index.js').Handle} Handle
+ * @typedef {import('../src/micromark-extension-growi-directive/index.js').HtmlOptions} HtmlOptions
+ * @typedef {import('../src/micromark-extension-growi-directive/index.js').Handle} Handle
  */
 
 import { htmlVoidElements } from 'html-void-elements';
 import { micromark } from 'micromark';
 import test from 'tape';
 
-import { DirectiveType } from '../src/mdast-util-growi-plugin/consts.js';
-import { directive as syntax, directiveHtml as html } from '../src/micromark-extension-growi-plugin/index.js';
+import { DirectiveType } from '../src/mdast-util-growi-directive/consts.js';
+import { directive as syntax, directiveHtml as html } from '../src/micromark-extension-growi-directive/index.js';
 
 const own = {}.hasOwnProperty;
 

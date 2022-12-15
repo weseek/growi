@@ -1,7 +1,8 @@
 import React from 'react';
 
 import { useTranslation } from 'next-i18next';
-import { UncontrolledTooltip } from 'reactstrap';
+
+import { NotAvailableForGuest } from '../NotAvailableForGuest';
 
 type RenderTagLabelsProps = {
   tags: string[],
@@ -31,21 +32,19 @@ const RenderTagLabels = React.memo((props: RenderTagLabelsProps) => {
           </a>
         );
       })}
-      <div id="edit-tags-btn-wrapper-for-tooltip">
-        <a
-          className={`btn btn-link btn-edit-tags text-muted p-0 d-flex align-items-center ${isTagsEmpty && 'no-tags'} ${isGuestUser && 'disabled'}`}
-          onClick={openEditorHandler}
-        >
-          { isTagsEmpty && <>{ t('Add tags for this page') }</>}
-          <i className={`icon-plus ${isTagsEmpty && 'ml-1'}`}/>
-        </a>
-      </div>
-      {isGuestUser && (
-        <UncontrolledTooltip placement="top" target="edit-tags-btn-wrapper-for-tooltip" fade={false}>
-          {t('Not available for guest')}
-        </UncontrolledTooltip>
-      )}
+      <NotAvailableForGuest>
+        <div id="edit-tags-btn-wrapper-for-tooltip">
+          <a
+            className={`btn btn-link btn-edit-tags text-muted p-0 d-flex align-items-center ${isTagsEmpty && 'no-tags'} ${isGuestUser && 'disabled'}`}
+            onClick={openEditorHandler}
+          >
+            { isTagsEmpty && <>{ t('Add tags for this page') }</>}
+            <i className={`icon-plus ${isTagsEmpty && 'ml-1'}`}/>
+          </a>
+        </div>
+      </NotAvailableForGuest>
     </>
+
   );
 
 });

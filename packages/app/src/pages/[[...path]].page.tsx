@@ -37,8 +37,10 @@ import type { PageModel, PageDocument } from '~/server/models/page';
 import type { PageRedirectModel } from '~/server/models/page-redirect';
 import type { UserUISettingsModel } from '~/server/models/user-ui-settings';
 import { useEditingMarkdown } from '~/stores/editor';
+import { useHasDraftOnHackmd, usePageIdOnHackmd, useRevisionIdHackmdSynced } from '~/stores/hackmd';
 import { useSWRxCurrentPage, useSWRxIsGrantNormalized } from '~/stores/page';
 import { useRedirectFrom } from '~/stores/page-redirect';
+import { useRemoteRevisionId } from '~/stores/remote-latest-page';
 import {
   useSelectedGrant,
   usePreferDrawerModeByUser, usePreferDrawerModeOnEditByUser, useSidebarCollapsed, useCurrentSidebarContents, useCurrentProductNavWidth,
@@ -256,6 +258,10 @@ const Page: NextPage<Props> = (props: Props) => {
   const pagePath = pageWithMeta?.data.path ?? (!_isPermalink(props.currentPathname) ? props.currentPathname : undefined);
 
   useCurrentPageId(pageId ?? null);
+  useRevisionIdHackmdSynced(pageWithMeta?.data.revisionHackmdSynced);
+  useRemoteRevisionId(pageWithMeta?.data.revision._id);
+  usePageIdOnHackmd(pageWithMeta?.data.pageIdOnHackmd);
+  useHasDraftOnHackmd(pageWithMeta?.data.hasDraftOnHackmd);
   // useIsNotCreatable(props.isForbidden || !isCreatablePage(pagePath)); // TODO: need to include props.isIdentical
   useCurrentPathname(props.currentPathname);
 
