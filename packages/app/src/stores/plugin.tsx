@@ -12,8 +12,7 @@ const pluginsFetcher = () => {
       return data;
     }
     catch (err) {
-      // TODO: Error handling
-      console.log('err', err);
+      throw new Error(err);
     }
   };
 };
@@ -30,8 +29,7 @@ const pluginFetcher = (id: string) => {
       return data;
     }
     catch (err) {
-      // TODO: Error handling
-      console.log('pluginFetcher', err);
+      throw new Error(err);
     }
   };
 };

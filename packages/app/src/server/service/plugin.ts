@@ -4,7 +4,6 @@ import path from 'path';
 
 // eslint-disable-next-line no-restricted-imports
 import axios from 'axios';
-import ObjectID from 'bson-objectid';
 import mongoose from 'mongoose';
 import streamToPromise from 'stream-to-promise';
 import unzipper from 'unzipper';
@@ -179,17 +178,24 @@ export class PluginService {
    */
   async getPluginIsEnabled(targetPluginId: string): Promise<boolean> {
     const ObjectID = mongoose.Types.ObjectId;
-    const isValidObjectId = (id) => {
+    const id = new ObjectID(targetPluginId);
+
+    const isValidObjectId = (id: string) => {
       return ObjectID.isValid(id) && (new ObjectID(id).toString() === id);
     };
 
-    if (isValidObjectId(targetPluginId)) {
-      const GrowiPlugin = mongoose.model<GrowiPlugin>('GrowiPlugin');
-      const growiPlugins = await GrowiPlugin.find({ _id: new ObjectID(targetPluginId).toString() });
-      return growiPlugins[0].isEnabled;
+    if (!isValidObjectId(targetPluginId)) {
+      throw new Error('This is invalid value.');
     }
 
-    throw new Error('Invalid id');
+    const GrowiPlugin = mongoose.model<GrowiPlugin>('GrowiPlugin');
+    const growiPlugins = await GrowiPlugin.findById(id);
+
+    if (growiPlugins == null) {
+      throw new Error('No plugin found for this ID.');
+    }
+
+    return growiPlugins.isEnabled;
   }
 
   /**
@@ -197,20 +203,31 @@ export class PluginService {
    */
   async switchPluginIsEnabled(targetPluginId: string): Promise<boolean> {
     const ObjectID = mongoose.Types.ObjectId;
-    const isValidObjectId = (id) => {
+    const id = new ObjectID(targetPluginId);
+
+    const isValidObjectId = (id: string) => {
       return ObjectID.isValid(id) && (new ObjectID(id).toString() === id);
     };
 
-    if (isValidObjectId(targetPluginId)) {
-      const GrowiPlugin = mongoose.model<GrowiPlugin>('GrowiPlugin');
-      const growiPlugins = await GrowiPlugin.find({ _id: new ObjectID(targetPluginId).toString() });
-      await growiPlugins[0].update(
-        { isEnabled: !growiPlugins[0].isEnabled },
-      );
-      return growiPlugins[0].isEnabled;
+    if (!isValidObjectId(targetPluginId)) {
+      throw new Error('This is invalid value.');
     }
 
-    throw new Error('Invalid id');
+    const GrowiPlugin = mongoose.model<GrowiPlugin>('GrowiPlugin');
+    const growiPlugins = await GrowiPlugin.findById(id);
+
+    if (growiPlugins == null) {
+      throw new Error('No plugin found for this ID.');
+    }
+
+    try {
+      await growiPlugins.update({ isEnabled: !growiPlugins.isEnabled });
+    }
+    catch (err) {
+      throw new Error('Plugin status switching failed.');
+    }
+
+    return growiPlugins.isEnabled;
   }
 
   /**
@@ -218,20 +235,32 @@ export class PluginService {
    */
   async pluginDeleted(targetPluginId: string): Promise<void> {
     const ObjectID = mongoose.Types.ObjectId;
-    const isValidObjectId = (id) => {
+    const id = new ObjectID(targetPluginId);
+
+    const isValidObjectId = (id: string) => {
       return ObjectID.isValid(id) && (new ObjectID(id).toString() === id);
     };
+    const deleteFile = (path: fs.PathLike) => fs.unlink(path, (err) => { return err });
 
-    if (isValidObjectId(targetPluginId)) {
-      const GrowiPlugin = mongoose.model<GrowiPlugin>('GrowiPlugin');
-      const growiPlugins = await GrowiPlugin.find({ _id: new ObjectID(targetPluginId).toString() });
-      growiPlugins[0].remove();
-      const deleteZipFile = (path: fs.PathLike) => fs.unlink(path, (err) => { return err });
-      deleteZipFile(growiPlugins[0].installedPath);
-      return;
+    if (!isValidObjectId(targetPluginId)) {
+      throw new Error('This is invalid value.');
     }
 
-    throw new Error('Invalid id');
+    const GrowiPlugin = mongoose.model<GrowiPlugin>('GrowiPlugin');
+    const growiPlugins = await GrowiPlugin.findByIdAndRemove(id);
+
+    if (growiPlugins == null) {
+      throw new Error('No plugin found for this ID.');
+    }
+
+    try {
+      deleteFile(growiPlugins.installedPath);
+    }
+    catch (err) {
+      throw new Error('Plugin repository deleting failed.');
+    }
+
+    return;
   }
 
 }

@@ -20,7 +20,7 @@ module.exports = (crowi: Crowi) => {
       return res.apiv3({ plugins: data });
     }
     catch (err) {
-      return res.apiv3Err(err, 400);
+      return res.apiv3Err(err);
     }
   });
 
@@ -34,7 +34,7 @@ module.exports = (crowi: Crowi) => {
       return res.apiv3({});
     }
     catch (err) {
-      return res.apiv3Err(err, 400);
+      return res.apiv3Err(err);
     }
   });
 
@@ -48,7 +48,7 @@ module.exports = (crowi: Crowi) => {
       return res.apiv3({ isEnabled: pluginIsEnabled });
     }
     catch (err) {
-      return res.apiv3Err(err, 400);
+      return res.apiv3Err(err);
     }
   });
 
@@ -62,7 +62,7 @@ module.exports = (crowi: Crowi) => {
       return res.apiv3({ isEnabled: pluginIsEnabled });
     }
     catch (err) {
-      return res.apiv3Err(err, 400);
+      return res.apiv3Err(err);
     }
   });
 
@@ -76,7 +76,7 @@ module.exports = (crowi: Crowi) => {
       return res.apiv3();
     }
     catch (err) {
-      return res.apiv3Err(err, 400);
+      return res.apiv3Err(err);
     }
   });
 
