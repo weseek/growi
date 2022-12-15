@@ -1,9 +1,10 @@
-import { useIsContainerFluid } from '~/stores/context';
+import { useIsContainerFluid, useShareLinkId } from '~/stores/context';
 import { useSWRxCurrentPage } from '~/stores/page';
 import { useEditorMode } from '~/stores/ui';
 
 export const useCurrentLayoutClassName = (): string => {
-  const { data: currentPage } = useSWRxCurrentPage();
+  const { data: shareLinkId } = useShareLinkId();
+  const { data: currentPage } = useSWRxCurrentPage(shareLinkId ?? undefined);
 
   const { data: dataIsContainerFluid } = useIsContainerFluid();
   const { getClassNamesByEditorMode } = useEditorMode();
