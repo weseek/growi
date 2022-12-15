@@ -13,7 +13,7 @@ import { useTranslation } from 'next-i18next';
 import { useRouter } from 'next/router';
 import { throttle, debounce } from 'throttle-debounce';
 
-import { useSaveOrUpdate } from '~/client/services/page-operation';
+import { useUpdateStateAfterSave, useSaveOrUpdate } from '~/client/services/page-operation';
 import { apiGet, apiPostForm } from '~/client/util/apiv1-client';
 import { toastError, toastSuccess } from '~/client/util/toastr';
 import { IEditorMethods } from '~/interfaces/editor-methods';
@@ -29,7 +29,9 @@ import {
   useIsConflict,
   useEditingMarkdown,
 } from '~/stores/editor';
-import { useCurrentPagePath, useSWRxCurrentPage } from '~/stores/page';
+import { useConflictDiffModal } from '~/stores/modal';
+import { useCurrentPagePath, useSWRxCurrentPage, useSWRxTagsInfo } from '~/stores/page';
+import { useSetRemoteLatestPageData } from '~/stores/remote-latest-page';
 import { usePreviewOptions } from '~/stores/renderer';
 import {
   EditorMode,
@@ -41,6 +43,7 @@ import loggerFactory from '~/utils/logger';
 
 
 // import { ConflictDiffModal } from './PageEditor/ConflictDiffModal';
+import { ConflictDiffModal } from './PageEditor/ConflictDiffModal';
 import Editor from './PageEditor/Editor';
 import Preview from './PageEditor/Preview';
 import scrollSyncHelper from './PageEditor/ScrollSyncHelper';
@@ -71,8 +74,9 @@ const PageEditor = React.memo((): JSX.Element => {
   const { data: currentPathname } = useCurrentPathname();
   const { data: currentPage, mutate: mutateCurrentPage } = useSWRxCurrentPage();
   const { data: grantData, mutate: mutateGrant } = useSelectedGrant();
-  const { data: pageTags } = usePageTagsForEditors(pageId);
-  const { data: editingMarkdown } = useEditingMarkdown();
+  const { data: pageTags, sync: syncTagsInfoForEditor } = usePageTagsForEditors(pageId);
+  const { mutate: mutateTagsInfo } = useSWRxTagsInfo(pageId);
+  const { data: editingMarkdown, mutate: mutateEditingMarkdown } = useEditingMarkdown();
   const { data: isEnabledAttachTitleHeader } = useIsEnabledAttachTitleHeader();
   const { data: templateBodyData } = useTemplateBodyData();
   const { data: isEditable } = useIsEditable();
@@ -84,10 +88,13 @@ const PageEditor = React.memo((): JSX.Element => {
   const { data: currentIndentSize, mutate: mutateCurrentIndentSize } = useCurrentIndentSize();
   const { data: isUploadableFile } = useIsUploadableFile();
   const { data: isUploadableImage } = useIsUploadableImage();
+  const { data: conflictDiffModalStatus, close: closeConflictDiffModal } = useConflictDiffModal();
 
   const { data: rendererOptions, mutate: mutateRendererOptions } = usePreviewOptions();
   const { mutate: mutateIsEnabledUnsavedWarning } = useIsEnabledUnsavedWarning();
   const saveOrUpdate = useSaveOrUpdate();
+
+  const updateStateAfterSave = useUpdateStateAfterSave();
 
   const currentRevisionId = currentPage?.revision?._id;
 
@@ -241,11 +248,10 @@ const PageEditor = React.memo((): JSX.Element => {
       await router.push(`/${page._id}`);
     }
     else {
-      await mutateCurrentPageId(page._id);
-      await mutateCurrentPage();
+      updateStateAfterSave(page._id);
     }
     mutateEditorMode(EditorMode.View);
-  }, [editorMode, save, isNotFound, mutateEditorMode, router, mutateCurrentPageId, mutateCurrentPage]);
+  }, [editorMode, save, isNotFound, mutateEditorMode, router, useUpdateStateAfterSave]);
 
   const saveWithShortcut = useCallback(async() => {
     if (editorMode !== EditorMode.Editor) {
@@ -254,11 +260,10 @@ const PageEditor = React.memo((): JSX.Element => {
 
     const page = await save();
     if (page != null) {
+      updateStateAfterSave(page._id);
       toastSuccess(t('toaster.save_succeeded'));
-      await mutateCurrentPageId(page._id);
-      await mutateCurrentPage();
     }
-  }, [editorMode, mutateCurrentPage, mutateCurrentPageId, save, t]);
+  }, [editorMode, save, t, useUpdateStateAfterSave]);
 
 
   /**
@@ -411,6 +416,23 @@ const PageEditor = React.memo((): JSX.Element => {
   }, []);
   const scrollEditorByPreviewScrollWithThrottle = useMemo(() => throttle(20, scrollEditorByPreviewScroll), [scrollEditorByPreviewScroll]);
 
+  const afterResolvedHandler = useCallback(async() => {
+    // get page data from db
+    const pageData = await mutateCurrentPage();
+
+    // update tag
+    await mutateTagsInfo(); // get from DB
+    syncTagsInfoForEditor(); // sync global state for client
+
+    // clear isConflict
+    mutateIsConflict(false);
+
+    // set resolved markdown in editing markdown
+    const markdown = pageData?.revision.body ?? '';
+    mutateEditingMarkdown(markdown);
+
+  }, [mutateCurrentPage, mutateEditingMarkdown, mutateIsConflict, mutateTagsInfo, syncTagsInfoForEditor]);
+
 
   // initialize
   useEffect(() => {
@@ -514,13 +536,13 @@ const PageEditor = React.memo((): JSX.Element => {
           onScroll={offset => scrollEditorByPreviewScrollWithThrottle(offset)}
         />
       </div>
-      {/* <ConflictDiffModal
-        isOpen={pageContainer.state.isConflictDiffModalOpen}
-        onClose={() => pageContainer.setState({ isConflictDiffModalOpen: false })}
-        pageContainer={pageContainer}
-        markdownOnEdit={markdown}
-        optionsToSave={optionsToSave}
-      /> */}
+      <ConflictDiffModal
+        isOpen={conflictDiffModalStatus?.isOpened}
+        onClose={() => closeConflictDiffModal()}
+        markdownOnEdit={markdownToPreview}
+        optionsToSave={undefined} // replace undefined
+        afterResolvedHandler={afterResolvedHandler}
+      />
     </div>
   );
 });

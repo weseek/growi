@@ -132,16 +132,28 @@ context('Modal for page operation', () => {
     cy.screenshot(`${ssPrefix}create-template-for-descendants-error`);
   });
 
-  it('PageDeleteModal is shown successfully', () => {
+  it('Page Deletion and PutBack is executed successfully', () => {
     cy.visit('/Sandbox/Bootstrap4');
     cy.waitUntilSkeletonDisappear();
 
-     cy.get('#grw-subnav-container').within(() => {
-       cy.getByTestid('open-page-item-control-btn').click({force: true});
-       cy.getByTestid('open-page-delete-modal-btn').click({force: true});
+    cy.get('#grw-subnav-container').within(() => {
+      cy.getByTestid('open-page-item-control-btn').click({force: true});
+      cy.getByTestid('open-page-delete-modal-btn').click({force: true});
     });
 
-     cy.getByTestid('page-delete-modal').should('be.visible').screenshot(`${ssPrefix}-delete-bootstrap4`);
+    cy.getByTestid('page-delete-modal').should('be.visible').within(() => {
+      cy.screenshot(`${ssPrefix}-delete-modal`);
+      cy.getByTestid('delete-page-button').click();
+    });
+    cy.getByTestid('trash-page-alert').should('be.visible');
+    cy.screenshot(`${ssPrefix}-bootstrap4-is-in-garbage-box`);
+
+    cy.getByTestid('put-back-button').click();
+    cy.getByTestid('put-back-page-modal').should('be.visible').within(() => {
+      cy.screenshot(`${ssPrefix}-put-back-modal`);
+      cy.getByTestid('put-back-execution-button').should('be.visible').click();
+    });
+    cy.screenshot(`${ssPrefix}-put-backed-bootstrap4-page`);
   });
 
   it('PageDuplicateModal is shown successfully', () => {

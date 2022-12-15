@@ -10,7 +10,7 @@ import { useRouter } from 'next/router';
 import { useTranslation } from 'react-i18next';
 import urljoin from 'url-join';
 
-import { useSaveOrUpdate } from '~/client/services/page-operation';
+import { useUpdateStateAfterSave, useSaveOrUpdate } from '~/client/services/page-operation';
 import { toastError, toastSuccess } from '~/client/util/apiNotification';
 import { apiPost } from '~/client/util/apiv1-client';
 import { IResHackmdIntegrated, IResHackmdDiscard } from '~/interfaces/hackmd';
@@ -25,7 +25,7 @@ import {
   usePageIdOnHackmd, useHasDraftOnHackmd, useRevisionIdHackmdSynced, useIsHackmdDraftUpdatingInRealtime,
 } from '~/stores/hackmd';
 import { useCurrentPagePath, useSWRxCurrentPage, useSWRxTagsInfo } from '~/stores/page';
-import { useRemoteRevisionId } from '~/stores/remote-latest-page';
+import { useRemoteRevisionId, useSetRemoteLatestPageData } from '~/stores/remote-latest-page';
 import {
   EditorMode,
   useEditorMode, useSelectedGrant,
@@ -85,8 +85,10 @@ export const PageEditorByHackmd = (): JSX.Element => {
   const { data: hasDraftOnHackmd, mutate: mutateHasDraftOnHackmd } = useHasDraftOnHackmd();
   const { data: revisionIdHackmdSynced, mutate: mutateRevisionIdHackmdSynced } = useRevisionIdHackmdSynced();
   const { mutate: mutateIsEnabledUnsavedWarning } = useIsEnabledUnsavedWarning();
-  const { data: isHackmdDraftUpdatingInRealtime, mutate: mutateIsHackmdDraftUpdatingInRealtime } = useIsHackmdDraftUpdatingInRealtime(false);
-  const { data: remoteRevisionId, mutate: mutateRemoteRevisionId } = useRemoteRevisionId(revision?._id);
+  const { data: isHackmdDraftUpdatingInRealtime, mutate: mutateIsHackmdDraftUpdatingInRealtime } = useIsHackmdDraftUpdatingInRealtime();
+  const { data: remoteRevisionId, mutate: mutateRemoteRevisionId } = useRemoteRevisionId();
+
+  const updateStateAfterSave = useUpdateStateAfterSave();
 
   const hackmdEditorRef = useRef<HackEditorRef>(null);
 
@@ -94,7 +96,8 @@ export const PageEditorByHackmd = (): JSX.Element => {
     if (editorMode !== EditorMode.HackMD) { return }
 
     try {
-      if (isSlackEnabled == null || currentPathname == null || slackChannels == null || grant == null || revision == null || hackmdEditorRef.current == null) {
+      if (isSlackEnabled == null || currentPathname == null || slackChannels == null || grant == null
+          || revision == null || hackmdEditorRef.current == null || revisionIdHackmdSynced == null) {
         throw new Error('Some materials to save are invalid');
       }
 
@@ -111,7 +114,7 @@ export const PageEditorByHackmd = (): JSX.Element => {
 
       const markdown = await hackmdEditorRef.current.getValue();
 
-      const { page } = await saveOrUpdate(markdown, { pageId, path: currentPagePath || currentPathname, revisionId: revision?._id }, optionsToSave);
+      const { page } = await saveOrUpdate(markdown, { pageId, path: currentPagePath || currentPathname, revisionId: revisionIdHackmdSynced }, optionsToSave);
       await mutatePageData();
       await mutateTagsInfo();
 
@@ -122,9 +125,9 @@ export const PageEditorByHackmd = (): JSX.Element => {
         await router.push(`/${page._id}`);
       }
       else {
-        await mutateCurrentPageId(page._id);
-        await mutatePageData();
+        updateStateAfterSave(page._id);
       }
+      setIsInitialized(false);
       mutateEditorMode(EditorMode.View);
     }
     catch (error) {
@@ -132,7 +135,7 @@ export const PageEditorByHackmd = (): JSX.Element => {
       toastError(error.message);
     }
   // eslint-disable-next-line max-len
-  }, [editorMode, isSlackEnabled, currentPathname, slackChannels, grant, revision, pageTags, saveOrUpdate, pageId, currentPagePath, mutatePageData, mutateTagsInfo, isNotFound, mutateEditorMode, router, mutateCurrentPageId]);
+  }, [editorMode, isSlackEnabled, currentPathname, slackChannels, grant, revision, revisionIdHackmdSynced, pageTags, saveOrUpdate, pageId, currentPagePath, mutatePageData, mutateTagsInfo, isNotFound, mutateEditorMode, router, useUpdateStateAfterSave]);
 
   // set handler to save and reload Page
   useEffect(() => {
@@ -253,9 +256,7 @@ export const PageEditorByHackmd = (): JSX.Element => {
       mutatePageData(res);
 
       // set updated data
-      mutateRemoteRevisionId(res.revision._id);
-      mutateRevisionIdHackmdSynced(res.page.revisionHackmdSynced);
-      mutateHasDraftOnHackmd(res.page.hasDraftOnHackmd);
+      updateStateAfterSave(res._id);
       mutateTagsInfo();
 
       logger.debug('success to save');
@@ -267,8 +268,9 @@ export const PageEditorByHackmd = (): JSX.Element => {
       toastError(error.message);
     }
   }, [
-    currentPagePath, currentPathname, isSlackEnabled, grant, slackChannels, pageId, revisionIdHackmdSynced, pageTags,
-    saveOrUpdate, mutatePageData, mutateRemoteRevisionId, mutateRevisionIdHackmdSynced, mutateHasDraftOnHackmd, mutateTagsInfo, t]);
+    currentPagePath, currentPathname, isSlackEnabled, grant, slackChannels, pageId, revisionIdHackmdSynced,
+    pageTags, saveOrUpdate, mutatePageData, useUpdateStateAfterSave, mutateTagsInfo, t,
+  ]);
 
   /**
    * onChange event of HackmdEditor handler
