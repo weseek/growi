@@ -348,6 +348,7 @@ export const generateViewOptions = (
       drawioPlugin.sanitizeOption,
       lsxGrowiPlugin.sanitizeOption,
     )],
+    rehypeSanitizePlugin,
     katex,
     [toc.rehypePluginStore, { storeTocNode }],
     // [autoLinkHeadings, {
@@ -430,6 +431,8 @@ export const generateSimpleViewOptions = (config: RendererConfig, pagePath: stri
     remarkPlugins.push(breaks);
   }
 
+
+
   const rehypeSanitizePlugin: Pluggable<any[]> | (() => void) = config.isEnabledXssPrevention
     ? [sanitize, deepmerge(commonSanitizeOption, lsxGrowiPlugin.sanitizeOption)]
     : () => {};
@@ -443,6 +446,7 @@ export const generateSimpleViewOptions = (config: RendererConfig, pagePath: stri
       drawioPlugin.sanitizeOption,
       lsxGrowiPlugin.sanitizeOption,
     )],
+    rehypeSanitizePlugin,
     katex,
   );
 
@@ -491,6 +495,7 @@ export const generatePreviewOptions = (config: RendererConfig, pagePath: string)
       drawioPlugin.sanitizeOption,
       addLineNumberAttribute.sanitizeOption,
     )],
+    rehypeSanitizePlugin,
     katex,
   );
 
