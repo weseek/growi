@@ -197,5 +197,5 @@ export const useUpdateStateAfterSave = () => {
     };
 
     setRemoteLatestPageData(remoterevisionData);
-  }
+  };
 };
