@@ -61,7 +61,7 @@ interface FileMeta {
 /**
  * Return type for {@link Pusher.getTransferability}
  */
-type IGetTransferabilityReturn = { canTransfer: true; } | { canTransfer: false; reason: string; };
+type Transferability = { canTransfer: true; } | { canTransfer: false; reason: string; };
 
 interface Pusher {
   /**
@@ -79,7 +79,7 @@ interface Pusher {
    * Check if transfering is proceedable
    * @param {IDataGROWIInfo} fromGROWIInfo
    */
-  getTransferability(fromGROWIInfo: IDataGROWIInfo): Promise<IGetTransferabilityReturn>
+  getTransferability(fromGROWIInfo: IDataGROWIInfo): Promise<Transferability>
   /**
    * List files in the storage
    * @param {TransferKey} tk Transfer key
@@ -171,7 +171,7 @@ export class G2GTransferPusherService implements Pusher {
    * @param toGROWIInfo to-growi info
    * @returns Whether g2g transfer is possible and reason for failure
    */
-  public async getTransferability(toGROWIInfo: IDataGROWIInfo): Promise<IGetTransferabilityReturn> {
+  public async getTransferability(toGROWIInfo: IDataGROWIInfo): Promise<Transferability> {
     const { fileUploadService } = this.crowi;
 
     const version = this.crowi.version;
@@ -302,8 +302,6 @@ export class G2GTransferPusherService implements Pusher {
           logger.warn(`Error occured when getting Attachment(ID=${attachment.id}), skipping: `, err);
           continue;
         }
-        // TODO: get attachmentLists from destination GROWI to avoid transferring files that the dest GROWI has
-        // TODO: refresh transfer key per 1 hour
         // post each attachment file data to receiver
         try {
           await this.doTransferAttachment(tk, attachment, fileStream);
@@ -440,7 +438,6 @@ export class G2GTransferReceiverService implements Receiver {
    * @returns
    */
   public async answerGROWIInfo(): Promise<IDataGROWIInfo> {
-    // TODO: add attachment file limit
     const { version, configManager, fileUploadService } = this.crowi;
     const userUpperLimit = configManager.getConfig('crowi', 'security:userUpperLimit');
     const fileUploadDisabled = configManager.getConfig('crowi', 'app:fileUploadDisabled');
@@ -508,7 +505,6 @@ export class G2GTransferReceiverService implements Receiver {
    * @returns
    */
   public async receiveAttachment(content: Readable, attachmentMap): Promise<void> {
-    // TODO: test with S3, local
     const { fileUploadService } = this.crowi;
     return fileUploadService.uploadAttachment(content, attachmentMap);
   }
