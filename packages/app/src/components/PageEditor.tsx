@@ -82,7 +82,6 @@ const PageEditor = React.memo((): JSX.Element => {
   const { data: isEditable } = useIsEditable();
   const { data: editorMode, mutate: mutateEditorMode } = useEditorMode();
   const { data: isSlackEnabled } = useIsSlackEnabled();
-  const { data: slackChannelsData } = useSWRxSlackChannels(currentPagePath);
   const { data: isTextlintEnabled } = useIsTextlintEnabled();
   const { data: isIndentSizeForced } = useIsIndentSizeForced();
   const { data: currentIndentSize, mutate: mutateCurrentIndentSize } = useCurrentIndentSize();
@@ -116,8 +115,6 @@ const PageEditor = React.memo((): JSX.Element => {
 
   const markdownToSave = useRef<string>(initialValue);
   const [markdownToPreview, setMarkdownToPreview] = useState<string>(initialValue);
-
-  const slackChannels = useMemo(() => (slackChannelsData ? slackChannelsData.toString() : ''), [slackChannelsData]);
 
   const { data: socket } = useGlobalSocket();
 
@@ -156,17 +153,16 @@ const PageEditor = React.memo((): JSX.Element => {
     if (grantData == null) {
       return;
     }
-    const slackChannels = slackChannelsData ? slackChannelsData.toString() : '';
     const optionsToSave = {
       isSlackEnabled: isSlackEnabled ?? false,
-      slackChannels,
+      slackChannels: '', // set in save method by opts in SavePageControlls.tsx
       grant: grantData.grant,
       pageTags: pageTags ?? [],
       grantUserGroupId: grantData.grantedGroup?.id,
       grantUserGroupName: grantData.grantedGroup?.name,
     };
     return optionsToSave;
-  }, [grantData, isSlackEnabled, pageTags, slackChannelsData]);
+  }, [grantData, isSlackEnabled, pageTags]);
 
   // register to facade
   useEffect(() => {
@@ -193,7 +189,7 @@ const PageEditor = React.memo((): JSX.Element => {
     setMarkdownWithDebounce(value, isClean);
   }, [setMarkdownWithDebounce]);
 
-  const save = useCallback(async(opts?: {overwriteScopesOfDescendants: boolean}): Promise<IPageHasId | null> => {
+  const save = useCallback(async(opts?: {slackChannels: string, overwriteScopesOfDescendants?: boolean}): Promise<IPageHasId | null> => {
     if (currentPathname == null) {
       logger.error('Some materials to save are invalid', { grantData, isSlackEnabled, currentPathname });
       throw new Error('Some materials to save are invalid');
@@ -227,9 +223,9 @@ const PageEditor = React.memo((): JSX.Element => {
     }
 
   // eslint-disable-next-line max-len
-  }, [grantData, isSlackEnabled, currentPathname, slackChannels, pageTags, saveOrUpdate, pageId, currentPagePath, currentRevisionId]);
+  }, [grantData, isSlackEnabled, currentPathname, pageTags, saveOrUpdate, pageId, currentPagePath, currentRevisionId]);
 
-  const saveAndReturnToViewHandler = useCallback(async(opts?: {overwriteScopesOfDescendants: boolean}) => {
+  const saveAndReturnToViewHandler = useCallback(async(opts: {slackChannels: string, overwriteScopesOfDescendants?: boolean}) => {
     if (editorMode !== EditorMode.Editor) {
       return;
     }
