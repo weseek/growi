@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 
 import type {
-  IPageInfoForEntity, IPagePopulatedToShowRevision,
+  IPageInfoForEntity, IPagePopulatedToShowRevision, Nullable,
 } from '@growi/core';
 import { isClient, pagePathUtils } from '@growi/core';
 import useSWR, { Key, SWRResponse } from 'swr';
@@ -80,11 +80,11 @@ export const useSWRxCurrentPage = (
 };
 
 
-export const useSWRxTagsInfo = (pageId?: string): SWRResponse<IPageTagsInfo | undefined, Error> => {
+export const useSWRxTagsInfo = (pageId: Nullable<string>): SWRResponse<IPageTagsInfo | undefined, Error> => {
   const endpoint = `/pages.getPageTag?pageId=${pageId}`;
   const key = pageId != null ? [endpoint, pageId] : null;
 
-  const fetcher = async(endpoint: string, pageId?: string) => {
+  const fetcher = async(endpoint: string, pageId: Nullable<string>) => {
     let tags: string[] = [];
     // when the page exists
     if (pageId != null) {
