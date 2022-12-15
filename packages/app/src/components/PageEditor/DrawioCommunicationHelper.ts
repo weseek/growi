@@ -1,4 +1,4 @@
-import { extractCodeFromMxfile } from '@growi/remark-drawio-plugin';
+import { extractCodeFromMxfile } from '@growi/remark-drawio';
 
 import loggerFactory from '~/utils/logger';
 
