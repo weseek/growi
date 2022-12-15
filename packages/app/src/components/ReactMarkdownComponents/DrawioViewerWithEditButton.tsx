@@ -5,7 +5,7 @@ import EventEmitter from 'events';
 import {
   DrawioEditByViewerProps,
   DrawioViewer, DrawioViewerProps, extractCodeFromMxfile,
-} from '@growi/remark-drawio-plugin';
+} from '@growi/remark-drawio';
 import { useTranslation } from 'next-i18next';
 
 import { useIsGuestUser, useIsSharedUser, useShareLinkId } from '~/stores/context';

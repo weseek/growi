@@ -126,7 +126,7 @@ jobs:
           name: Coverage Report
           path: |
             packages/app/coverage
-            packages/remark-growi-plugin/coverage
+            packages/remark-growi-directive/coverage
 
       - name: Slack Notification
         uses: weseek/ghaction-slack-notification@master

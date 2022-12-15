@@ -107,8 +107,8 @@ COPY packages/core packages/core
 COPY packages/codemirror-textlint packages/codemirror-textlint
 COPY packages/slack packages/slack
 COPY packages/ui packages/ui
-COPY packages/remark-drawio-plugin packages/remark-drawio-plugin
-COPY packages/remark-growi-plugin packages/remark-growi-plugin
+COPY packages/remark-drawio packages/remark-drawio
+COPY packages/remark-growi-directive packages/remark-growi-directive
 COPY packages/remark-lsx packages/remark-lsx
 COPY packages/hackmd packages/hackmd
 COPY packages/preset-themes packages/preset-themes

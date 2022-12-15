@@ -2,8 +2,8 @@
 import { ComponentType } from 'react';
 
 import { isClient } from '@growi/core';
-import * as drawioPlugin from '@growi/remark-drawio-plugin';
-import growiPlugin from '@growi/remark-growi-plugin';
+import * as drawioPlugin from '@growi/remark-drawio';
+import growiDirective from '@growi/remark-growi-directive';
 import { Lsx, LsxImmutable } from '@growi/remark-lsx/components';
 import * as lsxGrowiPlugin from '@growi/remark-lsx/services/renderer';
 import { Schema as SanitizeOption } from 'hast-util-sanitize';
@@ -296,7 +296,7 @@ const generateCommonOptions = (pagePath: string|undefined, config: RendererConfi
       gfm,
       emoji,
       pukiwikiLikeLinker,
-      growiPlugin,
+      growiDirective,
     ],
     rehypePlugins: [
       [relativeLinksByPukiwikiLikeLinker, { pagePath }],
