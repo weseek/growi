@@ -134,18 +134,17 @@ export const useSWRxPageInfoForList = (
 };
 
 export const usePageTreeTermManager = (isDisabled?: boolean) : SWRResponse<number, Error> & ITermNumberManagerUtil => {
-  return useTermNumberManager(isDisabled === true ? null : 'fullTextSearchTermNumber');
+  return useTermNumberManager(isDisabled === true ? null : 'pageTreeTermManager');
 };
 
 export const useSWRxRootPage = (): SWRResponse<RootPageResult, Error> => {
-  return useSWR(
+  return useSWRImmutable(
     '/page-listing/root',
     endpoint => apiv3Get(endpoint).then((response) => {
       return {
         rootPage: response.data.rootPage,
       };
     }),
-    { revalidateOnFocus: false },
   );
 };
 
@@ -154,14 +153,20 @@ export const useSWRxPageAncestorsChildren = (
 ): SWRResponse<AncestorsChildrenResult, Error> => {
   const { data: termNumber } = usePageTreeTermManager();
 
-  return useSWR(
+  // HACKME: Consider using global mutation from useSWRConfig and not to use term number -- 2022/12/08 @hakumizuki
+  const prevTermNumber = termNumber ? termNumber - 1 : 0;
+  const prevSWRRes = useSWRImmutable(path ? [`/page-listing/ancestors-children?path=${path}`, prevTermNumber] : null);
+
+  return useSWRImmutable(
     path ? [`/page-listing/ancestors-children?path=${path}`, termNumber] : null,
     endpoint => apiv3Get(endpoint).then((response) => {
       return {
         ancestorsChildren: response.data.ancestorsChildren,
       };
     }),
-    { revalidateOnFocus: false },
+    {
+      fallbackData: prevSWRRes.data, // avoid data to be undefined due to the termNumber to change
+    },
   );
 };
 

@@ -105,12 +105,13 @@ COPY ["package.json", "lerna.json", "tsconfig.base.json", "./"]
 COPY packages/app packages/app
 COPY packages/core packages/core
 COPY packages/codemirror-textlint packages/codemirror-textlint
-COPY packages/plugin-attachment-refs packages/plugin-attachment-refs
-COPY packages/plugin-lsx packages/plugin-lsx
 COPY packages/slack packages/slack
 COPY packages/ui packages/ui
-COPY packages/remark-growi-plugin packages/remark-growi-plugin
+COPY packages/remark-drawio packages/remark-drawio
+COPY packages/remark-growi-directive packages/remark-growi-directive
+COPY packages/remark-lsx packages/remark-lsx
 COPY packages/hackmd packages/hackmd
+COPY packages/preset-themes packages/preset-themes
 
 # build
 RUN yarn lerna run build

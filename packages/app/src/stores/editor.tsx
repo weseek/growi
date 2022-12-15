@@ -1,5 +1,5 @@
 import { Nullable, withUtils, SWRResponseWithUtils } from '@growi/core';
-import useSWR, { MutatorOptions, SWRResponse, useSWRConfig } from 'swr';
+import useSWR, { SWRResponse } from 'swr';
 import useSWRImmutable from 'swr/immutable';
 
 import { apiGet } from '~/client/util/apiv1-client';
@@ -13,6 +13,11 @@ import {
 // import { localStorageMiddleware } from './middlewares/sync-to-storage';
 import { useSWRxTagsInfo } from './page';
 import { useStaticSWR } from './use-static-swr';
+
+
+export const useEditingMarkdown = (initialData?: string): SWRResponse<string, Error> => {
+  return useStaticSWR('editingMarkdown', initialData);
+};
 
 
 type EditorSettingsOperation = {
@@ -116,4 +121,8 @@ export const usePageTagsForEditors = (pageId: Nullable<string>): SWRResponse<str
 
 export const useIsEnabledUnsavedWarning = (): SWRResponse<boolean, Error> => {
   return useStaticSWR<boolean, Error>('isEnabledUnsavedWarning');
+};
+
+export const useIsConflict = (): SWRResponse<boolean, Error> => {
+  return useStaticSWR<boolean, Error>('isConflict', undefined, { fallbackData: false });
 };

@@ -59,7 +59,7 @@ const EmptyTrashModal: FC = () => {
   };
 
   return (
-    <Modal size="lg" isOpen={isOpened} toggle={closeEmptyTrashModal} data-testid="page-delete-modal" className="grw-create-page">
+    <Modal size="lg" isOpen={isOpened} toggle={closeEmptyTrashModal} data-testid="page-delete-modal">
       <ModalHeader tag="h4" toggle={closeEmptyTrashModal} className="bg-danger text-light">
         <i className="icon-fw icon-fire"></i>
         {t('modal_empty.empty_the_trash')}

@@ -35,11 +35,7 @@ const drawioConfig = {
 };
 
 
-type Props = {
-  // onSave: (drawioData) => void,
-};
-
-export const DrawioModal = (props: Props): JSX.Element => {
+export const DrawioModal = (): JSX.Element => {
   const { data: drawioUri } = useDrawioUri();
   const { data: personalSettingsInfo } = usePersonalSettings();
 
@@ -71,9 +67,9 @@ export const DrawioModal = (props: Props): JSX.Element => {
     return new DrawioCommunicationHelper(
       drawioUri,
       drawioConfig,
-      { onClose: closeDrawioModal },
+      { onClose: closeDrawioModal, onSave: drawioModalData?.onSave },
     );
-  }, [closeDrawioModal, drawioUri]);
+  }, [closeDrawioModal, drawioModalData?.onSave, drawioUri]);
 
   const receiveMessageHandler = useCallback((event: MessageEvent) => {
     if (drawioModalData == null) {

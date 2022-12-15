@@ -1,8 +1,9 @@
+import { useEffect } from 'react';
+
 import type {
   IPageInfoForEntity, IPagePopulatedToShowRevision, Nullable,
 } from '@growi/core';
-import { pagePathUtils } from '@growi/core';
-import { useEffect } from 'react';
+import { isClient, pagePathUtils } from '@growi/core';
 import useSWR, { Key, SWRResponse } from 'swr';
 import useSWRImmutable from 'swr/immutable';
 
@@ -16,7 +17,7 @@ import { IRevisionsForPagination } from '~/interfaces/revision';
 
 import { IPageTagsInfo } from '../interfaces/tag';
 
-import { useCurrentPageId, useCurrentPathname, useCurrentRevisionId } from './context';
+import { useCurrentPageId, useCurrentPathname } from './context';
 import { ITermNumberManagerUtil, useTermNumberManager } from './use-static-swr';
 
 const { isPermalink: _isPermalink } = pagePathUtils;
@@ -28,7 +29,7 @@ export const useSWRxPage = (
     revisionId?: string,
     initialData?: IPagePopulatedToShowRevision|null,
 ): SWRResponse<IPagePopulatedToShowRevision|null, Error> => {
-  const swrResponse = useSWR<IPagePopulatedToShowRevision|null, Error>(
+  const swrResponse = useSWRImmutable<IPagePopulatedToShowRevision|null, Error>(
     pageId != null ? ['/page', pageId, shareLinkId, revisionId] : null,
     (endpoint, pageId, shareLinkId, revisionId) => apiv3Get<{ page: IPagePopulatedToShowRevision }>(endpoint, { pageId, shareLinkId, revisionId })
       .then(result => result.data.page)
@@ -64,9 +65,16 @@ export const useSWRxCurrentPage = (
     shareLinkId?: string, initialData?: IPagePopulatedToShowRevision|null,
 ): SWRResponse<IPagePopulatedToShowRevision|null, Error> => {
   const { data: currentPageId } = useCurrentPageId();
-  const { data: currentRevisionId } = useCurrentRevisionId();
 
-  const swrResult = useSWRxPage(currentPageId, shareLinkId, currentRevisionId, initialData);
+  // Get URL parameter for specific revisionId
+  let revisionId: string|undefined;
+  if (isClient()) {
+    const urlParams = new URLSearchParams(window.location.search);
+    const requestRevisionId = urlParams.get('revisionId');
+    revisionId = requestRevisionId != null ? requestRevisionId : undefined;
+  }
+
+  const swrResult = useSWRxPage(currentPageId, shareLinkId, revisionId, initialData);
 
   return swrResult;
 };

@@ -25,6 +25,7 @@ const setupTranspileModules = () => {
     // listing ESM packages until experimental.esmExternals works correctly to avoid ERR_REQUIRE_ESM
     'react-markdown',
     'unified',
+    'markdown-table',
     'character-entities-html4',
     'comma-separated-tokens',
     'decode-named-character-reference',

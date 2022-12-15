@@ -1,6 +1,6 @@
 @use '../variables' as var;
 @use '../bootstrap/init' as *;
-@use '../mixins';
+@use '../atoms/mixins/buttons' as mixins-buttons;
 @use './mixins/count-badge';
 
 // determine optional variables
@@ -301,7 +301,7 @@ ul.pagination {
       lighten($bgcolor-sidebar-context, 24%)
     );
     .grw-pagetree-triangle-btn {
-      @include mixins.button-outline-svg-icon-variant($secondary, $gray-200);
+      @include mixins-buttons.button-outline-svg-icon-variant($secondary, $gray-200);
     }
     .btn-page-item-control {
       @include button-outline-variant($gray-500, $gray-500, $secondary, transparent);
@@ -514,6 +514,13 @@ ul.pagination {
   .revision-toc {
     border-color: $border-color-toc;
   }
+}
+
+/*
+ * drawio
+ */
+.drawio-viewer {
+  border-color: $border-color-global;
 }
 
 /*
