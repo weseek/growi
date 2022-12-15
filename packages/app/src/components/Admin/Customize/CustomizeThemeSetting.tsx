@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useState } from 'react';
 
-import { PresetThemesMetadatas } from '@growi/preset-themes';
+import { PresetThemes, PresetThemesMetadatas } from '@growi/preset-themes';
 import { useTranslation } from 'next-i18next';
 
 import { apiv3Put } from '~/client/util/apiv3-client';
@@ -21,25 +21,25 @@ const CustomizeThemeSetting = (props: Props): JSX.Element => {
   const { t } = useTranslation();
 
   const { data, error } = useSWRxGrowiThemeSetting();
-  const [selectedTheme, setSelectedTheme] = useState(data?.currentTheme);
+  const [currentTheme, setCurrentTheme] = useState(data?.currentTheme);
 
   useEffect(() => {
-    setSelectedTheme(data?.currentTheme);
+    setCurrentTheme(data?.currentTheme);
   }, [data?.currentTheme]);
 
   const selectedHandler = useCallback((themeName: string) => {
-    setSelectedTheme(themeName);
+    setCurrentTheme(themeName);
   }, []);
 
   const submitHandler = useCallback(async() => {
-    if (selectedTheme == null) {
+    if (currentTheme == null) {
       toastWarning('The selected theme is undefined');
       return;
     }
 
     try {
       await apiv3Put('/customize-setting/theme', {
-        theme: selectedTheme,
+        theme: currentTheme,
       });
 
       toastSuccess(t('toaster.update_successed', { target: t('admin:customize_settings.theme'), ns: 'commons' }));
@@ -47,11 +47,13 @@ const CustomizeThemeSetting = (props: Props): JSX.Element => {
     catch (err) {
       toastError(err);
     }
-  }, [selectedTheme, t]);
+  }, [currentTheme, t]);
 
   const availableThemes = data?.pluginThemesMetadatas == null
     ? PresetThemesMetadatas
     : PresetThemesMetadatas.concat(data.pluginThemesMetadatas);
+
+  const selectedTheme = availableThemes.find(t => t.name === currentTheme)?.name ?? PresetThemes.DEFAULT;
 
   return (
     <div className="row">
