@@ -51,12 +51,12 @@ export const SavePageControls = (props: SavePageControlsProps): JSX.Element | nu
   const save = useCallback(async(): Promise<void> => {
     // save
     globalEmitter.emit('saveAndReturnToView', { slackChannels });
-  }, []);
+  }, [slackChannels]);
 
   const saveAndOverwriteScopesOfDescendants = useCallback(() => {
     // save
     globalEmitter.emit('saveAndReturnToView', { overwriteScopesOfDescendants: true, slackChannels });
-  }, []);
+  }, [slackChannels]);
 
 
   if (isEditable == null || isAclEnabled == null || grantData == null) {
