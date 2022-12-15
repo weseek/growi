@@ -335,6 +335,10 @@ export const generateViewOptions = (
     remarkPlugins.push(breaks);
   }
 
+  const rehypeSanitizePlugin: Pluggable<any[]> | (() => void) = config.isEnabledXssPrevention
+    ? [sanitize, deepmerge(commonSanitizeOption, lsxGrowiPlugin.sanitizeOption)]
+    : () => {};
+
   // add rehype plugins
   rehypePlugins.push(
     slug,
@@ -344,6 +348,7 @@ export const generateViewOptions = (
       drawioPlugin.sanitizeOption,
       lsxGrowiPlugin.sanitizeOption,
     )],
+    rehypeSanitizePlugin,
     katex,
     [toc.rehypePluginStore, { storeTocNode }],
     // [autoLinkHeadings, {
@@ -373,7 +378,9 @@ export const generateViewOptions = (
   // renderer.setMarkdownSettings({ breaks: rendererSettings.isEnabledLinebreaks });
   // renderer.configure();
 
-  verifySanitizePlugin(options, false);
+  if (config.isEnabledXssPrevention) {
+    verifySanitizePlugin(options, false);
+  }
   return options;
 };
 
@@ -386,16 +393,23 @@ export const generateTocOptions = (config: RendererConfig, tocNode: HtmlElementN
   // add remark plugins
   // remarkPlugins.push();
 
+
+  const rehypeSanitizePlugin: Pluggable<any[]> | (() => void) = config.isEnabledXssPrevention
+    ? [sanitize, deepmerge(commonSanitizeOption, lsxGrowiPlugin.sanitizeOption)]
+    : () => {};
+
   // add rehype plugins
   rehypePlugins.push(
     [toc.rehypePluginRestore, { tocNode }],
-    [sanitize, commonSanitizeOption],
+    rehypeSanitizePlugin,
   );
   // renderer.rehypePlugins.push([autoLinkHeadings, {
   //   behavior: 'append',
   // }]);
 
-  verifySanitizePlugin(options);
+  if (config.isEnabledXssPrevention) {
+    verifySanitizePlugin(options);
+  }
   return options;
 };
 
@@ -417,6 +431,10 @@ export const generateSimpleViewOptions = (config: RendererConfig, pagePath: stri
     remarkPlugins.push(breaks);
   }
 
+  const rehypeSanitizePlugin: Pluggable<any[]> | (() => void) = config.isEnabledXssPrevention
+    ? [sanitize, deepmerge(commonSanitizeOption, lsxGrowiPlugin.sanitizeOption)]
+    : () => {};
+
   // add rehype plugins
   rehypePlugins.push(
     [lsxGrowiPlugin.rehypePlugin, { pagePath }],
@@ -426,6 +444,7 @@ export const generateSimpleViewOptions = (config: RendererConfig, pagePath: stri
       drawioPlugin.sanitizeOption,
       lsxGrowiPlugin.sanitizeOption,
     )],
+    rehypeSanitizePlugin,
     katex,
   );
 
@@ -436,7 +455,9 @@ export const generateSimpleViewOptions = (config: RendererConfig, pagePath: stri
     components.table = Table;
   }
 
-  verifySanitizePlugin(options, false);
+  if (config.isEnabledXssPrevention) {
+    verifySanitizePlugin(options, false);
+  }
   return options;
 };
 
@@ -458,6 +479,10 @@ export const generatePreviewOptions = (config: RendererConfig, pagePath: string)
     remarkPlugins.push(breaks);
   }
 
+  const rehypeSanitizePlugin: Pluggable<any[]> | (() => void) = config.isEnabledXssPrevention
+    ? [sanitize, deepmerge(commonSanitizeOption, lsxGrowiPlugin.sanitizeOption, addLineNumberAttribute.sanitizeOption)]
+    : () => {};
+
   // add rehype plugins
   rehypePlugins.push(
     [lsxGrowiPlugin.rehypePlugin, { pagePath }],
@@ -468,6 +493,7 @@ export const generatePreviewOptions = (config: RendererConfig, pagePath: string)
       drawioPlugin.sanitizeOption,
       addLineNumberAttribute.sanitizeOption,
     )],
+    rehypeSanitizePlugin,
     katex,
   );
 
@@ -493,12 +519,18 @@ export const generateOthersOptions = (config: RendererConfig): RendererOptions =
   // renderer.setMarkdownSettings({ breaks: rendererSettings.isEnabledLinebreaks });
   // renderer.configure();
 
+  const rehypeSanitizePlugin: Pluggable<any[]> | (() => void) = config.isEnabledXssPrevention
+    ? [sanitize, deepmerge(commonSanitizeOption)]
+    : () => {};
+
   // add rehype plugins
   rehypePlugins.push(
-    [sanitize, commonSanitizeOption],
+    rehypeSanitizePlugin,
   );
 
-  verifySanitizePlugin(options);
+  if (config.isEnabledXssPrevention) {
+    verifySanitizePlugin(options);
+  }
   return options;
 };
 
