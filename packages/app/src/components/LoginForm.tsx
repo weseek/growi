@@ -7,8 +7,9 @@ import { useRouter } from 'next/router';
 import ReactCardFlip from 'react-card-flip';
 
 import { apiv3Post } from '~/client/util/apiv3-client';
+import type { IExternalAccountLoginError } from '~/interfaces/errors/external-account-login-error';
 import { LoginErrorCode } from '~/interfaces/errors/login-error';
-import { IErrorV3 } from '~/interfaces/errors/v3-error';
+import type { IErrorV3 } from '~/interfaces/errors/v3-error';
 import { RegistrationMode } from '~/interfaces/registration-mode';
 import { toArrayIfNot } from '~/utils/array-utils';
 
@@ -26,7 +27,8 @@ type LoginFormProps = {
   isLdapStrategySetup: boolean,
   isLdapSetupFailed: boolean,
   objOfIsExternalAuthEnableds?: any,
-  isMailerSetup?: boolean
+  isMailerSetup?: boolean,
+  externalAccountLoginError?: IExternalAccountLoginError,
 }
 export const LoginForm = (props: LoginFormProps): JSX.Element => {
   const { t } = useTranslation();
@@ -129,7 +131,7 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
   }, [t]);
 
   // wrap error elements which do not use dangerouslySetInnerHtml
-  const generateSafelySetErrors = useCallback((errors: IErrorV3[]): JSX.Element => {
+  const generateSafelySetErrors = useCallback((errors: (IErrorV3 | IExternalAccountLoginError)[]): JSX.Element => {
     if (errors == null || errors.length === 0) return <></>;
     return (
       <ul className="alert alert-danger">
@@ -151,7 +153,10 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
     // Generate login error elements using dangerouslySetInnerHTML
     const loginErrorElementWithDangerouslySetInnerHTML = generateDangerouslySetErrors(loginErrorListForDangerouslySetInnerHTML);
     // Generate login error elements using <ul>, <li>
-    const loginErrorElement = generateSafelySetErrors(loginErrorList);
+
+    const loginErrorElement = props.externalAccountLoginError != null
+      ? generateSafelySetErrors([...loginErrorList, props.externalAccountLoginError])
+      : generateSafelySetErrors(loginErrorList);
 
     return (
       <>

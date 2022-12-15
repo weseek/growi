@@ -23,26 +23,29 @@ import { Comments } from '~/components/Comments';
 import { PageAlerts } from '~/components/PageAlert/PageAlerts';
 // import { useTranslation } from '~/i18n';
 import { CurrentPageContentFooter } from '~/components/PageContentFooter';
+import { DrawioViewerScript } from '~/components/Script/DrawioViewerScript';
 import { UsersHomePageFooterProps } from '~/components/UsersHomePageFooter';
 import type { CrowiRequest } from '~/interfaces/crowi-request';
 // import { renderScriptTagByName, renderHighlightJsStyleTag } from '~/service/cdn-resources-loader';
 // import { useRendererSettings } from '~/stores/renderer';
 // import { EditorMode, useEditorMode, useIsMobile } from '~/stores/ui';
 import type { EditorConfig } from '~/interfaces/editor-settings';
-import type { CustomWindow } from '~/interfaces/global';
 import type { RendererConfig } from '~/interfaces/services/renderer';
 import type { ISidebarConfig } from '~/interfaces/sidebar-config';
 import type { IUserUISettings } from '~/interfaces/user-ui-settings';
 import type { PageModel, PageDocument } from '~/server/models/page';
 import type { PageRedirectModel } from '~/server/models/page-redirect';
 import type { UserUISettingsModel } from '~/server/models/user-ui-settings';
-import { useSWRxCurrentPage, useSWRxIsGrantNormalized, useSWRxPageInfo } from '~/stores/page';
+import { useEditingMarkdown } from '~/stores/editor';
+import { useHasDraftOnHackmd, usePageIdOnHackmd, useRevisionIdHackmdSynced } from '~/stores/hackmd';
+import { useSWRxCurrentPage, useSWRxIsGrantNormalized } from '~/stores/page';
 import { useRedirectFrom } from '~/stores/page-redirect';
+import { useRemoteRevisionId } from '~/stores/remote-latest-page';
 import {
-  EditorMode,
   useEditorMode, useSelectedGrant,
   usePreferDrawerModeByUser, usePreferDrawerModeOnEditByUser, useSidebarCollapsed, useCurrentSidebarContents, useCurrentProductNavWidth,
 } from '~/stores/ui';
+import { useSetupGlobalSocket, useSetupGlobalSocketForPage } from '~/stores/websocket';
 import loggerFactory from '~/utils/logger';
 
 // import { isUserPage, isTrashPage, isSharedPage } from '~/utils/path-utils';
@@ -62,9 +65,9 @@ import {
   useIsEnabledStaleNotification, useIsIdenticalPath,
   useIsSearchServiceConfigured, useIsSearchServiceReachable, useDisableLinkSharing,
   useDrawioUri, useHackmdUri, useDefaultIndentSize, useIsIndentSizeForced,
-  useIsAclEnabled, useIsSearchPage, useTemplateTagData,
+  useIsAclEnabled, useIsSearchPage, useTemplateTagData, useTemplateBodyData, useIsEnabledAttachTitleHeader,
   useCsrfToken, useIsSearchScopeChildrenAsDefault, useCurrentPageId, useCurrentPathname,
-  useIsSlackConfigured, useRendererConfig, useEditingMarkdown,
+  useIsSlackConfigured, useRendererConfig,
   useEditorConfig, useIsAllReplyShown, useIsUploadableFile, useIsUploadableImage, useCustomizedLogoSrc, useIsContainerFluid,
 } from '../stores/context';
 
@@ -74,13 +77,21 @@ import {
 // import { useCurrentPageSWR } from '../stores/page';
 
 
+declare global {
+  // eslint-disable-next-line vars-on-top, no-var
+  var globalEmitter: EventEmitter;
+}
+
+
 const NotCreatablePage = dynamic(() => import('../components/NotCreatablePage').then(mod => mod.NotCreatablePage), { ssr: false });
 const ForbiddenPage = dynamic(() => import('../components/ForbiddenPage'), { ssr: false });
 const UnsavedAlertDialog = dynamic(() => import('../components/UnsavedAlertDialog'), { ssr: false });
 const GrowiSubNavigationSwitcher = dynamic(() => import('../components/Navbar/GrowiSubNavigationSwitcher'), { ssr: false });
 const UsersHomePageFooter = dynamic<UsersHomePageFooterProps>(() => import('../components/UsersHomePageFooter')
   .then(mod => mod.UsersHomePageFooter), { ssr: false });
+const DrawioModal = dynamic(() => import('../components/PageEditor/DrawioModal').then(mod => mod.DrawioModal), { ssr: false });
 const HandsontableModal = dynamic(() => import('../components/PageEditor/HandsontableModal').then(mod => mod.HandsontableModal), { ssr: false });
+const PageStatusAlert = dynamic(() => import('../components/PageStatusAlert').then(mod => mod.PageStatusAlert), { ssr: false });
 
 const logger = loggerFactory('growi:pages:all');
 
@@ -154,7 +165,7 @@ type Props = CommonProps & {
   // isMailerSetup: boolean,
   isAclEnabled: boolean,
   // hasSlackConfig: boolean,
-  drawioUri: string,
+  drawioUri: string | null,
   hackmdUri: string,
   noCdn: string,
   // highlightJsStyle: string,
@@ -162,6 +173,7 @@ type Props = CommonProps & {
   isContainerFluid: boolean,
   editorConfig: EditorConfig,
   isEnabledStaleNotification: boolean,
+  isEnabledAttachTitleHeader: boolean,
   // isEnabledLinebreaks: boolean,
   // isEnabledLinebreaksInComments: boolean,
   adminPreferredIndentSize: number,
@@ -183,8 +195,8 @@ const GrowiPage: NextPage<Props> = (props: Props) => {
   const { data: currentUser } = useCurrentUser(props.currentUser ?? null);
 
   // register global EventEmitter
-  if (isClient()) {
-    (window as CustomWindow).globalEmitter = new EventEmitter();
+  if (isClient() && window.globalEmitter == null) {
+    window.globalEmitter = new EventEmitter();
   }
 
   // commons
@@ -216,7 +228,9 @@ const GrowiPage: NextPage<Props> = (props: Props) => {
   useIsSearchPage(false);
 
   useTemplateTagData(props.templateTagData);
+  useTemplateBodyData(props.templateBodyData);
 
+  useIsEnabledAttachTitleHeader(props.isEnabledAttachTitleHeader);
   useIsSearchServiceConfigured(props.isSearchServiceConfigured);
   useIsSearchServiceReachable(props.isSearchServiceReachable);
   useIsSearchScopeChildrenAsDefault(props.isSearchScopeChildrenAsDefault);
@@ -245,16 +259,24 @@ const GrowiPage: NextPage<Props> = (props: Props) => {
   const pagePath = pageWithMeta?.data.path ?? (!_isPermalink(props.currentPathname) ? props.currentPathname : undefined);
 
   useCurrentPageId(pageId ?? null);
+  useRevisionIdHackmdSynced(pageWithMeta?.data.revisionHackmdSynced);
+  useRemoteRevisionId(pageWithMeta?.data.revision._id);
+  usePageIdOnHackmd(pageWithMeta?.data.pageIdOnHackmd);
+  useHasDraftOnHackmd(pageWithMeta?.data.hasDraftOnHackmd);
   // useIsNotCreatable(props.isForbidden || !isCreatablePage(pagePath)); // TODO: need to include props.isIdentical
   useCurrentPathname(props.currentPathname);
 
   const { data: currentPage } = useSWRxCurrentPage(undefined, pageWithMeta?.data ?? null); // store initial data
-  useEditingMarkdown(pageWithMeta?.data.revision?.body ?? props.templateBodyData ?? '');
+
+  useEditingMarkdown(pageWithMeta?.data.revision?.body);
 
   const { data: grantData } = useSWRxIsGrantNormalized(pageId);
   const { mutate: mutateSelectedGrant } = useSelectedGrant();
 
   const { getClassNamesByEditorMode } = useEditorMode();
+
+  useSetupGlobalSocket();
+  useSetupGlobalSocketForPage(pageId);
 
   const shouldRenderPutbackPageModal = pageWithMeta != null
     ? _isTrashPage(pageWithMeta.data.path)
@@ -295,7 +317,11 @@ const GrowiPage: NextPage<Props> = (props: Props) => {
         {renderHighlightJsStyleTag(props.highlightJsStyle)}
         */}
       </Head>
+
+      <DrawioViewerScript />
+
       <BasicLayout title={useCustomTitle(props, 'GROWI')} className={classNames.join(' ')} expandContainer={isContainerFluid}>
+
         <div className="h-100 d-flex flex-column justify-content-between">
           <header className="py-0 position-relative">
             <div id="grw-subnav-container">
@@ -321,7 +347,7 @@ const GrowiPage: NextPage<Props> = (props: Props) => {
                     { props.isNotCreatablePage && <NotCreatablePage />}
                     { !props.isForbidden && !props.isNotCreatablePage && <DisplaySwitcher />}
                     {/* <DisplaySwitcher /> */}
-                    {/* <PageStatusAlert /> */}
+                    <PageStatusAlert />
                   </>
                 ) }
 
@@ -347,6 +373,7 @@ const GrowiPage: NextPage<Props> = (props: Props) => {
 
           <UnsavedAlertDialog />
           <DescendantsPageListModal />
+          <DrawioModal />
           <HandsontableModal />
           {shouldRenderPutbackPageModal && <PutbackPageModal />}
         </div>
@@ -469,7 +496,6 @@ async function injectRoutingInformation(context: GetServerSidePropsContext, prop
   }
   else {
     props.isNotFound = page.isEmpty;
-
     // /62a88db47fed8b2d94f30000 ==> /path/to/page
     if (isPermalink && page.isEmpty) {
       props.currentPathname = page.path;
@@ -532,6 +558,8 @@ function injectServerConfigurations(context: GetServerSidePropsContext, props: P
   };
   props.adminPreferredIndentSize = configManager.getConfig('markdown', 'markdown:adminPreferredIndentSize');
   props.isIndentSizeForced = configManager.getConfig('markdown', 'markdown:isIndentSizeForced');
+
+  props.isEnabledAttachTitleHeader = configManager.getConfig('crowi', 'customize:isEnabledAttachTitleHeader');
 
   props.rendererConfig = {
     isEnabledLinebreaks: configManager.getConfig('markdown', 'markdown:isEnabledLinebreaks'),

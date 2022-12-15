@@ -3,10 +3,12 @@ import React, { useState, useCallback } from 'react';
 import type { IUser, IUserHasId } from '@growi/core';
 import { NextPage, GetServerSideProps, GetServerSidePropsContext } from 'next';
 import { useTranslation } from 'next-i18next';
+import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import dynamic from 'next/dynamic';
 import Head from 'next/head';
 
 import type { CrowiRequest } from '~/interfaces/crowi-request';
+import type { RendererConfig } from '~/interfaces/services/renderer';
 import type { ISidebarConfig } from '~/interfaces/sidebar-config';
 import type { IDataTagCount } from '~/interfaces/tag';
 import type { IUserUISettings } from '~/interfaces/user-ui-settings';
@@ -20,11 +22,11 @@ import { BasicLayout } from '../components/Layout/BasicLayout';
 import {
   useCurrentUser, useIsSearchPage,
   useIsSearchServiceConfigured, useIsSearchServiceReachable,
-  useIsSearchScopeChildrenAsDefault,
+  useIsSearchScopeChildrenAsDefault, useRendererConfig,
 } from '../stores/context';
 
 import {
-  CommonProps, getServerSideCommonProps, useCustomTitle,
+  CommonProps, getServerSideCommonProps, getNextI18NextConfig, useCustomTitle,
 } from './utils/commons';
 
 const PAGING_LIMIT = 10;
@@ -40,6 +42,8 @@ type Props = CommonProps & {
 
   // sidebar
   sidebarConfig: ISidebarConfig,
+
+  rendererConfig: RendererConfig,
 };
 
 const TagList = dynamic(() => import('~/components/TagList'), { ssr: false });
@@ -72,6 +76,8 @@ const TagPage: NextPage<CommonProps> = (props: Props) => {
   useSidebarCollapsed(props.userUISettings?.isSidebarCollapsed ?? props.sidebarConfig.isSidebarClosedAtDockMode);
   useCurrentSidebarContents(props.userUISettings?.currentSidebarContents);
   useCurrentProductNavWidth(props.userUISettings?.currentProductNavWidth);
+
+  useRendererConfig(props.rendererConfig);
 
   return (
     <>
@@ -137,6 +143,33 @@ function injectServerConfigurations(context: GetServerSidePropsContext, props: P
     isSidebarDrawerMode: configManager.getConfig('crowi', 'customize:isSidebarDrawerMode'),
     isSidebarClosedAtDockMode: configManager.getConfig('crowi', 'customize:isSidebarClosedAtDockMode'),
   };
+
+  props.rendererConfig = {
+    isEnabledLinebreaks: configManager.getConfig('markdown', 'markdown:isEnabledLinebreaks'),
+    isEnabledLinebreaksInComments: configManager.getConfig('markdown', 'markdown:isEnabledLinebreaksInComments'),
+    adminPreferredIndentSize: configManager.getConfig('markdown', 'markdown:adminPreferredIndentSize'),
+    isIndentSizeForced: configManager.getConfig('markdown', 'markdown:isIndentSizeForced'),
+
+    plantumlUri: process.env.PLANTUML_URI ?? null,
+    blockdiagUri: process.env.BLOCKDIAG_URI ?? null,
+
+    // XSS Options
+    isEnabledXssPrevention: configManager.getConfig('markdown', 'markdown:xss:isEnabledPrevention'),
+    attrWhiteList: crowi.xssService.getAttrWhiteList(),
+    tagWhiteList: crowi.xssService.getTagWhiteList(),
+    highlightJsStyleBorder: crowi.configManager.getConfig('crowi', 'customize:highlightJsStyleBorder'),
+  };
+}
+
+/**
+ * for Server Side Translations
+ * @param context
+ * @param props
+ * @param namespacesRequired
+ */
+async function injectNextI18NextConfigurations(context: GetServerSidePropsContext, props: Props, namespacesRequired?: string[] | undefined): Promise<void> {
+  const nextI18NextConfig = await getNextI18NextConfig(serverSideTranslations, context, namespacesRequired);
+  props._nextI18Next = nextI18NextConfig._nextI18Next;
 }
 
 export const getServerSideProps: GetServerSideProps = async(context: GetServerSidePropsContext) => {
@@ -152,8 +185,10 @@ export const getServerSideProps: GetServerSideProps = async(context: GetServerSi
   if (user != null) {
     props.currentUser = user.toObject();
   }
+
   await injectUserUISettings(context, props);
   injectServerConfigurations(context, props);
+  await injectNextI18NextConfigurations(context, props, ['translation']);
 
   return {
     props,

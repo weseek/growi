@@ -1,7 +1,11 @@
 import { SubscriptionStatusType, Nullable } from '@growi/core';
 import urljoin from 'url-join';
 
-import { OptionsToSave } from '~/interfaces/editor-settings';
+import { OptionsToSave } from '~/interfaces/page-operation';
+import { useCurrentPageId } from '~/stores/context';
+import { useIsEnabledUnsavedWarning } from '~/stores/editor';
+import { useSWRxCurrentPage } from '~/stores/page';
+import { useSetRemoteLatestPageData } from '~/stores/remote-latest-page';
 import loggerFactory from '~/utils/logger';
 
 import { toastError } from '../util/apiNotification';
@@ -118,43 +122,80 @@ type PageInfo= {
   revisionId: Nullable<string>,
 }
 
+type SaveOrUpdateFunction = (markdown: string, pageInfo: PageInfo, optionsToSave?: OptionsToSave) => any;
+
 // TODO: define return type
-export const saveOrUpdate = async(optionsToSave: OptionsToSave, pageInfo: PageInfo, markdown: string) => {
-  const { path, pageId, revisionId } = pageInfo;
+export const useSaveOrUpdate = (): SaveOrUpdateFunction => {
+  /* eslint-disable react-hooks/rules-of-hooks */
+  const { mutate: mutateIsEnabledUnsavedWarning } = useIsEnabledUnsavedWarning();
+  /* eslint-enable react-hooks/rules-of-hooks */
 
-  const options = Object.assign({}, optionsToSave);
+  return async function(markdown: string, pageInfo: PageInfo, optionsToSave?: OptionsToSave) {
+    const { path, pageId, revisionId } = pageInfo;
 
-  /*
-  * Note: variable "markdown" will be received from params
-  * please delete the following code after implemating HackMD editor function
-  */
-  // let markdown;
-  // if (editorMode === EditorMode.HackMD) {
-  // const pageEditorByHackmd = this.appContainer.getComponentInstance('PageEditorByHackmd');
-  // markdown = await pageEditorByHackmd.getMarkdown();
-  // // set option to sync
-  // options.isSyncRevisionToHackmd = true;
-  // revisionId = this.state.revisionIdHackmdSynced;
-  // }
-  // else {
-  // const pageEditor = this.appContainer.getComponentInstance('PageEditor');
-  // const pageEditor = getComponentInstance('PageEditor');
-  // markdown = pageEditor.getMarkdown();
-  // }
+    const options: OptionsToSave = Object.assign({}, optionsToSave);
+    /*
+    * Note: variable "markdown" will be received from params
+    * please delete the following code after implemating HackMD editor function
+    */
+    // let markdown;
+    // if (editorMode === EditorMode.HackMD) {
+    // const pageEditorByHackmd = this.appContainer.getComponentInstance('PageEditorByHackmd');
+    // markdown = await pageEditorByHackmd.getMarkdown();
+    // // set option to sync
+    // options.isSyncRevisionToHackmd = true;
+    // revisionId = this.state.revisionIdHackmdSynced;
+    // }
+    // else {
+    // const pageEditor = this.appContainer.getComponentInstance('PageEditor');
+    // const pageEditor = getComponentInstance('PageEditor');
+    // markdown = pageEditor.getMarkdown();
+    // }
 
-  const isNoRevisionPage = pageId != null && revisionId == null;
+    const isNoRevisionPage = pageId != null && revisionId == null;
 
-  let res;
-  if (pageId == null || isNoRevisionPage) {
-    res = await createPage(path, markdown, options);
-  }
-  else {
-    if (revisionId == null) {
-      const msg = '\'revisionId\' is required to update page';
-      throw new Error(msg);
+    let res;
+    if (pageId == null || isNoRevisionPage) {
+      res = await createPage(path, markdown, options);
     }
-    res = await updatePage(pageId, revisionId, markdown, options);
-  }
+    else {
+      if (revisionId == null) {
+        const msg = '\'revisionId\' is required to update page';
+        throw new Error(msg);
+      }
+      res = await updatePage(pageId, revisionId, markdown, options);
+    }
 
-  return res;
+    // The updateFn should be a promise or asynchronous function to handle the remote mutation
+    // it should return updated data. see: https://swr.vercel.app/docs/mutation#optimistic-updates
+    // Moreover, `async() => false` does not work since it's too fast to be calculated.
+    await mutateIsEnabledUnsavedWarning(new Promise(r => setTimeout(() => r(false), 10)), { optimisticData: () => false });
+
+    return res;
+  };
+};
+
+export const useUpdateStateAfterSave = () => {
+  const { mutate: mutateCurrentPageId } = useCurrentPageId();
+  const { mutate: mutateCurrentPage } = useSWRxCurrentPage();
+  const { setRemoteLatestPageData } = useSetRemoteLatestPageData();
+
+  // update swr 'currentPageId', 'currentPage', remote states
+  return async(pageId: string) => {
+    await mutateCurrentPageId(pageId);
+    const updatedPage = await mutateCurrentPage();
+
+    if (updatedPage == null) { return }
+
+    const remoterevisionData = {
+      remoteRevisionId: updatedPage.revision._id,
+      remoteRevisionBody: updatedPage.revision.body,
+      remoteRevisionLastUpdateUser: updatedPage.lastUpdateUser,
+      remoteRevisionLastUpdatedAt: updatedPage.updatedAt,
+      revisionIdHackmdSynced: updatedPage.revisionHackmdSynced.toString(),
+      hasDraftOnHackmd: updatedPage.hasDraftOnHackmd,
+    };
+
+    setRemoteLatestPageData(remoterevisionData);
+  };
 };

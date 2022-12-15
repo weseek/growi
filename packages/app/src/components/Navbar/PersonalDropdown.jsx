@@ -39,7 +39,7 @@ const PersonalDropdown = () => {
       </button>
 
       {/* Menu */}
-      <div className="dropdown-menu dropdown-menu-right">
+      <div className="dropdown-menu dropdown-menu-right" data-testid="personal-dropdown-menu">
 
         <div className="px-4 pt-3 pb-2 text-center">
           <UserPicture user={user} size="lg" noLink noTooltip />
@@ -55,12 +55,12 @@ const PersonalDropdown = () => {
 
           <div className="btn-group btn-block mt-2" role="group">
             <Link href={`/user/${user.username}`}>
-              <a className="btn btn-sm btn-outline-secondary col">
+              <a className="btn btn-sm btn-outline-secondary col" data-testid="grw-personal-dropdown-menu-user-home">
                 <i className="icon-fw icon-home"></i>{t('personal_dropdown.home')}
               </a>
             </Link>
             <Link href="/me">
-              <a className="btn btn-sm btn-outline-secondary col">
+              <a className="btn btn-sm btn-outline-secondary col" data-testid="grw-personal-dropdown-menu-user-settings">
                 <i className="icon-fw icon-wrench"></i>{t('personal_dropdown.settings')}
               </a>
             </Link>

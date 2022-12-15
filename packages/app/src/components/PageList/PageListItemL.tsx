@@ -162,6 +162,8 @@ const PageListItemLSubstance: ForwardRefRenderFunction<ISelectable, Props> = (pr
   const canRenderESSnippet = elasticSearchResult != null && elasticSearchResult.snippet != null;
   const canRenderRevisionSnippet = revisionShortBody != null;
 
+  const hasBrowsingRights = canRenderESSnippet || canRenderRevisionSnippet;
+
   return (
     <li
       key={pageData._id}
@@ -228,7 +230,8 @@ const PageListItemLSubstance: ForwardRefRenderFunction<ISelectable, Props> = (pr
               </div>
 
               {/* doropdown icon includes page control buttons */}
-              <div className="ml-auto">
+              {hasBrowsingRights
+              && <div className="ml-auto">
                 <PageItemControl
                   alignRight
                   pageId={pageData._id}
@@ -242,6 +245,7 @@ const PageListItemLSubstance: ForwardRefRenderFunction<ISelectable, Props> = (pr
                   onClickRevertMenuItem={revertMenuItemClickHandler}
                 />
               </div>
+              }
             </div>
             <div className="page-list-snippet py-1">
               <Clamp lines={2}>
@@ -253,7 +257,7 @@ const PageListItemLSubstance: ForwardRefRenderFunction<ISelectable, Props> = (pr
                   <div data-testid="revision-short-body-in-page-list-item-L">{revisionShortBody}</div>
                 ) }
                 {
-                  !canRenderESSnippet && !canRenderRevisionSnippet && (
+                  !hasBrowsingRights && (
                     <>
                       <i className="icon-exclamation p-1"></i>
                       {t('not_allowed_to_see_this_page')}

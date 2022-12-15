@@ -41,15 +41,12 @@ const BookmarkButtons: FC<Props> = (props: Props) => {
   };
 
   const getTooltipMessage = useCallback(() => {
-    if (isGuestUser) {
-      return 'Not available for guest';
-    }
 
     if (isBookmarked) {
       return 'tooltip.cancel_bookmark';
     }
     return 'tooltip.bookmark';
-  }, [isGuestUser, isBookmarked]);
+  }, [isBookmarked]);
 
   return (
     <div className={`btn-group btn-group-bookmark ${styles['btn-group-bookmark']}`} role="group" aria-label="Bookmark buttons">
@@ -63,7 +60,7 @@ const BookmarkButtons: FC<Props> = (props: Props) => {
         <i className={`fa ${isBookmarked ? 'fa-bookmark' : 'fa-bookmark-o'}`}></i>
       </button>
 
-      <UncontrolledTooltip placement="top" target="bookmark-button" fade={false}>
+      <UncontrolledTooltip data-testid="bookmark-button-tooltip" placement="top" target="bookmark-button" fade={false}>
         {t(getTooltipMessage())}
       </UncontrolledTooltip>
 

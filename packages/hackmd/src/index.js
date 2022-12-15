@@ -11,5 +11,5 @@ const stylesCSSFile = fs.readFileSync(path.resolve(__dirname, `${dirPath}/styles
 module.exports = {
   stylesJS: stylesJSFile.toString(),
   agentJS: agentJSFile.toString(),
-  stylesCSS: stylesCSSFile.toString(),
+  stylesCSS: stylesCSSFile.toString().replace(/(\r\n|\n|\r)/gm, ''), // https://stackoverflow.com/questions/10805125/how-to-remove-all-line-breaks-from-a-string
 };
