@@ -431,8 +431,6 @@ export const generateSimpleViewOptions = (config: RendererConfig, pagePath: stri
     remarkPlugins.push(breaks);
   }
 
-
-
   const rehypeSanitizePlugin: Pluggable<any[]> | (() => void) = config.isEnabledXssPrevention
     ? [sanitize, deepmerge(commonSanitizeOption, lsxGrowiPlugin.sanitizeOption)]
     : () => {};
@@ -482,7 +480,7 @@ export const generatePreviewOptions = (config: RendererConfig, pagePath: string)
   }
 
   const rehypeSanitizePlugin: Pluggable<any[]> | (() => void) = config.isEnabledXssPrevention
-    ? [sanitize, deepmerge(commonSanitizeOption, lsxGrowiPlugin.sanitizeOption)]
+    ? [sanitize, deepmerge(commonSanitizeOption, lsxGrowiPlugin.sanitizeOption, addLineNumberAttribute.sanitizeOption)]
     : () => {};
 
   // add rehype plugins
@@ -522,7 +520,7 @@ export const generateOthersOptions = (config: RendererConfig): RendererOptions =
   // renderer.configure();
 
   const rehypeSanitizePlugin: Pluggable<any[]> | (() => void) = config.isEnabledXssPrevention
-    ? [sanitize, deepmerge(commonSanitizeOption, lsxGrowiPlugin.sanitizeOption)]
+    ? [sanitize, deepmerge(commonSanitizeOption)]
     : () => {};
 
   // add rehype plugins
