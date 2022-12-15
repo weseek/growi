@@ -190,12 +190,12 @@ const PageEditor = React.memo((): JSX.Element => {
   }, [setMarkdownWithDebounce]);
 
   const save = useCallback(async(opts?: {slackChannels: string, overwriteScopesOfDescendants?: boolean}): Promise<IPageHasId | null> => {
-    if (currentPathname == null) {
+    if (currentPathname == null || optionsToSave == null) {
       logger.error('Some materials to save are invalid', { grantData, isSlackEnabled, currentPathname });
       throw new Error('Some materials to save are invalid');
     }
 
-    const options = optionsToSave ? Object.assign(optionsToSave, opts) : undefined;
+    const options = Object.assign(optionsToSave, opts);
 
     try {
       const { page } = await saveOrUpdate(
