@@ -277,7 +277,9 @@ export class PluginService implements IPluginService {
     const isValidObjectId = (id: string) => {
       return ObjectID.isValid(id) && (new ObjectID(id).toString() === id);
     };
-    const deleteFile = (path: fs.PathLike) => fs.unlink(path, (err) => { return err });
+    const deleteFolder = (path: fs.PathLike) => {
+      fs.rmdir(path, { recursive: true }, (err) => { return err });
+    };
 
     if (!isValidObjectId(targetPluginId)) {
       throw new Error('This is invalid value.');
@@ -291,10 +293,11 @@ export class PluginService implements IPluginService {
     }
 
     try {
-      deleteFile(growiPlugins.installedPath);
+      const growiPluginsPath = path.join(pluginStoringPath, growiPlugins.installedPath);
+      deleteFolder(growiPluginsPath);
     }
     catch (err) {
-      throw new Error('Plugin repository deleting failed.');
+      throw new Error('Plugin local repository deleting failed.');
     }
 
     return;

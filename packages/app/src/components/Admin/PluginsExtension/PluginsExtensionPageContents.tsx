@@ -9,8 +9,6 @@ import { PluginInstallerForm } from './PluginInstallerForm';
 export const PluginsExtensionPageContents = (): JSX.Element => {
   const { data, mutate } = useSWRxPlugins();
 
-  console.log(data);
-
   return (
     <div>
 
