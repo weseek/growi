@@ -214,6 +214,10 @@ export const useIsContainerFluid = (initialData?: boolean): SWRResponse<boolean,
   return useStaticSWR('isContainerFluid', initialData);
 };
 
+export const useIsGuestAllowedToRead = (initialData?: boolean): SWRResponse<boolean, Error> => {
+  return useContextSWR('isGuestAllowedToRead', initialData);
+};
+
 /** **********************************************************
  *                     Computed contexts
  *********************************************************** */
