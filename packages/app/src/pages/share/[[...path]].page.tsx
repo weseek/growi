@@ -21,7 +21,7 @@ import { CrowiRequest } from '~/interfaces/crowi-request';
 import { RendererConfig } from '~/interfaces/services/renderer';
 import { IShareLinkHasId } from '~/interfaces/share-link';
 import {
-  useCurrentUser, useCurrentPathname, useCurrentPageId, useRendererConfig, useIsSearchPage,
+  useCurrentUser, useCurrentPathname, useCurrentPageId, useRendererConfig, useIsSearchPage, useIsGuestAllowedToRead,
   useShareLinkId, useIsSearchServiceConfigured, useIsSearchServiceReachable, useIsSearchScopeChildrenAsDefault, useDrawioUri,
 } from '~/stores/context';
 import { useDescendantsPageListModal } from '~/stores/modal';
@@ -43,6 +43,7 @@ type Props = CommonProps & {
   isSearchServiceConfigured: boolean,
   isSearchServiceReachable: boolean,
   isSearchScopeChildrenAsDefault: boolean,
+  isGuestAllowedToRead: boolean,
   drawioUri: string | null,
   rendererConfig: RendererConfig,
 };
@@ -54,6 +55,7 @@ const SharedPage: NextPage<Props> = (props: Props) => {
   useCurrentUser(props.currentUser);
   useCurrentPathname(props.currentPathname);
   useRendererConfig(props.rendererConfig);
+  useIsGuestAllowedToRead(props.isGuestAllowedToRead);
   useIsSearchServiceConfigured(props.isSearchServiceConfigured);
   useIsSearchServiceReachable(props.isSearchServiceReachable);
   useIsSearchScopeChildrenAsDefault(props.isSearchScopeChildrenAsDefault);
@@ -157,7 +159,9 @@ const SharedPage: NextPage<Props> = (props: Props) => {
 function injectServerConfigurations(context: GetServerSidePropsContext, props: Props): void {
   const req: CrowiRequest = context.req as CrowiRequest;
   const { crowi } = req;
-  const { configManager, searchService, xssService } = crowi;
+  const {
+    configManager, searchService, xssService, aclService,
+  } = crowi;
 
   props.disableLinkSharing = configManager.getConfig('crowi', 'security:disableLinkSharing');
 
@@ -166,6 +170,8 @@ function injectServerConfigurations(context: GetServerSidePropsContext, props: P
   props.isSearchScopeChildrenAsDefault = configManager.getConfig('crowi', 'customize:isSearchScopeChildrenAsDefault');
 
   props.drawioUri = configManager.getConfig('crowi', 'app:drawioUri');
+
+  props.isGuestAllowedToRead = aclService.isGuestAllowedToRead();
 
   props.rendererConfig = {
     isEnabledLinebreaks: configManager.getConfig('markdown', 'markdown:isEnabledLinebreaks'),
