@@ -29,5 +29,5 @@ export interface BookmarkFolderItems {
   name: string
   parent: string
   children: this[]
-  bookmarks: [Ref<BookmarkedPage>]
+  bookmarks: [BookmarkedPage]
 }

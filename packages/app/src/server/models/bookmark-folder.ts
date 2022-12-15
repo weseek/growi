@@ -22,7 +22,7 @@ export interface BookmarkFolderDocument extends Document {
   name: string
   owner: Types.ObjectId
   parent?: [this]
-  bookmarks: [Types.ObjectId]
+  bookmarks?: [Types.ObjectId]
 }
 
 export interface BookmarkFolderModel extends Model<BookmarkFolderDocument>{
@@ -38,9 +38,13 @@ const bookmarkFolderSchema = new Schema<BookmarkFolderDocument, BookmarkFolderMo
   name: { type: String },
   owner: { type: Schema.Types.ObjectId, ref: 'User', index: true },
   parent: { type: Schema.Types.ObjectId, ref: 'BookmarkFolder', required: false },
-  bookmarks: [{
-    type: Schema.Types.ObjectId, ref: 'Bookmark', default: [], required: false,
-  }],
+  bookmarks: {
+    type: [{
+      type: Schema.Types.ObjectId, ref: 'Bookmark', required: false,
+    }],
+    required: false,
+    default: [],
+  },
 }, {
   toObject: { virtuals: true },
 });
@@ -82,7 +86,16 @@ bookmarkFolderSchema.statics.findFolderAndChildren = async function(
 
   const parentFolder = await this.findById(parentId) as unknown as BookmarkFolderDocument;
   const bookmarkFolders = await this.find({ owner: userId, parent: parentFolder })
-    .populate({ path: 'children' }).populate({ path: 'bookmarks' }).exec() as unknown as BookmarkFolderItems[];
+    .populate({ path: 'children' })
+    .populate({
+      path: 'bookmarks',
+      model: 'Bookmark',
+      populate: {
+        path: 'page',
+        model: 'Page',
+      },
+    }).exec() as unknown as BookmarkFolderItems[];
+  console.log(bookmarkFolders);
   return bookmarkFolders;
 };
 

@@ -38,6 +38,7 @@ module.exports = (crowi) => {
 
     try {
       const bookmarkFolder = await BookmarkFolder.createByParameters(params);
+      console.log(bookmarkFolder);
       logger.debug('bookmark folder created', bookmarkFolder);
       return res.apiv3({ bookmarkFolder });
     }
@@ -55,13 +56,12 @@ module.exports = (crowi) => {
     const _parentId = parentId ?? null;
     try {
       const bookmarkFolders = await BookmarkFolder.findFolderAndChildren(req.user?._id, _parentId);
-      console.log(bookmarkFolders);
       const bookmarkFolderItems = bookmarkFolders.map(bookmarkFolder => ({
         _id: bookmarkFolder._id,
         name: bookmarkFolder.name,
         parent: bookmarkFolder.parent,
         children: bookmarkFolder.children,
-        bookmarkedPages: bookmarkFolder.bookmarks,
+        bookmarks: bookmarkFolder.bookmarks,
       }));
       return res.apiv3({ bookmarkFolderItems });
     }
