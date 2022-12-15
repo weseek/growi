@@ -149,18 +149,22 @@ const PageEditor = React.memo((): JSX.Element => {
 
   }, [socket, checkIsConflict]);
 
-  // const optionsToSave = useMemo(() => {
-  //   if (grantData == null) {
-  //     return;
-  //   }
-  //   const slackChannels = slackChannelsData ? slackChannelsData.toString() : '';
-  //   const optionsToSave = getOptionsToSave(
-  //     isSlackEnabled ?? false, slackChannels,
-  //     grantData.grant, grantData.grantedGroup?.id, grantData.grantedGroup?.name,
-  //     pageTags || [],
-  //   );
-  //   return optionsToSave;
-  // }, [grantData, isSlackEnabled, pageTags, slackChannelsData]);
+  const optionsToSave = useMemo((): OptionsToSave | undefined => {
+    if (grantData == null) {
+      return;
+    }
+    const slackChannels = slackChannelsData ? slackChannelsData.toString() : '';
+    const optionsToSave = {
+      isSlackEnabled: true, // WIP
+      slackChannels, // WIP
+      grant: grantData.grant,
+      pageTags: pageTags ?? [],
+      grantUserGroupId: grantData.grantedGroup?.id,
+      grantUserGroupName: grantData.grantedGroup?.name,
+    };
+    return optionsToSave;
+  }, [grantData, isSlackEnabled, pageTags, slackChannelsData]);
+
   // register to facade
   useEffect(() => {
     // for markdownRenderer
@@ -187,29 +191,20 @@ const PageEditor = React.memo((): JSX.Element => {
   }, [setMarkdownWithDebounce]);
 
   const save = useCallback(async(opts?: {overwriteScopesOfDescendants: boolean}): Promise<IPageHasId | null> => {
-    if (grantData == null || isSlackEnabled == null || currentPathname == null) {
+    if (currentPathname == null) {
       logger.error('Some materials to save are invalid', { grantData, isSlackEnabled, currentPathname });
       throw new Error('Some materials to save are invalid');
     }
 
-    const grant = grantData.grant || PageGrant.GRANT_PUBLIC;
-    const grantedGroup = grantData?.grantedGroup;
+    const options = optionsToSave ? Object.assign(optionsToSave, opts) : undefined;
 
-    const optionsToSave: OptionsToSave = {
-      isSlackEnabled,
-      slackChannels,
-      grant: grant || 1,
-      pageTags: pageTags || [],
-      grantUserGroupId: grantedGroup?.id,
-      grantUserGroupName: grantedGroup?.name,
-      ...opts,
-    };
+    console.log('optionsToSave', options);
 
     try {
       const { page } = await saveOrUpdate(
         markdownToSave.current,
         { pageId, path: currentPagePath || currentPathname, revisionId: currentRevisionId },
-        optionsToSave,
+        options,
       );
 
       return page;
