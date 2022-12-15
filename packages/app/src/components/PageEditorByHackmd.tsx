@@ -160,6 +160,11 @@ export const PageEditorByHackmd = (): JSX.Element => {
     };
   }, [resetInitializedStatusHandler]);
 
+  useEffect(() => {
+    // for page translation: https://github.com/weseek/growi/pull/7100
+    setIsInitialized(false);
+  }, [pageId]);
+
 
   const isResume = useCallback(() => {
     const isPageExistsOnHackmd = (pageIdOnHackmd != null);
