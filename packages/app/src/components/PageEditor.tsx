@@ -535,7 +535,7 @@ const PageEditor = React.memo((): JSX.Element => {
         isOpen={conflictDiffModalStatus?.isOpened}
         onClose={() => closeConflictDiffModal()}
         markdownOnEdit={markdownToPreview}
-        optionsToSave={undefined} // replace undefined
+        optionsToSave={optionsToSave}
         afterResolvedHandler={afterResolvedHandler}
       />
     </div>
