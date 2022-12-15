@@ -37,17 +37,14 @@ const AdminAppPage: NextPage<CommonProps> = (props) => {
   }
 
   return (
-    <>
-      <Head>
-        <title>{generateCustomTitle(props, title)}</title>
-      </Head>
-
-      <Provider inject={[...injectableContainers]}>
-        <AdminLayout componentTitle={title} >
-          <PluginsExtensionPageContents />
-        </AdminLayout>
-      </Provider>
-    </>
+    <Provider inject={[...injectableContainers]}>
+      <AdminLayout componentTitle={title} >
+        <Head>
+          <title>{generateCustomTitle(props, title)}</title>
+        </Head>
+        <PluginsExtensionPageContents />
+      </AdminLayout>
+    </Provider>
   );
 };
 
