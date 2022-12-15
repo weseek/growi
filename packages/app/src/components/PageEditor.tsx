@@ -13,7 +13,7 @@ import { useTranslation } from 'next-i18next';
 import { useRouter } from 'next/router';
 import { throttle, debounce } from 'throttle-debounce';
 
-import { useSaveOrUpdate } from '~/client/services/page-operation';
+import { updateStateAfterSave, useSaveOrUpdate } from '~/client/services/page-operation';
 import { apiGet, apiPostForm } from '~/client/util/apiv1-client';
 import { toastError, toastSuccess } from '~/client/util/toastr';
 import { IEditorMethods } from '~/interfaces/editor-methods';
@@ -233,28 +233,6 @@ const PageEditor = React.memo((): JSX.Element => {
 
   // eslint-disable-next-line max-len
   }, [grantData, isSlackEnabled, currentPathname, slackChannels, pageTags, saveOrUpdate, pageId, currentPagePath, currentRevisionId]);
-
-  const updateStateAfterSave = useCallback(async(pageId: string) => {
-
-    // update swr 'currentPageId', 'currentPage', remote states
-
-    await mutateCurrentPageId(pageId);
-    const updatedPage = await mutateCurrentPage();
-
-    if (updatedPage == null) { return }
-
-    const remoterevisionData = {
-      remoteRevisionId: updatedPage.revision._id,
-      remoteRevisionBody: updatedPage.revision.body,
-      remoteRevisionLastUpdateUser: updatedPage.lastUpdateUser,
-      remoteRevisionLastUpdatedAt: updatedPage.updatedAt,
-      revisionIdHackmdSynced: updatedPage.revisionHackmdSynced.toString(),
-      hasDraftOnHackmd: updatedPage.hasDraftOnHackmd,
-    };
-
-    setRemoteLatestPageData(remoterevisionData);
-
-  }, [mutateCurrentPage, mutateCurrentPageId, setRemoteLatestPageData]);
 
   const saveAndReturnToViewHandler = useCallback(async(opts?: {overwriteScopesOfDescendants: boolean}) => {
     if (editorMode !== EditorMode.Editor) {

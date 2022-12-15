@@ -10,7 +10,7 @@ import { useRouter } from 'next/router';
 import { useTranslation } from 'react-i18next';
 import urljoin from 'url-join';
 
-import { useSaveOrUpdate } from '~/client/services/page-operation';
+import { updateStateAfterSave, useSaveOrUpdate } from '~/client/services/page-operation';
 import { toastError, toastSuccess } from '~/client/util/apiNotification';
 import { apiPost } from '~/client/util/apiv1-client';
 import { IResHackmdIntegrated, IResHackmdDiscard } from '~/interfaces/hackmd';
@@ -91,28 +91,6 @@ export const PageEditorByHackmd = (): JSX.Element => {
   const { setRemoteLatestPageData } = useSetRemoteLatestPageData();
 
   const hackmdEditorRef = useRef<HackEditorRef>(null);
-
-  const updateStateAfterSave = useCallback(async(pageId: string) => {
-
-    // update swr 'currentPageId', 'currentPage', remote states
-
-    await mutateCurrentPageId(pageId);
-    const updatedPage = await mutatePageData();
-
-    if (updatedPage == null) { return }
-
-    const remoterevisionData = {
-      remoteRevisionId: updatedPage.revision._id,
-      remoteRevisionBody: updatedPage.revision.body,
-      remoteRevisionLastUpdateUser: updatedPage.lastUpdateUser,
-      remoteRevisionLastUpdatedAt: updatedPage.updatedAt,
-      revisionIdHackmdSynced: updatedPage.revisionHackmdSynced.toString(),
-      hasDraftOnHackmd: updatedPage.hasDraftOnHackmd,
-    };
-
-    setRemoteLatestPageData(remoterevisionData);
-
-  }, [mutateCurrentPageId, mutatePageData, setRemoteLatestPageData]);
 
   const saveAndReturnToViewHandler = useCallback(async(opts?: {overwriteScopesOfDescendants: boolean}) => {
     if (editorMode !== EditorMode.HackMD) { return }
