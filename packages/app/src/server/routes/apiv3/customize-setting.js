@@ -279,11 +279,11 @@ module.exports = (crowi) => {
       const GrowiPluginModel = mongoose.model('GrowiPlugin');
       const themePlugins = await GrowiPluginModel.findEnabledPluginsIncludingAnyTypes([GrowiPluginResourceType.Theme]);
 
-      const customThemeSummaries = themePlugins
+      const pluginThemesMetadatas = themePlugins
         .map(themePlugin => themePlugin.meta.themes)
         .flat();
 
-      return res.apiv3({ currentTheme, customThemeSummaries });
+      return res.apiv3({ currentTheme, pluginThemesMetadatas });
     }
     catch (err) {
       const msg = 'Error occurred in getting theme';

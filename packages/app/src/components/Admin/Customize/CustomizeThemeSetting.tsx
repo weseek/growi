@@ -49,9 +49,9 @@ const CustomizeThemeSetting = (props: Props): JSX.Element => {
     }
   }, [selectedTheme, t]);
 
-  const availableThemes = data?.customThemeSummaries == null
+  const availableThemes = data?.pluginThemesMetadatas == null
     ? PresetThemesMetadatas
-    : PresetThemesMetadatas.concat(data.customThemeSummaries);
+    : PresetThemesMetadatas.concat(data.pluginThemesMetadatas);
 
   return (
     <div className="row">

@@ -6,5 +6,5 @@ export type IResLayoutSetting = {
 
 export type IResGrowiTheme = {
   currentTheme: string,
-  customThemeSummaries: GrowiThemeMetadata[],
+  pluginThemesMetadatas: GrowiThemeMetadata[],
 }
