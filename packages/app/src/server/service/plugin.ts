@@ -23,8 +23,9 @@ const pluginStoringPath = resolveFromRoot('tmp/plugins');
 // https://regex101.com/r/fK2rV3/1
 const githubReposIdPattern = new RegExp(/^\/([^/]+)\/([^/]+)$/);
 
+const PLUGINS_STATIC_DIR = '/static/plugins'; // configured by express.static
 
-export type GrowiPluginManifestEntries = [growiPlugin: GrowiPlugin, manifest: ViteManifest][];
+export type GrowiPluginResourceEntries = [installedPath: string, href: string][];
 
 
 function retrievePluginManifest(growiPlugin: GrowiPlugin): ViteManifest {
@@ -36,7 +37,7 @@ function retrievePluginManifest(growiPlugin: GrowiPlugin): ViteManifest {
 export interface IPluginService {
   install(origin: GrowiPluginOrigin): Promise<void>
   retrieveThemeHref(theme: string): Promise<string | undefined>
-  retrieveAllPluginManifestEntries(): Promise<GrowiPluginManifestEntries>
+  retrieveAllPluginResourceEntries(): Promise<GrowiPluginResourceEntries>
 }
 
 export class PluginService implements IPluginService {
@@ -223,8 +224,7 @@ export class PluginService implements IPluginService {
     try {
       if (matchedPlugin != null && matchedThemeMetadata != null) {
         const manifest = await retrievePluginManifest(matchedPlugin);
-        return '/static/plugins' // configured by express.static
-          + `/${matchedPlugin.installedPath}/dist/${manifest[matchedThemeMetadata.manifestKey].file}`;
+        return `${PLUGINS_STATIC_DIR}/${matchedPlugin.installedPath}/dist/${manifest[matchedThemeMetadata.manifestKey].file}`;
       }
     }
     catch (e) {
@@ -232,19 +232,30 @@ export class PluginService implements IPluginService {
     }
   }
 
-  async retrieveAllPluginManifestEntries(): Promise<GrowiPluginManifestEntries> {
+  async retrieveAllPluginResourceEntries(): Promise<GrowiPluginResourceEntries> {
 
     const GrowiPlugin = mongoose.model('GrowiPlugin') as GrowiPluginModel;
 
-    const entries: GrowiPluginManifestEntries = [];
+    const entries: GrowiPluginResourceEntries = [];
 
     try {
       const growiPlugins = await GrowiPlugin.findEnabledPlugins();
 
       growiPlugins.forEach(async(growiPlugin) => {
         try {
+          const { types } = growiPlugin.meta;
           const manifest = await retrievePluginManifest(growiPlugin);
-          entries.push([growiPlugin, manifest]);
+
+          // add script
+          if (types.includes(GrowiPluginResourceType.Script) || types.includes(GrowiPluginResourceType.Template)) {
+            const href = `${PLUGINS_STATIC_DIR}/${growiPlugin.installedPath}/dist/${manifest['client-entry.tsx'].file}`;
+            entries.push([growiPlugin.installedPath, href]);
+          }
+          // add link
+          if (types.includes(GrowiPluginResourceType.Script) || types.includes(GrowiPluginResourceType.Style)) {
+            const href = `${PLUGINS_STATIC_DIR}/${growiPlugin.installedPath}/dist/${manifest['client-entry.tsx'].css}`;
+            entries.push([growiPlugin.installedPath, href]);
+          }
         }
         catch (e) {
           logger.warn(e);

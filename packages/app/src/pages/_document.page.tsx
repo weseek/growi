@@ -9,8 +9,7 @@ import Document, {
 } from 'next/document';
 
 import type { CrowiRequest } from '~/interfaces/crowi-request';
-import { GrowiPluginResourceType } from '~/interfaces/plugin';
-import type { IPluginService, GrowiPluginManifestEntries } from '~/server/service/plugin';
+import type { IPluginService, GrowiPluginResourceEntries } from '~/server/service/plugin';
 import loggerFactory from '~/utils/logger';
 
 const logger = loggerFactory('growi:page:_document');
@@ -50,35 +49,23 @@ const HeadersForThemes = (props: HeadersForThemesProps): JSX.Element => {
 };
 
 type HeadersForGrowiPluginProps = {
-  pluginManifestEntries: GrowiPluginManifestEntries;
+  pluginResourceEntries: GrowiPluginResourceEntries;
 }
 const HeadersForGrowiPlugin = (props: HeadersForGrowiPluginProps): JSX.Element => {
-  const { pluginManifestEntries } = props;
+  const { pluginResourceEntries } = props;
 
   return (
     <>
-      { pluginManifestEntries.map(([growiPlugin, manifest]) => {
-        const { types } = growiPlugin.meta;
-
-        const elements: JSX.Element[] = [];
-
-        // add script
-        if (types.includes(GrowiPluginResourceType.Script) || types.includes(GrowiPluginResourceType.Template)) {
-          elements.push(<>
-            {/* eslint-disable-next-line @next/next/no-sync-scripts */ }
-            <script type="module" key={`script_${growiPlugin.installedPath}`}
-              src={`/static/plugins/${growiPlugin.installedPath}/dist/${manifest['client-entry.tsx'].file}`} />
-          </>);
+      { pluginResourceEntries.map(([installedPath, href]) => {
+        if (href.endsWith('.js')) {
+          // eslint-disable-next-line @next/next/no-sync-scripts
+          return <script type="module" key={`script_${installedPath}`} src={href} />;
         }
-        // add link
-        if (types.includes(GrowiPluginResourceType.Script) || types.includes(GrowiPluginResourceType.Style)) {
-          elements.push(<>
-            <link rel="stylesheet" key={`link_${growiPlugin.installedPath}`}
-              href={`/static/plugins/${growiPlugin.installedPath}/dist/${manifest['client-entry.tsx'].css}`} />
-          </>);
+        if (href.endsWith('.css')) {
+          // eslint-disable-next-line @next/next/no-sync-scripts
+          return <link rel="stylesheet" key={`link_${installedPath}`} href={href} />;
         }
-
-        return elements;
+        return <></>;
       }) }
     </>
   );
@@ -89,7 +76,7 @@ interface GrowiDocumentProps {
   customCss: string;
   presetThemesManifest: ViteManifest,
   pluginThemeHref: string | undefined,
-  pluginManifestEntries: GrowiPluginManifestEntries;
+  pluginResourceEntries: GrowiPluginResourceEntries;
 }
 declare type GrowiDocumentInitialProps = DocumentInitialProps & GrowiDocumentProps;
 
@@ -107,7 +94,7 @@ class GrowiDocument extends Document<GrowiDocumentInitialProps> {
     const presetThemesManifest = await import('@growi/preset-themes/dist/themes/manifest.json').then(imported => imported.default);
 
     // retrieve plugin manifests
-    const pluginManifestEntries = await (pluginService as IPluginService).retrieveAllPluginManifestEntries();
+    const pluginResourceEntries = await (pluginService as IPluginService).retrieveAllPluginResourceEntries();
     const pluginThemeHref = await (pluginService as IPluginService).retrieveThemeHref(theme);
 
     return {
@@ -116,13 +103,13 @@ class GrowiDocument extends Document<GrowiDocumentInitialProps> {
       customCss,
       presetThemesManifest,
       pluginThemeHref,
-      pluginManifestEntries,
+      pluginResourceEntries,
     };
   }
 
   override render(): JSX.Element {
     const {
-      customCss, theme, presetThemesManifest, pluginThemeHref, pluginManifestEntries,
+      customCss, theme, presetThemesManifest, pluginThemeHref, pluginResourceEntries,
     } = this.props;
 
     return (
@@ -143,7 +130,7 @@ class GrowiDocument extends Document<GrowiDocumentInitialProps> {
           <link rel='preload' href="/static/fonts/Lato-Bold-latin-ext.woff2" as="font" type="font/woff2" />
           <HeadersForThemes theme={theme}
             presetThemesManifest={presetThemesManifest} pluginThemeHref={pluginThemeHref} />
-          <HeadersForGrowiPlugin pluginManifestEntries={pluginManifestEntries} />
+          <HeadersForGrowiPlugin pluginResourceEntries={pluginResourceEntries} />
         </Head>
         <body>
           <Main />
