@@ -158,8 +158,8 @@ const PageEditor = React.memo((): JSX.Element => {
     }
     const slackChannels = slackChannelsData ? slackChannelsData.toString() : '';
     const optionsToSave = {
-      isSlackEnabled: true, // WIP
-      slackChannels, // WIP
+      isSlackEnabled: isSlackEnabled ?? false,
+      slackChannels,
       grant: grantData.grant,
       pageTags: pageTags ?? [],
       grantUserGroupId: grantData.grantedGroup?.id,
