@@ -1,15 +1,15 @@
-import { execSync } from 'child_process';
 import fs from 'fs';
 import path from 'path';
 
+// eslint-disable-next-line no-restricted-imports
+import axios from 'axios';
 import mongoose from 'mongoose';
+import streamToPromise from 'stream-to-promise';
+import unzipper from 'unzipper';
 
-import type { GrowiPlugin, GrowiPluginMeta, GrowiPluginOrigin } from '~/interfaces/plugin';
+import type { GrowiPlugin, GrowiPluginOrigin } from '~/interfaces/plugin';
 import loggerFactory from '~/utils/logger';
 import { resolveFromRoot } from '~/utils/project-dir-utils';
-
-// eslint-disable-next-line import/no-cycle
-import Crowi from '../crowi';
 
 const logger = loggerFactory('growi:plugins:plugin-utils');
 
@@ -21,25 +21,12 @@ const githubReposIdPattern = new RegExp(/^\/([^/]+)\/([^/]+)$/);
 
 export class PluginService {
 
-  crowi: any;
-
-  growiBridgeService: any;
-
-  baseDir: any;
-
-  getFile:any;
-
-  constructor(crowi) {
-    this.crowi = crowi;
-    this.growiBridgeService = crowi.growiBridgeService;
-    this.baseDir = path.join(crowi.tmpDir, 'plugins');
-    this.getFile = this.growiBridgeService.getFile.bind(this);
-  }
-
-  async install(crowi: Crowi, origin: GrowiPluginOrigin): Promise<void> {
+  async install(origin: GrowiPluginOrigin): Promise<void> {
     // download
     const ghUrl = new URL(origin.url);
     const ghPathname = ghUrl.pathname;
+    // TODO: Branch names can be specified.
+    const ghBranch = 'main';
 
     const match = ghPathname.match(githubReposIdPattern);
     if (ghUrl.hostname !== 'github.com' || match == null) {
@@ -48,13 +35,10 @@ export class PluginService {
 
     const ghOrganizationName = match[1];
     const ghReposName = match[2];
+    const requestUrl = `https://github.com/${ghOrganizationName}/${ghReposName}/archive/refs/heads/${ghBranch}.zip`;
 
-    try {
-      await this.downloadZipFile(`${ghUrl.href}/archive/refs/heads/main.zip`, ghOrganizationName, ghReposName);
-    }
-    catch (err) {
-      console.log('downloadZipFile error', err);
-    }
+    // download github repository to local file system
+    await this.download(requestUrl, ghOrganizationName, ghReposName, ghBranch);
 
     // save plugin metadata
     const installedPath = `${ghOrganizationName}/${ghReposName}`;
@@ -64,18 +48,63 @@ export class PluginService {
     return;
   }
 
-  async downloadZipFile(url: string, ghOrganizationName: string, ghReposName: string): Promise<void> {
+  async download(requestUrl: string, ghOrganizationName: string, ghReposName: string, ghBranch: string): Promise<void> {
 
-    const downloadTargetPath = pluginStoringPath;
-    const zipFilePath = path.join(downloadTargetPath, 'main.zip');
-    const unzipTargetPath = path.join(pluginStoringPath, ghOrganizationName);
+    const zipFilePath = path.join(pluginStoringPath, `${ghBranch}.zip`);
+    const unzippedPath = path.join(pluginStoringPath, ghOrganizationName);
 
-    const stdout1 = execSync(`wget ${url} -O ${zipFilePath}`);
-    const stdout2 = execSync(`mkdir -p ${ghOrganizationName}`);
-    const stdout3 = execSync(`rm -rf ${ghOrganizationName}/${ghReposName}`);
-    const stdout4 = execSync(`unzip ${zipFilePath} -d ${unzipTargetPath}`);
-    const stdout5 = execSync(`mv ${unzipTargetPath}/${ghReposName}-main ${unzipTargetPath}/${ghReposName}`);
-    const stdout6 = execSync(`rm ${zipFilePath}`);
+    const renamePath = async(oldPath: fs.PathLike, newPath: fs.PathLike) => {
+      fs.renameSync(oldPath, newPath);
+    };
+
+    const downloadFile = async(requestUrl: string, filePath: string) => {
+      return new Promise<void>((resolve, reject) => {
+        axios({
+          method: 'GET',
+          url: requestUrl,
+          responseType: 'stream',
+        })
+          .then((res) => {
+            if (res.status === 200) {
+              const file = fs.createWriteStream(filePath);
+              res.data.pipe(file)
+                .on('close', () => file.close())
+                .on('finish', () => {
+                  return resolve();
+                });
+            }
+            else {
+              return reject(res.status);
+            }
+          }).catch((err) => {
+            return reject(err);
+          });
+      });
+    };
+
+    const unzip = async(zipFilePath: fs.PathLike, unzippedPath: fs.PathLike) => {
+      const stream = fs.createReadStream(zipFilePath);
+      const unzipStream = stream.pipe(unzipper.Extract({ path: unzippedPath }));
+      const deleteZipFile = (path: fs.PathLike) => fs.unlink(path, (err) => { return err });
+
+      try {
+        await streamToPromise(unzipStream);
+        deleteZipFile(zipFilePath);
+      }
+      catch (err) {
+        return err;
+      }
+    };
+
+    try {
+      await downloadFile(requestUrl, zipFilePath);
+      await unzip(zipFilePath, unzippedPath);
+      await renamePath(`${unzippedPath}/${ghReposName}-${ghBranch}`, `${unzippedPath}/${ghReposName}`);
+    }
+    catch (err) {
+      logger.error(err);
+      throw new Error(err);
+    }
 
     return;
   }
@@ -134,6 +163,5 @@ export class PluginService {
   async listPlugins(): Promise<GrowiPlugin[]> {
     return [];
   }
-
 
 }

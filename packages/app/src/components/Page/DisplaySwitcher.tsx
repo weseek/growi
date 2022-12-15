@@ -10,6 +10,7 @@ import { SocketEventName } from '~/interfaces/websocket';
 import {
   useIsSharedUser, useIsEditable, useShareLinkId, useIsNotFound,
 } from '~/stores/context';
+import { useIsHackmdDraftUpdatingInRealtime } from '~/stores/hackmd';
 import { useDescendantsPageListModal } from '~/stores/modal';
 import { useCurrentPagePath, useSWRxCurrentPage } from '~/stores/page';
 import {
@@ -51,6 +52,8 @@ const PageView = React.memo((): JSX.Element => {
   const { open: openDescendantPageListModal } = useDescendantsPageListModal();
   const { setRemoteLatestPageData } = useSetRemoteLatestPageData();
 
+  const { mutate: mutateIsHackmdDraftUpdatingInRealtime } = useIsHackmdDraftUpdatingInRealtime();
+
   const isTopPagePath = isTopPage(currentPagePath ?? '');
   const isUsersHomePagePath = isUsersHomePage(currentPagePath ?? '');
 
@@ -64,9 +67,18 @@ const PageView = React.memo((): JSX.Element => {
       remoteRevisionBody: s2cMessagePageUpdated.revisionBody,
       remoteRevisionLastUpdateUser: s2cMessagePageUpdated.remoteLastUpdateUser,
       remoteRevisionLastUpdatedAt: s2cMessagePageUpdated.revisionUpdateAt,
+      revisionIdHackmdSynced: s2cMessagePageUpdated.revisionIdHackmdSynced,
+      hasDraftOnHackmd: s2cMessagePageUpdated.hasDraftOnHackmd,
     };
     setRemoteLatestPageData(remoteData);
   }, [setRemoteLatestPageData]);
+
+  const setIsHackmdDraftUpdatingInRealtime = useCallback((data) => {
+    const { s2cMessagePageUpdated } = data;
+    if (s2cMessagePageUpdated.pageId === currentPage?._id) {
+      mutateIsHackmdDraftUpdatingInRealtime(true);
+    }
+  }, [currentPage?._id, mutateIsHackmdDraftUpdatingInRealtime]);
 
   // listen socket for someone updating this page
   useEffect(() => {
@@ -80,6 +92,18 @@ const PageView = React.memo((): JSX.Element => {
     };
 
   }, [setLatestRemotePageData, socket]);
+
+  // listen socket for hackmd saved
+  useEffect(() => {
+
+    if (socket == null) { return }
+
+    socket.on(SocketEventName.EditingWithHackmd, setIsHackmdDraftUpdatingInRealtime);
+
+    return () => {
+      socket.off(SocketEventName.EditingWithHackmd, setIsHackmdDraftUpdatingInRealtime);
+    };
+  }, [setIsHackmdDraftUpdatingInRealtime, socket]);
 
   return (
     <div className="d-flex flex-column flex-lg-row">

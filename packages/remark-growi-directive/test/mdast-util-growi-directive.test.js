@@ -3,9 +3,9 @@ import { toMarkdown } from 'mdast-util-to-markdown';
 import test from 'tape';
 import { removePosition } from 'unist-util-remove-position';
 
-import { DirectiveType } from '../src/mdast-util-growi-plugin/consts.js';
-import { directiveFromMarkdown, directiveToMarkdown } from '../src/mdast-util-growi-plugin/index.js';
-import { directive } from '../src/micromark-extension-growi-plugin/index.js';
+import { DirectiveType } from '../src/mdast-util-growi-directive/consts.js';
+import { directiveFromMarkdown, directiveToMarkdown } from '../src/mdast-util-growi-directive/index.js';
+import { directive } from '../src/micromark-extension-growi-directive/index.js';
 
 test('markdown -> mdast', (t) => {
   t.deepEqual(

@@ -4,15 +4,15 @@
  * @typedef {import('mdast-util-directive')} DoNotTouchAsThisImportIncludesDirectivesInTree
  */
 
-import { directiveFromMarkdown, directiveToMarkdown } from './mdast-util-growi-plugin/index.js';
-import { directive } from './micromark-extension-growi-plugin/index.js';
+import { directiveFromMarkdown, directiveToMarkdown } from './mdast-util-growi-directive/index.js';
+import { directive } from './micromark-extension-growi-directive/index.js';
 
 /**
     * Plugin to support GROWI plugin (`$lsx(/path, depth=2)`).
     *
     * @type {import('unified').Plugin<void[], Root>}
     */
-export function remarkGrowiPlugin() {
+export function remarkGrowiDirectivePlugin() {
   const data = this.data();
 
   add('micromarkExtensions', directive());

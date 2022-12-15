@@ -2,6 +2,7 @@ import { SWRResponse } from 'swr';
 
 import { IUser } from '~/interfaces/user';
 
+import { useRevisionIdHackmdSynced, useHasDraftOnHackmd } from './hackmd';
 import { useStaticSWR } from './use-static-swr';
 
 
@@ -25,7 +26,9 @@ type RemoteRevisionData = {
   remoteRevisionId: string,
   remoteRevisionBody: string,
   remoteRevisionLastUpdateUser: IUser,
-  remoteRevisionLastUpdatedAt: Date
+  remoteRevisionLastUpdatedAt: Date,
+  revisionIdHackmdSynced: string,
+  hasDraftOnHackmd: boolean,
 }
 
 
@@ -35,15 +38,19 @@ export const useSetRemoteLatestPageData = (): { setRemoteLatestPageData: (pageDa
   const { mutate: mutateRemoteRevisionBody } = useRemoteRevisionBody();
   const { mutate: mutateRemoteRevisionLastUpdateUser } = useRemoteRevisionLastUpdateUser();
   const { mutate: mutateRemoteRevisionLastUpdatedAt } = useRemoteRevisionLastUpdatedAt();
+  const { mutate: mutateRevisionIdHackmdSynced } = useRevisionIdHackmdSynced();
+  const { mutate: mutateHasDraftOnHackmd } = useHasDraftOnHackmd();
 
   const setRemoteLatestPageData = (remoteRevisionData: RemoteRevisionData) => {
     const {
-      remoteRevisionId, remoteRevisionBody, remoteRevisionLastUpdateUser, remoteRevisionLastUpdatedAt,
+      remoteRevisionId, remoteRevisionBody, remoteRevisionLastUpdateUser, remoteRevisionLastUpdatedAt, revisionIdHackmdSynced, hasDraftOnHackmd,
     } = remoteRevisionData;
     mutateRemoteRevisionId(remoteRevisionId);
     mutateRemoteRevisionBody(remoteRevisionBody);
     mutateRemoteRevisionLastUpdateUser(remoteRevisionLastUpdateUser);
     mutateRemoteRevisionLastUpdatedAt(remoteRevisionLastUpdatedAt);
+    mutateRevisionIdHackmdSynced(revisionIdHackmdSynced);
+    mutateHasDraftOnHackmd(hasDraftOnHackmd);
   };
 
   return {
