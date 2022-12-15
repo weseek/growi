@@ -119,6 +119,9 @@ export const PageStatusAlert = (): JSX.Element => {
     const isRevisionOutdated = revision?._id !== remoteRevisionId;
     const isHackmdDocumentOutdated = revisionIdHackmdSynced !== remoteRevisionId;
 
+    // 'revision?._id' and 'remoteRevisionId' are can not be undefined
+    if (revision?._id == null || remoteRevisionId == null) { return }
+
     // when remote revision is newer than both
     if (isHackmdDocumentOutdated && isRevisionOutdated) {
       return getContentsForUpdatedAlert();

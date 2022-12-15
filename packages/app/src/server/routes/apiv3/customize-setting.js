@@ -1,8 +1,10 @@
 /* eslint-disable no-unused-vars */
 
 import { ErrorV3 } from '@growi/core';
+import mongoose from 'mongoose';
 
 import { SupportedAction } from '~/interfaces/activity';
+import { GrowiPluginResourceType } from '~/interfaces/plugin';
 import { AttachmentType } from '~/server/interfaces/attachment';
 import loggerFactory from '~/utils/logger';
 
@@ -271,8 +273,17 @@ module.exports = (crowi) => {
   router.get('/theme', loginRequiredStrictly, adminRequired, async(req, res) => {
 
     try {
-      const theme = await crowi.configManager.getConfig('crowi', 'customize:theme');
-      return res.apiv3({ theme });
+      const currentTheme = await crowi.configManager.getConfig('crowi', 'customize:theme');
+
+      // retrieve plugin manifests
+      const GrowiPluginModel = mongoose.model('GrowiPlugin');
+      const themePlugins = await GrowiPluginModel.findEnabledPluginsIncludingAnyTypes([GrowiPluginResourceType.Theme]);
+
+      const pluginThemesMetadatas = themePlugins
+        .map(themePlugin => themePlugin.meta.themes)
+        .flat();
+
+      return res.apiv3({ currentTheme, pluginThemesMetadatas });
     }
     catch (err) {
       const msg = 'Error occurred in getting theme';
