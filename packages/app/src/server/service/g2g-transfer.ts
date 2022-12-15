@@ -8,7 +8,9 @@ import FormData from 'form-data';
 import { Types as MongooseTypes } from 'mongoose';
 
 import { G2G_PROGRESS_STATUS } from '~/interfaces/g2g-transfer';
+import GrowiArchiveImportOption from '~/models/admin/growi-archive-import-option';
 import TransferKeyModel from '~/server/models/transfer-key';
+import { generateOverwriteParams } from '~/server/routes/apiv3/import';
 import { createBatchStream } from '~/server/util/batch-stream';
 import axios from '~/utils/axios';
 import loggerFactory from '~/utils/logger';
@@ -20,7 +22,7 @@ const logger = loggerFactory('growi:service:g2g-transfer');
 
 export const X_GROWI_TRANSFER_KEY_HEADER_NAME = 'x-growi-transfer-key';
 
-export const uploadConfigKeys = [
+const uploadConfigKeys = [
   'app:fileUploadType',
   'app:useOnlyEnvVarForFileUploadType',
   'aws:referenceFileWithRelayMode',
@@ -489,6 +491,62 @@ export class G2GTransferReceiverService implements Receiver {
     }
 
     return tkd.keyString;
+  }
+
+  public getImportSettingMap(innerFileStats, optionsMap, operatorUserId) {
+    const { importService } = this.crowi;
+
+    const importSettingsMap = {};
+    innerFileStats.forEach(({ fileName, collectionName }) => {
+      const options = new GrowiArchiveImportOption(null, optionsMap[collectionName]);
+
+      if (collectionName === 'configs' && options.mode !== 'flushAndInsert') {
+        throw new Error('`flushAndInsert` is only available as an import setting for configs collection');
+      }
+      if (collectionName === 'pages' && options.mode === 'insert') {
+        throw new Error('`insert` is not available as an import setting for pages collection');
+      }
+      if (collectionName === 'attachmentFiles.chunks') {
+        throw new Error('`attachmentFiles.chunks` must not be transferred. Please omit it from request body `collections`.');
+      }
+      if (collectionName === 'attachmentFiles.files') {
+        throw new Error('`attachmentFiles.files` must not be transferred. Please omit it from request body `collections`.');
+      }
+
+      const importSettings = importService.generateImportSettings(options.mode);
+      importSettings.jsonFileName = fileName;
+      importSettings.overwriteParams = generateOverwriteParams(collectionName, operatorUserId, options);
+      importSettingsMap[collectionName] = importSettings;
+    });
+
+    return importSettingsMap;
+  }
+
+  public async importCollections(collections, importSettingsMap, sourceGROWIUploadConfigs): Promise<void> {
+    const { configManager, importService, appService } = this.crowi;
+    const shouldKeepUploadConfigs = configManager.getConfig('crowi', 'app:fileUploadType') !== 'none';
+
+    let savedUploadConfigs;
+    if (shouldKeepUploadConfigs) {
+      // save
+      savedUploadConfigs = Object.fromEntries(uploadConfigKeys.map((key) => {
+        return [key, configManager.getConfigFromDB('crowi', key)];
+      }));
+    }
+
+    await importService.import(collections, importSettingsMap);
+
+    // remove & save if none
+    if (shouldKeepUploadConfigs) {
+      await configManager.removeConfigsInTheSameNamespace('crowi', uploadConfigKeys);
+      await configManager.updateConfigsInTheSameNamespace('crowi', savedUploadConfigs);
+    }
+    else {
+      await configManager.updateConfigsInTheSameNamespace('crowi', sourceGROWIUploadConfigs);
+    }
+
+    await this.crowi.setUpFileUpload(true);
+    await appService.setupAfterInstall();
   }
 
   public async receive(zipfile: Readable): Promise<void> {

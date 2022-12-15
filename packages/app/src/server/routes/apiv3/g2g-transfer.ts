@@ -6,9 +6,8 @@ import express, { NextFunction, Request, Router } from 'express';
 import { body } from 'express-validator';
 import multer from 'multer';
 
-import GrowiArchiveImportOption from '~/models/admin/growi-archive-import-option';
 import { isG2GTransferError } from '~/server/models/vo/g2g-transfer-error';
-import { IDataGROWIInfo, uploadConfigKeys, X_GROWI_TRANSFER_KEY_HEADER_NAME } from '~/server/service/g2g-transfer';
+import { IDataGROWIInfo, X_GROWI_TRANSFER_KEY_HEADER_NAME } from '~/server/service/g2g-transfer';
 import loggerFactory from '~/utils/logger';
 import { TransferKey } from '~/utils/vo/transfer-key';
 
@@ -16,7 +15,6 @@ import { TransferKey } from '~/utils/vo/transfer-key';
 import Crowi from '../../crowi';
 import { apiV3FormValidator } from '../../middlewares/apiv3-form-validator';
 
-import { generateOverwriteParams } from './import';
 import { ApiV3Response } from './interfaces/apiv3-response';
 
 interface AuthorizedRequest extends Request {
@@ -196,66 +194,21 @@ module.exports = (crowi: Crowi): Router => {
     /*
      * generate maps of ImportSettings to import
      */
-    const importSettingsMap = {};
+    let importSettingsMap;
     try {
-      innerFileStats.forEach(({ fileName, collectionName }) => {
-        const options = new GrowiArchiveImportOption(null, optionsMap[collectionName]);
-
-        if (collectionName === 'configs' && options.mode !== 'flushAndInsert') {
-          throw new Error('`flushAndInsert` is only available as an import setting for configs collection');
-        }
-        if (collectionName === 'pages' && options.mode === 'insert') {
-          throw new Error('`insert` is not available as an import setting for pages collection');
-        }
-        if (collectionName === 'attachmentFiles.chunks') {
-          throw new Error('`attachmentFiles.chunks` must not be transferred. Please omit it from request body `collections`.');
-        }
-        if (collectionName === 'attachmentFiles.files') {
-          throw new Error('`attachmentFiles.files` must not be transferred. Please omit it from request body `collections`.');
-        }
-
-        const importSettings = importService.generateImportSettings(options.mode);
-        importSettings.jsonFileName = fileName;
-        importSettings.overwriteParams = generateOverwriteParams(collectionName, operatorUserId, options);
-        importSettingsMap[collectionName] = importSettings;
-      });
+      importSettingsMap = g2gTransferReceiverService.getImportSettingMap(innerFileStats, optionsMap, operatorUserId);
     }
     catch (err) {
       logger.error(err);
       return res.apiv3Err(new ErrorV3('Import settings invalid. See growi docs about details.', 'import_settings_invalid'));
     }
 
-    /*
-     * import collections
-     */
     try {
-      const shouldKeepUploadConfigs = configManager.getConfig('crowi', 'app:fileUploadType') !== 'none';
-
-      let savedUploadConfigs;
-      if (shouldKeepUploadConfigs) {
-        // save
-        savedUploadConfigs = Object.fromEntries(uploadConfigKeys.map((key) => {
-          return [key, configManager.getConfigFromDB('crowi', key)];
-        }));
-      }
-
-      await importService.import(collections, importSettingsMap);
-
-      // remove & save if none
-      if (shouldKeepUploadConfigs) {
-        await configManager.removeConfigsInTheSameNamespace('crowi', uploadConfigKeys);
-        await configManager.updateConfigsInTheSameNamespace('crowi', savedUploadConfigs);
-      }
-      else {
-        await configManager.updateConfigsInTheSameNamespace('crowi', sourceGROWIUploadConfigs);
-      }
-
-      await crowi?.setUpFileUpload(true);
-      await crowi?.appService?.setupAfterInstall();
+      await g2gTransferReceiverService.importCollections(collections, importSettingsMap, sourceGROWIUploadConfigs);
     }
     catch (err) {
       logger.error(err);
-      return res.apiv3Err(new ErrorV3('Failed to import.', 'failed_to_import'), 500);
+      return res.apiv3Err(new ErrorV3('Failed to import MongoDB collections', 'mongo_collection_import_failure'), 500);
     }
 
     return res.apiv3({ message: 'Successfully started to receive transfer data.' });

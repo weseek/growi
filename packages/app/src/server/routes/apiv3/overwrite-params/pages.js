@@ -8,10 +8,6 @@ const ImportOptionForPages = require('~/models/admin/import-option-for-pages');
 
 const { ObjectId } = mongoose.Types;
 
-const {
-  GRANT_PUBLIC,
-} = mongoose.model('Page');
-
 class PageOverwriteParamsFactory {
 
   /**
@@ -23,6 +19,7 @@ class PageOverwriteParamsFactory {
    *  value: any value or a function `(value, { document, schema, propertyName }) => { return newValue }`
    */
   static generate(operatorUserId, option) {
+    const { GRANT_PUBLIC } = mongoose.model('Page');
     const params = {};
 
     if (option.isOverwriteAuthorWithCurrentUser) {
