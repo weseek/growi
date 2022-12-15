@@ -13,7 +13,7 @@ export interface GrowiPluginDocument extends GrowiPlugin, Document {
 }
 export interface GrowiPluginModel extends Model<GrowiPluginDocument> {
   findEnabledPlugins(): Promise<GrowiPlugin[]>
-  findEnabledPluginsIncludingTypes(includingTypes: GrowiPluginResourceType[]): Promise<GrowiPlugin[]>
+  findEnabledPluginsIncludingAnyTypes(includingTypes: GrowiPluginResourceType[]): Promise<GrowiPlugin[]>
 }
 
 const growiThemeMetadataSchema = new Schema<GrowiThemeMetadata>({

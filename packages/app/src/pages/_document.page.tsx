@@ -3,15 +3,14 @@ import React from 'react';
 
 import type { ViteManifest } from '@growi/core';
 import { DefaultThemeMetadata, PresetThemesMetadatas } from '@growi/preset-themes';
-import mongoose from 'mongoose';
 import Document, {
   DocumentContext, DocumentInitialProps,
   Html, Head, Main, NextScript,
 } from 'next/document';
 
-import { ActivatePluginService, GrowiPluginManifestEntries } from '~/client/services/activate-plugin';
 import type { CrowiRequest } from '~/interfaces/crowi-request';
-import { GrowiPlugin, GrowiPluginResourceType } from '~/interfaces/plugin';
+import { GrowiPluginResourceType } from '~/interfaces/plugin';
+import type { IPluginService, GrowiPluginManifestEntries } from '~/server/service/plugin';
 import loggerFactory from '~/utils/logger';
 
 const logger = loggerFactory('growi:page:_document');
@@ -96,32 +95,26 @@ declare type GrowiDocumentInitialProps = DocumentInitialProps & GrowiDocumentPro
 
 class GrowiDocument extends Document<GrowiDocumentInitialProps> {
 
-  static presetThemesManifest: ViteManifest;
-
   static override async getInitialProps(ctx: DocumentContext): Promise<GrowiDocumentInitialProps> {
     const initialProps: DocumentInitialProps = await Document.getInitialProps(ctx);
     const { crowi } = ctx.req as CrowiRequest<any>;
-    const { configManager, customizeService } = crowi;
+    const { configManager, customizeService, pluginService } = crowi;
 
     const theme = configManager.getConfig('crowi', 'customize:theme');
     const customCss: string = customizeService.getCustomCss();
 
     // import preset-themes manifest
-    if (this.presetThemesManifest == null) {
-      this.presetThemesManifest = await import('@growi/preset-themes/dist/themes/manifest.json').then(imported => imported.default);
-    }
+    const presetThemesManifest = await import('@growi/preset-themes/dist/themes/manifest.json').then(imported => imported.default);
 
     // retrieve plugin manifests
-    const GrowiPlugin = mongoose.model<GrowiPlugin>('GrowiPlugin');
-    const growiPlugins = await GrowiPlugin.find({ isEnabled: true });
-    const pluginManifestEntries = await ActivatePluginService.retrievePluginManifestEntries(growiPlugins);
-    const pluginThemeHref = await ActivatePluginService.retrieveThemeHref(growiPlugins, theme);
+    const pluginManifestEntries = await (pluginService as IPluginService).retrieveAllPluginManifestEntries();
+    const pluginThemeHref = await (pluginService as IPluginService).retrieveThemeHref(theme);
 
     return {
       ...initialProps,
       theme,
       customCss,
-      presetThemesManifest: this.presetThemesManifest,
+      presetThemesManifest,
       pluginThemeHref,
       pluginManifestEntries,
     };

@@ -1,6 +1,7 @@
-import fs from 'fs';
+import fs, { readFileSync } from 'fs';
 import path from 'path';
 
+import { GrowiThemeMetadata, ViteManifest } from '@growi/core';
 // eslint-disable-next-line no-restricted-imports
 import axios from 'axios';
 import mongoose from 'mongoose';
@@ -13,6 +14,8 @@ import {
 import loggerFactory from '~/utils/logger';
 import { resolveFromRoot } from '~/utils/project-dir-utils';
 
+import type { GrowiPluginModel } from '../models/growi-plugin';
+
 const logger = loggerFactory('growi:plugins:plugin-utils');
 
 const pluginStoringPath = resolveFromRoot('tmp/plugins');
@@ -21,7 +24,22 @@ const pluginStoringPath = resolveFromRoot('tmp/plugins');
 const githubReposIdPattern = new RegExp(/^\/([^/]+)\/([^/]+)$/);
 
 
-export class PluginService {
+export type GrowiPluginManifestEntries = [growiPlugin: GrowiPlugin, manifest: ViteManifest][];
+
+
+function retrievePluginManifest(growiPlugin: GrowiPlugin): ViteManifest {
+  const manifestPath = resolveFromRoot(path.join('tmp/plugins', growiPlugin.installedPath, 'dist/manifest.json'));
+  const manifestStr: string = readFileSync(manifestPath, 'utf-8');
+  return JSON.parse(manifestStr);
+}
+
+export interface IPluginService {
+  install(origin: GrowiPluginOrigin): Promise<void>
+  retrieveThemeHref(theme: string): Promise<string | undefined>
+  retrieveAllPluginManifestEntries(): Promise<GrowiPluginManifestEntries>
+}
+
+export class PluginService implements IPluginService {
 
   async install(origin: GrowiPluginOrigin): Promise<void> {
     // download
@@ -50,7 +68,7 @@ export class PluginService {
     return;
   }
 
-  async download(requestUrl: string, ghOrganizationName: string, ghReposName: string, ghBranch: string): Promise<void> {
+  private async download(requestUrl: string, ghOrganizationName: string, ghReposName: string, ghBranch: string): Promise<void> {
 
     const zipFilePath = path.join(pluginStoringPath, `${ghBranch}.zip`);
     const unzippedPath = path.join(pluginStoringPath, ghOrganizationName);
@@ -111,15 +129,15 @@ export class PluginService {
     return;
   }
 
-  async savePluginMetaData(plugins: GrowiPlugin[]): Promise<void> {
+  private async savePluginMetaData(plugins: GrowiPlugin[]): Promise<void> {
     const GrowiPlugin = mongoose.model('GrowiPlugin');
     await GrowiPlugin.insertMany(plugins);
   }
 
   // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
-  static async detectPlugins(origin: GrowiPluginOrigin, installedPath: string, parentPackageJson?: any): Promise<GrowiPlugin[]> {
+  private static async detectPlugins(origin: GrowiPluginOrigin, installedPath: string, parentPackageJson?: any): Promise<GrowiPlugin[]> {
     const packageJsonPath = path.resolve(pluginStoringPath, installedPath, 'package.json');
-    const packageJson = await import(packageJsonPath);
+    const packageJson = JSON.parse(readFileSync(packageJsonPath, 'utf-8'));
 
     const { growiPlugin } = packageJson;
     const {
@@ -172,6 +190,72 @@ export class PluginService {
 
   async listPlugins(): Promise<GrowiPlugin[]> {
     return [];
+  }
+
+
+  async retrieveThemeHref(theme: string): Promise<string | undefined> {
+
+    const GrowiPlugin = mongoose.model('GrowiPlugin') as GrowiPluginModel;
+
+    let matchedPlugin: GrowiPlugin | undefined;
+    let matchedThemeMetadata: GrowiThemeMetadata | undefined;
+
+    try {
+      // retrieve plugin manifests
+      const growiPlugins = await GrowiPlugin.findEnabledPluginsIncludingAnyTypes([GrowiPluginResourceType.Theme]) as GrowiPlugin<GrowiThemePluginMeta>[];
+
+      growiPlugins
+        .forEach(async(growiPlugin) => {
+          const themeMetadatas = growiPlugin.meta.themes;
+          const themeMetadata = themeMetadatas.find(t => t.name === theme);
+
+          // found
+          if (themeMetadata != null) {
+            matchedPlugin = growiPlugin;
+            matchedThemeMetadata = themeMetadata;
+          }
+        });
+    }
+    catch (e) {
+      logger.error(`Could not find the theme '${theme}' from GrowiPlugin documents.`, e);
+    }
+
+    try {
+      if (matchedPlugin != null && matchedThemeMetadata != null) {
+        const manifest = await retrievePluginManifest(matchedPlugin);
+        return '/static/plugins' // configured by express.static
+          + `/${matchedPlugin.installedPath}/dist/${manifest[matchedThemeMetadata.manifestKey].file}`;
+      }
+    }
+    catch (e) {
+      logger.error(`Could not read manifest file for the theme '${theme}'`, e);
+    }
+  }
+
+  async retrieveAllPluginManifestEntries(): Promise<GrowiPluginManifestEntries> {
+
+    const GrowiPlugin = mongoose.model('GrowiPlugin') as GrowiPluginModel;
+
+    const entries: GrowiPluginManifestEntries = [];
+
+    try {
+      const growiPlugins = await GrowiPlugin.findEnabledPlugins();
+
+      growiPlugins.forEach(async(growiPlugin) => {
+        try {
+          const manifest = await retrievePluginManifest(growiPlugin);
+          entries.push([growiPlugin, manifest]);
+        }
+        catch (e) {
+          logger.warn(e);
+        }
+      });
+    }
+    catch (e) {
+      logger.error('Could not retrieve GrowiPlugin documents.', e);
+    }
+
+    return entries;
   }
 
 }
