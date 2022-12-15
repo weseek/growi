@@ -3,7 +3,7 @@ import { basename } from 'path';
 import { Readable } from 'stream';
 
 // eslint-disable-next-line no-restricted-imports
-import rawAxios from 'axios';
+import rawAxios, { type AxiosRequestConfig } from 'axios';
 import FormData from 'form-data';
 import { Types as MongooseTypes } from 'mongoose';
 
@@ -64,6 +64,12 @@ interface FileMeta {
 type IGetTransferabilityReturn = { canTransfer: true; } | { canTransfer: false; reason: string; };
 
 interface Pusher {
+  /**
+   * Merge axios config with transfer key
+   * @param {TransferKey} tk Transfer key
+   * @param {AxiosRequestConfig} config Axios config
+   */
+  getAxiosConfig(tk: TransferKey, config: AxiosRequestConfig): AxiosRequestConfig
   /**
    * Send to-growi a request to get growi info
    * @param {TransferKey} tk Transfer key
@@ -126,19 +132,6 @@ interface Receiver {
   receive(zippedGROWIDataStream: Readable): Promise<void>
 }
 
-const generateAxiosRequestConfigWithTransferKey = (tk: TransferKey, additionalHeaders: {[key: string]: string} = {}) => {
-  const { appSiteUrlOrigin, key } = tk;
-
-  return {
-    baseURL: appSiteUrlOrigin,
-    headers: {
-      ...additionalHeaders,
-      [X_GROWI_TRANSFER_KEY_HEADER_NAME]: key,
-    },
-    maxBodyLength: Infinity,
-  };
-};
-
 export class G2GTransferPusherService implements Pusher {
 
   crowi: any;
@@ -148,9 +141,23 @@ export class G2GTransferPusherService implements Pusher {
     this.crowi = crowi;
   }
 
+  public getAxiosConfig(tk: TransferKey, config: AxiosRequestConfig = {}): AxiosRequestConfig {
+    const { appSiteUrlOrigin, key } = tk;
+
+    return {
+      ...config,
+      baseURL: appSiteUrlOrigin,
+      headers: {
+        ...config.headers,
+        [X_GROWI_TRANSFER_KEY_HEADER_NAME]: key,
+      },
+      maxBodyLength: Infinity,
+    };
+  }
+
   public async askGROWIInfo(tk: TransferKey): Promise<IDataGROWIInfo> {
     try {
-      const { data: { growiInfo } } = await axios.get('/_api/v3/g2g-transfer/growi-info', generateAxiosRequestConfigWithTransferKey(tk));
+      const { data: { growiInfo } } = await axios.get('/_api/v3/g2g-transfer/growi-info', this.getAxiosConfig(tk));
       return growiInfo;
     }
     catch (err) {
@@ -216,7 +223,7 @@ export class G2GTransferPusherService implements Pusher {
 
   public async listFilesInStorage(tk: TransferKey): Promise<FileMeta[]> {
     try {
-      const { data: { files } } = await axios.get<{ files: FileMeta[] }>('/_api/v3/g2g-transfer/files', generateAxiosRequestConfigWithTransferKey(tk));
+      const { data: { files } } = await axios.get<{ files: FileMeta[] }>('/_api/v3/g2g-transfer/files', this.getAxiosConfig(tk));
       return files;
     }
     catch (err) {
@@ -351,7 +358,7 @@ export class G2GTransferPusherService implements Pusher {
       form.append('optionsMap', JSON.stringify(optionsMap));
       form.append('operatorUserId', user._id.toString());
       form.append('uploadConfigs', JSON.stringify(uploadConfigs));
-      await rawAxios.post('/_api/v3/g2g-transfer/', form, generateAxiosRequestConfigWithTransferKey(tk, form.getHeaders()));
+      await rawAxios.post('/_api/v3/g2g-transfer/', form, this.getAxiosConfig(tk, { headers: form.getHeaders() }));
     }
     catch (err) {
       logger.error(err);
@@ -399,7 +406,7 @@ export class G2GTransferPusherService implements Pusher {
 
     form.append('content', fileStream, attachment.fileName);
     form.append('attachmentMetadata', JSON.stringify(attachment));
-    await rawAxios.post('/_api/v3/g2g-transfer/attachment', form, generateAxiosRequestConfigWithTransferKey(tk, form.getHeaders()));
+    await rawAxios.post('/_api/v3/g2g-transfer/attachment', form, this.getAxiosConfig(tk, { headers: form.getHeaders() }));
   }
 
 }
