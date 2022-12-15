@@ -1,6 +1,5 @@
 module.exports = {
   extends: [
-    'weseek/react',
     'weseek/typescript',
   ],
   env: {
