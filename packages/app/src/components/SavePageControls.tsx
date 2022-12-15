@@ -30,7 +30,7 @@ const logger = loggerFactory('growi:SavePageControls');
 
 const { isTopPage } = pagePathUtils;
 
-type SavePageControlsProps = {
+export type SavePageControlsProps = {
   slackChannels: string
 }
 

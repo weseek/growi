@@ -69,7 +69,7 @@ const PageEditor = React.memo((): JSX.Element => {
   const router = useRouter();
 
   const { data: isNotFound } = useIsNotFound();
-  const { data: pageId, mutate: mutateCurrentPageId } = useCurrentPageId();
+  const { data: pageId } = useCurrentPageId();
   const { data: currentPagePath } = useCurrentPagePath();
   const { data: currentPathname } = useCurrentPathname();
   const { data: currentPage, mutate: mutateCurrentPage } = useSWRxCurrentPage();
@@ -197,8 +197,6 @@ const PageEditor = React.memo((): JSX.Element => {
 
     const options = optionsToSave ? Object.assign(optionsToSave, opts) : undefined;
 
-    console.log('optionsToSave', options);
-
     try {
       const { page } = await saveOrUpdate(
         markdownToSave.current,
@@ -223,7 +221,7 @@ const PageEditor = React.memo((): JSX.Element => {
     }
 
   // eslint-disable-next-line max-len
-  }, [grantData, isSlackEnabled, currentPathname, pageTags, saveOrUpdate, pageId, currentPagePath, currentRevisionId]);
+  }, [currentPathname, optionsToSave, grantData, isSlackEnabled, saveOrUpdate, pageId, currentPagePath, currentRevisionId]);
 
   const saveAndReturnToViewHandler = useCallback(async(opts: {slackChannels: string, overwriteScopesOfDescendants?: boolean}) => {
     if (editorMode !== EditorMode.Editor) {
@@ -242,7 +240,7 @@ const PageEditor = React.memo((): JSX.Element => {
       updateStateAfterSave(page._id);
     }
     mutateEditorMode(EditorMode.View);
-  }, [editorMode, save, isNotFound, mutateEditorMode, router, useUpdateStateAfterSave]);
+  }, [editorMode, save, isNotFound, mutateEditorMode, router, updateStateAfterSave]);
 
   const saveWithShortcut = useCallback(async() => {
     if (editorMode !== EditorMode.Editor) {
@@ -254,7 +252,7 @@ const PageEditor = React.memo((): JSX.Element => {
       updateStateAfterSave(page._id);
       toastSuccess(t('toaster.save_succeeded'));
     }
-  }, [editorMode, save, t, useUpdateStateAfterSave]);
+  }, [editorMode, save, t, updateStateAfterSave]);
 
 
   /**
