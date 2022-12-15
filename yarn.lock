@@ -18479,6 +18479,11 @@ react-datepicker@^4.7.0:
     react-onclickoutside "^6.12.0"
     react-popper "^2.2.5"
 
+react-disable@^0.1.1:
+  version "0.1.1"
+  resolved "https://registry.yarnpkg.com/react-disable/-/react-disable-0.1.1.tgz#86d2d0932259f626a70fa46f63d6d61cbe7dd066"
+  integrity sha512-KKEDYJUnF8hIPlmGYJu38HG8BlBB4EElCFY1zfA9W46/MF76DSGvgcduWl1eVT/CAw3ahb2sWTSfhon+kPSiKw==
+
 react-dnd-html5-backend@^14.1.0:
   version "14.1.0"
   resolved "https://registry.yarnpkg.com/react-dnd-html5-backend/-/react-dnd-html5-backend-14.1.0.tgz#b35a3a0c16dd3a2bfb5eb7ec62cf0c2cace8b62f"
