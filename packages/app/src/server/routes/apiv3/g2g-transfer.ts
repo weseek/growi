@@ -135,9 +135,6 @@ module.exports = (crowi: Crowi): Router => {
   // eslint-disable-next-line max-len
   receiveRouter.post('/', uploads.single('transferDataZipFile'), validateTransferKey, async(req: Request, res: ApiV3Response) => {
     const { file } = req;
-
-    const zipFile = importService.getFile(file.filename);
-
     const {
       collections: strCollections,
       optionsMap: strOptionsMap,
@@ -145,7 +142,9 @@ module.exports = (crowi: Crowi): Router => {
       uploadConfigs: strUploadConfigs,
     } = req.body;
 
-    // Parse multipart form data
+    /*
+     * parse multipart form data
+     */
     let collections;
     let optionsMap;
     let sourceGROWIUploadConfigs;
@@ -156,19 +155,18 @@ module.exports = (crowi: Crowi): Router => {
     }
     catch (err) {
       logger.error(err);
-      return res.apiv3Err(new ErrorV3('Failed to parse body.', 'parse_failed'), 500);
+      return res.apiv3Err(new ErrorV3('Failed to parse request body.', 'parse_failed'), 500);
     }
 
     /*
-     * unzip, parse
+     * unzip and parse
      */
     let meta;
     let innerFileStats;
     try {
-      // unzip
+      const zipFile = importService.getFile(file.filename);
       await importService.unzip(zipFile);
 
-      // eslint-disable-next-line no-unused-vars
       const { meta: parsedMeta, innerFileStats: _innerFileStats } = await growiBridgeService.parseZipFile(zipFile);
       innerFileStats = _innerFileStats;
       meta = parsedMeta;
@@ -178,46 +176,47 @@ module.exports = (crowi: Crowi): Router => {
       return res.apiv3Err(new ErrorV3('Failed to validate transfer data file.', 'validation_failed'), 500);
     }
 
+    /*
+     * validate meta.json
+     */
     try {
-      // validate with meta.json
       importService.validate(meta);
     }
     catch (err) {
       logger.error(err);
-
-      const msg = 'the version of this growi and the growi that exported the data are not met';
-      const varidationErr = 'version_incompatible';
-      return res.apiv3Err(new ErrorV3(msg, varidationErr), 500);
+      return res.apiv3Err(
+        new ErrorV3(
+          'the version of this growi and the growi that exported the data are not met',
+          'version_incompatible',
+        ),
+        500,
+      );
     }
 
-    // generate maps of ImportSettings to import
+    /*
+     * generate maps of ImportSettings to import
+     */
     const importSettingsMap = {};
     try {
       innerFileStats.forEach(({ fileName, collectionName }) => {
-        // instanciate GrowiArchiveImportOption
         const options = new GrowiArchiveImportOption(null, optionsMap[collectionName]);
 
-        // generate options
         if (collectionName === 'configs' && options.mode !== 'flushAndInsert') {
-          throw Error('`flushAndInsert` is only available as an import setting for configs collection');
+          throw new Error('`flushAndInsert` is only available as an import setting for configs collection');
         }
         if (collectionName === 'pages' && options.mode === 'insert') {
-          throw Error('`insert` is not available as an import setting for pages collection');
+          throw new Error('`insert` is not available as an import setting for pages collection');
         }
         if (collectionName === 'attachmentFiles.chunks') {
-          throw Error('`attachmentFiles.chunks` must not be transferred. Please omit it from request body `collections`.');
+          throw new Error('`attachmentFiles.chunks` must not be transferred. Please omit it from request body `collections`.');
         }
         if (collectionName === 'attachmentFiles.files') {
-          throw Error('`attachmentFiles.files` must not be transferred. Please omit it from request body `collections`.');
+          throw new Error('`attachmentFiles.files` must not be transferred. Please omit it from request body `collections`.');
         }
 
         const importSettings = importService.generateImportSettings(options.mode);
-
         importSettings.jsonFileName = fileName;
-
-        // generate overwrite params
         importSettings.overwriteParams = generateOverwriteParams(collectionName, operatorUserId, options);
-
         importSettingsMap[collectionName] = importSettings;
       });
     }
@@ -227,7 +226,7 @@ module.exports = (crowi: Crowi): Router => {
     }
 
     /*
-     * import
+     * import collections
      */
     try {
       const shouldKeepUploadConfigs = configManager.getConfig('crowi', 'app:fileUploadType') !== 'none';
