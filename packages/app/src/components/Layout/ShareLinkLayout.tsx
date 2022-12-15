@@ -6,7 +6,6 @@ import { useCurrentUser, useIsGuestAllowedToRead } from '~/stores/context';
 
 import { GrowiNavbar } from '../Navbar/GrowiNavbar';
 
-
 import { RawLayout } from './RawLayout';
 
 const PageCreateModal = dynamic(() => import('../PageCreateModal'), { ssr: false });
