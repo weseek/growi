@@ -1,6 +1,6 @@
 import { useCallback } from 'react';
 
-import { SWRResponse } from 'swr';
+import useSWR, { SWRResponse } from 'swr';
 import useSWRImmutable from 'swr/immutable';
 
 import { apiv3Get, apiv3Put } from '~/client/util/apiv3-client';
@@ -34,7 +34,7 @@ export const useSWRxGrowiThemeSetting = (): SWRResponse<IResGrowiTheme, Error> =
     return res.data;
   }, []);
 
-  const swrResponse = useSWRImmutable('/customize-setting/theme', fetcher);
+  const swrResponse = useSWR('/customize-setting/theme', fetcher);
 
   const update = async(theme: string) => {
     await apiv3Put('/customize-setting/layout', { theme });
