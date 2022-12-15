@@ -262,7 +262,7 @@ const GrowiPage: NextPage<Props> = (props: Props) => {
   useRevisionIdHackmdSynced(pageWithMeta?.data.revisionHackmdSynced);
   useRemoteRevisionId(pageWithMeta?.data.revision._id);
   usePageIdOnHackmd(pageWithMeta?.data.pageIdOnHackmd);
-  useHasDraftOnHackmd(pageWithMeta?.data.hasDraftOnHackmd);
+  useHasDraftOnHackmd(pageWithMeta?.data.hasDraftOnHackmd ?? false);
   // useIsNotCreatable(props.isForbidden || !isCreatablePage(pagePath)); // TODO: need to include props.isIdentical
   useCurrentPathname(props.currentPathname);
 
