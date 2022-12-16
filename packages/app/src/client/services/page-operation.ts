@@ -192,7 +192,7 @@ export const useUpdateStateAfterSave = () => {
       remoteRevisionBody: updatedPage.revision.body,
       remoteRevisionLastUpdateUser: updatedPage.lastUpdateUser,
       remoteRevisionLastUpdatedAt: updatedPage.updatedAt,
-      revisionIdHackmdSynced: updatedPage.revisionHackmdSynced.toString(),
+      revisionIdHackmdSynced: updatedPage.revisionHackmdSynced?.toString(),
       hasDraftOnHackmd: updatedPage.hasDraftOnHackmd,
     };
 

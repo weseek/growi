@@ -1,85 +1,82 @@
 /* eslint-disable @next/next/google-font-display */
 import React from 'react';
 
-import type { PresetThemesManifest } from '@growi/preset-themes';
-import { getManifestKeyFromTheme } from '@growi/preset-themes';
-import mongoose from 'mongoose';
+import type { ViteManifest } from '@growi/core';
+import { DefaultThemeMetadata, PresetThemesMetadatas } from '@growi/preset-themes';
 import Document, {
   DocumentContext, DocumentInitialProps,
   Html, Head, Main, NextScript,
 } from 'next/document';
 
-import { ActivatePluginService, GrowiPluginManifestEntries } from '~/client/services/activate-plugin';
 import type { CrowiRequest } from '~/interfaces/crowi-request';
-import { GrowiPlugin, GrowiPluginResourceType } from '~/interfaces/plugin';
-import type { GrowiThemes } from '~/interfaces/theme';
+import type { IPluginService, GrowiPluginResourceEntries } from '~/server/service/plugin';
 import loggerFactory from '~/utils/logger';
 
 const logger = loggerFactory('growi:page:_document');
 
-type HeadersForPresetThemesProps = {
-  theme: GrowiThemes,
-  manifest: PresetThemesManifest,
+type HeadersForThemesProps = {
+  theme: string,
+  presetThemesManifest: ViteManifest,
+  pluginThemeHref: string | undefined,
 }
-const HeadersForPresetThemes = (props: HeadersForPresetThemesProps): JSX.Element => {
-  const { theme, manifest } = props;
-
-  let themeKey = getManifestKeyFromTheme(theme);
-  if (!(themeKey in manifest)) {
-    logger.warn(`The key for '${theme} does not exist in preset-themes manifest`);
-    themeKey = getManifestKeyFromTheme('default');
-  }
-  const href = `/static/preset-themes/${manifest[themeKey].file}`; // configured by express.static
+const HeadersForThemes = (props: HeadersForThemesProps): JSX.Element => {
+  const {
+    theme, presetThemesManifest, pluginThemeHref,
+  } = props;
 
   const elements: JSX.Element[] = [];
 
-  elements.push(
-    <link rel="stylesheet" key={`link_preset-themes-${theme}`} href={href} />,
-  );
+  // when plugin theme is specified
+  if (pluginThemeHref != null) {
+    elements.push(
+      <link rel="stylesheet" key={`link_custom-themes-${theme}`} href={pluginThemeHref} />,
+    );
+  }
+  // preset theme
+  else {
+    const themeMetadata = PresetThemesMetadatas.find(p => p.name === theme);
+    const manifestKey = themeMetadata?.manifestKey ?? DefaultThemeMetadata.manifestKey;
+    if (themeMetadata == null || !(themeMetadata.manifestKey in presetThemesManifest)) {
+      logger.warn(`Use default theme because the key for '${theme} does not exist in preset-themes manifest`);
+    }
+    const href = `/static/preset-themes/${presetThemesManifest[manifestKey].file}`; // configured by express.static
+    elements.push(
+      <link rel="stylesheet" key={`link_preset-themes-${theme}`} href={href} />,
+    );
+  }
 
   return <>{elements}</>;
 };
 
 type HeadersForGrowiPluginProps = {
-  pluginManifestEntries: GrowiPluginManifestEntries;
+  pluginResourceEntries: GrowiPluginResourceEntries;
 }
 const HeadersForGrowiPlugin = (props: HeadersForGrowiPluginProps): JSX.Element => {
-  const { pluginManifestEntries } = props;
+  const { pluginResourceEntries } = props;
 
   return (
     <>
-      { pluginManifestEntries.map(([growiPlugin, manifest]) => {
-        const { types } = growiPlugin.meta;
-
-        const elements: JSX.Element[] = [];
-
-        // add script
-        if (types.includes(GrowiPluginResourceType.Script) || types.includes(GrowiPluginResourceType.Template)) {
-          elements.push(<>
-            {/* eslint-disable-next-line @next/next/no-sync-scripts */ }
-            <script type="module" key={`script_${growiPlugin.installedPath}`}
-              src={`/static/plugins/${growiPlugin.installedPath}/dist/${manifest['client-entry.tsx'].file}`} />
-          </>);
+      { pluginResourceEntries.map(([installedPath, href]) => {
+        if (href.endsWith('.js')) {
+          // eslint-disable-next-line @next/next/no-sync-scripts
+          return <script type="module" key={`script_${installedPath}`} src={href} />;
         }
-        // add link
-        if (types.includes(GrowiPluginResourceType.Script) || types.includes(GrowiPluginResourceType.Style)) {
-          elements.push(<>
-            <link rel="stylesheet" key={`link_${growiPlugin.installedPath}`}
-              href={`/static/plugins/${growiPlugin.installedPath}/dist/${manifest['client-entry.tsx'].css}`} />
-          </>);
+        if (href.endsWith('.css')) {
+          // eslint-disable-next-line @next/next/no-sync-scripts
+          return <link rel="stylesheet" key={`link_${installedPath}`} href={href} />;
         }
-
-        return elements;
+        return <></>;
       }) }
     </>
   );
 };
 
 interface GrowiDocumentProps {
-  theme: GrowiThemes,
+  theme: string,
   customCss: string;
-  presetThemesManifest: PresetThemesManifest,
-  pluginManifestEntries: GrowiPluginManifestEntries;
+  presetThemesManifest: ViteManifest,
+  pluginThemeHref: string | undefined,
+  pluginResourceEntries: GrowiPluginResourceEntries;
 }
 declare type GrowiDocumentInitialProps = DocumentInitialProps & GrowiDocumentProps;
 
@@ -88,7 +85,7 @@ class GrowiDocument extends Document<GrowiDocumentInitialProps> {
   static override async getInitialProps(ctx: DocumentContext): Promise<GrowiDocumentInitialProps> {
     const initialProps: DocumentInitialProps = await Document.getInitialProps(ctx);
     const { crowi } = ctx.req as CrowiRequest<any>;
-    const { configManager, customizeService } = crowi;
+    const { configManager, customizeService, pluginService } = crowi;
 
     const theme = configManager.getConfig('crowi', 'customize:theme');
     const customCss: string = customizeService.getCustomCss();
@@ -97,18 +94,22 @@ class GrowiDocument extends Document<GrowiDocumentInitialProps> {
     const presetThemesManifest = await import('@growi/preset-themes/dist/themes/manifest.json').then(imported => imported.default);
 
     // retrieve plugin manifests
-    const GrowiPlugin = mongoose.model<GrowiPlugin>('GrowiPlugin');
-    const growiPlugins = await GrowiPlugin.find({ isEnabled: true });
-    const pluginManifestEntries: GrowiPluginManifestEntries = await ActivatePluginService.retrievePluginManifests(growiPlugins);
+    const pluginResourceEntries = await (pluginService as IPluginService).retrieveAllPluginResourceEntries();
+    const pluginThemeHref = await (pluginService as IPluginService).retrieveThemeHref(theme);
 
     return {
-      ...initialProps, theme, customCss, presetThemesManifest, pluginManifestEntries,
+      ...initialProps,
+      theme,
+      customCss,
+      presetThemesManifest,
+      pluginThemeHref,
+      pluginResourceEntries,
     };
   }
 
   override render(): JSX.Element {
     const {
-      customCss, theme, presetThemesManifest, pluginManifestEntries,
+      customCss, theme, presetThemesManifest, pluginThemeHref, pluginResourceEntries,
     } = this.props;
 
     return (
@@ -127,8 +128,9 @@ class GrowiDocument extends Document<GrowiDocumentInitialProps> {
           <link rel='preload' href="/static/fonts/Lato-Regular-latin-ext.woff2" as="font" type="font/woff2" />
           <link rel='preload' href="/static/fonts/Lato-Bold-latin.woff2" as="font" type="font/woff2" />
           <link rel='preload' href="/static/fonts/Lato-Bold-latin-ext.woff2" as="font" type="font/woff2" />
-          <HeadersForPresetThemes theme={theme} manifest={presetThemesManifest} />
-          <HeadersForGrowiPlugin pluginManifestEntries={pluginManifestEntries} />
+          <HeadersForThemes theme={theme}
+            presetThemesManifest={presetThemesManifest} pluginThemeHref={pluginThemeHref} />
+          <HeadersForGrowiPlugin pluginResourceEntries={pluginResourceEntries} />
         </Head>
         <body>
           <Main />
