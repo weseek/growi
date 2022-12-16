@@ -94,7 +94,7 @@ const PageEditor = React.memo((): JSX.Element => {
   const { mutate: mutateIsEnabledUnsavedWarning } = useIsEnabledUnsavedWarning();
   const saveOrUpdate = useSaveOrUpdate();
 
-  const updateStateAfterSave = useUpdateStateAfterSave();
+  const updateStateAfterSave = useUpdateStateAfterSave(pageId);
 
   const currentRevisionId = currentPage?.revision?._id;
 
@@ -248,10 +248,10 @@ const PageEditor = React.memo((): JSX.Element => {
       await router.push(`/${page._id}`);
     }
     else {
-      updateStateAfterSave(page._id);
+      updateStateAfterSave?.();
     }
     mutateEditorMode(EditorMode.View);
-  }, [editorMode, save, isNotFound, mutateEditorMode, router, useUpdateStateAfterSave]);
+  }, [editorMode, save, isNotFound, mutateEditorMode, router, updateStateAfterSave]);
 
   const saveWithShortcut = useCallback(async() => {
     if (editorMode !== EditorMode.Editor) {
@@ -260,10 +260,10 @@ const PageEditor = React.memo((): JSX.Element => {
 
     const page = await save();
     if (page != null) {
-      updateStateAfterSave(page._id);
+      updateStateAfterSave?.();
       toastSuccess(t('toaster.save_succeeded'));
     }
-  }, [editorMode, save, t, useUpdateStateAfterSave]);
+  }, [editorMode, save, t, updateStateAfterSave]);
 
 
   /**
