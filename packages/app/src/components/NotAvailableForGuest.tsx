@@ -16,6 +16,10 @@ export const NotAvailableForGuest = ({ children }: NotAvailableForGuestProps): J
   const { data: isGuestUser } = useIsGuestUser();
   const isDisabled = !!isGuestUser;
 
+  if (!isGuestUser) {
+    return children;
+  }
+
   const id = `grw-not-available-for-guest-${Math.random().toString(32).substring(2)}`;
 
   return (
