@@ -88,7 +88,7 @@ export const PageEditorByHackmd = (): JSX.Element => {
   const { data: isHackmdDraftUpdatingInRealtime, mutate: mutateIsHackmdDraftUpdatingInRealtime } = useIsHackmdDraftUpdatingInRealtime();
   const { data: remoteRevisionId, mutate: mutateRemoteRevisionId } = useRemoteRevisionId();
 
-  const updateStateAfterSave = useUpdateStateAfterSave();
+  const updateStateAfterSave = useUpdateStateAfterSave(pageId);
 
   const hackmdEditorRef = useRef<HackEditorRef>(null);
 
@@ -125,7 +125,7 @@ export const PageEditorByHackmd = (): JSX.Element => {
         await router.push(`/${page._id}`);
       }
       else {
-        updateStateAfterSave(page._id);
+        updateStateAfterSave?.();
       }
       setIsInitialized(false);
       mutateEditorMode(EditorMode.View);
@@ -135,7 +135,7 @@ export const PageEditorByHackmd = (): JSX.Element => {
       toastError(error.message);
     }
   // eslint-disable-next-line max-len
-  }, [editorMode, isSlackEnabled, currentPathname, slackChannels, grant, revision, revisionIdHackmdSynced, pageTags, saveOrUpdate, pageId, currentPagePath, mutatePageData, mutateTagsInfo, isNotFound, mutateEditorMode, router, useUpdateStateAfterSave]);
+  }, [editorMode, isSlackEnabled, currentPathname, slackChannels, grant, revision, revisionIdHackmdSynced, pageTags, saveOrUpdate, pageId, currentPagePath, mutatePageData, mutateTagsInfo, isNotFound, mutateEditorMode, router, updateStateAfterSave]);
 
   // set handler to save and reload Page
   useEffect(() => {
@@ -256,7 +256,7 @@ export const PageEditorByHackmd = (): JSX.Element => {
       mutatePageData(res);
 
       // set updated data
-      updateStateAfterSave(res._id);
+      updateStateAfterSave?.();
       mutateTagsInfo();
 
       logger.debug('success to save');
@@ -267,10 +267,8 @@ export const PageEditorByHackmd = (): JSX.Element => {
       logger.error('failed to save', error);
       toastError(error.message);
     }
-  }, [
-    currentPagePath, currentPathname, isSlackEnabled, grant, slackChannels, pageId, revisionIdHackmdSynced,
-    pageTags, saveOrUpdate, mutatePageData, useUpdateStateAfterSave, mutateTagsInfo, t,
-  ]);
+  }, [currentPagePath, currentPathname, isSlackEnabled, grant, slackChannels, pageId, revisionIdHackmdSynced,
+      pageTags, saveOrUpdate, mutatePageData, updateStateAfterSave, mutateTagsInfo, t]);
 
   /**
    * onChange event of HackmdEditor handler

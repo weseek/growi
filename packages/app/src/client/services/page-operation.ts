@@ -175,7 +175,7 @@ export const useSaveOrUpdate = (): SaveOrUpdateFunction => {
   };
 };
 
-export const useUpdateStateAfterSave = (pageId: string|undefined): (() => Promise<void>) | undefined => {
+export const useUpdateStateAfterSave = (pageId: string|undefined|null): (() => Promise<void>) | undefined => {
   const { mutate: mutateCurrentPageId } = useCurrentPageId();
   const { mutate: mutateCurrentPage } = useSWRxCurrentPage();
   const { setRemoteLatestPageData } = useSetRemoteLatestPageData();
