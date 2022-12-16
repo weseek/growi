@@ -18,7 +18,7 @@ import { useIsMobile } from '~/stores/ui';
 import { IEditorMethods } from '../../interfaces/editor-methods';
 
 import AbstractEditor from './AbstractEditor';
-import Cheatsheet from './Cheatsheet';
+import { Cheatsheet } from './Cheatsheet';
 import CodeMirrorEditor from './CodeMirrorEditor';
 import pasteHelper from './PasteHelper';
 import TextAreaEditor from './TextAreaEditor';
