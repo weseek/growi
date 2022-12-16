@@ -30,7 +30,12 @@ const logger = loggerFactory('growi:SavePageControls');
 
 const { isTopPage } = pagePathUtils;
 
-export const SavePageControls = (): JSX.Element | null => {
+export type SavePageControlsProps = {
+  slackChannels: string
+}
+
+export const SavePageControls = (props: SavePageControlsProps): JSX.Element | null => {
+  const { slackChannels } = props;
   const { t } = useTranslation();
   const { data: currentPagePath } = useCurrentPagePath();
   const { data: isEditable } = useIsEditable();
@@ -45,13 +50,13 @@ export const SavePageControls = (): JSX.Element | null => {
 
   const save = useCallback(async(): Promise<void> => {
     // save
-    globalEmitter.emit('saveAndReturnToView');
-  }, []);
+    globalEmitter.emit('saveAndReturnToView', { slackChannels });
+  }, [slackChannels]);
 
   const saveAndOverwriteScopesOfDescendants = useCallback(() => {
     // save
-    globalEmitter.emit('saveAndReturnToView', { overwriteScopesOfDescendants: true });
-  }, []);
+    globalEmitter.emit('saveAndReturnToView', { overwriteScopesOfDescendants: true, slackChannels });
+  }, [slackChannels]);
 
 
   if (isEditable == null || isAclEnabled == null || grantData == null) {
