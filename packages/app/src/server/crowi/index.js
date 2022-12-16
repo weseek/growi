@@ -354,7 +354,6 @@ Crowi.prototype.setupPassport = async function() {
     this.passportService.setupStrategyById('ldap');
     this.passportService.setupStrategyById('saml');
     this.passportService.setupStrategyById('oidc');
-    this.passportService.setupStrategyById('basic');
     this.passportService.setupStrategyById('google');
     this.passportService.setupStrategyById('github');
     this.passportService.setupStrategyById('twitter');

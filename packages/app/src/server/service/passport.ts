@@ -7,7 +7,6 @@ import pRetry from 'p-retry';
 import passport from 'passport';
 import { Strategy as GitHubStrategy } from 'passport-github';
 import { Strategy as GoogleStrategy } from 'passport-google-oauth20';
-import { BasicStrategy } from 'passport-http';
 import LdapStrategy from 'passport-ldapauth';
 import { Strategy as LocalStrategy } from 'passport-local';
 import { Profile, Strategy as SamlStrategy, VerifiedCallback } from 'passport-saml';
@@ -77,11 +76,6 @@ class PassportService implements S2sMessageHandlable {
   isSamlStrategySetup = false;
 
   /**
-   * the flag whether BasicStrategy is set up successfully
-   */
-  isBasicStrategySetup = false;
-
-  /**
    * the flag whether serializer/deserializer are set up successfully
    */
   isSerializerSetup = false;
@@ -114,10 +108,6 @@ class PassportService implements S2sMessageHandlable {
     oidc: {
       setup: 'setupOidcStrategy',
       reset: 'resetOidcStrategy',
-    },
-    basic: {
-      setup: 'setupBasicStrategy',
-      reset: 'resetBasicStrategy',
     },
     google: {
       setup: 'setupGoogleStrategy',
@@ -193,7 +183,6 @@ class PassportService implements S2sMessageHandlable {
     if (this.isLdapStrategySetup) { setupStrategies.push('ldap') }
     if (this.isSamlStrategySetup) { setupStrategies.push('saml') }
     if (this.isOidcStrategySetup) { setupStrategies.push('oidc') }
-    if (this.isBasicStrategySetup) { setupStrategies.push('basic') }
     if (this.isGoogleStrategySetup) { setupStrategies.push('google') }
     if (this.isGitHubStrategySetup) { setupStrategies.push('github') }
     if (this.isTwitterStrategySetup) { setupStrategies.push('twitter') }
@@ -989,49 +978,6 @@ class PassportService implements S2sMessageHandlable {
     }
 
     return result;
-  }
-
-  /**
-   * reset BasicStrategy
-   *
-   * @memberof PassportService
-   */
-  resetBasicStrategy() {
-    logger.debug('BasicStrategy: reset');
-    passport.unuse('basic');
-    this.isBasicStrategySetup = false;
-  }
-
-  /**
-   * setup BasicStrategy
-   *
-   * @memberof PassportService
-   */
-  setupBasicStrategy() {
-
-    this.resetBasicStrategy();
-
-    const configManager = this.crowi.configManager;
-    const isBasicEnabled = configManager.getConfig('crowi', 'security:passport-basic:isEnabled');
-
-    // when disabled
-    if (!isBasicEnabled) {
-      return;
-    }
-
-    logger.debug('BasicStrategy: setting up..');
-
-    passport.use(new BasicStrategy(
-      (userId, password, done) => {
-        if (userId != null) {
-          return done(null, userId);
-        }
-        return done(null, false, { message: 'Incorrect credentials.' });
-      },
-    ));
-
-    this.isBasicStrategySetup = true;
-    logger.debug('BasicStrategy: setup is done');
   }
 
   /**

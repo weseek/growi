@@ -102,9 +102,6 @@ export const defaultCrowiConfigs: { [key: string]: any } = {
 
   'security:passport-oidc:isEnabled' : false,
 
-  'security:passport-basic:isEnabled' : false,
-  'security:passport-basic:isSameUsernameTreatedAsIdenticalUser': false,
-
   'aws:s3Bucket'          : 'growi',
   'aws:s3Region'          : 'ap-northeast-1',
   'aws:s3AccessKeyId'     : undefined,

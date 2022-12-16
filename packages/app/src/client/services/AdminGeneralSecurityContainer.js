@@ -42,7 +42,6 @@ export default class AdminGeneralSecurityContainer extends Container {
       isLdapEnabled: false,
       isSamlEnabled: false,
       isOidcEnabled: false,
-      isBasicEnabled: false,
       isGoogleEnabled: false,
       isGitHubEnabled: false,
       isTwitterEnabled: false,
@@ -82,7 +81,6 @@ export default class AdminGeneralSecurityContainer extends Container {
       isLdapEnabled: generalAuth.isLdapEnabled,
       isSamlEnabled: generalAuth.isSamlEnabled,
       isOidcEnabled: generalAuth.isOidcEnabled,
-      isBasicEnabled: generalAuth.isBasicEnabled,
       isGoogleEnabled: generalAuth.isGoogleEnabled,
       isGitHubEnabled: generalAuth.isGitHubEnabled,
       isTwitterEnabled: generalAuth.isTwitterEnabled,
@@ -316,13 +314,6 @@ export default class AdminGeneralSecurityContainer extends Container {
    */
   async switchIsOidcEnabled() {
     this.switchAuthentication('isOidcEnabled', 'oidc');
-  }
-
-  /**
-   * Switch Basic enabled
-   */
-  async switchIsBasicEnabled() {
-    this.switchAuthentication('isBasicEnabled', 'basic');
   }
 
   /**
