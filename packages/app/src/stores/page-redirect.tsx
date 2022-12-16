@@ -7,18 +7,18 @@ import { useCurrentPagePath } from './page';
 import { useStaticSWR } from './use-static-swr';
 
 type RedirectFromUtil = {
-  unlink(): Promise<void>
+  unlink(path?: string): Promise<void>
 }
 export const useRedirectFrom = (initialData?: string): SWRResponseWithUtils<RedirectFromUtil, string> => {
   const { data: currentPagePath } = useCurrentPagePath();
   const swrResponse: SWRResponse<string, Error> = useStaticSWR('redirectFrom', initialData);
   const utils = {
-    unlink: async() => {
-      if (currentPagePath == null) {
+    unlink: async(path?: string) => {
+      if (path == null || currentPagePath == null) {
         return;
       }
       try {
-        await apiPost('/pages.unlink', { path: currentPagePath });
+        await apiPost('/pages.unlink', { path: path ?? currentPagePath });
         swrResponse.mutate('');
       }
       catch (err) {
