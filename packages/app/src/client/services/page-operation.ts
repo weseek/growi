@@ -2,7 +2,10 @@ import { SubscriptionStatusType, Nullable } from '@growi/core';
 import urljoin from 'url-join';
 
 import { OptionsToSave } from '~/interfaces/page-operation';
+import { useCurrentPageId } from '~/stores/context';
 import { useIsEnabledUnsavedWarning } from '~/stores/editor';
+import { useSWRxCurrentPage } from '~/stores/page';
+import { useSetRemoteLatestPageData } from '~/stores/remote-latest-page';
 import loggerFactory from '~/utils/logger';
 
 import { toastError } from '../util/apiNotification';
@@ -169,5 +172,30 @@ export const useSaveOrUpdate = (): SaveOrUpdateFunction => {
     await mutateIsEnabledUnsavedWarning(new Promise(r => setTimeout(() => r(false), 10)), { optimisticData: () => false });
 
     return res;
+  };
+};
+
+export const useUpdateStateAfterSave = () => {
+  const { mutate: mutateCurrentPageId } = useCurrentPageId();
+  const { mutate: mutateCurrentPage } = useSWRxCurrentPage();
+  const { setRemoteLatestPageData } = useSetRemoteLatestPageData();
+
+  // update swr 'currentPageId', 'currentPage', remote states
+  return async(pageId: string) => {
+    await mutateCurrentPageId(pageId);
+    const updatedPage = await mutateCurrentPage();
+
+    if (updatedPage == null) { return }
+
+    const remoterevisionData = {
+      remoteRevisionId: updatedPage.revision._id,
+      remoteRevisionBody: updatedPage.revision.body,
+      remoteRevisionLastUpdateUser: updatedPage.lastUpdateUser,
+      remoteRevisionLastUpdatedAt: updatedPage.updatedAt,
+      revisionIdHackmdSynced: updatedPage.revisionHackmdSynced?.toString(),
+      hasDraftOnHackmd: updatedPage.hasDraftOnHackmd,
+    };
+
+    setRemoteLatestPageData(remoterevisionData);
   };
 };
