@@ -22,7 +22,6 @@ $color-nav-tabs-link-active: $gray-600 !default;
 $bordercolor-nav-tabs-active: var(--ordercolor-nav-tabs-active,var(--bordercolor-nav-tabs) var(--bordercolor-nav-tabs) var(--bgcolor-global));
 $color-btn-reload-in-sidebar: $gray-500;
 $bgcolor-keyword-highlighted: var.$grw-marker-yellow !default;
-$bgcolor-page-list-group-item-active: var(--bgcolor-page-list-group-item-active,hsl(from var(--bgcolor-global) h s calc(l 76%)));
 $color-page-list-group-item-meta: var(--color-page-list-group-item-meta,$gray-500);
 $color-search-page-list-title: var(--color-search-page-list-title,var(--color-global));
 
@@ -492,6 +491,7 @@ ul.pagination {
       }
 
       &.list-group-item-action {
+        --bgcolor-page-list-group-item-active: hsl(from var(--bgcolor-global) h s calc(l + 76%));
         &.active {
           background-color: var(--bgcolor-page-list-group-item-active);
           border-left-color: $primary;
@@ -505,8 +505,9 @@ ul.pagination {
  * GROWI Editor
  */
 .layout-root.editing {
+  --bgcolor-global-darken2: hsl(from var(--bgcolor-global) h s calc(l - 2%));
   .main {
-    background-color: hsl(from var(--bgcolor-global) h s calc(l - 2%));
+    background-color: var(--bgcolor-global-darken2);
 
     .page-editor-editor-container {
       border-right-color: $border-color-theme;
@@ -587,10 +588,11 @@ body.editing-sidebar {
     }
 
     .nav.nav-tabs {
+      --border-bottom-color: hsl(from var(--bgcolor-global) h s calc(l - 4%));
       > li > a.active {
         background: transparent;
-        border-bottom: solid 1px hsl(from var(--bgcolor-global) h s calc(l - 4%));
-        border-bottom-color: hsl(from var(--bgcolor-global) h s calc(l - 4%));
+        border-bottom: solid 1px var(--border-bottom-color);
+        border-bottom-color: var(--border-bottom-color);
       }
     }
   }
@@ -625,7 +627,8 @@ mark.rbt-highlight-text {
  * GROWI page content footer
  */
 .page-content-footer {
-  background-color: hsl(from var(--bgcolor-global) h s calc(l - 2%));
+  --bgcolor-global-darken2: hsl(from var(--bgcolor-global) h s calc(l - 2%));
+  background-color: var(--bgcolor-global-darken2);
   border-top-color: $border-color-theme;
 }
 

@@ -36,17 +36,17 @@
   --color-link: #1938ba;
   --link-color: var(--color-link);
   --link-hover-color: var(--color-link-hover);
-  --color-link-hover: hsl(from var(--color-link) h s calc(l 20%));
+  --color-link-hover: hsl(from var(--color-link) h s calc(l + 20%));
   --color-link-wiki: var(--color-link);
-  --color-link-wiki-hover:  hsl(from var(--color-link-wiki) h s calc(l 20%));
-  --color-link-nabvar: #{gray-500};
+  --color-link-wiki-hover:  hsl(from var(--color-link-wiki) h s calc(l + 20%));
+  --color-link-nabvar: #{$gray-500};
   $color-inline-code: darken($red, 15%); // optional
 
   // List Group colors
   --color-list: var(--color-global); // optional
-  // --bgcolor-list: var(--bgcolor-global); // optional
+  --bgcolor-list: var(--bgcolor-global); // optional
   // --color-list-hover: va(--color-global); // optional
-  --bgcolor-list-hover: hsl(from var(--bgcolor-global) h s calc(l 3%)); // optional
+  --bgcolor-list-hover: hsl(from var(--bgcolor-global) h s calc(l + 3%)); // optional
   // --color-list-active:white ; // optional
   // $bgcolor-list-active: $primary; // optional
 
@@ -64,12 +64,12 @@
 
   // Logo colors
   --bgcolor-logo: var(--bgcolor-navbar);
-  --fillcolor-logo-mark: lighten(desaturate(var(--bgcolor-navbar), 10%), 15%);
+  --fillcolor-logo-mark:hsl(from var(--bgcolor-navbar) h s calc(l + 15%));
 
   // Sidebar
   --bgcolor-sidebar: var(--primary);
   $bgcolor-sidebar: #122c55;
-  $bgcolor-sidebar-nav-item-active: rgba(black, 0.37); // optional
+  --bgcolor-sidebar-nav-item-active: rgba(black, 0.37); // optional
   --text-shadow-sidebar-nav-item-active: 0px 0px 10px #0099ff; // optional
   // Sidebar resize button
   $color-resize-button: $color-reversal;
@@ -80,10 +80,10 @@
   --color-sidebar-context: var(--color-global);
 
   // Sidebar list group
-  --bgcolor-sidebar-list-group: #{gray-50}; // optional
+  --bgcolor-sidebar-list-group: #{$gray-50}; // optional
 
   // Subnavigation
-  // --bgcolor-subnav: #fafafa; // optional
+  --bgcolor-subnav: hsl(from var(--bgcolor-global) h s calc(l - 3%));
 
   // Tabs
   // $color-nav-tabs-link-active: #; //optional
@@ -137,17 +137,17 @@
   $color-reversal: $gray-900;
   // $color-header: desaturate($primary, 20%);
   --color-link: #7b9ad5;
-  --color-link-hover: hsl(from var(--color-link) h s calc(l 10%));
+  --color-link-hover: hsl(from var(--color-link) h s calc(l + 10%));
   --color-link-wiki: var(--color-link);
-  --color-link-wiki-hover: hsl(from var(--color-link-wiki) h s calc(l 10%));
+  --color-link-wiki-hover: hsl(from var(--color-link-wiki) h s calc(l + 10%));
   --color-link-nabvar: #a7a7a7;
   --color-inline-code: #c7254e; // optional
 
   // List Group colors
   --color-list: var(--color-global); // optional
-  // --bgcolor-list: var(--bgcolor-global); // optional
+  --bgcolor-list: var(--bgcolor-global); // optional
   // --color-list-hover: va(--color-global); // optional
-  --bgcolor-list-hover: hsl(from var(--bgcolor-global) h s calc(l 3%)); // optional
+  --bgcolor-list-hover: hsl(from var(--bgcolor-global) h s calc(l + 3%)); // optional
   // --color-list-active:white ; // optional
   // $bgcolor-list-active: $primary; // optional
 
@@ -164,13 +164,13 @@
   $border-image-navbar: linear-gradient(to right, #44bfe3 0%, #b04aff 50%, #ff1794 100%);
 
   // Logo colors
-  $bgcolor-logo: var(--bgcolor-navbar);
+  --bgcolor-logo: var(--bgcolor-navbar);
   --fillcolor-logo-mark: #{$gray-700};
 
   // Sidebar
   --bgcolor-sidebar: #122c55;
   $bgcolor-sidebar: #122c55;
-  $bgcolor-sidebar-nav-item-active: rgba(#969494, 0.3); // optional
+  --bgcolor-sidebar-nav-item-active: rgba(#969494, 0.3); // optional
   --text-shadow-sidebar-nav-item-active: 0px 0px 10px #0099ff; // optional
   // Sidebar resize button
   $color-resize-button: white;
@@ -184,7 +184,7 @@
   --bgcolor-sidebar-list-group: #1c2a3e; // optional
 
   // Subnavigation
-  --bgcolor-subnav: hsl(from var(--bgcolor-global) h s calc(l 4%)); // optional
+  --bgcolor-subnav: hsl(from var(--bgcolor-global) h s calc(l - 3%)); // optional
 
   // Tabs
   $bordercolor-nav-tabs: $gray-700; // optional

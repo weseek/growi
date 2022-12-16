@@ -13,9 +13,11 @@
 
   &:disabled,
   &.disabled {
+    --btn-link-disabled-color: #{$btn-link-disabled-color};
     color: var(--btn-link-disabled-color);
     svg {
       fill: var(--btn-link-disabled-color);
     }
   }
 }
+

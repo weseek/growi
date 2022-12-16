@@ -24,6 +24,7 @@ $color-dropdown-link: var(--color-dropdown-link,var(--color-global));
 $color-dropdown-link-hover: var(--color-dropdown-link-hover,var(--color-global));
 $color-dropdown-link-active: var(--color-reversal);
 $bgcolor-dropdown-link-active: $primary !default;
+$bgcolor-navbar: var(--bgcolor-navbar,#{$gray-900});
 
 
 // override bootstrap variables
@@ -63,13 +64,16 @@ $dropdown-link-active-bg: var(--bgcolor-dropdown-link-active);
 }
 
 .form-control::placeholder {
-  color: hsl(from var(--bgcolor-global) h s calc(l - 20%));
+  --bgcolor-global-darken20: hsl(from var(--bgcolor-global) h s calc(l - 20%));
+  color: var(--bgcolor-global-darken20);
 }
 
 .form-control[disabled],
 .form-control[readonly] {
-  color: hsl(from var(--color-global) h s calc(l 10%));
-  background-color: hsl(from var(--bgcolor-global) h s calc(l - 5%));
+  --color-global-light-10:hsl(from var(--color-global) h s calc(l + 10%));
+  --color-global-darken-5:hsl(from var(--color-global) h s calc(l - 5%));
+  color: var(--color-global-light-10);
+  background-color: var(--color-global-darken-5);
 }
 
 /*
@@ -188,7 +192,7 @@ $dropdown-link-active-bg: var(--bgcolor-dropdown-link-active);
  * GROWI Sidebar
  */
 .grw-sidebar {
-  --bgcolor-sidebar-context: hsl(from var(--primary) h s calc(l 77%));
+  --bgcolor-sidebar-context: hsl(from var(--primary) h s calc(l + 77%));
   // List
   @include override-list-group-item(
     var(--color-list),
@@ -207,8 +211,8 @@ $dropdown-link-active-bg: var(--bgcolor-dropdown-link-active);
   .grw-pagetree {
     --bgcolor-sidebar-context-darken5: hsl(from var(--bgcolor-sidebar-context) h s calc(l - 5%));
     --bgcolor-sidebar-context-darken12: hsl(from var(--bgcolor-sidebar-context) h s calc(l - 12%));
-    --color-sidebar-context-lighten10: hsl(from var(--color-sidebar-context) h s calc(l 10%));
-    --color-sidebar-context-lighten8: hsl(from var(--color-sidebar-context) h s calc(l 8%));
+    --color-sidebar-context-lighten10: hsl(from var(--color-sidebar-context) h s calc(l + 10%));
+    --color-sidebar-context-lighten8: hsl(from var(--color-sidebar-context) h s calc(l + 8%));
     --bgcolor-sidebar-context-darken12: hsl(from var(--bgcolor-sidebar-context) h s calc(l - 15%));
     --bgcolor-sidebar-context-darken12: hsl(from var(--bgcolor-sidebar-context) h s calc(l - 24%));
     @include override-list-group-item-for-pagetree(
@@ -247,17 +251,18 @@ $dropdown-link-active-bg: var(--bgcolor-dropdown-link-active);
  * GROWI page list
  */
 .page-list {
+  --color-global-lighten10:hsl(from var(--color-global) h s calc(l + 10%));
   .page-list-ul {
     > li {
       > span.page-list-meta {
-        color: hsl(from var(--color-global) h s calc(l 10%));
+        color: var(--color-global-lighten10);
       }
     }
   }
   // List group
   .list-group-item {
     .page-list-snippet {
-      color: hsl(from var(--color-global) h s calc(l 10%));
+      color: var(--color-global-lighten10);
     }
   }
 }
@@ -266,8 +271,9 @@ $dropdown-link-active-bg: var(--bgcolor-dropdown-link-active);
  * GROWI ToC
  */
 .revision-toc-content {
+  --bgcolor-global-darken20: hsl(from var(--bgcolor-global) h s calc(l - 20%));
   ::marker {
-    color: hsl(from var(--bgcolor-global) h s calc(l - 20%));
+    color: var(--bgcolor-global-darken20);
   }
 }
 
@@ -446,5 +452,7 @@ $dropdown-link-active-bg: var(--bgcolor-dropdown-link-active);
  * skeleton
  */
 .grw-skeleton {
-  background-color: hsl(from var(--bgcolor-subnav) h s calc(l 10%));
+  --bgcolor-subnav-lighten10 : hsl(from var(--bgcolor-subnav) h s calc(l + 10%));
+  background-color: var(--bgcolor-subnav-lighten10);
 }
+

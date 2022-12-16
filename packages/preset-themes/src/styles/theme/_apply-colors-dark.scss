@@ -5,18 +5,18 @@
 
 // determine optional variables
 $color-list-active: $color-reversal !default;
-$bgcolor-list-active: $primary !default;
 $bgcolor-table: #343a40 !default;
 $border-color-table: lighten($bgcolor-table, 7.5%) !default;
 $color-table-hover: rgba(white, 0.075) !default;
 $bgcolor-table-hover: lighten($bgcolor-table, 7.5%) !default;
+$bgcolor-sidebar-list-group: var(--bgcolor-sidebar-list-group,var(--bgcolor-list));
 $color-tags: #949494 !default;
 $bgcolor-tags: $dark !default;
 $border-color-global: $gray-500 !default;
 $border-color-toc: $border-color-global !default;
 $color-dropdown-link-hover: $light !default;
+$bgcolor-dropdown-link-hover: var(--bgcolor-dropdown-link-hover);
 $color-dropdown-link-active: $light !default;
-$bgcolor-dropdown-link-active: $primary !default;
 
 // override bootstrap variables
 $text-muted: $gray-550;
@@ -31,24 +31,6 @@ $border-color: $border-color-global;
 @import './reboot-bootstrap-tables';
 @import './reboot-bootstrap-dropdown';
 
-// List Group
-/*
-  * Form
-  */
-input.form-control,
-select.form-control,
-select.custom-select,
-textarea.form-control {
-  border-color: $border-color-global;
-  &:focus {
-  }
-  // FIXME: accent color
-  // border: 1px solid darken($border, 30%);
-}
-
-.form-control[disabled],
-.form-control[readonly] {
-}
 
 .input-group > .input-group-prepend > .input-group-text {
   color: theme-color('light');
@@ -62,9 +44,6 @@ textarea.form-control {
 
 .input-group input {
   border-color: $border-color-global;
-}
-
-label.custom-control-label::before {
 }
 
 /*
@@ -194,73 +173,36 @@ ul.pagination {
 /*
  * GROWI page list
  */
-.page-list {
-  .page-list-ul {
-    > li {
-      > span.page-list-meta {
-      }
-    }
-  }
-
-  // List group
-  .list-group-item {
-    &.active {
-    }
-    .list-group-item-action:hover {
-    }
-    .page-list-snippet {
-    }
-  }
-}
 
 /*
  * GROWI ToC
  */
-.revision-toc-content {
-  ::marker {
-  }
-}
 
 /*
  * GROWI subnavigation
  */
-.grw-subnav {
-}
 
-.grw-subnav-fixed-container .grw-subnav {
-}
-
-.grw-page-editor-mode-manager {
-  .btn-outline-primary {
-    &:hover {
-      background-color: $gray-700;
-    }
-  }
-}
 
 // Search drop down
-#search-typeahead-asynctypeahead {
-  background-color: var(--bgcolor-global);
-  .table {
-    background-color: transparent;
-  }
-}
 
 /*
  * GROWI Sidebar
  */
 .grw-sidebar {
-  .grw-pagetree-triangle-btn {
-    @include mixins-buttons.button-outline-svg-icon-variant($secondary, $gray-200);
-  }
-  .btn-page-item-control {
-    @include button-outline-variant($gray-500, $gray-500, $secondary, transparent);
-    @include hover() {
+  // List
+
+  // Pagetree
+  .grw-pagetree {
+    .grw-pagetree-triangle-btn {
+      @include mixins-buttons.button-outline-svg-icon-variant($secondary, $gray-200);
     }
-    &:not(:disabled):not(.disabled):active,
-    &:not(:disabled):not(.disabled).active {
+    .btn-page-item-control {
+      @include button-outline-variant($gray-500, $gray-500, $secondary, transparent);
+      &:not(:disabled):not(.disabled):active,
+      &:not(:disabled):not(.disabled).active {
+      }
+      box-shadow: none !important;
     }
-    box-shadow: none !important;
   }
 }
 
@@ -295,32 +237,21 @@ ul.pagination {
     &::before {
       border-top-color: $secondary;
     }
-
-    &::after {
-    }
   }
   &.bs-popover-bottom .arrow {
     &::before {
       border-bottom-color: $secondary;
     }
 
-    &::after {
-    }
   }
   &.bs-popover-right .arrow {
     &::before {
       border-right-color: $secondary;
     }
-
-    &::after {
-    }
   }
   &.bs-popover-left .arrow {
     &::before {
       border-left-color: $secondary;
-    }
-
-    &::after {
     }
   }
 }
@@ -338,9 +269,6 @@ ul.pagination {
 .grw-slack-notification {
   background-color: transparent;
   $color-slack: #4b144c;
-
-  .form-control {
-  }
 
   .custom-control-label {
     &::before {
@@ -405,6 +333,7 @@ ul.pagination {
 }
 
 .page-comments-row {
+  background: var(--bgcolor-subnav);
 }
 
 /*

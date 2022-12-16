@@ -9,7 +9,7 @@ $bgcolor-list: var(--bgcolor-list,var(--bgcolor-global));
 $color-list-hover: var(--color-list-hover,var(--color-global));
 $color-list-active: $color-reversal !default;
 $bgcolor-list-active: var(--bgcolor-list-active,var(--primary));
-$bgcolor-subnav: var(--bgcolor-subnav,hsl(from var(--bgcolor-global) h s calc(l 3%)));
+$bgcolor-subnav: var(--bgcolor-subnav);
 $color-table: var(--color-table,white);
 $bgcolor-table: #343a40 !default;
 $border-color-table: lighten($bgcolor-table, 7.5%) !default;
@@ -24,7 +24,7 @@ $color-dropdown: var(--color-dropdown,var(--color-global));
 $bgcolor-dropdown: var(--bgcolor-dropdown,var(--bgcolor-global));
 $color-dropdown-link: var(--color-dropdown-link,var(--color-global));
 $color-dropdown-link-hover: $light !default;
-$bgcolor-dropdown-link-hover: var(--bgcolor-dropdown-link-hover,hsl(from var(--bgcolor-global) h s calc(l 15%)));
+$bgcolor-dropdown-link-hover: var(--bgcolor-dropdown-link-hover);
 $color-dropdown-link-active: $light !default;
 $bgcolor-dropdown-link-active: var(--bgcolor-dropdown-link-active,var(--primary));
 
@@ -66,8 +66,9 @@ input.form-control,
 select.form-control,
 select.custom-select,
 textarea.form-control {
+  --bgcolor-global-darken5: hsl(from var(--bgcolor-global) h s calc(l - 5%));
   color: var(--color-global);
-  background-color: hsl(from var(--bgcolor-global) h s calc(l - 5%));
+  background-color: var(--bgcolor-global-darken5);
   border-color: $border-color-global;
   &:focus {
     background-color: var(--bgcolor-global);
@@ -78,8 +79,10 @@ textarea.form-control {
 
 .form-control[disabled],
 .form-control[readonly] {
-  color: hsl(from var(--color-global) h s calc(l 10%));
-  background-color: hsl(from var(--bgcolor-global) h s calc(l 5%));
+  --color-global-light-10:hsl(from var(--color-global) h s calc(l + 10%));
+  --color-global-light-5:hsl(from var(--color-global) h s calc(l + 5%));
+  color: var(--color-global-light-10);
+  background-color: var(--color-global-light-5);
 }
 
 .input-group > .input-group-prepend > .input-group-text {
@@ -97,7 +100,8 @@ textarea.form-control {
 }
 
 label.custom-control-label::before {
-  background-color: hsl(from var(--bgcolor-global) h s calc(l - 5%));
+  --bgcolor-global-darken5: hsl(from var(--bgcolor-global) h s calc(l - 5%));
+  background-color: var(--bgcolor-global-darken5);
 }
 
 /*
@@ -228,10 +232,12 @@ ul.pagination {
  * GROWI page list
  */
 .page-list {
+  --color-global-darken10: hsl(from var(--color-global) h s calc(l - 10%));
+  --color-global-darken9: hsl(from var(--color-global) h s calc(l - 9%));
   .page-list-ul {
     > li {
       > span.page-list-meta {
-        color: hsl(from var(--color-global) h s calc(l - 10%));
+        color: var(--color-global-darken10);
       }
     }
   }
@@ -239,13 +245,13 @@ ul.pagination {
   // List group
   .list-group-item {
     &.active {
-      background-color: hsl(from var(--bgcolor-global) h s calc(l 9%));
+      background-color: var(--color-global-darken9);
     }
     .list-group-item-action:hover {
       background-color: var(--bgcolor-list-hover);
     }
     .page-list-snippet {
-      color: hsl(from var(--color-global) h s calc(l - 10%));
+      color: var(--color-global-darken10);
     }
   }
 }
@@ -254,8 +260,9 @@ ul.pagination {
  * GROWI ToC
  */
 .revision-toc-content {
+  --color-global-lighten30: hsl(from var(--color-global) h s calc(l + 30%));
   ::marker {
-    color: hsl(from var(--bgcolor-global) h s calc(l 30%));;
+    color: var(--color-global-lighten30);
   }
 }
 
@@ -302,12 +309,12 @@ ul.pagination {
   );
   // Pagetree
   .grw-pagetree {
-    --bgcolor-sidebar-context-lighten8: hsl(from var(--bgcolor-sidebar-context) h s calc(l 8%));
-    --bgcolor-sidebar-context-lighten15: hsl(from var(--bgcolor-sidebar-context) h s calc(l 15%));
+    --bgcolor-sidebar-context-lighten8: hsl(from var(--bgcolor-sidebar-context) h s calc(l + 8%));
+    --bgcolor-sidebar-context-lighten15: hsl(from var(--bgcolor-sidebar-context) h s calc(l + 15%));
     --color-sidebar-context-darken15: hsl(from var(--bgcolor-sidebar-context) h s calc(l - 15%));
     --color-sidebar-context-darken10: hsl(from var(--bgcolor-sidebar-context) h s calc(l - 10%));
-    --bgcolor-sidebar-context-lighten18: hsl(from var(--bgcolor-sidebar-context) h s calc(l 18%));
-    --bgcolor-sidebar-context-lighten24: hsl(from var(--bgcolor-sidebar-context) h s calc(l 24%));
+    --bgcolor-sidebar-context-lighten18: hsl(from var(--bgcolor-sidebar-context) h s calc(l + 18%));
+    --bgcolor-sidebar-context-lighten24: hsl(from var(--bgcolor-sidebar-context) h s calc(l + 24%));
     @include override-list-group-item-for-pagetree(
       var(--color-sidebar-context),
       var(--bgcolor-sidebar-context-lighten8),

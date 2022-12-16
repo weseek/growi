@@ -10,6 +10,7 @@
 }
 
 .dropdown-item {
+  --bgcolor-dropdown-link-hover: hsl(from var(--bgcolor-global) h s calc(l + 15%));
   color: $dropdown-link-color;
   svg {
     fill: $dropdown-link-color;
@@ -21,7 +22,7 @@
       fill: $dropdown-link-hover-color;
     }
 
-    @include gradient-bg($dropdown-link-hover-bg);
+    @include gradient-bg(var(--dropdown-link-hover-bg));
   }
 
   &:active,

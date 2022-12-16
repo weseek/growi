@@ -13,7 +13,6 @@ $color-tags: $secondary !default;
 $bgcolor-tags: $gray-200 !default;
 $border-color-global: $gray-300 !default;
 $border-color-toc: $border-color-global !default;
-$color-dropdown-link-active: $color-reversal !default;
 $bgcolor-dropdown-link-active: $primary !default;
 
 // override bootstrap variables
@@ -33,22 +32,11 @@ $border-color: $border-color-global;
 /*
  * Form
  */
-.form-control {
-}
 
-.form-control::placeholder {
-}
-
-.form-control[disabled],
-.form-control[readonly] {
-}
 
 /*
  * card
  */
-.card.card-disabled {
-  border-color: $gray-200;
-}
 
 /*
  * GROWI Login form
@@ -132,11 +120,6 @@ $border-color: $border-color-global;
 /*
  * GROWI subnavigation
  */
-.grw-subnav {
-}
-
-.grw-subnav-fixed-container .grw-subnav {
-}
 
 .grw-page-editor-mode-manager {
   .btn-outline-primary {
@@ -156,7 +139,6 @@ $border-color: $border-color-global;
  * GROWI Sidebar
  */
 .grw-sidebar {
-  // List
   // sidebar-centent-bg
   .grw-navigation-wrap {
     // Drop a shadow on the light theme. The dark theme makes '$ bgcolor-sidebar-context' brighter than the body.
@@ -166,10 +148,6 @@ $border-color: $border-color-global;
   .grw-pagetree {
     .grw-pagetree-triangle-btn {
       @include mixins-buttons.button-outline-svg-icon-variant($gray-400, $primary);
-    }
-  }
-  .private-legacy-pages-link {
-    &:hover {
     }
   }
 }
@@ -189,27 +167,10 @@ $border-color: $border-color-global;
 /*
  * GROWI page list
  */
-.page-list {
-  .page-list-ul {
-    > li {
-      > span.page-list-meta {
-      }
-    }
-  }
-  // List group
-  .list-group-item {
-    .page-list-snippet {
-    }
-  }
-}
 
 /*
  * GROWI ToC
  */
-.revision-toc-content {
-  ::marker {
-  }
-}
 
 /*
  * GROWI Editor
@@ -321,9 +282,6 @@ $border-color: $border-color-global;
   }
 }
 
-.page-comments-row {
-}
-
 /*
  * GROWI tags
  */
@@ -384,5 +342,4 @@ $border-color: $border-color-global;
 /*
  * skeleton
  */
-.grw-skeleton {
-}
+
