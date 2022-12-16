@@ -150,8 +150,6 @@ export const defaultCrowiConfigs: { [key: string]: any } = {
 };
 
 export const defaultMarkdownConfigs: { [key: string]: any } = {
-  'markdown:xss:isEnabledPrevention': true,
-  'markdown:xss:option': 2,
   'markdown:xss:tagWhiteList': [],
   'markdown:xss:attrWhiteList': [],
   'markdown:rehypeSanitize:isEnabledPrevention': true,
