@@ -1,30 +1,35 @@
 import React, {
   useEffect, useRef, useState, useMemo, useCallback,
 } from 'react';
-import { useTranslation } from 'react-i18next';
 
+import { Nullable } from '@growi/core';
+import { useTranslation } from 'next-i18next';
 import { debounce } from 'throttle-debounce';
 
-import loggerFactory from '~/utils/logger';
-
-import { usePageTreeTermManager, useSWRxPageAncestorsChildren, useSWRxRootPage } from '~/stores/page-listing';
-import { AncestorsChildrenResult, RootPageResult, TargetAndAncestors } from '~/interfaces/page-listing-results';
+import { toastError, toastSuccess } from '~/client/util/apiNotification';
 import { IPageHasId, IPageToDeleteWithMeta } from '~/interfaces/page';
+import { AncestorsChildrenResult, RootPageResult, TargetAndAncestors } from '~/interfaces/page-listing-results';
 import { OnDuplicatedFunction, OnDeletedFunction } from '~/interfaces/ui';
 import { SocketEventName, UpdateDescCountData, UpdateDescCountRawData } from '~/interfaces/websocket';
-import { toastError, toastSuccess } from '~/client/util/apiNotification';
+import { useIsEnabledAttachTitleHeader } from '~/stores/context';
 import {
   IPageForPageDuplicateModal, usePageDuplicateModal, usePageDeleteModal,
 } from '~/stores/modal';
-
-import { useIsEnabledAttachTitleHeader } from '~/stores/context';
+import { useCurrentPagePath, usePageInfoTermManager, useSWRxCurrentPage } from '~/stores/page';
+import {
+  usePageTreeTermManager, useSWRxPageAncestorsChildren, useSWRxRootPage, useDescendantsPageListForCurrentPathTermManager,
+} from '~/stores/page-listing';
 import { useFullTextSearchTermManager } from '~/stores/search';
-import { useDescendantsPageListForCurrentPathTermManager } from '~/stores/page';
-import { useGlobalSocket } from '~/stores/websocket';
 import { usePageTreeDescCountMap, useSidebarScrollerRef } from '~/stores/ui';
+import { useGlobalSocket } from '~/stores/websocket';
+import loggerFactory from '~/utils/logger';
 
-import { ItemNode } from './ItemNode';
+import PageTreeContentSkeleton from '../Skeleton/PageTreeContentSkeleton';
+
 import Item from './Item';
+import { ItemNode } from './ItemNode';
+
+import styles from './ItemsTree.module.scss';
 
 const logger = loggerFactory('growi:cli:ItemsTree');
 
@@ -84,7 +89,7 @@ const isSecondStageRenderingCondition = (condition: RenderingCondition|SecondSta
 type ItemsTreeProps = {
   isEnableActions: boolean
   targetPath: string
-  targetPathOrId?: string
+  targetPathOrId?: Nullable<string>
   targetAndAncestorsData?: TargetAndAncestors
 }
 
@@ -100,6 +105,7 @@ const ItemsTree = (props: ItemsTreeProps): JSX.Element => {
 
   const { data: ancestorsChildrenResult, error: error1 } = useSWRxPageAncestorsChildren(targetPath);
   const { data: rootPageResult, error: error2 } = useSWRxRootPage();
+  const { data: currentPagePath } = useCurrentPagePath();
   const { data: isEnabledAttachTitleHeader } = useIsEnabledAttachTitleHeader();
   const { open: openDuplicateModal } = usePageDuplicateModal();
   const { open: openDeleteModal } = usePageDeleteModal();
@@ -109,9 +115,11 @@ const ItemsTree = (props: ItemsTreeProps): JSX.Element => {
   const { data: ptDescCountMap, update: updatePtDescCountMap } = usePageTreeDescCountMap();
 
   // for mutation
+  const { mutate: mutateCurrentPage } = useSWRxCurrentPage();
   const { advance: advancePt } = usePageTreeTermManager();
   const { advance: advanceFts } = useFullTextSearchTermManager();
   const { advance: advanceDpl } = useDescendantsPageListForCurrentPathTermManager();
+  const { advance: advancePi } = usePageInfoTermManager();
 
   const [isInitialScrollCompleted, setIsInitialScrollCompleted] = useState(false);
 
@@ -140,13 +148,17 @@ const ItemsTree = (props: ItemsTreeProps): JSX.Element => {
 
   }, [socket, ptDescCountMap, updatePtDescCountMap]);
 
-  const onRenamed = () => {
+  const onRenamed = useCallback((fromPath: string | undefined, toPath: string) => {
     advancePt();
     advanceFts();
     advanceDpl();
-  };
 
-  const onClickDuplicateMenuItem = (pageToDuplicate: IPageForPageDuplicateModal) => {
+    if (currentPagePath === fromPath || currentPagePath === toPath) {
+      mutateCurrentPage();
+    }
+  }, [advanceDpl, advanceFts, advancePt, currentPagePath, mutateCurrentPage]);
+
+  const onClickDuplicateMenuItem = useCallback((pageToDuplicate: IPageForPageDuplicateModal) => {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const duplicatedHandler: OnDuplicatedFunction = (fromPath, toPath) => {
       toastSuccess(t('duplicated_pages', { fromPath }));
@@ -157,9 +169,9 @@ const ItemsTree = (props: ItemsTreeProps): JSX.Element => {
     };
 
     openDuplicateModal(pageToDuplicate, { onDuplicated: duplicatedHandler });
-  };
+  }, [advanceDpl, advanceFts, advancePt, openDuplicateModal, t]);
 
-  const onClickDeleteMenuItem = (pageToDelete: IPageToDeleteWithMeta) => {
+  const onClickDeleteMenuItem = useCallback((pageToDelete: IPageToDeleteWithMeta) => {
     const onDeletedHandler: OnDeletedFunction = (pathOrPathsToDelete, isRecursively, isCompletely) => {
       if (typeof pathOrPathsToDelete !== 'string') {
         return;
@@ -177,10 +189,15 @@ const ItemsTree = (props: ItemsTreeProps): JSX.Element => {
       advancePt();
       advanceFts();
       advanceDpl();
+      advancePi();
+
+      if (currentPagePath === pathOrPathsToDelete) {
+        mutateCurrentPage();
+      }
     };
 
     openDeleteModal([pageToDelete], { onDeleted: onDeletedHandler });
-  };
+  }, [advanceDpl, advanceFts, advancePi, advancePt, currentPagePath, mutateCurrentPage, openDeleteModal, t]);
 
   // ***************************  Scroll on init ***************************
   const scrollOnInit = useCallback(() => {
@@ -257,7 +274,7 @@ const ItemsTree = (props: ItemsTreeProps): JSX.Element => {
 
   if (initialItemNode != null) {
     return (
-      <ul className="grw-pagetree list-group p-3" ref={rootElemRef}>
+      <ul className={`grw-pagetree ${styles['grw-pagetree']} list-group py-3`} ref={rootElemRef}>
         <Item
           key={initialItemNode.page.path}
           targetPathOrId={targetPathOrId}
@@ -273,7 +290,7 @@ const ItemsTree = (props: ItemsTreeProps): JSX.Element => {
     );
   }
 
-  return <></>;
+  return <PageTreeContentSkeleton />;
 };
 
 export default ItemsTree;

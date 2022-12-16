@@ -1,7 +1,8 @@
 import React, { FC, useCallback } from 'react';
-import { useTranslation } from 'react-i18next';
 
-import { IUserGroupHasId } from '~/interfaces/user';
+import { useTranslation } from 'next-i18next';
+
+import type { IUserGroupHasId } from '~/interfaces/user';
 
 type Props = {
   selectableUserGroups?: IUserGroupHasId[]
@@ -9,7 +10,7 @@ type Props = {
   onClickCreateUserGroupButton?(): void
 };
 
-const UserGroupDropdown: FC<Props> = (props: Props) => {
+export const UserGroupDropdown: FC<Props> = (props: Props) => {
   const { t } = useTranslation();
 
   const { selectableUserGroups, onClickAddExistingUserGroupButton, onClickCreateUserGroupButton } = props;
@@ -66,5 +67,3 @@ const UserGroupDropdown: FC<Props> = (props: Props) => {
     </>
   );
 };
-
-export default UserGroupDropdown;

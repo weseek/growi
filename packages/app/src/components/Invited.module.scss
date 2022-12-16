@@ -1,0 +1,14 @@
+.invited,
+.nologin.error {
+  .main .row {
+    @media (min-width: 510px) {
+      .offset-sm-4 {
+        margin-left: calc(50% - 240px);
+      }
+
+      .col-sm-4 {
+        width: 480px;
+      }
+    }
+  }
+}

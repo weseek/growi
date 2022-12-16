@@ -79,6 +79,22 @@ export function addTrailingSlash(path) {
  * @returns {string}
  * @memberof pathUtils
  */
+export function removeHeadingSlash(path) {
+  if (path === '/') {
+    return path;
+  }
+
+  return hasHeadingSlash(path)
+    ? path.substring(1)
+    : path;
+}
+
+/**
+ *
+ * @param {string} path
+ * @returns {string}
+ * @memberof pathUtils
+ */
 export function removeTrailingSlash(path) {
   if (path === '/') {
     return path;
@@ -116,4 +132,20 @@ export function normalizePath(path) {
  */
 export function attachTitleHeader(path) {
   return `# ${path}`;
+}
+
+/**
+ * If the pagePath is top page path, eliminate the pageId from the url path.
+ *
+ * @param {string} path
+ * @param {string} id
+ * @returns {string}
+ * @memberof pathUtils
+ */
+export function returnPathForURL(path, id) {
+  if (path === '/') {
+    return path;
+  }
+
+  return addHeadingSlash(id);
 }

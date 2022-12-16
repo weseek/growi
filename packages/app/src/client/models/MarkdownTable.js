@@ -1,15 +1,12 @@
+import csvToMarkdown from 'csv-to-markdown-table';
 import markdownTable from 'markdown-table';
 import stringWidth from 'string-width';
-import csvToMarkdown from 'csv-to-markdown-table';
 
 // https://github.com/markdown-it/markdown-it/blob/d29f421927e93e88daf75f22089a3e732e195bd2/lib/rules_block/table.js#L83
 // https://regex101.com/r/7BN2fR/7
 const tableAlignmentLineRE = /^[-:|][-:|\s]*$/;
 const tableAlignmentLineNegRE = /^[^-:]*$/; // it is need to check to ignore empty row which is matched above RE
 const linePartOfTableRE = /^\|[^\r\n]*|[^\r\n]*\|$|([^|\r\n]+\|[^|\r\n]*)+/; // own idea
-
-// set up DOMParser
-const domParser = new (window.DOMParser)();
 
 const defaultOptions = { stringLength: stringWidth };
 
@@ -67,6 +64,9 @@ export default class MarkdownTable {
    * The error message is a innerHTML, so must not assign it into element.innerHTML because it can lead to Mutation-based XSS
    */
   static fromHTMLTableTag(str) {
+    // set up DOMParser
+    const domParser = new (window.DOMParser)();
+
     // use DOMParser to prevent DOM based XSS (https://developer.mozilla.org/en-US/docs/Web/API/DOMParser)
     const dom = domParser.parseFromString(str, 'application/xml');
 

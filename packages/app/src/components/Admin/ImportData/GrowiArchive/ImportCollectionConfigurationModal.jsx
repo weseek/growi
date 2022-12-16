@@ -2,8 +2,8 @@
 
 import React from 'react';
 
+import { useTranslation } from 'next-i18next';
 import PropTypes from 'prop-types';
-import { useTranslation } from 'react-i18next';
 import {
   Modal,
   ModalHeader,
@@ -233,7 +233,7 @@ ImportCollectionConfigurationModal.propTypes = {
 };
 
 const ImportCollectionConfigurationModalWrapperFc = (props) => {
-  const { t } = useTranslation();
+  const { t } = useTranslation('admin');
 
   return <ImportCollectionConfigurationModal t={t} {...props} />;
 };

@@ -1,40 +1,55 @@
 import React, {
-  FC, useState, useCallback, useRef,
+  useState, useCallback, useRef, useEffect,
 } from 'react';
 
 import assert from 'assert';
 
-import { useTranslation } from 'react-i18next';
+import { pathUtils } from '@growi/core';
+import { useTranslation } from 'next-i18next';
+import { useRouter } from 'next/router';
 
 import { IFocusable } from '~/client/interfaces/focusable';
-import AppContainer from '~/client/services/AppContainer';
 import { IPageWithSearchMeta } from '~/interfaces/search';
-import { useCurrentPagePath } from '~/stores/context';
+import {
+  useIsSearchScopeChildrenAsDefault, useIsSearchServiceReachable,
+} from '~/stores/context';
+import { useCurrentPagePath } from '~/stores/page';
 import { useGlobalSearchFormRef } from '~/stores/ui';
 
 import SearchForm from '../SearchForm';
-import { withUnstatedContainers } from '../UnstatedUtils';
+
+import styles from './GlobalSearch.module.scss';
 
 
-type Props = {
-  appContainer: AppContainer,
-
+export type GlobalSearchProps = {
   dropup?: boolean,
 }
 
-const GlobalSearch: FC<Props> = (props: Props) => {
-  const { appContainer, dropup } = props;
-  const { t } = useTranslation();
+export const GlobalSearch = (props: GlobalSearchProps): JSX.Element => {
+  const { t } = useTranslation('commons');
+
+  const { dropup } = props;
+
+  const { returnPathForURL } = pathUtils;
+
+  const router = useRouter();
 
   const globalSearchFormRef = useRef<IFocusable>(null);
 
   useGlobalSearchFormRef(globalSearchFormRef);
 
+  const { data: isSearchServiceReachable } = useIsSearchServiceReachable();
+  const { data: isSearchScopeChildrenAsDefault } = useIsSearchScopeChildrenAsDefault();
+  const { data: currentPagePath } = useCurrentPagePath();
+
   const [text, setText] = useState('');
-  const [isScopeChildren, setScopeChildren] = useState<boolean>(appContainer.getConfig().isSearchScopeChildrenAsDefault);
+  const [isScopeChildren, setScopeChildren] = useState<boolean|undefined>(isSearchScopeChildrenAsDefault ?? false);
   const [isFocused, setFocused] = useState<boolean>(false);
 
-  const { data: currentPagePath } = useCurrentPagePath();
+  useEffect(() => {
+    setScopeChildren(isSearchScopeChildrenAsDefault);
+  }, [isSearchScopeChildrenAsDefault]);
+
 
   const gotoPage = useCallback((data: IPageWithSearchMeta[]) => {
     assert(data.length > 0);
@@ -43,9 +58,9 @@ const GlobalSearch: FC<Props> = (props: Props) => {
 
     // navigate to page
     if (page != null) {
-      window.location.href = `/${page._id}`;
+      router.push(returnPathForURL(page.path, page._id));
     }
-  }, []);
+  }, [returnPathForURL, router]);
 
   const search = useCallback(() => {
     const url = new URL(window.location.href);
@@ -58,19 +73,22 @@ const GlobalSearch: FC<Props> = (props: Props) => {
     }
     url.searchParams.append('q', q);
 
-    window.location.href = url.href;
-  }, [currentPagePath, isScopeChildren, text]);
+    router.push(url.href);
+  }, [currentPagePath, isScopeChildren, router, text]);
 
   const scopeLabel = isScopeChildren
     ? t('header_search_box.label.This tree')
     : t('header_search_box.label.All pages');
 
-  const isSearchServiceReachable = appContainer.getConfig().isSearchServiceReachable;
-
   const isIndicatorShown = !isFocused && (text.length === 0);
 
+
+  if (isScopeChildren == null || isSearchServiceReachable == null) {
+    return <></>;
+  }
+
   return (
-    <div className={`form-group mb-0 d-print-none ${isSearchServiceReachable ? '' : 'has-error'}`}>
+    <div className={`grw-global-search ${styles['grw-global-search']} form-group mb-0 d-print-none ${isSearchServiceReachable ? '' : 'has-error'}`}>
       <div className="input-group flex-nowrap">
         <div className={`input-group-prepend ${dropup ? 'dropup' : ''}`}>
           <button
@@ -108,7 +126,7 @@ const GlobalSearch: FC<Props> = (props: Props) => {
         </div>
         <SearchForm
           ref={globalSearchFormRef}
-          isSearchServiceReachable={isSearchServiceReachable}
+          isSearchServiceReachable={isSearchServiceReachable || false}
           dropup={dropup}
           onChange={gotoPage}
           onBlur={() => setFocused(false)}
@@ -125,10 +143,3 @@ const GlobalSearch: FC<Props> = (props: Props) => {
     </div>
   );
 };
-
-/**
- * Wrapper component for using unstated
- */
-const GlobalSearchWrapper = withUnstatedContainers(GlobalSearch, [AppContainer]);
-
-export default GlobalSearchWrapper;

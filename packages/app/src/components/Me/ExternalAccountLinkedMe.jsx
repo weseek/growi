@@ -1,10 +1,9 @@
 import React, { Fragment } from 'react';
 
+import { useTranslation } from 'next-i18next';
 import PropTypes from 'prop-types';
-import { useTranslation } from 'react-i18next';
 
 
-import AppContainer from '~/client/services/AppContainer';
 import { useSWRxPersonalExternalAccounts } from '~/stores/personal-settings';
 
 import { withUnstatedContainers } from '../UnstatedUtils';
@@ -115,7 +114,6 @@ class ExternalAccountLinkedMe extends React.Component {
 
 ExternalAccountLinkedMe.propTypes = {
   t: PropTypes.func.isRequired, // i18next
-  appContainer: PropTypes.instanceOf(AppContainer).isRequired,
   personalExternalAccounts: PropTypes.arrayOf(PropTypes.object),
 };
 
@@ -126,9 +124,4 @@ const ExternalAccountLinkedMeWrapperFC = (props) => {
   return <ExternalAccountLinkedMe t={t} personalExternalAccounts={personalExternalAccountsData} {...props} />;
 };
 
-/**
- * Wrapper component for using unstated
- */
-const ExternalAccountLinkedMeWrapper = withUnstatedContainers(ExternalAccountLinkedMeWrapperFC, [AppContainer]);
-
-export default ExternalAccountLinkedMeWrapper;
+export default ExternalAccountLinkedMeWrapperFC;

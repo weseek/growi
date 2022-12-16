@@ -1,6 +1,6 @@
 import React, { useCallback } from 'react';
 
-import { useTranslation } from 'react-i18next';
+import { useTranslation } from 'next-i18next';
 
 import AdminAppContainer from '~/client/services/AdminAppContainer';
 import { toastSuccess, toastError } from '~/client/util/apiNotification';
@@ -23,7 +23,7 @@ const PluginSetting = (props: Props) => {
   const submitHandler = useCallback(async() => {
     try {
       await adminAppContainer.updatePluginSettingHandler();
-      toastSuccess(t('toaster.update_successed', { target: t('admin:app_setting.plugin_settings') }));
+      toastSuccess(t('toaster.update_successed', { target: t('admin:app_setting.plugin_settings'), ns: 'commons' }));
     }
     catch (err) {
       toastError(err);

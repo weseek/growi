@@ -1,10 +1,10 @@
-import React, { useCallback, useMemo } from 'react';
+import React, { useCallback } from 'react';
 
-import { useTranslation } from 'react-i18next';
+import type { IUserHasId } from '@growi/core';
+import { useTranslation } from 'next-i18next';
 
 import AdminUsersContainer from '~/client/services/AdminUsersContainer';
 import { toastSuccess, toastError } from '~/client/util/apiNotification';
-import { IUserHasId } from '~/interfaces/user';
 import { useCurrentUser } from '~/stores/context';
 
 import { withUnstatedContainers } from '../../UnstatedUtils';
@@ -20,6 +20,7 @@ const RemoveAdminAlert = React.memo((): JSX.Element => {
     </div>
   );
 });
+RemoveAdminAlert.displayName = 'RemoveAdminAlert';
 
 
 type Props = {
@@ -28,7 +29,7 @@ type Props = {
 }
 
 const RemoveAdminMenuItem = (props: Props): JSX.Element => {
-  const { t } = useTranslation();
+  const { t } = useTranslation('admin');
 
   const { adminUsersContainer, user } = props;
 
@@ -48,7 +49,7 @@ const RemoveAdminMenuItem = (props: Props): JSX.Element => {
   return user.username !== currentUser?.username
     ? (
       <button className="dropdown-item" type="button" onClick={clickRemoveAdminBtnHandler}>
-        <i className="icon-fw icon-user-unfollow"></i> {t('admin:user_management.user_table.remove_admin_access')}
+        <i className="icon-fw icon-user-unfollow"></i> {t('user_management.user_table.remove_admin_access')}
       </button>
     )
     : <RemoveAdminAlert />;
@@ -57,6 +58,7 @@ const RemoveAdminMenuItem = (props: Props): JSX.Element => {
 /**
 * Wrapper component for using unstated
 */
-const RemoveAdminMenuItemWrapper = withUnstatedContainers(RemoveAdminMenuItem, [AdminUsersContainer]);
+// eslint-disable-next-line max-len
+const RemoveAdminMenuItemWrapper: React.ForwardRefExoticComponent<Pick<any, string | number | symbol> & React.RefAttributes<any>> = withUnstatedContainers(RemoveAdminMenuItem, [AdminUsersContainer]);
 
 export default RemoveAdminMenuItemWrapper;

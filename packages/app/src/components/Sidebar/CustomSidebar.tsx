@@ -1,74 +1,69 @@
 import React, { FC } from 'react';
 
-import AppContainer from '~/client/services/AppContainer';
+import { useTranslation } from 'next-i18next';
+import Link from 'next/link';
+
 import { IRevision } from '~/interfaces/revision';
 import { useSWRxPageByPath } from '~/stores/page';
-import { useCustomSidebarRenderer } from '~/stores/renderer';
+import { useCustomSidebarOptions } from '~/stores/renderer';
 import loggerFactory from '~/utils/logger';
 
 import RevisionRenderer from '../Page/RevisionRenderer';
+
+import { SidebarHeaderReloadButton } from './SidebarHeaderReloadButton';
+import CustomSidebarContentSkeleton from './Skeleton/CustomSidebarContentSkeleton';
+
+import styles from './CustomSidebar.module.scss';
+
 
 const logger = loggerFactory('growi:cli:CustomSidebar');
 
 
 const SidebarNotFound = () => {
   return (
-    <div className="grw-sidebar-content-header h5 text-center p-3">
-      <a href="/Sidebar#edit">
-        <i className="icon-magic-wand"></i> Create <strong>/Sidebar</strong> page
-      </a>
+    <div className="grw-sidebar-content-header h5 text-center py-3">
+      <Link href="/Sidebar#edit">
+        <a><i className="icon-magic-wand"></i> Create <strong>/Sidebar</strong> page</a>
+      </Link>
     </div>
   );
 };
 
-type Props = {
-  appContainer: AppContainer,
-};
-
-const CustomSidebar: FC<Props> = () => {
-
-  const { data: renderer } = useCustomSidebarRenderer();
+const CustomSidebar: FC = () => {
+  const { t } = useTranslation();
+  const { data: rendererOptions } = useCustomSidebarOptions();
 
   const { data: page, error, mutate } = useSWRxPageByPath('/Sidebar');
 
-  if (renderer == null) {
+  if (rendererOptions == null) {
     return <></>;
   }
 
   const isLoading = page === undefined && error == null;
   const markdown = (page?.revision as IRevision | undefined)?.body;
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const RevisionRendererAny: any = RevisionRenderer;
-
   return (
-    <>
-      <div className="grw-sidebar-content-header p-3 d-flex">
+    <div className="px-3">
+      <div className="grw-sidebar-content-header py-3 d-flex">
         <h3 className="mb-0">
-          Custom Sidebar
-          <a className="h6 ml-2" href="/Sidebar"><i className="icon-pencil"></i></a>
+          {t('CustomSidebar')}
+          <Link href="/Sidebar"><a className="h6 ml-2"><i className="icon-pencil"></i></a></Link>
         </h3>
-        <button type="button" className="btn btn-sm ml-auto grw-btn-reload" onClick={() => mutate()}>
-          <i className="icon icon-reload"></i>
-        </button>
+        <SidebarHeaderReloadButton onClick={() => mutate()} />
       </div>
 
       {
         isLoading && (
-          <div className="text-muted text-center">
-            <i className="fa fa-2x fa-spinner fa-pulse mr-1"></i>
-          </div>
+          <CustomSidebarContentSkeleton />
         )
       }
 
       {
         (!isLoading && markdown != null) && (
-          <div className="p-3">
-            <RevisionRendererAny
-              growiRenderer={renderer}
+          <div className={`py-3 grw-custom-sidebar-content ${styles['grw-custom-sidebar-content']}`}>
+            <RevisionRenderer
+              rendererOptions={rendererOptions}
               markdown={markdown}
-              pagePath="/Sidebar"
-              additionalClassName="grw-custom-sidebar-content"
             />
           </div>
         )
@@ -79,7 +74,7 @@ const CustomSidebar: FC<Props> = () => {
           <SidebarNotFound />
         )
       }
-    </>
+    </div>
   );
 };
 

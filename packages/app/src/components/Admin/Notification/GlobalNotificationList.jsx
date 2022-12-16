@@ -1,11 +1,10 @@
 import React from 'react';
 
+import { useTranslation } from 'next-i18next';
 import PropTypes from 'prop-types';
-import { useTranslation } from 'react-i18next';
 import urljoin from 'url-join';
 
 import AdminNotificationContainer from '~/client/services/AdminNotificationContainer';
-import AppContainer from '~/client/services/AppContainer';
 import { toastSuccess, toastError } from '~/client/util/apiNotification';
 import { apiv3Put } from '~/client/util/apiv3-client';
 import loggerFactory from '~/utils/logger';
@@ -13,7 +12,7 @@ import loggerFactory from '~/utils/logger';
 import { withUnstatedContainers } from '../../UnstatedUtils';
 
 import NotificationDeleteModal from './NotificationDeleteModal';
-import NotificationTypeIcon from './NotificationTypeIcon';
+import { NotificationTypeIcon } from './NotificationTypeIcon';
 
 
 const logger = loggerFactory('growi:GolobalNotificationList');
@@ -40,7 +39,7 @@ class GlobalNotificationList extends React.Component {
       await apiv3Put(`/notification-setting/global-notification/${notification._id}/enabled`, {
         isEnabled,
       });
-      toastSuccess(t('notification_setting.toggle_notification', { path: notification.triggerPath }));
+      toastSuccess(t('notification_settings.toggle_notification', { path: notification.triggerPath }));
       await this.props.adminNotificationContainer.retrieveNotificationData();
     }
     catch (err) {
@@ -62,7 +61,7 @@ class GlobalNotificationList extends React.Component {
 
     try {
       const deletedNotificaton = await adminNotificationContainer.deleteGlobalNotificationPattern(this.state.notificationForConfiguration._id);
-      toastSuccess(t('notification_setting.delete_notification_pattern', { path: deletedNotificaton.triggerPath }));
+      toastSuccess(t('notification_settings.delete_notification_pattern', { path: deletedNotificaton.triggerPath }));
     }
     catch (err) {
       toastError(err);
@@ -176,17 +175,16 @@ class GlobalNotificationList extends React.Component {
 
 GlobalNotificationList.propTypes = {
   t: PropTypes.func.isRequired, // i18next
-  appContainer: PropTypes.instanceOf(AppContainer).isRequired,
   adminNotificationContainer: PropTypes.instanceOf(AdminNotificationContainer).isRequired,
 
 };
 
 const GlobalNotificationListWrapperFC = (props) => {
-  const { t } = useTranslation();
+  const { t } = useTranslation('admin');
 
   return <GlobalNotificationList t={t} {...props} />;
 };
 
-const GlobalNotificationListWrapper = withUnstatedContainers(GlobalNotificationListWrapperFC, [AppContainer, AdminNotificationContainer]);
+const GlobalNotificationListWrapper = withUnstatedContainers(GlobalNotificationListWrapperFC, [AdminNotificationContainer]);
 
 export default GlobalNotificationListWrapper;

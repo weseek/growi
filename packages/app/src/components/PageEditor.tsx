@@ -2,152 +2,257 @@ import React, {
   useCallback, useEffect, useMemo, useRef, useState,
 } from 'react';
 
+
 import EventEmitter from 'events';
 
-import { envUtils } from '@growi/core';
+import {
+  IPageHasId, PageGrant, pathUtils,
+} from '@growi/core';
 import detectIndent from 'detect-indent';
+import { useTranslation } from 'next-i18next';
+import { useRouter } from 'next/router';
 import { throttle, debounce } from 'throttle-debounce';
 
-import AppContainer from '~/client/services/AppContainer';
-import EditorContainer from '~/client/services/EditorContainer';
-import PageContainer from '~/client/services/PageContainer';
+import { useUpdateStateAfterSave, useSaveOrUpdate } from '~/client/services/page-operation';
 import { apiGet, apiPostForm } from '~/client/util/apiv1-client';
-import { getOptionsToSave } from '~/client/util/editor';
+import { toastError, toastSuccess } from '~/client/util/toastr';
+import { IEditorMethods } from '~/interfaces/editor-methods';
+import { OptionsToSave } from '~/interfaces/page-operation';
+import { SocketEventName } from '~/interfaces/websocket';
 import {
-  useIsEditable, useIsIndentSizeForced, useCurrentPagePath, useCurrentPageId,
+  useCurrentPathname, useCurrentPageId, useIsEnabledAttachTitleHeader, useTemplateBodyData,
+  useIsEditable, useIsUploadableFile, useIsUploadableImage, useIsNotFound, useIsIndentSizeForced,
 } from '~/stores/context';
 import {
   useCurrentIndentSize, useSWRxSlackChannels, useIsSlackEnabled, useIsTextlintEnabled, usePageTagsForEditors,
+  useIsEnabledUnsavedWarning,
+  useIsConflict,
+  useEditingMarkdown,
 } from '~/stores/editor';
-import { usePreviewRenderer } from '~/stores/renderer';
+import { useConflictDiffModal } from '~/stores/modal';
+import { useCurrentPagePath, useSWRxCurrentPage, useSWRxTagsInfo } from '~/stores/page';
+import { useSetRemoteLatestPageData } from '~/stores/remote-latest-page';
+import { usePreviewOptions } from '~/stores/renderer';
 import {
   EditorMode,
-  useEditorMode, useIsMobile, useSelectedGrant, useSelectedGrantGroupId, useSelectedGrantGroupName,
+  useEditorMode, useSelectedGrant,
 } from '~/stores/ui';
+import { useGlobalSocket } from '~/stores/websocket';
+import { registerGrowiFacade } from '~/utils/growi-facade';
 import loggerFactory from '~/utils/logger';
 
 
+// import { ConflictDiffModal } from './PageEditor/ConflictDiffModal';
 import { ConflictDiffModal } from './PageEditor/ConflictDiffModal';
 import Editor from './PageEditor/Editor';
 import Preview from './PageEditor/Preview';
 import scrollSyncHelper from './PageEditor/ScrollSyncHelper';
-import { withUnstatedContainers } from './UnstatedUtils';
 
-
-// TODO: remove this when omitting unstated is completed
 
 const logger = loggerFactory('growi:PageEditor');
 
 
-declare const globalEmitter: EventEmitter;
-
-
-type EditorRef = {
-  setValue: (markdown: string) => void,
-  setCaretLine: (line: number) => void,
-  insertText: (text: string) => void,
-  forceToFocus: () => void,
-  terminateUploadingState: () => void,
+declare global {
+  // eslint-disable-next-line vars-on-top, no-var
+  var globalEmitter: EventEmitter;
 }
 
-type Props = {
-  appContainer: AppContainer,
-  pageContainer: PageContainer,
-  editorContainer: EditorContainer,
-
-  isEditable: boolean,
-
-  editorMode: string,
-  isSlackEnabled: boolean,
-  slackChannels: string,
-  isMobile?: boolean,
-
-  grant: number,
-  grantGroupId?: string,
-  grantGroupName?: string,
-  mutateGrant: (grant: number) => void,
-
-  isTextlintEnabled?: boolean,
-  isIndentSizeForced?: boolean,
-  indentSize?: number,
-  mutateCurrentIndentSize: (indent: number) => void,
-};
 
 // for scrolling
 let lastScrolledDateWithCursor: Date | null = null;
 let isOriginOfScrollSyncEditor = false;
 let isOriginOfScrollSyncPreview = false;
 
-const PageEditor = (props: Props): JSX.Element => {
-  const {
-    appContainer, pageContainer, editorContainer,
-  } = props;
+const PageEditor = React.memo((): JSX.Element => {
 
-  const { data: isEditable } = useIsEditable();
-  const { data: editorMode } = useEditorMode();
-  const { data: isMobile } = useIsMobile();
-  const { data: isSlackEnabled } = useIsSlackEnabled();
+  const { t } = useTranslation();
+  const router = useRouter();
+
+  const { data: isNotFound } = useIsNotFound();
   const { data: pageId } = useCurrentPageId();
-  const { data: pageTags } = usePageTagsForEditors(pageId);
   const { data: currentPagePath } = useCurrentPagePath();
-  const { data: slackChannelsData } = useSWRxSlackChannels(currentPagePath);
-  const { data: grant, mutate: mutateGrant } = useSelectedGrant();
-  const { data: grantGroupId } = useSelectedGrantGroupId();
-  const { data: grantGroupName } = useSelectedGrantGroupName();
+  const { data: currentPathname } = useCurrentPathname();
+  const { data: currentPage, mutate: mutateCurrentPage } = useSWRxCurrentPage();
+  const { data: grantData, mutate: mutateGrant } = useSelectedGrant();
+  const { data: pageTags, sync: syncTagsInfoForEditor } = usePageTagsForEditors(pageId);
+  const { mutate: mutateTagsInfo } = useSWRxTagsInfo(pageId);
+  const { data: editingMarkdown, mutate: mutateEditingMarkdown } = useEditingMarkdown();
+  const { data: isEnabledAttachTitleHeader } = useIsEnabledAttachTitleHeader();
+  const { data: templateBodyData } = useTemplateBodyData();
+  const { data: isEditable } = useIsEditable();
+  const { data: editorMode, mutate: mutateEditorMode } = useEditorMode();
+  const { data: isSlackEnabled } = useIsSlackEnabled();
   const { data: isTextlintEnabled } = useIsTextlintEnabled();
   const { data: isIndentSizeForced } = useIsIndentSizeForced();
-  const { data: indentSize, mutate: mutateCurrentIndentSize } = useCurrentIndentSize();
+  const { data: currentIndentSize, mutate: mutateCurrentIndentSize } = useCurrentIndentSize();
+  const { data: isUploadableFile } = useIsUploadableFile();
+  const { data: isUploadableImage } = useIsUploadableImage();
+  const { data: conflictDiffModalStatus, close: closeConflictDiffModal } = useConflictDiffModal();
 
-  const { data: growiRenderer } = usePreviewRenderer();
+  const { data: rendererOptions, mutate: mutateRendererOptions } = usePreviewOptions();
+  const { mutate: mutateIsEnabledUnsavedWarning } = useIsEnabledUnsavedWarning();
+  const saveOrUpdate = useSaveOrUpdate();
 
-  // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-  const [markdown, setMarkdown] = useState<string>(pageContainer.state.markdown!);
+  const updateStateAfterSave = useUpdateStateAfterSave();
+
+  const currentRevisionId = currentPage?.revision?._id;
+
+  const initialValue = useMemo(() => {
+    if (!isNotFound) {
+      return editingMarkdown ?? '';
+    }
+
+    let initialValue = '';
+    if (isEnabledAttachTitleHeader && currentPathname != null) {
+      initialValue += `${pathUtils.attachTitleHeader(currentPathname)}\n`;
+    }
+    if (templateBodyData != null) {
+      initialValue += `${templateBodyData}\n`;
+    }
+    return initialValue;
+
+  }, [isNotFound, currentPathname, editingMarkdown, isEnabledAttachTitleHeader, templateBodyData]);
+
+  const markdownToSave = useRef<string>(initialValue);
+  const [markdownToPreview, setMarkdownToPreview] = useState<string>(initialValue);
+
+  const { data: socket } = useGlobalSocket();
+
+  const { mutate: mutateIsConflict } = useIsConflict();
 
 
-  const editorRef = useRef<EditorRef>(null);
+  const editorRef = useRef<IEditorMethods>(null);
   const previewRef = useRef<HTMLDivElement>(null);
 
-  const setMarkdownWithDebounce = useMemo(() => debounce(50, throttle(100, value => setMarkdown(value))), []);
-  const saveDraftWithDebounce = useMemo(() => debounce(800, () => {
-    editorContainer.saveDraft(pageContainer.state.path, markdown);
-  }), [editorContainer, markdown, pageContainer.state.path]);
+  const checkIsConflict = useCallback((data) => {
+    const { s2cMessagePageUpdated } = data;
 
-  const markdownChangedHandler = useCallback((value: string): void => {
-    setMarkdownWithDebounce(value);
-    // only when the first time to edit
-    if (!pageContainer.state.revisionId) {
-      saveDraftWithDebounce();
-    }
-  }, [pageContainer.state.revisionId, saveDraftWithDebounce, setMarkdownWithDebounce]);
+    const isConflict = markdownToPreview !== s2cMessagePageUpdated.revisionBody;
 
+    mutateIsConflict(isConflict);
 
-  const saveWithShortcut = useCallback(async() => {
-    if (grant == null) {
+  }, [markdownToPreview, mutateIsConflict]);
+
+  useEffect(() => {
+    markdownToSave.current = initialValue;
+    setMarkdownToPreview(initialValue);
+  }, [initialValue]);
+
+  useEffect(() => {
+    if (socket == null) { return }
+
+    socket.on(SocketEventName.PageUpdated, checkIsConflict);
+
+    return () => {
+      socket.off(SocketEventName.PageUpdated, checkIsConflict);
+    };
+
+  }, [socket, checkIsConflict]);
+
+  const optionsToSave = useMemo((): OptionsToSave | undefined => {
+    if (grantData == null) {
       return;
     }
+    const optionsToSave = {
+      isSlackEnabled: isSlackEnabled ?? false,
+      slackChannels: '', // set in save method by opts in SavePageControlls.tsx
+      grant: grantData.grant,
+      pageTags: pageTags ?? [],
+      grantUserGroupId: grantData.grantedGroup?.id,
+      grantUserGroupName: grantData.grantedGroup?.name,
+    };
+    return optionsToSave;
+  }, [grantData, isSlackEnabled, pageTags]);
 
-    const slackChannels = slackChannelsData ? slackChannelsData.toString() : '';
+  // register to facade
+  useEffect(() => {
+    // for markdownRenderer
+    registerGrowiFacade({
+      markdownRenderer: {
+        optionsMutators: {
+          previewOptionsMutator: mutateRendererOptions,
+        },
+      },
+    });
+  }, [mutateRendererOptions]);
 
-    const optionsToSave = getOptionsToSave(isSlackEnabled ?? false, slackChannels, grant, grantGroupId, grantGroupName, pageTags || []);
+  const setMarkdownWithDebounce = useMemo(() => debounce(100, throttle(150, (value: string, isClean: boolean) => {
+    markdownToSave.current = value;
+    setMarkdownToPreview(value);
+
+    // Displays an unsaved warning alert
+    mutateIsEnabledUnsavedWarning(!isClean);
+  })), [mutateIsEnabledUnsavedWarning]);
+
+
+  const markdownChangedHandler = useCallback((value: string, isClean: boolean): void => {
+    setMarkdownWithDebounce(value, isClean);
+  }, [setMarkdownWithDebounce]);
+
+  const save = useCallback(async(opts?: {slackChannels: string, overwriteScopesOfDescendants?: boolean}): Promise<IPageHasId | null> => {
+    if (currentPathname == null || optionsToSave == null) {
+      logger.error('Some materials to save are invalid', { grantData, isSlackEnabled, currentPathname });
+      throw new Error('Some materials to save are invalid');
+    }
+
+    const options = Object.assign(optionsToSave, opts);
 
     try {
-      // disable unsaved warning
-      editorContainer.disableUnsavedWarning();
+      const { page } = await saveOrUpdate(
+        markdownToSave.current,
+        { pageId, path: currentPagePath || currentPathname, revisionId: currentRevisionId },
+        options,
+      );
 
-      // eslint-disable-next-line no-unused-vars
-      const { tags } = await pageContainer.save(markdown, editorMode, optionsToSave);
-      logger.debug('success to save');
-
-      pageContainer.showSuccessToastr();
-
-      // update state of EditorContainer
-      editorContainer.setState({ tags });
+      return page;
     }
     catch (error) {
       logger.error('failed to save', error);
-      pageContainer.showErrorToastr(error);
+      toastError(error);
+      if (error.code === 'conflict') {
+        // pageContainer.setState({
+        //   remoteRevisionId: error.data.revisionId,
+        //   remoteRevisionBody: error.data.revisionBody,
+        //   remoteRevisionUpdateAt: error.data.createdAt,
+        //   lastUpdateUser: error.data.user,
+        // });
+      }
+      return null;
     }
-  }, [editorContainer, editorMode, grant, grantGroupId, grantGroupName, isSlackEnabled, slackChannelsData, markdown, pageContainer, pageTags]);
+
+  // eslint-disable-next-line max-len
+  }, [currentPathname, optionsToSave, grantData, isSlackEnabled, saveOrUpdate, pageId, currentPagePath, currentRevisionId]);
+
+  const saveAndReturnToViewHandler = useCallback(async(opts: {slackChannels: string, overwriteScopesOfDescendants?: boolean}) => {
+    if (editorMode !== EditorMode.Editor) {
+      return;
+    }
+
+    const page = await save(opts);
+    if (page == null) {
+      return;
+    }
+
+    if (isNotFound) {
+      await router.push(`/${page._id}`);
+    }
+    else {
+      updateStateAfterSave(page._id);
+    }
+    mutateEditorMode(EditorMode.View);
+  }, [editorMode, save, isNotFound, mutateEditorMode, router, updateStateAfterSave]);
+
+  const saveWithShortcut = useCallback(async() => {
+    if (editorMode !== EditorMode.Editor) {
+      return;
+    }
+
+    const page = await save();
+    if (page != null) {
+      updateStateAfterSave(page._id);
+      toastSuccess(t('toaster.save_succeeded'));
+    }
+  }, [editorMode, save, t, updateStateAfterSave]);
 
 
   /**
@@ -170,10 +275,10 @@ const PageEditor = (props: Props): JSX.Element => {
       }
 
       const formData = new FormData();
-      const { pageId, path } = pageContainer.state;
+      // const { pageId, path } = pageContainer.state;
       formData.append('file', file);
-      if (path != null) {
-        formData.append('path', path);
+      if (currentPagePath != null) {
+        formData.append('path', currentPagePath);
       }
       if (pageId != null) {
         formData.append('page_id', pageId);
@@ -194,18 +299,18 @@ const PageEditor = (props: Props): JSX.Element => {
       // when if created newly
       if (res.pageCreated) {
         logger.info('Page is created', res.page._id);
-        pageContainer.updateStateAfterSave(res.page, res.tags, res.revision, editorMode);
+        globalEmitter.emit('resetInitializedHackMdStatus');
         mutateGrant(res.page.grant);
       }
     }
     catch (e) {
       logger.error('failed to upload', e);
-      pageContainer.showErrorToastr(e);
+      toastError(e);
     }
     finally {
       editorRef.current.terminateUploadingState();
     }
-  }, [editorMode, mutateGrant, pageContainer]);
+  }, [currentPagePath, mutateGrant, pageId]);
 
 
   const scrollPreviewByEditorLine = useCallback((line: number) => {
@@ -260,7 +365,9 @@ const PageEditor = (props: Props): JSX.Element => {
 
     // turn on the flag
     isOriginOfScrollSyncEditor = true;
-    scrollSyncHelper.scrollPreviewToRevealOverflowing(previewRef.current, line);
+    if (previewRef.current != null) {
+      scrollSyncHelper.scrollPreviewToRevealOverflowing(previewRef.current, line);
+    }
   }, []);
   const scrollPreviewByCursorMovingWithThrottle = useMemo(() => throttle(20, scrollPreviewByCursorMoving), [scrollPreviewByCursorMoving]);
 
@@ -298,16 +405,33 @@ const PageEditor = (props: Props): JSX.Element => {
   }, []);
   const scrollEditorByPreviewScrollWithThrottle = useMemo(() => throttle(20, scrollEditorByPreviewScroll), [scrollEditorByPreviewScroll]);
 
+  const afterResolvedHandler = useCallback(async() => {
+    // get page data from db
+    const pageData = await mutateCurrentPage();
 
-  // register dummy instance to get markdown
+    // update tag
+    await mutateTagsInfo(); // get from DB
+    syncTagsInfoForEditor(); // sync global state for client
+
+    // clear isConflict
+    mutateIsConflict(false);
+
+    // set resolved markdown in editing markdown
+    const markdown = pageData?.revision.body ?? '';
+    mutateEditingMarkdown(markdown);
+
+  }, [mutateCurrentPage, mutateEditingMarkdown, mutateIsConflict, mutateTagsInfo, syncTagsInfoForEditor]);
+
+
+  // initialize
   useEffect(() => {
-    const pageEditorInstance = {
-      getMarkdown: () => {
-        return markdown;
-      },
-    };
-    appContainer.registerComponentInstance('PageEditor', pageEditorInstance);
-  }, [appContainer, markdown]);
+    if (initialValue == null) {
+      return;
+    }
+    markdownToSave.current = initialValue;
+    setMarkdownToPreview(initialValue);
+    mutateIsEnabledUnsavedWarning(false);
+  }, [initialValue, mutateIsEnabledUnsavedWarning]);
 
   // initial caret line
   useEffect(() => {
@@ -333,6 +457,15 @@ const PageEditor = (props: Props): JSX.Element => {
     };
   }, []);
 
+  // set handler to save and return to View
+  useEffect(() => {
+    globalEmitter.on('saveAndReturnToView', saveAndReturnToViewHandler);
+
+    return function cleanup() {
+      globalEmitter.removeListener('saveAndReturnToView', saveAndReturnToViewHandler);
+    };
+  }, [saveAndReturnToViewHandler]);
+
   // set handler to focus
   useEffect(() => {
     if (editorRef.current != null && editorMode === EditorMode.Editor) {
@@ -340,104 +473,68 @@ const PageEditor = (props: Props): JSX.Element => {
     }
   }, [editorMode]);
 
-  // set handler to update editor value
-  useEffect(() => {
-    const handler = (markdown) => {
-      if (editorRef.current != null) {
-        editorRef.current.setValue(markdown);
-      }
-    };
-    globalEmitter.on('updateEditorValue', handler);
-
-    return function cleanup() {
-      globalEmitter.removeListener('updateEditorValue', handler);
-    };
-  }, []);
-
-  // Displays an alert if there is a difference with pageContainer's markdown
-  useEffect(() => {
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    if (pageContainer.state.markdown! !== markdown) {
-      editorContainer.enableUnsavedWarning();
-    }
-  }, [editorContainer, markdown, pageContainer.state.markdown]);
-
   // Detect indent size from contents (only when users are allowed to change it)
   useEffect(() => {
-    const currentPageMarkdown = pageContainer.state.markdown;
-    if (!isIndentSizeForced && currentPageMarkdown != null) {
-      const detectedIndent = detectIndent(currentPageMarkdown);
+    // do nothing if the indent size fixed
+    if (isIndentSizeForced == null || isIndentSizeForced) {
+      return;
+    }
+
+    // detect from markdown
+    if (initialValue != null) {
+      const detectedIndent = detectIndent(initialValue);
       if (detectedIndent.type === 'space' && new Set([2, 4]).has(detectedIndent.amount)) {
         mutateCurrentIndentSize(detectedIndent.amount);
       }
     }
-  }, [isIndentSizeForced, mutateCurrentIndentSize, pageContainer.state.markdown]);
-
+  }, [initialValue, isIndentSizeForced, mutateCurrentIndentSize]);
 
   if (!isEditable) {
     return <></>;
   }
 
-  if (growiRenderer == null) {
+  if (rendererOptions == null) {
     return <></>;
   }
 
-  const config = props.appContainer.getConfig();
-  const isUploadable = config.upload.image || config.upload.file;
-  const isUploadableFile = config.upload.file;
-  const isMathJaxEnabled = !!config.env.MATHJAX;
-
-  const noCdn = envUtils.toBoolean(config.env.NO_CDN);
-
-  // TODO: omit no-explicit-any -- 2022.06.02 Yuki Takei
-  // It is impossible to avoid the error
-  //  "Property '...' does not exist on type 'IntrinsicAttributes & RefAttributes<any>'"
-  //  because Editor is a class component and must be wrapped with React.forwardRef
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const EditorAny = Editor as any;
+  const isUploadable = isUploadableImage || isUploadableFile;
 
   return (
     <div className="d-flex flex-wrap">
       <div className="page-editor-editor-container flex-grow-1 flex-basis-0 mw-0">
-        <EditorAny
+        <Editor
           ref={editorRef}
-          value={markdown}
-          noCdn={noCdn}
-          isMobile={isMobile}
+          value={initialValue}
           isUploadable={isUploadable}
           isUploadableFile={isUploadableFile}
           isTextlintEnabled={isTextlintEnabled}
-          indentSize={indentSize}
+          indentSize={currentIndentSize}
           onScroll={editorScrolledHandler}
           onScrollCursorIntoView={editorScrollCursorIntoViewHandler}
           onChange={markdownChangedHandler}
           onUpload={uploadHandler}
-          onSave={() => saveWithShortcut()}
+          onSave={saveWithShortcut}
         />
       </div>
       <div className="d-none d-lg-block page-editor-preview-container flex-grow-1 flex-basis-0 mw-0">
         <Preview
-          markdown={markdown}
-          growiRenderer={growiRenderer}
           ref={previewRef}
-          isMathJaxEnabled={isMathJaxEnabled}
-          renderMathJaxOnInit={false}
+          rendererOptions={rendererOptions}
+          markdown={markdownToPreview}
+          pagePath={currentPagePath}
           onScroll={offset => scrollEditorByPreviewScrollWithThrottle(offset)}
         />
       </div>
       <ConflictDiffModal
-        isOpen={pageContainer.state.isConflictDiffModalOpen}
-        onClose={() => pageContainer.setState({ isConflictDiffModalOpen: false })}
-        pageContainer={pageContainer}
-        markdownOnEdit={markdown}
+        isOpen={conflictDiffModalStatus?.isOpened}
+        onClose={() => closeConflictDiffModal()}
+        markdownOnEdit={markdownToPreview}
+        optionsToSave={optionsToSave}
+        afterResolvedHandler={afterResolvedHandler}
       />
     </div>
   );
-};
+});
+PageEditor.displayName = 'PageEditor';
 
-/**
-   * Wrapper component for using unstated
-   */
-const PageEditorWrapper = withUnstatedContainers(PageEditor, [AppContainer, PageContainer, EditorContainer]);
-
-export default PageEditorWrapper;
+export default PageEditor;

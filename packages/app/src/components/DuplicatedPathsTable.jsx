@@ -1,8 +1,9 @@
 import React from 'react';
+
+import { pagePathUtils } from '@growi/core';
+import { useTranslation } from 'next-i18next';
 import PropTypes from 'prop-types';
 
-import { useTranslation } from 'react-i18next';
-import { pagePathUtils } from '@growi/core';
 
 const { convertToNewAffiliationPath } = pagePathUtils;
 

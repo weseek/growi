@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { useTranslation } from 'react-i18next';
+import { useTranslation } from 'next-i18next';
 
 import { IPageInfoForEntity, IPageWithMeta } from '~/interfaces/page';
 import { OnDeletedFunction, OnPutBackedFunction } from '~/interfaces/ui';
@@ -9,6 +9,7 @@ import { ForceHideMenuItems } from '../Common/Dropdown/PageItemControl';
 
 import { PageListItemL } from './PageListItemL';
 
+import styles from './PageList.module.scss';
 
 type Props<M extends IPageInfoForEntity> = {
   pages: IPageWithMeta<M>[],
@@ -54,7 +55,7 @@ const PageList = (props: Props<IPageInfoForEntity>): JSX.Element => {
   }
 
   return (
-    <div className="page-list">
+    <div className={`page-list ${styles['page-list']}`}>
       <ul className="page-list-ul list-group list-group-flush">
         {pageList}
       </ul>

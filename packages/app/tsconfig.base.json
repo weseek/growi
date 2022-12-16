@@ -1,9 +1,10 @@
 {
   "extends": "../../tsconfig.base.json",
   "compilerOptions": {
-    "jsx": "react"
+    "resolveJsonModule": true,
+    "jsx": "preserve",
+    "incremental": true
   },
-  "include": [
-    "src/**/*"
-  ],
+  "include": ["next-env.d.ts", "config/**/*", "src/**/*"],
+  "exclude": ["node_modules"]
 }

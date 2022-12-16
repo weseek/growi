@@ -1,6 +1,7 @@
-import React, { Fragment, useMemo, useState } from 'react';
+import React, { useMemo, useState } from 'react';
 
-import { useTranslation } from 'react-i18next';
+import { useTranslation } from 'next-i18next';
+import Link from 'next/link';
 import { TabContent, TabPane } from 'reactstrap';
 
 import CustomNav from '../../CustomNavigation/CustomNav';
@@ -18,7 +19,7 @@ import ShareLinkSetting from './ShareLinkSetting';
 import TwitterSecuritySetting from './TwitterSecuritySetting';
 
 const SecurityManagementContents = () => {
-  const { t } = useTranslation();
+  const { t } = useTranslation('admin');
 
   const [activeTab, setActiveTab] = useState('passport_local');
   const [activeComponents, setActiveComponents] = useState(new Set(['passport_local']));
@@ -93,16 +94,18 @@ const SecurityManagementContents = () => {
 
       {/* XSS configuration link */}
       <div className="mb-5">
-        <h2 className="border-bottom">{t('security_setting.xss_prevent_setting')}</h2>
+        <h2 className="border-bottom">{t('security_settings.xss_prevent_setting')}</h2>
         <div className="text-center">
-          <a style={{ fontSize: 'large' }} href="/admin/markdown/#preventXSS">
-            <i className="fa-fw icon-login"></i> {t('security_setting.xss_prevent_setting_link')}
-          </a>
+          <Link href="/admin/markdown/#preventXSS" prefetch={false}>
+            <a style={{ fontSize: 'large' }}>
+              <i className="fa-fw icon-login"></i> {t('security_settings.xss_prevent_setting_link')}
+            </a>
+          </Link>
         </div>
       </div>
 
       <div className="auth-mechanism-configurations">
-        <h2 className="border-bottom">{t('security_setting.Authentication mechanism settings')}</h2>
+        <h2 className="border-bottom">{t('security_settings.Authentication mechanism settings')}</h2>
         <CustomNav
           activeTab={activeTab}
           navTabMapping={navTabMapping}

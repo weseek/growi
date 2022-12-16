@@ -7,8 +7,9 @@
 
 import 'tsconfig-paths/register';
 
-import { initMongooseGlobalSettings, getMongoUri, mongoOptions } from '@growi/core';
 import mongoose from 'mongoose';
+
+import { initMongooseGlobalSettings, getMongoUri, mongoOptions } from '~/server/util/mongoose-utils';
 
 // check env
 if (process.env.NODE_ENV !== 'test') {

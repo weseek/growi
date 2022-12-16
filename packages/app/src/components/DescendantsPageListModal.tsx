@@ -1,7 +1,8 @@
 
 import React, { useState, useMemo } from 'react';
 
-import { useTranslation } from 'react-i18next';
+import { useTranslation } from 'next-i18next';
+import dynamic from 'next/dynamic';
 import {
   Modal, ModalHeader, ModalBody,
 } from 'reactstrap';
@@ -11,17 +12,24 @@ import { useDescendantsPageListModal } from '~/stores/modal';
 
 import { CustomNavTab } from './CustomNavigation/CustomNav';
 import CustomTabContent from './CustomNavigation/CustomTabContent';
-import { DescendantsPageList } from './DescendantsPageList';
+import { DescendantsPageListProps } from './DescendantsPageList';
 import ExpandOrContractButton from './ExpandOrContractButton';
 import PageListIcon from './Icons/PageListIcon';
 import TimeLineIcon from './Icons/TimeLineIcon';
-import PageTimeline from './PageTimeline';
 
+import styles from './DescendantsPageListModal.module.scss';
 
-type Props = {
-}
+const DescendantsPageList = (props: DescendantsPageListProps): JSX.Element => {
+  const DescendantsPageList = dynamic<DescendantsPageListProps>(() => import('./DescendantsPageList').then(mod => mod.DescendantsPageList), { ssr: false });
+  return <DescendantsPageList {...props}/>;
+};
 
-export const DescendantsPageListModal = (props: Props): JSX.Element => {
+const PageTimeline = (): JSX.Element => {
+  const PageTimeline = dynamic(() => import('./PageTimeline').then(mod => mod.PageTimeline), { ssr: false });
+  return <PageTimeline />;
+};
+
+export const DescendantsPageListModal = (): JSX.Element => {
   const { t } = useTranslation();
 
   const [activeTab, setActiveTab] = useState('pagelist');
@@ -47,7 +55,12 @@ export const DescendantsPageListModal = (props: Props): JSX.Element => {
       },
       timeline: {
         Icon: TimeLineIcon,
-        Content: () => <PageTimeline />,
+        Content: () => {
+          if (status == null || !status.isOpened) {
+            return <></>;
+          }
+          return <PageTimeline />;
+        },
         i18n: t('Timeline View'),
         index: 1,
         isLinkEnabled: () => !isSharedUser,
@@ -81,7 +94,7 @@ export const DescendantsPageListModal = (props: Props): JSX.Element => {
       isOpen={isOpened}
       toggle={close}
       data-testid="page-accessories-modal"
-      className={`grw-page-accessories-modal ${isWindowExpanded ? 'grw-modal-expanded' : ''} `}
+      className={`grw-page-accessories-modal ${styles['grw-page-accessories-modal']} ${isWindowExpanded ? 'grw-modal-expanded' : ''} `}
     >
       <ModalHeader className="p-0" toggle={close} close={buttons}>
         <CustomNavTab
