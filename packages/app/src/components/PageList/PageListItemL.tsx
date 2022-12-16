@@ -16,6 +16,7 @@ import urljoin from 'url-join';
 
 import { ISelectable } from '~/client/interfaces/selectable-all';
 import { bookmark, unbookmark } from '~/client/services/page-operation';
+import { toastError } from '~/client/util/apiNotification';
 import {
   IPageInfoAll, isIPageInfoForListing, isIPageInfoForEntity, IPageWithMeta, IPageInfoForListing,
 } from '~/interfaces/page';
@@ -27,6 +28,7 @@ import LinkedPagePath from '~/models/linked-page-path';
 import {
   usePageRenameModal, usePageDuplicateModal, usePageDeleteModal, usePutBackPageModal,
 } from '~/stores/modal';
+import { useRedirectFrom } from '~/stores/page-redirect';
 import { useIsDeviceSmallerThanLg } from '~/stores/ui';
 
 import { useSWRxPageInfo } from '../../stores/page';
@@ -85,6 +87,7 @@ const PageListItemLSubstance: ForwardRefRenderFunction<ISelectable, Props> = (pr
   const { open: openRenameModal } = usePageRenameModal();
   const { open: openDeleteModal } = usePageDeleteModal();
   const { open: openPutBackPageModal } = usePutBackPageModal();
+  const { unlink } = useRedirectFrom();
 
   const shouldFetch = isSelected && (pageData != null || pageMeta != null);
   const { data: pageInfo } = useSWRxPageInfo(shouldFetch ? pageData?._id : null);
@@ -148,10 +151,25 @@ const PageListItemLSubstance: ForwardRefRenderFunction<ISelectable, Props> = (pr
     openDeleteModal([pageToDelete], { onDeleted: onPageDeleted });
   }, [pageData, openDeleteModal, onPageDeleted]);
 
-  const revertMenuItemClickHandler = useCallback(() => {
+  const revertMenuItemClickHandler = useCallback(async() => {
     const { _id: pageId, path } = pageData;
-    openPutBackPageModal({ pageId, path }, { onPutBacked: onPagePutBacked });
-  }, [onPagePutBacked, openPutBackPageModal, pageData]);
+
+    const putBackedHandler = async(path) => {
+      try {
+        await unlink(path);
+        console.log('unlink', path);
+      }
+      catch (err) {
+        toastError(err);
+      }
+
+      if (onPagePutBacked != null) {
+        onPagePutBacked(path);
+      }
+    };
+    console.log('aaa');
+    openPutBackPageModal({ pageId, path }, { onPutBacked: putBackedHandler });
+  }, [onPagePutBacked, openPutBackPageModal, pageData, unlink]);
 
   const styleListGroupItem = (!isDeviceSmallerThanLg && onClickItem != null) ? 'list-group-item-action' : '';
   // background color of list item changes when class "active" exists under 'list-group-item'

@@ -14,11 +14,14 @@ export const useRedirectFrom = (initialData?: string): SWRResponseWithUtils<Redi
   const swrResponse: SWRResponse<string, Error> = useStaticSWR('redirectFrom', initialData);
   const utils = {
     unlink: async(path?: string) => {
-      if (path == null || currentPagePath == null) {
+      console.log({ path, currentPagePath });
+      if (currentPagePath == null) {
         return;
       }
+
+      const pathHoge = currentPagePath === '/trash' ? `/trash/${path}` : currentPagePath;
       try {
-        await apiPost('/pages.unlink', { path: path ?? currentPagePath });
+        await apiPost('/pages.unlink', { path: pathHoge });
         swrResponse.mutate('');
       }
       catch (err) {
