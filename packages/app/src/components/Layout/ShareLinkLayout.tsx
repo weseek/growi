@@ -30,7 +30,7 @@ export const ShareLinkLayout = ({
 
   return (
     <RawLayout title={title} className={myClassName}>
-      <GrowiNavbar />
+      <GrowiNavbar isGlobalSearchHidden={true} />
 
       <div className="page-wrapper d-flex d-print-block">
         <div className="flex-fill mw-0" style={{ position: 'relative' }}>
