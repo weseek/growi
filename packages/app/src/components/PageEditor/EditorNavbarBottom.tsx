@@ -4,6 +4,7 @@ import dynamic from 'next/dynamic';
 import { Collapse, Button } from 'reactstrap';
 
 
+import { SavePageControlsProps } from '~/components/SavePageControls';
 import { useIsSlackConfigured } from '~/stores/context';
 import { useSWRxSlackChannels, useIsSlackEnabled } from '~/stores/editor';
 import { useCurrentPagePath } from '~/stores/page';
@@ -12,7 +13,7 @@ import {
 } from '~/stores/ui';
 
 
-const SavePageControls = dynamic(() => import('~/components/SavePageControls').then(mod => mod.SavePageControls), { ssr: false });
+const SavePageControls = dynamic<SavePageControlsProps>(() => import('~/components/SavePageControls').then(mod => mod.SavePageControls), { ssr: false });
 const SlackLogo = dynamic(() => import('~/components/SlackLogo').then(mod => mod.SlackLogo), { ssr: false });
 const SlackNotification = dynamic(() => import('~/components/SlackNotification').then(mod => mod.SlackNotification), { ssr: false });
 const OptionsSelector = dynamic(() => import('~/components/PageEditor/OptionsSelector').then(mod => mod.OptionsSelector), { ssr: false });
@@ -129,7 +130,7 @@ const EditorNavbarBottom = (): JSX.Element => {
               )}
             </div>
           ))}
-          <SavePageControls />
+          <SavePageControls slackChannels={slackChannelsStr} />
           { isCollapsedOptionsSelectorEnabled && renderExpandButton() }
         </form>
       </div>
