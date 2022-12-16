@@ -27,7 +27,7 @@ export default class AdminMarkDownContainer extends Container {
       pageBreakSeparator: 1,
       pageBreakCustomSeparator: '',
       isEnabledXss: false,
-      xssOption: 1,
+      xssOption: '',
       tagWhiteList: '',
       attrWhiteList: '',
     };
@@ -86,9 +86,6 @@ export default class AdminMarkDownContainer extends Container {
    * Switch enableXss
    */
   switchEnableXss() {
-    if (this.state.isEnabledXss) {
-      this.setState({ xssOption: null });
-    }
     this.setState({ isEnabledXss: !this.state.isEnabledXss });
   }
 
