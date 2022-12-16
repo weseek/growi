@@ -156,8 +156,7 @@ const PageListItemLSubstance: ForwardRefRenderFunction<ISelectable, Props> = (pr
 
     const putBackedHandler = async(path) => {
       try {
-        await unlink(path);
-        console.log('unlink', path);
+        await unlink(`/trash${path}`);
       }
       catch (err) {
         toastError(err);
@@ -167,7 +166,6 @@ const PageListItemLSubstance: ForwardRefRenderFunction<ISelectable, Props> = (pr
         onPagePutBacked(path);
       }
     };
-    console.log('aaa');
     openPutBackPageModal({ pageId, path }, { onPutBacked: putBackedHandler });
   }, [onPagePutBacked, openPutBackPageModal, pageData, unlink]);
 
