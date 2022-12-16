@@ -12,29 +12,31 @@ class Cheatsheet extends React.Component {
   render() {
     const { t } = this.props;
 
-    // const match = /language-(\w+)(:?.+)?/.exec(className || '');
-    // const lang = match && match[1] ? match[1] : '';
-
-    // const codeStr = `# ${t('sandbox.header_x', { index: '1' })}
-    // ## ${t('sandbox.header_x', { index: '2' })}
-    // ### ${t('sandbox.header_x', { index: '3' })}`;
-
     const codeStr = `# ${t('sandbox.header_x', { index: '1' })}\n## ${t('sandbox.header_x', { index: '2' })}\n### ${t('sandbox.header_x', { index: '3' })}`;
+    const codeBlockStr = 'text\n\ntext';
+    const lineBlockStr = 'text\ntext';
+    const typographyStr = `*${t('sandbox.italics')}*\n**${t('sandbox.bold')}**\n***${t('sandbox.italic_bold')}***\n~~${t('sandbox.strikethrough')}~~`;
+    const linkStr = '[Google](https://www.google.co.jp/)\n[/Page1/ChildPage1]';
+    const codeHighlightStr = '```javascript:index.js\nwriteCode();\n```';
 
-    const codeList = `- ${t('sandbox.unordered_list_x', { index: '1' })}
+    const codeListStr = `- ${t('sandbox.unordered_list_x', { index: '1' })}
     - ${t('sandbox.unordered_list_x', { index: '1.1' })}
-    - ${t('sandbox.unordered_list_x', { index: '2' })}`;
+    - ${t('sandbox.unordered_list_x', { index: '1.2' })}`;
 
-    const codeBlock = 'text\n\ntext';
-    const lineBlock = 'text\ntext';
-    const typography = `*${t('sandbox.italics')}*\n**${t('sandbox.bold')}**\n
-    ***${t('sandbox.italic_bold')}***\n
-    ~~${t('sandbox.strikethrough')}~~ ${t('sandbox.strikethrough')}`;
+    const orderedListStr = `1. ${t('sandbox.ordered_list_x', { index: '1' })}\n1. ${t('sandbox.ordered_list_x', { index: '2' })}`;
+    const taskStr = `- [ ] ${t('sandbox.task')}(${t('sandbox.task_unchecked')})\n- [x] ${t('sandbox.task')}(${t('sandbox.task_checked')})`;
+    const quoteStr = `> ${t('sandbox.quote1')}\n> ${t('sandbox.quote2')}`;
+
+    const nestedQuoteStr = `>> ${t('sandbox.quote_nested')}\n>>> ${t('sandbox.quote_nested')}\n>>>> ${t('sandbox.quote_nested')}`;
+
+    const tableStr = '|Left       |    Mid    |      Right|\n|:----------|:---------:|----------:|\n|col 1      |   col 2   |      col 3|\n|col 1      |   col 2   |      col 3|';
+    const imageStr = '![ex](https://example.com/image.png)';
 
 
     return (
       <div className="row small">
         <div className="col-sm-6">
+
           {/* Header */}
           <h4>{t('sandbox.header')}</h4>
           <PrismAsyncLight
@@ -43,7 +45,7 @@ class Cheatsheet extends React.Component {
             style={oneDark}
             language={'text'}
           >
-            {codeStr}
+            {String(codeStr).replace(/\n$/, '')}
           </PrismAsyncLight>
 
           {/* Block */}
@@ -55,7 +57,7 @@ class Cheatsheet extends React.Component {
             style={oneDark}
             language={'text'}
           >
-            {String(codeBlock).replace(/\n$/, '')}
+            {String(codeBlockStr).replace(/\n$/, '')}
           </PrismAsyncLight>
 
           {/* Line Break */}
@@ -67,7 +69,7 @@ class Cheatsheet extends React.Component {
             style={oneDark}
             language={'text'}
           >
-            {String(lineBlock).replace(/\n$/, '')}
+            {String(lineBlockStr).replace(/\n$/, '')}
           </PrismAsyncLight>
 
           {/* Typography */}
@@ -78,78 +80,105 @@ class Cheatsheet extends React.Component {
             style={oneDark}
             language={'text'}
           >
-            {String(typography).replace(/\n$/, '')}
+            {String(typographyStr).replace(/\n$/, '')}
           </PrismAsyncLight>
-          {/* <ul className="hljs">
-            <li><i>*{t('sandbox.italics')}*</i></li>
-            <li><b>**{t('sandbox.bold')}**</b></li>
-            <li><i><b>***{t('sandbox.italic_bold')}***</b></i></li>
-            <li>~~{t('sandbox.strikethrough')}~~ =&lt; <s>{t('sandbox.strikethrough')}</s></li>
-          </ul> */}
 
           {/* Link */}
           <h4>{t('sandbox.link')}</h4>
-          <ul className="hljs">
-            <li>[Google](https://www.google.co.jp/)</li>
-            <li>[/Page1/ChildPage1]</li>
-          </ul>
-          <h4>{t('sandbox.code_highlight')}</h4>
-          <ul className="hljs">
-            <li>```javascript:index.js</li>
-            <li>writeCode();</li>
-            <li>```</li>
-          </ul>
-        </div>
-
-        <div className="col-sm-6">
-          {/* List */}
-          <h4>{t('sandbox.list')}</h4>
-          {/* <ul className="hljs"> */}
           <PrismAsyncLight
             className="code-highlighted"
             PreTag="div"
             style={oneDark}
             language={'text'}
           >
-            {String(codeList).replace(/\n$/, '')}
+            {String(linkStr).replace(/\n$/, '')}
           </PrismAsyncLight>
-          {/* </ul> */}
-          <ul className="hljs">
-            <li>1. {t('sandbox.ordered_list_x', { index: '1' })}</li>
-            <li>1. {t('sandbox.ordered_list_x', { index: '2' })}</li>
-          </ul>
-          <ul className="hljs">
-            <li>- [ ] {t('sandbox.task')}({t('sandbox.task_unchecked')})</li>
-            <li>- [x] {t('sandbox.task')}({t('sandbox.task_checked')})</li>
-          </ul>
+
+          {/* CodeHhighlight */}
+          <h4>{t('sandbox.code_highlight')}</h4>
+          <PrismAsyncLight
+            className="code-highlighted"
+            PreTag="div"
+            style={oneDark}
+            language={'text'}
+          >
+            {String(codeHighlightStr).replace(/\n$/, '')}
+          </PrismAsyncLight>
+        </div>
+
+        <div className="col-sm-6">
+          {/* List */}
+          <h4>{t('sandbox.list')}</h4>
+          <PrismAsyncLight
+            className="code-highlighted"
+            PreTag="div"
+            style={oneDark}
+            language={'text'}
+          >
+            {String(codeListStr).replace(/\n$/, '')}
+          </PrismAsyncLight>
+
+          <PrismAsyncLight
+            className="code-highlighted"
+            PreTag="div"
+            style={oneDark}
+            language={'text'}
+          >
+            {String(orderedListStr).replace(/\n$/, '')}
+          </PrismAsyncLight>
+
+          <PrismAsyncLight
+            className="code-highlighted"
+            PreTag="div"
+            style={oneDark}
+            language={'text'}
+          >
+            {String(taskStr).replace(/\n$/, '')}
+          </PrismAsyncLight>
 
           {/* Quote */}
           <h4>{t('sandbox.quote')}</h4>
-          <ul className="hljs">
-            <li>&gt; {t('sandbox.quote1')}</li>
-            <li>&gt; {t('sandbox.quote2')}</li>
-          </ul>
-          <ul className="hljs">
-            <li>&gt;&gt; {t('sandbox.quote_nested')}</li>
-            <li>&gt;&gt;&gt; {t('sandbox.quote_nested')}</li>
-            <li>&gt;&gt;&gt;&gt; {t('sandbox.quote_nested')}</li>
-          </ul>
+          <PrismAsyncLight
+            className="code-highlighted"
+            PreTag="div"
+            style={oneDark}
+            language={'text'}
+          >
+            {String(quoteStr).replace(/\n$/, '')}
+          </PrismAsyncLight>
+
+          <PrismAsyncLight
+            className="code-highlighted"
+            PreTag="div"
+            style={oneDark}
+            language={'text'}
+          >
+            {String(nestedQuoteStr).replace(/\n$/, '')}
+          </PrismAsyncLight>
+
 
           {/* Table */}
           <h4>{t('sandbox.table')}</h4>
-          <pre className="border-0">
-            |Left&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;Mid&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Right|<br />
-            |:----------|:---------:|----------:|<br />
-            |col 1&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;col 2&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;col 3|<br />
-            |col 1&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;col 2&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;col 3|<br />
-          </pre>
+          <PrismAsyncLight
+            className="code-highlighted"
+            PreTag="div"
+            style={oneDark}
+            language={'text'}
+          >
+            {String(tableStr).replace(/\n$/, '')}
+          </PrismAsyncLight>
 
           {/* Image */}
           <h4>{t('sandbox.image')}</h4>
           <p className="mb-1"><code> ![{t('sandbox.alt_text')}](URL)</code> {t('sandbox.insert_image')}</p>
-          <ul className="hljs">
-            <li>![ex](https://example.com/image.png)</li>
-          </ul>
+          <PrismAsyncLight
+            className="code-highlighted"
+            PreTag="div"
+            style={oneDark}
+            language={'text'}
+          >
+            {String(imageStr).replace(/\n$/, '')}
+          </PrismAsyncLight>
 
           <hr />
           <a href="/Sandbox" className="btn btn-info btn-block" target="_blank">
