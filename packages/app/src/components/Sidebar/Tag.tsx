@@ -9,6 +9,9 @@ import { useSWRxTagsList } from '~/stores/tag';
 import TagCloudBox from '../TagCloudBox';
 import TagList from '../TagList';
 
+import { SidebarHeaderReloadButton } from './SidebarHeaderReloadButton';
+import { TagListSkeleton } from './Skeleton/TagContentSkeleton';
+
 
 const PAGING_LIMIT = 10;
 const TAG_CLOUD_LIMIT = 20;
@@ -44,22 +47,14 @@ const Tag: FC = () => {
     <div className="grw-container-convertible px-4 mb-5 pb-5" data-testid="grw-sidebar-content-tags">
       <div className="grw-sidebar-content-header py-3 d-flex">
         <h3 className="mb-0">{t('Tags')}</h3>
-        <button
-          type="button"
-          className="btn btn-sm ml-auto grw-btn-reload"
-          onClick={onReload}
-        >
-          <i className="icon icon-reload"></i>
-        </button>
+        <SidebarHeaderReloadButton onClick={() => onReload()}/>
       </div>
 
       <h3 className="my-3">{t('tag_list')}</h3>
 
       { isLoading
         ? (
-          <div className="text-muted text-center">
-            <i className="fa fa-2x fa-spinner fa-pulse mt-3"></i>
-          </div>
+          <TagListSkeleton />
         )
         : (
           <div data-testid="grw-tags-list">
