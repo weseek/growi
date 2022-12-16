@@ -2,8 +2,8 @@ import React, { useState } from 'react';
 
 import Link from 'next/link';
 
-import { toastSuccess, toastError } from '~/client/util/apiNotification';
 import { apiv3Post } from '~/client/util/apiv3-client';
+import { toastSuccess, toastError } from '~/client/util/toastr';
 import { useSWRxPlugin } from '~/stores/plugin';
 
 import styles from './PluginCard.module.scss';

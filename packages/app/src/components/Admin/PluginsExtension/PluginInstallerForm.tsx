@@ -1,7 +1,7 @@
 import React, { useCallback } from 'react';
 
-import { toastSuccess, toastError } from '~/client/util/apiNotification';
 import { apiv3Post } from '~/client/util/apiv3-client';
+import { toastSuccess, toastError } from '~/client/util/toastr';
 import { useSWRxPlugins } from '~/stores/plugin';
 
 export const PluginInstallerForm = (): JSX.Element => {
