@@ -2,14 +2,13 @@
   "extends": "./tsconfig.base.json",
   "compilerOptions": {
     "module": "esnext",
+    "strict": false,
     "noFallthroughCasesInSwitch": true,
-    "noUnusedLocals": true,
-    "noUnusedParameters": true,
-    "strict": true,
     "baseUrl": ".",
     "paths": {
       "~/*": ["./src/*"],
       "^/*": ["./*"],
+      "@growi/remark-lsx/*": ["../remark-lsx/src/*"],
       "@growi/*": ["../*/src"],
       "debug": ["./src/server/utils/logger/alias-for-debug"]
     }

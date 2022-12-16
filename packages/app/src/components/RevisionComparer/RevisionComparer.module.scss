@@ -1,0 +1,36 @@
+.revision-compare :global {
+  .revision-compare-container {
+    min-height: 100px;
+
+    &.nodiff {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+  }
+  .d2h-file-header {
+    display: none;
+  }
+
+  .grw-copy-dropdown {
+    .dropdown-menu {
+      min-width: 310px;
+
+      .dropdown-header {
+        margin-bottom: 0.5em;
+        font-size: 1.1em;
+      }
+
+      // unset active styles
+      .dropdown-item:active {
+        color: unset;
+        background-color: unset;
+      }
+
+      .well {
+        font-size: 0.7em;
+        word-break: break-all;
+      }
+    }
+  }
+}

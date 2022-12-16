@@ -1,0 +1,36 @@
+@use '../../styles/bootstrap/init' as bs;
+
+%comment-section {
+  position: relative;
+  padding: 1em;
+
+  // speech balloon
+  &:before {
+    position: absolute;
+    top: 1.5em;
+    left: -1em;
+    display: block;
+    width: 0;
+    content: '';
+    border: 1em solid transparent;
+    border-left-width: 0;
+
+    @include bs.media-breakpoint-down(xs) {
+      top: 1em;
+    }
+  }
+}
+
+%picture {
+  float: left;
+  width: 3em;
+  height: 3em;
+  margin-top: 0.8em;
+
+  @include bs.media-breakpoint-down(xs) {
+    width: 2em;
+    height: 2em;
+  }
+}
+
+$codemirror-default-height: 300px;

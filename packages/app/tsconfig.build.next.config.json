@@ -1,0 +1,17 @@
+{
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    "noResolve": false,
+    "preserveConstEnums": true,
+    "sourceMap": false,
+    "noEmit": false,
+    "paths": {
+      "~/*": ["./src/*"],
+      "^/*": ["./*"]
+    }
+  },
+  "files": [
+    "config/next-i18next.config.ts",
+    "src/utils/next.config.utils.ts"
+  ]
+}

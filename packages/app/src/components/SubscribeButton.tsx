@@ -1,9 +1,10 @@
 import React, { FC, useCallback } from 'react';
 
-import { useTranslation } from 'react-i18next';
+import { SubscriptionStatusType } from '@growi/core';
+import { useTranslation } from 'next-i18next';
 import { UncontrolledTooltip } from 'reactstrap';
 
-import { SubscriptionStatusType } from '~/interfaces/subscription';
+import styles from './SubscribeButton.module.scss';
 
 
 type Props = {
@@ -19,15 +20,12 @@ const SubscribeButton: FC<Props> = (props: Props) => {
   const isSubscribing = status === SubscriptionStatusType.SUBSCRIBE;
 
   const getTooltipMessage = useCallback(() => {
-    if (isGuestUser) {
-      return 'Not available for guest';
-    }
 
     if (isSubscribing) {
       return 'tooltip.stop_notification';
     }
     return 'tooltip.receive_notifications';
-  }, [isGuestUser, isSubscribing]);
+  }, [isSubscribing]);
 
   return (
     <>
@@ -35,13 +33,13 @@ const SubscribeButton: FC<Props> = (props: Props) => {
         type="button"
         id="subscribe-button"
         onClick={props.onClick}
-        className={`shadow-none btn btn-subscribe border-0
+        className={`shadow-none btn btn-subscribe ${styles['btn-subscribe']} border-0
           ${isSubscribing ? 'active' : ''} ${isGuestUser ? 'disabled' : ''}`}
       >
         <i className={`fa ${isSubscribing ? 'fa-bell' : 'fa-bell-slash-o'}`}></i>
       </button>
 
-      <UncontrolledTooltip placement="top" target="subscribe-button" fade={false}>
+      <UncontrolledTooltip data-testid="subscribe-button-tooltip" placement="top" target="subscribe-button" fade={false}>
         {t(getTooltipMessage())}
       </UncontrolledTooltip>
     </>

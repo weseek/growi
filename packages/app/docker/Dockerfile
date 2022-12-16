@@ -26,12 +26,19 @@ ENV optDir /opt
 
 WORKDIR ${optDir}
 
+ENV nodeModulesGrowiPackagesDir ${optDir}/node_modules/@growi
+# expect a string seperated by commas (e.g. "A,B")
+ENV removeNodeModulesSymlinkPaths ${nodeModulesGrowiPackagesDir}/slackbot-proxy
+
 # copy files
 COPY --from=packages-json-picker ${optDir} .
 
 # setup
 RUN yarn config set network-timeout 300000
 RUN npx -y lerna bootstrap -- --frozen-lockfile
+
+# remove unnecessary symlinks
+RUN rm -f $(echo ${removeNodeModulesSymlinkPaths} | sed -e "s/,/ /g")
 
 # make artifacts
 RUN tar -cf node_modules.tar \
@@ -55,7 +62,6 @@ RUN tar -cf node_modules.tar \
   packages/*/node_modules
 
 
-
 ##
 ## prebuilder-default
 ##
@@ -72,7 +78,6 @@ COPY --from=deps-resolver \
 # extract node_modules.tar
 RUN tar -xf node_modules.tar
 RUN rm node_modules.tar
-
 
 
 ##
@@ -94,16 +99,19 @@ ENV optDir /opt
 
 WORKDIR ${optDir}
 
+# ignore eslint and stylelint
 COPY ["package.json", "lerna.json", "tsconfig.base.json", "./"]
 # copy all related packages
 COPY packages/app packages/app
 COPY packages/core packages/core
 COPY packages/codemirror-textlint packages/codemirror-textlint
-COPY packages/plugin-attachment-refs packages/plugin-attachment-refs
-COPY packages/plugin-lsx packages/plugin-lsx
-COPY packages/plugin-pukiwiki-like-linker packages/plugin-pukiwiki-like-linker
 COPY packages/slack packages/slack
 COPY packages/ui packages/ui
+COPY packages/remark-drawio packages/remark-drawio
+COPY packages/remark-growi-directive packages/remark-growi-directive
+COPY packages/remark-lsx packages/remark-lsx
+COPY packages/hackmd packages/hackmd
+COPY packages/preset-themes packages/preset-themes
 
 # build
 RUN yarn lerna run build
@@ -111,11 +119,11 @@ RUN yarn lerna run build
 # make artifacts
 RUN tar -cf packages.tar \
   package.json \
+  packages/app/.next \
   packages/app/config \
   packages/app/public \
   packages/app/resource \
   packages/app/tmp \
-  packages/app/migrate-mongo-config.js \
   packages/app/.env.production* \
   packages/*/package.json \
   packages/*/dist

@@ -1,7 +1,7 @@
 import React, {
   FC, useCallback, useEffect, useState,
 } from 'react';
-import { useTranslation } from 'react-i18next';
+import { useTranslation } from 'next-i18next';
 import { ConfirmModal } from './ConfirmModal';
 import AdminAppContainer from '../../../client/services/AdminAppContainer';
 import { withUnstatedContainers } from '../../UnstatedUtils';

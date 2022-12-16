@@ -1,79 +1,64 @@
 import React, {
-  FC, useEffect, useState, useMemo, memo, useCallback,
+  FC, useState, useMemo, memo, useCallback,
 } from 'react';
 
+import { IRevisionHasId, isPopulated, getIdForRef } from '@growi/core';
 import { Button } from 'reactstrap';
 
-
-import AppContainer from '~/client/services/AppContainer';
 import { toastError } from '~/client/util/apiNotification';
 import { apiPost } from '~/client/util/apiv1-client';
-import { useCommentPreviewRenderer } from '~/stores/renderer';
+import { RendererOptions } from '~/services/renderer/renderer';
+import { useCommentForCurrentPageOptions } from '~/stores/renderer';
 
 import { ICommentHasId, ICommentHasIdList } from '../interfaces/comment';
 import { useSWRxPageComment } from '../stores/comment';
 
+import { Comment } from './PageComment/Comment';
+import { CommentEditor } from './PageComment/CommentEditor';
+import { DeleteCommentModal } from './PageComment/DeleteCommentModal';
+import { ReplyComments } from './PageComment/ReplyComments';
 
-import Comment from './PageComment/Comment';
-import CommentEditor from './PageComment/CommentEditor';
-import DeleteCommentModal from './PageComment/DeleteCommentModal';
-import ReplayComments from './PageComment/ReplayComments';
+import styles from './PageComment.module.scss';
 
-type Props = {
-  appContainer: AppContainer,
+export const ROOT_ELEM_ID = 'page-comments' as const;
+
+// Always render '#page-comments' for MutationObserver of SearchResultContent
+const PageCommentRoot = (props: React.HTMLAttributes<HTMLDivElement>): JSX.Element => (
+  <div id={ROOT_ELEM_ID} {...props}>{props.children}</div>
+);
+
+
+export type PageCommentProps = {
+  rendererOptions?: RendererOptions,
   pageId: string,
-  isReadOnly : boolean,
+  pagePath: string,
+  revision: string | IRevisionHasId,
+  currentUser: any,
+  isReadOnly: boolean,
   titleAlign?: 'center' | 'left' | 'right',
-  highlightKeywords?:string[],
   hideIfEmpty?: boolean,
 }
 
-
-const PageComment:FC<Props> = memo((props:Props):JSX.Element => {
+export const PageComment: FC<PageCommentProps> = memo((props:PageCommentProps): JSX.Element => {
 
   const {
-    appContainer, pageId, highlightKeywords, isReadOnly, titleAlign, hideIfEmpty,
+    rendererOptions: rendererOptionsByProps,
+    pageId, pagePath, revision, currentUser, isReadOnly, titleAlign, hideIfEmpty,
   } = props;
 
   const { data: comments, mutate } = useSWRxPageComment(pageId);
-  const { data: growiRenderer } = useCommentPreviewRenderer();
+  const { data: rendererOptionsForCurrentPage } = useCommentForCurrentPageOptions();
 
   const [commentToBeDeleted, setCommentToBeDeleted] = useState<ICommentHasId | null>(null);
   const [isDeleteConfirmModalShown, setIsDeleteConfirmModalShown] = useState<boolean>(false);
   const [showEditorIds, setShowEditorIds] = useState<Set<string>>(new Set());
-  const [formatedComments, setFormatedComments] = useState<ICommentHasIdList | null>(null);
   const [errorMessageOnDelete, setErrorMessageOnDelete] = useState<string>('');
 
-  const commentsFromOldest = useMemo(() => (formatedComments != null ? [...formatedComments].reverse() : null), [formatedComments]);
+  const commentsFromOldest = useMemo(() => (comments != null ? [...comments].reverse() : null), [comments]);
   const commentsExceptReply: ICommentHasIdList | undefined = useMemo(
     () => commentsFromOldest?.filter(comment => comment.replyTo == null), [commentsFromOldest],
   );
   const allReplies = {};
-
-  const highlightComment = useCallback((comment: string):string => {
-    if (highlightKeywords == null) return comment;
-
-    let highlightedComment = '';
-    highlightKeywords.forEach((highlightKeyword) => {
-      highlightedComment = comment.replaceAll(highlightKeyword, '<em class="highlighted-keyword">$&</em>');
-    });
-    return highlightedComment;
-  }, [highlightKeywords]);
-
-  useEffect(() => {
-
-    if (comments != null) {
-      const preprocessedCommentList: string[] = comments.map((comment) => {
-        const highlightedComment: string = highlightComment(comment.comment);
-        return highlightedComment;
-      });
-      const preprocessedComments: ICommentHasIdList = comments.map((comment, index) => {
-        return { ...comment, comment: preprocessedCommentList[index] };
-      });
-      setFormatedComments(preprocessedComments);
-    }
-
-  }, [comments, highlightComment]);
 
   if (commentsFromOldest != null) {
     commentsFromOldest.forEach((comment) => {
@@ -110,25 +95,6 @@ const PageComment:FC<Props> = memo((props:Props):JSX.Element => {
     }
   }, [commentToBeDeleted, onDeleteCommentAfterOperation]);
 
-  const generateCommentInnerElement = (comment: ICommentHasId) => (
-    <Comment
-      growiRenderer={growiRenderer}
-      deleteBtnClicked={onClickDeleteButton}
-      comment={comment}
-      onComment={mutate}
-      isReadOnly={isReadOnly}
-    />
-  );
-
-  const generateAllRepliesElement = (replyComments: ICommentHasIdList) => (
-    <ReplayComments
-      replyList={replyComments}
-      deleteBtnClicked={onClickDeleteButton}
-      growiRenderer={growiRenderer}
-      isReadOnly={isReadOnly}
-    />
-  );
-
   const removeShowEditorId = useCallback((commentId: string) => {
     setShowEditorIds((previousState) => {
       const previousShowEditorIds = new Set(...previousState);
@@ -137,91 +103,122 @@ const PageComment:FC<Props> = memo((props:Props):JSX.Element => {
     });
   }, []);
 
-
-  if (commentsFromOldest == null || commentsExceptReply == null) return <></>;
-
   if (hideIfEmpty && comments?.length === 0) {
-    return <></>;
-  }
-
-  if (growiRenderer == null) {
-    return <></>;
+    return <PageCommentRoot />;
   }
 
   let commentTitleClasses = 'border-bottom py-3 mb-3';
   commentTitleClasses = titleAlign != null ? `${commentTitleClasses} text-${titleAlign}` : `${commentTitleClasses} text-center`;
 
+  const rendererOptions = rendererOptionsByProps ?? rendererOptionsForCurrentPage;
+
+  if (commentsFromOldest == null || commentsExceptReply == null || rendererOptions == null) {
+    if (hideIfEmpty) {
+      return <PageCommentRoot />;
+    }
+    return (
+      <></>
+    );
+  }
+
+  const revisionId = getIdForRef(revision);
+  const revisionCreatedAt = (isPopulated(revision)) ? revision.createdAt : undefined;
+
+  const commentElement = (comment: ICommentHasId) => (
+    <Comment
+      rendererOptions={rendererOptions}
+      comment={comment}
+      revisionId={revisionId}
+      revisionCreatedAt={revisionCreatedAt as Date}
+      currentUser={currentUser}
+      isReadOnly={isReadOnly}
+      pageId={pageId}
+      pagePath={pagePath}
+      deleteBtnClicked={onClickDeleteButton}
+      onComment={mutate}
+    />
+  );
+
+  const replyCommentsElement = (replyComments: ICommentHasIdList) => (
+    <ReplyComments
+      rendererOptions={rendererOptions}
+      isReadOnly={isReadOnly}
+      revisionId={revisionId}
+      revisionCreatedAt={revisionCreatedAt as Date}
+      currentUser={currentUser}
+      replyList={replyComments}
+      pageId={pageId}
+      pagePath={pagePath}
+      deleteBtnClicked={onClickDeleteButton}
+      onComment={mutate}
+    />
+  );
+
   return (
-    <>
-      <div className="page-comments-row comment-list">
-        <div className="container-lg">
-          <div className="page-comments">
-            <h2 className={commentTitleClasses}><i className="icon-fw icon-bubbles"></i>Comments</h2>
-            <div className="page-comments-list" id="page-comments-list">
-              { commentsExceptReply.map((comment) => {
+    <PageCommentRoot className={`${styles['page-comment-styles']} page-comments-row comment-list`}>
+      <div className="container-lg">
+        <div className="page-comments">
+          <h2 className={commentTitleClasses}><i className="icon-fw icon-bubbles"></i>Comments</h2>
+          <div className="page-comments-list" id="page-comments-list">
+            { commentsExceptReply.map((comment) => {
 
-                const defaultCommentThreadClasses = 'page-comment-thread pb-5';
-                const hasReply: boolean = Object.keys(allReplies).includes(comment._id);
+              const defaultCommentThreadClasses = 'page-comment-thread pb-5';
+              const hasReply: boolean = Object.keys(allReplies).includes(comment._id);
 
-                let commentThreadClasses = '';
-                commentThreadClasses = hasReply ? `${defaultCommentThreadClasses} page-comment-thread-no-replies` : defaultCommentThreadClasses;
+              let commentThreadClasses = '';
+              commentThreadClasses = hasReply ? `${defaultCommentThreadClasses} page-comment-thread-no-replies` : defaultCommentThreadClasses;
 
-                return (
-                  <div key={comment._id} className={commentThreadClasses}>
-                    {/* display comment */}
-                    {generateCommentInnerElement(comment)}
-                    {/* display reply comment */}
-                    {hasReply && generateAllRepliesElement(allReplies[comment._id])}
-                    {/* display reply button */}
-                    {(!isReadOnly && !showEditorIds.has(comment._id)) && (
-                      <div className="text-right">
-                        <Button
-                          outline
-                          color="secondary"
-                          size="sm"
-                          className="btn-comment-reply"
-                          onClick={() => {
-                            setShowEditorIds(previousState => new Set(previousState.add(comment._id)));
-                          }}
-                        >
-                          <i className="icon-fw icon-action-undo"></i> Reply
-                        </Button>
-                      </div>
-                    )}
-                    {/* display reply editor */}
-                    {(!isReadOnly && showEditorIds.has(comment._id)) && (
-                      <CommentEditor
-                        growiRenderer={growiRenderer}
-                        replyTo={comment._id}
-                        onCancelButtonClicked={() => {
-                          removeShowEditorId(comment._id);
+              return (
+                <div key={comment._id} className={commentThreadClasses}>
+                  {commentElement(comment)}
+                  {hasReply && replyCommentsElement(allReplies[comment._id])}
+                  {(!isReadOnly && !showEditorIds.has(comment._id)) && (
+                    <div className="text-right">
+                      <Button
+                        outline
+                        color="secondary"
+                        size="sm"
+                        className="btn-comment-reply"
+                        onClick={() => {
+                          setShowEditorIds(previousState => new Set(previousState.add(comment._id)));
                         }}
-                        onCommentButtonClicked={() => {
-                          removeShowEditorId(comment._id);
-                          mutate();
-                        }}
-                      />
-                    )}
-                  </div>
-                );
+                      >
+                        <i className="icon-fw icon-action-undo"></i> Reply
+                      </Button>
+                    </div>
+                  )}
+                  {(!isReadOnly && showEditorIds.has(comment._id)) && (
+                    <CommentEditor
+                      pageId={pageId}
+                      replyTo={comment._id}
+                      onCancelButtonClicked={() => {
+                        removeShowEditorId(comment._id);
+                      }}
+                      onCommentButtonClicked={() => {
+                        removeShowEditorId(comment._id);
+                        mutate();
+                      }}
+                      revisionId={revisionId}
+                    />
+                  )}
+                </div>
+              );
 
-              })}
-            </div>
+            })}
           </div>
         </div>
       </div>
-      {(!isReadOnly && commentToBeDeleted != null) && (
+      {!isReadOnly && (
         <DeleteCommentModal
           isShown={isDeleteConfirmModalShown}
           comment={commentToBeDeleted}
           errorMessage={errorMessageOnDelete}
-          cancel={onCancelDeleteComment}
-          confirmedToDelete={onDeleteComment}
+          cancelToDelete={onCancelDeleteComment}
+          confirmToDelete={onDeleteComment}
         />
       )}
-    </>
+    </PageCommentRoot>
   );
 });
 
-
-export default PageComment;
+PageComment.displayName = 'PageComment';

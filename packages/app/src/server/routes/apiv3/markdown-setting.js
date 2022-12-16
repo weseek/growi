@@ -1,3 +1,5 @@
+import { ErrorV3 } from '@growi/core';
+
 import { SupportedAction } from '~/interfaces/activity';
 import loggerFactory from '~/utils/logger';
 
@@ -12,8 +14,6 @@ const express = require('express');
 const router = express.Router();
 
 const { body } = require('express-validator');
-
-const ErrorV3 = require('../../models/vo/error-apiv3');
 
 const validator = {
   lineBreak: [
@@ -93,7 +93,6 @@ const validator = {
 module.exports = (crowi) => {
   const loginRequiredStrictly = require('../../middlewares/login-required')(crowi);
   const adminRequired = require('../../middlewares/admin-required')(crowi);
-  const csrf = require('../../middlewares/csrf')(crowi);
   const addActivity = generateAddActivityMiddleware(crowi);
 
   const activityEvent = crowi.event('activity');
@@ -158,7 +157,7 @@ module.exports = (crowi) => {
    *                schema:
   *                   $ref: '#/components/schemas/LineBreakParams'
    */
-  router.put('/lineBreak', loginRequiredStrictly, adminRequired, csrf, addActivity, validator.lineBreak, apiV3FormValidator, async(req, res) => {
+  router.put('/lineBreak', loginRequiredStrictly, adminRequired, addActivity, validator.lineBreak, apiV3FormValidator, async(req, res) => {
 
     const requestLineBreakParams = {
       'markdown:isEnabledLinebreaks': req.body.isEnabledLinebreaks,
@@ -185,7 +184,7 @@ module.exports = (crowi) => {
 
   });
 
-  router.put('/indent', loginRequiredStrictly, adminRequired, csrf, addActivity, validator.indent, apiV3FormValidator, async(req, res) => {
+  router.put('/indent', loginRequiredStrictly, adminRequired, addActivity, validator.indent, apiV3FormValidator, async(req, res) => {
 
     const requestIndentParams = {
       'markdown:adminPreferredIndentSize': req.body.adminPreferredIndentSize,
@@ -235,7 +234,7 @@ module.exports = (crowi) => {
    *                schema:
    *                  $ref: '#/components/schemas/PresentationParams'
    */
-  router.put('/presentation', loginRequiredStrictly, adminRequired, csrf, addActivity, validator.presentationSetting, apiV3FormValidator, async(req, res) => {
+  router.put('/presentation', loginRequiredStrictly, adminRequired, addActivity, validator.presentationSetting, apiV3FormValidator, async(req, res) => {
     if (req.body.pageBreakSeparator === 3 && req.body.pageBreakCustomSeparator === '') {
       return res.apiv3Err(new ErrorV3('customRegularExpression is required'));
     }
@@ -288,7 +287,7 @@ module.exports = (crowi) => {
    *                schema:
    *                  $ref: '#/components/schemas/XssParams'
    */
-  router.put('/xss', loginRequiredStrictly, adminRequired, csrf, addActivity, validator.xssSetting, apiV3FormValidator, async(req, res) => {
+  router.put('/xss', loginRequiredStrictly, adminRequired, addActivity, validator.xssSetting, apiV3FormValidator, async(req, res) => {
     if (req.body.isEnabledXss && req.body.xssOption == null) {
       return res.apiv3Err(new ErrorV3('xss option is required'));
     }

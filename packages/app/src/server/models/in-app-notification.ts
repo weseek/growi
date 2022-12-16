@@ -1,4 +1,3 @@
-import { getOrCreateModel } from '@growi/core';
 import {
   Types, Document, Schema, Model,
 } from 'mongoose';
@@ -6,6 +5,8 @@ import mongoosePaginate from 'mongoose-paginate-v2';
 
 import { AllSupportedTargetModels, AllSupportedActions } from '~/interfaces/activity';
 import { InAppNotificationStatuses } from '~/interfaces/in-app-notification';
+
+import { getOrCreateModel } from '../util/mongoose-utils';
 
 import { ActivityDocument } from './activity';
 

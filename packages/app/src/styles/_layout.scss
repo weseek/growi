@@ -1,34 +1,35 @@
+@use './variables' as var;
+@use './bootstrap/init' as bs;
+
 body {
   overflow-y: scroll !important;
   overscroll-behavior-y: none;
 }
 
-body:not(.growi-layout-fluid) .grw-container-convertible {
+.layout-root:not(.growi-layout-fluid) .grw-container-convertible {
   @extend .container-lg;
+}
+
+.layout-root.growi-layout-fluid .grw-container-convertible {
+  @extend .container-fluid;
+}
+
+.grw-bg-image-wrapper {
+  position: fixed;
+  width: 100%;
+  height: 100%;
+
+  img {
+    object-fit: cover;
+    object-position: bottom;
+  }
 }
 
 body.not-found-page .grw-container-convertible {
   @extend .container-lg;
 }
 
-body.growi-layout-fluid .grw-container-convertible {
-  @extend .container-fluid;
-}
-
-.grw-logo {
-  svg {
-    width: $grw-logo-width;
-    height: $grw-navbar-height;
-    padding: ($grw-logo-width - $grw-logomark-width) / 2;
-  }
-}
-
-.confidential {
-  font-weight: bold;
-}
-
 .grw-modal-head {
-  font-size: 1em;
   border-bottom: 1px solid transparent;
 }
 
@@ -39,9 +40,9 @@ body.growi-layout-fluid .grw-container-convertible {
 
 // padding settings for GrowiNavbarBottom
 .page-wrapper {
-  padding-bottom: $grw-navbar-bottom-height;
+  padding-bottom: var.$grw-navbar-bottom-height;
 
-  @include media-breakpoint-up(md) {
+  @include bs.media-breakpoint-up(md) {
     padding-bottom: unset;
   }
 }
@@ -49,7 +50,7 @@ body.growi-layout-fluid .grw-container-convertible {
 .main {
   margin-top: 1rem;
 
-  @include media-breakpoint-up(lg) {
+  @include bs.media-breakpoint-up(lg) {
     margin-top: 2rem;
   }
 }
@@ -57,7 +58,7 @@ body.growi-layout-fluid .grw-container-convertible {
 .grw-side-contents-container {
   margin-bottom: 1rem;
 
-  @include media-breakpoint-up(lg) {
+  @include bs.media-breakpoint-up(lg) {
     width: 250px;
     min-width: 250px;
     margin-left: 30px;
@@ -74,7 +75,7 @@ body.growi-layout-fluid .grw-container-convertible {
   position: fixed;
   right: 1.5rem;
   bottom: 3rem;
-  z-index: $zindex-fixed;
+  z-index: bs.$zindex-fixed;
 
   transition: all 200ms linear;
 
@@ -114,7 +115,7 @@ body.growi-layout-fluid .grw-container-convertible {
 
   .main {
     header {
-      border-bottom: solid 1px $secondary;
+      border-bottom: solid 1px bs.$secondary;
       h1 {
         font-size: 2em;
         color: black;
@@ -125,25 +126,10 @@ body.growi-layout-fluid .grw-container-convertible {
       display: block !important;
     }
 
-    .revision-toc {
-      float: none;
-      max-width: 100%;
-      margin-bottom: 20px;
-      font-size: 0.9em;
-      border: solid 1px $gray-400;
-    }
-
     .meta {
       margin-top: 32px;
-      color: $secondary;
-      border-top: solid 1px $gray-300;
+      color: bs.$secondary;
+      border-top: solid 1px bs.$gray-300;
     }
   }
-}
-
-.system-version {
-  position: fixed;
-  right: 0.5em;
-  bottom: 0;
-  opacity: 0.6;
 }

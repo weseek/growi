@@ -1,4 +1,3 @@
-import { getOrCreateModel } from '@growi/core';
 import { addSeconds } from 'date-fns';
 import mongoose, {
   Schema, Model, Document, QueryOptions, FilterQuery,
@@ -9,8 +8,10 @@ import {
   IPageForResuming, IUserForResuming, IOptionsForResuming,
 } from '~/server/models/interfaces/page-operation';
 
+
 import loggerFactory from '../../utils/logger';
 import { ObjectIdLike } from '../interfaces/mongoose-utils';
+import { getOrCreateModel } from '../util/mongoose-utils';
 
 const TIME_TO_ADD_SEC = 10;
 
@@ -32,6 +33,7 @@ export interface IPageOperation {
   options?: IOptionsForResuming,
   incForUpdatingDescendantCount?: number,
   unprocessableExpiryDate: Date,
+  exPage?: IPageForResuming,
 
   isProcessable(): boolean
 }
@@ -70,6 +72,11 @@ const optionsSchemaForResuming = new Schema<IOptionsForResuming>({
   createRedirectPage: { type: Boolean },
   updateMetadata: { type: Boolean },
   prevDescendantCount: { type: Number },
+  grant: { type: Number },
+  grantUserGroupId: { type: ObjectId, ref: 'UserGroup' },
+  format: { type: String },
+  isSyncRevisionToHackmd: { type: Boolean },
+  overwriteScopesOfDescendants: { type: Boolean },
 }, { _id: false });
 
 const schema = new Schema<PageOperationDocument, PageOperationModel>({
@@ -88,6 +95,7 @@ const schema = new Schema<PageOperationDocument, PageOperationModel>({
   fromPath: { type: String, required: true, index: true },
   toPath: { type: String, index: true },
   page: { type: pageSchemaForResuming, required: true },
+  exPage: { type: pageSchemaForResuming, required: false },
   user: { type: userSchemaForResuming, required: true },
   options: { type: optionsSchemaForResuming },
   incForUpdatingDescendantCount: { type: Number },

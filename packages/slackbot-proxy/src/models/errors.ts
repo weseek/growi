@@ -11,7 +11,7 @@ export class InvalidUrlError extends ExtensibleCustomError {
 
 export class CustomHttpError extends Error {
 
-  httpError: HttpError
+  httpError: HttpError;
 
   constructor(httpError: HttpError) {
     super(httpError.message);

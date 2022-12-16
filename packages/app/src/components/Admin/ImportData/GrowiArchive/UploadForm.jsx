@@ -1,7 +1,7 @@
 import React from 'react';
 
+import { useTranslation } from 'next-i18next';
 import PropTypes from 'prop-types';
-import { useTranslation } from 'react-i18next';
 
 import { toastError } from '~/client/util/apiNotification';
 import { apiv3PostForm } from '~/client/util/apiv3-client';
@@ -98,7 +98,7 @@ UploadForm.propTypes = {
 };
 
 const UploadFormWrapperFc = (props) => {
-  const { t } = useTranslation();
+  const { t } = useTranslation('admin');
 
   return <UploadForm t={t} {...props} />;
 };

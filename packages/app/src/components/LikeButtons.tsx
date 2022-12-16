@@ -1,14 +1,13 @@
 import React, { FC, useState, useCallback } from 'react';
 
-import { useTranslation } from 'react-i18next';
+import { useTranslation } from 'next-i18next';
 import { UncontrolledTooltip, Popover, PopoverBody } from 'reactstrap';
-
-import AppContainer from '~/client/services/AppContainer';
 
 import { IUser } from '../interfaces/user';
 
-import { withUnstatedContainers } from './UnstatedUtils';
 import UserPictureList from './User/UserPictureList';
+
+import styles from './LikeButtons.module.scss';
 
 type LikeButtonsProps = {
 
@@ -35,18 +34,15 @@ const LikeButtons: FC<LikeButtonsProps> = (props: LikeButtonsProps) => {
   } = props;
 
   const getTooltipMessage = useCallback(() => {
-    if (isGuestUser) {
-      return 'Not available for guest';
-    }
 
     if (isLiked) {
       return 'tooltip.cancel_like';
     }
     return 'tooltip.like';
-  }, [isGuestUser, isLiked]);
+  }, [isLiked]);
 
   return (
-    <div className="btn-group" role="group" aria-label="Like buttons">
+    <div className={`btn-group btn-group-like ${styles['btn-group-like']}`} role="group" aria-label="Like buttons">
       <button
         type="button"
         id="like-button"
@@ -57,7 +53,7 @@ const LikeButtons: FC<LikeButtonsProps> = (props: LikeButtonsProps) => {
         <i className={`fa ${isLiked ? 'fa-heart' : 'fa-heart-o'}`}></i>
       </button>
 
-      <UncontrolledTooltip placement="top" target="like-button" fade={false}>
+      <UncontrolledTooltip data-testid="like-button-tooltip" placement="top" target="like-button" autohide={false} fade={false}>
         {t(getTooltipMessage())}
       </UncontrolledTooltip>
 

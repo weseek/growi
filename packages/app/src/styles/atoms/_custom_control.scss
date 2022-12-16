@@ -1,3 +1,5 @@
+@use '../bootstrap/init' as *;
+
 .custom-checkbox .custom-control-label::before {
   border-radius: $border-radius !important;
 }

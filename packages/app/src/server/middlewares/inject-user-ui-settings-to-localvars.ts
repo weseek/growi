@@ -5,16 +5,18 @@ import UserUISettings from '../models/user-ui-settings';
 
 const logger = loggerFactory('growi:middleware:inject-user-ui-settings-to-localvars');
 
-async function getSettings(userId: string): Promise<Partial<IUserUISettings> | null> {
+async function getSettings(userId: string): Promise<IUserUISettings | null> {
   const doc = await UserUISettings.findOne({ user: userId }).exec();
 
-  let partialDoc: Partial<IUserUISettings> | null = null;
+  let userUISettings: IUserUISettings | null = null;
   if (doc != null) {
-    partialDoc = doc.toObject();
-    delete partialDoc.user;
+    const obj = doc.toObject();
+    // omit user property
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    userUISettings = (({ user, ...rest }) => rest)(obj);
   }
 
-  return partialDoc;
+  return userUISettings;
 }
 
 module.exports = () => {

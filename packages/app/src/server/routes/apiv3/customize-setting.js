@@ -1,6 +1,10 @@
 /* eslint-disable no-unused-vars */
 
+import { ErrorV3 } from '@growi/core';
+import mongoose from 'mongoose';
+
 import { SupportedAction } from '~/interfaces/activity';
+import { GrowiPluginResourceType } from '~/interfaces/plugin';
 import { AttachmentType } from '~/server/interfaces/attachment';
 import loggerFactory from '~/utils/logger';
 
@@ -16,8 +20,6 @@ const router = express.Router();
 
 const { body, query } = require('express-validator');
 const multer = require('multer');
-
-const ErrorV3 = require('../../models/vo/error-apiv3');
 
 
 /**
@@ -48,8 +50,6 @@ const ErrorV3 = require('../../models/vo/error-apiv3');
  *        type: object
  *        properties:
  *          isEnabledTimeline:
- *            type: boolean
- *          isSavedStatesOfTabChanges:
  *            type: boolean
  *          isEnabledAttachTitleHeader:
  *            type: boolean
@@ -99,7 +99,6 @@ const ErrorV3 = require('../../models/vo/error-apiv3');
 module.exports = (crowi) => {
   const loginRequiredStrictly = require('../../middlewares/login-required')(crowi);
   const adminRequired = require('../../middlewares/admin-required')(crowi);
-  const csrf = require('../../middlewares/csrf')(crowi);
   const addActivity = generateAddActivityMiddleware(crowi);
 
   const activityEvent = crowi.event('activity');
@@ -111,11 +110,8 @@ module.exports = (crowi) => {
     layout: [
       body('isContainerFluid').isBoolean(),
     ],
-    themeAssetPath: [
-      query('themeName').isString(),
-    ],
     theme: [
-      body('themeType').isString(),
+      body('theme').isString(),
     ],
     sidebar: [
       body('isSidebarDrawerMode').isBoolean(),
@@ -123,7 +119,6 @@ module.exports = (crowi) => {
     ],
     function: [
       body('isEnabledTimeline').isBoolean(),
-      body('isSavedStatesOfTabChanges').isBoolean(),
       body('isEnabledAttachTitleHeader').isBoolean(),
       body('pageLimitationS').isInt().isInt({ min: 1, max: 1000 }),
       body('pageLimitationM').isInt().isInt({ min: 1, max: 1000 }),
@@ -179,9 +174,7 @@ module.exports = (crowi) => {
    */
   router.get('/', loginRequiredStrictly, adminRequired, async(req, res) => {
     const customizeParams = {
-      themeType: await crowi.configManager.getConfig('crowi', 'customize:theme'),
       isEnabledTimeline: await crowi.configManager.getConfig('crowi', 'customize:isEnabledTimeline'),
-      isSavedStatesOfTabChanges: await crowi.configManager.getConfig('crowi', 'customize:isSavedStatesOfTabChanges'),
       isEnabledAttachTitleHeader: await crowi.configManager.getConfig('crowi', 'customize:isEnabledAttachTitleHeader'),
       pageLimitationS: await crowi.configManager.getConfig('crowi', 'customize:showPageLimitationS'),
       pageLimitationM: await crowi.configManager.getConfig('crowi', 'customize:showPageLimitationM'),
@@ -254,7 +247,7 @@ module.exports = (crowi) => {
    *                schema:
    *                  $ref: '#/components/schemas/CustomizeLayout'
    */
-  router.put('/layout', loginRequiredStrictly, adminRequired, csrf, addActivity, validator.layout, apiV3FormValidator, async(req, res) => {
+  router.put('/layout', loginRequiredStrictly, adminRequired, addActivity, validator.layout, apiV3FormValidator, async(req, res) => {
     const requestParams = {
       'customize:isContainerFluid': req.body.isContainerFluid,
     };
@@ -277,41 +270,26 @@ module.exports = (crowi) => {
     }
   });
 
-  /**
-   * @swagger
-   *
-   *    /customize-setting/theme/asset-path:
-   *      put:
-   *        tags: [CustomizeSetting]
-   *        operationId: getThemeAssetPath
-   *        summary: /customize-setting/theme/asset-path
-   *        description: Get theme asset path
-   *        parameters:
-   *          - name: themeName
-   *            in: query
-   *            required: true
-   *            schema:
-   *              type: string
-   *        responses:
-   *          200:
-   *            description: Succeeded to get theme asset path
-   *            content:
-   *              application/json:
-   *                schema:
-   *                  properties:
-   *                    assetPath:
-   *                      type: string
-   */
-  router.get('/theme/asset-path', loginRequiredStrictly, adminRequired, validator.themeAssetPath, apiV3FormValidator, async(req, res) => {
-    const { themeName } = req.query;
+  router.get('/theme', loginRequiredStrictly, adminRequired, async(req, res) => {
 
-    const webpackAssetKey = `styles/theme-${themeName}.css`;
-    const assetPath = res.locals.webpack_asset(webpackAssetKey);
+    try {
+      const currentTheme = await crowi.configManager.getConfig('crowi', 'customize:theme');
 
-    if (assetPath == null) {
-      return res.apiv3Err(new ErrorV3(`The asset for '${webpackAssetKey}' is undefined.`, 'invalid-asset'));
+      // retrieve plugin manifests
+      const GrowiPluginModel = mongoose.model('GrowiPlugin');
+      const themePlugins = await GrowiPluginModel.findEnabledPluginsIncludingAnyTypes([GrowiPluginResourceType.Theme]);
+
+      const pluginThemesMetadatas = themePlugins
+        .map(themePlugin => themePlugin.meta.themes)
+        .flat();
+
+      return res.apiv3({ currentTheme, pluginThemesMetadatas });
     }
-    return res.apiv3({ assetPath });
+    catch (err) {
+      const msg = 'Error occurred in getting theme';
+      logger.error('Error', err);
+      return res.apiv3Err(new ErrorV3(msg, 'get-theme-failed'));
+    }
   });
 
   /**
@@ -337,15 +315,15 @@ module.exports = (crowi) => {
    *                schema:
    *                  $ref: '#/components/schemas/CustomizeTheme'
    */
-  router.put('/theme', loginRequiredStrictly, adminRequired, csrf, addActivity, validator.theme, apiV3FormValidator, async(req, res) => {
+  router.put('/theme', loginRequiredStrictly, adminRequired, addActivity, validator.theme, apiV3FormValidator, async(req, res) => {
     const requestParams = {
-      'customize:theme': req.body.themeType,
+      'customize:theme': req.body.theme,
     };
 
     try {
       await crowi.configManager.updateConfigsInTheSameNamespace('crowi', requestParams);
       const customizedParams = {
-        themeType: await crowi.configManager.getConfig('crowi', 'customize:theme'),
+        theme: await crowi.configManager.getConfig('crowi', 'customize:theme'),
       };
       const parameters = { action: SupportedAction.ACTION_ADMIN_THEME_UPDATE };
       activityEvent.emit('update', res.locals.activity._id, parameters);
@@ -373,7 +351,7 @@ module.exports = (crowi) => {
     }
   });
 
-  router.put('/sidebar', loginRequiredStrictly, adminRequired, csrf, validator.sidebar, apiV3FormValidator, addActivity, async(req, res) => {
+  router.put('/sidebar', loginRequiredStrictly, adminRequired, validator.sidebar, apiV3FormValidator, addActivity, async(req, res) => {
     const requestParams = {
       'customize:isSidebarDrawerMode': req.body.isSidebarDrawerMode,
       'customize:isSidebarClosedAtDockMode': req.body.isSidebarClosedAtDockMode,
@@ -420,10 +398,9 @@ module.exports = (crowi) => {
    *                schema:
    *                  $ref: '#/components/schemas/CustomizeFunction'
    */
-  router.put('/function', loginRequiredStrictly, adminRequired, csrf, addActivity, validator.function, apiV3FormValidator, async(req, res) => {
+  router.put('/function', loginRequiredStrictly, adminRequired, addActivity, validator.function, apiV3FormValidator, async(req, res) => {
     const requestParams = {
       'customize:isEnabledTimeline': req.body.isEnabledTimeline,
-      'customize:isSavedStatesOfTabChanges': req.body.isSavedStatesOfTabChanges,
       'customize:isEnabledAttachTitleHeader': req.body.isEnabledAttachTitleHeader,
       'customize:showPageLimitationS': req.body.pageLimitationS,
       'customize:showPageLimitationM': req.body.pageLimitationM,
@@ -438,7 +415,6 @@ module.exports = (crowi) => {
       await crowi.configManager.updateConfigsInTheSameNamespace('crowi', requestParams);
       const customizedParams = {
         isEnabledTimeline: await crowi.configManager.getConfig('crowi', 'customize:isEnabledTimeline'),
-        isSavedStatesOfTabChanges: await crowi.configManager.getConfig('crowi', 'customize:isSavedStatesOfTabChanges'),
         isEnabledAttachTitleHeader: await crowi.configManager.getConfig('crowi', 'customize:isEnabledAttachTitleHeader'),
         pageLimitationS: await crowi.configManager.getConfig('crowi', 'customize:showPageLimitationS'),
         pageLimitationM: await crowi.configManager.getConfig('crowi', 'customize:showPageLimitationM'),
@@ -482,7 +458,7 @@ module.exports = (crowi) => {
    *                schema:
    *                  $ref: '#/components/schemas/CustomizeHighlight'
    */
-  router.put('/highlight', loginRequiredStrictly, adminRequired, csrf, addActivity, validator.highlight, apiV3FormValidator, async(req, res) => {
+  router.put('/highlight', loginRequiredStrictly, adminRequired, addActivity, validator.highlight, apiV3FormValidator, async(req, res) => {
     const requestParams = {
       'customize:highlightJsStyle': req.body.highlightJsStyle,
       'customize:highlightJsStyleBorder': req.body.highlightJsStyleBorder,
@@ -528,7 +504,7 @@ module.exports = (crowi) => {
    *                schema:
    *                  $ref: '#/components/schemas/CustomizeTitle'
    */
-  router.put('/customize-title', loginRequiredStrictly, adminRequired, csrf, addActivity, validator.customizeTitle, apiV3FormValidator, async(req, res) => {
+  router.put('/customize-title', loginRequiredStrictly, adminRequired, addActivity, validator.customizeTitle, apiV3FormValidator, async(req, res) => {
     const requestParams = {
       'customize:title': req.body.customizeTitle,
     };
@@ -575,7 +551,7 @@ module.exports = (crowi) => {
    *                schema:
    *                  $ref: '#/components/schemas/CustomizeHeader'
    */
-  router.put('/customize-header', loginRequiredStrictly, adminRequired, csrf, addActivity, validator.customizeHeader, apiV3FormValidator, async(req, res) => {
+  router.put('/customize-header', loginRequiredStrictly, adminRequired, addActivity, validator.customizeHeader, apiV3FormValidator, async(req, res) => {
     const requestParams = {
       'customize:header': req.body.customizeHeader,
     };
@@ -618,7 +594,7 @@ module.exports = (crowi) => {
    *                schema:
    *                  $ref: '#/components/schemas/CustomizeCss'
    */
-  router.put('/customize-css', loginRequiredStrictly, adminRequired, csrf, addActivity, validator.customizeCss, apiV3FormValidator, async(req, res) => {
+  router.put('/customize-css', loginRequiredStrictly, adminRequired, addActivity, validator.customizeCss, apiV3FormValidator, async(req, res) => {
     const requestParams = {
       'customize:css': req.body.customizeCss,
     };
@@ -664,7 +640,7 @@ module.exports = (crowi) => {
    *                schema:
    *                  $ref: '#/components/schemas/CustomizeScript'
    */
-  router.put('/customize-script', loginRequiredStrictly, adminRequired, csrf, addActivity, validator.customizeScript, apiV3FormValidator, async(req, res) => {
+  router.put('/customize-script', loginRequiredStrictly, adminRequired, addActivity, validator.customizeScript, apiV3FormValidator, async(req, res) => {
     const requestParams = {
       'customize:script': req.body.customizeScript,
     };
@@ -690,21 +666,19 @@ module.exports = (crowi) => {
     return res.apiv3({ isDefaultLogo, customizedLogoSrc });
   });
 
-  router.put('/customize-logo', csrf, loginRequiredStrictly, adminRequired, validator.logo, apiV3FormValidator, async(req, res) => {
+  router.put('/customize-logo', loginRequiredStrictly, adminRequired, validator.logo, apiV3FormValidator, async(req, res) => {
 
     const {
-      isDefaultLogo, customizedLogoSrc,
+      isDefaultLogo,
     } = req.body;
 
     const requestParams = {
       'customize:isDefaultLogo': isDefaultLogo,
-      'customize:customizedLogoSrc': customizedLogoSrc,
     };
     try {
       await crowi.configManager.updateConfigsInTheSameNamespace('crowi', requestParams);
       const customizedParams = {
         isDefaultLogo: await crowi.configManager.getConfig('crowi', 'customize:isDefaultLogo'),
-        customizedLogoSrc: await crowi.configManager.getConfig('crowi', 'customize:customizedLogoSrc'),
       };
       return res.apiv3({ customizedParams });
     }
@@ -716,7 +690,7 @@ module.exports = (crowi) => {
   });
 
   router.post('/upload-brand-logo', uploads.single('file'), loginRequiredStrictly,
-    adminRequired, csrf, validator.logo, apiV3FormValidator, async(req, res) => {
+    adminRequired, validator.logo, apiV3FormValidator, async(req, res) => {
 
       if (req.file == null) {
         return res.apiv3Err(new ErrorV3('File error.', 'upload-brand-logo-failed'));
@@ -757,7 +731,7 @@ module.exports = (crowi) => {
       return res.apiv3({ attachment });
     });
 
-  router.delete('/delete-brand-logo', csrf, loginRequiredStrictly, adminRequired, async(req, res) => {
+  router.delete('/delete-brand-logo', loginRequiredStrictly, adminRequired, async(req, res) => {
 
     const attachments = await Attachment.find({ attachmentType: AttachmentType.BRAND_LOGO });
 

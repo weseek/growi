@@ -1,4 +1,4 @@
-import { pathUtils } from '@growi/core';
+import { isServer, pathUtils } from '@growi/core';
 import { Container } from 'unstated';
 import urljoin from 'url-join';
 
@@ -18,15 +18,15 @@ export default class AdminOidcSecurityContainer extends Container {
   constructor(appContainer) {
     super();
 
+    if (isServer()) {
+      return;
+    }
+
     this.appContainer = appContainer;
-    this.dummyOidcProviderName = 0;
-    this.dummyOidcProviderNameForError = 1;
 
     this.state = {
       retrieveError: null,
-      callbackUrl: urljoin(pathUtils.removeTrailingSlash(appContainer.config.crowi.url), '/passport/oidc/callback'),
-      // set dummy value tile for using suspense
-      oidcProviderName: this.dummyOidcProviderName,
+      oidcProviderName: '',
       oidcIssuerHost: '',
       oidcAuthorizationEndpoint: '',
       oidcTokenEndpoint: '',

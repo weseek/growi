@@ -17,7 +17,7 @@ jobs:
         ref: ${{ github.event.pull_request.base.ref }}
 
     - name: Retrieve information from package.json
-      uses: myrotvorets/info-from-package-json-action@1.1.0
+      uses: myrotvorets/info-from-package-json-action@1.2.0
       id: package-json
       with:
         workingDir: packages/slackbot-proxy
@@ -115,7 +115,7 @@ jobs:
         yarn bump-versions:slackbot-proxy
 
     - name: Retrieve information from package.json
-      uses: myrotvorets/info-from-package-json-action@1.1.0
+      uses: myrotvorets/info-from-package-json-action@1.2.0
       id: package-json
       with:
         workingDir: packages/slackbot-proxy

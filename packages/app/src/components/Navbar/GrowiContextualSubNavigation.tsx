@@ -1,68 +1,80 @@
 import React, { useState, useEffect, useCallback } from 'react';
 
-import PropTypes from 'prop-types';
-import { useTranslation } from 'react-i18next';
+import { isPopulated, IUser, pagePathUtils } from '@growi/core';
+import { useTranslation } from 'next-i18next';
+import dynamic from 'next/dynamic';
+import { useRouter } from 'next/router';
 import { DropdownItem } from 'reactstrap';
 
-import EditorContainer from '~/client/services/EditorContainer';
-import PageContainer from '~/client/services/PageContainer';
-import { exportAsMarkdown } from '~/client/services/page-operation';
+import { exportAsMarkdown, updateContentWidth } from '~/client/services/page-operation';
 import { toastSuccess, toastError } from '~/client/util/apiNotification';
 import { apiPost } from '~/client/util/apiv1-client';
-import { getIdForRef } from '~/interfaces/common';
 import {
-  IPageHasId, IPageToRenameWithMeta, IPageWithMeta, IPageInfoForEntity,
+  IPageToRenameWithMeta, IPageWithMeta, IPageInfoForEntity,
 } from '~/interfaces/page';
 import { IResTagsUpdateApiv1 } from '~/interfaces/tag';
 import { OnDuplicatedFunction, OnRenamedFunction, OnDeletedFunction } from '~/interfaces/ui';
-import { IUser } from '~/interfaces/user';
 import {
-  useCurrentCreatedAt, useCurrentUpdatedAt, useCurrentPageId, useRevisionId, useCurrentPagePath,
-  useCreator, useRevisionAuthor, useCurrentUser, useIsGuestUser, useIsSharedUser, useShareLinkId, useEmptyPageId, useTemplateTagData,
+  useCurrentPageId, useCurrentPathname, useIsNotFound,
+  useCurrentUser, useIsGuestUser, useIsSharedUser, useShareLinkId, useTemplateTagData, useIsContainerFluid,
 } from '~/stores/context';
 import { usePageTagsForEditors } from '~/stores/editor';
 import {
   usePageAccessoriesModal, PageAccessoriesModalContents, IPageForPageDuplicateModal,
   usePageDuplicateModal, usePageRenameModal, usePageDeleteModal, usePagePresentationModal,
 } from '~/stores/modal';
-import { useSWRxTagsInfo } from '~/stores/page';
+import { useSWRxCurrentPage, useSWRxTagsInfo } from '~/stores/page';
 import {
-  EditorMode, useDrawerMode, useEditorMode, useIsDeviceSmallerThanMd, useIsAbleToShowPageManagement, useIsAbleToShowTagLabel,
+  EditorMode, useDrawerMode, useEditorMode, useIsAbleToShowPageManagement, useIsAbleToShowTagLabel,
   useIsAbleToShowPageEditorModeManager, useIsAbleToShowPageAuthors,
 } from '~/stores/ui';
 
-import { AdditionalMenuItemsRendererProps } from '../Common/Dropdown/PageItemControl';
 import CreateTemplateModal from '../CreateTemplateModal';
 import AttachmentIcon from '../Icons/AttachmentIcon';
 import HistoryIcon from '../Icons/HistoryIcon';
 import PresentationIcon from '../Icons/PresentationIcon';
 import ShareLinkIcon from '../Icons/ShareLinkIcon';
-import { withUnstatedContainers } from '../UnstatedUtils';
+import { Skeleton } from '../Skeleton';
 
-
+import type { AuthorInfoProps } from './AuthorInfo';
 import { GrowiSubNavigation } from './GrowiSubNavigation';
-import PageEditorModeManager from './PageEditorModeManager';
-import { SubNavButtons } from './SubNavButtons';
+import type { SubNavButtonsProps } from './SubNavButtons';
+
+import AuthorInfoStyles from './AuthorInfo.module.scss';
+import PageEditorModeManagerStyles from './PageEditorModeManager.module.scss';
+
+const { isUsersHomePage } = pagePathUtils;
+
+const AuthorInfoSkeleton = () => <Skeleton additionalClass={`${AuthorInfoStyles['grw-author-info-skeleton']} py-1`} />;
 
 
-type AdditionalMenuItemsProps = AdditionalMenuItemsRendererProps & {
+const PageEditorModeManager = dynamic(
+  () => import('./PageEditorModeManager'),
+  { ssr: false, loading: () => <Skeleton additionalClass={`${PageEditorModeManagerStyles['grw-page-editor-mode-manager-skeleton']}`} /> },
+);
+// TODO: If enable skeleton, we get hydration error when create a page from PageCreateModal
+// { ssr: false, loading: () => <Skeleton additionalClass='btn-skeleton py-2' /> },
+const SubNavButtons = dynamic<SubNavButtonsProps>(
+  () => import('./SubNavButtons').then(mod => mod.SubNavButtons),
+  { ssr: false, loading: () => <></> },
+);
+const AuthorInfo = dynamic<AuthorInfoProps>(() => import('./AuthorInfo').then(mod => mod.AuthorInfo), {
+  ssr: false,
+  loading: AuthorInfoSkeleton,
+});
+
+type PageOperationMenuItemsProps = {
   pageId: string,
   revisionId: string,
   isLinkSharingDisabled?: boolean,
-  onClickTemplateMenuItem: (isPageTemplateModalShown: boolean) => void,
-
 }
 
-const AdditionalMenuItems = (props: AdditionalMenuItemsProps): JSX.Element => {
+const PageOperationMenuItems = (props: PageOperationMenuItemsProps): JSX.Element => {
   const { t } = useTranslation();
 
   const {
-    pageId, revisionId, isLinkSharingDisabled, onClickTemplateMenuItem,
+    pageId, revisionId, isLinkSharingDisabled,
   } = props;
-
-  const openPageTemplateModalHandler = () => {
-    onClickTemplateMenuItem(true);
-  };
 
   const { data: isGuestUser } = useIsGuestUser();
   const { data: isSharedUser } = useIsSharedUser();
@@ -135,9 +147,25 @@ const AdditionalMenuItems = (props: AdditionalMenuItemsProps): JSX.Element => {
         </span>
         {t('share_links.share_link_management')}
       </DropdownItem>
+    </>
+  );
+};
 
-      <DropdownItem divider />
+type CreateTemplateMenuItemsProps = {
+  onClickTemplateMenuItem: (isPageTemplateModalShown: boolean) => void,
+}
 
+const CreateTemplateMenuItems = (props: CreateTemplateMenuItemsProps): JSX.Element => {
+  const { t } = useTranslation();
+
+  const { onClickTemplateMenuItem } = props;
+
+  const openPageTemplateModalHandler = () => {
+    onClickTemplateMenuItem(true);
+  };
+
+  return (
+    <>
       {/* Create template */}
       <DropdownItem
         onClick={openPageTemplateModalHandler}
@@ -151,37 +179,45 @@ const AdditionalMenuItems = (props: AdditionalMenuItemsProps): JSX.Element => {
   );
 };
 
+type GrowiContextualSubNavigationProps = {
+  isCompactMode?: boolean,
+  isLinkSharingDisabled: boolean,
+};
 
-const GrowiContextualSubNavigation = (props) => {
-  const { data: isDeviceSmallerThanMd } = useIsDeviceSmallerThanMd();
+const GrowiContextualSubNavigation = (props: GrowiContextualSubNavigationProps): JSX.Element => {
+
+  const router = useRouter();
+
+  const { data: currentPage, mutate: mutateCurrentPage } = useSWRxCurrentPage();
+
+  const revision = currentPage?.revision;
+  const revisionId = (revision != null && isPopulated(revision)) ? revision._id : undefined;
+
   const { data: isDrawerMode } = useDrawerMode();
   const { data: editorMode, mutate: mutateEditorMode } = useEditorMode();
-  const { data: createdAt } = useCurrentCreatedAt();
-  const { data: updatedAt } = useCurrentUpdatedAt();
   const { data: pageId } = useCurrentPageId();
-  const { data: emptyPageId } = useEmptyPageId();
-  const { data: revisionId } = useRevisionId();
-  const { data: path } = useCurrentPagePath();
-  const { data: creator } = useCreator();
-  const { data: revisionAuthor } = useRevisionAuthor();
+  const { data: currentPathname } = useCurrentPathname();
   const { data: currentUser } = useCurrentUser();
+  const { data: isNotFound } = useIsNotFound();
   const { data: isGuestUser } = useIsGuestUser();
   const { data: isSharedUser } = useIsSharedUser();
   const { data: shareLinkId } = useShareLinkId();
+  const { data: isContainerFluid } = useIsContainerFluid();
 
   const { data: isAbleToShowPageManagement } = useIsAbleToShowPageManagement();
   const { data: isAbleToShowTagLabel } = useIsAbleToShowTagLabel();
   const { data: isAbleToShowPageEditorModeManager } = useIsAbleToShowPageEditorModeManager();
   const { data: isAbleToShowPageAuthors } = useIsAbleToShowPageAuthors();
 
-  const { mutate: mutateSWRTagsInfo, data: tagsInfoData } = useSWRxTagsInfo(pageId);
-  const { data: tagsForEditors, mutate: mutatePageTagsForEditors, sync: syncPageTagsForEditors } = usePageTagsForEditors(pageId);
+  const { mutate: mutateSWRTagsInfo, data: tagsInfoData } = useSWRxTagsInfo(currentPage?._id);
+  const { data: tagsForEditors, mutate: mutatePageTagsForEditors, sync: syncPageTagsForEditors } = usePageTagsForEditors(currentPage?._id);
 
   const { open: openDuplicateModal } = usePageDuplicateModal();
   const { open: openRenameModal } = usePageRenameModal();
   const { open: openDeleteModal } = usePageDeleteModal();
   const { data: templateTagData } = useTemplateTagData();
 
+  const path = currentPage?.path ?? currentPathname;
 
   useEffect(() => {
     // Run only when tagsInfoData has been updated
@@ -193,31 +229,30 @@ const GrowiContextualSubNavigation = (props) => {
 
   useEffect(() => {
     if (pageId === null && templateTagData != null) {
-      const tags = templateTagData.split(',').filter((str: string) => {
-        return str !== ''; // filter empty values
-      });
-      mutatePageTagsForEditors(tags);
+      mutatePageTagsForEditors(templateTagData);
     }
   }, [pageId, mutatePageTagsForEditors, templateTagData, mutateSWRTagsInfo]);
 
   const [isPageTemplateModalShown, setIsPageTempleteModalShown] = useState(false);
 
-  const {
-    isCompactMode, isLinkSharingDisabled, pageContainer,
-  } = props;
+  const { isCompactMode, isLinkSharingDisabled } = props;
 
   const isViewMode = editorMode === EditorMode.View;
 
 
   const tagsUpdatedHandlerForViewMode = useCallback(async(newTags: string[]) => {
+    if (currentPage == null) {
+      return;
+    }
+
+    const { _id: pageId, revision: revisionId } = currentPage;
     try {
       const res: IResTagsUpdateApiv1 = await apiPost('/tags.update', { pageId, revisionId, tags: newTags });
+      mutateCurrentPage();
 
-      const updatedRevisionId = getIdForRef(res.savedPage.revision);
-      await pageContainer.setState({ revisionId: updatedRevisionId });
-
-      const lastUpdateUser = res.savedPage?.lastUpdateUser as IUser;
-      await pageContainer.setState({ lastUpdateUser });
+      // TODO: fix https://github.com/weseek/growi/pull/6478 without pageContainer
+      // const lastUpdateUser = res.savedPage?.lastUpdateUser as IUser;
+      // await pageContainer.setState({ lastUpdateUsername: lastUpdateUser.username });
 
       // revalidate SWRTagsInfo
       mutateSWRTagsInfo();
@@ -229,7 +264,7 @@ const GrowiContextualSubNavigation = (props) => {
       toastError(err, 'fail to update tags');
     }
 
-  }, [pageId, revisionId, mutateSWRTagsInfo, mutatePageTagsForEditors, pageContainer]);
+  }, [currentPage, mutateCurrentPage, mutateSWRTagsInfo, mutatePageTagsForEditors]);
 
   const tagsUpdatedHandlerForEditMode = useCallback((newTags: string[]): void => {
     // It will not be reflected in the DB until the page is refreshed
@@ -237,97 +272,133 @@ const GrowiContextualSubNavigation = (props) => {
     return;
   }, [mutatePageTagsForEditors]);
 
+  const reload = useCallback(() => {
+    if (currentPathname != null) {
+      router.push(currentPathname);
+    }
+  }, [currentPathname, router]);
+
   const duplicateItemClickedHandler = useCallback(async(page: IPageForPageDuplicateModal) => {
     const duplicatedHandler: OnDuplicatedFunction = (fromPath, toPath) => {
-      window.location.href = toPath;
+      router.push(toPath);
     };
     openDuplicateModal(page, { onDuplicated: duplicatedHandler });
-  }, [openDuplicateModal]);
+  }, [openDuplicateModal, router]);
 
   const renameItemClickedHandler = useCallback(async(page: IPageToRenameWithMeta<IPageInfoForEntity>) => {
     const renamedHandler: OnRenamedFunction = () => {
-      if (page.data._id !== null) {
-        window.location.href = `/${page.data._id}`;
-        return;
-      }
-      window.location.reload();
+      reload();
     };
     openRenameModal(page, { onRenamed: renamedHandler });
-  }, [openRenameModal]);
-
-  const onDeletedHandler: OnDeletedFunction = useCallback((pathOrPathsToDelete, isRecursively, isCompletely) => {
-    if (typeof pathOrPathsToDelete !== 'string') {
-      return;
-    }
-
-    const path = pathOrPathsToDelete;
-
-    if (isCompletely) {
-      // redirect to NotFound Page
-      window.location.href = path;
-    }
-    else {
-      window.location.reload();
-    }
-  }, []);
+  }, [openRenameModal, reload]);
 
   const deleteItemClickedHandler = useCallback((pageWithMeta: IPageWithMeta) => {
-    openDeleteModal([pageWithMeta], { onDeleted: onDeletedHandler });
-  }, [onDeletedHandler, openDeleteModal]);
+    const deletedHandler: OnDeletedFunction = (pathOrPathsToDelete, isRecursively, isCompletely) => {
+      if (typeof pathOrPathsToDelete !== 'string') {
+        return;
+      }
+
+      const path = pathOrPathsToDelete;
+
+      if (isCompletely) {
+        // redirect to NotFound Page
+        router.push(path);
+      }
+      else {
+        // Do not use "router.push(currentPathname)" to avoid `Error: Invariant: attempted to hard navigate to the same URL`
+        // See: https://github.com/weseek/growi/pull/7061
+        router.reload();
+      }
+    };
+    openDeleteModal([pageWithMeta], { onDeleted: deletedHandler });
+  }, [openDeleteModal, router]);
+
+  const switchContentWidthHandler = useCallback(async(pageId: string, value: boolean) => {
+    await updateContentWidth(pageId, value);
+    mutateCurrentPage();
+  }, [mutateCurrentPage]);
 
   const templateMenuItemClickHandler = useCallback(() => {
     setIsPageTempleteModalShown(true);
   }, []);
 
 
-  const ControlComponents = useCallback(() => {
-    const pageIdForSubNavButtons = pageId ?? emptyPageId; // for SubNavButtons
-
-    function onPageEditorModeButtonClicked(viewType) {
-      mutateEditorMode(viewType);
-    }
-
-    let additionalMenuItemsRenderer;
-    if (revisionId != null) {
-      additionalMenuItemsRenderer = props => (
-        <AdditionalMenuItems
-          {...props}
-          pageId={pageId}
-          revisionId={revisionId}
-          isLinkSharingDisabled={isLinkSharingDisabled}
-          onClickTemplateMenuItem={templateMenuItemClickHandler}
-        />
+  const RightComponent = useCallback(() => {
+    const additionalMenuItemsRenderer = () => {
+      if (revisionId == null || pageId == null) {
+        return (
+          <>
+            <CreateTemplateMenuItems
+              onClickTemplateMenuItem={templateMenuItemClickHandler}
+            />
+          </>);
+      }
+      return (
+        <>
+          <PageOperationMenuItems
+            pageId={pageId}
+            revisionId={revisionId}
+            isLinkSharingDisabled={isLinkSharingDisabled}
+          />
+          <DropdownItem divider />
+          <CreateTemplateMenuItems
+            onClickTemplateMenuItem={templateMenuItemClickHandler}
+          />
+        </>
       );
-    }
+    };
+
     return (
       <>
-        <div className="d-flex flex-column align-items-end justify-content-center py-md-2" style={{ gap: `${isCompactMode ? '5px' : '7px'}` }}>
-          { pageIdForSubNavButtons != null && isViewMode && (
-            <div className="h-50">
-              <SubNavButtons
-                isCompactMode={isCompactMode}
-                pageId={pageIdForSubNavButtons}
-                shareLinkId={shareLinkId}
-                revisionId={revisionId}
-                path={path}
-                disableSeenUserInfoPopover={isSharedUser}
-                showPageControlDropdown={isAbleToShowPageManagement}
-                additionalMenuItemRenderer={additionalMenuItemsRenderer}
-                onClickDuplicateMenuItem={duplicateItemClickedHandler}
-                onClickRenameMenuItem={renameItemClickedHandler}
-                onClickDeleteMenuItem={deleteItemClickedHandler}
+        <div className="d-flex">
+          <div className="d-flex flex-column align-items-end justify-content-center py-md-2" style={{ gap: `${isCompactMode ? '5px' : '7px'}` }}>
+            { isViewMode && (
+              <div className="h-50">
+                { pageId != null && (
+                  <SubNavButtons
+                    isCompactMode={isCompactMode}
+                    pageId={pageId}
+                    revisionId={revisionId}
+                    shareLinkId={shareLinkId}
+                    path={path ?? currentPathname} // If the page is empty, "path" is undefined
+                    expandContentWidth={currentPage?.expandContentWidth ?? isContainerFluid}
+                    disableSeenUserInfoPopover={isSharedUser}
+                    showPageControlDropdown={isAbleToShowPageManagement}
+                    additionalMenuItemRenderer={additionalMenuItemsRenderer}
+                    onClickDuplicateMenuItem={duplicateItemClickedHandler}
+                    onClickRenameMenuItem={renameItemClickedHandler}
+                    onClickDeleteMenuItem={deleteItemClickedHandler}
+                    onClickSwitchContentWidth={switchContentWidthHandler}
+                  />
+                ) }
+              </div>
+            ) }
+            {isAbleToShowPageEditorModeManager && (
+              <PageEditorModeManager
+                onPageEditorModeButtonClicked={viewType => mutateEditorMode(viewType)}
+                isBtnDisabled={isGuestUser}
+                editorMode={editorMode}
               />
-            </div>
+            )}
+          </div>
+          { (isAbleToShowPageAuthors && !isCompactMode && !isUsersHomePage(path ?? '')) && (
+            <ul className={`${AuthorInfoStyles['grw-author-info']} text-nowrap border-left d-none d-lg-block d-edit-none py-2 pl-4 mb-0 ml-3`}>
+              <li className="pb-1">
+                { currentPage != null
+                  ? <AuthorInfo user={currentPage.creator as IUser} date={currentPage.createdAt} mode="create" locate="subnav" />
+                  : <AuthorInfoSkeleton />
+                }
+              </li>
+              <li className="mt-1 pt-1 border-top">
+                { currentPage != null
+                  ? <AuthorInfo user={currentPage.lastUpdateUser as IUser} date={currentPage.updatedAt} mode="update" locate="subnav" />
+                  : <AuthorInfoSkeleton />
+                }
+              </li>
+            </ul>
           ) }
-          {isAbleToShowPageEditorModeManager && (
-            <PageEditorModeManager
-              onPageEditorModeButtonClicked={onPageEditorModeButtonClicked}
-              isBtnDisabled={isGuestUser}
-              editorMode={editorMode}
-              isDeviceSmallerThanMd={isDeviceSmallerThanMd}
-            />
-          )}
         </div>
+
         {path != null && currentUser != null && (
           <CreateTemplateModal
             path={path}
@@ -337,59 +408,35 @@ const GrowiContextualSubNavigation = (props) => {
         )}
       </>
     );
-  }, [
-    pageId, emptyPageId, revisionId, shareLinkId, editorMode, mutateEditorMode, isCompactMode,
-    isLinkSharingDisabled, isDeviceSmallerThanMd, isGuestUser, isSharedUser, currentUser,
-    isViewMode, isAbleToShowPageEditorModeManager, isAbleToShowPageManagement,
-    duplicateItemClickedHandler, renameItemClickedHandler, deleteItemClickedHandler,
-    path, templateMenuItemClickHandler, isPageTemplateModalShown,
-  ]);
+  // eslint-disable-next-line max-len
+  }, [isCompactMode, isViewMode, pageId, revisionId, shareLinkId, path, currentPathname, isSharedUser, isAbleToShowPageManagement,
+      duplicateItemClickedHandler, renameItemClickedHandler, deleteItemClickedHandler, isAbleToShowPageEditorModeManager, isGuestUser,
+      editorMode, isAbleToShowPageAuthors, currentPage, currentUser, isPageTemplateModalShown, isLinkSharingDisabled, templateMenuItemClickHandler,
+      mutateEditorMode, switchContentWidthHandler]);
 
-  if (path == null) {
-    return <></>;
-  }
 
-  const currentPage: Partial<IPageHasId> = {
-    _id: pageId ?? undefined,
-    path,
-    revision: revisionId ?? undefined,
-    creator: creator ?? undefined,
-    lastUpdateUser: revisionAuthor,
-    createdAt: createdAt ?? undefined,
-    updatedAt: updatedAt ?? undefined,
-  };
+  const pagePath = isNotFound
+    ? currentPathname
+    : currentPage?.path;
 
   return (
     <div data-testid="grw-contextual-sub-nav">
       <GrowiSubNavigation
-        page={currentPage}
+        pagePath={pagePath}
+        pageId={currentPage?._id}
         showDrawerToggler={isDrawerMode}
         showTagLabel={isAbleToShowTagLabel}
-        showPageAuthors={isAbleToShowPageAuthors}
         isGuestUser={isGuestUser}
         isDrawerMode={isDrawerMode}
         isCompactMode={isCompactMode}
         tags={isViewMode ? tagsInfoData?.tags : tagsForEditors}
         tagsUpdatedHandler={isViewMode ? tagsUpdatedHandlerForViewMode : tagsUpdatedHandlerForEditMode}
-        controls={ControlComponents}
+        rightComponent={RightComponent}
         additionalClasses={['container-fluid']}
       />
     </div>
   );
 };
 
-/**
- * Wrapper component for using unstated
- */
-const GrowiContextualSubNavigationWrapper = withUnstatedContainers(GrowiContextualSubNavigation, [EditorContainer, PageContainer]);
 
-
-GrowiContextualSubNavigation.propTypes = {
-  editorContainer: PropTypes.instanceOf(EditorContainer).isRequired,
-  pageContainer: PropTypes.instanceOf(PageContainer).isRequired,
-
-  isCompactMode: PropTypes.bool,
-  isLinkSharingDisabled: PropTypes.bool,
-};
-
-export default GrowiContextualSubNavigationWrapper;
+export default GrowiContextualSubNavigation;

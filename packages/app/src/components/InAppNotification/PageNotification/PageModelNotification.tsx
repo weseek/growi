@@ -2,13 +2,13 @@ import React, {
   forwardRef, ForwardRefRenderFunction, useImperativeHandle,
 } from 'react';
 
+import { HasObjectId } from '@growi/core';
 import { PagePathLabel } from '@growi/ui';
+import { useRouter } from 'next/router';
 
-import { IInAppNotificationOpenable } from '~/client/interfaces/in-app-notification-openable';
-import { HasObjectId } from '~/interfaces/has-object-id';
-import { IInAppNotification } from '~/interfaces/in-app-notification';
+import type { IInAppNotificationOpenable } from '~/client/interfaces/in-app-notification-openable';
+import type { IInAppNotification } from '~/interfaces/in-app-notification';
 
-import { parseSnapshot } from '../../../models/serializers/in-app-notification-snapshot/page';
 import FormattedDistanceDate from '../../FormattedDistanceDate';
 
 interface Props {
@@ -24,7 +24,7 @@ const PageModelNotification: ForwardRefRenderFunction<IInAppNotificationOpenable
     notification, actionMsg, actionIcon, actionUsers,
   } = props;
 
-  const snapshot = parseSnapshot(notification.snapshot);
+  const router = useRouter();
 
   // publish open()
   useImperativeHandle(ref, () => ({
@@ -33,7 +33,7 @@ const PageModelNotification: ForwardRefRenderFunction<IInAppNotificationOpenable
         // jump to target page
         const targetPagePath = notification.target.path;
         if (targetPagePath != null) {
-          window.location.href = targetPagePath;
+          router.push(targetPagePath);
         }
       }
     },
@@ -42,7 +42,7 @@ const PageModelNotification: ForwardRefRenderFunction<IInAppNotificationOpenable
   return (
     <div className="p-2 overflow-hidden">
       <div className="text-truncate">
-        <b>{actionUsers}</b> {actionMsg} <PagePathLabel path={snapshot.path} />
+        <b>{actionUsers}</b> {actionMsg} <PagePathLabel path={notification.parsedSnapshot?.path ?? ''} />
       </div>
       <i className={`${actionIcon} mr-2`} />
       <FormattedDistanceDate

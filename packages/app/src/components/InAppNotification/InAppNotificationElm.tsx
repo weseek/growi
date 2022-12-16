@@ -2,12 +2,12 @@ import React, {
   FC, useRef,
 } from 'react';
 
+import { HasObjectId } from '@growi/core';
 import { UserPicture } from '@growi/ui';
 import { DropdownItem } from 'reactstrap';
 
 import { IInAppNotificationOpenable } from '~/client/interfaces/in-app-notification-openable';
 import { apiv3Post } from '~/client/util/apiv3-client';
-import { HasObjectId } from '~/interfaces/has-object-id';
 import { IInAppNotification, InAppNotificationStatuses } from '~/interfaces/in-app-notification';
 
 // Change the display for each targetmodel
@@ -97,7 +97,7 @@ const InAppNotificationElm: FC<Props> = (props: Props) => {
       break;
     case 'PAGE_UPDATE':
       actionMsg = 'updated on';
-      actionIcon = 'ti-agenda';
+      actionIcon = 'ti ti-agenda';
       break;
     case 'PAGE_RENAME':
       actionMsg = 'renamed';

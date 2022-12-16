@@ -1,10 +1,9 @@
 import React from 'react';
 
+import { useTranslation } from 'next-i18next';
 import PropTypes from 'prop-types';
-import { useTranslation } from 'react-i18next';
 
 import AdminMarkDownContainer from '~/client/services/AdminMarkDownContainer';
-import AppContainer from '~/client/services/AppContainer';
 import { toastSuccess, toastError } from '~/client/util/apiNotification';
 import loggerFactory from '~/utils/logger';
 
@@ -26,7 +25,7 @@ class PresentationForm extends React.Component {
 
     try {
       await this.props.adminMarkDownContainer.updatePresentationSetting();
-      toastSuccess(t('toaster.update_successed', { target: t('admin:markdown_setting.presentation_header') }));
+      toastSuccess(t('toaster.update_successed', { target: t('markdown_settings.presentation_header'), ns: 'commons' }));
     }
     catch (err) {
       toastError(err);
@@ -43,7 +42,7 @@ class PresentationForm extends React.Component {
       <fieldset className="form-group col-12 my-2">
 
         <label className="col-8 offset-4 col-form-label font-weight-bold text-left mt-3">
-          {t('admin:markdown_setting.presentation_options.page_break_setting')}
+          {t('markdown_settings.presentation_options.page_break_setting')}
         </label>
 
         <div className="form-group col-12 my-3">
@@ -58,13 +57,13 @@ class PresentationForm extends React.Component {
                   onChange={() => adminMarkDownContainer.switchPageBreakSeparator(1)}
                 />
                 <label className="custom-control-label w-100" htmlFor="pageBreakOption1">
-                  <p className="font-weight-bold">{ t('admin:markdown_setting.presentation_options.preset_one_separator') }</p>
+                  <p className="font-weight-bold">{ t('markdown_settings.presentation_options.preset_one_separator') }</p>
                   <div className="mt-3">
-                    { t('admin:markdown_setting.presentation_options.preset_one_separator_desc') }
+                    { t('markdown_settings.presentation_options.preset_one_separator_desc') }
                     <input
                       className="form-control"
                       type="text"
-                      value={t('admin:markdown_setting.presentation_options.preset_one_separator_value')}
+                      value={t('markdown_settings.presentation_options.preset_one_separator_value')}
                       readOnly
                     />
                   </div>
@@ -82,13 +81,13 @@ class PresentationForm extends React.Component {
                   onChange={() => adminMarkDownContainer.switchPageBreakSeparator(2)}
                 />
                 <label className="custom-control-label w-100" htmlFor="pageBreakOption2">
-                  <p className="font-weight-bold">{ t('admin:markdown_setting.presentation_options.preset_two_separator') }</p>
+                  <p className="font-weight-bold">{ t('markdown_settings.presentation_options.preset_two_separator') }</p>
                   <div className="mt-3">
-                    { t('admin:markdown_setting.presentation_options.preset_two_separator_desc') }
+                    { t('markdown_settings.presentation_options.preset_two_separator_desc') }
                     <input
                       className="form-control"
                       type="text"
-                      value={t('admin:markdown_setting.presentation_options.preset_two_separator_value')}
+                      value={t('markdown_settings.presentation_options.preset_two_separator_value')}
                       readOnly
                     />
                   </div>
@@ -105,9 +104,9 @@ class PresentationForm extends React.Component {
                   onChange={() => adminMarkDownContainer.switchPageBreakSeparator(3)}
                 />
                 <label className="custom-control-label w-100" htmlFor="pageBreakOption3">
-                  <p className="font-weight-bold">{ t('admin:markdown_setting.presentation_options.custom_separator') }</p>
+                  <p className="font-weight-bold">{ t('markdown_settings.presentation_options.custom_separator') }</p>
                   <div className="mt-3">
-                    { t('admin:markdown_setting.presentation_options.custom_separator_desc') }
+                    { t('markdown_settings.presentation_options.custom_separator_desc') }
                     <input
                       className="form-control"
                       defaultValue={pageBreakCustomSeparator}
@@ -129,17 +128,16 @@ class PresentationForm extends React.Component {
 
 PresentationForm.propTypes = {
   t: PropTypes.func.isRequired, // i18next
-  appContainer: PropTypes.instanceOf(AppContainer).isRequired,
   adminMarkDownContainer: PropTypes.instanceOf(AdminMarkDownContainer).isRequired,
 
 };
 
 const PresentationFormWrapperFC = (props) => {
-  const { t } = useTranslation();
+  const { t } = useTranslation('admin');
 
   return <PresentationForm t={t} {...props} />;
 };
 
-const PresentationFormWrapper = withUnstatedContainers(PresentationFormWrapperFC, [AppContainer, AdminMarkDownContainer]);
+const PresentationFormWrapper = withUnstatedContainers(PresentationFormWrapperFC, [AdminMarkDownContainer]);
 
 export default PresentationFormWrapper;

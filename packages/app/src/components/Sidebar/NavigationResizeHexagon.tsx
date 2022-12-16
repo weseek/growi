@@ -1,10 +1,6 @@
-import React, { FC } from 'react';
+import React from 'react';
 
-type Props = {
-
-};
-
-export const NavigationResizeHexagon: FC<Props> = () => (
+export const NavigationResizeHexagon = React.memo((): JSX.Element => (
   <svg
     xmlns="http://www.w3.org/2000/svg"
     viewBox="0 0 27.691 23.999"
@@ -17,4 +13,5 @@ export const NavigationResizeHexagon: FC<Props> = () => (
       <path d="M2.124,9.114l5.28,5.34a.647.647,0,0,0,.922,0l.616-.623a.665.665,0,0,0,0-.932L4.759,8.648,8.943,4.4a.665.665,0,0,0,0-.932l-.616-.623a.647.647,0,0,0-.922,0l-5.28,5.34A.665.665,0,0,0,2.124,9.114Z" transform="translate(-1.933 -2.648)"></path>
     </g>
   </svg>
-);
+));
+NavigationResizeHexagon.displayName = 'NavigationResizeHexagon';

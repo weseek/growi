@@ -870,7 +870,7 @@ module.exports = function(crowi, app) {
       return res.json(ApiResponse.error('Page exists', 'already_exists'));
     }
 
-    const options = {};
+    const options = { overwriteScopesOfDescendants };
     if (grant != null) {
       options.grant = grant;
       options.grantUserGroupId = grantUserGroupId;
@@ -890,11 +890,6 @@ module.exports = function(crowi, app) {
       tags: savedTags,
     };
     res.json(ApiResponse.success(result));
-
-    // update scopes for descendants
-    if (overwriteScopesOfDescendants) {
-      Page.applyScopesToDescendantsAsyncronously(createdPage, req.user);
-    }
 
     // global notification
     try {
@@ -1014,7 +1009,7 @@ module.exports = function(crowi, app) {
       return res.json(ApiResponse.error('Posted param "revisionId" is outdated.', 'conflict', returnLatestRevision));
     }
 
-    const options = { isSyncRevisionToHackmd };
+    const options = { isSyncRevisionToHackmd, overwriteScopesOfDescendants };
     if (grant != null) {
       options.grant = grant;
       options.grantUserGroupId = grantUserGroupId;
@@ -1022,7 +1017,7 @@ module.exports = function(crowi, app) {
 
     const previousRevision = await Revision.findById(revisionId);
     try {
-      page = await Page.updatePage(page, pageBody, previousRevision.body, req.user, options);
+      page = await crowi.pageService.updatePage(page, pageBody, previousRevision.body, req.user, options);
     }
     catch (err) {
       logger.error('error on _api/pages.update', err);
@@ -1043,11 +1038,6 @@ module.exports = function(crowi, app) {
       tags: savedTags,
     };
     res.json(ApiResponse.success(result));
-
-    // update scopes for descendants
-    if (overwriteScopesOfDescendants) {
-      Page.applyScopesToDescendantsAsyncronously(page, req.user);
-    }
 
     // global notification
     try {
@@ -1077,7 +1067,7 @@ module.exports = function(crowi, app) {
       target: page,
       action: SupportedAction.ACTION_PAGE_UPDATE,
     };
-    activityEvent.emit('update', res.locals.activity._id, parameters, page);
+    activityEvent.emit('update', res.locals.activity._id, parameters, { path: page.path, creator: page.creator._id.toString() });
   };
 
   /**
@@ -1281,6 +1271,10 @@ module.exports = function(crowi, app) {
       return res.json(ApiResponse.error(`Page '${pageId}' is not found or forbidden`, 'notfound_or_forbidden'));
     }
 
+    if (page.isEmpty && !isRecursively) {
+      return res.json(ApiResponse.error('Empty pages cannot be single deleted', 'single_deletion_empty_pages'));
+    }
+
     let creator;
     if (page.isEmpty) {
       // If empty, the creator is inherited from the closest non-empty ancestor page.
@@ -1473,7 +1467,7 @@ module.exports = function(crowi, app) {
     const path = req.body.path;
 
     try {
-      await PageRedirect.removePageRedirectByToPath(path);
+      await PageRedirect.removePageRedirectsByToPath(path);
       logger.debug('Redirect Page deleted', path);
     }
     catch (err) {

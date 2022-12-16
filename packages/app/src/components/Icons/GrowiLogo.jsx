@@ -31,4 +31,6 @@ const GrowiLogo = memo(() => (
   </svg>
 ));
 
+GrowiLogo.displayName = 'GrowiLogo';
+
 export default GrowiLogo;

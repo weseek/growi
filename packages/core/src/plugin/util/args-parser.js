@@ -1,12 +1,12 @@
 /**
  * Arguments parser for custom tag
  */
-class ArgsParser {
+export class ArgsParser {
 
   /**
    * @typedef ParseArgsResult
    * @property {string} firstArgsKey - key of the first argument
-   * @property {string} firstArgsValue - value of the first argument
+   * @property {string|boolean} firstArgsValue - value of the first argument
    * @property {object} options - key of the first argument
    */
 
@@ -55,5 +55,3 @@ class ArgsParser {
   }
 
 }
-
-module.exports = ArgsParser;

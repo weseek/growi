@@ -1,6 +1,7 @@
-import { Types } from 'mongoose';
-import { IUser } from './user';
+import type { IPageSnapshot } from '~/models/serializers/in-app-notification-snapshot/page';
+
 import { IPage } from './page';
+import { IUser } from './user';
 
 export enum InAppNotificationStatuses {
   STATUS_UNREAD = 'UNREAD',
@@ -17,6 +18,7 @@ export interface IInAppNotification {
   actionUsers: IUser[]
   createdAt: Date
   snapshot: string
+  parsedSnapshot?: IPageSnapshot
 }
 
 /*
@@ -54,7 +56,7 @@ export interface ISubscribeRule {
   name: subscribeRuleNames;
   isEnabled: boolean;
 }
-export interface IInAppNotificationSettings {
-  userId: Types.ObjectId;
+export interface IInAppNotificationSettings<UserID> {
+  userId: UserID | string;
   subscribeRules: ISubscribeRule[];
 }

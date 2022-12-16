@@ -1,6 +1,6 @@
 import React, { useCallback } from 'react';
 
-import { useTranslation } from 'react-i18next';
+import { useTranslation } from 'next-i18next';
 import {
   Modal,
   ModalHeader,
@@ -32,7 +32,7 @@ const DisassociateModal = (props: Props): JSX.Element => {
     try {
       await disassociateLdapAccount({ providerType, accountId });
       props.onClose();
-      toastSuccess(t('security_setting.updated_general_security_setting'));
+      toastSuccess(t('security_settings.updated_general_security_setting'));
     }
     catch (err) {
       toastError(err);
@@ -57,7 +57,7 @@ const DisassociateModal = (props: Props): JSX.Element => {
           { t('Cancel') }
         </button>
         <button type="button" className="btn btn-sm btn-danger" onClick={disassociateAccountHandler}>
-          <i className="ti-unlink"></i>
+          <i className="ti ti-unlink"></i>
           { t('Disassociate') }
         </button>
       </ModalFooter>
