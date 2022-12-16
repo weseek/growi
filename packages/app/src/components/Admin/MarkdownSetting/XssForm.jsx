@@ -92,12 +92,12 @@ class XssForm extends React.Component {
               <input
                 type="radio"
                 className="custom-control-input"
-                id="xssOption3"
+                id="xssOption2"
                 name="XssOption"
-                checked={xssOption === 3}
-                onChange={() => { adminMarkDownContainer.setState({ xssOption: 3 }) }}
+                checked={xssOption === RehypeSanitizeOption.CUSTOM}
+                onChange={() => { adminMarkDownContainer.setState({ xssOption: RehypeSanitizeOption.CUSTOM }) }}
               />
-              <label className="custom-control-label w-100" htmlFor="xssOption3">
+              <label className="custom-control-label w-100" htmlFor="xssOption2">
                 <p className="font-weight-bold">{t('markdown_settings.xss_options.custom_whitelist')}</p>
                 <WhiteListInput customizable />
               </label>
