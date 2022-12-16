@@ -95,7 +95,6 @@ bookmarkFolderSchema.statics.findFolderAndChildren = async function(
         model: 'Page',
       },
     }).exec() as unknown as BookmarkFolderItems[];
-  console.log(bookmarkFolders);
   return bookmarkFolders;
 };
 

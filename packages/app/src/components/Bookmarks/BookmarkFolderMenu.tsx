@@ -49,21 +49,17 @@ const BookmarkFolderMenu = (props: Props): JSX.Element => {
 
   }, [mutateChildBookmarkData, t]);
 
-  const addBookmarkToFolder = useCallback(async(folderId: string) => {
+
+  const onMenuItemClickHandler = useCallback(async(itemId: string) => {
+    setSelectedItem(itemId);
     try {
-      await apiv3Post('/bookmark-folder/add-boookmark-to-folder', { pageId: currentPage?._id, folderId });
+      await apiv3Post('/bookmark-folder/add-boookmark-to-folder', { pageId: currentPage?._id, folderId: itemId });
       toastSuccess('Bookmark added to bookmark folder successfully');
     }
     catch (err) {
       toastError(err);
     }
-
   }, [currentPage]);
-
-  const onMenuItemClickHandler = useCallback((itemId: string) => {
-    setSelectedItem(itemId);
-    addBookmarkToFolder(itemId);
-  }, [addBookmarkToFolder]);
 
   return (
     <UncontrolledDropdown className={`grw-bookmark-folder-dropdown ${styles['grw-bookmark-folder-dropdown']}`}>
@@ -100,7 +96,8 @@ const BookmarkFolderMenu = (props: Props): JSX.Element => {
                   checked={selectedItem === folder._id}
                   name="bookmark-folder-menu-item"
                   id={`bookmark-folder-menu-item-${folder._id}`}
-                  onChange={e => e.stopPropagation() }
+                  onChange={e => e.stopPropagation()}
+                  onClick={e => e.stopPropagation() }
                 />
                 <label htmlFor={`bookmark-folder-menu-item-${folder._id}`} className='p-2 m-0 grw-bookmark-folder-menu-item-title mr-auto'>
                   {folder.name}

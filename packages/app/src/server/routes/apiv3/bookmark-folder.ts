@@ -38,7 +38,6 @@ module.exports = (crowi) => {
 
     try {
       const bookmarkFolder = await BookmarkFolder.createByParameters(params);
-      console.log(bookmarkFolder);
       logger.debug('bookmark folder created', bookmarkFolder);
       return res.apiv3({ bookmarkFolder });
     }

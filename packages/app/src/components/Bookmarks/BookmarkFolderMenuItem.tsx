@@ -4,8 +4,11 @@ import {
   DropdownMenu, DropdownToggle, UncontrolledDropdown,
 } from 'reactstrap';
 
+import { toastError, toastSuccess } from '~/client/util/apiNotification';
+import { apiv3Post } from '~/client/util/apiv3-client';
 import { BookmarkFolderItems } from '~/interfaces/bookmark-info';
 import { useSWRxBookamrkFolderAndChild } from '~/stores/bookmark-folder';
+import { useSWRxCurrentPage } from '~/stores/page';
 
 import TriangleIcon from '../Icons/TriangleIcon';
 
@@ -22,6 +25,7 @@ const BookmarkFolderMenuItem = (props: Props):JSX.Element => {
   const [isOpen, setIsOpen] = useState(false);
   const { data: childFolders, mutate: mutateChildFolders } = useSWRxBookamrkFolderAndChild(item._id);
   const [selectedItem, setSelectedItem] = useState<string | null>(null);
+  const { data: currentPage } = useSWRxCurrentPage();
 
   useEffect(() => {
     if (isOpen) {
@@ -36,11 +40,18 @@ const BookmarkFolderMenuItem = (props: Props):JSX.Element => {
     setIsOpen(!isOpen);
   }, [isOpen]);
 
-  const onClickChildMenuItemHandler = useCallback((e, item) => {
+  const onClickChildMenuItemHandler = useCallback(async(e, item) => {
     e.stopPropagation();
     setSelectedItem(item._id);
+    try {
+      await apiv3Post('/bookmark-folder/add-boookmark-to-folder', { pageId: currentPage?._id, folderId: item._id });
+      toastSuccess('Bookmark added to bookmark folder successfully');
+    }
+    catch (err) {
+      toastError(err);
+    }
     onSelectedChild();
-  }, [onSelectedChild]);
+  }, [currentPage, onSelectedChild]);
 
   return (
     <UncontrolledDropdown
@@ -84,7 +95,8 @@ const BookmarkFolderMenuItem = (props: Props):JSX.Element => {
                     checked={selectedItem === child._id}
                     name="bookmark-folder-menu-item"
                     id={`bookmark-folder-menu-item-${child._id}`}
-                    onChange={e => e.stopPropagation() }
+                    onChange={e => e.stopPropagation()}
+                    onClick={e => e.stopPropagation() }
                   />
                   <label htmlFor={`bookmark-folder-menu-item-${child._id}`} className='p-2 m-0 grw-bookmark-folder-menu-item-title mr-auto'>
                     {child.name}
