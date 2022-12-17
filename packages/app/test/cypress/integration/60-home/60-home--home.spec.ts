@@ -14,21 +14,22 @@ context('Access Home', () => {
     // open PersonalDropdown
     cy.waitUntil(() => {
       // do
-      cy.get('.grw-personal-dropdown').should('be.visible').click();
+      cy.getByTestid('personal-dropdown-button').should('be.visible').click();
       // wait until
       return cy.getByTestid('grw-personal-dropdown-menu-user-home').then($elem => $elem.is(':visible'));
     });
     // click the Home button
     cy.getByTestid('grw-personal-dropdown-menu-user-home').should('be.visible').click();
 
-    cy.waitUntilSkeletonDisappear();
-    cy.collapseSidebar(true);
+    cy.getByTestid('grw-users-info').should('be.visible')
 
     // for check download toc data
     // https://redmine.weseek.co.jp/issues/111384
     // cy.get('.toc-link').should('be.visible');
 
     // same screenshot is taken in access-to-page.spec
+    cy.collapseSidebar(true);
+    cy.waitUntilSkeletonDisappear();
     cy.screenshot(`${ssPrefix}-visit-home`);
   });
 
