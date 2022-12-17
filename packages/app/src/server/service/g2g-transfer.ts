@@ -21,8 +21,14 @@ import { G2GTransferError, G2GTransferErrorCode } from '../models/vo/g2g-transfe
 
 const logger = loggerFactory('growi:service:g2g-transfer');
 
+/**
+ * Header name for transfer key
+ */
 export const X_GROWI_TRANSFER_KEY_HEADER_NAME = 'x-growi-transfer-key';
 
+/**
+ * Keys for file upload related config
+ */
 const uploadConfigKeys = [
   'app:fileUploadType',
   'app:useOnlyEnvVarForFileUploadType',
@@ -35,22 +41,35 @@ const uploadConfigKeys = [
   'gcs:useOnlyEnvVarsForSomeOptions',
 ] as const;
 
+/**
+ * File upload related configs
+ */
 type FileUploadConfigs = { [key in typeof uploadConfigKeys[number] ]: any; }
 
 /**
  * Data used for comparing to/from GROWI information
  */
 export type IDataGROWIInfo = {
+  /** GROWI version */
   version: string
+  /** Max user count */
   userUpperLimit: number | null // Handle null as Infinity
+  /** Whether file upload is disabled */
   fileUploadDisabled: boolean;
+  /** Total file size allowed */
   fileUploadTotalLimit: number | null // Handle null as Infinity
+  /** Attachment infromation */
   attachmentInfo: {
+    /** File storage type */
     type: string;
+    /** Whether the storage is writable */
     writable: boolean;
+    /** Bucket name (S3 and GCS only) */
     bucket?: string;
-    customEndpoint?: string; // for S3
-    uploadNamespace?: string; // for GCS
+    /** S3 custom endpoint */
+    customEndpoint?: string;
+    /** GCS namespace */
+    uploadNamespace?: string;
   };
 }
 
@@ -59,7 +78,9 @@ export type IDataGROWIInfo = {
  * TODO: mv this to "./file-uploader/uploader"
  */
 interface FileMeta {
+  /** File name */
   name: string;
+  /** File size in bytes */
   size: number;
 }
 
@@ -68,6 +89,9 @@ interface FileMeta {
  */
 type Transferability = { canTransfer: true; } | { canTransfer: false; reason: string; };
 
+/**
+ * G2g transfer pusher
+ */
 interface Pusher {
   /**
    * Merge axios config with transfer key
@@ -98,6 +122,8 @@ interface Pusher {
   /**
    * Start transfer data between GROWIs
    * @param {TransferKey} tk TransferKey object
+   * @param {any} user User operating g2g transfer
+   * @param {IDataGROWIInfo} toGROWIInfo GROWI info of new GROWI
    * @param {string[]} collections Collection name string array
    * @param {any} optionsMap Options map
    */
@@ -109,6 +135,9 @@ interface Pusher {
   ): Promise<void>
 }
 
+/**
+ * G2g transfer receiver
+ */
 interface Receiver {
   /**
    * Check if key is not expired
@@ -117,7 +146,7 @@ interface Receiver {
    */
   validateTransferKey(key: string): Promise<void>
   /**
-   * Check if key is not expired
+   * Generate GROWIInfo
    * @throws {import('../models/vo/g2g-transfer-error').G2GTransferError}
    */
   answerGROWIInfo(): Promise<IDataGROWIInfo>
@@ -152,8 +181,26 @@ interface Receiver {
     importSettingsMap: { [key: string]: ImportSettings; },
     sourceGROWIUploadConfigs: FileUploadConfigs,
   ): Promise<void>
+  /**
+   * Returns file upload configs
+   */
+  getFileUploadConfigs(): Promise<FileUploadConfigs>
+    /**
+   * Update file upload configs
+   * @param fileUploadConfigs  File upload configs
+   */
+  updateFileUploadConfigs(fileUploadConfigs: FileUploadConfigs): Promise<void>
+  /**
+   * Upload attachment file
+   * @param {Readable} content Pushed attachment data from source GROWI
+   * @param {any} attachmentMap Map-ped Attachment instance
+   */
+  receiveAttachment(content: Readable, attachmentMap: any): Promise<void>
 }
 
+/**
+ * G2g transfer pusher
+ */
 export class G2GTransferPusherService implements Pusher {
 
   crowi: any;
@@ -188,11 +235,6 @@ export class G2GTransferPusherService implements Pusher {
     }
   }
 
-  /**
-   * Returns whether g2g transfer is possible and reason for failure
-   * @param toGROWIInfo to-growi info
-   * @returns Whether g2g transfer is possible and reason for failure
-   */
   public async getTransferability(toGROWIInfo: IDataGROWIInfo): Promise<Transferability> {
     const { fileUploadService } = this.crowi;
 
@@ -415,12 +457,12 @@ export class G2GTransferPusherService implements Pusher {
   }
 
   /**
-   * transfer attachment to destination GROWI
-   * @param tk Transfer key
-   * @param attachment Attachment model instance
-   * @param fileStream Attachment data(loaded from storage)
+   * Transfer attachment to destination GROWI
+   * @param {TransferKey} tk Transfer key
+   * @param {any} attachment Attachment model instance
+   * @param {Readable} fileStream Attachment data(loaded from storage)
    */
-  private async doTransferAttachment(tk: TransferKey, attachment, fileStream: Readable) {
+  private async doTransferAttachment(tk: TransferKey, attachment: any, fileStream: Readable): Promise<void> {
     // Use FormData to immitate browser's form data object
     const form = new FormData();
 
@@ -431,6 +473,9 @@ export class G2GTransferPusherService implements Pusher {
 
 }
 
+/**
+ * G2g transfer receiver
+ */
 export class G2GTransferReceiverService implements Receiver {
 
   crowi: any;
@@ -455,10 +500,6 @@ export class G2GTransferReceiverService implements Receiver {
     }
   }
 
-  /**
-   * generate GROWIInfo
-   * @returns
-   */
   public async answerGROWIInfo(): Promise<IDataGROWIInfo> {
     const { version, configManager, fileUploadService } = this.crowi;
     const userUpperLimit = configManager.getConfig('crowi', 'security:userUpperLimit');
@@ -596,12 +637,6 @@ export class G2GTransferReceiverService implements Receiver {
     await appService.setupAfterInstall();
   }
 
-  /**
-   *
-   * @param content Pushed attachment data from source GROWI
-   * @param attachmentMap Map-ped Attachment instance
-   * @returns
-   */
   public async receiveAttachment(content: Readable, attachmentMap): Promise<void> {
     const { fileUploadService } = this.crowi;
     return fileUploadService.uploadAttachment(content, attachmentMap);
