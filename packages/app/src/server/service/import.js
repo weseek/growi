@@ -24,7 +24,7 @@ const logger = loggerFactory('growi:services:ImportService'); // eslint-disable-
 const BULK_IMPORT_SIZE = 100;
 
 
-class ImportSettings {
+export class ImportSettings {
 
   constructor(mode) {
     this.mode = mode || 'insert';

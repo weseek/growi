@@ -11,6 +11,7 @@ import { G2G_PROGRESS_STATUS } from '~/interfaces/g2g-transfer';
 import GrowiArchiveImportOption from '~/models/admin/growi-archive-import-option';
 import TransferKeyModel from '~/server/models/transfer-key';
 import { generateOverwriteParams } from '~/server/routes/apiv3/import';
+import { type ImportSettings } from '~/server/service/import';
 import { createBatchStream } from '~/server/util/batch-stream';
 import axios from '~/utils/axios';
 import loggerFactory from '~/utils/logger';
@@ -32,7 +33,9 @@ const uploadConfigKeys = [
   'gcs:uploadNamespace',
   'gcs:referenceFileWithRelayMode',
   'gcs:useOnlyEnvVarsForSomeOptions',
-];
+] as const;
+
+type FileUploadConfigs = { [key in typeof uploadConfigKeys[number] ]: any; }
 
 /**
  * Data used for comparing to/from GROWI information
@@ -127,11 +130,28 @@ interface Receiver {
    */
   createTransferKey(appSiteUrlOrigin: string): Promise<string>
   /**
-   * Receive transfer request and import data.
-   * @param {Readable} zippedGROWIDataStream
-   * @returns {void}
+   * Returns a map of collection name and ImportSettings
+   * @param {any[]} innerFileStats
+   * @param {{ [key: string]: GrowiArchiveImportOption; }} optionsMap Map of collection name and GrowiArchiveImportOption
+   * @param {string} operatorUserId User ID
+   * @returns {{ [key: string]: ImportSettings; }} Map of collection name and ImportSettings
    */
-  receive(zippedGROWIDataStream: Readable): Promise<void>
+  getImportSettingMap(
+    innerFileStats: any[],
+    optionsMap: { [key: string]: GrowiArchiveImportOption; },
+    operatorUserId: string,
+  ): { [key: string]: ImportSettings; }
+  /**
+   * Import collections
+   * @param {string} collections Array of collection name
+   * @param {{ [key: string]: ImportSettings; }} importSettingsMap Map of collection name and ImportSettings
+   * @param {FileUploadConfigs} sourceGROWIUploadConfigs File upload configs from src GROWI
+   */
+  importCollections(
+    collections: string[],
+    importSettingsMap: { [key: string]: ImportSettings; },
+    sourceGROWIUploadConfigs: FileUploadConfigs,
+  ): Promise<void>
 }
 
 export class G2GTransferPusherService implements Pusher {
@@ -493,7 +513,11 @@ export class G2GTransferReceiverService implements Receiver {
     return tkd.keyString;
   }
 
-  public getImportSettingMap(innerFileStats, optionsMap, operatorUserId) {
+  public getImportSettingMap(
+      innerFileStats: any[],
+      optionsMap: { [key: string]: GrowiArchiveImportOption; },
+      operatorUserId: string,
+  ): { [key: string]: ImportSettings; } {
     const { importService } = this.crowi;
 
     const importSettingsMap = {};
@@ -522,26 +546,31 @@ export class G2GTransferReceiverService implements Receiver {
     return importSettingsMap;
   }
 
-  public async importCollections(collections, importSettingsMap, sourceGROWIUploadConfigs): Promise<void> {
+  public async importCollections(
+      collections: string[],
+      importSettingsMap: { [key: string]: ImportSettings; },
+      sourceGROWIUploadConfigs: FileUploadConfigs,
+  ): Promise<void> {
     const { configManager, importService, appService } = this.crowi;
+    /** whether to keep current file upload configs */
     const shouldKeepUploadConfigs = configManager.getConfig('crowi', 'app:fileUploadType') !== 'none';
 
-    let savedUploadConfigs;
     if (shouldKeepUploadConfigs) {
-      // save
-      savedUploadConfigs = Object.fromEntries(uploadConfigKeys.map((key) => {
-        return [key, configManager.getConfigFromDB('crowi', key)];
-      }));
-    }
+      /** cache file upload configs */
+      const fileUploadConfigs = await this.getFileUploadConfigs();
 
-    await importService.import(collections, importSettingsMap);
+      // import mongo collections(overwrites file uplaod configs)
+      await importService.import(collections, importSettingsMap);
 
-    // remove & save if none
-    if (shouldKeepUploadConfigs) {
+      // restore file upload config from cache
       await configManager.removeConfigsInTheSameNamespace('crowi', uploadConfigKeys);
-      await configManager.updateConfigsInTheSameNamespace('crowi', savedUploadConfigs);
+      await configManager.updateConfigsInTheSameNamespace('crowi', fileUploadConfigs);
     }
     else {
+      // import mongo collections(overwrites file uplaod configs)
+      await importService.import(collections, importSettingsMap);
+
+      // update file upload config
       await configManager.updateConfigsInTheSameNamespace('crowi', sourceGROWIUploadConfigs);
     }
 
@@ -549,11 +578,22 @@ export class G2GTransferReceiverService implements Receiver {
     await appService.setupAfterInstall();
   }
 
-  public async receive(zipfile: Readable): Promise<void> {
-    // Import data
-    // Call onCompleteTransfer when finished
+  public async getFileUploadConfigs(): Promise<FileUploadConfigs> {
+    const { configManager } = this.crowi;
+    const fileUploadConfigs = Object.fromEntries(uploadConfigKeys.map((key) => {
+      return [key, configManager.getConfigFromDB('crowi', key)];
+    })) as FileUploadConfigs;
 
-    return;
+    return fileUploadConfigs;
+  }
+
+  public async updateFileUploadConfigs(fileUploadConfigs: FileUploadConfigs): Promise<void> {
+    const { appService, configManager } = this.crowi;
+
+    await configManager.removeConfigsInTheSameNamespace('crowi', Object.keys(fileUploadConfigs));
+    await configManager.updateConfigsInTheSameNamespace('crowi', fileUploadConfigs);
+    await this.crowi.setUpFileUpload(true);
+    await appService.setupAfterInstall();
   }
 
   /**
@@ -566,11 +606,5 @@ export class G2GTransferReceiverService implements Receiver {
     const { fileUploadService } = this.crowi;
     return fileUploadService.uploadAttachment(content, attachmentMap);
   }
-
-  /**
-   * Sync DB, etc.
-   * @returns {Promise<void>}
-   */
-  private async onCompleteTransfer(): Promise<void> { return }
 
 }
