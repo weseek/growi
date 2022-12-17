@@ -3,8 +3,8 @@ import urljoin from 'url-join';
 
 import { OptionsToSave } from '~/interfaces/page-operation';
 import { useCurrentPageId } from '~/stores/context';
-import { useIsEnabledUnsavedWarning } from '~/stores/editor';
-import { useSWRxCurrentPage } from '~/stores/page';
+import { useIsEnabledUnsavedWarning, usePageTagsForEditors } from '~/stores/editor';
+import { useSWRxCurrentPage, useSWRxTagsInfo } from '~/stores/page';
 import { useSetRemoteLatestPageData } from '~/stores/remote-latest-page';
 import loggerFactory from '~/utils/logger';
 
@@ -175,15 +175,22 @@ export const useSaveOrUpdate = (): SaveOrUpdateFunction => {
   };
 };
 
-export const useUpdateStateAfterSave = () => {
+export const useUpdateStateAfterSave = (pageId: string|undefined|null): (() => Promise<void>) | undefined => {
   const { mutate: mutateCurrentPageId } = useCurrentPageId();
   const { mutate: mutateCurrentPage } = useSWRxCurrentPage();
   const { setRemoteLatestPageData } = useSetRemoteLatestPageData();
+  const { mutate: mutateTagsInfo } = useSWRxTagsInfo(pageId);
+  const { sync: syncTagsInfoForEditor } = usePageTagsForEditors(pageId);
+
+  if (pageId == null) { return }
 
   // update swr 'currentPageId', 'currentPage', remote states
-  return async(pageId: string) => {
+  return async() => {
     await mutateCurrentPageId(pageId);
     const updatedPage = await mutateCurrentPage();
+
+    await mutateTagsInfo(); // get from DB
+    syncTagsInfoForEditor(); // sync global state for client
 
     if (updatedPage == null) { return }
 
