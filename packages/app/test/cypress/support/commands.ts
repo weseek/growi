@@ -56,14 +56,28 @@ Cypress.Commands.add('waitUntilSpinnerDisappear', () => {
   cy.get('.fa-spinner').should('not.exist');
 });
 
+function isVisible($elem: JQuery<Element>) {
+  return $elem.is(':visible');
+}
+function isHidden($elem: JQuery<Element>) {
+  return !isVisible($elem);
+}
 Cypress.Commands.add('collapseSidebar', (isCollapsed: boolean) => {
-  cy.waitUntil(() => {
-    // do
-    cy.getByTestid("grw-navigation-resize-button").click({force: true});
-    // wait until
-    return cy.getByTestid('grw-contextual-navigation-sub').then(($elem) => {
-      const isVisible = $elem.is(':visible');
-      return isVisible !== isCollapsed;
+  cy.getByTestid('grw-contextual-navigation-sub', { timeout: 3000 }).then(($contents) => {
+    // skip when the current state and isCoolapsed is match
+    if (isHidden($contents) === isCollapsed) {
+      return;
+    }
+
+    cy.waitUntil(() => {
+      // do
+      cy.getByTestid("grw-navigation-resize-button").click({force: true});
+      // wait until saving UserUISettings
+      // eslint-disable-next-line cypress/no-unnecessary-waiting
+      cy.wait(1500);
+
+      // wait until
+      return cy.getByTestid('grw-contextual-navigation-sub').then($contents => isHidden($contents) === isCollapsed);
     });
   });
 });
