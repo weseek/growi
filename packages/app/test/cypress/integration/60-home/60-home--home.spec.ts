@@ -10,11 +10,15 @@ context('Access Home', () => {
 
   it('Visit home', () => {
     cy.visit('/dummy');
-    cy.waitUntilSkeletonDisappear();
-    cy.get('.grw-personal-dropdown').as('dropdown').should('be.visible').click()
-    cy.get('@dropdown').within(()=>{
-      cy.getByTestid('personal-dropdown-menu').should('have.css', 'display', 'block');
+
+    // open PersonalDropdown
+    cy.waitUntil(() => {
+      // do
+      cy.get('.grw-personal-dropdown').should('be.visible').click();
+      // wait until
+      return cy.getByTestid('grw-personal-dropdown-menu-user-home').then($elem => $elem.is(':visible'));
     });
+    // click the Home button
     cy.getByTestid('grw-personal-dropdown-menu-user-home').should('be.visible').click();
 
     cy.waitUntilSkeletonDisappear();

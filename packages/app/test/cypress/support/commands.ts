@@ -24,6 +24,8 @@
 // -- This will overwrite an existing command --
 // Cypress.Commands.overwrite('visit', (originalFn, url, options) => { ... })
 
+import 'cypress-wait-until';
+
 
 Cypress.Commands.add('getByTestid', (selector, options?) => {
   return cy.get(`[data-testid=${selector}]`, options);
@@ -54,12 +56,14 @@ Cypress.Commands.add('waitUntilSpinnerDisappear', () => {
   cy.get('.fa-spinner').should('not.exist');
 });
 
-Cypress.Commands.add('collapseSidebar', (isCollapsed) => {
-  cy.getByTestid('grw-contextual-navigation-sub').then(($contents) => {
-    const isCurrentCollapsed = $contents.hasClass('d-none');
-    // toggle when the current state and isCoolapsed is not match
-    if (isCurrentCollapsed !== isCollapsed) {
-      cy.getByTestid("grw-navigation-resize-button").click({force: true});
-    }
+Cypress.Commands.add('collapseSidebar', (isCollapsed: boolean) => {
+  cy.waitUntil(() => {
+    // do
+    cy.getByTestid("grw-navigation-resize-button").click({force: true});
+    // wait until
+    return cy.getByTestid('grw-contextual-navigation-sub').then(($elem) => {
+      const isVisible = $elem.is(':visible');
+      return isVisible !== isCollapsed;
+    });
   });
 });
