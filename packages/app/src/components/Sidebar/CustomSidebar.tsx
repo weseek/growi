@@ -10,6 +10,8 @@ import loggerFactory from '~/utils/logger';
 
 import RevisionRenderer from '../Page/RevisionRenderer';
 
+import { SidebarHeaderReloadButton } from './SidebarHeaderReloadButton';
+import CustomSidebarContentSkeleton from './Skeleton/CustomSidebarContentSkeleton';
 
 import styles from './CustomSidebar.module.scss';
 
@@ -19,11 +21,9 @@ const logger = loggerFactory('growi:cli:CustomSidebar');
 
 const SidebarNotFound = () => {
   return (
-    <div className="grw-sidebar-content-header h5 text-center p-3">
+    <div className="grw-sidebar-content-header h5 text-center py-3">
       <Link href="/Sidebar#edit">
-        <a href="/Sidebar#edit">
-          <i className="icon-magic-wand"></i> Create <strong>/Sidebar</strong> page
-        </a>
+        <a><i className="icon-magic-wand"></i> Create <strong>/Sidebar</strong> page</a>
       </Link>
     </div>
   );
@@ -43,28 +43,24 @@ const CustomSidebar: FC = () => {
   const markdown = (page?.revision as IRevision | undefined)?.body;
 
   return (
-    <>
-      <div className="grw-sidebar-content-header p-3 d-flex">
+    <div className="px-3">
+      <div className="grw-sidebar-content-header py-3 d-flex">
         <h3 className="mb-0">
           {t('CustomSidebar')}
-          <a className="h6 ml-2" href="/Sidebar"><i className="icon-pencil"></i></a>
+          <Link href="/Sidebar"><a className="h6 ml-2"><i className="icon-pencil"></i></a></Link>
         </h3>
-        <button type="button" className="btn btn-sm ml-auto grw-btn-reload" onClick={() => mutate()}>
-          <i className="icon icon-reload"></i>
-        </button>
+        <SidebarHeaderReloadButton onClick={() => mutate()} />
       </div>
 
       {
         isLoading && (
-          <div className="text-muted text-center">
-            <i className="fa fa-2x fa-spinner fa-pulse mr-1"></i>
-          </div>
+          <CustomSidebarContentSkeleton />
         )
       }
 
       {
         (!isLoading && markdown != null) && (
-          <div className={`p-3 grw-custom-sidebar-content ${styles['grw-custom-sidebar-content']}`}>
+          <div className={`py-3 grw-custom-sidebar-content ${styles['grw-custom-sidebar-content']}`}>
             <RevisionRenderer
               rendererOptions={rendererOptions}
               markdown={markdown}
@@ -78,7 +74,7 @@ const CustomSidebar: FC = () => {
           <SidebarNotFound />
         )
       }
-    </>
+    </div>
   );
 };
 
