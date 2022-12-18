@@ -63,21 +63,25 @@ function isHidden($elem: JQuery<Element>) {
   return !isVisible($elem);
 }
 Cypress.Commands.add('collapseSidebar', (isCollapsed: boolean) => {
-  cy.getByTestid('grw-contextual-navigation-sub', { timeout: 3000 }).then(($contents) => {
-    // skip when the current state and isCoolapsed is match
-    if (isHidden($contents) === isCollapsed) {
-      return;
-    }
+  const isSidebarExists = isVisible(Cypress.$('[data-testid=grw-sidebar-wrapper]'));
 
-    cy.waitUntil(() => {
-      // do
-      cy.getByTestid("grw-navigation-resize-button").click({force: true});
-      // wait until saving UserUISettings
-      // eslint-disable-next-line cypress/no-unnecessary-waiting
-      cy.wait(1500);
+  if (!isSidebarExists) {
+    return;
+  }
 
-      // wait until
-      return cy.getByTestid('grw-contextual-navigation-sub').then($contents => isHidden($contents) === isCollapsed);
-    });
+  const isSidebarContextualNavigationHidden = isHidden(Cypress.$('[data-testid=grw-contextual-navigation-sub]'));
+  if (isSidebarContextualNavigationHidden === isCollapsed) {
+    return;
+  }
+
+  cy.waitUntil(() => {
+    // do
+    cy.getByTestid("grw-navigation-resize-button").click({force: true});
+    // wait until saving UserUISettings
+    // eslint-disable-next-line cypress/no-unnecessary-waiting
+    cy.wait(1500);
+
+    // wait until
+    return cy.getByTestid('grw-contextual-navigation-sub').then($contents => isHidden($contents) === isCollapsed);
   });
 });
