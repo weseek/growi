@@ -21,7 +21,7 @@ context('Access Home', () => {
     // click the Home button
     cy.getByTestid('grw-personal-dropdown-menu-user-home').should('be.visible').click();
 
-    cy.getByTestid('grw-users-info').should('be.visible')
+    cy.getByTestid('grw-users-info').should('be.visible');
 
     // for check download toc data
     // https://redmine.weseek.co.jp/issues/111384
