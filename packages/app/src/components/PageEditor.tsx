@@ -69,7 +69,7 @@ const PageEditor = React.memo((): JSX.Element => {
   const router = useRouter();
 
   const { data: isNotFound } = useIsNotFound();
-  const { data: pageId, mutate: mutateCurrentPageId } = useCurrentPageId();
+  const { data: pageId } = useCurrentPageId();
   const { data: currentPagePath } = useCurrentPagePath();
   const { data: currentPathname } = useCurrentPathname();
   const { data: currentPage, mutate: mutateCurrentPage } = useSWRxCurrentPage();
@@ -82,7 +82,6 @@ const PageEditor = React.memo((): JSX.Element => {
   const { data: isEditable } = useIsEditable();
   const { data: editorMode, mutate: mutateEditorMode } = useEditorMode();
   const { data: isSlackEnabled } = useIsSlackEnabled();
-  const { data: slackChannelsData } = useSWRxSlackChannels(currentPagePath);
   const { data: isTextlintEnabled } = useIsTextlintEnabled();
   const { data: isIndentSizeForced } = useIsIndentSizeForced();
   const { data: currentIndentSize, mutate: mutateCurrentIndentSize } = useCurrentIndentSize();
@@ -94,7 +93,7 @@ const PageEditor = React.memo((): JSX.Element => {
   const { mutate: mutateIsEnabledUnsavedWarning } = useIsEnabledUnsavedWarning();
   const saveOrUpdate = useSaveOrUpdate();
 
-  const updateStateAfterSave = useUpdateStateAfterSave();
+  const updateStateAfterSave = useUpdateStateAfterSave(pageId);
 
   const currentRevisionId = currentPage?.revision?._id;
 
@@ -116,8 +115,6 @@ const PageEditor = React.memo((): JSX.Element => {
 
   const markdownToSave = useRef<string>(initialValue);
   const [markdownToPreview, setMarkdownToPreview] = useState<string>(initialValue);
-
-  const slackChannels = useMemo(() => (slackChannelsData ? slackChannelsData.toString() : ''), [slackChannelsData]);
 
   const { data: socket } = useGlobalSocket();
 
@@ -152,18 +149,21 @@ const PageEditor = React.memo((): JSX.Element => {
 
   }, [socket, checkIsConflict]);
 
-  // const optionsToSave = useMemo(() => {
-  //   if (grantData == null) {
-  //     return;
-  //   }
-  //   const slackChannels = slackChannelsData ? slackChannelsData.toString() : '';
-  //   const optionsToSave = getOptionsToSave(
-  //     isSlackEnabled ?? false, slackChannels,
-  //     grantData.grant, grantData.grantedGroup?.id, grantData.grantedGroup?.name,
-  //     pageTags || [],
-  //   );
-  //   return optionsToSave;
-  // }, [grantData, isSlackEnabled, pageTags, slackChannelsData]);
+  const optionsToSave = useMemo((): OptionsToSave | undefined => {
+    if (grantData == null) {
+      return;
+    }
+    const optionsToSave = {
+      isSlackEnabled: isSlackEnabled ?? false,
+      slackChannels: '', // set in save method by opts in SavePageControlls.tsx
+      grant: grantData.grant,
+      pageTags: pageTags ?? [],
+      grantUserGroupId: grantData.grantedGroup?.id,
+      grantUserGroupName: grantData.grantedGroup?.name,
+    };
+    return optionsToSave;
+  }, [grantData, isSlackEnabled, pageTags]);
+
   // register to facade
   useEffect(() => {
     // for markdownRenderer
@@ -189,30 +189,19 @@ const PageEditor = React.memo((): JSX.Element => {
     setMarkdownWithDebounce(value, isClean);
   }, [setMarkdownWithDebounce]);
 
-  const save = useCallback(async(opts?: {overwriteScopesOfDescendants: boolean}): Promise<IPageHasId | null> => {
-    if (grantData == null || isSlackEnabled == null || currentPathname == null) {
+  const save = useCallback(async(opts?: {slackChannels: string, overwriteScopesOfDescendants?: boolean}): Promise<IPageHasId | null> => {
+    if (currentPathname == null || optionsToSave == null) {
       logger.error('Some materials to save are invalid', { grantData, isSlackEnabled, currentPathname });
       throw new Error('Some materials to save are invalid');
     }
 
-    const grant = grantData.grant || PageGrant.GRANT_PUBLIC;
-    const grantedGroup = grantData?.grantedGroup;
-
-    const optionsToSave: OptionsToSave = {
-      isSlackEnabled,
-      slackChannels,
-      grant: grant || 1,
-      pageTags: pageTags || [],
-      grantUserGroupId: grantedGroup?.id,
-      grantUserGroupName: grantedGroup?.name,
-      ...opts,
-    };
+    const options = Object.assign(optionsToSave, opts);
 
     try {
       const { page } = await saveOrUpdate(
         markdownToSave.current,
         { pageId, path: currentPagePath || currentPathname, revisionId: currentRevisionId },
-        optionsToSave,
+        options,
       );
 
       return page;
@@ -232,9 +221,9 @@ const PageEditor = React.memo((): JSX.Element => {
     }
 
   // eslint-disable-next-line max-len
-  }, [grantData, isSlackEnabled, currentPathname, slackChannels, pageTags, saveOrUpdate, pageId, currentPagePath, currentRevisionId]);
+  }, [currentPathname, optionsToSave, grantData, isSlackEnabled, saveOrUpdate, pageId, currentPagePath, currentRevisionId]);
 
-  const saveAndReturnToViewHandler = useCallback(async(opts?: {overwriteScopesOfDescendants: boolean}) => {
+  const saveAndReturnToViewHandler = useCallback(async(opts: {slackChannels: string, overwriteScopesOfDescendants?: boolean}) => {
     if (editorMode !== EditorMode.Editor) {
       return;
     }
@@ -248,10 +237,10 @@ const PageEditor = React.memo((): JSX.Element => {
       await router.push(`/${page._id}`);
     }
     else {
-      updateStateAfterSave(page._id);
+      updateStateAfterSave?.();
     }
     mutateEditorMode(EditorMode.View);
-  }, [editorMode, save, isNotFound, mutateEditorMode, router, useUpdateStateAfterSave]);
+  }, [editorMode, save, isNotFound, mutateEditorMode, router, updateStateAfterSave]);
 
   const saveWithShortcut = useCallback(async() => {
     if (editorMode !== EditorMode.Editor) {
@@ -260,10 +249,10 @@ const PageEditor = React.memo((): JSX.Element => {
 
     const page = await save();
     if (page != null) {
-      updateStateAfterSave(page._id);
+      updateStateAfterSave?.();
       toastSuccess(t('toaster.save_succeeded'));
     }
-  }, [editorMode, save, t, useUpdateStateAfterSave]);
+  }, [editorMode, save, t, updateStateAfterSave]);
 
 
   /**
@@ -540,7 +529,7 @@ const PageEditor = React.memo((): JSX.Element => {
         isOpen={conflictDiffModalStatus?.isOpened}
         onClose={() => closeConflictDiffModal()}
         markdownOnEdit={markdownToPreview}
-        optionsToSave={undefined} // replace undefined
+        optionsToSave={optionsToSave}
         afterResolvedHandler={afterResolvedHandler}
       />
     </div>

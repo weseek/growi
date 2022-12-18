@@ -188,7 +188,8 @@ const GrowiContextualSubNavigation = (props: GrowiContextualSubNavigationProps):
 
   const router = useRouter();
 
-  const { data: currentPage, mutate: mutateCurrentPage } = useSWRxCurrentPage();
+  const { data: shareLinkId } = useShareLinkId();
+  const { data: currentPage, mutate: mutateCurrentPage } = useSWRxCurrentPage(shareLinkId ?? undefined);
 
   const revision = currentPage?.revision;
   const revisionId = (revision != null && isPopulated(revision)) ? revision._id : undefined;
@@ -201,7 +202,6 @@ const GrowiContextualSubNavigation = (props: GrowiContextualSubNavigationProps):
   const { data: isNotFound } = useIsNotFound();
   const { data: isGuestUser } = useIsGuestUser();
   const { data: isSharedUser } = useIsSharedUser();
-  const { data: shareLinkId } = useShareLinkId();
   const { data: isContainerFluid } = useIsContainerFluid();
 
   const { data: isAbleToShowPageManagement } = useIsAbleToShowPageManagement();
