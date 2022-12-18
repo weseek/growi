@@ -26,6 +26,18 @@
 
 import 'cypress-wait-until';
 
+function isVisible($elem: JQuery<Element>) {
+  return $elem.is(':visible');
+}
+function isHidden($elem: JQuery<Element>) {
+  return !isVisible($elem);
+}
+function isVisibleByTestId(testId: string) {
+  return isVisible(Cypress.$(`[data-testid=${testId}]`));
+}
+function isHiddenByTestId(testId: string) {
+  return !isVisibleByTestId(testId);
+}
 
 Cypress.Commands.add('getByTestid', (selector, options?) => {
   return cy.get(`[data-testid=${selector}]`, options);
@@ -43,33 +55,28 @@ Cypress.Commands.add('login', (username, password) => {
   });
 });
 
-/**
- * use only for the pages which use component with skeleton
- */
 Cypress.Commands.add('waitUntilSkeletonDisappear', () => {
-  cy.get('.grw-skeleton').should('exist');
+  if (isHidden(Cypress.$('.grw-skeleton'))) {
+    return;
+  }
   cy.get('.grw-skeleton').should('not.exist');
 });
 
 Cypress.Commands.add('waitUntilSpinnerDisappear', () => {
-  cy.get('.fa-spinner').should('exist');
+  if (isHidden(Cypress.$('.fa-spinner'))) {
+    return;
+  }
   cy.get('.fa-spinner').should('not.exist');
 });
 
-function isVisible($elem: JQuery<Element>) {
-  return $elem.is(':visible');
-}
-function isHidden($elem: JQuery<Element>) {
-  return !isVisible($elem);
-}
 Cypress.Commands.add('collapseSidebar', (isCollapsed: boolean) => {
-  const isSidebarExists = isVisible(Cypress.$('[data-testid=grw-sidebar-wrapper]'));
+  const isSidebarExists = isVisibleByTestId('grw-sidebar-wrapper');
 
   if (!isSidebarExists) {
     return;
   }
 
-  const isSidebarContextualNavigationHidden = isHidden(Cypress.$('[data-testid=grw-contextual-navigation-sub]'));
+  const isSidebarContextualNavigationHidden = isHiddenByTestId('grw-contextual-navigation-sub');
   if (isSidebarContextualNavigationHidden === isCollapsed) {
     return;
   }
