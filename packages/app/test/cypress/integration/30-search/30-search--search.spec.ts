@@ -116,7 +116,8 @@ context('Search all pages', () => {
     cy.wait(1500);
     cy.screenshot(`${ssPrefix}3-search-page-results`, { capture: 'viewport'});
 
-    cy.getByTestid('open-page-item-control-btn').eq(1).click();
+    // TODO: chlick three dots bottom, collapse sidebar doesn't working.
+    cy.getByTestid('open-page-item-control-btn').eq(3).click();
     cy.getByTestid('search-result-content').should('be.visible');
     cy.get('.wiki').should('be.visible');
     // for avoid mismatch by auto scrolling
@@ -124,12 +125,8 @@ context('Search all pages', () => {
     cy.screenshot(`${ssPrefix}4-click-three-dots-menu`, {capture: 'viewport'});
 
     // Add bookmark
-    cy.waitUntil(() => {
-      // do
-      cy.getByTestid('add-remove-bookmark-btn').click({force: true});
-      // wati until
-      return cy.get('.btn-bookmark.active').then($elem => $elem.is(':visible'));
-    });
+    cy.getByTestid('add-remove-bookmark-btn').click({force: true});
+    cy.get('.btn-bookmark.active').should('be.visible')
     cy.screenshot(`${ssPrefix}5-add-bookmark`, {capture: 'viewport'});
 
     // Duplicate page

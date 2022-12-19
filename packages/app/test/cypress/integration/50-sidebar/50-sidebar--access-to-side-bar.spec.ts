@@ -73,9 +73,9 @@ describe('Access to sidebar', () => {
           });
 
           // click add remove bookmark btn
-          cy.getByTestid('page-item-control-menu').should('have.class', 'show').within(() => {
-            cy.getByTestid('add-remove-bookmark-btn').click();
-          });
+          cy.getByTestid('page-item-control-menu').should('have.class', 'show')
+          cy.getByTestid('add-remove-bookmark-btn').click();
+
 
           // show dropdown again
           cy.get('.grw-pagetree-item-children').first().within(() => {
@@ -229,15 +229,15 @@ describe('Access to sidebar', () => {
         });
       });
 
-      // TODO: No Drafts pages on GROWI version 6
-      // it('Successfully access to My Drafts page', () => {
-      //   cy.visit('/');
-      //   cy.collapseSidebar(true);
-      //   cy.get('.grw-sidebar-nav-secondary-container').within(() => {
-      //     cy.get('a[href*="/me/drafts"]').click();
-      //   });
-      //   cy.screenshot(`${ssPrefix}access-to-drafts-page`);
-      // });
+      TODO: No Drafts pages on GROWI version 6
+      it('Successfully access to My Drafts page', () => {
+        cy.visit('/');
+        cy.collapseSidebar(true);
+        cy.get('.grw-sidebar-nav-secondary-container').within(() => {
+          cy.get('a[href*="/me/drafts"]').click();
+        });
+        cy.screenshot(`${ssPrefix}access-to-drafts-page`);
+      });
 
       describe('Test access to GROWI Docs page', () => {
         it('Successfully access to GROWI Docs page', () => {
