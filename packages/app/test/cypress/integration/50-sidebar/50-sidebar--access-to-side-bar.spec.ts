@@ -222,6 +222,7 @@ describe('Access to sidebar', () => {
 
         it('Succesfully click all tags button', () => {
           cy.get('.grw-container-convertible > div > .btn-primary').click({force: true});
+          cy.collapseSidebar(true);
           cy.getByTestid('grw-tags-list').should('be.visible');
 
           cy.screenshot(`${ssPrefix}tags-2-click-all-tags-button`);
@@ -251,6 +252,7 @@ describe('Access to sidebar', () => {
 
       describe('Test access to trash page', () => {
         it('Successfully access to trash page', () => {
+          cy.collapseSidebar(true);
           cy.get('.grw-sidebar-nav-secondary-container').within(() => {
             cy.get('a[href*="/trash"]').click();
           });
