@@ -1,15 +1,20 @@
-import { execSync } from 'child_process';
-import fs from 'fs';
+import fs, { readFileSync } from 'fs';
 import path from 'path';
 
+import { GrowiThemeMetadata, ViteManifest } from '@growi/core';
+// eslint-disable-next-line no-restricted-imports
+import axios from 'axios';
 import mongoose from 'mongoose';
+import streamToPromise from 'stream-to-promise';
+import unzipper from 'unzipper';
 
-import type { GrowiPlugin, GrowiPluginMeta, GrowiPluginOrigin } from '~/interfaces/plugin';
+import {
+  GrowiPlugin, GrowiPluginOrigin, GrowiPluginResourceType, GrowiThemePluginMeta,
+} from '~/interfaces/plugin';
 import loggerFactory from '~/utils/logger';
 import { resolveFromRoot } from '~/utils/project-dir-utils';
 
-// eslint-disable-next-line import/no-cycle
-import Crowi from '../crowi';
+import type { GrowiPluginModel } from '../models/growi-plugin';
 
 const logger = loggerFactory('growi:plugins:plugin-utils');
 
@@ -18,28 +23,31 @@ const pluginStoringPath = resolveFromRoot('tmp/plugins');
 // https://regex101.com/r/fK2rV3/1
 const githubReposIdPattern = new RegExp(/^\/([^/]+)\/([^/]+)$/);
 
+const PLUGINS_STATIC_DIR = '/static/plugins'; // configured by express.static
 
-export class PluginService {
+export type GrowiPluginResourceEntries = [installedPath: string, href: string][];
 
-  crowi: any;
 
-  growiBridgeService: any;
+function retrievePluginManifest(growiPlugin: GrowiPlugin): ViteManifest {
+  const manifestPath = resolveFromRoot(path.join('tmp/plugins', growiPlugin.installedPath, 'dist/manifest.json'));
+  const manifestStr: string = readFileSync(manifestPath, 'utf-8');
+  return JSON.parse(manifestStr);
+}
 
-  baseDir: any;
+export interface IPluginService {
+  install(origin: GrowiPluginOrigin): Promise<void>
+  retrieveThemeHref(theme: string): Promise<string | undefined>
+  retrieveAllPluginResourceEntries(): Promise<GrowiPluginResourceEntries>
+}
 
-  getFile:any;
+export class PluginService implements IPluginService {
 
-  constructor(crowi) {
-    this.crowi = crowi;
-    this.growiBridgeService = crowi.growiBridgeService;
-    this.baseDir = path.join(crowi.tmpDir, 'plugins');
-    this.getFile = this.growiBridgeService.getFile.bind(this);
-  }
-
-  async install(crowi: Crowi, origin: GrowiPluginOrigin): Promise<void> {
+  async install(origin: GrowiPluginOrigin): Promise<void> {
     // download
     const ghUrl = new URL(origin.url);
     const ghPathname = ghUrl.pathname;
+    // TODO: Branch names can be specified.
+    const ghBranch = 'main';
 
     const match = ghPathname.match(githubReposIdPattern);
     if (ghUrl.hostname !== 'github.com' || match == null) {
@@ -48,13 +56,10 @@ export class PluginService {
 
     const ghOrganizationName = match[1];
     const ghReposName = match[2];
+    const requestUrl = `https://github.com/${ghOrganizationName}/${ghReposName}/archive/refs/heads/${ghBranch}.zip`;
 
-    try {
-      await this.downloadZipFile(`${ghUrl.href}/archive/refs/heads/main.zip`, ghOrganizationName, ghReposName);
-    }
-    catch (err) {
-      console.log('downloadZipFile error', err);
-    }
+    // download github repository to local file system
+    await this.download(requestUrl, ghOrganizationName, ghReposName, ghBranch);
 
     // save plugin metadata
     const installedPath = `${ghOrganizationName}/${ghReposName}`;
@@ -64,31 +69,76 @@ export class PluginService {
     return;
   }
 
-  async downloadZipFile(url: string, ghOrganizationName: string, ghReposName: string): Promise<void> {
+  private async download(requestUrl: string, ghOrganizationName: string, ghReposName: string, ghBranch: string): Promise<void> {
 
-    const downloadTargetPath = pluginStoringPath;
-    const zipFilePath = path.join(downloadTargetPath, 'main.zip');
-    const unzipTargetPath = path.join(pluginStoringPath, ghOrganizationName);
+    const zipFilePath = path.join(pluginStoringPath, `${ghBranch}.zip`);
+    const unzippedPath = path.join(pluginStoringPath, ghOrganizationName);
 
-    const stdout1 = execSync(`wget ${url} -O ${zipFilePath}`);
-    const stdout2 = execSync(`mkdir -p ${ghOrganizationName}`);
-    const stdout3 = execSync(`rm -rf ${ghOrganizationName}/${ghReposName}`);
-    const stdout4 = execSync(`unzip ${zipFilePath} -d ${unzipTargetPath}`);
-    const stdout5 = execSync(`mv ${unzipTargetPath}/${ghReposName}-main ${unzipTargetPath}/${ghReposName}`);
-    const stdout6 = execSync(`rm ${zipFilePath}`);
+    const renamePath = async(oldPath: fs.PathLike, newPath: fs.PathLike) => {
+      fs.renameSync(oldPath, newPath);
+    };
+
+    const downloadFile = async(requestUrl: string, filePath: string) => {
+      return new Promise<void>((resolve, reject) => {
+        axios({
+          method: 'GET',
+          url: requestUrl,
+          responseType: 'stream',
+        })
+          .then((res) => {
+            if (res.status === 200) {
+              const file = fs.createWriteStream(filePath);
+              res.data.pipe(file)
+                .on('close', () => file.close())
+                .on('finish', () => {
+                  return resolve();
+                });
+            }
+            else {
+              return reject(res.status);
+            }
+          }).catch((err) => {
+            return reject(err);
+          });
+      });
+    };
+
+    const unzip = async(zipFilePath: fs.PathLike, unzippedPath: fs.PathLike) => {
+      const stream = fs.createReadStream(zipFilePath);
+      const unzipStream = stream.pipe(unzipper.Extract({ path: unzippedPath }));
+      const deleteZipFile = (path: fs.PathLike) => fs.unlink(path, (err) => { return err });
+
+      try {
+        await streamToPromise(unzipStream);
+        deleteZipFile(zipFilePath);
+      }
+      catch (err) {
+        return err;
+      }
+    };
+
+    try {
+      await downloadFile(requestUrl, zipFilePath);
+      await unzip(zipFilePath, unzippedPath);
+      await renamePath(`${unzippedPath}/${ghReposName}-${ghBranch}`, `${unzippedPath}/${ghReposName}`);
+    }
+    catch (err) {
+      logger.error(err);
+      throw new Error(err);
+    }
 
     return;
   }
 
-  async savePluginMetaData(plugins: GrowiPlugin[]): Promise<void> {
+  private async savePluginMetaData(plugins: GrowiPlugin[]): Promise<void> {
     const GrowiPlugin = mongoose.model('GrowiPlugin');
     await GrowiPlugin.insertMany(plugins);
   }
 
   // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
-  static async detectPlugins(origin: GrowiPluginOrigin, installedPath: string, parentPackageJson?: any): Promise<GrowiPlugin[]> {
+  private static async detectPlugins(origin: GrowiPluginOrigin, installedPath: string, parentPackageJson?: any): Promise<GrowiPlugin[]> {
     const packageJsonPath = path.resolve(pluginStoringPath, installedPath, 'package.json');
-    const packageJson = await import(packageJsonPath);
+    const packageJson = JSON.parse(readFileSync(packageJsonPath, 'utf-8'));
 
     const { growiPlugin } = packageJson;
     const {
@@ -126,6 +176,14 @@ export class PluginService {
       },
     };
 
+    // add theme metadata
+    if (growiPlugin.types.includes(GrowiPluginResourceType.Theme)) {
+      (plugin as GrowiPlugin<GrowiThemePluginMeta>).meta = {
+        ...plugin.meta,
+        themes: growiPlugin.themes,
+      };
+    }
+
     logger.info('Plugin detected => ', plugin);
 
     return [plugin];
@@ -135,5 +193,80 @@ export class PluginService {
     return [];
   }
 
+
+  async retrieveThemeHref(theme: string): Promise<string | undefined> {
+
+    const GrowiPlugin = mongoose.model('GrowiPlugin') as GrowiPluginModel;
+
+    let matchedPlugin: GrowiPlugin | undefined;
+    let matchedThemeMetadata: GrowiThemeMetadata | undefined;
+
+    try {
+      // retrieve plugin manifests
+      const growiPlugins = await GrowiPlugin.findEnabledPluginsIncludingAnyTypes([GrowiPluginResourceType.Theme]) as GrowiPlugin<GrowiThemePluginMeta>[];
+
+      growiPlugins
+        .forEach(async(growiPlugin) => {
+          const themeMetadatas = growiPlugin.meta.themes;
+          const themeMetadata = themeMetadatas.find(t => t.name === theme);
+
+          // found
+          if (themeMetadata != null) {
+            matchedPlugin = growiPlugin;
+            matchedThemeMetadata = themeMetadata;
+          }
+        });
+    }
+    catch (e) {
+      logger.error(`Could not find the theme '${theme}' from GrowiPlugin documents.`, e);
+    }
+
+    try {
+      if (matchedPlugin != null && matchedThemeMetadata != null) {
+        const manifest = await retrievePluginManifest(matchedPlugin);
+        return `${PLUGINS_STATIC_DIR}/${matchedPlugin.installedPath}/dist/${manifest[matchedThemeMetadata.manifestKey].file}`;
+      }
+    }
+    catch (e) {
+      logger.error(`Could not read manifest file for the theme '${theme}'`, e);
+    }
+  }
+
+  async retrieveAllPluginResourceEntries(): Promise<GrowiPluginResourceEntries> {
+
+    const GrowiPlugin = mongoose.model('GrowiPlugin') as GrowiPluginModel;
+
+    const entries: GrowiPluginResourceEntries = [];
+
+    try {
+      const growiPlugins = await GrowiPlugin.findEnabledPlugins();
+
+      growiPlugins.forEach(async(growiPlugin) => {
+        try {
+          const { types } = growiPlugin.meta;
+          const manifest = await retrievePluginManifest(growiPlugin);
+
+          // add script
+          if (types.includes(GrowiPluginResourceType.Script) || types.includes(GrowiPluginResourceType.Template)) {
+            const href = `${PLUGINS_STATIC_DIR}/${growiPlugin.installedPath}/dist/${manifest['client-entry.tsx'].file}`;
+            entries.push([growiPlugin.installedPath, href]);
+          }
+          // add link
+          if (types.includes(GrowiPluginResourceType.Script) || types.includes(GrowiPluginResourceType.Style)) {
+            const href = `${PLUGINS_STATIC_DIR}/${growiPlugin.installedPath}/dist/${manifest['client-entry.tsx'].css}`;
+            entries.push([growiPlugin.installedPath, href]);
+          }
+        }
+        catch (e) {
+          logger.warn(e);
+        }
+      });
+    }
+    catch (e) {
+      logger.error('Could not retrieve GrowiPlugin documents.', e);
+    }
+
+    return entries;
+  }
 
 }

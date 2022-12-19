@@ -7,6 +7,7 @@
   "User": "用户",
   "Name": "姓名",
   "Created": "创建",
+  "Page": "页面",
   "Edit": "编辑",
   "Description": "描述",
   "last_login": "上次登录",
@@ -79,7 +80,7 @@
 		"client_secret": "客户机密",
 		"updated_general_security_setting": "更新安全设置成功",
 		"setup_not_completed_yet": "安装尚未完成",
-		"guest_mode": {
+    "guest_mode": {
 			"deny": "拒绝（仅限注册用户）",
 			"readonly": "接受（来宾可以只读）"
 		},
@@ -164,13 +165,6 @@
       "attr_based_login_control_rule_example2": "<h5>Example for escaping</h5>If you would like to use URL as a query value, escape the following:<br><code>http&#92;:&#92;/&#92;/schemas.example.com&#92;/ws&#92;/2005&#92;/05&#92;/identity&#92;/claims&#92;/emailaddress: &quot;myname@example.com&quot;</code>",
       "updated_saml": "Succeeded to update SAML setting"
 		},
-		"Basic": {
-			"enable_basic": "Enable Basic",
-			"name": "Basic Authentication",
-			"desc_1": "Login with <code>username</code> in Authorization header.",
-			"desc_2": "User will be automatically generated if not exist.",
-			"updated_basic": "Succeeded to update Basic setting"
-		},
 		"OAuth": {
 			"enable_oidc": "Enable OIDC",
 			"register": "Register for %s",
@@ -212,7 +206,7 @@
 				"username_detail": "Specification of mappings for <code>username</code> when creating new users",
 				"name_detail": "Specification of mappings for <code>name</code> when creating new users",
 				"mapping_detail": "Specification of mappings for %s when creating new users",
-				"register_1": "Contant to OIDC IdP Administrator",
+				"register_1": "Contact to OIDC IdP Administrator",
 				"register_2": "Register your OIDC App with \"Authorization callback URL\" as <code>%s</code>",
 				"register_3": "Copy and paste your ClientID and Client Secret above",
 				"updated_oidc": "Succeeded to update OpenID Connect",
@@ -238,6 +232,7 @@
 		}
   },
   "notification_settings": {
+    "notification_settings": "通知设置",
 		"slack_incoming_configuration": "Slack Incoming Webhooks configuration",
 		"prioritize_webhook": "Prioritize incoming webhook than Slack App",
 		"prioritize_webhook_desc": "Check this option and GROWI use Incoming Webhooks even if Slack App settings are enabled.",
@@ -399,9 +394,10 @@
     "aws_label": "AWS(S3)",
     "local_label": "Local",
     "gridfs_label": "MongoDB(GridFS)",
+    "fixed_by_env_var": "这是由env var 修复的 <code>{{key}}={{value}}</code>.",
+    "file_upload": "This is for uploading file settings. If you complete file upload settings, file upload function, profile picture function etc will be enabled.",
     "ses_settings": "SES设置",
     "test_connection": "测试邮件服务器连接",
-    "": "如果您没有SMTP设置，电子邮件将通过SES发送。您需要从电子邮件地址和生产设置进行验证。",
     "change_setting": "注意：如果你更改此设置未完成，您将无法访问迄今为止上传的文件。",
     "region": "Region",
     "bucket_name": "Bucket name",
@@ -474,17 +470,6 @@
       "expanded": "内容宽度100％ "
     },
     "theme": "主体",
-    "behavior": "行为",
-    "behavior_desc": {
-      "growi_text1": "<code>/page</code> and <code>/page/</code> 都显示同一页。",
-      "growi_text2": "<code>/nonexistent_page</code> 显示编辑表单",
-      "growi_text3": "如果使用GROWI增强布局，则所有页面都显示子页面列表",
-      "crowi_text1": "<code>/page</code> 显示页面",
-      "crowi_text2": "<code>/page/</code> 显示子页列表",
-      "crowi_text3": "如果portal应用于<code>/page/</code>，则会显示portal和子页面列表",
-      "crowi_text4": "<code>/nonexistent_page</code> 显示编辑表单<",
-      "crowi_text5": "<code>/nonexistent_page/</code> 子页列表"
-    },
     "theme_desc": {
       "light_and_dark": "明暗模式",
       "unique": "只有一种模式"
@@ -907,7 +892,6 @@
     "USER_LOGIN_WITH_TWITTER": "使用 Twitter 登录",
     "USER_LOGIN_WITH_OIDC": "使用 OIDC 登录",
     "USER_LOGIN_WITH_SAML": "使用 SAML 登录",
-    "USER_LOGIN_WITH_BASIC": "使用 BASIC 登录",
     "USER_LOGIN_FAILURE": "登录失败",
     "USER_LOGOUT": "注销",
     "USER_FOGOT_PASSWORD": "要求重置密码",
@@ -985,9 +969,6 @@
     "ADMIN_AUTH_OIDC_ENABLED": "启用 OIDC 身份验证",
     "ADMIN_AUTH_OIDC_DISABLED": "禁用 OIDC 身份验证",
     "ADMIN_AUTH_OIDC_UPDATE": "更新 OIDC 设置",
-    "ADMIN_AUTH_BASIC_ENABLED": "启用基本身份验证",
-    "ADMIN_AUTH_BASIC_DISABLED": "禁用基本身份验证",
-    "ADMIN_AUTH_BASIC_UPDATE": "更新基本认证设置",
     "ADMIN_AUTH_GOOGLE_ENABLED": "启用谷歌身份验证",
     "ADMIN_AUTH_GOOGLE_DISABLED": "禁用谷歌身份验证",
     "ADMIN_AUTH_GOOGLE_UPDATE": "更新谷歌授权设置",

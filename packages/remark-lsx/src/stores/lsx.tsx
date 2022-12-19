@@ -99,7 +99,7 @@ const useSWRxLsxResponse = (
     pagePath: string, options?: Record<string, string | undefined>, isImmutable?: boolean,
 ): SWRResponse<LsxResponse, Error> => {
   return useSWR(
-    ['/_api/plugins/lsx', pagePath, options, isImmutable],
+    ['/_api/lsx', pagePath, options, isImmutable],
     (endpoint, pagePath, options) => {
       return axios.get(endpoint, {
         params: {

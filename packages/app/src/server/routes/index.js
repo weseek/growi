@@ -96,7 +96,6 @@ module.exports = function(crowi, app) {
   app.get('/passport/twitter'                     , loginPassport.loginWithTwitter, loginPassport.loginFailureForExternalAccount);
   app.get('/passport/oidc'                        , loginPassport.loginWithOidc, loginPassport.loginFailureForExternalAccount);
   app.get('/passport/saml'                        , loginPassport.loginWithSaml, loginPassport.loginFailureForExternalAccount);
-  app.get('/passport/basic'                       , loginPassport.loginWithBasic, loginPassport.loginFailureForExternalAccount);
   app.get('/passport/google/callback'             , loginPassport.loginPassportGoogleCallback   , loginPassport.loginFailureForExternalAccount);
   app.get('/passport/github/callback'             , loginPassport.loginPassportGitHubCallback   , loginPassport.loginFailureForExternalAccount);
   app.get('/passport/twitter/callback'            , loginPassport.loginPassportTwitterCallback  , loginPassport.loginFailureForExternalAccount);
@@ -197,6 +196,7 @@ module.exports = function(crowi, app) {
     .get('/:token', applicationInstalled, injectUserRegistrationOrderByTokenMiddleware, userActivation.renderUserActivationPage(crowi))
     .use(userActivation.tokenErrorHandlerMiddeware(crowi)));
 
+  app.get('/share$', (req, res) => res.redirect('/'));
   app.get('/share/:linkId', next.delegateToNext);
 
   app.use('/ogp', express.Router().get('/:pageId([0-9a-z]{0,})', loginRequired, ogp.pageIdRequired, ogp.ogpValidator, ogp.renderOgp));

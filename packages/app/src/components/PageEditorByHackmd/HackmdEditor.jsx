@@ -1,6 +1,8 @@
 import React from 'react';
-import PropTypes from 'prop-types';
+
 import connectToChild from 'penpal/lib/connectToChild';
+import PropTypes from 'prop-types';
+
 import loggerFactory from '~/utils/logger';
 
 
@@ -27,11 +29,16 @@ export default class HackmdEditor extends React.PureComponent {
   }
 
   async initHackmdWithPenpal() {
+    const shouldInit = document.getElementById('iframe-hackmd') != null;
+    if (shouldInit) {
+      return;
+    }
+
     // eslint-disable-next-line @typescript-eslint/no-this-alias
     const _this = this; // for in methods scope
-
     const iframe = document.createElement('iframe');
     iframe.src = `${this.props.hackmdUri}/${this.props.pageIdOnHackmd}?both`;
+    iframe.id = 'iframe-hackmd';
     this.iframeContainer.appendChild(iframe);
 
     const connection = connectToChild({

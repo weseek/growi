@@ -20,7 +20,7 @@ import { useSWRxSlackChannels, useIsSlackEnabled } from '~/stores/editor';
 import { useCurrentPagePath } from '~/stores/page';
 
 import { CustomNavTab } from '../CustomNavigation/CustomNav';
-import NotAvailableForGuest from '../NotAvailableForGuest';
+import { NotAvailableForGuest } from '../NotAvailableForGuest';
 import Editor from '../PageEditor/Editor';
 
 

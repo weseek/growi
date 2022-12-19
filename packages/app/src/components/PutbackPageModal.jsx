@@ -103,7 +103,7 @@ const PutBackPageModal = () => {
     return (
       <>
         <ApiErrorMessageList errs={errs} targetPath={targetPath} />
-        <button type="button" className="btn btn-info" onClick={putbackPageButtonHandler}>
+        <button type="button" className="btn btn-info" onClick={putbackPageButtonHandler} data-testid="put-back-execution-button">
           <i className="icon-action-undo mr-2" aria-hidden="true"></i> { t('Put Back') }
         </button>
       </>
@@ -116,7 +116,7 @@ const PutBackPageModal = () => {
   }, [closePutBackPageModal]);
 
   return (
-    <Modal isOpen={isOpened} toggle={closeModalHandler}>
+    <Modal isOpen={isOpened} toggle={closeModalHandler} data-testid="put-back-page-modal">
       <ModalHeader tag="h4" toggle={closeModalHandler} className="bg-info text-light">
         <HeaderContent/>
       </ModalHeader>

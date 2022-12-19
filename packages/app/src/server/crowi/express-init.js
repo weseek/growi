@@ -1,9 +1,11 @@
+import { manifestPath as presetThemesManifestPath } from '@growi/preset-themes';
 import csrf from 'csurf';
 import mongoose from 'mongoose';
 
 import { i18n, localePath } from '^/config/next-i18next.config';
 
 import loggerFactory from '~/utils/logger';
+import { resolveFromRoot } from '~/utils/project-dir-utils';
 
 const logger = loggerFactory('growi:crowi:express-init');
 
@@ -115,7 +117,10 @@ module.exports = function(crowi, app) {
 
   const staticOption = (crowi.node_env === 'production') ? { maxAge: '30d' } : {};
   app.use(express.static(crowi.publicDir, staticOption));
-  app.use('/plugins', express.static(path.resolve(__dirname, '../../../tmp/plugins')));
+  app.use('/static/preset-themes', express.static(
+    resolveFromRoot(`../../node_modules/@growi/preset-themes/${path.dirname(presetThemesManifestPath)}`),
+  ));
+  app.use('/static/plugins', express.static(path.resolve(__dirname, '../../../tmp/plugins')));
 
   app.engine('html', swig.renderFile);
   // app.set('view cache', false);  // Default: true in production, otherwise undefined. -- 2017.07.04 Yuki Takei

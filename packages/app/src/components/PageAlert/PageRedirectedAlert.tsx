@@ -21,7 +21,7 @@ export const PageRedirectedAlert = React.memo((): JSX.Element => {
     }
   }, [unlink]);
 
-  if (redirectFrom == null) {
+  if (redirectFrom == null || redirectFrom === '') {
     return <></>;
   }
 

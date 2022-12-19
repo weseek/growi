@@ -37,8 +37,10 @@ import type { PageModel, PageDocument } from '~/server/models/page';
 import type { PageRedirectModel } from '~/server/models/page-redirect';
 import type { UserUISettingsModel } from '~/server/models/user-ui-settings';
 import { useEditingMarkdown } from '~/stores/editor';
+import { useHasDraftOnHackmd, usePageIdOnHackmd, useRevisionIdHackmdSynced } from '~/stores/hackmd';
 import { useSWRxCurrentPage, useSWRxIsGrantNormalized } from '~/stores/page';
 import { useRedirectFrom } from '~/stores/page-redirect';
+import { useRemoteRevisionId } from '~/stores/remote-latest-page';
 import {
   useEditorMode, useSelectedGrant,
   usePreferDrawerModeByUser, usePreferDrawerModeOnEditByUser, useSidebarCollapsed, useCurrentSidebarContents, useCurrentProductNavWidth,
@@ -257,6 +259,10 @@ const GrowiPage: NextPage<Props> = (props: Props) => {
   const pagePath = pageWithMeta?.data.path ?? (!_isPermalink(props.currentPathname) ? props.currentPathname : undefined);
 
   useCurrentPageId(pageId ?? null);
+  useRevisionIdHackmdSynced(pageWithMeta?.data.revisionHackmdSynced);
+  useRemoteRevisionId(pageWithMeta?.data.revision._id);
+  usePageIdOnHackmd(pageWithMeta?.data.pageIdOnHackmd);
+  useHasDraftOnHackmd(pageWithMeta?.data.hasDraftOnHackmd ?? false);
   // useIsNotCreatable(props.isForbidden || !isCreatablePage(pagePath)); // TODO: need to include props.isIdentical
   useCurrentPathname(props.currentPathname);
 
@@ -565,10 +571,12 @@ function injectServerConfigurations(context: GetServerSidePropsContext, props: P
     blockdiagUri: process.env.BLOCKDIAG_URI ?? null,
 
     // XSS Options
-    isEnabledXssPrevention: configManager.getConfig('markdown', 'markdown:xss:isEnabledPrevention'),
     attrWhiteList: crowi.xssService.getAttrWhiteList(),
     tagWhiteList: crowi.xssService.getTagWhiteList(),
     highlightJsStyleBorder: crowi.configManager.getConfig('crowi', 'customize:highlightJsStyleBorder'),
+
+    // XSS: rehype-sanitize options
+    isEnabledXssPrevention: configManager.getConfig('markdown', 'markdown:rehypeSanitize:isEnabledPrevention'),
   };
 
   props.sidebarConfig = {

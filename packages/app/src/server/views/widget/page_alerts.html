@@ -28,7 +28,8 @@
       {% endif %}
     {% endif %}
 
-    {% if redirectFrom or req.query.redirectFrom %}
+    <!-- This code has been replaced to <PageRedirectedAlert /> -->
+    <!-- {% if redirectFrom or req.query.redirectFrom %}
     <div class="alert alert-pink d-edit-none py-3 px-4 d-flex align-items-center justify-content-between">
       <span>
         {% set fromPath = req.query.redirectFrom %}
@@ -44,7 +45,7 @@
         </button>
       {% endif %}
     </div>
-    {% endif %}
+    {% endif %} -->
 
     {% if req.query.unlinked %}
     <div class="alert alert-info d-edit-none py-3 px-4">

@@ -1,7 +1,6 @@
+import { PresetThemes } from '@growi/preset-themes';
 import { Types, Schema } from 'mongoose';
 import uniqueValidator from 'mongoose-unique-validator';
-
-import { GrowiThemes } from '~/interfaces/theme';
 
 import { RehypeSanitizeOption } from '../../interfaces/rehype';
 import { getOrCreateModel } from '../util/mongoose-utils';
@@ -103,9 +102,6 @@ export const defaultCrowiConfigs: { [key: string]: any } = {
 
   'security:passport-oidc:isEnabled' : false,
 
-  'security:passport-basic:isEnabled' : false,
-  'security:passport-basic:isSameUsernameTreatedAsIdenticalUser': false,
-
   'aws:s3Bucket'          : 'growi',
   'aws:s3Region'          : 'ap-northeast-1',
   'aws:s3AccessKeyId'     : undefined,
@@ -126,7 +122,7 @@ export const defaultCrowiConfigs: { [key: string]: any } = {
   'customize:title' : undefined,
   'customize:highlightJsStyle' : 'github',
   'customize:highlightJsStyleBorder' : false,
-  'customize:theme' : GrowiThemes.DEFAULT,
+  'customize:theme' : PresetThemes.DEFAULT,
   'customize:isContainerFluid' : false,
   'customize:isEnabledTimeline' : true,
   'customize:isEnabledAttachTitleHeader' : false,
@@ -151,8 +147,6 @@ export const defaultCrowiConfigs: { [key: string]: any } = {
 };
 
 export const defaultMarkdownConfigs: { [key: string]: any } = {
-  'markdown:xss:isEnabledPrevention': true,
-  'markdown:xss:option': 2,
   'markdown:xss:tagWhiteList': [],
   'markdown:xss:attrWhiteList': [],
   'markdown:rehypeSanitize:isEnabledPrevention': true,

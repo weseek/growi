@@ -1,6 +1,9 @@
+import { GrowiThemeMetadata } from '@growi/core';
+
 export const GrowiPluginResourceType = {
   Template: 'template',
   Style: 'style',
+  Theme: 'theme',
   Script: 'script',
 } as const;
 export type GrowiPluginResourceType = typeof GrowiPluginResourceType[keyof typeof GrowiPluginResourceType];
@@ -11,11 +14,11 @@ export type GrowiPluginOrigin = {
   ghTag?: string,
 }
 
-export type GrowiPlugin = {
+export type GrowiPlugin<M extends GrowiPluginMeta = GrowiPluginMeta> = {
   isEnabled: boolean,
   installedPath: string,
   origin: GrowiPluginOrigin,
-  meta: GrowiPluginMeta,
+  meta: M,
 }
 
 export type GrowiPluginMeta = {
@@ -23,4 +26,8 @@ export type GrowiPluginMeta = {
   types: GrowiPluginResourceType[],
   desc?: string,
   author?: string,
+}
+
+export type GrowiThemePluginMeta = GrowiPluginMeta & {
+  themes: GrowiThemeMetadata[]
 }

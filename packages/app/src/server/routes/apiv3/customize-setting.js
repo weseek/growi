@@ -1,8 +1,10 @@
 /* eslint-disable no-unused-vars */
 
 import { ErrorV3 } from '@growi/core';
+import mongoose from 'mongoose';
 
 import { SupportedAction } from '~/interfaces/activity';
+import { GrowiPluginResourceType } from '~/interfaces/plugin';
 import { AttachmentType } from '~/server/interfaces/attachment';
 import loggerFactory from '~/utils/logger';
 
@@ -108,11 +110,8 @@ module.exports = (crowi) => {
     layout: [
       body('isContainerFluid').isBoolean(),
     ],
-    themeAssetPath: [
-      query('themeName').isString(),
-    ],
     theme: [
-      body('themeType').isString(),
+      body('theme').isString(),
     ],
     sidebar: [
       body('isSidebarDrawerMode').isBoolean(),
@@ -175,7 +174,6 @@ module.exports = (crowi) => {
    */
   router.get('/', loginRequiredStrictly, adminRequired, async(req, res) => {
     const customizeParams = {
-      themeType: await crowi.configManager.getConfig('crowi', 'customize:theme'),
       isEnabledTimeline: await crowi.configManager.getConfig('crowi', 'customize:isEnabledTimeline'),
       isEnabledAttachTitleHeader: await crowi.configManager.getConfig('crowi', 'customize:isEnabledAttachTitleHeader'),
       pageLimitationS: await crowi.configManager.getConfig('crowi', 'customize:showPageLimitationS'),
@@ -272,41 +270,26 @@ module.exports = (crowi) => {
     }
   });
 
-  /**
-   * @swagger
-   *
-   *    /customize-setting/theme/asset-path:
-   *      put:
-   *        tags: [CustomizeSetting]
-   *        operationId: getThemeAssetPath
-   *        summary: /customize-setting/theme/asset-path
-   *        description: Get theme asset path
-   *        parameters:
-   *          - name: themeName
-   *            in: query
-   *            required: true
-   *            schema:
-   *              type: string
-   *        responses:
-   *          200:
-   *            description: Succeeded to get theme asset path
-   *            content:
-   *              application/json:
-   *                schema:
-   *                  properties:
-   *                    assetPath:
-   *                      type: string
-   */
-  router.get('/theme/asset-path', loginRequiredStrictly, adminRequired, validator.themeAssetPath, apiV3FormValidator, async(req, res) => {
-    const { themeName } = req.query;
+  router.get('/theme', loginRequiredStrictly, adminRequired, async(req, res) => {
 
-    const webpackAssetKey = `styles/theme-${themeName}.css`;
-    const assetPath = res.locals.webpack_asset(webpackAssetKey);
+    try {
+      const currentTheme = await crowi.configManager.getConfig('crowi', 'customize:theme');
 
-    if (assetPath == null) {
-      return res.apiv3Err(new ErrorV3(`The asset for '${webpackAssetKey}' is undefined.`, 'invalid-asset'));
+      // retrieve plugin manifests
+      const GrowiPluginModel = mongoose.model('GrowiPlugin');
+      const themePlugins = await GrowiPluginModel.findEnabledPluginsIncludingAnyTypes([GrowiPluginResourceType.Theme]);
+
+      const pluginThemesMetadatas = themePlugins
+        .map(themePlugin => themePlugin.meta.themes)
+        .flat();
+
+      return res.apiv3({ currentTheme, pluginThemesMetadatas });
     }
-    return res.apiv3({ assetPath });
+    catch (err) {
+      const msg = 'Error occurred in getting theme';
+      logger.error('Error', err);
+      return res.apiv3Err(new ErrorV3(msg, 'get-theme-failed'));
+    }
   });
 
   /**
@@ -334,13 +317,13 @@ module.exports = (crowi) => {
    */
   router.put('/theme', loginRequiredStrictly, adminRequired, addActivity, validator.theme, apiV3FormValidator, async(req, res) => {
     const requestParams = {
-      'customize:theme': req.body.themeType,
+      'customize:theme': req.body.theme,
     };
 
     try {
       await crowi.configManager.updateConfigsInTheSameNamespace('crowi', requestParams);
       const customizedParams = {
-        themeType: await crowi.configManager.getConfig('crowi', 'customize:theme'),
+        theme: await crowi.configManager.getConfig('crowi', 'customize:theme'),
       };
       const parameters = { action: SupportedAction.ACTION_ADMIN_THEME_UPDATE };
       activityEvent.emit('update', res.locals.activity._id, parameters);
