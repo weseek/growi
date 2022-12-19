@@ -229,15 +229,15 @@ describe('Access to sidebar', () => {
         });
       });
 
-      TODO: No Drafts pages on GROWI version 6
-      it('Successfully access to My Drafts page', () => {
-        cy.visit('/');
-        cy.collapseSidebar(true);
-        cy.get('.grw-sidebar-nav-secondary-container').within(() => {
-          cy.get('a[href*="/me/drafts"]').click();
-        });
-        cy.screenshot(`${ssPrefix}access-to-drafts-page`);
-      });
+      // // TODO: No Drafts pages on GROWI version 6
+      // it('Successfully access to My Drafts page', () => {
+      //   cy.visit('/');
+      //   cy.collapseSidebar(true);
+      //   cy.get('.grw-sidebar-nav-secondary-container').within(() => {
+      //     cy.get('a[href*="/me/drafts"]').click();
+      //   });
+      //   cy.screenshot(`${ssPrefix}access-to-drafts-page`);
+      // });
 
       describe('Test access to GROWI Docs page', () => {
         it('Successfully access to GROWI Docs page', () => {
