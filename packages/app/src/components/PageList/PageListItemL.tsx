@@ -11,11 +11,9 @@ import { useTranslation } from 'next-i18next';
 import Link from 'next/link';
 import Clamp from 'react-multiline-clamp';
 import { CustomInput } from 'reactstrap';
-import urljoin from 'url-join';
-
 
 import { ISelectable } from '~/client/interfaces/selectable-all';
-import { bookmark, unbookmark } from '~/client/services/page-operation';
+import { unlink, bookmark, unbookmark } from '~/client/services/page-operation';
 import { toastError } from '~/client/util/apiNotification';
 import {
   IPageInfoAll, isIPageInfoForListing, isIPageInfoForEntity, IPageWithMeta, IPageInfoForListing,
@@ -28,7 +26,6 @@ import LinkedPagePath from '~/models/linked-page-path';
 import {
   usePageRenameModal, usePageDuplicateModal, usePageDeleteModal, usePutBackPageModal,
 } from '~/stores/modal';
-import { useRedirectFrom } from '~/stores/page-redirect';
 import { useIsDeviceSmallerThanLg } from '~/stores/ui';
 
 import { useSWRxPageInfo } from '../../stores/page';
@@ -87,7 +84,6 @@ const PageListItemLSubstance: ForwardRefRenderFunction<ISelectable, Props> = (pr
   const { open: openRenameModal } = usePageRenameModal();
   const { open: openDeleteModal } = usePageDeleteModal();
   const { open: openPutBackPageModal } = usePutBackPageModal();
-  const { unlink } = useRedirectFrom();
 
   const shouldFetch = isSelected && (pageData != null || pageMeta != null);
   const { data: pageInfo } = useSWRxPageInfo(shouldFetch ? pageData?._id : null);
@@ -169,7 +165,7 @@ const PageListItemLSubstance: ForwardRefRenderFunction<ISelectable, Props> = (pr
       }
     };
     openPutBackPageModal({ pageId, path }, { onPutBacked: putBackedHandler });
-  }, [onPagePutBacked, openPutBackPageModal, pageData, unlink]);
+  }, [onPagePutBacked, openPutBackPageModal, pageData]);
 
   const styleListGroupItem = (!isDeviceSmallerThanLg && onClickItem != null) ? 'list-group-item-action' : '';
   // background color of list item changes when class "active" exists under 'list-group-item'
