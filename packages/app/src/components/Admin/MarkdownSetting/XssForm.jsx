@@ -16,9 +16,6 @@ import WhiteListInput from './WhiteListInput';
 
 const logger = loggerFactory('growi:importer');
 
-const tags = sanitizeDefaultSchema.tagNames;
-const attrs = JSON.stringify(sanitizeDefaultSchema.attributes);
-
 class XssForm extends React.Component {
 
   constructor(props) {
@@ -43,6 +40,9 @@ class XssForm extends React.Component {
   xssOptions() {
     const { t, adminMarkDownContainer } = this.props;
     const { xssOption } = adminMarkDownContainer.state;
+
+    const rehypeRecommendedTags = sanitizeDefaultSchema.tagNames;
+    const rehypeRecommendedAttributes = JSON.stringify(sanitizeDefaultSchema.attributes);
 
     return (
       <div className="form-group col-12 my-3">
@@ -70,7 +70,7 @@ class XssForm extends React.Component {
                     rows="6"
                     cols="40"
                     readOnly
-                    defaultValue={tags}
+                    defaultValue={rehypeRecommendedTags}
                   />
                 </div>
                 <div className="mt-4">
@@ -83,7 +83,7 @@ class XssForm extends React.Component {
                     rows="6"
                     cols="40"
                     readOnly
-                    defaultValue={attrs}
+                    defaultValue={rehypeRecommendedAttributes}
                   />
                 </div>
               </label>
