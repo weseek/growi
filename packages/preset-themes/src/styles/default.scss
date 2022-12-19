@@ -126,7 +126,7 @@
   $color-theme-color-box: lighten($primary, 20%);
 
   @import './theme/apply-colors';
-  @import './theme/apply-colors-light';
+  // @import './theme/apply-colors-light';
   // @import '/packages/app/src/styles/theme/apply-colors-light-new';
 
   // Button
@@ -241,7 +241,7 @@
   $color-theme-color-box: $primary;
 
   @import './theme/apply-colors';
-  @import './theme/apply-colors-dark';
+  // @import './theme/apply-colors-dark';
 
   // @import '/packages/app/src/styles/theme/apply-colors-dark-new';
 
