@@ -542,14 +542,14 @@ module.exports = (crowi) => {
    *          content:
    *            application/json:
    *              schema:
-   *                $ref: '#/components/schemas/customizeHtml'
+   *                $ref: '#/components/schemas/CustomizeHtml'
    *        responses:
    *          200:
    *            description: Succeeded to update customize header
    *            content:
    *              application/json:
    *                schema:
-   *                  $ref: '#/components/schemas/customizeHtml'
+   *                  $ref: '#/components/schemas/CustomizeHtml'
    */
   router.put('/customize-html', loginRequiredStrictly, adminRequired, addActivity, validator.customizeHtml, apiV3FormValidator, async(req, res) => {
     const requestParams = {
