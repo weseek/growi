@@ -220,7 +220,6 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
       twitter: 'twitter',
       oidc: 'openid',
       saml: 'key',
-      basic: 'lock',
     };
 
     return (

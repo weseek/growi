@@ -263,7 +263,7 @@ const Page: NextPageWithLayout<Props> = (props: Props) => {
   useRevisionIdHackmdSynced(pageWithMeta?.data.revisionHackmdSynced);
   useRemoteRevisionId(pageWithMeta?.data.revision._id);
   usePageIdOnHackmd(pageWithMeta?.data.pageIdOnHackmd);
-  useHasDraftOnHackmd(pageWithMeta?.data.hasDraftOnHackmd);
+  useHasDraftOnHackmd(pageWithMeta?.data.hasDraftOnHackmd ?? false);
   // useIsNotCreatable(props.isForbidden || !isCreatablePage(pagePath)); // TODO: need to include props.isIdentical
   useCurrentPathname(props.currentPathname);
 
@@ -565,10 +565,12 @@ function injectServerConfigurations(context: GetServerSidePropsContext, props: P
     blockdiagUri: process.env.BLOCKDIAG_URI ?? null,
 
     // XSS Options
-    isEnabledXssPrevention: configManager.getConfig('markdown', 'markdown:xss:isEnabledPrevention'),
     attrWhiteList: crowi.xssService.getAttrWhiteList(),
     tagWhiteList: crowi.xssService.getTagWhiteList(),
     highlightJsStyleBorder: crowi.configManager.getConfig('crowi', 'customize:highlightJsStyleBorder'),
+
+    // XSS: rehype-sanitize options
+    isEnabledXssPrevention: configManager.getConfig('markdown', 'markdown:rehypeSanitize:isEnabledPrevention'),
   };
 
   props.sidebarConfig = {

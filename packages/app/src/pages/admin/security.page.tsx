@@ -7,8 +7,6 @@ import dynamic from 'next/dynamic';
 import Head from 'next/head';
 import { Container, Provider } from 'unstated';
 
-
-import AdminBasicSecurityContainer from '~/client/services/AdminBasicSecurityContainer';
 import AdminGeneralSecurityContainer from '~/client/services/AdminGeneralSecurityContainer';
 import AdminGitHubSecurityContainer from '~/client/services/AdminGitHubSecurityContainer';
 import AdminGoogleSecurityContainer from '~/client/services/AdminGoogleSecurityContainer';
@@ -52,7 +50,6 @@ const AdminSecuritySettingsPage: NextPage<Props> = (props) => {
       const adminLdapSecurityContainer = new AdminLdapSecurityContainer();
       const adminSamlSecurityContainer = new AdminSamlSecurityContainer();
       const adminOidcSecurityContainer = new AdminOidcSecurityContainer();
-      const adminBasicSecurityContainer = new AdminBasicSecurityContainer();
       const adminGoogleSecurityContainer = new AdminGoogleSecurityContainer();
       const adminGitHubSecurityContainer = new AdminGitHubSecurityContainer();
       const adminTwitterSecurityContainer = new AdminTwitterSecurityContainer();
@@ -63,7 +60,6 @@ const AdminSecuritySettingsPage: NextPage<Props> = (props) => {
         adminLdapSecurityContainer,
         adminSamlSecurityContainer,
         adminOidcSecurityContainer,
-        adminBasicSecurityContainer,
         adminGoogleSecurityContainer,
         adminGitHubSecurityContainer,
         adminTwitterSecurityContainer,
