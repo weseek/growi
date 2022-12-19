@@ -626,49 +626,6 @@ module.exports = function(crowi, app) {
     });
   };
 
-  /**
-   * middleware that login with BasicStrategy
-   * @param {*} req
-   * @param {*} res
-   * @param {*} next
-   */
-  const loginWithBasic = async(req, res, next) => {
-    if (!passportService.isBasicStrategySetup) {
-      debug('BasicStrategy has not been set up');
-      const error = new ExternalAccountLoginError('message.strategy_has_not_been_set_up', { strategy: 'Basic' });
-      return next(error);
-    }
-
-    const providerId = 'basic';
-    const strategyName = 'basic';
-    let userId;
-
-    try {
-      userId = await promisifiedPassportAuthentication(strategyName, req, res);
-    }
-    catch (err) {
-      return next(new ExternalAccountLoginError(err.message));
-    }
-
-    const userInfo = {
-      id: userId,
-      username: userId,
-      name: userId,
-    };
-
-    const externalAccount = await getOrCreateUser(req, res, userInfo, providerId);
-    if (!externalAccount) {
-      return next(new ExternalAccountLoginError('message.sign_in_failure'));
-    }
-
-    const user = await externalAccount.getPopulatedUser();
-    await req.logIn(user, (err) => {
-      if (err) { debug(err.message); return next(new ExternalAccountLoginError(err.message)) }
-
-      return loginSuccessHandler(req, res, user, SupportedAction.ACTION_USER_LOGIN_WITH_BASIC, true);
-    });
-  };
-
   return {
     cannotLoginErrorHadnler,
     loginFailure,
@@ -681,7 +638,6 @@ module.exports = function(crowi, app) {
     loginWithTwitter,
     loginWithOidc,
     loginWithSaml,
-    loginWithBasic,
     loginPassportGoogleCallback,
     loginPassportGitHubCallback,
     loginPassportTwitterCallback,
