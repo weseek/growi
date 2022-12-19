@@ -156,7 +156,7 @@ const PageListItemLSubstance: ForwardRefRenderFunction<ISelectable, Props> = (pr
 
     const putBackedHandler = async(path) => {
       try {
-        // pageData path should be `/trash/fuga` (`/trash` should be included to prefix)
+        // pageData path should be `/trash/fuga` (`/trash` should be included to the prefix)
         await unlink(pageData.path);
       }
       catch (err) {
@@ -164,7 +164,7 @@ const PageListItemLSubstance: ForwardRefRenderFunction<ISelectable, Props> = (pr
       }
 
       if (onPagePutBacked != null) {
-        // This path should be `/fuga` ( `/trash` is not included to prefix)
+        // This path should be `/fuga` ( `/trash` is not included to the prefix)
         onPagePutBacked(path);
       }
     };
