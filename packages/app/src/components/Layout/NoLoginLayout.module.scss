@@ -112,10 +112,6 @@
       rgba(#55a79a, 0.4),
       $gray-700,
     ),
-    'basic': (
-      rgba(#24292e, 0.4),
-      $gray-700,
-    ),
   );
 
   @each $label, $colors in $btn-fill-colors {

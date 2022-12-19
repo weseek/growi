@@ -6,7 +6,6 @@ import { TabContent, TabPane } from 'reactstrap';
 
 import CustomNav from '../../CustomNavigation/CustomNav';
 
-import BasicSecuritySetting from './BasicSecuritySetting';
 import FacebookSecuritySetting from './FacebookSecuritySetting';
 import GitHubSecuritySetting from './GitHubSecuritySetting';
 import GoogleSecuritySetting from './GoogleSecuritySetting';
@@ -51,30 +50,25 @@ const SecurityManagementContents = () => {
         i18n: 'OIDC',
         index: 3,
       },
-      passport_basic: {
-        Icon: () => <i className="fa fa-lock" />,
-        i18n: 'BASIC',
-        index: 4,
-      },
       passport_google: {
         Icon: () => <i className="fa fa-google" />,
         i18n: 'Google',
-        index: 5,
+        index: 4,
       },
       passport_github: {
         Icon: () => <i className="fa fa-github" />,
         i18n: 'GitHub',
-        index: 6,
+        index: 5,
       },
       passport_twitter: {
         Icon: () => <i className="fa fa-twitter" />,
         i18n: 'Twitter',
-        index: 7,
+        index: 6,
       },
       passport_facebook: {
         Icon: () => <i className="fa fa-facebook" />,
         i18n: '(TBD) Facebook',
-        index: 8,
+        index: 7,
       },
     };
   }, []);
@@ -125,9 +119,6 @@ const SecurityManagementContents = () => {
           </TabPane>
           <TabPane tabId="passport_oidc">
             {activeComponents.has('passport_oidc') && <OidcSecuritySetting />}
-          </TabPane>
-          <TabPane tabId="passport_basic">
-            {activeComponents.has('passport_basic') && <BasicSecuritySetting />}
           </TabPane>
           <TabPane tabId="passport_google">
             {activeComponents.has('passport_google') && <GoogleSecuritySetting />}
