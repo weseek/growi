@@ -80,6 +80,15 @@
       theme-color-level($color, $alert-color-level)
     );
   }
+  // Alert link
+  :root, .wiki {
+    .alert.alert-#{$color} {
+      a,
+      a:hover {
+        color: theme-color-level($color, $alert-color-level - 2);
+      }
+    }
+  }
 }
 
 @each $color, $value in $theme-colors {

@@ -11,11 +11,11 @@
 // determine optional variables
 $border-image-navbar: linear-gradient(to right, $gray-300 0%, $gray-300 100%) !default;
 $bgcolor-search-top-dropdown: $secondary !default;
-$bgcolor-sidebar-nav-item-active: darken($bgcolor-sidebar, 10%) !default;
+// $bgcolor-sidebar-nav-item-active: darken($bgcolor-sidebar, 10%) !default;
 $text-shadow-sidebar-nav-item-active: var(--text-shadow-sidebar-nav-item-active,1px 1px 2px var(--primary));
-$bgcolor-inline-code: $gray-100 !default;
-$color-inline-code: darken($red, 15%) !default;
-$bordercolor-inline-code: $gray-400 !default;
+// $bgcolor-inline-code: $gray-100 !default;
+// $color-inline-code: darken($red, 15%) !default;
+// $bordercolor-inline-code: $gray-400 !default;
 $bordercolor-nav-tabs: $gray-300 !default;
 $bordercolor-nav-tabs-hover: $gray-200 $gray-200 $bordercolor-nav-tabs !default;
 $color-nav-tabs-link-active: $gray-600 !default;
@@ -43,27 +43,27 @@ $theme-colors: map-merge($theme-colors, ( primary: $primary ));
 // determine variables with　bootstrap function (These variables can be used after importing bootstrap above)
 $color-modal-header: color-yiq($primary) !default;
 
-code:not([class^='language-']) {
-  @include code.code-inline-color($color-inline-code, $bgcolor-inline-code, $bordercolor-inline-code);
-}
+// code:not([class^='language-']) {
+//   @include code.code-inline-color($color-inline-code, $bgcolor-inline-code, $bordercolor-inline-code);
+// }
 
-.code-highlighted {
-  border-color: $bordercolor-inline-code;
-}
+// .code-highlighted {
+//   border-color: $bordercolor-inline-code;
+// }
 
 //
 //== Apply to Bootstrap Elements
 //
 
 // Alert link
-@each $color, $value in $theme-colors {
-  .alert.alert-#{$color} {
-    a,
-    a:hover {
-      color: theme-color-level($color, $alert-color-level - 2);
-    }
-  }
-}
+// @each $color, $value in $theme-colors {
+//   .alert.alert-#{$color} {
+//     a,
+//     a:hover {
+//       color: theme-color-level($color, $alert-color-level - 2);
+//     }
+//   }
+// }
 
 // Dropdown
 .grw-apperance-mode-dropdown {
@@ -220,18 +220,18 @@ ul.pagination {
     }
   }
 
-  .grw-sidebar-nav {
-    .btn {
-      @include button-variant(
-        $bgcolor-sidebar,
-        $bgcolor-sidebar,
-        darken($bgcolor-sidebar, 7.5%),
-        darken($bgcolor-sidebar, 10%),
-        $bgcolor-sidebar-nav-item-active,
-        $bgcolor-sidebar-nav-item-active
-      );
-    }
-  }
+  // .grw-sidebar-nav {
+  //   .btn {
+  //     @include button-variant(
+  //       $bgcolor-sidebar,
+  //       $bgcolor-sidebar,
+  //       darken($bgcolor-sidebar, 7.5%),
+  //       darken($bgcolor-sidebar, 10%),
+  //       $bgcolor-sidebar-nav-item-active,
+  //       $bgcolor-sidebar-nav-item-active
+  //     );
+  //   }
+  // }
   .grw-sidebar-nav-primary-container {
     .btn.active {
       i {
