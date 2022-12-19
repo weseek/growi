@@ -75,7 +75,7 @@ interface GrowiDocumentProps {
   theme: string,
   customScript: string | null,
   customCss: string | null,
-  customHtml: string | null,
+  customNoscript: string | null,
   presetThemesManifest: ViteManifest,
   pluginThemeHref: string | undefined,
   pluginResourceEntries: GrowiPluginResourceEntries;
@@ -92,7 +92,7 @@ class GrowiDocument extends Document<GrowiDocumentInitialProps> {
     const theme = configManager.getConfig('crowi', 'customize:theme');
     const customScript: string | null = customizeService.getCustomScript();
     const customCss: string | null = customizeService.getCustomCss();
-    const customHtml: string | null = customizeService.getCustomHtml();
+    const customNoscript: string | null = customizeService.getCustomNoscript();
 
     // import preset-themes manifest
     const presetThemesManifest = await import('@growi/preset-themes/dist/themes/manifest.json').then(imported => imported.default);
@@ -106,25 +106,11 @@ class GrowiDocument extends Document<GrowiDocumentInitialProps> {
       theme,
       customScript,
       customCss,
-      customHtml,
+      customNoscript,
       presetThemesManifest,
       pluginThemeHref,
       pluginResourceEntries,
     };
-  }
-
-  renderCustomHtml(customHtml: string | null): JSX.Element {
-    if (customHtml == null || customHtml.length === 0) {
-      return <></>;
-    }
-    return <noscript dangerouslySetInnerHTML={{ __html: customHtml }} />;
-  }
-
-  renderCustomCss(customCss: string | null): JSX.Element {
-    if (customCss == null || customCss.length === 0) {
-      return <></>;
-    }
-    return <style>{customCss}</style>;
   }
 
   renderCustomScript(customScript: string | null): JSX.Element {
@@ -134,9 +120,23 @@ class GrowiDocument extends Document<GrowiDocumentInitialProps> {
     return <script id="customScript" dangerouslySetInnerHTML={{ __html: customScript }} />;
   }
 
+  renderCustomCss(customCss: string | null): JSX.Element {
+    if (customCss == null || customCss.length === 0) {
+      return <></>;
+    }
+    return <style dangerouslySetInnerHTML={{ __html: customCss }} />;
+  }
+
+  renderCustomNoscript(customNoscript: string | null): JSX.Element {
+    if (customNoscript == null || customNoscript.length === 0) {
+      return <></>;
+    }
+    return <noscript dangerouslySetInnerHTML={{ __html: customNoscript }} />;
+  }
+
   override render(): JSX.Element {
     const {
-      customCss, customScript, customHtml,
+      customCss, customScript, customNoscript,
       theme, presetThemesManifest, pluginThemeHref, pluginResourceEntries,
     } = this.props;
 
@@ -156,7 +156,7 @@ class GrowiDocument extends Document<GrowiDocumentInitialProps> {
           {this.renderCustomCss(customCss)}
         </Head>
         <body>
-          {this.renderCustomHtml(customHtml)}
+          {this.renderCustomNoscript(customNoscript)}
           <Main />
           <NextScript />
         </body>

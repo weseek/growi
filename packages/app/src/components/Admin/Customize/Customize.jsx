@@ -12,9 +12,9 @@ import { withUnstatedContainers } from '../../UnstatedUtils';
 
 import CustomizeCssSetting from './CustomizeCssSetting';
 import CustomizeFunctionSetting from './CustomizeFunctionSetting';
-import CustomizeHtmlSetting from './CustomizeHtmlSetting';
 import CustomizeLayoutSetting from './CustomizeLayoutSetting';
 import CustomizeLogoSetting from './CustomizeLogoSetting';
+import CustomizeNoscriptSetting from './CustomizeNoscriptSetting';
 import CustomizeScriptSetting from './CustomizeScriptSetting';
 import CustomizeSidebarSetting from './CustomizeSidebarSetting';
 import CustomizeThemeSetting from './CustomizeThemeSetting';
@@ -68,7 +68,7 @@ function Customize(props) {
         <CustomizeCssSetting />
       </div>
       <div className="mb-5">
-        <CustomizeHtmlSetting />
+        <CustomizeNoscriptSetting />
       </div>
     </div>
   );

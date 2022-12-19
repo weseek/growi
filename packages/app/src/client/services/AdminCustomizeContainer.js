@@ -36,7 +36,7 @@ export default class AdminCustomizeContainer extends Container {
       isAllReplyShown: false,
       isSearchScopeChildrenAsDefault: false,
       currentCustomizeTitle: '',
-      currentCustomizeHtml: '',
+      currentCustomizeNoscript: '',
       currentCustomizeCss: '',
       currentCustomizeScript: '',
     };
@@ -73,7 +73,7 @@ export default class AdminCustomizeContainer extends Container {
         isAllReplyShown: customizeParams.isAllReplyShown,
         isSearchScopeChildrenAsDefault: customizeParams.isSearchScopeChildrenAsDefault,
         currentCustomizeTitle: customizeParams.customizeTitle,
-        currentCustomizeHtml: customizeParams.customizeHtml,
+        currentCustomizeNoscript: customizeParams.customizeNoscript,
         currentCustomizeCss: customizeParams.customizeCss,
         currentCustomizeScript: customizeParams.customizeScript,
       });
@@ -160,8 +160,8 @@ export default class AdminCustomizeContainer extends Container {
   /**
    * Change customize Html header
    */
-  changeCustomizeHtml(inputValue) {
-    this.setState({ currentCustomizeHtml: inputValue });
+  changeCustomizeNoscript(inputValue) {
+    this.setState({ currentCustomizeNoscript: inputValue });
   }
 
   /**
@@ -235,18 +235,14 @@ export default class AdminCustomizeContainer extends Container {
     }
   }
 
-  /**
-   * Update customHeader
-   * @memberOf AdminCustomizeContainer
-   */
-  async updateCustomizeHtml() {
+  async updateCustomizeNoscript() {
     try {
-      const response = await apiv3Put('/customize-setting/customize-html', {
-        customizeHtml: this.state.currentCustomizeHtml,
+      const response = await apiv3Put('/customize-setting/customize-noscript', {
+        customizeNoscript: this.state.currentCustomizeNoscript,
       });
       const { customizedParams } = response.data;
       this.setState({
-        currentCustomizeHtml: customizedParams.customizeHtml,
+        currentCustomizeNoscript: customizedParams.customizeNoscript,
       });
     }
     catch (err) {

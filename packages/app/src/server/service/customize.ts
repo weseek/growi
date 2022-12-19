@@ -97,7 +97,7 @@ class CustomizeService implements S2sMessageHandlable {
     return this.configManager.getConfig('crowi', 'customize:script');
   }
 
-  getCustomHtml() {
+  getCustomNoscript() {
     return this.configManager.getConfig('crowi', 'customize:noscript');
   }
 

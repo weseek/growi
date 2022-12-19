@@ -15,15 +15,15 @@ type Props = {
   adminCustomizeContainer: AdminCustomizeContainer
 }
 
-const CustomizeHtmlSetting = (props: Props): JSX.Element => {
+const CustomizeNoscriptSetting = (props: Props): JSX.Element => {
 
   const { adminCustomizeContainer } = props;
   const { t } = useTranslation();
 
   const onClickSubmit = useCallback(async() => {
     try {
-      await adminCustomizeContainer.updateCustomizeHtml();
-      toastSuccess(t('toaster.update_successed', { target: t('admin:customize_settings.custom_html'), ns: 'commons' }));
+      await adminCustomizeContainer.updateCustomizeNoscript();
+      toastSuccess(t('toaster.update_successed', { target: t('admin:customize_settings.custom_noscript'), ns: 'commons' }));
     }
     catch (err) {
       toastError(err);
@@ -34,13 +34,13 @@ const CustomizeHtmlSetting = (props: Props): JSX.Element => {
     <React.Fragment>
       <div className="row">
         <div className="col-12">
-          <h2 className="admin-setting-header">{t('admin:customize_settings.custom_html')}</h2>
+          <h2 className="admin-setting-header">{t('admin:customize_settings.custom_noscript')}</h2>
 
           <Card className="card well my-3">
             <CardBody className="px-0 py-2">
               <span
                 // eslint-disable-next-line react/no-danger
-                dangerouslySetInnerHTML={{ __html: t('admin:customize_settings.custom_html_detail') }}
+                dangerouslySetInnerHTML={{ __html: t('admin:customize_settings.custom_noscript_detail') }}
               />
             </CardBody>
           </Card>
@@ -48,9 +48,9 @@ const CustomizeHtmlSetting = (props: Props): JSX.Element => {
           <div className="form-group">
             <textarea
               className="form-control"
-              name="customizeHtml"
-              value={adminCustomizeContainer.state.currentCustomizeHtml || ''}
-              onChange={(e) => { adminCustomizeContainer.changeCustomizeHtml(e.target.value) }}
+              name="customizeNoscript"
+              value={adminCustomizeContainer.state.currentCustomizeNoscript || ''}
+              onChange={(e) => { adminCustomizeContainer.changeCustomizeNoscript(e.target.value) }}
             />
             <span className="form-text text-muted text-right">
               <i className="fa fa-fw fa-keyboard-o" aria-hidden="true"></i>
@@ -81,6 +81,6 @@ const CustomizeHtmlSetting = (props: Props): JSX.Element => {
 
 };
 
-const CustomizeHtmlSettingWrapper = withUnstatedContainers(CustomizeHtmlSetting, [AdminCustomizeContainer]);
+const CustomizeNoscriptSettingWrapper = withUnstatedContainers(CustomizeNoscriptSetting, [AdminCustomizeContainer]);
 
-export default CustomizeHtmlSettingWrapper;
+export default CustomizeNoscriptSettingWrapper;

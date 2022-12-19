@@ -77,11 +77,11 @@ const multer = require('multer');
  *        properties:
  *          customizeTitle:
  *            type: string
- *      CustomizeHtml:
- *        description: CustomizeHtml
+ *      CustomizeNoscript:
+ *        description: CustomizeNoscript
  *        type: object
  *        properties:
- *          customizeHtml:
+ *          customizeNoscript:
  *            type: string
  *      CustomizeCss:
  *        description: CustomizeCss
@@ -143,8 +143,8 @@ module.exports = (crowi) => {
     customizeCss: [
       body('customizeCss').isString(),
     ],
-    customizeHtml: [
-      body('customizeHtml').isString(),
+    customizeNoscript: [
+      body('customizeNoscript').isString(),
     ],
     logo: [
       body('isDefaultLogo').isBoolean().optional({ nullable: true }),
@@ -188,7 +188,7 @@ module.exports = (crowi) => {
       customizeTitle: await crowi.configManager.getConfig('crowi', 'customize:title'),
       customizeScript: await crowi.configManager.getConfig('crowi', 'customize:script'),
       customizeCss: await crowi.configManager.getConfig('crowi', 'customize:css'),
-      customizeHtml: await crowi.configManager.getConfig('crowi', 'customize:noscript'),
+      customizeNoscript: await crowi.configManager.getConfig('crowi', 'customize:noscript'),
     };
 
     return res.apiv3({ customizeParams });
@@ -531,43 +531,43 @@ module.exports = (crowi) => {
   /**
    * @swagger
    *
-   *    /customize-setting/customize-html:
+   *    /customize-setting/customize-noscript:
    *      put:
    *        tags: [CustomizeSetting]
-   *        operationId: updateCustomizeHtmlCustomizeSetting
-   *        summary: /customize-setting/customize-html
-   *        description: Update customizeHtml
+   *        operationId: updateCustomizeNoscriptCustomizeSetting
+   *        summary: /customize-setting/customize-noscript
+   *        description: Update customizeNoscript
    *        requestBody:
    *          required: true
    *          content:
    *            application/json:
    *              schema:
-   *                $ref: '#/components/schemas/CustomizeHtml'
+   *                $ref: '#/components/schemas/CustomizeNoscript'
    *        responses:
    *          200:
    *            description: Succeeded to update customize header
    *            content:
    *              application/json:
    *                schema:
-   *                  $ref: '#/components/schemas/CustomizeHtml'
+   *                  $ref: '#/components/schemas/CustomizeNoscript'
    */
-  router.put('/customize-html', loginRequiredStrictly, adminRequired, addActivity, validator.customizeHtml, apiV3FormValidator, async(req, res) => {
+  router.put('/customize-noscript', loginRequiredStrictly, adminRequired, addActivity, validator.customizeNoscript, apiV3FormValidator, async(req, res) => {
     const requestParams = {
-      'customize:noscript': req.body.customizeHtml,
+      'customize:noscript': req.body.customizeNoscript,
     };
     try {
       await crowi.configManager.updateConfigsInTheSameNamespace('crowi', requestParams);
       const customizedParams = {
-        customizeHtml: await crowi.configManager.getConfig('crowi', 'customize:noscript'),
+        customizeNoscript: await crowi.configManager.getConfig('crowi', 'customize:noscript'),
       };
-      const parameters = { action: SupportedAction.ACTION_ADMIN_CUSTOM_HTML_HEADER_UPDATE };
+      const parameters = { action: SupportedAction.ACTION_ADMIN_CUSTOM_NOSCRIPT_UPDATE };
       activityEvent.emit('update', res.locals.activity._id, parameters);
       return res.apiv3({ customizedParams });
     }
     catch (err) {
-      const msg = 'Error occurred in updating customizeHtml';
+      const msg = 'Error occurred in updating customizeNoscript';
       logger.error('Error', err);
-      return res.apiv3Err(new ErrorV3(msg, 'update-customizeHtml-failed'));
+      return res.apiv3Err(new ErrorV3(msg, 'update-customizeNoscript-failed'));
     }
   });
 
