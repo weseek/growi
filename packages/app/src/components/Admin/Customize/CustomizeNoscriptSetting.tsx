@@ -49,13 +49,16 @@ const CustomizeNoscriptSetting = (props: Props): JSX.Element => {
             <textarea
               className="form-control"
               name="customizeNoscript"
+              rows={8}
               value={adminCustomizeContainer.state.currentCustomizeNoscript || ''}
               onChange={(e) => { adminCustomizeContainer.changeCustomizeNoscript(e.target.value) }}
             />
+            {/* disabled in v6.0.0 temporarily -- 2022.12.19 Yuki Takei
             <span className="form-text text-muted text-right">
               <i className="fa fa-fw fa-keyboard-o" aria-hidden="true"></i>
               {t('admin:customize_settings.ctrl_space')}
             </span>
+            */}
           </div>
 
           <a className="text-muted"
