@@ -44,10 +44,13 @@ function Customize(props) {
   return (
     <div data-testid="admin-customize">
       <div className="mb-5">
-        <CustomizeLayoutSetting />
+        <CustomizeThemeSetting />
       </div>
       <div className="mb-5">
-        <CustomizeThemeSetting />
+        <CustomizeLogoSetting />
+      </div>
+      <div className="mb-5">
+        <CustomizeLayoutSetting />
       </div>
       <div className="mb-5">
         <CustomizeSidebarSetting />
@@ -66,9 +69,6 @@ function Customize(props) {
       </div>
       <div className="mb-5">
         <CustomizeHtmlSetting />
-      </div>
-      <div className="mb-5">
-        <CustomizeLogoSetting />
       </div>
     </div>
   );
