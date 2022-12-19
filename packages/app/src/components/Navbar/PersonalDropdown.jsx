@@ -34,7 +34,7 @@ const PersonalDropdown = () => {
       {/* Button */}
       {/* remove .dropdown-toggle for hide caret */}
       {/* See https://stackoverflow.com/a/44577512/13183572 */}
-      <button className="bg-transparent border-0 nav-link" type="button" ref={buttonRef} data-toggle="dropdown">
+      <button className="bg-transparent border-0 nav-link" type="button" ref={buttonRef} data-toggle="dropdown" data-testid="personal-dropdown-button">
         <UserPicture user={user} noLink noTooltip /><span className="ml-1 d-none d-lg-inline-block">&nbsp;{user.name}</span>
       </button>
 

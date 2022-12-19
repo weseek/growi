@@ -52,7 +52,6 @@ if (loginFormElem) {
     twitter: loginFormElem.dataset.isTwitterAuthEnabled === 'true',
     saml: loginFormElem.dataset.isSamlAuthEnabled === 'true',
     oidc: loginFormElem.dataset.isOidcAuthEnabled === 'true',
-    basic: loginFormElem.dataset.isBasicAuthEnabled === 'true',
   };
 
   Object.assign(componentMappings, {
