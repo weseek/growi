@@ -1,6 +1,8 @@
 import React, { useCallback } from 'react';
 
 import { useTranslation } from 'next-i18next';
+import { PrismAsyncLight } from 'react-syntax-highlighter';
+import { oneDark } from 'react-syntax-highlighter/dist/cjs/styles/prism';
 import { Card, CardBody } from 'reactstrap';
 
 import AdminCustomizeContainer from '~/client/services/AdminCustomizeContainer';
@@ -13,7 +15,7 @@ type Props = {
   adminCustomizeContainer: AdminCustomizeContainer
 }
 
-const CustomizeHeaderSetting = (props: Props): JSX.Element => {
+const CustomizeHtmlSetting = (props: Props): JSX.Element => {
 
   const { adminCustomizeContainer } = props;
   const { t } = useTranslation();
@@ -21,7 +23,7 @@ const CustomizeHeaderSetting = (props: Props): JSX.Element => {
   const onClickSubmit = useCallback(async() => {
     try {
       await adminCustomizeContainer.updateCustomizeHtml();
-      toastSuccess(t('toaster.update_successed', { target: t('admin:customize_settings.custom_header'), ns: 'commons' }));
+      toastSuccess(t('toaster.update_successed', { target: t('admin:customize_settings.custom_html'), ns: 'commons' }));
     }
     catch (err) {
       toastError(err);
@@ -32,25 +34,16 @@ const CustomizeHeaderSetting = (props: Props): JSX.Element => {
     <React.Fragment>
       <div className="row">
         <div className="col-12">
-          <h2 className="admin-setting-header">{t('admin:customize_settings.custom_header')}</h2>
+          <h2 className="admin-setting-header">{t('admin:customize_settings.custom_html')}</h2>
 
           <Card className="card well my-3">
             <CardBody className="px-0 py-2">
               <span
                 // eslint-disable-next-line react/no-danger
-                dangerouslySetInnerHTML={{ __html: t('admin:customize_settings.custom_header_detail') }}
+                dangerouslySetInnerHTML={{ __html: t('admin:customize_settings.custom_html_detail') }}
               />
             </CardBody>
           </Card>
-          <div className="form-text text-muted">
-            { t('Example') }:
-            <pre>
-              {/* eslint-disable-next-line react/no-unescaped-entities */}
-              <code className="text-wrap">&lt;script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@9.13.0/build/languages/yaml.min.js"
-                defer&gt;&lt;/script&gt;
-              </code>
-            </pre>
-          </div>
 
           <div className="form-group">
             <textarea
@@ -59,11 +52,27 @@ const CustomizeHeaderSetting = (props: Props): JSX.Element => {
               value={adminCustomizeContainer.state.currentCustomizeHtml || ''}
               onChange={(e) => { adminCustomizeContainer.changeCustomizeHtml(e.target.value) }}
             />
-            <p className="form-text text-muted text-right">
+            <span className="form-text text-muted text-right">
               <i className="fa fa-fw fa-keyboard-o" aria-hidden="true"></i>
               {t('admin:customize_settings.ctrl_space')}
-            </p>
+            </span>
           </div>
+
+          <a className="text-muted"
+            data-toggle="collapse" href="#collapseExampleHtml" role="button" aria-expanded="false" aria-controls="collapseExampleHtml">
+            <i className="fa fa-fw fa-chevron-right" aria-hidden="true"></i>
+            Example for Google Tag Manager
+          </a>
+          <div className="collapse" id="collapseExampleHtml">
+            <PrismAsyncLight style={oneDark} language={'javascript'}
+            >
+              {`<iframe src="https://www.googletagmanager.com/ns.html?id=GTM-XXXXXXX"
+  height="0"
+  width="0"
+  style="display:none;visibility:hidden"></iframe>`}
+            </PrismAsyncLight>
+          </div>
+
           <AdminUpdateButtonRow onClick={onClickSubmit} disabled={adminCustomizeContainer.state.retrieveError != null} />
         </div>
       </div>
@@ -72,6 +81,6 @@ const CustomizeHeaderSetting = (props: Props): JSX.Element => {
 
 };
 
-const CustomizeHeaderSettingWrapper = withUnstatedContainers(CustomizeHeaderSetting, [AdminCustomizeContainer]);
+const CustomizeHtmlSettingWrapper = withUnstatedContainers(CustomizeHtmlSetting, [AdminCustomizeContainer]);
 
-export default CustomizeHeaderSettingWrapper;
+export default CustomizeHtmlSettingWrapper;
