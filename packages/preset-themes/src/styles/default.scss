@@ -40,15 +40,12 @@
   --color-global: hsl(var(--color-global-hs),var(--color-global-l));
   --color-global-hs: 214.1,60%;
   --color-global-l: 16.7%;
-  --body-color: var(--color-global);
   $color-reversal: $light;
   // $color-header: #2b2b2b;
   --color-link: hsl(var(--color-link-hs),var(--color-link-l));
   --color-link-hs: 228.4,76.3%;
   --color-link-l: 41.4%;
-  --link-color: var(--color-link);
   --color-link-hover: hsl(var(--color-link-hs),calc(var(--color-link-l) + 20%));
-  --link-hover-color: var(--color-link-hover);
   --color-link-wiki: var(--color-link);
   --color-link-wiki-hs: var(--color-link-hs);
   --color-link-wiki-l: var(--color-link-l);

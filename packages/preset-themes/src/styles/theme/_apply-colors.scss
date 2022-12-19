@@ -38,10 +38,7 @@ $nav-tabs-link-active-bg: var(--bgcolor-global);
 $nav-tabs-link-active-border-color: var(--bordercolor-nav-tabs-active);
 $theme-colors: map-merge($theme-colors, ( primary: $primary ));
 
-@import 'reboot-bootstrap-buttons';
-@import 'reboot-bootstrap-colors';
 @import 'reboot-bootstrap-nav';
-@import 'reboot-toastr-colors';
 
 // determine variables with　bootstrap function (These variables can be used after importing bootstrap above)
 $color-modal-header: color-yiq($primary) !default;
