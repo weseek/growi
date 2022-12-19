@@ -157,13 +157,6 @@
       "attr_based_login_control_rule_example2": "<h5>Example for escaping</h5>If you would like to use URL as a query value, escape the following:<br><code>http&#92;:&#92;/&#92;/schemas.example.com&#92;/ws&#92;/2005&#92;/05&#92;/identity&#92;/claims&#92;/emailaddress: &quot;myname@example.com&quot;</code>",
       "updated_saml": "Succeeded to update SAML setting"
     },
-    "Basic": {
-      "enable_basic": "Enable Basic",
-      "name": "Basic Authentication",
-      "desc_1": "Login with <code>username</code> in Authorization header.",
-      "desc_2": "User will be automatically generated if not exist.",
-      "updated_basic": "Succeeded to update Basic setting"
-    },
     "OAuth": {
       "enable_oidc": "Enable OIDC",
       "register": "Register for %s",
@@ -891,7 +884,6 @@
     "USER_LOGIN_WITH_TWITTER": "Login with Twitter",
     "USER_LOGIN_WITH_OIDC": "Login with OIDC",
     "USER_LOGIN_WITH_SAML": "Login with SAML",
-    "USER_LOGIN_WITH_BASIC": "Login with BASIC",
     "USER_LOGIN_FAILURE": "Login failure",
     "USER_LOGOUT": "Logout",
     "USER_FOGOT_PASSWORD": "Request password reset",
@@ -969,9 +961,6 @@
     "ADMIN_AUTH_OIDC_ENABLED": "Enable OIDC auth",
     "ADMIN_AUTH_OIDC_DISABLED": "Disable OIDC auth",
     "ADMIN_AUTH_OIDC_UPDATE": "Update OIDC settings",
-    "ADMIN_AUTH_BASIC_ENABLED": "Enable BASIC auth",
-    "ADMIN_AUTH_BASIC_DISABLED": "Disable BASIC auth",
-    "ADMIN_AUTH_BASIC_UPDATE": "Update BASIC auth settings",
     "ADMIN_AUTH_GOOGLE_ENABLED": "Enable Google auth",
     "ADMIN_AUTH_GOOGLE_DISABLED": "Disable Google auth",
     "ADMIN_AUTH_GOOGLE_UPDATE": "Update Google auth settings",

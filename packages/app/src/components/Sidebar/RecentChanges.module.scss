@@ -1,3 +1,5 @@
+@use '~/styles/mixins' as *;
+
 .grw-recent-changes-resize-button :global {
   font-size: 12px;
   line-height: normal;
@@ -15,6 +17,21 @@
 }
 
 .list-group-item :global {
+  .grw-recent-changes-skeleton-small {
+    @include grw-skeleton-text($font-size:14px, $line-height:16px);
+    max-width: 120px;
+  }
+
+  .grw-recent-changes-skeleton-h5 {
+    @include grw-skeleton-h5;
+    max-width: 120px;
+  }
+
+  .grw-recent-changes-skeleton-date {
+    @include grw-skeleton-text($font-size:10px, $line-height:12px);
+    width: 90px;
+  }
+
   .grw-recent-changes-item-lower {
     height: 17.5px;
   }

@@ -15,7 +15,7 @@ import { useCustomizeTitle, useCurrentUser } from '~/stores/context';
 import { retrieveServerSideProps } from '../../utils/admin-page-util';
 
 const AdminLayout = dynamic(() => import('~/components/Layout/AdminLayout'), { ssr: false });
-const CustomizeSettingContents = dynamic(() => import('~/components/Admin//Customize/Customize'), { ssr: false });
+const CustomizeSettingContents = dynamic(() => import('~/components/Admin/Customize/Customize'), { ssr: false });
 
 
 type Props = CommonProps & {
