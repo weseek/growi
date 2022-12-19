@@ -15,7 +15,7 @@ export const useRedirectFrom = (initialData?: string): SWRResponseWithUtils<Redi
   const utils = {
     unlink: async() => {
       if (currentPagePath == null) {
-        return;
+        throw Error('currentPagePath should not be null');
       }
 
       try {
