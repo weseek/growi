@@ -77,11 +77,11 @@ const multer = require('multer');
  *        properties:
  *          customizeTitle:
  *            type: string
- *      CustomizeHeader:
- *        description: CustomizeHeader
+ *      CustomizeHtml:
+ *        description: CustomizeHtml
  *        type: object
  *        properties:
- *          customizeHeader:
+ *          customizeHtml:
  *            type: string
  *      CustomizeCss:
  *        description: CustomizeCss
@@ -131,20 +131,20 @@ module.exports = (crowi) => {
     customizeTitle: [
       body('customizeTitle').isString(),
     ],
-    customizeHeader: [
-      body('customizeHeader').isString(),
-    ],
     highlight: [
       body('highlightJsStyle').isString().isIn([
         'github', 'github-gist', 'atom-one-light', 'xcode', 'vs', 'atom-one-dark', 'hybrid', 'monokai', 'tomorrow-night', 'vs2015',
       ]),
       body('highlightJsStyleBorder').isBoolean(),
     ],
+    customizeScript: [
+      body('customizeScript').isString(),
+    ],
     customizeCss: [
       body('customizeCss').isString(),
     ],
-    customizeScript: [
-      body('customizeScript').isString(),
+    customizeHtml: [
+      body('customizeHtml').isString(),
     ],
     logo: [
       body('isDefaultLogo').isBoolean().optional({ nullable: true }),
@@ -186,9 +186,9 @@ module.exports = (crowi) => {
       styleName: await crowi.configManager.getConfig('crowi', 'customize:highlightJsStyle'),
       styleBorder: await crowi.configManager.getConfig('crowi', 'customize:highlightJsStyleBorder'),
       customizeTitle: await crowi.configManager.getConfig('crowi', 'customize:title'),
-      customizeHeader: await crowi.configManager.getConfig('crowi', 'customize:header'),
-      customizeCss: await crowi.configManager.getConfig('crowi', 'customize:css'),
       customizeScript: await crowi.configManager.getConfig('crowi', 'customize:script'),
+      customizeCss: await crowi.configManager.getConfig('crowi', 'customize:css'),
+      customizeHtml: await crowi.configManager.getConfig('crowi', 'customize:noscript'),
     };
 
     return res.apiv3({ customizeParams });
@@ -531,43 +531,43 @@ module.exports = (crowi) => {
   /**
    * @swagger
    *
-   *    /customize-setting/customizeHeader:
+   *    /customize-setting/customize-html:
    *      put:
    *        tags: [CustomizeSetting]
-   *        operationId: updateCustomizeHeaderCustomizeSetting
-   *        summary: /customize-setting/customizeHeader
-   *        description: Update customizeHeader
+   *        operationId: updateCustomizeHtmlCustomizeSetting
+   *        summary: /customize-setting/customize-html
+   *        description: Update customizeHtml
    *        requestBody:
    *          required: true
    *          content:
    *            application/json:
    *              schema:
-   *                $ref: '#/components/schemas/CustomizeHeader'
+   *                $ref: '#/components/schemas/customizeHtml'
    *        responses:
    *          200:
    *            description: Succeeded to update customize header
    *            content:
    *              application/json:
    *                schema:
-   *                  $ref: '#/components/schemas/CustomizeHeader'
+   *                  $ref: '#/components/schemas/customizeHtml'
    */
-  router.put('/customize-header', loginRequiredStrictly, adminRequired, addActivity, validator.customizeHeader, apiV3FormValidator, async(req, res) => {
+  router.put('/customize-html', loginRequiredStrictly, adminRequired, addActivity, validator.customizeHtml, apiV3FormValidator, async(req, res) => {
     const requestParams = {
-      'customize:header': req.body.customizeHeader,
+      'customize:noscript': req.body.customizeHtml,
     };
     try {
       await crowi.configManager.updateConfigsInTheSameNamespace('crowi', requestParams);
       const customizedParams = {
-        customizeHeader: await crowi.configManager.getConfig('crowi', 'customize:header'),
+        customizeHtml: await crowi.configManager.getConfig('crowi', 'customize:noscript'),
       };
       const parameters = { action: SupportedAction.ACTION_ADMIN_CUSTOM_HTML_HEADER_UPDATE };
       activityEvent.emit('update', res.locals.activity._id, parameters);
       return res.apiv3({ customizedParams });
     }
     catch (err) {
-      const msg = 'Error occurred in updating customizeHeader';
+      const msg = 'Error occurred in updating customizeHtml';
       logger.error('Error', err);
-      return res.apiv3Err(new ErrorV3(msg, 'update-customizeHeader-failed'));
+      return res.apiv3Err(new ErrorV3(msg, 'update-customizeHtml-failed'));
     }
   });
 

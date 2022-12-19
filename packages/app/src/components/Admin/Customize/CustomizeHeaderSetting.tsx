@@ -20,7 +20,7 @@ const CustomizeHeaderSetting = (props: Props): JSX.Element => {
 
   const onClickSubmit = useCallback(async() => {
     try {
-      await adminCustomizeContainer.updateCustomizeHeader();
+      await adminCustomizeContainer.updateCustomizeHtml();
       toastSuccess(t('toaster.update_successed', { target: t('admin:customize_settings.custom_header'), ns: 'commons' }));
     }
     catch (err) {
@@ -55,9 +55,9 @@ const CustomizeHeaderSetting = (props: Props): JSX.Element => {
           <div className="form-group">
             <textarea
               className="form-control"
-              name="customizeHeader"
-              value={adminCustomizeContainer.state.currentCustomizeHeader || ''}
-              onChange={(e) => { adminCustomizeContainer.changeCustomizeHeader(e.target.value) }}
+              name="customizeHtml"
+              value={adminCustomizeContainer.state.currentCustomizeHtml || ''}
+              onChange={(e) => { adminCustomizeContainer.changeCustomizeHtml(e.target.value) }}
             />
             <p className="form-text text-muted text-right">
               <i className="fa fa-fw fa-keyboard-o" aria-hidden="true"></i>

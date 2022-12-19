@@ -73,8 +73,9 @@ const HeadersForGrowiPlugin = (props: HeadersForGrowiPluginProps): JSX.Element =
 
 interface GrowiDocumentProps {
   theme: string,
-  customCss: string | null,
   customScript: string | null,
+  customCss: string | null,
+  customHtml: string | null,
   presetThemesManifest: ViteManifest,
   pluginThemeHref: string | undefined,
   pluginResourceEntries: GrowiPluginResourceEntries;
@@ -89,8 +90,9 @@ class GrowiDocument extends Document<GrowiDocumentInitialProps> {
     const { configManager, customizeService, pluginService } = crowi;
 
     const theme = configManager.getConfig('crowi', 'customize:theme');
-    const customCss: string = customizeService.getCustomCss();
-    const customScript: string = customizeService.getCustomScript();
+    const customScript: string | null = customizeService.getCustomScript();
+    const customCss: string | null = customizeService.getCustomCss();
+    const customHtml: string | null = customizeService.getCustomHtml();
 
     // import preset-themes manifest
     const presetThemesManifest = await import('@growi/preset-themes/dist/themes/manifest.json').then(imported => imported.default);
@@ -102,12 +104,20 @@ class GrowiDocument extends Document<GrowiDocumentInitialProps> {
     return {
       ...initialProps,
       theme,
-      customCss,
       customScript,
+      customCss,
+      customHtml,
       presetThemesManifest,
       pluginThemeHref,
       pluginResourceEntries,
     };
+  }
+
+  renderCustomHtml(customHtml: string | null): JSX.Element {
+    if (customHtml == null || customHtml.length === 0) {
+      return <></>;
+    }
+    return <noscript dangerouslySetInnerHTML={{ __html: customHtml }} />;
   }
 
   renderCustomCss(customCss: string | null): JSX.Element {
@@ -126,13 +136,13 @@ class GrowiDocument extends Document<GrowiDocumentInitialProps> {
 
   override render(): JSX.Element {
     const {
-      customCss, customScript, theme, presetThemesManifest, pluginThemeHref, pluginResourceEntries,
+      customCss, customScript, customHtml,
+      theme, presetThemesManifest, pluginThemeHref, pluginResourceEntries,
     } = this.props;
 
     return (
       <Html>
         <Head>
-          {this.renderCustomCss(customCss)}
           {this.renderCustomScript(customScript)}
           <link rel='preload' href="/static/fonts/PressStart2P-latin.woff2" as="font" type="font/woff2" />
           <link rel='preload' href="/static/fonts/PressStart2P-latin-ext.woff2" as="font" type="font/woff2" />
@@ -143,8 +153,10 @@ class GrowiDocument extends Document<GrowiDocumentInitialProps> {
           <HeadersForThemes theme={theme}
             presetThemesManifest={presetThemesManifest} pluginThemeHref={pluginThemeHref} />
           <HeadersForGrowiPlugin pluginResourceEntries={pluginResourceEntries} />
+          {this.renderCustomCss(customCss)}
         </Head>
         <body>
+          {this.renderCustomHtml(customHtml)}
           <Main />
           <NextScript />
         </body>

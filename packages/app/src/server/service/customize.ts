@@ -1,12 +1,13 @@
 // eslint-disable-next-line no-unused-vars
+import { DevidedPagePath } from '@growi/core';
 import uglifycss from 'uglifycss';
 
-import { DevidedPagePath } from '@growi/core';
 import loggerFactory from '~/utils/logger';
 
 import S2sMessage from '../models/vo/s2s-message';
-import { S2sMessageHandlable } from './s2s-messaging/handlable';
+
 import ConfigManager from './config-manager';
+import { S2sMessageHandlable } from './s2s-messaging/handlable';
 
 const logger = loggerFactory('growi:service:CustomizeService');
 
@@ -80,8 +81,6 @@ class CustomizeService implements S2sMessageHandlable {
    * initialize custom css strings
    */
   initCustomCss() {
-    const uglifycss = require('uglifycss');
-
     const rawCss = this.configManager.getConfig('crowi', 'customize:css') || '';
 
     // uglify and store
@@ -95,7 +94,11 @@ class CustomizeService implements S2sMessageHandlable {
   }
 
   getCustomScript() {
-    return this.configManager.getConfig('crowi', 'customize:script') || '';
+    return this.configManager.getConfig('crowi', 'customize:script');
+  }
+
+  getCustomHtml() {
+    return this.configManager.getConfig('crowi', 'customize:noscript');
   }
 
   initCustomTitle() {
