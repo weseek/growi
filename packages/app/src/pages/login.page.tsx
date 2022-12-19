@@ -87,7 +87,6 @@ function injectEnabledStrategies(context: GetServerSidePropsContext, props: Prop
     twitter: configManager.getConfig('crowi', 'security:passport-twitter:isEnabled'),
     saml: configManager.getConfig('crowi', 'security:passport-saml:isEnabled'),
     oidc: configManager.getConfig('crowi', 'security:passport-oidc:isEnabled'),
-    basic: configManager.getConfig('crowi', 'security:passport-basic:isEnabled'),
   };
 
   props.enabledStrategies = enabledStrategies;

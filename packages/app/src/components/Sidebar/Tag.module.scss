@@ -1,0 +1,10 @@
+@use '~/styles/mixins' as *;
+
+.grw-tag-skeleton-h3 {
+  @include grw-skeleton-h3;
+  max-width: 120px;
+}
+
+.grw-tag-list-skeleton {
+  height: 90px;
+}

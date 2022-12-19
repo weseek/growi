@@ -5,7 +5,6 @@ import useSWRImmutable from 'swr/immutable';
 import { SupportedActionType } from '~/interfaces/activity';
 import { EditorConfig } from '~/interfaces/editor-settings';
 import { RendererConfig } from '~/interfaces/services/renderer';
-import { GrowiThemes } from '~/interfaces/theme';
 import InterceptorManager from '~/services/interceptor-manager';
 
 import { TargetAndAncestors } from '../interfaces/page-listing-results';

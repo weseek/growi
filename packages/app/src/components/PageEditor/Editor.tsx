@@ -18,7 +18,7 @@ import { useIsMobile } from '~/stores/ui';
 import { IEditorMethods } from '../../interfaces/editor-methods';
 
 import AbstractEditor from './AbstractEditor';
-import Cheatsheet from './Cheatsheet';
+import { Cheatsheet } from './Cheatsheet';
 import CodeMirrorEditor from './CodeMirrorEditor';
 import pasteHelper from './PasteHelper';
 import TextAreaEditor from './TextAreaEditor';
@@ -246,7 +246,7 @@ const Editor: ForwardRefRenderFunction<IEditorMethods, EditorPropsType> = (props
     };
 
     return (
-      <Modal isOpen={isCheatsheetModalShown} toggle={hideCheatsheetModal} className={`${styles['modal-gfm-cheatsheet']}`} >
+      <Modal isOpen={isCheatsheetModalShown} toggle={hideCheatsheetModal} className={`modal-gfm-cheatsheet ${styles['modal-gfm-cheatsheet']}`} >
         <ModalHeader tag="h4" toggle={hideCheatsheetModal} className="bg-primary text-light">
           <i className="icon-fw icon-question" />Markdown help
         </ModalHeader>

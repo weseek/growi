@@ -1,8 +1,10 @@
 /* eslint-disable no-unused-vars */
 
 import { ErrorV3 } from '@growi/core';
+import mongoose from 'mongoose';
 
 import { SupportedAction } from '~/interfaces/activity';
+import { GrowiPluginResourceType } from '~/interfaces/plugin';
 import { AttachmentType } from '~/server/interfaces/attachment';
 import loggerFactory from '~/utils/logger';
 
@@ -75,11 +77,11 @@ const multer = require('multer');
  *        properties:
  *          customizeTitle:
  *            type: string
- *      CustomizeHeader:
- *        description: CustomizeHeader
+ *      CustomizeNoscript:
+ *        description: CustomizeNoscript
  *        type: object
  *        properties:
- *          customizeHeader:
+ *          customizeNoscript:
  *            type: string
  *      CustomizeCss:
  *        description: CustomizeCss
@@ -129,20 +131,20 @@ module.exports = (crowi) => {
     customizeTitle: [
       body('customizeTitle').isString(),
     ],
-    customizeHeader: [
-      body('customizeHeader').isString(),
-    ],
     highlight: [
       body('highlightJsStyle').isString().isIn([
         'github', 'github-gist', 'atom-one-light', 'xcode', 'vs', 'atom-one-dark', 'hybrid', 'monokai', 'tomorrow-night', 'vs2015',
       ]),
       body('highlightJsStyleBorder').isBoolean(),
     ],
+    customizeScript: [
+      body('customizeScript').isString(),
+    ],
     customizeCss: [
       body('customizeCss').isString(),
     ],
-    customizeScript: [
-      body('customizeScript').isString(),
+    customizeNoscript: [
+      body('customizeNoscript').isString(),
     ],
     logo: [
       body('isDefaultLogo').isBoolean().optional({ nullable: true }),
@@ -184,9 +186,9 @@ module.exports = (crowi) => {
       styleName: await crowi.configManager.getConfig('crowi', 'customize:highlightJsStyle'),
       styleBorder: await crowi.configManager.getConfig('crowi', 'customize:highlightJsStyleBorder'),
       customizeTitle: await crowi.configManager.getConfig('crowi', 'customize:title'),
-      customizeHeader: await crowi.configManager.getConfig('crowi', 'customize:header'),
-      customizeCss: await crowi.configManager.getConfig('crowi', 'customize:css'),
       customizeScript: await crowi.configManager.getConfig('crowi', 'customize:script'),
+      customizeCss: await crowi.configManager.getConfig('crowi', 'customize:css'),
+      customizeNoscript: await crowi.configManager.getConfig('crowi', 'customize:noscript'),
     };
 
     return res.apiv3({ customizeParams });
@@ -271,8 +273,17 @@ module.exports = (crowi) => {
   router.get('/theme', loginRequiredStrictly, adminRequired, async(req, res) => {
 
     try {
-      const theme = await crowi.configManager.getConfig('crowi', 'customize:theme');
-      return res.apiv3({ theme });
+      const currentTheme = await crowi.configManager.getConfig('crowi', 'customize:theme');
+
+      // retrieve plugin manifests
+      const GrowiPluginModel = mongoose.model('GrowiPlugin');
+      const themePlugins = await GrowiPluginModel.findEnabledPluginsIncludingAnyTypes([GrowiPluginResourceType.Theme]);
+
+      const pluginThemesMetadatas = themePlugins
+        .map(themePlugin => themePlugin.meta.themes)
+        .flat();
+
+      return res.apiv3({ currentTheme, pluginThemesMetadatas });
     }
     catch (err) {
       const msg = 'Error occurred in getting theme';
@@ -520,43 +531,43 @@ module.exports = (crowi) => {
   /**
    * @swagger
    *
-   *    /customize-setting/customizeHeader:
+   *    /customize-setting/customize-noscript:
    *      put:
    *        tags: [CustomizeSetting]
-   *        operationId: updateCustomizeHeaderCustomizeSetting
-   *        summary: /customize-setting/customizeHeader
-   *        description: Update customizeHeader
+   *        operationId: updateCustomizeNoscriptCustomizeSetting
+   *        summary: /customize-setting/customize-noscript
+   *        description: Update customizeNoscript
    *        requestBody:
    *          required: true
    *          content:
    *            application/json:
    *              schema:
-   *                $ref: '#/components/schemas/CustomizeHeader'
+   *                $ref: '#/components/schemas/CustomizeNoscript'
    *        responses:
    *          200:
    *            description: Succeeded to update customize header
    *            content:
    *              application/json:
    *                schema:
-   *                  $ref: '#/components/schemas/CustomizeHeader'
+   *                  $ref: '#/components/schemas/CustomizeNoscript'
    */
-  router.put('/customize-header', loginRequiredStrictly, adminRequired, addActivity, validator.customizeHeader, apiV3FormValidator, async(req, res) => {
+  router.put('/customize-noscript', loginRequiredStrictly, adminRequired, addActivity, validator.customizeNoscript, apiV3FormValidator, async(req, res) => {
     const requestParams = {
-      'customize:header': req.body.customizeHeader,
+      'customize:noscript': req.body.customizeNoscript,
     };
     try {
       await crowi.configManager.updateConfigsInTheSameNamespace('crowi', requestParams);
       const customizedParams = {
-        customizeHeader: await crowi.configManager.getConfig('crowi', 'customize:header'),
+        customizeNoscript: await crowi.configManager.getConfig('crowi', 'customize:noscript'),
       };
-      const parameters = { action: SupportedAction.ACTION_ADMIN_CUSTOM_HTML_HEADER_UPDATE };
+      const parameters = { action: SupportedAction.ACTION_ADMIN_CUSTOM_NOSCRIPT_UPDATE };
       activityEvent.emit('update', res.locals.activity._id, parameters);
       return res.apiv3({ customizedParams });
     }
     catch (err) {
-      const msg = 'Error occurred in updating customizeHeader';
+      const msg = 'Error occurred in updating customizeNoscript';
       logger.error('Error', err);
-      return res.apiv3Err(new ErrorV3(msg, 'update-customizeHeader-failed'));
+      return res.apiv3Err(new ErrorV3(msg, 'update-customizeNoscript-failed'));
     }
   });
 

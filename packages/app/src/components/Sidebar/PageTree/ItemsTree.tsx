@@ -24,6 +24,8 @@ import { usePageTreeDescCountMap, useSidebarScrollerRef } from '~/stores/ui';
 import { useGlobalSocket } from '~/stores/websocket';
 import loggerFactory from '~/utils/logger';
 
+import PageTreeContentSkeleton from '../Skeleton/PageTreeContentSkeleton';
+
 import Item from './Item';
 import { ItemNode } from './ItemNode';
 
@@ -272,7 +274,7 @@ const ItemsTree = (props: ItemsTreeProps): JSX.Element => {
 
   if (initialItemNode != null) {
     return (
-      <ul className={`grw-pagetree ${styles['grw-pagetree']} list-group p-3`} ref={rootElemRef}>
+      <ul className={`grw-pagetree ${styles['grw-pagetree']} list-group py-3`} ref={rootElemRef}>
         <Item
           key={initialItemNode.page.path}
           targetPathOrId={targetPathOrId}
@@ -288,7 +290,7 @@ const ItemsTree = (props: ItemsTreeProps): JSX.Element => {
     );
   }
 
-  return <></>;
+  return <PageTreeContentSkeleton />;
 };
 
 export default ItemsTree;

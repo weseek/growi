@@ -10,6 +10,7 @@ import {
 import { useConflictDiffModal } from '~/stores/modal';
 import { useSWRxCurrentPage } from '~/stores/page';
 import { useRemoteRevisionId, useRemoteRevisionLastUpdateUser } from '~/stores/remote-latest-page';
+import { EditorMode, useEditorMode } from '~/stores/ui';
 
 import { Username } from './User/Username';
 
@@ -29,6 +30,7 @@ export const PageStatusAlert = (): JSX.Element => {
   const { data: isConflict } = useIsConflict();
   const { mutate: mutateEditingMarkdown } = useEditingMarkdown();
   const { open: openConflictDiffModal } = useConflictDiffModal();
+  const { mutate: mutateEditorMode } = useEditorMode();
 
   // store remote latest page data
   const { data: revisionIdHackmdSynced } = useRevisionIdHackmdSynced();
@@ -72,12 +74,12 @@ export const PageStatusAlert = (): JSX.Element => {
           {t('hackmd.this_page_has_draft')}
         </>,
       btn:
-        <a href="#hackmd" key="btnOpenHackmdPageHasDraft" className="btn btn-outline-white">
+        <button onClick={() => mutateEditorMode(EditorMode.HackMD)} className="btn btn-outline-white">
           <i className="fa fa-fw fa-file-text-o mr-1"></i>
           Open HackMD Editor
-        </a>,
+        </button>,
     };
-  }, [t]);
+  }, [mutateEditorMode, t]);
 
   const getContentsForUpdatedAlert = useCallback((): AlertComponentContents => {
 
@@ -118,6 +120,9 @@ export const PageStatusAlert = (): JSX.Element => {
   const alertComponentContents = useMemo(() => {
     const isRevisionOutdated = revision?._id !== remoteRevisionId;
     const isHackmdDocumentOutdated = revisionIdHackmdSynced !== remoteRevisionId;
+
+    // 'revision?._id' and 'remoteRevisionId' are can not be undefined
+    if (revision?._id == null || remoteRevisionId == null) { return }
 
     // when remote revision is newer than both
     if (isHackmdDocumentOutdated && isRevisionOutdated) {
