@@ -491,9 +491,8 @@ ul.pagination {
       }
 
       &.list-group-item-action {
-        --bgcolor-page-list-group-item-active: hsl(from var(--bgcolor-global) h s calc(l + 76%));
         &.active {
-          background-color: var(--bgcolor-page-list-group-item-active);
+          background-color: hsl(var(--bgcolor-global-hs),calc(var(--bgcolor-global-l) + 76%));
           border-left-color: $primary;
         }
       }
@@ -505,9 +504,8 @@ ul.pagination {
  * GROWI Editor
  */
 .layout-root.editing {
-  --bgcolor-global-darken2: hsl(from var(--bgcolor-global) h s calc(l - 2%));
   .main {
-    background-color: var(--bgcolor-global-darken2);
+    background-color: hsl(var(--bgcolor-global-hs),calc(var(--bgcolor-global-l) - 2%));
 
     .page-editor-editor-container {
       border-right-color: $border-color-theme;
@@ -588,11 +586,10 @@ body.editing-sidebar {
     }
 
     .nav.nav-tabs {
-      --border-bottom-color: hsl(from var(--bgcolor-global) h s calc(l - 4%));
       > li > a.active {
         background: transparent;
-        border-bottom: solid 1px var(--border-bottom-color);
-        border-bottom-color: var(--border-bottom-color);
+        border-bottom: solid 1px hsl(var(--bgcolor-global-hs),calc(var(--bgcolor-global-l) - 4%));
+        border-bottom-color: hsl(var(--bgcolor-global-hs),calc(var(--bgcolor-global-l) - 4%));
       }
     }
   }
@@ -627,8 +624,7 @@ mark.rbt-highlight-text {
  * GROWI page content footer
  */
 .page-content-footer {
-  --bgcolor-global-darken2: hsl(from var(--bgcolor-global) h s calc(l - 2%));
-  background-color: var(--bgcolor-global-darken2);
+  background-color: hsl(var(--bgcolor-global-hs),calc(var(--bgcolor-global-l) - 2%));
   border-top-color: $border-color-theme;
 }
 
