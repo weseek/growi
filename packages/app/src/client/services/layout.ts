@@ -2,11 +2,23 @@ import { useIsContainerFluid } from '~/stores/context';
 import { useSWRxCurrentPage } from '~/stores/page';
 import { useEditorMode } from '~/stores/ui';
 
-export const useCurrentLayoutClassName = (): string => {
+export const useEditorModeClassName = (): string => {
+  const { getClassNamesByEditorMode } = useEditorMode();
+
+  // TODO: Enable `editing-sidebar` class somehow
+  // const classNames: string[] = [];
+  // if (currentPage != null) {
+  //   const isSidebar = currentPage.path === '/Sidebar';
+  //   classNames.push(...getClassNamesByEditorMode(/* isSidebar */));
+  // }
+
+  return `${getClassNamesByEditorMode().join(' ') ?? ''}`;
+};
+
+export const useCurrentGrowiLayoutFluidClassName = (): string => {
   const { data: currentPage } = useSWRxCurrentPage();
 
   const { data: dataIsContainerFluid } = useIsContainerFluid();
-  const { getClassNamesByEditorMode } = useEditorMode();
 
   const isContainerFluidEachPage = currentPage == null || !('expandContentWidth' in currentPage)
     ? null
@@ -14,14 +26,5 @@ export const useCurrentLayoutClassName = (): string => {
   const isContainerFluidDefault = dataIsContainerFluid;
   const isContainerFluid = isContainerFluidEachPage ?? isContainerFluidDefault;
 
-  const classNames: string[] = [];
-  if (currentPage != null) {
-    // TODO: Enable `editing-sidebar` class somehow
-    // const isSidebar = currentPage.path === '/Sidebar';
-    classNames.push(...getClassNamesByEditorMode(/* isSidebar */));
-  }
-
-  const myClassName = `${classNames.join(' ') ?? ''} ${isContainerFluid ? 'growi-layout-fluid' : ''}`;
-
-  return myClassName;
+  return isContainerFluid ? 'growi-layout-fluid' : '';
 };

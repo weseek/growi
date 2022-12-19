@@ -19,6 +19,7 @@ import Head from 'next/head';
 import { useRouter } from 'next/router';
 import superjson from 'superjson';
 
+import { useCurrentGrowiLayoutFluidClassName } from '~/client/services/layout';
 import { Comments } from '~/components/Comments';
 import { PageAlerts } from '~/components/PageAlert/PageAlerts';
 // import { useTranslation } from '~/i18n';
@@ -53,7 +54,7 @@ import loggerFactory from '~/utils/logger';
 // import GrowiSubNavigation from '../client/js/components/Navbar/GrowiSubNavigation';
 // import GrowiSubNavigationSwitcher from '../client/js/components/Navbar/GrowiSubNavigationSwitcher';
 import { DescendantsPageListModal } from '../components/DescendantsPageListModal';
-import { BasicLayoutWithCurrentPage } from '../components/Layout/BasicLayout';
+import { BasicLayoutWithEditorMode } from '../components/Layout/BasicLayout';
 import GrowiContextualSubNavigation from '../components/Navbar/GrowiContextualSubNavigation';
 import DisplaySwitcher from '../components/Page/DisplaySwitcher';
 // import { serializeUserSecurely } from '../server/models/serializers/user-serializer';
@@ -276,6 +277,8 @@ const Page: NextPageWithLayout<Props> = (props: Props) => {
   useSetupGlobalSocket();
   useSetupGlobalSocketForPage(pageId);
 
+  const growiLayoutFluidClass = useCurrentGrowiLayoutFluidClassName();
+
   const shouldRenderPutbackPageModal = pageWithMeta != null
     ? _isTrashPage(pageWithMeta.data.path)
     : false;
@@ -317,7 +320,7 @@ const Page: NextPageWithLayout<Props> = (props: Props) => {
 
         <div className="flex-grow-1">
           <div id="main" className={`main ${isUsersHomePage(props.currentPathname) && 'user-page'}`}>
-            <div id="content-main" className="content-main grw-container-convertible">
+            <div id="content-main" className={`content-main grw-container-convertible ${growiLayoutFluidClass}`}>
               { props.isIdenticalPathPage && <IdenticalPathPage /> }
 
               { !props.isIdenticalPathPage && (
@@ -362,9 +365,9 @@ Page.getLayout = function getLayout(page) {
     <>
       <DrawioViewerScript />
 
-      <BasicLayoutWithCurrentPage>
+      <BasicLayoutWithEditorMode>
         {page}
-      </BasicLayoutWithCurrentPage>
+      </BasicLayoutWithEditorMode>
       <UnsavedAlertDialog />
       <DescendantsPageListModal />
       <DrawioModal />

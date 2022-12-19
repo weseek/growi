@@ -2,7 +2,7 @@ import React, { ReactNode } from 'react';
 
 import dynamic from 'next/dynamic';
 
-import { useCurrentLayoutClassName } from '../../client/services/use-current-layout-class-name';
+import { useEditorModeClassName } from '../../client/services/layout';
 import { GrowiNavbar } from '../Navbar/GrowiNavbar';
 
 import { RawLayout } from './RawLayout';
@@ -21,7 +21,7 @@ type Props = {
 }
 
 export const ShareLinkLayout = ({ children }: Props): JSX.Element => {
-  const className = useCurrentLayoutClassName();
+  const className = useEditorModeClassName();
 
   return (
     <RawLayout className={className}>

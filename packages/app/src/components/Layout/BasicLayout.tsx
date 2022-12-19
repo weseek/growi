@@ -4,7 +4,7 @@ import dynamic from 'next/dynamic';
 import { DndProvider } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
 
-import { useCurrentLayoutClassName } from '../../client/services/use-current-layout-class-name';
+import { useEditorModeClassName } from '../../client/services/layout';
 import { GrowiNavbar } from '../Navbar/GrowiNavbar';
 import Sidebar from '../Sidebar';
 
@@ -69,8 +69,8 @@ export const BasicLayout = ({ children, className }: Props): JSX.Element => {
   );
 };
 
-export const BasicLayoutWithCurrentPage = ({ children }: Props): JSX.Element => {
-  const className = useCurrentLayoutClassName();
+export const BasicLayoutWithEditorMode = ({ children }: Props): JSX.Element => {
+  const className = useEditorModeClassName();
 
   return (
     <BasicLayout className={className}>
