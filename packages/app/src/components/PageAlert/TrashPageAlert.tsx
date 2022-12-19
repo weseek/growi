@@ -5,10 +5,12 @@ import { format } from 'date-fns';
 import { useRouter } from 'next/router';
 import { useTranslation } from 'react-i18next';
 
+import { unlink } from '~/client/services/page-operation';
 import { toastError } from '~/client/util/apiNotification';
 import { usePageDeleteModal, usePutBackPageModal } from '~/stores/modal';
-import { useSWRxPageInfo, useSWRxCurrentPage, useIsTrashPage } from '~/stores/page';
-import { useRedirectFrom } from '~/stores/page-redirect';
+import {
+  useCurrentPagePath, useSWRxPageInfo, useSWRxCurrentPage, useIsTrashPage,
+} from '~/stores/page';
 import { useIsAbleToShowTrashPageManagementButtons } from '~/stores/ui';
 
 
@@ -34,7 +36,7 @@ export const TrashPageAlert = (): JSX.Element => {
 
   const { open: openDeleteModal } = usePageDeleteModal();
   const { open: openPutBackPageModal } = usePutBackPageModal();
-  const { unlink } = useRedirectFrom();
+  const { data: currentPagePath } = useCurrentPagePath();
 
 
   const deleteUser = pageData?.deleteUser;
@@ -47,8 +49,11 @@ export const TrashPageAlert = (): JSX.Element => {
       return;
     }
     const putBackedHandler = () => {
+      if (currentPagePath == null) {
+        return;
+      }
       try {
-        unlink();
+        unlink(currentPagePath);
         // Do not use "router.push(`/${pageId}`)" to avoid `Error: Invariant: attempted to hard navigate to the same URL`
         // See: https://github.com/weseek/growi/pull/7054
         router.reload();
@@ -58,7 +63,7 @@ export const TrashPageAlert = (): JSX.Element => {
       }
     };
     openPutBackPageModal({ pageId, path: pagePath }, { onPutBacked: putBackedHandler });
-  }, [openPutBackPageModal, pageId, pagePath, router, unlink]);
+  }, [currentPagePath, openPutBackPageModal, pageId, pagePath, router]);
 
   const openPageDeleteModalHandler = useCallback(() => {
     if (pageId === undefined || revisionId === undefined || pagePath === undefined) {
