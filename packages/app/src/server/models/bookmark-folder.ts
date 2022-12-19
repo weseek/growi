@@ -135,7 +135,14 @@ bookmarkFolderSchema.statics.updateBookmarkFolder = async function(bookmarkFolde
 
 bookmarkFolderSchema.statics.insertOrUpdateBookmarkedPage = async function(pageId: IPageHasId, userId: Types.ObjectId | string, folderId: string):
 Promise<BookmarkFolderDocument | null> {
+
+  // Create bookmark or update existing
   const bookmarkedPage = await Bookmark.findOneAndUpdate({ page: pageId, user: userId }, { page: pageId, user: userId }, { new: true, upsert: true });
+
+  // Remove existing bookmark in bookmark folder
+  await this.updateMany({}, { $pull: { bookmarks:  bookmarkedPage._id } });
+
+  // Insert bookmark into bookmark folder
   const bookmarkFolder = await this.findByIdAndUpdate(folderId, { $addToSet: { bookmarks: bookmarkedPage } }, { new: true, upsert: true });
   return bookmarkFolder;
 };

@@ -67,7 +67,8 @@ const BookmarkFolderMenuItem = (props: Props):JSX.Element => {
           checked={isSelected}
           name="bookmark-folder-menu-item"
           id={`bookmark-folder-menu-item-${item._id}`}
-          onChange={e => e.stopPropagation() }
+          onChange={e => e.stopPropagation()}
+          onClick={e => e.stopPropagation()}
         />
         <label htmlFor={`bookmark-folder-menu-item-${item._id}`} className='p-2 m-0'>
           {item.name}

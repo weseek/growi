@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 
 import { useTranslation } from 'next-i18next';
 import {
@@ -7,7 +7,6 @@ import {
 
 import { toastError, toastSuccess } from '~/client/util/apiNotification';
 import { apiv3Post } from '~/client/util/apiv3-client';
-import { BookmarkFolderItems } from '~/interfaces/bookmark-info';
 import { useSWRxBookamrkFolderAndChild } from '~/stores/bookmark-folder';
 import { useSWRxCurrentPage } from '~/stores/page';
 
@@ -20,14 +19,13 @@ import styles from './BookmarkFolderMenu.module.scss';
 
 type Props = {
   children?: React.ReactNode
-  bookmarkFolders: BookmarkFolderItems[] | undefined
 }
 
 const BookmarkFolderMenu = (props: Props): JSX.Element => {
   const { t } = useTranslation();
-  const { children, bookmarkFolders } = props;
+  const { children } = props;
   const [isCreateAction, setIsCreateAction] = useState(false);
-  const { mutate: mutateChildBookmarkData } = useSWRxBookamrkFolderAndChild(null);
+  const { data: bookmarkFolders, mutate: mutateBookmarkFolderData } = useSWRxBookamrkFolderAndChild();
   const [selectedItem, setSelectedItem] = useState<string | null>(null);
   const { data: currentPage } = useSWRxCurrentPage();
 
@@ -35,11 +33,21 @@ const BookmarkFolderMenu = (props: Props): JSX.Element => {
     setIsCreateAction(true);
   }, []);
 
-  const onPressEnterHandlerForCreate = useCallback(async(folderName: string) => {
+  useEffect(() => {
+    bookmarkFolders?.forEach((bookmarkFolder) => {
+      const bookmark = bookmarkFolder.bookmarks.filter((bookmark) => {
+        return bookmark.page._id === currentPage?._id;
+      });
+      if (bookmark != null && bookmark.length > 0) {
+        setSelectedItem(bookmarkFolder._id);
+      }
+    });
+  }, [bookmarkFolders, currentPage, mutateBookmarkFolderData]);
 
+  const onPressEnterHandlerForCreate = useCallback(async(folderName: string) => {
     try {
       await apiv3Post('/bookmark-folder', { name: folderName, parent: null });
-      await mutateChildBookmarkData();
+      await mutateBookmarkFolderData();
       setIsCreateAction(false);
       toastSuccess(t('toaster.create_succeeded', { target: t('bookmark_folder.bookmark_folder') }));
     }
@@ -47,14 +55,14 @@ const BookmarkFolderMenu = (props: Props): JSX.Element => {
       toastError(err);
     }
 
-  }, [mutateChildBookmarkData, t]);
-
+  }, [mutateBookmarkFolderData, t]);
 
   const onMenuItemClickHandler = useCallback(async(itemId: string) => {
-    setSelectedItem(itemId);
     try {
       await apiv3Post('/bookmark-folder/add-boookmark-to-folder', { pageId: currentPage?._id, folderId: itemId });
+      setSelectedItem(itemId);
       toastSuccess('Bookmark added to bookmark folder successfully');
+
     }
     catch (err) {
       toastError(err);
@@ -97,7 +105,7 @@ const BookmarkFolderMenu = (props: Props): JSX.Element => {
                   name="bookmark-folder-menu-item"
                   id={`bookmark-folder-menu-item-${folder._id}`}
                   onChange={e => e.stopPropagation()}
-                  onClick={e => e.stopPropagation() }
+                  onClick={e => e.stopPropagation()}
                 />
                 <label htmlFor={`bookmark-folder-menu-item-${folder._id}`} className='p-2 m-0 grw-bookmark-folder-menu-item-title mr-auto'>
                   {folder.name}
