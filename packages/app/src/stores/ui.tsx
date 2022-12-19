@@ -79,14 +79,15 @@ export const useIsMobile = (): SWRResponse<boolean, Error> => {
   return useStaticSWR<boolean, Error>(key, undefined, configuration);
 };
 
-const getClassNamesByEditorMode = (editorMode: EditorMode | undefined, isSidebar = false): string[] => {
+// TODO: Enable `editing-sidebar` class somehow
+const getClassNamesByEditorMode = (editorMode: EditorMode | undefined /* , isSidebar = false */): string[] => {
   const classNames: string[] = [];
   switch (editorMode) {
     case EditorMode.Editor:
       classNames.push('editing', 'builtin-editor');
-      if (isSidebar) {
-        classNames.push('editing-sidebar');
-      }
+      // if (isSidebar) {
+      //   classNames.push('editing-sidebar');
+      // }
       break;
     case EditorMode.HackMD:
       classNames.push('editing', 'hackmd');
@@ -138,8 +139,9 @@ export const determineEditorModeByHash = (): EditorMode => {
   }
 };
 
+// TODO: Enable `editing-sidebar` class somehow
 type EditorModeUtils = {
-  getClassNamesByEditorMode: (isEditingSidebar: boolean) => string[],
+  getClassNamesByEditorMode: (/* isEditingSidebar: boolean */) => string[],
 }
 
 export const useEditorMode = (): SWRResponseWithUtils<EditorModeUtils, EditorMode> => {
@@ -167,9 +169,10 @@ export const useEditorMode = (): SWRResponseWithUtils<EditorModeUtils, EditorMod
     return mutateOriginal(editorMode, shouldRevalidate);
   }, [isEditable, mutateOriginal]);
 
+  // TODO: Enable `editing-sidebar` class somehow
   // construct getClassNamesByEditorMode method
-  const getClassNames = useCallback((isEditingSidebar: boolean) => {
-    return getClassNamesByEditorMode(swrResponse.data, isEditingSidebar);
+  const getClassNames = useCallback((/* isEditingSidebar: boolean */) => {
+    return getClassNamesByEditorMode(swrResponse.data /* , isEditingSidebar */);
   }, [swrResponse.data]);
 
   return Object.assign(swrResponse, {

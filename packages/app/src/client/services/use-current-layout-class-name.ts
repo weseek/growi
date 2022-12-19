@@ -16,8 +16,9 @@ export const useCurrentLayoutClassName = (): string => {
 
   const classNames: string[] = [];
   if (currentPage != null) {
-    const isSidebar = currentPage.path === '/Sidebar';
-    classNames.push(...getClassNamesByEditorMode(isSidebar));
+    // TODO: Enable `editing-sidebar` class somehow
+    // const isSidebar = currentPage.path === '/Sidebar';
+    classNames.push(...getClassNamesByEditorMode(/* isSidebar */));
   }
 
   const myClassName = `${classNames.join(' ') ?? ''} ${isContainerFluid ? 'growi-layout-fluid' : ''}`;
