@@ -102,9 +102,6 @@ export const defaultCrowiConfigs: { [key: string]: any } = {
 
   'security:passport-oidc:isEnabled' : false,
 
-  'security:passport-basic:isEnabled' : false,
-  'security:passport-basic:isSameUsernameTreatedAsIdenticalUser': false,
-
   'aws:s3Bucket'          : 'growi',
   'aws:s3Region'          : 'ap-northeast-1',
   'aws:s3AccessKeyId'     : undefined,
@@ -150,8 +147,6 @@ export const defaultCrowiConfigs: { [key: string]: any } = {
 };
 
 export const defaultMarkdownConfigs: { [key: string]: any } = {
-  'markdown:xss:isEnabledPrevention': true,
-  'markdown:xss:option': 2,
   'markdown:xss:tagWhiteList': [],
   'markdown:xss:attrWhiteList': [],
   'markdown:rehypeSanitize:isEnabledPrevention': true,

@@ -165,13 +165,6 @@
       "attr_based_login_control_rule_example2": "<h5>Example for escaping</h5>If you would like to use URL as a query value, escape the following:<br><code>http&#92;:&#92;/&#92;/schemas.example.com&#92;/ws&#92;/2005&#92;/05&#92;/identity&#92;/claims&#92;/emailaddress: &quot;myname@example.com&quot;</code>",
       "updated_saml": "Succeeded to update SAML setting"
 		},
-		"Basic": {
-			"enable_basic": "Enable Basic",
-			"name": "Basic Authentication",
-			"desc_1": "Login with <code>username</code> in Authorization header.",
-			"desc_2": "User will be automatically generated if not exist.",
-			"updated_basic": "Succeeded to update Basic setting"
-		},
 		"OAuth": {
 			"enable_oidc": "Enable OIDC",
 			"register": "Register for %s",
@@ -899,7 +892,6 @@
     "USER_LOGIN_WITH_TWITTER": "使用 Twitter 登录",
     "USER_LOGIN_WITH_OIDC": "使用 OIDC 登录",
     "USER_LOGIN_WITH_SAML": "使用 SAML 登录",
-    "USER_LOGIN_WITH_BASIC": "使用 BASIC 登录",
     "USER_LOGIN_FAILURE": "登录失败",
     "USER_LOGOUT": "注销",
     "USER_FOGOT_PASSWORD": "要求重置密码",
@@ -977,9 +969,6 @@
     "ADMIN_AUTH_OIDC_ENABLED": "启用 OIDC 身份验证",
     "ADMIN_AUTH_OIDC_DISABLED": "禁用 OIDC 身份验证",
     "ADMIN_AUTH_OIDC_UPDATE": "更新 OIDC 设置",
-    "ADMIN_AUTH_BASIC_ENABLED": "启用基本身份验证",
-    "ADMIN_AUTH_BASIC_DISABLED": "禁用基本身份验证",
-    "ADMIN_AUTH_BASIC_UPDATE": "更新基本认证设置",
     "ADMIN_AUTH_GOOGLE_ENABLED": "启用谷歌身份验证",
     "ADMIN_AUTH_GOOGLE_DISABLED": "禁用谷歌身份验证",
     "ADMIN_AUTH_GOOGLE_UPDATE": "更新谷歌授权设置",

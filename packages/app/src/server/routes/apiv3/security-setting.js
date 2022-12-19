@@ -34,7 +34,7 @@ const validator = {
   authenticationSetting: [
     body('isEnabled').if(value => value != null).isBoolean(),
     body('authId').isString().isIn([
-      'local', 'ldap', 'saml', 'oidc', 'basic', 'google', 'github', 'twitter',
+      'local', 'ldap', 'saml', 'oidc', 'google', 'github', 'twitter',
     ]),
   ],
   localSetting: [
@@ -90,9 +90,6 @@ const validator = {
     body('oidcAttrMapEmail').if(value => value != null).isString(),
     body('isSameUsernameTreatedAsIdenticalUser').if(value => value != null).isBoolean(),
     body('isSameEmailTreatedAsIdenticalUser').if(value => value != null).isBoolean(),
-  ],
-  basicAuth: [
-    body('isSameUsernameTreatedAsIdenticalUser').if(value => value != null).isBoolean(),
   ],
   googleOAuth: [
     body('googleClientId').if(value => value != null).isString(),
@@ -291,12 +288,6 @@ const validator = {
  *          isSameEmailTreatedAsIdenticalUser:
  *            type: boolean
  *            description: local account automatically linked the email matched
- *      BasicAuthSetting:
- *        type: object
- *        properties:
- *          isSameUsernameTreatedAsIdenticalUser:
- *            type: boolean
- *            description: local account automatically linked the email matched
  *      GitHubOAuthSetting:
  *        type: object
  *        properties:
@@ -398,7 +389,6 @@ module.exports = (crowi) => {
         isLdapEnabled: await crowi.configManager.getConfig('crowi', 'security:passport-ldap:isEnabled'),
         isSamlEnabled: await crowi.configManager.getConfig('crowi', 'security:passport-saml:isEnabled'),
         isOidcEnabled: await crowi.configManager.getConfig('crowi', 'security:passport-oidc:isEnabled'),
-        isBasicEnabled: await crowi.configManager.getConfig('crowi', 'security:passport-basic:isEnabled'),
         isGoogleEnabled: await crowi.configManager.getConfig('crowi', 'security:passport-google:isEnabled'),
         isGitHubEnabled: await crowi.configManager.getConfig('crowi', 'security:passport-github:isEnabled'),
         isTwitterEnabled: await crowi.configManager.getConfig('crowi', 'security:passport-twitter:isEnabled'),
@@ -460,9 +450,6 @@ module.exports = (crowi) => {
         oidcAttrMapEmail: await crowi.configManager.getConfig('crowi', 'security:passport-oidc:attrMapMail'),
         isSameUsernameTreatedAsIdenticalUser: await crowi.configManager.getConfig('crowi', 'security:passport-oidc:isSameUsernameTreatedAsIdenticalUser'),
         isSameEmailTreatedAsIdenticalUser: await crowi.configManager.getConfig('crowi', 'security:passport-oidc:isSameEmailTreatedAsIdenticalUser'),
-      },
-      basicAuth: {
-        isSameUsernameTreatedAsIdenticalUser: await crowi.configManager.getConfig('crowi', 'security:passport-basic:isSameUsernameTreatedAsIdenticalUser'),
       },
       googleOAuth: {
         googleClientId: await crowi.configManager.getConfig('crowi', 'security:passport-google:clientId'),
@@ -561,13 +548,6 @@ module.exports = (crowi) => {
             break;
           }
           parameters.action = SupportedAction.ACTION_ADMIN_AUTH_OIDC_DISABLED;
-          break;
-        case 'basic':
-          if (isEnabled) {
-            parameters.action = SupportedAction.ACTION_ADMIN_AUTH_BASIC_ENABLED;
-            break;
-          }
-          parameters.action = SupportedAction.ACTION_ADMIN_AUTH_BASIC_DISABLED;
           break;
         case 'google':
           if (isEnabled) {
@@ -1097,49 +1077,6 @@ module.exports = (crowi) => {
       const msg = 'Error occurred in updating OpenIDConnect';
       logger.error('Error', err);
       return res.apiv3Err(new ErrorV3(msg, 'update-OpenIDConnect-failed'));
-    }
-  });
-
-  /**
-   * @swagger
-   *
-   *    /_api/v3/security-setting/basic:
-   *      put:
-   *        tags: [SecuritySetting, apiv3]
-   *        description: Update basic
-   *        requestBody:
-   *          required: true
-   *          content:
-   *            application/json:
-   *              schema:
-   *                $ref: '#/components/schemas/BasicAuthSetting'
-   *        responses:
-   *          200:
-   *            description: Succeeded to update basic
-   *            content:
-   *              application/json:
-   *                schema:
-   *                  $ref: '#/components/schemas/BasicAuthSetting'
-   */
-  router.put('/basic', loginRequiredStrictly, adminRequired, addActivity, validator.basicAuth, apiV3FormValidator, async(req, res) => {
-    const requestParams = {
-      'security:passport-basic:isSameUsernameTreatedAsIdenticalUser': req.body.isSameUsernameTreatedAsIdenticalUser,
-    };
-
-    try {
-      await updateAndReloadStrategySettings('basic', requestParams);
-
-      const securitySettingParams = {
-        isSameUsernameTreatedAsIdenticalUser: await crowi.configManager.getConfig('crowi', 'security:passport-basic:isSameUsernameTreatedAsIdenticalUser'),
-      };
-      const parameters = { action: SupportedAction.ACTION_ADMIN_AUTH_BASIC_UPDATE };
-      activityEvent.emit('update', res.locals.activity._id, parameters);
-      return res.apiv3({ securitySettingParams });
-    }
-    catch (err) {
-      const msg = 'Error occurred in updating basicAuth';
-      logger.error('Error', err);
-      return res.apiv3Err(new ErrorV3(msg, 'update-basicOAuth-failed'));
     }
   });
 

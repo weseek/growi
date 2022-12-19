@@ -85,7 +85,7 @@ export const PageEditorByHackmd = (): JSX.Element => {
   const { data: isHackmdDraftUpdatingInRealtime, mutate: mutateIsHackmdDraftUpdatingInRealtime } = useIsHackmdDraftUpdatingInRealtime();
   const { data: remoteRevisionId, mutate: mutateRemoteRevisionId } = useRemoteRevisionId();
 
-  const updateStateAfterSave = useUpdateStateAfterSave();
+  const updateStateAfterSave = useUpdateStateAfterSave(pageId);
 
   const hackmdEditorRef = useRef<HackEditorRef>(null);
 
@@ -127,7 +127,7 @@ export const PageEditorByHackmd = (): JSX.Element => {
         await router.push(`/${page._id}`);
       }
       else {
-        updateStateAfterSave(page._id);
+        updateStateAfterSave?.();
       }
       setIsInitialized(false);
       mutateEditorMode(EditorMode.View);
@@ -161,6 +161,11 @@ export const PageEditorByHackmd = (): JSX.Element => {
       globalEmitter.removeListener('resetInitializedHackMdStatus', resetInitializedStatusHandler);
     };
   }, [resetInitializedStatusHandler]);
+
+  useEffect(() => {
+    // for page translation: https://github.com/weseek/growi/pull/7100
+    setIsInitialized(false);
+  }, [pageId]);
 
 
   const isResume = useCallback(() => {
@@ -251,7 +256,7 @@ export const PageEditorByHackmd = (): JSX.Element => {
       mutatePageData(res);
 
       // set updated data
-      updateStateAfterSave(res._id);
+      updateStateAfterSave?.();
       mutateTagsInfo();
 
       logger.debug('success to save');
