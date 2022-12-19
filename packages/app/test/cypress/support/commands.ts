@@ -24,6 +24,20 @@
 // -- This will overwrite an existing command --
 // Cypress.Commands.overwrite('visit', (originalFn, url, options) => { ... })
 
+import 'cypress-wait-until';
+
+function isVisible($elem: JQuery<Element>) {
+  return $elem.is(':visible');
+}
+function isHidden($elem: JQuery<Element>) {
+  return !isVisible($elem);
+}
+function isVisibleByTestId(testId: string) {
+  return isVisible(Cypress.$(`[data-testid=${testId}]`));
+}
+function isHiddenByTestId(testId: string) {
+  return !isVisibleByTestId(testId);
+}
 
 Cypress.Commands.add('getByTestid', (selector, options?) => {
   return cy.get(`[data-testid=${selector}]`, options);
@@ -41,43 +55,40 @@ Cypress.Commands.add('login', (username, password) => {
   });
 });
 
-/**
- * use only for the pages which use component with skeleton
- */
 Cypress.Commands.add('waitUntilSkeletonDisappear', () => {
-  cy.get('.grw-skeleton').should('exist');
+  if (isHidden(Cypress.$('.grw-skeleton'))) {
+    return;
+  }
   cy.get('.grw-skeleton').should('not.exist');
 });
 
 Cypress.Commands.add('waitUntilSpinnerDisappear', () => {
-  cy.get('.fa-spinner').should('exist');
+  if (isHidden(Cypress.$('.fa-spinner'))) {
+    return;
+  }
   cy.get('.fa-spinner').should('not.exist');
 });
 
-let isSidebarCollapsed: boolean | undefined;
+Cypress.Commands.add('collapseSidebar', (isCollapsed: boolean) => {
+  const isSidebarExists = isVisibleByTestId('grw-sidebar-wrapper');
 
-Cypress.Commands.add('collapseSidebar', (isCollapsed, force=false) => {
-
-  if (!force && isSidebarCollapsed === isCollapsed) {
+  if (!isSidebarExists) {
     return;
   }
 
-  const isGrowiPage = Cypress.$('div.growi').length > 0;
-  if (!isGrowiPage) {
-    cy.visit('/page-to-toggle-sidebar-collapsed');
+  const isSidebarContextualNavigationHidden = isHiddenByTestId('grw-contextual-navigation-sub');
+  if (isSidebarContextualNavigationHidden === isCollapsed) {
+    return;
   }
 
-  cy.getByTestid('grw-contextual-navigation-sub').then(($contents) => {
-    const isCurrentCollapsed = $contents.hasClass('d-none');
-    // toggle when the current state and isCoolapsed is not match
-    if (isCurrentCollapsed !== isCollapsed) {
-      cy.getByTestid("grw-navigation-resize-button").click({force: true});
+  cy.waitUntil(() => {
+    // do
+    cy.getByTestid("grw-navigation-resize-button").click({force: true});
+    // wait until saving UserUISettings
+    // eslint-disable-next-line cypress/no-unnecessary-waiting
+    cy.wait(1500);
 
-      // wait until saving UserUISettings
-      // eslint-disable-next-line cypress/no-unnecessary-waiting
-      cy.wait(1500);
-    }
+    // wait until
+    return cy.getByTestid('grw-contextual-navigation-sub').then($contents => isHidden($contents) === isCollapsed);
   });
-
-  isSidebarCollapsed = isCollapsed;
 });
