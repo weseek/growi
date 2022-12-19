@@ -3,7 +3,7 @@ import urljoin from 'url-join';
 
 import { OptionsToSave } from '~/interfaces/page-operation';
 import { useCurrentPageId } from '~/stores/context';
-import { useIsEnabledUnsavedWarning, usePageTagsForEditors } from '~/stores/editor';
+import { useEditingMarkdown, useIsEnabledUnsavedWarning, usePageTagsForEditors } from '~/stores/editor';
 import { useSWRxCurrentPage, useSWRxTagsInfo } from '~/stores/page';
 import { useSetRemoteLatestPageData } from '~/stores/remote-latest-page';
 import loggerFactory from '~/utils/logger';
@@ -181,6 +181,7 @@ export const useUpdateStateAfterSave = (pageId: string|undefined|null): (() => P
   const { setRemoteLatestPageData } = useSetRemoteLatestPageData();
   const { mutate: mutateTagsInfo } = useSWRxTagsInfo(pageId);
   const { sync: syncTagsInfoForEditor } = usePageTagsForEditors(pageId);
+  const { mutate: mutateEditingMarkdown } = useEditingMarkdown();
 
   if (pageId == null) { return }
 
@@ -193,6 +194,8 @@ export const useUpdateStateAfterSave = (pageId: string|undefined|null): (() => P
     syncTagsInfoForEditor(); // sync global state for client
 
     if (updatedPage == null) { return }
+
+    mutateEditingMarkdown(updatedPage.revision.body);
 
     const remoterevisionData = {
       remoteRevisionId: updatedPage.revision._id,
