@@ -199,3 +199,7 @@ export const useUpdateStateAfterSave = () => {
     setRemoteLatestPageData(remoterevisionData);
   };
 };
+
+export const unlink = async(path: string): Promise<void> => {
+  await apiPost('/pages.unlink', { path });
+};
