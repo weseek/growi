@@ -2,11 +2,11 @@ import React from 'react';
 
 import { useTranslation } from 'next-i18next';
 import PropTypes from 'prop-types';
+import { defaultSchema as sanitizeDefaultSchema } from 'rehype-sanitize';
 
 import AdminMarkDownContainer from '~/client/services/AdminMarkDownContainer';
 import { toastSuccess, toastError } from '~/client/util/apiNotification';
 import { RehypeSanitizeOption } from '~/interfaces/rehype';
-import { tags, attrs } from '~/services/xss/recommended-whitelist';
 import loggerFactory from '~/utils/logger';
 
 import { withUnstatedContainers } from '../../UnstatedUtils';
@@ -15,6 +15,9 @@ import AdminUpdateButtonRow from '../Common/AdminUpdateButtonRow';
 import WhiteListInput from './WhiteListInput';
 
 const logger = loggerFactory('growi:importer');
+
+const tags = sanitizeDefaultSchema.tagNames;
+const attrs = JSON.stringify(sanitizeDefaultSchema.attributes);
 
 class XssForm extends React.Component {
 
