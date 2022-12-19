@@ -73,7 +73,8 @@ const HeadersForGrowiPlugin = (props: HeadersForGrowiPluginProps): JSX.Element =
 
 interface GrowiDocumentProps {
   theme: string,
-  customCss: string;
+  customCss: string | null,
+  customScript: string | null,
   presetThemesManifest: ViteManifest,
   pluginThemeHref: string | undefined,
   pluginResourceEntries: GrowiPluginResourceEntries;
@@ -89,6 +90,7 @@ class GrowiDocument extends Document<GrowiDocumentInitialProps> {
 
     const theme = configManager.getConfig('crowi', 'customize:theme');
     const customCss: string = customizeService.getCustomCss();
+    const customScript: string = customizeService.getCustomScript();
 
     // import preset-themes manifest
     const presetThemesManifest = await import('@growi/preset-themes/dist/themes/manifest.json').then(imported => imported.default);
@@ -101,27 +103,37 @@ class GrowiDocument extends Document<GrowiDocumentInitialProps> {
       ...initialProps,
       theme,
       customCss,
+      customScript,
       presetThemesManifest,
       pluginThemeHref,
       pluginResourceEntries,
     };
   }
 
+  renderCustomCss(customCss: string | null): JSX.Element {
+    if (customCss == null || customCss.length === 0) {
+      return <></>;
+    }
+    return <style>{customCss}</style>;
+  }
+
+  renderCustomScript(customScript: string | null): JSX.Element {
+    if (customScript == null || customScript.length === 0) {
+      return <></>;
+    }
+    return <script id="customScript" dangerouslySetInnerHTML={{ __html: customScript }} />;
+  }
+
   override render(): JSX.Element {
     const {
-      customCss, theme, presetThemesManifest, pluginThemeHref, pluginResourceEntries,
+      customCss, customScript, theme, presetThemesManifest, pluginThemeHref, pluginResourceEntries,
     } = this.props;
 
     return (
       <Html>
         <Head>
-          <style>
-            {customCss}
-          </style>
-          {/*
-          {renderScriptTagsByGroup('basis')}
-          {renderStyleTagsByGroup('basis')}
-          */}
+          {this.renderCustomCss(customCss)}
+          {this.renderCustomScript(customScript)}
           <link rel='preload' href="/static/fonts/PressStart2P-latin.woff2" as="font" type="font/woff2" />
           <link rel='preload' href="/static/fonts/PressStart2P-latin-ext.woff2" as="font" type="font/woff2" />
           <link rel='preload' href="/static/fonts/Lato-Regular-latin.woff2" as="font" type="font/woff2" />
