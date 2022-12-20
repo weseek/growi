@@ -55,8 +55,8 @@ export class PluginService implements IPluginService {
           continue;
         }
         else {
-          // if not exists repository, reinstall latest plugin
-          // download
+          // if not exists repository, download latest plugin repository
+          // TODO: imprv Document version and repository version possibly different.
           const ghUrl = new URL(growiPlugin.origin.url);
           const ghPathname = ghUrl.pathname;
           // TODO: Branch names can be specified.
@@ -68,10 +68,9 @@ export class PluginService implements IPluginService {
 
           const ghOrganizationName = match[1];
           const ghReposName = match[2];
-          const requestUrl = `https://github.com/${ghOrganizationName}/${ghReposName}/archive/refs/heads/${ghBranch}.zip`;
 
           // download github repository to local file system
-          await this.download(requestUrl, ghOrganizationName, ghReposName, ghBranch);
+          await this.downloadPluginRepository(ghOrganizationName, ghReposName, ghBranch);
           continue;
         }
       }
@@ -95,29 +94,31 @@ export class PluginService implements IPluginService {
 
     const ghOrganizationName = match[1];
     const ghReposName = match[2];
-    const requestUrl = `https://github.com/${ghOrganizationName}/${ghReposName}/archive/refs/heads/${ghBranch}.zip`;
+    const installedPath = `${ghOrganizationName}/${ghReposName}`;
 
     // download github repository to local file system
-    await this.download(requestUrl, ghOrganizationName, ghReposName, ghBranch);
-    await this.deleteOldDocument(ghOrganizationName, ghReposName);
+    await this.downloadPluginRepository(ghOrganizationName, ghReposName, ghBranch);
+
+    // delete old document
+    await this.deleteOldDocument(installedPath);
 
     // save plugin metadata
-    const installedPath = `${ghOrganizationName}/${ghReposName}`;
     const plugins = await PluginService.detectPlugins(origin, installedPath);
     await this.savePluginMetaData(plugins);
 
     return;
   }
 
-  private async deleteOldDocument(ghOrganizationName: string, ghReposName: string): Promise<void> {
+  private async deleteOldDocument(path: string): Promise<void> {
     const GrowiPlugin = mongoose.model<GrowiPlugin>('GrowiPlugin');
-    const growiPlugin = await GrowiPlugin.findOne({ installedPath: `${ghOrganizationName}/${ghReposName}` });
+    const growiPlugin = await GrowiPlugin.findOne({ installedPath: path });
     // if document already exists, delete old document before rename path
-    if (growiPlugin) await GrowiPlugin.findOneAndDelete({ installedPath: `${ghOrganizationName}/${ghReposName}` });
+    if (growiPlugin) await GrowiPlugin.findOneAndDelete({ installedPath: path });
   }
 
-  private async download(requestUrl: string, ghOrganizationName: string, ghReposName: string, ghBranch: string): Promise<void> {
+  private async downloadPluginRepository(ghOrganizationName: string, ghReposName: string, ghBranch: string): Promise<void> {
 
+    const requestUrl = `https://github.com/${ghOrganizationName}/${ghReposName}/archive/refs/heads/${ghBranch}.zip`;
     const zipFilePath = path.join(pluginStoringPath, `${ghBranch}.zip`);
     const unzippedPath = path.join(pluginStoringPath, ghOrganizationName);
 
