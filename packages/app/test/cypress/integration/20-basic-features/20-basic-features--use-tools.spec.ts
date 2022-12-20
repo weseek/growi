@@ -29,7 +29,6 @@ context('Modal for page operation', () => {
     cy.fixture("user-admin.json").then(user => {
       cy.login(user.username, user.password);
     });
-    cy.collapseSidebar(true);
   });
 
   it("PageCreateModal is shown and closed successfully", () => {
@@ -45,6 +44,8 @@ context('Modal for page operation', () => {
       cy.screenshot(`${ssPrefix}new-page-modal-opened`);
       cy.get('button.close').click();
     });
+
+    cy.collapseSidebar(true, true);
     cy.screenshot(`${ssPrefix}page-create-modal-closed`);
   });
 
@@ -72,6 +73,7 @@ context('Modal for page operation', () => {
     // Do not use "cy.waitUntilSkeletonDisappear()"
     cy.get('.grw-skeleton').should('not.exist');
 
+    cy.collapseSidebar(true, true);
     cy.screenshot(`${ssPrefix}create-today-page`);
   });
 
@@ -101,9 +103,8 @@ context('Modal for page operation', () => {
     // eslint-disable-next-line cypress/no-unnecessary-waiting
     cy.wait(300);
 
-    // Do not use "cy.waitUntilSkeletonDisappear()"
-    cy.get('.grw-skeleton').should('not.exist');
-
+    cy.waitUntilSkeletonDisappear();
+    cy.collapseSidebar(true);
     cy.screenshot(`${ssPrefix}create-page-under-specific-page`);
   });
 
@@ -122,6 +123,7 @@ context('Modal for page operation', () => {
       cy.getByTestid('grw-btn-edit-page').should('be.visible').click();
     });
     cy.get('.toast-error').should('be.visible').invoke('attr', 'style', 'opacity: 1');
+    cy.collapseSidebar(true);
     cy.screenshot(`${ssPrefix}create-template-for-children-error`);
     cy.get('.toast-error').should('be.visible').click();
     cy.get('.toast-error').should('not.exist');
@@ -132,10 +134,11 @@ context('Modal for page operation', () => {
       cy.getByTestid('grw-btn-edit-page').should('be.visible').click();
     });
     cy.get('.toast-error').should('be.visible').invoke('attr', 'style', 'opacity: 1');
+    cy.collapseSidebar(true);
     cy.screenshot(`${ssPrefix}create-template-for-descendants-error`);
   });
 
-  it('Page Deletion and PutBack is executed successfully', () => {
+  it('Page Deletion and PutBack is executed successfully', { scrollBehavior: false }, () => {
     cy.visit('/Sandbox/Bootstrap4');
     cy.waitUntilSkeletonDisappear();
 
@@ -149,6 +152,7 @@ context('Modal for page operation', () => {
       cy.getByTestid('delete-page-button').click();
     });
     cy.getByTestid('trash-page-alert').should('be.visible');
+    cy.collapseSidebar(true);
     cy.screenshot(`${ssPrefix}-bootstrap4-is-in-garbage-box`);
 
     cy.getByTestid('put-back-button').click();
@@ -156,6 +160,8 @@ context('Modal for page operation', () => {
       cy.screenshot(`${ssPrefix}-put-back-modal`);
       cy.getByTestid('put-back-execution-button').should('be.visible').click();
     });
+
+    cy.collapseSidebar(true);
     cy.screenshot(`${ssPrefix}-put-backed-bootstrap4-page`);
   });
 
@@ -225,7 +231,6 @@ context('Page Accessories Modal', () => {
     cy.fixture("user-admin.json").then(user => {
       cy.login(user.username, user.password);
     });
-    cy.collapseSidebar(true);
   });
 
   it('Page History is shown successfully', () => {
@@ -239,7 +244,8 @@ context('Page Accessories Modal', () => {
       cy.getByTestid('open-page-accessories-modal-btn-with-history-tab').click({force: true});
     });
 
-     cy.getByTestid('page-history').should('be.visible')
+     cy.getByTestid('page-history').should('be.visible');
+     cy.collapseSidebar(true);
      cy.screenshot(`${ssPrefix}-open-page-history-bootstrap4`);
   });
 
@@ -255,6 +261,8 @@ context('Page Accessories Modal', () => {
     });
 
      cy.getByTestid('page-attachment').should('be.visible').contains('No attachments yet.');
+
+     cy.collapseSidebar(true);
      cy.screenshot(`${ssPrefix}-open-page-attachment-data-bootstrap4`);
   });
 
@@ -272,6 +280,8 @@ context('Page Accessories Modal', () => {
 
    cy.getByTestid('page-accessories-modal').should('be.visible');
    cy.getByTestid('share-link-management').should('be.visible');
+
+   cy.collapseSidebar(true);
    cy.screenshot(`${ssPrefix}-open-share-link-management-bootstrap4`);
   });
 });
@@ -283,7 +293,6 @@ context('Tag Oprations', { scrollBehavior: false }, () =>{
     cy.fixture("user-admin.json").then(user => {
       cy.login(user.username, user.password);
     });
-    cy.collapseSidebar(true);
   });
 
   it('Successfully add new tag', () => {
@@ -321,6 +330,7 @@ context('Tag Oprations', { scrollBehavior: false }, () =>{
     cy.get('.grw-taglabels-container > .grw-tag-labels > a').contains(tag).should('exist');
     /* eslint-disable cypress/no-unnecessary-waiting */
     cy.wait(150); // wait for toastr to change its color occured by mouseover
+    cy.collapseSidebar(true);
     cy.screenshot(`${ssPrefix}4-click-done`);
   });
 
@@ -342,6 +352,7 @@ context('Tag Oprations', { scrollBehavior: false }, () =>{
 
     // force to add 'active' to pass VRT: https://github.com/weseek/growi/pull/6603
     cy.getByTestid('page-list-item-L').first().invoke('addClass', 'active');
+    cy.collapseSidebar(true);
     cy.screenshot(`${ssPrefix}1-click-tag-name`);
     cy.getByTestid('search-result-list').should('be.visible').then(($el)=>{
       cy.wrap($el).within(()=>{
@@ -350,6 +361,7 @@ context('Tag Oprations', { scrollBehavior: false }, () =>{
 
       // eslint-disable-next-line cypress/no-unnecessary-waiting
       cy.wait(1500); // for wait rendering pagelist info
+      cy.collapseSidebar(true);
       cy.screenshot(`${ssPrefix}2-click-three-dots-menu`);
 
       cy.wrap($el).within(()=>{
@@ -372,6 +384,7 @@ context('Tag Oprations', { scrollBehavior: false }, () =>{
 
     cy.visit(`Sandbox-${newPageName}`);
     cy.waitUntilSkeletonDisappear();
+    cy.collapseSidebar(true);
     cy.screenshot(`${ssPrefix}4-duplicated-page`);
   });
 
@@ -394,6 +407,7 @@ context('Tag Oprations', { scrollBehavior: false }, () =>{
 
     // eslint-disable-next-line cypress/no-unnecessary-waiting
     cy.wait(300);
+    cy.collapseSidebar(true);
     cy.screenshot(`${ssPrefix}1-click-tag-name`);
 
     cy.getByTestid('search-result-list').within(() => {
@@ -440,6 +454,7 @@ context('Tag Oprations', { scrollBehavior: false }, () =>{
     cy.waitUntilSkeletonDisappear();
 
     cy.getByTestid('grw-tag-labels').should('be.visible')
+    cy.collapseSidebar(true);
     cy.screenshot(`${ssPrefix}4-new-page-name-applied`);
   });
 });
