@@ -30,7 +30,7 @@ const validator = {
   xssSetting: [
     body('isEnabledXss').isBoolean(),
     body('tagWhiteList').isArray(),
-    body('attrWhiteList').isString(),
+    body('attrWhiteString').isString(),
   ],
 };
 
@@ -82,8 +82,8 @@ const validator = {
  *            items:
  *              type: string
  *              description: tag whitelist
- *          attrWhiteList:
- *            type: array
+ *          attrWhiteString:
+ *            type: string
  *            description: array of attr whiteList
  *            items:
  *              type: string
@@ -128,7 +128,7 @@ module.exports = (crowi) => {
       isEnabledXss: await crowi.configManager.getConfig('markdown', 'markdown:rehypeSanitize:isEnabledPrevention'),
       xssOption: await crowi.configManager.getConfig('markdown', 'markdown:rehypeSanitize:option'),
       tagWhiteList: await crowi.configManager.getConfig('markdown', 'markdown:xss:tagWhiteList'),
-      attrWhiteList: await crowi.configManager.getConfig('markdown', 'markdown:xss:attrWhiteList'),
+      attrWhiteString: await crowi.configManager.getConfig('markdown', 'markdown:xss:attrWhiteString'),
     };
 
     return res.apiv3({ markdownParams });
@@ -296,7 +296,7 @@ module.exports = (crowi) => {
       'markdown:rehypeSanitize:isEnabledPrevention': req.body.isEnabledXss,
       'markdown:rehypeSanitize:option': req.body.xssOption,
       'markdown:xss:tagWhiteList': req.body.tagWhiteList, // Todo: need to be changed at https://redmine.weseek.co.jp/issues/109763
-      'markdown:xss:attrWhiteList': req.body.attrWhiteList, // Todo: need to be changed at https://redmine.weseek.co.jp/issues/109763
+      'markdown:xss:attrWhiteString': req.body.attrWhiteString, // Todo: need to be changed at https://redmine.weseek.co.jp/issues/109763
     };
 
     try {
@@ -305,7 +305,7 @@ module.exports = (crowi) => {
         isEnabledXss: await crowi.configManager.getConfig('markdown', 'markdown:rehypeSanitize:isEnabledPrevention'),
         xssOption: await crowi.configManager.getConfig('markdown', 'markdown:rehypeSanitize:option'),
         tagWhiteList: await crowi.configManager.getConfig('markdown', 'markdown:xss:tagWhiteList'),
-        attrWhiteList: await crowi.configManager.getConfig('markdown', 'markdown:xss:attrWhiteList'),
+        attrWhiteString: await crowi.configManager.getConfig('markdown', 'markdown:xss:attrWhiteString'),
       };
 
       const parameters = { action: SupportedAction.ACTION_ADMIN_MARKDOWN_XSS_UPDATE };

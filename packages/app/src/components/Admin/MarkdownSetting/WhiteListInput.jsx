@@ -14,7 +14,7 @@ class WhiteListInput extends React.Component {
     super(props);
 
     this.tagWhiteList = React.createRef();
-    this.attrWhiteList = React.createRef();
+    this.attrWhiteString = React.createRef();
 
     this.onClickRecommendTagButton = this.onClickRecommendTagButton.bind(this);
     this.onClickRecommendAttrButton = this.onClickRecommendAttrButton.bind(this);
@@ -26,8 +26,8 @@ class WhiteListInput extends React.Component {
   }
 
   onClickRecommendAttrButton() {
-    this.attrWhiteList.current.value = attrs;
-    this.props.adminMarkDownContainer.setState({ attrWhiteList: attrs });
+    this.attrWhiteString.current.value = attrs;
+    this.props.adminMarkDownContainer.setState({ attrWhiteString: attrs });
   }
 
   render() {
@@ -64,9 +64,9 @@ class WhiteListInput extends React.Component {
             name="recommendedAttrs"
             rows="6"
             cols="40"
-            ref={this.attrWhiteList}
-            defaultValue={adminMarkDownContainer.state.attrWhiteList}
-            onChange={(e) => { adminMarkDownContainer.setState({ attrWhiteList: e.target.value }) }}
+            ref={this.attrWhiteString}
+            defaultValue={adminMarkDownContainer.state.attrWhiteString}
+            onChange={(e) => { adminMarkDownContainer.setState({ attrWhiteString: e.target.value }) }}
           />
         </div>
       </>
