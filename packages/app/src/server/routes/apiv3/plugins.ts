@@ -30,7 +30,7 @@ module.exports = (crowi: Crowi): Router => {
 
   router.get('/', loginRequiredStrictly, adminRequired, async(req: Request, res: ApiV3Response) => {
     if (pluginService == null) {
-      throw new Error('\'pluginService\' is not import.');
+      throw new Error('\'pluginService\' is not set up.');
     }
 
     try {
@@ -44,7 +44,7 @@ module.exports = (crowi: Crowi): Router => {
 
   router.get('/:id', loginRequiredStrictly, adminRequired, validator.pluginIdisRequired, async(req: Request, res: ApiV3Response) => {
     if (pluginService == null) {
-      throw new Error('\'pluginService\' is not import.');
+      throw new Error('\'pluginService\' is not set up.');
     }
 
     const { id } = req.params;
@@ -62,7 +62,7 @@ module.exports = (crowi: Crowi): Router => {
 
   router.post('/', loginRequiredStrictly, adminRequired, validator.pluginFormValueisRequired, async(req: Request, res: ApiV3Response) => {
     if (pluginService == null) {
-      throw new Error('\'pluginService\' is not import.');
+      throw new Error('\'pluginService\' is not set up.');
     }
 
     const { pluginInstallerForm: formValue } = req.body;
@@ -78,7 +78,7 @@ module.exports = (crowi: Crowi): Router => {
 
   router.put('/:id/activate', loginRequiredStrictly, adminRequired, validator.pluginIdisRequired, async(req: Request, res: ApiV3Response) => {
     if (pluginService == null) {
-      throw new Error('\'pluginService\' is not import.');
+      throw new Error('\'pluginService\' is not set up.');
     }
 
     const { id } = req.params;
@@ -96,7 +96,7 @@ module.exports = (crowi: Crowi): Router => {
 
   router.put('/:id/deactivate', loginRequiredStrictly, adminRequired, validator.pluginIdisRequired, async(req: Request, res: ApiV3Response) => {
     if (pluginService == null) {
-      throw new Error('\'pluginService\' is not import.');
+      throw new Error('\'pluginService\' is not set up.');
     }
 
     const { id } = req.params;
@@ -114,7 +114,7 @@ module.exports = (crowi: Crowi): Router => {
 
   router.delete('/:id/remove', loginRequiredStrictly, adminRequired, validator.pluginIdisRequired, async(req: Request, res: ApiV3Response) => {
     if (pluginService == null) {
-      throw new Error('\'pluginService\' is not import.');
+      throw new Error('\'pluginService\' is not set up.');
     }
 
     const { id } = req.params;
