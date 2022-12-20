@@ -147,12 +147,14 @@ export const defaultCrowiConfigs: { [key: string]: any } = {
 };
 
 export const defaultMarkdownConfigs: { [key: string]: any } = {
+  // don't use it, but won't turn it off
   'markdown:xss:tagWhiteList': [],
   'markdown:xss:attrWhiteList': [],
+
   'markdown:rehypeSanitize:isEnabledPrevention': true,
   'markdown:rehypeSanitize:option': RehypeSanitizeOption.RECOMMENDED,
   'markdown:rehypeSanitize:tagNames': [],
-  'markdown:rehypeSanitize:attributes': {},
+  'markdown:rehypeSanitize:attributes': '{}',
   'markdown:isEnabledLinebreaks': false,
   'markdown:isEnabledLinebreaksInComments': true,
   'markdown:adminPreferredIndentSize': 4,
