@@ -305,7 +305,7 @@ const Page: NextPageWithLayout<Props> = (props: Props) => {
       <Head>
         <title>{title}</title>
       </Head>
-      <div className="h-100 d-flex flex-column justify-content-between">
+      <div className={`dynamic-layout-root ${growiLayoutFluidClass} h-100 d-flex flex-column justify-content-between`}>
         <header className="py-0 position-relative">
           <div id="grw-subnav-container">
             <GrowiContextualSubNavigation isLinkSharingDisabled={props.disableLinkSharing} />
@@ -320,7 +320,7 @@ const Page: NextPageWithLayout<Props> = (props: Props) => {
 
         <div className="flex-grow-1">
           <div id="main" className={`main ${isUsersHomePage(props.currentPathname) && 'user-page'}`}>
-            <div id="content-main" className={`content-main grw-container-convertible ${growiLayoutFluidClass}`}>
+            <div id="content-main" className="content-main grw-container-convertible">
               { props.isIdenticalPathPage && <IdenticalPathPage /> }
 
               { !props.isIdenticalPathPage && (

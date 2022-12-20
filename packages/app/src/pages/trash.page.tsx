@@ -6,6 +6,7 @@ import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import dynamic from 'next/dynamic';
 import Head from 'next/head';
 
+import { useCurrentGrowiLayoutFluidClassName } from '~/client/services/layout';
 import { GrowiSubNavigation } from '~/components/Navbar/GrowiSubNavigation';
 import type { CrowiRequest } from '~/interfaces/crowi-request';
 import type { RendererConfig } from '~/interfaces/services/renderer';
@@ -71,6 +72,8 @@ const TrashPage: NextPage<CommonProps> = (props: Props) => {
   const { data: isDrawerMode } = useDrawerMode();
   const { data: isGuestUser } = useIsGuestUser();
 
+  const growiLayoutFluidClass = useCurrentGrowiLayoutFluidClassName();
+
   const title = generateCustomTitle(props, 'GROWI');
 
   return (
@@ -79,21 +82,23 @@ const TrashPage: NextPage<CommonProps> = (props: Props) => {
         <title>{title}</title>
       </Head>
       <BasicLayoutWithEditorMode>
-        <header className="py-0 position-relative">
-          <GrowiSubNavigation
-            pagePath="/trash"
-            showDrawerToggler={isDrawerMode}
-            isGuestUser={isGuestUser}
-            isDrawerMode={isDrawerMode}
-            additionalClasses={['container-fluid']}
-          />
-        </header>
+        <div className={`dynamic-layout-root ${growiLayoutFluidClass}`}>
+          <header className="py-0 position-relative">
+            <GrowiSubNavigation
+              pagePath="/trash"
+              showDrawerToggler={isDrawerMode}
+              isGuestUser={isGuestUser}
+              isDrawerMode={isDrawerMode}
+              additionalClasses={['container-fluid']}
+            />
+          </header>
 
-        <div className="grw-container-convertible mb-5 pb-5">
-          <TrashPageList />
+          <div className="content-main grw-container-convertible mb-5 pb-5">
+            <TrashPageList />
+          </div>
+
+          <div id="grw-fav-sticky-trigger" className="sticky-top"></div>
         </div>
-
-        <div id="grw-fav-sticky-trigger" className="sticky-top"></div>
       </BasicLayoutWithEditorMode>
 
       <EmptyTrashModal />
