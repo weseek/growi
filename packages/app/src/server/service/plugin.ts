@@ -48,8 +48,8 @@ export class PluginService implements IPluginService {
       // check all growi plugin documents
       const GrowiPlugin = mongoose.model<GrowiPlugin>('GrowiPlugin');
       const growiPlugins = await GrowiPlugin.find({});
-      for await (const growiPluginData of growiPlugins) {
-        const pluginPath = path.join(pluginStoringPath, growiPluginData.installedPath);
+      for await (const growiPlugin of growiPlugins) {
+        const pluginPath = path.join(pluginStoringPath, growiPlugin.installedPath);
         if (fs.existsSync(pluginPath)) {
           // if exists repository, do nothing
           continue;
@@ -57,14 +57,15 @@ export class PluginService implements IPluginService {
         else {
           // if not exists repository, reinstall latest plugin
           // delete old document
-          await GrowiPlugin.findByIdAndDelete(growiPluginData._id);
+          await GrowiPlugin.findByIdAndDelete(growiPlugin._id);
           // reinstall latest plugin
-          await this.install(growiPluginData.origin);
+          await this.install(growiPlugin.origin);
           continue;
         }
       }
     }
     catch (err) {
+      logger.error(err);
       throw new Error(err);
     }
   }
@@ -146,12 +147,12 @@ export class PluginService implements IPluginService {
         if (fs.existsSync(newPath)) await fs.promises.rm(newPath, { recursive: true });
 
         const GrowiPlugin = mongoose.model<GrowiPlugin>('GrowiPlugin');
-        const isGrowiPlugin = await GrowiPlugin.findOne({ installedPath: `${ghOrganizationName}/${ghReposName}` });
+        const growiPlugin = await GrowiPlugin.findOne({ installedPath: `${ghOrganizationName}/${ghReposName}` });
         // if document already exists, delete old document before rename path
-        if (isGrowiPlugin) await GrowiPlugin.findOneAndDelete({ installedPath: `${ghOrganizationName}/${ghReposName}` });
+        if (growiPlugin) await GrowiPlugin.findOneAndDelete({ installedPath: `${ghOrganizationName}/${ghReposName}` });
       }
       catch (err) {
-        throw new Error(err);
+        return err;
       }
       // rename repository
       fs.renameSync(oldPath, newPath);
