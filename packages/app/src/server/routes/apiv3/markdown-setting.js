@@ -127,8 +127,8 @@ module.exports = (crowi) => {
       pageBreakCustomSeparator: await crowi.configManager.getConfig('markdown', 'markdown:presentation:pageBreakCustomSeparator'),
       isEnabledXss: await crowi.configManager.getConfig('markdown', 'markdown:rehypeSanitize:isEnabledPrevention'),
       xssOption: await crowi.configManager.getConfig('markdown', 'markdown:rehypeSanitize:option'),
-      tagWhiteList: await crowi.configManager.getConfig('markdown', 'markdown:xss:tagWhiteList'),
-      attrWhiteList: await crowi.configManager.getConfig('markdown', 'markdown:xss:attrWhiteList'),
+      tagWhiteList: await crowi.configManager.getConfig('markdown', 'markdown:rehypeSanitize:tagNames'),
+      attrWhiteList: await crowi.configManager.getConfig('markdown', 'markdown:rehypeSanitize:attributes'),
     };
 
     return res.apiv3({ markdownParams });
@@ -292,9 +292,8 @@ module.exports = (crowi) => {
       return res.apiv3Err(new ErrorV3('xss option is required'));
     }
 
-    let parsedAttrWhiteList = {};
     try {
-      parsedAttrWhiteList = JSON.parse(req.body.attrWhiteList);
+      JSON.parse(req.body.attrWhiteList);
     }
     catch (err) {
       const msg = 'Error occurred in updating xss';
@@ -305,8 +304,8 @@ module.exports = (crowi) => {
     const reqestXssParams = {
       'markdown:rehypeSanitize:isEnabledPrevention': req.body.isEnabledXss,
       'markdown:rehypeSanitize:option': req.body.xssOption,
-      'markdown:xss:tagWhiteList': parsedAttrWhiteList, // Todo: need to be changed at https://redmine.weseek.co.jp/issues/109763
-      'markdown:xss:attrWhiteList': req.body.attrWhiteList, // Todo: need to be changed at https://redmine.weseek.co.jp/issues/109763
+      'markdown:rehypeSanitize:tagNames': req.body.tagWhiteList,
+      'markdown:rehypeSanitize:attributes': req.body.attrWhiteList,
     };
 
     try {
@@ -314,8 +313,8 @@ module.exports = (crowi) => {
       const xssParams = {
         isEnabledXss: await crowi.configManager.getConfig('markdown', 'markdown:rehypeSanitize:isEnabledPrevention'),
         xssOption: await crowi.configManager.getConfig('markdown', 'markdown:rehypeSanitize:option'),
-        tagWhiteList: await crowi.configManager.getConfig('markdown', 'markdown:xss:tagWhiteList'),
-        attrWhiteList: await crowi.configManager.getConfig('markdown', 'markdown:xss:attrWhiteList'),
+        tagWhiteList: await crowi.configManager.getConfig('markdown', 'markdown:rehypeSanitize:tagNames'),
+        attrWhiteList: await crowi.configManager.getConfig('markdown', 'markdown:rehypeSanitize:attributes'),
       };
 
       const parameters = { action: SupportedAction.ACTION_ADMIN_MARKDOWN_XSS_UPDATE };
