@@ -38,9 +38,36 @@ export interface IPluginService {
   install(origin: GrowiPluginOrigin): Promise<void>
   retrieveThemeHref(theme: string): Promise<string | undefined>
   retrieveAllPluginResourceEntries(): Promise<GrowiPluginResourceEntries>
+  reintallNotExistPluginRepositories(): Promise<void>
 }
 
 export class PluginService implements IPluginService {
+
+  async reintallNotExistPluginRepositories(): Promise<void> {
+    try {
+      // check all growi plugin documents
+      const GrowiPlugin = mongoose.model<GrowiPlugin>('GrowiPlugin');
+      const growiPlugins = await GrowiPlugin.find({});
+      for await (const growiPluginData of JSON.parse(JSON.stringify(growiPlugins))) {
+        const pluginPath = path.join(pluginStoringPath, growiPluginData.installedPath);
+        if (fs.existsSync(pluginPath)) {
+          // if exists repository, do nothing
+          continue;
+        }
+        else {
+          // if not exists repository, reinstall latest plugin
+          // delete old document
+          await GrowiPlugin.deleteOne({ _id: growiPluginData._id });
+          // reinstall latest plugin
+          await this.install(growiPluginData.origin);
+          continue;
+        }
+      }
+    }
+    catch (err) {
+      throw new Error(err);
+    }
+  }
 
   async install(origin: GrowiPluginOrigin): Promise<void> {
     // download
@@ -76,14 +103,15 @@ export class PluginService implements IPluginService {
 
     const renamePath = async(oldPath: fs.PathLike, newPath: fs.PathLike) => {
       if (fs.existsSync(newPath)) {
-        // delete old directory
+        // if a repository already exists, delete old repository before rename path
+        // delete old repository
         await fs.promises.rm(newPath, { recursive: true });
 
         // delete old document
         const GrowiPlugin = mongoose.model<GrowiPlugin>('GrowiPlugin');
         await GrowiPlugin.deleteOne({ url: `https://github.com/${ghOrganizationName}/${ghReposName}` });
 
-        // rename new directory
+        // rename new repository
         fs.renameSync(oldPath, newPath);
       }
       else {
@@ -119,7 +147,7 @@ export class PluginService implements IPluginService {
     const unzip = async(zipFilePath: fs.PathLike, unzippedPath: fs.PathLike) => {
       const stream = fs.createReadStream(zipFilePath);
       const unzipStream = stream.pipe(unzipper.Extract({ path: unzippedPath }));
-      const deleteZipFile = (path: fs.PathLike) => fs.unlink(path, (err) => { return err });
+      const deleteZipFile = (path: fs.PathLike) => fs.unlinkSync(path);
 
       try {
         await streamToPromise(unzipStream);
