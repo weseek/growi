@@ -118,7 +118,7 @@ export const defaultCrowiConfigs: { [key: string]: any } = {
 
   'customize:css' : undefined,
   'customize:script' : undefined,
-  'customize:header' : undefined,
+  'customize:noscript' : undefined,
   'customize:title' : undefined,
   'customize:highlightJsStyle' : 'github',
   'customize:highlightJsStyleBorder' : false,
