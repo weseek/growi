@@ -75,7 +75,20 @@ export class PluginService implements IPluginService {
     const unzippedPath = path.join(pluginStoringPath, ghOrganizationName);
 
     const renamePath = async(oldPath: fs.PathLike, newPath: fs.PathLike) => {
-      fs.renameSync(oldPath, newPath);
+      if (fs.existsSync(newPath)) {
+        // delete old directory
+        await fs.promises.rm(newPath, { recursive: true });
+
+        // delete old document
+        const GrowiPlugin = mongoose.model<GrowiPlugin>('GrowiPlugin');
+        await GrowiPlugin.deleteOne({ url: `https://github.com/${ghOrganizationName}/${ghReposName}` });
+
+        // rename new directory
+        fs.renameSync(oldPath, newPath);
+      }
+      else {
+        fs.renameSync(oldPath, newPath);
+      }
     };
 
     const downloadFile = async(requestUrl: string, filePath: string) => {
