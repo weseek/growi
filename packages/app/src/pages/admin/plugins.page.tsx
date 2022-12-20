@@ -4,6 +4,7 @@ import {
 } from 'next';
 import { useTranslation } from 'next-i18next';
 import dynamic from 'next/dynamic';
+import Head from 'next/head';
 import { Container, Provider } from 'unstated';
 
 
@@ -37,7 +38,10 @@ const AdminAppPage: NextPage<CommonProps> = (props) => {
 
   return (
     <Provider inject={[...injectableContainers]}>
-      <AdminLayout title={generateCustomTitle(props, title)} componentTitle={title} >
+      <AdminLayout componentTitle={title} >
+        <Head>
+          <title>{generateCustomTitle(props, title)}</title>
+        </Head>
         <PluginsExtensionPageContents />
       </AdminLayout>
     </Provider>
