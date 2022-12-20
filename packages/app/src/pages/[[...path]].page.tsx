@@ -321,7 +321,7 @@ const GrowiPage: NextPage<Props> = (props: Props) => {
       <BasicLayout title={useCustomTitle(props, 'GROWI')} className={classNames.join(' ')} expandContainer={isContainerFluid}>
 
         {/* need to be refactored with SSR DisplaySwitcher */}
-        <ClientInitializer pageId={pageId ?? ''} />
+        <ClientInitializer/>
 
         <div className="h-100 d-flex flex-column justify-content-between">
           <header className="py-0 position-relative">
