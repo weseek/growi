@@ -30,7 +30,6 @@
   --bgcolor-global: hsl(var(--bgcolor-global-hs),var(--bgcolor-global-l));
   --bgcolor-global-hs: 0,0%;
   --bgcolor-global-l: 100%;
-  --body-bg: var(--bgcolor-global);
   $bgcolor-inline-code: $gray-100; //optional
   --bgcolor-card: #{$gray-50};
   $bgcolor-blinked-section: rgba($primary, 0.1);
@@ -112,7 +111,7 @@
   --color-editor-icons: var(--color-global);
 
   // Border colors
-  $border-color-theme: $gray-400;
+  --border-color-theme: #{$gray-400};
   $bordercolor-inline-code: $gray-400; // optional
 
   // Dropdown colors
@@ -145,7 +144,6 @@
   --bgcolor-global: #131418;
   --bgcolor-global-hs: 228,11.6%;
   --bgcolor-global-l: 9.4%;
-  --body-bg: var(--bgcolor-global);
   $bgcolor-inline-code: #1f1f22; //optional
   --bgcolor-card: hsl(var(--bgcolor-global-hs),calc(var(--bgcolor-global-l) - 5%));
   $bgcolor-blinked-section: rgba($primary, 0.4);
@@ -158,11 +156,9 @@
   $color-reversal: $gray-900;
   // $color-header: desaturate($primary, 20%);
   --color-link: #7b9ad5;
-  --link-color: var(--color-link);
   --color-link-hs: 219.3,51.7%;
   --color-link-l: 65.9%;
   --color-link-hover: hsl(var(--color-link-hs), calc(var(--color-link-l) + 10%));
-  --link-hover-color: var(--color-link-hover);
   --color-link-wiki: var(--color-link);
   --color-link-wiki-hs: var(--color-link-hs);
   --color-link-wiki-l: var(--color-link-l);
@@ -230,7 +226,7 @@
   --color-editor-icons: var(--color-global);
 
   // Border colors
-  $border-color-theme: $gray-400;
+  --border-color-theme: #{$gray-400};
   $bordercolor-inline-code: $secondary; // optional
 
   // admin theme box

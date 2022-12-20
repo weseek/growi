@@ -27,22 +27,22 @@
 
 
 // override bootstrap variables
-$body-bg: var(--bgcolor-global);
-$body-color: var(--color-global);
-$link-color: var(--color-link);
-$link-hover-color: var(--color-link-hover);
-$input-focus-color: var(--color-global);
-$nav-tabs-border-color: var(--bordercolor-nav-tabs);
-$nav-tabs-link-hover-border-color: var(--bordercolor-nav-tabs-hover);
-$nav-tabs-link-active-color: var(--color-nav-tabs-link-active);
-$nav-tabs-link-active-bg: var(--bgcolor-global);
-$nav-tabs-link-active-border-color: var(--bordercolor-nav-tabs-active);
-$theme-colors: map-merge($theme-colors, ( primary: $primary ));
+// $body-bg: var(--bgcolor-global);
+// $body-color: var(--color-global);
+// $link-color: var(--color-link);
+// $link-hover-color: var(--color-link-hover);
+// $input-focus-color: var(--color-global);
+// $nav-tabs-border-color: var(--bordercolor-nav-tabs);
+// $nav-tabs-link-hover-border-color: var(--bordercolor-nav-tabs-hover);
+// $nav-tabs-link-active-color: var(--color-nav-tabs-link-active);
+// $nav-tabs-link-active-bg: var(--bgcolor-global);
+// nav-tabs-link-active-border-color: var(--bordercolor-nav-tabs-active);
+// theme-colors: map-merge($theme-colors, ( primary: $primary ));
 
 @import 'reboot-bootstrap-nav';
 
 // determine variables with　bootstrap function (These variables can be used after importing bootstrap above)
-$color-modal-header: color-yiq($primary) !default;
+// $color-modal-header: var(--color-modal-header,contrast(var(--primary)));
 
 // code:not([class^='language-']) {
 //   @include code.code-inline-color($color-inline-code, $bgcolor-inline-code, $bordercolor-inline-code);
@@ -57,14 +57,14 @@ $color-modal-header: color-yiq($primary) !default;
 //
 
 // Alert link
-// @each $color, $value in $theme-colors {
-//   .alert.alert-#{$color} {
-//     a,
-//     a:hover {
-//       color: theme-color-level($color, $alert-color-level - 2);
-//     }
-//   }
-// }
+@each $color, $value in $theme-colors {
+  .alert.alert-#{$color} {
+    a,
+    a:hover {
+      color: theme-color-level($color, $alert-color-level - 2);
+    }
+  }
+}
 
 // Dropdown
 .grw-apperance-mode-dropdown {
@@ -326,12 +326,12 @@ ul.pagination {
  */
 .modal {
   .modal-header {
-    border-bottom-color: $border-color-theme;
+    // border-bottom-color: $border-color-theme;
     .modal-title {
-      color: $color-modal-header;
+      // color: $color-modal-header;
     }
     .close {
-      color: $color-modal-header;
+      // color: $color-modal-header;
       opacity: 0.5;
       &:hover {
         opacity: 0.9;
@@ -344,7 +344,7 @@ ul.pagination {
   }
 
   .modal-footer {
-    border-top-color: $border-color-theme;
+    // border-top-color: $border-color-theme;
   }
 }
 
@@ -505,11 +505,11 @@ ul.pagination {
     background-color: hsl(var(--bgcolor-global-hs),calc(var(--bgcolor-global-l) - 2%));
 
     .page-editor-editor-container {
-      border-right-color: $border-color-theme;
+      // border-right-color: $border-color-theme;
 
       .navbar-editor {
         background-color: var(--bgcolor-global); // same color with active tab
-        border-bottom-color: $border-color-theme;
+        // border-bottom-color: $border-color-theme;
       }
     }
 
@@ -622,7 +622,7 @@ mark.rbt-highlight-text {
  */
 .page-content-footer {
   background-color: hsl(var(--bgcolor-global-hs),calc(var(--bgcolor-global-l) - 2%));
-  border-top-color: $border-color-theme;
+  // border-top-color: $border-color-theme;
 }
 
 /*
