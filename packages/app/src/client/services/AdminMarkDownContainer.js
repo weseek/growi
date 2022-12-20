@@ -29,7 +29,7 @@ export default class AdminMarkDownContainer extends Container {
       isEnabledXss: false,
       xssOption: '',
       tagWhiteList: '',
-      attrWhiteList: '',
+      attrWhiteList: '{}',
     };
 
     this.switchEnableXss = this.switchEnableXss.bind(this);
@@ -136,7 +136,7 @@ export default class AdminMarkDownContainer extends Container {
       isEnabledXss: this.state.isEnabledXss,
       xssOption: this.state.xssOption,
       tagWhiteList,
-      attrWhiteList,
+      attrWhiteList: attrWhiteList ?? '{}',
     });
   }
 

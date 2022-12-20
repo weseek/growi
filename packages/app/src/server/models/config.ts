@@ -148,7 +148,7 @@ export const defaultCrowiConfigs: { [key: string]: any } = {
 
 export const defaultMarkdownConfigs: { [key: string]: any } = {
   'markdown:xss:tagWhiteList': [],
-  'markdown:xss:attrWhiteList': [],
+  'markdown:xss:attrWhiteList': '{}',
   'markdown:rehypeSanitize:isEnabledPrevention': true,
   'markdown:rehypeSanitize:option': RehypeSanitizeOption.RECOMMENDED,
   'markdown:rehypeSanitize:tagNames': [],
