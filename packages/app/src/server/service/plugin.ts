@@ -48,7 +48,7 @@ export class PluginService implements IPluginService {
       // check all growi plugin documents
       const GrowiPlugin = mongoose.model<GrowiPlugin>('GrowiPlugin');
       const growiPlugins = await GrowiPlugin.find({});
-      for await (const growiPluginData of JSON.parse(JSON.stringify(growiPlugins))) {
+      for await (const growiPluginData of growiPlugins) {
         const pluginPath = path.join(pluginStoringPath, growiPluginData.installedPath);
         if (fs.existsSync(pluginPath)) {
           // if exists repository, do nothing
