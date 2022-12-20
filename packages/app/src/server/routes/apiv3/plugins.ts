@@ -119,7 +119,7 @@ module.exports = (crowi: Crowi): Router => {
     const pluginId = new ObjectID(id);
 
     try {
-      await pluginService.pluginDeleted(pluginId);
+      await pluginService.deletePlugin(pluginId);
       return res.apiv3();
     }
     catch (err) {

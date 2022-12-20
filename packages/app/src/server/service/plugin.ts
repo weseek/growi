@@ -248,13 +248,13 @@ export class PluginService implements IPluginService {
   /**
    * Delete plugin
    */
-  async pluginDeleted(pluginId: mongoose.Types.ObjectId): Promise<void> {
-    const deleteFolder = (path: fs.PathLike) => {
-      fs.rmdir(path, { recursive: true }, (err) => { return err });
+  async pluginDelete(pluginId: mongoose.Types.ObjectId): Promise<void> {
+    const deleteFolder = (path: fs.PathLike): Promise<void> => {
+      return fs.promises.rmdir(path, { recursive: true });
     };
 
     const GrowiPlugin = mongoose.model<GrowiPlugin>('GrowiPlugin');
-    const growiPlugins = await GrowiPlugin.findByIdAndRemove(pluginId);
+    const growiPlugins = await GrowiPlugin.findById(pluginId);
 
     if (growiPlugins == null) {
       throw new Error('No plugin found for this ID.');
@@ -262,7 +262,8 @@ export class PluginService implements IPluginService {
 
     try {
       const growiPluginsPath = path.join(pluginStoringPath, growiPlugins.installedPath);
-      deleteFolder(growiPluginsPath);
+      await deleteFolder(growiPluginsPath);
+      await GrowiPlugin.remove({ _id: pluginId });
     }
     catch (err) {
       throw new Error('Plugin local repository deleting failed.');
