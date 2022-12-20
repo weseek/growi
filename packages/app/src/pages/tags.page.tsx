@@ -28,6 +28,7 @@ import {
 import {
   CommonProps, getServerSideCommonProps, getNextI18NextConfig, generateCustomTitle,
 } from './utils/commons';
+import { NextPageWithLayout } from './_app.page';
 
 const PAGING_LIMIT = 10;
 
@@ -49,7 +50,7 @@ type Props = CommonProps & {
 const TagList = dynamic(() => import('~/components/TagList'), { ssr: false });
 const TagCloudBox = dynamic(() => import('~/components/TagCloudBox'), { ssr: false });
 
-const TagPage: NextPage<CommonProps> = (props: Props) => {
+const TagPage: NextPageWithLayout<CommonProps> = (props: Props) => {
   const [activePage, setActivePage] = useState<number>(1);
   const [offset, setOffset] = useState<number>(0);
 
@@ -82,36 +83,44 @@ const TagPage: NextPage<CommonProps> = (props: Props) => {
   const title = generateCustomTitle(props, 'GROWI');
 
   return (
-    <BasicLayout>
+    <>
       <Head>
         <title>{title}</title>
       </Head>
-      <div className="grw-container-convertible mb-5 pb-5" data-testid="tags-page">
-        <h2 className="my-3">{`${t('Tags')}(${totalCount})`}</h2>
-        <div className="px-3 mb-5 text-center">
-          <TagCloudBox tags={tagData} minSize={20} />
+      <div className="dynamic-layout-root">
+        <div className="grw-container-convertible mb-5 pb-5" data-testid="tags-page">
+          <h2 className="my-3">{`${t('Tags')}(${totalCount})`}</h2>
+          <div className="px-3 mb-5 text-center">
+            <TagCloudBox tags={tagData} minSize={20} />
+          </div>
+          { isLoading
+            ? (
+              <div className="text-muted text-center">
+                <i className="fa fa-2x fa-spinner fa-pulse mt-3"></i>
+              </div>
+            )
+            : (
+              <div data-testid="grw-tags-list">
+                <TagList
+                  tagData={tagData}
+                  totalTags={totalCount}
+                  activePage={activePage}
+                  onChangePage={setOffsetByPageNumber}
+                  pagingLimit={PAGING_LIMIT}
+                />
+              </div>
+            )
+          }
+          <div id="grw-fav-sticky-trigger" className="sticky-top"></div>
         </div>
-        { isLoading
-          ? (
-            <div className="text-muted text-center">
-              <i className="fa fa-2x fa-spinner fa-pulse mt-3"></i>
-            </div>
-          )
-          : (
-            <div data-testid="grw-tags-list">
-              <TagList
-                tagData={tagData}
-                totalTags={totalCount}
-                activePage={activePage}
-                onChangePage={setOffsetByPageNumber}
-                pagingLimit={PAGING_LIMIT}
-              />
-            </div>
-          )
-        }
-        <div id="grw-fav-sticky-trigger" className="sticky-top"></div>
       </div>
-    </BasicLayout>
+    </>
+  );
+};
+
+TagPage.getLayout = function getLayout(page) {
+  return (
+    <BasicLayout>{page}</BasicLayout>
   );
 };
 

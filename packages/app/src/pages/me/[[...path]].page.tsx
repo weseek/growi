@@ -31,6 +31,7 @@ import loggerFactory from '~/utils/logger';
 import {
   CommonProps, getNextI18NextConfig, getServerSideCommonProps, generateCustomTitle,
 } from '../utils/commons';
+import { NextPageWithLayout } from '../_app.page';
 
 
 const logger = loggerFactory('growi:pages:me');
@@ -54,7 +55,7 @@ const InAppNotificationPage = dynamic(
   () => import('~/components/InAppNotification/InAppNotificationPage').then(mod => mod.InAppNotificationPage), { ssr: false },
 );
 
-const MePage: NextPage<Props> = (props: Props) => {
+const MePage: NextPageWithLayout<Props> = (props: Props) => {
   const router = useRouter();
   const { t } = useTranslation(['translation', 'commons']);
   const { path } = router.query;
@@ -113,25 +114,32 @@ const MePage: NextPage<Props> = (props: Props) => {
   const title = generateCustomTitle(props, 'GROWI');
 
   return (
-    <BasicLayout>
+    <>
       <Head>
         <title>{title}</title>
       </Head>
-      <header className="py-3">
-        <div className="container-fluid">
-          <h1 className="title">{ targetPage.title }</h1>
-        </div>
-      </header>
+      <div className="dynamic-layout-root">
+        <header className="py-3">
+          <div className="container-fluid">
+            <h1 className="title">{ targetPage.title }</h1>
+          </div>
+        </header>
 
-      <div id="grw-fav-sticky-trigger" className="sticky-top"></div>
+        <div id="grw-fav-sticky-trigger" className="sticky-top"></div>
 
-      <div id="main" className='main'>
-        <div id="content-main" className="content-main grw-container-convertible">
-          {targetPage.component}
+        <div id="main" className='main'>
+          <div id="content-main" className="content-main grw-container-convertible">
+            {targetPage.component}
+          </div>
         </div>
       </div>
+    </>
+  );
+};
 
-    </BasicLayout>
+MePage.getLayout = function getLayout(page) {
+  return (
+    <BasicLayout>{page}</BasicLayout>
   );
 };
 
