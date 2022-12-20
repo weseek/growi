@@ -570,6 +570,7 @@
     }
   },
   "private_legacy_pages": {
+    "title": "Private Legacy Pages",
     "bulk_operation": "Bulk operation",
     "convert_all_selected_pages": "Convert all to new v5 compatible format",
     "input_path_to_convert": "Input a path to convert pages",
@@ -731,7 +732,6 @@
     "logout": "Logout"
   },
   "pagetree": {
-    "private_legacy_pages": "Private Legacy Pages",
     "cannot_rename_a_title_that_contains_slash": "Cannot rename a title that contains '/'",
     "you_cannot_move_this_page_now": "You cannot move this page now",
     "something_went_wrong_with_moving_page": "Something went wrong with moving page"
