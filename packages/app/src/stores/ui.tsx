@@ -79,7 +79,8 @@ export const useIsMobile = (): SWRResponse<boolean, Error> => {
   return useStaticSWR<boolean, Error>(key, undefined, configuration);
 };
 
-// TODO: Enable `editing-sidebar` class somehow
+// TODO: Enable `editing-sidebar` class
+// https://redmine.weseek.co.jp/issues/111527
 const getClassNamesByEditorMode = (editorMode: EditorMode | undefined /* , isSidebar = false */): string[] => {
   const classNames: string[] = [];
   switch (editorMode) {
@@ -140,6 +141,7 @@ export const determineEditorModeByHash = (): EditorMode => {
 };
 
 // TODO: Enable `editing-sidebar` class somehow
+// https://redmine.weseek.co.jp/issues/111527
 type EditorModeUtils = {
   getClassNamesByEditorMode: (/* isEditingSidebar: boolean */) => string[],
 }
@@ -169,7 +171,8 @@ export const useEditorMode = (): SWRResponseWithUtils<EditorModeUtils, EditorMod
     return mutateOriginal(editorMode, shouldRevalidate);
   }, [isEditable, mutateOriginal]);
 
-  // TODO: Enable `editing-sidebar` class somehow
+  // TODO: Enable `editing-sidebar` class
+  // https://redmine.weseek.co.jp/issues/111527
   // construct getClassNamesByEditorMode method
   const getClassNames = useCallback((/* isEditingSidebar: boolean */) => {
     return getClassNamesByEditorMode(swrResponse.data /* , isEditingSidebar */);

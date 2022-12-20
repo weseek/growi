@@ -6,6 +6,7 @@ export const useEditorModeClassName = (): string => {
   const { getClassNamesByEditorMode } = useEditorMode();
 
   // TODO: Enable `editing-sidebar` class somehow
+  // https://redmine.weseek.co.jp/issues/111527
   // const classNames: string[] = [];
   // if (currentPage != null) {
   //   const isSidebar = currentPage.path === '/Sidebar';
