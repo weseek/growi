@@ -38,12 +38,12 @@ export interface IPluginService {
   install(origin: GrowiPluginOrigin): Promise<void>
   retrieveThemeHref(theme: string): Promise<string | undefined>
   retrieveAllPluginResourceEntries(): Promise<GrowiPluginResourceEntries>
-  intallNotExistPluginRepositories(): Promise<void>
+  reintallNotExistPluginRepositories(): Promise<void>
 }
 
 export class PluginService implements IPluginService {
 
-  async intallNotExistPluginRepositories(): Promise<void> {
+  async reintallNotExistPluginRepositories(): Promise<void> {
     try {
       // check all growi plugin documents
       const GrowiPlugin = mongoose.model<GrowiPlugin>('GrowiPlugin');
