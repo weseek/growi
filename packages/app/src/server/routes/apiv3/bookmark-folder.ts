@@ -108,5 +108,17 @@ module.exports = (crowi) => {
     }
   });
 
+  router.get('/selected-bookmark-folder/:pageId', accessTokenParser, loginRequiredStrictly, async(req, res) => {
+    const { pageId } = req.params;
+    try {
+      const selectedFolder = await BookmarkFolder.getSelectedBookmarkFolder(pageId);
+      return res.apiv3({ selectedFolder });
+    }
+    catch (err) {
+      logger.error(err);
+      return res.apiv3Err(err, 500);
+    }
+  });
+
   return router;
 };

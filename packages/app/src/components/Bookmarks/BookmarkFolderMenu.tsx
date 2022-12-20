@@ -6,7 +6,7 @@ import {
 } from 'reactstrap';
 
 import { toastError, toastSuccess } from '~/client/util/apiNotification';
-import { apiv3Post } from '~/client/util/apiv3-client';
+import { apiv3Get, apiv3Post } from '~/client/util/apiv3-client';
 import { useSWRxBookamrkFolderAndChild } from '~/stores/bookmark-folder';
 import { useSWRxCurrentPage } from '~/stores/page';
 
@@ -29,20 +29,26 @@ const BookmarkFolderMenu = (props: Props): JSX.Element => {
   const [selectedItem, setSelectedItem] = useState<string | null>(null);
   const { data: currentPage } = useSWRxCurrentPage();
 
+  const getSelectedFolder = useCallback(async() => {
+    try {
+      const result = await apiv3Get(`/bookmark-folder/selected-bookmark-folder/${currentPage?._id}`);
+      const { selectedFolder } = result.data;
+      if (selectedFolder != null) {
+        setSelectedItem(selectedFolder);
+      }
+    }
+    catch (err) {
+      toastError(err);
+    }
+  }, [currentPage]);
+
   const onClickNewBookmarkFolder = useCallback(() => {
     setIsCreateAction(true);
   }, []);
 
   useEffect(() => {
-    bookmarkFolders?.forEach((bookmarkFolder) => {
-      const bookmark = bookmarkFolder.bookmarks.filter((bookmark) => {
-        return bookmark.page._id === currentPage?._id;
-      });
-      if (bookmark != null && bookmark.length > 0) {
-        setSelectedItem(bookmarkFolder._id);
-      }
-    });
-  }, [bookmarkFolders, currentPage, mutateBookmarkFolderData]);
+    getSelectedFolder();
+  }, [getSelectedFolder]);
 
   const onPressEnterHandlerForCreate = useCallback(async(folderName: string) => {
     try {
@@ -67,7 +73,7 @@ const BookmarkFolderMenu = (props: Props): JSX.Element => {
     catch (err) {
       toastError(err);
     }
-  }, [currentPage]);
+  }, [currentPage?._id]);
 
   return (
     <UncontrolledDropdown className={`grw-bookmark-folder-dropdown ${styles['grw-bookmark-folder-dropdown']}`}>

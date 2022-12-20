@@ -5,7 +5,7 @@ import {
 } from 'reactstrap';
 
 import { toastError, toastSuccess } from '~/client/util/apiNotification';
-import { apiv3Post } from '~/client/util/apiv3-client';
+import { apiv3Get, apiv3Post } from '~/client/util/apiv3-client';
 import { BookmarkFolderItems } from '~/interfaces/bookmark-info';
 import { useSWRxBookamrkFolderAndChild } from '~/stores/bookmark-folder';
 import { useSWRxCurrentPage } from '~/stores/page';
@@ -27,11 +27,25 @@ const BookmarkFolderMenuItem = (props: Props):JSX.Element => {
   const [selectedItem, setSelectedItem] = useState<string | null>(null);
   const { data: currentPage } = useSWRxCurrentPage();
 
+  const getSelectedFolder = useCallback(async() => {
+    try {
+      const result = await apiv3Get(`/bookmark-folder/selected-bookmark-folder/${currentPage?._id}`);
+      const { selectedFolder } = result.data;
+      if (selectedFolder != null) {
+        setSelectedItem(selectedFolder._id);
+      }
+    }
+    catch (err) {
+      toastError(err);
+    }
+  }, [currentPage]);
+
   useEffect(() => {
     if (isOpen) {
       mutateChildFolders();
+      getSelectedFolder();
     }
-  }, [isOpen, mutateChildFolders]);
+  }, [getSelectedFolder, isOpen, mutateChildFolders]);
 
   const onMouseLeaveHandler = useCallback(() => {
     setIsOpen(false);
