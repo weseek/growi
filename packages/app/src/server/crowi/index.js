@@ -702,6 +702,8 @@ Crowi.prototype.setupPluginService = async function() {
   if (this.pluginService == null) {
     this.pluginService = new PluginService(this);
   }
+  // reinstall the plugins, if document exists but there is no repository
+  await this.pluginService.reintallNotExistPluginRepositories();
 };
 
 Crowi.prototype.setupPageService = async function() {

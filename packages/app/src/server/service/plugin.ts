@@ -56,10 +56,23 @@ export class PluginService implements IPluginService {
         }
         else {
           // if not exists repository, reinstall latest plugin
-          // delete old document
-          await GrowiPlugin.findByIdAndDelete(growiPlugin._id);
-          // reinstall latest plugin
-          await this.install(growiPlugin.origin);
+          // download
+          const ghUrl = new URL(growiPlugin.origin.url);
+          const ghPathname = ghUrl.pathname;
+          // TODO: Branch names can be specified.
+          const ghBranch = 'main';
+
+          const match = ghPathname.match(githubReposIdPattern);
+          if (ghUrl.hostname !== 'github.com' || match == null) {
+            throw new Error('The GitHub Repository URL is invalid.');
+          }
+
+          const ghOrganizationName = match[1];
+          const ghReposName = match[2];
+          const requestUrl = `https://github.com/${ghOrganizationName}/${ghReposName}/archive/refs/heads/${ghBranch}.zip`;
+
+          // download github repository to local file system
+          await this.download(requestUrl, ghOrganizationName, ghReposName, ghBranch);
           continue;
         }
       }
@@ -148,6 +161,7 @@ export class PluginService implements IPluginService {
 
         const GrowiPlugin = mongoose.model<GrowiPlugin>('GrowiPlugin');
         const growiPlugin = await GrowiPlugin.findOne({ installedPath: `${ghOrganizationName}/${ghReposName}` });
+        console.log(growiPlugin);
         // if document already exists, delete old document before rename path
         if (growiPlugin) await GrowiPlugin.findOneAndDelete({ installedPath: `${ghOrganizationName}/${ghReposName}` });
       }
