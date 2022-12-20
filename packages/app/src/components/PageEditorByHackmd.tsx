@@ -165,9 +165,7 @@ export const PageEditorByHackmd = (): JSX.Element => {
   useEffect(() => {
     // for page translation: https://github.com/weseek/growi/pull/7100
     setIsInitialized(false);
-
-    mutateIsEnabledUnsavedWarning(false);
-  }, [mutateIsEnabledUnsavedWarning, pageId]);
+  }, [pageId]);
 
 
   const isResume = useCallback(() => {
