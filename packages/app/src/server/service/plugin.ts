@@ -61,7 +61,6 @@ export class PluginService implements IPluginService {
           const ghPathname = ghUrl.pathname;
           // TODO: Branch names can be specified.
           const ghBranch = 'main';
-
           const match = ghPathname.match(githubReposIdPattern);
           if (ghUrl.hostname !== 'github.com' || match == null) {
             throw new Error('The GitHub Repository URL is invalid.');
@@ -79,7 +78,6 @@ export class PluginService implements IPluginService {
     }
     catch (err) {
       logger.error(err);
-      throw new Error(err);
     }
   }
 
@@ -181,7 +179,6 @@ export class PluginService implements IPluginService {
     }
     catch (err) {
       logger.error(err);
-      throw new Error(err);
     }
 
     return;
