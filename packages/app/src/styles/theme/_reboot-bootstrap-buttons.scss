@@ -1,21 +1,22 @@
 .btn-link {
-  color: var(--link-color);
+  color: var(--color-link);
   svg {
-    fill: var(--link-color);
+    fill: var(--color-link);
   }
 
   @include hover() {
-    color: var(--link-hover-color);
+    color: var(--color-link-hover);
     svg {
-      fill: var(--link-hover-color);
+      fill: var(--color-link-hover);
     }
   }
 
   &:disabled,
   &.disabled {
-    color: var(--btn-link-disabled-color);
+    color: var(--color-link-disabled, $gray-500);
     svg {
-      fill: var(--btn-link-disabled-color);
+      fill: var(--color-link-disabled, $gray-500);
     }
   }
 }
+

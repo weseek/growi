@@ -4,24 +4,41 @@
 @use './mixins/count-badge';
 
 // determine optional variables
+$color-list: var(--color-list,var(--color-global));
+$bgcolor-list: var(--bgcolor-list,var(--bgcolor-global));
+$color-list-hover: var(--color-list-hover,var(--color-global));
 $bgcolor-list-active: lighten($primary, 65%) !default;
 $color-list-active: color-yiq($bgcolor-list-active) !default;
+$color-table: var(--color-table,var(--color-global));
 $bgcolor-table: null !default;
 $border-color-table: $gray-200 !default;
+$color-table-hover: var(--color-table-hover,var(--color-table));
 $bgcolor-table-hover: rgba(black, 0.075) !default;
+$bgcolor-sidebar-list-group: var(--bgcolor-sidebar-list-group,var(--bgcolor-list));
 $color-tags: $secondary !default;
 $bgcolor-tags: $gray-200 !default;
 $border-color-global: $gray-300 !default;
 $border-color-toc: $border-color-global !default;
-$color-dropdown-link-active: $color-reversal !default;
+$color-dropdown: var(--color-dropdown,var(--color-global));
+$color-dropdown-link: var(--color-dropdown-link,var(--color-global));
+$color-dropdown-link-hover: var(--color-dropdown-link-hover,var(--color-global));
+$color-dropdown-link-active: var(--color-reversal);
 $bgcolor-dropdown-link-active: $primary !default;
+
 
 // override bootstrap variables
 $text-muted: $gray-500;
+$table-color: var(--color-table);
 $table-bg: $bgcolor-table;
 $table-border-color: $border-color-table;
+$table-hover-color: var(--color-table-hover);
 $table-hover-bg: $bgcolor-table-hover;
 $border-color: $border-color-global;
+$dropdown-color: var(--color-dropdown);
+$dropdown-link-color: var(--color-dropdown-link);
+$dropdown-link-hover-color: var(--color-dropdown-link-hover);
+$dropdown-link-active-color: var(--color-dropdown-link-active);
+$dropdown-link-active-bg: var(--bgcolor-dropdown-link-active);
 
 @import './mixins/list-group';
 @import './reboot-bootstrap-text';
@@ -30,23 +47,36 @@ $border-color: $border-color-global;
 @import './reboot-bootstrap-dropdown';
 
 // List Group
+@include override-list-group-item(
+  var(--color-list),
+  var(--bgcolor-sidebar-list-group),
+  var(--color-list-hover),
+  var(--bgcolor-list-hover),
+  var(--color-list-active),
+  var(--bgcolor-list-active)
+);
 /*
  * Form
  */
 .form-control {
+  background-color: var(--bgcolor-global);
 }
 
 .form-control::placeholder {
+  color: hsl(var(--bgcolor-global-hs),calc(var(--bgcolor-global-l) - 20%));
 }
 
 .form-control[disabled],
 .form-control[readonly] {
+  color: hsl(var(--color-global-hs),calc(var(--color-global-l) + 10%));
+  background-color: hsl(var(--color-global-hs),calc(var(--color-global-l) - 5%));
 }
 
 /*
  * card
  */
 .card.card-disabled {
+  background-color: var(--background-color);
   border-color: $gray-200;
 }
 
@@ -133,9 +163,11 @@ $border-color: $border-color-global;
  * GROWI subnavigation
  */
 .grw-subnav {
+  background-color: var(--bgcolor-subnav);
 }
 
 .grw-subnav-fixed-container .grw-subnav {
+  background-color: var(--bgcolor-subnav); opacity:0.85;
 }
 
 .grw-page-editor-mode-manager {
@@ -156,7 +188,18 @@ $border-color: $border-color-global;
  * GROWI Sidebar
  */
 .grw-sidebar {
+  --bgcolor-sidebar-context: hsl(var(--primary-hs),calc(var(--primary-l) + 77%));
+  --bgcolor-sidebar-context-hs: var(--primary-hs);
+  --bgcolor-sidebar-context-l: calc(var(--primary-l) + 77%);
   // List
+  @include override-list-group-item(
+    var(--color-list),
+    var(--bgcolor-sidebar-list-group),
+    var(--color-list-hover),
+    var(--bgcolor-list-hover),
+    var(--color-list-active),
+    var(--bgcolor-list-active)
+  );
   // sidebar-centent-bg
   .grw-navigation-wrap {
     // Drop a shadow on the light theme. The dark theme makes '$ bgcolor-sidebar-context' brighter than the body.
@@ -164,12 +207,22 @@ $border-color: $border-color-global;
   }
   // Pagetree
   .grw-pagetree {
+    @include override-list-group-item-for-pagetree(
+      var(--color-sidebar-context),
+      hsl(var(--bgcolor-sidebar-contexths),calc(var(--bgcolor-sidebar-context-l) - 5%)),
+      hsl(var(--bgcolor-sidebar-context-hs),calc(var(--bgcolor-sidebar-context-l) - 12%)),
+      hsl(var(--color-sidebar-context-hs),calc(var(--color-sidebar-context-l) + 10%)),
+      hsl(var(--color-sidebar-context-hs),calc(var(--color-sidebar-context-l) + 8%)),
+      hsl(var(--bgcolor-sidebar-context-hs),calc(var(--bgcolor-sidebar-context-l) - 15%)),
+      hsl(var(--bgcolor-sidebar-context-h-s),calc(var(--bgcolor-sidebar-context-l) - 24%))
+    );
     .grw-pagetree-triangle-btn {
       @include mixins-buttons.button-outline-svg-icon-variant($gray-400, $primary);
     }
   }
   .private-legacy-pages-link {
     &:hover {
+      background: var(--bgcolor-list-hover);
     }
   }
 }
@@ -193,12 +246,14 @@ $border-color: $border-color-global;
   .page-list-ul {
     > li {
       > span.page-list-meta {
+        color: hsl(var(--color-global-hs),calc(var(--color-global-l) + 10%));
       }
     }
   }
   // List group
   .list-group-item {
     .page-list-snippet {
+      color: hsl(var(--color-global-hs),calc(var(--color-global-l) + 10%));
     }
   }
 }
@@ -208,6 +263,7 @@ $border-color: $border-color-global;
  */
 .revision-toc-content {
   ::marker {
+    color: hsl(var(--bgcolor-global-hs),calc(var(--bgcolor-global-l) - 20%));
   }
 }
 
@@ -322,6 +378,7 @@ $border-color: $border-color-global;
 }
 
 .page-comments-row {
+  background: var(--bgcolor-subnav);
 }
 
 /*
@@ -385,4 +442,6 @@ $border-color: $border-color-global;
  * skeleton
  */
 .grw-skeleton {
+  background-color: hsl(var(--bgcolor-navbar-h),calc(var(--bgcolor-navbar-s) - 20%),calc(var(--bgcolor-navbar-l) + 10%));
 }
+
