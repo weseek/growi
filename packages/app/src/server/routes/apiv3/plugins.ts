@@ -29,7 +29,7 @@ module.exports = (crowi: Crowi): Router => {
 
   router.get('/', loginRequiredStrictly, adminRequired, async(req: Request, res: ApiV3Response) => {
     if (pluginService == null) {
-      return res.apiv3Err(400);
+      throw new Error('\'pluginService\' is not import.');
     }
 
     try {
@@ -43,7 +43,7 @@ module.exports = (crowi: Crowi): Router => {
 
   router.get('/:id', loginRequiredStrictly, adminRequired, validator.pluginIdisRequired, async(req: Request, res: ApiV3Response) => {
     if (pluginService == null) {
-      return res.apiv3Err(400);
+      throw new Error('\'pluginService\' is not import.');
     }
 
     const { id } = req.params;
@@ -60,7 +60,7 @@ module.exports = (crowi: Crowi): Router => {
 
   router.post('/', loginRequiredStrictly, adminRequired, validator.pluginFormValueisRequired, async(req: Request, res: ApiV3Response) => {
     if (pluginService == null) {
-      return res.apiv3Err(400);
+      throw new Error('\'pluginService\' is not import.');
     }
 
     const { pluginInstallerForm: formValue } = req.body;
@@ -76,7 +76,7 @@ module.exports = (crowi: Crowi): Router => {
 
   router.put('/:id/activate', loginRequiredStrictly, adminRequired, validator.pluginIdisRequired, async(req: Request, res: ApiV3Response) => {
     if (pluginService == null) {
-      return res.apiv3Err(400);
+      throw new Error('\'pluginService\' is not import.');
     }
 
     const { id } = req.params;
@@ -92,9 +92,8 @@ module.exports = (crowi: Crowi): Router => {
   });
 
   router.put('/:id/deactivate', loginRequiredStrictly, adminRequired, validator.pluginIdisRequired, async(req: Request, res: ApiV3Response) => {
-
     if (pluginService == null) {
-      return res.apiv3Err(400);
+      throw new Error('\'pluginService\' is not import.');
     }
 
     const { id } = req.params;
@@ -111,7 +110,7 @@ module.exports = (crowi: Crowi): Router => {
 
   router.delete('/:id/remove', loginRequiredStrictly, adminRequired, validator.pluginIdisRequired, async(req: Request, res: ApiV3Response) => {
     if (pluginService == null) {
-      return res.apiv3Err(400);
+      throw new Error('\'pluginService\' is not import.');
     }
 
     const { id } = req.params;

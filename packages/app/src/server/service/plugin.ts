@@ -196,7 +196,7 @@ export class PluginService implements IPluginService {
   /**
    * Get all downloaded plugins
    */
-  async getPlugins(): Promise<any> {
+  async getPlugins(): Promise<GrowiPlugin[]> {
     const entries: GrowiPlugin[] = [];
 
     const GrowiPlugin = mongoose.model<GrowiPlugin>('GrowiPlugin');
@@ -206,13 +206,13 @@ export class PluginService implements IPluginService {
       entries.push(growiPlugin);
     });
 
-    return JSON.parse(JSON.stringify(entries));
+    return entries;
   }
 
   /**
    * Get plugin data
    */
-  async getPlugin(pluginId: mongoose.Types.ObjectId): Promise<boolean> {
+  async getPlugin(pluginId: mongoose.Types.ObjectId): Promise<GrowiPlugin> {
     const GrowiPlugin = mongoose.model<GrowiPlugin>('GrowiPlugin');
     const growiPlugin = await GrowiPlugin.findById(pluginId);
 
@@ -220,7 +220,7 @@ export class PluginService implements IPluginService {
       throw new Error('No plugin found for this ID.');
     }
 
-    return JSON.parse(JSON.stringify(growiPlugin as GrowiPlugin));
+    return growiPlugin;
   }
 
   /**
