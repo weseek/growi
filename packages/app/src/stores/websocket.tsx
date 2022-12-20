@@ -44,6 +44,7 @@ export const useGlobalSocket = (): SWRResponse<Socket, Error> => {
   return useStaticSWR(GLOBAL_SOCKET_KEY);
 };
 
+// comment out for porduction build error: https://github.com/weseek/growi/pull/7131
 /*
  * Global Admin Socket
  */
