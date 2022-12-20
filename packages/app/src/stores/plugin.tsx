@@ -1,15 +1,24 @@
 
 import useSWR, { SWRResponse } from 'swr';
 
-import { apiv3Get, apiv3Post } from '~/client/util/apiv3-client';
+import { apiv3Get } from '~/client/util/apiv3-client';
+import { GrowiPluginHasId } from '~/interfaces/plugin';
 
-// TODO: Correct types
+type plugins = {
+  plugins: GrowiPluginHasId[][]
+}
+
+type pluginIsEnalbed = {
+  isEnabled: boolean
+}
+
 const pluginsFetcher = () => {
   return async() => {
     const reqUrl = '/plugins';
+
     try {
-      const data = await apiv3Get(reqUrl);
-      return data;
+      const res = await apiv3Get(reqUrl);
+      return res.data;
     }
     catch (err) {
       throw new Error(err);
@@ -17,16 +26,17 @@ const pluginsFetcher = () => {
   };
 };
 
-export const useSWRxPlugins = (): SWRResponse<any | null, Error> => {
-  return useSWR('/pluginsExtension', pluginsFetcher());
+export const useSWRxPlugins = (): SWRResponse<plugins | null, Error> => {
+  return useSWR('/plugins', pluginsFetcher());
 };
 
 const pluginFetcher = (id: string) => {
   return async() => {
-    const reqUrl = '/plugins/get-isenabled';
+    const reqUrl = `/plugins/${id}`;
+
     try {
-      const data = await apiv3Post(reqUrl, { _id: id });
-      return data;
+      const res = await apiv3Get(reqUrl);
+      return res.data;
     }
     catch (err) {
       throw new Error(err);
@@ -34,6 +44,6 @@ const pluginFetcher = (id: string) => {
   };
 };
 
-export const useSWRxPlugin = (_id: string): SWRResponse<any | null, Error> => {
+export const useSWRxPlugin = (_id: string): SWRResponse<pluginIsEnalbed | null, Error> => {
   return useSWR(`/plugin-${_id}`, pluginFetcher(_id));
 };

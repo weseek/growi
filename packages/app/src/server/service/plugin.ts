@@ -213,20 +213,9 @@ export class PluginService implements IPluginService {
   /**
    * Get plugin isEnabled
    */
-  async getPluginIsEnabled(targetPluginId: string): Promise<boolean> {
-    const ObjectID = mongoose.Types.ObjectId;
-    const id = new ObjectID(targetPluginId);
-
-    const isValidObjectId = (id: string) => {
-      return ObjectID.isValid(id) && (new ObjectID(id).toString() === id);
-    };
-
-    if (!isValidObjectId(targetPluginId)) {
-      throw new Error('This is invalid value.');
-    }
-
+  async getPluginIsEnabled(pluginId: mongoose.Types.ObjectId): Promise<boolean> {
     const GrowiPlugin = mongoose.model<GrowiPlugin>('GrowiPlugin');
-    const growiPlugins = await GrowiPlugin.findById(id);
+    const growiPlugins = await GrowiPlugin.findById(pluginId);
 
     if (growiPlugins == null) {
       throw new Error('No plugin found for this ID.');
@@ -238,20 +227,9 @@ export class PluginService implements IPluginService {
   /**
    * Switch plugin enabled
    */
-  async switchPluginIsEnabled(targetPluginId: string): Promise<boolean> {
-    const ObjectID = mongoose.Types.ObjectId;
-    const id = new ObjectID(targetPluginId);
-
-    const isValidObjectId = (id: string) => {
-      return ObjectID.isValid(id) && (new ObjectID(id).toString() === id);
-    };
-
-    if (!isValidObjectId(targetPluginId)) {
-      throw new Error('This is invalid value.');
-    }
-
+  async switchPluginIsEnabled(pluginId: mongoose.Types.ObjectId): Promise<boolean> {
     const GrowiPlugin = mongoose.model<GrowiPlugin>('GrowiPlugin');
-    const growiPlugins = await GrowiPlugin.findById(id);
+    const growiPlugins = await GrowiPlugin.findById(pluginId);
 
     if (growiPlugins == null) {
       throw new Error('No plugin found for this ID.');
@@ -270,23 +248,13 @@ export class PluginService implements IPluginService {
   /**
    * Delete plugin
    */
-  async pluginDeleted(targetPluginId: string): Promise<void> {
-    const ObjectID = mongoose.Types.ObjectId;
-    const id = new ObjectID(targetPluginId);
-
-    const isValidObjectId = (id: string) => {
-      return ObjectID.isValid(id) && (new ObjectID(id).toString() === id);
-    };
+  async pluginDeleted(pluginId: mongoose.Types.ObjectId): Promise<void> {
     const deleteFolder = (path: fs.PathLike) => {
       fs.rmdir(path, { recursive: true }, (err) => { return err });
     };
 
-    if (!isValidObjectId(targetPluginId)) {
-      throw new Error('This is invalid value.');
-    }
-
     const GrowiPlugin = mongoose.model<GrowiPlugin>('GrowiPlugin');
-    const growiPlugins = await GrowiPlugin.findByIdAndRemove(id);
+    const growiPlugins = await GrowiPlugin.findByIdAndRemove(pluginId);
 
     if (growiPlugins == null) {
       throw new Error('No plugin found for this ID.');

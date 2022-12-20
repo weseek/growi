@@ -1,16 +1,34 @@
-import express, { Request } from 'express';
+import express, { Request, Router } from 'express';
+import { body, query } from 'express-validator';
+import mongoose from 'mongoose';
 
 import Crowi from '../../crowi';
 
 import { ApiV3Response } from './interfaces/apiv3-response';
 
-type PluginInstallerFormRequest = Request & { form: any };
 
-module.exports = (crowi: Crowi) => {
+const ObjectID = mongoose.Types.ObjectId;
+
+/*
+ * Validators
+ */
+const validator = {
+  pluginIdisRequired: [
+    query('id').isMongoId().withMessage('pluginId is required'),
+  ],
+  pluginFormValueisRequired: [
+    body('pluginInstallerForm').isString().withMessage('pluginFormValue is required'),
+  ],
+};
+
+module.exports = (crowi: Crowi): Router => {
+  const loginRequiredStrictly = require('../../middlewares/login-required')(crowi);
+  const adminRequired = require('../../middlewares/admin-required')(crowi);
+
   const router = express.Router();
   const { pluginService } = crowi;
 
-  router.get('/', async(req: any, res: any) => {
+  router.get('/', loginRequiredStrictly, adminRequired, async(req: Request, res: ApiV3Response) => {
     if (pluginService == null) {
       return res.apiv3Err(400);
     }
@@ -24,13 +42,32 @@ module.exports = (crowi: Crowi) => {
     }
   });
 
-  router.post('/', async(req: PluginInstallerFormRequest, res: ApiV3Response) => {
+  router.get('/:id', loginRequiredStrictly, adminRequired, validator.pluginIdisRequired, async(req: Request, res: ApiV3Response) => {
     if (pluginService == null) {
       return res.apiv3Err(400);
     }
 
+    const { id } = req.params;
+    const pluginId = new ObjectID(id);
+
     try {
-      await pluginService.install(req.body.pluginInstallerForm);
+      const data = await pluginService.getPluginIsEnabled(pluginId);
+      return res.apiv3({ isEnabled: data });
+    }
+    catch (err) {
+      return res.apiv3Err(err);
+    }
+  });
+
+  router.post('/', loginRequiredStrictly, adminRequired, validator.pluginFormValueisRequired, async(req: Request, res: ApiV3Response) => {
+    if (pluginService == null) {
+      return res.apiv3Err(400);
+    }
+
+    const { pluginInstallerForm: formValue } = req.body;
+
+    try {
+      await pluginService.install(formValue);
       return res.apiv3({});
     }
     catch (err) {
@@ -38,13 +75,16 @@ module.exports = (crowi: Crowi) => {
     }
   });
 
-  router.post('/get-isenabled', async(req: any, res: ApiV3Response) => {
+  router.put('/:id/activate', loginRequiredStrictly, adminRequired, validator.pluginIdisRequired, async(req: Request, res: ApiV3Response) => {
     if (pluginService == null) {
       return res.apiv3Err(400);
     }
 
+    const { id } = req.params;
+    const pluginId = new ObjectID(id);
+
     try {
-      const pluginIsEnabled = await pluginService.getPluginIsEnabled(req.body._id);
+      const pluginIsEnabled = await pluginService.switchPluginIsEnabled(pluginId);
       return res.apiv3({ isEnabled: pluginIsEnabled });
     }
     catch (err) {
@@ -52,13 +92,17 @@ module.exports = (crowi: Crowi) => {
     }
   });
 
-  router.post('/switch-isenabled', async(req: any, res: ApiV3Response) => {
+  router.put('/:id/deactivate', loginRequiredStrictly, adminRequired, validator.pluginIdisRequired, async(req: Request, res: ApiV3Response) => {
+
     if (pluginService == null) {
       return res.apiv3Err(400);
     }
 
+    const { id } = req.params;
+    const pluginId = new ObjectID(id);
+
     try {
-      const pluginIsEnabled = await pluginService.switchPluginIsEnabled(req.body._id);
+      const pluginIsEnabled = await pluginService.switchPluginIsEnabled(pluginId);
       return res.apiv3({ isEnabled: pluginIsEnabled });
     }
     catch (err) {
@@ -66,13 +110,16 @@ module.exports = (crowi: Crowi) => {
     }
   });
 
-  router.post('/deleted', async(req: any, res: ApiV3Response) => {
+  router.delete('/:id/remove', loginRequiredStrictly, adminRequired, validator.pluginIdisRequired, async(req: Request, res: ApiV3Response) => {
     if (pluginService == null) {
       return res.apiv3Err(400);
     }
 
+    const { id } = req.params;
+    const pluginId = new ObjectID(id);
+
     try {
-      await pluginService.pluginDeleted(req.body._id);
+      await pluginService.pluginDeleted(pluginId);
       return res.apiv3();
     }
     catch (err) {

@@ -20,7 +20,6 @@ export const PluginsExtensionPageContents = (): JSX.Element => {
 
   return (
     <div>
-
       <div className="row mb-5">
         <div className="col-lg-12">
           <h2 className="admin-setting-header">Plugin Installer</h2>
@@ -35,25 +34,25 @@ export const PluginsExtensionPageContents = (): JSX.Element => {
               <i className="icon icon-reload"></i>
             </button>
           </h2>
-          {data?.data == null
+          {data == null
             ? <Loading />
             : (
               <div className="d-grid gap-5">
-                { data?.data?.plugins.length === 0 && (
+                { data.plugins.length === 0 && (
                   <div>Plugin is not installed</div>
                 )}
-                { data?.data?.plugins.map((item) => {
-                  const pluginId = item[0]._id;
-                  const pluginName = item[0].meta.name;
-                  const pluginUrl = item[0].origin.url;
-                  const pluginDiscription = item[0].meta.desc;
+                { data.plugins.map((plugin) => {
+                  const pluginId = plugin[0]._id;
+                  const pluginName = plugin[0].meta.name;
+                  const pluginUrl = plugin[0].origin.url;
+                  const pluginDiscription = plugin[0].meta.desc;
                   return (
                     <PluginCard
                       key={pluginId}
                       id={pluginId}
                       name={pluginName}
                       url={pluginUrl}
-                      description={pluginDiscription}
+                      desc={pluginDiscription}
                     />
                   );
                 })}

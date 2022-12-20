@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 
 import Link from 'next/link';
 
-import { apiv3Post } from '~/client/util/apiv3-client';
+import { apiv3Delete, apiv3Put } from '~/client/util/apiv3-client';
 import { toastSuccess, toastError } from '~/client/util/toastr';
 import { useSWRxPlugin } from '~/stores/plugin';
 
@@ -12,13 +12,13 @@ type Props = {
   id: string,
   name: string,
   url: string,
-  description: string,
+  desc?: string,
 }
 
 export const PluginCard = (props: Props): JSX.Element => {
 
   const {
-    id, name, url, description,
+    id, name, url, desc,
   } = props;
 
   const { data, mutate } = useSWRxPlugin(id);
@@ -28,16 +28,22 @@ export const PluginCard = (props: Props): JSX.Element => {
   }
 
   const PluginCardButton = (): JSX.Element => {
-    const [isEnabled, setState] = useState<boolean>(data.data.isEnabled);
+    const [isEnabled, setState] = useState<boolean>(data.isEnabled);
 
     const onChangeHandler = async() => {
-      const reqUrl = '/plugins/switch-isenabled';
-
       try {
-        const res = await apiv3Post(reqUrl, { _id: id });
-        setState(res.data.isEnabled);
-        const pluginState = !isEnabled ? 'Enabled' : 'Disabled';
-        toastSuccess(`${pluginState} Plugin `);
+        if (!isEnabled) {
+          const reqUrl = `/plugins/${id}/activate`;
+          const res = await apiv3Put(reqUrl);
+          setState(res.data.isEnabled);
+          toastSuccess('Plugin Activated');
+        }
+        else {
+          const reqUrl = `/plugins/${id}/deactivate`;
+          const res = await apiv3Put(reqUrl);
+          setState(res.data.isEnabled);
+          toastSuccess('Plugin Deactivated');
+        }
       }
       catch (err) {
         toastError('pluginIsEnabled', err);
@@ -68,10 +74,10 @@ export const PluginCard = (props: Props): JSX.Element => {
   const PluginDeleteButton = (): JSX.Element => {
 
     const onClickPluginDeleteBtnHandler = async() => {
-      const reqUrl = '/plugins/deleted';
+      const reqUrl = `/plugins/${id}/remove`;
 
       try {
-        await apiv3Post(reqUrl, { _id: id, name });
+        await apiv3Delete(reqUrl);
         toastSuccess(`${name} Deleted`);
       }
       catch (err) {
@@ -95,6 +101,7 @@ export const PluginCard = (props: Props): JSX.Element => {
     );
   };
 
+  // TODO: Fix commented out areas.
   return (
     <div className="card shadow border-0" key={name}>
       <div className="card-body px-5 py-4 mt-3">
@@ -103,7 +110,7 @@ export const PluginCard = (props: Props): JSX.Element => {
             <h2 className="card-title h3 border-bottom pb-2 mb-3">
               <Link href={`${url}`}>{name}</Link>
             </h2>
-            <p className="card-text text-muted">{description}</p>
+            <p className="card-text text-muted">{desc}</p>
           </div>
           <div className='col-3'>
             <div>
