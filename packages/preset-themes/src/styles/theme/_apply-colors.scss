@@ -9,21 +9,22 @@
 //
 
 // determine optional variables
-$border-image-navbar: linear-gradient(to right, $gray-300 0%, $gray-300 100%) !default;
-$bgcolor-search-top-dropdown: $secondary !default;
+// $border-image-navbar: linear-gradient(to right, $gray-300 0%, $gray-300 100%) !default;
+// $bgcolor-search-top-dropdown: $secondary !default;
 // $bgcolor-sidebar-nav-item-active: darken($bgcolor-sidebar, 10%) !default;
-$text-shadow-sidebar-nav-item-active: var(--text-shadow-sidebar-nav-item-active,1px 1px 2px var(--primary));
+// $text-shadow-sidebar-nav-item-active: var(--text-shadow-sidebar-nav-item-active,1px 1px 2px var(--primary));
 // $bgcolor-inline-code: $gray-100 !default;
 // $color-inline-code: darken($red, 15%) !default;
 // $bordercolor-inline-code: $gray-400 !default;
-$bordercolor-nav-tabs: $gray-300 !default;
-$bordercolor-nav-tabs-hover: $gray-200 $gray-200 $bordercolor-nav-tabs !default;
-$color-nav-tabs-link-active: $gray-600 !default;
-$bordercolor-nav-tabs-active: var(--ordercolor-nav-tabs-active,var(--bordercolor-nav-tabs) var(--bordercolor-nav-tabs) var(--bgcolor-global));
-$color-btn-reload-in-sidebar: $gray-500;
-$bgcolor-keyword-highlighted: var.$grw-marker-yellow !default;
-$color-page-list-group-item-meta: var(--color-page-list-group-item-meta,$gray-500);
-$color-search-page-list-title: var(--color-search-page-list-title,var(--color-global));
+// $bordercolor-nav-tabs: $gray-300 !default;
+// $bordercolor-nav-tabs-hover: $gray-200 $gray-200 $bordercolor-nav-tabs !default;
+// $color-nav-tabs-link-active: $gray-600 !default;
+// $bordercolor-nav-tabs-active: var(--bordercolor-nav-tabs-active,var(--bordercolor-nav-tabs) var(--bordercolor-nav-tabs) var(--bgcolor-global));
+// color-btn-reload-in-sidebar: $gray-500;
+// $bgcolor-keyword-highlighted: var.$grw-marker-yellow !default;
+// $color-page-list-group-item-meta: var(--color-page-list-group-item-meta,$gray-500);
+// $color-search-page-list-title: var(--color-search-page-list-title,var(--color-global));
+
 
 // override bootstrap variables
 $body-bg: var(--bgcolor-global);
@@ -31,9 +32,9 @@ $body-color: var(--color-global);
 $link-color: var(--color-link);
 $link-hover-color: var(--color-link-hover);
 $input-focus-color: var(--color-global);
-$nav-tabs-border-color: $bordercolor-nav-tabs;
-$nav-tabs-link-hover-border-color: $bordercolor-nav-tabs-hover;
-$nav-tabs-link-active-color: $color-nav-tabs-link-active;
+$nav-tabs-border-color: var(--bordercolor-nav-tabs);
+$nav-tabs-link-hover-border-color: var(--bordercolor-nav-tabs-hover);
+$nav-tabs-link-active-color: var(--color-nav-tabs-link-active);
 $nav-tabs-link-active-bg: var(--bgcolor-global);
 $nav-tabs-link-active-border-color: var(--bordercolor-nav-tabs-active);
 $theme-colors: map-merge($theme-colors, ( primary: $primary ));
@@ -247,7 +248,7 @@ ul.pagination {
 
   .grw-sidebar-content-header {
     .grw-btn-reload {
-      color: $color-btn-reload-in-sidebar;
+      color: var(--color-btn-reload-in-sidebar);
     }
 
     .grw-recent-changes-resize-button {
@@ -436,9 +437,9 @@ ul.pagination {
     }
   }
 
-  .highlighted-keyword {
-    background: linear-gradient(transparent 60%, $bgcolor-keyword-highlighted 60%);
-  }
+  // .highlighted-keyword {
+  //   background: linear-gradient(transparent 60%, $bgcolor-keyword-highlighted 60%);
+  // }
 
   a {
     color: var(--color-link-wiki);
@@ -601,11 +602,11 @@ body.editing-sidebar {
   .search-control {
     background-color: var(--bgcolor-global);
   }
-  .page-list {
-    .highlighted-keyword {
-      background: linear-gradient(transparent 60%, $bgcolor-keyword-highlighted 60%);
-    }
-  }
+  // .page-list {
+  //   .highlighted-keyword {
+  //     background: linear-gradient(transparent 60%, $bgcolor-keyword-highlighted 60%);
+  //   }
+  // }
 }
 
 /*

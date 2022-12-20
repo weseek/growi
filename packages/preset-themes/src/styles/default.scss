@@ -81,7 +81,6 @@
   --fillcolor-logo-mark: hsl(var(--bgcolor-navbar-h),calc(var(--bgcolor-navbar-s) - 20%),calc(var(--bgcolor-navbar-l) + 15%));
   // Sidebar
   --bgcolor-sidebar: var(--primary);
-  $bgcolor-sidebar: #122c55;
   --bgcolor-sidebar-hs: var(--primary-hs);
   --bgcolor-sidebar-l: var(--primary-l);
   --bgcolor-sidebar-nav-item-active: rgba(black, 0.37); // optional
@@ -129,7 +128,7 @@
   // Button
   .btn-group.grw-page-editor-mode-manager {
     .btn.btn-outline-primary {
-      @include page-editor-mode-manager.btn-page-editor-mode-manager(primary, lighten($primary, 65%), lighten($primary, 70%));
+      @include page-editor-mode-manager.btn-page-editor-mode-manager(var(--primary),hsl(var(--primary-hs),calc(var(--primary-l) + 65%)), hsl(var(--primary-hs),calc(var(--primary-l) + 70%)));
     }
   }
 }

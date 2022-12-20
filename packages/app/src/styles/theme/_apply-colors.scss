@@ -10,23 +10,21 @@
 //
 
 // // determine optional variables
-// $border-image-navbar: linear-gradient(to right, $gray-300 0%, $gray-300 100%) !default;
-// $bgcolor-search-top-dropdown: $secondary !default;
-// $bgcolor-sidebar-nav-item-active: darken($bgcolor-sidebar, 10%) !default;
-// $text-shadow-sidebar-nav-item-active: var(--text-shadow-sidebar-nav-item-active,1px 1px 2px var(--primary));
-
+$border-image-navbar: var(--border-image-navbar,linear-gradient(to right, $gray-300 0%, $gray-300 100%));
+$bgcolor-search-top-dropdown: var(--bgcolor-search-top-dropdown,$secondary);
+$bgcolor-sidebar-nav-item-active: var(--bgcolor-sidebar-nav-item-active,hsl(var(--primary-hs),calc(var(--primary-l) - 10%)));
+$text-shadow-sidebar-nav-item-active: var(--text-shadow-sidebar-nav-item-active,1px 1px 2px var(--primary));
 $bgcolor-inline-code: var(--bgcolor-inline-code, $gray-100);
 $color-inline-code: var(--color-inline-code, darken($red, 15%));
 $bordercolor-inline-code: var(--bordercolor-inline-code, $gray-400);
-
-// $bordercolor-nav-tabs: $gray-300 !default;
-// $bordercolor-nav-tabs-hover: $gray-200 $gray-200 $bordercolor-nav-tabs !default;
-// $color-nav-tabs-link-active: $gray-600 !default;
-// $bordercolor-nav-tabs-active: var(--ordercolor-nav-tabs-active,var(--bordercolor-nav-tabs) var(--bordercolor-nav-tabs) var(--bgcolor-global));
-// $color-btn-reload-in-sidebar: $gray-500;
-// $bgcolor-keyword-highlighted: var.$grw-marker-yellow !default;
-// $color-page-list-group-item-meta: var(--color-page-list-group-item-meta,$gray-500);
-// $color-search-page-list-title: var(--color-search-page-list-title,var(--color-global));
+$bordercolor-nav-tabs: var(--bordercolor-nav-tabs, $gray-300);
+$bordercolor-nav-tabs-hover: var(--bordercolor-nav-tabs-hover,$gray-200 $gray-200 var(--bordercolor-nav-tabs));
+$border-nav-tabs-link-activec: var(--border-nav-tabs-link-active, $gray-600);
+$bordercolor-nav-tabs-active: var(--bordercolor-nav-tabs-active,var(--bordercolor-nav-tabs) var(--bordercolor-nav-tabs) var(--bgcolor-global));
+$color-btn-reload-in-sidebar: var(--color-btn-reload-in-sidebar,$gray-500);
+$bgcolor-keyword-highlighted: var(--bgcolor-keyword-highlighted,var.$grw-marker-yellow);
+$color-page-list-group-item-meta: var(--color-page-list-group-item-meta,$gray-500);
+$color-search-page-list-title: var(--color-search-page-list-title,var(--color-global));
 
 // // override bootstrap variables
 // $body-bg: var(--bgcolor-global);
@@ -430,9 +428,9 @@ code:not([class^='language-']) {
 //     }
 //   }
 
-//   .highlighted-keyword {
-//     background: linear-gradient(transparent 60%, $bgcolor-keyword-highlighted 60%);
-//   }
+.highlighted-keyword {
+  background: linear-gradient(transparent 60%, var(--bgcolor-keyword-highlighted) 60%);
+}
 
 //   a {
 //     color: var(--color-link-wiki);
@@ -598,11 +596,11 @@ code:not([class^='language-']) {
 //   .search-control {
 //     background-color: var(--bgcolor-global);
 //   }
-//   .page-list {
-//     .highlighted-keyword {
-//       background: linear-gradient(transparent 60%, $bgcolor-keyword-highlighted 60%);
-//     }
-//   }
+.page-list {
+  .highlighted-keyword {
+    background: linear-gradient(transparent 60%, var(--bgcolor-keyword-highlighted) 60%);
+  }
+}
 // }
 
 // /*
