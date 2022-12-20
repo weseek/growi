@@ -1,4 +1,4 @@
-context('Switch Sidebar content', () => {
+context('Switch Sidebar content', { scrollBehavior: false }, () => {
   const ssPrefix = 'switch-sidebar-content';
 
   beforeEach(() => {
@@ -9,8 +9,8 @@ context('Switch Sidebar content', () => {
   });
 
   it('PageTree is successfully shown', () => {
-    cy.collapseSidebar(false);
     cy.visit('/page');
+    cy.collapseSidebar(false);
     cy.waitUntilSkeletonDisappear();
 
     cy.getByTestid('grw-sidebar-nav-primary-page-tree').click();
@@ -45,7 +45,7 @@ context('Modal for page operation', () => {
       cy.get('button.close').click();
     });
 
-    cy.collapseSidebar(true);
+    cy.collapseSidebar(true, true);
     cy.screenshot(`${ssPrefix}page-create-modal-closed`);
   });
 
@@ -70,10 +70,8 @@ context('Modal for page operation', () => {
     // eslint-disable-next-line cypress/no-unnecessary-waiting
     cy.wait(300);
 
-    // Do not use "cy.waitUntilSkeletonDisappear()"
-    cy.get('.grw-skeleton').should('not.exist');
-
     cy.collapseSidebar(true, true);
+    cy.waitUntilSkeletonDisappear();
     cy.screenshot(`${ssPrefix}create-today-page`);
   });
 
