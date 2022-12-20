@@ -45,7 +45,6 @@ import {
   useEditorMode, useSelectedGrant,
   usePreferDrawerModeByUser, usePreferDrawerModeOnEditByUser, useSidebarCollapsed, useCurrentSidebarContents, useCurrentProductNavWidth,
 } from '~/stores/ui';
-import { useSetupGlobalSocket, useSetupGlobalSocketForPage } from '~/stores/websocket';
 import loggerFactory from '~/utils/logger';
 
 // import { isUserPage, isTrashPage, isSharedPage } from '~/utils/path-utils';
@@ -92,6 +91,8 @@ const UsersHomePageFooter = dynamic<UsersHomePageFooterProps>(() => import('../c
 const DrawioModal = dynamic(() => import('../components/PageEditor/DrawioModal').then(mod => mod.DrawioModal), { ssr: false });
 const HandsontableModal = dynamic(() => import('../components/PageEditor/HandsontableModal').then(mod => mod.HandsontableModal), { ssr: false });
 const PageStatusAlert = dynamic(() => import('../components/PageStatusAlert').then(mod => mod.PageStatusAlert), { ssr: false });
+const ClientInitializer = dynamic(() => import('../components/Common/ClientInitializer').then(mod => mod.ClientInitializer), { ssr: false });
+
 
 const logger = loggerFactory('growi:pages:all');
 
@@ -275,9 +276,6 @@ const GrowiPage: NextPage<Props> = (props: Props) => {
 
   const { getClassNamesByEditorMode } = useEditorMode();
 
-  useSetupGlobalSocket();
-  useSetupGlobalSocketForPage(pageId);
-
   const shouldRenderPutbackPageModal = pageWithMeta != null
     ? _isTrashPage(pageWithMeta.data.path)
     : false;
@@ -321,6 +319,9 @@ const GrowiPage: NextPage<Props> = (props: Props) => {
       <DrawioViewerScript />
 
       <BasicLayout title={useCustomTitle(props, 'GROWI')} className={classNames.join(' ')} expandContainer={isContainerFluid}>
+
+        {/* need to be refactored with SSR DisplaySwitcher */}
+        <ClientInitializer pageId={pageId ?? ''} />
 
         <div className="h-100 d-flex flex-column justify-content-between">
           <header className="py-0 position-relative">
