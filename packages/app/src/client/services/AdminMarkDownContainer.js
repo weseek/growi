@@ -29,7 +29,7 @@ export default class AdminMarkDownContainer extends Container {
       isEnabledXss: false,
       xssOption: '',
       tagWhiteList: '',
-      attrWhiteString: '',
+      attrWhiteList: '',
     };
 
     this.switchEnableXss = this.switchEnableXss.bind(this);
@@ -60,7 +60,7 @@ export default class AdminMarkDownContainer extends Container {
       isEnabledXss: markdownParams.isEnabledXss,
       xssOption: markdownParams.xssOption,
       tagWhiteList: markdownParams.tagWhiteList || '',
-      attrWhiteString: markdownParams.attrWhiteString || '',
+      attrWhiteList: markdownParams.attrWhiteList || '',
     });
   }
 
@@ -120,13 +120,13 @@ export default class AdminMarkDownContainer extends Container {
    */
   async updateXssSetting() {
     let { tagWhiteList } = this.state;
-    const { attrWhiteString } = this.state;
+    const { attrWhiteList } = this.state;
 
     tagWhiteList = Array.isArray(tagWhiteList) ? tagWhiteList : tagWhiteList.split(',');
 
     try {
       // Check if parsing is possible
-      JSON.parse(attrWhiteString);
+      JSON.parse(attrWhiteList);
     }
     catch (err) {
       throw Error(err);
@@ -136,7 +136,7 @@ export default class AdminMarkDownContainer extends Container {
       isEnabledXss: this.state.isEnabledXss,
       xssOption: this.state.xssOption,
       tagWhiteList,
-      attrWhiteString,
+      attrWhiteList,
     });
   }
 
