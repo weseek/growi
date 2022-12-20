@@ -4,6 +4,7 @@ import {
 } from 'next';
 import { useTranslation } from 'next-i18next';
 import dynamic from 'next/dynamic';
+import Head from 'next/head';
 import { Container, Provider } from 'unstated';
 
 import AdminGeneralSecurityContainer from '~/client/services/AdminGeneralSecurityContainer';
@@ -15,7 +16,7 @@ import AdminOidcSecurityContainer from '~/client/services/AdminOidcSecurityConta
 import AdminSamlSecurityContainer from '~/client/services/AdminSamlSecurityContainer';
 import AdminTwitterSecurityContainer from '~/client/services/AdminTwitterSecurityContainer';
 import { CrowiRequest } from '~/interfaces/crowi-request';
-import { CommonProps, useCustomTitle } from '~/pages/utils/commons';
+import { CommonProps, generateCustomTitle } from '~/pages/utils/commons';
 import { useCurrentUser, useIsMailerSetup, useSiteUrl } from '~/stores/context';
 
 import { retrieveServerSideProps } from '../../utils/admin-page-util';
@@ -36,7 +37,8 @@ const AdminSecuritySettingsPage: NextPage<Props> = (props) => {
   useSiteUrl(props.siteUrl);
   useIsMailerSetup(props.isMailerSetup);
 
-  const title = t('security_settings.security_settings');
+  const componentTitle = t('security_settings.security_settings');
+  const pageTitle = generateCustomTitle(props, componentTitle);
   const adminSecurityContainers: Container<any>[] = [];
 
   if (isClient()) {
@@ -65,10 +67,12 @@ const AdminSecuritySettingsPage: NextPage<Props> = (props) => {
     }
   }
 
-
   return (
     <Provider inject={[...adminSecurityContainers]}>
-      <AdminLayout title={useCustomTitle(props, title)} componentTitle={title} >
+      <AdminLayout componentTitle={componentTitle}>
+        <Head>
+          <title>{pageTitle}</title>
+        </Head>
         <SecurityManagement />
       </AdminLayout>
     </Provider>

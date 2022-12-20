@@ -4,10 +4,11 @@ import {
 } from 'next';
 import { useTranslation } from 'next-i18next';
 import dynamic from 'next/dynamic';
+import Head from 'next/head';
 import { Container, Provider } from 'unstated';
 
 import AdminAppContainer from '~/client/services/AdminAppContainer';
-import { CommonProps, useCustomTitle } from '~/pages/utils/commons';
+import { CommonProps, generateCustomTitle } from '~/pages/utils/commons';
 import { useCurrentUser } from '~/stores/context';
 
 import { retrieveServerSideProps } from '../../utils/admin-page-util';
@@ -20,7 +21,8 @@ const AdminExportDataArchivePage: NextPage<CommonProps> = (props) => {
   const { t } = useTranslation('admin');
   useCurrentUser(props.currentUser ?? null);
 
-  const title = t('export_management.export_archive_data');
+  const componentTitle = t('export_management.export_archive_data');
+  const pageTitle = generateCustomTitle(props, componentTitle);
   const injectableContainers: Container<any>[] = [];
 
   if (isClient()) {
@@ -30,7 +32,10 @@ const AdminExportDataArchivePage: NextPage<CommonProps> = (props) => {
 
   return (
     <Provider inject={[...injectableContainers]}>
-      <AdminLayout title={useCustomTitle(props, title)} componentTitle={title} >
+      <AdminLayout componentTitle={componentTitle}>
+        <Head>
+          <title>{pageTitle}</title>
+        </Head>
         <ExportArchiveDataPage />
       </AdminLayout>
     </Provider>

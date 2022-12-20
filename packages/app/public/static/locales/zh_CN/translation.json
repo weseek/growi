@@ -574,6 +574,7 @@
     }
 	},
   "private_legacy_pages": {
+    "title": "私人遗留页面",
     "bulk_operation": "批量操作",
     "convert_all_selected_pages": "全部转换为新的v5兼容格式",
 		"input_path_to_convert": "输入一个转换页面的路径",
@@ -735,7 +736,6 @@
     "logout": "登出"
   },
   "pagetree": {
-    "private_legacy_pages": "私人遗留页面",
     "cannot_rename_a_title_that_contains_slash": "不能重命名包含 ’/' 的标题",
     "you_cannot_move_this_page_now": "你现在不能移动这个页面",
     "something_went_wrong_with_moving_page": "移动页面时出了问题"

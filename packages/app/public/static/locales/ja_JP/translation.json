@@ -569,6 +569,7 @@
     }
   },
   "private_legacy_pages": {
+    "title": "旧形式のプライベートページ",
     "bulk_operation": "一括操作",
     "convert_all_selected_pages": "新しい v5 互換形式に一括変換",
     "input_path_to_convert": "パスを入力して変換",
@@ -730,7 +731,6 @@
     "logout": "ログアウト"
   },
   "pagetree": {
-    "private_legacy_pages": "旧形式のプライベートページ",
     "cannot_rename_a_title_that_contains_slash": "`/` が含まれているタイトルにリネームできません",
     "you_cannot_move_this_page_now": "現在、このページを移動することはできません",
     "something_went_wrong_with_moving_page": "ページの移動に問題が発生しました"
