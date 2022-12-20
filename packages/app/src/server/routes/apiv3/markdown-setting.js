@@ -292,10 +292,20 @@ module.exports = (crowi) => {
       return res.apiv3Err(new ErrorV3('xss option is required'));
     }
 
+    let parsedAttrWhiteList = {};
+    try {
+      parsedAttrWhiteList = JSON.parse(req.body.attrWhiteList);
+    }
+    catch (err) {
+      const msg = 'Error occurred in updating xss';
+      logger.error('Error', err);
+      return res.apiv3Err(new ErrorV3(msg, 'update-xss-failed'));
+    }
+
     const reqestXssParams = {
       'markdown:rehypeSanitize:isEnabledPrevention': req.body.isEnabledXss,
       'markdown:rehypeSanitize:option': req.body.xssOption,
-      'markdown:xss:tagWhiteList': req.body.tagWhiteList, // Todo: need to be changed at https://redmine.weseek.co.jp/issues/109763
+      'markdown:xss:tagWhiteList': parsedAttrWhiteList, // Todo: need to be changed at https://redmine.weseek.co.jp/issues/109763
       'markdown:xss:attrWhiteList': req.body.attrWhiteList, // Todo: need to be changed at https://redmine.weseek.co.jp/issues/109763
     };
 
