@@ -104,19 +104,20 @@ export class PluginService implements IPluginService {
     const renamePath = async(oldPath: fs.PathLike, newPath: fs.PathLike) => {
       if (fs.existsSync(newPath)) {
         // if a repository already exists, delete old repository before rename path
-        // delete old repository
-        await fs.promises.rm(newPath, { recursive: true });
-
-        // delete old document
         const GrowiPlugin = mongoose.model<GrowiPlugin>('GrowiPlugin');
-        await GrowiPlugin.deleteOne({ url: `https://github.com/${ghOrganizationName}/${ghReposName}` });
 
-        // rename new repository
-        fs.renameSync(oldPath, newPath);
+        try {
+          // delete old repository
+          await fs.promises.rm(newPath, { recursive: true });
+          // delete old document
+          await GrowiPlugin.deleteOne({ url: `https://github.com/${ghOrganizationName}/${ghReposName}` });
+        }
+        catch (err) {
+          throw new Error(err);
+        }
       }
-      else {
-        fs.renameSync(oldPath, newPath);
-      }
+      // rename new repository
+      fs.renameSync(oldPath, newPath);
     };
 
     const downloadFile = async(requestUrl: string, filePath: string) => {
