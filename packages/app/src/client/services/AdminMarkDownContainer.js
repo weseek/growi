@@ -29,7 +29,7 @@ export default class AdminMarkDownContainer extends Container {
       isEnabledXss: false,
       xssOption: '',
       tagWhiteList: '',
-      attrWhiteList: '',
+      attrWhiteList: '{}',
     };
 
     this.switchEnableXss = this.switchEnableXss.bind(this);
@@ -119,19 +119,25 @@ export default class AdminMarkDownContainer extends Container {
    * Update Xss Setting
    */
   async updateXssSetting() {
-    let { tagWhiteList, attrWhiteList } = this.state;
+    let { tagWhiteList } = this.state;
+    const { attrWhiteList } = this.state;
 
     tagWhiteList = Array.isArray(tagWhiteList) ? tagWhiteList : tagWhiteList.split(',');
-    attrWhiteList = Array.isArray(attrWhiteList) ? attrWhiteList : attrWhiteList.split(',');
 
-    const response = await apiv3Put('/markdown-setting/xss', {
+    try {
+      // Check if parsing is possible
+      JSON.parse(attrWhiteList);
+    }
+    catch (err) {
+      throw Error(err);
+    }
+
+    await apiv3Put('/markdown-setting/xss', {
       isEnabledXss: this.state.isEnabledXss,
       xssOption: this.state.xssOption,
       tagWhiteList,
-      attrWhiteList,
+      attrWhiteList: attrWhiteList ?? '{}',
     });
-
-    return response;
   }
 
   /**
