@@ -6,8 +6,6 @@ context('Access to page', () => {
     cy.fixture("user-admin.json").then(user => {
       cy.login(user.username, user.password);
     });
-    // collapse sidebar
-    cy.collapseSidebar(true);
   });
 
   it('/Sandbox is successfully loaded', () => {
@@ -17,6 +15,7 @@ context('Access to page', () => {
     // for check download toc data
     cy.get('.toc-link').eq(0).contains('Table of Contents');
 
+    cy.collapseSidebar(true);
     cy.screenshot(`${ssPrefix}-sandbox`);
   });
 
@@ -46,6 +45,7 @@ context('Access to page', () => {
     // for check download toc data
     cy.get('.toc-link').should('be.visible');
 
+    cy.collapseSidebar(true);
     cy.screenshot(`${ssPrefix}-sandbox-math`);
   });
 
@@ -77,7 +77,7 @@ context('Access to page', () => {
 
     // eslint-disable-next-line cypress/no-unnecessary-waiting
     cy.wait(2000); // wait for calcViewHeight and rendering
-
+    cy.collapseSidebar(true);
     cy.screenshot(`${ssPrefix}-user-admin`);
   });
 
@@ -92,8 +92,6 @@ context('Access to /me page', () => {
     cy.fixture("user-admin.json").then(user => {
       cy.login(user.username, user.password);
     });
-    // collapse sidebar
-    cy.collapseSidebar(true);
   });
 
   it('/me is successfully loaded', () => {
@@ -101,6 +99,7 @@ context('Access to /me page', () => {
 
     cy.getByTestid('grw-user-settings').should('be.visible');
 
+    cy.collapseSidebar(true);
     cy.screenshot(`${ssPrefix}-me`);
   });
 
@@ -119,8 +118,6 @@ context('Access to special pages', () => {
     cy.fixture("user-admin.json").then(user => {
       cy.login(user.username, user.password);
     });
-    // collapse sidebar
-    cy.collapseSidebar(true);
   });
 
   it('/trash is successfully loaded', () => {
@@ -128,6 +125,7 @@ context('Access to special pages', () => {
 
     cy.getByTestid('trash-page-list').contains('There are no pages under this page.');
 
+    cy.collapseSidebar(true);
     cy.screenshot(`${ssPrefix}-trash`);
   });
 
@@ -147,6 +145,7 @@ context('Access to special pages', () => {
       cy.getByTestid('grw-tags-list').contains('You have no tag, You can set tags on pages');
     });
 
+    cy.collapseSidebar(true);
     cy.screenshot(`${ssPrefix}-tags`);
   });
 
@@ -160,8 +159,6 @@ context('Access to Template Editing Mode', () => {
     cy.fixture("user-admin.json").then(user => {
       cy.login(user.username, user.password);
     });
-    // collapse sidebar
-    cy.collapseSidebar(true);
   });
 
   // TODO: 109057
@@ -226,8 +223,6 @@ context('Access to /me/all-in-app-notifications', () => {
     cy.fixture("user-admin.json").then(user => {
       cy.login(user.username, user.password);
     });
-    // collapse sidebar
-    cy.collapseSidebar(true);
   });
 
   it('All In-App Notification list is successfully loaded', { scrollBehavior: false },() => {
@@ -238,11 +233,13 @@ context('Access to /me/all-in-app-notifications', () => {
     cy.getByTestid('grw-in-app-notification-page').should('be.visible');
     cy.getByTestid('grw-in-app-notification-page-spinner').should('not.exist');
 
+    cy.collapseSidebar(true);
     cy.screenshot(`${ssPrefix}-see-all`);
 
     cy.get('.grw-custom-nav-tab > div > ul > li:nth-child(2) > a').click();
     cy.getByTestid('grw-in-app-notification-page-spinner').should('not.exist');
 
+    cy.collapseSidebar(true);
     cy.screenshot(`${ssPrefix}-see-unread`);
    });
 
