@@ -38,7 +38,7 @@ export interface IPluginService {
   install(origin: GrowiPluginOrigin): Promise<void>
   retrieveThemeHref(theme: string): Promise<string | undefined>
   retrieveAllPluginResourceEntries(): Promise<GrowiPluginResourceEntries>
-  reintallNotExistPluginRepositories(): Promise<void>
+  downloadNotExistPluginRepositories(): Promise<void>
 }
 
 export class PluginService implements IPluginService {
