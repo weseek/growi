@@ -28,7 +28,7 @@ export const PluginCard = (props: Props): JSX.Element => {
   }
 
   const PluginCardButton = (): JSX.Element => {
-    const [isEnabled, setState] = useState<boolean>(data.isEnabled);
+    const [isEnabled, setState] = useState<boolean>(data.plugin.isEnabled);
 
     const onChangeHandler = async() => {
       try {

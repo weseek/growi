@@ -34,7 +34,7 @@ export const PluginsExtensionPageContents = (): JSX.Element => {
               <i className="icon icon-reload"></i>
             </button>
           </h2>
-          {data == null
+          {data?.plugins == null
             ? <Loading />
             : (
               <div className="d-grid gap-5">
@@ -42,10 +42,10 @@ export const PluginsExtensionPageContents = (): JSX.Element => {
                   <div>Plugin is not installed</div>
                 )}
                 { data.plugins.map((plugin) => {
-                  const pluginId = plugin[0]._id;
-                  const pluginName = plugin[0].meta.name;
-                  const pluginUrl = plugin[0].origin.url;
-                  const pluginDiscription = plugin[0].meta.desc;
+                  const pluginId = plugin._id;
+                  const pluginName = plugin.meta.name;
+                  const pluginUrl = plugin.origin.url;
+                  const pluginDiscription = plugin.meta.desc;
                   return (
                     <PluginCard
                       key={pluginId}

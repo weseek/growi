@@ -4,12 +4,12 @@ import useSWR, { SWRResponse } from 'swr';
 import { apiv3Get } from '~/client/util/apiv3-client';
 import { GrowiPluginHasId } from '~/interfaces/plugin';
 
-type plugins = {
-  plugins: GrowiPluginHasId[][]
+type Plugins = {
+  plugins: GrowiPluginHasId[]
 }
 
-type pluginIsEnalbed = {
-  isEnabled: boolean
+type Plugin = {
+  plugin: GrowiPluginHasId
 }
 
 const pluginsFetcher = () => {
@@ -26,7 +26,7 @@ const pluginsFetcher = () => {
   };
 };
 
-export const useSWRxPlugins = (): SWRResponse<plugins | null, Error> => {
+export const useSWRxPlugins = (): SWRResponse<Plugins | null, Error> => {
   return useSWR('/plugins', pluginsFetcher());
 };
 
@@ -44,6 +44,6 @@ const pluginFetcher = (id: string) => {
   };
 };
 
-export const useSWRxPlugin = (_id: string): SWRResponse<pluginIsEnalbed | null, Error> => {
+export const useSWRxPlugin = (_id: string): SWRResponse<Plugin | null, Error> => {
   return useSWR(`/plugin-${_id}`, pluginFetcher(_id));
 };

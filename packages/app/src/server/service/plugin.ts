@@ -135,23 +135,6 @@ export class PluginService implements IPluginService {
     await GrowiPlugin.insertMany(plugins);
   }
 
-
-  async getPlugins(): Promise<any> {
-    type GrowiPluginManifestEntries = [growiPlugin: GrowiPlugin, manifest: any][];
-    const entries: GrowiPluginManifestEntries = [];
-
-    const GrowiPlugin = mongoose.model<GrowiPlugin>('GrowiPlugin');
-    const growiPlugins = await GrowiPlugin.find({});
-
-    growiPlugins.forEach(async(growiPlugin) => {
-      const manifestPath = resolveFromRoot(path.join('tmp/plugins', growiPlugin.installedPath, 'dist/manifest.json'));
-      const customManifestStr: string = readFileSync(manifestPath, 'utf-8');
-      entries.push([growiPlugin, JSON.parse(customManifestStr)]);
-    });
-
-    return JSON.parse(JSON.stringify(entries));
-  }
-
   // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
   private static async detectPlugins(origin: GrowiPluginOrigin, installedPath: string, parentPackageJson?: any): Promise<GrowiPlugin[]> {
     const packageJsonPath = path.resolve(pluginStoringPath, installedPath, 'package.json');
@@ -211,17 +194,33 @@ export class PluginService implements IPluginService {
   }
 
   /**
-   * Get plugin isEnabled
+   * Get all downloaded plugins
    */
-  async getPluginIsEnabled(pluginId: mongoose.Types.ObjectId): Promise<boolean> {
-    const GrowiPlugin = mongoose.model<GrowiPlugin>('GrowiPlugin');
-    const growiPlugins = await GrowiPlugin.findById(pluginId);
+  async getPlugins(): Promise<any> {
+    const entries: GrowiPlugin[] = [];
 
-    if (growiPlugins == null) {
+    const GrowiPlugin = mongoose.model<GrowiPlugin>('GrowiPlugin');
+    const growiPlugins = await GrowiPlugin.find({});
+
+    growiPlugins.forEach(async(growiPlugin) => {
+      entries.push(growiPlugin);
+    });
+
+    return JSON.parse(JSON.stringify(entries));
+  }
+
+  /**
+   * Get plugin data
+   */
+  async getPlugin(pluginId: mongoose.Types.ObjectId): Promise<boolean> {
+    const GrowiPlugin = mongoose.model<GrowiPlugin>('GrowiPlugin');
+    const growiPlugin = await GrowiPlugin.findById(pluginId);
+
+    if (growiPlugin == null) {
       throw new Error('No plugin found for this ID.');
     }
 
-    return growiPlugins.isEnabled;
+    return JSON.parse(JSON.stringify(growiPlugin as GrowiPlugin));
   }
 
   /**
@@ -248,7 +247,7 @@ export class PluginService implements IPluginService {
   /**
    * Delete plugin
    */
-  async pluginDelete(pluginId: mongoose.Types.ObjectId): Promise<void> {
+  async deletePlugin(pluginId: mongoose.Types.ObjectId): Promise<void> {
     const deleteFolder = (path: fs.PathLike): Promise<void> => {
       return fs.promises.rmdir(path, { recursive: true });
     };

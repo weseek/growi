@@ -6,7 +6,6 @@ import Crowi from '../../crowi';
 
 import { ApiV3Response } from './interfaces/apiv3-response';
 
-
 const ObjectID = mongoose.Types.ObjectId;
 
 /*
@@ -51,8 +50,8 @@ module.exports = (crowi: Crowi): Router => {
     const pluginId = new ObjectID(id);
 
     try {
-      const data = await pluginService.getPluginIsEnabled(pluginId);
-      return res.apiv3({ isEnabled: data });
+      const data = await pluginService.getPlugin(pluginId);
+      return res.apiv3({ plugin: data });
     }
     catch (err) {
       return res.apiv3Err(err);
