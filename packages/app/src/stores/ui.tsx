@@ -6,7 +6,7 @@ import {
 import { withUtils, SWRResponseWithUtils } from '@growi/core/src/utils/with-utils';
 import { Breakpoint, addBreakpointListener, cleanupBreakpointListener } from '@growi/ui';
 import { HtmlElementNode } from 'rehype-toc';
-import SimpleBar from 'simplebar-react';
+import type SimpleBar from 'simplebar-react';
 import {
   useSWRConfig, SWRResponse, Key, Fetcher,
 } from 'swr';
