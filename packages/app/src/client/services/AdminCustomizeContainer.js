@@ -36,7 +36,7 @@ export default class AdminCustomizeContainer extends Container {
       isAllReplyShown: false,
       isSearchScopeChildrenAsDefault: false,
       currentCustomizeTitle: '',
-      currentCustomizeHeader: '',
+      currentCustomizeNoscript: '',
       currentCustomizeCss: '',
       currentCustomizeScript: '',
     };
@@ -73,7 +73,7 @@ export default class AdminCustomizeContainer extends Container {
         isAllReplyShown: customizeParams.isAllReplyShown,
         isSearchScopeChildrenAsDefault: customizeParams.isSearchScopeChildrenAsDefault,
         currentCustomizeTitle: customizeParams.customizeTitle,
-        currentCustomizeHeader: customizeParams.customizeHeader,
+        currentCustomizeNoscript: customizeParams.customizeNoscript,
         currentCustomizeCss: customizeParams.customizeCss,
         currentCustomizeScript: customizeParams.customizeScript,
       });
@@ -160,8 +160,8 @@ export default class AdminCustomizeContainer extends Container {
   /**
    * Change customize Html header
    */
-  changeCustomizeHeader(inputValue) {
-    this.setState({ currentCustomizeHeader: inputValue });
+  changeCustomizeNoscript(inputValue) {
+    this.setState({ currentCustomizeNoscript: inputValue });
   }
 
   /**
@@ -235,18 +235,14 @@ export default class AdminCustomizeContainer extends Container {
     }
   }
 
-  /**
-   * Update customHeader
-   * @memberOf AdminCustomizeContainer
-   */
-  async updateCustomizeHeader() {
+  async updateCustomizeNoscript() {
     try {
-      const response = await apiv3Put('/customize-setting/customize-header', {
-        customizeHeader: this.state.currentCustomizeHeader,
+      const response = await apiv3Put('/customize-setting/customize-noscript', {
+        customizeNoscript: this.state.currentCustomizeNoscript,
       });
       const { customizedParams } = response.data;
       this.setState({
-        currentCustomizeHeader: customizedParams.customizeHeader,
+        currentCustomizeNoscript: customizedParams.customizeNoscript,
       });
     }
     catch (err) {

@@ -17,7 +17,7 @@ export const Cheatsheet = (): JSX.Element => {
   const codeBlockStr = 'text\n\ntext';
   const lineBlockStr = 'text\ntext';
   const typographyStr = `*${t('sandbox.italics')}*\n**${t('sandbox.bold')}**\n***${t('sandbox.italic_bold')}***\n~~${t('sandbox.strikethrough')}~~`;
-  const linkStr = '[Google](https://www.google.co.jp/)\n[/Page1/ChildPage1]';
+  const linkStr = '[Google](https://www.google.co.jp/)';
   const codeHighlightStr = '```javascript:index.js\nwriteCode();\n```';
 
   // Right Side
