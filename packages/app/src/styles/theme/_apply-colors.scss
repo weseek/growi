@@ -53,7 +53,7 @@ code:not([class^='language-']) {
 }
 
 .code-highlighted {
-  border-color: $bordercolor-inline-code;
+  border-color: var(--ordercolor-inline-code);
 }
 
 //
