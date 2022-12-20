@@ -3,6 +3,7 @@ import { body, query } from 'express-validator';
 import mongoose from 'mongoose';
 
 import Crowi from '../../crowi';
+import type { GrowiPluginModel } from '../../models/growi-plugin';
 
 import { ApiV3Response } from './interfaces/apiv3-response';
 
@@ -50,7 +51,8 @@ module.exports = (crowi: Crowi): Router => {
     const pluginId = new ObjectID(id);
 
     try {
-      const data = await pluginService.getPlugin(pluginId);
+      const GrowiPluginModel = mongoose.model('GrowiPlugin') as GrowiPluginModel;
+      const data = await GrowiPluginModel.getPlugin(pluginId);
       return res.apiv3({ plugin: data });
     }
     catch (err) {
@@ -67,7 +69,7 @@ module.exports = (crowi: Crowi): Router => {
 
     try {
       await pluginService.install(formValue);
-      return res.apiv3({});
+      return res.apiv3();
     }
     catch (err) {
       return res.apiv3Err(err);
@@ -83,8 +85,9 @@ module.exports = (crowi: Crowi): Router => {
     const pluginId = new ObjectID(id);
 
     try {
-      const pluginIsEnabled = await pluginService.switchPluginIsEnabled(pluginId);
-      return res.apiv3({ isEnabled: pluginIsEnabled });
+      const GrowiPluginModel = mongoose.model('GrowiPlugin') as GrowiPluginModel;
+      const data = await GrowiPluginModel.activateStatus(pluginId);
+      return res.apiv3({ isEnabled: data?.isEnabled });
     }
     catch (err) {
       return res.apiv3Err(err);
@@ -100,8 +103,9 @@ module.exports = (crowi: Crowi): Router => {
     const pluginId = new ObjectID(id);
 
     try {
-      const pluginIsEnabled = await pluginService.switchPluginIsEnabled(pluginId);
-      return res.apiv3({ isEnabled: pluginIsEnabled });
+      const GrowiPluginModel = mongoose.model('GrowiPlugin') as GrowiPluginModel;
+      const data = await GrowiPluginModel.deactivateStatus(pluginId);
+      return res.apiv3({ isEnabled: data?.isEnabled });
     }
     catch (err) {
       return res.apiv3Err(err);

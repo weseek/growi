@@ -4,6 +4,7 @@ import useSWR, { SWRResponse } from 'swr';
 import { apiv3Get } from '~/client/util/apiv3-client';
 import { GrowiPluginHasId } from '~/interfaces/plugin';
 
+// TODO: Check types
 type Plugins = {
   plugins: GrowiPluginHasId[]
 }
@@ -26,7 +27,7 @@ const pluginsFetcher = () => {
   };
 };
 
-export const useSWRxPlugins = (): SWRResponse<Plugins | null, Error> => {
+export const useSWRxPlugins = (): SWRResponse<Plugins, Error> => {
   return useSWR('/plugins', pluginsFetcher());
 };
 
@@ -44,6 +45,6 @@ const pluginFetcher = (id: string) => {
   };
 };
 
-export const useSWRxPlugin = (_id: string): SWRResponse<Plugin | null, Error> => {
+export const useSWRxPlugin = (_id: string): SWRResponse<Plugin, Error> => {
   return useSWR(`/plugin-${_id}`, pluginFetcher(_id));
 };

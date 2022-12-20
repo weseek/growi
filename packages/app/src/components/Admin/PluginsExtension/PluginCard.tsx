@@ -23,7 +23,7 @@ export const PluginCard = (props: Props): JSX.Element => {
 
   const { data, mutate } = useSWRxPlugin(id);
 
-  if (data == null) {
+  if (data == null || data.plugin == null) {
     return <></>;
   }
 

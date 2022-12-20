@@ -210,41 +210,6 @@ export class PluginService implements IPluginService {
   }
 
   /**
-   * Get plugin data
-   */
-  async getPlugin(pluginId: mongoose.Types.ObjectId): Promise<GrowiPlugin> {
-    const GrowiPlugin = mongoose.model<GrowiPlugin>('GrowiPlugin');
-    const growiPlugin = await GrowiPlugin.findById(pluginId);
-
-    if (growiPlugin == null) {
-      throw new Error('No plugin found for this ID.');
-    }
-
-    return growiPlugin;
-  }
-
-  /**
-   * Switch plugin enabled
-   */
-  async switchPluginIsEnabled(pluginId: mongoose.Types.ObjectId): Promise<boolean> {
-    const GrowiPlugin = mongoose.model<GrowiPlugin>('GrowiPlugin');
-    const growiPlugins = await GrowiPlugin.findById(pluginId);
-
-    if (growiPlugins == null) {
-      throw new Error('No plugin found for this ID.');
-    }
-
-    try {
-      await growiPlugins.update({ isEnabled: !growiPlugins.isEnabled });
-    }
-    catch (err) {
-      throw new Error('Plugin status switching failed.');
-    }
-
-    return growiPlugins.isEnabled;
-  }
-
-  /**
    * Delete plugin
    */
   async deletePlugin(pluginId: mongoose.Types.ObjectId): Promise<void> {
