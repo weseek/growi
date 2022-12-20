@@ -43,7 +43,7 @@ export interface IPluginService {
 
 export class PluginService implements IPluginService {
 
-  async reintallNotExistPluginRepositories(): Promise<void> {
+  async downloadNotExistPluginRepositories(): Promise<void> {
     try {
       // check all growi plugin documents
       const GrowiPlugin = mongoose.model<GrowiPlugin>('GrowiPlugin');
