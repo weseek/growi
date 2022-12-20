@@ -24,6 +24,7 @@ import {
   useIsSearchScopeChildrenAsDefault, useIsSearchPage, useShowPageLimitationXL, useIsGuestUser, useRendererConfig,
 } from '../stores/context';
 
+import { NextPageWithLayout } from './_app.page';
 import {
   CommonProps, getServerSideCommonProps, getNextI18NextConfig, generateCustomTitle,
 } from './utils/commons';
@@ -47,7 +48,7 @@ type Props = CommonProps & {
   rendererConfig: RendererConfig,
 };
 
-const TrashPage: NextPage<CommonProps> = (props: Props) => {
+const TrashPage: NextPageWithLayout<CommonProps> = (props: Props) => {
   useCurrentUser(props.currentUser ?? null);
 
   useIsSearchServiceConfigured(props.isSearchServiceConfigured);
@@ -81,26 +82,33 @@ const TrashPage: NextPage<CommonProps> = (props: Props) => {
       <Head>
         <title>{title}</title>
       </Head>
-      <BasicLayoutWithEditorMode>
-        <div className={`dynamic-layout-root ${growiLayoutFluidClass}`}>
-          <header className="py-0 position-relative">
-            <GrowiSubNavigation
-              pagePath="/trash"
-              showDrawerToggler={isDrawerMode}
-              isGuestUser={isGuestUser}
-              isDrawerMode={isDrawerMode}
-              additionalClasses={['container-fluid']}
-            />
-          </header>
+      <div className={`dynamic-layout-root ${growiLayoutFluidClass}`}>
+        <header className="py-0 position-relative">
+          <GrowiSubNavigation
+            pagePath="/trash"
+            showDrawerToggler={isDrawerMode}
+            isGuestUser={isGuestUser}
+            isDrawerMode={isDrawerMode}
+            additionalClasses={['container-fluid']}
+          />
+        </header>
 
-          <div className="content-main grw-container-convertible mb-5 pb-5">
-            <TrashPageList />
-          </div>
-
-          <div id="grw-fav-sticky-trigger" className="sticky-top"></div>
+        <div className="content-main grw-container-convertible mb-5 pb-5">
+          <TrashPageList />
         </div>
-      </BasicLayoutWithEditorMode>
 
+        <div id="grw-fav-sticky-trigger" className="sticky-top"></div>
+      </div>
+    </>
+  );
+};
+
+TrashPage.getLayout = function getLayout(page) {
+  return (
+    <>
+      <BasicLayoutWithEditorMode>
+        {page}
+      </BasicLayoutWithEditorMode>
       <EmptyTrashModal />
       <PutbackPageModal />
     </>
