@@ -30,7 +30,7 @@ const validator = {
   xssSetting: [
     body('isEnabledXss').isBoolean(),
     body('tagWhiteList').isArray(),
-    body('attrWhiteList').isArray(),
+    body('attrWhiteList').isString(),
   ],
 };
 
