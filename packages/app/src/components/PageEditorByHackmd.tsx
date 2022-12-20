@@ -259,6 +259,8 @@ export const PageEditorByHackmd = (): JSX.Element => {
       updateStateAfterSave?.();
       mutateTagsInfo();
 
+      mutateIsEnabledUnsavedWarning(false);
+
       logger.debug('success to save');
 
       toastSuccess(t('successfully_saved_the_page'));
@@ -267,7 +269,8 @@ export const PageEditorByHackmd = (): JSX.Element => {
       logger.error('failed to save', error);
       toastError(error.message);
     }
-  }, [currentPagePath, currentPathname, pageId, revisionIdHackmdSynced, optionsToSave, saveOrUpdate, mutatePageData, updateStateAfterSave, mutateTagsInfo, t]);
+  }, [currentPagePath, currentPathname, pageId, revisionIdHackmdSynced, optionsToSave,
+      saveOrUpdate, mutatePageData, updateStateAfterSave, mutateTagsInfo, mutateIsEnabledUnsavedWarning, t]);
 
   /**
    * onChange event of HackmdEditor handler
@@ -283,13 +286,15 @@ export const PageEditorByHackmd = (): JSX.Element => {
       return;
     }
 
+    mutateIsEnabledUnsavedWarning(true);
+
     try {
       await apiPost('/hackmd.saveOnHackmd', { pageId });
     }
     catch (err) {
       logger.error(err);
     }
-  }, [pageId, revision?.body, hackmdUri]);
+  }, [hackmdUri, pageId, revision?.body, mutateIsEnabledUnsavedWarning]);
 
   const penpalErrorOccuredHandler = useCallback((error) => {
     toastError(error.message);
