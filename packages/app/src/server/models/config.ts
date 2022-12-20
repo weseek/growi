@@ -118,7 +118,7 @@ export const defaultCrowiConfigs: { [key: string]: any } = {
 
   'customize:css' : undefined,
   'customize:script' : undefined,
-  'customize:header' : undefined,
+  'customize:noscript' : undefined,
   'customize:title' : undefined,
   'customize:highlightJsStyle' : 'github',
   'customize:highlightJsStyleBorder' : false,
@@ -147,12 +147,14 @@ export const defaultCrowiConfigs: { [key: string]: any } = {
 };
 
 export const defaultMarkdownConfigs: { [key: string]: any } = {
+  // don't use it, but won't turn it off
   'markdown:xss:tagWhiteList': [],
   'markdown:xss:attrWhiteList': [],
+
   'markdown:rehypeSanitize:isEnabledPrevention': true,
   'markdown:rehypeSanitize:option': RehypeSanitizeOption.RECOMMENDED,
   'markdown:rehypeSanitize:tagNames': [],
-  'markdown:rehypeSanitize:attributes': {},
+  'markdown:rehypeSanitize:attributes': '{}',
   'markdown:isEnabledLinebreaks': false,
   'markdown:isEnabledLinebreaksInComments': true,
   'markdown:adminPreferredIndentSize': 4,

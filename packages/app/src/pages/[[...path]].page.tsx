@@ -261,7 +261,7 @@ const Page: NextPageWithLayout<Props> = (props: Props) => {
 
   useCurrentPageId(pageId ?? null);
   useRevisionIdHackmdSynced(pageWithMeta?.data.revisionHackmdSynced);
-  useRemoteRevisionId(pageWithMeta?.data.revision._id);
+  useRemoteRevisionId(pageWithMeta?.data.revision?._id);
   usePageIdOnHackmd(pageWithMeta?.data.pageIdOnHackmd);
   useHasDraftOnHackmd(pageWithMeta?.data.hasDraftOnHackmd ?? false);
   // useIsNotCreatable(props.isForbidden || !isCreatablePage(pagePath)); // TODO: need to include props.isIdentical

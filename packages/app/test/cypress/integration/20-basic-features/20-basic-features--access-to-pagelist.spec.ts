@@ -5,13 +5,12 @@ context('Access to pagelist', () => {
     cy.fixture("user-admin.json").then(user => {
       cy.login(user.username, user.password);
     });
-    // collapse sidebar
-    cy.collapseSidebar(true);
   });
 
   it('Page list modal is successfully opened ', () => {
     cy.visit('/');
     cy.waitUntilSkeletonDisappear();
+    cy.collapseSidebar(true);
 
     cy.getByTestid('pageListButton').click({force: true});
     cy.getByTestid('page-accessories-modal').parent().should('have.class','show');
@@ -55,8 +54,9 @@ context('Access to pagelist', () => {
 
   it('Successfully expand and close modal', () => {
     cy.visit('/');
-
     cy.waitUntilSkeletonDisappear();
+    cy.collapseSidebar(true);
+
     cy.getByTestid('pageListButton').click({force: true});
     cy.getByTestid('page-accessories-modal').parent().should('have.class','show');
     cy.getByTestid('page-list-item-L').should('be.visible');
@@ -77,6 +77,7 @@ context('Access to pagelist', () => {
       cy.get('button.close').eq(1).click();
     });
 
+    cy.collapseSidebar(true);
     cy.screenshot(`${ssPrefix}8-close-page-list-modal`);
   });
 });
@@ -88,22 +89,24 @@ context('Access to timeline', () => {
     cy.fixture("user-admin.json").then(user => {
       cy.login(user.username, user.password);
     });
-    // collapse sidebar
-    cy.collapseSidebar(true);
   });
   it('Timeline list successfully openend', () => {
     cy.visit('/');
+    cy.collapseSidebar(true);
+
     cy.getByTestid('pageListButton').click({force: true});
     cy.getByTestid('page-accessories-modal').parent().should('have.class','show').within(() => {
       cy.get('.nav-title > li').eq(1).find('a').click();
     });
     // eslint-disable-next-line cypress/no-unnecessary-waiting
     cy.wait(500); // wait for loading wiki
-    cy.screenshot(`${ssPrefix}1-timeline-list`, {capture: 'viewport'});
+    cy.screenshot(`${ssPrefix}1-timeline-list`);
   });
 
   it('Successfully expand and close modal', () => {
     cy.visit('/');
+    cy.collapseSidebar(true);
+
     cy.getByTestid('pageListButton').click({force: true});
     cy.getByTestid('page-accessories-modal').parent().should('have.class','show').within(() => {
       cy.get('.nav-title > li').eq(1).find('a').click();
@@ -112,10 +115,10 @@ context('Access to timeline', () => {
     cy.get('.modal').should('be.visible');
     // eslint-disable-next-line cypress/no-unnecessary-waiting
     cy.wait(500); // wait for loading wiki
-    cy.screenshot(`${ssPrefix}2-timeline-list-fullscreen`, {capture: 'viewport'});
+    cy.screenshot(`${ssPrefix}2-timeline-list-fullscreen`);
     cy.getByTestid('page-accessories-modal').parent().should('have.class','show').within(() => {
       cy.get('button.close').eq(1).click();
     });
-    cy.screenshot(`${ssPrefix}3-close-modal`, {capture: 'viewport'});
+    cy.screenshot(`${ssPrefix}3-close-modal`);
   });
 });
