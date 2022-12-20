@@ -38,12 +38,12 @@ export interface IPluginService {
   install(origin: GrowiPluginOrigin): Promise<void>
   retrieveThemeHref(theme: string): Promise<string | undefined>
   retrieveAllPluginResourceEntries(): Promise<GrowiPluginResourceEntries>
-  reintallNotExistPluginRepositories(): Promise<void>
+  intallNotExistPluginRepositories(): Promise<void>
 }
 
 export class PluginService implements IPluginService {
 
-  async reintallNotExistPluginRepositories(): Promise<void> {
+  async intallNotExistPluginRepositories(): Promise<void> {
     try {
       // check all growi plugin documents
       const GrowiPlugin = mongoose.model<GrowiPlugin>('GrowiPlugin');
@@ -57,7 +57,7 @@ export class PluginService implements IPluginService {
         else {
           // if not exists repository, reinstall latest plugin
           // delete old document
-          await GrowiPlugin.deleteOne({ _id: growiPluginData._id });
+          await GrowiPlugin.findByIdAndDelete(growiPluginData._id);
           // reinstall latest plugin
           await this.install(growiPluginData.origin);
           continue;
@@ -101,25 +101,6 @@ export class PluginService implements IPluginService {
     const zipFilePath = path.join(pluginStoringPath, `${ghBranch}.zip`);
     const unzippedPath = path.join(pluginStoringPath, ghOrganizationName);
 
-    const renamePath = async(oldPath: fs.PathLike, newPath: fs.PathLike) => {
-      if (fs.existsSync(newPath)) {
-        // if a repository already exists, delete old repository before rename path
-        const GrowiPlugin = mongoose.model<GrowiPlugin>('GrowiPlugin');
-
-        try {
-          // delete old repository
-          await fs.promises.rm(newPath, { recursive: true });
-          // delete old document
-          await GrowiPlugin.deleteOne({ url: `https://github.com/${ghOrganizationName}/${ghReposName}` });
-        }
-        catch (err) {
-          throw new Error(err);
-        }
-      }
-      // rename new repository
-      fs.renameSync(oldPath, newPath);
-    };
-
     const downloadFile = async(requestUrl: string, filePath: string) => {
       return new Promise<void>((resolve, reject) => {
         axios({
@@ -157,6 +138,23 @@ export class PluginService implements IPluginService {
       catch (err) {
         return err;
       }
+    };
+
+    const renamePath = async(oldPath: fs.PathLike, newPath: fs.PathLike) => {
+      try {
+        // if repository already exists, delete old repository before rename path
+        if (fs.existsSync(newPath)) await fs.promises.rm(newPath, { recursive: true });
+
+        const GrowiPlugin = mongoose.model<GrowiPlugin>('GrowiPlugin');
+        const isGrowiPlugin = await GrowiPlugin.findOne({ installedPath: `${ghOrganizationName}/${ghReposName}` });
+        // if document already exists, delete old document before rename path
+        if (isGrowiPlugin) await GrowiPlugin.findOneAndDelete({ installedPath: `${ghOrganizationName}/${ghReposName}` });
+      }
+      catch (err) {
+        throw new Error(err);
+      }
+      // rename repository
+      fs.renameSync(oldPath, newPath);
     };
 
     try {

@@ -90,7 +90,7 @@ class GrowiDocument extends Document<GrowiDocumentInitialProps> {
     const { configManager, customizeService, pluginService } = crowi;
 
     // document exists but there is no repository, reinstall the plugins
-    await (pluginService as IPluginService).reintallNotExistPluginRepositories();
+    await (pluginService as IPluginService).intallNotExistPluginRepositories();
 
     const theme = configManager.getConfig('crowi', 'customize:theme');
     const customScript: string | null = customizeService.getCustomScript();
