@@ -179,7 +179,6 @@
     "remark-wiki-link": "^1.0.4",
     "simplebar-react": "^2.3.6",
     "socket.io": "^4.2.0",
-    "sticky-events": "^3.4.11",
     "stream-to-promise": "^3.0.0",
     "string-width": "=4.2.2",
     "superjson": "^1.9.1",
@@ -245,6 +244,7 @@
     "simple-line-icons": "^2.5.5",
     "simple-load-script": "^1.0.2",
     "socket.io-client": "^4.2.0",
+    "sticky-events": "^3.4.11",
     "swagger2openapi": "^5.3.1",
     "ts-node-dev": "^2.0.0",
     "tsc-alias": "^1.2.9"
