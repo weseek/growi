@@ -191,13 +191,15 @@ const GrowiContextualSubNavigation = (props: GrowiContextualSubNavigationProps):
   const { data: shareLinkId } = useShareLinkId();
   const { data: currentPage, mutate: mutateCurrentPage } = useSWRxCurrentPage(shareLinkId ?? undefined);
 
+  const { data: currentPathname } = useCurrentPathname();
+  const isSharedPage = pagePathUtils.isSharedPage(currentPathname ?? '');
+
   const revision = currentPage?.revision;
   const revisionId = (revision != null && isPopulated(revision)) ? revision._id : undefined;
 
   const { data: isDrawerMode } = useDrawerMode();
   const { data: editorMode, mutate: mutateEditorMode } = useEditorMode();
   const { data: pageId } = useCurrentPageId();
-  const { data: currentPathname } = useCurrentPathname();
   const { data: currentUser } = useCurrentUser();
   const { data: isNotFound } = useIsNotFound();
   const { data: isGuestUser } = useIsGuestUser();
@@ -209,8 +211,10 @@ const GrowiContextualSubNavigation = (props: GrowiContextualSubNavigationProps):
   const { data: isAbleToShowPageEditorModeManager } = useIsAbleToShowPageEditorModeManager();
   const { data: isAbleToShowPageAuthors } = useIsAbleToShowPageAuthors();
 
-  const { mutate: mutateSWRTagsInfo, data: tagsInfoData } = useSWRxTagsInfo(currentPage?._id);
-  const { data: tagsForEditors, mutate: mutatePageTagsForEditors, sync: syncPageTagsForEditors } = usePageTagsForEditors(currentPage?._id);
+  const { mutate: mutateSWRTagsInfo, data: tagsInfoData } = useSWRxTagsInfo(!isSharedPage ? currentPage?._id : undefined);
+
+  // eslint-disable-next-line max-len
+  const { data: tagsForEditors, mutate: mutatePageTagsForEditors, sync: syncPageTagsForEditors } = usePageTagsForEditors(!isSharedPage ? currentPage?._id : undefined);
 
   const { open: openDuplicateModal } = usePageDuplicateModal();
   const { open: openRenameModal } = usePageRenameModal();
