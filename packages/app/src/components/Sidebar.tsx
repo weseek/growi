@@ -22,6 +22,10 @@ import { StickyStretchableScrollerProps } from './StickyStretchableScroller';
 
 import styles from './Sidebar.module.scss';
 
+const StickyStretchableScroller = dynamic<StickyStretchableScrollerProps>(() => import('./StickyStretchableScroller')
+  .then(mod => mod.StickyStretchableScroller), { ssr: false });
+const SidebarContents = dynamic(() => import('./Sidebar/SidebarContents')
+  .then(mod => mod.SidebarContents), { ssr: false, loading: () => <SidebarSkeleton /> });
 
 const sidebarMinWidth = 240;
 const sidebarMinimizeWidth = 20;
@@ -57,10 +61,6 @@ const GlobalNavigation = () => {
 };
 
 const SidebarContentsWrapper = () => {
-  const StickyStretchableScroller = dynamic<StickyStretchableScrollerProps>(() => import('./StickyStretchableScroller')
-    .then(mod => mod.StickyStretchableScroller), { ssr: false, loading: () => <SidebarSkeleton /> });
-  const SidebarContents = dynamic(() => import('./Sidebar/SidebarContents')
-    .then(mod => mod.SidebarContents), { ssr: false, loading: () => <SidebarSkeleton /> });
   const { mutate: mutateSidebarScroller } = useSidebarScrollerRef();
 
   const calcViewHeight = useCallback(() => {
