@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { memo } from 'react';
 
 import { useTranslation } from 'next-i18next';
 
@@ -10,7 +10,7 @@ import PageTreeContentSkeleton from './PageTreeContentSkeleton';
 import RecentChangesContentSkeleton from './RecentChangesContentSkeleton';
 import TagContentSkeleton from './TagContentSkeleton';
 
-export const SidebarSkeleton = (): JSX.Element => {
+export const SidebarSkeleton = memo(() => {
   const { t } = useTranslation();
   const { data: currentSidebarContents } = useCurrentSidebarContents();
 
@@ -45,4 +45,5 @@ export const SidebarSkeleton = (): JSX.Element => {
       <Contents />
     </div>
   );
-};
+});
+SidebarSkeleton.displayName = 'SidebarSkeleton';
