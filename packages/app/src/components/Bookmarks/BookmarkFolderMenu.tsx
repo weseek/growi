@@ -1,4 +1,6 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, {
+  useCallback, useEffect, useState,
+} from 'react';
 
 import { useTranslation } from 'next-i18next';
 import {
@@ -78,7 +80,10 @@ const BookmarkFolderMenu = (props: Props): JSX.Element => {
   return (
     <UncontrolledDropdown className={`grw-bookmark-folder-dropdown ${styles['grw-bookmark-folder-dropdown']}`}>
       {children}
-      <DropdownMenu right className='grw-bookmark-folder-menu'>
+      <DropdownMenu
+        right
+        className='grw-bookmark-folder-menu'
+      >
         { isCreateAction ? (
           <div className='mx-2'>
             <BookmarkFolderNameInput
