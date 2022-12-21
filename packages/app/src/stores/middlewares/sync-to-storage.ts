@@ -1,6 +1,10 @@
 import { isClient } from '@growi/core';
 import { Middleware } from 'swr';
 
+import loggerFactory from '~/utils/logger';
+
+const logger = loggerFactory('growi:stores:sync-to-storage');
+
 const generateKeyInStorage = (key: string): string => {
   return `swr-cache-${key}`;
 };
@@ -30,7 +34,12 @@ export const createSyncToStorageMiddlware = (
       // retrieve initial data from storage
       const itemInStorage = storage.getItem(keyInStorage);
       if (itemInStorage != null) {
-        initData = storageSerializer.deserialize(itemInStorage);
+        try {
+          initData = storageSerializer.deserialize(itemInStorage);
+        }
+        catch (e) {
+          logger.warn(`Could not deserialize the item for the key '${keyInStorage}'`);
+        }
       }
 
       config.fallbackData = initData;
