@@ -27,7 +27,6 @@ const PLUGINS_STATIC_DIR = '/static/plugins'; // configured by express.static
 
 export type GrowiPluginResourceEntries = [installedPath: string, href: string][];
 
-
 function retrievePluginManifest(growiPlugin: GrowiPlugin): ViteManifest {
   const manifestPath = resolveFromRoot(path.join('tmp/plugins', growiPlugin.installedPath, 'dist/manifest.json'));
   const manifestStr: string = readFileSync(manifestPath, 'utf-8');
@@ -81,35 +80,41 @@ export class PluginService implements IPluginService {
   }
 
   async install(origin: GrowiPluginOrigin): Promise<void> {
+    try {
     // download
-    const ghUrl = new URL(origin.url);
-    const ghPathname = ghUrl.pathname;
-    // TODO: Branch names can be specified.
-    const ghBranch = 'main';
+      const ghUrl = new URL(origin.url);
+      const ghPathname = ghUrl.pathname;
+      // TODO: Branch names can be specified.
+      const ghBranch = 'main';
 
-    const match = ghPathname.match(githubReposIdPattern);
-    if (ghUrl.hostname !== 'github.com' || match == null) {
-      throw new Error('The GitHub Repository URL is invalid.');
+      const match = ghPathname.match(githubReposIdPattern);
+      if (ghUrl.hostname !== 'github.com' || match == null) {
+        throw new Error('The GitHub Repository URL is invalid.');
+      }
+
+      const ghOrganizationName = match[1];
+      const ghReposName = match[2];
+      const installedPath = `${ghOrganizationName}/${ghReposName}`;
+
+      // download github repository to local file system
+      await this.downloadPluginRepository(ghOrganizationName, ghReposName, ghBranch);
+
+      // delete old document
+      await this.deleteOldPluginDocument(installedPath);
+
+      // save plugin metadata
+      const plugins = await PluginService.detectPlugins(origin, installedPath);
+      await this.savePluginMetaData(plugins);
     }
-
-    const ghOrganizationName = match[1];
-    const ghReposName = match[2];
-    const installedPath = `${ghOrganizationName}/${ghReposName}`;
-
-    // download github repository to local file system
-    await this.downloadPluginRepository(ghOrganizationName, ghReposName, ghBranch);
-
-    // delete old document
-    await this.deleteOldDocument(installedPath);
-
-    // save plugin metadata
-    const plugins = await PluginService.detectPlugins(origin, installedPath);
-    await this.savePluginMetaData(plugins);
+    catch (err) {
+      logger.error(err);
+      throw err;
+    }
 
     return;
   }
 
-  private async deleteOldDocument(path: string): Promise<void> {
+  private async deleteOldPluginDocument(path: string): Promise<void> {
     const GrowiPlugin = mongoose.model<GrowiPlugin>('GrowiPlugin');
     const growiPlugin = await GrowiPlugin.findOne({ installedPath: path });
     // if document already exists, delete old document before rename path
@@ -123,7 +128,7 @@ export class PluginService implements IPluginService {
     const unzippedPath = path.join(pluginStoringPath, ghOrganizationName);
 
     const downloadFile = async(requestUrl: string, filePath: string) => {
-      return new Promise<void>((resolve, reject) => {
+      return new Promise<void>((resolve, rejects) => {
         axios({
           method: 'GET',
           url: requestUrl,
@@ -139,10 +144,12 @@ export class PluginService implements IPluginService {
                 });
             }
             else {
-              return reject(res.status);
+              rejects(res.status);
             }
-          }).catch((err) => {
-            return reject(err);
+          }).catch((e) => {
+            logger.error(e);
+            // eslint-disable-next-line prefer-promise-reject-errors
+            rejects('Filed to download file.');
           });
       });
     };
@@ -157,7 +164,8 @@ export class PluginService implements IPluginService {
         deleteZipFile(zipFilePath);
       }
       catch (err) {
-        return err;
+        logger.error(err);
+        throw new Error('Filed to unzip.');
       }
     };
 
@@ -169,7 +177,8 @@ export class PluginService implements IPluginService {
         fs.renameSync(oldPath, newPath);
       }
       catch (err) {
-        return err;
+        logger.error(err);
+        throw new Error('Filed to rename path.');
       }
     };
 
@@ -179,7 +188,7 @@ export class PluginService implements IPluginService {
       await renamePath(`${unzippedPath}/${ghReposName}-${ghBranch}`, `${unzippedPath}/${ghReposName}`);
     }
     catch (err) {
-      logger.error(err);
+      throw err;
     }
 
     return;

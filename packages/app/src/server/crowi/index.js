@@ -702,7 +702,8 @@ Crowi.prototype.setupPluginService = async function() {
   if (this.pluginService == null) {
     this.pluginService = new PluginService(this);
   }
-  // download the plugins repositories, if document exists but there is no repository
+  // download plugin repositories, if document exists but there is no repository
+  // TODO: Cannot download unless connected to the Internet at setup.
   await this.pluginService.downloadNotExistPluginRepositories();
 };
 
