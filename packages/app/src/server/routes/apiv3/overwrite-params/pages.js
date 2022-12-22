@@ -1,7 +1,5 @@
-const { pagePathUtils } = require('@growi/core');
+const { PageGrant } = require('@growi/core');
 const mongoose = require('mongoose');
-
-const { isTopPage } = pagePathUtils;
 
 // eslint-disable-next-line no-unused-vars
 const ImportOptionForPages = require('~/models/admin/import-option-for-pages');
@@ -19,7 +17,6 @@ class PageOverwriteParamsFactory {
    *  value: any value or a function `(value, { document, schema, propertyName }) => { return newValue }`
    */
   static generate(operatorUserId, option) {
-    const { GRANT_PUBLIC } = mongoose.model('Page');
     const params = {};
 
     if (option.isOverwriteAuthorWithCurrentUser) {
@@ -30,13 +27,13 @@ class PageOverwriteParamsFactory {
 
     params.grant = (value, { document, schema, propertyName }) => {
       if (option.makePublicForGrant2 && value === 2) {
-        return GRANT_PUBLIC;
+        return PageGrant.GRANT_PUBLIC;
       }
       if (option.makePublicForGrant4 && value === 4) {
-        return GRANT_PUBLIC;
+        return PageGrant.GRANT_PUBLIC;
       }
       if (option.makePublicForGrant5 && value === 5) {
-        return GRANT_PUBLIC;
+        return PageGrant.GRANT_PUBLIC;
       }
       return value;
     };
