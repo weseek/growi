@@ -39,7 +39,6 @@ export type NextPageWithLayout<P = {}, IP = P> = NextPage<P, IP> & {
 }
 
 type GrowiAppProps = AppProps & {
-  pageProps: CommonProps;
   Component: NextPageWithLayout,
 };
 
