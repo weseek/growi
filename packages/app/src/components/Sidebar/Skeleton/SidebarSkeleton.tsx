@@ -1,6 +1,7 @@
-import React from 'react';
+import React, { memo } from 'react';
 
-import { Skeleton } from '~/components/Skeleton';
+import { useTranslation } from 'next-i18next';
+
 import { SidebarContentsType } from '~/interfaces/ui';
 import { useCurrentSidebarContents } from '~/stores/ui';
 
@@ -9,42 +10,40 @@ import PageTreeContentSkeleton from './PageTreeContentSkeleton';
 import RecentChangesContentSkeleton from './RecentChangesContentSkeleton';
 import TagContentSkeleton from './TagContentSkeleton';
 
-import styles from './SidebarSkeleton.module.scss';
-
-export const SidebarHeaderSkeleton = (): JSX.Element => {
-  return (
-    <div className="grw-sidebar-content-header py-3">
-      <Skeleton additionalClass={styles['grw-sidebar-content-header-skeleton']} />
-    </div>
-  );
-};
-
-export const SidebarSkeleton = (): JSX.Element => {
-
+export const SidebarSkeleton = memo(() => {
+  const { t } = useTranslation();
   const { data: currentSidebarContents } = useCurrentSidebarContents();
 
-  let SidebarContentSkeleton: () => JSX.Element;
+  let Contents: () => JSX.Element;
+  let title: string;
   switch (currentSidebarContents) {
 
-    case SidebarContentsType.TAG:
-      SidebarContentSkeleton = TagContentSkeleton;
-      break;
     case SidebarContentsType.RECENT:
-      SidebarContentSkeleton = RecentChangesContentSkeleton;
+      Contents = RecentChangesContentSkeleton;
+      title = t('Recent Changes');
       break;
     case SidebarContentsType.CUSTOM:
-      SidebarContentSkeleton = CustomSidebarContentSkeleton;
+      Contents = CustomSidebarContentSkeleton;
+      title = t('CustomSidebar');
+      break;
+    case SidebarContentsType.TAG:
+      Contents = TagContentSkeleton;
+      title = t('Tags');
       break;
     case SidebarContentsType.TREE:
     default:
-      SidebarContentSkeleton = PageTreeContentSkeleton;
+      Contents = PageTreeContentSkeleton;
+      title = t('Page Tree');
       break;
   }
 
   return (
     <div className={currentSidebarContents === SidebarContentsType.TAG ? 'px-4' : 'px-3'}>
-      <SidebarHeaderSkeleton />
-      <SidebarContentSkeleton />
+      <div className="grw-sidebar-content-header py-3">
+        <h3 className="mb-0">{title}</h3>
+      </div>
+      <Contents />
     </div>
   );
-};
+});
+SidebarSkeleton.displayName = 'SidebarSkeleton';
