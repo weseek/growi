@@ -12,7 +12,12 @@ describe('Access to sidebar', () => {
     context('when access to root page', { scrollBehavior: false }, () => {
       beforeEach(() => {
         cy.visit('/');
-        cy.waitUntilSkeletonDisappear();
+
+        // Workaround for waitinig initial open/close interaction
+        // TODO: remove this cy.wait() after SSR without the initial interaction is implemented
+        // eslint-disable-next-line cypress/no-unnecessary-waiting
+        cy.wait(2000);
+
         // Since this is a sidebar test, call collapseSidebar in beforeEach.
         cy.collapseSidebar(false);
       });
@@ -21,6 +26,7 @@ describe('Access to sidebar', () => {
         it('Successfully show sidebar', () => {
           cy.getByTestid('grw-pagetree-item-container').should('be.visible');
 
+          cy.waitUntilSkeletonDisappear();
           cy.screenshot(`${ssPrefix}1-sidebar-shown`, {
             capture: 'viewport',
             // Blackout for recalculation of toc content hight
@@ -31,6 +37,7 @@ describe('Access to sidebar', () => {
         it('Successfully collapse sidebar', () => {
           cy.getByTestid('grw-navigation-resize-button').click({force: true});
 
+          cy.waitUntilSkeletonDisappear();
           cy.screenshot(`${ssPrefix}2-sidebar-collapsed`, {
             capture: 'viewport',
             // Blackout for recalculation of toc content hight
