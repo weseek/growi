@@ -67,12 +67,16 @@ describe('Access to sidebar', () => {
         });
 
         it('Successfully click Add to Bookmarks button', () => {
-          // click three dots
-          cy.get('.grw-pagetree-item-children').first().within(() => {
-            cy.getByTestid('open-page-item-control-btn').find('button').first().invoke('css','display','block').click();
+          cy.waitUntil(() => {
+            // do
+            cy.getByTestid('grw-contextual-navigation-sub').within(() => {
+              cy.get('.grw-pagetree-item-children').first().as('pagetreeItem').within(() => {
+                cy.getByTestid('open-page-item-control-btn').find('button').first().invoke('css','display','block').click()
+              });
+            });
+            // wait until
+            return cy.get('.dropdown-menu.show').then($elem => $elem.is(':visible'));
           });
-
-          cy.getByTestid('page-item-control-menu').should('have.class', 'show');
 
           cy.screenshot(`${ssPrefix}page-tree-3-before-click-button`, {
             // Blackout for recalculation of toc content hight
@@ -83,13 +87,17 @@ describe('Access to sidebar', () => {
           cy.getByTestid('page-item-control-menu').should('have.class', 'show')
           cy.getByTestid('add-remove-bookmark-btn').click();
 
-
           // show dropdown again
-          cy.get('.grw-pagetree-item-children').first().within(() => {
-            cy.getByTestid('open-page-item-control-btn').find('button').first().invoke('css','display','block').click();
+          cy.waitUntil(() => {
+            // do
+            cy.getByTestid('grw-contextual-navigation-sub').within(() => {
+              cy.get('.grw-pagetree-item-children').first().as('pagetreeItem').within(() => {
+                cy.getByTestid('open-page-item-control-btn').find('button').first().invoke('css','display','block').click()
+              });
+            });
+            // wait until
+            return cy.get('.dropdown-menu.show').then($elem => $elem.is(':visible'));
           });
-
-          cy.getByTestid('page-item-control-menu').should('have.class', 'show');
 
           cy.screenshot(`${ssPrefix}page-tree-4-after-click-button`, {
             // Blackout for recalculation of toc content hight
@@ -98,14 +106,23 @@ describe('Access to sidebar', () => {
         });
 
         it('Successfully show duplicate page modal', () => {
-          cy.get('.grw-pagetree-item-children').first().within(() => {
-            cy.getByTestid('open-page-item-control-btn').find('button').first().invoke('css','display','block').click();
+          cy.waitUntil(() => {
+            // do
+            cy.getByTestid('grw-contextual-navigation-sub').within(() => {
+              cy.get('.grw-pagetree-item-children').first().as('pagetreeItem').within(() => {
+                cy.getByTestid('open-page-item-control-btn').find('button').first().invoke('css','display','block').click()
+              });
+            });
+            // wait until
+            return cy.get('.dropdown-menu.show').then($elem => $elem.is(':visible'));
           });
-          cy.get('.dropdown-menu.show').should('be.visible').within(() => {
-            cy.getByTestid('open-page-duplicate-modal-btn').click();
+
+          cy.get('.dropdown-menu.show').within(() => {
+            cy.getByTestid('open-page-duplicate-modal-btn').should('be.visible').click();
           });
+
           cy.getByTestid('page-duplicate-modal').should('be.visible').within(() => {
-            cy.get('.rbt-input-main').type('_test');
+            cy.get('.form-control').type('_test');
 
             cy.screenshot(`${ssPrefix}page-tree-5-duplicate-page-modal`);
 
@@ -114,34 +131,46 @@ describe('Access to sidebar', () => {
         });
 
         it('Successfully rename page', () => {
-          cy.getByTestid('grw-contextual-navigation-sub').within(() => {
-            cy.get('.grw-pagetree-item-children').first().within(() => {
-              cy.getByTestid('open-page-item-control-btn').find('button').first().invoke('css','display','block').click()
+          cy.waitUntil(() => {
+            // do
+            cy.getByTestid('grw-contextual-navigation-sub').within(() => {
+              cy.get('.grw-pagetree-item-children').first().as('pagetreeItem').within(() => {
+                cy.getByTestid('open-page-item-control-btn').find('button').first().invoke('css','display','block').click()
+              });
             });
-            cy.get('.dropdown-menu.show').should('be.visible').within(() => {
-              cy.getByTestid('open-page-move-rename-modal-btn').click();
-            });
-            cy.get('.grw-pagetree-item-children').first().within(() => {
-              cy.getByTestid('closable-text-input').type('_newname');
-            });
-
-            cy.screenshot(`${ssPrefix}page-tree-6-rename-page`);
+            // wait until
+            return cy.get('.dropdown-menu.show').then($elem => $elem.is(':visible'));
           });
+
+          cy.get('.dropdown-menu.show').within(() => {
+            cy.getByTestid('open-page-move-rename-modal-btn').should('be.visible').click();
+          });
+
+          cy.get('@pagetreeItem').within(() => {
+            cy.getByTestid('closable-text-input').type('_newname');
+          })
+
+          cy.screenshot(`${ssPrefix}page-tree-6-rename-page`);
         });
 
         it('Successfully show delete page modal', () => {
-          cy.getByTestid('grw-contextual-navigation-sub').within(() => {
-            cy.get('.grw-pagetree-item-children').first().within(() => {
-              cy.getByTestid('open-page-item-control-btn').find('button').first().invoke('css','display','block').click()
+          cy.waitUntil(() => {
+            // do
+            cy.getByTestid('grw-contextual-navigation-sub').within(() => {
+              cy.get('.grw-pagetree-item-children').first().as('pagetreeItem').within(() => {
+                cy.getByTestid('open-page-item-control-btn').find('button').first().invoke('css','display','block').click()
+              });
             });
-            cy.get('.dropdown-menu.show').should('be.visible').within(() => {
-              cy.getByTestid('open-page-delete-modal-btn').click();
-            });
+            // wait until
+            return cy.get('.dropdown-menu.show').then($elem => $elem.is(':visible'));
           });
+
+          cy.get('.dropdown-menu.show').within(() => {
+            cy.getByTestid('open-page-delete-modal-btn').should('be.visible').click();
+          });
+
           cy.getByTestid('page-delete-modal').should('be.visible').within(() => {
-
             cy.screenshot(`${ssPrefix}page-tree-7-delete-page-modal`);
-
             cy.get('.modal-header > button').click();
           });
         });
