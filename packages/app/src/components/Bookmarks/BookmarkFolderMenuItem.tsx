@@ -96,8 +96,50 @@ const BookmarkFolderMenuItem = (props: Props):JSX.Element => {
     catch (err) {
       toastError(err);
     }
-    onSelectedChild();
-  }, [currentPage, onSelectedChild]);
+    // onSelectedChild();
+  }, [currentPage]);
+
+  const renderBookmarkSubMenuItem = useCallback(() => {
+    return (
+      <>
+        { childFolders != null && (
+          <DropdownMenu className='m-0'>
+            { isCreateAction ? (
+              <div className='mx-2' onClick={e => e.stopPropagation()}>
+                <BookmarkFolderNameInput
+                  onClickOutside={() => setIsCreateAction(false)}
+                  onPressEnter={onPressEnterHandlerForCreate}
+                />
+              </div>
+            ) : (
+              <DropdownItem toggle={false} onClick={e => onClickNewBookmarkFolder(e) } className='grw-bookmark-folder-menu-item'>
+                <FolderIcon isOpen={false}/>
+                <span className="mx-2 ">{t('bookmark_folder.new_folder')}</span>
+              </DropdownItem>
+            )}
+
+            { childFolders && childFolders?.length > 0 && (<DropdownItem divider />)}
+
+            {childFolders?.map(child => (
+              <div key={child._id} >
+
+                <div
+                  className='dropdown-item grw-bookmark-folder-menu-item'
+                  tabIndex={0} role="menuitem"
+                  onClick={e => onClickChildMenuItemHandler(e, child)}>
+                  <BookmarkFolderMenuItem
+                    onSelectedChild={() => setSelectedItem(null)}
+                    isSelected={selectedItem === child._id}
+                    item={child}
+                  />
+                </div>
+              </div>
+            ))}
+          </DropdownMenu>
+        )}
+      </>
+    );
+  }, [childFolders, isCreateAction, onClickChildMenuItemHandler, onClickNewBookmarkFolder, onPressEnterHandlerForCreate, selectedItem, t]);
 
   return (
     <UncontrolledDropdown
@@ -126,55 +168,9 @@ const BookmarkFolderMenuItem = (props: Props):JSX.Element => {
         onClick={e => e.stopPropagation()}
         onMouseEnter={onMouseEnterHandler}
       >
-        <TriangleIcon/>
+        { childFolders && childFolders?.length > 0 && <TriangleIcon/> }
       </DropdownToggle>
-      { childFolders != null && (
-        <DropdownMenu className='m-0'>
-          { isCreateAction ? (
-            <div className='mx-2' onClick={e => e.stopPropagation()}>
-              <BookmarkFolderNameInput
-                onClickOutside={() => setIsCreateAction(false)}
-                onPressEnter={onPressEnterHandlerForCreate}
-              />
-            </div>
-          ) : (
-            <DropdownItem toggle={false} onClick={e => onClickNewBookmarkFolder(e) } className='grw-bookmark-folder-menu-item'>
-              <FolderIcon isOpen={false}/>
-              <span className="mx-2 ">{t('bookmark_folder.new_folder')}</span>
-            </DropdownItem>
-          )}
-          <DropdownItem divider />
-
-          {childFolders?.map(child => (
-            <div key={child._id} >
-              {child.children.length > 0 ? (
-                <div className='dropdown-item grw-bookmark-folder-menu-item' tabIndex={0} role="menuitem" onClick={e => onClickChildMenuItemHandler(e, child)}>
-                  <BookmarkFolderMenuItem
-                    onSelectedChild={() => setSelectedItem(null)}
-                    isSelected={selectedItem === child._id}
-                    item={child}
-                  />
-                </div>
-              ) : (
-                <div className='dropdown-item grw-bookmark-folder-menu-item' tabIndex={0} role="menuitem" onClick={e => onClickChildMenuItemHandler(e, child)}>
-                  <input
-                    type="radio"
-                    checked={selectedItem === child._id}
-                    name="bookmark-folder-menu-item"
-                    id={`bookmark-folder-menu-item-${child._id}`}
-                    onChange={e => e.stopPropagation()}
-                    onClick={e => e.stopPropagation() }
-                  />
-                  <label htmlFor={`bookmark-folder-menu-item-${child._id}`} className='p-2 m-0 grw-bookmark-folder-menu-item-title mr-auto'>
-                    {child.name}
-                  </label>
-                </div>
-              )}
-            </div>
-          ))}
-        </DropdownMenu>
-      )
-      }
+      { renderBookmarkSubMenuItem() }
     </UncontrolledDropdown >
   );
 };

@@ -105,11 +105,16 @@ bookmarkFolderSchema.statics.findChildFolderById = async function(parentFolderId
   return childFolders;
 };
 
-bookmarkFolderSchema.statics.deleteFolderAndChildren = async function(boookmarkFolderId: Types.ObjectId | string): Promise<{deletedCount: number}> {
+bookmarkFolderSchema.statics.deleteFolderAndChildren = async function(bookmarkFolderId: Types.ObjectId | string): Promise<{deletedCount: number}> {
+  const bookmarkFolder = await this.findById(bookmarkFolderId);
   // Delete parent and all children folder
-  const bookmarkFolder = await this.findByIdAndDelete(boookmarkFolderId);
   let deletedCount = 0;
   if (bookmarkFolder != null) {
+    // Delete Bookmarks
+    const bookmarks = bookmarkFolder?.bookmarks;
+    if (bookmarks && bookmarks.length > 0) {
+      await Bookmark.deleteMany({ _id: { $in: bookmarks } });
+    }
     // Delete all child recursively and update deleted count
     const childFolders = await this.find({ parent: bookmarkFolder });
     await Promise.all(childFolders.map(async(child) => {
@@ -118,6 +123,7 @@ bookmarkFolderSchema.statics.deleteFolderAndChildren = async function(boookmarkF
     }));
     const deletedChild = await this.deleteMany({ parent: bookmarkFolder });
     deletedCount += deletedChild.deletedCount + 1;
+    bookmarkFolder.delete();
   }
   return { deletedCount };
 };
