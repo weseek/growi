@@ -23,7 +23,7 @@
     "react-innertext": "^1.1.5"
   },
   "devDependencies": {
-    "bootstrap": "^4.6.1",
+    "bootstrap": "^5.2.3",
     "sass": "^1.55.0"
   }
 }

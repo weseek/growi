@@ -210,7 +210,7 @@
     "@types/react-scroll": "^1.8.4",
     "autoprefixer": "^9.0.0",
     "babel-loader": "^8.2.5",
-    "bootstrap": "^4.6.1",
+    "bootstrap": "^5.2.3",
     "codemirror": "^5.64.0",
     "connect-browser-sync": "^2.1.0",
     "core-js": "=2.6.9",
