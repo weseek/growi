@@ -21,6 +21,7 @@ context('Switch sidebar mode', () => {
 
   it('Switching sidebar mode', () => {
     cy.visit('/');
+    // This test uses collapseSidebar here, because this test for the sidebar.
     cy.collapseSidebar(true, true)
     cy.get('.grw-apperance-mode-dropdown').first().click();
 

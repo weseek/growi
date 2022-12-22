@@ -116,6 +116,7 @@ context('Search all pages', () => {
     cy.wait(1500);
     cy.screenshot(`${ssPrefix}3-search-page-results`, { capture: 'viewport'});
 
+    // TODO: chlick three dots bottom, collapse sidebar doesn't working.
     cy.getByTestid('open-page-item-control-btn').eq(1).click();
     cy.getByTestid('search-result-content').should('be.visible');
     cy.get('.wiki').should('be.visible');
@@ -123,7 +124,7 @@ context('Search all pages', () => {
     cy.get('.search-result-content-body-container').scrollTo('top');
     cy.screenshot(`${ssPrefix}4-click-three-dots-menu`, {capture: 'viewport'});
 
-    //Add bookmark
+    // Add bookmark
     cy.getByTestid('add-remove-bookmark-btn').click({force: true});
     cy.get('.btn-bookmark.active').should('be.visible');
     cy.screenshot(`${ssPrefix}5-add-bookmark`, {capture: 'viewport'});
