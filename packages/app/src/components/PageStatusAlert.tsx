@@ -153,7 +153,7 @@ export const PageStatusAlert = (): JSX.Element => {
     getContentsForDraftExistsAlert,
   ]);
 
-  if (!!isGuest || alertComponentContents == null) { return <></> }
+  if (isGuest || alertComponentContents == null) { return <></> }
 
   const { additionalClasses, label, btn } = alertComponentContents;
 
