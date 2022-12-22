@@ -22,8 +22,8 @@
   --primary-hs: 216.7,65%;
   --primary-l: 20.2%;
   --accent: hsl(var(--accent-hs),var(--accent-l));
-  --accent-hs: 216.7,65%;
-  --accent-l: 20.2%;
+  --accent-hs: 198.6,74.2%;
+  --accent-l: 48.6%;
   $accent: #209fd8;
 
 
@@ -51,7 +51,7 @@
   --color-link-wiki-l: var(--color-link-l);
   --color-link-wiki-hover: #{hsl.lighten(var(--color-link-wiki),20%)};
   --color-link-nabvar: #{$gray-500};
-  --color-inline-code: darken($red, 15%); // optional
+  --color-inline-code: #{darken($red, 15%)}; // optional
 
   // List Group colors
   --color-list: var(--color-global); // optional
@@ -74,6 +74,8 @@
   --bgcolor-navbar-s:0%;
   --bgcolor-navbar-l:12.94%;
   --bgcolor-search-top-dropdown: var(--accent);
+  --bgcolor-search-top-dropdown-hs: var(--accent-hs);
+  --bgcolor-search-top-dropdown-l: var(--accent-l);
   $border-image-navbar: linear-gradient(to right, #36c9ff 0%, #36c9ff 33%, #7926ff 66%, #ff2eff 100%);
 
   // Logo colors
@@ -187,6 +189,8 @@
   // Navbar
   --bgcolor-navbar: #2a2929;
   --bgcolor-search-top-dropdown: var(--accent);
+  --bgcolor-search-top-dropdown-hs: var(--accent-hs);
+  --bgcolor-search-top-dropdown-l: (var(--accent-l));
   $border-image-navbar: linear-gradient(to right, #44bfe3 0%, #b04aff 50%, #ff1794 100%);
 
   // Logo colors
