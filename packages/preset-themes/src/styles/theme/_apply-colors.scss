@@ -3,7 +3,7 @@
 @use '../mixins';
 @use './mixins/tables'; // comment out and use _reboot-bootstrap-tables instead -- 2020.05.28 Yuki Takei
 @use '../atoms/mixins/code';
-
+@use './mixins/hsl-button';
 @use './hsl-functions' as hsl;
 
 //
@@ -41,7 +41,7 @@
 // nav-tabs-link-active-border-color: var(--bordercolor-nav-tabs-active);
 // theme-colors: map-merge($theme-colors, ( primary: $primary ));
 
-@import 'reboot-bootstrap-nav';
+// @import 'reboot-bootstrap-nav';
 
 // determine variables with　bootstrap function (These variables can be used after importing bootstrap above)
 // $color-modal-header: var(--color-modal-header,contrast(var(--primary)));
@@ -59,257 +59,257 @@
 //
 
 // Alert link
-@each $color, $value in $theme-colors {
-  .alert.alert-#{$color} {
-    a,
-    a:hover {
-      color: theme-color-level($color, $alert-color-level - 2);
-    }
-  }
-}
+// @each $color, $value in $theme-colors {
+//   .alert.alert-#{$color} {
+//     a,
+//     a:hover {
+//       color: theme-color-level($color, $alert-color-level - 2);
+//     }
+//   }
+// }
 
 // Dropdown
-.grw-apperance-mode-dropdown {
-  .grw-sidebar-mode-icon svg {
-    fill: $secondary;
-  }
-  .grw-color-mode-icon svg {
-    fill: var(--color-global);
-  }
-  .grw-color-mode-icon-muted svg {
-    fill: $secondary;
-  }
-}
+// .grw-apperance-mode-dropdown {
+//   .grw-sidebar-mode-icon svg {
+//     fill: var(--secondary);
+//   }
+//   .grw-color-mode-icon svg {
+//     fill: var(--color-global);
+//   }
+//   .grw-color-mode-icon-muted svg {
+//     fill: var(--secondary);
+//   }
+// }
 
 // Form
-.form-control {
-  @include form-control-focus();
-}
+// .form-control {
+//   @include form-control-focus();
+// }
 
 // Tabs
-.nav.nav-tabs .nav-link.active {
-  color: var(--color-link);
-  background: transparent;
+// .nav.nav-tabs .nav-link.active {
+//   color: var(--color-link);
+//   background: transparent;
 
-  &:hover,
-  &:focus {
-    color: var(--color-link-hover);
-  }
-}
+//   &:hover,
+//   &:focus {
+//     color: var(--color-link-hover);
+//   }
+// }
 
 // Pagination
-ul.pagination {
-  li.page-item.disabled {
-    button.page-link {
-      color: $gray-400;
-    }
-  }
-  li.page-item.active {
-    button.page-link {
-      color: color-yiq($primary);
-      background-color: $primary;
-      &:hover,
-      &:focus {
-        color: color-yiq($primary);
-        background-color: $primary;
-      }
-    }
-  }
-  li.page-item {
-    button.page-link {
-      color: $primary;
-      border-color: $secondary;
-      &:hover,
-      &:active,
-      &:focus {
-        color: $primary;
-      }
-    }
-  }
-}
+// ul.pagination {
+//   li.page-item.disabled {
+//     button.page-link {
+//       color: #{$gray-400};
+//     }
+//   }
+//   li.page-item.active {
+//     button.page-link {
+//       color: #{hsl.contrast(var(--primary))};
+//       background-color: var(--primary);
+//       &:hover,
+//       &:focus {
+//         color: #{hsl.contrast(var(--primary))};
+//         background-color: var(--primary);
+//       }
+//     }
+//   }
+//   li.page-item {
+//     button.page-link {
+//       color: var(--primary);
+//       border-color: var(--secondary);
+//       &:hover,
+//       &:active,
+//       &:focus {
+//         color: var(--primary);
+//       }
+//     }
+//   }
+// }
 
 //
 //== Apply to Handsontable
 //
-.handsontable {
-  color: initial;
-}
+// .handsontable {
+//   color: initial;
+// }
 
 //
 //== Apply to GROWI Elements
 //
 
-.grw-logo {
-  // set transition for fill
-  svg * {
-    transition: fill 0.8s ease-out;
-  }
+// .grw-logo {
+//   set transition for fill
+//   svg * {
+//     transition: fill 0.8s ease-out;
+//   }
 
-  svg {
-    fill: var(--fillcolor-logo-mark);
-  }
+//   svg {
+//     fill: var(--fillcolor-logo-mark);
+//   }
 
-  &:hover {
-    svg {
-      .group1 {
-        fill: var.$growi-green;
-      }
+//   &:hover {
+//     svg {
+//       .group1 {
+//         fill: #{var.$growi-green};
+//       }
 
-      .group2 {
-        fill: var.$growi-blue;
-      }
-    }
-  }
-}
+//       .group2 {
+//         fill: #{var.$growi-blue};
+//       }
+//     }
+//   }
+// }
 
-.grw-navbar {
-  background: var(--bgcolor-navbar);
-  .nav-item .nav-link {
-    color: var(--color-link-nabvar);
-  }
+// .grw-navbar {
+//   background: var(--bgcolor-navbar);
+//   .nav-item .nav-link {
+//     color: var(--color-link-nabvar);
+//   }
 
-  border-image: $border-image-navbar;
-  border-image-slice: 1;
+//   border-image: var(--border-image-navbar);
+//   border-image-slice: 1;
 
-  .grw-app-title {
-    color: var(--fillcolor-logo-mark);
-  }
-}
+//   .grw-app-title {
+//     color: var(--fillcolor-logo-mark);
+//   }
+// }
 
-.grw-global-search {
-  .btn-secondary.dropdown-toggle {
-    @include button-variant($bgcolor-search-top-dropdown, $bgcolor-search-top-dropdown);
-  }
+// .grw-global-search {
+//   .btn-secondary.dropdown-toggle {
+//     @include button-variant($bgcolor-search-top-dropdown, $bgcolor-search-top-dropdown);
+//   }
 
-  // for https://youtrack.weseek.co.jp/issue/GW-2603
-  .search-typeahead {
-    background-color: var(--bgcolor-global); opacity:0.9;
-  }
-}
+//   // for https://youtrack.weseek.co.jp/issue/GW-2603
+//   .search-typeahead {
+//     background-color: var(--bgcolor-global); opacity:0.9;
+//   }
+// }
 
-.grw-sidebar {
-  .grw-navigation-resize-button {
-    $color-resize-button: var(--color-resize-button--,var(--color-global));
-    $bgcolor-resize-button: white !default;
-    $color-resize-button-hover: $color-reversal !default;
-    $bgcolor-resize-button-hover: lighten($bgcolor-resize-button, 5%) !default;
+// .grw-sidebar {
+//   .grw-navigation-resize-button {
+//     $color-resize-button: var(--color-resize-button--,var(--color-global));
+//     $bgcolor-resize-button: var(--bgcolor-resize-button,white);
+//     $color-resize-button-hover: var(--color-resize-button-hover,var(--color-reversal));
+//     $bgcolor-resize-button-hover: var(--bgcolor-resize-button-hover,#{hsl.lighten(var(--bgcolor-resize-button), 5%)});
 
-    .hexagon-container svg {
-      .background {
-        fill: $bgcolor-resize-button;
-      }
-      .icon {
-        fill: $color-resize-button;
-      }
-    }
-    &:hover .hexagon-container svg {
-      .background {
-        fill: $bgcolor-resize-button-hover;
-      }
-      .icon {
-        fill: $color-resize-button-hover;
-      }
-    }
-  }
-  div.grw-global-navigation {
-    > div {
-      background-color: var(--bgcolor-sidebar);
-    }
-  }
-  div.grw-contextual-navigation {
-    > div {
-      color: var(--color-sidebar-context);
-      background-color: var(--bgcolor-sidebar-context);
-    }
-  }
+//     .hexagon-container svg {
+//       .background {
+//         fill: var(--bgcolor-resize-button);
+//       }
+//       .icon {
+//         fill: var(--color-resize-button);
+//       }
+//     }
+//     &:hover .hexagon-container svg {
+//       .background {
+//         fill: var(--bgcolor-resize-button-hover);
+//       }
+//       .icon {
+//         fill: var(--color-resize-button-hover);
+//       }
+//     }
+//   }
+//   div.grw-global-navigation {
+//     > div {
+//       background-color: var(--bgcolor-sidebar);
+//     }
+//   }
+//   div.grw-contextual-navigation {
+//     > div {
+//       color: var(--color-sidebar-context);
+//       background-color: var(--bgcolor-sidebar-context);
+//     }
+//   }
 
-  // .grw-sidebar-nav {
-  //   .btn {
-  //     @include button-variant(
-  //       $bgcolor-sidebar,
-  //       $bgcolor-sidebar,
-  //       darken($bgcolor-sidebar, 7.5%),
-  //       darken($bgcolor-sidebar, 10%),
-  //       $bgcolor-sidebar-nav-item-active,
-  //       $bgcolor-sidebar-nav-item-active
-  //     );
-  //   }
-  // }
-  .grw-sidebar-nav-primary-container {
-    .btn.active {
-      i {
-        text-shadow: var(--text-shadow-sidebar-nav-item-active);
-      }
-      // fukidashi
-      &:after {
-        border-right-color: var(--bgcolor-sidebar-context)
-        ;
-      }
-    }
-  }
+//   .grw-sidebar-nav {
+//     .btn {
+//       @include button-variant(
+//         $bgcolor-sidebar,
+//         $bgcolor-sidebar,
+//         darken($bgcolor-sidebar, 7.5%),
+//         darken($bgcolor-sidebar, 10%),
+//         $bgcolor-sidebar-nav-item-active,
+//         $bgcolor-sidebar-nav-item-active
+//       );
+//     }
+//   }
+//   .grw-sidebar-nav-primary-container {
+//     .btn.active {
+//       i {
+//         text-shadow: var(--text-shadow-sidebar-nav-item-active);
+//       }
+//       // fukidashi
+//       &:after {
+//         border-right-color: var(--bgcolor-sidebar-context)
+//         ;
+//       }
+//     }
+//   }
 
-  .grw-sidebar-content-header {
-    .grw-btn-reload {
-      color: var(--color-btn-reload-in-sidebar);
-    }
+//   .grw-sidebar-content-header {
+//     .grw-btn-reload {
+//       color: var(--color-btn-reload-in-sidebar);
+//     }
 
-    .grw-recent-changes-resize-button {
-      .custom-control-label::before {
-        background-color: $primary;
-      }
+//     .grw-recent-changes-resize-button {
+//       .custom-control-label::before {
+//         background-color: var(--primary);
+//       }
 
-      .custom-control-label::after {
-        background-color: var(--bgcolor-global);
-      }
+//       .custom-control-label::after {
+//         background-color: var(--bgcolor-global);
+//       }
 
-      .custom-control-input:not(:checked) + .custom-control-label::before {
-        color: var(--bgcolor-global);
-      }
+//       .custom-control-input:not(:checked) + .custom-control-label::before {
+//         color: var(--bgcolor-global);
+//       }
 
-      .custom-control-input:checked + .custom-control-label::before {
-        color: var(--bgcolor-global);
-        background-color: $primary;
-        // border-color: $primary !important;
-      }
-      .custom-control-input:checked + .custom-control-label::after {
-        color: var(--bgcolor-global);
-      }
-    }
-  }
+//       .custom-control-input:checked + .custom-control-label::before {
+//         color: var(--bgcolor-global);
+//         background-color: var(--primary);
+//         // border-color: $primary !important;
+//       }
+//       .custom-control-input:checked + .custom-control-label::after {
+//         color: var(--bgcolor-global);
+//       }
+//     }
+//   }
 
-  .grw-pagetree {
-    .list-group-item {
-      .grw-pagetree-title-anchor {
-        color: inherit;
-      }
-    }
-  }
-  .grw-pagetree-footer {
-    .h5.grw-private-legacy-pages-anchor {
-      color: inherit;
-    }
-  }
+//   .grw-pagetree {
+//     .list-group-item {
+//       .grw-pagetree-title-anchor {
+//         color: inherit;
+//       }
+//     }
+//   }
+//   .grw-pagetree-footer {
+//     .h5.grw-private-legacy-pages-anchor {
+//       color: inherit;
+//     }
+//   }
 
-  .grw-recent-changes {
-    .list-group {
-      .list-group-item {
-        background-color: transparent;
+//   .grw-recent-changes {
+//     .list-group {
+//       .list-group-item {
+//         background-color: transparent;
 
-        .icon-lock {
-          color: var(--color-link);
-        }
+//         .icon-lock {
+//           color: var(--color-link);
+//         }
 
-        .grw-recent-changes-item-lower {
-          color: $gray-500;
+//         .grw-recent-changes-item-lower {
+//           color: $gray-500;
 
-          svg {
-            fill: $gray-500;
-          }
-        }
-      }
-    }
-  }
-}
+//           svg {
+//             fill: $gray-500;
+//           }
+//         }
+//       }
+//     }
+//   }
+// }
 
 /*
  * Icon
