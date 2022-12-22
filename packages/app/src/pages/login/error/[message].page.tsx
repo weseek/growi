@@ -49,11 +49,15 @@ const LoginPage: NextPage<Props> = (props: Props) => {
 
   console.log({ props });
 
-  const renderAlert = () => {
+  const renderAlertMessage = () => {
     return (
-      <div className="alert alert-success">
-        <h2>{ t('login.Registration successful') }</h2>
-      </div>
+      <>
+        <div className="alert alert-success">
+          {/* <h2>{ t('login.Registration successful') }</h2> */}
+          <h2>登録完了</h2>
+        </div>
+        <p>Wait for approved by administrators.</p>
+      </>
     );
 
     //  {% if reason === 'registered'%}
@@ -79,13 +83,11 @@ const LoginPage: NextPage<Props> = (props: Props) => {
       <div className="mb-4 login-form-errors text-center">
         <div className='noLogin-dialog mx-auto'>
           <div className="col-12">
-            {renderAlert()}
+            {renderAlertMessage()}
           </div>
-
         </div>
       </div>
 
-      {/* <p>{ reasonMessage }</p> */}
 
     </NoLoginLayout>
   );

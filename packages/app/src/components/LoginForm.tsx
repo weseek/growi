@@ -203,7 +203,7 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
               <span className="btn-label">
                 <i className="icon-login"></i>
               </span>
-              <span className="btn-label-text">{t('Sign in')}</span>
+              <span className="btn-label-text">{t('Sign in')}aaa</span>
             </button>
           </div>
         </form>
