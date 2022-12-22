@@ -11,7 +11,7 @@ import type {
 } from '@growi/core';
 import ExtensibleCustomError from 'extensible-custom-error';
 import {
-  NextPage, GetServerSideProps, GetServerSidePropsContext,
+  GetServerSideProps, GetServerSidePropsContext,
 } from 'next';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import dynamic from 'next/dynamic';
@@ -19,6 +19,7 @@ import Head from 'next/head';
 import { useRouter } from 'next/router';
 import superjson from 'superjson';
 
+import { useCurrentGrowiLayoutFluidClassName } from '~/client/services/layout';
 import { Comments } from '~/components/Comments';
 import { PageAlerts } from '~/components/PageAlert/PageAlerts';
 // import { useTranslation } from '~/i18n';
@@ -42,7 +43,7 @@ import { useSWRxCurrentPage, useSWRxIsGrantNormalized } from '~/stores/page';
 import { useRedirectFrom } from '~/stores/page-redirect';
 import { useRemoteRevisionId } from '~/stores/remote-latest-page';
 import {
-  useEditorMode, useSelectedGrant,
+  useSelectedGrant,
   usePreferDrawerModeByUser, usePreferDrawerModeOnEditByUser, useSidebarCollapsed, useCurrentSidebarContents, useCurrentProductNavWidth,
 } from '~/stores/ui';
 import { useSetupGlobalSocket, useSetupGlobalSocketForPage } from '~/stores/websocket';
@@ -53,7 +54,7 @@ import loggerFactory from '~/utils/logger';
 // import GrowiSubNavigation from '../client/js/components/Navbar/GrowiSubNavigation';
 // import GrowiSubNavigationSwitcher from '../client/js/components/Navbar/GrowiSubNavigationSwitcher';
 import { DescendantsPageListModal } from '../components/DescendantsPageListModal';
-import { BasicLayout } from '../components/Layout/BasicLayout';
+import { BasicLayoutWithEditorMode } from '../components/Layout/BasicLayout';
 import GrowiContextualSubNavigation from '../components/Navbar/GrowiContextualSubNavigation';
 import DisplaySwitcher from '../components/Page/DisplaySwitcher';
 // import { serializeUserSecurely } from '../server/models/serializers/user-serializer';
@@ -71,10 +72,10 @@ import {
   useEditorConfig, useIsAllReplyShown, useIsUploadableFile, useIsUploadableImage, useCustomizedLogoSrc, useIsContainerFluid,
 } from '../stores/context';
 
+import { NextPageWithLayout } from './_app.page';
 import {
-  CommonProps, getNextI18NextConfig, getServerSideCommonProps, useCustomTitle,
+  CommonProps, getNextI18NextConfig, getServerSideCommonProps, generateCustomTitle,
 } from './utils/commons';
-// import { useCurrentPageSWR } from '../stores/page';
 
 
 declare global {
@@ -188,7 +189,7 @@ type Props = CommonProps & {
   sidebarConfig: ISidebarConfig,
 };
 
-const GrowiPage: NextPage<Props> = (props: Props) => {
+const Page: NextPageWithLayout<Props> = (props: Props) => {
   // const { t } = useTranslation();
   const router = useRouter();
 
@@ -260,23 +261,23 @@ const GrowiPage: NextPage<Props> = (props: Props) => {
 
   useCurrentPageId(pageId ?? null);
   useRevisionIdHackmdSynced(pageWithMeta?.data.revisionHackmdSynced);
-  useRemoteRevisionId(pageWithMeta?.data.revision._id);
+  useRemoteRevisionId(pageWithMeta?.data.revision?._id);
   usePageIdOnHackmd(pageWithMeta?.data.pageIdOnHackmd);
   useHasDraftOnHackmd(pageWithMeta?.data.hasDraftOnHackmd ?? false);
   // useIsNotCreatable(props.isForbidden || !isCreatablePage(pagePath)); // TODO: need to include props.isIdentical
   useCurrentPathname(props.currentPathname);
 
-  const { data: currentPage } = useSWRxCurrentPage(undefined, pageWithMeta?.data ?? null); // store initial data
+  useSWRxCurrentPage(undefined, pageWithMeta?.data ?? null); // store initial data
 
   useEditingMarkdown(pageWithMeta?.data.revision?.body);
 
   const { data: grantData } = useSWRxIsGrantNormalized(pageId);
   const { mutate: mutateSelectedGrant } = useSelectedGrant();
 
-  const { getClassNamesByEditorMode } = useEditorMode();
-
   useSetupGlobalSocket();
   useSetupGlobalSocketForPage(pageId);
+
+  const growiLayoutFluidClass = useCurrentGrowiLayoutFluidClassName();
 
   const shouldRenderPutbackPageModal = pageWithMeta != null
     ? _isTrashPage(pageWithMeta.data.path)
@@ -295,89 +296,82 @@ const GrowiPage: NextPage<Props> = (props: Props) => {
     }
   }, [props.currentPathname, router]);
 
-  const classNames: string[] = [];
-
-  const isSidebar = pagePath === '/Sidebar';
-  classNames.push(...getClassNamesByEditorMode(isSidebar));
-
   const isTopPagePath = isTopPage(pageWithMeta?.data.path ?? '');
 
-  const isContainerFluidEachPage = currentPage == null || !('expandContentWidth' in currentPage)
-    ? null
-    : currentPage.expandContentWidth;
-  const isContainerFluidDefault = props.isContainerFluid;
-  const isContainerFluid = isContainerFluidEachPage ?? isContainerFluidDefault;
+  const title = generateCustomTitle(props, 'GROWI');
 
   return (
     <>
       <Head>
-        {/*
-        {renderScriptTagByName('drawio-viewer')}
-        {renderScriptTagByName('highlight-addons')}
-        {renderHighlightJsStyleTag(props.highlightJsStyle)}
-        */}
+        <title>{title}</title>
       </Head>
+      <div className={`dynamic-layout-root ${growiLayoutFluidClass} h-100 d-flex flex-column justify-content-between`}>
+        <header className="py-0 position-relative">
+          <div id="grw-subnav-container">
+            <GrowiContextualSubNavigation isLinkSharingDisabled={props.disableLinkSharing} />
+          </div>
+        </header>
+        <div className="d-edit-none">
+          <GrowiSubNavigationSwitcher />
+        </div>
 
+        <div id="grw-subnav-sticky-trigger" className="sticky-top"></div>
+        <div id="grw-fav-sticky-trigger" className="sticky-top"></div>
+
+        <div className="flex-grow-1">
+          <div id="main" className={`main ${isUsersHomePage(props.currentPathname) && 'user-page'}`}>
+            <div id="content-main" className="content-main grw-container-convertible">
+              { props.isIdenticalPathPage && <IdenticalPathPage /> }
+
+              { !props.isIdenticalPathPage && (
+                <>
+                  <PageAlerts />
+                  { props.isForbidden && <ForbiddenPage /> }
+                  { props.isNotCreatablePage && <NotCreatablePage />}
+                  { !props.isForbidden && !props.isNotCreatablePage && <DisplaySwitcher />}
+                  {/* <DisplaySwitcher /> */}
+                  <PageStatusAlert />
+                </>
+              ) }
+
+              {/* <div className="col-xl-2 col-lg-3 d-none d-lg-block revision-toc-container">
+                <div id="revision-toc" className="revision-toc mt-3 sps sps--abv" data-sps-offset="123">
+                  <div id="revision-toc-content" className="revision-toc-content"></div>
+                </div>
+              </div> */}
+            </div>
+          </div>
+        </div>
+        { !props.isIdenticalPathPage && !props.isNotFound && (
+          <footer className="footer d-edit-none">
+            { pageWithMeta != null && pagePath != null && !isTopPagePath && (
+              <Comments pageId={pageId} pagePath={pagePath} revision={pageWithMeta.data.revision} />
+            ) }
+            { pageWithMeta != null && isUsersHomePage(pageWithMeta.data.path) && (
+              <UsersHomePageFooter creatorId={pageWithMeta.data.creator._id}/>
+            ) }
+            <CurrentPageContentFooter />
+          </footer>
+        )}
+
+        {shouldRenderPutbackPageModal && <PutbackPageModal />}
+      </div>
+    </>
+  );
+};
+
+Page.getLayout = function getLayout(page) {
+  return (
+    <>
       <DrawioViewerScript />
 
-      <BasicLayout title={useCustomTitle(props, 'GROWI')} className={classNames.join(' ')} expandContainer={isContainerFluid}>
-
-        <div className="h-100 d-flex flex-column justify-content-between">
-          <header className="py-0 position-relative">
-            <div id="grw-subnav-container">
-              <GrowiContextualSubNavigation isLinkSharingDisabled={props.disableLinkSharing} />
-            </div>
-          </header>
-          <div className="d-edit-none">
-            <GrowiSubNavigationSwitcher />
-          </div>
-
-          <div id="grw-subnav-sticky-trigger" className="sticky-top"></div>
-          <div id="grw-fav-sticky-trigger" className="sticky-top"></div>
-
-          <div className="flex-grow-1">
-            <div id="main" className={`main ${isUsersHomePage(props.currentPathname) && 'user-page'}`}>
-              <div id="content-main" className="content-main grw-container-convertible">
-                { props.isIdenticalPathPage && <IdenticalPathPage /> }
-
-                { !props.isIdenticalPathPage && (
-                  <>
-                    <PageAlerts />
-                    { props.isForbidden && <ForbiddenPage /> }
-                    { props.isNotCreatablePage && <NotCreatablePage />}
-                    { !props.isForbidden && !props.isNotCreatablePage && <DisplaySwitcher />}
-                    {/* <DisplaySwitcher /> */}
-                    <PageStatusAlert />
-                  </>
-                ) }
-
-                {/* <div className="col-xl-2 col-lg-3 d-none d-lg-block revision-toc-container">
-                  <div id="revision-toc" className="revision-toc mt-3 sps sps--abv" data-sps-offset="123">
-                    <div id="revision-toc-content" className="revision-toc-content"></div>
-                  </div>
-                </div> */}
-              </div>
-            </div>
-          </div>
-          { !props.isIdenticalPathPage && !props.isNotFound && (
-            <footer className="footer d-edit-none">
-              { pageWithMeta != null && pagePath != null && !isTopPagePath && (
-                <Comments pageId={pageId} pagePath={pagePath} revision={pageWithMeta.data.revision} />
-              ) }
-              { pageWithMeta != null && isUsersHomePage(pageWithMeta.data.path) && (
-                <UsersHomePageFooter creatorId={pageWithMeta.data.creator._id}/>
-              ) }
-              <CurrentPageContentFooter />
-            </footer>
-          )}
-
-          <UnsavedAlertDialog />
-          <DescendantsPageListModal />
-          <DrawioModal />
-          <HandsontableModal />
-          {shouldRenderPutbackPageModal && <PutbackPageModal />}
-        </div>
-      </BasicLayout>
+      <BasicLayoutWithEditorMode>
+        {page}
+      </BasicLayoutWithEditorMode>
+      <UnsavedAlertDialog />
+      <DescendantsPageListModal />
+      <DrawioModal />
+      <HandsontableModal />
     </>
   );
 };
@@ -645,4 +639,4 @@ export const getServerSideProps: GetServerSideProps = async(context: GetServerSi
   };
 };
 
-export default GrowiPage;
+export default Page;

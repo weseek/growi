@@ -6,11 +6,11 @@ body {
   overscroll-behavior-y: none;
 }
 
-.layout-root:not(.growi-layout-fluid) .grw-container-convertible {
+.dynamic-layout-root:not(.growi-layout-fluid) .grw-container-convertible {
   @extend .container-lg;
 }
 
-.layout-root.growi-layout-fluid .grw-container-convertible {
+.dynamic-layout-root.growi-layout-fluid .grw-container-convertible {
   @extend .container-fluid;
 }
 
