@@ -3,6 +3,7 @@ import React, { useCallback, useMemo } from 'react';
 import { useTranslation } from 'next-i18next';
 import * as ReactDOMServer from 'react-dom/server';
 
+import { useIsGuestUser } from '~/stores/context';
 import { useEditingMarkdown, useIsConflict } from '~/stores/editor';
 import {
   useHasDraftOnHackmd, useIsHackmdDraftUpdatingInRealtime, useRevisionIdHackmdSynced,
@@ -31,6 +32,7 @@ export const PageStatusAlert = (): JSX.Element => {
   const { mutate: mutateEditingMarkdown } = useEditingMarkdown();
   const { open: openConflictDiffModal } = useConflictDiffModal();
   const { mutate: mutateEditorMode } = useEditorMode();
+  const { data: isGuest } = useIsGuestUser();
 
   // store remote latest page data
   const { data: revisionIdHackmdSynced } = useRevisionIdHackmdSynced();
@@ -151,7 +153,7 @@ export const PageStatusAlert = (): JSX.Element => {
     getContentsForDraftExistsAlert,
   ]);
 
-  if (alertComponentContents == null) { return <></> }
+  if (!!isGuest || alertComponentContents == null) { return <></> }
 
   const { additionalClasses, label, btn } = alertComponentContents;
 
