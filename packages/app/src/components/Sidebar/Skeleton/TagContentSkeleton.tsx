@@ -1,5 +1,7 @@
 import React from 'react';
 
+import { useTranslation } from 'next-i18next';
+
 import { Skeleton } from '~/components/Skeleton';
 
 import styles from '../Tag.module.scss';
@@ -11,10 +13,11 @@ export const TagListSkeleton = (): JSX.Element => {
 };
 
 const TagContentSkeleton = (): JSX.Element => {
+  const { t } = useTranslation('');
 
   return (
     <>
-      <Skeleton additionalClass={`${styles['grw-tag-skeleton-h3']} my-3`} />
+      <h3 className="my-3">{t('tag_list')}</h3>
       <TagListSkeleton />
     </>
   );
