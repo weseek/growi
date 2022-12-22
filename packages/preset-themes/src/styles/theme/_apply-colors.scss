@@ -3,6 +3,7 @@
 @use '../mixins';
 @use './mixins/tables'; // comment out and use _reboot-bootstrap-tables instead -- 2020.05.28 Yuki Takei
 @use '../atoms/mixins/code';
+
 @use './hsl-functions' as hsl;
 
 //
@@ -490,7 +491,7 @@ ul.pagination {
 
       &.list-group-item-action {
         &.active {
-          background-color: hsl(var(--bgcolor-global-hs),calc(var(--bgcolor-global-l) + 76%));
+          background-color: #{hsl.lighten(var(--bgcolor-global),76%)};
           border-left-color: $primary;
         }
       }
@@ -503,7 +504,7 @@ ul.pagination {
  */
 .layout-root.editing {
   .main {
-    background-color: hsl(var(--bgcolor-global-hs),calc(var(--bgcolor-global-l) - 2%));
+    background-color: #{hsl.darken(var(--bgcolor-global),2%)};
 
     .page-editor-editor-container {
       // border-right-color: $border-color-theme;
@@ -586,8 +587,8 @@ body.editing-sidebar {
     .nav.nav-tabs {
       > li > a.active {
         background: transparent;
-        border-bottom: solid 1px hsl(var(--bgcolor-global-hs),calc(var(--bgcolor-global-l) - 4%));
-        border-bottom-color: hsl(var(--bgcolor-global-hs),calc(var(--bgcolor-global-l) - 4%));
+        border-bottom: solid 1px #{hsl.darken(var(--bgcolor-global),4%)};
+        border-bottom-color: #{hsl.darken(var(--bgcolor-global),4%)};
       }
     }
   }
@@ -622,7 +623,7 @@ mark.rbt-highlight-text {
  * GROWI page content footer
  */
 .page-content-footer {
-  background-color: hsl(var(--bgcolor-global-hs),calc(var(--bgcolor-global-l) - 2%));
+  background-color: #{hsl.darken(var(--bgcolor-global),2%)};
   // border-top-color: $border-color-theme;
 }
 
