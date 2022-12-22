@@ -47,7 +47,7 @@ $theme-colors: map-merge($theme-colors, ( primary: $primary ));
 @import 'reboot-toastr-colors';
 
 // determine variables with　bootstrap function (These variables can be used after importing bootstrap above)
-$color-modal-header: var(--color-modal-header,contrast(var(--primary)));
+$color-modal-header: var(--color-modal-header,#{hsl.contrast(var(--primary))});
 
 code:not([class^='language-']) {
   @include code.code-inline-color(var(--color-inline-code), var(--bgcolor-inline-code), var(--bordercolor-inline-code));
@@ -186,7 +186,7 @@ ul.pagination {
 
   // for https://youtrack.weseek.co.jp/issue/GW-2603
   .search-typeahead {
-    background-color: var(--bgcolor-global); opacity:0.9;
+    background-color: hsla(var(--bgcolor-global-hs),var(--bgcolor-global-l),90%);
   }
 }
 
@@ -332,8 +332,7 @@ ul.pagination {
       color: var(--color-modal-header);
     }
     .close {
-      color: var(--color-modal-header);
-      opacity: 0.5;
+      color: hsla(var(--color-modal-header),50%);
       &:hover {
         opacity: 0.9;
       }
@@ -353,7 +352,7 @@ ul.pagination {
   .nav-item {
     &:hover,
     &:focus {
-      background-color: var(--color-link); opacity:0.9;
+      background-color: hsla(var(--color-link),90%);
     }
     .nav-link {
       -webkit-appearance: none;

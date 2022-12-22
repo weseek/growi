@@ -52,6 +52,7 @@
   --color-link-wiki-hover: #{hsl.lighten(var(--color-link-wiki),20%)};
   --color-link-nabvar: #{$gray-500};
   --color-inline-code: #{darken($red, 15%)}; // optional
+  --color-modal-header: #{hsl.contrast(var(--primary))};
 
   // List Group colors
   --color-list: var(--color-global); // optional
@@ -90,8 +91,8 @@
   // Sidebar resize button
   --color-resize-button: var(--color-reversal);
   --bgcolor-resize-button: var(--accent);
-  --bgcolor-resize-button-hs: var(var(--accent-hs));
-  --bgcolor-resize-button-l: var(var(--accent-l));
+  --bgcolor-resize-button-hs: var(--accent-hs);
+  --bgcolor-resize-button-l: var(--accent-l);
   --color-resize-button-hover: var(--color-reversal);
   --bgcolor-resize-button-hover: #{hsl.lighten(var(--bgcolor-resize-button), 5%)};
   // Sidebar contents
@@ -127,7 +128,6 @@
 
   @import './theme/apply-colors';
   // @import './theme/apply-colors-light';
-  // @import '/packages/app/src/styles/theme/apply-colors-light-new';
 
   // Button
   .btn-group.grw-page-editor-mode-manager {
