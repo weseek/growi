@@ -6,6 +6,7 @@ import {
 import { useTranslation } from 'next-i18next';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import Head from 'next/head';
+import { useRouter } from 'next/router';
 
 import { NoLoginLayout } from '~/components/Layout/NoLoginLayout';
 import { LoginForm } from '~/components/LoginForm';
@@ -40,6 +41,10 @@ const LoginPage: NextPage<Props> = (props: Props) => {
   // commons
   useCsrfToken(props.csrfToken);
   const { t } = useTranslation();
+  const router = useRouter();
+  const { message } = router.query;
+
+  console.log({ message });
 
   // page
   useCurrentPathname(props.currentPathname);
@@ -49,14 +54,36 @@ const LoginPage: NextPage<Props> = (props: Props) => {
 
   console.log({ props });
 
+  // get user status and quit gitting message from router.query
+
+  let errReason = '';
+  let reasonMessage = '';
+
+  switch (message) {
+    case 'registered':
+      errReason = t('login.Registration successful');
+      reasonMessage = 'Wait for approved by administrators.';
+      break;
+    case 'password-reset-order':
+      errReason = t('forgot_password.incorrect_token_or_expired_url');
+      break;
+    case 'invited':
+      errReason = t('forgot_password.forgot_password');
+      break;
+    default:
+      errReason = t('login.Sign in error');
+  }
+
   const renderAlertMessage = () => {
+
+
     return (
       <>
         <div className="alert alert-success">
           {/* <h2>{ t('login.Registration successful') }</h2> */}
-          <h2>登録完了</h2>
+          <h2>{errReason}</h2>
         </div>
-        <p>Wait for approved by administrators.</p>
+        <p>{reasonMessage}</p>
       </>
     );
 
