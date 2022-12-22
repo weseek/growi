@@ -31,7 +31,7 @@
   --bgcolor-global: hsl(var(--bgcolor-global-hs),var(--bgcolor-global-l));
   --bgcolor-global-hs: 0,0%;
   --bgcolor-global-l: 100%;
-  $bgcolor-inline-code: $gray-100; //optional
+  --bgcolor-inline-code: #{$gray-100}; //optional
   --bgcolor-card: #{$gray-50};
   $bgcolor-blinked-section: rgba($primary, 0.1);
   //$bgcolor-keyword-highlighted: $grw-marker-yellow;
@@ -40,7 +40,7 @@
   --color-global: hsl(var(--color-global-hs),var(--color-global-l));
   --color-global-hs: 214.1,60%;
   --color-global-l: 16.7%;
-  $color-reversal: $light;
+  --color-reversal: var(--light);
   // $color-header: #2b2b2b;
   --color-link: hsl(var(--color-link-hs),var(--color-link-l));
   --color-link-hs: 228.4,76.3%;
@@ -51,7 +51,7 @@
   --color-link-wiki-l: var(--color-link-l);
   --color-link-wiki-hover: #{hsl.lighten(var(--color-link-wiki),20%)};
   --color-link-nabvar: #{$gray-500};
-  $color-inline-code: darken($red, 15%); // optional
+  --color-inline-code: darken($red, 15%); // optional
 
   // List Group colors
   --color-list: var(--color-global); // optional
@@ -73,7 +73,7 @@
   --bgcolor-navbar-h:0;
   --bgcolor-navbar-s:0%;
   --bgcolor-navbar-l:12.94%;
-  $bgcolor-search-top-dropdown: $accent;
+  --bgcolor-search-top-dropdown: var(--accent);
   $border-image-navbar: linear-gradient(to right, #36c9ff 0%, #36c9ff 33%, #7926ff 66%, #ff2eff 100%);
 
   // Logo colors
@@ -86,10 +86,12 @@
   --bgcolor-sidebar-nav-item-active: rgba(black, 0.37); // optional
   --text-shadow-sidebar-nav-item-active: 0px 0px 10px #0099ff; // optional
   // Sidebar resize button
-  $color-resize-button: $color-reversal;
-  $bgcolor-resize-button: $accent;
-  $color-resize-button-hover: $color-reversal;
-  $bgcolor-resize-button-hover: lighten($bgcolor-resize-button, 5%);
+  --color-resize-button: var(--color-reversal);
+  --bgcolor-resize-button: var(--accent);
+  --bgcolor-resize-button-hs: var(var(--accent-hs));
+  --bgcolor-resize-button-l: var(var(--accent-l));
+  --color-resize-button-hover: var(--color-reversal);
+  --bgcolor-resize-button-hover: #{hsl.lighten(var(--bgcolor-resize-button), 5%)};
   // Sidebar contents
   --color-sidebar-context: var(--color-global);
   --color-sidebar-context-hs: var(--color-global-hs);
@@ -113,7 +115,7 @@
 
   // Border colors
   --border-color-theme: #{$gray-400};
-  $bordercolor-inline-code: $gray-400; // optional
+  --bordercolor-inline-code: #{$gray-400}; // optional
 
   // Dropdown colors
   --bgcolor-dropdown-link-active: $growi-blue;
@@ -145,7 +147,7 @@
   --bgcolor-global: #131418;
   --bgcolor-global-hs: 228,11.6%;
   --bgcolor-global-l: 9.4%;
-  $bgcolor-inline-code: #1f1f22; //optional
+  --bgcolor-inline-code: #1f1f22; //optional
   --bgcolor-card: #{hsl.darken(var(--bgcolor-global),5%)};
   $bgcolor-blinked-section: rgba($primary, 0.4);
   $bgcolor-keyword-highlighted: darken($grw-marker-red, 30%);
@@ -184,7 +186,7 @@
 
   // Navbar
   --bgcolor-navbar: #2a2929;
-  $bgcolor-search-top-dropdown: $accent;
+  --bgcolor-search-top-dropdown: var(--accent);
   $border-image-navbar: linear-gradient(to right, #44bfe3 0%, #b04aff 50%, #ff1794 100%);
 
   // Logo colors
@@ -228,7 +230,7 @@
 
   // Border colors
   --border-color-theme: #{$gray-400};
-  $bordercolor-inline-code: $secondary; // optional
+  --bordercolor-inline-code: var(--secondary); // optional
 
   // admin theme box
   $color-theme-color-box: $primary;

@@ -10,9 +10,9 @@
 //== Apply to Bootstrap
 //
 
-// // determine optional variables
+// determine optional variables
 $border-image-navbar: var(--border-image-navbar,linear-gradient(to right, $gray-300 0%, $gray-300 100%));
-$bgcolor-search-top-dropdown: var(--bgcolor-search-top-dropdown,$secondary);
+$bgcolor-search-top-dropdown: var(--bgcolor-search-top-dropdown,var(--secondary));
 $bgcolor-sidebar-nav-item-active: var(--bgcolor-sidebar-nav-item-active,#{hsl.darken(var(--primary),10%)});
 $text-shadow-sidebar-nav-item-active: var(--text-shadow-sidebar-nav-item-active,1px 1px 2px var(--primary));
 $bgcolor-inline-code: var(--bgcolor-inline-code, #{$gray-100});
@@ -23,11 +23,11 @@ $bordercolor-nav-tabs-hover: var(--bordercolor-nav-tabs-hover,#{$gray-200} #{$gr
 $border-nav-tabs-link-activec: var(--border-nav-tabs-link-active, #{$gray-600});
 $bordercolor-nav-tabs-active: var(--bordercolor-nav-tabs-active,var(--bordercolor-nav-tabs) var(--bordercolor-nav-tabs) var(--bgcolor-global));
 $color-btn-reload-in-sidebar: var(--color-btn-reload-in-sidebar,#{$gray-500});
-$bgcolor-keyword-highlighted: var(--bgcolor-keyword-highlighted,var.$grw-marker-yellow);
+$bgcolor-keyword-highlighted: var(--bgcolor-keyword-highlighted,#{var.$grw-marker-yellow});
 $color-page-list-group-item-meta: var(--color-page-list-group-item-meta,#{$gray-500});
 $color-search-page-list-title: var(--color-search-page-list-title,var(--color-global));
 
-// // override bootstrap variables
+// override bootstrap variables
 $body-bg: var(--bgcolor-global);
 $body-color: var(--color-global);
 $link-color: var(--color-link);
@@ -46,7 +46,7 @@ $theme-colors: map-merge($theme-colors, ( primary: $primary ));
 // @import 'reboot-bootstrap-nav';
 @import 'reboot-toastr-colors';
 
-// // determine variables with　bootstrap function (These variables can be used after importing bootstrap above)
+// determine variables with　bootstrap function (These variables can be used after importing bootstrap above)
 $color-modal-header: var(--color-modal-header,contrast(var(--primary)));
 
 code:not([class^='language-']) {
@@ -54,7 +54,7 @@ code:not([class^='language-']) {
 }
 
 .code-highlighted {
-  border-color: var(--ordercolor-inline-code);
+  border-color: var(--bordercolor-inline-code);
 }
 
 //
@@ -62,169 +62,169 @@ code:not([class^='language-']) {
 //
 
 // Alert link
-// @each $color, $value in $theme-colors {
-//   .alert.alert-#{$color} {
-//     a,
-//     a:hover {
-//       color: theme-color-level($color, $alert-color-level - 2);
-//     }
-//   }
-// }
+@each $color, $value in $theme-colors {
+  .alert.alert-#{$color} {
+    a,
+    a:hover {
+      color: theme-color-level($color, $alert-color-level - 2);
+    }
+  }
+}
 
-// // Dropdown
-// .grw-apperance-mode-dropdown {
-//   .grw-sidebar-mode-icon svg {
-//     fill: var(--secondary);
-//   }
-//   .grw-color-mode-icon svg {
-//     fill: var(--color-global);
-//   }
-//   .grw-color-mode-icon-muted svg {
-//     fill: var(--secondary);
-//   }
-// }
+// Dropdown
+.grw-apperance-mode-dropdown {
+  .grw-sidebar-mode-icon svg {
+    fill: var(--secondary);
+  }
+  .grw-color-mode-icon svg {
+    fill: var(--color-global);
+  }
+  .grw-color-mode-icon-muted svg {
+    fill: var(--secondary);
+  }
+}
 
-// // Form
-// .form-control {
-//   @include form-control-focus();
-// }
+// Form
+.form-control {
+  @include form-control-focus();
+}
 
-// // Tabs
-// .nav.nav-tabs .nav-link.active {
-//   color: var(--color-link);
-//   background: transparent;
+// Tabs
+.nav.nav-tabs .nav-link.active {
+  color: var(--color-link);
+  background: transparent;
 
-//   &:hover,
-//   &:focus {
-//     color: var(--color-link-hover);
-//   }
-// }
+  &:hover,
+  &:focus {
+    color: var(--color-link-hover);
+  }
+}
 
-// // Pagination
-// ul.pagination {
-//   li.page-item.disabled {
-//     button.page-link {
-//       color: $gray-400;
-//     }
-//   }
-//   li.page-item.active {
-//     button.page-link {
-//       color: color-yiq($primary);
-//       background-color: $primary;
-//       &:hover,
-//       &:focus {
-//         color: color-yiq($primary);
-//         background-color: $primary;
-//       }
-//     }
-//   }
-//   li.page-item {
-//     button.page-link {
-//       color: $primary;
-//       border-color: $secondary;
-//       &:hover,
-//       &:active,
-//       &:focus {
-//         color: $primary;
-//       }
-//     }
-//   }
-// }
+// Pagination
+ul.pagination {
+  li.page-item.disabled {
+    button.page-link {
+      color: #{$gray-400};
+    }
+  }
+  li.page-item.active {
+    button.page-link {
+      color: #{hsl.contrast(var(--primary))};
+      background-color: var(--primary);
+      &:hover,
+      &:focus {
+        color: #{hsl.contrast(var(--primary))};
+        background-color: var(--primary);
+      }
+    }
+  }
+  li.page-item {
+    button.page-link {
+      color: var(--primary);
+      border-color: var(--secondary);
+      &:hover,
+      &:active,
+      &:focus {
+        color: var(--primary);
+      }
+    }
+  }
+}
 
-// //
-// //== Apply to Handsontable
-// //
-// .handsontable {
-//   color: initial;
-// }
+//
+//== Apply to Handsontable
+//
+.handsontable {
+  color: initial;
+}
 
-// //
-// //== Apply to GROWI Elements
-// //
+//
+//== Apply to GROWI Elements
+//
 
-// .grw-logo {
-//   // set transition for fill
-//   svg * {
-//     transition: fill 0.8s ease-out;
-//   }
+.grw-logo {
+  set transition for fill
+  svg * {
+    transition: fill 0.8s ease-out;
+  }
 
-//   svg {
-//     fill: var(--fillcolor-logo-mark);
-//   }
+  svg {
+    fill: var(--fillcolor-logo-mark);
+  }
 
-//   &:hover {
-//     svg {
-//       .group1 {
-//         fill: var.$growi-green;
-//       }
+  &:hover {
+    svg {
+      .group1 {
+        fill: #{var.$growi-green};
+      }
 
-//       .group2 {
-//         fill: var.$growi-blue;
-//       }
-//     }
-//   }
-// }
+      .group2 {
+        fill: #{var.$growi-blue};
+      }
+    }
+  }
+}
 
-// .grw-navbar {
-//   background: var(--bgcolor-navbar);
-//   .nav-item .nav-link {
-//     color: var(--color-link-nabvar);
-//   }
+.grw-navbar {
+  background: var(--bgcolor-navbar);
+  .nav-item .nav-link {
+    color: var(--color-link-nabvar);
+  }
 
-//   border-image: $border-image-navbar;
-//   border-image-slice: 1;
+  border-image: var(--border-image-navbar);
+  border-image-slice: 1;
 
-//   .grw-app-title {
-//     color: var(--fillcolor-logo-mark);
-//   }
-// }
+  .grw-app-title {
+    color: var(--fillcolor-logo-mark);
+  }
+}
 
-// .grw-global-search {
-//   .btn-secondary.dropdown-toggle {
-//     @include button-variant($bgcolor-search-top-dropdown, $bgcolor-search-top-dropdown);
-//   }
+.grw-global-search {
+  .btn-secondary.dropdown-toggle {
+    @include hsl-button.button-variant(var(--bgcolor-search-top-dropdown), var(--bgcolor-search-top-dropdown));
+  }
 
-//   // for https://youtrack.weseek.co.jp/issue/GW-2603
-//   .search-typeahead {
-//     background-color: var(--bgcolor-global); opacity:0.9;
-//   }
-// }
+  // for https://youtrack.weseek.co.jp/issue/GW-2603
+  .search-typeahead {
+    background-color: var(--bgcolor-global); opacity:0.9;
+  }
+}
 
 .grw-sidebar {
-  //   .grw-navigation-resize-button {
-  //     $color-resize-button: var(--color-resize-button--,var(--color-global));
-  //     $bgcolor-resize-button: white !default;
-  //     $color-resize-button-hover: $color-reversal !default;
-  //     $bgcolor-resize-button-hover: lighten($bgcolor-resize-button, 5%) !default;
+  .grw-navigation-resize-button {
+    $color-resize-button: var(--color-resize-button--,var(--color-global));
+    $bgcolor-resize-button: var(--bgcolor-resize-button,white);
+    $color-resize-button-hover: var(--color-resize-button-hover,var(--color-reversal));
+    $bgcolor-resize-button-hover: var(--bgcolor-resize-button-hover,#{hsl.lighten(var(--bgcolor-resize-button), 5%)});
 
-  //     .hexagon-container svg {
-  //       .background {
-  //         fill: $bgcolor-resize-button;
-  //       }
-  //       .icon {
-  //         fill: $color-resize-button;
-  //       }
-  //     }
-  //     &:hover .hexagon-container svg {
-  //       .background {
-  //         fill: $bgcolor-resize-button-hover;
-  //       }
-  //       .icon {
-  //         fill: $color-resize-button-hover;
-  //       }
-  //     }
-  //   }
-  //   div.grw-global-navigation {
-  //     > div {
-  //       background-color: var(--bgcolor-sidebar);
-  //     }
-  //   }
-  //   div.grw-contextual-navigation {
-  //     > div {
-  //       color: var(--color-sidebar-context);
-  //       background-color: var(--bgcolor-sidebar-context);
-  //     }
-  //   }
+    .hexagon-container svg {
+      .background {
+        fill: var(--bgcolor-resize-button);
+      }
+      .icon {
+        fill: var(--color-resize-button);
+      }
+    }
+    &:hover .hexagon-container svg {
+      .background {
+        fill: var(--bgcolor-resize-button-hover);
+      }
+      .icon {
+        fill: var(--color-resize-button-hover);
+      }
+    }
+  }
+  div.grw-global-navigation {
+    > div {
+      background-color: var(--bgcolor-sidebar);
+    }
+  }
+  div.grw-contextual-navigation {
+    > div {
+      color: var(--color-sidebar-context);
+      background-color: var(--bgcolor-sidebar-context);
+    }
+  }
 
   .grw-sidebar-nav {
     .btn {
@@ -234,80 +234,80 @@ code:not([class^='language-']) {
       );
     }
   }
-  //   .grw-sidebar-nav-primary-container {
-  //     .btn.active {
-  //       i {
-  //         text-shadow: var(--text-shadow-sidebar-nav-item-active);
-  //       }
-  //       // fukidashi
-  //       &:after {
-  //         border-right-color: var(--bgcolor-sidebar-context)
-  //         ;
-  //       }
-  //     }
-  //   }
+  .grw-sidebar-nav-primary-container {
+    .btn.active {
+      i {
+        text-shadow: var(--text-shadow-sidebar-nav-item-active);
+      }
+      // fukidashi
+      &:after {
+        border-right-color: var(--bgcolor-sidebar-context)
+        ;
+      }
+    }
+  }
 
-  //   .grw-sidebar-content-header {
-  //     .grw-btn-reload {
-  //       color: $color-btn-reload-in-sidebar;
-  //     }
+  .grw-sidebar-content-header {
+    .grw-btn-reload {
+      color: var(--color-btn-reload-in-sidebar);
+    }
 
-  //     .grw-recent-changes-resize-button {
-  //       .custom-control-label::before {
-  //         background-color: $primary;
-  //       }
+    .grw-recent-changes-resize-button {
+      .custom-control-label::before {
+        background-color: var(--primary);
+      }
 
-  //       .custom-control-label::after {
-  //         background-color: var(--bgcolor-global);
-  //       }
+      .custom-control-label::after {
+        background-color: var(--bgcolor-global);
+      }
 
-  //       .custom-control-input:not(:checked) + .custom-control-label::before {
-  //         color: var(--bgcolor-global);
-  //       }
+      .custom-control-input:not(:checked) + .custom-control-label::before {
+        color: var(--bgcolor-global);
+      }
 
-  //       .custom-control-input:checked + .custom-control-label::before {
-  //         color: var(--bgcolor-global);
-  //         background-color: $primary;
-  //         // border-color: $primary !important;
-  //       }
-  //       .custom-control-input:checked + .custom-control-label::after {
-  //         color: var(--bgcolor-global);
-  //       }
-  //     }
-  //   }
+      .custom-control-input:checked + .custom-control-label::before {
+        color: var(--bgcolor-global);
+        background-color: var(--primary);
+        // border-color: $primary !important;
+      }
+      .custom-control-input:checked + .custom-control-label::after {
+        color: var(--bgcolor-global);
+      }
+    }
+  }
 
-  //   .grw-pagetree {
-  //     .list-group-item {
-  //       .grw-pagetree-title-anchor {
-  //         color: inherit;
-  //       }
-  //     }
-  //   }
-  //   .grw-pagetree-footer {
-  //     .h5.grw-private-legacy-pages-anchor {
-  //       color: inherit;
-  //     }
-  //   }
+  .grw-pagetree {
+    .list-group-item {
+      .grw-pagetree-title-anchor {
+        color: inherit;
+      }
+    }
+  }
+  .grw-pagetree-footer {
+    .h5.grw-private-legacy-pages-anchor {
+      color: inherit;
+    }
+  }
 
-  //   .grw-recent-changes {
-  //     .list-group {
-  //       .list-group-item {
-  //         background-color: transparent;
+  .grw-recent-changes {
+    .list-group {
+      .list-group-item {
+        background-color: transparent;
 
-  //         .icon-lock {
-  //           color: var(--color-link);
-  //         }
+        .icon-lock {
+          color: var(--color-link);
+        }
 
-  //         .grw-recent-changes-item-lower {
-  //           color: $gray-500;
+        .grw-recent-changes-item-lower {
+          color: #{$gray-500};
 
-  //           svg {
-  //             fill: $gray-500;
-  //           }
-  //         }
-  //       }
-  //     }
-  //   }
+          svg {
+            fill: #{$gray-500};
+          }
+        }
+      }
+    }
+  }
 }
 
 // /*
