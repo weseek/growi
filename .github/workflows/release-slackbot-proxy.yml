@@ -55,7 +55,7 @@ jobs:
         gcloud auth configure-docker --quiet
 
     - name: Set up Docker Buildx
-      uses: docker/setup-buildx-action@v1
+      uses: docker/setup-buildx-action@v2
 
     - name: Build and push
       uses: docker/build-push-action@v2
