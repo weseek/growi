@@ -1,6 +1,7 @@
 @use './variables' as *;
 @use './bootstrap/variables' as *;
 @use './theme/mixins/page-editor-mode-manager';
+@use './theme/hsl-functions' as hsl;
 
 // == Define Bootstrap theme colors
 //
@@ -20,7 +21,7 @@
   --primary: hsl(var(--primary-hs),var(--primary-l));
   --primary-hs: 216.7,65%;
   --primary-l: 20.2%;
-  --accent: #209fd8;
+  --accent: hsl(var(--accent-hs),var(--accent-l));
   --accent-hs: 216.7,65%;
   --accent-l: 20.2%;
   $accent: #209fd8;
@@ -30,7 +31,6 @@
   --bgcolor-global: hsl(var(--bgcolor-global-hs),var(--bgcolor-global-l));
   --bgcolor-global-hs: 0,0%;
   --bgcolor-global-l: 100%;
-  --body-bg: var(--bgcolor-global);
   $bgcolor-inline-code: $gray-100; //optional
   --bgcolor-card: #{$gray-50};
   $bgcolor-blinked-section: rgba($primary, 0.1);
@@ -45,11 +45,11 @@
   --color-link: hsl(var(--color-link-hs),var(--color-link-l));
   --color-link-hs: 228.4,76.3%;
   --color-link-l: 41.4%;
-  --color-link-hover: hsl(var(--color-link-hs),calc(var(--color-link-l) + 20%));
+  --color-link-hover: #{hsl.lighten(var(--color-link),20%)};
   --color-link-wiki: var(--color-link);
   --color-link-wiki-hs: var(--color-link-hs);
   --color-link-wiki-l: var(--color-link-l);
-  --color-link-wiki-hover: hsl(var(--color-link-wiki-hs),calc(var(--color-link-wiki-l) + 20%));
+  --color-link-wiki-hover: #{hsl.lighten(var(--color-link-wiki),20%)};
   --color-link-nabvar: #{$gray-500};
   $color-inline-code: darken($red, 15%); // optional
 
@@ -57,7 +57,7 @@
   --color-list: var(--color-global); // optional
   --bgcolor-list: var(--bgcolor-global); // optional
   // --color-list-hover: va(--color-global); // optional
-  --bgcolor-list-hover: hsl(var(--bgcolor-global-hs),calc(var(--bgcolor-global-l) + 3%));// optional
+  --bgcolor-list-hover: #{hsl.lighten(var(--bgcolor-global),3%)};// optional
   // --color-list-active:white ; // optional
   // $bgcolor-list-active: $primary; // optional
 
@@ -81,7 +81,6 @@
   --fillcolor-logo-mark: hsl(var(--bgcolor-navbar-h),calc(var(--bgcolor-navbar-s) - 20%),calc(var(--bgcolor-navbar-l) + 15%));
   // Sidebar
   --bgcolor-sidebar: var(--primary);
-  $bgcolor-sidebar: #122c55;
   --bgcolor-sidebar-hs: var(--primary-hs);
   --bgcolor-sidebar-l: var(--primary-l);
   --bgcolor-sidebar-nav-item-active: rgba(black, 0.37); // optional
@@ -99,7 +98,7 @@
   --bgcolor-sidebar-list-group: #{$gray-50}; // optional
 
   // Subnavigation
-  --bgcolor-subnav: hsl(var(--bgcolor-global-hs),calc(var(--bgcolor-global-l) - 3%));
+  --bgcolor-subnav: #{hsl.darken(var(--bgcolor-global),3%)};
   // Tabs
   // $color-nav-tabs-link-active: #; //optional
   // $bordercolor-nav-tabs-hover: # # $bordercolor-nav-tabs; // optional
@@ -113,7 +112,7 @@
   --color-editor-icons: var(--color-global);
 
   // Border colors
-  $border-color-theme: $gray-400;
+  --border-color-theme: #{$gray-400};
   $bordercolor-inline-code: $gray-400; // optional
 
   // Dropdown colors
@@ -129,7 +128,7 @@
   // Button
   .btn-group.grw-page-editor-mode-manager {
     .btn.btn-outline-primary {
-      @include page-editor-mode-manager.btn-page-editor-mode-manager(primary, lighten($primary, 65%), lighten($primary, 70%));
+      @include page-editor-mode-manager.btn-page-editor-mode-manager (var(--primary),#{hsl.lighten(var(--primary),65%)}, #{hsl.lighten(var(--primary),70%)});
     }
   }
 }
@@ -146,9 +145,8 @@
   --bgcolor-global: #131418;
   --bgcolor-global-hs: 228,11.6%;
   --bgcolor-global-l: 9.4%;
-  --body-bg: var(--bgcolor-global);
   $bgcolor-inline-code: #1f1f22; //optional
-  --bgcolor-card: hsl(var(--bgcolor-global-hs),calc(var(--bgcolor-global-l) - 5%));
+  --bgcolor-card: #{hsl.darken(var(--bgcolor-global),5%)};
   $bgcolor-blinked-section: rgba($primary, 0.4);
   $bgcolor-keyword-highlighted: darken($grw-marker-red, 30%);
 
@@ -159,15 +157,13 @@
   $color-reversal: $gray-900;
   // $color-header: desaturate($primary, 20%);
   --color-link: #7b9ad5;
-  --link-color: var(--color-link);
   --color-link-hs: 219.3,51.7%;
   --color-link-l: 65.9%;
-  --color-link-hover: hsl(var(--color-link-hs), calc(var(--color-link-l) + 10%));
-  --link-hover-color: var(--color-link-hover);
+  --color-link-hover: #{hsl.lighten(var(--color-link),10%)};
   --color-link-wiki: var(--color-link);
   --color-link-wiki-hs: var(--color-link-hs);
   --color-link-wiki-l: var(--color-link-l);
-  --color-link-wiki-hover: hsl(var(--color-link-wiki-hs), calc(var(--color-link-wiki-l) + 10%));
+  --color-link-wiki-hover: #{hsl.lighten(var(--color-link-wiki),10%)};
   --color-link-nabvar: #a7a7a7;
   --color-inline-code: #c7254e; // optional
 
@@ -175,7 +171,7 @@
   --color-list: var(--color-global); // optional
   --bgcolor-list: var(--bgcolor-global); // optional
   // --color-list-hover: va(--color-global); // optional
-  --bgcolor-list-hover: hsl(var(--bgcolor-global-hs),calc(var(--bgcolor-global-l) + 3%)); // optional
+  --bgcolor-list-hover: #{hsl.lighten(var(--bgcolor-global),3%)}; // optional
   // --color-list-active:white ; // optional
   // $bgcolor-list-active: $primary; // optional
 
@@ -215,7 +211,7 @@
   --bgcolor-sidebar-list-group: #1c2a3e; // optional
 
   // Subnavigation
-  --bgcolor-subnav: --bgcolor-list-hover: hsl(var(--bgcolor-global-hs),calc(var(--bgcolor-global-l) + 3%));  // optional
+  --bgcolor-subnav: --bgcolor-list-hover: #{hsl.lighten(var(--bgcolor-global),3%)};  // optional
 
   // Tabs
   $bordercolor-nav-tabs: $gray-700; // optional
@@ -231,7 +227,7 @@
   --color-editor-icons: var(--color-global);
 
   // Border colors
-  $border-color-theme: $gray-400;
+  --border-color-theme: #{$gray-400};
   $bordercolor-inline-code: $secondary; // optional
 
   // admin theme box
