@@ -76,7 +76,7 @@
   --bgcolor-search-top-dropdown: var(--accent);
   --bgcolor-search-top-dropdown-hs: var(--accent-hs);
   --bgcolor-search-top-dropdown-l: var(--accent-l);
-  $border-image-navbar: linear-gradient(to right, #36c9ff 0%, #36c9ff 33%, #7926ff 66%, #ff2eff 100%);
+  --border-image-navbar: linear-gradient(to right, #36c9ff 0%, #36c9ff 33%, #7926ff 66%, #ff2eff 100%);
 
   // Logo colors
   --bgcolor-logo: var(--bgcolor-navbar);
@@ -191,7 +191,7 @@
   --bgcolor-search-top-dropdown: var(--accent);
   --bgcolor-search-top-dropdown-hs: var(--accent-hs);
   --bgcolor-search-top-dropdown-l: (var(--accent-l));
-  $border-image-navbar: linear-gradient(to right, #44bfe3 0%, #b04aff 50%, #ff1794 100%);
+  --border-image-navbar: linear-gradient(to right, #44bfe3 0%, #b04aff 50%, #ff1794 100%);
 
   // Logo colors
   --bgcolor-logo: var(--bgcolor-navbar);

@@ -11,7 +11,7 @@
 //
 
 // determine optional variables
-$border-image-navbar: var(--border-image-navbar,linear-gradient(to right, $gray-300 0%, $gray-300 100%));
+$border-image-navbar: var(--border-image-navbar,#{linear-gradient(to right, $gray-300 0%, $gray-300 100%)});
 $bgcolor-search-top-dropdown: var(--bgcolor-search-top-dropdown,var(--secondary));
 $bgcolor-sidebar-nav-item-active: var(--bgcolor-sidebar-nav-item-active,#{hsl.darken(var(--primary),10%)});
 $text-shadow-sidebar-nav-item-active: var(--text-shadow-sidebar-nav-item-active,1px 1px 2px var(--primary));
