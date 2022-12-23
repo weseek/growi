@@ -11,11 +11,11 @@ module.exports = (crowi: Crowi) => {
   const { pluginService } = crowi;
 
   router.post('/', async(req: PluginInstallerFormRequest, res: ApiV3Response) => {
-    try {
-      if (pluginService == null) {
-        throw new Error('pluginService is not set up');
-      }
+    if (pluginService == null) {
+      return res.apiv3Err('\'pluginService\' is not set up', 500);
+    }
 
+    try {
       await pluginService.install(req.body.pluginInstallerForm);
       return res.apiv3({});
     }

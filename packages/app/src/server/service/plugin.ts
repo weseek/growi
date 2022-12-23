@@ -116,9 +116,7 @@ export class PluginService implements IPluginService {
 
   private async deleteOldPluginDocument(path: string): Promise<void> {
     const GrowiPlugin = mongoose.model<GrowiPlugin>('GrowiPlugin');
-    const growiPlugin = await GrowiPlugin.findOne({ installedPath: path });
-    // if document already exists, delete old document before rename path
-    if (growiPlugin) await GrowiPlugin.findOneAndDelete({ installedPath: path });
+    await GrowiPlugin.deleteMany({ installedPath: path });
   }
 
   private async downloadPluginRepository(ghOrganizationName: string, ghReposName: string, ghBranch: string): Promise<void> {
