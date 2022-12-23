@@ -23,7 +23,7 @@ export const PluginCard = (props: Props): JSX.Element => {
 
   const { data, mutate } = useSWRxPlugin(id);
 
-  if (data == null || data.plugin == null) {
+  if (data == null) {
     return <></>;
   }
 
@@ -32,17 +32,17 @@ export const PluginCard = (props: Props): JSX.Element => {
 
     const onChangeHandler = async() => {
       try {
-        if (!isEnabled) {
-          const reqUrl = `/plugins/${id}/activate`;
-          const res = await apiv3Put(reqUrl);
-          setState(res.data.isEnabled);
-          toastSuccess('Plugin Activated');
+        if (isEnabled) {
+          const reqUrl = `/plugins/${id}/deactivate`;
+          await apiv3Put(reqUrl);
+          setState(!isEnabled);
+          toastSuccess('Plugin Deactivated');
         }
         else {
-          const reqUrl = `/plugins/${id}/deactivate`;
-          const res = await apiv3Put(reqUrl);
-          setState(res.data.isEnabled);
-          toastSuccess('Plugin Deactivated');
+          const reqUrl = `/plugins/${id}/activate`;
+          await apiv3Put(reqUrl);
+          setState(!isEnabled);
+          toastSuccess('Plugin Activated');
         }
       }
       catch (err) {
@@ -101,7 +101,7 @@ export const PluginCard = (props: Props): JSX.Element => {
     );
   };
 
-  // TODO: Fix commented out areas.
+  // TODO: Refactor commented out areas.
   return (
     <div className="card shadow border-0" key={name}>
       <div className="card-body px-5 py-4 mt-3">

@@ -88,11 +88,8 @@ module.exports = (crowi: Crowi): Router => {
 
     try {
       const GrowiPluginModel = mongoose.model('GrowiPlugin') as GrowiPluginModel;
-      const growiPlugin = await GrowiPluginModel.activateStatus(pluginId);
-      if (growiPlugin == null) {
-        return res.apiv3Err('GROWI Plugin is not found.', 400);
-      }
-      return res.apiv3({ isEnabled: growiPlugin.isEnabled });
+      await GrowiPluginModel.activateStatus(pluginId);
+      return res.apiv3({});
     }
     catch (err) {
       return res.apiv3Err(err);
@@ -109,11 +106,8 @@ module.exports = (crowi: Crowi): Router => {
 
     try {
       const GrowiPluginModel = mongoose.model('GrowiPlugin') as GrowiPluginModel;
-      const growiPlugin = await GrowiPluginModel.deactivateStatus(pluginId);
-      if (growiPlugin == null) {
-        return res.apiv3Err('GROWI Plugin is not found.', 400);
-      }
-      return res.apiv3({ isEnabled: growiPlugin.isEnabled });
+      await GrowiPluginModel.deactivateStatus(pluginId);
+      return res.apiv3({});
     }
     catch (err) {
       return res.apiv3Err(err);

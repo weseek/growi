@@ -180,14 +180,9 @@ export class PluginService implements IPluginService {
       }
     };
 
-    try {
-      await downloadFile(requestUrl, zipFilePath);
-      await unzip(zipFilePath, unzippedPath);
-      await renamePath(`${unzippedPath}/${ghReposName}-${ghBranch}`, `${unzippedPath}/${ghReposName}`);
-    }
-    catch (err) {
-      throw err;
-    }
+    await downloadFile(requestUrl, zipFilePath);
+    await unzip(zipFilePath, unzippedPath);
+    await renamePath(`${unzippedPath}/${ghReposName}-${ghBranch}`, `${unzippedPath}/${ghReposName}`);
 
     return;
   }
