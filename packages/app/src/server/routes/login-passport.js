@@ -130,7 +130,7 @@ module.exports = function(crowi, app) {
     // remove session.redirectTo
     delete req.session.redirectTo;
 
-    return res.apiv3({ redirectTo });
+    return res.apiv3({ redirectTo, userStatus: req.user.status });
   };
 
   const cannotLoginErrorHadnler = (req, res, next) => {

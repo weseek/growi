@@ -2,6 +2,7 @@ import React, {
   useState, useEffect, useCallback,
 } from 'react';
 
+import { USER_STATUS } from '@growi/core';
 import { useTranslation } from 'next-i18next';
 import { useRouter } from 'next/router';
 import ReactCardFlip from 'react-card-flip';
@@ -90,8 +91,17 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
 
     try {
       const res = await apiv3Post('/login', { loginForm });
-      const { redirectTo } = res.data;
-      router.push(redirectTo ?? '/');
+      const { redirectTo, userStatus } = res.data;
+
+      if (redirectTo != null) {
+        return router.push(redirectTo);
+      }
+
+      if (userStatus !== USER_STATUS.ACTIVE) {
+        window.location.href = '/';
+      }
+
+      return router.push('/');
     }
     catch (err) {
       const errs = toArrayIfNot(err);
