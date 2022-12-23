@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { memo } from 'react';
 
 import { SidebarContentsType } from '~/interfaces/ui';
 import { useCurrentSidebarContents } from '~/stores/ui';
@@ -8,7 +8,7 @@ import PageTree from './PageTree';
 import RecentChanges from './RecentChanges';
 import Tag from './Tag';
 
-export const SidebarContents = (): JSX.Element => {
+export const SidebarContents = memo(() => {
   const { data: currentSidebarContents } = useCurrentSidebarContents();
 
   let Contents;
@@ -29,5 +29,5 @@ export const SidebarContents = (): JSX.Element => {
   return (
     <Contents />
   );
-
-};
+});
+SidebarContents.displayName = 'SidebarContents';
