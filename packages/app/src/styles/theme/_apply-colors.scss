@@ -377,13 +377,13 @@ ul.pagination {
   }
 }
 
-// .grw-page-accessories-modal {
-//   .modal-header {
-//     .close {
-//       color: $secondary;
-//     }
-//   }
-// }
+.grw-page-accessories-modal {
+  .modal-header {
+    .close {
+      color: var(--secondary);
+    }
+  }
+}
 
 /*
  * cards
@@ -397,7 +397,7 @@ ul.pagination {
 
 .admin-bot-card {
   .grw-botcard-title-active {
-    color: $gray-200;
+    color: #{$gray-200};
   }
 }
 
