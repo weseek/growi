@@ -29,7 +29,7 @@ const LoginPage: NextPage<CommonProps> = () => {
     return (
       <>
         <div className="alert alert-warning">
-          <h2>{ t('login.registration_successful') }</h2>
+          <h2>{ t('login.sign_in_error') }</h2>
         </div>
         <p>Wait for approved by administrators.</p>
       </>
