@@ -124,7 +124,7 @@ context('Search all pages', () => {
       // do
       cy.get('@edit-tag-tooltip').find('a').click({force: true});
       // wait until
-      return new Promise((resolve) => resolve(Cypress.$('#edit-tag-modal').is(':visible')));
+      return cy.get('#edit-tag-modal').then($elem => $elem.is(':visible'));
     });
 
     cy.get('#edit-tag-modal').should('be.visible').within(() => {
