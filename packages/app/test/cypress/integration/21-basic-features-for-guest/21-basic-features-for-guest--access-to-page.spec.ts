@@ -3,45 +3,47 @@ context('Access to page by guest', () => {
 
   it('/Sandbox is successfully loaded', () => {
     cy.visit('/Sandbox');
-    cy.getByTestid('grw-pagetree-item-container').should('be.visible');
+    cy.waitUntilSkeletonDisappear();
+
     cy.collapseSidebar(true, true);
     cy.screenshot(`${ssPrefix}-sandbox`);
   });
 
+  // TODO: https://redmine.weseek.co.jp/issues/109939
   it('/Sandbox with anchor hash is successfully loaded', () => {
     cy.visit('/Sandbox#Headers');
-    cy.getByTestid('grw-pagetree-item-container').should('be.visible');
-
-    // eslint-disable-next-line cypress/no-unnecessary-waiting
-    // cy.wait(500);
+    cy.waitUntilSkeletonDisappear();
 
     // hide fab // disable fab for sticky-events warning
     // cy.getByTestid('grw-fab-container').invoke('attr', 'style', 'display: none');
 
-    cy.collapseSidebar(true);
+    // remove animation for screenshot
+    // remove 'blink' class because ::after element cannot be operated
+    // https://stackoverflow.com/questions/5041494/selecting-and-manipulating-css-pseudo-elements-such-as-before-and-after-usin/21709814#21709814
+    cy.get('#mdcont-headers').invoke('removeClass', 'blink');
+
     cy.screenshot(`${ssPrefix}-sandbox-headers`);
   });
 
   it('/Sandbox/Math is successfully loaded', () => {
     cy.visit('/Sandbox/Math');
-    cy.getByTestid('revision-toc-content').should('be.visible');
+    cy.waitUntilSkeletonDisappear();
+
+    // for check download toc data
+    cy.get('.toc-link').should('be.visible');
 
     cy.get('.math').should('be.visible');
 
     cy.collapseSidebar(true);
-    cy.screenshot(`${ssPrefix}-sandbox-math`, {
-      blackout: ['.revision-toc', '[data-hide-in-vrt=true]']
-    });
+    cy.screenshot(`${ssPrefix}-sandbox-math`);
   });
 
   it('/Sandbox with edit is successfully loaded', () => {
     cy.visit('/Sandbox#edit');
-
-    // eslint-disable-next-line cypress/no-unnecessary-waiting
-    cy.wait(1000);
+    cy.waitUntilSkeletonDisappear();
 
     cy.collapseSidebar(true);
-    cy.screenshot(`${ssPrefix}-sandbox-edit-page`);
+    cy.screenshot(`${ssPrefix}-sandbox-with-edit-hash`);
   })
 
 });
