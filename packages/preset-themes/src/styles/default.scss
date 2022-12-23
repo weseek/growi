@@ -31,7 +31,7 @@
   --bgcolor-global-l: 100%;
   --bgcolor-inline-code: #{$gray-100}; //optional
   --bgcolor-card: #{$gray-50};
-  --bgcolor-blinked-section: hsla(var(--primary-hs),var(--primary-l),90%);
+  --bgcolor-blinked-section: #{hsl.alpha(var(--primary),90%)};
   --bgcolor-keyword-highlighted: #{$grw-marker-yellow};
 
   // Font colors
@@ -140,18 +140,20 @@
 //== Dark Mode
 //
 :root[data-theme='dark'] {
-  --primary: #115cd3;
+  --primary: hsl(var(--primary-hs),var(--primary-l));
   --primary-hs: 216.8,85.1%;
   --prymary-l: 44.7;
-  $accent: #db00c2;
+  --accent: hsl(var(--accent-hs),var(--accent-l));
+  --accent-hs: 307,100%;
+  --accent-l: 43%;
 
   // Background colors
-  --bgcolor-global: #131418;
-  --bgcolor-global-hs: 228,11.6%;
-  --bgcolor-global-l: 9.4%;
+  --bgcolor-global: hsl(var(--bgcolor-global-hs),var(--bgcolor-global-l));
+  --bgcolor-global-hs: 228,12%;
+  --bgcolor-global-l: 8%;
   --bgcolor-inline-code: #1f1f22; //optional
   --bgcolor-card: #{hsl.darken(var(--bgcolor-global),5%)};
-  $bgcolor-blinked-section: rgba($primary, 0.4);
+  --bgcolor-blinked-section: #{hsl.alpha(var(--primary), 60%)};
   --bgcolor-keyword-highlighted: #{darken($grw-marker-red, 30%)};
 
   // Font colors

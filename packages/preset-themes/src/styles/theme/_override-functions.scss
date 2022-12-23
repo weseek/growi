@@ -17,5 +17,5 @@
 }
 
 @function rgba($color, $degrees) {
-  @return $color;
+  @return hsl.alpha($color, $degrees);
 }

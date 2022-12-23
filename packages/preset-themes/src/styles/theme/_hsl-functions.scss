@@ -54,3 +54,10 @@
   $color-l: var(#{$color+'-l'});
   @return hsl($color-hs, calc($color-l - $degrees));
 }
+@function alpha($color, $degrees) {
+  $color: bs.str-replace($color, 'var(');
+  $color: bs.str-replace($color, ')');
+  $color-hs: var(#{$color+'-hs'});
+  $color-l: var(#{$color+'-l'});
+  @return hsla($color-hs,$color-l,$degrees);
+}
