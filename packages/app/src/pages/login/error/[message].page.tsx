@@ -25,7 +25,7 @@ const LoginPage: NextPage<CommonProps> = () => {
 
   let loginErrorElm;
 
-  const renderResistrationSuccessFul = () => {
+  const ApprovalPendingUserError = () => {
     return (
       <>
         <div className="alert alert-warning">
@@ -36,7 +36,7 @@ const LoginPage: NextPage<CommonProps> = () => {
     );
   };
 
-  const renderSuspendedUserError = () => {
+  const SuspendedUserError = () => {
     return (
       <>
         <div className="alert alert-warning">
@@ -47,7 +47,7 @@ const LoginPage: NextPage<CommonProps> = () => {
     );
   };
 
-  const renderPasswordResetOrderError = () => {
+  const PasswordResetOrderError = () => {
     return (
       <>
         <div className="alert alert-warning mb-3">
@@ -60,7 +60,7 @@ const LoginPage: NextPage<CommonProps> = () => {
     );
   };
 
-  const renderDefaultLoginError = () => {
+  const DefaultLoginError = () => {
     return (
       <div className="alert alert-warning">
         <h2>{ t('login.sign_in_error') }</h2>
@@ -70,16 +70,16 @@ const LoginPage: NextPage<CommonProps> = () => {
 
   switch (message) {
     case 'registered':
-      loginErrorElm = () => renderResistrationSuccessFul();
+      loginErrorElm = <ApprovalPendingUserError />;
       break;
     case 'suspended':
-      loginErrorElm = () => renderSuspendedUserError();
+      loginErrorElm = <SuspendedUserError />;
       break;
     case 'password-reset-order':
-      loginErrorElm = () => renderPasswordResetOrderError();
+      loginErrorElm = <PasswordResetOrderError />;
       break;
     default:
-      loginErrorElm = () => renderDefaultLoginError();
+      loginErrorElm = <DefaultLoginError />;
   }
 
 
@@ -88,7 +88,7 @@ const LoginPage: NextPage<CommonProps> = () => {
       <div className="mb-4 login-form-errors text-center">
         <div className='noLogin-dialog pb-4 mx-auto'>
           <div className="col-12">
-            {loginErrorElm()}
+            {loginErrorElm}
           </div>
           {/* If the transition source is "/login", use <a /> tag since the transition will not occur if next/link is used. */}
           <a href='/login'>
