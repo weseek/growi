@@ -5,6 +5,7 @@ import {
   Dropdown, DropdownMenu, DropdownToggle, DropdownItem,
 } from 'reactstrap';
 
+import { NotAvailableForGuest } from '~/components/NotAvailableForGuest';
 import {
   IPageInfoAll, isIPageInfoForOperation,
 } from '~/interfaces/page';
@@ -331,24 +332,28 @@ export const PageItemControlSubstance = (props: PageItemControlSubstanceProps): 
   }, [onClickPathRecoveryMenuItem, pageId]);
 
   return (
-    <Dropdown isOpen={isOpen} toggle={() => setIsOpen(!isOpen)} data-testid="open-page-item-control-btn">
-      { children ?? (
-        <DropdownToggle color="transparent" className="border-0 rounded btn-page-item-control d-flex align-items-center justify-content-center">
-          <i className="icon-options"></i>
-        </DropdownToggle>
-      ) }
+    <NotAvailableForGuest>
+      <Dropdown isOpen={isOpen} toggle={() => setIsOpen(!isOpen)} data-testid="open-page-item-control-btn">
+        { children ?? (
+          <DropdownToggle color="transparent" className="border-0 rounded btn-page-item-control d-flex align-items-center justify-content-center">
+            <i className="icon-options"></i>
+          </DropdownToggle>
+        ) }
 
-      <PageItemControlDropdownMenu
-        {...props}
-        isLoading={isLoading}
-        pageInfo={fetchedPageInfo ?? presetPageInfo}
-        onClickBookmarkMenuItem={bookmarkMenuItemClickHandler}
-        onClickRenameMenuItem={renameMenuItemClickHandler}
-        onClickDuplicateMenuItem={duplicateMenuItemClickHandler}
-        onClickDeleteMenuItem={deleteMenuItemClickHandler}
-        onClickPathRecoveryMenuItem={pathRecoveryMenuItemClickHandler}
-      />
-    </Dropdown>
+        <PageItemControlDropdownMenu
+          {...props}
+          isLoading={isLoading}
+          pageInfo={fetchedPageInfo ?? presetPageInfo}
+          onClickBookmarkMenuItem={bookmarkMenuItemClickHandler}
+          onClickRenameMenuItem={renameMenuItemClickHandler}
+          onClickDuplicateMenuItem={duplicateMenuItemClickHandler}
+          onClickDeleteMenuItem={deleteMenuItemClickHandler}
+          onClickPathRecoveryMenuItem={pathRecoveryMenuItemClickHandler}
+        />
+      </Dropdown>
+
+    </NotAvailableForGuest>
+
   );
 
 };

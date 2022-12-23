@@ -210,16 +210,17 @@ context('Page Accessories Modal', () => {
       cy.login(user.username, user.password);
     });
 
-    cy.visit('/Sandbox/Bootstrap4');
+    cy.visit('/');
 
-    cy.getByTestid('grw-contextual-sub-nav').as('subnav').should('be.visible').within(() => {
-      cy.getByTestid('open-page-item-control-btn').as('pageItemControlBtn').should('be.visible');
-    });
     cy.waitUntil(() => {
       // do
-      cy.get('@pageItemControlBtn').click();
+      cy.getByTestid('grw-contextual-sub-nav').should('be.visible').within(() => {
+        cy.getByTestid('open-page-item-control-btn').find('button').first().as('btn').click();
+      });
       // wait until
-      return cy.get('.dropdown-menu.show').then($elem => $elem.is(':visible'));
+      return cy.get('body').within(() => {
+        return Cypress.$('.dropdown-menu.show').is(':visible');
+      });
     });
 
   });

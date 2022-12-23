@@ -6,13 +6,12 @@ import dynamic from 'next/dynamic';
 import { useRouter } from 'next/router';
 import { DropdownItem } from 'reactstrap';
 
-import { exportAsMarkdown, updateContentWidth } from '~/client/services/page-operation';
+import { exportAsMarkdown, updateContentWidth, useUpdateStateAfterSave } from '~/client/services/page-operation';
 import { toastSuccess, toastError } from '~/client/util/apiNotification';
 import { apiPost } from '~/client/util/apiv1-client';
 import {
   IPageToRenameWithMeta, IPageWithMeta, IPageInfoForEntity,
 } from '~/interfaces/page';
-import { IResTagsUpdateApiv1 } from '~/interfaces/tag';
 import { OnDuplicatedFunction, OnRenamedFunction, OnDeletedFunction } from '~/interfaces/ui';
 import {
   useCurrentPageId, useCurrentPathname, useIsNotFound,
@@ -221,6 +220,8 @@ const GrowiContextualSubNavigation = (props: GrowiContextualSubNavigationProps):
   const { open: openDeleteModal } = usePageDeleteModal();
   const { data: templateTagData } = useTemplateTagData();
 
+  const updateStateAfterSave = useUpdateStateAfterSave(pageId);
+
   const path = currentPage?.path ?? currentPathname;
 
   useEffect(() => {
@@ -251,16 +252,9 @@ const GrowiContextualSubNavigation = (props: GrowiContextualSubNavigationProps):
 
     const { _id: pageId, revision: revisionId } = currentPage;
     try {
-      const res: IResTagsUpdateApiv1 = await apiPost('/tags.update', { pageId, revisionId, tags: newTags });
-      mutateCurrentPage();
+      await apiPost('/tags.update', { pageId, revisionId, tags: newTags });
 
-      // TODO: fix https://github.com/weseek/growi/pull/6478 without pageContainer
-      // const lastUpdateUser = res.savedPage?.lastUpdateUser as IUser;
-      // await pageContainer.setState({ lastUpdateUsername: lastUpdateUser.username });
-
-      // revalidate SWRTagsInfo
-      mutateSWRTagsInfo();
-      mutatePageTagsForEditors(newTags);
+      updateStateAfterSave?.();
 
       toastSuccess('updated tags successfully');
     }
@@ -268,7 +262,7 @@ const GrowiContextualSubNavigation = (props: GrowiContextualSubNavigationProps):
       toastError(err, 'fail to update tags');
     }
 
-  }, [currentPage, mutateCurrentPage, mutateSWRTagsInfo, mutatePageTagsForEditors]);
+  }, [currentPage, updateStateAfterSave]);
 
   const tagsUpdatedHandlerForEditMode = useCallback((newTags: string[]): void => {
     // It will not be reflected in the DB until the page is refreshed
