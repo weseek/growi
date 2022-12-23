@@ -174,8 +174,8 @@ export const PageComment: FC<PageCommentProps> = memo((props:PageCommentProps): 
                   {commentElement(comment)}
                   {hasReply && replyCommentsElement(allReplies[comment._id])}
                   {(!isReadOnly && !showEditorIds.has(comment._id)) && (
-                    <NotAvailableForGuest>
-                      <div className="text-right">
+                    <div className="d-flex flex-row-reverse">
+                      <NotAvailableForGuest>
                         <Button
                           outline
                           color="secondary"
@@ -187,8 +187,8 @@ export const PageComment: FC<PageCommentProps> = memo((props:PageCommentProps): 
                         >
                           <i className="icon-fw icon-action-undo"></i> Reply
                         </Button>
-                      </div>
-                    </NotAvailableForGuest>
+                      </NotAvailableForGuest>
+                    </div>
                   )}
                   {(!isReadOnly && showEditorIds.has(comment._id)) && (
                     <CommentEditor
