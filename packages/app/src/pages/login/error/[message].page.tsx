@@ -18,6 +18,7 @@ import {
 
 
 type Props = CommonProps;
+const classNames: string[] = ['login-page'];
 
 const LoginPage: NextPage<CommonProps> = (props: CommonProps) => {
 
@@ -29,8 +30,6 @@ const LoginPage: NextPage<CommonProps> = (props: CommonProps) => {
 
   // page
   useCurrentPathname(props.currentPathname);
-
-  const classNames: string[] = ['login-page'];
 
 
   let loginErrorElm;
@@ -95,9 +94,8 @@ const LoginPage: NextPage<CommonProps> = (props: CommonProps) => {
 
   return (
     <NoLoginLayout className={classNames.join(' ')}>
-
       <div className="mb-4 login-form-errors text-center">
-        <div className='noLogin-dialog mx-auto'>
+        <div className='noLogin-dialog pb-4 mx-auto'>
           <div className="col-12">
             {loginErrorElm()}
           </div>
@@ -107,8 +105,6 @@ const LoginPage: NextPage<CommonProps> = (props: CommonProps) => {
           </a>
         </div>
       </div>
-
-
     </NoLoginLayout>
   );
 };
