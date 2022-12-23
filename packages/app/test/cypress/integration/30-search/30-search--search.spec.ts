@@ -116,15 +116,15 @@ context('Search all pages', () => {
 
     cy.visit('/');
 
-    // Add tag
-    cy.get('#edit-tags-btn-wrapper-for-tooltip').as('edit-tag-tooltip').should('be.visible');
-
-    // open Edit Tags Modal
+    // open Edit Tags Modal to add tag
     cy.waitUntil(() => {
       // do
-      cy.get('@edit-tag-tooltip').find('a').click({force: true});
+      cy.getByTestid('grw-tag-labels').as('tagLabels').should('be.visible');
+      cy.get('@tagLabels').find('a.btn').as('btn').click();
       // wait until
-      return cy.get('#edit-tag-modal').then($elem => $elem.is(':visible'));
+      return cy.get('body').within(() => {
+        return Cypress.$('.modal.show').is(':visible');
+      });
     });
 
     cy.get('#edit-tag-modal').should('be.visible').within(() => {
@@ -168,7 +168,16 @@ context('Search all pages', () => {
     const tag = 'help';
 
     cy.visit('/');
-    cy.get('.grw-taglabels-container > div > a').contains(tag).click();
+
+    // open Edit Tags Modal to add tag
+    cy.waitUntil(() => {
+      // do
+      cy.getByTestid('grw-tag-labels').as('tagLabels').should('be.visible');
+      cy.get('@tagLabels').find('a').contains(tag).as('tag').click();
+      // wait until
+      return cy.getByTestid('search-result-base').then($elem => $elem.is(':visible'));
+    });
+
     cy.getByTestid('search-result-base').should('be.visible');
     cy.getByTestid('search-result-list').should('be.visible');
     cy.getByTestid('search-result-content').should('be.visible');
@@ -366,12 +375,10 @@ context('Search current tree with "prefix":', () => {
     const searchText = 'help';
 
     cy.visit('/');
-    cy.waitUntilSkeletonDisappear();
-    cy.collapseSidebar(true);
 
     cy.waitUntil(() => {
       // do
-      cy.getByTestid('select-search-scope').click();
+      cy.getByTestid('select-search-scope').should('be.visible').click();
       // wait until
       return cy.get('.grw-global-search-container').within(() => {
         return Cypress.$('.dropdown-menu.show').is(':visible');
