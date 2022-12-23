@@ -186,7 +186,7 @@ ul.pagination {
 
   // for https://youtrack.weseek.co.jp/issue/GW-2603
   .search-typeahead {
-    background-color: hsla(var(--bgcolor-global-hs),var(--bgcolor-global-l),90%);
+    background-color: hsla(var(--bgcolor-global-hs),var(--bgcolor-global-l),10%);
   }
 }
 
@@ -310,17 +310,17 @@ ul.pagination {
   }
 }
 
-// /*
-//  * Icon
-//  */
-// .editor-container .navbar-editor svg {
-//   fill: var(--color-editor-icons);
-// }
+/*
+ * Icon
+ */
+.editor-container .navbar-editor svg {
+  fill: var(--color-editor-icons);
+}
 
-// // page preview button in link form
-// .btn-page-preview svg {
-//   fill: white;
-// }
+// page preview button in link form
+.btn-page-preview svg {
+  fill: white;
+}
 
 /*
  * Modal
@@ -332,7 +332,8 @@ ul.pagination {
       color: var(--color-modal-header);
     }
     .close {
-      color: hsla(var(--color-modal-header),50%);
+      color: hsla(var(--primary-hs),var(--primary-l),50%);
+
       &:hover {
         opacity: 0.9;
       }
@@ -352,7 +353,7 @@ ul.pagination {
   .nav-item {
     &:hover,
     &:focus {
-      background-color: hsla(var(--color-link),90%);
+      background-color: hsla(var(--color-link-hs),var(--color-link-l),10%);
     }
     .nav-link {
       -webkit-appearance: none;
@@ -379,7 +380,7 @@ ul.pagination {
 .grw-page-accessories-modal {
   .modal-header {
     .close {
-      color: $secondary;
+      color: var(--secondary);
     }
   }
 }
@@ -396,7 +397,7 @@ ul.pagination {
 
 .admin-bot-card {
   .grw-botcard-title-active {
-    color: $gray-200;
+    color: #{$gray-200};
   }
 }
 

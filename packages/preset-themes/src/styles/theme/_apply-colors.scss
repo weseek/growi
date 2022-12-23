@@ -314,100 +314,100 @@
 /*
  * Icon
  */
-.editor-container .navbar-editor svg {
-  fill: var(--color-editor-icons);
-}
+// .editor-container .navbar-editor svg {
+//   fill: var(--color-editor-icons);
+// }
 
-// page preview button in link form
-.btn-page-preview svg {
-  fill: white;
-}
+// // page preview button in link form
+// .btn-page-preview svg {
+//   fill: white;
+// }
 
-/*
- * Modal
- */
-.modal {
-  .modal-header {
-    // border-bottom-color: $border-color-theme;
-    .modal-title {
-      // color: $color-modal-header;
-    }
-    .close {
-      // color: $color-modal-header;
-      opacity: 0.5;
-      &:hover {
-        opacity: 0.9;
-      }
-    }
-  }
+// /*
+//  * Modal
+//  */
+// .modal {
+//   .modal-header {
+//     border-bottom-color: var(--border-color-theme);
+//     .modal-title {
+//       color: var(--color-modal-header);
+//     }
+//     .close {
+//       color: var(--color-modal-header);
+//       opacity: 0.5;
+//       &:hover {
+//         opacity: 0.9;
+//       }
+//     }
+//   }
 
-  .modal-content {
-    background-color: var(--bgcolor-global);
-  }
+//   .modal-content {
+//     background-color: var(--bgcolor-global);
+//   }
 
-  .modal-footer {
-    // border-top-color: $border-color-theme;
-  }
-}
+//   .modal-footer {
+//     border-top-color: var(--border-color-theme);
+//   }
+// }
 
-.grw-custom-nav-tab {
-  .nav-item {
-    &:hover,
-    &:focus {
-      background-color: var(--color-link); opacity:0.9;
-    }
-    .nav-link {
-      -webkit-appearance: none;
-      color: var(--color-link);
-      svg {
-        fill: var(--color-link);
-      }
+// .grw-custom-nav-tab {
+//   .nav-item {
+//     &:hover,
+//     &:focus {
+//       background-color: hsla(var(--color-link-hs),var(--color-link-l),10%);
+//     }
+//     .nav-link {
+//       -webkit-appearance: none;
+//       color: var(--color-link);
+//       svg {
+//         fill: var(--color-link);
+//       }
 
-      // Disabled state lightens text
-      &.disabled {
-        color: $nav-link-disabled-color;
-        svg {
-          fill: $nav-link-disabled-color;
-        }
-      }
-    }
-  }
+//       // Disabled state lightens text
+//       &.disabled {
+//         color: $nav-link-disabled-color;
+//         svg {
+//           fill: $nav-link-disabled-color;
+//         }
+//       }
+//     }
+//   }
 
-  .grw-nav-slide-hr {
-    border-color: var(--color-link);
-  }
-}
+//   .grw-nav-slide-hr {
+//     border-color: var(--color-link);
+//   }
+// }
 
-.grw-page-accessories-modal {
-  .modal-header {
-    .close {
-      color: $secondary;
-    }
-  }
-}
+// .grw-page-accessories-modal {
+//   .modal-header {
+//     .close {
+//       color: var(--secondary);
+//     }
+//   }
+// }
 
 /*
  * cards
  */
-.card.well {
-  color: var(--color-global);
-  background-color: var(--bgcolor-card);
-  border-color: $light;
-  box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.05);
-}
+// .card.well {
+//   color: var(--color-global);
+//   background-color: var(--bgcolor-card);
+//   border-color: var(--light);
+//   box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.05);
+// }
 
-.admin-bot-card {
-  .grw-botcard-title-active {
-    color: $gray-200;
-  }
-}
+// .admin-bot-card {
+//   .grw-botcard-title-active {
+//     color: #{$gray-200};
+//   }
+// }
 
 /*
  * Form Slider
  */
 .admin-page {
   span.slider {
-    background-color: $gray-300;
+    background-color: #{$gray-300};
 
     &:before {
       background-color: white;
