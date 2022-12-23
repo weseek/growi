@@ -5,15 +5,11 @@ import {
 } from 'next';
 import { useTranslation } from 'next-i18next';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
-import Head from 'next/head';
 import { useRouter } from 'next/router';
 
 import { NoLoginLayout } from '~/components/Layout/NoLoginLayout';
-import type { CrowiRequest } from '~/interfaces/crowi-request';
-import { IExternalAccountLoginError, isExternalAccountLoginError } from '~/interfaces/errors/external-account-login-error';
-import type { RegistrationMode } from '~/interfaces/registration-mode';
 import {
-  CommonProps, getServerSideCommonProps, generateCustomTitle, getNextI18NextConfig,
+  CommonProps, getServerSideCommonProps, getNextI18NextConfig,
 } from '~/pages/utils/commons';
 import {
   useCsrfToken,
@@ -21,21 +17,9 @@ import {
 } from '~/stores/context';
 
 
-type Props = CommonProps & {
-  registrationMode: RegistrationMode,
-  pageWithMetaStr: string,
-  isMailerSetup: boolean,
-  enabledStrategies: unknown,
-  registrationWhiteList: string[],
-  isLocalStrategySetup: boolean,
-  isLdapStrategySetup: boolean,
-  isLdapSetupFailed: boolean,
-  isPasswordResetEnabled: boolean,
-  isEmailAuthenticationEnabled: boolean,
-  externalAccountLoginError?: IExternalAccountLoginError,
-};
+type Props = CommonProps;
 
-const LoginPage: NextPage<Props> = (props: Props) => {
+const LoginPage: NextPage<CommonProps> = (props: CommonProps) => {
 
   // commons
   useCsrfToken(props.csrfToken);
@@ -43,12 +27,9 @@ const LoginPage: NextPage<Props> = (props: Props) => {
   const router = useRouter();
   const { message } = router.query;
 
-  console.log({ message });
-
   // page
   useCurrentPathname(props.currentPathname);
 
-  const title = generateCustomTitle(props, 'GROWI');
   const classNames: string[] = ['login-page'];
 
 
@@ -104,7 +85,6 @@ const LoginPage: NextPage<Props> = (props: Props) => {
       <div className="mb-4 login-form-errors text-center">
         <div className='noLogin-dialog mx-auto'>
           <div className="col-12">
-            {/* {renderAlertMessage()} */}
             {loginErrorElm()}
           </div>
         </div>
@@ -126,43 +106,6 @@ async function injectNextI18NextConfigurations(context: GetServerSidePropsContex
   props._nextI18Next = nextI18NextConfig._nextI18Next;
 }
 
-function injectEnabledStrategies(context: GetServerSidePropsContext, props: Props): void {
-  const req: CrowiRequest = context.req as CrowiRequest;
-  const { crowi } = req;
-  const {
-    configManager,
-  } = crowi;
-
-  const enabledStrategies = {
-    google: configManager.getConfig('crowi', 'security:passport-google:isEnabled'),
-    github: configManager.getConfig('crowi', 'security:passport-github:isEnabled'),
-    facebook: false,
-    twitter: configManager.getConfig('crowi', 'security:passport-twitter:isEnabled'),
-    saml: configManager.getConfig('crowi', 'security:passport-saml:isEnabled'),
-    oidc: configManager.getConfig('crowi', 'security:passport-oidc:isEnabled'),
-  };
-
-  props.enabledStrategies = enabledStrategies;
-}
-
-async function injectServerConfigurations(context: GetServerSidePropsContext, props: Props): Promise<void> {
-  const req: CrowiRequest = context.req as CrowiRequest;
-  const { crowi } = req;
-  const {
-    mailService,
-    configManager,
-    passportService,
-  } = crowi;
-
-  props.isPasswordResetEnabled = crowi.configManager.getConfig('crowi', 'security:passport-local:isPasswordResetEnabled');
-  props.isMailerSetup = mailService.isMailerSetup;
-  props.isLocalStrategySetup = passportService.isLocalStrategySetup;
-  props.isLdapStrategySetup = passportService.isLdapStrategySetup;
-  props.isLdapSetupFailed = configManager.getConfig('crowi', 'security:passport-ldap:isEnabled') && !props.isLdapStrategySetup;
-  props.registrationWhiteList = configManager.getConfig('crowi', 'security:registrationWhiteList');
-  props.isEmailAuthenticationEnabled = configManager.getConfig('crowi', 'security:passport-local:isEmailAuthenticationEnabled');
-  props.registrationMode = configManager.getConfig('crowi', 'security:registrationMode');
-}
 
 export const getServerSideProps: GetServerSideProps = async(context: GetServerSidePropsContext) => {
   const result = await getServerSideCommonProps(context);
@@ -175,15 +118,6 @@ export const getServerSideProps: GetServerSideProps = async(context: GetServerSi
 
   const props: Props = result.props as Props;
 
-  if (context.query.externalAccountLoginError != null) {
-    const externalAccountLoginError = context.query.externalAccountLoginError;
-    if (isExternalAccountLoginError(externalAccountLoginError)) {
-      props.externalAccountLoginError = { ...externalAccountLoginError as IExternalAccountLoginError };
-    }
-  }
-
-  injectServerConfigurations(context, props);
-  injectEnabledStrategies(context, props);
   await injectNextI18NextConfigurations(context, props, ['translation']);
 
   return {
