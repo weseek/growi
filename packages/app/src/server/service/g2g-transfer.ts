@@ -29,7 +29,7 @@ export const X_GROWI_TRANSFER_KEY_HEADER_NAME = 'x-growi-transfer-key';
 /**
  * Keys for file upload related config
  */
-const uploadConfigKeys = [
+const UPLOAD_CONFIG_KEYS = [
   'app:fileUploadType',
   'app:useOnlyEnvVarForFileUploadType',
   'aws:referenceFileWithRelayMode',
@@ -44,7 +44,7 @@ const uploadConfigKeys = [
 /**
  * File upload related configs
  */
-type FileUploadConfigs = { [key in typeof uploadConfigKeys[number] ]: any; }
+type FileUploadConfigs = { [key in typeof UPLOAD_CONFIG_KEYS[number] ]: any; }
 
 /**
  * Data used for comparing to/from GROWI information
@@ -98,7 +98,7 @@ interface Pusher {
    * @param {TransferKey} tk Transfer key
    * @param {AxiosRequestConfig} config Axios config
    */
-  getAxiosConfig(tk: TransferKey, config: AxiosRequestConfig): AxiosRequestConfig
+  generateAxiosBaseConfig(tk: TransferKey, config: AxiosRequestConfig): AxiosRequestConfig
   /**
    * Send to-growi a request to get growi info
    * @param {TransferKey} tk Transfer key
@@ -210,7 +210,7 @@ export class G2GTransferPusherService implements Pusher {
     this.crowi = crowi;
   }
 
-  public getAxiosConfig(tk: TransferKey, config: AxiosRequestConfig = {}): AxiosRequestConfig {
+  public generateAxiosBaseConfig(tk: TransferKey, config: AxiosRequestConfig = {}): AxiosRequestConfig {
     const { appSiteUrlOrigin, key } = tk;
 
     return {
@@ -226,7 +226,7 @@ export class G2GTransferPusherService implements Pusher {
 
   public async askGROWIInfo(tk: TransferKey): Promise<IDataGROWIInfo> {
     try {
-      const { data: { growiInfo } } = await axios.get('/_api/v3/g2g-transfer/growi-info', this.getAxiosConfig(tk));
+      const { data: { growiInfo } } = await axios.get('/_api/v3/g2g-transfer/growi-info', this.generateAxiosBaseConfig(tk));
       return growiInfo;
     }
     catch (err) {
@@ -287,7 +287,7 @@ export class G2GTransferPusherService implements Pusher {
 
   public async listFilesInStorage(tk: TransferKey): Promise<FileMeta[]> {
     try {
-      const { data: { files } } = await axios.get<{ files: FileMeta[] }>('/_api/v3/g2g-transfer/files', this.getAxiosConfig(tk));
+      const { data: { files } } = await axios.get<{ files: FileMeta[] }>('/_api/v3/g2g-transfer/files', this.generateAxiosBaseConfig(tk));
       return files;
     }
     catch (err) {
@@ -386,7 +386,7 @@ export class G2GTransferPusherService implements Pusher {
       attachments: G2G_PROGRESS_STATUS.PENDING,
     });
 
-    const targetConfigKeys = uploadConfigKeys;
+    const targetConfigKeys = UPLOAD_CONFIG_KEYS;
 
     const uploadConfigs = Object.fromEntries(targetConfigKeys.map((key) => {
       return [key, this.crowi.configManager.getConfig('crowi', key)];
@@ -420,7 +420,7 @@ export class G2GTransferPusherService implements Pusher {
       form.append('optionsMap', JSON.stringify(optionsMap));
       form.append('operatorUserId', user._id.toString());
       form.append('uploadConfigs', JSON.stringify(uploadConfigs));
-      await rawAxios.post('/_api/v3/g2g-transfer/', form, this.getAxiosConfig(tk, { headers: form.getHeaders() }));
+      await rawAxios.post('/_api/v3/g2g-transfer/', form, this.generateAxiosBaseConfig(tk, { headers: form.getHeaders() }));
     }
     catch (err) {
       logger.error(err);
@@ -468,7 +468,7 @@ export class G2GTransferPusherService implements Pusher {
 
     form.append('content', fileStream, attachment.fileName);
     form.append('attachmentMetadata', JSON.stringify(attachment));
-    await rawAxios.post('/_api/v3/g2g-transfer/attachment', form, this.getAxiosConfig(tk, { headers: form.getHeaders() }));
+    await rawAxios.post('/_api/v3/g2g-transfer/attachment', form, this.generateAxiosBaseConfig(tk, { headers: form.getHeaders() }));
   }
 
 }
@@ -604,7 +604,7 @@ export class G2GTransferReceiverService implements Receiver {
       await importService.import(collections, importSettingsMap);
 
       // restore file upload config from cache
-      await configManager.removeConfigsInTheSameNamespace('crowi', uploadConfigKeys);
+      await configManager.removeConfigsInTheSameNamespace('crowi', UPLOAD_CONFIG_KEYS);
       await configManager.updateConfigsInTheSameNamespace('crowi', fileUploadConfigs);
     }
     else {
@@ -621,7 +621,7 @@ export class G2GTransferReceiverService implements Receiver {
 
   public async getFileUploadConfigs(): Promise<FileUploadConfigs> {
     const { configManager } = this.crowi;
-    const fileUploadConfigs = Object.fromEntries(uploadConfigKeys.map((key) => {
+    const fileUploadConfigs = Object.fromEntries(UPLOAD_CONFIG_KEYS.map((key) => {
       return [key, configManager.getConfigFromDB('crowi', key)];
     })) as FileUploadConfigs;
 
