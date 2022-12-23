@@ -7,13 +7,13 @@
 //
 
 // colors for overriding bootstrap $theme-colors
-// $secondary: #;
+// --secondary: #;
 // --info: #;
 // --success: #;
 // --warning: #;
 // --danger: #;
-// $light: #;
-// $dark: #;
+// --light: #;
+// --dark: #;
 
 //== Light Mode
 //
@@ -24,8 +24,6 @@
   --accent: hsl(var(--accent-hs),var(--accent-l));
   --accent-hs: 198.6,74.2%;
   --accent-l: 48.6%;
-  $accent: #209fd8;
-
 
   // Background colors
   --bgcolor-global: hsl(var(--bgcolor-global-hs),var(--bgcolor-global-l));
@@ -33,8 +31,8 @@
   --bgcolor-global-l: 100%;
   --bgcolor-inline-code: #{$gray-100}; //optional
   --bgcolor-card: #{$gray-50};
-  $bgcolor-blinked-section: rgba($primary, 0.1);
-  //$bgcolor-keyword-highlighted: $grw-marker-yellow;
+  --bgcolor-blinked-section: hsla(var(--primary-hs),var(--primary-l),90%);
+  --bgcolor-keyword-highlighted: #{$grw-marker-yellow};
 
   // Font colors
   --color-global: hsl(var(--color-global-hs),var(--color-global-l));
@@ -52,7 +50,8 @@
   --color-link-wiki-hover: #{hsl.lighten(var(--color-link-wiki),20%)};
   --color-link-nabvar: #{$gray-500};
   --color-inline-code: #{darken($red, 15%)}; // optional
-  --color-modal-header: #{hsl.contrast(var(--primary))};
+  --color-modal-header: white;
+
 
   // List Group colors
   --color-list: var(--color-global); // optional
@@ -61,6 +60,7 @@
   --bgcolor-list-hover: #{hsl.lighten(var(--bgcolor-global),3%)};// optional
   // --color-list-active:white ; // optional
   // $bgcolor-list-active: $primary; // optional
+  --color-page-list-group-item-meta: #{$gray-500};
 
   // Table colors
   // --color-table: #; // optional
@@ -107,7 +107,7 @@
   // Tabs
   // $color-nav-tabs-link-active: #; //optional
   // $bordercolor-nav-tabs-hover: # # $bordercolor-nav-tabs; // optional
-  // $bordercolor-nav-tabs-active: # # --bgcolor-global; // optional
+  --bordercolor-nav-tabs-active: var(--bordercolor-nav-tabs) var(--bordercolor-nav-tabs) var(--bgcolor-global); // optional
 
   // Tags
   // $color-tags: #; //optional
@@ -124,7 +124,7 @@
   --bgcolor-dropdown-link-active: $growi-blue;
 
   // admin theme box
-  $color-theme-color-box: lighten($primary, 20%);
+  --color-theme-color-box: #{hsl.lighten(var(--primary), 20%)};
 
   @import './theme/apply-colors';
   // @import './theme/apply-colors-light';
@@ -152,7 +152,7 @@
   --bgcolor-inline-code: #1f1f22; //optional
   --bgcolor-card: #{hsl.darken(var(--bgcolor-global),5%)};
   $bgcolor-blinked-section: rgba($primary, 0.4);
-  $bgcolor-keyword-highlighted: darken($grw-marker-red, 30%);
+  --bgcolor-keyword-highlighted: #{darken($grw-marker-red, 30%)};
 
   // Font colors
   --color-global: #{$gray-400};
@@ -170,6 +170,7 @@
   --color-link-wiki-hover: #{hsl.lighten(var(--color-link-wiki),10%)};
   --color-link-nabvar: #a7a7a7;
   --color-inline-code: #c7254e; // optional
+  --color-modal-header: black;
 
   // List Group colors
   --color-list: var(--color-global); // optional
@@ -177,7 +178,8 @@
   // --color-list-hover: va(--color-global); // optional
   --bgcolor-list-hover: #{hsl.lighten(var(--bgcolor-global),3%)}; // optional
   // --color-list-active:white ; // optional
-  // $bgcolor-list-active: $primary; // optional
+  // --bgcolor-list-active: var(--primary); // optional
+  --color-page-list-group-item-meta: #{$gray-500};
 
   // Table colors
   // --color-table: #; // optional
@@ -205,10 +207,10 @@
   --bgcolor-sidebar-nav-item-active: rgba(#969494, 0.3); // optional
   --text-shadow-sidebar-nav-item-active: 0px 0px 10px #0099ff; // optional
   // Sidebar resize button
-  $color-resize-button: white;
-  $bgcolor-resize-button: $accent;
-  $color-resize-button-hover: white;
-  $bgcolor-resize-button-hover: darken($bgcolor-resize-button, 5%);
+  --color-resize-button: white;
+  --bgcolor-resize-button: var(--accent);
+  --color-resize-button-hover: white;
+  --bgcolor-resize-button-hover: #{hsl.darken(var(--accent), 5%)};
   // Sidebar contents
   --color-sidebar-context: var(--color-global);
   --color-sidebar-context-hs: var(--color-global-hs);
@@ -220,10 +222,10 @@
   --bgcolor-subnav: --bgcolor-list-hover: #{hsl.lighten(var(--bgcolor-global),3%)};  // optional
 
   // Tabs
-  $bordercolor-nav-tabs: $gray-700; // optional
+  --bordercolor-nav-tabs: #{$gray-700}; // optional
   // $color-nav-tabs-link-active: #; //optional
-  $bordercolor-nav-tabs-hover: #666 #666 $bordercolor-nav-tabs; // optional
-  // $bordercolor-nav-tabs-active: # # var(--bgcolor-global); // optional
+  --bordercolor-nav-tabs-hover: #666 #666 var(--bordercolor-nav-tabs); // optional
+  --bordercolor-nav-tabs-active: var(--bordercolor-nav-tabs) var(--bordercolor-nav-tabs) var(--bgcolor-global); // optional
 
   // Tags
   // $color-tags: #; //optional
@@ -237,12 +239,10 @@
   --bordercolor-inline-code: var(--secondary); // optional
 
   // admin theme box
-  $color-theme-color-box: $primary;
+  --color-theme-color-box: var(--primary);
 
   @import './theme/apply-colors';
   // @import './theme/apply-colors-dark';
-
-  // @import '/packages/app/src/styles/theme/apply-colors-dark-new';
 
   //Button
   .btn-group.grw-page-editor-mode-manager {
