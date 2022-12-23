@@ -8,25 +8,24 @@ import { RawLayout } from './RawLayout';
 
 import styles from './Admin.module.scss';
 
+
+const AdminNavigation = dynamic(() => import('~/components/Admin/Common/AdminNavigation'), { ssr: false });
+const SystemVersion = dynamic(() => import('../SystemVersion'), { ssr: false });
 const HotkeysManager = dynamic(() => import('../Hotkeys/HotkeysManager'), { ssr: false });
 
 
 type Props = {
-  title?: string
   componentTitle?: string
   children?: ReactNode
 }
 
 
 const AdminLayout = ({
-  children, title, componentTitle,
+  children, componentTitle,
 }: Props): JSX.Element => {
 
-  const AdminNavigation = dynamic(() => import('~/components/Admin/Common/AdminNavigation'), { ssr: false });
-  const SystemVersion = dynamic(() => import('../SystemVersion'), { ssr: false });
-
   return (
-    <RawLayout title={title}>
+    <RawLayout>
       <div className={`admin-page ${styles['admin-page']}`}>
         <GrowiNavbar isGlobalSearchHidden={true} />
 

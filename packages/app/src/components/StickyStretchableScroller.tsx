@@ -1,5 +1,5 @@
 import React, {
-  useEffect, useCallback, ReactNode, useRef, useState, useMemo, RefObject,
+  useEffect, useCallback, FC, useRef, useState, useMemo, RefObject,
 } from 'react';
 
 import SimpleBar from 'simplebar-react';
@@ -15,7 +15,6 @@ export type StickyStretchableScrollerProps = {
   stickyElemSelector: string,
   simplebarRef?: (ref: RefObject<SimpleBar>) => void,
   calcViewHeight?: (scrollElement: HTMLElement) => number,
-  children?: ReactNode,
 }
 
 /**
@@ -40,7 +39,7 @@ export type StickyStretchableScrollerProps = {
     </StickyStretchableScroller>
   );
  */
-export const StickyStretchableScroller = (props: StickyStretchableScrollerProps): JSX.Element => {
+export const StickyStretchableScroller: FC<StickyStretchableScrollerProps> = (props) => {
 
   const {
     children, stickyElemSelector, calcViewHeight, simplebarRef: setSimplebarRef,

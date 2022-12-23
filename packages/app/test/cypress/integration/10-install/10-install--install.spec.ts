@@ -3,22 +3,24 @@ describe('Install', () => {
 
   beforeEach(() => {
     cy.visit('/');
+    cy.getByTestid('installerForm').should('be.visible');
   });
 
   it('Successfully show installer', () => {
-    cy.getByTestid('installerForm').should('be.visible');
     cy.screenshot(`${ssPrefix}-redirect-to-installer-page`);
   });
 
   it('Sccessfully choose languages', () => {
-    cy.getByTestid('installerForm').should('be.visible');
     cy.getByTestid('dropdownLanguage').should('be.visible');
-    // TODO: should not use wait.
-    // eslint-disable-next-line cypress/no-unnecessary-waiting
-    cy.wait(1000); // waiting for load
 
-    cy.getByTestid('dropdownLanguage').click();
-    cy.get('.dropdown-menu').should('be.visible');
+    // open Language Dropdown, wait for language data to load
+    cy.waitUntil(() => {
+      // do
+      cy.getByTestid('dropdownLanguage').click();
+      // wati until
+      return cy.get('.dropdown-menu').then($elem => $elem.is(':visible'));
+    });
+
     cy.getByTestid('dropdownLanguageMenu-en_US').click();
     cy.get('.alert-success').should('be.visible');
     cy.screenshot(`${ssPrefix}-select-en_US`);
@@ -48,8 +50,9 @@ describe('Install', () => {
     cy.getByTestid('btnSubmit').click();
 
     // Redirects to the root page take a long time (more than 10000ms)
+    cy.getByTestid('grw-pagetree-item-container', { timeout: 20000 }).should('be.visible');
+
     cy.waitUntilSkeletonDisappear();
-    cy.getByTestid('grw-pagetree-item-container').should('be.visible');
     cy.screenshot(`${ssPrefix}-installed-redirect-to-root-page`, {
       blackout: ['[data-hide-in-vrt=true]']
     });

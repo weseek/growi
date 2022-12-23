@@ -4,10 +4,11 @@ import {
 } from 'next';
 import { useTranslation } from 'next-i18next';
 import dynamic from 'next/dynamic';
+import Head from 'next/head';
 import { Container, Provider } from 'unstated';
 
 import AdminNotificationContainer from '~/client/services/AdminNotificationContainer';
-import { CommonProps, useCustomTitle } from '~/pages/utils/commons';
+import { CommonProps, generateCustomTitle } from '~/pages/utils/commons';
 import { useCurrentUser } from '~/stores/context';
 
 import { retrieveServerSideProps } from '../../../utils/admin-page-util';
@@ -31,7 +32,10 @@ const AdminGlobalNotificationNewPage: NextPage<CommonProps> = (props) => {
 
   return (
     <Provider inject={[...injectableContainers]}>
-      <AdminLayout title={useCustomTitle(props, title)} componentTitle={title} >
+      <AdminLayout componentTitle={title}>
+        <Head>
+          <title>{title}</title>
+        </Head>
         <ManageGlobalNotification />
       </AdminLayout>
     </Provider>
