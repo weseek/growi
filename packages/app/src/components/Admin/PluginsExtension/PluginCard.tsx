@@ -4,7 +4,6 @@ import Link from 'next/link';
 
 import { apiv3Delete, apiv3Put } from '~/client/util/apiv3-client';
 import { toastSuccess, toastError } from '~/client/util/toastr';
-import { useSWRxPlugin } from '~/stores/plugin';
 
 import styles from './PluginCard.module.scss';
 
@@ -12,23 +11,19 @@ type Props = {
   id: string,
   name: string,
   url: string,
+  isEnalbed: boolean,
+  mutate: () => void,
   desc?: string,
 }
 
 export const PluginCard = (props: Props): JSX.Element => {
 
   const {
-    id, name, url, desc,
+    id, name, url, isEnalbed, desc, mutate,
   } = props;
 
-  const { data, mutate } = useSWRxPlugin(id);
-
-  if (data == null) {
-    return <></>;
-  }
-
   const PluginCardButton = (): JSX.Element => {
-    const [isEnabled, setState] = useState<boolean>(data.plugin.isEnabled);
+    const [isEnabled, setState] = useState<boolean>(isEnalbed);
 
     const onChangeHandler = async() => {
       try {
@@ -47,9 +42,6 @@ export const PluginCard = (props: Props): JSX.Element => {
       }
       catch (err) {
         toastError('pluginIsEnabled', err);
-      }
-      finally {
-        mutate();
       }
     };
 

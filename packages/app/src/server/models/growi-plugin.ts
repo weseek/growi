@@ -14,9 +14,9 @@ export interface GrowiPluginDocument extends GrowiPlugin, Document {
 export interface GrowiPluginModel extends Model<GrowiPluginDocument> {
   findEnabledPlugins(): Promise<GrowiPlugin[]>
   findEnabledPluginsIncludingAnyTypes(includingTypes: GrowiPluginResourceType[]): Promise<GrowiPlugin[]>
-  getPlugin(id: Types.ObjectId): Promise<GrowiPlugin | null>
-  activateStatus(id: Types.ObjectId): Promise<void>
-  deactivateStatus(id: Types.ObjectId): Promise<void>
+  findPlugins(): Promise<GrowiPlugin[]>
+  activatePlugin(id: Types.ObjectId): Promise<void>
+  deactivatePlugin(id: Types.ObjectId): Promise<void>
 }
 
 const growiThemeMetadataSchema = new Schema<GrowiThemeMetadata>({
@@ -69,16 +69,15 @@ growiPluginSchema.statics.findEnabledPluginsIncludingAnyTypes = async function(t
   });
 };
 
-growiPluginSchema.statics.getPlugin = async function(id: Types.ObjectId): Promise<GrowiPlugin | null> {
-  const growiPlugin = await this.findOne({ _id: id });
-  return growiPlugin;
+growiPluginSchema.statics.findPlugins = async function(): Promise<GrowiPlugin[]> {
+  return this.find({});
 };
 
-growiPluginSchema.statics.activateStatus = async function(id: Types.ObjectId): Promise<void> {
+growiPluginSchema.statics.activatePlugin = async function(id: Types.ObjectId): Promise<void> {
   await this.findOneAndUpdate({ _id: id }, { isEnabled: true });
 };
 
-growiPluginSchema.statics.deactivateStatus = async function(id: Types.ObjectId): Promise<void> {
+growiPluginSchema.statics.deactivatePlugin = async function(id: Types.ObjectId): Promise<void> {
   await this.findOneAndUpdate({ _id: id }, { isEnabled: false });
 };
 

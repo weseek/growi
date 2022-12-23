@@ -34,29 +34,9 @@ module.exports = (crowi: Crowi): Router => {
     }
 
     try {
-      const data = await pluginService.getPlugins();
-      return res.apiv3({ plugins: data });
-    }
-    catch (err) {
-      return res.apiv3Err(err);
-    }
-  });
-
-  router.get('/:id', loginRequiredStrictly, adminRequired, validator.pluginIdisRequired, async(req: Request, res: ApiV3Response) => {
-    if (pluginService == null) {
-      return res.apiv3Err('\'pluginService\' is not set up', 500);
-    }
-
-    const { id } = req.params;
-    const pluginId = new ObjectID(id);
-
-    try {
       const GrowiPluginModel = mongoose.model('GrowiPlugin') as GrowiPluginModel;
-      const growiPlugin = await GrowiPluginModel.getPlugin(pluginId);
-      if (growiPlugin == null) {
-        return res.apiv3Err('GROWI Plugin is not found.', 400);
-      }
-      return res.apiv3({ plugin: growiPlugin });
+      const data = await GrowiPluginModel.findPlugins();
+      return res.apiv3({ plugins: data });
     }
     catch (err) {
       return res.apiv3Err(err);
@@ -88,8 +68,8 @@ module.exports = (crowi: Crowi): Router => {
 
     try {
       const GrowiPluginModel = mongoose.model('GrowiPlugin') as GrowiPluginModel;
-      await GrowiPluginModel.activateStatus(pluginId);
-      return res.apiv3({});
+      await GrowiPluginModel.activatePlugin(pluginId);
+      return res.apiv3();
     }
     catch (err) {
       return res.apiv3Err(err);
@@ -106,8 +86,8 @@ module.exports = (crowi: Crowi): Router => {
 
     try {
       const GrowiPluginModel = mongoose.model('GrowiPlugin') as GrowiPluginModel;
-      await GrowiPluginModel.deactivateStatus(pluginId);
-      return res.apiv3({});
+      await GrowiPluginModel.deactivatePlugin(pluginId);
+      return res.apiv3();
     }
     catch (err) {
       return res.apiv3Err(err);

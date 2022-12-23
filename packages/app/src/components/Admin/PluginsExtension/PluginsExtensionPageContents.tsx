@@ -45,6 +45,7 @@ export const PluginsExtensionPageContents = (): JSX.Element => {
                   const pluginId = plugin._id;
                   const pluginName = plugin.meta.name;
                   const pluginUrl = plugin.origin.url;
+                  const pluginIsEnabled = plugin.isEnabled;
                   const pluginDiscription = plugin.meta.desc;
                   return (
                     <PluginCard
@@ -52,7 +53,9 @@ export const PluginsExtensionPageContents = (): JSX.Element => {
                       id={pluginId}
                       name={pluginName}
                       url={pluginUrl}
+                      isEnalbed={pluginIsEnabled}
                       desc={pluginDiscription}
+                      mutate={mutate}
                     />
                   );
                 })}

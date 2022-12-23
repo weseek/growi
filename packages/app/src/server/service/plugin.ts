@@ -251,22 +251,6 @@ export class PluginService implements IPluginService {
   }
 
   /**
-   * Get all downloaded plugins
-   */
-  async getPlugins(): Promise<GrowiPlugin[]> {
-    const entries: GrowiPlugin[] = [];
-
-    const GrowiPlugin = mongoose.model<GrowiPlugin>('GrowiPlugin');
-    const growiPlugins = await GrowiPlugin.find({});
-
-    growiPlugins.forEach(async(growiPlugin) => {
-      entries.push(growiPlugin);
-    });
-
-    return entries;
-  }
-
-  /**
    * Delete plugin
    */
   async deletePlugin(pluginId: mongoose.Types.ObjectId): Promise<void> {

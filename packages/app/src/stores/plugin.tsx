@@ -1,16 +1,10 @@
-
 import useSWR, { SWRResponse } from 'swr';
 
 import { apiv3Get } from '~/client/util/apiv3-client';
 import { GrowiPluginHasId } from '~/interfaces/plugin';
 
-// TODO: Check types
 type Plugins = {
   plugins: GrowiPluginHasId[]
-}
-
-type Plugin = {
-  plugin: GrowiPluginHasId
 }
 
 const pluginsFetcher = () => {
@@ -29,22 +23,4 @@ const pluginsFetcher = () => {
 
 export const useSWRxPlugins = (): SWRResponse<Plugins, Error> => {
   return useSWR('/plugins', pluginsFetcher());
-};
-
-const pluginFetcher = (id: string) => {
-  return async() => {
-    const reqUrl = `/plugins/${id}`;
-
-    try {
-      const res = await apiv3Get(reqUrl);
-      return res.data;
-    }
-    catch (err) {
-      throw new Error(err);
-    }
-  };
-};
-
-export const useSWRxPlugin = (_id: string): SWRResponse<Plugin, Error> => {
-  return useSWR(`/plugin-${_id}`, pluginFetcher(_id));
 };
