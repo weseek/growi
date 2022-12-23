@@ -24,7 +24,6 @@ export interface IEditorSettings {
   theme: undefined | string,
   keymapMode: undefined | KeyMapMode,
   styleActiveLine: boolean,
-  renderDrawioInRealtime: boolean,
   autoFormatMarkdownTable: boolean,
   textlintSettings: undefined | ITextlintSettings;
 }
