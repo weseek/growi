@@ -97,9 +97,10 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
         router.push(redirectTo);
       }
 
-      if (userStatus === USER_STATUS.REGISTERED) {
-        window.location.href = 'login/error/registered';
+      if (userStatus !== USER_STATUS.ACTIVE) {
+        window.location.href = '/';
       }
+
       router.push('/');
     }
     catch (err) {

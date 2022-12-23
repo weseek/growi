@@ -38,10 +38,21 @@ const LoginPage: NextPage<CommonProps> = (props: CommonProps) => {
   const renderResistrationSuccessFul = () => {
     return (
       <>
-        <div className="alert alert-success">
+        <div className="alert alert-warning">
           <h2>{ t('login.registration_successful') }</h2>
         </div>
         <p>Wait for approved by administrators.</p>
+      </>
+    );
+  };
+
+  const renderSuspendedUserError = () => {
+    return (
+      <>
+        <div className="alert alert-warning">
+          <h2>{ t('login.sign_in_error') }</h2>
+        </div>
+        <p>This account is suspended.</p>
       </>
     );
   };
@@ -71,6 +82,9 @@ const LoginPage: NextPage<CommonProps> = (props: CommonProps) => {
     case 'registered':
       loginErrorElm = () => renderResistrationSuccessFul();
       break;
+    case 'suspended':
+      loginErrorElm = () => renderSuspendedUserError();
+      break;
     case 'password-reset-order':
       loginErrorElm = () => renderPasswordResetOrderError();
       break;
@@ -87,6 +101,10 @@ const LoginPage: NextPage<CommonProps> = (props: CommonProps) => {
           <div className="col-12">
             {loginErrorElm()}
           </div>
+          {/* If the transition source is "/login", use <a /> tag since the transition will not occur if next/link is used. */}
+          <a href='/login'>
+            <i className="icon-login mr-1" />{t('Sign in is here')}
+          </a>
         </div>
       </div>
 
