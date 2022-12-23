@@ -80,12 +80,12 @@ const AssociateModal = (props: Props): JSX.Element => {
             >
               <i className="fa fa-google"></i> (TBD) Google OAuth
             </NavLink>
-            <NavLink
+            {/* <NavLink
               className={activeTab === 4 ? 'active' : ''}
               onClick={() => setActiveTab(4)}
             >
               <i className="fa fa-facebook"></i> (TBD) Facebook
-            </NavLink>
+            </NavLink> */}
           </Nav>
           <TabContent activeTab={activeTab}>
             <TabPane tabId={1}>
