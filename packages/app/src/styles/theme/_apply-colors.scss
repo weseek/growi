@@ -26,6 +26,10 @@ $color-btn-reload-in-sidebar: var(--color-btn-reload-in-sidebar,#{$gray-500});
 $bgcolor-keyword-highlighted: var(--bgcolor-keyword-highlighted,#{var.$grw-marker-yellow});
 $color-page-list-group-item-meta: var(--color-page-list-group-item-meta,#{$gray-500});
 $color-search-page-list-title: var(--color-search-page-list-title,var(--color-global));
+$color-resize-button: var(--color-resize-button--,var(--color-global));
+$bgcolor-resize-button: var(--bgcolor-resize-button,white);
+$color-resize-button-hover: var(--color-resize-button-hover,var(--color-reversal));
+$bgcolor-resize-button-hover: var(--bgcolor-resize-button-hover,#{hsl.lighten(var(--bgcolor-resize-button), 5%)});
 
 // override bootstrap variables
 $body-bg: var(--bgcolor-global);
@@ -192,11 +196,6 @@ ul.pagination {
 
 .grw-sidebar {
   .grw-navigation-resize-button {
-    $color-resize-button: var(--color-resize-button--,var(--color-global));
-    $bgcolor-resize-button: var(--bgcolor-resize-button,white);
-    $color-resize-button-hover: var(--color-resize-button-hover,var(--color-reversal));
-    $bgcolor-resize-button-hover: var(--bgcolor-resize-button-hover,#{hsl.lighten(var(--bgcolor-resize-button), 5%)});
-
     .hexagon-container svg {
       .background {
         fill: var(--bgcolor-resize-button);
@@ -421,276 +420,273 @@ ul.pagination {
   }
 }
 
-// /*
-//  * GROWI wiki
-//  */
-// .wiki {
-//   h1,
-//   h2,
-//   h3,
-//   h4,
-//   h5,
-//   h6,
-//   h7 {
-//     &.blink {
-//       @include mixins.blink-bgcolor($bgcolor-blinked-section);
-//     }
-//   }
+/*
+ * GROWI wiki
+ */
+.wiki {
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6,
+  h7 {
+    &.blink {
+      @include mixins.blink-bgcolor(var(--bgcolor-blinked-section));
+    }
+  }
 
-.highlighted-keyword {
-  background: linear-gradient(transparent 60%, var(--bgcolor-keyword-highlighted) 60%);
-}
-
-//   a {
-//     color: var(--color-link-wiki);
-
-//     &:hover {
-//       color: var(--color-link-wiki-hover);
-//     }
-//   }
-
-//   // table with handsontable modal button
-//   .editable-with-handsontable {
-//     button {
-//       color: var(--color-link-wiki);
-//     }
-
-//     button:hover {
-//       color: var(--color-link-wiki-hover);
-//     }
-//   }
-// }
-
-// /*
-//  * GROWI page-list
-//  */
-// .page-list {
-//   // List group
-//   .list-group {
-//     .list-group-item {
-//       a {
-//         svg {
-//           fill: var(--color-global);
-//         }
-
-//         @include hover() {
-//           svg {
-//             fill: var(--color-global);
-//           }
-//         }
-//       }
-
-//       .page-list-meta {
-//         color: var(--color-page-list-group-item-meta);
-//         svg {
-//           fill: var(--color-page-list-group-item-meta);
-//         }
-//       }
-
-//       &.list-group-item-action {
-//         &.active {
-//           background-color: hsl(var(--bgcolor-global-hs),calc(var(--bgcolor-global-l) + 76%));
-//           border-left-color: $primary;
-//         }
-//       }
-//     }
-//   }
-// }
-
-// /*
-//  * GROWI Editor
-//  */
-// .layout-root.editing {
-//   --bgcolor-global-darken2: hsl(from var(--bgcolor-global) h s calc(l - 2%));
-//   .main {
-//     background-color: var(--bgcolor-global-darken2);
-
-//     .page-editor-editor-container {
-//       border-right-color: var(--border-color-theme);
-
-//       .navbar-editor {
-//         background-color: var(--bgcolor-global); // same color with active tab
-//         border-bottom-color: var(--border-color-theme);
-//       }
-//     }
-
-//     .page-editor-preview-container {
-//       background-color: var(--bgcolor-global);
-//     }
-//   }
-// }
-
-// /*
-//  * Preview for editing /Sidebar
-//  */
-// body.editing-sidebar {
-//   .page-editor-preview-body {
-//     color: var(--color-sidebar-context);
-//     background-color: var(--bgcolor-sidebar-context);
-//   }
-// }
-
-// /*
-//  * GROWI Grid Edit Modal
-//  */
-// .grw-grid-edit-preview {
-//   .desktop-preview,
-//   .tablet-preview,
-//   .mobile-preview {
-//     background: var(--bgcolor-global);
-//   }
-//   .grid-edit-border-for-each-cols {
-//     border: 2px solid var(--bgcolor-global);
-//   }
-// }
-
-// .grid-preview-col-0 {
-//   background: var.$growi-blue;
-// }
-
-// .grid-preview-col-1 {
-//   background: var(--info);
-// }
-
-// .grid-preview-col-2 {
-//   background: var(--success);
-// }
-
-// .grid-preview-col-3 {
-//   background: var.$growi-green;
-// }
-
-// /*
-//  * GROWI comment
-//  */
-// .page-comment-meta .page-comment-revision svg {
-//   fill: var(--color-link);
-
-//   &:hover {
-//     fill: var(--color-link-hover);
-//   }
-// }
-
-// /*
-//  * GROWI comment form
-//  */
-// .page-comments {
-//   .page-comment .page-comment-main,
-//   .page-comment-form .comment-form-main {
-//     background-color: var(--bgcolor-global);
-
-//     &:before {
-//       border-right-color: var(--bgcolor-global);
-//     }
-
-//     .nav.nav-tabs {
-//       --border-bottom-color: hsl(from var(--bgcolor-global) h s calc(l - 4%));
-//       > li > a.active {
-//         background: transparent;
-//         border-bottom: solid 1px var(--border-bottom-color);
-//         border-bottom-color: var(--border-bottom-color);
-//       }
-//     }
-//   }
-// }
-
-// /*
-//  * GROWI search result
-//  */
-// .search-result-base {
-//   .grw-search-page-nav {
-//     background-color: var(--bgcolor-subnav);
-//   }
-//   .search-control {
-//     background-color: var(--bgcolor-global);
-//   }
-.page-list {
   .highlighted-keyword {
     background: linear-gradient(transparent 60%, var(--bgcolor-keyword-highlighted) 60%);
   }
+
+  a {
+    color: var(--color-link-wiki);
+
+    &:hover {
+      color: var(--color-link-wiki-hover);
+    }
+  }
+
+  // table with handsontable modal button
+  .editable-with-handsontable {
+    button {
+      color: var(--color-link-wiki);
+    }
+
+    button:hover {
+      color: var(--color-link-wiki-hover);
+    }
+  }
 }
-// }
 
-// /*
-//  * react bootstrap typeahead
-//  */
-// mark.rbt-highlight-text {
-//   // Temporarily the highlight color is black
-//   color: black;
-// }
+/*
+ * GROWI page-list
+ */
+.page-list {
+  // List group
+  .list-group {
+    .list-group-item {
+      a {
+        svg {
+          fill: var(--color-global);
+        }
 
-// /*
-//  * GROWI page content footer
-//  */
-// .page-content-footer {
-//   --bgcolor-global-darken2: hsl(from var(--bgcolor-global) h s calc(l - 2%));
-//   background-color: var(--bgcolor-global-darken2);
-//   border-top-color: $border-color-theme;
-// }
+        @include hover() {
+          svg {
+            fill: var(--color-global);
+          }
+        }
+      }
 
-// /*
-//  * GROWI admin page #layoutOptions #themeOptions
-//  */
-// .admin-page {
-//   #layoutOptions {
-//     .customize-layout-card {
-//       &.border-active {
-//         border-color: $color-theme-color-box;
-//       }
-//     }
-//   }
+      .page-list-meta {
+        color: var(--color-page-list-group-item-meta);
+        svg {
+          fill: var(--color-page-list-group-item-meta);
+        }
+      }
 
-//   #themeOptions {
-//     .theme-option-container.active {
-//       .theme-option-name {
-//         color: var(--color-global);
-//       }
-//       a {
-//         background-color: $color-theme-color-box;
-//         border-color: $color-theme-color-box;
-//       }
-//     }
-//   }
-// }
+      &.list-group-item-action {
+        &.active {
+          background-color: #{hsl.lighten(var(--bgcolor-global),76%)};
+          border-left-color: var(--primary);
+        }
+      }
+    }
+  }
+}
 
-// /*
-//  * HackMd
-//  */
-// .bg-box {
-//   background-color: var(--bgcolor-global);
-// }
+/*
+ * GROWI Editor
+ */
+.layout-root.editing {
+  .main {
+    background-color: #{hsl.darken(var(--bgcolor-global),2%)};
 
-// .grw-fab {
-//   .btn-create-page {
-//     fill: color-yiq($primary);
-//   }
+    .page-editor-editor-container {
+      border-right-color: var(--border-color-theme);
 
-//   .btn-scroll-to-top {
-//     fill: $gray-900;
-//   }
-// }
+      .navbar-editor {
+        background-color: var(--bgcolor-global); // same color with active tab
+        border-bottom-color: var(--border-color-theme);
+      }
+    }
 
-// /*
-//   Slack Integration
-// */
-// .selecting-bot-type {
-//   .bot-type-disc {
-//     width: 20px;
-//   }
-// }
+    .page-editor-preview-container {
+      background-color: var(--bgcolor-global);
+    }
+  }
+}
 
-// /*
-//   In App Notification
-// */
-// .grw-unopend-notification {
-//   width: 7px;
-//   height: 7px;
-//   background-color: $primary;
-// }
+/*
+ * Preview for editing /Sidebar
+ */
+body.editing-sidebar {
+  .page-editor-preview-body {
+    color: var(--color-sidebar-context);
+    background-color: var(--bgcolor-sidebar-context);
+  }
+}
 
-// /*
-// Emoji picker modal
-// */
-// .emoji-picker-modal {
-//   background-color: transparent !important;
-// }
+/*
+ * GROWI Grid Edit Modal
+ */
+.grw-grid-edit-preview {
+  .desktop-preview,
+  .tablet-preview,
+  .mobile-preview {
+    background: var(--bgcolor-global);
+  }
+  .grid-edit-border-for-each-cols {
+    border: 2px solid var(--bgcolor-global);
+  }
+}
+
+.grid-preview-col-0 {
+  background: #{var.$growi-blue};
+}
+
+.grid-preview-col-1 {
+  background: var(--info);
+}
+
+.grid-preview-col-2 {
+  background: var(--success);
+}
+
+.grid-preview-col-3 {
+  background: #{var.$growi-green};
+}
+
+/*
+ * GROWI comment
+ */
+.page-comment-meta .page-comment-revision svg {
+  fill: var(--color-link);
+
+  &:hover {
+    fill: var(--color-link-hover);
+  }
+}
+
+/*
+ * GROWI comment form
+ */
+.page-comments {
+  .page-comment .page-comment-main,
+  .page-comment-form .comment-form-main {
+    background-color: var(--bgcolor-global);
+
+    &:before {
+      border-right-color: var(--bgcolor-global);
+    }
+
+    .nav.nav-tabs {
+      > li > a.active {
+        background: transparent;
+        border-bottom: solid 1px #{hsl.darken(var(--bgcolor-global),4%)};
+        border-bottom-color: #{hsl.darken(var(--bgcolor-global),4%)};
+      }
+    }
+  }
+}
+
+/*
+ * GROWI search result
+ */
+.search-result-base {
+  .grw-search-page-nav {
+    background-color: var(--bgcolor-subnav);
+  }
+  .search-control {
+    background-color: var(--bgcolor-global);
+  }
+  .page-list {
+    .highlighted-keyword {
+      background: linear-gradient(transparent 60%, var(--bgcolor-keyword-highlighted) 60%);
+    }
+  }
+}
+
+/*
+ * react bootstrap typeahead
+ */
+mark.rbt-highlight-text {
+  // Temporarily the highlight color is black
+  color: black;
+}
+
+/*
+ * GROWI page content footer
+ */
+.page-content-footer {
+  background-color: #{hsl.darken(var(--bgcolor-global),2%)};
+  border-top-color: var(--border-color-theme);
+}
+
+/*
+ * GROWI admin page #layoutOptions #themeOptions
+ */
+.admin-page {
+  #layoutOptions {
+    .customize-layout-card {
+      &.border-active {
+        border-color: var(--color-theme-color-box);
+      }
+    }
+  }
+
+  #themeOptions {
+    .theme-option-container.active {
+      .theme-option-name {
+        color: var(--color-global);
+      }
+      a {
+        background-color: var(--color-theme-color-box);
+        border-color: var(--color-theme-color-box);
+      }
+    }
+  }
+}
+
+/*
+ * HackMd
+ */
+.bg-box {
+  background-color: var(--bgcolor-global);
+}
+
+.grw-fab {
+  .btn-create-page {
+    fill: #{hsl.contrast(var(--primary))};
+  }
+
+  .btn-scroll-to-top {
+    fill: #{$gray-900};
+  }
+}
+
+/*
+  Slack Integration
+*/
+.selecting-bot-type {
+  .bot-type-disc {
+    width: 20px;
+  }
+}
+
+/*
+  In App Notification
+*/
+.grw-unopend-notification {
+  width: 7px;
+  height: 7px;
+  background-color: var(--primary);
+}
+
+/*
+Emoji picker modal
+*/
+.emoji-picker-modal {
+  background-color: transparent !important;
+}
