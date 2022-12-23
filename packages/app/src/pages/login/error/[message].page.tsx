@@ -11,25 +11,16 @@ import { NoLoginLayout } from '~/components/Layout/NoLoginLayout';
 import {
   CommonProps, getServerSideCommonProps, getNextI18NextConfig,
 } from '~/pages/utils/commons';
-import {
-  useCsrfToken,
-  useCurrentPathname,
-} from '~/stores/context';
 
 
 type Props = CommonProps;
 const classNames: string[] = ['login-page'];
 
-const LoginPage: NextPage<CommonProps> = (props: CommonProps) => {
+const LoginPage: NextPage<CommonProps> = () => {
 
-  // commons
-  useCsrfToken(props.csrfToken);
   const { t } = useTranslation();
   const router = useRouter();
   const { message } = router.query;
-
-  // page
-  useCurrentPathname(props.currentPathname);
 
 
   let loginErrorElm;
