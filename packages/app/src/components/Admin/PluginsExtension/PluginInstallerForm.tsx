@@ -4,6 +4,7 @@ import { apiv3Post } from '~/client/util/apiv3-client';
 import { toastSuccess, toastError } from '~/client/util/toastr';
 import { useSWRxPlugins } from '~/stores/plugin';
 
+
 export const PluginInstallerForm = (): JSX.Element => {
   const { mutate } = useSWRxPlugins();
 
@@ -28,8 +29,8 @@ export const PluginInstallerForm = (): JSX.Element => {
       await apiv3Post('/plugins', { pluginInstallerForm });
       toastSuccess('Plugin Install Successed!');
     }
-    catch (err) {
-      toastError(err);
+    catch (e) {
+      toastError(e);
     }
     finally {
       mutate();

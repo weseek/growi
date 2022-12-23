@@ -30,7 +30,7 @@ module.exports = (crowi: Crowi): Router => {
 
   router.get('/', loginRequiredStrictly, adminRequired, async(req: Request, res: ApiV3Response) => {
     if (pluginService == null) {
-      throw new Error('\'pluginService\' is not set up.');
+      return res.apiv3Err('\'pluginService\' is not set up', 500);
     }
 
     try {
