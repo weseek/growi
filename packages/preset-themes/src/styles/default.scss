@@ -52,7 +52,7 @@
   --color-link-wiki-hover: #{hsl.lighten(var(--color-link-wiki),20%)};
   --color-link-nabvar: #{$gray-500};
   --color-inline-code: #{darken($red, 15%)}; // optional
-  --color-modal-header: #{hsl.contrast(var(--primary))};
+  --color-modal-header: white;
 
   // List Group colors
   --color-list: var(--color-global); // optional
