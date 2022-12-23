@@ -80,7 +80,7 @@ const NavbarRight = memo((): JSX.Element => {
         <li className="grw-apperance-mode-dropdown nav-item dropdown">
           <AppearanceModeDropdown isAuthenticated={isAuthenticated} />
         </li>
-        <li id="login-user" className="nav-item"><a className="nav-link" href="/login">Login</a></li>;
+        <li id="login-user" className="nav-item"><a className="nav-link" href="/login">Login</a></li>
       </>
     );
   }, [isAuthenticated]);

@@ -45,7 +45,7 @@ context('Access User settings', () => {
       cy.login(user.username, user.password);
     });
     cy.visit('/me');
-    cy.collapseSidebar(true);
+    cy.collapseSidebar(true, true);
     // hide fab // disable fab for sticky-events warning
     // cy.getByTestid('grw-fab-container').invoke('attr', 'style', 'display: none');
   });
