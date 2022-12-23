@@ -19,9 +19,9 @@ $bgcolor-inline-code: var(--bgcolor-inline-code, #{$gray-100});
 $color-inline-code: var(--color-inline-code, #{darken($red, 15%)});
 $bordercolor-inline-code: var(--bordercolor-inline-code, #{$gray-400});
 $bordercolor-nav-tabs: var(--bordercolor-nav-tabs, #{$gray-300});
-$bordercolor-nav-tabs-hover: var(--bordercolor-nav-tabs-hover,#{$gray-200} #{$gray-200} var(--bordercolor-nav-tabs));
-$border-nav-tabs-link-activec: var(--border-nav-tabs-link-active, #{$gray-600});
-$bordercolor-nav-tabs-active: var(--bordercolor-nav-tabs-active,var(--bordercolor-nav-tabs) var(--bordercolor-nav-tabs) var(--bgcolor-global));
+$bordercolor-nav-tabs-hover: var(--bordercolor-nav-tabs-hover,#{$gray-200} #{$gray-200} #{$bordercolor-nav-tabs});
+$border-nav-tabs-link-active: var(--border-nav-tabs-link-active, #{$gray-600});
+$bordercolor-nav-tabs-active: var(--bordercolor-nav-tabs-active,$bordercolor-nav-tabs $bordercolor-nav-tabs var(--bgcolor-global));
 $color-btn-reload-in-sidebar: var(--color-btn-reload-in-sidebar,#{$gray-500});
 $bgcolor-keyword-highlighted: var(--bgcolor-keyword-highlighted,#{var.$grw-marker-yellow});
 $color-page-list-group-item-meta: var(--color-page-list-group-item-meta,#{$gray-500});
@@ -33,11 +33,11 @@ $body-color: var(--color-global);
 $link-color: var(--color-link);
 $link-hover-color: var(--color-link-hover);
 $input-focus-color: var(--color-global);
-$nav-tabs-border-color: var(--bordercolor-nav-tabs);
-$nav-tabs-link-hover-border-color: var(--bordercolor-nav-tabs-hover);
+$nav-tabs-border-color: $bordercolor-nav-tabs;
+$nav-tabs-link-hover-border-color: $bordercolor-nav-tabs-hover;
 $nav-tabs-link-active-color: var(--color-nav-tabs-link-active);
 $nav-tabs-link-active-bg: var(--bgcolor-global);
-$nav-tabs-link-active-border-color: var(--bordercolor-nav-tabs-active);
+$nav-tabs-link-active-border-color: $bordercolor-nav-tabs-active;
 $theme-colors: map-merge($theme-colors, ( primary: $primary ));
 
 @import 'reboot-bootstrap-buttons';
@@ -50,11 +50,11 @@ $theme-colors: map-merge($theme-colors, ( primary: $primary ));
 $color-modal-header: var(--color-modal-header,#{hsl.contrast(var(--primary))});
 
 code:not([class^='language-']) {
-  @include code.code-inline-color(var(--color-inline-code), var(--bgcolor-inline-code), var(--bordercolor-inline-code));
+  @include code.code-inline-color($color-inline-code, $bgcolor-inline-code, $bordercolor-inline-code);
 }
 
 .code-highlighted {
-  border-color: var(--bordercolor-inline-code);
+  border-color: $bordercolor-inline-code;
 }
 
 //
@@ -171,7 +171,7 @@ ul.pagination {
     color: var(--color-link-nabvar);
   }
 
-  border-image: var(--border-image-navbar);
+  border-image: $border-image-navbar;
   border-image-slice: 1;
 
   .grw-app-title {
@@ -236,7 +236,7 @@ ul.pagination {
   .grw-sidebar-nav-primary-container {
     .btn.active {
       i {
-        text-shadow: var(--text-shadow-sidebar-nav-item-active);
+        text-shadow: $text-shadow-sidebar-nav-item-active;
       }
       // fukidashi
       &:after {
@@ -247,7 +247,7 @@ ul.pagination {
 
   .grw-sidebar-content-header {
     .grw-btn-reload {
-      color: var(--color-btn-reload-in-sidebar);
+      color: $color-btn-reload-in-sidebar;
     }
 
     .grw-recent-changes-resize-button {
@@ -327,7 +327,7 @@ ul.pagination {
   .modal-header {
     border-bottom-color: var(--border-color-theme);
     .modal-title {
-      color: var(--color-modal-header);
+      color: $color-modal-header;
     }
     .close {
       color: #{hsl.alpha(var(--primary),50%)};
@@ -437,7 +437,7 @@ ul.pagination {
   }
 
   .highlighted-keyword {
-    background: linear-gradient(transparent 60%, var(--bgcolor-keyword-highlighted) 60%);
+    background: linear-gradient(transparent 60%, $bgcolor-keyword-highlighted 60%);
   }
 
   a {
@@ -480,9 +480,9 @@ ul.pagination {
       }
 
       .page-list-meta {
-        color: var(--color-page-list-group-item-meta);
+        color: $color-page-list-group-item-meta;
         svg {
-          fill: var(--color-page-list-group-item-meta);
+          fill: $color-page-list-group-item-meta;
         }
       }
 
@@ -603,7 +603,7 @@ body.editing-sidebar {
   }
   .page-list {
     .highlighted-keyword {
-      background: linear-gradient(transparent 60%, var(--bgcolor-keyword-highlighted) 60%);
+      background: linear-gradient(transparent 60%, $bgcolor-keyword-highlighted 60%);
     }
   }
 }

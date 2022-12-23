@@ -21,6 +21,7 @@
   --primary: hsl(var(--primary-hs),var(--primary-l));
   --primary-hs: 216.7,65%;
   --primary-l: 20.2%;
+  --primary-65: hsl(216.7,65%,85.2%);
   --accent: hsl(var(--accent-hs),var(--accent-l));
   --accent-hs: 198.6,74.2%;
   --accent-l: 48.6%;
@@ -32,7 +33,7 @@
   --bgcolor-inline-code: #{$gray-100}; //optional
   --bgcolor-card: #{$gray-50};
   --bgcolor-blinked-section: #{hsl.alpha(var(--primary),90%)};
-  --bgcolor-keyword-highlighted: #{$grw-marker-yellow};
+  // --bgcolor-keyword-highlighted: #{$grw-marker-yellow};
 
   // Font colors
   --color-global: hsl(var(--color-global-hs),var(--color-global-l));
@@ -50,17 +51,16 @@
   --color-link-wiki-hover: #{hsl.lighten(var(--color-link-wiki),20%)};
   --color-link-nabvar: #{$gray-500};
   --color-inline-code: #{darken($red, 15%)}; // optional
-  --color-modal-header: white;
 
 
   // List Group colors
   --color-list: var(--color-global); // optional
-  --bgcolor-list: var(--bgcolor-global); // optional
+  // --bgcolor-list: var(--bgcolor-global); // optional
   // --color-list-hover: va(--color-global); // optional
   --bgcolor-list-hover: #{hsl.lighten(var(--bgcolor-global),3%)};// optional
   // --color-list-active:white ; // optional
-  // $bgcolor-list-active: $primary; // optional
-  --color-page-list-group-item-meta: #{$gray-500};
+  // --bgcolor-list-active: $primary; // optional
+  // --color-page-list-group-item-meta: #{$gray-500}; // optional
 
   // Table colors
   // --color-table: #; // optional
@@ -99,15 +99,21 @@
   --color-sidebar-context: var(--color-global);
   --color-sidebar-context-hs: var(--color-global-hs);
   --color-sidebar-context-l: var(--color-global-l);
+  --bgcolor-sidebar-context: #{hsl.lighten(var(--primary),77%)};
+  --bgcolor-sidebar-context-hs: var(--primary-hs);
+  --bgcolor-sidebar-context-l: calc(var(--primary-l) + 77%);
   // Sidebar list group
   --bgcolor-sidebar-list-group: #{$gray-50}; // optional
 
   // Subnavigation
-  --bgcolor-subnav: #{hsl.darken(var(--bgcolor-global),3%)};
+  --bgcolor-subnav: hsl(var(--bgcolor-subnav-hs),var(--bgcolor-subnav-l));
+  --bgcolor-subnav-hs: var(--bgcolor-global-hs);
+  --bgcolor-subnav-l: calc(var(--bgcolor-global-l) - 3%);
+
   // Tabs
-  // $color-nav-tabs-link-active: #; //optional
-  // $bordercolor-nav-tabs-hover: # # $bordercolor-nav-tabs; // optional
-  --bordercolor-nav-tabs-active: var(--bordercolor-nav-tabs) var(--bordercolor-nav-tabs) var(--bgcolor-global); // optional
+  // --color-nav-tabs-link-active: #; //optional
+  // --bordercolor-nav-tabs-hover: # # $bordercolor-nav-tabs; // optional
+  // --bordercolor-nav-tabs-active: # # // optional
 
   // Tags
   // $color-tags: #; //optional
@@ -121,13 +127,13 @@
   --bordercolor-inline-code: #{$gray-400}; // optional
 
   // Dropdown colors
-  --bgcolor-dropdown-link-active: $growi-blue;
+  --bgcolor-dropdown-link-active: #{$growi-blue};
 
   // admin theme box
   --color-theme-color-box: #{hsl.lighten(var(--primary), 20%)};
 
   @import './theme/apply-colors';
-  // @import './theme/apply-colors-light';
+  @import './theme/apply-colors-light';
 
   // Button
   .btn-group.grw-page-editor-mode-manager {
@@ -172,16 +178,14 @@
   --color-link-wiki-hover: #{hsl.lighten(var(--color-link-wiki),10%)};
   --color-link-nabvar: #a7a7a7;
   --color-inline-code: #c7254e; // optional
-  --color-modal-header: black;
 
   // List Group colors
   --color-list: var(--color-global); // optional
-  --bgcolor-list: var(--bgcolor-global); // optional
+  // --bgcolor-list: var(--bgcolor-global); // optional
   // --color-list-hover: va(--color-global); // optional
   --bgcolor-list-hover: #{hsl.lighten(var(--bgcolor-global),3%)}; // optional
   // --color-list-active:white ; // optional
-  // --bgcolor-list-active: var(--primary); // optional
-  --color-page-list-group-item-meta: #{$gray-500};
+  --bgcolor-list-active: var(--primary); // optional
 
   // Table colors
   // --color-table: #; // optional

@@ -1,38 +1,37 @@
-@use '../bootstrap/init' as *;
+// @use '../bootstrap/init' as *;
 
-.dropdown-menu {
-  color: $dropdown-color;
-  svg {
-    fill: $dropdown-color;
-  }
+// .dropdown-menu {
+//   color: $color-dropdown;
+//   svg {
+//     fill: $color-dropdown;
+//   }
 
-  background-color: $dropdown-bg;
-}
+//   background-color: $bgcolor-dropdown;
+// }
 
-.dropdown-item {
-  --bgcolor-dropdown-link-hover: hsl(var(--bgcolor-global-hs),calc(var(--bgcolor-global-l) + 15%));
-  color: $dropdown-link-color;
-  svg {
-    fill: $dropdown-link-color;
-  }
+// .dropdown-item {
+//   color: $color-dropdown-link;
+//   svg {
+//     fill: $color-dropdown-link;
+//   }
 
-  @include hover-focus() {
-    color: $dropdown-link-hover-color;
-    svg {
-      fill: $dropdown-link-hover-color;
-    }
+//   @include hover-focus() {
+//     color: $color-dropdown-link;
+//     svg {
+//       fill: $color-dropdown-link-hover;
+//     }
 
-    @include gradient-bg(var(--dropdown-link-hover-bg));
-  }
+//     @include gradient-bg($bgcolor-dropdown-link-hover);
+//   }
 
-  &:active,
-  &.active,
-  &:active:hover,
-  &.active:hover {
-    color: $dropdown-link-active-color;
-    background-color: $dropdown-link-active-bg;
-    svg {
-      fill: $dropdown-link-active-color;
-    }
-  }
-}
+//   &:active,
+//   &.active,
+//   &:active:hover,
+//   &.active:hover {
+//     color: $color-dropdown-link-active;
+//     background-color:  $bgcolor-dropdown-link-active;
+//     svg {
+//       fill: $color-dropdown-link-active;
+//     }
+//   }
+// }

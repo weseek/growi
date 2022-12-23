@@ -1,38 +1,37 @@
 @use '../bootstrap/init' as *;
 
 .dropdown-menu {
-  color: $dropdown-color;
+  color: $color-dropdown;
   svg {
-    fill: $dropdown-color;
+    fill: $color-dropdown;
   }
 
-  background-color: $dropdown-bg;
+  background-color: $bgcolor-dropdown;
 }
 
 .dropdown-item {
-  --bgcolor-dropdown-link-hover: hsl(var(--bgcolor-global-hs),calc(var(--bgcolor-global-l) + 15%));
-  color: $dropdown-link-color;
+  color: $color-dropdown-link;
   svg {
-    fill: $dropdown-link-color;
+    fill: $color-dropdown-link;
   }
 
   @include hover-focus() {
-    color: $dropdown-link-hover-color;
+    color: $color-dropdown-link;
     svg {
-      fill: $dropdown-link-hover-color;
+      fill: $color-dropdown-link-hover;
     }
 
-    @include gradient-bg(var(--dropdown-link-hover-bg));
+    @include gradient-bg($bgcolor-dropdown-link-hover);
   }
 
   &:active,
   &.active,
   &:active:hover,
   &.active:hover {
-    color: $dropdown-link-active-color;
-    background-color: $dropdown-link-active-bg;
+    color: $color-dropdown-link-active;
+    background-color:  $bgcolor-dropdown-link-active;
     svg {
-      fill: $dropdown-link-active-color;
+      fill: $color-dropdown-link-active;
     }
   }
 }
