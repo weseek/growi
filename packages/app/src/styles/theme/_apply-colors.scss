@@ -186,7 +186,7 @@ ul.pagination {
 
   // for https://youtrack.weseek.co.jp/issue/GW-2603
   .search-typeahead {
-    background-color: hsla(var(--bgcolor-global-hs),var(--bgcolor-global-l),10%);
+    background-color: #{hsl.alpha(var(--bgcolor-global),10%)};
   }
 }
 
@@ -330,7 +330,7 @@ ul.pagination {
       color: var(--color-modal-header);
     }
     .close {
-      color: hsla(var(--primary-hs),var(--primary-l),50%);
+      color: #{hsl.alpha(var(--primary),50%)};
 
       &:hover {
         opacity: 0.9;
@@ -351,7 +351,7 @@ ul.pagination {
   .nav-item {
     &:hover,
     &:focus {
-      background-color: hsla(var(--color-link-hs),var(--color-link-l),10%);
+      background-color: #{hsl.alpha(var(--color-link),10%)};
     }
     .nav-link {
       -webkit-appearance: none;
