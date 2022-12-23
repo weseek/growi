@@ -71,6 +71,11 @@ Cypress.Commands.add('waitUntilSpinnerDisappear', () => {
 
 Cypress.Commands.add('collapseSidebar', (isCollapsed: boolean, waitUntilSaving = false) => {
   cy.getByTestid('grw-sidebar-wrapper', { timeout: 5000 }).within(() => {
+    // skip if .grw-sidebar-dock does not exist
+    if (isHidden(Cypress.$('.grw-sidebar-dock'))) {
+      return;
+    }
+
     // process only when Dock Mode
     cy.get('.grw-sidebar-dock').within(() => {
       const isSidebarContextualNavigationHidden = isHiddenByTestId('grw-contextual-navigation-sub');
