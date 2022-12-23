@@ -9,6 +9,7 @@ import {
 
 import { toastError, toastSuccess } from '~/client/util/apiNotification';
 import { apiv3Get, apiv3Post } from '~/client/util/apiv3-client';
+import { useSWRBookmarkInfo } from '~/stores/bookmark';
 import { useSWRxBookamrkFolderAndChild } from '~/stores/bookmark-folder';
 import { useSWRxCurrentPage } from '~/stores/page';
 
@@ -30,6 +31,7 @@ const BookmarkFolderMenu = (props: Props): JSX.Element => {
   const { data: bookmarkFolders, mutate: mutateBookmarkFolderData } = useSWRxBookamrkFolderAndChild();
   const [selectedItem, setSelectedItem] = useState<string | null>(null);
   const { data: currentPage } = useSWRxCurrentPage();
+  const { mutate: mutateBookmarkInfo } = useSWRBookmarkInfo(currentPage?._id);
 
   const getSelectedFolder = useCallback(async() => {
     try {
@@ -52,6 +54,13 @@ const BookmarkFolderMenu = (props: Props): JSX.Element => {
     getSelectedFolder();
   }, [getSelectedFolder]);
 
+  const isBookmarkFolderExists = useCallback((): boolean => {
+    if (bookmarkFolders && bookmarkFolders.length > 0) {
+      return true;
+    }
+    return false;
+  }, [bookmarkFolders]);
+
   const onPressEnterHandlerForCreate = useCallback(async(folderName: string) => {
     try {
       await apiv3Post('/bookmark-folder', { name: folderName, parent: null });
@@ -69,12 +78,13 @@ const BookmarkFolderMenu = (props: Props): JSX.Element => {
     try {
       await apiv3Post('/bookmark-folder/add-boookmark-to-folder', { pageId: currentPage?._id, folderId: itemId });
       setSelectedItem(itemId);
+      mutateBookmarkInfo();
       toastSuccess('Bookmark added to bookmark folder successfully');
     }
     catch (err) {
       toastError(err);
     }
-  }, [currentPage]);
+  }, [currentPage, mutateBookmarkInfo]);
 
   const renderBookmarkMenuItem = useCallback(() => {
     return (
@@ -92,27 +102,40 @@ const BookmarkFolderMenu = (props: Props): JSX.Element => {
             <span className="mx-2 ">{t('bookmark_folder.new_folder')}</span>
           </DropdownItem>
         )}
-        <DropdownItem divider />
-        {bookmarkFolders?.map(folder => (
-          <div key={folder._id} >
-            {
-              <div className='dropdown-item grw-bookmark-folder-menu-item' tabIndex={0} role="menuitem" onClick={() => onMenuItemClickHandler(folder._id)}>
-                <BookmarkFolderMenuItem
-                  isSelected={selectedItem === folder._id}
-                  item={folder}
-                  onSelectedChild={() => setSelectedItem(null)}
-                />
+        { isBookmarkFolderExists() && (
+          <>
+            <DropdownItem divider />
+            {bookmarkFolders?.map(folder => (
+              <div key={folder._id} >
+                {
+                  <div className='dropdown-item grw-bookmark-folder-menu-item' tabIndex={0} role="menuitem" onClick={() => onMenuItemClickHandler(folder._id)}>
+                    <BookmarkFolderMenuItem
+                      isSelected={selectedItem === folder._id}
+                      item={folder}
+                      onSelectedChild={() => setSelectedItem(null)}
+                    />
+                  </div>
+                }
               </div>
-            }
-          </div>
-        ))}
+            ))}
+          </>
+        )}
       </>
     );
-  }, [bookmarkFolders, isCreateAction, onClickNewBookmarkFolder, onMenuItemClickHandler, onPressEnterHandlerForCreate, selectedItem, t]);
+  }, [bookmarkFolders,
+      isBookmarkFolderExists,
+      isCreateAction,
+      onClickNewBookmarkFolder,
+      onMenuItemClickHandler,
+      onPressEnterHandlerForCreate,
+      selectedItem,
+      t,
+  ]);
 
   return (
     <UncontrolledDropdown
-      direction='up'
+      onToggle={getSelectedFolder}
+      direction={ isBookmarkFolderExists() ? 'up' : 'down' }
       className={`grw-bookmark-folder-dropdown ${styles['grw-bookmark-folder-dropdown']}`}>
       {children}
       <DropdownMenu

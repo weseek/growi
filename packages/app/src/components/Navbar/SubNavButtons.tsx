@@ -228,8 +228,6 @@ const SubNavButtonsSubstance = (props: SubNavButtonsSubstanceProps): JSX.Element
       {revisionId != null && (
         <BookmarkButtons
           hideTotalNumber={isCompactMode}
-          bookmarkCount={bookmarkCount}
-          isBookmarked={isBookmarked}
           bookmarkedUsers={bookmarkInfo?.bookmarkedUsers}
         />
       )}

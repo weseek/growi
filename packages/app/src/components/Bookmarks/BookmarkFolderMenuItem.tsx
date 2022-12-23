@@ -9,6 +9,7 @@ import {
 import { toastError, toastSuccess } from '~/client/util/apiNotification';
 import { apiv3Get, apiv3Post } from '~/client/util/apiv3-client';
 import { BookmarkFolderItems } from '~/interfaces/bookmark-info';
+import { useSWRBookmarkInfo } from '~/stores/bookmark';
 import { useSWRxBookamrkFolderAndChild } from '~/stores/bookmark-folder';
 import { useSWRxCurrentPage } from '~/stores/page';
 
@@ -25,7 +26,7 @@ type Props ={
 }
 const BookmarkFolderMenuItem = (props: Props):JSX.Element => {
   const {
-    item, isSelected, onSelectedChild,
+    item, isSelected,
   } = props;
   const { t } = useTranslation();
   const [isOpen, setIsOpen] = useState(false);
@@ -34,6 +35,7 @@ const BookmarkFolderMenuItem = (props: Props):JSX.Element => {
   const [selectedItem, setSelectedItem] = useState<string | null>(null);
   const [isCreateAction, setIsCreateAction] = useState<boolean>(false);
   const { data: currentPage } = useSWRxCurrentPage();
+  const { mutate: mutateBookmarkInfo } = useSWRBookmarkInfo(currentPage?._id);
 
   const getSelectedFolder = useCallback(async() => {
     try {
@@ -89,6 +91,7 @@ const BookmarkFolderMenuItem = (props: Props):JSX.Element => {
   const onClickChildMenuItemHandler = useCallback(async(e, item) => {
     e.stopPropagation();
     setSelectedItem(item._id);
+    mutateBookmarkInfo();
     try {
       await apiv3Post('/bookmark-folder/add-boookmark-to-folder', { pageId: currentPage?._id, folderId: item._id });
       toastSuccess('Bookmark added to bookmark folder successfully');
@@ -96,8 +99,7 @@ const BookmarkFolderMenuItem = (props: Props):JSX.Element => {
     catch (err) {
       toastError(err);
     }
-    // onSelectedChild();
-  }, [currentPage]);
+  }, [currentPage, mutateBookmarkInfo]);
 
   const renderBookmarkSubMenuItem = useCallback(() => {
     return (
