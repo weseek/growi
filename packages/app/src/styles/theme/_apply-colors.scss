@@ -190,7 +190,7 @@ ul.pagination {
 
   // for https://youtrack.weseek.co.jp/issue/GW-2603
   .search-typeahead {
-    background-color: hsla(var(--bgcolor-global-hs),var(--bgcolor-global-l),90%);
+    background-color: hsla(var(--bgcolor-global-hs),var(--bgcolor-global-l),10%);
   }
 }
 
@@ -331,7 +331,8 @@ ul.pagination {
       color: var(--color-modal-header);
     }
     .close {
-      color: hsla(var(--color-modal-header),50%);
+      color: hsla(var(--primary-hs),var(--primary-l),50%);
+
       &:hover {
         opacity: 0.9;
       }
