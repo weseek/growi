@@ -19,7 +19,7 @@ context('Access to search result page', () => {
     // for avoid mismatch by auto scrolling
     cy.get('.search-result-content-body-container').scrollTo('top');
 
-    cy.collapseSidebar(true);
+    cy.collapseSidebar(true, true);
     cy.waitUntilSkeletonDisappear();
     cy.screenshot(`${ssPrefix}with-q`);
   });
@@ -97,7 +97,7 @@ context('Search all pages', () => {
 
     cy.visit('/');
 
-    cy.collapseSidebar(true);
+    cy.collapseSidebar(true, true);
     cy.waitUntilSkeletonDisappear();
 
     cy.get('.rbt-input').click();
@@ -124,7 +124,7 @@ context('Search all pages', () => {
       // do
       cy.get('@edit-tag-tooltip').find('a').click({force: true});
       // wait until
-      return new Promise((resolve) => resolve(Cypress.$('#edit-tag-modal').is(':visible')));
+      return cy.get('#edit-tag-modal').then($elem => $elem.is(':visible'));
     });
 
     cy.get('#edit-tag-modal').should('be.visible').within(() => {

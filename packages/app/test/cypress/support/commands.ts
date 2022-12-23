@@ -69,7 +69,7 @@ Cypress.Commands.add('waitUntilSpinnerDisappear', () => {
   cy.get('.fa-spinner').should('not.exist');
 });
 
-Cypress.Commands.add('collapseSidebar', (isCollapsed: boolean) => {
+Cypress.Commands.add('collapseSidebar', (isCollapsed: boolean, waitUntilSaving = false) => {
   cy.getByTestid('grw-sidebar-wrapper', { timeout: 5000 }).within(() => {
     // process only when Dock Mode
     cy.get('.grw-sidebar-dock').within(() => {
@@ -82,8 +82,10 @@ Cypress.Commands.add('collapseSidebar', (isCollapsed: boolean) => {
         // do
         cy.getByTestid("grw-navigation-resize-button").click({force: true});
         // wait until saving UserUISettings
-        // eslint-disable-next-line cypress/no-unnecessary-waiting
-        cy.wait(1500);
+        if (waitUntilSaving) {
+          // eslint-disable-next-line cypress/no-unnecessary-waiting
+          cy.wait(1500);
+        }
 
         // wait until
         return cy.getByTestid('grw-contextual-navigation-sub').then($contents => isHidden($contents) === isCollapsed);

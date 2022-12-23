@@ -4,7 +4,7 @@ context('Access to page by guest', () => {
   it('/Sandbox is successfully loaded', () => {
     cy.visit('/Sandbox');
     cy.getByTestid('grw-pagetree-item-container').should('be.visible');
-    cy.collapseSidebar(true);
+    cy.collapseSidebar(true, true);
     cy.screenshot(`${ssPrefix}-sandbox`);
   });
 
@@ -18,7 +18,7 @@ context('Access to page by guest', () => {
     // hide fab // disable fab for sticky-events warning
     // cy.getByTestid('grw-fab-container').invoke('attr', 'style', 'display: none');
 
-    cy.collapseSidebar(true, true);
+    cy.collapseSidebar(true);
     cy.screenshot(`${ssPrefix}-sandbox-headers`);
   });
 
