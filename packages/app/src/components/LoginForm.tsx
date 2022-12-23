@@ -227,7 +227,6 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
       google: 'google',
       github: 'github',
       facebook: 'facebook',
-      twitter: 'twitter',
       oidc: 'openid',
       saml: 'key',
     };

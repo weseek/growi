@@ -14,7 +14,6 @@ import AdminLdapSecurityContainer from '~/client/services/AdminLdapSecurityConta
 import AdminLocalSecurityContainer from '~/client/services/AdminLocalSecurityContainer';
 import AdminOidcSecurityContainer from '~/client/services/AdminOidcSecurityContainer';
 import AdminSamlSecurityContainer from '~/client/services/AdminSamlSecurityContainer';
-import AdminTwitterSecurityContainer from '~/client/services/AdminTwitterSecurityContainer';
 import { CrowiRequest } from '~/interfaces/crowi-request';
 import { CommonProps, generateCustomTitle } from '~/pages/utils/commons';
 import { useCurrentUser, useIsMailerSetup, useSiteUrl } from '~/stores/context';
@@ -52,7 +51,6 @@ const AdminSecuritySettingsPage: NextPage<Props> = (props) => {
       const adminOidcSecurityContainer = new AdminOidcSecurityContainer();
       const adminGoogleSecurityContainer = new AdminGoogleSecurityContainer();
       const adminGitHubSecurityContainer = new AdminGitHubSecurityContainer();
-      const adminTwitterSecurityContainer = new AdminTwitterSecurityContainer();
 
       adminSecurityContainers.push(
         adminGeneralSecurityContainer,
@@ -62,7 +60,6 @@ const AdminSecuritySettingsPage: NextPage<Props> = (props) => {
         adminOidcSecurityContainer,
         adminGoogleSecurityContainer,
         adminGitHubSecurityContainer,
-        adminTwitterSecurityContainer,
       );
     }
   }

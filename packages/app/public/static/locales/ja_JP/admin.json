@@ -182,16 +182,6 @@
       "Facebook": {
         "name": "Facebook OAuth"
       },
-      "Twitter": {
-        "enable_twitter": "Twitter OAuth を有効にする",
-        "name": "Twitter OAuth",
-        "register_1": "{{link}} へアクセス",
-        "register_2": "Twitterにサインイン",
-        "register_3": "Create New Appをクリック &rightarrow; Application Detailsの各項目を入力",
-        "register_4": "Create your Twitter Applicationで作成",
-        "register_5": "上記フォームにクライアントIDとクライアントシークレットを入力",
-        "updated_twitter": "Twitter OAuth を更新しました"
-      },
       "GitHub": {
         "enable_github": "GitHub OAuth を有効にする",
         "name": "GitHub OAuth",
@@ -215,7 +205,6 @@
       "how_to": {
         "google": "Google OAuth の設定方法",
         "github": "GitHub OAuth の設定方法",
-        "twitter": "Twitter OAuth の設定方法",
         "oidc": "OIDC の設定方法"
       }
     },
@@ -889,7 +878,6 @@
     "USER_LOGIN_WITH_LDAP": "LDAP 認証でログイン",
     "USER_LOGIN_WITH_GOOGLE": "Google 認証でログイン",
     "USER_LOGIN_WITH_GITHUB": "GitHub 認証でログイン",
-    "USER_LOGIN_WITH_TWITTER": "Twitter 認証でログイン",
     "USER_LOGIN_WITH_OIDC": "OIDC 認証でログイン",
     "USER_LOGIN_WITH_SAML": "SAML 認証でログイン",
     "USER_LOGIN_FAILURE": "ログイン失敗",
@@ -975,9 +963,6 @@
     "ADMIN_AUTH_GITHUB_ENABLED": "GitHub 認証の有効",
     "ADMIN_AUTH_GITHUB_DISABLED": "GitHub 認証の無効",
     "ADMIN_AUTH_GITHUB_UPDATE": "GitHub 認証設定の更新",
-    "ADMIN_AUTH_TWITTER_ENABLED": "Twitter 認証の有効",
-    "ADMIN_AUTH_TWITTER_DISABLED": "Twitter 認証の無効",
-    "ADMIN_AUTH_TWITTER_UPDATE": "Twitter 認証設定の更新",
     "ADMIN_MARKDOWN_LINE_BREAK_UPDATE": "Line Break 設定の更新",
     "ADMIN_MARKDOWN_INDENT_UPDATE": "インデント設定の更新",
     "ADMIN_MARKDOWN_PRESENTATION_UPDATE": "プレゼンテーション設定の更新",

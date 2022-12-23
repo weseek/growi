@@ -49,7 +49,6 @@ if (loginFormElem) {
     google: loginFormElem.dataset.isGoogleAuthEnabled === 'true',
     github: loginFormElem.dataset.isGithubAuthEnabled === 'true',
     facebook: loginFormElem.dataset.isFacebookAuthEnabled === 'true',
-    twitter: loginFormElem.dataset.isTwitterAuthEnabled === 'true',
     saml: loginFormElem.dataset.isSamlAuthEnabled === 'true',
     oidc: loginFormElem.dataset.isOidcAuthEnabled === 'true',
   };
