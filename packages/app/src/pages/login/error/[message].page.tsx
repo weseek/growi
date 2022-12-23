@@ -9,7 +9,6 @@ import Head from 'next/head';
 import { useRouter } from 'next/router';
 
 import { NoLoginLayout } from '~/components/Layout/NoLoginLayout';
-import { LoginForm } from '~/components/LoginForm';
 import type { CrowiRequest } from '~/interfaces/crowi-request';
 import { IExternalAccountLoginError, isExternalAccountLoginError } from '~/interfaces/errors/external-account-login-error';
 import type { RegistrationMode } from '~/interfaces/registration-mode';
@@ -52,56 +51,52 @@ const LoginPage: NextPage<Props> = (props: Props) => {
   const title = generateCustomTitle(props, 'GROWI');
   const classNames: string[] = ['login-page'];
 
-  console.log({ props });
 
-  // get user status and quit gitting message from router.query
+  let loginErrorElm;
 
-  let errReason = '';
-  let reasonMessage = '';
-
-  switch (message) {
-    case 'registered':
-      errReason = t('login.registration_successful');
-      reasonMessage = 'Wait for approved by administrators.';
-      break;
-    case 'password-reset-order':
-      errReason = t('forgot_password.incorrect_token_or_expired_url');
-      break;
-    case 'invited':
-      errReason = t('forgot_password.forgot_password');
-      break;
-    default:
-      errReason = t('login.sign_in_error');
-  }
-
-  const renderAlertMessage = () => {
-
-
+  const renderResistrationSuccessFul = () => {
     return (
       <>
         <div className="alert alert-success">
-          <h2>{errReason}</h2>
+          <h2>{ t('login.registration_successful') }</h2>
         </div>
-          <p>{reasonMessage}</p>
+        <p>Wait for approved by administrators.</p>
       </>
     );
-
-    //  {% if reason === 'registered'%}
-    // <div className="alert alert-success">
-    //   <h2>{ t('login.registration_successful') }</h2>
-    // </div>
-    // {/* {% elseif reason === 'password-reset-order' %} */}
-    // <div className="alert alert-warning mb-3">
-    //   <h2>{ t('forgot_password.incorrect_token_or_expired_url') }</h2>
-    // </div>
-    // <a href="/forgot-password" className="link-switch">
-    //   <i className="icon-key"></i> { t('forgot_password.forgot_password') }
-    // </a>
-    //   {/* {% else %} */}
-    //   <div className="alert alert-warning">
-    //     <h2>{ t('login.sign_in_error') }</h2>
-    //   </div>
   };
+
+  const renderPasswordResetOrderError = () => {
+    return (
+      <>
+        <div className="alert alert-warning mb-3">
+          <h2>{ t('forgot_password.incorrect_token_or_expired_url') }</h2>
+        </div>
+        <a href="/forgot-password" className="link-switch">
+          <i className="icon-key"></i> { t('forgot_password.forgot_password') }
+        </a>
+      </>
+    );
+  };
+
+  const renderDefaultLoginError = () => {
+    return (
+      <div className="alert alert-warning">
+        <h2>{ t('login.sign_in_error') }</h2>
+      </div>
+    );
+  };
+
+  switch (message) {
+    case 'registered':
+      loginErrorElm = () => renderResistrationSuccessFul();
+      break;
+    case 'password-reset-order':
+      loginErrorElm = () => renderPasswordResetOrderError();
+      break;
+    default:
+      loginErrorElm = () => renderDefaultLoginError();
+  }
+
 
   return (
     <NoLoginLayout className={classNames.join(' ')}>
@@ -109,7 +104,8 @@ const LoginPage: NextPage<Props> = (props: Props) => {
       <div className="mb-4 login-form-errors text-center">
         <div className='noLogin-dialog mx-auto'>
           <div className="col-12">
-            {renderAlertMessage()}
+            {/* {renderAlertMessage()} */}
+            {loginErrorElm()}
           </div>
         </div>
       </div>
