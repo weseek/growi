@@ -15,7 +15,7 @@ context('Access to page', () => {
     // for check download toc data
     cy.get('.toc-link').eq(0).contains('Table of Contents');
 
-    cy.collapseSidebar(true);
+    cy.collapseSidebar(true, true);
     cy.screenshot(`${ssPrefix}-sandbox`);
   });
 
