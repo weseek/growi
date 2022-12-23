@@ -94,14 +94,14 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
       const { redirectTo, userStatus } = res.data;
 
       if (redirectTo != null) {
-        router.push(redirectTo);
+        return router.push(redirectTo);
       }
 
       if (userStatus !== USER_STATUS.ACTIVE) {
         window.location.href = '/';
       }
 
-      router.push('/');
+      return router.push('/');
     }
     catch (err) {
       const errs = toArrayIfNot(err);
