@@ -24,7 +24,7 @@ context('Modal for page operation', () => {
       cy.get('button.close').click();
     });
 
-    cy.collapseSidebar(true);
+    cy.collapseSidebar(true, true);
     cy.screenshot(`${ssPrefix}page-create-modal-closed`);
   });
 
@@ -231,7 +231,7 @@ context('Page Accessories Modal', () => {
 
     cy.getByTestid('page-history').should('be.visible');
 
-    cy.collapseSidebar(true);
+    cy.collapseSidebar(true, true);
     cy.waitUntilSpinnerDisappear();
     cy.screenshot(`${ssPrefix}-open-page-history-bootstrap4`);
   });

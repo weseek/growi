@@ -10,7 +10,7 @@ context('Click page icons button', () => {
 
   it('Successfully subscribe/unsubscribe a page', () => {
     cy.visit('/Sandbox');
-    cy.collapseSidebar(true);
+    cy.collapseSidebar(true, true);
 
     // Subscribe
     cy.get('#subscribe-button').click({force: true});

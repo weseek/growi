@@ -19,7 +19,7 @@ context('Access to search result page', () => {
     // for avoid mismatch by auto scrolling
     cy.get('.search-result-content-body-container').scrollTo('top');
 
-    cy.collapseSidebar(true);
+    cy.collapseSidebar(true, true);
     cy.waitUntilSkeletonDisappear();
     cy.screenshot(`${ssPrefix}with-q`);
   });
@@ -97,7 +97,7 @@ context('Search all pages', () => {
 
     cy.visit('/');
 
-    cy.collapseSidebar(true);
+    cy.collapseSidebar(true, true);
     cy.waitUntilSkeletonDisappear();
 
     cy.get('.rbt-input').click();
