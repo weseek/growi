@@ -45,8 +45,6 @@ const LoginPage: NextPage<Props> = (props: Props) => {
   const title = generateCustomTitle(props, 'GROWI');
   const classNames: string[] = ['login-page'];
 
-  console.log({ props });
-
   return (
     <NoLoginLayout className={classNames.join(' ')}>
       <Head>
