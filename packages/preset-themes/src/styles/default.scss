@@ -7,13 +7,13 @@
 //
 
 // colors for overriding bootstrap $theme-colors
-// $secondary: #;
+// --secondary: #;
 // --info: #;
 // --success: #;
 // --warning: #;
 // --danger: #;
-// $light: #;
-// $dark: #;
+// --light: #;
+// --dark: #;
 
 //== Light Mode
 //
@@ -24,8 +24,6 @@
   --accent: hsl(var(--accent-hs),var(--accent-l));
   --accent-hs: 198.6,74.2%;
   --accent-l: 48.6%;
-  $accent: #209fd8;
-
 
   // Background colors
   --bgcolor-global: hsl(var(--bgcolor-global-hs),var(--bgcolor-global-l));
@@ -109,7 +107,7 @@
   // Tabs
   // $color-nav-tabs-link-active: #; //optional
   // $bordercolor-nav-tabs-hover: # # $bordercolor-nav-tabs; // optional
-  // $bordercolor-nav-tabs-active: # # --bgcolor-global; // optional
+  --bordercolor-nav-tabs-active: var(--bordercolor-nav-tabs) var(--bordercolor-nav-tabs) var(--bgcolor-global); // optional
 
   // Tags
   // $color-tags: #; //optional
@@ -209,10 +207,10 @@
   --bgcolor-sidebar-nav-item-active: rgba(#969494, 0.3); // optional
   --text-shadow-sidebar-nav-item-active: 0px 0px 10px #0099ff; // optional
   // Sidebar resize button
-  $color-resize-button: white;
-  $bgcolor-resize-button: $accent;
-  $color-resize-button-hover: white;
-  $bgcolor-resize-button-hover: darken($bgcolor-resize-button, 5%);
+  --color-resize-button: white;
+  --bgcolor-resize-button: var(--accent);
+  --color-resize-button-hover: white;
+  --bgcolor-resize-button-hover: #{hsl.darken(var(--accent), 5%)};
   // Sidebar contents
   --color-sidebar-context: var(--color-global);
   --color-sidebar-context-hs: var(--color-global-hs);
@@ -224,10 +222,10 @@
   --bgcolor-subnav: --bgcolor-list-hover: #{hsl.lighten(var(--bgcolor-global),3%)};  // optional
 
   // Tabs
-  $bordercolor-nav-tabs: $gray-700; // optional
+  --bordercolor-nav-tabs: #{$gray-700}; // optional
   // $color-nav-tabs-link-active: #; //optional
-  $bordercolor-nav-tabs-hover: #666 #666 $bordercolor-nav-tabs; // optional
-  // $bordercolor-nav-tabs-active: # # var(--bgcolor-global); // optional
+  --bordercolor-nav-tabs-hover: #666 #666 var(--bordercolor-nav-tabs); // optional
+  --bordercolor-nav-tabs-active: var(--bordercolor-nav-tabs) var(--bordercolor-nav-tabs) var(--bgcolor-global); // optional
 
   // Tags
   // $color-tags: #; //optional
@@ -245,8 +243,6 @@
 
   @import './theme/apply-colors';
   // @import './theme/apply-colors-dark';
-
-  // @import '/packages/app/src/styles/theme/apply-colors-dark-new';
 
   //Button
   .btn-group.grw-page-editor-mode-manager {

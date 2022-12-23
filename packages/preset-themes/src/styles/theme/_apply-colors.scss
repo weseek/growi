@@ -1,34 +1,33 @@
-@use '../variables' as var;
-@use '../bootstrap/init' as *;
-@use '../mixins';
-@use './mixins/tables'; // comment out and use _reboot-bootstrap-tables instead -- 2020.05.28 Yuki Takei
-@use '../atoms/mixins/code';
-@use './mixins/hsl-button';
-@use './hsl-functions' as hsl;
+// @use '../variables' as var;
+// @use '../bootstrap/init' as *;
+// @use '../mixins';
+// @use '../atoms/mixins/code';
+// @use './mixins/tables'; // comment out and use _reboot-bootstrap-tables instead -- 2020.05.28 Yuki Takei
+// @use './mixins/hsl-button';
+// @use './hsl-functions' as hsl;
 
-//
-//== Apply to Bootstrap
-//
+// //
+// //== Apply to Bootstrap
+// //
 
-// determine optional variables
-// $border-image-navbar: linear-gradient(to right, $gray-300 0%, $gray-300 100%) !default;
-// $bgcolor-search-top-dropdown: $secondary !default;
-// $bgcolor-sidebar-nav-item-active: darken($bgcolor-sidebar, 10%) !default;
+// // determine optional variables
+// $border-image-navbar: var(--border-image-navbar,#{linear-gradient(to right, $gray-300 0%, $gray-300 100%)});
+// $bgcolor-search-top-dropdown: var(--bgcolor-search-top-dropdown,var(--secondary));
+// $bgcolor-sidebar-nav-item-active: var(--bgcolor-sidebar-nav-item-active,#{hsl.darken(var(--primary),10%)});
 // $text-shadow-sidebar-nav-item-active: var(--text-shadow-sidebar-nav-item-active,1px 1px 2px var(--primary));
-// $bgcolor-inline-code: $gray-100 !default;
-// $color-inline-code: darken($red, 15%) !default;
-// $bordercolor-inline-code: $gray-400 !default;
-// $bordercolor-nav-tabs: $gray-300 !default;
-// $bordercolor-nav-tabs-hover: $gray-200 $gray-200 $bordercolor-nav-tabs !default;
-// $color-nav-tabs-link-active: $gray-600 !default;
+// $bgcolor-inline-code: var(--bgcolor-inline-code, #{$gray-100});
+// $color-inline-code: var(--color-inline-code, #{darken($red, 15%)});
+// $bordercolor-inline-code: var(--bordercolor-inline-code, #{$gray-400});
+// $bordercolor-nav-tabs: var(--bordercolor-nav-tabs, #{$gray-300});
+// $bordercolor-nav-tabs-hover: var(--bordercolor-nav-tabs-hover,#{$gray-200} #{$gray-200} var(--bordercolor-nav-tabs));
+// $border-nav-tabs-link-activec: var(--border-nav-tabs-link-active, #{$gray-600});
 // $bordercolor-nav-tabs-active: var(--bordercolor-nav-tabs-active,var(--bordercolor-nav-tabs) var(--bordercolor-nav-tabs) var(--bgcolor-global));
-// color-btn-reload-in-sidebar: $gray-500;
-// $bgcolor-keyword-highlighted: var.$grw-marker-yellow !default;
-// $color-page-list-group-item-meta: var(--color-page-list-group-item-meta,$gray-500);
+// $color-btn-reload-in-sidebar: var(--color-btn-reload-in-sidebar,#{$gray-500});
+// $bgcolor-keyword-highlighted: var(--bgcolor-keyword-highlighted,#{var.$grw-marker-yellow});
+// $color-page-list-group-item-meta: var(--color-page-list-group-item-meta,#{$gray-500});
 // $color-search-page-list-title: var(--color-search-page-list-title,var(--color-global));
 
-
-// override bootstrap variables
+// // override bootstrap variables
 // $body-bg: var(--bgcolor-global);
 // $body-color: var(--color-global);
 // $link-color: var(--color-link);
@@ -38,27 +37,27 @@
 // $nav-tabs-link-hover-border-color: var(--bordercolor-nav-tabs-hover);
 // $nav-tabs-link-active-color: var(--color-nav-tabs-link-active);
 // $nav-tabs-link-active-bg: var(--bgcolor-global);
-// nav-tabs-link-active-border-color: var(--bordercolor-nav-tabs-active);
-// theme-colors: map-merge($theme-colors, ( primary: $primary ));
+// $nav-tabs-link-active-border-color: var(--bordercolor-nav-tabs-active);
+// $theme-colors: map-merge($theme-colors, ( primary: $primary ));
 
-// @import 'reboot-bootstrap-nav';
+// // @import 'reboot-bootstrap-nav';
 
-// determine variables with　bootstrap function (These variables can be used after importing bootstrap above)
-// $color-modal-header: var(--color-modal-header,contrast(var(--primary)));
+// // determine variables with　bootstrap function (These variables can be used after importing bootstrap above)
+// $color-modal-header: var(--color-modal-header,#{hsl.contrast(var(--primary))});
 
 // code:not([class^='language-']) {
-//   @include code.code-inline-color($color-inline-code, $bgcolor-inline-code, $bordercolor-inline-code);
+//   @include code.code-inline-color(var(--color-inline-code), var(--bgcolor-inline-code), var(--bordercolor-inline-code));
 // }
 
 // .code-highlighted {
 //   border-color: var(--bordercolor-inline-code);
 // }
 
-//
-//== Apply to Bootstrap Elements
-//
+// //
+// //== Apply to Bootstrap Elements
+// //
 
-// Alert link
+// // Alert link
 // @each $color, $value in $theme-colors {
 //   .alert.alert-#{$color} {
 //     a,
@@ -68,7 +67,7 @@
 //   }
 // }
 
-// Dropdown
+// // Dropdown
 // .grw-apperance-mode-dropdown {
 //   .grw-sidebar-mode-icon svg {
 //     fill: var(--secondary);
@@ -81,12 +80,12 @@
 //   }
 // }
 
-// Form
+// // Form
 // .form-control {
 //   @include form-control-focus();
 // }
 
-// Tabs
+// // Tabs
 // .nav.nav-tabs .nav-link.active {
 //   color: var(--color-link);
 //   background: transparent;
@@ -97,7 +96,7 @@
 //   }
 // }
 
-// Pagination
+// // Pagination
 // ul.pagination {
 //   li.page-item.disabled {
 //     button.page-link {
@@ -128,16 +127,16 @@
 //   }
 // }
 
-//
-//== Apply to Handsontable
-//
+// //
+// //== Apply to Handsontable
+// //
 // .handsontable {
 //   color: initial;
 // }
 
-//
-//== Apply to GROWI Elements
-//
+// //
+// //== Apply to GROWI Elements
+// //
 
 // .grw-logo {
 //   set transition for fill
@@ -178,22 +177,21 @@
 
 // .grw-global-search {
 //   .btn-secondary.dropdown-toggle {
-//     @include button-variant($bgcolor-search-top-dropdown, $bgcolor-search-top-dropdown);
+//     @include hsl-button.button-variant(var(--bgcolor-search-top-dropdown), var(--bgcolor-search-top-dropdown));
 //   }
 
 //   // for https://youtrack.weseek.co.jp/issue/GW-2603
 //   .search-typeahead {
-//     background-color: var(--bgcolor-global); opacity:0.9;
+//     background-color: hsla(var(--bgcolor-global-hs),var(--bgcolor-global-l),10%);
 //   }
 // }
 
 // .grw-sidebar {
+//   $color-resize-button: var(--color-resize-button--,var(--color-global));
+//   $bgcolor-resize-button: var(--bgcolor-resize-button,white);
+//   $color-resize-button-hover: var(--color-resize-button-hover,var(--color-reversal));
+//   $bgcolor-resize-button-hover: var(--bgcolor-resize-button-hover,#{hsl.lighten(var(--bgcolor-resize-button), 5%)});
 //   .grw-navigation-resize-button {
-//     $color-resize-button: var(--color-resize-button--,var(--color-global));
-//     $bgcolor-resize-button: var(--bgcolor-resize-button,white);
-//     $color-resize-button-hover: var(--color-resize-button-hover,var(--color-reversal));
-//     $bgcolor-resize-button-hover: var(--bgcolor-resize-button-hover,#{hsl.lighten(var(--bgcolor-resize-button), 5%)});
-
 //     .hexagon-container svg {
 //       .background {
 //         fill: var(--bgcolor-resize-button);
@@ -225,13 +223,9 @@
 
 //   .grw-sidebar-nav {
 //     .btn {
-//       @include button-variant(
-//         $bgcolor-sidebar,
-//         $bgcolor-sidebar,
-//         darken($bgcolor-sidebar, 7.5%),
-//         darken($bgcolor-sidebar, 10%),
-//         $bgcolor-sidebar-nav-item-active,
-//         $bgcolor-sidebar-nav-item-active
+//       @include hsl-button.button-variant(
+//         var(--bgcolor-sidebar),
+//         var(--bgcolor-sidebar),
 //       );
 //     }
 //   }
@@ -242,8 +236,7 @@
 //       }
 //       // fukidashi
 //       &:after {
-//         border-right-color: var(--bgcolor-sidebar-context)
-//         ;
+//         border-right-color: var(--bgcolor-sidebar-context);
 //       }
 //     }
 //   }
@@ -269,7 +262,7 @@
 //       .custom-control-input:checked + .custom-control-label::before {
 //         color: var(--bgcolor-global);
 //         background-color: var(--primary);
-//         // border-color: $primary !important;
+//         border-color: var(--primary);
 //       }
 //       .custom-control-input:checked + .custom-control-label::after {
 //         color: var(--bgcolor-global);
@@ -300,10 +293,10 @@
 //         }
 
 //         .grw-recent-changes-item-lower {
-//           color: $gray-500;
+//           color: #{$gray-500};
 
 //           svg {
-//             fill: $gray-500;
+//             fill: #{$gray-500};
 //           }
 //         }
 //       }
@@ -323,9 +316,9 @@
 //   fill: white;
 // }
 
-/*
- * Modal
- */
+// /*
+//  * Modal
+//  */
 // .modal {
 //   .modal-header {
 //     border-bottom-color: var(--border-color-theme);
@@ -333,7 +326,8 @@
 //       color: var(--color-modal-header);
 //     }
 //     .close {
-//       color: hsla(var(--color-modal-header),50%);
+//       color: hsla(var(--primary-hs),var(--primary-l),50%);
+
 //       &:hover {
 //         opacity: 0.9;
 //       }
@@ -385,9 +379,9 @@
 //   }
 // }
 
-/*
- * cards
- */
+// /*
+//  * cards
+//  */
 // .card.well {
 //   color: var(--color-global);
 //   background-color: var(--bgcolor-card);
@@ -401,9 +395,9 @@
 //   }
 // }
 
-/*
- * Form Slider
- */
+// /*
+//  * Form Slider
+//  */
 // .admin-page {
 //   span.slider {
 //     background-color: #{$gray-300};
@@ -422,9 +416,9 @@
 //   }
 // }
 
-/*
- * GROWI wiki
- */
+// /*
+//  * GROWI wiki
+//  */
 // .wiki {
 //   h1,
 //   h2,
@@ -462,9 +456,9 @@
 //   }
 // }
 
-/*
- * GROWI page-list
- */
+// /*
+//  * GROWI page-list
+//  */
 // .page-list {
 //   // List group
 //   .list-group {
@@ -498,9 +492,9 @@
 //   }
 // }
 
-/*
- * GROWI Editor
- */
+// /*
+//  * GROWI Editor
+//  */
 // .layout-root.editing {
 //   .main {
 //     background-color: #{hsl.darken(var(--bgcolor-global),2%)};
@@ -593,9 +587,9 @@
 //   }
 // }
 
-/*
- * GROWI search result
- */
+// /*
+//  * GROWI search result
+//  */
 // .search-result-base {
 //   .grw-search-page-nav {
 //     background-color: var(--bgcolor-subnav);
@@ -610,9 +604,9 @@
 //   }
 // }
 
-/*
- * react bootstrap typeahead
- */
+// /*
+//  * react bootstrap typeahead
+//  */
 // mark.rbt-highlight-text {
 //   // Temporarily the highlight color is black
 //   color: black;
@@ -626,9 +620,9 @@
 //   border-top-color: var(--border-color-theme);
 // }
 
-/*
- * GROWI admin page #layoutOptions #themeOptions
- */
+// /*
+//  * GROWI admin page #layoutOptions #themeOptions
+//  */
 // .admin-page {
 //   #layoutOptions {
 //     .customize-layout-card {
