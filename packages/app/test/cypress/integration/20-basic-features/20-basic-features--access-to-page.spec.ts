@@ -20,23 +20,23 @@ context('Access to page', () => {
   });
 
   // TODO: https://redmine.weseek.co.jp/issues/109939
-  // it('/Sandbox with anchor hash is successfully loaded', () => {
-  //   cy.visit('/Sandbox#Headers');
-  //   cy.waitUntilSkeletonDisappear();
+  it('/Sandbox with anchor hash is successfully loaded', () => {
+    cy.visit('/Sandbox#Headers');
+    cy.waitUntilSkeletonDisappear();
 
-  //   // for check download toc data
-  //   cy.get('.toc-link').should('be.visible');
+    // for check download toc data
+    cy.get('.toc-link').should('be.visible');
 
-  //   // hide fab // disable fab for sticky-events warning
-  //   // cy.getByTestid('grw-fab-container').invoke('attr', 'style', 'display: none');
+    // hide fab // disable fab for sticky-events warning
+    // cy.getByTestid('grw-fab-container').invoke('attr', 'style', 'display: none');
 
-  //   // remove animation for screenshot
-  //   // remove 'blink' class because ::after element cannot be operated
-  //   // https://stackoverflow.com/questions/5041494/selecting-and-manipulating-css-pseudo-elements-such-as-before-and-after-usin/21709814#21709814
-  //   cy.get('#mdcont-headers').invoke('removeClass', 'blink');
+    // remove animation for screenshot
+    // remove 'blink' class because ::after element cannot be operated
+    // https://stackoverflow.com/questions/5041494/selecting-and-manipulating-css-pseudo-elements-such-as-before-and-after-usin/21709814#21709814
+    cy.get('#mdcont-headers').invoke('removeClass', 'blink');
 
-  //   cy.screenshot(`${ssPrefix}-sandbox-headers`);
-  // });
+    cy.screenshot(`${ssPrefix}-sandbox-headers`);
+  });
 
   it('/Sandbox/Math is successfully loaded', () => {
     cy.visit('/Sandbox/Math');
@@ -45,26 +45,21 @@ context('Access to page', () => {
     // for check download toc data
     cy.get('.toc-link').should('be.visible');
 
-    cy.collapseSidebar(true);
+    cy.get('.math').should('be.visible');
+
     cy.screenshot(`${ssPrefix}-sandbox-math`);
   });
 
   it('/Sandbox with edit is successfully loaded', () => {
-    cy.visit('/Sandbox');
+    cy.visit('/Sandbox#edit');
     cy.waitUntilSkeletonDisappear();
-
-    cy.get('#grw-subnav-container').should('be.visible').within(() => {
-
-      // eslint-disable-next-line cypress/no-unnecessary-waiting
-      cy.wait(2000);
-      cy.getByTestid('editor-button').should('be.visible').click();
-    })
 
     cy.getByTestid('navbar-editor').should('be.visible');
     cy.get('.grw-editor-navbar-bottom').should('be.visible');
     cy.getByTestid('save-page-btn').should('be.visible');
-    cy.get('.grw-grant-selector').should('be.visible')
+    cy.get('.grw-grant-selector').should('be.visible');
 
+    cy.collapseSidebar(true);
     cy.screenshot(`${ssPrefix}-Sandbox-edit-page`);
   })
 
