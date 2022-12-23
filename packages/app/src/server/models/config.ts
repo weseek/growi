@@ -95,11 +95,6 @@ export const defaultCrowiConfigs: { [key: string]: any } = {
   'security:passport-github:clientSecret': undefined,
   'security:passport-github:isSameUsernameTreatedAsIdenticalUser': false,
 
-  'security:passport-twitter:isEnabled' : false,
-  'security:passport-twitter:consumerKey': undefined,
-  'security:passport-twitter:consumerSecret': undefined,
-  'security:passport-twitter:isSameUsernameTreatedAsIdenticalUser': false,
-
   'security:passport-oidc:isEnabled' : false,
 
   'aws:s3Bucket'          : 'growi',

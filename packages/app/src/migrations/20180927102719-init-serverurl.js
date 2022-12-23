@@ -40,7 +40,6 @@ module.exports = {
       $or: [
         { key: 'security:passport-github:callbackUrl' },
         { key: 'security:passport-google:callbackUrl' },
-        { key: 'security:passport-twitter:callbackUrl' },
         { key: 'security:passport-saml:callbackUrl' },
       ],
     });

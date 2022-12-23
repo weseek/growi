@@ -31,6 +31,6 @@ FacebookSecurityManagement.propTypes = {
   adminGeneralSecurityContainer: PropTypes.instanceOf(AdminGeneralSecurityContainer).isRequired,
 };
 
-const TwitterSecurityManagementWrapper = withUnstatedContainers(FacebookSecurityManagement, [AdminGeneralSecurityContainer]);
+const FacebookSecurityManagementWrapper = withUnstatedContainers(FacebookSecurityManagement, [AdminGeneralSecurityContainer]);
 
-export default withTranslation()(TwitterSecurityManagementWrapper);
+export default withTranslation()(FacebookSecurityManagementWrapper);

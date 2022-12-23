@@ -88,7 +88,6 @@ function injectEnabledStrategies(context: GetServerSidePropsContext, props: Prop
     google: configManager.getConfig('crowi', 'security:passport-google:isEnabled'),
     github: configManager.getConfig('crowi', 'security:passport-github:isEnabled'),
     facebook: false,
-    twitter: configManager.getConfig('crowi', 'security:passport-twitter:isEnabled'),
     saml: configManager.getConfig('crowi', 'security:passport-saml:isEnabled'),
     oidc: configManager.getConfig('crowi', 'security:passport-oidc:isEnabled'),
   };

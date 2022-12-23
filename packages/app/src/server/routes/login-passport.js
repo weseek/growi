@@ -471,49 +471,6 @@ module.exports = function(crowi, app) {
     });
   };
 
-  const loginWithTwitter = function(req, res, next) {
-    if (!passportService.isTwitterStrategySetup) {
-      debug('TwitterStrategy has not been set up');
-      const error = new ExternalAccountLoginError('message.strategy_has_not_been_set_up', { strategy: 'TwitterStrategy' });
-      return next(error);
-    }
-
-    passport.authenticate('twitter')(req, res);
-  };
-
-  const loginPassportTwitterCallback = async(req, res, next) => {
-    const providerId = 'twitter';
-    const strategyName = 'twitter';
-
-    let response;
-    try {
-      response = await promisifiedPassportAuthentication(strategyName, req, res);
-    }
-    catch (err) {
-      return next(new ExternalAccountLoginError(err.message));
-    }
-
-    const userInfo = {
-      id: response.id,
-      username: response.username,
-      name: response.displayName,
-    };
-
-    const externalAccount = await getOrCreateUser(req, res, userInfo, providerId);
-    if (!externalAccount) {
-      return next(new ExternalAccountLoginError('message.sign_in_failure'));
-    }
-
-    const user = await externalAccount.getPopulatedUser();
-
-    // login
-    req.logIn(user, async(err) => {
-      if (err) { debug(err.message); return next(new ExternalAccountLoginError(err.message)) }
-
-      return loginSuccessHandler(req, res, user, SupportedAction.ACTION_USER_LOGIN_WITH_TWITTER, true);
-    });
-  };
-
   const loginWithOidc = function(req, res, next) {
     if (!passportService.isOidcStrategySetup) {
       debug('OidcStrategy has not been set up');
@@ -635,12 +592,10 @@ module.exports = function(crowi, app) {
     loginWithLocal,
     loginWithGoogle,
     loginWithGitHub,
-    loginWithTwitter,
     loginWithOidc,
     loginWithSaml,
     loginPassportGoogleCallback,
     loginPassportGitHubCallback,
-    loginPassportTwitterCallback,
     loginPassportOidcCallback,
     loginPassportSamlCallback,
   };
