@@ -61,7 +61,7 @@ const LoginPage: NextPage<Props> = (props: Props) => {
 
   switch (message) {
     case 'registered':
-      errReason = t('login.Registration successful');
+      errReason = t('login.registration_successful');
       reasonMessage = 'Wait for approved by administrators.';
       break;
     case 'password-reset-order':
@@ -71,7 +71,7 @@ const LoginPage: NextPage<Props> = (props: Props) => {
       errReason = t('forgot_password.forgot_password');
       break;
     default:
-      errReason = t('login.Sign in error');
+      errReason = t('login.sign_in_error');
   }
 
   const renderAlertMessage = () => {
@@ -80,16 +80,15 @@ const LoginPage: NextPage<Props> = (props: Props) => {
     return (
       <>
         <div className="alert alert-success">
-          {/* <h2>{ t('login.Registration successful') }</h2> */}
           <h2>{errReason}</h2>
         </div>
-        <p>{reasonMessage}</p>
+          <p>{reasonMessage}</p>
       </>
     );
 
     //  {% if reason === 'registered'%}
     // <div className="alert alert-success">
-    //   <h2>{ t('login.Registration successful') }</h2>
+    //   <h2>{ t('login.registration_successful') }</h2>
     // </div>
     // {/* {% elseif reason === 'password-reset-order' %} */}
     // <div className="alert alert-warning mb-3">
@@ -100,7 +99,7 @@ const LoginPage: NextPage<Props> = (props: Props) => {
     // </a>
     //   {/* {% else %} */}
     //   <div className="alert alert-warning">
-    //     <h2>{ t('login.Sign in error') }</h2>
+    //     <h2>{ t('login.sign_in_error') }</h2>
     //   </div>
   };
 
