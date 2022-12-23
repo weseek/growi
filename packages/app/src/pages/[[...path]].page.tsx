@@ -292,7 +292,8 @@ const Page: NextPageWithLayout<Props> = (props: Props) => {
   useEffect(() => {
     const decodedURI = decodeURI(window.location.pathname);
     if (isClient() && decodedURI !== props.currentPathname) {
-      router.replace(props.currentPathname, undefined, { shallow: true });
+      const { search, hash } = window.location;
+      router.replace(`${props.currentPathname}${search}${hash}`, undefined, { shallow: true });
     }
   }, [props.currentPathname, router]);
 

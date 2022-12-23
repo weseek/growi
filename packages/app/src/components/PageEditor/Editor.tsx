@@ -227,7 +227,7 @@ const Editor: ForwardRefRenderFunction<IEditorMethods, EditorPropsType> = (props
     );
   }, [isUploading]);
 
-  const renderNavbar = useCallback(() => {
+  const renderNavbar = () => {
     return (
       <div className="m-0 navbar navbar-default navbar-editor" data-testid="navbar-editor" style={{ minHeight: 'unset' }}>
         <ul className="pl-2 nav nav-navbar">
@@ -238,7 +238,7 @@ const Editor: ForwardRefRenderFunction<IEditorMethods, EditorPropsType> = (props
         </ul>
       </div>
     );
-  }, [editorSubstance]);
+  };
 
   const renderCheatsheetModal = useCallback(() => {
     const hideCheatsheetModal = () => {

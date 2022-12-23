@@ -46,7 +46,7 @@ const CustomizeCssSetting = (props: Props): JSX.Element => {
               className="form-control"
               name="customizeCss"
               rows={8}
-              value={adminCustomizeContainer.state.currentCustomizeCss || ''}
+              defaultValue={adminCustomizeContainer.state.currentCustomizeCss || ''}
               onChange={(e) => { adminCustomizeContainer.changeCustomizeCss(e.target.value) }}
             />
             {/* disabled in v6.0.0 temporarily -- 2022.12.19 Yuki Takei
