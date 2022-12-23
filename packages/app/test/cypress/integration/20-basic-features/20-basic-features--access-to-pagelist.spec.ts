@@ -14,7 +14,7 @@ context('Access to pagelist', () => {
       // do
       cy.getByTestid('pageListButton').click({force: true});
       // wait until
-      return cy.getByTestid('page-accessories-modal').then($elem => $elem.is(':visible'));
+      return cy.getByTestid('descendants-page-list-modal').then($elem => $elem.is(':visible'));
     });
 
     cy.waitUntilSpinnerDisappear();
@@ -34,7 +34,7 @@ context('Access to pagelist', () => {
   it('Successfully open PageItemControl', () => {
     cy.waitUntil(() => {
       // do
-      cy.getByTestid('page-accessories-modal').within(() => {
+      cy.getByTestid('descendants-page-list-modal').within(() => {
         cy.getByTestid('page-list-item-L').first().within(() => {
           cy.getByTestid('open-page-item-control-btn').click();
         });
@@ -77,7 +77,7 @@ context('Access to timeline', () => {
     cy.collapseSidebar(true);
 
     cy.getByTestid('pageListButton').click({force: true});
-    cy.getByTestid('page-accessories-modal').parent().should('have.class','show').within(() => {
+    cy.getByTestid('descendants-page-list-modal').parent().should('have.class','show').within(() => {
       cy.get('.nav-title > li').eq(1).find('a').click();
     });
     // eslint-disable-next-line cypress/no-unnecessary-waiting
