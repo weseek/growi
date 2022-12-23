@@ -117,8 +117,6 @@ export const PageEditorByHackmd = (): JSX.Element => {
       const markdown = await hackmdEditorRef.current.getValue();
 
       const { page } = await saveOrUpdate(markdown, { pageId, path: currentPagePath || currentPathname, revisionId: revisionIdHackmdSynced }, options);
-      await mutatePageData();
-      await mutateTagsInfo();
 
       if (page == null) {
         return;
@@ -128,6 +126,7 @@ export const PageEditorByHackmd = (): JSX.Element => {
       }
       else {
         updateStateAfterSave?.();
+        mutateIsHackmdDraftUpdatingInRealtime(false);
       }
       setIsInitialized(false);
       mutateEditorMode(EditorMode.View);
@@ -137,7 +136,7 @@ export const PageEditorByHackmd = (): JSX.Element => {
       toastError(error.message);
     }
   // eslint-disable-next-line max-len
-  }, [editorMode, currentPathname, revision, revisionIdHackmdSynced, optionsToSave, saveOrUpdate, pageId, currentPagePath, mutatePageData, mutateTagsInfo, isNotFound, mutateEditorMode, router, updateStateAfterSave]);
+  }, [editorMode, currentPathname, revision, revisionIdHackmdSynced, optionsToSave, saveOrUpdate, pageId, currentPagePath, isNotFound, mutateEditorMode, router, updateStateAfterSave, mutateIsHackmdDraftUpdatingInRealtime]);
 
   // set handler to save and reload Page
   useEffect(() => {
