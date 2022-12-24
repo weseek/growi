@@ -29,7 +29,6 @@ import PageGrantService from '../service/page-grant';
 import PageOperationService from '../service/page-operation';
 // eslint-disable-next-line import/no-cycle
 import { PluginService } from '../service/plugin';
-import QuestionnaireCronService from '../service/questionnnaire-cron-service';
 import SearchService from '../service/search';
 import { SlackIntegrationService } from '../service/slack-integration';
 import { UserNotificationService } from '../service/user-notification';
@@ -308,11 +307,8 @@ Crowi.prototype.setupModels = async function() {
 };
 
 Crowi.prototype.setupCron = function() {
-  new QuestionnaireCronService(
-    this.configManager.getConfig('crowi', 'app:growiQuestionnaireUri'),
-    this.configManager.getConfig('crowi', 'app:questionnaireCronSchedule'),
-    this.configManager.getConfig('crowi', 'app:questionnaireCronMaxHoursUntilRequest'),
-  ).setUpCron();
+  const QuestionnaireCronService = require('../service/questionnaire-cron');
+  new QuestionnaireCronService(this).setUpCron();
 };
 
 Crowi.prototype.scanRuntimeVersions = async function() {
