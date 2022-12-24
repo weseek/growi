@@ -1,6 +1,7 @@
-import React, { useEffect } from 'react';
+import React, { ReactElement, ReactNode, useEffect } from 'react';
 
 import { isServer } from '@growi/core';
+import { NextPage } from 'next';
 import { appWithTranslation } from 'next-i18next';
 import { AppProps } from 'next/app';
 import { SWRConfig } from 'swr';
@@ -32,9 +33,15 @@ const swrConfig: SWRConfigValue = {
 };
 
 
+// eslint-disable-next-line @typescript-eslint/ban-types
+export type NextPageWithLayout<P = {}, IP = P> = NextPage<P, IP> & {
+  getLayout?: (page: ReactElement) => ReactNode,
+}
+
 type GrowiAppProps = AppProps & {
-  pageProps: CommonProps;
+  Component: NextPageWithLayout,
 };
+
 // register custom serializer
 registerTransformerForObjectId();
 
@@ -58,9 +65,12 @@ function GrowiApp({ Component, pageProps }: GrowiAppProps): JSX.Element {
   useGrowiVersion(commonPageProps.growiVersion);
   useCustomizedLogoSrc(commonPageProps.customizedLogoSrc);
 
+  // Use the layout defined at the page level, if available
+  const getLayout = Component.getLayout ?? (page => page);
+
   return (
     <SWRConfig value={swrConfig}>
-      <Component {...pageProps} />
+      {getLayout(<Component {...pageProps} />)}
     </SWRConfig>
   );
 }

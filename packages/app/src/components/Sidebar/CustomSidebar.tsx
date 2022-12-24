@@ -47,7 +47,7 @@ const CustomSidebar: FC = () => {
       <div className="grw-sidebar-content-header py-3 d-flex">
         <h3 className="mb-0">
           {t('CustomSidebar')}
-          <Link href="/Sidebar"><a className="h6 ml-2"><i className="icon-pencil"></i></a></Link>
+          <Link href="/Sidebar#edit"><a className="h6 ml-2"><i className="icon-pencil"></i></a></Link>
         </h3>
         <SidebarHeaderReloadButton onClick={() => mutate()} />
       </div>

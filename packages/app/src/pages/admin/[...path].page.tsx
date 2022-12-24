@@ -2,8 +2,9 @@ import {
   NextPage, GetServerSideProps, GetServerSidePropsContext,
 } from 'next';
 import dynamic from 'next/dynamic';
+import Head from 'next/head';
 
-import { CommonProps } from '~/pages/utils/commons';
+import { CommonProps, generateCustomTitle } from '~/pages/utils/commons';
 import { useCurrentUser } from '~/stores/context';
 import { useIsMaintenanceMode } from '~/stores/maintenanceMode';
 
@@ -17,8 +18,13 @@ const AdminAppPage: NextPage<CommonProps> = (props) => {
   useIsMaintenanceMode(props.isMaintenanceMode);
   useCurrentUser(props.currentUser ?? null);
 
+  const title = generateCustomTitle(props, 'GROWI');
+
   return (
     <AdminLayout>
+      <Head>
+        <title>{title}</title>
+      </Head>
       <AdminNotFoundPage />
     </AdminLayout>
   );

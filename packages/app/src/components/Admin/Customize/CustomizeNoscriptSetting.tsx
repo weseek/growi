@@ -15,15 +15,15 @@ type Props = {
   adminCustomizeContainer: AdminCustomizeContainer
 }
 
-const CustomizeScriptSetting = (props: Props): JSX.Element => {
+const CustomizeNoscriptSetting = (props: Props): JSX.Element => {
 
   const { adminCustomizeContainer } = props;
   const { t } = useTranslation();
 
   const onClickSubmit = useCallback(async() => {
     try {
-      await adminCustomizeContainer.updateCustomizeScript();
-      toastSuccess(t('toaster.update_successed', { target: t('admin:customize_settings.custom_script'), ns: 'commons' }));
+      await adminCustomizeContainer.updateCustomizeNoscript();
+      toastSuccess(t('toaster.update_successed', { target: t('admin:customize_settings.custom_noscript'), ns: 'commons' }));
     }
     catch (err) {
       toastError(err);
@@ -34,47 +34,45 @@ const CustomizeScriptSetting = (props: Props): JSX.Element => {
     <React.Fragment>
       <div className="row">
         <div className="col-12">
-          <h2 className="admin-setting-header">{t('admin:customize_settings.custom_script')}</h2>
-          <Card className="card well">
+          <h2 className="admin-setting-header">{t('admin:customize_settings.custom_noscript')}</h2>
+
+          <Card className="card well my-3">
             <CardBody className="px-0 py-2">
-              {t('admin:customize_settings.write_java')}<br />
-              {t('admin:customize_settings.reflect_change')}
+              <span
+                // eslint-disable-next-line react/no-danger
+                dangerouslySetInnerHTML={{ __html: t('admin:customize_settings.custom_noscript_detail') }}
+              />
             </CardBody>
           </Card>
 
           <div className="form-group">
             <textarea
               className="form-control"
-              name="customizeScript"
+              name="customizeNoscript"
               rows={8}
-              defaultValue={adminCustomizeContainer.state.currentCustomizeScript || ''}
-              onChange={(e) => { adminCustomizeContainer.changeCustomizeScript(e.target.value) }}
+              defaultValue={adminCustomizeContainer.state.currentCustomizeNoscript || ''}
+              onChange={(e) => { adminCustomizeContainer.changeCustomizeNoscript(e.target.value) }}
             />
             {/* disabled in v6.0.0 temporarily -- 2022.12.19 Yuki Takei
             <span className="form-text text-muted text-right">
-              <i className="fa fa-fw fa-keyboard-o" aria-hidden="true" />
+              <i className="fa fa-fw fa-keyboard-o" aria-hidden="true"></i>
               {t('admin:customize_settings.ctrl_space')}
             </span>
             */}
           </div>
 
           <a className="text-muted"
-            data-toggle="collapse" href="#collapseExampleScript" role="button" aria-expanded="false" aria-controls="collapseExampleScript">
+            data-toggle="collapse" href="#collapseExampleHtml" role="button" aria-expanded="false" aria-controls="collapseExampleHtml">
             <i className="fa fa-fw fa-chevron-right" aria-hidden="true"></i>
             Example for Google Tag Manager
           </a>
-          <div className="collapse" id="collapseExampleScript">
+          <div className="collapse" id="collapseExampleHtml">
             <PrismAsyncLight style={oneDark} language={'javascript'}
             >
-              {`(function(w,d,s,l,i){
-w[l]=w[l]||[];
-w[l].push({'gtm.start':new Date().getTime(),event:'gtm.js'});
-var f=d.getElementsByTagName(s)[0],
-  j=d.createElement(s),
-  dl=l!='dataLayer'?'&l='+l:'';
-j.async=true;
-j.src='https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
-})(window,document,'script','dataLayer','GTM-XXXXXX');`}
+              {`<iframe src="https://www.googletagmanager.com/ns.html?id=GTM-XXXXXXX"
+  height="0"
+  width="0"
+  style="display:none;visibility:hidden"></iframe>`}
             </PrismAsyncLight>
           </div>
 
@@ -86,6 +84,6 @@ j.src='https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefo
 
 };
 
-const CustomizeScriptSettingWrapper = withUnstatedContainers(CustomizeScriptSetting, [AdminCustomizeContainer]);
+const CustomizeNoscriptSettingWrapper = withUnstatedContainers(CustomizeNoscriptSetting, [AdminCustomizeContainer]);
 
-export default CustomizeScriptSettingWrapper;
+export default CustomizeNoscriptSettingWrapper;

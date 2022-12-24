@@ -165,13 +165,6 @@
       "attr_based_login_control_rule_exampl2": "<h5>エスケープの例</h5>ルールに URL を利用したい場合は、次のようにエスケープしてください:<br><code>http&#92;:&#92;/&#92;/schemas.example.com&#92;/ws&#92;/2005&#92;/05&#92;/identity&#92;/claims&#92;/emailaddress: &quot;myname@example.com&quot;</code>",
       "updated_saml": "Succeeded to update SAML setting"
     },
-    "Basic": {
-      "enable_basic": "Basic を有効にする",
-      "name": "Basic 認証",
-      "desc_1": "Authorization ヘッダに格納されている <code>username</code> でログインします。",
-      "desc_2": "ユーザーが存在しなかった場合は自動生成します。",
-      "updated_basic": "Basic認証 を更新しました"
-    },
     "OAuth": {
       "enable_oidc": "OIDC を有効にする",
       "register": "%sに登録",
@@ -188,16 +181,6 @@
       },
       "Facebook": {
         "name": "Facebook OAuth"
-      },
-      "Twitter": {
-        "enable_twitter": "Twitter OAuth を有効にする",
-        "name": "Twitter OAuth",
-        "register_1": "{{link}} へアクセス",
-        "register_2": "Twitterにサインイン",
-        "register_3": "Create New Appをクリック &rightarrow; Application Detailsの各項目を入力",
-        "register_4": "Create your Twitter Applicationで作成",
-        "register_5": "上記フォームにクライアントIDとクライアントシークレットを入力",
-        "updated_twitter": "Twitter OAuth を更新しました"
       },
       "GitHub": {
         "enable_github": "GitHub OAuth を有効にする",
@@ -222,7 +205,6 @@
       "how_to": {
         "google": "Google OAuth の設定方法",
         "github": "GitHub OAuth の設定方法",
-        "twitter": "Twitter OAuth の設定方法",
         "oidc": "OIDC の設定方法"
       }
     },
@@ -513,8 +495,8 @@
     "custom_title_detail_placeholder1": "<code>&#123;&#123;sitename&#125;&#125;</code> - この Wiki のサイト名",
     "custom_title_detail_placeholder2": "<code>&#123;&#123;pagename&#125;&#125;</code> - 現在表示中のページ名",
     "custom_title_detail_placeholder3": "<code>&#123;&#123;pagepath&#125;&#125;</code> - 現在表示中のページパス",
-    "custom_header": "カスタム HTML Header",
-    "custom_header_detail": "システム全体に適用される HTML を記述できます。<code>&lt;header&gt;</code> タグ内の他の <code>&lt;script&gt;</code> タグ読み込み前に展開されます。<br>変更の反映はページの更新が必要です。",
+    "custom_noscript": "カスタム Noscript",
+    "custom_noscript_detail": "システム全体に適用される HTML を記述できます。<code>&lt;body&gt;</code> タグ内の最初の <code>&lt;noscript&gt;</code> タグ内に展開されます。<br>変更の反映はページの更新が必要です。",
     "custom_css": "カスタム CSS",
     "write_css": " システム全体に適用されるCSSを記述できます。",
     "ctrl_space": "Ctrl+Space でコード補完",
@@ -896,10 +878,8 @@
     "USER_LOGIN_WITH_LDAP": "LDAP 認証でログイン",
     "USER_LOGIN_WITH_GOOGLE": "Google 認証でログイン",
     "USER_LOGIN_WITH_GITHUB": "GitHub 認証でログイン",
-    "USER_LOGIN_WITH_TWITTER": "Twitter 認証でログイン",
     "USER_LOGIN_WITH_OIDC": "OIDC 認証でログイン",
     "USER_LOGIN_WITH_SAML": "SAML 認証でログイン",
-    "USER_LOGIN_WITH_BASIC": "BASIC 認証でログイン",
     "USER_LOGIN_FAILURE": "ログイン失敗",
     "USER_LOGOUT": "ログアウト",
     "USER_FOGOT_PASSWORD": "パスワードリセットのリクエスト",
@@ -977,18 +957,12 @@
     "ADMIN_AUTH_OIDC_ENABLED": "OIDC 認証を有効",
     "ADMIN_AUTH_OIDC_DISABLED": "OIDC 認証を無効",
     "ADMIN_AUTH_OIDC_UPDATE": "OIDC 認証設定の更新",
-    "ADMIN_AUTH_BASIC_ENABLED": "BASIC 認証の有効",
-    "ADMIN_AUTH_BASIC_DISABLED": "BASIC 認証の無効",
-    "ADMIN_AUTH_BASIC_UPDATE": "BASIC 認証設定の更新",
     "ADMIN_AUTH_GOOGLE_ENABLED": "Google 認証の有効",
     "ADMIN_AUTH_GOOGLE_DISABLED": "Google 認証の無効",
     "ADMIN_AUTH_GOOGLE_UPDATE": "Google 認証設定の更新",
     "ADMIN_AUTH_GITHUB_ENABLED": "GitHub 認証の有効",
     "ADMIN_AUTH_GITHUB_DISABLED": "GitHub 認証の無効",
     "ADMIN_AUTH_GITHUB_UPDATE": "GitHub 認証設定の更新",
-    "ADMIN_AUTH_TWITTER_ENABLED": "Twitter 認証の有効",
-    "ADMIN_AUTH_TWITTER_DISABLED": "Twitter 認証の無効",
-    "ADMIN_AUTH_TWITTER_UPDATE": "Twitter 認証設定の更新",
     "ADMIN_MARKDOWN_LINE_BREAK_UPDATE": "Line Break 設定の更新",
     "ADMIN_MARKDOWN_INDENT_UPDATE": "インデント設定の更新",
     "ADMIN_MARKDOWN_PRESENTATION_UPDATE": "プレゼンテーション設定の更新",
@@ -999,7 +973,7 @@
     "ADMIN_FUNCTION_UPDATE": "機能設定の更新",
     "ADMIN_CODE_HIGHLIGHT_UPDATE": "コードハイライト設定の更新",
     "ADMIN_CUSTOM_TITLE_UPDATE": "カスタムタイトル設定の更新",
-    "ADMIN_CUSTOM_HTML_HEADER_UPDATE": "カスタム HTML Header 設定の更新",
+    "ADMIN_CUSTOM_NOSCRIPT_UPDATE": "カスタム noscript 設定の更新",
     "ADMIN_CUSTOM_CSS_UPDATE": "カスタム CSS 設定の更新",
     "ADMIN_CUSTOM_SCRIPT_UPDATE": "カスタムスクリプト設定の更新",
     "ADMIN_ARCHIVE_DATA_UPLOAD": "アーカイブデータのアップロード",

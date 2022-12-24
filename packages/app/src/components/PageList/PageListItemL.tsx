@@ -11,11 +11,10 @@ import { useTranslation } from 'next-i18next';
 import Link from 'next/link';
 import Clamp from 'react-multiline-clamp';
 import { CustomInput } from 'reactstrap';
-import urljoin from 'url-join';
-
 
 import { ISelectable } from '~/client/interfaces/selectable-all';
-import { bookmark, unbookmark } from '~/client/services/page-operation';
+import { unlink, bookmark, unbookmark } from '~/client/services/page-operation';
+import { toastError } from '~/client/util/apiNotification';
 import {
   IPageInfoAll, isIPageInfoForListing, isIPageInfoForEntity, IPageWithMeta, IPageInfoForListing,
 } from '~/interfaces/page';
@@ -148,9 +147,24 @@ const PageListItemLSubstance: ForwardRefRenderFunction<ISelectable, Props> = (pr
     openDeleteModal([pageToDelete], { onDeleted: onPageDeleted });
   }, [pageData, openDeleteModal, onPageDeleted]);
 
-  const revertMenuItemClickHandler = useCallback(() => {
+  const revertMenuItemClickHandler = useCallback(async() => {
     const { _id: pageId, path } = pageData;
-    openPutBackPageModal({ pageId, path }, { onPutBacked: onPagePutBacked });
+
+    const putBackedHandler = async(path) => {
+      try {
+        // pageData path should be `/trash/fuga` (`/trash` should be included to the prefix)
+        await unlink(pageData.path);
+      }
+      catch (err) {
+        toastError(err);
+      }
+
+      if (onPagePutBacked != null) {
+        // This path should be `/fuga` ( `/trash` is not included to the prefix)
+        onPagePutBacked(path);
+      }
+    };
+    openPutBackPageModal({ pageId, path }, { onPutBacked: putBackedHandler });
   }, [onPagePutBacked, openPutBackPageModal, pageData]);
 
   const styleListGroupItem = (!isDeviceSmallerThanLg && onClickItem != null) ? 'list-group-item-action' : '';

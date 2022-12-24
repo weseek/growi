@@ -16,6 +16,7 @@ export default defineConfig({
         return launchOptions;
       });
     },
+    defaultCommandTimeout: 7000,
   },
   fileServerFolder: 'test/cypress',
   fixturesFolder: 'test/cypress/fixtures',
@@ -25,5 +26,4 @@ export default defineConfig({
   viewportWidth: 1400,
   viewportHeight: 1024,
 
-  defaultCommandTimeout: 30000,
 });

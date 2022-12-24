@@ -76,7 +76,7 @@ module.exports = function(crowi, app) {
 
   app.get('/'                         , applicationInstalled, unavailableWhenMaintenanceMode, loginRequired, autoReconnectToSearch, next.delegateToNext);
 
-  app.get('/login/error/:reason'      , applicationInstalled, login.error);
+  app.get('/login/error/:reason'      , applicationInstalled, next.delegateToNext);
   app.get('/login'                    , applicationInstalled, login.preLogin, next.delegateToNext);
   app.get('/invited'                  , applicationInstalled, next.delegateToNext);
   // app.post('/login'                   , applicationInstalled, loginFormValidator.loginRules(), loginFormValidator.loginValidation, csrfProtection,  addActivity, loginPassport.loginWithLocal, loginPassport.loginWithLdap, loginPassport.loginFailure);
@@ -93,13 +93,10 @@ module.exports = function(crowi, app) {
   // OAuth
   app.get('/passport/google'                      , loginPassport.loginWithGoogle, loginPassport.loginFailureForExternalAccount);
   app.get('/passport/github'                      , loginPassport.loginWithGitHub, loginPassport.loginFailureForExternalAccount);
-  app.get('/passport/twitter'                     , loginPassport.loginWithTwitter, loginPassport.loginFailureForExternalAccount);
   app.get('/passport/oidc'                        , loginPassport.loginWithOidc, loginPassport.loginFailureForExternalAccount);
   app.get('/passport/saml'                        , loginPassport.loginWithSaml, loginPassport.loginFailureForExternalAccount);
-  app.get('/passport/basic'                       , loginPassport.loginWithBasic, loginPassport.loginFailureForExternalAccount);
   app.get('/passport/google/callback'             , loginPassport.loginPassportGoogleCallback   , loginPassport.loginFailureForExternalAccount);
   app.get('/passport/github/callback'             , loginPassport.loginPassportGitHubCallback   , loginPassport.loginFailureForExternalAccount);
-  app.get('/passport/twitter/callback'            , loginPassport.loginPassportTwitterCallback  , loginPassport.loginFailureForExternalAccount);
   app.get('/passport/oidc/callback'               , loginPassport.loginPassportOidcCallback     , loginPassport.loginFailureForExternalAccount);
   app.post('/passport/saml/callback'              , addActivity, loginPassport.loginPassportSamlCallback, loginPassport.loginFailureForExternalAccount);
 

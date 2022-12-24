@@ -121,7 +121,6 @@
   "UserGroup": "用户组",
   "ChildUserGroup": "儿童用户组",
 	"Basic Settings": "基础设置",
-	"Basic authentication": "基本身份验证",
 	"The contents entered here will be shown in the header etc": "此处输入的内容将显示在标题等中",
 	"Public": "公共",
 	"Anyone with the link": "任何人",
@@ -575,6 +574,7 @@
     }
 	},
   "private_legacy_pages": {
+    "title": "私人遗留页面",
     "bulk_operation": "批量操作",
     "convert_all_selected_pages": "全部转换为新的v5兼容格式",
 		"input_path_to_convert": "输入一个转换页面的路径",
@@ -609,8 +609,8 @@
     }
   },
 	"login": {
-		"Sign in error": "登录错误",
-		"Registration successful": "注册成功。请等待管理员批准",
+		"sign_in_error": "登录错误",
+		"registration_successful": "注册成功。请等待管理员批准",
 		"Setup": "安装程序",
     "enabled_ldap_has_configuration_problem":"启用了LDAP，但配置有问题。",
     "set_env_var_for_logs": "(请设置环境变量 <code>DEBUG=crowi:service:PassportService</code> 以获得日志。)"
@@ -736,7 +736,6 @@
     "logout": "登出"
   },
   "pagetree": {
-    "private_legacy_pages": "私人遗留页面",
     "cannot_rename_a_title_that_contains_slash": "不能重命名包含 ’/' 的标题",
     "you_cannot_move_this_page_now": "你现在不能移动这个页面",
     "something_went_wrong_with_moving_page": "移动页面时出了问题"

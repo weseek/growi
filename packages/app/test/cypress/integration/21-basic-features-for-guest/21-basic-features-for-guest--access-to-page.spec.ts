@@ -3,46 +3,47 @@ context('Access to page by guest', () => {
 
   it('/Sandbox is successfully loaded', () => {
     cy.visit('/Sandbox');
-    cy.waitUntilSpinnerDisappear();
-    cy.getByTestid('grw-pagetree-item-container').should('be.visible');
+    cy.waitUntilSkeletonDisappear();
+
     cy.collapseSidebar(true, true);
     cy.screenshot(`${ssPrefix}-sandbox`);
   });
 
+  // TODO: https://redmine.weseek.co.jp/issues/109939
   it('/Sandbox with anchor hash is successfully loaded', () => {
     cy.visit('/Sandbox#Headers');
-    cy.getByTestid('grw-pagetree-item-container').should('be.visible');
-    cy.collapseSidebar(true, true);
-
-    // eslint-disable-next-line cypress/no-unnecessary-waiting
-    // cy.wait(500);
+    cy.waitUntilSkeletonDisappear();
 
     // hide fab // disable fab for sticky-events warning
     // cy.getByTestid('grw-fab-container').invoke('attr', 'style', 'display: none');
+
+    // remove animation for screenshot
+    // remove 'blink' class because ::after element cannot be operated
+    // https://stackoverflow.com/questions/5041494/selecting-and-manipulating-css-pseudo-elements-such-as-before-and-after-usin/21709814#21709814
+    cy.get('#mdcont-headers').invoke('removeClass', 'blink');
 
     cy.screenshot(`${ssPrefix}-sandbox-headers`);
   });
 
   it('/Sandbox/Math is successfully loaded', () => {
     cy.visit('/Sandbox/Math');
-    cy.getByTestid('revision-toc-content').should('be.visible');
-    cy.collapseSidebar(true, true);
+    cy.waitUntilSkeletonDisappear();
+
+    // for check download toc data
+    cy.get('.toc-link').should('be.visible');
 
     cy.get('.math').should('be.visible');
 
-    cy.screenshot(`${ssPrefix}-sandbox-math`, {
-      blackout: ['.revision-toc', '[data-hide-in-vrt=true]']
-    });
+    cy.collapseSidebar(true);
+    cy.screenshot(`${ssPrefix}-sandbox-math`);
   });
 
   it('/Sandbox with edit is successfully loaded', () => {
     cy.visit('/Sandbox#edit');
-    cy.collapseSidebar(true, true);
+    cy.waitUntilSkeletonDisappear();
 
-    // eslint-disable-next-line cypress/no-unnecessary-waiting
-    cy.wait(1000);
-
-    cy.screenshot(`${ssPrefix}-sandbox-edit-page`);
+    cy.collapseSidebar(true);
+    cy.screenshot(`${ssPrefix}-sandbox-with-edit-hash`);
   })
 
 });
@@ -51,13 +52,9 @@ context('Access to page by guest', () => {
 context('Access to /me page', () => {
   const ssPrefix = 'access-to-me-page-by-guest-';
 
-  beforeEach(() => {
-    // collapse sidebar
-    cy.collapseSidebar(true);
-  });
-
   it('/me should be redirected to /login', () => {
-    cy.visit('/me', {  });
+    cy.visit('/me');
+    cy.getByTestid('login-form').should('be.visible');
     cy.screenshot(`${ssPrefix}-me`);
   });
 
@@ -69,8 +66,8 @@ context('Access to special pages by guest', () => {
 
   it('/trash is successfully loaded', () => {
     cy.visit('/trash', {  });
-    cy.collapseSidebar(true, true);
     cy.getByTestid('trash-page-list').should('be.visible');
+    cy.collapseSidebar(true);
     cy.screenshot(`${ssPrefix}-trash`);
   });
 

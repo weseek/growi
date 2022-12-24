@@ -199,30 +199,6 @@ const ConfigurationDropdown = memo(({ onConfirmEnableTextlint }: ConfigurationDr
     );
   }, [editorSettings, update, t]);
 
-  const renderRealtimeDrawioMenuItem = useCallback(() => {
-    if (editorSettings == null) {
-      return <></>;
-    }
-
-    const isActive = editorSettings.renderDrawioInRealtime;
-
-    const iconClasses = ['text-info'];
-    if (isActive) {
-      iconClasses.push('ti ti-check');
-    }
-    const iconClassName = iconClasses.join(' ');
-
-    return (
-      <DropdownItem toggle={false} onClick={() => update({ renderDrawioInRealtime: !isActive })}>
-        <div className="d-flex justify-content-between">
-          <span className="icon-container"><img src="/images/icons/fx.svg" width="14px" alt="fx"></img></span>
-          <span className="menuitem-label">draw.io Rendering</span>
-          <span className="icon-container"><i className={iconClassName}></i></span>
-        </div>
-      </DropdownItem>
-    );
-  }, [editorSettings, update]);
-
   const renderMarkdownTableAutoFormattingMenuItem = useCallback(() => {
     if (editorSettings == null) {
       return <></>;
@@ -300,7 +276,6 @@ const ConfigurationDropdown = memo(({ onConfirmEnableTextlint }: ConfigurationDr
 
         <DropdownMenu>
           {renderActiveLineMenuItem()}
-          {renderRealtimeDrawioMenuItem()}
           {renderMarkdownTableAutoFormattingMenuItem()}
           {renderIsTextlintEnabledMenuItem()}
           {/* <DropdownItem divider /> */}

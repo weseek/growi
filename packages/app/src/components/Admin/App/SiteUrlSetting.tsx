@@ -18,19 +18,20 @@ type Props = {
 
 const SiteUrlSetting = (props: Props) => {
   const { t } = useTranslation('admin', { keyPrefix: 'app_setting' });
+  const { t: tCommon } = useTranslation('commons');
   const { adminAppContainer } = props;
 
 
   const submitHandler = useCallback(async() => {
     try {
       await adminAppContainer.updateSiteUrlSettingHandler();
-      toastSuccess(t('toaster.update_successed', { target: t('site_url.title') }));
+      toastSuccess(tCommon('toaster.update_successed', { target: t('site_url.title') }));
     }
     catch (err) {
       toastError(err);
       logger.error(err);
     }
-  }, [adminAppContainer, t]);
+  }, [adminAppContainer, t, tCommon]);
 
   return (
     <React.Fragment>
