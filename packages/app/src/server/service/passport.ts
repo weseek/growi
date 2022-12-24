@@ -10,7 +10,6 @@ import { Strategy as GoogleStrategy } from 'passport-google-oauth20';
 import LdapStrategy from 'passport-ldapauth';
 import { Strategy as LocalStrategy } from 'passport-local';
 import { Profile, Strategy as SamlStrategy, VerifiedCallback } from 'passport-saml';
-import { Strategy as TwitterStrategy } from 'passport-twitter';
 import urljoin from 'url-join';
 
 import loggerFactory from '~/utils/logger';
@@ -59,11 +58,6 @@ class PassportService implements S2sMessageHandlable {
    * the flag whether GitHubStrategy is set up successfully
    */
   isGitHubStrategySetup = false;
-
-  /**
-   * the flag whether TwitterStrategy is set up successfully
-   */
-  isTwitterStrategySetup = false;
 
   /**
    * the flag whether OidcStrategy is set up successfully
@@ -116,10 +110,6 @@ class PassportService implements S2sMessageHandlable {
     github: {
       setup: 'setupGitHubStrategy',
       reset: 'resetGitHubStrategy',
-    },
-    twitter: {
-      setup: 'setupTwitterStrategy',
-      reset: 'resetTwitterStrategy',
     },
   };
 
@@ -185,7 +175,6 @@ class PassportService implements S2sMessageHandlable {
     if (this.isOidcStrategySetup) { setupStrategies.push('oidc') }
     if (this.isGoogleStrategySetup) { setupStrategies.push('google') }
     if (this.isGitHubStrategySetup) { setupStrategies.push('github') }
-    if (this.isTwitterStrategySetup) { setupStrategies.push('twitter') }
 
     return setupStrategies;
   }
@@ -546,54 +535,6 @@ class PassportService implements S2sMessageHandlable {
     logger.debug('GitHubStrategy: reset');
     passport.unuse('github');
     this.isGitHubStrategySetup = false;
-  }
-
-  setupTwitterStrategy() {
-
-    this.resetTwitterStrategy();
-
-    const { configManager } = this.crowi;
-    const isTwitterEnabled = configManager.getConfig('crowi', 'security:passport-twitter:isEnabled');
-
-    // when disabled
-    if (!isTwitterEnabled) {
-      return;
-    }
-
-    logger.debug('TwitterStrategy: setting up..');
-    passport.use(
-      new TwitterStrategy(
-        {
-          consumerKey: configManager.getConfig('crowi', 'security:passport-twitter:consumerKey'),
-          consumerSecret: configManager.getConfig('crowi', 'security:passport-twitter:consumerSecret'),
-          callbackURL: (this.crowi.appService.getSiteUrl() != null)
-            ? urljoin(this.crowi.appService.getSiteUrl(), '/passport/twitter/callback') // auto-generated with v3.2.4 and above
-            : configManager.getConfig('crowi', 'security:passport-twitter:callbackUrl'), // DEPRECATED: backward compatible with v3.2.3 and below
-          skipUserProfile: false,
-        },
-        (accessToken, refreshToken, profile, done) => {
-          if (profile) {
-            return done(null, profile);
-          }
-
-          return done(null, false);
-        },
-      ),
-    );
-
-    this.isTwitterStrategySetup = true;
-    logger.debug('TwitterStrategy: setup is done');
-  }
-
-  /**
-   * reset TwitterStrategy
-   *
-   * @memberof PassportService
-   */
-  resetTwitterStrategy() {
-    logger.debug('TwitterStrategy: reset');
-    passport.unuse('twitter');
-    this.isTwitterStrategySetup = false;
   }
 
   async setupOidcStrategy() {

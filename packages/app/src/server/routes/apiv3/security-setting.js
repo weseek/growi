@@ -34,7 +34,7 @@ const validator = {
   authenticationSetting: [
     body('isEnabled').if(value => value != null).isBoolean(),
     body('authId').isString().isIn([
-      'local', 'ldap', 'saml', 'oidc', 'google', 'github', 'twitter',
+      'local', 'ldap', 'saml', 'oidc', 'google', 'github',
     ]),
   ],
   localSetting: [
@@ -99,11 +99,6 @@ const validator = {
   githubOAuth: [
     body('githubClientId').if(value => value != null).isString(),
     body('githubClientSecret').if(value => value != null).isString(),
-    body('isSameUsernameTreatedAsIdenticalUser').if(value => value != null).isBoolean(),
-  ],
-  twitterOAuth: [
-    body('twitterConsumerKey').if(value => value != null).isString(),
-    body('twitterConsumerSecret').if(value => value != null).isString(),
     body('isSameUsernameTreatedAsIdenticalUser').if(value => value != null).isBoolean(),
   ],
 };
@@ -312,18 +307,6 @@ const validator = {
  *          isSameUsernameTreatedAsIdenticalUser:
  *            type: boolean
  *            description: local account automatically linked the email matched
- *      TwitterOAuthSetting:
- *        type: object
- *        properties:
- *          twitterConsumerKey:
- *            type: string
- *            description: key of comsumer
- *          twitterConsumerSecret:
- *            type: string
- *            description: password of comsumer
- *          isSameUsernameTreatedAsIdenticalUser:
- *            type: boolean
- *            description: local account automatically linked the email matched
  */
 module.exports = (crowi) => {
   const loginRequiredStrictly = require('../../middlewares/login-required')(crowi);
@@ -391,7 +374,6 @@ module.exports = (crowi) => {
         isOidcEnabled: await crowi.configManager.getConfig('crowi', 'security:passport-oidc:isEnabled'),
         isGoogleEnabled: await crowi.configManager.getConfig('crowi', 'security:passport-google:isEnabled'),
         isGitHubEnabled: await crowi.configManager.getConfig('crowi', 'security:passport-github:isEnabled'),
-        isTwitterEnabled: await crowi.configManager.getConfig('crowi', 'security:passport-twitter:isEnabled'),
       },
       ldapAuth: {
         serverUrl: await crowi.configManager.getConfig('crowi', 'security:passport-ldap:serverUrl'),
@@ -460,11 +442,6 @@ module.exports = (crowi) => {
         githubClientId: await crowi.configManager.getConfig('crowi', 'security:passport-github:clientId'),
         githubClientSecret: await crowi.configManager.getConfig('crowi', 'security:passport-github:clientSecret'),
         isSameUsernameTreatedAsIdenticalUser: await crowi.configManager.getConfig('crowi', 'security:passport-github:isSameUsernameTreatedAsIdenticalUser'),
-      },
-      twitterOAuth: {
-        twitterConsumerKey: await crowi.configManager.getConfig('crowi', 'security:passport-twitter:consumerKey'),
-        twitterConsumerSecret: await crowi.configManager.getConfig('crowi', 'security:passport-twitter:consumerSecret'),
-        isSameUsernameTreatedAsIdenticalUser: await crowi.configManager.getConfig('crowi', 'security:passport-twitter:isSameUsernameTreatedAsIdenticalUser'),
       },
     };
     return res.apiv3({ securityParams });
@@ -562,13 +539,6 @@ module.exports = (crowi) => {
             break;
           }
           parameters.action = SupportedAction.ACTION_ADMIN_AUTH_GITHUB_DISABLED;
-          break;
-        case 'twitter':
-          if (isEnabled) {
-            parameters.action = SupportedAction.ACTION_ADMIN_AUTH_TWITTER_ENABLED;
-            break;
-          }
-          parameters.action = SupportedAction.ACTION_ADMIN_AUTH_TWITTER_DISABLED;
           break;
       }
       activityEvent.emit('update', res.locals.activity._id, parameters);
@@ -1174,56 +1144,6 @@ module.exports = (crowi) => {
       const msg = 'Error occurred in updating githubOAuth';
       logger.error('Error', err);
       return res.apiv3Err(new ErrorV3(msg, 'update-githubOAuth-failed'));
-    }
-  });
-
-  /**
-   * @swagger
-   *
-   *    /_api/v3/security-setting/twitter-oauth:
-   *      put:
-   *        tags: [SecuritySetting, apiv3]
-   *        description: Update twitter OAuth
-   *        requestBody:
-   *          required: true
-   *          content:
-   *            application/json:
-   *              schema:
-   *                $ref: '#/components/schemas/TwitterOAuthSetting'
-   *        responses:
-   *          200:
-   *            description: Succeeded to update twitter OAuth
-   *            content:
-   *              application/json:
-   *                schema:
-   *                  $ref: '#/components/schemas/TwitterOAuthSetting'
-   */
-  router.put('/twitter-oauth', loginRequiredStrictly, adminRequired, addActivity, validator.twitterOAuth, apiV3FormValidator, async(req, res) => {
-
-    let requestParams = {
-      'security:passport-twitter:consumerKey': req.body.twitterConsumerKey,
-      'security:passport-twitter:consumerSecret': req.body.twitterConsumerSecret,
-      'security:passport-twitter:isSameUsernameTreatedAsIdenticalUser': req.body.isSameUsernameTreatedAsIdenticalUser,
-    };
-
-    requestParams = removeNullPropertyFromObject(requestParams);
-
-    try {
-      await updateAndReloadStrategySettings('twitter', requestParams);
-
-      const securitySettingParams = {
-        twitterConsumerId: await crowi.configManager.getConfig('crowi', 'security:passport-twitter:consumerKey'),
-        twitterConsumerSecret: await crowi.configManager.getConfig('crowi', 'security:passport-twitter:consumerSecret'),
-        isSameUsernameTreatedAsIdenticalUser: await crowi.configManager.getConfig('crowi', 'security:passport-twitter:isSameUsernameTreatedAsIdenticalUser'),
-      };
-      const parameters = { action: SupportedAction.ACTION_ADMIN_AUTH_TWITTER_UPDATE };
-      activityEvent.emit('update', res.locals.activity._id, parameters);
-      return res.apiv3({ securitySettingParams });
-    }
-    catch (err) {
-      const msg = 'Error occurred in updating twitterOAuth';
-      logger.error('Error', err);
-      return res.apiv3Err(new ErrorV3(msg, 'update-twitterOAuth-failed'));
     }
   });
 

@@ -356,7 +356,6 @@ Crowi.prototype.setupPassport = async function() {
     this.passportService.setupStrategyById('oidc');
     this.passportService.setupStrategyById('google');
     this.passportService.setupStrategyById('github');
-    this.passportService.setupStrategyById('twitter');
   }
   catch (err) {
     logger.error(err);

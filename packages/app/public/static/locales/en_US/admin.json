@@ -174,16 +174,6 @@
       "Facebook": {
         "name": "Facebook OAuth"
       },
-      "Twitter": {
-        "enable_twitter": "Enable Twitter OAuth",
-        "name": "Twitter OAuth",
-        "register_1": "Access {{link}}",
-        "register_2": "Sign in Twitter",
-        "register_3": "Create Credentials &rightarrow; OAuth client ID &rightarrow; Select \"Web application\"",
-        "register_4": "Register your OAuth App with one of Authorized redirect URIs as <code>{{url}}</code>",
-        "register_5": "Copy and paste your ClientID and Client Secret above",
-        "updated_twitter": "Succeeded to update Twitter OAuth setting"
-      },
       "GitHub": {
         "enable_github": "Enable GitHub OAuth",
         "name": "GitHub OAuth",
@@ -207,7 +197,6 @@
       "how_to": {
         "google": "How to configure Google OAuth?",
         "github": "How to configure GitHub OAuth?",
-        "twitter": "How to configure Twitter OAuth?",
         "oidc": "How to configure OIDC?"
       }
     },
@@ -881,7 +870,6 @@
     "USER_LOGIN_WITH_LDAP": "Login with LDAP",
     "USER_LOGIN_WITH_GOOGLE": "Login with Google",
     "USER_LOGIN_WITH_GITHUB": "Login with GitHub",
-    "USER_LOGIN_WITH_TWITTER": "Login with Twitter",
     "USER_LOGIN_WITH_OIDC": "Login with OIDC",
     "USER_LOGIN_WITH_SAML": "Login with SAML",
     "USER_LOGIN_FAILURE": "Login failure",
@@ -967,9 +955,6 @@
     "ADMIN_AUTH_GITHUB_ENABLED": "Enable GitHub auth",
     "ADMIN_AUTH_GITHUB_DISABLED": "Disable GitHub auth",
     "ADMIN_AUTH_GITHUB_UPDATE": "Update GitHub auth settings",
-    "ADMIN_AUTH_TWITTER_ENABLED": "Enable Twitter auth",
-    "ADMIN_AUTH_TWITTER_DISABLED": "Disable Twitter auth",
-    "ADMIN_AUTH_TWITTER_UPDATE": "Update Twitter auth settings",
     "ADMIN_MARKDOWN_LINE_BREAK_UPDATE": "Update Link Break settings",
     "ADMIN_MARKDOWN_INDENT_UPDATE": "Update Indent settings",
     "ADMIN_MARKDOWN_PRESENTATION_UPDATE": "Update Presentation setting",

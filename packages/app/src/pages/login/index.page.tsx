@@ -11,15 +11,14 @@ import { LoginForm } from '~/components/LoginForm';
 import type { CrowiRequest } from '~/interfaces/crowi-request';
 import { IExternalAccountLoginError, isExternalAccountLoginError } from '~/interfaces/errors/external-account-login-error';
 import type { RegistrationMode } from '~/interfaces/registration-mode';
-
+import {
+  CommonProps, getServerSideCommonProps, generateCustomTitle, getNextI18NextConfig,
+} from '~/pages/utils/commons';
 import {
   useCsrfToken,
   useCurrentPathname,
-} from '../stores/context';
+} from '~/stores/context';
 
-import {
-  CommonProps, getServerSideCommonProps, generateCustomTitle, getNextI18NextConfig,
-} from './utils/commons';
 
 type Props = CommonProps & {
   registrationMode: RegistrationMode,
@@ -89,7 +88,6 @@ function injectEnabledStrategies(context: GetServerSidePropsContext, props: Prop
     google: configManager.getConfig('crowi', 'security:passport-google:isEnabled'),
     github: configManager.getConfig('crowi', 'security:passport-github:isEnabled'),
     facebook: false,
-    twitter: configManager.getConfig('crowi', 'security:passport-twitter:isEnabled'),
     saml: configManager.getConfig('crowi', 'security:passport-saml:isEnabled'),
     oidc: configManager.getConfig('crowi', 'security:passport-oidc:isEnabled'),
   };

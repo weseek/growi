@@ -44,7 +44,6 @@ export default class AdminGeneralSecurityContainer extends Container {
       isOidcEnabled: false,
       isGoogleEnabled: false,
       isGitHubEnabled: false,
-      isTwitterEnabled: false,
       setupStrategies: [],
       disableLinkSharing: false,
       shareLinks: [],
@@ -83,7 +82,6 @@ export default class AdminGeneralSecurityContainer extends Container {
       isOidcEnabled: generalAuth.isOidcEnabled,
       isGoogleEnabled: generalAuth.isGoogleEnabled,
       isGitHubEnabled: generalAuth.isGitHubEnabled,
-      isTwitterEnabled: generalAuth.isTwitterEnabled,
     });
   }
 
@@ -328,13 +326,6 @@ export default class AdminGeneralSecurityContainer extends Container {
    */
   async switchIsGitHubOAuthEnabled() {
     this.switchAuthentication('isGitHubEnabled', 'github');
-  }
-
-  /**
-   * Switch TwitterOAuth enabled
-   */
-  async switchIsTwitterOAuthEnabled() {
-    this.switchAuthentication('isTwitterEnabled', 'twitter');
   }
 
 }
