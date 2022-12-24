@@ -29,10 +29,12 @@ import PageGrantService from '../service/page-grant';
 import PageOperationService from '../service/page-operation';
 // eslint-disable-next-line import/no-cycle
 import { PluginService } from '../service/plugin';
+import QuestionnaireCronService from '../service/questionnnaire-cron-service';
 import SearchService from '../service/search';
 import { SlackIntegrationService } from '../service/slack-integration';
 import { UserNotificationService } from '../service/user-notification';
 import { initMongooseGlobalSettings, getMongoUri, mongoOptions } from '../util/mongoose-utils';
+
 
 const logger = loggerFactory('growi:crowi');
 const httpErrorHandler = require('../middlewares/http-error-handler');
@@ -105,6 +107,7 @@ Crowi.prototype.init = async function() {
   await this.setupModels();
   await this.setupConfigManager();
   await this.setupSessionConfig();
+  await this.setupCron();
 
   // setup messaging services
   await this.setupS2sMessagingService();
@@ -302,6 +305,14 @@ Crowi.prototype.setupModels = async function() {
   Object.keys(allModels).forEach((key) => {
     return this.model(key, models[key](this));
   });
+};
+
+Crowi.prototype.setupCron = function() {
+  new QuestionnaireCronService(
+    this.configManager.getConfig('crowi', 'app:growiQuestionnaireUri'),
+    this.configManager.getConfig('crowi', 'app:questionnaireCronSchedule'),
+    this.configManager.getConfig('crowi', 'app:questionnaireCronMaxHoursUntilRequest'),
+  ).setUpCron();
 };
 
 Crowi.prototype.scanRuntimeVersions = async function() {
