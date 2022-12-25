@@ -1,6 +1,7 @@
 import axios from '~/utils/axios';
 
 import Crowi from '../crowi';
+import { QuestionnaireOrderDocument } from '../models/questionnaire/questionnaire-order';
 
 const nodeCron = require('node-cron');
 
@@ -39,7 +40,9 @@ class QuestionnaireCronService {
 
       try {
         const response = await axios.get(`${this.growiQuestionnaireUri}/questionnaire-order/index`);
+        const questionnaireOrders: QuestionnaireOrderDocument[] = response.data.questionnaireOrders;
         console.log(response.data);
+        console.log(questionnaireOrders);
       }
       catch (e) {
         console.log(e);
