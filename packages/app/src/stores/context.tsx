@@ -5,7 +5,6 @@ import useSWRImmutable from 'swr/immutable';
 import { SupportedActionType } from '~/interfaces/activity';
 import { EditorConfig } from '~/interfaces/editor-settings';
 import { RendererConfig } from '~/interfaces/services/renderer';
-import { GrowiThemes } from '~/interfaces/theme';
 import InterceptorManager from '~/services/interceptor-manager';
 
 import { TargetAndAncestors } from '../interfaces/page-listing-results';
@@ -35,10 +34,6 @@ export const useSiteUrl = (initialData?: string): SWRResponse<string, Error> => 
 
 export const useConfidential = (initialData?: string): SWRResponse<string, Error> => {
   return useContextSWR('confidential', initialData);
-};
-
-export const useGrowiTheme = (initialData?: GrowiThemes): SWRResponse<GrowiThemes, Error> => {
-  return useContextSWR('theme', initialData);
 };
 
 export const useCurrentUser = (initialData?: Nullable<IUser>): SWRResponse<Nullable<IUser>, Error> => {

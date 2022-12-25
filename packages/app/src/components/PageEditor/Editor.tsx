@@ -18,7 +18,7 @@ import { useIsMobile } from '~/stores/ui';
 import { IEditorMethods } from '../../interfaces/editor-methods';
 
 import AbstractEditor from './AbstractEditor';
-import Cheatsheet from './Cheatsheet';
+import { Cheatsheet } from './Cheatsheet';
 import CodeMirrorEditor from './CodeMirrorEditor';
 import pasteHelper from './PasteHelper';
 import TextAreaEditor from './TextAreaEditor';
@@ -227,7 +227,7 @@ const Editor: ForwardRefRenderFunction<IEditorMethods, EditorPropsType> = (props
     );
   }, [isUploading]);
 
-  const renderNavbar = useCallback(() => {
+  const renderNavbar = () => {
     return (
       <div className="m-0 navbar navbar-default navbar-editor" data-testid="navbar-editor" style={{ minHeight: 'unset' }}>
         <ul className="pl-2 nav nav-navbar">
@@ -238,7 +238,7 @@ const Editor: ForwardRefRenderFunction<IEditorMethods, EditorPropsType> = (props
         </ul>
       </div>
     );
-  }, [editorSubstance]);
+  };
 
   const renderCheatsheetModal = useCallback(() => {
     const hideCheatsheetModal = () => {
@@ -246,7 +246,7 @@ const Editor: ForwardRefRenderFunction<IEditorMethods, EditorPropsType> = (props
     };
 
     return (
-      <Modal isOpen={isCheatsheetModalShown} toggle={hideCheatsheetModal} className={`${styles['modal-gfm-cheatsheet']}`} >
+      <Modal isOpen={isCheatsheetModalShown} toggle={hideCheatsheetModal} className={`modal-gfm-cheatsheet ${styles['modal-gfm-cheatsheet']}`} size={'lg'} >
         <ModalHeader tag="h4" toggle={hideCheatsheetModal} className="bg-primary text-light">
           <i className="icon-fw icon-question" />Markdown help
         </ModalHeader>

@@ -7,20 +7,19 @@ import { RawLayout } from './RawLayout';
 import commonStyles from './NoLoginLayout.module.scss';
 
 type Props = {
-  title: string,
   className?: string,
   children?: ReactNode,
 }
 
 export const NoLoginLayout = ({
-  children, title, className,
+  children, className,
 }: Props): JSX.Element => {
   const classNames: string[] = ['wrapper'];
   if (className != null) {
     classNames.push(className);
   }
   return (
-    <RawLayout title={title} className={`${commonStyles.nologin}`}>
+    <RawLayout className={`${commonStyles.nologin}`}>
       <div className="nologin">
         <div id="wrapper">
           <div id="page-wrapper">

@@ -267,12 +267,12 @@ $slack-work-space-name-card-border: #efc1f6;
       background-color: $gray-50;
       border: 1px solid $border-color;
     }
-    .theme-option-name {
+    .theme-option-name, .theme-option-badge {
       opacity: 0.3;
     }
     // style (active)
     .theme-option-container.active {
-      .theme-option-name {
+      .theme-option-name, .theme-option-badge {
         opacity: 1;
       }
     }

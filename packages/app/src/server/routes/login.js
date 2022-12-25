@@ -82,38 +82,20 @@ module.exports = function(crowi, app) {
     });
   };
 
-  actions.error = function(req, res) {
-    const reason = req.params.reason;
-
-
-    let reasonMessage = '';
-    if (reason === 'suspended') {
-      reasonMessage = 'This account is suspended.';
-    }
-    else if (reason === 'registered') {
-      reasonMessage = 'Wait for approved by administrators.';
-    }
-
-    return res.render('login/error', {
-      reason,
-      reasonMessage,
-    });
-  };
-
   actions.preLogin = function(req, res, next) {
     // user has already logged in
-    // const { user } = req;
-    // if (user != null && user.status === User.STATUS_ACTIVE) {
-    //   const { redirectTo } = req.session;
-    //   // remove session.redirectTo
-    //   delete req.session.redirectTo;
-    //   return res.safeRedirect(redirectTo);
-    // }
+    const { user } = req;
+    if (user != null && user.status === User.STATUS_ACTIVE) {
+      const { redirectTo } = req.session;
+      // remove session.redirectTo
+      delete req.session.redirectTo;
+      return res.safeRedirect(redirectTo);
+    }
 
-    // // set referer to 'redirectTo'
-    // if (req.session.redirectTo == null && req.headers.referer != null) {
-    //   req.session.redirectTo = req.headers.referer;
-    // }
+    // set referer to 'redirectTo'
+    if (req.session.redirectTo == null && req.headers.referer != null) {
+      req.session.redirectTo = req.headers.referer;
+    }
 
     next();
   };

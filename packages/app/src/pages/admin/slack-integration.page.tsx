@@ -3,9 +3,10 @@ import {
 } from 'next';
 import { useTranslation } from 'next-i18next';
 import dynamic from 'next/dynamic';
+import Head from 'next/head';
 
 import { CrowiRequest } from '~/interfaces/crowi-request';
-import { CommonProps, useCustomTitle } from '~/pages/utils/commons';
+import { CommonProps, generateCustomTitle } from '~/pages/utils/commons';
 import { useCurrentUser, useSiteUrl } from '~/stores/context';
 
 import { retrieveServerSideProps } from '../../utils/admin-page-util';
@@ -25,10 +26,14 @@ const AdminSlackIntegrationPage: NextPage<Props> = (props) => {
   useCurrentUser(props.currentUser ?? null);
   useSiteUrl(props.siteUrl);
 
-  const title = t('slack_integration.slack_integration');
+  const componentTitle = t('slack_integration.slack_integration');
+  const pageTitle = generateCustomTitle(props, componentTitle);
 
   return (
-    <AdminLayout title={useCustomTitle(props, title)} componentTitle={title} >
+    <AdminLayout componentTitle={componentTitle}>
+      <Head>
+        <title>{pageTitle}</title>
+      </Head>
       <SlackIntegration />
     </AdminLayout>
   );

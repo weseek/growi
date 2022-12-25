@@ -2,10 +2,11 @@ import React from 'react';
 
 import { useTranslation } from 'next-i18next';
 import PropTypes from 'prop-types';
+import { defaultSchema as sanitizeDefaultSchema } from 'rehype-sanitize';
 
 import AdminMarkDownContainer from '~/client/services/AdminMarkDownContainer';
 import { toastSuccess, toastError } from '~/client/util/apiNotification';
-import { tags, attrs } from '~/services/xss/recommended-whitelist';
+import { RehypeSanitizeOption } from '~/interfaces/rehype';
 import loggerFactory from '~/utils/logger';
 
 import { withUnstatedContainers } from '../../UnstatedUtils';
@@ -40,6 +41,9 @@ class XssForm extends React.Component {
     const { t, adminMarkDownContainer } = this.props;
     const { xssOption } = adminMarkDownContainer.state;
 
+    const rehypeRecommendedTags = sanitizeDefaultSchema.tagNames;
+    const rehypeRecommendedAttributes = JSON.stringify(sanitizeDefaultSchema.attributes);
+
     return (
       <div className="form-group col-12 my-3">
         <div className="row">
@@ -49,12 +53,12 @@ class XssForm extends React.Component {
               <input
                 type="radio"
                 className="custom-control-input"
-                id="xssOption2"
+                id="xssOption1"
                 name="XssOption"
-                checked={xssOption === 2}
-                onChange={() => { adminMarkDownContainer.setState({ xssOption: 2 }) }}
+                checked={xssOption === RehypeSanitizeOption.RECOMMENDED}
+                onChange={() => { adminMarkDownContainer.setState({ xssOption: RehypeSanitizeOption.RECOMMENDED }) }}
               />
-              <label className="custom-control-label w-100" htmlFor="xssOption2">
+              <label className="custom-control-label w-100" htmlFor="xssOption1">
                 <p className="font-weight-bold">{t('markdown_settings.xss_options.recommended_setting')}</p>
                 <div className="mt-4">
                   <div className="d-flex justify-content-between">
@@ -66,7 +70,7 @@ class XssForm extends React.Component {
                     rows="6"
                     cols="40"
                     readOnly
-                    defaultValue={tags}
+                    defaultValue={rehypeRecommendedTags}
                   />
                 </div>
                 <div className="mt-4">
@@ -79,7 +83,7 @@ class XssForm extends React.Component {
                     rows="6"
                     cols="40"
                     readOnly
-                    defaultValue={attrs}
+                    defaultValue={rehypeRecommendedAttributes}
                   />
                 </div>
               </label>
@@ -91,12 +95,12 @@ class XssForm extends React.Component {
               <input
                 type="radio"
                 className="custom-control-input"
-                id="xssOption3"
+                id="xssOption2"
                 name="XssOption"
-                checked={xssOption === 3}
-                onChange={() => { adminMarkDownContainer.setState({ xssOption: 3 }) }}
+                checked={xssOption === RehypeSanitizeOption.CUSTOM}
+                onChange={() => { adminMarkDownContainer.setState({ xssOption: RehypeSanitizeOption.CUSTOM }) }}
               />
-              <label className="custom-control-label w-100" htmlFor="xssOption3">
+              <label className="custom-control-label w-100" htmlFor="xssOption2">
                 <p className="font-weight-bold">{t('markdown_settings.xss_options.custom_whitelist')}</p>
                 <WhiteListInput customizable />
               </label>

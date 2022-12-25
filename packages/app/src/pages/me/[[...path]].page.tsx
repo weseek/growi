@@ -8,10 +8,12 @@ import {
 import { useTranslation } from 'next-i18next';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import dynamic from 'next/dynamic';
+import Head from 'next/head';
 import { useRouter } from 'next/router';
 
 import { BasicLayout } from '~/components/Layout/BasicLayout';
 import { CrowiRequest } from '~/interfaces/crowi-request';
+import type { RendererConfig } from '~/interfaces/services/renderer';
 import { ISidebarConfig } from '~/interfaces/sidebar-config';
 import { IUserUISettings } from '~/interfaces/user-ui-settings';
 import { UserUISettingsModel } from '~/server/models/user-ui-settings';
@@ -19,7 +21,7 @@ import {
   useCurrentUser, useIsSearchPage,
   useIsSearchServiceConfigured, useIsSearchServiceReachable,
   useCsrfToken, useIsSearchScopeChildrenAsDefault,
-  useRegistrationWhiteList, useShowPageLimitationXL,
+  useRegistrationWhiteList, useShowPageLimitationXL, useRendererConfig,
 } from '~/stores/context';
 import {
   usePreferDrawerModeByUser, usePreferDrawerModeOnEditByUser, useSidebarCollapsed, useCurrentSidebarContents, useCurrentProductNavWidth,
@@ -27,8 +29,9 @@ import {
 import loggerFactory from '~/utils/logger';
 
 import {
-  CommonProps, getNextI18NextConfig, getServerSideCommonProps, useCustomTitle,
+  CommonProps, getNextI18NextConfig, getServerSideCommonProps, generateCustomTitle,
 } from '../utils/commons';
+import { NextPageWithLayout } from '../_app.page';
 
 
 const logger = loggerFactory('growi:pages:me');
@@ -39,6 +42,7 @@ type Props = CommonProps & {
   isSearchScopeChildrenAsDefault: boolean,
   userUISettings?: IUserUISettings
   sidebarConfig: ISidebarConfig,
+  rendererConfig: RendererConfig,
   showPageLimitationXL: number,
 
   // config
@@ -51,7 +55,7 @@ const InAppNotificationPage = dynamic(
   () => import('~/components/InAppNotification/InAppNotificationPage').then(mod => mod.InAppNotificationPage), { ssr: false },
 );
 
-const MePage: NextPage<Props> = (props: Props) => {
+const MePage: NextPageWithLayout<Props> = (props: Props) => {
   const router = useRouter();
   const { t } = useTranslation(['translation', 'commons']);
   const { path } = router.query;
@@ -93,22 +97,28 @@ const MePage: NextPage<Props> = (props: Props) => {
   // commons
   useCsrfToken(props.csrfToken);
 
-  // // UserUISettings
+  // UserUISettings
   usePreferDrawerModeByUser(props.userUISettings?.preferDrawerModeByUser ?? props.sidebarConfig.isSidebarDrawerMode);
   usePreferDrawerModeOnEditByUser(props.userUISettings?.preferDrawerModeOnEditByUser);
   useSidebarCollapsed(props.userUISettings?.isSidebarCollapsed ?? props.sidebarConfig.isSidebarClosedAtDockMode);
   useCurrentSidebarContents(props.userUISettings?.currentSidebarContents);
   useCurrentProductNavWidth(props.userUISettings?.currentProductNavWidth);
 
-  // // page
+  // page
   useIsSearchServiceConfigured(props.isSearchServiceConfigured);
   useIsSearchServiceReachable(props.isSearchServiceReachable);
   useIsSearchScopeChildrenAsDefault(props.isSearchScopeChildrenAsDefault);
 
+  useRendererConfig(props.rendererConfig);
+
+  const title = generateCustomTitle(props, 'GROWI');
+
   return (
     <>
-      <BasicLayout title={useCustomTitle(props, 'GROWI')}>
-
+      <Head>
+        <title>{title}</title>
+      </Head>
+      <div className="dynamic-layout-root">
         <header className="py-3">
           <div className="container-fluid">
             <h1 className="title">{ targetPage.title }</h1>
@@ -122,9 +132,14 @@ const MePage: NextPage<Props> = (props: Props) => {
             {targetPage.component}
           </div>
         </div>
-
-      </BasicLayout>
+      </div>
     </>
+  );
+};
+
+MePage.getLayout = function getLayout(page) {
+  return (
+    <BasicLayout>{page}</BasicLayout>
   );
 };
 
@@ -158,6 +173,22 @@ async function injectServerConfigurations(context: GetServerSidePropsContext, pr
   props.sidebarConfig = {
     isSidebarDrawerMode: configManager.getConfig('crowi', 'customize:isSidebarDrawerMode'),
     isSidebarClosedAtDockMode: configManager.getConfig('crowi', 'customize:isSidebarClosedAtDockMode'),
+  };
+
+  props.rendererConfig = {
+    isEnabledLinebreaks: configManager.getConfig('markdown', 'markdown:isEnabledLinebreaks'),
+    isEnabledLinebreaksInComments: configManager.getConfig('markdown', 'markdown:isEnabledLinebreaksInComments'),
+    adminPreferredIndentSize: configManager.getConfig('markdown', 'markdown:adminPreferredIndentSize'),
+    isIndentSizeForced: configManager.getConfig('markdown', 'markdown:isIndentSizeForced'),
+
+    plantumlUri: process.env.PLANTUML_URI ?? null,
+    blockdiagUri: process.env.BLOCKDIAG_URI ?? null,
+
+    // XSS Options
+    isEnabledXssPrevention: configManager.getConfig('markdown', 'markdown:xss:isEnabledPrevention'),
+    attrWhiteList: crowi.xssService.getAttrWhiteList(),
+    tagWhiteList: crowi.xssService.getTagWhiteList(),
+    highlightJsStyleBorder: crowi.configManager.getConfig('crowi', 'customize:highlightJsStyleBorder'),
   };
 }
 

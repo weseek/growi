@@ -8,7 +8,7 @@
     "paths": {
       "~/*": ["./src/*"],
       "^/*": ["./*"],
-      "@growi/plugin-lsx/*": ["../plugin-lsx/src/*"],
+      "@growi/remark-lsx/*": ["../remark-lsx/src/*"],
       "@growi/*": ["../*/src"],
       "debug": ["./src/server/utils/logger/alias-for-debug"]
     }

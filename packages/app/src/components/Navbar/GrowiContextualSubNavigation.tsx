@@ -1,18 +1,17 @@
 import React, { useState, useEffect, useCallback } from 'react';
 
-import { isPopulated, IUser } from '@growi/core';
+import { isPopulated, IUser, pagePathUtils } from '@growi/core';
 import { useTranslation } from 'next-i18next';
 import dynamic from 'next/dynamic';
 import { useRouter } from 'next/router';
 import { DropdownItem } from 'reactstrap';
 
-import { exportAsMarkdown, updateContentWidth } from '~/client/services/page-operation';
+import { exportAsMarkdown, updateContentWidth, useUpdateStateAfterSave } from '~/client/services/page-operation';
 import { toastSuccess, toastError } from '~/client/util/apiNotification';
 import { apiPost } from '~/client/util/apiv1-client';
 import {
   IPageToRenameWithMeta, IPageWithMeta, IPageInfoForEntity,
 } from '~/interfaces/page';
-import { IResTagsUpdateApiv1 } from '~/interfaces/tag';
 import { OnDuplicatedFunction, OnRenamedFunction, OnDeletedFunction } from '~/interfaces/ui';
 import {
   useCurrentPageId, useCurrentPathname, useIsNotFound,
@@ -43,6 +42,7 @@ import type { SubNavButtonsProps } from './SubNavButtons';
 import AuthorInfoStyles from './AuthorInfo.module.scss';
 import PageEditorModeManagerStyles from './PageEditorModeManager.module.scss';
 
+const { isUsersHomePage } = pagePathUtils;
 
 const AuthorInfoSkeleton = () => <Skeleton additionalClass={`${AuthorInfoStyles['grw-author-info-skeleton']} py-1`} />;
 
@@ -187,7 +187,11 @@ const GrowiContextualSubNavigation = (props: GrowiContextualSubNavigationProps):
 
   const router = useRouter();
 
-  const { data: currentPage, mutate: mutateCurrentPage } = useSWRxCurrentPage();
+  const { data: shareLinkId } = useShareLinkId();
+  const { data: currentPage, mutate: mutateCurrentPage } = useSWRxCurrentPage(shareLinkId ?? undefined);
+
+  const { data: currentPathname } = useCurrentPathname();
+  const isSharedPage = pagePathUtils.isSharedPage(currentPathname ?? '');
 
   const revision = currentPage?.revision;
   const revisionId = (revision != null && isPopulated(revision)) ? revision._id : undefined;
@@ -195,12 +199,10 @@ const GrowiContextualSubNavigation = (props: GrowiContextualSubNavigationProps):
   const { data: isDrawerMode } = useDrawerMode();
   const { data: editorMode, mutate: mutateEditorMode } = useEditorMode();
   const { data: pageId } = useCurrentPageId();
-  const { data: currentPathname } = useCurrentPathname();
   const { data: currentUser } = useCurrentUser();
   const { data: isNotFound } = useIsNotFound();
   const { data: isGuestUser } = useIsGuestUser();
   const { data: isSharedUser } = useIsSharedUser();
-  const { data: shareLinkId } = useShareLinkId();
   const { data: isContainerFluid } = useIsContainerFluid();
 
   const { data: isAbleToShowPageManagement } = useIsAbleToShowPageManagement();
@@ -208,13 +210,17 @@ const GrowiContextualSubNavigation = (props: GrowiContextualSubNavigationProps):
   const { data: isAbleToShowPageEditorModeManager } = useIsAbleToShowPageEditorModeManager();
   const { data: isAbleToShowPageAuthors } = useIsAbleToShowPageAuthors();
 
-  const { mutate: mutateSWRTagsInfo, data: tagsInfoData } = useSWRxTagsInfo(currentPage?._id);
-  const { data: tagsForEditors, mutate: mutatePageTagsForEditors, sync: syncPageTagsForEditors } = usePageTagsForEditors(currentPage?._id);
+  const { mutate: mutateSWRTagsInfo, data: tagsInfoData } = useSWRxTagsInfo(!isSharedPage ? currentPage?._id : undefined);
+
+  // eslint-disable-next-line max-len
+  const { data: tagsForEditors, mutate: mutatePageTagsForEditors, sync: syncPageTagsForEditors } = usePageTagsForEditors(!isSharedPage ? currentPage?._id : undefined);
 
   const { open: openDuplicateModal } = usePageDuplicateModal();
   const { open: openRenameModal } = usePageRenameModal();
   const { open: openDeleteModal } = usePageDeleteModal();
   const { data: templateTagData } = useTemplateTagData();
+
+  const updateStateAfterSave = useUpdateStateAfterSave(pageId);
 
   const path = currentPage?.path ?? currentPathname;
 
@@ -246,16 +252,9 @@ const GrowiContextualSubNavigation = (props: GrowiContextualSubNavigationProps):
 
     const { _id: pageId, revision: revisionId } = currentPage;
     try {
-      const res: IResTagsUpdateApiv1 = await apiPost('/tags.update', { pageId, revisionId, tags: newTags });
-      mutateCurrentPage();
+      await apiPost('/tags.update', { pageId, revisionId, tags: newTags });
 
-      // TODO: fix https://github.com/weseek/growi/pull/6478 without pageContainer
-      // const lastUpdateUser = res.savedPage?.lastUpdateUser as IUser;
-      // await pageContainer.setState({ lastUpdateUsername: lastUpdateUser.username });
-
-      // revalidate SWRTagsInfo
-      mutateSWRTagsInfo();
-      mutatePageTagsForEditors(newTags);
+      updateStateAfterSave?.();
 
       toastSuccess('updated tags successfully');
     }
@@ -263,7 +262,7 @@ const GrowiContextualSubNavigation = (props: GrowiContextualSubNavigationProps):
       toastError(err, 'fail to update tags');
     }
 
-  }, [currentPage, mutateCurrentPage, mutateSWRTagsInfo, mutatePageTagsForEditors]);
+  }, [currentPage, updateStateAfterSave]);
 
   const tagsUpdatedHandlerForEditMode = useCallback((newTags: string[]): void => {
     // It will not be reflected in the DB until the page is refreshed
@@ -304,11 +303,13 @@ const GrowiContextualSubNavigation = (props: GrowiContextualSubNavigationProps):
         router.push(path);
       }
       else {
-        reload();
+        // Do not use "router.push(currentPathname)" to avoid `Error: Invariant: attempted to hard navigate to the same URL`
+        // See: https://github.com/weseek/growi/pull/7061
+        router.reload();
       }
     };
     openDeleteModal([pageWithMeta], { onDeleted: deletedHandler });
-  }, [openDeleteModal, reload, router]);
+  }, [openDeleteModal, router]);
 
   const switchContentWidthHandler = useCallback(async(pageId: string, value: boolean) => {
     await updateContentWidth(pageId, value);
@@ -378,7 +379,7 @@ const GrowiContextualSubNavigation = (props: GrowiContextualSubNavigationProps):
               />
             )}
           </div>
-          { (isAbleToShowPageAuthors && !isCompactMode) && (
+          { (isAbleToShowPageAuthors && !isCompactMode && !isUsersHomePage(path ?? '')) && (
             <ul className={`${AuthorInfoStyles['grw-author-info']} text-nowrap border-left d-none d-lg-block d-edit-none py-2 pl-4 mb-0 ml-3`}>
               <li className="pb-1">
                 { currentPage != null

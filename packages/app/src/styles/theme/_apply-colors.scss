@@ -569,11 +569,11 @@ body.editing-sidebar {
 }
 
 .grid-preview-col-1 {
-  background: $info;
+  background: var(--info);
 }
 
 .grid-preview-col-2 {
-  background: $success;
+  background: var(--success);
 }
 
 .grid-preview-col-3 {
@@ -586,7 +586,7 @@ body.editing-sidebar {
 .page-comment-meta .page-comment-revision svg {
   fill: $color-link;
 
-  &:hover() {
+  &:hover {
     fill: $color-link-hover;
   }
 }

@@ -68,6 +68,8 @@ export const AppearanceModeDropdown:FC<AppearanceModeDropdownProps> = (props: Ap
     </>
   );
 
+  const dropdownDivider = <div className="dropdown-divider"></div>;
+
   const renderSidebarModeSwitch = useCallback((isEditMode: boolean) => {
     return (
       <>
@@ -112,13 +114,15 @@ export const AppearanceModeDropdown:FC<AppearanceModeDropdownProps> = (props: Ap
 
         {/* sidebar mode */}
         {renderSidebarModeSwitch(false)}
-
-        <div className="dropdown-divider"></div>
+        {dropdownDivider}
 
         {/* side bar mode on editor */}
-        {isAuthenticated && renderSidebarModeSwitch(true)}
-
-        <div className="dropdown-divider"></div>
+        {isAuthenticated && (
+          <>
+            {renderSidebarModeSwitch(true)}
+            {dropdownDivider}
+          </>
+        )}
 
         {/* color mode */}
         <h6 className="dropdown-header">{t('personal_dropdown.color_mode')}</h6>

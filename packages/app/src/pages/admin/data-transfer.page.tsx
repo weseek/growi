@@ -3,8 +3,9 @@ import {
 } from 'next';
 import { useTranslation } from 'next-i18next';
 import dynamic from 'next/dynamic';
+import Head from 'next/head';
 
-import { CommonProps, useCustomTitle } from '~/pages/utils/commons';
+import { CommonProps } from '~/pages/utils/commons';
 import { useCurrentUser } from '~/stores/context';
 
 import { retrieveServerSideProps } from '../../utils/admin-page-util';
@@ -23,7 +24,10 @@ const DataTransferPage: NextPage<Props> = (props) => {
   const title = t('g2g_data_transfer.data_transfer');
 
   return (
-    <AdminLayout title={useCustomTitle(props, title)} componentTitle={title} >
+    <AdminLayout componentTitle={title}>
+      <Head>
+        <title>{title}</title>
+      </Head>
       <G2GDataTransferPage />
     </AdminLayout>
   );

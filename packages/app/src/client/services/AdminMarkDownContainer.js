@@ -27,9 +27,9 @@ export default class AdminMarkDownContainer extends Container {
       pageBreakSeparator: 1,
       pageBreakCustomSeparator: '',
       isEnabledXss: false,
-      xssOption: 1,
+      xssOption: '',
       tagWhiteList: '',
-      attrWhiteList: '',
+      attrWhiteList: '{}',
     };
 
     this.switchEnableXss = this.switchEnableXss.bind(this);
@@ -86,9 +86,6 @@ export default class AdminMarkDownContainer extends Container {
    * Switch enableXss
    */
   switchEnableXss() {
-    if (this.state.isEnabledXss) {
-      this.setState({ xssOption: null });
-    }
     this.setState({ isEnabledXss: !this.state.isEnabledXss });
   }
 
@@ -122,19 +119,25 @@ export default class AdminMarkDownContainer extends Container {
    * Update Xss Setting
    */
   async updateXssSetting() {
-    let { tagWhiteList, attrWhiteList } = this.state;
+    let { tagWhiteList } = this.state;
+    const { attrWhiteList } = this.state;
 
     tagWhiteList = Array.isArray(tagWhiteList) ? tagWhiteList : tagWhiteList.split(',');
-    attrWhiteList = Array.isArray(attrWhiteList) ? attrWhiteList : attrWhiteList.split(',');
 
-    const response = await apiv3Put('/markdown-setting/xss', {
+    try {
+      // Check if parsing is possible
+      JSON.parse(attrWhiteList);
+    }
+    catch (err) {
+      throw Error(err);
+    }
+
+    await apiv3Put('/markdown-setting/xss', {
       isEnabledXss: this.state.isEnabledXss,
       xssOption: this.state.xssOption,
       tagWhiteList,
-      attrWhiteList,
+      attrWhiteList: attrWhiteList ?? '{}',
     });
-
-    return response;
   }
 
   /**

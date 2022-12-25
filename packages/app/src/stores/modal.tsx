@@ -489,34 +489,94 @@ export const useDrawioModal = (status?: DrawioModalStatus): SWRResponse<DrawioMo
 /*
 * HandsonTableModal
 */
+type HandsonTableModalSaveHandler = (table: MarkdownTable) => void;
+
 type HandsontableModalStatus = {
   isOpened: boolean,
-  table?: MarkdownTable,
-  editor: any,
-  autoFormatMarkdownTable: boolean,
+  table: MarkdownTable,
+  // TODO: Define editor type
+  editor?: any,
+  autoFormatMarkdownTable?: boolean,
+  // onSave is passed only when editing table directly from the page.
+  onSave?: HandsonTableModalSaveHandler
 }
 
 type HandsontableModalStatusUtils = {
-  open(table: MarkdownTable, editor: any, autoFormatMarkdownTable: boolean): Promise<HandsontableModalStatus | undefined>
-  close(): Promise<HandsontableModalStatus | undefined>
+  open(
+    table: MarkdownTable,
+    editor?: any,
+    autoFormatMarkdownTable?: boolean,
+    onSave?: HandsonTableModalSaveHandler
+  ): void
+  close(): void
 }
+
+const defaultMarkdownTable = () => {
+  return new MarkdownTable(
+    [
+      ['col1', 'col2', 'col3'],
+      ['', '', ''],
+      ['', '', ''],
+    ],
+    {
+      align: ['', '', ''],
+    },
+  );
+};
 
 export const useHandsontableModal = (status?: HandsontableModalStatus): SWRResponse<HandsontableModalStatus, Error> & HandsontableModalStatusUtils => {
   const initialData: HandsontableModalStatus = {
-    isOpened: false, table: undefined, editor: undefined, autoFormatMarkdownTable: false,
+    isOpened: false,
+    table: defaultMarkdownTable(),
+    editor: undefined,
+    autoFormatMarkdownTable: false,
   };
+
   const swrResponse = useStaticSWR<HandsontableModalStatus, Error>('handsontableModalStatus', status, { fallbackData: initialData });
 
-  const open = (table: MarkdownTable, editor: any, autoFormatMarkdownTable: boolean) => swrResponse.mutate({
-    isOpened: true, table, editor, autoFormatMarkdownTable,
-  });
-  const close = () => swrResponse.mutate({
-    isOpened: false, table: undefined, editor: undefined, autoFormatMarkdownTable: false,
-  });
+  const { mutate } = swrResponse;
+
+  const open = useCallback((table: MarkdownTable, editor?: any, autoFormatMarkdownTable?: boolean, onSave?: HandsonTableModalSaveHandler): void => {
+    mutate({
+      isOpened: true, table, editor, autoFormatMarkdownTable, onSave,
+    });
+  }, [mutate]);
+  const close = useCallback((): void => {
+    mutate({
+      isOpened: false, table: defaultMarkdownTable(), editor: undefined, autoFormatMarkdownTable: false, onSave: undefined,
+    });
+  }, [mutate]);
 
   return {
     ...swrResponse,
     open,
     close,
   };
+};
+
+/*
+ * ConflictDiffModal
+ */
+type ConflictDiffModalStatus = {
+  isOpened: boolean,
+}
+
+type ConflictDiffModalUtils = {
+  open(): void,
+  close(): void,
+}
+
+export const useConflictDiffModal = (): SWRResponse<ConflictDiffModalStatus, Error> & ConflictDiffModalUtils => {
+
+  const initialStatus: ConflictDiffModalStatus = { isOpened: false };
+  const swrResponse = useStaticSWR<ConflictDiffModalStatus, Error>('conflictDiffModal', undefined, { fallbackData: initialStatus });
+
+  return Object.assign(swrResponse, {
+    open: () => {
+      swrResponse.mutate({ isOpened: true });
+    },
+    close: () => {
+      swrResponse.mutate({ isOpened: false });
+    },
+  });
 };

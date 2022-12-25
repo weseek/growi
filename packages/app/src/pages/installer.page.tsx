@@ -5,6 +5,7 @@ import {
   NextPage, GetServerSideProps, GetServerSidePropsContext,
 } from 'next';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
+import Head from 'next/head';
 import { useTranslation } from 'react-i18next';
 
 import { NoLoginLayout } from '~/components/Layout/NoLoginLayout';
@@ -17,7 +18,7 @@ import {
 } from '../stores/context';
 
 import {
-  CommonProps, getNextI18NextConfig, getServerSideCommonProps, useCustomTitle,
+  CommonProps, getNextI18NextConfig, getServerSideCommonProps, generateCustomTitle,
 } from './utils/commons';
 
 const { isTrashPage: _isTrashPage } = pagePathUtils;
@@ -58,10 +59,14 @@ const InstallerPage: NextPage<Props> = (props: Props) => {
   useConfidential(props.confidential);
   useCsrfToken(props.csrfToken);
 
+  const title = generateCustomTitle(props, 'GROWI');
   const classNames: string[] = [];
 
   return (
-    <NoLoginLayout title={useCustomTitle(props, 'GROWI')} className={classNames.join(' ')}>
+    <NoLoginLayout className={classNames.join(' ')}>
+      <Head>
+        <title>{title}</title>
+      </Head>
       <div id="installer-form-container" className="noLogin-dialog mx-auto">
         <CustomNavAndContents navTabMapping={navTabMapping} tabContentClasses={['p-0']} />
       </div>

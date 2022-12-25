@@ -345,7 +345,7 @@ class LinkEditModal extends React.PureComponent {
     return (
       <div className="card well pt-3">
         <form className="form-group mb-0">
-          <div className="form-group row">
+          <div className="form-group mb-0 row">
             <label className="col-sm-3">{t('link_edit.path_format')}</label>
             <div className="col-sm-9">
               <div className="custom-control custom-checkbox custom-checkbox-info custom-control-inline">
@@ -376,36 +376,23 @@ class LinkEditModal extends React.PureComponent {
               </div>
             </div>
           </div>
-          <div className="form-group row mb-0">
-            <label className="col-sm-3">{t('link_edit.notation')}</label>
-            <div className="col-sm-9">
-              <div className="custom-control custom-radio custom-control-inline">
-                <input
-                  type="radio"
-                  className="custom-control-input"
-                  id="markdownType"
-                  value={Linker.types.markdownLink}
-                  checked={this.state.linkerType === Linker.types.markdownLink}
-                  onChange={e => this.handleSelecteLinkerType(e.target.value)}
-                />
-                <label className="custom-control-label" htmlFor="markdownType">
-                  {t('link_edit.markdown')}
-                </label>
-              </div>
-              <div className="custom-control custom-radio custom-control-inline">
-                <input
-                  type="radio"
-                  className="custom-control-input"
-                  id="growiType"
-                  value={Linker.types.growiLink}
-                  checked={this.state.linkerType === Linker.types.growiLink}
-                  onChange={e => this.handleSelecteLinkerType(e.target.value)}
-                />
-                <label className="custom-control-label" htmlFor="growiType">
-                  {t('link_edit.GROWI_original')}
-                </label>
-              </div>
-              {this.isApplyPukiwikiLikeLinkerPlugin && (
+          {this.isApplyPukiwikiLikeLinkerPlugin && (
+            <div className="form-group row mb-0 mt-1">
+              <label className="col-sm-3">{t('link_edit.notation')}</label>
+              <div className="col-sm-9">
+                <div className="custom-control custom-radio custom-control-inline">
+                  <input
+                    type="radio"
+                    className="custom-control-input"
+                    id="markdownType"
+                    value={Linker.types.markdownLink}
+                    checked={this.state.linkerType === Linker.types.markdownLink}
+                    onChange={e => this.handleSelecteLinkerType(e.target.value)}
+                  />
+                  <label className="custom-control-label" htmlFor="markdownType">
+                    {t('link_edit.markdown')}
+                  </label>
+                </div>
                 <div className="custom-control custom-radio custom-control-inline">
                   <input
                     type="radio"
@@ -419,9 +406,9 @@ class LinkEditModal extends React.PureComponent {
                     {t('link_edit.pukiwiki')}
                   </label>
                 </div>
-              )}
+              </div>
             </div>
-          </div>
+          )}
         </form>
       </div>
     );
@@ -463,11 +450,11 @@ class LinkEditModal extends React.PureComponent {
 
 }
 
-const LinkEditModalFc = React.forwardRef((props, ref) => {
+const LinkEditModalFc = React.memo(React.forwardRef((props, ref) => {
   const { t } = useTranslation();
   const { data: currentPath } = useCurrentPagePath();
   return <LinkEditModal t={t} ref={ref} pagePath={currentPath} {...props} />;
-});
+}));
 
 LinkEditModal.propTypes = {
   t: PropTypes.func.isRequired,

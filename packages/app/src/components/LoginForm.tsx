@@ -2,13 +2,15 @@ import React, {
   useState, useEffect, useCallback,
 } from 'react';
 
+import { USER_STATUS } from '@growi/core';
 import { useTranslation } from 'next-i18next';
 import { useRouter } from 'next/router';
 import ReactCardFlip from 'react-card-flip';
 
 import { apiv3Post } from '~/client/util/apiv3-client';
+import type { IExternalAccountLoginError } from '~/interfaces/errors/external-account-login-error';
 import { LoginErrorCode } from '~/interfaces/errors/login-error';
-import { IErrorV3 } from '~/interfaces/errors/v3-error';
+import type { IErrorV3 } from '~/interfaces/errors/v3-error';
 import { RegistrationMode } from '~/interfaces/registration-mode';
 import { toArrayIfNot } from '~/utils/array-utils';
 
@@ -26,7 +28,8 @@ type LoginFormProps = {
   isLdapStrategySetup: boolean,
   isLdapSetupFailed: boolean,
   objOfIsExternalAuthEnableds?: any,
-  isMailerSetup?: boolean
+  isMailerSetup?: boolean,
+  externalAccountLoginError?: IExternalAccountLoginError,
 }
 export const LoginForm = (props: LoginFormProps): JSX.Element => {
   const { t } = useTranslation();
@@ -88,8 +91,17 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
 
     try {
       const res = await apiv3Post('/login', { loginForm });
-      const { redirectTo } = res.data;
-      router.push(redirectTo ?? '/');
+      const { redirectTo, userStatus } = res.data;
+
+      if (redirectTo != null) {
+        return router.push(redirectTo);
+      }
+
+      if (userStatus !== USER_STATUS.ACTIVE) {
+        window.location.href = '/';
+      }
+
+      return router.push('/');
     }
     catch (err) {
       const errs = toArrayIfNot(err);
@@ -129,7 +141,7 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
   }, [t]);
 
   // wrap error elements which do not use dangerouslySetInnerHtml
-  const generateSafelySetErrors = useCallback((errors: IErrorV3[]): JSX.Element => {
+  const generateSafelySetErrors = useCallback((errors: (IErrorV3 | IExternalAccountLoginError)[]): JSX.Element => {
     if (errors == null || errors.length === 0) return <></>;
     return (
       <ul className="alert alert-danger">
@@ -151,7 +163,10 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
     // Generate login error elements using dangerouslySetInnerHTML
     const loginErrorElementWithDangerouslySetInnerHTML = generateDangerouslySetErrors(loginErrorListForDangerouslySetInnerHTML);
     // Generate login error elements using <ul>, <li>
-    const loginErrorElement = generateSafelySetErrors(loginErrorList);
+
+    const loginErrorElement = props.externalAccountLoginError != null
+      ? generateSafelySetErrors([...loginErrorList, props.externalAccountLoginError])
+      : generateSafelySetErrors(loginErrorList);
 
     return (
       <>
@@ -212,10 +227,8 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
       google: 'google',
       github: 'github',
       facebook: 'facebook',
-      twitter: 'twitter',
       oidc: 'openid',
       saml: 'key',
-      basic: 'lock',
     };
 
     return (
@@ -492,7 +505,7 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
   }
 
   return (
-    <div className="noLogin-dialog mx-auto" id="noLogin-dialog">
+    <div className="noLogin-dialog mx-auto" id="noLogin-dialog" data-testid="login-form">
       <div className="row mx-0">
         <div className="col-12">
           <ReactCardFlip isFlipped={isRegistering} flipDirection="horizontal" cardZIndex="3">

@@ -1,10 +1,11 @@
 // allow only types to import from react
 import { ComponentType } from 'react';
 
-import { Lsx } from '@growi/plugin-lsx/components';
-import * as lsxGrowiPlugin from '@growi/plugin-lsx/services/renderer';
-import * as drawioPlugin from '@growi/remark-drawio-plugin';
-import growiPlugin from '@growi/remark-growi-plugin';
+import { isClient } from '@growi/core';
+import * as drawioPlugin from '@growi/remark-drawio';
+import growiDirective from '@growi/remark-growi-directive';
+import { Lsx, LsxImmutable } from '@growi/remark-lsx/components';
+import * as lsxGrowiPlugin from '@growi/remark-lsx/services/renderer';
 import { Schema as SanitizeOption } from 'hast-util-sanitize';
 import { SpecialComponents } from 'react-markdown/lib/ast-to-react';
 import { NormalComponents } from 'react-markdown/lib/complex-types';
@@ -26,7 +27,10 @@ import { CodeBlock } from '~/components/ReactMarkdownComponents/CodeBlock';
 import { DrawioViewerWithEditButton } from '~/components/ReactMarkdownComponents/DrawioViewerWithEditButton';
 import { Header } from '~/components/ReactMarkdownComponents/Header';
 import { NextLink } from '~/components/ReactMarkdownComponents/NextLink';
+import { Table } from '~/components/ReactMarkdownComponents/Table';
+import { TableWithEditButton } from '~/components/ReactMarkdownComponents/TableWithEditButton';
 import { RendererConfig } from '~/interfaces/services/renderer';
+import { registerGrowiFacade } from '~/utils/growi-facade';
 import loggerFactory from '~/utils/logger';
 
 import * as addClass from './rehype-plugins/add-class';
@@ -37,6 +41,7 @@ import { relativeLinksByPukiwikiLikeLinker } from './rehype-plugins/relative-lin
 import * as toc from './rehype-plugins/relocate-toc';
 import * as plantuml from './remark-plugins/plantuml';
 import { pukiwikiLikeLinker } from './remark-plugins/pukiwiki-like-linker';
+import * as table from './remark-plugins/table';
 import * as xsvToTable from './remark-plugins/xsv-to-table';
 
 // import CsvToTable from './PreProcessor/CsvToTable';
@@ -291,7 +296,7 @@ const generateCommonOptions = (pagePath: string|undefined, config: RendererConfi
       gfm,
       emoji,
       pukiwikiLikeLinker,
-      growiPlugin,
+      growiDirective,
     ],
     rehypePlugins: [
       [relativeLinksByPukiwikiLikeLinker, { pagePath }],
@@ -330,6 +335,10 @@ export const generateViewOptions = (
     remarkPlugins.push(breaks);
   }
 
+  const rehypeSanitizePlugin: Pluggable<any[]> | (() => void) = config.isEnabledXssPrevention
+    ? [sanitize, deepmerge(commonSanitizeOption, lsxGrowiPlugin.sanitizeOption)]
+    : () => {};
+
   // add rehype plugins
   rehypePlugins.push(
     slug,
@@ -339,6 +348,7 @@ export const generateViewOptions = (
       drawioPlugin.sanitizeOption,
       lsxGrowiPlugin.sanitizeOption,
     )],
+    rehypeSanitizePlugin,
     katex,
     [toc.rehypePluginStore, { storeTocNode }],
     // [autoLinkHeadings, {
@@ -351,8 +361,9 @@ export const generateViewOptions = (
     components.h1 = Header;
     components.h2 = Header;
     components.h3 = Header;
-    components.lsx = props => <Lsx {...props} forceToFetchData />;
+    components.lsx = Lsx;
     components.drawio = DrawioViewerWithEditButton;
+    components.table = TableWithEditButton;
   }
 
   // // Add configurers for viewer
@@ -367,7 +378,9 @@ export const generateViewOptions = (
   // renderer.setMarkdownSettings({ breaks: rendererSettings.isEnabledLinebreaks });
   // renderer.configure();
 
-  verifySanitizePlugin(options, false);
+  if (config.isEnabledXssPrevention) {
+    verifySanitizePlugin(options, false);
+  }
   return options;
 };
 
@@ -380,16 +393,23 @@ export const generateTocOptions = (config: RendererConfig, tocNode: HtmlElementN
   // add remark plugins
   // remarkPlugins.push();
 
+
+  const rehypeSanitizePlugin: Pluggable<any[]> | (() => void) = config.isEnabledXssPrevention
+    ? [sanitize, deepmerge(commonSanitizeOption, lsxGrowiPlugin.sanitizeOption)]
+    : () => {};
+
   // add rehype plugins
   rehypePlugins.push(
     [toc.rehypePluginRestore, { tocNode }],
-    [sanitize, commonSanitizeOption],
+    rehypeSanitizePlugin,
   );
   // renderer.rehypePlugins.push([autoLinkHeadings, {
   //   behavior: 'append',
   // }]);
 
-  verifySanitizePlugin(options);
+  if (config.isEnabledXssPrevention) {
+    verifySanitizePlugin(options);
+  }
   return options;
 };
 
@@ -405,10 +425,15 @@ export const generateSimpleViewOptions = (config: RendererConfig, pagePath: stri
     drawioPlugin.remarkPlugin,
     xsvToTable.remarkPlugin,
     lsxGrowiPlugin.remarkPlugin,
+    table.remarkPlugin,
   );
   if (config.isEnabledLinebreaks) {
     remarkPlugins.push(breaks);
   }
+
+  const rehypeSanitizePlugin: Pluggable<any[]> | (() => void) = config.isEnabledXssPrevention
+    ? [sanitize, deepmerge(commonSanitizeOption, lsxGrowiPlugin.sanitizeOption)]
+    : () => {};
 
   // add rehype plugins
   rehypePlugins.push(
@@ -419,16 +444,20 @@ export const generateSimpleViewOptions = (config: RendererConfig, pagePath: stri
       drawioPlugin.sanitizeOption,
       lsxGrowiPlugin.sanitizeOption,
     )],
+    rehypeSanitizePlugin,
     katex,
   );
 
   // add components
   if (components != null) {
-    components.lsx = props => <Lsx {...props} />;
+    components.lsx = LsxImmutable;
     components.drawio = drawioPlugin.DrawioViewer;
+    components.table = Table;
   }
 
-  verifySanitizePlugin(options, false);
+  if (config.isEnabledXssPrevention) {
+    verifySanitizePlugin(options, false);
+  }
   return options;
 };
 
@@ -444,10 +473,15 @@ export const generatePreviewOptions = (config: RendererConfig, pagePath: string)
     drawioPlugin.remarkPlugin,
     xsvToTable.remarkPlugin,
     lsxGrowiPlugin.remarkPlugin,
+    table.remarkPlugin,
   );
   if (config.isEnabledLinebreaks) {
     remarkPlugins.push(breaks);
   }
+
+  const rehypeSanitizePlugin: Pluggable<any[]> | (() => void) = config.isEnabledXssPrevention
+    ? [sanitize, deepmerge(commonSanitizeOption, lsxGrowiPlugin.sanitizeOption, addLineNumberAttribute.sanitizeOption)]
+    : () => {};
 
   // add rehype plugins
   rehypePlugins.push(
@@ -459,13 +493,15 @@ export const generatePreviewOptions = (config: RendererConfig, pagePath: string)
       drawioPlugin.sanitizeOption,
       addLineNumberAttribute.sanitizeOption,
     )],
+    rehypeSanitizePlugin,
     katex,
   );
 
   // add components
   if (components != null) {
-    components.lsx = props => <Lsx {...props} />;
+    components.lsx = LsxImmutable;
     components.drawio = drawioPlugin.DrawioViewer;
+    components.table = Table;
   }
 
   // verifySanitizePlugin(options, false);
@@ -483,11 +519,30 @@ export const generateOthersOptions = (config: RendererConfig): RendererOptions =
   // renderer.setMarkdownSettings({ breaks: rendererSettings.isEnabledLinebreaks });
   // renderer.configure();
 
+  const rehypeSanitizePlugin: Pluggable<any[]> | (() => void) = config.isEnabledXssPrevention
+    ? [sanitize, deepmerge(commonSanitizeOption)]
+    : () => {};
+
   // add rehype plugins
   rehypePlugins.push(
-    [sanitize, commonSanitizeOption],
+    rehypeSanitizePlugin,
   );
 
-  verifySanitizePlugin(options);
+  if (config.isEnabledXssPrevention) {
+    verifySanitizePlugin(options);
+  }
   return options;
 };
+
+
+// register to facade
+if (isClient()) {
+  registerGrowiFacade({
+    markdownRenderer: {
+      optionsGenerators: {
+        generateViewOptions,
+        generatePreviewOptions,
+      },
+    },
+  });
+}

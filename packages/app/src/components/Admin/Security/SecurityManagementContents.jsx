@@ -6,8 +6,7 @@ import { TabContent, TabPane } from 'reactstrap';
 
 import CustomNav from '../../CustomNavigation/CustomNav';
 
-import BasicSecuritySetting from './BasicSecuritySetting';
-import FacebookSecuritySetting from './FacebookSecuritySetting';
+// import FacebookSecuritySetting from './FacebookSecuritySetting';
 import GitHubSecuritySetting from './GitHubSecuritySetting';
 import GoogleSecuritySetting from './GoogleSecuritySetting';
 import LdapSecuritySetting from './LdapSecuritySetting';
@@ -16,7 +15,6 @@ import OidcSecuritySetting from './OidcSecuritySetting';
 import SamlSecuritySetting from './SamlSecuritySetting';
 import SecuritySetting from './SecuritySetting';
 import ShareLinkSetting from './ShareLinkSetting';
-import TwitterSecuritySetting from './TwitterSecuritySetting';
 
 const SecurityManagementContents = () => {
   const { t } = useTranslation('admin');
@@ -51,31 +49,21 @@ const SecurityManagementContents = () => {
         i18n: 'OIDC',
         index: 3,
       },
-      passport_basic: {
-        Icon: () => <i className="fa fa-lock" />,
-        i18n: 'BASIC',
-        index: 4,
-      },
       passport_google: {
         Icon: () => <i className="fa fa-google" />,
         i18n: 'Google',
-        index: 5,
+        index: 4,
       },
       passport_github: {
         Icon: () => <i className="fa fa-github" />,
         i18n: 'GitHub',
-        index: 6,
+        index: 5,
       },
-      passport_twitter: {
-        Icon: () => <i className="fa fa-twitter" />,
-        i18n: 'Twitter',
-        index: 7,
-      },
-      passport_facebook: {
-        Icon: () => <i className="fa fa-facebook" />,
-        i18n: '(TBD) Facebook',
-        index: 8,
-      },
+      // passport_facebook: {
+      //   Icon: () => <i className="fa fa-facebook" />,
+      //   i18n: '(TBD) Facebook',
+      //   index: 7,
+      // },
     };
   }, []);
 
@@ -126,21 +114,15 @@ const SecurityManagementContents = () => {
           <TabPane tabId="passport_oidc">
             {activeComponents.has('passport_oidc') && <OidcSecuritySetting />}
           </TabPane>
-          <TabPane tabId="passport_basic">
-            {activeComponents.has('passport_basic') && <BasicSecuritySetting />}
-          </TabPane>
           <TabPane tabId="passport_google">
             {activeComponents.has('passport_google') && <GoogleSecuritySetting />}
           </TabPane>
           <TabPane tabId="passport_github">
             {activeComponents.has('passport_github') && <GitHubSecuritySetting />}
           </TabPane>
-          <TabPane tabId="passport_twitter">
-            {activeComponents.has('passport_twitter') && <TwitterSecuritySetting />}
-          </TabPane>
-          <TabPane tabId="passport_facebook">
+          {/* <TabPane tabId="passport_facebook">
             {activeComponents.has('passport_facebook') && <FacebookSecuritySetting />}
-          </TabPane>
+          </TabPane> */}
         </TabContent>
       </div>
     </div>

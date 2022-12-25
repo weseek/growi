@@ -3,7 +3,6 @@ import { Container } from 'unstated';
 
 import loggerFactory from '~/utils/logger';
 
-import { toastError } from '../util/apiNotification';
 import { apiv3Get } from '../util/apiv3-client';
 
 // eslint-disable-next-line no-unused-vars
@@ -66,7 +65,6 @@ export default class AdminHomeContainer extends Container {
         nodeVersion: adminHomeParams.nodeVersion,
         npmVersion: adminHomeParams.npmVersion,
         yarnVersion: adminHomeParams.yarnVersion,
-        installedPlugins: adminHomeParams.installedPlugins,
         envVars: adminHomeParams.envVars,
         isV5Compatible: adminHomeParams.isV5Compatible,
         isMaintenanceMode: adminHomeParams.isMaintenanceMode,

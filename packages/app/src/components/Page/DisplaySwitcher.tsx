@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React, { useCallback, useEffect, useMemo } from 'react';
 
 import { pagePathUtils } from '@growi/core';
 import { useTranslation } from 'next-i18next';
@@ -6,12 +6,18 @@ import dynamic from 'next/dynamic';
 import { Link } from 'react-scroll';
 
 import { DEFAULT_AUTO_SCROLL_OPTS } from '~/client/util/smooth-scroll';
+import { SocketEventName } from '~/interfaces/websocket';
 import {
   useIsSharedUser, useIsEditable, useShareLinkId, useIsNotFound,
 } from '~/stores/context';
+import { useIsHackmdDraftUpdatingInRealtime } from '~/stores/hackmd';
 import { useDescendantsPageListModal } from '~/stores/modal';
 import { useCurrentPagePath, useSWRxCurrentPage } from '~/stores/page';
+import {
+  useSetRemoteLatestPageData,
+} from '~/stores/remote-latest-page';
 import { EditorMode, useEditorMode } from '~/stores/ui';
+import { useGlobalSocket } from '~/stores/websocket';
 
 import CountBadge from '../Common/CountBadge';
 import { ContentLinkButtonsProps } from '../ContentLinkButtons';
@@ -44,9 +50,60 @@ const PageView = React.memo((): JSX.Element => {
   const { data: isNotFound } = useIsNotFound();
   const { data: currentPage } = useSWRxCurrentPage(shareLinkId ?? undefined);
   const { open: openDescendantPageListModal } = useDescendantsPageListModal();
+  const { setRemoteLatestPageData } = useSetRemoteLatestPageData();
+
+  const { mutate: mutateIsHackmdDraftUpdatingInRealtime } = useIsHackmdDraftUpdatingInRealtime();
 
   const isTopPagePath = isTopPage(currentPagePath ?? '');
   const isUsersHomePagePath = isUsersHomePage(currentPagePath ?? '');
+
+  const { data: socket } = useGlobalSocket();
+
+  const setLatestRemotePageData = useCallback((data) => {
+    const { s2cMessagePageUpdated } = data;
+
+    const remoteData = {
+      remoteRevisionId: s2cMessagePageUpdated.revisionId,
+      remoteRevisionBody: s2cMessagePageUpdated.revisionBody,
+      remoteRevisionLastUpdateUser: s2cMessagePageUpdated.remoteLastUpdateUser,
+      remoteRevisionLastUpdatedAt: s2cMessagePageUpdated.revisionUpdateAt,
+      revisionIdHackmdSynced: s2cMessagePageUpdated.revisionIdHackmdSynced,
+      hasDraftOnHackmd: s2cMessagePageUpdated.hasDraftOnHackmd,
+    };
+    setRemoteLatestPageData(remoteData);
+  }, [setRemoteLatestPageData]);
+
+  const setIsHackmdDraftUpdatingInRealtime = useCallback((data) => {
+    const { s2cMessagePageUpdated } = data;
+    if (s2cMessagePageUpdated.pageId === currentPage?._id) {
+      mutateIsHackmdDraftUpdatingInRealtime(true);
+    }
+  }, [currentPage?._id, mutateIsHackmdDraftUpdatingInRealtime]);
+
+  // listen socket for someone updating this page
+  useEffect(() => {
+
+    if (socket == null) { return }
+
+    socket.on(SocketEventName.PageUpdated, setLatestRemotePageData);
+
+    return () => {
+      socket.off(SocketEventName.PageUpdated, setLatestRemotePageData);
+    };
+
+  }, [setLatestRemotePageData, socket]);
+
+  // listen socket for hackmd saved
+  useEffect(() => {
+
+    if (socket == null) { return }
+
+    socket.on(SocketEventName.EditingWithHackmd, setIsHackmdDraftUpdatingInRealtime);
+
+    return () => {
+      socket.off(SocketEventName.EditingWithHackmd, setIsHackmdDraftUpdatingInRealtime);
+    };
+  }, [setIsHackmdDraftUpdatingInRealtime, socket]);
 
   return (
     <div className="d-flex flex-column flex-lg-row">
