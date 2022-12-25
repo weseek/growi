@@ -4,7 +4,6 @@ import path from 'path';
 import { GrowiThemeMetadata, ViteManifest } from '@growi/core';
 // eslint-disable-next-line no-restricted-imports
 import axios from 'axios';
-import { plugins } from 'handsontable';
 import mongoose from 'mongoose';
 import streamToPromise from 'stream-to-promise';
 import unzipper from 'unzipper';
