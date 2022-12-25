@@ -10,14 +10,16 @@ export interface QuestionnaireOrderDocument extends IQuestionnaireOrder, Documen
 
 export type QuestionnaireOrderModel = Model<QuestionnaireOrderDocument>
 
-function showDateValidator(value) {
-  // `this` is the mongoose document
-  return this.showFrom <= value;
-}
-
-const questionnaireOrderSchema = new Schema<IQuestionnaireOrder>({
+const questionnaireOrderSchema = new Schema<QuestionnaireOrderDocument>({
+  orderId: { type: String, required: true },
   showFrom: { type: Date, required: true },
-  showUntil: { type: Date, required: true, validate: [showDateValidator, 'showFrom must be before showUntil'] },
+  showUntil: {
+    type: Date,
+    required: true,
+    validate: [function(value) {
+      return this.showFrom <= value;
+    }, 'showFrom must be before showUntil'],
+  },
   questions: [questionSchema],
   condition: { type: conditionSchema, required: true },
 }, { timestamps: true });

@@ -308,6 +308,8 @@ Crowi.prototype.setupModels = async function() {
 };
 
 Crowi.prototype.setupCron = function() {
+  console.log(this.configManager?.getConfig('crowi', 'app:questionnaireCronSchedule'));
+  console.log(this.configManager?.getConfig('crowi', 'app:questionnaireCronMaxHoursUntilRequest'));
   new QuestionnaireCronService(this).setUpCron();
 };
 

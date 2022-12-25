@@ -1,6 +1,7 @@
+import { IQuestionnaireOrder } from '~/interfaces/questionnaire/questionnaire-order';
 import axios from '~/utils/axios';
 
-import { QuestionnaireOrderDocument } from '../models/questionnaire/questionnaire-order';
+import QuestionnaireOrder from '../models/questionnaire/questionnaire-order';
 
 const nodeCron = require('node-cron');
 
@@ -28,11 +29,29 @@ class QuestionnaireCronService {
   }
 
   setUpCron(): void {
-    const maxSecondsUntilRequest = this.maxHoursUntilRequest * 60 * 60;
+    // const maxSecondsUntilRequest = this.maxHoursUntilRequest * 60 * 60;
+    const maxSecondsUntilRequest = 60;
     this.questionnaireOrderGetCron(this.cronSchedule, maxSecondsUntilRequest);
   }
 
   questionnaireOrderGetCron(cronSchedule: string, maxSecondsUntilRequest: number): void {
+    const saveOrders = async(questionnaireOrders: IQuestionnaireOrder[]) => {
+      const savedOrders = await QuestionnaireOrder.find();
+      const savedOrderIds = savedOrders.map(order => order.orderId);
+      // 渡されたアンケートのうち未保存のものを保存する
+      const nonSavedOrders = questionnaireOrders.filter(order => !savedOrderIds.includes(order.orderId));
+      QuestionnaireOrder.insertMany(nonSavedOrders);
+    };
+
+    const deleteFinishedOrders = () => {
+      const currentDate = new Date(Date.now());
+      QuestionnaireOrder.deleteMany({
+        showUntil: {
+          $lt: currentDate,
+        },
+      });
+    };
+
     nodeCron.schedule(cronSchedule, async() => {
       const secToSleep = getRandomInt(0, maxSecondsUntilRequest);
 
@@ -40,9 +59,15 @@ class QuestionnaireCronService {
 
       try {
         const response = await axios.get(`${this.growiQuestionnaireUri}/questionnaire-order/index`);
-        const questionnaireOrders: QuestionnaireOrderDocument[] = response.data.questionnaireOrders;
-        console.log(response.data);
-        console.log(questionnaireOrders);
+        const questionnaireOrdersJson = JSON.parse(JSON.stringify(response.data)).questionnaireQrders;
+        const questionnaireOrders: IQuestionnaireOrder[] = questionnaireOrdersJson.map((questionnaireOrder) => {
+          questionnaireOrder.orderId = questionnaireOrder._id;
+          delete questionnaireOrder._id;
+          return questionnaireOrder;
+        });
+
+        await saveOrders(questionnaireOrders);
+        deleteFinishedOrders();
       }
       catch (e) {
         console.log(e);
