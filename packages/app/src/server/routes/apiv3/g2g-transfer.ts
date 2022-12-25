@@ -6,9 +6,8 @@ import express, { NextFunction, Request, Router } from 'express';
 import { body } from 'express-validator';
 import multer from 'multer';
 
-import GrowiArchiveImportOption from '~/models/admin/growi-archive-import-option';
 import { isG2GTransferError } from '~/server/models/vo/g2g-transfer-error';
-import { IDataGROWIInfo, uploadConfigKeys, X_GROWI_TRANSFER_KEY_HEADER_NAME } from '~/server/service/g2g-transfer';
+import { IDataGROWIInfo, X_GROWI_TRANSFER_KEY_HEADER_NAME } from '~/server/service/g2g-transfer';
 import loggerFactory from '~/utils/logger';
 import { TransferKey } from '~/utils/vo/transfer-key';
 
@@ -16,7 +15,6 @@ import { TransferKey } from '~/utils/vo/transfer-key';
 import Crowi from '../../crowi';
 import { apiV3FormValidator } from '../../middlewares/apiv3-form-validator';
 
-import { generateOverwriteParams } from './import';
 import { ApiV3Response } from './interfaces/apiv3-response';
 
 interface AuthorizedRequest extends Request {
@@ -135,9 +133,6 @@ module.exports = (crowi: Crowi): Router => {
   // eslint-disable-next-line max-len
   receiveRouter.post('/', uploads.single('transferDataZipFile'), validateTransferKey, async(req: Request, res: ApiV3Response) => {
     const { file } = req;
-
-    const zipFile = importService.getFile(file.filename);
-
     const {
       collections: strCollections,
       optionsMap: strOptionsMap,
@@ -145,7 +140,9 @@ module.exports = (crowi: Crowi): Router => {
       uploadConfigs: strUploadConfigs,
     } = req.body;
 
-    // Parse multipart form data
+    /*
+     * parse multipart form data
+     */
     let collections;
     let optionsMap;
     let sourceGROWIUploadConfigs;
@@ -156,19 +153,18 @@ module.exports = (crowi: Crowi): Router => {
     }
     catch (err) {
       logger.error(err);
-      return res.apiv3Err(new ErrorV3('Failed to parse body.', 'parse_failed'), 500);
+      return res.apiv3Err(new ErrorV3('Failed to parse request body.', 'parse_failed'), 500);
     }
 
     /*
-     * unzip, parse
+     * unzip and parse
      */
     let meta;
     let innerFileStats;
     try {
-      // unzip
+      const zipFile = importService.getFile(file.filename);
       await importService.unzip(zipFile);
 
-      // eslint-disable-next-line no-unused-vars
       const { meta: parsedMeta, innerFileStats: _innerFileStats } = await growiBridgeService.parseZipFile(zipFile);
       innerFileStats = _innerFileStats;
       meta = parsedMeta;
@@ -178,85 +174,41 @@ module.exports = (crowi: Crowi): Router => {
       return res.apiv3Err(new ErrorV3('Failed to validate transfer data file.', 'validation_failed'), 500);
     }
 
+    /*
+     * validate meta.json
+     */
     try {
-      // validate with meta.json
       importService.validate(meta);
     }
     catch (err) {
       logger.error(err);
-
-      const msg = 'the version of this growi and the growi that exported the data are not met';
-      const varidationErr = 'version_incompatible';
-      return res.apiv3Err(new ErrorV3(msg, varidationErr), 500);
+      return res.apiv3Err(
+        new ErrorV3(
+          'the version of this growi and the growi that exported the data are not met',
+          'version_incompatible',
+        ),
+        500,
+      );
     }
 
-    // generate maps of ImportSettings to import
-    const importSettingsMap = {};
+    /*
+     * generate maps of ImportSettings to import
+     */
+    let importSettingsMap;
     try {
-      innerFileStats.forEach(({ fileName, collectionName }) => {
-        // instanciate GrowiArchiveImportOption
-        const options = new GrowiArchiveImportOption(null, optionsMap[collectionName]);
-
-        // generate options
-        if (collectionName === 'configs' && options.mode !== 'flushAndInsert') {
-          throw Error('`flushAndInsert` is only available as an import setting for configs collection');
-        }
-        if (collectionName === 'pages' && options.mode === 'insert') {
-          throw Error('`insert` is not available as an import setting for pages collection');
-        }
-        if (collectionName === 'attachmentFiles.chunks') {
-          throw Error('`attachmentFiles.chunks` must not be transferred. Please omit it from request body `collections`.');
-        }
-        if (collectionName === 'attachmentFiles.files') {
-          throw Error('`attachmentFiles.files` must not be transferred. Please omit it from request body `collections`.');
-        }
-
-        const importSettings = importService.generateImportSettings(options.mode);
-
-        importSettings.jsonFileName = fileName;
-
-        // generate overwrite params
-        importSettings.overwriteParams = generateOverwriteParams(collectionName, operatorUserId, options);
-
-        importSettingsMap[collectionName] = importSettings;
-      });
+      importSettingsMap = g2gTransferReceiverService.getImportSettingMap(innerFileStats, optionsMap, operatorUserId);
     }
     catch (err) {
       logger.error(err);
       return res.apiv3Err(new ErrorV3('Import settings invalid. See growi docs about details.', 'import_settings_invalid'));
     }
 
-    /*
-     * import
-     */
     try {
-      const shouldKeepUploadConfigs = configManager.getConfig('crowi', 'app:fileUploadType') !== 'none';
-
-      let savedUploadConfigs;
-      if (shouldKeepUploadConfigs) {
-        // save
-        savedUploadConfigs = Object.fromEntries(uploadConfigKeys.map((key) => {
-          return [key, configManager.getConfigFromDB('crowi', key)];
-        }));
-      }
-
-      await importService.import(collections, importSettingsMap);
-
-      // remove & save if none
-      if (shouldKeepUploadConfigs) {
-        await configManager.removeConfigsInTheSameNamespace('crowi', uploadConfigKeys);
-        await configManager.updateConfigsInTheSameNamespace('crowi', savedUploadConfigs);
-      }
-      else {
-        await configManager.updateConfigsInTheSameNamespace('crowi', sourceGROWIUploadConfigs);
-      }
-
-      await crowi?.setUpFileUpload(true);
-      await crowi?.appService?.setupAfterInstall();
+      await g2gTransferReceiverService.importCollections(collections, importSettingsMap, sourceGROWIUploadConfigs);
     }
     catch (err) {
       logger.error(err);
-      return res.apiv3Err(new ErrorV3('Failed to import.', 'failed_to_import'), 500);
+      return res.apiv3Err(new ErrorV3('Failed to import MongoDB collections', 'mongo_collection_import_failure'), 500);
     }
 
     return res.apiv3({ message: 'Successfully started to receive transfer data.' });
@@ -335,8 +287,6 @@ module.exports = (crowi: Crowi): Router => {
     return res.apiv3({ transferKey: transferKeyString });
   });
 
-  // Auto export
-  // TODO: Use socket to send progress info to the client
   // eslint-disable-next-line max-len
   pushRouter.post('/transfer', accessTokenParser, loginRequiredStrictly, adminRequired, validator.transfer, apiV3FormValidator, async(req: AuthorizedRequest, res: ApiV3Response) => {
     const { transferKey, collections, optionsMap } = req.body;
@@ -351,8 +301,7 @@ module.exports = (crowi: Crowi): Router => {
       return res.apiv3Err(new ErrorV3('Transfer key is invalid', 'transfer_key_invalid'), 400);
     }
 
-    // Ask growi info
-    // TODO: Ask progress as well
+    // get growi info
     let toGROWIInfo: IDataGROWIInfo;
     try {
       toGROWIInfo = await g2gTransferPusherService.askGROWIInfo(tk);
@@ -371,7 +320,7 @@ module.exports = (crowi: Crowi): Router => {
 
     // Start transfer
     try {
-      await g2gTransferPusherService.startTransfer(tk, req.user, toGROWIInfo, collections, optionsMap);
+      await g2gTransferPusherService.startTransfer(tk, req.user, collections, optionsMap);
     }
     catch (err) {
       logger.error(err);

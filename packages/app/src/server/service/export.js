@@ -236,7 +236,7 @@ class ExportService {
     // TODO: remove broken zip file
   }
 
-  async export(collections, shouldEmit = true) {
+  async export(collections) {
     if (this.currentProgressingStatus != null) {
       throw new Error('There is an exporting process running.');
     }
@@ -246,7 +246,7 @@ class ExportService {
 
     let zipFileStat;
     try {
-      zipFileStat = await this.exportCollectionsToZippedJson(collections, shouldEmit);
+      zipFileStat = await this.exportCollectionsToZippedJson(collections);
     }
     finally {
       this.currentProgressingStatus = null;

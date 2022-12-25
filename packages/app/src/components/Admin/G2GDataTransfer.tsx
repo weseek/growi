@@ -45,10 +45,7 @@ const G2GDataTransfer = (): JSX.Element => {
   }, []);
 
   const setCollectionsAndSelectedCollections = useCallback(async() => {
-    const [{ data: collectionsData }, { data: statusData }] = await Promise.all([
-      apiv3Get<{collections: any[]}>('/mongo/collections', {}),
-      apiv3Get<{status: { zipFileStats: any[], isExporting: boolean, progressList: any[] }}>('/export/status', {}),
-    ]);
+    const { data: collectionsData } = await apiv3Get<{collections: any[]}>('/mongo/collections', {});
 
     // filter only not ignored collection names
     const filteredCollections = collectionsData.collections.filter((collectionName) => {
