@@ -1,6 +1,5 @@
 import axios from '~/utils/axios';
 
-import Crowi from '../crowi';
 import { QuestionnaireOrderDocument } from '../models/questionnaire/questionnaire-order';
 
 const nodeCron = require('node-cron');
@@ -21,7 +20,8 @@ class QuestionnaireCronService {
 
   maxHoursUntilRequest: number;
 
-  constructor(crowi: Crowi) {
+  // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
+  constructor(crowi) {
     this.growiQuestionnaireUri = crowi.configManager?.getConfig('crowi', 'app:growiQuestionnaireUri');
     this.cronSchedule = crowi.configManager?.getConfig('crowi', 'app:questionnaireCronSchedule');
     this.maxHoursUntilRequest = crowi.configManager?.getConfig('crowi', 'app:questionnaireCronMaxHoursUntilRequest');
