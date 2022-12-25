@@ -29,6 +29,7 @@ import PageGrantService from '../service/page-grant';
 import PageOperationService from '../service/page-operation';
 // eslint-disable-next-line import/no-cycle
 import { PluginService } from '../service/plugin';
+import QuestionnaireCronService from '../service/questionnaire-cron';
 import SearchService from '../service/search';
 import { SlackIntegrationService } from '../service/slack-integration';
 import { UserNotificationService } from '../service/user-notification';
@@ -307,7 +308,6 @@ Crowi.prototype.setupModels = async function() {
 };
 
 Crowi.prototype.setupCron = function() {
-  const QuestionnaireCronService = require('../service/questionnaire-cron');
   new QuestionnaireCronService(this).setUpCron();
 };
 
