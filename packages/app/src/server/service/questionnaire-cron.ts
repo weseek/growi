@@ -1,7 +1,7 @@
 import { IQuestionnaireOrder } from '~/interfaces/questionnaire/questionnaire-order';
 import axios from '~/utils/axios';
 
-import QuestionnaireOrder from '../models/questionnaire/questionnaire-order';
+import QuestionnaireOrder, { QuestionnaireOrderDocument } from '../models/questionnaire/questionnaire-order';
 
 const nodeCron = require('node-cron');
 
@@ -35,11 +35,11 @@ class QuestionnaireCronService {
   }
 
   questionnaireOrderGetCron(cronSchedule: string, maxSecondsUntilRequest: number): void {
-    const saveOrders = async(questionnaireOrders: IQuestionnaireOrder[]) => {
-      const savedOrders = await QuestionnaireOrder.find();
-      const savedOrderIds = savedOrders.map(order => order.orderId);
+    const saveOrders = async(questionnaireOrders: QuestionnaireOrderDocument[]) => {
+      const savedOrders: QuestionnaireOrderDocument[] = await QuestionnaireOrder.find();
+      const savedOrderIds = savedOrders.map(order => order._id.toString());
       // 渡されたアンケートのうち未保存のものを保存する
-      const nonSavedOrders = questionnaireOrders.filter(order => !savedOrderIds.includes(order.orderId));
+      const nonSavedOrders = questionnaireOrders.filter(order => !savedOrderIds.includes(order._id));
       QuestionnaireOrder.insertMany(nonSavedOrders);
     };
 
@@ -59,12 +59,7 @@ class QuestionnaireCronService {
 
       try {
         const response = await axios.get(`${this.growiQuestionnaireUri}/questionnaire-order/index`);
-        const questionnaireOrdersJson = JSON.parse(JSON.stringify(response.data)).questionnaireQrders;
-        const questionnaireOrders: IQuestionnaireOrder[] = questionnaireOrdersJson.map((questionnaireOrder) => {
-          questionnaireOrder.orderId = questionnaireOrder._id;
-          delete questionnaireOrder._id;
-          return questionnaireOrder;
-        });
+        const questionnaireOrders: QuestionnaireOrderDocument[] = JSON.parse(JSON.stringify(response.data)).questionnaireQrders;
 
         await saveOrders(questionnaireOrders);
         deleteFinishedOrders();
