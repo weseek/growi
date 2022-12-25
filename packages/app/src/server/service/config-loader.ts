@@ -127,24 +127,6 @@ const ENV_VAR_NAME_TO_CONFIG_INFO = {
   //   type:    ,
   //   default:
   // },
-  // OAUTH_TWITTER_CONSUMER_KEY: {
-  //   ns:      'crowi',
-  //   key:     'security:passport-twitter:consumerKey',
-  //   type:    ,
-  //   default:
-  // },
-  // OAUTH_TWITTER_CONSUMER_SECRET: {
-  //   ns:      'crowi',
-  //   key:     'security:passport-twitter:consumerSecret',
-  //   type:    ,
-  //   default:
-  // },
-  // OAUTH_TWITTER_CALLBACK_URI: {
-  //   ns:      'crowi',
-  //   key:     'security:passport-twitter:callbackUrl',
-  //   type:    ,
-  //   default:
-  // },
   DRAWIO_URI: {
     ns:      'crowi',
     key:     'app:drawioUri',

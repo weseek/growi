@@ -12,13 +12,21 @@ describe('Access to sidebar', () => {
     context('when access to root page', { scrollBehavior: false }, () => {
       beforeEach(() => {
         cy.visit('/');
-        cy.waitUntilSkeletonDisappear();
+
+        // Workaround for waitinig initial open/close interaction
+        // TODO: remove this cy.wait() after SSR without the initial interaction is implemented
+        // eslint-disable-next-line cypress/no-unnecessary-waiting
+        cy.wait(2000);
+
+        // Since this is a sidebar test, call collapseSidebar in beforeEach.
         cy.collapseSidebar(false);
       });
 
       describe('Test show/collapse button', () => {
         it('Successfully show sidebar', () => {
-          cy.getByTestid('grw-pagetree-item-container').should('be.visible');
+          cy.getByTestid('grw-contextual-navigation-sub').should('be.visible');
+
+          cy.waitUntilSkeletonDisappear();
           cy.screenshot(`${ssPrefix}1-sidebar-shown`, {
             capture: 'viewport',
             // Blackout for recalculation of toc content hight
@@ -28,6 +36,10 @@ describe('Access to sidebar', () => {
 
         it('Successfully collapse sidebar', () => {
           cy.getByTestid('grw-navigation-resize-button').click({force: true});
+
+          cy.getByTestid('grw-contextual-navigation-sub').should('not.be.visible');
+
+          cy.waitUntilSkeletonDisappear();
           cy.screenshot(`${ssPrefix}2-sidebar-collapsed`, {
             capture: 'viewport',
             // Blackout for recalculation of toc content hight
@@ -37,9 +49,21 @@ describe('Access to sidebar', () => {
       });
 
       describe('Test page tree tab', () => {
+        beforeEach(() => {
+          cy.getByTestid('grw-sidebar-nav-primary-page-tree').should('be.visible')
+            .then($elem => {
+              // open if inactive
+              if (!$elem.hasClass('active')) {
+                cy.getByTestid('grw-sidebar-nav-primary-page-tree').click();
+              }
+            });
+        });
+
         it('Successfully access to page tree', () => {
           cy.getByTestid('grw-contextual-navigation-sub').within(() => {
             cy.getByTestid('grw-pagetree-item-container').should('be.visible');
+
+            cy.waitUntilSkeletonDisappear();
             cy.screenshot(`${ssPrefix}page-tree-1-access-to-page-tree`);
           });
         });
@@ -49,34 +73,45 @@ describe('Access to sidebar', () => {
             cy.get('.grw-pagetree-open').should('be.visible');
 
             // hide page tree tiems
-            cy.get('.grw-pagetree-triangle-btn').eq(0).click();
+            cy.get('.grw-pagetree-triangle-btn').first().click();
+
             cy.screenshot(`${ssPrefix}page-tree-2-hide-page-tree-items`);
           });
         });
 
         it('Successfully click Add to Bookmarks button', () => {
-          // click three dots
-          cy.get('.grw-pagetree-item-children').eq(0).within(() => {
-            cy.getByTestid('open-page-item-control-btn').find('button').eq(0).invoke('css','display','block').click();
+          cy.waitUntil(() => {
+            // do
+            cy.getByTestid('grw-contextual-navigation-sub').within(() => {
+              cy.get('.grw-pagetree-item-children').first().as('pagetreeItem').within(() => {
+                cy.getByTestid('open-page-item-control-btn').find('button').first().invoke('css','display','block').click()
+              });
+            });
+            // wait until
+            return cy.get('.dropdown-menu.show').then($elem => $elem.is(':visible'));
           });
 
-          cy.getByTestid('page-item-control-menu').should('have.class', 'show');
           cy.screenshot(`${ssPrefix}page-tree-3-before-click-button`, {
             // Blackout for recalculation of toc content hight
             blackout: ['.grw-side-contents-container', '[data-hide-in-vrt=true]'],
           });
 
           // click add remove bookmark btn
-          cy.getByTestid('page-item-control-menu').should('have.class', 'show').within(() => {
-            cy.getByTestid('add-remove-bookmark-btn').click();
-          });
+          cy.getByTestid('page-item-control-menu').should('have.class', 'show')
+          cy.getByTestid('add-remove-bookmark-btn').click();
 
           // show dropdown again
-          cy.get('.grw-pagetree-item-children').eq(0).within(() => {
-            cy.getByTestid('open-page-item-control-btn').find('button').eq(0).invoke('css','display','block').click();
+          cy.waitUntil(() => {
+            // do
+            cy.getByTestid('grw-contextual-navigation-sub').within(() => {
+              cy.get('.grw-pagetree-item-children').first().as('pagetreeItem').within(() => {
+                cy.getByTestid('open-page-item-control-btn').find('button').first().invoke('css','display','block').click()
+              });
+            });
+            // wait until
+            return cy.get('.dropdown-menu.show').then($elem => $elem.is(':visible'));
           });
 
-          cy.getByTestid('page-item-control-menu').should('have.class', 'show');
           cy.screenshot(`${ssPrefix}page-tree-4-after-click-button`, {
             // Blackout for recalculation of toc content hight
             blackout: ['.grw-side-contents-container', '[data-hide-in-vrt=true]'],
@@ -84,43 +119,69 @@ describe('Access to sidebar', () => {
         });
 
         it('Successfully show duplicate page modal', () => {
-          cy.get('.grw-pagetree-item-children').eq(0).within(() => {
-            cy.getByTestid('open-page-item-control-btn').find('button').eq(0).invoke('css','display','block').click();
+          cy.waitUntil(() => {
+            // do
+            cy.getByTestid('grw-contextual-navigation-sub').within(() => {
+              cy.get('.grw-pagetree-item-children').first().as('pagetreeItem').within(() => {
+                cy.getByTestid('open-page-item-control-btn').find('button').first().invoke('css','display','block').click()
+              });
+            });
+            // wait until
+            return cy.get('.dropdown-menu.show').then($elem => $elem.is(':visible'));
           });
-          cy.get('.dropdown-menu.show').should('be.visible').within(() => {
-            cy.getByTestid('open-page-duplicate-modal-btn').click();
+
+          cy.get('.dropdown-menu.show').within(() => {
+            cy.getByTestid('open-page-duplicate-modal-btn').should('be.visible').click();
           });
+
           cy.getByTestid('page-duplicate-modal').should('be.visible').within(() => {
-            cy.get('.rbt-input-main').type('_test');
+            cy.get('.form-control').type('_test');
+
             cy.screenshot(`${ssPrefix}page-tree-5-duplicate-page-modal`);
+
             cy.get('.modal-header > button').click();
           });
         });
 
         it('Successfully rename page', () => {
-          cy.getByTestid('grw-contextual-navigation-sub').within(() => {
-            cy.get('.grw-pagetree-item-children').eq(0).within(() => {
-              cy.getByTestid('open-page-item-control-btn').find('button').eq(0).invoke('css','display','block').click()
+          cy.waitUntil(() => {
+            // do
+            cy.getByTestid('grw-contextual-navigation-sub').within(() => {
+              cy.get('.grw-pagetree-item-children').first().as('pagetreeItem').within(() => {
+                cy.getByTestid('open-page-item-control-btn').find('button').first().invoke('css','display','block').click()
+              });
             });
-            cy.get('.dropdown-menu.show').should('be.visible').within(() => {
-              cy.getByTestid('open-page-move-rename-modal-btn').click();
-            });
-            cy.get('.grw-pagetree-item-children').eq(0).within(() => {
-              cy.getByTestid('closable-text-input').type('_newname');
-            });
-            cy.screenshot(`${ssPrefix}page-tree-6-rename-page`);
+            // wait until
+            return cy.get('.dropdown-menu.show').then($elem => $elem.is(':visible'));
           });
+
+          cy.get('.dropdown-menu.show').within(() => {
+            cy.getByTestid('open-page-move-rename-modal-btn').should('be.visible').click();
+          });
+
+          cy.get('@pagetreeItem').within(() => {
+            cy.getByTestid('closable-text-input').type('_newname');
+          })
+
+          cy.screenshot(`${ssPrefix}page-tree-6-rename-page`);
         });
 
         it('Successfully show delete page modal', () => {
-          cy.getByTestid('grw-contextual-navigation-sub').within(() => {
-            cy.get('.grw-pagetree-item-children').eq(0).within(() => {
-              cy.getByTestid('open-page-item-control-btn').find('button').eq(0).invoke('css','display','block').click()
+          cy.waitUntil(() => {
+            // do
+            cy.getByTestid('grw-contextual-navigation-sub').within(() => {
+              cy.get('.grw-pagetree-item-children').first().as('pagetreeItem').within(() => {
+                cy.getByTestid('open-page-item-control-btn').find('button').first().invoke('css','display','block').click()
+              });
             });
-            cy.get('.dropdown-menu.show').should('be.visible').within(() => {
-              cy.getByTestid('open-page-delete-modal-btn').click();
-            });
+            // wait until
+            return cy.get('.dropdown-menu.show').then($elem => $elem.is(':visible'));
           });
+
+          cy.get('.dropdown-menu.show').within(() => {
+            cy.getByTestid('open-page-delete-modal-btn').should('be.visible').click();
+          });
+
           cy.getByTestid('page-delete-modal').should('be.visible').within(() => {
             cy.screenshot(`${ssPrefix}page-tree-7-delete-page-modal`);
             cy.get('.modal-header > button').click();
@@ -129,14 +190,21 @@ describe('Access to sidebar', () => {
       });
 
       describe('Test custom sidebar tab', () => {
+        beforeEach(() => {
+          cy.getByTestid('grw-sidebar-nav-primary-custom-sidebar').should('be.visible')
+            .then($elem => {
+              // open if inactive
+              if (!$elem.hasClass('active')) {
+                cy.getByTestid('grw-sidebar-nav-primary-custom-sidebar').click();
+              }
+            });
+        });
+
         it('Successfully access to custom sidebar', () => {
-          cy.getByTestid('grw-sidebar-nav-primary-custom-sidebar').click();
-
-          // eslint-disable-next-line cypress/no-unnecessary-waiting
-          cy.wait(1500); // Wait debounce for UserUISettings update
-
           cy.getByTestid('grw-contextual-navigation-sub').within(() => {
-            cy.get('.grw-sidebar-content-header.h5').find('a');
+            cy.get('.grw-sidebar-content-header > h3').find('a');
+
+            cy.waitUntilSkeletonDisappear();
             cy.screenshot(`${ssPrefix}custom-sidebar-1-access-to-custom-sidebar`);
           });
         });
@@ -144,32 +212,43 @@ describe('Access to sidebar', () => {
         it('Successfully redirect to editor', () => {
           const content = '# HELLO \n ## Hello\n ### Hello';
 
-          cy.get('.grw-sidebar-content-header.h5').find('a').click();
+          cy.get('.grw-sidebar-content-header > h3').find('a').click();
+
+          cy.get('.layout-root').should('have.class', 'editing');
           cy.get('.CodeMirror textarea').type(content, {force: true});
+
           cy.screenshot(`${ssPrefix}custom-sidebar-2-redirect-to-editor`);
+
           cy.getByTestid('save-page-btn').click();
           cy.get('.layout-root').should('not.have.class', 'editing');
         });
 
         it('Successfully create custom sidebar content', () => {
-          cy.getByTestid('grw-contextual-navigation-sub').within(() => {
-            cy.get('.grw-custom-sidebar-content').should('be.visible');
-            cy.screenshot(`${ssPrefix}custom-sidebar-3-content-created`);
-          });
+          cy.getByTestid('grw-sidebar-nav-primary-custom-sidebar')
+            .should('be.visible')
+            .should('have.class', 'active');
+
+          cy.waitUntilSkeletonDisappear();
+          cy.screenshot(`${ssPrefix}custom-sidebar-3-content-created`);
         });
       });
 
       describe('Test recent changes tab', () => {
+        beforeEach(() => {
+          cy.getByTestid('grw-sidebar-nav-primary-recent-changes').should('be.visible')
+            .then($elem => {
+              // open if inactive
+              if (!$elem.hasClass('active')) {
+                cy.getByTestid('grw-sidebar-nav-primary-recent-changes').click();
+              }
+            });
+        });
+
         it('Successfully access to recent changes', () => {
-          cy.getByTestid('grw-sidebar-nav-primary-recent-changes').click();
-
-          // eslint-disable-next-line cypress/no-unnecessary-waiting
-          cy.wait(1500); // Wait debounce for UserUISettings update
-
           cy.getByTestid('grw-recent-changes').should('be.visible');
           cy.get('.list-group-item').should('be.visible');
 
-          // The scope of the capture is not narrowed because the blackout is shifted
+          // The scope of the screenshot is not narrowed because the blackout is shifted
           cy.screenshot(`${ssPrefix}recent-changes-1-access-to-recent-changes`, {
             // Blackout for recalculation of toc content hight
             blackout: ['.grw-side-contents-container', '[data-hide-in-vrt=true]'],
@@ -182,7 +261,7 @@ describe('Access to sidebar', () => {
             cy.get('.list-group-item').should('be.visible');
           });
 
-          // The scope of the capture is not narrowed because the blackout is shifted
+          // The scope of the screenshot is not narrowed because the blackout is shifted
           cy.screenshot(`${ssPrefix}recent-changes-2-switch-content-size`, {
             // Blackout for recalculation of toc content hight
             blackout: ['.grw-side-contents-container', '[data-hide-in-vrt=true]'],
@@ -191,14 +270,20 @@ describe('Access to sidebar', () => {
       });
 
       describe('Test tags tab', () => {
+        beforeEach(() => {
+          cy.getByTestid('grw-sidebar-nav-primary-tags').should('be.visible')
+            .then($elem => {
+              // open if inactive
+              if (!$elem.hasClass('active')) {
+                cy.getByTestid('grw-sidebar-nav-primary-tags').click();
+              }
+            });
+        });
+
         it('Successfully access to tags', () => {
-          cy.getByTestid('grw-sidebar-nav-primary-tags').click();
-
-          // eslint-disable-next-line cypress/no-unnecessary-waiting
-          cy.wait(1500); // Wait debounce for UserUISettings update
-
           cy.getByTestid('grw-contextual-navigation-sub').within(() => {
             cy.getByTestid('grw-tags-list').should('be.visible');
+
             cy.screenshot(`${ssPrefix}tags-1-access-to-tags`);
           });
         });
@@ -207,11 +292,12 @@ describe('Access to sidebar', () => {
           cy.get('.grw-container-convertible > div > .btn-primary').click({force: true});
           cy.collapseSidebar(true);
           cy.getByTestid('grw-tags-list').should('be.visible');
+
           cy.screenshot(`${ssPrefix}tags-2-click-all-tags-button`);
         });
       });
 
-      // TODO: No Drafts pages on GROWI version 6
+      // // TODO: No Drafts pages on GROWI version 6
       // it('Successfully access to My Drafts page', () => {
       //   cy.visit('/');
       //   cy.collapseSidebar(true);
@@ -241,6 +327,7 @@ describe('Access to sidebar', () => {
 
           cy.get('.grw-page-path-hierarchical-link').should('be.visible');
           cy.get('.grw-custom-nav-tab').should('be.visible');
+
           cy.screenshot(`${ssPrefix}access-to-trash-page`);
         });
       });

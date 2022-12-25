@@ -6,13 +6,11 @@ context('Click page icons button', () => {
     cy.fixture("user-admin.json").then(user => {
       cy.login(user.username, user.password);
     });
-    // collapse sidebar
-    cy.collapseSidebar(true);
   });
 
   it('Successfully subscribe/unsubscribe a page', () => {
     cy.visit('/Sandbox');
-    cy.waitUntilSkeletonDisappear();
+    cy.collapseSidebar(true, true);
 
     // Subscribe
     cy.get('#subscribe-button').click({force: true});
@@ -26,6 +24,7 @@ context('Click page icons button', () => {
     })
     cy.getByTestid('subscribe-button-tooltip').should('not.exist');
 
+    cy.waitUntilSkeletonDisappear();
     cy.get('#grw-subnav-container').within(() => { cy.screenshot(`${ssPrefix}1-subscribe-page`) })
 
     // Unsubscribe
@@ -40,12 +39,13 @@ context('Click page icons button', () => {
     })
     cy.getByTestid('subscribe-button-tooltip').should('not.exist');
 
+    cy.waitUntilSkeletonDisappear();
     cy.get('#grw-subnav-container').within(() => { cy.screenshot(`${ssPrefix}2-unsubscribe-page`) })
   });
 
   it('Successfully Like / Dislike a page', () => {
     cy.visit('/Sandbox');
-    cy.waitUntilSkeletonDisappear();
+    cy.collapseSidebar(true);
 
     // like
     cy.get('#like-button').click({force: true});
@@ -59,6 +59,7 @@ context('Click page icons button', () => {
     })
     cy.getByTestid('like-button-tooltip').should('not.exist');
 
+    cy.waitUntilSpinnerDisappear();
     cy.get('#grw-subnav-container').within(() => { cy.screenshot(`${ssPrefix}3-like-page`) });
 
     // total liker (user-list-popover is commented out because it is sometimes displayed and sometimes not.)
@@ -78,6 +79,7 @@ context('Click page icons button', () => {
     })
     cy.getByTestid('like-button-tooltip').should('not.exist');
 
+    cy.waitUntilSpinnerDisappear();
     cy.get('#grw-subnav-container').within(() => { cy.screenshot(`${ssPrefix}5-dislike-page`) });
 
     // total liker (user-list-popover is commented out because it is sometimes displayed and sometimes not.)
@@ -88,7 +90,7 @@ context('Click page icons button', () => {
 
   it('Successfully Bookmark / Unbookmark a page', () => {
     cy.visit('/Sandbox');
-    cy.waitUntilSkeletonDisappear();
+    cy.collapseSidebar(true);
 
     // bookmark
     cy.get('#bookmark-button').click({force: true});
@@ -102,11 +104,13 @@ context('Click page icons button', () => {
     })
     cy.getByTestid('bookmark-button-tooltip').should('not.exist');
 
+    cy.waitUntilSpinnerDisappear();
     cy.get('#grw-subnav-container').within(() => { cy.screenshot(`${ssPrefix}7-bookmark-page`) });
 
     // total bookmarker
     cy.get('#po-total-bookmarks').click({force: true});
     cy.get('.user-list-popover').should('be.visible');
+    cy.waitUntilSpinnerDisappear();
     cy.get('#grw-subnav-container').within(() => { cy.screenshot(`${ssPrefix}8-bookmarks-counter`) });
 
     // unbookmark
@@ -121,11 +125,13 @@ context('Click page icons button', () => {
     })
     cy.getByTestid('bookmark-button-tooltip').should('not.exist');
 
+    cy.waitUntilSpinnerDisappear();
     cy.get('#grw-subnav-container').within(() => { cy.screenshot(`${ssPrefix}9-unbookmark-page`) });
 
     // total bookmarker
     cy.get('#po-total-bookmarks').click({force: true});
     cy.get('.user-list-popover').should('be.visible');
+    cy.waitUntilSpinnerDisappear();
     cy.get('#grw-subnav-container').within(() => { cy.screenshot(`${ssPrefix}10-bookmarks-counter`) });
   });
 

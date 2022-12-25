@@ -82,24 +82,6 @@ module.exports = function(crowi, app) {
     });
   };
 
-  actions.error = function(req, res) {
-    const reason = req.params.reason;
-
-
-    let reasonMessage = '';
-    if (reason === 'suspended') {
-      reasonMessage = 'This account is suspended.';
-    }
-    else if (reason === 'registered') {
-      reasonMessage = 'Wait for approved by administrators.';
-    }
-
-    return res.render('login/error', {
-      reason,
-      reasonMessage,
-    });
-  };
-
   actions.preLogin = function(req, res, next) {
     // user has already logged in
     const { user } = req;

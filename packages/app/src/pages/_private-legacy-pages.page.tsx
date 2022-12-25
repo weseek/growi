@@ -1,6 +1,7 @@
 import {
   NextPage, GetServerSideProps, GetServerSidePropsContext,
 } from 'next';
+import { useTranslation } from 'next-i18next';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import dynamic from 'next/dynamic';
 import Head from 'next/head';
@@ -22,7 +23,7 @@ import {
 } from '~/stores/ui';
 
 import {
-  CommonProps, getNextI18NextConfig, getServerSideCommonProps, useCustomTitle,
+  CommonProps, getNextI18NextConfig, getServerSideCommonProps, generateCustomTitle,
 } from './utils/commons';
 
 const SearchResultLayout = dynamic(() => import('~/components/Layout/SearchResultLayout'), { ssr: false });
@@ -47,6 +48,8 @@ type Props = CommonProps & {
 };
 
 const PrivateLegacyPage: NextPage<Props> = (props: Props) => {
+  const { t } = useTranslation();
+
   const { userUISettings } = props;
 
   const PrivateLegacyPages = dynamic(() => import('~/components/PrivateLegacyPages'), { ssr: false });
@@ -74,18 +77,17 @@ const PrivateLegacyPage: NextPage<Props> = (props: Props) => {
   // render config
   useRendererConfig(props.rendererConfig);
 
+  const title = generateCustomTitle(props, t('private_legacy_pages.title'));
+
   return (
     <>
       <Head>
-        {/*
-        {renderScriptTagByName('drawio-viewer')}
-        {renderScriptTagByName('highlight-addons')}
-        */}
+        <title>{title}</title>
       </Head>
 
       <DrawioViewerScript />
 
-      <SearchResultLayout title={useCustomTitle(props, 'GROWI')}>
+      <SearchResultLayout>
         <div id="private-regacy-pages">
           <PrivateLegacyPages />
         </div>

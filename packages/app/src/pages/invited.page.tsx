@@ -5,6 +5,7 @@ import { USER_STATUS } from '@growi/core';
 import { NextPage, GetServerSideProps, GetServerSidePropsContext } from 'next';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import dynamic from 'next/dynamic';
+import Head from 'next/head';
 
 import { InvitedFormProps } from '~/components/InvitedForm';
 import { NoLoginLayout } from '~/components/Layout/NoLoginLayout';
@@ -13,7 +14,7 @@ import type { CrowiRequest } from '~/interfaces/crowi-request';
 import { useCsrfToken, useCurrentPathname, useCurrentUser } from '../stores/context';
 
 import {
-  CommonProps, getServerSideCommonProps, useCustomTitle, getNextI18NextConfig,
+  CommonProps, getServerSideCommonProps, generateCustomTitle, getNextI18NextConfig,
 } from './utils/commons';
 
 const InvitedForm = dynamic<InvitedFormProps>(() => import('~/components/InvitedForm').then(mod => mod.InvitedForm), { ssr: false });
@@ -30,10 +31,14 @@ const InvitedPage: NextPage<Props> = (props: Props) => {
   useCurrentPathname(props.currentPathname);
   useCurrentUser(props.currentUser);
 
+  const title = generateCustomTitle(props, 'GROWI');
   const classNames: string[] = ['invited-page'];
 
   return (
-    <NoLoginLayout title={useCustomTitle(props, 'GROWI')} className={classNames.join(' ')}>
+    <NoLoginLayout className={classNames.join(' ')}>
+      <Head>
+        <title>{title}</title>
+      </Head>
       <InvitedForm invitedFormUsername={props.invitedFormUsername} invitedFormName={props.invitedFormName} />
     </NoLoginLayout>
   );

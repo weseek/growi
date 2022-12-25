@@ -356,7 +356,6 @@ Crowi.prototype.setupPassport = async function() {
     this.passportService.setupStrategyById('oidc');
     this.passportService.setupStrategyById('google');
     this.passportService.setupStrategyById('github');
-    this.passportService.setupStrategyById('twitter');
   }
   catch (err) {
     logger.error(err);
@@ -702,6 +701,9 @@ Crowi.prototype.setupPluginService = async function() {
   if (this.pluginService == null) {
     this.pluginService = new PluginService(this);
   }
+  // download plugin repositories, if document exists but there is no repository
+  // TODO: Cannot download unless connected to the Internet at setup.
+  await this.pluginService.downloadNotExistPluginRepositories();
 };
 
 Crowi.prototype.setupPageService = async function() {
