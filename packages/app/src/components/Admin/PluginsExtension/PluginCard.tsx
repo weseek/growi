@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 
+import { useTranslation } from 'next-i18next';
 import Link from 'next/link';
 
 import { apiv3Delete, apiv3Put } from '~/client/util/apiv3-client';
@@ -22,6 +23,8 @@ export const PluginCard = (props: Props): JSX.Element => {
     id, name, url, isEnalbed, desc, mutate,
   } = props;
 
+  const { t } = useTranslation('admin');
+
   const PluginCardButton = (): JSX.Element => {
     const [isEnabled, setState] = useState<boolean>(isEnalbed);
 
@@ -29,19 +32,21 @@ export const PluginCard = (props: Props): JSX.Element => {
       try {
         if (isEnabled) {
           const reqUrl = `/plugins/${id}/deactivate`;
-          await apiv3Put(reqUrl);
+          const res = await apiv3Put(reqUrl);
           setState(!isEnabled);
-          toastSuccess('Plugin Deactivated');
+          const pluginName = res.data.pluginName;
+          toastSuccess(t('toaster.deactivate_plugin_success', { pluginName }));
         }
         else {
           const reqUrl = `/plugins/${id}/activate`;
-          await apiv3Put(reqUrl);
+          const res = await apiv3Put(reqUrl);
           setState(!isEnabled);
-          toastSuccess('Plugin Activated');
+          const pluginName = res.data.pluginName;
+          toastSuccess(t('toaster.activate_plugin_success', { pluginName }));
         }
       }
       catch (err) {
-        toastError('pluginIsEnabled', err);
+        toastError(err);
       }
     };
 
@@ -69,11 +74,12 @@ export const PluginCard = (props: Props): JSX.Element => {
       const reqUrl = `/plugins/${id}/remove`;
 
       try {
-        await apiv3Delete(reqUrl);
-        toastSuccess(`${name} Deleted`);
+        const res = await apiv3Delete(reqUrl);
+        const pluginName = res.data.pluginName;
+        toastSuccess(t('toaster.remove_plugin_success', { pluginName }));
       }
       catch (err) {
-        toastError('pluginDelete', err);
+        toastError(err);
       }
       finally {
         mutate();
@@ -93,7 +99,6 @@ export const PluginCard = (props: Props): JSX.Element => {
     );
   };
 
-  // TODO: Refactor commented out areas.
   return (
     <div className="card shadow border-0" key={name}>
       <div className="card-body px-5 py-4 mt-3">
@@ -113,30 +118,9 @@ export const PluginCard = (props: Props): JSX.Element => {
             </div>
           </div>
         </div>
-        <div className="row">
-          <div className="col-12 d-flex flex-wrap gap-2">
-            {/* {topics?.map((topic: string) => {
-              return (
-                <span key={`${name}-${topic}`} className="badge rounded-1 mp-bg-light-blue text-dark fw-normal">
-                  {topic}
-                </span>
-              );
-            })} */}
-          </div>
-        </div>
       </div>
       <div className="card-footer px-5 border-top-0 mp-bg-light-blue">
         <p className="d-flex justify-content-between align-self-center mb-0">
-          <span>
-            {/* {owner.login === 'weseek' ? <FontAwesomeIcon icon={faCircleCheck} className="me-1 text-primary" /> : <></>}
-
-            <a href={owner.html_url} target="_blank" rel="noreferrer">
-              {owner.login}
-            </a> */}
-          </span>
-          {/* <span>
-            <FontAwesomeIcon icon={faCircleArrowDown} className="me-1" /> {stargazersCount}
-          </span> */}
         </p>
       </div>
     </div>

@@ -1,12 +1,14 @@
 import React, { useCallback } from 'react';
 
+import { useTranslation } from 'next-i18next';
+
 import { apiv3Post } from '~/client/util/apiv3-client';
 import { toastSuccess, toastError } from '~/client/util/toastr';
 import { useSWRxPlugins } from '~/stores/plugin';
 
-
 export const PluginInstallerForm = (): JSX.Element => {
   const { mutate } = useSWRxPlugins();
+  const { t } = useTranslation('admin');
 
   const submitHandler = useCallback(async(e) => {
     e.preventDefault();
@@ -26,8 +28,9 @@ export const PluginInstallerForm = (): JSX.Element => {
     };
 
     try {
-      await apiv3Post('/plugins', { pluginInstallerForm });
-      toastSuccess('Plugin Install Successed!');
+      const res = await apiv3Post('/plugins', { pluginInstallerForm });
+      const pluginName = res.data.pluginName;
+      toastSuccess(t('toaster.install_plugin_success', { pluginName }));
     }
     catch (e) {
       toastError(e);
@@ -35,7 +38,7 @@ export const PluginInstallerForm = (): JSX.Element => {
     finally {
       mutate();
     }
-  }, [mutate]);
+  }, [mutate, t]);
 
   return (
     <form role="form" onSubmit={submitHandler}>

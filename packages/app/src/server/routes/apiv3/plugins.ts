@@ -51,8 +51,8 @@ module.exports = (crowi: Crowi): Router => {
     const { pluginInstallerForm: formValue } = req.body;
 
     try {
-      await pluginService.install(formValue);
-      return res.apiv3();
+      const pluginName = await pluginService.install(formValue);
+      return res.apiv3({ pluginName });
     }
     catch (err) {
       return res.apiv3Err(err);
@@ -68,8 +68,8 @@ module.exports = (crowi: Crowi): Router => {
 
     try {
       const GrowiPluginModel = mongoose.model('GrowiPlugin') as GrowiPluginModel;
-      await GrowiPluginModel.activatePlugin(pluginId);
-      return res.apiv3();
+      const pluginName = await GrowiPluginModel.activatePlugin(pluginId);
+      return res.apiv3({ pluginName });
     }
     catch (err) {
       return res.apiv3Err(err);
@@ -86,8 +86,8 @@ module.exports = (crowi: Crowi): Router => {
 
     try {
       const GrowiPluginModel = mongoose.model('GrowiPlugin') as GrowiPluginModel;
-      await GrowiPluginModel.deactivatePlugin(pluginId);
-      return res.apiv3();
+      const pluginName = await GrowiPluginModel.deactivatePlugin(pluginId);
+      return res.apiv3({ pluginName });
     }
     catch (err) {
       return res.apiv3Err(err);
@@ -103,8 +103,8 @@ module.exports = (crowi: Crowi): Router => {
     const pluginId = new ObjectID(id);
 
     try {
-      await pluginService.deletePlugin(pluginId);
-      return res.apiv3();
+      const pluginName = await pluginService.deletePlugin(pluginId);
+      return res.apiv3({ pluginName });
     }
     catch (err) {
       return res.apiv3Err(err);
