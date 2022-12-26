@@ -654,7 +654,7 @@
 		"failed_to_create_admin_user": "无法创建管理用户。{{errMessage}",
     "successfully_send_email_auth":"我们向 {{email}} 发送了一封电子邮件。 请点击邮件中的网址并完成注册。",
     "incorrect_token_or_expired_url":"令牌不正确或 URL 已过期。",
-    "user_already_loggedin": "当你登录的时候，你不能创建一个新的账户。",
+    "user_already_logged_in": "当你登录的时候，你不能创建一个新的账户。",
     "registration_closed": "你无权创建一个新的账户。",
     "Username has invalid characters": "用户名有无效字符",
     "Username field is required": "用户ID字段是必需的",
