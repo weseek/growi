@@ -1,6 +1,7 @@
 import React, {
   useState, useRef, useImperativeHandle, useCallback, ForwardRefRenderFunction, forwardRef,
   memo,
+  useEffect,
 } from 'react';
 
 import Dropzone from 'react-dropzone';
@@ -60,6 +61,8 @@ const Editor: ForwardRefRenderFunction<IEditorMethods, EditorPropsType> = (props
   const [isUploading, setIsUploading] = useState(false);
   const [isCheatsheetModalShown, setIsCheatsheetModalShown] = useState(false);
 
+  const [navBarItems, setNavBarItems] = useState<JSX.Element[]>([]);
+
   const { t } = useTranslation();
   const { data: editorSettings } = useEditorSettings();
   const { data: defaultIndentSize } = useDefaultIndentSize();
@@ -69,6 +72,13 @@ const Editor: ForwardRefRenderFunction<IEditorMethods, EditorPropsType> = (props
   // CodeMirrorEditor ref
   const cmEditorRef = useRef<AbstractEditor<any>>(null);
   const taEditorRef = useRef<TextAreaEditor>(null);
+
+  useEffect(() => {
+    if (cmEditorRef.current != null) {
+      const editorNavBarItems = cmEditorRef.current.getNavbarItems() ?? [];
+      setNavBarItems(editorNavBarItems);
+    }
+  }, []);
 
   const editorSubstance = useCallback(() => {
     return isMobile ? taEditorRef.current : cmEditorRef.current;
@@ -231,7 +241,7 @@ const Editor: ForwardRefRenderFunction<IEditorMethods, EditorPropsType> = (props
     return (
       <div className="m-0 navbar navbar-default navbar-editor" data-testid="navbar-editor" style={{ minHeight: 'unset' }}>
         <ul className="pl-2 nav nav-navbar">
-          { (editorSubstance()?.getNavbarItems() ?? []).map((item, idx) => {
+          { navBarItems.map((item, idx) => {
             // eslint-disable-next-line react/no-array-index-key
             return <li key={`navbarItem-${idx}`}>{item}</li>;
           }) }
