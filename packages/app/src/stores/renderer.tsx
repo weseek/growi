@@ -1,11 +1,11 @@
 import { HtmlElementNode } from 'rehype-toc';
-import useSWR, { Key, SWRResponse } from 'swr';
+import useSWR, { SWRResponse } from 'swr';
 import useSWRImmutable from 'swr/immutable';
 
 import { RendererConfig } from '~/interfaces/services/renderer';
 import {
   RendererOptions,
-  generateSimpleViewOptions, generatePreviewOptions, generateOthersOptions,
+  generateSimpleViewOptions, generatePreviewOptions,
   generateViewOptions, generateTocOptions,
 } from '~/services/renderer/renderer';
 import { getGrowiFacade } from '~/utils/growi-facade';
@@ -148,7 +148,19 @@ export const useSearchResultOptions = useSelectedPagePreviewOptions;
 export const useTimelineOptions = useSelectedPagePreviewOptions;
 
 export const useCustomSidebarOptions = (): SWRResponse<RendererOptions, Error> => {
-  const key: Key = 'customSidebarOptions';
+  const { data: rendererConfig } = useRendererConfig();
 
-  return _useOptionsBase(key, generateOthersOptions);
+  const isAllDataValid = rendererConfig != null;
+
+  const key = isAllDataValid
+    ? ['customSidebarOptions', rendererConfig]
+    : null;
+
+  return useSWRImmutable<RendererOptions, Error>(
+    key,
+    (rendererId, rendererConfig, pagePath, highlightKeywords) => generateSimpleViewOptions(rendererConfig, pagePath, highlightKeywords),
+    {
+      fallbackData: isAllDataValid ? generateSimpleViewOptions(rendererConfig, '/') : undefined,
+    },
+  );
 };
