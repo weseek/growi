@@ -34,7 +34,7 @@ function retrievePluginManifest(growiPlugin: GrowiPlugin): ViteManifest {
 }
 
 export interface IPluginService {
-  install(origin: GrowiPluginOrigin): Promise<void>
+  install(origin: GrowiPluginOrigin): Promise<string>
   retrieveThemeHref(theme: string): Promise<string | undefined>
   retrieveAllPluginResourceEntries(): Promise<GrowiPluginResourceEntries>
   downloadNotExistPluginRepositories(): Promise<void>
@@ -62,7 +62,7 @@ export class PluginService implements IPluginService {
           const ghBranch = 'main';
           const match = ghPathname.match(githubReposIdPattern);
           if (ghUrl.hostname !== 'github.com' || match == null) {
-            throw new Error('The GitHub Repository URL is invalid.');
+            throw new Error('GitHub repository URL is invalid.');
           }
 
           const ghOrganizationName = match[1];
@@ -79,7 +79,7 @@ export class PluginService implements IPluginService {
     }
   }
 
-  async install(origin: GrowiPluginOrigin): Promise<void> {
+  async install(origin: GrowiPluginOrigin): Promise<string> {
     try {
     // download
       const ghUrl = new URL(origin.url);
@@ -89,7 +89,7 @@ export class PluginService implements IPluginService {
 
       const match = ghPathname.match(githubReposIdPattern);
       if (ghUrl.hostname !== 'github.com' || match == null) {
-        throw new Error('The GitHub Repository URL is invalid.');
+        throw new Error('GitHub repository URL is invalid.');
       }
 
       const ghOrganizationName = match[1];
@@ -105,13 +105,13 @@ export class PluginService implements IPluginService {
       // save plugin metadata
       const plugins = await PluginService.detectPlugins(origin, installedPath);
       await this.savePluginMetaData(plugins);
+
+      return plugins[0].meta.name;
     }
     catch (err) {
       logger.error(err);
       throw err;
     }
-
-    return;
   }
 
   private async deleteOldPluginDocument(path: string): Promise<void> {
@@ -144,8 +144,8 @@ export class PluginService implements IPluginService {
             else {
               rejects(res.status);
             }
-          }).catch((e) => {
-            logger.error(e);
+          }).catch((err) => {
+            logger.error(err);
             // eslint-disable-next-line prefer-promise-reject-errors
             rejects('Filed to download file.');
           });
@@ -180,14 +180,9 @@ export class PluginService implements IPluginService {
       }
     };
 
-    try {
-      await downloadFile(requestUrl, zipFilePath);
-      await unzip(zipFilePath, unzippedPath);
-      await renamePath(`${unzippedPath}/${ghReposName}-${ghBranch}`, `${unzippedPath}/${ghReposName}`);
-    }
-    catch (err) {
-      throw err;
-    }
+    await downloadFile(requestUrl, zipFilePath);
+    await unzip(zipFilePath, unzippedPath);
+    await renamePath(`${unzippedPath}/${ghReposName}-${ghBranch}`, `${unzippedPath}/${ghReposName}`);
 
     return;
   }
@@ -255,6 +250,40 @@ export class PluginService implements IPluginService {
     return [];
   }
 
+  /**
+   * Delete plugin
+   */
+  async deletePlugin(pluginId: mongoose.Types.ObjectId): Promise<string> {
+    const deleteFolder = (path: fs.PathLike): Promise<void> => {
+      return fs.promises.rm(path, { recursive: true });
+    };
+
+    const GrowiPlugin = mongoose.model<GrowiPlugin>('GrowiPlugin');
+    const growiPlugins = await GrowiPlugin.findById(pluginId);
+
+    if (growiPlugins == null) {
+      throw new Error('No plugin found for this ID.');
+    }
+
+    try {
+      const growiPluginsPath = path.join(pluginStoringPath, growiPlugins.installedPath);
+      await deleteFolder(growiPluginsPath);
+    }
+    catch (err) {
+      logger.error(err);
+      throw new Error('Filed to delete plugin repository.');
+    }
+
+    try {
+      await GrowiPlugin.deleteOne({ _id: pluginId });
+    }
+    catch (err) {
+      logger.error(err);
+      throw new Error('Filed to delete plugin from GrowiPlugin documents.');
+    }
+
+    return growiPlugins.meta.name;
+  }
 
   async retrieveThemeHref(theme: string): Promise<string | undefined> {
 
