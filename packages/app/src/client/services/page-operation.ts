@@ -188,6 +188,7 @@ export const useUpdateStateAfterSave = (pageId: string|undefined|null): (() => P
   // update swr 'currentPageId', 'currentPage', remote states
   return async() => {
 
+    // update tag before page: https://github.com/weseek/growi/pull/7158
     await mutateTagsInfo(); // get from DB
     syncTagsInfoForEditor(); // sync global state for client
 
