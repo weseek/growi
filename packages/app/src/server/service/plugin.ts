@@ -9,7 +9,7 @@ import streamToPromise from 'stream-to-promise';
 import unzipper from 'unzipper';
 
 import {
-  GrowiPlugin, GrowiPluginOrigin, GrowiPluginResourceType, GrowiThemePluginMeta,
+  GrowiPlugin, GrowiPluginOrigin, GrowiPluginResourceType, GrowiThemePluginMeta, GrowiPluginMeta,
 } from '~/interfaces/plugin';
 import loggerFactory from '~/utils/logger';
 import { resolveFromRoot } from '~/utils/project-dir-utils';
@@ -95,56 +95,64 @@ export class PluginService implements IPluginService {
     const ghReposName = match[2];
     const installedPath = `${ghOrganizationName}/${ghReposName}`;
 
-    try {
-      // clean up old plugin data from file system and documents
-      await this.cleanUp(installedPath, ghBranch);
+    const zipFilePath = path.join(pluginStoringPath, `${ghBranch}.zip`);
+    const unzippedFolderPath = path.join(pluginStoringPath, `${installedPath}-${ghBranch}`);
+    const temporaryReposStoringPath = path.join(pluginStoringPath, ghReposName);
+    const reposStoringPath = path.join(pluginStoringPath, `${installedPath}`);
 
-      // download github repository to file system
+
+    let plugins: GrowiPlugin<GrowiPluginMeta>[];
+
+    try {
+      // download github repository to file system's temporary path
       await this.downloadPluginRepository(ghOrganizationName, ghReposName, ghBranch);
 
-      // save plugin metadata
-      const plugins = await PluginService.detectPlugins(origin, installedPath);
+      // detect plugins
+      plugins = await PluginService.detectPlugins(origin, ghOrganizationName, ghReposName);
+
+      // remove the old repository from the storing path
+      if (fs.existsSync(reposStoringPath)) await fs.promises.rm(reposStoringPath, { recursive: true });
+
+      // move new repository from temporary path to storing path.
+      fs.renameSync(temporaryReposStoringPath, reposStoringPath);
+    }
+    catch (err) {
+      if (fs.existsSync(zipFilePath)) await fs.promises.rm(zipFilePath);
+      if (fs.existsSync(unzippedFolderPath)) await fs.promises.rm(unzippedFolderPath, { recursive: true });
+      if (fs.existsSync(temporaryReposStoringPath)) await fs.promises.rm(temporaryReposStoringPath, { recursive: true });
+      logger.error(err);
+      throw err;
+    }
+
+    try {
+      // delete plugin documents if these exist
+      await this.deleteOldPluginDocument(installedPath);
+
+      // save new plugins metadata
       await this.savePluginMetaData(plugins);
 
       return plugins[0].meta.name;
     }
     catch (err) {
-      await this.cleanUp(installedPath, ghBranch);
+      if (fs.existsSync(reposStoringPath)) await fs.promises.rm(reposStoringPath, { recursive: true });
+      await this.deleteOldPluginDocument(installedPath);
       logger.error(err);
       throw err;
     }
   }
 
-  private async cleanUp(installedPath: string, ghBranch: string): Promise<void> {
+  private async deleteOldPluginDocument(path: string): Promise<void> {
     const GrowiPlugin = mongoose.model<GrowiPlugin>('GrowiPlugin');
-    const zipFilePath = path.join(pluginStoringPath, `${ghBranch}.zip`);
-    const unzippedPath = path.join(pluginStoringPath, `${installedPath}-${ghBranch}`);
-    const renamedPath = path.join(pluginStoringPath, `${installedPath}`);
-
-    try {
-      // delete the zip file if it exists
-      if (fs.existsSync(zipFilePath)) await fs.promises.rm(zipFilePath);
-
-      // delete unzipped folder if it exists
-      if (fs.existsSync(unzippedPath)) await fs.promises.rm(unzippedPath, { recursive: true });
-
-      // delete renamed folder if it exists
-      if (fs.existsSync(renamedPath)) await fs.promises.rm(renamedPath, { recursive: true });
-
-      // delete plugin documents if they exist
-      await GrowiPlugin.deleteMany({ installedPath });
-    }
-    catch (err) {
-      logger.error(err);
-      throw new Error('Failed to clean up plugin data.');
-    }
+    await GrowiPlugin.deleteMany({ installedPath: path });
   }
 
   private async downloadPluginRepository(ghOrganizationName: string, ghReposName: string, ghBranch: string): Promise<void> {
 
     const requestUrl = `https://github.com/${ghOrganizationName}/${ghReposName}/archive/refs/heads/${ghBranch}.zip`;
     const zipFilePath = path.join(pluginStoringPath, `${ghBranch}.zip`);
-    const unzippedPath = path.join(pluginStoringPath, ghOrganizationName);
+    const unzipPath = pluginStoringPath;
+    const unzippedFolderPath = `${unzipPath}/${ghReposName}-${ghBranch}`;
+    const temporaryReposStoringPath = `${unzipPath}/${ghReposName}`;
 
     const downloadFile = async(requestUrl: string, filePath: string) => {
       return new Promise<void>((resolve, rejects) => {
@@ -187,19 +195,9 @@ export class PluginService implements IPluginService {
       }
     };
 
-    const renamePath = async(oldPath: fs.PathLike, newPath: fs.PathLike) => {
-      try {
-        fs.renameSync(oldPath, newPath);
-      }
-      catch (err) {
-        logger.error(err);
-        throw new Error('Filed to rename path.');
-      }
-    };
-
     await downloadFile(requestUrl, zipFilePath);
-    await unzip(zipFilePath, unzippedPath);
-    await renamePath(`${unzippedPath}/${ghReposName}-${ghBranch}`, `${unzippedPath}/${ghReposName}`);
+    await unzip(zipFilePath, unzipPath);
+    fs.renameSync(unzippedFolderPath, temporaryReposStoringPath);
 
     return;
   }
@@ -209,9 +207,9 @@ export class PluginService implements IPluginService {
     await GrowiPlugin.insertMany(plugins);
   }
 
-  // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
-  private static async detectPlugins(origin: GrowiPluginOrigin, installedPath: string, parentPackageJson?: any): Promise<GrowiPlugin[]> {
-    const packageJsonPath = path.resolve(pluginStoringPath, installedPath, 'package.json');
+  // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types, max-len
+  private static async detectPlugins(origin: GrowiPluginOrigin, ghOrganizationName: string, ghReposName: string, parentPackageJson?: any): Promise<GrowiPlugin[]> {
+    const packageJsonPath = path.resolve(pluginStoringPath, ghReposName, 'package.json');
     const packageJson = JSON.parse(readFileSync(packageJsonPath, 'utf-8'));
 
     const { growiPlugin } = packageJson;
@@ -228,7 +226,7 @@ export class PluginService implements IPluginService {
     if (growiPlugin.isMonorepo && growiPlugin.packages != null) {
       const plugins = await Promise.all(
         growiPlugin.packages.map(async(subPackagePath) => {
-          const subPackageInstalledPath = path.join(installedPath, subPackagePath);
+          const subPackageInstalledPath = path.join(ghReposName, subPackagePath);
           return this.detectPlugins(origin, subPackageInstalledPath, packageJson);
         }),
       );
@@ -240,7 +238,7 @@ export class PluginService implements IPluginService {
     }
     const plugin = {
       isEnabled: true,
-      installedPath,
+      installedPath: `${ghOrganizationName}/${ghReposName}`,
       origin,
       meta: {
         name: growiPlugin.name ?? packageName,
