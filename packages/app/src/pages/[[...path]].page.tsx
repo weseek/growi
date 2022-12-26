@@ -317,11 +317,13 @@ const Page: NextPageWithLayout<Props> = (props: Props) => {
             </>
           ) }
 
-          {/* <div className="col-xl-2 col-lg-3 d-none d-lg-block revision-toc-container">
-        <div id="revision-toc" className="revision-toc mt-3 sps sps--abv" data-sps-offset="123">
-          <div id="revision-toc-content" className="revision-toc-content"></div>
-        </div>
-      </div> */}
+          { /*
+            <div className="col-xl-2 col-lg-3 d-none d-lg-block revision-toc-container">
+              <div id="revision-toc" className="revision-toc mt-3 sps sps--abv" data-sps-offset="123">
+                <div id="revision-toc-content" className="revision-toc-content"></div>
+              </div>
+            </div>
+            */ }
         </div>
       </div>
     );
