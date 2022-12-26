@@ -12,14 +12,14 @@
   // @include box-shadow($btn-box-shadow);
 
   @include bs.hover() {
-    color: hsl.contrast($background, $hover-background-darken-degrees);
+    color: hsl.contrast($background);
     @include bs.gradient-bg($hover-background);
     border-color: $hover-border;
   }
 
   &:focus,
   &.focus {
-    color: hsl.contrast($background, $hover-background-darken-degrees);
+    color: hsl.contrast($background);
     @include bs.gradient-bg($hover-background);
     border-color: $hover-border;
     // @if $enable-shadows {
@@ -34,7 +34,7 @@
   &.disabled,
   &:disabled {
     color: hsl.contrast($background);
-    background-color: $background;
+    @include bs.gradient-bg($background);
     border-color: $border;
     // Remove CSS gradients if they're enabled
     @if bs.$enable-gradients {
@@ -42,11 +42,13 @@
     }
   }
 
-  // &:not(:disabled):not(.disabled):active,
-  // &:not(:disabled):not(.disabled).active,
-  // .show > &.dropdown-toggle {
-  //   color: color-yiq($active-background);
-  //   background-color: $active-background;
+  &:not(:disabled):not(.disabled):active,
+  &:not(:disabled):not(.disabled).active,
+  .show > &.dropdown-toggle {
+    color: hsl.contrast($background);
+    background-color: $hover-background;
+    border-color: $hover-border;
+  }
   //   @if $enable-gradients {
   //     background-image: none; // Remove the gradient for the pressed/active state
   //   }
@@ -60,5 +62,45 @@
   //     //   box-shadow: 0 0 0 $btn-focus-width rgba(mix(color-yiq($background), $border, 15%), .5);
   //     // }
   //   }
+  // }
+}
+
+// @mixin button-outline-variant($color, $color-hover: color-yiq($color), $active-background: $color, $active-border: $color) {
+@mixin button-outline-variant($color, $color-hover: hsl.contrast($color), $active-background: $color, $active-border: $color) {
+  color: $color;
+  border-color: $color;
+
+  @include bs.hover() {
+    color: $color-hover;
+    background-color: $active-background;
+    border-color: $active-border;
+  }
+
+  // &:focus,
+  // &.focus {
+  //   box-shadow: 0 0 0 bs.$btn-focus-width hsl.alpha($color,50%);
+  // }
+
+  &.disabled,
+  &:disabled {
+    color: $color;
+    background-color: transparent;
+  }
+
+  // &:not(:disabled):not(.disabled):active,
+  // &:not(:disabled):not(.disabled).active,
+  // .show > &.dropdown-toggle {
+  //   color: hsl.contrast($active-background);
+  //   background-color: $active-background;
+  //   border-color: $active-border;
+
+  // &:focus {
+  //   @if $enable-shadows and $btn-active-box-shadow != none {
+  //     @include bs.box-shadow($btn-active-box-shadow, 0 0 0 $btn-focus-width hsl.alpha($color,50%));
+  //   } @else {
+  //     // Avoid using mixin so we can pass custom focus shadow properly
+  //     box-shadow: 0 0 0 $btn-focus-width hsl.alpha($color,50%);
+  //   }
+  // }
   // }
 }

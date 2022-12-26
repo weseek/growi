@@ -7,7 +7,7 @@
     .list-group-item {
       color: $color;
       background-color: $bgcolor;
-      border-color: $border-color-global;
+      // border-color: $border-color-global;
 
       &.list-group-item-action {
         &:hover {
@@ -29,7 +29,7 @@
   .list-group-item {
     color: $color;
     background-color: transparent;
-    border-color: $border-color-global;
+    // border-color: $border-color-global;
 
     .grw-count-badge {
       @include count-badge.count-badge($btn-color, $bgcolor-hover, 28px);

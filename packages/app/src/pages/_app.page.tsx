@@ -20,7 +20,7 @@ import { registerTransformerForObjectId } from './utils/objectid-transformer';
 
 import '~/styles/style-app.scss';
 import '~/styles/theme/_apply-colors.scss';
-
+import '~/styles/theme/_apply-colors-light.scss';
 
 const isDev = process.env.NODE_ENV === 'development';
 

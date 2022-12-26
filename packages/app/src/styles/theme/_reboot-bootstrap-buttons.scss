@@ -13,9 +13,9 @@
 
   &:disabled,
   &.disabled {
-    color: var(--color-link-disabled, $gray-500);
+    color: var(--color-link-disabled, #{$gray-500});
     svg {
-      fill: var(--color-link-disabled, $gray-500);
+      fill: var(--color-link-disabled, #{$gray-500});
     }
   }
 }
