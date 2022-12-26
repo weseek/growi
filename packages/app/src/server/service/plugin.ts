@@ -97,7 +97,7 @@ export class PluginService implements IPluginService {
 
     try {
       // clean up old plugin data from file system and documents
-      await this.cleanUp(ghOrganizationName, ghReposName, ghBranch);
+      await this.cleanUp(installedPath, ghBranch);
 
       // download github repository to file system
       await this.downloadPluginRepository(ghOrganizationName, ghReposName, ghBranch);
@@ -109,36 +109,35 @@ export class PluginService implements IPluginService {
       return plugins[0].meta.name;
     }
     catch (err) {
-      await this.cleanUp(ghOrganizationName, ghReposName, ghBranch);
+      await this.cleanUp(installedPath, ghBranch);
       logger.error(err);
       throw err;
     }
   }
 
-  private async cleanUp(ghOrganizationName: string, ghReposName: string, ghBranch: string): Promise<void> {
+  private async cleanUp(installedPath: string, ghBranch: string): Promise<void> {
+    const GrowiPlugin = mongoose.model<GrowiPlugin>('GrowiPlugin');
     const zipFilePath = path.join(pluginStoringPath, `${ghBranch}.zip`);
-    const unzippedPath = path.join(pluginStoringPath, ghOrganizationName);
-    const installedPath = `${ghOrganizationName}/${ghReposName}`;
+    const unzippedPath = path.join(pluginStoringPath, `${installedPath}-${ghBranch}`);
+    const renamedPath = path.join(pluginStoringPath, `${installedPath}`);
 
     try {
-      // delete zip file if remain
+      // delete the zip file if it exists
       if (fs.existsSync(zipFilePath)) await fs.promises.rm(zipFilePath);
-      // delete unzipped folder if remain
-      if (fs.existsSync(`${unzippedPath}/${ghReposName}-${ghBranch}`)) await fs.promises.rm(`${unzippedPath}/${ghReposName}-${ghBranch}`, { recursive: true });
-      // delete renamed folder if remain
-      if (fs.existsSync(`${unzippedPath}/${ghReposName}`)) await fs.promises.rm(`${unzippedPath}/${ghReposName}`, { recursive: true });
-      // delete plugin documents
-      await this.deleteOldPluginDocuments(installedPath);
+
+      // delete unzipped folder if it exists
+      if (fs.existsSync(unzippedPath)) await fs.promises.rm(unzippedPath, { recursive: true });
+
+      // delete renamed folder if it exists
+      if (fs.existsSync(renamedPath)) await fs.promises.rm(renamedPath, { recursive: true });
+
+      // delete plugin documents if they exist
+      await GrowiPlugin.deleteMany({ installedPath });
     }
     catch (err) {
       logger.error(err);
       throw new Error('Failed to clean up plugin data.');
     }
-  }
-
-  private async deleteOldPluginDocuments(path: string): Promise<void> {
-    const GrowiPlugin = mongoose.model<GrowiPlugin>('GrowiPlugin');
-    await GrowiPlugin.deleteMany({ installedPath: path });
   }
 
   private async downloadPluginRepository(ghOrganizationName: string, ghReposName: string, ghBranch: string): Promise<void> {
