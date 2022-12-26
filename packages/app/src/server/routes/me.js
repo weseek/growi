@@ -100,35 +100,5 @@ module.exports = function(crowi, app) {
       });
   };
 
-  actions.externalAccounts = {};
-  actions.externalAccounts.list = function(req, res) {
-    const userData = req.user;
-
-    const renderVars = {};
-    ExternalAccount.find({ user: userData })
-      .then((externalAccounts) => {
-        renderVars.externalAccounts = externalAccounts;
-        return;
-      })
-      .then(() => {
-        if (req.method === 'POST' && req.form.isValid) {
-          // TODO impl
-          return res.render('me/external-accounts', renderVars);
-        }
-        // method GET
-        return res.render('me/external-accounts', renderVars);
-      });
-  };
-
-  actions.drafts = {};
-  actions.drafts.list = async function(req, res) {
-    return res.render('me/drafts');
-  };
-
-  actions.updates = function(req, res) {
-    res.render('me/update', {
-    });
-  };
-
   return actions;
 };
