@@ -385,7 +385,6 @@
     "gridfs_label": "MongoDB(GridFS)",
     "fixed_by_env_var": "環境変数 <code>FILE_UPLOAD={{fileUploadType}}</code> により固定されています。",
     "file_upload": "ファイルをアップロードするための設定を行います。ファイルアップロードの設定を完了させると、ファイルアップロード機能、プロフィール写真機能などが有効になります。",
-    "ses_settings": "SES設定",
     "test_connection": "接続テスト",
     "change_setting": "この設定を途中で変更すると、これまでにアップロードしたファイル等へのアクセスができなくなりますのでご注意下さい。",
     "region": "リージョン",
@@ -1033,6 +1032,10 @@
     "remove_user_success": "{{username}}を削除しました",
     "remove_external_user_success": "{{accountId}}を削除しました",
     "switch_disable_link_sharing_success": "共有リンクの設定を変更しました",
-    "failed_to_reset_password":"パスワードのリセットに失敗しました"
+    "failed_to_reset_password":"パスワードのリセットに失敗しました",
+    "install_plugin_success": "{{pluginName}}のインストールに成功しました",
+    "activate_plugin_success": "{{pluginName}}を有効化しました",
+    "deactivate_plugin_success": "{{pluginName}}を無効化しました",
+    "remove_plugin_success": "{{pluginName}}を削除しました"
   }
 }

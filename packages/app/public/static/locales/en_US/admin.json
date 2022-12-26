@@ -377,7 +377,6 @@
     "local_label": "Local",
     "gridfs_label": "MongoDB(GridFS)",
     "file_upload": "This is for uploading file settings. If you complete file upload settings, file upload function, profile picture function etc will be enabled.",
-    "ses_settings":"SES settings",
     "test_connection": "Test connection to mail",
     "change_setting": "Caution:if you change this setting not completed, you will not be able to access files you have uploaded so far.",
     "region": "Region",
@@ -1025,6 +1024,10 @@
     "remove_user_success": "Succeeded to removing {{username}}",
     "remove_external_user_success": "Succeeded to remove {{accountId}}",
     "switch_disable_link_sharing_success": "Succeeded to update share link setting",
-    "failed_to_reset_password":"Failed to reset password"
+    "failed_to_reset_password":"Failed to reset password",
+    "install_plugin_success": "Succeeded to install {{pluginName}}",
+    "activate_plugin_success": "Succeeded to activating {{pluginName}}",
+    "deactivate_plugin_success": "Succeeded to deactivate {{pluginName}}",
+    "remove_plugin_success": "Succeeded to removing {{pluginName}}"
   }
 }

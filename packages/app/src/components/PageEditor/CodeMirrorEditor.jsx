@@ -1182,6 +1182,8 @@ CodeMirrorEditor.defaultProps = {
   lineNumbers: true,
 };
 
+const CodeMirrorEditorMemoized = memo(CodeMirrorEditor);
+
 
 const CodeMirrorEditorFc = React.forwardRef((props, ref) => {
   const { open: openDrawioModal } = useDrawioModal();
@@ -1196,7 +1198,7 @@ const CodeMirrorEditorFc = React.forwardRef((props, ref) => {
   }, [openHandsontableModal]);
 
   return (
-    <CodeMirrorEditor
+    <CodeMirrorEditorMemoized
       ref={ref}
       onClickDrawioBtn={openDrawioModalHandler}
       onClickTableBtn={openTableModalHandler}
