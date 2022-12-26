@@ -81,6 +81,7 @@ function Crowi() {
   this.activityService = null;
   this.commentService = null;
   this.xss = new Xss();
+  this.questionnaireCronService = null;
 
   this.tokens = null;
 
@@ -308,9 +309,8 @@ Crowi.prototype.setupModels = async function() {
 };
 
 Crowi.prototype.setupCron = function() {
-  console.log(this.configManager?.getConfig('crowi', 'app:questionnaireCronSchedule'));
-  console.log(this.configManager?.getConfig('crowi', 'app:questionnaireCronMaxHoursUntilRequest'));
-  new QuestionnaireCronService(this).setUpCron();
+  this.questionnaireCronService = new QuestionnaireCronService(this);
+  this.questionnaireCronService.startCron();
 };
 
 Crowi.prototype.scanRuntimeVersions = async function() {
