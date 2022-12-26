@@ -298,7 +298,8 @@ export class G2GTransferPusherService implements Pusher {
 
   public async transferAttachments(tk: TransferKey): Promise<void> {
     const BATCH_SIZE = 100;
-    const { fileUploadService } = this.crowi;
+    const { fileUploadService, socketIoService } = this.crowi;
+    const socket = socketIoService.getAdminSocket();
     const Attachment = this.crowi.model('Attachment');
     const filesFromNewGrowi = await this.listFilesInStorage(tk);
 
@@ -364,6 +365,12 @@ export class G2GTransferPusherService implements Pusher {
         }
         catch (err) {
           logger.warn(`Error occured when getting Attachment(ID=${attachment.id}), skipping: `, err);
+          socket.emit('admin:g2gError', {
+            message: `Error occured when uploading Attachment(ID=${attachment.id})`,
+            key: `Error occured when uploading Attachment(ID=${attachment.id})`,
+            // TODO: emit error with params
+            // key: 'admin:g2g:error_upload_attachment',
+          });
           continue;
         }
         // post each attachment file data to receiver
@@ -372,6 +379,12 @@ export class G2GTransferPusherService implements Pusher {
         }
         catch (err) {
           logger.error(`Error occured when uploading attachment(ID=${attachment.id})`, err);
+          socket.emit('admin:g2gError', {
+            message: `Error occured when uploading Attachment(ID=${attachment.id})`,
+            key: `Error occured when uploading Attachment(ID=${attachment.id})`,
+            // TODO: emit error with params
+            // key: 'admin:g2g:error_upload_attachment',
+          });
         }
       }
     }

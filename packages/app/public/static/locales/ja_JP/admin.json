@@ -1027,7 +1027,6 @@
   },
   "g2g": {
     "transfer_success": "G2G移行が完了しました",
-    "error_upload_attachment": "添付ファイルのアップロードに失敗しました",
     "error_generate_growi_archive": "GROWI アーカイブファイルの作成に失敗しました",
     "error_send_growi_archive": "GROWI アーカイブファイルの送信に失敗しました"
   },
