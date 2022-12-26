@@ -377,7 +377,6 @@
     "local_label": "Local",
     "gridfs_label": "MongoDB(GridFS)",
     "file_upload": "This is for uploading file settings. If you complete file upload settings, file upload function, profile picture function etc will be enabled.",
-    "ses_settings":"SES settings",
     "test_connection": "Test connection to mail",
     "change_setting": "Caution:if you change this setting not completed, you will not be able to access files you have uploaded so far.",
     "region": "Region",
