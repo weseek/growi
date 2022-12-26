@@ -184,10 +184,12 @@ $dropdown-link-active-bg: $bgcolor-dropdown-link-active;
   }
 }
 
-// .grw-drawer-toggler {
-//   @extend .btn-light;
-//   color: #{$gray-500};
-// }
+.grw-drawer-toggler {
+  @include button-variant($light, $light);
+  @include mixins-buttons.button-svg-icon-variant($light, $light);
+  color: #{$gray-500};
+  box-shadow: none !important;
+}
 
 /*
  * GROWI Sidebar

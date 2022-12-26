@@ -34,7 +34,7 @@
   &.disabled,
   &:disabled {
     color: hsl.contrast($background);
-    background-color: $background;
+    @include bs.gradient-bg($background);
     border-color: $border;
     // Remove CSS gradients if they're enabled
     @if bs.$enable-gradients {
@@ -42,11 +42,13 @@
     }
   }
 
-  // &:not(:disabled):not(.disabled):active,
-  // &:not(:disabled):not(.disabled).active,
-  // .show > &.dropdown-toggle {
-  //   color: color-yiq($active-background);
-  //   background-color: $active-background;
+  &:not(:disabled):not(.disabled):active,
+  &:not(:disabled):not(.disabled).active,
+  .show > &.dropdown-toggle {
+    color: hsl.contrast($background);
+    background-color: $hover-background;
+    border-color: $hover-border;
+  }
   //   @if $enable-gradients {
   //     background-image: none; // Remove the gradient for the pressed/active state
   //   }
