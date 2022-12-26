@@ -4,7 +4,6 @@ import path from 'path';
 import { GrowiThemeMetadata, ViteManifest } from '@growi/core';
 // eslint-disable-next-line no-restricted-imports
 import axios from 'axios';
-import { plugins } from 'handsontable';
 import mongoose from 'mongoose';
 import streamToPromise from 'stream-to-promise';
 import unzipper from 'unzipper';
@@ -81,27 +80,27 @@ export class PluginService implements IPluginService {
   }
 
   async install(origin: GrowiPluginOrigin): Promise<string> {
-    try {
     // download
-      const ghUrl = new URL(origin.url);
-      const ghPathname = ghUrl.pathname;
-      // TODO: Branch names can be specified.
-      const ghBranch = 'main';
+    const ghUrl = new URL(origin.url);
+    const ghPathname = ghUrl.pathname;
+    // TODO: Branch names can be specified.
+    const ghBranch = 'main';
 
-      const match = ghPathname.match(githubReposIdPattern);
-      if (ghUrl.hostname !== 'github.com' || match == null) {
-        throw new Error('GitHub repository URL is invalid.');
-      }
+    const match = ghPathname.match(githubReposIdPattern);
+    if (ghUrl.hostname !== 'github.com' || match == null) {
+      throw new Error('GitHub repository URL is invalid.');
+    }
 
-      const ghOrganizationName = match[1];
-      const ghReposName = match[2];
-      const installedPath = `${ghOrganizationName}/${ghReposName}`;
+    const ghOrganizationName = match[1];
+    const ghReposName = match[2];
+    const installedPath = `${ghOrganizationName}/${ghReposName}`;
 
-      // download github repository to local file system
+    try {
+      // clean up old plugin data from file system and documents
+      await this.cleanUp(ghOrganizationName, ghReposName, ghBranch);
+
+      // download github repository to file system
       await this.downloadPluginRepository(ghOrganizationName, ghReposName, ghBranch);
-
-      // delete old document
-      await this.deleteOldPluginDocument(installedPath);
 
       // save plugin metadata
       const plugins = await PluginService.detectPlugins(origin, installedPath);
@@ -110,12 +109,34 @@ export class PluginService implements IPluginService {
       return plugins[0].meta.name;
     }
     catch (err) {
+      await this.cleanUp(ghOrganizationName, ghReposName, ghBranch);
       logger.error(err);
       throw err;
     }
   }
 
-  private async deleteOldPluginDocument(path: string): Promise<void> {
+  private async cleanUp(ghOrganizationName: string, ghReposName: string, ghBranch: string): Promise<void> {
+    const zipFilePath = path.join(pluginStoringPath, `${ghBranch}.zip`);
+    const unzippedPath = path.join(pluginStoringPath, ghOrganizationName);
+    const installedPath = `${ghOrganizationName}/${ghReposName}`;
+
+    try {
+      // delete zip file if remain
+      if (fs.existsSync(zipFilePath)) await fs.promises.rm(zipFilePath);
+      // delete unzipped folder if remain
+      if (fs.existsSync(`${unzippedPath}/${ghReposName}-${ghBranch}`)) await fs.promises.rm(`${unzippedPath}/${ghReposName}-${ghBranch}`, { recursive: true });
+      // delete renamed folder if remain
+      if (fs.existsSync(`${unzippedPath}/${ghReposName}`)) await fs.promises.rm(`${unzippedPath}/${ghReposName}`, { recursive: true });
+      // delete plugin documents
+      await this.deleteOldPluginDocuments(installedPath);
+    }
+    catch (err) {
+      logger.error(err);
+      throw new Error('Failed to clean up plugin data.');
+    }
+  }
+
+  private async deleteOldPluginDocuments(path: string): Promise<void> {
     const GrowiPlugin = mongoose.model<GrowiPlugin>('GrowiPlugin');
     await GrowiPlugin.deleteMany({ installedPath: path });
   }
@@ -157,10 +178,9 @@ export class PluginService implements IPluginService {
       try {
         const stream = fs.createReadStream(zipFilePath);
         const unzipStream = stream.pipe(unzipper.Extract({ path: unzippedPath }));
-        const deleteZipFile = (path: fs.PathLike) => fs.unlinkSync(path);
 
         await streamToPromise(unzipStream);
-        deleteZipFile(zipFilePath);
+        await fs.promises.rm(zipFilePath);
       }
       catch (err) {
         logger.error(err);
@@ -170,9 +190,6 @@ export class PluginService implements IPluginService {
 
     const renamePath = async(oldPath: fs.PathLike, newPath: fs.PathLike) => {
       try {
-        // if repository already exists, delete old repository before rename path
-        if (fs.existsSync(newPath)) await fs.promises.rm(newPath, { recursive: true });
-        // rename repository
         fs.renameSync(oldPath, newPath);
       }
       catch (err) {
