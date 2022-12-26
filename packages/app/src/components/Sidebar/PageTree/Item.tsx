@@ -17,7 +17,7 @@ import TriangleIcon from '~/components/Icons/TriangleIcon';
 import {
   IPageHasId, IPageInfoAll, IPageToDeleteWithMeta,
 } from '~/interfaces/page';
-import { useSWRxCurrentUserBookmarks } from '~/stores/bookmark';
+import { useSWRBookmarkInfo, useSWRxCurrentUserBookmarks } from '~/stores/bookmark';
 import { IPageForPageDuplicateModal } from '~/stores/modal';
 import { useSWRxPageChildren } from '~/stores/page-listing';
 import { usePageTreeDescCountMap } from '~/stores/ui';
@@ -117,6 +117,7 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
 
   const { data, mutate: mutateChildren } = useSWRxPageChildren(isOpen ? page._id : null);
   const { mutate: mutateCurrentUserBookmarks } = useSWRxCurrentUserBookmarks();
+  const { mutate: mutateBookmarkInfo } = useSWRBookmarkInfo(page._id);
 
   // descendantCount
   const { getDescCount } = usePageTreeDescCountMap();
@@ -248,6 +249,7 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
     const bookmarkOperation = _newValue ? bookmark : unbookmark;
     await bookmarkOperation(_pageId);
     mutateCurrentUserBookmarks();
+    mutateBookmarkInfo();
   };
 
   const duplicateMenuItemClickHandler = useCallback((): void => {

@@ -32,7 +32,6 @@ export interface BookmarkFolderModel extends Model<BookmarkFolderDocument>{
   deleteFolderAndChildren(bookmarkFolderId: Types.ObjectId | string): {deletedCount: number}
   updateBookmarkFolder(bookmarkFolderId: string, name: string, parent: string): BookmarkFolderDocument | null
   insertOrUpdateBookmarkedPage(pageId: IPageHasId, userId: Types.ObjectId | string, folderId: string)
-  getSelectedBookmarkFolder(pageId: Types.ObjectId | string): BookmarkFolderDocument | null
 }
 
 const bookmarkFolderSchema = new Schema<BookmarkFolderDocument, BookmarkFolderModel>({
@@ -152,16 +151,6 @@ Promise<BookmarkFolderDocument | null> {
   // Insert bookmark into bookmark folder
   const bookmarkFolder = await this.findByIdAndUpdate(folderId, { $addToSet: { bookmarks: bookmarkedPage } }, { new: true, upsert: true });
   return bookmarkFolder;
-};
-
-bookmarkFolderSchema.statics.getSelectedBookmarkFolder = async function(pageId: Types.ObjectId | string): Promise<BookmarkFolderDocument | null> {
-
-  const bookmark = await Bookmark.findOne({ page: pageId });
-  if (bookmark != null) {
-    const bookmarkFolder = await this.findOne({ bookmarks: [bookmark._id] }) as unknown as BookmarkFolderDocument;
-    return bookmarkFolder;
-  }
-  return null;
 };
 
 

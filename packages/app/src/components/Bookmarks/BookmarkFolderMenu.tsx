@@ -33,26 +33,19 @@ const BookmarkFolderMenu = (props: Props): JSX.Element => {
   const { data: currentPage } = useSWRxCurrentPage();
   const { mutate: mutateBookmarkInfo } = useSWRBookmarkInfo(currentPage?._id);
 
-  const getSelectedFolder = useCallback(async() => {
-    try {
-      const result = await apiv3Get(`/bookmark-folder/selected-bookmark-folder/${currentPage?._id}`);
-      const { selectedFolder } = result.data;
-      if (selectedFolder != null) {
-        setSelectedItem(selectedFolder);
-      }
-    }
-    catch (err) {
-      toastError(err);
-    }
-  }, [currentPage]);
-
   const onClickNewBookmarkFolder = useCallback(() => {
     setIsCreateAction(true);
   }, []);
 
   useEffect(() => {
-    getSelectedFolder();
-  }, [getSelectedFolder]);
+    bookmarkFolders?.forEach((bookmarkFolder) => {
+      bookmarkFolder.bookmarks.forEach((bookmark) => {
+        if (bookmark.page._id === currentPage?._id) {
+          setSelectedItem(bookmarkFolder._id);
+        }
+      });
+    });
+  }, [bookmarkFolders, currentPage?._id]);
 
   const isBookmarkFolderExists = useCallback((): boolean => {
     if (bookmarkFolders && bookmarkFolders.length > 0) {
@@ -134,7 +127,6 @@ const BookmarkFolderMenu = (props: Props): JSX.Element => {
 
   return (
     <UncontrolledDropdown
-      onToggle={getSelectedFolder}
       direction={ isBookmarkFolderExists() ? 'up' : 'down' }
       className={`grw-bookmark-folder-dropdown ${styles['grw-bookmark-folder-dropdown']}`}>
       {children}

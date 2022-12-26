@@ -11,7 +11,9 @@ import CountBadge from '~/components/Common/CountBadge';
 import FolderIcon from '~/components/Icons/FolderIcon';
 import TriangleIcon from '~/components/Icons/TriangleIcon';
 import { BookmarkFolderItems } from '~/interfaces/bookmark-info';
+import { useSWRBookmarkInfo } from '~/stores/bookmark';
 import { useSWRxBookamrkFolderAndChild } from '~/stores/bookmark-folder';
+import { useSWRxCurrentPage } from '~/stores/page';
 
 import BookmarkFolderItemControl from './BookmarkFolderItemControl';
 import BookmarkFolderNameInput from './BookmarkFolderNameInput';
@@ -37,6 +39,8 @@ const BookmarkFolderItem: FC<BookmarkFolderItemProps> = (props: BookmarkFolderIt
   const [isRenameAction, setIsRenameAction] = useState<boolean>(false);
   const [isCreateAction, setIsCreateAction] = useState<boolean>(false);
   const [isDeleteFolderModalShown, setIsDeleteFolderModalShown] = useState<boolean>(false);
+  const { data: currentPage } = useSWRxCurrentPage();
+  const { mutate: mutateBookmarkInfo } = useSWRBookmarkInfo(currentPage?._id);
 
   const getChildCount = useCallback((): number => {
     if (currentChildren != null && currentChildren.length > children.length) {
@@ -113,12 +117,13 @@ const BookmarkFolderItem: FC<BookmarkFolderItemProps> = (props: BookmarkFolderIt
       await apiv3Delete(`/bookmark-folder/${folderId}`);
       setIsDeleteFolderModalShown(false);
       loadParent();
+      mutateBookmarkInfo();
       toastSuccess(t('toaster.delete_succeeded', { target: t('bookmark_folder.bookmark_folder') }));
     }
     catch (err) {
       toastError(err);
     }
-  }, [folderId, loadParent, t]);
+  }, [folderId, loadParent, mutateBookmarkInfo, t]);
 
   const onClickPlusButton = useCallback(async(e) => {
     e.stopPropagation();

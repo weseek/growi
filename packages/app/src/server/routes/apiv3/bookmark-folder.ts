@@ -100,7 +100,7 @@ module.exports = (crowi) => {
 
     try {
       const bookmarkFolder = await BookmarkFolder.insertOrUpdateBookmarkedPage(pageId, userId, folderId);
-      logger.debug('bookmark added to folder created', bookmarkFolder);
+      logger.debug('bookmark added to folder', bookmarkFolder);
       return res.apiv3({ bookmarkFolder });
     }
     catch (err) {
@@ -108,17 +108,6 @@ module.exports = (crowi) => {
     }
   });
 
-  router.get('/selected-bookmark-folder/:pageId', accessTokenParser, loginRequiredStrictly, async(req, res) => {
-    const { pageId } = req.params;
-    try {
-      const selectedFolder = await BookmarkFolder.getSelectedBookmarkFolder(pageId);
-      return res.apiv3({ selectedFolder });
-    }
-    catch (err) {
-      logger.error(err);
-      return res.apiv3Err(err, 500);
-    }
-  });
 
   return router;
 };

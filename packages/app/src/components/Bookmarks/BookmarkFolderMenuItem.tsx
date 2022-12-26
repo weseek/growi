@@ -37,19 +37,6 @@ const BookmarkFolderMenuItem = (props: Props):JSX.Element => {
   const { data: currentPage } = useSWRxCurrentPage();
   const { mutate: mutateBookmarkInfo } = useSWRBookmarkInfo(currentPage?._id);
 
-  const getSelectedFolder = useCallback(async() => {
-    try {
-      const result = await apiv3Get(`/bookmark-folder/selected-bookmark-folder/${currentPage?._id}`);
-      const { selectedFolder } = result.data;
-      if (selectedFolder != null) {
-        setSelectedItem(selectedFolder._id);
-      }
-    }
-    catch (err) {
-      toastError(err);
-    }
-  }, [currentPage]);
-
   const onPressEnterHandlerForCreate = useCallback(async(folderName: string) => {
     try {
       await apiv3Post('/bookmark-folder', { name: folderName, parent: item._id });
@@ -66,9 +53,16 @@ const BookmarkFolderMenuItem = (props: Props):JSX.Element => {
   useEffect(() => {
     if (isOpen) {
       mutateChildFolders();
-      getSelectedFolder();
     }
-  }, [getSelectedFolder, isOpen, mutateChildFolders]);
+    childFolders?.forEach((bookmarkFolder) => {
+      bookmarkFolder.bookmarks.forEach((bookmark) => {
+        if (bookmark.page._id === currentPage?._id) {
+          setSelectedItem(bookmarkFolder._id);
+        }
+      });
+    });
+
+  }, [childFolders, currentPage?._id, isOpen, mutateChildFolders]);
 
   const onClickNewBookmarkFolder = useCallback((e) => {
     e.stopPropagation();
