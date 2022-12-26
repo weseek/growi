@@ -9,6 +9,7 @@
 $color-list: var(--color-list,var(--color-global));
 $bgcolor-list: var(--bgcolor-list,var(--bgcolor-global));
 $color-list-hover: var(--color-list-hover,var(--color-global));
+$bgcolor-list-hover: var(--bgcolor-list-hover,var(--bgcolor-global));
 $bgcolor-list-active: var(--bgcolor-list-active,var(--primary-65));
 $color-list-active: var(--color-list-active,#{hsl.contrast(var(--primary-65))});
 $color-table: var(--color-table,var(--color-global));
@@ -183,10 +184,10 @@ $dropdown-link-active-bg: $bgcolor-dropdown-link-active;
   }
 }
 
-.grw-drawer-toggler {
-  @extend .btn-light;
-  color: $gray-500;
-}
+// .grw-drawer-toggler {
+//   @extend .btn-light;
+//   color: #{$gray-500};
+// }
 
 /*
  * GROWI Sidebar
@@ -217,6 +218,7 @@ $dropdown-link-active-bg: $bgcolor-dropdown-link-active;
       #{hsl.darken(var(--bgcolor-sidebar-context),15%)},
       #{hsl.darken(var(--bgcolor-sidebar-context),24%)}
     );
+
     .grw-pagetree-triangle-btn {
       @include mixins-buttons.button-outline-svg-icon-variant(#{gray-400}, var(--primary));
     }
@@ -366,10 +368,10 @@ $dropdown-link-active-bg: $bgcolor-dropdown-link-active;
 
 .wiki {
   h1 {
-    border-color: $border-color-theme;
+    border-color: var(--border-color-theme);
   }
   h2 {
-    border-color: $border-color-theme;
+    border-color: var(--border-color-theme);
   }
 }
 

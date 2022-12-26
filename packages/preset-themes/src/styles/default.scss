@@ -40,7 +40,7 @@
   --color-global-hs: 214.1,60%;
   --color-global-l: 16.7%;
   --color-reversal: var(--light);
-  // $color-header: #2b2b2b;
+  // --color-header: #2b2b2b;
   --color-link: hsl(var(--color-link-hs),var(--color-link-l));
   --color-link-hs: 228.4,76.3%;
   --color-link-l: 41.4%;
@@ -55,11 +55,11 @@
 
   // List Group colors
   --color-list: var(--color-global); // optional
-  // --bgcolor-list: var(--bgcolor-global); // optional
+  --bgcolor-list: var(--bgcolor-global); // optional
   // --color-list-hover: va(--color-global); // optional
   --bgcolor-list-hover: #{hsl.lighten(var(--bgcolor-global),3%)};// optional
-  // --color-list-active:white ; // optional
-  // --bgcolor-list-active: $primary; // optional
+  // --color-list-active: white ; // optional
+  // --bgcolor-list-active: var(--primary); // optional
   // --color-page-list-group-item-meta: #{$gray-500}; // optional
 
   // Table colors
@@ -111,13 +111,14 @@
   --bgcolor-subnav-l: calc(var(--bgcolor-global-l) - 3%);
 
   // Tabs
+  // --bordercolor-nav-tabs: #{$gray-300}; // optional
   // --color-nav-tabs-link-active: #; //optional
   // --bordercolor-nav-tabs-hover: # # $bordercolor-nav-tabs; // optional
   // --bordercolor-nav-tabs-active: # # // optional
 
   // Tags
-  // $color-tags: #; //optional
-  // $bgcolor-tags: #; //optional
+  // --color-tags: #; //optional
+  // --bgcolor-tags: #; //optional
 
   // Icon colors
   --color-editor-icons: var(--color-global);
@@ -166,8 +167,8 @@
   --color-global: #{$gray-400};
   --color-global-hs: 0,0%;
   --color-global-l: 74%;
-  $color-reversal: $gray-900;
-  // $color-header: desaturate($primary, 20%);
+  --color-reversal: #{$gray-900};
+  // --color-header: desaturate($primary, 20%);
   --color-link: #7b9ad5;
   --color-link-hs: 219.3,51.7%;
   --color-link-l: 65.9%;
@@ -182,9 +183,9 @@
   // List Group colors
   --color-list: var(--color-global); // optional
   // --bgcolor-list: var(--bgcolor-global); // optional
-  // --color-list-hover: va(--color-global); // optional
+  // --color-list-hover: var(--color-global); // optional
   --bgcolor-list-hover: #{hsl.lighten(var(--bgcolor-global),3%)}; // optional
-  // --color-list-active:white ; // optional
+  // --color-list-active: white ; // optional
   --bgcolor-list-active: var(--primary); // optional
 
   // Table colors
@@ -253,7 +254,7 @@
   //Button
   .btn-group.grw-page-editor-mode-manager {
     .btn.btn-outline-primary {
-      @include page-editor-mode-manager.btn-page-editor-mode-manager(lighten($primary, 30%), lighten($primary, 20%), $primary, darken($primary, 20%));
+      @include page-editor-mode-manager.btn-page-editor-mode-manager(#{hsl.lighten(var(--primary), 30%)}, #{hsl.lighten(var(--primary), 20%)}, var(--primary), #{hsl.darken(var(--primary), 20%)});
     }
   }
 }
