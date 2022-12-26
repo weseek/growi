@@ -336,18 +336,17 @@ export const generateViewOptions = (
   }
 
   const rehypeSanitizePlugin: Pluggable<any[]> | (() => void) = config.isEnabledXssPrevention
-    ? [sanitize, deepmerge(commonSanitizeOption, lsxGrowiPlugin.sanitizeOption)]
+    ? [sanitize, deepmerge(
+      commonSanitizeOption,
+      drawioPlugin.sanitizeOption,
+      lsxGrowiPlugin.sanitizeOption,
+    )]
     : () => {};
 
   // add rehype plugins
   rehypePlugins.push(
     slug,
     [lsxGrowiPlugin.rehypePlugin, { pagePath }],
-    [sanitize, deepmerge(
-      commonSanitizeOption,
-      drawioPlugin.sanitizeOption,
-      lsxGrowiPlugin.sanitizeOption,
-    )],
     rehypeSanitizePlugin,
     katex,
     [toc.rehypePluginStore, { storeTocNode }],
@@ -395,7 +394,9 @@ export const generateTocOptions = (config: RendererConfig, tocNode: HtmlElementN
 
 
   const rehypeSanitizePlugin: Pluggable<any[]> | (() => void) = config.isEnabledXssPrevention
-    ? [sanitize, deepmerge(commonSanitizeOption, lsxGrowiPlugin.sanitizeOption)]
+    ? [sanitize, deepmerge(
+      commonSanitizeOption,
+    )]
     : () => {};
 
   // add rehype plugins
@@ -432,18 +433,17 @@ export const generateSimpleViewOptions = (config: RendererConfig, pagePath: stri
   }
 
   const rehypeSanitizePlugin: Pluggable<any[]> | (() => void) = config.isEnabledXssPrevention
-    ? [sanitize, deepmerge(commonSanitizeOption, lsxGrowiPlugin.sanitizeOption)]
+    ? [sanitize, deepmerge(
+      commonSanitizeOption,
+      drawioPlugin.sanitizeOption,
+      lsxGrowiPlugin.sanitizeOption,
+    )]
     : () => {};
 
   // add rehype plugins
   rehypePlugins.push(
     [lsxGrowiPlugin.rehypePlugin, { pagePath }],
     [keywordHighlighter.rehypePlugin, { keywords: highlightKeywords }],
-    [sanitize, deepmerge(
-      commonSanitizeOption,
-      drawioPlugin.sanitizeOption,
-      lsxGrowiPlugin.sanitizeOption,
-    )],
     rehypeSanitizePlugin,
     katex,
   );
@@ -480,19 +480,18 @@ export const generatePreviewOptions = (config: RendererConfig, pagePath: string)
   }
 
   const rehypeSanitizePlugin: Pluggable<any[]> | (() => void) = config.isEnabledXssPrevention
-    ? [sanitize, deepmerge(commonSanitizeOption, lsxGrowiPlugin.sanitizeOption, addLineNumberAttribute.sanitizeOption)]
+    ? [sanitize, deepmerge(
+      commonSanitizeOption,
+      lsxGrowiPlugin.sanitizeOption,
+      drawioPlugin.sanitizeOption,
+      addLineNumberAttribute.sanitizeOption,
+    )]
     : () => {};
 
   // add rehype plugins
   rehypePlugins.push(
     [lsxGrowiPlugin.rehypePlugin, { pagePath }],
     addLineNumberAttribute.rehypePlugin,
-    [sanitize, deepmerge(
-      commonSanitizeOption,
-      lsxGrowiPlugin.sanitizeOption,
-      drawioPlugin.sanitizeOption,
-      addLineNumberAttribute.sanitizeOption,
-    )],
     rehypeSanitizePlugin,
     katex,
   );
