@@ -101,7 +101,7 @@ const G2GDataTransferExportForm = (props: Props): JSX.Element => {
           const isConfigButtonAvailable = Object.keys(IMPORT_OPTION_CLASS_MAPPING).includes(collectionName);
 
           if (optionsMap[collectionName] == null) {
-            return <></>;
+            return null;
           }
 
           return (
@@ -112,7 +112,7 @@ const G2GDataTransferExportForm = (props: Props): JSX.Element => {
                 // insertedCount={collectionProgress ? collectionProgress.insertedCount : 0}
                 // modifiedCount={collectionProgress ? collectionProgress.modifiedCount : 0}
                 // errorsCount={errors ? errors.length : 0}
-                isImporting={0}
+                isImporting={false}
                 isImported={false}
                 insertedCount={0}
                 modifiedCount={0}
@@ -135,17 +135,17 @@ const G2GDataTransferExportForm = (props: Props): JSX.Element => {
     );
   };
 
-  const WarnForGroups = ({ errors, key }): JSX.Element => {
+  const WarnForGroups = ({ errors }): JSX.Element => {
     if (errors.length === 0) {
       return <></>;
     }
 
     return (
-      <div key={key} className="alert alert-warning">
+      <div className="alert alert-warning">
         <ul>
-          {errors.map((error, index) => {
+          {errors.map((error) => {
             // eslint-disable-next-line react/no-array-index-key
-            return <li key={`${key}-${index}`}>{error}</li>;
+            return <li key={error}>{error}</li>;
           })}
         </ul>
       </div>
