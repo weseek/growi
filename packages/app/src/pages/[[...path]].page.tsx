@@ -93,6 +93,8 @@ const UsersHomePageFooter = dynamic<UsersHomePageFooterProps>(() => import('../c
 const DrawioModal = dynamic(() => import('../components/PageEditor/DrawioModal').then(mod => mod.DrawioModal), { ssr: false });
 const HandsontableModal = dynamic(() => import('../components/PageEditor/HandsontableModal').then(mod => mod.HandsontableModal), { ssr: false });
 const PageStatusAlert = dynamic(() => import('../components/PageStatusAlert').then(mod => mod.PageStatusAlert), { ssr: false });
+const IdenticalPathPage = dynamic(() => import('../components/IdenticalPathPage').then(mod => mod.IdenticalPathPage), { ssr: false });
+const PutbackPageModal = dynamic(() => import('../components/PutbackPageModal'), { ssr: false });
 
 const logger = loggerFactory('growi:pages:all');
 
@@ -127,17 +129,6 @@ superjson.registerCustom<IPageToShowRevisionWithMeta, IPageToShowRevisionWithMet
   },
   'IPageToShowRevisionWithMetaTransformer',
 );
-
-
-const IdenticalPathPage = (): JSX.Element => {
-  const IdenticalPathPage = dynamic(() => import('../components/IdenticalPathPage').then(mod => mod.IdenticalPathPage), { ssr: false });
-  return <IdenticalPathPage />;
-};
-
-const PutbackPageModal = (): JSX.Element => {
-  const PutbackPageModal = dynamic(() => import('../components/PutbackPageModal'), { ssr: false });
-  return <PutbackPageModal />;
-};
 
 type Props = CommonProps & {
   currentUser: IUser,
@@ -301,17 +292,62 @@ const Page: NextPageWithLayout<Props> = (props: Props) => {
 
   const title = generateCustomTitle(props, 'GROWI');
 
+  const GrowiPageHeader = () => {
+    return (
+      <header className="py-0 position-relative">
+        <div id="grw-subnav-container">
+          <GrowiContextualSubNavigation isLinkSharingDisabled={props.disableLinkSharing} />
+        </div>
+      </header>
+    );
+  };
+
+  const GrowiPageMain = () => {
+    return (
+      <div id="main" className={`main ${isUsersHomePage(props.currentPathname) && 'user-page'}`}>
+        <div id="content-main" className="content-main grw-container-convertible">
+          { props.isIdenticalPathPage ? <IdenticalPathPage /> : (
+            <>
+              <PageAlerts />
+              { props.isForbidden && <ForbiddenPage /> }
+              { props.isNotCreatablePage && <NotCreatablePage />}
+              { !props.isForbidden && !props.isNotCreatablePage && <DisplaySwitcher />}
+              {/* <DisplaySwitcher /> */}
+              <PageStatusAlert />
+            </>
+          ) }
+
+          {/* <div className="col-xl-2 col-lg-3 d-none d-lg-block revision-toc-container">
+        <div id="revision-toc" className="revision-toc mt-3 sps sps--abv" data-sps-offset="123">
+          <div id="revision-toc-content" className="revision-toc-content"></div>
+        </div>
+      </div> */}
+        </div>
+      </div>
+    );
+  };
+
+  const GrowiPageFooter = () => {
+    return (
+      <footer className="footer d-edit-none">
+        { pageWithMeta != null && pagePath != null && !isTopPagePath && (
+          <Comments pageId={pageId} pagePath={pagePath} revision={pageWithMeta.data.revision} />
+        ) }
+        { pageWithMeta != null && isUsersHomePage(pageWithMeta.data.path) && (
+          <UsersHomePageFooter creatorId={pageWithMeta.data.creator._id}/>
+        ) }
+        <CurrentPageContentFooter />
+      </footer>
+    );
+  };
+
   return (
     <>
       <Head>
         <title>{title}</title>
       </Head>
       <div className={`dynamic-layout-root ${growiLayoutFluidClass} h-100 d-flex flex-column justify-content-between`}>
-        <header className="py-0 position-relative">
-          <div id="grw-subnav-container">
-            <GrowiContextualSubNavigation isLinkSharingDisabled={props.disableLinkSharing} />
-          </div>
-        </header>
+        <GrowiPageHeader />
         <div className="d-edit-none">
           <GrowiSubNavigationSwitcher />
         </div>
@@ -320,40 +356,9 @@ const Page: NextPageWithLayout<Props> = (props: Props) => {
         <div id="grw-fav-sticky-trigger" className="sticky-top"></div>
 
         <div className="flex-grow-1">
-          <div id="main" className={`main ${isUsersHomePage(props.currentPathname) && 'user-page'}`}>
-            <div id="content-main" className="content-main grw-container-convertible">
-              { props.isIdenticalPathPage && <IdenticalPathPage /> }
-
-              { !props.isIdenticalPathPage && (
-                <>
-                  <PageAlerts />
-                  { props.isForbidden && <ForbiddenPage /> }
-                  { props.isNotCreatablePage && <NotCreatablePage />}
-                  { !props.isForbidden && !props.isNotCreatablePage && <DisplaySwitcher />}
-                  {/* <DisplaySwitcher /> */}
-                  <PageStatusAlert />
-                </>
-              ) }
-
-              {/* <div className="col-xl-2 col-lg-3 d-none d-lg-block revision-toc-container">
-                <div id="revision-toc" className="revision-toc mt-3 sps sps--abv" data-sps-offset="123">
-                  <div id="revision-toc-content" className="revision-toc-content"></div>
-                </div>
-              </div> */}
-            </div>
-          </div>
+          <GrowiPageMain />
         </div>
-        { !props.isIdenticalPathPage && !props.isNotFound && (
-          <footer className="footer d-edit-none">
-            { pageWithMeta != null && pagePath != null && !isTopPagePath && (
-              <Comments pageId={pageId} pagePath={pagePath} revision={pageWithMeta.data.revision} />
-            ) }
-            { pageWithMeta != null && isUsersHomePage(pageWithMeta.data.path) && (
-              <UsersHomePageFooter creatorId={pageWithMeta.data.creator._id}/>
-            ) }
-            <CurrentPageContentFooter />
-          </footer>
-        )}
+        { !props.isIdenticalPathPage && !props.isNotFound && <GrowiPageFooter /> }
 
         {shouldRenderPutbackPageModal && <PutbackPageModal />}
       </div>
