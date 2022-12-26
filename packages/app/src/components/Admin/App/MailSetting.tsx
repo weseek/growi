@@ -25,7 +25,7 @@ const MailSetting = (props: Props) => {
   async function submitHandler() {
     try {
       await adminAppContainer.updateMailSettingHandler();
-      toastSuccess(t('toaster.update_successed', { target: t('admin:app_setting.ses_settings'), ns: 'commons' }));
+      toastSuccess(t('toaster.update_successed', { target: t('admin:app_setting.mail_settings'), ns: 'commons' }));
     }
     catch (err) {
       toastError(err);
