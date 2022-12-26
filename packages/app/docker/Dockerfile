@@ -125,6 +125,7 @@ RUN tar -cf packages.tar \
   packages/app/resource \
   packages/app/tmp \
   packages/app/.env.production* \
+  packages/app/next.config.js \
   packages/*/package.json \
   packages/*/dist
 
