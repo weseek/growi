@@ -187,11 +187,12 @@ export const useUpdateStateAfterSave = (pageId: string|undefined|null): (() => P
 
   // update swr 'currentPageId', 'currentPage', remote states
   return async() => {
-    await mutateCurrentPageId(pageId);
-    const updatedPage = await mutateCurrentPage();
 
     await mutateTagsInfo(); // get from DB
     syncTagsInfoForEditor(); // sync global state for client
+
+    await mutateCurrentPageId(pageId);
+    const updatedPage = await mutateCurrentPage();
 
     if (updatedPage == null) { return }
 
