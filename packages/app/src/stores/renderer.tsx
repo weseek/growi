@@ -147,12 +147,6 @@ export const useSearchResultOptions = useSelectedPagePreviewOptions;
 
 export const useTimelineOptions = useSelectedPagePreviewOptions;
 
-export const useDraftOptions = (): SWRResponse<RendererOptions, Error> => {
-  const key = 'draftOptions';
-
-  return _useOptionsBase(key, generateOthersOptions);
-};
-
 export const useCustomSidebarOptions = (): SWRResponse<RendererOptions, Error> => {
   const key: Key = 'customSidebarOptions';
 
