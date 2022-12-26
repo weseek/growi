@@ -189,6 +189,7 @@ export const useUpdateStateAfterSave = (pageId: string|undefined|null): (() => P
   return async() => {
 
     // update tag before page: https://github.com/weseek/growi/pull/7158
+    // !! DO NOT CHANGE THE ORDERS OF THE MUTATIONS !! -- 12.26 yuken-t
     await mutateTagsInfo(); // get from DB
     syncTagsInfoForEditor(); // sync global state for client
 
