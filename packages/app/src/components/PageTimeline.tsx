@@ -13,6 +13,37 @@ import PaginationWrapper from './PaginationWrapper';
 
 import styles from './PageTimeline.module.scss';
 
+
+type TimelineCardProps = {
+  page: IPageHasId,
+}
+
+const TimelineCard = ({ page }: TimelineCardProps): JSX.Element => {
+
+  const { data: rendererOptions } = useTimelineOptions(page.path);
+
+  return (
+    <div className={`card card-timeline ${styles['card-timeline']}`}>
+      <div className="card-header h4 p-3">
+        <Link href={page.path} prefetch={false}>
+          <a>{page.path}</a>
+        </Link>
+      </div>
+      <div className="card-body">
+        { rendererOptions != null && (
+          <RevisionLoader
+            lazy
+            rendererOptions={rendererOptions}
+            pageId={page._id}
+            revisionId={page.revision}
+          />
+        ) }
+      </div>
+    </div>
+  );
+};
+
+
 export const PageTimeline = (): JSX.Element => {
   const [activePage, setActivePage] = useState(1);
   const [totalPageItems, setTotalPageItems] = useState(0);
@@ -21,7 +52,6 @@ export const PageTimeline = (): JSX.Element => {
 
   const { data: currentPagePath } = useCurrentPagePath();
   const { t } = useTranslation();
-  const { data: rendererOptions } = useTimelineOptions();
 
   const handlePage = useCallback(async(selectedPage: number) => {
     if (currentPagePath == null) { return }
@@ -36,10 +66,6 @@ export const PageTimeline = (): JSX.Element => {
     handlePage(1);
   }, [handlePage]);
 
-  if (rendererOptions == null) {
-    return <></>;
-  }
-
   if (pages == null || pages.length === 0) {
     return (
       <div className="mt-2">
@@ -51,27 +77,7 @@ export const PageTimeline = (): JSX.Element => {
 
   return (
     <div>
-      { pages.map((page) => {
-        return (
-          <div className="timeline-body" key={`key-${page._id}`}>
-            <div className={`card card-timeline ${styles['card-timeline']}`}>
-              <div className="card-header">
-                <Link href={page.path} prefetch={false}>
-                  <a>{page.path}</a>
-                </Link>
-              </div>
-              <div className="card-body">
-                <RevisionLoader
-                  lazy
-                  rendererOptions={rendererOptions}
-                  pageId={page._id}
-                  revisionId={page.revision}
-                />
-              </div>
-            </div>
-          </div>
-        );
-      }) }
+      { pages.map(page => <TimelineCard key={page._id} page={page} />) }
       <PaginationWrapper
         activePage={activePage}
         changePage={handlePage}

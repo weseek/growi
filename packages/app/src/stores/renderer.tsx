@@ -113,7 +113,7 @@ export const useCommentForCurrentPageOptions = (): SWRResponse<RendererOptions, 
   const isAllDataValid = currentPagePath != null && rendererConfig != null;
 
   const key = isAllDataValid
-    ? ['commentForCurrentPageOptions', rendererConfig, currentPagePath]
+    ? ['commentPreviewOptions', rendererConfig, currentPagePath]
     : null;
 
   return useSWRImmutable<RendererOptions, Error>(
@@ -145,11 +145,7 @@ export const useSelectedPagePreviewOptions = (pagePath: string, highlightKeyword
 };
 export const useSearchResultOptions = useSelectedPagePreviewOptions;
 
-export const useTimelineOptions = (): SWRResponse<RendererOptions, Error> => {
-  const key = 'timelineOptions';
-
-  return _useOptionsBase(key, generateOthersOptions);
-};
+export const useTimelineOptions = useSelectedPagePreviewOptions;
 
 export const useDraftOptions = (): SWRResponse<RendererOptions, Error> => {
   const key = 'draftOptions';
