@@ -67,9 +67,20 @@ export class PluginService implements IPluginService {
 
           const ghOrganizationName = match[1];
           const ghReposName = match[2];
+          const temporaryReposStoringPath = path.join(pluginStoringPath, ghReposName);
 
-          // download github repository to local file system
-          await this.downloadPluginRepository(ghOrganizationName, ghReposName, ghBranch);
+          try {
+            // download github repository to local file system
+            await this.downloadPluginRepository(ghOrganizationName, ghReposName, ghBranch);
+            fs.renameSync(temporaryReposStoringPath, pluginPath);
+          }
+          catch (err) {
+            // clean up
+            if (fs.existsSync(temporaryReposStoringPath)) await fs.promises.rm(temporaryReposStoringPath, { recursive: true });
+            if (fs.existsSync(pluginPath)) await fs.promises.rm(pluginPath, { recursive: true });
+            logger.error(err);
+          }
+
           continue;
         }
       }
@@ -117,6 +128,7 @@ export class PluginService implements IPluginService {
       fs.renameSync(temporaryReposStoringPath, reposStoringPath);
     }
     catch (err) {
+      // clean up
       if (fs.existsSync(zipFilePath)) await fs.promises.rm(zipFilePath);
       if (fs.existsSync(unzippedFolderPath)) await fs.promises.rm(unzippedFolderPath, { recursive: true });
       if (fs.existsSync(temporaryReposStoringPath)) await fs.promises.rm(temporaryReposStoringPath, { recursive: true });
@@ -134,6 +146,7 @@ export class PluginService implements IPluginService {
       return plugins[0].meta.name;
     }
     catch (err) {
+      // clean up
       if (fs.existsSync(reposStoringPath)) await fs.promises.rm(reposStoringPath, { recursive: true });
       await this.deleteOldPluginDocument(installedPath);
       logger.error(err);
@@ -146,6 +159,47 @@ export class PluginService implements IPluginService {
     await GrowiPlugin.deleteMany({ installedPath: path });
   }
 
+  private async downloadFile(requestUrl: string, filePath: string): Promise<void> {
+    return new Promise<void>((resolve, rejects) => {
+      axios({
+        method: 'GET',
+        url: requestUrl,
+        responseType: 'stream',
+      })
+        .then((res) => {
+          if (res.status === 200) {
+            const file = fs.createWriteStream(filePath);
+            res.data.pipe(file)
+              .on('close', () => file.close())
+              .on('finish', () => {
+                return resolve();
+              });
+          }
+          else {
+            rejects(res.status);
+          }
+        }).catch((err) => {
+          logger.error(err);
+          // eslint-disable-next-line prefer-promise-reject-errors
+          rejects('Filed to download file.');
+        });
+    });
+  }
+
+  private async unzip(zipFilePath: fs.PathLike, unzippedPath: fs.PathLike) {
+    try {
+      const stream = fs.createReadStream(zipFilePath);
+      const unzipStream = stream.pipe(unzipper.Extract({ path: unzippedPath }));
+
+      await streamToPromise(unzipStream);
+      await fs.promises.rm(zipFilePath);
+    }
+    catch (err) {
+      logger.error(err);
+      throw new Error('Filed to unzip.');
+    }
+  }
+
   private async downloadPluginRepository(ghOrganizationName: string, ghReposName: string, ghBranch: string): Promise<void> {
 
     const requestUrl = `https://github.com/${ghOrganizationName}/${ghReposName}/archive/refs/heads/${ghBranch}.zip`;
@@ -154,49 +208,8 @@ export class PluginService implements IPluginService {
     const unzippedFolderPath = `${unzipPath}/${ghReposName}-${ghBranch}`;
     const temporaryReposStoringPath = `${unzipPath}/${ghReposName}`;
 
-    const downloadFile = async(requestUrl: string, filePath: string) => {
-      return new Promise<void>((resolve, rejects) => {
-        axios({
-          method: 'GET',
-          url: requestUrl,
-          responseType: 'stream',
-        })
-          .then((res) => {
-            if (res.status === 200) {
-              const file = fs.createWriteStream(filePath);
-              res.data.pipe(file)
-                .on('close', () => file.close())
-                .on('finish', () => {
-                  return resolve();
-                });
-            }
-            else {
-              rejects(res.status);
-            }
-          }).catch((err) => {
-            logger.error(err);
-            // eslint-disable-next-line prefer-promise-reject-errors
-            rejects('Filed to download file.');
-          });
-      });
-    };
-
-    const unzip = async(zipFilePath: fs.PathLike, unzippedPath: fs.PathLike) => {
-      try {
-        const stream = fs.createReadStream(zipFilePath);
-        const unzipStream = stream.pipe(unzipper.Extract({ path: unzippedPath }));
-
-        await streamToPromise(unzipStream);
-        await fs.promises.rm(zipFilePath);
-      }
-      catch (err) {
-        logger.error(err);
-        throw new Error('Filed to unzip.');
-      }
-    };
-
-    await downloadFile(requestUrl, zipFilePath);
-    await unzip(zipFilePath, unzipPath);
+    await this.downloadFile(requestUrl, zipFilePath);
+    await this.unzip(zipFilePath, unzipPath);
     fs.renameSync(unzippedFolderPath, temporaryReposStoringPath);
 
     return;
