@@ -189,11 +189,13 @@ export const useUpdateStateAfterSave = (pageId: string|undefined|null): (() => P
   return useCallback(async() => {
     if (pageId == null) { return }
 
-    await mutateCurrentPageId(pageId);
-    const updatedPage = await mutateCurrentPage();
-
+    // update tag before page: https://github.com/weseek/growi/pull/7158
+    // !! DO NOT CHANGE THE ORDERS OF THE MUTATIONS !! -- 12.26 yuken-t
     await mutateTagsInfo(); // get from DB
     syncTagsInfoForEditor(); // sync global state for client
+
+    await mutateCurrentPageId(pageId);
+    const updatedPage = await mutateCurrentPage();
 
     if (updatedPage == null) { return }
 
