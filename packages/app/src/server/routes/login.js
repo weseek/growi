@@ -145,17 +145,17 @@ module.exports = function(crowi, app) {
       const isMailerSetup = mailService.isMailerSetup ?? false;
 
       if (!isMailerSetup && registrationMode === aclService.labels.SECURITY_REGISTRATION_MODE_RESTRICTED) {
-        return res.apiv3Err(['email_settings_is_not_setup'], 403);
+        return res.apiv3Err(['message.email_settings_is_not_setup'], 403);
       }
 
       User.createUserByEmailAndPassword(name, username, email, password, undefined, async(err, userData) => {
         if (err) {
           const errors = [];
           if (err.name === 'UserUpperLimitException') {
-            errors.push('can_not_register_maximum_number_of_users');
+            errors.push('message.can_not_register_maximum_number_of_users');
           }
           else {
-            errors.push('failed_to_register');
+            errors.push('message.failed_to_register');
           }
           return res.apiv3Err(errors, 405);
         }
