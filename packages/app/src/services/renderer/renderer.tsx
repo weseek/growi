@@ -208,7 +208,12 @@ export const generateTocOptions = (config: RendererConfig, tocNode: HtmlElementN
   return options;
 };
 
-export const generateSimpleViewOptions = (config: RendererConfig, pagePath: string, highlightKeywords?: string | string[]): RendererOptions => {
+export const generateSimpleViewOptions = (
+    config: RendererConfig,
+    pagePath: string,
+    highlightKeywords?: string | string[],
+    overrideIsEnabledLinebreaks?: boolean,
+): RendererOptions => {
   const options = generateCommonOptions(pagePath);
 
   const { remarkPlugins, rehypePlugins, components } = options;
@@ -222,7 +227,10 @@ export const generateSimpleViewOptions = (config: RendererConfig, pagePath: stri
     lsxGrowiPlugin.remarkPlugin,
     table.remarkPlugin,
   );
-  if (config.isEnabledLinebreaks) {
+
+  const isEnabledLinebreaks = overrideIsEnabledLinebreaks ?? config.isEnabledLinebreaks;
+
+  if (isEnabledLinebreaks) {
     remarkPlugins.push(breaks);
   }
 

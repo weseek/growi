@@ -92,9 +92,19 @@ export const useCommentForCurrentPageOptions = (): SWRResponse<RendererOptions, 
 
   return useSWRImmutable<RendererOptions, Error>(
     key,
-    (rendererId, rendererConfig, currentPagePath) => generateSimpleViewOptions(rendererConfig, currentPagePath),
+    (rendererId, rendererConfig, currentPagePath) => generateSimpleViewOptions(
+      rendererConfig,
+      currentPagePath,
+      undefined,
+      rendererConfig.isEnabledLinebreaksInComments,
+    ),
     {
-      fallbackData: isAllDataValid ? generateSimpleViewOptions(rendererConfig, currentPagePath) : undefined,
+      fallbackData: isAllDataValid ? generateSimpleViewOptions(
+        rendererConfig,
+        currentPagePath,
+        undefined,
+        rendererConfig.isEnabledLinebreaksInComments,
+      ) : undefined,
     },
   );
 };
