@@ -6,15 +6,12 @@ import apiV1FormValidator from '../middlewares/apiv1-form-validator';
 import injectResetOrderByTokenMiddleware from '../middlewares/inject-reset-order-by-token-middleware';
 import injectUserRegistrationOrderByTokenMiddleware from '../middlewares/inject-user-registration-order-by-token-middleware';
 import * as loginFormValidator from '../middlewares/login-form-validator';
-import * as registerFormValidator from '../middlewares/register-form-validator';
 import {
   generateUnavailableWhenMaintenanceModeMiddleware, generateUnavailableWhenMaintenanceModeMiddlewareForApi,
 } from '../middlewares/unavailable-when-maintenance-mode';
 
-import * as allInAppNotifications from './all-in-app-notifications';
 import * as forgotPassword from './forgot-password';
 import nextFactory from './next';
-import * as privateLegacyPages from './private-legacy-pages';
 import * as userActivation from './user-activation';
 
 const multer = require('multer');
@@ -33,7 +30,6 @@ module.exports = function(crowi, app) {
   const loginRequired = require('../middlewares/login-required')(crowi, true);
   const adminRequired = require('../middlewares/admin-required')(crowi);
   const certifySharedFile = require('../middlewares/certify-shared-file')(crowi);
-  const injectUserUISettings = require('../middlewares/inject-user-ui-settings-to-localvars')();
   const rateLimiter = require('../middlewares/rate-limiter')();
   const addActivity = generateAddActivityMiddleware(crowi);
 
@@ -84,7 +80,7 @@ module.exports = function(crowi, app) {
   // NOTE: get method "/admin/export/:fileName" should be loaded before "/admin/*"
   app.get('/admin/export/:fileName'   , loginRequiredStrictly , adminRequired ,admin.export.api.validators.export.download(), admin.export.download);
 
-  app.get('/admin/*'                    , applicationInstalled, loginRequiredStrictly , adminRequired , next.delegateToNext);
+  app.get('/admin/*'                  , applicationInstalled, loginRequiredStrictly , adminRequired , next.delegateToNext);
   app.get('/admin'                    , applicationInstalled, loginRequiredStrictly , adminRequired , next.delegateToNext);
 
   // installer
@@ -153,28 +149,14 @@ module.exports = function(crowi, app) {
 
   app.use(unavailableWhenMaintenanceMode);
 
-  // app.get('/tags'                     , loginRequired, tag.showPage);
-  app.get('/tags', loginRequired, next.delegateToNext);
-
-  app.get('/me'                                 , loginRequiredStrictly, injectUserUISettings, next.delegateToNext);
-  app.get('/me/*'                                 , loginRequiredStrictly, injectUserUISettings, next.delegateToNext);
-  // external-accounts
-  // my in-app-notifications
-  // app.get('/me/all-in-app-notifications'   , loginRequiredStrictly, injectUserUISettings, allInAppNotifications.list);
-  // app.get('/me/external-accounts'               , loginRequiredStrictly, injectUserUISettings, me.externalAccounts.list);
-  // // my drafts
-  // app.get('/me/drafts'                          , loginRequiredStrictly, injectUserUISettings, me.drafts.list);
-
+  app.get('/me'                                   , loginRequiredStrictly, next.delegateToNext);
+  app.get('/me/*'                                 , loginRequiredStrictly, next.delegateToNext);
   app.get('/attachment/:id([0-9a-z]{24})' , certifySharedFile , loginRequired, attachment.api.get);
   app.get('/attachment/profile/:id([0-9a-z]{24})' , loginRequired, attachment.api.get);
   app.get('/attachment/:pageId/:fileName'       , loginRequired, attachment.api.obsoletedGetForMongoDB); // DEPRECATED: remains for backward compatibility for v3.3.x or below
   app.get('/download/:id([0-9a-z]{24})'         , loginRequired, attachment.api.download);
 
   app.get('/_search'                            , loginRequired, next.delegateToNext);
-
-  app.get('/trash$'                   , loginRequired, injectUserUISettings, next.delegateToNext);
-  app.get('/trash/$'                  , loginRequired, (req, res) => res.redirect('/trash'));
-  app.get('/trash/*/$'                , loginRequired, injectUserUISettings, page.deletedPageListShowWrapper);
 
   app.get('/_hackmd/load-agent'          , hackmd.loadAgent);
   app.get('/_hackmd/load-styles'         , hackmd.loadStyles);

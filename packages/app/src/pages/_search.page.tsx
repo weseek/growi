@@ -5,6 +5,7 @@ import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import dynamic from 'next/dynamic';
 import Head from 'next/head';
 
+import SearchResultLayout from '~/components/Layout/SearchResultLayout';
 import { DrawioViewerScript } from '~/components/Script/DrawioViewerScript';
 import type { CrowiRequest } from '~/interfaces/crowi-request';
 import type { RendererConfig } from '~/interfaces/services/renderer';
@@ -23,12 +24,11 @@ import {
 
 import { SearchPage } from '../components/SearchPage';
 
+import { NextPageWithLayout } from './_app.page';
 import {
   CommonProps, getNextI18NextConfig, getServerSideCommonProps, generateCustomTitle,
 } from './utils/commons';
-import { NextPageWithLayout } from './_app.page';
 
-const SearchResultLayout = dynamic(() => import('~/components/Layout/SearchResultLayout'), { ssr: false });
 
 type Props = CommonProps & {
   currentUser: IUser,
