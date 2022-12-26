@@ -11,14 +11,12 @@ type Props = {
 const SearchResultLayout = ({ children }: Props): JSX.Element => {
 
   return (
-    <div className={`on-search ${commonStyles['on-search']}`}>
-      <BasicLayout>
-        <div id="grw-fav-sticky-trigger" className="sticky-top"></div>
-        <div id="main" className="main search-page mt-0">
-          { children }
-        </div>
-      </BasicLayout>
-    </div>
+    <BasicLayout className={`on-search ${commonStyles['on-search']}`}>
+      <div id="grw-fav-sticky-trigger" className="sticky-top"></div>
+      <div id="main" className="main search-page mt-0">
+        { children }
+      </div>
+    </BasicLayout>
   );
 };
 
