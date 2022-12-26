@@ -102,12 +102,12 @@ module.exports = function(crowi, app) {
 
   actions.register = function(req, res) {
     if (req.user != null) {
-      return res.apiv3Err('user_already_logged_in', 403);
+      return res.apiv3Err('message.user_already_logged_in', 403);
     }
 
     // config で closed ならさよなら
     if (configManager.getConfig('crowi', 'security:registrationMode') === aclService.labels.SECURITY_REGISTRATION_MODE_CLOSED) {
-      return res.apiv3Err('registration_closed', 403);
+      return res.apiv3Err('message.registration_closed', 403);
     }
 
     if (!req.form.isValid) {

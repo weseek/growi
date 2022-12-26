@@ -1,4 +1,4 @@
-import { GrowiThemeMetadata } from '@growi/core';
+import { GrowiThemeMetadata, HasObjectId } from '@growi/core';
 
 export const GrowiPluginResourceType = {
   Template: 'template',
@@ -31,3 +31,5 @@ export type GrowiPluginMeta = {
 export type GrowiThemePluginMeta = GrowiPluginMeta & {
   themes: GrowiThemeMetadata[]
 }
+
+export type GrowiPluginHasId = GrowiPlugin & HasObjectId;
