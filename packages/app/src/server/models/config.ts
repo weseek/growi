@@ -1,7 +1,6 @@
+import { PresetThemes } from '@growi/preset-themes';
 import { Types, Schema } from 'mongoose';
 import uniqueValidator from 'mongoose-unique-validator';
-
-import { GrowiThemes } from '~/interfaces/theme';
 
 import { RehypeSanitizeOption } from '../../interfaces/rehype';
 import { getOrCreateModel } from '../util/mongoose-utils';
@@ -96,15 +95,7 @@ export const defaultCrowiConfigs: { [key: string]: any } = {
   'security:passport-github:clientSecret': undefined,
   'security:passport-github:isSameUsernameTreatedAsIdenticalUser': false,
 
-  'security:passport-twitter:isEnabled' : false,
-  'security:passport-twitter:consumerKey': undefined,
-  'security:passport-twitter:consumerSecret': undefined,
-  'security:passport-twitter:isSameUsernameTreatedAsIdenticalUser': false,
-
   'security:passport-oidc:isEnabled' : false,
-
-  'security:passport-basic:isEnabled' : false,
-  'security:passport-basic:isSameUsernameTreatedAsIdenticalUser': false,
 
   'aws:s3Bucket'          : 'growi',
   'aws:s3Region'          : 'ap-northeast-1',
@@ -122,11 +113,11 @@ export const defaultCrowiConfigs: { [key: string]: any } = {
 
   'customize:css' : undefined,
   'customize:script' : undefined,
-  'customize:header' : undefined,
+  'customize:noscript' : undefined,
   'customize:title' : undefined,
   'customize:highlightJsStyle' : 'github',
   'customize:highlightJsStyleBorder' : false,
-  'customize:theme' : GrowiThemes.DEFAULT,
+  'customize:theme' : PresetThemes.DEFAULT,
   'customize:isContainerFluid' : false,
   'customize:isEnabledTimeline' : true,
   'customize:isEnabledAttachTitleHeader' : false,
@@ -151,14 +142,14 @@ export const defaultCrowiConfigs: { [key: string]: any } = {
 };
 
 export const defaultMarkdownConfigs: { [key: string]: any } = {
-  'markdown:xss:isEnabledPrevention': true,
-  'markdown:xss:option': 2,
+  // don't use it, but won't turn it off
   'markdown:xss:tagWhiteList': [],
   'markdown:xss:attrWhiteList': [],
+
   'markdown:rehypeSanitize:isEnabledPrevention': true,
   'markdown:rehypeSanitize:option': RehypeSanitizeOption.RECOMMENDED,
   'markdown:rehypeSanitize:tagNames': [],
-  'markdown:rehypeSanitize:attributes': {},
+  'markdown:rehypeSanitize:attributes': '{}',
   'markdown:isEnabledLinebreaks': false,
   'markdown:isEnabledLinebreaksInComments': true,
   'markdown:adminPreferredIndentSize': 4,

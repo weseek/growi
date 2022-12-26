@@ -5,8 +5,9 @@ import EventEmitter from 'events';
 import { useRouter } from 'next/router';
 import { Element } from 'react-markdown/lib/rehype-filter';
 
-import { NextLink } from './NextLink';
+import { useIsGuestUser, useIsSharedUser, useShareLinkId } from '~/stores/context';
 
+import { NextLink } from './NextLink';
 
 import styles from './Header.module.scss';
 
@@ -55,6 +56,10 @@ export const Header = (props: HeaderProps): JSX.Element => {
     node, id, children, level,
   } = props;
 
+  const { data: isGuestUser } = useIsGuestUser();
+  const { data: isSharedUser } = useIsSharedUser();
+  const { data: shareLinkId } = useShareLinkId();
+
   const router = useRouter();
 
   const [isActive, setActive] = useState(false);
@@ -80,13 +85,17 @@ export const Header = (props: HeaderProps): JSX.Element => {
     };
   }, [activateByHash, router.events]);
 
+  const showEditButton = !isGuestUser && !isSharedUser && shareLinkId == null;
+
   return (
     <CustomTag id={id} className={`revision-head ${styles['revision-head']} ${isActive ? 'blink' : ''}`}>
       {children}
       <NextLink href={`#${id}`} className="revision-head-link">
         <span className="icon-link"></span>
       </NextLink>
-      <EditLink line={node.position?.start.line} />
+      {showEditButton && (
+        <EditLink line={node.position?.start.line} />
+      )}
     </CustomTag>
   );
 };

@@ -14,6 +14,7 @@ import InterceptorManager from '~/services/interceptor-manager';
 import { useHandsontableModal, useDrawioModal } from '~/stores/modal';
 import loggerFactory from '~/utils/logger';
 
+import { TemplateModal } from '../TemplateModal';
 import { UncontrolledCodeMirror } from '../UncontrolledCodeMirror';
 
 import AbstractEditor from './AbstractEditor';
@@ -110,6 +111,7 @@ class CodeMirrorEditor extends AbstractEditor {
       emojiSearchText: '',
       startPosWithEmojiPickerModeTurnedOn: null,
       isEmojiPickerMode: false,
+      isTemplateModalOpened: false,
     };
 
     this.cm = React.createRef();
@@ -159,6 +161,9 @@ class CodeMirrorEditor extends AbstractEditor {
 
     this.foldDrawioSection = this.foldDrawioSection.bind(this);
     this.clickDrawioIconHandler = this.clickDrawioIconHandler.bind(this);
+    this.clickTableIconHandler = this.clickTableIconHandler.bind(this);
+
+    this.showTemplateModal = this.showTemplateModal.bind(this);
 
   }
 
@@ -868,6 +873,10 @@ class CodeMirrorEditor extends AbstractEditor {
     this.linkEditModal.current.show(markdownLinkUtil.getMarkdownLink(this.getCodeMirror()));
   }
 
+  showTemplateModal() {
+    this.setState({ isTemplateModalOpened: true });
+  }
+
   // fold draw.io section (``` drawio ~ ```)
   foldDrawioSection() {
     const editor = this.getCodeMirror();
@@ -888,6 +897,16 @@ class CodeMirrorEditor extends AbstractEditor {
         // Fold the section after the drawio section (```drawio) has been updated.
         this.foldDrawioSection();
       },
+    );
+  }
+
+  clickTableIconHandler() {
+    const markdownTable = mtu.getMarkdownTable(this.getCodeMirror());
+
+    this.props.onClickTableBtn(
+      markdownTable,
+      this.getCodeMirror(),
+      this.props.editorSettings.autoFormatMarkdownTable,
     );
   }
 
@@ -1016,13 +1035,7 @@ class CodeMirrorEditor extends AbstractEditor {
         color={null}
         size="sm"
         title="Table"
-        onClick={() => {
-          this.props.onClickTableBtn(
-            mtu.getMarkdownTable(this.getCodeMirror()),
-            this.getCodeMirror(),
-            this.props.editorSettings.autoFormatMarkdownTable,
-          );
-        }}
+        onClick={this.clickTableIconHandler}
       >
         <EditorIcon icon="Table" />
       </Button>,
@@ -1043,6 +1056,15 @@ class CodeMirrorEditor extends AbstractEditor {
         onClick={() => this.showEmojiPicker()}
       >
         <EditorIcon icon="Emoji" />
+      </Button>,
+      <Button
+        key="nav-item-template"
+        color={null}
+        bssize="small"
+        title="Template"
+        onClick={() => this.showTemplateModal()}
+      >
+        <EditorIcon icon="Template" />
       </Button>,
     ];
   }
@@ -1137,6 +1159,11 @@ class CodeMirrorEditor extends AbstractEditor {
           ref={this.linkEditModal}
           onSave={(linkText) => { return markdownLinkUtil.replaceFocusedMarkdownLinkWithEditor(this.getCodeMirror(), linkText) }}
         />
+        <TemplateModal
+          isOpen={this.state.isTemplateModalOpened}
+          onClose={() => this.setState({ isTemplateModalOpened: false })}
+          onSubmit={templateText => this.setValue(templateText) }
+        />
       </div>
     );
   }
@@ -1164,8 +1191,8 @@ const CodeMirrorEditorFc = React.forwardRef((props, ref) => {
     openDrawioModal(drawioMxFile, onSave);
   }, [openDrawioModal]);
 
-  const openTableModalHandler = useCallback((table, editor, autoFormatMarkdownTable) => {
-    openHandsontableModal(table, editor, autoFormatMarkdownTable);
+  const openTableModalHandler = useCallback((markdownTable, editor, autoFormatMarkdownTable) => {
+    openHandsontableModal(markdownTable, editor, autoFormatMarkdownTable);
   }, [openHandsontableModal]);
 
   return (

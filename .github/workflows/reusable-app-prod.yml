@@ -235,7 +235,11 @@ jobs:
 
     - name: lerna bootstrap
       run: |
-        npx lerna bootstrap -- --frozen-lockfile
+        npx lerna bootstrap -- --production
+
+    - name: lerna add packages needed for CI
+      run: |
+        npx lerna add yargs
 
     - name: Download production files artifact
       uses: actions/download-artifact@v3

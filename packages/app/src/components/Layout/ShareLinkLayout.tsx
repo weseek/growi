@@ -2,6 +2,7 @@ import React, { ReactNode } from 'react';
 
 import dynamic from 'next/dynamic';
 
+import { useEditorModeClassName } from '../../client/services/layout';
 import { GrowiNavbar } from '../Navbar/GrowiNavbar';
 
 import { RawLayout } from './RawLayout';
@@ -16,21 +17,15 @@ const Fab = dynamic(() => import('../Fab').then(mod => mod.Fab), { ssr: false })
 
 
 type Props = {
-  title: string
-  className?: string,
-  expandContainer?: boolean,
   children?: ReactNode
 }
 
-export const ShareLinkLayout = ({
-  children, title, className, expandContainer,
-}: Props): JSX.Element => {
-
-  const myClassName = `${className ?? ''} ${expandContainer ? 'growi-layout-fluid' : ''}`;
+export const ShareLinkLayout = ({ children }: Props): JSX.Element => {
+  const className = useEditorModeClassName();
 
   return (
-    <RawLayout title={title} className={myClassName}>
-      <GrowiNavbar />
+    <RawLayout className={className}>
+      <GrowiNavbar isGlobalSearchHidden={true} />
 
       <div className="page-wrapper d-flex d-print-block">
         <div className="flex-fill mw-0" style={{ position: 'relative' }}>

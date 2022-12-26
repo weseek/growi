@@ -1,6 +1,6 @@
 import { useCallback } from 'react';
 
-import type { IGraphViewerGlobal } from '@growi/remark-drawio-plugin';
+import type { IGraphViewerGlobal } from '@growi/remark-drawio';
 import Script from 'next/script';
 
 declare global {

@@ -80,7 +80,7 @@ const NavbarRight = memo((): JSX.Element => {
         <li className="grw-apperance-mode-dropdown nav-item dropdown">
           <AppearanceModeDropdown isAuthenticated={isAuthenticated} />
         </li>
-        <li id="login-user" className="nav-item"><a className="nav-link" href="/login">Login</a></li>;
+        <li id="login-user" className="nav-item"><a className="nav-link" href="/login">Login</a></li>
       </>
     );
   }, [isAuthenticated]);
@@ -136,7 +136,13 @@ const GrowiNavbarLogo: FC<NavbarLogoProps> = memo((props: NavbarLogoProps) => {
 
 GrowiNavbarLogo.displayName = 'GrowiNavbarLogo';
 
-export const GrowiNavbar = (): JSX.Element => {
+type Props = {
+  isGlobalSearchHidden?: boolean
+}
+
+export const GrowiNavbar = (props: Props): JSX.Element => {
+
+  const { isGlobalSearchHidden } = props;
 
   const GlobalSearch = dynamic<GlobalSearchProps>(() => import('./GlobalSearch').then(mod => mod.GlobalSearch), { ssr: false });
 
@@ -169,7 +175,7 @@ export const GrowiNavbar = (): JSX.Element => {
       </ul>
 
       <div className="grw-global-search-container position-absolute">
-        { isSearchServiceConfigured && !isDeviceSmallerThanMd && !isSearchPage && (
+        { !isGlobalSearchHidden && isSearchServiceConfigured && !isDeviceSmallerThanMd && !isSearchPage && (
           <GlobalSearch />
         ) }
       </div>

@@ -1,5 +1,5 @@
 import React, {
-  useCallback, useEffect, useRef, useState,
+  memo, useCallback, useEffect, useRef, useState,
 } from 'react';
 
 import dynamic from 'next/dynamic';
@@ -17,16 +17,21 @@ import {
 import DrawerToggler from './Navbar/DrawerToggler';
 import { NavigationResizeHexagon } from './Sidebar/NavigationResizeHexagon';
 import { SidebarNav } from './Sidebar/SidebarNav';
+import { SidebarSkeleton } from './Sidebar/Skeleton/SidebarSkeleton';
 import { StickyStretchableScrollerProps } from './StickyStretchableScroller';
 
 import styles from './Sidebar.module.scss';
 
+const StickyStretchableScroller = dynamic<StickyStretchableScrollerProps>(() => import('./StickyStretchableScroller')
+  .then(mod => mod.StickyStretchableScroller), { ssr: false });
+const SidebarContents = dynamic(() => import('./Sidebar/SidebarContents')
+  .then(mod => mod.SidebarContents), { ssr: false, loading: () => <SidebarSkeleton /> });
 
 const sidebarMinWidth = 240;
 const sidebarMinimizeWidth = 20;
 const sidebarFixedWidthInDrawerMode = 320;
 
-const GlobalNavigation = () => {
+const GlobalNavigation = memo(() => {
   const { data: isDrawerMode } = useDrawerMode();
   const { data: currentContents } = useCurrentSidebarContents();
   const { data: isCollapsed, mutate: mutateSidebarCollapsed } = useSidebarCollapsed();
@@ -53,12 +58,10 @@ const GlobalNavigation = () => {
 
   return <SidebarNav onItemSelected={itemSelectedHandler} />;
 
-};
+});
+GlobalNavigation.displayName = 'GlobalNavigation';
 
-const SidebarContentsWrapper = () => {
-  const StickyStretchableScroller = dynamic<StickyStretchableScrollerProps>(() => import('./StickyStretchableScroller')
-    .then(mod => mod.StickyStretchableScroller), { ssr: false });
-  const SidebarContents = dynamic(() => import('./Sidebar/SidebarContents').then(mod => mod.SidebarContents), { ssr: false });
+const SidebarContentsWrapper = memo(() => {
   const { mutate: mutateSidebarScroller } = useSidebarScrollerRef();
 
   const calcViewHeight = useCallback(() => {
@@ -83,10 +86,11 @@ const SidebarContentsWrapper = () => {
       <DrawerToggler iconClass="icon-arrow-left" />
     </>
   );
-};
+});
+SidebarContentsWrapper.displayName = 'SidebarContentsWrapper';
 
 
-const Sidebar = (): JSX.Element => {
+const Sidebar = memo((): JSX.Element => {
 
   const { data: isDrawerMode } = useDrawerMode();
   const { data: isDrawerOpened, mutate: mutateDrawerOpened } = useDrawerOpened();
@@ -352,6 +356,7 @@ const Sidebar = (): JSX.Element => {
     </>
   );
 
-};
+});
+Sidebar.displayName = 'Sidebar';
 
 export default Sidebar;

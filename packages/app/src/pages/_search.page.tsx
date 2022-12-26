@@ -24,8 +24,9 @@ import {
 import { SearchPage } from '../components/SearchPage';
 
 import {
-  CommonProps, getNextI18NextConfig, getServerSideCommonProps, useCustomTitle,
+  CommonProps, getNextI18NextConfig, getServerSideCommonProps, generateCustomTitle,
 } from './utils/commons';
+import { NextPageWithLayout } from './_app.page';
 
 const SearchResultLayout = dynamic(() => import('~/components/Layout/SearchResultLayout'), { ssr: false });
 
@@ -53,7 +54,7 @@ type Props = CommonProps & {
 
 };
 
-const SearchResultPage: NextPage<Props> = (props: Props) => {
+const SearchResultPage: NextPageWithLayout<Props> = (props: Props) => {
   const { userUISettings } = props;
 
   // commons
@@ -87,29 +88,28 @@ const SearchResultPage: NextPage<Props> = (props: Props) => {
     return <PutbackPageModal />;
   };
 
-  const classNames: string[] = [];
-  // if (props.isContainerFluid) {
-  //   classNames.push('growi-layout-fluid');
-  // }
+  const title = generateCustomTitle(props, 'GROWI');
 
   return (
     <>
       <Head>
-        {/*
-        {renderScriptTagByName('drawio-viewer')}
-        {renderScriptTagByName('highlight-addons')}
-        */}
+        <title>{title}</title>
       </Head>
 
-      <DrawioViewerScript />
-
-      <SearchResultLayout title={useCustomTitle(props, 'GROWI')} className={classNames.join(' ')}>
-        <div id="search-page">
-          <SearchPage />
-        </div>
-      </SearchResultLayout>
+      <div id="search-page" className="dynamic-layout-root">
+        <SearchPage />
+      </div>
 
       <PutbackPageModal />
+    </>
+  );
+};
+
+SearchResultPage.getLayout = function getLayout(page) {
+  return (
+    <>
+      <DrawioViewerScript />
+      <SearchResultLayout>{page}</SearchResultLayout>
     </>
   );
 };

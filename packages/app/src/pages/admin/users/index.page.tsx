@@ -4,11 +4,12 @@ import {
 } from 'next';
 import { useTranslation } from 'next-i18next';
 import dynamic from 'next/dynamic';
+import Head from 'next/head';
 import { Container, Provider } from 'unstated';
 
 import AdminUsersContainer from '~/client/services/AdminUsersContainer';
 import { CrowiRequest } from '~/interfaces/crowi-request';
-import { CommonProps, useCustomTitle } from '~/pages/utils/commons';
+import { CommonProps, generateCustomTitle } from '~/pages/utils/commons';
 import { useCurrentUser, useIsMailerSetup } from '~/stores/context';
 
 import { retrieveServerSideProps } from '../../../utils/admin-page-util';
@@ -29,6 +30,7 @@ const AdminUserManagementPage: NextPage<Props> = (props) => {
   useIsMailerSetup(props.isMailerSetup);
 
   const title = t('user_management.user_management');
+  const headTitle = generateCustomTitle(props, title);
   const injectableContainers: Container<any>[] = [];
 
   if (isClient()) {
@@ -40,7 +42,10 @@ const AdminUserManagementPage: NextPage<Props> = (props) => {
 
   return (
     <Provider inject={[...injectableContainers]}>
-      <AdminLayout title={useCustomTitle(props, title)} componentTitle={title} >
+      <AdminLayout componentTitle={title}>
+        <Head>
+          <title>{headTitle}</title>
+        </Head>
         <UserManagement />
       </AdminLayout>
     </Provider>

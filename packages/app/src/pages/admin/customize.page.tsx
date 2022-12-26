@@ -4,17 +4,18 @@ import {
 } from 'next';
 import { useTranslation } from 'next-i18next';
 import dynamic from 'next/dynamic';
+import Head from 'next/head';
 import { Container, Provider } from 'unstated';
 
 import AdminCustomizeContainer from '~/client/services/AdminCustomizeContainer';
 import { CrowiRequest } from '~/interfaces/crowi-request';
-import { CommonProps, useCustomTitle } from '~/pages/utils/commons';
+import { CommonProps, generateCustomTitle } from '~/pages/utils/commons';
 import { useCustomizeTitle, useCurrentUser } from '~/stores/context';
 
 import { retrieveServerSideProps } from '../../utils/admin-page-util';
 
 const AdminLayout = dynamic(() => import('~/components/Layout/AdminLayout'), { ssr: false });
-const CustomizeSettingContents = dynamic(() => import('~/components/Admin//Customize/Customize'), { ssr: false });
+const CustomizeSettingContents = dynamic(() => import('~/components/Admin/Customize/Customize'), { ssr: false });
 
 
 type Props = CommonProps & {
@@ -27,7 +28,8 @@ const AdminCustomizeSettingsPage: NextPage<Props> = (props) => {
   useCustomizeTitle(props.customizeTitle);
   useCurrentUser(props.currentUser ?? null);
 
-  const title = t('customize_settings.customize_settings');
+  const componentTitle = t('customize_settings.customize_settings');
+  const pageTitle = generateCustomTitle(props, componentTitle);
   const injectableContainers: Container<any>[] = [];
 
   if (isClient()) {
@@ -39,7 +41,10 @@ const AdminCustomizeSettingsPage: NextPage<Props> = (props) => {
 
   return (
     <Provider inject={[...injectableContainers]}>
-      <AdminLayout title={useCustomTitle(props, title)} componentTitle={title} >
+      <AdminLayout componentTitle={componentTitle}>
+        <Head>
+          <title>{pageTitle}</title>
+        </Head>
         <CustomizeSettingContents />
       </AdminLayout>
     </Provider>

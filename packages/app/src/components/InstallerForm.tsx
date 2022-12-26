@@ -106,11 +106,13 @@ const InstallerForm = memo((): JSX.Element => {
       <div className="row">
         <form role="form" id="register-form" className="col-md-12" onSubmit={submitHandler}>
           <div className="dropdown mb-3">
-            <div className="d-flex dropdown-with-icon">
-              <i className="icon-bubbles border-0 rounded-0" />
+            <div className="input-group">
+              <div className="input-group-prepend dropdown-with-icon">
+                <i className="input-group-text icon-bubbles border-0 rounded-0" />
+              </div>
               <button
                 type="button"
-                className="btn btn-secondary dropdown-toggle text-right w-100 border-0 shadow-none"
+                className="btn btn-secondary dropdown-toggle form-control text-right rounded-right"
                 id="dropdownLanguage"
                 data-testid="dropdownLanguage"
                 data-toggle="dropdown"

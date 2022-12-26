@@ -2,11 +2,13 @@
   "meta": {
     "display_name": "English"
   },
-  "wiki_management_home_page": "Wiki Management Home Page",
   "last_login": "Last login",
-  "anyone_with_the_link": "anyone with the link",
-  "only_me": "only me",
-  "only_inside_the_group": "only inside the group",
+  "wiki_management_home_page": "Wiki Management Home Page",
+  "public": "Public",
+  "anyone_with_the_link": "Anyone with the link",
+  "specified_users": "Specified users",
+  "only_me": "Only me",
+  "only_inside_the_group": "Only inside the group",
   "security_settings": {
     "security_settings": "Security Settings",
     "scope_of_page_disclosure": "Scope of page disclosure",
@@ -155,13 +157,6 @@
       "attr_based_login_control_rule_example2": "<h5>Example for escaping</h5>If you would like to use URL as a query value, escape the following:<br><code>http&#92;:&#92;/&#92;/schemas.example.com&#92;/ws&#92;/2005&#92;/05&#92;/identity&#92;/claims&#92;/emailaddress: &quot;myname@example.com&quot;</code>",
       "updated_saml": "Succeeded to update SAML setting"
     },
-    "Basic": {
-      "enable_basic": "Enable Basic",
-      "name": "Basic Authentication",
-      "desc_1": "Login with <code>username</code> in Authorization header.",
-      "desc_2": "User will be automatically generated if not exist.",
-      "updated_basic": "Succeeded to update Basic setting"
-    },
     "OAuth": {
       "enable_oidc": "Enable OIDC",
       "register": "Register for %s",
@@ -179,16 +174,6 @@
       "Facebook": {
         "name": "Facebook OAuth"
       },
-      "Twitter": {
-        "enable_twitter": "Enable Twitter OAuth",
-        "name": "Twitter OAuth",
-        "register_1": "Access {{link}}",
-        "register_2": "Sign in Twitter",
-        "register_3": "Create Credentials &rightarrow; OAuth client ID &rightarrow; Select \"Web application\"",
-        "register_4": "Register your OAuth App with one of Authorized redirect URIs as <code>{{url}}</code>",
-        "register_5": "Copy and paste your ClientID and Client Secret above",
-        "updated_twitter": "Succeeded to update Twitter OAuth setting"
-      },
       "GitHub": {
         "enable_github": "Enable GitHub OAuth",
         "name": "GitHub OAuth",
@@ -203,7 +188,7 @@
         "username_detail": "Specification of mappings for <code>username</code> when creating new users",
         "name_detail": "Specification of mappings for <code>name</code> when creating new users",
         "mapping_detail": "Specification of mappings for %s when creating new users",
-        "register_1": "Contant to OIDC IdP Administrator",
+        "register_1": "Contact to OIDC IdP Administrator",
         "register_2": "Register your OIDC App with \"Authorization callback URL\" as <code>%s</code>",
         "register_3": "Copy and paste your ClientID and Client Secret above",
         "updated_oidc": "Succeeded to update OpenID Connect",
@@ -212,7 +197,6 @@
       "how_to": {
         "google": "How to configure Google OAuth?",
         "github": "How to configure GitHub OAuth?",
-        "twitter": "How to configure Twitter OAuth?",
         "oidc": "How to configure OIDC?"
       }
     },
@@ -279,13 +263,35 @@
     "toggle_notification": "Updated setting of {{path}}",
     "not_found_global_notification_triggerid": "Not found the global notification id"
   },
+  "full_text_search_management": {
+    "full_text_search_management": "Full Text Search Management",
+    "elasticsearch_management": "Elasticsearch management",
+    "connection_status": "Connection status",
+    "connection_status_label_unconfigured": "UNCONFIGURED",
+    "connection_status_label_connected": "CONNECTED",
+    "connection_status_label_disconnected": "DISCONNECTED",
+    "connection_status_label_erroroccured": "ERROR OCCURED ON SEARCH SERVICE",
+    "indices_status": "Indices Status",
+    "indices_status_label_normalized": "NORMALIZED",
+    "indices_status_label_unnormalized": "REBUILDING or BROKEN",
+    "indices_summary": "Indices summary",
+    "reconnect": "Reconnect",
+    "reconnect_button": "Try to reconnect",
+    "reconnect_description": "Click the button to try to reconnect to Elasticsearch.",
+    "normalize": "Normalize",
+    "normalize_button": "Normalize indices",
+    "normalize_description": "Click the button to repair broken indices.",
+    "rebuild": "Rebuild",
+    "rebuild_button": "Rebuild index",
+    "rebuild_description_1": "Click the button to rebuild index and add all page datas.",
+    "rebuild_description_2": "This may take a while."
+  },
   "mailer_setup_required":"<a href='/admin/app'>Email settings</a> are required to send.",
   "admin_top": {
     "management_wiki": "Management Wiki",
     "system_information": "System information",
     "wiki_administrator": "Only wiki administrator can access this page",
     "assign_administrator": "You can assign the selected user to be a wiki administrator on the User Management page using the 'Give admin access' button",
-    "list_of_installed_plugins": "List of installed plugins",
     "package_name": "Package name",
     "specified_version": "Specified version",
     "installed_version": "Installed version",
@@ -481,8 +487,8 @@
     "custom_title_detail_placeholder1": "<code>&#123;&#123;sitename&#125;&#125;</code> - The site name of this wiki.",
     "custom_title_detail_placeholder2": "<code>&#123;&#123;pagename&#125;&#125;</code> - The page name of the current page.",
     "custom_title_detail_placeholder3": "<code>&#123;&#123;pagepath&#125;&#125;</code> - The page path of the current page.",
-    "custom_header": "Custom HTML header",
-    "custom_header_detail": "You can customize HTML header that applies all pages. Your custom script will be inserted in <code>&lt;header&gt;</code> but above other <code>&lt;script&gt;</code> tags.<br>Relaod page to see changes.",
+    "custom_noscript": "Custom Noscript",
+    "custom_noscript_detail": "You can customize Noscript code that applies all pages. Your custom Noscript will be inserted into the <code>&lt;noscript&gt;</code> tag that is located as the first element of body.<br>Relaod page to see changes.",
     "custom_css": "Custom CSS",
     "write_css": "You can write CSS that is applied to whole system.",
     "ctrl_space": "Ctrl+Space to autocomplete",
@@ -498,6 +504,11 @@
   },
   "importer_management": {
     "import_data": "Import Data",
+    "article": "Article",
+    "category": "Category",
+    "tag": "Tag",
+    "page": "Page",
+    "page_path": "Page Path",
     "beta_warning": "This function is Beta.",
     "import_from": "Import from {{from}}",
     "import_growi_archive": "Import GROWI archive",
@@ -636,7 +647,6 @@
     "integration_procedure": "Integration Procedure",
     "custom_bot_without_proxy_settings": "Custom Bot without proxy Settings",
     "integration_failed":"Integration failed",
-    "official_bot_settings": "Official bot Settings",
     "reset": "Reset",
     "reset_all_settings": "Reset all settings",
     "delete_slackbot_settings": "Delete Slack Bot settings",
@@ -709,7 +719,6 @@
   "slack_integration_legacy": {
     "slack_integration_legacy": "Legacy Slack Integration",
     "alert_disabled": "This 'Slack Legacy Intenfation' has been currently disabled since <a href='/admin/slack-integration'>New settings</a> are enabled",
-    "alert_Pd": "This 'Legacy Slack Integration' is currently disabled because <a href='/admin/slack-integration'>the new settings</a> is enabled.",
     "alert_deplicated": "This 'Legacy Slack Integration' is outdated and will be discontinued in the future. Use <a href='/admin/slack-integration'>the new settings</a> instead. "
   },
   "user_management": {
@@ -819,29 +828,6 @@
       "force_update_parents_description": "Enable this option to force the addition of missing users to the ancestor groups if they exist after changing a parent group."
     }
   },
-  "full_text_search_management": {
-    "full_text_search_management": "Full Text Search Management",
-    "elasticsearch_management": "Elasticsearch management",
-    "connection_status": "Connection status",
-    "connection_status_label_unconfigured": "UNCONFIGURED",
-    "connection_status_label_connected": "CONNECTED",
-    "connection_status_label_disconnected": "DISCONNECTED",
-    "connection_status_label_erroroccured": "ERROR OCCURED ON SEARCH SERVICE",
-    "indices_status": "Indices Status",
-    "indices_status_label_normalized": "NORMALIZED",
-    "indices_status_label_unnormalized": "REBUILDING or BROKEN",
-    "indices_summary": "Indices summary",
-    "reconnect": "Reconnect",
-    "reconnect_button": "Try to reconnect",
-    "reconnect_description": "Click the button to try to reconnect to Elasticsearch.",
-    "normalize": "Normalize",
-    "normalize_button": "Normalize indices",
-    "normalize_description": "Click the button to repair broken indices.",
-    "rebuild": "Rebuild",
-    "rebuild_button": "Rebuild index",
-    "rebuild_description_1": "Click the button to rebuild index and add all page datas.",
-    "rebuild_description_2": "This may take a while."
-  },
   "audit_log_management": {
     "audit_log": "Audit Log",
     "audit_log_settings": "Audit Log Settings",
@@ -884,10 +870,8 @@
     "USER_LOGIN_WITH_LDAP": "Login with LDAP",
     "USER_LOGIN_WITH_GOOGLE": "Login with Google",
     "USER_LOGIN_WITH_GITHUB": "Login with GitHub",
-    "USER_LOGIN_WITH_TWITTER": "Login with Twitter",
     "USER_LOGIN_WITH_OIDC": "Login with OIDC",
     "USER_LOGIN_WITH_SAML": "Login with SAML",
-    "USER_LOGIN_WITH_BASIC": "Login with BASIC",
     "USER_LOGIN_FAILURE": "Login failure",
     "USER_LOGOUT": "Logout",
     "USER_FOGOT_PASSWORD": "Request password reset",
@@ -965,18 +949,12 @@
     "ADMIN_AUTH_OIDC_ENABLED": "Enable OIDC auth",
     "ADMIN_AUTH_OIDC_DISABLED": "Disable OIDC auth",
     "ADMIN_AUTH_OIDC_UPDATE": "Update OIDC settings",
-    "ADMIN_AUTH_BASIC_ENABLED": "Enable BASIC auth",
-    "ADMIN_AUTH_BASIC_DISABLED": "Disable BASIC auth",
-    "ADMIN_AUTH_BASIC_UPDATE": "Update BASIC auth settings",
     "ADMIN_AUTH_GOOGLE_ENABLED": "Enable Google auth",
     "ADMIN_AUTH_GOOGLE_DISABLED": "Disable Google auth",
     "ADMIN_AUTH_GOOGLE_UPDATE": "Update Google auth settings",
     "ADMIN_AUTH_GITHUB_ENABLED": "Enable GitHub auth",
     "ADMIN_AUTH_GITHUB_DISABLED": "Disable GitHub auth",
     "ADMIN_AUTH_GITHUB_UPDATE": "Update GitHub auth settings",
-    "ADMIN_AUTH_TWITTER_ENABLED": "Enable Twitter auth",
-    "ADMIN_AUTH_TWITTER_DISABLED": "Disable Twitter auth",
-    "ADMIN_AUTH_TWITTER_UPDATE": "Update Twitter auth settings",
     "ADMIN_MARKDOWN_LINE_BREAK_UPDATE": "Update Link Break settings",
     "ADMIN_MARKDOWN_INDENT_UPDATE": "Update Indent settings",
     "ADMIN_MARKDOWN_PRESENTATION_UPDATE": "Update Presentation setting",
@@ -987,7 +965,7 @@
     "ADMIN_FUNCTION_UPDATE": "Update Function",
     "ADMIN_CODE_HIGHLIGHT_UPDATE": "Update Code Highlight",
     "ADMIN_CUSTOM_TITLE_UPDATE": "Update Custom Title",
-    "ADMIN_CUSTOM_HTML_HEADER_UPDATE": "Update Custom HTML header",
+    "ADMIN_CUSTOM_NOSCRIPT_UPDATE": "Update Custom noscript",
     "ADMIN_CUSTOM_CSS_UPDATE": "Update Custom CSS",
     "ADMIN_CUSTOM_SCRIPT_UPDATE": "Update Custom script",
     "ADMIN_ARCHIVE_DATA_UPLOAD": "Upload Archived Data",
