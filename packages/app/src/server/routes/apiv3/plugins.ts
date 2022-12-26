@@ -35,7 +35,7 @@ module.exports = (crowi: Crowi): Router => {
 
     try {
       const GrowiPluginModel = mongoose.model('GrowiPlugin') as GrowiPluginModel;
-      const data = await GrowiPluginModel.findPlugins();
+      const data = await GrowiPluginModel.find({});
       return res.apiv3({ plugins: data });
     }
     catch (err) {

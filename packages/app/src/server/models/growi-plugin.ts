@@ -14,7 +14,6 @@ export interface GrowiPluginDocument extends GrowiPlugin, Document {
 export interface GrowiPluginModel extends Model<GrowiPluginDocument> {
   findEnabledPlugins(): Promise<GrowiPlugin[]>
   findEnabledPluginsIncludingAnyTypes(includingTypes: GrowiPluginResourceType[]): Promise<GrowiPlugin[]>
-  findPlugins(): Promise<GrowiPlugin[]>
   activatePlugin(id: Types.ObjectId): Promise<string>
   deactivatePlugin(id: Types.ObjectId): Promise<string>
 }
@@ -67,10 +66,6 @@ growiPluginSchema.statics.findEnabledPluginsIncludingAnyTypes = async function(t
     isEnabled: true,
     'meta.types': { $in: types },
   });
-};
-
-growiPluginSchema.statics.findPlugins = async function(): Promise<GrowiPlugin[]> {
-  return this.find({});
 };
 
 growiPluginSchema.statics.activatePlugin = async function(id: Types.ObjectId): Promise<string> {
