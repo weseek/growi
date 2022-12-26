@@ -503,7 +503,9 @@ export const generatePreviewOptions = (config: RendererConfig, pagePath: string)
     components.table = Table;
   }
 
-  // verifySanitizePlugin(options, false);
+  if (config.isEnabledXssPrevention) {
+    verifySanitizePlugin(options, false);
+  }
   return options;
 };
 
