@@ -159,6 +159,7 @@ export class PluginService implements IPluginService {
     await GrowiPlugin.deleteMany({ installedPath: path });
   }
 
+  // !! DO NOT USE WHERE NOT SSRF GUARDED !! -- 12.26 ryoji-s
   private async downloadFile(requestUrl: string, filePath: string): Promise<void> {
     return new Promise<void>((resolve, rejects) => {
       axios({
