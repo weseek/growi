@@ -2,7 +2,7 @@ import React, { useCallback, useEffect, useState } from 'react';
 
 import { useTranslation } from 'react-i18next';
 
-import { useGenerateTransferKeyWithThrottle } from '~/client/services/g2g-transfer';
+import { useGenerateTransferKey } from '~/client/services/g2g-transfer';
 import { toastError, toastSuccess } from '~/client/util/apiNotification';
 import { apiv3Get, apiv3Post } from '~/client/util/apiv3-client';
 import { G2G_PROGRESS_STATUS, type G2GProgress } from '~/interfaces/g2g-transfer';
@@ -80,11 +80,16 @@ const G2GDataTransfer = (): JSX.Element => {
     }
   }, [socket]);
 
-  const { transferKey, generateTransferKeyWithThrottle } = useGenerateTransferKeyWithThrottle();
+  const { transferKey, generateTransferKey } = useGenerateTransferKey();
 
-  const onClickHandler = useCallback(() => {
-    generateTransferKeyWithThrottle();
-  }, [generateTransferKeyWithThrottle]);
+  const onClickHandler = useCallback(async() => {
+    try {
+      await generateTransferKey();
+    }
+    catch (errs) {
+      toastError(errs);
+    }
+  }, [generateTransferKey]);
 
   const startTransfer = useCallback(async(e) => {
     e.preventDefault();
