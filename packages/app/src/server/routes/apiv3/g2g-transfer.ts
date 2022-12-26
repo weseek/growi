@@ -314,22 +314,17 @@ module.exports = (crowi: Crowi): Router => {
     // Check if can transfer
     const transferability = await g2gTransferPusherService.getTransferability(toGROWIInfo);
     if (!transferability.canTransfer) {
-      logger.debug('Could not transfer.');
       return res.apiv3Err(new ErrorV3(transferability.reason, 'growi_incompatible_to_transfer'));
     }
 
     // Start transfer
     try {
-      await g2gTransferPusherService.startTransfer(tk, req.user, collections, optionsMap);
+      // DO NOT "await". Let it run in the background.
+      // Errors should be emitted through websocket.
+      g2gTransferPusherService.startTransfer(tk, req.user, collections, optionsMap);
     }
     catch (err) {
       logger.error(err);
-
-      if (!isG2GTransferError(err)) {
-        return res.apiv3Err(new ErrorV3('Failed to transfer', 'failed_to_transfer'), 500);
-      }
-
-      return res.apiv3Err(new ErrorV3(err.message, err.code), 500);
     }
 
     return res.apiv3({ message: 'Successfully requested auto transfer.' });
