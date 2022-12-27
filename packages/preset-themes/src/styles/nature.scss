@@ -16,16 +16,7 @@
 
 .growi:not(.login-page) {
   // add background-image
-  #page-wrapper,
   .page-editor-preview-container {
-    background-attachment: fixed;
-    background-position: center center;
-    background-size: cover;
-  }
-}
-
-.growi.login-page {
-  #page-wrapper {
     background-attachment: fixed;
     background-position: center center;
     background-size: cover;
