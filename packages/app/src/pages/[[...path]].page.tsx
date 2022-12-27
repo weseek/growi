@@ -21,9 +21,10 @@ import superjson from 'superjson';
 
 import { useCurrentGrowiLayoutFluidClassName } from '~/client/services/layout';
 import { Comments } from '~/components/Comments';
+import { MainPane } from '~/components/Layout/MainPane';
 import { PageAlerts } from '~/components/PageAlert/PageAlerts';
 // import { useTranslation } from '~/i18n';
-import { CurrentPageContentFooter } from '~/components/PageContentFooter';
+import { PageContentFooter } from '~/components/PageContentFooter';
 import { DrawioViewerScript } from '~/components/Script/DrawioViewerScript';
 import { UsersHomePageFooterProps } from '~/components/UsersHomePageFooter';
 import type { CrowiRequest } from '~/interfaces/crowi-request';
@@ -59,6 +60,7 @@ import GrowiContextualSubNavigation from '../components/Navbar/GrowiContextualSu
 import DisplaySwitcher from '../components/Page/DisplaySwitcher';
 // import { serializeUserSecurely } from '../server/models/serializers/user-serializer';
 // import PageStatusAlert from '../client/js/components/PageStatusAlert';
+import type { PageSideContentsProps } from '../components/PageSideContents';
 import {
   useCurrentUser,
   useIsLatestRevision,
@@ -69,7 +71,7 @@ import {
   useIsAclEnabled, useIsSearchPage, useTemplateTagData, useTemplateBodyData, useIsEnabledAttachTitleHeader,
   useCsrfToken, useIsSearchScopeChildrenAsDefault, useCurrentPageId, useCurrentPathname,
   useIsSlackConfigured, useRendererConfig,
-  useEditorConfig, useIsAllReplyShown, useIsUploadableFile, useIsUploadableImage, useCustomizedLogoSrc, useIsContainerFluid,
+  useEditorConfig, useIsAllReplyShown, useIsUploadableFile, useIsUploadableImage, useCustomizedLogoSrc, useIsContainerFluid, useIsNotCreatable,
 } from '../stores/context';
 
 import { NextPageWithLayout } from './_app.page';
@@ -88,6 +90,7 @@ declare global {
 const NotCreatablePage = dynamic(() => import('../components/NotCreatablePage').then(mod => mod.NotCreatablePage), { ssr: false });
 const ForbiddenPage = dynamic(() => import('../components/ForbiddenPage'), { ssr: false });
 const UnsavedAlertDialog = dynamic(() => import('../components/UnsavedAlertDialog'), { ssr: false });
+const PageSideContents = dynamic<PageSideContentsProps>(() => import('../components/PageSideContents').then(mod => mod.PageSideContents), { ssr: false });
 const GrowiSubNavigationSwitcher = dynamic(() => import('../components/Navbar/GrowiSubNavigationSwitcher'), { ssr: false });
 const UsersHomePageFooter = dynamic<UsersHomePageFooterProps>(() => import('../components/UsersHomePageFooter')
   .then(mod => mod.UsersHomePageFooter), { ssr: false });
@@ -98,7 +101,7 @@ const PageStatusAlert = dynamic(() => import('../components/PageStatusAlert').th
 const logger = loggerFactory('growi:pages:all');
 
 const {
-  isPermalink: _isPermalink, isUsersHomePage, isTrashPage: _isTrashPage, isUserPage, isCreatablePage, isTopPage,
+  isPermalink: _isPermalink, isUsersHomePage, isTrashPage: _isTrashPage, isCreatablePage, isTopPage,
 } = pagePathUtils;
 const { removeHeadingSlash } = pathUtils;
 
@@ -153,7 +156,7 @@ type Props = CommonProps & {
   isIdenticalPathPage?: boolean,
   isForbidden: boolean,
   isNotFound: boolean,
-  isNotCreatablePage: boolean,
+  isNotCreatable: boolean,
   // isAbleToDeleteCompletely: boolean,
 
   templateTagData?: string[],
@@ -204,7 +207,6 @@ const Page: NextPageWithLayout<Props> = (props: Props) => {
   // commons
   useEditorConfig(props.editorConfig);
   useCsrfToken(props.csrfToken);
-  useCustomizedLogoSrc(props.customizedLogoSrc);
 
   // UserUISettings
   usePreferDrawerModeByUser(props.userUISettings?.preferDrawerModeByUser ?? props.sidebarConfig.isSidebarDrawerMode);
@@ -219,13 +221,10 @@ const Page: NextPageWithLayout<Props> = (props: Props) => {
   // useOwnerOfCurrentPage(props.pageUser != null ? JSON.parse(props.pageUser) : null);
   useIsForbidden(props.isForbidden);
   useIsNotFound(props.isNotFound);
-  // useIsNotCreatable(props.IsNotCreatable);
+  useIsNotCreatable(props.isNotCreatable);
   useRedirectFrom(props.redirectFrom);
-  // useShared();
-  // useShareLinkId(props.shareLinkId);
   useIsSharedUser(false); // this page cann't be routed for '/share'
-  useIsIdenticalPath(false); // TODO: need to initialize from props
-  // useIsAbleToDeleteCompletely(props.isAbleToDeleteCompletely);
+  useIsIdenticalPath(props.isIdenticalPathPage ?? false);
   useIsEnabledStaleNotification(props.isEnabledStaleNotification);
   useIsSearchPage(false);
 
@@ -265,7 +264,6 @@ const Page: NextPageWithLayout<Props> = (props: Props) => {
   useRemoteRevisionId(pageWithMeta?.data.revision?._id);
   usePageIdOnHackmd(pageWithMeta?.data.pageIdOnHackmd);
   useHasDraftOnHackmd(pageWithMeta?.data.hasDraftOnHackmd ?? false);
-  // useIsNotCreatable(props.isForbidden || !isCreatablePage(pagePath)); // TODO: need to include props.isIdentical
   useCurrentPathname(props.currentPathname);
 
   useSWRxCurrentPage(undefined, pageWithMeta?.data ?? null); // store initial data
@@ -302,6 +300,27 @@ const Page: NextPageWithLayout<Props> = (props: Props) => {
 
   const title = generateCustomTitle(props, 'GROWI');
 
+
+  const sideContents = !props.isNotFound && !props.isNotCreatable
+    ? (
+      <PageSideContents page={pageWithMeta?.data} />
+    )
+    : <></>;
+
+  const footerContents = !props.isIdenticalPathPage && !props.isNotFound && pageWithMeta != null
+    ? (
+      <>
+        { pagePath != null && !isTopPagePath && (
+          <Comments pageId={pageId} pagePath={pagePath} revision={pageWithMeta.data.revision} />
+        ) }
+        { isUsersHomePage(pageWithMeta.data.path) && (
+          <UsersHomePageFooter creatorId={pageWithMeta.data.creator._id}/>
+        ) }
+        <PageContentFooter page={pageWithMeta.data} />
+      </>
+    )
+    : <></>;
+
   return (
     <>
       <Head>
@@ -320,47 +339,27 @@ const Page: NextPageWithLayout<Props> = (props: Props) => {
         <div id="grw-subnav-sticky-trigger" className="sticky-top"></div>
         <div id="grw-fav-sticky-trigger" className="sticky-top"></div>
 
-        <div className="flex-grow-1">
-          <div id="main" className={`main ${isUsersHomePage(props.currentPathname) && 'user-page'}`}>
-            <div id="content-main" className="content-main grw-container-convertible">
-              { props.isIdenticalPathPage && <IdenticalPathPage /> }
-
-              { !props.isIdenticalPathPage && (
-                <>
-                  <PageAlerts />
-                  { props.isForbidden && <ForbiddenPage /> }
-                  { props.isNotCreatablePage && <NotCreatablePage />}
-                  { !props.isForbidden && !props.isNotCreatablePage && <DisplaySwitcher />}
-                  {/* <DisplaySwitcher /> */}
-                  <PageStatusAlert />
-                </>
-              ) }
-              <div className="revision-head">
-                <NextLink href="#test-link1" className="revision-head-link">
-                  <span className="icon-link">テストリンク</span>
-                </NextLink>
-                <p id="test-link1" style={{ backgroundColor: 'orange', width: 400, height: 1200 }}>なんじゃこりゃ</p>
-              </div>
-
-              {/* <div className="col-xl-2 col-lg-3 d-none d-lg-block revision-toc-container">
-                <div id="revision-toc" className="revision-toc mt-3 sps sps--abv" data-sps-offset="123">
-                  <div id="revision-toc-content" className="revision-toc-content"></div>
-                </div>
-              </div> */}
-            </div>
+        <MainPane
+          sideContents={sideContents}
+          footerContents={footerContents}
+        >
+          <PageAlerts />
+          { props.isIdenticalPathPage && <IdenticalPathPage />}
+          { !props.isIdenticalPathPage && (
+            <>
+              { props.isForbidden && <ForbiddenPage /> }
+              { props.isNotCreatable && <NotCreatablePage />}
+              { !props.isForbidden && !props.isNotCreatable && <DisplaySwitcher />}
+            </>
+          ) }
+          <div className="revision-head">
+            <NextLink href="#test-link1" className="revision-head-link">
+              <span className="icon-link">テストリンク</span>
+            </NextLink>
+            <p id="test-link1" style={{ backgroundColor: 'orange', width: 400, height: 1200 }}>なんじゃこりゃ</p>
           </div>
-        </div>
-        { !props.isIdenticalPathPage && !props.isNotFound && (
-          <footer className="footer d-edit-none">
-            { pageWithMeta != null && pagePath != null && !isTopPagePath && (
-              <Comments pageId={pageId} pagePath={pagePath} revision={pageWithMeta.data.revision} />
-            ) }
-            { pageWithMeta != null && isUsersHomePage(pageWithMeta.data.path) && (
-              <UsersHomePageFooter creatorId={pageWithMeta.data.creator._id}/>
-            ) }
-            <CurrentPageContentFooter />
-          </footer>
-        )}
+          <PageStatusAlert />
+        </MainPane>
 
         {shouldRenderPutbackPageModal && <PutbackPageModal />}
       </div>
@@ -487,17 +486,18 @@ async function injectRoutingInformation(context: GetServerSidePropsContext, prop
   const page = props.pageWithMeta?.data;
 
   if (props.isIdenticalPathPage) {
-    // TBD
+    props.isNotCreatable = true;
   }
   else if (page == null) {
     props.isNotFound = true;
-    props.isNotCreatablePage = !isCreatablePage(currentPathname);
+    props.isNotCreatable = !isCreatablePage(currentPathname);
     // check the page is forbidden or just does not exist.
     const count = isPermalink ? await Page.count({ _id: pageId }) : await Page.count({ path: currentPathname });
     props.isForbidden = count > 0;
   }
   else {
     props.isNotFound = page.isEmpty;
+    props.isNotCreatable = false;
     // /62a88db47fed8b2d94f30000 ==> /path/to/page
     if (isPermalink && page.isEmpty) {
       props.currentPathname = page.path;

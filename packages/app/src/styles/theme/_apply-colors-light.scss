@@ -84,7 +84,7 @@ $dropdown-link-active-bg: $bgcolor-dropdown-link-active;
     linear-gradient(135deg, var.$growi-green 10%, hsla(225, 95%, 50%, 0) 70%), linear-gradient(225deg, var.$growi-blue 10%, hsla(140, 90%, 50%, 0) 80%),
     linear-gradient(315deg, darken($color-gradient, 25%) 100%, hsla(35, 95%, 55%, 0) 70%);
 
-  .noLogin-header {
+  .nologin-header {
     background-color: rgba(white, 0.5);
 
     .logo {
@@ -97,7 +97,7 @@ $dropdown-link-active-bg: $bgcolor-dropdown-link-active;
     }
   }
 
-  .noLogin-dialog {
+  .nologin-dialog {
     background-color: rgba(white, 0.5);
   }
 
