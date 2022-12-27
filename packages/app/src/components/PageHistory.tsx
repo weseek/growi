@@ -7,7 +7,6 @@ import { useSWRxPageRevisions, useCurrentPagePath } from '~/stores/page';
 import loggerFactory from '~/utils/logger';
 
 import { PageRevisionTable } from './PageHistory/PageRevisionTable';
-import PaginationWrapper from './PaginationWrapper';
 import { RevisionComparer } from './RevisionComparer/RevisionComparer';
 
 const logger = loggerFactory('growi:PageHistory');
@@ -45,18 +44,6 @@ export const PageHistory: React.FC<{ onClose: () => void }> = ({ onClose }) => {
     );
   }
 
-  const pager = () => {
-    return (
-      <PaginationWrapper
-        activePage={activePage}
-        changePage={setActivePage}
-        totalItemsCount={revisionsData.totalCounts}
-        pagingLimit={pagingLimit}
-        align="center"
-      />
-    );
-  };
-
   return (
     <div className="revision-history" data-testid="page-history">
       <PageRevisionTable
@@ -70,9 +57,6 @@ export const PageHistory: React.FC<{ onClose: () => void }> = ({ onClose }) => {
         onChangeTargetInvoked={setTargetRevision}
         onClose={onClose}
       />
-      <div className="my-3">
-        {pager()}
-      </div>
       <RevisionComparer
         sourceRevision={sourceRevision}
         targetRevision={targetRevision}

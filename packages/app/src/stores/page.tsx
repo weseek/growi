@@ -6,6 +6,7 @@ import type {
 import { isClient, pagePathUtils } from '@growi/core';
 import useSWR, { Key, SWRResponse } from 'swr';
 import useSWRImmutable from 'swr/immutable';
+import useSWRInfinite, { SWRInfiniteResponse } from 'swr/infinite';
 
 import { apiGet } from '~/client/util/apiv1-client';
 import { apiv3Get } from '~/client/util/apiv3-client';
@@ -139,6 +140,29 @@ export const useSWRxPageRevisions = (
         };
         return revisions;
       });
+    },
+  );
+};
+
+export const useSWRxInfinitePageRevisions = (
+    pageId: string | null | undefined,
+) : SWRInfiniteResponse<(IRevisionsForPagination), Error> => {
+  const LIMIT = 10;
+  const getKey = (page: number) => {
+    return `/revisions/list?pageId=${pageId}&page=${page + 1}&limit=${LIMIT}`;
+  };
+  return useSWRInfinite(
+    getKey,
+    (endpoint: string) => apiv3Get(endpoint).then((response) => {
+      const revisions = {
+        revisions: response.data.docs,
+        totalCounts: response.data.totalDocs,
+      };
+      return revisions;
+    }),
+    {
+      revalidateFirstPage: false,
+      revalidateAll: false,
     },
   );
 };
