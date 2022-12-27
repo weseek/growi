@@ -17,6 +17,7 @@ $bgcolor-sidebar-nav-item-active: var(--bgcolor-sidebar-nav-item-active,#{hsl.da
 $text-shadow-sidebar-nav-item-active: var(--text-shadow-sidebar-nav-item-active,1px 1px 2px var(--primary));
 $bgcolor-inline-code: var(--bgcolor-inline-code, #{$gray-100});
 $color-inline-code: var(--color-inline-code, #{darken($red, 15%)});
+$border-color-theme: var(--border-color-theme,#{$gray-400});
 $bordercolor-inline-code: var(--bordercolor-inline-code, #{$gray-400});
 $bordercolor-nav-tabs: var(--bordercolor-nav-tabs, #{$gray-300});
 $bordercolor-nav-tabs-hover: var(--bordercolor-nav-tabs-hover,#{$gray-200} #{$gray-200} #{$bordercolor-nav-tabs});
@@ -325,7 +326,7 @@ ul.pagination {
  */
 .modal {
   .modal-header {
-    border-bottom-color: var(--border-color-theme);
+    border-bottom-color: $border-color-theme;
     .modal-title {
       color: $color-modal-header;
     }
@@ -343,7 +344,7 @@ ul.pagination {
   }
 
   .modal-footer {
-    border-top-color: var(--border-color-theme);
+    border-top-color: $border-color-theme;
   }
 }
 
@@ -504,11 +505,11 @@ ul.pagination {
     background-color: #{hsl.darken(var(--bgcolor-global),2%)};
 
     .page-editor-editor-container {
-      border-right-color: var(--border-color-theme);
+      border-right-color: $border-color-theme;
 
       .navbar-editor {
         background-color: var(--bgcolor-global); // same color with active tab
-        border-bottom-color: var(--border-color-theme);
+        border-bottom-color: $border-color-theme;
       }
     }
 
@@ -621,7 +622,7 @@ mark.rbt-highlight-text {
  */
 .page-content-footer {
   background-color: #{hsl.darken(var(--bgcolor-global),2%)};
-  border-top-color: var(--border-color-theme);
+  border-top-color: $border-color-theme;
 }
 
 /*

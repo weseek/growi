@@ -14,6 +14,7 @@ $bgcolor-list-active: var(--bgcolor-list-active,var(--primary-65));
 $color-list-active: var(--color-list-active,#{hsl.contrast(var(--primary-65))});
 $color-table: var(--color-table,var(--color-global));
 $bgcolor-table: var(--bgcolor-table,null);
+$border-color-theme: var(--border-color-theme,#{$gray-400});
 $border-color-table: var(--border-color-table,#{$gray-200});
 $color-table-hover: var(--color-table-hover,var(--color-table));
 $bgcolor-table-hover: var(--bgcolor-table-hover,rgba(black, 0.075));
@@ -21,7 +22,7 @@ $bgcolor-sidebar-list-group: var(--bgcolor-sidebar-list-group,var(--bgcolor-list
 $color-tags: var(--color-tags,var(--secondary));
 $bgcolor-tags: var(--bgcolor-tags,#{$gray-200});
 $border-color-global: var(--border-color-global,#{$gray-300});
-$border-color-toc: var(--border-color-toc,var(--border-color-global));
+$border-color-toc: var(--border-color-toc,#{$gray-300});
 $color-dropdown: var(--color-dropdown,var(--color-global));
 $bgcolor-dropdown: var(--color-dropdown,var(--bgcolor-global));
 $color-dropdown-link: var(--color-dropdown-link,var(--color-global));
@@ -270,9 +271,8 @@ $dropdown-link-active-bg: $bgcolor-dropdown-link-active;
  * GROWI ToC
  */
 .revision-toc-content {
-  --bgcolor-global-darken20: hsl(from var(--bgcolor-global) h s calc(l - 20%));
   ::marker {
-    color: var(--bgcolor-global-darken20);
+    color: #{hsl.darken(var(--bgcolor-global),20%)};
   }
 }
 
@@ -280,7 +280,7 @@ $dropdown-link-active-bg: $bgcolor-dropdown-link-active;
  * GROWI Editor
  */
 .grw-editor-navbar-bottom {
-  background-color: $gray-50;
+  background-color: #{$gray-50};
 
   #slack-mark-white {
     display: none;
@@ -288,8 +288,8 @@ $dropdown-link-active-bg: $bgcolor-dropdown-link-active;
 
   .input-group-text {
     margin-right: 1px;
-    color: $secondary;
-    border-color: $light;
+    color: var(--secondary);
+    border-color: var(--light);
   }
 
   .btn.btn-outline-secondary {
@@ -302,7 +302,7 @@ $dropdown-link-active-bg: $bgcolor-dropdown-link-active;
  */
 .link-edit-modal {
   span i {
-    color: $gray-400;
+    color: #{$gray-400};
   }
 }
 
@@ -311,7 +311,7 @@ $dropdown-link-active-bg: $bgcolor-dropdown-link-active;
  */
 
 .grw-grid-edit-preview {
-  background: $gray-100;
+  background: #{$gray-100};
 }
 
 /*
@@ -319,7 +319,9 @@ $dropdown-link-active-bg: $bgcolor-dropdown-link-active;
  */
 .grw-slack-notification {
   background-color: white;
-  $color-slack: #4b144c;
+  --color-slack: hsl(var(--color-slack-hs),var(--color-slack-l));
+  --color-slack-hs: 299,58%;
+  --color-slack-l: 19%;
 
   .form-control {
     background: white;
@@ -327,20 +329,20 @@ $dropdown-link-active-bg: $bgcolor-dropdown-link-active;
 
   .custom-control-label {
     &::before {
-      background-color: $gray-200;
+      background-color: #{$gray-200};
       border-color: transparent;
     }
     &::after {
       background-color: white;
-      // background-image: url(/images/icons/slack/slack-logo-off.svg); -- should be specified in app -- 2022.12.09 Yuki Takei
+      background-image: url(/images/icons/slack/slack-logo-off.svg);
     }
   }
   .custom-control-input:checked ~ .custom-control-label {
     &::before {
-      background-color: lighten($color-slack, 60%);
+      background-color: #{hsl.lighten(var(--color-slack), 60%)};
     }
     &::after {
-      // background-image: url(/images/icons/slack/slack-logo-on.svg); -- should be specified in app -- 2022.12.09 Yuki Takei
+      background-image: url(/images/icons/slack/slack-logo-on.svg);
     }
   }
   .grw-slack-logo svg {
@@ -357,7 +359,7 @@ $dropdown-link-active-bg: $bgcolor-dropdown-link-active;
   }
 
   .grw-btn-slack-triangle {
-    color: $secondary;
+    color: var(--secondary);
   }
 }
 
@@ -365,15 +367,15 @@ $dropdown-link-active-bg: $bgcolor-dropdown-link-active;
  * GROWI HandsontableModal
  */
 .grw-hot-modal-navbar {
-  background-color: $light;
+  background-color: var(--light);
 }
 
 .wiki {
   h1 {
-    border-color: var(--border-color-theme);
+    border-color: $border-color-theme;
   }
   h2 {
-    border-color: var(--border-color-theme);
+    border-color: $border-color-theme;
   }
 }
 
@@ -415,7 +417,7 @@ $dropdown-link-active-bg: $bgcolor-dropdown-link-active;
 */
 .grw-side-contents-sticky-container {
   .grw-count-badge {
-    @include count-badge.count-badge($gray-600, $gray-200);
+    @include count-badge.count-badge(#{$gray-600}, #{$gray-200});
   }
 
   .grw-border-vr {
@@ -451,7 +453,6 @@ $dropdown-link-active-bg: $bgcolor-dropdown-link-active;
  * skeleton
  */
 .grw-skeleton {
-  --bgcolor-subnav-lighten10 : hsl(from var(--bgcolor-subnav) h s calc(l + 10%));
-  background-color: var(--bgcolor-subnav-lighten10);
+  background-color: #{hsl.lighten(var(--bgcolor-navbar),10%)};
 }
 

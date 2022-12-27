@@ -1,9 +1,9 @@
-@use '../variables' as var;
-@use '../bootstrap/init' as *;
-@use '../atoms/mixins/buttons' as mixins-buttons;
-@use './mixins/count-badge';
-@use './mixins/hsl-button';
-@use './hsl-functions' as hsl;
+// @use '../variables' as var;
+// @use '../bootstrap/init' as *;
+// @use '../atoms/mixins/buttons' as mixins-buttons;
+// @use './mixins/count-badge';
+// @use './mixins/hsl-button';
+// @use './hsl-functions' as hsl;
 
 
 // determine optional variables
@@ -44,11 +44,11 @@
 // $dropdown-link-active-color: $color-dropdown-link-active;
 // $dropdown-link-active-bg: $bgcolor-dropdown-link-active;
 
-@import './mixins/list-group';
-@import './reboot-bootstrap-text';
-@import './reboot-bootstrap-border-colors';
-@import './reboot-bootstrap-tables';
-@import './reboot-bootstrap-dropdown';
+// @import './mixins/list-group';
+// @import './reboot-bootstrap-text';
+// @import './reboot-bootstrap-border-colors';
+// @import './reboot-bootstrap-tables';
+// @import './reboot-bootstrap-dropdown';
 
 // // List Group
 // @include override-list-group-item(
@@ -266,187 +266,187 @@
 /*
  * GROWI ToC
  */
-.revision-toc-content {
-  ::marker {
-    color: hsl(var(--bgcolor-global-hs),calc(var(--bgcolor-global-l) - 20%));
-  }
-}
+// .revision-toc-content {
+//   ::marker {
+//     color: #{hsl.darken(var(--bgcolor-global),20%)};
+//   }
+// }
 
 /*
  * GROWI Editor
  */
-.grw-editor-navbar-bottom {
-  background-color: $gray-50;
+// .grw-editor-navbar-bottom {
+//   background-color: #{$gray-50};
 
-  #slack-mark-white {
-    display: none;
-  }
+//   #slack-mark-white {
+//     display: none;
+//   }
 
-  .input-group-text {
-    margin-right: 1px;
-    color: $secondary;
-    border-color: $light;
-  }
+//   .input-group-text {
+//     margin-right: 1px;
+//     color: var(--secondary);
+//     border-color: var(--light);
+//   }
 
-  .btn.btn-outline-secondary {
-    border-color: $border-color;
-  }
-}
+//   .btn.btn-outline-secondary {
+//     border-color: $border-color;
+//   }
+// }
 
 /*
  * GROWI Link Edit Modal
  */
-.link-edit-modal {
-  span i {
-    color: $gray-400;
-  }
-}
+// .link-edit-modal {
+//   span i {
+//     color: #{$gray-400};
+//   }
+// }
 
 /*
  * GROWI Grid Edit Modal
  */
 
-.grw-grid-edit-preview {
-  background: $gray-100;
-}
+// .grw-grid-edit-preview {
+//   background: #{$gray-100};
+// }
 
 /*
  * Slack
  */
-.grw-slack-notification {
-  background-color: white;
-  $color-slack: #4b144c;
+// .grw-slack-notification {
+//   background-color: white;
+//   --color-slack: #4b144c;
 
-  .form-control {
-    background: white;
-  }
+//   .form-control {
+//     background: white;
+//   }
 
-  .custom-control-label {
-    &::before {
-      background-color: $gray-200;
-      border-color: transparent;
-    }
-    &::after {
-      background-color: white;
-      // background-image: url(/images/icons/slack/slack-logo-off.svg); -- should be specified in app -- 2022.12.09 Yuki Takei
-    }
-  }
-  .custom-control-input:checked ~ .custom-control-label {
-    &::before {
-      background-color: lighten($color-slack, 60%);
-    }
-    &::after {
-      // background-image: url(/images/icons/slack/slack-logo-on.svg); -- should be specified in app -- 2022.12.09 Yuki Takei
-    }
-  }
-  .grw-slack-logo svg {
-    fill: #af30b0;
-  }
+//   .custom-control-label {
+//     &::before {
+//       background-color: #{$gray-200};
+//       border-color: transparent;
+//     }
+//     &::after {
+//       background-color: white;
+//       // background-image: url(/images/icons/slack/slack-logo-off.svg); -- should be specified in app -- 2022.12.09 Yuki Takei
+//     }
+//   }
+//   .custom-control-input:checked ~ .custom-control-label {
+//     &::before {
+//       background-color: #{hsl.lighten(var(--color-slack), 60%)};
+//     }
+//     &::after {
+//       // background-image: url(/images/icons/slack/slack-logo-on.svg); -- should be specified in app -- 2022.12.09 Yuki Takei
+//     }
+//   }
+//   .grw-slack-logo svg {
+//     fill: #af30b0;
+//   }
 
-  .grw-btn-slack {
-    background-color: white;
+//   .grw-btn-slack {
+//     background-color: white;
 
-    &:hover,
-    &:focus {
-      background-color: white;
-    }
-  }
+//     &:hover,
+//     &:focus {
+//       background-color: white;
+//     }
+//   }
 
-  .grw-btn-slack-triangle {
-    color: $secondary;
-  }
-}
+//   .grw-btn-slack-triangle {
+//     color: var(--secondary);
+//   }
+// }
 
 /*
  * GROWI HandsontableModal
  */
-.grw-hot-modal-navbar {
-  background-color: $light;
-}
+// .grw-hot-modal-navbar {
+//   background-color: var(--light);
+// }
 
-.wiki {
-  h1 {
-    // border-color: $border-color-theme;
-  }
-  h2 {
-    // border-color: $border-color-theme;
-  }
-}
+// .wiki {
+//   h1 {
+// border-color: $border-color-theme;
+// }
+// h2 {
+// border-color: $border-color-theme;
+//   }
+// }
 
 /*
  * GROWI comment form
- */
-.comment-form {
-  #slack-mark-white {
-    display: none;
-  }
-}
+//  */
+// .comment-form {
+//   #slack-mark-white {
+//     display: none;
+//   }
+// }
 
-.page-comments-row {
-  background: var(--bgcolor-subnav);
-}
+// .page-comments-row {
+//   background: var(--bgcolor-subnav);
+// }
 
 /*
  * GROWI tags
  */
-.grw-tag-labels {
-  .grw-tag-label {
-    // color: $color-tags;
-    // background-color: $bgcolor-tags;
-  }
-}
+// .grw-tag-labels {
+//   .grw-tag-label {
+// color: $color-tags;
+// background-color: $bgcolor-tags;
+//   }
+// }
 
 /*
  * GROWI popular tags
  */
-.grw-popular-tag-labels {
-  .grw-tag-label {
-    // color: $color-tags;
-    // background-color: $bgcolor-tags;
-  }
-}
+// .grw-popular-tag-labels {
+//   .grw-tag-label {
+// color: $color-tags;
+// background-color: $bgcolor-tags;
+//   }
+// }
 
 /*
 * grw-side-contents
 */
-.grw-side-contents-sticky-container {
-  .grw-count-badge {
-    @include count-badge.count-badge($gray-600, $gray-200);
-  }
+// .grw-side-contents-sticky-container {
+//   .grw-count-badge {
+//     @include count-badge.count-badge(#{$gray-600}, #{$gray-200});
+//   }
 
-  .grw-border-vr {
-    // border-color: $border-color-toc;
-  }
-  .revision-toc {
-    // border-color: $border-color-toc;
-  }
-}
+//   .grw-border-vr {
+//     border-color: $border-color-toc;
+//   }
+//   .revision-toc {
+//     border-color: $border-color-toc;
+//   }
+// }
 
 /*
  * drawio
  */
-.drawio-viewer {
-  // border-color: $border-color-global;
-}
+// .drawio-viewer {
+//   border-color: $border-color-global;
+// }
 
 /*
  * admin settings
  */
-.admin-setting-header {
-  border-color: $border-color;
-}
+// .admin-setting-header {
+//   border-color: $border-color;
+// }
 
 /*
  * modal
  */
-.grw-modal-head {
-  // border-color: $border-color-global);
-}
+// .grw-modal-head {
+//   border-color: $border-color-global;
+// }
 
 /*
  * skeleton
  */
-.grw-skeleton {
-  background-color: hsl(var(--bgcolor-navbar-h),calc(var(--bgcolor-navbar-s) - 20%),calc(var(--bgcolor-navbar-l) + 10%));
-}
+// .grw-skeleton {
+//   background-color: #{hsl.lighten(var(--bgcolor-navbar),10%)};
+// }
 
