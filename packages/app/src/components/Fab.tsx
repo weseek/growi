@@ -1,5 +1,5 @@
 import React, {
-  useState, useCallback, useRef,
+  useState, useCallback, useRef, useEffect,
 } from 'react';
 
 import { animateScroll } from 'react-scroll';
@@ -36,30 +36,30 @@ export const Fab = (): JSX.Element => {
   * TODO: Comment out to prevent err >>> TypeError: Cannot read properties of null (reading 'bottom')
   *       We need add style={{ position: 'relative }} to child elements if disable StickyEvents. see: use grep = "<Fab".
   */
-  // const stickyChangeHandler = useCallback((event) => {
-  //   logger.debug('StickyEvents.CHANGE detected');
+  const stickyChangeHandler = useCallback((event) => {
+    logger.debug('StickyEvents.CHANGE detected');
 
-  //   const newAnimateClasses = event.detail.isSticky ? 'animated fadeInUp faster' : 'animated fadeOut faster';
-  //   const newButtonClasses = event.detail.isSticky ? '' : 'disabled grw-pointer-events-none';
+    const newAnimateClasses = event.detail.isSticky ? 'animated fadeInUp faster' : 'animated fadeOut faster';
+    const newButtonClasses = event.detail.isSticky ? '' : 'disabled grw-pointer-events-none';
 
-  //   setAnimateClasses(newAnimateClasses);
-  //   setButtonClasses(newButtonClasses);
-  // }, []);
+    setAnimateClasses(newAnimateClasses);
+    setButtonClasses(newButtonClasses);
+  }, []);
 
-  // // setup effect by sticky event
-  // useEffect(() => {
-  //   // sticky
-  //   // See: https://github.com/ryanwalters/sticky-events
-  //   const stickyEvents = new StickyEvents({ stickySelector: '#grw-fav-sticky-trigger' });
-  //   const { stickySelector } = stickyEvents;
-  //   const elem = document.querySelector(stickySelector);
-  //   elem.addEventListener(StickyEvents.CHANGE, stickyChangeHandler);
+  // setup effect by sticky event
+  useEffect(() => {
+    // sticky
+    // See: https://github.com/ryanwalters/sticky-events
+    const stickyEvents = new StickyEvents({ stickySelector: '#grw-fav-sticky-trigger' });
+    const { stickySelector } = stickyEvents;
+    const elem = document.querySelector(stickySelector);
+    elem.addEventListener(StickyEvents.CHANGE, stickyChangeHandler);
 
-  //   // return clean up handler
-  //   return () => {
-  //     elem.removeEventListener(StickyEvents.CHANGE, stickyChangeHandler);
-  //   };
-  // }, [stickyChangeHandler]);
+    // return clean up handler
+    return () => {
+      elem.removeEventListener(StickyEvents.CHANGE, stickyChangeHandler);
+    };
+  }, [stickyChangeHandler]);
 
   const PageCreateButton = useCallback(() => {
     return (

@@ -38,7 +38,7 @@ const GrowiSubNavigationSwitcher = (props) => {
   * The above err occurs when moving to admin page after rendering normal pages.
   * This is because id "grw-subnav-sticky-trigger" does not exist on admin pages.
   */
-  // const stickyEvents = useMemo(() => new StickyEvents({ stickySelector: '#grw-subnav-sticky-trigger' }), []);
+  const stickyEvents = useMemo(() => new StickyEvents({ stickySelector: '#grw-subnav-sticky-trigger' }), []);
 
   const initWidth = useCallback(() => {
     const instance = fixedContainerRef.current;
@@ -53,18 +53,18 @@ const GrowiSubNavigationSwitcher = (props) => {
     setWidth(clientWidth);
   }, []);
 
-  // const initVisible = useCallback(() => {
-  //   const elements = stickyEvents.stickyElements;
+  const initVisible = useCallback(() => {
+    const elements = stickyEvents.stickyElements;
 
-  //   for (const elem of elements) {
-  //     const bool = stickyEvents.isSticking(elem);
-  //     if (bool) {
-  //       setVisible(bool);
-  //       break;
-  //     }
-  //   }
+    for (const elem of elements) {
+      const bool = stickyEvents.isSticking(elem);
+      if (bool) {
+        setVisible(bool);
+        break;
+      }
+    }
 
-  // }, [stickyEvents]);
+  }, [stickyEvents]);
 
   // setup effect by resizing event
   useEffect(() => {
@@ -83,19 +83,19 @@ const GrowiSubNavigationSwitcher = (props) => {
     setVisible(event.detail.isSticky);
   }, []);
 
-  // // setup effect by sticky event
-  // useEffect(() => {
-  //   // sticky
-  //   // See: https://github.com/ryanwalters/sticky-events
-  //   const { stickySelector } = stickyEvents;
-  //   const elem = document.querySelector(stickySelector);
-  //   elem.addEventListener(StickyEvents.CHANGE, stickyChangeHandler);
+  // setup effect by sticky event
+  useEffect(() => {
+    // sticky
+    // See: https://github.com/ryanwalters/sticky-events
+    const { stickySelector } = stickyEvents;
+    const elem = document.querySelector(stickySelector);
+    elem.addEventListener(StickyEvents.CHANGE, stickyChangeHandler);
 
-  //   // return clean up handler
-  //   return () => {
-  //     elem.removeEventListener(StickyEvents.CHANGE, stickyChangeHandler);
-  //   };
-  // }, [stickyChangeHandler, stickyEvents]);
+    // return clean up handler
+    return () => {
+      elem.removeEventListener(StickyEvents.CHANGE, stickyChangeHandler);
+    };
+  }, [stickyChangeHandler, stickyEvents]);
 
   // update width when sidebar collapsing changed
   useEffect(() => {
@@ -104,16 +104,16 @@ const GrowiSubNavigationSwitcher = (props) => {
     }
   }, [isSidebarCollapsed, initWidth]);
 
-  // // initialize
-  // useEffect(() => {
-  //   initWidth();
+  // initialize
+  useEffect(() => {
+    initWidth();
 
-  //   // check sticky state several times
-  //   setTimeout(initVisible, 100);
-  //   setTimeout(initVisible, 300);
-  //   setTimeout(initVisible, 2000);
+    // check sticky state several times
+    setTimeout(initVisible, 100);
+    setTimeout(initVisible, 300);
+    setTimeout(initVisible, 2000);
 
-  // }, [initWidth, initVisible]);
+  }, [initWidth, initVisible]);
 
   // ${styles['grw-subnav-switcher']}
 
