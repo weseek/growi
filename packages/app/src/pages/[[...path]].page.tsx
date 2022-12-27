@@ -549,8 +549,6 @@ function injectServerConfigurations(context: GetServerSidePropsContext, props: P
   props.isAllReplyShown = configManager.getConfig('crowi', 'customize:isAllReplyShown');
   props.isContainerFluid = configManager.getConfig('crowi', 'customize:isContainerFluid');
   props.isEnabledStaleNotification = configManager.getConfig('crowi', 'customize:isEnabledStaleNotification');
-  // props.isEnabledLinebreaks = configManager.getConfig('markdown', 'markdown:isEnabledLinebreaks');
-  // props.isEnabledLinebreaksInComments = configManager.getConfig('markdown', 'markdown:isEnabledLinebreaksInComments');
   props.disableLinkSharing = configManager.getConfig('crowi', 'security:disableLinkSharing');
   props.editorConfig = {
     upload: {

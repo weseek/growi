@@ -93,7 +93,7 @@ export const PluginCard = (props: Props): JSX.Element => {
           className="btn btn-primary"
           onClick={() => onClickPluginDeleteBtnHandler()}
         >
-          Delete
+          {t('plugins.delete')}
         </button>
       </div>
     );

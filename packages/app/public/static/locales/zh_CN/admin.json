@@ -391,8 +391,6 @@
     "bucket_name": "Bucket name",
     "custom_endpoint": "Custom endpoint",
     "custom_endpoint_change": "输入对象存储服务（如MinIO）端点的URL，MinIO具有与S3兼容的API。如果为空，则使用Amazon S3。",
-    "plugin_settings": "插件设置",
-    "enable_plugin_loading": "启用插件加载",
     "load_plugins": "加载插件",
     "enable": "启用",
     "disable": "停用",
@@ -857,6 +855,16 @@
     "docs_url": {
       "log_type": "https://docs.growi.org/en/admin-guide/admin-cookbook/audit-log-setup.html#log-types"
     }
+  },
+  "plugins": {
+    "plugins": "Plugins",
+    "plugin_installer": "Plugin Installer",
+    "repository_url": "Repository URL",
+    "description": "You can install plugins by inputting the URL",
+    "plugin_card": "Plugin Card",
+    "plugin_is_not_installed": "Plugin is not installed",
+    "install": "Install",
+    "delete": "Delete"
   },
   "cloud_setting_management": {
     "to_cloud_settings": "進入 GROWI.cloud 的管理界面"

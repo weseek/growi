@@ -383,8 +383,6 @@
     "bucket_name": "Bucket name",
     "custom_endpoint": "Custom endpoint",
     "custom_endpoint_change": "Input the URL of the endpoint of an object storage service like MinIO that has a S3-compatible API.  Amazon S3 is used if empty.",
-    "plugin_settings": "Plugin settings",
-    "enable_plugin_loading": "Enable plugin loading",
     "load_plugins": "Load plugins",
     "enable": "Enable",
     "disable": "Disable",
@@ -849,6 +847,16 @@
     "docs_url": {
       "log_type": "https://docs.growi.org/en/admin-guide/admin-cookbook/audit-log-setup.html#log-types"
     }
+  },
+  "plugins": {
+    "plugins": "Plugins",
+    "plugin_installer": "Plugin Installer",
+    "repository_url": "Repository URL",
+    "description": "You can install plugins by inputting the URL",
+    "plugin_card": "Plugin Card",
+    "plugin_is_not_installed": "Plugin is not installed",
+    "install": "Install",
+    "delete": "Delete"
   },
   "cloud_setting_management": {
     "to_cloud_settings": "Open GROWI.cloud Settings"

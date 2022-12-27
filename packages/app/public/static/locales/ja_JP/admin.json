@@ -391,8 +391,6 @@
     "bucket_name": "バケット名",
     "custom_endpoint": "カスタムエンドポイント",
     "custom_endpoint_change": "MinIOなど、S3互換APIを持つ他のオブジェクトストレージサービスを使用する場合のみ、そのエンドポイントのURLを入力してください。空欄の場合は、Amazon S3を使用します。",
-    "plugin_settings": "プラグイン設定",
-    "enable_plugin_loading": "プラグインの読み込みを有効にします。",
     "load_plugins": "プラグインを読み込む",
     "enable": "有効",
     "disable": "無効",
@@ -857,6 +855,16 @@
     "docs_url": {
       "log_type": "https://docs.growi.org/ja/admin-guide/admin-cookbook/audit-log-setup.html#log-types"
     }
+  },
+  "plugins": {
+    "plugins": "プラグイン",
+    "plugin_installer": "プラグインインストーラー",
+    "repository_url": "URL",
+    "description": "リポジトリのURLの入力してください。",
+    "plugin_card": "プラグインカード",
+    "plugin_is_not_installed": "プラグインがインストールされていません",
+    "install": "インストール",
+    "delete": "削除"
   },
   "cloud_setting_management": {
     "to_cloud_settings": "GROWI.cloud の管理画面へ"

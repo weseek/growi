@@ -4,6 +4,7 @@ import React, {
 
 import { Nullable } from '@growi/core';
 import { useTranslation } from 'next-i18next';
+import { useRouter } from 'next/router';
 import { debounce } from 'throttle-debounce';
 
 import { toastError, toastSuccess } from '~/client/util/apiNotification';
@@ -102,6 +103,7 @@ const ItemsTree = (props: ItemsTreeProps): JSX.Element => {
   } = props;
 
   const { t } = useTranslation();
+  const router = useRouter();
 
   const { data: ancestorsChildrenResult, error: error1 } = useSWRxPageAncestorsChildren(targetPath);
   const { data: rootPageResult, error: error2 } = useSWRxRootPage();
@@ -193,11 +195,12 @@ const ItemsTree = (props: ItemsTreeProps): JSX.Element => {
 
       if (currentPagePath === pathOrPathsToDelete) {
         mutateCurrentPage();
+        router.push(`/trash${pathOrPathsToDelete}`);
       }
     };
 
     openDeleteModal([pageToDelete], { onDeleted: onDeletedHandler });
-  }, [advanceDpl, advanceFts, advancePi, advancePt, currentPagePath, mutateCurrentPage, openDeleteModal, t]);
+  }, [advanceDpl, advanceFts, advancePi, advancePt, currentPagePath, mutateCurrentPage, openDeleteModal, router, t]);
 
   // ***************************  Scroll on init ***************************
   const scrollOnInit = useCallback(() => {
