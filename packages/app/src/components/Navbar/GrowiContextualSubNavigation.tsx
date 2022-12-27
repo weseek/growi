@@ -302,14 +302,12 @@ const GrowiContextualSubNavigation = (props: GrowiContextualSubNavigationProps):
         // redirect to NotFound Page
         router.push(path);
       }
-      else {
-        // Do not use "router.push(currentPathname)" to avoid `Error: Invariant: attempted to hard navigate to the same URL`
-        // See: https://github.com/weseek/growi/pull/7061
-        router.reload();
+      else if (currentPathname != null) {
+        router.push(currentPathname);
       }
     };
     openDeleteModal([pageWithMeta], { onDeleted: deletedHandler });
-  }, [openDeleteModal, router]);
+  }, [currentPathname, openDeleteModal, router]);
 
   const switchContentWidthHandler = useCallback(async(pageId: string, value: boolean) => {
     await updateContentWidth(pageId, value);
