@@ -263,6 +263,7 @@ const Editor: ForwardRefRenderFunction<IEditorMethods, EditorPropsType> = (props
   const isReadyToRenderEditor = editorSettings != null;
   const editorRef = editorSubstance();
 
+  // https://redmine.weseek.co.jp/issues/111731
   useEffect(() => {
     if (isReadyToRenderEditor && editorRef != null) {
       const editorNavBarItems = editorRef.getNavbarItems() ?? [];
