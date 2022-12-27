@@ -260,14 +260,17 @@ const Editor: ForwardRefRenderFunction<IEditorMethods, EditorPropsType> = (props
     );
   }, [isCheatsheetModalShown]);
 
+  const isReadyToRenderEditor = editorSettings != null;
+  const editorRef = editorSubstance();
+
   useEffect(() => {
-    if (editorSubstance != null && editorSettings != null) {
-      const editorNavBarItems = editorSubstance()?.getNavbarItems() ?? [];
+    if (isReadyToRenderEditor && editorRef != null) {
+      const editorNavBarItems = editorRef.getNavbarItems() ?? [];
       setNavBarItems(editorNavBarItems);
     }
-  }, [editorSettings, editorSubstance]);
+  }, [editorRef, isReadyToRenderEditor]);
 
-  if (editorSettings == null) {
+  if (!isReadyToRenderEditor) {
     return <></>;
   }
 
