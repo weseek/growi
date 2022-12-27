@@ -109,8 +109,6 @@ export const defaultCrowiConfigs: { [key: string]: any } = {
   'mail:smtpUser'     : undefined,
   'mail:smtpPassword' : undefined,
 
-  'plugin:isEnabledPlugins' : true,
-
   'customize:css' : undefined,
   'customize:script' : undefined,
   'customize:noscript' : undefined,
