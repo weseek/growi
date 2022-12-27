@@ -26,8 +26,14 @@
         padding-top: 30px;
         padding-bottom: 10px;
       }
-
     }
+
+    .link-growi-org {
+      position: absolute;
+      bottom: 9px;
+      z-index: 3;
+    }
+
   }
 
   // styles
@@ -115,6 +121,7 @@
   .nologin-dialog {
     max-width: 480px;
   }
+
 }
 
 .link-switch {
