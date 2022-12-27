@@ -74,6 +74,7 @@
   --bgcolor-navbar-h:0;
   --bgcolor-navbar-s:0%;
   --bgcolor-navbar-l:12.94%;
+  --bgcolor-navbar-hs:var(--bgcolor-navbar-h),var(--bgcolor-navbar-s);
   --bgcolor-search-top-dropdown: var(--accent);
   --bgcolor-search-top-dropdown-hs: var(--accent-hs);
   --bgcolor-search-top-dropdown-l: var(--accent-l);
@@ -124,7 +125,6 @@
   --color-editor-icons: var(--color-global);
 
   // Border colors
-  --border-color-theme: #{$gray-400};
   --bordercolor-inline-code: #{$gray-400}; // optional
 
   // Dropdown colors
@@ -242,7 +242,6 @@
   --color-editor-icons: var(--color-global);
 
   // Border colors
-  --border-color-theme: #{$gray-400};
   --bordercolor-inline-code: var(--secondary); // optional
 
   // admin theme box
