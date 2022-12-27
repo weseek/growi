@@ -1,5 +1,7 @@
 import React, { ReactNode } from 'react';
 
+import { useAppTitle } from '~/stores/context';
+
 import GrowiLogo from '../Icons/GrowiLogo';
 
 import { RawLayout } from './RawLayout';
@@ -14,7 +16,8 @@ type Props = {
 export const NoLoginLayout = ({
   children, className,
 }: Props): JSX.Element => {
-  const classNames: string[] = ['wrapper'];
+
+  const { data: appTitle } = useAppTitle();
   if (className != null) {
     classNames.push(className);
   }
@@ -28,7 +31,7 @@ export const NoLoginLayout = ({
             <div className="col-md-12">
               <div className="nologin-header mx-auto">
                 <GrowiLogo />
-                <h1 className="my-3">GROWI</h1>
+                <h1 className="my-3">{ appTitle ?? 'GROWI' }</h1>
                 <div className="noLogin-form-errors px-3"></div>
               </div>
               {children}
