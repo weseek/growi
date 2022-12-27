@@ -17,6 +17,7 @@ export type GrowiPluginOrigin = {
 export type GrowiPlugin<M extends GrowiPluginMeta = GrowiPluginMeta> = {
   isEnabled: boolean,
   installedPath: string,
+  organizationName: string,
   origin: GrowiPluginOrigin,
   meta: M,
 }
