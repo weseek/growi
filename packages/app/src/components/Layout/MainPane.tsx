@@ -24,7 +24,7 @@ export const MainPane = (props: Props): JSX.Element => {
                   <div className="flex-grow-1 flex-basis-0 mw-0">
                     {children}
                   </div>
-                  <div className="grw-side-contents-container">
+                  <div className="grw-side-contents-container d-edit-none">
                     <div className="grw-side-contents-sticky-container">
                       {sideContents}
                     </div>
