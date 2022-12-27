@@ -42,19 +42,22 @@ export interface IPluginService {
 
 export class PluginService implements IPluginService {
 
+  /*
+  * Downloading a non-existent repository to the file system
+  */
   async downloadNotExistPluginRepositories(): Promise<void> {
     try {
-      // check all growi plugin documents
+      // find all growi plugin documents
       const GrowiPlugin = mongoose.model<GrowiPlugin>('GrowiPlugin');
       const growiPlugins = await GrowiPlugin.find({});
+
+      // if not exists repository in file system, download latest plugin repository
       for await (const growiPlugin of growiPlugins) {
         const pluginPath = path.join(pluginStoringPath, growiPlugin.installedPath);
         if (fs.existsSync(pluginPath)) {
-          // if exists repository, do nothing
           continue;
         }
         else {
-          // if not exists repository, download latest plugin repository
           // TODO: imprv Document version and repository version possibly different.
           const ghUrl = new URL(growiPlugin.origin.url);
           const ghPathname = ghUrl.pathname;
@@ -67,16 +70,21 @@ export class PluginService implements IPluginService {
 
           const ghOrganizationName = match[1];
           const ghReposName = match[2];
-          const temporaryReposStoringPath = path.join(pluginStoringPath, ghReposName);
+
+          const requestUrl = `https://github.com/${ghOrganizationName}/${ghReposName}/archive/refs/heads/${ghBranch}.zip`;
+          const zipFilePath = path.join(pluginStoringPath, `${ghBranch}.zip`);
+          const unzippedPath = pluginStoringPath;
+          const unzippedReposPath = path.join(pluginStoringPath, `${ghReposName}-${ghBranch}`);
 
           try {
             // download github repository to local file system
-            await this.downloadPluginRepository(ghOrganizationName, ghReposName, ghBranch);
-            fs.renameSync(temporaryReposStoringPath, pluginPath);
+            await this.download(requestUrl, zipFilePath);
+            await this.unzip(zipFilePath, unzippedPath);
+            fs.renameSync(unzippedReposPath, pluginPath);
           }
           catch (err) {
-            // clean up
-            if (fs.existsSync(temporaryReposStoringPath)) await fs.promises.rm(temporaryReposStoringPath, { recursive: true });
+            // clean up, documents are not operated
+            if (fs.existsSync(unzippedReposPath)) await fs.promises.rm(unzippedReposPath, { recursive: true });
             if (fs.existsSync(pluginPath)) await fs.promises.rm(pluginPath, { recursive: true });
             logger.error(err);
           }
@@ -90,8 +98,10 @@ export class PluginService implements IPluginService {
     }
   }
 
+  /*
+  * Install a plugin from URL and save it in the DB and file system.
+  */
   async install(origin: GrowiPluginOrigin): Promise<string> {
-    // download
     const ghUrl = new URL(origin.url);
     const ghPathname = ghUrl.pathname;
     // TODO: Branch names can be specified.
@@ -106,9 +116,11 @@ export class PluginService implements IPluginService {
     const ghReposName = match[2];
     const installedPath = `${ghOrganizationName}/${ghReposName}`;
 
+    const requestUrl = `https://github.com/${ghOrganizationName}/${ghReposName}/archive/refs/heads/${ghBranch}.zip`;
     const zipFilePath = path.join(pluginStoringPath, `${ghBranch}.zip`);
-    const unzippedFolderPath = path.join(pluginStoringPath, `${installedPath}-${ghBranch}`);
-    const temporaryReposStoringPath = path.join(pluginStoringPath, ghReposName);
+    const unzippedPath = pluginStoringPath;
+    const unzippedReposPath = path.join(pluginStoringPath, `${ghReposName}-${ghBranch}`);
+    const temporaryReposPath = path.join(pluginStoringPath, ghReposName);
     const reposStoringPath = path.join(pluginStoringPath, `${installedPath}`);
 
 
@@ -116,7 +128,9 @@ export class PluginService implements IPluginService {
 
     try {
       // download github repository to file system's temporary path
-      await this.downloadPluginRepository(ghOrganizationName, ghReposName, ghBranch);
+      await this.download(requestUrl, zipFilePath);
+      await this.unzip(zipFilePath, unzippedPath);
+      fs.renameSync(unzippedReposPath, temporaryReposPath);
 
       // detect plugins
       plugins = await PluginService.detectPlugins(origin, ghOrganizationName, ghReposName);
@@ -125,13 +139,13 @@ export class PluginService implements IPluginService {
       if (fs.existsSync(reposStoringPath)) await fs.promises.rm(reposStoringPath, { recursive: true });
 
       // move new repository from temporary path to storing path.
-      fs.renameSync(temporaryReposStoringPath, reposStoringPath);
+      fs.renameSync(temporaryReposPath, reposStoringPath);
     }
     catch (err) {
       // clean up
       if (fs.existsSync(zipFilePath)) await fs.promises.rm(zipFilePath);
-      if (fs.existsSync(unzippedFolderPath)) await fs.promises.rm(unzippedFolderPath, { recursive: true });
-      if (fs.existsSync(temporaryReposStoringPath)) await fs.promises.rm(temporaryReposStoringPath, { recursive: true });
+      if (fs.existsSync(unzippedReposPath)) await fs.promises.rm(unzippedReposPath, { recursive: true });
+      if (fs.existsSync(temporaryReposPath)) await fs.promises.rm(temporaryReposPath, { recursive: true });
       logger.error(err);
       throw err;
     }
@@ -159,8 +173,8 @@ export class PluginService implements IPluginService {
     await GrowiPlugin.deleteMany({ installedPath: path });
   }
 
-  // !! DO NOT USE WHERE NOT SSRF GUARDED !! -- 12.26 ryoji-s
-  private async downloadFile(requestUrl: string, filePath: string): Promise<void> {
+  // !! DO NOT USE WHERE NOT SSRF GUARDED !! -- 2022.12.26 ryoji-s
+  private async download(requestUrl: string, filePath: string): Promise<void> {
     return new Promise<void>((resolve, rejects) => {
       axios({
         method: 'GET',
@@ -187,7 +201,7 @@ export class PluginService implements IPluginService {
     });
   }
 
-  private async unzip(zipFilePath: fs.PathLike, unzippedPath: fs.PathLike) {
+  private async unzip(zipFilePath: fs.PathLike, unzippedPath: fs.PathLike): Promise<void> {
     try {
       const stream = fs.createReadStream(zipFilePath);
       const unzipStream = stream.pipe(unzipper.Extract({ path: unzippedPath }));
@@ -199,21 +213,6 @@ export class PluginService implements IPluginService {
       logger.error(err);
       throw new Error('Filed to unzip.');
     }
-  }
-
-  private async downloadPluginRepository(ghOrganizationName: string, ghReposName: string, ghBranch: string): Promise<void> {
-
-    const requestUrl = `https://github.com/${ghOrganizationName}/${ghReposName}/archive/refs/heads/${ghBranch}.zip`;
-    const zipFilePath = path.join(pluginStoringPath, `${ghBranch}.zip`);
-    const unzipPath = pluginStoringPath;
-    const unzippedFolderPath = `${unzipPath}/${ghReposName}-${ghBranch}`;
-    const temporaryReposStoringPath = `${unzipPath}/${ghReposName}`;
-
-    await this.downloadFile(requestUrl, zipFilePath);
-    await this.unzip(zipFilePath, unzipPath);
-    fs.renameSync(unzippedFolderPath, temporaryReposStoringPath);
-
-    return;
   }
 
   private async savePluginMetaData(plugins: GrowiPlugin[]): Promise<void> {
