@@ -19,6 +19,7 @@ module.exports = function(crowi, app) {
     exportService,
   } = crowi;
 
+  const recommendedWhitelist = require('~/services/xss/recommended-whitelist');
   const ApiResponse = require('../util/apiResponse');
   const importer = require('../util/importer')(crowi);
 
