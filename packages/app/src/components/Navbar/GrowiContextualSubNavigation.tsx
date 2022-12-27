@@ -322,7 +322,7 @@ const GrowiContextualSubNavigation = (props: GrowiContextualSubNavigationProps):
   }, []);
 
 
-  const RightComponent = useCallback(() => {
+  const RightComponent = () => {
     const additionalMenuItemsRenderer = () => {
       if (revisionId == null || pageId == null) {
         return (
@@ -407,11 +407,7 @@ const GrowiContextualSubNavigation = (props: GrowiContextualSubNavigationProps):
         )}
       </>
     );
-  // eslint-disable-next-line max-len
-  }, [isCompactMode, isViewMode, pageId, revisionId, shareLinkId, path, currentPathname, isSharedUser, isAbleToShowPageManagement,
-      duplicateItemClickedHandler, renameItemClickedHandler, deleteItemClickedHandler, isAbleToShowPageEditorModeManager, isGuestUser,
-      editorMode, isAbleToShowPageAuthors, currentPage, currentUser, isPageTemplateModalShown, isLinkSharingDisabled, templateMenuItemClickHandler,
-      mutateEditorMode, switchContentWidthHandler]);
+  };
 
 
   const pagePath = isIdenticalPath || isNotFound

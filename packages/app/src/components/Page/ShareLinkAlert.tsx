@@ -39,7 +39,7 @@ const ShareLinkAlert: FC<Props> = (props: Props) => {
   const alertColor = getAlertColor(ratio);
 
   return (
-    <p className={`alert alert-${alertColor} my-3 px-4 d-edit-none`}>
+    <p className={`alert alert-${alertColor} px-4 d-edit-none`}>
       <i className="icon-fw icon-link"></i>
       {(expiredAt === null ? <span>{t('page_page.notice.no_deadline')}</span>
       // eslint-disable-next-line react/no-danger
