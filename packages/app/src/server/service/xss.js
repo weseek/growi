@@ -1,9 +1,9 @@
-import loggerFactory from '~/utils/logger';
+import { RehypeSanitizeOption } from '~/interfaces/rehype';
+import loggerFactory from '~/utils/logger'; // eslint-disable-line no-unused-vars
 
-const logger = loggerFactory('growi:service:XssSerivce'); // eslint-disable-line no-unused-vars
+const logger = loggerFactory('growi:service:XssSerivce');
 
 const Xss = require('~/services/xss');
-const { tags, attrs } = require('~/services/xss/recommended-whitelist');
 
 /**
  * the service class of XssSerivce
@@ -12,7 +12,6 @@ class XssSerivce {
 
   constructor(configManager) {
     this.configManager = configManager;
-
     this.xss = new Xss();
   }
 
@@ -20,20 +19,18 @@ class XssSerivce {
     return this.xss.process(value);
   }
 
-  getTagWhiteList() {
-    const isEnabledXssPrevention = this.configManager.getConfig('markdown', 'markdown:xss:isEnabledPrevention');
-    const xssOpiton = this.configManager.getConfig('markdown', 'markdown:xss:option');
+  async getTagWhiteList() {
+    const { defaultSchema } = await import('rehype-sanitize');
+    const isEnabledXssPrevention = this.configManager.getConfig('markdown', 'markdown:rehypeSanitize:isEnabledPrevention');
+    const xssOpiton = this.configManager.getConfig('markdown', 'markdown:rehypeSanitize:option');
 
     if (isEnabledXssPrevention) {
       switch (xssOpiton) {
-        case 1: // ignore all: use default option
-          return [];
+        case RehypeSanitizeOption.RECOMMENDED:
+          return defaultSchema.tagNames;
 
-        case 2: // recommended
-          return tags;
-
-        case 3: // custom white list
-          return this.configManager.getConfig('markdown', 'markdown:xss:tagWhiteList');
+        case RehypeSanitizeOption.CUSTOM:
+          return this.configManager.getConfig('markdown', 'markdown:rehypeSanitize:tagNames');
 
         default:
           return [];
@@ -44,27 +41,28 @@ class XssSerivce {
     }
   }
 
-  getAttrWhiteList() {
-    const isEnabledXssPrevention = this.configManager.getConfig('markdown', 'markdown:xss:isEnabledPrevention');
-    const xssOpiton = this.configManager.getConfig('markdown', 'markdown:xss:option');
+  async getAttrWhiteList() {
+    const { defaultSchema } = await import('rehype-sanitize');
+    const isEnabledXssPrevention = this.configManager.getConfig('markdown', 'markdown:rehypeSanitize:isEnabledPrevention');
+    const xssOpiton = this.configManager.getConfig('markdown', 'markdown:rehypeSanitize:option');
 
     if (isEnabledXssPrevention) {
       switch (xssOpiton) {
-        case 1: // ignore all: use default option
-          return [];
+        case RehypeSanitizeOption.RECOMMENDED:
+          return defaultSchema.attributes;
 
-        case 2: // recommended
-          return attrs;
-
-        case 3: // custom white list
-          return this.configManager.getConfig('markdown', 'markdown:xss:attrWhiteList');
+        case RehypeSanitizeOption.CUSTOM: {
+          const rehypeSanitizeAttributesConfig = this.configManager.getConfig('markdown', 'markdown:rehypeSanitize:attributes');
+          const parsedAttrWhiteList = JSON.parse(rehypeSanitizeAttributesConfig);
+          return parsedAttrWhiteList;
+        }
 
         default:
-          return [];
+          return {};
       }
     }
     else {
-      return [];
+      return {};
     }
   }
 
