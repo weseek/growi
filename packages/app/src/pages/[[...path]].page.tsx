@@ -76,6 +76,7 @@ import { NextPageWithLayout } from './_app.page';
 import {
   CommonProps, getNextI18NextConfig, getServerSideCommonProps, generateCustomTitle,
 } from './utils/commons';
+import { NextLink } from '~/components/ReactMarkdownComponents/NextLink';
 
 
 declare global {
@@ -334,6 +335,12 @@ const Page: NextPageWithLayout<Props> = (props: Props) => {
                   <PageStatusAlert />
                 </>
               ) }
+              <div className="revision-head">
+                <NextLink href="#test-link1" className="revision-head-link">
+                  <span className="icon-link">テストリンク</span>
+                </NextLink>
+                <p id="test-link1" style={{ backgroundColor: 'orange', width: 400, height: 1200 }}>なんじゃこりゃ</p>
+              </div>
 
               {/* <div className="col-xl-2 col-lg-3 d-none d-lg-block revision-toc-container">
                 <div id="revision-toc" className="revision-toc mt-3 sps sps--abv" data-sps-offset="123">

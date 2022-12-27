@@ -4,6 +4,7 @@ import EventEmitter from 'events';
 
 import { useRouter } from 'next/router';
 import { Element } from 'react-markdown/lib/rehype-filter';
+import { animateScroll } from 'react-scroll';
 
 import { useIsGuestUser, useIsSharedUser, useShareLinkId } from '~/stores/context';
 
@@ -51,6 +52,11 @@ type HeaderProps = {
   id?: string,
 }
 
+const isHashMatch = (url: string, id: string) => {
+  const hash = (new URL(url, 'https://example.com')).hash.slice(1);
+  return hash === id;
+};
+
 export const Header = (props: HeaderProps): JSX.Element => {
   const {
     node, id, children, level,
@@ -66,10 +72,33 @@ export const Header = (props: HeaderProps): JSX.Element => {
 
   const CustomTag = `h${level}` as keyof JSX.IntrinsicElements;
 
-  const activateByHash = useCallback((url: string) => {
-    const hash = (new URL(url, 'https://example.com')).hash.slice(1);
-    setActive(hash === id);
+  const scrollByHash = useCallback((url: string) => {
+    console.log('よばれ scrollByHash', url);
+    if (!isHashMatch(url, id ?? '')) {
+      return;
+    }
+
+    // use querySelector to intentionally get the first element found
+    const toElem = document.getElementById(id ?? '') as HTMLElement | null;
+    console.log('えれむ toElem', toElem);
+    if (toElem == null) {
+      return;
+    }
+
+    animateScroll.scrollTo(100, {
+      containerId: 'grw-raw-layout',
+      duration: 200,
+    });
   }, [id]);
+
+  const activateByHash = useCallback((url: string) => {
+    setActive(isHashMatch(url, id ?? ''));
+  }, [id]);
+
+  const onHashChangeComplete = useCallback((url: string) => {
+    scrollByHash(url);
+    activateByHash(url);
+  }, [activateByHash, scrollByHash]);
 
   // init
   useEffect(() => {
@@ -78,12 +107,12 @@ export const Header = (props: HeaderProps): JSX.Element => {
 
   // update isActive when hash is changed
   useEffect(() => {
-    router.events.on('hashChangeComplete', activateByHash);
+    router.events.on('hashChangeComplete', onHashChangeComplete);
 
     return () => {
-      router.events.off('hashChangeComplete', activateByHash);
+      router.events.off('hashChangeComplete', onHashChangeComplete);
     };
-  }, [activateByHash, router.events]);
+  }, [onHashChangeComplete, router.events]);
 
   const showEditButton = !isGuestUser && !isSharedUser && shareLinkId == null;
 
