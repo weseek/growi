@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useCallback, useEffect } from 'react';
 
 
 import EventEmitter from 'events';
@@ -25,6 +25,7 @@ import { MainPane } from '~/components/Layout/MainPane';
 import { PageAlerts } from '~/components/PageAlert/PageAlerts';
 // import { useTranslation } from '~/i18n';
 import { PageContentFooter } from '~/components/PageContentFooter';
+import { NextLink } from '~/components/ReactMarkdownComponents/NextLink';
 import { DrawioViewerScript } from '~/components/Script/DrawioViewerScript';
 import { UsersHomePageFooterProps } from '~/components/UsersHomePageFooter';
 import type { CrowiRequest } from '~/interfaces/crowi-request';
@@ -78,7 +79,7 @@ import { NextPageWithLayout } from './_app.page';
 import {
   CommonProps, getNextI18NextConfig, getServerSideCommonProps, generateCustomTitle,
 } from './utils/commons';
-import { NextLink } from '~/components/ReactMarkdownComponents/NextLink';
+import { animateScroll } from 'react-scroll';
 
 
 declare global {
@@ -192,6 +193,49 @@ type Props = CommonProps & {
   // Sidebar
   sidebarConfig: ISidebarConfig,
 };
+
+export const Tester = (): JSX.Element => {
+  const router = useRouter();
+
+  const scrollByHash = useCallback((url: string) => {
+    console.log('よばれ scrollByHash', url);
+
+    // use querySelector to intentionally get the first element found
+    const toElem = document.getElementById('test-link1') as HTMLElement | null;
+    console.log('えれむ toElem', toElem);
+    if (toElem == null) {
+      return;
+    }
+
+    animateScroll.scrollTo(100, {
+      containerId: 'grw-raw-layout',
+      duration: 200,
+    });
+  }, []);
+
+  const onHashChangeComplete = useCallback((url: string) => {
+    scrollByHash(url);
+  }, [scrollByHash]);
+
+  // update isActive when hash is changed
+  useEffect(() => {
+    router.events.on('hashChangeComplete', onHashChangeComplete);
+
+    return () => {
+      router.events.off('hashChangeComplete', onHashChangeComplete);
+    };
+  }, [onHashChangeComplete, router.events]);
+
+  return (
+    <div className="revision-head">
+      <NextLink href="#test-link1" className="revision-head-link">
+        <span className="icon-link">テストリンク</span>
+      </NextLink>
+      <p id="test-link1" style={{ backgroundColor: 'orange', width: 400, height: 1200 }}>なんじゃこりゃ</p>
+    </div>
+  );
+};
+
 
 const Page: NextPageWithLayout<Props> = (props: Props) => {
   // const { t } = useTranslation();
@@ -352,12 +396,7 @@ const Page: NextPageWithLayout<Props> = (props: Props) => {
               { !props.isForbidden && !props.isNotCreatable && <DisplaySwitcher />}
             </>
           ) }
-          <div className="revision-head">
-            <NextLink href="#test-link1" className="revision-head-link">
-              <span className="icon-link">テストリンク</span>
-            </NextLink>
-            <p id="test-link1" style={{ backgroundColor: 'orange', width: 400, height: 1200 }}>なんじゃこりゃ</p>
-          </div>
+          <Tester />
           <PageStatusAlert />
         </MainPane>
 
