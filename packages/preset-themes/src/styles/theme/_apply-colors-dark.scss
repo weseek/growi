@@ -2,47 +2,50 @@
 @use '../bootstrap/init' as *;
 @use '../atoms/mixins/buttons' as mixins-buttons;
 @use './mixins/count-badge';
+@use './mixins/hsl-button';
+@use './hsl-functions' as hsl;
 
 // determine optional variables
 $color-list: var(--color-list,var(--color-global));
 $bgcolor-list: var(--bgcolor-list,var(--bgcolor-global));
 $color-list-hover: var(--color-list-hover,var(--color-global));
-$color-list-active: $color-reversal !default;
+$color-list-active: var(--color-list-active,var(--color-reversal));
+$bgcolor-list-hover: var(--bgcolor-list-hover,var(--bgcolor-global));
 $bgcolor-list-active: var(--bgcolor-list-active,var(--primary));
 $bgcolor-subnav: var(--bgcolor-subnav);
 $color-table: var(--color-table,white);
-$bgcolor-table: #343a40 !default;
-$border-color-table: lighten($bgcolor-table, 7.5%) !default;
-$color-table-hover: rgba(white, 0.075) !default;
-$bgcolor-table-hover: lighten($bgcolor-table, 7.5%) !default;
+$bgcolor-table: var(--bgcolor-table,#343a40);
+$border-color-table: var(--border-color-table,hsl.lighten(var(--bgcolor-table),7.5%),lighten(#343a40, 7.5%));
+$color-table-hover: var(--color-table-hover,rgba(white, 0.075));
+$bgcolor-table-hover: var(--bgcolor-table-hover,hsl.lighten(var(--bgcolor-table),7.5%),lighten(#343a40, 7.5%));
 $bgcolor-sidebar-list-group: var(--bgcolor-sidebar-list-group,var(--bgcolor-list));
-$color-tags: #949494 !default;
-$bgcolor-tags: $dark !default;
-$border-color-global: $gray-500 !default;
-$border-color-toc: $border-color-global !default;
+$color-tags: var(--color-tags,#949494);
+$bgcolor-tags: var(--bgcolor-tags,var(--dark));
+$border-color-global: var(--border-color-global,#{$gray-500});
+$border-color-toc: var(--border-color-toc,$border-color-global);
 $color-dropdown: var(--color-dropdown,var(--color-global));
 $bgcolor-dropdown: var(--bgcolor-dropdown,var(--bgcolor-global));
 $color-dropdown-link: var(--color-dropdown-link,var(--color-global));
-$color-dropdown-link-hover: $light !default;
-$bgcolor-dropdown-link-hover: var(--bgcolor-dropdown-link-hover);
-$color-dropdown-link-active: $light !default;
+$color-dropdown-link-hover: var(--color-dropdown-link-hover,var(--light));
+$bgcolor-dropdown-link-hover: var(--bgcolor-dropdown-link-hover,var(--primary));
+$color-dropdown-link-active: var(--color-dropdown-link-active,var(--light));
 $bgcolor-dropdown-link-active: var(--bgcolor-dropdown-link-active,var(--primary));
 
 // override bootstrap variables
 $text-muted: $gray-550;
-$table-dark-color: var(--color-table);
+$table-dark-color: $color-table;
 $table-dark-bg: $bgcolor-table;
 $table-dark-border-color: $border-color-table;
-$table-dark-hover-color: var(--color-table-hover);
+$table-dark-hover-color: $color-table-hover;
 $table-dark-hover-bg: $bgcolor-table-hover;
 $border-color: $border-color-global;
-$dropdown-color: var(--color-dropdown);
-$dropdown-bg: var(--bgcolor-dropdown);
-$dropdown-link-color: var(--color-dropdown-link);
-$dropdown-link-hover-color: var(--color-dropdown-link-hover);
-$dropdown-link-hover-bg: var(--bgcolor-dropdown-link-hover);
-$dropdown-link-active-color: var(--color-dropdown-link-active);
-$dropdown-link-active-bg: bar(--bgcolor-dropdown-link-active);
+$dropdown-color: $color-dropdown;
+$dropdown-bg: $bgcolor-dropdown;
+$dropdown-link-color: $color-dropdown-link;
+$dropdown-link-hover-color: $color-dropdown-link-hover;
+$dropdown-link-hover-bg: $bgcolor-dropdown-link-hover;
+$dropdown-link-active-color: $color-dropdown-link-active;
+$dropdown-link-active-bg: $bgcolor-dropdown-link-active;
 
 @import './mixins/list-group';
 @import './reboot-bootstrap-text';
@@ -52,12 +55,12 @@ $dropdown-link-active-bg: bar(--bgcolor-dropdown-link-active);
 
 // List Group
 @include override-list-group-item(
-  var(--color-list),
-  var(--bgcolor-sidebar-list-group),
-  var(--color-list-hover),
-  var(--bgcolor-list-hover),
-  var(--color-list-active),
-  var(--bgcolor-list-active)
+  $color-list,
+  $bgcolor-sidebar-list-group,
+  $color-list-hover,
+  $bgcolor-list-hover,
+  $color-list-active,
+  $bgcolor-list-active
 );
 /*
   * Form
@@ -67,7 +70,7 @@ select.form-control,
 select.custom-select,
 textarea.form-control {
   color: var(--color-global);
-  background-color: hsl(var(--bgcolor-global-hs),calc(var(--bgcolor-global-l) - 5%));
+  background-color: #{hsl.darken(var(--bgcolor-global), 5%)};
   border-color: $border-color-global;
   &:focus {
     background-color: var(--bgcolor-global);
@@ -78,8 +81,8 @@ textarea.form-control {
 
 .form-control[disabled],
 .form-control[readonly] {
-  color: hsl(var(--color-global-hs),calc(var(--color-global-l) + 10%));
-  background-color: hsl(var(--color-global-hs),calc(var(--color-global-l) + 5%));
+  color: #{hsl.lighten(var(--color-global),10%)};
+  background-color: #{hsl.lighten(var(--color-global),5%)};
 }
 
 .input-group > .input-group-prepend > .input-group-text {
@@ -97,7 +100,7 @@ textarea.form-control {
 }
 
 label.custom-control-label::before {
-  background-color: hsl(var(--bgcolor-global-hs),calc(var(--bgcolor-global-l) - 5%));
+  background-color: #{hsl.darken(var(--bgcolor-global),5%)};
 }
 
 /*
@@ -110,18 +113,18 @@ label.custom-control-label::before {
 /*
  * Card
  */
-.card:not([class*='bg-']):not(.well):not(.card-disabled) {
-  @extend .bg-dark;
-}
+// .card:not([class*='bg-']):not(.well):not(.card-disabled) {
+//   @extend .bg-dark;
+// }
 
 // [TODO] GW-3219 modify common color of well in dark theme, then remove below css.
 .card.well {
-  border-color: $secondary;
+  border-color: var(--secondary);
 }
 
 .card.card-disabled {
   background-color: lighten($dark, 10%);
-  border-color: $secondary;
+  border-color: var(--secondary);
 }
 
 /*
@@ -130,7 +133,9 @@ label.custom-control-label::before {
 ul.pagination {
   li.page-item {
     button.page-link {
-      @extend .btn-dark;
+      @include button-variant($dark, $dark);
+      @include mixins-buttons.button-svg-icon-variant($dark, $dark);
+      box-shadow: none !important;
     }
   }
 }
@@ -194,7 +199,9 @@ ul.pagination {
   }
 
   .btn-external-auth-tab {
-    @extend .btn-dark;
+    @include button-variant($dark, $dark);
+    @include mixins-buttons.button-svg-icon-variant($dark, $dark);
+    box-shadow: none !important;
   }
 
   // footer link text
@@ -220,8 +227,11 @@ ul.pagination {
  * GROWI subnavigation
  */
 .grw-drawer-toggler {
-  @extend .btn-dark;
-  color: $gray-400;
+  @include button-variant($dark, $dark);
+  @include mixins-buttons.button-svg-icon-variant($dark, $dark);
+  color: #{$gray-400};
+  box-shadow: none !important;
+
 }
 
 /*
@@ -466,10 +476,10 @@ ul.pagination {
 
 .wiki {
   h1 {
-    border-color: lighten($border-color-theme, 10%);
+    border-color: #{hsl.lighten(var(--border-color-theme),10%)};
   }
   h2 {
-    border-color: $border-color-theme;
+    border-color: var(--border-color-theme);
   }
 }
 

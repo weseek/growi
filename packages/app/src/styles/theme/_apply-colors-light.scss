@@ -14,7 +14,6 @@ $bgcolor-list-active: var(--bgcolor-list-active,var(--primary-65));
 $color-list-active: var(--color-list-active,#{hsl.contrast(var(--primary-65))});
 $color-table: var(--color-table,var(--color-global));
 $bgcolor-table: var(--bgcolor-table,null);
-$border-color-theme: var(--border-color-theme,#{$gray-400});
 $border-color-table: var(--border-color-table,#{$gray-200});
 $color-table-hover: var(--color-table-hover,var(--color-table));
 $bgcolor-table-hover: var(--bgcolor-table-hover,rgba(black, 0.075));
@@ -33,7 +32,7 @@ $bgcolor-dropdown-link-active: var(--bgcolor-dropdown-link-active,var(--primary)
 
 
 // override bootstrap variables
-$text-muted: #{$gray-500};
+$text-muted: $gray-500;
 $table-color: $color-table;
 $table-bg: $bgcolor-table;
 $table-border-color: $border-color-table;
@@ -372,10 +371,10 @@ $dropdown-link-active-bg: $bgcolor-dropdown-link-active;
 
 .wiki {
   h1 {
-    border-color: $border-color-theme;
+    border-color: var(--border-color-theme);
   }
   h2 {
-    border-color: $border-color-theme;
+    border-color: var(--border-color-theme);
   }
 }
 

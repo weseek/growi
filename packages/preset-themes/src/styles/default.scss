@@ -125,6 +125,7 @@
   --color-editor-icons: var(--color-global);
 
   // Border colors
+  --border-color-theme: #{$gray-400};
   --bordercolor-inline-code: #{$gray-400}; // optional
 
   // Dropdown colors
@@ -208,7 +209,6 @@
 
   // Sidebar
   --bgcolor-sidebar: hsl(var(--bgcolor-sidebar-hs),var(---gcolor-sidebar-l));
-  $bgcolor-sidebar: #122c55;
   --bgcolor-sidebar-hs: 216.7,65%;
   --bgcolor-sidebar-l: 33.3%;
   --bgcolor-sidebar-nav-item-active: rgba(#969494, 0.3); // optional
@@ -242,13 +242,16 @@
   --color-editor-icons: var(--color-global);
 
   // Border colors
+  --border-color-theme: hsl(var(--border-color-theme-hs),var(--border-color-theme-l));
+  --border-color-theme-hs: 210,13%;
+  --border-color-theme-l: 71%;
   --bordercolor-inline-code: var(--secondary); // optional
 
   // admin theme box
   --color-theme-color-box: var(--primary);
 
   @import './theme/apply-colors';
-  // @import './theme/apply-colors-dark';
+  @import './theme/apply-colors-dark';
 
   //Button
   .btn-group.grw-page-editor-mode-manager {
