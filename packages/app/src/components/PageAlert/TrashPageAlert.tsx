@@ -54,9 +54,6 @@ export const TrashPageAlert = (): JSX.Element => {
       }
       try {
         unlink(currentPagePath);
-        // Do not use "router.push(`/${pageId}`)" to avoid `Error: Invariant: attempted to hard navigate to the same URL`
-        // See: https://github.com/weseek/growi/pull/7054
-        // router.reload();
         router.push(`/${pageId}`);
       }
       catch (err) {
