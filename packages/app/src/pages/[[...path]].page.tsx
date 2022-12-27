@@ -218,13 +218,9 @@ const Page: NextPageWithLayout<Props> = (props: Props) => {
   // useOwnerOfCurrentPage(props.pageUser != null ? JSON.parse(props.pageUser) : null);
   useIsForbidden(props.isForbidden);
   useIsNotFound(props.isNotFound);
-  // useIsNotCreatable(props.IsNotCreatable);
   useRedirectFrom(props.redirectFrom);
-  // useShared();
-  // useShareLinkId(props.shareLinkId);
   useIsSharedUser(false); // this page cann't be routed for '/share'
-  useIsIdenticalPath(props.isIdenticalPathPage);
-  // useIsAbleToDeleteCompletely(props.isAbleToDeleteCompletely);
+  useIsIdenticalPath(props.isIdenticalPathPage ?? false);
   useIsEnabledStaleNotification(props.isEnabledStaleNotification);
   useIsSearchPage(false);
 
