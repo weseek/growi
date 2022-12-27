@@ -43,7 +43,7 @@ export const PluginInstallerForm = (): JSX.Element => {
   return (
     <form role="form" onSubmit={submitHandler}>
       <div className='form-group row'>
-        <label className="text-left text-md-right col-md-3 col-form-label">GitHub Repository URL</label>
+        <label className="text-left text-md-right col-md-3 col-form-label">{t('plugins.repository_url')}</label>
         <div className="col-md-6">
           <input
             className="form-control"
@@ -52,13 +52,13 @@ export const PluginInstallerForm = (): JSX.Element => {
             placeholder="https://github.com/growi/plugins"
             required
           />
-          <p className="form-text text-muted">You can install plugins by inputting the GitHub URL.</p>
+          <p className="form-text text-muted">{t('plugins.description')}</p>
         </div>
       </div>
 
       <div className="row my-3">
         <div className="mx-auto">
-          <button type="submit" className="btn btn-primary">Install</button>
+          <button type="submit" className="btn btn-primary">{t('plugins.install')}</button>
         </div>
       </div>
     </form>
