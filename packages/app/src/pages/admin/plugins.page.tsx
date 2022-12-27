@@ -24,11 +24,11 @@ const PluginsExtensionPageContents = dynamic(
 
 
 const AdminAppPage: NextPage<CommonProps> = (props) => {
-  const { t } = useTranslation('commons');
+  const { t } = useTranslation('admin');
   useIsMaintenanceMode(props.isMaintenanceMode);
   useCurrentUser(props.currentUser ?? null);
 
-  const title = 'Plugins';
+  const title = t('plugins.plugins');
   const injectableContainers: Container<any>[] = [];
 
   if (isClient()) {
