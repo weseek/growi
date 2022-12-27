@@ -4,9 +4,9 @@ import { V5ConversionErrCode } from '~/interfaces/errors/v5-conversion-error';
 
 export class V5ConversionError extends ExtensibleCustomError {
 
-  readonly id = 'V5ConversionError'
+  readonly id = 'V5ConversionError';
 
-  code!: V5ConversionErrCode
+  code!: V5ConversionErrCode;
 
   constructor(message: string, code: V5ConversionErrCode) {
     super(message);

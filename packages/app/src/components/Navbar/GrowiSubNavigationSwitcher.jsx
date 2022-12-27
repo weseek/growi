@@ -1,15 +1,17 @@
 import React, {
   useMemo, useState, useRef, useEffect, useCallback,
 } from 'react';
-import PropTypes from 'prop-types';
 
+import PropTypes from 'prop-types';
 import StickyEvents from 'sticky-events';
 import { debounce } from 'throttle-debounce';
 
-import loggerFactory from '~/utils/logger';
 import { useSidebarCollapsed } from '~/stores/ui';
+import loggerFactory from '~/utils/logger';
 
 import GrowiContextualSubNavigation from './GrowiContextualSubNavigation';
+
+import styles from './GrowiSubNavigationSwitcher.module.scss';
 
 const logger = loggerFactory('growi:cli:GrowiSubNavigationSticky');
 
@@ -31,7 +33,12 @@ const GrowiSubNavigationSwitcher = (props) => {
   const [width, setWidth] = useState(null);
 
   const fixedContainerRef = useRef();
-  const stickyEvents = useMemo(() => new StickyEvents({ stickySelector: '#grw-subnav-sticky-trigger' }), []);
+  /*
+  * Comment out to prevent err >>> TypeError: Cannot read properties of null (reading 'bottom')
+  * The above err occurs when moving to admin page after rendering normal pages.
+  * This is because id "grw-subnav-sticky-trigger" does not exist on admin pages.
+  */
+  // const stickyEvents = useMemo(() => new StickyEvents({ stickySelector: '#grw-subnav-sticky-trigger' }), []);
 
   const initWidth = useCallback(() => {
     const instance = fixedContainerRef.current;
@@ -46,18 +53,18 @@ const GrowiSubNavigationSwitcher = (props) => {
     setWidth(clientWidth);
   }, []);
 
-  const initVisible = useCallback(() => {
-    const elements = stickyEvents.stickyElements;
+  // const initVisible = useCallback(() => {
+  //   const elements = stickyEvents.stickyElements;
 
-    for (const elem of elements) {
-      const bool = stickyEvents.isSticking(elem);
-      if (bool) {
-        setVisible(bool);
-        break;
-      }
-    }
+  //   for (const elem of elements) {
+  //     const bool = stickyEvents.isSticking(elem);
+  //     if (bool) {
+  //       setVisible(bool);
+  //       break;
+  //     }
+  //   }
 
-  }, [stickyEvents]);
+  // }, [stickyEvents]);
 
   // setup effect by resizing event
   useEffect(() => {
@@ -76,19 +83,19 @@ const GrowiSubNavigationSwitcher = (props) => {
     setVisible(event.detail.isSticky);
   }, []);
 
-  // setup effect by sticky event
-  useEffect(() => {
-    // sticky
-    // See: https://github.com/ryanwalters/sticky-events
-    const { stickySelector } = stickyEvents;
-    const elem = document.querySelector(stickySelector);
-    elem.addEventListener(StickyEvents.CHANGE, stickyChangeHandler);
+  // // setup effect by sticky event
+  // useEffect(() => {
+  //   // sticky
+  //   // See: https://github.com/ryanwalters/sticky-events
+  //   const { stickySelector } = stickyEvents;
+  //   const elem = document.querySelector(stickySelector);
+  //   elem.addEventListener(StickyEvents.CHANGE, stickyChangeHandler);
 
-    // return clean up handler
-    return () => {
-      elem.removeEventListener(StickyEvents.CHANGE, stickyChangeHandler);
-    };
-  }, [stickyChangeHandler, stickyEvents]);
+  //   // return clean up handler
+  //   return () => {
+  //     elem.removeEventListener(StickyEvents.CHANGE, stickyChangeHandler);
+  //   };
+  // }, [stickyChangeHandler, stickyEvents]);
 
   // update width when sidebar collapsing changed
   useEffect(() => {
@@ -97,22 +104,24 @@ const GrowiSubNavigationSwitcher = (props) => {
     }
   }, [isSidebarCollapsed, initWidth]);
 
-  // initialize
-  useEffect(() => {
-    initWidth();
+  // // initialize
+  // useEffect(() => {
+  //   initWidth();
 
-    // check sticky state several times
-    setTimeout(initVisible, 100);
-    setTimeout(initVisible, 300);
-    setTimeout(initVisible, 2000);
+  //   // check sticky state several times
+  //   setTimeout(initVisible, 100);
+  //   setTimeout(initVisible, 300);
+  //   setTimeout(initVisible, 2000);
 
-  }, [initWidth, initVisible]);
+  // }, [initWidth, initVisible]);
+
+  // ${styles['grw-subnav-switcher']}
 
   return (
-    <div className={`grw-subnav-switcher ${isVisible ? '' : 'grw-subnav-switcher-hidden'}`}>
+    <div className={`${styles['grw-subnav-switcher']} ${isVisible ? '' : 'grw-subnav-switcher-hidden'}`}>
       <div
         id="grw-subnav-fixed-container"
-        className="grw-subnav-fixed-container position-fixed grw-subnav-append-shadow-container"
+        className={`grw-subnav-fixed-container ${styles['grw-subnav-fixed-container']} position-fixed grw-subnav-append-shadow-container`}
         ref={fixedContainerRef}
         style={{ width }}
       >

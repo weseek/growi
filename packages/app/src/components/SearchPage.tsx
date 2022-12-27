@@ -1,20 +1,21 @@
 import React, {
   useCallback, useEffect, useMemo, useRef, useState,
 } from 'react';
-import { useTranslation } from 'react-i18next';
 
-import { parse as parseQuerystring } from 'querystring';
 
-import AppContainer from '~/client/services/AppContainer';
-import { IFormattedSearchResult } from '~/interfaces/search';
+import { useTranslation } from 'next-i18next';
+import { useRouter } from 'next/router';
+
+
 import { ISelectableAll, ISelectableAndIndeterminatable } from '~/client/interfaces/selectable-all';
-import { useIsSearchServiceReachable } from '~/stores/context';
+import { IFormattedSearchResult } from '~/interfaces/search';
+import { useIsSearchServiceReachable, useShowPageLimitationL } from '~/stores/context';
 import { ISearchConditions, ISearchConfigurations, useSWRxSearch } from '~/stores/search';
 
+import { NotAvailableForGuest } from './NotAvailableForGuest';
 import PaginationWrapper from './PaginationWrapper';
 import { OperateAllControl } from './SearchPage/OperateAllControl';
 import SearchControl from './SearchPage/SearchControl';
-
 import { IReturnSelectedPageIds, SearchPageBase, usePageDeleteModalForBulkDeletion } from './SearchPage2/SearchPageBase';
 
 
@@ -84,36 +85,22 @@ const SearchResultListHead = React.memo((props: SearchResultListHeadProps): JSX.
   );
 });
 
+SearchResultListHead.displayName = 'SearchResultListHead';
 
-/**
- * SearchPage
- */
 
-const getParsedUrlQuery = () => {
-  const search = window.location.search || '?';
-  return parseQuerystring(search.slice(1)); // remove heading '?' and parse
-};
-
-type Props = {
-  appContainer: AppContainer,
-}
-
-export const SearchPage = (props: Props): JSX.Element => {
+export const SearchPage = (): JSX.Element => {
   const { t } = useTranslation();
-
-  const {
-    appContainer,
-  } = props;
+  const { data: showPageLimitationL } = useShowPageLimitationL();
+  const router = useRouter();
 
   // parse URL Query
-  const parsedQueries = getParsedUrlQuery().q;
-  const initQ = (Array.isArray(parsedQueries) ? parsedQueries.join(' ') : parsedQueries) ?? '';
+  const queries = router.query.q;
+  const initQ = (Array.isArray(queries) ? queries.join(' ') : queries) ?? '';
 
   const [keyword, setKeyword] = useState<string>(initQ);
   const [offset, setOffset] = useState<number>(0);
-  const [limit, setLimit] = useState<number>(INITIAL_PAGIONG_SIZE);
+  const [limit, setLimit] = useState<number>(showPageLimitationL ?? INITIAL_PAGIONG_SIZE);
   const [configurationsByControl, setConfigurationsByControl] = useState<Partial<ISearchConfigurations>>({});
-
   const selectAllControlRef = useRef<ISelectableAndIndeterminatable|null>(null);
   const searchPageBaseRef = useRef<ISelectableAll & IReturnSelectedPageIds|null>(null);
 
@@ -197,21 +184,23 @@ export const SearchPage = (props: Props): JSX.Element => {
     const isDisabled = hitsCount === 0;
 
     return (
-      <OperateAllControl
-        ref={selectAllControlRef}
-        isCheckboxDisabled={isDisabled}
-        onCheckboxChanged={selectAllCheckboxChangedHandler}
-      >
-        <button
-          type="button"
-          className="btn btn-outline-danger text-nowrap border-0 px-2"
-          disabled={isDisabled}
-          onClick={deleteAllButtonClickedHandler}
+      <NotAvailableForGuest>
+        <OperateAllControl
+          ref={selectAllControlRef}
+          isCheckboxDisabled={isDisabled}
+          onCheckboxChanged={selectAllCheckboxChangedHandler}
         >
-          <i className="icon-fw icon-trash"></i>
-          {t('search_result.delete_all_selected_page')}
-        </button>
-      </OperateAllControl>
+          <button
+            type="button"
+            className="btn btn-outline-danger text-nowrap border-0 px-2"
+            disabled={isDisabled}
+            onClick={deleteAllButtonClickedHandler}
+          >
+            <i className="icon-fw icon-trash"></i>
+            {t('search_result.delete_all_selected_page')}
+          </button>
+        </OperateAllControl>
+      </NotAvailableForGuest>
     );
   }, [deleteAllButtonClickedHandler, hitsCount, selectAllCheckboxChangedHandler, t]);
 
@@ -269,7 +258,6 @@ export const SearchPage = (props: Props): JSX.Element => {
   return (
     <SearchPageBase
       ref={searchPageBaseRef}
-      appContainer={appContainer}
       pages={data?.data}
       searchingKeyword={keyword}
       onSelectedPagesByCheckboxesChanged={selectedPagesByCheckboxesChangedHandler}

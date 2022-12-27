@@ -1,0 +1,11 @@
+/*
+* reply
+*/
+.page-comment-reply :global {
+  margin-top: 1em;
+}
+
+// remove margin after hidden replies
+.page-comments-hidden-replies + .page-comment-reply :global {
+  margin-top: 0;
+}

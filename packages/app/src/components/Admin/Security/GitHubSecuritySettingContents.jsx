@@ -1,13 +1,16 @@
 /* eslint-disable react/no-danger */
 import React from 'react';
 
+import { pathUtils } from '@growi/core';
+import { useTranslation } from 'next-i18next';
 import PropTypes from 'prop-types';
-import { useTranslation } from 'react-i18next';
+import urljoin from 'url-join';
 
 
 import AdminGeneralSecurityContainer from '~/client/services/AdminGeneralSecurityContainer';
 import AdminGitHubSecurityContainer from '~/client/services/AdminGitHubSecurityContainer';
 import { toastSuccess, toastError } from '~/client/util/apiNotification';
+import { useSiteUrl } from '~/stores/context';
 
 import { withUnstatedContainers } from '../../UnstatedUtils';
 
@@ -25,7 +28,7 @@ class GitHubSecurityManagementContents extends React.Component {
     try {
       await adminGitHubSecurityContainer.updateGitHubSetting();
       await adminGeneralSecurityContainer.retrieveSetupStratedies();
-      toastSuccess(t('security_setting.OAuth.GitHub.updated_github'));
+      toastSuccess(t('security_settings.OAuth.GitHub.updated_github'));
     }
     catch (err) {
       toastError(err);
@@ -33,15 +36,18 @@ class GitHubSecurityManagementContents extends React.Component {
   }
 
   render() {
-    const { t, adminGeneralSecurityContainer, adminGitHubSecurityContainer } = this.props;
+    const {
+      t, adminGeneralSecurityContainer, adminGitHubSecurityContainer, siteUrl,
+    } = this.props;
     const { isGitHubEnabled } = adminGeneralSecurityContainer.state;
+    const gitHubCallbackUrl = urljoin(pathUtils.removeTrailingSlash(siteUrl), '/passport/github/callback');
 
     return (
 
       <React.Fragment>
 
         <h2 className="alert-anchor border-bottom">
-          {t('security_setting.OAuth.GitHub.name')}
+          {t('security_settings.OAuth.GitHub.name')}
         </h2>
 
         {adminGitHubSecurityContainer.state.retrieveError != null && (
@@ -61,30 +67,30 @@ class GitHubSecurityManagementContents extends React.Component {
                 onChange={() => { adminGeneralSecurityContainer.switchIsGitHubOAuthEnabled() }}
               />
               <label className="custom-control-label" htmlFor="isGitHubEnabled">
-                {t('security_setting.OAuth.GitHub.enable_github')}
+                {t('security_settings.OAuth.GitHub.enable_github')}
               </label>
             </div>
             {(!adminGeneralSecurityContainer.state.setupStrategies.includes('github') && isGitHubEnabled)
-              && <div className="badge badge-warning">{t('security_setting.setup_is_not_yet_complete')}</div>}
+              && <div className="badge badge-warning">{t('security_settings.setup_is_not_yet_complete')}</div>}
           </div>
         </div>
 
         <div className="row mb-5">
-          <label className="col-12 col-md-3 text-left text-md-right py-2">{t('security_setting.callback_URL')}</label>
+          <label className="col-12 col-md-3 text-left text-md-right py-2">{t('security_settings.callback_URL')}</label>
           <div className="col-12 col-md-6">
             <input
               className="form-control"
               type="text"
-              value={adminGitHubSecurityContainer.state.appSiteUrl}
+              value={gitHubCallbackUrl}
               readOnly
             />
-            <p className="form-text text-muted small">{t('security_setting.desc_of_callback_URL', { AuthName: 'OAuth' })}</p>
-            {!adminGeneralSecurityContainer.state.appSiteUrl && (
+            <p className="form-text text-muted small">{t('security_settings.desc_of_callback_URL', { AuthName: 'OAuth' })}</p>
+            {(siteUrl == null || siteUrl === '') && (
               <div className="alert alert-danger">
                 <i
                   className="icon-exclamation"
                   // eslint-disable-next-line max-len
-                  dangerouslySetInnerHTML={{ __html: t('security_setting.alert_siteUrl_is_not_set', { link: `<a href="/admin/app">${t('App Settings')}<i class="icon-login"></i></a>` }) }}
+                  dangerouslySetInnerHTML={{ __html: t('alert.siteUrl_is_not_set', { link: `<a href="/admin/app">${t('headers.app_settings', { ns: 'commons' })}<i class="icon-login"></i></a>`, ns: 'commons' }) }}
                 />
               </div>
             )}
@@ -95,10 +101,10 @@ class GitHubSecurityManagementContents extends React.Component {
         {isGitHubEnabled && (
           <React.Fragment>
 
-            <h3 className="border-bottom">{t('security_setting.configuration')}</h3>
+            <h3 className="border-bottom">{t('security_settings.configuration')}</h3>
 
             <div className="row mb-5">
-              <label htmlFor="githubClientId" className="col-3 text-right py-2">{t('security_setting.clientID')}</label>
+              <label htmlFor="githubClientId" className="col-3 text-right py-2">{t('security_settings.clientID')}</label>
               <div className="col-6">
                 <input
                   className="form-control"
@@ -108,13 +114,13 @@ class GitHubSecurityManagementContents extends React.Component {
                   onChange={e => adminGitHubSecurityContainer.changeGitHubClientId(e.target.value)}
                 />
                 <p className="form-text text-muted">
-                  <small dangerouslySetInnerHTML={{ __html: t('security_setting.Use env var if empty', { env: 'OAUTH_GITHUB_CLIENT_ID' }) }} />
+                  <small dangerouslySetInnerHTML={{ __html: t('security_settings.Use env var if empty', { env: 'OAUTH_GITHUB_CLIENT_ID' }) }} />
                 </p>
               </div>
             </div>
 
             <div className="row mb-5">
-              <label htmlFor="githubClientSecret" className="col-3 text-right py-2">{t('security_setting.client_secret')}</label>
+              <label htmlFor="githubClientSecret" className="col-3 text-right py-2">{t('security_settings.client_secret')}</label>
               <div className="col-6">
                 <input
                   className="form-control"
@@ -124,7 +130,7 @@ class GitHubSecurityManagementContents extends React.Component {
                   onChange={e => adminGitHubSecurityContainer.changeGitHubClientSecret(e.target.value)}
                 />
                 <p className="form-text text-muted">
-                  <small dangerouslySetInnerHTML={{ __html: t('security_setting.Use env var if empty', { env: 'OAUTH_GITHUB_CLIENT_SECRET' }) }} />
+                  <small dangerouslySetInnerHTML={{ __html: t('security_settings.Use env var if empty', { env: 'OAUTH_GITHUB_CLIENT_SECRET' }) }} />
                 </p>
               </div>
             </div>
@@ -142,11 +148,11 @@ class GitHubSecurityManagementContents extends React.Component {
                   <label
                     className="custom-control-label"
                     htmlFor="bindByUserNameGitHub"
-                    dangerouslySetInnerHTML={{ __html: t('security_setting.Treat email matching as identical') }}
+                    dangerouslySetInnerHTML={{ __html: t('security_settings.Treat email matching as identical') }}
                   />
                 </div>
                 <p className="form-text text-muted">
-                  <small dangerouslySetInnerHTML={{ __html: t('security_setting.Treat email matching as identical_warn') }} />
+                  <small dangerouslySetInnerHTML={{ __html: t('security_settings.Treat email matching as identical_warn') }} />
                 </p>
               </div>
             </div>
@@ -167,13 +173,13 @@ class GitHubSecurityManagementContents extends React.Component {
         <div style={{ minHeight: '300px' }}>
           <h4>
             <i className="icon-question" aria-hidden="true"></i>
-            <a href="#collapseHelpForGitHubOauth" data-toggle="collapse"> {t('security_setting.OAuth.how_to.github')}</a>
+            <a href="#collapseHelpForGitHubOauth" data-toggle="collapse"> {t('security_settings.OAuth.how_to.github')}</a>
           </h4>
           <ol id="collapseHelpForGitHubOauth" className="collapse">
             {/* eslint-disable-next-line max-len */}
-            <li dangerouslySetInnerHTML={{ __html: t('security_setting.OAuth.GitHub.register_1', { link: '<a href="https://github.com/settings/developers" target=_blank>GitHub Developer Settings</a>' }) }} />
-            <li dangerouslySetInnerHTML={{ __html: t('security_setting.OAuth.GitHub.register_2', { url: adminGitHubSecurityContainer.state.callbackUrl }) }} />
-            <li dangerouslySetInnerHTML={{ __html: t('security_setting.OAuth.GitHub.register_3') }} />
+            <li dangerouslySetInnerHTML={{ __html: t('security_settings.OAuth.GitHub.register_1', { link: '<a href="https://github.com/settings/developers" target=_blank>GitHub Developer Settings</a>' }) }} />
+            <li dangerouslySetInnerHTML={{ __html: t('security_settings.OAuth.GitHub.register_2', { url: gitHubCallbackUrl }) }} />
+            <li dangerouslySetInnerHTML={{ __html: t('security_settings.OAuth.GitHub.register_3') }} />
           </ol>
         </div>
 
@@ -186,8 +192,9 @@ class GitHubSecurityManagementContents extends React.Component {
 }
 
 const GitHubSecurityManagementContentsFC = (props) => {
-  const { t } = useTranslation();
-  return <GitHubSecurityManagementContents t={t} {...props} />;
+  const { t } = useTranslation('admin');
+  const { data: siteUrl } = useSiteUrl();
+  return <GitHubSecurityManagementContents t={t} siteUrl={siteUrl} {...props} />;
 };
 
 /**

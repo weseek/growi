@@ -1,7 +1,7 @@
 import React, { FC, useState, useCallback } from 'react';
 
+import dynamic from 'next/dynamic';
 import { useTranslation } from 'react-i18next';
-
 
 import { toastSuccess, toastError } from '~/client/util/apiNotification';
 import { apiv3Delete, apiv3Post, apiv3Put } from '~/client/util/apiv3-client';
@@ -9,11 +9,11 @@ import { IUserGroup, IUserGroupHasId } from '~/interfaces/user';
 import { useIsAclEnabled } from '~/stores/context';
 import { useSWRxUserGroupList, useSWRxChildUserGroupList, useSWRxUserGroupRelationList } from '~/stores/user-group';
 
-import UserGroupDeleteModal from './UserGroupDeleteModal';
-import UserGroupModal from './UserGroupModal';
-import UserGroupTable from './UserGroupTable';
+const UserGroupDeleteModal = dynamic(() => import('./UserGroupDeleteModal').then(mod => mod.UserGroupDeleteModal), { ssr: false });
+const UserGroupModal = dynamic(() => import('./UserGroupModal').then(mod => mod.UserGroupModal), { ssr: false });
+const UserGroupTable = dynamic(() => import('./UserGroupTable').then(mod => mod.UserGroupTable), { ssr: false });
 
-const UserGroupPage: FC = () => {
+export const UserGroupPage: FC = () => {
   const { t } = useTranslation();
 
   const { data: isAclEnabled } = useIsAclEnabled();
@@ -93,7 +93,7 @@ const UserGroupPage: FC = () => {
         description: userGroupData.description,
       });
 
-      toastSuccess(t('toaster.update_successed', { target: t('UserGroup') }));
+      toastSuccess(t('toaster.update_successed', { target: t('UserGroup'), ns: 'commons' }));
 
       // mutate
       await mutateUserGroups();
@@ -112,7 +112,7 @@ const UserGroupPage: FC = () => {
         description: userGroupData.description,
       });
 
-      toastSuccess(t('toaster.update_successed', { target: t('UserGroup') }));
+      toastSuccess(t('toaster.update_successed', { target: t('UserGroup'), ns: 'commons' }));
 
       // mutate
       await mutateUserGroups();
@@ -126,7 +126,7 @@ const UserGroupPage: FC = () => {
 
   const deleteUserGroupById = useCallback(async(deleteGroupId: string, actionName: string, transferToUserGroupId: string) => {
     try {
-      const res = await apiv3Delete(`/user-groups/${deleteGroupId}`, {
+      await apiv3Delete(`/user-groups/${deleteGroupId}`, {
         actionName,
         transferToUserGroupId,
       });
@@ -137,12 +137,12 @@ const UserGroupPage: FC = () => {
       setSelectedUserGroup(undefined);
       setDeleteModalShown(false);
 
-      toastSuccess(`Deleted ${res.data.userGroups.length} groups.`);
+      toastSuccess(`Deleted ${selectedUserGroup?.name} group.`);
     }
     catch (err) {
       toastError(new Error('Unable to delete the groups'));
     }
-  }, [mutateUserGroups]);
+  }, [mutateUserGroups, selectedUserGroup]);
 
   return (
     <div data-testid="admin-user-groups">
@@ -193,5 +193,3 @@ const UserGroupPage: FC = () => {
     </div>
   );
 };
-
-export default UserGroupPage;

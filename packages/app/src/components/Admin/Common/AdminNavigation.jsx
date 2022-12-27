@@ -1,46 +1,45 @@
-/* eslint-disable no-multi-spaces */
-/* eslint-disable react/jsx-props-no-multi-spaces */
-
-
 import React from 'react';
 
 import { pathUtils } from '@growi/core';
+import { useTranslation } from 'next-i18next';
+import Link from 'next/link';
 import PropTypes from 'prop-types';
-import { useTranslation } from 'react-i18next';
 import urljoin from 'url-join';
 
+import { useGrowiCloudUri, useGrowiAppIdForGrowiCloud } from '../../../stores/context';
+// import AppContainer from '~/client/services/AppContainer';
 
-import AppContainer from '~/client/services/AppContainer';
-
-import { withUnstatedContainers } from '../../UnstatedUtils';
+// import { withUnstatedContainers } from '../../UnstatedUtils';
 
 const AdminNavigation = (props) => {
-  const { t } = useTranslation();
-  const { appContainer } = props;
+  const { t } = useTranslation('admin');
+  // const { appContainer } = props;
   const pathname = window.location.pathname;
 
-  const growiCloudUri = appContainer.config.env.GROWI_CLOUD_URI;
-  const growiAppIdForGrowiCloud = appContainer.config.env.GROWI_APP_ID_FOR_GROWI_CLOUD;
+  const { data: growiCloudUri } = useGrowiCloudUri();
+  const { data: growiAppIdForGrowiCloud } = useGrowiAppIdForGrowiCloud();
 
   // eslint-disable-next-line react/prop-types
   const MenuLabel = ({ menu }) => {
     switch (menu) {
-      case 'app':                      return <><i className="icon-fw icon-settings"></i>        { t('App Settings') }</>;
-      case 'security':                 return <><i className="icon-fw icon-shield"></i>          { t('security_settings') }</>;
-      case 'markdown':                 return <><i className="icon-fw icon-note"></i>            { t('Markdown Settings') }</>;
-      case 'customize':                return <><i className="icon-fw icon-wrench"></i>          { t('Customize') }</>;
-      case 'importer':                 return <><i className="icon-fw icon-cloud-upload"></i>    { t('Import Data') }</>;
-      case 'export':                   return <><i className="icon-fw icon-cloud-download"></i>  { t('Export Archive Data') }</>;
-      case 'notification':             return <><i className="icon-fw icon-bell"></i>            { t('External_Notification')}</>;
-      case 'slack-integration':        return <><i className="icon-fw icon-shuffle"></i>         { t('slack_integration') }</>;
-      case 'slack-integration-legacy': return <><i className="icon-fw icon-shuffle"></i>         { t('Legacy_Slack_Integration')}</>;
-      case 'users':                    return <><i className="icon-fw icon-user"></i>            { t('User_Management') }</>;
-      case 'user-groups':              return <><i className="icon-fw icon-people"></i>          { t('UserGroup Management') }</>;
-      case 'search':                   return <><i className="icon-fw icon-magnifier"></i>       { t('Full Text Search Management') }</>;
-      // TODO: Consider where to place the "AuditLog"
-      case 'audit-log':                return <><i className="icon-fw icon-feed"></i>            { t('AuditLog')}</>;
-      case 'cloud':                    return <><i className="icon-fw icon-share-alt"></i>       { t('to_cloud_settings')} </>;
-      default:                         return <><i className="icon-fw icon-home"></i>            { t('Wiki Management Home Page') }</>;
+      /* eslint-disable no-multi-spaces, max-len */
+      case 'app':                      return <><i className="mr-1 icon-fw icon-settings"></i>{        t('headers.app_settings', { ns: 'commons' }) }</>;
+      case 'security':                 return <><i className="mr-1 icon-fw icon-shield"></i>{          t('security_settings.security_settings') }</>;
+      case 'markdown':                 return <><i className="mr-1 icon-fw icon-note"></i>{            t('markdown_settings.markdown_settings') }</>;
+      case 'customize':                return <><i className="mr-1 icon-fw icon-wrench"></i>{          t('customize_settings.customize_settings') }</>;
+      case 'importer':                 return <><i className="mr-1 icon-fw icon-cloud-upload"></i>{    t('importer_management.import_data') }</>;
+      case 'export':                   return <><i className="mr-1 icon-fw icon-cloud-download"></i>{  t('export_management.export_archive_data') }</>;
+      case 'notification':             return <><i className="mr-1 icon-fw icon-bell"></i>{            t('external_notification.external_notification')}</>;
+      case 'slack-integration':        return <><i className="mr-1 icon-fw icon-shuffle"></i>{         t('slack_integration.slack_integration') }</>;
+      case 'slack-integration-legacy': return <><i className="mr-1 icon-fw icon-shuffle"></i>{         t('slack_integration_legacy.slack_integration_legacy')}</>;
+      case 'users':                    return <><i className="mr-1 icon-fw icon-user"></i>{            t('user_management.user_management') }</>;
+      case 'user-groups':              return <><i className="mr-1 icon-fw icon-people"></i>{          t('user_group_management.user_group_management') }</>;
+      case 'search':                   return <><i className="mr-1 icon-fw icon-magnifier"></i>{       t('full_text_search_management.full_text_search_management') }</>;
+      case 'audit-log':                return <><i className="mr-1 icon-fw icon-feed"></i>{            t('audit_log_management.audit_log')}</>;
+      case 'plugins':                  return <><i className="mr-1 icon-fw icon-puzzle"></i>{          t('plugins.plugins')}</>;
+      case 'cloud':                    return <><i className="mr-1 icon-fw icon-share-alt"></i>{       t('cloud_setting_management.to_cloud_settings')} </>;
+      default:                         return <><i className="mr-1 icon-fw icon-home"></i>{            t('wiki_management_home_page') }</>;
+      /* eslint-enable no-multi-spaces, max-len */
     }
   };
 
@@ -52,13 +51,17 @@ const AdminNavigation = (props) => {
       ? 'list-group-item list-group-item-action border-0 round-corner'
       : 'dropdown-item px-3 py-2';
 
+    const href = isRoot ? '/admin' : urljoin('/admin', menu);
+
     return (
-      <a
-        href={isRoot ? '/admin' : urljoin('/admin', menu)}
-        className={`${pageTransitionClassName} ${isActive ? 'active' : ''}`}
-      >
-        <MenuLabel menu={menu} />
-      </a>
+      <Link href={href}>
+        <a
+          href={href}
+          className={`${pageTransitionClassName} ${isActive ? 'active' : ''}`}
+        >
+          <MenuLabel menu={menu} />
+        </a>
+      </Link>
     );
   };
 
@@ -75,6 +78,7 @@ const AdminNavigation = (props) => {
   const getListGroupItemOrDropdownItemList = (isListGroupItems) => {
     return (
       <>
+        {/* eslint-disable no-multi-spaces */}
         <MenuLink menu="home"         isListGroupItems isActive={pathname === '/admin'} isRoot />
         <MenuLink menu="app"          isListGroupItems isActive={isActiveMenu('/app')} />
         <MenuLink menu="security"     isListGroupItems isActive={isActiveMenu('/security')} />
@@ -87,8 +91,9 @@ const AdminNavigation = (props) => {
         <MenuLink menu="slack-integration-legacy" isListGroupItems isActive={isActiveMenu('/slack-integration-legacy')} />
         <MenuLink menu="users"        isListGroupItems isActive={isActiveMenu('/users')} />
         <MenuLink menu="user-groups"  isListGroupItems isActive={isActiveMenu('/user-groups')} />
-        <MenuLink menu="search"       isListGroupItems isActive={isActiveMenu('/search')} />
         <MenuLink menu="audit-log"    isListGroupItems isActive={isActiveMenu('/audit-log')} />
+        <MenuLink menu="plugins"      isListGroupItems isActive={isActiveMenu('/plugins')} />
+        <MenuLink menu="search"       isListGroupItems isActive={isActiveMenu('/search')} />
         {growiCloudUri != null && growiAppIdForGrowiCloud != null
           && (
             <a
@@ -99,6 +104,7 @@ const AdminNavigation = (props) => {
             </a>
           )
         }
+        {/* eslint-enable no-multi-spaces */}
       </>
     );
   };
@@ -122,6 +128,7 @@ const AdminNavigation = (props) => {
           aria-expanded="false"
         >
           <span className="float-left">
+            {/* eslint-disable no-multi-spaces */}
             {pathname === '/admin' &&              <MenuLabel menu="home" />}
             {isActiveMenu('/app') &&               <MenuLabel menu="app" />}
             {isActiveMenu('/security') &&          <MenuLabel menu="security" />}
@@ -135,6 +142,8 @@ const AdminNavigation = (props) => {
             {isActiveMenu('/user-groups') &&       <MenuLabel menu="user-groups" />}
             {isActiveMenu('/search') &&            <MenuLabel menu="search" />}
             {isActiveMenu('/audit-log') &&         <MenuLabel menu="audit-log" />}
+            {isActiveMenu('/plugins') &&           <MenuLabel menu="plugins" />}
+            {/* eslint-enable no-multi-spaces */}
           </span>
         </button>
         <div className="dropdown-menu" aria-labelledby="dropdown-admin-navigation">
@@ -146,10 +155,11 @@ const AdminNavigation = (props) => {
   );
 };
 
-const AdminNavigationWrapper = withUnstatedContainers(AdminNavigation, [AppContainer]);
+// const AdminNavigationWrapper = withUnstatedContainers(AdminNavigation, [AppContainer]);
 
 AdminNavigation.propTypes = {
-  appContainer: PropTypes.instanceOf(AppContainer).isRequired,
+  // appContainer: PropTypes.instanceOf(AppContainer).isRequired,
 };
 
-export default AdminNavigationWrapper;
+// export default AdminNavigationWrapper;
+export default AdminNavigation;

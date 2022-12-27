@@ -1,11 +1,10 @@
 import React from 'react';
 
+import { useTranslation } from 'next-i18next';
 import PropTypes from 'prop-types';
-import { useTranslation } from 'react-i18next';
 
-import AdminSocketIoContainer from '~/client/services/AdminSocketIoContainer';
+import { useAdminSocket } from '~/stores/socket-io';
 
-import { withUnstatedContainers } from '../../UnstatedUtils';
 import LabeledProgressBar from '../Common/LabeledProgressBar';
 
 class RebuildIndexControls extends React.Component {
@@ -25,24 +24,25 @@ class RebuildIndexControls extends React.Component {
   }
 
   initWebSockets() {
-    const socket = this.props.adminSocketIoContainer.getSocket();
+    const { socket } = this.props;
 
-    socket.on('addPageProgress', (data) => {
-      this.setState({
-        total: data.totalCount,
-        current: data.count,
-        skip: data.skipped,
+    if (socket != null) {
+      socket.on('addPageProgress', (data) => {
+        this.setState({
+          total: data.totalCount,
+          current: data.count,
+          skip: data.skipped,
+        });
       });
-    });
 
-    socket.on('finishAddPage', (data) => {
-      this.setState({
-        total: data.totalCount,
-        current: data.count,
-        skip: data.skipped,
+      socket.on('finishAddPage', (data) => {
+        this.setState({
+          total: data.totalCount,
+          current: data.count,
+          skip: data.skipped,
+        });
       });
-    });
-
+    }
   }
 
   renderProgressBar() {
@@ -108,25 +108,21 @@ class RebuildIndexControls extends React.Component {
 }
 
 const RebuildIndexControlsFC = (props) => {
-  const { t } = useTranslation();
-  return <RebuildIndexControls t={t} {...props} />;
+  const { t } = useTranslation('admin');
+  const { data: socket } = useAdminSocket();
+  return <RebuildIndexControls t={t} socket={socket} {...props} />;
 };
 
 
-/**
- * Wrapper component for using unstated
- */
-const RebuildIndexControlsWrapper = withUnstatedContainers(RebuildIndexControlsFC, [AdminSocketIoContainer]);
-
 RebuildIndexControls.propTypes = {
   t: PropTypes.func.isRequired, // i18next
-  adminSocketIoContainer: PropTypes.instanceOf(AdminSocketIoContainer).isRequired,
 
   isRebuildingProcessing: PropTypes.bool.isRequired,
   isRebuildingCompleted: PropTypes.bool.isRequired,
 
   isNormalized: PropTypes.bool,
   onRebuildingRequested: PropTypes.func.isRequired,
+  socket: PropTypes.object,
 };
 
-export default RebuildIndexControlsWrapper;
+export default RebuildIndexControlsFC;

@@ -40,10 +40,6 @@ module.exports = function(crowi, app) {
 
   actions.api = api;
 
-  actions.showPage = function(req, res) {
-    return res.render('tags');
-  };
-
   /**
    * @swagger
    *
@@ -159,7 +155,7 @@ module.exports = function(crowi, app) {
       }
 
       const previousRevision = await Revision.findById(revisionId);
-      result.savedPage = await Page.updatePage(page, previousRevision.body, previousRevision.body, req.user);
+      result.savedPage = await crowi.pageService.updatePage(page, previousRevision.body, previousRevision.body, req.user);
       await PageTagRelation.updatePageTags(pageId, tags);
       result.tags = await PageTagRelation.listTagNamesByPage(pageId);
 

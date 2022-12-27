@@ -1,7 +1,7 @@
 # :tada: Welcome to GROWI
 
 [![GitHub Releases](https://img.shields.io/github/release/weseek/growi.svg)](https://github.com/weseek/growi/releases/latest)
-[![MIT License](https://img.shields.io/badge/license-MIT-blue.svg?style=flat)](LICENSE)
+[![MIT License](https://img.shields.io/badge/license-MIT-blue.svg?style=flat)](https://github.com/weseek/growi/blob/master/LICENSE)
 
 GROWI is a Wiki for Individuals and Corporations | A knowledge base tool.
 Knowledge in companies, university laboratories, and clubs can be easily shared and anyone can edit the page.
@@ -18,7 +18,7 @@ Let's increase the information exchange everyday.
 - We can create a bullet point by adding `-`  at the beginning of the line.
 - We can also copy and paste, drag and drop attachments such as images, PDF, Word/Excel/PowerPoint, etc.
 - Once we finished, press the "**Update**" button to publish the page.
-    - We can also save it by `Ctrl(⌘) +S`.
+    - We can also save it by `Ctrl(⌘) + S`.
 
 For more information: [Tutorial#Create New Page](https://docs.growi.org/en/guide/tutorial/create_page.html#create-new-page)
 
@@ -29,7 +29,7 @@ For more information: [Tutorial#Create New Page](https://docs.growi.org/en/guide
   <div class="card-body">
     <ul>
       <li>Ctrl(⌘) + "/" to show quick help.</li>
-      <li>We can write HTML with <a href="https://getbootstrap.com/docs/4.5/components/">Bootstrap 4</a>.</li>
+      <li>We can write HTML with <a href="https://getbootstrap.com/docs/4.6/components/">Bootstrap 4</a>.</li>
     </ul>
   </div>
 </div>

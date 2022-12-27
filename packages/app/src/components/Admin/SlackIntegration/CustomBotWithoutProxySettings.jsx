@@ -1,20 +1,22 @@
 import React, { useState, useEffect } from 'react';
-import { useTranslation } from 'react-i18next';
+
+import { useTranslation } from 'next-i18next';
 import PropTypes from 'prop-types';
-import AppContainer from '~/client/services/AppContainer';
-import { withUnstatedContainers } from '../../UnstatedUtils';
-import CustomBotWithoutProxySettingsAccordion, { botInstallationStep } from './CustomBotWithoutProxySettingsAccordion';
+
+import { useAppTitle } from '~/stores/context';
+
 import CustomBotWithoutProxyConnectionStatus from './CustomBotWithoutProxyConnectionStatus';
+import CustomBotWithoutProxySettingsAccordion, { botInstallationStep } from './CustomBotWithoutProxySettingsAccordion';
 
 const CustomBotWithoutProxySettings = (props) => {
-  const { appContainer, connectionStatuses } = props;
+  const { connectionStatuses } = props;
   const { t } = useTranslation();
+  const { data: appTitle } = useAppTitle();
   const [siteName, setSiteName] = useState('');
 
   useEffect(() => {
-    const siteName = appContainer.config.crowi.title;
-    setSiteName(siteName);
-  }, [appContainer]);
+    setSiteName(appTitle);
+  }, [appTitle]);
 
   const workspaceName = connectionStatuses[props.slackBotToken]?.workspaceName;
 
@@ -58,10 +60,8 @@ const CustomBotWithoutProxySettings = (props) => {
   );
 };
 
-const CustomBotWithoutProxySettingsWrapper = withUnstatedContainers(CustomBotWithoutProxySettings, [AppContainer]);
 
 CustomBotWithoutProxySettings.propTypes = {
-  appContainer: PropTypes.instanceOf(AppContainer).isRequired,
 
   slackSigningSecret: PropTypes.string,
   slackSigningSecretEnv: PropTypes.string,
@@ -75,4 +75,4 @@ CustomBotWithoutProxySettings.propTypes = {
   eventActionsPermission: PropTypes.object,
 };
 
-export default CustomBotWithoutProxySettingsWrapper;
+export default CustomBotWithoutProxySettings;

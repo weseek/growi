@@ -1,3 +1,8 @@
+@use '../variables' as var;
+@use '../bootstrap/init' as *;
+@use '../atoms/mixins/buttons' as mixins-buttons;
+@use './mixins/count-badge';
+
 // determine optional variables
 $color-list: $color-global !default;
 $bgcolor-list: $bgcolor-global !default;
@@ -35,10 +40,11 @@ $dropdown-link-hover-color: $color-dropdown-link-hover;
 $dropdown-link-active-color: $color-dropdown-link-active;
 $dropdown-link-active-bg: $bgcolor-dropdown-link-active;
 
-@import 'reboot-bootstrap-text';
-@import 'reboot-bootstrap-border-colors';
-@import 'reboot-bootstrap-tables';
-@import 'reboot-bootstrap-dropdown';
+@import './mixins/list-group';
+@import './reboot-bootstrap-text';
+@import './reboot-bootstrap-border-colors';
+@import './reboot-bootstrap-tables';
+@import './reboot-bootstrap-dropdown';
 
 // List Group
 @include override-list-group-item($color-list, $bgcolor-list, $color-list-hover, $bgcolor-list-hover, $color-list-active, $bgcolor-list-active);
@@ -75,10 +81,10 @@ $dropdown-link-active-bg: $bgcolor-dropdown-link-active;
   // background color
   $color-gradient: #3e4d6c;
   background: linear-gradient(45deg, darken($color-gradient, 30%) 0%, hsla(340, 100%, 55%, 0) 70%),
-    linear-gradient(135deg, $growi-green 10%, hsla(225, 95%, 50%, 0) 70%), linear-gradient(225deg, $growi-blue 10%, hsla(140, 90%, 50%, 0) 80%),
+    linear-gradient(135deg, var.$growi-green 10%, hsla(225, 95%, 50%, 0) 70%), linear-gradient(225deg, var.$growi-blue 10%, hsla(140, 90%, 50%, 0) 80%),
     linear-gradient(315deg, darken($color-gradient, 25%) 100%, hsla(35, 95%, 55%, 0) 70%);
 
-  .login-header {
+  .nologin-header {
     background-color: rgba(white, 0.5);
 
     .logo {
@@ -91,7 +97,7 @@ $dropdown-link-active-bg: $bgcolor-dropdown-link-active;
     }
   }
 
-  .login-dialog {
+  .nologin-dialog {
     background-color: rgba(white, 0.5);
   }
 
@@ -137,11 +143,11 @@ $dropdown-link-active-bg: $bgcolor-dropdown-link-active;
       color: black;
 
       .growi {
-        color: darken($growi-green, 20%);
+        color: darken(var.$growi-green, 20%);
       }
 
       .org {
-        color: darken($growi-blue, 15%);
+        color: darken(var.$growi-blue, 15%);
       }
     }
   }
@@ -195,7 +201,7 @@ $dropdown-link-active-bg: $bgcolor-dropdown-link-active;
       darken($bgcolor-sidebar-context, 24%)
     );
     .grw-pagetree-triangle-btn {
-      @include button-outline-svg-icon-variant($gray-400, $primary);
+      @include mixins-buttons.button-outline-svg-icon-variant($gray-400, $primary);
     }
   }
   .private-legacy-pages-link {
@@ -237,7 +243,16 @@ $dropdown-link-active-bg: $bgcolor-dropdown-link-active;
 }
 
 /*
- * GROWI on-edit
+ * GROWI ToC
+ */
+.revision-toc-content {
+  ::marker {
+    color: darken($bgcolor-global, 20%);
+  }
+}
+
+/*
+ * GROWI Editor
  */
 .grw-editor-navbar-bottom {
   background-color: $gray-50;
@@ -375,7 +390,7 @@ $dropdown-link-active-bg: $bgcolor-dropdown-link-active;
 */
 .grw-side-contents-sticky-container {
   .grw-count-badge {
-    @include count-badge($gray-600, $gray-200);
+    @include count-badge.count-badge($gray-600, $gray-200);
   }
 
   .grw-border-vr {
@@ -384,6 +399,13 @@ $dropdown-link-active-bg: $bgcolor-dropdown-link-active;
   .revision-toc {
     border-color: $border-color-toc;
   }
+}
+
+/*
+ * drawio
+ */
+.drawio-viewer {
+  border-color: $border-color-global;
 }
 
 /*
@@ -398,4 +420,11 @@ $dropdown-link-active-bg: $bgcolor-dropdown-link-active;
  */
 .grw-modal-head {
   border-color: $border-color-global;
+}
+
+/*
+ * skeleton
+ */
+.grw-skeleton {
+  background-color: darken($bgcolor-subnav, 10%);
 }

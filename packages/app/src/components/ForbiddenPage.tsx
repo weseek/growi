@@ -1,10 +1,6 @@
-import React, { useMemo } from 'react';
-import { useTranslation } from 'react-i18next';
+import React from 'react';
 
-import PageListIcon from './Icons/PageListIcon';
-import CustomNavAndContents from './CustomNavigation/CustomNavAndContents';
-import { DescendantsPageListForCurrentPath } from './DescendantsPageList';
-
+import { useTranslation } from 'next-i18next';
 
 type Props = {
   isLinkSharingDisabled?: boolean,
@@ -12,17 +8,6 @@ type Props = {
 
 const ForbiddenPage = React.memo((props: Props): JSX.Element => {
   const { t } = useTranslation();
-
-  const navTabMapping = useMemo(() => {
-    return {
-      pagelist: {
-        Icon: PageListIcon,
-        Content: DescendantsPageListForCurrentPath,
-        i18n: t('page_list'),
-        index: 0,
-      },
-    };
-  }, [t]);
 
   return (
     <>
@@ -39,19 +24,14 @@ const ForbiddenPage = React.memo((props: Props): JSX.Element => {
         <div className="col-sm-12">
           <p className="alert alert-primary py-3 px-4">
             <i className="icon-fw icon-lock" aria-hidden="true" />
-            { props.isLinkSharingDisabled ? t('custom_navigation.link_sharing_is_disabled') : t('Browsing of this page is restricted')}
+            { props.isLinkSharingDisabled ? t('share_links.link_sharing_is_disabled') : t('Browsing of this page is restricted')}
           </p>
         </div>
       </div>
-
-      { !props.isLinkSharingDisabled && (
-        <div className="mt-5">
-          <CustomNavAndContents navTabMapping={navTabMapping} />
-        </div>
-      ) }
-
     </>
   );
 });
+
+ForbiddenPage.displayName = 'ForbiddenPage';
 
 export default ForbiddenPage;

@@ -3,7 +3,7 @@ import React, {
 } from 'react';
 
 import { pullAllBy } from 'lodash';
-import { useTranslation } from 'react-i18next';
+import { useTranslation } from 'next-i18next';
 
 import { toastSuccess, toastError } from '~/client/util/apiNotification';
 import { apiv3Get, apiv3Put } from '~/client/util/apiv3-client';
@@ -54,7 +54,7 @@ const InAppNotificationSettings: FC = () => {
     try {
       const { data } = await apiv3Put('/personal-setting/in-app-notification-settings', { subscribeRules });
       setSubscribeRules(data.subscribeRules);
-      toastSuccess(t('toaster.update_successed', { target: 'InAppNotification Settings' }));
+      toastSuccess(t('toaster.update_successed', { target: 'InAppNotification Settings', ns: 'commons' }));
     }
     catch (err) {
       toastError(err);

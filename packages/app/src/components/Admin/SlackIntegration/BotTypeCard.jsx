@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { useTranslation } from 'react-i18next';
+import { useTranslation } from 'next-i18next';
 
 import { SlackbotType } from '@growi/slack';
 
@@ -31,7 +31,7 @@ const botDetails = {
 };
 
 const BotTypeCard = (props) => {
-  const { t } = useTranslation('admin');
+  const { t } = useTranslation();
 
   const isBotTypeOfficial = props.botType === SlackbotType.OFFICIAL;
 

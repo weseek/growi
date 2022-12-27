@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { useTranslation } from 'react-i18next';
+import { useTranslation } from 'next-i18next';
 
 type Props = {
   isRebuildingProcessing: boolean,
@@ -9,7 +9,7 @@ type Props = {
 }
 
 const NormalizeIndicesControls = (props: Props): JSX.Element => {
-  const { t } = useTranslation();
+  const { t } = useTranslation('admin');
   const { isNormalized, isRebuildingProcessing } = props;
 
   const isEnabled = (isNormalized != null) && !isNormalized && !isRebuildingProcessing;

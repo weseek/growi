@@ -1,15 +1,11 @@
-import React, { FC } from 'react';
+import React from 'react';
 
-import { useTranslation } from 'react-i18next';
+import { useTranslation } from 'next-i18next';
 
-import BasicInfoSettings from './BasicInfoSettings';
+import { BasicInfoSettings } from './BasicInfoSettings';
 import ProfileImageSettings from './ProfileImageSettings';
 
-type Props = {
-
-};
-
-const UserSettings: FC<Props> = () => {
+const UserSettings = React.memo((): JSX.Element => {
   const { t } = useTranslation();
 
   return (
@@ -24,6 +20,7 @@ const UserSettings: FC<Props> = () => {
       </div>
     </div>
   );
-};
+});
+UserSettings.displayName = 'UserSettings';
 
 export default UserSettings;

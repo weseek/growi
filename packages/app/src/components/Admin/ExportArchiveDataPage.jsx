@@ -1,17 +1,13 @@
-import React, { Fragment } from 'react';
+import React from 'react';
 
+import { useTranslation } from 'next-i18next';
 import PropTypes from 'prop-types';
-import { useTranslation } from 'react-i18next';
 import * as toastr from 'toastr';
 
 
-import AdminSocketIoContainer from '~/client/services/AdminSocketIoContainer';
-import AppContainer from '~/client/services/AppContainer';
-import { apiDelete, apiGet } from '~/client/util/apiv1-client';
-
-import { withUnstatedContainers } from '../UnstatedUtils';
 // import { toastSuccess, toastError } from '~/client/util/apiNotification';
-
+import { apiDelete, apiGet } from '~/client/util/apiv1-client';
+import { useAdminSocket } from '~/stores/socket-io';
 
 import LabeledProgressBar from './Common/LabeledProgressBar';
 import ArchiveFilesTable from './ExportArchiveData/ArchiveFilesTable';
@@ -44,7 +40,7 @@ class ExportArchiveDataPage extends React.Component {
     this.exportingRequestedHandler = this.exportingRequestedHandler.bind(this);
   }
 
-  async componentWillMount() {
+  async UNSAFE_componentWillMount() {
     // TODO:: use apiv3.get
     // eslint-disable-next-line no-unused-vars
     const [{ collections }, { status }] = await Promise.all([
@@ -70,45 +66,47 @@ class ExportArchiveDataPage extends React.Component {
   }
 
   setupWebsocketEventHandler() {
-    const socket = this.props.adminSocketIoContainer.getSocket();
+    const { socket } = this.props;
 
-    // websocket event
-    socket.on('admin:onProgressForExport', ({ currentCount, totalCount, progressList }) => {
-      this.setState({
-        isExporting: true,
-        progressList,
-      });
-    });
-
-    // websocket event
-    socket.on('admin:onStartZippingForExport', () => {
-      this.setState({
-        isZipping: true,
-      });
-    });
-
-    // websocket event
-    socket.on('admin:onTerminateForExport', ({ addedZipFileStat }) => {
-      const zipFileStats = this.state.zipFileStats.concat([addedZipFileStat]);
-
-      this.setState({
-        isExporting: false,
-        isZipping: false,
-        isExported: true,
-        zipFileStats,
+    if (socket != null) {
+      // websocket event
+      socket.on('admin:onProgressForExport', ({ currentCount, totalCount, progressList }) => {
+        this.setState({
+          isExporting: true,
+          progressList,
+        });
       });
 
-      // TODO: toastSuccess, toastError
-      toastr.success(undefined, `New Archive Data '${addedZipFileStat.fileName}' is added`, {
-        closeButton: true,
-        progressBar: true,
-        newestOnTop: false,
-        showDuration: '100',
-        hideDuration: '100',
-        timeOut: '1200',
-        extendedTimeOut: '150',
+      // websocket event
+      socket.on('admin:onStartZippingForExport', () => {
+        this.setState({
+          isZipping: true,
+        });
       });
-    });
+
+      // websocket event
+      socket.on('admin:onTerminateForExport', ({ addedZipFileStat }) => {
+        const zipFileStats = this.state.zipFileStats.concat([addedZipFileStat]);
+
+        this.setState({
+          isExporting: false,
+          isZipping: false,
+          isExported: true,
+          zipFileStats,
+        });
+
+        // TODO: toastSuccess, toastError
+        toastr.success(undefined, `New Archive Data '${addedZipFileStat.fileName}' is added`, {
+          closeButton: true,
+          progressBar: true,
+          newestOnTop: false,
+          showDuration: '100',
+          hideDuration: '100',
+          timeOut: '1200',
+          extendedTimeOut: '150',
+        });
+      });
+    }
   }
 
   onZipFileStatAdd(newStat) {
@@ -214,22 +212,22 @@ class ExportArchiveDataPage extends React.Component {
 
     return (
       <div data-testid="admin-export-archive-data">
-        <h2>{t('Export Archive Data')}</h2>
+        <h2>{t('export_management.export_archive_data')}</h2>
 
         <button type="button" className="btn btn-outline-secondary" disabled={isExporting} onClick={this.openExportModal}>
-          {t('admin:export_management.create_new_archive_data')}
+          {t('export_management.create_new_archive_data')}
         </button>
 
         { showExportingData && (
           <div className="mt-5">
-            <h3>{t('admin:export_management.exporting_collection_list')}</h3>
+            <h3>{t('export_management.exporting_collection_list')}</h3>
             { this.renderProgressBarsForCollections() }
             { this.renderProgressBarForZipping() }
           </div>
         ) }
 
         <div className="mt-5">
-          <h3>{t('admin:export_management.exported_data_list')}</h3>
+          <h3>{t('export_management.exported_data_list')}</h3>
           <ArchiveFilesTable
             zipFileStats={this.state.zipFileStats}
             onZipFileStatRemove={this.onZipFileStatRemove}
@@ -250,18 +248,14 @@ class ExportArchiveDataPage extends React.Component {
 
 ExportArchiveDataPage.propTypes = {
   t: PropTypes.func.isRequired, // i18next
-  appContainer: PropTypes.instanceOf(AppContainer).isRequired,
-  adminSocketIoContainer: PropTypes.instanceOf(AdminSocketIoContainer).isRequired,
+  socket: PropTypes.object,
 };
 
 const ExportArchiveDataPageWrapperFC = (props) => {
-  const { t } = useTranslation();
-  return <ExportArchiveDataPage t={t} {...props} />;
+  const { t } = useTranslation('admin');
+  const { data: socket } = useAdminSocket();
+
+  return <ExportArchiveDataPage t={t} socket={socket} {...props} />;
 };
 
-/**
- * Wrapper component for using unstated
- */
-const ExportArchiveDataPageWrapper = withUnstatedContainers(ExportArchiveDataPageWrapperFC, [AppContainer, AdminSocketIoContainer]);
-
-export default ExportArchiveDataPageWrapper;
+export default ExportArchiveDataPageWrapperFC;

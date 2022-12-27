@@ -1,7 +1,8 @@
 import mongoose from 'mongoose';
 
-import { getMongoUri, mongoOptions } from '@growi/core';
+// eslint-disable-next-line import/no-named-as-default
 import Config from '~/server/models/config';
+import { getMongoUri, mongoOptions } from '~/server/util/mongoose-utils';
 import loggerFactory from '~/utils/logger';
 
 const logger = loggerFactory('growi:migrate:init-serverurl');
@@ -39,7 +40,6 @@ module.exports = {
       $or: [
         { key: 'security:passport-github:callbackUrl' },
         { key: 'security:passport-google:callbackUrl' },
-        { key: 'security:passport-twitter:callbackUrl' },
         { key: 'security:passport-saml:callbackUrl' },
       ],
     });

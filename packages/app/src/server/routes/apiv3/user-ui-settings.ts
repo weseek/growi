@@ -1,13 +1,12 @@
+import { ErrorV3 } from '@growi/core';
 import express from 'express';
 import { body } from 'express-validator';
-import { AllSidebarContentsType } from '~/interfaces/ui';
 
+import { AllSidebarContentsType } from '~/interfaces/ui';
 import loggerFactory from '~/utils/logger';
 
 import { apiV3FormValidator } from '../../middlewares/apiv3-form-validator';
-
 import UserUISettings from '../../models/user-ui-settings';
-import ErrorV3 from '../../models/vo/error-apiv3';
 
 const logger = loggerFactory('growi:routes:apiv3:user-ui-settings');
 
@@ -15,7 +14,6 @@ const router = express.Router();
 
 module.exports = (crowi) => {
   const loginRequiredStrictly = require('../../middlewares/login-required')(crowi);
-  const csrf = require('../../middlewares/csrf')(crowi);
 
   const validatorForPut = [
     body('settings').exists().withMessage('The body param \'settings\' is required'),
@@ -27,7 +25,7 @@ module.exports = (crowi) => {
   ];
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  router.put('/', loginRequiredStrictly, csrf, validatorForPut, apiV3FormValidator, async(req: any, res: any) => {
+  router.put('/', loginRequiredStrictly, validatorForPut, apiV3FormValidator, async(req: any, res: any) => {
     const { user } = req;
     const { settings } = req.body;
 

@@ -1,4 +1,7 @@
 {
+  "meta": {
+    "display_name": "English"
+  },
   "Help": "Help",
   "view": "View",
   "Edit": "Edit",
@@ -16,6 +19,7 @@
   "Move/Rename": "Move/Rename",
   "Redirected": "Redirected",
   "Unlinked": "Unlinked",
+  "unlink_redirection": "Unlink redirection",
   "Done": "Done",
   "Cancel": "Cancel",
   "Create": "Create",
@@ -24,18 +28,16 @@
   "administrator": "Admin",
   "Tag": "Tag",
   "Tags": "Tags",
-  "New": "New",
   "Close": "Close",
   "Shortcuts": "Shortcuts",
+  "CustomSidebar": "Custom Sidebar",
   "eg": "e.g.",
   "add": "Add",
   "Undo": "Undo",
   "Article": "Article",
-  "Page": "Page",
   "Page Path": "Page path",
   "Category": "Category",
   "User": "User",
-  "status": "Status",
   "account_id": "Account Id",
   "Update": "Update",
   "Update Page": "Update Page",
@@ -74,7 +76,6 @@
   "username": "Username",
   "Created": "Created",
   "Last updated": "Updated",
-  "Last_Login": "Last login",
   "Share": "Share",
   "Markdown Link": "Markdown Link",
   "Create/Edit Template": "Create/Edit template page",
@@ -97,8 +98,6 @@
   "Updated": "Updated",
   "Upload new image": "Upload new image",
   "Connected": "Connected",
-  "Show": "Show",
-  "Hide": "Hide",
   "Loading": "Loading...",
   "Disclose E-mail": "Disclose E-mail",
   "page exists": "this page already exists",
@@ -109,31 +108,12 @@
   "Input page name (optional)": "Input page name (optional)",
   "New Page": "New page",
   "Create under": "Create page under below:",
-  "Wiki Management Home Page": "Wiki Management Home Page",
-  "App Settings": "App Settings",
   "V5 Page Migration": "Convert To V5 Compatibility",
   "GROWI.5.0_new_schema": "GROWI.5.0 new schema",
-  "See_more_detail_on_new_schema": "See more detail on <a href='#'>{{url}}</a> <i class='icon-share-alt'></i> ",
-  "Site URL settings": "Site URL settings",
-  "Markdown Settings": "Markdown Settings",
-  "Customize": "Customize",
-  "Notification Settings": "Notification Settings",
-  "slack_integration": "Slack Integration",
-  "External_Notification": "External Notification",
-  "Legacy_Slack_Integration": "Legacy Slack Integration",
-  "User_Management": "User Management",
+  "See_more_detail_on_new_schema": "See more detail on <a href='https://docs.growi.org/en/admin-guide/upgrading/50x.html#about-the-new-v5-compatible-format' target='_blank'>{{title}}</a> <i class='icon-share-alt'></i> ",
   "external_account_management": "External Account Management",
   "UserGroup": "UserGroup",
-  "ChildUserGroup": "ChildUserGroup",
-  "UserGroup Management": "UserGroup Management",
-  "AuditLog": "Audit Log",
-  "AuditLog Settings": "Audit Log Settings",
-  "Full Text Search Management": "Full Text Search Management",
-  "Import Data": "Import Data",
-  "Export Archive Data": "Export Archive Data",
   "Basic Settings": "Basic Settings",
-  "Basic authentication": "Basic authentication",
-  "Register limitation": "Register limitation",
   "The contents entered here will be shown in the header etc": "The contents entered here will be shown in the header etc",
   "Public": "Public",
   "Anyone with the link": "Anyone with the link",
@@ -141,11 +121,6 @@
   "Only me": "Only me",
   "Only inside the group": "Only inside the group",
   "page_list": "Page List",
-  "scope_of_page_disclosure": "Scope of page disclosure",
-  "set_point": "Set point",
-  "always_displayed": "Always displayed",
-  "always_hidden": "Always hidden",
-  "displayed_or_hidden": "Displayed / Hidden",
   "Reselect the group": "Reselect the group",
   "Shareable link": "Shareable link",
   "The whitelist of registration permission E-mail address": "The whitelist of registration permission E-mail address",
@@ -159,13 +134,11 @@
   "edited this page": "edited this page.",
   "List Drafts": "Drafts",
   "Deleted Pages": "Deleted Pages",
-  "Sign out": "Logout",
   "Disassociate": "Disassociate",
   "No bookmarks yet": "No bookmarks yet",
   "add_bookmark": "Add to Bookmarks",
   "remove_bookmark": "Remove from Bookmarks",
   "wide_view": "Wide View",
-  "Recent Created": "Recent Created",
   "Recent Changes": "Recent Changes",
   "Page Tree": "Page Tree",
   "original_path":"Original path",
@@ -177,34 +150,25 @@
   "not_allowed_to_see_this_page": "You cannot see this page",
   "Confirm": "Confirm",
   "Successfully requested": "Successfully requested.",
-  "personal_dropdown": {
-    "home": "Home",
-    "settings": "Settings",
-    "color_mode": "Color mode",
-    "sidebar_mode": "Sidebar mode",
-    "sidebar_mode_editor": "Sidebar mode on editor",
-    "use_os_settings": "Use OS settings"
-  },
   "form_validation": {
     "error_message": "Some values ​​are incorrect",
     "required": "%s is required",
     "invalid_syntax": "The syntax of %s is invalid.",
     "title_required": "Title is required."
   },
-  "not_found_page": {
-    "Create Page": "Create Page",
-    "page_not_exist": "This page does not exist.",
-    "page_not_exist_alert": "This page does not exist. Please create a new page."
+  "not_creatable_page": {
+    "could_not_creata_path": "Couldn't create path."
   },
   "custom_navigation": {
-    "no_page_list": "There are no pages under this page.",
-    "link_sharing_is_disabled": "Link sharing is disabled."
+    "no_page_list": "There are no pages under this page."
   },
   "installer": {
     "setup": "Setup",
     "create_initial_account": "Create an initial account",
     "initial_account_will_be_administrator_automatically": "The initial account will be administrator automatically.",
-    "unavaliable_user_id": "This 'User ID' is unavailable."
+    "unavaliable_user_id": "This 'User ID' is unavailable.",
+    "failed_to_install": "Failed to install GROWI. Please try again.",
+    "failed_to_login_after_install": "Failed to login after installation. Redirecting to the login form ..."
   },
   "breaking_changes": {
     "v346_using_basic_auth": "Basic Authentication currently in use will <strong>no longer be available</strong> in the near future. Remove settings from %s"
@@ -248,15 +212,10 @@
     "new_password_confirm": "Re-enter new password",
     "password_is_not_set": "Password is not set"
   },
-  "security_settings": "Security settings",
   "share_links": {
     "Shere this page link to public": "Shere this page link to public",
     "share_link_list": "Share link list",
     "share_link_management": "Share Link Management",
-    "No_share_links":"No share links",
-    "Share Link": "Share Link",
-    "Page Path": "Page Path",
-    "share_link_notice":"remove all share links",
     "delete_all_share_links":"Delete all share links",
     "expire": "Expiration",
     "Days": "Days",
@@ -266,30 +225,13 @@
     "Unlimited": "unlimited",
     "Issue": "Issue",
     "share_settings" :"Share settings",
-    "Invalid_Number_of_Date" : "You entered invalid value"
+    "Invalid_Number_of_Date" : "You entered invalid value",
+    "link_sharing_is_disabled": "Link sharing is disabled"
   },
   "API Settings": "API settings",
   "API Token Settings": "API token settings",
   "Current API Token": "Current API token",
   "Update API Token": "Update API token",
-  "header_search_box": {
-    "label": {
-      "All pages": "All pages",
-      "This tree": "This tree"
-    },
-    "item_label": {
-      "All pages": "All pages",
-      "This tree": "Only children of this tree"
-    }
-  },
-  "in_app_notification": {
-    "notification_list": "In-App Notification List",
-    "see_all": "See All",
-    "no_notification": "You don't have any notificatios.",
-    "all": "All",
-    "unopend": "Unread",
-    "mark_all_as_read": "Mark all as read"
-  },
   "in_app_notification_settings": {
     "in_app_notification_settings": "In-App Notification Settings",
     "subscribe_settings": "Settings to automatically subscribe (Receive notifications) to pages",
@@ -333,14 +275,6 @@
       "no_mixed_zenkaku_and_hankaku_alphabet": "Check for mixed full-width and half-width alphabets.",
       "no_nfd": "textlint rule that disallow to use NFD like UTF8-MAC Sonant mark."
     }
-  },
-  "copy_to_clipboard": {
-    "Copy to clipboard": "Copy to clipboard",
-    "Page path": "Page path",
-    "Page URL": "Page URL",
-    "Permanent link": "Permanent link",
-    "Page path and permanent link": "Page path and permanent link",
-    "Markdown link": "Markdown link"
   },
   "search_help": {
     "title": "Searching Help",
@@ -390,7 +324,8 @@
     "overwrite_scopes": "{{operation}} and Overwrite scopes of all descendants",
     "notice": {
       "conflict": "Couldn't save the changes you made because someone else was editing this page. Please re-edit the affected section after reloading the page."
-    }
+    },
+    "changes_not_saved": "Changes you made may not be saved."
   },
   "page_comment": {
     "display_the_page_when_posting_this_comment": "Display the page when posting this comment",
@@ -400,7 +335,8 @@
     "notfound_or_forbidden": "Original page is not found or forbidden.",
     "already_exists": "Page with the path already exists.",
     "outdated": "Page is updated someone and now outdated.",
-    "user_not_admin": "Only admin user can delete"
+    "user_not_admin": "Only admin user can delete",
+    "single_deletion_empty_pages": "Empty pages cannot be single deleted"
   },
   "page_history": {
     "revision_list": "Revision list",
@@ -534,24 +470,10 @@
     "page_not_found_in_preview": "\"{{path}}\" is not a GROWI page."
   },
   "toaster": {
-    "create_succeeded": "Succeeded to create {{target}}",
-    "create_failed": "Failed to create {{target}}",
-    "update_successed": "Succeeded to update {{target}}",
-    "update_failed": "Failed to update {{target}}",
     "file_upload_succeeded": "File upload succeeded.",
     "file_upload_failed": "File upload failed.",
-    "initialize_successed": "Succeeded to initialize {{target}}",
-    "give_user_admin": "Succeeded to give {{username}} admin",
-    "remove_user_admin": "Succeeded to remove {{username}} admin",
-    "activate_user_success": "Succeeded to activating {{username}}",
-    "deactivate_user_success": "Succeeded to deactivate {{username}}",
-    "remove_user_success": "Succeeded to removing {{username}}",
-    "remove_external_user_success": "Succeeded to remove {{accountId}}",
-    "remove_share_link_success": "Succeeded to remove {{shareLinkId}}",
-    "issue_share_link": "Succeeded to issue new share link",
-    "remove_share_link": "Succeeded to remove {{count}} share links",
-    "switch_disable_link_sharing_success": "Succeeded to update share link setting",
-    "failed_to_reset_password":"Failed to reset password"
+    "save_succeeded": "Saved successfully",
+    "issue_share_link": "Succeeded to issue new share link"
   },
   "template": {
     "modal_label": {
@@ -648,6 +570,7 @@
     }
   },
   "private_legacy_pages": {
+    "title": "Private Legacy Pages",
     "bulk_operation": "Bulk operation",
     "convert_all_selected_pages": "Convert all to new v5 compatible format",
     "input_path_to_convert": "Input a path to convert pages",
@@ -681,295 +604,16 @@
       "error_duplicate_pages_found": "Multiple pages with the same path name were found. Please rename or delete and try again."
     }
   },
-  "security_setting": {
-    "Guest Users Access": "Guest users access",
-    "Fixed by env var": "This is fixed by the env var <code>{{key}}={{value}}</code>.",
-    "Register limitation": "Register limitation",
-    "Register limitation desc": "Restriction of new users' registration",
-    "The whitelist of registration permission E-mail address": "The whitelist of registration permission E-mail address",
-    "users_without_account": "Users without account is not accessible",
-    "example": "Example",
-    "restrict_emails": "You can restrict email registration to your wiki by writing an email domain (beginning with @). ",
-    "for_example": " For example, if you would like to restrict registration to users within the growi.org domain, you can write ",
-    "in_this_case": "; in this case, only users within the growi.org domain would be able to register, and all other users would be rejected.",
-    "insert_single": "Please insert single e-mail address per line.",
-    "page_list_and_search_results": "Page list / Search results",
-    "page_listing_1": "Page listing/searching<br>restricted by 'Only me'",
-    "page_listing_1_desc": "Show pages that are restricted by 'Only me' option when listing/searching",
-    "page_listing_2": "Page listing/searching<br>restricted by User group",
-    "page_listing_2_desc": "Show pages that are restricted by User group when listing/searching",
-    "page_access_rights": "Page access",
-    "page_delete_rights": "Delete rights",
-    "page_delete": "Page Delete",
-    "page_delete_completely": "Page Delete Completely",
-    "other_options": "Other options",
-    "deletion_explain": "Restricts users who can trash the selected single page.",
-    "complete_deletion_explain": "Restricts users who can completely delete  selected single page.",
-    "recursive_deletion_explain": "Restricts users who can trash pages including descendants.",
-    "recursive_complete_deletion_explain": "Restricts users who can completely delete pages including descendants.",
-    "inherit": "Inherit(Use the same setting as for a single page)",
-    "admin_only": "Admin only",
-    "admin_and_author": "Admin and author",
-    "anyone": "Anyone",
-    "session": "Session",
-    "max_age": "Max age (msec)",
-    "max_age_desc": "Specifies the number (in milliseconds) to expire users session.<br>Default: 2592000000 (30days)",
-    "max_age_caution": "Restarting the server is required after you modify this value.",
-    "forced_update_desc": "Settings have been forcibly changed. Previous setting: ",
-    "page_delete_rights_caution": "The \"Delete / Delete All\" permission (including descendant pages) is forced to be stronger than the \"Delete / Completely Delete\" permission. <br> <br> Admin only > Admin and autor > Anyone",
-    "Authentication mechanism settings": "Authentication Mechanism Settings",
-    "setup_is_not_yet_complete": "Setup is not yet complete",
-    "alert_siteUrl_is_not_set": "'Site URL' is NOT set. Set it from the {{link}}",
-    "xss_prevent_setting": "Prevent XSS(Cross Site Scripting)",
-    "xss_prevent_setting_link": "Go to Markdown Settings",
-    "callback_URL": "Callback URL",
-    "providerName": "Provider Name",
-    "issuerHost": "Issuer Host",
-    "scope": "Scope",
-    "desc_of_callback_URL": "Use it in the setting of the {{AuthName}} Identity provider",
-    "authorization_endpoint": "Authorization Endpoint",
-    "token_endpoint": "Token Endpoint",
-    "revocation_endpoint": "Revocation Endpoint",
-    "introspection_endpoint": "Introspection Endpoint",
-    "userinfo_endpoint": "UserInfo Endpoint",
-    "end_session_endpoint": "EndSessioin Endpoint",
-    "registration_endpoint": "Registration Endpoint",
-    "jwks_uri": "JSON Web Key Set URL",
-    "clientID": "Client ID",
-    "client_secret": "Client Secret",
-    "updated_general_security_setting": "Succeeded to update security setting",
-    "setup_not_completed_yet": "Setup not completed yet",
-    "guest_mode": {
-      "deny": "Deny (Registered users only)",
-      "readonly": "Accept (Guests can read only)"
-    },
-    "registration_mode": {
-      "open": "Open (Anyone can register)",
-      "restricted": "Restricted (Requires approval by administrators)",
-      "closed": "Closed (Invitation Only)"
-    },
-    "share_link_rights": "Share link rights",
-    "enable_link_sharing": "Enable link sharing",
-    "all_share_links": "All share links",
-    "configuration": " Configuration",
-    "optional": "Optional",
-    "Treat username matching as identical": "Automatically bind external accounts newly logged in to local accounts when <code>username</code> match",
-    "Treat username matching as identical_warn": "WARNING: Be aware of security because the system treats the same user as a match of <code>username</code>.",
-    "Treat email matching as identical": "Automatically bind external accounts newly logged in to local accounts when <code>email</code> match",
-    "Treat email matching as identical_warn": "WARNING: Be aware of security because the system treats the same user as a match of <code>email</code>.",
-    "Use env var if empty": "Use env var <code>{{env}}</code> if empty",
-    "Use default if both are empty": "If both ​​are empty, the default value <code>{{target}}</code> is used.",
-    "missing mandatory configs": "The following mandatory items are not set in either database nor environment variables.",
-    "Local": {
-      "name": "ID/Password",
-      "note for the only env option": "The LOCAL authentication is limited by the value of environment variable.<br>To change this setting, please change to false or delete the value of the environment variable <code>{{env}}</code> .",
-      "enable_local": "Enable ID/Password",
-      "password_reset_by_users": "Password reset by users",
-      "enable_password_reset_by_users": "Enable password reset by users",
-      "password_reset_desc": "when forgot password, users are able to reset it by themselves.",
-      "email_authentication": "Email authentication on user registration",
-      "enable_email_authentication": "Enable email authentication",
-      "enable_email_authentication_desc": "Email authentication is going to be performed for user registration.",
-      "please_enable_mailer": "Please setup mailer first.",
-      "need_complete_mail_setting_warning": "To use the following functions, please complete the mail settings."
-    },
-    "ldap": {
-      "enable_ldap": "Enable LDAP",
-      "server_url_detail": "The LDAP URL of the directory service in the format <code>ldap://host:port/DN</code> or <code>ldaps://host:port/DN</code>.",
-      "bind_mode": "Binding Mode",
-      "bind_manager": "Manager Bind",
-      "bind_user": "User Bind",
-      "bind_DN_manager_detail": "The DN of the account that authenticates and queries the directory service",
-      "bind_DN_user_detail1": "The query used to bind with the directory service.",
-      "bind_DN_user_detail2": "Use <code>&#123;&#123;username&#125;&#125;</code> to reference the username entered in the login page.",
-      "bind_DN_password": "Bind DN Password",
-      "bind_DN_password_manager_detail": "The password for the Bind DN account.",
-      "bind_DN_password_user_detail": "The password that is entered in the login page will be used to bind.",
-      "search_filter": "Search Filter",
-      "search_filter_detail1": "The query used to locate the authenticated user.",
-      "search_filter_detail2": "Use <code>&#123;&#123;username&#125;&#125;</code> to reference the username entered in the login page.",
-      "search_filter_detail3": "If empty, the filter <code>(uid=&#123;&#123;username&#125;&#125;)</code> is used.",
-      "search_filter_example1": "Match with 'uid' or 'mail'",
-      "search_filter_example2": "Match with 'sAMAccountName' for Active Directory",
-      "username_detail": "Specification of mappings for <code>username</code> when creating new users",
-      "name_detail": "Specification of mappings for full name when creating new users",
-      "mail_detail": "Specification of mappings for mail address when creating new users",
-      "group_search_base_DN": "Group Search Base DN",
-      "group_search_base_DN_detail": "The base DN from which to search for groups. If defined, also <code>Group Search Filter</code> must be defined for the search to work.",
-      "group_search_filter": "Group Search Filter",
-      "group_search_filter_detail1": "The query used to filter for groups.",
-      "group_search_filter_detail2": "Login via LDAP is accepted only when this query hits one or more groups.",
-      "group_search_filter_detail3": "Use <code>&#123;&#123;dn&#125;&#125;</code> to have it replaced of the found user object.",
-      "group_search_filter_detail4": "<code>(&(cn=group1)(memberUid=&#123;&#123;dn&#125;&#125;))</code> hits the groups which has <code>cn=group1</code> and <code>memberUid</code> includes the user's <code>uid</code>(when <code>Group DN Property</code> is not changed from the default value.)",
-      "group_search_user_DN_property": "User DN Property",
-      "group_search_user_DN_property_detail": "The property of user object to use in <code>&#123;&#123;dn&#125;&#125;</code> interpolation of <code>Group Search Filter</code>.",
-      "test_config": "Test Saved Configuration",
-      "updated_ldap": "Succeeded to update LDAP setting"
-    },
-    "SAML": {
-      "name": "SAML",
-      "enable_saml": "Enable SAML",
-      "id_detail": "Specification of the name of attribute which can identify the user in SAML Identity Provider",
-      "username_detail": "Specification of mappings for <code>username</code> when creating new users",
-      "mapping_detail": "Specification of mappings for {{target}} when creating new users",
-      "cert_detail": "PEM-encoded X.509 signing certificate to validate the response from IdP",
-      "Use env var if empty": "If the value in the database is empty, the value of the environment variable <code>{{env}}</code> is used.",
-      "note for the only env option": "The setting item that enables or disables the SAML authentication and the highlighted setting items use only the value of environment variables.<br>To change this setting, please change to false or delete the value of the environment variable <code>{{env}}</code> .",
-      "attr_based_login_control_detail": "Limit who can sign up by using <code>&lt;saml: Attribute&gt;</code> element included in <code>&lt;saml: AttributeStatement&gt;</code> element and its child element <code>&lt;saml: AttributeValue&gt;</code>.",
-      "attr_based_login_control_rule_help": "<h5>Supported Queries:</h5><ul><li>Terms</li><li>Fields</li><li>AND/NOT/OR Operator</li><li>Grouping</li></ul><h5>Unsupported Queries:</h5><ul><li>Wildcard, Fuzzy, Proximity, Range and Boosting</li><li>+/- Operator</li><li>Field Grouping</li></ul><h5>Escaping special characters</h5>It is needed to escape following special characters:<br><code>+ - && || ! ( ) { } [ ] ^ &quot; &tilde; * ? : &#92;</code> and <code>/</code>",
-      "attr_based_login_control_rule_example1": "<h5>Example for conditions</h5>If a rule is <code>(Department: A || Department: B) && Position: Leader</code>, users who have either <code>Department: A</code> or <code>Department: B</code> and have <code>Position: Leader</code> <strong>can</strong> sign in.",
-      "attr_based_login_control_rule_example2": "<h5>Example for escaping</h5>If you would like to use URL as a query value, escape the following:<br><code>http&#92;:&#92;/&#92;/schemas.example.com&#92;/ws&#92;/2005&#92;/05&#92;/identity&#92;/claims&#92;/emailaddress: &quot;myname@example.com&quot;</code>",
-      "updated_saml": "Succeeded to update SAML setting"
-    },
-    "Basic": {
-      "enable_basic": "Enable Basic",
-      "name": "Basic Authentication",
-      "desc_1": "Login with <code>username</code> in Authorization header.",
-      "desc_2": "User will be automatically generated if not exist.",
-      "updated_basic": "Succeeded to update Basic setting"
-    },
-    "OAuth": {
-      "enable_oidc": "Enable OIDC",
-      "register": "Register for %s",
-      "change_redirect_url": "Enter <code>%s</code> <br>(where <code>%s</code> is your host name) for \"Authorized redirect URIs\".",
-      "Google": {
-        "enable_google": "Enable Google OAuth",
-        "name": "Google OAuth",
-        "register_1": "Access {{link}}",
-        "register_2": "Create Project if no projects exist",
-        "register_3": "Create Credentials &rightarrow; OAuth client ID &rightarrow; Select \"Web application\"",
-        "register_4": "Register your OAuth App with one of Authorized redirect URIs as <code>{{url}}</code>",
-        "register_5": "Copy and paste your ClientID and Client Secret above",
-        "updated_google": "Succeeded to update Google OAuth setting"
-      },
-      "Facebook": {
-        "name": "Facebook OAuth"
-      },
-      "Twitter": {
-        "enable_twitter": "Enable Twitter OAuth",
-        "name": "Twitter OAuth",
-        "register_1": "Access {{link}}",
-        "register_2": "Sign in Twitter",
-        "register_3": "Create Credentials &rightarrow; OAuth client ID &rightarrow; Select \"Web application\"",
-        "register_4": "Register your OAuth App with one of Authorized redirect URIs as <code>{{url}}</code>",
-        "register_5": "Copy and paste your ClientID and Client Secret above",
-        "updated_twitter": "Succeeded to update Twitter OAuth setting"
-      },
-      "GitHub": {
-        "enable_github": "Enable GitHub OAuth",
-        "name": "GitHub OAuth",
-        "register_1": "Access {{link}}",
-        "register_2": "Register your OAuth App with \"Authorization callback URL\" as <code>{{url}}</code>",
-        "register_3": "Copy and paste your ClientID and Client Secret above",
-        "updated_github": "Succeeded to update GitHub OAuth setting"
-      },
-      "OIDC": {
-        "name": "OpenID Connect",
-        "id_detail": "Specification of the name of attribute which can identify the user in OIDC claims",
-        "username_detail": "Specification of mappings for <code>username</code> when creating new users",
-        "name_detail": "Specification of mappings for <code>name</code> when creating new users",
-        "mapping_detail": "Specification of mappings for %s when creating new users",
-        "register_1": "Contant to OIDC IdP Administrator",
-        "register_2": "Register your OIDC App with \"Authorization callback URL\" as <code>%s</code>",
-        "register_3": "Copy and paste your ClientID and Client Secret above",
-        "updated_oidc": "Succeeded to update OpenID Connect",
-        "Use discovered URL if empty": "Use discovered URL from \"Issuer Host\" if empty"
-      },
-      "how_to": {
-        "google": "How to configure Google OAuth?",
-        "github": "How to configure GitHub OAuth?",
-        "twitter": "How to configure Twitter OAuth?",
-        "oidc": "How to configure OIDC?"
-      }
-    },
-    "form_item_name": {
-      "entryPoint": "Entry point",
-      "issuer": "Issuer",
-      "cert": "Certificate",
-      "attrMapId": "ID",
-      "attrMapUsername": "Username",
-      "attrMapMail": "Mail Address",
-      "attrMapFirstName": "First Name",
-      "attrMapLastName": "Last Name",
-      "ABLCRule": "Rule"
-    }
-  },
-  "notification_setting": {
-    "slack_incoming_configuration": "Slack Incoming Webhooks configuration",
-    "prioritize_webhook": "Prioritize incoming webhook than Slack App",
-    "prioritize_webhook_desc": "Check this option and GROWI use Incoming Webhooks even if Slack App settings are enabled.",
-    "slack_app_configuration": "Slack app configuration",
-    "slack_app_configuration_desc": "This is the way that compatible with Crowi,<br /> but not recommended in GROWI because it is <strong>too complex</strong>.",
-    "use_instead":"Please use Slack Incoming Webhooks Configuration instead.",
-    "how_to": {
-      "header": "How to configure Incoming Webhooks?",
-      "workspace": "(At Workspace) Add a hook",
-      "workspace_desc1": "Go to <a href='https://slack.com/services/new/incoming-webhook'>Incoming Webhooks configuration page</a>.",
-      "workspace_desc2": "Choose the default channel to post.",
-      "workspace_desc3": "Add.",
-      "at_growi": "(At GROWI admin page) Set Webhook URL",
-      "at_growi_desc": "Input &rdquo;Webhook URL&rdquo; and submit on this page."
-    },
-    "user_trigger_notification_header": "Default notification settings for patterns",
-    "pattern": "Pattern",
-    "channel": "Channel",
-    "pattern_desc": "Path name of wiki. Pattern expression with <code>*</code> can be used.",
-    "channel_desc": "Slack channel name. Without <code>#</code>.",
-    "valid_page": "Enable/disable Notification",
-    "link_notification_help": "<strong>The page that is able to be viewed only by those who know the link 'Anyone with the link'</strong> is not notified always.",
-    "just_me_notification_help": "<strong>The page that is restricted by 'Only Me'</strong> is notify when the page edited.",
-    "group_notification_help": "<strong>The page that is restricted by 'User Group'</strong> is notify when the page edited.",
-    "notification_list": "List of notification settings",
-    "add_notification": "Add new",
-    "trigger_path": "Trigger path",
-    "trigger_path_help": "(expression with <code>*</code> is supported)",
-    "trigger_events": "Trigger events",
-    "notify_to": "Notify to",
-    "back_to_list": "Go back to list",
-    "notification_detail": "Notification Setting Details",
-    "event_pageCreate": "When new page is \"CREATED\"",
-    "event_pageEdit": "When page is \"EDITED\"",
-    "event_pageDelete": "When page is \"DELETED\"",
-    "event_pageMove": "When page is \"MOVED\" (renamed)",
-    "event_pageLike": "When someone \"LIKES\" page",
-    "event_comment": "When someone \"COMMENTS\" on page",
-    "email": {
-      "ifttt_link": "Create a new IFTTT applet with Email trigger"
-    },
-    "updated_slackApp": "Succeeded to update Slack App Configuration setting",
-    "add_notification_pattern": "Add user trigger notification patterns",
-    "delete_notification_pattern": "Delete notification pattern",
-    "delete_notification_pattern_desc1": "Delete Path: {{path}}",
-    "delete_notification_pattern_desc2": "Once deleted, it cannot be recovered",
-    "toggle_notification": "Updated setting of {{path}}"
-  },
-  "full_text_search_management": {
-    "elasticsearch_management": "Elasticsearch management",
-    "connection_status": "Connection status",
-    "connection_status_label_unconfigured": "UNCONFIGURED",
-    "connection_status_label_connected": "CONNECTED",
-    "connection_status_label_disconnected": "DISCONNECTED",
-    "connection_status_label_erroroccured": "ERROR OCCURED ON SEARCH SERVICE",
-    "indices_status": "Indices Status",
-    "indices_status_label_normalized": "NORMALIZED",
-    "indices_status_label_unnormalized": "REBUILDING or BROKEN",
-    "indices_summary": "Indices summary",
-    "reconnect": "Reconnect",
-    "reconnect_button": "Try to reconnect",
-    "reconnect_description": "Click the button to try to reconnect to Elasticsearch.",
-    "normalize": "Normalize",
-    "normalize_button": "Normalize indices",
-    "normalize_description": "Click the button to repair broken indices.",
-    "rebuild": "Rebuild",
-    "rebuild_button": "Rebuild index",
-    "rebuild_description_1": "Click the button to rebuild index and add all page datas.",
-    "rebuild_description_2": "This may take a while."
-  },
-  "to_cloud_settings": "Open GROWI.cloud Settings",
   "login": {
-    "Sign in error": "Login error",
-    "Registration successful": "Registration successful",
-    "Setup": "Setup"
+    "sign_in_error": "Login error",
+    "registration_successful": "registration_successful. Please wait for administrator approval.",
+    "Setup": "Setup",
+    "enabled_ldap_has_configuration_problem":"LDAP is enabled but the configuration has something wrong.",
+    "set_env_var_for_logs": "(Please set the environment variables <code>DEBUG=crowi:service:PassportService</code> to get the logs)"
+  },
+  "invited": {
+    "discription_heading": "Create Account",
+    "discription": "Create an your account with the invited email address"
   },
   "export_bulk": {
     "failed_to_export": "Failed to export",
@@ -983,8 +627,9 @@
     "fail_to_fetch_access_token": "Failed to fetch access_token. Please do connect again.",
     "successfully_disconnected": "Successfully Disconnected!",
     "strategy_has_not_been_set_up": "{{strategy}} has not been set up",
+    "ldap_user_not_valid": "Ldap user is no valid",
+    "external_account_not_exist": "Failed to find or create External account",
     "maximum_number_of_users": "Can not register more than the maximum number of users.",
-    "database_error": "Database Server Error occured",
     "sign_in_failure": "Sign in failure.",
     "aws_sttings_required": "AWS settings required to use this function. Please ask the administrator.",
     "application_already_installed": "Application already installed.",
@@ -993,6 +638,8 @@
     "username_should_not_be_null":"Username should not be null. Please check Authentication Mechanism Settings on admin page",
     "email_address_is_already_registered":"This email address is already registered.",
     "can_not_register_maximum_number_of_users":"Can not register more than the maximum number of users.",
+    "email_settings_is_not_setup":"E-mail settings is not set up. Please ask the administrator.",
+    "email_authentication_is_not_enabled": "Email authentication is not enabled. Please ask the administrator.",
     "failed_to_register":"Failed to register.",
     "successfully_created":"The user {{username}} is successfully created.",
     "can_not_activate_maximum_number_of_users":"Can not activate more than the maximum number of users.",
@@ -1002,7 +649,21 @@
     "complete_to_install2":"Complete to Install GROWI ! Please check each settings on this page first.",
     "failed_to_create_admin_user":"Failed to create admin user. {{errMessage}}",
     "successfully_send_email_auth":"We sent an email to {{email}}. Please click the URL in the email and complete the registration.",
-    "incorrect_token_or_expired_url": "The token is incorrect or the URL has expired."
+    "incorrect_token_or_expired_url": "The token is incorrect or the URL has expired.",
+    "user_already_logged_in": "You cannot create a new account when you are logged in.",
+    "registration_closed": "You are not authorized to create a new account.",
+    "Username has invalid characters": "Username has invalid characters.",
+    "Username field is required": "User ID field is required.",
+    "Name field is required": "Name field is required.",
+    "Email format is invalid": "Email format is invalid.",
+    "Email field is required": "Email field is required.",
+    "Password has invalid character": "Password has invalid character.",
+    "Password minimum character should be more than 8 characters": "Password minimum character should be more than 8 characters.",
+    "Password field is required": "Password field is required.",
+    "Username or E-mail has invalid characters": "Username or E-mail has invalid characters.",
+    "Password minimum character should be more than 6 characters": "Password minimum character should be more than 6 characters.",
+    "user_not_found": "User not found.",
+    "provider_duplicated_username_exception": "<p><strong><i class='icon-fw icon-ban'></i>DuplicatedUsernameException occured</strong></p><p class='mb-0'> Your {{ failedProviderForDuplicatedUsernameException }} authentication was succeeded, but a new user could not be created. See the issue <a href='https://github.com/weseek/growi/issues/193'>#193</a>.</p>"
   },
   "grid_edit":{
     "create_bootstrap_4_grid":"Create Bootstrap 4 Grid",
@@ -1029,6 +690,7 @@
     "confirm_new_password": "Confirm the new password",
     "email_is_required": "Email is required",
     "success_to_send_email": "Success to send email",
+    "feature_is_unavailable": "This feature is unavailable.",
     "incorrect_token_or_expired_url": "The token is incorrect or the URL has expired. Please resend a password reset request via the link below.",
     "password_and_confirm_password_does_not_match": "Password and confirm password does not match"
   },
@@ -1070,7 +732,6 @@
     "logout": "Logout"
   },
   "pagetree": {
-    "private_legacy_pages": "Private Legacy Pages",
     "cannot_rename_a_title_that_contains_slash": "Cannot rename a title that contains '/'",
     "you_cannot_move_this_page_now": "You cannot move this page now",
     "something_went_wrong_with_moving_page": "Something went wrong with moving page"
@@ -1084,13 +745,6 @@
     "select_group": "Select group",
     "belonging_to_no_group": "Could not find the groups you belong to.",
     "manage_user_groups": "Manage user groups"
-  },
-  "crop_image_modal": {
-    "image_crop": "Image Crop",
-    "crop": "Crop",
-    "save": "Save",
-    "reset": "Reset",
-    "cancel": "Cancel"
   },
   "fix_page_grant": {
     "modal": {
@@ -1135,5 +789,13 @@
   "page_operation":{
     "paths_recovered": "Paths recovered successfully",
     "path_recovery_failed":"Path recovery failed"
+  },
+  "footer": {
+    "bookmarks": "Bookmarks",
+    "recently_created": "Recently Created"
+  },
+  "v5_page_migration": {
+    "page_tree_not_avaliable" : "Page tree feature is not available yet.",
+    "go_to_settings": "Go to settings to enable the feature"
   }
 }

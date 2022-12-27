@@ -12,13 +12,14 @@ on:
       - yarn.lock
       - packages/app/**
       - '!packages/app/docker/**'
+      - packages/codemirror-textlint/**
       - packages/core/**
+      - packages/remark-*/**
       - packages/slack/**
       - packages/ui/**
-      - packages/plugin-**
   pull_request:
     branches:
-        - master
+      - master
     types: [opened, reopened, synchronize]
     paths:
       - .github/workflows/ci-app-prod.yml
@@ -28,10 +29,18 @@ on:
       - yarn.lock
       - packages/app/**
       - '!packages/app/docker/**'
+      - packages/codemirror-textlint/**
       - packages/core/**
+      - packages/remark-*/**
       - packages/slack/**
       - packages/ui/**
-      - packages/plugin-**
+  workflow_call:
+    inputs:
+      cypress-config-video:
+        description: 'Enable video when running Cypress test'
+        type: boolean
+        default: false
+
 
 jobs:
 
@@ -50,6 +59,7 @@ jobs:
       node-version: 16.x
       skip-cypress: ${{ contains( github.event.pull_request.labels.*.name, 'dependencies' ) && contains( github.event.pull_request.labels.*.name, 'github_actions' ) }}
       cypress-report-artifact-name: Cypress report
+      cypress-config-video: ${{ inputs.cypress-config-video || false }}
     secrets:
       SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
 

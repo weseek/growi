@@ -1,56 +1,59 @@
-import React, { useCallback, useMemo } from 'react';
+import React from 'react';
 
-import RecentlyCreatedIcon from './Icons/RecentlyCreatedIcon';
-import { smoothScrollIntoView } from '~/client/util/smooth-scroll';
-import { usePageUser } from '~/stores/context';
+import { IUserHasId } from '@growi/core';
+import { Link as ScrollLink } from 'react-scroll';
 
-const WIKI_HEADER_LINK = 120;
+import { DEFAULT_AUTO_SCROLL_OPTS } from '~/client/util/smooth-scroll';
+import { RecentlyCreatedIcon } from '~/components/Icons/RecentlyCreatedIcon';
 
+import styles from './ContentLinkButtons.module.scss';
 
-const ContentLinkButtons = (): JSX.Element => {
+const OFFSET = -120;
 
-  const { data: pageUser } = usePageUser();
+const BookMarkLinkButton = React.memo(() => {
 
-  // get element for smoothScroll
-  const getBookMarkListHeaderDom = useMemo(() => { return document.getElementById('bookmarks-list') }, []);
-  const getRecentlyCreatedListHeaderDom = useMemo(() => { return document.getElementById('recently-created-list') }, []);
-
-
-  const BookMarkLinkButton = useCallback((): JSX.Element => {
-    if (getBookMarkListHeaderDom == null) {
-      return <></>;
-    }
-
-    return (
+  return (
+    <ScrollLink to="bookmarks-list" offset={OFFSET} {...DEFAULT_AUTO_SCROLL_OPTS}>
       <button
         type="button"
         className="btn btn-outline-secondary btn-sm px-2"
-        onClick={() => smoothScrollIntoView(getBookMarkListHeaderDom, WIKI_HEADER_LINK)}
       >
         <i className="fa fa-fw fa-bookmark-o"></i>
         <span>Bookmarks</span>
       </button>
-    );
-  }, [getBookMarkListHeaderDom]);
+    </ScrollLink>
+  );
+});
 
-  const RecentlyCreatedLinkButton = useCallback(() => {
-    if (getRecentlyCreatedListHeaderDom == null) {
-      return <></>;
-    }
+BookMarkLinkButton.displayName = 'BookMarkLinkButton';
 
-    return (
+const RecentlyCreatedLinkButton = React.memo(() => {
+
+  return (
+    <ScrollLink to="recently-created-list" offset={OFFSET} {...DEFAULT_AUTO_SCROLL_OPTS}>
       <button
         type="button"
         className="btn btn-outline-secondary btn-sm px-3"
-        onClick={() => smoothScrollIntoView(getRecentlyCreatedListHeaderDom, WIKI_HEADER_LINK)}
       >
-        <i className="grw-icon-container-recently-created mr-2"><RecentlyCreatedIcon /></i>
+        <i className={`${styles['grw-icon-container-recently-created']} grw-icon-container-recently-created mr-2`}><RecentlyCreatedIcon /></i>
         <span>Recently Created</span>
       </button>
-    );
-  }, [getRecentlyCreatedListHeaderDom]);
+    </ScrollLink>
+  );
+});
 
-  if (pageUser == null) {
+RecentlyCreatedLinkButton.displayName = 'RecentlyCreatedLinkButton';
+
+
+export type ContentLinkButtonsProps = {
+  author?: IUserHasId,
+}
+
+export const ContentLinkButtons = (props: ContentLinkButtonsProps): JSX.Element => {
+
+  const { author } = props;
+
+  if (author == null || author.status === 4) {
     return <></>;
   }
 
@@ -62,5 +65,3 @@ const ContentLinkButtons = (): JSX.Element => {
   );
 
 };
-
-export default ContentLinkButtons;

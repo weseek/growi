@@ -10,6 +10,9 @@ on:
         type: boolean
       cypress-report-artifact-name:
         type: string
+      cypress-config-video:
+        type: boolean
+        default: false
     secrets:
       SLACK_WEBHOOK_URL:
         required: true
@@ -49,6 +52,7 @@ jobs:
     - name: Remove unnecessary packages
       run: |
         rm -rf packages/slackbot-proxy
+        rm -f "node_modules/@growi/slackbot-proxy"
 
     - name: Build
       run: |
@@ -59,29 +63,31 @@ jobs:
     - name: Archive production files
       id: archive-prod-files
       run: |
-        tar -cf production.tar \
+        tar -zcf production.tar.gz \
           package.json \
+          packages/app/.next \
           packages/app/config \
           packages/app/public \
           packages/app/resource \
           packages/app/tmp \
-          packages/app/migrate-mongo-config.js \
           packages/app/.env.production* \
           packages/*/package.json \
           packages/*/dist
-        echo ::set-output name=file::production.tar
+        echo "file=production.tar.gz" >> $GITHUB_OUTPUT
 
     - name: Upload production files as artifact
       uses: actions/upload-artifact@v3
       with:
-        name: Production Files
+        name: Production Files (node${{ inputs.node-version }})
         path: ${{ steps.archive-prod-files.outputs.file }}
 
     - name: Upload report as artifact
       uses: actions/upload-artifact@v3
       with:
         name: Bundle Analyzing Report
-        path: packages/app/report/bundle-analyzer.html
+        path: |
+          packages/app/.next/analyze/client.html
+          packages/app/.next/analyze/server.html
 
     - name: Slack Notification
       uses: weseek/ghaction-slack-notification@master
@@ -123,8 +129,8 @@ jobs:
     - name: Get Date
       id: get-date
       run: |
-        echo "::set-output name=dateYmdHM::$(/bin/date -u "+%Y%m%d%H%M")"
-        echo "::set-output name=dateYm::$(/bin/date -u "+%Y%m")"
+        echo "dateYmdHM=$(/bin/date -u "+%Y%m%d%H%M")" >> $GITHUB_OUTPUT
+        echo "dateYm=$(/bin/date -u "+%Y%m")" >> $GITHUB_OUTPUT
 
     - name: Cache/Restore node_modules (not reused)
       id: cache-dependencies
@@ -143,6 +149,7 @@ jobs:
     - name: Remove unnecessary packages
       run: |
         rm -rf packages/slackbot-proxy
+        rm -f "node_modules/@growi/slackbot-proxy"
 
     - name: lerna bootstrap --production
       run: |
@@ -151,7 +158,7 @@ jobs:
     - name: Download production files artifact
       uses: actions/download-artifact@v3
       with:
-        name: Production Files
+        name: Production Files (node${{ inputs.node-version }})
 
     - name: Extract procution files artifact
       run: |
@@ -211,7 +218,7 @@ jobs:
 
     - uses: actions/setup-node@v3
       with:
-        node-version: ${{ matrix.node-version }}
+        node-version: ${{ inputs.node-version }}
         cache: 'yarn'
         cache-dependency-path: '**/yarn.lock'
 
@@ -228,12 +235,16 @@ jobs:
 
     - name: lerna bootstrap
       run: |
-        npx lerna bootstrap -- --frozen-lockfile
+        npx lerna bootstrap -- --production
+
+    - name: lerna add packages needed for CI
+      run: |
+        npx lerna add yargs
 
     - name: Download production files artifact
       uses: actions/download-artifact@v3
       with:
-        name: Production Files
+        name: Production Files (node${{ inputs.node-version }})
 
     - name: Extract procution files artifact
       run: |
@@ -243,7 +254,7 @@ jobs:
       id: determine-spec-exp
       run: |
         SPEC=`node bin/github-actions/generate-cypress-spec-arg.js --prefix="test/cypress/integration/" --suffix="-*/**" "${{ matrix.spec-group }}"`
-        echo "::set-output name=value::$SPEC"
+        echo "value=$SPEC" >> $GITHUB_OUTPUT
 
     - name: Copy dotenv file for ci
       working-directory: ./packages/app
@@ -270,6 +281,7 @@ jobs:
         spec: '${{ steps.determine-spec-exp.outputs.value }}'
         start: yarn server
         wait-on: 'http://localhost:3000'
+        config: video=${{ inputs.cypress-config-video }}
       env:
         MONGO_URI: mongodb://localhost:${{ job.services.mongodb.ports['27017'] }}/growi-vrt
         ELASTICSEARCH_URI: http://localhost:${{ job.services.elasticsearch.ports['9200'] }}/growi

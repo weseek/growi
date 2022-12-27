@@ -2,7 +2,7 @@ import React, {
   useState, useEffect, useCallback, useMemo,
 } from 'react';
 
-import { useTranslation } from 'react-i18next';
+import { useTranslation } from 'next-i18next';
 import {
   Modal, ModalHeader, ModalBody, ModalFooter,
 } from 'reactstrap';
@@ -75,10 +75,10 @@ const PageDuplicateModal = (): JSX.Element => {
   }, [checkExistPaths]);
 
   useEffect(() => {
-    if (page != null && pageNameInput !== page.path) {
+    if (isOpened && page != null && pageNameInput !== page.path) {
       checkExistPathsDebounce(page.path, pageNameInput);
     }
-  }, [pageNameInput, subordinatedPages, checkExistPathsDebounce, page]);
+  }, [isOpened, pageNameInput, subordinatedPages, checkExistPathsDebounce, page]);
 
   /**
    * change pageNameInput for PagePathAutoComplete
@@ -150,22 +150,17 @@ const PageDuplicateModal = (): JSX.Element => {
 
   }, [isOpened]);
 
-  if (page == null) {
-    return <></>;
-  }
 
-  const { path } = page;
-  const isTargetPageDuplicate = existingPaths.includes(pageNameInput);
+  const renderBodyContent = () => {
+    if (!isOpened || page == null) {
+      return <></>;
+    }
 
-  const submitButtonEnabled = existingPaths.length === 0
-    || (isDuplicateRecursively && isDuplicateRecursivelyWithoutExistPath);
+    const { path } = page;
+    const isTargetPageDuplicate = existingPaths.includes(pageNameInput);
 
-  return (
-    <Modal size="lg" isOpen={isOpened} toggle={closeDuplicateModal} data-testid="page-duplicate-modal" className="grw-duplicate-page" autoFocus={false}>
-      <ModalHeader tag="h4" toggle={closeDuplicateModal} className="bg-primary text-light">
-        { t('modal_duplicate.label.Duplicate page') }
-      </ModalHeader>
-      <ModalBody>
+    return (
+      <>
         <div className="form-group"><label>{t('modal_duplicate.label.Current page name')}</label><br />
           <code>{path}</code>
         </div>
@@ -239,9 +234,20 @@ const PageDuplicateModal = (): JSX.Element => {
             ) }
           </div>
         </div>
+      </>
+    );
+  };
 
-      </ModalBody>
-      <ModalFooter>
+  const renderFooterContent = () => {
+    if (!isOpened || page == null) {
+      return <></>;
+    }
+
+    const submitButtonEnabled = existingPaths.length === 0
+    || (isDuplicateRecursively && isDuplicateRecursivelyWithoutExistPath);
+
+    return (
+      <>
         <ApiErrorMessageList errs={errs} targetPath={pageNameInput} />
         <button
           type="button"
@@ -251,6 +257,21 @@ const PageDuplicateModal = (): JSX.Element => {
         >
           { t('modal_duplicate.label.Duplicate page') }
         </button>
+      </>
+    );
+  };
+
+
+  return (
+    <Modal size="lg" isOpen={isOpened} toggle={closeDuplicateModal} data-testid="page-duplicate-modal" className="grw-duplicate-page" autoFocus={false}>
+      <ModalHeader tag="h4" toggle={closeDuplicateModal} className="bg-primary text-light">
+        { t('modal_duplicate.label.Duplicate page') }
+      </ModalHeader>
+      <ModalBody>
+        {renderBodyContent()}
+      </ModalBody>
+      <ModalFooter>
+        {renderFooterContent()}
       </ModalFooter>
     </Modal>
   );

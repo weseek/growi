@@ -2,15 +2,14 @@ import React from 'react';
 // import PropTypes from 'prop-types';
 
 import { Input } from 'reactstrap';
+
 import InterceptorManager from '~/services/interceptor-manager';
 import loggerFactory from '~/utils/logger';
 
 
 import AbstractEditor from './AbstractEditor';
-
-import pasteHelper from './PasteHelper';
 import mlu from './MarkdownListUtil';
-
+import pasteHelper from './PasteHelper';
 import PreventMarkdownListInterceptor from './PreventMarkdownListInterceptor';
 
 export default class TextAreaEditor extends AbstractEditor {
@@ -89,7 +88,7 @@ export default class TextAreaEditor extends AbstractEditor {
     // scroll to bottom
     this.textarea.scrollTop = this.textarea.scrollHeight;
 
-    const lines = this.textarea.value.split('\n').slice(0, line + 1);
+    const lines = this.textarea.value.split('\n').slice(0, line);
     /* eslint-disable no-param-reassign, no-return-assign */
     const pos = lines
       .map((lineStr) => { return lineStr.length + 1 }) // correct length+1 of each lines

@@ -1,4 +1,9 @@
+import { isClient } from '@growi/core';
 import { Middleware } from 'swr';
+
+import loggerFactory from '~/utils/logger';
+
+const logger = loggerFactory('growi:stores:sync-to-storage');
 
 const generateKeyInStorage = (key: string): string => {
   return `swr-cache-${key}`;
@@ -29,29 +34,39 @@ export const createSyncToStorageMiddlware = (
       // retrieve initial data from storage
       const itemInStorage = storage.getItem(keyInStorage);
       if (itemInStorage != null) {
-        initData = storageSerializer.deserialize(itemInStorage);
+        try {
+          initData = storageSerializer.deserialize(itemInStorage);
+        }
+        catch (e) {
+          logger.warn(`Could not deserialize the item for the key '${keyInStorage}'`);
+        }
       }
 
-      const swrNext = useSWRNext(key, fetcher, {
-        fallbackData: initData,
-        ...config,
-      });
+      config.fallbackData = initData;
+      const swrNext = useSWRNext(key, fetcher, config);
+      const swrMutate = swrNext.mutate;
 
-      return {
-        ...swrNext,
-        // override mutate
+      return Object.assign(swrNext, {
         mutate: (data, shouldRevalidate) => {
-          return swrNext.mutate(data, shouldRevalidate)
+          return swrMutate(data, shouldRevalidate)
             .then((value) => {
               storage.setItem(keyInStorage, storageSerializer.serialize(value));
               return value;
             });
         },
-      };
+      });
     };
   };
 };
 
-export const localStorageMiddleware = createSyncToStorageMiddlware(localStorage);
+const passthroughMiddleware: Middleware = (useSWRNext) => {
+  return (key, fetcher, config) => useSWRNext(key, fetcher, config);
+};
 
-export const sessionStorageMiddleware = createSyncToStorageMiddlware(sessionStorage);
+export const localStorageMiddleware = isClient()
+  ? createSyncToStorageMiddlware(localStorage)
+  : passthroughMiddleware;
+
+export const sessionStorageMiddleware = isClient()
+  ? createSyncToStorageMiddlware(sessionStorage)
+  : passthroughMiddleware;

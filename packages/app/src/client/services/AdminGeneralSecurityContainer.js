@@ -1,3 +1,4 @@
+import { isServer } from '@growi/core';
 import { Container } from 'unstated';
 
 import {
@@ -18,15 +19,15 @@ export default class AdminGeneralSecurityContainer extends Container {
   constructor(appContainer) {
     super();
 
-    this.dummyCurrentRestrictGuestMode = 0;
-    this.dummyCurrentRestrictGuestModeForError = 1;
+    if (isServer()) {
+      return;
+    }
 
     this.state = {
       retrieveError: null,
       sessionMaxAge: null,
       wikiMode: '',
-      // set dummy value tile for using suspense
-      currentRestrictGuestMode: this.dummyCurrentRestrictGuestMode,
+      currentRestrictGuestMode: '',
       currentPageDeletionAuthority: PageSingleDeleteConfigValue.AdminOnly,
       currentPageRecursiveDeletionAuthority: PageRecursiveDeleteConfigValue.Inherit,
       currentPageCompleteDeletionAuthority: PageSingleDeleteCompConfigValue.AdminOnly,
@@ -37,15 +38,12 @@ export default class AdminGeneralSecurityContainer extends Container {
       expandOtherOptionsForCompleteDeletion: false,
       isShowRestrictedByOwner: false,
       isShowRestrictedByGroup: false,
-      appSiteUrl: appContainer.config.crowi.url || '',
       isLocalEnabled: false,
       isLdapEnabled: false,
       isSamlEnabled: false,
       isOidcEnabled: false,
-      isBasicEnabled: false,
       isGoogleEnabled: false,
       isGitHubEnabled: false,
-      isTwitterEnabled: false,
       setupStrategies: [],
       disableLinkSharing: false,
       shareLinks: [],
@@ -82,10 +80,8 @@ export default class AdminGeneralSecurityContainer extends Container {
       isLdapEnabled: generalAuth.isLdapEnabled,
       isSamlEnabled: generalAuth.isSamlEnabled,
       isOidcEnabled: generalAuth.isOidcEnabled,
-      isBasicEnabled: generalAuth.isBasicEnabled,
       isGoogleEnabled: generalAuth.isGoogleEnabled,
       isGitHubEnabled: generalAuth.isGitHubEnabled,
-      isTwitterEnabled: generalAuth.isTwitterEnabled,
     });
   }
 
@@ -319,13 +315,6 @@ export default class AdminGeneralSecurityContainer extends Container {
   }
 
   /**
-   * Switch Basic enabled
-   */
-  async switchIsBasicEnabled() {
-    this.switchAuthentication('isBasicEnabled', 'basic');
-  }
-
-  /**
    * Switch GoogleOAuth enabled
    */
   async switchIsGoogleOAuthEnabled() {
@@ -337,13 +326,6 @@ export default class AdminGeneralSecurityContainer extends Container {
    */
   async switchIsGitHubOAuthEnabled() {
     this.switchAuthentication('isGitHubEnabled', 'github');
-  }
-
-  /**
-   * Switch TwitterOAuth enabled
-   */
-  async switchIsTwitterOAuthEnabled() {
-    this.switchAuthentication('isTwitterEnabled', 'twitter');
   }
 
 }

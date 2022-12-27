@@ -1,8 +1,12 @@
-import { RefObject } from 'react';
+import { RefObject, useCallback, useEffect } from 'react';
 
-import { isClient } from '@growi/core';
-import { Breakpoint, addBreakpointListener } from '@growi/ui';
-import SimpleBar from 'simplebar-react';
+import {
+  isClient, isServer, pagePathUtils, Nullable, PageGrant,
+} from '@growi/core';
+import { withUtils, SWRResponseWithUtils } from '@growi/core/src/utils/with-utils';
+import { Breakpoint, addBreakpointListener, cleanupBreakpointListener } from '@growi/ui';
+import { HtmlElementNode } from 'rehype-toc';
+import type SimpleBar from 'simplebar-react';
 import {
   useSWRConfig, SWRResponse, Key, Fetcher,
 } from 'swr';
@@ -11,20 +15,21 @@ import useSWRImmutable from 'swr/immutable';
 import { IFocusable } from '~/client/interfaces/focusable';
 import { useUserUISettings } from '~/client/services/user-ui-settings';
 import { apiv3Get, apiv3Put } from '~/client/util/apiv3-client';
-import { Nullable } from '~/interfaces/common';
+import { IPageGrantData } from '~/interfaces/page';
 import { ISidebarConfig } from '~/interfaces/sidebar-config';
 import { SidebarContentsType } from '~/interfaces/ui';
 import { UpdateDescCountData } from '~/interfaces/websocket';
 import loggerFactory from '~/utils/logger';
 
-import { isTrashTopPage } from '../../../core/src/utils/page-path-utils';
-
 import {
-  useCurrentPageId, useCurrentPagePath, useIsEditable, useIsTrashPage, useIsUserPage, useIsGuestUser, useEmptyPageId,
-  useIsNotCreatable, useIsSharedUser, useNotFoundTargetPathOrId, useIsForbidden, useIsIdenticalPath, useCurrentUser, useShareLinkId,
+  useCurrentPageId, useIsEditable, useIsGuestUser,
+  useIsSharedUser, useIsIdenticalPath, useCurrentUser, useShareLinkId, useIsNotFound,
 } from './context';
 import { localStorageMiddleware } from './middlewares/sync-to-storage';
+import { useCurrentPagePath, useIsTrashPage } from './page';
 import { useStaticSWR } from './use-static-swr';
+
+const { isTrashTopPage, isUsersTopPage } = pagePathUtils;
 
 const logger = loggerFactory('growi:stores:ui');
 
@@ -42,13 +47,18 @@ export type EditorMode = typeof EditorMode[keyof typeof EditorMode];
 
 
 /** **********************************************************
- *                     Storing RefObjects
+ *                     Storing objects to ref
  *********************************************************** */
 
 export const useSidebarScrollerRef = (initialData?: RefObject<SimpleBar>): SWRResponse<RefObject<SimpleBar>, Error> => {
   return useStaticSWR<RefObject<SimpleBar>, Error>('sidebarScrollerRef', initialData);
 };
 
+export const useCurrentPageTocNode = (): SWRResponse<HtmlElementNode, any> => {
+  const { data: currentPagePath } = useCurrentPagePath();
+
+  return useStaticSWR(['currentPageTocNode', currentPagePath]);
+};
 
 /** **********************************************************
  *                          SWR Hooks
@@ -69,62 +79,74 @@ export const useIsMobile = (): SWRResponse<boolean, Error> => {
   return useStaticSWR<boolean, Error>(key, undefined, configuration);
 };
 
-const updateBodyClassesByEditorMode = (newEditorMode: EditorMode, isSidebar = false) => {
-  const bodyElement = document.getElementsByTagName('body')[0];
-  if (bodyElement == null) {
-    logger.warn('The body tag was not successfully obtained');
-    return;
-  }
-  switch (newEditorMode) {
-    case EditorMode.View:
-      bodyElement.classList.remove('on-edit', 'builtin-editor', 'hackmd', 'editing-sidebar');
-      break;
+// TODO: Enable `editing-sidebar` class
+// https://redmine.weseek.co.jp/issues/111527
+const getClassNamesByEditorMode = (editorMode: EditorMode | undefined /* , isSidebar = false */): string[] => {
+  const classNames: string[] = [];
+  switch (editorMode) {
     case EditorMode.Editor:
-      bodyElement.classList.add('on-edit', 'builtin-editor');
-      bodyElement.classList.remove('hackmd');
-      // editing /Sidebar
-      if (isSidebar) {
-        bodyElement.classList.add('editing-sidebar');
-      }
+      classNames.push('editing', 'builtin-editor');
+      // if (isSidebar) {
+      //   classNames.push('editing-sidebar');
+      // }
       break;
     case EditorMode.HackMD:
-      bodyElement.classList.add('on-edit', 'hackmd');
-      bodyElement.classList.remove('builtin-editor', 'editing-sidebar');
+      classNames.push('editing', 'hackmd');
       break;
   }
+
+  return classNames;
 };
 
+export const EditorModeHash = {
+  View: '',
+  Edit: '#edit',
+  HackMD: '#hackmd',
+} as const;
+export type EditorModeHash = typeof EditorModeHash[keyof typeof EditorModeHash];
+
+export const isEditorModeHash = (hash: string): hash is EditorModeHash => Object.values<string>(EditorModeHash).includes(hash);
+
 const updateHashByEditorMode = (newEditorMode: EditorMode) => {
-  const { pathname } = window.location;
+  const { pathname, search } = window.location;
 
   switch (newEditorMode) {
     case EditorMode.View:
-      window.history.replaceState(null, '', pathname);
+      window.history.replaceState(null, '', `${pathname}${search}${EditorModeHash.View}`);
       break;
     case EditorMode.Editor:
-      window.history.replaceState(null, '', `${pathname}#edit`);
+      window.history.replaceState(null, '', `${pathname}${search}${EditorModeHash.Edit}`);
       break;
     case EditorMode.HackMD:
-      window.history.replaceState(null, '', `${pathname}#hackmd`);
+      window.history.replaceState(null, '', `${pathname}${search}${EditorModeHash.HackMD}`);
       break;
   }
 };
 
 export const determineEditorModeByHash = (): EditorMode => {
+  if (isServer()) {
+    return EditorMode.View;
+  }
+
   const { hash } = window.location;
 
   switch (hash) {
-    case '#edit':
+    case EditorModeHash.Edit:
       return EditorMode.Editor;
-    case '#hackmd':
+    case EditorModeHash.HackMD:
       return EditorMode.HackMD;
     default:
       return EditorMode.View;
   }
 };
 
-let isEditorModeLoaded = false;
-export const useEditorMode = (): SWRResponse<EditorMode, Error> => {
+// TODO: Enable `editing-sidebar` class somehow
+// https://redmine.weseek.co.jp/issues/111527
+type EditorModeUtils = {
+  getClassNamesByEditorMode: (/* isEditingSidebar: boolean */) => string[],
+}
+
+export const useEditorMode = (): SWRResponseWithUtils<EditorModeUtils, EditorMode> => {
   const { data: _isEditable } = useIsEditable();
 
   const editorModeByHash = determineEditorModeByHash();
@@ -133,36 +155,33 @@ export const useEditorMode = (): SWRResponse<EditorMode, Error> => {
   const isEditable = !isLoading && _isEditable;
   const initialData = isEditable ? editorModeByHash : EditorMode.View;
 
-  const { data: currentPagePath } = useCurrentPagePath();
-  const isSidebar = currentPagePath === '/Sidebar';
-
-  const swrResponse = useSWRImmutable(
+  const swrResponse = useSWRImmutable<EditorMode>(
     isLoading ? null : ['editorMode', isEditable],
     null,
     { fallbackData: initialData },
   );
 
-  // initial updating
-  if (!isEditorModeLoaded && !isLoading && swrResponse.data != null) {
-    if (isEditable) {
-      updateBodyClassesByEditorMode(swrResponse.data, isSidebar);
+  // construct overriding mutate method
+  const mutateOriginal = swrResponse.mutate;
+  const mutate = useCallback((editorMode: EditorMode, shouldRevalidate?: boolean) => {
+    if (!isEditable) {
+      return Promise.resolve(EditorMode.View); // fixed if not editable
     }
-    isEditorModeLoaded = true;
-  }
+    updateHashByEditorMode(editorMode);
+    return mutateOriginal(editorMode, shouldRevalidate);
+  }, [isEditable, mutateOriginal]);
 
-  return {
-    ...swrResponse,
+  // TODO: Enable `editing-sidebar` class
+  // https://redmine.weseek.co.jp/issues/111527
+  // construct getClassNamesByEditorMode method
+  const getClassNames = useCallback((/* isEditingSidebar: boolean */) => {
+    return getClassNamesByEditorMode(swrResponse.data /* , isEditingSidebar */);
+  }, [swrResponse.data]);
 
-    // overwrite mutate
-    mutate: (editorMode: EditorMode, shouldRevalidate?: boolean) => {
-      if (!isEditable) {
-        return Promise.resolve(EditorMode.View); // fixed if not editable
-      }
-      updateBodyClassesByEditorMode(editorMode, isSidebar);
-      updateHashByEditorMode(editorMode);
-      return swrResponse.mutate(editorMode, shouldRevalidate);
-    },
-  };
+  return Object.assign(swrResponse, {
+    mutate,
+    getClassNamesByEditorMode: getClassNames,
+  });
 };
 
 export const useIsDeviceSmallerThanMd = (): SWRResponse<boolean, Error> => {
@@ -170,21 +189,25 @@ export const useIsDeviceSmallerThanMd = (): SWRResponse<boolean, Error> => {
 
   const { cache, mutate } = useSWRConfig();
 
-  if (isClient()) {
-    const mdOrAvobeHandler = function(this: MediaQueryList): void {
-      // sm -> md: matches will be true
-      // md -> sm: matches will be false
-      mutate(key, !this.matches);
-    };
-    const mql = addBreakpointListener(Breakpoint.MD, mdOrAvobeHandler);
+  useEffect(() => {
+    if (isClient()) {
+      const mdOrAvobeHandler = function(this: MediaQueryList): void {
+        // sm -> md: matches will be true
+        // md -> sm: matches will be false
+        mutate(key, !this.matches);
+      };
+      const mql = addBreakpointListener(Breakpoint.MD, mdOrAvobeHandler);
 
-    // initialize
-    if (cache.get(key) == null) {
-      document.addEventListener('DOMContentLoaded', () => {
+      // initialize
+      if (cache.get(key) == null) {
         mutate(key, !mql.matches);
-      });
+      }
+
+      return () => {
+        cleanupBreakpointListener(mql, mdOrAvobeHandler);
+      };
     }
-  }
+  }, [cache, key, mutate]);
 
   return useStaticSWR(key);
 };
@@ -194,21 +217,25 @@ export const useIsDeviceSmallerThanLg = (): SWRResponse<boolean, Error> => {
 
   const { cache, mutate } = useSWRConfig();
 
-  if (isClient()) {
-    const lgOrAvobeHandler = function(this: MediaQueryList): void {
-      // md -> lg: matches will be true
-      // lg -> md: matches will be false
-      mutate(key, !this.matches);
-    };
-    const mql = addBreakpointListener(Breakpoint.LG, lgOrAvobeHandler);
+  useEffect(() => {
+    if (isClient()) {
+      const lgOrAvobeHandler = function(this: MediaQueryList): void {
+        // md -> lg: matches will be true
+        // lg -> md: matches will be false
+        mutate(key, !this.matches);
+      };
+      const mql = addBreakpointListener(Breakpoint.LG, lgOrAvobeHandler);
 
-    // initialize
-    if (cache.get(key) == null) {
-      document.addEventListener('DOMContentLoaded', () => {
+      // initialize
+      if (cache.get(key) == null) {
         mutate(key, !mql.matches);
-      });
+      }
+
+      return () => {
+        cleanupBreakpointListener(mql, lgOrAvobeHandler);
+      };
     }
-  }
+  }, [cache, key, mutate]);
 
   return useStaticSWR(key);
 };
@@ -217,15 +244,13 @@ type PreferDrawerModeByUserUtils = {
   update: (preferDrawerMode: boolean) => void
 }
 
-export const usePreferDrawerModeByUser = (initialData?: boolean): SWRResponse<boolean, Error> & PreferDrawerModeByUserUtils => {
+export const usePreferDrawerModeByUser = (initialData?: boolean): SWRResponseWithUtils<PreferDrawerModeByUserUtils, boolean> => {
   const { data: isGuestUser } = useIsGuestUser();
   const { scheduleToPut } = useUserUISettings();
 
   const swrResponse: SWRResponse<boolean, Error> = useStaticSWR('preferDrawerModeByUser', initialData, { use: isGuestUser ? [localStorageMiddleware] : [] });
 
-  return {
-    ...swrResponse,
-    data: swrResponse.data,
+  const utils: PreferDrawerModeByUserUtils = {
     update: (preferDrawerMode: boolean) => {
       swrResponse.mutate(preferDrawerMode);
 
@@ -234,6 +259,9 @@ export const usePreferDrawerModeByUser = (initialData?: boolean): SWRResponse<bo
       }
     },
   };
+
+  return withUtils(swrResponse, utils);
+
 };
 
 export const usePreferDrawerModeOnEditByUser = (initialData?: boolean): SWRResponse<boolean, Error> => {
@@ -253,9 +281,9 @@ export const useCurrentProductNavWidth = (initialData?: number): SWRResponse<num
 };
 
 export const useDrawerMode = (): SWRResponse<boolean, Error> => {
-  const { data: editorMode } = useEditorMode();
   const { data: preferDrawerModeByUser } = usePreferDrawerModeByUser();
   const { data: preferDrawerModeOnEditByUser } = usePreferDrawerModeOnEditByUser();
+  const { data: editorMode } = useEditorMode();
   const { data: isDeviceSmallerThanMd } = useIsDeviceSmallerThanMd();
 
   const condition = editorMode != null || preferDrawerModeByUser != null || preferDrawerModeOnEditByUser != null || isDeviceSmallerThanMd != null;
@@ -270,12 +298,17 @@ export const useDrawerMode = (): SWRResponse<boolean, Error> => {
     return isDeviceSmallerThanMd || preferDrawerMode;
   };
 
+  const isViewModeWithPreferDrawerMode = editorMode === EditorMode.View && preferDrawerModeByUser;
+  const isEditModeWithPreferDrawerMode = editorMode === EditorMode.Editor && preferDrawerModeOnEditByUser;
+  const useFallbackData = isViewModeWithPreferDrawerMode || isEditModeWithPreferDrawerMode;
+  const fallbackOption = useFallbackData
+    ? { fallbackData: true }
+    : { fallback: calcDrawerMode };
+
   return useSWRImmutable(
     condition ? ['isDrawerMode', editorMode, preferDrawerModeByUser, preferDrawerModeOnEditByUser, isDeviceSmallerThanMd] : null,
     calcDrawerMode,
-    {
-      fallback: calcDrawerMode,
-    },
+    fallbackOption,
   );
 };
 
@@ -353,17 +386,8 @@ export const useSidebarResizeDisabled = (isDisabled?: boolean): SWRResponse<bool
   return useStaticSWR('isSidebarResizeDisabled', isDisabled, { fallbackData: false });
 };
 
-
-export const useSelectedGrant = (initialData?: number): SWRResponse<number, Error> => {
-  return useStaticSWR<number, Error>('grant', initialData);
-};
-
-export const useSelectedGrantGroupId = (initialData?: Nullable<string>): SWRResponse<Nullable<string>, Error> => {
-  return useStaticSWR<Nullable<string>, Error>('grantGroupId', initialData);
-};
-
-export const useSelectedGrantGroupName = (initialData?: Nullable<string>): SWRResponse<Nullable<string>, Error> => {
-  return useStaticSWR<Nullable<string>, Error>('grantGroupName', initialData);
+export const useSelectedGrant = (initialData?: Nullable<IPageGrantData>): SWRResponse<Nullable<IPageGrantData>, Error> => {
+  return useStaticSWR<Nullable<IPageGrantData>, Error>('selectedGrant', initialData, { fallbackData: { grant: PageGrant.GRANT_PUBLIC } });
 };
 
 export const useGlobalSearchFormRef = (initialData?: RefObject<IFocusable>): SWRResponse<RefObject<IFocusable>, Error> => {
@@ -387,7 +411,6 @@ export const usePageTreeDescCountMap = (initialData?: UpdateDescCountData): SWRR
   };
 };
 
-
 /** **********************************************************
  *                          SWR Hooks
  *                Determined value by context
@@ -403,67 +426,70 @@ export const useIsAbleToShowTrashPageManagementButtons = (): SWRResponse<boolean
 export const useIsAbleToShowPageManagement = (): SWRResponse<boolean, Error> => {
   const key = 'isAbleToShowPageManagement';
   const { data: currentPageId } = useCurrentPageId();
-  const { data: emptyPageId } = useEmptyPageId();
-  const { data: isTrashPage } = useIsTrashPage();
-  const { data: isSharedUser } = useIsSharedUser();
+  const { data: _isTrashPage } = useIsTrashPage();
+  const { data: _isSharedUser } = useIsSharedUser();
+  const { data: isNotFound } = useIsNotFound();
 
-  const pageId = currentPageId ?? emptyPageId;
-  const includesUndefined = [pageId, isTrashPage, isSharedUser].some(v => v === undefined);
-  const isPageExist = pageId != null;
+  const pageId = currentPageId;
+  const includesUndefined = [pageId, _isTrashPage, _isSharedUser, isNotFound].some(v => v === undefined);
+  const isPageExist = (pageId != null) && isNotFound === false;
+  const isEmptyPage = (pageId != null) && isNotFound === true;
+  const isTrashPage = isPageExist && _isTrashPage === true;
+  const isSharedUser = isPageExist && _isSharedUser === true;
 
   return useSWRImmutable(
-    includesUndefined ? null : key,
-    () => isPageExist && !isTrashPage && !isSharedUser,
+    includesUndefined ? null : [key, pageId, isPageExist, isEmptyPage, isTrashPage, isSharedUser],
+    // eslint-disable-next-line max-len
+    (key: string, pageId: string, isPageExist: boolean, isTrashPage: boolean, isSharedUser: boolean) => (isPageExist && !isTrashPage && !isSharedUser) || isEmptyPage,
   );
 };
 
 export const useIsAbleToShowTagLabel = (): SWRResponse<boolean, Error> => {
   const key = 'isAbleToShowTagLabel';
-  const { data: isUserPage } = useIsUserPage();
+  const { data: pageId } = useCurrentPageId();
   const { data: currentPagePath } = useCurrentPagePath();
   const { data: isIdenticalPath } = useIsIdenticalPath();
-  const { data: notFoundTargetPathOrId } = useNotFoundTargetPathOrId();
+  const { data: isNotFound } = useIsNotFound();
   const { data: editorMode } = useEditorMode();
   const { data: shareLinkId } = useShareLinkId();
 
-  const includesUndefined = [isUserPage, currentPagePath, isIdenticalPath, notFoundTargetPathOrId, editorMode].some(v => v === undefined);
+  const includesUndefined = [currentPagePath, isIdenticalPath, isNotFound, editorMode].some(v => v === undefined);
 
   const isViewMode = editorMode === EditorMode.View;
-  const isNotFoundPage = notFoundTargetPathOrId != null;
 
   return useSWRImmutable(
-    includesUndefined ? null : [key, editorMode],
+    includesUndefined ? null : [key, pageId, currentPagePath, isIdenticalPath, isNotFound, editorMode, shareLinkId],
     // "/trash" page does not exist on page collection and unable to add tags
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    () => !isUserPage && !isTrashTopPage(currentPagePath!) && shareLinkId == null && !isIdenticalPath && !(isViewMode && isNotFoundPage),
+    () => !isUsersTopPage(currentPagePath!) && !isTrashTopPage(currentPagePath!) && shareLinkId == null && !isIdenticalPath && !(isViewMode && isNotFound),
   );
 };
 
 export const useIsAbleToShowPageEditorModeManager = (): SWRResponse<boolean, Error> => {
   const key = 'isAbleToShowPageEditorModeManager';
-  const { data: isNotCreatable } = useIsNotCreatable();
-  const { data: isForbidden } = useIsForbidden();
-  const { data: isTrashPage } = useIsTrashPage();
+  const { data: isEditable } = useIsEditable();
   const { data: isSharedUser } = useIsSharedUser();
 
-  const includesUndefined = [isNotCreatable, isForbidden, isTrashPage, isSharedUser].some(v => v === undefined);
+  const includesUndefined = [isEditable, isSharedUser].some(v => v === undefined);
 
   return useSWRImmutable(
-    includesUndefined ? null : key,
-    () => !isNotCreatable && !isForbidden && !isTrashPage && !isSharedUser,
+    includesUndefined ? null : [key, isEditable, isSharedUser],
+    () => !!isEditable && !isSharedUser,
   );
 };
 
 export const useIsAbleToShowPageAuthors = (): SWRResponse<boolean, Error> => {
   const key = 'isAbleToShowPageAuthors';
-  const { data: currentPageId } = useCurrentPageId();
-  const { data: isUserPage } = useIsUserPage();
+  const { data: pageId } = useCurrentPageId();
+  const { data: pagePath } = useCurrentPagePath();
+  const { data: isNotFound } = useIsNotFound();
 
-  const includesUndefined = [currentPageId, isUserPage].some(v => v === undefined);
-  const isPageExist = currentPageId != null;
+  const includesUndefined = [pageId, pagePath, isNotFound].some(v => v === undefined);
+  const isPageExist = (pageId != null) && !isNotFound;
+  const isUsersTopPagePath = pagePath != null && isUsersTopPage(pagePath);
 
   return useSWRImmutable(
-    includesUndefined ? null : key,
-    () => isPageExist && !isUserPage,
+    includesUndefined ? null : [key, pageId, pagePath, isNotFound],
+    () => isPageExist && !isUsersTopPagePath,
   );
 };

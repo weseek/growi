@@ -3,7 +3,7 @@ import React, { FC, useCallback } from 'react';
 import { Picker } from 'emoji-mart';
 import { Modal } from 'reactstrap';
 
-import { isDarkMode } from '~/client/util/color-scheme';
+import { useNextThemes } from '~/stores/use-next-themes';
 
 import EmojiPickerHelper, { getEmojiTranslation } from './EmojiPickerHelper';
 
@@ -20,6 +20,8 @@ const EmojiPicker: FC<Props> = (props: Props) => {
   const {
     onClose, onSelected, emojiSearchText, emojiPickerHelper, isOpen,
   } = props;
+
+  const { resolvedTheme } = useNextThemes();
 
   // Set search emoji input and trigger search
   const searchEmoji = useCallback(() => {
@@ -38,7 +40,6 @@ const EmojiPicker: FC<Props> = (props: Props) => {
 
 
   const translation = getEmojiTranslation();
-  const theme = isDarkMode() ? 'dark' : 'light';
 
   return (
     <Modal isOpen={isOpen} toggle={onClose} onOpened={searchEmoji} backdropClassName="emoji-picker-modal" fade={false}>
@@ -48,7 +49,7 @@ const EmojiPicker: FC<Props> = (props: Props) => {
         title={translation.title}
         emojiTooltip
         style={emojiPickerHelper.setStyle()}
-        theme={theme}
+        theme={resolvedTheme}
       />
     </Modal>
   );

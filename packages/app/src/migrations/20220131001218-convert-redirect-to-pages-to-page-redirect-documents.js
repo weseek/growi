@@ -1,9 +1,10 @@
 import mongoose from 'mongoose';
-import { getModelSafely, getMongoUri, mongoOptions } from '@growi/core';
 
+// eslint-disable-next-line import/no-named-as-default
 import PageRedirectModel from '~/server/models/page-redirect';
-import loggerFactory from '~/utils/logger';
 import { createBatchStream } from '~/server/util/batch-stream';
+import { getModelSafely, getMongoUri, mongoOptions } from '~/server/util/mongoose-utils';
+import loggerFactory from '~/utils/logger';
 
 const logger = loggerFactory('growi:migrate:convert-redirect-to-pages-to-page-redirect-documents');
 

@@ -1,0 +1,25 @@
+version: 2
+updates:
+  - package-ecosystem: github-actions
+    directory: '/'
+    open-pull-requests-limit: 0
+    schedule:
+      interval: monthly
+    commit-message:
+      prefix: ci
+      include: scope
+
+  - package-ecosystem: npm
+    directory: '/'
+    open-pull-requests-limit: 0
+    schedule:
+      interval: weekly
+    commit-message:
+      prefix: ci
+      include: scope
+    ignore:
+      - dependency-name: escape-string-regexp
+      - dependency-name: string-width
+      - dependency-name: "@handsontable/react"
+      - dependency-name: handsontable
+

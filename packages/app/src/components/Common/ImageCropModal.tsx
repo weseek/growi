@@ -12,6 +12,7 @@ import {
   ModalFooter,
 } from 'reactstrap';
 
+
 import { toastError } from '~/client/util/apiNotification';
 import loggerFactory from '~/utils/logger';
 import 'react-image-crop/dist/ReactCrop.css';
@@ -46,9 +47,18 @@ const ImageCropModal: FC<Props> = (props: Props) => {
   const [imageRef, setImageRef] = useState<HTMLImageElement | null>(null);
   const [cropOptions, setCropOtions] = useState<CropOptions>(null);
   const [isCropImage, setIsCropImage] = useState<boolean>(true);
-  const { t } = useTranslation();
+  const { t } = useTranslation('commons');
+
   const reset = useCallback(() => {
     if (imageRef) {
+      // Some SVG files may not have width and height properties, causing the render size to be 0x0
+      // Force imageRef to have width and height by create temporary image element then set the imageRef width with tempImage width
+      // Set imageRef width & height by natural width / height if image has no dimension
+      if (imageRef.width === 0 || imageRef.height === 0) {
+        imageRef.width = imageRef.naturalWidth;
+        imageRef.height = imageRef.naturalHeight;
+      }
+      // Get size of Image, min value of width and height
       const size = Math.min(imageRef.width, imageRef.height);
       setCropOtions({
         aspect: 1,
@@ -63,6 +73,7 @@ const ImageCropModal: FC<Props> = (props: Props) => {
 
   useEffect(() => {
     document.body.style.position = 'static';
+    setIsCropImage(true);
     reset();
   }, [reset]);
 
@@ -73,18 +84,22 @@ const ImageCropModal: FC<Props> = (props: Props) => {
   };
 
 
-  const onCropChange = (crop) => {
-    setCropOtions(crop);
-  };
+  const getCroppedImg = async(image: HTMLImageElement, crop: ICropOptions) => {
+    const {
+      naturalWidth: imageNaturalWidth, naturalHeight: imageNaturalHeight, width: imageWidth, height: imageHeight,
+    } = image;
 
-  const getCroppedImg = async(image, crop) => {
+    const {
+      width: cropWidth, height: cropHeight, x, y,
+    } = crop;
+
     const canvas = document.createElement('canvas');
-    const scaleX = image.naturalWidth / image.width;
-    const scaleY = image.naturalHeight / image.height;
-    canvas.width = crop.width;
-    canvas.height = crop.height;
+    const scaleX = imageNaturalWidth / imageWidth;
+    const scaleY = imageNaturalHeight / imageHeight;
+    canvas.width = cropWidth;
+    canvas.height = cropHeight;
     const ctx = canvas.getContext('2d');
-    ctx?.drawImage(image, crop.x * scaleX, crop.y * scaleY, crop.width * scaleX, crop.height * scaleY, 0, 0, crop.width, crop.height);
+    ctx?.drawImage(image, x * scaleX, y * scaleY, cropWidth * scaleX, cropHeight * scaleY, 0, 0, cropWidth, cropHeight);
     try {
       const blob = await canvasToBlob(canvas);
       return blob;
@@ -105,7 +120,6 @@ const ImageCropModal: FC<Props> = (props: Props) => {
   // Clear image and set isImageCrop true on modal close
   const onModalCloseHandler = async() => {
     setImageRef(null);
-    setIsCropImage(true);
     onModalClose();
   };
 
@@ -129,13 +143,22 @@ const ImageCropModal: FC<Props> = (props: Props) => {
       <ModalBody className="my-4">
         {
           isCropImage
-            ? (<ReactCrop src={src} crop={cropOptions} onImageLoaded={onImageLoaded} onChange={onCropChange} circularCrop={isCircular} />)
+            ? (
+              <ReactCrop
+                style={{ backgroundColor: 'transparent' }}
+                src={src}
+                crop={cropOptions}
+                onImageLoaded={onImageLoaded}
+                onChange={crop => setCropOtions(crop)}
+                circularCrop={isCircular}
+              />
+            )
             : (<img style={{ maxWidth: imageRef?.width }} src={imageRef?.src} />)
         }
       </ModalBody>
       <ModalFooter>
-        <button type="button" className="btn btn-outline-danger rounded-pill mr-auto" onClick={reset}>
-          {t('crop_image_modal.reset')}
+        <button type="button" className="btn btn-outline-danger rounded-pill mr-auto" disabled={!isCropImage} onClick={reset}>
+          {t('commons:Reset')}
         </button>
         { !showCropOption && (
           <div className="mr-auto">

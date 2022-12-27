@@ -1,4 +1,4 @@
-import { pathUtils } from '@growi/core';
+import { isServer, pathUtils } from '@growi/core';
 import { Container } from 'unstated';
 import urljoin from 'url-join';
 
@@ -18,12 +18,15 @@ export default class AdminGoogleSecurityContainer extends Container {
   constructor(appContainer) {
     super();
 
+    if (isServer()) {
+      return;
+    }
+
     this.dummyGoogleClientId = 0;
     this.dummyGoogleClientIdForError = 1;
 
     this.state = {
       retrieveError: null,
-      callbackUrl: urljoin(pathUtils.removeTrailingSlash(appContainer.config.crowi.url), '/passport/google/callback'),
       // set dummy value tile for using suspense
       googleClientId: this.dummyGoogleClientId,
       googleClientSecret: '',

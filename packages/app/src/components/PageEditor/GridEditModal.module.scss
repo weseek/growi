@@ -1,0 +1,43 @@
+@use '~/styles/bootstrap/init' as bs;
+
+.grw-grid-edit-modal :global {
+  .desktop-preview,
+  .tablet-preview,
+  .mobile-preview {
+    .row {
+      height: 140px;
+      margin: 0px;
+    }
+  }
+  .desktop-preview {
+    .row {
+      div {
+        padding: 0px;
+      }
+    }
+  }
+
+  .tablet-preview {
+    .row {
+      div {
+        padding: 0px;
+      }
+    }
+  }
+
+  .mobile-preview {
+    width: 75%;
+    .row {
+      div {
+        padding: 0px;
+      }
+    }
+  }
+
+  .grid-division-menu {
+    width: 60vw;
+    @include bs.media-breakpoint-down(lg) {
+      width: 80vw;
+    }
+  }
+}

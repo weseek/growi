@@ -2,31 +2,30 @@ import React, {
   FC, useState, useEffect, useCallback,
 } from 'react';
 
-import { useTranslation } from 'react-i18next';
-import PropTypes from 'prop-types';
-import AppContainer from '~/client/services/AppContainer';
-import { withUnstatedContainers } from '../UnstatedUtils';
-import InAppNotificationList from './InAppNotificationList';
-import { useSWRxInAppNotifications, useSWRxInAppNotificationStatus } from '../../stores/in-app-notification';
-import PaginationWrapper from '../PaginationWrapper';
-import CustomNavAndContents from '../CustomNavigation/CustomNavAndContents';
-import { InAppNotificationStatuses } from '~/interfaces/in-app-notification';
-import { apiv3Put, apiv3Post } from '~/client/util/apiv3-client';
+import { useTranslation } from 'next-i18next';
 
+import { apiv3Put, apiv3Post } from '~/client/util/apiv3-client';
+import { InAppNotificationStatuses } from '~/interfaces/in-app-notification';
+import { useShowPageLimitationXL } from '~/stores/context';
 import loggerFactory from '~/utils/logger';
+
+import { useSWRxInAppNotifications, useSWRxInAppNotificationStatus } from '../../stores/in-app-notification';
+import CustomNavAndContents from '../CustomNavigation/CustomNavAndContents';
+import PaginationWrapper from '../PaginationWrapper';
+
+import InAppNotificationList from './InAppNotificationList';
+
 
 const logger = loggerFactory('growi:InAppNotificationPage');
 
 
-type Props = {
-  appContainer: AppContainer
-}
-
-const InAppNotificationPageBody: FC<Props> = (props) => {
-  const { appContainer } = props;
-  const limit = appContainer.config.pageLimitationXL;
-  const { t } = useTranslation();
+export const InAppNotificationPage: FC = () => {
+  const { t } = useTranslation('commons');
   const { mutate } = useSWRxInAppNotificationStatus();
+
+  const { data: showPageLimitationXL } = useShowPageLimitationXL();
+
+  const limit = showPageLimitationXL != null ? showPageLimitationXL : 20;
 
   const updateNotificationStatus = useCallback(async() => {
     try {
@@ -65,7 +64,7 @@ const InAppNotificationPageBody: FC<Props> = (props) => {
 
     if (notificationData == null) {
       return (
-        <div className="wiki">
+        <div className="wiki" data-testid="grw-in-app-notification-page-spinner">
           <div className="text-muted text-center">
             <i className="fa fa-2x fa-spinner fa-pulse mr-1"></i>
           </div>
@@ -139,13 +138,10 @@ const InAppNotificationPageBody: FC<Props> = (props) => {
   };
 
   return (
-    <CustomNavAndContents navTabMapping={navTabMapping} tabContentClasses={['mt-4']} />
+    <div data-testid="grw-in-app-notification-page">
+      <CustomNavAndContents navTabMapping={navTabMapping} tabContentClasses={['mt-4']} />
+    </div>
   );
 };
 
-const InAppNotificationPage = withUnstatedContainers(InAppNotificationPageBody, [AppContainer]);
-export default InAppNotificationPage;
-
-InAppNotificationPageBody.propTypes = {
-  appContainer: PropTypes.instanceOf(AppContainer).isRequired,
-};
+InAppNotificationPage.displayName = 'InAppNotificationPage';

@@ -46,21 +46,21 @@ export default class EmojiPickerHelper {
     if (sc.findPrevious()) {
       return sc.pos.from;
     }
-  }
+  };
 
   shouldOpen = (startPos: Position): boolean => {
     const currentPos = this.editor.getCursor();
     const rangeStr = this.editor.getRange(startPos, currentPos);
 
     return EMOJI_PATTERN.test(rangeStr);
-  }
+  };
 
   getInitialSearchingText = (startPos: Position): void => {
     const currentPos = this.editor.getCursor();
     const rangeStr = this.editor.getRange(startPos, currentPos);
 
     return rangeStr.slice(1); // return without the heading ':'
-  }
+  };
 
   addEmoji = (emoji: { colons: string }, startPosToReplace: Position|null): void => {
     const currentPos = this.editor.getCursor();
