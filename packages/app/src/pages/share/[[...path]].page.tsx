@@ -13,6 +13,7 @@ import { MainPane } from '~/components/Layout/MainPane';
 import { ShareLinkLayout } from '~/components/Layout/ShareLinkLayout';
 import GrowiContextualSubNavigation from '~/components/Navbar/GrowiContextualSubNavigation';
 import { Page } from '~/components/Page';
+import type { PageSideContentsProps } from '~/components/PageSideContents';
 import { DrawioViewerScript } from '~/components/Script/DrawioViewerScript';
 import { SupportedAction, SupportedActionType } from '~/interfaces/activity';
 import { CrowiRequest } from '~/interfaces/crowi-request';
@@ -31,7 +32,7 @@ import {
 
 const logger = loggerFactory('growi:next-page:share');
 
-const PageSideContents = dynamic(() => import('~/components/PageSideContents').then(mod => mod.PageSideContents), { ssr: false });
+const PageSideContents = dynamic<PageSideContentsProps>(() => import('~/components/PageSideContents').then(mod => mod.PageSideContents), { ssr: false });
 // const Comments = dynamic(() => import('~/components/Comments').then(mod => mod.Comments), { ssr: false });
 const ShareLinkAlert = dynamic(() => import('~/components/Page/ShareLinkAlert'), { ssr: false });
 const ForbiddenPage = dynamic(() => import('~/components/ForbiddenPage'), { ssr: false });

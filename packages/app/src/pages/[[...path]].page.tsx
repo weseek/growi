@@ -60,6 +60,7 @@ import GrowiContextualSubNavigation from '../components/Navbar/GrowiContextualSu
 import DisplaySwitcher from '../components/Page/DisplaySwitcher';
 // import { serializeUserSecurely } from '../server/models/serializers/user-serializer';
 // import PageStatusAlert from '../client/js/components/PageStatusAlert';
+import type { PageSideContentsProps } from '../components/PageSideContents';
 import {
   useCurrentUser,
   useIsLatestRevision,
@@ -88,7 +89,7 @@ declare global {
 const NotCreatablePage = dynamic(() => import('../components/NotCreatablePage').then(mod => mod.NotCreatablePage), { ssr: false });
 const ForbiddenPage = dynamic(() => import('../components/ForbiddenPage'), { ssr: false });
 const UnsavedAlertDialog = dynamic(() => import('../components/UnsavedAlertDialog'), { ssr: false });
-const PageSideContents = dynamic(() => import('../components/PageSideContents').then(mod => mod.PageSideContents), { ssr: false });
+const PageSideContents = dynamic<PageSideContentsProps>(() => import('../components/PageSideContents').then(mod => mod.PageSideContents), { ssr: false });
 const GrowiSubNavigationSwitcher = dynamic(() => import('../components/Navbar/GrowiSubNavigationSwitcher'), { ssr: false });
 const UsersHomePageFooter = dynamic<UsersHomePageFooterProps>(() => import('../components/UsersHomePageFooter')
   .then(mod => mod.UsersHomePageFooter), { ssr: false });
@@ -99,7 +100,7 @@ const PageStatusAlert = dynamic(() => import('../components/PageStatusAlert').th
 const logger = loggerFactory('growi:pages:all');
 
 const {
-  isPermalink: _isPermalink, isUsersHomePage, isTrashPage: _isTrashPage, isUserPage, isCreatablePage, isTopPage,
+  isPermalink: _isPermalink, isUsersHomePage, isTrashPage: _isTrashPage, isCreatablePage, isTopPage,
 } = pagePathUtils;
 const { removeHeadingSlash } = pathUtils;
 

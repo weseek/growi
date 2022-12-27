@@ -19,12 +19,12 @@ import styles from './PageSideContents.module.scss';
 const { isTopPage, isUsersHomePage } = pagePathUtils;
 
 
-type Props = {
+export type PageSideContentsProps = {
   page?: IPageHasId,
   isSharedUser?: boolean,
 }
 
-export const PageSideContents = (props: Props): JSX.Element => {
+export const PageSideContents = (props: PageSideContentsProps): JSX.Element => {
   const { t } = useTranslation();
 
   const { data: currentPathname } = useCurrentPathname();
