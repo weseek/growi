@@ -73,13 +73,6 @@ const Editor: ForwardRefRenderFunction<IEditorMethods, EditorPropsType> = (props
   const cmEditorRef = useRef<AbstractEditor<any>>(null);
   const taEditorRef = useRef<TextAreaEditor>(null);
 
-  useEffect(() => {
-    if (cmEditorRef.current != null) {
-      const editorNavBarItems = cmEditorRef.current.getNavbarItems() ?? [];
-      setNavBarItems(editorNavBarItems);
-    }
-  }, []);
-
   const editorSubstance = useCallback(() => {
     return isMobile ? taEditorRef.current : cmEditorRef.current;
   }, [isMobile]);
@@ -266,6 +259,13 @@ const Editor: ForwardRefRenderFunction<IEditorMethods, EditorPropsType> = (props
       </Modal>
     );
   }, [isCheatsheetModalShown]);
+
+  useEffect(() => {
+    if (editorSubstance != null && editorSettings != null) {
+      const editorNavBarItems = editorSubstance()?.getNavbarItems() ?? [];
+      setNavBarItems(editorNavBarItems);
+    }
+  }, [editorSettings, editorSubstance]);
 
   if (editorSettings == null) {
     return <></>;
