@@ -15,7 +15,7 @@ import {
 import { OnDuplicatedFunction, OnRenamedFunction, OnDeletedFunction } from '~/interfaces/ui';
 import {
   useCurrentPageId, useCurrentPathname, useIsNotFound,
-  useCurrentUser, useIsGuestUser, useIsSharedUser, useShareLinkId, useTemplateTagData, useIsContainerFluid,
+  useCurrentUser, useIsGuestUser, useIsSharedUser, useShareLinkId, useTemplateTagData, useIsContainerFluid, useIsIdenticalPath,
 } from '~/stores/context';
 import { usePageTagsForEditors } from '~/stores/editor';
 import {
@@ -201,6 +201,7 @@ const GrowiContextualSubNavigation = (props: GrowiContextualSubNavigationProps):
   const { data: pageId } = useCurrentPageId();
   const { data: currentUser } = useCurrentUser();
   const { data: isNotFound } = useIsNotFound();
+  const { data: isIdenticalPath } = useIsIdenticalPath();
   const { data: isGuestUser } = useIsGuestUser();
   const { data: isSharedUser } = useIsSharedUser();
   const { data: isContainerFluid } = useIsContainerFluid();
@@ -413,7 +414,7 @@ const GrowiContextualSubNavigation = (props: GrowiContextualSubNavigationProps):
       mutateEditorMode, switchContentWidthHandler]);
 
 
-  const pagePath = isNotFound
+  const pagePath = isIdenticalPath || isNotFound
     ? currentPathname
     : currentPage?.path;
 
