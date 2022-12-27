@@ -18,11 +18,14 @@ export const NoLoginLayout = ({
 }: Props): JSX.Element => {
 
   const { data: appTitle } = useAppTitle();
+
+  const classNames: string[] = [''];
   if (className != null) {
     classNames.push(className);
   }
+
   return (
-    <RawLayout className={`nologin ${commonStyles.nologin}`}>
+    <RawLayout className={`nologin ${commonStyles.nologin} ${classNames}`}>
       <div className="page-wrapper">
         <div className="main container-fluid">
 
