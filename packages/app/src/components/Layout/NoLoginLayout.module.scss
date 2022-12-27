@@ -2,65 +2,44 @@
 
 
 .nologin :global {
-  #page-wrapper {
-    background: none;
-  }
+  height: 100vh;
 
   // layout
-  #wrapper {
+  .page-wrapper {
+    display: flex;
+    align-items: center;
     height: 100vh;
+    margin-top: 0px;
 
-    #page-wrapper {
-      display: flex;
-      align-items: center;
-      height: 100vh;
-      margin-top: 0px;
+    .main {
+      width: 100vw;
 
-      .main {
-        width: 100vw;
-
-        > .row {
-          margin-right: 20px;
-          margin-left: 20px;
-        }
-
-        .noLogin-header {
-          display: flex;
-          flex-direction: column;
-          align-items: center;
-          padding-top: 30px;
-          padding-bottom: 10px;
-        }
-
-        .noLogin-form-errors {
-          width: 100%;
-
-          .alert {
-            padding: 5px;
-            margin-top: 10px;
-            margin-bottom: 0;
-
-            ul {
-              padding-left: 1.5em;
-            }
-          }
-        }
+      > .row {
+        margin-right: 20px;
+        margin-left: 20px;
       }
 
-      // .main
-    }
+      .nologin-header {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        padding-top: 30px;
+        padding-bottom: 10px;
+      }
 
-    // #page-wrapper
+    }
   }
 
-  // #wrapper
-
   // styles
-  .noLogin-header {
+  .nologin-header {
     h1 {
       font-size: 22px;
       line-height: 1em;
     }
+  }
+
+  .alert {
+    padding: 0.5em 1em 0.5em 2em;
   }
 
   .input-group {
@@ -132,8 +111,8 @@
       transition: color 0.8s;
     }
   }
-  .noLogin-header,
-  .noLogin-dialog {
+  .nologin-header,
+  .nologin-dialog {
     max-width: 480px;
   }
 }

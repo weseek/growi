@@ -85,7 +85,7 @@ const CompleteUserRegistrationForm: React.FC<Props> = (props: Props) => {
 
   return (
     <>
-      <div className="noLogin-dialog mx-auto" id="noLogin-dialog">
+      <div className="nologin-dialog mx-auto" id="nologin-dialog">
         <div className="row mx-0">
           <div className="col-12">
 

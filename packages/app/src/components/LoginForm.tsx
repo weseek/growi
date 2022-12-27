@@ -505,7 +505,7 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
   }
 
   return (
-    <div className="noLogin-dialog mx-auto" id="noLogin-dialog" data-testid="login-form">
+    <div className="nologin-dialog mx-auto" id="nologin-dialog" data-testid="login-form">
       <div className="row mx-0">
         <div className="col-12">
           <ReactCardFlip isFlipped={isRegistering} flipDirection="horizontal" cardZIndex="3">

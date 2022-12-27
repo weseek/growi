@@ -86,7 +86,7 @@ const LoginPage: NextPage<CommonProps> = () => {
   return (
     <NoLoginLayout className={classNames.join(' ')}>
       <div className="mb-4 login-form-errors text-center">
-        <div className='noLogin-dialog pb-4 mx-auto'>
+        <div className='nologin-dialog pb-4 mx-auto'>
           <div className="col-12">
             {loginErrorElm}
           </div>
