@@ -152,7 +152,7 @@ type Props = CommonProps & {
   isIdenticalPathPage?: boolean,
   isForbidden: boolean,
   isNotFound: boolean,
-  isNotCreatablePage: boolean,
+  isNotCreatable: boolean,
   // isAbleToDeleteCompletely: boolean,
 
   templateTagData?: string[],
@@ -218,6 +218,7 @@ const Page: NextPageWithLayout<Props> = (props: Props) => {
   // useOwnerOfCurrentPage(props.pageUser != null ? JSON.parse(props.pageUser) : null);
   useIsForbidden(props.isForbidden);
   useIsNotFound(props.isNotFound);
+  useIsNotCreatable(props.isNotCreatable);
   useRedirectFrom(props.redirectFrom);
   useIsSharedUser(false); // this page cann't be routed for '/share'
   useIsIdenticalPath(props.isIdenticalPathPage ?? false);
@@ -469,17 +470,18 @@ async function injectRoutingInformation(context: GetServerSidePropsContext, prop
   const page = props.pageWithMeta?.data;
 
   if (props.isIdenticalPathPage) {
-    // TBD
+    props.isNotCreatable = true;
   }
   else if (page == null) {
     props.isNotFound = true;
-    props.isNotCreatablePage = !isCreatablePage(currentPathname);
+    props.isNotCreatable = !isCreatablePage(currentPathname);
     // check the page is forbidden or just does not exist.
     const count = isPermalink ? await Page.count({ _id: pageId }) : await Page.count({ path: currentPathname });
     props.isForbidden = count > 0;
   }
   else {
     props.isNotFound = page.isEmpty;
+    props.isNotCreatable = false;
     // /62a88db47fed8b2d94f30000 ==> /path/to/page
     if (isPermalink && page.isEmpty) {
       props.currentPathname = page.path;

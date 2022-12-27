@@ -473,7 +473,7 @@ export const useIsAbleToShowPageEditorModeManager = (): SWRResponse<boolean, Err
   const includesUndefined = [isEditable, isSharedUser].some(v => v === undefined);
 
   return useSWRImmutable(
-    includesUndefined ? null : key,
+    includesUndefined ? null : [key, isEditable, isSharedUser],
     () => !!isEditable && !isSharedUser,
   );
 };
