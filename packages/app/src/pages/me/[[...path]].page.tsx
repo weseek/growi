@@ -3,7 +3,7 @@ import React, { useMemo } from 'react';
 import { IUserHasId } from '@growi/core';
 import { model as mongooseModel } from 'mongoose';
 import {
-  NextPage, GetServerSideProps, GetServerSidePropsContext,
+  GetServerSideProps, GetServerSidePropsContext,
 } from 'next';
 import { useTranslation } from 'next-i18next';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
@@ -28,10 +28,10 @@ import {
 } from '~/stores/ui';
 import loggerFactory from '~/utils/logger';
 
+import { NextPageWithLayout } from '../_app.page';
 import {
   CommonProps, getNextI18NextConfig, getServerSideCommonProps, generateCustomTitle,
 } from '../utils/commons';
-import { NextPageWithLayout } from '../_app.page';
 
 
 const logger = loggerFactory('growi:pages:me');
@@ -185,7 +185,7 @@ async function injectServerConfigurations(context: GetServerSidePropsContext, pr
     blockdiagUri: process.env.BLOCKDIAG_URI ?? null,
 
     // XSS Options
-    isEnabledXssPrevention: configManager.getConfig('markdown', 'markdown:xss:isEnabledPrevention'),
+    isEnabledXssPrevention: configManager.getConfig('markdown', 'markdown:rehypeSanitize:isEnabledPrevention'),
     attrWhiteList: crowi.xssService.getAttrWhiteList(),
     tagWhiteList: crowi.xssService.getTagWhiteList(),
     highlightJsStyleBorder: crowi.configManager.getConfig('crowi', 'customize:highlightJsStyleBorder'),

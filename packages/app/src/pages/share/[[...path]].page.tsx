@@ -170,7 +170,7 @@ function injectServerConfigurations(context: GetServerSidePropsContext, props: P
     blockdiagUri: process.env.BLOCKDIAG_URI ?? null,
 
     // XSS Options
-    isEnabledXssPrevention: configManager.getConfig('markdown', 'markdown:xss:isEnabledPrevention'),
+    isEnabledXssPrevention: configManager.getConfig('markdown', 'markdown:rehypeSanitize:isEnabledPrevention'),
     attrWhiteList: xssService.getAttrWhiteList(),
     tagWhiteList: xssService.getTagWhiteList(),
     highlightJsStyleBorder: configManager.getConfig('crowi', 'customize:highlightJsStyleBorder'),
