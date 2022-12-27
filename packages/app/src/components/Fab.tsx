@@ -61,6 +61,7 @@ export const Fab = (): JSX.Element => {
     };
   }, [stickyChangeHandler]);
 
+  // TODO: Flickering occurs when moving page if "currentPath" or "openCreateModal" is set to useCallback dependencies.
   const PageCreateButton = useCallback(() => {
     return (
       <div className={`rounded-circle position-absolute ${animateClasses}`} style={{ bottom: '2.3rem', right: '4rem' }}>
@@ -76,7 +77,8 @@ export const Fab = (): JSX.Element => {
         </button>
       </div>
     );
-  }, [animateClasses, buttonClasses, currentPath, openCreateModal]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [animateClasses, buttonClasses]); // , currentPath, openCreateModal]);
 
   const ScrollToTopButton = useCallback(() => {
     const clickHandler = () => {
