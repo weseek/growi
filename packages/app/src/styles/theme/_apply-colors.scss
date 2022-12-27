@@ -104,16 +104,16 @@ code:not([class^='language-']) {
 ul.pagination {
   li.page-item.disabled {
     button.page-link {
-      color: #{$gray-400};
+      color: $gray-400;
     }
   }
   li.page-item.active {
     button.page-link {
-      color: #{hsl.contrast(var(--primary))};
+      color: hsl.contrast(var(--primary));
       background-color: var(--primary);
       &:hover,
       &:focus {
-        color: #{hsl.contrast(var(--primary))};
+        color: hsl.contrast(var(--primary));
         background-color: var(--primary);
       }
     }
@@ -155,11 +155,11 @@ ul.pagination {
   &:hover {
     svg {
       .group1 {
-        fill: #{var.$growi-green};
+        fill: var.$growi-green;
       }
 
       .group2 {
-        fill: #{var.$growi-blue};
+        fill: var.$growi-blue;
       }
     }
   }
@@ -186,12 +186,12 @@ ul.pagination {
 
   // for https://youtrack.weseek.co.jp/issue/GW-2603
   .search-typeahead {
-    background-color: #{hsl.alpha(var(--bgcolor-global),10%)};
+    background-color: hsl.alpha(var(--bgcolor-global),10%);
   }
 }
 
 .grw-sidebar {
-  $color-resize-button: var(--color-resize-button--,var(--color-global));
+  $color-resize-button: var(--color-resize-button,var(--color-global));
   $bgcolor-resize-button: var(--bgcolor-resize-button,white);
   $color-resize-button-hover: var(--color-resize-button-hover,var(--color-reversal));
   $bgcolor-resize-button-hover: var(--bgcolor-resize-button-hover,#{hsl.lighten(var(--bgcolor-resize-button), 5%)});
@@ -240,7 +240,7 @@ ul.pagination {
       }
       // fukidashi
       &:after {
-        border-right-color: var(--bgcolor-sidebar-context);
+        border-right-color: var(--bgcolor-sidebar-context) !important;
       }
     }
   }
@@ -297,10 +297,10 @@ ul.pagination {
         }
 
         .grw-recent-changes-item-lower {
-          color: #{$gray-500};
+          color: $gray-500;
 
           svg {
-            fill: #{$gray-500};
+            fill: $gray-500;
           }
         }
       }
@@ -330,7 +330,7 @@ ul.pagination {
       color: $color-modal-header;
     }
     .close {
-      color: #{hsl.alpha(var(--primary),50%)};
+      color: hsl.alpha(var(--primary),50%);
 
       &:hover {
         opacity: 0.9;
@@ -351,7 +351,7 @@ ul.pagination {
   .nav-item {
     &:hover,
     &:focus {
-      background-color: #{hsl.alpha(var(--color-link),10%)};
+      background-color: hsl.alpha(var(--color-link),10%);
     }
     .nav-link {
       -webkit-appearance: none;
@@ -395,7 +395,7 @@ ul.pagination {
 
 .admin-bot-card {
   .grw-botcard-title-active {
-    color: #{$gray-200};
+    color: $gray-200;
   }
 }
 
@@ -404,7 +404,7 @@ ul.pagination {
  */
 .admin-page {
   span.slider {
-    background-color: #{$gray-300};
+    background-color: $gray-300;
 
     &:before {
       background-color: white;
@@ -488,7 +488,7 @@ ul.pagination {
 
       &.list-group-item-action {
         &.active {
-          background-color: #{hsl.lighten(var(--bgcolor-global),76%)};
+          background-color: hsl.lighten(var(--bgcolor-global),76%);
           border-left-color: var(--primary);
         }
       }
@@ -501,7 +501,7 @@ ul.pagination {
  */
 .layout-root.editing {
   .main {
-    background-color: #{hsl.darken(var(--bgcolor-global),2%)};
+    background-color: hsl.darken(var(--bgcolor-global),2%);
 
     .page-editor-editor-container {
       border-right-color: var(--border-color-theme);
@@ -543,7 +543,7 @@ body.editing-sidebar {
 }
 
 .grid-preview-col-0 {
-  background: #{var.$growi-blue};
+  background: var.$growi-blue;
 }
 
 .grid-preview-col-1 {
@@ -555,7 +555,7 @@ body.editing-sidebar {
 }
 
 .grid-preview-col-3 {
-  background: #{var.$growi-green};
+  background: var.$growi-green;
 }
 
 /*
@@ -584,8 +584,8 @@ body.editing-sidebar {
     .nav.nav-tabs {
       > li > a.active {
         background: transparent;
-        border-bottom: solid 1px #{hsl.darken(var(--bgcolor-global),4%)};
-        border-bottom-color: #{hsl.darken(var(--bgcolor-global),4%)};
+        border-bottom: solid 1px hsl.darken(var(--bgcolor-global),4%);
+        border-bottom-color: hsl.darken(var(--bgcolor-global),4%);
       }
     }
   }
@@ -620,7 +620,7 @@ mark.rbt-highlight-text {
  * GROWI page content footer
  */
 .page-content-footer {
-  background-color: #{hsl.darken(var(--bgcolor-global),2%)};
+  background-color: hsl.darken(var(--bgcolor-global),2%);
   border-top-color: var(--border-color-theme);
 }
 
@@ -658,11 +658,11 @@ mark.rbt-highlight-text {
 
 .grw-fab {
   .btn-create-page {
-    fill: #{hsl.contrast(var(--primary))};
+    fill: hsl.contrast(var(--primary)) !important;
   }
 
   .btn-scroll-to-top {
-    fill: #{$gray-900};
+    fill: $gray-900;
   }
 }
 

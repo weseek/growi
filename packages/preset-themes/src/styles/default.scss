@@ -89,6 +89,7 @@
   --bgcolor-sidebar-l: var(--primary-l);
   --bgcolor-sidebar-nav-item-active: rgba(black, 0.37); // optional
   --text-shadow-sidebar-nav-item-active: 0px 0px 10px #0099ff; // optional
+
   // Sidebar resize button
   --color-resize-button: var(--color-reversal);
   --bgcolor-resize-button: var(--accent);
@@ -96,6 +97,7 @@
   --bgcolor-resize-button-l: var(--accent-l);
   --color-resize-button-hover: var(--color-reversal);
   --bgcolor-resize-button-hover: #{hsl.lighten(var(--bgcolor-resize-button), 5%)};
+
   // Sidebar contents
   --color-sidebar-context: var(--color-global);
   --color-sidebar-context-hs: var(--color-global-hs);
@@ -103,6 +105,7 @@
   --bgcolor-sidebar-context: #{hsl.lighten(var(--primary),77%)};
   --bgcolor-sidebar-context-hs: var(--primary-hs);
   --bgcolor-sidebar-context-l: calc(var(--primary-l) + 77%);
+
   // Sidebar list group
   --bgcolor-sidebar-list-group: #{$gray-50}; // optional
 
@@ -150,7 +153,7 @@
 :root[data-theme='dark'] {
   --primary: hsl(var(--primary-hs),var(--primary-l));
   --primary-hs: 216.8,85.1%;
-  --prymary-l: 44.7;
+  --primary-l: 44.7%;
   --accent: hsl(var(--accent-hs),var(--accent-l));
   --accent-hs: 307,100%;
   --accent-l: 43%;
@@ -208,11 +211,14 @@
   --fillcolor-logo-mark: #{$gray-700};
 
   // Sidebar
-  --bgcolor-sidebar: hsl(var(--bgcolor-sidebar-hs),var(---gcolor-sidebar-l));
+  --bgcolor-sidebar: hsl(var(--bgcolor-sidebar-hs),var(--bgcolor-sidebar-l));
   --bgcolor-sidebar-hs: 216.7,65%;
-  --bgcolor-sidebar-l: 33.3%;
+  --bgcolor-sidebar-l: 20.2%;
   --bgcolor-sidebar-nav-item-active: rgba(#969494, 0.3); // optional
   --text-shadow-sidebar-nav-item-active: 0px 0px 10px #0099ff; // optional
+  --bgcolor-sidebar-context: hsl(var(--bgcolor-sidebar-context-hs),var(--bgcolor-sidebar-context-l));
+  --bgcolor-sidebar-context-hs: 228,12%;
+  --bgcolor-sidebar-context-l: 16%;
   // Sidebar resize button
   --color-resize-button: white;
   --bgcolor-resize-button: var(--accent);
@@ -226,7 +232,9 @@
   --bgcolor-sidebar-list-group: #1c2a3e; // optional
 
   // Subnavigation
-  --bgcolor-subnav: --bgcolor-list-hover: #{hsl.lighten(var(--bgcolor-global),3%)};  // optional
+  --bgcolor-subnav: hsl(var(--bgcolor-subnav-hs),var(--bgcolor-subnav-l));
+  --bgcolor-subnav-hs: var(--bgcolor-global-hs);
+  --bgcolor-subnav-l: calc(var(--bgcolor-global-l) + 4%);
 
   // Tabs
   --bordercolor-nav-tabs: #{$gray-700}; // optional
