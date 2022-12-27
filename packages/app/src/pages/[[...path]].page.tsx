@@ -221,7 +221,7 @@ const Page: NextPageWithLayout<Props> = (props: Props) => {
   useIsForbidden(props.isForbidden);
   useIsNotFound(props.isNotFound);
   useIsNotCreatable(props.isNotCreatable);
-  useRedirectFrom(props.redirectFrom);
+  useRedirectFrom(props.redirectFrom ?? null);
   useIsSharedUser(false); // this page cann't be routed for '/share'
   useIsIdenticalPath(props.isIdenticalPathPage ?? false);
   useIsEnabledStaleNotification(props.isEnabledStaleNotification);
