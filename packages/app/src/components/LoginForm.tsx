@@ -16,6 +16,10 @@ import { toArrayIfNot } from '~/utils/array-utils';
 
 import { CompleteUserRegistration } from './CompleteUserRegistration';
 
+
+import styles from './LoginForm.module.scss';
+
+
 type LoginFormProps = {
   username?: string,
   name?: string,
@@ -505,39 +509,41 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
   }
 
   return (
-    <div className="noLogin-dialog mx-auto" id="noLogin-dialog" data-testid="login-form">
-      <div className="row mx-0">
-        <div className="col-12">
-          <ReactCardFlip isFlipped={isRegistering} flipDirection="horizontal" cardZIndex="3">
-            <div className="front">
-              {isLocalOrLdapStrategiesEnabled && renderLocalOrLdapLoginForm()}
-              {isSomeExternalAuthEnabled && renderExternalAuthLoginForm()}
-              {isLocalOrLdapStrategiesEnabled && isPasswordResetEnabled && (
-                <div className="text-right mb-2">
-                  <a href="/forgot-password" className="d-block link-switch">
-                    <i className="icon-key"></i> {t('forgot_password.forgot_password')}
-                  </a>
-                </div>
-              )}
-              {/* Sign up link */}
-              {isRegistrationEnabled && (
-                <div className="text-right mb-2">
-                  <a href="#register" id="register" className="link-switch" onClick={switchForm}>
-                    <i className="ti ti-check-box"></i> {t('Sign up is here')}
-                  </a>
-                </div>
-              )}
-            </div>
-            <div className="back">
-              {/* Register form for /login#register */}
-              {isRegistrationEnabled && renderRegisterForm()}
-            </div>
-          </ReactCardFlip>
+    <div className={`login-form ${styles['login-form']}`}>
+      <div className="nologin-dialog mx-auto" id="nologin-dialog" data-testid="login-form">
+        <div className="row mx-0">
+          <div className="col-12">
+            <ReactCardFlip isFlipped={isRegistering} flipDirection="horizontal" cardZIndex="3">
+              <div className="front">
+                {isLocalOrLdapStrategiesEnabled && renderLocalOrLdapLoginForm()}
+                {isSomeExternalAuthEnabled && renderExternalAuthLoginForm()}
+                {isLocalOrLdapStrategiesEnabled && isPasswordResetEnabled && (
+                  <div className="text-right mb-2">
+                    <a href="/forgot-password" className="d-block link-switch">
+                      <i className="icon-key"></i> {t('forgot_password.forgot_password')}
+                    </a>
+                  </div>
+                )}
+                {/* Sign up link */}
+                {isRegistrationEnabled && (
+                  <div className="text-right mb-2">
+                    <a href="#register" id="register" className="link-switch" onClick={switchForm}>
+                      <i className="ti ti-check-box"></i> {t('Sign up is here')}
+                    </a>
+                  </div>
+                )}
+              </div>
+              <div className="back">
+                {/* Register form for /login#register */}
+                {isRegistrationEnabled && renderRegisterForm()}
+              </div>
+            </ReactCardFlip>
+          </div>
         </div>
+        <a href="https://growi.org" className="link-growi-org pl-3">
+          <span className="growi">GROWI</span>.<span className="org">ORG</span>
+        </a>
       </div>
-      <a href="https://growi.org" className="link-growi-org pl-3">
-        <span className="growi">GROWI</span>.<span className="org">ORG</span>
-      </a>
     </div>
   );
 

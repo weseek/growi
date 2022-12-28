@@ -120,7 +120,6 @@ $color-link-wiki-hover: lighten($color-link-wiki, 15%);
     background: $themelight;
   }
 
-  #wrapper > #page-wrapper,
   .page-editor-preview-container {
     background-image: url('/images/themes/christmas/christmas.jpg');
     background-attachment: fixed;
@@ -129,6 +128,8 @@ $color-link-wiki-hover: lighten($color-link-wiki, 15%);
 
   // login page
   .nologin {
+    background: unset !important;
+
     .input-group {
       .input-group-text {
         color: $gray-700;
@@ -140,8 +141,8 @@ $color-link-wiki-hover: lighten($color-link-wiki, 15%);
       }
     }
 
-    .noLogin-header,
-    .noLogin-dialog {
+    .nologin-header,
+    .nologin-dialog {
       background-color: rgba(#ccc, 0.5);
     }
     .link-switch {

@@ -84,7 +84,7 @@ export const InvitedForm = (props: InvitedFormProps): JSX.Element => {
   }
 
   return (
-    <div className="noLogin-dialog px-3 pb-3 mx-auto" id="noLogin-dialog">
+    <div className="nologin-dialog px-3 pb-3 mx-auto" id="nologin-dialog">
       { formNotification() }
       <form role="form" onSubmit={submitHandler} id="invited-form">
         {/* Email Form */}

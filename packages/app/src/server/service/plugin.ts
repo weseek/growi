@@ -54,10 +54,15 @@ export class PluginService implements IPluginService {
       // if not exists repository in file system, download latest plugin repository
       for await (const growiPlugin of growiPlugins) {
         const pluginPath = path.join(pluginStoringPath, growiPlugin.installedPath);
+        const organizationName = path.join(pluginStoringPath, growiPlugin.organizationName);
         if (fs.existsSync(pluginPath)) {
           continue;
         }
         else {
+          if (!fs.existsSync(organizationName)) {
+            fs.mkdirSync(organizationName);
+          }
+
           // TODO: imprv Document version and repository version possibly different.
           const ghUrl = new URL(growiPlugin.origin.url);
           const ghPathname = ghUrl.pathname;
@@ -122,6 +127,7 @@ export class PluginService implements IPluginService {
     const unzippedReposPath = path.join(pluginStoringPath, `${ghReposName}-${ghBranch}`);
     const temporaryReposPath = path.join(pluginStoringPath, ghReposName);
     const reposStoringPath = path.join(pluginStoringPath, `${installedPath}`);
+    const organizationPath = path.join(pluginStoringPath, ghOrganizationName);
 
 
     let plugins: GrowiPlugin<GrowiPluginMeta>[];
@@ -134,6 +140,8 @@ export class PluginService implements IPluginService {
 
       // detect plugins
       plugins = await PluginService.detectPlugins(origin, ghOrganizationName, ghReposName);
+
+      if (!fs.existsSync(organizationPath)) fs.mkdirSync(organizationPath);
 
       // remove the old repository from the storing path
       if (fs.existsSync(reposStoringPath)) await fs.promises.rm(reposStoringPath, { recursive: true });
@@ -252,6 +260,7 @@ export class PluginService implements IPluginService {
     const plugin = {
       isEnabled: true,
       installedPath: `${ghOrganizationName}/${ghReposName}`,
+      organizationName: ghOrganizationName,
       origin,
       meta: {
         name: growiPlugin.name ?? packageName,

@@ -261,15 +261,15 @@ const Editor: ForwardRefRenderFunction<IEditorMethods, EditorPropsType> = (props
   }, [isCheatsheetModalShown]);
 
   const isReadyToRenderEditor = editorSettings != null;
-  const editorRef = editorSubstance();
 
   // https://redmine.weseek.co.jp/issues/111731
   useEffect(() => {
+    const editorRef = editorSubstance();
     if (isReadyToRenderEditor && editorRef != null) {
       const editorNavBarItems = editorRef.getNavbarItems() ?? [];
       setNavBarItems(editorNavBarItems);
     }
-  }, [editorRef, isReadyToRenderEditor]);
+  }, [editorSubstance, isReadyToRenderEditor]);
 
   if (!isReadyToRenderEditor) {
     return <></>;
