@@ -32,10 +32,6 @@ export const Fab = (): JSX.Element => {
   const createBtnRef = useRef(null);
   useRipple(createBtnRef, { rippleColor: 'rgba(255, 255, 255, 0.3)' });
 
-  /*
-  * TODO: Comment out to prevent err >>> TypeError: Cannot read properties of null (reading 'bottom')
-  *       We need add style={{ position: 'relative }} to child elements if disable StickyEvents. see: use grep = "<Fab".
-  */
   const stickyChangeHandler = useCallback((event) => {
     logger.debug('StickyEvents.CHANGE detected');
 
