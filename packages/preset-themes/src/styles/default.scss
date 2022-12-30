@@ -136,9 +136,6 @@
   // admin theme box
   --color-theme-color-box: #{hsl.lighten(var(--primary), 20%)};
 
-  @import './theme/apply-colors';
-  @import './theme/apply-colors-light';
-
   // Button
   .btn-group.grw-page-editor-mode-manager {
     .btn.btn-outline-primary {
@@ -172,7 +169,7 @@
   --color-global-l: 74%;
   --color-reversal: #{$gray-900};
   // --color-header: desaturate($primary, 20%);
-  --color-link: #7b9ad5;
+  --color-link: hsl(var(----color-link-hs),var(--color-link-l));
   --color-link-hs: 219.3,51.7%;
   --color-link-l: 65.9%;
   --color-link-hover: #{hsl.lighten(var(--color-link),10%)};
@@ -202,7 +199,7 @@
   --bgcolor-navbar: #2a2929;
   --bgcolor-search-top-dropdown: var(--accent);
   --bgcolor-search-top-dropdown-hs: var(--accent-hs);
-  --bgcolor-search-top-dropdown-l: (var(--accent-l));
+  --bgcolor-search-top-dropdown-l: var(--accent-l);
   --border-image-navbar: linear-gradient(to right, #44bfe3 0%, #b04aff 50%, #ff1794 100%);
 
   // Logo colors
@@ -256,9 +253,6 @@
 
   // admin theme box
   --color-theme-color-box: var(--primary);
-
-  @import './theme/apply-colors';
-  @import './theme/apply-colors-dark';
 
   //Button
   .btn-group.grw-page-editor-mode-manager {
