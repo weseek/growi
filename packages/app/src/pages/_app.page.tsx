@@ -19,8 +19,9 @@ import { CommonProps } from './utils/commons';
 import { registerTransformerForObjectId } from './utils/objectid-transformer';
 
 import '~/styles/style-app.scss';
-import '~/styles/theme/_apply-colors.scss';
 import '~/styles/theme/_apply-colors-light.scss';
+import '~/styles/theme/_apply-colors-dark.scss';
+import '~/styles/theme/_apply-colors.scss';
 
 const isDev = process.env.NODE_ENV === 'development';
 
