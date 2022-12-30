@@ -87,6 +87,7 @@ code:not([class^='language-']) {
 // Form
 .form-control {
   @include form-control-focus();
+  border: none;
 }
 
 // Tabs
@@ -290,7 +291,7 @@ ul.pagination {
   .grw-recent-changes {
     .list-group {
       .list-group-item {
-        background-color: transparent;
+        background-color: transparent !important;
 
         .icon-lock {
           color: var(--color-link);
@@ -467,6 +468,7 @@ ul.pagination {
   // List group
   .list-group {
     .list-group-item {
+      background-color: var(--bgcolor-global) !important;
       a {
         svg {
           fill: var(--color-global);
@@ -487,8 +489,8 @@ ul.pagination {
       }
 
       &.list-group-item-action {
+        background-color: var(--bgcolor-list);
         &.active {
-          background-color: hsl.lighten(var(--bgcolor-global),76%);
           border-left-color: var(--primary);
         }
       }
