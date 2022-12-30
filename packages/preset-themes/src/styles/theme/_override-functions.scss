@@ -1,21 +1,21 @@
-@use './hsl-functions' as hsl;
+// @use './hsl-functions' as hsl;
 
-@function color-yiq($color, $dark: $yiq-text-dark, $light: $yiq-text-light) {
-  @return hsl.contrast($color);
-}
+// @function color-yiq($color, $dark: $yiq-text-dark, $light: $yiq-text-light) {
+//   @return hsl.contrast($color);
+// }
 
-@function lighten($color, $degrees) {
-  @return hsl.lighten($color, $degrees);
-}
+// @function lighten($color, $degrees) {
+//   @return hsl.lighten($color, $degrees);
+// }
 
-@function darken($color, $degrees) {
-  @return hsl.darken($color, $degrees);
-}
+// @function darken($color, $degrees) {
+//   @return hsl.darken($color, $degrees);
+// }
 
-@function mix($color1, $color2, $degrees) {
-  @return $color1;
-}
+// @function mix($color1, $color2, $degrees) {
+//   @return $color1;
+// }
 
-@function rgba($color, $degrees) {
-  @return hsl.alpha($color, $degrees);
-}
+// @function rgba($color, $degrees) {
+//   @return hsl.alpha($color, $degrees);
+// }
