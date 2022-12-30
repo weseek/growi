@@ -136,9 +136,6 @@
   // admin theme box
   --color-theme-color-box: #{hsl.lighten(var(--primary), 20%)};
 
-  @import './theme/apply-colors';
-  @import './theme/apply-colors-light';
-
   // Button
   .btn-group.grw-page-editor-mode-manager {
     .btn.btn-outline-primary {
@@ -256,9 +253,6 @@
 
   // admin theme box
   --color-theme-color-box: var(--primary);
-
-  @import './theme/apply-colors';
-  @import './theme/apply-colors-dark';
 
   //Button
   .btn-group.grw-page-editor-mode-manager {
