@@ -1,9 +1,9 @@
-{{ username }} commented on {{ path }}.
+<%- username }} commented on {{ path -%>.
 
 ----------------------
 
-{{ comment }}
+<%- comment -%>
 
 ----------------------
 
-Growi: {{ appTitle }}
+Growi: <%- appTitle -%>

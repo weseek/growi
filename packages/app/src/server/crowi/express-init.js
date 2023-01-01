@@ -2,8 +2,6 @@ import { manifestPath as presetThemesManifestPath } from '@growi/preset-themes';
 import csrf from 'csurf';
 import mongoose from 'mongoose';
 
-import { i18n, localePath } from '^/config/next-i18next.config';
-
 import loggerFactory from '~/utils/logger';
 import { resolveFromRoot } from '~/utils/project-dir-utils';
 
@@ -22,8 +20,6 @@ module.exports = function(crowi, app) {
   const expressSession = require('express-session');
   const flash = require('connect-flash');
   const mongoSanitize = require('express-mongo-sanitize');
-  const swig = require('swig-templates');
-  const webpackAssets = require('express-webpack-assets');
   // const i18next = require('i18next');
   // const i18nFsBackend = require('i18next-node-fs-backend');
   // const i18nSprintf = require('i18next-sprintf-postprocessor');
@@ -122,10 +118,6 @@ module.exports = function(crowi, app) {
   ));
   app.use('/static/plugins', express.static(path.resolve(__dirname, '../../../tmp/plugins')));
 
-  app.engine('html', swig.renderFile);
-  // app.set('view cache', false);  // Default: true in production, otherwise undefined. -- 2017.07.04 Yuki Takei
-  app.set('view engine', 'html');
-  app.set('views', crowi.viewsDir);
   app.use(methodOverride());
 
   // inject rawBody to req
@@ -172,10 +164,6 @@ module.exports = function(crowi, app) {
   app.use(registerSafeRedirect);
   app.use(injectCurrentuserToLocalvars);
   app.use(autoReconnectToS2sMsgServer);
-
-  const middlewares = require('../util/middlewares')(crowi, app);
-  app.use(middlewares.swigFilters(swig));
-  app.use(middlewares.swigFunctions());
 
   // app.use(i18nMiddleware.handle(i18next));
   // TODO: Remove this workaround implementation when i18n works correctly.

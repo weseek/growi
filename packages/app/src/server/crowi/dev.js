@@ -8,8 +8,6 @@ import loggerFactory from '~/utils/logger';
 
 import nextFactory from '../routes/next';
 
-const swig = require('swig-templates');
-
 const logger = loggerFactory('growi:crowi:dev');
 
 
