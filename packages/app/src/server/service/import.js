@@ -396,7 +396,7 @@ class ImportService {
       // https://regex101.com/r/mD4eZs/6
       // prevent from unexpecting attack doing unzip file (path traversal attack)
       // FOR EXAMPLE
-      // ../../src/server/example.html
+      // ../../src/server/views/admin/markdown.html
       if (fileName.match(/(\.\.\/|\.\.\\)/)) {
         logger.error('File path is not appropriate.', fileName);
         return;
