@@ -1,3 +1,5 @@
+import { promisify } from 'util';
+
 import ejs from 'ejs';
 import nodemailer from 'nodemailer';
 
@@ -8,6 +10,7 @@ import S2sMessage from '../models/vo/s2s-message';
 import { S2sMessageHandlable } from './s2s-messaging/handlable';
 
 const logger = loggerFactory('growi:service:mail');
+
 
 type MailConfig = {
   to?: string,
@@ -191,8 +194,10 @@ class MailService implements S2sMessageHandlable {
       throw new Error('Mailer is not completed to set up. Please set up SMTP or AWS setting.');
     }
 
+    const renderFilePromisified = promisify(ejs.renderFile);
+
     const templateVars = config.vars || {};
-    const output = ejs.render(
+    const output = await renderFilePromisified(
       config.template,
       templateVars,
     );
