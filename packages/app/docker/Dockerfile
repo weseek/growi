@@ -1,7 +1,5 @@
 # syntax = docker/dockerfile:1.4
 
-ARG flavor=default
-
 
 ##
 ## packages-json-picker
@@ -63,9 +61,9 @@ RUN tar -cf node_modules.tar \
 
 
 ##
-## prebuilder-default
+## prebuilder
 ##
-FROM node:16-slim AS prebuilder-default
+FROM node:16-slim AS prebuilder
 
 ENV optDir /opt
 
@@ -80,20 +78,11 @@ RUN tar -xf node_modules.tar
 RUN rm node_modules.tar
 
 
-##
-## prebuilder-nocdn
-##
-FROM prebuilder-default AS prebuilder-nocdn
-
-# add dotenv file for NO_CDN
-COPY packages/app/docker/nocdn/.env.production.local ${optDir}/packages/app/
-
-
 
 ##
 ## builder
 ##
-FROM prebuilder-${flavor} AS builder
+FROM prebuilder AS builder
 
 ENV optDir /opt
 
