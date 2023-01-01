@@ -1,3 +1,4 @@
+import ejs from 'ejs';
 import nodemailer from 'nodemailer';
 
 import loggerFactory from '~/utils/logger';
@@ -191,7 +192,7 @@ class MailService implements S2sMessageHandlable {
     }
 
     const templateVars = config.vars || {};
-    const output = await swig.renderFile(
+    const output = ejs.render(
       config.template,
       templateVars,
     );
