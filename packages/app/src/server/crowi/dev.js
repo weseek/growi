@@ -97,33 +97,6 @@ class CrowiDev {
     this.setupNextjsStackFrame(app);
   }
 
-  // setupHeaderDebugger(app) {
-  //   logger.debug('setupHeaderDebugger');
-
-  //   app.use((req, res, next) => {
-  //     onHeaders(res, () => {
-  //       logger.debug('HEADERS GOING TO BE WRITTEN');
-  //     });
-  //     next();
-  //   });
-  // }
-
-  // setupBrowserSync(app) {
-  //   logger.debug('setupBrowserSync');
-
-  //   const browserSync = require('browser-sync');
-  //   const bs = browserSync.create().init({
-  //     logSnippet: false,
-  //     notify: false,
-  //     files: [
-  //       `${this.crowi.viewsDir}/**/*.html`,
-  //       `${this.crowi.publicDir}/**/*.js`,
-  //       `${this.crowi.publicDir}/**/*.css`,
-  //     ],
-  //   });
-  //   app.use(require('connect-browser-sync')(bs));
-  // }
-
   setupNextBundleAnalyzer(app) {
     const next = nextFactory(this.crowi);
     app.use('/analyze', express.static(path.resolve(__dirname, '../../../.next/analyze')));
