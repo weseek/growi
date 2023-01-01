@@ -1,9 +1,9 @@
 import nodemailer from 'nodemailer';
-import swig from 'swig-templates';
 
 import loggerFactory from '~/utils/logger';
 
 import S2sMessage from '../models/vo/s2s-message';
+
 import { S2sMessageHandlable } from './s2s-messaging/handlable';
 
 const logger = loggerFactory('growi:service:mail');
