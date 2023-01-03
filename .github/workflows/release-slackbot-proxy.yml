@@ -43,7 +43,7 @@ jobs:
         password: ${{ secrets.DOCKER_REGISTRY_ON_GITHUB_PASSWORD }}
 
     - name: Authenticate to Google Cloud for GROWI.cloud
-      uses: google-github-actions/auth@v0
+      uses: google-github-actions/auth@v1
       with:
         credentials_json: '${{ secrets.GCP_SA_KEY_SLACKBOT_PROXY }}'
 
