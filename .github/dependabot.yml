@@ -2,7 +2,7 @@ version: 2
 updates:
   - package-ecosystem: github-actions
     directory: '/'
-    open-pull-requests-limit: 0
+    open-pull-requests-limit: 3
     schedule:
       interval: monthly
     commit-message:
@@ -11,7 +11,7 @@ updates:
 
   - package-ecosystem: npm
     directory: '/'
-    open-pull-requests-limit: 0
+    open-pull-requests-limit: 3
     schedule:
       interval: weekly
     commit-message:
