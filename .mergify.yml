@@ -3,10 +3,11 @@ pull_request_rules:
     conditions:
       - author = dependabot[bot]
       - '#approved-reviews-by >= 1'
-      - check-success = lint
-      - check-success = test
-      - check-success = launch-dev
-      - check-success = launch-prod
+      - check-success = "lint (16.x)"
+      - check-success = "test (16.x)"
+      - check-success = "launch-dev (16.x)"
+      - check-success = "test-prod-node14 / launch-prod"
+      - check-success = "test-prod-node16 / launch-prod"
     actions:
       merge:
         method: merge
