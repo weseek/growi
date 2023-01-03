@@ -52,7 +52,7 @@
   },
   "devDependencies": {
     "@tsed/core": "^6.43.0",
-    "@tsed/exceptions": "^6.43.0",
+    "@tsed/exceptions": "^7.9.0",
     "@tsed/json-mapper": "^6.43.0",
     "@tsed/schema": "^6.43.0",
     "bootstrap": "^5.0.2",
