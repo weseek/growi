@@ -48,7 +48,7 @@ jobs:
         credentials_json: '${{ secrets.GCP_SA_KEY_SLACKBOT_PROXY }}'
 
     - name: Setup gcloud
-      uses: google-github-actions/setup-gcloud@v0
+      uses: google-github-actions/setup-gcloud@v1
 
     - name: Configure docker for gcloud
       run: |
