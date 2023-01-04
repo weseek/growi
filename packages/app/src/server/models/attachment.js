@@ -51,10 +51,6 @@ module.exports = function(crowi) {
     return `/attachment/${this._id}`;
   });
 
-  attachmentSchema.virtual('brandLogoFilePathProxied').get(function() {
-    return `/attachment/brand-logo/${this._id}`;
-  });
-
   attachmentSchema.virtual('downloadPathProxied').get(function() {
     return `/download/${this._id}`;
   });
@@ -83,6 +79,9 @@ module.exports = function(crowi) {
     return attachment;
   };
 
+  attachmentSchema.statics.isBrandLogoExist = function() {
+    return this.findOne({ attachmentType: AttachmentType.BRAND_LOGO }) != null;
+  };
 
   attachmentSchema.methods.getValidTemporaryUrl = function() {
     if (this.temporaryUrlExpiredAt == null) {
@@ -103,10 +102,6 @@ module.exports = function(crowi) {
     this.temporaryUrlExpiredAt = addSeconds(new Date(), provideSec);
 
     return this.save();
-  };
-
-  attachmentSchema.methods.isBrandLogo = function() {
-    return this.attachmentType === AttachmentType.BRAND_LOGO;
   };
 
   return mongoose.model('Attachment', attachmentSchema);
