@@ -296,6 +296,12 @@ module.exports = function(crowi, app) {
     return responseForAttachment(req, res, attachment);
   };
 
+  api.getBrandLogo = async function(req, res) {
+    const attachment = await Attachment.findOne({ attachmentType: AttachmentType.BRAND_LOGO });
+
+    return responseForAttachment(req, res, attachment);
+  };
+
   /**
    * @api {get} /attachments.obsoletedGetForMongoDB get attachments from mongoDB
    * @apiName get
