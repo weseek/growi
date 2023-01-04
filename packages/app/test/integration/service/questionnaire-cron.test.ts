@@ -22,11 +22,11 @@ describe('QuestionnaireCronService', () => {
   const mockResponse = {
     data: {
       questionnaireOrders: [
-        // 既に保存されているアンケート
+        // 既に保存されている、終了していないアンケート
         {
           _id: '63a8354837e7aa378e16f0b1',
           showFrom: '2022-12-11',
-          showUntil: '2023-12-12',
+          showUntil: '2100-12-12',
           questions: [
             {
               type: 'points',
@@ -43,11 +43,11 @@ describe('QuestionnaireCronService', () => {
             },
           },
         },
-        // 新しいアンケート
+        // 保存されておらず、終了していないアンケート
         {
           _id: '63a8354837e7aa378e16f0b2',
           showFrom: '2021-12-11',
-          showUntil: '2022-12-12',
+          showUntil: '2100-12-12',
           questions: [
             {
               type: 'points',
@@ -75,7 +75,9 @@ describe('QuestionnaireCronService', () => {
     crowi = await getInstance();
     // reload
     await crowi.setupConfigManager();
+  });
 
+  beforeEach(async() => {
     // 初期データ投入
     await QuestionnaireOrder.insertMany([
       {
@@ -98,7 +100,7 @@ describe('QuestionnaireCronService', () => {
           },
         },
       },
-      // 期限切れ
+      // 終了しているアンケート
       {
         _id: '63a8354837e7aa378e16f0b3',
         showFrom: '2020-12-11',
@@ -128,6 +130,9 @@ describe('QuestionnaireCronService', () => {
 
     // useFakeTimers の後でないと設定した mock 時刻が反映されない
     crowi.setupCron();
+
+    spyAxiosGet.mockResolvedValue(mockResponse);
+    spyGetRandomInt.mockReturnValue(secondsUntilRequest); // リクエストまでの待機時間を固定化
   });
 
   afterAll(() => {
@@ -136,12 +141,9 @@ describe('QuestionnaireCronService', () => {
   });
 
   test('Should save new quesionnaire orders and delete outdated ones', async() => {
-    spyAxiosGet.mockResolvedValue(mockResponse);
-    spyGetRandomInt.mockReturnValue(secondsUntilRequest);
-
     jest.advanceTimersByTime(5 * 1000); // cronjob 実行時刻まで進める
     jest.advanceTimersByTime(secondsUntilRequest); // 待機時間の最大値まで進め、リクエストを実行する
-    jest.useRealTimers(); // cronjob 実行完了後は real timers に戻さないと mongoose が正常に動作しない
+    jest.useRealTimers(); // cronjob 実行開始後は real timers に戻さないと mongoose が正常に動作しない
 
     await new Promise(resolve => setTimeout(resolve, 3000)); // 裏で動いている cronjob が実行完了するまで待つ
 
