@@ -20,7 +20,8 @@ export type CommonProps = {
   growiVersion: string,
   isMaintenanceMode: boolean,
   redirectDestination: string | null,
-  customizedLogoSrc?: string,
+  isDefaultLogo: boolean,
+  isCustomizedLogoUploaded: boolean,
   currentUser?: IUser,
 } & Partial<SSRConfig>;
 
@@ -30,7 +31,7 @@ export const getServerSideCommonProps: GetServerSideProps<CommonProps> = async(c
   const req = context.req as CrowiRequest<IUserHasId & any>;
   const { crowi, user } = req;
   const {
-    appService, configManager, customizeService,
+    appService, configManager, customizeService, attachmentService,
   } = crowi;
 
   const url = new URL(context.resolvedUrl, 'http://example.com');
@@ -46,6 +47,7 @@ export const getServerSideCommonProps: GetServerSideProps<CommonProps> = async(c
   // eslint-disable-next-line max-len, no-nested-ternary
   const redirectDestination = !isMaintenanceMode && currentPathname === '/maintenance' ? '/' : isMaintenanceMode && !currentPathname.match('/admin/*') && !(currentPathname === '/maintenance') ? '/maintenance' : null;
   const isDefaultLogo = crowi.configManager.getConfig('crowi', 'customize:isDefaultLogo');
+  const isCustomizedLogoUploaded = await attachmentService.isBrandLogoExist();
 
   const props: CommonProps = {
     namespacesRequired: ['translation'],
@@ -59,8 +61,9 @@ export const getServerSideCommonProps: GetServerSideProps<CommonProps> = async(c
     growiVersion: crowi.version,
     isMaintenanceMode,
     redirectDestination,
-    customizedLogoSrc: isDefaultLogo ? null : configManager.getConfig('crowi', 'customize:customizedLogoSrc'),
     currentUser,
+    isDefaultLogo,
+    isCustomizedLogoUploaded,
   };
 
   return { props };

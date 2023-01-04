@@ -1,45 +1,34 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useMemo, useState } from 'react';
 
 import { useTranslation } from 'react-i18next';
 
 import { toastError, toastSuccess } from '~/client/util/apiNotification';
 import {
-  apiv3Delete, apiv3Get, apiv3PostForm, apiv3Put,
+  apiv3Delete, apiv3PostForm, apiv3Put,
 } from '~/client/util/apiv3-client';
 import ImageCropModal from '~/components/Common/ImageCropModal';
+import { useIsDefaultLogo, useIsCustomizedLogoUploaded } from '~/stores/context';
 
 import AdminUpdateButtonRow from '../Common/AdminUpdateButtonRow';
 
+
 const DEFAULT_LOGO = '/images/logo.svg';
+const CUSTOMIZED_LOGO = '/attachment/brand-logo';
 
 const CustomizeLogoSetting = (): JSX.Element => {
 
   const { t } = useTranslation();
+  const { data: _isDefaultLogo } = useIsDefaultLogo();
+  const { data: isCustomizedLogoUploaded, mutate: mutateIsCustomizedLogoUploaded } = useIsCustomizedLogoUploaded();
 
   const [uploadLogoSrc, setUploadLogoSrc] = useState<ArrayBuffer | string | null>(null);
   const [isImageCropModalShow, setIsImageCropModalShow] = useState<boolean>(false);
-  const [isDefaultLogo, setIsDefaultLogo] = useState<boolean>(true);
+  const [isDefaultLogo, setIsDefaultLogo] = useState<boolean>(_isDefaultLogo ?? true);
   const [retrieveError, setRetrieveError] = useState<any>();
-  const [customizedLogoSrc, setCustomizedLogoSrc] = useState< string | null >(null);
 
-  const retrieveData = useCallback(async() => {
-    try {
-      const response = await apiv3Get('/customize-setting/customize-logo');
-      const { isDefaultLogo: _isDefaultLogo, customizedLogoSrc } = response.data;
-      const isDefaultLogo = _isDefaultLogo ?? true;
-
-      setIsDefaultLogo(isDefaultLogo);
-      setCustomizedLogoSrc(customizedLogoSrc);
-    }
-    catch (err) {
-      setRetrieveError(err);
-      throw new Error('Failed to fetch data');
-    }
-  }, []);
-
-  useEffect(() => {
-    retrieveData();
-  }, [retrieveData]);
+  const selectedCurrentLogo = useMemo(() => {
+    return isDefaultLogo || !isCustomizedLogoUploaded ? DEFAULT_LOGO : CUSTOMIZED_LOGO;
+  }, [isDefaultLogo, isCustomizedLogoUploaded]);
 
   const onSelectFile = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files != null && e.target.files.length > 0) {
@@ -52,11 +41,7 @@ const CustomizeLogoSetting = (): JSX.Element => {
 
   const onClickSubmit = useCallback(async() => {
     try {
-      const response = await apiv3Put('/customize-setting/customize-logo', {
-        isDefaultLogo,
-      });
-      const { customizedParams } = response.data;
-      setIsDefaultLogo(customizedParams.isDefaultLogo);
+      await apiv3Put('/customize-setting/customize-logo', { isDefaultLogo });
       toastSuccess(t('toaster.update_successed', { target: t('admin:customize_settings.custom_logo'), ns: 'commons' }));
     }
     catch (err) {
@@ -67,7 +52,7 @@ const CustomizeLogoSetting = (): JSX.Element => {
   const onClickDeleteBtn = useCallback(async() => {
     try {
       await apiv3Delete('/customize-setting/delete-brand-logo');
-      setCustomizedLogoSrc(null);
+      mutateIsCustomizedLogoUploaded(false);
       toastSuccess(t('toaster.update_successed', { target: t('admin:customize_settings.current_logo'), ns: 'commons' }));
     }
     catch (err) {
@@ -75,15 +60,15 @@ const CustomizeLogoSetting = (): JSX.Element => {
       setRetrieveError(err);
       throw new Error('Failed to delete logo');
     }
-  }, [t]);
+  }, [mutateIsCustomizedLogoUploaded, t]);
 
 
   const processImageCompletedHandler = useCallback(async(croppedImage) => {
     try {
       const formData = new FormData();
       formData.append('file', croppedImage);
-      const { data } = await apiv3PostForm('/customize-setting/upload-brand-logo', formData);
-      setCustomizedLogoSrc(data.attachment.filePathProxied);
+      await apiv3PostForm('/customize-setting/upload-brand-logo', formData);
+      mutateIsCustomizedLogoUploaded(true);
       toastSuccess(t('toaster.update_successed', { target: t('admin:customize_settings.current_logo'), ns: 'commons' }));
     }
     catch (err) {
@@ -91,7 +76,7 @@ const CustomizeLogoSetting = (): JSX.Element => {
       setRetrieveError(err);
       throw new Error('Failed to upload brand logo');
     }
-  }, [t]);
+  }, [mutateIsCustomizedLogoUploaded, t]);
 
   return (
     <React.Fragment>
@@ -117,6 +102,7 @@ const CustomizeLogoSetting = (): JSX.Element => {
                     </label>
                   </div>
                 </h4>
+                {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img src={DEFAULT_LOGO} width="64" />
               </div>
               <div className="col-md-6 col-12">
@@ -141,8 +127,8 @@ const CustomizeLogoSetting = (): JSX.Element => {
                     { t('admin:customize_settings.current_logo') }
                   </label>
                   <div className="col-sm-8 col-12">
-                    <p><img src={customizedLogoSrc || DEFAULT_LOGO} className="picture picture-lg " id="settingBrandLogo" width="64" /></p>
-                    {(customizedLogoSrc != null) && (
+                    <p><img src={selectedCurrentLogo} className="picture picture-lg " id="settingBrandLogo" width="64" /></p>
+                    {isCustomizedLogoUploaded && (
                       <button type="button" className="btn btn-danger" onClick={onClickDeleteBtn}>
                         { t('admin:customize_settings.delete_logo') }
                       </button>
