@@ -50,7 +50,7 @@ class QuestionnaireCronService {
       const savedOrderIds = savedOrders.map(order => order._id.toString());
       // 渡されたアンケートのうち未保存のものを保存する
       const nonSavedOrders = questionnaireOrders.filter(order => !savedOrderIds.includes(order._id));
-      QuestionnaireOrder.insertMany(nonSavedOrders);
+      await QuestionnaireOrder.insertMany(nonSavedOrders);
     };
 
     const deleteFinishedOrders = async() => {
@@ -73,7 +73,7 @@ class QuestionnaireCronService {
         const questionnaireOrders: QuestionnaireOrderDocument[] = response.data.questionnaireOrders;
 
         await saveOrders(questionnaireOrders);
-        await deleteFinishedOrders();
+        deleteFinishedOrders();
       }
       catch (e) {
         logger.error(e);

@@ -64,6 +64,27 @@ describe('QuestionnaireCronService', () => {
             },
           },
         },
+        // 保存されておらず、終了しているアンケート
+        {
+          _id: '63a8354837e7aa378e16f0b3',
+          showFrom: '2021-12-11',
+          showUntil: '2021-12-12',
+          questions: [
+            {
+              type: 'points',
+              text: 'これはいい質問ですか？',
+            },
+          ],
+          condition: {
+            user: {
+              types: ['general'],
+            },
+            growi: {
+              types: ['cloud'],
+              versionRegExps: ['2\\.0\\.[0-9]', '1\\.9\\.[0-9]'],
+            },
+          },
+        },
       ],
     },
   };
@@ -102,7 +123,7 @@ describe('QuestionnaireCronService', () => {
       },
       // 終了しているアンケート
       {
-        _id: '63a8354837e7aa378e16f0b3',
+        _id: '63a8354837e7aa378e16f0b4',
         showFrom: '2020-12-11',
         showUntil: '2021-12-12',
         questions: [
