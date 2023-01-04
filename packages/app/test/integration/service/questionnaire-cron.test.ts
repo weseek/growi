@@ -22,7 +22,7 @@ describe('QuestionnaireCronService', () => {
   const mockResponse = {
     data: {
       questionnaireOrders: [
-        // 既に保存されている、終了していないアンケート
+        // 既に保存されている、終了していないアンケート (user types を GROWI 保存時から更新)
         {
           _id: '63a8354837e7aa378e16f0b1',
           showFrom: '2022-12-11',
@@ -42,6 +42,9 @@ describe('QuestionnaireCronService', () => {
               versionRegExps: ['2\\.0\\.[0-9]', '1\\.9\\.[0-9]'],
             },
           },
+          createdAt: '2022-12-01',
+          updatedAt: '2022-12-01',
+          __v: 0,
         },
         // 保存されておらず、終了していないアンケート
         {
@@ -63,6 +66,9 @@ describe('QuestionnaireCronService', () => {
               versionRegExps: ['2\\.0\\.[0-9]', '1\\.9\\.[0-9]'],
             },
           },
+          createdAt: '2022-12-02',
+          updatedAt: '2022-12-02',
+          __v: 0,
         },
         // 保存されておらず、終了しているアンケート
         {
@@ -84,6 +90,9 @@ describe('QuestionnaireCronService', () => {
               versionRegExps: ['2\\.0\\.[0-9]', '1\\.9\\.[0-9]'],
             },
           },
+          createdAt: '2022-12-03',
+          updatedAt: '2022-12-03',
+          __v: 0,
         },
       ],
     },
@@ -103,12 +112,12 @@ describe('QuestionnaireCronService', () => {
     await QuestionnaireOrder.insertMany([
       {
         _id: '63a8354837e7aa378e16f0b1',
-        showFrom: '2021-12-11',
+        showFrom: '2022-12-11',
         showUntil: '2100-12-12',
         questions: [
           {
             type: 'points',
-            text: 'アンケート機能は支障なく動いていますか？',
+            text: 'Growi は使いやすいですか？',
           },
         ],
         condition: {
@@ -116,7 +125,7 @@ describe('QuestionnaireCronService', () => {
             types: ['general'],
           },
           growi: {
-            types: ['cloud'],
+            types: ['cloud', 'private-cloud'],
             versionRegExps: ['2\\.0\\.[0-9]', '1\\.9\\.[0-9]'],
           },
         },
@@ -130,6 +139,27 @@ describe('QuestionnaireCronService', () => {
           {
             type: 'points',
             text: '最近どうですか？',
+          },
+        ],
+        condition: {
+          user: {
+            types: ['general'],
+          },
+          growi: {
+            types: ['cloud'],
+            versionRegExps: ['2\\.0\\.[0-9]', '1\\.9\\.[0-9]'],
+          },
+        },
+      },
+      // growi-questionnaire にないアンケート
+      {
+        _id: '63a8354837e7aa378e16f0b5',
+        showFrom: '2020-12-11',
+        showUntil: '2100-12-12',
+        questions: [
+          {
+            type: 'points',
+            text: '最新のデザインはどうですか？',
           },
         ],
         condition: {
@@ -161,15 +191,63 @@ describe('QuestionnaireCronService', () => {
     crowi.questionnaireCronService.stopCron();
   });
 
-  test('Should save new quesionnaire orders and delete outdated ones', async() => {
+  test('Should save quesionnaire orders and delete outdated ones', async() => {
     jest.advanceTimersByTime(5 * 1000); // cronjob 実行時刻まで進める
     jest.advanceTimersByTime(secondsUntilRequest); // 待機時間の最大値まで進め、リクエストを実行する
     jest.useRealTimers(); // cronjob 実行開始後は real timers に戻さないと mongoose が正常に動作しない
 
-    await new Promise(resolve => setTimeout(resolve, 3000)); // 裏で動いている cronjob が実行完了するまで待つ
+    await new Promise(resolve => setTimeout(resolve, 5000)); // 裏で動いている cronjob が実行完了するまで待つ
 
-    const savedOrders = await QuestionnaireOrder.find();
-    const savedIds: string[] = savedOrders.map(order => order._id.toString());
-    expect(savedIds.sort()).toEqual(['63a8354837e7aa378e16f0b1', '63a8354837e7aa378e16f0b2']);
+    const savedOrders = await QuestionnaireOrder.find()
+      .select('-condition._id -questions._id')
+      .sort({ _id: 1 });
+    expect(JSON.parse(JSON.stringify(savedOrders))).toEqual([
+      {
+        _id: '63a8354837e7aa378e16f0b1',
+        showFrom: '2022-12-11T00:00:00.000Z',
+        showUntil: '2100-12-12T00:00:00.000Z',
+        questions: [
+          {
+            type: 'points',
+            text: 'Growi は使いやすいですか？',
+          },
+        ],
+        condition: {
+          user: {
+            types: ['admin', 'general'],
+          },
+          growi: {
+            types: ['cloud', 'private-cloud'],
+            versionRegExps: ['2\\.0\\.[0-9]', '1\\.9\\.[0-9]'],
+          },
+        },
+        createdAt: '2022-12-01T00:00:00.000Z',
+        updatedAt: '2022-12-01T00:00:00.000Z',
+        __v: 0,
+      },
+      {
+        _id: '63a8354837e7aa378e16f0b2',
+        showFrom: '2021-12-11T00:00:00.000Z',
+        showUntil: '2100-12-12T00:00:00.000Z',
+        questions: [
+          {
+            type: 'points',
+            text: 'アンケート機能は支障なく動いていますか？',
+          },
+        ],
+        condition: {
+          user: {
+            types: ['general'],
+          },
+          growi: {
+            types: ['cloud'],
+            versionRegExps: ['2\\.0\\.[0-9]', '1\\.9\\.[0-9]'],
+          },
+        },
+        createdAt: '2022-12-02T00:00:00.000Z',
+        updatedAt: '2022-12-02T00:00:00.000Z',
+        __v: 0,
+      },
+    ]);
   });
 });

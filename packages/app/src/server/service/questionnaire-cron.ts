@@ -46,21 +46,10 @@ class QuestionnaireCronService {
 
   private questionnaireOrderGetCron(cronSchedule: string, maxSecondsUntilRequest: number) {
     const saveOrders = async(questionnaireOrders: QuestionnaireOrderDocument[]) => {
-      const savedOrders: QuestionnaireOrderDocument[] = await QuestionnaireOrder.find();
-      const savedOrderIds = savedOrders.map(order => order._id.toString());
-      // 渡されたアンケートのうち未保存のものを保存する
-      const nonSavedOrders = questionnaireOrders.filter(order => !savedOrderIds.includes(order._id));
-      await QuestionnaireOrder.insertMany(nonSavedOrders);
-    };
-
-    const deleteFinishedOrders = async() => {
       const currentDate = new Date(Date.now());
-
-      await QuestionnaireOrder.deleteMany({
-        showUntil: {
-          $lt: currentDate,
-        },
-      });
+      // 渡されたアンケートのうち終了前のものを保存する
+      const nonFinishedOrders = questionnaireOrders.filter(order => new Date(order.showUntil) > currentDate);
+      await QuestionnaireOrder.insertMany(nonFinishedOrders);
     };
 
     return nodeCron.schedule(cronSchedule, async() => {
@@ -72,8 +61,8 @@ class QuestionnaireCronService {
         const response = await axios.get(`${this.growiQuestionnaireUri}/questionnaire-order/index`);
         const questionnaireOrders: QuestionnaireOrderDocument[] = response.data.questionnaireOrders;
 
+        await QuestionnaireOrder.deleteMany();
         await saveOrders(questionnaireOrders);
-        deleteFinishedOrders();
       }
       catch (e) {
         logger.error(e);
