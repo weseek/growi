@@ -37,6 +37,7 @@ context('Access to page', () => {
     // https://stackoverflow.com/questions/5041494/selecting-and-manipulating-css-pseudo-elements-such-as-before-and-after-usin/21709814#21709814
     cy.get('#mdcont-headers').invoke('removeClass', 'blink');
 
+    cy.collapseSidebar(true);
     cy.screenshot(`${ssPrefix}-sandbox-headers`);
   });
 
@@ -50,6 +51,7 @@ context('Access to page', () => {
 
     cy.get('.math').should('be.visible');
 
+    cy.collapseSidebar(true);
     cy.screenshot(`${ssPrefix}-sandbox-math`);
   });
 
