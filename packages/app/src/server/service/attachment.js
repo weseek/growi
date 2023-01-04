@@ -79,9 +79,9 @@ class AttachmentService {
     return;
   }
 
-  isBrandLogoExist() {
+  async isBrandLogoExist() {
     const Attachment = this.crowi.model('Attachment');
-    return Attachment.findOne({ attachmentType: AttachmentType.BRAND_LOGO }) != null;
+    return await Attachment.findOne({ attachmentType: AttachmentType.BRAND_LOGO }) != null;
   }
 
 }
