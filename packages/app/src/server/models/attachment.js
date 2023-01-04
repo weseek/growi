@@ -51,6 +51,10 @@ module.exports = function(crowi) {
     return `/attachment/${this._id}`;
   });
 
+  attachmentSchema.virtual('brandLogoFilePathProxied').get(function() {
+    return `/attachment/brand-logo/${this._id}`;
+  });
+
   attachmentSchema.virtual('downloadPathProxied').get(function() {
     return `/download/${this._id}`;
   });
