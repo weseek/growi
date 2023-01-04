@@ -19,7 +19,6 @@ module.exports = (crowi) => {
 
     if (attachment.isBrandLogo()) {
       req.isBrandLogo = true;
-      return next();
     }
 
     next();
