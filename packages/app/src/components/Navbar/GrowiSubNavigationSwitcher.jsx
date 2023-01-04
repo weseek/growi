@@ -115,8 +115,6 @@ const GrowiSubNavigationSwitcher = (props) => {
 
   }, [initWidth, initVisible]);
 
-  // ${styles['grw-subnav-switcher']}
-
   return (
     <div className={`${styles['grw-subnav-switcher']} ${isVisible ? '' : 'grw-subnav-switcher-hidden'}`}>
       <div
