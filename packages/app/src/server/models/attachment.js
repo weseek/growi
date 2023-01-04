@@ -79,10 +79,6 @@ module.exports = function(crowi) {
     return attachment;
   };
 
-  attachmentSchema.statics.isBrandLogoExist = function() {
-    return this.findOne({ attachmentType: AttachmentType.BRAND_LOGO }) != null;
-  };
-
   attachmentSchema.methods.getValidTemporaryUrl = function() {
     if (this.temporaryUrlExpiredAt == null) {
       return null;

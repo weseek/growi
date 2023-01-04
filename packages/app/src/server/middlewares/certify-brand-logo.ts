@@ -1,10 +1,10 @@
-export const generateCertifyBrandLogo = (crowi) => {
+export const generateCertifyBrandLogoMiddleware = (crowi) => {
 
   return async(req, res, next) => {
 
-    const Attachment = crowi.model('Attachment');
+    const { attachmentService } = crowi;
 
-    if (Attachment.isBrandLogoExist()) {
+    if (attachmentService.isBrandLogoExist()) {
       req.isBrandLogo = true;
     }
 

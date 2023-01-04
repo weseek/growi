@@ -1,5 +1,7 @@
 import loggerFactory from '~/utils/logger';
 
+import { AttachmentType } from '../interfaces/attachment';
+
 const fs = require('fs');
 
 const mongoose = require('mongoose');
@@ -75,6 +77,11 @@ class AttachmentService {
     await attachment.remove();
 
     return;
+  }
+
+  isBrandLogoExist() {
+    const Attachment = this.crowi.model('Attachment');
+    return Attachment.findOne({ attachmentType: AttachmentType.BRAND_LOGO }) != null;
   }
 
 }
