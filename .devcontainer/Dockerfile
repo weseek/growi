@@ -3,7 +3,7 @@
 # Licensed under the MIT License. See https://go.microsoft.com/fwlink/?linkid=2090316 for license information.
 #-------------------------------------------------------------------------------------------------------------
 
-FROM mcr.microsoft.com/vscode/devcontainers/javascript-node:0-16-bullseye
+FROM mcr.microsoft.com/vscode/devcontainers/javascript-node:0-16
 
 # The node image includes a non-root user with sudo access. Use the
 # "remoteUser" property in devcontainer.json to use it. On Linux, update
@@ -33,13 +33,13 @@ RUN chown -R $USER_UID:$USER_GID /home/$USERNAME /workspace;
 ENV DEBIAN_FRONTEND=noninteractive
 
 # Prepare to install Chrome for VRT
-# RUN sh -c 'echo "deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main" >> /etc/apt/sources.list.d/google.list'
-# RUN wget -q -O - https://dl.google.com/linux/linux_signing_key.pub | sudo apt-key add -
+RUN sh -c 'echo "deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main" >> /etc/apt/sources.list.d/google.list'
+RUN wget -q -O - https://dl.google.com/linux/linux_signing_key.pub | sudo apt-key add -
 
 RUN apt-get update \
    && apt-get -y install --no-install-recommends git-lfs \
       # Chrome
-      # google-chrome-stable \
+      google-chrome-stable \
       # for Cypress
       libgtk2.0-0 libgtk-3-0 libgbm-dev libnotify-dev libgconf-2-4 libnss3 libxss1 libasound2 libxtst6 xauth xvfb fonts-noto-cjk \
 
