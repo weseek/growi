@@ -1,35 +1,31 @@
 import React from 'react';
 
 import { useTranslation } from 'next-i18next';
-import { Disable } from 'react-disable';
-import { UncontrolledTooltip } from 'reactstrap';
 
 import { useIsGuestUser } from '~/stores/context';
+
+import { NotAvailable } from './NotAvailable';
+
 
 type NotAvailableForGuestProps = {
   children: JSX.Element
 }
 
-export const NotAvailableForGuest = ({ children }: NotAvailableForGuestProps): JSX.Element => {
+export const NotAvailableForGuest = React.memo(({ children }: NotAvailableForGuestProps): JSX.Element => {
   const { t } = useTranslation();
-
   const { data: isGuestUser } = useIsGuestUser();
+
   const isDisabled = !!isGuestUser;
-
-  if (!isGuestUser) {
-    return children;
-  }
-
-  const id = `grw-not-available-for-guest-${Math.random().toString(32).substring(2)}`;
+  const title = t('Not available for guest');
 
   return (
-    <>
-      <div id={id}>
-        <Disable disabled={isDisabled}>
-          { children }
-        </Disable>
-      </div>
-      <UncontrolledTooltip placement="top" target={id}>{t('Not available for guest')}</UncontrolledTooltip>
-    </>
+    <NotAvailable
+      isDisabled={isDisabled}
+      title={title}
+      classNamePrefix="grw-not-available-for-guest"
+    >
+      {children}
+    </NotAvailable>
   );
-};
+});
+NotAvailableForGuest.displayName = 'NotAvailableForGuest';
