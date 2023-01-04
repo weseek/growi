@@ -5,7 +5,7 @@ import loggerFactory from '~/utils/logger';
 
 const logger = loggerFactory('growi:stores:sync-to-storage');
 
-const generateKeyInStorage = (key: string): string => {
+export const generateKeyInStorage = (key: string): string => {
   return `swr-cache-${key}`;
 };
 

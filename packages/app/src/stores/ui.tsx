@@ -25,7 +25,7 @@ import {
   useCurrentPageId, useIsEditable, useIsGuestUser,
   useIsSharedUser, useIsIdenticalPath, useCurrentUser, useShareLinkId, useIsNotFound,
 } from './context';
-import { localStorageMiddleware } from './middlewares/sync-to-storage';
+import { generateKeyInStorage, localStorageMiddleware } from './middlewares/sync-to-storage';
 import { useCurrentPagePath, useIsTrashPage } from './page';
 import { useStaticSWR } from './use-static-swr';
 
@@ -248,7 +248,18 @@ export const usePreferDrawerModeByUser = (initialData?: boolean): SWRResponseWit
   const { data: isGuestUser } = useIsGuestUser();
   const { scheduleToPut } = useUserUISettings();
 
-  const swrResponse: SWRResponse<boolean, Error> = useStaticSWR('preferDrawerModeByUser', initialData, { use: isGuestUser ? [localStorageMiddleware] : [] });
+  const key = 'preferDrawerModeByUser';
+
+  const swrResponse: SWRResponse<boolean, Error> = useStaticSWR(key, initialData, { use: isGuestUser ? [localStorageMiddleware] : [] });
+
+  useEffect(() => {
+    if (!isGuestUser) { return }
+    const keyInStorage = generateKeyInStorage(key.toString());
+    const preferDrawerMode = localStorage.getItem(keyInStorage);
+    const preferDrawerModeBool = preferDrawerMode?.toLowerCase() === 'true';
+
+    swrResponse.mutate(preferDrawerModeBool);
+  }, [isGuestUser, swrResponse]);
 
   const utils: PreferDrawerModeByUserUtils = {
     update: (preferDrawerMode: boolean) => {
