@@ -33,6 +33,7 @@ import AttachmentIcon from '../Icons/AttachmentIcon';
 import HistoryIcon from '../Icons/HistoryIcon';
 import PresentationIcon from '../Icons/PresentationIcon';
 import ShareLinkIcon from '../Icons/ShareLinkIcon';
+import { NotAvailableForNow } from '../NotAvailableForNow';
 import { Skeleton } from '../Skeleton';
 
 import type { AuthorInfoProps } from './AuthorInfo';
@@ -86,16 +87,18 @@ const PageOperationMenuItems = (props: PageOperationMenuItemsProps): JSX.Element
   return (
     <>
       {/* Presentation */}
-      <DropdownItem
-        onClick={() => openPresentationModal(hrefForPresentationModal)}
-        data-testid="open-presentation-modal-btn"
-        className="grw-page-control-dropdown-item"
-      >
-        <i className="icon-fw grw-page-control-dropdown-icon">
-          <PresentationIcon />
-        </i>
-        { t('Presentation Mode') }
-      </DropdownItem>
+      <NotAvailableForNow>
+        <DropdownItem
+          onClick={() => openPresentationModal(hrefForPresentationModal)}
+          data-testid="open-presentation-modal-btn"
+          className="grw-page-control-dropdown-item"
+        >
+          <i className="icon-fw grw-page-control-dropdown-icon">
+            <PresentationIcon />
+          </i>
+          { t('Presentation Mode') }
+        </DropdownItem>
+      </NotAvailableForNow>
 
       {/* Export markdown */}
       <DropdownItem

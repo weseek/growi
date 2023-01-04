@@ -43,12 +43,12 @@ jobs:
         password: ${{ secrets.DOCKER_REGISTRY_ON_GITHUB_PASSWORD }}
 
     - name: Authenticate to Google Cloud for GROWI.cloud
-      uses: google-github-actions/auth@v0
+      uses: google-github-actions/auth@v1
       with:
         credentials_json: '${{ secrets.GCP_SA_KEY_SLACKBOT_PROXY }}'
 
     - name: Setup gcloud
-      uses: google-github-actions/setup-gcloud@v0
+      uses: google-github-actions/setup-gcloud@v1
 
     - name: Configure docker for gcloud
       run: |
@@ -75,7 +75,7 @@ jobs:
         mv /tmp/.buildx-cache-new /tmp/.buildx-cache
 
     - name: Add tag
-      uses: anothrNick/github-tag-action@1.38.0
+      uses: anothrNick/github-tag-action@v1
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         CUSTOM_TAG: v${{ steps.package-json.outputs.packageVersion }}
