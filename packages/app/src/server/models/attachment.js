@@ -79,6 +79,7 @@ module.exports = function(crowi) {
     return attachment;
   };
 
+
   attachmentSchema.methods.getValidTemporaryUrl = function() {
     if (this.temporaryUrlExpiredAt == null) {
       return null;
