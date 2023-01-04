@@ -193,10 +193,14 @@ describe('QuestionnaireCronService', () => {
 
   test('Should save quesionnaire orders and delete outdated ones', async() => {
     jest.advanceTimersByTime(5 * 1000); // cronjob 実行時刻まで進める
-    jest.advanceTimersByTime(secondsUntilRequest); // 待機時間の最大値まで進め、リクエストを実行する
+    jest.advanceTimersByTime(secondsUntilRequest); // 待機時間分進め、リクエストを実行する
     jest.useRealTimers(); // cronjob 実行開始後は real timers に戻さないと mongoose が正常に動作しない
 
-    await new Promise(resolve => setTimeout(resolve, 5000)); // 裏で動いている cronjob が実行完了するまで待つ
+    await new Promise((resolve) => {
+      // cronjob の実行完了を待つ
+      // refs: https://github.com/node-cron/node-cron/blob/a0be3f4a7a5419af109cecf4a41071ea559b9b3d/src/task.js#L24
+      crowi.questionnaireCronService.cronJob._task.once('task-finished', resolve);
+    });
 
     const savedOrders = await QuestionnaireOrder.find()
       .select('-condition._id -questions._id')
