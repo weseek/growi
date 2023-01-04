@@ -1,11 +1,14 @@
 import createError, { isHttpError } from 'http-errors';
 
-const { customTagUtils } = require('@growi/core');
+const { pagePathUtils, customTagUtils } = require('@growi/core');
 
 const { OptionParser } = customTagUtils;
 
 
 const DEFAULT_PAGES_NUM = 50;
+
+
+const { isTopPage } = pagePathUtils;
 
 class Lsx {
 
@@ -35,7 +38,9 @@ class Lsx {
     }
 
     // count slash
-    const slashNum = pagePath.split('/').length - 1;
+    const slashNum = isTopPage(pagePath)
+      ? 1
+      : pagePath.split('/').length;
     const depthStart = slashNum; // start is not affect to fetch page
     const depthEnd = slashNum + end - 1;
 
