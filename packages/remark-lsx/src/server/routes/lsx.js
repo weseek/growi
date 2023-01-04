@@ -165,26 +165,10 @@ module.exports = (crowi, app) => {
    * @return {Promise<Query>} query
    */
   async function generateBaseQueryBuilder(pagePath, user) {
-    let baseQuery = Page.find();
-    if (Page.PageQueryBuilder == null) {
-      if (Page.generateQueryToListWithDescendants != null) { // for Backward compatibility (<= GROWI v3.2.x)
-        baseQuery = Page.generateQueryToListWithDescendants(pagePath, user, {});
-      }
-      else if (Page.generateQueryToListByStartWith != null) { // for Backward compatibility (<= crowi-plus v2.0.7)
-        baseQuery = Page.generateQueryToListByStartWith(pagePath, user, {});
-      }
-
-      // return dummy PageQueryBuilder object
-      return Promise.resolve({ query: baseQuery });
-    }
+    const baseQuery = Page.find();
 
     const builder = new Page.PageQueryBuilder(baseQuery);
-    if (builder.addConditionToListOnlyDescendants == null) { // for Backward compatibility (<= GROWI v4.0.x)
-      builder.addConditionToListWithDescendants(pagePath);
-    }
-    else {
-      builder.addConditionToListOnlyDescendants(pagePath);
-    }
+    builder.addConditionToListOnlyDescendants(pagePath);
 
     builder
       .addConditionToExcludeTrashed();
