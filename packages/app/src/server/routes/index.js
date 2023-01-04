@@ -106,6 +106,8 @@ module.exports = function(crowi, app) {
   app.post('/_api/admin/import/qiita'           , loginRequiredStrictly , adminRequired , csrfProtection, addActivity, admin.api.importDataFromQiita);
   app.post('/_api/admin/import/testQiitaAPI'    , loginRequiredStrictly , adminRequired , csrfProtection, addActivity, admin.api.testQiitaAPI);
 
+  app.get('/attachment/brand-logo/:id([0-9a-z]{24})' , loginRequired, attachment.api.get);
+
   /*
    * Routes below are unavailable when maintenance mode
    */
