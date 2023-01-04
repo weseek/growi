@@ -30,6 +30,7 @@ module.exports = function(crowi, app) {
   const loginRequired = require('../middlewares/login-required')(crowi, true);
   const adminRequired = require('../middlewares/admin-required')(crowi);
   const certifySharedFile = require('../middlewares/certify-shared-file')(crowi);
+  const certifyBrandLogo = require('../middlewares/certify-brand-logo')(crowi);
   const rateLimiter = require('../middlewares/rate-limiter')();
   const addActivity = generateAddActivityMiddleware(crowi);
 
@@ -106,7 +107,7 @@ module.exports = function(crowi, app) {
   app.post('/_api/admin/import/qiita'           , loginRequiredStrictly , adminRequired , csrfProtection, addActivity, admin.api.importDataFromQiita);
   app.post('/_api/admin/import/testQiitaAPI'    , loginRequiredStrictly , adminRequired , csrfProtection, addActivity, admin.api.testQiitaAPI);
 
-  app.get('/attachment/brand-logo/:id([0-9a-z]{24})' , loginRequired, attachment.api.get);
+  app.get('/attachment/brand-logo/:id([0-9a-z]{24})' , certifyBrandLogo, loginRequired, attachment.api.get);
 
   /*
    * Routes below are unavailable when maintenance mode

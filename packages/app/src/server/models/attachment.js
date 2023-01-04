@@ -101,5 +101,9 @@ module.exports = function(crowi) {
     return this.save();
   };
 
+  attachmentSchema.methods.isBrandLogo = function() {
+    return this.attachmentType === AttachmentType.BRAND_LOGO;
+  };
+
   return mongoose.model('Attachment', attachmentSchema);
 };
