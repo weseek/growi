@@ -1,15 +1,23 @@
 import QuestionnaireOrder from '../../../src/server/models/questionnaire/questionnaire-order';
+import * as questionnaireCron from '../../../src/server/service/questionnaire-cron';
 import axios from '../../../src/utils/axios';
 import { getInstance } from '../setup-crowi';
-
 
 const spyAxiosGet = jest.spyOn<typeof axios, 'get'>(
   axios,
   'get',
 );
 
+const spyGetRandomInt = jest.spyOn<typeof questionnaireCron, 'getRandomInt'>(
+  questionnaireCron,
+  'getRandomInt',
+);
+
 describe('QuestionnaireCronService', () => {
   let crowi;
+
+  const maxSecondsUntilRequest = 4 * 60 * 60 * 1000;
+  const secondsUntilRequest = questionnaireCron.getRandomInt(0, maxSecondsUntilRequest);
 
   const mockResponse = {
     data: {
@@ -68,48 +76,49 @@ describe('QuestionnaireCronService', () => {
     // reload
     await crowi.setupConfigManager();
 
-    // await QuestionnaireOrder.insertMany([
-    //   {
-    //     _id: '63a8354837e7aa378e16f0b1',
-    //     showFrom: '2021-12-11',
-    //     showUntil: '2022-12-12',
-    //     questions: [
-    //       {
-    //         type: 'points',
-    //         text: 'アンケート機能は支障なく動いていますか？',
-    //       },
-    //     ],
-    //     condition: {
-    //       user: {
-    //         types: ['general'],
-    //       },
-    //       growi: {
-    //         types: ['cloud'],
-    //         versionRegExps: ['2\\.0\\.[0-9]', '1\\.9\\.[0-9]'],
-    //       },
-    //     },
-    //   },
-    //   {
-    //     _id: '63a8354837e7aa378e16f0b3',
-    //     showFrom: '2020-12-11',
-    //     showUntil: '2021-12-12',
-    //     questions: [
-    //       {
-    //         type: 'points',
-    //         text: '最近どうですか？',
-    //       },
-    //     ],
-    //     condition: {
-    //       user: {
-    //         types: ['general'],
-    //       },
-    //       growi: {
-    //         types: ['cloud'],
-    //         versionRegExps: ['2\\.0\\.[0-9]', '1\\.9\\.[0-9]'],
-    //       },
-    //     },
-    //   },
-    // ]);
+    await QuestionnaireOrder.insertMany([
+      {
+        _id: '63a8354837e7aa378e16f0b1',
+        showFrom: '2021-12-11',
+        showUntil: '2100-12-12',
+        questions: [
+          {
+            type: 'points',
+            text: 'アンケート機能は支障なく動いていますか？',
+          },
+        ],
+        condition: {
+          user: {
+            types: ['general'],
+          },
+          growi: {
+            types: ['cloud'],
+            versionRegExps: ['2\\.0\\.[0-9]', '1\\.9\\.[0-9]'],
+          },
+        },
+      },
+      // 期限切れ
+      {
+        _id: '63a8354837e7aa378e16f0b3',
+        showFrom: '2020-12-11',
+        showUntil: '2021-12-12',
+        questions: [
+          {
+            type: 'points',
+            text: '最近どうですか？',
+          },
+        ],
+        condition: {
+          user: {
+            types: ['general'],
+          },
+          growi: {
+            types: ['cloud'],
+            versionRegExps: ['2\\.0\\.[0-9]', '1\\.9\\.[0-9]'],
+          },
+        },
+      },
+    ]);
 
     const mockDate = new Date(2022, 0, 1, 21, 59, 55); // cronjob 実行の 5 秒前
     jest.useFakeTimers();
@@ -122,16 +131,22 @@ describe('QuestionnaireCronService', () => {
   afterAll(() => {
     jest.useRealTimers();
     crowi.questionnaireCronService.stopCron();
+    console.log('finished');
   });
 
   describe('test test', () => {
     test('hoge', async() => {
       spyAxiosGet.mockResolvedValue(mockResponse);
+      spyGetRandomInt.mockReturnValue(secondsUntilRequest);
+
       jest.advanceTimersByTime(5 * 1000); // cronjob 実行時刻まで進める
-      jest.advanceTimersByTime(4 * 60 * 60 * 1000); // 待機時間の最大値まで進め、リクエストを実行する
-      // const savedOrders = await QuestionnaireOrder.find();
-      // const savedIds: string[] = savedOrders.map(order => order._id.toString());
-      const savedIds = ['a'];
+      jest.advanceTimersByTime(secondsUntilRequest); // 待機時間の最大値まで進め、リクエストを実行する
+      jest.useRealTimers();
+
+      await new Promise(resolve => setTimeout(resolve, 3000));
+
+      const savedOrders = await QuestionnaireOrder.find();
+      const savedIds: string[] = savedOrders.map(order => order._id.toString());
       expect(savedIds.sort()).toEqual(['63a8354837e7aa378e16f0b1', '63a8354837e7aa378e16f0b2']);
     });
   });

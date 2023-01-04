@@ -4,7 +4,7 @@ import QuestionnaireOrder, { QuestionnaireOrderDocument } from '../models/questi
 
 const nodeCron = require('node-cron');
 
-const getRandomInt = (min: number, max: number): number => {
+export const getRandomInt = (min: number, max: number): number => {
   const minInt = Math.ceil(min);
   const maxInt = Math.floor(max);
   return Math.floor(Math.random() * (maxInt - minInt) + minInt);
@@ -29,6 +29,8 @@ class QuestionnaireCronService {
     this.maxHoursUntilRequest = crowi.configManager?.getConfig('crowi', 'app:questionnaireCronMaxHoursUntilRequest');
 
     const maxSecondsUntilRequest = this.maxHoursUntilRequest * 60 * 60;
+    // const maxSecondsUntilRequest = 60;
+    // this.cronSchedule = '* * * * *';
 
     this.cronJob = this.questionnaireOrderGetCron(this.cronSchedule, maxSecondsUntilRequest);
   }
@@ -43,10 +45,10 @@ class QuestionnaireCronService {
 
   private questionnaireOrderGetCron(cronSchedule: string, maxSecondsUntilRequest: number) {
     const saveOrders = async(questionnaireOrders: QuestionnaireOrderDocument[]) => {
-      console.log('こんにちは');
       const savedOrders: QuestionnaireOrderDocument[] = await QuestionnaireOrder.find();
-      console.log(savedOrders);
       const savedOrderIds = savedOrders.map(order => order._id.toString());
+      console.log(savedOrderIds);
+      console.log(questionnaireOrders);
       // 渡されたアンケートのうち未保存のものを保存する
       const nonSavedOrders = questionnaireOrders.filter(order => !savedOrderIds.includes(order._id));
       QuestionnaireOrder.insertMany(nonSavedOrders);
@@ -54,6 +56,7 @@ class QuestionnaireCronService {
 
     const deleteFinishedOrders = async() => {
       const currentDate = new Date(Date.now());
+
       await QuestionnaireOrder.deleteMany({
         showUntil: {
           $lt: currentDate,
@@ -67,15 +70,14 @@ class QuestionnaireCronService {
 
       await sleep(secToSleep * 1000);
 
+      console.log('executed');
+
       try {
         const response = await axios.get(`${this.growiQuestionnaireUri}/questionnaire-order/index`);
-        console.log(response.data);
-        const questionnaireOrders: QuestionnaireOrderDocument[] = JSON.parse(JSON.stringify(response.data)).questionnaireQrders;
+        const questionnaireOrders: QuestionnaireOrderDocument[] = response.data.questionnaireOrders;
 
         await saveOrders(questionnaireOrders);
         await deleteFinishedOrders();
-
-        console.log('executed');
       }
       catch (e) {
         console.log(e);

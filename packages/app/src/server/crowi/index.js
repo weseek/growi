@@ -306,6 +306,7 @@ Crowi.prototype.setupModels = async function() {
   Object.keys(allModels).forEach((key) => {
     return this.model(key, models[key](this));
   });
+
 };
 
 Crowi.prototype.setupCron = function() {
