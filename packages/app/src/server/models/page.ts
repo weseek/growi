@@ -223,13 +223,10 @@ export class PageQueryBuilder {
     const ancestorsPaths = extractToAncestorsPaths(pathNormalized);
 
     this.query = this.query
+      // exclude the target page
+      .and({ path: { $ne: path } })
       .and(
-        { path: { $ne: path } }, // exclude the target page
-        {
-          path: {
-            $in: ancestorsPaths,
-          },
-        },
+        { path: { $in: ancestorsPaths } },
       );
 
     return this;
