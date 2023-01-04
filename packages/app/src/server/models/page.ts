@@ -196,10 +196,11 @@ export class PageQueryBuilder {
 
   /**
    * generate the query to find the pages '{path}/*' (exclude '{path}' self).
-   * If top page, return without doing anything.
    */
-  addConditionToListOnlyDescendants(path, option): PageQueryBuilder {
-    // No request is set for the top page
+  addConditionToListOnlyDescendants(path: string, option): PageQueryBuilder {
+    // exclude the target page
+    this.query = this.query.and({ path: { $ne: path } });
+
     if (isTopPage(path)) {
       return this;
     }
@@ -209,22 +210,27 @@ export class PageQueryBuilder {
     const startsPattern = escapeStringRegexp(pathWithTrailingSlash);
 
     this.query = this.query
-      .and({ path: new RegExp(`^${startsPattern}`) });
+      .and(
+        { path: new RegExp(`^${startsPattern}`) },
+      );
 
     return this;
 
   }
 
-  addConditionToListOnlyAncestors(path): PageQueryBuilder {
+  addConditionToListOnlyAncestors(path: string): PageQueryBuilder {
     const pathNormalized = pathUtils.normalizePath(path);
     const ancestorsPaths = extractToAncestorsPaths(pathNormalized);
 
     this.query = this.query
-      .and({
-        path: {
-          $in: ancestorsPaths,
+      .and(
+        { path: { $ne: path } }, // exclude the target page
+        {
+          path: {
+            $in: ancestorsPaths,
+          },
         },
-      });
+      );
 
     return this;
 
