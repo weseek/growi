@@ -22,7 +22,7 @@ describe('QuestionnaireCronService', () => {
   const mockResponse = {
     data: {
       questionnaireOrders: [
-        // 既に保存されている
+        // 既に保存されているアンケート
         {
           _id: '63a8354837e7aa378e16f0b1',
           showFrom: '2022-12-11',
@@ -76,6 +76,7 @@ describe('QuestionnaireCronService', () => {
     // reload
     await crowi.setupConfigManager();
 
+    // 初期データ投入
     await QuestionnaireOrder.insertMany([
       {
         _id: '63a8354837e7aa378e16f0b1',
@@ -120,7 +121,8 @@ describe('QuestionnaireCronService', () => {
       },
     ]);
 
-    const mockDate = new Date(2022, 0, 1, 21, 59, 55); // cronjob 実行の 5 秒前
+    // cronjob 実行の 5 秒前に現在時刻を設定する
+    const mockDate = new Date(2022, 0, 1, 21, 59, 55);
     jest.useFakeTimers();
     jest.setSystemTime(mockDate);
 
@@ -131,23 +133,20 @@ describe('QuestionnaireCronService', () => {
   afterAll(() => {
     jest.useRealTimers();
     crowi.questionnaireCronService.stopCron();
-    console.log('finished');
   });
 
-  describe('test test', () => {
-    test('hoge', async() => {
-      spyAxiosGet.mockResolvedValue(mockResponse);
-      spyGetRandomInt.mockReturnValue(secondsUntilRequest);
+  test('Should save new quesionnaire orders and delete outdated ones', async() => {
+    spyAxiosGet.mockResolvedValue(mockResponse);
+    spyGetRandomInt.mockReturnValue(secondsUntilRequest);
 
-      jest.advanceTimersByTime(5 * 1000); // cronjob 実行時刻まで進める
-      jest.advanceTimersByTime(secondsUntilRequest); // 待機時間の最大値まで進め、リクエストを実行する
-      jest.useRealTimers();
+    jest.advanceTimersByTime(5 * 1000); // cronjob 実行時刻まで進める
+    jest.advanceTimersByTime(secondsUntilRequest); // 待機時間の最大値まで進め、リクエストを実行する
+    jest.useRealTimers(); // cronjob 実行完了後は real timers に戻さないと mongoose が正常に動作しない
 
-      await new Promise(resolve => setTimeout(resolve, 3000));
+    await new Promise(resolve => setTimeout(resolve, 3000)); // 裏で動いている cronjob が実行完了するまで待つ
 
-      const savedOrders = await QuestionnaireOrder.find();
-      const savedIds: string[] = savedOrders.map(order => order._id.toString());
-      expect(savedIds.sort()).toEqual(['63a8354837e7aa378e16f0b1', '63a8354837e7aa378e16f0b2']);
-    });
+    const savedOrders = await QuestionnaireOrder.find();
+    const savedIds: string[] = savedOrders.map(order => order._id.toString());
+    expect(savedIds.sort()).toEqual(['63a8354837e7aa378e16f0b1', '63a8354837e7aa378e16f0b2']);
   });
 });

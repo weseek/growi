@@ -1,6 +1,9 @@
 import axios from '~/utils/axios';
+import loggerFactory from '~/utils/logger';
 
 import QuestionnaireOrder, { QuestionnaireOrderDocument } from '../models/questionnaire/questionnaire-order';
+
+const logger = loggerFactory('growi:service:questionnaire-cron');
 
 const nodeCron = require('node-cron');
 
@@ -29,8 +32,6 @@ class QuestionnaireCronService {
     this.maxHoursUntilRequest = crowi.configManager?.getConfig('crowi', 'app:questionnaireCronMaxHoursUntilRequest');
 
     const maxSecondsUntilRequest = this.maxHoursUntilRequest * 60 * 60;
-    // const maxSecondsUntilRequest = 60;
-    // this.cronSchedule = '* * * * *';
 
     this.cronJob = this.questionnaireOrderGetCron(this.cronSchedule, maxSecondsUntilRequest);
   }
@@ -47,8 +48,6 @@ class QuestionnaireCronService {
     const saveOrders = async(questionnaireOrders: QuestionnaireOrderDocument[]) => {
       const savedOrders: QuestionnaireOrderDocument[] = await QuestionnaireOrder.find();
       const savedOrderIds = savedOrders.map(order => order._id.toString());
-      console.log(savedOrderIds);
-      console.log(questionnaireOrders);
       // 渡されたアンケートのうち未保存のものを保存する
       const nonSavedOrders = questionnaireOrders.filter(order => !savedOrderIds.includes(order._id));
       QuestionnaireOrder.insertMany(nonSavedOrders);
@@ -65,12 +64,9 @@ class QuestionnaireCronService {
     };
 
     return nodeCron.schedule(cronSchedule, async() => {
-      console.log('called');
+      // GROWI ごとにリクエスト時刻を分散させるためにランダムな時間 sleep する
       const secToSleep = getRandomInt(0, maxSecondsUntilRequest);
-
       await sleep(secToSleep * 1000);
-
-      console.log('executed');
 
       try {
         const response = await axios.get(`${this.growiQuestionnaireUri}/questionnaire-order/index`);
@@ -80,7 +76,7 @@ class QuestionnaireCronService {
         await deleteFinishedOrders();
       }
       catch (e) {
-        console.log(e);
+        logger.error(e);
       }
 
     });
