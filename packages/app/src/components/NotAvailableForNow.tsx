@@ -12,7 +12,7 @@ type NotAvailableForNowProps = {
 export const NotAvailableForNow = React.memo(({ children }: NotAvailableForNowProps): JSX.Element => {
   const { t } = useTranslation();
 
-  const title = t('Not available for now');
+  const title = t('Not available in this version');
 
   return (
     <NotAvailable
