@@ -1,23 +1,13 @@
-import loggerFactory from '~/utils/logger';
-
-
-const logger = loggerFactory('growi:middleware:certify-brand-logo-fire');
+import { AttachmentType } from '~/server/interfaces/attachment';
 
 module.exports = (crowi) => {
 
   return async(req, res, next) => {
 
-    const fileId = req.params.id || null;
-
     const Attachment = crowi.model('Attachment');
+    const attachment = await Attachment.findOne({ attachmentType: AttachmentType.BRAND_LOGO });
 
-    const attachment = await Attachment.findOne({ _id: fileId });
-
-    if (attachment == null) {
-      return next();
-    }
-
-    if (attachment.isBrandLogo()) {
+    if (attachment != null) {
       req.isBrandLogo = true;
     }
 
