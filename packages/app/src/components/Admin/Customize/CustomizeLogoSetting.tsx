@@ -18,15 +18,15 @@ const CUSTOMIZED_LOGO = '/attachment/brand-logo';
 const CustomizeLogoSetting = (): JSX.Element => {
 
   const { t } = useTranslation();
-  const { data: _isDefaultLogo } = useIsDefaultLogo();
+  const { data: isDefaultLogo } = useIsDefaultLogo();
   const { data: isCustomizedLogoUploaded, mutate: mutateIsCustomizedLogoUploaded } = useIsCustomizedLogoUploaded();
 
   const [uploadLogoSrc, setUploadLogoSrc] = useState<ArrayBuffer | string | null>(null);
   const [isImageCropModalShow, setIsImageCropModalShow] = useState<boolean>(false);
-  const [isDefaultLogo, setIsDefaultLogo] = useState<boolean>(_isDefaultLogo ?? true);
+  const [isDefaultLogoSelected, setIsDefaultLogoSelected] = useState<boolean>(isDefaultLogo ?? true);
   const [retrieveError, setRetrieveError] = useState<any>();
 
-  const selectedCurrentLogo = useMemo(() => {
+  const currentLogo = useMemo(() => {
     return isDefaultLogo || !isCustomizedLogoUploaded ? DEFAULT_LOGO : CUSTOMIZED_LOGO;
   }, [isDefaultLogo, isCustomizedLogoUploaded]);
 
@@ -41,13 +41,13 @@ const CustomizeLogoSetting = (): JSX.Element => {
 
   const onClickSubmit = useCallback(async() => {
     try {
-      await apiv3Put('/customize-setting/customize-logo', { isDefaultLogo });
+      await apiv3Put('/customize-setting/customize-logo', { isDefaultLogo: isDefaultLogoSelected });
       toastSuccess(t('toaster.update_successed', { target: t('admin:customize_settings.custom_logo'), ns: 'commons' }));
     }
     catch (err) {
       toastError(err);
     }
-  }, [t, isDefaultLogo]);
+  }, [t, isDefaultLogoSelected]);
 
   const onClickDeleteBtn = useCallback(async() => {
     try {
@@ -94,8 +94,8 @@ const CustomizeLogoSetting = (): JSX.Element => {
                       className="custom-control-input"
                       form="formImageType"
                       name="imagetypeForm[isDefaultLogo]"
-                      checked={isDefaultLogo}
-                      onChange={() => { setIsDefaultLogo(true) }}
+                      checked={isDefaultLogoSelected}
+                      onChange={() => { setIsDefaultLogoSelected(true) }}
                     />
                     <label className="custom-control-label" htmlFor="radioDefaultLogo">
                       {t('admin:customize_settings.default_logo')}
@@ -114,8 +114,8 @@ const CustomizeLogoSetting = (): JSX.Element => {
                       className="custom-control-input"
                       form="formImageType"
                       name="imagetypeForm[isDefaultLogo]"
-                      checked={!isDefaultLogo}
-                      onChange={() => { setIsDefaultLogo(false) }}
+                      checked={!isDefaultLogoSelected}
+                      onChange={() => { setIsDefaultLogoSelected(false) }}
                     />
                     <label className="custom-control-label" htmlFor="radioUploadLogo">
                       { t('admin:customize_settings.upload_logo') }
@@ -127,7 +127,8 @@ const CustomizeLogoSetting = (): JSX.Element => {
                     { t('admin:customize_settings.current_logo') }
                   </label>
                   <div className="col-sm-8 col-12">
-                    <p><img src={selectedCurrentLogo} className="picture picture-lg " id="settingBrandLogo" width="64" /></p>
+
+                    <p><img src={currentLogo} className="picture picture-lg " id="settingBrandLogo" width="64" /></p>
                     {isCustomizedLogoUploaded && (
                       <button type="button" className="btn btn-danger" onClick={onClickDeleteBtn}>
                         { t('admin:customize_settings.delete_logo') }
