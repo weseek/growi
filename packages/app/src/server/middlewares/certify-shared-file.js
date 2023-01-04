@@ -1,4 +1,6 @@
+import { AttachmentType } from '~/server/interfaces/attachment';
 import loggerFactory from '~/utils/logger';
+
 
 const url = require('url');
 
@@ -29,6 +31,12 @@ module.exports = (crowi) => {
     const attachment = await Attachment.findOne({ _id: fileId });
 
     if (attachment == null) {
+      return next();
+    }
+
+    const isBlandLogo = attachment.attachmentType === AttachmentType.BRAND_LOGO;
+    if (isBlandLogo) {
+      req.isSharedPage = true;
       return next();
     }
 
