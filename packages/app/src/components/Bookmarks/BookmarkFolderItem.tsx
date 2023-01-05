@@ -11,12 +11,16 @@ import CountBadge from '~/components/Common/CountBadge';
 import FolderIcon from '~/components/Icons/FolderIcon';
 import TriangleIcon from '~/components/Icons/TriangleIcon';
 import { BookmarkFolderItems } from '~/interfaces/bookmark-info';
+import { IPageToDeleteWithMeta } from '~/interfaces/page';
+import { OnDeletedFunction } from '~/interfaces/ui';
 import { useSWRBookmarkInfo } from '~/stores/bookmark';
 import { useSWRxBookamrkFolderAndChild } from '~/stores/bookmark-folder';
+import { usePageDeleteModal } from '~/stores/modal';
 import { useSWRxCurrentPage } from '~/stores/page';
 
 import BookmarkFolderItemControl from './BookmarkFolderItemControl';
 import BookmarkFolderNameInput from './BookmarkFolderNameInput';
+import BookmarkItem from './BookmarkItem';
 import DeleteBookmarkFolderModal from './DeleteBookmarkFolderModal';
 
 
@@ -29,7 +33,7 @@ const BookmarkFolderItem: FC<BookmarkFolderItemProps> = (props: BookmarkFolderIt
 
   const { t } = useTranslation();
   const {
-    name, _id: folderId, children, parent,
+    name, _id: folderId, children, parent, bookmarks,
   } = bookmarkFolder;
   const [currentChildren, setCurrentChildren] = useState<BookmarkFolderItems[]>();
   const [targetFolder, setTargetFolder] = useState<string | null>(folderId);
@@ -41,6 +45,7 @@ const BookmarkFolderItem: FC<BookmarkFolderItemProps> = (props: BookmarkFolderIt
   const [isDeleteFolderModalShown, setIsDeleteFolderModalShown] = useState<boolean>(false);
   const { data: currentPage } = useSWRxCurrentPage();
   const { mutate: mutateBookmarkInfo } = useSWRBookmarkInfo(currentPage?._id);
+  const { open: openDeleteModal } = usePageDeleteModal();
 
   const getChildCount = useCallback((): number => {
     if (currentChildren != null && currentChildren.length > children.length) {
@@ -133,6 +138,30 @@ const BookmarkFolderItem: FC<BookmarkFolderItemProps> = (props: BookmarkFolderIt
     setIsCreateAction(true);
   }, [hasChildren, isOpen]);
 
+  const onClickDeleteBookmarkHandler = useCallback((pageToDelete: IPageToDeleteWithMeta) => {
+    const pageDeletedHandler : OnDeletedFunction = (pathOrPathsToDelete, _isRecursively, isCompletely) => {
+      if (typeof pathOrPathsToDelete !== 'string') {
+        return;
+      }
+      const path = pathOrPathsToDelete;
+
+      if (isCompletely) {
+        toastSuccess(t('deleted_pages_completely', { path }));
+      }
+      else {
+        toastSuccess(t('deleted_pages', { path }));
+      }
+      mutateParentBookmarkFolder();
+      mutateBookmarkInfo();
+    };
+    openDeleteModal([pageToDelete], { onDeleted: pageDeletedHandler });
+  }, [mutateBookmarkInfo, mutateParentBookmarkFolder, openDeleteModal, t]);
+
+  const onUnbookmarkHandler = useCallback(() => {
+    mutateParentBookmarkFolder();
+    mutateBookmarkInfo();
+  }, [mutateBookmarkInfo, mutateParentBookmarkFolder]);
+
   const renderChildFolder = () => {
     return isOpen && currentChildren?.map((childFolder) => {
       return (
@@ -142,6 +171,20 @@ const BookmarkFolderItem: FC<BookmarkFolderItemProps> = (props: BookmarkFolderIt
             bookmarkFolder={childFolder}
           />
         </div>
+      );
+    });
+  };
+
+  const renderBookmarkItem = () => {
+    return isOpen && bookmarks?.map((bookmark) => {
+      return (
+        <BookmarkItem
+          bookmarkedPage={bookmark.page}
+          key={bookmark._id}
+          onUnbookmarked={onUnbookmarkHandler}
+          onRenamed={mutateParentBookmarkFolder}
+          onClickDeleteMenuItem={onClickDeleteBookmarkHandler}
+        />
       );
     });
   };
@@ -232,6 +275,9 @@ const BookmarkFolderItem: FC<BookmarkFolderItemProps> = (props: BookmarkFolderIt
       )}
       {
         renderChildFolder()
+      }
+      {
+        renderBookmarkItem()
       }
       <DeleteBookmarkFolderModal
         bookmarkFolder={bookmarkFolder}
