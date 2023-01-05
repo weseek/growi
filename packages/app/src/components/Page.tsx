@@ -5,7 +5,6 @@ import React, {
 
 import EventEmitter from 'events';
 
-import { pagePathUtils } from '@growi/core';
 import { DrawioEditByViewerProps } from '@growi/remark-drawio';
 import { useTranslation } from 'next-i18next';
 import dynamic from 'next/dynamic';
@@ -16,7 +15,7 @@ import { useSaveOrUpdate } from '~/client/services/page-operation';
 import { toastSuccess, toastError } from '~/client/util/apiNotification';
 import { OptionsToSave } from '~/interfaces/page-operation';
 import {
-  useIsGuestUser, useShareLinkId, useCurrentPathname,
+  useIsGuestUser, useShareLinkId,
 } from '~/stores/context';
 import { useEditingMarkdown } from '~/stores/editor';
 import { useDrawioModal, useHandsontableModal } from '~/stores/modal';
@@ -60,13 +59,10 @@ export const Page = (props) => {
     tocRef.current = toc;
   }, []);
 
-  const { data: currentPathname } = useCurrentPathname();
-  const isSharedPage = pagePathUtils.isSharedPage(currentPathname ?? '');
-
   const { data: shareLinkId } = useShareLinkId();
   const { data: currentPage, mutate: mutateCurrentPage } = useSWRxCurrentPage(shareLinkId ?? undefined);
   const { mutate: mutateEditingMarkdown } = useEditingMarkdown();
-  const { data: tagsInfo } = useSWRxTagsInfo(!isSharedPage ? currentPage?._id : undefined);
+  const { data: tagsInfo } = useSWRxTagsInfo(currentPage?._id);
   const { data: isGuestUser } = useIsGuestUser();
   const { data: isMobile } = useIsMobile();
   const { data: rendererOptions, mutate: mutateRendererOptions } = useViewOptions(storeTocNodeHandler);

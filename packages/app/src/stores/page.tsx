@@ -20,7 +20,7 @@ import { IPageTagsInfo } from '../interfaces/tag';
 import { useCurrentPageId, useCurrentPathname } from './context';
 import { ITermNumberManagerUtil, useTermNumberManager } from './use-static-swr';
 
-const { isPermalink: _isPermalink } = pagePathUtils;
+const { isPermalink: _isPermalink, isSharedPage: _isSharedPage } = pagePathUtils;
 
 
 export const useSWRxPage = (
@@ -83,20 +83,14 @@ export const useSWRxCurrentPage = (
 export const useSWRxTagsInfo = (pageId: Nullable<string>): SWRResponse<IPageTagsInfo | undefined, Error> => {
 
   const endpoint = `/pages.getPageTag?pageId=${pageId}`;
-  const key = [endpoint, pageId];
 
-  const fetcher = async(endpoint: string, pageId: Nullable<string>) => {
-    let tags: string[] = [];
-    // when the page exists
-    if (pageId != null) {
-      const res = await apiGet<IPageTagsInfo>(endpoint, { pageId });
-      tags = res?.tags;
-    }
+  const { data: pathname } = useCurrentPathname();
+  const isSharedPage = _isSharedPage(pathname ?? '');
 
-    return { tags };
-  };
-
-  return useSWRImmutable(key, fetcher);
+  return useSWRImmutable<IPageTagsInfo | undefined, Error>(
+    !isSharedPage && pageId != null ? [endpoint, pageId] : null,
+    (endpoint, pageId) => apiGet<IPageTagsInfo>(endpoint, { pageId }).then(result => result),
+  );
 };
 
 export const usePageInfoTermManager = (isDisabled?: boolean) : SWRResponse<number, Error> & ITermNumberManagerUtil => {

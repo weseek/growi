@@ -214,7 +214,7 @@ const GrowiContextualSubNavigation = (props: GrowiContextualSubNavigationProps):
   const { data: isAbleToShowPageEditorModeManager } = useIsAbleToShowPageEditorModeManager();
   const { data: isAbleToShowPageAuthors } = useIsAbleToShowPageAuthors();
 
-  const { mutate: mutateSWRTagsInfo, data: tagsInfoData } = useSWRxTagsInfo(!isSharedPage ? currentPage?._id : undefined);
+  const { mutate: mutateSWRTagsInfo, data: tagsInfoData } = useSWRxTagsInfo(currentPage?._id);
 
   // eslint-disable-next-line max-len
   const { data: tagsForEditors, mutate: mutatePageTagsForEditors, sync: syncPageTagsForEditors } = usePageTagsForEditors(!isSharedPage ? currentPage?._id : undefined);
