@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { IUserHasId } from '@growi/core';
+import { IUserHasId, IPagePopulatedToShowRevision } from '@growi/core';
 import {
   GetServerSideProps, GetServerSidePropsContext,
 } from 'next';
@@ -23,6 +23,7 @@ import {
   useCurrentUser, useCurrentPathname, useCurrentPageId, useRendererConfig, useIsSearchPage,
   useShareLinkId, useIsSearchServiceConfigured, useIsSearchServiceReachable, useIsSearchScopeChildrenAsDefault, useDrawioUri, useIsContainerFluid,
 } from '~/stores/context';
+import { useSWRxCurrentPage } from '~/stores/page';
 import loggerFactory from '~/utils/logger';
 
 import { NextPageWithLayout } from '../_app.page';
@@ -38,6 +39,7 @@ const ShareLinkAlert = dynamic(() => import('~/components/Page/ShareLinkAlert'),
 const ForbiddenPage = dynamic(() => import('~/components/ForbiddenPage'), { ssr: false });
 
 type Props = CommonProps & {
+  page?: IPagePopulatedToShowRevision,
   shareLink?: IShareLinkHasId,
   isExpired: boolean,
   disableLinkSharing: boolean,
@@ -50,6 +52,7 @@ type Props = CommonProps & {
 
 const SharedPage: NextPageWithLayout<Props> = (props: Props) => {
   useIsSearchPage(false);
+  useSWRxCurrentPage(undefined, props.page);
   useShareLinkId(props.shareLink?._id);
   useCurrentPageId(props.shareLink?.relatedPage._id);
   useCurrentUser(props.currentUser);
@@ -227,7 +230,8 @@ export const getServerSideProps: GetServerSideProps = async(context: GetServerSi
     const ShareLinkModel = crowi.model('ShareLink');
     const shareLink = await ShareLinkModel.findOne({ _id: params.linkId }).populate('relatedPage');
     if (shareLink != null) {
-      await shareLink.relatedPage.populateDataToShowRevision();
+      const page = await shareLink.relatedPage.populateDataToShowRevision();
+      props.page = page.toObject();
       props.isExpired = shareLink.isExpired();
       props.shareLink = shareLink.toObject();
     }

@@ -20,8 +20,7 @@ import { IPageTagsInfo } from '../interfaces/tag';
 import { useCurrentPageId, useCurrentPathname } from './context';
 import { ITermNumberManagerUtil, useTermNumberManager } from './use-static-swr';
 
-const { isPermalink: _isPermalink } = pagePathUtils;
-
+const { isPermalink: _isPermalink, isSharedPage: _isSharedPage } = pagePathUtils;
 
 export const useSWRxPage = (
     pageId?: string|null,
@@ -29,10 +28,16 @@ export const useSWRxPage = (
     revisionId?: string,
     initialData?: IPagePopulatedToShowRevision|null,
 ): SWRResponse<IPagePopulatedToShowRevision|null, Error> => {
+  const { data: pathname } = useCurrentPathname();
+  const isSharedPage = _isSharedPage(pathname ?? '');
+
   const swrResponse = useSWRImmutable<IPagePopulatedToShowRevision|null, Error>(
     pageId != null ? ['/page', pageId, shareLinkId, revisionId] : null,
-    (endpoint, pageId, shareLinkId, revisionId) => apiv3Get<{ page: IPagePopulatedToShowRevision }>(endpoint, { pageId, shareLinkId, revisionId })
-      .then(result => result.data.page)
+    // eslint-disable-next-line max-len
+    isSharedPage ? null : (endpoint, pageId, shareLinkId, revisionId) => apiv3Get<{ page: IPagePopulatedToShowRevision }>(endpoint, { pageId, shareLinkId, revisionId })
+      .then((result) => {
+        return result.data.page;
+      })
       .catch((errs) => {
         if (!Array.isArray(errs)) { throw Error('error is not array') }
         const statusCode = errs[0].status;
