@@ -250,7 +250,24 @@ export const usePreferDrawerModeByUser = (initialData?: boolean): SWRResponseWit
 
   const key = 'preferDrawerModeByUser';
 
-  const swrResponse: SWRResponse<boolean, Error> = useStaticSWR(key, initialData, { use: isGuestUser ? [localStorageMiddleware] : [] });
+  const initialDataWithLocalStorage = () => {
+    // server
+    if (!isGuestUser || !isClient()) return initialData;
+
+    // client
+    const keyInStorage = generateKeyInStorage(key.toString());
+    const preferDrawerMode = localStorage.getItem(keyInStorage);
+
+    // localstorage doesn't have value
+    if (preferDrawerMode == null) return initialData;
+
+    const preferDrawerModeBool = preferDrawerMode?.toLowerCase() === 'true';
+
+    // localstorage has value
+    return preferDrawerModeBool;
+  };
+
+  const swrResponse: SWRResponse<boolean, Error> = useStaticSWR(key, initialDataWithLocalStorage(), { use: isGuestUser ? [localStorageMiddleware] : [] });
 
   useEffect(() => {
     if (!isGuestUser) { return }
@@ -258,7 +275,9 @@ export const usePreferDrawerModeByUser = (initialData?: boolean): SWRResponseWit
     const preferDrawerMode = localStorage.getItem(keyInStorage);
     const preferDrawerModeBool = preferDrawerMode?.toLowerCase() === 'true';
 
-    swrResponse.mutate(preferDrawerModeBool);
+    if (swrResponse.data !== preferDrawerModeBool) {
+      swrResponse.mutate(preferDrawerModeBool);
+    }
   }, [isGuestUser, swrResponse]);
 
   const utils: PreferDrawerModeByUserUtils = {
