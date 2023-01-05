@@ -1,4 +1,5 @@
 import axios from '~/utils/axios';
+import { sleep } from '~/utils/sleep';
 
 const nodeCron = require('node-cron');
 
@@ -8,11 +9,9 @@ const getRandomInt = (min: number, max: number): number => {
   return Math.floor(Math.random() * (maxInt - minInt) + minInt);
 };
 
-const sleep = msec => new Promise(resolve => setTimeout(resolve, msec));
-
 class QuestionnaireCronService {
 
-  growiQuestionnaireUri: string;
+  growiQuestionnaireServerOrigin: string;
 
   cronSchedule: string;
 
@@ -20,7 +19,7 @@ class QuestionnaireCronService {
 
   // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
   constructor(crowi) {
-    this.growiQuestionnaireUri = crowi.configManager?.getConfig('crowi', 'app:growiQuestionnaireUri');
+    this.growiQuestionnaireServerOrigin = crowi.configManager?.getConfig('crowi', 'app:growiQuestionnaireServerOrigin');
     this.cronSchedule = crowi.configManager?.getConfig('crowi', 'app:questionnaireCronSchedule');
     this.maxHoursUntilRequest = crowi.configManager?.getConfig('crowi', 'app:questionnaireCronMaxHoursUntilRequest');
   }
@@ -37,7 +36,7 @@ class QuestionnaireCronService {
       await sleep(secToSleep * 1000);
 
       try {
-        const response = await axios.get(`${this.growiQuestionnaireUri}/questionnaire-order/index`);
+        const response = await axios.get(`${this.growiQuestionnaireServerOrigin}/questionnaire-order/index`);
         console.log(response.data);
       }
       catch (e) {
