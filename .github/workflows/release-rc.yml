@@ -22,7 +22,7 @@ jobs:
 
     - name: Docker meta
       id: meta
-      uses: docker/metadata-action@v3
+      uses: docker/metadata-action@v4
       with:
         # images: weseek/growi,ghcr.io/weseek/growi
         images: ghcr.io/weseek/growi
