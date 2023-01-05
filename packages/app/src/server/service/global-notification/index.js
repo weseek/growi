@@ -45,7 +45,7 @@ class GlobalNotificationService {
     }
 
     await Promise.all([
-      this.gloabalNotificationMail.fire(event, page.path, triggeredBy, vars),
+      this.gloabalNotificationMail.fire(event, page, triggeredBy, vars),
       this.gloabalNotificationSlack.fire(event, page.id, page.path, triggeredBy, vars),
     ]);
   }

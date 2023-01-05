@@ -38,7 +38,7 @@ jobs:
         sh ./packages/app/bin/github-actions/update-readme.sh
 
     - name: Retrieve information from package.json
-      uses: myrotvorets/info-from-package-json-action@1.1.0
+      uses: myrotvorets/info-from-package-json-action@1.2.0
       id: package-json
 
     - name: Update Changelog
@@ -99,7 +99,7 @@ jobs:
         yarn bump-versions:slackbot-proxy
 
     - name: Retrieve information from package.json
-      uses: myrotvorets/info-from-package-json-action@1.1.0
+      uses: myrotvorets/info-from-package-json-action@1.2.0
       id: package-json
 
     - name: Commit
@@ -126,58 +126,46 @@ jobs:
 
     runs-on: ubuntu-latest
 
-    strategy:
-      matrix:
-        flavor: [default, nocdn]
-
     steps:
     - uses: actions/checkout@v3
       with:
         ref: v${{ needs.create-github-release.outputs.RELEASED_VERSION }}
         lfs: true
 
-    - name: Setup suffix
-      id: suffix
-      run: |
-        [[ ${{ matrix.flavor }} = "nocdn" ]] && suffix="-nocdn" || suffix=""
-        echo "::set-output name=SUFFIX::$suffix"
-
     - name: Docker meta
       id: meta
-      uses: docker/metadata-action@v3
+      uses: docker/metadata-action@v4
       with:
         images: weseek/growi,ghcr.io/weseek/growi
-        flavor: |
-          suffix=${{ steps.suffix.outputs.SUFFIX }}
         tags: |
           type=raw,value=latest
           type=semver,value=${{ needs.create-github-release.outputs.RELEASED_VERSION }},pattern={{major}}
           type=semver,value=${{ needs.create-github-release.outputs.RELEASED_VERSION }},pattern={{major}}.{{minor}}
           type=semver,value=${{ needs.create-github-release.outputs.RELEASED_VERSION }},pattern={{major}}.{{minor}}.{{patch}}
 
-    - name: Login to docker.io registry
-      run: |
-        echo ${{ secrets. DOCKER_REGISTRY_PASSWORD }} | docker login --username wsmoogle --password-stdin
+    - name: Login to Docker Hub
+      uses: docker/login-action@v2
+      with:
+        username: wsmoogle
+        password: ${{ secrets.DOCKER_REGISTRY_PASSWORD }}
 
     - name: Login to GitHub Container Registry
-      uses: docker/login-action@v1
+      uses: docker/login-action@v2
       with:
         registry: ghcr.io
         username: wsmoogle
         password: ${{ secrets.DOCKER_REGISTRY_ON_GITHUB_PASSWORD }}
 
     - name: Set up Docker Buildx
-      uses: docker/setup-buildx-action@v1
+      uses: docker/setup-buildx-action@v2
 
     - name: Build and push
-      uses: docker/build-push-action@v2
+      uses: docker/build-push-action@v3
       with:
         context: .
         file: ./packages/app/docker/Dockerfile
         platforms: linux/amd64
         push: true
-        build-args: |
-          flavor=${{ matrix.flavor }}
         builder: ${{ steps.buildx.outputs.name }}
         cache-from: type=gha
         cache-to: type=gha,mode=max
@@ -196,10 +184,9 @@ jobs:
       with:
         channel: '#release'
         url: ${{ secrets.SLACK_WEBHOOK_URL }}
-        created_tag: 'v${{ needs.create-github-release.outputs.RELEASED_VERSION }}${{ steps.suffix.outputs.SUFFIX }}'
+        created_tag: 'v${{ needs.create-github-release.outputs.RELEASED_VERSION }}'
 
     - name: Check whether workspace is clean
       run: |
         STATUS=`git status --porcelain`
         if [ -z "$STATUS" ]; then exit 0; else exit 1; fi
-

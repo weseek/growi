@@ -1,10 +1,12 @@
 import path from 'path';
 
-import { i18n } from '~/next-i18next.config';
+import express from 'express';
+
+import { i18n } from '^/config/next-i18next.config';
+
 import loggerFactory from '~/utils/logger';
 
-const onHeaders = require('on-headers');
-const swig = require('swig-templates');
+import nextFactory from '../routes/next';
 
 const logger = loggerFactory('growi:crowi:dev');
 
@@ -25,16 +27,11 @@ class CrowiDev {
     this.requireForAutoReloadServer();
 
     this.initPromiseRejectionWarningHandler();
-    this.initSwig();
   }
 
   initPromiseRejectionWarningHandler() {
     // https://qiita.com/syuilo/items/0800d7e44e93203c7285
     process.on('unhandledRejection', console.dir); // eslint-disable-line no-console
-  }
-
-  initSwig() {
-    swig.setDefaults({ cache: false });
   }
 
   /**
@@ -55,6 +52,8 @@ class CrowiDev {
   setupServer(app) {
     const port = this.crowi.port;
     let server = app;
+
+    this.setupExpressBeforeListening(app);
 
     // for log
     let serverUrl = `http://localhost:${port}}`;
@@ -88,40 +87,29 @@ class CrowiDev {
     return server;
   }
 
-  /**
-   *
-   * @param {any} app express
-   */
+  setupExpressBeforeListening(app) {
+    this.setupNextBundleAnalyzer(app);
+  }
+
   setupExpressAfterListening(app) {
-    this.setupHeaderDebugger(app);
-    this.setupBrowserSync(app);
+    // this.setupBrowserSync(app);
+    this.setupWebpackHmr(app);
+    this.setupNextjsStackFrame(app);
   }
 
-  setupHeaderDebugger(app) {
-    logger.debug('setupHeaderDebugger');
-
-    app.use((req, res, next) => {
-      onHeaders(res, () => {
-        logger.debug('HEADERS GOING TO BE WRITTEN');
-      });
-      next();
-    });
+  setupNextBundleAnalyzer(app) {
+    const next = nextFactory(this.crowi);
+    app.use('/analyze', express.static(path.resolve(__dirname, '../../../.next/analyze')));
   }
 
-  setupBrowserSync(app) {
-    logger.debug('setupBrowserSync');
+  setupWebpackHmr(app) {
+    const next = nextFactory(this.crowi);
+    app.all('/_next/webpack-hmr', next.delegateToNext);
+  }
 
-    const browserSync = require('browser-sync');
-    const bs = browserSync.create().init({
-      logSnippet: false,
-      notify: false,
-      files: [
-        `${this.crowi.viewsDir}/**/*.html`,
-        `${this.crowi.publicDir}/**/*.js`,
-        `${this.crowi.publicDir}/**/*.css`,
-      ],
-    });
-    app.use(require('connect-browser-sync')(bs));
+  setupNextjsStackFrame(app) {
+    const next = nextFactory(this.crowi);
+    app.get('/__nextjs_original-stack-frame', next.delegateToNext);
   }
 
 }

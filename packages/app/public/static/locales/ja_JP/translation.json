@@ -1,4 +1,7 @@
 {
+  "meta": {
+    "display_name": "日本語"
+  },
   "Help": "ヘルプ",
   "view": "View",
   "Edit": "編集",
@@ -16,6 +19,7 @@
   "Move/Rename": "移動/名前変更",
   "Redirected": "リダイレクトされました",
   "Unlinked": "リダイレクト削除",
+  "unlink_redirection": "リダイレクト削除",
   "Done": "完了",
   "Cancel": "キャンセル",
   "Create": "作成",
@@ -24,18 +28,12 @@
   "administrator": "管理者",
   "Tag": "タグ",
   "Tags": "タグ",
-  "New": "作成",
   "Close": "閉じる",
   "Shortcuts": "ショートカット",
+  "CustomSidebar": "カスタムサイドバー",
   "eg": "例:",
   "add": "追加",
   "Undo": "元に戻す",
-  "Article": "記事",
-  "Page": "ページ",
-  "Page Path": "ページパス",
-  "Category": "カテゴリー",
-  "User": "ユーザー",
-  "status": "ステータス",
   "account_id": "アカウントID",
   "Initialize": "初期化",
   "Update": "更新",
@@ -59,6 +57,7 @@
   "Presentation Mode": "プレゼンテーション",
   "The end": "おしまい",
   "Not available for guest": "ゲストユーザーは利用できません",
+  "Not available in this version": "このバージョンでは利用できません",
   "No users have liked this yet": "いいねをしているユーザーはいません",
   "No users have bookmarked yet": "ブックマークしているユーザーはいません",
   "Create Archive Page": "アーカイブページの作成",
@@ -74,7 +73,6 @@
   "username": "ユーザー名",
   "Created": "作成日",
   "Last updated": "最終更新",
-  "Last_Login": "最終ログイン",
   "Share": "共有",
   "Markdown Link": "Markdown形式のリンク",
   "Create/Edit Template": "テンプレートページの作成/編集",
@@ -109,30 +107,12 @@
   "Input page name (optional)": "ページ名を入力(空欄OK)",
   "New Page": "新規ページ",
   "Create under": "ページを以下に作成",
-  "Wiki Management Home Page": "Wiki管理トップ",
-  "App Settings": "アプリ設定",
   "V5 Page Migration": "V5 互換形式 への変換",
   "GROWI.5.0_new_schema": "GROWI.5.0における新スキーマについて",
-  "See_more_detail_on_new_schema": "詳しくは<a href='#'>{{url}}</a><i class='icon-share-alt'></i>を参照ください。",
-  "Site URL settings": "サイトURL設定",
-  "Markdown Settings": "マークダウン設定",
-  "Customize": "カスタマイズ",
-  "Notification Settings": "通知設定",
-  "slack_integration": "Slack連携",
-  "External_Notification": "外部ツールへの通知",
-  "Legacy_Slack_Integration": "Slack連携 (レガシー)",
-  "User_Management": "ユーザー管理",
+  "See_more_detail_on_new_schema": "詳しくは<a href='https://docs.growi.org/ja/admin-guide/upgrading/50x.html#新しい-v5-互換形式について' target='_blank'>{{title}}</a><i class='icon-share-alt'></i>を参照ください。",
   "external_account_management": "外部アカウント管理",
   "UserGroup": "グループ",
-  "ChildUserGroup": "子グループ",
-  "UserGroup Management": "グループ管理",
-  "AuditLog": "監査ログ",
-  "AuditLog Settings": "監査ログ設定",
-  "Full Text Search Management": "全文検索管理",
-  "Import Data": "データインポート",
-  "Export Archive Data": "データアーカイブ",
   "Basic Settings": "基本設定",
-  "Register limitation": "登録の制限",
   "The contents entered here will be shown in the header etc": "ここに入力した内容は、ヘッダー等に表示されます。",
   "Public": "公開",
   "Anyone with the link": "リンクを知っている人のみ",
@@ -140,11 +120,6 @@
   "Only me": "自分のみ",
   "Only inside the group": "特定グループのみ",
   "page_list": "ページリスト",
-  "scope_of_page_disclosure": "ページの公開範囲",
-  "set_point": "設定値",
-  "always_displayed": "表示 (固定)",
-  "always_hidden": "非表示 (固定)",
-  "displayed_or_hidden": "表示 / 非表示",
   "Reselect the group": "グループの再選択",
   "Shareable link": "このページの共有用URL",
   "The whitelist of registration permission E-mail address": "登録許可メールアドレスの<br>ホワイトリスト",
@@ -158,7 +133,6 @@
   "edited this page": "さんがこのページを編集しました。",
   "List Drafts": "下書き一覧",
   "Deleted Pages": "削除済みページ",
-  "Sign out": "ログアウト",
   "Disassociate": "連携解除",
   "Color mode": "カラーモード",
   "Sidebar mode": "サイドバーモード",
@@ -167,7 +141,6 @@
   "add_bookmark": "ブックマークに追加",
   "remove_bookmark": "ブックマークから削除",
   "wide_view": "ワイドビュー",
-  "Recent Created": "最新の作成",
   "Recent Changes": "最新の変更",
   "Page Tree": "ページツリー",
   "original_path":"元のパス",
@@ -179,34 +152,25 @@
   "not_allowed_to_see_this_page": "このページは閲覧できません",
   "Confirm": "確認",
   "Successfully requested": "正常に処理を受け付けました",
-  "personal_dropdown": {
-    "home": "ホーム",
-    "settings": "設定",
-    "color_mode": "カラーモード",
-    "sidebar_mode": "サイドバーモード",
-    "sidebar_mode_editor": "サイドバーモード(編集時)",
-    "use_os_settings": "OS設定を利用する"
-  },
   "form_validation": {
     "error_message": "いくつかの値が設定されていません",
     "required": "%sに値を入力してください",
     "invalid_syntax": "%sの構文が不正です",
     "title_required": "タイトルを入力してください"
   },
-  "not_found_page": {
-    "Create Page": "ページを作成する",
-    "page_not_exist": "このページは存在しません。",
-    "page_not_exist_alert": "このページは存在しません。新たに作成する必要があります。"
+  "not_creatable_page": {
+    "could_not_creata_path": "パスを作成できませんでした。"
   },
   "custom_navigation": {
-    "no_page_list": "このページの配下にはページが存在しません。",
-    "link_sharing_is_disabled": "リンクのシェアは無効化されています"
+    "no_page_list": "このページの配下にはページが存在しません。"
   },
   "installer": {
     "setup": "セットアップ",
     "create_initial_account": "最初のアカウントの作成",
     "initial_account_will_be_administrator_automatically": "初めに作成するアカウントは、自動的に管理者権限が付与されます",
-    "unavaliable_user_id": "このユーザーIDは利用できません。"
+    "unavaliable_user_id": "このユーザーIDは利用できません。",
+    "failed_to_install": "GROWI のインストールに失敗しました。再度お試しください。",
+    "failed_to_login_after_install": "インストール後、ログインに失敗しました。ログインフォームに遷移しています ..."
   },
   "breaking_changes": {
     "v346_using_basic_auth": "現在利用中の Basic 認証機能は、近い将来<strong>廃止されます</strong>。%s から設定を削除してください。"
@@ -250,15 +214,10 @@
     "new_password_confirm": "(確認用)",
     "password_is_not_set": "パスワードが設定されていません"
   },
-  "security_settings": "セキュリティ設定",
   "share_links": {
     "Shere this page link to public": "外部に共有するリンクを発行する",
     "share_link_list": "共有リンクリスト",
     "share_link_management": "共有リンク管理",
-    "No_share_links":"共有リンクが存在しません",
-    "Share Link": "共有用リンク",
-    "Page Path": "ページパス",
-    "share_link_notice":"共有リンクを全て削除します",
     "delete_all_share_links":"全ての共有リンクを削除します",
     "expire": "有効期限",
     "Days": "日間",
@@ -268,30 +227,13 @@
     "Unlimited": "無期限",
     "Issue": "発行",
     "share_settings" :"共有設定",
-    "Invalid_Number_of_Date" : "有効期限の日数には整数を入力してください"
+    "Invalid_Number_of_Date" : "有効期限の日数には整数を入力してください",
+    "link_sharing_is_disabled": "リンクのシェアは無効化されています"
   },
   "API Settings": "API設定",
   "API Token Settings": "API Token設定",
   "Current API Token": "現在のAPI Token",
   "Update API Token": "API Tokenを更新",
-  "header_search_box": {
-    "label": {
-      "All pages": "全てのページ",
-      "This tree": "この階層"
-    },
-    "item_label": {
-      "All pages": "全てのページ",
-      "This tree": "この階層下の子ページのみ"
-    }
-  },
-  "in_app_notification": {
-    "notification_list": "アプリ内通知一覧",
-    "see_all": "通知一覧を見る",
-    "no_notification": "通知はありません",
-    "all": "全て",
-    "unopend": "未読",
-    "mark_all_as_read": "全て既読にする"
-  },
   "in_app_notification_settings": {
     "in_app_notification_settings": "アプリ内通知設定",
     "subscribe_settings": "自動でページをサブスクライブする（通知を受け取る）設定",
@@ -335,14 +277,6 @@
       "no_nfd": "UTF8-MAC濁点のようなNFDの使用を禁止します。"
     }
   },
-  "copy_to_clipboard": {
-    "Copy to clipboard": "クリップボードにコピー",
-    "Page path": "ページ名",
-    "Page URL": "ページURL",
-    "Permanent link": "パーマリンク",
-    "Page path and permanent link": "ページ名とパーマリンク",
-    "Markdown link": "マークダウン形式のリンク"
-  },
   "search_help": {
     "title": "検索のヘルプ",
     "and": {
@@ -374,7 +308,7 @@
   },
   "page_page": {
     "notice": {
-      "version": "これは現在の版ではありません。",
+      "version": "これは最新のバージョンではありません。",
       "redirected": "リダイレクト元 >>",
       "redirected_period":"",
       "unlinked": "このページへのリダイレクトは削除されました。",
@@ -390,7 +324,8 @@
     "overwrite_scopes": "{{operation}}と同時に全ての配下ページのスコープを上書き",
     "notice": {
       "conflict": "すでに他の人がこのページを編集していたため保存できませんでした。ページを再読み込み後、自分の編集箇所のみ再度編集してください。"
-    }
+    },
+    "changes_not_saved": "変更が保存されていない可能性があります。"
   },
   "page_comment": {
     "display_the_page_when_posting_this_comment": "投稿時のページを表示する",
@@ -400,7 +335,8 @@
     "notfound_or_forbidden": "元のページが見つからないか、アクセス権がありません。",
     "already_exists": "そのパスを持つページは既に存在しています。",
     "outdated": "ページが他のユーザーによって更新されました。",
-    "user_not_admin": "権限のあるユーザーのみが削除できます"
+    "user_not_admin": "権限のあるユーザーのみが削除できます",
+    "single_deletion_empty_pages": "空ページの単体削除はできません"
   },
   "page_history": {
     "revision_list": "更新履歴",
@@ -534,24 +470,10 @@
     "page_not_found_in_preview": "\"{{path}}\" というページはありません。"
   },
   "toaster": {
-    "create_succeeded": "新しい{{target}}が作成されました",
-    "create_failed": "{{target}}の作成に失敗しました",
-    "update_successed": "{{target}}を更新しました",
-    "update_failed": "{{target}}の更新に失敗しました",
     "file_upload_succeeded": "ファイルをアップロードしました",
     "file_upload_failed": "ファイルのアップロードに失敗しました",
-    "initialize_successed": "{{target}}を初期化しました",
-    "give_user_admin": "{{username}}を管理者に設定しました",
-    "remove_user_admin": "{{username}}を管理者から外しました",
-    "activate_user_success": "{{username}}を有効化しました",
-    "deactivate_user_success": "{{username}}を無効化しました",
-    "remove_user_success": "{{username}}を削除しました",
-    "remove_external_user_success": "{{accountId}}を削除しました",
-    "remove_share_link_success": "{{shareLinkId}}を削除しました",
-    "issue_share_link": "共有リンクを作成しました",
-    "remove_share_link": "共有リンクを{{count}}件削除しました",
-    "switch_disable_link_sharing_success": "共有リンクの設定を変更しました",
-    "failed_to_reset_password":"パスワードのリセットに失敗しました"
+    "save_succeeded": "保存に成功しました",
+    "issue_share_link": "共有リンクを作成しました"
   },
   "template": {
     "modal_label": {
@@ -648,6 +570,7 @@
     }
   },
   "private_legacy_pages": {
+    "title": "旧形式のプライベートページ",
     "bulk_operation": "一括操作",
     "convert_all_selected_pages": "新しい v5 互換形式に一括変換",
     "input_path_to_convert": "パスを入力して変換",
@@ -681,288 +604,16 @@
       "error_duplicate_pages_found": "同名のパスを持つページが複数見つかりました。リネームまたは削除してから再度実行してください"
     }
   },
-  "security_setting": {
-    "Guest Users Access": "ゲストユーザーのアクセス",
-    "Fixed by env var": "環境変数 <code>{{forcewikimode}}={{wikimode}}</code> により固定されています。",
-    "Register limitation": "登録の制限",
-    "Register limitation desc": "新しいユーザーを登録する方法を制限します.",
-    "The whitelist of registration permission E-mail address": "登録許可メールアドレスの<br>ホワイトリスト",
-    "users_without_account": "アカウントを持たないユーザーはアクセス不可",
-    "example": "例",
-    "restrict_emails": "登録可能なメールアドレスを制限することができます。",
-    "for_example": "例えば、",
-    "in_this_case": "と記載することで、そのドメインのメールアドレスを持っている人のみ登録可能になります。",
-    "insert_single": "1行に1メールアドレス入力してください。",
-    "page_list_and_search_results": "ページリスト・検索結果",
-    "page_listing_1": "ページのリスト表示と検索<br>'自分のみ'に閲覧制限しているページ",
-    "page_listing_1_desc": "ページのリスト表示や検索結果において、'自分のみ'に閲覧制限をしているページをアクセス権のないユーザーにも表示します。",
-    "page_listing_2": "ページのリスト表示と検索<br>特定グループに閲覧制限しているページ",
-    "page_listing_2_desc": "ページのリスト表示や検索結果において、特定グループにのみ閲覧制限をしているページをアクセス権のないユーザーにも表示します。",
-    "page_access_rights": "ページの閲覧権限",
-    "page_delete_rights": "ページの削除権限",
-    "page_delete": "ゴミ箱に入れる",
-    "page_delete_completely": "完全に削除する",
-    "other_options": "その他のオプション",
-    "deletion_explain": "ページをゴミ箱に入れることができるユーザーを制限します。",
-    "complete_deletion_explain": "ページを完全削除することができるユーザーを制限します。",
-    "recursive_deletion_explain": "子孫を含めたページをゴミ箱に入れることができるユーザーを制限します。",
-    "recursive_complete_deletion_explain": "子孫を含めたページを完全削除することができるユーザーを制限します。",
-    "inherit": "単体のみと同じ",
-    "admin_only": "管理者のみ可能",
-    "admin_and_author": "管理者とページ作者が可能",
-    "anyone": "誰でも可能",
-    "session": "セッション",
-    "max_age": "有効期間 (ミリ秒)",
-    "max_age_desc": "ユーザーのセッション情報の有効期間をミリ秒で指定できます。<br>デフォルト値: 2592000000 (30日間)",
-    "max_age_caution": "この値を変更した後は、サーバーを再起動する必要があります。",
-    "forced_update_desc": "設定が強制変更されました。前回の設定: ",
-    "page_delete_rights_caution": "「（子孫ページを含む）ゴミ箱に入れる操作 / 完全に削除する」の権限は、「ゴミ箱に入れる操作 / 完全に削除する」よりも強い権限になるように強制されます。 <br><br> 管理者のみ可能 > 管理者とページ作者が可能 > 誰でも可能",
-    "Authentication mechanism settings": "認証機構設定",
-    "setup_is_not_yet_complete":"セットアップはまだ完了してません",
-    "alert_siteUrl_is_not_set": "'サイトURL' が設定されていません。{{link}} から設定してください。",
-    "xss_prevent_setting": "XSS(Cross Site Scripting)対策設定",
-    "xss_prevent_setting_link": "マークダウン設定ページに移動",
-    "callback_URL": "コールバックURL",
-    "desc_of_callback_URL": "{{AuthName}} プロバイダ側の設定で利用してください。",
-    "authorization_endpoint": "認可エンドポイント",
-    "token_endpoint": "トークンエンドポイント",
-    "revocation_endpoint": "失効エンドポイント",
-    "introspection_endpoint": "検証エンドポイント",
-    "userinfo_endpoint": "ユーザ情報エンドポイント",
-    "end_session_endpoint": "セッション終了エンドポイント",
-    "registration_endpoint": "登録エンドポイント",
-    "jwks_uri": "JSON Web Key Set URL",
-    "clientID": "クライアントID",
-    "client_secret": "クライアントシークレット",
-    "updated_general_security_setting": "セキュリティ設定を更新しました。",
-    "setup_not_completed_yet": "まだセットアップは完了していません。",
-    "guest_mode": {
-      "deny": "拒否 (アカウントを持つユーザーのみ利用可能)",
-      "readonly": "許可 (ゲストユーザーも閲覧のみ可能)"
-    },
-    "registration_mode": {
-      "open": "公開 (だれでも登録可能)",
-      "restricted": "制限 (登録完了には管理者の承認が必要)",
-      "closed": "非公開 (登録には管理者による招待が必要)"
-    },
-    "share_link_rights": "シェアリンクの権限",
-    "enable_link_sharing": "リンクのシェアを許可",
-    "all_share_links": "全てのシェアリンク",
-    "configuration": "設定",
-    "optional": "オプション",
-    "Treat username matching as identical": "新規ログイン時、<code>username</code> が一致したローカルアカウントが存在した場合は自動的に紐付ける",
-    "Treat username matching as identical_warn": "警告: <code>username</code> の一致を以て同一ユーザーであるとみなすので、セキュリティに注意してください",
-    "Treat email matching as identical": "新規ログイン時、<code>email</code> が一致したローカルアカウントが存在した場合は自動的に紐付ける",
-    "Treat email matching as identical_warn": "警告: <code>email</code> の一致を以て同一ユーザーであるとみなすので、セキュリティに注意してください",
-    "Use env var if empty": "空の場合、環境変数 <code>{{env}}</code> を利用します",
-    "Use default if both are empty": "どちらの値も空の場合、デフォルト値 <code>{{target}}</code> を利用します",
-    "missing mandatory configs": "以下の必須項目の値がデータベースと環境変数のどちらにも設定されていません",
-    "Local": {
-      "name": "ID/Password",
-      "note for the only env option": "現在LOCAL認証のON/OFFは環境変数の値によって制限されています<br>この設定を変更する場合は環境変数 <code>{{env}}</code> の値をfalseに変更もしくは削除してください",
-      "enable_local": "ID/Password を有効にする",
-      "password_reset_by_users": "ユーザーによるパスワード再設定",
-      "enable_password_reset_by_users": "ユーザーによるパスワード再設定を有効にする",
-      "password_reset_desc": "ログイン時のパスワードを忘れた際に、ユーザー自身がパスワードを再設定できます。",
-      "email_authentication": "ユーザー登録時のメール認証",
-      "enable_email_authentication": "メール認証を有効にする",
-      "enable_email_authentication_desc": "ユーザー登録時にメール認証を行います。",
-      "please_enable_mailer": "メール認証を有効にするには、メール設定を完了させてください。",
-      "need_complete_mail_setting_warning": "以下の機能を使えるようにするには、メール設定を完了させてください。"
-    },
-    "ldap": {
-      "enable_ldap": "LDAP を有効にする",
-      "server_url_detail": "LDAP URLを <code>ldap://host:port/DN</code> または <code>ldaps://host:port/DN</code> の形式で入力してください。",
-      "bind_mode": "Bind モード",
-      "bind_manager": "管理者 Bind",
-      "bind_user": "ユーザー Bind",
-      "bind_DN_manager_detail": "ディレクトリーサービスに認証する際のアカウント DN",
-      "bind_DN_user_detail1": "ディレクトリーサービスに Bind するアカウント DN を決定するためのクエリ",
-      "bind_DN_user_detail2": "ログイン時に入力されるユーザー名を使用するには <code>&#123;&#123;username&#125;&#125;</code> の形式を使用してください。",
-      "bind_DN_password": "Bind DN パスワード",
-      "bind_DN_password_manager_detail": "Bind DN アカウントのパスワード",
-      "bind_DN_password_user_detail": "ログイン時のパスワードが使用されます。",
-      "search_filter": "検索フィルター",
-      "search_filter_detail1": "認証されるユーザーを一意に決定するための LDAP フィルタ",
-      "search_filter_detail2": "ログイン時のユーザー名を使用するには <code>&#123;&#123;username&#125;&#125;</code> の形式を使用してください。",
-      "search_filter_detail3": "空欄の場合 <code>(uid=&#123;&#123;username&#125;&#125;)</code> が使用されます。",
-      "search_filter_example1": "'uid' または 'mail' に一致",
-      "search_filter_example2": "'sAMAccountName' に一致 (Active Directory)",
-      "username_detail": "新規ユーザーのアカウント名(<code>username</code>)に関連付ける属性",
-      "name_detail": "新規ユーザーの表示名に関連付ける属性",
-      "mail_detail": "新規ユーザーのメールアドレスに関連付ける属性",
-      "group_search_base_DN": "グループ検索ベース DN",
-      "group_search_base_DN_detail": "グループ検索を実行するベース DN。利用する場合は <code>グループ検索フィルター</code> も入力する必要があります。",
-      "group_search_filter": "グループ検索フィルター",
-      "group_search_filter_detail1": "グループフィルターに用いるクエリ",
-      "group_search_filter_detail2": "このクエリにヒットするグループがあったときのみ、LDAPでのログインが成功します。",
-      "group_search_filter_detail3": "ログイン対象ユーザーオブジェクトのプロパティーで置換する場合は <code>&#123;&#123;dn&#125;&#125;</code> を用いてください。",
-      "group_search_filter_detail4": "<code>(&(cn=group1)(memberUid=&#123;&#123;dn&#125;&#125;))</code> は <code>cn=group1</code> と、ユーザーの <code>uid</code> を含む <code>memberUid</code> を持つグループにヒットします(<code>ユーザーの DN プロパティー</code> がデフォルトから変更されていない場合)",
-      "group_search_user_DN_property": "ユーザーの DN プロパティー",
-      "group_search_user_DN_property_detail": "<code>グループ検索フィルター</code> 内の <code>&#123;&#123;dn&#125;&#125;</code> で置換される、ユーザーオブジェクトのプロパティー",
-      "test_config": "ログインテスト",
-      "updated_ldap": "LDAP設定 を更新しました"
-    },
-    "SAML": {
-      "name": "SAML",
-      "enable_saml": "SAML を有効にする",
-      "id_detail": "SAML Identity プロバイダ内で一意に識別可能な値を格納している属性",
-      "username_detail": "新規ユーザーのアカウント名(<code>username</code>)に関連付ける属性",
-      "mapping_detail": "新規ユーザーの{{target}}に関連付ける属性",
-      "cert_detail": "IdP からのレスポンスの validation を行うためのPEMエンコードされた X.509 証明書",
-      "Use env var if empty": "データベース側の値が空の場合、環境変数 <code>{{env}}</code> の値を利用します",
-      "note for the only env option": "現在SAML認証のON/OFFの設定値及びハイライトされている設定値は環境変数の値のみを使用するようになっています<br>この設定を変更する場合は環境変数 <code>{{env}}</code> の値をfalseに変更もしくは削除してください",
-      "attr_based_login_control_detail": "SAMLの <code>&lt;saml:AttributeStatement&gt;</code> 要素に含まれる <code>&lt;saml:Attribute&gt;</code> 要素と、その子要素 <code>&lt;saml:AttributeValue&gt;</code> を利用してログインの可否を制御します。",
-      "attr_based_login_control_rule_help": "<h5>利用可能なクエリ:</h5><ul><li>Terms</li><li>Fields</li><li>AND/NOT/OR Operator</li><li>Grouping</li></ul><h5>利用不可なクエリ:</h5><ul><li>Wildcard, Fuzzy, Proximity, Range and Boosting</li><li>+/- Operator</li><li>Field Grouping</li></ul><h5>特殊文字のエスケープ</h5>次の特殊文字はエスケープする必要があります。<code>+ - && || ! ( ) { } [ ] ^ &quot; &tilde; * ? : &#92;</code> and <code>/</code>",
-      "attr_based_login_control_rule_example1": "<h5>条件式の例</h5>ルールに <code>(Department: A || Department: B) && Position: Leader</code> を指定した場合, <code>Department: A</code> または <code>Department: B</code> のどちらかに該当し、かつ <code>Position: Leader</code> を持つユーザーにログインを<strong>許可</strong>します。",
-      "attr_based_login_control_rule_exampl2": "<h5>エスケープの例</h5>ルールに URL を利用したい場合は、次のようにエスケープしてください:<br><code>http&#92;:&#92;/&#92;/schemas.example.com&#92;/ws&#92;/2005&#92;/05&#92;/identity&#92;/claims&#92;/emailaddress: &quot;myname@example.com&quot;</code>",
-      "updated_saml": "Succeeded to update SAML setting"
-    },
-    "Basic": {
-      "enable_basic": "Basic を有効にする",
-      "name": "Basic 認証",
-      "desc_1": "Authorization ヘッダに格納されている <code>username</code> でログインします。",
-      "desc_2": "ユーザーが存在しなかった場合は自動生成します。",
-      "updated_basic": "Basic認証 を更新しました"
-    },
-    "OAuth": {
-      "enable_oidc": "OIDC を有効にする",
-      "register": "%sに登録",
-      "change_redirect_url": "承認済みのリダイレクトURLに、 <code>%s</code> を入力",
-      "Google": {
-        "enable_google": "Google OAuth を有効にする",
-        "name": "Google OAuth",
-        "register_1": "{{link}}へアクセス",
-        "register_2": "プロジェクトがない場合はプロジェクトを作成",
-        "register_3": "認証情報を作成 &rightarrow; OAuthクライアントID &rightarrow; ウェブアプリケーションを選択",
-        "register_4": "承認済みのリダイレクトURIを<code>{{url}}</code>としてGrowiを登録",
-        "register_5": "上記フォームにクライアントIDとクライアントシークレットを入力",
-        "updated_google": "Google OAuth を更新しました"
-      },
-      "Facebook": {
-        "name": "Facebook OAuth"
-      },
-      "Twitter": {
-        "enable_twitter": "Twitter OAuth を有効にする",
-        "name": "Twitter OAuth",
-        "register_1": "{{link}} へアクセス",
-        "register_2": "Twitterにサインイン",
-        "register_3": "Create New Appをクリック &rightarrow; Application Detailsの各項目を入力",
-        "register_4": "Create your Twitter Applicationで作成",
-        "register_5": "上記フォームにクライアントIDとクライアントシークレットを入力",
-        "updated_twitter": "Twitter OAuth を更新しました"
-      },
-      "GitHub": {
-        "enable_github": "GitHub OAuth を有効にする",
-        "name": "GitHub OAuth",
-        "register_1": "{{link}} へアクセス",
-        "register_2": "\"Authorization callback URL\"を<code>{{url}}</code>としてGrowiを登録",
-        "register_3": "上記フォームにクライアントIDとクライアントシークレットを入力",
-        "updated_github": "GitHub OAuth を更新しました"
-      },
-      "OIDC": {
-        "name": "OpenID Connect",
-        "id_detail": "OIDC claims で一意に識別可能な値を格納している属性",
-        "username_detail": "新規ユーザーのアカウント名(<code>username</code>)に関連付ける属性",
-        "name_detail": "新規ユーザー名(<code>name</code>)に関連付ける属性",
-        "mapping_detail": "新規ユーザーの{{target}}に関連付ける属性",
-        "updated_oidc": "OpenID Connect を更新しました",
-        "Use discovered URL if empty": "データベース側の値が空の場合、\"Issuer Host\"から検出した値を利用します。"
-      },
-      "how_to": {
-        "google": "Google OAuth の設定方法",
-        "github": "GitHub OAuth の設定方法",
-        "twitter": "Twitter OAuth の設定方法"
-      }
-    },
-    "form_item_name": {
-      "entryPoint": "エントリーポイント",
-      "issuer": "発行者",
-      "cert": "証明書",
-      "attrMapId": "ID",
-      "attrMapUsername": "ユーザー名",
-      "attrMapMail": "メールアドレス",
-      "attrMapFirstName": "姓",
-      "attrMapLastName": "名",
-      "ABLCRule": "ルール"
-    }
-  },
-  "notification_setting": {
-    "slack_incoming_configuration": "Slack Incoming Webhooks 設定",
-    "prioritize_webhook": "Slack アプリより Incoming Webhook を優先する",
-    "prioritize_webhook_desc": "このオプションをオンにすると、 Slack App が有効になっていても GROWI は Incoming Webhook を使用します。",
-    "slack_app_configuration": "Slack App 設定",
-    "slack_app_configuration_desc": "Crowi 互換の機能です。<br /> <strong>設定が複雑すぎる</strong>のでオススメしません。",
-    "use_instead": "代わりに Slack Incoming Webhooks 設定を使用してください。",
-    "how_to": {
-      "header": "Incoming Webhooks の設定方法",
-      "workspace": "ワークスペースで Webhook を追加します。",
-      "workspace_desc1": "<a href='https://slack.com/services/new/incoming-webhook'>Incoming Webhooks Configuration page</a> にアクセスします。",
-      "workspace_desc2": "投稿するチャンネルを選びます。",
-      "workspace_desc3": "追加します。",
-      "at_growi": "GROWI 管理画面で Webhook URL を設定します。",
-      "at_growi_desc": "このページで &rdquo;Webhook URL&rdquo; を入力して送信します。"
-    },
-    "user_trigger_notification_header": "デフォルトパターンの通知設定",
-    "pattern": "パターン",
-    "channel": "チャンネル名",
-    "pattern_desc": "Wiki のパス名。 パスには <code>*</code> を使用できます。",
-    "channel_desc": "<code>#</code> を除いた Slack チャンネル名",
-    "valid_page": "通知の有効 / 無効",
-    "link_notification_help": "<strong>linkを知っている人のみ閲覧できるページ</strong>は常に通知されません。",
-    "just_me_notification_help": "<strong>'自分のみ'に閲覧制限をしているページ</strong>に変更を加えた際に通知する",
-    "group_notification_help": "<strong>'特定グループにのみ'に閲覧制限をしているページ</strong>に変更を加えた際に通知する",
-    "notification_list": "通知設定の一覧",
-    "add_notification": "通知設定の追加",
-    "trigger_path": "トリガーパス",
-    "trigger_path_help": "(<code>*</code>が使用できます)",
-    "trigger_events": "トリガーイベント",
-    "notify_to": "通知先",
-    "back_to_list": "通知設定一覧に戻る",
-    "notification_detail": "通知詳細設定",
-    "event_pageCreate": "ページが新規作成されたとき",
-    "event_pageEdit": "ページが編集されたとき",
-    "event_pageDelete": "ページが削除されたとき",
-    "event_pageMove": "ページが移動(名前が変更)されたとき",
-    "event_pageLike": "ページに「いいね」がついたとき",
-    "event_comment": "コメントが投稿されたとき",
-    "email": {
-      "ifttt_link": "IFTTT でメールトリガの新しいアプレットを作る"
-    },
-    "updated_slackApp": "SlackApp設定を更新しました",
-    "add_notification_pattern": "通知パターンを追加しました。",
-    "delete_notification_pattern": "通知パターンを削除しました。",
-    "delete_notification_pattern_desc1": "Path: {{path}} を削除します。",
-    "delete_notification_pattern_desc2": "Once deleted, it cannot be recovered",
-    "toggle_notification": "{{path}}の通知設定を変更しました"
-  },
-  "full_text_search_management": {
-    "elasticsearch_management": "Elasticsearch 管理",
-    "connection_status": "接続の状態",
-    "connection_status_label_unconfigured": "設定されていません",
-    "connection_status_label_connected": "接続されています",
-    "connection_status_label_disconnected": "切断されています",
-    "connection_status_label_erroroccured": "SearchService でエラーが発生しています",
-    "indices_status": "インデックスの状態",
-    "indices_status_label_normalized": "正規化されています",
-    "indices_status_label_unnormalized": "リビルド中 または 破損しています",
-    "indices_summary": "インデックスのサマリ",
-    "reconnect": "再接続",
-    "reconnect_button": "再接続の試行",
-    "reconnect_description": "Elasticsearch への再接続を試みます。",
-    "normalize": "正規化",
-    "normalize_button": "インデックスの正規化",
-    "normalize_description": "破損したインデックスを修復します。",
-    "rebuild": "リビルド",
-    "rebuild_button": "インデックスのリビルド",
-    "rebuild_description_1": "全てのページのインデックスを削除し、作り直します。",
-    "rebuild_description_2": "この作業には数秒かかります。"
-  },
-  "to_cloud_settings": "GROWI.cloud の管理画面へ",
   "login": {
-    "Sign in error": "ログインエラー",
-    "Registration successful": "登録完了",
-    "Setup": "セットアップ"
+    "sign_in_error": "ログインエラー",
+    "registration_successful": "登録が完了しました。管理者の承認をお待ちください。",
+    "Setup": "セットアップ",
+    "enabled_ldap_has_configuration_problem":"LDAPは有効ですが、設定に問題があります。",
+    "set_env_var_for_logs": "(ログを取得するためには、環境変数 <code>DEBUG=crowi:service:PassportService</code> を設定してください。)"
+  },
+  "invited": {
+    "discription_heading": "アカウント作成",
+    "discription": "招待を受け取ったメールアドレスでアカウントを作成します"
   },
   "export_bulk": {
     "failed_to_export": "ページのエクスポートに失敗しました",
@@ -976,8 +627,9 @@
     "fail_to_fetch_access_token": "アクセストークンの取得に失敗しました、再度お試しください。",
     "successfully_disconnected": "切断に成功しました!",
     "strategy_has_not_been_set_up": "{{strategy}} はセットアップされていません。",
+    "ldap_user_not_valid": "Ldap user is no valid",
+    "external_account_not_exist": "外部アカウントが見つからない、または作成に失敗しました",
     "maximum_number_of_users": "ユーザー数が上限を超えたためアクティベートできません。",
-    "database_error":"データベースサーバーに問題があります。",
     "sign_in_failure": "ログインに失敗しました。",
     "aws_sttings_required": "この機能にはAWS設定が必要です。管理者に訪ねて下さい。",
     "application_already_installed": "アプリケーションのインストールが完了しました。",
@@ -986,6 +638,8 @@
     "username_should_not_be_null":"Username が null になっています 管理画面の認証機構設定にて設定の確認をしてください",
     "email_address_is_already_registered":"このメールアドレスは既に登録されています。",
     "can_not_register_maximum_number_of_users":"ユーザー数が上限を超えたため登録できません。",
+    "email_settings_is_not_setup":"E-mail 設定が完了していません。管理者に問い合わせてください。",
+    "email_authentication_is_not_enabled": "メール認証が有効になっていません。管理者に問い合わせてください。",
     "failed_to_register":"登録に失敗しました。",
     "successfully_created":"{{username}} が作成されました。",
     "can_not_activate_maximum_number_of_users":"ユーザーが上限に達したためアクティベートできません。",
@@ -995,7 +649,21 @@
     "complete_to_install2":"GROWI のインストールが完了しました！はじめに、このページで各種設定を確認してください。",
     "failed_to_create_admin_user":"管理ユーザーの作成に失敗しました。{{errMessage}}",
     "successfully_send_email_auth":"{{email}} にメールを送信しました。添付されたURLをクリックし、本登録を完了させてください",
-    "incorrect_token_or_expired_url":"トークンが正しくないか、URLの有効期限が切れています。"
+    "incorrect_token_or_expired_url":"トークンが正しくないか、URLの有効期限が切れています。",
+    "user_already_logged_in": "ログイン中のため、新規アカウントを作成できませんでした。",
+    "registration_closed": "新しいアカウントを作成する権限がありません。",
+    "Username has invalid characters": "ユーザー名に不正な文字が含まれています.",
+    "Username field is required": "User ID は必須項目です",
+    "Name field is required": "ユーザーID は必須項目です",
+    "Email format is invalid": "メールアドレスのフォーマットが無効です",
+    "Email field is required": "メールアドレスは必須項目です",
+    "Password has invalid character": "パスワードに無効な文字があります",
+    "Password minimum character should be more than 8 characters": "パスワードの最小文字数は8文字以上です",
+    "Password field is required": "パスワードの欄は必ず入力してください",
+    "Username or E-mail has invalid characters": "ユーザー名または、メールアドレスに無効な文字があります",
+    "Password minimum character should be more than 6 characters": "パスワードの最小文字数は6文字以上です",
+    "user_not_found": "ユーザーが見つかりません",
+    "provider_duplicated_username_exception": "<p><strong><i class='icon-fw icon-ban'></i>エラー: DuplicatedUsernameException</strong></p><p class='mb-0'> {{ failedProviderForDuplicatedUsernameException }} 認証は成功しましたが、新しいユーザーを作成できませんでした。詳しくは<a href='https://github.com/weseek/growi/issues/193'>こちら: #193</a>.</p>"
   },
   "grid_edit":{
     "create_bootstrap_4_grid":"Bootstrap 4 グリッドを作成",
@@ -1022,6 +690,7 @@
     "confirm_new_password": "新しいパスワードの確認",
     "email_is_required": "メールを入力してください",
     "success_to_send_email": "メールを送信しました",
+    "feature_is_unavailable": "この機能を利用することはできません。",
     "incorrect_token_or_expired_url":"トークンが正しくないか、URLの有効期限が切れています。 以下のリンクからパスワードリセットリクエストを再送信してください。",
     "password_and_confirm_password_does_not_match": "パスワードと確認パスワードが一致しません"
   },
@@ -1063,7 +732,6 @@
     "logout": "ログアウト"
   },
   "pagetree": {
-    "private_legacy_pages": "旧形式のプライベートページ",
     "cannot_rename_a_title_that_contains_slash": "`/` が含まれているタイトルにリネームできません",
     "you_cannot_move_this_page_now": "現在、このページを移動することはできません",
     "something_went_wrong_with_moving_page": "ページの移動に問題が発生しました"
@@ -1077,12 +745,6 @@
     "select_group": "グループを選ぶ",
     "belonging_to_no_group": "所属しているグループが見つかりませんでした。",
     "manage_user_groups": "グループ管理"
-  },
-  "crop_image_modal": {
-    "image_crop": "画像の切り抜き",
-    "crop": "トリミング",
-    "reset": "リセット",
-    "cancel": "キャンセル"
   },
   "fix_page_grant": {
     "modal": {
@@ -1127,5 +789,13 @@
   "page_operation":{
     "paths_recovered": "パスを修復しました",
     "path_recovery_failed":"パスを修復できませんでした"
+  },
+  "footer": {
+    "bookmarks": "ブックマーク",
+    "recently_created": "最近作成したページ"
+  },
+  "v5_page_migration": {
+    "page_tree_not_avaliable" : "Page Tree 機能は現在使用できません。",
+    "go_to_settings": "設定する"
   }
 }

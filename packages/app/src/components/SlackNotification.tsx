@@ -1,8 +1,10 @@
 /* eslint-disable react/prop-types */
 import React, { FC } from 'react';
 
-import { useTranslation } from 'react-i18next';
+import { useTranslation } from 'next-i18next';
 import { PopoverBody, PopoverHeader, UncontrolledPopover } from 'reactstrap';
+
+import styles from './SlackNotification.module.scss';
 
 
 type SlackNotificationProps = {
@@ -35,7 +37,7 @@ export const SlackNotification: FC<SlackNotificationProps> = ({
 
 
   return (
-    <div className="grw-slack-notification w-100">
+    <div className={`grw-slack-notification ${styles['grw-slack-notification']} w-100`}>
       <div className="grw-input-group-slack-notification input-group extended-setting">
         <label className="input-group-addon">
           <div className="custom-control custom-switch custom-switch-lg custom-switch-slack">

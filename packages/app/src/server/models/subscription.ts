@@ -1,14 +1,14 @@
-
-import { getOrCreateModel } from '@growi/core';
+import {
+  SubscriptionStatusType, AllSubscriptionStatusType, Ref, IPage, IUser, ISubscription,
+} from '@growi/core';
 import {
   Types, Document, Model, Schema,
 } from 'mongoose';
 
 import { AllSupportedTargetModels } from '~/interfaces/activity';
-import { Ref } from '~/interfaces/common';
-import { IPage } from '~/interfaces/page';
-import { SubscriptionStatusType, AllSubscriptionStatusType, ISubscription } from '~/interfaces/subscription';
-import { IUser } from '~/interfaces/user';
+
+import { getOrCreateModel } from '../util/mongoose-utils';
+
 
 export interface SubscriptionDocument extends ISubscription, Document {}
 

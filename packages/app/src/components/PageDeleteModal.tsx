@@ -2,20 +2,19 @@ import React, {
   useState, FC, useMemo, useEffect,
 } from 'react';
 
-import { pagePathUtils } from '@growi/core';
-import { useTranslation } from 'react-i18next';
+import { HasObjectId, pagePathUtils } from '@growi/core';
+import { useTranslation } from 'next-i18next';
 import {
   Modal, ModalHeader, ModalBody, ModalFooter,
 } from 'reactstrap';
 
 import { apiPost } from '~/client/util/apiv1-client';
 import { apiv3Post } from '~/client/util/apiv3-client';
-import { HasObjectId } from '~/interfaces/has-object-id';
 import {
   IDeleteSinglePageApiv1Result, IDeleteManyPageApiv3Result, IPageToDeleteWithMeta, IDataWithMeta, isIPageInfoForEntity, IPageInfoForEntity,
 } from '~/interfaces/page';
 import { usePageDeleteModal } from '~/stores/modal';
-import { useSWRxPageInfoForList } from '~/stores/page';
+import { useSWRxPageInfoForList } from '~/stores/page-listing';
 import loggerFactory from '~/utils/logger';
 
 
@@ -229,13 +228,26 @@ const PageDeleteModal: FC = () => {
     return <></>;
   };
 
-  return (
-    <Modal size="lg" isOpen={isOpened} toggle={closeDeleteModal} data-testid="page-delete-modal" className="grw-create-page">
-      <ModalHeader tag="h4" toggle={closeDeleteModal} className={`bg-${deleteIconAndKey[deleteMode].color} text-light`}>
+  const headerContent = () => {
+    if (!isOpened) {
+      return <></>;
+    }
+
+    return (
+      <>
         <i className={`icon-fw icon-${deleteIconAndKey[deleteMode].icon}`}></i>
         { t(`modal_delete.delete_${deleteIconAndKey[deleteMode].translationKey}`) }
-      </ModalHeader>
-      <ModalBody>
+      </>
+    );
+  };
+
+  const bodyContent = () => {
+    if (!isOpened) {
+      return <></>;
+    }
+
+    return (
+      <>
         <div className="form-group grw-scrollable-modal-body pb-1">
           <label>{ t('modal_delete.deleting_page') }:</label><br />
           {/* Todo: change the way to show path on modal when too many pages are selected */}
@@ -243,18 +255,42 @@ const PageDeleteModal: FC = () => {
         </div>
         { isDeletable && renderDeleteRecursivelyForm()}
         { isDeletable && !forceDeleteCompletelyMode && renderDeleteCompletelyForm() }
-      </ModalBody>
-      <ModalFooter>
+      </>
+    );
+  };
+
+  const footerContent = () => {
+    if (!isOpened) {
+      return <></>;
+    }
+
+    return (
+      <>
         <ApiErrorMessageList errs={errs} />
         <button
           type="button"
           className={`btn btn-${deleteIconAndKey[deleteMode].color}`}
           disabled={!isDeletable}
           onClick={deleteButtonHandler}
+          data-testid="delete-page-button"
         >
           <i className={`mr-1 icon-${deleteIconAndKey[deleteMode].icon}`} aria-hidden="true"></i>
           { t(`modal_delete.delete_${deleteIconAndKey[deleteMode].translationKey}`) }
         </button>
+      </>
+    );
+  };
+
+  return (
+    <Modal size="lg" isOpen={isOpened} toggle={closeDeleteModal} data-testid="page-delete-modal">
+      <ModalHeader tag="h4" toggle={closeDeleteModal} className={`bg-${deleteIconAndKey[deleteMode].color} text-light`}>
+        {headerContent()}
+      </ModalHeader>
+      <ModalBody>
+        {bodyContent()}
+      </ModalBody>
+      <ModalFooter>
+        {footerContent()}
       </ModalFooter>
     </Modal>
 

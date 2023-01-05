@@ -1,11 +1,10 @@
 import React from 'react';
 
+import { useTranslation } from 'next-i18next';
 import PropTypes from 'prop-types';
-import { useTranslation } from 'react-i18next';
+import { defaultSchema as sanitizeDefaultSchema } from 'rehype-sanitize';
 
 import AdminMarkDownContainer from '~/client/services/AdminMarkDownContainer';
-import AppContainer from '~/client/services/AppContainer';
-import { tags, attrs } from '~/services/xss/recommended-whitelist';
 
 import { withUnstatedContainers } from '../../UnstatedUtils';
 
@@ -17,18 +16,21 @@ class WhiteListInput extends React.Component {
     this.tagWhiteList = React.createRef();
     this.attrWhiteList = React.createRef();
 
+    this.tags = sanitizeDefaultSchema.tagNames;
+    this.attrs = JSON.stringify(sanitizeDefaultSchema.attributes);
+
     this.onClickRecommendTagButton = this.onClickRecommendTagButton.bind(this);
     this.onClickRecommendAttrButton = this.onClickRecommendAttrButton.bind(this);
   }
 
   onClickRecommendTagButton() {
-    this.tagWhiteList.current.value = tags;
-    this.props.adminMarkDownContainer.setState({ tagWhiteList: tags });
+    // this.tagWhiteList.current.value = this.tags;
+    // this.props.adminMarkDownContainer.setState({ tagWhiteList: this.tags });
   }
 
   onClickRecommendAttrButton() {
-    this.attrWhiteList.current.value = attrs;
-    this.props.adminMarkDownContainer.setState({ attrWhiteList: attrs });
+    // this.attrWhiteList.current.value = this.attrs;
+    // this.props.adminMarkDownContainer.setState({ attrWhiteList: this.attrs });
   }
 
   render() {
@@ -38,12 +40,13 @@ class WhiteListInput extends React.Component {
       <>
         <div className="mt-4">
           <div className="d-flex justify-content-between">
-            {t('admin:markdown_setting.xss_options.tag_names')}
-            <p id="btn-import-tags" className="btn btn-sm btn-primary mb-0" onClick={this.onClickRecommendTagButton}>
-              {t('admin:markdown_setting.xss_options.import_recommended', { target: 'Tags' })}
+            {t('markdown_settings.xss_options.tag_names')}
+            <p id="btn-import-tags" className="btn btn-sm btn-primary mb-0 disabled" onClick={this.onClickRecommendTagButton}>
+              {t('markdown_settings.xss_options.import_recommended', { target: 'Tags' })}
             </p>
           </div>
           <textarea
+            disabled
             className="form-control xss-list"
             name="recommendedTags"
             rows="6"
@@ -55,12 +58,13 @@ class WhiteListInput extends React.Component {
         </div>
         <div className="mt-4">
           <div className="d-flex justify-content-between">
-            {t('admin:markdown_setting.xss_options.tag_attributes')}
-            <p id="btn-import-tags" className="btn btn-sm btn-primary mb-0" onClick={this.onClickRecommendAttrButton}>
-              {t('admin:markdown_setting.xss_options.import_recommended', { target: 'Attrs' })}
+            {t('markdown_settings.xss_options.tag_attributes')}
+            <p id="btn-import-tags" className="btn btn-sm btn-primary mb-0 disabled" onClick={this.onClickRecommendAttrButton}>
+              {t('markdown_settings.xss_options.import_recommended', { target: 'Attrs' })}
             </p>
           </div>
           <textarea
+            disabled
             className="form-control xss-list"
             name="recommendedAttrs"
             rows="6"
@@ -79,17 +83,16 @@ class WhiteListInput extends React.Component {
 
 WhiteListInput.propTypes = {
   t: PropTypes.func.isRequired, // i18next
-  appContainer: PropTypes.instanceOf(AppContainer).isRequired,
   adminMarkDownContainer: PropTypes.instanceOf(AdminMarkDownContainer).isRequired,
 
 };
 
 const PresentationFormWrapperFC = (props) => {
-  const { t } = useTranslation();
+  const { t } = useTranslation('admin');
 
   return <WhiteListInput t={t} {...props} />;
 };
 
-const WhiteListWrapper = withUnstatedContainers(PresentationFormWrapperFC, [AppContainer, AdminMarkDownContainer]);
+const WhiteListWrapper = withUnstatedContainers(PresentationFormWrapperFC, [AdminMarkDownContainer]);
 
 export default WhiteListWrapper;

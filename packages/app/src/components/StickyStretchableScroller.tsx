@@ -1,10 +1,10 @@
 import React, {
-  useEffect, useCallback, ReactNode, useRef, useState, useMemo, RefObject,
+  useEffect, useCallback, FC, useRef, useState, useMemo, RefObject,
 } from 'react';
 
-import { debounce } from 'throttle-debounce';
-import StickyEvents from 'sticky-events';
 import SimpleBar from 'simplebar-react';
+import StickyEvents from 'sticky-events';
+import { debounce } from 'throttle-debounce';
 
 import loggerFactory from '~/utils/logger';
 
@@ -15,7 +15,6 @@ export type StickyStretchableScrollerProps = {
   stickyElemSelector: string,
   simplebarRef?: (ref: RefObject<SimpleBar>) => void,
   calcViewHeight?: (scrollElement: HTMLElement) => number,
-  children?: ReactNode,
 }
 
 /**
@@ -40,7 +39,7 @@ export type StickyStretchableScrollerProps = {
     </StickyStretchableScroller>
   );
  */
-export const StickyStretchableScroller = (props: StickyStretchableScrollerProps): JSX.Element => {
+export const StickyStretchableScroller: FC<StickyStretchableScrollerProps> = (props) => {
 
   const {
     children, stickyElemSelector, calcViewHeight, simplebarRef: setSimplebarRef,
@@ -70,26 +69,26 @@ export const StickyStretchableScroller = (props: StickyStretchableScrollerProps)
 
   const resetScrollbarDebounced = useMemo(() => debounce(100, resetScrollbar), [resetScrollbar]);
 
-  const stickyChangeHandler = useCallback(() => {
-    logger.debug('StickyEvents.CHANGE detected');
-    resetScrollbarDebounced();
-  }, [resetScrollbarDebounced]);
+  // const stickyChangeHandler = useCallback(() => {
+  //   logger.debug('StickyEvents.CHANGE detected');
+  //   resetScrollbarDebounced();
+  // }, [resetScrollbarDebounced]);
 
-  // setup effect by sticky event
-  useEffect(() => {
-    // sticky
-    // See: https://github.com/ryanwalters/sticky-events
-    const stickyEvents = new StickyEvents({ stickySelector: stickyElemSelector });
-    stickyEvents.enableEvents();
-    const { stickySelector } = stickyEvents;
-    const elem = document.querySelector(stickySelector);
-    elem.addEventListener(StickyEvents.CHANGE, stickyChangeHandler);
+  // // setup effect by sticky event
+  // useEffect(() => {
+  //   // sticky
+  //   // See: https://github.com/ryanwalters/sticky-events
+  //   const stickyEvents = new StickyEvents({ stickySelector: stickyElemSelector });
+  //   stickyEvents.enableEvents();
+  //   const { stickySelector } = stickyEvents;
+  //   const elem = document.querySelector(stickySelector);
+  //   elem.addEventListener(StickyEvents.CHANGE, stickyChangeHandler);
 
-    // return clean up handler
-    return () => {
-      elem.removeEventListener(StickyEvents.CHANGE, stickyChangeHandler);
-    };
-  }, [stickyElemSelector, stickyChangeHandler]);
+  //   // return clean up handler
+  //   return () => {
+  //     elem.removeEventListener(StickyEvents.CHANGE, stickyChangeHandler);
+  //   };
+  // }, [stickyElemSelector, stickyChangeHandler]);
 
   // setup effect by resizing event
   useEffect(() => {

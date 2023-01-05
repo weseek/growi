@@ -1,6 +1,6 @@
 import each from 'jest-each';
 
-import OptionParser from '~/plugin/util/option-parser';
+import { OptionParser } from '~/plugin/util/option-parser';
 
 describe('option-parser', () => {
 

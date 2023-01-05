@@ -1,9 +1,10 @@
 {
   "name": "@growi/slackbot-proxy",
-  "version": "5.1.4-slackbot-proxy.0",
+  "version": "6.0.1-slackbot-proxy.0",
   "license": "MIT",
   "scripts": {
     "build": "yarn tsc && tsc-alias -p tsconfig.build.json",
+    "clean": "npx -y shx rm -rf dist",
     "cp:public": "cp -RT ./src/public ./dist/public",
     "cp:views": "cp -RT ./src/views ./dist/views",
     "cp:bootstrap": "cp -RT ./node_modules/bootstrap/dist ./dist/public/bootstrap",
@@ -11,7 +12,7 @@
     "tsc": "tsc -p tsconfig.build.json",
     "tsc:w": "yarn tsc -w",
     "dev:ci": "yarn dev --ci",
-    "dev": "cross-env NODE_ENV=development ts-node-dev -r tsconfig-paths/register -r dotenv-flow/config src/index.ts",
+    "dev": "cross-env NODE_ENV=development ts-node-dev -r tsconfig-paths/register -r dotenv-flow/config --transpile-only src/index.ts",
     "start:prod:ci": "yarn start:prod --ci",
     "start:prod": "cross-env NODE_ENV=production node -r dotenv-flow/config dist/index.js",
     "postbuild": "yarn cp:public && yarn cp:views && yarn cp:bootstrap",
@@ -25,7 +26,7 @@
   },
   "dependencies": {
     "@godaddy/terminus": "^4.9.0",
-    "@growi/slack": "^5.1.4-RC.0",
+    "@growi/slack": "^6.0.1-RC.0",
     "@slack/oauth": "^2.0.1",
     "@slack/web-api": "^6.2.4",
     "@tsed/common": "^6.43.0",

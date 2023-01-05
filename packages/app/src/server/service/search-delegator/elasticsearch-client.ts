@@ -20,7 +20,7 @@ type ApiResponse<T = any, C = any> = ES6ApiResponse<T, C> | ES7ApiResponse<T, C>
 
 export default class ElasticsearchClient {
 
-  client: ES6Client | ES7Client
+  client: ES6Client | ES7Client;
 
   constructor(client: ES6Client | ES7Client) {
     this.client = client;
@@ -36,12 +36,12 @@ export default class ElasticsearchClient {
       this.client instanceof ES6Client ? this.client.cat.aliases(params) : this.client.cat.aliases(params),
     indices: (params: ES6RequestParams.CatIndices & ES7RequestParams.CatIndices): Promise<ApiResponse<CatIndicesResponse>> =>
       this.client instanceof ES6Client ? this.client.cat.indices(params) : this.client.cat.indices(params),
-  }
+  };
 
   cluster = {
     health: (params: ES6RequestParams.ClusterHealth & ES7RequestParams.ClusterHealth): Promise<ApiResponse<ClusterHealthResponse>> =>
       this.client instanceof ES6Client ? this.client.cluster.health(params) : this.client.cluster.health(params),
-  }
+  };
 
   indices = {
     create: (params: ES6RequestParams.IndicesCreate & ES7RequestParams.IndicesCreate) =>
@@ -62,11 +62,11 @@ export default class ElasticsearchClient {
       this.client instanceof ES6Client ? this.client.indices.validateQuery(params) : this.client.indices.validateQuery(params),
     stats: (params: ES6RequestParams.IndicesStats & ES7RequestParams.IndicesStats): Promise<ApiResponse<IndicesStatsResponse>> =>
       this.client instanceof ES6Client ? this.client.indices.stats(params) : this.client.indices.stats(params),
-  }
+  };
 
   nodes = {
     info: (): Promise<ApiResponse<NodesInfoResponse>> => (this.client instanceof ES6Client ? this.client.nodes.info() : this.client.nodes.info()),
-  }
+  };
 
   ping() {
     return this.client instanceof ES6Client ? this.client.ping() : this.client.ping();

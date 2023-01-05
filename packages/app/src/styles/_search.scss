@@ -1,137 +1,9 @@
-.search-typeahead {
-  position: relative;
-  width: 100%;
-  // corner radius
-  border-top-right-radius: $border-radius;
-  border-bottom-right-radius: $border-radius;
-  .rbt-input-main {
-    padding-right: 36px;
-  }
-  .search-clear {
-    position: absolute;
-    top: 4px;
-    right: 4px;
-    z-index: 3;
-    width: 24px;
-    height: 24px;
-    padding: 0;
-    line-height: 0;
-  }
-
-  .rbt-menu {
-    max-height: none !important;
-    margin-top: 3px;
-
-    li a span {
-      .page-path {
-        display: inline;
-        padding: 0 4px;
-        color: inherit;
-      }
-
-      .page-list-meta {
-        font-size: 0.9em;
-        color: $gray-400;
-
-        > span {
-          margin-right: 0.3rem;
-        }
-      }
-    }
-  }
-}
-
 // styles for admin user search
 .admin-user-page {
   .search-typeahead {
     .search-clear {
       top: 7px;
       right: 4px;
-    }
-  }
-}
-
-// input styles
-.grw-global-search {
-  .dropdown-toggle {
-    min-width: 95px;
-    padding-left: 1.5rem;
-  }
-
-  .search-typeahead {
-    .rbt-menu {
-      @extend .dropdown-menu-right;
-      @extend .dropdown-menu-md-left;
-      @include media-breakpoint-down(sm) {
-        left: auto !important;
-        width: 90vw;
-      }
-    }
-  }
-
-  // using react-bootstrap-typeahead
-  // see: https://github.com/ericgio/react-bootstrap-typeahead
-  .rbt-input.form-control {
-    height: 30px;
-    .rbt-input-wrapper {
-      margin-left: 8px;
-    }
-  }
-
-  .form-group:not(.has-error) {
-    .rbt-input.form-control {
-      border: none;
-    }
-  }
-
-  .grw-shortcut-key-indicator {
-    position: absolute;
-    top: 0;
-    right: 4px;
-
-    display: flex;
-    align-items: center;
-    height: 30px;
-
-    code {
-      padding-right: 0.4rem;
-      padding-left: 0.4rem;
-    }
-  }
-}
-
-// layout for GlobalSearch
-.grw-global-search-top {
-  // centering on navbar
-  top: $grw-navbar-height / 2;
-  left: 50vw;
-  z-index: $zindex-fixed + 1;
-  transform: translate(-50%, -50%);
-
-  .rbt-input.form-control {
-    width: 200px;
-    transition: 0.3s ease-out;
-
-    // focus
-    &.focus {
-      width: 300px;
-    }
-
-    @include media-breakpoint-up(md) {
-      width: 300px;
-    }
-    @include media-breakpoint-up(lg) {
-      // focus
-      &.focus {
-        width: 400px;
-      }
-    }
-    @include media-breakpoint-up(xl) {
-      width: 350px;
-      // focus
-      &.focus {
-        width: 450px;
-      }
     }
   }
 }
@@ -246,6 +118,20 @@
         padding-top: 0 !important;
         border-top: none !important;
       }
+    }
+  }
+}
+
+
+// style to apply when displaying search page
+.on-search {
+  // set sidebar height shown in search page
+  $search-page-sidebar-height: calc(100vh - ($grw-navbar-height + $grw-navbar-border-width));
+
+  .grw-sidebar {
+    height: $search-page-sidebar-height;
+    .data-layout-container {
+      height: 100%;
     }
   }
 }

@@ -2,7 +2,7 @@
 
 import nodePath from 'path';
 
-import { getOrCreateModel, pagePathUtils, pathUtils } from '@growi/core';
+import { HasObjectId, pagePathUtils, pathUtils } from '@growi/core';
 import escapeStringRegexp from 'escape-string-regexp';
 import mongoose, {
   Schema, Model, Document, AnyObject,
@@ -15,7 +15,7 @@ import { IUserHasId } from '~/interfaces/user';
 import { ObjectIdLike } from '~/server/interfaces/mongoose-utils';
 
 import loggerFactory from '../../utils/logger';
-import Crowi from '../crowi';
+import { getOrCreateModel } from '../util/mongoose-utils';
 
 import { getPageSchema, extractToAncestorsPaths, populateDataToShowRevision } from './obsolete-page';
 
@@ -58,11 +58,13 @@ export type CreateMethod = (path: string, body: string, user, options: PageCreat
 export interface PageModel extends Model<PageDocument> {
   [x: string]: any; // for obsolete static methods
   findByIdsAndViewer(pageIds: ObjectIdLike[], user, userGroups?, includeEmpty?: boolean): Promise<PageDocument[]>
-  findByPathAndViewer(path: string | null, user, userGroups?, useFindOne?: boolean, includeEmpty?: boolean): Promise<PageDocument | PageDocument[] | null>
+  findByPathAndViewer(path: string | null, user, userGroups?, useFindOne?: true, includeEmpty?: boolean): Promise<PageDocument & HasObjectId | null>
+  findByPathAndViewer(path: string | null, user, userGroups?, useFindOne?: false, includeEmpty?: boolean): Promise<(PageDocument & HasObjectId)[]>
+  countByPathAndViewer(path: string | null, user, userGroups?, includeEmpty?:boolean): Promise<number>
   findTargetAndAncestorsByPathOrId(pathOrId: string): Promise<TargetAndAncestorsResult>
   findRecentUpdatedPages(path: string, user, option, includeEmpty?: boolean): Promise<PaginatedPages>
   generateGrantCondition(
-    user, userGroups, showAnyoneKnowsLink?: boolean, showPagesRestrictedByOwner?: boolean, showPagesRestrictedByGroup?: boolean,
+    user, userGroups, includeAnyoneWithTheLink?: boolean, showPagesRestrictedByOwner?: boolean, showPagesRestrictedByGroup?: boolean,
   ): { $or: any[] }
 
   PageQueryBuilder: typeof PageQueryBuilder
@@ -138,7 +140,7 @@ export class PageQueryBuilder {
    * @param pathsToFilter The paths to have additional filters as to be applicable
    * @returns PageQueryBuilder
    */
-  addConditionToFilterByApplicableAncestors(pathsToFilter: string[]) {
+  addConditionToFilterByApplicableAncestors(pathsToFilter: string[]): PageQueryBuilder {
     this.query = this.query
       .and(
         {
@@ -154,7 +156,7 @@ export class PageQueryBuilder {
     return this;
   }
 
-  addConditionToExcludeTrashed() {
+  addConditionToExcludeTrashed(): PageQueryBuilder {
     this.query = this.query
       .and({
         $or: [
@@ -170,7 +172,7 @@ export class PageQueryBuilder {
    * generate the query to find the pages '{path}/*' and '{path}' self.
    * If top page, return without doing anything.
    */
-  addConditionToListWithDescendants(path: string, option?) {
+  addConditionToListWithDescendants(path: string, option?): PageQueryBuilder {
     // No request is set for the top page
     if (isTopPage(path)) {
       return this;
@@ -194,10 +196,11 @@ export class PageQueryBuilder {
 
   /**
    * generate the query to find the pages '{path}/*' (exclude '{path}' self).
-   * If top page, return without doing anything.
    */
-  addConditionToListOnlyDescendants(path, option) {
-    // No request is set for the top page
+  addConditionToListOnlyDescendants(path: string, option): PageQueryBuilder {
+    // exclude the target page
+    this.query = this.query.and({ path: { $ne: path } });
+
     if (isTopPage(path)) {
       return this;
     }
@@ -207,22 +210,24 @@ export class PageQueryBuilder {
     const startsPattern = escapeStringRegexp(pathWithTrailingSlash);
 
     this.query = this.query
-      .and({ path: new RegExp(`^${startsPattern}`) });
+      .and(
+        { path: new RegExp(`^${startsPattern}`) },
+      );
 
     return this;
 
   }
 
-  addConditionToListOnlyAncestors(path) {
+  addConditionToListOnlyAncestors(path: string): PageQueryBuilder {
     const pathNormalized = pathUtils.normalizePath(path);
     const ancestorsPaths = extractToAncestorsPaths(pathNormalized);
 
     this.query = this.query
-      .and({
-        path: {
-          $in: ancestorsPaths,
-        },
-      });
+      // exclude the target page
+      .and({ path: { $ne: path } })
+      .and(
+        { path: { $in: ancestorsPaths } },
+      );
 
     return this;
 
@@ -297,7 +302,7 @@ export class PageQueryBuilder {
     return this;
   }
 
-  async addConditionForParentNormalization(user) {
+  async addConditionForParentNormalization(user): Promise<PageQueryBuilder> {
     // determine UserGroup condition
     let userGroups;
     if (user != null) {
@@ -330,7 +335,7 @@ export class PageQueryBuilder {
     return this;
   }
 
-  async addConditionAsMigratablePages(user) {
+  async addConditionAsMigratablePages(user): Promise<PageQueryBuilder> {
     this.query = this.query
       .and({
         $or: [
@@ -338,7 +343,7 @@ export class PageQueryBuilder {
           { grant: { $ne: GRANT_SPECIFIED } },
         ],
       });
-    this.addConditionAsNotMigrated();
+    this.addConditionAsRootOrNotOnTree();
     this.addConditionAsNonRootPage();
     this.addConditionToExcludeTrashed();
     await this.addConditionForParentNormalization(user);
@@ -347,19 +352,21 @@ export class PageQueryBuilder {
   }
 
   // add viewer condition to PageQueryBuilder instance
-  async addViewerCondition(user, userGroups = null): Promise<PageQueryBuilder> {
+  async addViewerCondition(user, userGroups = null, includeAnyoneWithTheLink = false): Promise<PageQueryBuilder> {
     let relatedUserGroups = userGroups;
     if (user != null && relatedUserGroups == null) {
       const UserGroupRelation: any = mongoose.model('UserGroupRelation');
       relatedUserGroups = await UserGroupRelation.findAllUserGroupIdsRelatedToUser(user);
     }
 
-    this.addConditionToFilteringByViewer(user, relatedUserGroups, false);
+    this.addConditionToFilteringByViewer(user, relatedUserGroups, includeAnyoneWithTheLink);
     return this;
   }
 
-  addConditionToFilteringByViewer(user, userGroups, showAnyoneKnowsLink = false, showPagesRestrictedByOwner = false, showPagesRestrictedByGroup = false) {
-    const condition = generateGrantCondition(user, userGroups, showAnyoneKnowsLink, showPagesRestrictedByOwner, showPagesRestrictedByGroup);
+  addConditionToFilteringByViewer(
+      user, userGroups, includeAnyoneWithTheLink = false, showPagesRestrictedByOwner = false, showPagesRestrictedByGroup = false,
+  ): PageQueryBuilder {
+    const condition = generateGrantCondition(user, userGroups, includeAnyoneWithTheLink, showPagesRestrictedByOwner, showPagesRestrictedByGroup);
 
     this.query = this.query
       .and(condition);
@@ -367,27 +374,27 @@ export class PageQueryBuilder {
     return this;
   }
 
-  addConditionToPagenate(offset, limit, sortOpt?) {
+  addConditionToPagenate(offset, limit, sortOpt?): PageQueryBuilder {
     this.query = this.query
       .sort(sortOpt).skip(offset).limit(limit); // eslint-disable-line newline-per-chained-call
 
     return this;
   }
 
-  addConditionAsNonRootPage() {
+  addConditionAsNonRootPage(): PageQueryBuilder {
     this.query = this.query.and({ path: { $ne: '/' } });
 
     return this;
   }
 
-  addConditionAsNotMigrated() {
+  addConditionAsRootOrNotOnTree(): PageQueryBuilder {
     this.query = this.query
       .and({ parent: null });
 
     return this;
   }
 
-  addConditionAsOnTree() {
+  addConditionAsOnTree(): PageQueryBuilder {
     this.query = this.query
       .and(
         {
@@ -404,25 +411,25 @@ export class PageQueryBuilder {
   /*
    * Add this condition when get any ancestor pages including the target's parent
    */
-  addConditionToSortPagesByDescPath() {
+  addConditionToSortPagesByDescPath(): PageQueryBuilder {
     this.query = this.query.sort('-path');
 
     return this;
   }
 
-  addConditionToSortPagesByAscPath() {
+  addConditionToSortPagesByAscPath(): PageQueryBuilder {
     this.query = this.query.sort('path');
 
     return this;
   }
 
-  addConditionToMinimizeDataForRendering() {
+  addConditionToMinimizeDataForRendering(): PageQueryBuilder {
     this.query = this.query.select('_id path isEmpty grant revision descendantCount');
 
     return this;
   }
 
-  addConditionToListByPathsArray(paths) {
+  addConditionToListByPathsArray(paths): PageQueryBuilder {
     this.query = this.query
       .and({
         path: {
@@ -433,7 +440,7 @@ export class PageQueryBuilder {
     return this;
   }
 
-  addConditionToListByPageIdsArray(pageIds) {
+  addConditionToListByPageIdsArray(pageIds): PageQueryBuilder {
     this.query = this.query
       .and({
         _id: {
@@ -444,7 +451,7 @@ export class PageQueryBuilder {
     return this;
   }
 
-  addConditionToExcludeByPageIdsArray(pageIds) {
+  addConditionToExcludeByPageIdsArray(pageIds): PageQueryBuilder {
     this.query = this.query
       .and({
         _id: {
@@ -455,7 +462,7 @@ export class PageQueryBuilder {
     return this;
   }
 
-  populateDataToList(userPublicFields) {
+  populateDataToList(userPublicFields): PageQueryBuilder {
     this.query = this.query
       .populate({
         path: 'lastUpdateUser',
@@ -464,12 +471,12 @@ export class PageQueryBuilder {
     return this;
   }
 
-  populateDataToShowRevision(userPublicFields) {
+  populateDataToShowRevision(userPublicFields): PageQueryBuilder {
     this.query = populateDataToShowRevision(this.query, userPublicFields);
     return this;
   }
 
-  addConditionToFilteringByParentId(parentId) {
+  addConditionToFilteringByParentId(parentId): PageQueryBuilder {
     this.query = this.query.and({ parent: parentId });
     return this;
   }
@@ -559,13 +566,27 @@ schema.statics.findByIdsAndViewer = async function(pageIds: string[], user, user
  * Find a page by path and viewer. Pass false to useFindOne to use findOne method.
  */
 schema.statics.findByPathAndViewer = async function(
-    path: string | null, user, userGroups = null, useFindOne = true, includeEmpty = false,
-): Promise<PageDocument | PageDocument[] | null> {
+    path: string | null, user, userGroups = null, useFindOne = false, includeEmpty = false,
+): Promise<(PageDocument | PageDocument[]) & HasObjectId | null> {
   if (path == null) {
     throw new Error('path is required.');
   }
 
   const baseQuery = useFindOne ? this.findOne({ path }) : this.find({ path });
+  const includeAnyoneWithTheLink = useFindOne;
+  const queryBuilder = new PageQueryBuilder(baseQuery, includeEmpty);
+
+  await queryBuilder.addViewerCondition(user, userGroups, includeAnyoneWithTheLink);
+
+  return queryBuilder.query.exec();
+};
+
+schema.statics.countByPathAndViewer = async function(path: string | null, user, userGroups = null, includeEmpty = false): Promise<number> {
+  if (path == null) {
+    throw new Error('path is required.');
+  }
+
+  const baseQuery = this.count({ path });
   const queryBuilder = new PageQueryBuilder(baseQuery, includeEmpty);
 
   await queryBuilder.addViewerCondition(user, userGroups);
@@ -874,14 +895,14 @@ schema.statics.findParent = async function(pageId): Promise<PageDocument | null>
 schema.statics.PageQueryBuilder = PageQueryBuilder as any; // mongoose does not support constructor type as statics attrs type
 
 export function generateGrantCondition(
-    user, userGroups, showAnyoneKnowsLink = false, showPagesRestrictedByOwner = false, showPagesRestrictedByGroup = false,
+    user, userGroups, includeAnyoneWithTheLink = false, showPagesRestrictedByOwner = false, showPagesRestrictedByGroup = false,
 ): { $or: any[] } {
   const grantConditions: AnyObject[] = [
     { grant: null },
     { grant: GRANT_PUBLIC },
   ];
 
-  if (showAnyoneKnowsLink) {
+  if (includeAnyoneWithTheLink) {
     grantConditions.push({ grant: GRANT_RESTRICTED });
   }
 
@@ -938,175 +959,17 @@ export type PageCreateOptions = {
   format?: string
   grantUserGroupId?: ObjectIdLike
   grant?: number
+  overwriteScopesOfDescendants?: boolean
 }
 
 /*
  * Merge obsolete page model methods and define new methods which depend on crowi instance
  */
-export default (crowi: Crowi): any => {
-  let pageEvent;
-  if (crowi != null) {
-    pageEvent = crowi.event('page');
-  }
-
-  const shouldUseUpdatePageV4 = (grant: number, isV5Compatible: boolean, isOnTree: boolean): boolean => {
-    const isRestricted = grant === GRANT_RESTRICTED;
-    return !isRestricted && (!isV5Compatible || !isOnTree);
-  };
-
-  schema.statics.emitPageEventUpdate = (page: IPageHasId, user: IUserHasId): void => {
-    pageEvent.emit('update', page, user);
-  };
-
-  /**
-   * A wrapper method of schema.statics.updatePage for updating grant only.
-   * @param {PageDocument} page
-   * @param {UserDocument} user
-   * @param options
-   */
-  schema.statics.updateGrant = async function(page, user, grantData: {grant: PageGrant, grantedGroup: ObjectIdLike}) {
-    const { grant, grantedGroup } = grantData;
-
-    const options = {
-      grant,
-      grantUserGroupId: grantedGroup,
-      isSyncRevisionToHackmd: false,
-    };
-
-    return this.updatePage(page, null, null, user, options);
-  };
-
-  schema.statics.updatePage = async function(
-      pageData,
-      body: string | null,
-      previousBody: string | null,
-      user,
-      options: {grant?: PageGrant, grantUserGroupId?: ObjectIdLike, isSyncRevisionToHackmd?: boolean} = {},
-  ) {
-    if (crowi.configManager == null || crowi.pageGrantService == null || crowi.pageService == null) {
-      throw Error('Crowi is not set up');
-    }
-
-    const wasOnTree = pageData.parent != null || isTopPage(pageData.path);
-    const exParent = pageData.parent;
-    const isV5Compatible = crowi.configManager.getConfig('crowi', 'app:isV5Compatible');
-
-    const shouldUseV4Process = shouldUseUpdatePageV4(pageData.grant, isV5Compatible, wasOnTree);
-    if (shouldUseV4Process) {
-      // v4 compatible process
-      return this.updatePageV4(pageData, body, previousBody, user, options);
-    }
-
-    const grant = options.grant ?? pageData.grant; // use the previous data if absence
-    const grantUserGroupId: undefined | ObjectIdLike = options.grantUserGroupId ?? pageData.grantedGroup?._id.toString();
-
-    const grantedUserIds = pageData.grantedUserIds || [user._id];
-    const shouldBeOnTree = grant !== GRANT_RESTRICTED;
-    const isChildrenExist = await this.count({ path: new RegExp(`^${escapeStringRegexp(addTrailingSlash(pageData.path))}`), parent: { $ne: null } });
-
-    const newPageData = pageData;
-
-    if (shouldBeOnTree) {
-      let isGrantNormalized = false;
-      try {
-        isGrantNormalized = await crowi.pageGrantService.isGrantNormalized(user, pageData.path, grant, grantedUserIds, grantUserGroupId, true);
-      }
-      catch (err) {
-        logger.error(`Failed to validate grant of page at "${pageData.path}" of grant ${grant}:`, err);
-        throw err;
-      }
-      if (!isGrantNormalized) {
-        throw Error('The selected grant or grantedGroup is not assignable to this page.');
-      }
-
-      if (!wasOnTree) {
-        const newParent = await crowi.pageService.getParentAndFillAncestorsByUser(user, newPageData.path);
-        newPageData.parent = newParent._id;
-      }
-    }
-    else {
-      if (wasOnTree && isChildrenExist) {
-        // Update children's parent with new parent
-        const newParentForChildren = await this.createEmptyPage(pageData.path, pageData.parent, pageData.descendantCount);
-        await this.updateMany(
-          { parent: pageData._id },
-          { parent: newParentForChildren._id },
-        );
-      }
-
-      newPageData.parent = null;
-      newPageData.descendantCount = 0;
-    }
-
-    newPageData.applyScope(user, grant, grantUserGroupId);
-
-    // update existing page
-    let savedPage = await newPageData.save();
-
-    // Update body
-    const Revision = mongoose.model('Revision') as any; // TODO: Typescriptize model
-    const isSyncRevisionToHackmd = options.isSyncRevisionToHackmd;
-    const isBodyPresent = body != null && previousBody != null;
-    const shouldUpdateBody = isBodyPresent;
-    if (shouldUpdateBody) {
-      const newRevision = await Revision.prepareRevision(newPageData, body, previousBody, user);
-      savedPage = await pushRevision(savedPage, newRevision, user);
-      await savedPage.populateDataToShowRevision();
-
-      if (isSyncRevisionToHackmd) {
-        savedPage = await this.syncRevisionToHackmd(savedPage);
-      }
-    }
-
-
-    this.emitPageEventUpdate(savedPage, user);
-
-    // Update ex children's parent
-    if (!wasOnTree && shouldBeOnTree) {
-      const emptyPageAtSamePath = await this.findOne({ path: pageData.path, isEmpty: true }); // this page is necessary to find children
-
-      if (isChildrenExist) {
-        if (emptyPageAtSamePath != null) {
-          // Update children's parent with new parent
-          await this.updateMany(
-            { parent: emptyPageAtSamePath._id },
-            { parent: savedPage._id },
-          );
-        }
-      }
-
-      await this.findOneAndDelete({ path: pageData.path, isEmpty: true }); // delete here
-    }
-
-    // Sub operation
-    // 1. Update descendantCount
-    const shouldPlusDescCount = !wasOnTree && shouldBeOnTree;
-    const shouldMinusDescCount = wasOnTree && !shouldBeOnTree;
-    if (shouldPlusDescCount) {
-      await crowi.pageService.updateDescendantCountOfAncestors(newPageData._id, 1, false);
-      const newDescendantCount = await this.recountDescendantCount(newPageData._id);
-      await this.updateOne({ _id: newPageData._id }, { descendantCount: newDescendantCount });
-    }
-    else if (shouldMinusDescCount) {
-      // Update from parent. Parent is null if newPageData.grant is RESTRECTED.
-      if (newPageData.grant === GRANT_RESTRICTED) {
-        await crowi.pageService.updateDescendantCountOfAncestors(exParent, -1, true);
-      }
-    }
-
-    // 2. Delete unnecessary empty pages
-    const shouldRemoveLeafEmpPages = wasOnTree && !isChildrenExist;
-    if (shouldRemoveLeafEmpPages) {
-      await this.removeLeafEmptyPagesRecursively(exParent);
-    }
-
-    return savedPage;
-  };
-
+export default function PageModel(crowi): any {
   // add old page schema methods
   const pageSchema = getPageSchema(crowi);
   schema.methods = { ...pageSchema.methods, ...schema.methods };
   schema.statics = { ...pageSchema.statics, ...schema.statics };
 
   return getOrCreateModel<PageDocument, PageModel>('Page', schema as any); // TODO: improve type
-};
+}

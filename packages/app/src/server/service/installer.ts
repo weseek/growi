@@ -1,11 +1,11 @@
 import path from 'path';
 
+import { Lang } from '@growi/core';
+import { addSeconds } from 'date-fns';
 import ExtensibleCustomError from 'extensible-custom-error';
 import fs from 'graceful-fs';
 import mongoose from 'mongoose';
 
-
-import { Lang } from '~/interfaces/lang';
 import { IPage } from '~/interfaces/page';
 import { IUser } from '~/interfaces/user';
 import loggerFactory from '~/utils/logger';
@@ -52,7 +52,7 @@ export class InstallerService {
   private async createPage(filePath, pagePath, owner): Promise<IPage|undefined> {
     try {
       const markdown = fs.readFileSync(filePath);
-      return this.crowi.pageService.create(pagePath, markdown, owner, {}) as IPage;
+      return this.crowi.pageService.create(pagePath, markdown, owner, { isSynchronously: true }) as IPage;
     }
     catch (err) {
       logger.error(`Failed to create ${pagePath}`, err);
@@ -79,7 +79,20 @@ export class InstallerService {
         // TODO typescriptize models/user.js and remove eslint-disable-next-line
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const Page = mongoose.model('Page') as any;
-        await Page.updateMany({}, { createdAt: initialPagesCreatedAt, updatedAt: initialPagesCreatedAt });
+
+        // Increment timestamp to avoid difference for order in VRT
+        const pagePaths = ['/Sandbox', '/Sandbox/Bootstrap4', '/Sandbox/Diagrams', '/Sandbox/Math'];
+        const promises = pagePaths.map(async(path: string, idx: number) => {
+          const date = addSeconds(initialPagesCreatedAt, idx);
+          return Page.update(
+            { path },
+            {
+              createdAt: date,
+              updatedAt: date,
+            },
+          );
+        });
+        await Promise.all(promises);
       }
       catch (err) {
         logger.error('Failed to update createdAt', err);
@@ -110,7 +123,7 @@ export class InstallerService {
     return configManager.updateConfigsInTheSameNamespace('crowi', initialConfig, true);
   }
 
-  async install(firstAdminUserToSave: IUser, globalLang: Lang, options?: AutoInstallOptions): Promise<IUser> {
+  async install(firstAdminUserToSave: Pick<IUser, 'name' | 'username' | 'email' | 'password'>, globalLang: Lang, options?: AutoInstallOptions): Promise<IUser> {
     await this.initDB(globalLang, options);
 
     // TODO typescriptize models/user.js and remove eslint-disable-next-line
@@ -145,7 +158,7 @@ export class InstallerService {
     const rootRevision = await Revision.findOne({ path: '/' });
     rootPage.creator = adminUser._id;
     rootPage.lastUpdateUser = adminUser._id;
-    rootRevision.creator = adminUser._id;
+    rootRevision.author = adminUser._id;
     await Promise.all([rootPage.save(), rootRevision.save()]);
 
     // create initial pages

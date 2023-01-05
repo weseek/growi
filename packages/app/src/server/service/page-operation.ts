@@ -16,6 +16,7 @@ const {
 const AUTO_UPDATE_INTERVAL_SEC = 5;
 
 const {
+  Create, Update,
   Duplicate, Delete, DeleteCompletely, Revert, NormalizeParent,
 } = PageActionType;
 
@@ -29,7 +30,7 @@ class PageOperationService {
 
   async init(): Promise<void> {
     // cleanup PageOperation documents except ones with { actionType: Rename, actionStage: Sub }
-    const types = [Duplicate, Delete, DeleteCompletely, Revert, NormalizeParent];
+    const types = [Create, Update, Duplicate, Delete, DeleteCompletely, Revert, NormalizeParent];
     await PageOperation.deleteByActionTypes(types);
     await PageOperation.deleteMany({ actionType: PageActionType.Rename, actionStage: PageActionStage.Main });
   }

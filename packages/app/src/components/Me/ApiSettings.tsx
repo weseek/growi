@@ -1,6 +1,6 @@
 import React, { useCallback } from 'react';
 
-import { useTranslation } from 'react-i18next';
+import { useTranslation } from 'next-i18next';
 
 import { toastSuccess, toastError } from '~/client/util/apiNotification';
 import { apiv3Put } from '~/client/util/apiv3-client';
@@ -19,7 +19,7 @@ const ApiSettings = React.memo((): JSX.Element => {
       await apiv3Put('/personal-setting/api-token');
       mutateDatabaseData();
 
-      toastSuccess(t('toaster.update_successed', { target: t('page_me_apitoken.api_token') }));
+      toastSuccess(t('toaster.update_successed', { target: t('page_me_apitoken.api_token'), ns: 'commons' }));
     }
     catch (err) {
       toastError(err);
@@ -86,5 +86,6 @@ const ApiSettings = React.memo((): JSX.Element => {
 
 });
 
+ApiSettings.displayName = 'ApiSettings';
 
 export default ApiSettings;

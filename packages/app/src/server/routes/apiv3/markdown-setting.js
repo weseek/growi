@@ -1,3 +1,5 @@
+import { ErrorV3 } from '@growi/core';
+
 import { SupportedAction } from '~/interfaces/activity';
 import loggerFactory from '~/utils/logger';
 
@@ -12,8 +14,6 @@ const express = require('express');
 const router = express.Router();
 
 const { body } = require('express-validator');
-
-const ErrorV3 = require('../../models/vo/error-apiv3');
 
 const validator = {
   lineBreak: [
@@ -30,7 +30,7 @@ const validator = {
   xssSetting: [
     body('isEnabledXss').isBoolean(),
     body('tagWhiteList').isArray(),
-    body('attrWhiteList').isArray(),
+    body('attrWhiteList').isString(),
   ],
 };
 
@@ -93,7 +93,6 @@ const validator = {
 module.exports = (crowi) => {
   const loginRequiredStrictly = require('../../middlewares/login-required')(crowi);
   const adminRequired = require('../../middlewares/admin-required')(crowi);
-  const csrf = require('../../middlewares/csrf')(crowi);
   const addActivity = generateAddActivityMiddleware(crowi);
 
   const activityEvent = crowi.event('activity');
@@ -126,10 +125,10 @@ module.exports = (crowi) => {
       isIndentSizeForced: await crowi.configManager.getConfig('markdown', 'markdown:isIndentSizeForced'),
       pageBreakSeparator: await crowi.configManager.getConfig('markdown', 'markdown:presentation:pageBreakSeparator'),
       pageBreakCustomSeparator: await crowi.configManager.getConfig('markdown', 'markdown:presentation:pageBreakCustomSeparator'),
-      isEnabledXss: await crowi.configManager.getConfig('markdown', 'markdown:xss:isEnabledPrevention'),
-      xssOption: await crowi.configManager.getConfig('markdown', 'markdown:xss:option'),
-      tagWhiteList: await crowi.configManager.getConfig('markdown', 'markdown:xss:tagWhiteList'),
-      attrWhiteList: await crowi.configManager.getConfig('markdown', 'markdown:xss:attrWhiteList'),
+      isEnabledXss: await crowi.configManager.getConfig('markdown', 'markdown:rehypeSanitize:isEnabledPrevention'),
+      xssOption: await crowi.configManager.getConfig('markdown', 'markdown:rehypeSanitize:option'),
+      tagWhiteList: await crowi.configManager.getConfig('markdown', 'markdown:rehypeSanitize:tagNames'),
+      attrWhiteList: await crowi.configManager.getConfig('markdown', 'markdown:rehypeSanitize:attributes'),
     };
 
     return res.apiv3({ markdownParams });
@@ -158,7 +157,7 @@ module.exports = (crowi) => {
    *                schema:
   *                   $ref: '#/components/schemas/LineBreakParams'
    */
-  router.put('/lineBreak', loginRequiredStrictly, adminRequired, csrf, addActivity, validator.lineBreak, apiV3FormValidator, async(req, res) => {
+  router.put('/lineBreak', loginRequiredStrictly, adminRequired, addActivity, validator.lineBreak, apiV3FormValidator, async(req, res) => {
 
     const requestLineBreakParams = {
       'markdown:isEnabledLinebreaks': req.body.isEnabledLinebreaks,
@@ -185,7 +184,7 @@ module.exports = (crowi) => {
 
   });
 
-  router.put('/indent', loginRequiredStrictly, adminRequired, csrf, addActivity, validator.indent, apiV3FormValidator, async(req, res) => {
+  router.put('/indent', loginRequiredStrictly, adminRequired, addActivity, validator.indent, apiV3FormValidator, async(req, res) => {
 
     const requestIndentParams = {
       'markdown:adminPreferredIndentSize': req.body.adminPreferredIndentSize,
@@ -235,7 +234,7 @@ module.exports = (crowi) => {
    *                schema:
    *                  $ref: '#/components/schemas/PresentationParams'
    */
-  router.put('/presentation', loginRequiredStrictly, adminRequired, csrf, addActivity, validator.presentationSetting, apiV3FormValidator, async(req, res) => {
+  router.put('/presentation', loginRequiredStrictly, adminRequired, addActivity, validator.presentationSetting, apiV3FormValidator, async(req, res) => {
     if (req.body.pageBreakSeparator === 3 && req.body.pageBreakCustomSeparator === '') {
       return res.apiv3Err(new ErrorV3('customRegularExpression is required'));
     }
@@ -288,25 +287,34 @@ module.exports = (crowi) => {
    *                schema:
    *                  $ref: '#/components/schemas/XssParams'
    */
-  router.put('/xss', loginRequiredStrictly, adminRequired, csrf, addActivity, validator.xssSetting, apiV3FormValidator, async(req, res) => {
+  router.put('/xss', loginRequiredStrictly, adminRequired, addActivity, validator.xssSetting, apiV3FormValidator, async(req, res) => {
     if (req.body.isEnabledXss && req.body.xssOption == null) {
       return res.apiv3Err(new ErrorV3('xss option is required'));
     }
 
+    try {
+      JSON.parse(req.body.attrWhiteList);
+    }
+    catch (err) {
+      const msg = 'Error occurred in updating xss';
+      logger.error('Error', err);
+      return res.apiv3Err(new ErrorV3(msg, 'update-xss-failed'));
+    }
+
     const reqestXssParams = {
-      'markdown:xss:isEnabledPrevention': req.body.isEnabledXss,
-      'markdown:xss:option': req.body.xssOption,
-      'markdown:xss:tagWhiteList': req.body.tagWhiteList,
-      'markdown:xss:attrWhiteList': req.body.attrWhiteList,
+      'markdown:rehypeSanitize:isEnabledPrevention': req.body.isEnabledXss,
+      'markdown:rehypeSanitize:option': req.body.xssOption,
+      'markdown:rehypeSanitize:tagNames': req.body.tagWhiteList,
+      'markdown:rehypeSanitize:attributes': req.body.attrWhiteList,
     };
 
     try {
       await crowi.configManager.updateConfigsInTheSameNamespace('markdown', reqestXssParams);
       const xssParams = {
-        isEnabledXss: await crowi.configManager.getConfig('markdown', 'markdown:xss:isEnabledPrevention'),
-        xssOption: await crowi.configManager.getConfig('markdown', 'markdown:xss:option'),
-        tagWhiteList: await crowi.configManager.getConfig('markdown', 'markdown:xss:tagWhiteList'),
-        attrWhiteList: await crowi.configManager.getConfig('markdown', 'markdown:xss:attrWhiteList'),
+        isEnabledXss: await crowi.configManager.getConfig('markdown', 'markdown:rehypeSanitize:isEnabledPrevention'),
+        xssOption: await crowi.configManager.getConfig('markdown', 'markdown:rehypeSanitize:option'),
+        tagWhiteList: await crowi.configManager.getConfig('markdown', 'markdown:rehypeSanitize:tagNames'),
+        attrWhiteList: await crowi.configManager.getConfig('markdown', 'markdown:rehypeSanitize:attributes'),
       };
 
       const parameters = { action: SupportedAction.ACTION_ADMIN_MARKDOWN_XSS_UPDATE };

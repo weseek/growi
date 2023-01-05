@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
+
+import { useTranslation } from 'next-i18next';
 import {
   Modal, ModalHeader, ModalBody, ModalFooter,
 } from 'reactstrap';
-import { useTranslation } from 'react-i18next';
 
 import { apiv3Post } from '~/client/util/apiv3-client';
 import { usePrivateLegacyPagesMigrationModal } from '~/stores/modal';
@@ -10,11 +11,7 @@ import { usePrivateLegacyPagesMigrationModal } from '~/stores/modal';
 import ApiErrorMessageList from './PageManagement/ApiErrorMessageList';
 
 
-type Props = {
-
-}
-
-export const PrivateLegacyPagesMigrationModal = (props: Props): JSX.Element => {
+export const PrivateLegacyPagesMigrationModal = (): JSX.Element => {
   const { t } = useTranslation();
 
   const { data: status, close } = usePrivateLegacyPagesMigrationModal();
@@ -76,7 +73,7 @@ export const PrivateLegacyPagesMigrationModal = (props: Props): JSX.Element => {
   };
 
   return (
-    <Modal size="lg" isOpen={isOpened} toggle={close} className="grw-create-page">
+    <Modal size="lg" isOpen={isOpened} toggle={close}>
       <ModalHeader tag="h4" toggle={close} className="bg-primary text-light">
         { t('private_legacy_pages.modal.title') }
       </ModalHeader>

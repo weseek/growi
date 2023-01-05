@@ -1,81 +1,62 @@
-// import variables
-@import 'variables';
+@import './bootstrap/apply';
 
 @import 'mixins';
-@import 'override-bootstrap-variables';
 
-// vendor
-@import 'vendor';
-
-// override bootstrap
-@import 'override-bootstrap';
-
-// override codemirror
-@import 'override-codemirror';
-
-// override react-bootstrap-typeahead styles
+// react-bootstrap-typeahead
+@import '~react-bootstrap-typeahead/css/Typeahead';
 @import 'override-rbt';
 
-// override simplebar-react styles
+// SimpleBar
+@import '~simplebar/dist/simplebar.min.css';
 @import 'override-simplebar';
+
+// Emoji-mart style
+@import '~emoji-mart/css/emoji-mart.css';
+
+// KaTeX
+@import '~katex/dist/katex.min';
+
+// icons
+
+// DO NOT CHANGE THER OERDER OF font-awesome AND simple-line-icons.
+// font-familiy used in simple-line-icons has to be prioritized than the one used in font-awesome.
+@import '~font-awesome';
+@import '~simple-line-icons';
+@import '~material-icons/iconfont/filled';
+@import '~@icon/themify-icons/themify-icons';
 
 // atoms
 @import 'atoms/buttons';
-@import 'atoms/code';
-@import 'atoms/nav';
-@import 'atoms/pre';
 @import 'atoms/spinners';
 @import 'atoms/custom_control';
+@import 'atoms/code';
 
 // molecules
-@import 'molecules/copy-dropdown';
-@import 'molecules/page-editor-mode-manager';
-@import 'molecules/slack-notification';
-@import 'molecules/duplicated-paths-table.scss';
+@import 'molecules/toastr';
+// @import 'molecules/slack-notification';
+// @import 'molecules/duplicated-paths-table.scss';
 
-// growi component
-@import 'admin';
-@import 'attachments';
-@import 'comment';
-@import 'comment_growi';
-@import 'drawio';
-@import 'create-page';
-@import 'draft';
-@import 'editor-attachment';
-@import 'editor-navbar';
-@import 'page-content-footer';
-@import 'handsontable';
+// organisms
+@import 'organisms/wiki';
+
+// // growi component
+// @import 'attachments';
+// @import 'comment';
+// @import 'comment_growi';
+// @import 'draft';
+@import 'editor';
+@import 'fonts';
 @import 'layout';
-@import 'login';
-@import 'me';
+// @import 'me';
 @import 'mirror_mode';
 @import 'modal';
-@import 'navbar';
-@import 'old-ios';
-@import 'on-edit';
-@import 'page-duplicate-modal';
-@import 'page_list';
-@import 'page-accessories-control';
-@import 'page-accessories-modal';
+// @import 'old-ios';
+// @import 'page-duplicate-modal';
 @import 'page-path';
-@import 'page-tree';
-@import 'page';
-@import 'page-presentation';
-@import 'page-history';
-@import 'recent-changes';
 @import 'search';
-@import 'shortcuts';
-@import 'sidebar';
-@import 'sidebar-wiki';
-@import 'subnav';
 @import 'tag';
-@import 'toc';
-@import 'user';
-@import 'staff_credit';
-@import 'waves';
-@import 'wiki';
-@import 'sharelink';
-@import 'linkedit-preview';
+// @import 'user';
+
 
 /*
  * for Guest User Mode

@@ -1,3 +1,5 @@
+import { ErrorV3 } from '@growi/core';
+
 import loggerFactory from '~/utils/logger';
 
 const logger = loggerFactory('growi:routes:apiv3:user-group-relation'); // eslint-disable-line no-unused-vars
@@ -5,7 +7,6 @@ const logger = loggerFactory('growi:routes:apiv3:user-group-relation'); // eslin
 const express = require('express');
 const { query } = require('express-validator');
 
-const ErrorV3 = require('../../models/vo/error-apiv3');
 const { serializeUserGroupRelationSecurely } = require('../../models/serializers/user-group-relation-serializer');
 
 const router = express.Router();

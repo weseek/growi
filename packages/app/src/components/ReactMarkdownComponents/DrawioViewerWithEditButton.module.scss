@@ -1,0 +1,19 @@
+.drawio-viewer-with-edit-button :global {
+  position: relative;
+
+  .btn-edit-drawio {
+    position: absolute;
+    top: 11px;
+    right: 10px;
+    z-index: 14;
+    font-size: 12px;
+    line-height: 1;
+    opacity: 0;
+  }
+}
+
+.drawio-viewer-with-edit-button:hover :global {
+  .btn-edit-drawio {
+    opacity: 1;
+  }
+}

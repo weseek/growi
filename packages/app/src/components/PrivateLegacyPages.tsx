@@ -2,13 +2,12 @@ import React, {
   useCallback, useMemo, useRef, useState, useEffect,
 } from 'react';
 
-import { useTranslation } from 'react-i18next';
+import { useTranslation } from 'next-i18next';
 import {
   UncontrolledButtonDropdown, DropdownToggle, DropdownMenu, DropdownItem, Modal, ModalHeader, ModalBody, ModalFooter,
 } from 'reactstrap';
 
 import { ISelectableAll, ISelectableAndIndeterminatable } from '~/client/interfaces/selectable-all';
-import AppContainer from '~/client/services/AppContainer';
 import { toastSuccess, toastError } from '~/client/util/apiNotification';
 import { apiv3Post } from '~/client/util/apiv3-client';
 import { V5ConversionErrCode } from '~/interfaces/errors/v5-conversion-error';
@@ -19,7 +18,7 @@ import { useCurrentUser } from '~/stores/context';
 import {
   ILegacyPrivatePage, usePrivateLegacyPagesMigrationModal,
 } from '~/stores/modal';
-import { useSWRxV5MigrationStatus } from '~/stores/page-listing';
+import { usePageTreeTermManager, useSWRxV5MigrationStatus } from '~/stores/page-listing';
 import {
   useSWRxSearch,
 } from '~/stores/search';
@@ -75,7 +74,7 @@ const SearchResultListHead = React.memo((props: SearchResultListHeadProps): JSX.
 
   if (isSuccess) {
     return (
-      <div className="card border-success mt-3">
+      <div className="card border-success mt-3" data-testid="search-result-private-legacy-pages">
         <div className="card-body">
           <h2 className="card-title text-success">{t('private_legacy_pages.nopages_title')}</h2>
           <p className="card-text">
@@ -128,6 +127,8 @@ const SearchResultListHead = React.memo((props: SearchResultListHeadProps): JSX.
   );
 });
 
+SearchResultListHead.displayName = 'SearchResultListHead';
+
 /*
  * ConvertByPathModal
  */
@@ -147,7 +148,7 @@ const ConvertByPathModal = React.memo((props: ConvertByPathModalProps): JSX.Elem
   }, [props.isOpen]);
 
   return (
-    <Modal size="lg" isOpen={props.isOpen} toggle={props.close} className="grw-create-page">
+    <Modal size="lg" isOpen={props.isOpen} toggle={props.close}>
       <ModalHeader tag="h4" toggle={props.close} className="bg-primary text-light">
         { t('private_legacy_pages.by_path_modal.title') }
       </ModalHeader>
@@ -182,24 +183,17 @@ const ConvertByPathModal = React.memo((props: ConvertByPathModalProps): JSX.Elem
   );
 });
 
+ConvertByPathModal.displayName = 'ConvertByPathModal';
+
 /**
  * LegacyPage
  */
 
-type Props = {
-  appContainer: AppContainer,
-}
-
-const PrivateLegacyPages = (props: Props): JSX.Element => {
+const PrivateLegacyPages = (): JSX.Element => {
   const { t } = useTranslation();
   const { data: currentUser } = useCurrentUser();
 
   const isAdmin = currentUser?.admin;
-
-  const {
-    appContainer,
-  } = props;
-
 
   const [keyword, setKeyword] = useState<string>(initQ);
   const [offset, setOffset] = useState<number>(0);
@@ -219,6 +213,7 @@ const PrivateLegacyPages = (props: Props): JSX.Element => {
   });
 
   const { data: migrationStatus, mutate: mutateMigrationStatus } = useSWRxV5MigrationStatus();
+  const { advance: advancePt } = usePageTreeTermManager();
 
   const searchInvokedHandler = useCallback((_keyword: string) => {
     mutateMigrationStatus();
@@ -320,6 +315,7 @@ const PrivateLegacyPages = (props: Props): JSX.Element => {
         closeModal();
         mutateMigrationStatus();
         mutate();
+        advancePt();
       },
     );
   }, [data, mutate, openModal, closeModal, mutateMigrationStatus]);
@@ -438,7 +434,6 @@ const PrivateLegacyPages = (props: Props): JSX.Element => {
     <>
       <SearchPageBase
         ref={searchPageBaseRef}
-        appContainer={appContainer}
         pages={data?.data}
         onSelectedPagesByCheckboxesChanged={selectedPagesByCheckboxesChangedHandler}
         forceHideMenuItems={[MenuItemType.BOOKMARK, MenuItemType.RENAME, MenuItemType.DUPLICATE, MenuItemType.REVERT, MenuItemType.PATH_RECOVERY]}
@@ -459,6 +454,8 @@ const PrivateLegacyPages = (props: Props): JSX.Element => {
             });
             toastSuccess(t('private_legacy_pages.by_path_modal.success'));
             setOpenConvertModal(false);
+            mutate();
+            advancePt();
           }
           catch (errs) {
             if (errs.length === 1) {

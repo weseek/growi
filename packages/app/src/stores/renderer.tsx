@@ -1,70 +1,150 @@
-import { Key, SWRResponse } from 'swr';
+import { HtmlElementNode } from 'rehype-toc';
+import useSWR, { SWRResponse } from 'swr';
 import useSWRImmutable from 'swr/immutable';
 
-import { RendererSettings } from '~/interfaces/services/renderer';
-import GrowiRenderer, {
-  generateViewRenderer, generatePreviewRenderer, generateCommentPreviewRenderer, generateOthersRenderer, RendererGenerator,
-} from '~/services/renderer/growi-renderer';
-import { useStaticSWR } from '~/stores/use-static-swr';
+import {
+  RendererOptions,
+  generateSimpleViewOptions, generatePreviewOptions,
+  generateViewOptions, generateTocOptions,
+} from '~/services/renderer/renderer';
+import { getGrowiFacade } from '~/utils/growi-facade';
 
-import { useCurrentPagePath, useGrowiRendererConfig } from './context';
 
-export const useRendererSettings = (initialData?: RendererSettings): SWRResponse<RendererSettings, Error> => {
-  return useStaticSWR('rendererSettings', initialData);
-};
+import {
+  useRendererConfig,
+} from './context';
+import { useCurrentPagePath } from './page';
+import { useCurrentPageTocNode } from './ui';
 
-// The base hook with common processes
-const _useRendererBase = (key: string, generator: RendererGenerator): SWRResponse<GrowiRenderer, Error> => {
-  const { data: rendererSettings } = useRendererSettings();
-  const { data: currentPath } = useCurrentPagePath();
-  const { data: growiRendererConfig } = useGrowiRendererConfig();
 
-  return useSWRImmutable(
-    (rendererSettings == null || growiRendererConfig == null || currentPath == null)
-      ? null
-      : [key, rendererSettings, growiRendererConfig, currentPath],
-    (key, rendererSettings, growiRendererConfig, currentPath) => generator(growiRendererConfig, rendererSettings, currentPath),
+export const useViewOptions = (storeTocNodeHandler: (toc: HtmlElementNode) => void): SWRResponse<RendererOptions, Error> => {
+  const { data: currentPagePath } = useCurrentPagePath();
+  const { data: rendererConfig } = useRendererConfig();
+
+  const isAllDataValid = currentPagePath != null && rendererConfig != null;
+
+  const key = isAllDataValid
+    ? ['viewOptions', currentPagePath, rendererConfig]
+    : null;
+
+  return useSWR<RendererOptions, Error>(
+    key,
+    (rendererId, currentPagePath, rendererConfig) => {
+      // determine options generator
+      const optionsGenerator = getGrowiFacade().markdownRenderer?.optionsGenerators?.customGenerateViewOptions ?? generateViewOptions;
+      return optionsGenerator(currentPagePath, rendererConfig, storeTocNodeHandler);
+    },
+    {
+      fallbackData: isAllDataValid ? generateViewOptions(currentPagePath, rendererConfig, storeTocNodeHandler) : undefined,
+    },
   );
 };
 
-export const useViewRenderer = (): SWRResponse<GrowiRenderer, Error> => {
-  const key = 'viewRenderer';
+export const useTocOptions = (): SWRResponse<RendererOptions, Error> => {
+  const { data: currentPagePath } = useCurrentPagePath();
+  const { data: rendererConfig } = useRendererConfig();
+  const { data: tocNode } = useCurrentPageTocNode();
 
-  return _useRendererBase(key, generateViewRenderer);
+  const isAllDataValid = rendererConfig != null;
+
+  const key = isAllDataValid
+    ? ['tocOptions', currentPagePath, tocNode, rendererConfig]
+    : null;
+
+  return useSWRImmutable<RendererOptions, Error>(
+    key,
+    (rendererId, path, tocNode, rendererConfig) => generateTocOptions(rendererConfig, tocNode),
+  );
 };
 
-export const usePreviewRenderer = (): SWRResponse<GrowiRenderer, Error> => {
-  const key = 'previewRenderer';
+export const usePreviewOptions = (): SWRResponse<RendererOptions, Error> => {
+  const { data: currentPagePath } = useCurrentPagePath();
+  const { data: rendererConfig } = useRendererConfig();
 
-  return _useRendererBase(key, generatePreviewRenderer);
+  const isAllDataValid = currentPagePath != null && rendererConfig != null;
+
+  const key = isAllDataValid
+    ? ['previewOptions', rendererConfig, currentPagePath]
+    : null;
+
+  return useSWR<RendererOptions, Error>(
+    key,
+    (rendererId, rendererConfig, pagePath, highlightKeywords) => {
+      // determine options generator
+      const optionsGenerator = getGrowiFacade().markdownRenderer?.optionsGenerators?.customGeneratePreviewOptions ?? generatePreviewOptions;
+      return optionsGenerator(rendererConfig, pagePath, highlightKeywords);
+    },
+    {
+      fallbackData: isAllDataValid ? generatePreviewOptions(rendererConfig, currentPagePath) : undefined,
+    },
+  );
 };
 
-export const useCommentPreviewRenderer = (): SWRResponse<GrowiRenderer, Error> => {
-  const key = 'commentPreviewRenderer';
+export const useCommentForCurrentPageOptions = (): SWRResponse<RendererOptions, Error> => {
+  const { data: currentPagePath } = useCurrentPagePath();
+  const { data: rendererConfig } = useRendererConfig();
 
-  return _useRendererBase(key, generateCommentPreviewRenderer);
+  const isAllDataValid = currentPagePath != null && rendererConfig != null;
+
+  const key = isAllDataValid
+    ? ['commentPreviewOptions', rendererConfig, currentPagePath]
+    : null;
+
+  return useSWRImmutable<RendererOptions, Error>(
+    key,
+    (rendererId, rendererConfig, currentPagePath) => generateSimpleViewOptions(
+      rendererConfig,
+      currentPagePath,
+      undefined,
+      rendererConfig.isEnabledLinebreaksInComments,
+    ),
+    {
+      fallbackData: isAllDataValid ? generateSimpleViewOptions(
+        rendererConfig,
+        currentPagePath,
+        undefined,
+        rendererConfig.isEnabledLinebreaksInComments,
+      ) : undefined,
+    },
+  );
 };
+export const useCommentPreviewOptions = useCommentForCurrentPageOptions;
 
-export const useSearchResultRenderer = (): SWRResponse<GrowiRenderer, Error> => {
-  const key = 'searchResultRenderer';
+export const useSelectedPagePreviewOptions = (pagePath: string, highlightKeywords?: string | string[]): SWRResponse<RendererOptions, Error> => {
+  const { data: rendererConfig } = useRendererConfig();
 
-  return _useRendererBase(key, generateOthersRenderer);
+  const isAllDataValid = rendererConfig != null;
+
+  const key = isAllDataValid
+    ? ['selectedPagePreviewOptions', rendererConfig, pagePath, highlightKeywords]
+    : null;
+
+  return useSWRImmutable<RendererOptions, Error>(
+    key,
+    (rendererId, rendererConfig, pagePath, highlightKeywords) => generateSimpleViewOptions(rendererConfig, pagePath, highlightKeywords),
+    {
+      fallbackData: isAllDataValid ? generateSimpleViewOptions(rendererConfig, pagePath, highlightKeywords) : undefined,
+    },
+  );
 };
+export const useSearchResultOptions = useSelectedPagePreviewOptions;
 
-export const useTimelineRenderer = (): SWRResponse<GrowiRenderer, Error> => {
-  const key = 'timelineRenderer';
+export const useTimelineOptions = useSelectedPagePreviewOptions;
 
-  return _useRendererBase(key, generateOthersRenderer);
-};
+export const useCustomSidebarOptions = (): SWRResponse<RendererOptions, Error> => {
+  const { data: rendererConfig } = useRendererConfig();
 
-export const useDraftRenderer = (): SWRResponse<GrowiRenderer, Error> => {
-  const key = 'draftRenderer';
+  const isAllDataValid = rendererConfig != null;
 
-  return _useRendererBase(key, generateOthersRenderer);
-};
+  const key = isAllDataValid
+    ? ['customSidebarOptions', rendererConfig]
+    : null;
 
-export const useCustomSidebarRenderer = (): SWRResponse<GrowiRenderer, Error> => {
-  const key: Key = 'customSidebarRenderer';
-
-  return _useRendererBase(key, generateOthersRenderer);
+  return useSWRImmutable<RendererOptions, Error>(
+    key,
+    (rendererId, rendererConfig, pagePath, highlightKeywords) => generateSimpleViewOptions(rendererConfig, pagePath, highlightKeywords),
+    {
+      fallbackData: isAllDataValid ? generateSimpleViewOptions(rendererConfig, '/') : undefined,
+    },
+  );
 };

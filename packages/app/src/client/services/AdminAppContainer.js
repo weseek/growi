@@ -1,3 +1,4 @@
+import { isServer } from '@growi/core';
 import { Container } from 'unstated';
 
 import { apiv3Get, apiv3Post, apiv3Put } from '../util/apiv3-client';
@@ -11,13 +12,13 @@ export default class AdminAppContainer extends Container {
   constructor() {
     super();
 
-    this.dummyTitle = 0;
-    this.dummyTitleForError = 1;
+    if (isServer()) {
+      return;
+    }
 
     this.state = {
       retrieveError: null,
-      // set dummy value tile for using suspense
-      title: this.dummyTitle,
+      title: '',
       confidential: '',
       globalLang: '',
       isEmailPublishedForNewUser: true,
@@ -315,13 +316,6 @@ export default class AdminAppContainer extends Container {
   }
 
   /**
-   * Change secret key
-   */
-  changeIsEnabledPlugins(isEnabledPlugins) {
-    this.setState({ isEnabledPlugins });
-  }
-
-  /**
    * Update app setting
    * @memberOf AdminAppContainer
    * @return {Array} Appearance
@@ -438,19 +432,6 @@ export default class AdminAppContainer extends Container {
     const response = await apiv3Put('/app-settings/file-upload-setting', requestParams);
     const { responseParams } = response.data;
     return this.setState(responseParams);
-  }
-
-  /**
-   * Update plugin setting
-   * @memberOf AdminAppContainer
-   * @return {Array} Appearance
-   */
-  async updatePluginSettingHandler() {
-    const response = await apiv3Put('/app-settings/plugin-setting', {
-      isEnabledPlugins: this.state.isEnabledPlugins,
-    });
-    const { pluginSettingParams } = response.data;
-    return pluginSettingParams;
   }
 
   /**

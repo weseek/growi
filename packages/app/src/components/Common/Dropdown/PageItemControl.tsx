@@ -1,10 +1,11 @@
 import React, { useState, useCallback, useEffect } from 'react';
 
-import { useTranslation } from 'react-i18next';
+import { useTranslation } from 'next-i18next';
 import {
   Dropdown, DropdownMenu, DropdownToggle, DropdownItem,
 } from 'reactstrap';
 
+import { NotAvailableForGuest } from '~/components/NotAvailableForGuest';
 import {
   IPageInfoAll, isIPageInfoForOperation,
 } from '~/interfaces/page';
@@ -245,11 +246,19 @@ const PageItemControlDropdownMenu = React.memo((props: DropdownMenuProps): JSX.E
   }
 
   return (
-    <DropdownMenu positionFixed modifiers={{ preventOverflow: { boundariesElement: undefined } }} right={alignRight}>
+    <DropdownMenu
+      data-testid="page-item-control-menu"
+      modifiers={{ preventOverflow: { boundariesElement: 'viewport' } }}
+      right={alignRight}
+      container="body"
+      style={{ zIndex: 1055 }} /* make it larger than $zindex-modal of bootstrap */
+    >
       {contents}
     </DropdownMenu>
   );
 });
+
+PageItemControlDropdownMenu.displayName = 'PageItemControl';
 
 
 type PageItemControlSubstanceProps = CommonProps & {
@@ -323,30 +332,34 @@ export const PageItemControlSubstance = (props: PageItemControlSubstanceProps): 
   }, [onClickPathRecoveryMenuItem, pageId]);
 
   return (
-    <Dropdown isOpen={isOpen} toggle={() => setIsOpen(!isOpen)} data-testid="open-page-item-control-btn">
-      { children ?? (
-        <DropdownToggle color="transparent" className="border-0 rounded btn-page-item-control d-flex align-items-center justify-content-center">
-          <i className="icon-options"></i>
-        </DropdownToggle>
-      ) }
+    <NotAvailableForGuest>
+      <Dropdown isOpen={isOpen} toggle={() => setIsOpen(!isOpen)} data-testid="open-page-item-control-btn">
+        { children ?? (
+          <DropdownToggle color="transparent" className="border-0 rounded btn-page-item-control d-flex align-items-center justify-content-center">
+            <i className="icon-options"></i>
+          </DropdownToggle>
+        ) }
 
-      <PageItemControlDropdownMenu
-        {...props}
-        isLoading={isLoading}
-        pageInfo={fetchedPageInfo ?? presetPageInfo}
-        onClickBookmarkMenuItem={bookmarkMenuItemClickHandler}
-        onClickRenameMenuItem={renameMenuItemClickHandler}
-        onClickDuplicateMenuItem={duplicateMenuItemClickHandler}
-        onClickDeleteMenuItem={deleteMenuItemClickHandler}
-        onClickPathRecoveryMenuItem={pathRecoveryMenuItemClickHandler}
-      />
-    </Dropdown>
+        <PageItemControlDropdownMenu
+          {...props}
+          isLoading={isLoading}
+          pageInfo={fetchedPageInfo ?? presetPageInfo}
+          onClickBookmarkMenuItem={bookmarkMenuItemClickHandler}
+          onClickRenameMenuItem={renameMenuItemClickHandler}
+          onClickDuplicateMenuItem={duplicateMenuItemClickHandler}
+          onClickDeleteMenuItem={deleteMenuItemClickHandler}
+          onClickPathRecoveryMenuItem={pathRecoveryMenuItemClickHandler}
+        />
+      </Dropdown>
+
+    </NotAvailableForGuest>
+
   );
 
 };
 
 
-type PageItemControlProps = CommonProps & {
+export type PageItemControlProps = CommonProps & {
   pageId?: string,
   children?: React.ReactNode,
   operationProcessData?: IPageOperationProcessData,

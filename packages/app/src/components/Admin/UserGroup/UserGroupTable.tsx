@@ -2,11 +2,11 @@ import React, {
   FC, useState, useEffect,
 } from 'react';
 
+import type { IUserGroupHasId, IUserGroupRelation, IUserHasId } from '@growi/core';
 import dateFnsFormat from 'date-fns/format';
 import { TFunctionResult } from 'i18next';
-import { useTranslation } from 'react-i18next';
+import { useTranslation } from 'next-i18next';
 
-import { IUserGroupHasId, IUserGroupRelation, IUserHasId } from '~/interfaces/user';
 
 type Props = {
   headerLabel?: TFunctionResult,
@@ -53,8 +53,8 @@ const generateGroupIdToChildGroupsMap = (childUserGroups: IUserGroupHasId[]): Re
 };
 
 
-const UserGroupTable: FC<Props> = (props: Props) => {
-  const { t } = useTranslation();
+export const UserGroupTable: FC<Props> = (props: Props) => {
+  const { t } = useTranslation('admin');
 
   /*
    * State
@@ -126,7 +126,7 @@ const UserGroupTable: FC<Props> = (props: Props) => {
   }, [props.userGroupRelations, props.childUserGroups]);
 
   return (
-    <>
+    <div data-testid="grw-user-group-table">
       <h2>{props.headerLabel}</h2>
 
       <table className="table table-bordered table-user-list">
@@ -135,7 +135,7 @@ const UserGroupTable: FC<Props> = (props: Props) => {
             <th>{t('Name')}</th>
             <th>{t('Description')}</th>
             <th>{t('User')}</th>
-            <th>{t('ChildUserGroup')}</th>
+            <th>{t('user_group_management.child_user_group')}</th>
             <th style={{ width: 100 }}>{t('Created')}</th>
             <th style={{ width: 70 }}></th>
           </tr>
@@ -216,8 +216,6 @@ const UserGroupTable: FC<Props> = (props: Props) => {
           })}
         </tbody>
       </table>
-    </>
+    </div>
   );
 };
-
-export default UserGroupTable;

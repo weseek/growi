@@ -1,8 +1,68 @@
 # Changelog
 
-## [Unreleased](https://github.com/weseek/growi/compare/v5.1.3...HEAD)
+## [Unreleased](https://github.com/weseek/growi/compare/v6.0.0...HEAD)
 
 *Please do not manually update this file. We've automated the process.*
+
+## [v6.0.0](https://github.com/weseek/growi/compare/v5.1.7...v6.0.0) - 2022-12-27
+
+### 💎 Features
+
+- feat: Apply Next.js
+- feat: New plugin (#7034) @yuki-takei
+- feat: Save prevent xss custom settings in new format (#7124) @miya
+
+### 🧰 Maintenance
+
+- support: Request scoped SWR (#6742) @yuki-takei
+- support: Build preset themes within external package (#7057) @yuki-takei
+
+## [v5.1.7](https://github.com/weseek/growi/compare/v5.1.6...v5.1.7) - 2022-10-26
+
+### 🐛 Bug Fixes
+
+- fix: Page move event notification message (#6823) @hakumizuki
+
+## [v5.1.6](https://github.com/weseek/growi/compare/v5.1.5...v5.1.6) - 2022-10-19
+
+### 🐛 Bug Fixes
+
+- fix: image not showing and exceed crop modal area (#6712) @mudana-grune
+- fix: Conflict Diff Modal Error getCurrentOptionsToSave is not a function (#6745) @kaoritokashiki
+
+## [v5.1.5](https://github.com/weseek/growi/compare/v5.1.4...v5.1.5) - 2022-10-04
+
+### 💎 Features
+
+- feat: Add option to not use crop modal on brand logo upload (#6677) @Yohei-Shiina
+
+### 🚀 Improvement
+
+- imprv: Emoji picker performance for v5.x (#6689) @hakumizuki
+
+### 🐛 Bug Fixes
+
+- fix(auditlog): Attachment download is displayed even if the filter is unchecked (#6688) @miya
+- fix: firstName and lastName japanese translations in SAML  (#6631) @kaoritokashiki
+
+## [v5.1.4](https://github.com/weseek/growi/compare/v5.1.3...v5.1.4) - 2022-09-12
+
+### 💎 Features
+
+- feat:  Truncate long path when recent changes is in S size (#6263) @mudana-grune
+- feat: In-app notifications when removing descendants of subscribed pages (#6192) @Shunm634-source
+- feat: Not increment ordered list number in CodeMirror (#6462) @mudana-grune
+
+### 🚀 Improvement
+
+- imprv: Added page URL to mail subject (#6554) @hakumizuki
+
+### 🐛 Bug Fixes
+
+- fix: Cannot update user group without parent (#6530) @kaoritokashiki
+- fix: Make PageTree input not draggable when editting (#6525) @hakumizuki
+- fix: Pagetree input hit enter (#6526) @hakumizuki
+- fix: Disallow retrieval of revision data that does not match the page (#6537) @miya
 
 ## [v5.1.3](https://github.com/weseek/growi/compare/v5.1.2...v5.1.3) - 2022-08-28
 

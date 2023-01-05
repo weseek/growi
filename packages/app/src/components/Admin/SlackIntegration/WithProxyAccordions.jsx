@@ -2,17 +2,16 @@
 import React, { useState, useCallback } from 'react';
 
 import { SlackbotType } from '@growi/slack';
+import { useTranslation } from 'next-i18next';
 import PropTypes from 'prop-types';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
-import { useTranslation } from 'react-i18next';
 import { Tooltip } from 'reactstrap';
 
-import AppContainer from '~/client/services/AppContainer';
 import { toastSuccess, toastError } from '~/client/util/apiNotification';
 import { apiv3Put, apiv3Post } from '~/client/util/apiv3-client';
+import { useSiteUrl } from '~/stores/context';
 import loggerFactory from '~/utils/logger';
 
-import { withUnstatedContainers } from '../../UnstatedUtils';
 import Accordion from '../Common/Accordion';
 
 import ManageCommandsProcess from './ManageCommandsProcess';
@@ -143,9 +142,9 @@ const CustomCopyToClipBoard = (props) => {
   );
 };
 
-const GeneratingTokensAndRegisteringProxyServiceProcess = withUnstatedContainers((props) => {
+const GeneratingTokensAndRegisteringProxyServiceProcess = (props) => {
   const { t } = useTranslation();
-  const { appContainer, slackAppIntegrationId } = props;
+  const { slackAppIntegrationId } = props;
 
   const regenerateTokensHandler = async() => {
     try {
@@ -153,7 +152,7 @@ const GeneratingTokensAndRegisteringProxyServiceProcess = withUnstatedContainers
       if (props.onUpdateTokens != null) {
         props.onUpdateTokens();
       }
-      toastSuccess(t('toaster.update_successed', { target: 'Token' }));
+      toastSuccess(t('toaster.update_successed', { target: 'Token', ns: 'commons' }));
     }
     catch (err) {
       toastError(err);
@@ -231,7 +230,7 @@ const GeneratingTokensAndRegisteringProxyServiceProcess = withUnstatedContainers
     </div>
 
   );
-}, [AppContainer]);
+};
 
 const TestProcess = ({
   slackAppIntegrationId, onSubmitForm, onSubmitFormFailed, isLatestConnectionSuccess,
@@ -313,6 +312,7 @@ const TestProcess = ({
 
 const WithProxyAccordions = (props) => {
   const { t } = useTranslation();
+  const { data: siteUrl } = useSiteUrl();
   const [isLatestConnectionSuccess, setIsLatestConnectionSuccess] = useState(false);
 
   const submitForm = () => {
@@ -334,7 +334,7 @@ const WithProxyAccordions = (props) => {
     '②': {
       title: 'register_for_growi_official_bot_proxy_service',
       content: <GeneratingTokensAndRegisteringProxyServiceProcess
-        growiUrl={props.appContainer.config.crowi.url}
+        growiUrl={siteUrl}
         slackAppIntegrationId={props.slackAppIntegrationId}
         tokenPtoG={props.tokenPtoG}
         tokenGtoP={props.tokenGtoP}
@@ -373,7 +373,7 @@ const WithProxyAccordions = (props) => {
     '③': {
       title: 'register_for_growi_custom_bot_proxy',
       content: <GeneratingTokensAndRegisteringProxyServiceProcess
-        growiUrl={props.appContainer.config.crowi.url}
+        growiUrl={siteUrl}
         slackAppIntegrationId={props.slackAppIntegrationId}
         tokenPtoG={props.tokenPtoG}
         tokenGtoP={props.tokenGtoP}
@@ -434,9 +434,7 @@ const WithProxyAccordions = (props) => {
 /**
  * Wrapper component for using unstated
  */
-const WithProxyAccordionsWrapper = withUnstatedContainers(WithProxyAccordions, [AppContainer]);
 WithProxyAccordions.propTypes = {
-  appContainer: PropTypes.instanceOf(AppContainer).isRequired,
   botType: PropTypes.oneOf(Object.values(SlackbotType)).isRequired,
   slackAppIntegrationId: PropTypes.string.isRequired,
   tokenPtoG: PropTypes.string,
@@ -446,4 +444,4 @@ WithProxyAccordions.propTypes = {
   permissionsForSlackEventActions: PropTypes.object.isRequired,
 };
 
-export default WithProxyAccordionsWrapper;
+export default WithProxyAccordions;

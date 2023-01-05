@@ -2,18 +2,18 @@
 // https://github.com/microsoft/vscode-dev-containers/tree/v0.117.1/containers/javascript-node-12-mongo
 // If you want to run as a non-root user in the container, see .devcontainer/docker-compose.yml.
 {
-	"name": "GROWI-Dev",
-	"dockerComposeFile": "docker-compose.yml",
-	"service": "node",
-	"workspaceFolder": "/workspace/growi",
+  "name": "GROWI-Dev",
+  "dockerComposeFile": "docker-compose.yml",
+  "service": "node",
+  "workspaceFolder": "/workspace/growi",
 
-	// Set *default* container specific settings.json values on container create.
-	"settings": {
-		"terminal.integrated.defaultProfile.linux": "bash"
-	},
+  // Set *default* container specific settings.json values on container create.
+  "settings": {
+    "terminal.integrated.defaultProfile.linux": "bash"
+  },
 
-	// Add the IDs of extensions you want installed when the container is created.
-	"extensions": [
+  // Add the IDs of extensions you want installed when the container is created.
+  "extensions": [
     "dbaeumer.vscode-eslint",
     "mhutchie.git-graph",
     "eamodio.gitlens",
@@ -26,17 +26,17 @@
     "esbenp.prettier-vscode",
     "shinnn.stylelint",
     "stylelint.vscode-stylelint"
-	],
+  ],
 
-	// Uncomment the next line if you want start specific services in your Docker Compose config.
-	// "runServices": [],
+  // Uncomment the next line if you want start specific services in your Docker Compose config.
+  // "runServices": [],
 
-	// Uncomment the line below if you want to keep your containers running after VS Code shuts down.
-	// "shutdownAction": "none",
+  // Uncomment the line below if you want to keep your containers running after VS Code shuts down.
+  // "shutdownAction": "none",
 
-	// Use 'postCreateCommand' to run commands after the container is created.
-	// "postCreateCommand": "yarn install",
+  // Use 'postCreateCommand' to run commands after the container is created.
+  // "postCreateCommand": "yarn install",
 
-	// Uncomment to connect as a non-root user. See https://aka.ms/vscode-remote/containers/non-root.
-	"remoteUser": "node"
+  // Uncomment to connect as a non-root user. See https://aka.ms/vscode-remote/containers/non-root.
+  "remoteUser": "node"
 }

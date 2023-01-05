@@ -5,8 +5,7 @@ module.exports = (crowi) => {
     const isDBInitialized = await appService.isDBInitialized(true);
 
     if (isDBInitialized) {
-      req.flash('errorMessage', req.t('message.application_already_installed'));
-      return res.redirect('admin');
+      return res.redirect('/');
     }
 
     return next();

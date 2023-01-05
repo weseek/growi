@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { useTranslation } from 'react-i18next';
+import { useTranslation } from 'next-i18next';
 
 import AdminAppContainer from '~/client/services/AdminAppContainer';
 import { toastSuccess, toastError } from '~/client/util/apiNotification';
@@ -17,7 +17,7 @@ type Props = {
 
 
 const MailSetting = (props: Props) => {
-  const { t } = useTranslation();
+  const { t } = useTranslation(['admin', 'commons']);
   const { adminAppContainer } = props;
 
   const transmissionMethods = ['smtp', 'ses'];
@@ -25,7 +25,7 @@ const MailSetting = (props: Props) => {
   async function submitHandler() {
     try {
       await adminAppContainer.updateMailSettingHandler();
-      toastSuccess(t('toaster.update_successed', { target: t('admin:app_setting.ses_settings') }));
+      toastSuccess(t('toaster.update_successed', { target: t('admin:app_setting.mail_settings'), ns: 'commons' }));
     }
     catch (err) {
       toastError(err);

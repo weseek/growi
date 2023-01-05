@@ -1,4 +1,5 @@
 import loggerFactory from '~/utils/logger';
+
 import { S2sMessagingService } from './base';
 
 const logger = loggerFactory('growi:service:s2s-messaging:S2sMessagingServiceFactory');
@@ -51,9 +52,9 @@ class S2sMessagingServiceFactory {
 
     logger.info(`Config pub/sub server type '${type}' is set.`);
 
-    const module = envToModuleMappings[type];
+    const moduleFileName = envToModuleMappings[type];
 
-    const modulePath = `./${module}`;
+    const modulePath = `./${moduleFileName}`;
     // eslint-disable-next-line @typescript-eslint/no-var-requires
     this.delegator = require(modulePath)(crowi);
 

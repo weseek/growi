@@ -1,18 +1,20 @@
 import React, {
-  useCallback, useState, FC, useEffect,
+  useCallback, useState, FC, useEffect, ReactNode,
 } from 'react';
 
 import nodePath from 'path';
 
-import { pathUtils, pagePathUtils } from '@growi/core';
+import { pathUtils, pagePathUtils, Nullable } from '@growi/core';
+import { useTranslation } from 'next-i18next';
+import Link from 'next/link';
 import { useDrag, useDrop } from 'react-dnd';
-import { useTranslation } from 'react-i18next';
 import { UncontrolledTooltip, DropdownToggle } from 'reactstrap';
 
 import { bookmark, unbookmark, resumeRenameOperation } from '~/client/services/page-operation';
 import { toastWarning, toastError, toastSuccess } from '~/client/util/apiNotification';
 import { apiv3Put, apiv3Post } from '~/client/util/apiv3-client';
 import TriangleIcon from '~/components/Icons/TriangleIcon';
+import { NotAvailableForGuest } from '~/components/NotAvailableForGuest';
 import {
   IPageHasId, IPageInfoAll, IPageToDeleteWithMeta,
 } from '~/interfaces/page';
@@ -35,16 +37,16 @@ const logger = loggerFactory('growi:cli:Item');
 interface ItemProps {
   isEnableActions: boolean
   itemNode: ItemNode
-  targetPathOrId?: string
+  targetPathOrId?: Nullable<string>
   isOpen?: boolean
   isEnabledAttachTitleHeader?: boolean
-  onRenamed?(): void
+  onRenamed?(fromPath: string | undefined, toPath: string): void
   onClickDuplicateMenuItem?(pageToDuplicate: IPageForPageDuplicateModal): void
   onClickDeleteMenuItem?(pageToDelete: IPageToDeleteWithMeta): void
 }
 
 // Utility to mark target
-const markTarget = (children: ItemNode[], targetPathOrId?: string): void => {
+const markTarget = (children: ItemNode[], targetPathOrId?: Nullable<string>): void => {
   if (targetPathOrId == null) {
     return;
   }
@@ -91,6 +93,15 @@ const isDroppable = (fromPage?: Partial<IPageHasId>, newParentPage?: Partial<IPa
 
   const newPathAfterMoved = getNewPathAfterMoved(fromPage.path, newParentPage.path);
   return pagePathUtils.canMoveByPath(fromPage.path, newPathAfterMoved) && !pagePathUtils.isUsersTopPage(newParentPage.path);
+};
+
+// Component wrapper to make a child element not draggable
+// https://github.com/react-dnd/react-dnd/issues/335
+type NotDraggableProps = {
+  children: ReactNode,
+};
+const NotDraggableForClosableTextInput = (props: NotDraggableProps): JSX.Element => {
+  return <div draggable onDragStart={e => e.preventDefault()}>{props.children}</div>;
 };
 
 
@@ -181,7 +192,7 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
       await mutateChildren();
 
       if (onRenamed != null) {
-        onRenamed();
+        onRenamed(page.path, newPagePath);
       }
 
       // force open
@@ -276,7 +287,7 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
       });
 
       if (onRenamed != null) {
-        onRenamed();
+        onRenamed(page.path, newPagePath);
       }
 
       toastSuccess(t('renamed_pages', { path: page.path }));
@@ -370,11 +381,6 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
   const pathRecoveryMenuItemClickHandler = async(pageId: string): Promise<void> => {
     try {
       await resumeRenameOperation(pageId);
-
-      if (onRenamed != null) {
-        onRenamed();
-      }
-
       toastSuccess(t('page_operation.paths_recovered'));
     }
     catch {
@@ -415,6 +421,7 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
   return (
     <div
       id={`pagetree-item-${page._id}`}
+      data-testid="grw-pagetree-item-container"
       className={`grw-pagetree-item-container ${isOver ? 'grw-pagetree-is-over' : ''}
     ${shouldHide ? 'd-none' : ''}`}
     >
@@ -439,13 +446,17 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
         </div>
         { isRenameInputShown
           ? (
-            <ClosableTextInput
-              value={nodePath.basename(page.path ?? '')}
-              placeholder={t('Input page name')}
-              onClickOutside={() => { setRenameInputShown(false) }}
-              onPressEnter={onPressEnterForRenameHandler}
-              inputValidator={inputValidator}
-            />
+            <div className="flex-fill">
+              <NotDraggableForClosableTextInput>
+                <ClosableTextInput
+                  value={nodePath.basename(page.path ?? '')}
+                  placeholder={t('Input page name')}
+                  onClickOutside={() => { setRenameInputShown(false) }}
+                  onPressEnter={onPressEnterForRenameHandler}
+                  inputValidator={inputValidator}
+                />
+              </NotDraggableForClosableTextInput>
+            </div>
           )
           : (
             <>
@@ -457,10 +468,13 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
                   </UncontrolledTooltip>
                 </>
               )}
-
-              <a href={`/${page._id}`} className="grw-pagetree-title-anchor flex-grow-1">
-                <p className={`text-truncate m-auto ${page.isEmpty && 'grw-sidebar-text-muted'}`}>{nodePath.basename(page.path ?? '') || '/'}</p>
-              </a>
+              { page != null && page.path != null && page._id != null && (
+                <Link href={pathUtils.returnPathForURL(page.path, page._id)} prefetch={false}>
+                  <a className="grw-pagetree-title-anchor flex-grow-1">
+                    <p className={`text-truncate m-auto ${page.isEmpty && 'grw-sidebar-text-muted'}`}>{nodePath.basename(page.path ?? '') || '/'}</p>
+                  </a>
+                </Link>
+              )}
             </>
           )}
         {descendantCount > 0 && !isRenameInputShown && (
@@ -468,43 +482,53 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
             <CountBadge count={descendantCount} />
           </div>
         )}
-        <div className="grw-pagetree-control d-flex">
-          <PageItemControl
-            pageId={page._id}
-            isEnableActions={isEnableActions}
-            onClickBookmarkMenuItem={bookmarkMenuItemClickHandler}
-            onClickDuplicateMenuItem={duplicateMenuItemClickHandler}
-            onClickRenameMenuItem={renameMenuItemClickHandler}
-            onClickDeleteMenuItem={deleteMenuItemClickHandler}
-            onClickPathRecoveryMenuItem={pathRecoveryMenuItemClickHandler}
-            isInstantRename
-            // Todo: It is wanted to find a better way to pass operationProcessData to PageItemControl
-            operationProcessData={page.processData}
-          >
-            {/* pass the color property to reactstrap dropdownToggle props. https://6-4-0--reactstrap.netlify.app/components/dropdowns/  */}
-            <DropdownToggle color="transparent" className="border-0 rounded btn-page-item-control p-0 grw-visible-on-hover mr-1">
-              <i className="icon-options fa fa-rotate-90 p-1"></i>
-            </DropdownToggle>
-          </PageItemControl>
-          {!pagePathUtils.isUsersTopPage(page.path ?? '') && (
+        <NotAvailableForGuest>
+          <div className="grw-pagetree-control d-flex">
+            <PageItemControl
+              pageId={page._id}
+              isEnableActions={isEnableActions}
+              onClickBookmarkMenuItem={bookmarkMenuItemClickHandler}
+              onClickDuplicateMenuItem={duplicateMenuItemClickHandler}
+              onClickRenameMenuItem={renameMenuItemClickHandler}
+              onClickDeleteMenuItem={deleteMenuItemClickHandler}
+              onClickPathRecoveryMenuItem={pathRecoveryMenuItemClickHandler}
+              isInstantRename
+              // Todo: It is wanted to find a better way to pass operationProcessData to PageItemControl
+              operationProcessData={page.processData}
+            >
+              {/* pass the color property to reactstrap dropdownToggle props. https://6-4-0--reactstrap.netlify.app/components/dropdowns/  */}
+              <DropdownToggle color="transparent" className="border-0 rounded btn-page-item-control p-0 grw-visible-on-hover mr-1">
+                <i id='option-button-in-page-tree' className="icon-options fa fa-rotate-90 p-1"></i>
+              </DropdownToggle>
+            </PageItemControl>
+          </div>
+        </NotAvailableForGuest>
+
+        {!pagePathUtils.isUsersTopPage(page.path ?? '') && (
+          <NotAvailableForGuest>
             <button
+              id='page-create-button-in-page-tree'
               type="button"
               className="border-0 rounded btn btn-page-item-control p-0 grw-visible-on-hover"
               onClick={onClickPlusButton}
             >
               <i className="icon-plus d-block p-0" />
             </button>
-          )}
-        </div>
+          </NotAvailableForGuest>
+        )}
       </li>
 
       {isEnableActions && isNewPageInputShown && (
-        <ClosableTextInput
-          placeholder={t('Input page name')}
-          onClickOutside={() => { setNewPageInputShown(false) }}
-          onPressEnter={onPressEnterForCreateHandler}
-          inputValidator={inputValidator}
-        />
+        <div className="flex-fill">
+          <NotDraggableForClosableTextInput>
+            <ClosableTextInput
+              placeholder={t('Input page name')}
+              onClickOutside={() => { setNewPageInputShown(false) }}
+              onPressEnter={onPressEnterForCreateHandler}
+              inputValidator={inputValidator}
+            />
+          </NotDraggableForClosableTextInput>
+        </div>
       )}
       {
         isOpen && hasChildren() && currentChildren.map((node, index) => (

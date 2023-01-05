@@ -2,8 +2,8 @@ import React from 'react';
 
 import path from 'path';
 
+import { useTranslation } from 'next-i18next';
 import PropTypes from 'prop-types';
-import { useTranslation } from 'react-i18next';
 import {
   Modal,
   ModalHeader,
@@ -14,15 +14,17 @@ import {
 } from 'reactstrap';
 import validator from 'validator';
 
+
 import Linker from '~/client/models/Linker';
-import PageContainer from '~/client/services/PageContainer';
 import { apiv3Get } from '~/client/util/apiv3-client';
+import { useCurrentPagePath } from '~/stores/page';
 
 import PagePreviewIcon from '../Icons/PagePreviewIcon';
 import SearchTypeahead from '../SearchTypeahead';
-import { withUnstatedContainers } from '../UnstatedUtils';
 
-import PreviewWithSuspense from './PreviewWithSuspense';
+import Preview from './Preview';
+
+import styles from './LinkEditPreview.module.scss';
 
 
 class LinkEditModal extends React.PureComponent {
@@ -44,7 +46,7 @@ class LinkEditModal extends React.PureComponent {
       isPreviewOpen: false,
     };
 
-    this.isApplyPukiwikiLikeLinkerPlugin = window.growiRenderer.preProcessors.some(process => process.constructor.name === 'PukiwikiLikeLinker');
+    // this.isApplyPukiwikiLikeLinkerPlugin = window.growiRenderer.preProcessors.some(process => process.constructor.name === 'PukiwikiLikeLinker');
 
     this.show = this.show.bind(this);
     this.hide = this.hide.bind(this);
@@ -267,8 +269,7 @@ class LinkEditModal extends React.PureComponent {
   }
 
   getRootPath(type) {
-    const { pageContainer } = this.props;
-    const pagePath = pageContainer.state.path;
+    const { pagePath } = this.props;
     // rootPaths of md link and pukiwiki link are different
     return type === Linker.types.markdownLink ? path.dirname(pagePath) : pagePath;
   }
@@ -303,12 +304,16 @@ class LinkEditModal extends React.PureComponent {
                 autoFocus
               />
               <div className="d-none d-sm-block input-group-append">
-                <button type="button" id="preview-btn" className="btn btn-info btn-page-preview">
+                <button type="button" id="preview-btn" className={`btn btn-info btn-page-preview ${styles['btn-page-preview']}`}>
                   <PagePreviewIcon />
                 </button>
                 <Popover trigger="focus" placement="right" isOpen={this.state.isPreviewOpen} target="preview-btn" toggle={this.toggleIsPreviewOpen}>
                   <PopoverBody>
-                    <PreviewWithSuspense setMarkdown={this.setMarkdown} markdown={this.state.markdown} pagePath={pagePath} error={this.state.previewError} />
+                    {this.state.markdown != null && pagePath != null
+                    && <div className={`linkedit-preview ${styles['linkedit-preview']}`}>
+                      <Preview markdown={this.state.markdown} pagePath={pagePath} />
+                    </div>
+                    }
                   </PopoverBody>
                 </Popover>
               </div>
@@ -340,7 +345,7 @@ class LinkEditModal extends React.PureComponent {
     return (
       <div className="card well pt-3">
         <form className="form-group mb-0">
-          <div className="form-group row">
+          <div className="form-group mb-0 row">
             <label className="col-sm-3">{t('link_edit.path_format')}</label>
             <div className="col-sm-9">
               <div className="custom-control custom-checkbox custom-checkbox-info custom-control-inline">
@@ -371,36 +376,23 @@ class LinkEditModal extends React.PureComponent {
               </div>
             </div>
           </div>
-          <div className="form-group row mb-0">
-            <label className="col-sm-3">{t('link_edit.notation')}</label>
-            <div className="col-sm-9">
-              <div className="custom-control custom-radio custom-control-inline">
-                <input
-                  type="radio"
-                  className="custom-control-input"
-                  id="markdownType"
-                  value={Linker.types.markdownLink}
-                  checked={this.state.linkerType === Linker.types.markdownLink}
-                  onChange={e => this.handleSelecteLinkerType(e.target.value)}
-                />
-                <label className="custom-control-label" htmlFor="markdownType">
-                  {t('link_edit.markdown')}
-                </label>
-              </div>
-              <div className="custom-control custom-radio custom-control-inline">
-                <input
-                  type="radio"
-                  className="custom-control-input"
-                  id="growiType"
-                  value={Linker.types.growiLink}
-                  checked={this.state.linkerType === Linker.types.growiLink}
-                  onChange={e => this.handleSelecteLinkerType(e.target.value)}
-                />
-                <label className="custom-control-label" htmlFor="growiType">
-                  {t('link_edit.GROWI_original')}
-                </label>
-              </div>
-              {this.isApplyPukiwikiLikeLinkerPlugin && (
+          {this.isApplyPukiwikiLikeLinkerPlugin && (
+            <div className="form-group row mb-0 mt-1">
+              <label className="col-sm-3">{t('link_edit.notation')}</label>
+              <div className="col-sm-9">
+                <div className="custom-control custom-radio custom-control-inline">
+                  <input
+                    type="radio"
+                    className="custom-control-input"
+                    id="markdownType"
+                    value={Linker.types.markdownLink}
+                    checked={this.state.linkerType === Linker.types.markdownLink}
+                    onChange={e => this.handleSelecteLinkerType(e.target.value)}
+                  />
+                  <label className="custom-control-label" htmlFor="markdownType">
+                    {t('link_edit.markdown')}
+                  </label>
+                </div>
                 <div className="custom-control custom-radio custom-control-inline">
                   <input
                     type="radio"
@@ -414,9 +406,9 @@ class LinkEditModal extends React.PureComponent {
                     {t('link_edit.pukiwiki')}
                   </label>
                 </div>
-              )}
+              </div>
             </div>
-          </div>
+          )}
         </form>
       </div>
     );
@@ -458,20 +450,17 @@ class LinkEditModal extends React.PureComponent {
 
 }
 
-const LinkEditModalFc = React.forwardRef((props, ref) => {
+const LinkEditModalFc = React.memo(React.forwardRef((props, ref) => {
   const { t } = useTranslation();
-  return <LinkEditModal t={t} ref={ref} {...props} />;
-});
+  const { data: currentPath } = useCurrentPagePath();
+  return <LinkEditModal t={t} ref={ref} pagePath={currentPath} {...props} />;
+}));
 
 LinkEditModal.propTypes = {
   t: PropTypes.func.isRequired,
-  pageContainer: PropTypes.instanceOf(PageContainer).isRequired,
+  pagePath: PropTypes.string,
   onSave: PropTypes.func,
 };
 
-/**
- * Wrapper component for using unstated
- */
-const LinkEditModalWrapper = withUnstatedContainers(LinkEditModalFc, [PageContainer]);
 
-export default LinkEditModalWrapper;
+export default LinkEditModalFc;

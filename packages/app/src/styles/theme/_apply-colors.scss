@@ -1,3 +1,9 @@
+@use '../variables' as var;
+@use '../bootstrap/init' as *;
+@use '../mixins';
+@use './mixins/tables'; // comment out and use _reboot-bootstrap-tables instead -- 2020.05.28 Yuki Takei
+@use '../atoms/mixins/code';
+
 //
 //== Apply to Bootstrap
 //
@@ -15,7 +21,7 @@ $bordercolor-nav-tabs-hover: $gray-200 $gray-200 $bordercolor-nav-tabs !default;
 $color-nav-tabs-link-active: $gray-600 !default;
 $bordercolor-nav-tabs-active: $bordercolor-nav-tabs $bordercolor-nav-tabs $bgcolor-global !default;
 $color-btn-reload-in-sidebar: $gray-500;
-$bgcolor-keyword-highlighted: $grw-marker-yellow !default;
+$bgcolor-keyword-highlighted: var.$grw-marker-yellow !default;
 $bgcolor-page-list-group-item-active: lighten($primary, 76%) !default;
 $color-page-list-group-item-meta: $gray-500 !default;
 $color-search-page-list-title: $color-global !default;
@@ -32,14 +38,8 @@ $nav-tabs-link-hover-border-color: $bordercolor-nav-tabs-hover;
 $nav-tabs-link-active-color: $color-nav-tabs-link-active;
 $nav-tabs-link-active-bg: $bgcolor-global;
 $nav-tabs-link-active-border-color: $bordercolor-nav-tabs-active;
+$theme-colors: map-merge($theme-colors, ( primary: $primary ));
 
-@import '~bootstrap/scss/functions';
-@import '~bootstrap/scss/variables';
-@import '~bootstrap/scss/mixins';
-@import '../mixins';
-@import 'mixins/list-group';
-@import 'mixins/page-editor-mode-manager';
-@import 'mixins/tables'; // comment out and use _reboot-bootstrap-tables instead -- 2020.05.28 Yuki Takei
 @import 'reboot-bootstrap-buttons';
 @import 'reboot-bootstrap-colors';
 @import 'reboot-bootstrap-theme-colors';
@@ -50,16 +50,11 @@ $nav-tabs-link-active-border-color: $bordercolor-nav-tabs-active;
 // determine variables with　bootstrap function (These variables can be used after importing bootstrap above)
 $color-modal-header: color-yiq($primary) !default;
 
-:not(pre) {
-  > code {
-    color: $color-inline-code;
-    background-color: $bgcolor-inline-code;
-    border-color: $bordercolor-inline-code;
-  }
+code:not([class^='language-']) {
+  @include code.code-inline-color($color-inline-code, $bgcolor-inline-code, $bordercolor-inline-code);
 }
 
-pre:not(.hljs):not(.CodeMirror-line) {
-  background-color: $bgcolor-inline-code;
+.code-highlighted {
   border-color: $bordercolor-inline-code;
 }
 
@@ -78,7 +73,7 @@ pre:not(.hljs):not(.CodeMirror-line) {
 }
 
 // Dropdown
-.grw-personal-dropdown {
+.grw-apperance-mode-dropdown {
   .grw-sidebar-mode-icon svg {
     fill: $secondary;
   }
@@ -161,11 +156,11 @@ ul.pagination {
   &:hover {
     svg {
       .group1 {
-        fill: $growi-green;
+        fill: var.$growi-green;
       }
 
       .group2 {
-        fill: $growi-blue;
+        fill: var.$growi-blue;
       }
     }
   }
@@ -173,7 +168,7 @@ ul.pagination {
 
 .grw-navbar {
   background: $bgcolor-navbar;
-  .nav-item > .nav-link {
+  .nav-item .nav-link {
     color: $color-link-nabvar;
   }
 
@@ -443,7 +438,7 @@ ul.pagination {
   h6,
   h7 {
     &.blink {
-      @include blink-bgcolor($bgcolor-blinked-section);
+      @include mixins.blink-bgcolor($bgcolor-blinked-section);
     }
   }
 
@@ -508,9 +503,9 @@ ul.pagination {
 }
 
 /*
- * GROWI on-edit
+ * GROWI Editor
  */
-body.on-edit {
+.layout-root.editing {
   .main {
     background-color: darken($bgcolor-global, 2%);
 
@@ -525,10 +520,6 @@ body.on-edit {
 
     .page-editor-preview-container {
       background-color: $bgcolor-global;
-    }
-
-    .page-editor-footer {
-      border-top-color: $border-color-theme;
     }
   }
 }
@@ -558,19 +549,19 @@ body.editing-sidebar {
 }
 
 .grid-preview-col-0 {
-  background: $growi-blue;
+  background: var.$growi-blue;
 }
 
 .grid-preview-col-1 {
-  background: $info;
+  background: var(--info);
 }
 
 .grid-preview-col-2 {
-  background: $success;
+  background: var(--success);
 }
 
 .grid-preview-col-3 {
-  background: $growi-green;
+  background: var.$growi-green;
 }
 
 /*
@@ -579,7 +570,7 @@ body.editing-sidebar {
 .page-comment-meta .page-comment-revision svg {
   fill: $color-link;
 
-  &:hover() {
+  &:hover {
     fill: $color-link-hover;
   }
 }

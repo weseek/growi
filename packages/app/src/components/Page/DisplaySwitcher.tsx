@@ -1,140 +1,157 @@
-import React, { useMemo } from 'react';
+import React, { useCallback, useEffect, useMemo } from 'react';
 
 import { pagePathUtils } from '@growi/core';
-import { useTranslation } from 'react-i18next';
-import { TabContent, TabPane } from 'reactstrap';
+import dynamic from 'next/dynamic';
 
-
-import { smoothScrollIntoView } from '~/client/util/smooth-scroll';
+import { SocketEventName } from '~/interfaces/websocket';
 import {
-  useCurrentPagePath, useIsSharedUser, useIsEditable, useCurrentPageId, useIsUserPage, usePageUser, useShareLinkId, useIsEmptyPage,
+  useIsEditable, useShareLinkId, useIsNotFound,
 } from '~/stores/context';
-import { useDescendantsPageListModal } from '~/stores/modal';
-import { useSWRxCurrentPage } from '~/stores/page';
+import { useIsHackmdDraftUpdatingInRealtime } from '~/stores/hackmd';
+import { useCurrentPagePath, useSWRxCurrentPage } from '~/stores/page';
+import {
+  useSetRemoteLatestPageData,
+} from '~/stores/remote-latest-page';
 import { EditorMode, useEditorMode } from '~/stores/ui';
+import { useGlobalSocket } from '~/stores/websocket';
 
-import CountBadge from '../Common/CountBadge';
-import ContentLinkButtons from '../ContentLinkButtons';
-import HashChanged from '../EventListeneres/HashChanged';
-import PageListIcon from '../Icons/PageListIcon';
-import Page from '../Page';
-import PageEditor from '../PageEditor';
-import EditorNavbarBottom from '../PageEditor/EditorNavbarBottom';
-import PageEditorByHackmd from '../PageEditorByHackmd';
-import TableOfContents from '../TableOfContents';
-import UserInfo from '../User/UserInfo';
+import CustomTabContent from '../CustomNavigation/CustomTabContent';
+import { Page } from '../Page';
+import { UserInfoProps } from '../User/UserInfo';
+
+const { isUsersHomePage } = pagePathUtils;
 
 
-const WIKI_HEADER_LINK = 120;
+const PageEditor = dynamic(() => import('../PageEditor'), { ssr: false });
+const PageEditorByHackmd = dynamic(() => import('../PageEditorByHackmd').then(mod => mod.PageEditorByHackmd), { ssr: false });
+const EditorNavbarBottom = dynamic(() => import('../PageEditor/EditorNavbarBottom'), { ssr: false });
+const HashChanged = dynamic(() => import('../EventListeneres/HashChanged'), { ssr: false });
+const NotFoundPage = dynamic(() => import('../NotFoundPage'), { ssr: false });
+const UserInfo = dynamic<UserInfoProps>(() => import('../User/UserInfo').then(mod => mod.UserInfo), { ssr: false });
 
-const { isTopPage } = pagePathUtils;
 
-
-const DisplaySwitcher = (): JSX.Element => {
-  const { t } = useTranslation();
-
-  // get element for smoothScroll
-  const getCommentListDom = useMemo(() => { return document.getElementById('page-comments-list') }, []);
-
-  const { data: isEmptyPage } = useIsEmptyPage();
-  const { data: currentPageId } = useCurrentPageId();
+const PageView = React.memo((): JSX.Element => {
   const { data: currentPagePath } = useCurrentPagePath();
-  const { data: isSharedUser } = useIsSharedUser();
   const { data: shareLinkId } = useShareLinkId();
-  const { data: isUserPage } = useIsUserPage();
-  const { data: isEditable } = useIsEditable();
-  const { data: pageUser } = usePageUser();
+  const { data: isNotFound } = useIsNotFound();
   const { data: currentPage } = useSWRxCurrentPage(shareLinkId ?? undefined);
+  const { setRemoteLatestPageData } = useSetRemoteLatestPageData();
 
-  const { data: editorMode } = useEditorMode();
+  const { mutate: mutateIsHackmdDraftUpdatingInRealtime } = useIsHackmdDraftUpdatingInRealtime();
 
-  const { open: openDescendantPageListModal } = useDescendantsPageListModal();
+  const isUsersHomePagePath = isUsersHomePage(currentPagePath ?? '');
 
-  const isPageExist = currentPageId != null;
-  const isViewMode = editorMode === EditorMode.View;
-  const isTopPagePath = isTopPage(currentPagePath ?? '');
+  const { data: socket } = useGlobalSocket();
+
+  const setLatestRemotePageData = useCallback((data) => {
+    const { s2cMessagePageUpdated } = data;
+
+    const remoteData = {
+      remoteRevisionId: s2cMessagePageUpdated.revisionId,
+      remoteRevisionBody: s2cMessagePageUpdated.revisionBody,
+      remoteRevisionLastUpdateUser: s2cMessagePageUpdated.remoteLastUpdateUser,
+      remoteRevisionLastUpdatedAt: s2cMessagePageUpdated.revisionUpdateAt,
+      revisionIdHackmdSynced: s2cMessagePageUpdated.revisionIdHackmdSynced,
+      hasDraftOnHackmd: s2cMessagePageUpdated.hasDraftOnHackmd,
+    };
+    setRemoteLatestPageData(remoteData);
+  }, [setRemoteLatestPageData]);
+
+  const setIsHackmdDraftUpdatingInRealtime = useCallback((data) => {
+    const { s2cMessagePageUpdated } = data;
+    if (s2cMessagePageUpdated.pageId === currentPage?._id) {
+      mutateIsHackmdDraftUpdatingInRealtime(true);
+    }
+  }, [currentPage?._id, mutateIsHackmdDraftUpdatingInRealtime]);
+
+  // listen socket for someone updating this page
+  useEffect(() => {
+
+    if (socket == null) { return }
+
+    socket.on(SocketEventName.PageUpdated, setLatestRemotePageData);
+
+    return () => {
+      socket.off(SocketEventName.PageUpdated, setLatestRemotePageData);
+    };
+
+  }, [setLatestRemotePageData, socket]);
+
+  // listen socket for hackmd saved
+  useEffect(() => {
+
+    if (socket == null) { return }
+
+    socket.on(SocketEventName.EditingWithHackmd, setIsHackmdDraftUpdatingInRealtime);
+
+    return () => {
+      socket.off(SocketEventName.EditingWithHackmd, setIsHackmdDraftUpdatingInRealtime);
+    };
+  }, [setIsHackmdDraftUpdatingInRealtime, socket]);
 
   return (
     <>
-      <TabContent activeTab={editorMode}>
-        <TabPane tabId={EditorMode.View}>
-          <div className="d-flex flex-column flex-lg-row-reverse">
+      { isUsersHomePagePath && <UserInfo author={currentPage?.creator} /> }
+      { !isNotFound && <Page /> }
+      { isNotFound && <NotFoundPage /> }
+    </>
+  );
+});
+PageView.displayName = 'PageView';
 
-            { isPageExist && !isEmptyPage && (
-              <div className="grw-side-contents-container">
-                <div className="grw-side-contents-sticky-container">
 
-                  {/* Page list */}
-                  <div className="grw-page-accessories-control">
-                    { currentPagePath != null && !isSharedUser && (
-                      <button
-                        type="button"
-                        className="btn btn-block btn-outline-secondary grw-btn-page-accessories rounded-pill d-flex justify-content-between align-items-center"
-                        onClick={() => openDescendantPageListModal(currentPagePath)}
-                        data-testid="pageListButton"
-                      >
-                        <div className="grw-page-accessories-control-icon">
-                          <PageListIcon />
-                        </div>
-                        {t('page_list')}
-                        <CountBadge count={currentPage?.descendantCount} offset={1} />
-                      </button>
-                    ) }
-                  </div>
+const DisplaySwitcher = React.memo((): JSX.Element => {
 
-                  {/* Comments */}
-                  { getCommentListDom != null && !isTopPagePath && (
-                    <div className="grw-page-accessories-control mt-2">
-                      <button
-                        type="button"
-                        className="btn btn-block btn-outline-secondary grw-btn-page-accessories rounded-pill d-flex justify-content-between align-items-center"
-                        onClick={() => smoothScrollIntoView(getCommentListDom, WIKI_HEADER_LINK)}
-                      >
-                        <i className="icon-fw icon-bubbles grw-page-accessories-control-icon"></i>
-                        <span>Comments</span>
-                        <CountBadge count={currentPage?.commentCount} />
-                      </button>
-                    </div>
-                  ) }
+  const { data: isEditable } = useIsEditable();
 
-                  <div className="d-none d-lg-block">
-                    <div id="revision-toc" className="revision-toc">
-                      <TableOfContents />
-                    </div>
-                    <ContentLinkButtons />
-                  </div>
+  const { data: editorMode = EditorMode.View } = useEditorMode();
 
-                </div>
-              </div>
-            ) }
+  const isViewMode = editorMode === EditorMode.View;
 
-            <div className="flex-grow-1 flex-basis-0 mw-0">
-              { isUserPage && <UserInfo pageUser={pageUser} />}
-              <Page />
-            </div>
-
+  const navTabMapping = useMemo(() => {
+    return {
+      [EditorMode.View]: {
+        Content: () => (
+          <div data-testid="page-view" id="page-view">
+            <PageView />
           </div>
-        </TabPane>
-        { isEditable && (
-          <TabPane tabId={EditorMode.Editor}>
-            <div data-testid="page-editor" id="page-editor">
-              <PageEditor />
-            </div>
-          </TabPane>
-        ) }
-        { isEditable && (
-          <TabPane tabId={EditorMode.HackMD}>
-            <div id="page-editor-with-hackmd">
-              <PageEditorByHackmd />
-            </div>
-          </TabPane>
-        ) }
-      </TabContent>
-      { isEditable && !isViewMode && <EditorNavbarBottom /> }
+        ),
+      },
+      [EditorMode.Editor]: {
+        Content: () => (
+          isEditable
+            ? (
+              <div data-testid="page-editor" id="page-editor">
+                <PageEditor />
+              </div>
+            )
+            : <></>
+        ),
+      },
+      [EditorMode.HackMD]: {
+        Content: () => (
+          isEditable
+            ? (
+              <div id="page-editor-with-hackmd">
+                <PageEditorByHackmd />
+              </div>
+            )
+            : <></>
+        ),
+      },
+    };
+  }, [isEditable]);
 
+
+  return (
+    <>
+      <CustomTabContent activeTab={editorMode} navTabMapping={navTabMapping} />
+
+      { isEditable && !isViewMode && <EditorNavbarBottom /> }
       { isEditable && <HashChanged></HashChanged> }
     </>
   );
-};
+});
+DisplaySwitcher.displayName = 'DisplaySwitcher';
 
 export default DisplaySwitcher;

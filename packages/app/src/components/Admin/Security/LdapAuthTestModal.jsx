@@ -9,7 +9,7 @@ import {
 
 import { withUnstatedContainers } from '../../UnstatedUtils';
 
-import LdapAuthTest from './LdapAuthTest';
+import { LdapAuthTest } from './LdapAuthTest';
 
 
 class LdapAuthTestModal extends React.Component {

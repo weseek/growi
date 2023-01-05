@@ -48,25 +48,25 @@ type Data = any;
 
 class ElasticsearchDelegator implements SearchDelegator<Data, ESTermsKey, ESQueryTerms> {
 
-  name!: SearchDelegatorName.DEFAULT
+  name!: SearchDelegatorName.DEFAULT;
 
-  configManager!: any
+  configManager!: any;
 
-  socketIoService!: any
+  socketIoService!: any;
 
-  isElasticsearchV6: boolean
+  isElasticsearchV6: boolean;
 
-  isElasticsearchReindexOnBoot: boolean
+  isElasticsearchReindexOnBoot: boolean;
 
-  elasticsearch: any
+  elasticsearch: any;
 
-  client: any
+  client: any;
 
-  queries: any
+  queries: any;
 
-  indexName: string
+  indexName: string;
 
-  esUri: string
+  esUri: string;
 
   constructor(configManager, socketIoService) {
     this.name = SearchDelegatorName.DEFAULT;

@@ -1,7 +1,8 @@
 import React, { FC } from 'react';
 
-import { IInAppNotification, PaginateResult } from '~/interfaces/in-app-notification';
-import { HasObjectId } from '~/interfaces/has-object-id';
+import { HasObjectId } from '@growi/core';
+
+import type { IInAppNotification, PaginateResult } from '~/interfaces/in-app-notification';
 
 import InAppNotificationElm from './InAppNotificationElm';
 
@@ -25,7 +26,7 @@ const InAppNotificationList: FC<Props> = (props: Props) => {
     );
   }
 
-  const notifications = inAppNotificationData.docs;
+  const notifications = inAppNotificationData.docs.filter((notification) => { return notification.parsedSnapshot != null });
 
   return (
     <>

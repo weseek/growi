@@ -1,0 +1,14 @@
+@use '../styles/bootstrap/variables' as var;
+
+.card-timeline :global {
+  margin-bottom: 3rem;
+  border: 1px solid var.$gray-300;
+
+  .card-header {
+    background-color: var.$gray-300;
+  }
+
+  .card-body {
+    min-height: 15vh;
+  }
+}

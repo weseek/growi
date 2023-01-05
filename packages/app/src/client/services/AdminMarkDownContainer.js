@@ -1,3 +1,4 @@
+import { isServer } from '@growi/core';
 import { Container } from 'unstated';
 
 import { apiv3Get, apiv3Put } from '../util/apiv3-client';
@@ -11,23 +12,24 @@ export default class AdminMarkDownContainer extends Container {
   constructor(appContainer) {
     super();
 
+    if (isServer()) {
+      return;
+    }
+
     this.appContainer = appContainer;
-    this.dummyIsEnabledLinebreaks = 0;
-    this.dummyIsEnabledLinebreaksForError = 1;
 
     this.state = {
       retrieveError: null,
-      // set dummy value tile for using suspense
-      isEnabledLinebreaks: this.dummyIsEnabledLinebreaks,
+      isEnabledLinebreaks: false,
       isEnabledLinebreaksInComments: false,
       adminPreferredIndentSize: 4,
       isIndentSizeForced: false,
       pageBreakSeparator: 1,
       pageBreakCustomSeparator: '',
       isEnabledXss: false,
-      xssOption: 1,
+      xssOption: '',
       tagWhiteList: '',
-      attrWhiteList: '',
+      attrWhiteList: '{}',
     };
 
     this.switchEnableXss = this.switchEnableXss.bind(this);
@@ -84,9 +86,6 @@ export default class AdminMarkDownContainer extends Container {
    * Switch enableXss
    */
   switchEnableXss() {
-    if (this.state.isEnabledXss) {
-      this.setState({ xssOption: null });
-    }
     this.setState({ isEnabledXss: !this.state.isEnabledXss });
   }
 
@@ -120,19 +119,25 @@ export default class AdminMarkDownContainer extends Container {
    * Update Xss Setting
    */
   async updateXssSetting() {
-    let { tagWhiteList, attrWhiteList } = this.state;
+    let { tagWhiteList } = this.state;
+    const { attrWhiteList } = this.state;
 
     tagWhiteList = Array.isArray(tagWhiteList) ? tagWhiteList : tagWhiteList.split(',');
-    attrWhiteList = Array.isArray(attrWhiteList) ? attrWhiteList : attrWhiteList.split(',');
 
-    const response = await apiv3Put('/markdown-setting/xss', {
+    try {
+      // Check if parsing is possible
+      JSON.parse(attrWhiteList);
+    }
+    catch (err) {
+      throw Error(err);
+    }
+
+    await apiv3Put('/markdown-setting/xss', {
       isEnabledXss: this.state.isEnabledXss,
       xssOption: this.state.xssOption,
       tagWhiteList,
-      attrWhiteList,
+      attrWhiteList: attrWhiteList ?? '{}',
     });
-
-    return response;
   }
 
   /**
