@@ -1,42 +1,35 @@
 import axios from '~/utils/axios';
+import { getRandomIntInRange } from '~/utils/rand';
 import { sleep } from '~/utils/sleep';
 
 const nodeCron = require('node-cron');
 
-const getRandomInt = (min: number, max: number): number => {
-  const minInt = Math.ceil(min);
-  const maxInt = Math.floor(max);
-  return Math.floor(Math.random() * (maxInt - minInt) + minInt);
-};
-
 class QuestionnaireCronService {
 
-  growiQuestionnaireServerOrigin: string;
-
-  cronSchedule: string;
-
-  maxHoursUntilRequest: number;
+  crowi: any;
 
   // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
   constructor(crowi) {
-    this.growiQuestionnaireServerOrigin = crowi.configManager?.getConfig('crowi', 'app:growiQuestionnaireServerOrigin');
-    this.cronSchedule = crowi.configManager?.getConfig('crowi', 'app:questionnaireCronSchedule');
-    this.maxHoursUntilRequest = crowi.configManager?.getConfig('crowi', 'app:questionnaireCronMaxHoursUntilRequest');
+    this.crowi = crowi;
   }
 
   setUpCron(): void {
-    const maxSecondsUntilRequest = this.maxHoursUntilRequest * 60 * 60;
-    this.questionnaireOrderGetCron(this.cronSchedule, maxSecondsUntilRequest);
+    const cronSchedule = this.crowi.configManager?.getConfig('crowi', 'app:questionnaireCronSchedule');
+    const maxHoursUntilRequest = this.crowi.configManager?.getConfig('crowi', 'app:questionnaireCronMaxHoursUntilRequest');
+
+    const maxSecondsUntilRequest = maxHoursUntilRequest * 60 * 60;
+    this.questionnaireOrderGetCron(cronSchedule, maxSecondsUntilRequest);
   }
 
   questionnaireOrderGetCron(cronSchedule: string, maxSecondsUntilRequest: number): void {
+    const growiQuestionnaireServerOrigin = this.crowi.configManager?.getConfig('crowi', 'app:growiQuestionnaireServerOrigin');
     nodeCron.schedule(cronSchedule, async() => {
-      const secToSleep = getRandomInt(0, maxSecondsUntilRequest);
+      const secToSleep = getRandomIntInRange(0, maxSecondsUntilRequest);
 
       await sleep(secToSleep * 1000);
 
       try {
-        const response = await axios.get(`${this.growiQuestionnaireServerOrigin}/questionnaire-order/index`);
+        const response = await axios.get(`${growiQuestionnaireServerOrigin}/questionnaire-order/index`);
         console.log(response.data);
       }
       catch (e) {
