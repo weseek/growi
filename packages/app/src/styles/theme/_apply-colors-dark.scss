@@ -52,6 +52,7 @@
   @import './reboot-bootstrap-text';
   @import './reboot-bootstrap-border-colors';
   @import './reboot-bootstrap-tables';
+  @import './reboot-bootstrap-theme-colors';
   @import './reboot-bootstrap-dropdown';
 
   // List Group
@@ -114,14 +115,8 @@
   /*
   * Card
   */
-  .card:not([class*='bg-']):not(.well):not(.card-disabled) {
-    background-color: $dark !important;
-    a,
-    button{
-      @include hover-focus() {
-        background-color: darken($dark, 10%) !important;
-      }
-    }
+  .card:not([class*=‘bg-’]):not(.well):not(.card-disabled) {
+    @extend .bg-dark;
   }
 
   // [TODO] GW-3219 modify common color of well in dark theme, then remove below css.
@@ -156,11 +151,7 @@
     }
     li.page-item {
       button.page-link {
-        @include button-variant($dark, $dark);
-        @include mixins-buttons.button-svg-icon-variant($dark, $dark);
-        color: var(--primary);
-        border-color: var(--secondary);
-        box-shadow: none !important;
+        @extend .btn-dark;
       }
     }
   }
@@ -224,9 +215,7 @@
     }
 
     .btn-external-auth-tab {
-      @include button-variant($dark, $dark);
-      @include mixins-buttons.button-svg-icon-variant($dark, $dark);
-      box-shadow: none !important;
+      @extend .btn-dark;
     }
 
     // footer link text
