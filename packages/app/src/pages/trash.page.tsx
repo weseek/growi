@@ -4,7 +4,9 @@ import type { IUser, IUserHasId } from '@growi/core';
 import { NextPage, GetServerSideProps, GetServerSidePropsContext } from 'next';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import dynamic from 'next/dynamic';
+import Head from 'next/head';
 
+import { useCurrentGrowiLayoutFluidClassName } from '~/client/services/layout';
 import { GrowiSubNavigation } from '~/components/Navbar/GrowiSubNavigation';
 import type { CrowiRequest } from '~/interfaces/crowi-request';
 import type { RendererConfig } from '~/interfaces/services/renderer';
@@ -15,15 +17,16 @@ import {
   useCurrentProductNavWidth, useCurrentSidebarContents, useDrawerMode, usePreferDrawerModeByUser, usePreferDrawerModeOnEditByUser, useSidebarCollapsed,
 } from '~/stores/ui';
 
-import { BasicLayout } from '../components/Layout/BasicLayout';
+import { BasicLayoutWithEditorMode } from '../components/Layout/BasicLayout';
 import {
   useCurrentUser, useCurrentPageId, useCurrentPathname,
   useIsSearchServiceConfigured, useIsSearchServiceReachable,
   useIsSearchScopeChildrenAsDefault, useIsSearchPage, useShowPageLimitationXL, useIsGuestUser, useRendererConfig,
 } from '../stores/context';
 
+import { NextPageWithLayout } from './_app.page';
 import {
-  CommonProps, getServerSideCommonProps, getNextI18NextConfig, useCustomTitle,
+  CommonProps, getServerSideCommonProps, getNextI18NextConfig, generateCustomTitle,
 } from './utils/commons';
 
 const TrashPageList = dynamic(() => import('~/components/TrashPageList').then(mod => mod.TrashPageList), { ssr: false });
@@ -45,7 +48,7 @@ type Props = CommonProps & {
   rendererConfig: RendererConfig,
 };
 
-const TrashPage: NextPage<CommonProps> = (props: Props) => {
+const TrashPage: NextPageWithLayout<CommonProps> = (props: Props) => {
   useCurrentUser(props.currentUser ?? null);
 
   useIsSearchServiceConfigured(props.isSearchServiceConfigured);
@@ -70,9 +73,16 @@ const TrashPage: NextPage<CommonProps> = (props: Props) => {
   const { data: isDrawerMode } = useDrawerMode();
   const { data: isGuestUser } = useIsGuestUser();
 
+  const growiLayoutFluidClass = useCurrentGrowiLayoutFluidClassName();
+
+  const title = generateCustomTitle(props, 'GROWI');
+
   return (
     <>
-      <BasicLayout title={useCustomTitle(props, 'GROWI')} >
+      <Head>
+        <title>{title}</title>
+      </Head>
+      <div className={`dynamic-layout-root ${growiLayoutFluidClass}`}>
         <header className="py-0 position-relative">
           <GrowiSubNavigation
             pagePath="/trash"
@@ -83,13 +93,22 @@ const TrashPage: NextPage<CommonProps> = (props: Props) => {
           />
         </header>
 
-        <div className="grw-container-convertible mb-5 pb-5">
+        <div className="content-main grw-container-convertible mb-5 pb-5">
           <TrashPageList />
         </div>
 
         <div id="grw-fav-sticky-trigger" className="sticky-top"></div>
-      </BasicLayout>
+      </div>
+    </>
+  );
+};
 
+TrashPage.getLayout = function getLayout(page) {
+  return (
+    <>
+      <BasicLayoutWithEditorMode>
+        {page}
+      </BasicLayoutWithEditorMode>
       <EmptyTrashModal />
       <PutbackPageModal />
     </>
@@ -137,7 +156,7 @@ function injectServerConfigurations(context: GetServerSidePropsContext, props: P
     blockdiagUri: process.env.BLOCKDIAG_URI ?? null,
 
     // XSS Options
-    isEnabledXssPrevention: configManager.getConfig('markdown', 'markdown:xss:isEnabledPrevention'),
+    isEnabledXssPrevention: configManager.getConfig('markdown', 'markdown:rehypeSanitize:isEnabledPrevention'),
     attrWhiteList: crowi.xssService.getAttrWhiteList(),
     tagWhiteList: crowi.xssService.getTagWhiteList(),
     highlightJsStyleBorder: crowi.configManager.getConfig('crowi', 'customize:highlightJsStyleBorder'),

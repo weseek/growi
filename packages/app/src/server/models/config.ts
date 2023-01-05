@@ -95,11 +95,6 @@ export const defaultCrowiConfigs: { [key: string]: any } = {
   'security:passport-github:clientSecret': undefined,
   'security:passport-github:isSameUsernameTreatedAsIdenticalUser': false,
 
-  'security:passport-twitter:isEnabled' : false,
-  'security:passport-twitter:consumerKey': undefined,
-  'security:passport-twitter:consumerSecret': undefined,
-  'security:passport-twitter:isSameUsernameTreatedAsIdenticalUser': false,
-
   'security:passport-oidc:isEnabled' : false,
 
   'aws:s3Bucket'          : 'growi',
@@ -113,8 +108,6 @@ export const defaultCrowiConfigs: { [key: string]: any } = {
   'mail:smtpPort'     : undefined,
   'mail:smtpUser'     : undefined,
   'mail:smtpPassword' : undefined,
-
-  'plugin:isEnabledPlugins' : true,
 
   'customize:css' : undefined,
   'customize:script' : undefined,
@@ -147,12 +140,14 @@ export const defaultCrowiConfigs: { [key: string]: any } = {
 };
 
 export const defaultMarkdownConfigs: { [key: string]: any } = {
+  // don't use it, but won't turn it off
   'markdown:xss:tagWhiteList': [],
   'markdown:xss:attrWhiteList': [],
+
   'markdown:rehypeSanitize:isEnabledPrevention': true,
   'markdown:rehypeSanitize:option': RehypeSanitizeOption.RECOMMENDED,
   'markdown:rehypeSanitize:tagNames': [],
-  'markdown:rehypeSanitize:attributes': {},
+  'markdown:rehypeSanitize:attributes': '{}',
   'markdown:isEnabledLinebreaks': false,
   'markdown:isEnabledLinebreaksInComments': true,
   'markdown:adminPreferredIndentSize': 4,

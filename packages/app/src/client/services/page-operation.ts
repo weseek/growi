@@ -1,9 +1,11 @@
+import { useCallback } from 'react';
+
 import { SubscriptionStatusType, Nullable } from '@growi/core';
 import urljoin from 'url-join';
 
 import { OptionsToSave } from '~/interfaces/page-operation';
 import { useCurrentPageId } from '~/stores/context';
-import { useIsEnabledUnsavedWarning, usePageTagsForEditors } from '~/stores/editor';
+import { useEditingMarkdown, useIsEnabledUnsavedWarning, usePageTagsForEditors } from '~/stores/editor';
 import { useSWRxCurrentPage, useSWRxTagsInfo } from '~/stores/page';
 import { useSetRemoteLatestPageData } from '~/stores/remote-latest-page';
 import loggerFactory from '~/utils/logger';
@@ -130,7 +132,7 @@ export const useSaveOrUpdate = (): SaveOrUpdateFunction => {
   const { mutate: mutateIsEnabledUnsavedWarning } = useIsEnabledUnsavedWarning();
   /* eslint-enable react-hooks/rules-of-hooks */
 
-  return async function(markdown: string, pageInfo: PageInfo, optionsToSave?: OptionsToSave) {
+  return useCallback(async(markdown: string, pageInfo: PageInfo, optionsToSave?: OptionsToSave) => {
     const { path, pageId, revisionId } = pageInfo;
 
     const options: OptionsToSave = Object.assign({}, optionsToSave);
@@ -172,7 +174,7 @@ export const useSaveOrUpdate = (): SaveOrUpdateFunction => {
     await mutateIsEnabledUnsavedWarning(new Promise(r => setTimeout(() => r(false), 10)), { optimisticData: () => false });
 
     return res;
-  };
+  }, [mutateIsEnabledUnsavedWarning]);
 };
 
 export const useUpdateStateAfterSave = (pageId: string|undefined|null): (() => Promise<void>) | undefined => {
@@ -181,18 +183,23 @@ export const useUpdateStateAfterSave = (pageId: string|undefined|null): (() => P
   const { setRemoteLatestPageData } = useSetRemoteLatestPageData();
   const { mutate: mutateTagsInfo } = useSWRxTagsInfo(pageId);
   const { sync: syncTagsInfoForEditor } = usePageTagsForEditors(pageId);
-
-  if (pageId == null) { return }
+  const { mutate: mutateEditingMarkdown } = useEditingMarkdown();
 
   // update swr 'currentPageId', 'currentPage', remote states
-  return async() => {
-    await mutateCurrentPageId(pageId);
-    const updatedPage = await mutateCurrentPage();
+  return useCallback(async() => {
+    if (pageId == null) { return }
 
+    // update tag before page: https://github.com/weseek/growi/pull/7158
+    // !! DO NOT CHANGE THE ORDERS OF THE MUTATIONS !! -- 12.26 yuken-t
     await mutateTagsInfo(); // get from DB
     syncTagsInfoForEditor(); // sync global state for client
 
+    await mutateCurrentPageId(pageId);
+    const updatedPage = await mutateCurrentPage();
+
     if (updatedPage == null) { return }
+
+    mutateEditingMarkdown(updatedPage.revision.body);
 
     const remoterevisionData = {
       remoteRevisionId: updatedPage.revision._id,
@@ -204,7 +211,7 @@ export const useUpdateStateAfterSave = (pageId: string|undefined|null): (() => P
     };
 
     setRemoteLatestPageData(remoterevisionData);
-  };
+  }, [mutateCurrentPage, mutateCurrentPageId, mutateEditingMarkdown, mutateTagsInfo, pageId, setRemoteLatestPageData, syncTagsInfoForEditor]);
 };
 
 export const unlink = async(path: string): Promise<void> => {

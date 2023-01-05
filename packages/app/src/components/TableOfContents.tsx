@@ -17,7 +17,6 @@ const { isUserPage: _isUserPage } = pagePathUtils;
 const logger = loggerFactory('growi:TableOfContents');
 
 const TableOfContents = (): JSX.Element => {
-
   const { data: currentPagePath } = useCurrentPagePath();
 
   const isUserPage = currentPagePath != null && _isUserPage(currentPagePath);

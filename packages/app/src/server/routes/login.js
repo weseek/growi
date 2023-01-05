@@ -82,24 +82,6 @@ module.exports = function(crowi, app) {
     });
   };
 
-  actions.error = function(req, res) {
-    const reason = req.params.reason;
-
-
-    let reasonMessage = '';
-    if (reason === 'suspended') {
-      reasonMessage = 'This account is suspended.';
-    }
-    else if (reason === 'registered') {
-      reasonMessage = 'Wait for approved by administrators.';
-    }
-
-    return res.render('login/error', {
-      reason,
-      reasonMessage,
-    });
-  };
-
   actions.preLogin = function(req, res, next) {
     // user has already logged in
     const { user } = req;
@@ -120,12 +102,12 @@ module.exports = function(crowi, app) {
 
   actions.register = function(req, res) {
     if (req.user != null) {
-      return res.apiv3Err('user_already_logged_in', 403);
+      return res.apiv3Err('message.user_already_logged_in', 403);
     }
 
     // config で closed ならさよなら
     if (configManager.getConfig('crowi', 'security:registrationMode') === aclService.labels.SECURITY_REGISTRATION_MODE_CLOSED) {
-      return res.apiv3Err('registration_closed', 403);
+      return res.apiv3Err('message.registration_closed', 403);
     }
 
     if (!req.form.isValid) {
@@ -163,17 +145,17 @@ module.exports = function(crowi, app) {
       const isMailerSetup = mailService.isMailerSetup ?? false;
 
       if (!isMailerSetup && registrationMode === aclService.labels.SECURITY_REGISTRATION_MODE_RESTRICTED) {
-        return res.apiv3Err(['email_settings_is_not_setup'], 403);
+        return res.apiv3Err(['message.email_settings_is_not_setup'], 403);
       }
 
       User.createUserByEmailAndPassword(name, username, email, password, undefined, async(err, userData) => {
         if (err) {
           const errors = [];
           if (err.name === 'UserUpperLimitException') {
-            errors.push('can_not_register_maximum_number_of_users');
+            errors.push('message.can_not_register_maximum_number_of_users');
           }
           else {
-            errors.push('failed_to_register');
+            errors.push('message.failed_to_register');
           }
           return res.apiv3Err(errors, 405);
         }

@@ -10,7 +10,7 @@ export const PrivateLegacyPagesLink: FC = memo(() => {
   return (
     <Link href="/_private-legacy-pages" prefetch={false}>
       <a className="h5 grw-private-legacy-pages-anchor text-decoration-none">
-        <i className="icon-drawer mr-2"></i> {t('pagetree.private_legacy_pages')}
+        <i className="icon-drawer mr-2"></i> {t('private_legacy_pages.title')}
       </a>
     </Link>
   );

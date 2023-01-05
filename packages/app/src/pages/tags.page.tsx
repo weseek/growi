@@ -25,8 +25,9 @@ import {
   useIsSearchScopeChildrenAsDefault, useRendererConfig,
 } from '../stores/context';
 
+import { NextPageWithLayout } from './_app.page';
 import {
-  CommonProps, getServerSideCommonProps, getNextI18NextConfig, useCustomTitle,
+  CommonProps, getServerSideCommonProps, getNextI18NextConfig, generateCustomTitle,
 } from './utils/commons';
 
 const PAGING_LIMIT = 10;
@@ -49,7 +50,7 @@ type Props = CommonProps & {
 const TagList = dynamic(() => import('~/components/TagList'), { ssr: false });
 const TagCloudBox = dynamic(() => import('~/components/TagCloudBox'), { ssr: false });
 
-const TagPage: NextPage<CommonProps> = (props: Props) => {
+const TagPage: NextPageWithLayout<CommonProps> = (props: Props) => {
   const [activePage, setActivePage] = useState<number>(1);
   const [offset, setOffset] = useState<number>(0);
 
@@ -64,7 +65,7 @@ const TagPage: NextPage<CommonProps> = (props: Props) => {
   const tagData: IDataTagCount[] = tagDataList?.data || [];
   const totalCount: number = tagDataList?.totalCount || 0;
   const isLoading = tagDataList === undefined && error == null;
-  const classNames: string[] = [];
+
 
   useIsSearchPage(false);
   useIsSearchServiceConfigured(props.isSearchServiceConfigured);
@@ -79,11 +80,14 @@ const TagPage: NextPage<CommonProps> = (props: Props) => {
 
   useRendererConfig(props.rendererConfig);
 
+  const title = generateCustomTitle(props, 'GROWI');
+
   return (
     <>
       <Head>
+        <title>{title}</title>
       </Head>
-      <BasicLayout title={useCustomTitle(props, 'GROWI')} className={classNames.join(' ')}>
+      <div className="dynamic-layout-root">
         <div className="grw-container-convertible mb-5 pb-5" data-testid="tags-page">
           <h2 className="my-3">{`${t('Tags')}(${totalCount})`}</h2>
           <div className="px-3 mb-5 text-center">
@@ -109,8 +113,14 @@ const TagPage: NextPage<CommonProps> = (props: Props) => {
           }
           <div id="grw-fav-sticky-trigger" className="sticky-top"></div>
         </div>
-      </BasicLayout>
+      </div>
     </>
+  );
+};
+
+TagPage.getLayout = function getLayout(page) {
+  return (
+    <BasicLayout>{page}</BasicLayout>
   );
 };
 
@@ -154,7 +164,7 @@ function injectServerConfigurations(context: GetServerSidePropsContext, props: P
     blockdiagUri: process.env.BLOCKDIAG_URI ?? null,
 
     // XSS Options
-    isEnabledXssPrevention: configManager.getConfig('markdown', 'markdown:xss:isEnabledPrevention'),
+    isEnabledXssPrevention: configManager.getConfig('markdown', 'markdown:rehypeSanitize:isEnabledPrevention'),
     attrWhiteList: crowi.xssService.getAttrWhiteList(),
     tagWhiteList: crowi.xssService.getTagWhiteList(),
     highlightJsStyleBorder: crowi.configManager.getConfig('crowi', 'customize:highlightJsStyleBorder'),

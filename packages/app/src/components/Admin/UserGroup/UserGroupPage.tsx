@@ -126,7 +126,7 @@ export const UserGroupPage: FC = () => {
 
   const deleteUserGroupById = useCallback(async(deleteGroupId: string, actionName: string, transferToUserGroupId: string) => {
     try {
-      const res = await apiv3Delete(`/user-groups/${deleteGroupId}`, {
+      await apiv3Delete(`/user-groups/${deleteGroupId}`, {
         actionName,
         transferToUserGroupId,
       });
@@ -137,12 +137,12 @@ export const UserGroupPage: FC = () => {
       setSelectedUserGroup(undefined);
       setDeleteModalShown(false);
 
-      toastSuccess(`Deleted ${res.data.userGroups.length} groups.`);
+      toastSuccess(`Deleted ${selectedUserGroup?.name} group.`);
     }
     catch (err) {
       toastError(new Error('Unable to delete the groups'));
     }
-  }, [mutateUserGroups]);
+  }, [mutateUserGroups, selectedUserGroup]);
 
   return (
     <div data-testid="admin-user-groups">

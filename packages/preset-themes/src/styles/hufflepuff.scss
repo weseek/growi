@@ -121,16 +121,14 @@
 
   // login and register
   .nologin {
-    #page-wrapper {
-      background-color: $themelight;
-      background-image: url('../images/themes/hufflepuff/badger-light.png');
-      background-attachment: fixed;
-      background-position: bottom;
-      background-size: cover;
-    }
+    background: unset !important;
+    background-image: url('../images/themes/hufflepuff/badger-light.png');
+    background-attachment: fixed;
+    background-position: bottom;
+    background-size: cover;
 
-    .noLogin-header,
-    .noLogin-dialog {
+    .nologin-header,
+    .nologin-dialog {
       background-color: rgba(black, 0.1);
     }
 
@@ -292,16 +290,14 @@
 
   // login and register
   .nologin {
-    #page-wrapper {
-      background-color: $themedark;
-      background-image: url('../images/themes/hufflepuff/badger-light.png');
-      background-attachment: fixed;
-      background-position: bottom;
-      background-size: cover;
-    }
+    background: unset !important;
+    background-image: url('../images/themes/hufflepuff/badger-light.png');
+    background-attachment: fixed;
+    background-position: bottom;
+    background-size: cover;
 
-    .noLogin-header,
-    .noLogin-dialog {
+    .nologin-header,
+    .nologin-dialog {
       background-color: rgba(black, 0.1);
     }
 

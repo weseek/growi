@@ -6,7 +6,7 @@ import { TabContent, TabPane } from 'reactstrap';
 
 import CustomNav from '../../CustomNavigation/CustomNav';
 
-import FacebookSecuritySetting from './FacebookSecuritySetting';
+// import FacebookSecuritySetting from './FacebookSecuritySetting';
 import GitHubSecuritySetting from './GitHubSecuritySetting';
 import GoogleSecuritySetting from './GoogleSecuritySetting';
 import LdapSecuritySetting from './LdapSecuritySetting';
@@ -15,7 +15,6 @@ import OidcSecuritySetting from './OidcSecuritySetting';
 import SamlSecuritySetting from './SamlSecuritySetting';
 import SecuritySetting from './SecuritySetting';
 import ShareLinkSetting from './ShareLinkSetting';
-import TwitterSecuritySetting from './TwitterSecuritySetting';
 
 const SecurityManagementContents = () => {
   const { t } = useTranslation('admin');
@@ -60,16 +59,11 @@ const SecurityManagementContents = () => {
         i18n: 'GitHub',
         index: 5,
       },
-      passport_twitter: {
-        Icon: () => <i className="fa fa-twitter" />,
-        i18n: 'Twitter',
-        index: 6,
-      },
-      passport_facebook: {
-        Icon: () => <i className="fa fa-facebook" />,
-        i18n: '(TBD) Facebook',
-        index: 7,
-      },
+      // passport_facebook: {
+      //   Icon: () => <i className="fa fa-facebook" />,
+      //   i18n: '(TBD) Facebook',
+      //   index: 7,
+      // },
     };
   }, []);
 
@@ -126,12 +120,9 @@ const SecurityManagementContents = () => {
           <TabPane tabId="passport_github">
             {activeComponents.has('passport_github') && <GitHubSecuritySetting />}
           </TabPane>
-          <TabPane tabId="passport_twitter">
-            {activeComponents.has('passport_twitter') && <TwitterSecuritySetting />}
-          </TabPane>
-          <TabPane tabId="passport_facebook">
+          {/* <TabPane tabId="passport_facebook">
             {activeComponents.has('passport_facebook') && <FacebookSecuritySetting />}
-          </TabPane>
+          </TabPane> */}
         </TabContent>
       </div>
     </div>

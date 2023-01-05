@@ -47,7 +47,7 @@ const CustomizeScriptSetting = (props: Props): JSX.Element => {
               className="form-control"
               name="customizeScript"
               rows={8}
-              value={adminCustomizeContainer.state.currentCustomizeScript || ''}
+              defaultValue={adminCustomizeContainer.state.currentCustomizeScript || ''}
               onChange={(e) => { adminCustomizeContainer.changeCustomizeScript(e.target.value) }}
             />
             {/* disabled in v6.0.0 temporarily -- 2022.12.19 Yuki Takei

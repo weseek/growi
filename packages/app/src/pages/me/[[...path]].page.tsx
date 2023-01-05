@@ -3,11 +3,12 @@ import React, { useMemo } from 'react';
 import { IUserHasId } from '@growi/core';
 import { model as mongooseModel } from 'mongoose';
 import {
-  NextPage, GetServerSideProps, GetServerSidePropsContext,
+  GetServerSideProps, GetServerSidePropsContext,
 } from 'next';
 import { useTranslation } from 'next-i18next';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import dynamic from 'next/dynamic';
+import Head from 'next/head';
 import { useRouter } from 'next/router';
 
 import { BasicLayout } from '~/components/Layout/BasicLayout';
@@ -27,8 +28,9 @@ import {
 } from '~/stores/ui';
 import loggerFactory from '~/utils/logger';
 
+import { NextPageWithLayout } from '../_app.page';
 import {
-  CommonProps, getNextI18NextConfig, getServerSideCommonProps, useCustomTitle,
+  CommonProps, getNextI18NextConfig, getServerSideCommonProps, generateCustomTitle,
 } from '../utils/commons';
 
 
@@ -53,7 +55,7 @@ const InAppNotificationPage = dynamic(
   () => import('~/components/InAppNotification/InAppNotificationPage').then(mod => mod.InAppNotificationPage), { ssr: false },
 );
 
-const MePage: NextPage<Props> = (props: Props) => {
+const MePage: NextPageWithLayout<Props> = (props: Props) => {
   const router = useRouter();
   const { t } = useTranslation(['translation', 'commons']);
   const { path } = router.query;
@@ -109,10 +111,14 @@ const MePage: NextPage<Props> = (props: Props) => {
 
   useRendererConfig(props.rendererConfig);
 
+  const title = generateCustomTitle(props, 'GROWI');
+
   return (
     <>
-      <BasicLayout title={useCustomTitle(props, 'GROWI')}>
-
+      <Head>
+        <title>{title}</title>
+      </Head>
+      <div className="dynamic-layout-root">
         <header className="py-3">
           <div className="container-fluid">
             <h1 className="title">{ targetPage.title }</h1>
@@ -126,9 +132,14 @@ const MePage: NextPage<Props> = (props: Props) => {
             {targetPage.component}
           </div>
         </div>
-
-      </BasicLayout>
+      </div>
     </>
+  );
+};
+
+MePage.getLayout = function getLayout(page) {
+  return (
+    <BasicLayout>{page}</BasicLayout>
   );
 };
 
@@ -174,7 +185,7 @@ async function injectServerConfigurations(context: GetServerSidePropsContext, pr
     blockdiagUri: process.env.BLOCKDIAG_URI ?? null,
 
     // XSS Options
-    isEnabledXssPrevention: configManager.getConfig('markdown', 'markdown:xss:isEnabledPrevention'),
+    isEnabledXssPrevention: configManager.getConfig('markdown', 'markdown:rehypeSanitize:isEnabledPrevention'),
     attrWhiteList: crowi.xssService.getAttrWhiteList(),
     tagWhiteList: crowi.xssService.getTagWhiteList(),
     highlightJsStyleBorder: crowi.configManager.getConfig('crowi', 'customize:highlightJsStyleBorder'),

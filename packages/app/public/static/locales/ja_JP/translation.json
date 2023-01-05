@@ -57,6 +57,7 @@
   "Presentation Mode": "プレゼンテーション",
   "The end": "おしまい",
   "Not available for guest": "ゲストユーザーは利用できません",
+  "Not available in this version": "このバージョンでは利用できません",
   "No users have liked this yet": "いいねをしているユーザーはいません",
   "No users have bookmarked yet": "ブックマークしているユーザーはいません",
   "Create Archive Page": "アーカイブページの作成",
@@ -569,6 +570,7 @@
     }
   },
   "private_legacy_pages": {
+    "title": "旧形式のプライベートページ",
     "bulk_operation": "一括操作",
     "convert_all_selected_pages": "新しい v5 互換形式に一括変換",
     "input_path_to_convert": "パスを入力して変換",
@@ -603,8 +605,8 @@
     }
   },
   "login": {
-    "Sign in error": "ログインエラー",
-    "Registration successful": "登録が完了しました。管理者の承認をお待ちください。",
+    "sign_in_error": "ログインエラー",
+    "registration_successful": "登録が完了しました。管理者の承認をお待ちください。",
     "Setup": "セットアップ",
     "enabled_ldap_has_configuration_problem":"LDAPは有効ですが、設定に問題があります。",
     "set_env_var_for_logs": "(ログを取得するためには、環境変数 <code>DEBUG=crowi:service:PassportService</code> を設定してください。)"
@@ -648,7 +650,7 @@
     "failed_to_create_admin_user":"管理ユーザーの作成に失敗しました。{{errMessage}}",
     "successfully_send_email_auth":"{{email}} にメールを送信しました。添付されたURLをクリックし、本登録を完了させてください",
     "incorrect_token_or_expired_url":"トークンが正しくないか、URLの有効期限が切れています。",
-    "user_already_loggedin": "ログイン中のため、新規アカウントを作成できませんでした。",
+    "user_already_logged_in": "ログイン中のため、新規アカウントを作成できませんでした。",
     "registration_closed": "新しいアカウントを作成する権限がありません。",
     "Username has invalid characters": "ユーザー名に不正な文字が含まれています.",
     "Username field is required": "User ID は必須項目です",
@@ -730,7 +732,6 @@
     "logout": "ログアウト"
   },
   "pagetree": {
-    "private_legacy_pages": "旧形式のプライベートページ",
     "cannot_rename_a_title_that_contains_slash": "`/` が含まれているタイトルにリネームできません",
     "you_cannot_move_this_page_now": "現在、このページを移動することはできません",
     "something_went_wrong_with_moving_page": "ページの移動に問題が発生しました"

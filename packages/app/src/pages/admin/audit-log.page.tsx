@@ -3,10 +3,11 @@ import {
 } from 'next';
 import { useTranslation } from 'next-i18next';
 import dynamic from 'next/dynamic';
+import Head from 'next/head';
 
 import { SupportedActionType } from '~/interfaces/activity';
 import { CrowiRequest } from '~/interfaces/crowi-request';
-import { CommonProps, useCustomTitle } from '~/pages/utils/commons';
+import { CommonProps, generateCustomTitle } from '~/pages/utils/commons';
 import { useCurrentUser, useAuditLogEnabled, useAuditLogAvailableActions } from '~/stores/context';
 
 import { retrieveServerSideProps } from '../../utils/admin-page-util';
@@ -29,9 +30,13 @@ const AdminAuditLogPage: NextPage<Props> = (props) => {
   useCurrentUser(props.currentUser ?? null);
 
   const title = t('audit_log_management.audit_log');
+  const headTitle = generateCustomTitle(props, title);
 
   return (
-    <AdminLayout title={useCustomTitle(props, title)} componentTitle={title} >
+    <AdminLayout componentTitle={title}>
+      <Head>
+        <title>{headTitle}</title>
+      </Head>
       <AuditLogManagement />
     </AdminLayout>
   );

@@ -1,6 +1,7 @@
 import React, {
   useState, useRef, useImperativeHandle, useCallback, ForwardRefRenderFunction, forwardRef,
   memo,
+  useEffect,
 } from 'react';
 
 import Dropzone from 'react-dropzone';
@@ -59,6 +60,8 @@ const Editor: ForwardRefRenderFunction<IEditorMethods, EditorPropsType> = (props
   const [dropzoneActive, setDropzoneActive] = useState(false);
   const [isUploading, setIsUploading] = useState(false);
   const [isCheatsheetModalShown, setIsCheatsheetModalShown] = useState(false);
+
+  const [navBarItems, setNavBarItems] = useState<JSX.Element[]>([]);
 
   const { t } = useTranslation();
   const { data: editorSettings } = useEditorSettings();
@@ -227,18 +230,18 @@ const Editor: ForwardRefRenderFunction<IEditorMethods, EditorPropsType> = (props
     );
   }, [isUploading]);
 
-  const renderNavbar = useCallback(() => {
+  const renderNavbar = () => {
     return (
       <div className="m-0 navbar navbar-default navbar-editor" data-testid="navbar-editor" style={{ minHeight: 'unset' }}>
         <ul className="pl-2 nav nav-navbar">
-          { (editorSubstance()?.getNavbarItems() ?? []).map((item, idx) => {
+          { navBarItems.map((item, idx) => {
             // eslint-disable-next-line react/no-array-index-key
             return <li key={`navbarItem-${idx}`}>{item}</li>;
           }) }
         </ul>
       </div>
     );
-  }, [editorSubstance]);
+  };
 
   const renderCheatsheetModal = useCallback(() => {
     const hideCheatsheetModal = () => {
@@ -246,7 +249,7 @@ const Editor: ForwardRefRenderFunction<IEditorMethods, EditorPropsType> = (props
     };
 
     return (
-      <Modal isOpen={isCheatsheetModalShown} toggle={hideCheatsheetModal} className={`modal-gfm-cheatsheet ${styles['modal-gfm-cheatsheet']}`} >
+      <Modal isOpen={isCheatsheetModalShown} toggle={hideCheatsheetModal} className={`modal-gfm-cheatsheet ${styles['modal-gfm-cheatsheet']}`} size={'lg'} >
         <ModalHeader tag="h4" toggle={hideCheatsheetModal} className="bg-primary text-light">
           <i className="icon-fw icon-question" />Markdown help
         </ModalHeader>
@@ -257,7 +260,18 @@ const Editor: ForwardRefRenderFunction<IEditorMethods, EditorPropsType> = (props
     );
   }, [isCheatsheetModalShown]);
 
-  if (editorSettings == null) {
+  const isReadyToRenderEditor = editorSettings != null;
+
+  // https://redmine.weseek.co.jp/issues/111731
+  useEffect(() => {
+    const editorRef = editorSubstance();
+    if (isReadyToRenderEditor && editorRef != null) {
+      const editorNavBarItems = editorRef.getNavbarItems() ?? [];
+      setNavBarItems(editorNavBarItems);
+    }
+  }, [editorSubstance, isReadyToRenderEditor]);
+
+  if (!isReadyToRenderEditor) {
     return <></>;
   }
 

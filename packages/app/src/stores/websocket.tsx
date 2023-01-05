@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 
-import io, { Socket } from 'socket.io-client';
+import type { Socket } from 'socket.io-client';
 import { SWRResponse } from 'swr';
 
 import loggerFactory from '~/utils/logger';
@@ -23,14 +23,19 @@ export const useSetupGlobalSocket = (): void => {
   const { mutate } = useStaticSWR(GLOBAL_SOCKET_KEY);
 
   useEffect(() => {
-    const socket = io(GLOBAL_SOCKET_NS, {
-      transports: ['websocket'],
-    });
+    const setUpSocket = async() => {
+      const { io } = await import('socket.io-client');
+      const socket = io(GLOBAL_SOCKET_NS, {
+        transports: ['websocket'],
+      });
 
-    socket.on('error', (err) => { logger.error(err) });
-    socket.on('connect_error', (err) => { logger.error('Failed to connect with websocket.', err) });
+      socket.on('error', (err) => { logger.error(err) });
+      socket.on('connect_error', (err) => { logger.error('Failed to connect with websocket.', err) });
 
-    mutate(socket);
+      mutate(socket);
+    };
+
+    setUpSocket();
 
   }, [mutate]);
 };
@@ -39,23 +44,24 @@ export const useGlobalSocket = (): SWRResponse<Socket, Error> => {
   return useStaticSWR(GLOBAL_SOCKET_KEY);
 };
 
+// comment out for porduction build error: https://github.com/weseek/growi/pull/7131
 /*
  * Global Admin Socket
  */
-export const useSetupGlobalAdminSocket = (shouldInit: boolean): SWRResponse<Socket, Error> => {
-  let socket: Socket | undefined;
+// export const useSetupGlobalAdminSocket = (shouldInit: boolean): SWRResponse<Socket, Error> => {
+//   let socket: Socket | undefined;
 
-  if (shouldInit) {
-    socket = io(GLOBAL_ADMIN_SOCKET_NS, {
-      transports: ['websocket'],
-    });
+//   if (shouldInit) {
+//     socket = io(GLOBAL_ADMIN_SOCKET_NS, {
+//       transports: ['websocket'],
+//     });
 
-    socket.on('error', (err) => { logger.error(err) });
-    socket.on('connect_error', (err) => { logger.error('Failed to connect with websocket.', err) });
-  }
+//     socket.on('error', (err) => { logger.error(err) });
+//     socket.on('connect_error', (err) => { logger.error('Failed to connect with websocket.', err) });
+//   }
 
-  return useStaticSWR(shouldInit ? GLOBAL_ADMIN_SOCKET_KEY : null, socket);
-};
+//   return useStaticSWR(shouldInit ? GLOBAL_ADMIN_SOCKET_KEY : null, socket);
+// };
 
 export const useGlobalAdminSocket = (): SWRResponse<Socket, Error> => {
   return useStaticSWR(GLOBAL_ADMIN_SOCKET_KEY);

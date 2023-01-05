@@ -4,6 +4,7 @@ import dynamic from 'next/dynamic';
 import { DndProvider } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
 
+import { useEditorModeClassName } from '../../client/services/layout';
 import { GrowiNavbar } from '../Navbar/GrowiNavbar';
 import Sidebar from '../Sidebar';
 
@@ -27,21 +28,13 @@ const Fab = dynamic(() => import('../Fab').then(mod => mod.Fab), { ssr: false })
 
 
 type Props = {
-  title: string
-  className?: string,
-  expandContainer?: boolean,
   children?: ReactNode
+  className?: string
 }
 
-export const BasicLayout = ({
-  children, title, className, expandContainer,
-}: Props): JSX.Element => {
-
-  const myClassName = `${className ?? ''} ${expandContainer ? 'growi-layout-fluid' : ''}`;
-
+export const BasicLayout = ({ children, className }: Props): JSX.Element => {
   return (
-    <RawLayout title={title} className={myClassName}>
-
+    <RawLayout className={className ?? ''}>
       <DndProvider backend={HTML5Backend}>
         <GrowiNavbar />
 
@@ -73,5 +66,15 @@ export const BasicLayout = ({
       <ShortcutsModal />
       <SystemVersion showShortcutsButton />
     </RawLayout>
+  );
+};
+
+export const BasicLayoutWithEditorMode = ({ children }: Props): JSX.Element => {
+  const className = useEditorModeClassName();
+
+  return (
+    <BasicLayout className={className}>
+      {children}
+    </BasicLayout>
   );
 };

@@ -14,7 +14,6 @@ import AppSetting from './AppSetting';
 import FileUploadSetting from './FileUploadSetting';
 import MailSetting from './MailSetting';
 import { MaintenanceMode } from './MaintenanceMode';
-import PluginSetting from './PluginSetting';
 import SiteUrlSetting from './SiteUrlSetting';
 import V5PageMigration from './V5PageMigration';
 
@@ -105,13 +104,6 @@ const AppSettingsPageContents = (props: Props) => {
         <div className="col-lg-12">
           <h2 className="admin-setting-header">{t('admin:app_setting.file_upload_settings')}</h2>
           <FileUploadSetting />
-        </div>
-      </div>
-
-      <div className="row mt-5">
-        <div className="col-lg-12">
-          <h2 className="admin-setting-header">{t('admin:app_setting.plugin_settings')}</h2>
-          <PluginSetting />
         </div>
       </div>
 

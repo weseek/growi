@@ -6,8 +6,6 @@ context('Access to page', () => {
     cy.fixture("user-admin.json").then(user => {
       cy.login(user.username, user.password);
     });
-    // collapse sidebar
-    cy.collapseSidebar(true);
   });
 
   it('/Sandbox is successfully loaded', () => {
@@ -15,56 +13,58 @@ context('Access to page', () => {
     cy.waitUntilSkeletonDisappear();
 
     // for check download toc data
-    cy.get('.toc-link').eq(0).contains('Table of Contents');
+    // https://redmine.weseek.co.jp/issues/111384
+    // cy.get('.toc-link').should('be.visible');
 
+    cy.collapseSidebar(true, true);
     cy.screenshot(`${ssPrefix}-sandbox`);
   });
 
   // TODO: https://redmine.weseek.co.jp/issues/109939
-  // it('/Sandbox with anchor hash is successfully loaded', () => {
-  //   cy.visit('/Sandbox#Headers');
-  //   cy.waitUntilSkeletonDisappear();
+  it('/Sandbox with anchor hash is successfully loaded', () => {
+    cy.visit('/Sandbox#Headers');
+    cy.waitUntilSkeletonDisappear();
 
-  //   // for check download toc data
-  //   cy.get('.toc-link').should('be.visible');
+    // for check download toc data
+    // https://redmine.weseek.co.jp/issues/111384
+    // cy.get('.toc-link').should('be.visible');
 
-  //   // hide fab // disable fab for sticky-events warning
-  //   // cy.getByTestid('grw-fab-container').invoke('attr', 'style', 'display: none');
+    // hide fab // disable fab for sticky-events warning
+    // cy.getByTestid('grw-fab-container').invoke('attr', 'style', 'display: none');
 
-  //   // remove animation for screenshot
-  //   // remove 'blink' class because ::after element cannot be operated
-  //   // https://stackoverflow.com/questions/5041494/selecting-and-manipulating-css-pseudo-elements-such-as-before-and-after-usin/21709814#21709814
-  //   cy.get('#mdcont-headers').invoke('removeClass', 'blink');
+    // remove animation for screenshot
+    // remove 'blink' class because ::after element cannot be operated
+    // https://stackoverflow.com/questions/5041494/selecting-and-manipulating-css-pseudo-elements-such-as-before-and-after-usin/21709814#21709814
+    cy.get('#mdcont-headers').invoke('removeClass', 'blink');
 
-  //   cy.screenshot(`${ssPrefix}-sandbox-headers`);
-  // });
+    cy.collapseSidebar(true);
+    cy.screenshot(`${ssPrefix}-sandbox-headers`);
+  });
 
   it('/Sandbox/Math is successfully loaded', () => {
     cy.visit('/Sandbox/Math');
     cy.waitUntilSkeletonDisappear();
 
     // for check download toc data
-    cy.get('.toc-link').should('be.visible');
+    // https://redmine.weseek.co.jp/issues/111384
+    // cy.get('.toc-link').should('be.visible');
 
+    cy.get('.math').should('be.visible');
+
+    cy.collapseSidebar(true);
     cy.screenshot(`${ssPrefix}-sandbox-math`);
   });
 
   it('/Sandbox with edit is successfully loaded', () => {
-    cy.visit('/Sandbox');
+    cy.visit('/Sandbox#edit');
     cy.waitUntilSkeletonDisappear();
-
-    cy.get('#grw-subnav-container').should('be.visible').within(() => {
-
-      // eslint-disable-next-line cypress/no-unnecessary-waiting
-      cy.wait(2000);
-      cy.getByTestid('editor-button').should('be.visible').click();
-    })
 
     cy.getByTestid('navbar-editor').should('be.visible');
     cy.get('.grw-editor-navbar-bottom').should('be.visible');
     cy.getByTestid('save-page-btn').should('be.visible');
-    cy.get('.grw-grant-selector').should('be.visible')
+    cy.get('.grw-grant-selector').should('be.visible');
 
+    cy.collapseSidebar(true);
     cy.screenshot(`${ssPrefix}-Sandbox-edit-page`);
   })
 
@@ -73,11 +73,12 @@ context('Access to page', () => {
 
     cy.waitUntilSkeletonDisappear();
     // for check download toc data
-    cy.get('.toc-link').should('be.visible');
+    // https://redmine.weseek.co.jp/issues/111384
+    // cy.get('.toc-link').should('be.visible');
 
     // eslint-disable-next-line cypress/no-unnecessary-waiting
     cy.wait(2000); // wait for calcViewHeight and rendering
-
+    cy.collapseSidebar(true);
     cy.screenshot(`${ssPrefix}-user-admin`);
   });
 
@@ -92,8 +93,6 @@ context('Access to /me page', () => {
     cy.fixture("user-admin.json").then(user => {
       cy.login(user.username, user.password);
     });
-    // collapse sidebar
-    cy.collapseSidebar(true);
   });
 
   it('/me is successfully loaded', () => {
@@ -101,6 +100,7 @@ context('Access to /me page', () => {
 
     cy.getByTestid('grw-user-settings').should('be.visible');
 
+    cy.collapseSidebar(true);
     cy.screenshot(`${ssPrefix}-me`);
   });
 
@@ -119,8 +119,6 @@ context('Access to special pages', () => {
     cy.fixture("user-admin.json").then(user => {
       cy.login(user.username, user.password);
     });
-    // collapse sidebar
-    cy.collapseSidebar(true);
   });
 
   it('/trash is successfully loaded', () => {
@@ -128,6 +126,7 @@ context('Access to special pages', () => {
 
     cy.getByTestid('trash-page-list').contains('There are no pages under this page.');
 
+    cy.collapseSidebar(true);
     cy.screenshot(`${ssPrefix}-trash`);
   });
 
@@ -147,6 +146,7 @@ context('Access to special pages', () => {
       cy.getByTestid('grw-tags-list').contains('You have no tag, You can set tags on pages');
     });
 
+    cy.collapseSidebar(true);
     cy.screenshot(`${ssPrefix}-tags`);
   });
 
@@ -160,8 +160,6 @@ context('Access to Template Editing Mode', () => {
     cy.fixture("user-admin.json").then(user => {
       cy.login(user.username, user.password);
     });
-    // collapse sidebar
-    cy.collapseSidebar(true);
   });
 
   // TODO: 109057
@@ -226,8 +224,6 @@ context('Access to /me/all-in-app-notifications', () => {
     cy.fixture("user-admin.json").then(user => {
       cy.login(user.username, user.password);
     });
-    // collapse sidebar
-    cy.collapseSidebar(true);
   });
 
   it('All In-App Notification list is successfully loaded', { scrollBehavior: false },() => {
@@ -238,11 +234,13 @@ context('Access to /me/all-in-app-notifications', () => {
     cy.getByTestid('grw-in-app-notification-page').should('be.visible');
     cy.getByTestid('grw-in-app-notification-page-spinner').should('not.exist');
 
+    cy.collapseSidebar(true);
     cy.screenshot(`${ssPrefix}-see-all`);
 
     cy.get('.grw-custom-nav-tab > div > ul > li:nth-child(2) > a').click();
     cy.getByTestid('grw-in-app-notification-page-spinner').should('not.exist');
 
+    cy.collapseSidebar(true);
     cy.screenshot(`${ssPrefix}-see-unread`);
    });
 

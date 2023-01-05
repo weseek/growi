@@ -1,10 +1,12 @@
 {
   "name": "@growi/preset-themes",
   "description": "GROWI preset themes",
-  "version": "6.0.0-RC.9",
+  "version": "6.0.1-RC.0",
   "license": "MIT",
   "main": "dist/libs/index.js",
-  "files": ["dist"],
+  "files": [
+    "dist"
+  ],
   "scripts": {
     "build": "yarn build:libs & yarn build:themes",
     "build:w": "yarn build:libs -w & yarn build:themes -w",

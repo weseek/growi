@@ -16,7 +16,7 @@ export default defineConfig({
         return launchOptions;
       });
     },
-    defaultCommandTimeout: 10000,
+    defaultCommandTimeout: 7000,
   },
   fileServerFolder: 'test/cypress',
   fixturesFolder: 'test/cypress/fixtures',

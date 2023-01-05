@@ -5,6 +5,7 @@ import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import dynamic from 'next/dynamic';
 import Head from 'next/head';
 
+import SearchResultLayout from '~/components/Layout/SearchResultLayout';
 import { DrawioViewerScript } from '~/components/Script/DrawioViewerScript';
 import type { CrowiRequest } from '~/interfaces/crowi-request';
 import type { RendererConfig } from '~/interfaces/services/renderer';
@@ -23,11 +24,11 @@ import {
 
 import { SearchPage } from '../components/SearchPage';
 
+import { NextPageWithLayout } from './_app.page';
 import {
-  CommonProps, getNextI18NextConfig, getServerSideCommonProps, useCustomTitle,
+  CommonProps, getNextI18NextConfig, getServerSideCommonProps, generateCustomTitle,
 } from './utils/commons';
 
-const SearchResultLayout = dynamic(() => import('~/components/Layout/SearchResultLayout'), { ssr: false });
 
 type Props = CommonProps & {
   currentUser: IUser,
@@ -53,7 +54,7 @@ type Props = CommonProps & {
 
 };
 
-const SearchResultPage: NextPage<Props> = (props: Props) => {
+const SearchResultPage: NextPageWithLayout<Props> = (props: Props) => {
   const { userUISettings } = props;
 
   // commons
@@ -87,29 +88,28 @@ const SearchResultPage: NextPage<Props> = (props: Props) => {
     return <PutbackPageModal />;
   };
 
-  const classNames: string[] = [];
-  // if (props.isContainerFluid) {
-  //   classNames.push('growi-layout-fluid');
-  // }
+  const title = generateCustomTitle(props, 'GROWI');
 
   return (
     <>
       <Head>
-        {/*
-        {renderScriptTagByName('drawio-viewer')}
-        {renderScriptTagByName('highlight-addons')}
-        */}
+        <title>{title}</title>
       </Head>
 
-      <DrawioViewerScript />
-
-      <SearchResultLayout title={useCustomTitle(props, 'GROWI')} className={classNames.join(' ')}>
-        <div id="search-page">
-          <SearchPage />
-        </div>
-      </SearchResultLayout>
+      <div id="search-page" className="dynamic-layout-root">
+        <SearchPage />
+      </div>
 
       <PutbackPageModal />
+    </>
+  );
+};
+
+SearchResultPage.getLayout = function getLayout(page) {
+  return (
+    <>
+      <DrawioViewerScript />
+      <SearchResultLayout>{page}</SearchResultLayout>
     </>
   );
 };
@@ -154,7 +154,7 @@ function injectServerConfigurations(context: GetServerSidePropsContext, props: P
     blockdiagUri: process.env.BLOCKDIAG_URI ?? null,
 
     // XSS Options
-    isEnabledXssPrevention: configManager.getConfig('markdown', 'markdown:xss:isEnabledPrevention'),
+    isEnabledXssPrevention: configManager.getConfig('markdown', 'markdown:rehypeSanitize:isEnabledPrevention'),
     attrWhiteList: crowi.xssService.getAttrWhiteList(),
     tagWhiteList: crowi.xssService.getTagWhiteList(),
     highlightJsStyleBorder: crowi.configManager.getConfig('crowi', 'customize:highlightJsStyleBorder'),
