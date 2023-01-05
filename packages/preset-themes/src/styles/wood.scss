@@ -23,7 +23,7 @@
 }
 
 .growi.login-page {
-  #page-wrapper {
+  .page-wrapper {
     background-image: url('/images/themes/wood/wood.jpg');
     background-attachment: fixed;
     background-position: center center;
@@ -151,10 +151,10 @@ $themelight: #f5f3ee;
 
   // login and register
   .nologin {
-    background: white;
+    background: unset !important;
 
-    .noLogin-header,
-    .noLogin-dialog {
+    .nologin-header,
+    .nologin-dialog {
       background-color: rgba(black, 0.1);
     }
 

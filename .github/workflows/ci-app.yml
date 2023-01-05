@@ -20,6 +20,11 @@ on:
       - packages/slack/**
       - packages/ui/**
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+
 jobs:
   lint:
     runs-on: ubuntu-latest

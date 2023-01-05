@@ -377,15 +377,12 @@
     "local_label": "Local",
     "gridfs_label": "MongoDB(GridFS)",
     "file_upload": "This is for uploading file settings. If you complete file upload settings, file upload function, profile picture function etc will be enabled.",
-    "ses_settings":"SES settings",
     "test_connection": "Test connection to mail",
     "change_setting": "Caution:if you change this setting not completed, you will not be able to access files you have uploaded so far.",
     "region": "Region",
     "bucket_name": "Bucket name",
     "custom_endpoint": "Custom endpoint",
     "custom_endpoint_change": "Input the URL of the endpoint of an object storage service like MinIO that has a S3-compatible API.  Amazon S3 is used if empty.",
-    "plugin_settings": "Plugin settings",
-    "enable_plugin_loading": "Enable plugin loading",
     "load_plugins": "Load plugins",
     "enable": "Enable",
     "disable": "Disable",
@@ -851,6 +848,16 @@
       "log_type": "https://docs.growi.org/en/admin-guide/admin-cookbook/audit-log-setup.html#log-types"
     }
   },
+  "plugins": {
+    "plugins": "Plugins",
+    "plugin_installer": "Plugin Installer",
+    "repository_url": "Repository URL",
+    "description": "You can install plugins by inputting the URL",
+    "plugin_card": "Plugin Card",
+    "plugin_is_not_installed": "Plugin is not installed",
+    "install": "Install",
+    "delete": "Delete"
+  },
   "cloud_setting_management": {
     "to_cloud_settings": "Open GROWI.cloud Settings"
   },
@@ -1025,6 +1032,10 @@
     "remove_user_success": "Succeeded to removing {{username}}",
     "remove_external_user_success": "Succeeded to remove {{accountId}}",
     "switch_disable_link_sharing_success": "Succeeded to update share link setting",
-    "failed_to_reset_password":"Failed to reset password"
+    "failed_to_reset_password":"Failed to reset password",
+    "install_plugin_success": "Succeeded to install {{pluginName}}",
+    "activate_plugin_success": "Succeeded to activating {{pluginName}}",
+    "deactivate_plugin_success": "Succeeded to deactivate {{pluginName}}",
+    "remove_plugin_success": "Succeeded to removing {{pluginName}}"
   }
 }

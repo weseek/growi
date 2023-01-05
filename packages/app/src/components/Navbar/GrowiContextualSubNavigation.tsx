@@ -15,7 +15,7 @@ import {
 import { OnDuplicatedFunction, OnRenamedFunction, OnDeletedFunction } from '~/interfaces/ui';
 import {
   useCurrentPageId, useCurrentPathname, useIsNotFound,
-  useCurrentUser, useIsGuestUser, useIsSharedUser, useShareLinkId, useTemplateTagData, useIsContainerFluid,
+  useCurrentUser, useIsGuestUser, useIsSharedUser, useShareLinkId, useTemplateTagData, useIsContainerFluid, useIsIdenticalPath,
 } from '~/stores/context';
 import { usePageTagsForEditors } from '~/stores/editor';
 import {
@@ -33,6 +33,7 @@ import AttachmentIcon from '../Icons/AttachmentIcon';
 import HistoryIcon from '../Icons/HistoryIcon';
 import PresentationIcon from '../Icons/PresentationIcon';
 import ShareLinkIcon from '../Icons/ShareLinkIcon';
+import { NotAvailableForNow } from '../NotAvailableForNow';
 import { Skeleton } from '../Skeleton';
 
 import type { AuthorInfoProps } from './AuthorInfo';
@@ -86,16 +87,18 @@ const PageOperationMenuItems = (props: PageOperationMenuItemsProps): JSX.Element
   return (
     <>
       {/* Presentation */}
-      <DropdownItem
-        onClick={() => openPresentationModal(hrefForPresentationModal)}
-        data-testid="open-presentation-modal-btn"
-        className="grw-page-control-dropdown-item"
-      >
-        <i className="icon-fw grw-page-control-dropdown-icon">
-          <PresentationIcon />
-        </i>
-        { t('Presentation Mode') }
-      </DropdownItem>
+      <NotAvailableForNow>
+        <DropdownItem
+          onClick={() => openPresentationModal(hrefForPresentationModal)}
+          data-testid="open-presentation-modal-btn"
+          className="grw-page-control-dropdown-item"
+        >
+          <i className="icon-fw grw-page-control-dropdown-icon">
+            <PresentationIcon />
+          </i>
+          { t('Presentation Mode') }
+        </DropdownItem>
+      </NotAvailableForNow>
 
       {/* Export markdown */}
       <DropdownItem
@@ -201,6 +204,7 @@ const GrowiContextualSubNavigation = (props: GrowiContextualSubNavigationProps):
   const { data: pageId } = useCurrentPageId();
   const { data: currentUser } = useCurrentUser();
   const { data: isNotFound } = useIsNotFound();
+  const { data: isIdenticalPath } = useIsIdenticalPath();
   const { data: isGuestUser } = useIsGuestUser();
   const { data: isSharedUser } = useIsSharedUser();
   const { data: isContainerFluid } = useIsContainerFluid();
@@ -302,14 +306,12 @@ const GrowiContextualSubNavigation = (props: GrowiContextualSubNavigationProps):
         // redirect to NotFound Page
         router.push(path);
       }
-      else {
-        // Do not use "router.push(currentPathname)" to avoid `Error: Invariant: attempted to hard navigate to the same URL`
-        // See: https://github.com/weseek/growi/pull/7061
-        router.reload();
+      else if (currentPathname != null) {
+        router.push(currentPathname);
       }
     };
     openDeleteModal([pageWithMeta], { onDeleted: deletedHandler });
-  }, [openDeleteModal, router]);
+  }, [currentPathname, openDeleteModal, router]);
 
   const switchContentWidthHandler = useCallback(async(pageId: string, value: boolean) => {
     await updateContentWidth(pageId, value);
@@ -321,7 +323,7 @@ const GrowiContextualSubNavigation = (props: GrowiContextualSubNavigationProps):
   }, []);
 
 
-  const RightComponent = useCallback(() => {
+  const RightComponent = () => {
     const additionalMenuItemsRenderer = () => {
       if (revisionId == null || pageId == null) {
         return (
@@ -406,14 +408,10 @@ const GrowiContextualSubNavigation = (props: GrowiContextualSubNavigationProps):
         )}
       </>
     );
-  // eslint-disable-next-line max-len
-  }, [isCompactMode, isViewMode, pageId, revisionId, shareLinkId, path, currentPathname, isSharedUser, isAbleToShowPageManagement,
-      duplicateItemClickedHandler, renameItemClickedHandler, deleteItemClickedHandler, isAbleToShowPageEditorModeManager, isGuestUser,
-      editorMode, isAbleToShowPageAuthors, currentPage, currentUser, isPageTemplateModalShown, isLinkSharingDisabled, templateMenuItemClickHandler,
-      mutateEditorMode, switchContentWidthHandler]);
+  };
 
 
-  const pagePath = isNotFound
+  const pagePath = isIdenticalPath || isNotFound
     ? currentPathname
     : currentPage?.path;
 
