@@ -191,7 +191,7 @@ const GrowiContextualSubNavigation = (props: GrowiContextualSubNavigationProps):
   const router = useRouter();
 
   const { data: shareLinkId } = useShareLinkId();
-  const { data: currentPage, mutate: mutateCurrentPage } = useSWRxCurrentPage(shareLinkId ?? undefined);
+  const { data: currentPage, mutate: mutateCurrentPage } = useSWRxCurrentPage();
 
   const { data: currentPathname } = useCurrentPathname();
   const isSharedPage = pagePathUtils.isSharedPage(currentPathname ?? '');

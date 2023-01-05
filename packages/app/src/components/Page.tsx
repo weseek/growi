@@ -64,7 +64,7 @@ export const Page = (props) => {
   const isSharedPage = pagePathUtils.isSharedPage(currentPathname ?? '');
 
   const { data: shareLinkId } = useShareLinkId();
-  const { data: currentPage, mutate: mutateCurrentPage } = useSWRxCurrentPage(shareLinkId ?? undefined);
+  const { data: currentPage, mutate: mutateCurrentPage } = useSWRxCurrentPage();
   const { mutate: mutateEditingMarkdown } = useEditingMarkdown();
   const { data: tagsInfo } = useSWRxTagsInfo(!isSharedPage ? currentPage?._id : undefined);
   const { data: isGuestUser } = useIsGuestUser();
