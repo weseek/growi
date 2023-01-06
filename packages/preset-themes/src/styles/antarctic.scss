@@ -24,13 +24,12 @@
   }
 }
 
-.growi.login-page {
-  #page-wrapper {
-    background-image: url('/images/themes/antarctic/topimage.svg');
-    background-attachment: fixed;
-    background-position: center center;
-    background-size: cover;
-  }
+.nologin {
+  background: unset !important;
+  background-image: url('/images/themes/antarctic/topimage.svg');
+  background-attachment: fixed;
+  background-position: center center;
+  background-size: cover;
 }
 
 $themecolor: #000080;

@@ -16,6 +16,11 @@ on:
       - '!packages/slackbot-proxy/docker/**'
       - packages/slack/**
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+
 jobs:
 
   test:

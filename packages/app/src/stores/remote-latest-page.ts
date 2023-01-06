@@ -1,3 +1,5 @@
+import { useMemo, useCallback } from 'react';
+
 import { SWRResponse } from 'swr';
 
 import { IUser } from '~/interfaces/user';
@@ -41,7 +43,7 @@ export const useSetRemoteLatestPageData = (): { setRemoteLatestPageData: (pageDa
   const { mutate: mutateRevisionIdHackmdSynced } = useRevisionIdHackmdSynced();
   const { mutate: mutateHasDraftOnHackmd } = useHasDraftOnHackmd();
 
-  const setRemoteLatestPageData = (remoteRevisionData: RemoteRevisionData) => {
+  const setRemoteLatestPageData = useCallback((remoteRevisionData: RemoteRevisionData) => {
     const {
       remoteRevisionId, remoteRevisionBody, remoteRevisionLastUpdateUser, remoteRevisionLastUpdatedAt, revisionIdHackmdSynced, hasDraftOnHackmd,
     } = remoteRevisionData;
@@ -51,10 +53,13 @@ export const useSetRemoteLatestPageData = (): { setRemoteLatestPageData: (pageDa
     mutateRemoteRevisionLastUpdatedAt(remoteRevisionLastUpdatedAt);
     mutateRevisionIdHackmdSynced(revisionIdHackmdSynced);
     mutateHasDraftOnHackmd(hasDraftOnHackmd);
-  };
+  // eslint-disable-next-line max-len
+  }, [mutateHasDraftOnHackmd, mutateRemoteRevisionBody, mutateRemoteRevisionId, mutateRemoteRevisionLastUpdateUser, mutateRemoteRevisionLastUpdatedAt, mutateRevisionIdHackmdSynced]);
 
-  return {
-    setRemoteLatestPageData,
-  };
+  return useMemo(() => {
+    return {
+      setRemoteLatestPageData,
+    };
+  }, [setRemoteLatestPageData]);
 
 };

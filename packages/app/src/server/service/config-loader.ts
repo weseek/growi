@@ -646,9 +646,9 @@ const ENV_VAR_NAME_TO_CONFIG_INFO = {
     type: ValueType.STRING,
     default: null,
   },
-  GROWI_QUESTIONNAIRE_URI: {
+  GROWI_QUESTIONNAIRE_SERVER_ORIGIN: {
     ns: 'crowi',
-    key: 'app:growiQuestionnaireUri',
+    key: 'app:growiQuestionnaireServerOrigin',
     type: ValueType.STRING,
     default: null,
   },

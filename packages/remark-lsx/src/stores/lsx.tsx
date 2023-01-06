@@ -124,10 +124,12 @@ type LsxNodeTree = {
 export const useSWRxNodeTree = (lsxContext: LsxContext, isImmutable?: boolean): SWRResponse<LsxNodeTree, Error> => {
   const { data, error } = useSWRxLsxResponse(lsxContext.pagePath, lsxContext.options, isImmutable);
 
+  const isLoading = data === undefined && error == null;
+
   return useSWR(
-    data === undefined ? null : ['lsxNodeTree', lsxContext.pagePath, lsxContext.options, isImmutable, data],
+    !isLoading ? ['lsxNodeTree', lsxContext.pagePath, lsxContext.options, isImmutable, data, error] : null,
     (key, pagePath, options, isImmutable, data) => {
-      if (error != null) {
+      if (data === undefined || error != null) {
         throw error;
       }
       return {

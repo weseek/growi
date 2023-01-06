@@ -141,7 +141,7 @@ ul.pagination {
     linear-gradient(225deg, darken(var.$growi-blue, 20%) 10%, hsla(140, 90%, 50%, 0) 80%),
     linear-gradient(315deg, darken($color-gradient, 25%) 100%, hsla(35, 95%, 55%, 0) 70%);
 
-  .noLogin-header {
+  .nologin-header {
     background-color: rgba(black, 0.5);
 
     .logo {
@@ -154,7 +154,7 @@ ul.pagination {
     }
   }
 
-  .noLogin-dialog {
+  .nologin-dialog {
     background-color: rgba(black, 0.5);
   }
 

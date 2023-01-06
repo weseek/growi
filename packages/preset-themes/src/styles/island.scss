@@ -101,11 +101,7 @@ $color-themelight: rgba(183, 226, 219, 1);
 
   // login page
   .nologin {
-    &.login-page {
-      > #wrapper > #page-wrapper {
-        background-image: unset;
-      }
-    }
+    background-image: unset !important;
   }
 
   // Button

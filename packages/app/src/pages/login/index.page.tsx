@@ -20,6 +20,9 @@ import {
 } from '~/stores/context';
 
 
+import styles from './index.module.scss';
+
+
 type Props = CommonProps & {
   registrationMode: RegistrationMode,
   pageWithMetaStr: string,
@@ -43,7 +46,7 @@ const LoginPage: NextPage<Props> = (props: Props) => {
   useCurrentPathname(props.currentPathname);
 
   const title = generateCustomTitle(props, 'GROWI');
-  const classNames: string[] = ['login-page'];
+  const classNames: string[] = ['login-page', styles['login-page']];
 
   return (
     <NoLoginLayout className={classNames.join(' ')}>

@@ -1,23 +1,25 @@
 import QuestionnaireOrder from '../../../src/server/models/questionnaire/questionnaire-order';
-import * as questionnaireCron from '../../../src/server/service/questionnaire-cron';
-import axios from '../../../src/utils/axios';
 import { getInstance } from '../setup-crowi';
+
+const axios = require('axios').default;
+
+const rand = require('../../../src/utils/rand');
 
 const spyAxiosGet = jest.spyOn<typeof axios, 'get'>(
   axios,
   'get',
 );
 
-const spyGetRandomInt = jest.spyOn<typeof questionnaireCron, 'getRandomInt'>(
-  questionnaireCron,
-  'getRandomInt',
+const spyGetRandomIntInRange = jest.spyOn<typeof rand, 'getRandomIntInRange'>(
+  rand,
+  'getRandomIntInRange',
 );
 
 describe('QuestionnaireCronService', () => {
   let crowi;
 
   const maxSecondsUntilRequest = 4 * 60 * 60 * 1000;
-  const secondsUntilRequest = questionnaireCron.getRandomInt(0, maxSecondsUntilRequest);
+  const secondsUntilRequest = rand.getRandomIntInRange(0, maxSecondsUntilRequest);
 
   const mockResponse = {
     data: {
@@ -183,7 +185,7 @@ describe('QuestionnaireCronService', () => {
     crowi.setupCron();
 
     spyAxiosGet.mockResolvedValue(mockResponse);
-    spyGetRandomInt.mockReturnValue(secondsUntilRequest); // リクエストまでの待機時間を固定化
+    spyGetRandomIntInRange.mockReturnValue(secondsUntilRequest); // リクエストまでの待機時間を固定化
   });
 
   afterAll(() => {

@@ -7,9 +7,8 @@
 import { factorySpace } from 'micromark-factory-space';
 import { factoryWhitespace } from 'micromark-factory-whitespace';
 import {
-  asciiAlpha,
-  asciiAlphanumeric,
   markdownLineEnding,
+  markdownLineEndingOrSpace,
   markdownSpace,
 } from 'micromark-util-character';
 import { codes } from 'micromark-util-symbol/codes.js';
@@ -82,11 +81,16 @@ export function factoryAttributes(
       return shortcutStart(code);
     }
 
-    if (disallowEol && markdownSpace(code)) {
-      return factorySpace(effects, between, types.whitespace)(code);
+    if (disallowEol) {
+      if (markdownSpace(code)) {
+        return factorySpace(effects, between, types.whitespace)(code);
+      }
+      if (code === codes.comma) {
+        return factoryAttributesDevider(effects, between)(code);
+      }
     }
 
-    if (!disallowEol && (markdownLineEndingOrSpaceOrComma(code))) {
+    if (!disallowEol && markdownLineEndingOrSpaceOrComma(code)) {
       return factoryAttributesDevider(effects, between)(code);
     }
 
@@ -129,7 +133,7 @@ export function factoryAttributes(
       || code === codes.greaterThan
       || code === codes.graveAccent
       || code === codes.rightParenthesis
-      || markdownLineEndingOrSpaceOrComma(code)
+      || code === codes.comma
     ) {
       return nok(code);
     }
@@ -186,6 +190,7 @@ export function factoryAttributes(
         && code !== codes.graveAccent
         && code !== codes.rightParenthesis
         && code !== codes.space
+        && code !== codes.comma
     ) {
       effects.consume(code);
       return name;
@@ -197,7 +202,7 @@ export function factoryAttributes(
       return factorySpace(effects, nameAfter, types.whitespace)(code);
     }
 
-    if (!disallowEol && markdownLineEndingOrSpaceOrComma(code)) {
+    if (!disallowEol && markdownLineEndingOrSpace(code)) {
       return factoryAttributesDevider(effects, nameAfter)(code);
     }
 
@@ -245,7 +250,7 @@ export function factoryAttributes(
       return factorySpace(effects, valueBefore, types.whitespace)(code);
     }
 
-    if (!disallowEol && markdownLineEndingOrSpaceOrComma(code)) {
+    if (!disallowEol && markdownLineEndingOrSpace(code)) {
       return factoryAttributesDevider(effects, valueBefore)(code);
     }
 
