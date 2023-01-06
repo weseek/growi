@@ -32,20 +32,19 @@ export const useSWRxPage = (
   const swrResponse = useSWRImmutable<IPagePopulatedToShowRevision|null, Error>(
     pageId != null ? ['/page', pageId, shareLinkId, revisionId] : null,
     // TODO: upgrade SWR to v2 and use useSWRMutation
-    //        in order to avoid complicated fetcher settings
-    Object.assign({
-      fetcher: (endpoint, pageId, shareLinkId, revisionId) => apiv3Get<{ page: IPagePopulatedToShowRevision }>(endpoint, { pageId, shareLinkId, revisionId })
-        .then(result => result.data.page)
-        .catch((errs) => {
-          if (!Array.isArray(errs)) { throw Error('error is not array') }
-          const statusCode = errs[0].status;
-          if (statusCode === 403 || statusCode === 404) {
-            // for NotFoundPage
-            return null;
-          }
-          throw Error('failed to get page');
-        }),
-    }, config ?? {}),
+    //        in order to trigger mutation manually
+    (endpoint, pageId, shareLinkId, revisionId) => apiv3Get<{ page: IPagePopulatedToShowRevision }>(endpoint, { pageId, shareLinkId, revisionId })
+      .then(result => result.data.page)
+      .catch((errs) => {
+        if (!Array.isArray(errs)) { throw Error('error is not array') }
+        const statusCode = errs[0].status;
+        if (statusCode === 403 || statusCode === 404) {
+          // for NotFoundPage
+          return null;
+        }
+        throw Error('failed to get page');
+      }),
+    config,
   );
 
   useEffect(() => {
