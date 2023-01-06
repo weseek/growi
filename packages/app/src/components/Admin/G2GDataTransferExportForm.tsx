@@ -143,9 +143,8 @@ const G2GDataTransferExportForm = (props: Props): JSX.Element => {
     return (
       <div className="alert alert-warning">
         <ul>
-          {errors.map((error) => {
-            // eslint-disable-next-line react/no-array-index-key
-            return <li key={error}>{error}</li>;
+          {errors.map((error, i) => {
+            return <li key={i}>{error}</li>;
           })}
         </ul>
       </div>
@@ -165,7 +164,7 @@ const G2GDataTransferExportForm = (props: Props): JSX.Element => {
       <div className="mt-4">
         <legend>{groupName} Collections</legend>
         <ImportItems collectionNames={collectionNames} />
-        <WarnForGroups errors={errors} key={`warnFor${groupName}`} />
+        <WarnForGroups errors={errors} />
       </div>
     );
   };
