@@ -805,6 +805,9 @@
   },
   "tag_edit_modal": {
     "edit_tags": "编辑标签",
-    "done": "完毕"
+    "done": "完毕",
+    "tags_input": {
+      "tag_name": "标签名称"
+    }
   }
 }

@@ -801,6 +801,9 @@
   },
   "tag_edit_modal": {
     "edit_tags": "Edit Tags",
-    "done": "Done"
+    "done": "Done",
+    "tags_input": {
+      "tag_name": "tag name"
+    }
   }
 }

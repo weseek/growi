@@ -801,6 +801,9 @@
   },
   "tag_edit_modal": {
     "edit_tags": "タグの編集",
-    "done": "完了"
+    "done": "完了",
+    "tags_input": {
+      "tag_name": "タグ名"
+    }
   }
 }
