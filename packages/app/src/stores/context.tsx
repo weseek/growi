@@ -201,8 +201,12 @@ export const useCustomizeTitle = (initialData?: string): SWRResponse<string, Err
   return useContextSWR('CustomizeTitle', initialData);
 };
 
-export const useCustomizedLogoSrc = (initialData?: string): SWRResponse<string, Error> => {
-  return useContextSWR('customizedLogoSrc', initialData);
+export const useIsDefaultLogo = (initialData?: boolean): SWRResponse<boolean, Error> => {
+  return useContextSWR('isDefaultLogo', initialData);
+};
+
+export const useIsCustomizedLogoUploaded = (initialData?: boolean): SWRResponse<boolean, Error> => {
+  return useStaticSWR('isCustomizedLogoUploaded', initialData);
 };
 
 export const useGrowiCloudUri = (initialData?: string): SWRResponse<string, Error> => {
