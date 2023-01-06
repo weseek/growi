@@ -139,7 +139,7 @@ export const generateViewOptions = (
   // add remark plugins
   remarkPlugins.push(
     math,
-    [plantuml.remarkPlugin, { baseUrl: config.plantumlUri }],
+    [plantuml.remarkPlugin, { plantumlUri: config.plantumlUri }],
     drawioPlugin.remarkPlugin,
     xsvToTable.remarkPlugin,
     lsxGrowiPlugin.remarkPlugin,
@@ -221,7 +221,7 @@ export const generateSimpleViewOptions = (
   // add remark plugins
   remarkPlugins.push(
     math,
-    [plantuml.remarkPlugin, { baseUrl: config.plantumlUri }],
+    [plantuml.remarkPlugin, { plantumlUri: config.plantumlUri }],
     drawioPlugin.remarkPlugin,
     xsvToTable.remarkPlugin,
     lsxGrowiPlugin.remarkPlugin,
@@ -271,7 +271,7 @@ export const generatePreviewOptions = (config: RendererConfig, pagePath: string)
   // add remark plugins
   remarkPlugins.push(
     math,
-    [plantuml.remarkPlugin, { baseUrl: config.plantumlUri }],
+    [plantuml.remarkPlugin, { plantumlUri: config.plantumlUri }],
     drawioPlugin.remarkPlugin,
     xsvToTable.remarkPlugin,
     lsxGrowiPlugin.remarkPlugin,

@@ -43,6 +43,12 @@ module.exports = (crowi, isGuestAllowed = false, fallback = null) => {
       return next();
     }
 
+    // Check if it is a Brand logo
+    if (req.isBrandLogo) {
+      logger.debug('Target is Brand logo');
+      return next();
+    }
+
     // is api path
     const baseUrl = req.baseUrl || '';
     if (baseUrl.match(/^\/_api\/.+$/)) {
