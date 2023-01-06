@@ -65,9 +65,7 @@ export const useSWRxPageByPath = (path?: string): SWRResponse<IPagePopulatedToSh
   );
 };
 
-export const useSWRxCurrentPage = (
-    shareLinkId?: string, initialData?: IPagePopulatedToShowRevision|null,
-): SWRResponse<IPagePopulatedToShowRevision|null, Error> => {
+export const useSWRxCurrentPage = (initialData?: IPagePopulatedToShowRevision|null): SWRResponse<IPagePopulatedToShowRevision|null, Error> => {
   const { data: currentPageId } = useCurrentPageId();
 
   // Get URL parameter for specific revisionId
@@ -78,7 +76,7 @@ export const useSWRxCurrentPage = (
     revisionId = requestRevisionId != null ? requestRevisionId : undefined;
   }
 
-  const swrResult = useSWRxPage(currentPageId, shareLinkId, revisionId, initialData);
+  const swrResult = useSWRxPage(currentPageId, undefined, revisionId, initialData);
 
   return swrResult;
 };

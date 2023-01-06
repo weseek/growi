@@ -265,7 +265,7 @@ const Page: NextPageWithLayout<Props> = (props: Props) => {
   useHasDraftOnHackmd(pageWithMeta?.data.hasDraftOnHackmd ?? false);
   useCurrentPathname(props.currentPathname);
 
-  useSWRxCurrentPage(undefined, pageWithMeta?.data ?? null); // store initial data
+  useSWRxCurrentPage(pageWithMeta?.data ?? null); // store initial data
 
   useEditingMarkdown(pageWithMeta?.data.revision?.body);
 

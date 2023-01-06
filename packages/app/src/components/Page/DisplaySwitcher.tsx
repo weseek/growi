@@ -34,7 +34,7 @@ const PageView = React.memo((): JSX.Element => {
   const { data: currentPagePath } = useCurrentPagePath();
   const { data: shareLinkId } = useShareLinkId();
   const { data: isNotFound } = useIsNotFound();
-  const { data: currentPage } = useSWRxCurrentPage(shareLinkId ?? undefined);
+  const { data: currentPage } = useSWRxCurrentPage();
   const { setRemoteLatestPageData } = useSetRemoteLatestPageData();
 
   const { mutate: mutateIsHackmdDraftUpdatingInRealtime } = useIsHackmdDraftUpdatingInRealtime();
