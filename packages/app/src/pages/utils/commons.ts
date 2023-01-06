@@ -46,8 +46,8 @@ export const getServerSideCommonProps: GetServerSideProps<CommonProps> = async(c
 
   // eslint-disable-next-line max-len, no-nested-ternary
   const redirectDestination = !isMaintenanceMode && currentPathname === '/maintenance' ? '/' : isMaintenanceMode && !currentPathname.match('/admin/*') && !(currentPathname === '/maintenance') ? '/maintenance' : null;
-  const isDefaultLogo = crowi.configManager.getConfig('crowi', 'customize:isDefaultLogo');
   const isCustomizedLogoUploaded = await attachmentService.isBrandLogoExist();
+  const isDefaultLogo = crowi.configManager.getConfig('crowi', 'customize:isDefaultLogo') || !isCustomizedLogoUploaded;
 
   const props: CommonProps = {
     namespacesRequired: ['translation'],

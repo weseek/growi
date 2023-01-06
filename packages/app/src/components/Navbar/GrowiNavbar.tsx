@@ -11,7 +11,7 @@ import { useRipple } from 'react-use-ripple';
 import { UncontrolledTooltip } from 'reactstrap';
 
 import {
-  useIsSearchPage, useIsGuestUser, useIsSearchServiceConfigured, useAppTitle, useConfidential, useIsDefaultLogo, useIsCustomizedLogoUploaded,
+  useIsSearchPage, useIsGuestUser, useIsSearchServiceConfigured, useAppTitle, useConfidential, useIsDefaultLogo,
 } from '~/stores/context';
 import { usePageCreateModal } from '~/stores/modal';
 import { useCurrentPagePath } from '~/stores/page';
@@ -127,9 +127,9 @@ interface NavbarLogoProps {
 }
 
 const GrowiNavbarLogo: FC<NavbarLogoProps> = memo((props: NavbarLogoProps) => {
-  const { isDefaultLogo, isCustomizedLogoUploaded } = props;
+  const { isDefaultLogo } = props;
 
-  return isDefaultLogo || !isCustomizedLogoUploaded
+  return isDefaultLogo
     ? <GrowiLogo />
     // eslint-disable-next-line @next/next/no-img-element
     : (<img src='/attachment/brand-logo' alt="custom logo" className="picture picture-lg p-2 mx-2" id="settingBrandLogo" width="32" />);
@@ -153,7 +153,6 @@ export const GrowiNavbar = (props: Props): JSX.Element => {
   const { data: isDeviceSmallerThanMd } = useIsDeviceSmallerThanMd();
   const { data: isSearchPage } = useIsSearchPage();
   const { data: isDefaultLogo } = useIsDefaultLogo();
-  const { data: isCustomizedLogoUploaded } = useIsCustomizedLogoUploaded();
 
   return (
     <nav id="grw-navbar" className={`navbar grw-navbar ${styles['grw-navbar']} navbar-expand navbar-dark sticky-top mb-0 px-0`}>
@@ -161,7 +160,7 @@ export const GrowiNavbar = (props: Props): JSX.Element => {
       <div className="navbar-brand mr-0">
         <Link href="/" prefetch={false}>
           <a className="grw-logo d-block">
-            <GrowiNavbarLogo isDefaultLogo={isDefaultLogo} isCustomizedLogoUploaded={isCustomizedLogoUploaded}/>
+            <GrowiNavbarLogo isDefaultLogo={isDefaultLogo} />
           </a>
         </Link>
       </div>

@@ -27,8 +27,8 @@ const CustomizeLogoSetting = (): JSX.Element => {
   const [retrieveError, setRetrieveError] = useState<any>();
 
   const currentLogo = useMemo(() => {
-    return isDefaultLogo || !isCustomizedLogoUploaded ? DEFAULT_LOGO : CUSTOMIZED_LOGO;
-  }, [isDefaultLogo, isCustomizedLogoUploaded]);
+    return isDefaultLogo ? DEFAULT_LOGO : CUSTOMIZED_LOGO;
+  }, [isDefaultLogo]);
 
   const onSelectFile = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files != null && e.target.files.length > 0) {
