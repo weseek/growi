@@ -1,3 +1,11 @@
+import { BlackoutGroup } from "../../support/blackout";
+
+// Blackout for recalculation of toc content hight
+const blackoutOverride = [
+  ...BlackoutGroup.BASIS,
+  ...BlackoutGroup.SIDE_CONTENTS,
+];
+
 describe('Access to sidebar', () => {
   const ssPrefix = 'access-to-sidebar-';
 
@@ -29,8 +37,7 @@ describe('Access to sidebar', () => {
           cy.waitUntilSkeletonDisappear();
           cy.screenshot(`${ssPrefix}1-sidebar-shown`, {
             capture: 'viewport',
-            // Blackout for recalculation of toc content hight
-            blackout: ['.grw-side-contents-container', '[data-hide-in-vrt=true]'],
+            blackout: blackoutOverride,
           });
         });
 
@@ -42,8 +49,7 @@ describe('Access to sidebar', () => {
           cy.waitUntilSkeletonDisappear();
           cy.screenshot(`${ssPrefix}2-sidebar-collapsed`, {
             capture: 'viewport',
-            // Blackout for recalculation of toc content hight
-            blackout: ['.grw-side-contents-container', '[data-hide-in-vrt=true]'],
+            blackout: blackoutOverride,
           });
         });
       });
@@ -92,8 +98,7 @@ describe('Access to sidebar', () => {
           });
 
           cy.screenshot(`${ssPrefix}page-tree-3-before-click-button`, {
-            // Blackout for recalculation of toc content hight
-            blackout: ['.grw-side-contents-container', '[data-hide-in-vrt=true]'],
+            blackout: blackoutOverride,
           });
 
           // click add remove bookmark btn
@@ -113,8 +118,7 @@ describe('Access to sidebar', () => {
           });
 
           cy.screenshot(`${ssPrefix}page-tree-4-after-click-button`, {
-            // Blackout for recalculation of toc content hight
-            blackout: ['.grw-side-contents-container', '[data-hide-in-vrt=true]'],
+            blackout: blackoutOverride,
           });
         });
 
@@ -250,8 +254,7 @@ describe('Access to sidebar', () => {
 
           // The scope of the screenshot is not narrowed because the blackout is shifted
           cy.screenshot(`${ssPrefix}recent-changes-1-access-to-recent-changes`, {
-            // Blackout for recalculation of toc content hight
-            blackout: ['.grw-side-contents-container', '[data-hide-in-vrt=true]'],
+            blackout: blackoutOverride,
           });
         });
 
@@ -263,8 +266,7 @@ describe('Access to sidebar', () => {
 
           // The scope of the screenshot is not narrowed because the blackout is shifted
           cy.screenshot(`${ssPrefix}recent-changes-2-switch-content-size`, {
-            // Blackout for recalculation of toc content hight
-            blackout: ['.grw-side-contents-container', '[data-hide-in-vrt=true]'],
+            blackout: blackoutOverride,
           });
         });
       });

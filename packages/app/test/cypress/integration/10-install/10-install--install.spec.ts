@@ -53,8 +53,6 @@ describe('Install', () => {
     cy.getByTestid('grw-pagetree-item-container', { timeout: 20000 }).should('be.visible');
 
     cy.waitUntilSkeletonDisappear();
-    cy.screenshot(`${ssPrefix}-installed-redirect-to-root-page`, {
-      blackout: ['[data-hide-in-vrt=true]']
-    });
+    cy.screenshot(`${ssPrefix}-installed-redirect-to-root-page`);
   });
 });
