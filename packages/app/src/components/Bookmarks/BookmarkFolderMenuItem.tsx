@@ -21,17 +21,15 @@ import BookmarkFolderNameInput from './BookmarkFolderNameInput';
 
 type Props ={
   item: BookmarkFolderItems
-  isSelected: boolean
   onSelectedChild: () => void
 }
 const BookmarkFolderMenuItem = (props: Props):JSX.Element => {
   const {
-    item, isSelected,
+    item,
   } = props;
   const { t } = useTranslation();
   const [isOpen, setIsOpen] = useState(false);
   const { data: childFolders, mutate: mutateChildFolders } = useSWRxBookamrkFolderAndChild(item._id);
-
   const [selectedItem, setSelectedItem] = useState<string | null>(null);
   const [isCreateAction, setIsCreateAction] = useState<boolean>(false);
   const { data: currentPage } = useSWRxCurrentPage();
@@ -49,6 +47,16 @@ const BookmarkFolderMenuItem = (props: Props):JSX.Element => {
     }
 
   }, [item, mutateChildFolders, t]);
+
+  useEffect(() => {
+    if (item.bookmarks != null) {
+      item.bookmarks.forEach((bookmark) => {
+        if (bookmark.page._id === currentPage?._id) {
+          setSelectedItem(item._id);
+        }
+      });
+    }
+  }, [currentPage?._id, item._id, item.bookmarks]);
 
   useEffect(() => {
     if (isOpen) {
@@ -125,7 +133,6 @@ const BookmarkFolderMenuItem = (props: Props):JSX.Element => {
                   onClick={e => onClickChildMenuItemHandler(e, child)}>
                   <BookmarkFolderMenuItem
                     onSelectedChild={() => setSelectedItem(null)}
-                    isSelected={selectedItem === child._id}
                     item={child}
                   />
                 </div>
@@ -135,7 +142,7 @@ const BookmarkFolderMenuItem = (props: Props):JSX.Element => {
         )}
       </>
     );
-  }, [childFolders, isCreateAction, onClickChildMenuItemHandler, onClickNewBookmarkFolder, onPressEnterHandlerForCreate, selectedItem, t]);
+  }, [childFolders, isCreateAction, onClickChildMenuItemHandler, onClickNewBookmarkFolder, onPressEnterHandlerForCreate, t]);
 
   return (
     <UncontrolledDropdown
@@ -148,7 +155,7 @@ const BookmarkFolderMenuItem = (props: Props):JSX.Element => {
       <div className='d-flex justify-content-start  grw-bookmark-folder-menu-item-title'>
         <input
           type="radio"
-          checked={isSelected}
+          checked={selectedItem === item._id}
           name="bookmark-folder-menu-item"
           id={`bookmark-folder-menu-item-${item._id}`}
           onChange={e => e.stopPropagation()}

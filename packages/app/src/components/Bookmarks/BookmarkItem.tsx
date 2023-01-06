@@ -96,7 +96,7 @@ const BookmarkItem = (props: Props): JSX.Element => {
 
   return (
     <div className="grw-foldertree-item-container" key={bookmarkedPage._id}>
-      <li className="bookmark-item-list list-group-item list-group-item-action border-0 py-0 pl-3 d-flex align-items-center" id={bookmarkItemId}>
+      <li className="bookmark-item-list list-group-item list-group-item-action border-0 py-0 pl-5 d-flex align-items-center" id={bookmarkItemId}>
         { isRenameInputShown ? (
           <ClosableTextInput
             value={nodePath.basename(bookmarkedPage.path ?? '')}

@@ -69,6 +69,7 @@ const BookmarkFolderMenu = (props: Props): JSX.Element => {
   const onMenuItemClickHandler = useCallback(async(itemId: string) => {
     try {
       await apiv3Post('/bookmark-folder/add-boookmark-to-folder', { pageId: currentPage?._id, folderId: itemId });
+      await mutateBookmarkFolderData();
       setSelectedItem(itemId);
       mutateBookmarkInfo();
       toastSuccess('Bookmark added to bookmark folder successfully');
@@ -76,7 +77,7 @@ const BookmarkFolderMenu = (props: Props): JSX.Element => {
     catch (err) {
       toastError(err);
     }
-  }, [currentPage, mutateBookmarkInfo]);
+  }, [currentPage?._id, mutateBookmarkFolderData, mutateBookmarkInfo]);
 
   const renderBookmarkMenuItem = useCallback(() => {
     return (
@@ -102,7 +103,6 @@ const BookmarkFolderMenu = (props: Props): JSX.Element => {
                 {
                   <div className='dropdown-item grw-bookmark-folder-menu-item' tabIndex={0} role="menuitem" onClick={() => onMenuItemClickHandler(folder._id)}>
                     <BookmarkFolderMenuItem
-                      isSelected={selectedItem === folder._id}
                       item={folder}
                       onSelectedChild={() => setSelectedItem(null)}
                     />
@@ -120,7 +120,6 @@ const BookmarkFolderMenu = (props: Props): JSX.Element => {
       onClickNewBookmarkFolder,
       onMenuItemClickHandler,
       onPressEnterHandlerForCreate,
-      selectedItem,
       t,
   ]);
 
