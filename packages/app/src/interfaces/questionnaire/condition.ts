@@ -2,12 +2,12 @@ import { GrowiServiceType } from './growi-info';
 import { UserType } from './user-info';
 
 interface UserCondition {
-  types: UserType[] // アンケート対象ユーザータイプ
+  types: UserType[] // user types to show questionnaire
 }
 
 interface GrowiCondition {
-  types: GrowiServiceType[] // アンケート対象 GROWI タイプ
-  versionRegExps: string[] // アンケート対象 GROWI バージョン正規表現
+  types: GrowiServiceType[] // GROWI types to show questionnaire in
+  versionRegExps: string[] // GROWI versions to show questionnaire in
 }
 
 export interface ICondition {

@@ -1,5 +1,3 @@
-
-
 import axiosRetry from 'axios-retry';
 
 import loggerFactory from '~/utils/logger';
@@ -19,7 +17,7 @@ class QuestionnaireCronService {
 
   crowi: any;
 
-  cronJob;
+  cronJob: any;
 
   // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
   constructor(crowi) {
@@ -43,13 +41,13 @@ class QuestionnaireCronService {
     const growiQuestionnaireServerOrigin = this.crowi.configManager?.getConfig('crowi', 'app:growiQuestionnaireServerOrigin');
     const saveOrders = async(questionnaireOrders: QuestionnaireOrderDocument[]) => {
       const currentDate = new Date(Date.now());
-      // 渡されたアンケートのうち終了前のものを保存する
+      // save questionnaires that are not finished (doesn't have to be started)
       const nonFinishedOrders = questionnaireOrders.filter(order => new Date(order.showUntil) > currentDate);
       await QuestionnaireOrder.insertMany(nonFinishedOrders);
     };
 
     return nodeCron.schedule(cronSchedule, async() => {
-      // GROWI ごとにリクエスト時刻を分散させるためにランダムな時間 sleep する
+      // sleep for a random amount to scatter request time from GROWI apps to questionnaire server
       const secToSleep = getRandomIntInRange(0, maxSecondsUntilRequest);
       await sleep(secToSleep * 1000);
 
