@@ -148,7 +148,7 @@ const SharedPage: NextPageWithLayout<Props> = (props: Props) => {
           {(isShowSharedPage && shareLink != null) && (
             <>
               <ShareLinkAlert expiredAt={shareLink.expiredAt} createdAt={shareLink.createdAt} />
-              <Page />
+              <Page currentPage={props.shareLinkRelatedPage} />
             </>
           )}
         </MainPane>

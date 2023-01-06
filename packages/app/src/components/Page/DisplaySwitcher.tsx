@@ -92,7 +92,7 @@ const PageView = React.memo((): JSX.Element => {
   return (
     <>
       { isUsersHomePagePath && <UserInfo author={currentPage?.creator} /> }
-      { !isNotFound && <Page /> }
+      { !isNotFound && <Page currentPage={currentPage ?? undefined} /> }
       { isNotFound && <NotFoundPage /> }
     </>
   );
