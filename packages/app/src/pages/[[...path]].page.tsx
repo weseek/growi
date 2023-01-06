@@ -328,7 +328,7 @@ const Page: NextPageWithLayout<Props> = (props: Props) => {
       <div className={`dynamic-layout-root ${growiLayoutFluidClass} h-100 d-flex flex-column justify-content-between`}>
         <header className="py-0 position-relative">
           <div id="grw-subnav-container">
-            <GrowiContextualSubNavigation isLinkSharingDisabled={props.disableLinkSharing} />
+            <GrowiContextualSubNavigation currentPage={pageWithMeta?.data} isLinkSharingDisabled={props.disableLinkSharing} />
           </div>
         </header>
         <div className="d-edit-none">

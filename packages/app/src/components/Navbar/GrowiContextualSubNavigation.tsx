@@ -1,6 +1,8 @@
 import React, { useState, useEffect, useCallback } from 'react';
 
-import { isPopulated, IUser, pagePathUtils } from '@growi/core';
+import {
+  isPopulated, IUser, pagePathUtils, IPagePopulatedToShowRevision,
+} from '@growi/core';
 import { useTranslation } from 'next-i18next';
 import dynamic from 'next/dynamic';
 import { useRouter } from 'next/router';
@@ -182,16 +184,19 @@ const CreateTemplateMenuItems = (props: CreateTemplateMenuItemsProps): JSX.Eleme
 };
 
 type GrowiContextualSubNavigationProps = {
+  currentPage?: IPagePopulatedToShowRevision,
   isCompactMode?: boolean,
   isLinkSharingDisabled: boolean,
 };
 
 const GrowiContextualSubNavigation = (props: GrowiContextualSubNavigationProps): JSX.Element => {
 
+  const { currentPage } = props;
+
   const router = useRouter();
 
   const { data: shareLinkId } = useShareLinkId();
-  const { data: currentPage, mutate: mutateCurrentPage } = useSWRxCurrentPage();
+  const { mutate: mutateCurrentPage } = useSWRxCurrentPage(shareLinkId ?? undefined);
 
   const { data: currentPathname } = useCurrentPathname();
   const isSharedPage = pagePathUtils.isSharedPage(currentPathname ?? '');

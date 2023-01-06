@@ -25,7 +25,6 @@ import {
   useCurrentUser, useCurrentPathname, useCurrentPageId, useRendererConfig, useIsSearchPage,
   useShareLinkId, useIsSearchServiceConfigured, useIsSearchServiceReachable, useIsSearchScopeChildrenAsDefault, useDrawioUri, useIsContainerFluid,
 } from '~/stores/context';
-import { useSWRxCurrentPage } from '~/stores/page';
 import loggerFactory from '~/utils/logger';
 
 import { NextPageWithLayout } from '../_app.page';
@@ -71,7 +70,6 @@ superjson.registerCustom<IShareLinkRelatedPage, string>(
 
 const SharedPage: NextPageWithLayout<Props> = (props: Props) => {
   useIsSearchPage(false);
-  useSWRxCurrentPage(undefined, props.shareLinkRelatedPage);
   useShareLinkId(props.shareLink?._id);
   useCurrentPageId(props.shareLink?.relatedPage._id);
   useCurrentUser(props.currentUser);
@@ -113,7 +111,7 @@ const SharedPage: NextPageWithLayout<Props> = (props: Props) => {
 
       <div className={`dynamic-layout-root ${growiLayoutFluidClass} h-100 d-flex flex-column justify-content-between`}>
         <header className="py-0 position-relative">
-          {isShowSharedPage && <GrowiContextualSubNavigation isLinkSharingDisabled={props.disableLinkSharing} />}
+          {isShowSharedPage && <GrowiContextualSubNavigation currentPage={props.shareLinkRelatedPage} isLinkSharingDisabled={props.disableLinkSharing} />}
         </header>
 
         <div id="grw-fav-sticky-trigger" className="sticky-top"></div>
