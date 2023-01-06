@@ -21,8 +21,6 @@ const CustomizeLogoSetting = (): JSX.Element => {
   const { data: isDefaultLogo } = useIsDefaultLogo();
   const { data: isCustomizedLogoUploaded, mutate: mutateIsCustomizedLogoUploaded } = useIsCustomizedLogoUploaded();
 
-  console.log('isCustomizedLogoUploaded', isCustomizedLogoUploaded);
-
   const [uploadLogoSrc, setUploadLogoSrc] = useState<ArrayBuffer | string | null>(null);
   const [isImageCropModalShow, setIsImageCropModalShow] = useState<boolean>(false);
   const [isDefaultLogoSelected, setIsDefaultLogoSelected] = useState<boolean>(isDefaultLogo ?? true);
