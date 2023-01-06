@@ -70,7 +70,7 @@ describe('Access to sidebar', () => {
             cy.getByTestid('grw-pagetree-item-container').should('be.visible');
 
             cy.waitUntilSkeletonDisappear();
-            cy.screenshot(`${ssPrefix}page-tree-1-access-to-page-tree`);
+            cy.screenshot(`${ssPrefix}page-tree-1-access-to-page-tree`, { blackout: blackoutOverride });
           });
         });
 
@@ -81,7 +81,7 @@ describe('Access to sidebar', () => {
             // hide page tree tiems
             cy.get('.grw-pagetree-triangle-btn').first().click();
 
-            cy.screenshot(`${ssPrefix}page-tree-2-hide-page-tree-items`);
+            cy.screenshot(`${ssPrefix}page-tree-2-hide-page-tree-items`, { blackout: blackoutOverride });
           });
         });
 
@@ -97,9 +97,7 @@ describe('Access to sidebar', () => {
             return cy.get('.dropdown-menu.show').then($elem => $elem.is(':visible'));
           });
 
-          cy.screenshot(`${ssPrefix}page-tree-3-before-click-button`, {
-            blackout: blackoutOverride,
-          });
+          cy.screenshot(`${ssPrefix}page-tree-3-before-click-button`, { blackout: blackoutOverride });
 
           // click add remove bookmark btn
           cy.getByTestid('page-item-control-menu').should('have.class', 'show')
@@ -117,9 +115,7 @@ describe('Access to sidebar', () => {
             return cy.get('.dropdown-menu.show').then($elem => $elem.is(':visible'));
           });
 
-          cy.screenshot(`${ssPrefix}page-tree-4-after-click-button`, {
-            blackout: blackoutOverride,
-          });
+          cy.screenshot(`${ssPrefix}page-tree-4-after-click-button`, { blackout: blackoutOverride });
         });
 
         it('Successfully show duplicate page modal', () => {
@@ -141,7 +137,7 @@ describe('Access to sidebar', () => {
           cy.getByTestid('page-duplicate-modal').should('be.visible').within(() => {
             cy.get('.form-control').type('_test');
 
-            cy.screenshot(`${ssPrefix}page-tree-5-duplicate-page-modal`);
+            cy.screenshot(`${ssPrefix}page-tree-5-duplicate-page-modal`, { blackout: blackoutOverride });
 
             cy.get('.modal-header > button').click();
           });
@@ -167,7 +163,7 @@ describe('Access to sidebar', () => {
             cy.getByTestid('closable-text-input').type('_newname');
           })
 
-          cy.screenshot(`${ssPrefix}page-tree-6-rename-page`);
+          cy.screenshot(`${ssPrefix}page-tree-6-rename-page`, { blackout: blackoutOverride });
         });
 
         it('Successfully show delete page modal', () => {
@@ -187,7 +183,7 @@ describe('Access to sidebar', () => {
           });
 
           cy.getByTestid('page-delete-modal').should('be.visible').within(() => {
-            cy.screenshot(`${ssPrefix}page-tree-7-delete-page-modal`);
+            cy.screenshot(`${ssPrefix}page-tree-7-delete-page-modal`, { blackout: blackoutOverride });
             cy.get('.modal-header > button').click();
           });
         });
@@ -209,7 +205,7 @@ describe('Access to sidebar', () => {
             cy.get('.grw-sidebar-content-header > h3').find('a');
 
             cy.waitUntilSkeletonDisappear();
-            cy.screenshot(`${ssPrefix}custom-sidebar-1-access-to-custom-sidebar`);
+            cy.screenshot(`${ssPrefix}custom-sidebar-1-access-to-custom-sidebar`, { blackout: blackoutOverride });
           });
         });
 
@@ -221,7 +217,7 @@ describe('Access to sidebar', () => {
           cy.get('.layout-root').should('have.class', 'editing');
           cy.get('.CodeMirror textarea').type(content, {force: true});
 
-          cy.screenshot(`${ssPrefix}custom-sidebar-2-redirect-to-editor`);
+          cy.screenshot(`${ssPrefix}custom-sidebar-2-redirect-to-editor`, { blackout: blackoutOverride });
 
           cy.getByTestid('save-page-btn').click();
           cy.get('.layout-root').should('not.have.class', 'editing');
@@ -233,7 +229,7 @@ describe('Access to sidebar', () => {
             .should('have.class', 'active');
 
           cy.waitUntilSkeletonDisappear();
-          cy.screenshot(`${ssPrefix}custom-sidebar-3-content-created`);
+          cy.screenshot(`${ssPrefix}custom-sidebar-3-content-created`, { blackout: blackoutOverride });
         });
       });
 
@@ -253,9 +249,7 @@ describe('Access to sidebar', () => {
           cy.get('.list-group-item').should('be.visible');
 
           // The scope of the screenshot is not narrowed because the blackout is shifted
-          cy.screenshot(`${ssPrefix}recent-changes-1-access-to-recent-changes`, {
-            blackout: blackoutOverride,
-          });
+          cy.screenshot(`${ssPrefix}recent-changes-1-access-to-recent-changes`, { blackout: blackoutOverride });
         });
 
         it('Successfully switch content size', () => {
@@ -265,9 +259,7 @@ describe('Access to sidebar', () => {
           });
 
           // The scope of the screenshot is not narrowed because the blackout is shifted
-          cy.screenshot(`${ssPrefix}recent-changes-2-switch-content-size`, {
-            blackout: blackoutOverride,
-          });
+          cy.screenshot(`${ssPrefix}recent-changes-2-switch-content-size`, { blackout: blackoutOverride });
         });
       });
 
@@ -286,7 +278,7 @@ describe('Access to sidebar', () => {
           cy.getByTestid('grw-contextual-navigation-sub').within(() => {
             cy.getByTestid('grw-tags-list').should('be.visible');
 
-            cy.screenshot(`${ssPrefix}tags-1-access-to-tags`);
+            cy.screenshot(`${ssPrefix}tags-1-access-to-tags`, { blackout: blackoutOverride });
           });
         });
 
@@ -295,7 +287,7 @@ describe('Access to sidebar', () => {
           cy.collapseSidebar(true);
           cy.getByTestid('grw-tags-list').should('be.visible');
 
-          cy.screenshot(`${ssPrefix}tags-2-click-all-tags-button`);
+          cy.screenshot(`${ssPrefix}tags-2-click-all-tags-button`, { blackout: blackoutOverride });
         });
       });
 
@@ -306,7 +298,7 @@ describe('Access to sidebar', () => {
       //   cy.get('.grw-sidebar-nav-secondary-container').within(() => {
       //     cy.get('a[href*="/me/drafts"]').click();
       //   });
-      //   cy.screenshot(`${ssPrefix}access-to-drafts-page`);
+      //   cy.screenshot(`${ssPrefix}access-to-drafts-page`, { blackout: blackoutOverride });
       // });
 
       describe('Test access to GROWI Docs page', () => {
@@ -330,7 +322,7 @@ describe('Access to sidebar', () => {
           cy.get('.grw-page-path-hierarchical-link').should('be.visible');
           cy.get('.grw-custom-nav-tab').should('be.visible');
 
-          cy.screenshot(`${ssPrefix}access-to-trash-page`);
+          cy.screenshot(`${ssPrefix}access-to-trash-page`, { blackout: blackoutOverride });
         });
       });
     });
