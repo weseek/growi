@@ -132,14 +132,16 @@ export const Page: FC<Props> = (props: Props) => {
       toastSuccess(t('toaster.save_succeeded'));
 
       // rerender
-      mutateCurrentPage();
+      if (!isSharedPage) {
+        mutateCurrentPage();
+      }
       mutateEditingMarkdown(newMarkdown);
     }
     catch (error) {
       logger.error('failed to save', error);
       toastError(error);
     }
-  }, [currentPage, mutateCurrentPage, mutateEditingMarkdown, saveOrUpdate, shareLinkId, t, tagsInfo]);
+  }, [currentPage, isSharedPage, mutateCurrentPage, mutateEditingMarkdown, saveOrUpdate, shareLinkId, t, tagsInfo]);
 
   // set handler to open DrawioModal
   useEffect(() => {
@@ -186,14 +188,16 @@ export const Page: FC<Props> = (props: Props) => {
       toastSuccess(t('toaster.save_succeeded'));
 
       // rerender
-      mutateCurrentPage();
+      if (!isSharedPage) {
+        mutateCurrentPage();
+      }
       mutateEditingMarkdown(newMarkdown);
     }
     catch (error) {
       logger.error('failed to save', error);
       toastError(error);
     }
-  }, [currentPage, mutateCurrentPage, mutateEditingMarkdown, saveOrUpdate, shareLinkId, t, tagsInfo]);
+  }, [currentPage, isSharedPage, mutateCurrentPage, mutateEditingMarkdown, saveOrUpdate, shareLinkId, t, tagsInfo]);
 
   // set handler to open HandsonTableModal
   useEffect(() => {

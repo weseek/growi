@@ -319,9 +319,11 @@ const GrowiContextualSubNavigation = (props: GrowiContextualSubNavigationProps):
   }, [currentPathname, openDeleteModal, router]);
 
   const switchContentWidthHandler = useCallback(async(pageId: string, value: boolean) => {
-    await updateContentWidth(pageId, value);
-    mutateCurrentPage();
-  }, [mutateCurrentPage]);
+    if (!isSharedPage) {
+      await updateContentWidth(pageId, value);
+      mutateCurrentPage();
+    }
+  }, [isSharedPage, mutateCurrentPage]);
 
   const templateMenuItemClickHandler = useCallback(() => {
     setIsPageTempleteModalShown(true);
