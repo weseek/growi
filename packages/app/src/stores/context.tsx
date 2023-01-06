@@ -76,8 +76,8 @@ export const useIsSharedUser = (initialData?: boolean): SWRResponse<boolean, Err
   return useContextSWR<boolean, Error>('isSharedUser', initialData);
 };
 
-export const useShareLinkId = (initialData?: Nullable<string>): SWRResponse<Nullable<string>, Error> => {
-  return useContextSWR<Nullable<string>, Error>('shareLinkId', initialData);
+export const useShareLinkId = (initialData?: string): SWRResponse<string, Error> => {
+  return useContextSWR('shareLinkId', initialData);
 };
 
 export const useDisableLinkSharing = (initialData?: Nullable<boolean>): SWRResponse<Nullable<boolean>, Error> => {
