@@ -24,7 +24,7 @@ describe('QuestionnaireCronService', () => {
   const mockResponse = {
     data: {
       questionnaireOrders: [
-        // 既に保存されている、終了していないアンケート (user types を GROWI 保存時から更新)
+        // saved in db、not finished (user types is updated from the time it was saved)
         {
           _id: '63a8354837e7aa378e16f0b1',
           showFrom: '2022-12-11',
@@ -48,7 +48,7 @@ describe('QuestionnaireCronService', () => {
           updatedAt: '2022-12-01',
           __v: 0,
         },
-        // 保存されておらず、終了していないアンケート
+        // not saved, not finished
         {
           _id: '63a8354837e7aa378e16f0b2',
           showFrom: '2021-12-11',
@@ -72,7 +72,7 @@ describe('QuestionnaireCronService', () => {
           updatedAt: '2022-12-02',
           __v: 0,
         },
-        // 保存されておらず、終了しているアンケート
+        // not saved, finished
         {
           _id: '63a8354837e7aa378e16f0b3',
           showFrom: '2021-12-11',
@@ -110,7 +110,7 @@ describe('QuestionnaireCronService', () => {
   });
 
   beforeEach(async() => {
-    // 初期データ投入
+    // insert initial db data
     await QuestionnaireOrder.insertMany([
       {
         _id: '63a8354837e7aa378e16f0b1',
@@ -132,7 +132,7 @@ describe('QuestionnaireCronService', () => {
           },
         },
       },
-      // 終了しているアンケート
+      // finished
       {
         _id: '63a8354837e7aa378e16f0b4',
         showFrom: '2020-12-11',
@@ -153,7 +153,7 @@ describe('QuestionnaireCronService', () => {
           },
         },
       },
-      // growi-questionnaire にないアンケート
+      // questionnaire that doesn't exist in questionnaire server
       {
         _id: '63a8354837e7aa378e16f0b5',
         showFrom: '2020-12-11',
@@ -176,16 +176,16 @@ describe('QuestionnaireCronService', () => {
       },
     ]);
 
-    // cronjob 実行の 5 秒前に現在時刻を設定する
+    // mock the date to 5 seconds before cronjob execution
     const mockDate = new Date(2022, 0, 1, 21, 59, 55);
     jest.useFakeTimers();
     jest.setSystemTime(mockDate);
 
-    // useFakeTimers の後でないと設定した mock 時刻が反映されない
+    // must be after useFakeTimers for mockDate to be in effect
     crowi.setupCron();
 
     spyAxiosGet.mockResolvedValue(mockResponse);
-    spyGetRandomIntInRange.mockReturnValue(secondsUntilRequest); // リクエストまでの待機時間を固定化
+    spyGetRandomIntInRange.mockReturnValue(secondsUntilRequest); // static sleep time until request
   });
 
   afterAll(() => {
@@ -194,12 +194,12 @@ describe('QuestionnaireCronService', () => {
   });
 
   test('Should save quesionnaire orders and delete outdated ones', async() => {
-    jest.advanceTimersByTime(5 * 1000); // cronjob 実行時刻まで進める
-    jest.advanceTimersByTime(secondsUntilRequest); // 待機時間分進め、リクエストを実行する
-    jest.useRealTimers(); // cronjob 実行開始後は real timers に戻さないと mongoose が正常に動作しない
+    jest.advanceTimersByTime(5 * 1000); // advance unitl cronjob execution
+    jest.advanceTimersByTime(secondsUntilRequest); // advance until request execution
+    jest.useRealTimers(); // after cronjob starts, undo timer mocks so mongoose can work properly
 
     await new Promise((resolve) => {
-      // cronjob の実行完了を待つ
+      // wait until cronjob execution finishes
       // refs: https://github.com/node-cron/node-cron/blob/a0be3f4a7a5419af109cecf4a41071ea559b9b3d/src/task.js#L24
       crowi.questionnaireCronService.cronJob._task.once('task-finished', resolve);
     });
