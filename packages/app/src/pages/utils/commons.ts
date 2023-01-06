@@ -21,7 +21,6 @@ export type CommonProps = {
   isMaintenanceMode: boolean,
   redirectDestination: string | null,
   isDefaultLogo: boolean,
-  isCustomizedLogoUploaded: boolean,
   currentUser?: IUser,
 } & Partial<SSRConfig>;
 
@@ -63,7 +62,6 @@ export const getServerSideCommonProps: GetServerSideProps<CommonProps> = async(c
     redirectDestination,
     currentUser,
     isDefaultLogo,
-    isCustomizedLogoUploaded,
   };
 
   return { props };
