@@ -169,7 +169,7 @@
   --color-global-l: 74%;
   --color-reversal: #{$gray-900};
   // --color-header: desaturate($primary, 20%);
-  --color-link: hsl(var(----color-link-hs),var(--color-link-l));
+  --color-link: hsl(var(--color-link-hs),var(--color-link-l));
   --color-link-hs: 219.3,51.7%;
   --color-link-l: 65.9%;
   --color-link-hover: #{hsl.lighten(var(--color-link),10%)};
