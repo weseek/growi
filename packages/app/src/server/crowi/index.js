@@ -108,7 +108,7 @@ Crowi.prototype.init = async function() {
   await this.setupModels();
   await this.setupConfigManager();
   await this.setupSessionConfig();
-  await this.setupCron();
+  this.setupCron();
 
   // setup messaging services
   await this.setupS2sMessagingService();
