@@ -21,6 +21,8 @@ const CustomizeLogoSetting = (): JSX.Element => {
   const { data: isDefaultLogo } = useIsDefaultLogo();
   const { data: isCustomizedLogoUploaded, mutate: mutateIsCustomizedLogoUploaded } = useIsCustomizedLogoUploaded();
 
+  console.log('isCustomizedLogoUploaded', isCustomizedLogoUploaded);
+
   const [uploadLogoSrc, setUploadLogoSrc] = useState<ArrayBuffer | string | null>(null);
   const [isImageCropModalShow, setIsImageCropModalShow] = useState<boolean>(false);
   const [isDefaultLogoSelected, setIsDefaultLogoSelected] = useState<boolean>(isDefaultLogo ?? true);
@@ -127,12 +129,15 @@ const CustomizeLogoSetting = (): JSX.Element => {
                     { t('admin:customize_settings.current_logo') }
                   </label>
                   <div className="col-sm-8 col-12">
-
-                    <p><img src={currentLogo} className="picture picture-lg " id="settingBrandLogo" width="64" /></p>
                     {isCustomizedLogoUploaded && (
-                      <button type="button" className="btn btn-danger" onClick={onClickDeleteBtn}>
-                        { t('admin:customize_settings.delete_logo') }
-                      </button>
+                      <>
+                        <p>
+                          <img src='/attachment/brand-logo' className="picture picture-lg " id="settingBrandLogo" width="64" />
+                        </p>
+                        <button type="button" className="btn btn-danger" onClick={onClickDeleteBtn}>
+                          { t('admin:customize_settings.delete_logo') }
+                        </button>
+                      </>
                     )}
                   </div>
                 </div>
