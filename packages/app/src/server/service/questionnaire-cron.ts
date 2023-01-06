@@ -1,8 +1,12 @@
-import axios from '~/utils/axios';
+import axiosRetry from 'axios-retry';
+
 import { getRandomIntInRange } from '~/utils/rand';
 import { sleep } from '~/utils/sleep';
 
+const axios = require('axios').default;
 const nodeCron = require('node-cron');
+
+axiosRetry(axios, { retries: 3 });
 
 class QuestionnaireCronService {
 
