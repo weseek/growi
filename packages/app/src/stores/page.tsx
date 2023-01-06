@@ -28,13 +28,14 @@ export const useSWRxPage = (
     revisionId?: string,
     initialData?: IPagePopulatedToShowRevision|null,
 ): SWRResponse<IPagePopulatedToShowRevision|null, Error> => {
+
   const { data: pathname } = useCurrentPathname();
   const isSharedPage = _isSharedPage(pathname ?? '');
+  const shouldFetch = pageId != null && !isSharedPage;
 
   const swrResponse = useSWRImmutable<IPagePopulatedToShowRevision|null, Error>(
-    pageId != null ? ['/page', pageId, shareLinkId, revisionId] : null,
-    // eslint-disable-next-line max-len
-    isSharedPage ? null : (endpoint, pageId, shareLinkId, revisionId) => apiv3Get<{ page: IPagePopulatedToShowRevision }>(endpoint, { pageId, shareLinkId, revisionId })
+    shouldFetch ? ['/page', pageId, shareLinkId, revisionId] : null,
+    (endpoint, pageId, shareLinkId, revisionId) => apiv3Get<{ page: IPagePopulatedToShowRevision }>(endpoint, { pageId, shareLinkId, revisionId })
       .then(result => result.data.page)
       .catch((errs) => {
         if (!Array.isArray(errs)) { throw Error('error is not array') }
