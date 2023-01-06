@@ -646,6 +646,24 @@ const ENV_VAR_NAME_TO_CONFIG_INFO = {
     type: ValueType.STRING,
     default: null,
   },
+  GROWI_QUESTIONNAIRE_SERVER_ORIGIN: {
+    ns: 'crowi',
+    key: 'app:growiQuestionnaireServerOrigin',
+    type: ValueType.STRING,
+    default: null,
+  },
+  QUESTIONNAIRE_CRON_SCHEDULE: {
+    ns: 'crowi',
+    key: 'app:questionnaireCronSchedule',
+    type: ValueType.STRING,
+    default: '0 22 * * *',
+  },
+  QUESTIONNAIRE_CRON_MAX_HOURS_UNTIL_REQUEST: {
+    ns: 'crowi',
+    key: 'app:questionnaireCronMaxHoursUntilRequest',
+    type: ValueType.NUMBER,
+    default: 4,
+  },
 };
 
 
