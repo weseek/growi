@@ -297,9 +297,13 @@ module.exports = function(crowi, app) {
   };
 
   api.getBrandLogo = async function(req, res) {
-    const attachment = await Attachment.findOne({ attachmentType: AttachmentType.BRAND_LOGO });
+    const brandLogoAttachment = await Attachment.findOne({ attachmentType: AttachmentType.BRAND_LOGO });
 
-    return responseForAttachment(req, res, attachment);
+    if (brandLogoAttachment == null) {
+      return res.status(404).json(ApiResponse.error('Brand logo does not exist'));
+    }
+
+    return responseForAttachment(req, res, brandLogoAttachment);
   };
 
   /**
