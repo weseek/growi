@@ -43,6 +43,7 @@ $theme-colors: map-merge($theme-colors, ( primary: $primary ));
 @import 'reboot-bootstrap-buttons';
 @import 'reboot-bootstrap-colors';
 @import 'reboot-bootstrap-theme-colors';
+@import 'hsl-reboot-bootstrap-theme-colors';
 @import 'reboot-bootstrap-nav';
 @import 'reboot-toastr-colors';
 

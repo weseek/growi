@@ -21,6 +21,9 @@
   --primary: hsl(var(--primary-hs),var(--primary-l));
   --primary-hs: 216.7,65%;
   --primary-l: 20.2%;
+  --secondary: hsl(var(--secondary-hs),var(--secondary-l));
+  --secondary-hs: 208,7%;
+  --secondary-l: 46%;
   --accent: hsl(var(--accent-hs),var(--accent-l));
   --accent-hs: 198.6,74.2%;
   --accent-l: 48.6%;
@@ -150,6 +153,9 @@
   --primary: hsl(var(--primary-hs),var(--primary-l));
   --primary-hs: 216.8,85.1%;
   --primary-l: 44.7%;
+  --secondary: hsl(var(--secondary-hs),var(--secondary-l));
+  --secondary-hs: 208,7%;
+  --secondary-l: 46%;
   --accent: hsl(var(--accent-hs),var(--accent-l));
   --accent-hs: 307,100%;
   --accent-l: 43%;
