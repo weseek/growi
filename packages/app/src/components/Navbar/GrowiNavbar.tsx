@@ -123,7 +123,6 @@ Confidential.displayName = 'Confidential';
 
 interface NavbarLogoProps {
   isDefaultLogo?: boolean
-  isCustomizedLogoUploaded?: boolean
 }
 
 const GrowiNavbarLogo: FC<NavbarLogoProps> = memo((props: NavbarLogoProps) => {

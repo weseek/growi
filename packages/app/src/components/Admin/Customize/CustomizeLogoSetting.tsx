@@ -102,7 +102,6 @@ const CustomizeLogoSetting = (): JSX.Element => {
                     </label>
                   </div>
                 </h4>
-                {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img src={DEFAULT_LOGO} width="64" />
               </div>
               <div className="col-md-6 col-12">
