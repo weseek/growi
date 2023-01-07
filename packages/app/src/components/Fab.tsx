@@ -40,6 +40,22 @@ export const Fab = (): JSX.Element => {
 
     setAnimateClasses(newAnimateClasses);
     setButtonClasses(newButtonClasses);
+
+    /**
+     * After the fade animation is finished, fix the button display status.
+     * Prevents the fade animation occurred each time by button components rendered.
+     * Check Fab.module.scss for fade animation time.
+     */
+    setTimeout(() => {
+      if (event.detail.isSticky) {
+        setAnimateClasses('visible');
+        setButtonClasses('');
+      }
+      else {
+        setAnimateClasses('invisible');
+      }
+    }, 500);
+
   }, []);
 
   // setup effect by sticky event
@@ -57,7 +73,6 @@ export const Fab = (): JSX.Element => {
     };
   }, [stickyChangeHandler]);
 
-  // TODO: Flickering occurs when moving page if "currentPath" or "openCreateModal" is set to useCallback dependencies.
   const PageCreateButton = useCallback(() => {
     return (
       <div className={`rounded-circle position-absolute ${animateClasses}`} style={{ bottom: '2.3rem', right: '4rem' }}>
@@ -73,8 +88,7 @@ export const Fab = (): JSX.Element => {
         </button>
       </div>
     );
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [animateClasses, buttonClasses]); // , currentPath, openCreateModal]);
+  }, [animateClasses, buttonClasses, currentPath, openCreateModal]);
 
   const ScrollToTopButton = useCallback(() => {
     const clickHandler = () => {
