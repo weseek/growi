@@ -1,242 +1,138 @@
 @use '../bootstrap/init' as *;
 @use '../atoms/mixins/buttons' as mixins-buttons;
 @use './mixins/hsl-button';
+@use './mixins/hsl-badge';
 @use './hsl-functions' as hsl;
 
-.bg-primary {
-  background-color: var(--primary) !important;
-  a,
-  button {
-    @include hover-focus() {
-      background-color: hsl.darken(var(--primary), 10%) !important;
-    }
-  }
-}
+$hsl-colors: (
+  'primary': var(--primary),
+  'secondary': var(--secondary)
+);
 
-.bg-secondary  {
-  background-color: var(--secondary) !important;
-  a,
-  button {
-    @include hover-focus() {
-      background-color: hsl.darken(var(--secondary), 10%) !important;
-    }
-  }
-}
-
-.border-primary {
-  border-color: var(--primary) !important;
-}
-
-.border-secondary {
-  border-color: var(--secondary) !important;
-}
-
-.text-primary {
-  color: var(--primary) !important;
-  @if $emphasized-link-hover-darken-percentage != 0 {
-    a {
+@each $color, $value in $hsl-colors {
+  .bg-#{$color} {
+    background-color: $value !important;
+    a,
+    button {
       @include hover-focus() {
-        color: hsl.darken(var(--primary), $emphasized-link-hover-darken-percentage) !important;
+        background-color: hsl.darken($value, 10%) !important;
       }
     }
   }
 }
 
-.text-secondary {
-  color: var(--secondary) !important;
-  @if $emphasized-link-hover-darken-percentage != 0 {
-    a {
-      @include hover-focus() {
-        color: hsl.darken(var(--secondary), $emphasized-link-hover-darken-percentage) !important;
+@each $color, $value in $hsl-colors {
+  .border-#{$color} {
+    border-color: $value !important;
+  }
+}
+
+@each $color, $value in $hsl-colors {
+  .text-#{$color} {
+    color: $value !important;
+    @if $emphasized-link-hover-darken-percentage != 0 {
+      a {
+        @include hover-focus() {
+          color: hsl.darken($value, $emphasized-link-hover-darken-percentage) !important;
+        }
       }
     }
   }
 }
 
-
-
-.btn-primary {
-  $color: var(--primary);
-  @include hsl-button.button-variant($color, $color);
-  @include hsl-button.button-svg-icon-variant($color, $color);
-  box-shadow: none !important;
-}
-
-.btn-secondary {
-  $color: var(--secondary);
-  @include hsl-button.button-variant($color, $color);
-  @include hsl-button.button-svg-icon-variant($color, $color);
-  box-shadow: none !important;
-}
-
-.btn-outline-primary {
-  $color: var(--primary);
-  @include hsl-button.button-outline-variant($color, $color, hsl.alpha($color, 90%), $color);
-  @include mixins-buttons.button-outline-svg-icon-variant($color, $color);
-
-  &:not(:disabled):not(.disabled):active,
-  &:not(:disabled):not(.disabled).active {
-    color: $color;
-    background-color: hsl.alpha($color, 90%);
-    border-color: $color;
-  }
-
-  box-shadow: none !important;
-}
-
-.btn-outline-secondary {
-  $color: var(--secondary);
-  @include hsl-button.button-outline-variant($color, $color, hsl.alpha($color, 90%), $color);
-  @include mixins-buttons.button-outline-svg-icon-variant($color, $color);
-
-  &:not(:disabled):not(.disabled):active,
-  &:not(:disabled):not(.disabled).active {
-    color: $color;
-    background-color: hsl.alpha($color, 90%);
-    border-color: $color;
-  }
-
-  box-shadow: none !important;
-}
-
-// separate style: https://github.com/weseek/growi/pull/6804
-.show > .btn-outline-primary.dropdown-toggle {
-  $color: var(--primary);
-  color: $color;
-  background-color: hsl.alpha($color, 90%);
-  border-color: $color;
-}
-
-.show > .btn-outline-secondary.dropdown-toggle {
-  $color: var(--secondary);
-  color: $color;
-  background-color: hsl.alpha($color, 90%);
-  border-color: $color;
-}
-
-.custom-checkbox-primary {
-  $color: var(--primary);
-  .custom-control-label::before {
-    border-color: $input-border-color;
-    transition: 0.3s ease-in-out;
-  }
-  .custom-control-input:checked + .custom-control-label::before {
-    background-color: $color;
-    border-color: $color;
-  }
-  .custom-control-input:checked + .custom-control-label::after {
-    color: var(--bgcolor-global);
-  }
-  .custom-control-input:not(:disabled):active ~ .custom-control-label::before {
-    color: var(--bgcolor-global);
-    background-color: $color;
-    border-color: $color;
-  }
-  .custom-control-input:focus:not(:checked) ~ .custom-control-label::before {
-    color: var(--bgcolor-global);
-    background-color: var(--bgcolor-global);
-    border-color: $input-focus-border-color;
+@each $color, $value in $hsl-colors {
+  .btn-#{$color} {
+    @include hsl-button.button-variant($value, $value);
+    @include hsl-button.button-svg-icon-variant($value, $value);
+    box-shadow: none !important;
   }
 }
 
-.custom-checkbox-secondary {
-  $color: var(--secondary);
-  .custom-control-label::before {
-    border-color: $input-border-color;
-    transition: 0.3s ease-in-out;
+@each $color, $value in $hsl-colors {
+  .btn-outline-#{$color} {
+    @include hsl-button.button-outline-variant($value, $value, hsl.alpha($value, 90%), $value);
+    @include mixins-buttons.button-outline-svg-icon-variant($value, $value);
+
+    &:not(:disabled):not(.disabled):active,
+    &:not(:disabled):not(.disabled).active {
+      color: $value;
+      background-color: hsl.alpha($value, 90%);
+      border-color: $value;
+    }
+
+    box-shadow: none !important;
   }
-  .custom-control-input:checked + .custom-control-label::before {
-    background-color: $color;
-    border-color: $color;
-  }
-  .custom-control-input:checked + .custom-control-label::after {
-    color: var(--bgcolor-global);
-  }
-  .custom-control-input:not(:disabled):active ~ .custom-control-label::before {
-    color: var(--bgcolor-global);
-    background-color: $color;
-    border-color: $color;
-  }
-  .custom-control-input:focus:not(:checked) ~ .custom-control-label::before {
-    color: var(--bgcolor-global);
-    background-color: var(--bgcolor-global);
-    border-color: $input-focus-border-color;
+
+  // separate style: https://github.com/weseek/growi/pull/6804
+  .show > .btn-outline-primary.dropdown-toggle {
+    color: $value;
+    background-color: hsl.alpha($value, 90%);
+    border-color: $value;
   }
 }
 
-.alert-primary {
-  $color: var(--primary);
-  $alert-color: hsl.contrast($color,0%,90%);
-  $alert-bg-color: hsl.darken($color, calc($alert-bg-level + 0.95) * $theme-color-interval);
-  $alert-border-color: hsl.darken($color, $alert-border-level * $theme-color-interval);
-
-  color: $alert-color;
-  @include gradient-bg($alert-bg-color);
-  border-color: $alert-border-color;
-
-  hr {
-    border-top-color: hsl.darken($color, calc($alert-border-level + 5) * $theme-color-interval);
-  }
-
-  .alert-link {
-    color: hsl.contrast($color);
-  }
-}
-
-// Alert link
-:root, .wiki {
-  .alert.alert-primary {
-    a,
-    a:hover {
-      color: hsl.darken(var(--primary), calc($alert-bg-level - 7.7) * $theme-color-interval);
+@each $color, $value in $hsl-colors {
+  .custom-checkbox-#{$color} {
+    .custom-control-label::before {
+      border-color: $input-border-color;
+      transition: 0.3s ease-in-out;
+    }
+    .custom-control-input:checked + .custom-control-label::before {
+      background-color: $value;
+      border-color: $value;
+    }
+    .custom-control-input:checked + .custom-control-label::after {
+      color: var(--bgcolor-global);
+    }
+    .custom-control-input:not(:disabled):active ~ .custom-control-label::before {
+      color: var(--bgcolor-global);
+      background-color: $value;
+      border-color: $value;
+    }
+    .custom-control-input:focus:not(:checked) ~ .custom-control-label::before {
+      color: var(--bgcolor-global);
+      background-color: var(--bgcolor-global);
+      border-color: $input-focus-border-color;
     }
   }
 }
 
-.alert-secondary {
-  $color: var(--secondary);
-  $alert-color: hsl.contrast($color,0%,90%);
-  $alert-bg-color: hsl.darken($color, calc($alert-bg-level + 0.95) * $theme-color-interval);
-  $alert-border-color: hsl.darken($color, $alert-border-level * $theme-color-interval);
+@each $color, $value in $hsl-colors {
+  .alert-#{$color} {
+    $alert-color: hsl.contrast($value,0%,90%);
+    $alert-bg-color: hsl.darken($value, calc($alert-bg-level + 0.95) * $theme-color-interval);
+    $alert-border-color: hsl.darken($value, $alert-border-level * $theme-color-interval);
 
-  color: $alert-color;
-  @include gradient-bg($alert-bg-color);
-  border-color: $alert-border-color;
+    color: $alert-color;
+    @include gradient-bg($alert-bg-color);
+    border-color: $alert-border-color;
 
-  hr {
-    border-top-color: hsl.darken($color, calc($alert-border-level + 5) * $theme-color-interval);
+    hr {
+      border-top-color: hsl.darken($value, calc($alert-border-level + 5) * $theme-color-interval);
+    }
+
+    .alert-link {
+      color: hsl.contrast($value);
+    }
   }
 
-  .alert-link {
-    color: hsl.contrast($color);
-  }
-}
-
-// Alert link
-:root, .wiki {
-  .alert.alert-secondary {
-    a,
-    a:hover {
-      color: hsl.darken(var(--secondary), calc($alert-bg-level - 7.7) * $theme-color-interval);
+  // Alert link
+  :root, .wiki {
+    .alert.alert-primary {
+      a,
+      a:hover {
+        color: hsl.darken($value, calc($alert-bg-level - 7.7) * $theme-color-interval);
+      }
     }
   }
 }
 
+@each $color, $value in $hsl-colors {
+  .badge-#{$color} {
+    @include hsl-badge.badge-variant($value);
+  }
 
-
-
-.badge-primary {
-  @include hsl-button.badge-variant(var(--primary));
-}
-
-a.badge-primary  {
-  @include hsl-button.badge-variant(var(--primary));
-}
-
-.badge-secondary {
-  @include hsl-button.badge-variant(var(--secondary));
-}
-
-a.badge-secondary  {
-  @include hsl-button.badge-variant(var(--secondary));
+  a.badge-#{$color}  {
+    @include hsl-badge.badge-variant($value);
+  }
 }
