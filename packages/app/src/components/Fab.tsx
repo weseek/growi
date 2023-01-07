@@ -7,9 +7,9 @@ import { useRipple } from 'react-use-ripple';
 import StickyEvents from 'sticky-events';
 
 import { DEFAULT_AUTO_SCROLL_OPTS } from '~/client/util/smooth-scroll';
-import { useCurrentUser } from '~/stores/context';
 import { usePageCreateModal } from '~/stores/modal';
 import { useCurrentPagePath } from '~/stores/page';
+import { useIsAbleToChangeEditorMode } from '~/stores/ui';
 import loggerFactory from '~/utils/logger';
 
 import { CreatePageIcon } from './Icons/CreatePageIcon';
@@ -21,7 +21,7 @@ const logger = loggerFactory('growi:cli:Fab');
 
 export const Fab = (): JSX.Element => {
 
-  const { data: currentUser } = useCurrentUser();
+  const { data: isAbleToChangeEditorMode } = useIsAbleToChangeEditorMode();
   const { data: currentPath = '' } = useCurrentPagePath();
   const { open: openCreateModal } = usePageCreateModal();
 
@@ -114,7 +114,7 @@ export const Fab = (): JSX.Element => {
 
   return (
     <div className={`${styles['grw-fab']} grw-fab d-none d-md-block d-edit-none`} data-testid="grw-fab-container">
-      {currentUser != null && <PageCreateButton />}
+      {isAbleToChangeEditorMode && <PageCreateButton />}
       <ScrollToTopButton />
     </div>
   );
