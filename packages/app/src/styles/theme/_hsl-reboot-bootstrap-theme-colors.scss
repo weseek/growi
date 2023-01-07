@@ -50,13 +50,13 @@ $hsl-colors: (
 
 @each $color, $value in $hsl-colors {
   .btn-outline-#{$color} {
-    @include hsl-button.button-outline-variant($value, $value, hsl.alpha($value, 90%), $value);
+    @include hsl-button.button-outline-variant($value, $value, hsl.alpha($value, 10%), $value);
     @include mixins-buttons.button-outline-svg-icon-variant($value, $value);
 
     &:not(:disabled):not(.disabled):active,
     &:not(:disabled):not(.disabled).active {
       color: $value;
-      background-color: hsl.alpha($value, 90%);
+      background-color: hsl.alpha($value, 10%);
       border-color: $value;
     }
 
@@ -64,9 +64,9 @@ $hsl-colors: (
   }
 
   // separate style: https://github.com/weseek/growi/pull/6804
-  .show > .btn-outline-primary.dropdown-toggle {
+  .show > .btn-outline-#{$color}.dropdown-toggle {
     color: $value;
-    background-color: hsl.alpha($value, 90%);
+    background-color: hsl.alpha($value, 10%);
     border-color: $value;
   }
 }
