@@ -9,6 +9,8 @@ import { debounce } from 'throttle-debounce';
 import { useSidebarCollapsed } from '~/stores/ui';
 import loggerFactory from '~/utils/logger';
 
+import { useSWRxCurrentPage } from '~/stores/page';
+
 import GrowiContextualSubNavigation from './GrowiContextualSubNavigation';
 
 import styles from './GrowiSubNavigationSwitcher.module.scss';
@@ -27,6 +29,7 @@ const logger = loggerFactory('growi:cli:GrowiSubNavigationSticky');
  */
 const GrowiSubNavigationSwitcher = (props) => {
 
+  const { data: currentPage } = useSWRxCurrentPage();
   const { data: isSidebarCollapsed } = useSidebarCollapsed();
 
   const [isVisible, setVisible] = useState(false);
@@ -123,7 +126,7 @@ const GrowiSubNavigationSwitcher = (props) => {
         ref={fixedContainerRef}
         style={{ width }}
       >
-        <GrowiContextualSubNavigation isCompactMode isLinkSharingDisabled />
+        <GrowiContextualSubNavigation currentPage isCompactMode isLinkSharingDisabled />
       </div>
     </div>
   );

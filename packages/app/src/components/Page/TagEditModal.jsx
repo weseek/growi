@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import PropTypes from 'prop-types';
 
+import { useTranslation } from 'next-i18next';
+import PropTypes from 'prop-types';
 import {
   Modal, ModalHeader, ModalBody, ModalFooter,
 } from 'reactstrap';
@@ -9,6 +10,7 @@ import TagsInput from './TagsInput';
 
 function TagEditModal(props) {
   const [tags, setTags] = useState([]);
+  const { t } = useTranslation();
 
   function onTagsUpdatedByTagsInput(tags) {
     setTags(tags);
@@ -37,14 +39,14 @@ function TagEditModal(props) {
   return (
     <Modal isOpen={props.isOpen} toggle={closeModalHandler} id="edit-tag-modal" autoFocus={false}>
       <ModalHeader tag="h4" toggle={closeModalHandler} className="bg-primary text-light">
-        Edit Tags
+        {t('tag_edit_modal.edit_tags')}
       </ModalHeader>
       <ModalBody>
         <TagsInput tags={tags} onTagsUpdated={onTagsUpdatedByTagsInput} autoFocus />
       </ModalBody>
       <ModalFooter>
         <button type="button" className="btn btn-primary" onClick={handleSubmit}>
-          Done
+          {t('tag_edit_modal.done')}
         </button>
       </ModalFooter>
     </Modal>

@@ -25,7 +25,7 @@ const SystemInformationTable = (props: Props) => {
       <tbody>
         <tr>
           <th>GROWI</th>
-          <td data-hide-in-vrt>{ growiVersion }</td>
+          <td data-vrt-blackout>{ growiVersion }</td>
         </tr>
         <tr>
           <th>node.js</th>

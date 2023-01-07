@@ -26,7 +26,10 @@ export const InAppNotificationDropdown = (): JSX.Element => {
   const limit = 6;
 
   const { data: socket } = useDefaultSocket();
-  const { data: inAppNotificationData, mutate: mutateInAppNotificationData } = useSWRxInAppNotifications(limit);
+  const { data: inAppNotificationData, mutate: mutateInAppNotificationData } = useSWRxInAppNotifications(
+    limit, undefined, undefined,
+    { revalidateOnFocus: isOpen },
+  );
   const { data: inAppNotificationUnreadStatusCount, mutate: mutateInAppNotificationUnreadStatusCount } = useSWRxInAppNotificationStatus();
 
   // ripple
