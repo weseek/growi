@@ -60,6 +60,7 @@
   "Presentation Mode": "Presentation",
   "The end": "The end",
   "Not available for guest": "Not available for guest",
+  "Not available in this version": "Not available in this version",
   "No users have liked this yet": "No users have liked this yet",
   "No users have liked this yet.": "No users have liked this yet.",
   "No users have bookmarked yet": "No users have bookmarked yet",
@@ -797,5 +798,12 @@
   "v5_page_migration": {
     "page_tree_not_avaliable" : "Page tree feature is not available yet.",
     "go_to_settings": "Go to settings to enable the feature"
+  },
+  "tag_edit_modal": {
+    "edit_tags": "Edit Tags",
+    "done": "Done",
+    "tags_input": {
+      "tag_name": "tag name"
+    }
   }
 }

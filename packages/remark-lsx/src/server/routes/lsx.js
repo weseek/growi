@@ -1,9 +1,14 @@
-const { customTagUtils } = require('@growi/core');
+import createError, { isHttpError } from 'http-errors';
+
+const { pagePathUtils, customTagUtils } = require('@growi/core');
 
 const { OptionParser } = customTagUtils;
 
 
 const DEFAULT_PAGES_NUM = 50;
+
+
+const { isTopPage } = pagePathUtils;
 
 class Lsx {
 
@@ -21,7 +26,7 @@ class Lsx {
   static addDepthCondition(query, pagePath, optionsDepth) {
     // when option strings is 'depth=', the option value is true
     if (optionsDepth == null || optionsDepth === true) {
-      throw new Error('The value of depth option is invalid.');
+      throw createError(400, 'The value of depth option is invalid.');
     }
 
     const range = OptionParser.parseRange(optionsDepth);
@@ -29,11 +34,13 @@ class Lsx {
     const end = range.end;
 
     if (start < 1 || end < 1) {
-      throw new Error(`specified depth is [${start}:${end}] : start and end are must be larger than 1`);
+      throw createError(400, `specified depth is [${start}:${end}] : start and end are must be larger than 1`);
     }
 
     // count slash
-    const slashNum = pagePath.split('/').length - 1;
+    const slashNum = isTopPage(pagePath)
+      ? 1
+      : pagePath.split('/').length;
     const depthStart = slashNum; // start is not affect to fetch page
     const depthEnd = slashNum + end - 1;
 
@@ -56,7 +63,7 @@ class Lsx {
   static addNumCondition(query, pagePath, optionsNum) {
     // when option strings is 'num=', the option value is true
     if (optionsNum == null || optionsNum === true) {
-      throw new Error('The value of num option is invalid.');
+      throw createError(400, 'The value of num option is invalid.');
     }
 
     if (typeof optionsNum === 'number') {
@@ -68,7 +75,7 @@ class Lsx {
     const end = range.end;
 
     if (start < 1 || end < 1) {
-      throw new Error(`specified num is [${start}:${end}] : start and end are must be larger than 1`);
+      throw createError(400, `specified num is [${start}:${end}] : start and end are must be larger than 1`);
     }
 
     const skip = start - 1;
@@ -92,7 +99,7 @@ class Lsx {
   static addFilterCondition(query, pagePath, optionsFilter, isExceptFilter = false) {
     // when option strings is 'filter=', the option value is true
     if (optionsFilter == null || optionsFilter === true) {
-      throw new Error('filter option require value in regular expression.');
+      throw createError(400, 'filter option require value in regular expression.');
     }
 
     let filterPath = '';
@@ -141,7 +148,7 @@ class Lsx {
     const isReversed = optionsReverse === 'true';
 
     if (optionsSort !== 'path' && optionsSort !== 'createdAt' && optionsSort !== 'updatedAt') {
-      throw new Error(`The specified value '${optionsSort}' for the sort option is invalid. It must be 'path', 'createdAt' or 'updatedAt'.`);
+      throw createError(400, `The specified value '${optionsSort}' for the sort option is invalid. It must be 'path', 'createdAt' or 'updatedAt'.`);
     }
 
     const sortOption = {};
@@ -163,26 +170,10 @@ module.exports = (crowi, app) => {
    * @return {Promise<Query>} query
    */
   async function generateBaseQueryBuilder(pagePath, user) {
-    let baseQuery = Page.find();
-    if (Page.PageQueryBuilder == null) {
-      if (Page.generateQueryToListWithDescendants != null) { // for Backward compatibility (<= GROWI v3.2.x)
-        baseQuery = Page.generateQueryToListWithDescendants(pagePath, user, {});
-      }
-      else if (Page.generateQueryToListByStartWith != null) { // for Backward compatibility (<= crowi-plus v2.0.7)
-        baseQuery = Page.generateQueryToListByStartWith(pagePath, user, {});
-      }
-
-      // return dummy PageQueryBuilder object
-      return Promise.resolve({ query: baseQuery });
-    }
+    const baseQuery = Page.find();
 
     const builder = new Page.PageQueryBuilder(baseQuery);
-    if (builder.addConditionToListOnlyDescendants == null) { // for Backward compatibility (<= GROWI v4.0.x)
-      builder.addConditionToListWithDescendants(pagePath);
-    }
-    else {
-      builder.addConditionToListOnlyDescendants(pagePath);
-    }
+    builder.addConditionToListOnlyDescendants(pagePath);
 
     builder
       .addConditionToExcludeTrashed();
@@ -245,6 +236,9 @@ module.exports = (crowi, app) => {
       res.status(200).send({ pages, toppageViewersCount });
     }
     catch (error) {
+      if (isHttpError) {
+        return res.status(error.status).send(error);
+      }
       return res.status(500).send(error);
     }
   };

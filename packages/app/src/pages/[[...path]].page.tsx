@@ -71,7 +71,7 @@ import {
   useIsAclEnabled, useIsSearchPage, useTemplateTagData, useTemplateBodyData, useIsEnabledAttachTitleHeader,
   useCsrfToken, useIsSearchScopeChildrenAsDefault, useCurrentPageId, useCurrentPathname,
   useIsSlackConfigured, useRendererConfig,
-  useEditorConfig, useIsAllReplyShown, useIsUploadableFile, useIsUploadableImage, useCustomizedLogoSrc, useIsContainerFluid, useIsNotCreatable,
+  useEditorConfig, useIsAllReplyShown, useIsUploadableFile, useIsUploadableImage, useIsContainerFluid, useIsNotCreatable,
 } from '../stores/context';
 
 import { NextPageWithLayout } from './_app.page';
@@ -265,7 +265,7 @@ const Page: NextPageWithLayout<Props> = (props: Props) => {
   useHasDraftOnHackmd(pageWithMeta?.data.hasDraftOnHackmd ?? false);
   useCurrentPathname(props.currentPathname);
 
-  useSWRxCurrentPage(undefined, pageWithMeta?.data ?? null); // store initial data
+  useSWRxCurrentPage(pageWithMeta?.data ?? null); // store initial data
 
   useEditingMarkdown(pageWithMeta?.data.revision?.body);
 
@@ -328,7 +328,7 @@ const Page: NextPageWithLayout<Props> = (props: Props) => {
       <div className={`dynamic-layout-root ${growiLayoutFluidClass} h-100 d-flex flex-column justify-content-between`}>
         <header className="py-0 position-relative">
           <div id="grw-subnav-container">
-            <GrowiContextualSubNavigation isLinkSharingDisabled={props.disableLinkSharing} />
+            <GrowiContextualSubNavigation currentPage={pageWithMeta?.data} isLinkSharingDisabled={props.disableLinkSharing} />
           </div>
         </header>
         <div className="d-edit-none">

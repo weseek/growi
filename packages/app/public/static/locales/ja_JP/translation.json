@@ -57,6 +57,7 @@
   "Presentation Mode": "プレゼンテーション",
   "The end": "おしまい",
   "Not available for guest": "ゲストユーザーは利用できません",
+  "Not available in this version": "このバージョンでは利用できません",
   "No users have liked this yet": "いいねをしているユーザーはいません",
   "No users have bookmarked yet": "ブックマークしているユーザーはいません",
   "Create Archive Page": "アーカイブページの作成",
@@ -79,6 +80,7 @@
   "View diff": "差分を表示",
   "No diff": "差分なし",
   "User ID": "ユーザーID",
+  "User Settings": "ユーザー設定",
   "User Information": "ユーザー情報",
   "Basic Info": "ユーザーの基本情報",
   "Name": "名前",
@@ -796,5 +798,12 @@
   "v5_page_migration": {
     "page_tree_not_avaliable" : "Page Tree 機能は現在使用できません。",
     "go_to_settings": "設定する"
+  },
+  "tag_edit_modal": {
+    "edit_tags": "タグの編集",
+    "done": "完了",
+    "tags_input": {
+      "tag_name": "タグ名"
+    }
   }
 }
