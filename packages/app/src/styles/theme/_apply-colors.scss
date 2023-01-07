@@ -122,7 +122,7 @@ ul.pagination {
   li.page-item {
     button.page-link {
       color: var(--primary);
-      border-color: var(--secondary);
+      border-color: var(--secondary) !important;
       &:hover,
       &:active,
       &:focus {

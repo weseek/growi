@@ -153,6 +153,7 @@
     li.page-item {
       button.page-link {
         @extend .btn-dark;
+        color: var(--primary);
       }
     }
   }

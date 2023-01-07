@@ -191,7 +191,7 @@
   // --color-list-hover: var(--color-global); // optional
   --bgcolor-list-hover: #{hsl.lighten(var(--bgcolor-global),3%)}; // optional
   // --color-list-active: white ; // optional
-  --bgcolor-list-active: var(--primary); // optional
+  // --bgcolor-list-active: var(--primary); // optional
 
   // Table colors
   // --color-table: #; // optional

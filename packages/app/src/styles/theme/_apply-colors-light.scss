@@ -28,7 +28,7 @@
   $color-dropdown-link: var(--color-dropdown-link,var(--color-global));
   $color-dropdown-link-hover: var(--color-dropdown-link-hover,var(--color-global));
   $color-dropdown-link-active: var(--color-dropdown-link-active,var(--color-reversal));
-  $bgcolor-dropdown-link-hover: var(--bgcolor-dropdown-link-hover,hsl.lighten(var(--bgcolor-global),15%));
+  $bgcolor-dropdown-link-hover: hsl.lighten(var(--bgcolor-global),15%);
   $bgcolor-dropdown-link-active: var(--bgcolor-dropdown-link-active,var(--primary));
 
 
@@ -43,6 +43,7 @@
   $dropdown-color: $color-dropdown;
   $dropdown-link-color: $color-dropdown-link;
   $dropdown-link-hover-color: $color-dropdown-link-hover;
+  $dropdown-link-hover-bg: $bgcolor-dropdown-link-hover;
   $dropdown-link-active-color: $color-dropdown-link-active;
   $dropdown-link-active-bg: $bgcolor-dropdown-link-active;
 
