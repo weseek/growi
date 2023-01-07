@@ -1,20 +1,14 @@
-import React, { useCallback } from 'react';
-
+import React from 'react';
 
 import { useTranslation } from 'react-i18next';
 
-import { useGenerateTransferKeyWithThrottle } from '~/client/services/g2g-transfer';
+import { useGenerateTransferKey } from '~/client/services/g2g-transfer';
 
 import CustomCopyToClipBoard from './Common/CustomCopyToClipBoard';
 
 const DataTransferForm = (): JSX.Element => {
   const { t } = useTranslation();
-
-  const { transferKey, generateTransferKeyWithThrottle } = useGenerateTransferKeyWithThrottle();
-
-  const onClickHandler = useCallback(() => {
-    generateTransferKeyWithThrottle();
-  }, [generateTransferKeyWithThrottle]);
+  const { transferKey, generateTransferKey } = useGenerateTransferKey();
 
   return (
     <div data-testid="installerForm" className="p-3">
@@ -24,7 +18,7 @@ const DataTransferForm = (): JSX.Element => {
 
       <div className="form-group row mt-3">
         <div className="col-md-12">
-          <button type="button" className="btn btn-primary w-100" onClick={onClickHandler}>
+          <button type="button" className="btn btn-primary w-100" onClick={generateTransferKey}>
             {t('g2g_data_transfer.publish_transfer_key')}
           </button>
         </div>
