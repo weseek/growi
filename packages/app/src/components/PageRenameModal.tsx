@@ -304,7 +304,7 @@ const PageRenameModal = (): JSX.Element => {
             </label>
           </div>
 
-          <div className="custom-control custom-checkbox custom-checkbox-primary">
+          <div className="custom-control custom-checkbox custom-checkbox-success">
             <input
               className="custom-control-input"
               name="remain_metadata"

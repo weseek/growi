@@ -72,32 +72,6 @@ $hsl-colors: (
 }
 
 @each $color, $value in $hsl-colors {
-  .custom-checkbox-#{$color} {
-    .custom-control-label::before {
-      border-color: $input-border-color;
-      transition: 0.3s ease-in-out;
-    }
-    .custom-control-input:checked + .custom-control-label::before {
-      background-color: $value;
-      border-color: $value;
-    }
-    .custom-control-input:checked + .custom-control-label::after {
-      color: var(--bgcolor-global);
-    }
-    .custom-control-input:not(:disabled):active ~ .custom-control-label::before {
-      color: var(--bgcolor-global);
-      background-color: $value;
-      border-color: $value;
-    }
-    .custom-control-input:focus:not(:checked) ~ .custom-control-label::before {
-      color: var(--bgcolor-global);
-      background-color: var(--bgcolor-global);
-      border-color: $input-focus-border-color;
-    }
-  }
-}
-
-@each $color, $value in $hsl-colors {
   .alert-#{$color} {
     $alert-color: hsl.contrast($value,0%,90%);
     $alert-bg-color: hsl.darken($value, calc($alert-bg-level + 0.95) * $theme-color-interval);

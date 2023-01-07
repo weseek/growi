@@ -10,9 +10,9 @@
   $color-list: var(--color-list,var(--color-global));
   $bgcolor-list: var(--bgcolor-list,var(--bgcolor-global));
   $color-list-hover: var(--color-list-hover,var(--color-global));
-  $bgcolor-list-hover: var(--bgcolor-list-hover,var(--bgcolor-global));
-  $bgcolor-list-active: var(--bgcolor-list-active,hsl.lighten(var(--primary),65%));
-  $color-list-active: var(--color-list-active,hsl(var(--primary-hs), clamp(10%, (100% - var(--primary-l)  + 65% - 51%) * 1000, 95%)));
+  $bgcolor-list-hover: var(--bgcolor-list-hover, var(--bgcolor-global));
+  $bgcolor-list-active: var(--bgcolor-list-active, hsl.lighten(var(--primary),65%));
+  $color-list-active: var(--color-list-active,hsl(var(--primary-hs), clamp(10%, (100% - var(--primary-l)  - 65% - 51%) * 1000, 95%)));
   $color-table: var(--color-table,var(--color-global));
   $bgcolor-table: var(--bgcolor-table,null);
   $border-color-table: var(--border-color-table,#{$gray-200});
@@ -77,7 +77,7 @@
   .form-control[disabled],
   .form-control[readonly] {
     color: hsl.lighten(var(--color-global),10%);
-    background-color: hsl.darken(var(--color-global),5%);
+    background-color: hsl.darken(var(--bgcolor-global),5%);
   }
 
   /*

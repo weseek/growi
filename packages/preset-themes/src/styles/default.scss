@@ -60,7 +60,7 @@
   // --color-list-hover: var(--color-global); // optional
   --bgcolor-list-hover: #{hsl.lighten(var(--bgcolor-global),3%)};// optional
   // --color-list-active: white ; // optional
-  --bgcolor-list-active: #{hsl.lighten(var(--bgcolor-global),3%)}; // optional
+  // --bgcolor-list-active: #{hsl.lighten(var(--bgcolor-global),3%)}; // optional
   // --color-page-list-group-item-meta: #{$gray-500}; // optional
 
   // Table colors
