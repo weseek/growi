@@ -331,7 +331,8 @@ ul.pagination {
       color: $color-modal-header;
     }
     .close {
-      color: hsl.alpha(var(--primary),50%);
+      color: $color-modal-header;
+      opacity: 0.5;
 
       &:hover {
         opacity: 0.9;
