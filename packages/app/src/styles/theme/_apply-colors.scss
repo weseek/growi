@@ -2,7 +2,6 @@
 @use '../bootstrap/init' as *;
 @use '../mixins';
 @use '../atoms/mixins/code';
-@use './mixins/tables'; // comment out and use _reboot-bootstrap-tables instead -- 2020.05.28 Yuki Takei
 @use './mixins/hsl-button';
 @use './hsl-functions' as hsl;
 

@@ -18,7 +18,7 @@
   $border-color-table: var(--border-color-table,#{$gray-200});
   $color-table-hover: var(--color-table-hover,var(--color-table));
   $bgcolor-table-hover: var(--bgcolor-table-hover,rgba(black, 0.075));
-  $bgcolor-sidebar-list-group: var(--bgcolor-sidebar-list-group,var(--bgcolor-list));
+  $bgcolor-sidebar-list-group: var(bgcolor-sidebar-list-group,var(--bgcolor-list));
   $color-tags: var(--color-tags,var(--secondary));
   $bgcolor-tags: var(--bgcolor-tags,#{$gray-200});
   $border-color-global: var(--border-color-global,#{$gray-300});

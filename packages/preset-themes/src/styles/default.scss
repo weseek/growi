@@ -7,7 +7,6 @@
 //
 
 // colors for overriding bootstrap $theme-colors
-// --secondary: #;
 // --info: #;
 // --success: #;
 // --warning: #;
@@ -58,7 +57,7 @@
   --color-list: var(--color-global); // optional
   --bgcolor-list: var(--bgcolor-global); // optional
   // --color-list-hover: var(--color-global); // optional
-  --bgcolor-list-hover: #{hsl.lighten(var(--bgcolor-global),3%)};// optional
+  --bgcolor-list-hover: #{hsl.darken(var(--bgcolor-global),3%)};// optional
   // --color-list-active: white ; // optional
   // --bgcolor-list-active: #{hsl.lighten(var(--bgcolor-global),3%)}; // optional
   // --color-page-list-group-item-meta: #{$gray-500}; // optional
@@ -108,7 +107,7 @@
   --bgcolor-sidebar-context-l: calc(var(--primary-l) + 77%);
 
   // Sidebar list group
-  --bgcolor-sidebar-list-group: #{$gray-50}; // optional
+  // --bgcolor-sidebar-list-group: #{$gray-50}; // optional
 
   // Subnavigation
   --bgcolor-subnav: hsl(var(--bgcolor-subnav-hs),var(--bgcolor-subnav-l));
@@ -230,7 +229,7 @@
   --color-sidebar-context-hs: var(--color-global-hs);
   --color-sidebar-context-l: var(--color-global-l);
   // Sidebar list group
-  --bgcolor-sidebar-list-group: #1c2a3e; // optional
+  // --bgcolor-sidebar-list-group: #1c2a3e; // optional
 
   // Subnavigation
   --bgcolor-subnav: hsl(var(--bgcolor-subnav-hs),var(--bgcolor-subnav-l));
