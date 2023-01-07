@@ -1,8 +1,34 @@
 # Changelog
 
-## [Unreleased](https://github.com/weseek/growi/compare/v6.0.0...HEAD)
+## [Unreleased](https://github.com/weseek/growi/compare/v6.0.1...HEAD)
 
 *Please do not manually update this file. We've automated the process.*
+
+## [v6.0.1](https://github.com/weseek/growi/compare/v6.0.0...v6.0.1) - 2023-01-07
+
+### 🚀 Improvement
+
+- imprv: Reduce frequent API calling by SWR (#7218) @yuki-takei
+- imprv: Do not use api for fetching pages when using shared pages (#7213) @miya
+
+### 🐛 Bug Fixes
+
+- fix: Custom logo not displayed on shared page (#7205) @miya
+- fix: Attach i18n User Setting and TagEditModal (#7216) @jam411
+- fix: Make PLANTUML_URI v5.x compatible (#7215) @yuki-takei
+- fix: Launch with PROMSTER_ENABLED=true failed (#7210) @yuki-takei
+- fix: Lsx performs with strange behavior (#7209) @yuki-takei
+
+### 🧰 Maintenance
+
+- support: Arm architecture (#7212) @yuki-takei
+- ci(deps): bump anothrNick/github-tag-action from 1.38.0 to 1.56.0 (#7195) @dependabot
+- ci(deps): bump google-github-actions/setup-gcloud from 0 to 1 (#7193) @dependabot
+- ci(deps): bump github/codeql-action from 1 to 2 (#7194) @dependabot
+- ci(deps): bump flat from 5.0.0 to 5.0.2 (#7200) @dependabot
+- ci(deps): bump json5 from 1.0.1 to 1.0.2 (#7201) @dependabot
+- ci(Mergify): configuration update (#7202) @yuki-takei
+- support: Uninstall swig-template (#7192) @yuki-takei
 
 ## [v6.0.0](https://github.com/weseek/growi/compare/v5.1.7...v6.0.0) - 2022-12-27
 
