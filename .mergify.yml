@@ -14,7 +14,7 @@ pull_request_rules:
 
   - name: Automatic merge for Preparing next version
     conditions:
-      - author = GitHub Action
+      - author = github-actions[bot]
       - '#approved-reviews-by >= 1'
       - check-skipped = "test (16.x)"
       - check-skipped = "test-prod-node14 / launch-prod"
