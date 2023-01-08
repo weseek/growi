@@ -2,7 +2,6 @@
 @use '../bootstrap/init' as *;
 @use '../mixins';
 @use '../atoms/mixins/code';
-@use './mixins/tables'; // comment out and use _reboot-bootstrap-tables instead -- 2020.05.28 Yuki Takei
 @use './mixins/hsl-button';
 @use './hsl-functions' as hsl;
 
@@ -43,6 +42,7 @@ $theme-colors: map-merge($theme-colors, ( primary: $primary ));
 @import 'reboot-bootstrap-buttons';
 @import 'reboot-bootstrap-colors';
 @import 'reboot-bootstrap-theme-colors';
+@import 'hsl-reboot-bootstrap-theme-colors';
 @import 'reboot-bootstrap-nav';
 @import 'reboot-toastr-colors';
 
@@ -87,7 +87,6 @@ code:not([class^='language-']) {
 // Form
 .form-control {
   @include form-control-focus();
-  border: none;
 }
 
 // Tabs
@@ -122,7 +121,7 @@ ul.pagination {
   li.page-item {
     button.page-link {
       color: var(--primary);
-      border-color: var(--secondary);
+      border-color: var(--secondary) !important;
       &:hover,
       &:active,
       &:focus {
@@ -331,7 +330,8 @@ ul.pagination {
       color: $color-modal-header;
     }
     .close {
-      color: hsl.alpha(var(--primary),50%);
+      color: $color-modal-header;
+      opacity: 0.5;
 
       &:hover {
         opacity: 0.9;

@@ -7,7 +7,6 @@
 //
 
 // colors for overriding bootstrap $theme-colors
-// --secondary: #;
 // --info: #;
 // --success: #;
 // --warning: #;
@@ -21,6 +20,9 @@
   --primary: hsl(var(--primary-hs),var(--primary-l));
   --primary-hs: 216.7,65%;
   --primary-l: 20.2%;
+  --secondary: hsl(var(--secondary-hs),var(--secondary-l));
+  --secondary-hs: 208,7%;
+  --secondary-l: 46%;
   --accent: hsl(var(--accent-hs),var(--accent-l));
   --accent-hs: 198.6,74.2%;
   --accent-l: 48.6%;
@@ -51,14 +53,13 @@
   --color-link-nabvar: #{$gray-500};
   --color-inline-code: #{darken($red, 15%)}; // optional
 
-
   // List Group colors
   --color-list: var(--color-global); // optional
   --bgcolor-list: var(--bgcolor-global); // optional
   // --color-list-hover: var(--color-global); // optional
-  --bgcolor-list-hover: #{hsl.lighten(var(--bgcolor-global),3%)};// optional
+  --bgcolor-list-hover: #{hsl.darken(var(--bgcolor-global),3%)};// optional
   // --color-list-active: white ; // optional
-  --bgcolor-list-active: #{hsl.lighten(var(--bgcolor-global),3%)}; // optional
+  // --bgcolor-list-active: #{hsl.lighten(var(--bgcolor-global),3%)}; // optional
   // --color-page-list-group-item-meta: #{$gray-500}; // optional
 
   // Table colors
@@ -106,7 +107,7 @@
   --bgcolor-sidebar-context-l: calc(var(--primary-l) + 77%);
 
   // Sidebar list group
-  --bgcolor-sidebar-list-group: #{$gray-50}; // optional
+  // --bgcolor-sidebar-list-group: #{$gray-50}; // optional
 
   // Subnavigation
   --bgcolor-subnav: hsl(var(--bgcolor-subnav-hs),var(--bgcolor-subnav-l));
@@ -150,6 +151,9 @@
   --primary: hsl(var(--primary-hs),var(--primary-l));
   --primary-hs: 216.8,85.1%;
   --primary-l: 44.7%;
+  --secondary: hsl(var(--secondary-hs),var(--secondary-l));
+  --secondary-hs: 208,7%;
+  --secondary-l: 46%;
   --accent: hsl(var(--accent-hs),var(--accent-l));
   --accent-hs: 307,100%;
   --accent-l: 43%;
@@ -169,7 +173,7 @@
   --color-global-l: 74%;
   --color-reversal: #{$gray-900};
   // --color-header: desaturate($primary, 20%);
-  --color-link: hsl(var(----color-link-hs),var(--color-link-l));
+  --color-link: hsl(var(--color-link-hs),var(--color-link-l));
   --color-link-hs: 219.3,51.7%;
   --color-link-l: 65.9%;
   --color-link-hover: #{hsl.lighten(var(--color-link),10%)};
@@ -186,7 +190,7 @@
   // --color-list-hover: var(--color-global); // optional
   --bgcolor-list-hover: #{hsl.lighten(var(--bgcolor-global),3%)}; // optional
   // --color-list-active: white ; // optional
-  --bgcolor-list-active: var(--primary); // optional
+  // --bgcolor-list-active: var(--primary); // optional
 
   // Table colors
   // --color-table: #; // optional
@@ -225,7 +229,7 @@
   --color-sidebar-context-hs: var(--color-global-hs);
   --color-sidebar-context-l: var(--color-global-l);
   // Sidebar list group
-  --bgcolor-sidebar-list-group: #1c2a3e; // optional
+  // --bgcolor-sidebar-list-group: #1c2a3e; // optional
 
   // Subnavigation
   --bgcolor-subnav: hsl(var(--bgcolor-subnav-hs),var(--bgcolor-subnav-l));

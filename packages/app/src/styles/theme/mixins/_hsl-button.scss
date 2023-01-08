@@ -104,3 +104,39 @@
   // }
   // }
 }
+
+// @mixin button-svg-icon-variant($background, $hover-background: darken($background, 7.5%), $active-background: darken($background, 10%)) {
+@mixin button-svg-icon-variant($background, $hover-background-darken-degrees: 7.5%, $active-background-darken-degrees: 10%) {
+  svg {
+    fill: hsl.contrast($background);
+  }
+
+  @include bs.hover() {
+    svg {
+      fill: hsl.contrast($background);
+    }
+  }
+
+  &:focus,
+  &.focus {
+    svg {
+      fill: hsl.contrast($background);
+    }
+  }
+
+  // Disabled comes first so active can properly restyle
+  &.disabled,
+  &:disabled {
+    svg {
+      fill: hsl.contrast($background);
+    }
+  }
+
+  &:not(:disabled):not(.disabled):active,
+  &:not(:disabled):not(.disabled).active,
+  .show > &.dropdown-toggle {
+    svg {
+      fill: hsl.contrast($background);
+    }
+  }
+}

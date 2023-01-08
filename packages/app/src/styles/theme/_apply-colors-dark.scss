@@ -52,6 +52,8 @@
   @import './reboot-bootstrap-text';
   @import './reboot-bootstrap-border-colors';
   @import './reboot-bootstrap-tables';
+  @import './reboot-bootstrap-theme-colors';
+  @import 'hsl-reboot-bootstrap-theme-colors';
   @import './reboot-bootstrap-dropdown';
 
   // List Group
@@ -83,7 +85,7 @@
   .form-control[disabled],
   .form-control[readonly] {
     color: hsl.lighten(var(--color-global),10%);
-    background-color: hsl.lighten(var(--color-global),5%);
+    background-color: hsl.lighten(var(--bgcolor-global),5%);
   }
 
   .input-group > .input-group-prepend > .input-group-text {
@@ -114,14 +116,8 @@
   /*
   * Card
   */
-  .card:not([class*='bg-']):not(.well):not(.card-disabled) {
-    background-color: $dark !important;
-    a,
-    button{
-      @include hover-focus() {
-        background-color: darken($dark, 10%) !important;
-      }
-    }
+  .card:not([class*=‘bg-’]):not(.well):not(.card-disabled) {
+    @extend .bg-dark;
   }
 
   // [TODO] GW-3219 modify common color of well in dark theme, then remove below css.
@@ -156,11 +152,8 @@
     }
     li.page-item {
       button.page-link {
-        @include button-variant($dark, $dark);
-        @include mixins-buttons.button-svg-icon-variant($dark, $dark);
+        @extend .btn-dark;
         color: var(--primary);
-        border-color: var(--secondary);
-        box-shadow: none !important;
       }
     }
   }
@@ -224,9 +217,7 @@
     }
 
     .btn-external-auth-tab {
-      @include button-variant($dark, $dark);
-      @include mixins-buttons.button-svg-icon-variant($dark, $dark);
-      box-shadow: none !important;
+      @extend .btn-dark;
     }
 
     // footer link text
