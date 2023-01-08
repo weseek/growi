@@ -27,10 +27,29 @@ export const Fab = (): JSX.Element => {
 
   const [animateClasses, setAnimateClasses] = useState('invisible');
   const [buttonClasses, setButtonClasses] = useState('');
+  const [isSticky, setIsSticky] = useState<boolean>(false);
 
   // ripple
   const createBtnRef = useRef(null);
   useRipple(createBtnRef, { rippleColor: 'rgba(255, 255, 255, 0.3)' });
+
+  /**
+   * After the fade animation is finished, fix the button display status.
+   * Prevents the fade animation occurred each time by button components rendered.
+   * Check Fab.module.scss for fade animation time.
+   */
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      if (isSticky) {
+        setAnimateClasses('visible');
+        setButtonClasses('');
+      }
+      else {
+        setAnimateClasses('invisible');
+      }
+    }, 500);
+    return () => clearTimeout(timer);
+  }, [isSticky]);
 
   const stickyChangeHandler = useCallback((event) => {
     logger.debug('StickyEvents.CHANGE detected');
@@ -40,22 +59,7 @@ export const Fab = (): JSX.Element => {
 
     setAnimateClasses(newAnimateClasses);
     setButtonClasses(newButtonClasses);
-
-    /**
-     * After the fade animation is finished, fix the button display status.
-     * Prevents the fade animation occurred each time by button components rendered.
-     * Check Fab.module.scss for fade animation time.
-     */
-    setTimeout(() => {
-      if (event.detail.isSticky) {
-        setAnimateClasses('visible');
-        setButtonClasses('');
-      }
-      else {
-        setAnimateClasses('invisible');
-      }
-    }, 500);
-
+    setIsSticky(event.detail.isSticky);
   }, []);
 
   // setup effect by sticky event

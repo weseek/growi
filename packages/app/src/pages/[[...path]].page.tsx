@@ -90,7 +90,8 @@ const NotCreatablePage = dynamic(() => import('../components/NotCreatablePage').
 const ForbiddenPage = dynamic(() => import('../components/ForbiddenPage'), { ssr: false });
 const UnsavedAlertDialog = dynamic(() => import('../components/UnsavedAlertDialog'), { ssr: false });
 const PageSideContents = dynamic<PageSideContentsProps>(() => import('../components/PageSideContents').then(mod => mod.PageSideContents), { ssr: false });
-const GrowiSubNavigationSwitcher = dynamic(() => import('../components/Navbar/GrowiSubNavigationSwitcher'), { ssr: false });
+const GrowiSubNavigationSwitcher = dynamic(() => import('../components/Navbar/GrowiSubNavigationSwitcher')
+  .then(mod => mod.GrowiSubNavigationSwitcher), { ssr: false });
 const UsersHomePageFooter = dynamic<UsersHomePageFooterProps>(() => import('../components/UsersHomePageFooter')
   .then(mod => mod.UsersHomePageFooter), { ssr: false });
 const DrawioModal = dynamic(() => import('../components/PageEditor/DrawioModal').then(mod => mod.DrawioModal), { ssr: false });
