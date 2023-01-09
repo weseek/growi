@@ -1,5 +1,7 @@
-import { ICondition } from './condition';
-import { IQuestion } from './question';
+import { HasObjectId } from '@growi/core';
+
+import { ICondition, IConditionHasId } from './condition';
+import { IQuestion, IQuestionHasId } from './question';
 
 export interface IQuestionnaireOrder {
   showFrom: Date
@@ -7,3 +9,10 @@ export interface IQuestionnaireOrder {
   questions: IQuestion[]
   condition: ICondition
 }
+
+export type IQuestionnaireOrderHasId = {
+  showFrom: Date
+  showUntil: Date
+  questions: IQuestionHasId[]
+  condition: IConditionHasId
+} & HasObjectId;

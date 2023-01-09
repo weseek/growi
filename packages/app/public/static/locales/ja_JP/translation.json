@@ -797,5 +797,13 @@
   "v5_page_migration": {
     "page_tree_not_avaliable" : "Page Tree 機能は現在使用できません。",
     "go_to_settings": "設定する"
+  },
+  "questionnaire": {
+    "Questionnaire": "アンケート",
+    "don't show again": "今後このアンケートを表示しない",
+    "answer later": "今は回答しない",
+    "strongly agree": "非常にそう思う",
+    "strongly disagree": "全くそう思わない",
+    "send answer": "回答する"
   }
 }

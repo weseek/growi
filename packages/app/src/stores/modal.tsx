@@ -580,3 +580,26 @@ export const useConflictDiffModal = (): SWRResponse<ConflictDiffModalStatus, Err
     },
   });
 };
+
+/*
+* QuestionnaireModal
+*/
+type QuestionnaireModalStatus = {
+  isOpened: boolean,
+}
+
+type QuestionnaireModalStatusUtils = {
+  open(): Promise<QuestionnaireModalStatus | undefined>
+  close(): Promise<QuestionnaireModalStatus | undefined>
+}
+
+export const useQuestionnaireModal = (status?: QuestionnaireModalStatus): SWRResponse<QuestionnaireModalStatus, Error> & QuestionnaireModalStatusUtils => {
+  const initialData: QuestionnaireModalStatus = { isOpened: true };
+  const swrResponse = useStaticSWR<QuestionnaireModalStatus, Error>('questionnaireModalStatus', status, { fallbackData: initialData });
+
+  return {
+    ...swrResponse,
+    open: () => swrResponse.mutate({ isOpened: true }),
+    close: () => swrResponse.mutate({ isOpened: false }),
+  };
+};
