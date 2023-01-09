@@ -160,6 +160,7 @@ const BookmarkFolderMenuItem = (props: Props):JSX.Element => {
       </div>
       <DropdownToggle
         color="transparent"
+        className='grw-bookmark-folder-menu-toggle-btn '
         onClick={e => e.stopPropagation()}
         onMouseEnter={onMouseEnterHandler}
       >

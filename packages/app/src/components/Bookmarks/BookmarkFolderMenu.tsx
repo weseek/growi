@@ -8,7 +8,7 @@ import {
 } from 'reactstrap';
 
 import { toastError, toastSuccess } from '~/client/util/apiNotification';
-import { apiv3Post } from '~/client/util/apiv3-client';
+import { apiv3Get, apiv3Post } from '~/client/util/apiv3-client';
 import { useSWRBookmarkInfo } from '~/stores/bookmark';
 import { useSWRxBookamrkFolderAndChild } from '~/stores/bookmark-folder';
 import { useSWRxCurrentPage } from '~/stores/page';
@@ -18,6 +18,7 @@ import FolderIcon from '../Icons/FolderIcon';
 import BookmarkFolderMenuItem from './BookmarkFolderMenuItem';
 import BookmarkFolderNameInput from './BookmarkFolderNameInput';
 
+import styles from './BookmarkFolderMenu.module.scss';
 
 type Props = {
   children?: React.ReactNode
@@ -127,7 +128,7 @@ const BookmarkFolderMenu = (props: Props): JSX.Element => {
   return (
     <UncontrolledDropdown
       direction={ isBookmarkFolderExists() ? 'up' : 'down' }
-      className="grw-bookmark-folder-dropdown">
+      className={`grw-bookmark-folder-dropdown ${styles['grw-bookmark-folder-dropdown']}`}>
       {children}
       <DropdownMenu
         right
