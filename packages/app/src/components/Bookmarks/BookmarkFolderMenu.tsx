@@ -36,6 +36,10 @@ const BookmarkFolderMenu = (props: Props): JSX.Element => {
     setIsCreateAction(true);
   }, []);
 
+  const toggleHandler = useCallback(() => {
+    mutateBookmarkFolderData();
+  }, [mutateBookmarkFolderData]);
+
   useEffect(() => {
     bookmarkFolders?.forEach((bookmarkFolder) => {
       bookmarkFolder.bookmarks.forEach((bookmark) => {
@@ -69,7 +73,6 @@ const BookmarkFolderMenu = (props: Props): JSX.Element => {
   const onMenuItemClickHandler = useCallback(async(itemId: string) => {
     try {
       await apiv3Post('/bookmark-folder/add-boookmark-to-folder', { pageId: currentPage?._id, folderId: itemId });
-      await mutateBookmarkFolderData();
       setSelectedItem(itemId);
       mutateBookmarkInfo();
       toastSuccess('Bookmark added to bookmark folder successfully');
@@ -77,7 +80,7 @@ const BookmarkFolderMenu = (props: Props): JSX.Element => {
     catch (err) {
       toastError(err);
     }
-  }, [currentPage?._id, mutateBookmarkFolderData, mutateBookmarkInfo]);
+  }, [currentPage?._id, mutateBookmarkInfo]);
 
   const renderBookmarkMenuItem = useCallback(() => {
     return (
@@ -104,6 +107,7 @@ const BookmarkFolderMenu = (props: Props): JSX.Element => {
                   <div className='dropdown-item grw-bookmark-folder-menu-item' tabIndex={0} role="menuitem" onClick={() => onMenuItemClickHandler(folder._id)}>
                     <BookmarkFolderMenuItem
                       item={folder}
+                      isSelected={selectedItem === folder._id}
                       onSelectedChild={() => setSelectedItem(null)}
                     />
                   </div>
@@ -121,10 +125,12 @@ const BookmarkFolderMenu = (props: Props): JSX.Element => {
       onMenuItemClickHandler,
       onPressEnterHandlerForCreate,
       t,
+      selectedItem,
   ]);
 
   return (
     <UncontrolledDropdown
+      onToggle={toggleHandler}
       direction={ isBookmarkFolderExists() ? 'up' : 'down' }
       className="grw-bookmark-folder-dropdown">
       {children}
