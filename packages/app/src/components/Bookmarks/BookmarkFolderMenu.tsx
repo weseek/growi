@@ -1,5 +1,5 @@
 import React, {
-  useCallback, useEffect, useState,
+  useCallback, useState,
 } from 'react';
 
 import { useTranslation } from 'next-i18next';
@@ -32,15 +32,13 @@ const BookmarkFolderMenu = (props: Props): JSX.Element => {
   const { data: currentPage } = useSWRxCurrentPage();
   const { mutate: mutateBookmarkInfo } = useSWRBookmarkInfo(currentPage?._id);
 
+
   const onClickNewBookmarkFolder = useCallback(() => {
     setIsCreateAction(true);
   }, []);
 
   const toggleHandler = useCallback(() => {
     mutateBookmarkFolderData();
-  }, [mutateBookmarkFolderData]);
-
-  useEffect(() => {
     bookmarkFolders?.forEach((bookmarkFolder) => {
       bookmarkFolder.bookmarks.forEach((bookmark) => {
         if (bookmark.page._id === currentPage?._id) {
@@ -73,14 +71,17 @@ const BookmarkFolderMenu = (props: Props): JSX.Element => {
   const onMenuItemClickHandler = useCallback(async(itemId: string) => {
     try {
       await apiv3Post('/bookmark-folder/add-boookmark-to-folder', { pageId: currentPage?._id, folderId: itemId });
-      setSelectedItem(itemId);
+
       mutateBookmarkInfo();
       toastSuccess('Bookmark added to bookmark folder successfully');
     }
     catch (err) {
       toastError(err);
     }
-  }, [currentPage?._id, mutateBookmarkInfo]);
+
+    mutateBookmarkFolderData();
+    setSelectedItem(itemId);
+  }, [currentPage?._id, mutateBookmarkFolderData, mutateBookmarkInfo]);
 
   const renderBookmarkMenuItem = useCallback(() => {
     return (

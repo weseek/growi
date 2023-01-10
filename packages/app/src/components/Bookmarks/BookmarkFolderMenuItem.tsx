@@ -32,6 +32,7 @@ const BookmarkFolderMenuItem = (props: Props):JSX.Element => {
   const [isOpen, setIsOpen] = useState(false);
   const [currentChildFolders, setCurrentChildFolders] = useState<BookmarkFolderItems[]>();
   const { data: childFolders, mutate: mutateChildFolders } = useSWRxBookamrkFolderAndChild(item._id);
+  const { mutate: mutateParentFolders } = useSWRxBookamrkFolderAndChild(item.parent);
   const [selectedItem, setSelectedItem] = useState<string | null>(null);
   const [isCreateAction, setIsCreateAction] = useState<boolean>(false);
   const { data: currentPage } = useSWRxCurrentPage();
@@ -54,11 +55,8 @@ const BookmarkFolderMenuItem = (props: Props):JSX.Element => {
   useEffect(() => {
     if (isOpen && childFolders != null) {
       mutateChildFolders();
-
       setCurrentChildFolders(childFolders);
-
     }
-
     currentChildFolders?.forEach((bookmarkFolder) => {
       bookmarkFolder.bookmarks.forEach((bookmark) => {
         if (bookmark.page._id === currentPage?._id) {
@@ -67,7 +65,7 @@ const BookmarkFolderMenuItem = (props: Props):JSX.Element => {
       });
     });
 
-  }, [childFolders, currentChildFolders, currentPage?._id, isOpen, item._id, mutateChildFolders]);
+  }, [childFolders, currentChildFolders, currentPage?._id, isOpen, item, mutateChildFolders, mutateParentFolders]);
 
   const onClickNewBookmarkFolder = useCallback((e) => {
     e.stopPropagation();
@@ -89,19 +87,21 @@ const BookmarkFolderMenuItem = (props: Props):JSX.Element => {
 
   const onClickChildMenuItemHandler = useCallback(async(e, item) => {
     e.stopPropagation();
-    setSelectedItem(item._id);
     mutateBookmarkInfo();
     onSelectedChild();
     try {
       await apiv3Post('/bookmark-folder/add-boookmark-to-folder', { pageId: currentPage?._id, folderId: item._id });
       toastSuccess('Bookmark added to bookmark folder successfully');
+      mutateParentFolders();
+      mutateChildFolders();
+      setSelectedItem(item._id);
     }
     catch (err) {
       toastError(err);
     }
 
-    mutateChildFolders();
-  }, [currentPage?._id, mutateBookmarkInfo, onSelectedChild, mutateChildFolders]);
+
+  }, [mutateBookmarkInfo, onSelectedChild, currentPage?._id]);
 
   const renderBookmarkSubMenuItem = useCallback(() => {
     return (
