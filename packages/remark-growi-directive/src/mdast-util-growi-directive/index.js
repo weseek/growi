@@ -231,18 +231,6 @@ function attributes(node, context) {
     }
   }
 
-  if (classesFull) {
-    values.unshift(classesFull);
-  }
-
-  if (classes) {
-    values.unshift(classes);
-  }
-
-  if (id) {
-    values.unshift(id);
-  }
-
   return values.length > 0 ? `(${values.join(' ')})` : '';
 
   /**
