@@ -12,7 +12,7 @@ const Question = ({ question }: QuestionProps): JSX.Element => {
       </span>
     </div>
     <div className="col-7 d-flex align-items-center">
-      <div className="btn-group btn-group-toggle flex-fill" data-toggle="buttons">
+      <div className="btn-group btn-group-toggle flex-fill grw-questionnaire-btn-group" data-toggle="buttons">
         <label className="btn btn-outline-primary">
           <input type="radio" name="options" id="option1"/> 1
         </label>

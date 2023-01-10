@@ -209,4 +209,9 @@
       @include page-editor-mode-manager.btn-page-editor-mode-manager(lighten($primary, 30%), lighten($primary, 20%), $primary, darken($primary, 20%));
     }
   }
+  // .btn-group.grw-questionnaire-btn-group {
+  //   .btn.btn-outline-primary {
+  //     @include page-editor-mode-manager.btn-page-editor-mode-manager(lighten($primary, 30%), lighten($primary, 20%), $primary, darken($primary, 20%));
+  //   }
+  // }
 }
