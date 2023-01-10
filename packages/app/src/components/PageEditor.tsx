@@ -206,6 +206,7 @@ const PageEditor = React.memo((): JSX.Element => {
         options,
       );
 
+      // to sync revision id with page tree: https://github.com/weseek/growi/pull/7227
       advancePt();
 
       return page;

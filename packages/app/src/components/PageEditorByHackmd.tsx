@@ -129,6 +129,8 @@ export const PageEditorByHackmd = (): JSX.Element => {
       else {
         updateStateAfterSave?.();
         mutateIsHackmdDraftUpdatingInRealtime(false);
+
+        // to sync revision id with page tree: https://github.com/weseek/growi/pull/7227
         advancePt();
       }
       setIsInitialized(false);
@@ -261,6 +263,7 @@ export const PageEditorByHackmd = (): JSX.Element => {
       updateStateAfterSave?.();
       mutateTagsInfo();
 
+      // to sync revision id with page tree: https://github.com/weseek/growi/pull/7227
       advancePt();
 
       mutateIsEnabledUnsavedWarning(false);
