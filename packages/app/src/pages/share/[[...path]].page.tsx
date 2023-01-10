@@ -12,7 +12,7 @@ import superjson from 'superjson';
 import { useCurrentGrowiLayoutFluidClassName } from '~/client/services/layout';
 import { MainPane } from '~/components/Layout/MainPane';
 import { ShareLinkLayout } from '~/components/Layout/ShareLinkLayout';
-import GrowiContextualSubNavigation from '~/components/Navbar/GrowiContextualSubNavigation';
+import { GrowiContextualSubNavigationForSharedPage } from '~/components/Navbar/GrowiContextualSubNavigation';
 import { Page } from '~/components/Page';
 import type { PageSideContentsProps } from '~/components/PageSideContents';
 import { DrawioViewerScript } from '~/components/Script/DrawioViewerScript';
@@ -111,7 +111,8 @@ const SharedPage: NextPageWithLayout<Props> = (props: Props) => {
 
       <div className={`dynamic-layout-root ${growiLayoutFluidClass} h-100 d-flex flex-column justify-content-between`}>
         <header className="py-0 position-relative">
-          {isShowSharedPage && <GrowiContextualSubNavigation currentPage={props.shareLinkRelatedPage} isLinkSharingDisabled={props.disableLinkSharing} />}
+          {isShowSharedPage
+          && <GrowiContextualSubNavigationForSharedPage currentPage={props.shareLinkRelatedPage} isLinkSharingDisabled={props.disableLinkSharing} />}
         </header>
 
         <div id="grw-fav-sticky-trigger" className="sticky-top"></div>

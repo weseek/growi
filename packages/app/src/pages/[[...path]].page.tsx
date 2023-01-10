@@ -56,7 +56,7 @@ import loggerFactory from '~/utils/logger';
 // import GrowiSubNavigationSwitcher from '../client/js/components/Navbar/GrowiSubNavigationSwitcher';
 import { DescendantsPageListModal } from '../components/DescendantsPageListModal';
 import { BasicLayoutWithEditorMode } from '../components/Layout/BasicLayout';
-import GrowiContextualSubNavigation from '../components/Navbar/GrowiContextualSubNavigation';
+import { GrowiContextualSubNavigation } from '../components/Navbar/GrowiContextualSubNavigation';
 import DisplaySwitcher from '../components/Page/DisplaySwitcher';
 // import { serializeUserSecurely } from '../server/models/serializers/user-serializer';
 // import PageStatusAlert from '../client/js/components/PageStatusAlert';
@@ -328,7 +328,7 @@ const Page: NextPageWithLayout<Props> = (props: Props) => {
       <div className={`dynamic-layout-root ${growiLayoutFluidClass} h-100 d-flex flex-column justify-content-between`}>
         <header className="py-0 position-relative">
           <div id="grw-subnav-container">
-            <GrowiContextualSubNavigation currentPage={pageWithMeta?.data} isLinkSharingDisabled={props.disableLinkSharing} />
+            <GrowiContextualSubNavigation isLinkSharingDisabled={props.disableLinkSharing} />
           </div>
         </header>
         <div className="d-edit-none">
