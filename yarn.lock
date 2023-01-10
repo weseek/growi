@@ -22091,9 +22091,9 @@ textlint-rule-no-doubled-conjunction@^2.0.2:
     textlint-util-to-string "^3.1.1"
 
 textlint-rule-no-doubled-joshi@^4.0.0:
-  version "4.0.0"
-  resolved "https://registry.yarnpkg.com/textlint-rule-no-doubled-joshi/-/textlint-rule-no-doubled-joshi-4.0.0.tgz#4e0776125ee244e05492e642a75d564baec728f8"
-  integrity sha512-IUlJBlvzdkiJhbxqw3KlvI/o+qUIrk2AltV1P67gQqLT1XMuxVUVftCMmKdGrH4tDN5nrD4TkcW+yoFxnBCEvQ==
+  version "4.0.1"
+  resolved "https://registry.yarnpkg.com/textlint-rule-no-doubled-joshi/-/textlint-rule-no-doubled-joshi-4.0.1.tgz#2a2c01549fbe5cbf1355a9960c353d449eaec4e6"
+  integrity sha512-zkdFMvrbVeU3nrio5SxCg+jObflG1JdT6e5FaHAny8yyqEsRVz4vS7zPxjlsqXDK1c/GqcPcGJFNyhDupfsz4w==
   dependencies:
     kuromojin "^3.0.0"
     sentence-splitter "^3.2.1"
