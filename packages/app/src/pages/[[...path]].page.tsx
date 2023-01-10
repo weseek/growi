@@ -56,7 +56,7 @@ import loggerFactory from '~/utils/logger';
 // import GrowiSubNavigationSwitcher from '../client/js/components/Navbar/GrowiSubNavigationSwitcher';
 import { DescendantsPageListModal } from '../components/DescendantsPageListModal';
 import { BasicLayoutWithEditorMode } from '../components/Layout/BasicLayout';
-import { GrowiContextualSubNavigation } from '../components/Navbar/GrowiContextualSubNavigation';
+import { GrowiContextualSubNavigationSubstance } from '../components/Navbar/GrowiContextualSubNavigation';
 import DisplaySwitcher from '../components/Page/DisplaySwitcher';
 // import { serializeUserSecurely } from '../server/models/serializers/user-serializer';
 // import PageStatusAlert from '../client/js/components/PageStatusAlert';
@@ -131,6 +131,17 @@ superjson.registerCustom<IPageToShowRevisionWithMeta, IPageToShowRevisionWithMet
   'IPageToShowRevisionWithMetaTransformer',
 );
 
+// GrowiContextualSubNavigation for NOT shared page
+type GrowiContextualSubNavigationProps = {
+  isLinkSharingDisabled: boolean,
+}
+
+const GrowiContextualSubNavigation = (props: GrowiContextualSubNavigationProps): JSX.Element => {
+  const { isLinkSharingDisabled } = props;
+  const { data: currentPage } = useSWRxCurrentPage();
+  if (currentPage == null) { return <></> }
+  return <GrowiContextualSubNavigationSubstance currentPage={currentPage} isLinkSharingDisabled={isLinkSharingDisabled}/>;
+};
 
 const IdenticalPathPage = (): JSX.Element => {
   const IdenticalPathPage = dynamic(() => import('../components/IdenticalPathPage').then(mod => mod.IdenticalPathPage), { ssr: false });

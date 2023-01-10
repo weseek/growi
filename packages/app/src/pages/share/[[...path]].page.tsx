@@ -12,7 +12,7 @@ import superjson from 'superjson';
 import { useCurrentGrowiLayoutFluidClassName } from '~/client/services/layout';
 import { MainPane } from '~/components/Layout/MainPane';
 import { ShareLinkLayout } from '~/components/Layout/ShareLinkLayout';
-import { GrowiContextualSubNavigationForSharedPage } from '~/components/Navbar/GrowiContextualSubNavigation';
+import { GrowiContextualSubNavigationSubstance } from '~/components/Navbar/GrowiContextualSubNavigation';
 import { Page } from '~/components/Page';
 import type { PageSideContentsProps } from '~/components/PageSideContents';
 import { DrawioViewerScript } from '~/components/Script/DrawioViewerScript';
@@ -67,6 +67,19 @@ superjson.registerCustom<IShareLinkRelatedPage, string>(
   },
   'IShareLinkRelatedPageTransformer',
 );
+
+// GrowiContextualSubNavigation for shared page
+// get page info from props not to send request 'GET /page' from client
+type GrowiContextualSubNavigationForSharedPageProps = {
+  currentPage?: IPagePopulatedToShowRevision,
+  isLinkSharingDisabled: boolean,
+}
+
+const GrowiContextualSubNavigationForSharedPage = (props: GrowiContextualSubNavigationForSharedPageProps): JSX.Element => {
+  const { currentPage, isLinkSharingDisabled } = props;
+  if (currentPage == null) { return <></> }
+  return <GrowiContextualSubNavigationSubstance currentPage={currentPage} isLinkSharingDisabled={isLinkSharingDisabled}/>;
+};
 
 const SharedPage: NextPageWithLayout<Props> = (props: Props) => {
   useIsSearchPage(false);
