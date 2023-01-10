@@ -6,12 +6,12 @@ import PropTypes from 'prop-types';
 import StickyEvents from 'sticky-events';
 import { debounce } from 'throttle-debounce';
 
+import { useSWRxCurrentPage } from '~/stores/page';
 import { useSidebarCollapsed } from '~/stores/ui';
 import loggerFactory from '~/utils/logger';
 
-import { useSWRxCurrentPage } from '~/stores/page';
 
-import GrowiContextualSubNavigation from './GrowiContextualSubNavigation';
+import { GrowiContextualSubNavigation } from './GrowiContextualSubNavigation';
 
 import styles from './GrowiSubNavigationSwitcher.module.scss';
 
