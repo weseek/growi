@@ -3,17 +3,6 @@
 @use './theme/mixins/page-editor-mode-manager';
 @use './theme/hsl-functions' as hsl;
 
-// == Define Bootstrap theme colors
-//
-
-// colors for overriding bootstrap $theme-colors
-// --info: #;
-// --success: #;
-// --warning: #;
-// --danger: #;
-// --light: #;
-// --dark: #;
-
 //== Light Mode
 //
 :root[data-theme='light'] {
@@ -83,6 +72,7 @@
   // Logo colors
   --bgcolor-logo: var(--bgcolor-navbar);
   --fillcolor-logo-mark: hsl(var(--bgcolor-navbar-h),calc(var(--bgcolor-navbar-s) - 20%),calc(var(--bgcolor-navbar-l) + 15%));
+
   // Sidebar
   --bgcolor-sidebar: var(--primary);
   --bgcolor-sidebar-hs: var(--primary-hs);

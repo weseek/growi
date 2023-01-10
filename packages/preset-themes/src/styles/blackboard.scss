@@ -1,6 +1,7 @@
 @use './variables' as *;
 @use './bootstrap/variables' as *;
 @use './theme/mixins/page-editor-mode-manager';
+@use './theme/hsl-functions' as hsl;
 
 :root {
   // Theme colors
@@ -78,9 +79,6 @@
 
   // admin theme box
   $color-theme-color-box: $primary;
-
-  @import './theme/apply-colors';
-  @import './theme/apply-colors-dark';
 
   // Navs
   .nav-tabs {

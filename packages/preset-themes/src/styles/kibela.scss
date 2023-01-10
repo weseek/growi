@@ -1,6 +1,7 @@
 @use './variables' as *;
 @use './bootstrap/variables' as *;
 @use './theme/mixins/page-editor-mode-manager';
+@use './theme/hsl-functions' as hsl;
 
 $bgcolor-theme: rgb(18, 86, 163);
 $themelight: #f4f5f6;
@@ -77,9 +78,6 @@ $lightthemecolor: rgba(181, 203, 247, 0.61);
   $bgcolor-sidebar-context: #f4f6fc;
   // Sidebar list group
   $bgcolor-sidebar-list-group: #fafbff; // optional
-
-  @import './theme/apply-colors';
-  @import './theme/apply-colors-light';
 
   .main {
     .container,
