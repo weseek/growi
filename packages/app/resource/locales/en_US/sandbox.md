@@ -233,16 +233,6 @@ You can create links using `[Display text](URL)`.
 
 [Google](https://www.google.co.jp/)
 
-## Crowi compatibility
-
-```
-[/Sandbox]
-</user/admin1>
-```
-
-[/Sandbox]  
-</user/admin1>
-
 ## Pukiwiki like linker
 
 This is the most flexible linker.
