@@ -171,6 +171,7 @@
     "no_page_list": "There are no pages under this page."
   },
 	"installer": {
+    "title": "安装",
 		"setup": "安装",
 		"create_initial_account": "创建初始用户",
 		"initial_account_will_be_administrator_automatically": "初始帐户将自动成为管理员。",
@@ -555,6 +556,7 @@
     "link_sharing_is_disabled": "链接共享已被禁用"
   },
 	"search_result": {
+    "title": "搜索页面",
 		"result_meta": "搜索结果:",
 		"deletion_mode_btn_lavel": "选择并删除页面",
 		"cancel": "取消",
@@ -610,6 +612,7 @@
     }
   },
 	"login": {
+    "title": "登录",
 		"sign_in_error": "登录错误",
 		"registration_successful": "注册成功。请等待管理员批准",
 		"Setup": "安装程序",
@@ -617,6 +620,7 @@
     "set_env_var_for_logs": "(请设置环境变量 <code>DEBUG=crowi:service:PassportService</code> 以获得日志。)"
 	},
   "invited": {
+    "invited": "邀请函",
     "discription_heading": "创建账户",
     "discription": "用被邀请的电子邮件地址创建一个你的账户"
   },

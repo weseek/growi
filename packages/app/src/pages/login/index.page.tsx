@@ -3,6 +3,7 @@ import React from 'react';
 import {
   NextPage, GetServerSideProps, GetServerSidePropsContext,
 } from 'next';
+import { useTranslation } from 'next-i18next';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import Head from 'next/head';
 
@@ -18,7 +19,6 @@ import {
   useCsrfToken,
   useCurrentPathname,
 } from '~/stores/context';
-
 
 import styles from './index.module.scss';
 
@@ -38,6 +38,7 @@ type Props = CommonProps & {
 };
 
 const LoginPage: NextPage<Props> = (props: Props) => {
+  const { t } = useTranslation();
 
   // commons
   useCsrfToken(props.csrfToken);
@@ -45,7 +46,7 @@ const LoginPage: NextPage<Props> = (props: Props) => {
   // page
   useCurrentPathname(props.currentPathname);
 
-  const title = generateCustomTitle(props, 'GROWI');
+  const title = generateCustomTitle(props, t('login.title'));
   const classNames: string[] = ['login-page', styles['login-page']];
 
   return (

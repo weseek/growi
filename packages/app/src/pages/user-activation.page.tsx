@@ -10,7 +10,7 @@ import type { RegistrationMode } from '~/interfaces/registration-mode';
 import { IUserRegistrationOrder } from '~/server/models/user-registration-order';
 
 import {
-  getServerSideCommonProps, getNextI18NextConfig, generateCustomTitle, CommonProps,
+  getServerSideCommonProps, getNextI18NextConfig, generateCustomTitleForPage, CommonProps,
 } from './utils/commons';
 
 type Props = CommonProps & {
@@ -23,7 +23,7 @@ type Props = CommonProps & {
 
 const UserActivationPage: NextPage<Props> = (props: Props) => {
 
-  const title = generateCustomTitle(props, 'GROWI');
+  const title = generateCustomTitleForPage(props, '/user-activation');
 
   return (
     <NoLoginLayout>

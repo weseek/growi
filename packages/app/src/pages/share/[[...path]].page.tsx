@@ -29,7 +29,7 @@ import loggerFactory from '~/utils/logger';
 
 import { NextPageWithLayout } from '../_app.page';
 import {
-  CommonProps, getServerSideCommonProps, generateCustomTitle, getNextI18NextConfig,
+  CommonProps, getServerSideCommonProps, generateCustomTitleForPage, getNextI18NextConfig,
 } from '../utils/commons';
 
 const logger = loggerFactory('growi:next-page:share');
@@ -73,7 +73,7 @@ const SharedPage: NextPageWithLayout<Props> = (props: Props) => {
   useShareLinkId(props.shareLink?._id);
   useCurrentPageId(props.shareLink?.relatedPage._id);
   useCurrentUser(props.currentUser);
-  useCurrentPathname(props.currentPathname);
+  const { data: currentPathname } = useCurrentPathname(props.currentPathname);
   useRendererConfig(props.rendererConfig);
   useIsSearchServiceConfigured(props.isSearchServiceConfigured);
   useIsSearchServiceReachable(props.isSearchServiceReachable);
@@ -88,7 +88,7 @@ const SharedPage: NextPageWithLayout<Props> = (props: Props) => {
   const isShowSharedPage = !props.disableLinkSharing && !isNotFound && !props.isExpired;
   const shareLink = props.shareLink;
 
-  const title = generateCustomTitle(props, 'GROWI');
+  const title = generateCustomTitleForPage(props, currentPathname ?? '');
 
 
   const sideContents = shareLink != null

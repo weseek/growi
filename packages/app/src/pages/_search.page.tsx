@@ -5,6 +5,7 @@ import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import dynamic from 'next/dynamic';
 import Head from 'next/head';
 
+import { useTranslation } from 'next-i18next';
 import SearchResultLayout from '~/components/Layout/SearchResultLayout';
 import { DrawioViewerScript } from '~/components/Script/DrawioViewerScript';
 import type { CrowiRequest } from '~/interfaces/crowi-request';
@@ -57,6 +58,8 @@ type Props = CommonProps & {
 const SearchResultPage: NextPageWithLayout<Props> = (props: Props) => {
   const { userUISettings } = props;
 
+  const { t } = useTranslation();
+
   // commons
   useCsrfToken(props.csrfToken);
 
@@ -88,7 +91,7 @@ const SearchResultPage: NextPageWithLayout<Props> = (props: Props) => {
     return <PutbackPageModal />;
   };
 
-  const title = generateCustomTitle(props, 'GROWI');
+  const title = generateCustomTitle(props, t('search_result.title'));
 
   return (
     <>
