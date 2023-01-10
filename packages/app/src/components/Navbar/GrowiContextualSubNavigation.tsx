@@ -183,13 +183,13 @@ const CreateTemplateMenuItems = (props: CreateTemplateMenuItemsProps): JSX.Eleme
   );
 };
 
-type GrowiContextualSubNavigationProps = {
+type GrowiContextualSubNavigationSubstanceProps = {
   currentPage?: IPagePopulatedToShowRevision,
   isCompactMode?: boolean,
   isLinkSharingDisabled: boolean,
 };
 
-const GrowiContextualSubNavigation = (props: GrowiContextualSubNavigationProps): JSX.Element => {
+const GrowiContextualSubNavigationSubstance = (props: GrowiContextualSubNavigationSubstanceProps): JSX.Element => {
 
   const { currentPage } = props;
 
@@ -441,5 +441,26 @@ const GrowiContextualSubNavigation = (props: GrowiContextualSubNavigationProps):
   );
 };
 
+// GrowiContextualSubNavigation for shared page
+// get page info from props not to send request 'GET /page' from client
+type GrowiContextualSubNavigationForSharedPageProps = {
+  currentPage: IPagePopulatedToShowRevision,
+  isLinkSharingDisabled: boolean,
+}
 
-export default GrowiContextualSubNavigation;
+export const GrowiContextualSubNavigationForSharedPage = (props: GrowiContextualSubNavigationForSharedPageProps): JSX.Element => {
+  const { currentPage, isLinkSharingDisabled } = props;
+  return <GrowiContextualSubNavigationSubstance currentPage={currentPage} isLinkSharingDisabled={isLinkSharingDisabled}/>;
+};
+
+// GrowiContextualSubNavigation for NOT shared page
+type GrowiContextualSubNavigationProps = {
+  isLinkSharingDisabled: boolean,
+}
+
+export const GrowiContextualSubNavigation = (props: GrowiContextualSubNavigationProps): JSX.Element => {
+  const { isLinkSharingDisabled } = props;
+  const { data: currentPage } = useSWRxCurrentPage();
+  if (currentPage == null) { return <></> }
+  return <GrowiContextualSubNavigationSubstance currentPage={currentPage} isLinkSharingDisabled={isLinkSharingDisabled}/>;
+};
