@@ -19,23 +19,23 @@ type Props = {
   sort?: string,
   reverse?: string,
   filter?: string,
+  except?: string,
 
   isImmutable?: boolean,
 };
 
 export const Lsx = React.memo(({
   prefix,
-  num, depth, sort, reverse, filter,
+  num, depth, sort, reverse, filter, except,
   isImmutable,
-  ...props
 }: Props): JSX.Element => {
 
   const lsxContext = useMemo(() => {
     const options = {
-      num, depth, sort, reverse, filter,
+      num, depth, sort, reverse, filter, except,
     };
     return new LsxContext(prefix, options);
-  }, [depth, filter, num, prefix, reverse, sort]);
+  }, [depth, filter, num, prefix, reverse, sort, except]);
 
   const { data, error } = useSWRxNodeTree(lsxContext, isImmutable);
 
