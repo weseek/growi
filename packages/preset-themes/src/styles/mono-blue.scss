@@ -1,6 +1,7 @@
 @use './variables' as *;
 @use './bootstrap/variables' as *;
 @use './theme/mixins/page-editor-mode-manager';
+@use './theme/hsl-functions' as hsl;
 
 :root[data-theme='light'] {
   // Theme colors
@@ -70,9 +71,6 @@
 
   // admin theme box
   $color-theme-color-box: lighten($primary, 20%);
-
-  @import './theme/apply-colors';
-  @import './theme/apply-colors-light';
 
   // Navs {
   .nav-tabs {
@@ -167,9 +165,6 @@
 
   // admin theme box
   $color-theme-color-box: $primary;
-
-  @import './theme/apply-colors';
-  @import './theme/apply-colors-dark';
 
   // Navs
   .nav-tabs {

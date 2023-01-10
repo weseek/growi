@@ -1,85 +1,109 @@
 @use './variables' as *;
 @use './bootstrap/variables' as *;
 @use './theme/mixins/page-editor-mode-manager';
+@use './theme/hsl-functions' as hsl;
 
 :root[data-theme='light'] {
   // Theme colors
-  $themecolor: #38b48b;
-  $themelight: #ffffff;
-  $accentcolor: #bfbfbf;
-  $subthemecolor: #e6e6e6;
-
-  $primary: $themecolor;
+  --primary: hsl(var(--primary-hs),var(--primary-l)) !important;
+  --primary-hs: 160,53%;
+  --primary-l: 46%;
+  --secondary-hs: 208,7%;
+  --secondary-l: 46%;
+  --accentcolor: hsl(var(--accentcolor-hs),var(--accentcolor-l));
+  --accentcolor-hs: 0,0%;
+  --accentcolor-l: 75%;
 
   // Background colors
-  $bgcolor-global: $themelight;
-  $bgcolor-inline-code: $gray-100; //optional
-  $bgcolor-card: $accentcolor;
-  $bgcolor-blinked-section: rgba($primary, 0.1);
-  //$bgcolor-keyword-highlighted: $grw-marker-yellow;
+  --bgcolor-global: hsl(var(--bgcolor-global-hs),var(--bgcolor-global-l));
+  --bgcolor-global-hs: 0,0%;
+  --bgcolor-global-l: 100%;
+  --bgcolor-inline-code: #{$gray-100}; //optional
+  --bgcolor-card: var(--accentcolor);
+  --bgcolor-blinked-section: #{hsl.alpha(var(--primary),90%)};
+  //--bgcolor-keyword-highlighted: #{$grw-marker-yellow};
 
   // Font colors
-  $color-global: #2c2c2c;
-  $color-reversal: $gray-100;
-  $color-link: $primary;
-  $color-link-hover: lighten($color-link, 12%);
-  $color-link-wiki: $primary;
-  $color-link-wiki-hover: lighten($color-link-wiki, 12%);
-  $color-link-nabvar: $color-reversal;
-  $color-inline-code: #c7254e; // optional
-  $color-search: $color-global;
+  --color-global: hsl(var(--color-global-hs),var(--color-global-l));
+  --color-global-hs: 0,0%;
+  --color-global-l: 17%;
+  --color-reversal: #{$gray-100};
+  --color-link: var(--primary);
+  --color-link-hs: var(--primary-hs);
+  --color-link-l: var(--primary-l);
+  --color-link-hover: #{hsl.lighten(var(--primary), 12%)};
+  --color-link-wiki: var(--primary);
+  --color-link-wiki-hs: var(--primary-hs);
+  --color-link-wiki-l: var(--primary-l);
+  --color-link-wiki-hover: #{hsl.lighten(var(--primary), 12%)};
+  --color-link-nabvar: var(--color-reversal);
+  --color-inline-code: #c7254e; // optional
+  --color-search: var(--color-global);
 
   // List Group colors
-  // $color-list: $color-global;
-  $bgcolor-list: transparent;
-  $color-list-hover: $color-search;
-  $bgcolor-list-hover: darken($bgcolor-global, 3%);
-  // $color-list-active: $color-reversal;
-  // $bgcolor-list-active: $primary;
+  // --color-list: var(--color-global);
+  --bgcolor-list: transparent;
+  --color-list-hover: var(--color-global);
+  --bgcolor-list-hover: #{hsl.darken(var(--bgcolor-global),3%)};
+  // --color-list-active: var(--color-reversal);
+  // --bgcolor-list-active: var(--primary);
 
   // Navbar
-  $bgcolor-navbar: $color-global;
-  $bgcolor-search-top-dropdown: $themecolor;
-  $border-image-navbar: linear-gradient(to right, $primary 0%, darken($primary, 5%) 100%);
+  --bgcolor-navbar: var(--color-global);
+  --bgcolor-navbar-hs: var(--color-global-hs);
+  --bgcolor-navbar-l: var(--color-global-l);
+  --bgcolor-search-top-dropdown: var(--primary);
+  --bgcolor-search-top-dropdown-hs: var(--primary-hs);
+  --bgcolor-search-top-dropdown-l: var(--primary-l);
+  --border-image-navbar: linear-gradient(to right, var(--primary) 0%, #{hsl.darken(var(--primary), 5%)} 100%);
+
 
   // Logo colors
-  $bgcolor-logo: $themelight;
-  $fillcolor-logo-mark: $themelight;
+  --bgcolor-logo: var(--bgcolor-global);
+  --fillcolor-logo-mark: var(--bgcolor-global);
 
   // Sidebar
-  $bgcolor-sidebar: $accentcolor;
-  // $bgcolor-sidebar-nav-item-active: rgba(#, 0.37); // optional
-  $text-shadow-sidebar-nav-item-active: 0px 0px 10px #ffffff; // optional
+  --bgcolor-sidebar: var(--accentcolor);
+  --bgcolor-sidebar-hs: var(--accentcolor-hs);
+  --bgcolor-sidebar-l: var(--accentcolor-l);
+  // --bgcolor-sidebar-nav-item-active: rgba(#, 0.37); // optional
+  --text-shadow-sidebar-nav-item-active: 0px 0px 10px #ffffff; // optional
+
   // Sidebar resize button
-  $color-resize-button: #ffffff;
-  $bgcolor-resize-button: $primary;
-  $color-resize-button-hover: $color-reversal;
-  $bgcolor-resize-button-hover: lighten($bgcolor-resize-button, 5%);
+  --color-resize-button: #ffffff;
+  --bgcolor-resize-button: var(--primary);
+  --bgcolor-sidebar-context-hs: var(--primary-hs);
+  --bgcolor-sidebar-context-l: var(--primary-l);
+  --color-resize-button-hover: var(--color-reversal);
+  --bgcolor-resize-button-hover: #{hsl.lighten(var(--primary), 5%)};
+
   // Sidebar contents
-  $color-sidebar-context: $color-global;
-  $bgcolor-sidebar-context: #ebebeb;
+  --color-sidebar-context: var(--color-global);
+  --color-sidebar-context-hs: var(--color-global-hs);
+  --color-sidebar-context-hs: var(--color-global-l);
+  --bgcolor-sidebar-context: hsl(var(--bgcolor-sidebar-context-hs),var(--bgcolor-sidebar-context-l));
+  --bgcolor-sidebar-context-hs: 0,0%;
+  --bgcolor-sidebar-context-l: 93%;
+
   // Sidebar list group
-  // $bgcolor-sidebar-list-group: #; // optional
+  // --bgcolor-sidebar-list-group: #; // optional
 
   // Icon colors
-  $color-editor-icons: $color-global;
+  --color-editor-icons: var(--color-global);
 
   // Border colors
-  $border-color-theme: $primary;
-  $bordercolor-inline-code: #ccc8c8; // optional
+  --border-color-theme: var(--primary);
+  --bordercolor-inline-code: #ccc8c8; // optional
 
   // admin theme box
-  $color-theme-color-box: $primary;
-
-  @import './theme/apply-colors';
-  @import './theme/apply-colors-light';
+  --color-theme-color-box: var(--primary);
 
   // Navs {
   .nav-tabs {
-    border-bottom: $border-color-theme 1px solid;
+    border-bottom: var(--primary) 1px solid;
     .nav-link {
       &:hover {
-        border-color: lighten($border-color-theme, 10%);
+        border-color: #{hsl.lighten(var(--primary), 10%)};
         border-bottom: none;
       }
       &.active {
@@ -87,106 +111,127 @@
       }
     }
   }
+
   // Button
   .btn-group.grw-page-editor-mode-manager {
     .btn.btn-outline-primary {
-      @include page-editor-mode-manager.btn-page-editor-mode-manager(#ffffff, $primary, $primary, lighten($primary, 20%));
+      @include page-editor-mode-manager.btn-page-editor-mode-manager(#ffffff, var(--primary), var(--primary), #{hsl.lighten(var(--primary), 20%)});
     }
   }
 }
 
 :root[data-theme='dark'] {
   // Theme colors
-  $themecolor: #38b48b;
-  $themedark: #333333;
-  $accentcolor: #212121;
-  $subthemecolor: #2e2e2e;
-
-  $primary: #38b48b;
-  $dark: #a7a7a7;
+  --primary: hsl(var(--primary-hs),var(--primary-l)) !important;
+  --primary-hs: 160,53%;
+  --primary-l: 46%;
+  --secondary: hsl(var(--secondary-hs),var(--secondary-l)) !important;
+  --secondary-hs: 208,7%;
+  --secondary-l: 46%;
+  --accentcolor: hsl(var(--accentcolor-hs),var(--accentcolor-l));
+  --accentcolor-hs: 0,0%;
+  --accentcolor-l: 13%;
 
   // Background colors
-  $bgcolor-global: $themedark;
-  $bgcolor-navbar: #2b2b2b;
-  $bgcolor-inline-code: $gray-100; //optional
-  $bgcolor-card: darken($themedark, 5%);
-  $bgcolor-blinked-section: rgba($primary, 0.5);
-  $bgcolor-keyword-highlighted: darken($grw-marker-red, 30%);
+  --bgcolor-global: hsl(var(--bgcolor-global-hs),var(--bgcolor-global-l));
+  --bgcolor-global-hs: 0,0%;
+  --bgcolor-global-l: 20%;
+  --bgcolor-inline-code: #{$gray-100}; //optional
+  --bgcolor-card: #{hsl.darken(var(--bgcolor-global), 5%)};
+  --bgcolor-blinked-section: #{hsl.alpha(var(--primary),50%)};
+  --bgcolor-keyword-highlighted: #{darken($grw-marker-red, 30%)};
 
   // Font colors
-  $color-global: #ffffff;
-  $color-reversal: $gray-100;
-  $color-link: $primary;
-  $color-link-hover: lighten($color-link, 12%);
-  $color-link-wiki: $primary;
-  $color-link-wiki-hover: lighten($color-link-wiki, 12%);
-  $color-link-nabvar: $color-reversal;
-  $color-inline-code: $subthemecolor;
-  $color-inline-code: #c7254e; // optional
-  $color-search: $dark;
+  --color-global: hsl(var(--color-global-hs),var(--color-global-l));
+  --color-global-hs: 0,0%;
+  --color-global-l: 100%;
+  --color-reversal: #{$gray-100};
+  --color-link: var(--primary);
+  --color-link-hs: var(--primary-hs);
+  --color-link-hs: var(--primary-l);
+  --color-link-hover: #{hsl.lighten(var(--color-link),12%)};
+  --color-link-wiki: var(--primary);
+  --color-link-wiki-hs: var(--primary-hs);
+  --color-link-wiki-hs: var(--primary-l);
+  --color-link-wiki-hover: #{hsl.lighten(var(--color-link),12%)};
+  --color-link-nabvar: var(--color-reversal);
+  --color-inline-code: #c7254e; // optional
+  --color-search: #a7a7a7;
 
   // List Group colors
-  // $color-list: $color-global;
-  $bgcolor-list: transparent;
-  $color-list-hover: $accentcolor;
-  // $bgcolor-list-hover: lighten($bgcolor-global, 3%);
-  // $color-list-active: $color-reversal;
-  // $bgcolor-list-active: $primary;
+  // --color-list: var(--color-global);
+  --bgcolor-list: transparent;
+  --color-list-hover: var(--accentcolor);
+  // --bgcolor-list-hover: #{hsl.darken(var(--bgcolor-global),3%)};// optional
+  // --color-list-active: white ; // optional
+  // --bgcolor-list-active: #{hsl.lighten(var(--bgcolor-global),3%)}; // optional
 
   // Navbar
-  $bgcolor-navbar: #2c2c2c;
-  $bgcolor-search-top-dropdown: $themecolor;
-  $border-image-navbar: linear-gradient(to right, $primary 0%, darken($primary, 5%) 100%);
+  --bgcolor-navbar: hsl(var(--bgcolor-navbar-hs),var(--bgcolor-navbar-l));
+  --bgcolor-navbar-hs: 0,0%;
+  --bgcolor-navbar-l: 17%;
+  --bgcolor-search-top-dropdown: var(--primary);
+  --bgcolor-search-top-dropdown-hs: var(--primary-hs);
+  --bgcolor-search-top-dropdown-hs: var(--primary-l);
+  --border-image-navbar: linear-gradient(to right, #ea5532 0%, #c9171e 100%);
 
   // Logo colors
-  $bgcolor-logo: #ffffff;
-  $fillcolor-logo-mark: #ffffff;
-  // $fillcolor-logo-mark: #4e5a60;
+  --bgcolor-logo: var(--color-global);
+  --fillcolor-logo-mark: var(--color-global);
+  // --fillcolor-logo-mark: #4e5a60;
 
   // Sidebar
-  $bgcolor-sidebar: $accentcolor;
-  // $bgcolor-sidebar-nav-item-active: rgba(#, 0.3); // optional
-  $text-shadow-sidebar-nav-item-active: 0px 0px 10px $primary; // optional
+  --bgcolor-sidebar: var(--accentcolor);
+  --bgcolor-sidebar-hs: var(--accentcolor-hs);
+  --bgcolor-sidebar-hs: var(--accentcolor-l);
+  // --bgcolor-sidebar-nav-item-active: rgba(#, 0.3); // optional
+  --text-shadow-sidebar-nav-item-active: 0px 0px 10px var(--primary); // optional
+
   // Sidebar resize button
-  $color-resize-button: $color-global;
-  $bgcolor-resize-button: $primary;
-  $color-resize-button-hover: $color-global;
-  $bgcolor-resize-button-hover: darken($bgcolor-resize-button, 5%);
+  --color-resize-button: var(--color-global);
+  --bgcolor-resize-button: var(--primary);
+  --bgcolor-resize-button-hs: var(--primary-hs);
+  --bgcolor-resize-button-hs: var(--primary-l);
+  --color-resize-button-hover: var(--color-global);
+  --bgcolor-resize-button-hover: #{hsl.darken(var(--primary), 5%)};
+
   // Sidebar contents
-  $bgcolor-sidebar-context: #3c403c;
-  $color-sidebar-context: $color-global;
+  --color-sidebar-context: var(--color-global);
+  --color-sidebar-context-hs: var(--color-global-hs);
+  --color-sidebar-context-hs: var(--color-global-l);
+  --bgcolor-sidebar-context: hsl(var(--bgcolor-sidebar-context-hs),var(--bgcolor-sidebar-context-l));
+  --bgcolor-sidebar-context-hs: 0,2%;
+  --bgcolor-sidebar-context-l: 25%;
+
   // Sidebar list group
-  // $bgcolor-sidebar-list-group: #; // optional
+  // --bgcolor-sidebar-list-group: #; // optional
 
   // Icon colors
-  $color-editor-icons: $color-global;
+  --color-editor-icons: var(--color-global);
 
   // Border colors
-  $border-color-theme: $primary;
-  $bordercolor-inline-code: #4d4d4d; // optional
+  --border-color-theme: var(--primary);
+  --bordercolor-inline-code: #4d4d4d; // optional
 
   // Dropdown colors
-  $color-dropdown-link-active: $color-global;
-  $color-dropdown-link-hover: $color-reversal;
+  --color-dropdown-link-active: var(--color-global);
+  --color-dropdown-link-hover: var(--color-reversal);
 
   // admin theme box
-  $color-theme-color-box: $primary;
-
-  @import './theme/apply-colors';
-  @import './theme/apply-colors-dark';
+  --color-theme-color-box: var(--primary);
 
   // Navs
   .nav-tabs {
-    border-bottom: $border-color-theme 1px solid;
+    border-bottom: var(--primary) 1px solid;
     .nav-link {
       &:hover {
-        border-color: lighten($border-color-theme, 10%);
+        border-color: #{hsl.lighten(var(--primary), 10%)};
         border-bottom: none;
       }
       &.active {
-        color: $color-link;
+        color: var(--primary);
         background-color: transparent;
-        border-color: $border-color-theme;
+        border-color: var(--primary);
       }
     }
   }
@@ -199,7 +244,7 @@
   // Button
   .btn-group.grw-page-editor-mode-manager {
     .btn.btn-outline-primary {
-      @include page-editor-mode-manager.btn-page-editor-mode-manager(#ffffff, $primary, $primary, darken($primary, 20%));
+      @include page-editor-mode-manager.btn-page-editor-mode-manager(#ffffff, var(--primary), var(--primary), #{hsl.darken(var(--primary), 20%)});
     }
   }
 }

@@ -1,6 +1,7 @@
 @use './variables' as *;
 @use './bootstrap/variables' as *;
 @use './theme/mixins/page-editor-mode-manager';
+@use './theme/hsl-functions' as hsl;
 
 // == Define Bootstrap theme colors
 //
@@ -91,9 +92,6 @@
 
   // admin theme box
   $color-theme-color-box: darken($primary, 5%);
-
-  @import './theme/apply-colors';
-  @import './theme/apply-colors-light';
 
   &, body {
     background-image: url('../images/hufflepuff/badger-light3.png');
@@ -235,9 +233,6 @@
 
   // admin theme box
   $color-theme-color-box: $primary;
-
-  @import './theme/apply-colors';
-  @import './theme/apply-colors-dark';
 
   &, body {
     background-image: url('../images/hufflepuff/badger-dark.jpg');
