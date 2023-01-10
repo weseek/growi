@@ -557,7 +557,7 @@
     "link_sharing_is_disabled": "链接共享已被禁用"
   },
 	"search_result": {
-    "title": "搜索页面",
+    "title": "搜索",
 		"result_meta": "搜索结果:",
 		"deletion_mode_btn_lavel": "选择并删除页面",
 		"cancel": "取消",

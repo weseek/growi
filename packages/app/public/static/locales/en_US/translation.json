@@ -553,7 +553,7 @@
     "popover_desc": "Input channel name. You can notify multiple channels by entering a comma-separated list."
   },
   "search_result": {
-    "title": "Search Page",
+    "title": "Search",
     "result_meta": "Search results for:",
     "deletion_mode_btn_lavel": "Select and delete page",
     "cancel": "Cancel",
