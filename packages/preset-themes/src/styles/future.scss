@@ -43,7 +43,8 @@
   --bgcolor-list: transparent;
   // --color-list-hover: var(--color-reversal);
   --color-list-active: white;
-  // --bgcolor-list-active: var(--primary);
+  --bgcolor-list-active: var(--primary);
+  // --color-page-list-group-item-meta: #{$gray-500}; // optional
 
   // Table colors
   // --color-table: #; // optional
@@ -75,6 +76,8 @@
   // Sidebar resize button
   --color-resize-button: #0e2329;
   --bgcolor-resize-button: var(--bgcolor-search-top-dropdown);
+  --bgcolor-resize-button-hs: var(--bgcolor-search-top-dropdown-hs);
+  --bgcolor-resize-button-l: var(--bgcolor-search-top-dropdown-l);
   --color-resize-button-hover: #0e2329;
   --bgcolor-resize-button-hover: #{hsl.lighten(var(--bgcolor-search-top-dropdown), 5%)};
 
