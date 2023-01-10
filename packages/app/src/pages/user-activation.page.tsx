@@ -1,4 +1,5 @@
 import { NextPage, GetServerSideProps, GetServerSidePropsContext } from 'next';
+import { useTranslation } from 'next-i18next';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import Head from 'next/head';
 
@@ -22,8 +23,9 @@ type Props = CommonProps & {
 }
 
 const UserActivationPage: NextPage<Props> = (props: Props) => {
+  const { t } = useTranslation();
 
-  const title = generateCustomTitleForPage(props, '/user-activation');
+  const title = generateCustomTitleForPage(props, t('User Activation'));
 
   return (
     <NoLoginLayout>

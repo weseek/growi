@@ -105,7 +105,6 @@ export const getNextI18NextConfig = async(
 export const generateCustomTitle = (props: CommonProps, title: string): string => {
   return props.customTitleTemplate
     .replace('{{sitename}}', props.appTitle)
-    .replace('{{page}}', title)
     .replace('{{pagepath}}', title)
     .replace('{{pagename}}', title);
 };
@@ -121,6 +120,5 @@ export const generateCustomTitleForPage = (props: CommonProps, pagePath: string)
   return props.customTitleTemplate
     .replace('{{sitename}}', props.appTitle)
     .replace('{{pagepath}}', pagePath)
-    .replace('{{page}}', dPagePath.latter) // for backward compatibility
     .replace('{{pagename}}', dPagePath.latter);
 };
