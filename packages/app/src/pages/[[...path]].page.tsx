@@ -56,7 +56,7 @@ import loggerFactory from '~/utils/logger';
 // import GrowiSubNavigationSwitcher from '../client/js/components/Navbar/GrowiSubNavigationSwitcher';
 import { DescendantsPageListModal } from '../components/DescendantsPageListModal';
 import { BasicLayoutWithEditorMode } from '../components/Layout/BasicLayout';
-import { GrowiContextualSubNavigationSubstance } from '../components/Navbar/GrowiContextualSubNavigation';
+import GrowiContextualSubNavigationSubstance from '../components/Navbar/GrowiContextualSubNavigation';
 import DisplaySwitcher from '../components/Page/DisplaySwitcher';
 // import { serializeUserSecurely } from '../server/models/serializers/user-serializer';
 // import PageStatusAlert from '../client/js/components/PageStatusAlert';

@@ -183,13 +183,13 @@ const CreateTemplateMenuItems = (props: CreateTemplateMenuItemsProps): JSX.Eleme
   );
 };
 
-type GrowiContextualSubNavigationSubstanceProps = {
+type GrowiContextualSubNavigationProps = {
   currentPage: IPagePopulatedToShowRevision,
   isCompactMode?: boolean,
   isLinkSharingDisabled: boolean,
 };
 
-export const GrowiContextualSubNavigationSubstance = (props: GrowiContextualSubNavigationSubstanceProps): JSX.Element => {
+const GrowiContextualSubNavigation = (props: GrowiContextualSubNavigationProps): JSX.Element => {
 
   const { currentPage } = props;
 
@@ -440,3 +440,5 @@ export const GrowiContextualSubNavigationSubstance = (props: GrowiContextualSubN
     </div>
   );
 };
+
+export default GrowiContextualSubNavigation;
