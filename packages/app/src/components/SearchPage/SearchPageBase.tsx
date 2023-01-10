@@ -14,7 +14,8 @@ import { usePageDeleteModal } from '~/stores/modal';
 import { usePageTreeTermManager } from '~/stores/page-listing';
 
 import { ForceHideMenuItems } from '../Common/Dropdown/PageItemControl';
-import { SearchResultList } from '../SearchPage/SearchResultList';
+
+import { SearchResultList } from './SearchResultList';
 
 import styles from './SearchPageBase.module.scss';
 
@@ -41,7 +42,7 @@ type Props = {
 }
 
 const SearchPageBaseSubstance: ForwardRefRenderFunction<ISelectableAll & IReturnSelectedPageIds, Props> = (props:Props, ref) => {
-  const SearchResultContent = dynamic(import('../SearchPage/SearchResultContent').then(mod => mod.SearchResultContent), { ssr: false });
+  const SearchResultContent = dynamic(import('./SearchResultContent').then(mod => mod.SearchResultContent), { ssr: false });
   const {
     pages,
     searchingKeyword,

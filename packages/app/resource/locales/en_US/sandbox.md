@@ -233,16 +233,6 @@ You can create links using `[Display text](URL)`.
 
 [Google](https://www.google.co.jp/)
 
-## Crowi compatibility
-
-```
-[/Sandbox]
-</user/admin1>
-```
-
-[/Sandbox]  
-</user/admin1>
-
 ## Pukiwiki like linker
 
 This is the most flexible linker.
@@ -254,7 +244,7 @@ Example of Bootstrap4 is [[here>./Bootstrap4]]
 ```
 
 [[./Bootstrap4]]  
-Example of Bootstrap4 is[[here>./Bootstrap4]]
+Example of Bootstrap4 is [[here>./Bootstrap4]]
 
 # :memo: Lists
 

@@ -365,8 +365,8 @@
           "type": "textGrowiPluginDirective",
           "name": "a",
           "attributes": {
-            "id": "e",
-            "class": "c d f g",
+            "#b.c.d": "",
+            ".f.g": "",
             "h": "i & j\nk"
           },
           "children": [],
@@ -379,7 +379,7 @@
             "end": {
               "line": 7,
               "column": 4,
-              "offset": 111
+              "offset": 99
             }
           }
         },
@@ -390,12 +390,12 @@
             "start": {
               "line": 7,
               "column": 4,
-              "offset": 111
+              "offset": 99
             },
             "end": {
               "line": 7,
               "column": 5,
-              "offset": 112
+              "offset": 100
             }
           }
         }
@@ -409,7 +409,7 @@
         "end": {
           "line": 7,
           "column": 5,
-          "offset": 112
+          "offset": 100
         }
       }
     }
@@ -423,7 +423,7 @@
     "end": {
       "line": 8,
       "column": 1,
-      "offset": 113
+      "offset": 101
     }
   }
 }
