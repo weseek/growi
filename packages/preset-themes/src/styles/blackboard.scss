@@ -3,95 +3,117 @@
 @use './theme/mixins/page-editor-mode-manager';
 @use './theme/hsl-functions' as hsl;
 
-:root {
+:root[data-theme='dark']{
   // Theme colors
-  $themecolor: #da8506;
-  $themelight: #223729;
-  $accentcolor: #739aff;
-  $subthemecolor: #192a1f;
-
-  $primary: $themecolor;
-  $dark: #223729;
+  --primary: hsl(var(--primary-hs),var(--primary-l)) !important;
+  --primary-hs: 36,95%;
+  --primary-l: 44%;
+  --secondary: hsl(var(--secondary-hs),var(--secondary-l)) !important;
+  --secondary-hs: 208,7%;
+  --secondary-l: 46%;
+  --subthemecolor: hsl(var(--subthemecolor-hs),var(--subthemecolor-l));
+  --subthemecolor-hs: 141,25%;
+  --subthemecolor-l: 13%;
 
   // Background colors
-  $bgcolor-global: $themelight;
-  $bgcolor-navbar: #563e23;
-  $bgcolor-inline-code: $gray-100; //optional
-  $bgcolor-card: darken($themelight, 5%);
-  $bgcolor-blinked-section: rgba($primary, 0.5);
-  $bgcolor-keyword-highlighted: darken($grw-marker-red, 30%);
+  --bgcolor-global: hsl(var(--bgcolor-global-hs),var(--bgcolor-global-l));
+  --bgcolor-global-hs: 140,24%;
+  --bgcolor-global-l: 17%;
+  --bgcolor-inline-code: #{$gray-100}; //optional
+  --bgcolor-card: #{hsl.darken(var(--bgcolor-global), 5%)};
+  --bgcolor-blinked-section: #{hsl.alpha(var(--primary), 50%)};
+  --bgcolor-keyword-highlighted: #{darken($grw-marker-red, 30%)};
 
   // Font colors
-  $color-global: #ffffff;
-  $color-reversal: $gray-100;
-  $color-link: $accentcolor;
-  $color-link-hover: lighten($color-link, 12%);
-  $color-link-wiki: $accentcolor;
-  $color-link-wiki-hover: lighten($color-link-wiki, 12%);
-  $color-link-nabvar: $color-reversal;
-  $color-inline-code: $subthemecolor;
-  $color-inline-code: #c7254e; // optional
-  $color-search: $dark;
+  --color-global: hsl(var(--color-global-hs),var(--color-global-l));
+  --color-global-hs: 0,0%;
+  --color-global-l: 100%;
+  --color-reversal: var(--gray-100);
+  --color-link: hsl(var(--color-link-hs),var(--color-link-l));
+  --color-link-hs: 223,100%;
+  --color-link-l: 73%;
+  --color-link-hover: #{hsl.lighten(var(--color-link), 12%)};
+  --color-link-wiki: var(--color-link);
+  --color-link-wiki-hs: var(--color-link-hs);
+  --color-link-wiki-l: var(--color-link-l);
+  --color-link-wiki-hover: #{hsl.lighten(var(--color-link), 12%)};
+  --color-link-nabvar: var(--color-reversal);
+  --color-inline-code: var(--subthemecolor);
+  --color-search: $dark;
 
   // List Group colors
-  // $color-list: $color-global;
-  $bgcolor-list: transparent;
-  $color-list-hover: $accentcolor;
-  // $bgcolor-list-hover: lighten($bgcolor-global, 3%);
-  // $color-list-active: $color-reversal;
-  // $bgcolor-list-active: $primary;
+  // --color-list: var(--color-global);
+  --bgcolor-list: transparent;
+  --color-list-hover: var(--color-link);
+  // --bgcolor-list-hover: #{hsl.lighten(var(--bgcolor-global), 3%);
+  // --color-list-active: var(--color-reversal);
+  // --bgcolor-list-active: var(--primary);
 
   // Navbar
-  $bgcolor-navbar: #563e23;
-  $bgcolor-search-top-dropdown: $themecolor;
-  $border-image-navbar: linear-gradient(to right, #bebebe 0%, #d8d8d8 100%);
+  --bgcolor-navbar: hsl(var(--bgcolor-navbar-hs),var(--bgcolor-navbar-l));
+  --bgcolor-navbar-hs: 32,42%;
+  --bgcolor-navbar-l: 24%;
+  --bgcolor-search-top-dropdown: var(--primary);
+  --bgcolor-search-top-dropdown-hs: var(--primary-hs);
+  --bgcolor-search-top-dropdown-l: var(--primary-l);
+  --border-image-navbar: linear-gradient(to right, #bebebe 0%, #d8d8d8 100%);
 
   // Logo colors
-  $bgcolor-logo: $color-global;
-  $fillcolor-logo-mark: $color-global;
-  // $fillcolor-logo-mark: #4e5a60;
+  --bgcolor-logo: var(--color-global);
+  --fillcolor-logo-mark: var(--color-global);
 
   // Sidebar
-  $bgcolor-sidebar: #7b5932;
-  // $bgcolor-sidebar-nav-item-active: rgba(#, 0.3); // optional
-  $text-shadow-sidebar-nav-item-active: 0px 0px 10px $primary; // optional
+  --bgcolor-sidebar: hsl(var(--bgcolor-sidebar-hs),var(--bgcolor-sidebar-l));
+  --bgcolor-sidebar-hs: 32,42%;
+  --bgcolor-sidebar-l: 34%;
+  // 00bgcolor-sidebar-nav-item-active: rgba(#, 0.3); // optional
+  --text-shadow-sidebar-nav-item-active: 0px 0px 10px var(--primary); // optional
+
   // Sidebar resize button
-  $color-resize-button: $color-global;
-  $bgcolor-resize-button: $primary;
-  $color-resize-button-hover: $color-global;
-  $bgcolor-resize-button-hover: darken($bgcolor-resize-button, 5%);
+  --color-resize-button: var(--color-global);
+  --bgcolor-resize-button: var(--primary);
+  --bgcolor-resize-button-hs: var(--primary-hs);
+  --bgcolor-resize-button-l: var(--primary-l);
+  --color-resize-button-hover: var(--color-global);
+  --bgcolor-resize-button-hover: #{hsl.darken(var(--color-global), 5%)};
+
   // Sidebar contents
-  $bgcolor-sidebar-context: lighten($subthemecolor, 8%);
-  $color-sidebar-context: $color-global;
+  --color-sidebar-context: var(--color-global);
+  --color-sidebar-context-hs: var(--color-global-hs);
+  --color-sidebar-context-l: var(--color-global-l);
+  --bgcolor-sidebar-context: #{hsl.lighten(var(--subthemecolor),8%)};
+  --bgcolor-sidebar-context-hs: var(--subthemecolor-hs);
+  --bgcolor-sidebar-context-l: calc(var(--subthemecolor-l) + 8%);
+
   // Sidebar list group
-  // $bgcolor-sidebar-list-group: #; // optional
+  // --bgcolor-sidebar-list-group: #; // optional
 
   // Icon colors
-  $color-editor-icons: $color-global;
+  --color-editor-icons: var(--color-global);
 
   // Border colors
-  $border-color-theme: $color-global;
-  $bordercolor-inline-code: #4d4d4d; // optional
+  --border-color-theme: var(--color-global);
+  --bordercolor-inline-code: #4d4d4d; // optional
 
   // Dropdown colors
-  $color-dropdown-link-active: $color-global;
-  $color-dropdown-link-hover: $color-reversal;
+  --color-dropdown-link-active: var(--color-global);
+  --color-dropdown-link-hover: var(--color-reversal);
 
   // admin theme box
-  $color-theme-color-box: $primary;
+  --color-theme-color-box: var(--primary);
 
   // Navs
   .nav-tabs {
-    border-bottom: $border-color-theme 1px solid;
+    border-bottom: var(--border-color-theme) 1px solid;
     .nav-link {
       &:hover {
-        border-color: lighten($border-color-theme, 10%);
+        border-color: #{hsl.lighten(var(--color-global), 10%)};
         border-bottom: none;
       }
       &.active {
-        color: $color-link;
+        color: var(--color-link);
         background-color: transparent;
-        border-color: $border-color-theme;
+        border-color: var(--border-color-theme);
       }
     }
   }
@@ -99,14 +121,14 @@
   // Table
   .table {
     color: white;
-    background-color: $themelight;
-    border-color: $border-color-theme;
+    background-color: var(--bgcolor-global);
+    border-color: var(--border-color-theme);
   }
 
   // Button
   .btn-group.grw-page-editor-mode-manager {
     .btn.btn-outline-primary {
-      @include page-editor-mode-manager.btn-page-editor-mode-manager(#ffffff, $primary, $primary, darken($primary, 20%));
+      @include page-editor-mode-manager.btn-page-editor-mode-manager(#ffffff, var(--primary), var(--primary), #{hsl.darken(var(--primary), 20%)});
     }
   }
 }

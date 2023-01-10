@@ -3,7 +3,7 @@
 @use './theme/mixins/page-editor-mode-manager';
 @use './theme/hsl-functions' as hsl;
 
-:root {
+:root[data-theme='light']{
   --primary: hsl(var(--primary-hs),var(--primary-l)) !important;
   --primary-hs: 212,80%;
   --primary-l: 35%;
@@ -120,9 +120,9 @@
   }
 
   //Button
-  .grw-page-editor-mode-manager {
+  .btn-group.grw-page-editor-mode-manager {
     .btn.btn-outline-primary {
-      @include page-editor-mode-manager.btn-page-editor-mode-manager(#{hsl.darken(var(--primary), 15%)}, #{hsl.lighten(var(--primary), 45%)}, #{hsl.lighten(var(--primary), 50%)});
+      @include page-editor-mode-manager.btn-page-editor-mode-manager (#{hsl.darken(var(--primary), 15%)}, #{hsl.lighten(var(--primary), 45%)}, #{hsl.lighten(var(--primary), 50%)});
     }
   }
 }
