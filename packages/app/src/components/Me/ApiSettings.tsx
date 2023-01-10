@@ -39,7 +39,7 @@ const ApiSettings = React.memo((): JSX.Element => {
             ? (
               <input
                 data-testid="grw-api-settings-input"
-                data-hide-in-vrt
+                data-vrt-blackout
                 className="form-control"
                 type="text"
                 name="apiToken"
