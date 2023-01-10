@@ -21,8 +21,8 @@ export interface BookmarkFolderDocument extends Document {
   _id: Types.ObjectId
   name: string
   owner: Types.ObjectId
-  parent?: [this]
-  bookmarks?: [Types.ObjectId]
+  parent?: this[]
+  bookmarks?: Types.ObjectId[]
 }
 
 export interface BookmarkFolderModel extends Model<BookmarkFolderDocument>{
