@@ -240,7 +240,7 @@ Both the page description and link address can be displayed on the page.
 
 ```
 [[./Bootstrap4]]
-Example of Bootstrap4 is[[here>./Bootstrap4]]
+Example of Bootstrap4 is [[here>./Bootstrap4]]
 ```
 
 [[./Bootstrap4]]  

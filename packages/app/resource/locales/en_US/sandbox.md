@@ -244,7 +244,7 @@ Example of Bootstrap4 is [[here>./Bootstrap4]]
 ```
 
 [[./Bootstrap4]]  
-Example of Bootstrap4 is[[here>./Bootstrap4]]
+Example of Bootstrap4 is [[here>./Bootstrap4]]
 
 # :memo: Lists
 
