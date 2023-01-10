@@ -64,8 +64,8 @@ export const Page: FC<Props> = (props: Props) => {
     tocRef.current = toc;
   }, []);
 
-  const { data: pathname } = useCurrentPathname();
-  const isSharedPage = pagePathUtils.isSharedPage(pathname ?? '');
+  const { data: currentPathname } = useCurrentPathname();
+  const isSharedPage = pagePathUtils.isSharedPage(currentPathname ?? '');
 
   const { data: shareLinkId } = useShareLinkId();
   const { mutate: mutateCurrentPage } = useSWRxCurrentPage();
