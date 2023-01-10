@@ -11,7 +11,7 @@ import type { RegistrationMode } from '~/interfaces/registration-mode';
 import { IUserRegistrationOrder } from '~/server/models/user-registration-order';
 
 import {
-  getServerSideCommonProps, getNextI18NextConfig, generateCustomTitleForPage, CommonProps,
+  getServerSideCommonProps, getNextI18NextConfig, generateCustomTitle, CommonProps,
 } from './utils/commons';
 
 type Props = CommonProps & {
@@ -25,7 +25,7 @@ type Props = CommonProps & {
 const UserActivationPage: NextPage<Props> = (props: Props) => {
   const { t } = useTranslation();
 
-  const title = generateCustomTitleForPage(props, t('User Activation'));
+  const title = generateCustomTitle(props, t('User Activation'));
 
   return (
     <NoLoginLayout>
