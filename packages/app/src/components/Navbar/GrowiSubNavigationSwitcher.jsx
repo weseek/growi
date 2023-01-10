@@ -11,7 +11,7 @@ import { useSidebarCollapsed } from '~/stores/ui';
 import loggerFactory from '~/utils/logger';
 
 
-import { GrowiContextualSubNavigationSubstance } from './GrowiContextualSubNavigation';
+import GrowiContextualSubNavigation from './GrowiContextualSubNavigation';
 
 import styles from './GrowiSubNavigationSwitcher.module.scss';
 
@@ -128,7 +128,7 @@ const GrowiSubNavigationSwitcher = (props) => {
         ref={fixedContainerRef}
         style={{ width }}
       >
-        <GrowiContextualSubNavigationSubstance currentPage isCompactMode isLinkSharingDisabled />
+        <GrowiContextualSubNavigation currentPage isCompactMode isLinkSharingDisabled />
       </div>
     </div>
   );
