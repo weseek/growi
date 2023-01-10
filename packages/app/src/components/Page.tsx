@@ -16,7 +16,7 @@ import { useSaveOrUpdate } from '~/client/services/page-operation';
 import { toastSuccess, toastError } from '~/client/util/apiNotification';
 import { OptionsToSave } from '~/interfaces/page-operation';
 import {
-  useIsGuestUser, useShareLinkId,
+  useIsGuestUser, useShareLinkId, useCurrentPathname,
 } from '~/stores/context';
 import { useEditingMarkdown } from '~/stores/editor';
 import { useDrawioModal, useHandsontableModal } from '~/stores/modal';
@@ -63,6 +63,9 @@ export const Page: FC<Props> = (props: Props) => {
   const storeTocNodeHandler = useCallback((toc: HtmlElementNode) => {
     tocRef.current = toc;
   }, []);
+
+  const { data: pathname } = useCurrentPathname();
+  const isSharedPage = pagePathUtils.isSharedPage(pathname ?? '');
 
   const { data: shareLinkId } = useShareLinkId();
   const { mutate: mutateCurrentPage } = useSWRxCurrentPage();
