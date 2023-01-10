@@ -40,16 +40,12 @@ export const directiveFromMarkdown = {
   },
   exit: {
     directiveLeaf: exit,
-    directiveLeafAttributeClassValue: exitAttributeClassValue,
-    directiveLeafAttributeIdValue: exitAttributeIdValue,
     directiveLeafAttributeName: exitAttributeName,
     directiveLeafAttributeValue: exitAttributeValue,
     directiveLeafAttributes: exitAttributes,
     directiveLeafName: exitName,
 
     directiveText: exit,
-    directiveTextAttributeClassValue: exitAttributeClassValue,
-    directiveTextAttributeIdValue: exitAttributeIdValue,
     directiveTextAttributeName: exitAttributeName,
     directiveTextAttributeValue: exitAttributeValue,
     directiveTextAttributes: exitAttributes,
@@ -119,22 +115,6 @@ function enterAttributes() {
 }
 
 /** @type {FromMarkdownHandle} */
-function exitAttributeIdValue(token) {
-  const list = /** @type {Array.<[string, string]>} */ (
-    this.getData('directiveAttributes')
-  );
-  list.push(['id', parseEntities(this.sliceSerialize(token))]);
-}
-
-/** @type {FromMarkdownHandle} */
-function exitAttributeClassValue(token) {
-  const list = /** @type {Array.<[string, string]>} */ (
-    this.getData('directiveAttributes')
-  );
-  list.push(['class', parseEntities(this.sliceSerialize(token))]);
-}
-
-/** @type {FromMarkdownHandle} */
 function exitAttributeValue(token) {
   const list = /** @type {Array.<[string, string]>} */ (
     this.getData('directiveAttributes')
@@ -165,12 +145,7 @@ function exitAttributes() {
   while (++index < list.length) {
     const attribute = list[index];
 
-    if (attribute[0] === 'class' && cleaned.class) {
-      cleaned.class += ` ${attribute[1]}`;
-    }
-    else {
-      cleaned[attribute[0]] = attribute[1];
-    }
+    cleaned[attribute[0]] = attribute[1];
   }
 
   this.setData('directiveAttributes');
@@ -252,31 +227,7 @@ function attributes(node, context) {
     ) {
       const value = String(attrs[key]);
 
-      if (key === 'id') {
-        id = shortcut.test(value) ? `#${value}` : quoted('id', value);
-      }
-      else if (key === 'class') {
-        const list = value.split(/[\t\n\r ]+/g);
-        /** @type {Array.<string>} */
-        const classesFullList = [];
-        /** @type {Array.<string>} */
-        const classesList = [];
-        let index = -1;
-
-        while (++index < list.length) {
-          (shortcut.test(list[index]) ? classesList : classesFullList).push(
-            list[index],
-          );
-        }
-
-        classesFull = classesFullList.length > 0
-          ? quoted('class', classesFullList.join(' '))
-          : '';
-        classes = classesList.length > 0 ? `.${classesList.join('.')}` : '';
-      }
-      else {
-        values.push(quoted(key, value));
-      }
+      values.push(quoted(key, value));
     }
   }
 
