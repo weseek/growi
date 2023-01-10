@@ -2,8 +2,9 @@ import React, {
   useCallback, useEffect, useMemo, useRef, useState,
 } from 'react';
 
-
 import EventEmitter from 'events';
+import nodePath from 'path';
+
 
 import {
   IPageHasId, PageGrant, pathUtils,
@@ -106,7 +107,8 @@ const PageEditor = React.memo((): JSX.Element => {
 
     let initialValue = '';
     if (isEnabledAttachTitleHeader && currentPathname != null) {
-      initialValue += `${pathUtils.attachTitleHeader(currentPathname)}\n`;
+      const pageTitle = nodePath.basename(currentPathname);
+      initialValue += `${pathUtils.attachTitleHeader(pageTitle)}\n`;
     }
     if (templateBodyData != null) {
       initialValue += `${templateBodyData}\n`;
