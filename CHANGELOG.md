@@ -1,8 +1,21 @@
 # Changelog
 
-## [Unreleased](https://github.com/weseek/growi/compare/v6.0.1...HEAD)
+## [Unreleased](https://github.com/weseek/growi/compare/v6.0.2...HEAD)
 
 *Please do not manually update this file. We've automated the process.*
+
+## [v6.0.2](https://github.com/weseek/growi/compare/v6.0.1...v6.0.2) - 2023-01-10
+
+### 🐛 Bug Fixes
+
+- fix: Attaching page title as initial header section (#7228) @yukendev
+- fix: Update PageTree data after saving page (#7227) @yukendev
+- fix: Lsx "filter" and "except" options does not work (#7226) @yuki-takei
+- fix: Omit remark-growi-directive shortcuts (#7225) @yuki-takei
+
+### 🧰 Maintenance
+
+- ci(deps-dev): bump textlint-rule-no-doubled-joshi from 4.0.0 to 4.0.1 (#7222) @dependabot
 
 ## [v6.0.1](https://github.com/weseek/growi/compare/v6.0.0...v6.0.1) - 2023-01-07
 
