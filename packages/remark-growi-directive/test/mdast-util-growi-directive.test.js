@@ -119,6 +119,14 @@ test('markdown -> mdast', (t) => {
     'should support content in a label',
   );
 
+  const hoge = removePosition(
+    fromMarkdown('x $a(#b.c.d e=f g="h&amp;i&unknown;j")', {
+      extensions: [directive()],
+      mdastExtensions: [directiveFromMarkdown],
+    }),
+    true,
+  );
+
   t.deepEqual(
     removePosition(
       fromMarkdown('x $a(#b.c.d e=f g="h&amp;i&unknown;j")', {
@@ -138,7 +146,7 @@ test('markdown -> mdast', (t) => {
               type: DirectiveType.Text,
               name: 'a',
               attributes: {
-                id: 'b', class: 'c d', e: 'f', g: 'h&i&unknown;j',
+                '#b.c.d': '', e: 'f', g: 'h&i&unknown;j',
               },
               children: [],
             },
@@ -307,7 +315,7 @@ test('mdast -> markdown', (t) => {
           {
             type: DirectiveType.Text,
             name: 'b',
-            attributes: { class: 'a b\nc', id: 'd', key: 'value' },
+            attributes: { '#d': '', '.a.b.c': '', key: 'value' },
             children: [],
           },
           { type: 'text', value: ' k.' },
@@ -316,7 +324,7 @@ test('mdast -> markdown', (t) => {
       { extensions: [directiveToMarkdown] },
     ),
     'a $b(#d .a.b.c key="value") k.\n',
-    'should serialize a directive (text) w/ `id`, `class` attributes',
+    'should serialize a directive (text) w/ hash, dot notation attributes',
   );
 
   t.deepEqual(
@@ -391,7 +399,7 @@ test('mdast -> markdown', (t) => {
           {
             type: DirectiveType.Text,
             name: 'b',
-            attributes: { class: 'c.d e<f' },
+            attributes: { 'c.d': '', 'e<f': '' },
             children: [],
           },
           { type: 'text', value: ' g.' },
@@ -399,7 +407,7 @@ test('mdast -> markdown', (t) => {
       },
       { extensions: [directiveToMarkdown] },
     ),
-    'a $b(class="c.d e<f") g.\n',
+    'a $b(c.d e<f) g.\n',
     'should not use the `class` shortcut if impossible characters exist',
   );
 
@@ -412,7 +420,9 @@ test('mdast -> markdown', (t) => {
           {
             type: DirectiveType.Text,
             name: 'b',
-            attributes: { class: 'c.d e f<g hij' },
+            attributes: {
+              'c.d': '', e: '', 'f<g': '', hij: '',
+            },
             children: [],
           },
           { type: 'text', value: ' k.' },
@@ -420,7 +430,7 @@ test('mdast -> markdown', (t) => {
       },
       { extensions: [directiveToMarkdown] },
     ),
-    'a $b(.e.hij class="c.d f<g") k.\n',
+    'a $b(c.d e f<g hij) k.\n',
     'should not use the `class` shortcut if impossible characters exist (but should use it for classes that don’t)',
   );
 
@@ -485,7 +495,7 @@ test('mdast -> markdown', (t) => {
       {
         type: DirectiveType.Leaf,
         name: 'a',
-        attributes: { id: 'b', class: 'c d', key: 'e\nf' },
+        attributes: { '#b': '', '.c.d': '', key: 'e\nf' },
         children: [],
       },
       { extensions: [directiveToMarkdown] },
