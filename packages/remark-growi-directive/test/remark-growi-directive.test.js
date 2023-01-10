@@ -2,10 +2,8 @@
  * @typedef {import('mdast').Root} Root
  */
 
-
 import fs from 'node:fs';
 import path from 'node:path';
-import util from 'util';
 
 import { isHidden } from 'is-hidden';
 import { remark } from 'remark';
