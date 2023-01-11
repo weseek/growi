@@ -27,9 +27,6 @@ jobs:
   lint:
     runs-on: ubuntu-latest
 
-    if: |
-      !startsWith(github.ref, 'refs/heads/support/prepare-v')
-
     strategy:
       matrix:
         node-version: [16.x]
@@ -80,10 +77,6 @@ jobs:
 
   test:
     runs-on: ubuntu-latest
-
-    if: |
-      !startsWith(github.ref, 'refs/heads/support/prepare-v')
-
 
     strategy:
       matrix:
@@ -150,10 +143,6 @@ jobs:
 
   launch-dev:
     runs-on: ubuntu-latest
-
-    if: |
-      !startsWith(github.ref, 'refs/heads/support/prepare-v')
-
 
     strategy:
       matrix:
