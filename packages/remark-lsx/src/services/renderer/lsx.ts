@@ -104,7 +104,7 @@ export const rehypePlugin: Plugin<[LsxRehypePluginParams]> = (options = {}) => {
       }
 
       // resolve relative path
-      lsxElem.properties.prefix = pathResolver(prefix, basePagePath);
+      lsxElem.properties.prefix = decodeURI(pathResolver(prefix, basePagePath));
     });
   };
 };
