@@ -7,8 +7,8 @@ import {
   DropdownItem, DropdownMenu, UncontrolledDropdown,
 } from 'reactstrap';
 
-import { toastError, toastSuccess } from '~/client/util/apiNotification';
 import { apiv3Post } from '~/client/util/apiv3-client';
+import { toastError, toastSuccess } from '~/client/util/toastr';
 import { useSWRBookmarkInfo } from '~/stores/bookmark';
 import { useSWRxBookamrkFolderAndChild } from '~/stores/bookmark-folder';
 import { useSWRxCurrentPage } from '~/stores/page';
