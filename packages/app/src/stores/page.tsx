@@ -20,7 +20,7 @@ import { IPageTagsInfo } from '../interfaces/tag';
 import { useCurrentPageId, useCurrentPathname, useShareLinkId } from './context';
 import { ITermNumberManagerUtil, useTermNumberManager } from './use-static-swr';
 
-const { isPermalink: _isPermalink, isSharedPage: _isSharedPage } = pagePathUtils;
+const { isPermalink: _isPermalink } = pagePathUtils;
 
 export const useSWRxPage = (
     pageId?: string|null,
@@ -92,14 +92,12 @@ export const useSWRxCurrentPage = (initialData?: IPagePopulatedToShowRevision|nu
 
 
 export const useSWRxTagsInfo = (pageId: Nullable<string>): SWRResponse<IPageTagsInfo | undefined, Error> => {
+  const { data: shareLinkId } = useShareLinkId();
 
   const endpoint = `/pages.getPageTag?pageId=${pageId}`;
 
-  const { data: pathname } = useCurrentPathname();
-  const isSharedPage = _isSharedPage(pathname ?? '');
-
   return useSWRImmutable<IPageTagsInfo | undefined, Error>(
-    !isSharedPage && pageId != null ? [endpoint, pageId] : null,
+    shareLinkId == null && pageId != null ? [endpoint, pageId] : null,
     (endpoint, pageId) => apiGet<IPageTagsInfo>(endpoint, { pageId }).then(result => result),
   );
 };
