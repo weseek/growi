@@ -49,7 +49,7 @@ export const getServerSideCommonProps: GetServerSideProps<CommonProps> = async(c
   const redirectDestination = !isMaintenanceMode && currentPathname === '/maintenance' ? '/' : isMaintenanceMode && !currentPathname.match('/admin/*') && !(currentPathname === '/maintenance') ? '/maintenance' : null;
   const isCustomizedLogoUploaded = await attachmentService.isBrandLogoExist();
   const isDefaultLogo = crowi.configManager.getConfig('crowi', 'customize:isDefaultLogo') || !isCustomizedLogoUploaded;
-  const forcedColorScheme = crowi.configManager.getConfig('crowi', 'customize:theme:forcedColorScheme');
+  const forcedColorScheme = crowi.customizeService.forcedColorScheme;
 
   const props: CommonProps = {
     namespacesRequired: ['translation'],
