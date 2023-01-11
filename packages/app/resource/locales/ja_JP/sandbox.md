@@ -232,16 +232,6 @@ ___
 
 [Google](https://www.google.co.jp/)
 
-## Crowi 互換
-
-```
-[/Sandbox]
-</user/admin1>
-```
-
-[/Sandbox]  
-</user/admin1>
-
 ## Pukiwiki like linker
 
 最も柔軟な Linker です。

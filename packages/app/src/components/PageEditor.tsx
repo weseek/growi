@@ -2,8 +2,9 @@ import React, {
   useCallback, useEffect, useMemo, useRef, useState,
 } from 'react';
 
-
 import EventEmitter from 'events';
+import nodePath from 'path';
+
 
 import {
   IPageHasId, PageGrant, pathUtils,
@@ -31,6 +32,7 @@ import {
 } from '~/stores/editor';
 import { useConflictDiffModal } from '~/stores/modal';
 import { useCurrentPagePath, useSWRxCurrentPage, useSWRxTagsInfo } from '~/stores/page';
+import { usePageTreeTermManager } from '~/stores/page-listing';
 import { useSetRemoteLatestPageData } from '~/stores/remote-latest-page';
 import { usePreviewOptions } from '~/stores/renderer';
 import {
@@ -88,6 +90,7 @@ const PageEditor = React.memo((): JSX.Element => {
   const { data: isUploadableFile } = useIsUploadableFile();
   const { data: isUploadableImage } = useIsUploadableImage();
   const { data: conflictDiffModalStatus, close: closeConflictDiffModal } = useConflictDiffModal();
+  const { advance: advancePt } = usePageTreeTermManager();
 
   const { data: rendererOptions, mutate: mutateRendererOptions } = usePreviewOptions();
   const { mutate: mutateIsEnabledUnsavedWarning } = useIsEnabledUnsavedWarning();
@@ -104,7 +107,8 @@ const PageEditor = React.memo((): JSX.Element => {
 
     let initialValue = '';
     if (isEnabledAttachTitleHeader && currentPathname != null) {
-      initialValue += `${pathUtils.attachTitleHeader(currentPathname)}\n`;
+      const pageTitle = nodePath.basename(currentPathname);
+      initialValue += `${pathUtils.attachTitleHeader(pageTitle)}\n`;
     }
     if (templateBodyData != null) {
       initialValue += `${templateBodyData}\n`;
@@ -204,6 +208,9 @@ const PageEditor = React.memo((): JSX.Element => {
         options,
       );
 
+      // to sync revision id with page tree: https://github.com/weseek/growi/pull/7227
+      advancePt();
+
       return page;
     }
     catch (error) {
@@ -221,7 +228,7 @@ const PageEditor = React.memo((): JSX.Element => {
     }
 
   // eslint-disable-next-line max-len
-  }, [currentPathname, optionsToSave, grantData, isSlackEnabled, saveOrUpdate, pageId, currentPagePath, currentRevisionId]);
+  }, [currentPathname, optionsToSave, grantData, isSlackEnabled, saveOrUpdate, pageId, currentPagePath, currentRevisionId, advancePt]);
 
   const saveAndReturnToViewHandler = useCallback(async(opts: {slackChannels: string, overwriteScopesOfDescendants?: boolean}) => {
     if (editorMode !== EditorMode.Editor) {

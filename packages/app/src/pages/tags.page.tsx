@@ -80,7 +80,7 @@ const TagPage: NextPageWithLayout<CommonProps> = (props: Props) => {
 
   useRendererConfig(props.rendererConfig);
 
-  const title = generateCustomTitle(props, 'GROWI');
+  const title = generateCustomTitle(props, t('Tags'));
 
   return (
     <>

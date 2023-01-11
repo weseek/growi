@@ -29,7 +29,7 @@ import PaginationWrapper from './PaginationWrapper';
 import { PrivateLegacyPagesMigrationModal } from './PrivateLegacyPagesMigrationModal';
 import { OperateAllControl } from './SearchPage/OperateAllControl';
 import SearchControl from './SearchPage/SearchControl';
-import { IReturnSelectedPageIds, SearchPageBase, usePageDeleteModalForBulkDeletion } from './SearchPage2/SearchPageBase';
+import { IReturnSelectedPageIds, SearchPageBase, usePageDeleteModalForBulkDeletion } from './SearchPage/SearchPageBase';
 
 
 // TODO: replace with "customize:showPageLimitationS"

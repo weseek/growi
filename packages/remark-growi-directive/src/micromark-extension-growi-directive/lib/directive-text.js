@@ -96,8 +96,6 @@ function tokenizeAttributes(effects, ok, nok) {
     'directiveTextAttributes',
     'directiveTextAttributesMarker',
     'directiveTextAttribute',
-    'directiveTextAttributeId',
-    'directiveTextAttributeClass',
     'directiveTextAttributeName',
     'directiveTextAttributeInitializerMarker',
     'directiveTextAttributeValueLiteral',

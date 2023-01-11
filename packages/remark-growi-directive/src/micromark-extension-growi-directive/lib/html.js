@@ -49,8 +49,6 @@ export function directiveHtml(options = {}) {
     },
     exit: {
       directiveLeaf: exit,
-      directiveLeafAttributeClassValue: exitAttributeClassValue,
-      directiveLeafAttributeIdValue: exitAttributeIdValue,
       directiveLeafAttributeName: exitAttributeName,
       directiveLeafAttributeValue: exitAttributeValue,
       directiveLeafAttributes: exitAttributes,
@@ -58,8 +56,6 @@ export function directiveHtml(options = {}) {
       directiveLeafName: exitName,
 
       directiveText: exit,
-      directiveTextAttributeClassValue: exitAttributeClassValue,
-      directiveTextAttributeIdValue: exitAttributeIdValue,
       directiveTextAttributeName: exitAttributeName,
       directiveTextAttributeValue: exitAttributeValue,
       directiveTextAttributes: exitAttributes,
@@ -106,21 +102,6 @@ export function directiveHtml(options = {}) {
   }
 
   /** @type {_Handle} */
-  function exitAttributeIdValue(token) {
-    /** @type {Attribute[]} */
-    const attributes = this.getData('directiveAttributes');
-    attributes.push(['id', parseEntities(this.sliceSerialize(token))]);
-  }
-
-  /** @type {_Handle} */
-  function exitAttributeClassValue(token) {
-    /** @type {Attribute[]} */
-    const attributes = this.getData('directiveAttributes');
-
-    attributes.push(['class', parseEntities(this.sliceSerialize(token))]);
-  }
-
-  /** @type {_Handle} */
   function exitAttributeName(token) {
     // Attribute names in CommonMark are significantly limited, so character
     // references can’t exist.
@@ -154,12 +135,7 @@ export function directiveHtml(options = {}) {
     while (++index < attributes.length) {
       attribute = attributes[index];
 
-      if (attribute[0] === 'class' && cleaned.class) {
-        cleaned.class += ` ${attribute[1]}`;
-      }
-      else {
-        cleaned[attribute[0]] = attribute[1];
-      }
+      cleaned[attribute[0]] = attribute[1];
     }
 
     this.resume();
