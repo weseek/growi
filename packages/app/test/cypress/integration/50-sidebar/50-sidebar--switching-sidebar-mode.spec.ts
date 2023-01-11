@@ -1,3 +1,11 @@
+import { BlackoutGroup } from "../../support/blackout";
+
+// Blackout for recalculation of toc content hight
+const blackoutOverride = [
+  ...BlackoutGroup.BASIS,
+  ...BlackoutGroup.SIDE_CONTENTS,
+];
+
 context('Switch sidebar mode', () => {
   const ssPrefix = 'switch-sidebar-mode-';
 
@@ -28,15 +36,13 @@ context('Switch sidebar mode', () => {
     cy.get('[for="swSidebarMode"]').click({force: true});
     cy.get('.grw-sidebar-nav').should('not.be.visible');
     cy.screenshot(`${ssPrefix}-switch-sidebar-mode`, {
-      // Blackout for recalculation of toc content hight
-      blackout: ['.grw-side-contents-container', '[data-hide-in-vrt=true]'],
+      blackout: blackoutOverride,
     });
 
     cy.get('[for="swSidebarMode"]').click({force: true});
     cy.get('.grw-sidebar-nav').should('be.visible');
     cy.screenshot(`${ssPrefix}-switch-sidebar-mode-back`, {
-      // Blackout for recalculation of toc content hight
-      blackout: ['.grw-side-contents-container','[data-hide-in-vrt=true]'],
+      blackout: blackoutOverride,
     });
   });
 

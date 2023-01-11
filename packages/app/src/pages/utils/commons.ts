@@ -20,7 +20,7 @@ export type CommonProps = {
   growiVersion: string,
   isMaintenanceMode: boolean,
   redirectDestination: string | null,
-  customizedLogoSrc?: string,
+  isDefaultLogo: boolean,
   currentUser?: IUser,
 } & Partial<SSRConfig>;
 
@@ -30,7 +30,7 @@ export const getServerSideCommonProps: GetServerSideProps<CommonProps> = async(c
   const req = context.req as CrowiRequest<IUserHasId & any>;
   const { crowi, user } = req;
   const {
-    appService, configManager, customizeService,
+    appService, configManager, customizeService, attachmentService,
   } = crowi;
 
   const url = new URL(context.resolvedUrl, 'http://example.com');
@@ -45,7 +45,8 @@ export const getServerSideCommonProps: GetServerSideProps<CommonProps> = async(c
 
   // eslint-disable-next-line max-len, no-nested-ternary
   const redirectDestination = !isMaintenanceMode && currentPathname === '/maintenance' ? '/' : isMaintenanceMode && !currentPathname.match('/admin/*') && !(currentPathname === '/maintenance') ? '/maintenance' : null;
-  const isDefaultLogo = crowi.configManager.getConfig('crowi', 'customize:isDefaultLogo');
+  const isCustomizedLogoUploaded = await attachmentService.isBrandLogoExist();
+  const isDefaultLogo = crowi.configManager.getConfig('crowi', 'customize:isDefaultLogo') || !isCustomizedLogoUploaded;
 
   const props: CommonProps = {
     namespacesRequired: ['translation'],
@@ -59,8 +60,8 @@ export const getServerSideCommonProps: GetServerSideProps<CommonProps> = async(c
     growiVersion: crowi.version,
     isMaintenanceMode,
     redirectDestination,
-    customizedLogoSrc: isDefaultLogo ? null : configManager.getConfig('crowi', 'customize:customizedLogoSrc'),
     currentUser,
+    isDefaultLogo,
   };
 
   return { props };
@@ -104,7 +105,6 @@ export const getNextI18NextConfig = async(
 export const generateCustomTitle = (props: CommonProps, title: string): string => {
   return props.customTitleTemplate
     .replace('{{sitename}}', props.appTitle)
-    .replace('{{page}}', title)
     .replace('{{pagepath}}', title)
     .replace('{{pagename}}', title);
 };
@@ -120,6 +120,5 @@ export const generateCustomTitleForPage = (props: CommonProps, pagePath: string)
   return props.customTitleTemplate
     .replace('{{sitename}}', props.appTitle)
     .replace('{{pagepath}}', pagePath)
-    .replace('{{page}}', dPagePath.latter) // for backward compatibility
     .replace('{{pagename}}', dPagePath.latter);
 };

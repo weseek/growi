@@ -1,4 +1,4 @@
-import { useCallback } from 'react';
+import { useCallback, useMemo } from 'react';
 
 import { SWRResponse } from 'swr';
 
@@ -222,10 +222,10 @@ type PutBackPageModalUtils = {
 }
 
 export const usePutBackPageModal = (status?: PutBackPageModalStatus): SWRResponse<PutBackPageModalStatus, Error> & PutBackPageModalUtils => {
-  const initialData: PutBackPageModalStatus = {
+  const initialData: PutBackPageModalStatus = useMemo(() => ({
     isOpened: false,
     page: { pageId: '', path: '' },
-  };
+  }), []);
   const swrResponse = useStaticSWR<PutBackPageModalStatus, Error>('putBackPageModalStatus', status, { fallbackData: initialData });
 
   return {

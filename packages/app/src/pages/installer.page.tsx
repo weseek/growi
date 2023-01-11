@@ -4,9 +4,9 @@ import { pagePathUtils } from '@growi/core';
 import {
   NextPage, GetServerSideProps, GetServerSidePropsContext,
 } from 'next';
+import { useTranslation } from 'next-i18next';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import Head from 'next/head';
-import { useTranslation } from 'react-i18next';
 
 import { NoLoginLayout } from '~/components/Layout/NoLoginLayout';
 
@@ -59,7 +59,7 @@ const InstallerPage: NextPage<Props> = (props: Props) => {
   useConfidential(props.confidential);
   useCsrfToken(props.csrfToken);
 
-  const title = generateCustomTitle(props, 'GROWI');
+  const title = generateCustomTitle(props, t('installer.title'));
   const classNames: string[] = [];
 
   return (

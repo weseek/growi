@@ -5,6 +5,8 @@ import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import dynamic from 'next/dynamic';
 import Head from 'next/head';
 
+import { useTranslation } from 'next-i18next';
+import SearchResultLayout from '~/components/Layout/SearchResultLayout';
 import { DrawioViewerScript } from '~/components/Script/DrawioViewerScript';
 import type { CrowiRequest } from '~/interfaces/crowi-request';
 import type { RendererConfig } from '~/interfaces/services/renderer';
@@ -23,12 +25,11 @@ import {
 
 import { SearchPage } from '../components/SearchPage';
 
+import { NextPageWithLayout } from './_app.page';
 import {
   CommonProps, getNextI18NextConfig, getServerSideCommonProps, generateCustomTitle,
 } from './utils/commons';
-import { NextPageWithLayout } from './_app.page';
 
-const SearchResultLayout = dynamic(() => import('~/components/Layout/SearchResultLayout'), { ssr: false });
 
 type Props = CommonProps & {
   currentUser: IUser,
@@ -56,6 +57,8 @@ type Props = CommonProps & {
 
 const SearchResultPage: NextPageWithLayout<Props> = (props: Props) => {
   const { userUISettings } = props;
+
+  const { t } = useTranslation();
 
   // commons
   useCsrfToken(props.csrfToken);
@@ -88,7 +91,7 @@ const SearchResultPage: NextPageWithLayout<Props> = (props: Props) => {
     return <PutbackPageModal />;
   };
 
-  const title = generateCustomTitle(props, 'GROWI');
+  const title = generateCustomTitle(props, t('search_result.title'));
 
   return (
     <>
@@ -154,7 +157,7 @@ function injectServerConfigurations(context: GetServerSidePropsContext, props: P
     blockdiagUri: process.env.BLOCKDIAG_URI ?? null,
 
     // XSS Options
-    isEnabledXssPrevention: configManager.getConfig('markdown', 'markdown:xss:isEnabledPrevention'),
+    isEnabledXssPrevention: configManager.getConfig('markdown', 'markdown:rehypeSanitize:isEnabledPrevention'),
     attrWhiteList: crowi.xssService.getAttrWhiteList(),
     tagWhiteList: crowi.xssService.getTagWhiteList(),
     highlightJsStyleBorder: crowi.configManager.getConfig('crowi', 'customize:highlightJsStyleBorder'),

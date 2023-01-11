@@ -316,13 +316,6 @@ export default class AdminAppContainer extends Container {
   }
 
   /**
-   * Change secret key
-   */
-  changeIsEnabledPlugins(isEnabledPlugins) {
-    this.setState({ isEnabledPlugins });
-  }
-
-  /**
    * Update app setting
    * @memberOf AdminAppContainer
    * @return {Array} Appearance
@@ -439,19 +432,6 @@ export default class AdminAppContainer extends Container {
     const response = await apiv3Put('/app-settings/file-upload-setting', requestParams);
     const { responseParams } = response.data;
     return this.setState(responseParams);
-  }
-
-  /**
-   * Update plugin setting
-   * @memberOf AdminAppContainer
-   * @return {Array} Appearance
-   */
-  async updatePluginSettingHandler() {
-    const response = await apiv3Put('/app-settings/plugin-setting', {
-      isEnabledPlugins: this.state.isEnabledPlugins,
-    });
-    const { pluginSettingParams } = response.data;
-    return pluginSettingParams;
   }
 
   /**

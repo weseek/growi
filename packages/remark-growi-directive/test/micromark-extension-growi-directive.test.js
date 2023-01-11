@@ -231,39 +231,39 @@ test('micromark-extension-directive (syntax)', (t) => {
     );
 
     t.equal(
-      micromark('$a(..b)', options()),
-      '<p>(..b)</p>',
-      'should not support an empty shortcut (`.`)',
+      micromark('a $a(..b)', options()),
+      '<p>a </p>',
+      'should support attrs which starts w/ continuous dots',
     );
 
     t.equal(
-      micromark('$a(.#b)', options()),
-      '<p>(.#b)</p>',
-      'should not support an empty shortcut (`#`)',
+      micromark('a $a(.#b)', options()),
+      '<p>a </p>',
+      'should support attrs which start w/ `#`',
     );
 
     t.equal(
-      micromark('$a(.)', options()),
-      '<p>(.)</p>',
-      'should not support an empty shortcut (`}`)',
+      micromark('a $a(.)', options()),
+      '<p>a </p>',
+      'should support attrs w/ (`.`)',
     );
 
     t.equal(
-      micromark('$a(.a=b)', options()),
-      '<p>(.a=b)</p>',
-      'should not support certain characters in shortcuts (`=`)',
+      micromark('a $a(.a=b)', options()),
+      '<p>a </p>',
+      'should support with the attr `(.a=b)`',
     );
 
     t.equal(
-      micromark('$a(.a"b)', options()),
-      '<p>(.a&quot;b)</p>',
-      'should not support certain characters in shortcuts (`"`)',
+      micromark('a $a(.a"b)', options()),
+      '<p>a </p>',
+      'should support with the attr `(.a"b)`',
     );
 
     t.equal(
-      micromark('$a(.a<b)', options()),
-      '<p>(.a&lt;b)</p>',
-      'should not support certain characters in shortcuts (`<`)',
+      micromark('a $a(.a<b)', options()),
+      '<p>a </p>',
+      'should support with the attr `(.a<b)`',
     );
 
     t.equal(
@@ -792,12 +792,16 @@ test('micromark-extension-directive (compile)', (t) => {
         'a $lsx()',
         'a $lsx(num=1)',
         'a $lsx(/)',
+        'a $lsx(/,num=5,depth=1)',
+        'a $lsx(/, num=5, depth=1)',
         'a $lsx(💚)',
         'Leaf:',
         '$lsx',
         '$lsx()',
         '$lsx(num=1)',
         '$lsx(/)',
+        '$lsx(/,num=5,depth=1)',
+        '$lsx(/, num=5, depth=1)',
         '$lsx(💚)',
       ].join('\n\n'),
       options({ lsx }),
@@ -808,12 +812,16 @@ test('micromark-extension-directive (compile)', (t) => {
       '<p>a <lsx ></lsx></p>',
       '<p>a <lsx num="1"></lsx></p>',
       '<p>a <lsx prefix="/"></lsx></p>',
+      '<p>a <lsx prefix="/" num="5" depth="1"></lsx></p>',
+      '<p>a <lsx prefix="/" num="5" depth="1"></lsx></p>',
       '<p>a <lsx prefix="💚"></lsx></p>',
       '<p>Leaf:</p>',
       '<lsx ></lsx>',
       '<lsx ></lsx>',
       '<lsx num="1"></lsx>',
       '<lsx prefix="/"></lsx>',
+      '<lsx prefix="/" num="5" depth="1"></lsx>',
+      '<lsx prefix="/" num="5" depth="1"></lsx>',
       '<lsx prefix="💚"></lsx>',
     ].join('\n'),
     'should support directives (lsx)',
@@ -994,26 +1002,20 @@ test('content', (t) => {
 
   t.equal(
     micromark('a $span(#a#b)', options({ '*': h })),
-    '<p>a <span id="b"></span></p>',
-    'should support `id` shortcuts',
+    '<p>a <span #a#b=""></span></p>',
+    'should support attrs which contains `#` (1)',
   );
 
   t.equal(
     micromark('a $span(id=a id="b" #c#d)', options({ '*': h })),
-    '<p>a <span id="d"></span></p>',
-    'should support `id` shortcuts after `id` attributes',
+    '<p>a <span id="b" #c#d=""></span></p>',
+    'should support attrs which contains `#` (2)',
   );
 
   t.equal(
     micromark('a $span(.a.b)', options({ '*': h })),
-    '<p>a <span class="a b"></span></p>',
-    'should support `class` shortcuts',
-  );
-
-  t.equal(
-    micromark('a $span(class=a class="b c" .d.e)', options({ '*': h })),
-    '<p>a <span class="a b c d e"></span></p>',
-    'should support `class` shortcuts after `class` attributes',
+    '<p>a <span .a.b=""></span></p>',
+    'should support attrs with dot notation',
   );
 
   t.test('spec for growi plugin', (t) => {

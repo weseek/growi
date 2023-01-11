@@ -94,7 +94,7 @@ const InstallerForm = memo((): JSX.Element => {
     : <span><i className="icon-fw icon-ban" />{ t('installer.unavaliable_user_id') }</span>;
 
   return (
-    <div data-testid="installerForm" className={`p-3${hasErrorClass}`}>
+    <div data-testid="installerForm" className={`nologin-dialog p-3 mx-auto${hasErrorClass}`}>
       <div className="row">
         <div className="col-md-12">
           <p className="alert alert-success">

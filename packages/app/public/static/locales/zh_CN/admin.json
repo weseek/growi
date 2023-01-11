@@ -385,15 +385,12 @@
     "gridfs_label": "MongoDB(GridFS)",
     "fixed_by_env_var": "这是由env var 修复的 <code>{{key}}={{value}}</code>.",
     "file_upload": "This is for uploading file settings. If you complete file upload settings, file upload function, profile picture function etc will be enabled.",
-    "ses_settings": "SES设置",
     "test_connection": "测试邮件服务器连接",
     "change_setting": "注意：如果你更改此设置未完成，您将无法访问迄今为止上传的文件。",
     "region": "Region",
     "bucket_name": "Bucket name",
     "custom_endpoint": "Custom endpoint",
     "custom_endpoint_change": "输入对象存储服务（如MinIO）端点的URL，MinIO具有与S3兼容的API。如果为空，则使用Amazon S3。",
-    "plugin_settings": "插件设置",
-    "enable_plugin_loading": "启用插件加载",
     "load_plugins": "加载插件",
     "enable": "启用",
     "disable": "停用",
@@ -859,6 +856,16 @@
       "log_type": "https://docs.growi.org/en/admin-guide/admin-cookbook/audit-log-setup.html#log-types"
     }
   },
+  "plugins": {
+    "plugins": "Plugins",
+    "plugin_installer": "Plugin Installer",
+    "repository_url": "Repository URL",
+    "description": "You can install plugins by inputting the URL",
+    "plugin_card": "Plugin Card",
+    "plugin_is_not_installed": "Plugin is not installed",
+    "install": "Install",
+    "delete": "Delete"
+  },
   "cloud_setting_management": {
     "to_cloud_settings": "進入 GROWI.cloud 的管理界面"
   },
@@ -1038,6 +1045,10 @@
     "remove_user_success": "Succeeded to removing {{username}}",
     "remove_external_user_success": "Succeeded to remove {{accountId}}",
     "switch_disable_link_sharing_success": "成功更新分享链接设置",
-    "failed_to_reset_password":"Failed to reset password"
+    "failed_to_reset_password":"Failed to reset password",
+    "install_plugin_success": "Succeeded to install {{pluginName}}",
+    "activate_plugin_success": "Succeeded to activating {{pluginName}}",
+    "deactivate_plugin_success": "Succeeded to deactivate {{pluginName}}",
+    "remove_plugin_success": "Succeeded to removing {{pluginName}}"
   }
 }

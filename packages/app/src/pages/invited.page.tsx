@@ -3,6 +3,7 @@ import React from 'react';
 import type { IUserHasId, IUser } from '@growi/core';
 import { USER_STATUS } from '@growi/core';
 import { NextPage, GetServerSideProps, GetServerSidePropsContext } from 'next';
+import { useTranslation } from 'next-i18next';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import dynamic from 'next/dynamic';
 import Head from 'next/head';
@@ -26,12 +27,13 @@ type Props = CommonProps & {
 }
 
 const InvitedPage: NextPage<Props> = (props: Props) => {
+  const { t } = useTranslation();
 
   useCsrfToken(props.csrfToken);
   useCurrentPathname(props.currentPathname);
   useCurrentUser(props.currentUser);
 
-  const title = generateCustomTitle(props, 'GROWI');
+  const title = generateCustomTitle(props, t('invited.title'));
   const classNames: string[] = ['invited-page'];
 
   return (

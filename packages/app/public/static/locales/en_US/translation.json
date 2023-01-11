@@ -60,6 +60,7 @@
   "Presentation Mode": "Presentation",
   "The end": "The end",
   "Not available for guest": "Not available for guest",
+  "Not available in this version": "Not available in this version",
   "No users have liked this yet": "No users have liked this yet",
   "No users have liked this yet.": "No users have liked this yet.",
   "No users have bookmarked yet": "No users have bookmarked yet",
@@ -84,6 +85,7 @@
   "No diff": "No diff",
   "User ID": "User ID",
   "User Information": "User information",
+  "User Activation": "User Activation",
   "Basic Info": "Basic info",
   "Name": "Name",
   "Email": "Email",
@@ -164,6 +166,7 @@
   },
   "installer": {
     "tab": "Create account",
+    "title": "Installer",
     "setup": "Setup",
     "create_initial_account": "Create an initial account",
     "initial_account_will_be_administrator_automatically": "The initial account will be administrator automatically.",
@@ -564,6 +567,7 @@
     "popover_desc": "Input channel name. You can notify multiple channels by entering a comma-separated list."
   },
   "search_result": {
+    "title": "Search",
     "result_meta": "Search results for:",
     "deletion_mode_btn_lavel": "Select and delete page",
     "cancel": "Cancel",
@@ -619,6 +623,7 @@
     }
   },
   "login": {
+    "title": "Login",
     "sign_in_error": "Login error",
     "registration_successful": "registration_successful. Please wait for administrator approval.",
     "Setup": "Setup",
@@ -626,6 +631,7 @@
     "set_env_var_for_logs": "(Please set the environment variables <code>DEBUG=crowi:service:PassportService</code> to get the logs)"
   },
   "invited": {
+    "title": "Invited",
     "discription_heading": "Create Account",
     "discription": "Create an your account with the invited email address"
   },
@@ -664,7 +670,7 @@
     "failed_to_create_admin_user":"Failed to create admin user. {{errMessage}}",
     "successfully_send_email_auth":"We sent an email to {{email}}. Please click the URL in the email and complete the registration.",
     "incorrect_token_or_expired_url": "The token is incorrect or the URL has expired.",
-    "user_already_loggedin": "You cannot create a new account when you are logged in.",
+    "user_already_logged_in": "You cannot create a new account when you are logged in.",
     "registration_closed": "You are not authorized to create a new account.",
     "Username has invalid characters": "Username has invalid characters.",
     "Username field is required": "User ID field is required.",
@@ -811,5 +817,12 @@
   "v5_page_migration": {
     "page_tree_not_avaliable" : "Page tree feature is not available yet.",
     "go_to_settings": "Go to settings to enable the feature"
+  },
+  "tag_edit_modal": {
+    "edit_tags": "Edit Tags",
+    "done": "Done",
+    "tags_input": {
+      "tag_name": "tag name"
+    }
   }
 }

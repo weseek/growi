@@ -16,7 +16,7 @@ import { NotAvailableForGuest } from './NotAvailableForGuest';
 import PaginationWrapper from './PaginationWrapper';
 import { OperateAllControl } from './SearchPage/OperateAllControl';
 import SearchControl from './SearchPage/SearchControl';
-import { IReturnSelectedPageIds, SearchPageBase, usePageDeleteModalForBulkDeletion } from './SearchPage2/SearchPageBase';
+import { IReturnSelectedPageIds, SearchPageBase, usePageDeleteModalForBulkDeletion } from './SearchPage/SearchPageBase';
 
 
 // TODO: replace with "customize:showPageLimitationS"
@@ -63,7 +63,7 @@ const SearchResultListHead = React.memo((props: SearchResultListHeadProps): JSX.
         <span className="ml-3">{`${leftNum}-${rightNum}`} / {total}</span>
         { took != null && (
           // blackout 70px rectangle in VRT
-          <span data-hide-in-vrt className="ml-3 text-muted d-inline-block" style={{ minWidth: '70px' }}>({took}ms)</span>
+          <span data-vrt-blackout className="ml-3 text-muted d-inline-block" style={{ minWidth: '70px' }}>({took}ms)</span>
         ) }
       </div>
       <div className="input-group flex-nowrap search-result-select-group ml-auto d-md-flex d-none">

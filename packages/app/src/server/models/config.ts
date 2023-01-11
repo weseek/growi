@@ -109,8 +109,6 @@ export const defaultCrowiConfigs: { [key: string]: any } = {
   'mail:smtpUser'     : undefined,
   'mail:smtpPassword' : undefined,
 
-  'plugin:isEnabledPlugins' : true,
-
   'customize:css' : undefined,
   'customize:script' : undefined,
   'customize:noscript' : undefined,
@@ -243,9 +241,6 @@ schema.statics.getLocalconfig = function(crowi) {
     globalLang: crowi.configManager.getConfig('crowi', 'app:globalLang'),
     pageLimitationL: crowi.configManager.getConfig('crowi', 'customize:showPageLimitationL'),
     pageLimitationXL: crowi.configManager.getConfig('crowi', 'customize:showPageLimitationXL'),
-    customizedLogoSrc: isDefaultLogo != null && !isDefaultLogo
-      ? crowi.configManager.getConfig('crowi', 'customize:customizedLogoSrc')
-      : null,
     auditLogEnabled: crowi.configManager.getConfig('crowi', 'app:auditLogEnabled'),
     activityExpirationSeconds: crowi.configManager.getConfig('crowi', 'app:activityExpirationSeconds'),
     auditLogAvailableActions: crowi.activityService.getAvailableActions(false),

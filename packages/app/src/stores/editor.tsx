@@ -1,3 +1,5 @@
+import { useCallback } from 'react';
+
 import { Nullable, withUtils, SWRResponseWithUtils } from '@growi/core';
 import useSWR, { SWRResponse } from 'swr';
 import useSWRImmutable from 'swr/immutable';
@@ -87,7 +89,7 @@ export const useCurrentIndentSize = (): SWRResponse<number, Error> => {
 */
 export const useSWRxSlackChannels = (currentPagePath: Nullable<string>): SWRResponse<string[], Error> => {
   const shouldFetch: boolean = currentPagePath != null;
-  return useSWR(
+  return useSWRImmutable(
     shouldFetch ? ['/pages.updatePost', currentPagePath] : null,
     (endpoint, path) => apiGet(endpoint, { path }).then((response: SlackChannels) => response.updatePost),
     { fallbackData: [''] },
@@ -109,13 +111,14 @@ export type IPageTagsForEditorsOption = {
 export const usePageTagsForEditors = (pageId: Nullable<string>): SWRResponse<string[], Error> & IPageTagsForEditorsOption => {
   const { data: tagsInfoData } = useSWRxTagsInfo(pageId);
   const swrResult = useStaticSWR<string[], Error>('pageTags', undefined);
+  const { mutate } = swrResult;
+  const sync = useCallback((): void => {
+    mutate(tagsInfoData?.tags || [], false);
+  }, [mutate, tagsInfoData?.tags]);
 
   return {
     ...swrResult,
-    sync: (): void => {
-      const { mutate } = swrResult;
-      mutate(tagsInfoData?.tags || [], false);
-    },
+    sync,
   };
 };
 

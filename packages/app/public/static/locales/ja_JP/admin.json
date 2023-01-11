@@ -385,15 +385,12 @@
     "gridfs_label": "MongoDB(GridFS)",
     "fixed_by_env_var": "環境変数 <code>FILE_UPLOAD={{fileUploadType}}</code> により固定されています。",
     "file_upload": "ファイルをアップロードするための設定を行います。ファイルアップロードの設定を完了させると、ファイルアップロード機能、プロフィール写真機能などが有効になります。",
-    "ses_settings": "SES設定",
     "test_connection": "接続テスト",
     "change_setting": "この設定を途中で変更すると、これまでにアップロードしたファイル等へのアクセスができなくなりますのでご注意下さい。",
     "region": "リージョン",
     "bucket_name": "バケット名",
     "custom_endpoint": "カスタムエンドポイント",
     "custom_endpoint_change": "MinIOなど、S3互換APIを持つ他のオブジェクトストレージサービスを使用する場合のみ、そのエンドポイントのURLを入力してください。空欄の場合は、Amazon S3を使用します。",
-    "plugin_settings": "プラグイン設定",
-    "enable_plugin_loading": "プラグインの読み込みを有効にします。",
     "load_plugins": "プラグインを読み込む",
     "enable": "有効",
     "disable": "無効",
@@ -859,6 +856,16 @@
       "log_type": "https://docs.growi.org/ja/admin-guide/admin-cookbook/audit-log-setup.html#log-types"
     }
   },
+  "plugins": {
+    "plugins": "プラグイン",
+    "plugin_installer": "プラグインインストーラー",
+    "repository_url": "URL",
+    "description": "リポジトリのURLの入力してください。",
+    "plugin_card": "プラグインカード",
+    "plugin_is_not_installed": "プラグインがインストールされていません",
+    "install": "インストール",
+    "delete": "削除"
+  },
   "cloud_setting_management": {
     "to_cloud_settings": "GROWI.cloud の管理画面へ"
   },
@@ -1038,6 +1045,10 @@
     "remove_user_success": "{{username}}を削除しました",
     "remove_external_user_success": "{{accountId}}を削除しました",
     "switch_disable_link_sharing_success": "共有リンクの設定を変更しました",
-    "failed_to_reset_password":"パスワードのリセットに失敗しました"
+    "failed_to_reset_password":"パスワードのリセットに失敗しました",
+    "install_plugin_success": "{{pluginName}}のインストールに成功しました",
+    "activate_plugin_success": "{{pluginName}}を有効化しました",
+    "deactivate_plugin_success": "{{pluginName}}を無効化しました",
+    "remove_plugin_success": "{{pluginName}}を削除しました"
   }
 }

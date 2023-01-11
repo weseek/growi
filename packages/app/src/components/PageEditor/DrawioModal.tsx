@@ -37,7 +37,12 @@ const drawioConfig = {
 
 export const DrawioModal = (): JSX.Element => {
   const { data: drawioUri } = useDrawioUri();
-  const { data: personalSettingsInfo } = usePersonalSettings();
+  const { data: personalSettingsInfo } = usePersonalSettings({
+    // make immutable
+    revalidateIfStale: false,
+    revalidateOnFocus: false,
+    revalidateOnReconnect: false,
+  });
 
   const { data: drawioModalData, close: closeDrawioModal } = useDrawioModal();
   const isOpened = drawioModalData?.isOpened ?? false;

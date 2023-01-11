@@ -25,10 +25,10 @@ import {
   useIsSearchScopeChildrenAsDefault, useRendererConfig,
 } from '../stores/context';
 
+import { NextPageWithLayout } from './_app.page';
 import {
   CommonProps, getServerSideCommonProps, getNextI18NextConfig, generateCustomTitle,
 } from './utils/commons';
-import { NextPageWithLayout } from './_app.page';
 
 const PAGING_LIMIT = 10;
 
@@ -80,7 +80,7 @@ const TagPage: NextPageWithLayout<CommonProps> = (props: Props) => {
 
   useRendererConfig(props.rendererConfig);
 
-  const title = generateCustomTitle(props, 'GROWI');
+  const title = generateCustomTitle(props, t('Tags'));
 
   return (
     <>
@@ -164,7 +164,7 @@ function injectServerConfigurations(context: GetServerSidePropsContext, props: P
     blockdiagUri: process.env.BLOCKDIAG_URI ?? null,
 
     // XSS Options
-    isEnabledXssPrevention: configManager.getConfig('markdown', 'markdown:xss:isEnabledPrevention'),
+    isEnabledXssPrevention: configManager.getConfig('markdown', 'markdown:rehypeSanitize:isEnabledPrevention'),
     attrWhiteList: crowi.xssService.getAttrWhiteList(),
     tagWhiteList: crowi.xssService.getTagWhiteList(),
     highlightJsStyleBorder: crowi.configManager.getConfig('crowi', 'customize:highlightJsStyleBorder'),

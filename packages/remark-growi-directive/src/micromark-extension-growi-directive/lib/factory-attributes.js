@@ -7,9 +7,8 @@
 import { factorySpace } from 'micromark-factory-space';
 import { factoryWhitespace } from 'micromark-factory-whitespace';
 import {
-  asciiAlpha,
-  asciiAlphanumeric,
   markdownLineEnding,
+  markdownLineEndingOrSpace,
   markdownSpace,
 } from 'micromark-util-character';
 import { codes } from 'micromark-util-symbol/codes.js';
@@ -25,8 +24,6 @@ import { markdownLineEndingOrSpaceOrComma, factoryAttributesDevider } from '../.
  * @param {string} attributesType
  * @param {string} attributesMarkerType
  * @param {string} attributeType
- * @param {string} attributeIdType
- * @param {string} attributeClassType
  * @param {string} attributeNameType
  * @param {string} attributeInitializerType
  * @param {string} attributeValueLiteralType
@@ -43,8 +40,6 @@ export function factoryAttributes(
     attributesType,
     attributesMarkerType,
     attributeType,
-    attributeIdType,
-    attributeClassType,
     attributeNameType,
     attributeInitializerType,
     attributeValueLiteralType,
@@ -72,21 +67,16 @@ export function factoryAttributes(
 
   /** @type {State} */
   function between(code) {
-    if (code === codes.numberSign) {
-      type = attributeIdType;
-      return shortcutStart(code);
+    if (disallowEol) {
+      if (markdownSpace(code)) {
+        return factorySpace(effects, between, types.whitespace)(code);
+      }
+      if (code === codes.comma) {
+        return factoryAttributesDevider(effects, between)(code);
+      }
     }
 
-    if (code === codes.dot) {
-      type = attributeClassType;
-      return shortcutStart(code);
-    }
-
-    if (disallowEol && markdownSpace(code)) {
-      return factorySpace(effects, between, types.whitespace)(code);
-    }
-
-    if (!disallowEol && (markdownLineEndingOrSpaceOrComma(code))) {
+    if (!disallowEol && markdownLineEndingOrSpaceOrComma(code)) {
       return factoryAttributesDevider(effects, between)(code);
     }
 
@@ -107,69 +97,6 @@ export function factoryAttributes(
   }
 
   /** @type {State} */
-  function shortcutStart(code) {
-    effects.enter(attributeType);
-    effects.enter(type);
-    effects.enter(`${type}Marker`);
-    effects.consume(code);
-    effects.exit(`${type}Marker`);
-    return shortcutStartAfter;
-  }
-
-  /** @type {State} */
-  function shortcutStartAfter(code) {
-    if (
-      code === codes.eof
-      || code === codes.quotationMark
-      || code === codes.numberSign
-      || code === codes.apostrophe
-      || code === codes.dot
-      || code === codes.lessThan
-      || code === codes.equalsTo
-      || code === codes.greaterThan
-      || code === codes.graveAccent
-      || code === codes.rightParenthesis
-      || markdownLineEndingOrSpaceOrComma(code)
-    ) {
-      return nok(code);
-    }
-
-    effects.enter(`${type}Value`);
-    effects.consume(code);
-    return shortcut;
-  }
-
-  /** @type {State} */
-  function shortcut(code) {
-    if (
-      code === codes.eof
-      || code === codes.quotationMark
-      || code === codes.apostrophe
-      || code === codes.lessThan
-      || code === codes.equalsTo
-      || code === codes.greaterThan
-      || code === codes.graveAccent
-    ) {
-      return nok(code);
-    }
-
-    if (
-      code === codes.numberSign
-      || code === codes.dot
-      || code === codes.rightParenthesis
-      || markdownLineEndingOrSpaceOrComma(code)
-    ) {
-      effects.exit(`${type}Value`);
-      effects.exit(type);
-      effects.exit(attributeType);
-      return between(code);
-    }
-
-    effects.consume(code);
-    return shortcut;
-  }
-
-  /** @type {State} */
   function name(code) {
     if (
       code !== codes.eof
@@ -177,15 +104,14 @@ export function factoryAttributes(
         && code !== codes.lineFeed
         && code !== codes.carriageReturnLineFeed
         && code !== codes.quotationMark
-        && code !== codes.numberSign
         && code !== codes.apostrophe
-        && code !== codes.dot
         && code !== codes.lessThan
         && code !== codes.equalsTo
         && code !== codes.greaterThan
         && code !== codes.graveAccent
         && code !== codes.rightParenthesis
         && code !== codes.space
+        && code !== codes.comma
     ) {
       effects.consume(code);
       return name;
@@ -197,7 +123,7 @@ export function factoryAttributes(
       return factorySpace(effects, nameAfter, types.whitespace)(code);
     }
 
-    if (!disallowEol && markdownLineEndingOrSpaceOrComma(code)) {
+    if (!disallowEol && markdownLineEndingOrSpace(code)) {
       return factoryAttributesDevider(effects, nameAfter)(code);
     }
 
@@ -245,7 +171,7 @@ export function factoryAttributes(
       return factorySpace(effects, valueBefore, types.whitespace)(code);
     }
 
-    if (!disallowEol && markdownLineEndingOrSpaceOrComma(code)) {
+    if (!disallowEol && markdownLineEndingOrSpace(code)) {
       return factoryAttributesDevider(effects, valueBefore)(code);
     }
 
