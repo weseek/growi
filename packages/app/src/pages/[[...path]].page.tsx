@@ -396,6 +396,21 @@ class MultiplePagesHitsError extends ExtensibleCustomError {
 
 }
 
+// apply parent page grant fot creating page
+async function applyGrantToPage(props: Props, ancestor: any) {
+  await ancestor.populate('grantedGroup');
+  const grant = {
+    grant: ancestor.grant,
+  };
+  const grantedGroup = ancestor.grantedGroup ? {
+    grantedGroup: {
+      id: ancestor.grantedGroup.id,
+      name: ancestor.grantedGroup.name,
+    },
+  } : {};
+  props.grantData = Object.assign(grant, grantedGroup);
+}
+
 async function injectPageData(context: GetServerSidePropsContext, props: Props): Promise<void> {
   const { model: mongooseModel } = await import('mongoose');
 
@@ -456,17 +471,7 @@ async function injectPageData(context: GetServerSidePropsContext, props: Props):
       // take over pagrent page grant
       const ancestor = await Page.findAncestorByPathAndViewer(currentPathname, user);
       if (ancestor != null) {
-        await ancestor.populate('grantedGroup');
-        const grant = {
-          grant: ancestor.grant,
-        };
-        const grantedGroup = ancestor.grantedGroup ? {
-          grantedGroup: {
-            id: ancestor.grantedGroup.id,
-            name: ancestor.grantedGroup.name,
-          },
-        } : {};
-        props.grantData = Object.assign(grant, grantedGroup);
+        await applyGrantToPage(props, ancestor);
       }
     }
   }
