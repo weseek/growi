@@ -101,7 +101,7 @@ const BookmarkFolderMenuItem = (props: Props):JSX.Element => {
     }
 
 
-  }, [mutateBookmarkInfo, onSelectedChild, currentPage?._id]);
+  }, [mutateBookmarkInfo, onSelectedChild, currentPage?._id, mutateParentFolders, mutateChildFolders]);
 
   const renderBookmarkSubMenuItem = useCallback(() => {
     return (

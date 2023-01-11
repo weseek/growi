@@ -46,7 +46,7 @@ const BookmarkFolderMenu = (props: Props): JSX.Element => {
         }
       });
     });
-  }, [bookmarkFolders, currentPage?._id]);
+  }, [bookmarkFolders, currentPage?._id, mutateBookmarkFolderData]);
 
   const isBookmarkFolderExists = useCallback((): boolean => {
     if (bookmarkFolders && bookmarkFolders.length > 0) {
