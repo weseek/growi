@@ -27,8 +27,7 @@ jobs:
   lint:
     runs-on: ubuntu-latest
 
-    if: |
-      !contains(github.event.pull_request.labels.*.name, 'prepare next version')
+    if: startsWith(github.ref, 'refs/heads/support/prepare-v')
 
     strategy:
       matrix:
@@ -81,8 +80,7 @@ jobs:
   test:
     runs-on: ubuntu-latest
 
-    if: |
-      !contains(github.event.pull_request.labels.*.name, 'prepare next version')
+    if: startsWith(github.ref, 'refs/heads/support/prepare-v')
 
     strategy:
       matrix:
@@ -150,8 +148,7 @@ jobs:
   launch-dev:
     runs-on: ubuntu-latest
 
-    if: |
-      !contains(github.event.pull_request.labels.*.name, 'prepare next version')
+    if: startsWith(github.ref, 'refs/heads/support/prepare-v')
 
     strategy:
       matrix:
