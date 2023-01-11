@@ -22,7 +22,7 @@ const CustomizeThemeSetting = (props: Props): JSX.Element => {
 
   const { data, error, update } = useSWRxGrowiThemeSetting();
   const [currentTheme, setCurrentTheme] = useState(data?.currentTheme);
-  const [currentForcedColorScheme, setCurrentForcedColorScheme] = useState(data?.currentForcedColorScheme);
+  const [currentForcedColorScheme, setCurrentForcedColorScheme] = useState(data?.currentForcedColorScheme ?? null);
 
   useEffect(() => {
     setCurrentTheme(data?.currentTheme);
@@ -30,11 +30,11 @@ const CustomizeThemeSetting = (props: Props): JSX.Element => {
 
   const selectedHandler = useCallback((themeName: string, schemeType: GrowiThemeSchemeType) => {
     setCurrentTheme(themeName);
-    setCurrentForcedColorScheme(schemeType === GrowiThemeSchemeType.BOTH ? undefined : schemeType);
+    setCurrentForcedColorScheme(schemeType === GrowiThemeSchemeType.BOTH ? null : schemeType);
   }, []);
 
   const submitHandler = useCallback(async() => {
-    if (currentTheme == null || currentForcedColorScheme == null) {
+    if (currentTheme == null) {
       toastWarning('The selected theme is undefined');
       return;
     }
