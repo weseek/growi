@@ -1,7 +1,8 @@
+import { ColorScheme } from './color-scheme';
+
 export const GrowiThemeSchemeType = {
+  ...ColorScheme,
   BOTH: 'both',
-  LIGHT: 'light',
-  DARK: 'dark',
 } as const;
 export type GrowiThemeSchemeType = typeof GrowiThemeSchemeType[keyof typeof GrowiThemeSchemeType];
 

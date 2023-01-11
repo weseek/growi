@@ -1,4 +1,4 @@
-import { GrowiThemeMetadata } from '@growi/core';
+import type { ColorScheme, GrowiThemeMetadata } from '@growi/core';
 
 export type IResLayoutSetting = {
   isContainerFluid: boolean,
@@ -6,5 +6,6 @@ export type IResLayoutSetting = {
 
 export type IResGrowiTheme = {
   currentTheme: string,
+  currentForcedColorScheme: ColorScheme,
   pluginThemesMetadatas: GrowiThemeMetadata[],
 }

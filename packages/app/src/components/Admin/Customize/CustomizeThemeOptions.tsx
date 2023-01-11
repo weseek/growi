@@ -9,7 +9,7 @@ import { ThemeColorBox } from './ThemeColorBox';
 type Props = {
   availableThemes: GrowiThemeMetadata[],
   selectedTheme?: string,
-  onSelected?: (themeName: string) => void,
+  onSelected?: (themeName: string, schemeType: GrowiThemeSchemeType) => void,
 };
 
 const CustomizeThemeOptions = (props: Props): JSX.Element => {
@@ -36,7 +36,7 @@ const CustomizeThemeOptions = (props: Props): JSX.Element => {
                 key={theme.name}
                 isSelected={selectedTheme != null && selectedTheme === theme.name}
                 metadata={theme}
-                onSelected={() => onSelected?.(theme.name)}
+                onSelected={() => onSelected?.(theme.name, theme.schemeType)}
               />
             );
           })}
@@ -52,7 +52,7 @@ const CustomizeThemeOptions = (props: Props): JSX.Element => {
                 key={theme.name}
                 isSelected={selectedTheme != null && selectedTheme === theme.name}
                 metadata={theme}
-                onSelected={() => onSelected?.(theme.name)}
+                onSelected={() => onSelected?.(theme.name, theme.schemeType)}
               />
             );
           })}
