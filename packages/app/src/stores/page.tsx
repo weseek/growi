@@ -116,14 +116,11 @@ export const useSWRxPageInfo = (
 
   const { data: termNumber } = usePageInfoTermManager();
 
-  const { data: pathname } = useCurrentPathname();
-  const isSharedPage = _isSharedPage(pathname ?? '');
-
   // assign null if shareLinkId is undefined in order to identify SWR key only by pageId
   const fixedShareLinkId = shareLinkId ?? null;
 
   const swrResult = useSWRImmutable<IPageInfo | IPageInfoForOperation, Error>(
-    !isSharedPage && pageId != null && termNumber != null ? ['/page/info', pageId, fixedShareLinkId, termNumber] : null,
+    pageId != null && termNumber != null ? ['/page/info', pageId, fixedShareLinkId, termNumber] : null,
     (endpoint, pageId, shareLinkId) => apiv3Get(endpoint, { pageId, shareLinkId }).then(response => response.data),
     { fallbackData: initialData },
   );
