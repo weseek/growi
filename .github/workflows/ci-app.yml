@@ -5,8 +5,6 @@ on:
     branches-ignore:
       - release/**
       - rc/**
-      - chore/**
-      - support/prepare-v**
     paths:
       - .github/workflows/ci-app.yml
       - .eslint*
@@ -28,6 +26,9 @@ concurrency:
 jobs:
   lint:
     runs-on: ubuntu-latest
+
+    if: |
+      !contains(github.event.pull_request.labels.*.name, 'prepare next version')
 
     strategy:
       matrix:
@@ -79,6 +80,9 @@ jobs:
 
   test:
     runs-on: ubuntu-latest
+
+    if: |
+      !contains(github.event.pull_request.labels.*.name, 'prepare next version')
 
     strategy:
       matrix:
@@ -145,6 +149,9 @@ jobs:
 
   launch-dev:
     runs-on: ubuntu-latest
+
+    if: |
+      !contains(github.event.pull_request.labels.*.name, 'prepare next version')
 
     strategy:
       matrix:
