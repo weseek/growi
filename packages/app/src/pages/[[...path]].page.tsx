@@ -32,6 +32,7 @@ import type { CrowiRequest } from '~/interfaces/crowi-request';
 // import { useRendererSettings } from '~/stores/renderer';
 // import { EditorMode, useEditorMode, useIsMobile } from '~/stores/ui';
 import type { EditorConfig } from '~/interfaces/editor-settings';
+import { IPageGrantData } from '~/interfaces/page';
 import type { RendererConfig } from '~/interfaces/services/renderer';
 import type { ISidebarConfig } from '~/interfaces/sidebar-config';
 import type { IUserUISettings } from '~/interfaces/user-ui-settings';
@@ -185,6 +186,8 @@ type Props = CommonProps & {
   isIndentSizeForced: boolean,
   disableLinkSharing: boolean,
 
+  grantData?: IPageGrantData,
+
   rendererConfig: RendererConfig,
 
   // UI
@@ -284,8 +287,9 @@ const Page: NextPageWithLayout<Props> = (props: Props) => {
 
   // sync grant data
   useEffect(() => {
-    mutateSelectedGrant(grantData?.grantData.currentPageGrant);
-  }, [grantData?.grantData.currentPageGrant, mutateSelectedGrant]);
+    const grantDataToApply = props.grantData ? props.grantData : grantData?.grantData.currentPageGrant;
+    mutateSelectedGrant(grantDataToApply);
+  }, [grantData?.grantData.currentPageGrant, mutateSelectedGrant, props.grantData]);
 
   // sync pathname by Shallow Routing https://nextjs.org/docs/routing/shallow-routing
   useEffect(() => {
@@ -393,6 +397,21 @@ class MultiplePagesHitsError extends ExtensibleCustomError {
 
 }
 
+// apply parent page grant fot creating page
+async function applyGrantToPage(props: Props, ancestor: any) {
+  await ancestor.populate('grantedGroup');
+  const grant = {
+    grant: ancestor.grant,
+  };
+  const grantedGroup = ancestor.grantedGroup ? {
+    grantedGroup: {
+      id: ancestor.grantedGroup.id,
+      name: ancestor.grantedGroup.name,
+    },
+  } : {};
+  props.grantData = Object.assign(grant, grantedGroup);
+}
+
 async function injectPageData(context: GetServerSidePropsContext, props: Props): Promise<void> {
   const { model: mongooseModel } = await import('mongoose');
 
@@ -449,6 +468,12 @@ async function injectPageData(context: GetServerSidePropsContext, props: Props):
     if (templateData != null) {
       props.templateTagData = templateData.templateTags as string[];
       props.templateBodyData = templateData.templateBody as string;
+    }
+
+    // apply pagrent page grant
+    const ancestor = await Page.findAncestorByPathAndViewer(currentPathname, user);
+    if (ancestor != null) {
+      await applyGrantToPage(props, ancestor);
     }
   }
 
