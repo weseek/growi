@@ -92,22 +92,14 @@ export const useSWRxCurrentPage = (initialData?: IPagePopulatedToShowRevision|nu
 
 
 export const useSWRxTagsInfo = (pageId: Nullable<string>): SWRResponse<IPageTagsInfo | undefined, Error> => {
+  const { data: shareLinkId } = useShareLinkId();
 
   const endpoint = `/pages.getPageTag?pageId=${pageId}`;
-  const key = [endpoint, pageId];
 
-  const fetcher = async(endpoint: string, pageId: Nullable<string>) => {
-    let tags: string[] = [];
-    // when the page exists
-    if (pageId != null) {
-      const res = await apiGet<IPageTagsInfo>(endpoint, { pageId });
-      tags = res?.tags;
-    }
-
-    return { tags };
-  };
-
-  return useSWRImmutable(key, fetcher);
+  return useSWRImmutable<IPageTagsInfo | undefined, Error>(
+    shareLinkId == null && pageId != null ? [endpoint, pageId] : null,
+    (endpoint, pageId) => apiGet<IPageTagsInfo>(endpoint, { pageId }).then(result => result),
+  );
 };
 
 export const usePageInfoTermManager = (isDisabled?: boolean) : SWRResponse<number, Error> & ITermNumberManagerUtil => {
