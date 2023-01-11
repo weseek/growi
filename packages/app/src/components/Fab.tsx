@@ -25,8 +25,8 @@ export const Fab = (): JSX.Element => {
   const { data: currentPath = '' } = useCurrentPagePath();
   const { open: openCreateModal } = usePageCreateModal();
 
-  const [animateClasses, setAnimateClasses] = useState('invisible');
-  const [buttonClasses, setButtonClasses] = useState('');
+  const [animateClasses, setAnimateClasses] = useState<string>('invisible');
+  const [buttonClasses, setButtonClasses] = useState<string>('');
   const [isSticky, setIsSticky] = useState<boolean>(false);
 
   // ripple
