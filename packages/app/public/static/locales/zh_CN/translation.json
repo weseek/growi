@@ -28,7 +28,6 @@
 	"Admin": "管理",
 	"administrator": "管理员",
 	"Tags": "Tags",
-  "New": "新建",
   "Close": "Close",
 	"Shortcuts": "快捷方式",
   "CustomSidebar": "Custom Sidebar",
@@ -57,7 +56,8 @@
   "No_attachments_yet": "暂无附件",
 	"Presentation Mode": "演示文稿",
   "The end": "结束",
-  "Not available for guest": "Not available for guest",
+  "Not available for guest": "不提供给客人",
+  "Not available in this version": "此版本中不提供",
   "No users have liked this yet": "还没有用户喜欢这个",
   "No users have bookmarked yet": "还没有用户加入书签",
   "Create Archive Page": "创建归档页",
@@ -73,7 +73,6 @@
   "username": "用户名",
 	"Created": "创建",
 	"Last updated": "上次更新",
-  "last_login": "上次登录",
 	"Share": "分享",
   "Share Link": "分享链接",
 	"Markdown Link": "Markdown链接",
@@ -87,6 +86,7 @@
 	"My Drafts": "My Drafts",
 	"User Settings": "用户设置",
 	"User Information": "用户信息",
+  "User Activation": "用户激活",
 	"Basic Info": "基础信息",
 	"Name": "姓名",
 	"Email": "邮箱",
@@ -117,16 +117,12 @@
 	"Create under": "Create page under below:",
   "V5 Page Migration": "转换为V5的兼容性",
   "GROWI.5.0_new_schema": "GROWI.5.0 new schema",
-  "See_more_detail_on_new_schema": "更多详情请见<a href='#'>{{url}}</a> <i class='icon-share-alt'></i> ",
-	"Site URL settings": "主页URL设置",
+  "See_more_detail_on_new_schema": "更多详情请见<a href='https://docs.growi.org/en/admin-guide/upgrading/50x.html#about-the-new-v5-compatible-format' target='_blank'> {{title}}</a> <i class='icon-share-alt'></i> ",
 	"Markdown Settings": "Markdown设置",
-	"Notification Settings": "通知设置",
 	"external_account_management": "外部账户管理",
   "UserGroup": "用户组",
   "ChildUserGroup": "儿童用户组",
 	"Basic Settings": "基础设置",
-	"Basic authentication": "基本身份验证",
-	"Register limitation": "注册限制",
 	"The contents entered here will be shown in the header etc": "此处输入的内容将显示在标题等中",
 	"Public": "公共",
 	"Anyone with the link": "任何人",
@@ -147,7 +143,6 @@
 	"edited this page": "edited this page.",
 	"List Drafts": "草稿",
 	"Deleted Pages": "已删除页",
-	"Sign out": "退出",
   "Disassociate": "解除关联",
   "No bookmarks yet": "暂无书签",
   "add_bookmark": "添加到书签",
@@ -170,19 +165,14 @@
 		"invalid_syntax": "%s的语法无效。",
     "title_required": "标题是必需的。"
   },
-  "not_found_page": {
-    "Create Page": "创建页面",
-    "page_not_exist": "该页面不存在",
-    "page_not_exist_alert": "该页面不存在，请创建一个新页面"
-  },
   "not_creatable_page": {
     "could_not_creata_path": "无法创建路径"
   },
   "custom_navigation": {
-    "no_page_list": "There are no pages under this page.",
-    "link_sharing_is_disabled": "链接共享已被禁用"
+    "no_page_list": "There are no pages under this page."
   },
 	"installer": {
+    "title": "安装",
 		"setup": "安装",
 		"create_initial_account": "创建初始用户",
 		"initial_account_will_be_administrator_automatically": "初始帐户将自动成为管理员。",
@@ -236,24 +226,6 @@
 	"API Token Settings": "API token 设置",
 	"Current API Token": "当前 API token",
 	"Update API Token": "更新 API token",
-	"header_search_box": {
-		"label": {
-			"All pages": "所有页面",
-			"This tree": "当前分支"
-		},
-		"item_label": {
-			"All pages": "所有页面",
-			"This tree": "当前分支以下内容"
-		}
-  },
-  "in_app_notification": {
-    "notification_list": "应用内通知列表",
-    "see_all": "查看通知列表",
-    "no_notification": "您没有任何通知",
-    "all": "全部",
-    "unopend": "未读",
-    "mark_all_as_read" : "标记为已读"
-  },
   "in_app_notification_settings": {
     "in_app_notification_settings": "在应用程序通知设置",
     "subscribe_settings": "自动订阅（接收通知）页面的设置",
@@ -297,14 +269,6 @@
       "no_nfd": "禁止使用 UTF8-MAC 浊音等 NFD。"
     }
   },
-	"copy_to_clipboard": {
-		"Copy to clipboard": "复制到剪贴板",
-		"Page path": "页面路径",
-		"Page URL": "页面Url",
-		"Parmanent link": "参数化链接",
-		"Page path and parmanent link": "页面路径及参数化链接",
-		"Markdown link": "Markdown链接"
-	},
 	"search_help": {
 		"title": "搜索帮助",
 		"and": {
@@ -363,7 +327,8 @@
 		"notfound_or_forbidden": "未找到或禁止原始页。",
 		"already_exists": "具有该路径的页面已存在",
 		"outdated": "页面已被某人更新，现在已过时。",
-		"user_not_admin": "仅管理员用户可以删除"
+		"user_not_admin": "仅管理员用户可以删除",
+    "single_deletion_empty_pages": "空的页面不能被单一删除"
   },
   "page_history": {
     "revision_list": "修订清单",
@@ -496,10 +461,6 @@
     "page_not_found_in_preview": "\"{{path}}\" is not a GROWI page."
   },
 	"toaster": {
-    "create_succeeded": "Succeeded to create {{target}}",
-    "create_failed": "Failed to create {{target}}",
-		"update_successed": "Succeeded to update {{target}}",
-    "update_failed": "Failed to update {{target}}",
     "file_upload_succeeded": "文件上传成功",
     "file_upload_failed": "文件上传失败",
     "initialize_successed": "Succeeded to initialize {{target}}",
@@ -511,7 +472,9 @@
     "remove_external_user_success": "Succeeded to remove {{accountId}} ",
     "switch_disable_link_sharing_success": "成功更新分享链接设置",
     "failed_to_reset_password":"Failed to reset password",
-    "delete_succeeded": "Succeeded to delete {{target}}"
+    "delete_succeeded": "Succeeded to delete {{target}}",
+    "save_succeeded": "已成功保存",
+    "issue_share_link": "Succeeded to issue new share link"
   },
 	"template": {
 		"modal_label": {
@@ -587,15 +550,10 @@
     "popover_title": "Slack Notification",
     "popover_desc": "Input channel name. You can notify multiple channels by entering a comma-separated list."
   },
-  "security_settings": "安全设置",
   "share_links": {
     "Shere this page link to public": "Shere this page link to public",
     "share_link_list": "Share link list",
     "share_link_management": "Share Link Management",
-    "No_share_links":"No share links",
-    "Share Link": "Share Link",
-    "Page Path": "Page Path",
-    "share_link_notice":"remove all share links",
     "delete_all_share_links":"Delete all share links",
     "expire": "Expiration",
     "Days": "Days",
@@ -605,66 +563,11 @@
     "Unlimited": "unlimited",
     "Issue": "Issue",
     "share_settings" :"Share settings",
-    "Invalid_Number_of_Date" : "You entered invalid value"
+    "Invalid_Number_of_Date" : "You entered invalid value",
+    "link_sharing_is_disabled": "链接共享已被禁用"
   },
-	"notification_setting": {
-		"slack_incoming_configuration": "Slack Incoming Webhooks configuration",
-		"prioritize_webhook": "Prioritize incoming webhook than Slack App",
-		"prioritize_webhook_desc": "Check this option and GROWI use Incoming Webhooks even if Slack App settings are enabled.",
-		"slack_app_configuration": "Slack app configuration",
-		"slack_app_configuration_desc": "This is the way that compatible with Crowi,<br /> but not recommended in GROWI because it is <strong>too complex</strong>.",
-		"use_instead": "Please use Slack Incoming Webhooks Configuration instead.",
-		"how_to": {
-			"header": "How to configure Incoming Webhooks?",
-			"workspace": "(At Workspace) Add a hook",
-			"workspace_desc1": "Go to <a href='https://slack.com/services/new/incoming-webhook'>Incoming Webhooks configuration page</a>.",
-			"workspace_desc2": "Choose the default channel to post.",
-			"workspace_desc3": "Add.",
-			"at_growi": "(At GROWI admin page) Set Webhook URL",
-			"at_growi_desc": "Input &rdquo;Webhook URL&rdquo; and submit on this page."
-		},
-		"user_trigger_notification_header": "Default notification settings for patterns",
-		"pattern": "Pattern",
-		"channel": "Channel",
-		"pattern_desc": "Path name of wiki. Pattern expression with <code>*</code> can be used.",
-		"channel_desc": "Slack channel name. Without <code>#</code>.",
-		"valid_page": "启用/禁用通知",
-		"link_notification_help": "<strong>只有那些知道“链接的任何人”链接的人才能查看的页面并不总是得到通知。</strong> ",
-		"just_me_notification_help": "<strong>被“仅限我”限制的页在编辑时被通知。</strong>",
-		"group_notification_help": "<strong>被“用户组”限制的页面在编辑时被通知。</strong>",
-		"notification_list": "List of notification settings",
-		"add_notification": "Add new",
-		"trigger_path": "Trigger path",
-		"trigger_path_help": "(expression with <code>*</code> is supported)",
-		"trigger_events": "Trigger events",
-		"notify_to": "Notify to",
-		"back_to_list": "Go back to list",
-		"notification_detail": "Notification Setting Details",
-		"event_pageCreate": "When new page is \"CREATED\"",
-		"event_pageEdit": "When page is \"EDITED\"",
-		"event_pageDelete": "When page is \"DELETED\"",
-		"event_pageMove": "When page is \"MOVED\" (renamed)",
-		"event_pageLike": "When someone \"LIKES\" page",
-		"event_comment": "When someone \"COMMENTS\" on page",
-		"email": {
-			"ifttt_link": "Create a new IFTTT applet with Email trigger"
-		},
-		"updated_slackApp": "Succeeded to update Slack App Configuration setting",
-		"add_notification_pattern": "Add user trigger notification patterns",
-		"delete_notification_pattern": "Delete notification pattern",
-		"delete_notification_pattern_desc1": "Delete Path: {{path}}",
-		"delete_notification_pattern_desc2": "Once deleted, it cannot be recovered",
-		"toggle_notification": "Updated setting of {{path}}"
-	},
-	"personal_dropdown": {
-		"home": "家",
-		"settings": "设置",
-		"color_mode": "颜色模式",
-		"sidebar_mode": "边栏模式",
-		"sidebar_mode_editor": "编辑器上的边栏模式",
-		"use_os_settings": "使用操作系统设置"
-	},
 	"search_result": {
+    "title": "搜索",
 		"result_meta": "搜索结果:",
 		"deletion_mode_btn_lavel": "选择并删除页面",
 		"cancel": "取消",
@@ -685,6 +588,7 @@
     }
 	},
   "private_legacy_pages": {
+    "title": "私人遗留页面",
     "bulk_operation": "批量操作",
     "convert_all_selected_pages": "全部转换为新的v5兼容格式",
 		"input_path_to_convert": "输入一个转换页面的路径",
@@ -718,15 +622,16 @@
       "error_duplicate_pages_found": "发现多个具有相同路径名称的页面。请重新命名或删除并重试。"
     }
   },
-	"to_cloud_settings": "進入 GROWI.cloud 的管理界面",
 	"login": {
-		"Sign in error": "登录错误",
-		"Registration successful": "注册成功",
+    "title": "登录",
+		"sign_in_error": "登录错误",
+		"registration_successful": "注册成功。请等待管理员批准",
 		"Setup": "安装程序",
     "enabled_ldap_has_configuration_problem":"启用了LDAP，但配置有问题。",
     "set_env_var_for_logs": "(请设置环境变量 <code>DEBUG=crowi:service:PassportService</code> 以获得日志。)"
 	},
   "invited": {
+    "invited": "邀请函",
     "discription_heading": "创建账户",
     "discription": "用被邀请的电子邮件地址创建一个你的账户"
   },
@@ -753,6 +658,8 @@
     "username_should_not_be_null":"用户名不应为空。请检查管理页面上的身份验证机制设置",
 		"email_address_is_already_registered": "此电子邮件地址已注册。",
 		"can_not_register_maximum_number_of_users": "注册的用户数不能超过最大值。",
+    "email_settings_is_not_setup":"邮箱设置未设置，请询问管理员。",
+    "email_authentication_is_not_enabled": "电子邮件验证未被激活, 请询问管理员。",
 		"failed_to_register": "注册失败。",
 		"successfully_created": "已成功创建用户{{username}。",
 		"can_not_activate_maximum_number_of_users": "无法激活超过最大用户数的用户。",
@@ -763,7 +670,7 @@
 		"failed_to_create_admin_user": "无法创建管理用户。{{errMessage}",
     "successfully_send_email_auth":"我们向 {{email}} 发送了一封电子邮件。 请点击邮件中的网址并完成注册。",
     "incorrect_token_or_expired_url":"令牌不正确或 URL 已过期。",
-    "user_already_loggedin": "当你登录的时候，你不能创建一个新的账户。",
+    "user_already_logged_in": "当你登录的时候，你不能创建一个新的账户。",
     "registration_closed": "你无权创建一个新的账户。",
     "Username has invalid characters": "用户名有无效字符",
     "Username field is required": "用户ID字段是必需的",
@@ -845,7 +752,6 @@
     "logout": "登出"
   },
   "pagetree": {
-    "private_legacy_pages": "私人遗留页面",
     "cannot_rename_a_title_that_contains_slash": "不能重命名包含 ’/' 的标题",
     "you_cannot_move_this_page_now": "你现在不能移动这个页面",
     "something_went_wrong_with_moving_page": "移动页面时出了问题"
@@ -859,13 +765,6 @@
     "select_group": "选择组别",
     "belonging_to_no_group": "无法找到你所属的团体。",
     "manage_user_groups": "管理用户组"
-  },
-  "crop_image_modal": {
-    "image_crop": "图像裁剪",
-    "crop": "修剪",
-    "save": "节省",
-    "reset": "重启",
-    "cancel": "取消"
   },
   "fix_page_grant": {
     "modal": {
@@ -925,5 +824,16 @@
     },
     "input_placeholder": "输入文件夹名称",
     "new_folder": "新建文件夹"
+  },
+  "v5_page_migration": {
+    "page_tree_not_avaliable": "Page Tree 功能不可用",
+    "go_to_settings": "进入设置，启用该功能"
+  },
+  "tag_edit_modal": {
+    "edit_tags": "编辑标签",
+    "done": "完毕",
+    "tags_input": {
+      "tag_name": "标签名称"
+    }
   }
 }

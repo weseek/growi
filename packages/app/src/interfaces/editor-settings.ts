@@ -5,7 +5,7 @@ export interface ILintRule {
 }
 
 export interface ITextlintSettings {
-  neverAskBeforeDownloadLargeFiles: boolean;
+  neverAskBeforeDownloadLargeFiles?: boolean;
   textlintRules: ILintRule[];
 }
 
@@ -24,7 +24,6 @@ export interface IEditorSettings {
   theme: undefined | string,
   keymapMode: undefined | KeyMapMode,
   styleActiveLine: boolean,
-  renderDrawioInRealtime: boolean,
   autoFormatMarkdownTable: boolean,
   textlintSettings: undefined | ITextlintSettings;
 }
@@ -35,13 +34,3 @@ export type EditorConfig = {
     isUploadableImage: boolean,
   }
 }
-
-export type OptionsToSave = {
-  isSlackEnabled: boolean;
-  slackChannels: string;
-  grant: number;
-  pageTags: string[] | null;
-  grantUserGroupId?: string | null;
-  grantUserGroupName?: string | null;
-  isSyncRevisionToHackmd?: boolean;
-};

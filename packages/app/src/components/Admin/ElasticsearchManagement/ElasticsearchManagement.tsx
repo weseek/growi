@@ -54,9 +54,12 @@ const ElasticsearchManagement = () => {
             setIsConfigured(false);
           }
         }
+        toastError(errors as Error[]);
+      }
+      else {
+        toastError(errors as Error);
       }
 
-      toastError(errors);
     }
     finally {
       setIsInitialized(true);
@@ -146,7 +149,7 @@ const ElasticsearchManagement = () => {
 
   return (
     <>
-      <div className="row">
+      <div data-testid="admin-full-text-search" className="row">
         <div className="col-md-12">
           <StatusTable
             isInitialized={isInitialized}

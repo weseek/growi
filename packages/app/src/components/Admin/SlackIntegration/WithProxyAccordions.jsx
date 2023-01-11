@@ -12,7 +12,6 @@ import { apiv3Put, apiv3Post } from '~/client/util/apiv3-client';
 import { useSiteUrl } from '~/stores/context';
 import loggerFactory from '~/utils/logger';
 
-import { withUnstatedContainers } from '../../UnstatedUtils';
 import Accordion from '../Common/Accordion';
 
 import ManageCommandsProcess from './ManageCommandsProcess';
@@ -143,7 +142,7 @@ const CustomCopyToClipBoard = (props) => {
   );
 };
 
-const GeneratingTokensAndRegisteringProxyServiceProcess = withUnstatedContainers((props) => {
+const GeneratingTokensAndRegisteringProxyServiceProcess = (props) => {
   const { t } = useTranslation();
   const { slackAppIntegrationId } = props;
 
@@ -153,7 +152,7 @@ const GeneratingTokensAndRegisteringProxyServiceProcess = withUnstatedContainers
       if (props.onUpdateTokens != null) {
         props.onUpdateTokens();
       }
-      toastSuccess(t('toaster.update_successed', { target: 'Token' }));
+      toastSuccess(t('toaster.update_successed', { target: 'Token', ns: 'commons' }));
     }
     catch (err) {
       toastError(err);
@@ -231,7 +230,7 @@ const GeneratingTokensAndRegisteringProxyServiceProcess = withUnstatedContainers
     </div>
 
   );
-}, []);
+};
 
 const TestProcess = ({
   slackAppIntegrationId, onSubmitForm, onSubmitFormFailed, isLatestConnectionSuccess,

@@ -16,7 +16,8 @@ const router = express.Router();
 const routerForAdmin = express.Router();
 const routerForAuth = express.Router();
 
-module.exports = (crowi, app, isInstalled) => {
+module.exports = (crowi, app) => {
+  const isInstalled = crowi.configManager.getConfig('crowi', 'app:installed');
 
   // add custom functions to express response
   require('./response')(express, crowi);
@@ -55,6 +56,8 @@ module.exports = (crowi, app, isInstalled) => {
   routerForAuth.post('/register',
     applicationInstalled, registerFormValidator.registerRules(), registerFormValidator.registerValidation, addActivity, login.register);
 
+  routerForAuth.post('/user-activation/register', applicationInstalled, userActivation.registerRules(),
+    userActivation.validateRegisterForm, userActivation.registerAction(crowi));
 
   // installer
   if (!isInstalled) {
@@ -66,6 +69,7 @@ module.exports = (crowi, app, isInstalled) => {
 
   router.use('/personal-setting', require('./personal-setting')(crowi));
 
+  router.use('/user-group-relations', require('./user-group-relation')(crowi));
   router.use('/user-group-relations', require('./user-group-relation')(crowi));
 
   router.use('/statistics', require('./statistics')(crowi));
@@ -94,10 +98,13 @@ module.exports = (crowi, app, isInstalled) => {
   router.get('/check-username', user.api.checkUsername);
 
   router.post('/complete-registration',
+    addActivity,
     injectUserRegistrationOrderByTokenMiddleware,
     userActivation.completeRegistrationRules(),
     userActivation.validateCompleteRegistration,
     userActivation.completeRegistrationAction(crowi));
+
+  router.use('/plugins', require('./plugins')(crowi));
 
   router.use('/user-ui-settings', require('./user-ui-settings')(crowi));
 

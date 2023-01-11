@@ -2,26 +2,32 @@ import React, { useState, useCallback } from 'react';
 
 import { useTranslation } from 'next-i18next';
 
+import { unlink } from '~/client/services/page-operation';
 import { toastError } from '~/client/util/apiNotification';
+import { useCurrentPagePath } from '~/stores/page';
 import { useRedirectFrom } from '~/stores/page-redirect';
 
 export const PageRedirectedAlert = React.memo((): JSX.Element => {
   const { t } = useTranslation();
-  const { data: redirectFrom, unlink } = useRedirectFrom();
+  const { data: currentPagePath } = useCurrentPagePath();
+  const { data: redirectFrom } = useRedirectFrom();
 
   const [isUnlinked, setIsUnlinked] = useState(false);
 
   const unlinkButtonClickHandler = useCallback(async() => {
+    if (currentPagePath == null) {
+      return;
+    }
     try {
-      await unlink();
+      await unlink(currentPagePath);
       setIsUnlinked(true);
     }
     catch (err) {
       toastError(err);
     }
-  }, [unlink]);
+  }, [currentPagePath]);
 
-  if (redirectFrom == null) {
+  if (redirectFrom == null || redirectFrom === '') {
     return <></>;
   }
 

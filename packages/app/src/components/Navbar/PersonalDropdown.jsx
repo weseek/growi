@@ -10,7 +10,7 @@ import { apiv3Post } from '~/client/util/apiv3-client';
 import { useCurrentUser } from '~/stores/context';
 
 const PersonalDropdown = () => {
-  const { t } = useTranslation();
+  const { t } = useTranslation('commons');
   const { data: currentUser } = useCurrentUser();
 
   // ripple
@@ -34,12 +34,12 @@ const PersonalDropdown = () => {
       {/* Button */}
       {/* remove .dropdown-toggle for hide caret */}
       {/* See https://stackoverflow.com/a/44577512/13183572 */}
-      <button className="bg-transparent border-0 nav-link" type="button" ref={buttonRef} data-toggle="dropdown">
+      <button className="bg-transparent border-0 nav-link" type="button" ref={buttonRef} data-toggle="dropdown" data-testid="personal-dropdown-button">
         <UserPicture user={user} noLink noTooltip /><span className="ml-1 d-none d-lg-inline-block">&nbsp;{user.name}</span>
       </button>
 
       {/* Menu */}
-      <div className="dropdown-menu dropdown-menu-right">
+      <div className="dropdown-menu dropdown-menu-right" data-testid="personal-dropdown-menu">
 
         <div className="px-4 pt-3 pb-2 text-center">
           <UserPicture user={user} size="lg" noLink noTooltip />
@@ -55,13 +55,13 @@ const PersonalDropdown = () => {
 
           <div className="btn-group btn-block mt-2" role="group">
             <Link href={`/user/${user.username}`}>
-              <a className="btn btn-sm btn-outline-secondary col">
-                <i className="icon-fw icon-home"></i>{ t('personal_dropdown.home') }
+              <a className="btn btn-sm btn-outline-secondary col" data-testid="grw-personal-dropdown-menu-user-home">
+                <i className="icon-fw icon-home"></i>{t('personal_dropdown.home')}
               </a>
             </Link>
             <Link href="/me">
-              <a className="btn btn-sm btn-outline-secondary col">
-                <i className="icon-fw icon-wrench"></i>{ t('personal_dropdown.settings') }
+              <a className="btn btn-sm btn-outline-secondary col" data-testid="grw-personal-dropdown-menu-user-settings">
+                <i className="icon-fw icon-wrench"></i>{t('personal_dropdown.settings')}
               </a>
             </Link>
           </div>
@@ -69,7 +69,7 @@ const PersonalDropdown = () => {
 
         <div className="dropdown-divider"></div>
 
-        <button type="button" className="dropdown-item" onClick={logoutHandler}><i className="icon-fw icon-power"></i>{ t('Sign out') }</button>
+        <button type="button" className="dropdown-item" onClick={logoutHandler}><i className="icon-fw icon-power"></i>{t('Sign out')}</button>
       </div>
 
     </>

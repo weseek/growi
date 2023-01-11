@@ -1,6 +1,6 @@
 @use '../variables' as var;
 @use '../bootstrap/init' as *;
-@use '../mixins';
+@use '../atoms/mixins/buttons' as mixins-buttons;
 @use './mixins/count-badge';
 
 // determine optional variables
@@ -84,7 +84,7 @@ $dropdown-link-active-bg: $bgcolor-dropdown-link-active;
     linear-gradient(135deg, var.$growi-green 10%, hsla(225, 95%, 50%, 0) 70%), linear-gradient(225deg, var.$growi-blue 10%, hsla(140, 90%, 50%, 0) 80%),
     linear-gradient(315deg, darken($color-gradient, 25%) 100%, hsla(35, 95%, 55%, 0) 70%);
 
-  .noLogin-header {
+  .nologin-header {
     background-color: rgba(white, 0.5);
 
     .logo {
@@ -97,7 +97,7 @@ $dropdown-link-active-bg: $bgcolor-dropdown-link-active;
     }
   }
 
-  .noLogin-dialog {
+  .nologin-dialog {
     background-color: rgba(white, 0.5);
   }
 
@@ -201,7 +201,7 @@ $dropdown-link-active-bg: $bgcolor-dropdown-link-active;
       darken($bgcolor-sidebar-context, 24%)
     );
     .grw-pagetree-triangle-btn {
-      @include mixins.button-outline-svg-icon-variant($gray-400, $primary);
+      @include mixins-buttons.button-outline-svg-icon-variant($gray-400, $primary);
     }
   }
 
@@ -310,7 +310,7 @@ $dropdown-link-active-bg: $bgcolor-dropdown-link-active;
 }
 
 /*
- * GROWI on-edit
+ * GROWI Editor
  */
 .grw-editor-navbar-bottom {
   background-color: $gray-50;
@@ -460,6 +460,13 @@ $dropdown-link-active-bg: $bgcolor-dropdown-link-active;
 }
 
 /*
+ * drawio
+ */
+.drawio-viewer {
+  border-color: $border-color-global;
+}
+
+/*
  * admin settings
  */
 .admin-setting-header {
@@ -474,8 +481,8 @@ $dropdown-link-active-bg: $bgcolor-dropdown-link-active;
 }
 
 /*
- * skelton
+ * skeleton
  */
-.grw-skelton {
+.grw-skeleton {
   background-color: darken($bgcolor-subnav, 10%);
 }

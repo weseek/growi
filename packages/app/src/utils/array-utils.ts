@@ -1,6 +1,6 @@
 // converts non-array item to array
 
-export const toArrayIfNot = <T = unknown>(item?: T): T[] => {
+export const toArrayIfNot = <T = unknown>(item?: T | T[]): T[] => {
   if (item == null) {
     return [];
   }

@@ -1,32 +1,47 @@
-import React, { useEffect } from 'react';
+import React, { ReactElement, ReactNode, useEffect } from 'react';
 
+import { isServer } from '@growi/core';
+import { NextPage } from 'next';
 import { appWithTranslation } from 'next-i18next';
 import { AppProps } from 'next/app';
-import { DndProvider } from 'react-dnd';
-import { HTML5Backend } from 'react-dnd-html5-backend';
-
-import '~/styles/style-next.scss';
-import '~/styles/style-themes.scss';
-// import InterceptorManager from '~/service/interceptor-manager';
+import { SWRConfig } from 'swr';
 
 import * as nextI18nConfig from '^/config/next-i18next.config';
 
-import { NextThemesProvider } from '~/stores/use-next-themes';
-
-import { useI18nextHMR } from '../services/i18next-hmr';
+import { ActivatePluginService } from '~/client/services/activate-plugin';
+import { useI18nextHMR } from '~/services/i18next-hmr';
 import {
-  useAppTitle, useConfidential, useGrowiTheme, useGrowiVersion, useSiteUrl,
-} from '../stores/context';
+  useAppTitle, useConfidential, useGrowiVersion, useSiteUrl, useIsDefaultLogo,
+} from '~/stores/context';
+import { SWRConfigValue, swrGlobalConfiguration } from '~/utils/swr-utils';
+
 
 import { CommonProps } from './utils/commons';
 import { registerTransformerForObjectId } from './utils/objectid-transformer';
-// import { useInterceptorManager } from '~/stores/interceptor';
+
+import '~/styles/style-app.scss';
+
 
 const isDev = process.env.NODE_ENV === 'development';
 
-type GrowiAppProps = AppProps & {
-  pageProps: CommonProps;
+const swrConfig: SWRConfigValue = {
+  ...swrGlobalConfiguration,
+  // set the request scoped cache provider in server
+  provider: isServer()
+    ? cache => new Map(cache)
+    : undefined,
 };
+
+
+// eslint-disable-next-line @typescript-eslint/ban-types
+export type NextPageWithLayout<P = {}, IP = P> = NextPage<P, IP> & {
+  getLayout?: (page: ReactElement) => ReactNode,
+}
+
+type GrowiAppProps = AppProps & {
+  Component: NextPageWithLayout,
+};
+
 // register custom serializer
 registerTransformerForObjectId();
 
@@ -37,20 +52,26 @@ function GrowiApp({ Component, pageProps }: GrowiAppProps): JSX.Element {
     import('bootstrap/dist/js/bootstrap');
   }, []);
 
+  useEffect(() => {
+    ActivatePluginService.activateAll();
+  }, []);
+
+
   const commonPageProps = pageProps as CommonProps;
   // useInterceptorManager(new InterceptorManager());
   useAppTitle(commonPageProps.appTitle);
   useSiteUrl(commonPageProps.siteUrl);
   useConfidential(commonPageProps.confidential);
-  useGrowiTheme(commonPageProps.theme);
   useGrowiVersion(commonPageProps.growiVersion);
+  useIsDefaultLogo(commonPageProps.isDefaultLogo);
+
+  // Use the layout defined at the page level, if available
+  const getLayout = Component.getLayout ?? (page => page);
 
   return (
-    <NextThemesProvider>
-      <DndProvider backend={HTML5Backend}>
-        <Component {...pageProps} />
-      </DndProvider>
-    </NextThemesProvider>
+    <SWRConfig value={swrConfig}>
+      {getLayout(<Component {...pageProps} />)}
+    </SWRConfig>
   );
 }
 

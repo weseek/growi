@@ -1,58 +1,73 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 
+import { PresetThemes, PresetThemesMetadatas } from '@growi/preset-themes';
 import { useTranslation } from 'next-i18next';
 
-import AdminCustomizeContainer from '~/client/services/AdminCustomizeContainer';
-import { toastSuccess, toastError } from '~/client/util/apiNotification';
 import { apiv3Put } from '~/client/util/apiv3-client';
-import { useGrowiTheme } from '~/stores/context';
+import { toastSuccess, toastError, toastWarning } from '~/client/util/toastr';
+import { useSWRxGrowiThemeSetting } from '~/stores/admin/customize';
 
-
-import { withUnstatedContainers } from '../../UnstatedUtils';
 import AdminUpdateButtonRow from '../Common/AdminUpdateButtonRow';
 
 import CustomizeThemeOptions from './CustomizeThemeOptions';
 
+
+// eslint-disable-next-line @typescript-eslint/ban-types
 type Props = {
-  adminCustomizeContainer: AdminCustomizeContainer
 }
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const CustomizeThemeSetting = (props: Props): JSX.Element => {
-
-  const { adminCustomizeContainer } = props;
-  const { data: currentTheme, mutate: mutateGrowiTheme } = useGrowiTheme();
   const { t } = useTranslation();
 
-  const selectedHandler = useCallback((themeName) => {
-    mutateGrowiTheme(themeName);
-  }, [mutateGrowiTheme]);
+  const { data, error } = useSWRxGrowiThemeSetting();
+  const [currentTheme, setCurrentTheme] = useState(data?.currentTheme);
+
+  useEffect(() => {
+    setCurrentTheme(data?.currentTheme);
+  }, [data?.currentTheme]);
+
+  const selectedHandler = useCallback((themeName: string) => {
+    setCurrentTheme(themeName);
+  }, []);
 
   const submitHandler = useCallback(async() => {
-    try {
-      if (currentTheme != null) {
-        await apiv3Put('/customize-setting/theme', {
-          themeType: currentTheme,
-        });
-      }
+    if (currentTheme == null) {
+      toastWarning('The selected theme is undefined');
+      return;
+    }
 
-      toastSuccess(t('toaster.update_successed', { target: t('admin:customize_settings.theme') }));
+    try {
+      await apiv3Put('/customize-setting/theme', {
+        theme: currentTheme,
+      });
+
+      toastSuccess(t('toaster.update_successed', { target: t('admin:customize_settings.theme'), ns: 'commons' }));
     }
     catch (err) {
       toastError(err);
     }
   }, [currentTheme, t]);
 
+  const availableThemes = data?.pluginThemesMetadatas == null
+    ? PresetThemesMetadatas
+    : PresetThemesMetadatas.concat(data.pluginThemesMetadatas);
+
+  const selectedTheme = availableThemes.find(t => t.name === currentTheme)?.name ?? PresetThemes.DEFAULT;
+
   return (
     <div className="row">
       <div className="col-12">
         <h2 className="admin-setting-header">{t('admin:customize_settings.theme')}</h2>
-        <CustomizeThemeOptions onSelected={selectedHandler} currentTheme={currentTheme} />
-        <AdminUpdateButtonRow onClick={submitHandler} disabled={adminCustomizeContainer.state.retrieveError != null} />
+        <CustomizeThemeOptions
+          onSelected={selectedHandler}
+          availableThemes={availableThemes}
+          selectedTheme={selectedTheme}
+        />
+        <AdminUpdateButtonRow onClick={submitHandler} disabled={error != null} />
       </div>
     </div>
   );
 };
 
-const CustomizeThemeSettingWrapper = withUnstatedContainers(CustomizeThemeSetting, [AdminCustomizeContainer]);
-
-export default CustomizeThemeSettingWrapper;
+export default CustomizeThemeSetting;

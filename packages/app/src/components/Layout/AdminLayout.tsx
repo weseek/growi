@@ -8,33 +8,26 @@ import { RawLayout } from './RawLayout';
 
 import styles from './Admin.module.scss';
 
-const AdminNotFoundPage = dynamic(() => import('../Admin/NotFoundPage').then(mod => mod.AdminNotFoundPage), { ssr: false });
+
+const AdminNavigation = dynamic(() => import('~/components/Admin/Common/AdminNavigation'), { ssr: false });
+const SystemVersion = dynamic(() => import('../SystemVersion'), { ssr: false });
+const HotkeysManager = dynamic(() => import('../Hotkeys/HotkeysManager'), { ssr: false });
 
 
 type Props = {
-  title: string
-  componentTitle: string
-  /**
-   * Set the current option of AdminNavigation
-   * Expected it is in ["home", "app", "security", "markdown", "customize", "importer", "export",
-   * "notification", 'global-notification', "users", "user-groups", "search"]
-   */
-  selectedNavOpt: string
+  componentTitle?: string
   children?: ReactNode
 }
 
 
 const AdminLayout = ({
-  children, title, selectedNavOpt, componentTitle,
+  children, componentTitle,
 }: Props): JSX.Element => {
 
-  const AdminNavigation = dynamic(() => import('~/components/Admin/Common/AdminNavigation'), { ssr: false });
-  const SystemVersion = dynamic(() => import('../SystemVersion'), { ssr: false });
-
   return (
-    <RawLayout title={title}>
+    <RawLayout>
       <div className={`admin-page ${styles['admin-page']}`}>
-        <GrowiNavbar />
+        <GrowiNavbar isGlobalSearchHidden={true} />
 
         <header className="py-0 container-fluid">
           <h1 className="title px-3">{componentTitle}</h1>
@@ -43,10 +36,10 @@ const AdminLayout = ({
           <div className="container-fluid">
             <div className="row">
               <div className="col-lg-3">
-                <AdminNavigation selected={selectedNavOpt} />
+                <AdminNavigation />
               </div>
               <div className="col-lg-9">
-                {children || <AdminNotFoundPage />}
+                {children}
               </div>
             </div>
           </div>
@@ -54,6 +47,9 @@ const AdminLayout = ({
 
         <SystemVersion />
       </div>
+
+      <HotkeysManager />
+
     </RawLayout>
   );
 };

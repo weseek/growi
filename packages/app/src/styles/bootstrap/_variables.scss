@@ -36,6 +36,12 @@ $red: #ff0a54 !default;
 
 $enable-shadows: true;
 
+// Links
+//
+// Style anchor elements.
+
+$link-hover-decoration: none !default;
+
 // Grid breakpoints
 //
 // Define the minimum dimensions at which your layout will change,
@@ -47,7 +53,7 @@ $grid-breakpoints: (
   md: 768px,
   lg: 992px,
   xl: 1200px,
-  2xl: 1480px,
+  xxl: 1480px,
 );
 
 // Grid containers
@@ -59,7 +65,7 @@ $container-max-widths: (
   md: 720px,
   lg: 960px,
   xl: 1140px,
-  2xl: 1320px,
+  xxl: 1320px,
 );
 
 //== Typography

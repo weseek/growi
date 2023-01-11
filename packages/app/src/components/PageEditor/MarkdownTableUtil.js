@@ -96,6 +96,11 @@ class MarkdownTableUtil {
     return MarkdownTable.fromMarkdownString(strFromBotToEot);
   }
 
+  getMarkdownTableFromLine(markdown, bol, eol) {
+    const tableLines = markdown.split(/\r\n|\r|\n/).slice(bol - 1, eol).join('\n');
+    return MarkdownTable.fromMarkdownString(tableLines);
+  }
+
   /**
    * return boolean value whether the cursor position is end of line
    */

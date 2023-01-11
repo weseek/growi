@@ -3,7 +3,6 @@ import React, {
 } from 'react';
 
 import { IRevisionHasId, isPopulated, getIdForRef } from '@growi/core';
-import dynamic from 'next/dynamic';
 import { Button } from 'reactstrap';
 
 import { toastError } from '~/client/util/apiNotification';
@@ -14,27 +13,30 @@ import { useCommentForCurrentPageOptions } from '~/stores/renderer';
 import { ICommentHasId, ICommentHasIdList } from '../interfaces/comment';
 import { useSWRxPageComment } from '../stores/comment';
 
+import { NotAvailableForGuest } from './NotAvailableForGuest';
 import { Comment } from './PageComment/Comment';
-import { CommentEditorProps } from './PageComment/CommentEditor';
-import { DeleteCommentModalProps } from './PageComment/DeleteCommentModal';
+import { CommentEditor } from './PageComment/CommentEditor';
+import { DeleteCommentModal } from './PageComment/DeleteCommentModal';
 import { ReplyComments } from './PageComment/ReplyComments';
-import { PageCommentSkelton } from './PageCommentSkelton';
 
 import styles from './PageComment.module.scss';
 
-const CommentEditor = dynamic<CommentEditorProps>(() => import('./PageComment/CommentEditor').then(mod => mod.CommentEditor), { ssr: false });
-const DeleteCommentModal = dynamic<DeleteCommentModalProps>(
-  () => import('./PageComment/DeleteCommentModal').then(mod => mod.DeleteCommentModal), { ssr: false },
+export const ROOT_ELEM_ID = 'page-comments' as const;
+
+// Always render '#page-comments' for MutationObserver of SearchResultContent
+const PageCommentRoot = (props: React.HTMLAttributes<HTMLDivElement>): JSX.Element => (
+  <div id={ROOT_ELEM_ID} {...props}>{props.children}</div>
 );
+
 
 export type PageCommentProps = {
   rendererOptions?: RendererOptions,
   pageId: string,
+  pagePath: string,
   revision: string | IRevisionHasId,
   currentUser: any,
   isReadOnly: boolean,
   titleAlign?: 'center' | 'left' | 'right',
-  highlightKeywords?: string[],
   hideIfEmpty?: boolean,
 }
 
@@ -42,7 +44,7 @@ export const PageComment: FC<PageCommentProps> = memo((props:PageCommentProps): 
 
   const {
     rendererOptions: rendererOptionsByProps,
-    pageId, revision, currentUser, highlightKeywords, isReadOnly, titleAlign, hideIfEmpty,
+    pageId, pagePath, revision, currentUser, isReadOnly, titleAlign, hideIfEmpty,
   } = props;
 
   const { data: comments, mutate } = useSWRxPageComment(pageId);
@@ -103,7 +105,7 @@ export const PageComment: FC<PageCommentProps> = memo((props:PageCommentProps): 
   }, []);
 
   if (hideIfEmpty && comments?.length === 0) {
-    return <></>;
+    return <PageCommentRoot />;
   }
 
   let commentTitleClasses = 'border-bottom py-3 mb-3';
@@ -113,17 +115,17 @@ export const PageComment: FC<PageCommentProps> = memo((props:PageCommentProps): 
 
   if (commentsFromOldest == null || commentsExceptReply == null || rendererOptions == null) {
     if (hideIfEmpty) {
-      return <></>;
+      return <PageCommentRoot />;
     }
     return (
-      <PageCommentSkelton commentTitleClasses={commentTitleClasses}/>
+      <></>
     );
   }
 
   const revisionId = getIdForRef(revision);
   const revisionCreatedAt = (isPopulated(revision)) ? revision.createdAt : undefined;
 
-  const generateCommentElement = (comment: ICommentHasId) => (
+  const commentElement = (comment: ICommentHasId) => (
     <Comment
       rendererOptions={rendererOptions}
       comment={comment}
@@ -131,13 +133,14 @@ export const PageComment: FC<PageCommentProps> = memo((props:PageCommentProps): 
       revisionCreatedAt={revisionCreatedAt as Date}
       currentUser={currentUser}
       isReadOnly={isReadOnly}
-      highlightKeywords={highlightKeywords}
+      pageId={pageId}
+      pagePath={pagePath}
       deleteBtnClicked={onClickDeleteButton}
       onComment={mutate}
     />
   );
 
-  const generateReplyCommentsElement = (replyComments: ICommentHasIdList) => (
+  const replyCommentsElement = (replyComments: ICommentHasIdList) => (
     <ReplyComments
       rendererOptions={rendererOptions}
       isReadOnly={isReadOnly}
@@ -145,32 +148,34 @@ export const PageComment: FC<PageCommentProps> = memo((props:PageCommentProps): 
       revisionCreatedAt={revisionCreatedAt as Date}
       currentUser={currentUser}
       replyList={replyComments}
+      pageId={pageId}
+      pagePath={pagePath}
       deleteBtnClicked={onClickDeleteButton}
       onComment={mutate}
     />
   );
 
   return (
-    <>
-      <div className={`${styles['page-comment-styles']} page-comments-row comment-list`}>
-        <div className="container-lg">
-          <div className="page-comments">
-            <h2 className={commentTitleClasses}><i className="icon-fw icon-bubbles"></i>Comments</h2>
-            <div className="page-comments-list" id="page-comments-list">
-              { commentsExceptReply.map((comment) => {
+    <PageCommentRoot className={`${styles['page-comment-styles']} page-comments-row comment-list`}>
+      <div className="container-lg">
+        <div className="page-comments">
+          <h2 className={commentTitleClasses}><i className="icon-fw icon-bubbles"></i>Comments</h2>
+          <div className="page-comments-list" id="page-comments-list">
+            { commentsExceptReply.map((comment) => {
 
-                const defaultCommentThreadClasses = 'page-comment-thread pb-5';
-                const hasReply: boolean = Object.keys(allReplies).includes(comment._id);
+              const defaultCommentThreadClasses = 'page-comment-thread pb-5';
+              const hasReply: boolean = Object.keys(allReplies).includes(comment._id);
 
-                let commentThreadClasses = '';
-                commentThreadClasses = hasReply ? `${defaultCommentThreadClasses} page-comment-thread-no-replies` : defaultCommentThreadClasses;
+              let commentThreadClasses = '';
+              commentThreadClasses = hasReply ? `${defaultCommentThreadClasses} page-comment-thread-no-replies` : defaultCommentThreadClasses;
 
-                return (
-                  <div key={comment._id} className={commentThreadClasses}>
-                    {generateCommentElement(comment)}
-                    {hasReply && generateReplyCommentsElement(allReplies[comment._id])}
-                    {(!isReadOnly && !showEditorIds.has(comment._id)) && (
-                      <div className="text-right">
+              return (
+                <div key={comment._id} className={commentThreadClasses}>
+                  {commentElement(comment)}
+                  {hasReply && replyCommentsElement(allReplies[comment._id])}
+                  {(!isReadOnly && !showEditorIds.has(comment._id)) && (
+                    <div className="d-flex flex-row-reverse">
+                      <NotAvailableForGuest>
                         <Button
                           outline
                           color="secondary"
@@ -182,26 +187,27 @@ export const PageComment: FC<PageCommentProps> = memo((props:PageCommentProps): 
                         >
                           <i className="icon-fw icon-action-undo"></i> Reply
                         </Button>
-                      </div>
-                    )}
-                    {(!isReadOnly && showEditorIds.has(comment._id)) && (
-                      <CommentEditor
-                        pageId={pageId}
-                        replyTo={comment._id}
-                        onCancelButtonClicked={() => {
-                          removeShowEditorId(comment._id);
-                        }}
-                        onCommentButtonClicked={() => {
-                          removeShowEditorId(comment._id);
-                          mutate();
-                        }}
-                      />
-                    )}
-                  </div>
-                );
+                      </NotAvailableForGuest>
+                    </div>
+                  )}
+                  {(!isReadOnly && showEditorIds.has(comment._id)) && (
+                    <CommentEditor
+                      pageId={pageId}
+                      replyTo={comment._id}
+                      onCancelButtonClicked={() => {
+                        removeShowEditorId(comment._id);
+                      }}
+                      onCommentButtonClicked={() => {
+                        removeShowEditorId(comment._id);
+                        mutate();
+                      }}
+                      revisionId={revisionId}
+                    />
+                  )}
+                </div>
+              );
 
-              })}
-            </div>
+            })}
           </div>
         </div>
       </div>
@@ -214,7 +220,7 @@ export const PageComment: FC<PageCommentProps> = memo((props:PageCommentProps): 
           confirmToDelete={onDeleteComment}
         />
       )}
-    </>
+    </PageCommentRoot>
   );
 });
 

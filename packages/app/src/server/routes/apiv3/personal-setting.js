@@ -117,7 +117,6 @@ module.exports = (crowi) => {
       body('theme').optional().isString(),
       body('keymapMode').optional().isString(),
       body('styleActiveLine').optional().isBoolean(),
-      body('renderDrawioInRealtime').optional().isBoolean(),
       body('autoFormatMarkdownTable').optional().isBoolean(),
       body('textlintSettings.neverAskBeforeDownloadLargeFiles').optional().isBoolean(),
       body('textlintSettings.textlintRules.*.name').optional().isString(),
@@ -539,12 +538,12 @@ module.exports = (crowi) => {
     const { body } = req;
 
     const {
-      theme, keymapMode, styleActiveLine, renderDrawioInRealtime, autoFormatMarkdownTable,
+      theme, keymapMode, styleActiveLine, autoFormatMarkdownTable,
       textlintSettings,
     } = body;
 
     const document = {
-      theme, keymapMode, styleActiveLine, renderDrawioInRealtime, autoFormatMarkdownTable,
+      theme, keymapMode, styleActiveLine, autoFormatMarkdownTable,
     };
 
     if (textlintSettings != null) {

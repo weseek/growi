@@ -2,8 +2,8 @@ import {
   FormEventHandler, memo, useCallback, useState,
 } from 'react';
 
-import i18next from 'i18next';
-import { useTranslation, i18n } from 'next-i18next';
+import { useTranslation } from 'next-i18next';
+import { useRouter } from 'next/router';
 
 import { i18n as i18nConfig } from '^/config/next-i18next.config';
 
@@ -11,10 +11,13 @@ import { toastError } from '~/client/util/apiNotification';
 import { apiv3Post } from '~/client/util/apiv3-client';
 
 const InstallerForm = memo((): JSX.Element => {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
+
+  const router = useRouter();
 
   const [isValidUserName, setValidUserName] = useState(true);
   const [isSubmittingDisabled, setSubmittingDisabled] = useState(false);
+  const [currentLocale, setCurrentLocale] = useState('en_US');
 
   const checkUserName = useCallback(async(event) => {
     const axios = require('axios').create({
@@ -27,6 +30,11 @@ const InstallerForm = memo((): JSX.Element => {
     const res = await axios.get('/_api/v3/check-username', { params: { username: event.target.value } });
     setValidUserName(res.data.valid);
   }, []);
+
+  const onClickLanguageItem = useCallback((locale) => {
+    i18n.changeLanguage(locale);
+    setCurrentLocale(locale);
+  }, [i18n]);
 
   const submitHandler: FormEventHandler = useCallback(async(e: any) => {
     e.preventDefault();
@@ -59,13 +67,13 @@ const InstallerForm = memo((): JSX.Element => {
         name,
         email,
         password,
-        'app:globalLang': formData['registerForm[app:globalLang]'].value,
+        'app:globalLang': currentLocale,
       },
     };
 
     try {
       await apiv3Post('/installer', data);
-      window.location.href = '/';
+      router.push('/');
     }
     catch (errs) {
       const err = errs[0];
@@ -73,12 +81,12 @@ const InstallerForm = memo((): JSX.Element => {
 
       if (code === 'failed_to_login_after_install') {
         toastError(t('installer.failed_to_login_after_install'));
-        setTimeout(() => { window.location.href = '/login' }, 700); // Wait 700 ms to show toastr
+        setTimeout(() => { router.push('/login') }, 700); // Wait 700 ms to show toastr
       }
 
       toastError(t('installer.failed_to_install'));
     }
-  }, [isSubmittingDisabled, t]);
+  }, [isSubmittingDisabled, currentLocale, router, t]);
 
   const hasErrorClass = isValidUserName ? '' : ' has-error';
   const unavailableUserId = isValidUserName
@@ -86,7 +94,7 @@ const InstallerForm = memo((): JSX.Element => {
     : <span><i className="icon-fw icon-ban" />{ t('installer.unavaliable_user_id') }</span>;
 
   return (
-    <div data-testid="installerForm" className={`noLogin-dialog p-3 mx-auto${hasErrorClass}`}>
+    <div data-testid="installerForm" className={`nologin-dialog p-3 mx-auto${hasErrorClass}`}>
       <div className="row">
         <div className="col-md-12">
           <p className="alert alert-success">
@@ -98,11 +106,13 @@ const InstallerForm = memo((): JSX.Element => {
       <div className="row">
         <form role="form" id="register-form" className="col-md-12" onSubmit={submitHandler}>
           <div className="dropdown mb-3">
-            <div className="d-flex dropdown-with-icon">
-              <i className="icon-bubbles border-0 rounded-0" />
+            <div className="input-group">
+              <div className="input-group-prepend dropdown-with-icon">
+                <i className="input-group-text icon-bubbles border-0 rounded-0" />
+              </div>
               <button
                 type="button"
-                className="btn btn-secondary dropdown-toggle text-right w-100 border-0 shadow-none"
+                className="btn btn-secondary dropdown-toggle form-control text-right rounded-right"
                 id="dropdownLanguage"
                 data-testid="dropdownLanguage"
                 data-toggle="dropdown"
@@ -132,7 +142,7 @@ const InstallerForm = memo((): JSX.Element => {
                         data-testid={`dropdownLanguageMenu-${locale}`}
                         className="dropdown-item"
                         type="button"
-                        onClick={() => { i18next.changeLanguage(locale) }}
+                        onClick={() => { onClickLanguageItem(locale) }}
                       >
                         {fixedT?.('meta.display_name')}
                       </button>

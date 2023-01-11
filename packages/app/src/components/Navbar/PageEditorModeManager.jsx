@@ -27,6 +27,7 @@ const PageEditorModeButtonWrapper = React.memo(({
       className={classNames.join(' ')}
       onClick={() => { onClick(targetMode) }}
       id={id}
+      data-testid={`${targetMode}-button`}
     >
       <span className="d-flex flex-column flex-md-row justify-content-center">
         <span className="grw-page-editor-mode-manager-icon mr-md-1">{icon}</span>
@@ -109,11 +110,6 @@ function PageEditorModeManager(props) {
           </>
         )}
       </div>
-      {isBtnDisabled && (
-        <UncontrolledTooltip placement="top" target="grw-page-editor-mode-manager" fade={false}>
-          {t('Not available for guest')}
-        </UncontrolledTooltip>
-      )}
     </>
   );
 

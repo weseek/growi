@@ -12,7 +12,11 @@ export const useSWRxUsersList = (userIds: string[]): SWRResponse<IUserHasId[], E
     (endpoint, userIds) => apiv3Get(endpoint, { userIds: userIds.join(',') }).then((response) => {
       return response.data.users;
     }),
-    { use: [checkAndUpdateImageUrlCached] },
+    {
+      use: [checkAndUpdateImageUrlCached],
+      revalidateOnFocus: false,
+      revalidateOnReconnect: false,
+    },
   );
 };
 

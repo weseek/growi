@@ -49,7 +49,7 @@ UserRemoveButton.propTypes = {
 };
 
 const UserRemoveButtonWrapperFC = (props) => {
-  const { t } = useTranslation();
+  const { t } = useTranslation('admin');
   return <UserRemoveButton t={t} {...props} />;
 };
 

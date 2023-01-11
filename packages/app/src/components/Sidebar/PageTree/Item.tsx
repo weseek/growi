@@ -14,6 +14,7 @@ import { bookmark, unbookmark, resumeRenameOperation } from '~/client/services/p
 import { toastWarning, toastError, toastSuccess } from '~/client/util/apiNotification';
 import { apiv3Put, apiv3Post } from '~/client/util/apiv3-client';
 import TriangleIcon from '~/components/Icons/TriangleIcon';
+import { NotAvailableForGuest } from '~/components/NotAvailableForGuest';
 import {
   IPageHasId, IPageInfoAll, IPageToDeleteWithMeta,
 } from '~/interfaces/page';
@@ -40,7 +41,7 @@ interface ItemProps {
   targetPathOrId?: Nullable<string>
   isOpen?: boolean
   isEnabledAttachTitleHeader?: boolean
-  onRenamed?(): void
+  onRenamed?(fromPath: string | undefined, toPath: string): void
   onClickDuplicateMenuItem?(pageToDuplicate: IPageForPageDuplicateModal): void
   onClickDeleteMenuItem?(pageToDelete: IPageToDeleteWithMeta): void
 }
@@ -187,7 +188,7 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
       await mutateChildren();
 
       if (onRenamed != null) {
-        onRenamed();
+        onRenamed(page.path, newPagePath);
       }
 
       // force open
@@ -288,7 +289,7 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
       });
 
       if (onRenamed != null) {
-        onRenamed();
+        onRenamed(page.path, newPagePath);
       }
 
       toastSuccess(t('renamed_pages', { path: page.path }));
@@ -382,11 +383,6 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
   const pathRecoveryMenuItemClickHandler = async(pageId: string): Promise<void> => {
     try {
       await resumeRenameOperation(pageId);
-
-      if (onRenamed != null) {
-        onRenamed();
-      }
-
       toastSuccess(t('page_operation.paths_recovered'));
     }
     catch {
@@ -427,6 +423,7 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
   return (
     <div
       id={`pagetree-item-${page._id}`}
+      data-testid="grw-pagetree-item-container"
       className={`grw-pagetree-item-container ${isOver ? 'grw-pagetree-is-over' : ''}
     ${shouldHide ? 'd-none' : ''}`}
     >
@@ -473,12 +470,13 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
                   </UncontrolledTooltip>
                 </>
               )}
-
-              <Link href={`/${page._id}`} prefetch={false}>
-                <a className="grw-pagetree-title-anchor flex-grow-1">
-                  <p className={`text-truncate m-auto ${page.isEmpty && 'grw-sidebar-text-muted'}`}>{nodePath.basename(page.path ?? '') || '/'}</p>
-                </a>
-              </Link>
+              { page != null && page.path != null && page._id != null && (
+                <Link href={pathUtils.returnPathForURL(page.path, page._id)} prefetch={false}>
+                  <a className="grw-pagetree-title-anchor flex-grow-1">
+                    <p className={`text-truncate m-auto ${page.isEmpty && 'grw-sidebar-text-muted'}`}>{nodePath.basename(page.path ?? '') || '/'}</p>
+                  </a>
+                </Link>
+              )}
             </>
           )}
         {descendantCount > 0 && !isRenameInputShown && (
@@ -486,34 +484,40 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
             <CountBadge count={descendantCount} />
           </div>
         )}
-        <div className="grw-pagetree-control d-flex">
-          <PageItemControl
-            pageId={page._id}
-            isEnableActions={isEnableActions}
-            onClickBookmarkMenuItem={bookmarkMenuItemClickHandler}
-            onClickDuplicateMenuItem={duplicateMenuItemClickHandler}
-            onClickRenameMenuItem={renameMenuItemClickHandler}
-            onClickDeleteMenuItem={deleteMenuItemClickHandler}
-            onClickPathRecoveryMenuItem={pathRecoveryMenuItemClickHandler}
-            isInstantRename
-            // Todo: It is wanted to find a better way to pass operationProcessData to PageItemControl
-            operationProcessData={page.processData}
-          >
-            {/* pass the color property to reactstrap dropdownToggle props. https://6-4-0--reactstrap.netlify.app/components/dropdowns/  */}
-            <DropdownToggle color="transparent" className="border-0 rounded btn-page-item-control p-0 grw-visible-on-hover mr-1">
-              <i className="icon-options fa fa-rotate-90 p-1"></i>
-            </DropdownToggle>
-          </PageItemControl>
-          {!pagePathUtils.isUsersTopPage(page.path ?? '') && (
+        <NotAvailableForGuest>
+          <div className="grw-pagetree-control d-flex">
+            <PageItemControl
+              pageId={page._id}
+              isEnableActions={isEnableActions}
+              onClickBookmarkMenuItem={bookmarkMenuItemClickHandler}
+              onClickDuplicateMenuItem={duplicateMenuItemClickHandler}
+              onClickRenameMenuItem={renameMenuItemClickHandler}
+              onClickDeleteMenuItem={deleteMenuItemClickHandler}
+              onClickPathRecoveryMenuItem={pathRecoveryMenuItemClickHandler}
+              isInstantRename
+              // Todo: It is wanted to find a better way to pass operationProcessData to PageItemControl
+              operationProcessData={page.processData}
+            >
+              {/* pass the color property to reactstrap dropdownToggle props. https://6-4-0--reactstrap.netlify.app/components/dropdowns/  */}
+              <DropdownToggle color="transparent" className="border-0 rounded btn-page-item-control p-0 grw-visible-on-hover mr-1">
+                <i id='option-button-in-page-tree' className="icon-options fa fa-rotate-90 p-1"></i>
+              </DropdownToggle>
+            </PageItemControl>
+          </div>
+        </NotAvailableForGuest>
+
+        {!pagePathUtils.isUsersTopPage(page.path ?? '') && (
+          <NotAvailableForGuest>
             <button
+              id='page-create-button-in-page-tree'
               type="button"
               className="border-0 rounded btn btn-page-item-control p-0 grw-visible-on-hover"
               onClick={onClickPlusButton}
             >
               <i className="icon-plus d-block p-0" />
             </button>
-          )}
-        </div>
+          </NotAvailableForGuest>
+        )}
       </li>
 
       {isEnableActions && isNewPageInputShown && (

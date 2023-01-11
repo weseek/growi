@@ -77,6 +77,11 @@ class ScrollSyncHelper {
     }
 
     const hiElement = lines[hi];
+
+    if (hiElement == null) {
+      return {};
+    }
+
     if (hi >= 1 && hiElement.element.getBoundingClientRect().top > position) {
       const loElement = lines[lo];
       const bounds = loElement.element.getBoundingClientRect();
@@ -95,7 +100,7 @@ class ScrollSyncHelper {
 
   getEditorLineNumberForPageOffset(parentElement, offset) {
     const { previous, next } = this.getLineElementsAtPageOffset(parentElement, offset);
-    if (previous) {
+    if (previous != null) {
       if (next) {
         const betweenProgress = (
           offset - parentElement.scrollTop - previous.element.getBoundingClientRect().top)

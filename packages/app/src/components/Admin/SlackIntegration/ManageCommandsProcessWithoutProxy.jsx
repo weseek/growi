@@ -1,8 +1,8 @@
 import React, { useCallback, useEffect, useState } from 'react';
 
 import { defaultSupportedCommandsNameForBroadcastUse, defaultSupportedCommandsNameForSingleUse, defaultSupportedSlackEventActions } from '@growi/slack';
-import PropTypes from 'prop-types';
 import { useTranslation } from 'next-i18next';
+import PropTypes from 'prop-types';
 
 import { apiv3Put } from '~/client/util/apiv3-client';
 import loggerFactory from '~/utils/logger';
@@ -207,7 +207,7 @@ const ManageCommandsProcessWithoutProxy = ({ commandPermission, eventActionsPerm
         commandPermission: editingCommandPermission,
         eventActionsPermission: editingEventActionsPermission,
       });
-      toastSuccess(t('toaster.update_successed', { target: 'the permission for commands' }));
+      toastSuccess(t('toaster.update_successed', { target: 'the permission for commands', ns: 'commons' }));
     }
     catch (err) {
       toastError(err);

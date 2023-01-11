@@ -1,19 +1,20 @@
 import {
   NextPage, GetServerSideProps, GetServerSidePropsContext,
 } from 'next';
+import { useTranslation } from 'next-i18next';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import dynamic from 'next/dynamic';
 import Head from 'next/head';
 
-import { BasicLayout } from '~/components/Layout/BasicLayout';
-import { CrowiRequest } from '~/interfaces/crowi-request';
-import { RendererConfig } from '~/interfaces/services/renderer';
-import { ISidebarConfig } from '~/interfaces/sidebar-config';
-import { IUser, IUserHasId } from '~/interfaces/user';
-import { IUserUISettings } from '~/interfaces/user-ui-settings';
-import UserUISettings from '~/server/models/user-ui-settings';
+import { DrawioViewerScript } from '~/components/Script/DrawioViewerScript';
+import type { CrowiRequest } from '~/interfaces/crowi-request';
+import type { RendererConfig } from '~/interfaces/services/renderer';
+import type { ISidebarConfig } from '~/interfaces/sidebar-config';
+import type { IUser, IUserHasId } from '~/interfaces/user';
+import type { IUserUISettings } from '~/interfaces/user-ui-settings';
+import type { UserUISettingsModel } from '~/server/models/user-ui-settings';
 import {
-  useCsrfToken, useCurrentUser, useIsSearchPage, useIsSearchScopeChildrenAsDefault,
+  useCsrfToken, useCurrentUser, useDrawioUri, useIsSearchPage, useIsSearchScopeChildrenAsDefault,
   useIsSearchServiceConfigured, useIsSearchServiceReachable, useRendererConfig,
 } from '~/stores/context';
 import {
@@ -22,7 +23,7 @@ import {
 } from '~/stores/ui';
 
 import {
-  CommonProps, getNextI18NextConfig, getServerSideCommonProps, useCustomTitle,
+  CommonProps, getNextI18NextConfig, getServerSideCommonProps, generateCustomTitle,
 } from './utils/commons';
 
 const SearchResultLayout = dynamic(() => import('~/components/Layout/SearchResultLayout'), { ssr: false });
@@ -33,6 +34,8 @@ type Props = CommonProps & {
   isSearchServiceConfigured: boolean,
   isSearchServiceReachable: boolean,
   isSearchScopeChildrenAsDefault: boolean,
+
+  drawioUri: string | null,
 
   // UI
   userUISettings?: IUserUISettings
@@ -45,6 +48,8 @@ type Props = CommonProps & {
 };
 
 const PrivateLegacyPage: NextPage<Props> = (props: Props) => {
+  const { t } = useTranslation();
+
   const { userUISettings } = props;
 
   const PrivateLegacyPages = dynamic(() => import('~/components/PrivateLegacyPages'), { ssr: false });
@@ -60,6 +65,8 @@ const PrivateLegacyPage: NextPage<Props> = (props: Props) => {
   useIsSearchServiceReachable(props.isSearchServiceReachable);
   useIsSearchScopeChildrenAsDefault(props.isSearchScopeChildrenAsDefault);
 
+  useDrawioUri(props.drawioUri);
+
   // UserUISettings
   usePreferDrawerModeByUser(userUISettings?.preferDrawerModeByUser ?? props.sidebarConfig.isSidebarDrawerMode);
   usePreferDrawerModeOnEditByUser(userUISettings?.preferDrawerModeOnEditByUser);
@@ -70,16 +77,17 @@ const PrivateLegacyPage: NextPage<Props> = (props: Props) => {
   // render config
   useRendererConfig(props.rendererConfig);
 
+  const title = generateCustomTitle(props, t('private_legacy_pages.title'));
+
   return (
     <>
       <Head>
-        {/*
-        {renderScriptTagByName('drawio-viewer')}
-        {renderScriptTagByName('highlight-addons')}
-        */}
+        <title>{title}</title>
       </Head>
 
-      <SearchResultLayout title={useCustomTitle(props, 'GROWI')}>
+      <DrawioViewerScript />
+
+      <SearchResultLayout>
         <div id="private-regacy-pages">
           <PrivateLegacyPages />
         </div>
@@ -89,9 +97,12 @@ const PrivateLegacyPage: NextPage<Props> = (props: Props) => {
 };
 
 async function injectUserUISettings(context: GetServerSidePropsContext, props: Props): Promise<void> {
+  const { model: mongooseModel } = await import('mongoose');
+
   const req = context.req as CrowiRequest<IUserHasId & any>;
   const { user } = req;
 
+  const UserUISettings = mongooseModel('UserUISettings') as UserUISettingsModel;
   const userUISettings = user == null ? null : await UserUISettings.findOne({ user: user._id }).exec();
   if (userUISettings != null) {
     props.userUISettings = userUISettings.toObject();
@@ -106,6 +117,8 @@ async function injectServerConfigurations(context: GetServerSidePropsContext, pr
   props.isSearchServiceConfigured = searchService.isConfigured;
   props.isSearchServiceReachable = searchService.isReachable;
   props.isSearchScopeChildrenAsDefault = configManager.getConfig('crowi', 'customize:isSearchScopeChildrenAsDefault');
+
+  props.drawioUri = configManager.getConfig('crowi', 'app:drawioUri');
 
   props.sidebarConfig = {
     isSidebarDrawerMode: configManager.getConfig('crowi', 'customize:isSidebarDrawerMode'),
@@ -122,7 +135,7 @@ async function injectServerConfigurations(context: GetServerSidePropsContext, pr
     blockdiagUri: process.env.BLOCKDIAG_URI ?? null,
 
     // XSS Options
-    isEnabledXssPrevention: configManager.getConfig('markdown', 'markdown:xss:isEnabledPrevention'),
+    isEnabledXssPrevention: configManager.getConfig('markdown', 'markdown:rehypeSanitize:isEnabledPrevention'),
     attrWhiteList: crowi.xssService.getAttrWhiteList(),
     tagWhiteList: crowi.xssService.getTagWhiteList(),
     highlightJsStyleBorder: crowi.configManager.getConfig('crowi', 'customize:highlightJsStyleBorder'),

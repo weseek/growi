@@ -1,10 +1,5 @@
 @use '~/styles/variables' as var;
 @use '~/styles/bootstrap/init' as bs;
-@use '~/styles/atoms/mixins' as atm;
-
-.code-inline {
-  @include atm.code-inline;
-}
 
 .code-highlighted-title {
   position: absolute;
@@ -16,5 +11,5 @@
   color: bs.$gray-900;
   background: bs.$gray-300;
   border-radius: bs.$border-radius;
-  opacity: 0.6;
+  opacity: 0.8;
 }
