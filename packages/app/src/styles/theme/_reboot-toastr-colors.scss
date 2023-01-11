@@ -1,15 +1,15 @@
 .toast-success {
-  background-color: $success;
+  background-color: var(--success);
 }
 
 .toast-error {
-  background-color: $danger;
+  background-color: var(--danger);
 }
 
 .toast-info {
-  background-color: $info;
+  background-color: var(--info);
 }
 
 .toast-warning {
-  background-color: $warning;
+  background-color: var(--warning);
 }

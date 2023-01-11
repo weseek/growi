@@ -9,13 +9,14 @@ import { useRouter } from 'next/router';
 
 import { ISelectableAll, ISelectableAndIndeterminatable } from '~/client/interfaces/selectable-all';
 import { IFormattedSearchResult } from '~/interfaces/search';
-import { useIsSearchServiceReachable } from '~/stores/context';
+import { useIsSearchServiceReachable, useShowPageLimitationL } from '~/stores/context';
 import { ISearchConditions, ISearchConfigurations, useSWRxSearch } from '~/stores/search';
 
+import { NotAvailableForGuest } from './NotAvailableForGuest';
 import PaginationWrapper from './PaginationWrapper';
 import { OperateAllControl } from './SearchPage/OperateAllControl';
 import SearchControl from './SearchPage/SearchControl';
-import { IReturnSelectedPageIds, SearchPageBase, usePageDeleteModalForBulkDeletion } from './SearchPage2/SearchPageBase';
+import { IReturnSelectedPageIds, SearchPageBase, usePageDeleteModalForBulkDeletion } from './SearchPage/SearchPageBase';
 
 
 // TODO: replace with "customize:showPageLimitationS"
@@ -62,7 +63,7 @@ const SearchResultListHead = React.memo((props: SearchResultListHeadProps): JSX.
         <span className="ml-3">{`${leftNum}-${rightNum}`} / {total}</span>
         { took != null && (
           // blackout 70px rectangle in VRT
-          <span data-hide-in-vrt className="ml-3 text-muted d-inline-block" style={{ minWidth: '70px' }}>({took}ms)</span>
+          <span data-vrt-blackout className="ml-3 text-muted d-inline-block" style={{ minWidth: '70px' }}>({took}ms)</span>
         ) }
       </div>
       <div className="input-group flex-nowrap search-result-select-group ml-auto d-md-flex d-none">
@@ -89,6 +90,7 @@ SearchResultListHead.displayName = 'SearchResultListHead';
 
 export const SearchPage = (): JSX.Element => {
   const { t } = useTranslation();
+  const { data: showPageLimitationL } = useShowPageLimitationL();
   const router = useRouter();
 
   // parse URL Query
@@ -97,9 +99,8 @@ export const SearchPage = (): JSX.Element => {
 
   const [keyword, setKeyword] = useState<string>(initQ);
   const [offset, setOffset] = useState<number>(0);
-  const [limit, setLimit] = useState<number>(INITIAL_PAGIONG_SIZE);
+  const [limit, setLimit] = useState<number>(showPageLimitationL ?? INITIAL_PAGIONG_SIZE);
   const [configurationsByControl, setConfigurationsByControl] = useState<Partial<ISearchConfigurations>>({});
-
   const selectAllControlRef = useRef<ISelectableAndIndeterminatable|null>(null);
   const searchPageBaseRef = useRef<ISelectableAll & IReturnSelectedPageIds|null>(null);
 
@@ -183,21 +184,23 @@ export const SearchPage = (): JSX.Element => {
     const isDisabled = hitsCount === 0;
 
     return (
-      <OperateAllControl
-        ref={selectAllControlRef}
-        isCheckboxDisabled={isDisabled}
-        onCheckboxChanged={selectAllCheckboxChangedHandler}
-      >
-        <button
-          type="button"
-          className="btn btn-outline-danger text-nowrap border-0 px-2"
-          disabled={isDisabled}
-          onClick={deleteAllButtonClickedHandler}
+      <NotAvailableForGuest>
+        <OperateAllControl
+          ref={selectAllControlRef}
+          isCheckboxDisabled={isDisabled}
+          onCheckboxChanged={selectAllCheckboxChangedHandler}
         >
-          <i className="icon-fw icon-trash"></i>
-          {t('search_result.delete_all_selected_page')}
-        </button>
-      </OperateAllControl>
+          <button
+            type="button"
+            className="btn btn-outline-danger text-nowrap border-0 px-2"
+            disabled={isDisabled}
+            onClick={deleteAllButtonClickedHandler}
+          >
+            <i className="icon-fw icon-trash"></i>
+            {t('search_result.delete_all_selected_page')}
+          </button>
+        </OperateAllControl>
+      </NotAvailableForGuest>
     );
   }, [deleteAllButtonClickedHandler, hitsCount, selectAllCheckboxChangedHandler, t]);
 

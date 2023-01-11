@@ -28,7 +28,6 @@
   "administrator": "Admin",
   "Tag": "Tag",
   "Tags": "Tags",
-  "New": "New",
   "Close": "Close",
   "Shortcuts": "Shortcuts",
   "CustomSidebar": "Custom Sidebar",
@@ -36,7 +35,6 @@
   "add": "Add",
   "Undo": "Undo",
   "Article": "Article",
-  "Page": "Page",
   "Page Path": "Page path",
   "Category": "Category",
   "User": "User",
@@ -62,6 +60,7 @@
   "Presentation Mode": "Presentation",
   "The end": "The end",
   "Not available for guest": "Not available for guest",
+  "Not available in this version": "Not available in this version",
   "No users have liked this yet": "No users have liked this yet",
   "No users have liked this yet.": "No users have liked this yet.",
   "No users have bookmarked yet": "No users have bookmarked yet",
@@ -78,7 +77,6 @@
   "username": "Username",
   "Created": "Created",
   "Last updated": "Updated",
-  "last_login": "Last login",
   "Share": "Share",
   "Markdown Link": "Markdown Link",
   "Create/Edit Template": "Create/Edit template page",
@@ -87,6 +85,7 @@
   "No diff": "No diff",
   "User ID": "User ID",
   "User Information": "User information",
+  "User Activation": "User Activation",
   "Basic Info": "Basic info",
   "Name": "Name",
   "Email": "Email",
@@ -101,8 +100,6 @@
   "Updated": "Updated",
   "Upload new image": "Upload new image",
   "Connected": "Connected",
-  "Show": "Show",
-  "Hide": "Hide",
   "Loading": "Loading...",
   "Disclose E-mail": "Disclose E-mail",
   "page exists": "this page already exists",
@@ -115,13 +112,10 @@
   "Create under": "Create page under below:",
   "V5 Page Migration": "Convert To V5 Compatibility",
   "GROWI.5.0_new_schema": "GROWI.5.0 new schema",
-  "See_more_detail_on_new_schema": "See more detail on <a href='#'>{{url}}</a> <i class='icon-share-alt'></i> ",
-  "Site URL settings": "Site URL settings",
+  "See_more_detail_on_new_schema": "See more detail on <a href='https://docs.growi.org/en/admin-guide/upgrading/50x.html#about-the-new-v5-compatible-format' target='_blank'>{{title}}</a> <i class='icon-share-alt'></i> ",
   "external_account_management": "External Account Management",
   "UserGroup": "UserGroup",
   "Basic Settings": "Basic Settings",
-  "Basic authentication": "Basic authentication",
-  "Register limitation": "Register limitation",
   "The contents entered here will be shown in the header etc": "The contents entered here will be shown in the header etc",
   "Public": "Public",
   "Anyone with the link": "Anyone with the link",
@@ -129,8 +123,6 @@
   "Only me": "Only me",
   "Only inside the group": "Only inside the group",
   "page_list": "Page List",
-  "scope_of_page_disclosure": "Scope of page disclosure",
-  "set_point": "Set point",
   "Reselect the group": "Reselect the group",
   "Shareable link": "Shareable link",
   "The whitelist of registration permission E-mail address": "The whitelist of registration permission E-mail address",
@@ -144,7 +136,6 @@
   "edited this page": "edited this page.",
   "List Drafts": "Drafts",
   "Deleted Pages": "Deleted Pages",
-  "Sign out": "Logout",
   "Disassociate": "Disassociate",
   "No bookmarks yet": "No bookmarks yet",
   "add_bookmark": "Add to Bookmarks",
@@ -161,33 +152,20 @@
   "not_allowed_to_see_this_page": "You cannot see this page",
   "Confirm": "Confirm",
   "Successfully requested": "Successfully requested.",
-  "personal_dropdown": {
-    "home": "Home",
-    "settings": "Settings",
-    "color_mode": "Color mode",
-    "sidebar_mode": "Sidebar mode",
-    "sidebar_mode_editor": "Sidebar mode on editor",
-    "use_os_settings": "Use OS settings"
-  },
   "form_validation": {
     "error_message": "Some values ​​are incorrect",
     "required": "%s is required",
     "invalid_syntax": "The syntax of %s is invalid.",
     "title_required": "Title is required."
   },
-  "not_found_page": {
-    "Create Page": "Create Page",
-    "page_not_exist": "This page does not exist.",
-    "page_not_exist_alert": "This page does not exist. Please create a new page."
-  },
   "not_creatable_page": {
     "could_not_creata_path": "Couldn't create path."
   },
   "custom_navigation": {
-    "no_page_list": "There are no pages under this page.",
-    "link_sharing_is_disabled": "Link sharing is disabled."
+    "no_page_list": "There are no pages under this page."
   },
   "installer": {
+    "title": "Installer",
     "setup": "Setup",
     "create_initial_account": "Create an initial account",
     "initial_account_will_be_administrator_automatically": "The initial account will be administrator automatically.",
@@ -241,10 +219,6 @@
     "Shere this page link to public": "Shere this page link to public",
     "share_link_list": "Share link list",
     "share_link_management": "Share Link Management",
-    "No_share_links":"No share links",
-    "Share Link": "Share Link",
-    "Page Path": "Page Path",
-    "share_link_notice":"remove all share links",
     "delete_all_share_links":"Delete all share links",
     "expire": "Expiration",
     "Days": "Days",
@@ -254,30 +228,13 @@
     "Unlimited": "unlimited",
     "Issue": "Issue",
     "share_settings" :"Share settings",
-    "Invalid_Number_of_Date" : "You entered invalid value"
+    "Invalid_Number_of_Date" : "You entered invalid value",
+    "link_sharing_is_disabled": "Link sharing is disabled"
   },
   "API Settings": "API settings",
   "API Token Settings": "API token settings",
   "Current API Token": "Current API token",
   "Update API Token": "Update API token",
-  "header_search_box": {
-    "label": {
-      "All pages": "All pages",
-      "This tree": "This tree"
-    },
-    "item_label": {
-      "All pages": "All pages",
-      "This tree": "Only children of this tree"
-    }
-  },
-  "in_app_notification": {
-    "notification_list": "In-App Notification List",
-    "see_all": "See All",
-    "no_notification": "You don't have any notificatios.",
-    "all": "All",
-    "unopend": "Unread",
-    "mark_all_as_read": "Mark all as read"
-  },
   "in_app_notification_settings": {
     "in_app_notification_settings": "In-App Notification Settings",
     "subscribe_settings": "Settings to automatically subscribe (Receive notifications) to pages",
@@ -321,14 +278,6 @@
       "no_mixed_zenkaku_and_hankaku_alphabet": "Check for mixed full-width and half-width alphabets.",
       "no_nfd": "textlint rule that disallow to use NFD like UTF8-MAC Sonant mark."
     }
-  },
-  "copy_to_clipboard": {
-    "Copy to clipboard": "Copy to clipboard",
-    "Page path": "Page path",
-    "Page URL": "Page URL",
-    "Permanent link": "Permanent link",
-    "Page path and permanent link": "Page path and permanent link",
-    "Markdown link": "Markdown link"
   },
   "search_help": {
     "title": "Searching Help",
@@ -389,7 +338,8 @@
     "notfound_or_forbidden": "Original page is not found or forbidden.",
     "already_exists": "Page with the path already exists.",
     "outdated": "Page is updated someone and now outdated.",
-    "user_not_admin": "Only admin user can delete"
+    "user_not_admin": "Only admin user can delete",
+    "single_deletion_empty_pages": "Empty pages cannot be single deleted"
   },
   "page_history": {
     "revision_list": "Revision list",
@@ -523,10 +473,6 @@
     "page_not_found_in_preview": "\"{{path}}\" is not a GROWI page."
   },
   "toaster": {
-    "create_succeeded": "Succeeded to create {{target}}",
-    "create_failed": "Failed to create {{target}}",
-    "update_successed": "Succeeded to update {{target}}",
-    "update_failed": "Failed to update {{target}}",
     "file_upload_succeeded": "File upload succeeded.",
     "file_upload_failed": "File upload failed.",
     "initialize_successed": "Succeeded to initialize {{target}}",
@@ -541,7 +487,8 @@
     "remove_share_link": "Succeeded to remove {{count}} share links",
     "switch_disable_link_sharing_success": "Succeeded to update share link setting",
     "failed_to_reset_password":"Failed to reset password",
-    "delete_succeeded": "Succeeded to delete {{target}}"
+    "delete_succeeded": "Succeeded to delete {{target}}",
+    "save_succeeded": "Saved successfully"
   },
   "template": {
     "modal_label": {
@@ -618,6 +565,7 @@
     "popover_desc": "Input channel name. You can notify multiple channels by entering a comma-separated list."
   },
   "search_result": {
+    "title": "Search",
     "result_meta": "Search results for:",
     "deletion_mode_btn_lavel": "Select and delete page",
     "cancel": "Cancel",
@@ -638,6 +586,7 @@
     }
   },
   "private_legacy_pages": {
+    "title": "Private Legacy Pages",
     "bulk_operation": "Bulk operation",
     "convert_all_selected_pages": "Convert all to new v5 compatible format",
     "input_path_to_convert": "Input a path to convert pages",
@@ -671,15 +620,16 @@
       "error_duplicate_pages_found": "Multiple pages with the same path name were found. Please rename or delete and try again."
     }
   },
-  "to_cloud_settings": "Open GROWI.cloud Settings",
   "login": {
-    "Sign in error": "Login error",
-    "Registration successful": "Registration successful",
+    "title": "Login",
+    "sign_in_error": "Login error",
+    "registration_successful": "registration_successful. Please wait for administrator approval.",
     "Setup": "Setup",
     "enabled_ldap_has_configuration_problem":"LDAP is enabled but the configuration has something wrong.",
     "set_env_var_for_logs": "(Please set the environment variables <code>DEBUG=crowi:service:PassportService</code> to get the logs)"
   },
   "invited": {
+    "title": "Invited",
     "discription_heading": "Create Account",
     "discription": "Create an your account with the invited email address"
   },
@@ -706,6 +656,8 @@
     "username_should_not_be_null":"Username should not be null. Please check Authentication Mechanism Settings on admin page",
     "email_address_is_already_registered":"This email address is already registered.",
     "can_not_register_maximum_number_of_users":"Can not register more than the maximum number of users.",
+    "email_settings_is_not_setup":"E-mail settings is not set up. Please ask the administrator.",
+    "email_authentication_is_not_enabled": "Email authentication is not enabled. Please ask the administrator.",
     "failed_to_register":"Failed to register.",
     "successfully_created":"The user {{username}} is successfully created.",
     "can_not_activate_maximum_number_of_users":"Can not activate more than the maximum number of users.",
@@ -716,7 +668,7 @@
     "failed_to_create_admin_user":"Failed to create admin user. {{errMessage}}",
     "successfully_send_email_auth":"We sent an email to {{email}}. Please click the URL in the email and complete the registration.",
     "incorrect_token_or_expired_url": "The token is incorrect or the URL has expired.",
-    "user_already_loggedin": "You cannot create a new account when you are logged in.",
+    "user_already_logged_in": "You cannot create a new account when you are logged in.",
     "registration_closed": "You are not authorized to create a new account.",
     "Username has invalid characters": "Username has invalid characters.",
     "Username field is required": "User ID field is required.",
@@ -798,7 +750,6 @@
     "logout": "Logout"
   },
   "pagetree": {
-    "private_legacy_pages": "Private Legacy Pages",
     "cannot_rename_a_title_that_contains_slash": "Cannot rename a title that contains '/'",
     "you_cannot_move_this_page_now": "You cannot move this page now",
     "something_went_wrong_with_moving_page": "Something went wrong with moving page"
@@ -812,13 +763,6 @@
     "select_group": "Select group",
     "belonging_to_no_group": "Could not find the groups you belong to.",
     "manage_user_groups": "Manage user groups"
-  },
-  "crop_image_modal": {
-    "image_crop": "Image Crop",
-    "crop": "Crop",
-    "save": "Save",
-    "reset": "Reset",
-    "cancel": "Cancel"
   },
   "fix_page_grant": {
     "modal": {
@@ -878,5 +822,16 @@
     },
     "input_placeholder": "Input folder name",
     "new_folder": "New Folder"
+  },
+  "v5_page_migration": {
+    "page_tree_not_avaliable" : "Page tree feature is not available yet.",
+    "go_to_settings": "Go to settings to enable the feature"
+  },
+  "tag_edit_modal": {
+    "edit_tags": "Edit Tags",
+    "done": "Done",
+    "tags_input": {
+      "tag_name": "tag name"
+    }
   }
 }

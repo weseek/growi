@@ -93,8 +93,8 @@ export const DescendantsPageListModal = (): JSX.Element => {
       size="xl"
       isOpen={isOpened}
       toggle={close}
-      data-testid="page-accessories-modal"
-      className={`grw-page-accessories-modal ${styles['grw-page-accessories-modal']} ${isWindowExpanded ? 'grw-modal-expanded' : ''} `}
+      data-testid="descendants-page-list-modal"
+      className={`grw-descendants-page-list-modal ${styles['grw-descendants-page-list-modal']} ${isWindowExpanded ? 'grw-modal-expanded' : ''} `}
     >
       <ModalHeader className="p-0" toggle={close} close={buttons}>
         <CustomNavTab

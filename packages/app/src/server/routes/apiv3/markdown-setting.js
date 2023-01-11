@@ -30,7 +30,7 @@ const validator = {
   xssSetting: [
     body('isEnabledXss').isBoolean(),
     body('tagWhiteList').isArray(),
-    body('attrWhiteList').isArray(),
+    body('attrWhiteList').isString(),
   ],
 };
 
@@ -125,10 +125,10 @@ module.exports = (crowi) => {
       isIndentSizeForced: await crowi.configManager.getConfig('markdown', 'markdown:isIndentSizeForced'),
       pageBreakSeparator: await crowi.configManager.getConfig('markdown', 'markdown:presentation:pageBreakSeparator'),
       pageBreakCustomSeparator: await crowi.configManager.getConfig('markdown', 'markdown:presentation:pageBreakCustomSeparator'),
-      isEnabledXss: await crowi.configManager.getConfig('markdown', 'markdown:xss:isEnabledPrevention'),
-      xssOption: await crowi.configManager.getConfig('markdown', 'markdown:xss:option'),
-      tagWhiteList: await crowi.configManager.getConfig('markdown', 'markdown:xss:tagWhiteList'),
-      attrWhiteList: await crowi.configManager.getConfig('markdown', 'markdown:xss:attrWhiteList'),
+      isEnabledXss: await crowi.configManager.getConfig('markdown', 'markdown:rehypeSanitize:isEnabledPrevention'),
+      xssOption: await crowi.configManager.getConfig('markdown', 'markdown:rehypeSanitize:option'),
+      tagWhiteList: await crowi.configManager.getConfig('markdown', 'markdown:rehypeSanitize:tagNames'),
+      attrWhiteList: await crowi.configManager.getConfig('markdown', 'markdown:rehypeSanitize:attributes'),
     };
 
     return res.apiv3({ markdownParams });
@@ -292,20 +292,29 @@ module.exports = (crowi) => {
       return res.apiv3Err(new ErrorV3('xss option is required'));
     }
 
+    try {
+      JSON.parse(req.body.attrWhiteList);
+    }
+    catch (err) {
+      const msg = 'Error occurred in updating xss';
+      logger.error('Error', err);
+      return res.apiv3Err(new ErrorV3(msg, 'update-xss-failed'));
+    }
+
     const reqestXssParams = {
-      'markdown:xss:isEnabledPrevention': req.body.isEnabledXss,
-      'markdown:xss:option': req.body.xssOption,
-      'markdown:xss:tagWhiteList': req.body.tagWhiteList,
-      'markdown:xss:attrWhiteList': req.body.attrWhiteList,
+      'markdown:rehypeSanitize:isEnabledPrevention': req.body.isEnabledXss,
+      'markdown:rehypeSanitize:option': req.body.xssOption,
+      'markdown:rehypeSanitize:tagNames': req.body.tagWhiteList,
+      'markdown:rehypeSanitize:attributes': req.body.attrWhiteList,
     };
 
     try {
       await crowi.configManager.updateConfigsInTheSameNamespace('markdown', reqestXssParams);
       const xssParams = {
-        isEnabledXss: await crowi.configManager.getConfig('markdown', 'markdown:xss:isEnabledPrevention'),
-        xssOption: await crowi.configManager.getConfig('markdown', 'markdown:xss:option'),
-        tagWhiteList: await crowi.configManager.getConfig('markdown', 'markdown:xss:tagWhiteList'),
-        attrWhiteList: await crowi.configManager.getConfig('markdown', 'markdown:xss:attrWhiteList'),
+        isEnabledXss: await crowi.configManager.getConfig('markdown', 'markdown:rehypeSanitize:isEnabledPrevention'),
+        xssOption: await crowi.configManager.getConfig('markdown', 'markdown:rehypeSanitize:option'),
+        tagWhiteList: await crowi.configManager.getConfig('markdown', 'markdown:rehypeSanitize:tagNames'),
+        attrWhiteList: await crowi.configManager.getConfig('markdown', 'markdown:rehypeSanitize:attributes'),
       };
 
       const parameters = { action: SupportedAction.ACTION_ADMIN_MARKDOWN_XSS_UPDATE };

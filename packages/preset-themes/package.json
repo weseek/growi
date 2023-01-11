@@ -1,0 +1,29 @@
+{
+  "name": "@growi/preset-themes",
+  "description": "GROWI preset themes",
+  "version": "6.0.2-RC.0",
+  "license": "MIT",
+  "main": "dist/libs/index.js",
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "yarn build:libs & yarn build:themes",
+    "build:w": "yarn build:libs -w & yarn build:themes -w",
+    "build:libs": "vite -c vite.libs.config.ts build",
+    "build:themes": "vite -c vite.themes.config.ts build",
+    "lint:eslint": "eslint --quiet \"**/*.{js,jsx,ts,tsx}\"",
+    "lint:styles": "stylelint src/**/*.scss",
+    "lint": "run-p lint:*",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "react-innertext": "^1.1.5"
+  },
+  "devDependencies": {
+    "bootstrap": "^4.6.1",
+    "sass": "^1.55.0"
+  }
+}

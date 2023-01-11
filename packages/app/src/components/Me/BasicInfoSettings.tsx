@@ -22,7 +22,7 @@ export const BasicInfoSettings = (): JSX.Element => {
     try {
       await updateBasicInfo();
       sync();
-      toastSuccess(t('toaster.update_successed', { target: t('Basic Info') }));
+      toastSuccess(t('toaster.update_successed', { target: t('Basic Info'), ns: 'commons' }));
     }
     catch (err) {
       toastError(err);

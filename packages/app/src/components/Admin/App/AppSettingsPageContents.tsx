@@ -14,7 +14,6 @@ import AppSetting from './AppSetting';
 import FileUploadSetting from './FileUploadSetting';
 import MailSetting from './MailSetting';
 import { MaintenanceMode } from './MaintenanceMode';
-import PluginSetting from './PluginSetting';
 import SiteUrlSetting from './SiteUrlSetting';
 import V5PageMigration from './V5PageMigration';
 
@@ -73,7 +72,7 @@ const AppSettingsPageContents = (props: Props) => {
           && (
             <div className="row">
               <div className="col-lg-12">
-                <h2 className="admin-setting-header">{t('V5 Page Migration')}</h2>
+                <h2 className="admin-setting-header" data-testid="v5-page-migration">{t('V5 Page Migration')}</h2>
                 <V5PageMigration />
               </div>
             </div>
@@ -82,14 +81,14 @@ const AppSettingsPageContents = (props: Props) => {
 
       <div className="row">
         <div className="col-lg-12">
-          <h2 className="admin-setting-header">{t('app_settings')}</h2>
+          <h2 className="admin-setting-header">{t('headers.app_settings', { ns: 'commons' })}</h2>
           <AppSetting />
         </div>
       </div>
 
       <div className="row mt-5">
         <div className="col-lg-12">
-          <h2 className="admin-setting-header">{t('Site URL settings')}</h2>
+          <h2 className="admin-setting-header">{t('app_setting.site_url.title')}</h2>
           <SiteUrlSetting />
         </div>
       </div>
@@ -105,13 +104,6 @@ const AppSettingsPageContents = (props: Props) => {
         <div className="col-lg-12">
           <h2 className="admin-setting-header">{t('admin:app_setting.file_upload_settings')}</h2>
           <FileUploadSetting />
-        </div>
-      </div>
-
-      <div className="row mt-5">
-        <div className="col-lg-12">
-          <h2 className="admin-setting-header">{t('admin:app_setting.plugin_settings')}</h2>
-          <PluginSetting />
         </div>
       </div>
 

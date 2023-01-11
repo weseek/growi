@@ -29,7 +29,7 @@ import PaginationWrapper from './PaginationWrapper';
 import { PrivateLegacyPagesMigrationModal } from './PrivateLegacyPagesMigrationModal';
 import { OperateAllControl } from './SearchPage/OperateAllControl';
 import SearchControl from './SearchPage/SearchControl';
-import { IReturnSelectedPageIds, SearchPageBase, usePageDeleteModalForBulkDeletion } from './SearchPage2/SearchPageBase';
+import { IReturnSelectedPageIds, SearchPageBase, usePageDeleteModalForBulkDeletion } from './SearchPage/SearchPageBase';
 
 
 // TODO: replace with "customize:showPageLimitationS"
@@ -148,7 +148,7 @@ const ConvertByPathModal = React.memo((props: ConvertByPathModalProps): JSX.Elem
   }, [props.isOpen]);
 
   return (
-    <Modal size="lg" isOpen={props.isOpen} toggle={props.close} className="grw-create-page">
+    <Modal size="lg" isOpen={props.isOpen} toggle={props.close}>
       <ModalHeader tag="h4" toggle={props.close} className="bg-primary text-light">
         { t('private_legacy_pages.by_path_modal.title') }
       </ModalHeader>
@@ -455,6 +455,7 @@ const PrivateLegacyPages = (): JSX.Element => {
             toastSuccess(t('private_legacy_pages.by_path_modal.success'));
             setOpenConvertModal(false);
             mutate();
+            advancePt();
           }
           catch (errs) {
             if (errs.length === 1) {

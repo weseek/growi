@@ -7,7 +7,7 @@ import {
 } from 'reactstrap';
 
 const ConfirmBotChangeModal = (props) => {
-  const { t } = useTranslation();
+  const { t } = useTranslation('admin');
 
   const handleCancelButton = () => {
     if (props.onCancelClick != null) {

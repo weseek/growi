@@ -17,6 +17,14 @@ export const SocketEventName = {
   FinishAddPage: 'finishAddPage',
   RebuildingFailed: 'rebuildingFailed',
 
+  // Page Operation
+  PageCreated: 'page:create',
+  PageUpdated: 'page:update',
+  PageDeleted: 'page:delete',
+
+  // Hackmd
+  EditingWithHackmd: 'page:editingWithHackmd',
+
 } as const;
 export type SocketEventName = typeof SocketEventName[keyof typeof SocketEventName];
 

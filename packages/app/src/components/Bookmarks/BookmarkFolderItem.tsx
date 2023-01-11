@@ -1,5 +1,5 @@
 import {
-  FC, useCallback, useEffect, useState,
+  FC, useCallback, useEffect, useState, useMemo,
 } from 'react';
 
 import { useTranslation } from 'next-i18next';
@@ -42,7 +42,7 @@ const BookmarkFolderItem: FC<BookmarkFolderItemProps> = (props: BookmarkFolderIt
   const { data: currentPage } = useSWRxCurrentPage();
   const { mutate: mutateBookmarkInfo } = useSWRBookmarkInfo(currentPage?._id);
 
-  const getChildCount = useCallback((): number => {
+  const childCount = useMemo((): number => {
     if (currentChildren != null && currentChildren.length > children.length) {
       return currentChildren.length;
     }
@@ -193,7 +193,7 @@ const BookmarkFolderItem: FC<BookmarkFolderItemProps> = (props: BookmarkFolderIt
             </div>
             {hasChildren() && (
               <div className="grw-foldertree-count-wrapper">
-                <CountBadge count={ getChildCount() } />
+                <CountBadge count={ childCount } />
               </div>
             )}
           </>

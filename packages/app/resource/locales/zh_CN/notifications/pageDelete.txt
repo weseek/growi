@@ -1,5 +1,5 @@
-{{ username }} deleted the page  {{ path }}.
+<%- username -%> deleted the page  <%- path -%>.
 
 ----------------------
 
-Growi: {{ appTitle }}
+Growi: <%- appTitle -%>

@@ -27,7 +27,7 @@ class LineBreakForm extends React.Component {
 
     try {
       await this.props.adminMarkDownContainer.updateLineBreakSetting();
-      toastSuccess(t('toaster.update_successed', { target: t('markdown_settings.lineBreak_header') }));
+      toastSuccess(t('toaster.update_successed', { target: t('markdown_settings.lineBreak_header'), ns: 'commons' }));
     }
     catch (err) {
       toastError(err);

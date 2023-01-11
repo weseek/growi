@@ -1,4 +1,6 @@
 export const PageActionType = {
+  Create: 'Create',
+  Update: 'Update',
   Rename: 'Rename',
   Duplicate: 'Duplicate',
   Delete: 'Delete',
@@ -24,3 +26,13 @@ export type IPageOperationProcessData = {
 export type IPageOperationProcessInfo = {
   [pageId: string]: IPageOperationProcessData,
 }
+
+export type OptionsToSave = {
+  isSlackEnabled: boolean;
+  slackChannels: string;
+  grant: number;
+  pageTags: string[] | null;
+  grantUserGroupId?: string | null;
+  grantUserGroupName?: string | null;
+  isSyncRevisionToHackmd?: boolean;
+};

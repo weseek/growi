@@ -1,5 +1,5 @@
 import { useTranslation } from 'next-i18next';
-import useSWR, { SWRResponse } from 'swr';
+import useSWR, { SWRConfiguration, SWRResponse } from 'swr';
 
 
 import { IExternalAccount } from '~/interfaces/external-account';
@@ -13,10 +13,11 @@ import { useStaticSWR } from './use-static-swr';
 const logger = loggerFactory('growi:stores:personal-settings');
 
 
-export const useSWRxPersonalSettings = (): SWRResponse<IUser, Error> => {
+export const useSWRxPersonalSettings = (config?: SWRConfiguration): SWRResponse<IUser, Error> => {
   return useSWR(
     '/personal-setting',
     endpoint => apiv3Get(endpoint).then(response => response.data.currentUser),
+    config,
   );
 };
 
@@ -27,9 +28,9 @@ export type IPersonalSettingsInfoOption = {
   disassociateLdapAccount: (account: { providerType: string, accountId: string }) => Promise<void>,
 }
 
-export const usePersonalSettings = (): SWRResponse<IUser, Error> & IPersonalSettingsInfoOption => {
+export const usePersonalSettings = (config?: SWRConfiguration): SWRResponse<IUser, Error> & IPersonalSettingsInfoOption => {
   const { i18n } = useTranslation();
-  const { data: personalSettingsDataFromDB, mutate: revalidate } = useSWRxPersonalSettings();
+  const { data: personalSettingsDataFromDB, mutate: revalidate } = useSWRxPersonalSettings(config);
   const key = personalSettingsDataFromDB != null ? 'personalSettingsInfo' : null;
 
   const swrResult = useStaticSWR<IUser, Error>(key, undefined, { fallbackData: personalSettingsDataFromDB });

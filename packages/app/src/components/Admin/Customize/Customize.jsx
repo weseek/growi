@@ -12,10 +12,9 @@ import { withUnstatedContainers } from '../../UnstatedUtils';
 
 import CustomizeCssSetting from './CustomizeCssSetting';
 import CustomizeFunctionSetting from './CustomizeFunctionSetting';
-import CustomizeHeaderSetting from './CustomizeHeaderSetting';
-import CustomizeHighlightSetting from './CustomizeHighlightSetting';
 import CustomizeLayoutSetting from './CustomizeLayoutSetting';
 import CustomizeLogoSetting from './CustomizeLogoSetting';
+import CustomizeNoscriptSetting from './CustomizeNoscriptSetting';
 import CustomizeScriptSetting from './CustomizeScriptSetting';
 import CustomizeSidebarSetting from './CustomizeSidebarSetting';
 import CustomizeThemeSetting from './CustomizeThemeSetting';
@@ -45,10 +44,13 @@ function Customize(props) {
   return (
     <div data-testid="admin-customize">
       <div className="mb-5">
-        <CustomizeLayoutSetting />
+        <CustomizeThemeSetting />
       </div>
       <div className="mb-5">
-        <CustomizeThemeSetting />
+        <CustomizeLogoSetting />
+      </div>
+      <div className="mb-5">
+        <CustomizeLayoutSetting />
       </div>
       <div className="mb-5">
         <CustomizeSidebarSetting />
@@ -57,22 +59,16 @@ function Customize(props) {
         <CustomizeFunctionSetting />
       </div>
       <div className="mb-5">
-        <CustomizeHighlightSetting />
-      </div>
-      <div className="mb-5">
         <CustomizeTitle />
-      </div>
-      <div className="mb-5">
-        <CustomizeHeaderSetting />
-      </div>
-      <div className="mb-5">
-        <CustomizeCssSetting />
       </div>
       <div className="mb-5">
         <CustomizeScriptSetting />
       </div>
       <div className="mb-5">
-        <CustomizeLogoSetting />
+        <CustomizeCssSetting />
+      </div>
+      <div className="mb-5">
+        <CustomizeNoscriptSetting />
       </div>
     </div>
   );

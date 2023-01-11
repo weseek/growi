@@ -33,7 +33,7 @@ class StatusActivateButton extends React.Component {
 
     return (
       <button className="dropdown-item" type="button" onClick={() => { this.onClickAcceptBtn() }}>
-        <i className="icon-fw icon-user-following"></i> {t('admin:user_management.user_table.accept')}
+        <i className="icon-fw icon-user-following"></i> {t('user_management.user_table.accept')}
       </button>
     );
   }
@@ -41,7 +41,7 @@ class StatusActivateButton extends React.Component {
 }
 
 const StatusActivateFormWrapperFC = (props) => {
-  const { t } = useTranslation();
+  const { t } = useTranslation('admin');
   return <StatusActivateButton t={t} {...props} />;
 };
 

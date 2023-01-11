@@ -272,6 +272,7 @@ const PageDeleteModal: FC = () => {
           className={`btn btn-${deleteIconAndKey[deleteMode].color}`}
           disabled={!isDeletable}
           onClick={deleteButtonHandler}
+          data-testid="delete-page-button"
         >
           <i className={`mr-1 icon-${deleteIconAndKey[deleteMode].icon}`} aria-hidden="true"></i>
           { t(`modal_delete.delete_${deleteIconAndKey[deleteMode].translationKey}`) }
@@ -281,7 +282,7 @@ const PageDeleteModal: FC = () => {
   };
 
   return (
-    <Modal size="lg" isOpen={isOpened} toggle={closeDeleteModal} data-testid="page-delete-modal" className="grw-create-page">
+    <Modal size="lg" isOpen={isOpened} toggle={closeDeleteModal} data-testid="page-delete-modal">
       <ModalHeader tag="h4" toggle={closeDeleteModal} className={`bg-${deleteIconAndKey[deleteMode].color} text-light`}>
         {headerContent()}
       </ModalHeader>

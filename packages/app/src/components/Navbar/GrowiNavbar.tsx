@@ -5,14 +5,16 @@ import React, {
 import { isServer } from '@growi/core';
 import { useTranslation } from 'next-i18next';
 import dynamic from 'next/dynamic';
+import Image from 'next/image';
 import Link from 'next/link';
 import { useRipple } from 'react-use-ripple';
 import { UncontrolledTooltip } from 'reactstrap';
 
 import {
-  useIsSearchPage, useCurrentPagePath, useIsGuestUser, useIsSearchServiceConfigured, useAppTitle, useConfidential,
+  useIsSearchPage, useIsGuestUser, useIsSearchServiceConfigured, useAppTitle, useConfidential, useIsDefaultLogo,
 } from '~/stores/context';
 import { usePageCreateModal } from '~/stores/modal';
+import { useCurrentPagePath } from '~/stores/page';
 import { useIsDeviceSmallerThanMd } from '~/stores/ui';
 
 import { HasChildren } from '../../interfaces/common';
@@ -57,7 +59,7 @@ const NavbarRight = memo((): JSX.Element => {
             onClick={() => openCreateModal(currentPagePath || '')}
           >
             <i className="icon-pencil mr-2"></i>
-            <span className="d-none d-lg-block">{ t('New') }</span>
+            <span className="d-none d-lg-block">{ t('commons:New') }</span>
           </button>
         </li>
 
@@ -78,7 +80,7 @@ const NavbarRight = memo((): JSX.Element => {
         <li className="grw-apperance-mode-dropdown nav-item dropdown">
           <AppearanceModeDropdown isAuthenticated={isAuthenticated} />
         </li>
-        <li id="login-user" className="nav-item"><a className="nav-link" href="/login">Login</a></li>;
+        <li id="login-user" className="nav-item"><a className="nav-link" href="/login">Login</a></li>
       </>
     );
   }, [isAuthenticated]);
@@ -119,7 +121,28 @@ const Confidential: FC<ConfidentialProps> = memo((props: ConfidentialProps): JSX
 });
 Confidential.displayName = 'Confidential';
 
-export const GrowiNavbar = (): JSX.Element => {
+interface NavbarLogoProps {
+  isDefaultLogo?: boolean
+}
+
+const GrowiNavbarLogo: FC<NavbarLogoProps> = memo((props: NavbarLogoProps) => {
+  const { isDefaultLogo } = props;
+
+  return isDefaultLogo
+    ? <GrowiLogo />
+    // eslint-disable-next-line @next/next/no-img-element
+    : (<img src='/attachment/brand-logo' alt="custom logo" className="picture picture-lg p-2 mx-2" id="settingBrandLogo" width="32" />);
+});
+
+GrowiNavbarLogo.displayName = 'GrowiNavbarLogo';
+
+type Props = {
+  isGlobalSearchHidden?: boolean
+}
+
+export const GrowiNavbar = (props: Props): JSX.Element => {
+
+  const { isGlobalSearchHidden } = props;
 
   const GlobalSearch = dynamic<GlobalSearchProps>(() => import('./GlobalSearch').then(mod => mod.GlobalSearch), { ssr: false });
 
@@ -128,6 +151,7 @@ export const GrowiNavbar = (): JSX.Element => {
   const { data: isSearchServiceConfigured } = useIsSearchServiceConfigured();
   const { data: isDeviceSmallerThanMd } = useIsDeviceSmallerThanMd();
   const { data: isSearchPage } = useIsSearchPage();
+  const { data: isDefaultLogo } = useIsDefaultLogo();
 
   return (
     <nav id="grw-navbar" className={`navbar grw-navbar ${styles['grw-navbar']} navbar-expand navbar-dark sticky-top mb-0 px-0`}>
@@ -135,7 +159,7 @@ export const GrowiNavbar = (): JSX.Element => {
       <div className="navbar-brand mr-0">
         <Link href="/" prefetch={false}>
           <a className="grw-logo d-block">
-            <GrowiLogo />
+            <GrowiNavbarLogo isDefaultLogo={isDefaultLogo} />
           </a>
         </Link>
       </div>
@@ -151,7 +175,7 @@ export const GrowiNavbar = (): JSX.Element => {
       </ul>
 
       <div className="grw-global-search-container position-absolute">
-        { isSearchServiceConfigured && !isDeviceSmallerThanMd && !isSearchPage && (
+        { !isGlobalSearchHidden && isSearchServiceConfigured && !isDeviceSmallerThanMd && !isSearchPage && (
           <GlobalSearch />
         ) }
       </div>
