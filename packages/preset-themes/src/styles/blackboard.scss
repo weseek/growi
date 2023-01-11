@@ -49,6 +49,13 @@
   // --color-list-active: var(--color-reversal);
   // --bgcolor-list-active: var(--primary);
 
+  // Table colors
+  // --color-table: #; // optional
+  --bgcolor-table: var(--bgcolor-global); // optional
+  // --border-color-table: #; // optional
+  // --color-table-hover: #; // optional
+  // --bgcolor-table-hover: #; // optional
+
   // Navbar
   --bgcolor-navbar: hsl(var(--bgcolor-navbar-hs),var(--bgcolor-navbar-l));
   --bgcolor-navbar-hs: 32,42%;

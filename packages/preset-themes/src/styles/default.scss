@@ -86,7 +86,7 @@
   --bgcolor-resize-button-hs: var(--accent-hs);
   --bgcolor-resize-button-l: var(--accent-l);
   --color-resize-button-hover: var(--color-reversal);
-  --bgcolor-resize-button-hover: #{hsl.lighten(var(--bgcolor-resize-button), 5%)};
+  --bgcolor-resize-button-hover: #{hsl.lighten(var(--accent), 5%)};
 
   // Sidebar contents
   --color-sidebar-context: var(--color-global);

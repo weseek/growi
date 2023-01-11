@@ -1,15 +1,22 @@
 .toast-success {
-  background-color: $success;
+  background-color: var(--success) !important;
 }
 
 .toast-error {
-  background-color: $danger;
+  background-color: var(--danger) !important;
 }
 
 .toast-info {
-  background-color: $info;
+  background-color: var(--info) !important;
 }
 
 .toast-warning {
-  background-color: $warning;
+  background-color: var(--warning) !important;
+}
+
+:root {
+  --toastify-color-info: var(--info);
+  --toastify-color-success: var(--success);
+  --toastify-color-warning: var(--warning);
+  --toastify-color-error: var(--danger);
 }
