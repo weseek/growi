@@ -35,6 +35,7 @@ type Props = CommonProps & {
 
 const InstallerPage: NextPage<Props> = (props: Props) => {
   const { t } = useTranslation();
+  const { t: tCommons } = useTranslation('commons');
 
   const navTabMapping = useMemo(() => {
     return {
@@ -47,11 +48,11 @@ const InstallerPage: NextPage<Props> = (props: Props) => {
       external_accounts: {
         Icon: () => <i className="icon-fw icon-share-alt"></i>,
         Content: DataTransferForm,
-        i18n: t('g2g_data_transfer.tab'),
+        i18n: tCommons('g2g_data_transfer.tab'),
         index: 1,
       },
     };
-  }, [t]);
+  }, [t, tCommons]);
 
   // commons
   useAppTitle(props.appTitle);
@@ -67,7 +68,7 @@ const InstallerPage: NextPage<Props> = (props: Props) => {
       <Head>
         <title>{title}</title>
       </Head>
-      <div id="installer-form-container" className="noLogin-dialog mx-auto">
+      <div id="installer-form-container" className="nologin-dialog mx-auto">
         <CustomNavAndContents navTabMapping={navTabMapping} tabContentClasses={['p-0']} />
       </div>
     </NoLoginLayout>
