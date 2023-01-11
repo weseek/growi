@@ -11,7 +11,7 @@ import * as nextI18nConfig from '^/config/next-i18next.config';
 import { ActivatePluginService } from '~/client/services/activate-plugin';
 import { useI18nextHMR } from '~/services/i18next-hmr';
 import {
-  useAppTitle, useConfidential, useGrowiVersion, useSiteUrl, useIsDefaultLogo,
+  useAppTitle, useConfidential, useGrowiVersion, useSiteUrl, useIsDefaultLogo, useForcedColorScheme,
 } from '~/stores/context';
 import { SWRConfigValue, swrGlobalConfiguration } from '~/utils/swr-utils';
 
@@ -66,6 +66,7 @@ function GrowiApp({ Component, pageProps }: GrowiAppProps): JSX.Element {
   useConfidential(commonPageProps.confidential);
   useGrowiVersion(commonPageProps.growiVersion);
   useIsDefaultLogo(commonPageProps.isDefaultLogo);
+  useForcedColorScheme(commonPageProps.forcedColorScheme);
 
   // Use the layout defined at the page level, if available
   const getLayout = Component.getLayout ?? (page => page);
