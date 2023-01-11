@@ -72,6 +72,7 @@ class CustomizeService implements S2sMessageHandlable {
     await configManager.loadConfigs();
     this.initCustomCss();
     this.initCustomTitle();
+    this.initGrowiTheme();
   }
 
   async publishUpdatedMessage() {
