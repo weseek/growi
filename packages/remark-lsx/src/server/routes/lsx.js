@@ -1,6 +1,6 @@
 import createError, { isHttpError } from 'http-errors';
 
-const { pagePathUtils, customTagUtils } = require('@growi/core');
+const { pathUtils, pagePathUtils, customTagUtils } = require('@growi/core');
 
 const { OptionParser } = customTagUtils;
 
@@ -8,6 +8,7 @@ const { OptionParser } = customTagUtils;
 const DEFAULT_PAGES_NUM = 50;
 
 
+const { addTrailingSlash } = pathUtils;
 const { isTopPage } = pagePathUtils;
 
 class Lsx {
@@ -105,10 +106,10 @@ class Lsx {
     let filterPath = '';
     if (optionsFilter.charAt(0) === '^') {
       // move '^' to the first of path
-      filterPath = new RegExp(`^${pagePath}${optionsFilter.slice(1, optionsFilter.length)}`);
+      filterPath = new RegExp(`^${addTrailingSlash(pagePath)}${optionsFilter.slice(1, optionsFilter.length)}`);
     }
     else {
-      filterPath = new RegExp(`^${pagePath}.*${optionsFilter}`);
+      filterPath = new RegExp(`^${addTrailingSlash(pagePath)}.*${optionsFilter}`);
     }
 
     if (isExceptFilter) {
